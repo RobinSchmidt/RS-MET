@@ -119,5 +119,6 @@ SFZ Resources
 -------------
 
 https://sfzformat.com/
+https://sfzformat.com/legacy/
 https://github.com/sfz
 

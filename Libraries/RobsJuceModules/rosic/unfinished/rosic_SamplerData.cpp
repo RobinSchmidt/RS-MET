@@ -437,7 +437,7 @@ void rsRemoveRepeats(std::string& s, char c)
 }
 // move into rosic, write unit test
 
-rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
+rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn) // rename to setFromSfz
 {
   clearInstrument();
   if(strIn.empty())
@@ -449,6 +449,16 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
   std::string str = strIn;
   rsReplaceCharacter(str, '\n', ' ');
   rsRemoveRepeats(str, ' ');
+  // -Factor out into a function preProcessSfz
+  // -Include stripping away comments. A comment begins with a slash '/' and extends until the end
+  //  of the line. It's really annyoing that we can't yet write any comments. Maybe hava a general
+  //  function that removes all characters between a startTag and endTag and call it like
+  //    str = removeBetween(str, "/", "\n", true, false)
+  //  where the true/false flags indicate whether or not the startTag, endTag (here "/" and "\n") 
+  //  characters themselves should also be removed. The slash itself shall be removed but the 
+  //  newline should remain intact. Of course, it must be called before rsReplaceCharacter.
+
+
 
   // Extracts the subtring starting at startIndex up to (and excluding) the next separator ' ' 
   // charcater. If there is no ' ', it will return the string from startIndex up to its end:
