@@ -758,6 +758,9 @@
     <Filter Include="JUCE Modules\rosic\transforms">
       <UniqueIdentifier>{8E6E1311-D906-A7F8-803D-3D202B0521C4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\rosic\unfinished\sampler">
+      <UniqueIdentifier>{1F8F431F-C3D1-947D-BF35-F40BCBB1369C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\rosic\unfinished">
       <UniqueIdentifier>{AE58008C-947B-CA78-EACB-539C5756F464}</UniqueIdentifier>
     </Filter>
@@ -5128,6 +5131,21 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.cpp">
       <Filter>JUCE Modules\rosic\transforms</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerData.cpp">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerEngine.cpp">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerPlayers.cpp">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerProcessors.cpp">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SfzCodeBook.cpp">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
@@ -5159,21 +5177,6 @@
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.cpp">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.cpp">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.cpp">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerPlayers.cpp">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerProcessors.cpp">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SfzCodeBook.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.cpp">
@@ -9987,6 +9990,21 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.h">
       <Filter>JUCE Modules\rosic\transforms</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerData.h">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerEngine.h">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerPlayers.h">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerProcessors.h">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SfzCodeBook.h">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.h">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
@@ -10018,21 +10036,6 @@
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.h">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.h">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.h">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerPlayers.h">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerProcessors.h">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SfzCodeBook.h">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosicOld.h">
@@ -10183,6 +10186,9 @@
     </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt">
       <Filter>JUCE Modules\rosic\math</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Sampler.md">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\PolyphonyInRosic.txt">
       <Filter>JUCE Modules\rosic</Filter>

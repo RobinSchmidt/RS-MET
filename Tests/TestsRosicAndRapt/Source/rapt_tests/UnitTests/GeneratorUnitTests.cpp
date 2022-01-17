@@ -2667,7 +2667,7 @@ bool samplerProcessorsTest()
 
   // Sizes of infrastructural classes:
   size = sizeof(RegionPlayer);           // 184
-  size = sizeof(SignalProcessor);        //  48
+  size = sizeof(Effect);                 //  48
   size = sizeof(Parameter);              //   8
 
   // Sizes of some basic underlying data structures:

@@ -1,6 +1,8 @@
 #ifndef rosic_SamplerProcessors_h
 #define rosic_SamplerProcessors_h
 
+// ToDo: rename to SamplerEffects.h/cpp, factor out a file SamplerEffectCores.h/cpp
+
 namespace rosic {
 namespace Sampler {
 
@@ -38,7 +40,7 @@ protected:
 
 /** Baseclass for signal processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
-class SignalProcessor  // rename to Effect
+class Effect  // rename to Effect
 {
 public:
 
@@ -472,12 +474,12 @@ protected:
 
 /** Class where all the boilerplate for making DSP processors available in the sampler goes. */
 
-class rsSamplerProcessors  // maybe make this a namespace
+class rsSamplerProcessors  // maybe make this a namespace and/or rename to SamplerEffect
 {
 
 public:
 
-  class Amplifier : public SignalProcessor
+  class Amplifier : public Effect
   {
   public:
     Amplifier();
@@ -490,7 +492,7 @@ public:
 
 
 
-  class Filter : public SignalProcessor
+  class Filter : public Effect
   {
 
   public:
@@ -540,7 +542,7 @@ public:
     FilterCore core;
   };
 
-  class Equalizer : public SignalProcessor
+  class Equalizer : public Effect
   {
 
   public:
@@ -582,7 +584,7 @@ public:
 
 
 
-  class WaveShaper : public SignalProcessor
+  class WaveShaper : public Effect
   {
 
   public:
@@ -752,7 +754,7 @@ bool rsObjectPool<T>::isInConsistentState()
 
 /** A class for storing a pool of SignalProcessor objects...tbc... */
 
-class SignalProcessorPool
+class SignalProcessorPool  // rename to EffectPool
 {
 
 public:
@@ -777,12 +779,12 @@ public:
   it certainly should not do is to just replace the non-available processor by a bypass dummy 
   processor because that could have really bad consequences: imagine a missing attenuation 
   processor. Regions are always played back either correctly or not at all but never wrongly. */
-  SignalProcessor* grabProcessor(DspType type);
+  Effect* grabProcessor(DspType type);  // rename to grabEffect
 
   /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 
   processor to the pool so it becomes available again for playing other notes. */
-  void repositProcessor(SignalProcessor* p);
+  void repositProcessor(Effect* p);
   // maybe rename it to repositProcessor
 
 
@@ -815,7 +817,7 @@ protected:
 
 struct DspResourcePool
 {
-  SignalProcessorPool processorPool;
+  SignalProcessorPool processorPool;  // rename to EffectPool
   //ModulatorPool modulatorPool;
   //ConnectionPool connectionPool;
 };

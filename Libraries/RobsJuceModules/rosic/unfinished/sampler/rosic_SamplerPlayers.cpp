@@ -26,13 +26,13 @@ size_t SignalProcessorChain::getNumProcessors(DspType type) const
   return count;
 }
 
-SignalProcessor* SignalProcessorChain::getProcessor(DspType type, int index)
+Effect* SignalProcessorChain::getProcessor(DspType type, int index)
 {
   RAPT::rsAssert(index >= 1 || index == -1);
   index = RAPT::rsMax(index-1, 0);
   int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
   for(int i = 0; i < (int)processors.size(); i++) {
-    SignalProcessor* dsp = getProcessor(i);
+    Effect* dsp = getProcessor(i);
     if(dsp->getType() == type) {
       if(count == index)
         return dsp;
@@ -78,7 +78,7 @@ bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeCha
       continue;
 
     // OK - now we actually need to grab another DSP of given type from the pool:
-    SignalProcessor* dsp = getProcessor(dspType);
+    Effect* dsp = getProcessor(dspType);
     if(dsp)
     {
       dsp->resetSettings(sfzIndex);
@@ -117,7 +117,7 @@ void SamplePlayer::disassembleDspChain()
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  SignalProcessor* dsp = dspChain.getProcessor(s.getTargetDspType(), s.getIndex());
+  Effect* dsp = dspChain.getProcessor(s.getTargetDspType(), s.getIndex());
   if(dsp != nullptr)
     dsp->setParameter(s.getType(), s.getValue());
   else

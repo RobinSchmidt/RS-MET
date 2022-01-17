@@ -5,7 +5,7 @@ namespace rosic { namespace Sampler {
 
 //=================================================================================================
 
-class SignalProcessorChain
+class SignalProcessorChain  // rename to EffectChain
 {
 public:
 
@@ -20,7 +20,7 @@ public:
   //void reset() { resetState(); resetSettings(); }
 
   void reserve(size_t num) { processors.reserve(num); }
-  void addProcessor(SignalProcessor* p) { processors.push_back(p); }
+  void addProcessor(Effect* p) { processors.push_back(p); }  // rename to addEffect
   void clear() { processors.clear(); }
 
   bool isEmpty() const { return processors.empty(); }
@@ -32,7 +32,7 @@ public:
   size_t getNumProcessors(DspType type) const;
 
 
-  SignalProcessor* getProcessor(int i) { return processors[i]; }
+  Effect* getProcessor(int i) { return processors[i]; } // rename to getEffect
   // is this needed? it's confusing to have this and the function below because the indices mean
   // different things in both cases
 
@@ -43,11 +43,11 @@ public:
   We usually encode this by setting the value to -1 in the data-record. Such a -1 will then be
   interpreted as "first-and-only" and in this case, it doesn't really matter, if the caller
   passes -1 or +1 into this function. */
-  SignalProcessor* getProcessor(DspType type, int sfzIndex);
+  Effect* getProcessor(DspType type, int sfzIndex);
 
 protected:
 
-  std::vector<SignalProcessor*> processors;
+  std::vector<Effect*> processors;  // rename to effects
 
 };
 
@@ -171,7 +171,7 @@ protected:
 
   /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
   buildProcessingChain. */
-  SignalProcessor* getProcessor(DspType type)
+  Effect* getProcessor(DspType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
     return dspPool->processorPool.grabProcessor(type);

@@ -1,12 +1,12 @@
 namespace rosic {
 namespace Sampler {
 
-void SignalProcessor::addParameter(Opcode opcode)
+void Effect::addParameter(Opcode opcode)
 {
   params.push_back(Parameter(opcode));
 }
 
-void SignalProcessor::setParameter(Opcode opcode, float value)
+void Effect::setParameter(Opcode opcode, float value)
 {
   size_t i = 0;
   for(i = 0; i < params.size(); i++) {
@@ -16,7 +16,7 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
   RAPT::rsError("Parameter not found in SignalProcessor::setParameter");
 }
 
-void SignalProcessor::resetSettings(int index)
+void Effect::resetSettings(int index)
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   for(size_t i = 0; i < params.size(); i++) {
@@ -483,10 +483,10 @@ inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
 // enough in general to include in the library. Maybe create a file where we can deposit code that
 // may become useful later
 
-SignalProcessor* SignalProcessorPool::grabProcessor(DspType type)
+Effect* SignalProcessorPool::grabProcessor(DspType type)
 {
   using SPT = DspType;
-  SignalProcessor* p = nullptr;
+  Effect* p = nullptr;
   switch(type)
   {
   case SPT::Amplifier:  p = amplifiers.grabItem();  break;
@@ -497,7 +497,7 @@ SignalProcessor* SignalProcessorPool::grabProcessor(DspType type)
   return p;
 }
 
-void SignalProcessorPool::repositProcessor(SignalProcessor* p)
+void SignalProcessorPool::repositProcessor(Effect* p)
 {
   using SPT = DspType;
   int i = -1;
