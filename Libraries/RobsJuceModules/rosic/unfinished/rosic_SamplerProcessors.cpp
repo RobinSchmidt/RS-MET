@@ -271,6 +271,89 @@ void FilterCore::resetState()
 
 //=================================================================================================
 
+rsSamplerProcessors::Amplifier::Amplifier()
+{
+  type = DspType::Amplifier;
+
+  params.reserve(5); 
+  // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
+  // way. The number of parameters is actually known at compile time. Maybe use std::array 
+  // instead of std::vector...hmm...but the number varies between the subclasses, so the array
+  // could not be a baseclass member then...hmm...Maybe SignalProcessor could have an int as
+  // template parameter - but no: then i can't treat them uniformly in the DSP chain...ok, then 
+  // maybe try to set up a unit test that fires when we reserve the wrong size here. Maybe we can 
+  // use an initializer list. But it's actually quite useful to have a more verbose textual "list" 
+  // here to refer to to figure out the indices of the parameters
+
+                                          // index
+  addParameter(Opcode::volumeN);          // 0
+  addParameter(Opcode::panN);             // 1
+  addParameter(Opcode::widthN);           // 2
+  addParameter(Opcode::positionN);        // 3
+
+  addParameter(Opcode::ampN_veltrack);    // 4
+}
+
+void rsSamplerProcessors::Amplifier::prepareToPlay(uchar key, uchar vel, double fs)
+{
+  // Save key, vel for later. We may need those values again when we need to recompute our coeffs 
+  // on a control-change
+  this->key = key;
+  this->vel = vel;
+
+  // Maybe factor this out into an updateCoeffs function which may also be called on control-change 
+  // events
+
+  // Extract nominal values from the parameters:
+  //                                         Opcode
+  float vol = params[0].getValue();       // volumeN
+  float pan = params[1].getValue();       // panN
+  float wd  = params[2].getValue();       // widthN
+  float pos = params[3].getValue();       // positionN
+
+  // Extract key/vel modifiers:
+  float volByVel = params[4].getValue();  // ampN_veltrack
+
+  // Apply modifiers:
+  float dB  = 40 * log10f(127.f/(float)vel);    // change of volume at given velocity
+  vol += 0.01 * volByVel * dB;
+  // Unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
+  // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
+
+  // Set up the core:
+  core.setup(vol, pan, wd, pos);
+
+
+  // ToDo:
+  // -get rid of the getValue() calls by allowing the params to convert to float
+  // -it's not ideal that this code depends on the order, how we add the params in the 
+  //  constructor - try to avoid that - not sure, if that's possible
+}
+
+void rsSamplerProcessors::Amplifier::processFrame(float* L, float* R) 
+{
+  core.processFrame(L, R);
+  // ToDo:
+  // -Let the baseclass maintain a pointer to some sort of MidiStatus object which contains a 
+  //  "dirty" flag which is set whenever the status changes, for example because a 
+  //  control-change was received.
+  // -Inspect the flag here, if it is dirty, we have two options:
+  //  -Recalculate out coeffs immediately, taking into account the new settings of controllers
+  //   etc, or:
+  // -Set up this object for a parameter transition (smoothing) by initializing a sampleCounter
+  //  to numSmoothingSamples and checking that counter in each sample and if it nonzero, do an 
+  //  update step and count down - when zero is reached, we have reached the new target 
+  //  parameters
+}
+
+void rsSamplerProcessors::Amplifier::processBlock(float* L, float* R, int N) 
+{
+  for(int n = 0; n < N; n++)
+    processFrame(&L[n], &R[n]);
+}
+
+//=================================================================================================
+
 SignalProcessorPool::SignalProcessorPool()
 {
   allocateProcessors();

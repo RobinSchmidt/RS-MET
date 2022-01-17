@@ -474,68 +474,15 @@ class rsSamplerProcessors  // maybe make this a namespace
 
 public:
 
-
-
   class Amplifier : public SignalProcessor
   {
-
   public:
-
-    Amplifier() 
-    { 
-      type = DspType::Amplifier;
-      params.reserve(4);
-      addParameter(Opcode::volumeN);
-      addParameter(Opcode::panN);
-      addParameter(Opcode::widthN);
-      addParameter(Opcode::positionN);
-      // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
-      // way. The number of parameters is actually known at compile time. Maybe use std::array 
-      // instead of std::vector...hmm...but the number varies between the subclasses, so the array
-      // could not be a baseclass member then...hmm...Maybe SignalProcessor could have an int as
-      // template parameter - but no: then i can't treat them uniformly in the DSP chain
-    }
-    void prepareToPlay(uchar key, uchar vel, double fs) override 
-    { 
-      core.setup(
-        params[0].getValue(),
-        params[1].getValue(),
-        params[2].getValue(),
-        params[3].getValue());
-      // ToDo:
-      // -let it take key/vel parameters and compute the actual parameter values to use here, 
-      //  taking key/vel into account
-      // -get rid of the getValue() calls by allowing the params to convert to float
-      // -it's not ideal that this code depends on the order, how we add the params in the 
-      //  constructor - try to avoid that
-    }
-    void processFrame(float* L, float* R) override 
-    {
-      core.processFrame(L, R);
-      // ToDo:
-      // -Let the baseclass maintain a pointer to some sort of MidiStatus object which contains a 
-      //  "dirty" flag which is set whenever the status changes, for example because a 
-      //  control-change was received.
-      // -Inspect the flag here, if it is dirty, we have two options:
-      //  -Recalculate out coeffs immediately, taking into account the new settings of controllers
-      //   etc, or:
-      // -Set up this object for a parameter transition (smoothing) by initializing a sampleCounter
-      //  to numSmoothingSamples and checking that counter in each sample and if it nonzero, do an 
-      //  update step and count down - when zero is reached, we have reached the new target 
-      //  parameters
-    }
-
-    void processBlock(float* L, float* R, int N) override 
-    {
-      for(int n = 0; n < N; n++)
-        processFrame(&L[n], &R[n]);
-    }
-
-
+    Amplifier();
+    void prepareToPlay(uchar key, uchar vel, double fs) override;
+    void processFrame(float* L, float* R) override;
+    void processBlock(float* L, float* R, int N) override;
   protected:
-
     AmplifierCore core;
-
   };
 
 
