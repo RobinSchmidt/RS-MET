@@ -495,9 +495,9 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   // Others like all tuning related stuff indeed needs to be done at the source.
 
   RAPT::rsAssert(rp != nullptr);
-  double val = (double)s.getValue();   // use float!
-  int    N   = s.getIndex();
-  using OC   = Opcode;
+  float val = s.getValue();
+  int   N   = s.getIndex();
+  using OC  = Opcode;
   switch(s.getType())
   {
   // Player:
@@ -516,12 +516,13 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   case OC::Transpose:     { iv->transpose      += val;        } break;
   case OC::Tune:          { iv->tune           += val;        } break;
   case OC::Delay:         { rp->sampleTime     += -val * fs;  } break;
-  case OC::Offset:        { rp->offset         += float(val); } break;
+  case OC::Offset:        { rp->offset         += val;        } break;
 
     // Tracking:
   case OC::ampN_veltrack: { 
-    iv->ampN_veltrack[N] += (float)val; } break;
-    // ToDo: make sure that ampN_veltrack has large enough size!!!
+    iv->ampN_veltrack[N] += val; } break;
+    // !!!!!  TODO: make sure that ampN_veltrack has large enough size !!!!!!
+    // we may have to resize the array on sfz-load
   }
 
   // Maybe the default branch should call rp->setupPlayerSetting(s, sampleRate, val). That would 
