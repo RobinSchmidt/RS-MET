@@ -221,7 +221,8 @@ protected:
   processor exists in our chain - if not, then something went wrong with assembling the 
   dspChain in a step before and an assert is triggered. */
   virtual void setupProcessorSetting(const PlaybackSetting& s);
-  // rename to setDspOpcode
+  // rename to setDspOpcode or setEffectOpcode...but maybe it applies to modulators, too,
+  // maybe the more general "processor" is actually appropriate
 
   /** ToDo: add documentation */
   virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate, 
@@ -230,7 +231,7 @@ protected:
   // want to do something in its override)...??? comment obsolete?
 
 
-  SignalProcessorChain dspChain;
+  SignalProcessorChain dspChain;  // rename to effectChain or fxChain
   /** This is the chain of our actual DSP objects. A SignalProcessorChain is basically an array
   of pointers to polymorphic signal processor classes that can be assembled at runtime,  
   typically on noteOn. */

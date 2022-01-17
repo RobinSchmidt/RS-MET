@@ -160,7 +160,7 @@ std::vector<float> rsApplyFilter(std::vector<float>& x, rosic::Sampler::FilterTy
 {
   int N = (int)x.size();
   std::vector<float> y(N);
-  using FilterDsp  = rosic::Sampler::rsSamplerProcessors::Filter;
+  using FilterDsp  = rosic::Sampler::rsSamplerEffects::Filter;
   using FilterCore = rosic::Sampler::FilterCore;
   FilterCore flt;
   float omega = float(2*PI) * cutoff / sampleRate;

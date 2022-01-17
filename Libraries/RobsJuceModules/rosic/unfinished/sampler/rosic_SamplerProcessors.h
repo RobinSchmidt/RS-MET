@@ -8,7 +8,8 @@ namespace Sampler {
 
 //=================================================================================================
 
-/** Class to represent parameters of DSP processors and modulators. */
+/** Class to represent parameters of effect processors and modulators. */
+
 class Parameter
 {
 
@@ -38,9 +39,12 @@ protected:
   // float modulatedValue;  // ...later, for modulation
 };
 
-/** Baseclass for signal processors that can be applied to layers while they are the played back.
+//=================================================================================================
+
+/** Baseclass for effect processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
-class Effect  // rename to Effect
+
+class Effect
 {
 public:
 
@@ -474,7 +478,7 @@ protected:
 
 /** Class where all the boilerplate for making DSP processors available in the sampler goes. */
 
-class rsSamplerProcessors  // maybe make this a namespace and/or rename to SamplerEffect
+class rsSamplerEffects  // maybe make this a namespace and/or maybe get rid
 {
 
 public:
@@ -771,14 +775,14 @@ public:
 
 
 
-  /** A client can request a processor of the given type. If a processor of the desired type is 
+  /** A client can request a effect of the given type. If a effect of the desired type is 
   available, a pointer to it will returned. If not, a nullptr will be returned. The "client" will 
-  typically be a RegionPlayer and call grabProcessor on noteOn. When no processor of the desired 
+  typically be a RegionPlayer and call grabEffect on noteOn. When no effect of the desired 
   type is available anymore, the calling code should probably forego the whole RegionPlayer. If
   the region can't be played correctly due to lack of resources, it should not play at all. What
-  it certainly should not do is to just replace the non-available processor by a bypass dummy 
-  processor because that could have really bad consequences: imagine a missing attenuation 
-  processor. Regions are always played back either correctly or not at all but never wrongly. */
+  it certainly should not do is to just replace the non-available effect by a bypass dummy 
+  effect because that could have really bad consequences: imagine a missing attenuation 
+  effect. Regions are always played back either correctly or not at all but never wrongly. */
   Effect* grabProcessor(DspType type);  // rename to grabEffect
 
   /** This function should be called by the client when it doesn't need the processor anymore, For
@@ -800,7 +804,7 @@ public:
 
 protected:
 
-  using SP = rsSamplerProcessors;
+  using SP = rsSamplerEffects;  // rename or remove
   rsObjectPool<SP::Amplifier>  amplifiers;
   rsObjectPool<SP::Filter>     filters;
   rsObjectPool<SP::Equalizer>  equalizers;
