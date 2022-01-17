@@ -9,9 +9,12 @@ class SignalProcessorChain
 {
 public:
 
+  using uchar = unsigned char;
+
   void processFrame(float* L, float* R);
   void processBlock(float* L, float* R, int N);
-  void prepareToPlay(double fs) { for(auto & p : processors) p->prepareToPlay(fs); }
+  void prepareToPlay(uchar key, uchar vel, double fs) 
+  { for(auto & p : processors) p->prepareToPlay(key, vel, fs); }
   //void resetState()    { for(auto & p : processors) p->resetState();    }
   //void resetSettings() { for(auto & p : processors) p->resetSettings(); }
   //void reset() { resetState(); resetSettings(); }
@@ -254,8 +257,8 @@ public:
   (false). Likewise, regionSettingsOverride = true lets the region settings override the group
   settings. */
   rsReturnCode setRegionToPlay(const Region* regionToPlay, 
-    const AudioFileStream<float>* sampleStream, double outputSampleRate, bool busMode, 
-    PlayerIntermediates* iv);
+    const AudioFileStream<float>* sampleStream, uchar key, uchar vel, double outputSampleRate, 
+    bool busMode, PlayerIntermediates* iv);
   // todo: later maybe have default values (false) for the busMode 
 
   const Region* getRegionToPlay() const { return region; }
@@ -263,7 +266,7 @@ public:
   /** Sets the midi note number for which this player was started. This needs to be set up when
   receiving a noteOn. This information is used later when receiving a noteOff to identify which
   players need to stop. */
-  void setKey(uchar newKey) { key = newKey; }
+  //void setKey(uchar newKey) { key = newKey; }
 
   /** Generates one stereo sample frame at a time. */
   void processFrame(float* L, float* R);
@@ -305,7 +308,8 @@ protected:
   rsReturnCode::success, it means the player is now ready to play. If it returns anything else,
   it means that something went wrong  - presumably not enough ressources were available - and the
   engine should discard the player object, i.e. put it back into the pool. */
-  rsReturnCode prepareToPlay(double sampleRate, bool busMode, PlayerIntermediates* iv);
+  rsReturnCode prepareToPlay(uchar key, uchar vel, double sampleRate, bool busMode,
+    PlayerIntermediates* iv);
 
 
   bool assembleDspChain(bool busMode) override;
@@ -391,11 +395,13 @@ class SampleBusPlayer : public SamplePlayer
 
 public:
 
+  using uchar = unsigned char;
+
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
     RegionPlayer* rp, PlayerIntermediates* iv) override;
 
   bool setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay, 
-    double sampleRate, RegionPlayer* regionPlayer, bool busMode, 
+    uchar key, uchar vel, double sampleRate, RegionPlayer* regionPlayer, bool busMode, 
     PlayerIntermediates* intermediates);
   // busMode is superfluous - when a SampleBusPlayer is invoked, we are in busMode by definition
 
@@ -454,9 +460,9 @@ public:
   { return (const rsSamplerData::Group*) grpOrInstr; }
 
   /** Sets the group that should be played back by this player. */
-  bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
-    RegionPlayer* rp, bool busMode, PlayerIntermediates* intermediates)
-  { return setGroupOrInstrumToPlay(groupToPlay, sampleRate, rp, busMode, intermediates); }
+  bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, uchar key, uchar vel, 
+    double fs, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
+  { return setGroupOrInstrumToPlay(groupToPlay, key, vel, fs, rp, busMode, iv); }
     // ...it's just a convenience function to make the call site look nicer.
 
 protected:
@@ -479,9 +485,9 @@ public:
 
   // implement processBlock
 
-  bool setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, double sampleRate, 
-    RegionPlayer* rp, bool busMode, PlayerIntermediates* intermediates)
-  { return setGroupOrInstrumToPlay(instrumToPlay, sampleRate, rp, busMode, intermediates); }
+  bool setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, uchar key, uchar vel, 
+    double fs, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
+  { return setGroupOrInstrumToPlay(instrumToPlay, key, vel, fs, rp, busMode, iv); }
     // Convenience function to make the call site look nicer.
 
 };

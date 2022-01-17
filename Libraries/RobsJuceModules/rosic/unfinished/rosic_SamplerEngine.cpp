@@ -474,11 +474,10 @@ RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r, uchar key, uc
   if(idlePlayers.empty())
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
-  rp->setKey(key);  // why is it not enough to do it inside the "if"
-  rsReturnCode rc = rp->setRegionToPlay(r, getSampleStreamFor(r), sampleRate, busMode, iv);
+  rsReturnCode rc = rp->setRegionToPlay(
+    r, getSampleStreamFor(r), key, vel, sampleRate, busMode, iv);
   if(rc == rsReturnCode::success)
   {
-    //rp->setKey(key);
     activePlayers.push_back(rp);
     return rp;
   }
@@ -750,7 +749,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, ucha
   //intermediates.reset();
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
   if(!canFallBackToBaseclass()) // Don't update the group players, if they are not used anyway
-    updateGroupPlayers(psc, &intermediates);
+    updateGroupPlayers(psc, key, vel, &intermediates);
   return psc;
 }
 
@@ -759,7 +758,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uch
   //intermediates.reset();
   PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
   if(!canFallBackToBaseclass())
-    updateGroupPlayers(psc, &intermediates);
+    updateGroupPlayers(psc, key, vel, &intermediates);
   return psc;
 }
 
@@ -831,7 +830,8 @@ int rsSamplerEngine2::stopAllPlayers()
 // -in addition to move the players back into their idle pool, we also need to move the dsp
 //  objects back
 
-void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, PlayerIntermediates* iv)
+void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, uchar key, uchar vel,  
+  PlayerIntermediates* iv)
 {
   // Figure out, how many regions were triggered and add pointers to the freshly triggered 
   // RegionPlayers to an appropriate GroupPlayer - either to one that is already playing or grab a 
@@ -846,11 +846,11 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, PlayerIntermedia
       activeGroupPlayers[gpi]->addRegionPlayer(rp);
       instrumPlayer.addRegionPlayer(rp); }
     else  {
-      if(!startGroupPlayerFor(rp, iv)) {
+      if(!startGroupPlayerFor(rp, key, vel, iv)) {
         stopRegionPlayer(i);
         numLayersNow--;  }
-      if(numLayersBefore == 0) {          // If nothing was playing before, we have to 
-        if(!startInstrumPlayerFor(rp)) {  // start the instrumPlayer, too
+      if(numLayersBefore == 0) {                    // If nothing was playing before, we have to 
+        if(!startInstrumPlayerFor(rp, key, vel)) {  // start the instrumPlayer, too
           reset(); return; }}
           // Failure to start the instrumPlayer should actually be an extremely rare and 
           // exceptional sitution. We have somehow managed to trigger an overload with a single
@@ -869,13 +869,14 @@ int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* g
   return -1;
 }
 
-bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp, PlayerIntermediates* intermediates)
+bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp, uchar key, uchar vel, 
+  PlayerIntermediates* intermediates)
 {
   if(idleGroupPlayers.empty())
     return false;
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
-  bool ok = gp->setGroupToPlay(grp, sampleRate, rp, busMode, intermediates);
+  bool ok = gp->setGroupToPlay(grp, key, vel, sampleRate, rp, busMode, intermediates);
   if(!ok) {
     idleGroupPlayers.push_back(gp);
     return false; } // Not enough resources to start the player. Caller should roll back rp, too
@@ -901,9 +902,10 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
   return rsReturnCode::success;
 }
 
-bool rsSamplerEngine2::startInstrumPlayerFor(RegionPlayer* rp)
+bool rsSamplerEngine2::startInstrumPlayerFor(RegionPlayer* rp, uchar key, uchar vel)
 {
-  return instrumPlayer.setInstrumToPlay(&sfz.instrument , sampleRate, rp, busMode, &intermediates);
+  return instrumPlayer.setInstrumToPlay(
+    &sfz.instrument, key, vel, sampleRate, rp, busMode, &intermediates);
 }
 
 void rsSamplerEngine2::stopInstrumPlayer()

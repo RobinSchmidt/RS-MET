@@ -609,7 +609,7 @@ protected:
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
 
-  PlayerIntermediates intermediates;  // find a better name
+  PlayerIntermediates intermediates;  // find a better name - maybe turn into a midiStatus
   /**< Intermediate variables used for the computation of things like per-sample increment, final 
   amplitude etc. according to key, vel, keytrack, veltrack, tune, transpose, etc. We need to pass 
   around such a struct from noteOn to have a place into which we can accumulate all the modifiers
@@ -782,7 +782,7 @@ protected:
 
   /** Updates our active/idleGroupPlayer arrays according to a status change in the
   active/idleRegionPlayer arrays...tbc... */
-  void updateGroupPlayers(PlayStatusChange psc, PlayerIntermediates* intermediates);
+  void updateGroupPlayers(PlayStatusChange psc, uchar key, uchar vel, PlayerIntermediates* iv);
 
   /** Returns the index within our activeGroupPlayers array at which the group player for the given
   group is located or -1 if there is no currently active player for the given group. */
@@ -792,14 +792,15 @@ protected:
   when region players were triggered for which we do not already have an active group player in
   use. Return true, if the player could be started. If it could not be started, the caller may 
   need to take care of some cleanup (roll back the regionPlayer). */
-  bool startGroupPlayerFor(RegionPlayer* regionPlayer, PlayerIntermediates* intermediates);
+  bool startGroupPlayerFor(RegionPlayer* regionPlayer, uchar key, uchar vel, 
+    PlayerIntermediates* intermediates);
 
   /** Stops the groupPlayer with the given activeIndex, i.e. moves it from the activeGroupPlayers
   array to the idleGroupPlayers array. */
   int stopGroupPlayer(int activeIndex);
 
   // under construction
-  bool startInstrumPlayerFor(RegionPlayer* regionPlayer); 
+  bool startInstrumPlayerFor(RegionPlayer* regionPlayer, uchar key, uchar vel); 
   void stopInstrumPlayer();
 
 

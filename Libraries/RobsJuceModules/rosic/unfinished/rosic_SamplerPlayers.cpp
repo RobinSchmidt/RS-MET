@@ -144,14 +144,15 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
 // RegionPlayer
 
 rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay,
-  const AudioFileStream<float>* sampleStream, double fs, bool busMode, PlayerIntermediates* iv)
+  const AudioFileStream<float>* sampleStream, uchar key, uchar vel, double fs, bool busMode, 
+  PlayerIntermediates* iv)
 {
   releaseResources(); // actually, it should not hold any at this point - or should it?
   region = regionToPlay;
   if(region == nullptr)
     return rsReturnCode::nothingToDo;
   stream = sampleStream;
-  return prepareToPlay(fs, busMode, iv);
+  return prepareToPlay(key, vel, fs, busMode, iv);
 }
 
 void RegionPlayer::processFrame(float* L, float* R)
@@ -239,6 +240,8 @@ void RegionPlayer::releaseResources()
   // Invalidate our pointers:
   stream = nullptr;
   region = nullptr;
+
+  //key = 0;  // shouldn't we do this
 }
 
 void RegionPlayer::allocateMemory()
@@ -251,10 +254,13 @@ void RegionPlayer::allocateMemory()
   // later
 }
 
-rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode, PlayerIntermediates* iv)
+rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool busMode, 
+  PlayerIntermediates* iv)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
+
+  this->key = key;
 
   if(!assembleDspChain(busMode))
   {
@@ -271,7 +277,7 @@ rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode, PlayerIntermed
 
   // todo: setup modulators and modulation connections
 
-  dspChain.prepareToPlay(fs);
+  dspChain.prepareToPlay(key, vel, fs);
   // modulators.prepareToPlay(fs)
 
   return rsReturnCode::success;
@@ -489,7 +495,7 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
 
     // Tracking:
   case OC::ampN_veltrack: { 
-    iv->ampN_veltrack[N] += val; } break;
+    iv->ampN_veltrack[N] += (float)val; } break;
     // ToDo: make sure that ampN_veltrack has large enough size!!!
   }
 
@@ -500,7 +506,8 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
 }
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay,
-  double sampleRate, RegionPlayer* rp, bool busMode, PlayerIntermediates* intermediates)
+  uchar key, uchar vel, double sampleRate, RegionPlayer* rp, bool busMode, 
+  PlayerIntermediates* intermediates)
 {
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
@@ -529,7 +536,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, intermediates);
-    dspChain.prepareToPlay(sampleRate); 
+    dspChain.prepareToPlay(key, vel, sampleRate); 
     rp->setupFromIntemediates(*intermediates, sampleRate); // We need to do this again
   }
   return true;

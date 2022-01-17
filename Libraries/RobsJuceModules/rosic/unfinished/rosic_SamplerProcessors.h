@@ -41,6 +41,8 @@ class SignalProcessor
 {
 public:
 
+  using uchar = unsigned char;
+
   // Lifetime:
 
   // Setup:
@@ -57,7 +59,7 @@ public:
   // https://stackoverflow.com/questions/21476869/constant-pointer-vs-pointer-to-constant
 
   // Processing:
-  virtual void prepareToPlay(double sampleRate) = 0;  // maybe it needs to receive the key, vel
+  virtual void prepareToPlay(uchar key, uchar vel, double sampleRate) = 0;  // maybe it needs to receive the key, vel
 
   virtual void processFrame(float* L, float* R) = 0;
   virtual void processBlock(float* L, float* R, int N) = 0;
@@ -73,7 +75,7 @@ protected:
 
   std::vector<Parameter> params;
   DspType type = DspType::Unknown;
-  unsigned char key = 0, vel = 0;
+  uchar key = 0, vel = 0;
 
   // For response to midi control:
   // MidiStatus midiStatus;
@@ -493,7 +495,7 @@ public:
       // could not be a baseclass member then...hmm...Maybe SignalProcessor could have an int as
       // template parameter - but no: then i can't treat them uniformly in the DSP chain
     }
-    void prepareToPlay(double fs) override 
+    void prepareToPlay(uchar key, uchar vel, double fs) override 
     { 
       core.setup(
         params[0].getValue(),
@@ -552,7 +554,7 @@ public:
       addParameter(Opcode::resonanceN);   // in sfz, this is a gain in dB
       //addParameter(Opcode::FilterBandwidth);
     }
-    void prepareToPlay(double fs) override 
+    void prepareToPlay(uchar key, uchar vel, double fs) override 
     { 
       FilterType sfzType = (FilterType)(int)params[0].getValue();
       FilterCore::Type coreType = convertTypeEnum(sfzType);
@@ -621,7 +623,7 @@ public:
       addParameter(Opcode::eqN_freq);
       addParameter(Opcode::eqN_bw); 
     }
-    void prepareToPlay(double fs) override 
+    void prepareToPlay(uchar key, uchar vel, double fs) override 
     { 
       core.setupGainFreqBw(
         FilterCore::Type::BQ_Bell,
@@ -663,7 +665,7 @@ public:
       addParameter(Opcode::distortN_drive);
       addParameter(Opcode::distortN_dc);
     }
-    void prepareToPlay(double fs) override
+    void prepareToPlay(uchar key, uchar vel, double fs) override
     {
       core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(), 
         params[2].getValue(), 1.f, 0.f, 0.f);
