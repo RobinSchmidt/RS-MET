@@ -532,6 +532,8 @@ void SfzCodeBook::makeImplicitIndexExplicit(std::string& str) const
   else if(str == "cutoff")    str = "cutoff1";
   else if(str == "resonance") str = "resonance1";
 
+  // todo: filN_keytrack, etc....
+
   else if(str == "volume")    str = "volume1";
   else if(str == "pan")       str = "pan1";
   else if(str == "width")     str = "width1";
