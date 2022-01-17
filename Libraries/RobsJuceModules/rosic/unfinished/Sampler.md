@@ -1,15 +1,24 @@
+The RS-MET Sampler Engine
+#########################
+
+...is still very much under construction...
+
 The RS-MET sampler engine is built around sfz which is a popular text-based file format to specify 
 sample-based instruments. In sfz, the instrument is specified in terms of so called opcodes where 
 each opcode controls a certain playback parameter. For example, an opcode specification like 
 cutoff=1000 controls the cutoff frequency of a filter and sets it to 1000 Hz. The original sfz 
-specification (henceforth referred to as sfz v1) specifies nearly 200 of such opcodes and various
-extensions to this basic set exist, for example in sfz v2, the ARIA engine, Cakewalk's Rapture, the linux sampler project, sfizz and many more. The RS-MET engine defines also some extensions of its 
+specification (henceforth referred to as sfz v1) specifies nearly 200 of such opcodes. On top of 
+that, various extensions exist, for example sfz v2, Cakewalk's Rapture, the ARIA engine, the Linux
+Sampler Project, Sfizz and many more. The RS-MET engine also defines some extensions of its 
 own. It thereby tries to be as compatible as possible to existing extensions ...tbc...
 
 
 
-Opcode support
+Opcode Support
 ##############
+
+Listed below are the opcodes that are currently supported by the RS-MET sampler engine, categorized
+by the specification/extension that first introduced them.
 
 SFZ v1
 ======
@@ -31,13 +40,84 @@ Amplifiers
 ----------
 
 
-Notes
------
 
-For some opcodes that include an index such as eqN_gain, cutoffN, etc. the N is optional when N=1 
-to cater for the fact that sfz1 only allowed one of those devices. These are:
+
+RS-MET
+======
+
+General extensions
+------------------
+
+In sfz v1, there were 3 equalizers whose settings were controlled by the opcodes eqN_gain, 
+eqN_freq, eqN_bw where N would be replaced by 1,2,3. In the RS-MET engine, N can be arbitrary so 
+you can have an arbitrary number of equalizer bands. The same goes for the filter opcodes. In sfz 
+v2, there were two filters and in v1 only one which is why in sfz v1 and v2 the settings of the 
+first filter are just set by opcodes cutoff, resonance etc. and in sfz v2, those of the filter were
+set by cutoff2, etc. The RS-MET engine allows N to be arbitrary here as well where in the case of 
+N=1, the 1 is optional to support sfz v1 (and v2) syntax. The indexed opcodes for which the index 
+of N=1 is optional are:
 
 filN_type, cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, volumeN, panN, 
 widthN, positionN
 
+You may notice that we have also volumeN, panN, etc. That means, the amplifier is also realized as
+an effect and you can have as many amplifier units as you want.
+
+
+Parameter Quantization
+----------------------
+
+In sfz, some opcodes were specified to take integer values but which could by their nature just as
+easily admit floating point values. So, the RS-MET engine lifts this restriction where is makes 
+sense. The affected opcodes are:
+
+
+Parameter Ranges
+----------------
+
+
+
+
+
+New opcodes
+-----------
+
+The RS-MET engine also introduces some entirely new opcodes for new effects and settings. These 
+are:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Acknowledgments
+---------------
+
+I'm especially grateful to Niall McCallum (modeaudio.com) for funding the initial development of 
+this engine. It will be used in one their upcoming products...
+
+
+SFZ Resources
+-------------
+
+https://sfzformat.com/
+https://github.com/sfz
 

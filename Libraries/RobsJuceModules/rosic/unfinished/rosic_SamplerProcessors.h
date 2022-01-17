@@ -38,7 +38,7 @@ protected:
 
 /** Baseclass for signal processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
-class SignalProcessor
+class SignalProcessor  // rename to Effect
 {
 public:
 
