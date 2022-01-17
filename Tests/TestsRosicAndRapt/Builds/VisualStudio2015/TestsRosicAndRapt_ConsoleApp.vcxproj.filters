@@ -2524,6 +2524,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerProcessors.cpp">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerTools.cpp">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SfzCodeBook.cpp">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </ClCompile>
@@ -4912,6 +4915,9 @@
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerProcessors.h">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerTools.h">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SfzCodeBook.h">

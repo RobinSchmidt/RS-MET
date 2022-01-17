@@ -195,11 +195,11 @@ void SignalProcessorPool::allocateProcessors()
   filters.init(64);
   equalizers.init(64); 
   waveShapers.init(8);
-  // These numbers are preliminary. We need to do something more sensible here later. Perhaps, this 
-  // function should be called when a new sfz is loaded and it should have arguments for how many
-  // objects of each type are needed. The engine should analyze, how many filters, waveshapers, 
-  // etc. could be needed in the worst case, fill a suitable data structure with that information
-  // and pass it in.
+  // These numbers are ad hoc and preliminary. We need to do something more sensible here later. 
+  // Perhaps, this function should be called when a new sfz is loaded and it should have arguments
+  // for how many objects of each type are needed. The engine should analyze, how many filters, 
+  // waveshapers, etc. could be needed in the worst case, fill a suitable data structure with that 
+  // information and pass it in.
 
   // Maybe instead of manually resizing everything, do it programmatically, maybe using a
   // SignalProcessorFactory to create the objects. But then: how do we keep track of the different

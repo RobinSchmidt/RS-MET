@@ -440,6 +440,7 @@
 
 #include "unfinished/rosic_AudioStream.h"
 
+#include "unfinished/sampler/rosic_SamplerTools.h"
 #include "unfinished/sampler/rosic_SfzCodeBook.h"
 #include "unfinished/sampler/rosic_SamplerData.h"
 #include "unfinished/sampler/rosic_SamplerEffectCores.h"
