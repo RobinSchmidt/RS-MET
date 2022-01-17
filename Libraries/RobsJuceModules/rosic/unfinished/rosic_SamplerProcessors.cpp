@@ -359,7 +359,68 @@ void rsSamplerProcessors::Amplifier::processBlock(float* L, float* R, int N)
 
 //-------------------------------------------------------------------------------------------------
 
+rsSamplerProcessors::Filter::Filter() 
+{ 
+  using OC = Opcode;
+  type = DspType::Filter;
+  params.reserve(6);                 // index
+  addParameter(OC::filN_type);       //   0
+  addParameter(OC::cutoffN);         //   1
+  addParameter(OC::resonanceN);      //   2
+  addParameter(OC::filN_keytrack);   //   3
+  addParameter(OC::filN_keycenter);  //   4
+  addParameter(OC::filN_veltrack);   //   5
+  // ToDo
+  // -Maybe support peak filters, re-use the resonance parameter for their gain, introduce a 
+  //  bandwidth parameter ...on the other hand, we have the eqN_... opcodes, so maybe supporting 
+  //  peak would be redundant - we'll see
+  //addParameter(Opcode::filN_bw);
+}
+void rsSamplerProcessors::Filter::prepareToPlay(uchar key, uchar vel, double fs)
+{ 
+  this->key = key;
+  this->vel = vel;
 
+  // This is still somewhat ugly:
+  FilterType sfzType = (FilterType)(int)params[0].getValue();
+  FilterCore::Type coreType = convertTypeEnum(sfzType);
+
+  // Extract numeric parameters:
+  float cutoff    = params[1].getValue();
+  float resonance = params[2].getValue();
+  float keytrack  = params[3].getValue();
+  float keycenter = params[4].getValue();
+  float veltrack  = params[5].getValue();
+
+  // Apply modifiers to cutoff:
+  float pitchOffset = ((float)key - keycenter) * keytrack * 0.01;
+  cutoff *= RAPT::rsPitchOffsetToFreqFactor(pitchOffset);
+  //cutoff *= ... // apply veltrack
+
+  // Set up core:
+  core.setupCutRes(coreType, cutoff*float(2*PI/fs), resonance);
+  core.resetState();
+
+  /*
+
+  FilterType sfzType = (FilterType)(int)params[0].getValue();
+  FilterCore::Type coreType = convertTypeEnum(sfzType);
+  core.setupCutRes(
+    coreType,
+    params[1].getValue() * float(2*PI/fs),
+    params[2].getValue());
+  core.resetState();
+  */
+}
+void rsSamplerProcessors::Filter::processFrame(float* L, float* R) 
+{ 
+  core.processFrame(L, R); 
+}
+void rsSamplerProcessors::Filter::processBlock(float* L, float* R, int N) 
+{
+  for(int n = 0; n < N; n++)
+    processFrame(&L[n], &R[n]);
+}
 
 //=================================================================================================
 

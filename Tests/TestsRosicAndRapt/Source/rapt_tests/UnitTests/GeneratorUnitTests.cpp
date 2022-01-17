@@ -2606,13 +2606,14 @@ bool samplerKeyVelTrackTest()
 
   // Test filter keytracking by creating a sort filter-whistle patch:
   se.clearRegionSettings(0, 0); 
-  key_track = 100.f;  // 100 cents per key
+  //key_track = 100.f;  // 100 cents per key
   se.setRegionSetting(0, 0, OC::filN_type, (float)FT::bp_6_6, 1);
-  se.setRegionSetting(0, 0, OC::filN_keytrack, key_track, 1);
-  se.setRegionSetting(0, 0, OC::filN_keycenter,     69.f, 1);
-  se.setRegionSetting(0, 0, OC::cutoffN,           440.f, 1);
-  se.setRegionSetting(0, 0, OC::resonanceN,         40.f, 1);
-  //tgt = rsApplyFilter(noise, FT::bp_6_6, 440.f, 40.f);  // to be written
+  se.setRegionSetting(0, 0, OC::PitchKeyTrack,    0.f, -1);  // pitch shall not track key
+  se.setRegionSetting(0, 0, OC::filN_keytrack,  100.f,  1);  // cutoff shall track key 100%
+  se.setRegionSetting(0, 0, OC::filN_keycenter,  69.f,  1);  // A4 is the neutral key
+  se.setRegionSetting(0, 0, OC::cutoffN,        440.f,  1);  // at A4, cutoff is 440
+  se.setRegionSetting(0, 0, OC::resonanceN,      40.f,  1);  // we use high resonance
+  //tgt = rsApplyFilter(noise, FT::bp_6_6, 880.f, 40.f);  // to be written
   Vec outL(N), outR(N);
   getSamplerNote(&se, 81, vel, outL, outR);
   rsPlotVector(outL);

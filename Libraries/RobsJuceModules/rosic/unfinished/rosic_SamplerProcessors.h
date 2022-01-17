@@ -493,31 +493,31 @@ public:
 
   public:
 
-    Filter() 
-    { 
-      type = DspType::Filter;
-      params.reserve(3);
-      addParameter(Opcode::filN_type);
-      addParameter(Opcode::cutoffN);
-      addParameter(Opcode::resonanceN);   // in sfz, this is a gain in dB
-      //addParameter(Opcode::FilterBandwidth);
-    }
-    void prepareToPlay(uchar key, uchar vel, double fs) override 
-    { 
-      FilterType sfzType = (FilterType)(int)params[0].getValue();
-      FilterCore::Type coreType = convertTypeEnum(sfzType);
-      core.setupCutRes(
-        coreType,
-        params[1].getValue() * float(2*PI/fs),
-        params[2].getValue());
-      core.resetState();
-    }
-    void processFrame(float* L, float* R) override { core.processFrame(L, R); }
-    void processBlock(float* L, float* R, int N) override 
-    {
-      for(int n = 0; n < N; n++)
-        processFrame(&L[n], &R[n]);
-    }
+    Filter();
+    //{ 
+    //  type = DspType::Filter;
+    //  params.reserve(3);
+    //  addParameter(Opcode::filN_type);
+    //  addParameter(Opcode::cutoffN);
+    //  addParameter(Opcode::resonanceN);   // in sfz, this is a gain in dB
+    //  //addParameter(Opcode::FilterBandwidth);
+    //}
+    void prepareToPlay(uchar key, uchar vel, double fs) override;
+    //{ 
+    //  FilterType sfzType = (FilterType)(int)params[0].getValue();
+    //  FilterCore::Type coreType = convertTypeEnum(sfzType);
+    //  core.setupCutRes(
+    //    coreType,
+    //    params[1].getValue() * float(2*PI/fs),
+    //    params[2].getValue());
+    //  core.resetState();
+    //}
+    void processFrame(float* L, float* R) override; //{ core.processFrame(L, R); }
+    void processBlock(float* L, float* R, int N) override;
+    //{
+    //  for(int n = 0; n < N; n++)
+    //    processFrame(&L[n], &R[n]);
+    //}
 
   protected:
 
