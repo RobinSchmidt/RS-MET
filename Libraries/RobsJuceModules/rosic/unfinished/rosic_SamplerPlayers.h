@@ -94,6 +94,8 @@ public:
   // should have a member variable of the type that is re-used whenever a new note is triggered
   // ...hmmmm - we'll get a lot more settings - maybe switch to float
 
+  float pitch_keytrack = 666;
+
   std::vector<float> ampN_veltrack; // ampN_keytrack, pitchN_veltrack, pitchN_keytrack
 
 private:
@@ -109,9 +111,11 @@ private:
 
   void reset()
   {
+    transpose      = 0.0;
+    tune           = 0.0;
+    pitch_keytrack = 100.f;
+
     using namespace RAPT;
-    transpose = 0;
-    tune = 0;
     rsFill(ampN_veltrack, 0.f);
   }
   // maybe needed when we don't create it on the stack but rather re-use a member

@@ -398,8 +398,16 @@ void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double f
   // This may get called twice on noteOn in busMode -> verify and try to avoid the first call
 
   // Compute the per-sample increment:
-  double rootKey = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
-  double pitchOffset = double(key) - rootKey + iv.transpose + 0.01 * iv.tune;
+  float pitch_keycenter = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
+  // get rid - use iv.pitch_keycenter
+
+  // old:
+  //double pitchOffset = double(key) - pitch_keycenter + iv.transpose + 0.01 * iv.tune; 
+
+  // new:
+  double pitchOffset = 0.01 * iv.pitch_keytrack * (double(key) - pitch_keycenter) 
+    + iv.transpose + 0.01 * iv.tune;
+
   increment = pow(2.0, pitchOffset / 12.0) * stream->getSampleRate() / fs;
   // The formula using rsPitchOffsetToFreqFactor is too imprecise: when we have a pitchOffset of 
   // exactly -12, for example, we want the increment be multiplied by exactly 0.5, but using this
@@ -413,13 +421,15 @@ void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double f
   // ToDo:
   // -Take into account pitch_keytrack, pitch_veltrack...maybe we need to take key,vel params or we
   //  add such fields to PlayerIntermediates...which should be extended to a "MidiStatus" anyway.
+  // -Verify the formulas
+
   // -Can we avoid the inquiry for the rootKey? This may be a bit expensive. Maybe the RegionPlayer
   //  should have a rootKey member? That may be messy to deal with in busMode. Maybe try to treat
-  //  the pitch_keycenter opcode somehow like the transpose opcode. What would actually be a 
-  //  meaningful "accumulative" behavior of a setting like that? Maybe accumulate differences to
-  //  the default or something? Maybe keep a rootKeyShift member that is by default zero, 
-  //  accumulates th differences of the pitch_keycenter opcode with respce to 60 (the default)?
-  //  Try this and write unit tests..
+  //  the pitch_keycenter opcode somehow like the transpose and pitch_keytrack opcode. What would 
+  //  actually be a meaningful "accumulative" behavior of a setting like that? Maybe accumulate 
+  //  differences to the default or something? Maybe keep a rootKeyShift member that is by default 
+  //  zero, accumulates th differences of the pitch_keycenter opcode with respce to 60 (the 
+  //  default)? Try this and write unit tests..
 }
 
 void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
@@ -439,8 +449,9 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   {
   // Player:
   //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::Transpose:     { iv->transpose =  val;                } break;
-  case OC::Tune:          { iv->tune      =  val;                } break;
+  case OC::PitchKeyTrack: { iv->pitch_keytrack =  val;           } break;
+  case OC::Transpose:     { iv->transpose      =  val;           } break;
+  case OC::Tune:          { iv->tune           =  val;           } break;
   case OC::Delay:         { sampleTime    = -val * sampleRate;   } break;
   case OC::Offset:        { offset        =  val;                } break;
   case OC::LoopMode:      { loopMode      = (LoopMode)(int) val; } break;  
@@ -452,6 +463,9 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
     iv->ampN_veltrack[N] = val;          } break;
     // ToDo: make sure that ampN_veltrack has large enough size!!!
   }
+
+  // ToDo: maybe handle PitchKeyCenter just like transpose and tune...hmmm.not sure...
+
 }
 // ...actually, if we can assume that all values start at neutral values, we can always accumulate
 // and the distinction between this implementation and the one in SampleBusPlayer becomes identical
@@ -481,16 +495,17 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   // Others like all tuning related stuff indeed needs to be done at the source.
 
   RAPT::rsAssert(rp != nullptr);
-  double val = (double)s.getValue();
+  double val = (double)s.getValue();   // use float!
   int    N   = s.getIndex();
   using OC   = Opcode;
   switch(s.getType())
   {
   // Player:
-  case OC::Transpose: { iv->transpose  += val;        } break;
-  case OC::Tune:      { iv->tune       += val;        } break;
-  case OC::Delay:     { rp->sampleTime += -val * fs;  } break;
-  case OC::Offset:    { rp->offset     += float(val); } break;
+  case OC::PitchKeyTrack: { iv->pitch_keytrack += val;        } break;
+  case OC::Transpose:     { iv->transpose      += val;        } break;
+  case OC::Tune:          { iv->tune           += val;        } break;
+  case OC::Delay:         { rp->sampleTime     += -val * fs;  } break;
+  case OC::Offset:        { rp->offset         += float(val); } break;
 
     // Tracking:
   case OC::ampN_veltrack: { 

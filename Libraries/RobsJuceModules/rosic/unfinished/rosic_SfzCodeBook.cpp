@@ -573,6 +573,27 @@ ToDo:
    lowpass -> waveshaper -> lowpass -> waveshaper -> equalizer
  with 3 filters and 2 waveshapers
 
+To add support for a new opcode, the following things need to be done:
+-If it's not already there, a new entry must be added to the Opcode enum
+-In our constructor, we'll need to add a corresponding add(...) call
+-PlayerIntermediates may need to get a new field for it
+-RegionPlayer::setupPlayerSetting and SampleBusPlayer::setupPlayerSetting may need to add a new
+ case in their switch statements
+-If the opcode affects one of our existing DSPs, we may need to add a parameter to this DSPs list,
+ check rsSamplerProcessors::Amplifier::Amplifier() for this. If the new opcode is for some new type 
+ of DSP which does not yet exist, a new DSP class may need to be introduced - see below
+-If the opcode affects the RegionPlayer, we must account for it in RegionPlayer::setupDspSettingsFor
+ (or rather one of the function it calls...-> explain better)
+-quite probably, prepareToPlay of the DSP class also needs to be updated
+-...what about controller handling?
+-If the opcode's values are of textual type, new enums for the possible choices have to be defined 
+ and appropriate conversion functions need to be added to SfzCodeBook, see enum LoopMode, 
+ SfzCodeBook::stringToLoopMode, SfzCodeBook::loopModeToString
+
+To add a new DSP class, the following things need to be done:
+...tbc...
+
+
 
 SFZ - Resources:
 https://sfzformat.com/legacy/   opcode reference for sfz 1.0
