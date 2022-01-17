@@ -78,11 +78,11 @@ bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeCha
       continue;
 
     // OK - now we actually need to grab another DSP of given type from the pool:
-    Effect* dsp = getProcessor(dspType);
-    if(dsp)
+    Effect* eff = getEffect(dspType);
+    if(eff)
     {
-      dsp->resetSettings(sfzIndex);
-      dspChain.addProcessor(dsp);
+      eff->resetSettings(sfzIndex);
+      dspChain.addProcessor(eff);
     }
     else {
       disassembleDspChain();
@@ -111,7 +111,7 @@ bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
 void SamplePlayer::disassembleDspChain()
 {
   for(int i = 0; i < dspChain.getNumProcessors(); i++)
-    dspPool->processorPool.repositProcessor(dspChain.getProcessor(i));
+    dspPool->processorPool.repositEffect(dspChain.getProcessor(i));
   dspChain.clear();
 }
 

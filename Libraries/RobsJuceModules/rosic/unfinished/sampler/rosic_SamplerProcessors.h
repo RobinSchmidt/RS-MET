@@ -336,28 +336,27 @@ public:
 
   ~EffectPool();
 
-  /** Allocates the processors. */
-  void allocateProcessors();
+  /** Allocates the effects by resizing our vectors (which contain direct objects). */
+  void allocateEffects();
   // todo: Let it have an argument that somehow specifies, how many of each type should be 
   // allocated. Maybe that could be a reference to the sfz-data itself or something derived from it
 
 
-  /** A client can request a effect of the given type. If a effect of the desired type is 
+  /** A client can request an effect of the given type. If an effect of the desired type is 
   available, a pointer to it will returned. If not, a nullptr will be returned. The "client" will 
-  typically be a RegionPlayer and call grabEffect on noteOn. When no effect of the desired 
-  type is available anymore, the calling code should probably forego the whole RegionPlayer. If
-  the region can't be played correctly due to lack of resources, it should not play at all. What
-  it certainly should not do is to just replace the non-available effect by a bypass dummy 
-  effect because that could have really bad consequences: imagine a missing attenuation 
-  effect. Regions are always played back either correctly or not at all but never wrongly. */
-  Effect* grabProcessor(DspType type);  // rename to grabEffect
+  typically be a RegionPlayer and call grabEffect on noteOn when assembling the effect chain. When
+  no effect of the desired type is available anymore, the calling code should probably forego the 
+  whole RegionPlayer. If the region can't be played correctly due to lack of resources, it should 
+  not play at all. What it certainly should not do is to just replace the non-available effect by a
+  bypass dummy effect because that could have really bad consequences: imagine a missing 
+  attenuation effect. Regions are always played back either correctly or not at all but never 
+  wrongly. */
+  Effect* grabEffect(DspType type);
 
   /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 
   processor to the pool so it becomes available again for playing other notes. */
-  void repositProcessor(Effect* p);
-  // maybe rename it to repositProcessor
-
+  void repositEffect(Effect* p);
 
   /** This is currently only meant to facilitate unit testing overload conditions. In such tests,
   we want a well defined and small number of filters to be available so we can simulate conditions

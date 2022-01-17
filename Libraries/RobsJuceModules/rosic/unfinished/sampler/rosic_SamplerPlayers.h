@@ -169,12 +169,12 @@ public:
 protected:
 
 
-  /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
-  buildProcessingChain. */
-  Effect* getProcessor(DspType type)
+  /** Returns a pointer to an effect of given type, if available, otherwise a nullptr. Used in
+  assembleEffectChain. */
+  Effect* getEffect(DspType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
-    return dspPool->processorPool.grabProcessor(type);
+    return dspPool->processorPool.grabEffect(type);
   }
 
   /** Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 

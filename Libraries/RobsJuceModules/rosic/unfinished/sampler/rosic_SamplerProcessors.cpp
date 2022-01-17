@@ -180,7 +180,7 @@ void rsSamplerEffects::Filter::processBlock(float* L, float* R, int N)
 
 EffectPool::EffectPool()
 {
-  allocateProcessors();
+  allocateEffects();
   // Maybe don't do this on construction. Maybe client code should explicitly request this
 }
 
@@ -189,7 +189,7 @@ EffectPool::~EffectPool()
 
 }
 
-void EffectPool::allocateProcessors()
+void EffectPool::allocateEffects()
 {
   amplifiers.init(64);
   filters.init(64);
@@ -209,7 +209,7 @@ void EffectPool::allocateProcessors()
 
 
 
-Effect* EffectPool::grabProcessor(DspType type)
+Effect* EffectPool::grabEffect(DspType type)
 {
   using SPT = DspType;
   Effect* p = nullptr;
@@ -223,7 +223,7 @@ Effect* EffectPool::grabProcessor(DspType type)
   return p;
 }
 
-void EffectPool::repositProcessor(Effect* p)
+void EffectPool::repositEffect(Effect* p)
 {
   using SPT = DspType;
   int i = -1;
