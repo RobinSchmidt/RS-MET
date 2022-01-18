@@ -84,6 +84,34 @@ imposing (arbitrary) limits, I'd rather go with the "trust the programmer" appro
 ...but I'm not sure yet...we'll see...
 
 
+Synthesis Features
+==================
+
+It may be nice to turn this into some sort of hybrid sampler/synthesizer thing. We could use the 
+existing architecture as is and just define the synthesis units as new "effect" processors that 
+actually generate some sound instead of (or in addition to) processing input signals. Maybe they 
+could respond to a "gate" signal at their input which should be just a constant value of either 
+0 or 1. They should also do something sensible in case of other values or arbitrary input signals, 
+though. 
+
+### What is possible already?
+
+A couple of synthesizer-ish things can already be done with the standard sampler-ish features. 
+Among these are:
+
+-A simple oscillator can be set up by just loading a single cycle waveform file and setting the 
+ loops appropriately, so a simple oscillator with arbitrary waveform is already
+ covered. This should allow us to produce a wide range of typical synthesizer sounds.
+
+-The filter (in bandpass mode) with keytracking of 100% and a white noise input sample can be 
+ used to synthesize "whistle" sounds. A second bandpass with possible a different resonance 
+ setting can be used to further shape the attack
+
+### What else could be needed?
+
+  - Another interesting unit could be a comb filter with feedback
+
+
 Misc Ideas
 ==========
 

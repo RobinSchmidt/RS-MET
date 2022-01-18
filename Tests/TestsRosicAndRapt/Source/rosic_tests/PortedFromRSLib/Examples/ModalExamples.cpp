@@ -912,6 +912,42 @@ void createBassdrumPsy1Samples()
   createBassdrumPsy1Sample(4.0, plot);
 }
 
+
+
+void createMiscSamples()
+{
+  // Create miscelanneous other samples that are useful as raw material in the sampler engine.
+
+  using Vec = std::vector<double>;
+  using AT  = RAPT::rsArrayTools;
+
+  int fs = 44100;
+  int N  = 0;       // number of samples
+  
+  // Generate a unit impulse:
+  double one = 1.0;
+  rosic::writeToMonoWaveFile("UnitImpulse.wav", &one, 1, fs);
+  // -Maybe we should make it a few samples long. Having a wavfile containing just a single value
+  //  may be a corner case that some sampler engines won't like? But it actually makes for a nice
+  //  unit test to see what an engine does in such an extreme case.
+
+  // Generate 5 seconds of white noise with uniform amplitude distribution:
+  N = 5*fs;
+  Vec x(N);
+  RAPT::rsNoiseGenerator<double> ng;
+  for(int n = 0; n < N; n++)
+    x[n] = ng.getSample();
+  rosic::writeToMonoWaveFile("UniformWhiteNoise.wav", &x[0], N, fs);
+  // Notes:
+  // -Layering this sample with itself with various offsets can be used to obtain Irwin-Hall
+  //  distributed white noise.
+  // -5 seconds should be long enough to have no noticable repetition pattern and/or 
+  //  comb-filtering artifacts when layering several shifted copies.
+
+
+  int dummy = 0;
+}
+
 void createBass1()
 {
   SampleMapGeneratorModal g;
