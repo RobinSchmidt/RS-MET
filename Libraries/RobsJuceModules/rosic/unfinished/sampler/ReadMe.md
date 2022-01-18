@@ -48,9 +48,9 @@ In sfz v1, there were 3 equalizers whose settings were controlled by the opcodes
 eqN_freq, eqN_bw where N would be replaced by 1,2,3. In the RS-MET engine, N can be arbitrary so 
 you can have an arbitrary number of equalizer bands. The same goes for the filter opcodes. In sfz 
 v2, there were two filters and in v1 only one which is why in sfz v1 and v2 the settings of the 
-first filter are just set by opcodes cutoff, resonance etc. and in sfz v2, those of the second 
-filter were set by cutoff2, etc. The RS-MET engine allows N to be arbitrary here as well where in 
-the case of N=1, the 1 is optional to support sfz v1 (and v2) syntax. The indexed opcodes for which the index of N=1 is optional are:
+first filter are just set by opcodes cutoff, resonance etc. (without any index) and in sfz v2, 
+those of the second filter were set by cutoff2, etc. The RS-MET engine allows N to be arbitrary 
+here as well where in the case of N=1, the 1 is optional to support sfz v1 (and v2) syntax. The indexed opcodes for which the index of N=1 is optional are:
 
 filN_type, cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, volumeN, panN, 
 widthN, positionN, ampN_keytrack, ampN_keycenter, ampN_veltrack
