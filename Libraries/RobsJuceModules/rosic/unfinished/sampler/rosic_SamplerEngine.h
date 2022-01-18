@@ -88,9 +88,9 @@ public:
 
   // For convenience:
   using uchar = unsigned char;
-  using Region = rsSamplerData::Region; // todo: make a subclass here that adds the stream field
-  using Group  = rsSamplerData::Group;
-  using PlaybackSetting = rsSamplerData::PlaybackSetting;
+  using Region = SfzInstrument::Region; // todo: make a subclass here that adds the stream field
+  using Group  = SfzInstrument::Group;
+  using PlaybackSetting = SfzInstrument::PlaybackSetting;
 
 
 
@@ -224,7 +224,7 @@ public:
 
   /** Sets up the engine from the given sfz data object and returns rsReturnCode::success, if all
   is well or...  */
-  int setupFromSFZ(const rsSamplerData& sfz);
+  int setupFromSFZ(const SfzInstrument& sfz);
 
   /** Sets up the root directory, with respect to which sfz file paths are interpreted in saveToSfz
   and loadFromSfz. This is supposed to be an absolute path. Returns false in case, the directory
@@ -350,9 +350,9 @@ public:
   to setupFromSFZ of loadFromSFZ. */
   int getNumSamplesFailed() const { return numSamplesFailed; }
 
-  /** Returns a const pointer to the rsSamplerData object that represents the current instrument
+  /** Returns a const pointer to the SfzInstrument object that represents the current instrument
   settings. */
-  const rsSamplerData& getInstrumentData() const { return sfz; }
+  const SfzInstrument& getInstrumentData() const { return sfz; }
 
   /** Given a path which can be either relative to our sfzDir or absolute, this function returns
   the corresponding absolute path as std::string. That means, if pathIsAbsolute is true, it just
@@ -489,7 +489,7 @@ protected:
 
   /** Returns true, iff the given sample is used in the instrument definition represented by the
   given sfz */
-  bool isSampleUsedIn(const AudioFileStream<float>* sample, const rsSamplerData& sfz);
+  bool isSampleUsedIn(const AudioFileStream<float>* sample, const SfzInstrument& sfz);
 
   /** Stops the player at the given "activeIndex" which is the index into our "activePlayers"
   array. This results in the removal of the player from "activePlayers" and adding it back to
@@ -531,14 +531,14 @@ protected:
 
   /** Removes those samples from our sample pool that are not used in the given sfz instrument
   specification. Returns the number of samples that were removed. */
-  int removeSamplesNotUsedIn(const rsSamplerData& sfz);
+  int removeSamplesNotUsedIn(const SfzInstrument& sfz);
   // maybe rename to removeUnusedSamples. But that name is more ambiguous: it could be interpreted
   // as "unused in the current sfz member", so maybe don't
 
   /** Adds all samples to our sample pool that are used in the given sfz instrument definition, if
   they are not already there. Returns the number of samples that were added or
   rsReturnCode::fileLoadError if any of the files failed to load. */
-  int addSamplesUsedIn(const rsSamplerData& sfz);
+  int addSamplesUsedIn(const SfzInstrument& sfz);
   // maybe rename to loadSamples or loadSamplesFor
 
   /** Sets up all the AudioStream pointers in all the regions in our sfz member. */
@@ -556,7 +556,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Data
 
-  rsSamplerData sfz;
+  SfzInstrument sfz;
   /**< The data structure that defines the sfz instrument. */
 
   static const int numKeys = 128;
@@ -683,9 +683,9 @@ public:
 
   // for convenience:
   using uchar = unsigned char;
-  //using Region = rsSamplerData::Region; // todo: make a subclass here that adds the stream field
-  //using Group  = rsSamplerData::Group;
-  //using PlaybackSetting = rsSamplerData::PlaybackSetting;
+  //using Region = SfzInstrument::Region; // todo: make a subclass here that adds the stream field
+  //using Group  = SfzInstrument::Group;
+  //using PlaybackSetting = SfzInstrument::PlaybackSetting;
 
 
   rsSamplerEngine2(int maxNumLayers = 16);
@@ -787,7 +787,7 @@ protected:
 
   /** Returns the index within our activeGroupPlayers array at which the group player for the given
   group is located or -1 if there is no currently active player for the given group. */
-  int getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group);
+  int getActiveGroupPlayerIndexFor(const SfzInstrument::Group* group);
 
   /** This starts a new group player for the given region player. This is used in e.g. handleNoteOn
   when region players were triggered for which we do not already have an active group player in

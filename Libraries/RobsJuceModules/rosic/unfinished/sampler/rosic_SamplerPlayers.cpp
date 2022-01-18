@@ -551,7 +551,7 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   // the order of 5 and 6 can be swapped because accumulation is commutative
 }
 
-bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::HierarchyLevel* thingToPlay,
+bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLevel* thingToPlay,
   uchar key, uchar vel, double sampleRate, RegionPlayer* rp, bool busMode, 
   PlayerIntermediates* intermediates)
 {

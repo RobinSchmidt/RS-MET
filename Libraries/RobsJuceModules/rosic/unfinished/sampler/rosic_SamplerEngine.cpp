@@ -14,7 +14,7 @@ rsSamplerEngine::rsSamplerEngine(int maxNumLayers)
     SfzCodeBook::createInstance();
     // This is a singleton object which is used for various translation tasks from various places.
     // We manage its lifetime here in this rather high-level class and lower level objects who live
-    // only inside this one, such as rsSamplerData, will access the instance for various 
+    // only inside this one, such as SfzInstrument, will access the instance for various 
     // operations. We will also take care of the cleanup here.
 }
 
@@ -180,7 +180,7 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
   for(int k = 0; k < numKeys; k++)
     regionsForKey[k].removeRegion(r);
 
-  // Remove region from the rsSamplerData object
+  // Remove region from the SfzInstrument object
   bool success = sfz.removeRegion(gi, ri);
   if(success) 
     return rsReturnCode::success;
@@ -218,7 +218,7 @@ int rsSamplerEngine::setInstrumentSetting(Opcode type, float value, int index)
   return sfz.setInstrumentSetting(type, value, index);
 }
 
-int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
+int rsSamplerEngine::setupFromSFZ(const SfzInstrument& newSfz)
 {
   removeSamplesNotUsedIn(newSfz);     // remove samples that are not needed anymore from memory
   int rc1 = addSamplesUsedIn(newSfz); // load samples that are needed but not yet loaded
@@ -270,7 +270,7 @@ bool rsSamplerEngine::saveToSFZ(const char* path, bool pathIsAbsolute) const
 int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
 {
   std::string absPath = getAbsolutePath(path, pathIsAbsolute);
-  rsSamplerData newSfz;
+  SfzInstrument newSfz;
   rsReturnCode rc = newSfz.loadFromSFZ(absPath.c_str());
   if(rc != rsReturnCode::success) {
     clearInstrument();
@@ -285,7 +285,7 @@ int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
 
 int rsSamplerEngine::setFromSFZ(const std::string& sfzFileContents)
 {
-  rsSamplerData newSfz;
+  SfzInstrument newSfz;
   rsReturnCode rc = newSfz.setFromSFZ(sfzFileContents);
   if(rc != rsReturnCode::success) {
     clearInstrument();
@@ -501,7 +501,7 @@ RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r, uchar key, uc
 }
 
 bool rsSamplerEngine::isSampleUsedIn(
-  const AudioFileStream<float>* stream, const rsSamplerData& sfz)
+  const AudioFileStream<float>* stream, const SfzInstrument& sfz)
 {
   const std::string& streamPath = stream->getPath();
   for(int gi = 0; gi < sfz.getNumGroups(); gi++) {
@@ -598,7 +598,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, ucha
   //  efficient
 }
 
-int rsSamplerEngine::removeSamplesNotUsedIn(const rsSamplerData& sfz)
+int rsSamplerEngine::removeSamplesNotUsedIn(const SfzInstrument& sfz)
 {
   numSamplesRemoved = 0;
   for(int i = samplePool.getNumSamples()-1; i >= 0; i--) {
@@ -609,7 +609,7 @@ int rsSamplerEngine::removeSamplesNotUsedIn(const rsSamplerData& sfz)
   return numSamplesRemoved;
 }
 
-int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
+int rsSamplerEngine::addSamplesUsedIn(const SfzInstrument& sfz)
 {
   auto isValidSamplePath = [](const std::string& path) { return !path.empty(); };
   // -maybe make this a member function
@@ -659,7 +659,7 @@ int rsSamplerEngine::setupAudioStreams()
     r->setCustomPointer(stream);
     return true;
   };
-  // ToDo: Maybe change Region* to rsSamplerData::HierarchyLevel*, so we can assign streams to 
+  // ToDo: Maybe change Region* to SfzInstrument::HierarchyLevel*, so we can assign streams to 
   // groups and instruments also.
 
   bool allOK = true;
@@ -845,7 +845,7 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, uchar key, uchar
   int numLayersBefore = numLayersNow - psc.numLayersStarted;
   for(int i = numLayersBefore; i < numLayersNow; i++) {
     RegionPlayer* rp = activePlayers[i];
-    const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
+    const SfzInstrument::Group* grp = rp->getRegionToPlay()->getGroup();
     int gpi = getActiveGroupPlayerIndexFor(grp);
     if(gpi != -1) {
       activeGroupPlayers[gpi]->addRegionPlayer(rp);
@@ -866,7 +866,7 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, uchar key, uchar
   } // end for i
 }
 
-int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group)
+int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const SfzInstrument::Group* group)
 {
   for(size_t i = 0; i < activeGroupPlayers.size(); i++)
     if(activeGroupPlayers[i]->getGroupToPlay() == group)
@@ -880,7 +880,7 @@ bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp, uchar key, uchar ve
   if(idleGroupPlayers.empty())
     return false;
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
-  const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
+  const SfzInstrument::Group* grp = rp->getRegionToPlay()->getGroup();
   bool ok = gp->setGroupToPlay(grp, key, vel, sampleRate, rp, busMode, intermediates);
   if(!ok) {
     idleGroupPlayers.push_back(gp);

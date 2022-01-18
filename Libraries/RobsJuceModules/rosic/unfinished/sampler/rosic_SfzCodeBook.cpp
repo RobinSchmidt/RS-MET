@@ -385,7 +385,7 @@ int SfzCodeBook::stringToIndex(const std::string& str)
   // extract the 3. Maybe rename it to stringToIndexN and have another function stringToIndexX that
   // would extract the 5 in the 2nd case. N and X are used as placeholders here:
   // https://www.linuxsampler.org/sfz/
-  // It seems like the caller (rsSamplerData::getSettingFromString) knows the opcode represented by
+  // It seems like the caller (SfzInstrument::getSettingFromString) knows the opcode represented by
   // str, so if that's helpful, it could be included as parameter for the function. Perhaps that's
   // useful to implement the special rules for the filter-related params (to interpret cutoff as 
   // cutoff1, fil_type as fil1_type etc.). Maybe, we should have a function isFilterRelated

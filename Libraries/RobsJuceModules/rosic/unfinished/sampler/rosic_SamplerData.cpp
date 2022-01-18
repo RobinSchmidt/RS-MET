@@ -4,12 +4,12 @@ namespace Sampler {
 //-------------------------------------------------------------------------------------------------
 // The internal classes
 
-float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type, int index)
+float SfzInstrument::PlaybackSetting::getDefaultValue(Opcode type, int index)
 {
   SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeDefaultValue(type, index);
 }
-DspType rsSamplerData::PlaybackSetting::getTargetDspType(Opcode type)
+DspType SfzInstrument::PlaybackSetting::getTargetDspType(Opcode type)
 {
   SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeToProcessor(type);
@@ -19,7 +19,7 @@ DspType rsSamplerData::PlaybackSetting::getTargetDspType(Opcode type)
 
 //-------------------------------------------------------------------------------------------------
 
-void rsSamplerData::HierarchyLevel::ensureDspsPresent(Opcode opcodeType, int howMany)
+void SfzInstrument::HierarchyLevel::ensureDspsPresent(Opcode opcodeType, int howMany)
 { 
   using namespace RAPT;
   using SPT = DspType;
@@ -40,7 +40,7 @@ void rsSamplerData::HierarchyLevel::ensureDspsPresent(Opcode opcodeType, int how
     dspTypes.push_back(dspType);
 }
 
-void rsSamplerData::HierarchyLevel::updateDspsArray()
+void SfzInstrument::HierarchyLevel::updateDspsArray()
 {
   dspTypes.clear();
   for(size_t i = 0; i < settings.size(); i++)
@@ -52,7 +52,7 @@ void rsSamplerData::HierarchyLevel::updateDspsArray()
   }
 }
 
-void rsSamplerData::HierarchyLevel::setSetting(const PlaybackSetting& s)
+void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 {
   using TP = Opcode;
   TP t = s.getOpcode();
@@ -94,7 +94,7 @@ void rsSamplerData::HierarchyLevel::setSetting(const PlaybackSetting& s)
   }
 }
 
-bool rsSamplerData::HierarchyLevel::removeSetting(Opcode type, int index)
+bool SfzInstrument::HierarchyLevel::removeSetting(Opcode type, int index)
 {
   bool wasRemoved = false;
   if(index == -1) {
@@ -113,7 +113,7 @@ bool rsSamplerData::HierarchyLevel::removeSetting(Opcode type, int index)
   // Maybe it should remove the DSP if it was the last setting that applied to it?
 }
 
-void rsSamplerData::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
+void SfzInstrument::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
 {
   samplePath = lvl->samplePath;
   settings   = lvl->settings;
@@ -124,7 +124,7 @@ void rsSamplerData::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
   //parent = lvl->parent;  // no, this one definitely not (i think)
 }
 
-float rsSamplerData::HierarchyLevel::getSettingValue(
+float SfzInstrument::HierarchyLevel::getSettingValue(
   Opcode type, int index, bool accumulate) const
 {
   float val = PlaybackSetting::getDefaultValue(type, index);  // init to global fallback value
@@ -147,7 +147,7 @@ float rsSamplerData::HierarchyLevel::getSettingValue(
 // anyway)...but maybe the accumulate feature is not even needed in this function - may get rid of
 // it
 
-int rsSamplerData::HierarchyLevel::findSetting(Opcode type, int index) const
+int SfzInstrument::HierarchyLevel::findSetting(Opcode type, int index) const
 {
   for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
     if(settings[i].getOpcode() == type && settings[i].getIndex() == index)
@@ -156,9 +156,9 @@ int rsSamplerData::HierarchyLevel::findSetting(Opcode type, int index) const
   return -1;
 }
 
-void rsSamplerData::Region::copyDataFrom(const Region* src)
+void SfzInstrument::Region::copyDataFrom(const Region* src)
 {
-  rsSamplerData::HierarchyLevel::copyDataFrom(src);
+  SfzInstrument::HierarchyLevel::copyDataFrom(src);
   loKey = src->loKey;
   hiKey = src->hiKey;
   loVel = src->loVel;
@@ -166,7 +166,7 @@ void rsSamplerData::Region::copyDataFrom(const Region* src)
   int dummy = 0;
 }
 
-bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const
+bool SfzInstrument::Region::operator==(const SfzInstrument::Region& rhs) const
 {
   bool equal = settings == rhs.settings;
   equal &= dspTypes == rhs.dspTypes;
@@ -179,22 +179,22 @@ bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const
   // What about the customPointer? should we require that to be equal, too?
 }
 
-int rsSamplerData::Group::addRegion(uchar loKey, uchar hiKey)
+int SfzInstrument::Group::addRegion(uchar loKey, uchar hiKey)
 {
-  rsSamplerData::Region* r = new rsSamplerData::Region;
+  SfzInstrument::Region* r = new SfzInstrument::Region;
   r->setLoKey(loKey);
   r->setHiKey(hiKey);
   return addRegion(r);
 }
 
-int rsSamplerData::Group::addRegion(Region* r)
+int SfzInstrument::Group::addRegion(Region* r)
 {
   r->setParent(this);
   regions.push_back(r);
   return ((int)regions.size()) - 1;
 }
 
-bool rsSamplerData::Group::removeRegion(int i)
+bool SfzInstrument::Group::removeRegion(int i)
 {
   if(i < 0 || i >= (int)regions.size())
     return false;
@@ -203,27 +203,27 @@ bool rsSamplerData::Group::removeRegion(int i)
   return true;
 }
 
-void rsSamplerData::Group::copyDataFrom(const Group* src)
+void SfzInstrument::Group::copyDataFrom(const Group* src)
 {
-  rsSamplerData::HierarchyLevel::copyDataFrom(src);
+  SfzInstrument::HierarchyLevel::copyDataFrom(src);
   clearRegions();
   settings = src->getSettings();
   for(int i = 0; i < src->getNumRegions(); i++) {
-    const rsSamplerData::Region* srcRegion = src->getRegion(i);
-    rsSamplerData::Region* dstRegion = new rsSamplerData::Region;
+    const SfzInstrument::Region* srcRegion = src->getRegion(i);
+    SfzInstrument::Region* dstRegion = new SfzInstrument::Region;
     dstRegion->copyDataFrom(srcRegion);
     addRegion(dstRegion);
   }
 }
 
-void rsSamplerData::Group::clearRegions()
+void SfzInstrument::Group::clearRegions()
 {
   for(size_t i = 0; i < regions.size(); i++)
     delete regions[i];
   regions.clear();
 }
 
-int rsSamplerData::Group::getRegionIndex(const rsSamplerData::Region* region) const
+int SfzInstrument::Group::getRegionIndex(const SfzInstrument::Region* region) const
 {
   for(size_t i = 0; i < regions.size(); i++)
     if(regions[i] == region)
@@ -231,7 +231,7 @@ int rsSamplerData::Group::getRegionIndex(const rsSamplerData::Region* region) co
   return -1;
 }
 
-rsSamplerData::Region* rsSamplerData::Group::getRegion(int i) const
+SfzInstrument::Region* SfzInstrument::Group::getRegion(int i) const
 {
   if(i < 0 || i >= (int)regions.size()) {
     RAPT::rsError("Invalid region index");
@@ -240,7 +240,7 @@ rsSamplerData::Region* rsSamplerData::Group::getRegion(int i) const
   return regions[i];
 }
 
-bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const
+bool SfzInstrument::Group::operator==(const SfzInstrument::Group& rhs) const
 {
   bool equal = settings == rhs.settings;
   equal &= dspTypes == rhs.dspTypes;
@@ -251,27 +251,27 @@ bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const
   return equal;
 }
 
-int rsSamplerData::Instrument::addGroup()
+int SfzInstrument::Instrument::addGroup()
 {
-  rsSamplerData::Group* g = new rsSamplerData::Group;
+  SfzInstrument::Group* g = new SfzInstrument::Group;
   return addGroup(g);
 }
 
-int rsSamplerData::Instrument::addGroup(rsSamplerData::Group* g)
+int SfzInstrument::Instrument::addGroup(SfzInstrument::Group* g)
 {
   g->parent = this;
   groups.push_back(g);
   return ((int)groups.size()) - 1;
 }
 
-void rsSamplerData::Instrument::clearGroups()
+void SfzInstrument::Instrument::clearGroups()
 {
   for(size_t i = 0; i < groups.size(); i++)
     delete groups[i];
   groups.clear();
 }
 
-bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs) const
+bool SfzInstrument::Instrument::operator==(const SfzInstrument::Instrument& rhs) const
 {
   bool equal = settings == rhs.settings;
   equal &= dspTypes == rhs.dspTypes;
@@ -283,9 +283,9 @@ bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs)
 }
 
 //-------------------------------------------------------------------------------------------------
-// The actual rsSamplerData class:
+// The actual SfzInstrument class:
 
-int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
+int SfzInstrument::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   if(gi < 0 || gi >= (int)instrument.groups.size()) {
     RAPT::rsError("Invalid group index");
@@ -294,7 +294,7 @@ int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
   return ri;
 }
 
-bool rsSamplerData::removeRegion(int gi, int ri)
+bool SfzInstrument::removeRegion(int gi, int ri)
 {
   if(gi < 0 || gi >= (int)instrument.groups.size()) {
     RAPT::rsError("Invalid group index");
@@ -302,7 +302,7 @@ bool rsSamplerData::removeRegion(int gi, int ri)
   return instrument.groups[gi]->removeRegion(ri);
 }
 
-rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, Opcode type, float value, int index)
+rsReturnCode SfzInstrument::setRegionSetting(int gi, int ri, Opcode type, float value, int index)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
@@ -311,7 +311,7 @@ rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, Opcode type, float 
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, Opcode type, int index)
+rsReturnCode SfzInstrument::removeRegionSetting(int gi, int ri, Opcode type, int index)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
@@ -321,7 +321,7 @@ rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, Opcode type, int
   else           return rsReturnCode::nothingToDo;
 }
 
-rsReturnCode rsSamplerData::clearRegionSettings(int gi, int ri)
+rsReturnCode SfzInstrument::clearRegionSettings(int gi, int ri)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
@@ -330,7 +330,7 @@ rsReturnCode rsSamplerData::clearRegionSettings(int gi, int ri)
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value, int index)
+rsReturnCode SfzInstrument::setGroupSetting(int gi, Opcode type, float value, int index)
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
@@ -339,7 +339,7 @@ rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value, in
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type, int index)
+rsReturnCode SfzInstrument::removeGroupSetting(int gi, Opcode type, int index)
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
@@ -349,38 +349,38 @@ rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type, int index)
   else           return rsReturnCode::nothingToDo;
 }
 
-rsReturnCode rsSamplerData::setInstrumentSetting(Opcode type, float value, int index)
+rsReturnCode SfzInstrument::setInstrumentSetting(Opcode type, float value, int index)
 {
   instrument.setSetting(PlaybackSetting(type, value, index));
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeInstrumentSetting(Opcode type, int index)
+rsReturnCode SfzInstrument::removeInstrumentSetting(Opcode type, int index)
 {
   bool wasRemoved = instrument.removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
 }
 
-void rsSamplerData::clearAllRegionSettings()
+void SfzInstrument::clearAllRegionSettings()
 {
   for(size_t gi = 0; gi < instrument.groups.size(); gi++)
     for(size_t ri = 0; ri < instrument.groups[gi]->regions.size(); ri++)
       instrument.groups[gi]->regions[ri]->clearSettings();
 }
 
-void rsSamplerData::clearAllGroupSettings()
+void SfzInstrument::clearAllGroupSettings()
 {
   for(size_t gi = 0; gi < instrument.groups.size(); gi++)
     instrument.groups[gi]->clearSettings();
 }
 
-void rsSamplerData::clearAllInstrumentSettings()
+void SfzInstrument::clearAllInstrumentSettings()
 {
   instrument.clearSettings();
 }
 
-void rsSamplerData::clearAllSettings()
+void SfzInstrument::clearAllSettings()
 {
   clearAllRegionSettings();
   clearAllGroupSettings();
@@ -388,7 +388,7 @@ void rsSamplerData::clearAllSettings()
 }
 // needs test
 
-std::string rsSamplerData::getAsSFZ() const
+std::string SfzInstrument::getAsSFZ() const
 {
   auto writeSettingsToString = [](const HierarchyLevel* lvl, std::string& str)
   {
@@ -446,7 +446,7 @@ void rsRemoveRepeats(std::string& s, char c)
 }
 // move into rosic, write unit test
 
-rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn) // rename to setFromSfz
+rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to setFromSfz
 {
   clearInstrument();
   if(strIn.empty())
@@ -588,14 +588,14 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn) // rename to se
   //  https://en.cppreference.com/w/cpp/header/string_view
 }
 
-bool rsSamplerData::saveToSFZ(const char* path) const
+bool SfzInstrument::saveToSFZ(const char* path) const
 {
   std::string sfz = getAsSFZ();
   return rsWriteStringToFile(path, sfz.c_str());
 }
 // this has no safeguards against overwriting an existing file!
 
-rsReturnCode rsSamplerData::loadFromSFZ(const char* path)
+rsReturnCode SfzInstrument::loadFromSFZ(const char* path)
 {
   // just for debug, to figure out, in which directory the mac expects the sfz file:
   //rsWriteStringToFile("TestFile.sfz", "blablabla");
@@ -624,7 +624,7 @@ rsReturnCode rsSamplerData::loadFromSFZ(const char* path)
   // This is clearly not elegant. Get rid of the intermediate c-string!
 }
 
-void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::string& s)
+void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
   using PST = Opcode;
   PST    op = setting.getOpcode();
@@ -643,7 +643,7 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   //  because they are handled already by the caller because they require special treatment.
 }
 
-rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
+SfzInstrument::PlaybackSetting SfzInstrument::getSettingFromString(
   const std::string& opStr, const std::string& valStr)
 {
   using PS  = PlaybackSetting;
@@ -655,7 +655,7 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   return PS(op, val, idx);
 }
 
-void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
+void SfzInstrument::copy(const SfzInstrument& src, SfzInstrument& dst)
 {
   dst.clearInstrument();
   dst.instrument.copyDataFrom(&src.instrument);

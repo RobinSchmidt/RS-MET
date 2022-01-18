@@ -247,14 +247,14 @@ bool samplerDataTest()
 {
   bool ok = true;
 
-  //using SD = rsSamplerData;
+  //using SD = SfzInstrument;
   using SFZT = rosic::Sampler::SfzCodeBook;
-  using SD   = rosic::Sampler::rsSamplerData;
+  using SD   = rosic::Sampler::SfzInstrument;
   using PST  = rosic::Sampler::Opcode;
 
   SFZT::createInstance();
   // Normally, this is supposed to be done in the constructor of rsSamplerEngine and objects of 
-  // type rsSamplerData are supposed to live only inside the engine. But here in the test, we 
+  // type SfzInstrument are supposed to live only inside the engine. But here in the test, we 
   // create these data objects with having an engine around, so we must take over the 
   // responsibility for the lifetime of the SfzCodeBook which is used in the data object.
 
@@ -293,7 +293,7 @@ bool samplerDataTest()
 
   sfz = "<region>";
   d2.setFromSFZ(sfz); // crashes! the parser gets tripped up by empty regions
-  // crash: in rsSamplerData::setFromSFZ, j0 = 18446744073709551615
+  // crash: in SfzInstrument::setFromSFZ, j0 = 18446744073709551615
 
   // Set volume settings for instrument, group(0), and region(0,0):
   d1.setInstrumentSetting(  PST::Volume, -2.f);
@@ -420,7 +420,7 @@ bool samplerRegionPlayerTest()
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using AT   = RAPT::rsArrayTools;
-  using SD   = rosic::Sampler::rsSamplerData;
+  using SD   = rosic::Sampler::SfzInstrument;
   using SE   = rosic::Sampler::rsSamplerEngineTest;
   using RC   = rosic::Sampler::rsReturnCode;
   using PST  = rosic::Sampler::Opcode;
@@ -2147,7 +2147,7 @@ bool samplerEqualizerTest()
   using SE     = rosic::Sampler::rsSamplerEngineTest;
   using OC     = rosic::Sampler::Opcode;
   using Type   = rosic::Sampler::FilterType;
-  using Region = rosic::Sampler::rsSamplerData::Region;
+  using Region = rosic::Sampler::SfzInstrument::Region;
 
 
   using namespace RAPT;
@@ -2321,7 +2321,7 @@ bool samplerOverloadTest()
   using Vec    = std::vector<float>;
   using SE2    = rosic::Sampler::rsSamplerEngine2Test;
   using OC     = rosic::Sampler::Opcode;
-  using Region = rosic::Sampler::rsSamplerData::Region;
+  using Region = rosic::Sampler::SfzInstrument::Region;
   using Ev     = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp   = Ev::Type;
 

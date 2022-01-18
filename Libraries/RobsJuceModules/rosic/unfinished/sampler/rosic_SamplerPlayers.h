@@ -205,7 +205,7 @@ protected:
 
 
 
-  using PlaybackSetting = rsSamplerData::PlaybackSetting; // for convenience
+  using PlaybackSetting = SfzInstrument::PlaybackSetting; // for convenience
   // mayb rename to OpcodeSetting
 
   /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
@@ -257,9 +257,9 @@ public:
 
   // For convenience:
   using uchar = unsigned char;
-  using Region = rsSamplerData::Region; // todo: make a subclass here that adds the stream field
-  using Group  = rsSamplerData::Group;
-  using PlaybackSetting = rsSamplerData::PlaybackSetting;
+  using Region = SfzInstrument::Region; // todo: make a subclass here that adds the stream field
+  using Group  = SfzInstrument::Group;
+  using PlaybackSetting = SfzInstrument::PlaybackSetting;
 
   /** Sets up the region object that this player should play. You need to also pass the output
   sample-rate which is the sample rate at which the player should run (not the sample rate of the
@@ -411,7 +411,7 @@ public:
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
     RegionPlayer* rp, PlayerIntermediates* iv) override;
 
-  bool setGroupOrInstrumToPlay(const rsSamplerData::HierarchyLevel* thingToPlay, 
+  bool setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLevel* thingToPlay, 
     uchar key, uchar vel, double sampleRate, RegionPlayer* regionPlayer, bool busMode, 
     PlayerIntermediates* intermediates);
   // busMode is superfluous - when a SampleBusPlayer is invoked, we are in busMode by definition
@@ -426,7 +426,7 @@ protected:
 
   bool assembleEffectChain(bool busMode) override;
 
-  const rsSamplerData::HierarchyLevel* grpOrInstr = nullptr;
+  const SfzInstrument::HierarchyLevel* grpOrInstr = nullptr;
   // pointer to the group or isntrument that this player should play
 
 };
@@ -467,11 +467,11 @@ public:
 
   /** Returns a pointer to the group to play. If there is currently no group assigned to this 
   player, this is a nullptr. */
-  const rsSamplerData::Group* getGroupToPlay() const 
-  { return (const rsSamplerData::Group*) grpOrInstr; }
+  const SfzInstrument::Group* getGroupToPlay() const 
+  { return (const SfzInstrument::Group*) grpOrInstr; }
 
   /** Sets the group that should be played back by this player. */
-  bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, uchar key, uchar vel, 
+  bool setGroupToPlay(const SfzInstrument::Group* groupToPlay, uchar key, uchar vel, 
     double fs, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
   { return setGroupOrInstrumToPlay(groupToPlay, key, vel, fs, rp, busMode, iv); }
     // ...it's just a convenience function to make the call site look nicer.
@@ -496,7 +496,7 @@ public:
 
   // implement processBlock
 
-  bool setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, uchar key, uchar vel, 
+  bool setInstrumToPlay(const SfzInstrument::Instrument* instrumToPlay, uchar key, uchar vel, 
     double fs, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
   { return setGroupOrInstrumToPlay(instrumToPlay, key, vel, fs, rp, busMode, iv); }
     // Convenience function to make the call site look nicer.

@@ -12,7 +12,7 @@ Maybe rename to rsSfzInstrument and the rename the Instrument hierarchy level to
 
 */
 
-class rsSamplerData // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
+class SfzInstrument // todo: move into its own pair of .h/.cpp files, rename to SfzInstrument
 {
 
 public:
@@ -21,15 +21,15 @@ public:
   // \name Lifetime
 
   /** Default constructor. */
-  rsSamplerData() {}
+  SfzInstrument() {}
 
-  ~rsSamplerData() { clearInstrument(); }
+  ~SfzInstrument() { clearInstrument(); }
 
   /** Copy constructor.   */
-  rsSamplerData(const rsSamplerData& d) { copy(d, *this); }
+  SfzInstrument(const SfzInstrument& d) { copy(d, *this); }
 
   /** Copy assignment operator. */
-  rsSamplerData& operator=(const rsSamplerData& d) 
+  SfzInstrument& operator=(const SfzInstrument& d) 
   { if(this != &d)  copy(d, *this); return *this; }
 
   //-----------------------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ public:
     int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
     // Maybe use 1 as default - if there's only one such setting anyway, that seems appropriate
     // index should always be a positive real number. But maybe that's not such a good idea - see
-    // comment in rsSamplerData::writeSettingToString in the cpp file. For certain things, we need
+    // comment in SfzInstrument::writeSettingToString in the cpp file. For certain things, we need
     // a code for "not applicable".
   };
 
@@ -244,7 +244,7 @@ public:
     /** Returns the generic pointer for custom satellite data or objects that are associated with
     this region. This pointer is intended to be used for some sort of audio stream object that is
     used for accessing the sample data. It has been made a generic void pointer to decouple
-    rsSamplerData from the AudioFileStream class that is used in rsSamplerEngine. The
+    SfzInstrument from the AudioFileStream class that is used in rsSamplerEngine. The
     sampler-engine assigns this pointer with appropriate stream object and when retrieving them,
     does an appropriate type cast. ToDo: try to find a better design, maybe move up into
     baseclass */
@@ -281,7 +281,7 @@ public:
     //const AudioFileStream* sampleStream = nullptr;
     // try to get rid - that member should be added by rsSamplerEngine::Region which should be
     // a subclass of rsInstrumentDataSFZ::Region, and/or move up into baseclass. maybe to decouple
-    // rsSamplerData from AudioFileStream, just keep it as pointer-to-void which client code may 
+    // SfzInstrument from AudioFileStream, just keep it as pointer-to-void which client code may 
     // typecast to any sort of stream...or maybe that coupling makes sense?..hmm - not really.
     // maybe a pointer-to-void named customData should be stored in HierarchyLevel
 
@@ -351,7 +351,7 @@ public:
   private:
 
     //friend class Group;  // do we need this? if not, get rid.
-    //friend class rsSamplerData;  // get rid!
+    //friend class SfzInstrument;  // get rid!
 
 
     // The Region class shall not provide any public functions that can modify the region because
@@ -416,7 +416,7 @@ public:
     std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
 
-    friend class rsSamplerData;
+    friend class SfzInstrument;
     //friend class rsSamplerEngine;  // try to get rid
   };
 
@@ -492,7 +492,7 @@ under "How is the sfz..."
     // the implementations of Group and Instrument more consistent but is actually technically not 
     // necessary. So, for the time being, let's keep it an array of direct value objects.
 
-    friend class rsSamplerData;  // get rid
+    friend class SfzInstrument;  // get rid
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -589,7 +589,7 @@ under "How is the sfz..."
 //const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 
 //{ return instrument.getGroupSettings(i); }
 
-  bool operator==(const rsSamplerData& rhs) const { return instrument == rhs.instrument; }
+  bool operator==(const SfzInstrument& rhs) const { return instrument == rhs.instrument; }
 
 
 
@@ -633,7 +633,7 @@ protected:
   static PlaybackSetting getSettingFromString(
     const std::string& opcode, const std::string& value);
 
-  static void copy(const rsSamplerData& src, rsSamplerData& dst);
+  static void copy(const SfzInstrument& src, SfzInstrument& dst);
 
 };
 
