@@ -1,7 +1,7 @@
 The RS-MET Sampler Engine
 ===========================
 
-...is still very much under construction...
+...is still in early stages and very much under construction...
 
 The RS-MET sampler engine is built around sfz which is a popular text-based file format to specify 
 sample-based instruments. In sfz, the instrument is specified in terms of so called opcodes where 
@@ -64,7 +64,7 @@ applies). For effects of the same kind with an index, their order will be dictat
 if you write "eq2_gain=3 eq1_gain=6" then eq1 will be before eq2. The rule is: if there's an index,
 that index determines the position among the sibling effects. For effects of different kinds, the
 rule of the first opcode applies. If you write "eq2_gain=6" without specifying any settings for 
-eq1, then your effect chain will nevertheless contain two equalizers, but the first one will have neutral settings so it won't do anything to your signal.
+eq1, then your effect chain will nevertheless contain two equalizers, but the first one will have neutral default settings so it won't do anything to your signal.
 
 
 #### Parameter Quantization
