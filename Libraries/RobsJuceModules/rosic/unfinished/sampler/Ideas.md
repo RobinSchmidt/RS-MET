@@ -70,17 +70,18 @@ Some of the parameters that sfz specifies to be integer can easily also admit fl
 Examples for such parameters are tune, transpose, loop_start, loop_end. By specifying 
 param_quantize=none, we could lift these unnecessary restrictions. 
 
-
 In the current implementation, we actually do not quantize the integer parameters anyway nor do we 
 clip parameters to their specified ranges, so currently we already operate in that unrestricted 
 mode. It would actually take some extra programming to enforce these restrictions and the "gain" 
 would be *less* flexibility. Maybe we should or maybe we shouldn't. If users want to restrict 
 themselves to using only integers for certain parameters, they can already do it. No additional 
 code needed. The same goes for the ranges. However, in some cases we may indeed want to put some
-limits on the ranges to ensure numeric stability (think of filter feedback) or sane resource 
-requirements (think of delay) or safety for the user's equipment and/or ears (think of gain). But 
-maybe such nannying of sfz authors is inappropriate - after all, if the author "programs" a "buggy"
-sfz, it may be argued that it's "their bug"...not sure yet...
+limits on the ranges to ensure numeric stability (think of feedback) or sane resource requirements 
+(think of delay) or safety for the user's equipment and/or ears (think of gain). But maybe such 
+nannying of sfz authors is inappropriate - after all, if the author "programs" a "buggy" sfz, it 
+may be argued that it's "their bug". I think, instead of safeguarding the user from mistakes by 
+imposing (arbitrary) limits, I'd rather go with the "trust the programmer" approach. 
+...but I'm not sure yet...we'll see...
 
 
 Misc Ideas
@@ -96,10 +97,13 @@ but it could also be a simple textual representation similar to sfz. like:
 
 max_abs=0 max_rms=-3.01 mean_pitch=69 max_pitch=75.3 min_pitch=67.8 loop_start=23.54 
 loop_end=156.65 cycles_in_loop=1 category=single_note (others: single_drum, noise, polyphonic, 
-speech, singing, melody/sequence/monophonic, drumloop, mixdown, effect, chord, environment)
+speech, singing, melody/sequence/monophonic, drumloop, mixdown, effect, chord, environmental)
 
 Maybe write a little script that batch-generates such metadata files for a folder of samples for 
-those parameters that are easily analyzed (such as max-abs, max_rms, maybe pitch, loudness)
+those parameters that are easily analyzed (such as max-abs, max_rms, maybe pitch, loudness). Other
+opcodes: tempo=140 (in bpm), freq_range=treble (also: bass, low_mid, mid, high_mid)...maybe that 
+could also be a more quantitative spectral_centroid measure. also interesting: spectral_slope - 
+could be useful to the up the spectral_slope filter
 
 
 
