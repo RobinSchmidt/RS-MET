@@ -340,7 +340,7 @@ Notes:
 
 Modulators should be stereo. Stereo LFOs should have a parameter for the phase offset between 
 modulator for left and right channel. For envelopes, maybe a delay would be more appropriate. The 
-LFOs should support the sample opcode to load single cycle LFO waveforms
+LFOs should support the sample opcode to load single cycle LFO waveforms. 
 
 Maybe use rsFloat32x4 to pass around signals. We could use the 4 channels for L/R/M/S and process
 all simultaneously. ...but for delayline based effects, that may imply to double the memory 

@@ -25,21 +25,18 @@ SFZ v1
 
 Player
 ------
-
 sample, lokey, hikey, lovel, hivel, delay, offset, loop_mode (partial), transpose, tune, 
 pitch_keycenter, pitch_keytrack
 
 Filters
 -------
-
 filN_type (partial), cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, eqN_gain,
 eqN_freq, eqN_bw
 
 
 Amplifiers
 ----------
-
-
+volume, pan, width, position, amp_keytrack, amp_keycenter, amp_veltrack
 
 
 RS-MET
@@ -58,7 +55,7 @@ N=1, the 1 is optional to support sfz v1 (and v2) syntax. The indexed opcodes fo
 of N=1 is optional are:
 
 filN_type, cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, volumeN, panN, 
-widthN, positionN
+widthN, positionN, ampN_keytrack, ampN_keycenter, ampN_veltrack
 
 You may notice that we have also volumeN, panN, etc. That means, the amplifier is also realized as
 an effect and you can have as many amplifier units as you want.
@@ -66,7 +63,6 @@ an effect and you can have as many amplifier units as you want.
 
 Parameter Quantization
 ----------------------
-
 In sfz, some opcodes were specified to take integer values but which could by their nature just as
 easily admit floating point values. So, the RS-MET engine lifts this restriction where is makes 
 sense. The affected opcodes are:
@@ -118,12 +114,13 @@ this engine. It will be used in one their upcoming products...
 SFZ Resources
 -------------
 
-https://sfzformat.com/                  A website dedicated to the sfz format.
-https://sfzformat.com/legacy/           Original description of the sfz fomat and sfz v1 opcodes.
+https://sfzformat.com/                  A website dedicated to the sfz format
+https://sfzformat.com/legacy/           Original description of the sfz fomat and sfz v1 opcodes
 https://sfzformat.com/opcodes/          Comprehensive list of opcodes including extensions
 https://sfzformat.com/software/tools/   List of sfz authoring tools
 https://github.com/sfz                  sfz related stuff
 https://github.com/sfztools             Open source sfz tools
 https://github.com/sfztools/sfizz       An open source sfz engine
 https://www.linuxsampler.org/           Another one
+https://sfzinstruments.github.io/       Free sfz instruments
 
