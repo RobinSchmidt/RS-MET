@@ -1,0 +1,7 @@
+On 2022/01/18, i realized that the folder of generated files:
+
+E:\Programming\C++\RS-MET\Tests\TestsRosicAndRapt\Builds\CodeBlocksLinux\bin\Debug\TestsRosicAndRapt
+
+was accidently under version control. I deleted it but the history is still there and should at 
+some point be pruned. The commit with the hash: 4b0f07850b975346f30adb663b0d283966991a96 and 
+comment "added text" is the last one before deleting.
