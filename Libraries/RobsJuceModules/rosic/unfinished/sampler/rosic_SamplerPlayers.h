@@ -33,7 +33,7 @@ public:
   // rename to getNumEffects
 
 
-  Effect* getProcessor(int i) { return processors[i]; } // rename to getEffect
+  Effect* getEffect(int i) { return processors[i]; } // rename to getEffect
   // is this needed? it's confusing to have this and the function below because the indices mean
   // different things in both cases
 

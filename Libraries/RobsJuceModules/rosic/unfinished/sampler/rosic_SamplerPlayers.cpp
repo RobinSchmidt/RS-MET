@@ -32,7 +32,7 @@ Effect* EffectChain::getEffect(DspType type, int index)
   index = RAPT::rsMax(index-1, 0);
   int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
   for(int i = 0; i < (int)processors.size(); i++) {
-    Effect* dsp = getProcessor(i);
+    Effect* dsp = getEffect(i);
     if(dsp->getType() == type) {
       if(count == index)
         return dsp;
@@ -110,7 +110,7 @@ bool SamplePlayer::assembleEffectChain(const std::vector<DspType>& dspTypes)
 void SamplePlayer::disassembleEffectChain()
 {
   for(int i = 0; i < effectChain.getNumEffects(); i++)
-    dspPool->effectPool.repositEffect(effectChain.getProcessor(i));
+    dspPool->effectPool.repositEffect(effectChain.getEffect(i));
   effectChain.clear();
   // ToDo: benchmark whether its faster to traverse the array from the back
 }

@@ -444,7 +444,7 @@
 #include "unfinished/sampler/rosic_SfzCodeBook.h"
 #include "unfinished/sampler/rosic_SamplerData.h"
 #include "unfinished/sampler/rosic_SamplerEffectCores.h"
-#include "unfinished/sampler/rosic_SamplerProcessors.h"
+#include "unfinished/sampler/rosic_SamplerEffects.h"
 #include "unfinished/sampler/rosic_SamplerPlayers.h"
 #include "unfinished/sampler/rosic_SamplerEngine.h"
 
