@@ -251,27 +251,27 @@ bool SfzInstrument::Group::operator==(const SfzInstrument::Group& rhs) const
   return equal;
 }
 
-int SfzInstrument::Instrument::addGroup()
+int SfzInstrument::Global::addGroup()
 {
   SfzInstrument::Group* g = new SfzInstrument::Group;
   return addGroup(g);
 }
 
-int SfzInstrument::Instrument::addGroup(SfzInstrument::Group* g)
+int SfzInstrument::Global::addGroup(SfzInstrument::Group* g)
 {
   g->parent = this;
   groups.push_back(g);
   return ((int)groups.size()) - 1;
 }
 
-void SfzInstrument::Instrument::clearGroups()
+void SfzInstrument::Global::clearGroups()
 {
   for(size_t i = 0; i < groups.size(); i++)
     delete groups[i];
   groups.clear();
 }
 
-bool SfzInstrument::Instrument::operator==(const SfzInstrument::Instrument& rhs) const
+bool SfzInstrument::Global::operator==(const SfzInstrument::Global& rhs) const
 {
   bool equal = settings == rhs.settings;
   equal &= dspTypes == rhs.dspTypes;

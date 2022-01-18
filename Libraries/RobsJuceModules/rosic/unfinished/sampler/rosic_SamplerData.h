@@ -8,7 +8,7 @@ namespace Sampler {
 
 /** Data structure to define sample based instruments conforming to the sfz specification. 
 
-Maybe rename to rsSfzInstrument and the rename the Instrument hierarchy level to Global
+Maybe rename to rsSfzInstrument and the rename the Global hierarchy level to Global
 
 */
 
@@ -38,7 +38,7 @@ public:
   using uchar = unsigned char;
   class Region;
   class Group;
-  class Instrument;
+  class Global;
 
 
   //-----------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their
-  commonalities. Subclasses are Region, Group, Instrument. 
+  commonalities. Subclasses are Region, Group, Global. 
   
   maybe drag out of the class, name it rsSamplerLevel or HierarchyLevel  */
   class HierarchyLevel  
@@ -220,7 +220,7 @@ public:
     // default value, if the parent is nullptr.
 
     /** Returns a pointer to the parent level which encloses this level. In a Region, this would
-    point to its enclosing Group, in a Group to its enclosing Instrument and in an Instrument, it
+    point to its enclosing Group, in a Group to its enclosing Global and in an Global, it
     would remain nullptr (unless we introduce an even higher level such as an "Ensemble"). */
     const HierarchyLevel* getParent() const { return parent; }
 
@@ -397,7 +397,7 @@ public:
     int getNumRegions() const { return (int)regions.size(); }
 
     /** Return a pointer to the instrument to which this group belongs. */
-    const Instrument* getInstrument() const { return (const Instrument*)getParent(); }
+    const Global* getInstrument() const { return (const Global*)getParent(); }
 
     /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;
@@ -444,7 +444,7 @@ under "How is the sfz..."
   multiple regions."  under "Implementation ...How is an instrument..."
   ..so...yeah - "instrument" is consistent with sfz usage...but maybe rename this class to 
   rsSfzInstrument.  */
-  class Instrument : public HierarchyLevel
+  class Global : public HierarchyLevel
   {
 
   public:
@@ -472,7 +472,7 @@ under "How is the sfz..."
     bool isGroupIndexValid(int i) const { return i >= 0 && i < (int)groups.size(); }
 
 
-    bool operator==(const Instrument& rhs) const;
+    bool operator==(const Global& rhs) const;
     //{ return settings == rhs.settings && groups == rhs.groups; }
 
 
@@ -489,7 +489,7 @@ under "How is the sfz..."
 
     std::vector<Group*> groups;
     // Should that be an array of pointers, too? Like the regions array in Group? That would make
-    // the implementations of Group and Instrument more consistent but is actually technically not 
+    // the implementations of Group and Global more consistent but is actually technically not 
     // necessary. So, for the time being, let's keep it an array of direct value objects.
 
     friend class SfzInstrument;  // get rid
@@ -623,7 +623,7 @@ under "How is the sfz..."
 
 //protected:  // preliminarily commented - make protected again later
 
-  Instrument instrument;
+  Global instrument;
   // Maybe we could maintain an array of such instruments that define an ensmeble
 
 protected:

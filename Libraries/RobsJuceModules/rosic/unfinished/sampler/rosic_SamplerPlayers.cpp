@@ -532,7 +532,7 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
 
   // hmmm...the PitchKeyCenter stuff doesn't work. the probelm is that in busMode, we call
   // RegionPlayer::setupPlayerSetting for the region first and *then* call 
-  // SampleBusPlayer::setupPlayerSetting for the Group and Instrument, so if we would just set the
+  // SampleBusPlayer::setupPlayerSetting for the Group and Global, so if we would just set the
   // value here, we would override the region's settings - exactly the opposite of what should 
   // happen. Maybe we could fix this always calling in RegionPlayer::setupDspSettingsFor all 3
   // setup functions without using the if(!busMode) conditional. Then, for any setting that should 

@@ -496,7 +496,7 @@ public:
 
   // implement processBlock
 
-  bool setInstrumToPlay(const SfzInstrument::Instrument* instrumToPlay, uchar key, uchar vel, 
+  bool setInstrumToPlay(const SfzInstrument::Global* instrumToPlay, uchar key, uchar vel, 
     double fs, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
   { return setGroupOrInstrumToPlay(instrumToPlay, key, vel, fs, rp, busMode, iv); }
     // Convenience function to make the call site look nicer.
