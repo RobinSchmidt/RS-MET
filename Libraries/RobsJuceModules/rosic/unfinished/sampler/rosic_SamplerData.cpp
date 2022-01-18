@@ -287,19 +287,19 @@ bool SfzInstrument::Global::operator==(const SfzInstrument::Global& rhs) const
 
 int SfzInstrument::addRegion(int gi, uchar loKey, uchar hiKey)
 {
-  if(gi < 0 || gi >= (int)instrument.groups.size()) {
+  if(gi < 0 || gi >= (int)global.groups.size()) {
     RAPT::rsError("Invalid group index");
     return -1; }
-  int ri = instrument.groups[gi]->addRegion(loKey, hiKey);  // region index within its group
+  int ri = global.groups[gi]->addRegion(loKey, hiKey);  // region index within its group
   return ri;
 }
 
 bool SfzInstrument::removeRegion(int gi, int ri)
 {
-  if(gi < 0 || gi >= (int)instrument.groups.size()) {
+  if(gi < 0 || gi >= (int)global.groups.size()) {
     RAPT::rsError("Invalid group index");
     return false; }
-  return instrument.groups[gi]->removeRegion(ri);
+  return global.groups[gi]->removeRegion(ri);
 }
 
 rsReturnCode SfzInstrument::setRegionSetting(int gi, int ri, Opcode type, float value, int index)
@@ -307,7 +307,7 @@ rsReturnCode SfzInstrument::setRegionSetting(int gi, int ri, Opcode type, float 
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex; }
-  instrument.groups[gi]->regions[ri]->setSetting(PlaybackSetting(type, value, index));
+  global.groups[gi]->regions[ri]->setSetting(PlaybackSetting(type, value, index));
   return rsReturnCode::success;
 }
 
@@ -316,7 +316,7 @@ rsReturnCode SfzInstrument::removeRegionSetting(int gi, int ri, Opcode type, int
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex; }
-  bool wasRemoved = instrument.groups[gi]->regions[ri]->removeSetting(type, index);
+  bool wasRemoved = global.groups[gi]->regions[ri]->removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
 }
@@ -326,7 +326,7 @@ rsReturnCode SfzInstrument::clearRegionSettings(int gi, int ri)
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex; }
-  instrument.groups[gi]->regions[ri]->clearSettings();
+  global.groups[gi]->regions[ri]->clearSettings();
   return rsReturnCode::success;
 }
 
@@ -335,7 +335,7 @@ rsReturnCode SfzInstrument::setGroupSetting(int gi, Opcode type, float value, in
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
     return rsReturnCode::invalidIndex; }
-  instrument.groups[gi]->setSetting(PlaybackSetting(type, value, index));
+  global.groups[gi]->setSetting(PlaybackSetting(type, value, index));
   return rsReturnCode::success;
 }
 
@@ -344,40 +344,40 @@ rsReturnCode SfzInstrument::removeGroupSetting(int gi, Opcode type, int index)
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
     return rsReturnCode::invalidIndex; }
-  bool wasRemoved = instrument.groups[gi]->removeSetting(type, index);
+  bool wasRemoved = global.groups[gi]->removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
 }
 
 rsReturnCode SfzInstrument::setInstrumentSetting(Opcode type, float value, int index)
 {
-  instrument.setSetting(PlaybackSetting(type, value, index));
+  global.setSetting(PlaybackSetting(type, value, index));
   return rsReturnCode::success;
 }
 
 rsReturnCode SfzInstrument::removeInstrumentSetting(Opcode type, int index)
 {
-  bool wasRemoved = instrument.removeSetting(type, index);
+  bool wasRemoved = global.removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
 }
 
 void SfzInstrument::clearAllRegionSettings()
 {
-  for(size_t gi = 0; gi < instrument.groups.size(); gi++)
-    for(size_t ri = 0; ri < instrument.groups[gi]->regions.size(); ri++)
-      instrument.groups[gi]->regions[ri]->clearSettings();
+  for(size_t gi = 0; gi < global.groups.size(); gi++)
+    for(size_t ri = 0; ri < global.groups[gi]->regions.size(); ri++)
+      global.groups[gi]->regions[ri]->clearSettings();
 }
 
 void SfzInstrument::clearAllGroupSettings()
 {
-  for(size_t gi = 0; gi < instrument.groups.size(); gi++)
-    instrument.groups[gi]->clearSettings();
+  for(size_t gi = 0; gi < global.groups.size(); gi++)
+    global.groups[gi]->clearSettings();
 }
 
 void SfzInstrument::clearAllInstrumentSettings()
 {
-  instrument.clearSettings();
+  global.clearSettings();
 }
 
 void SfzInstrument::clearAllSettings()
@@ -406,7 +406,7 @@ std::string SfzInstrument::getAsSFZ() const
   };
 
   std::string str;
-  writeSettingsToString(&instrument, str);
+  writeSettingsToString(&global, str);
   for(int gi = 0; gi < getNumGroups(); gi++) {
     str += "<group>\n";
     writeSettingsToString(getGroup(gi), str);
@@ -524,7 +524,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
   // Set up instrument level settings:
   tmp = str.substr(0, i0);
-  setupLevel(&instrument, tmp);
+  setupLevel(&global, tmp);
 
   // Loop over the the groups within the instrument definition:
   bool allGroupsDone = false;
@@ -536,9 +536,9 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
     // Extract substring with group definition and add a new group to the instrument:
     std::string groupDef = str.substr(i0, i1-i0); // group definition (ToDo: use string_view)
-    int gi = instrument.addGroup();
-    Group* g = instrument.getGroup(gi);
-    g->parent = &instrument;
+    int gi = global.addGroup();
+    Group* g = global.getGroup(gi);
+    g->parent = &global;
 
     // Find start and end index in the string for the first region within the current group:
     size_t j0 = str.find(region, i0);
@@ -658,7 +658,7 @@ SfzInstrument::PlaybackSetting SfzInstrument::getSettingFromString(
 void SfzInstrument::copy(const SfzInstrument& src, SfzInstrument& dst)
 {
   dst.clearInstrument();
-  dst.instrument.copyDataFrom(&src.instrument);
+  dst.global.copyDataFrom(&src.global);
   for(int i = 0; i < src.getNumGroups(); i++) {
     const Group* srcGroup = src.getGroup(i);
     Group* dstGroup = new Group;

@@ -6,11 +6,20 @@ namespace Sampler {
 
 //=================================================================================================
 
-/** Data structure to define sample based instruments conforming to the sfz specification. 
+/** Data structure to define sample based instruments conforming to the sfz specification. From
+here: https://sfzformat.com/legacy/ we quote:
 
-Maybe rename to rsSfzInstrument and the rename the Global hierarchy level to Global
+"The basic component of an instrument is a region. An instrument then, is defined by one or more
+regions. Multiple regions can be arranged in a group. Groups allow entering common parameters for
+multiple regions." 
 
-*/
+The parameters are represented as key/value pairs where the key is called an opcode in sfz 
+terminology. So, regions can define playback parameters via opcodes, groups can define fallback 
+values for these parameters for all regions belonging the group and the global section can define
+fallback values for all its groups. We represent the 3 hierarchy levels of sfz (region, group, 
+global) by the 3 internal classes Region, Group, Global which havea common basclass 
+HierarchyLevel. The common baseclass stores the opcodes defined on the respective level. 
+...tbc...   */
 
 class SfzInstrument // todo: move into its own pair of .h/.cpp files, rename to SfzInstrument
 {
@@ -286,15 +295,16 @@ public:
     // maybe a pointer-to-void named customData should be stored in HierarchyLevel
 
     std::string samplePath;
-    // This is the full (relative) path. ToDo: maybe this should be moved into the baseclass. We'll
-    // need to figure out, if the sfz player allows samples to be defined also for groups. The same
-    // goes for the loKey,etc. stuff as well. Actually, the string is redundant here when the 
-    // "custom" pointer actually points to an AudioFileStream, because that stream object also 
-    // stores the path. Maybe revert the custom void pointer to a pointer-to-AudioFileStream again. 
-    // Yes, this will introduce coupling but it gets rid of the redundant storage and the unelegant
-    // (and potentially unsafe) typecast of the void pointer. Maybe trying to decouple it amounts 
-    // to the "speculative generality" antipattern here - we'll see...
-    // https://refactoring.guru/smells/speculative-generality
+    // This is the full (relative) path with respect to either the .sfz file or some predefined
+    // sample directory. Actually, the string is redundant here when the "custom" pointer actually
+    // points to an AudioFileStream, because that stream object also stores the path. Maybe revert
+    // the custom void pointer to a pointer-to-AudioFileStream again. Yes, this will introduce 
+    // coupling but it gets rid of the redundant storage and the unelegant (and potentially 
+    //  unsafe) typecast of the void pointer. Maybe trying to decouple it amounts to the 
+    // "speculative generality" antipattern here - we'll see...
+    //   https://refactoring.guru/smells/speculative-generality
+    // moreover, this part of the code is not the "hot" part anyway so optimizing it for size may
+    // be pointless.
 
     const void* custom = nullptr;
 
@@ -328,10 +338,11 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** A region is the lowest organizational level ins sfz. It contains a sample along with
+  /** A region is the lowest hierarchy level ins sfz. It contains a sample along with
   performance settings including information for which keys and velocities the sample should be
   played and optionally other constraints for when the the sample should be played and also
   settings for pitch, volume, pan, filter, envelopes, etc. */
+
   class Region : public HierarchyLevel
   {
 
@@ -421,29 +432,13 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
-  /** The instrument is the highest hierarchy level in sfz. There is actually no section header in
-  the .sfz file format for the whole instrument that corresponds to this class. The whole
-  content of the sfz file *is* the instrument. But for consistency, we represent it by a class as
-  well. Maybe later an additional "Ensemble" or "Orchestra" level can be added on top. But 
-  actually the .sfz already can apparently represent an ensemble:
-
-  "Each .sfz definition file represents one or a collection of instruments."
-  https://sfzformat.com/legacy/ 
-
-  I guess, what they have in mind is to use a dispatch based on the midi channel
-  
-  Maybe rename to Global (i think, that's what it's called in sfz - and the aria engine has a level
-  in between called master). Or is instrument actually right? see:
-  
-  "Each .sfz definition file represents one or a collection of instruments. An instrument is 
-  defined as a collection of regions."
-under "How is the sfz..."
-
-  "The basic component of an instrument is a region. An instrument then, is defined by one or more
-  regions. Multiple regions can be arranged in a group. Groups allow entering common parameters for
-  multiple regions."  under "Implementation ...How is an instrument..."
-  ..so...yeah - "instrument" is consistent with sfz usage...but maybe rename this class to 
-  rsSfzInstrument.  */
+  /** The global instrument level is the highest hierarchy level in sfz. There is actually no 
+  section header in the .sfz file format for the whole instrument that corresponds to this class. 
+  The whole content of the sfz file *is* the instrument. But for consistency, we represent it by a 
+  class as well. Maybe later an additional "Ensemble" or "Orchestra" level can be added on top. But 
+  actually the .sfz already can apparently represent an ensemble. The spec says: "Each .sfz 
+  definition file represents one or a collection of instruments.". I guess, what they have in mind
+  is to use a dispatch based on the midi channel. Soo - i guess we are good with the 3 levels. */
   class Global : public HierarchyLevel
   {
 
@@ -461,11 +456,8 @@ under "How is the sfz..."
       return groups[i]; 
     }
 
-
     const std::vector<PlaybackSetting>& getGroupSettings(int groupIndex) const
-    {
-      return groups[groupIndex]->getSettings();
-    }
+    { return groups[groupIndex]->getSettings(); }
 
 
     /** Returns true, if the given index i refers to a valid group within this instrument. */
@@ -502,9 +494,9 @@ under "How is the sfz..."
   // and there should match and rsSamplerEngine should call functions from here and perhaps do
   // additional stuff, if necessary
 
-  int addGroup() { return instrument.addGroup(); }
+  int addGroup() { return global.addGroup(); }
 
-  int addGroup(Group* newGroup) { return instrument.addGroup(newGroup); }
+  int addGroup(Group* newGroup) { return global.addGroup(newGroup); }
 
   /** Adds a region to the group with the given groupIndex and returns the region index within the
   group of the newly added region or -1 if the grouIndex was invalid. */
@@ -517,12 +509,12 @@ under "How is the sfz..."
 
   void setRegionCustomPointer(int gi, int ri, void* ptr)
   {
-    instrument.groups[gi]->regions[ri]->setCustomPointer(ptr);
+    global.groups[gi]->regions[ri]->setCustomPointer(ptr);
   }
 
   void setRegionSample(int gi, int ri, const std::string& samplePath)
   {
-    instrument.groups[gi]->regions[ri]->setSamplePath(samplePath);
+    global.groups[gi]->regions[ri]->setSamplePath(samplePath);
   }
 
   rsReturnCode setRegionSetting(int gi, int ri, Opcode type, float value, int index = -1);
@@ -551,7 +543,7 @@ under "How is the sfz..."
   /** Clears the whole instrument definition. */
   void clearInstrument()
   {
-    instrument.clearGroups();
+    global.clearGroups();
     //signalProcessors.clear();
   }
   //{ instrument.groups.clear(); }
@@ -564,32 +556,32 @@ under "How is the sfz..."
   bool isIndexPairValid(int groupIndex, int regionIndex) const
   {
     int gi = groupIndex, ri = regionIndex;
-    return instrument.isGroupIndexValid(gi) && instrument.groups[gi]->isRegionIndexValid(ri);
+    return global.isGroupIndexValid(gi) && global.groups[gi]->isRegionIndexValid(ri);
   }
 
-  bool isGroupIndexValid(int i) const { return instrument.isGroupIndexValid(i); }
+  bool isGroupIndexValid(int i) const { return global.isGroupIndexValid(i); }
 
 
-  int getNumGroups() const { return instrument.getNumGroups(); }
+  int getNumGroups() const { return global.getNumGroups(); }
 
-  int getNumRegions(int i) const { return instrument.groups[i]->getNumRegions(); }
+  int getNumRegions(int i) const { return global.groups[i]->getNumRegions(); }
 
   //const Group& getGroupRef(size_t i) const { return instrument.groups[i]; }
 
   //const Group& getGroupRef(int i) const { return *instrument.groups[i]; }
   // replace by getGroupPtr ..maybe rename to just getGroup
 
-  const Group* getGroup(int i) const { return instrument.groups[i]; }
+  const Group* getGroup(int i) const { return global.groups[i]; }
 
-  const Region* getRegion(int gi, int ri) const { return instrument.groups[gi]->regions[ri]; }
+  const Region* getRegion(int gi, int ri) const { return global.groups[gi]->regions[ri]; }
 
-  Region* getRegionMutable(int gi, int ri) const { return instrument.groups[gi]->regions[ri]; }
+  Region* getRegionMutable(int gi, int ri) const { return global.groups[gi]->regions[ri]; }
 
 /** Returns a const reference to the playback settings if the i-th group. */
 //const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 
 //{ return instrument.getGroupSettings(i); }
 
-  bool operator==(const SfzInstrument& rhs) const { return instrument == rhs.instrument; }
+  bool operator==(const SfzInstrument& rhs) const { return global == rhs.global; }
 
 
 
@@ -620,11 +612,9 @@ under "How is the sfz..."
   // todo: document return values - should probably be one of: success, loadError, parseError
 
 
-
 //protected:  // preliminarily commented - make protected again later
 
-  Global instrument;
-  // Maybe we could maintain an array of such instruments that define an ensmeble
+  Global global;
 
 protected:
 

@@ -451,8 +451,8 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
 {
   *gi = -1;
   *ri = -1;
-  for(size_t i = 0; i < sfz.instrument.groups.size(); i++) {
-    int j = sfz.instrument.groups[i]->getRegionIndex(r);
+  for(size_t i = 0; i < sfz.global.groups.size(); i++) {
+    int j = sfz.global.groups[i]->getRegionIndex(r);
     if(j != -1) {
       *gi = (int) i;
       *ri = j;
@@ -910,7 +910,7 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
 bool rsSamplerEngine2::startInstrumPlayerFor(RegionPlayer* rp, uchar key, uchar vel)
 {
   return instrumPlayer.setInstrumToPlay(
-    &sfz.instrument, key, vel, sampleRate, rp, busMode, &intermediates);
+    &sfz.global, key, vel, sampleRate, rp, busMode, &intermediates);
 }
 
 void rsSamplerEngine2::stopInstrumPlayer()

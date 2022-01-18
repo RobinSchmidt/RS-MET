@@ -280,7 +280,7 @@ public:
   int getNumGroups() const { return sfz.getNumGroups(); }
 
   /** Returns a pointer to the index-th group or a nullptr if the index is invalid. */ 
-  const Group* getGroup(int index) { return sfz.instrument.getGroup(index); }
+  const Group* getGroup(int index) { return sfz.global.getGroup(index); }
 
   /** Returns the number of regions in the instrument definition that use the sample with the given
   path. The path is interpreted to be relative to the sample-path which is by default the directory
