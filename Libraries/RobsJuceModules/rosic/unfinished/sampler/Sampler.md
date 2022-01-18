@@ -31,7 +31,7 @@ pitch_keycenter, pitch_keytrack
 
 #### Filters
 
-filN_type (partial), cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, eqN_gain,
+fil_type (partial), cutoff, resonance, fil_keytrack, fil_keycenter, fil_veltrack, eqN_gain,
 eqN_freq, eqN_bw
 
 
@@ -48,22 +48,29 @@ In sfz v1, there were 3 equalizers whose settings were controlled by the opcodes
 eqN_freq, eqN_bw where N would be replaced by 1,2,3. In the RS-MET engine, N can be arbitrary so 
 you can have an arbitrary number of equalizer bands. The same goes for the filter opcodes. In sfz 
 v2, there were two filters and in v1 only one which is why in sfz v1 and v2 the settings of the 
-first filter are just set by opcodes cutoff, resonance etc. and in sfz v2, those of the filter were
-set by cutoff2, etc. The RS-MET engine allows N to be arbitrary here as well where in the case of 
-N=1, the 1 is optional to support sfz v1 (and v2) syntax. The indexed opcodes for which the index 
-of N=1 is optional are:
+first filter are just set by opcodes cutoff, resonance etc. and in sfz v2, those of the second 
+filter were set by cutoff2, etc. The RS-MET engine allows N to be arbitrary here as well where in 
+the case of N=1, the 1 is optional to support sfz v1 (and v2) syntax. The indexed opcodes for which the index of N=1 is optional are:
 
 filN_type, cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, volumeN, panN, 
 widthN, positionN, ampN_keytrack, ampN_keycenter, ampN_veltrack
 
 You may notice that we have also volumeN, panN, etc. That means, the amplifier is also realized as
-an effect and you can have as many amplifier units as you want.
+an effect and you can have as many amplifier units as you want. All effects are applied in series
+and the order of the effects in the chain is determined by the first opcode that applies to a given
+effect. For example, if you write into your sfz-file "volume=-6 cutoff=500 pan=50" then the 
+amplifier (to which volume and pan apply) will be placed before the filter (to which cutoff 
+applies). For effects of the same kind with an index, their order will be dictated by the index, so
+if you write "eq2_gain=3 eq1_gain=6" then eq1 will be before eq2. The rule is: if there's an index,
+that index determines the position among the sibling effects. For effects of different kinds, the
+rule of the first opcode applies. If you write "eq2_gain=6" without specifying any settings for 
+eq1, then your effect chain will nevertheless contain two equalizers, but the first one will have neutral settings so it won't do anything to your signal.
 
 
 #### Parameter Quantization
 
 In sfz, some opcodes were specified to take integer values but which could by their nature just as
-easily admit floating point values. So, the RS-MET engine lifts this restriction where is makes 
+easily admit floating point values. So, the RS-MET engine lifts this restriction where it makes 
 sense. The affected opcodes are: ...tbc...
 
 
@@ -80,32 +87,13 @@ are ...tbc...
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Misc
 ----
 
 ### Acknowledgments
 
-I'm especially grateful to Niall McCallum (modeaudio.com) for funding the initial development of 
-this engine. It will be used in one their upcoming products...
+I'm especially grateful to Niall McCallum (www.modeaudio.com) for funding the initial development 
+of this engine. It will be used in one of their upcoming products...
 
 
 ### SFZ Resources
