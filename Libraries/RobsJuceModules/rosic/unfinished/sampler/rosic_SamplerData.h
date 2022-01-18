@@ -4,35 +4,13 @@
 namespace rosic {
 namespace Sampler {
 
-/** Return codes for the setup functions. We use encodings as negative integers so we can use
-them also for functions which use positive integers as valid return values. */
-enum rsReturnCode
-{
-  success        = -1,  //< Operation completed successfully. 
-  nothingToDo    = -2,  //< There was nothing to actually do. State was already as desired.
-  memAllocFail   = -3,  //< Memory allocation failure.
-  invalidIndex   = -4,  //< An invalid index was passed.
-  layerOverload  = -5,  //< Not enough free layers available (in e.g. new noteOn).
-  notFound       = -6,  //< A region, group, sample or whatever was not found.
-  fileLoadError  = -7,  //< A file could not be loaded (reasons: not found or failed alloc).
-  notImplemented = -8,  //< Feature not yet implemented (relevant during development).
-  failed         = -9   //< General failure report wihtout further specification
-};
-// todo: make it an enum class, maybe include also return codes for inquiry functions such as for
-// "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
-// need to return valid integers (like, for numChannels, etc. - we could use negative numbers to
-// encode such things)
-// -maybe rename "success" to "completed" or "done" because "success" has actually a more general 
-//   meaning: "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
-// -maybe include a general code for "failed" 
-// -rename the layerOverload to a general "overload" or ressourcesUsedUp or something - to make the
-//  enum more genrally useful...maybe just overload
-// -maybe move it out of the Sampler sub-namespace - it may be more generally useful
-// -other possibly useful codes: unavailable, denied
-
 //=================================================================================================
 
-/** Data structure to define sample based instruments conforming to the sfz specification. */
+/** Data structure to define sample based instruments conforming to the sfz specification. 
+
+Maybe rename to rsSfzInstrument and the rename the Instrument hierarchy level to Global
+
+*/
 
 class rsSamplerData // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
 {
@@ -55,7 +33,7 @@ public:
   { if(this != &d)  copy(d, *this); return *this; }
 
   //-----------------------------------------------------------------------------------------------
-  // Forward dcalarations and abbreviations
+  // Forward declarations and abbreviations
 
   using uchar = unsigned char;
   class Region;
@@ -136,15 +114,11 @@ public:
     Opcode type  = Opcode::Unknown;  // rename type to opcode
     float  value = 0.f;
     int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
-    // maybe use 1 as default - if there's only one such setting anyway, that seems appropriate
+    // Maybe use 1 as default - if there's only one such setting anyway, that seems appropriate
     // index should always be a positive real number. But maybe that's not such a good idea - see
     // comment in rsSamplerData::writeSettingToString in the cpp file. For certain things, we need
-    // a code for not applicable
+    // a code for "not applicable".
   };
-  // Maybe rename to Opcode - but no: "opcodes" are the strings that appear in the sfz file, such
-  // "lokey". They map to the Type of the playback setting. Maybe this class should provide the
-  // mapping (maybe std::map or some selfmade class for a 2-way associative array)
-
 
   //-----------------------------------------------------------------------------------------------
   /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their
@@ -468,7 +442,8 @@ under "How is the sfz..."
   "The basic component of an instrument is a region. An instrument then, is defined by one or more
   regions. Multiple regions can be arranged in a group. Groups allow entering common parameters for
   multiple regions."  under "Implementation ...How is an instrument..."
-  ..so...yeah - "instrument" is consistent with sfz usage   */
+  ..so...yeah - "instrument" is consistent with sfz usage...but maybe rename this class to 
+  rsSfzInstrument.  */
   class Instrument : public HierarchyLevel
   {
 

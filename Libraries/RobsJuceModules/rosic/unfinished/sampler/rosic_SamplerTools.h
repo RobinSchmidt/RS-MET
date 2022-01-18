@@ -8,6 +8,41 @@ namespace Sampler {
 // Potentially generally useful utility classes and functions that are used in the sampler engine.
 // The code here may later go into some more general place somewhere in the RAPT or rosic library.
 
+/** Return codes for the setup functions. We use encodings as negative integers so we can use
+them also for functions which use positive integers as valid return values. */
+enum rsReturnCode
+{
+  success        = -1,  //< Operation completed successfully. 
+  nothingToDo    = -2,  //< There was nothing to actually do. State was already as desired.
+  memAllocFail   = -3,  //< Memory allocation failure.
+  invalidIndex   = -4,  //< An invalid index was passed.
+  layerOverload  = -5,  //< Not enough free layers available (in e.g. new noteOn).
+  notFound       = -6,  //< A region, group, sample or whatever was not found.
+  fileLoadError  = -7,  //< A file could not be loaded (reasons: not found or failed alloc).
+  notImplemented = -8,  //< Feature not yet implemented (relevant during development).
+  failed         = -9   //< General failure report wihtout further specification
+};
+// todo: make it an enum class, maybe include also return codes for inquiry functions such as for
+// "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
+// need to return valid integers (like, for numChannels, etc. - we could use negative numbers to
+// encode such things)
+// -maybe rename "success" to "completed" or "done" because "success" has actually a more general 
+//   meaning: "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
+//  ...but maybe it's not a good idea to distinguish between different kinds of "success". At the 
+//  call site, we want to do tests like if(returnCode == ReturnCode::success) which should pass 
+//  even when there was nothing to do
+// -rename the layerOverload to a general "overload" or ressourcesUsedUp or something - to make the
+//  enum more genrally useful...maybe just overload
+// -maybe move it out of the Sampler sub-namespace - it may be more generally useful
+// -other possibly useful codes: unavailable, denied
+// -maybe the fileLoadError should be replaced by more specific errors: fileNotFound, 
+//  fileTooLarge, fileCorrupted ...TooLarge is returned when the mem-alloc for the buffer failed,
+//  Corrupted when the sfz parser couldn't parse the content. Then we can display more specific 
+//  errors on the GUI...maybe the "corrupted" should be even more specific: inform, which opcodes
+//  were to blame, etc.
+
+//=================================================================================================
+
 /** Implements a pool of objects from which items can be grabbed and later returned. To "grab" an
 item means to retrieve a pointer to it using grabItem(). The caller can then use the item fro as 
 long as it needs it and when it is finished, it returns the item into the pool by calling
