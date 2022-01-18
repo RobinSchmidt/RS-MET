@@ -78,7 +78,9 @@ would be *less* flexibility. Maybe we should or maybe we shouldn't. If users wan
 themselves to using only integers for certain parameters, they can already do it. No additional 
 code needed. The same goes for the ranges. However, in some cases we may indeed want to put some
 limits on the ranges to ensure numeric stability (think of filter feedback) or sane resource 
-requirements (think of delay) or safety for the user's equipment and/or ears (think of gain).
+requirements (think of delay) or safety for the user's equipment and/or ears (think of gain). But 
+maybe such nannying of sfz authors is inappropriate - after all, if the author "programs" a "buggy"
+sfz, it may be argued that it's "their bug"...not sure yet...
 
 
 Misc Ideas
