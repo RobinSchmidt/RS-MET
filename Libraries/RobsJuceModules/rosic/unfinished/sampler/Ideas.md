@@ -44,16 +44,16 @@ together (to form a sub-bus) and then *additional* effect processors are applied
 Then, the outputs of the groups are mixed together and to that master mix, the global effect 
 processors are applied. So if there's a global setting for cutoff and also a group- and region 
 setting for it, there will actually be 3 filters when a single layer is playing back a region.
-When a chord of 3 notes (of the same region) are played, there will be 6 filters: 3 for the 3 
-regions, an fourth one applied to their mix into a group and a fifth one to the global master 
-signal. We already have the behavior implemented for the override and levels_are_busses modes (but 
-it's not yet opcode controlled). Maybe implement also the "accumulate" mode. In this mode, for 
-example, there is no such thing as a group filter but the cutoff specified in the group gets 
-(somehow) accumulated into the cutoff specified by the region. Maybe simple addition is indeed 
-appropriate. But such an "accumulate" would place the burden on us to specify the accumulation 
-behavior for each new opcode to be defined and it may not always be obvious, how this should be 
-done. We'll see...for the time being, only "override" and "levels_are_busses" should be 
-implemented.
+When a chord of 3 notes (of the same region) are played, there will be 5 filters: 3 for the 3 
+regions, an fourth one applied to their submix into a group ("sub-bus") and a fifth one to the 
+global master mix ("master-bus"). We already have the behavior implemented for the override and 
+levels_are_busses modes (but it's not yet opcode controlled). Maybe implement also the "accumulate" 
+mode. In this mode, for example, there is no such thing as a group filter but the cutoff specified 
+in the group gets (somehow) accumulated into the cutoff specified by the region. Maybe simple 
+addition is indeed appropriate. But such an "accumulate" would place the burden on us to specify 
+the accumulation behavior for each new opcode to be defined and it may not always be obvious, how 
+this should be done. We'll see...for the time being, only "override" and "levels_are_busses" should 
+be implemented.
  
 -param_range:  
 Decides, whether or not parameters should be restricted to the range specified by sfz. Possible 
