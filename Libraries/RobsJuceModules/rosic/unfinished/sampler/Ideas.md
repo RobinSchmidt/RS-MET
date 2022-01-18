@@ -3,12 +3,12 @@ In this file, I collect some ideas for possible new features of the sampler engi
 Ideas for new opcodes
 =====================
 
-reverse:  
+-reverse:  
 Toggle reverse playback in the RegionPlayer. The user may to also want to use the offset opcode to 
 determine where to start. If not defined, it starts at the last sample by default. Maybe 
 loop_start and loop_end should also reverse roles in reverse mode.
 
-normalize:  
+-normalize:  
 Apply an additional scale factor (directly at the RegionPlayer) that normalizes the sample on the 
 fly according to different criteria. Possible options could be: none, max_abs, max_rms, loudness 
 where the latter may employ some perceptual measure. To make this work, we need to analyze the 
