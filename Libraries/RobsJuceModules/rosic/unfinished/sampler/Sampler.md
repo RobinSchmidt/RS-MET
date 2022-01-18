@@ -118,7 +118,12 @@ this engine. It will be used in one their upcoming products...
 SFZ Resources
 -------------
 
-https://sfzformat.com/
-https://sfzformat.com/legacy/
-https://github.com/sfz
+https://sfzformat.com/                  A website dedicated to the sfz format.
+https://sfzformat.com/legacy/           Original description of the sfz fomat and sfz v1 opcodes.
+https://sfzformat.com/opcodes/          Comprehensive list of opcodes including extensions
+https://sfzformat.com/software/tools/   List of sfz authoring tools
+https://github.com/sfz                  sfz related stuff
+https://github.com/sfztools             Open source sfz tools
+https://github.com/sfztools/sfizz       An open source sfz engine
+https://www.linuxsampler.org/           Another one
 

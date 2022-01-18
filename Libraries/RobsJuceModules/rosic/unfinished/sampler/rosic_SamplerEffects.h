@@ -203,44 +203,27 @@ public:
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
 protected:
-
   FilterCore core;
-  // ToDo: use a more efficient implementation - it needs to support only a biquad mode. Maybe 
-  // use TDF1. A patch can use a lot of eq bands, so we may need many eqs, so we should be more
-  // frugal with memory than for the filter opcode where there is typically only one or maybe two
-  // per note. ...but we probably should support shelving modes, too
+  // ToDo: use a more efficient implementation and call it EqualizerCore - it needs to support 
+  // only a biquad mode. Maybe use TDF1. A patch can use a lot of eq bands, so we may need many
+  // eqs, so we should be more frugal with memory than for the filter opcode where there is 
+  // typically only one or maybe two per note. ...but we probably should support shelving modes,
+  // too. Maybe the EQ could have a type, too and also provide some of the types that filter has.
+  // Then the sfz author could choose to pick eqN instead of filN, knowing that the implementation
+  // is cheaper. ...but maybe it should provide keytrack and veltrack, too - but maybe not 
+  // controller response ...what about MS-processing? maybe have another opcode big_eqN ...how
+  // about EngineersFilter? maybe engfilN_type, engfilN_freq, etc.
 };
 
 class WaveShaper : public Effect
 {
-
 public:
-
-  WaveShaper()
-  {
-    type = DspType::WaveShaper;
-    params.reserve(3);
-    addParameter(Opcode::distortN_shape);
-    addParameter(Opcode::distortN_drive);
-    addParameter(Opcode::distortN_dc);
-  }
-  void prepareToPlay(uchar key, uchar vel, double fs) override
-  {
-    core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(),
-      params[2].getValue(), 1.f, 0.f, 0.f);
-    int dummy = 0;
-  }
-  void processFrame(float* L, float* R) override { core.processFrame(L, R); }
-  void processBlock(float* L, float* R, int N) override
-  {
-    for(int n = 0; n < N; n++)
-      processFrame(&L[n], &R[n]);
-  }
-
+  WaveShaper();
+  void prepareToPlay(uchar key, uchar vel, double fs) override;
+  void processFrame(float* L, float* R) override;
+  void processBlock(float* L, float* R, int N);
 protected:
-
   WaveshaperCore core;
-
 };
 
 // before writing too much boilerplate, fix the API:

@@ -128,6 +128,7 @@ Filter::Filter()
   // -Maybe support peak filters, re-use the resonance parameter for their gain, introduce a 
   //  bandwidth parameter ...on the other hand, we have the eqN_... opcodes, so maybe supporting 
   //  peak would be redundant - we'll see
+  // -Maybe support a reso_drive opcode to allow self oscillation in ladder filters
   //addParameter(Opcode::filN_bw);
 }
 
@@ -220,6 +221,7 @@ Equalizer::Equalizer()
   addParameter(Opcode::eqN_freq);
   addParameter(Opcode::eqN_bw);
 }
+
 void Equalizer::prepareToPlay(uchar key, uchar vel, double fs)
 {
   core.setupGainFreqBw(
@@ -230,19 +232,46 @@ void Equalizer::prepareToPlay(uchar key, uchar vel, double fs)
   );
   core.resetState();
 }
+
 void Equalizer::processFrame(float* L, float* R)
 { 
   core.processFrame(L, R); 
 }
+
 void Equalizer::processBlock(float* L, float* R, int N)
 {
   for(int n = 0; n < N; n++)
     processFrame(&L[n], &R[n]);
 }
 
+//=================================================================================================
 
+WaveShaper::WaveShaper()
+{
+  type = DspType::WaveShaper;
+  params.reserve(3);
+  addParameter(Opcode::distortN_shape);
+  addParameter(Opcode::distortN_drive);
+  addParameter(Opcode::distortN_dc);
+}
 
+void WaveShaper::prepareToPlay(uchar key, uchar vel, double fs) override
+{
+  core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(),
+    params[2].getValue(), 1.f, 0.f, 0.f);
+  int dummy = 0;
+}
 
+void WaveShaper::processFrame(float* L, float* R) override 
+{ 
+  core.processFrame(L, R); 
+}
+
+void WaveShaper::processBlock(float* L, float* R, int N) override
+{
+  for(int n = 0; n < N; n++)
+    processFrame(&L[n], &R[n]);
+}
 
 //=================================================================================================
 
@@ -274,9 +303,6 @@ void EffectPool::allocateEffects()
   // kinds of modules?
 }
 
-
-
-
 Effect* EffectPool::grabEffect(DspType type)
 {
   using SPT = DspType;
@@ -307,14 +333,14 @@ void EffectPool::repositEffect(Effect* p)
 
 }} // namespaces
 
-
 //=================================================================================================
 /*
 
 Notes:
 
 Modulators should be stereo. Stereo LFOs should have a parameter for the phase offset between 
-modulator for left and right channel. For envelopes, maybe a delay would be more appropriate.
+modulator for left and right channel. For envelopes, maybe a delay would be more appropriate. The 
+LFOs should support the sample opcode to load single cycle LFO waveforms
 
 Maybe use rsFloat32x4 to pass around signals. We could use the 4 channels for L/R/M/S and process
 all simultaneously. ...but for delayline based effects, that may imply to double the memory 

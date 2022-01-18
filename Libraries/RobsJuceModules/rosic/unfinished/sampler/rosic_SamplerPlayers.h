@@ -30,10 +30,9 @@ public:
 
   /** Returns the number of processors of given type in the chain. */
   size_t getNumEffects(DspType type) const;
-  // rename to getNumEffects
 
 
-  Effect* getEffect(int i) { return processors[i]; } // rename to getEffect
+  Effect* getEffect(int i) { return processors[i]; } 
   // is this needed? it's confusing to have this and the function below because the indices mean
   // different things in both cases
 
