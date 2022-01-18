@@ -26,23 +26,23 @@ public:
   bool isEmpty() const { return processors.empty(); }
 
   /** Returns the total number of processors in the chain. */
-  size_t getNumProcessors() const { return processors.size(); }
+  size_t getNumEffects() const { return processors.size(); }
 
   /** Returns the number of processors of given type in the chain. */
-  size_t getNumProcessors(DspType type) const;
+  size_t getNumEffects(DspType type) const;
+  // rename to getNumEffects
 
 
   Effect* getProcessor(int i) { return processors[i]; } // rename to getEffect
   // is this needed? it's confusing to have this and the function below because the indices mean
   // different things in both cases
 
-  /** Returns the index-th processor of the given type within the chain or nullptr, if there are
+  /** Returns the sfzIndex-th processor of the given type within the chain or nullptr, if there are
   not enough (i.e. less than i) processors of the given type in the chain. This is a 1-based index
-  as it occurs in the sfz files. To get the 3rd filter, you would pass 
-  type = SignalProcessorType::Filter, index = 3. For certain opcodes, an index is not applicable. 
-  We usually encode this by setting the value to -1 in the data-record. Such a -1 will then be
-  interpreted as "first-and-only" and in this case, it doesn't really matter, if the caller
-  passes -1 or +1 into this function. */
+  as it occurs in the sfz files. To get the 3rd filter, you would pass type = Dsp::Filter, 
+  index = 3. For certain opcodes, an index is not applicable. We usually encode this by setting the
+  value to -1 in the data-record. Such a -1 will then be interpreted as "first-and-only" and in 
+  this case, it doesn't really matter, if the caller passes -1 or +1 into this function. */
   Effect* getEffect(DspType type, int sfzIndex);
 
 protected:
@@ -186,22 +186,22 @@ protected:
   the desired DSPs was succesful. It may fail due to not having enough DSPs of required types 
   available. In such cases, any partially assembled dspChain will be disassembled again and 
   false is returned. This potential disassembly is what is meant by the "or clean-up" part. */
-  bool augmentOrCleanDspChain(const std::vector<DspType>& dspTypeChain);
+  bool augmentOrCleanEffectChain(const std::vector<DspType>& dspTypeChain);
 
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available).  */
-  virtual bool assembleDspChain(bool busMode) = 0;
+  virtual bool assembleEffectChain(bool busMode) = 0;
   // rename to assemberEffectChain
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
 
   /** A helper function that is called from GroupPlayer::assembleDspChain(bool) and
   InstrumentPlayer::assembleDspChain(bool). */
-  bool assembleDspChain(const std::vector<DspType>& dspTypes);
+  bool assembleEffectChain(const std::vector<DspType>& dspTypes);
 
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
-  void disassembleDspChain();
+  void disassembleEffectChain();
 
 
 
@@ -324,7 +324,7 @@ protected:
     PlayerIntermediates* iv);
 
 
-  bool assembleDspChain(bool busMode) override;
+  bool assembleEffectChain(bool busMode) override;
 
 
   bool setupModulations();
@@ -419,13 +419,13 @@ public:
 
   virtual void releaseResources()
   {
-    disassembleDspChain();
+    disassembleEffectChain();
     grpOrInstr = nullptr;
   }
 
 protected:
 
-  bool assembleDspChain(bool busMode) override;
+  bool assembleEffectChain(bool busMode) override;
 
   const rsSamplerData::OrganizationLevel* grpOrInstr = nullptr;
   // pointer to the group or isntrument that this player should play

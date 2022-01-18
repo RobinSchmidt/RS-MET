@@ -16,7 +16,7 @@ void EffectChain::processBlock(float* L, float* R, int N)
     processFrame(L, R);
 }
 
-size_t EffectChain::getNumProcessors(DspType type) const
+size_t EffectChain::getNumEffects(DspType type) const
 {
   size_t count = 0;
   for(size_t i = 0; i < processors.size(); i++) {
@@ -64,20 +64,20 @@ int rsCount(const T* a, int N, T elem)
 }
 // move into rsArrayTools
 
-bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeChain)
+bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<DspType>& dspTypeChain)
 {
   for(int i = 0; i < (int)dspTypeChain.size(); i++)
   {
-    // Figure out the type of the DSP that may need to be added to the chain:
+    // Figure out the type of the effect that may need to be added to the chain:
     DspType dspType = dspTypeChain[i];
 
-    // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
+    // Figure out, if we actually need to add another effect to the chain. If not, there's nothing
     // more to do in this iteration:
     int sfzIndex = rsCount(&dspTypeChain[0], i, dspType) + 1;
-    if(effectChain.getNumProcessors(dspType) >= sfzIndex)
+    if(effectChain.getNumEffects(dspType) >= sfzIndex)
       continue;
 
-    // OK - now we actually need to grab another DSP of given type from the pool:
+    // OK - now we actually need to grab another effect of given type from the pool:
     Effect* eff = getEffect(dspType);
     if(eff)
     {
@@ -85,34 +85,34 @@ bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeCha
       effectChain.addEffect(eff);
     }
     else {
-      disassembleDspChain();
+      disassembleEffectChain();
       return false;
-      // Not enough DSPs of desired type are available in the pool so we roll back any partially 
+      // Not enough effects of desired type are available in the pool so we roll back any partially 
       // built chain and report failure. 
     }
   }
   return true;
   // When we arrive here, we have successfully finished the loop which means that we either could
-  // add enough DSPs of the desired types to the chain or they were already present before. In 
-  // both cases, the dspChain is now in the required state so we can report success.
-
+  // add enough effects of the desired types to the chain or they were already present before. In 
+  // both cases, the effectChain is now in the required state so we can report success.
 }
 
-bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
+bool SamplePlayer::assembleEffectChain(const std::vector<DspType>& dspTypes)
 {
   if(!effectChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
-    disassembleDspChain();  }  // ...so we do it here. But this should be fixed elsewhere!
-  if(!augmentOrCleanDspChain(dspTypes)) 
+    disassembleEffectChain();  }  // ...so we do it here. But this should be fixed elsewhere!
+  if(!augmentOrCleanEffectChain(dspTypes)) 
     return false;
   return true;
 }
 
-void SamplePlayer::disassembleDspChain()
+void SamplePlayer::disassembleEffectChain()
 {
-  for(int i = 0; i < effectChain.getNumProcessors(); i++)
+  for(int i = 0; i < effectChain.getNumEffects(); i++)
     dspPool->effectPool.repositEffect(effectChain.getProcessor(i));
   effectChain.clear();
+  // ToDo: benchmark whether its faster to traverse the array from the back
 }
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
@@ -227,7 +227,7 @@ void RegionPlayer::releaseResources()
 {
   RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
 
-  disassembleDspChain();
+  disassembleEffectChain();
 
   // Return the modulators to the pool:
   // ...something to do...
@@ -262,7 +262,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
 
   this->key = key;
 
-  if(!assembleDspChain(busMode))
+  if(!assembleEffectChain(busMode))
   {
     releaseResources();
     return rsReturnCode::layerOverload;
@@ -310,10 +310,10 @@ bool RegionPlayer::hasFinished()
   return false;
 }
 
-bool RegionPlayer::assembleDspChain(bool busMode)
+bool RegionPlayer::assembleEffectChain(bool busMode)
 {
   // The DSPs for which the region itself defines settings/opcodes are always needed:
-  bool ok = SamplePlayer::assembleDspChain(region->getProcessingChain());
+  bool ok = SamplePlayer::assembleEffectChain(region->getProcessingChain());
   if(!ok)
     return false;
 
@@ -321,9 +321,9 @@ bool RegionPlayer::assembleDspChain(bool busMode)
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
   if(!busMode) {
-    if(!augmentOrCleanDspChain(region->getGroup()->getProcessingChain()))
+    if(!augmentOrCleanEffectChain(region->getGroup()->getProcessingChain()))
       return false;
-    if(!augmentOrCleanDspChain(region->getGroup()->getInstrument()->getProcessingChain()))
+    if(!augmentOrCleanEffectChain(region->getGroup()->getInstrument()->getProcessingChain()))
       return false; }
 
   return true;
@@ -575,10 +575,10 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
 
   // A GroupPlayer needs to play back a new group or the InstrumPlayer was triggered anew. In such 
   // a case, we need to assemble the DSP chain first:
-  disassembleDspChain();
+  disassembleEffectChain();
   grpOrInstr = thingToPlay;
   if(grpOrInstr != nullptr) {
-    if(!assembleDspChain(busMode)) {
+    if(!assembleEffectChain(busMode)) {
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, intermediates);
@@ -588,14 +588,14 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
   return true;
 }
 
-bool SampleBusPlayer::assembleDspChain(bool busMode)
+bool SampleBusPlayer::assembleEffectChain(bool busMode)
 {
   RAPT::rsAssert(busMode == true);
   // If we are not in busMode, this function should actually not even get called because only in
   // busMode, the Group- or InstrumentPlayer's own DSP chain is used. We need to take the busMode
   // parameter anyway because this function is an override.
 
-  return SamplePlayer::assembleDspChain(grpOrInstr->getProcessingChain());
+  return SamplePlayer::assembleEffectChain(grpOrInstr->getProcessingChain());
   // We need only to take into account the group's DSP settings. The instrument's DSP settings
   // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
   // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
