@@ -77,9 +77,11 @@ public:
   }
   */
 
+  void clear() { sampleRate  = 1; numChannels = 0; numFrames   = 0; }
+
 protected:
 
-  T   sampleRate  = T(44100);
+  T   sampleRate  = T(44100);  // or maybe init to 0? or 1? or 666?
   int numChannels = 0;
   int numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
 
@@ -157,7 +159,7 @@ public:
   // -don't split the path into 3 fields -> have only a path field which is the full path
   // -return a const reference to that here
 
-
+  void clear() { AudioStream<T>::clear(); path.clear(); rootDirIndex = 0; }
 
 protected:
 
@@ -168,6 +170,7 @@ protected:
   //std::string fileName;  // without filename extension (e.g. Piano_A4)
   //std::string extension; // filename extension (e.g. wav, flac)
   std::string path;      // relative path from a predefined root directory
+
   int rootDirIndex = 0;  // index of root directory (among a couple of predefined choices)
   // rootDirIndex stores the root-directory to which the path is relative, but just as an integer
   // index that selects between various pre-defined root-directories that should exist at the 
@@ -177,6 +180,9 @@ protected:
   // samples. It's totally possible to have samples in an instrument with same relative paths and 
   // filenames but with respect to different root directories. Yes - that would be weird, but the 
   // engine should neverless be able to handle such situations.
+  // Actually, i don't like the idea that this class should be coupled to the sampler engine. It
+  // should be usable in a much more general context. Maybe get rid of the rootDirIndex and replace
+  // it by an actual string representing the root dir
 
   // todo: maybe keep just the path which should represents the full relative path. It doesn't seem
   // to be a good idea to split it into 3 parts

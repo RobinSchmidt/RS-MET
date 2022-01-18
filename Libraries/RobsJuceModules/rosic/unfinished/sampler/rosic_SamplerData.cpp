@@ -63,6 +63,15 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   if(t == TP::LoVel) { loVel = (uchar)s.getValue(); return; }
   if(t == TP::HiVel) { hiVel = (uchar)s.getValue(); return; }
   // ToDo: maybe we should assert that the value is an integer in the range 0..127
+  // we should also handle the "key" opcode which specifies lokey, hikey, 
+  // pitch_keycenter simultaneously?
+
+  // The "key" opcode specifies lokey, hikey and pitch_keycenter at the same time:
+  if(t == TP::Key)
+  {
+    loKey = hiKey = (uchar)s.getValue();
+    setSetting(PlaybackSetting(Opcode::PitchKeyCenter, s.getValue(), -1));
+  }
 
   // All other settings are handled by either overwriting the last setting of that type in our 
   // array, if present or by appending the setting, if not present:

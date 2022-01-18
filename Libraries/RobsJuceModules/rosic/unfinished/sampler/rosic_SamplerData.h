@@ -447,13 +447,28 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
-  /** The instrument is the highest organizational level in sfz. There is actually no section
-  header in the .sfz file format for the whole instrument that corresponds to this class. The whole
+  /** The instrument is the highest hierarchy level in sfz. There is actually no section header in
+  the .sfz file format for the whole instrument that corresponds to this class. The whole
   content of the sfz file *is* the instrument. But for consistency, we represent it by a class as
-  well. Maybe later an additional "Ensemble" or "Orchestra" level can be added on top. 
+  well. Maybe later an additional "Ensemble" or "Orchestra" level can be added on top. But 
+  actually the .sfz already can apparently represent an ensemble:
+
+  "Each .sfz definition file represents one or a collection of instruments."
+  https://sfzformat.com/legacy/ 
+
+  I guess, what they have in mind is to use a dispatch based on the midi channel
   
-  Maybe rename to Global (i think, that's what it's called in sfz - and the aria engien has a level
-  in between called master) */
+  Maybe rename to Global (i think, that's what it's called in sfz - and the aria engine has a level
+  in between called master). Or is instrument actually right? see:
+  
+  "Each .sfz definition file represents one or a collection of instruments. An instrument is 
+  defined as a collection of regions."
+under "How is the sfz..."
+
+  "The basic component of an instrument is a region. An instrument then, is defined by one or more
+  regions. Multiple regions can be arranged in a group. Groups allow entering common parameters for
+  multiple regions."  under "Implementation ...How is an instrument..."
+  ..so...yeah - "instrument" is consistent with sfz usage   */
   class Instrument : public OrganizationLevel
   {
 

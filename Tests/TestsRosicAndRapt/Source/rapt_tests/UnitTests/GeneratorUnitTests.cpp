@@ -243,7 +243,7 @@ void setupForSineWave(rosic::Sampler::rsSamplerEngine* se)
 
 //=================================================================================================
 
-bool samplerDataUnitTest()
+bool samplerDataTest()
 {
   bool ok = true;
 
@@ -412,8 +412,10 @@ bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
 // factor out a getSamplerOutput(rosic::rsSamplerEngine* se, float key, float vel, 
 // const std::vector<float>& targetL, const std::vector<float>& targetR, bool plot) function
 
-bool samplerEngineUnitTest1()
+bool samplerRegionPlayerTest()
 {
+  // Tests the basic functionality of RegionPlayer
+
   bool ok = true;
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
@@ -650,14 +652,50 @@ bool samplerEngineUnitTest1()
   rsApplyDelay(tgt, delaySamples);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false); 
 
+  // Test some corner cases:
+
+  // Test playing a sample of length 1:
+  float one = 1.f; float* pOne = &one; float** ppOne = &pOne;
+  se.clearInstrument();
+  se.addSampleToPool(ppOne, 1, 1, 44100.f, "RAM");
+  se.addGroup();
+  se.addRegion(0);
+  se.setRegionSample(0, 0, 0);
+  float L, R;
+
+  // The unit impulse played at its original pitch should just produce a single sample of 1:
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
+  ok &= se.getNumActiveLayers() == 1;
+  se.processFrame(&L, &R);
+  ok &= L == 1.f && R == 1.f;
+  ok &= se.getNumActiveLayers() == 0;
+  se.processFrame(&L, &R);
+  ok &= L == 0.f && R == 0.f;
+
+  // Playing it two octaves below it's keycenter should produce 4 samples: 1.0, 0.75, 0.5, 0.25 due 
+  // to the linear interpolation:
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 36.f, 127.f));
+  ok &= se.getNumActiveLayers() == 1;
+  se.processFrame(&L, &R);  ok &= L == 1.0f  && R == 1.0f;
+  se.processFrame(&L, &R);  ok &= L == 0.75f && R == 0.75f;
+  se.processFrame(&L, &R);  ok &= L == 0.5f  && R == 0.5f;
+  se.processFrame(&L, &R);  ok &= L == 0.25f && R == 0.25f;
+  ok &= se.getNumActiveLayers() == 0;
+  se.processFrame(&L, &R);  ok &= L == 0.f && R == 0.f;
+
+  // Test playing a sample of length 0:
+  // ...or should we? is this something we should be able to handle? What should actually be the
+  // desired state of the samplePool after adding a sample of size 0? should we indeed add an
+  // object with zero data or should we just don't add anything? ..I'm not yet sure...but perhaps
+  // 
+
+
+
   // ToDo:
-  // -implement and test opcodes for key- and vel-tracking for:
-  //  pitch, volume, pan, delay
   // -write a performance test for the sampler
   // -switch to an int+float representation of the current sample position and increment and check, 
   //  if this improves performance...even if not, it's still better because it doesn't lose 
   //  precision for later samples
-  // -implement opcodes: pos, width, start, loop_start/end, loop_mode
   // -implement and test better realtime resampling (linear interpolation at first, later cubic and
   //  sinc, maybe some sort of "Elephant" interpolation, too - although, they are supposed to work 
   //  with 2x oversampling) 
@@ -665,17 +703,19 @@ bool samplerEngineUnitTest1()
   //   modulated by pitch-env and -lfo, or maybe use and int and a a float to represent sampleTime
   //   and increment -> do benchmarks, which is faster
   //  -should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
-  //   for controlling this? in some situations, that may makes sense, in others not so much
+  //   for controlling this? in some situations, that may makes sense (for creating comb-filter 
+  //   effects), in others not so much
 
 
   rsAssert(ok);
   return ok;
 }
 
-bool samplerEngine2UnitTest()
+bool samplerBusModeTest()
 {
   // We test the extended functionality of rsSamplerEngine2, in particular, the signal routing 
   // through per group DSP processes.
+  // rename to samplerBusModeTest
 
   bool ok = true;
 
@@ -1024,7 +1064,7 @@ bool samplerEngine2UnitTest()
   return ok;
 }
 
-bool samplerEngineUnitTestFileIO()
+bool samplerSaveLoadTest()
 {
   // This test also tests the file I/O
 
@@ -2647,7 +2687,7 @@ bool samplerKeyVelTrackTest()
   return ok;
 }
 
-bool samplerProcessorsTest()
+bool samplerEffectsTest()
 {
   bool ok = true;
 
@@ -2736,16 +2776,17 @@ bool samplerEngineUnitTest()
   //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
-  ok &= samplerDataUnitTest();
-  ok &= samplerEngineUnitTest1();       // rename to something more descriptive
-  ok &= samplerEngineUnitTestFileIO();  // rename to samplerSaveLoadTest
-  ok &= samplerParserTest();            // uses some files created by "..FileIO" -> order matters!
-  ok &= samplerProcessorsTest();
-  ok &= samplerModulationsTest();
-  ok &= samplerOverloadTest();
-  ok &= samplerKeyVelTrackTest();
-  ok &= samplerLoopTest();
-  ok &= samplerEngine2UnitTest();  // rename to samplerEngineBusModeTest
+  ok &= samplerDataTest();           // datastructure for representing an sfz
+  ok &= samplerRegionPlayerTest();   // basic playback of regions
+  ok &= samplerBusModeTest();        // basic playback in busMode
+  ok &= samplerSaveLoadTest();       // saving and loading of sfz files
+  ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
+  ok &= samplerEffectsTest();        // effect chain
+  ok &= samplerModulationsTest();    // modulation system
+  ok &= samplerOverloadTest();       // behavior in overload conditions
+  ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
+  ok &= samplerLoopTest();           // loop modes
+
 
   // ToDo:
   // -implement key/vel crossfade

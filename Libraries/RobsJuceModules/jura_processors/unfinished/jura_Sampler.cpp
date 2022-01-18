@@ -465,5 +465,19 @@ Another nice project that may help to figure out, how to build and deploy a plug
 https://github.com/surge-synthesizer/surge
 
 
+An editor GUI could be organized as follows:
+-Display the instrument on the left as a tree-view. The user can browse the groups and regions.
+ -Groups can open/close (+/-) regions
+ -Regions can open/close their parameter sets
+ -When clicking on a parameter, a slider appears to adjust it
+ -the slider can be dragged to a pane to remain in the view persistently
+-Display the regions layed out in a rectangle with keyboard at the bottom like in NI Kontakt
+ 
+ 
+ 
+ 
+ 
+ 
+
 
 */

@@ -418,14 +418,19 @@ bool rsSamplerEngine::shouldRegionPlay(const Region* r, uchar key, uchar vel)
 
   // Check, if all other playback constraints for the given region as defined in r->settings are 
   // satisfied. If any of them isn't, return false:
+  // check midi-channel, most recent controller
+
   // ...more to do...
 
   // -to do this efficiently, we should have the settings sorted in some way - the most often
   //  accessed settings should come first. or last. so we can have two sets of most often accessed
   //  settings - maybe those which are accessed often from the audio-rendering should come first 
   //  and those accessed often from the event-processing last. settings that are accessed rarely
-  //  go into the middle section. ..but maybe we shoud avoid accessing the settings from the 
-  //  rendering anyway
+  //  go into the middle section. Or maybe the region object should have fields for all of these.
+  //  Scanning the settings array for all of them isn't a good idea.
+
+  // ..but maybe we shoud avoid accessing the settings from the 
+  //  rendering anyway ...this constraint checking
 
 
   // The region has passed all constraint filters and should indeed be played:

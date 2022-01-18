@@ -106,8 +106,14 @@ protected:
 
 /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
 can be envelopes, LFOs, etc. */
-class Modulator
+class Modulator  
 {
+
+// Maybe treat modulators uniformly with effects...this may actually simplify the implementation
+// *and* make it more flexible. We want stereo modulation anyway. Maybe let the LFO's load 
+// samples as well using a syntax like lfoN_wave="SingleCycle/TwoSines.wav"
+// https://sfzformat.com/opcodes/lfoN_wave
+
 public:
   virtual float getSample() = 0;
   // todo: processBlock, prepareToPlay

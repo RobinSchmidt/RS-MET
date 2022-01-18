@@ -3,8 +3,19 @@ bool AudioFileStreamPreloaded<T>::setData(
   T** newData, int numFrames, int numDataChannels, T sampleRate, int numStreamChannels, 
   const std::string& path)
 {
+  RAPT::rsAssert(numFrames > 0 && numDataChannels > 0, "Data must be non-empty");
+
+
   // Deallocate old and allocate new memory:
   clear();
+  if(numFrames <= 0 || numDataChannels <= 0 || numStreamChannels <= 0) {
+    RAPT::rsError("Data should be non-empty"); 
+    return false; }
+    // I'm not sure what would be the most meaningful way to handle a situation where the caller
+    // passes some invalid data but it seems sensible to just reset the object into a cleared 
+    // state. If this happens, it probably means we have a bug at a higher level. That's why the
+    // assertion is there.
+
   int numChannelsMin = RAPT::rsMin(numDataChannels, numStreamChannels);
   flatData = new T[numChannelsMin*numFrames];
   channelPointers = new T*[numStreamChannels];
@@ -28,7 +39,8 @@ bool AudioFileStreamPreloaded<T>::setData(
 
   // Maybe we should have a version of this function which does not need to copy data but instead
   // just takes over ownership of the passed array. But this would need a parameter for the flat 
-  // data array, too. We'll see, how this meshes with the wavefile loading functions...
+  // data array, too. But maybe the caller has no flat array. We'll see, how this meshes with the
+  // wavefile loading functions. For the time being, we copy...
 }
 
 /*
@@ -41,12 +53,9 @@ void AudioFileStreamPreloaded::setNumOutputChannels(int newNumChannels)
 template<class T>
 void AudioFileStreamPreloaded<T>::clear()
 {
-  //numChannels = 0;
-  //numFrames   = 0; 
-
+  AudioFileStream<T>::clear();
   delete[] channelPointers;
   channelPointers = nullptr; 
-
   delete[] flatData;
   flatData = nullptr;
 }
