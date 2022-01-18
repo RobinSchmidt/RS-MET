@@ -3,12 +3,12 @@ In this file, I collect some ideas for possible new features of the sampler engi
 Ideas for new opcodes
 =====================
 
-reverse: 
+reverse:  
 Toggle reverse playback in the RegionPlayer. The user may to also want to use the offset opcode to 
 determine where to start. If not defined, it starts at the last sample by default. Maybe 
 loop_start and loop_end should also reverse roles in reverse mode.
 
-normalize:
+normalize:  
 Apply an additional scale factor (directly at the RegionPlayer) that normalizes the sample on the 
 fly according to different criteria. Possible options could be: none, max_abs, max_rms, loudness 
 where the latter may employ some perceptual measure. To make this work, we need to analyze the 
@@ -16,26 +16,26 @@ sample on load and store the results somewhere. Maybe AudioFileStreamPreloaded c
 appropriate place. In a (potential future) direct-from-disk streaming mode, there perhaps needs to
 be some metadata file next to the .wav - see below under "Misc Ideas".
 
-invert (or negate):
+invert (or negate):  
 Switches polarity of signal. Might be integrated into the Amplifier unit. But actually, that may be
 redundant: negation should already be possible by a certain setting of width (may -100?), so maybe
 we don't really need it. It could be convenient though. However, let's try to keep the number of
 new opcodes low...
 
-filN_q_freqtrack (or resonanceN_freqtrack): 
+filN_q_freqtrack (or resonanceN_freqtrack):  
 Amount of tracking of the filter's quality factor Q (or resonance) of the filter's cutoff 
 frequency. The default value should map to constant-Q behavior (maybe it should be 100%). The 
 formula can be something based on what we have in RAPT where the filter's decay time constant 
 scales with frequency.
 
-spectral_slope:
+spectral_slope:  
 A filter that applies an (approximate) slope to the spectrum of the signal. For example, 
 spectral_slope=-3.01 would be a pinkening filter, i.e. a filter that turns white noise into pink
 noise. A value of -6.02 would turn it into brown noise, +6.02 blue noise etc. Could also be called
 color - but spectral_slope is probably less ambiguous. It could also benefit from key- and 
 vel-tracking.
 
-param_mode (maybe find a better name): 
+param_mode (maybe find a better name):  
 Switch the behavior of what happens when global, group and region all define values for the same 
 opcode. The default mode specified by sfz is "override": group settings override global settings 
 and region settings override global and/or group settings. We could also have "accumulate" and 
@@ -55,12 +55,12 @@ behavior for each new opcode to be defined and it may not always be obvious, how
 done. We'll see...for the time being, only "override" and "levels_are_busses" should be 
 implemented.
  
-param_range: 
+param_range:  
 Decides, whether or not parameters should be restricted to the range specified by sfz. Possible 
 values could be "sfz1" or "clipped", "free". Perhaps there could also be some mode that does clip 
 but at different values than the sfz spec says.
  
-param_quantize: 
+param_quantize:  
 Some of the parameters that sfz wants to be integer can easily also admit float values. Examples 
 for such parameters are tune, transpose, loop_start, loop_end.
 
