@@ -96,20 +96,52 @@ though.
 
 ### What is possible already?
 
-A couple of synthesizer-ish things can already be done with the standard sampler-ish features. 
-Among these are:
+A couple of synthesizer-ish things can already be done with the standard sampler-ish features 
+without actually adding any dedicated sound generator "effects". Among these are:
 
 - A simple oscillator can be set up by just loading a single cycle waveform file and setting the 
-  loops appropriately, so a simple oscillator with arbitrary waveform is already
-  covered. This should allow us to produce a wide range of typical synthesizer sounds.
+  loop appropriately, so a simple oscillator with arbitrary waveform is already
+  covered. Together with the filter(s), this should allow us to produce a wide range of typical 
+  subtractive synthesizer sounds. Of course, we can also use multiple such oscillators, detune them
+  to produce beating and supersaw sounds. A highpass filter may be beneficial to get the typical
+  curved analog-like sawtooth (and square) shapes. A midi controller could be routed to the tune 
+  opcodes of the oscillators to control the supersaw's "Detune"
 
 - The filter (in bandpass mode) with keytracking of 100% and a white noise input sample can be 
   used to synthesize "whistle" sounds. A second bandpass with possible a different resonance 
-  setting can be used to further shape the attack
+  setting can be used to further shape the attack. 
+
+- The equalizers can be used to apply formant-like spectral peaks and anti-formant-like troughs to 
+  any source signal.
+
+- A sample containing an impulse-like signal (possibly just a single value of 1 followed by
+  all zeros) can be fed into the filter(s) with high resonance settings. The resonating filters 
+  will produce decaying sinusoids. When keytracking is at 100%, these resonance "blips" are 
+  musically playable.
 
 ### What else could be needed?
 
-  - Another interesting unit could be a comb filter with feedback
+  - Another interesting unit could be a comb filter with feedback and possibly a lowpass in the
+    feedback patch. With an impulse like input, we could synthesize Karplus-Strong like "plucked 
+    string" sounds. When we introduce a flanger unit, we should have an eye on enabling such 
+    things in addition to the usual "flanging". It would primarily be a flanger but could be abused
+    as Karplus-Strong synthesizer.
+  
+  - We may need to allow the layer to have a ring-out phase where the RegionPlayer keeps playing 
+    for some specified amount of time even after the sample has finished.
+
+  - LFOs could be allowed to produce audio-rate signals and have keytracking of their frequencies. 
+    When routed to pitch, we could mock frequency modulation synthesis. When the input sample is a 
+    square wave, maybe we can also mock pulse-width modulation. We would need a linear mode of 
+    operation of the pitch LFO - I'm not sure, what sfz wants. If sfz prescribes logarithmic pitch
+    modulation for the pitch LFO, we may introduce another opcode to switch that.
+
+  - A reverb algo with an impulsive input sample could be used to create noise-burst like source 
+    signals which could be shaped further by key-tracked comb and/or bandpass filters. Maybe a 
+    series of narrow peak equalizers can be used instead of bandpasses.
+    
+   - Maybe we could have modal filter bank available as effect algorithm. With impulse and/or noisy
+     inputs, we could do some modal synthesis.
 
 
 Misc Ideas
