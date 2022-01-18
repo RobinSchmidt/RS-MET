@@ -927,7 +927,8 @@ void rsSamplerEngine2::stopInstrumPlayer()
 /*
 
 Bugs:
--when loading a new instrument while a region is playing, it crashes
+-When loading a new instrument while a region is playing, it crashes - we need to acquire a mutex
+ before emptying and re-filling the sample-pool
 
 Goals: 
 -Implement (a subset of) the feature set of the sfz specification, perhaps with some extensions 

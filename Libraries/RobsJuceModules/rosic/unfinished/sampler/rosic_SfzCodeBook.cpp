@@ -528,29 +528,43 @@ int SfzCodeBook::getIndexAndReplaceByN(std::string& str) const
 
 void SfzCodeBook::makeImplicitIndexExplicit(std::string& str) const
 {
-  if(     str == "fil_type")  str = "fil1_type";
-  else if(str == "cutoff")    str = "cutoff1";
-  else if(str == "resonance") str = "resonance1";
+  if(     str == "fil_type")      str = "fil1_type";
+  else if(str == "cutoff")        str = "cutoff1";
+  else if(str == "resonance")     str = "resonance1";
+  else if(str == "fil_keytrack")  str = "fil1_keytrack";
+  else if(str == "fil_keycenter") str = "fil1_keycenter";
+  else if(str == "fil_veltrack")  str = "fil1_veltrack";
 
-  // todo: filN_keytrack, etc....
-
-  else if(str == "volume")    str = "volume1";
-  else if(str == "pan")       str = "pan1";
-  else if(str == "width")     str = "width1";
-  else if(str == "position")  str = "position1";
+  else if(str == "volume")        str = "volume1";
+  else if(str == "pan")           str = "pan1";
+  else if(str == "width")         str = "width1";
+  else if(str == "position")      str = "position1";
 }
 void SfzCodeBook::makeExplicitIndexImplicit(std::string& str) const
 {
-  if(     str == "fil1_type")  str = "fil_type";
-  else if(str == "cutoff1")    str = "cutoff";
-  else if(str == "resonance1") str = "resonance";
+  if(     str == "fil1_type")      str = "fil_type";
+  else if(str == "cutoff1")        str = "cutoff";
+  else if(str == "resonance1")     str = "resonance";
+  else if(str == "fil1_keytrack")  str = "fil_keytrack";
+  else if(str == "fil1_keycenter") str = "fil_keycenter";
+  else if(str == "fil1_veltrack")  str = "fil_veltrack";
 
-  else if(str == "volume1")    str = "volume";
-  else if(str == "pan1")       str = "pan";
-  else if(str == "width1")     str = "width";
-  else if(str == "position1")  str = "position";
+  else if(str == "volume1")        str = "volume";
+  else if(str == "pan1")           str = "pan";
+  else if(str == "width1")         str = "width";
+  else if(str == "position1")      str = "position";
 }
-// Maybe we can do something more clever later...
+// This is stupid! Maybe we can do something more clever later. Maybe in the constructor, fill 
+// two parallel arrays of strings, one with the parameter name with the index included and one 
+// without (at corresponding positions). The addition of a parameter to the array could be done
+// by a helper function that could be called like addImplicitlyIndexedParam("volume1"). The 
+// function would add the string as is into one of the arrays and a version with the 1 removed
+// into the other. Here in this function, we could then just loop through one array and if we 
+// hit a match, return the corresponding string from the other. Still not pretty but much less 
+// boilerplate to write. The function name should be abbreviated. We could even get away with 
+// storing just one array of the strings without the index along with an integer for the 
+// position where it should be inserted or removed...at the cost of more complex code for 
+// finding a match.
 
 
 }}
