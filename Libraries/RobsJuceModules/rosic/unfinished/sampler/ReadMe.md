@@ -37,7 +37,7 @@ eqN_freq, eqN_bw
 
 #### Amplifiers
 
-volume, pan, width, position, amp_keytrack, amp_keycenter, amp_veltrack
+volume, pan, width (preliminary), position, amp_keytrack, amp_keycenter, amp_veltrack
 
 
 ### RS-MET

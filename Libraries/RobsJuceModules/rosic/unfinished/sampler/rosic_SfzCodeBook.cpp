@@ -603,21 +603,6 @@ To add a new DSP class, the following things need to be done:
 ...tbc...
 
 
-Ideas for more opcodes:
--param_mode: switch the behavior of what happens when instrument, group, region all define the same
- parameter. The default mode specified by sfz is: "override". We could have also "accumulate" and
- "levels_are_busses". We already have the first and last. Maybe implement also "accumulate". In 
- this mode, for example, there is no such thing as a group filter but the cutoff specified in the 
- group gets (somehow) accumulated into the cutoff specified by the region. Maybe simple addition
- is indeed appropriate.
--param_range: "sfz1", "free": decide, whether or not parameters should be restricted to the range
- specified by sfz
--param_quantize: some of the parameters that sfz wants to be integer can easily also admit float 
- values. Examples: tune, transpose, loop_start, loop_end
--reverse: reverses the player's playback direction
-
-
-
 SFZ - Resources:
 https://sfzformat.com/legacy/   opcode reference for sfz 1.0
 https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
