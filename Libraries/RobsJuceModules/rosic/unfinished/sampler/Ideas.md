@@ -39,13 +39,16 @@ vel-tracking.
 Switch the behavior of what happens when global, group and region all define values for the same 
 opcode. The default mode specified by sfz is "override": group settings override global settings 
 and region settings override global and/or group settings. We could also have "accumulate" and 
-"levels_are_busses" modes. In the latter case, the outputs of the regions within a group are mixed
-together (to form a sub-bus) and then *additional* effect processors are applied to that (sub)mix.
-Then, the outputs of the groups are mixed together and to that master mix, the global effect 
-processors are applied. So if there's a global setting for cutoff and also a group- and region 
+"levels_are_busses" modes. In the latter mode, the 3 hierarchy levels of the sfz specification
+(region, group, global) are mapped to busses: regions form the single channels, groups form 
+sub-busses mixing togther the regions/channels within the group and the global instrument mixes 
+together the groups/sub-busses into a master-bus. When effect opcodes are specified for a group or
+globally, they don't merely provide fallback values for the regions (as they would in normal sfz 
+operation) but instead specify settings for *additional* effect processors to be applied to the 
+(sub- or master) bus. So if there's a global setting for cutoff and also a group- and region 
 setting for it, there will actually be 3 filters when a single layer is playing back a region.
 When a chord of 3 notes (of the same region) are played, there will be 5 filters: 3 for the 3 
-regions, an fourth one applied to their submix into a group ("sub-bus") and a fifth one to the 
+regions, a fourth one applied to their submix into a group ("sub-bus") and a fifth one to the 
 global master mix ("master-bus"). We already have the behavior implemented for the override and 
 levels_are_busses modes (but it's not yet opcode controlled). Maybe implement also the "accumulate" 
 mode. In this mode, for example, there is no such thing as a group filter but the cutoff specified 
