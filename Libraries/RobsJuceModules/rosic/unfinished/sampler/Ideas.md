@@ -102,8 +102,13 @@ speech, singing, melody/sequence/monophonic, drumloop, mixdown, effect, chord, e
 Maybe write a little script that batch-generates such metadata files for a folder of samples for 
 those parameters that are easily analyzed (such as max-abs, max_rms, maybe pitch, loudness). Other
 opcodes: tempo=140 (in bpm), freq_range=treble (also: bass, low_mid, mid, high_mid)...maybe that 
-could also be a more quantitative spectral_centroid measure. also interesting: spectral_slope - 
-could be useful to the up the spectral_slope filter
+could also be a more quantitative spectral_centroid measure. Also interesting: spectral_slope - 
+could be useful to the up the spectral_slope filter. Crest factors: mean_crest, max_crest, 
+min_crest. Statistical measures: mean, variance, skew, kurtosis ..maybe also as short-time 
+min/mean/max values. Maybe also analyze the stereo_width, dynamic_range...well, now we are getting 
+into mastering territory...that's a bit beyond the scope of a sampler, but we are actually just 
+talking about general metadata now. So...yeah - maybe we should define an sfz-like metadata format
+for audio files. That could be useful for the sampler but also in other contexts.
 
 
 
