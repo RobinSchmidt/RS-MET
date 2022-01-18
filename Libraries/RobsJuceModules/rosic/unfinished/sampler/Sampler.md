@@ -1,5 +1,5 @@
-The RS-MET Sampler Engine
-#########################
+# The RS-MET Sampler Engine
+===========================
 
 ...is still very much under construction...
 
@@ -14,36 +14,35 @@ own. It thereby tries to be as compatible as possible to existing extensions ...
 
 
 
-Opcode Support
-##############
+## Opcode Support
+-----------------
+
 
 Listed below are the opcodes that are currently supported by the RS-MET sampler engine, categorized
 by the specification/extension that first introduced them.
 
-SFZ v1
-======
+### SFZ v1
 
-Player
-------
+
+####Player
+
 sample, lokey, hikey, lovel, hivel, delay, offset, loop_mode (partial), transpose, tune, 
 pitch_keycenter, pitch_keytrack
 
-Filters
--------
+####Filters
+
 filN_type (partial), cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, eqN_gain,
 eqN_freq, eqN_bw
 
 
-Amplifiers
-----------
+####Amplifiers
+
 volume, pan, width, position, amp_keytrack, amp_keycenter, amp_veltrack
 
 
-RS-MET
-======
+###RS-MET
 
-General extensions
-------------------
+####General extensions
 
 In sfz v1, there were 3 equalizers whose settings were controlled by the opcodes eqN_gain, 
 eqN_freq, eqN_bw where N would be replaced by 1,2,3. In the RS-MET engine, N can be arbitrary so 
@@ -61,25 +60,23 @@ You may notice that we have also volumeN, panN, etc. That means, the amplifier i
 an effect and you can have as many amplifier units as you want.
 
 
-Parameter Quantization
-----------------------
+####Parameter Quantization
+
 In sfz, some opcodes were specified to take integer values but which could by their nature just as
 easily admit floating point values. So, the RS-MET engine lifts this restriction where is makes 
-sense. The affected opcodes are:
+sense. The affected opcodes are: ...tbc...
 
 
-Parameter Ranges
-----------------
+####Parameter Ranges
+
+The sfz spec prescribes a range, i.e. a minimum and and maximum value for each parameter. We are a 
+bit more liberal with respect to these range limits ...tbc...
 
 
-
-
-
-New opcodes
------------
+####New opcodes
 
 The RS-MET engine also introduces some entirely new opcodes for new effects and settings. These 
-are:
+are ...tbc...
 
 
 
@@ -102,25 +99,23 @@ are:
 
 
 
+## Misc
 
-
-Acknowledgments
----------------
+###Acknowledgments
 
 I'm especially grateful to Niall McCallum (modeaudio.com) for funding the initial development of 
 this engine. It will be used in one their upcoming products...
 
 
-SFZ Resources
--------------
+###SFZ Resources
 
-https://sfzformat.com/                  A website dedicated to the sfz format
-https://sfzformat.com/legacy/           Original description of the sfz fomat and sfz v1 opcodes
-https://sfzformat.com/opcodes/          Comprehensive list of opcodes including extensions
-https://sfzformat.com/software/tools/   List of sfz authoring tools
-https://github.com/sfz                  sfz related stuff
-https://github.com/sfztools             Open source sfz tools
-https://github.com/sfztools/sfizz       An open source sfz engine
-https://www.linuxsampler.org/           Another one
-https://sfzinstruments.github.io/       Free sfz instruments
+https://sfzformat.com/                  A website dedicated to the sfz format  
+https://sfzformat.com/legacy/           Original description of the sfz fomat and sfz v1 opcodes  
+https://sfzformat.com/opcodes/          Comprehensive list of opcodes including extensions  
+https://sfzformat.com/software/tools/   List of sfz authoring tools  
+https://github.com/sfz                  sfz related stuff  
+https://github.com/sfztools             Open source sfz tools  
+https://github.com/sfztools/sfizz       An open source sfz engine  
+https://www.linuxsampler.org/           Another one  
+https://sfzinstruments.github.io/       Free sfz instruments  
 
