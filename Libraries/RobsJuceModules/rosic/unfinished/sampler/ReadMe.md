@@ -42,7 +42,7 @@ volume, pan, width (preliminary), position, amp_keytrack, amp_keycenter, amp_vel
 
 ### RS-MET
 
-#### General extensions
+#### General Extensions
 
 In sfz v1, there were 3 equalizers whose settings were controlled by the opcodes eqN_gain, 
 eqN_freq, eqN_bw where N would be replaced by 1,2,3. In the RS-MET engine, N can be arbitrary so 
@@ -79,7 +79,7 @@ The sfz spec prescribes a range, i.e. a minimum and and maximum value for each p
 bit more liberal with respect to these range limits ...tbc...
 
 
-#### New opcodes
+#### New Opcodes
 
 The RS-MET engine also introduces some entirely new opcodes for new effects and settings. These 
 are ...tbc...

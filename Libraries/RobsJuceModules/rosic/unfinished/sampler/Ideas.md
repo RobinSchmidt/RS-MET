@@ -51,7 +51,9 @@ Ideas for new opcodes
   an "accumulate" would place the burden on us to specify the accumulation behavior for each new 
   opcode to be defined and it may not always be obvious, how this should be done. We'll see...for 
   the time being, only "override" and "levels_are_busses" are implemented. This feature totally 
-  alters the signal flow and is quite a big deal.
+  alters the signal flow and is quite a big deal. When a waveshaper is set up in a group or 
+  globally, this will now also allow intermodulation distortion between the regions, such that
+  playing of powerchords becomes a possibility.
  
 - param_range: Decides, whether or not parameters should be restricted to the range specified by 
   sfz. Possible values could be "sfz1" or "clipped", "free". Perhaps there could also be some mode 
@@ -66,7 +68,7 @@ Ideas for new opcodes
 In the current implementation, we actually do not quantize the integer parameters anyway nor do we 
 clip parameters to their specified ranges, so currently we already operate in that unrestricted 
 mode. It would actually take some extra programming to enforce these restrictions and the "gain" 
-would be *less* flexibility. Maybe we should or maybe we shouldn't. If users want to restrict 
+would be *less* flexibility. Maybe we should or maybe we shouldn't do it. If users want to restrict 
 themselves to using only integers for certain parameters, they can already do it. No additional 
 code needed. The same goes for the ranges. However, in some cases we may indeed want to put some
 limits on the ranges to ensure numeric stability (think of feedback) or sane resource requirements 
@@ -101,7 +103,7 @@ without actually adding any dedicated sound generator "effects". Among these are
   opcodes of the oscillators to control the supersaw's "Detune"
 
 - The filter (in bandpass mode) with keytracking of 100% and a white noise input sample can be 
-  used to synthesize "whistle" sounds. A second bandpass with possible a different resonance 
+  used to synthesize "whistle" sounds. A second bandpass with possibly a different resonance 
   setting can be used to further shape the attack. 
 
 - The equalizers can be used to apply formant-like spectral peaks and anti-formant-like troughs to 
@@ -125,7 +127,8 @@ without actually adding any dedicated sound generator "effects". Among these are
   
 - We may need to allow the layer to have a ring-out phase where the RegionPlayer keeps playing 
   for some specified amount of time even after the sample has finished. Or it could be mocked by
-  using a sample that has a tail containing some silence.
+  using a sample that has a tail containing some silence. By using a loop, that silence portion
+  could be very short.
 
 - LFOs could be allowed to produce audio-rate signals and have keytracking of their frequencies. 
   When routed to pitch, we could mock frequency modulation synthesis. When the input sample is a 
