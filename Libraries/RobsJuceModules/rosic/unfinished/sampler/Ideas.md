@@ -42,12 +42,12 @@ and region settings override global and/or group settings. We could also have "a
 "levels_are_busses" modes. In the latter mode, the 3 hierarchy levels of the sfz specification
 (region, group, global) are mapped to busses: regions form the single channels, groups form 
 sub-busses mixing togther the regions/channels within the group and the global instrument mixes 
-together the groups/sub-busses into a master-bus. When effect opcodes are specified for a group or
-globally, they don't merely provide fallback values for the regions (as they would in normal sfz 
-operation) but instead specify settings for *additional* effect processors to be applied to the 
+together the groups/sub-busses into a master-bus. When effect opcodes are specified for a group 
+and/or globally, they don't merely provide fallback values for the regions (as they would in normal 
+sfz operation) but instead specify settings for *additional* effect processors to be applied to the 
 (sub- or master) bus. So if there's a global setting for cutoff and also a group- and region 
 setting for it, there will actually be 3 filters when a single layer is playing back a region.
-When a chord of 3 notes (of the same region) are played, there will be 5 filters: 3 for the 3 
+When a chord of 3 notes (of the same region) is played, there will be 5 filters: 3 for the 3 
 regions, a fourth one applied to their submix into a group ("sub-bus") and a fifth one to the 
 global master mix ("master-bus"). We already have the behavior implemented for the override and 
 levels_are_busses modes (but it's not yet opcode controlled). Maybe implement also the "accumulate" 
@@ -55,17 +55,24 @@ mode. In this mode, for example, there is no such thing as a group filter but th
 in the group gets (somehow) accumulated into the cutoff specified by the region. Maybe simple 
 addition is indeed appropriate. But such an "accumulate" would place the burden on us to specify 
 the accumulation behavior for each new opcode to be defined and it may not always be obvious, how 
-this should be done. We'll see...for the time being, only "override" and "levels_are_busses" should 
-be implemented.
+this should be done. We'll see...for the time being, only "override" and "levels_are_busses" are 
+implemented.
  
 -param_range:  
 Decides, whether or not parameters should be restricted to the range specified by sfz. Possible 
 values could be "sfz1" or "clipped", "free". Perhaps there could also be some mode that does clip 
-but at different values than the sfz spec says.
+but at different (i.e. extended) values than what the sfz spec says. For example, the range for the 
+width opcode may be extended to +-200% (sfz specifies the range to be +-100% which allows only 
+stereo narrowing but not widening - which is a bit sad).
  
 -param_quantize:  
-Some of the parameters that sfz wants to be integer can easily also admit float values. Examples 
-for such parameters are tune, transpose, loop_start, loop_end.
+Some of the parameters that sfz specifies to be integer can easily also admit float values. 
+Examples for such parameters are tune, transpose, loop_start, loop_end. By specifying 
+param_quantize=none, we could lift these unnecessary restrictions. ...in the current 
+implementation, we actually do not quantize the integer parameters anyway so currently we already 
+operate in that unrestricted mode. It would actually take some extra programming to enforce these 
+restrictions. Maybe we should or maybe we shouldn't. If users want to restrict themselves to using
+only integers for certain parameters, they can already do it. No additional code needed.
 
 
 Misc Ideas
