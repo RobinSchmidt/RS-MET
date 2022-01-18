@@ -614,6 +614,7 @@ Ideas for more opcodes:
  specified by sfz
 -param_quantize: some of the parameters that sfz wants to be integer can easily also admit float 
  values. Examples: tune, transpose, loop_start, loop_end
+-reverse: reverses the player's playback direction
 
 
 

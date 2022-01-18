@@ -50,7 +50,7 @@ you can have an arbitrary number of equalizer bands. The same goes for the filte
 v2, there were two filters and in v1 only one which is why in sfz v1 and v2 the settings of the 
 first filter are just set by opcodes cutoff, resonance etc. (without any index) and in sfz v2, 
 those of the second filter were set by cutoff2, etc. The RS-MET engine allows N to be arbitrary 
-here as well where in the case of N=1, the 1 is optional to support sfz v1 (and v2) syntax. The indexed opcodes for which the index of N=1 is optional are:
+here as well where in the case of N=1, the 1 is optional to support the indexless sfz v1 (and v2) syntax for filter 1. The other indexed opcodes for which an index of N=1 is optional are:
 
 filN_type, cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, volumeN, panN, 
 widthN, positionN, ampN_keytrack, ampN_keycenter, ampN_veltrack
@@ -61,10 +61,9 @@ and the order of the effects in the chain is determined by the first opcode that
 effect. For example, if you write into your sfz-file "volume=-6 cutoff=500 pan=50" then the 
 amplifier (to which volume and pan apply) will be placed before the filter (to which cutoff 
 applies). For effects of the same kind with an index, their order will be dictated by the index, so
-if you write "eq2_gain=3 eq1_gain=6" then eq1 will be before eq2. The rule is: if there's an index,
-that index determines the position among the sibling effects. For effects of different kinds, the
-rule of the first opcode applies. If you write "eq2_gain=6" without specifying any settings for 
-eq1, then your effect chain will nevertheless contain two equalizers, but the first one will have neutral default settings so it won't do anything to your signal.
+if you write "eq2_gain=3 eq1_gain=6" then eq1 will be before eq2 regardless of order of appearance. The rule is: if there's an index, that index determines the position among the sibling effects. For
+effects of different kinds, the rule of the first opcode applies. If you write "eq2_gain=6" without specifying any settings for eq1, then your effect chain will nevertheless contain two equalizers, 
+but the first one will have neutral default settings so it won't do anything to your signal.
 
 
 #### Parameter Quantization

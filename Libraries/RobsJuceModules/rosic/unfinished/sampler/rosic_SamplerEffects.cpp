@@ -255,19 +255,19 @@ WaveShaper::WaveShaper()
   addParameter(Opcode::distortN_dc);
 }
 
-void WaveShaper::prepareToPlay(uchar key, uchar vel, double fs) override
+void WaveShaper::prepareToPlay(uchar key, uchar vel, double fs)
 {
   core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(),
     params[2].getValue(), 1.f, 0.f, 0.f);
   int dummy = 0;
 }
 
-void WaveShaper::processFrame(float* L, float* R) override 
+void WaveShaper::processFrame(float* L, float* R)
 { 
   core.processFrame(L, R); 
 }
 
-void WaveShaper::processBlock(float* L, float* R, int N) override
+void WaveShaper::processBlock(float* L, float* R, int N)
 {
   for(int n = 0; n < N; n++)
     processFrame(&L[n], &R[n]);
