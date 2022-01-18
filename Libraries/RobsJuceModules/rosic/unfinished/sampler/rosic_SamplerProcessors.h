@@ -327,7 +327,7 @@ public:
 
 /** A class for storing a pool of Effect objects...tbc... */
 
-class EffectPool  // rename to EffectPool
+class EffectPool
 {
 
 public:
@@ -387,7 +387,7 @@ protected:
 
 struct DspResourcePool
 {
-  EffectPool processorPool;  // rename to effectPool
+  EffectPool effectPool;
   //ModulatorPool modulatorPool;
   //ConnectionPool connectionPool;
 };

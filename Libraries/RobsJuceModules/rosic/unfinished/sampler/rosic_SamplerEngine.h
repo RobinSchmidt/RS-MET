@@ -860,14 +860,7 @@ public:
 
 //=================================================================================================
 
-template<class T>
-void rsSetupPointers(std::vector<T>& objectArray, std::vector<T*>& pointerArray)
-{
-  pointerArray.resize(objectArray.size());
-  for(size_t i = 0; i < objectArray.size(); i++)
-    pointerArray[i] = &objectArray[i];
-}
-// move to library, maybe use it in the production code, too
+
 
 class rsSamplerEngine2Test : public rsSamplerEngine2
 {
@@ -879,7 +872,7 @@ public:
   void setMaxNumFilters(int newMax) 
   { 
     reset();
-    dspPool.processorPool.setMaxNumFilters(newMax); 
+    dspPool.effectPool.setMaxNumFilters(newMax); 
   }
 
   // move into baseclass - jura::Sampler will need it:
@@ -902,7 +895,7 @@ public:
   }
 
 
-  int getNumUsedFilters() const { return dspPool.processorPool.getNumUsedFilters(); }
+  int getNumUsedFilters() const { return dspPool.effectPool.getNumUsedFilters(); }
 
 
 

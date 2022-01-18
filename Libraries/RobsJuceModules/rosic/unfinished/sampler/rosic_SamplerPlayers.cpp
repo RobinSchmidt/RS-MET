@@ -26,7 +26,7 @@ size_t EffectChain::getNumProcessors(DspType type) const
   return count;
 }
 
-Effect* EffectChain::getProcessor(DspType type, int index)
+Effect* EffectChain::getEffect(DspType type, int index)
 {
   RAPT::rsAssert(index >= 1 || index == -1);
   index = RAPT::rsMax(index-1, 0);
@@ -82,7 +82,7 @@ bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeCha
     if(eff)
     {
       eff->resetSettings(sfzIndex);
-      effectChain.addProcessor(eff);
+      effectChain.addEffect(eff);
     }
     else {
       disassembleDspChain();
@@ -111,13 +111,13 @@ bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
 void SamplePlayer::disassembleDspChain()
 {
   for(int i = 0; i < effectChain.getNumProcessors(); i++)
-    dspPool->processorPool.repositEffect(effectChain.getProcessor(i));
+    dspPool->effectPool.repositEffect(effectChain.getProcessor(i));
   effectChain.clear();
 }
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  Effect* dsp = effectChain.getProcessor(s.getTargetDspType(), s.getIndex());
+  Effect* dsp = effectChain.getEffect(s.getTargetDspType(), s.getIndex());
   if(dsp != nullptr)
     dsp->setParameter(s.getType(), s.getValue());
   else

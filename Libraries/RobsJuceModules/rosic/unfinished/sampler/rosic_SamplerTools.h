@@ -136,6 +136,15 @@ bool rsObjectPool<T>::isInConsistentState()
   return ok;
 }
 
+template<class T>
+void rsSetupPointers(std::vector<T>& objectArray, std::vector<T*>& pointerArray)
+{
+  pointerArray.resize(objectArray.size());
+  for(size_t i = 0; i < objectArray.size(); i++)
+    pointerArray[i] = &objectArray[i];
+}
+// move to library, maybe use it in the production code, too
+
 
 /*
 template<class T> // Grow v by given amount

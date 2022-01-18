@@ -20,7 +20,7 @@ public:
   //void reset() { resetState(); resetSettings(); }
 
   void reserve(size_t num) { processors.reserve(num); }
-  void addProcessor(Effect* p) { processors.push_back(p); }  // rename to addEffect
+  void addEffect(Effect* p) { processors.push_back(p); }
   void clear() { processors.clear(); }
 
   bool isEmpty() const { return processors.empty(); }
@@ -43,7 +43,7 @@ public:
   We usually encode this by setting the value to -1 in the data-record. Such a -1 will then be
   interpreted as "first-and-only" and in this case, it doesn't really matter, if the caller
   passes -1 or +1 into this function. */
-  Effect* getProcessor(DspType type, int sfzIndex);
+  Effect* getEffect(DspType type, int sfzIndex);
 
 protected:
 
@@ -177,7 +177,7 @@ protected:
   Effect* getEffect(DspType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
-    return dspPool->processorPool.grabEffect(type);
+    return dspPool->effectPool.grabEffect(type);
   }
 
   /** Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
@@ -192,6 +192,7 @@ protected:
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available).  */
   virtual bool assembleDspChain(bool busMode) = 0;
+  // rename to assemberEffectChain
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
 
