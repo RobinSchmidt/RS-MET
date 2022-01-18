@@ -119,7 +119,7 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
   Effect* dsp = effectChain.getEffect(s.getTargetDspType(), s.getIndex());
   if(dsp != nullptr)
-    dsp->setParameter(s.getType(), s.getValue());
+    dsp->setParameter(s.getOpcode(), s.getValue());
   else
     RAPT::rsError("No processor available for DSP opcode");
     // We could not find a suitable processor in our dspChain to which the given setting could be
@@ -134,7 +134,7 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
   for(size_t i = 0; i < settings.size(); i++)
   {
     PlaybackSetting s = settings[i];
-    Opcode op = s.getType();
+    Opcode op = s.getOpcode();
     if(     codebook->isDspSetting(op))    { setupProcessorSetting(s);              }
     else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, sampleRate, rp, iv); }
   }
@@ -313,7 +313,7 @@ bool RegionPlayer::hasFinished()
 bool RegionPlayer::assembleEffectChain(bool busMode)
 {
   // The DSPs for which the region itself defines settings/opcodes are always needed:
-  bool ok = SamplePlayer::assembleEffectChain(region->getProcessingChain());
+  bool ok = SamplePlayer::assembleEffectChain(region->getDspTypeChain());
   if(!ok)
     return false;
 
@@ -321,9 +321,9 @@ bool RegionPlayer::assembleEffectChain(bool busMode)
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
   if(!busMode) {
-    if(!augmentOrCleanEffectChain(region->getGroup()->getProcessingChain()))
+    if(!augmentOrCleanEffectChain(region->getGroup()->getDspTypeChain()))
       return false;
-    if(!augmentOrCleanEffectChain(region->getGroup()->getInstrument()->getProcessingChain()))
+    if(!augmentOrCleanEffectChain(region->getGroup()->getInstrument()->getDspTypeChain()))
       return false; }
 
   return true;
@@ -445,7 +445,7 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   float val = s.getValue();
   int   N   = s.getIndex();
   using OC  = Opcode;
-  switch(s.getType())
+  switch(s.getOpcode())
   {
   // Player:
   //case OC::PitchKeyCenter: { iv->pitch_keycenter = val;           } break; // was done by caller before
@@ -489,16 +489,16 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
   // setting in question reaches through to an underlying (embedded) RegionPlayer object and must 
   // be accumulated into the respective value there. This applies to all kinds of settings that 
-  // cannot be meaningfully achieved by post-processing in the DSP chain but instead must be 
+  // cannot be meaningfully achieved by post-processing in the effect chain but instead must be 
   // applied directly at the playback source. Some of them (like delay) *could* be achieved 
-  // also by post-processing with a suitable DSP but it's more efficient to do it at the source.
-  // Others like all tuning related stuff indeed needs to be done at the source.
+  // also by post-processing with a suitable effect but it's more efficient to do it at the source.
+  // Others like all tuning related stuff indeed need to be done at the source.
 
   RAPT::rsAssert(rp != nullptr);
   float val = s.getValue();
   int   N   = s.getIndex();
   using OC  = Opcode;
-  switch(s.getType())
+  switch(s.getOpcode())
   {
   // Player:
   /*
@@ -551,7 +551,7 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   // the order of 5 and 6 can be swapped because accumulation is commutative
 }
 
-bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay,
+bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::HierarchyLevel* thingToPlay,
   uchar key, uchar vel, double sampleRate, RegionPlayer* rp, bool busMode, 
   PlayerIntermediates* intermediates)
 {
@@ -595,7 +595,7 @@ bool SampleBusPlayer::assembleEffectChain(bool busMode)
   // busMode, the Group- or InstrumentPlayer's own DSP chain is used. We need to take the busMode
   // parameter anyway because this function is an override.
 
-  return SamplePlayer::assembleEffectChain(grpOrInstr->getProcessingChain());
+  return SamplePlayer::assembleEffectChain(grpOrInstr->getDspTypeChain());
   // We need only to take into account the group's DSP settings. The instrument's DSP settings
   // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
   // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings

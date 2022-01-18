@@ -88,7 +88,7 @@ public:
     // maybe remove the -1 default argument. callers should be explicit...maybe...or: check with an
     // assert that no index applies to the givne Opcode when index == -1
 
-    Opcode getType() const { return type; }
+    Opcode getOpcode() const { return type; }
     // rename to getOpcode
 
 
@@ -118,11 +118,11 @@ public:
 
     /** For a given type of opcode, this function returns the type of signal processor to which the
     opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
-    static DspType getTargetProcessorType(Opcode op);
+    static DspType getTargetDspType(Opcode op);
     // rename to getTargetDspType
 
 
-    DspType getTargetDspType() const { return getTargetProcessorType(type); }
+    DspType getTargetDspType() const { return getTargetDspType(type); }
 
 
     bool operator==(const PlaybackSetting& rhs) const
@@ -151,7 +151,7 @@ public:
   commonalities. Subclasses are Region, Group, Instrument. 
   
   maybe drag out of the class, name it rsSamplerLevel or HierarchyLevel  */
-  class OrganizationLevel  
+  class HierarchyLevel  
   {
 
   public:
@@ -209,11 +209,11 @@ public:
 
     /** Sets the parent level, i.e. the enclosing group for regions or the enclosing instrument for
     groups. */
-    void setParent(OrganizationLevel* newParent) { parent = newParent; }
+    void setParent(HierarchyLevel* newParent) { parent = newParent; }
 
 
 
-    void copyDataFrom(const OrganizationLevel* lvl);
+    void copyDataFrom(const HierarchyLevel* lvl);
 
 
     //---------------------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ public:
     /** Returns a pointer to the parent level which encloses this level. In a Region, this would
     point to its enclosing Group, in a Group to its enclosing Instrument and in an Instrument, it
     would remain nullptr (unless we introduce an even higher level such as an "Ensemble"). */
-    const OrganizationLevel* getParent() const { return parent; }
+    const HierarchyLevel* getParent() const { return parent; }
 
     /** Returns the lowest key at which this region will be played. */
     uchar getLoKey() const { return loKey; }
@@ -283,7 +283,7 @@ public:
 
     /** Returns a (const) reference to an array of processor types that is used by the engine to 
     build the dsp chain when this region should be played.*/
-    const std::vector<DspType>& getProcessingChain() const { return dspTypes; }
+    const std::vector<DspType>& getDspTypeChain() const { return dspTypes; }
     // rename to getDspTypeChain
 
 
@@ -309,7 +309,7 @@ public:
     // a subclass of rsInstrumentDataSFZ::Region, and/or move up into baseclass. maybe to decouple
     // rsSamplerData from AudioFileStream, just keep it as pointer-to-void which client code may 
     // typecast to any sort of stream...or maybe that coupling makes sense?..hmm - not really.
-    // maybe a pointer-to-void named customData should be stored in OrganizationLevel
+    // maybe a pointer-to-void named customData should be stored in HierarchyLevel
 
     std::string samplePath;
     // This is the full (relative) path. ToDo: maybe this should be moved into the baseclass. We'll
@@ -324,7 +324,7 @@ public:
 
     const void* custom = nullptr;
 
-    OrganizationLevel* parent = nullptr;
+    HierarchyLevel* parent = nullptr;
 
 
 
@@ -358,7 +358,7 @@ public:
   performance settings including information for which keys and velocities the sample should be
   played and optionally other constraints for when the the sample should be played and also
   settings for pitch, volume, pan, filter, envelopes, etc. */
-  class Region : public OrganizationLevel
+  class Region : public HierarchyLevel
   {
 
   public:
@@ -393,7 +393,7 @@ public:
   /** A group organizes a bunch of regions into a single entity for which performance settings can
   be set up which will be applicable in cases where the region does not itself define these
   settings, so they act as fallback values. It's the mid-level of organization in sfz. */
-  class Group : public OrganizationLevel
+  class Group : public HierarchyLevel
   {
 
   public:
@@ -469,7 +469,7 @@ under "How is the sfz..."
   regions. Multiple regions can be arranged in a group. Groups allow entering common parameters for
   multiple regions."  under "Implementation ...How is an instrument..."
   ..so...yeah - "instrument" is consistent with sfz usage   */
-  class Instrument : public OrganizationLevel
+  class Instrument : public HierarchyLevel
   {
 
   public:

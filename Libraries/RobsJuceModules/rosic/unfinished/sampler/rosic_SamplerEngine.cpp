@@ -659,7 +659,7 @@ int rsSamplerEngine::setupAudioStreams()
     r->setCustomPointer(stream);
     return true;
   };
-  // ToDo: Maybe change Region* to rsSamplerData::OrganizationLevel*, so we can assign streams to 
+  // ToDo: Maybe change Region* to rsSamplerData::HierarchyLevel*, so we can assign streams to 
   // groups and instruments also.
 
   bool allOK = true;

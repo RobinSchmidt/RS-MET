@@ -411,7 +411,7 @@ public:
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
     RegionPlayer* rp, PlayerIntermediates* iv) override;
 
-  bool setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay, 
+  bool setGroupOrInstrumToPlay(const rsSamplerData::HierarchyLevel* thingToPlay, 
     uchar key, uchar vel, double sampleRate, RegionPlayer* regionPlayer, bool busMode, 
     PlayerIntermediates* intermediates);
   // busMode is superfluous - when a SampleBusPlayer is invoked, we are in busMode by definition
@@ -426,7 +426,7 @@ protected:
 
   bool assembleEffectChain(bool busMode) override;
 
-  const rsSamplerData::OrganizationLevel* grpOrInstr = nullptr;
+  const rsSamplerData::HierarchyLevel* grpOrInstr = nullptr;
   // pointer to the group or isntrument that this player should play
 
 };

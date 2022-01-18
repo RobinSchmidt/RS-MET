@@ -9,7 +9,7 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type, int index)
   SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeDefaultValue(type, index);
 }
-DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
+DspType rsSamplerData::PlaybackSetting::getTargetDspType(Opcode type)
 {
   SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeToProcessor(type);
@@ -19,11 +19,11 @@ DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 
 //-------------------------------------------------------------------------------------------------
 
-void rsSamplerData::OrganizationLevel::ensureDspsPresent(Opcode opcodeType, int howMany)
+void rsSamplerData::HierarchyLevel::ensureDspsPresent(Opcode opcodeType, int howMany)
 { 
   using namespace RAPT;
   using SPT = DspType;
-  SPT dspType = PlaybackSetting::getTargetProcessorType(opcodeType);
+  SPT dspType = PlaybackSetting::getTargetDspType(opcodeType);
   rsAssert( dspType != SPT::Unknown );
 
   // use: SfzCodeBook::isDspSetting:
@@ -40,22 +40,22 @@ void rsSamplerData::OrganizationLevel::ensureDspsPresent(Opcode opcodeType, int 
     dspTypes.push_back(dspType);
 }
 
-void rsSamplerData::OrganizationLevel::updateDspsArray()
+void rsSamplerData::HierarchyLevel::updateDspsArray()
 {
   dspTypes.clear();
   for(size_t i = 0; i < settings.size(); i++)
   {
-    Opcode op = settings[i].getType();
+    Opcode op = settings[i].getOpcode();
     int idx   = settings[i].getIndex();
     if(idx != -1)  // opcodes that apply to the DSP array don't have index -1
       ensureDspsPresent(op, RAPT::rsMax(idx, 1));
   }
 }
 
-void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
+void rsSamplerData::HierarchyLevel::setSetting(const PlaybackSetting& s)
 {
   using TP = Opcode;
-  TP t = s.getType();
+  TP t = s.getOpcode();
 
   // Handle the lo/hi key/vel opcodes as special cases:
   if(t == TP::LoKey) { loKey = (uchar)s.getValue(); return; }
@@ -94,17 +94,17 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   }
 }
 
-bool rsSamplerData::OrganizationLevel::removeSetting(Opcode type, int index)
+bool rsSamplerData::HierarchyLevel::removeSetting(Opcode type, int index)
 {
   bool wasRemoved = false;
   if(index == -1) {
     for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
-      if(settings[i].getType() == type) {
+      if(settings[i].getOpcode() == type) {
         RAPT::rsRemove(settings, i);
         wasRemoved = true; }}}
   else {
     for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
-      if(settings[i].getType() == type && settings[i].getIndex() == index) {
+      if(settings[i].getOpcode() == type && settings[i].getIndex() == index) {
         RAPT::rsRemove(settings, i);
         wasRemoved = true; }}}
   updateDspsArray();
@@ -113,7 +113,7 @@ bool rsSamplerData::OrganizationLevel::removeSetting(Opcode type, int index)
   // Maybe it should remove the DSP if it was the last setting that applied to it?
 }
 
-void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl)
+void rsSamplerData::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
 {
   samplePath = lvl->samplePath;
   settings   = lvl->settings;
@@ -124,7 +124,7 @@ void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl
   //parent = lvl->parent;  // no, this one definitely not (i think)
 }
 
-float rsSamplerData::OrganizationLevel::getSettingValue(
+float rsSamplerData::HierarchyLevel::getSettingValue(
   Opcode type, int index, bool accumulate) const
 {
   float val = PlaybackSetting::getDefaultValue(type, index);  // init to global fallback value
@@ -147,10 +147,10 @@ float rsSamplerData::OrganizationLevel::getSettingValue(
 // anyway)...but maybe the accumulate feature is not even needed in this function - may get rid of
 // it
 
-int rsSamplerData::OrganizationLevel::findSetting(Opcode type, int index) const
+int rsSamplerData::HierarchyLevel::findSetting(Opcode type, int index) const
 {
   for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
-    if(settings[i].getType() == type && settings[i].getIndex() == index)
+    if(settings[i].getOpcode() == type && settings[i].getIndex() == index)
       return (int)i;
   }
   return -1;
@@ -158,7 +158,7 @@ int rsSamplerData::OrganizationLevel::findSetting(Opcode type, int index) const
 
 void rsSamplerData::Region::copyDataFrom(const Region* src)
 {
-  rsSamplerData::OrganizationLevel::copyDataFrom(src);
+  rsSamplerData::HierarchyLevel::copyDataFrom(src);
   loKey = src->loKey;
   hiKey = src->hiKey;
   loVel = src->loVel;
@@ -205,7 +205,7 @@ bool rsSamplerData::Group::removeRegion(int i)
 
 void rsSamplerData::Group::copyDataFrom(const Group* src)
 {
-  rsSamplerData::OrganizationLevel::copyDataFrom(src);
+  rsSamplerData::HierarchyLevel::copyDataFrom(src);
   clearRegions();
   settings = src->getSettings();
   for(int i = 0; i < src->getNumRegions(); i++) {
@@ -390,7 +390,7 @@ void rsSamplerData::clearAllSettings()
 
 std::string rsSamplerData::getAsSFZ() const
 {
-  auto writeSettingsToString = [](const OrganizationLevel* lvl, std::string& str)
+  auto writeSettingsToString = [](const HierarchyLevel* lvl, std::string& str)
   {
     auto toStr = [](const uchar c) { return std::to_string(c); }; // uchar to string
     const std::string& samplePath = lvl->getSamplePath();
@@ -420,7 +420,7 @@ std::string rsSamplerData::getAsSFZ() const
   // serialization but that may complicate other things due to the introduced redundancy and 
   // therefore extra care to keep the data consistent. That raises the question, if groups and
   // instruments also can define lokey/hikey settings and how they are interpreted. If so, maybe
-  // these lokey/hikey members should be moved into the OrganizationLevel baseclass. 
+  // these lokey/hikey members should be moved into the HierarchyLevel baseclass. 
   // ...done ...verify and delete comment
 
   // ToDo: figure out how SFZPlayer behaves with respect to this maybe by defining those opcodes
@@ -484,7 +484,7 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn) // rename to se
   // can ensure this
 
   // Sets up one setting in lvl given in the format "opcode=value":
-  auto setupSetting = [&](OrganizationLevel* lvl, const std::string& str)
+  auto setupSetting = [&](HierarchyLevel* lvl, const std::string& str)
   {
     size_t splitIndex = str.find('=', 0);
     std::string opcode = str.substr(0, splitIndex);
@@ -498,7 +498,7 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn) // rename to se
 
   // Sets up the given level according to the given string which is supposed to contain one setting
   // per line in the format "opocde=value\n":
-  auto setupLevel = [&](OrganizationLevel* lvl, const std::string& str)
+  auto setupLevel = [&](HierarchyLevel* lvl, const std::string& str)
   {
     size_t start = 0;
     while(true)
@@ -627,7 +627,7 @@ rsReturnCode rsSamplerData::loadFromSFZ(const char* path)
 void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
   using PST = Opcode;
-  PST    op = setting.getType();
+  PST    op = setting.getOpcode();
   float val = setting.getValue();
   int   idx = setting.getIndex();  // not yet used but shall be later
 
