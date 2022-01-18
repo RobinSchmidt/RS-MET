@@ -1,5 +1,5 @@
-#ifndef rosic_SamplerProcessors_h
-#define rosic_SamplerProcessors_h
+#ifndef rosic_SamplerEffects_h
+#define rosic_SamplerEffects_h
 
 // ToDo: rename to SamplerEffects.h/cpp, factor out a file SamplerEffectCores.h/cpp
 
@@ -170,158 +170,146 @@ protected:
 
 //=================================================================================================
 
-/** Class where all the boilerplate for making DSP processors available in the sampler goes. */
+class Amplifier : public Effect
+{
+public:
+  Amplifier();
+  void prepareToPlay(uchar key, uchar vel, double fs) override;
+  void processFrame(float* L, float* R) override;
+  void processBlock(float* L, float* R, int N) override;
+protected:
+  AmplifierCore core;
+};
 
-class rsSamplerEffects  // maybe make this a namespace and/or maybe get rid
+class Filter : public Effect
 {
 
 public:
 
-  class Amplifier : public Effect
+  Filter();
+  void prepareToPlay(uchar key, uchar vel, double fs) override;
+  void processFrame(float* L, float* R) override; //{ core.processFrame(L, R); }
+  void processBlock(float* L, float* R, int N) override;
+
+
+  static FilterCore::Type convertTypeEnum(FilterType sfzType)
   {
-  public:
-    Amplifier();
-    void prepareToPlay(uchar key, uchar vel, double fs) override;
-    void processFrame(float* L, float* R) override;
-    void processBlock(float* L, float* R, int N) override;
-  protected:
-    AmplifierCore core;
-  };
+    // Conversion of filter type enum values used in the sfz data and those used in the dsp core.
+    // Maybe we should try to avoid the translation step between the core-enum and sfz-enum by 
+    // using a single enum for both. I'm not yet sure, if that's practical - we'll see. It could
+    // turn out to be problematic when we want to use bit-twiddling of the enum-values to switch 
+    // between different filter topologies in the core while the sfz-type number must allow for
+    // lossless roundtrip with a float.
+    using TC = FilterCore::Type;      // enum used in the DSP core
+    using TO = FilterType;            // enum used in the sfz opcode
+    switch(sfzType)
+    {
+    case TO::lp_6:   return TC::FO_Lowpass;
+    case TO::hp_6:   return TC::FO_Highpass;
+
+    case TO::lp_12:  return TC::BQ_Lowpass;        // ToDo: Use SVF as default implementation
+    case TO::hp_12:  return TC::BQ_Highpass;       // for 2nd order filters...maybe...
+    case TO::bp_6_6: return TC::BQ_Bandpass_Skirt;
+    case TO::br_6_6: return TC::BQ_Bandstop;
 
 
+    //case TO::lp_12: return TC::SVF_Lowpass_12;
+    //case TO::hp_12: return TC::SVF_Highpass_12;
+    }
+    //RAPT::rsError("Unknown filter type in convertTypeEnum.");
+    //return TC::Unknown;
+    // This may actually happen when the user only defines cutoff but not fil_type. In this 
+    // case, sfz prescribes that the default mode is lpf_2p.
 
-  class Filter : public Effect
+    return TC::BQ_Lowpass;
+  }
+  // todo: avoid this conversion - use the same enum in both, the sfz codebook and the 
+  // FilterCore just like we do with the waveshaper's distortion shapes
+
+protected:
+
+  FilterCore core;
+};
+
+class Equalizer : public Effect
+{
+
+public:
+
+  Equalizer()
   {
-
-  public:
-
-    Filter();
-    void prepareToPlay(uchar key, uchar vel, double fs) override;
-    void processFrame(float* L, float* R) override; //{ core.processFrame(L, R); }
-    void processBlock(float* L, float* R, int N) override;
- 
-
-    static FilterCore::Type convertTypeEnum(FilterType sfzType)
-    {
-      // Conversion of filter type enum values used in the sfz data and those used in the dsp core.
-      // Maybe we should try to avoid the translation step between the core-enum and sfz-enum by 
-      // using a single enum for both. I'm not yet sure, if that's practical - we'll see. It could
-      // turn out to be problematic when we want to use bit-twiddling of the enum-values to switch 
-      // between different filter topologies in the core while the sfz-type number must allow for
-      // lossless roundtrip with a float.
-      using TC = FilterCore::Type;      // enum used in the DSP core
-      using TO = FilterType;            // enum used in the sfz opcode
-      switch(sfzType)
-      {
-      case TO::lp_6:   return TC::FO_Lowpass;
-      case TO::hp_6:   return TC::FO_Highpass;
-
-      case TO::lp_12:  return TC::BQ_Lowpass;        // ToDo: Use SVF as default implementation
-      case TO::hp_12:  return TC::BQ_Highpass;       // for 2nd order filters...maybe...
-      case TO::bp_6_6: return TC::BQ_Bandpass_Skirt; 
-      case TO::br_6_6: return TC::BQ_Bandstop; 
-
-
-      //case TO::lp_12: return TC::SVF_Lowpass_12;
-      //case TO::hp_12: return TC::SVF_Highpass_12;
-      }
-      //RAPT::rsError("Unknown filter type in convertTypeEnum.");
-      //return TC::Unknown;
-      // This may actually happen when the user only defines cutoff but not fil_type. In this 
-      // case, sfz prescribes that the default mode is lpf_2p.
-
-      return TC::BQ_Lowpass;
-    }
-    // todo: avoid this conversion - use the same enum in both, the sfz codebook and the 
-    // FilterCore just like we do with the waveshaper's distortion shapes
-
-  protected:
-
-    FilterCore core;
-  };
-
-  class Equalizer : public Effect
+    type = DspType::Equalizer;
+    params.reserve(3);
+    addParameter(Opcode::eqN_gain);
+    addParameter(Opcode::eqN_freq);
+    addParameter(Opcode::eqN_bw);
+  }
+  void prepareToPlay(uchar key, uchar vel, double fs) override
   {
-
-  public:
-
-    Equalizer()
-    {
-      type = DspType::Equalizer;
-      params.reserve(3);
-      addParameter(Opcode::eqN_gain);
-      addParameter(Opcode::eqN_freq);
-      addParameter(Opcode::eqN_bw); 
-    }
-    void prepareToPlay(uchar key, uchar vel, double fs) override 
-    { 
-      core.setupGainFreqBw(
-        FilterCore::Type::BQ_Bell,
-        params[0].getValue(),
-        params[1].getValue() * float(2*PI/fs),
-        params[2].getValue()
-      );
-      core.resetState();
-    }
-    void processFrame(float* L, float* R) override { core.processFrame(L, R); }
-    void processBlock(float* L, float* R, int N) override 
-    {
-      for(int n = 0; n < N; n++)
-        processFrame(&L[n], &R[n]);
-    }
-
-  protected:
-
-    FilterCore core;
-    // ToDo: use a more efficient implementation - it needs to support only a biquad mode. Maybe 
-    // use TDF1. A patch can use a lot of eq bands, so we may need many eqs, so we should be more
-    // frugal with memory than for the filter opcode where there is typically only one or maybe two
-    // per note. ...but we probably should support shelving modes, too
-
-  };
-
-
-
-  class WaveShaper : public Effect
+    core.setupGainFreqBw(
+      FilterCore::Type::BQ_Bell,
+      params[0].getValue(),
+      params[1].getValue() * float(2*PI/fs),
+      params[2].getValue()
+    );
+    core.resetState();
+  }
+  void processFrame(float* L, float* R) override { core.processFrame(L, R); }
+  void processBlock(float* L, float* R, int N) override
   {
+    for(int n = 0; n < N; n++)
+      processFrame(&L[n], &R[n]);
+  }
 
-  public:
+protected:
 
-    WaveShaper() 
-    { 
-      type = DspType::WaveShaper; 
-      params.reserve(3);
-      addParameter(Opcode::distortN_shape);
-      addParameter(Opcode::distortN_drive);
-      addParameter(Opcode::distortN_dc);
-    }
-    void prepareToPlay(uchar key, uchar vel, double fs) override
-    {
-      core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(), 
-        params[2].getValue(), 1.f, 0.f, 0.f);
-      int dummy = 0;
-    }
-    void processFrame(float* L, float* R) override { core.processFrame(L, R); }
-    void processBlock(float* L, float* R, int N) override 
-    {
-      for(int n = 0; n < N; n++)
-        processFrame(&L[n], &R[n]);
-    }
-
-  protected:
-
-    WaveshaperCore core;
-
-  };
-
-  // before writing too much boilerplate, fix the API:
-  // -processFrame should work either with 2 floats or rsFloat32x4...or maybe make a class
-  //  rsFloat32x2...could be just a synonym for rsFloat32x4 (because that can be simdified), but 
-  //  the name makes clear that we use only 2 of the 4 available slots
-  // -can we avoid the need for the boilerplate? ...or at least reduce the amount? maybe with 
-  //  similar strategies as in romos, using macros?
+  FilterCore core;
+  // ToDo: use a more efficient implementation - it needs to support only a biquad mode. Maybe 
+  // use TDF1. A patch can use a lot of eq bands, so we may need many eqs, so we should be more
+  // frugal with memory than for the filter opcode where there is typically only one or maybe two
+  // per note. ...but we probably should support shelving modes, too
 
 };
+
+class WaveShaper : public Effect
+{
+
+public:
+
+  WaveShaper()
+  {
+    type = DspType::WaveShaper;
+    params.reserve(3);
+    addParameter(Opcode::distortN_shape);
+    addParameter(Opcode::distortN_drive);
+    addParameter(Opcode::distortN_dc);
+  }
+  void prepareToPlay(uchar key, uchar vel, double fs) override
+  {
+    core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(),
+      params[2].getValue(), 1.f, 0.f, 0.f);
+    int dummy = 0;
+  }
+  void processFrame(float* L, float* R) override { core.processFrame(L, R); }
+  void processBlock(float* L, float* R, int N) override
+  {
+    for(int n = 0; n < N; n++)
+      processFrame(&L[n], &R[n]);
+  }
+
+protected:
+
+  WaveshaperCore core;
+
+};
+
+// before writing too much boilerplate, fix the API:
+// -processFrame should work either with 2 floats or rsFloat32x4...or maybe make a class
+//  rsFloat32x2...could be just a synonym for rsFloat32x4 (because that can be simdified), but 
+//  the name makes clear that we use only 2 of the 4 available slots
+// -can we avoid the need for the boilerplate? ...or at least reduce the amount? maybe with 
+//  similar strategies as in romos, using macros?
+
 
 //=================================================================================================
 
@@ -370,11 +358,10 @@ public:
 
 protected:
 
-  using SP = rsSamplerEffects;  // rename or remove
-  rsObjectPool<SP::Amplifier>  amplifiers;
-  rsObjectPool<SP::Filter>     filters;
-  rsObjectPool<SP::Equalizer>  equalizers;
-  rsObjectPool<SP::WaveShaper> waveShapers;
+  rsObjectPool<Amplifier>  amplifiers;
+  rsObjectPool<Filter>     filters;
+  rsObjectPool<Equalizer>  equalizers;
+  rsObjectPool<WaveShaper> waveShapers;
 
 };
 // Maybe templatize, rename funcs to generic grabItem, repositItem. But maybe not - maybe we don't

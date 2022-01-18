@@ -27,7 +27,7 @@ void Effect::resetSettings(int index)
 
 //=================================================================================================
 
-rsSamplerEffects::Amplifier::Amplifier()
+Amplifier::Amplifier()
 {
   type = DspType::Amplifier;
   params.reserve(7);                      // index
@@ -53,7 +53,7 @@ rsSamplerEffects::Amplifier::Amplifier()
   // they don't intefere with the algo params (stored directly in the DSP objects).
 }
 
-void rsSamplerEffects::Amplifier::prepareToPlay(uchar key, uchar vel, double fs)
+void Amplifier::prepareToPlay(uchar key, uchar vel, double fs)
 {
   // Save key, vel for later. We may need those values again when we need to recompute our coeffs 
   // on a control-change
@@ -89,7 +89,7 @@ void rsSamplerEffects::Amplifier::prepareToPlay(uchar key, uchar vel, double fs)
   //  constructor - try to avoid that - not sure, if that's possible
 }
 
-void rsSamplerEffects::Amplifier::processFrame(float* L, float* R) 
+void Amplifier::processFrame(float* L, float* R) 
 {
   core.processFrame(L, R);
   // ToDo:
@@ -105,7 +105,7 @@ void rsSamplerEffects::Amplifier::processFrame(float* L, float* R)
   //  parameters
 }
 
-void rsSamplerEffects::Amplifier::processBlock(float* L, float* R, int N) 
+void Amplifier::processBlock(float* L, float* R, int N) 
 {
   for(int n = 0; n < N; n++)
     processFrame(&L[n], &R[n]);
@@ -113,7 +113,7 @@ void rsSamplerEffects::Amplifier::processBlock(float* L, float* R, int N)
 
 //=================================================================================================
 
-rsSamplerEffects::Filter::Filter() 
+Filter::Filter() 
 { 
   using OC = Opcode;
   type = DspType::Filter;
@@ -131,7 +131,7 @@ rsSamplerEffects::Filter::Filter()
   //addParameter(Opcode::filN_bw);
 }
 
-void rsSamplerEffects::Filter::prepareToPlay(uchar key, uchar vel, double fs)
+void Filter::prepareToPlay(uchar key, uchar vel, double fs)
 { 
   this->key = key;
   this->vel = vel;
@@ -165,12 +165,12 @@ void rsSamplerEffects::Filter::prepareToPlay(uchar key, uchar vel, double fs)
   // a reference implementation does.
 }
 
-void rsSamplerEffects::Filter::processFrame(float* L, float* R) 
+void Filter::processFrame(float* L, float* R) 
 { 
   core.processFrame(L, R); 
 }
 
-void rsSamplerEffects::Filter::processBlock(float* L, float* R, int N) 
+void Filter::processBlock(float* L, float* R, int N) 
 {
   for(int n = 0; n < N; n++)
     processFrame(&L[n], &R[n]);
