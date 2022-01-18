@@ -68,11 +68,16 @@ stereo narrowing but not widening - which is a bit sad).
 -param_quantize:  
 Some of the parameters that sfz specifies to be integer can easily also admit float values. 
 Examples for such parameters are tune, transpose, loop_start, loop_end. By specifying 
-param_quantize=none, we could lift these unnecessary restrictions. ...in the current 
-implementation, we actually do not quantize the integer parameters anyway so currently we already 
-operate in that unrestricted mode. It would actually take some extra programming to enforce these 
-restrictions. Maybe we should or maybe we shouldn't. If users want to restrict themselves to using
-only integers for certain parameters, they can already do it. No additional code needed.
+param_quantize=none, we could lift these unnecessary restrictions. 
+
+
+In the current implementation, we actually do not quantize the integer parameters anyway nor do we 
+clip them to their specified ranges, so currently we already operate in that unrestricted mode. It 
+would actually take some extra programming to enforce these restrictions. Maybe we should or maybe 
+we shouldn't. If users want to restrict themselves to using only integers for certain parameters, 
+they can already do it. No additional code needed. The same goes for the ranges. However, in some 
+cases we may indeed want to put some limits on the ranges to ensure numeric stability and/or sane
+resource requirements of certain algorithms (think of delay, for example).
 
 
 Misc Ideas
