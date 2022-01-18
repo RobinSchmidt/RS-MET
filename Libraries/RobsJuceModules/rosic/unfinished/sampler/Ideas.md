@@ -72,12 +72,13 @@ param_quantize=none, we could lift these unnecessary restrictions.
 
 
 In the current implementation, we actually do not quantize the integer parameters anyway nor do we 
-clip them to their specified ranges, so currently we already operate in that unrestricted mode. It 
-would actually take some extra programming to enforce these restrictions. Maybe we should or maybe 
-we shouldn't. If users want to restrict themselves to using only integers for certain parameters, 
-they can already do it. No additional code needed. The same goes for the ranges. However, in some 
-cases we may indeed want to put some limits on the ranges to ensure numeric stability and/or sane
-resource requirements of certain algorithms (think of delay, for example).
+clip parameters to their specified ranges, so currently we already operate in that unrestricted 
+mode. It would actually take some extra programming to enforce these restrictions and the "gain" 
+would be *less* flexibility. Maybe we should or maybe we shouldn't. If users want to restrict 
+themselves to using only integers for certain parameters, they can already do it. No additional 
+code needed. The same goes for the ranges. However, in some cases we may indeed want to put some
+limits on the ranges to ensure numeric stability (think of filter feedback) or sane resource 
+requirements (think of delay) or safety for the user's equipment and/or ears (think of gain).
 
 
 Misc Ideas
