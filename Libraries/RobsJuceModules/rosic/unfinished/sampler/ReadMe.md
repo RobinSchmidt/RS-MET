@@ -98,7 +98,7 @@ of this engine. It will be used in one of their upcoming products...
 ### SFZ Resources
 
 https://sfzformat.com/                  A website dedicated to the sfz format  
-https://sfzformat.com/legacy/           Original reference for the sfz v1 specification
+https://sfzformat.com/legacy/           Original reference for the sfz v1 specification  
 https://sfzformat.com/opcodes/          Comprehensive reference for opcodes including extensions  
 https://sfzformat.com/software/tools/   List of sfz authoring tools  
 https://github.com/sfz                  sfz related stuff  
