@@ -144,7 +144,11 @@ without actually adding any dedicated sound generator "effects". Among these are
 - A sample containing an impulse-like signal (possibly just a single value of 1 followed by
   all zeros) can be fed into the filter(s) with high resonance settings. The resonating filters 
   will produce decaying sinusoids. When keytracking is at 100%, these resonance "blips" are 
-  musically playable.
+  musically playable. Putting a second such filter in series can be used for a smoother attack. 
+  The lowpass mode may also be nice for that. This can also be used to beef up bassdrum sounds 
+  with a low-frequency attack/decay sinusoid. In the higher ranges, it produces a sort of 
+  "Popcorn" sound (https://www.youtube.com/watch?v=NjxNnqTcHhg) (...could use some reverb though 
+  and maybe also waveshaping to give it some overtones)
 
 ### What else could be needed?
 
@@ -157,13 +161,21 @@ without actually adding any dedicated sound generator "effects". Among these are
 - We may need to allow the layer to have a ring-out phase where the RegionPlayer keeps playing 
   for some specified amount of time even after the sample has finished. Or it could be mocked by
   using a sample that has a tail containing some silence. By using a loop, that silence portion
-  could be very short.
+  could be very short because the looping would lengthen it as needed.
 
 - LFOs could be allowed to produce audio-rate signals and have keytracking of their frequencies. 
   When routed to pitch, we could mock frequency modulation synthesis. When the input sample is a 
   square wave, maybe we can also mock pulse-width modulation. We would need a linear mode of 
   operation of the pitch LFO - I'm not sure, what sfz wants. If sfz prescribes logarithmic pitch
-  modulation for the pitch LFO, we may introduce another opcode to switch that.
+  modulation for the pitch LFO, we may introduce another opcode to switch that. Maybe the 
+  modulators should produce stereo signals, too. Think of an LFO mapped to cutoff with a phase
+  offset between left and right channel. That will easily give nice stereo movement. However,
+  not for all parameters does it make sense to have different left/right values. Think, for 
+  example, of a pan or width parameter - there is no meaningful concept of applying different
+  pan values to left and right channels. I'm not yet sure, how to handle that. Maybe let's have two
+  generic outputs, i.e. channel1/channel2 instead of left/right and how they are used is opcode
+  defined - some (like cutoff) may interpret them as left/right, others (like pan) may just ignore 
+  the second channel.
 
 - A reverb algo with an impulsive input sample could be used to create noise-burst like source 
   signals which could be shaped further by key-tracked comb and/or bandpass filters. Maybe a 
