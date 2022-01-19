@@ -215,7 +215,9 @@ min_crest. Statistical measures: mean, variance, skew, kurtosis ..maybe also as 
 min/mean/max values. Maybe also analyze the stereo_width, dynamic_range...well, now we are getting 
 into mastering territory...that's a bit beyond the scope of a sampler, but we are actually just 
 talking about general metadata now. So...yeah - maybe we should define an sfz-like metadata format
-for audio files. That could be useful for the sampler but also in other contexts.
+for audio files. That could be useful for the sampler but also in other contexts. Maybe .amd for
+"audio meta data" - not sure, if a certain CPU vendor would be happy with this choice, though...
+how about .adi (audio data info), .afi (audio file info), .adp (audio data properties)
 
 
 
