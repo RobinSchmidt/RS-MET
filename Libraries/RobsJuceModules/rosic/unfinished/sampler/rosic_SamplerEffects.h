@@ -36,7 +36,17 @@ protected:
 
   Opcode opcode = Opcode::Unknown;
   float value = 0.f;        // maybe rename to nominalValue, maybe init to 666
-  // float modulatedValue;  // ...later, for modulation
+
+  // float modulatedValue;  
+  // Uncomment that later for modulation, maybe use floatStereo because we want to support 
+  // different modulator values for left and right. Think of an LFO mapped to cutoff with a phase
+  // offset between left and right channel. That will easily give nice stereo movement. However,
+  // not for all parameters does it make sense to have different left/right values. Think, for 
+  // example, of a pan or width parameter - there is no meaningful concept of applying different
+  // pan values to left and right channels. ...not yet sure, how to handle that... Maybe have two
+  // generic outputs, i.e. channel1/channel2 instead of left/right and how they are used is opcode
+  // defined - some (like cutoff) may interpret them as left/right, others (like pan) may just 
+  // ignore the second channel. dunno...
 };
 
 //=================================================================================================

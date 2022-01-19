@@ -100,7 +100,9 @@ public:
   //float pitch_keycenter = 666;
   float pitch_keytrack  = 666;
 
-  std::vector<float> ampN_veltrack; // ampN_keytrack, pitchN_veltrack, pitchN_keytrack
+  std::vector<float> ampN_veltrack; // ToDo: ampN_keytrack, pitchN_veltrack, pitchN_keytrack
+  // I think, these are only needed to support key/vel tracking in levels_are_busses mode. In 
+  // override mode, we can get away without them. This is still under construction...
 
 private:
 
