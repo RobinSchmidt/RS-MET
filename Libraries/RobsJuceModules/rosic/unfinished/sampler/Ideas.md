@@ -32,15 +32,15 @@ Ideas for new opcodes
   and vel-tracking.
   
 - functionN: Let the user define an arbitrary function (as string) to be applied to the signal. For 
-  example: functionN=``"tanh(a*x + b) / a - tanh(b)"`` functionN_a=1.7 functionN_b=-0.2. It could use
-  the same expression evaluator engine as in FuncShaper. Maybe it could also support a syntax like:
-  "m = x1 + x2; s = x1 - x2; m = a*m; s = b*s; y1 = m+s; y2 = m-s" where x1,x2 are the two input 
-  channels and y1, y2 are the output channels (I deliberately do not use xL,xR for "left" and 
-  "right" because maybe later, we want to support other multichannel configurations, so it seems 
-  better to be generic). Maybe that functionality could also be integrated into the waveshaper. But 
-  that would make it quite heavyweight. Maybe the engine should automatically switch between 
-  loading a lightweight implementation when a predefined shape is used and only load the 
-  heavyweight, expression evaluator based variant when it's actually used in the sfz. We may 
+  example: ``functionN="tanh(a*x + b) / a - tanh(b)" functionN_a=1.7 functionN_b=-0.2``. It could 
+  use  the same expression evaluator engine as in FuncShaper. Maybe it could also support a syntax 
+  like: ``"m = x1 + x2; s = x1 - x2; m = a*m; s = b*s; y1 = m+s; y2 = m-s"`` where x1,x2 are the 
+  two input channels and y1, y2 are the output channels (I deliberately do not use xL,xR for "left" 
+  and "right" because maybe later, we want to support other multichannel configurations, so it 
+  seems better to be generic). Maybe that functionality could also be integrated into the 
+  waveshaper. But that would make it quite heavyweight. Maybe the engine should automatically 
+  switch between loading a lightweight implementation when a predefined shape is used and only load 
+  the heavyweight, expression evaluator based variant when it's actually used in the sfz. We may 
   actually want to apply a similar strategy to load different filter implementations depending on 
   the selected filter type. Many filters will be simple 1-poles but some will be sophisticated
   virtual analog models, so we may have devise such a strategy anyway.
