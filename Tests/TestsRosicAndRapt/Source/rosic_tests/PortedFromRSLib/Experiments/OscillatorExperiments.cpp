@@ -327,39 +327,48 @@ void zeroDelayfeedbackPhaseMod()
   // it as a root finding porblem for the equation f(y) = y - sin(p + a*y) = 0. We solve it via 
   // Newton iteration. The derivative is given by f'(y) = 1 - a*cos(p + a*y)
 
-  int N = 1000;       // number of samples to render
-  double cycle = 300; // length of one cycle of the sinewave
+  int N = 6000;         // number of samples to render
+  double cycle = 2000;  // length of one cycle of the sinewave
 
-  double a = 0.9;     // feedback amount
+  double a = 0.95;       // feedback amount
 
   double tol = 1.e-13;
-  int maxIts = 100;
+  int maxIts = 100;     // maximum number of Newton steps, if 0, we get unit-delay feedback PM
 
   double w = 2*PI/cycle;
-  std::vector<double> y(N);
+  std::vector<double> y(N), z(N);
   for(int n = 1; n < N; n++)
   {
-    double p = w*n;
-
-    //y[n] = sin(p);      // preliminary
-
-    double t = y[n-1];      // inital guess for y[n]
-    t = sin(p + a*y[n-1]);  // ...that should actually be a better guess
-    for(int i = 0; i < maxIts; i++)
+    double p = w*n;                    // sine phase
+    double t = sin(p + a*y[n-1]);      // initial guess using UDF-FB-PM, may be better to use z
+    y[n] = t;                          // y is the UDF signal
+    for(int i = 0; i < maxIts; i++)    // Newton iteration
     {
       double f  = t -   sin(p + a*t);  // function whose root we want to find
       double fp = 1 - a*cos(p + a*t);  // derivative of our function
       double d  = -f/fp;               // calculate Newtion step
       t += d;                          // perform Newton step
-      if(abs(d) <= tol) 
-        break;         // break if converged
-
+      if(abs(d) <= tol) break;         // break if converged
     }
- 
-    y[n] = t;
-
+    z[n] = t;                          // z is the ZDF signal
   }
 
-  rsPlotVector(y);
+  // Observations
+  // -For a = 1.5, we get some discontinuities. Is that correct? When we set maxIts=0, we get
+  //  garbage, so probably the Newtion iteration does not converge to the correct value.
+  // -The greatest difference betwen UDF and ZDF exists around the discontinuity of the saw. There
+  //  the UDF version tends to get asymmteric whereas the "cleaned up" ZDF version is still nicely
+  //  symmetric.
+  //
+  // Ideas:
+  // -How about apply a saturation like tanh to the phase where the phase in in -pi..+pi and the
+  //  output of the tanh is also scaled into that range. The goal is to get a smooth transition
+  //  between sine and saw. When applying tanh to the phase (with proper scaling of input and
+  //  output), would we get a smooth wrap-around? I think so but I'm not sure. It would be 
+  //  useful, if we could achieve the goal with an explicit feedforward algorithm. Feedback PM
+  //  works nicely but is computationally expensive. Maybe implement a few variants of a 
+  //  sineToSaw function taking as input the phase p and maybe an initial guess
+
+  rsPlotVectors(y, z, z-y);
   int dummy = 0;
 }
