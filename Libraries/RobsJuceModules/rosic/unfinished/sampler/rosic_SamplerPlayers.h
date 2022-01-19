@@ -102,7 +102,14 @@ public:
 
   std::vector<float> ampN_veltrack; // ToDo: ampN_keytrack, pitchN_veltrack, pitchN_keytrack
   // I think, these are only needed to support key/vel tracking in levels_are_busses mode. In 
-  // override mode, we can get away without them. This is still under construction...
+  // override mode, we can get away without them. I think, they are needed, because we need to 
+  // first accumulate all key- and veltrack values into final total key- and veltrack values and
+  // then use the respective tracking formula on these totals. But maybe the formulas could be 
+  // implemented incrementally such that each contribution to the amplitude factor gets directly
+  // accumulated into the final amplitude multiplier? Then we could perhaps replace the arrays by
+  // single values or even get rid of them entirely and accumulate directly into the respctive
+  // parameter...we'll see...some math and design questions to figure out....this is still under 
+  // construction...
 
 private:
 
