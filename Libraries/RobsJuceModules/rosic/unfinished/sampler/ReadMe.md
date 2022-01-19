@@ -32,7 +32,7 @@ pitch_keycenter, pitch_keytrack
 #### Filters
 
 fil_type (partial), cutoff, resonance, fil_keytrack, fil_keycenter, fil_veltrack, eqN_gain,
-eqN_freq, eqN_bw
+eqN_freq, eqN_bw (N=1,2,3 in sfz, arbitrary here)
 
 
 #### Amplifiers

@@ -12,11 +12,11 @@ Ideas for new opcodes
   max_rms, loudness where the latter may employ some perceptual measure. To make this work, we need 
   to analyze the sample on load and store the results somewhere. Maybe AudioFileStreamPreloaded 
   could be an appropriate place. In a (potential future) direct-from-disk streaming mode, there 
-  perhaps needs tobe some metadata file next to the .wav - see below under "Misc Ideas".
+  perhaps needs to be some metadata file next to the .wav - see below under "Misc Ideas".
 
 - invert (or negate): Switches polarity of signal. Might be integrated into the Amplifier unit. But
   actually, that may be redundant: negation should already be possible by a certain setting of 
-  width (may -100?), so maybe we don't really need it. It could be convenient though. However, 
+  width (maybe -100?), so maybe we don't really need it. It could be convenient though. However, 
   let's try to keep the number of new opcodes low...
 
 - filN_q_freqtrack (or resonanceN_freqtrack): Amount of tracking of the filter's quality factor Q
@@ -32,7 +32,7 @@ Ideas for new opcodes
   and vel-tracking.
   
 - functionN: Let the user define an arbitrary function (as string) to be applied to the signal. For 
-  example: functionN="tanh(a*x + b) / a - tanh(b)" functionN_a=1.7 functionN_b=-0.2. It could use
+  example: functionN=´"tanh(a*x + b) / a - tanh(b)"´ functionN_a=1.7 functionN_b=-0.2. It could use
   the same expression evaluator engine as in FuncShaper. Maybe it could also support a syntax like:
   "m = x1 + x2; s = x1 - x2; m = a*m; s = b*s; y1 = m+s; y2 = m-s" where x1,x2 are the two input 
   channels and y1, y2 are the output channels (I deliberately do not use xL,xR for "left" and 
