@@ -68,21 +68,28 @@ private:
 
 /** UNDER CONSTRUCTION
 
-A struct to hold intermediate values that arise in the calculation of the Player's member
-variables to control certain playback aspects such as pitch, amplitude etc. There are often 
-multiple opcodes that influence such a setting and we must override or accumulate them all 
-seperately before we can compute the final resulting member variable (such as the per-sample 
-time increment or the final amplitude scaler). To facilitate this, we pass a pointer to such a
-struct to setupPlayerSetting. */
+A class used to represent the current playback status of the engine. There exists exactly one 
+object of this type as member of SamplerEngine. It holds information about the most recently 
+received midi events of particular kinds (such as controllers and pitchbend) to facilitate 
+responding to these events in the effects etc.  ..tbc...
 
-class PlayerIntermediates
+It is also used to hold and accumulate some intermediate values that arise in the calculation of
+the Player's member variables to control certain playback aspects such as pitch, amplitude etc. 
+There are often multiple opcodes that influence such a setting and we must override or accumulate 
+them all seperately before we can compute the final resulting member variable (such as the 
+per-sample time increment or the final amplitude scaler). To facilitate this, we pass a pointer to
+such a struct to setupPlayerSetting. */
+
+class PlayStatus
 {
 public:
 
 
 
 
+
   //-----------------------------------------------------------------------------------------------
+  // the members used to facilitate accumulation of intermediate calculation results:
 
   // Initialize members to evil values to make sure they are set up correctly in reset:
   double transpose = 666;
@@ -113,7 +120,7 @@ public:
 
 private:
 
-  PlayerIntermediates()
+  PlayStatus()
   {
     int dummy = 0;
     ampN_veltrack.resize(5);  // preliminary: ToDo: in SamplerEngine::preAllocateDspMemory, allocate
@@ -133,6 +140,28 @@ private:
     rsFill(ampN_veltrack, 0.f);
   }
   // maybe needed when we don't create it on the stack but rather re-use a member
+
+  // under construction - not yet used:
+  char  controllers[128];  // most recnetly received values of all controllers
+  short pitchWheel;        // most recently received value of pitch wheel
+  // todo: aftertouch, etc.
+  bool  dirty = false;
+  // ToDo: The dirty flag should be set to true by the midi event handlers when control, wheel, 
+  // etc. messages are received, it should be inspected and used by effects to update their coeffs 
+  // if needed and it should be set back to false at the end of the engine's process function 
+  // because when that function exits, is assumed that all effects have updated themselves in the 
+  // process. Maybe we should have additional flags controllersDirty, pitchwheelDirty etc. the 
+  // global dirty flag will be true when any of theses are true, so we can inspect only the global
+  // dirty flag per sample in the effects and only if it's true, inspect the other flags to figure 
+  // out what kind of event happened (to avoid recalculations when they are not necessary - some
+  // effects may only want to respond to controllers but not to other kinds of events). Maybe we
+  // should use std::atomic<bool> to communicate the fact that it is used for communication between
+  // the audio- and midi-thread even though we assume that they are actually the same thread (but 
+  // maybe we shouldn't assume that anyway - in a plugin, this will generally be true but maybe 
+  // within a DAW, the midi events would indeed be received in another thread?)
+
+
+
 
   friend class rsSamplerEngine; 
   // rsSamplerEngine has an object of this class as member, so it needs to be able to call the 
@@ -224,7 +253,7 @@ protected:
   up its own member variables, GroupPlayer manipulates one of its embedded RegionPlayers, 
   etc.  */
   virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp, PlayerIntermediates* iv) = 0;
+    RegionPlayer* rp, PlayStatus* iv) = 0;
   // rename to setPlayerOpcode
 
   /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
@@ -238,7 +267,7 @@ protected:
 
   /** ToDo: add documentation */
   virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate, 
-    RegionPlayer* rp, bool busMode, PlayerIntermediates* iv);
+    RegionPlayer* rp, bool busMode, PlayStatus* iv);
   // Maybe return a bool to indicate, if the setting was handled (if false, the subclass may
   // want to do something in its override)...??? comment obsolete?
 
@@ -278,7 +307,7 @@ public:
   settings. */
   rsReturnCode setRegionToPlay(const Region* regionToPlay, 
     const AudioFileStream<float>* sampleStream, uchar key, uchar vel, double outputSampleRate, 
-    bool busMode, PlayerIntermediates* iv);
+    bool busMode, PlayStatus* iv);
   // todo: later maybe have default values (false) for the busMode 
 
   const Region* getRegionToPlay() const { return region; }
@@ -329,7 +358,7 @@ protected:
   it means that something went wrong  - presumably not enough ressources were available - and the
   engine should discard the player object, i.e. put it back into the pool. */
   rsReturnCode prepareToPlay(uchar key, uchar vel, double sampleRate, bool busMode,
-    PlayerIntermediates* iv);
+    PlayStatus* iv);
 
 
   bool assembleEffectChain(bool busMode) override;
@@ -343,12 +372,12 @@ protected:
   // move to baseclass, if possible and/or maybe have a virtual detupDspSettings function in 
   // baseclass that we override here and in the GroupPlayer:
   void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode, 
-    PlayerIntermediates* iv);
+    PlayStatus* iv);
 
-  void setupFromIntemediates(const PlayerIntermediates& iv, double sampleRate);
+  void setupFromIntemediates(const PlayStatus& iv, double sampleRate);
 
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp, PlayerIntermediates* iv) override;
+    RegionPlayer* rp, PlayStatus* iv) override;
 
   const Region* region;                 //< The Region object that this object should play
   const AudioFileStream<float>* stream; //< Stream object to get the data from
@@ -418,11 +447,11 @@ public:
   using uchar = unsigned char;
 
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp, PlayerIntermediates* iv) override;
+    RegionPlayer* rp, PlayStatus* iv) override;
 
   bool setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLevel* thingToPlay, 
     uchar key, uchar vel, double sampleRate, RegionPlayer* regionPlayer, bool busMode, 
-    PlayerIntermediates* intermediates);
+    PlayStatus* intermediates);
   // busMode is superfluous - when a SampleBusPlayer is invoked, we are in busMode by definition
 
   virtual void releaseResources()
@@ -481,7 +510,7 @@ public:
 
   /** Sets the group that should be played back by this player. */
   bool setGroupToPlay(const SfzInstrument::Group* groupToPlay, uchar key, uchar vel, 
-    double fs, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
+    double fs, RegionPlayer* rp, bool busMode, PlayStatus* iv)
   { return setGroupOrInstrumToPlay(groupToPlay, key, vel, fs, rp, busMode, iv); }
     // ...it's just a convenience function to make the call site look nicer.
 
@@ -506,7 +535,7 @@ public:
   // implement processBlock
 
   bool setInstrumToPlay(const SfzInstrument::Global* instrumToPlay, uchar key, uchar vel, 
-    double fs, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
+    double fs, RegionPlayer* rp, bool busMode, PlayStatus* iv)
   { return setGroupOrInstrumToPlay(instrumToPlay, key, vel, fs, rp, busMode, iv); }
     // Convenience function to make the call site look nicer.
 

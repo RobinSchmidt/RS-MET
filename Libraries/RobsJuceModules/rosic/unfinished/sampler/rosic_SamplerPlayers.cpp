@@ -128,7 +128,7 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 }
 
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
-  double sampleRate, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
+  double sampleRate, RegionPlayer* rp, bool busMode, PlayStatus* iv)
 {
   SfzCodeBook* codebook = SfzCodeBook::getInstance();
   for(size_t i = 0; i < settings.size(); i++)
@@ -145,7 +145,7 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
 
 rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay,
   const AudioFileStream<float>* sampleStream, uchar key, uchar vel, double fs, bool busMode, 
-  PlayerIntermediates* iv)
+  PlayStatus* iv)
 {
   releaseResources(); // actually, it should not hold any at this point - or should it?
   region = regionToPlay;
@@ -255,7 +255,7 @@ void RegionPlayer::allocateMemory()
 }
 
 rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool busMode, 
-  PlayerIntermediates* iv)
+  PlayStatus* iv)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
@@ -371,7 +371,7 @@ void RegionPlayer::resetPlayerSettings()
 }
 
 void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode, 
-  PlayerIntermediates* iv)
+  PlayStatus* iv)
 {
   // To set up the settings, we call setupDspSettings 3 times to:
   //   (1) set up the general instrument-wide settings
@@ -393,7 +393,7 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode,
   // at the first time for nothing....
 }
 
-void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double fs) // fix typo!
+void RegionPlayer::setupFromIntemediates(const PlayStatus& iv, double fs) // fix typo!
 {
   // This may get called twice on noteOn in busMode -> verify and try to avoid the first call
 
@@ -420,7 +420,7 @@ void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double f
 
   // ToDo:
   // -Take into account pitch_veltrack...maybe we need to take an addition vel parameter or we
-  //  add such a fields to PlayerIntermediates...which should be extended to a "MidiStatus" anyway.
+  //  add such a fields to PlayStatus...which should be extended to a "MidiStatus" anyway.
   // -Verify the formulas
 
   // -Can we avoid the inquiry for the rootKey? This may be a bit expensive. Maybe the RegionPlayer
@@ -433,7 +433,7 @@ void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double f
 }
 
 void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-  RegionPlayer* rp, PlayerIntermediates* iv)
+  RegionPlayer* rp, PlayStatus* iv)
 {
   RAPT::rsAssert(rp == this);
   // For RegionPlayer objects like this, this function is supposed to be called only for the object
@@ -484,7 +484,7 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
 // SampleBusPlayer
 
 void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs, 
-  RegionPlayer* rp, PlayerIntermediates* iv)
+  RegionPlayer* rp, PlayStatus* iv)
 {
   // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
   // setting in question reaches through to an underlying (embedded) RegionPlayer object and must 
@@ -553,14 +553,14 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLevel* thingToPlay,
   uchar key, uchar vel, double sampleRate, RegionPlayer* rp, bool busMode, 
-  PlayerIntermediates* intermediates)
+  PlayStatus* intermediates)
 {
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
 
-  //PlayerIntermediates dummy;  
+  //PlayStatus dummy;  
   // I think, using a dummy is wrong an this is what and breaks the test. Yes - this seems to be 
-  // the case. I guess, we need to take a PlayerIntermediates parameter that must be owned 
+  // the case. I guess, we need to take a PlayStatus parameter that must be owned 
   // somehwere higher up
 
 

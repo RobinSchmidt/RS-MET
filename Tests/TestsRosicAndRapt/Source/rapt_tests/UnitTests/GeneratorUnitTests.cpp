@@ -2805,7 +2805,7 @@ bool samplerEngineUnitTest()
   // ToDo:
   // -implement key/vel crossfade
   // -implement cutoff_ccN ..or actually cutoffN_ccX
-  //  -extend the PlayerIntermediates class to a MidiStatus class that provides the info about 
+  //  -extend the PlayStatus class to a MidiStatus class that provides the info about 
   //   controllers, pitch-wheel, etc.
 
   // -implement loop_mode=loop_sustain

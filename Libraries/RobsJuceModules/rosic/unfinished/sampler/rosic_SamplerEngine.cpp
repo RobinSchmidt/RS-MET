@@ -464,7 +464,7 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
 }
 
 RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r, uchar key, uchar vel, 
-  PlayerIntermediates* iv)
+  PlayStatus* iv)
 {
   RAPT::rsAssert(r->getCustomPointer() != nullptr); // No stream connected
 
@@ -726,7 +726,7 @@ void rsSamplerEngine::preAllocateDspMemory()
   //  allocate us some more could work? But that wouldn't be totally foolproof either. We'll see...
   //  ...see what hise, sfizz and linuxsampler do
   // -Maybe just let the used decide this in the xml file - with sane defaults.
-  // -We also need to make sure that the arrays in PlayerIntermediates are large enough
+  // -We also need to make sure that the arrays in PlayStatus are large enough
 }
 
 //=================================================================================================
@@ -836,7 +836,7 @@ int rsSamplerEngine2::stopAllPlayers()
 //  objects back
 
 void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, uchar key, uchar vel,  
-  PlayerIntermediates* iv)
+  PlayStatus* iv)
 {
   // Figure out, how many regions were triggered and add pointers to the freshly triggered 
   // RegionPlayers to an appropriate GroupPlayer - either to one that is already playing or grab a 
@@ -875,7 +875,7 @@ int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const SfzInstrument::Group* g
 }
 
 bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp, uchar key, uchar vel, 
-  PlayerIntermediates* intermediates)
+  PlayStatus* intermediates)
 {
   if(idleGroupPlayers.empty())
     return false;

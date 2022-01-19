@@ -599,7 +599,7 @@ ToDo:
 To add support for a new opcode, the following things need to be done:
 -If it's not already there, a new entry must be added to the Opcode enum
 -In our constructor, we'll need to add a corresponding add(...) call
--PlayerIntermediates may need to get a new field for it
+-PlayStatus may need to get a new field for it
 -RegionPlayer::setupPlayerSetting and SampleBusPlayer::setupPlayerSetting may need to add a new
  case in their switch statements
 -If the opcode affects one of our existing DSPs, we may need to add a parameter to this DSPs list,
