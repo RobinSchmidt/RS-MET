@@ -929,7 +929,12 @@ void createMiscSamples()
   rosic::writeToMonoWaveFile("UnitImpulse.wav", &one, 1, fs);
   // -Maybe we should make it a few samples long. Having a wavfile containing just a single value
   //  may be a corner case that some sampler engines won't like? But it actually makes for a nice
-  //  unit test to see what an engine does in such an extreme case.
+  //  unit test to see what an engine does in such an extreme case. OK, my engine handles it 
+  //  nicely: it just produces a unit impulse indeed. 
+  // -But: we can't create filter blips this way because the region player immediately stops, 
+  //  giving the filter no ringtout time. We need a couple of samples of silence after the impulse
+  //  and set up a loop over this silence portion.
+  //  
 
   // Generate 5 seconds of white noise with uniform amplitude distribution:
   N = 5*fs;

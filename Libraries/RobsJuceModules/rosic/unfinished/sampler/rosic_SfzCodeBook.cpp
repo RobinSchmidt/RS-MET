@@ -27,6 +27,7 @@ SfzCodeBook::SfzCodeBook()
 
   // Player response constraints (aka "Input Control" in the sfz doc):
   SP dsp = DspType::SamplePlayer;
+  add(OC::Key,   Nat, "key",   0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::LoKey, Nat, "lokey", 0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::HiKey, Nat, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
   add(OC::LoVel, Nat, "lovel", 0, 127,   0, dsp, OU::RawInt,  Sfz1);

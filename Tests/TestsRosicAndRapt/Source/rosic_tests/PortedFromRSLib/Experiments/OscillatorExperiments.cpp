@@ -317,3 +317,49 @@ void phaseShapingSkew()
 
   int dummy = 0;
 }
+
+void zeroDelayfeedbackPhaseMod()
+{
+  // We want to generate a waveform via feedback phase-modulation without delay in the feedback 
+  // path. The equation is 
+  //   y[n] = sin(p[n] + a*y[n])  
+  // where p[n] = w*n is the regular sine phase. We can't solve explicitly for y[n], so we consider
+  // it as a root finding porblem for the equation f(y) = y - sin(p + a*y) = 0. We solve it via 
+  // Newton iteration. The derivative is given by f'(y) = 1 - a*cos(p + a*y)
+
+  int N = 1000;       // number of samples to render
+  double cycle = 300; // length of one cycle of the sinewave
+
+  double a = 0.9;     // feedback amount
+
+  double tol = 1.e-13;
+  int maxIts = 100;
+
+  double w = 2*PI/cycle;
+  std::vector<double> y(N);
+  for(int n = 1; n < N; n++)
+  {
+    double p = w*n;
+
+    //y[n] = sin(p);      // preliminary
+
+    double t = y[n-1];      // inital guess for y[n]
+    t = sin(p + a*y[n-1]);  // ...that should actually be a better guess
+    for(int i = 0; i < maxIts; i++)
+    {
+      double f  = t -   sin(p + a*t);  // function whose root we want to find
+      double fp = 1 - a*cos(p + a*t);  // derivative of our function
+      double d  = -f/fp;               // calculate Newtion step
+      t += d;                          // perform Newton step
+      if(abs(d) <= tol) 
+        break;         // break if converged
+
+    }
+ 
+    y[n] = t;
+
+  }
+
+  rsPlotVector(y);
+  int dummy = 0;
+}

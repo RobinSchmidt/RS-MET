@@ -141,7 +141,13 @@ without actually adding any dedicated sound generator "effects". Among these are
   series of narrow peak equalizers can be used instead of bandpasses.
     
  - Maybe we could have modal filter bank available as effect algorithm. With impulse and/or noisy
-   inputs, we could do some modal synthesis.
+   inputs, we could do some modal synthesis. Maybe each modal filter could generate 8 or 16 modes.
+   It would need some sort of dry/wet or pass-through parameter to run it in parallel with the 
+   input. That could actually make sense for the regular filter as well. The opcodes could be 
+   modalN_freqM, modalN_phaseM, modalN_gainM, modalN_decayM, modalN_attackM, modalN_through. But 
+   no - even with the pass-through parameter we wouldn't get a parallel connection of the
+   individual modal filters - so maybe a single one should support more than 8 modes...maybe up to
+   64?
 
 
 Misc Ideas

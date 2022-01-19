@@ -1729,11 +1729,25 @@ bool samplerFilterTest()
   // -maybe write a helper function taht goes through these checks als for lowpass and highpass
   // -maybe we should allow cutoff up to 30000 as in the EQ
 
+  /*
+  // Test impulse response ...or maybe not:
+  float one = 1.f; float* pOne = &one; float** ppOne = &pOne;
+  se.clearInstrument();
+  se.addSampleToPool(ppOne, 1, 1, fs, "RAM");
+  se.addGroup();   
+  se.addRegion(0);
+  se.setRegionSample(0, 0, 0);
+  RAPT::rsFill(outL, 0.f);
+  RAPT::rsFill(outR, 0.f);
+  */
+
+
   // ToDo
   // -Cutoff=0 does not yet work - the svf produces silence and the sampler goes into bypass. Maybe
   //  we should do something different in this case. For a bandpass, it seems to make sense that 
   //  the limiting case is a lowpass. For a highpass, the limiting case should indeed be a bypass.
-  //  for a lowpass, we may see the resonance peak at DC?
+  //  for a lowpass, we may see the resonance peak at DC? ..which gets narrower when the cutoff 
+  //  goes down and in the limit, nothing passes anymore?
   // -Try a series connection of waveshaper and filter in both possible orders - check if the order
   //  is indeed determined by the first opcode that applies to the given dsp as it should be
   // -Maybe change the default filter type to make it work even the fil_type opcode is missing.

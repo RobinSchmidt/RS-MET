@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -446,6 +446,7 @@ int main(int argc, char* argv[])
   //phaseShapingCurvesRational();
   //phaseShaping();
   //phaseShapingSkew();
+  zeroDelayfeedbackPhaseMod();
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
@@ -633,7 +634,7 @@ int main(int argc, char* argv[])
   //createPiano1();
   //createSamplerWaveforms();
   //createBassdrumPsy1Samples();
-  //createMiscSamples();
+  createMiscSamples();
 
   // sample-map creations (they take long):
   //createBass1();
