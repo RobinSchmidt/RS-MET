@@ -32,7 +32,7 @@ Ideas for new opcodes
   and vel-tracking.
   
 - functionN: Let the user define an arbitrary function (as string) to be applied to the signal. For 
-  example: functionN=´´"tanh(a*x + b) / a - tanh(b)"´´ functionN_a=1.7 functionN_b=-0.2. It could use
+  example: functionN=``"tanh(a*x + b) / a - tanh(b)"`` functionN_a=1.7 functionN_b=-0.2. It could use
   the same expression evaluator engine as in FuncShaper. Maybe it could also support a syntax like:
   "m = x1 + x2; s = x1 - x2; m = a*m; s = b*s; y1 = m+s; y2 = m-s" where x1,x2 are the two input 
   channels and y1, y2 are the output channels (I deliberately do not use xL,xR for "left" and 
