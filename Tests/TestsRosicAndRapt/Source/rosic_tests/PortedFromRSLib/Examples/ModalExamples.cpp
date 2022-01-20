@@ -742,7 +742,7 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   double freqWeight2 = -1.0;
   double freqWeight3 =  1.0;
   double freqFloor   =  0.0;
-  double freqCeil    =  800;
+  double freqCeil    =  800;  // an excursion/depth would be better
   //double freqScale   = 1.0;    // 1: fundamental, 2,3,4,etc: overtones
 
   // Amplitude envelope parameters:
@@ -754,7 +754,7 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   double ampWeight3 =  1.0;
 
 
-  int plotDecimate = 16;
+  int plotDecimate = 32;
   if(plot)
   {
     fs /= plotDecimate;
@@ -786,7 +786,7 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   if(plot) rsPlotVectors(env1, env2, env3, env);
 
   // Create the raw sine-sweep:
-  AT::normalize(&env[0], N);
+  AT::normalize(&env[0], N);  // makes it inconvenient to port to realtime
   Vec xL(N), xR(N);
   double phi = 0;  // phase
   for(int n = 0; n < N; n++)
@@ -848,6 +848,11 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   }
 
   // ToDo:
+  // -Write this as a jupyter notebook - we really want quck REPL evaluation for this
+  // -Maybe write this as an APE script
+  //  -Give the user just a single choice parameter to select the preset, settings are encoded in 
+  //   the code...but maybe give some macro-parameters to the user
+  //  -but APE does not yet support midi - maybe trigger the drum with an input impulse
   // -Have an envelop for the waveshape. it should control the amount of feedback PM:
   //  y[n] = sin(phi + fb*y[n])  -> nonlinear -> needs implicit solver maybe using y[n-1] as 
   //  initial guess, Newton iteration: f(y) = y - sin(phi + fb*y), f'(y) = 1 - fb*cos(phi + fb*y)
@@ -869,10 +874,7 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   //  length = 2^16 = 65536), randomize phases, iFFT ...this need its own amp-env
   // -Add an envelope generator to ToolChain that implements a weighted sum of exponential decays
   // -Maybe give ToolChain a rendering functionality
-  // -Maybe write this as an APE script
-  //  -Give the user just a single choice parameter to select the preset, settings are encoded in 
-  //   the code...but maybe give some macro-parameters to the user
-  //  -but APE does not yet support midi - maybe trigger the drum with an input impulse
+
   // -try to raise the amp-env to a time-varying power - with 2 , it should look more like Gaussian
   // -apply distortion, maybe bitcrushing in a time variant manner to add some noisiness to the
   //  transient
@@ -917,6 +919,9 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
 
 void createBassdrumPsy1Samples()
 {
+  createBassdrumPsy1Sample(1.0, true); return;  // for development
+
+
   bool plot = false;
   createBassdrumPsy1Sample(1.0, plot);
   createBassdrumPsy1Sample(1.5, plot);

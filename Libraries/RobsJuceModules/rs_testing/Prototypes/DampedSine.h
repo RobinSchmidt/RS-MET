@@ -194,11 +194,11 @@ public:
   T getEnergyIntegral(const T& t0, const T& t1) const;
 
 
-  T getEnvelopeIntegral(const T& t0, const T& t1) const;
+  //T getEnvelopeIntegral(const T& t0, const T& t1) const;
 
   T getCenterOfMass() const;
 
-  T getEnvelopeCenterOfMass() const;
+  //T getEnvelopeCenterOfMass() const;
 
 
   int getNumSines() const { return (int) sines.size(); }

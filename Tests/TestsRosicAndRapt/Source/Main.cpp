@@ -60,8 +60,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -633,7 +633,7 @@ int main(int argc, char* argv[])
   //createModalFilterBankExamples(); // takes long
   //createPiano1();
   //createSamplerWaveforms();
-  //createBassdrumPsy1Samples();
+  createBassdrumPsy1Samples();
   createMiscSamples();
 
   // sample-map creations (they take long):

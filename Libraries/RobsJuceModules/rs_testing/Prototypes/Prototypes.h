@@ -30,6 +30,7 @@ using namespace RAPT;
 #include "DampedSine.h"
 #include "AdditiveSynthEngine.h"
 #include "MultiplicativeSynth.h"
+#include "RenderScriptTools.h"
 #include "FractalRenderer.h"
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant

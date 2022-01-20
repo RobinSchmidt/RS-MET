@@ -20,6 +20,7 @@
 #include "DampedSine.cpp"
 #include "AdditiveSynthEngine.cpp"
 #include "MultiplicativeSynth.cpp"
+#include "RenderScriptTools.h"
 #include "FractalRenderer.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
