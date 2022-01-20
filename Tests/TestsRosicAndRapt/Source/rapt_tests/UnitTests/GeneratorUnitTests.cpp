@@ -824,7 +824,7 @@ bool samplerBusModeTest()
   se.setBusMode(false);
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7f, false);
   ok &= se.getNumActiveLayers() == 1;        // it's still playing due to the delay
   ok &= se.getNumActiveGroupPlayers() == 0;  // no group player is/was used due to settings
 
@@ -834,7 +834,7 @@ bool samplerBusModeTest()
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
   rsApplyDelay(tgt, instrDelay);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7f, false);
 
   //---------------------------------------------------------------------------
   // Test offset accumulation:
@@ -852,7 +852,7 @@ bool samplerBusModeTest()
   se.setBusMode(false);
   tgt = sin440;
   rsApplyDelay(tgt, -regionOffset);  // offset is like a negative delay
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7f, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0; 
 
@@ -862,7 +862,7 @@ bool samplerBusModeTest()
   rsApplyDelay(tgt, -regionOffset); 
   rsApplyDelay(tgt, -groupOffset); 
   rsApplyDelay(tgt, -instrOffset); 
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7f, false);
 
   //---------------------------------------------------------------------------
   // Test offset and delay (but only for the region setting):
@@ -1629,7 +1629,7 @@ bool samplerFilterTest()
     for(int n = 0; n < N; n++)
       tgt[n] = flt.getSample(noise[n]);
     se.setRegionSetting(0, 0, PST::filN_type, (float) sfzType, 1);
-    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, plot);
+    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7f, plot);
 
   };
   ok &= testAgainstOpf(flt.LOWPASS_IIT,  Type::lp_6, false);
@@ -1701,9 +1701,9 @@ bool samplerFilterTest()
     // SNR of 100 dB. It's "relative" in the sense that it is measured against the actual signal 
     // level and not against the maximum possible signal level (i think).
   };
-  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5, false);
-  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  cutoff, reso, 1.e-5, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, cutoff, reso, 1.e-5, false);
+  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);
+  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  cutoff, reso, 1.e-5f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, cutoff, reso, 1.e-5f, false);
   //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, true);
   // BRF fails! they look very similar though. Maybe there are different definitions in place for
   // how to intepret the resoGain parameter. It's questionable anyway, if we have implemented
@@ -1716,14 +1716,14 @@ bool samplerFilterTest()
   // slightly higher Q than low- or highpasses with the same resonance gain. We test it for 
   // frequencies from all the way up to all the way down. For the lower cutoffs, we need higher 
   // tolerances:
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 22050.f,   40.f, 1.e-4, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 20000.f,   40.f, 1.e-4, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 10000.f,   40.f, 1.e-4, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,  1000.f,   40.f, 1.e-4, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,   100.f,   40.f, 1.e-3, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,    10.f,   40.f, 1.e-3, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.1f,  40.f, 1.e-3, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.01f, 40.f, 1.e-3, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 22050.f,   40.f, 1.e-4f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 20000.f,   40.f, 1.e-4f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 10000.f,   40.f, 1.e-4f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,  1000.f,   40.f, 1.e-4f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,   100.f,   40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,    10.f,   40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.1f,  40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.01f, 40.f, 1.e-3f, false);
   //ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.0f,  40.f, 1.e-3, true);
   // todo: 
   // -maybe write a helper function taht goes through these checks als for lowpass and highpass
@@ -1826,7 +1826,7 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
   se.setRegionSetting(0, 0, PST::distortN_shape, float(shape1), 1);
   se.setRegionSetting(0, 0, PST::distortN_drive, drive1, 1);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7f, false);
 
   // Set up one region within one group and add a waveshaper to the group. When two notes are being 
   // played, the waveshaper should be applied to the sum of both notes:
@@ -1847,7 +1847,7 @@ bool samplerWaveShaperTest()
   using EvTp = Ev::Type;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
-  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, false);
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13f, false);
 
   // Let the region override the group setting for drive. The shape setting should still come from
   // the group. We again play two notes at 60 and 48:
@@ -1858,7 +1858,7 @@ bool samplerWaveShaperTest()
   se.reset();
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
-  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, false);
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13f, false);
 
   // Remove the group setting for the shape - now the waveshaper should use the default shape which
   // is linear, i.e. no shaping at all. 
@@ -1868,7 +1868,7 @@ bool samplerWaveShaperTest()
   se.reset();
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
-  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, false);
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13f, false);
 
   // Add another region to the group without giving it a distortion setting - it should keep 
   // falling back to the group setting (linear, drive2) whereas the old region should keep using
@@ -1881,7 +1881,7 @@ bool samplerWaveShaperTest()
   se.reset();
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
-  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-5, false);
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-5f, false);
   // Why do we need such a high tolerance here? This seems wrong! figure out!
 
   // Start fresh, define the shape on the insrument level, the drive at the group level and the
@@ -1898,7 +1898,7 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::distortN_dc, dc1, 1);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(drive1 * sin440[n] + dc1);  // maybe include a gain1, too
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7f, false);
 
   // ToDo:
   // -Try different shapes, use different sets of parameters, use DC, postGain, etc.
@@ -1980,7 +1980,7 @@ bool samplerWaveShaperTest2()
   se.reset();
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
-  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, false);
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13f, false);
   // maybe factor this out into testSamplerNotes2
 
   // Mix-and-accumulate mode:
@@ -2058,7 +2058,7 @@ bool samplerDspChainTest()
   se.setRegionSetting(0, 0, PST::cutoffN,   cutoff1, 1);
   se.setRegionSetting(0, 0, PST::filN_type, (float)Type::hp_6, 2);
   se.setRegionSetting(0, 0, PST::cutoffN,   cutoff2, 2);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
 
   // Add a waveshaper and after that a 3rd (lowpass) filter into the chain, such that 
   // the chain is now: LPF -> HPF -> WS -> LPF:
@@ -2076,7 +2076,7 @@ bool samplerDspChainTest()
   flt.reset();
   for(int n = 0; n < N; n++)
     tgt[n] = flt.getSample(tanh(drive * tgt[n]));
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
 
   // Updates the target signal according to new values of cutoff1,2,3 and drive
   auto updateTgt = [&]()
@@ -2102,19 +2102,19 @@ bool samplerDspChainTest()
   cutoff2 = 100.f;
   se.setRegionSetting(0, 0, PST::cutoffN, cutoff2, 2);
   updateTgt();
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
   cutoff1 = 4000.f;
   se.setRegionSetting(0, 0, PST::cutoffN, cutoff1, 1);
   updateTgt();
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
   cutoff3 = 3000.f;
   se.setRegionSetting(0, 0, PST::cutoffN, cutoff3, 3);
   updateTgt();
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
   drive = 8.0;
   se.setRegionSetting(0, 0, PST::distortN_drive, drive, -1);
   updateTgt();
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
 
   // OK - we currently have 3 filters with a waveshaper between filter 2 and filter 3. Now let's
   // check the behavior when we try to add a 5th filter without adding a 4th before. The desired 
@@ -2133,7 +2133,7 @@ bool samplerDspChainTest()
   svf.setGain(G);
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(tgt[n]);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
 
   // ToDo: 
   // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
@@ -2229,7 +2229,7 @@ bool samplerEqualizerTest()
   r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 1;
   applyEqs(noise, tgt, { gain1 }, { freq1 }, { bw1 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5f, false);
   // Tolerance needs to be even higher than in the filter tests
 
   // Now we set only the gain of eq1. The freq and bandwidth should default to 50 Hz and 1 oct:
@@ -2239,7 +2239,7 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   ok &= r->getNumProcessors() == 1;
   applyEqs(noise, tgt, { gain1 }, { 50 }, { 1 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-3, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-3f, false);
   // Whoa - here we need a really high tolerance! OK, we have a moderately high Q and high gain and
   // a low frequency. Settings which are prone to numeric errors. But still, this is actually quite 
   // bad. Maybe we need to use double precision for filters and equalizers indeed. Or maybe use 
@@ -2257,17 +2257,17 @@ bool samplerEqualizerTest()
   r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 3;
   applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
 
   // Add band 2. This has a default freq of 500Hz:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain2, 2); 
   applyEqs(noise, tgt, { gain2, gain3 }, { 500.f, 5000.f }, { 1.f, 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
 
   // Add band 1. This has a default freq of 50Hz:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { 50.f, 500.f, 5000.f }, { 1.f, 1.f, 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-3, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-3f, false);
   // Here, we also need a high tolerance
 
   // Change settings of band 1 to something more benign from a numeric point of view:
@@ -2278,7 +2278,7 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_freq, freq1, 1);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw1, 1);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, 500.f, 5000.f }, { bw1, 1.f, 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
 
   // Change settings of band 2:
   gain2 = -6;
@@ -2288,7 +2288,7 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_freq, freq2, 2);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw2, 2);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, freq2, 5000.f }, { bw1, bw2, 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
 
   // Change settings of band 3:
   gain3 = 7;
@@ -2298,7 +2298,7 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_freq, freq3, 3);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw3, 3);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, freq2, freq3 }, { bw1, bw2, bw3 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
 
   // Add a 5th band with no 4th in between, so we get a dspChain with 5 eqs but the 4th is neutral.
   // The new eq should be at its default freq of 1000:
@@ -2310,7 +2310,7 @@ bool samplerEqualizerTest()
   ok &= r->getNumProcessors() == 5;
   applyEqs(noise, tgt, { gain1, gain2, gain3, gain5 }, { freq1, freq2, freq3, 1000 }, 
     { bw1, bw2, bw3, bw5 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
 
   // ToDo:
   // -Check that it all works also when we have one or more filters (via the actual filter opcode)
@@ -2484,7 +2484,7 @@ bool samplerLoopTest()
   Vec sinTable(numCycles*cycleLength); // sine wave sample 
   double w = 2*PI/cycleLength; 
   for(size_t n = 0; n < sinTable.size(); n++)
-    sinTable[n] = sinf(w*n);
+    sinTable[n] = (float)sin(w*n);
   //rsPlotVector(sinTable);
 
   // Playback settings:
@@ -2807,8 +2807,16 @@ bool samplerEngineUnitTest()
   // -implement cutoff_ccN ..or actually cutoffN_ccX
   //  -extend the PlayStatus class to a MidiStatus class that provides the info about 
   //   controllers, pitch-wheel, etc.
-
-  // -implement loop_mode=loop_sustain
+  // -implement loop_mode=loop_sustain, 
+  // -implement and test loop_end beyond the last sample - it should append an appropriate amount 
+  //  of silence before looping back. rationale: together with delay, the feature can be used to 
+  //  create repititve hits (of a drum sample, say) to create looped rhythms
+  //  Here (under "Playing part of the sample repeatedly"):
+  //    http://www.drealm.info/sfz/plj-sfz.xhtml
+  //  it is said that when no loop start point is given, it doesn't default to 0 but to offset.
+  //  There's an unofficial opcode delay_beats described there (at the bottom). That could be 
+  //  useful for programming drumloops directly in sfz (but where does the bpm info come from?
+  //  from an opcode or from the host?)
   // -maybe keep tests for the basic SamplerEngine and samplerEngine2 (supporting busMode) in 
   //  seperate functions. We may want to be able to easily seperate out the basic implementation
   //  along with its test, if needed.

@@ -57,7 +57,7 @@ void rsSamplerEngine::clearInstrument()
 }
 
 int rsSamplerEngine::addSampleToPool(
-  float** data, int numFrames, int numChannels, float sampleRate, const std::string& path)
+  float** data, int numFrames, int numChannels, double sampleRate, const std::string& path)
 {
   // todo: 
   // -check, if a sample with the same path already exists - if so, we have nothing to 
@@ -1126,5 +1126,9 @@ sample_dir=factory  (other options: user, here, E:/Samples/MySamples, ../../Samp
 maybe define a subregion header. Idea use the same sample with the mostly same settings but one or
 a few settings differently for different keys...but no - this places too much burden on the 
 playback engine - it would have to scan each region for subregions - no good idea!
+
+To support convolution, may use the unofficial impulse opcode - decribed here (near bottom):
+http://www.drealm.info/sfz/plj-sfz.xhtml
+but lift the up-to 512 samples restriction
 
 */

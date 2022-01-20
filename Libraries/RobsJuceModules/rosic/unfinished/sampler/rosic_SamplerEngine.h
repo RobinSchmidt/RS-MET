@@ -136,7 +136,7 @@ public:
 
   /** Adds a new sample to our pool of samples. After the sample has been added, regions can be
   defined that make use of it. */
-  int addSampleToPool(float** data, int numFrames, int numChannels, float sampleRate,
+  int addSampleToPool(float** data, int numFrames, int numChannels, double sampleRate,
     const std::string& path);
   // Maybe rename to addSample, it should return the index of the sample in the sample-pool
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey

@@ -10,8 +10,8 @@ bool doNothing(T x)
 inline void rsPrintLine(const std::string& message)
 {
   std::string str = message + "\n";
-  //std::cout << str;        // APE (Audio Programming Environment) does not support std::cout,
-  printf("%s", str.c_str()); // so we resort to the old-skool C way of doing it
+  //std::cout << str;        // APE (Audio Programming Environment) does not support std::cout...
+  printf("%s", str.c_str()); // ...so we resort to the old-skool C way of doing it
 }
 
 /** This function should be used to indicate a runtime error. */
@@ -33,8 +33,10 @@ inline void rsError(const char *message = nullptr)
 
 inline void rsWarning(const char* message = nullptr)
 {
+#ifdef RS_DEBUG
   if(message) rsPrintLine("Warning " + std::string(message));
   else        rsPrintLine("Warning");
+#endif
 }
 
 /** This function should be used for runtime assertions. */

@@ -203,14 +203,32 @@ public:
   virtual ~AudioFileStreamPreloaded() { clear(); }
 
 
-  /** Returns true, iff everything went alright and false if it failed to allocate the required
-  memory. */
+  /** Sets the new sample data. The function will *not* make the object take ownership over the 
+  passed data nor will it refer to it later. Instead, it will be copy everything into an internal
+  buffer. The numFrames parameter gives the number of sample frames, numDataChannels gives the 
+  number of channels in the passed input data and numStreamChannels gives the number of desired
+  channels in the stream. If these two numbers are different. It beahves as follows: If the input 
+  has more channels than the stream, the strem will just use the first few of the input channels. 
+  If the stream has more channels than the input, then the input channels will be mapped to the 
+  outputs by using wrapping around the channelNumber as needed (i.e. using modulo). The important
+  special cas here is when the input data is mono - the same data will just be broadcasted to all
+  output channels. Returns true, iff everything went alright and false if it failed to allocate the
+  required memory. */
   bool setData(T** newData, int numFrames, int numDataChannels, T sampleRate,
     int numStreamChannels, const std::string& path);
   // todo: 
   // -we need to distiguish between the number of channels in the data and the desired number of 
-  //  output channels
+  //  output channels (done?)
+  // -maybe use double for the sampleRate
   // -include fileName etc. later, too
+  // -Maybe have variations of this function taking ownership or just refering to data owned 
+  //  elsewhere. Give the different versions appropriate names: setDataByCopying, 
+  //  setDataByReferring, setDataByTakingOwnership. We'll need a boolean flag to store in which 
+  //  mode the data was passed so we know what the appropriate thing to do is when we get new data
+  //  or the object gets destroyed.
+  // -Maybe the numChannels parameter should come before numFrames because it's the first index 
+  //  into the 2D array? -> check conventions used elsewhere. It would be consistent with rsMatrix
+  //  when the rows are interpreted as channels.
 
   //void setNumOutputChannels(int newNumChannels) override;
 

@@ -873,6 +873,16 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   //  -Give the user just a single choice parameter to select the preset, settings are encoded in 
   //   the code...but maybe give some macro-parameters to the user
   //  -but APE does not yet support midi - maybe trigger the drum with an input impulse
+  // -try to raise the amp-env to a time-varying power - with 2 , it should look more like Gaussian
+  // -apply distortion, maybe bitcrushing in a time variant manner to add some noisiness to the
+  //  transient
+  // -for such effects, obtain a difference signal to the original and store the pure effect 
+  //  seperately to be mixed in later
+  // -use a more sawtooth-like waveform to give it some overtones...however, maybe the 1st and 2nd
+  //  should be notched out because 100 or 150 hz are ugly in bassdrums. or: maybe also subtract
+  //  from a sample using a sine, obtain difference and pass that through a highpass before mixing
+  // -the (gaussian) envelope should be applied after reverb/convolution -> sort of gated reverb
+
 
   // ToDo:
   // -render some goasque creaking sounds and make an sfz (use pan-envelopes)...but how? maybe using a 
@@ -884,6 +894,9 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   //  should get added on to of each other - the oscs just keep playing
   // -maybe wrap bassdrum and bass into a single instrument using keyranges - the wen can also 
   //  apply some dynamics processing to their mix (if bus_mode is active)
+  // -maybe convolve it with an expoentially decaying white noise sound, 
+  //  -maybe that noise should have a color envelope from white to brown, say
+
   
   // -For dubstep sounds, try to use a percussive sample like a snare, set up a loop and modify its 
   //  location via midi-cc, maybe have a second one an octave below going on. maybe change the loop 
@@ -1157,12 +1170,12 @@ void createPluck1()
   p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(93, p);
 
-  g.setKeyRangeToRender(80, 80);  
+  g.setKeyRangeToRender(21, 93);  
   // For production rendering, use 21..93. For preview and sound-design, use smaller range
   // ToDo: maybe use an increment (default 1, 12 means one sample per octave - which is also good 
   // for preview), see SampleMapGenerator::generateAllSamples
 
-  g.setTruncationLevel(-40);
+  g.setTruncationLevel(-50);
   // For production rendering, use -80 or -60. For preview -40
 
 
@@ -1190,6 +1203,10 @@ void createPluck1()
   //  quickly that they supply a broadband signal at the start of the sample (i think). ..that may
   //  generally an interesting way to render transients: oversampled, supersonic, quickly decaying 
   //  modes - then downsampled with AA filter.
+  // -In the sfz file, we could specify a 2nd region with the same same but a very short decay
+  //  envelope and add it to the normal sampel. the result is a two-stage-decay or enhanced
+  //  transient. making it velocity dependent, we can do things like: higher vel leads to stronger
+  //  transients
 }
 
 void testHighPluck()

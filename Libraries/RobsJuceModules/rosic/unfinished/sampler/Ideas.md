@@ -95,7 +95,7 @@ mode. It would actually take some extra programming to enforce these restriction
 would be *less* flexibility. Maybe we should or maybe we shouldn't do it. If users want to restrict 
 themselves to using only integers for certain parameters, they can already do it. No additional 
 code needed. The same goes for the ranges. However, in some cases we may indeed want to put some
-limits on the ranges to ensure numeric stability (think of feedback) or sane resource requirements 
+limits on the ranges to ensure bibo stability (think of feedback) or sane resource requirements 
 (think of delay) or safety for the user's equipment and/or ears (think of gain). But maybe such 
 nannying of sfz authors is inappropriate - after all, if the author "programs" a "buggy" sfz, it 
 may be argued that it's "their bug". I think, instead of safeguarding the user from mistakes by 
@@ -167,7 +167,8 @@ without actually adding any dedicated sound generator "effects". Among these are
   When routed to pitch, we could mock frequency modulation synthesis. When the input sample is a 
   square wave, maybe we can also mock pulse-width modulation. We would need a linear mode of 
   operation of the pitch LFO - I'm not sure, what sfz wants. If sfz prescribes logarithmic pitch
-  modulation for the pitch LFO, we may introduce another opcode to switch that. Maybe the 
+  modulation for the pitch LFO, we may introduce another opcode to switch that or we could define
+  separate opcodes lfoN_to_pitch and lfoN_to_freq to distinguish between these modes. Maybe the 
   modulators should produce stereo signals, too. Think of an LFO mapped to cutoff with a phase
   offset between left and right channel. That will easily give nice stereo movement. However,
   not for all parameters does it make sense to have different left/right values. Think, for 
@@ -175,7 +176,7 @@ without actually adding any dedicated sound generator "effects". Among these are
   pan values to left and right channels. I'm not yet sure, how to handle that. Maybe let's have two
   generic outputs, i.e. channel1/channel2 instead of left/right and how they are used is opcode
   defined - some (like cutoff) may interpret them as left/right, others (like pan) may just ignore 
-  the second channel.
+  the second channel. 
 
 - A reverb algo with an impulsive input sample could be used to create noise-burst like source 
   signals which could be shaped further by key-tracked comb and/or bandpass filters. Maybe a 
@@ -204,7 +205,9 @@ but it could also be a simple textual representation similar to sfz. like:
 
 max_abs=0 max_rms=-3.01 mean_pitch=69 max_pitch=75.3 min_pitch=67.8 loop_start=23.54 
 loop_end=156.65 cycles_in_loop=1 category=single_note (others: single_drum, noise, polyphonic, 
-speech, singing, melody/sequence/monophonic, drumloop, mixdown, effect, chord, environmental)
+speech, singing, melody/sequence/monophonic or music_monophonic, music_polyphonic, 
+music_mixdown/full_mix, drum_loop, instrument_loop, effect, chord, environmental, atmo/ambience, 
+foley)
 
 Maybe write a little script that batch-generates such metadata files for a folder of samples for 
 those parameters that are easily analyzed (such as max-abs, max_rms, maybe pitch, loudness). Other

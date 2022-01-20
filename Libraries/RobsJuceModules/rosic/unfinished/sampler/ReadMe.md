@@ -97,13 +97,14 @@ of this engine. It will be used in one of their upcoming products...
 
 ### SFZ Resources
 
-https://sfzformat.com/                  A website dedicated to the sfz format  
-https://sfzformat.com/legacy/           Original reference for the sfz v1 specification  
-https://sfzformat.com/opcodes/          Comprehensive reference for opcodes including extensions  
-https://sfzformat.com/software/tools/   List of sfz authoring tools  
-https://github.com/sfz                  sfz related stuff  
-https://github.com/sfztools             Open source sfz tools  
-https://github.com/sfztools/sfizz       An open source sfz engine  
-https://www.linuxsampler.org/           Another one  
-https://sfzinstruments.github.io/       Free sfz instruments  
+https://sfzformat.com/                    A website dedicated to the sfz format  
+https://sfzformat.com/legacy/             Original reference for the sfz v1 specification  
+https://sfzformat.com/opcodes/            Comprehensive opcode reference (including extensions)
+http://www.drealm.info/sfz/plj-sfz.xhtml  Another description of the sfz format
+https://sfzformat.com/software/tools/     List of sfz authoring tools  
+https://github.com/sfz                    sfz related stuff  
+https://github.com/sfztools               Open source sfz tools  
+https://github.com/sfztools/sfizz         An open source sfz engine  
+https://www.linuxsampler.org/             Another one  
+https://sfzinstruments.github.io/         Free sfz instruments  
 
