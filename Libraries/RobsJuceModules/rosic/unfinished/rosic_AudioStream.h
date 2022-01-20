@@ -26,10 +26,10 @@ public:
   valid range 0 <= samplePosition <= N-1, the signal there is taken to be zero. At positions in
   between -1..0 and N-1..N, linear interpolation will take place between the first (or last) actual
   sample and zero. */
-  virtual void getFrameStereo(T samplePosition, T* left, T* right) const
+  virtual void getFrameStereo(double samplePosition, T* left, T* right) const
   {
     int i = (int) samplePosition;      // integer part
-    T   f = samplePosition - T(i);     // fractional part
+    T   f = T(samplePosition - T(i));     // fractional part
     T xL0(0), xR0(0), xL1(0), xR1(0);
     if(isValidFrameIndex(i  )) getFrameStereo(i,   &xL0, &xR0);
     if(isValidFrameIndex(i+1)) getFrameStereo(i+1, &xL1, &xR1);
@@ -61,7 +61,7 @@ public:
   int getNumFrames() const { return numFrames; }
 
 
-  T getSampleRate() const { return sampleRate; }
+  double getSampleRate() const { return sampleRate; }
 
   bool isValidFrameIndex(int i) const { return i >= 0 && i < numFrames; }
 
@@ -81,7 +81,7 @@ public:
 
 protected:
 
-  T   sampleRate  = T(44100);  // or maybe init to 0? or 1? or 666?
+  double sampleRate  = T(44100);  // or maybe init to 0? or 1? or 666?
   int numChannels = 0;
   int numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
 
@@ -214,7 +214,7 @@ public:
   special cas here is when the input data is mono - the same data will just be broadcasted to all
   output channels. Returns true, iff everything went alright and false if it failed to allocate the
   required memory. */
-  bool setData(T** newData, int numFrames, int numDataChannels, T sampleRate,
+  bool setData(T** newData, int numFrames, int numDataChannels, double sampleRate,
     int numStreamChannels, const std::string& path);
   // todo: 
   // -we need to distiguish between the number of channels in the data and the desired number of 

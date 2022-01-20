@@ -1,6 +1,6 @@
 template<class T>
 bool AudioFileStreamPreloaded<T>::setData(
-  T** newData, int numFrames, int numDataChannels, T sampleRate, int numStreamChannels, 
+  T** newData, int numFrames, int numDataChannels, double sampleRate, int numStreamChannels, 
   const std::string& path)
 {
   RAPT::rsAssert(numFrames > 0 && numDataChannels > 0, "Data must be non-empty");
