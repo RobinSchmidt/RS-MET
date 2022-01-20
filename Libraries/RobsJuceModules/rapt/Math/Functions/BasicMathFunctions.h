@@ -47,6 +47,7 @@ inline bool rsIsCloseTo(T x, T targetValue, T tolerance);
 
 /** Checks, if x is a power of 2. */
 inline bool rsIsPowerOfTwo(unsigned int x);
+// templatize it!
 
 /** Checks, if x is a power of N. */
 inline bool rsIsPowerOfN(unsigned int x, unsigned int N);

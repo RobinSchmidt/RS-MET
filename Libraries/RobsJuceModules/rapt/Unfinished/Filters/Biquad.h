@@ -461,13 +461,13 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookLowpassCoeffs(T& b0, T& b1,
 {
   T sine, cosine;
   calculateSineAndCosine(sine, cosine, frequency, oneOverSampleRate);
-  T alpha = sine/(2.0*q);
-  T a0Rec = 1.0/(1.0+alpha);
+  T alpha = sine/(2*q);
+  T a0Rec = 1/(1+alpha);
 
-  a1 = 2.0*cosine   * a0Rec;
-  a2 = (alpha-1.0)  * a0Rec;
-  b1 = (1.0-cosine) * a0Rec;
-  b0 = 0.5*b1;
+  a1 = 2*cosine   * a0Rec;
+  a2 = (alpha-1)  * a0Rec;
+  b1 = (1-cosine) * a0Rec;
+  b0 = T(0.5)*b1;
   b2 = b0;
 }
 

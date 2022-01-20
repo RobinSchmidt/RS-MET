@@ -118,10 +118,10 @@ bool testGetSampleAt()  // unit test for function above
 template<class T>
 void rsApplyPan(std::vector<T>& L, std::vector<T>& R, T pan, bool constPow = false)
 {
-  int N = L.size(); rsAssert(R.size() == N);
+  int N = L.size(); rsAssert((int)R.size() == N);
   using AT = RAPT::rsArrayTools;
 
-  T t = (pan + 1) * 0.5;     // -1...+1  ->   0...1
+  T t = (pan + 1) * T(0.5);    // -1...+1  ->   0...1
   AT::scale(&L[0], N, 2 * (1 - t));
   AT::scale(&R[0], N, 2 *      t);
 }
@@ -206,7 +206,7 @@ std::vector<T> createColoredNoise(int N, T spectralSlope, int seed = 0)
   rosic::SlopeFilter flt;
   flt.setSlope(spectralSlope);
   for(int n = 0; n < N; n++)
-    y[n] = flt.getSample(y[n]);
+    y[n] = (float)flt.getSample(y[n]);
 
   return y;
 }
@@ -236,7 +236,7 @@ void setupForSineWave(rosic::Sampler::rsSamplerEngine* se)
   int N = 2048;
   std::vector<float> sineWave(N);
   for(int n = 0; n < N; n++)
-    sineWave[n] = sin(2*PI*n/N);
+    sineWave[n] = (float) sin(2.0*PI*n/N);
   se->clearInstrument();
   addSingleSampleRegion(se, sineWave, 21, 56320);
 }
@@ -1552,7 +1552,7 @@ bool samplerAmplifierTest()
   // Set amplifier settings for region, group, instrument to 1,2,3 respectively and test it in both
   // modes (busMode and normal). In busMode, the gain should be 1+2+3 = 6dB and in normal mode, it 
   // should be 1dB:
-  float tol = 1.e-6;
+  float tol = 1.e-6f;
 
   // gains for region, group and instrument
   float rVol = 3.f;
@@ -1595,7 +1595,7 @@ bool samplerFilterTest()
   float fs     = 44100.f;    // sample rate
   float cutoff = 1000.f;     // filter cutoff
   float reso   = 0.f;        // filter resonance gain in dB
-  float slope  = -3.01;      // spectral slope of the noise
+  float slope  = -3.01f;     // spectral slope of the noise
   int   N      = 1000;       // length of sample
   VecF  noise;               // noise sample
   VecF  tgt(N);              // target output in tests
@@ -2019,7 +2019,7 @@ bool samplerDspChainTest()
 
   // Setup:
   float fs      = 44100.f;  // sample rate
-  float slope   = -3.01;    // spectral slope of the noise
+  float slope   = -3.01f;   // spectral slope of the noise
   float cutoff1 = 2000.f;   // lowpass cutoff
   float cutoff2 =  500.f;   // highpass cutoff
   int   N       =  500;     // length of sample
@@ -2208,7 +2208,7 @@ bool samplerEqualizerTest()
       flt.setBandwidth1(bws[i]);
       flt.reset();
       for(int n = 0; n < N; n++)
-        y[n] = flt.getSample(y[n]);
+        y[n] = (float)flt.getSample(y[n]);
     }
   };
 
@@ -2283,7 +2283,7 @@ bool samplerEqualizerTest()
   // Change settings of band 2:
   gain2 = -6;
   float freq2 = 2500;
-  float bw2   = 0.3;
+  float bw2   = 0.3f;
   se.setRegionSetting(0, 0, OC::eqN_gain, gain2, 2);
   se.setRegionSetting(0, 0, OC::eqN_freq, freq2, 2);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw2, 2);
@@ -2293,7 +2293,7 @@ bool samplerEqualizerTest()
   // Change settings of band 3:
   gain3 = 7;
   float freq3 = 8000;
-  float bw3   = 2.2;
+  float bw3   = 2.2f;
   se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);
   se.setRegionSetting(0, 0, OC::eqN_freq, freq3, 3);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw3, 3);
@@ -2303,7 +2303,7 @@ bool samplerEqualizerTest()
   // Add a 5th band with no 4th in between, so we get a dspChain with 5 eqs but the 4th is neutral.
   // The new eq should be at its default freq of 1000:
   float gain5 = -3;
-  float bw5   = 1.2;
+  float bw5   = 1.2f;
   se.setRegionSetting(0, 0, OC::eqN_gain, gain5, 5);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw5, 5);
   r = se.getRegion(0, 0);
@@ -2355,7 +2355,7 @@ bool samplerOverloadTest()
   // is equal to expectedFilters:
   auto testNote = [&](int note, int expectedLayers, int expectedFilters)
   {
-    se.handleMusicalEvent(Ev(EvTp::noteOn, note, 127));
+    se.handleMusicalEvent(Ev(EvTp::noteOn, (float) note, 127));
     bool ok = true;
     ok &= se.getNumActiveLayers() == expectedLayers;
     ok &= se.getNumUsedFilters()  == expectedFilters;
@@ -2499,7 +2499,7 @@ bool samplerLoopTest()
   addSingleSampleRegion(&se, sinTable, (float)rootKey);
   se.setRegionSetting(0,0, OC::LoopMode,  (float)LoopMode::loop_continuous, -1);
   se.setRegionSetting(0,0, OC::LoopStart, 0,               -1);
-  se.setRegionSetting(0,0, OC::LoopEnd,   0 + cycleLength, -1);
+  se.setRegionSetting(0,0, OC::LoopEnd,   0 + (float)cycleLength, -1);
 
   // Helper function to produce the error signal between the ideal sinewave of given frequency and
   // the signal produced by the sampler engine for given key:
@@ -2528,12 +2528,12 @@ bool samplerLoopTest()
 
 
   // Set the loop length to 2 cycles - this should make no difference up to roundoff:  
-  se.setRegionSetting(0,0, OC::LoopEnd, 2*cycleLength, -1);
+  se.setRegionSetting(0,0, OC::LoopEnd, float(2*cycleLength), -1);
   Vec err2 = getError(69, 440);
   ok &= rsMaxAbs(err2) <= tol;
 
   // Set the loop length to all 3 cycles and therefore equal to the total length of the sample:
-  se.setRegionSetting(0,0, OC::LoopEnd, sinTable.size(), -1);
+  se.setRegionSetting(0,0, OC::LoopEnd, (float)sinTable.size(), -1);
   Vec err3 = getError(69, 440);
   ok &= rsMaxAbs(err3) <= tol;
 
@@ -2680,15 +2680,15 @@ bool samplerKeyVelTrackTest()
   se.setRegionSetting(0, 0, OC::resonanceN,      40.f,  1);  // we use high resonance
   float fs = (float)se.getOutputSampleRate();
   tgt = rsApplyFilter(noise, FT::bp_6_6, 880.f, fs, 40.f); 
-  ok &= testSamplerNote(&se, 81, vel, tgt, tgt, 2.e-5, false); // 81 = 69 + 12
+  ok &= testSamplerNote(&se, 81, vel, tgt, tgt, 2.e-5f, false); // 81 = 69 + 12
 
   // Test vel-tracking:
   vel_track = -1200.f;  // -12 semitones reduction at min-vel, i.e. vel=1
   se.setRegionSetting(0, 0, OC::filN_veltrack, vel_track,  1); 
   tgt = rsApplyFilter(noise, FT::bp_6_6, 440.f, fs, 40.f); 
-  ok &= testSamplerNote(&se, 69, 127, tgt, tgt, 4.e-5, false);  // at key=69, keytrack should be neutral
+  ok &= testSamplerNote(&se, 69, 127, tgt, tgt, 4.e-5f, false);  // at key=69, keytrack should be neutral
   tgt = rsApplyFilter(noise, FT::bp_6_6, 220.f, fs, 40.f); 
-  ok &= testSamplerNote(&se, 69, 1, tgt, tgt, 0.00015, false);
+  ok &= testSamplerNote(&se, 69, 1, tgt, tgt, 0.00015f, false);
   // We need quite high tolerances here. I'm not sure about the veltrack formula - it's just a 
   // guess based on what i think, the behavior should be. I think, at vel = 127, the cutoff should 
   // be unmodified and at vel=1, the cutoff should be reduced by 1200 cents, i.e. 12 semitones, 
