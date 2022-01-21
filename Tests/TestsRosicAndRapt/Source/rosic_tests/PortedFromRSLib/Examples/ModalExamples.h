@@ -12,8 +12,8 @@ void createPiano1();
 
 // Multisample creations
 void createSamplerWaveforms();
-void createBassdrumPsy1Samples();
-void createMiscSamples();
+
+
 
 // Multisample + sfz sample-map creations:
 void createBass1();
@@ -30,7 +30,7 @@ void testHighPluck();
 parameters. */
 
 template<class T>
-class rsModalParameterGenerator
+class rsModalParameterGenerator   // move to rs_testing/Prortotypes/RenderScriptTools
 {
 
 public:

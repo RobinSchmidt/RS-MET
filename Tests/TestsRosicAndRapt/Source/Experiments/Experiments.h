@@ -4,6 +4,7 @@
 #include <rs_testing/rs_testing.h>
 
 #include "PrototypesForAPE.h"
+#include "SamplerRenderScripts.h"
 
 #include "../rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.h"
 #include "../rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"
