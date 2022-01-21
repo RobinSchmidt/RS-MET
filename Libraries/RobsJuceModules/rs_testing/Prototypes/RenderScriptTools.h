@@ -18,6 +18,18 @@ public:
   void setFreqWeight(int index, T newWeight) { freqWeights[index] = newWeight; dirty = true; }
   void setAmpWeight( int index, T newAmp)    { freqAmp[index]     = newAmp;    dirty = true; }
 
+
+  // trigger...
+  void noteOn(int key, int vel)
+  {
+    sampleCount = 0;
+    phase = 0;
+    for(int i = 0; i < numEnvs; i++) {
+      freqEnvs[i].noteOn(key, vel);
+      ampEnvs[i].noteOn( key, vel);  }
+  }
+
+
   inline void processFrame(T* L, T* R);
 
 
@@ -46,6 +58,13 @@ protected:
   T sampleRate = 44100;
   bool dirty = true;
 
+  int sampleCount = 0;   // sample counter
+  T   phase       = 0;   // phase in waveform in nominal range 0...2*pi but can also go beyond
+
+  // ToDo:
+  //T timeScale = 1;       // scales the envelope times
+  //T freqScale = 1;       // scales the oscillator frequencies
+
   RAPT::rsAttackDecayEnvelope<T> freqEnvs[3];
 };
 
@@ -55,6 +74,26 @@ inline void rsSweepDrummer<T>::processFrame(T* L, T* R)
   if(dirty)
     updateCoeffs();
 
+  // compute outputs of envelopes:
+  T freq = freqFloor;
+  T amp  = 0;
+  for(int i = 0; i < numEnvs; i++)
+  {
+    freq += freqWeights[i] * freqEnvs[i].getSample();
+    amp  += ampWeights[i]  * ampEnvs[i].getSample();
+  }
+
+  *L = sin(phi - PI/4);
+  *R = sin(phi + PI/4);
+  // ToDo: Use wave(phi +- PI/4, waveParam1, waveParam2) where param2 controls phase-shaping 
+  // (sin-to-saw) and param2 waveshaping (sin/saw-to-square). Both parameters should also have an
+  // envelope.
+
+
+  // state update:
+  T w = 2*PI*freq/sampleRate;
+  phase += w;
+  sampleCount++;
 }
 
 template<class T>
@@ -62,6 +101,8 @@ inline void rsSweepDrummer<T>::updateCoeffs()
 {
   for(int i = 0; i < numEnvs; i++)
   {
+    freqEnvs[i].setAttackSamples(0.0);
+    ampEnvs[i].setAttackSamples(0.0);
     freqEnvs[i].setDecaySamples(freqDecays[i] * 0.001 * sampleRate);
     ampEnvs[i].setDecaySamples( ampDecays[i]  * 0.001 * sampleRate);
   }

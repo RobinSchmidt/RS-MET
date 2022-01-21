@@ -917,6 +917,19 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   int dummy = 0;
 }
 
+void createSweepDrummerSamples(int sampleRate, double freqScale)
+{
+  // We do the same as the function above but this time with less code using the new rsSweepDrummer
+  // class. When this is finished, the function above will be obsolete...
+
+
+
+
+
+}
+
+
+
 void createBassdrumPsy1Samples()
 {
   createBassdrumPsy1Sample(1.0, true); return;  // for development
