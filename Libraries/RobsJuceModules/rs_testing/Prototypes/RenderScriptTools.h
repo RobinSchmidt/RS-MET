@@ -1,5 +1,7 @@
 #pragma once
 
+//=================================================================================================
+
 /** A drum synthesizer based on frequency sweeps. It provides envelopes for the frequency, 
 waveshape and amplitude of an oscillator. Each of these envelopes is formed as a weighted sum of
 exponential decays ...tbc... */
@@ -105,6 +107,11 @@ inline void rsSweepDrummer<T>::updateCoeffs()
     ampEnvs[i].setAttackSamples(0.0);
     freqEnvs[i].setDecaySamples(freqDecays[i] * 0.001 * sampleRate);
     ampEnvs[i].setDecaySamples( ampDecays[i]  * 0.001 * sampleRate);
+    // todo: update envelopes for waveform parameters
   }
   dirty = false;
 }
+
+//=================================================================================================
+
+//std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount);

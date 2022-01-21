@@ -1,4 +1,8 @@
+
+//#include <rs_testing/rs_testing.h> // ToDo: get rid of that! organize the includes properly!
+
 #include "ModalExamples.h"
+
 
 // try to get rid of these prototype declarattions:
 std::vector<double> rsLinearRangeVector(     int N, double min, double max);
@@ -697,6 +701,8 @@ void createSamplerWaveforms()
   int dummy = 0;
 }
 
+
+// get rid - there's a copy of it now in RenderScriptTools.cpp which should be used
 std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount)
 {
   int N = (int)x.size();
@@ -721,6 +727,7 @@ std::vector<double> randomizePhases(const std::vector<double>& x, int seed, doub
   ft.getRealSignalFromMagnitudesAndPhases(&a[0], &p[0], &y[0]);
   return y;
 }
+
 
 void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
 {
@@ -928,11 +935,10 @@ void createSweepDrummerSamples(int sampleRate, double freqScale)
 
 }
 
-
-
+// move this to RenderScripts:
 void createBassdrumPsy1Samples()
 {
-  createBassdrumPsy1Sample(1.0, true); return;  // for development
+  //createBassdrumPsy1Sample(1.0, true); return;  // for development
 
 
   bool plot = false;
@@ -942,8 +948,6 @@ void createBassdrumPsy1Samples()
   createBassdrumPsy1Sample(3.0, plot);
   createBassdrumPsy1Sample(4.0, plot);
 }
-
-
 
 void createMiscSamples()
 {

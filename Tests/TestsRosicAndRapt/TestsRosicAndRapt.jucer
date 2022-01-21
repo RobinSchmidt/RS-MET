@@ -109,6 +109,10 @@
               file="Source/Experiments/PrototypesForAPE.cpp"/>
         <FILE id="PRlvpg" name="PrototypesForAPE.h" compile="0" resource="0"
               file="Source/Experiments/PrototypesForAPE.h"/>
+        <FILE id="A9kRcU" name="SamplerRenderScripts.cpp" compile="0" resource="0"
+              file="Source/Experiments/SamplerRenderScripts.cpp"/>
+        <FILE id="VLR9gC" name="SamplerRenderScripts.h" compile="0" resource="0"
+              file="Source/Experiments/SamplerRenderScripts.h"/>
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
         <GROUP id="{AB24ABE0-F0E0-71E1-6E93-83A6FD72A019}" name="PortedFromRSLib">

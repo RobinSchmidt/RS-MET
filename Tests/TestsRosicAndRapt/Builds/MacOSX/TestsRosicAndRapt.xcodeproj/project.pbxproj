@@ -56,7 +56,9 @@
 		1DC80EA032879A6E112815F8 /* ../../Source/rapt_tests/UnitTests/Math/Point2DTests.cpp */ /* Point2DTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Point2DTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/Point2DTests.cpp; sourceTree = SOURCE_ROOT; };
 		1E176D0450A5E3496CACE44D /* ../../Source/rapt_tests/UnitTests/MathUnitTests.cpp */ /* MathUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MathUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/MathUnitTests.cpp; sourceTree = SOURCE_ROOT; };
 		1EC39954B08CD7482AFEBDF2 /* ../../Source/rapt_tests/PerformanceTests/MiscPerformanceTests.cpp */ /* MiscPerformanceTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MiscPerformanceTests.cpp; path = ../../Source/rapt_tests/PerformanceTests/MiscPerformanceTests.cpp; sourceTree = SOURCE_ROOT; };
+		1F0F3C94758B70149F5794F7 /* ../../Source/Experiments/SamplerRenderScripts.cpp */ /* SamplerRenderScripts.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SamplerRenderScripts.cpp; path = ../../Source/Experiments/SamplerRenderScripts.cpp; sourceTree = SOURCE_ROOT; };
 		1F929012E78CA9A40F66A62B /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/SystemInformation.h */ /* SystemInformation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SystemInformation.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/SystemInformation.h; sourceTree = SOURCE_ROOT; };
+		1FE6F37D6D2ED20A90AFC71F /* ../../Source/Experiments/SamplerRenderScripts.h */ /* SamplerRenderScripts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SamplerRenderScripts.h; path = ../../Source/Experiments/SamplerRenderScripts.h; sourceTree = SOURCE_ROOT; };
 		203B1AECBFC671E5B0653D47 /* ../../Source/rapt_tests/RaptTests.h */ /* RaptTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RaptTests.h; path = ../../Source/rapt_tests/RaptTests.h; sourceTree = SOURCE_ROOT; };
 		2182ED301BEF1F950D9731B1 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Tree.h */ /* Tree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Tree.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Tree.h; sourceTree = SOURCE_ROOT; };
 		21BDE8754B3007B8D442EED5 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.h */ /* ResamplingExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResamplingExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.h; sourceTree = SOURCE_ROOT; };
@@ -463,6 +465,8 @@
 				50371B1A3E2C818358A47657,
 				509C137E7884B1402DB64EE8,
 				A516EB8D0213F8DD27507BA8,
+				1F0F3C94758B70149F5794F7,
+				1FE6F37D6D2ED20A90AFC71F,
 			);
 			name = Experiments;
 			sourceTree = "<group>";
