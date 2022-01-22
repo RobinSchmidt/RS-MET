@@ -251,6 +251,29 @@ void createSweepDrummerSamples(int sampleRate)
   //sd.setFreqFloor(0.0);
   //sd.setFreqDepth(800);
 
+
+  // Helper function to render oputput and write to file:
+  auto render = [&](const char* fileName, double length, double fadeLength)
+  {
+  // render signal:
+    int N = (int)ceil(length * sampleRate);
+    std::vector<double> xL(N), xR(N);
+    sd.noteOn(33, 64);                      // A1, 55Hz, mid velocity
+    for(int n = 0; n < N; n++)
+      sd.processFrame(&xL[n], &xR[n]);
+
+    //using AT = RAPT::rsArrayTools;
+    rsNormalizeJointly(xL, xR);
+    int fadeStart = (int)ceil((length-fadeLength)*sampleRate);
+    rsFadeOut(&xL[0], fadeStart, N);
+    rsFadeOut(&xR[0], fadeStart, N);
+
+    rosic::writeToStereoWaveFile(fileName, &xL[0], &xR[0], N, sampleRate);
+
+    // todo: apply dithering, use the new implementation and save to 24 bit
+  };
+
+
   // Freq envelope:
   sd.setFreqDecays( 10.0,   80, 240);   // in ms
   sd.setFreqWeights( 6.0,   -1,   1);   // raw factors
@@ -260,25 +283,21 @@ void createSweepDrummerSamples(int sampleRate)
   sd.setAmpDecays(  20.0,  100, 400);
   sd.setAmpWeights(  0.75,  -1,   1); 
 
-  // render signal:
-  double length = 1.2; // in seconds
-  int N = (int) ceil(length * sampleRate);
-  std::vector<double> xL(N), xR(N);
-  sd.noteOn(33, 64);  // A1, 55Hz, mid velocity
-  for(int n = 0; n < N; n++)
-    sd.processFrame(&xL[n], &xR[n]);
+  render("SweepDrum1.wav", 1.2, 0.2);
+  // The freq excursion seems to gor far above 800/6 = 13.333. the first cycle is 65 samples long
+  // which translates to 48000/65 = 738.46.. Hz. -> figure out what makes the freq-excursion go so
+  // high
 
-  //using AT = RAPT::rsArrayTools;
-  rsNormalizeJointly(xL, xR);
-  int fadeStart = (int) ceil(1.0*sampleRate);
-  rsFadeOut(&xL[0], fadeStart, N);
-  rsFadeOut(&xR[0], fadeStart, N);
-
-  using namespace rosic;
-  writeToStereoWaveFile("rsSweepDrummerTest1.wav", &xL[0], &xR[0], N, sampleRate);
-  //  todo: apply dithering, use the new implementation and save to 24 bit
+  sd.setFreqDecays( 10.0, 120, 240);
+  sd.setFreqWeights( 6.0,  -2,   2); 
+  render("SweepDrum2.wav", 1.2, 0.2);
 
   // ToDo:
+  // -allow rendering of the envelopes for inspection
+  // -maybe give the freq amp a dip too, so its down-up-down
+  // -maybe render the raw signal without amp-env
+  // -render samples with a freq-floor, i.e. more tonal bassdrums
+  // -apply waveshape envelopes
   // -Split off transient by applying a short amp env at the beginning and subtracting the so 
   //  enveloped signal - save transient and body in seperate files to be recombined with weights
   //  in the sampler - weights can be velocity dependent with stronger dependency for the transient
