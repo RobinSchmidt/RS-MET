@@ -283,19 +283,40 @@ void createSweepDrummerSamples(int sampleRate)
   sd.setAmpDecays(  20.0,  100, 400);
   sd.setAmpWeights(  0.75,  -1,   1); 
 
-  render("SweepDrum1.wav", 1.2, 0.2);
+  // The freq-env first goes down quickly, then almost stabilizes, and then goes down further more
+  // slowly:
+  render("SweepBassdrum1.wav", 1.2, 0.2);
   // The freq excursion seems to gor far above 800/6 = 13.333. the first cycle is 65 samples long
   // which translates to 48000/65 = 738.46.. Hz. -> figure out what makes the freq-excursion go so
-  // high
+  // high ...ah! the freq starts out at 800 due to freqWeights[0] == 6. Maybe alway choose the 1st
+  // weight = 1 such that the freq-depth directly gives the excursion
 
+  // This has a freq-env that gow like down-up-down (might be interesting for toms):
   sd.setFreqDecays( 10.0, 120, 240);
   sd.setFreqWeights( 6.0,  -2,   2); 
-  render("SweepDrum2.wav", 1.2, 0.2);
+  render("SweepBassdrum2.wav", 1.2, 0.2);
+
+  // This has more tonal character, stabilizing at A1 = 55Hz
+  sd.setFreqDecays(  5.0,  15,  60);
+  sd.setFreqWeights(10.0,  -1,   1);
+  sd.setFreqDepth(1000/10.0);
+  sd.setAmpDecays(  20.0,  80, 300);
+  sd.setFreqFloor(55.0);
+  render("SweepBassdrum3.wav", 1.2, 0.2);
+  // maybe this could use some overtones to emphasize the tonal character
+
+  // Reaching the 55Hz more quickly:
+  sd.setFreqDecays(4.0,  10,  40);
+  sd.setFreqDepth(1300/10.0);
+  render("SweepBassdrum4.wav", 1.2, 0.2);
+
 
   // ToDo:
   // -allow rendering of the envelopes for inspection
-  // -maybe give the freq amp a dip too, so its down-up-down
-  // -maybe render the raw signal without amp-env
+  // -maybe make a class rsSweepDrumPresets that we can use like: preset.setup(sd, 2); where
+  //  2 is the index of the preset
+  // -Maybe render the raw signal without amp-env. The amp-env can be applied later in the 
+  //  sampler.
   // -render samples with a freq-floor, i.e. more tonal bassdrums
   // -apply waveshape envelopes
   // -Split off transient by applying a short amp env at the beginning and subtracting the so 

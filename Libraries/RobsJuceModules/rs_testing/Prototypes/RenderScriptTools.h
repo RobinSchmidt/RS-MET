@@ -53,6 +53,8 @@ public:
 
   void setFreqDepth(T newDepth) { freqDepth = newDepth; }
 
+  void setFreqFloor(T newFloor) { freqFloor = newFloor; }
+
 
   // trigger...
   void noteOn(int key, int vel)
@@ -93,7 +95,7 @@ protected:
   T sampleRate = 44100;
   bool dirty = true;
 
-  int sampleCount = 0;   // sample counter
+  int sampleCount = 0;   // sample counter - maybe not needed
   T   phase       = 0;   // phase in waveform in nominal range 0...2*pi but can also go beyond
 
   // ToDo:
