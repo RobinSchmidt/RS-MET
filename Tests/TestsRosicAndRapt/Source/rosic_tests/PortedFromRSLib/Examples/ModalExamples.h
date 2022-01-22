@@ -10,11 +10,6 @@ void createModalFilterBankExamples();
 // Single sample creations:
 void createPiano1();
 
-// Multisample creations
-void createSamplerWaveforms();
-
-
-
 // Multisample + sfz sample-map creations:
 void createBass1();
 void createGong1();

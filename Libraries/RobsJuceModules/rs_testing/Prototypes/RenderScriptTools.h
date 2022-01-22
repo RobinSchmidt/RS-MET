@@ -114,4 +114,7 @@ inline void rsSweepDrummer<T>::updateCoeffs()
 
 //=================================================================================================
 
-//std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount);
+std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount);
+
+
+//=================================================================================================

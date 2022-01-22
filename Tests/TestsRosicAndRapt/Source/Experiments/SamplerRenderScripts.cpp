@@ -1,5 +1,5 @@
 
-
+/*
 // get rid - there's a copy of it now in RenderScriptTools.cpp which should be used
 std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount)
 {
@@ -25,6 +25,7 @@ std::vector<double> randomizePhases(const std::vector<double>& x, int seed, doub
   ft.getRealSignalFromMagnitudesAndPhases(&a[0], &p[0], &y[0]);
   return y;
 }
+*/
 
 void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
 {
@@ -282,6 +283,88 @@ void createMiscSamples()
   // -5 seconds should be long enough to have no noticable repetition pattern and/or 
   //  comb-filtering artifacts when layering several shifted copies.
 
+
+  int dummy = 0;
+}
+
+void createSamplerWaveforms()
+{
+  // ToDo: factor out the mip-map creation and move it to RenderScriptTools.h/cpp
+
+  // Create mip-mapped multisamples for single-cycle waveforms that can be used in the sampler 
+  // engine. Most tables are of length 2048 except the bottom one which is of length 4096. We want
+  // a cycle length that is a power of two and we want the samples to have a rootKey that is 
+  // exactly a midi note. All midi notes except for the As have irrational frequencies. So let's 
+  // choose an A as rootKey. A4 at 440Hz is midi-key 69. When we use key=21 (27.5 Hz) for the table
+  // of length 2048, we need to choose a sample-rate of 56320 to make it all work out. The formula 
+  // for the frequency is: sampleRate/cycleLength, so we get 56320/2048 = 27.5
+
+  // ToDo:
+  // -Create prototype wave of length 8192
+  // -Create various filtered versions moving average filters...the goal is to preserve the 
+  //  time domain waveform as closely as possible ...maybe use a 
+  //  filter -> decimate -> interpolate procedure for the higher tables
+  //  ...maybe to avoid boudary artifacts from the MA filters, we should use 3 cycles for the
+  //  filtering and then etract the middle one
+
+  using Vec = std::vector<double>;
+  using SWR = rosic::StandardWaveformRenderer;
+  using namespace RAPT;
+  using namespace rosic;
+
+  std::string waveName = "Saw";  // name of the waveform as it appears in the .wav files
+
+  // Render prototype sawtooth wave of length 8192 and obtain the first two decimated versions of
+  // it by just suing averages of successive samples:
+  Vec w8192(8192);
+  SWR::renderSawWaveform(&w8192[0], 8192); //rsPlotVector(w8192);
+  rsScale(w8192, 0.8125); //
+  // Some nicely representable approximation to the scaling by the Wilbraham-Gibbs constant to 
+  // avoid clipping due to Gibb's overshoot 
+  // https://en.wikipedia.org/wiki/Gibbs_phenomenon
+  // https://mathworld.wolfram.com/Wilbraham-GibbsConstant.html
+
+
+  Vec w4096 = rsDecimateViaMean(w8192, 2); //rsPlotVector(w4096);
+  Vec w2048 = rsDecimateViaMean(w4096, 2); //rsPlotVector(w2048);
+
+  std::string fileName;
+  fileName = waveName + "_K9.wav";
+  rosic::writeToMonoWaveFile(fileName.c_str(), &w4096[0], 4096, 56320, 16);
+
+  //fileName = waveName + "_K21.wav";
+  //rosic::writeToMonoWaveFile(fileName.c_str(), &w2048[0], 2048, 56320, 16);
+  // seems like we don't need the 8192 version..
+
+
+  // From the waveform of length 2048, we create the mip-map using the FFT/iFFT technique:
+  MipMappedWaveTableStereo mipMap;
+  double* pWave[2];
+  pWave[0] = pWave[1] = &w2048[0];
+  mipMap.setWaveform(pWave, 2048);
+  Vec tmp(mipMap.getTableLength());  // temp buffer for the succesive mip-map levels
+  int key = 21;
+  for(int i = 0; i < mipMap.getNumLevels(); i++)
+  {
+    mipMap.copyDataTo(&tmp[0], 0, i);
+    fileName = waveName + "_K" + std::to_string(key) +  ".wav";
+    rosic::writeToMonoWaveFile(fileName.c_str(), &tmp[0], 2048, 56320, 16);
+    key += 12;
+    //rsPlotVector(tmp);
+  }
+
+  // Observations:
+  // -In the 0th mip-map, it seems like the Nyquist freq is missing?
+  // -Allow the user to specify a tapering function such that we do not necessarily have to use
+  //  hard brickwall filters with all of their strong ringing
+  //
+  // ToDo:
+  // -Figure out (and maybe fix) the missing Nyquist freq in the 0th mip-map level.
+  //  -Commenting out the "Truncate the spectrum for the next iteration" part doesn't fix it.
+  //  -Maybe it has to do with the weird encoding of DC and Nyquist gain in the 0th spectral bin?
+  // -Looks like we could have one more level...but it will consume more memory
+  // -Write the different rendered levels to wavefiles with a meaningfully formatted way, such as
+  //  Saw_K21 for the w2048 wave.
 
   int dummy = 0;
 }

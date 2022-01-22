@@ -1,5 +1,4 @@
 
-/*
 std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount)
 {
   int N = (int)x.size();
@@ -24,7 +23,9 @@ std::vector<double> randomizePhases(const std::vector<double>& x, int seed, doub
   ft.getRealSignalFromMagnitudesAndPhases(&a[0], &p[0], &y[0]);
   return y;
 }
-*/
+
+
+
 
 
 /*

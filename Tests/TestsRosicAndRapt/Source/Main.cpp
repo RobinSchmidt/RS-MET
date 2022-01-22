@@ -632,11 +632,13 @@ int main(int argc, char* argv[])
   //createModalFilterExamples();
   //createModalFilterBankExamples(); // takes long
   //createPiano1();
-  //createSamplerWaveforms();
-  createBassdrumPsy1Samples();
-  createMiscSamples();
 
-  // sample-map creations (they take long):
+  // The new renering scripts for creating sample content for the sfz engine:
+  //createBassdrumPsy1Samples();
+  //createMiscSamples();
+  createSamplerWaveforms();
+
+  // Older sample-map creations based on modal synthesis (they take long):
   //createBass1();
   //createGong1();
   //createPluck1();
