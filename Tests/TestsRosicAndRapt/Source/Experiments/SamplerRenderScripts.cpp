@@ -1,32 +1,4 @@
 
-/*
-// get rid - there's a copy of it now in RenderScriptTools.cpp which should be used
-std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount)
-{
-  int N = (int)x.size();
-  RAPT::rsAssert(RAPT::rsIsPowerOfTwo(N), "Works only for power of 2 lengths");
-
-  // Do forward transform:
-  std::vector<double> y(N), a(N), p(N);
-  using FT = RAPT::rsFourierTransformerRadix2<double>;   // todo: use Bluestein later
-  FT ft;
-  ft.setBlockSize(N);
-  ft.getRealSignalMagnitudesAndPhases(&x[0], &a[0], &p[0]);
-
-  // Randomize phases:
-  RAPT::rsNoiseGenerator<double> ng;
-  ng.setSeed(seed);
-  ng.setRange(0.0, amount * 2*PI);
-  for(int k = 1; k < N; k++) {    // DC is unaffected
-    p[k] += ng.getSample();
-    p[k] =  RAPT::rsWrapToInterval(p[k], -PI, +PI); }
-
-  // Do inverse transform and return result:
-  ft.getRealSignalFromMagnitudesAndPhases(&a[0], &p[0], &y[0]);
-  return y;
-}
-*/
-
 void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
 {
   // Create a bassdrum sample using a weighted sum of exponential envelopes with different decay
@@ -48,7 +20,7 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   double freqWeight3 =  1.0;
   double freqFloor   =  0.0;
   double freqCeil    =  800;  // an excursion/depth would be better
-                              //double freqScale   = 1.0;    // 1: fundamental, 2,3,4,etc: overtones
+  //double freqScale   = 1.0;    // 1: fundamental, 2,3,4,etc: overtones
 
   // Amplitude envelope parameters:
   double ampDecay1  =   20;
@@ -222,10 +194,96 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   int dummy = 0;
 }
 
-void createSweepDrummerSamples(int sampleRate, double freqScale)
+std::vector<double> renderAlternatingSquareSweep(int N=2048)
+{
+  // Renders the sequence 1,-1,1,1,-1,-1,1,1,1,1,-1,-1,-1,-1,....
+  // Its intended to be used as transient for drum sounds
+
+  RAPT::rsAssert(RAPT::rsIsPowerOfTwo(N), "Works only for power of 2 lengths");
+
+  std::vector<double> y(N);
+  int M = 2;  // current sub-length
+  int n = 0;  // current index in sub-sequence
+  int s = 0;  // current start
+  while(M < N)
+  {
+    n = 0;
+
+    while(n < M/2)
+    {
+      y[s+n] = 1;
+      n++;
+    }
+    while(n < M)
+    {
+      y[s+n] = -1;
+      n++;
+    }
+
+    s += M;
+    M *= 2;
+  }
+
+  return y;
+}
+
+void createSweepDrummerSamples(int sampleRate)
 {
   // We do the same as the function above but this time with less code using the new rsSweepDrummer
   // class. When this is finished, the function above will be obsolete...
+
+  /*
+  // test to render some transient to mix in:
+  int N = 2048;
+  auto test = renderAlternatingSquareSweep(N);
+  rsPlotVector(test);
+  rosic::writeToMonoWaveFile("SquareSweep2048.wav", &test[0], N, sampleRate);
+  // using this as input to a reverb and then cutting off the initial section and further shaping
+  // the response can give intersting sounds. I think, we should generally explore the possibility
+  // to render drumsounds via FDNs
+  */
+
+
+  rsSweepDrummer<double> sd;
+  sd.setSampleRate(sampleRate);
+  //sd.setFreqScale(1.0);
+  //sd.setTimeScale(1.0);
+  //sd.setFreqFloor(0.0);
+  //sd.setFreqDepth(800);
+
+  // Freq envelope:
+  sd.setFreqDecays( 10.0,   80, 240);   // in ms
+  sd.setFreqWeights( 6.0,   -1,   1);   // raw factors
+  sd.setFreqDepth(800/6.0);             // in Hz
+
+  // Amp Enevlope:
+  sd.setAmpDecays(  20.0,  100, 400);
+  sd.setAmpWeights(  0.75,  -1,   1); 
+
+  // render signal:
+  double length = 1.2; // in seconds
+  int N = (int) ceil(length * sampleRate);
+  std::vector<double> xL(N), xR(N);
+  sd.noteOn(33, 64);  // A1, 55Hz, mid velocity
+  for(int n = 0; n < N; n++)
+    sd.processFrame(&xL[n], &xR[n]);
+
+  //using AT = RAPT::rsArrayTools;
+  rsNormalizeJointly(xL, xR);
+  int fadeStart = (int) ceil(1.0*sampleRate);
+  rsFadeOut(&xL[0], fadeStart, N);
+  rsFadeOut(&xR[0], fadeStart, N);
+
+  using namespace rosic;
+  writeToStereoWaveFile("rsSweepDrummerTest1.wav", &xL[0], &xR[0], N, sampleRate);
+  //  todo: apply dithering, use the new implementation and save to 24 bit
+
+  // ToDo:
+  // -Split off transient by applying a short amp env at the beginning and subtracting the so 
+  //  enveloped signal - save transient and body in seperate files to be recombined with weights
+  //  in the sampler - weights can be velocity dependent with stronger dependency for the transient
+  //  ...but maybe that can be realized in the sampler itself by using one short decay and one
+  //  with an equal attack? then we could remic transient and body in realtime
 
 
 
@@ -236,8 +294,9 @@ void createSweepDrummerSamples(int sampleRate, double freqScale)
 // move this to RenderScripts:
 void createBassdrumPsy1Samples()
 {
+  createSweepDrummerSamples(48000); return;
+  
   //createBassdrumPsy1Sample(1.0, true); return;  // for development
-
 
   bool plot = false;
   createBassdrumPsy1Sample(1.0, plot);
