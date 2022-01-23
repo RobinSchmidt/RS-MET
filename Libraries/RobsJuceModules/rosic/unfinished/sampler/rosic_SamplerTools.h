@@ -181,6 +181,12 @@ void rsSetupPointers(std::vector<T>& objectArray, std::vector<T*>& pointerArray)
 // move to library, maybe use it in the production code, too
 
 
+// Some helpers for string parsing:
+void rsRemoveLineComments(std::string& str, char commentStart);
+void rsReplaceCharacter(std::string& str, char oldChar, char newChar);
+void rsRemoveRepeats(std::string& s, char c);
+
+
 /*
 template<class T> // Grow v by given amount
 inline void rsGrow(std::vector<T>& v, size_t amount = 1)
