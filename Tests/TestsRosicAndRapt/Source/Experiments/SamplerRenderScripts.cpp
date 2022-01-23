@@ -227,7 +227,7 @@ std::vector<double> renderAlternatingSquareSweep(int N=2048)
   return y;
 }
 
-void createSweepDrummerSamples(int sampleRate)
+void renderSweepBassdrums(int sampleRate)
 {
   // We do the same as the function above but this time with less code using the new rsSweepDrummer
   // class. When this is finished, the function above will be obsolete...
@@ -270,7 +270,7 @@ void createSweepDrummerSamples(int sampleRate)
 
     rosic::writeToStereoWaveFile(fileName, &xL[0], &xR[0], N, sampleRate);
 
-    // todo: apply dithering, use the new implementation and save to 24 bit
+    // todo: apply dithering, use the new implementation and save to 24 or 32 bit (without dither)
   };
 
 
@@ -317,13 +317,22 @@ void createSweepDrummerSamples(int sampleRate)
   //  2 is the index of the preset
   // -Maybe render the raw signal without amp-env. The amp-env can be applied later in the 
   //  sampler.
-  // -render samples with a freq-floor, i.e. more tonal bassdrums
-  // -apply waveshape envelopes
+  // -apply waveshape envelopes - maybe it should go just up and down. at the start, the pitch
+  //  is high, so we may not want as many overtones. at the end, it's fading away amplitude-wise,
+  //  so the brightness should perhaps follow along. check out zeroDelayfeedbackPhaseMod, maybe
+  //  use asin
   // -Split off transient by applying a short amp env at the beginning and subtracting the so 
   //  enveloped signal - save transient and body in seperate files to be recombined with weights
   //  in the sampler - weights can be velocity dependent with stronger dependency for the transient
   //  ...but maybe that can be realized in the sampler itself by using one short decay and one
-  //  with an equal attack? then we could remic transient and body in realtime
+  //  with an equal attack? then we could remic transient and body in realtime - try in rgc:sfz
+  //  to load the same sample twice, for one apply a decay-only (50 ms) and to the other an 
+  //  attack-only (also 50 ms) and add the outputs (maybe the release needs to equal the decay). 
+  //  I hope that the sum will give back the original signal. If this is the case, we can use this
+  //  to apply the amp-envelopes in realtime with dynamic response to velocity. Generally, we want 
+  //  the velocity to control the "transientness" and spectral brightness (and also volume). Maybe 
+  //  velocity could control a mix between more or less overtones (and/or maybe a filter's cutoff).
+  //  Maybe velocity could also control an additional pitch envelope. and 
 
 
 
@@ -334,7 +343,7 @@ void createSweepDrummerSamples(int sampleRate)
 // move this to RenderScripts:
 void createBassdrumPsy1Samples()
 {
-  createSweepDrummerSamples(48000); return;
+  renderSweepBassdrums(48000); return;
   
   //createBassdrumPsy1Sample(1.0, true); return;  // for development
 

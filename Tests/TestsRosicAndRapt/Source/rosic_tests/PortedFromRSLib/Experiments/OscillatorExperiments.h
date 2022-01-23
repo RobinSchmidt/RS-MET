@@ -9,6 +9,6 @@ void phaseShapingCurvesRational();
 
 void phaseShaping();
 void phaseShapingSkew();
-void zeroDelayfeedbackPhaseMod();
+void zeroDelayFeedbackPhaseMod();
 
 #endif

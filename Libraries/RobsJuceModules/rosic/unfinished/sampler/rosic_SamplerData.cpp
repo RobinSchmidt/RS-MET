@@ -427,6 +427,15 @@ std::string SfzInstrument::getAsSFZ() const
   // at all 3 levels - i guess, it will use the most restrictive setting of all of them
 }
 
+void rsRemoveLineComments(std::string& str, char commentStart)
+{
+  // Removes everything between the given character that starts a comment and the next linebreak 
+  // except when the commentStart character is part of a string which is detected by looking for 
+  // a ". The commentStart character itself is also removed but the linebreak is kept.
+
+
+  int dummy = 0;
+}
 void rsReplaceCharacter(std::string& str, char oldChar, char newChar)
 {
   for(size_t i = 0; i < str.size(); i++) {
@@ -453,11 +462,11 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     return rsReturnCode::failed;
   size_t endOfFile = std::numeric_limits<size_t>::max();
 
-  // Pre-process the string to make parsing easier: replace newlines with whitespaces and then 
-  // replace sequences of multiple whitespaces with a single whitespace:
+  // Pre-process the string to make parsing easier:
   std::string str = strIn;
-  rsReplaceCharacter(str, '\n', ' ');
-  rsRemoveRepeats(str, ' ');
+  rsRemoveLineComments(str, '/');     // remove the comments
+  rsReplaceCharacter(str, '\n', ' '); // replace newlines with whitespaces
+  rsRemoveRepeats(str, ' ');          // replace sequences of whitespaces with single whitespace
   // -Factor out into a function preProcessSfz
   // -Include stripping away comments. A comment begins with a slash '/' and extends until the end
   //  of the line. It's really annyoing that we can't yet write any comments. Maybe hava a general

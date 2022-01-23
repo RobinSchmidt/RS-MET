@@ -123,6 +123,12 @@ inline void rsSweepDrummer<T>::processFrame(T* L, T* R)
 
   *L = amp * sin(phase - PI/4);
   *R = amp * sin(phase + PI/4);
+  //*L = amp * tanh(sin(phase - PI/4));
+  //*R = amp * tanh(sin(phase + PI/4));
+  //*L = amp * tanh(3*sin(phase - PI/4));
+  //*R = amp * tanh(3*sin(phase + PI/4));
+  //*L = amp * tanh(sin(phase - PI/4) + 0.2) - tanh(0.2);
+  //*R = amp * tanh(sin(phase + PI/4) + 0.2) - tanh(0.2);
   // ToDo: Use wave(phi +- PI/4, waveParam1, waveParam2) where param2 controls phase-shaping 
   // (sin-to-saw) and param2 waveshaping (sin/saw-to-square). Both parameters should also have an
   // envelope.

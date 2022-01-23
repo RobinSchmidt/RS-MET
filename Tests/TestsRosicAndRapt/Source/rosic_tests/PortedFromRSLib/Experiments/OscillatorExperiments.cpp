@@ -318,7 +318,7 @@ void phaseShapingSkew()
   int dummy = 0;
 }
 
-void zeroDelayfeedbackPhaseMod()
+void zeroDelayFeedbackPhaseMod()
 {
   // We want to generate a waveform via feedback phase-modulation without delay in the feedback 
   // path. The equation is 
@@ -336,7 +336,7 @@ void zeroDelayfeedbackPhaseMod()
   int maxIts = 100;     // maximum number of Newton steps, if 0, we get unit-delay feedback PM
 
   double w = 2*PI/cycle;
-  std::vector<double> y(N), z(N);
+  std::vector<double> y(N), z(N), q(N);
   for(int n = 1; n < N; n++)
   {
     double p = w*n;                    // sine phase
@@ -351,6 +351,7 @@ void zeroDelayfeedbackPhaseMod()
       if(abs(d) <= tol) break;         // break if converged
     }
     z[n] = t;                          // z is the ZDF signal
+    q[n] = asin(t);                    // the new phase angle
   }
 
   // Observations
@@ -369,6 +370,12 @@ void zeroDelayfeedbackPhaseMod()
   //  works nicely but is computationally expensive. Maybe implement a few variants of a 
   //  sineToSaw function taking as input the phase p and maybe an initial guess
 
-  rsPlotVectors(y, z, z-y);
+  // Try to unwrap the phase:
+  //rsArrayTools::add(&q[0], +2*PI, &q[0], N);
+  //rsArrayTools::unwrap(&q[0], N, 2*PI);
+  // ...that doesn't seem to work yet. ah - because the unwrapping assumes discontinuities in the
+  // function itself but we have only discontinuities in the derivative
+
+  rsPlotVectors(y, z, z-y, q);
   int dummy = 0;
 }
