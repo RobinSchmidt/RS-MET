@@ -1383,19 +1383,7 @@ bool samplerParserTest()
   std::string sfzStr;
   SE se2(maxLayers);
 
-  sfzStr = "\
-<group>\n\
-<region>\n\
-sample=Sin440Hz.wav / some comment\n\
-pitch_keycenter=69.000000\n\
-pan=-100.000000\n\
-/ another comment   \n\
-<region>\n\
-sample=Cos440Hz.wav\n\
-pitch_keycenter=69.000000\n\
-pan=100.000000";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  ok &= se2.isInSameStateAs(se);
+
 
 
   // Some tests that previously have triggered asserts:
@@ -1470,9 +1458,20 @@ pan=100.000000";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   ok &= se2.isInSameStateAs(se);
 
-
-  // ToDo:
-  // -introduce tests for sfz-strings containing comments
+  // Now with comments:
+  sfzStr = "\
+<group>\n\
+<region>\n\
+sample=Sin440Hz.wav / some comment\n\
+pitch_keycenter=69.000000\n\
+pan=-100.000000\n\
+/ another comment   \n\
+<region>\n\
+sample=Cos440Hz.wav\n\
+pitch_keycenter=69.000000\n\
+pan=100.000000";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  ok &= se2.isInSameStateAs(se);
 
   rsAssert(ok);
   return ok;
@@ -2801,7 +2800,6 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerParserTest(); 
   //ok &= samplerKeyVelTrackTest();
   //ok &= samplerModulationsTest();
 

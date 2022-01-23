@@ -47,7 +47,7 @@ Ideas for new opcodes
   load the big filter when a smaller one would suffice so we may have devise such a strategy 
   anyway. Also, some filter types actually have totally disjoint features (think, VA and elltiptic,
   for example), so it doesn't make sense to lump them all into one big uberfilter class when many
-  of such objects are needed.
+  of such objects are needed. The opcode may also be called formulaN. Maybe that's better.
 
 - tableN: Works like functionN but instead of specifying the function as a string, it loads a 
   table. The table could be stored in a .wav file or maybe in a .txt or .dat file like the ones 
