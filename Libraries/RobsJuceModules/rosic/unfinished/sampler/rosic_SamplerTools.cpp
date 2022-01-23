@@ -14,7 +14,6 @@ void rsRemoveLineComments(std::string& str, char commentStart)
   int state = inText;             // current state
   size_t ri = 0;                  // read index
   size_t wi = 0;                  // write index
-  //size_t length = str.size();
 
   while(ri < str.size()) {
 
@@ -25,10 +24,10 @@ void rsRemoveLineComments(std::string& str, char commentStart)
         state = inString;
       else
         state = inText;   }
-    else if(c == commentStart) {  // Detect start of comments
+    else if(c == commentStart) {   // Detect start of comments
       if(state != inString)
         state = inComment; }
-    else if(c == '\n') {          // Detect end of comments
+    else if(c == '\n') {           // Detect end of comments
       state = inText; }
 
     // Advance to next input character, possibly copying current into output:
@@ -44,8 +43,9 @@ void rsRemoveLineComments(std::string& str, char commentStart)
 
   // Maybe this is overkill - at least for the wavefile names. They are actually not given in 
   // quotes. However, maybe later we will need to handle strings anyway - for example, for the
-  // function or formula opcode. ...that also means we do not yet have test coverage for sfzs 
-  // containing strings
+  // formula opcode. ...that also means we do not yet have test coverage for sfzs  containing 
+  // strings ...what if a newline occurs within a string? We don't handle this case and maybe
+  // we don't need to. Do we?
 }
 
 void rsReplaceCharacter(std::string& str, char oldChar, char newChar)
@@ -57,6 +57,9 @@ void rsReplaceCharacter(std::string& str, char oldChar, char newChar)
 
 void rsRemoveRepeats(std::string& s, char c)
 {
+  // Removes repeated occurrences of character c, i.e. replaces each sequence of multiple cs with a 
+  // single c.
+
   if(s.size() < 2)
     return;
   size_t i = 0, j = 1;                  // i: read index, j: write index
