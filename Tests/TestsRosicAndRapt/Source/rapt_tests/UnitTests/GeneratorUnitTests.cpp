@@ -1473,6 +1473,9 @@ pan=100.000000";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   ok &= se2.isInSameStateAs(se);
 
+  // ToDo: test with a sample path that contains a '/', i.e. goes into a subdirectory. In this 
+  // case, the '/' within that path should not be mistaken for a comment
+
   rsAssert(ok);
   return ok;
 }
@@ -2872,5 +2875,9 @@ ToDo:
  https://github.com/sfz/opcode-suggestions/issues
 
 maybe open a thread at kvr..something like SFZ: interpreting and extending the format specification
+
+
+a nice list of all the various kinds of envelopes (ADSR, DAHDSR, ...):
+https://synth.fandom.com/de/wiki/H%C3%BCllkurve
 
 */

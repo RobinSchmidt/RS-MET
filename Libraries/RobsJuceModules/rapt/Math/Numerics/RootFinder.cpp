@@ -24,7 +24,10 @@ template<class T>
 T rsRootFinder<T>::bisection(const std::function<T(T)>& f, T xL, T xR, T y)
 {
   static const int maxNumIterations = 100; // 100 should be enough for double-precision
+
   T tol = std::numeric_limits<T>::epsilon();
+  // This is not always suitable! We really should let the caller pass this in
+
   T fL  = f(xL) - y;
   T xM, fM;
   for(int i = 1; i <= maxNumIterations; i++) {

@@ -324,42 +324,62 @@ void zeroDelayFeedbackPhaseMod()
   // path. The equation is 
   //   y[n] = sin(p[n] + a*y[n])  
   // where p[n] = w*n is the regular sine phase. We can't solve explicitly for y[n], so we consider
-  // it as a root finding porblem for the equation f(y) = y - sin(p + a*y) = 0. We solve it via 
+  // it as a root finding problem for the equation f(y) = y - sin(p + a*y) = 0. We solve it via 
   // Newton iteration. The derivative is given by f'(y) = 1 - a*cos(p + a*y)
 
   int N = 6000;         // number of samples to render
   double cycle = 2000;  // length of one cycle of the sinewave
 
-  double a = 0.95;       // feedback amount
+  double a = 0.996;     
+  // feedback amount, 0.996 works for cycle=2000 with Newton, 0.997 doesn't
 
   double tol = 1.e-13;
   int maxIts = 100;     // maximum number of Newton steps, if 0, we get unit-delay feedback PM
 
   double w = 2*PI/cycle;
   std::vector<double> y(N), z(N), q(N);
+
+  double p;
+
+  // Define objective function for root-finder:
+  auto func = [&](double y) { return y - sin(p + a*y); };
+
+
   for(int n = 1; n < N; n++)
   {
-    double p = w*n;                    // sine phase
+    p = w*n;                           // sine phase
     double t = sin(p + a*y[n-1]);      // initial guess using UDF-FB-PM, may be better to use z
     y[n] = t;                          // y is the UDF signal
+    
+    // Newton iteration:
+    //t = 0;  // test - use 0 as initial guess - nope!
     for(int i = 0; i < maxIts; i++)    // Newton iteration
     {
       double f  = t -   sin(p + a*t);  // function whose root we want to find
       double fp = 1 - a*cos(p + a*t);  // derivative of our function
-      double d  = -f/fp;               // calculate Newtion step
+      double d  = -f/fp;               // calculate Newton step
       t += d;                          // perform Newton step
       if(abs(d) <= tol) break;         // break if converged
     }
+    
+    // Test to use bisection instead of Newton:
+    //t = rsRootFinder<double>::bisection(func, -1.0, 1.0);
+
     z[n] = t;                          // z is the ZDF signal
     q[n] = asin(t);                    // the new phase angle
   }
 
   // Observations
   // -For a = 1.5, we get some discontinuities. Is that correct? When we set maxIts=0, we get
-  //  garbage, so probably the Newtion iteration does not converge to the correct value.
+  //  garbage, so probably the Newton iteration does not converge to the correct value.
   // -The greatest difference betwen UDF and ZDF exists around the discontinuity of the saw. There
   //  the UDF version tends to get asymmteric whereas the "cleaned up" ZDF version is still nicely
   //  symmetric.
+  // -For cycle=2000, N=6000, a=0.996 it still works but for 0.997 it doesn't. But increasing cycle
+  //  to 3000 and N to 9000, it works again. Conclusion: convergence of Newton iteration depends
+  //  on feedback factor (higher -> unstable) and cycle-length (shorter -> unstable)
+  // -We get a slightly larger stable range when using bisection instead of Newton, but it also 
+  //  starts to behave weird from 1 upwards
   //
   // Ideas:
   // -How about apply a saturation like tanh to the phase where the phase in in -pi..+pi and the
@@ -369,6 +389,13 @@ void zeroDelayFeedbackPhaseMod()
   //  useful, if we could achieve the goal with an explicit feedforward algorithm. Feedback PM
   //  works nicely but is computationally expensive. Maybe implement a few variants of a 
   //  sineToSaw function taking as input the phase p and maybe an initial guess
+  // -I suppose, the problem with higher feedback is that the initial guess for the iteration 
+  //  becomes more and more wrong around the signal's discontinuity. Maybe we need a different
+  //  strategy to come up with an initial guess. Having to pass in the previous value is 
+  //  inconvenient anyway. Maybe just take a triangular approximation of the sine that squeezes
+  //  into a saw with higher feedback. And/or maybe try bisection instead of Newton iteration. Or
+  //  Brent's method or regula falsi. Or: when the phase is close to a multiple to 2*pi, drag the
+  //  initial guess toward zero
 
   // Try to unwrap the phase:
   //rsArrayTools::add(&q[0], +2*PI, &q[0], N);
@@ -376,6 +403,12 @@ void zeroDelayFeedbackPhaseMod()
   // ...that doesn't seem to work yet. ah - because the unwrapping assumes discontinuities in the
   // function itself but we have only discontinuities in the derivative
 
+  //rsPlotVectors(y);  // only UDF signal
   rsPlotVectors(y, z, z-y, q);
   int dummy = 0;
+
+
+  // Resources:
+  // https://ristoid.net/modular/fm_variants.html
+  // https://ccrma.stanford.edu/software/snd/snd/fm.html
 }
