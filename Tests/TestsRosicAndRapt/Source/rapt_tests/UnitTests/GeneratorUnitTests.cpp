@@ -1092,7 +1092,8 @@ bool samplerSaveLoadTest()
   }
   rosic::writeToMonoWaveFile("Sin440Hz.wav", &sin440[0], N, (int)fs, 16);
   rosic::writeToMonoWaveFile("Cos440Hz.wav", &cos440[0], N, (int)fs, 16);
-  rosic::writeToStereoWaveFile("SinCos440Hz.wav", &sin440[0], &cos440[0], N, (int)fs, 16);
+  system("mkdir tmpwav");
+  rosic::writeToStereoWaveFile("tmpwav/SinCos440Hz.wav", &sin440[0], &cos440[0], N, (int)fs, 16);
   // Using "Samples/Sin440Hz.wav" works only, iff the "Samples" folder already exists. ToDo: maybe
   // writeToMonoWaveFile should create it, if it doesn't exist already.
 
@@ -1218,7 +1219,7 @@ bool samplerSaveLoadTest()
 
   // Test using a stereo sample:
   se.clearInstrument();
-  si = se.loadSampleToPool("SinCos440Hz.wav"); ok &= si == 0;
+  si = se.loadSampleToPool("tmpwav/SinCos440Hz.wav"); ok &= si == 0;
   ok &= se.getNumSamples() == 1;
   gi = se.addGroup();   ok &= gi == 0;
   ri = se.addRegion(0); ok &= ri == 0;
@@ -1475,6 +1476,9 @@ pan=100.000000";
 
   // ToDo: test with a sample path that contains a '/', i.e. goes into a subdirectory. In this 
   // case, the '/' within that path should not be mistaken for a comment
+
+
+
 
   rsAssert(ok);
   return ok;

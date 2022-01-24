@@ -30,8 +30,6 @@
 #include <rapt/rapt.h>
 #include <rosic/rosic.h>
 
-
-
 using namespace RAPT;  // get rid of this
 
 namespace RAPT
