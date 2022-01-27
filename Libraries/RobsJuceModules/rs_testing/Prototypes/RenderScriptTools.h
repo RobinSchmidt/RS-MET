@@ -230,6 +230,8 @@ inline void rsNoiseBurst<T>::processFrame(T* L, T* R)
   T amp = ampEnv.getSample();
   *L *= amp;
   *R *= amp;
+
+  sampleCount++;
 }
 
 

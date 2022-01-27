@@ -308,7 +308,7 @@ void renderSweepBassdrums(int sampleRate)
   // high ...ah! the freq starts out at 800 due to freqWeights[0] == 6. Maybe alway choose the 1st
   // weight = 1 such that the freq-depth directly gives the excursion
 
-  // This has a freq-env that gow like down-up-down (might be interesting for toms):
+  // This has a freq-env that goes like down-up-down (might be interesting for toms):
   sd.setFreqDecays( 10.0, 120, 240);
   sd.setFreqWeights( 6.0,  -2,   2); 
   render("SweepBassdrum2.wav", 1.2, 0.2);
@@ -319,13 +319,18 @@ void renderSweepBassdrums(int sampleRate)
   sd.setFreqDepth(1000/10.0);
   sd.setAmpDecays(  20.0,  80, 300);
   sd.setFreqFloor(55.0);
-  render("SweepBassdrum3.wav", 1.2, 0.2);
+  render("SweepBassdrum3_1.wav", 1.2, 0.2);
   // maybe this could use some overtones to emphasize the tonal character
 
-  // Reaching the 55Hz more quickly:
-  sd.setFreqDecays(4.0,  10,  40);
-  sd.setFreqDepth(1300/10.0);
-  render("SweepBassdrum4.wav", 1.2, 0.2);
+  // Reaching the 55Hz more quickly - it's almost the same as previous but a tad punchier. Maybe 
+  // get rid of the previous...but maybe the previous is nice for a lower velocity
+  sd.setFreqDecays(4.0,  10,  40);       // different
+  sd.setFreqWeights(10.0,  -1,   1);     // same
+  sd.setFreqDepth(1300/10.0);            // different
+  sd.setFreqFloor(55.0);                 // same
+  sd.setAmpDecays(  20.0,  80, 300);     // same
+  render("SweepBassdrum3_2.wav", 2.0, 0.2);
+
 
 
   int dummy = 0;
@@ -384,16 +389,14 @@ void createNoiseBursts(int sampleRate)
   rsNoiseBurst<double> nb;
   nb.setSampleRate(sampleRate);
 
-  nb.setAmpAttack(30.0);
-  nb.setAmpDecay(500.0); 
+  nb.setAmpAttack(50.0);
+  nb.setAmpDecay(200.0); 
   // maybe we should set up decay in terms of T60
 
   nb.setSpectralSlopeStart(   0.0);
-  nb.setSpectralSlopeChange(-20.0);  // 6 (dB/oct) / sec
+  nb.setSpectralSlopeChange(-10.0);  // in (dB/oct) / sec
 
-  //int N = 2000;
-
-  double length = 3.0;  // preliminary
+  double length = 5.0;  // preliminary
 
   int N = (int)ceil(length * sampleRate);
   std::vector<double> xL(N), xR(N);
@@ -401,16 +404,22 @@ void createNoiseBursts(int sampleRate)
   for(int n = 0; n < N; n++)
     nb.processFrame(&xL[n], &xR[n]);
 
-
-
   rosic::writeToStereoWaveFile("NoiseBurst.wav", &xL[0], &xR[0], N, sampleRate);
 
-  //rsPlotVectors(xL, xR);
 
-
-
-
-  return;
+  // Observations:
+  // -When we choose a too high setting for slope-change, the later part of the signal gets 
+  //  boosted. I think, it's because the slope filter doesn't normalize to unit magnitude at DC
+  //  but at 1 kHz (the pivot frequency). We need to normalize the slope-filter at DC. We can 
+  //  counteract the low-freq boost by choosing a shorter decay for the amp-env - but that's 
+  //  clunky. We need a variant of SlopeFilter that normalizes at DC - and maybe another one that 
+  //  normalizes at Nyquist when we want to introduce a 2nd filter to attenuate the bass over time.
+  //  But maybe for that, a time-variant highpass is more appropriate. A 2nd order Butterworth
+  //  highpass adjusted around 400 Hz seems to be good
+  //
+  // ToDo:
+  // -Use a state-variable and/or state-vector based implementation for better time-variant 
+  //  behavior
 }
 
 

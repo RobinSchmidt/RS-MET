@@ -58,4 +58,9 @@ void SlopeFilter::updateCoefficients()
   s1b0 *= normalizer;
   s1b1 *= normalizer;
   s1b2 *= normalizer;
+
+  // What is the rationale for the formula for the normalizer? We may need a variant that 
+  // normalizes to unit gain at DC (for downward slopes) and another one that normalizes at Nyquist
+  // (for upward slopes). I think, it currently normalizes the gain to unity at the center/pivot 
+  // frequency which is 1000 = sqrt(250 * 4000). Verify and document this!
 }

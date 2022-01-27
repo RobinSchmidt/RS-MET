@@ -19,7 +19,7 @@ class SlopeFilter
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Lifetime
 
   /** Constructor. */
   SlopeFilter();
@@ -28,7 +28,7 @@ public:
   ~SlopeFilter();
 
   //-----------------------------------------------------------------------------------------------
-  // setup:
+  // \name Setup:
 
   /** Sets the sample-rate on which the filter should operate. */
   void setSampleRate(double newSampleRate);
@@ -37,7 +37,7 @@ public:
   void setSlope(double newSlope);
 
   //-----------------------------------------------------------------------------------------------
-  // audio-processing:
+  // \name Processing:
 
   /** Computes one output-sample. */
   INLINE double getSample(double in);
@@ -46,8 +46,6 @@ public:
   INLINE void getSampleFrameStereo(double *inOutL, double *inOutR);
   // rename to processFrameStereo or processFrame
 
-  //-----------------------------------------------------------------------------------------------
-  // others:
 
   /** Resets the internal buffers. */
   void reset();
