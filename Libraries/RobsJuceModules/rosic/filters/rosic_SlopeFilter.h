@@ -6,7 +6,12 @@ namespace rosic
 
 /** This class implements a filter that approximates a (user-adjustable) constant slope in (dB/oct) 
 across the whole audible range using two second order shelving filters. 
--todo: templatize and drag over to RAPT */
+
+ToDo: 
+-templatize and drag over to RAPT 
+-use an SVF-based implementation (but maybe in a subclass - it's more expensive and may not always 
+ be needed - it's mostly for better time-variant behavior - maybe a state-vector based version 
+ could be useful, too).  */
 
 class SlopeFilter
 {
@@ -39,6 +44,7 @@ public:
 
   /** Computes one stereo output sample frame. */
   INLINE void getSampleFrameStereo(double *inOutL, double *inOutR);
+  // rename to processFrameStereo or processFrame
 
   //-----------------------------------------------------------------------------------------------
   // others:

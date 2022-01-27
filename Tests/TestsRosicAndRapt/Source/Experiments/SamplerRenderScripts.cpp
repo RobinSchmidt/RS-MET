@@ -251,8 +251,21 @@ void renderSweepBassdrums(int sampleRate)
   //sd.setFreqFloor(0.0);
   //sd.setFreqDepth(800);
 
+  // Helper function to apply time variying quantization (experimental - doesn't seem to sound 
+  // good):
+  auto quantize = [](std::vector<double>& xL, std::vector<double>& xR, 
+    double amount, double attack, double decay)
+  {
+    int N = (int) xL.size();
+    for(int n = 0; n < N; n++)
+    {
+      xL[n] = rsQuant(xL[n], amount);
+      xR[n] = rsQuant(xR[n], amount);
+    }
+  };
 
-  // Helper function to render oputput and write to file:
+
+  // Helper function to render output and write to file:
   auto render = [&](const char* fileName, double length, double fadeLength)
   {
   // render signal:
@@ -261,6 +274,10 @@ void renderSweepBassdrums(int sampleRate)
     sd.noteOn(33, 64);                      // A1, 55Hz, mid velocity
     for(int n = 0; n < N; n++)
       sd.processFrame(&xL[n], &xR[n]);
+
+    // experimental:
+    //quantize(xL, xR, 0.025, 0.0, 100.0);
+    // ...nah - that doesn't sound good
 
     //using AT = RAPT::rsArrayTools;
     rsNormalizeJointly(xL, xR);
@@ -286,7 +303,7 @@ void renderSweepBassdrums(int sampleRate)
   // The freq-env first goes down quickly, then almost stabilizes, and then goes down further more
   // slowly:
   render("SweepBassdrum1.wav", 1.2, 0.2);
-  // The freq excursion seems to gor far above 800/6 = 13.333. the first cycle is 65 samples long
+  // The freq excursion seems to go far above 800/6 = 13.333. the first cycle is 65 samples long
   // which translates to 48000/65 = 738.46.. Hz. -> figure out what makes the freq-excursion go so
   // high ...ah! the freq starts out at 800 due to freqWeights[0] == 6. Maybe alway choose the 1st
   // weight = 1 such that the freq-depth directly gives the excursion
@@ -311,7 +328,17 @@ void renderSweepBassdrums(int sampleRate)
   render("SweepBassdrum4.wav", 1.2, 0.2);
 
 
+  int dummy = 0;
+
   // ToDo:
+  // -Add an envelope for the quantization, use functionrsQuantize (or was it rsQuant)...hmmm...
+  //  don't know - maybe quantization is not a good idea. It doesn't sound good. The idea is to 
+  //  somehow introduce some noisy element into the attack transient. Simply mixing in decaying
+  //  noise may work too, especially in combination with reverb. But that's somehow dissatisfying.
+  //  it would be nice to "derive" some noisy signal from the raw bassdrum signal. Maybe we can
+  //  drive a chaos generator whose chaoticity is controlled by some aspect of the bassdrum? Maybe
+  //  take the derivative, square it, smooth it
+
   // -allow rendering of the envelopes for inspection
   // -maybe make a class rsSweepDrumPresets that we can use like: preset.setup(sd, 2); where
   //  2 is the index of the preset
@@ -334,19 +361,16 @@ void renderSweepBassdrums(int sampleRate)
   //  velocity could control a mix between more or less overtones (and/or maybe a filter's cutoff).
   //  Maybe velocity could also control an additional pitch envelope. and 
 
-
-
-
-  int dummy = 0;
 }
 
-// move this to RenderScripts:
-void createBassdrumPsy1Samples()
+void createBassdrumPsy1Samples()  // rename to createSweepBassdrumSamples
 {
   renderSweepBassdrums(48000); return;
   
   //createBassdrumPsy1Sample(1.0, true); return;  // for development
 
+  // old - may become obsolete as soon as the new renderSweepBassdrums is finished and re-creates 
+  // all samples we create here:
   bool plot = false;
   createBassdrumPsy1Sample(1.0, plot);
   createBassdrumPsy1Sample(1.5, plot);
@@ -355,9 +379,45 @@ void createBassdrumPsy1Samples()
   createBassdrumPsy1Sample(4.0, plot);
 }
 
+void createNoiseBursts(int sampleRate)
+{
+  rsNoiseBurst<double> nb;
+  nb.setSampleRate(sampleRate);
+
+  nb.setAmpAttack(30.0);
+  nb.setAmpDecay(500.0); 
+  // maybe we should set up decay in terms of T60
+
+  nb.setSpectralSlopeStart(   0.0);
+  nb.setSpectralSlopeChange(-20.0);  // 6 (dB/oct) / sec
+
+  //int N = 2000;
+
+  double length = 3.0;  // preliminary
+
+  int N = (int)ceil(length * sampleRate);
+  std::vector<double> xL(N), xR(N);
+  nb.noteOn(60, 64);
+  for(int n = 0; n < N; n++)
+    nb.processFrame(&xL[n], &xR[n]);
+
+
+
+  rosic::writeToStereoWaveFile("NoiseBurst.wav", &xL[0], &xR[0], N, sampleRate);
+
+  //rsPlotVectors(xL, xR);
+
+
+
+
+  return;
+}
+
 
 void createMiscSamples()
 {
+  createNoiseBursts(48000);
+
   // Create miscelanneous other samples that are useful as raw material in the sampler engine.
 
   using Vec = std::vector<double>;

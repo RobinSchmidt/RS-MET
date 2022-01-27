@@ -7,7 +7,7 @@ waveshape and amplitude of an oscillator. Each of these envelopes is formed as a
 exponential decays ...tbc... */
 
 template<class T>
-class rsSweepDrummer
+class rsSweepDrummer  // renam to rsSweepDrum
 {
 
 
@@ -153,6 +153,85 @@ inline void rsSweepDrummer<T>::updateCoeffs()
   }
   dirty = false;
 }
+
+//=================================================================================================
+
+/** A class to create noise bursts with attack/decay envelopes for spectral slope and amplitude.
+Mostly meant for generating impulse responses for convolution. */
+
+
+template<class T>
+class rsNoiseBurst
+{
+
+public:
+
+  void setSampleRate(T newSampleRate) { sampleRate = newSampleRate; }
+
+  void setAmpAttack(T newAttack) { ampEnv.setAttackSamples(newAttack * 0.001 * sampleRate); }
+  void setAmpDecay( T newDecay ) { ampEnv.setDecaySamples( newDecay  * 0.001 * sampleRate); }
+
+  //void setSlopeAttack(T newAttack) { slopeEnv.setAttackSamples(newAttack * 0.001 * sampleRate); }
+  //void setSlopeDecay( T newDecay ) { slopeEnv.setDecaySamples( newDecay  * 0.001 * sampleRate); }
+
+  void setSpectralSlopeStart( T newStart)  { slopeStart = newStart; }
+  void setSpectralSlopeChange(T newChange) { slopeChange = newChange; }
+
+  // setMinSlope, setMaxslope
+
+  // setIrwinHallOrder, setSeeds(seedL, seedR)
+
+  void noteOn(int key, int vel)
+  {
+    sampleCount = 0;
+    noiseGenL.setSeed(seedL);
+    noiseGenR.setSeed(seedR);
+    ampEnv.reset();
+    ampEnv.noteOn(key, vel);
+    slopeFilter.reset();
+  }
+
+  inline void processFrame(T* L, T* R);
+
+protected:
+
+
+  T sampleRate = 44100;
+  //bool dirty = true;
+
+  RAPT::rsAttackDecayEnvelope<T> ampEnv; //, slopeEnv;
+  rosic::SlopeFilter slopeFilter;
+  RAPT::rsNoiseGenerator<T> noiseGenL, noiseGenR;
+
+  int seedL = 0, seedR = 1;
+
+  int sampleCount = 0;
+
+  T slopeStart  = 0.0;
+  T slopeChange = 0.0; // in (dB/oct) / sec
+
+  // maybe have two slopes to create a sort of bandpass character
+
+};
+
+template<class T>
+inline void rsNoiseBurst<T>::processFrame(T* L, T* R)
+{
+  // Generate raw white noise:
+  *L = noiseGenL.getSample();
+  *R = noiseGenR.getSample();
+
+  // Compute and apply spectral slope:
+  T slope = slopeStart + slopeChange * sampleCount / sampleRate;
+  slopeFilter.setSlope(slope);
+  slopeFilter.getSampleFrameStereo(L, R);
+
+  // Compute and apply amplitude envelope:
+  T amp = ampEnv.getSample();
+  *L *= amp;
+  *R *= amp;
+}
+
 
 //=================================================================================================
 

@@ -396,12 +396,17 @@ void zeroDelayFeedbackPhaseMod()
   //  into a saw with higher feedback. And/or maybe try bisection instead of Newton iteration. Or
   //  Brent's method or regula falsi. Or: when the phase is close to a multiple to 2*pi, drag the
   //  initial guess toward zero
+  // -Maybe try to use peridoci cubic spline interpolation of the phase: fix points (-pi,-pi),
+  //  (+pi,+pi) and for the middle point (0,y) make y adjustable. The result would be only 2nd 
+  //  order smooth but maybe that's good enough. After all, we actually want to create some 
+  //  harmonics with this technique anyway.
 
   // Try to unwrap the phase:
   //rsArrayTools::add(&q[0], +2*PI, &q[0], N);
   //rsArrayTools::unwrap(&q[0], N, 2*PI);
   // ...that doesn't seem to work yet. ah - because the unwrapping assumes discontinuities in the
-  // function itself but we have only discontinuities in the derivative
+  // function itself but we have only discontinuities in the derivative. Maybe try to
+  // differentiate -> unwrap -> integrate (numerically)? But wrap at what value?
 
   //rsPlotVectors(y);  // only UDF signal
   rsPlotVectors(y, z, z-y, q);
