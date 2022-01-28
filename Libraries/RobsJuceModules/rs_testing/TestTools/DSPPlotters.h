@@ -214,6 +214,8 @@ public:
 
   void setFreqAxisUnit(FreqAxisUnits newUnit) { freqAxisUnit = newUnit; }
 
+  void setLogFreqAxis(bool freqsAreLogarithmic) { logFreqAxis = freqsAreLogarithmic; };
+
   /** Sets the floor level for the plot in decibels. */
   void setFloorLevel(T newFloor) { dBFloor = newFloor; }
 
@@ -232,6 +234,8 @@ protected:
   int fftSize = 2048;
 
   //bool plotPhases = true;
+
+  bool logFreqAxis = false;
 
   T dBFloor = T(-120);
 

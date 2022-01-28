@@ -543,7 +543,8 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
     int dummy = 0;
   }
 
-  //setLogScale("x"); // make this a user option
+  if(logFreqAxis)
+    setLogScale("x"); // uses decadic ticks -> use octaves instead
 
   plot();
 }

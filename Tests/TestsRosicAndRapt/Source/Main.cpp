@@ -591,7 +591,7 @@ int main(int argc, char* argv[])
   //testFiniteImpulseResponseDesigner();
   //testFilterAnalyzer();
   //testBiquadCascade();
-  //testSlopeFilter();
+  testSlopeFilter();
   //testPrototypeDesigner();
   //testLowpassToLowshelf();
   //testBesselPrototypeDesign();

@@ -388,27 +388,61 @@ void createNoiseBursts(int sampleRate)
 {
   rsNoiseBurst<double> nb;
   nb.setSampleRate(sampleRate);
-
   nb.setIrwinHallOrder(8);
+  nb.setSpectralSlopeStart(0.0);   // start out white
+
+  // Helper function to render output and write to file:
+  auto render = [&](const char* fileName, double length, double fadeLength)
+  {
+    // render signal:
+    int N = (int)ceil(length * sampleRate);
+    std::vector<double> xL(N), xR(N);
+    nb.noteOn(60, 64);                      // A1, 55Hz, mid velocity
+    for(int n = 0; n < N; n++)
+      nb.processFrame(&xL[n], &xR[n]);
+
+    //using AT = RAPT::rsArrayTools;
+    rsNormalizeJointly(xL, xR);
+    int fadeStart = (int)ceil((length-fadeLength)*sampleRate);
+    rsFadeOut(&xL[0], fadeStart, N);
+    rsFadeOut(&xR[0], fadeStart, N);
+
+    rosic::writeToStereoWaveFile(fileName, &xL[0], &xR[0], N, sampleRate);
+
+    // todo: apply dithering, use the new implementation and save to 24 or 32 bit (without dither)
+  };
 
   nb.setAmpAttack(100.0);
-  nb.setAmpDecay(2000.0); 
-  // maybe we should set up decay in terms of T60, maybe call it setReverbTime60
-
-  nb.setSpectralSlopeStart(   0.0);
+  nb.setAmpDecay(2000.0);  // maybe set up decay in terms of T60, maybe call it setReverbTime60
   nb.setSpectralSlopeChange(-5.0);  // in (dB/oct) / sec
+  render("NoiseBurst_100_2000_5.wav", 5.0, 0.2);
 
-  double length = 5.0;
+  nb.setAmpAttack(50.0);
+  nb.setAmpDecay(1000.0);
+  nb.setSpectralSlopeChange(-10.0);
+  render("NoiseBurst_50_1000_10.wav", 2.6, 0.2);
 
-  int N = (int)ceil(length * sampleRate);
-  std::vector<double> xL(N), xR(N);
-  nb.noteOn(60, 64);
-  for(int n = 0; n < N; n++)
-    nb.processFrame(&xL[n], &xR[n]);
+  nb.setAmpAttack(30.0);
+  nb.setAmpDecay(800.0);
+  nb.setSpectralSlopeChange(-15.0);
+  render("NoiseBurst_30_800_15.wav", 1.8, 0.2);
 
-  rsNormalizeJointly(xL, xR);
+  nb.setAmpAttack(20.0);
+  nb.setAmpDecay(500.0);
+  nb.setSpectralSlopeChange(-25.0);
+  render("NoiseBurst_20_500_25.wav", 1.0, 0.2);
 
-  rosic::writeToStereoWaveFile("NoiseBurst.wav", &xL[0], &xR[0], N, sampleRate);
+  nb.setAmpAttack(10.0);
+  nb.setAmpDecay(300.0);
+  nb.setSpectralSlopeChange(-30.0);
+  render("NoiseBurst_10_300_30.wav", 0.6, 0.2);
+
+  nb.setAmpAttack(10.0);
+  nb.setAmpDecay(300.0);
+  nb.setSpectralSlopeChange(-60.0);
+  render("NoiseBurst_10_300_60.wav", 0.6, 0.2);
+
+
 
   // settings befor introducing the normalizer for the slope-filter: 
   // 50/100/-20; 50,200,-10; 10,50,-25
@@ -418,7 +452,9 @@ void createNoiseBursts(int sampleRate)
   // -with 50,200,-10, there is a strange noise artifact at the end (after 4.5 secs). With a faster
   //  slope-change, this happens earlier. seems like when the slope hits -45.220833333333331, the
   //  computed DC gain of the slope filter becomes infinite. At -45.707916666666669, it becomes 
-  //  NaN. Maybe we need to limit the slope to -45
+  //  NaN. Maybe we need to limit the slope to -45, Or: Maybe use 2 slope filters in series each with 
+  //  only half of the slope. Or: maybe make a SlopeFilterChain class that let's the use select the 
+  //  number M of filters and each partial filter realizes a slope of slope/M.
   // -When we choose a too high setting for slope-change, the later part of the signal gets 
   //  boosted. I think, it's because the slope filter doesn't normalize to unit magnitude at DC
   //  but at 1 kHz (the pivot frequency). We need to normalize the slope-filter at DC. We can 
@@ -427,6 +463,7 @@ void createNoiseBursts(int sampleRate)
   //  normalizes at Nyquist when we want to introduce a 2nd filter to attenuate the bass over time.
   //  But maybe for that, a time-variant highpass is more appropriate. A 2nd order Butterworth
   //  highpass adjusted around 400 Hz seems to be good
+  // -With shorter settings, it could be useful to create snare-like sounds
   //
   // ToDo:
   // -Use a state-variable and/or state-vector based implementation for better time-variant 
@@ -435,6 +472,9 @@ void createNoiseBursts(int sampleRate)
   // -Try higher order Irwin-Hall distributions for the input noise. Maybe try (time-varying)
   //  bimodal and trimodal distributions. Maybe it should start out bimodal and over time, the
   //  modes should merge into one.
+  // -Try to fix the problem in the slope filter when the slope gets really large. Actually, we 
+  //  should plot the magnitude responses anyway. Maybe try to use a filter-bank based approach
+  //  instead of the slope filter. Maybe Linkwitz-Riley filters could be good for this
 }
 
 

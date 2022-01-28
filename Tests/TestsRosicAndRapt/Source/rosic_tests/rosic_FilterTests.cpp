@@ -855,33 +855,69 @@ void rotes::testSlopeFilter()
   rosic::SlopeFilter filter;
   filter.setSampleRate(sampleRate);
   filter.setSlope(+6);
+  filter.setSlope(-10);
 
 
   // obtain impulse-response, convert to spectrum and plot the magnitude response:
 
   static const int length = 8192;
-  double impulseResponse[length];
-  impulseResponse[0] = filter.getSample(1.0);
+
+  using Vec = std::vector<double>;
+
+  Vec impResp(length);
+  impResp[0] = filter.getSample(1.0);
   int n;
   for(n=1; n<length; n++)
-    impulseResponse[n] = filter.getSample(0.0);
+    impResp[n] = filter.getSample(0.0);
 
+  /*
+  Vec freqs(length);
+  Vec mags(length);
+  Vec decibels(length);
+  */
 
+  /*
+  RAPT::rsArrayTools::fillWithIndex(&freqs[0], length);
+  RAPT::rsArrayTools::scale(&freqs[0], &freqs[0], length, sampleRate/length);
 
-  double frequencies[length];
-  double magnitudes[length];
-  double decibels[length];
-
-  RAPT::rsArrayTools::fillWithIndex(frequencies, length);
-  RAPT::rsArrayTools::scale(frequencies, frequencies, length, sampleRate/length);
-
-  fftMagnitudesAndPhases(impulseResponse, length, magnitudes, NULL, length);
+  fftMagnitudesAndPhases(&impResp[0], length, &mags[0], nullptr, length);
 
   for(n=0; n<length; n++)
-    decibels[n] = RAPT::rsAmpToDb(length*magnitudes[n]);
+    decibels[n] = RAPT::rsAmpToDb(length*mags[n]);
 
-  plotData(length/4, frequencies, decibels); 
+  plotData(length/4, &freqs[0], &decibels[0]); 
+  rsPlotSpectrum(mags, sampleRate);
+  */
 
+  /*
+  SpectrumPlotter<double> plt;
+  plt.setSampleRate(sampleRate);
+  plt.setLogFreqAxis(true);
+  plt.setFftSize(length);
+  plt.plotDecibelSpectra(length, &impResp[0]);
+  */
+
+  int N = 1024;
+  Vec freqs(N), mags(N), decibels(N);
+  RAPT::rsArrayTools::fillWithRangeExponential(&freqs[0], N, 20.0, 20000.0);
+  for(int k = 0; k < N; k++)
+  {
+    mags[k] = filter.getMagnitudeAt(freqs[k]);
+    decibels[k] = RAPT::rsAmpToDb(mags[k]);
+  }
+  GNUPlotter plt2;
+  plt2.addDataArrays(N, &freqs[0], &decibels[0]);
+  plt2.setLogScale("x");
+  plt2.plot();
+
+
+
+
+  // ToDo:
+  // -plot also the computed magnitude together with the measured one
+  // -try more extreme slopes - check out what the limts are
+  // -to achieve slopes beyond the limits, use a number of M slope filters in series, each 
+  //  realizing slope/M
 
   int dummy = 0;
 }
