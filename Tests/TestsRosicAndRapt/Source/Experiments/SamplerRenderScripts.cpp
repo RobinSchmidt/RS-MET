@@ -389,14 +389,14 @@ void createNoiseBursts(int sampleRate)
   rsNoiseBurst<double> nb;
   nb.setSampleRate(sampleRate);
 
-  nb.setAmpAttack(50.0);
-  nb.setAmpDecay(200.0); 
-  // maybe we should set up decay in terms of T60
+  nb.setAmpAttack(100.0);
+  nb.setAmpDecay(2000.0); 
+  // maybe we should set up decay in terms of T60, maybe call it setReverbTime60
 
   nb.setSpectralSlopeStart(   0.0);
-  nb.setSpectralSlopeChange(-10.0);  // in (dB/oct) / sec
+  nb.setSpectralSlopeChange(-5.0);  // in (dB/oct) / sec
 
-  double length = 5.0;  // preliminary
+  double length = 5.0;
 
   int N = (int)ceil(length * sampleRate);
   std::vector<double> xL(N), xR(N);
@@ -404,10 +404,19 @@ void createNoiseBursts(int sampleRate)
   for(int n = 0; n < N; n++)
     nb.processFrame(&xL[n], &xR[n]);
 
+  rsNormalizeJointly(xL, xR);
+
   rosic::writeToStereoWaveFile("NoiseBurst.wav", &xL[0], &xR[0], N, sampleRate);
+
+  // settings befor introducing the normalizer for the slope-filter: 
+  // 50/100/-20; 50,200,-10; 10,50,-25
 
 
   // Observations:
+  // -with 50,200,-10, there is a strange noise artifact at the end (after 4.5 secs). With a faster
+  //  slope-change, this happens earlier. seems like when the slope hits -45.220833333333331, the
+  //  computed DC gain of the slope filter becomes infinite. At -45.707916666666669, it becomes 
+  //  NaN. Maybe we need to limit the slope to -45
   // -When we choose a too high setting for slope-change, the later part of the signal gets 
   //  boosted. I think, it's because the slope filter doesn't normalize to unit magnitude at DC
   //  but at 1 kHz (the pivot frequency). We need to normalize the slope-filter at DC. We can 
@@ -420,6 +429,10 @@ void createNoiseBursts(int sampleRate)
   // ToDo:
   // -Use a state-variable and/or state-vector based implementation for better time-variant 
   //  behavior
+  // -Maybe try other shapes for the slope envelope. It's currently just linear.
+  // -Try higher order Irwin-Hall distributions for the input noise. Maybe try (time-varying)
+  //  bimodal and trimodal distributions. Maybe it should start out bimodal and over time, the
+  //  modes should merge into one.
 }
 
 

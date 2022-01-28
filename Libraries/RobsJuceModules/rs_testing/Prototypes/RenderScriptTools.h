@@ -223,11 +223,19 @@ inline void rsNoiseBurst<T>::processFrame(T* L, T* R)
 
   // Compute and apply spectral slope:
   T slope = slopeStart + slopeChange * sampleCount / sampleRate;
+  slope   = rsMax(slope, -45.0);  // roughly the limit beyond weird things happen
   slopeFilter.setSlope(slope);
   slopeFilter.getSampleFrameStereo(L, R);
 
+  // Compute compensation gain for slope filter:
+  T slopeGainDC = slopeFilter.getMagnitudeAt(0.0);
+  //rsAssert(slopeGainDC > 0.0);
+  //rsAssert(rsIsFiniteNumber(slopeGainDC));
+
   // Compute and apply amplitude envelope:
   T amp = ampEnv.getSample();
+  amp /= slopeGainDC;           // normalize filter magnitude at DC
+  rsAssert(amp <= 1.0 && amp >= 0.0);
   *L *= amp;
   *R *= amp;
 

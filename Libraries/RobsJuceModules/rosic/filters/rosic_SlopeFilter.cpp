@@ -30,6 +30,19 @@ void SlopeFilter::setSlope(double newSlope)
 }
 
 //-------------------------------------------------------------------------------------------------
+// inquiry:
+
+double SlopeFilter::getMagnitudeAt(double frequency)
+{
+  double w, g;
+  w  = 2*PI*frequency/sampleRate;
+  g  = RAPT::biquadMagnitudeAt(s1b0, s1b1, s1b2, -s1a1, -s1a2, w);
+  g *= RAPT::biquadMagnitudeAt(s2b0, s2b1, s2b2, -s2a1, -s2a2, w);
+  return g;
+}
+// todo: make sign-convention for a-coeffs consistent throughout library
+
+//-------------------------------------------------------------------------------------------------
 // others:
 
 void SlopeFilter::reset()

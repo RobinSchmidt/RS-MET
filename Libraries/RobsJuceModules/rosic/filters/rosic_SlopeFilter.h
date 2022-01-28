@@ -37,6 +37,11 @@ public:
   void setSlope(double newSlope);
 
   //-----------------------------------------------------------------------------------------------
+  // \name Inquiry:
+
+  double getMagnitudeAt(double frequency);
+
+  //-----------------------------------------------------------------------------------------------
   // \name Processing:
 
   /** Computes one output-sample. */
