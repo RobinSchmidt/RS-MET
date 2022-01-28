@@ -177,6 +177,12 @@ public:
   void setSpectralSlopeStart( T newStart)  { slopeStart = newStart; }
   void setSpectralSlopeChange(T newChange) { slopeChange = newChange; }
 
+  void setIrwinHallOrder(int newOrder)
+  {
+    noiseGenL.setOrder(newOrder);
+    noiseGenR.setOrder(newOrder);
+  }
+
   // setMinSlope, setMaxslope
 
   // setIrwinHallOrder, setSeeds(seedL, seedR)
@@ -201,7 +207,7 @@ protected:
 
   RAPT::rsAttackDecayEnvelope<T> ampEnv; //, slopeEnv;
   rosic::SlopeFilter slopeFilter;
-  RAPT::rsNoiseGenerator<T> noiseGenL, noiseGenR;
+  RAPT::rsNoiseGenerator2<T> noiseGenL, noiseGenR;
 
   int seedL = 0, seedR = 1;
 

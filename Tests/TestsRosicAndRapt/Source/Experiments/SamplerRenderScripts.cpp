@@ -389,6 +389,8 @@ void createNoiseBursts(int sampleRate)
   rsNoiseBurst<double> nb;
   nb.setSampleRate(sampleRate);
 
+  nb.setIrwinHallOrder(8);
+
   nb.setAmpAttack(100.0);
   nb.setAmpDecay(2000.0); 
   // maybe we should set up decay in terms of T60, maybe call it setReverbTime60
