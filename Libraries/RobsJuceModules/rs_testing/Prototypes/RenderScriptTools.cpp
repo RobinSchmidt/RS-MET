@@ -62,10 +62,18 @@ void rsConvolveFiles(const char* fileNameX, const char* fileNameH)
   // Read input signal:
   int numChannelsX, numFramesX, sampleRateX;
   double** x = rosic::readFromWaveFile(fileNameX, numChannelsX, numFramesX, sampleRateX);
+  RAPT::rsAssert(numChannelsX == 2, "rsConvolveFiles currently works only for stereo inputs");
 
   // Read impulse response:
   int numChannelsH, numFramesH, sampleRateH;
   double** h = rosic::readFromWaveFile(fileNameH, numChannelsH, numFramesH, sampleRateH);
+  RAPT::rsAssert(numChannelsH == 2, "rsConvolveFiles currently works only for stereo inputs");
+
+  //RAPT::rsAssert(numChannelsX == numChannelsH, "x and h must have the same number of channels");
+  // I'm not yet sure what to do in general when x and h have a different number of channels - 
+  // although it's actually quite obvious what to do in the case when one signal has only one 
+  // channel. But the implementation of the stuff below, also with respect to computing the 
+  // differences may be a bit more complicated...
 
   // Allocate memory for output signal:
   int numChannelsY = rsMax(numChannelsX, numChannelsH);
@@ -73,6 +81,21 @@ void rsConvolveFiles(const char* fileNameX, const char* fileNameH)
   double** y = rsAllocateMatrix<double>(numChannelsY, numFramesY);
 
   // Do the convolutions of the channels:
+  rosic::ConvolverPartitioned convolver;
+  for(int c = 0; c < numChannelsY; c++)
+  {
+    convolver.setImpulseResponse(h[c], numFramesH);
+    convolver.clearInputBuffers();
+    for(int n = 0; n < numFramesX; n++)
+      y[c][n] = convolver.getSample(x[c][n]);
+    for(int n = numFramesX; n < numFramesY; n++)
+      y[c][n] = convolver.getSample(0.0);
+  }
+
+  // Normalize output signal and write to wavefile:
+  RAPT::rsArrayTools::normalize(y[0], numChannelsY*numFramesY, 1.0); // joint normalization
+  rosic::writeToStereoWaveFile("Convolved.wav", y[0], y[1], numFramesY, sampleRateX, 16);
+  // ToDo: generate a name from the names of the input files
 
 
 
