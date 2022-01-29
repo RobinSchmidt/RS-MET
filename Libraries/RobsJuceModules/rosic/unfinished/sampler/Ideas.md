@@ -17,12 +17,16 @@ Ideas for new opcodes
 - retrigger_mode: Controls what happens when the same note is retriggered that is currently still 
   playing (presumably in release phase). Available modes could be: new_layer: just triggers a new 
   layer and the old one also keeps playing. retrigger_envs: re-uses the currently playing layer but
-  re-triggers its envelopes. retrigger_all: retriggers also LFOs and restarts the sample. 
-  new_and_choke: triggers a new layer and shuts off the old one immediately with quick fade-out 
-  over a few milliseconds maybe. May also be called new_and_suppress, new_and_shutdown, 
-  new_and_brake, new_and_stall, new_and_stop. ...Check, if there is already something similar in 
-  sfz. Maybe the quick fade out could have an additional time parameter - like new_and_stop_10ms 
-  for a 10 ms fade-out. new_layer could also be called overlap or self_overlap.
+  re-triggers its envelopes. retrigger_all: retriggers also LFOs and restarts the sample (maybe 
+  there should be a very short crossfade between the playing and restarted sample). new_and_choke: 
+  triggers a new layer and shuts off the old one immediately with quick fade-out over a few 
+  milliseconds maybe. May also be called new_and_suppress, new_and_shutdown, new_and_brake, 
+  new_and_stall, new_and_stop. ...Check, if there is already something similar in sfz. Maybe the 
+  quick fade out could have an additional time parameter - like new_and_stop_10ms for a 10 ms 
+  fade-out. new_layer could also be called overlap or self_overlap. The envelope retriggering could
+  itself operate in different modes: start from current, start from start, additive. Maybe these 
+  options could be appended to the retrigger_envs option..or maybe retigger=envs_from_current, 
+  envs_from_start, envs_additive, overlap, restart, quick_fade_10ms
 
 - invert (or negate): Switches polarity of signal. Might be integrated into the Amplifier unit. But
   actually, that may be redundant: negation should already be possible by a certain setting of 

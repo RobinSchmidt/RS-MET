@@ -1,7 +1,7 @@
 #pragma once
 
 
-void createBassdrumPsy1Samples();
+//void createBassdrumPsy1Samples();
 void createMiscSamples();
 
 // Multisample creations:

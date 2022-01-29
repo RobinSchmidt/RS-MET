@@ -332,7 +332,6 @@ void renderSweepBassdrums(int sampleRate)
   render("SweepBassdrum3_2.wav", 2.0, 0.2);
 
 
-
   int dummy = 0;
 
   // ToDo:
@@ -365,14 +364,11 @@ void renderSweepBassdrums(int sampleRate)
   //  the velocity to control the "transientness" and spectral brightness (and also volume). Maybe 
   //  velocity could control a mix between more or less overtones (and/or maybe a filter's cutoff).
   //  Maybe velocity could also control an additional pitch envelope. and 
-
 }
 
-void createBassdrumPsy1Samples()  
+void createBassdrumSamplesOld()  
 {
   // rename to createSweepBassdrumSamples or remove and integrate into createMiscSamples
-
-  renderSweepBassdrums(48000); return;
 
   //createBassdrumPsy1Sample(1.0, true); return;  // for development
 
@@ -482,7 +478,11 @@ void createNoiseBursts(int sampleRate)
 
 void createMiscSamples()
 {
+  createBassdrumSamplesOld();  // becomes obsolete when renderSweepBassdrums renders all of them
+  renderSweepBassdrums(48000); 
   createNoiseBursts(48000);
+  rsConvolveFiles("SweepBassdrum1.wav", "NoiseBurst_50_1000_10.wav");
+  return;
 
   // Create miscelanneous other samples that are useful as raw material in the sampler engine.
 
