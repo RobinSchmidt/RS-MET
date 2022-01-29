@@ -854,72 +854,47 @@ void rotes::testSlopeFilter()
 
   rosic::SlopeFilter filter;
   filter.setSampleRate(sampleRate);
-  filter.setSlope(+6);
-  filter.setSlope(-10);
-
-
-  // obtain impulse-response, convert to spectrum and plot the magnitude response:
-
-  static const int length = 8192;
 
   using Vec = std::vector<double>;
 
-  Vec impResp(length);
-  impResp[0] = filter.getSample(1.0);
-  int n;
-  for(n=1; n<length; n++)
-    impResp[n] = filter.getSample(0.0);
+  // Settings:
+  int N = 501;
+  int numStages = 1;  // simulates using multiple stages
+  Vec slopes = { -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
+  //Vec slopes = { -18, -15, -12, -9, -6, -3, 0, +3, 6, 9, 12, 15, 18 };
+  //Vec slopes = { -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50 };
 
-  /*
-  Vec freqs(length);
-  Vec mags(length);
-  Vec decibels(length);
-  */
-
-  /*
-  RAPT::rsArrayTools::fillWithIndex(&freqs[0], length);
-  RAPT::rsArrayTools::scale(&freqs[0], &freqs[0], length, sampleRate/length);
-
-  fftMagnitudesAndPhases(&impResp[0], length, &mags[0], nullptr, length);
-
-  for(n=0; n<length; n++)
-    decibels[n] = RAPT::rsAmpToDb(length*mags[n]);
-
-  plotData(length/4, &freqs[0], &decibels[0]); 
-  rsPlotSpectrum(mags, sampleRate);
-  */
-
-  /*
-  SpectrumPlotter<double> plt;
-  plt.setSampleRate(sampleRate);
-  plt.setLogFreqAxis(true);
-  plt.setFftSize(length);
-  plt.plotDecibelSpectra(length, &impResp[0]);
-  */
-
-  int N = 1024;
+  // Create and plot magnidtue responses:
   Vec freqs(N), mags(N), decibels(N);
   RAPT::rsArrayTools::fillWithRangeExponential(&freqs[0], N, 20.0, 20000.0);
-  for(int k = 0; k < N; k++)
-  {
-    mags[k] = filter.getMagnitudeAt(freqs[k]);
-    decibels[k] = RAPT::rsAmpToDb(mags[k]);
-  }
   GNUPlotter plt2;
-  plt2.addDataArrays(N, &freqs[0], &decibels[0]);
+  for(size_t i = 0; i < slopes.size(); i++)
+  {
+    filter.setSlope(slopes[i]);
+    for(int k = 0; k < N; k++)
+    {
+      mags[k] = filter.getMagnitudeAt(freqs[k]);
+      mags[k] = pow(mags[k], numStages);
+      decibels[k] = RAPT::rsAmpToDb(mags[k]);
+    }
+    plt2.addDataArrays(N, &freqs[0], &decibels[0]);
+  }
   plt2.setLogScale("x");
   plt2.plot();
-
-
-
-
-  // ToDo:
-  // -plot also the computed magnitude together with the measured one
-  // -try more extreme slopes - check out what the limts are
-  // -to achieve slopes beyond the limits, use a number of M slope filters in series, each 
-  //  realizing slope/M
-
   int dummy = 0;
+
+
+  // Observations:
+  // -For smaller settings between -6,..,+6, the approximation looks quite good, in particular
+  //  between 100 Hz and 10 kHz. Beyond that, the slope levels off (gets shallower) which might 
+  //  actually be desirable - we may not want the boost to continue indefinitely into subsonic 
+  //  and supersonic frequencies.
+  // -The pivot or hinge frequency where all graphs meet is slightly above 1 kHz (around 1012 Hz). 
+  //  I actually expected it to be exactly at 1 kHz. -> figure out, maybe fix
+  // -For the more extreme settings like -40 or -50, the slopes seem to be smaller than they should
+  //  be when just trying to achieve these slopes with one stage. Maybe the slope of one stage 
+  //  should be limited to +-10 dB/oct and higher slopes should be realized by a cascade of 
+  //  multiple slope filters (with identical coeffs).
 }
 
 void rotes::testPrototypeDesigner()

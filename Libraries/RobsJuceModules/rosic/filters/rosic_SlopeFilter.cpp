@@ -58,8 +58,8 @@ void SlopeFilter::reset()
 
 void SlopeFilter::updateCoefficients()
 {
-  static const double freq1 =  250.0;
-  static const double freq2 = 4000.0;
+  static const double freq1 =  250.0;                 // 2 octaves below hinge-freq (1 kHz)
+  static const double freq2 = 4000.0;                 // 2 octaves above hinge-freq
   static const double q     =    0.40406101782088438; // bandwidth is 3 octaves
 
   double gainFactor = RAPT::rsDbToAmp(-2.0*slope);
@@ -77,3 +77,26 @@ void SlopeFilter::updateCoefficients()
   // (for upward slopes). I think, it currently normalizes the gain to unity at the center/pivot 
   // frequency which is 1000 = sqrt(250 * 4000). Verify and document this!
 }
+
+
+/*
+
+ToDo:
+-Make a version for RAPT that makes this one obsolete (this one here can then be realized as 
+ subclass of an explicit instantiation if that is needed for legacy reasons):
+ -Should use template parameters for parameters/coeffs and signals using the common pattern. That
+  obviates the need for seprate state variables for L/R stereo channels.
+ -Should normalize either as we do now, normalize at some user-defined "hinge"-frequency (or 
+  pivot-frequency), defaulting to 1 kHz or normalize at DC or Nyquist. Maybe a "passive" mode 
+  should normalize at DC for downward slopes and at nyquist for upward slopes. The intention here
+  was actually to normalize at 1 kHz but experiments show that the actual hinge is slightly above
+  one kHz (at 1012 Hz for fs=48kHz) - may have to do with bilinear warping? Normalizing at Nyquist
+  may not play nicely with higher sample-rates in the sense that total gain depends on sample-rate
+  -> check that before implementing such modes.
+ -Maybe it should make use of rsBiquad or rsBiquadCascade, either via subclassing or via embedding.
+ -We could have a class rsSlopeFilterChain that chains M identical slope filters each realizing
+  only one M-th of the desired slope. Rationale: For higher slopes, the approximation to a straight
+  line gets worse using only 4 poles. Realizing them via a cascade works better. Maybe the slope of
+  a single stage should only realize up to 10 or 12 dB/oct
+
+*/

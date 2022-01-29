@@ -33,6 +33,21 @@ void rsNormalizeJointly(std::vector<double>& x, std::vector<double>& y)
   RAPT::rsScale(y, scaler);
 }
 
+void rsConvolveFiles(const char* fileName1, const char* fileName2)
+{
+
+
+  int dummy = 0;
+
+  // ToDo:
+  // -Create also the difference signals between the convolution result y and the original input
+  //  signals x and h: y-x will be the purely wet output, y-h will be...possibly also interesting.
+  //  The purely wet output can be useful for later mixing it in, for example in an sfz file.
+  // -The output filenames should be derived from the input filenames, maybe like:
+  //  Conv_InName1_InName2.wav
+  // -We should use 32 bit float format an make normalization optional...maybe even 64 bit.
+}
+
 /*
 
 Ideas:
@@ -49,6 +64,11 @@ rsSweepDrummer:
  for w1,w2,w3,d1,d2,d3. Maybe have some constraints like d1 < d2 < d3, x1=0. Maybe we nee to solve 
  it iterativley. Maybe start by passing 1 exponential through the average of the first 3 and lst 3
  points, then compute a 2nd envelope by corrceting the error, etc.
+-Try to create more interesting attack transients by synthesizing sines with higher harmonics of 
+ the present (time-variant) frequencies but (much) faster decay and use the "multiplicative 
+ synthesis" ideas with them. This could also be realized as a post-processing step that plays 
+ samples at higher speeds. The results will be different from just scaling the frequencies and
+ both variants could be useful
 
 
 */

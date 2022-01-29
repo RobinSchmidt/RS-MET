@@ -233,8 +233,15 @@ void rsBiquadCascade<TSig, TCoef>::reset()
 /*
 
 ToDo:
--try to replace the unit delays by N-sample delays. I think, it should replicate the frequency 
+
+-Try to replace the unit delays by N-sample delays. I think, it should replicate the frequency 
  response several times giving a sort of comb-filter effect. Then, we can make Butteworth combs 
  etc. using an adapted version of EngineersFilter
+
+-Maybe it should support using different topologies like state-variable and state-vector 
+ implementations. Maybe this should be realized in a class rsMultiTopologyBiquad that realizes a
+ general biquad filter with switchable topology. Options: DF1, DF2, TDF1, TDF2, SVF, 
+ State-vector/phasor, maybe others? what about lattice? state-space? That would be useful for
+ experimentation
 
 */

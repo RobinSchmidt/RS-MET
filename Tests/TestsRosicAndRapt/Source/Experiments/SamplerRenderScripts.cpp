@@ -368,10 +368,12 @@ void renderSweepBassdrums(int sampleRate)
 
 }
 
-void createBassdrumPsy1Samples()  // rename to createSweepBassdrumSamples
+void createBassdrumPsy1Samples()  
 {
+  // rename to createSweepBassdrumSamples or remove and integrate into createMiscSamples
+
   renderSweepBassdrums(48000); return;
-  
+
   //createBassdrumPsy1Sample(1.0, true); return;  // for development
 
   // old - may become obsolete as soon as the new renderSweepBassdrums is finished and re-creates 

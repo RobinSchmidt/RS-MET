@@ -254,15 +254,14 @@ inline void rsNoiseBurst<T>::processFrame(T* L, T* R)
 std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount);
 
 void rsNormalizeJointly(std::vector<double>& x, std::vector<double>& y);
-/*
-{
-  double maxX = RAPT::rsMaxAbs(x);
-  double maxY = RAPT::rsMaxAbs(y);
-  double scaler = 1.0 / RAPT::rsMax(maxX, maxY);
-  RAPT::rsScale(x, scaler);
-  RAPT::rsScale(y, scaler);
-}
-*/
+
+/** Under construction. 
+Computes the convolution between the two given wavefiles and writes the result into another 
+wavefile. */
+void rsConvolveFiles(const char* fileName1, const char* fileName2);
+
+
+
 
 
 //=================================================================================================
