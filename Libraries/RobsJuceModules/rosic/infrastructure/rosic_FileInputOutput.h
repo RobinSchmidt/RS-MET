@@ -36,7 +36,10 @@ responsibility to eventually free the allcoated memory (inner and outer pointers
 The reference parameters will be assigned to their correct values inside this function, so you
 know what you've got when the function returns. */
 double** readFromWaveFile(const char* path, int& numChannels, int& numFrames, int& sampleRate);
-// maybe rename to readDoubleFromWaveFile
+// todo: 
+// -let the output parameters be pointers
+// -provide a helper function to do the cleanup
+// -maybe rename to readDoubleFromWaveFile
 
 float** readFloatFromWaveFile(const char* path, int& numChannels, int& numFrames, int& sampleRate);
 

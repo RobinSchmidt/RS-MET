@@ -88,6 +88,7 @@ float** rosic::readFloatFromWaveFile(
   // -check, if the 1st or 2nd call to "new" return a nullptr (indicating allocation failure)
   //  -if the 1st: return nullptr
   //  -if the 2nd: clean up 1st and return nullptr
+  // -clean up memory in the catch branch
 }
 
 double** rosic::readFromWaveFile(

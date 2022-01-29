@@ -33,11 +33,54 @@ void rsNormalizeJointly(std::vector<double>& x, std::vector<double>& y)
   RAPT::rsScale(y, scaler);
 }
 
-void rsConvolveFiles(const char* fileName1, const char* fileName2)
+
+template<class T>
+T** rsAllocateMatrix(int M, int N)
 {
+  T* dataFlat = new T[M*N];
+  T** data    = new T*[M];
+  for(int i = 0; i < M; i++)
+    data[i] = &dataFlat[i*N];
+  return data;
+  // Compare to RAPT::rsMatrixTools::allocateMatrix...merge code. I think, this here is better. It
+  // calls new only twice and the data is stored in contiguous memory. But: what if not enough
+  // contiguous memory is available? Maybe rosic::readFromWaveFile should use this function
+  // internally and make it clear that the function below should be used for cleanup.
+}
+
+template<class T>
+void rsDeAllocateMatrix(T** A, int M)
+{
+  delete[] A[0];
+  delete[] A;
+  // Compare this to what we do in the RS-MET-Tests repo for the sinusoidal analysis
+}
 
 
-  int dummy = 0;
+void rsConvolveFiles(const char* fileNameX, const char* fileNameH)
+{
+  // Read input signal:
+  int numChannelsX, numFramesX, sampleRateX;
+  double** x = rosic::readFromWaveFile(fileNameX, numChannelsX, numFramesX, sampleRateX);
+
+  // Read impulse response:
+  int numChannelsH, numFramesH, sampleRateH;
+  double** h = rosic::readFromWaveFile(fileNameH, numChannelsH, numFramesH, sampleRateH);
+
+  // Allocate memory for output signal:
+  int numChannelsY = rsMax(numChannelsX, numChannelsH);
+  int numFramesY   = numFramesX + numFramesH - 1;
+  double** y = rsAllocateMatrix<double>(numChannelsY, numFramesY);
+
+  // Do the convolutions of the channels:
+
+
+
+
+  // Clean up allocated memory:
+  rsDeAllocateMatrix(x, numChannelsX);
+  rsDeAllocateMatrix(h, numChannelsH);
+  rsDeAllocateMatrix(y, numChannelsY);
 
   // ToDo:
   // -Create also the difference signals between the convolution result y and the original input
