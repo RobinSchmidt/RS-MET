@@ -13,6 +13,7 @@ void particleSystem();
 bool quantumSpinMeasurement();   // move to unit tests
 bool quantumSpinEntanglement();  // this too 
 bool quantumGates();             // dito
+void quantumComputer();
 bool quantumSpinEvolution();
 void quantum3StateSystem();
 void quantumParticle();

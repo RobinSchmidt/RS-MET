@@ -414,13 +414,87 @@ class rsQuantumComputer
 public:
 
   typedef std::complex<T> Complex;
-  typedef rsVector2D<std::complex<T>> Vec;
+  typedef rsVector2D<std::complex<T>> Vec;     // maybe get rid - use QBit isntead
+  typedef rsVector2D<std::complex<T>> QBit;
   typedef rsMatrix2x2<std::complex<T>> QGate;
 
   rsQuantumComputer() { allocateMemory(); }
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup:
+
+  /** Sets the number of qbits which this simulated quantum computer should have. Reasonable
+  numbers are between 1 and 10. The computational requirements grow exponentially with the number 
+  of qbits, so it's only possible to simulate very small quantum computers. */
+  void setNumQBits(int newNumQBits);
+
 
   void applyGate(const QGate& g, int bitIndex);
+  // what does this do?
+
+
+  /** Sets the qbit at the given index into the given classic state. */
+  void setQBit(int opIndex, bool newState);
+
+  /** Sets the qbit at the given index into the given state. */
+  void setQBit(int opIndex, QBit newState) { qbits[opIndex] = newState; }
+
+  /** Sets the state of the whole quantum register to the classical state given by the 
+  bit-vector. This is typically the first thing you want to do in any quantum algorithm to 
+  initialize the computation. */
+  void setState(const std::vector<bool>& newState);
+
+  /** Applies a Hadamard gate to the qubit at the given index. If the qubit is in one of the 
+  classic states before the application, after application it will be in a state that has a 50% 
+  probability of being measured as "true" and a 50% of being measured as "false" when a measurement
+  is done. */
+  //void applyHadamardGate(int opIndex);
+
+  /** Applies a "not" gate to the qubit at the given index. This reverses the probabilities of 
+  being measured as "true" or "false". */
+  //void applyNotGate(int opIndex);
+
+  /** Applies a "controlled not" aka "cnot" gate to the qbit at index "opTarget" controlled by the
+  qbit at index "opControl". ...tbc... */
+  //void applyControlledNotGate(int opControl, int opTarget);
+
+  /** Applies a Pauli-Z gate to the qbit at the given "opIndex". The effect of this gate is a 
+  rotation around the z-axis on the Bloch-sphere. Such a rotation doesn't change the probability of
+  of being measured as "true" or "false", it merely changes the relative phases of the two 
+  components of the complex 2D vector representing the qbit. This gate is also known as 
+  z-rotation. (todo: verify terminology) */
+  //void applyPauliGateZ(int opIndex);
+
+  //void applyPauliGateX(int opIndex);
+  //void applyPauliGateY(int opIndex);
+
+  // todo: PauliX, PauliY
+  // what else is there? toffoli-gate? maybe functions to produce singlet and triplet states (see
+  // Susskind, pg 166)
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Measurement
+
+  /** Measures the qbit with given index. The result is a classic state that can be either 0 or 1 
+  (true or false). In an actual quantum computer, such a measurement will collapse the 
+  superposition of the qbit into a classic state. Here, this "collapse of the wavefunction" is 
+  optional. */
+  //bool measure(int opIndex, bool collapseState = true);
+  // i'm actually not yet sure if measuring a single qbit makes sense or if always the whole
+  // quantum register should get measured. Maybe, due to entanglement, measuring a single qbit
+  // makes only sense for product-states which are the exception, not the rule?
+
+  /** Applies measurement to all the qbits in our quantum register and returns the result as a 
+  classic bit-vector. This is typically the last thing you want to do in any quantum algorithm to
+  actually produce a result of a single run of the algorithm. On a higher level, you will want to
+  collect the results of many such runs and analyze the results statistically - of special interest
+  will be the expecation value. */
+  //std::vector<bool> measure(bool collapseState = true);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
 
   /** Returns the nth number where a given digit is cleared in the binary representation of the 
   number. */
@@ -436,10 +510,11 @@ public:
 protected:
 
   void allocateMemory() { qbits.resize(numStates); }
+  // this may still be wrong...shouldn't it be of size numQBits?
 
   int numQBits  = 4;
-  int numStates = 16; // = 2^numQBits
-  std::vector<Vec> qbits;  // these are actually the states
+  int numStates = 16;      // = 2^numQBits  ?? the state space is continuous? numClassicStates?
+  std::vector<Vec> qbits;  // these are actually the states..our quantum register
 
 };
 

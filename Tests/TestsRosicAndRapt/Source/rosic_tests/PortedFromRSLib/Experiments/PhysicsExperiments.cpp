@@ -1399,15 +1399,11 @@ bool quantumGates()
 
   Mat2 pauliX; QS::setToPauliX(pauliX); // not gate
 
-
   rsQuantumComputer<double> cmp;
   cmp.applyGate(pauliX, 0);
   cmp.applyGate(pauliX, 1);
   cmp.applyGate(pauliX, 2);
   cmp.applyGate(pauliX, 3);
-
-
-
 
   rsAssert(pass);
   return pass;
@@ -1427,6 +1423,30 @@ bool quantumGates()
 // this is a really good paper on how to simulate a quantum computer
 // https://arxiv.org/pdf/1805.00988.pdf
 
+void quantumComputer()
+{
+  rsQuantumComputer<double> cmp;
+
+  std::vector<bool> state;
+
+  // Our first quantum program uses only one qbit and implements a random number generator that 
+  // randomly sets the qbit into |0> or |1> state. We start in the |0> state, apply the Hadamard 
+  // gate and then measure the qbit. We expect it to be randomly in |0> or |1> state with equal
+  // probabilities for both:
+  cmp.setNumQBits(1);
+  state.resize(1);
+  state[0] = false;
+  cmp.setState(state);
+  //cmp.applyHadamardGate(0);
+  //state = cmp.measure();
+
+
+  // ToDo:
+  // -Repeat the computation multiple times and collect the results as we would do in an actual
+  //  quantum computation. Then find the mean value of the result
+
+  int dummy = 0;
+}
 
 
 template<class T>

@@ -482,11 +482,17 @@ void createMiscSamples()
   renderSweepBassdrums(48000); 
   createNoiseBursts(48000);
 
+  rsConvolveFiles("SweepBassdrum1.wav", "NoiseBurst_100_2000_5.wav");
   //rsConvolveFiles("SweepBassdrum1.wav", "NoiseBurst_50_1000_10.wav");
-  rsConvolveFiles("SweepBassdrum1.wav", "NoiseBurst_30_800_15.wav");
+  //rsConvolveFiles("SweepBassdrum1.wav", "NoiseBurst_30_800_15.wav");
+  //rsConvolveFiles("SweepBassdrum3_2.wav", "NoiseBurst_30_800_15.wav");
   // The right channel is a bit quiet at the start. maybe try another seed for right. But maybe it
   // has to do the phases of left and right input signal and not with the seed. Maybe try to swap 
-  // input channels of one of the signals only
+  // input channels of one of the signals only. The convolution wet result could use some highpass
+  // but this is something we can do in the sampler engine. For the more tonal bassdrum, the reverb
+  // does not sound as good. It takes away some of the tonal character (turns everything into a big
+  // "tock" sound). Seems like the reverb works better for atonal drums. Maybe try a longer attack
+  // for the reverb to leave the transient of the drum more intact.
 
   return;
 

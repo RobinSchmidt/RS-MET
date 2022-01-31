@@ -268,6 +268,33 @@ void rsQuantumParticle<T>::updateWaveFunction(T dt)
 
 
 template<class T>
+void rsQuantumComputer<T>::setQBit(int opIndex, bool newState)
+{
+  if(newState == true) 
+    setQBit(opIndex, QBit(T(1), T(0)));  // (1,0) represents the classic state "true"
+  else
+    setQBit(opIndex, QBit(T(0), T(1)));  // (0,1) represents the classic state "false"
+}
+// todo: verify, if this is the most common convention to represent true/false via a qbit (could be
+// the other way around)
+
+template<class T>
+void rsQuantumComputer<T>::setState(const std::vector<bool>& newState)
+{
+  rsAssert((int) newState.size() == numQBits);
+  for(int i = 0; i < numQBits; i++)
+    setQBit(i, newState[i]);
+}
+
+template<class T>
+void rsQuantumComputer<T>::setNumQBits(int newNumQBits)
+{
+  numQBits  = newNumQBits;
+  numStates = rsPowInt(2, numQBits);
+  allocateMemory();
+}
+
+template<class T>
 void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
 {
   std::vector<Vec> tmp = qbits;  
@@ -315,5 +342,21 @@ void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
     int dummy = 0;
   }
 
+
+
+
+
   // see also https://quantum-journal.org/papers/q-2018-01-31-49/pdf/?
 }
+
+/*
+
+Ideas:
+-Create a quantum computer with 11 qbits. The state-space has 2^11 = 2048 (complex) dimensions 
+ which happens to be our favorite length for single cycle waveforms. Interpret the state as a 
+ (stereo) waveform and observe it during a quantum computaion. Maybe we can generate interesting 
+ wavetables this way. ...remains to be seen
+
+
+
+*/
