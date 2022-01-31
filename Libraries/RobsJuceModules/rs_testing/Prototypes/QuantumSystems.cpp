@@ -266,6 +266,7 @@ void rsQuantumParticle<T>::updateWaveFunction(T dt)
 
 //=================================================================================================
 
+
 template<class T>
 void rsQuantumComputer<T>::setNumQBits(int newNumQBits)
 {
@@ -274,6 +275,7 @@ void rsQuantumComputer<T>::setNumQBits(int newNumQBits)
   allocateMemory();
 }
 
+/*
 template<class T>
 void rsQuantumComputer<T>::setQBit(int opIndex, bool newState)
 {
@@ -284,14 +286,20 @@ void rsQuantumComputer<T>::setQBit(int opIndex, bool newState)
 }
 // todo: verify, if this is the most common convention to represent true/false via a qbit (could be
 // the other way around)
+*/
 
 template<class T>
 void rsQuantumComputer<T>::setState(const std::vector<bool>& newState)
 {
   rsAssert((int) newState.size() == numQBits);
-  for(int i = 0; i < numQBits; i++)
-    setQBit(i, newState[i]);
+  //for(int i = 0; i < numQBits; i++)
+  //  setQBit(i, newState[i]);
 }
+// I think, this is wrong. What we need to do is construct the tensor product of the quantum states
+// that are represented by the bits in newState, i.e. an n-fold tensor product of the 2D vectors 
+// (1,0) and (0,1) and whether (1,0) or (0,1) is chose for a particular factor is determined by the
+// classic bit at the respective position in newState. Maybe we need to use rsMatrix so we can make
+// use of it kroneckerProduct member function
 
 template<class T>
 void rsQuantumComputer<T>::applyHadamardGate(int i)
@@ -301,8 +309,10 @@ void rsQuantumComputer<T>::applyHadamardGate(int i)
   static const rsMatrix2x2<std::complex<T>> H(s, s, s, -s);
 
   // Apply the Hadamard matrix to the i-th qbit:
-  state[i] = H * state[i];
+  //state[i] = H * state[i];
 }
+// I think, we have to form a Kronecker product of a whole bunch of indenty matrices and one 
+// Hadamard matrix as the i-th factor
 
 template<class T>
 void rsQuantumComputer<T>::measure(std::vector<bool>& result, bool collapseState)
@@ -315,7 +325,7 @@ void rsQuantumComputer<T>::measure(std::vector<bool>& result, bool collapseState
     // given by the complex magnitude of the x-component of the complex 2D vector representing
     // the respective qbit (or is it the y component? That's a matter of convention how we encode
     // the classic state 0 and 1 -> figure out the common convention):
-    T p = rsAbs(state[i].x);
+    //T p = rsAbs(state[i].x);
 
     // Generate a (pseudo) random number, equally distributed in 0..1, and depending on whether or
     // not it is >= our p, assign the classical state 0 or 1 to the respective output qbit:
@@ -345,7 +355,12 @@ void rsQuantumComputer<T>::measure(std::vector<bool>& result, bool collapseState
 // an entangled 2 QBit state will then require to compute the 4 probabilities for each of the 4 
 // possible states, cumulating them and check, in which range/bin our generated random number 
 // falls.
-
+// Maybe instead of a vector of bool, we should use an rsUint32 for representing a classic state.
+// Then we could have a function getMeasurementProbability(rsUint32 classicState) that computes the
+// probability of measuring the given classic state according to our intenral quantum state. Then 
+// here, we should generate a random number, loop through all the classing states and compute and
+// accumulate their measurement probabilities and when the accumulated probability crosses our
+// random number, the last classic state in the accumulation is the result?
 
 
 /*

@@ -416,10 +416,12 @@ class rsQuantumComputer
 
 public:
 
-  typedef std::complex<T> Complex;
-  //typedef rsVector2D<std::complex<T>> Vec;     // maybe get rid - use QBit isntead
-  typedef rsVector2D<std::complex<T>> QBit;
-  //typedef rsMatrix2x2<std::complex<T>> QGate;
+  using Complex = std::complex<T>;
+  using QBit = rsVector2D<std::complex<T>>;
+  //using ClassicState = rsUint32; // supports up to 32 QBits
+
+
+
 
   rsQuantumComputer() 
   { 
@@ -441,10 +443,10 @@ public:
 
 
   /** Sets the qbit at the given index into the given classic state. */
-  void setQBit(int opIndex, bool newState);
+  //void setQBit(int opIndex, bool newState);
 
   /** Sets the qbit at the given index into the given state. */
-  void setQBit(int opIndex, QBit newState) { state[opIndex] = newState; }
+  //void setQBit(int opIndex, QBit newState) { state[opIndex] = newState; }
 
   /** Sets the state of the whole quantum register to the classical state given by the 
   bit-vector. This is typically the first thing you want to do in any quantum algorithm to 
@@ -505,12 +507,19 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
+  /** Returns the number of (complex) dimensions of our quantum state space. This is given by 2^n 
+  where n is the number of qbits. This is also equal to the number of classic states that can be
+  represented and that be a potential measurement result. */
+  rsUint32 getStateSpaceDimensionality() const { return dimensions; }
+
+
   static QBit getClassicStateOne()  { return QBit(T(1), T(0)); }
   static QBit getClassicStateZero() { return QBit(T(0), T(1)); }
   // (1,0) represents the classic state "1" or "true",  (0,1) represents the classic state "0" or
   // "false" ...todo: verify, if this is the most common convention to represent true/false via a
   // qbit (could be the other way around). Document also how they are related to "up" and "down"
-  // spins
+  // spins. Maybe it should create an rsMatrix of dimension 2x1 so we can use it to build tensor
+  // products
 
   /** Returns the nth number where a given digit is cleared in the binary representation of the 
   number. */
@@ -529,10 +538,20 @@ protected:
 
   void allocateMemory() { state.resize(numQBits); }
 
-  int numQBits = 0;
-  std::vector<QBit> state;
+  /** Converts a classic state given as vector of bits into an integer. For example, the 
+  vector 1101 would translate to the integer 1*8 + 1*4 + 0*2 + 1*1 = 13, which we could represent
+  as |1101> in binary ket notation or |13> in decimal ket notation. */
+  //rsUint32 bitVecToUint(std::vector<bool>& bits);
 
-  rsNoiseGenerator<T> prng;
+
+
+  int numQBits   = 1;
+  int dimensions = 2; // = 2^numQBits, number of (complex) dimensions of our state space
+  std::vector<Complex> state;
+
+  //std::vector<QBit> state;
+
+  rsNoiseGenerator<T> prng; // used for measurements
 
 
   /*
