@@ -320,10 +320,13 @@ void rsQuantumComputer<T>::measure(std::vector<bool>& result, bool collapseState
     // Generate a (pseudo) random number, equally distributed in 0..1, and depending on whether or
     // not it is >= our p, assign the classical state 0 or 1 to the respective output qbit:
     T r = prng.getSample();
+
+    /*
     if(r >= p)
       result[i] = getClassicStateOne();
     else
       result[i] = getClassicStateZero();
+      */
     // Or should it be ">" instead of ">="? Think it through in the edge cases when the 
     // probability p is exactly 0 or 1...
   }
@@ -331,7 +334,7 @@ void rsQuantumComputer<T>::measure(std::vector<bool>& result, bool collapseState
   // Collapse our internal state to the result, if so requested. This is what would happen in an
   // actual quantum computer:
   if(collapseState)
-    state = result;
+    setState(result);
 }
 // But wait...what about entangled states? I think, we can't just compute the result of each qbit
 // independently...Maybe the whole implementation is wrong and we indeed need a length 2^numQBits
