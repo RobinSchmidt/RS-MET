@@ -398,8 +398,11 @@ protected:
 
 //=================================================================================================
 
-/**
-
+/** Simulates a small(!) quantum computer for educational purposes. The number of qbits is 
+necessarily small because the computational requirements for such a simulation grow exponentially
+with the number of qbits. Realistic numbers are perhaps up to 10 or 12 qbits. Unlike in an actual 
+quantum computer, in a simulation it's actually possible to peek the actual quantum state without 
+destroying it. ...tbc...
 
 References:
  (1) Simulating Quantum Computers Using OpenCL: https://arxiv.org/pdf/1805.00988.pdf
@@ -414,11 +417,15 @@ class rsQuantumComputer
 public:
 
   typedef std::complex<T> Complex;
-  typedef rsVector2D<std::complex<T>> Vec;     // maybe get rid - use QBit isntead
+  //typedef rsVector2D<std::complex<T>> Vec;     // maybe get rid - use QBit isntead
   typedef rsVector2D<std::complex<T>> QBit;
-  typedef rsMatrix2x2<std::complex<T>> QGate;
+  //typedef rsMatrix2x2<std::complex<T>> QGate;
 
-  rsQuantumComputer() { allocateMemory(); }
+  rsQuantumComputer() 
+  { 
+    allocateMemory(); 
+    prng.setRange(T(0), T(1));
+  }
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup:
@@ -429,7 +436,7 @@ public:
   void setNumQBits(int newNumQBits);
 
 
-  void applyGate(const QGate& g, int bitIndex);
+  //void applyGate(const QGate& g, int bitIndex);
   // what does this do?
 
 
@@ -437,7 +444,7 @@ public:
   void setQBit(int opIndex, bool newState);
 
   /** Sets the qbit at the given index into the given state. */
-  void setQBit(int opIndex, QBit newState) { qbits[opIndex] = newState; }
+  void setQBit(int opIndex, QBit newState) { state[opIndex] = newState; }
 
   /** Sets the state of the whole quantum register to the classical state given by the 
   bit-vector. This is typically the first thing you want to do in any quantum algorithm to 
@@ -448,7 +455,7 @@ public:
   classic states before the application, after application it will be in a state that has a 50% 
   probability of being measured as "true" and a 50% of being measured as "false" when a measurement
   is done. */
-  //void applyHadamardGate(int opIndex);
+  void applyHadamardGate(int opIndex);
 
   /** Applies a "not" gate to the qubit at the given index. This reverses the probabilities of 
   being measured as "true" or "false". */
@@ -485,36 +492,54 @@ public:
   // quantum register should get measured. Maybe, due to entanglement, measuring a single qbit
   // makes only sense for product-states which are the exception, not the rule?
 
-  /** Applies measurement to all the qbits in our quantum register and returns the result as a 
+  /** Applies measurement to all the qbits in our quantum register and writes the result into a 
   classic bit-vector. This is typically the last thing you want to do in any quantum algorithm to
   actually produce a result of a single run of the algorithm. On a higher level, you will want to
   collect the results of many such runs and analyze the results statistically - of special interest
-  will be the expecation value. */
-  //std::vector<bool> measure(bool collapseState = true);
+  will be the expecation value of the result. In an actual quantum computer, such a measurement 
+  will collapse the internal state of the quantum register into a classic state. Here in our 
+  simulation, this "collapse of the wavefunction" is optional. */
+  void measure(std::vector<bool>& result, bool collapseState = true);
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
+  static QBit getClassicStateOne()  { return QBit(T(1), T(0)); }
+  static QBit getClassicStateZero() { return QBit(T(0), T(1)); }
+  // (1,0) represents the classic state "1" or "true",  (0,1) represents the classic state "0" or
+  // "false" ...todo: verify, if this is the most common convention to represent true/false via a
+  // qbit (could be the other way around). Document also how they are related to "up" and "down"
+  // spins
+
   /** Returns the nth number where a given digit is cleared in the binary representation of the 
   number. */
+  /*
   static int nth_cleared(int n, int target)  
   {
     int mask = (1 << target ) - 1;
     int not_mask = ~mask; 
     return (n & mask) | ((n & not_mask ) << 1);
   }
+  */
 
 
 
 protected:
 
-  void allocateMemory() { qbits.resize(numStates); }
-  // this may still be wrong...shouldn't it be of size numQBits?
+  void allocateMemory() { state.resize(numQBits); }
 
+  int numQBits = 0;
+  std::vector<QBit> state;
+
+  rsNoiseGenerator<T> prng;
+
+
+  /*
   int numQBits  = 4;
   int numStates = 16;      // = 2^numQBits  ?? the state space is continuous? numClassicStates?
   std::vector<Vec> qbits;  // these are actually the states..our quantum register
+  */
 
 };
 

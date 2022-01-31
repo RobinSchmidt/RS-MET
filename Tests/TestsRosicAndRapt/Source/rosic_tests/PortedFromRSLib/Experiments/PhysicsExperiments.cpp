@@ -1400,10 +1400,10 @@ bool quantumGates()
   Mat2 pauliX; QS::setToPauliX(pauliX); // not gate
 
   rsQuantumComputer<double> cmp;
-  cmp.applyGate(pauliX, 0);
-  cmp.applyGate(pauliX, 1);
-  cmp.applyGate(pauliX, 2);
-  cmp.applyGate(pauliX, 3);
+  //cmp.applyGate(pauliX, 0);
+  //cmp.applyGate(pauliX, 1);
+  //cmp.applyGate(pauliX, 2);
+  //cmp.applyGate(pauliX, 3);
 
   rsAssert(pass);
   return pass;
@@ -1437,8 +1437,8 @@ void quantumComputer()
   state.resize(1);
   state[0] = false;
   cmp.setState(state);
-  //cmp.applyHadamardGate(0);
-  //state = cmp.measure();
+  cmp.applyHadamardGate(0);
+  cmp.measure(state);
 
 
   // ToDo:

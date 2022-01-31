@@ -266,14 +266,21 @@ void rsQuantumParticle<T>::updateWaveFunction(T dt)
 
 //=================================================================================================
 
+template<class T>
+void rsQuantumComputer<T>::setNumQBits(int newNumQBits)
+{
+  numQBits  = newNumQBits;
+  //numStates = rsPowInt(2, numQBits);
+  allocateMemory();
+}
 
 template<class T>
 void rsQuantumComputer<T>::setQBit(int opIndex, bool newState)
 {
   if(newState == true) 
-    setQBit(opIndex, QBit(T(1), T(0)));  // (1,0) represents the classic state "true"
+    setQBit(opIndex, getClassicStateOne());
   else
-    setQBit(opIndex, QBit(T(0), T(1)));  // (0,1) represents the classic state "false"
+    setQBit(opIndex, getClassicStateZero());
 }
 // todo: verify, if this is the most common convention to represent true/false via a qbit (could be
 // the other way around)
@@ -287,13 +294,58 @@ void rsQuantumComputer<T>::setState(const std::vector<bool>& newState)
 }
 
 template<class T>
-void rsQuantumComputer<T>::setNumQBits(int newNumQBits)
+void rsQuantumComputer<T>::applyHadamardGate(int i)
 {
-  numQBits  = newNumQBits;
-  numStates = rsPowInt(2, numQBits);
-  allocateMemory();
+  // Create the matrix that represents the Hadamard gate:
+  static const T s = T(1) / sqrt(T(2));
+  static const rsMatrix2x2<std::complex<T>> H(s, s, s, -s);
+
+  // Apply the Hadamard matrix to the i-th qbit:
+  state[i] = H * state[i];
 }
 
+template<class T>
+void rsQuantumComputer<T>::measure(std::vector<bool>& result, bool collapseState)
+{
+  rsAssert((int) result.size() == numQBits);
+
+  for(int i = 0; i < numQBits; i++)
+  {
+    // Compute probability of measuring qbit i to be in "true" or |1> state. This probability is
+    // given by the complex magnitude of the x-component of the complex 2D vector representing
+    // the respective qbit (or is it the y component? That's a matter of convention how we encode
+    // the classic state 0 and 1 -> figure out the common convention):
+    T p = rsAbs(state[i].x);
+
+    // Generate a (pseudo) random number, equally distributed in 0..1, and depending on whether or
+    // not it is >= our p, assign the classical state 0 or 1 to the respective output qbit:
+    T r = prng.getSample();
+    if(r >= p)
+      result[i] = getClassicStateOne();
+    else
+      result[i] = getClassicStateZero();
+    // Or should it be ">" instead of ">="? Think it through in the edge cases when the 
+    // probability p is exactly 0 or 1...
+  }
+
+  // Collapse our internal state to the result, if so requested. This is what would happen in an
+  // actual quantum computer:
+  if(collapseState)
+    state = result;
+}
+// But wait...what about entangled states? I think, we can't just compute the result of each qbit
+// independently...Maybe the whole implementation is wrong and we indeed need a length 2^numQBits
+// vector to represent out state? ...yeah... i think so...otherwise there wouldn't be an 
+// exponential growth of computational requirements. try to prepare entangled states with a cnot
+// gate. this here is too simple! ...maybe it's not a good idea to use rsVector2D. instead, we
+// need a general std::vector of complex numbers and it can be 2D, 4D, 8D, 16D, 32D etc. Measuring
+// an entangled 2 QBit state will then require to compute the 4 probabilities for each of the 4 
+// possible states, cumulating them and check, in which range/bin our generated random number 
+// falls.
+
+
+
+/*
 template<class T>
 void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
 {
@@ -342,12 +394,10 @@ void rsQuantumComputer<T>::applyGate(const QGate& g, int t)
     int dummy = 0;
   }
 
-
-
-
-
   // see also https://quantum-journal.org/papers/q-2018-01-31-49/pdf/?
 }
+*/
+
 
 /*
 
