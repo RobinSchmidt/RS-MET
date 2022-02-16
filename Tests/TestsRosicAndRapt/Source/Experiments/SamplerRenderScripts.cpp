@@ -473,6 +473,10 @@ void createNoiseBursts(int sampleRate)
   // -Try to fix the problem in the slope filter when the slope gets really large. Actually, we 
   //  should plot the magnitude responses anyway. Maybe try to use a filter-bank based approach
   //  instead of the slope filter. Maybe Linkwitz-Riley filters could be good for this
+
+  // Sound Design ideas:
+  // -The noise burst could probably be used to create nice pizzicato sounds. Maybe use some sort
+  //  of filter-blip as input. Maybe using modal synthesis.
 }
 
 
@@ -532,6 +536,7 @@ void createMiscSamples()
 
   int dummy = 0;
 }
+
 
 void createSamplerWaveforms()
 {

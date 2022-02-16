@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
   //quantumSpinMeasurement();  // move to unit tests
   //quantumSpinEntanglement();
   //quantumGates();            // move to unit tests
-  quantumComputer();
+  //quantumComputer();
   //quantumSpinEvolution();
   //quantum3StateSystem();
   //quantumParticle();
