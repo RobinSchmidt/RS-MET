@@ -345,7 +345,7 @@ int main(int argc, char* argv[])
   //butterworthEnergy();
   //stateVariableFilter();
   //stateVariableFilterMorph();
-  //stateVectorFilter();   // just a stub, at the moment
+  stateVectorFilter();   // just a stub, at the moment
   //biquadModulation();   // compares modulation properties of various biquad structures
   ////transistorLadder(); // triggers assert
   //phonoFilterPrototypePlot();

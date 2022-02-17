@@ -917,7 +917,20 @@ void stateVectorFilter()
   // Observations:
   // -cookbook lowpass with q = 0.5 leads to a singularity (a matrix becomes non-invertible)
   //  -in this case, we fudge with the poles (todo: make more tests for this)
-}
+
+  // ToDo:
+  // -Plot impulse responses of biquad and state-vector (aka phasor-) filter for 3 cases:
+  //  (1) 2 distinct real poles, (2) 2 equal real poles, (3) 2 complex conjugate poles
+  // -The case with the two equal real poles can be realized by using a state update of the form
+  //    |x|' = |a b| * |x|
+  //    |y|    |c d|   |y|
+  //  where a = d = pole, b = 0, c != 0. I think, c can be any nonzero value and the actual value 
+  //  will be compensated by the weight for y in the output. We should choose a value that leads to
+  //  good modulation response when the pole changes and/or which connects seamlessly the cases
+  //  (1),(3). We will get: x' = a*x, y' = c*x + d*y such that the y filter receives input from the
+  //  x filter (but with unit delay). Two possible choices for c could be c = 1 or c = 1-a 
+  //  ...we'll see. Oh - and the x-filter needs also input from the overall input.
+}   
 
 void transistorLadder()
 {

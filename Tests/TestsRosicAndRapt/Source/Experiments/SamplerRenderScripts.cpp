@@ -469,7 +469,8 @@ void createNoiseBursts(int sampleRate)
   // -Maybe try other shapes for the slope envelope. It's currently just linear.
   // -Try higher order Irwin-Hall distributions for the input noise. Maybe try (time-varying)
   //  bimodal and trimodal distributions. Maybe it should start out bimodal and over time, the
-  //  modes should merge into one.
+  //  modes should merge into one, maybe exponentially - i.e. use a bimodal distribution with modes
+  //  a,-a for some a and let that a decay to zero.
   // -Try to fix the problem in the slope filter when the slope gets really large. Actually, we 
   //  should plot the magnitude responses anyway. Maybe try to use a filter-bank based approach
   //  instead of the slope filter. Maybe Linkwitz-Riley filters could be good for this
