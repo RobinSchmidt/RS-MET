@@ -880,43 +880,55 @@ void stateVectorFilter()
   // H.simplify_full()
   // maybe eliminate(X)? or maybe i need a matrix z-transform
 
+
+
+  // Helper function to plot impulse responses of regular biquad with difference equation: 
+  //   y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] + a_1 y[n-1] + a_2 y[n-2]
+  // and a state-vector implementation of it with the given coeffs. ToDo: use negative sign
+  // convention for a-coeffs.
+  auto plotImpResp = [](double b0, double b1, double b2, double a1, double a2, int N)
+  {
+    rosic::BiquadMonoDF1 bqd;
+    rsStateVectorFilter<double, double> stVecFlt;
+
+    bqd.setCoefficients(b0, b1, b2, a1, a2);
+    stVecFlt.setupFromBiquad(b0, b1, b2, -a1, -a2);
+
+    std::vector<double> yBqd   = impulseResponse(bqd, N, 1.0);
+    std::vector<double> yStVec = impulseResponse(stVecFlt, N, 1.0);
+
+    // plot:
+    GNUPlotter plt;
+    plt.addDataArrays(N, &yBqd[0]);
+    plt.addDataArrays(N, &yStVec[0]);
+    plt.plot();
+  };
+
+
   int    N  = 100;           // number of samples
   double fs = 44100;         // sample rate
   double f  = 1000;          // filter frequency
   double q  = 0.5;           // Q value
   double g  = 2;             // gain factor (for shelf or bell filters)
 
-  typedef rosic::BiquadDesigner DSN;
+  using DSN = rosic::BiquadDesigner;
   double b0, b1, b2, a1, a2; // biquad coeffs
   //DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
-  DSN::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1/fs, f, q);
-   // uses + convention for a-coeffs
 
-  //// test:
-  //b0 = 1;
-  //b1 = 0;
-  //b2 = 0;
-  //a1 = 0.5;
-  //a2 = 0.2;
+  // Cookbook lowpass with q = 0.5 leads to a singularity (a matrix becomes non-invertible). In 
+  // this case, we fudge with the poles (todo: make more tests for this, treat that case 
+  // differently, see ToDo section below):
+  DSN::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1/fs, f, q); // uses + convention for a-coeffs
+  plotImpResp(b0, b1, b2, a1, a2, N);
 
-  rosic::BiquadMonoDF1 bqd;
-  rsStateVectorFilter<double, double> stVecFlt;
 
-  bqd.setCoefficients(b0, b1, b2, a1, a2);
-  stVecFlt.setupFromBiquad(b0, b1, b2, -a1, -a2);
-
-  std::vector<double> yBqd   = impulseResponse(bqd,      N, 1.0);
-  std::vector<double> yStVec = impulseResponse(stVecFlt, N, 1.0);
-
-  // plot:
-  GNUPlotter plt;
-  plt.addDataArrays(N, &yBqd[0]);
-  plt.addDataArrays(N, &yStVec[0]);
-  plt.plot();
+  plotImpResp(1, 0, 0, 0.5, 0.25, N);  // 2 distinct real poles at 0.5 and 0.25, no zeros
+  plotImpResp(1, 0, 0, 0.5, 0.5,  N);  // 2 equal real poles at 0.5, no zeros
+  // ...ahh...wait - no - the comments are wrong. To create poles at desired locations, we need
+  // to multiply out the factors - here we give biquad coeffs directly
 
   // Observations:
-  // -cookbook lowpass with q = 0.5 leads to a singularity (a matrix becomes non-invertible)
-  //  -in this case, we fudge with the poles (todo: make more tests for this)
+
 
   // ToDo:
   // -Plot impulse responses of biquad and state-vector (aka phasor-) filter for 3 cases:
@@ -930,6 +942,9 @@ void stateVectorFilter()
   //  (1),(3). We will get: x' = a*x, y' = c*x + d*y such that the y filter receives input from the
   //  x filter (but with unit delay). Two possible choices for c could be c = 1 or c = 1-a 
   //  ...we'll see. Oh - and the x-filter needs also input from the overall input.
+  // -Write a unit test that also tests all the different cases and tests also the state-variable 
+  //  implementation (and maybe other implementations as well - what about a lattice, state-space,
+  //  etc variant, for example?)
 }   
 
 void transistorLadder()
