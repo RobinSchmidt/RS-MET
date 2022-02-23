@@ -356,6 +356,10 @@ void SamplerEditor::createWidgets()
 
 /*
 Bugs:
+-FilterBlip.xml behaves weird in the low keyrange at low velocities - that's strange because the 
+ patch doesn't specify any veltrack stuff. It does have amp-keytrack, though. Also, multiple hits
+ seem to get louder with each hit - check if there's maybe some remnant filter state that 
+ accumulates over the key-hits
 -when switching the preset while holding a note, it crashes (at least on mac)
  -> maybe we need to acquire the lock in setStateFromXml (done -> needs tests)
  -> it's apparently an access violation due to removing samples from the pool in the gui-thread

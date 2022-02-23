@@ -1500,7 +1500,7 @@ void parametricCurve()
   int numDots  = 2500;
   //int numDots  = 500;
   double range = 1.5;
-  bool natural = false;  // natural parametrization (by arc-length s)
+  //bool natural = false;  // natural parametrization (by arc-length s)
 
   // Lissajous curve parameters:
   double a  = 2.0;
@@ -1511,8 +1511,27 @@ void parametricCurve()
 
   // define functions x = fx(t), y = fy(t)
   std::function<double(double)> fx, fy;
-  fx = [&](double t) { return cos(a*t - 0.5*p); };
-  fy = [&](double t) { return sin(b*t + 0.5*p); };
+
+  // Lissajous figure:
+  //a = 2; b = 3; t0 = 0, t1 = 2*PI;
+  //fx = [&](double t) { return cos(a*t - 0.5*p); };
+  //fy = [&](double t) { return sin(b*t + 0.5*p); };
+
+  // Some nice parametric shapes: 
+  a = 0.3, b = 1.5; t0 = 0, t1 = 2*PI; // a: "eggness", b: "ellipticity"
+  fx = [&](double t) { return sin(t - a*sin(t)); };
+  fy = [&](double t) { return b * cos(t);        };
+  // https://www.desmos.com/calculator/jte3k1amlp
+  // Circle:   a=0,n=1
+  // Elllipse: a=0,b!=1
+  // Egg:      a=0.3,b=1.5; a=0.4,b=2 (longer)
+  // Drop:     a=0.85,b=2;  a=1,b=3 (longer, with cusp)
+  // Fish:     a=2.3,b=1.5
+  //
+  // Variation: x(t) = sin(t - a*sin(t)), y(t) = b*cos(t - c*cos(t))
+  // using b=1 and a=c=1.1, we get some sort of arrow-head:
+  // https://www.desmos.com/calculator/v4crjw8cdo
+
 
   // plot curve:
   rsImageF img(width, height);
@@ -1524,6 +1543,10 @@ void parametricCurve()
   // -when using numDots such that discrete dots become visible (like 500), those that land on a 
   //  pixel appear brighter than those which don't
   //  -> using de-twisting improves this
+
+  // Ideas for shapes:
+  // -Egg: x(t) = sin(t - a*sin(t)), y(t) = b * cos(t), a: eggness, b: length, 
+//    example: a=0.3,b=1.5 https://www.desmos.com/calculator/jte3k1amlp
 }
 
 template<class TPix, class TVal>

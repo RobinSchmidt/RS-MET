@@ -1344,6 +1344,47 @@ bool samplerSaveLoadTest()
   return ok;
 }
 
+
+bool samplerPreProcessorTest()
+{
+  // Tests the pre-processing of the sfz parser, i.e. stripping off comments, etc.
+
+  bool ok = true;
+
+  // Create a string starting with a comment and then has a group and region and strip off the 
+  // comment.
+
+  using namespace rosic::Sampler;
+
+  std::string str;
+
+  auto stripComments = [](std::string& str) { rsRemoveLineComments(str, '/'); };
+
+
+  str = "/Some comment\n<group>\n<region>";
+  stripComments(str);
+  ok &= str == "\n<group>\n<region>";
+
+  str = "/Some comment \n<group>\n<region>";
+  stripComments(str);
+  ok &= str == "\n<group>\n<region>";
+
+  str = "/ Some comment\n<group>\n<region>";
+  stripComments(str);
+  ok &= str == "\n<group>\n<region>";
+
+  str = "/ Some comment \n<group>\n<region>";
+  stripComments(str);
+  ok &= str == "\n<group>\n<region>";
+
+  // wrap into function ok &= check("/Some comment\n<group>\n<region>", "\n<group>\n<region>");
+  // etc.
+
+  rsAssert(ok);
+  return ok;
+}
+
+
 bool samplerParserTest()
 {
   // Tests the sfz parser by manually creating some sfz-strings and throwing them at the sampler
@@ -1355,6 +1396,8 @@ bool samplerParserTest()
   using PST = rosic::Sampler::Opcode;
 
   bool ok = true;
+
+  ok &= samplerPreProcessorTest();
 
   // Create the engine and instruct it to load the just created sample files into its sample 
   // pool. These files are supposed to exist because samplerEngineUnitTestFileIO has created them

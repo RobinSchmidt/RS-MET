@@ -27,7 +27,8 @@ void rsRemoveLineComments(std::string& str, char commentStart)
       else
         state = inText;   }
     else if(c == '=')                          // Detect start of assignment
-      state = inRhs;
+      state = inRhs;       // maybe we should also check, if the state is inText
+
     else if(c == ' ' && state == inRhs)        // Detect end of assignment
       state = inText;
     else if(c == commentStart) {               // Detect start of comments
@@ -47,6 +48,17 @@ void rsRemoveLineComments(std::string& str, char commentStart)
 
   str.resize(wi);
 
+  // Notes:
+  // The '/' character marks the start of a line comment and the comment extends for the rest of
+  // the line, i.e. until the next newline '\n' is encountered. But: If the '/' occurs inside the
+  // path of a filename, it does not start a comment. We solve this by introducing a state
+  // inRhs in which the '/' is ignored (i.e. doesn't put us into comment-state)
+  // 
+
+  // Bugs:
+  // -using ' ' to detect the end of an assignment does not work: when we have a comment slash
+  //  followed by a space, we'll jump out of inComment state - but shouldn't
+
   // Maybe this is overkill - at least for the wavefile names. They are actually not given in 
   // quotes. However, maybe later we will need to handle strings anyway - for example, for the
   // formula opcode. ...that also means we do not yet have test coverage for sfzs  containing 
@@ -62,6 +74,7 @@ void rsRemoveLineComments(std::string& str, char commentStart)
   // unit test containing filenames using subdirectories...ok done...added the inRhs stuff - it now
   // needs tests
 }
+// this needs more unit tests - it doesn't work correctly yet
 
 void rsReplaceCharacter(std::string& str, char oldChar, char newChar)
 {

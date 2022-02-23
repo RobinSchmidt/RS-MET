@@ -3,6 +3,6 @@ https://philippegroarke.com/posts/2018/c++_ui_solutions/
 
 Library for mathematical function evaluation
 http://ftp.math.utah.edu/pub/mathcw/
-belongs togethr with the book:
+belongs together with the book:
 The Mathematical-Function Computation Handbook: Programming Using the MathCW Portable Software Library
 https://www.amazon.com/Mathematical-Function-Computation-Handbook-Programming-Portable-ebook/dp/B0751873YT/

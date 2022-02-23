@@ -320,8 +320,43 @@ Ideas:
   brightness that is controlled by the mean and variance
  -maybe a similar process should be applied to saturation, too (but not to hue)
 
--implement blob-coloring:
+
+Should perhaps go into some rsImageAnalyzer class:
+
+-Implement blob-coloring:
  https://en.wikipedia.org/wiki/Blob_detection
  https://www.youtube.com/watch?v=vTUsGzXFmuc
+-Define a data-structure for representing image regions (can be used for "blobs"). A region is 
+ defined to be a set of pixels, typically (but not necessarily) connected. It can be implemented 
+ just as a vector of pairs of integer pixel coordinates x,y.
+-On such regions, define functions to extract certain features (see "Taschenbuch der Informatik", 
+ pg. 540):
+ -Area: number of pixels
+ -Circumfence: number of boundary pixels, defined as pixels who have neighbors that are not part of 
+  the region (should we use a 4- or 8-neighborhood? Maybe have both variants). Computing it perhaps
+  needs an O(N^2) algo where N is the number of pixels? Or can we do better? Perhaps, if the pixels 
+  are sorted in some way, we can indeed do better: left or right neighbors, if present, should be 
+  immediately adjacent in the array. top or bottom neighbors, if present, should be at most one 
+  "row-stride" away (there is no fixe row-stride though, but we may be able to give bounds). Maybe
+  it could be helpful, if the region data-structure stores row-indices and within each row, the 
+  indices of columns - that could even be more memory efficient (at least for compact regions)
+ -Compactness: circumfence^2 / area
+ -Connectedness: each pixel has at least one neighbor which is also inside the region
+ -Moments: m_{kl} = sum_{x,y} x^k  y^l  b(x,y) where x,y are the pixel coordinates and b(x,y) is
+  the pixel's brightness
+ -Center of gravity: x_c = m_{10} / m_{00}, y_c = m_{01} / m_{00}
+ -Traslation invariant moments: t_{kl} = sum_{x,y} (x-x_c)^k (y-y_c)^l b(x,y). They don't depend on
+  the position of the region within the image
+ -Translation- and scale-invariant moments: s_{kl} = t_{kl} / pow(t_{00}, 1 + (k+l)/2)
+ -Translation-, scale- and rotation-invariant moments: r_1 = t_{20} - t_{02}, 
+  r_2 = r_1^2 + 4 t_{11}^2, r_3 = (t_{30} - 3 t_{12})^2 + (3 t_{21} - t_{03})^2
+ -Histogram: function from the pixel-values (brightnesses) to a relative frequency of occurence in
+  0..1. When pixel values are float, we may need a function from brightness intervals (instead of 
+  brightness values) to relative frequencies. From the histogram, we may extract further features
+  such as mean brightness, brightness variance...maybe measures like skew, kurtosis, etc. could be
+  interesting...maybe some sort of measure of uni-/bi-/tri-/etc-modality? ...although, presumably,
+  any region extraction algo will have selected more or less homogenuous regions anyway, so these
+  features may mae more sense for an image as a whole?
+
 
 */

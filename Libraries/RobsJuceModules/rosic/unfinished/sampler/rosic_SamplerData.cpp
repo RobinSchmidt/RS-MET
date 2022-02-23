@@ -440,9 +440,10 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   rsReplaceCharacter(str, '\n', ' '); // replace newlines with whitespaces
   rsRemoveRepeats(str, ' ');          // replace sequences of whitespaces with single whitespace
   // -Factor out into a function preProcessSfz
-  // -Include stripping away comments. A comment begins with a slash '/' and extends until the end
-  //  of the line. It's really annyoing that we can't yet write any comments. Maybe hava a general
-  //  function that removes all characters between a startTag and endTag and call it like
+  // -prepend a <group> tag if the file doesn't start with one, i.e. starts with a naked region
+  // -Include stripping away comments (done?). A comment begins with a slash '/' and extends until 
+  //  the end of the line. It's really annyoing that we can't yet write any comments. Maybe hava a
+  //  general function that removes all characters between a startTag and endTag and call it like
   //    str = removeBetween(str, "/", "\n", true, false)
   //  where the true/false flags indicate whether or not the startTag, endTag (here "/" and "\n") 
   //  characters themselves should also be removed. The slash itself shall be removed but the 
@@ -653,6 +654,10 @@ void SfzInstrument::copy(const SfzInstrument& src, SfzInstrument& dst)
 /*
 
 Bugs:
+-when the sfz file immediately starts with a <region> without a <group> before, the parsing 
+ fails. We should probably prepend a group statement if there is none in the pre-processing stage.
+-patches starting with a comment don't load - the comment is not stripped off 
+ -> bug in pre-processor?
 -when the opcode value in the sfz file is given without decimal dot, e.g. volume=-6 instead of 
  volume=-6.0, it crashes
 

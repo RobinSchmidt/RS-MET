@@ -975,6 +975,10 @@ ToDo:
  need on-the-fly type conversion.
 -Optionally resample the samples on loading to the output sample rate using a very high quality 
  (much better than realtime) resampling algorithm (say Sinc_512)
+-Explain relationship between regions and layers. They are related but not the same thing. For 
+ example, we can have two layers that simulatenously play back the same region. In such a case,
+ a sample will be overlapped with itself. This happens in the one_shot loop_mode and when a key 
+ gets retriggered during a non-finished release phase.
 
 Notes:
 
