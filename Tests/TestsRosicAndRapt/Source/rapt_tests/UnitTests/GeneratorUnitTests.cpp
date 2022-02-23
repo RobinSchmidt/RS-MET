@@ -1377,13 +1377,7 @@ bool samplerPreProcessorTest()
   ok &= check("<group>  /Some comment\n<region>",   "<group>  \n<region>");
   ok &= check("<group>  / Some comment \n<region>", "<group>  \n<region>");
 
-
   ok &= check("/ Some = comment \n<group>\n<region>", "\n<group>\n<region>");
-  // fails! the occurence of "=" within a comment seems to break it
-
-
-
-
 
 
   rsAssert(ok);
@@ -2858,6 +2852,7 @@ bool samplerEngineUnitTest()
   // The new test that is currently under construction:
   //ok &= samplerKeyVelTrackTest();
   //ok &= samplerModulationsTest();
+  ok &= samplerPreProcessorTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing an sfz

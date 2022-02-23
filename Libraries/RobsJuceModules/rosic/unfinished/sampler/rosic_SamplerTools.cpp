@@ -26,9 +26,8 @@ void rsRemoveLineComments(std::string& str, char commentStart)
         state = inString;
       else
         state = inText;   }
-    else if(c == '=')                          // Detect start of assignment
-      state = inRhs;       // maybe we should also check, if the state is inText
-
+    else if(c == '=' && state == inText)       // Detect start of assignment
+      state = inRhs;
     else if(c == ' ' && state == inRhs)        // Detect end of assignment
       state = inText;
     else if(c == commentStart) {               // Detect start of comments
