@@ -1457,6 +1457,16 @@ bool samplerParserTest()
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   // todo: make a helper function to turn these into one-liners like test("<group>...");
 
+
+  sfzStr = "<group> <region>sample=Sin440Hz.wav pan=79";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+
+  sfzStr = " <group> <region>sample=Sin440Hz.wav pan=79";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;  // triggers assert
+
+
+  // ToDo: test a patch that doesn't define a group - the preprocessor should perhaps add one
+
   // Test reading an sfz-string where each opcode in on one line. This is the string that would be
   // generated and written into a file by a call to se.saveToSFZ("SinCos.sfz"); Then, a 2nd engine
   // tries to set itself up according to sfzStr. If all works as it should, se2 should aftwards be
@@ -1519,6 +1529,10 @@ pan=100.000000";
 
   // ToDo: test with a sample path that contains a '/', i.e. goes into a subdirectory. In this 
   // case, the '/' within that path should not be mistaken for a comment
+
+
+
+
 
 
 
