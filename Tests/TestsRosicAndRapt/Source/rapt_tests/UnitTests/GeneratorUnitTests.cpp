@@ -1428,44 +1428,31 @@ bool samplerParserTest()
   SE se2(maxLayers);
 
 
-
-
   // Some tests that previously have triggered asserts:
-  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35   pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35  pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region>sample=Sin440Hz.wav\n<region>sample=Cos440Hz.wav";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region>sample=Sin440Hz.wav";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region>\nsample=Sin440Hz.wav";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region>sample=Sin440Hz.wav pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region>sample=Sin440Hz.wav volume=35 pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 \n";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79  ";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79\n";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 ";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // todo: make a helper function to turn these into one-liners like test("<group>...");
+  auto test = [&](const std::string& str)
+  {
+    rc = se2.setFromSFZ(str); 
+    return rc == RC::success;
+  };
+  ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35   pan=79");
+  ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35  pan=79");
+  ok &= test("<group>\n<region>sample=Sin440Hz.wav\n<region>sample=Cos440Hz.wav");
+  ok &= test("<group>\n<region>sample=Sin440Hz.wav");
+  ok &= test("<group>\n<region>\nsample=Sin440Hz.wav");
+  ok &= test("<group>\n<region>sample=Sin440Hz.wav pan=79");
+  ok &= test("<group>\n<region>sample=Sin440Hz.wav volume=35 pan=79");
+  ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 pan=79");
+  ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 \n");
+  ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79  ");
+  ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79\n");
+  ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 ");
+  ok &= test("<group> <region>sample=Sin440Hz.wav pan=79");
+  ok &= test(" <group> <region>sample=Sin440Hz.wav pan=79"); // triggers assert
 
 
-  sfzStr = "<group> <region>sample=Sin440Hz.wav pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-
-  sfzStr = " <group> <region>sample=Sin440Hz.wav pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;  // triggers assert
-
-
-  // ToDo: test a patch that doesn't define a group - the preprocessor should perhaps add one
+  // ToDo: test a patch that doesn't define a group - the preprocessor should perhaps add one. 
+  // But when we later wnat to add a global section, it may be not so easy to figure out where to insert the
+  // group ...maybe, if absent, insert <group> immediately before the first <region>
 
   // Test reading an sfz-string where each opcode in on one line. This is the string that would be
   // generated and written into a file by a call to se.saveToSFZ("SinCos.sfz"); Then, a 2nd engine
