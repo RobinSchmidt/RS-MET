@@ -1356,29 +1356,35 @@ bool samplerPreProcessorTest()
 
   using namespace rosic::Sampler;
 
-  std::string str;
-
-  auto stripComments = [](std::string& str) { rsRemoveLineComments(str, '/'); };
 
 
-  str = "/Some comment\n<group>\n<region>";
-  stripComments(str);
-  ok &= str == "\n<group>\n<region>";
+  //auto stripComments = [](std::string& str) { rsRemoveLineComments(str, '/'); };
 
-  str = "/Some comment \n<group>\n<region>";
-  stripComments(str);
-  ok &= str == "\n<group>\n<region>";
+  // Helper function that takes a sfz-string with comments and the target string without comments
+  // that should result from stripping the comments from the former string:
+  auto check = [](std::string withComments, const std::string& withoutComments) 
+  { 
+    rsRemoveLineComments(withComments, '/');
+    return withComments == withoutComments;
+  };
 
-  str = "/ Some comment\n<group>\n<region>";
-  stripComments(str);
-  ok &= str == "\n<group>\n<region>";
+  ok &= check("/Some comment\n<group>\n<region>",   "\n<group>\n<region>");
+  ok &= check("/Some comment \n<group>\n<region>",  "\n<group>\n<region>");
+  ok &= check("/ Some comment\n<group>\n<region>",  "\n<group>\n<region>");
+  ok &= check("/ Some comment \n<group>\n<region>", "\n<group>\n<region>");
 
-  str = "/ Some comment \n<group>\n<region>";
-  stripComments(str);
-  ok &= str == "\n<group>\n<region>";
+  ok &= check("<group>/Some comment\n<region>",     "<group>\n<region>");
+  ok &= check("<group>  /Some comment\n<region>",   "<group>  \n<region>");
+  ok &= check("<group>  / Some comment \n<region>", "<group>  \n<region>");
 
-  // wrap into function ok &= check("/Some comment\n<group>\n<region>", "\n<group>\n<region>");
-  // etc.
+
+  ok &= check("/ Some = comment \n<group>\n<region>", "\n<group>\n<region>");
+  // fails! the occurence of "=" within a comment seems to break it
+
+
+
+
+
 
   rsAssert(ok);
   return ok;
