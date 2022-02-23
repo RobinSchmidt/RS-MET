@@ -2866,7 +2866,7 @@ bool samplerEngineUnitTest()
   // The new test that is currently under construction:
   //ok &= samplerKeyVelTrackTest();
   //ok &= samplerModulationsTest();
-  ok &= samplerPreProcessorTest();
+  ok &= samplerParserTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing an sfz
