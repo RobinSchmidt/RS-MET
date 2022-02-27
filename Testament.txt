@@ -1,0 +1,9 @@
+Should I pass away, I hereby declare that all parts of this repository whose author I am shall 
+become public domain. This entails in particular, but not only, the contents of the folder:
+
+Libraries\RobsJuceModules
+
+It is my last wish that this code will be of value for something and cool things will be made from 
+it.
+
+Berlin, Feb. 27th 2022, Robin Schmidt
