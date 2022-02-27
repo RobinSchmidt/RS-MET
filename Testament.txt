@@ -3,7 +3,7 @@ become public domain. This entails in particular, but not only, the contents of 
 
 Libraries\RobsJuceModules
 
-The same goes, by the way, for all my other repositories as well. It is my last wish that my code 
+The same goes, by the way, for all my other repositories as well. It is my last will that my code 
 will be of value for something and cool things will be built from it. Live long and prosper!
 
 Berlin, Feb. 27th 2022, Robin Schmidt
