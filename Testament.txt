@@ -3,7 +3,7 @@ become public domain. This entails in particular, but not only, the contents of 
 
 Libraries\RobsJuceModules
 
-It is my last wish that this code will be of value for something and cool things will be made from 
+It is my last wish that this code will be of value for something and cool things will be built from 
 it.
 
 Berlin, Feb. 27th 2022, Robin Schmidt
