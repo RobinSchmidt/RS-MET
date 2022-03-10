@@ -1431,7 +1431,11 @@ bool samplerParserTest()
   // Some tests that previously have triggered asserts:
   auto test = [&](const std::string& str)
   {
-    rc = se2.setFromSFZ(str); 
+    rc = se2.setFromSFZ(str);
+
+    // ToDo: check, if se2 is in the expected state...but we don't really have a reference engine in
+    // the expected state available...change that!
+
     return rc == RC::success;
   };
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35   pan=79");
@@ -1439,15 +1443,28 @@ bool samplerParserTest()
   ok &= test("<group>\n<region>sample=Sin440Hz.wav\n<region>sample=Cos440Hz.wav");
   ok &= test("<group>\n<region>sample=Sin440Hz.wav");
   ok &= test("<group>\n<region>\nsample=Sin440Hz.wav");
+
   ok &= test("<group>\n<region>sample=Sin440Hz.wav pan=79");
+
   ok &= test("<group>\n<region>sample=Sin440Hz.wav volume=35 pan=79");
+
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 pan=79");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 \n");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79  ");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79\n");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 ");
+
+
   ok &= test("<group> <region>sample=Sin440Hz.wav pan=79");
-  ok &= test(" <group> <region>sample=Sin440Hz.wav pan=79"); // triggers assert
+  ok &= test(" <group> <region>sample=Sin440Hz.wav pan=79"); // triggers assert (but passes)
+  // In SfzInstrument::setFromSFZ, the very 1st region that gets added gets an empty string
+  // for tmp = groupDef.substr(j0+Lr, j1-j0-Lr); at the bottom of the while(!allRegionsDone) loop.
+  // This result in the 1st region being empty. Then 2nd region seems to be the actually correct
+  // one. The test passes because we do not actually check, if the instrument is in the correct
+  // expected state - we only check, if parsing works. ToDo: put a reference smapler engine in the
+  // expected state and check, if the se2 is in the same state (within the test helper function).
+  // Maybe move these tests to the bottom of the function.
+
 
 
   // ToDo: test a patch that doesn't define a group - the preprocessor should perhaps add one. 
@@ -2852,8 +2869,8 @@ bool samplerEngineUnitTest()
 
   // The new test that is currently under construction:
   //ok &= samplerKeyVelTrackTest();
-  //ok &= samplerModulationsTest();
-  ok &= samplerParserTest();
+  ok &= samplerModulationsTest();
+  //ok &= samplerParserTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing an sfz

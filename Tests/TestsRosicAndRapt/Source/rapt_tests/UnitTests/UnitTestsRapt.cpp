@@ -104,3 +104,9 @@ bool runUnitTestsRapt()
   std::cout << "\n";
   return ok;
 }
+
+// Currently, a unit test is just a function that returns a bool: true if the test has passed and 
+// false if it has failed. Maybe at some stage, switch to some sort of unit testing framework. This
+// looks interesting (but rquires C++20):
+// https://www.youtube.com/watch?v=-qAXShy1xiE
+// https://github.com/boost-ext/ut/blob/master/include/boost/ut.hpp

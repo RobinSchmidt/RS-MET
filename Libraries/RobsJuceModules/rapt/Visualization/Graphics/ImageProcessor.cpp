@@ -358,5 +358,9 @@ Should perhaps go into some rsImageAnalyzer class:
   any region extraction algo will have selected more or less homogenuous regions anyway, so these
   features may mae more sense for an image as a whole?
 
+-Try to classify pixels as background, foreground and boundary (as in anti-aliased vector graphics
+ rendering) and try to change the background color without altering the foreground: Example: green
+ filled triangle on red background -> switch background to blue -> boundary pixles should change 
+ from dark yellowish to purple. Maybe there can be more pixel classes than these 3.
 
 */

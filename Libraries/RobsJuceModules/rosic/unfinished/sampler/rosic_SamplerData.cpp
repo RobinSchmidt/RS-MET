@@ -536,7 +536,11 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     {
       // Find start and end index of next region definition:
       j0 = groupDef.find(region, j1);
-      RAPT::rsAssert(j0 != endOfFile);  // for debug - gets triggered when we have empty regions
+
+      RAPT::rsAssert(j0 != endOfFile);  
+      // for debug - gets triggered when we have empty regions ...but also in other case, i 
+      // think
+
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {
         allRegionsDone = true;
