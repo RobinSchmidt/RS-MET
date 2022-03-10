@@ -2848,6 +2848,45 @@ bool samplerEffectsTest()
 
 bool samplerModulationsTest()
 {
+  using Vec = std::vector<float>;
+  using SE  = rosic::Sampler::rsSamplerEngineTest;
+  using OC  = rosic::Sampler::Opcode;
+  using AT  = RAPT::rsArrayTools;
+
+  // Set up a sampler engine with a sample that is just looped DC:
+  float fs = 44100;
+  int N = 1000;
+  SE se;
+  se.setSampleRate(fs);
+  Vec dc(N);
+  rsFill(dc, 1.f);
+  addSingleSampleRegion(&se, dc);
+  se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
+  se.setRegionSetting(0, 0, OC::LoopStart, 0.f,      1);
+  se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N, 1);
+
+  // Set up an amplitude LFO:
+  float lfoFreq  =  200.f;    // in Hz (SFZ has range 0..20 Hz, we allow audio-rate modulation)
+  float lfoDepth =    6.02f;  // in dB
+  se.setRegionSetting(0, 0, OC::amplfo_freq,  lfoFreq,  1);
+  se.setRegionSetting(0, 0, OC::amplfo_depth, lfoDepth, 1);
+
+  // Produce target signal:
+  Vec tgt(N);
+  float w = 2*float(PI)*lfoFreq / fs;
+  for(int n = 0; n < N; n++)
+  {
+    float lfoOut = sin(w*n);
+    tgt[n] = rsDbToAmp(lfoDepth * lfoOut);  // TODO: verify formula/behavior
+  }
+  rsPlotVectors(dc, tgt);
+
+  // Produce sampler output signal and check against target:
+  bool ok = true;
+  //Vec outL(N), outR(N);
+  ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true); // triggers assert
+  //rsPlotVectors(dc, tgt, outL, outR);
+
   // ToDo:
   // -Set up a sampler engine with a sample that is just DC and apply an amplitude envelope
   // -Envelopes in sfz have the parameters: delay, start, attack, hold, decay, sustain, release
@@ -2856,7 +2895,17 @@ bool samplerModulationsTest()
   // -Maybe we should also define shape parameters for the segments, i.e. attack_shape, 
   //  decay_shape, release_shape
 
-  bool ok = true;
+  // Notes:
+  // -Maybe we should have seperate opcodes for fixed modulators like amplfo, pitcheg, etc. and 
+  //  freely routable modulators
+  // -Opcodes for freely routable LFOs are defined in sfz 2, for example:
+  //  lfoN_freq, lfoN_amplitude (routes to amplitude, i guess)...but we may need something like:
+  //  lfoN_ampM_volume, lfoN_ampM_pan, lfoN_ampM_width, etc.
+  // -To which amplifier should the amplfo_depth apply? To the 1st - that would be consistent with
+  //  the automatic adding of 1 when nothing is given for N in the indexd opcodes. On the other 
+  //  hand, we will not introduce indexed versions amplfo_depth - instead, we'll use 
+  //  lfoN_ampM_volume etc. and applying the amp-lfo to the last amp may be more intuitive...hmmm..
+  // -How can we allow ringmod?
 
   rsAssert(ok);
   return ok;

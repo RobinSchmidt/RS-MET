@@ -83,8 +83,9 @@ enum class Opcode
   // depth-parameters do not exist in sfz for amp-env. wouldn't make much sense, i guess
 
     // Amplifier LFO:
-  AmpLfoDelay, AmpLfoFade, AmpLfoFreq, AmpLfoDepth, AmpLfoDepthCtrlN, 
+  AmpLfoDelay, AmpLfoFade, /*AmpLfoFreq, AmpLfoDepth,*/ AmpLfoDepthCtrlN, 
   AmpLfoDepthChanAft, AmpLfoDepthPolyAft, AmpLfoFreqCtrlN, AmpLfoFreqChanAft, AmpLfoFreqPolyAft,
+  amplfo_freq, amplfo_depth,
 
   // Equalízer:
   eqN_freq, eqN_freqccX, eqN_vel2freq, eqN_bw, eqN_bwccX, eqN_gain, eqN_gainccX, eqN_vel2gain,
