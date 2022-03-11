@@ -241,10 +241,10 @@ bool SfzCodeBook::isFilterRelated(Opcode op) const
   // generally?
 }
 
-OpcodeType SfzCodeBook::opcodeToProcessor(Opcode op)
+OpcodeType SfzCodeBook::getOpcodeType(Opcode op)
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
-    RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToProcessor");
+    RAPT::rsError("Unknown opcode in SfzCodeBook::getOpcodeType");
     return OpcodeType::Unknown; 
   }
   return opcodeEntries[(int)op].dsp;

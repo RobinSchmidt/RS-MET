@@ -303,12 +303,12 @@ enum class OpcodeType
   SamplePlayer,
 
   // Effects:
-  _TagDspsStart,  // rename to _TagEffectsStart
+  _TagEffectsStart,
   Amplifier,
   Filter,
   Equalizer,
   WaveShaper,
-  _TagDspsEnd,    // rename to _TagEffectsEnd
+  _TagEffectsEnd,
 
   // Fixed Modulators:
   _TagFixedModulatorsStart,
@@ -382,9 +382,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Translations
 
-  /** Returns the type of signal processor to which the given opcdoe applies. */
-  OpcodeType opcodeToProcessor(Opcode op);
-  // rename to getOpcodeType
+  /** Returns the type of the given opcode. */
+  OpcodeType getOpcodeType(Opcode op);
 
   /** Returns the default value for the given opcode as floating point number. If the format of the
   value is integer or an enum value, you'll need to convert the returned value to int and then
@@ -430,21 +429,21 @@ public:
 
   /** Returns true iff the given opcode applies to a DSP in the DSP chain like volume, cutoff, 
   etc. but not pitch_keycenter or tune. */
-  bool isDspSetting(Opcode op)
+  bool isEffectSetting(Opcode op)
   {
-    OpcodeType dspType = opcodeToProcessor(op);
-    return dspType > OpcodeType::_TagDspsStart && dspType < OpcodeType::_TagDspsEnd;
-    // maybe use a helper function 
-    // isStrictlyBetween(dspType, OpcodeType::_TagDspsStart, OpcodeType::_TagDspsEnd)
+    using OT = OpcodeType;
+    OT type = getOpcodeType(op);
+    return type > OT::_TagEffectsStart && type < OT::_TagEffectsEnd;
+    // maybe use a helper function :
+    // return isStrictlyBetween(type, OT::_TagEffectsStart, OT::_TagEffectsEnd);
   }
-  // rename to isEffectSetting
 
   /** Returns true iff the given opcode applies to the sample playback source such as tune, 
   delay, offset, etc. */
   bool isPlayerSetting(Opcode op)
   {
-    OpcodeType dspType = opcodeToProcessor(op);
-    return dspType == OpcodeType::SamplePlayer;
+    OpcodeType type = getOpcodeType(op);
+    return type == OpcodeType::SamplePlayer;
   }
 
   // todo: isModulationSetting, isModulatorSetting  (modulatiON settings define mod-connections,

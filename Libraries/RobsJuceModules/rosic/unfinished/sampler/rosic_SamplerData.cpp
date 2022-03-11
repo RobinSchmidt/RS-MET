@@ -12,7 +12,7 @@ float SfzInstrument::PlaybackSetting::getDefaultValue(Opcode type, int index)
 OpcodeType SfzInstrument::PlaybackSetting::getTargetOpcodeType(Opcode type)
 {
   SfzCodeBook* t = SfzCodeBook::getInstance();
-  return t->opcodeToProcessor(type);
+  return t->getOpcodeType(type);
 }
 // Maybe get rid of these two. The caller should use the translator himself. Or maybe it's more 
 // convenient to keep them as convenience functions? We'll see....
@@ -26,7 +26,7 @@ void SfzInstrument::HierarchyLevel::ensureDspsPresent(Opcode opcodeType, int how
   SPT dspType = PlaybackSetting::getTargetOpcodeType(opcodeType);
   rsAssert( dspType != SPT::Unknown );
 
-  // use: SfzCodeBook::isDspSetting:
+  // use: SfzCodeBook::isEffectSetting:
   if(dspType == SPT::SamplePlayer || dspType == SPT::Unknown)
     return;
     // The sample-player at the start of the processing chain doesn't really count as bona-fide DSP
