@@ -115,6 +115,17 @@ void SamplePlayer::disassembleEffectChain()
   // ToDo: benchmark whether its faster to traverse the array from the back
 }
 
+bool SamplePlayer::assembleModulators(const std::vector<OpcodeType>& types)
+{
+  RAPT::rsError("Not yet implemented");
+  return false;
+}
+
+void SamplePlayer::disassembleModulators()
+{
+  RAPT::rsError("Not yet implemented");
+}
+
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
   Effect* dsp = effectChain.getEffect(s.getTargetOpcodeType(), s.getIndex());

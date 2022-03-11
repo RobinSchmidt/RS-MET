@@ -257,7 +257,6 @@ protected:
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available).  */
   virtual bool assembleEffectChain(bool busMode) = 0;
-  // rename to assemberEffectChain
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
 
@@ -268,6 +267,10 @@ protected:
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleEffectChain();
 
+  // under construction:
+  //virtual bool assembleModulators(bool busMode) = 0;
+  bool assembleModulators(const std::vector<OpcodeType>& types);
+  void disassembleModulators();
 
 
 
@@ -301,9 +304,12 @@ protected:
 
 
   EffectChain effectChain;
-  /** This is the chain of our effect processor objects. An EffectChain is basically an array
+  /**< This is the chain of our effect processor objects. An EffectChain is basically an array
   of pointers to polymorphic effect classes (i.e. subclasses of the Effect baseclass) that can be 
   assembled at runtime, typically on noteOn. */
+
+
+
 
   DspResourcePool* dspPool = nullptr;
   /**< A pool of DSP processor objects from which we can grab some as needed to assemble our DSP
@@ -392,7 +398,7 @@ protected:
   bool assembleEffectChain(bool busMode) override;
 
 
-  bool setupModulations();
+  bool setupModulations();  // maybe move to baseclass
 
   //void resetDspState();
   void resetPlayerSettings();
@@ -436,6 +442,7 @@ protected:
   uchar key = 0;                 //< Midi note number used for starting this player
 
 
+  // maybe move to baseclass:
   std::vector<Modulator*> modSources;
   std::vector<Parameter*> modTargets;
   std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
