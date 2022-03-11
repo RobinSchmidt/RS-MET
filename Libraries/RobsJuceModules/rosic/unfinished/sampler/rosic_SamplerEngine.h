@@ -194,7 +194,8 @@ public:
   int setRegionModulation(int groupIndex, int regionIdex, OpcodeType modSrcType, int modSrcIndex,
     Opcode modTarget, int modTargetIndex, float modDepth)
   {
-    return 0;
+    return sfz.setRegionModulation(groupIndex, regionIdex, 
+      modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth);
   }
 
 

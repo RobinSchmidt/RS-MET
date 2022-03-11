@@ -2910,7 +2910,10 @@ bool samplerFreeModulationsTest()
   // lfoN_effectXparam where "effect" is a placeholder for e.g. "eq", "distort", "amp", etc. and 
   // param is a placeholder for e.g. "gain", "drive", "pan" etc. For something like 
   // lfo2_fil3cutoff, we could also write lfo2_cutoff3. We need to define a general scheme and 
-  // allow some alternative alias-syntax in those special cases that also appear in sfz2
+  // allow some alternative alias-syntax in those special cases that also appear in sfz2...maybe
+  // sfz2 compatibility is not so crucial...but it would certainly be nice to have...which samplers
+  // support sfz2 anyway?
+  // https://www.plogue.com/products/sforzando.html (uses ARIA?)
 
 
 

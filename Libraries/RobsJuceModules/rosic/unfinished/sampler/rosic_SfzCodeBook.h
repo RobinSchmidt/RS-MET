@@ -324,8 +324,8 @@ enum class OpcodeType
 
   // Freely routable modulators:
   _TagFreeModulatorsStart,
-  FreeEnv, 
-  FreeLfo,
+  FreeEnv,  // maybe rename to EnvGen
+  FreeLfo,  // maybe rename to LowFreqOsc
   _TagFreeModulatorsEnd,
   // Free modulators need to come immediately after the fixed modulators. Some code relies on that.
   // ToDo: maybe avoid this dependency by using _TagModulatorsStart, _TagModulatorsEnd and wrap 

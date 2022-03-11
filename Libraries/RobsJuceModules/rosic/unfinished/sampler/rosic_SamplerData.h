@@ -129,6 +129,58 @@ public:
     // a code for "not applicable".
   };
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** A class to represent a modulation routing...tbc.... */
+  class ModulationRouting
+  {
+
+  public:
+
+    ModulationRouting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex, 
+      float modDepth)
+      : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
+      , targetIndex(modTargetIndex), depth(modDepth) 
+    {}
+
+    /** Returns true, iff the type and index of the source of the given routing matches ours. */
+    bool hasMatchingSource(const ModulationRouting& r) const
+    {
+      return r.sourceType == sourceType && r.sourceIndex == sourceIndex;
+    }
+
+    bool hasMatchingTarget(const ModulationRouting& r) const
+    {
+      return r.target == target && r.targetIndex == targetIndex;
+    }
+
+    bool hasMatchingEndpoints(const ModulationRouting& r) const
+    {
+      return hasMatchingSource(r) && hasMatchingTarget(r);
+    }
+    // try to find better name maybe hasMatchingPorts/Pins...dunno
+
+    void setDepth(float newDepth) { depth = newDepth; }
+
+
+  private:
+
+    OpcodeType sourceType;   // Type of modulator like EnvGen, LowfreqOsc, etc.
+    int        sourceIndex;  // Index like the 3 in lfo3_freq 
+    Opcode     target;       // Modulation target like cutoffN, volumeN, etc.
+    int        targetIndex;  // Index like the 2 in lfo3_cutoff2, lfo3_eq2gain, etc.
+    float      depth;        // Modulation depth
+
+    // ToDo:
+    // -Maybe have a member for modulationMode (absolute, relative, exponential, etc.) but maybe
+    //  that should be determined by the target...not suere yet
+    // -Maybe use sourceIndex values < 1 for the special fixed modulators, like
+    //  0: amp, -1: filter, -2 pitch - maybe define constants for them
+
+  };
+
+
+
   //-----------------------------------------------------------------------------------------------
   /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their
   commonalities. Subclasses are Region, Group, Global. 
@@ -172,9 +224,15 @@ public:
     {
       settings.clear();
       dspTypes.clear();
+      modRoutings.clear();
     }
     // should this also set loKey/hiKey and loVel/hiVel back to their default values of 0/127? 
     // i actually think so...also the signalProcessors
+
+
+    void setModulation(OpcodeType modSrcType, int modSrcIndex, 
+      Opcode modTarget, int modTargetIndex, float modDepth);
+
 
 
     void setLoKey(uchar newKey) { loKey = newKey; }
@@ -327,12 +385,22 @@ public:
     //  group setting -> check, how sfzPlayer behaves
 
     std::vector<PlaybackSetting> settings;
-    /**< The settings which applay to this region/group/instrument, i.e. the opcodes along with 
+    /**< The settings which apply to this region/group/instrument, i.e. the opcodes along with 
     their values and, if appliable, index */
 
     std::vector<OpcodeType> dspTypes;
     /**< Listing of the types of signal processors used in this instrument in the same order like 
-    how they should be applied (we assume a serial connection). */
+    how they should be applied (we assume a serial connection). But the list also contains the 
+    modulation sources. The distinction between these two sorts of DSPs is not relevant here but
+    will become relevant when actually assmebling the Player objects. */
+
+    std::vector<ModulationRouting> modRoutings;
+    /** Holds the modulation routings...tbc...  */
+
+    // ModulationConnection is for the objects that are used in sample processing whereas 
+    // ModulationSetting/Routing is used in regions/groups/etc
+
+
 
   };
 
@@ -518,20 +586,23 @@ public:
   }
 
   rsReturnCode setRegionSetting(int gi, int ri, Opcode type, float value, int index = -1);
-
   rsReturnCode setGroupSetting(int gi, Opcode type, float value, int index = -1);
+  rsReturnCode setInstrumentSetting(Opcode type, float value, int index = -1);  // rename to setGlobalSetting for sfz compliance
 
-  rsReturnCode setInstrumentSetting(Opcode type, float value, int index = -1);
-  // rename to setGlobalSetting for sfz compliance
+  rsReturnCode setRegionModulation(int gi, int ri, OpcodeType modSrcType, int modSrcIndex,
+    Opcode modTarget, int modTargetIndex, float modDepth);
+  // for setting up a modulation connection
+  // maybe rename to addRegionModulation
+
 
   rsReturnCode removeRegionSetting(int gi, int ri, Opcode type, int index);
-
-  rsReturnCode clearRegionSettings(int gi, int ri);
-
   rsReturnCode removeGroupSetting(int gi, Opcode type, int index);
-
   rsReturnCode removeInstrumentSetting(Opcode type, int index);
 
+
+
+
+  rsReturnCode clearRegionSettings(int gi, int ri);
 
   void clearAllRegionSettings();
   void clearAllGroupSettings();

@@ -396,7 +396,7 @@ struct DspResourcePool
 {
   EffectPool    effectPool;
   ModulatorPool modulatorPool;
-  //ConnectionPool connectionPool;
+  //ConnectionPool connectionPool; // not sure, if needed
 };
 
 

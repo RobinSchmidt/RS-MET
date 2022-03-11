@@ -111,7 +111,33 @@ bool SfzInstrument::HierarchyLevel::removeSetting(Opcode type, int index)
   return wasRemoved;
   // We can't use size_t for i because the -1 would create an access violation when size() = 0
   // Maybe it should remove the DSP if it was the last setting that applied to it?
+
+  // We should probably also remove all modulation routings that have this setting as target?
+  // ...or maybe not?
 }
+
+void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int modSrcIndex,
+  Opcode modTarget, int modTargetIndex, float modDepth)
+{
+  // ToDo: verify that modTarget is a modulatable opcode, i.e. an opcode for setting a continuous 
+  // parameter - something like cutoffN but not something like loop_mode - but maybe that should be
+  // checked when assembling the modMatrix...
+
+  if(!SfzCodeBook::isModSourceSetting(modSrcType)) {
+    RAPT::rsError("modSrcType must be some sort of modulation source");
+    return; }
+  ModulationRouting newRouting(modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth);
+  for(size_t i = 0; i < modRoutings.size(); i++) {
+    if( modRoutings[i].hasMatchingEndpoints(newRouting) ) {
+      modRoutings[i].setDepth(modDepth);  // Overwrite existing routing
+      return;  }}                         // ...and return early
+  modRoutings.push_back(newRouting);      // or append a new routing
+}
+// Maybe return the index where the setting was modified or the last index if it was pushed.
+// Maybe we should have a sanity check that source and target exist...but maybe it's allowable to 
+// set up the modulation connections before these exist. But in this case, we should perhaps make
+// a sanity check for all connections after the region was fully set up. Maybe a member function
+// checkModRoutingSanity ..or hasDanglingRoutings or something
 
 void SfzInstrument::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
 {
@@ -311,6 +337,31 @@ rsReturnCode SfzInstrument::setRegionSetting(int gi, int ri, Opcode type, float 
   return rsReturnCode::success;
 }
 
+rsReturnCode SfzInstrument::setGroupSetting(int gi, Opcode type, float value, int index)
+{
+  if(!isGroupIndexValid(gi)) {
+    RAPT::rsError("Invalid group index");
+    return rsReturnCode::invalidIndex; }
+  global.groups[gi]->setSetting(PlaybackSetting(type, value, index));
+  return rsReturnCode::success;
+}
+
+rsReturnCode SfzInstrument::setInstrumentSetting(Opcode type, float value, int index)
+{
+  global.setSetting(PlaybackSetting(type, value, index));
+  return rsReturnCode::success;
+}
+
+rsReturnCode SfzInstrument::setRegionModulation(int gi, int ri, 
+  OpcodeType srcType, int srcIndex, Opcode tgtParam, int tgtIndex, float depth)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    RAPT::rsError("Invalid group- and/or region index");
+    return rsReturnCode::invalidIndex; }
+  global.groups[gi]->regions[ri]->setModulation(srcType, srcIndex, tgtParam, tgtIndex, depth);
+  return rsReturnCode::success;
+}
+
 rsReturnCode SfzInstrument::removeRegionSetting(int gi, int ri, Opcode type, int index)
 {
   if(!isIndexPairValid(gi, ri)) {
@@ -319,24 +370,6 @@ rsReturnCode SfzInstrument::removeRegionSetting(int gi, int ri, Opcode type, int
   bool wasRemoved = global.groups[gi]->regions[ri]->removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
-}
-
-rsReturnCode SfzInstrument::clearRegionSettings(int gi, int ri)
-{
-  if(!isIndexPairValid(gi, ri)) {
-    RAPT::rsError("Invalid group- and/or region index");
-    return rsReturnCode::invalidIndex; }
-  global.groups[gi]->regions[ri]->clearSettings();
-  return rsReturnCode::success;
-}
-
-rsReturnCode SfzInstrument::setGroupSetting(int gi, Opcode type, float value, int index)
-{
-  if(!isGroupIndexValid(gi)) {
-    RAPT::rsError("Invalid group index");
-    return rsReturnCode::invalidIndex; }
-  global.groups[gi]->setSetting(PlaybackSetting(type, value, index));
-  return rsReturnCode::success;
 }
 
 rsReturnCode SfzInstrument::removeGroupSetting(int gi, Opcode type, int index)
@@ -349,17 +382,20 @@ rsReturnCode SfzInstrument::removeGroupSetting(int gi, Opcode type, int index)
   else           return rsReturnCode::nothingToDo;
 }
 
-rsReturnCode SfzInstrument::setInstrumentSetting(Opcode type, float value, int index)
-{
-  global.setSetting(PlaybackSetting(type, value, index));
-  return rsReturnCode::success;
-}
-
 rsReturnCode SfzInstrument::removeInstrumentSetting(Opcode type, int index)
 {
   bool wasRemoved = global.removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
+}
+
+rsReturnCode SfzInstrument::clearRegionSettings(int gi, int ri)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    RAPT::rsError("Invalid group- and/or region index");
+    return rsReturnCode::invalidIndex; }
+  global.groups[gi]->regions[ri]->clearSettings();
+  return rsReturnCode::success;
 }
 
 void SfzInstrument::clearAllRegionSettings()
