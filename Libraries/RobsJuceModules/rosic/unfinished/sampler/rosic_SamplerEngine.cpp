@@ -202,7 +202,7 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
   sfz.setRegionSample(gi, ri, s->getPath());
   return rsReturnCode::success;
 }
-
+/*
 int rsSamplerEngine::setRegionSetting(int gi, int ri, Opcode type, float value, int index)
 {
   return sfz.setRegionSetting(gi, ri, type, value, index);
@@ -217,7 +217,7 @@ int rsSamplerEngine::setInstrumentSetting(Opcode type, float value, int index)
 {
   return sfz.setInstrumentSetting(type, value, index);
 }
-
+*/
 int rsSamplerEngine::setupFromSFZ(const SfzInstrument& newSfz)
 {
   removeSamplesNotUsedIn(newSfz);     // remove samples that are not needed anymore from memory

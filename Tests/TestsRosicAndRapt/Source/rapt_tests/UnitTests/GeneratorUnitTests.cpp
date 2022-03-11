@@ -2851,7 +2851,58 @@ bool samplerFreeModulationsTest()
   bool ok = true;
 
   // ToDo:
-  // Create a sinewave with an LFO applied to the drive parameter of a waveshaper...
+  // Create a DC signal with an LFO applied to the DC parameter of a waveshaper...
+
+  using Vec   = std::vector<float>;
+  using SE    = rosic::Sampler::rsSamplerEngineTest;
+  using OC    = rosic::Sampler::Opcode;
+  using OT    = rosic::Sampler::OpcodeType;
+  using Shape = rosic::Sampler::WaveshaperCore::Shape;
+
+  // Create a DC example sample:
+  int N  = 500;     // length of sample
+  Vec dc(N);
+  rsFill(dc, 1.f);
+
+  // Set up a sampler engine with a sample that is just looped DC, a waveshaper with an identity
+  // function as shape but with an LFO-modulated DC parameter:
+  float fs       = 44100;   // sample rate
+  float baseDC   = 3.f;     // nominal DC value
+  float lfoFreq  =  200.f;  // in Hz (SFZ has range 0..20 Hz, we allow audio-rate modulation)
+  float lfoDepth =    0.5;  // raw
+
+  SE se;
+  se.setSampleRate(fs);
+  addSingleSampleRegion(&se, dc);
+  se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
+  se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
+  se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
+  se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
+  se.setRegionSetting(0, 0, OC::lfoN_freq,   lfoFreq, 1);
+
+  // experimental:
+  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth);
+  // routes free LFO 1 to DC parameter of waveshaper 1 with given modulation depth
+
+
+  // should have syntax: groupIndex, regionIndex, modSource, modTarget, modDepth)
+  // ...but how would we specify the modSource/Target? In the sfz-file, we want to write things
+  // like lfo2_cutoff3=500 to modulate the cutoff of filter 3 500 Hz up and down via free LFO 2, 
+  // We want to support the follwoing SFZ2-compatible syntax (where X=1 is (sometimes?) optional):
+  //   LFO parameters:   lfoN_freq, lfoN_phase, lfoN_wave, lfoN_delay, lfoN_fade
+  //   LFO to filter:    lfoN_cutoffX, lfoN_resonanceX
+  //   LFO to equalizer: lfoN_eqXgain, lfoN_eqXfreq, lfoN_eqXbw
+  //   LFO to amplifier: lfoN_volumeX, lfoN_panX, lfoN_widthX
+  // The lfoN_eqXfreq etc could serve as model for how we write the general routing opcodes:
+  // lfoN_effectXparam where "effect" is a placeholder for e.g. "eq", "distort", "amp", etc. and 
+  // param is a placeholder for e.g. "gain", "drive", "pan" etc. For something like 
+  // lfo2_fil3cutoff, we could also write lfo2_cutoff3. We need to define a general scheme and 
+  // allow some alternative alias-syntax in those special cases that also appear in sfz2
+
+
+
+
+
 
 
   rsAssert(ok);

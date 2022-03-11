@@ -276,7 +276,7 @@ WaveShaper::WaveShaper()
   type = OpcodeType::WaveShaper;
   params.reserve(3);
   addParameter(Opcode::distortN_shape);
-  addParameter(Opcode::distortN_drive);
+  addParameter(Opcode::distortN_drive);  // maybe drive should be in dB
   addParameter(Opcode::distortN_dc);
 }
 
