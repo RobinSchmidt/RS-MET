@@ -65,27 +65,19 @@ class Processor // maybe find a better name
 
 public:
 
-
-protected:
-
-};
-
-
-
-/** Baseclass for effect processors that can be applied to layers while they are the played back.
-Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
-
-class Effect : public Processor
-{
-public:
-
   using uchar = unsigned char;
-
-  // Lifetime:
 
   // Setup:
   void addParameter(Opcode opcode); // maybe should return an integer parameter index?
   void setParameter(Opcode opcode, float value);
+
+  /** Resets all parameters to their default values. The caller needs to pass an index because 
+  those default values may depend on that index. For example eq1_freq has 50, eq2_freq has 500 
+  and eq3_freq has 5000 as default. So, the index is the index of a dsp of the particular given 
+  type within the dsp chain. i.e. in the case of the eqs 1,2,3. It's not the index at which point 
+  it sits in the dspChain. Only dsps of the same type count. */
+  virtual void resetSettings(int index);
+  // rename to resetParameters or setParametersToDefaults
 
   // Inquiry:
   OpcodeType getType() { return type; }
@@ -96,25 +88,18 @@ public:
   // itself but maybe reassign the pointer - yep, looks right:
   // https://stackoverflow.com/questions/21476869/constant-pointer-vs-pointer-to-constant
 
+
+
   // Processing:
-  virtual void prepareToPlay(uchar key, uchar vel, double sampleRate) = 0;  // maybe it needs to receive the key, vel
-
-  virtual void processFrame(float* L, float* R) = 0;
-  virtual void processBlock(float* L, float* R, int N) = 0;
-
-  /** Resets all parameters to their default values. The caller needs to pass an index because 
-  those default values may depend on that index. For example eq1_freq has 50, eq2_freq has 500 
-  and eq3_freq has 5000 as default. So, the index is the index of a dsp of the particular given 
-  type within the dsp chain. i.e. in the case of the eqs 1,2,3. It's not the index at which point 
-  it sits in the dspChain. Only dsps of the same type count. */
-  virtual void resetSettings(int index);
-  // rename to resetParameters or setParametersToDefaults
+  virtual void prepareToPlay(uchar key, uchar vel, double sampleRate) = 0;  
 
 protected:
 
   std::vector<Parameter> params;
   OpcodeType type = OpcodeType::Unknown;
-  uchar key = 0, vel = 0;
+
+  uchar key = 0, vel = 0; 
+  // needed for key/vel tracking? maybe should be in baseclass? envelopes will need it, too
 
   // For response to midi control:
   // MidiStatus midiStatus;
@@ -134,7 +119,24 @@ protected:
   */
   // ToDo: define a macro for that, see:
   // https://stackoverflow.com/questions/2173746/how-do-i-make-this-c-object-non-copyable
+
 };
+
+//-------------------------------------------------------------------------------------------------
+
+/** Baseclass for effect processors that can be applied to layers while they are the played back.
+Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
+
+class Effect : public Processor
+{
+public:
+
+  virtual void processFrame(float* L, float* R) = 0;
+  virtual void processBlock(float* L, float* R, int N) = 0;
+
+};
+
+//-------------------------------------------------------------------------------------------------
 
 /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
 can be envelopes, LFOs, etc. */
@@ -162,8 +164,6 @@ public:
 
   // todo: processBlock, prepareToPlay
 };
-
-
 
 
 //=================================================================================================

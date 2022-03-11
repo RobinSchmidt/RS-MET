@@ -1,22 +1,22 @@
 namespace rosic {
 namespace Sampler {
 
-void Effect::addParameter(Opcode opcode)
+void Processor::addParameter(Opcode opcode)
 {
   params.push_back(Parameter(opcode));
 }
 
-void Effect::setParameter(Opcode opcode, float value)
+void Processor::setParameter(Opcode opcode, float value)
 {
   size_t i = 0;
   for(i = 0; i < params.size(); i++) {
     if(params[i].getOpcode() == opcode) {
       params[i].setValue(value);
       return; }}
-  RAPT::rsError("Parameter not found in SignalProcessor::setParameter");
+  RAPT::rsError("Parameter not found in Processor::setParameter");
 }
 
-void Effect::resetSettings(int index)
+void Processor::resetSettings(int index)
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   for(size_t i = 0; i < params.size(); i++) {
