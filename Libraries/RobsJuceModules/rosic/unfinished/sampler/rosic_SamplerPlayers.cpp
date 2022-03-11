@@ -64,6 +64,19 @@ int rsCount(const T* a, int N, T elem)
 }
 // move into rsArrayTools
 
+/*
+size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType type)
+{
+  size_t count = 0;
+  for(size_t i = 0; i < modSources.size(); i++) {
+    if(modSources[i]->getType() == type) // make Processor baseclass of Effect and Modulator and getType a function of Processor
+      count++;
+  }
+  return count;
+}
+*/
+// make (static) member of SamplePlayer
+
 bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspTypeChain)
 {
   //SfzCodeBook* cb = SfzCodeBook::getInstance();
@@ -74,15 +87,8 @@ bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspT
     // or modSources array:
     OpcodeType opType = dspTypeChain[i];
 
-    // we either add a modulator to the modSources array or an effect to the effectChain:
-    if(SfzCodeBook::isModSourceSetting(opType))
-    {
-      RAPT::rsError("Not yet implemented");
-
-      // We need code quite similar to the code in the branch below... maybe swicth the two 
-      // branches, maybe factor out the common code somehwo
-    }
-    else if(SfzCodeBook::isEffectSetting(opType))
+    // We either add an effect to the effectChain or a modulator to the modSources array:
+    if(SfzCodeBook::isEffectSetting(opType))
     {
       // Figure out, if we actually need to add another effect to the chain. If not, there's 
       // nothing more to do in this iteration:
@@ -97,12 +103,35 @@ bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspT
         eff->resetSettings(sfzIndex);
         effectChain.addEffect(eff);
       }
-      else {
+      else 
+      {
         disassembleEffectChain();
         return false;
         // Not enough effects of desired type are available in the pool so we roll back any partially 
         // built chain and report failure. 
       }
+    }
+    else if(SfzCodeBook::isModSourceSetting(opType))
+    {
+      RAPT::rsError("Not yet finished");
+
+      // We need code quite similar to the code in the branch above... maybe switch the two 
+      // branches, maybe factor out the common code somehow
+
+      // The logic for adding modulation sources is the same as for adding effect processors:
+      int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1;
+
+
+      /*
+      if(modSources.getNumModulators(opType) >= sfzIndex)
+        continue;
+      */
+
+
+
+
+
+
     }
   }
   return true;

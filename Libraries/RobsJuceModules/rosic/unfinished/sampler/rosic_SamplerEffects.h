@@ -58,10 +58,24 @@ protected:
 
 //=================================================================================================
 
+/** Baseclass for Effect and Modulator factoring out some common stuff...tbc... */
+
+class Processor // maybe find a better name
+{
+
+public:
+
+
+protected:
+
+};
+
+
+
 /** Baseclass for effect processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
 
-class Effect
+class Effect : public Processor
 {
 public:
 
@@ -94,6 +108,7 @@ public:
   type within the dsp chain. i.e. in the case of the eqs 1,2,3. It's not the index at which point 
   it sits in the dspChain. Only dsps of the same type count. */
   virtual void resetSettings(int index);
+  // rename to resetParameters or setParametersToDefaults
 
 protected:
 
@@ -123,8 +138,10 @@ protected:
 
 /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
 can be envelopes, LFOs, etc. */
-class Modulator  // rename to modulationSource
+class Modulator : public Processor
 {
+  // maybe don't derive from Effect but instead derive both Effect and Modulator from a common
+  // baseclass (maybe Processor) which contains only params and type
 
 // Maybe treat modulators uniformly with effects...this may actually simplify the implementation
 // *and* make it more flexible. We want stereo modulation anyway. Maybe let the LFO's load 
