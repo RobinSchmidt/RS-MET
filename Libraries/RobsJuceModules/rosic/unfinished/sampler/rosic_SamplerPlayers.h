@@ -245,6 +245,14 @@ protected:
     return dspPool->effectPool.grabEffect(type);
   }
 
+  Modulator* getModulator(OpcodeType type)
+  {
+    RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
+    return dspPool->modulatorPool.grabModulator(type);
+  }
+  // Maybe just have one function that returns a pointer to Processor (baseclass of Effect and 
+  // Modulator)
+
   /** Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
   particular DSP is needed, if no suitable such DSP is already there in our dspChain where 
   "suitable" means: "with right type and index". The return value informs, whether or not adding

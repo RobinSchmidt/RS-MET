@@ -171,7 +171,7 @@ public:
 
 /** Envelope generator for the sampler. */
 
-class rsSamplerEnvGen
+class rsSamplerEnvGen : public Modulator // rename to EnvGen
 {
 
 public:
@@ -180,10 +180,22 @@ public:
   void setup(float delay, float start, float attack, float hold, float decay, float sustain,
     float release, float sampleRate);
 
-  float getSample();
+  //float getSample();
 
   //void processBlock(float* samples, int numSamples); 
   void reset() { sampleCount = 0; out = 0.f; }
+
+  void prepareToPlay(uchar key, uchar vel, double sampleRate) override
+  {
+    RAPT::rsError("Not yet implemented");
+  }
+
+  float getSample() override
+  {
+    RAPT::rsError("Not yet implemented");
+    return 0.f;
+  }
+
 
 protected:
 
@@ -199,13 +211,23 @@ protected:
 
 /** Low frequency oscillator for the sampler. */
 
-class rsSamplerLowFreqOsc
+class rsSamplerLowFreqOsc : public Modulator  // rename to LowFreqOsc
 {
 
 public:
 
   void setup(float freq, float delay, float fade, float sampleRate);
 
+  void prepareToPlay(uchar key, uchar vel, double sampleRate) override
+  {
+    RAPT::rsError("Not yet implemented");
+  }
+
+  float getSample() override
+  {
+    RAPT::rsError("Not yet implemented");
+    return 0.f;
+  }
 
 protected:
 
@@ -315,6 +337,7 @@ public:
   attenuation effect. Regions are always played back either correctly or not at all but never 
   wrongly. */
   Effect* grabEffect(OpcodeType type);
+  // rename to grabProcessor
 
   /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 
@@ -345,12 +368,38 @@ protected:
 
 //=================================================================================================
 
+class ModulatorPool
+{
+
+public:
+
+  ModulatorPool();
+  ~ModulatorPool();
+
+  void allocateModulators();
+  Modulator* grabModulator(OpcodeType type);
+  void repositModulator(Modulator* p);
+
+
+protected:
+
+  rsObjectPool<rsSamplerEnvGen>     envGens;
+  rsObjectPool<rsSamplerLowFreqOsc> lowFreqOscs;
+
+};
+// Maybe consolidate the ModulatorPool and EffectPool into a single ProcessorPool class that 
+// contains both types of processors. The distinction seems to just lead to code duplication.
+
+
+
+//=================================================================================================
+
 /** Structure to consolidate the different kinds of DSP resources */ 
 
 struct DspResourcePool
 {
-  EffectPool effectPool;
-  //ModulatorPool modulatorPool;
+  EffectPool    effectPool;
+  ModulatorPool modulatorPool;
   //ConnectionPool connectionPool;
 };
 

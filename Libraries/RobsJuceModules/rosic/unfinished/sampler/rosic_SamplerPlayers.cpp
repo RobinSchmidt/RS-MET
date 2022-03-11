@@ -64,18 +64,18 @@ int rsCount(const T* a, int N, T elem)
 }
 // move into rsArrayTools
 
-/*
 size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType type)
 {
   size_t count = 0;
   for(size_t i = 0; i < modSources.size(); i++) {
-    if(modSources[i]->getType() == type) // make Processor baseclass of Effect and Modulator and getType a function of Processor
+    if(modSources[i]->getType() == type)
       count++;
   }
   return count;
 }
-*/
-// make (static) member of SamplePlayer
+// make (static) member of SamplePlayer ...maybe it should take a vector of Processor* and then we
+// can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
+// closely. Then, we need to rename it
 
 bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspTypeChain)
 {
@@ -115,23 +115,17 @@ bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspT
     {
       RAPT::rsError("Not yet finished");
 
-      // We need code quite similar to the code in the branch above... maybe switch the two 
-      // branches, maybe factor out the common code somehow
-
       // The logic for adding modulation sources is the same as for adding effect processors:
-      int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1;
-
-
-      /*
-      if(modSources.getNumModulators(opType) >= sfzIndex)
+      int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1; 
+      if(getNumModulators(modSources, opType) >= sfzIndex)
         continue;
-      */
-
-
-
-
-
-
+      Modulator* mod = getModulator(opType);  // maybe use a general getProcessor function
+      if(mod) {
+        mod->resetSettings(sfzIndex);
+        modSources.push_back(mod);     }
+      else {
+        disassembleEffectChain();
+        return false;  }
     }
   }
   return true;
@@ -156,6 +150,10 @@ void SamplePlayer::disassembleEffectChain()
   for(int i = 0; i < effectChain.getNumEffects(); i++)
     dspPool->effectPool.repositEffect(effectChain.getEffect(i));
   effectChain.clear();
+
+  // todo: do the same with the modSources array
+
+
   // ToDo: benchmark whether its faster to traverse the array from the back
 }
 
