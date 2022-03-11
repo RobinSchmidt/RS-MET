@@ -27,6 +27,31 @@ void Processor::resetSettings(int index)
 
 //=================================================================================================
 
+LowFreqOsc::LowFreqOsc()
+{
+  type = OpcodeType::FreeLfo;
+  params.reserve(1);                      // index
+  addParameter(Opcode::lfoN_freq);        //   0
+
+  // ToDo: phase, wave, sync, ...
+}
+
+void LowFreqOsc::prepareToPlay(uchar key, uchar vel, double sampleRate)
+{
+  //RAPT::rsError("Not yet implemented");
+
+  // todo: core.setup(freq, delay, fade, sampleRate);
+}
+
+float LowFreqOsc::getSample()
+{
+  //RAPT::rsError("Not yet implemented");
+  return 0.f;
+}
+
+
+//=================================================================================================
+
 Amplifier::Amplifier()
 {
   type = OpcodeType::Amplifier;

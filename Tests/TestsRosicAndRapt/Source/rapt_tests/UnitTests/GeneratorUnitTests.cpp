@@ -2793,11 +2793,11 @@ bool samplerEffectsTest()
   int size;
 
   // Sizes of DSP cores:
-  size = sizeof(AmplifierCore);          // 16
-  size = sizeof(FilterCore);             // 64
-  size = sizeof(WaveshaperCore);         // 24
-  size = sizeof(rsSamplerEnvGen);        // 36
-  size = sizeof(rsSamplerLowFreqOsc);    // 16
+  size = sizeof(AmplifierCore);     // 16
+  size = sizeof(FilterCore);        // 64
+  size = sizeof(WaveshaperCore);    // 24
+  size = sizeof(EnvGen);            // 36
+  size = sizeof(LowFreqOsc);        // 16
   // FilterCore is quite large - try to reduce it - maybe by defining different kinds of filters 
   // because many filter types do not use all variables. See below
 
@@ -2846,8 +2846,22 @@ bool samplerEffectsTest()
   return ok;
 }
 
-bool samplerModulationsTest()
+bool samplerFreeModulationsTest()
 {
+  bool ok = true;
+
+  // ToDo:
+  // Create a sinewave with an LFO applied to the drive parameter of a waveshaper...
+
+
+  rsAssert(ok);
+  return ok;
+}
+
+bool samplerFixedModulationsTest()
+{
+  bool ok = true;
+
   using Vec = std::vector<float>;
   using SE  = rosic::Sampler::rsSamplerEngineTest;
   using OC  = rosic::Sampler::Opcode;
@@ -2882,21 +2896,32 @@ bool samplerModulationsTest()
   //rsPlotVectors(dc, tgt);
 
   // Produce sampler output signal and check against target:
-  bool ok = true;
+
   //Vec outL(N), outR(N);
   ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true); // triggers assert
   //rsPlotVectors(dc, tgt, outL, outR);
 
+  rsAssert(ok);
+  return ok;
+}
+
+bool samplerModulationsTest()
+{
+  bool ok = true;
+  ok &= samplerFreeModulationsTest();
+
+  //ok &= samplerFixedModulationsTest();  
+  // does not yet pass - we should first implement the free modulations and do the fixed ones
+  // later
+
+
+  /*
   // Remove the hardwired amp-lfo opcodes and add freely routable ones instead:
   se.removeRegionSetting(0, 0, OC::amplfo_freq,  1);
   se.removeRegionSetting(0, 0, OC::amplfo_depth, 1);
   se.setRegionSetting(   0, 0, OC::lfoN_freq,       lfoFreq,  1);
   se.setRegionSetting(   0, 0, OC::lfoN_amplitudeX, lfoDepth, 1);
-
-
-
-
-
+  */
 
   // ToDo:
   // -Set up a sampler engine with a sample that is just DC and apply an amplitude envelope
@@ -2936,7 +2961,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  //ok &= samplerModulationsTest();
+  ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing an sfz
@@ -2945,7 +2970,7 @@ bool samplerEngineUnitTest()
   ok &= samplerSaveLoadTest();       // saving and loading of sfz files
   ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
   ok &= samplerEffectsTest();        // effect chain
-  //ok &= samplerModulationsTest();    // modulation system
+  ok &= samplerModulationsTest();    // modulation system
   ok &= samplerOverloadTest();       // behavior in overload conditions
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes

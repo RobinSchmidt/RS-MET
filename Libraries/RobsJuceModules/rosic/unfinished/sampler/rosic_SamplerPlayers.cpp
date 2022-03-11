@@ -113,7 +113,7 @@ bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspT
     }
     else if(SfzCodeBook::isModSourceSetting(opType))
     {
-      RAPT::rsError("Not yet finished");
+      //RAPT::rsError("Not yet finished");
 
       // The logic for adding modulation sources is the same as for adding effect processors:
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1; 
@@ -145,16 +145,19 @@ bool SamplePlayer::assembleEffectChain(const std::vector<OpcodeType>& dspTypes)
   return true;
 }
 
-void SamplePlayer::disassembleEffectChain()
+void SamplePlayer::disassembleEffectChain()  // rename
 {
   for(int i = 0; i < effectChain.getNumEffects(); i++)
     dspPool->effectPool.repositEffect(effectChain.getEffect(i));
   effectChain.clear();
 
-  // todo: do the same with the modSources array
+  for(size_t i = 0; i < modSources.size(); ++i)
+    dspPool->modulatorPool.repositModulator(modSources[i]);
+  modSources.clear();
 
-
-  // ToDo: benchmark whether its faster to traverse the array from the back
+  // ToDo: 
+  // -write the loop over the effectChain in the same way as the one over the modulators
+  // -benchmark whether its faster to traverse the array from the back
 }
 
 /*

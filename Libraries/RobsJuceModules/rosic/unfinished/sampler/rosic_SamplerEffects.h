@@ -171,7 +171,7 @@ public:
 
 /** Envelope generator for the sampler. */
 
-class rsSamplerEnvGen : public Modulator // rename to EnvGen
+class EnvGen : public Modulator
 {
 
 public:
@@ -211,26 +211,22 @@ protected:
 
 /** Low frequency oscillator for the sampler. */
 
-class rsSamplerLowFreqOsc : public Modulator  // rename to LowFreqOsc
+class LowFreqOsc : public Modulator
 {
 
 public:
 
-  void setup(float freq, float delay, float fade, float sampleRate);
+  LowFreqOsc();
+  void prepareToPlay(uchar key, uchar vel, double sampleRate) override;
+  float getSample() override;
 
-  void prepareToPlay(uchar key, uchar vel, double sampleRate) override
-  {
-    RAPT::rsError("Not yet implemented");
-  }
+  //void setup(float freq, float delay, float fade, float sampleRate); // move into a core class
 
-  float getSample() override
-  {
-    RAPT::rsError("Not yet implemented");
-    return 0.f;
-  }
+
 
 protected:
 
+  // move into a core class:
   float pos;                   // normalized position in the wave in 0..1
   float inc;                   // per sample increment for pos
   RAPT::rsUint32 delay, fade;  // delay and fade-in time in samples
@@ -383,8 +379,8 @@ public:
 
 protected:
 
-  rsObjectPool<rsSamplerEnvGen>     envGens;
-  rsObjectPool<rsSamplerLowFreqOsc> lowFreqOscs;
+  rsObjectPool<EnvGen>     envGens;
+  rsObjectPool<LowFreqOsc> lowFreqOscs;
 
 };
 // Maybe consolidate the ModulatorPool and EffectPool into a single ProcessorPool class that 
