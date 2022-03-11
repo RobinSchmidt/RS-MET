@@ -304,7 +304,7 @@ enum class OpcodeType
 {
   Unknown,
 
-  // Sound Production:
+  // Sound production:
   SamplePlayer,
 
   // Effects:
@@ -315,20 +315,22 @@ enum class OpcodeType
   WaveShaper,
   _TagEffectsEnd,
 
-  // Fixed Modulators:
+  // Fixed modulators:
   _TagFixedModulatorsStart,
   AmpEnv,    AmpLfo,
   FilterEnv, FilterLfo,
   PitchEnv,  PitchLfo,
   _TagFixedModulatorsEnd,
-  // Maybe we should have separate sections for the hardwired modulators and the freely routable
-  // modulators? like FixedModulators, RoutableModulators
 
-  // Routable Modulators:
+  // Freely routable modulators:
   _TagFreeModulatorsStart,
   FreeEnv, 
   FreeLfo,
   _TagFreeModulatorsEnd,
+  // Free modulators need to come immediately after the fixed modulators. Some code relies on that.
+  // ToDo: maybe avoid this dependency by using _TagModulatorsStart, _TagModulatorsEnd and wrap 
+  // them all between these tags ...but maybe some code needs to distinguish the cases...we'll see
+  // wehn the mod-system is finished...we coul actually also have both by nesting those tags
 
   // Routing of free modulators:
   _TagModRoutingStart,
@@ -435,18 +437,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  /** Returns true iff the given opcode applies to a DSP in the DSP chain like volume, cutoff, 
-  etc. but not pitch_keycenter or tune. */
-  bool isEffectSetting(Opcode op)
-  {
-    using OT = OpcodeType;
-    OT type = getOpcodeType(op);
-    return type > OT::_TagEffectsStart && type < OT::_TagEffectsEnd;
-    // maybe use a helper function :
-    // return isStrictlyBetween(type, OT::_TagEffectsStart, OT::_TagEffectsEnd);
-  }
-  // make static
-
   /** Returns true iff the given opcode applies to the sample playback source such as tune, 
   delay, offset, etc. */
   bool isPlayerSetting(Opcode op)
@@ -454,6 +444,52 @@ public:
     OpcodeType type = getOpcodeType(op);
     return type == OpcodeType::SamplePlayer;
   }
+  // todo: make static (maybe)
+
+
+  /** Returns true iff the given opcode type applies to an effect in the effect chain like e.g.
+  Amplifier, Filter, Equalizer, etc. */
+  static bool isEffectSetting(OpcodeType type)
+  {
+    using OT = OpcodeType;
+    return type > OT::_TagEffectsStart && type < OT::_TagEffectsEnd;
+    // ToDo: maybe use a helper function:
+    // return isStrictlyBetween(type, OT::_TagEffectsStart, OT::_TagEffectsEnd);
+  }
+
+  /** Returns true iff the given opcode applies to an effect in the effect chain like e.g. volume, 
+  cutoff, eq2_freq, etc. but not pitch_keycenter or tune. */
+  bool isEffectSetting(Opcode op)
+  {
+    return isEffectSetting(getOpcodeType(op));
+
+    /*
+    using OT = OpcodeType;
+    OT type = getOpcodeType(op);
+    return type > OT::_TagEffectsStart && type < OT::_TagEffectsEnd;
+    */
+    // maybe use a helper function :
+    // return isStrictlyBetween(type, OT::_TagEffectsStart, OT::_TagEffectsEnd);
+  }
+  // todo: make static
+
+  static bool isModSourceSetting(OpcodeType type)
+  {
+    using OT = OpcodeType;
+    return type > OT::_TagFixedModulatorsStart && type < OT::_TagFreeModulatorsEnd;
+    // It is not a bug that in the > comparison we compeare against the "..Fixed.." tag and in 
+    // the < comparision against the "..Free.." tag. We want to catch all ModSource settings here,
+    // regardless whether its a fixed or free source.
+  }
+
+
+
+
+
+
+
+  bool isModSourceSetting(Opcode op) { return isModSourceSetting(getOpcodeType(op)); }
+  // todo: needs test, make static
 
   // todo: isModulationSetting, isModulatorSetting  (modulatiON settings define mod-connections,
   // modulatOR settings parameters of the modulators), hasIndex..but this may be expensive to 

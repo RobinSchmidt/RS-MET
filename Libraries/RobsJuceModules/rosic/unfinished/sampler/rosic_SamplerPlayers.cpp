@@ -66,35 +66,50 @@ int rsCount(const T* a, int N, T elem)
 
 bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspTypeChain)
 {
+  //SfzCodeBook* cb = SfzCodeBook::getInstance();
+
   for(int i = 0; i < (int)dspTypeChain.size(); i++)
   {
-    // Figure out the type of the effect that may need to be added to the chain:
-    OpcodeType dspType = dspTypeChain[i];
+    // Figure out the type of the effect or modulator that may need to be added to the effectChain 
+    // or modSources array:
+    OpcodeType opType = dspTypeChain[i];
 
-    // Figure out, if we actually need to add another effect to the chain. If not, there's nothing
-    // more to do in this iteration:
-    int sfzIndex = rsCount(&dspTypeChain[0], i, dspType) + 1;
-    if(effectChain.getNumEffects(dspType) >= sfzIndex)
-      continue;
-
-    // OK - now we actually need to grab another effect of given type from the pool:
-    Effect* eff = getEffect(dspType);
-    if(eff)
+    // we either add a modulator to the modSources array or an effect to the effectChain:
+    if(SfzCodeBook::isModSourceSetting(opType))
     {
-      eff->resetSettings(sfzIndex);
-      effectChain.addEffect(eff);
+      RAPT::rsError("Not yet implemented");
+
+      // We need code quite similar to the code in the branch below... maybe swicth the two 
+      // branches, maybe factor out the common code somehwo
     }
-    else {
-      disassembleEffectChain();
-      return false;
-      // Not enough effects of desired type are available in the pool so we roll back any partially 
-      // built chain and report failure. 
+    else if(SfzCodeBook::isEffectSetting(opType))
+    {
+      // Figure out, if we actually need to add another effect to the chain. If not, there's 
+      // nothing more to do in this iteration:
+      int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1;
+      if(effectChain.getNumEffects(opType) >= sfzIndex)
+        continue;
+
+      // OK - now we actually need to grab another effect of given type from the pool:
+      Effect* eff = getEffect(opType);
+      if(eff)
+      {
+        eff->resetSettings(sfzIndex);
+        effectChain.addEffect(eff);
+      }
+      else {
+        disassembleEffectChain();
+        return false;
+        // Not enough effects of desired type are available in the pool so we roll back any partially 
+        // built chain and report failure. 
+      }
     }
   }
   return true;
   // When we arrive here, we have successfully finished the loop which means that we either could
-  // add enough effects of the desired types to the chain or they were already present before. In 
-  // both cases, the effectChain is now in the required state so we can report success.
+  // add enough effects or modulators of the desired types to the chain/array or they were already 
+  // present before. In both cases, the effectChain or modSources is now in the required state so 
+  // we can report success.
 }
 
 bool SamplePlayer::assembleEffectChain(const std::vector<OpcodeType>& dspTypes)
@@ -115,16 +130,17 @@ void SamplePlayer::disassembleEffectChain()
   // ToDo: benchmark whether its faster to traverse the array from the back
 }
 
+/*
 bool SamplePlayer::assembleModulators(const std::vector<OpcodeType>& types)
 {
   RAPT::rsError("Not yet implemented");
   return false;
 }
-
 void SamplePlayer::disassembleModulators()
 {
   RAPT::rsError("Not yet implemented");
 }
+*/
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {

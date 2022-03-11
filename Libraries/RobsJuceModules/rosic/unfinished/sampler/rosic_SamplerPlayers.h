@@ -55,7 +55,7 @@ protected:
 
 //=================================================================================================
 
-class ModulationConnection
+class ModulationConnection  // maybe rename to ModulationWire
 {
 
   enum class ModType
@@ -263,14 +263,17 @@ protected:
   /** A helper function that is called from GroupPlayer::assembleDspChain(bool) and
   InstrumentPlayer::assembleDspChain(bool). */
   bool assembleEffectChain(const std::vector<OpcodeType>& dspTypes);
+  // maybe rename to assembleDspModules - should assemble effects and modulators jointly
 
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleEffectChain();
 
   // under construction:
   //virtual bool assembleModulators(bool busMode) = 0;
-  bool assembleModulators(const std::vector<OpcodeType>& types);
-  void disassembleModulators();
+  //bool assembleModulators(const std::vector<OpcodeType>& types);
+  //void disassembleModulators();
+  // perhaps these should not be separate functions but the modulators should be assembled 
+  // jointly with the effects
 
 
 
@@ -308,13 +311,19 @@ protected:
   of pointers to polymorphic effect classes (i.e. subclasses of the Effect baseclass) that can be 
   assembled at runtime, typically on noteOn. */
 
+  // Moved here from RegionPlayer subclass - I'm not yet sure, if they should be members here or
+  // there:
+  std::vector<Modulator*> modSources;
+  std::vector<Parameter*> modTargets;
+  std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
 
 
 
   DspResourcePool* dspPool = nullptr;
   /**< A pool of DSP processor objects from which we can grab some as needed to assemble our DSP
-  chain. The assembly task is mostly done in the subclasses making use of addDspsIfNeeded. The 
-  pointer should be set by the engine once and for all when it creates its Players. */
+  chain. The assembly task is mostly done in the subclasses making use of addDspsIfNeeded 
+  (verify - maybe now it's augmentOrCleanEffectChain?). The pointer should be set by the engine 
+  once and for all when it creates its Player objects. */
 
 };
 
@@ -440,12 +449,6 @@ protected:
 
   LoopMode loopMode = LoopMode::no_loop;
   uchar key = 0;                 //< Midi note number used for starting this player
-
-
-  // maybe move to baseclass:
-  std::vector<Modulator*> modSources;
-  std::vector<Parameter*> modTargets;
-  std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
 
 
 
