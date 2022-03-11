@@ -295,22 +295,42 @@ opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a f
 respective region. In order to facilitating to build the DSP chain for a region player,
 we also need an explicit representation of the DSP processor types. */
 
-enum class DspType  // rename to DspType or ProcessorType or OpcodeType
+enum class DspType  // rename to DspType or ProcessorType or OpcodeType or OpType
 {
   Unknown,
 
+  // Sound Production:
   SamplePlayer,
 
-  // The modulators:
-  // AmpEnv, FilterEnv, PitchEnv, AmpLFO, ...
-
-  // The actual DSP processors:
-  _TagDspsStart,
+  // Effects:
+  _TagDspsStart,  // rename to _TagEffectsStart
   Amplifier,
   Filter,
   Equalizer,
   WaveShaper,
-  _TagDspsEnd,
+  _TagDspsEnd,    // rename to _TagEffectsEnd
+
+  // Fixed Modulators:
+  _TagFixedModulatorsStart,
+  AmpEnv,    AmpLfo,
+  FilterEnv, FilterLfo,
+  PitchEnv,  PitchLfo,
+  _TagFixedModulatorsEnd,
+  // Maybe we should have separate sections for the hardwired modulators and the freely routable
+  // modulators? like FixedModulators, RoutableModulators
+
+  // Routable Modulators:
+  _TagFreeModulatorsStart,
+  FreeEnv, 
+  FreeLfo,
+  _TagFreeModulatorsEnd,
+
+  // Routing of free modulators:
+  _TagModRoutingStart,
+  EnvN_to_ParamM,
+  LfoN_to_ParamM,
+  _TagModRoutingEnd,
+
 
   // Opcodes for controlling key- and velocity tracking:
   //Tracking,           // no - we don't need this - the tracking parameters bleong into the same
@@ -414,6 +434,7 @@ public:
     DspType dspType = opcodeToProcessor(op);
     return dspType > DspType::_TagDspsStart && dspType < DspType::_TagDspsEnd;
   }
+  // rename to isEffectSetting
 
   /** Returns true iff the given opcode applies to the sample playback source such as tune, 
   delay, offset, etc. */
@@ -449,7 +470,7 @@ protected:
     float minValue, float maxValue, float defaultValue, 
     DspType dspType, OpcodeUnit unit, OpcodeSpec spec);
 
-  /** Adds a filter type enum index with its associated sfz-string to our lookupü table for later
+  /** Adds a filter type enum index with its associated sfz-string to our lookup table for later
   lookup. */
   void addFilterType(FilterType type, const std::string& sfzStr);
 
@@ -485,7 +506,7 @@ protected:
     std::string  text;        // "volume"
     float        minVal;      // -144
     float        maxVal;      //  +12
-    float        defVal;      //    0
+    float        defVal;      //    0 default value
     //float        neutVal;   //    0 neutral value (some sfz defaults, like width, seem not to be)
     DspType      dsp;         // DspType::Amplifier
     OpcodeUnit   unit;        // OpcodeUnit::Decibels
@@ -508,7 +529,7 @@ protected:
   /**< The string-ref returning functions return a reference to this, if they do not find a 
   suitable actual string to return. 
   \todo: is this still needed? I think, we don't return string-refs anymore but actual string
-  objects */
+  objects. may be obsolete - if so, delete */
 
 
   static SfzCodeBook* instance;

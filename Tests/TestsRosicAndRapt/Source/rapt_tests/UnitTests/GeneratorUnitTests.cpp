@@ -2897,7 +2897,15 @@ bool samplerModulationsTest()
 
   // Notes:
   // -Maybe we should have seperate opcodes for fixed modulators like amplfo, pitcheg, etc. and 
-  //  freely routable modulators
+  //  freely routable modulators. Or maybe we should treat opcodes like amplfo_depth as an alias 
+  //  for lfo3_amp1_volume - we just map lfo1,lfo2,lfo3 to pitchlfo,fillfo,amplfo and similarly
+  //  for eg1,eg2,eg3 - they are aliases for pitcheg,fileg,ampeg and textually replaced on load?
+  //  Or maybe the order should be amplfo = lfo1, fillfo = lfo2, pitchlfo = lfo3 (according to 
+  //  importance - rationale: we almost always will have an amp env, often have a filter env, rarely
+  //  have a pitch env - and the order of the LFOs should match that of the EGs)?
+  //  ...hmm - but the idea may be not good: what if an sfz2 file specifies amplfo_freq and 
+  //  lfo1_freq differently? We would then probably let the later defintiion override the former 
+  //  but in other sfz2 players, there may be indeed two separate LFOs
   // -Opcodes for freely routable LFOs are defined in sfz 2, for example:
   //  lfoN_freq, lfoN_amplitude (routes to amplitude, i guess)...but we may need something like:
   //  lfoN_ampM_volume, lfoN_ampM_pan, lfoN_ampM_width, etc.

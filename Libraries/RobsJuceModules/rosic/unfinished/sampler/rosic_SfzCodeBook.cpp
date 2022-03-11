@@ -106,14 +106,9 @@ SfzCodeBook::SfzCodeBook()
   add(OC::panN,      Flt, "panN",      -100.f, +100.f,   0.f, dsp, OU::RawFloat, Sfz1e);
   add(OC::widthN,    Flt, "widthN",    -100.f, +100.f, 100.f, dsp, OU::Percent,  Sfz1e);
   add(OC::positionN, Flt, "positionN", -100.f, +100.f,   0.f, dsp, OU::Percent,  Sfz1e);
-
   add(OC::ampN_keytrack,  Flt, "ampN_keytrack",  -96.0f, 12.f, 0.f, dsp, OU::DecibelPerKey, Sfz1e);
   add(OC::ampN_keycenter, Flt, "ampN_keycenter",   0.0f,127.f,60.f, dsp, OU::MidiKey,       Sfz1e);
   add(OC::ampN_veltrack,  Flt, "ampN_veltrack", -100.0f,100.f, 0.f, dsp, OU::Percent,       Sfz1e);
-
-  add(OC::amplfo_freq,  Flt, "amplfo_freq",    0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1e);
-  add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1e);
-
   // Wait! The spec says that the default value for width is 0%. 
   // https://sfzformat.com/legacy/
   // But that's not a neutral value! It will monoize the samples by default? is that right or is 
@@ -126,6 +121,13 @@ SfzCodeBook::SfzCodeBook()
   // Further down the signal chain, a mono sample may be stereoized by some DSP along the way.
   // Maybe we should not treat the amplifier settings in the sfz way and instead use 
   // ampN_scale, ampN_pan, ampN_width, ampN_position...or some other parametrization
+
+  dsp = DspType::AmpLfo;
+  add(OC::amplfo_freq,  Flt, "amplfo_freq",    0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1e);
+  add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1e);
+  // Or should the amplfo_depth be of type ModulationRouting, ModConnection?
+
+
 
 
   // Equalizer:
