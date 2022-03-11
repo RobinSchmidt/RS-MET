@@ -295,7 +295,7 @@ opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a f
 respective region. In order to facilitating to build the DSP chain for a region player,
 we also need an explicit representation of the DSP processor types. */
 
-enum class DspType  // rename to DspType or ProcessorType or OpcodeType or OpType
+enum class OpcodeType
 {
   Unknown,
 
@@ -383,7 +383,8 @@ public:
   // \name Translations
 
   /** Returns the type of signal processor to which the given opcdoe applies. */
-  DspType opcodeToProcessor(Opcode op);
+  OpcodeType opcodeToProcessor(Opcode op);
+  // rename to getOpcodeType
 
   /** Returns the default value for the given opcode as floating point number. If the format of the
   value is integer or an enum value, you'll need to convert the returned value to int and then
@@ -431,8 +432,10 @@ public:
   etc. but not pitch_keycenter or tune. */
   bool isDspSetting(Opcode op)
   {
-    DspType dspType = opcodeToProcessor(op);
-    return dspType > DspType::_TagDspsStart && dspType < DspType::_TagDspsEnd;
+    OpcodeType dspType = opcodeToProcessor(op);
+    return dspType > OpcodeType::_TagDspsStart && dspType < OpcodeType::_TagDspsEnd;
+    // maybe use a helper function 
+    // isStrictlyBetween(dspType, OpcodeType::_TagDspsStart, OpcodeType::_TagDspsEnd)
   }
   // rename to isEffectSetting
 
@@ -440,8 +443,8 @@ public:
   delay, offset, etc. */
   bool isPlayerSetting(Opcode op)
   {
-    DspType dspType = opcodeToProcessor(op);
-    return dspType == DspType::SamplePlayer;
+    OpcodeType dspType = opcodeToProcessor(op);
+    return dspType == OpcodeType::SamplePlayer;
   }
 
   // todo: isModulationSetting, isModulatorSetting  (modulatiON settings define mod-connections,
@@ -468,14 +471,14 @@ protected:
   database to make it available for later lookup. */
   void addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr, 
     float minValue, float maxValue, float defaultValue, 
-    DspType dspType, OpcodeUnit unit, OpcodeSpec spec);
+    OpcodeType opType, OpcodeUnit unit, OpcodeSpec spec);
 
   /** Adds a filter type enum index with its associated sfz-string to our lookup table for later
   lookup. */
   void addFilterType(FilterType type, const std::string& sfzStr);
 
 
-  // these could actually be static:
+  // I think, these member function could actually be static - if so, make them so:
 
   /** Returns true, if the opcode is related to the filter, i.e. is cutoff, fil_type, resonance, 
   etc. These opcodes need some special rules for parsing because in sfz, only 1 filter exists which
@@ -508,7 +511,7 @@ protected:
     float        maxVal;      //  +12
     float        defVal;      //    0 default value
     //float        neutVal;   //    0 neutral value (some sfz defaults, like width, seem not to be)
-    DspType      dsp;         // DspType::Amplifier
+    OpcodeType      dsp;         // OpcodeType::Amplifier
     OpcodeUnit   unit;        // OpcodeUnit::Decibels
     OpcodeSpec   spec;        // OpcodeSpec::Sfz_1
     //std::string  comment;   // "Maximum in sfz spec is 6dB. We extend it to +12 dB."

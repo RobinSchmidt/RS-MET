@@ -67,7 +67,7 @@ public:
   void setParameter(Opcode opcode, float value);
 
   // Inquiry:
-  DspType getType() { return type; }
+  OpcodeType getType() { return type; }
   int getNumParameters() const { return (int) params.size(); }
 
   //virtual const Parameter* getParameter() const { return nullptr; } // maybe relax constness later
@@ -91,7 +91,7 @@ public:
 protected:
 
   std::vector<Parameter> params;
-  DspType type = DspType::Unknown;
+  OpcodeType type = OpcodeType::Unknown;
   uchar key = 0, vel = 0;
 
   // For response to midi control:
@@ -278,7 +278,7 @@ public:
   bypass dummy effect because that could have really bad consequences: imagine a missing 
   attenuation effect. Regions are always played back either correctly or not at all but never 
   wrongly. */
-  Effect* grabEffect(DspType type);
+  Effect* grabEffect(OpcodeType type);
 
   /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 

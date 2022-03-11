@@ -9,7 +9,7 @@ float SfzInstrument::PlaybackSetting::getDefaultValue(Opcode type, int index)
   SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeDefaultValue(type, index);
 }
-DspType SfzInstrument::PlaybackSetting::getTargetDspType(Opcode type)
+OpcodeType SfzInstrument::PlaybackSetting::getTargetOpcodeType(Opcode type)
 {
   SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeToProcessor(type);
@@ -22,8 +22,8 @@ DspType SfzInstrument::PlaybackSetting::getTargetDspType(Opcode type)
 void SfzInstrument::HierarchyLevel::ensureDspsPresent(Opcode opcodeType, int howMany)
 { 
   using namespace RAPT;
-  using SPT = DspType;
-  SPT dspType = PlaybackSetting::getTargetDspType(opcodeType);
+  using SPT = OpcodeType;
+  SPT dspType = PlaybackSetting::getTargetOpcodeType(opcodeType);
   rsAssert( dspType != SPT::Unknown );
 
   // use: SfzCodeBook::isDspSetting:

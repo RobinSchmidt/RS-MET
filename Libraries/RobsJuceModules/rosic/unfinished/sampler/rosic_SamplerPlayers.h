@@ -29,7 +29,7 @@ public:
   size_t getNumEffects() const { return processors.size(); }
 
   /** Returns the number of processors of given type in the chain. */
-  size_t getNumEffects(DspType type) const;
+  size_t getNumEffects(OpcodeType type) const;
 
 
   Effect* getEffect(int i) { return processors[i]; } 
@@ -42,7 +42,7 @@ public:
   index = 3. For certain opcodes, an index is not applicable. We usually encode this by setting the
   value to -1 in the data-record. Such a -1 will then be interpreted as "first-and-only" and in 
   this case, it doesn't really matter, if the caller passes -1 or +1 into this function. */
-  Effect* getEffect(DspType type, int sfzIndex);
+  Effect* getEffect(OpcodeType type, int sfzIndex);
 
 protected:
 
@@ -211,7 +211,7 @@ protected:
 
   /** Returns a pointer to an effect of given type, if available, otherwise a nullptr. Used in
   assembleEffectChain. */
-  Effect* getEffect(DspType type)
+  Effect* getEffect(OpcodeType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
     return dspPool->effectPool.grabEffect(type);
@@ -223,7 +223,7 @@ protected:
   the desired DSPs was succesful. It may fail due to not having enough DSPs of required types 
   available. In such cases, any partially assembled dspChain will be disassembled again and 
   false is returned. This potential disassembly is what is meant by the "or clean-up" part. */
-  bool augmentOrCleanEffectChain(const std::vector<DspType>& dspTypeChain);
+  bool augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspTypeChain);
 
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
@@ -235,7 +235,7 @@ protected:
 
   /** A helper function that is called from GroupPlayer::assembleDspChain(bool) and
   InstrumentPlayer::assembleDspChain(bool). */
-  bool assembleEffectChain(const std::vector<DspType>& dspTypes);
+  bool assembleEffectChain(const std::vector<OpcodeType>& dspTypes);
 
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleEffectChain();

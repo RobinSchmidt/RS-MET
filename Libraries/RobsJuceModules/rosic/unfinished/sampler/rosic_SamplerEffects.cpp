@@ -29,7 +29,7 @@ void Effect::resetSettings(int index)
 
 Amplifier::Amplifier()
 {
-  type = DspType::Amplifier;
+  type = OpcodeType::Amplifier;
   params.reserve(7);                      // index
   addParameter(Opcode::volumeN);          //   0
   addParameter(Opcode::panN);             //   1
@@ -116,7 +116,7 @@ void Amplifier::processBlock(float* L, float* R, int N)
 Filter::Filter() 
 { 
   using OC = Opcode;
-  type = DspType::Filter;
+  type = OpcodeType::Filter;
   params.reserve(6);                 // index
   addParameter(OC::filN_type);       //   0
   addParameter(OC::cutoffN);         //   1
@@ -215,7 +215,7 @@ FilterCore::Type Filter::convertTypeEnum(FilterType sfzType)
 
 Equalizer::Equalizer()
 {
-  type = DspType::Equalizer;
+  type = OpcodeType::Equalizer;
   params.reserve(3);
   addParameter(Opcode::eqN_gain);
   addParameter(Opcode::eqN_freq);
@@ -248,7 +248,7 @@ void Equalizer::processBlock(float* L, float* R, int N)
 
 WaveShaper::WaveShaper()
 {
-  type = DspType::WaveShaper;
+  type = OpcodeType::WaveShaper;
   params.reserve(3);
   addParameter(Opcode::distortN_shape);
   addParameter(Opcode::distortN_drive);
@@ -303,9 +303,9 @@ void EffectPool::allocateEffects()
   // kinds of modules?
 }
 
-Effect* EffectPool::grabEffect(DspType type)
+Effect* EffectPool::grabEffect(OpcodeType type)
 {
-  using SPT = DspType;
+  using SPT = OpcodeType;
   Effect* p = nullptr;
   switch(type)
   {
@@ -319,7 +319,7 @@ Effect* EffectPool::grabEffect(DspType type)
 
 void EffectPool::repositEffect(Effect* p)
 {
-  using SPT = DspType;
+  using SPT = OpcodeType;
   int i = -1;
   switch(p->getType())
   {

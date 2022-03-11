@@ -7,7 +7,7 @@ SfzCodeBook::SfzCodeBook()
   // On construction, we build our database (maybe factor out):
   using OC = Opcode;
   using OF = OpcodeFormat;
-  using SP = DspType;
+  using SP = OpcodeType;
   using OU = OpcodeUnit;
   using OS = OpcodeSpec;
   opcodeEntries.resize((int)Opcode::NumTypes);
@@ -26,7 +26,7 @@ SfzCodeBook::SfzCodeBook()
   OS Sfz1e = OS::Sfz_1_E;
 
   // Player response constraints (aka "Input Control" in the sfz doc):
-  SP dsp = DspType::SamplePlayer;
+  SP dsp = OpcodeType::SamplePlayer;
   add(OC::Key,   Nat, "key",   0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::LoKey, Nat, "lokey", 0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::HiKey, Nat, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
@@ -72,7 +72,7 @@ SfzCodeBook::SfzCodeBook()
 
 
   // Filter:
-  dsp = DspType::Filter;
+  dsp = OpcodeType::Filter;
   add(OC::filN_type, Txt, "filN_type", (float)FilterType::Unknown + 1.f, 
     (float)FilterType::numTypes - 1.f, (float)FilterType::lp_12, dsp, OU::Text, Sfz1e); 
   // sfz default is lpf_2p - maybe rename our enum values to be consistent with sfz
@@ -101,7 +101,7 @@ SfzCodeBook::SfzCodeBook()
 
 
   // Player amplifier:
-  dsp = DspType::Amplifier; 
+  dsp = OpcodeType::Amplifier; 
   add(OC::volumeN,   Flt, "volumeN",   -144.f,   +6.f,   0.f, dsp, OU::Decibels, Sfz1e);
   add(OC::panN,      Flt, "panN",      -100.f, +100.f,   0.f, dsp, OU::RawFloat, Sfz1e);
   add(OC::widthN,    Flt, "widthN",    -100.f, +100.f, 100.f, dsp, OU::Percent,  Sfz1e);
@@ -122,7 +122,7 @@ SfzCodeBook::SfzCodeBook()
   // Maybe we should not treat the amplifier settings in the sfz way and instead use 
   // ampN_scale, ampN_pan, ampN_width, ampN_position...or some other parametrization
 
-  dsp = DspType::AmpLfo;
+  dsp = OpcodeType::AmpLfo;
   add(OC::amplfo_freq,  Flt, "amplfo_freq",    0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1e);
   add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1e);
   // Or should the amplfo_depth be of type ModulationRouting, ModConnection?
@@ -131,7 +131,7 @@ SfzCodeBook::SfzCodeBook()
 
 
   // Equalizer:
-  dsp = DspType::Equalizer;
+  dsp = OpcodeType::Equalizer;
   add(OC::eqN_freq, Flt, "eqN_freq",   0.0f, 30000.f, 1000.f, dsp, OU::Hertz,    Sfz1e);
   add(OC::eqN_gain, Flt, "eqN_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1e);
   add(OC::eqN_bw,   Flt, "eqN_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1e);
@@ -147,7 +147,7 @@ SfzCodeBook::SfzCodeBook()
 
   // This is very very preliminary - don't use it yet to define actual instruments - its behavior
   // may be going to change:
-  dsp = DspType::WaveShaper;
+  dsp = OpcodeType::WaveShaper;
   OS RsMet = OS::RsMet;
   add(OC::distortN_shape, Nat, "distortN_shape",  0.f,  0.f, 0.f, dsp, OU::RawInt,   RsMet); // not yet used
   add(OC::distortN_drive, Flt, "distortN_drive",  0.f,  8.f, 1.f, dsp, OU::RawFloat, RsMet);
@@ -212,7 +212,7 @@ inline void rsEnsureSize(std::vector<T>& v, size_t s)
     v.resize(s);
 } // maybe move to rapt
 void SfzCodeBook::addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr,
-  float minVal, float maxVal, float defVal, DspType dspType, OpcodeUnit unit, OpcodeSpec spec)
+  float minVal, float maxVal, float defVal, OpcodeType dspType, OpcodeUnit unit, OpcodeSpec spec)
 {
   int i = (int)op;
   rsEnsureSize(opcodeEntries, size_t(i+1));
@@ -241,11 +241,11 @@ bool SfzCodeBook::isFilterRelated(Opcode op) const
   // generally?
 }
 
-DspType SfzCodeBook::opcodeToProcessor(Opcode op)
+OpcodeType SfzCodeBook::opcodeToProcessor(Opcode op)
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
     RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToProcessor");
-    return DspType::Unknown; 
+    return OpcodeType::Unknown; 
   }
   return opcodeEntries[(int)op].dsp;
 }

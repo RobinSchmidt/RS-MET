@@ -16,7 +16,7 @@ void EffectChain::processBlock(float* L, float* R, int N)
     processFrame(L, R);
 }
 
-size_t EffectChain::getNumEffects(DspType type) const
+size_t EffectChain::getNumEffects(OpcodeType type) const
 {
   size_t count = 0;
   for(size_t i = 0; i < processors.size(); i++) {
@@ -26,7 +26,7 @@ size_t EffectChain::getNumEffects(DspType type) const
   return count;
 }
 
-Effect* EffectChain::getEffect(DspType type, int index)
+Effect* EffectChain::getEffect(OpcodeType type, int index)
 {
   RAPT::rsAssert(index >= 1 || index == -1);
   index = RAPT::rsMax(index-1, 0);
@@ -64,12 +64,12 @@ int rsCount(const T* a, int N, T elem)
 }
 // move into rsArrayTools
 
-bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<DspType>& dspTypeChain)
+bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspTypeChain)
 {
   for(int i = 0; i < (int)dspTypeChain.size(); i++)
   {
     // Figure out the type of the effect that may need to be added to the chain:
-    DspType dspType = dspTypeChain[i];
+    OpcodeType dspType = dspTypeChain[i];
 
     // Figure out, if we actually need to add another effect to the chain. If not, there's nothing
     // more to do in this iteration:
@@ -97,7 +97,7 @@ bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<DspType>& dspType
   // both cases, the effectChain is now in the required state so we can report success.
 }
 
-bool SamplePlayer::assembleEffectChain(const std::vector<DspType>& dspTypes)
+bool SamplePlayer::assembleEffectChain(const std::vector<OpcodeType>& dspTypes)
 {
   if(!effectChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
@@ -117,7 +117,7 @@ void SamplePlayer::disassembleEffectChain()
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  Effect* dsp = effectChain.getEffect(s.getTargetDspType(), s.getIndex());
+  Effect* dsp = effectChain.getEffect(s.getTargetOpcodeType(), s.getIndex());
   if(dsp != nullptr)
     dsp->setParameter(s.getOpcode(), s.getValue());
   else
@@ -313,7 +313,7 @@ bool RegionPlayer::hasFinished()
 bool RegionPlayer::assembleEffectChain(bool busMode)
 {
   // The DSPs for which the region itself defines settings/opcodes are always needed:
-  bool ok = SamplePlayer::assembleEffectChain(region->getDspTypeChain());
+  bool ok = SamplePlayer::assembleEffectChain(region->getOpcodeTypeChain());
   if(!ok)
     return false;
 
@@ -321,9 +321,9 @@ bool RegionPlayer::assembleEffectChain(bool busMode)
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
   if(!busMode) {
-    if(!augmentOrCleanEffectChain(region->getGroup()->getDspTypeChain()))
+    if(!augmentOrCleanEffectChain(region->getGroup()->getOpcodeTypeChain()))
       return false;
-    if(!augmentOrCleanEffectChain(region->getGroup()->getInstrument()->getDspTypeChain()))
+    if(!augmentOrCleanEffectChain(region->getGroup()->getInstrument()->getOpcodeTypeChain()))
       return false; }
 
   return true;
@@ -595,7 +595,7 @@ bool SampleBusPlayer::assembleEffectChain(bool busMode)
   // busMode, the Group- or InstrumentPlayer's own DSP chain is used. We need to take the busMode
   // parameter anyway because this function is an override.
 
-  return SamplePlayer::assembleEffectChain(grpOrInstr->getDspTypeChain());
+  return SamplePlayer::assembleEffectChain(grpOrInstr->getOpcodeTypeChain());
   // We need only to take into account the group's DSP settings. The instrument's DSP settings
   // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
   // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
