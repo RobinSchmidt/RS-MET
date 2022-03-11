@@ -2879,10 +2879,15 @@ bool samplerFreeModulationsTest()
   se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
   se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
   se.setRegionSetting(0, 0, OC::lfoN_freq,   lfoFreq, 1);
+  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth);  // experimental
+  // routes free LFO 1 to DC parameter of waveshaper 1 with given modulation depth. Setting this
+  // up seems to work. What remains to be done is to actually apply the modulations in the realtime
+  // thread.
 
-  // experimental:
-  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth);
-  // routes free LFO 1 to DC parameter of waveshaper 1 with given modulation depth
+
+  //ok &= !se.hasDanglingRoutings();
+  // should verify that all roútings that are set up in all regions have a valid source and target
+
 
   // Generate target signal:
   Vec tgt(N);
@@ -2897,6 +2902,8 @@ bool samplerFreeModulationsTest()
   ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true);
   // tgt wiggles between 3.5 and 4.5 centered at 4.0, L/R outputs are currently constant at 4.0 as
   // expected (the plotted signal between -0.5 and +0.5 is the error)
+
+
 
   // should have syntax: groupIndex, regionIndex, modSource, modTarget, modDepth)
   // ...but how would we specify the modSource/Target? In the sfz-file, we want to write things
