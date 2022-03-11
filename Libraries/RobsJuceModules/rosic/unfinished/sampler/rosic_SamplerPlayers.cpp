@@ -173,6 +173,44 @@ void RegionPlayer::processFrame(float* L, float* R)
   stream->getFrameStereo((float)sampleTime, L, R);  
   // try to avoid the conversion to float - use a 2nd template parameter for the time
 
+
+
+  //---------------------------------------------
+  // Under construction - handle modulations:
+
+  // Update our modulators:
+  for(size_t i = 0; i < modSources.size(); ++i)
+    modSources[i]->updateModValue();
+
+  // Initialize modulated parameters to non-modulated values:
+  for(size_t i = 0; i < modTargets.size(); ++i)
+    modTargets[i]->initModulatedValue();
+
+  // Apply the modulations:
+  for(size_t i = 0; i < modMatrix.size(); ++i)
+  {
+    RAPT::rsError("Not yet implemented");
+    // ToDo:
+    // -Figure out modulation source and target where the target should be some parameter of an 
+    //  effect from our effectChain and later maybe also a parameter of another modulator
+
+    /*
+    // It could look something like this:
+    size_t si = modMatrix[i]->getSourceIndex();
+    size_t ti = modMatrix[i]->getTargetIndex();
+    float u = modTargets[ti]->getValue();           // unmodulated value
+    float m = modSources[si]->modValue;             // modulator output
+    float c = modMatrix[i]->getContribution(m, u);  // modulation contribution
+    modTargets[i]->modulatedValue += c;
+    */
+  }
+
+  // End of modulation handling
+  //---------------------------------------------
+
+
+
+
   // Update our sampleTime counter:
   sampleTime += increment;
   if(loopMode == LoopMode::loop_continuous)
@@ -181,7 +219,7 @@ void RegionPlayer::processFrame(float* L, float* R)
       sampleTime -= (loopEnd - loopStart);
   }
 
-  // Apply the DSP chain:
+  // Apply the effect chain:
   effectChain.processFrame(L, R);
 
 
@@ -246,7 +284,8 @@ void RegionPlayer::releaseResources()
 
 void RegionPlayer::allocateMemory()
 {
-  modulators.reserve(8);
+  modSources.reserve(8);
+  modTargets.reserve(8);
   modMatrix.reserve(32);
   effectChain.reserve(8);
   // These values are ad-hoc arbitrarily chosen. Maybe give the function some parameters to choose

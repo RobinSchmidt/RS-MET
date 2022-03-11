@@ -58,10 +58,38 @@ protected:
 class ModulationConnection
 {
 
+  enum class ModType
+  {
+    absolute,
+    relative
+    //exponential,
+    //multiplicative
+  };
+
+  /** Computes and returns a contribution to be added to a modulated value that comes from this
+  connection ...tbc.... */
+  float getContribution(float modulatorOutput, float unmodulatedValue)
+  {
+    switch(type)
+    {
+    case ModType::absolute: return amount * modulatorOutput;
+    case ModType::relative: return amount * modulatorOutput * unmodulatedValue;
+    default: RAPT::rsError("Unknown ModType");
+    }
+  }
+  // ToDo:
+  // -Try to find better name
+  // -Factor out the computations - we use similar computations in the mod-system in jura -> 
+  //  consolidate the code
+
+
 private:
-  std::function<void(double)> targetSetter; // target callback that sets some parameter
-  double amount = 0.0;  // strength of modulation
-  double refVal = 0.0;  // unmodulated reference value
+
+  float amount = 0.0;               // strength of modulation
+  ModType type = ModType::absolute;
+
+  //std::function<void(double)> targetSetter; // target callback that sets some parameter
+  //double refVal = 0.0;  // unmodulated reference value
 };
 
 //=================================================================================================
@@ -407,8 +435,12 @@ protected:
   LoopMode loopMode = LoopMode::no_loop;
   uchar key = 0;                 //< Midi note number used for starting this player
 
-  std::vector<Modulator*> modulators;
+
+  std::vector<Modulator*> modSources;
+  std::vector<Parameter*> modTargets;
   std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
+
+
 
 
 

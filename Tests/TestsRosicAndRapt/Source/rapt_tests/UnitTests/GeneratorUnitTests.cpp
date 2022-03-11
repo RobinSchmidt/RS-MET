@@ -2879,13 +2879,24 @@ bool samplerModulationsTest()
     float lfoOut = sin(w*n);
     tgt[n] = rsDbToAmp(lfoDepth * lfoOut);  // TODO: verify formula/behavior
   }
-  rsPlotVectors(dc, tgt);
+  //rsPlotVectors(dc, tgt);
 
   // Produce sampler output signal and check against target:
   bool ok = true;
   //Vec outL(N), outR(N);
   ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true); // triggers assert
   //rsPlotVectors(dc, tgt, outL, outR);
+
+  // Remove the hardwired amp-lfo opcodes and add freely routable ones instead:
+  se.removeRegionSetting(0, 0, OC::amplfo_freq,  1);
+  se.removeRegionSetting(0, 0, OC::amplfo_depth, 1);
+  se.setRegionSetting(   0, 0, OC::lfoN_freq,       lfoFreq,  1);
+  se.setRegionSetting(   0, 0, OC::lfoN_amplitudeX, lfoDepth, 1);
+
+
+
+
+
 
   // ToDo:
   // -Set up a sampler engine with a sample that is just DC and apply an amplitude envelope
@@ -2925,7 +2936,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  //ok &= samplerModulationsTest();
+  ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing an sfz

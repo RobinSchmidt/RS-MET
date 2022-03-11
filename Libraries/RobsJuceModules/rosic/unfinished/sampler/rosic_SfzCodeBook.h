@@ -101,7 +101,11 @@ enum class Opcode
   // filters
 
   // egN_timeX, egN_levelX
-  // lfoN_freq, lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave, lfoN_volume
+  lfoN_freq,      // lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave,
+  lfoN_volumeX,
+  lfoN_amplitudeX,
+
+
 
   // ARIA:
   PanLaw,
@@ -281,6 +285,7 @@ enum class OpcodeSpec
   Sfz_1,
   Sfz_1_E,      // extended sfz 1, for example with arbitrary number of eq bands
   Sfz_2,
+  Sfz_2_E,      // e.g.: lfoN_volumeX (sfz2 has only lfoN_volume)
   Aria,
   RsMet,
   //...etc...
@@ -327,8 +332,8 @@ enum class OpcodeType
 
   // Routing of free modulators:
   _TagModRoutingStart,
-  EnvN_to_ParamM,
-  LfoN_to_ParamM,
+  EnvN_ParamX,
+  LfoN_ParamX,
   _TagModRoutingEnd,
 
 

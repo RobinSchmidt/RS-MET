@@ -32,12 +32,19 @@ public:
 
   // provide operator to convert to float to help avoidng boilerplate later
 
+  // Misc:
+
+  /** Initializes the modulated value to the nominal value. */
+  void initModulatedValue() { modulatedValue = value; }
+
+
+
 protected:
 
   Opcode opcode = Opcode::Unknown;
-  float value = 0.f;        // maybe rename to nominalValue, maybe init to 666
+  float value = 0.f;               // maybe rename to nominalValue, maybe init to 666
 
-  // float modulatedValue;  
+  float modulatedValue = 666.f;
   // Uncomment that later for modulation, maybe use floatStereo because we want to support 
   // different modulator values for left and right. Think of an LFO mapped to cutoff with a phase
   // offset between left and right channel. That will easily give nice stereo movement. However,
@@ -116,7 +123,7 @@ protected:
 
 /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
 can be envelopes, LFOs, etc. */
-class Modulator  
+class Modulator  // rename to modulationSource
 {
 
 // Maybe treat modulators uniformly with effects...this may actually simplify the implementation
@@ -125,9 +132,21 @@ class Modulator
 // https://sfzformat.com/opcodes/lfoN_wave
 
 public:
+
   virtual float getSample() = 0;
+
+
+  void updateModValue()
+  {
+    modValue = getSample();
+  }
+  float modValue = 0.f;
+
+
   // todo: processBlock, prepareToPlay
 };
+
+
 
 
 //=================================================================================================

@@ -17,16 +17,20 @@ SfzCodeBook::SfzCodeBook()
     SP dspType, OU unit, OS spec)
   { addOpcode(op, fmt, name, minVal, maxVal, defVal, dspType, unit, spec); };
 
-  OF Nat  = OF::Natural;
-  OF Int  = OF::Integer;
-  OF Flt  = OF::Float;
-  OF Txt  = OF::String;
+  // Opcode value formatting:
+  OF Nat = OF::Natural;       // natural numbers (starting at 0) -> indices, controller-numbers
+  OF Int = OF::Integer;       // integer numbers 
+  OF Flt = OF::Float;         // floating point numbers -> continuous parameters
+  OF Txt = OF::String;        // strings -> choice parameters
 
+  // SFZ specification:
   OS Sfz1  = OS::Sfz_1;
   OS Sfz1e = OS::Sfz_1_E;
+  OS Sfz2  = OS::Sfz_2;
+  OS Sfz2e = OS::Sfz_2_E;
 
   // Player response constraints (aka "Input Control" in the sfz doc):
-  SP dsp = OpcodeType::SamplePlayer;
+  SP dsp = OpcodeType::SamplePlayer;  // rename to type or tp or ot
   add(OC::Key,   Nat, "key",   0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::LoKey, Nat, "lokey", 0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::HiKey, Nat, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
@@ -122,10 +126,7 @@ SfzCodeBook::SfzCodeBook()
   // Maybe we should not treat the amplifier settings in the sfz way and instead use 
   // ampN_scale, ampN_pan, ampN_width, ampN_position...or some other parametrization
 
-  dsp = OpcodeType::AmpLfo;
-  add(OC::amplfo_freq,  Flt, "amplfo_freq",    0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1e);
-  add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1e);
-  // Or should the amplfo_depth be of type ModulationRouting, ModConnection?
+
 
 
 
@@ -191,6 +192,7 @@ SfzCodeBook::SfzCodeBook()
   // SFZ 2: lpf_4p, hpr_4p, lpf_6p, hpf_6p, bpf_1p, brf_1p, apf_1p, pkf_2p, lpf_2p_sv, hpf_2p_sv, 
   //        bpf_2p_sv, brf_2p_sv, comb, pink.
   // https://sfzformat.com/legacy/
+  // https://sfzformat.com/opcodes/
   // https://www.linuxsampler.org/sfz/
   // http://ariaengine.com/forums/index.php?p=/discussion/4389/arias-custom-opcodes/p1
   // ...it has 6-pole filters! :-O can we realize that with the current filter implementation 
@@ -200,6 +202,31 @@ SfzCodeBook::SfzCodeBook()
   // when only simple filters are used in a patch and opens the possibility to later include really
   // fancy filters without blowing up the memory footprint of patches which use only simple 
   // filters
+
+
+  // Fixed modulators:
+  dsp = OpcodeType::AmpLfo;
+  add(OC::amplfo_freq,  Flt, "amplfo_freq",    0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1);
+  add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1);
+  // Or should the amplfo_depth be of type ModulationRouting, ModConnection? ..we'll see
+
+  // Routable modulators:
+  dsp = OpcodeType::FreeLfo;
+  add(OC::lfoN_freq,  Flt, "lfoN_freq",    0.0f,  20.f, 0.f, dsp, OU::Hertz, Sfz2);
+
+  // Modulation routings:
+  dsp = OpcodeType::LfoN_ParamX;
+  add(OC::lfoN_volumeX, Flt, "lfoN_volumeX",    -10.0f,  10.f, 0.f, dsp, OU::Decibels, Sfz2e);
+  //add(OC::lfoN_volumeX, Flt, "lfoN_amplitudeX",   0.0f,  20.f, 0.f, dsp, OU::RawFloat, Sfz2e);
+  //add(OC::lfoN_volumeX, Flt, "lfoN_panX",         0.0f,  20.f, 0.f, dsp, OU::RawFloat, Sfz2e);
+  // todo: veriyf ranges, units, defaults, etc.
+
+  // SFZ2 has: lfoN_freq, lfoN_amplitude, lfoN_volume, lfoN_pan, lfoN_cutoff, lfoN_cutoff2
+  // we want:  lfoN_amplitudeX, lfoN_volumeX, lfoN_cutoffX, ...
+
+  // We also want LFO phases and we want to be able able to specify the LFO frequency in 
+  // temp-synced units - maybe an opcode lfoN_unit = hertz (cycles per second), cycles per beat or 
+  // maybe lfoN_sync = true/false
 
 
   int dummy = 0;
