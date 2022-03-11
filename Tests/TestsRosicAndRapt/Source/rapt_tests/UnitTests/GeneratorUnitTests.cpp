@@ -2860,7 +2860,7 @@ bool samplerFreeModulationsTest()
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
 
   // Create a DC example sample:
-  int N  = 500;     // length of sample
+  int N  = 1000;     // length of sample
   Vec dc(N);
   rsFill(dc, 1.f);
 
@@ -2884,6 +2884,19 @@ bool samplerFreeModulationsTest()
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth);
   // routes free LFO 1 to DC parameter of waveshaper 1 with given modulation depth
 
+  // Generate target signal:
+  Vec tgt(N);
+  float w = 2*float(PI)*lfoFreq / fs;
+  for(int n = 0; n < N; n++)
+  {
+    float lfoOut = sin(w*n);
+    tgt[n] = 1.f + (baseDC + lfoDepth * lfoOut);
+  }
+  //rsPlotVectors(dc, tgt);
+
+  ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true);
+  // tgt wiggles between 3.5 and 4.5 centered at 4.0, L/R outputs are currently constant at 4.0 as
+  // expected (the plotted signal between -0.5 and +0.5 is the error)
 
   // should have syntax: groupIndex, regionIndex, modSource, modTarget, modDepth)
   // ...but how would we specify the modSource/Target? In the sfz-file, we want to write things
