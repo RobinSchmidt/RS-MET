@@ -384,6 +384,9 @@ public:
 
   /** Returns the type of the given opcode. */
   OpcodeType getOpcodeType(Opcode op);
+  // maybe remove the "get" here or add a "get" to opcodeDefaultValue to make these functions
+  // consistent..maybe rename this function to just getType and opcodeDefaultValue to 
+  // getDefault(Value)
 
   /** Returns the default value for the given opcode as floating point number. If the format of the
   value is integer or an enum value, you'll need to convert the returned value to int and then
@@ -437,6 +440,7 @@ public:
     // maybe use a helper function :
     // return isStrictlyBetween(type, OT::_TagEffectsStart, OT::_TagEffectsEnd);
   }
+  // make static
 
   /** Returns true iff the given opcode applies to the sample playback source such as tune, 
   delay, offset, etc. */
