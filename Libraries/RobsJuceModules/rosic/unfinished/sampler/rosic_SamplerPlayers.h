@@ -278,8 +278,6 @@ protected:
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available).  */
   virtual bool assembleProcessors(bool busMode) = 0;
-  // -rename to assemble Processors and let it assemble the effect chain as well as the modulators
-  //  and mod-connections
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
 
@@ -289,14 +287,6 @@ protected:
 
   /** Reposits all the processors back into the dspPool. */
   void disassembleProcessors();
-
-  // under construction:
-  //virtual bool assembleModulators(bool busMode) = 0;
-  //bool assembleModulations(const std::vector<OpcodeType>& types);
-  //void disassembleModulations();
-  // perhaps these should not be separate functions but the modulators should be assembled 
-  // jointly with the effects
-
 
 
   using PlaybackSetting = SfzInstrument::PlaybackSetting; // for convenience

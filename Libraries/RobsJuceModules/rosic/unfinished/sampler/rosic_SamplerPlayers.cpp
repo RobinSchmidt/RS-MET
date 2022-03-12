@@ -41,14 +41,6 @@ Effect* EffectChain::getEffect(OpcodeType type, int index)
   return nullptr;
 }
 
-/*
-void SignalProcessorChain::resetState()
-{
-for(size_t i = 0; i < processors.size(); i++)
-processors[i]->resetState();
-}
-*/
-
 //=================================================================================================
 // SamplePlayer
 
@@ -76,6 +68,7 @@ size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType ty
 // make (static) member of SamplePlayer ...maybe it should take a vector of Processor* and then we
 // can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
 // closely. Then, we need to rename it
+// rename to getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeType type)
 
 bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain)
 {
@@ -162,20 +155,6 @@ void SamplePlayer::disassembleProcessors()
   //  Member functions should become free functions (maybe wrapped into a class...maybe this class)
   // -benchmark whether its faster to traverse the array from the back
 }
-
-/*
-bool SamplePlayer::assembleModulations(const std::vector<OpcodeType>& types)
-{
-  RAPT::rsError("Not yet implemented");
-  return false;
-}
-
-void SamplePlayer::disassembleModulations()
-{
-  RAPT::rsError("Not yet implemented");
-}
-*/
-
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {

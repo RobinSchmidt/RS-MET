@@ -2905,14 +2905,12 @@ bool samplerFreeModulationsTest()
 
   // -At the end of SamplePlayer::augmentOrCleanEffectChain, the modSources array correctly 
   //  contains one LFO, but it's still uninitialized (them members contain garbage values).
-  // -In RegionPlayer::prepareToPlay, we need to also include a call to 
-  //  SamplePlayer::assembleModulations
 
 
   // ToDo:
   // -Done: Provide method to set up modulation routings in Region, Group, Global.
   // -During assembling the RegionPlayer, also assemble the modulators and connections.
-  //  -Done(?): Assemble modulators in a way similar to assembling the effects.
+  //  -Done: Assemble modulators in a way similar to assembling the effects.
   //  -Done: Implement ModulationConnection/Wire class. It should contain pointers to the modulator
   //   (i.e. the source), the modulated parameter (i.e. the target) and parameters for modulation 
   //   depth and mode (formula).
@@ -2920,13 +2918,15 @@ bool samplerFreeModulationsTest()
   // -During playback, make use of the modulations:
   //  -Done(?): Let all modulators update their output value in processFrame.
   //  -Done(?): Init all modulated parameters to their unmodulated values.
-  //  -Apply all modulations
-  //  -Update the affected DSP units (effects and(!) modulators)
+  //  -Apply all modulations in an accumulating loop over the modMatrix
+  //  -Update the affected DSP units (effects and(!) modulators), i.e. recompute their affected
+  //   algo-params
   //
   // -Refactor:
-  //  -Maybe get rid of EffectChain (see comments there)
+  //  -Maybe get rid of class EffectChain (see comments there)
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
   //   effects and modulators.
+  //  -See comment in DspResourcePool
 
 
   // Notes: 
