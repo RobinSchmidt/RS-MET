@@ -212,6 +212,9 @@ private:
   Parameter* target = nullptr;      // Parameter objects are members of a Processor
   float depth  = 0.f;               // Strength of modulation
   ModMode mode = ModMode::absolute; // maybe the default should depend on the target?
+
+  // Maybe we also should keep a pointer to the target Processor not only the Parameter?
+  // ...could be useful...we'll see
 };
 
 //=================================================================================================
