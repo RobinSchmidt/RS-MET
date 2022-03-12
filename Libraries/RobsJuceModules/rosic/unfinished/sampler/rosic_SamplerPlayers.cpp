@@ -105,7 +105,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       }
       else 
       {
-        disassembleEffectChain();
+        disassembleProcessors();
         return false;
         // Not enough effects of desired type are available in the pool so we roll back any partially 
         // built chain and report failure. 
@@ -122,7 +122,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
         mod->resetSettings(sfzIndex);
         modSources.push_back(mod);     }
       else {
-        disassembleEffectChain();
+        disassembleProcessors();
         return false;  }
     }
   }
@@ -133,18 +133,17 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
   // we can report success.
 }
 
-bool SamplePlayer::assembleEffectChain(const std::vector<OpcodeType>& dspTypes) 
+bool SamplePlayer::assembleProcessors(const std::vector<OpcodeType>& dspTypes) 
 {
-  // rename to assembleProcessors
   if(!effectChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
-    disassembleEffectChain();  }  // ...so we do it here. But this should be fixed elsewhere!
+    disassembleProcessors();  }  // ...so we do it here. But this should be fixed elsewhere!
   if(!augmentOrCleanProcessors(dspTypes)) 
     return false;
   return true;
 }
 
-void SamplePlayer::disassembleEffectChain()  // rename
+void SamplePlayer::disassembleProcessors()
 {
   for(int i = 0; i < effectChain.getNumEffects(); i++)
     dspPool->effectPool.repositEffect(effectChain.getEffect(i));
@@ -335,22 +334,10 @@ bool RegionPlayer::isPlayable(const Region* region)
 void RegionPlayer::releaseResources()
 {
   RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
-
-  disassembleEffectChain();
-
-  // Return the modulators to the pool:
-  // ...something to do...
-  //modulators.clear();
-
-  // Return the mod-connections to the pool:
-  // ...something to do...
-  //modMatrix.clear();
-
-  // Invalidate our pointers:
-  stream = nullptr;
+  disassembleProcessors();  // Move effects, modulators and connectors back into the pool
+  stream = nullptr;         // Invalidate our pointers
   region = nullptr;
-
-  //key = 0;  // shouldn't we do this
+  //key = 0;                // shouldn't we do this?
 }
 
 void RegionPlayer::allocateMemory()
@@ -372,7 +359,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
 
   this->key = key;
 
-  if(!assembleEffectChain(busMode))
+  if(!assembleProcessors(busMode))
   {
     releaseResources();
     return rsReturnCode::layerOverload;
@@ -384,24 +371,16 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
   resetPlayerSettings();
   setupDspSettingsFor(region, fs, busMode, iv);
 
-  // todo: setup modulation connections
-
-  /*
-  bool ok = assembleModulations();
-  if(!ok)
-  {
-
-  }
-  */
-
 
   effectChain.prepareToPlay(key, vel, fs);
-  //prepareToPlay(modSources, fs);
-  // modSources.prepareToPlay(fs)  // maybe we need to call this before effectChain.prep..
-  // ...but modSources is not a class but a simple array - maybe effectChain should also be a 
-  // simple array and we should use free functions operating on an array of Processors? Or maybe
-  // have a class processorChain......not sure yet
-
+  // Should be replaced by:
+  //   prepareToPlay(modSources,  key, vel, fs);
+  //   prepareToPlay(effectChain, key, vel, fs);
+  // prepareToPlay should take a std::vector<Processor> as input. The rationale for preparing the
+  // modulators first is that their initial output may already affect the initial parameters of
+  // the effects? ...but does that matter? Aren't the params recomputed in processFrame anyway?
+  // ...perhaps it doesn't matter, but the order feels right this way anyway. This prepareToPlay
+  // function may be a member of SamplePlayer.
 
 
   return rsReturnCode::success;
@@ -434,12 +413,12 @@ bool RegionPlayer::hasFinished()
   return false;
 }
 
-bool RegionPlayer::assembleEffectChain(bool busMode)
+bool RegionPlayer::assembleProcessors(bool busMode)
 {
   // Change into function to assemble effects, modulators and routing
 
   // The DSPs for which the region itself defines settings/opcodes are always needed:
-  bool ok = SamplePlayer::assembleEffectChain(region->getOpcodeTypeChain());
+  bool ok = SamplePlayer::assembleProcessors(region->getOpcodeTypeChain());
   if(!ok)
     return false;
 
@@ -701,10 +680,10 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
 
   // A GroupPlayer needs to play back a new group or the InstrumPlayer was triggered anew. In such 
   // a case, we need to assemble the DSP chain first:
-  disassembleEffectChain();
+  disassembleProcessors();
   grpOrInstr = thingToPlay;
   if(grpOrInstr != nullptr) {
-    if(!assembleEffectChain(busMode)) {
+    if(!assembleProcessors(busMode)) {
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, intermediates);
@@ -714,14 +693,14 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
   return true;
 }
 
-bool SampleBusPlayer::assembleEffectChain(bool busMode)
+bool SampleBusPlayer::assembleProcessors(bool busMode)
 {
   RAPT::rsAssert(busMode == true);
   // If we are not in busMode, this function should actually not even get called because only in
   // busMode, the Group- or InstrumentPlayer's own DSP chain is used. We need to take the busMode
   // parameter anyway because this function is an override.
 
-  return SamplePlayer::assembleEffectChain(grpOrInstr->getOpcodeTypeChain());
+  return SamplePlayer::assembleProcessors(grpOrInstr->getOpcodeTypeChain());
   // We need only to take into account the group's DSP settings. The instrument's DSP settings
   // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
   // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings

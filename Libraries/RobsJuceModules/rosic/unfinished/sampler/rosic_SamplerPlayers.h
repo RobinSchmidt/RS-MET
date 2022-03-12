@@ -277,20 +277,18 @@ protected:
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available).  */
-  virtual bool assembleEffectChain(bool busMode) = 0;
+  virtual bool assembleProcessors(bool busMode) = 0;
   // -rename to assemble Processors and let it assemble the effect chain as well as the modulators
   //  and mod-connections
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
 
   /** A helper function that is called from GroupPlayer::assembleDspChain(bool) and
-  InstrumentPlayer::assembleDspChain(bool). */
-  bool assembleEffectChain(const std::vector<OpcodeType>& dspTypes);
-  // maybe rename to assembleDspModules - should assemble effects and modulators jointly
+  InstrumentPlayer::assembleDspChain(bool). ...verify comment - seems out of date  */
+  bool assembleProcessors(const std::vector<OpcodeType>& dspTypes);
 
-  /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
-  void disassembleEffectChain();
-  // rename to disassembleProcessors and let it also disassemble the modulators and routings
+  /** Reposits all the processors back into the dspPool. */
+  void disassembleProcessors();
 
   // under construction:
   //virtual bool assembleModulators(bool busMode) = 0;
@@ -433,7 +431,7 @@ protected:
     PlayStatus* iv);
 
 
-  bool assembleEffectChain(bool busMode) override;
+  bool assembleProcessors(bool busMode) override;
 
   //bool assembleEffectChain(bool busMode) override;
 
@@ -529,13 +527,13 @@ public:
 
   virtual void releaseResources()
   {
-    disassembleEffectChain();
+    disassembleProcessors();
     grpOrInstr = nullptr;
   }
 
 protected:
 
-  bool assembleEffectChain(bool busMode) override;
+  bool assembleProcessors(bool busMode) override;
 
   const SfzInstrument::HierarchyLevel* grpOrInstr = nullptr;
   // pointer to the group or isntrument that this player should play
