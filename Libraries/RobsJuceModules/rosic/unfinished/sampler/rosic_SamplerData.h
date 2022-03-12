@@ -4,6 +4,63 @@
 namespace rosic {
 namespace Sampler {
 
+
+//=================================================================================================
+
+/** A class to represent the settings of a modulation routing. This class is used only to store the
+settings, not to actually connect modulator objects to parameters during processing. For this 
+purpose, the class ModulationConnection is used. ..tbc.... */
+
+class ModulationRouting  
+{
+// Maybe rename to ModulationSetting to be consisten with PlaybackSetting. Also drag out 
+// PlaybackSetting from SfzInstrument
+
+public:
+
+  ModulationRouting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex,
+    float modDepth)
+    : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
+    , targetIndex(modTargetIndex), depth(modDepth)
+  {}
+
+  /** Returns true, iff the type and index of the source of the given routing matches ours. */
+  bool hasMatchingSource(const ModulationRouting& r) const
+  {
+    return r.sourceType == sourceType && r.sourceIndex == sourceIndex;
+  }
+
+  bool hasMatchingTarget(const ModulationRouting& r) const
+  {
+    return r.target == target && r.targetIndex == targetIndex;
+  }
+
+  bool hasMatchingEndpoints(const ModulationRouting& r) const
+  {
+    return hasMatchingSource(r) && hasMatchingTarget(r);
+  }
+  // try to find better name maybe hasMatchingPorts/Pins...dunno
+
+  void setDepth(float newDepth) { depth = newDepth; }
+
+
+private:
+
+  OpcodeType sourceType;   // Type of modulator like EnvGen, LowfreqOsc, etc.
+  int        sourceIndex;  // Index like the 3 in lfo3_freq 
+  Opcode     target;       // Modulation target like cutoffN, volumeN, etc.
+  int        targetIndex;  // Index like the 2 in lfo3_cutoff2, lfo3_eq2gain, etc.
+  float      depth;        // Modulation depth
+  //int        mode;       // absolute, relative, exponential, etc. (maybe)
+
+  // ToDo:
+  // -Maybe have a member for modulationMode (absolute, relative, exponential, etc.) but maybe
+  //  that should be determined by the target...not sure yet
+  // -Maybe use sourceIndex values < 1 for the special fixed modulators, like
+  //  0: amp, -1: filter, -2 pitch - maybe define constants for them
+};
+
+
 //=================================================================================================
 
 /** Data structure to define sample based instruments conforming to the sfz specification. From
@@ -129,55 +186,6 @@ public:
     // a code for "not applicable".
   };
 
-
-  //-----------------------------------------------------------------------------------------------
-  /** A class to represent a modulation routing...tbc.... */
-  class ModulationRouting
-  {
-
-  public:
-
-    ModulationRouting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex, 
-      float modDepth)
-      : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
-      , targetIndex(modTargetIndex), depth(modDepth) 
-    {}
-
-    /** Returns true, iff the type and index of the source of the given routing matches ours. */
-    bool hasMatchingSource(const ModulationRouting& r) const
-    {
-      return r.sourceType == sourceType && r.sourceIndex == sourceIndex;
-    }
-
-    bool hasMatchingTarget(const ModulationRouting& r) const
-    {
-      return r.target == target && r.targetIndex == targetIndex;
-    }
-
-    bool hasMatchingEndpoints(const ModulationRouting& r) const
-    {
-      return hasMatchingSource(r) && hasMatchingTarget(r);
-    }
-    // try to find better name maybe hasMatchingPorts/Pins...dunno
-
-    void setDepth(float newDepth) { depth = newDepth; }
-
-
-  private:
-
-    OpcodeType sourceType;   // Type of modulator like EnvGen, LowfreqOsc, etc.
-    int        sourceIndex;  // Index like the 3 in lfo3_freq 
-    Opcode     target;       // Modulation target like cutoffN, volumeN, etc.
-    int        targetIndex;  // Index like the 2 in lfo3_cutoff2, lfo3_eq2gain, etc.
-    float      depth;        // Modulation depth
-    //int        mode;       // absolute, relative, exponential, etc. (maybe)
-
-    // ToDo:
-    // -Maybe have a member for modulationMode (absolute, relative, exponential, etc.) but maybe
-    //  that should be determined by the target...not sure yet
-    // -Maybe use sourceIndex values < 1 for the special fixed modulators, like
-    //  0: amp, -1: filter, -2 pitch - maybe define constants for them
-  };
 
 
 
