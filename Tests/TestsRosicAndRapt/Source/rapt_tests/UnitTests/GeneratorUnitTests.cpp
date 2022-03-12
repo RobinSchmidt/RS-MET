@@ -2904,22 +2904,41 @@ bool samplerFreeModulationsTest()
   // expected (the plotted signal between -0.5 and +0.5 is the error)
 
 
+  // ToDo:
+  // -Done: Provide method to set up modulation routings in Region, Group, Global.
+  // -During assembling the RegionPlayer, also assemble the modulators and connections.
+  //  -Done(?): Assemble modulators in a way similar to assembling the effects.
+  //  -Implement ModulationConnection/Wire class. It should contain pointers to the modulator (i.e. 
+  //   the source), the modulated parameter (i.e. the target) and parameters for modulation depth
+  //   and mode (formula).
+  //  -Assemble the modulation connections (and disassemble them when finished).
+  // -During playback, make use of the modulations:
+  //  -Done(?): Let all modulators update their output value in processFrame.
+  //  -Init all modulated parameters to their unmodulated values.
+  //  -Apply all modulations
+  //  -Update the affected DSP units (effects and(!) modulators)
 
-  // should have syntax: groupIndex, regionIndex, modSource, modTarget, modDepth)
-  // ...but how would we specify the modSource/Target? In the sfz-file, we want to write things
-  // like lfo2_cutoff3=500 to modulate the cutoff of filter 3 500 Hz up and down via free LFO 2, 
-  // We want to support the follwoing SFZ2-compatible syntax (where X=1 is (sometimes?) optional):
+  // Notes: 
+  // To specify free modulations in the sfz-file, we want to write things like lfo2_cutoff3=500 to 
+  // modulate the cutoff of filter 3 500 Hz up and down via free LFO 2, etc. We want to support the
+  // follwoing SFZ2-compatible syntax (where X=1 is sometimes optional):
   //   LFO parameters:   lfoN_freq, lfoN_phase, lfoN_wave, lfoN_delay, lfoN_fade
-  //   LFO to filter:    lfoN_cutoffX, lfoN_resonanceX
+  //   LFO to filter:    lfoN_cutoffX, lfoN_resonanceX (X=1 optional)
   //   LFO to equalizer: lfoN_eqXgain, lfoN_eqXfreq, lfoN_eqXbw
-  //   LFO to amplifier: lfoN_volumeX, lfoN_panX, lfoN_widthX
+  //   LFO to amplifier: lfoN_volumeX, lfoN_panX, lfoN_widthX (X=1 optional)
   // The lfoN_eqXfreq etc could serve as model for how we write the general routing opcodes:
   // lfoN_effectXparam where "effect" is a placeholder for e.g. "eq", "distort", "amp", etc. and 
   // param is a placeholder for e.g. "gain", "drive", "pan" etc. For something like 
   // lfo2_fil3cutoff, we could also write lfo2_cutoff3. We need to define a general scheme and 
-  // allow some alternative alias-syntax in those special cases that also appear in sfz2...maybe
-  // sfz2 compatibility is not so crucial...but it would certainly be nice to have...which samplers
-  // support sfz2 anyway?
+  // allow some alternative alias-syntax in those special cases that also appear in sfz2.
+  // To specify absolute, relative, exponential, etc. modes, we could use a syntax like:
+  // lfo2_cutoff3=500_relative where some sensible default is used which may depend on the target
+  // parameter. Maybe use abbreviations like abs, rel, exp, mul, etc.. Maybe we should have opcodes
+  // That define clipping values for modulation like cutoff3_min=20, cutoff3_max=20000 - maybe 
+  // these should not only affect modulation...we'll see...
+  //
+  // Maybe sfz2 compatibility is not so crucial? But it would certainly be nice to have. Which 
+  // samplers support sfz2 anyway? Here is one:
   // https://www.plogue.com/products/sforzando.html (uses ARIA?)
 
 

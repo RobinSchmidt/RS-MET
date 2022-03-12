@@ -154,7 +154,9 @@ Filter::Filter()
   //  bandwidth parameter ...on the other hand, we have the eqN_... opcodes, so maybe supporting 
   //  peak would be redundant - we'll see
   // -Maybe support a reso_drive opcode to allow self oscillation in ladder filters
-  //addParameter(Opcode::filN_bw);
+  // -More parameters: filN_bw: bandwidth in octaves (for peak and shelv filters), filN_design =
+  //  default, moog, biquad, butter, cheby1, cheby2, ellip, ...
+  //
 }
 
 void Filter::prepareToPlay(uchar key, uchar vel, double fs)
