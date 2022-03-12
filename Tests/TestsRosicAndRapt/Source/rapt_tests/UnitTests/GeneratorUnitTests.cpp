@@ -2906,6 +2906,10 @@ bool samplerFreeModulationsTest()
   // -At the end of SamplePlayer::augmentOrCleanEffectChain, the modSources array correctly 
   //  contains one LFO, but it's still uninitialized (them members contain garbage values).
 
+  // ToDo Next: 
+  // 1: refactor DspResourcePool
+  // 2: let it allocate mod connections
+  // 3: finish SamplePlayer::assembleModulations
 
   // ToDo:
   // -Done: Provide method to set up modulation routings in Region, Group, Global.
@@ -2937,10 +2941,10 @@ bool samplerFreeModulationsTest()
   //    specify lfoN_freq themselves
   //
   // -Refactor:
+  //  -See comment in DspResourcePool
   //  -Maybe get rid of class EffectChain (see comments there)
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
   //   effects and modulators.
-  //  -See comment in DspResourcePool
   //  -Drag out PlaybackSetting from SfzInstrument
 
 
