@@ -421,6 +421,13 @@ void ModulatorPool::repositModulator(Modulator* p)
 
 // preliminary - just delegate - todo: move actual implementations here
 
+DspResourcePool::DspResourcePool()
+{
+  //allocateEffects();
+  //allocateModulators();
+  allocateConnectors();
+}
+
 void DspResourcePool::allocateEffects()
 {
   effectPool.allocateEffects();

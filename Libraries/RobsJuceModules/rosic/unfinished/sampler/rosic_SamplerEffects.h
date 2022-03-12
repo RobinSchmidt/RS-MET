@@ -444,6 +444,8 @@ class DspResourcePool
 
 public:
 
+  DspResourcePool();
+
   /** Allocates the effects by resizing our vectors (which contain direct objects). */
   void allocateEffects();
   // todo: Let it have an argument that somehow specifies, how many of each type should be 
@@ -471,7 +473,10 @@ public:
   Modulator* grabModulator(OpcodeType type);
   void repositModulator(Modulator* p);
 
-
+  void allocateConnectors()
+  {
+    connectorPool.init(512);  // preliminary
+  }
   ModulationConnector* grabConnector() { return connectorPool.grabItem(); }
   void repositConnector(ModulationConnector* c) { connectorPool.repositItem(c); }
 
