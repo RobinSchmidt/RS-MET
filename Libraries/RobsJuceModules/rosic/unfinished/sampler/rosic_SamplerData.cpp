@@ -126,7 +126,7 @@ void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int mod
   if(!SfzCodeBook::isModSourceSetting(modSrcType)) {
     RAPT::rsError("modSrcType must be some sort of modulation source");
     return; }
-  ModulationRouting newRouting(modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth);
+  ModulationSetting newRouting(modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth);
   for(size_t i = 0; i < modRoutings.size(); i++) {
     if( modRoutings[i].hasMatchingEndpoints(newRouting) ) {
       modRoutings[i].setDepth(modDepth);  // Overwrite existing routing

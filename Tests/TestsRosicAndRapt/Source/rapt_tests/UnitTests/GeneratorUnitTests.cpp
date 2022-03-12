@@ -2941,6 +2941,7 @@ bool samplerFreeModulationsTest()
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
   //   effects and modulators.
   //  -See comment in DspResourcePool
+  //  -Drag out PlaybackSetting from SfzInstrument
 
 
   // Notes: 

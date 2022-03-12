@@ -279,7 +279,7 @@ protected:
   bool augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain);
 
   /** Under construction... */
-  bool assembleModulations(std::vector<ModulationRouting>& modSettings);
+  bool assembleModulations(std::vector<ModulationSetting>& modSettings);
  
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 

@@ -126,7 +126,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
   // we can report success.
 }
 
-bool SamplePlayer::assembleModulations(std::vector<ModulationRouting>& modSettings)
+bool SamplePlayer::assembleModulations(std::vector<ModulationSetting>& modSettings)
 {
   // we need a pointer to the region/group/instrument from which we can retrieve the
   // modRoutings array - or we need to pass it in as parameter. The latter would be consistent with

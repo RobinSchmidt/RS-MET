@@ -11,31 +11,31 @@ namespace Sampler {
 settings, not to actually connect modulator objects to parameters during processing. For this 
 purpose, the class ModulationConnection is used. ..tbc.... */
 
-class ModulationRouting  
+class ModulationSetting  
 {
-// Maybe rename to ModulationSetting to be consisten with PlaybackSetting. Also drag out 
-// PlaybackSetting from SfzInstrument
+// Drag out PlaybackSetting from SfzInstrument and put it before this class...they kinda belong
+// together and should be treated on same footing
 
 public:
 
-  ModulationRouting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex,
+  ModulationSetting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex,
     float modDepth)
     : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
     , targetIndex(modTargetIndex), depth(modDepth)
   {}
 
   /** Returns true, iff the type and index of the source of the given routing matches ours. */
-  bool hasMatchingSource(const ModulationRouting& r) const
+  bool hasMatchingSource(const ModulationSetting& r) const
   {
     return r.sourceType == sourceType && r.sourceIndex == sourceIndex;
   }
 
-  bool hasMatchingTarget(const ModulationRouting& r) const
+  bool hasMatchingTarget(const ModulationSetting& r) const
   {
     return r.target == target && r.targetIndex == targetIndex;
   }
 
-  bool hasMatchingEndpoints(const ModulationRouting& r) const
+  bool hasMatchingEndpoints(const ModulationSetting& r) const
   {
     return hasMatchingSource(r) && hasMatchingTarget(r);
   }
@@ -402,7 +402,7 @@ public:
     modulation sources. The distinction between these two sorts of DSPs is not relevant here but
     will become relevant when actually assmebling the Player objects. */
 
-    std::vector<ModulationRouting> modRoutings;
+    std::vector<ModulationSetting> modRoutings;
     /** Holds the modulation routings...tbc...  */
 
     // ModulationConnection is for the objects that are used in sample processing whereas 
