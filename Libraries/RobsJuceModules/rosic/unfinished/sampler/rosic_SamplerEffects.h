@@ -353,7 +353,7 @@ protected:
 
 /** A class for storing a pool of Effect objects...tbc... */
 
-class EffectPool
+class EffectPool  // get rid
 {
 
 public:
@@ -388,10 +388,10 @@ public:
   /** This is currently only meant to facilitate unit testing overload conditions. In such tests,
   we want a well defined and small number of filters to be available so we can simulate conditions
   where the engine is running out of filters in a controlled way. */
-  void setMaxNumFilters(int newMax) { filters.init(newMax); }
+  //void setMaxNumFilters(int newMax) { filters.init(newMax); }
 
 
-  int getNumUsedFilters() const { return filters.getNumUsedItems(); }
+  //int getNumUsedFilters() const { return filters.getNumUsedItems(); }
   // also to facilitate testing
 
 
@@ -409,7 +409,7 @@ public:
 
 //=================================================================================================
 
-class ModulatorPool
+class ModulatorPool // get rid
 {
 
 public:
@@ -471,6 +471,8 @@ public:
   Modulator* grabModulator(OpcodeType type);
   void repositModulator(Modulator* p);
 
+
+  ModulationConnector* grabConnector() { return connectorPool.grabItem(); }
   void repositConnector(ModulationConnector* c) { connectorPool.repositItem(c); }
 
 

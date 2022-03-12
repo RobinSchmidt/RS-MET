@@ -128,7 +128,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
 
 bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& modSettings)
 {
-  RAPT::rsError("not yet working and currently under construction and in a messy state");
+  //RAPT::rsError("not yet working and currently under construction and in a messy state");
 
   // we need a pointer to the region/group/instrument from which we can retrieve the
   // modRoutings array - or we need to pass it in as parameter. The latter would be consistent with
@@ -141,19 +141,14 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     return false;
   for(size_t i = 0; i < modSettings.size(); i++)
   {
-    rosic::Sampler::ModulationConnector* mc; 
-
-    //mc = dspPool->connectorPool.grabItem(); // doesn't compile
-    //RAPT::rsAssert(mc); // should not be null bcs we verified that enough are available
+    ModulationConnector* mc = dspPool->grabConnector();
+    RAPT::rsAssert(mc); // we already verified that enough are available
 
     // ToDo: set up the members of mc correctly
+    // ...
 
     modMatrix.push_back(mc);
   }
-
-
-
-
 
   return true;
 
