@@ -137,11 +137,11 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
   RAPT::rsAssert(dspPool);
   RAPT::rsAssert(modMatrix.empty(), "Someone has not cleaned up the modMatrix");
 
-  if(dspPool->connectorPool.getNumIdleItems() < (int)modSettings.size())
+  if(dspPool->getNumIdleConnectors() < (int)modSettings.size())
     return false;
   for(size_t i = 0; i < modSettings.size(); i++)
   {
-    rosic::Sampler::ModulationConnection* mc; 
+    rosic::Sampler::ModulationConnector* mc; 
 
     //mc = dspPool->connectorPool.grabItem(); // doesn't compile
     //RAPT::rsAssert(mc); // should not be null bcs we verified that enough are available
@@ -190,15 +190,15 @@ bool SamplePlayer::assembleProcessors(
 void SamplePlayer::disassembleProcessors()
 {
   for(int i = 0; i < effectChain.getNumEffects(); i++)
-    dspPool->effectPool.repositEffect(effectChain.getEffect(i));
+    dspPool->repositEffect(effectChain.getEffect(i));
   effectChain.clear();
 
   for(size_t i = 0; i < modSources.size(); ++i)
-    dspPool->modulatorPool.repositModulator(modSources[i]);
+    dspPool->repositModulator(modSources[i]);
   modSources.clear();
 
   for(size_t i = 0; i < modMatrix.size(); ++i)
-    dspPool->connectorPool.repositItem(modMatrix[i]);
+    dspPool->repositConnector(modMatrix[i]);
   modMatrix.clear();
 
   // ToDo: 

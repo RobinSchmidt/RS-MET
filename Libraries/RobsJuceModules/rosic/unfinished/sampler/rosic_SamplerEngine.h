@@ -883,7 +883,7 @@ public:
   void setMaxNumFilters(int newMax) 
   { 
     reset();
-    dspPool.effectPool.setMaxNumFilters(newMax); 
+    dspPool.setMaxNumFilters(newMax); 
   }
 
   // move into baseclass - jura::Sampler will need it:
@@ -906,7 +906,7 @@ public:
   }
 
 
-  int getNumUsedFilters() const { return dspPool.effectPool.getNumUsedFilters(); }
+  int getNumUsedFilters() const { return dspPool.getNumUsedFilters(); }
 
 
 

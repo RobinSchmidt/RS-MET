@@ -165,6 +165,51 @@ public:
   // todo: processBlock, prepareToPlay
 };
 
+//=================================================================================================
+
+class ModulationConnector  // maybe rename to ModulationWire or just Modulation or ModConnector
+{
+
+public:
+
+  enum class ModType
+  {
+    absolute,
+    relative
+    //exponential,
+    //multiplicative
+  };
+
+  /** Computes and returns a contribution to be added to a modulated value that comes from this
+  connection ...tbc.... */
+  float getContribution(float modulatorOutput, float unmodulatedValue)
+  {
+    switch(type)
+    {
+    case ModType::absolute: return amount * modulatorOutput;
+    case ModType::relative: return amount * modulatorOutput * unmodulatedValue;
+    default: RAPT::rsError("Unknown ModType");
+    }
+  }
+  // ToDo:
+  // -Try to find better name
+  // -Factor out the computations - we use similar computations in the mod-system in jura -> 
+  //  consolidate the code
+
+  inline void initTarget()
+  {
+    RAPT::rsAssert(target != nullptr);
+    target->initModulatedValue();
+  }
+
+
+private:
+
+  Modulator* source = nullptr;      // e.g. EnvGen, LowFreqOsc, etc.
+  Parameter* target = nullptr;      // Parameter objects are members of a Processor
+  float amount = 0.f;               // Strength of modulation
+  ModType type = ModType::absolute; // maybe the default should depend on the target?
+};
 
 //=================================================================================================
 // these should go into ModulatorCores:
@@ -426,6 +471,8 @@ public:
   Modulator* grabModulator(OpcodeType type);
   void repositModulator(Modulator* p);
 
+  void repositConnector(ModulationConnector* c) { connectorPool.repositItem(c); }
+
 
   /** This is currently only meant to facilitate unit testing overload conditions. In such tests,
   we want a well defined and small number of filters to be available so we can simulate conditions
@@ -436,13 +483,15 @@ public:
   int getNumUsedFilters() const { return effectPool.filters.getNumUsedItems(); }
   // also to facilitate testing
 
+  int getNumIdleConnectors() const { return connectorPool.getNumIdleItems(); }
 
 
-//protected:
+
+protected:
 
   EffectPool    effectPool;
   ModulatorPool modulatorPool;
-  rsObjectPool<ModulationConnection> connectorPool;
+  rsObjectPool<ModulationConnector> connectorPool;
 };
 // maybe turn this class into a sort of facade such that client code doesn't need to rech through
 // into the member - have functions like grab/reposit Effect/Modulator/Connector. Maybe get rid of

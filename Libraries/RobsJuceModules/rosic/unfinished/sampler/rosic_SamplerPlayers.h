@@ -60,52 +60,6 @@ protected:
 
 //=================================================================================================
 
-class ModulationConnection  // maybe rename to ModulationWire or just Modulation or ModConnector
-{
-
-public:
-
-  enum class ModType
-  {
-    absolute,
-    relative
-    //exponential,
-    //multiplicative
-  };
-
-  /** Computes and returns a contribution to be added to a modulated value that comes from this
-  connection ...tbc.... */
-  float getContribution(float modulatorOutput, float unmodulatedValue)
-  {
-    switch(type)
-    {
-    case ModType::absolute: return amount * modulatorOutput;
-    case ModType::relative: return amount * modulatorOutput * unmodulatedValue;
-    default: RAPT::rsError("Unknown ModType");
-    }
-  }
-  // ToDo:
-  // -Try to find better name
-  // -Factor out the computations - we use similar computations in the mod-system in jura -> 
-  //  consolidate the code
-
-  inline void initTarget()
-  {
-    RAPT::rsAssert(target != nullptr);
-    target->initModulatedValue();
-  }
-
-
-private:
-
-  Modulator* source = nullptr;      // e.g. EnvGen, LowFreqOsc, etc.
-  Parameter* target = nullptr;      // Parameter objects are members of a Processor
-  float amount = 0.f;               // Strength of modulation
-  ModType type = ModType::absolute; // maybe the default should depend on the target?
-};
-
-//=================================================================================================
-
 /** UNDER CONSTRUCTION
 
 A class used to represent the current playback status of the engine. There exists exactly one 
@@ -258,13 +212,13 @@ protected:
   Effect* getEffect(OpcodeType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
-    return dspPool->effectPool.grabEffect(type);
+    return dspPool->grabEffect(type);
   }
 
   Modulator* getModulator(OpcodeType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
-    return dspPool->modulatorPool.grabModulator(type);
+    return dspPool->grabModulator(type);
   }
   // Maybe just have one function that returns a pointer to Processor (baseclass of Effect and 
   // Modulator)
@@ -338,7 +292,7 @@ protected:
   //std::vector<Parameter*> modTargets;  
   // redundant - maybe use later for optimizing initialization of modulations
 
-  std::vector<ModulationConnection*> modMatrix;  
+  std::vector<ModulationConnector*> modMatrix;  
   // not a literal matrix but conceptually - maybe rename to modRoutings..but maybe not - we may
   // see it as sparse matrix
 
