@@ -160,17 +160,18 @@ void SamplePlayer::disassembleEffectChain()  // rename
   // -benchmark whether its faster to traverse the array from the back
 }
 
-/*
-bool SamplePlayer::assembleModulators(const std::vector<OpcodeType>& types)
+
+bool SamplePlayer::assembleModulations(const std::vector<OpcodeType>& types)
 {
   RAPT::rsError("Not yet implemented");
   return false;
 }
-void SamplePlayer::disassembleModulators()
+
+void SamplePlayer::disassembleModulations()
 {
   RAPT::rsError("Not yet implemented");
 }
-*/
+
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
@@ -240,8 +241,16 @@ void RegionPlayer::processFrame(float* L, float* R)
     modSources[i]->updateModValue();
 
   // Initialize modulated parameters to non-modulated values:
-  for(size_t i = 0; i < modTargets.size(); ++i)
-    modTargets[i]->initModulatedValue();
+  //for(size_t i = 0; i < modTargets.size(); ++i)
+  //  modTargets[i]->initModulatedValue();
+  for(size_t i = 0; i < modMatrix.size(); ++i)
+    modMatrix[i]->initTarget();
+    // Will initialize targets with multiple incoming connections multiple times. I think, avoiding 
+    // the redundant initializations would require us to somehow store a (redundant) array of all 
+    // affected modulation targets. This may or may not be worth the effort...we'll see.
+
+
+
 
   // Apply the modulations:
   for(size_t i = 0; i < modMatrix.size(); ++i)
@@ -342,7 +351,7 @@ void RegionPlayer::releaseResources()
 void RegionPlayer::allocateMemory()
 {
   modSources.reserve(8);
-  modTargets.reserve(8);
+  //modTargets.reserve(8);
   modMatrix.reserve(32);
   effectChain.reserve(8);
   // These values are ad-hoc arbitrarily chosen. Maybe give the function some parameters to choose
@@ -368,13 +377,27 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
     return rsReturnCode::layerOverload;
   }
   resetPlayerSettings();
-
   setupDspSettingsFor(region, fs, busMode, iv);
 
-  // todo: setup modulators and modulation connections
+  // todo: setup modulation connections
+
+  /*
+  bool ok = assembleModulations();
+  if(!ok)
+  {
+
+  }
+  */
+
 
   effectChain.prepareToPlay(key, vel, fs);
-  // modulators.prepareToPlay(fs)
+  //prepareToPlay(modSources, fs);
+  // modSources.prepareToPlay(fs)  // maybe we need to call this before effectChain.prep..
+  // ...but modSources is not a class but a simple array - maybe effectChain should also be a 
+  // simple array and we should use free functions operating on an array of Processors? Or maybe
+  // have a class processorChain......not sure yet
+
+
 
   return rsReturnCode::success;
   // Overload should actually not happen in therory (as by the sfz spec, and unlimited number of 
@@ -408,6 +431,8 @@ bool RegionPlayer::hasFinished()
 
 bool RegionPlayer::assembleEffectChain(bool busMode)
 {
+  // Change into function to assemble effects, modulators and routing
+
   // The DSPs for which the region itself defines settings/opcodes are always needed:
   bool ok = SamplePlayer::assembleEffectChain(region->getOpcodeTypeChain());
   if(!ok)
@@ -417,10 +442,10 @@ bool RegionPlayer::assembleEffectChain(bool busMode)
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
   if(!busMode) {
-    if(!augmentOrCleanEffectChain(region->getGroup()->getOpcodeTypeChain()))
-      return false;
-    if(!augmentOrCleanEffectChain(region->getGroup()->getInstrument()->getOpcodeTypeChain()))
+    if(!augmentOrCleanEffectChain(region->getGroup()->getOpcodeTypeChain())) {
       return false; }
+    if(!augmentOrCleanEffectChain(region->getGroup()->getInstrument()->getOpcodeTypeChain())) {
+      return false; }}
 
   return true;
   // OK - everything went well so we report success. If, on the other hand, false is returned, it

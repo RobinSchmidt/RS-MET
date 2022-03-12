@@ -52,11 +52,18 @@ protected:
   // on sfz load
 
 };
+// Maybe get rid of this class and instead use a std::vector<Effect*> directly for the effectChain
+// member of SamplePlayer and replace all member functions where it makes sense with free functions 
+// operating on a std::vector<Processor*> such that we can re-use these functions for the 
+// modSources array as well. Maybe collect the "free" functions as static functions in some class.
+// Maybe even in the SamplePlayer class.
 
 //=================================================================================================
 
-class ModulationConnection  // maybe rename to ModulationWire
+class ModulationConnection  // maybe rename to ModulationWire or just Modulation
 {
+
+public:
 
   enum class ModType
   {
@@ -82,14 +89,19 @@ class ModulationConnection  // maybe rename to ModulationWire
   // -Factor out the computations - we use similar computations in the mod-system in jura -> 
   //  consolidate the code
 
+  inline void initTarget()
+  {
+    RAPT::rsAssert(target != nullptr);
+    target->initModulatedValue();
+  }
+
 
 private:
 
-  float amount = 0.0;               // strength of modulation
-  ModType type = ModType::absolute;
-
-  //std::function<void(double)> targetSetter; // target callback that sets some parameter
-  //double refVal = 0.0;  // unmodulated reference value
+  Modulator* source = nullptr;      // e.g. EnvGen, LowFreqOsc, etc.
+  Parameter* target = nullptr;      // Parameter objects are members of a Processor
+  float amount = 0.f;               // Strength of modulation
+  ModType type = ModType::absolute; // maybe the default should depend on the target?
 };
 
 //=================================================================================================
@@ -265,6 +277,8 @@ protected:
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available).  */
   virtual bool assembleEffectChain(bool busMode) = 0;
+  // -rename to assemble Processors and let it assemble the effect chain as well as the modulators
+  //  and mod-connections
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
 
@@ -278,8 +292,8 @@ protected:
 
   // under construction:
   //virtual bool assembleModulators(bool busMode) = 0;
-  //bool assembleModulators(const std::vector<OpcodeType>& types);
-  //void disassembleModulators();
+  bool assembleModulations(const std::vector<OpcodeType>& types);
+  void disassembleModulations();
   // perhaps these should not be separate functions but the modulators should be assembled 
   // jointly with the effects
 
@@ -322,7 +336,7 @@ protected:
   // Moved here from RegionPlayer subclass - I'm not yet sure, if they should be members here or
   // there:
   std::vector<Modulator*> modSources;
-  std::vector<Parameter*> modTargets;
+  //std::vector<Parameter*> modTargets;  // redundant - maybe use later for optimizing initialization of modulations
   std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
 
 
@@ -413,6 +427,8 @@ protected:
 
 
   bool assembleEffectChain(bool busMode) override;
+
+  //bool assembleEffectChain(bool busMode) override;
 
 
   bool setupModulations();  // maybe move to baseclass

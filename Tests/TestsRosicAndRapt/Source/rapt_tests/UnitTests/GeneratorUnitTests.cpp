@@ -2903,20 +2903,31 @@ bool samplerFreeModulationsTest()
   // tgt wiggles between 3.5 and 4.5 centered at 4.0, L/R outputs are currently constant at 4.0 as
   // expected (the plotted signal between -0.5 and +0.5 is the error)
 
+  // -At the end of SamplePlayer::augmentOrCleanEffectChain, the modSources array correctly 
+  //  contains one LFO, but it's still uninitialized (them members contain garbage values).
+  // -In RegionPlayer::prepareToPlay, we need to also include a call to 
+  //  SamplePlayer::assembleModulations
+
 
   // ToDo:
   // -Done: Provide method to set up modulation routings in Region, Group, Global.
   // -During assembling the RegionPlayer, also assemble the modulators and connections.
   //  -Done(?): Assemble modulators in a way similar to assembling the effects.
-  //  -Implement ModulationConnection/Wire class. It should contain pointers to the modulator (i.e. 
-  //   the source), the modulated parameter (i.e. the target) and parameters for modulation depth
-  //   and mode (formula).
-  //  -Assemble the modulation connections (and disassemble them when finished).
+  //  -Done: Implement ModulationConnection/Wire class. It should contain pointers to the modulator
+  //   (i.e. the source), the modulated parameter (i.e. the target) and parameters for modulation 
+  //   depth and mode (formula).
+  //  -Assemble the modulation connections (and disassemble them when finished or an error occurs).
   // -During playback, make use of the modulations:
   //  -Done(?): Let all modulators update their output value in processFrame.
-  //  -Init all modulated parameters to their unmodulated values.
+  //  -Done(?): Init all modulated parameters to their unmodulated values.
   //  -Apply all modulations
   //  -Update the affected DSP units (effects and(!) modulators)
+  //
+  // -Refactor:
+  //  -Maybe get rid of EffectChain (see comments there)
+  //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
+  //   effects and modulators.
+
 
   // Notes: 
   // To specify free modulations in the sfz-file, we want to write things like lfo2_cutoff3=500 to 
