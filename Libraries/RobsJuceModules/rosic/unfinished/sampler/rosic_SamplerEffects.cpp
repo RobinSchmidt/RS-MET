@@ -419,6 +419,42 @@ void ModulatorPool::repositModulator(Modulator* p)
 
 
 
+// preliminary - just delegate - todo: move actual implementations here
+
+void DspResourcePool::allocateEffects()
+{
+  effectPool.allocateEffects();
+}
+
+Effect* DspResourcePool::grabEffect(OpcodeType type)
+{
+  return effectPool.grabEffect(type);
+}
+
+void DspResourcePool::repositEffect(Effect* p)
+{
+  effectPool.repositEffect(p);
+}
+
+void DspResourcePool::allocateModulators()
+{
+  modulatorPool.allocateModulators();
+}
+
+Modulator* DspResourcePool::grabModulator(OpcodeType type)
+{
+  return modulatorPool.grabModulator(type);
+}
+
+void DspResourcePool::repositModulator(Modulator* p)
+{
+  modulatorPool.repositModulator(p);
+}
+
+
+
+
+
 }} // namespaces
 
 //=================================================================================================

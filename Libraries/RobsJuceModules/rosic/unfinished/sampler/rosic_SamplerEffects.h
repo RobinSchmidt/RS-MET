@@ -350,7 +350,7 @@ public:
   // also to facilitate testing
 
 
-protected:
+//protected:
 
   rsObjectPool<Amplifier>  amplifiers;
   rsObjectPool<Filter>     filters;
@@ -394,8 +394,52 @@ protected:
 
 /** Structure to consolidate the different kinds of DSP resources */ 
 
-struct DspResourcePool
+class DspResourcePool
 {
+
+public:
+
+  /** Allocates the effects by resizing our vectors (which contain direct objects). */
+  void allocateEffects();
+  // todo: Let it have an argument that somehow specifies, how many of each type should be 
+  // allocated. Maybe that could be a reference to the sfz-data itself or something derived from it
+
+
+  /** A client can request an effect of the given type. If an effect of the desired type is 
+  available, a pointer to it will returned. If not, a nullptr will be returned. The "client" will 
+  typically be a RegionPlayer and call grabEffect on noteOn when assembling the effect chain. When
+  no effect of the desired type is available anymore, the calling code should probably forego the 
+  whole RegionPlayer. If the region can't be played correctly due to lack of resources, it should 
+  not play at all. What it certainly should not do is to just replace the non-available effect by a
+  bypass dummy effect because that could have really bad consequences: imagine a missing 
+  attenuation effect. Regions are always played back either correctly or not at all but never 
+  wrongly. */
+  Effect* grabEffect(OpcodeType type);
+
+  /** This function should be called by the client when it doesn't need the processor anymore, For
+  example, because the region for which it was used has stopped playing. The client returns the 
+  processor to the pool so it becomes available again for playing other notes. */
+  void repositEffect(Effect* p);
+
+
+  void allocateModulators();
+  Modulator* grabModulator(OpcodeType type);
+  void repositModulator(Modulator* p);
+
+
+  /** This is currently only meant to facilitate unit testing overload conditions. In such tests,
+  we want a well defined and small number of filters to be available so we can simulate conditions
+  where the engine is running out of filters in a controlled way. */
+  void setMaxNumFilters(int newMax) { effectPool.filters.init(newMax); }
+
+
+  int getNumUsedFilters() const { return effectPool.filters.getNumUsedItems(); }
+  // also to facilitate testing
+
+
+
+//protected:
+
   EffectPool    effectPool;
   ModulatorPool modulatorPool;
   rsObjectPool<ModulationConnection> connectorPool;
