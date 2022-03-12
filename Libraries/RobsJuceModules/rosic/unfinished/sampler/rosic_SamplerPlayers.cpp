@@ -117,11 +117,13 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       else {
         disassembleProcessors();
         return false;  }
+      // Try to get rid of the duplication by making the branches even more similar and then try to
+      // refactor....
     }
   }
   return true;
   // When we arrive here, we have successfully finished the loop which means that we either could
-  // add enough effects or modulators of the desired types to the chain/array or they were already 
+  // add enough effects/modulators of the desired types to the chain/array or they were already 
   // present before. In both cases, the effectChain or modSources is now in the required state so 
   // we can report success.
 }
@@ -143,7 +145,10 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
 
     // ToDo: set up the members of mc correctly:
     // -Determine pointers to source Modulator and target Parameter
-    // -Set them up in mc
+    //  -find the source Modulator within the modSources
+    //  -find the target Processor either within the modSources or within the effectChain
+    //  -find the correct parameter within the target Processor
+    // -Set those pointers up in mc
 
     mc->setDepth(ms.getDepth());
     //mc->setMode(ms.getMode());
@@ -168,7 +173,6 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
 bool SamplePlayer::assembleProcessors(
   const std::vector<OpcodeType>& dspTypes, const std::vector<ModulationSetting>& modSettings) 
 {
-  //if(!effectChain.isEmpty()) {
   if(!areProcessorsEmpty()) {    // Sanity check
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
     disassembleProcessors();  }  // ...so we do it here. But this should be fixed elsewhere!
