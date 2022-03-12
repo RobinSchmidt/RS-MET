@@ -126,7 +126,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
   // we can report success.
 }
 
-bool SamplePlayer::assembleModulations(std::vector<ModulationSetting>& modSettings)
+bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& modSettings)
 {
   // we need a pointer to the region/group/instrument from which we can retrieve the
   // modRoutings array - or we need to pass it in as parameter. The latter would be consistent with
@@ -148,7 +148,8 @@ bool SamplePlayer::assembleModulations(std::vector<ModulationSetting>& modSettin
   // pool.
 }
 
-bool SamplePlayer::assembleProcessors(const std::vector<OpcodeType>& dspTypes) 
+bool SamplePlayer::assembleProcessors(
+  const std::vector<OpcodeType>& dspTypes, const std::vector<ModulationSetting>& modSettings) 
 {
   //if(!effectChain.isEmpty()) {
   if(!areProcessorsEmpty()) {    // Sanity check
@@ -158,11 +159,9 @@ bool SamplePlayer::assembleProcessors(const std::vector<OpcodeType>& dspTypes)
   if(!augmentOrCleanProcessors(dspTypes)) 
     return false;
 
-  /*
-  if(!assembleModulations()) {
+  if(!assembleModulations(modSettings)) {
     disassembleProcessors();
     return false; }
-    */
 
   return true;
 }
@@ -419,8 +418,13 @@ bool RegionPlayer::hasFinished()
 
 bool RegionPlayer::assembleProcessors(bool busMode)
 {
+  const Region* reg = region;
+  const Group*  grp = reg->getGroup();
+  const Global* glb = grp->getInstrument();
+
   // The DSPs for which the region itself defines settings/opcodes are always needed:
-  bool ok = SamplePlayer::assembleProcessors(region->getOpcodeTypeChain());
+  bool ok = SamplePlayer::assembleProcessors(
+    reg->getOpcodeTypeChain(), reg->getModulationSettings());
   if(!ok)
     return false;
 
@@ -428,9 +432,9 @@ bool RegionPlayer::assembleProcessors(bool busMode)
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
   if(!busMode) {
-    if(!augmentOrCleanProcessors(region->getGroup()->getOpcodeTypeChain())) {
+    if(!augmentOrCleanProcessors(grp->getOpcodeTypeChain())) {
       return false; }
-    if(!augmentOrCleanProcessors(region->getGroup()->getInstrument()->getOpcodeTypeChain())) {
+    if(!augmentOrCleanProcessors(glb->getOpcodeTypeChain())) {
       return false; }}
 
   return true;
@@ -691,10 +695,11 @@ bool SampleBusPlayer::assembleProcessors(bool busMode)
   // busMode, the Group- or InstrumentPlayer's own DSP chain is used. We need to take the busMode
   // parameter anyway because this function is an override.
 
-  return SamplePlayer::assembleProcessors(grpOrInstr->getOpcodeTypeChain());
-  // We need only to take into account the group's DSP settings. The instrument's DSP settings
-  // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
-  // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
+  return SamplePlayer::assembleProcessors(
+    grpOrInstr->getOpcodeTypeChain(), grpOrInstr->getModulationSettings());
+    // We need only to take into account the group's DSP settings. The instrument's DSP settings
+    // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
+    // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
 }
 
 //=================================================================================================

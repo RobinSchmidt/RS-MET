@@ -333,7 +333,9 @@ public:
     /** Returns a (const) reference to an array of processor types that is used by the engine to 
     build the dsp chain when this region should be played.*/
     const std::vector<OpcodeType>& getOpcodeTypeChain() const { return dspTypes; }
-    // rename to getOpcodeTypeChain
+
+
+    const std::vector<ModulationSetting>& getModulationSettings() const { return modRoutings; }
 
 
   protected:
@@ -485,6 +487,7 @@ public:
 
     /** Return a pointer to the instrument to which this group belongs. */
     const Global* getInstrument() const { return (const Global*)getParent(); }
+    // mybe rename to getGlobal ..or rename Global back to Instrument
 
     /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;

@@ -279,7 +279,7 @@ protected:
   bool augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain);
 
   /** Under construction... */
-  bool assembleModulations(std::vector<ModulationSetting>& modSettings);
+  bool assembleModulations(const std::vector<ModulationSetting>& modSettings);
  
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
@@ -288,12 +288,10 @@ protected:
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
 
-
-
-
   /** A helper function that is called from GroupPlayer::assembleDspChain(bool) and
   InstrumentPlayer::assembleDspChain(bool). ...verify comment - seems out of date  */
-  bool assembleProcessors(const std::vector<OpcodeType>& dspTypes);
+  bool assembleProcessors(const std::vector<OpcodeType>& dspTypes, 
+    const std::vector<ModulationSetting>& modSettings);
 
   /** Reposits all the processors back into the dspPool. */
   void disassembleProcessors();
@@ -367,6 +365,7 @@ public:
   using uchar = unsigned char;
   using Region = SfzInstrument::Region; // todo: make a subclass here that adds the stream field
   using Group  = SfzInstrument::Group;
+  using Global = SfzInstrument::Global;
   using PlaybackSetting = SfzInstrument::PlaybackSetting;
 
   /** Sets up the region object that this player should play. You need to also pass the output
