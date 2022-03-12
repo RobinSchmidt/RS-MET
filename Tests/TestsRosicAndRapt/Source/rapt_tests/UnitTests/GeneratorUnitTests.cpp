@@ -2928,7 +2928,13 @@ bool samplerFreeModulationsTest()
   //   need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
   //   additional modulators for the enclosing Group and Instrument and their contributions should 
   //   just also be accumulated into the params? But: actually the Group will have its own effect 
-  //   chain as well, so Group modulations should apply to this.
+  //   chain as well, so Group modulations should apply to this. Some things seem clear:
+  //   -region-modulators should never modulate parameters of the outlying group
+  //   -it may make sense, if group modulators modulate parameters of embedded regions in addition
+  //    to the region's own modulators...but it might be weird
+  //   -in override mode, the group-modulators should provide fallback values for missing region
+  //    values: if a group defines lfoN_freq then this will be used in all regions unless the 
+  //    specify lfoN_freq themselves
   //
   // -Refactor:
   //  -Maybe get rid of class EffectChain (see comments there)

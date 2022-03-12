@@ -126,6 +126,28 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
   // we can report success.
 }
 
+bool SamplePlayer::assembleModulations()
+{
+  // we need a pointer to the region/group/instrument from which we can retrieve the
+  // modRoutings array - or we need to pass it in as parameter. The latter would be consistent with
+  // how we pass in the dspTypes array to augmentOrCleanProcessors
+
+
+
+  return true;
+
+  // Assembling the mod-connections may also fail if not enough are available - in this 
+  // case we also need to roll back and return false. But: maybe we should do it in a way that 
+  // can't fail by not grabbing pre-allocated connection objects from the pool but rather using a
+  // std::vector<ModulationConnection> instead of std::vector<ModulationConnection*> Or maybe the
+  // Region/Group etc. object could maintain such an array itself such we do not need to assemble 
+  // it at...or only need to re-connect pins, i.e. update the source/target pointers...but no -
+  // I'm confusing again Regions with Layers here - we may have several layers playing the same
+  // region and they will need different pointers. But nevertheless, it may make sense to use
+  // a vector of direct ModulationConnection objects rather than using pre-allocated ones from the
+  // pool.
+}
+
 bool SamplePlayer::assembleProcessors(const std::vector<OpcodeType>& dspTypes) 
 {
   //if(!effectChain.isEmpty()) {
@@ -136,14 +158,9 @@ bool SamplePlayer::assembleProcessors(const std::vector<OpcodeType>& dspTypes)
   if(!augmentOrCleanProcessors(dspTypes)) 
     return false;
 
-  // ToDo: Assemble the mod-connections. This may also fail if not enough are available - in this 
-  // case we also need to roll back and return false. But: maybe we should do it in a way that 
-  // can't fail by not grabbing pre-allocated connection objects from the pool but rather using a
-  // std::vector<ModulationConnection> instead of std::vector<ModulationConnection*> Or maybe the
-  // Region/Group etc. object could maintain such an array itself such we do not need to assemble 
-  // it at...or only need to re-connect pins, i.e. update the source/target pointers...but no -
-  // I'm confusing again Regions with Layers here - we may have several layers playing the same
-  // region and they will need different pointers
+  if(!assembleModulations()) {
+    disassembleProcessors();
+    return false; }
 
   return true;
 }

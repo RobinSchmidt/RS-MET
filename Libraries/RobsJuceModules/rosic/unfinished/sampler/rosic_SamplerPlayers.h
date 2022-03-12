@@ -278,12 +278,18 @@ protected:
   disassembly is what is meant by the "or clean" part. */
   bool augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain);
 
+  /** Under construction... */
+  bool assembleModulations();
+ 
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available).  */
   virtual bool assembleProcessors(bool busMode) = 0;
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
+
+
+
 
   /** A helper function that is called from GroupPlayer::assembleDspChain(bool) and
   InstrumentPlayer::assembleDspChain(bool). ...verify comment - seems out of date  */
