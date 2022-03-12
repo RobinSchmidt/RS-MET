@@ -265,13 +265,14 @@ protected:
   // Maybe just have one function that returns a pointer to Processor (baseclass of Effect and 
   // Modulator)
 
-  /** Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
-  particular DSP is needed, if no suitable such DSP is already there in our dspChain where 
-  "suitable" means: "with right type and index". The return value informs, whether or not adding
-  the desired DSPs was succesful. It may fail due to not having enough DSPs of required types 
-  available. In such cases, any partially assembled dspChain will be disassembled again and 
-  false is returned. This potential disassembly is what is meant by the "or clean-up" part. */
-  bool augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspTypeChain);
+  /** Adds the processors of the given types to our array of effects or modulators, if needed. 
+  Adding a particular processor is needed, if no suitable such processor is already there in our 
+  effectChain (or modSources) where "suitable" means: "with right type and index". The return value
+  informs, whether or not adding the desired processors was succesful. It may fail due to not 
+  having enough processors of required types available. In such cases, any partially assembled 
+  effectChain or modSources array will be disassembled again and false is returned. This potential
+  disassembly is what is meant by the "or clean" part. */
+  bool augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain);
 
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
@@ -289,11 +290,12 @@ protected:
 
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleEffectChain();
+  // rename to disassembleProcessors and let it also disassemble the modulators and routings
 
   // under construction:
   //virtual bool assembleModulators(bool busMode) = 0;
-  bool assembleModulations(const std::vector<OpcodeType>& types);
-  void disassembleModulations();
+  //bool assembleModulations(const std::vector<OpcodeType>& types);
+  //void disassembleModulations();
   // perhaps these should not be separate functions but the modulators should be assembled 
   // jointly with the effects
 
@@ -336,8 +338,13 @@ protected:
   // Moved here from RegionPlayer subclass - I'm not yet sure, if they should be members here or
   // there:
   std::vector<Modulator*> modSources;
-  //std::vector<Parameter*> modTargets;  // redundant - maybe use later for optimizing initialization of modulations
-  std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
+
+  //std::vector<Parameter*> modTargets;  
+  // redundant - maybe use later for optimizing initialization of modulations
+
+  std::vector<ModulationConnection*> modMatrix;  
+  // not a literal matrix but conceptually - maybe rename to modRoutings..but maybe not - we may
+  // see it as sparse matrix
 
 
 

@@ -77,7 +77,7 @@ size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType ty
 // can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
 // closely. Then, we need to rename it
 
-bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspTypeChain)
+bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain)
 {
   //SfzCodeBook* cb = SfzCodeBook::getInstance();
 
@@ -113,8 +113,6 @@ bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspT
     }
     else if(SfzCodeBook::isModSourceSetting(opType))
     {
-      //RAPT::rsError("Not yet finished");
-
       // The logic for adding modulation sources is the same as for adding effect processors:
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1; 
       if(getNumModulators(modSources, opType) >= sfzIndex)
@@ -135,12 +133,13 @@ bool SamplePlayer::augmentOrCleanEffectChain(const std::vector<OpcodeType>& dspT
   // we can report success.
 }
 
-bool SamplePlayer::assembleEffectChain(const std::vector<OpcodeType>& dspTypes)
+bool SamplePlayer::assembleEffectChain(const std::vector<OpcodeType>& dspTypes) 
 {
+  // rename to assembleProcessors
   if(!effectChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
     disassembleEffectChain();  }  // ...so we do it here. But this should be fixed elsewhere!
-  if(!augmentOrCleanEffectChain(dspTypes)) 
+  if(!augmentOrCleanProcessors(dspTypes)) 
     return false;
   return true;
 }
@@ -155,12 +154,17 @@ void SamplePlayer::disassembleEffectChain()  // rename
     dspPool->modulatorPool.repositModulator(modSources[i]);
   modSources.clear();
 
+  for(size_t i = 0; i < modMatrix.size(); ++i)
+    dspPool->connectorPool.repositItem(modMatrix[i]);
+  modMatrix.clear();
+
   // ToDo: 
-  // -write the loop over the effectChain in the same way as the one over the modulators
+  // -let effectChain just be std::vector<Effect> to handle it uniformly with the modulators.
+  //  Member functions should become free functions (maybe wrapped into a class...maybe this class)
   // -benchmark whether its faster to traverse the array from the back
 }
 
-
+/*
 bool SamplePlayer::assembleModulations(const std::vector<OpcodeType>& types)
 {
   RAPT::rsError("Not yet implemented");
@@ -171,6 +175,7 @@ void SamplePlayer::disassembleModulations()
 {
   RAPT::rsError("Not yet implemented");
 }
+*/
 
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
@@ -442,9 +447,9 @@ bool RegionPlayer::assembleEffectChain(bool busMode)
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
   if(!busMode) {
-    if(!augmentOrCleanEffectChain(region->getGroup()->getOpcodeTypeChain())) {
+    if(!augmentOrCleanProcessors(region->getGroup()->getOpcodeTypeChain())) {
       return false; }
-    if(!augmentOrCleanEffectChain(region->getGroup()->getInstrument()->getOpcodeTypeChain())) {
+    if(!augmentOrCleanProcessors(region->getGroup()->getInstrument()->getOpcodeTypeChain())) {
       return false; }}
 
   return true;

@@ -89,3 +89,17 @@ void rsQuadratureNetwork<TSig, TPar>::updateCoefficients()
     zeros[i] *= j;
   }
 }
+
+
+/*
+
+ToDo:
+-Plot phase responses of real and imag output
+-Try to form linear combinations of re and im outputs - can we obtain arbitrary phse-shifts with 
+ that?
+-What happens, if we inject the input not only into the real part but with weights into the real
+ and imaginary inputs of the filter (using a sin/cos rule such that sum-of-squares of weights is
+ always 1)? Maybe that's equivalen to forming linear combinations of the outputs?
+
+
+*/

@@ -388,6 +388,8 @@ protected:
 
 
 
+
+
 //=================================================================================================
 
 /** Structure to consolidate the different kinds of DSP resources */ 
@@ -396,8 +398,13 @@ struct DspResourcePool
 {
   EffectPool    effectPool;
   ModulatorPool modulatorPool;
-  //ConnectionPool connectionPool; // not sure, if needed
+  rsObjectPool<ModulationConnection> connectorPool;
 };
+// maybe turn this class into a sort of facade such that client code doesn't need to rech through
+// into the member - have functions like grab/reposit Effect/Modulator/Connector. Maybe get rid of
+// classes effectPool, modulatorPool - move implementations of its members into this class. data 
+// members should be rsObjectPool<Effect> effectPool; rsObjectPool<Modulator> modulatorPool;
+// -> more consistency/uniformity
 
 
 
