@@ -2915,12 +2915,20 @@ bool samplerFreeModulationsTest()
   //   (i.e. the source), the modulated parameter (i.e. the target) and parameters for modulation 
   //   depth and mode (formula).
   //  -Assemble the modulation connections (and disassemble them when finished or an error occurs).
+  //   Code needs to be added to SamplePlayer::assembleProcessors
+  //  -Update RegionPlayer::prepareToPlay to prepare also the modSources (see comment there). Maybe
+  //   we need to do similar things in GroupPlayer, InstrumentPlayer, too
   // -During playback, make use of the modulations:
   //  -Done(?): Let all modulators update their output value in processFrame.
   //  -Done(?): Init all modulated parameters to their unmodulated values.
   //  -Apply all modulations in an accumulating loop over the modMatrix
   //  -Update the affected DSP units (effects and(!) modulators), i.e. recompute their affected
   //   algo-params
+  //  -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
+  //   need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
+  //   additional modulators for the enclosing Group and Instrument and their contributions should 
+  //   just also be accumulated into the params? But: actually the Group will have its own effect 
+  //   chain as well, so Group modulations should apply to this.
   //
   // -Refactor:
   //  -Maybe get rid of class EffectChain (see comments there)

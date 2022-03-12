@@ -170,13 +170,13 @@ public:
     Opcode     target;       // Modulation target like cutoffN, volumeN, etc.
     int        targetIndex;  // Index like the 2 in lfo3_cutoff2, lfo3_eq2gain, etc.
     float      depth;        // Modulation depth
+    //int        mode;       // absolute, relative, exponential, etc. (maybe)
 
     // ToDo:
     // -Maybe have a member for modulationMode (absolute, relative, exponential, etc.) but maybe
-    //  that should be determined by the target...not suere yet
+    //  that should be determined by the target...not sure yet
     // -Maybe use sourceIndex values < 1 for the special fixed modulators, like
     //  0: amp, -1: filter, -2 pitch - maybe define constants for them
-
   };
 
 

@@ -60,7 +60,7 @@ protected:
 
 //=================================================================================================
 
-class ModulationConnection  // maybe rename to ModulationWire or just Modulation
+class ModulationConnection  // maybe rename to ModulationWire or just Modulation or ModConnector
 {
 
 public:
@@ -123,10 +123,6 @@ such a struct to setupPlayerSetting. */
 class PlayStatus
 {
 public:
-
-
-
-
 
   //-----------------------------------------------------------------------------------------------
   // the members used to facilitate accumulation of intermediate calculation results:
@@ -245,6 +241,14 @@ public:
   player may grab items in order to prepare itself for playing back a region. This should be set
   up by the engine soon after it has created all its players. */
   void setDspResourcePool(DspResourcePool* newPool) { dspPool = newPool; }
+
+  /** Returns true if all our arrays related to the processors are empty, i.e. the
+  effectChain, modSources, modMatrix arrays. Mostly for self-testing purposes. */
+  bool areProcessorsEmpty() const
+  {
+    return effectChain.isEmpty() && modSources.empty() && modMatrix.empty();
+    // also include modTargets.empty() in case we use it later
+  }
 
 protected:
 
@@ -412,24 +416,28 @@ protected:
   bool isPlayable(const Region* region);
 
   /** Acquires the ressources that are required for the playback of the given region such as the
-  required DSPs and modulators, sets up the internal values for the playback settings (including 
+  required effects and modulators, sets up the internal values for the playback settings (including 
   DSP objects) according to the assigned region and resets all DSP objects. When it returns
   rsReturnCode::success, it means the player is now ready to play. If it returns anything else,
-  it means that something went wrong  - presumably not enough ressources were available - and the
-  engine should discard the player object, i.e. put it back into the pool. */
+  it means that something went wrong. Presumably, not enough ressources were available. In such a 
+  case, and the engine should discard the player object, i.e. put it back into the pool. */
   rsReturnCode prepareToPlay(uchar key, uchar vel, double sampleRate, bool busMode,
     PlayStatus* iv);
 
-
+  /** Assembles all signal processing objects that are needed to play this region, i.e. all the
+  required effects, modulators and modulation connections and returns true, if all works well.
+  If not enough pre-allocated objects of the required type are available in our dspPool, it rolls
+  back any partial assembly and returns false.  */
   bool assembleProcessors(bool busMode) override;
 
-  //bool assembleEffectChain(bool busMode) override;
-
-
-  bool setupModulations();  // maybe move to baseclass
-
-  //void resetDspState();
+  /** Resets our member variables such as sampleTime, increment, etc. to their default/initial 
+  values. Does not reset any settings in our processors. */
   void resetPlayerSettings();
+  // Maybe rename to resetMembers
+  // Maybe it should reset also the processors? Or maybe we should have an extra function 
+  // resetProcessors for that and a general reset() that call both. Not sure. At the moment, we 
+  // don't seem to need to reset the processors manually. They are automatically initialized after
+  // assembly.
 
   // move to baseclass, if possible and/or maybe have a virtual detupDspSettings function in 
   // baseclass that we override here and in the GroupPlayer:

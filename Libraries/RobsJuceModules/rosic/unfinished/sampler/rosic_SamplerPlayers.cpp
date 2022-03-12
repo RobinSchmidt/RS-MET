@@ -128,11 +128,23 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
 
 bool SamplePlayer::assembleProcessors(const std::vector<OpcodeType>& dspTypes) 
 {
-  if(!effectChain.isEmpty()) {
+  //if(!effectChain.isEmpty()) {
+  if(!areProcessorsEmpty()) {    // Sanity check
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
     disassembleProcessors();  }  // ...so we do it here. But this should be fixed elsewhere!
+
   if(!augmentOrCleanProcessors(dspTypes)) 
     return false;
+
+  // ToDo: Assemble the mod-connections. This may also fail if not enough are available - in this 
+  // case we also need to roll back and return false. But: maybe we should do it in a way that 
+  // can't fail by not grabbing pre-allocated connection objects from the pool but rather using a
+  // std::vector<ModulationConnection> instead of std::vector<ModulationConnection*> Or maybe the
+  // Region/Group etc. object could maintain such an array itself such we do not need to assemble 
+  // it at...or only need to re-connect pins, i.e. update the source/target pointers...but no -
+  // I'm confusing again Regions with Layers here - we may have several layers playing the same
+  // region and they will need different pointers
+
   return true;
 }
 
@@ -338,18 +350,12 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
 
   this->key = key;
 
-  if(!assembleProcessors(busMode))
-  {
+  if(!assembleProcessors(busMode)) {
     releaseResources();
-    return rsReturnCode::layerOverload;
-  }
-  if(!setupModulations()) {
-    releaseResources();
-    return rsReturnCode::layerOverload;
-  }
+    return rsReturnCode::layerOverload; }
+
   resetPlayerSettings();
   setupDspSettingsFor(region, fs, busMode, iv);
-
 
   effectChain.prepareToPlay(key, vel, fs);
   // Should be replaced by:
@@ -394,8 +400,6 @@ bool RegionPlayer::hasFinished()
 
 bool RegionPlayer::assembleProcessors(bool busMode)
 {
-  // Change into function to assemble effects, modulators and routing
-
   // The DSPs for which the region itself defines settings/opcodes are always needed:
   bool ok = SamplePlayer::assembleProcessors(region->getOpcodeTypeChain());
   if(!ok)
@@ -419,17 +423,6 @@ bool RegionPlayer::assembleProcessors(bool busMode)
   // gracefully. It should actually not happen, i.e. we should make sure to always pre-allocate 
   // enough DSPs but it may be impractical to ensure in a 100% bulletproof manner. But let's 
   // try at least to make that an exception that occurs only in extreme scenarios.
-}
-
-bool RegionPlayer::setupModulations()
-{
-  // ToDo:
-  // -Build the set of modulators, similar as in buildProcessingChain
-  // -Wire up the modulation connections
-
-  // ...something to do...
-
-  return true;
 }
 
 void RegionPlayer::resetPlayerSettings()
