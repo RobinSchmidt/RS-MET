@@ -41,7 +41,12 @@ public:
   }
   // try to find better name maybe hasMatchingPorts/Pins...dunno
 
+  float getDepth() const { return depth; } 
+
+
   void setDepth(float newDepth) { depth = newDepth; }
+
+
 
 
 private:
@@ -55,7 +60,8 @@ private:
 
   // ToDo:
   // -Maybe have a member for modulationMode (absolute, relative, exponential, etc.) but maybe
-  //  that should be determined by the target...not sure yet
+  //  that should be determined by the target...not sure yet maybe one of the mode options could be
+  //  "automatic" or "default"
   // -Maybe use sourceIndex values < 1 for the special fixed modulators, like
   //  0: amp, -1: filter, -2 pitch - maybe define constants for them
 };

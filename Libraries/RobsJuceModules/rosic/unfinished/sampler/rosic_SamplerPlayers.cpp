@@ -130,10 +130,6 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
 {
   //RAPT::rsError("not yet working and currently under construction and in a messy state");
 
-  // we need a pointer to the region/group/instrument from which we can retrieve the
-  // modRoutings array - or we need to pass it in as parameter. The latter would be consistent with
-  // how we pass in the dspTypes array to augmentOrCleanProcessors
-
   RAPT::rsAssert(dspPool);
   RAPT::rsAssert(modMatrix.empty(), "Someone has not cleaned up the modMatrix");
 
@@ -141,11 +137,16 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     return false;
   for(size_t i = 0; i < modSettings.size(); i++)
   {
+    ModulationSetting    ms = modSettings[i];
     ModulationConnector* mc = dspPool->grabConnector();
     RAPT::rsAssert(mc); // we already verified that enough are available
 
-    // ToDo: set up the members of mc correctly
-    // ...
+    // ToDo: set up the members of mc correctly:
+    // -Determine pointers to source Modulator and target Parameter
+    // -Set them up in mc
+
+    mc->setDepth(ms.getDepth());
+    //mc->setMode(ms.getMode());
 
     modMatrix.push_back(mc);
   }

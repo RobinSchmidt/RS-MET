@@ -172,7 +172,7 @@ class ModulationConnector  // maybe rename to ModulationWire or just Modulation 
 
 public:
 
-  enum class ModType
+  enum class ModMode
   {
     absolute,
     relative
@@ -184,10 +184,10 @@ public:
   connection ...tbc.... */
   float getContribution(float modulatorOutput, float unmodulatedValue)
   {
-    switch(type)
+    switch(mode)
     {
-    case ModType::absolute: return amount * modulatorOutput;
-    case ModType::relative: return amount * modulatorOutput * unmodulatedValue;
+    case ModMode::absolute: return depth * modulatorOutput;
+    case ModMode::relative: return depth * modulatorOutput * unmodulatedValue;
     default: RAPT::rsError("Unknown ModType");
     }
   }
@@ -195,6 +195,7 @@ public:
   // -Try to find better name
   // -Factor out the computations - we use similar computations in the mod-system in jura -> 
   //  consolidate the code
+  // -Maybe move to .cpp to avoid inlining
 
   inline void initTarget()
   {
@@ -202,13 +203,15 @@ public:
     target->initModulatedValue();
   }
 
+  void setDepth(float newDepth) { depth = newDepth; }
+
 
 private:
 
   Modulator* source = nullptr;      // e.g. EnvGen, LowFreqOsc, etc.
   Parameter* target = nullptr;      // Parameter objects are members of a Processor
-  float amount = 0.f;               // Strength of modulation
-  ModType type = ModType::absolute; // maybe the default should depend on the target?
+  float depth  = 0.f;               // Strength of modulation
+  ModMode mode = ModMode::absolute; // maybe the default should depend on the target?
 };
 
 //=================================================================================================
@@ -358,9 +361,8 @@ class EffectPool  // get rid
 
 public:
 
-  EffectPool();
-
-  ~EffectPool();
+  //EffectPool();
+  //~EffectPool();
 
   /** Allocates the effects by resizing our vectors (which contain direct objects). */
   void allocateEffects();
@@ -414,8 +416,8 @@ class ModulatorPool // get rid
 
 public:
 
-  ModulatorPool();
-  ~ModulatorPool();
+  //ModulatorPool();
+  //~ModulatorPool();
 
   void allocateModulators();
   Modulator* grabModulator(OpcodeType type);

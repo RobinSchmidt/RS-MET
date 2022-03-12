@@ -301,7 +301,7 @@ void WaveShaper::processBlock(float* L, float* R, int N)
 }
 
 //=================================================================================================
-
+/*
 EffectPool::EffectPool()
 {
   allocateEffects();
@@ -312,6 +312,7 @@ EffectPool::~EffectPool()
 {
 
 }
+*/
 
 void EffectPool::allocateEffects()
 {
@@ -359,7 +360,7 @@ void EffectPool::repositEffect(Effect* p)
 }
 
 //=================================================================================================
-
+/*
 ModulatorPool::ModulatorPool()
 {
   allocateModulators();
@@ -369,6 +370,7 @@ ModulatorPool::~ModulatorPool()
 {
 
 }
+*/
 
 void ModulatorPool::allocateModulators()
 {
@@ -423,9 +425,15 @@ void ModulatorPool::repositModulator(Modulator* p)
 
 DspResourcePool::DspResourcePool()
 {
-  //allocateEffects();
-  //allocateModulators();
+  allocateEffects();
+  allocateModulators();
   allocateConnectors();
+  // Maybe don't do this on construction. Maybe client code should explicitly request this when a
+  // new sfz file ist loaded. The content of the file should determine, how many of each type we 
+  // need to allocate. Maybe have an allocate function that takes a reference to the SfzInstrument
+  // object. Or: the xml file should say how much to pre-allocate - maybe it can have an option 
+  // that let's use allocate heuristically based on the sfz content. Or maybe define sfz opcodes
+  // for pre-allocation: max_filters, max_amplifiers, max_connections, etc.
 }
 
 void DspResourcePool::allocateEffects()
