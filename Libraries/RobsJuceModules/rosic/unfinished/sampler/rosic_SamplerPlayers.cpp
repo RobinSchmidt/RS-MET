@@ -154,8 +154,6 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
 
 bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& modSettings)
 {
-  //RAPT::rsError("not yet working and currently under construction and in a messy state");
-
   RAPT::rsAssert(dspPool);
   RAPT::rsAssert(modMatrix.empty(), "Someone has not cleaned up the modMatrix");
 
@@ -203,11 +201,13 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
   // can't fail by not grabbing pre-allocated connection objects from the pool but rather using a
   // std::vector<ModulationConnection> instead of std::vector<ModulationConnection*> Or maybe the
   // Region/Group etc. object could maintain such an array itself such we do not need to assemble 
-  // it at...or only need to re-connect pins, i.e. update the source/target pointers...but no -
+  // it at all...or only need to re-connect pins, i.e. update the source/target pointers...but no -
   // I'm confusing again Regions with Layers here - we may have several layers playing the same
   // region and they will need different pointers. But nevertheless, it may make sense to use
   // a vector of direct ModulationConnection objects rather than using pre-allocated ones from the
-  // pool.
+  // pool. This may simplify the code but it may make the memory occupied by the modMatrix larger 
+  // because now it stores objects instead of pointers...but this may actually help with caching. 
+  // We would need less pointer chasing during playback.
 }
 
 bool SamplePlayer::assembleProcessors(

@@ -30,13 +30,12 @@ class ModulationSetting
 public:
 
   ModulationSetting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex,
-    float modDepth)
+    float modDepth, ModMode modMode)
     : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
-    , targetIndex(modTargetIndex), depth(modDepth)
+    , targetIndex(modTargetIndex), depth(modDepth), mode(modMode)
   {
     targetType = SfzCodeBook::getInstance()->getOpcodeType(modTarget);
   }
-  // needs to take mode parameter
 
   /** Returns true, iff the type and index of the source of the given routing matches ours. */
   bool hasMatchingSource(const ModulationSetting& r) const
@@ -76,7 +75,7 @@ public:
 
   void setDepth(float newDepth) { depth = newDepth; }
 
-
+  void setMode(ModMode newMode) { mode = newMode; }
 
 
 private:
@@ -276,7 +275,7 @@ public:
 
 
     void setModulation(OpcodeType modSrcType, int modSrcIndex, 
-      Opcode modTarget, int modTargetIndex, float modDepth);
+      Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
 
 
 
@@ -638,7 +637,7 @@ public:
   rsReturnCode setInstrumentSetting(Opcode type, float value, int index = -1);  // rename to setGlobalSetting for sfz compliance
 
   rsReturnCode setRegionModulation(int gi, int ri, OpcodeType modSrcType, int modSrcIndex,
-    Opcode modTarget, int modTargetIndex, float modDepth);
+    Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
   // for setting up a modulation connection
   // maybe rename to addRegionModulation
 

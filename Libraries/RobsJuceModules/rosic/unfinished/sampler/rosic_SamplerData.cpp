@@ -117,19 +117,22 @@ bool SfzInstrument::HierarchyLevel::removeSetting(Opcode type, int index)
 }
 
 void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int modSrcIndex,
-  Opcode modTarget, int modTargetIndex, float modDepth)
+  Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode)
 {
   // ToDo: verify that modTarget is a modulatable opcode, i.e. an opcode for setting a continuous 
   // parameter - something like cutoffN but not something like loop_mode - but maybe that should be
-  // checked when assembling the modMatrix...
+  // checked when assembling the modMatrix...nope - let's do it here - that's more efficient 
+  // because it's called less often
 
   if(!SfzCodeBook::isModSourceSetting(modSrcType)) {
     RAPT::rsError("modSrcType must be some sort of modulation source");
     return; }
-  ModulationSetting newRouting(modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth);
+  ModulationSetting newRouting(
+    modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth, modMode);
   for(size_t i = 0; i < modRoutings.size(); i++) {
     if( modRoutings[i].hasMatchingEndpoints(newRouting) ) {
       modRoutings[i].setDepth(modDepth);  // Overwrite existing routing
+      modRoutings[i].setMode(modMode);
       return;  }}                         // ...and return early
   modRoutings.push_back(newRouting);      // or append a new routing
 }
@@ -352,13 +355,14 @@ rsReturnCode SfzInstrument::setInstrumentSetting(Opcode type, float value, int i
   return rsReturnCode::success;
 }
 
-rsReturnCode SfzInstrument::setRegionModulation(int gi, int ri, 
-  OpcodeType srcType, int srcIndex, Opcode tgtParam, int tgtIndex, float depth)
+rsReturnCode SfzInstrument::setRegionModulation(int gi, int ri, OpcodeType srcType, int srcIndex, 
+  Opcode tgtParam, int tgtIndex, float depth, ModMode modMode)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex; }
-  global.groups[gi]->regions[ri]->setModulation(srcType, srcIndex, tgtParam, tgtIndex, depth);
+  global.groups[gi]->regions[ri]->setModulation(
+    srcType, srcIndex, tgtParam, tgtIndex, depth, modMode);
   return rsReturnCode::success;
 }
 

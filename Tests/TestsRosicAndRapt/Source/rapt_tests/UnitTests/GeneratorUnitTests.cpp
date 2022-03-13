@@ -2858,6 +2858,7 @@ bool samplerFreeModulationsTest()
   using OC    = rosic::Sampler::Opcode;
   using OT    = rosic::Sampler::OpcodeType;
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
+  using Mode  = rosic::Sampler::ModMode;
 
   // Create a DC example sample:
   int N  = 1000;     // length of sample
@@ -2879,7 +2880,7 @@ bool samplerFreeModulationsTest()
   se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
   se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
   se.setRegionSetting(0, 0, OC::lfoN_freq,   lfoFreq, 1);
-  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth);  // experimental
+  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
   // routes free LFO 1 to DC parameter of waveshaper 1 with given modulation depth. Setting this
   // up seems to work. What remains to be done is to actually apply the modulations in the realtime
   // thread.
@@ -2918,7 +2919,8 @@ bool samplerFreeModulationsTest()
   //  -Done: Implement ModulationConnection/Wire class. It should contain pointers to the modulator
   //   (i.e. the source), the modulated parameter (i.e. the target) and parameters for modulation 
   //   depth and mode (formula).
-  //  -Assemble the modulation connections (and disassemble them when finished or an error occurs).
+  //  -Done: Assemble the modulation connections (and disassemble them when finished or an error 
+  //   occurs).
   //   Code needs to be added to SamplePlayer::assembleProcessors
   //  -Update RegionPlayer::prepareToPlay to prepare also the modSources (see comment there). Maybe
   //   we need to do similar things in GroupPlayer, InstrumentPlayer, too
