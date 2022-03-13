@@ -16,10 +16,11 @@ void Processor::setParameter(Opcode opcode, float value)
   RAPT::rsError("Parameter not found in Processor::setParameter");
 }
 
-Parameter* Processor::getParameter(Opcode op) const
+Parameter* Processor::getParameter(Opcode op)
 {
-  // ...
-
+  for(size_t i = 0; i < params.size(); ++i) {
+    if(params[i].getOpcode() == op)
+      return &params[i]; }
   return nullptr;
 }
 

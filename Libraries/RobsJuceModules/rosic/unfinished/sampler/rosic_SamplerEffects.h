@@ -84,8 +84,9 @@ public:
   int getNumParameters() const { return (int) params.size(); }
 
   /** Returns a pointer to our paramter object that "listens" to the given opcode if we have such a
-  Parameter here, nullptr otherwise. */
-  Parameter* getParameter(Opcode op) const;
+  Parameter here, nullptr otherwise. The method is not const because the caller may modify the
+  returned Parameter, i.e. call non-const methods on it. This is used for modulation...tbc... */
+  Parameter* getParameter(Opcode op);
 
   //virtual const Parameter* getParameter() const { return nullptr; } // maybe relax constness later
   // check, if that's the right form of constness - we want to disable modfifying the parameter
