@@ -54,6 +54,9 @@ public:
   int getTargetIndex() const { return targetIndex; }
 
 
+  Opcode getTargetOpcode() const { return target; }
+  // maybe rename.. the "Opcode" here means what sort of Parameter is being modulated
+
   float getDepth() const { return depth; } 
 
 

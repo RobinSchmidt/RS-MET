@@ -89,22 +89,7 @@ Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType ty
   return nullptr;
 }
 
-/*
-Processor* findProcessor(const std::vector<Modulator*>& processors, OpcodeType type, int index)
-{
-  Modulator* m;
-  m = processors[0];
-  Processor* p = m; 
-  p = findProcessor(p, (int) processors.size(), type, index);
 
-  //Modulator* src = dynamic_cast<Modulator*> (prc);
-
-
-
-  return nullptr;
-}
-*/
-// convenience function - maybe get rid
 
 
 
@@ -185,15 +170,6 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     ModulationConnector* mc = dspPool->grabConnector();
     RAPT::rsAssert(mc); // we already verified that enough are available
 
-
-
-    // ToDo: set up the members of mc correctly:
-    // -Determine pointers to source Modulator and target Parameter
-    //  -find the source Modulator within the modSources
-    //  -find the target Processor either within the modSources or within the effectChain
-    //  -find the correct parameter within the target Processor
-    // -Set those pointers up in mc
-
     // Determine pointer to modulation source and set it up in the connector:
     Processor* prc = findProcessor(
       modSources[0], (int) modSources.size(), ms.getSourceType(), ms.getSourceIndex());
@@ -210,9 +186,9 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
       prc = findProcessor(effectChain.processors[0], (int) effectChain.processors.size(), 
         ms.getTargetType(), ms.getTargetIndex());  }              // Receiver is an effect
     RAPT::rsAssert(prc);
-    Parameter* param;     // ...todo: find pointer to the parameter
+    Parameter* param = prc->getParameter(ms.getTargetOpcode());
+    RAPT::rsAssert(param);
     mc->setTarget(prc, param);
-
 
     // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
@@ -261,8 +237,9 @@ void SamplePlayer::disassembleProcessors()
     dspPool->repositModulator(modSources[i]);
   modSources.clear();
 
-  for(size_t i = 0; i < modMatrix.size(); ++i)
-    dspPool->repositConnector(modMatrix[i]);
+  for(size_t i = 0; i < modMatrix.size(); ++i) {
+    modMatrix[i]->reset();
+    dspPool->repositConnector(modMatrix[i]); }
   modMatrix.clear();
 
   // ToDo: 

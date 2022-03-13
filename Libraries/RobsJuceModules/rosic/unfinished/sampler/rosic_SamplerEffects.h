@@ -83,6 +83,10 @@ public:
   OpcodeType getType() { return type; }
   int getNumParameters() const { return (int) params.size(); }
 
+  /** Returns a pointer to our paramter object that "listens" to the given opcode if we have such a
+  Parameter here, nullptr otherwise. */
+  Parameter* getParameter(Opcode op) const;
+
   //virtual const Parameter* getParameter() const { return nullptr; } // maybe relax constness later
   // check, if that's the right form of constness - we want to disable modfifying the parameter
   // itself but maybe reassign the pointer - yep, looks right:
@@ -178,6 +182,8 @@ public:
     relative
     //exponential,
     //multiplicative
+
+    // unknown
   };
 
   /** Computes and returns a contribution to be added to a modulated value that comes from this
@@ -212,8 +218,17 @@ public:
     targetParam = newTargetParameter;
   }
 
-
   void setDepth(float newDepth) { depth = newDepth; }
+
+  void reset()
+  {
+    source      = nullptr;
+    targetProc  = nullptr; 
+    targetParam = nullptr;
+    depth = 0.f; 
+    mode  = ModMode::absolute; // maybe use ModMode::unknown as default
+  }
+  // maybe move to cpp
 
 
 

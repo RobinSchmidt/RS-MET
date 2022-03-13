@@ -2942,10 +2942,12 @@ bool samplerFreeModulationsTest()
   //
   // -Refactor:
   //  -See comment in DspResourcePool
+  //  -See comment in SamplePlayer::assembleModulations
   //  -Maybe get rid of class EffectChain (see comments there)
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
   //   effects and modulators.
   //  -Drag out PlaybackSetting from SfzInstrument
+
 
 
   // Notes: 

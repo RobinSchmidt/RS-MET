@@ -16,6 +16,13 @@ void Processor::setParameter(Opcode opcode, float value)
   RAPT::rsError("Parameter not found in Processor::setParameter");
 }
 
+Parameter* Processor::getParameter(Opcode op) const
+{
+  // ...
+
+  return nullptr;
+}
+
 void Processor::resetSettings(int index)
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
