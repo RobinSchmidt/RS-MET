@@ -7,6 +7,17 @@ namespace Sampler {
 
 //=================================================================================================
 
+enum class ModMode  // renaem to ModulationMode
+{
+  absolute,
+  relative
+  //exponential,
+  //multiplicative
+
+  // unknown
+};
+
+
 /** A class to represent the settings of a modulation routing. This class is used only to store the
 settings, not to actually connect modulator objects to parameters during processing. For this 
 purpose, the class ModulationConnection is used. ..tbc.... */
@@ -25,6 +36,7 @@ public:
   {
     targetType = SfzCodeBook::getInstance()->getOpcodeType(modTarget);
   }
+  // needs to take mode parameter
 
   /** Returns true, iff the type and index of the source of the given routing matches ours. */
   bool hasMatchingSource(const ModulationSetting& r) const
@@ -57,6 +69,8 @@ public:
   Opcode getTargetOpcode() const { return target; }
   // maybe rename.. the "Opcode" here means what sort of Parameter is being modulated
 
+  ModMode getMode() const { return mode; }
+
   float getDepth() const { return depth; } 
 
 
@@ -73,7 +87,7 @@ private:
   Opcode     target;       // Target parameter like cutoffN, volumeN, etc. ..rename to targetParam
   int        targetIndex;  // Index like the 2 in lfo3_cutoff2, lfo3_eq2gain, etc.
   float      depth;        // Modulation depth
-  //int        mode;       // absolute, relative, exponential, etc. (maybe)
+  ModMode    mode;         // absolute, relative, exponential, etc.
 
   // ToDo:
   // -Maybe have a member for modulationMode (absolute, relative, exponential, etc.) but maybe

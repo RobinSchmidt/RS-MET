@@ -177,15 +177,7 @@ class ModulationConnector  // maybe rename to ModulationWire or just Modulation 
 
 public:
 
-  enum class ModMode
-  {
-    absolute,
-    relative
-    //exponential,
-    //multiplicative
 
-    // unknown
-  };
 
   /** Computes and returns a contribution to be added to a modulated value that comes from this
   connection ...tbc.... */
@@ -220,6 +212,8 @@ public:
   }
 
   void setDepth(float newDepth) { depth = newDepth; }
+
+  void setMode(ModMode newMode) { mode = newMode; }
 
   void reset()
   {

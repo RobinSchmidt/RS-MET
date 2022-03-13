@@ -192,7 +192,7 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
 
     // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
-    //mc->setMode(ms.getMode());
+    mc->setMode(ms.getMode());
     modMatrix.push_back(mc);
   }
 
