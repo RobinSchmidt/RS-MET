@@ -2907,11 +2907,6 @@ bool samplerFreeModulationsTest()
   // -At the end of SamplePlayer::augmentOrCleanEffectChain, the modSources array correctly 
   //  contains one LFO, but it's still uninitialized (them members contain garbage values).
 
-  // ToDo Next: 
-  // 1: refactor DspResourcePool
-  // 2: let it allocate mod connections
-  // 3: finish SamplePlayer::assembleModulations
-
   // ToDo:
   // -Done: Provide method to set up modulation routings in Region, Group, Global.
   // -During assembling the RegionPlayer, also assemble the modulators and connections.
@@ -2930,17 +2925,17 @@ bool samplerFreeModulationsTest()
   //  -Apply all modulations in an accumulating loop over the modMatrix
   //  -Update the affected DSP units (effects and(!) modulators), i.e. recompute their affected
   //   algo-params
-  //  -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
-  //   need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
-  //   additional modulators for the enclosing Group and Instrument and their contributions should 
-  //   just also be accumulated into the params? But: actually the Group will have its own effect 
-  //   chain as well, so Group modulations should apply to this. Some things seem clear:
-  //   -region-modulators should never modulate parameters of the outlying group
-  //   -it may make sense, if group modulators modulate parameters of embedded regions in addition
-  //    to the region's own modulators...but it might be weird
-  //   -in override mode, the group-modulators should provide fallback values for missing region
-  //    values: if a group defines lfoN_freq then this will be used in all regions unless the 
-  //    specify lfoN_freq themselves
+  // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
+  //  need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
+  //  additional modulators for the enclosing Group and Instrument and their contributions should 
+  //  just also be accumulated into the params? But: actually the Group will have its own effect 
+  //  chain as well, so Group modulations should apply to this. Some things seem clear:
+  //  -region-modulators should never modulate parameters of the outlying group
+  //  -it may make sense, if group modulators modulate parameters of embedded regions in addition
+  //   to the region's own modulators...but it might be weird
+  //  -in override mode, the group-modulators should provide fallback values for missing region
+  //   values: if a group defines lfoN_freq then this will be used in all regions unless the 
+  //   specify lfoN_freq themselves
   //
   // -Refactor:
   //  -See comment in DspResourcePool
