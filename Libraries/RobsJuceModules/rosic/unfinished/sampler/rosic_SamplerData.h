@@ -22,7 +22,9 @@ public:
     float modDepth)
     : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
     , targetIndex(modTargetIndex), depth(modDepth)
-  {}
+  {
+    targetType = SfzCodeBook::getInstance()->getOpcodeType(modTarget);
+  }
 
   /** Returns true, iff the type and index of the source of the given routing matches ours. */
   bool hasMatchingSource(const ModulationSetting& r) const
@@ -46,6 +48,12 @@ public:
 
   int getSourceIndex() const { return sourceIndex; }
 
+
+  OpcodeType getTargetType() const { return targetType; }
+
+  int getTargetIndex() const { return targetIndex; }
+
+
   float getDepth() const { return depth; } 
 
 
@@ -56,9 +64,10 @@ public:
 
 private:
 
-  OpcodeType sourceType;   // Type of modulator like EnvGen, LowfreqOsc, etc.
+  OpcodeType sourceType;   // Type of modulator, e.g. EnvGen, LowFreqOsc, etc.
   int        sourceIndex;  // Index like the 3 in lfo3_freq 
-  Opcode     target;       // Modulation target like cutoffN, volumeN, etc.
+  OpcodeType targetType;   // Type of receiver object, e.g. Filter, Amplifier, etc.
+  Opcode     target;       // Target parameter like cutoffN, volumeN, etc. ..rename to targetParam
   int        targetIndex;  // Index like the 2 in lfo3_cutoff2, lfo3_eq2gain, etc.
   float      depth;        // Modulation depth
   //int        mode;       // absolute, relative, exponential, etc. (maybe)

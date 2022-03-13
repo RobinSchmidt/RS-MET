@@ -199,19 +199,32 @@ public:
 
   inline void initTarget()
   {
-    RAPT::rsAssert(target != nullptr);
-    target->initModulatedValue();
+    RAPT::rsAssert(targetParam != nullptr);
+    targetParam->initModulatedValue();
   }
+
+  void setSource(Modulator* newSource) { source = newSource; }
+
+
+  void setTarget(Processor* newTargetProcessor, Parameter* newTargetParameter) 
+  { 
+    targetProc  = newTargetProcessor; 
+    targetParam = newTargetParameter;
+  }
+
 
   void setDepth(float newDepth) { depth = newDepth; }
 
 
+
+
 private:
 
-  Modulator* source = nullptr;      // e.g. EnvGen, LowFreqOsc, etc.
-  Parameter* target = nullptr;      // Parameter objects are members of a Processor
-  float depth  = 0.f;               // Strength of modulation
-  ModMode mode = ModMode::absolute; // maybe the default should depend on the target?
+  Modulator* source      = nullptr;  // e.g. EnvGen, LowFreqOsc, etc.
+  Processor* targetProc  = nullptr;  // e.g. Filter, Amplifier, etc.
+  Parameter* targetParam = nullptr;  // Parameter objects are members of a Processor
+  float depth  = 0.f;                // Strength of modulation
+  ModMode mode = ModMode::absolute;  // maybe the default should depend on the target?
 
   // Maybe we also should keep a pointer to the target Processor not only the Parameter?
   // ...could be useful...we'll see

@@ -44,7 +44,7 @@ public:
   this case, it doesn't really matter, if the caller passes -1 or +1 into this function. */
   Effect* getEffect(OpcodeType type, int sfzIndex);
 
-protected:
+//protected:
 
   std::vector<Effect*> processors;  // rename to effects
   // Where is this allocated, i.e. where do we call resize on this? I mean the vector itself, not

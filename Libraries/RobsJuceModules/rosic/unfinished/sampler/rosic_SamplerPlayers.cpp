@@ -73,7 +73,7 @@ size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType ty
   return count;
 }
 
-/*
+
 Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index)
 {
   // ToDo: 
@@ -81,24 +81,29 @@ Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType ty
   //  -1,-2,-3 for the hardwired modulators for amp, cutoff, pitch (maybe -4 for cutoff2)
 
   int count = 0;
+  for(int i = 0; i < numProcessors; ++i) {
+    if(processors[i].getType() == type) {
+      count++;
+      if(count == index)
+        return &processors[i]; }}
+  return nullptr;
+}
 
-  //...
+/*
+Processor* findProcessor(const std::vector<Modulator*>& processors, OpcodeType type, int index)
+{
+  Modulator* m;
+  m = processors[0];
+  Processor* p = m; 
+  p = findProcessor(p, (int) processors.size(), type, index);
+
+  //Modulator* src = dynamic_cast<Modulator*> (prc);
+
+
 
   return nullptr;
 }
 */
-
-Processor* findProcessor(const std::vector<Modulator*>& processors, OpcodeType type, int index)
-{
-  /*
-  Processor* prc = findProcessor(
-    &processors[0], (int) modSources.size(), ms.getSourceType(), ms.getSourceIndex());
-  Modulator* src = dynamic_cast<Modulator*> (prc);
-  */
-
-
-  return nullptr;
-}
 // convenience function - maybe get rid
 
 
@@ -169,13 +174,18 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
   RAPT::rsAssert(dspPool);
   RAPT::rsAssert(modMatrix.empty(), "Someone has not cleaned up the modMatrix");
 
+  // Check, if enough connectors are available:
   if(dspPool->getNumIdleConnectors() < (int)modSettings.size())
     return false;
+
+  // Do the assembly:
   for(size_t i = 0; i < modSettings.size(); i++)
   {
     ModulationSetting    ms = modSettings[i];
     ModulationConnector* mc = dspPool->grabConnector();
     RAPT::rsAssert(mc); // we already verified that enough are available
+
+
 
     // ToDo: set up the members of mc correctly:
     // -Determine pointers to source Modulator and target Parameter
@@ -184,16 +194,29 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     //  -find the correct parameter within the target Processor
     // -Set those pointers up in mc
 
-
-    Processor* prc = findProcessor(modSources, ms.getSourceType(), ms.getSourceIndex());
+    // Determine pointer to modulation source and set it up in the connector:
+    Processor* prc = findProcessor(
+      modSources[0], (int) modSources.size(), ms.getSourceType(), ms.getSourceIndex());
     Modulator* src = dynamic_cast<Modulator*> (prc);
     RAPT::rsAssert(src);
-    //mc->setSource(src);
+    mc->setSource(src);
+
+    // Determine pointer to modulation target (Processor and Parameter) and set it up in the
+    // connector:
+    if(SfzCodeBook::isModSourceSetting(ms.getTargetType())) {
+      prc = findProcessor(modSources[0], (int) modSources.size(), // Receiver is another modulator
+        ms.getTargetType(), ms.getTargetIndex());  }
+    else {
+      prc = findProcessor(effectChain.processors[0], (int) effectChain.processors.size(), 
+        ms.getTargetType(), ms.getTargetIndex());  }              // Receiver is an effect
+    RAPT::rsAssert(prc);
+    Parameter* param;     // ...todo: find pointer to the parameter
+    mc->setTarget(prc, param);
 
 
+    // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
     //mc->setMode(ms.getMode());
-
     modMatrix.push_back(mc);
   }
 
