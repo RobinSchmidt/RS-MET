@@ -37,7 +37,9 @@ Effect* EffectChain::getEffect(OpcodeType type, int index)
       if(count == index)
         return dsp;
       else
-        count++; }}
+        count++;
+    }
+  }
   return nullptr;
 }
 
@@ -56,6 +58,11 @@ int rsCount(const T* a, int N, T elem)
 }
 // move into rsArrayTools
 
+
+// make (static) member of SamplePlayer ...maybe it should take a vector of Processor* and then we
+// can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
+// closely. Then, we need to rename it
+// rename to getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeType type):
 size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType type)
 {
   size_t count = 0;
@@ -65,10 +72,37 @@ size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType ty
   }
   return count;
 }
-// make (static) member of SamplePlayer ...maybe it should take a vector of Processor* and then we
-// can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
-// closely. Then, we need to rename it
-// rename to getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeType type)
+
+/*
+Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index)
+{
+  // ToDo: 
+  // -Check, if index < 0 and if so, modify it processors.size() + abs(index) to use indices 
+  //  -1,-2,-3 for the hardwired modulators for amp, cutoff, pitch (maybe -4 for cutoff2)
+
+  int count = 0;
+
+  //...
+
+  return nullptr;
+}
+*/
+
+Processor* findProcessor(const std::vector<Modulator*>& processors, OpcodeType type, int index)
+{
+  /*
+  Processor* prc = findProcessor(
+    &processors[0], (int) modSources.size(), ms.getSourceType(), ms.getSourceIndex());
+  Modulator* src = dynamic_cast<Modulator*> (prc);
+  */
+
+
+  return nullptr;
+}
+// convenience function - maybe get rid
+
+
+
 
 bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain)
 {
@@ -149,6 +183,13 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     //  -find the target Processor either within the modSources or within the effectChain
     //  -find the correct parameter within the target Processor
     // -Set those pointers up in mc
+
+
+    Processor* prc = findProcessor(modSources, ms.getSourceType(), ms.getSourceIndex());
+    Modulator* src = dynamic_cast<Modulator*> (prc);
+    RAPT::rsAssert(src);
+    //mc->setSource(src);
+
 
     mc->setDepth(ms.getDepth());
     //mc->setMode(ms.getMode());

@@ -41,6 +41,11 @@ public:
   }
   // try to find better name maybe hasMatchingPorts/Pins...dunno
 
+
+  OpcodeType getSourceType() const { return sourceType; }
+
+  int getSourceIndex() const { return sourceIndex; }
+
   float getDepth() const { return depth; } 
 
 
