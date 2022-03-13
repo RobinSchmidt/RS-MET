@@ -187,6 +187,7 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     Parameter* param = prc->getParameter(ms.getTargetOpcode());
     RAPT::rsAssert(param);
     mc->setTarget(prc, param);
+    RAPT::rsAppendIfNotAlreadyThere(modTargets, prc);
 
     // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
@@ -241,6 +242,9 @@ void SamplePlayer::disassembleProcessors()
     modMatrix[i]->reset();
     dspPool->repositConnector(modMatrix[i]); }
   modMatrix.clear();
+
+
+  modTargets.clear();
 
   // ToDo: 
   // -let effectChain just be std::vector<Effect> to handle it uniformly with the modulators.

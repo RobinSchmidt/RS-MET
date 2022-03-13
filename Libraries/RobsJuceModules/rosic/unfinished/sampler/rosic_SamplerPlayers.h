@@ -288,9 +288,18 @@ protected:
   // Moved here from RegionPlayer subclass - I'm not yet sure, if they should be members here or
   // there:
   std::vector<Modulator*> modSources;
+  /**< Our array of modulation sources. */
 
-  //std::vector<Parameter*> modTargets;  
-  // redundant - maybe use later for optimizing initialization of modulations
+  //std::vector<Parameter*> modTargets; 
+  // redundant - maybe use later for optimizing initialization of modulations..well..we will 
+  // probably need it anyway in order to apply modulations efficiently by re-calculating coeffs 
+  // only on modulated effects...but maybe it should be an array of Processor*
+
+  std::vector<Processor*> modTargets;
+  /** This array holds pointers to all processors that are being modulated (i.e. having incoming
+  modulation connections). This is used to update only those processors that actually need such an 
+  update whereas with "update" we mean a recomputation of the algorithm's coefficients. */
+
 
   std::vector<ModulationConnector*> modMatrix;  
   // not a literal matrix but conceptually - maybe rename to modRoutings..but maybe not - we may

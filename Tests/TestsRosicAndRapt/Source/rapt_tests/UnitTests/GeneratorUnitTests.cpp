@@ -2916,7 +2916,6 @@ bool samplerFreeModulationsTest()
   //   depth and mode (formula).
   //  -Done: Assemble the modulation connections (and disassemble them when finished or an error 
   //   occurs).
-  //   Code needs to be added to SamplePlayer::assembleProcessors
   //  -Update RegionPlayer::prepareToPlay to prepare also the modSources (see comment there). Maybe
   //   we need to do similar things in GroupPlayer, InstrumentPlayer, too
   // -During playback, make use of the modulations:
