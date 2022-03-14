@@ -61,15 +61,6 @@ LowFreqOsc::LowFreqOsc()
   // ToDo: phase, wave, sync, ...
 }
 
-/*
-float LowFreqOsc::getSample()
-{
-  //RAPT::rsError("Not yet implemented");
-  return 0.1f;
-}
-*/
-
-
 //=================================================================================================
 
 Amplifier::Amplifier()
@@ -124,15 +115,15 @@ void Amplifier::updateCoeffs(double sampleRate)
 {
 
   // Extract nominal values from the parameters:
-  float volume   = params[0].getValue();
-  float pan      = params[1].getValue();
-  float width    = params[2].getValue();
-  float position = params[3].getValue();
+  float volume   = params[0].mv();
+  float pan      = params[1].mv();
+  float width    = params[2].mv();
+  float position = params[3].mv();
 
   // Extract key/vel modifiers:
-  float ampN_veltrack  = params[4].getValue();
-  float ampN_keytrack  = params[5].getValue();
-  float ampN_keycenter = params[6].getValue();
+  float ampN_veltrack  = params[4].mv();
+  float ampN_keytrack  = params[5].mv();
+  float ampN_keycenter = params[6].mv();
 
   // Apply modifiers:
   volume += ampN_veltrack * 0.01f * 40 * log10f(127.f/(float)vel);
@@ -191,11 +182,11 @@ void Filter::updateCoeffs(double fs)
   FilterCore::Type coreType = convertTypeEnum(sfzType);
 
   // Extract numeric parameters:
-  float cutoff    = params[1].getValue();
-  float resonance = params[2].getValue();
-  float keytrack  = params[3].getValue();
-  float keycenter = params[4].getValue();
-  float veltrack  = params[5].getValue();
+  float cutoff    = params[1].mv();
+  float resonance = params[2].mv();
+  float keytrack  = params[3].mv();
+  float keycenter = params[4].mv();
+  float veltrack  = params[5].mv();
 
   // Apply modifiers to cutoff:
   float pitchOffset = ((float)key - keycenter) * keytrack * 0.01f;  // pitch-offset from keytrack
@@ -278,9 +269,9 @@ void Equalizer::updateCoeffs(double fs)
 {
   core.setupGainFreqBw(
     FilterCore::Type::BQ_Bell,
-    params[0].getValue(),
-    params[1].getValue() * float(2*PI/fs),
-    params[2].getValue()
+    params[0].mv(),
+    params[1].mv() * float(2*PI/fs),
+    params[2].mv()
   );
   dirty = false;
 }

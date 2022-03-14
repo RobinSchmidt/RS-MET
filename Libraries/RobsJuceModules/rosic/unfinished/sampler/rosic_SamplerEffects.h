@@ -20,11 +20,15 @@ public:
   Parameter(Opcode opcode)
   {
     this->opcode = opcode;
-    //this->value  = SfzCodeBook::getInstance()->getDefaultValue(opcode); // maybe do this later
+    //this->value  = SfzCodeBook::getInstance()->opcodeDefaultValue(opcode, 1);
+    //initModulatedValue();
+    // the getInstance call triggers an assert
   }
+  // move to cpp
 
   // Setup:
   void setValue(float newValue) { value = newValue; }
+  // maybe rename to setNominalValue
 
   // Inquiry:
   Opcode getOpcode() const { return opcode; }
@@ -37,17 +41,12 @@ public:
   /** Initializes the modulated value to the nominal value. */
   void initModulatedValue() { modulatedValue = value; }
 
-  void applyModulation(float m)
-  {
-    modulatedValue += m;
-  }
+  void applyModulation(float m) { modulatedValue += m; }
+  // use stereo input later
 
   /** Returns the modulated value. The function name is kept short to reduce the verbosity of the
   boilerplate in the Processors. */
-  inline float mv() const
-  {
-    return modulatedValue;
-  }
+  inline float mv() const { return modulatedValue; }
   // maybe use the conversion operator instead to make the code even shorter
 
 
@@ -55,17 +54,16 @@ protected:
 
   Opcode opcode = Opcode::Unknown;
   float value = 0.f;               // maybe rename to nominalValue, maybe init to 666
-
   float modulatedValue = 666.f;
-  // Uncomment that later for modulation, maybe use floatStereo because we want to support 
-  // different modulator values for left and right. Think of an LFO mapped to cutoff with a phase
-  // offset between left and right channel. That will easily give nice stereo movement. However,
-  // not for all parameters does it make sense to have different left/right values. Think, for 
-  // example, of a pan or width parameter - there is no meaningful concept of applying different
-  // pan values to left and right channels. ...not yet sure, how to handle that... Maybe have two
-  // generic outputs, i.e. channel1/channel2 instead of left/right and how they are used is opcode
-  // defined - some (like cutoff) may interpret them as left/right, others (like pan) may just 
-  // ignore the second channel. dunno...
+  // Maybe use rsFloatStereo later because we want to support different modulator values for left
+  // and right. Think of an LFO mapped to cutoff with a phase offset between left and right 
+  // channel. That will easily give nice stereo movement. However, not for all parameters does it
+  // make sense to have different left/right values. Think, for example, of a pan or width 
+  // parameter - there is no meaningful concept of applying different pan values to left and right
+  // channels. ...not yet sure, how to handle that... Maybe have two generic outputs, i.e. 
+  // channel1/channel2 instead of left/right and how they are used is opcode defined - some (like
+  // cutoff) may interpret them as left/right, others (like pan) may just ignore the second 
+  // channel. dunno...
 };
 
 //=================================================================================================
