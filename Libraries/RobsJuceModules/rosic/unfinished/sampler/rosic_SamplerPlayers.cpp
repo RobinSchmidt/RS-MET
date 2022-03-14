@@ -73,8 +73,7 @@ size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType ty
   return count;
 }
 
-
-Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index)
+int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type, int index)
 {
   // ToDo: 
   // -Check, if index < 0 and if so, modify it processors.size() + abs(index) to use indices 
@@ -85,8 +84,29 @@ Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType ty
     if(processors[i].getType() == type) {
       count++;
       if(count == index)
+        return i; }}
+  return -1;
+}
+
+
+Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index)
+{
+  int i = findProcessorIndex(processors, numProcessors, type, index);
+  if(i == -1)
+    return nullptr;
+  else
+    return &processors[i]; 
+
+  /*
+  // old:
+  int count = 0;
+  for(int i = 0; i < numProcessors; ++i) {
+    if(processors[i].getType() == type) {
+      count++;
+      if(count == index)
         return &processors[i]; }}
   return nullptr;
+  */
 }
 
 
@@ -168,18 +188,32 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     ModulationConnector* mc = dspPool->grabConnector();
     RAPT::rsAssert(mc); // we already verified that enough are available
 
-    // Determine pointer to modulation source and set it up in the connector:
+
+    // Determine pointer to modulation source and its index in our modSources array and set it up 
+    // in the connector:
+    /*
+    //old:
     Processor* prc = findProcessor(
       modSources[0], (int) modSources.size(), ms.getSourceType(), ms.getSourceIndex());
     Modulator* src = dynamic_cast<Modulator*> (prc);
     RAPT::rsAssert(src);
-
     mc->setSource(src);
     // ToDo: instead of storing the pointer, store the index into the modSources array 
     // -> findProcessor should return an int
+    */
+    // new:
+    int j = findProcessorIndex(modSources[0], (int) modSources.size(), ms.getSourceType(), 
+      ms.getSourceIndex());
+    RAPT::rsAssert(j >= 0);
+    Modulator* src = modSources[j];
+    RAPT::rsAssert(src);
+    mc->setSourceIndex(j);
+    mc->setSource(src);
+
 
     // Determine pointer to modulation target (Processor and Parameter) and set it up in the
     // connector:
+    Processor* prc;
     if(SfzCodeBook::isModSourceSetting(ms.getTargetType())) {
       prc = findProcessor(modSources[0], (int) modSources.size(), // Receiver is another modulator
         ms.getTargetType(), ms.getTargetIndex());  }
@@ -189,11 +223,12 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     RAPT::rsAssert(prc);
     Parameter* param = prc->getParameter(ms.getTargetOpcode());
     RAPT::rsAssert(param);
-
     mc->setTarget(prc, param);
     RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, prc);
+    RAPT::rsAppend(modTargetParams, param);
     // ToDo: instead of storing the pointer, store the index -> findProcessor should return an int
-    // -> append should return the index
+    // -> append should return the index...maybe not...i think, we need that index only for the 
+    // modSource
 
     // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
@@ -328,9 +363,17 @@ void RegionPlayer::processFrame(float* L, float* R)
     // ToDo: Try to use processFrame instead. But then we need to store the output frames of all 
     // modulators in a local buffer here (maybe use a member modBuffer) and the 
     // ModulationConnection must somehow maintain an index into that buffer. Maybe the 
-    // ModualtionConnection could store array indices into our modSources, modTargetProcessors
-    // arrays instead of pointers to Modulator, Processor. The index into the modSources array
-    // could then double as index into the buffer of stored modulation signals...
+    // ModualtionConnection could store array indices into our modSources, 
+    // modTargetProcessors arrays instead of pointers to Modulator, Processor. The index into the
+    // modSources array could then double as index into the buffer of stored modulation signals.
+    // ...done: we currently hold the index and the pointer - that's redundant because the pointer
+    // could be obtained from the index - but it may save one indirection in per-sample processing
+    // to store it redundantly...or does it...we'll see....if not, keep only the index.
+    //
+    // Actually, if we assume a single audio thread, the modBuffer could and should be shared among
+    // all the RegionPlayers (if multi-threading is added later, it could be declared 
+    // thread_local). Maybe the PlayStatus object could be an appropriate place to hold such a 
+    // buffer. It could also generally hold signal buffers for block processing.
   }
 
   // Initialize modulated parameters to non-modulated values:

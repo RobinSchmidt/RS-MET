@@ -2907,9 +2907,6 @@ bool samplerFreeModulationsTest()
   // -At the end of SamplePlayer::augmentOrCleanEffectChain, the modSources array correctly 
   //  contains one LFO, but it's still uninitialized (them members contain garbage values).
 
-  // Next:
-  // ModulationConnector shoudl store indices instead of pointers (see comments there)
-
   // ToDo:
   // -Done: Provide method to set up modulation routings in Region, Group, Global.
   // -During assembling the RegionPlayer, also assemble the modulators and connections.
@@ -2938,6 +2935,10 @@ bool samplerFreeModulationsTest()
   //  -in override mode, the group-modulators should provide fallback values for missing region
   //   values: if a group defines lfoN_freq then this will be used in all regions unless the 
   //   specify lfoN_freq themselves
+  //  -Maybe we could have 3 different modes of behavior: 
+  //    (1) group mod-routings provide fallback values for missing region routings, sfz-default
+  //    (2) group mod-routings only connect group modulators to group effects, levels_are_busses
+  //    (3) both.
   //
   // -Refactor:
   //  -See comment in DspResourcePool
@@ -2973,7 +2974,21 @@ bool samplerFreeModulationsTest()
   // Maybe sfz2 compatibility is not so crucial? But it would certainly be nice to have. Which 
   // samplers support sfz2 anyway? Here is one:
   // https://www.plogue.com/products/sforzando.html (uses ARIA?)
-
+  //
+  // The DC parameter of the waveshaper can actually be abused for turning the mod-system into a
+  // modular sound synthesis architecture. When the Waveshaper is configured in such a way to 
+  // output only the DC value and we modulate the DC parameter, the waveshaper's output will be the
+  // sum of all modulation inputs and can in turn be used to modulate other parameters like for 
+  // example the frequency of an oscillator to obtain FM synthesis. But maybe we should define a 
+  // simpler Processor specifically for that purpose. It could have just one single Parameter whose 
+  // (modulated) value will directly appear as output signal. It could perhaps be call ConstValue
+  // or ValueGenerator and its sole Parameter could be called "value". Maybe it should also have
+  // an additional "gate" parameter...maybe it could generate two different values depending on 
+  // whether the gate has nonzeor input or not. The default output for closed gate would be zero
+  // and the default output for open gate would be 1 - but both values could be modulated. Maybe we
+  // could also have a Quantizer module that let's the user define a bunch of quantization levels. 
+  // It could be useful to place such a quantizer behind a ValueGenerator. It could be controlled 
+  // by opcodes of the form quantN_levelX
 
 
 

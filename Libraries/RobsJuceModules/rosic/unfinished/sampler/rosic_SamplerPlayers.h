@@ -329,6 +329,8 @@ protected:
   (verify - maybe now it's augmentOrCleanEffectChain?). The pointer should be set by the engine 
   once and for all when it creates its Player objects. */
 
+  // ToDo:
+  // -make sure, that all the std::vectors reserve enough memory when an sfz-file is loaded
 };
 
 //=================================================================================================

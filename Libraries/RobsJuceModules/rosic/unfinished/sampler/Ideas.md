@@ -83,7 +83,7 @@ Ideas for new opcodes
   group settings override global settings and region settings override global and/or group 
   settings. We could also have "accumulate" and "levels_are_busses" modes. In the latter mode, the 
   3 hierarchy levels of the sfz specification (region, group, global) are mapped to busses: regions 
-  form the single channels, groups form sub-busses mixing togther the regions/channels within the 
+  form the single channels, groups form sub-busses mixing together the regions/channels within the 
   group and the global instrument mixes together the groups/sub-busses into a master-bus. When 
   effect opcodes are specified for a group and/or globally, they don't merely provide fallback 
   values for the regions (as they would in normal sfz operation) but instead specify settings for
@@ -107,7 +107,10 @@ Ideas for new opcodes
   sfz. Possible values could be "sfz1" or "clipped", "free". Perhaps there could also be some mode 
   that does clip but at different (i.e. extended) values than what the sfz spec says. For example, 
   the range for the width opcode may be extended to +-200% (sfz specifies the range to be +-100% 
-  which allows only stereo narrowing but not widening - which is a bit sad).
+  which allows only stereo narrowing but not widening - which is a bit sad). Or maybe we should 
+  have for each opcode corresponding min/max opcodes such as min_cutoffN=20, max_cutoffN=20000 etc.
+  defaulting to +-inf. These limits should perhaps also be enforced during modulation. But maybe it
+  may also make sense to specify the modulation limits seperately.
  
 - param_quantize: Some of the parameters that sfz specifies to be integer can easily also admit 
   float values. Examples for such parameters are tune, transpose, loop_start, loop_end. By 

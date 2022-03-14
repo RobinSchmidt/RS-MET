@@ -220,6 +220,8 @@ public:
 
   void setSource(Modulator* newSource) { source = newSource; }
 
+  void setSourceIndex(int newIndex) { sourceIndex = newIndex; }
+
 
   void setTarget(Processor* newTargetProcessor, Parameter* newTargetParameter) 
   { 
@@ -236,6 +238,7 @@ public:
     source      = nullptr;
     targetProc  = nullptr; 
     targetParam = nullptr;
+    sourceIndex = -1;
     depth = 0.f; 
     mode  = ModMode::absolute; // maybe use ModMode::unknown as default
   }
@@ -258,6 +261,10 @@ private:
   // smaller (we store a 32 bit int instead of a 64 bit pointer - maybe even 16 bit int would be 
   // enough)
 
+  int sourceIndex = -1;
+  // maybe get rid - if this is needed in the SamplePlayer, it should just keep an array of 
+  // integers modSourceIndices for that purpose...hmm..or maybe it's ok this way..it's actually
+  // more economic to avoid having an additional array there
 
 
 
