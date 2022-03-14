@@ -37,9 +37,9 @@ void Processor::prepareToPlay(uchar key, uchar vel, double sampleRate)
 {
   this->key = key;
   this->vel = vel;
-  //dirty = true;
+  dirty = true;
   //handleParameterChange(sampleRate); // should set dirty to false at its end
-  //resetState();
+  resetState();
 }
 
 //=================================================================================================
@@ -204,7 +204,7 @@ void Filter::prepareToPlay(uchar key, uchar vel, double fs)
 
   // Set up core:
   core.setupCutRes(coreType, cutoff*float(2*PI/fs), resonance);
-  core.resetState();
+  core.resetState();  // maybe get rid
 
   // ToDo:
   // Verify the formula used for velocity tracking. It's just a guess based on what I think, the 
@@ -281,7 +281,7 @@ void Equalizer::prepareToPlay(uchar key, uchar vel, double fs)
     params[1].getValue() * float(2*PI/fs),
     params[2].getValue()
   );
-  core.resetState();
+  core.resetState(); // get rid
 }
 
 void Equalizer::processFrame(float* L, float* R)

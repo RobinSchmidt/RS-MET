@@ -107,20 +107,23 @@ public:
 
 
 
-  //virtual void handleParameterChange(double sampleRate) = 0; 
+  //virtual void handleParameterChange(double sampleRate) = 0;
   // maybe it should take the sampleRate as parameter - then we don't nee a member for it - we 
   // could store it in the PlayStatus. actually, we could perhaps also directly access the 
   // PlayStatus object ourselves...but maybe it's more efficient to obtain it once in processFrame
   // and then pass it as parameter to all Processors
 
-  //virtual void resetState() = 0;  // maybe just call it reset()
+  /** Subclasses should override this functions to reset their internal state variables, if any, 
+  such as a filter's past in- and output samples, an oscillator's phase etc. */
+  virtual void resetState() {}
 
 protected:
 
   std::vector<Parameter> params;
   OpcodeType type = OpcodeType::Unknown;
   uchar key = 0, vel = 0;                 // Used for key/vel tracking
-  //double sampleRate = 44100.0; 
+  //double sampleRate = 44100.0;
+  bool dirty = true;
 
   // For response to midi control:
   // MidiStatus midiStatus;
@@ -392,6 +395,7 @@ public:
   void prepareToPlay(uchar key, uchar vel, double fs) override;
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
+  void resetState() override { core.resetState(); }
   static FilterCore::Type convertTypeEnum(FilterType sfzType);
 protected:
   FilterCore core;
@@ -404,6 +408,7 @@ public:
   void prepareToPlay(uchar key, uchar vel, double fs) override;
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
+  void resetState() override { core.resetState(); }
 protected:
   FilterCore core;
   // ToDo: use a more efficient implementation and call it EqualizerCore - it needs to support 
