@@ -384,18 +384,36 @@ void RegionPlayer::processFrame(float* L, float* R)
   //  modMatrix[i]->initTarget();
     // Will initialize targets with multiple incoming connections multiple times. I think, avoiding 
     // the redundant initializations would require us to somehow store a (redundant) array of all 
-    // affected modulation targets. This may or may not be worth the effort...we'll see.
+    // affected modulation targets. This may or may not be worth the effort...well..we actually did
+    // it....
 
 
-
-
-  // Apply the modulations:
+  // Apply the modulations to the affected parameters:
   for(size_t i = 0; i < modMatrix.size(); ++i)
   {
-    RAPT::rsError("Not yet implemented");
+    //RAPT::rsError("Not yet implemented");
     // ToDo:
     // -Figure out modulation source and target where the target should be some parameter of an 
     //  effect from our effectChain and later maybe also a parameter of another modulator
+
+    ModulationConnector* con = modMatrix[i];
+    Parameter* par = con->getTargetParam();
+    int   si = con->getSourceIndex();
+    float u  = par->getValue();                 // unmodulated value
+    float m  = modSources[si]->modValue;        // modulator output
+    float c  = con->getContribution(m, u);      // compute modulation contribution
+    par->applyModulation(c);                    // accumulate the contribution
+    int dummy = 0;
+    // We could avoid one dereferencing by avoiding the si variable and instead directly use a
+    // con->getSource() function directly returning the pointer...but we want to refactor this 
+    // later in a way such that the output of the modSource is not stored in the modSource object 
+    // but rather in a modBuffer - for this we will need the index si because the same index will
+    // be used for this buffer...
+    // Here, we should perhaps also keep track of whether or not the modulatedValue in the target
+    // parameter actually changes and if so, set a dirty flag - and avoid subsequent update 
+    // compuations, if it didn't change (because all modulators have produced the same output as 
+    // in the previous sample - which is common in envelope sustain and for midi based modulators).
+    // But maybe this dirtification should be handled by Parameter itself.
 
     /*
     // It could look something like this:
@@ -407,6 +425,12 @@ void RegionPlayer::processFrame(float* L, float* R)
     modTargets[i]->modulatedValue += c;
     */
   }
+
+  // Let the affected Processors update their algo-parameters according to the new user parameters
+  // now containing the modulations:
+  // ...
+
+
 
   // End of modulation handling
   //---------------------------------------------

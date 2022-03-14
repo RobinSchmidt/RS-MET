@@ -37,6 +37,11 @@ public:
   /** Initializes the modulated value to the nominal value. */
   void initModulatedValue() { modulatedValue = value; }
 
+  void applyModulation(float m)
+  {
+    modulatedValue += m;
+  }
+
 
 
 protected:
@@ -210,7 +215,10 @@ public:
   //  be viable to make modulation dependent on the order of the connections...however, showing it 
   //  as mod-matrix would then again hide the order unless the matrix entries also show it somehow.
   //  It could be matrix of mod-widgets with a slider for amount, box for mode, draggable nuber for 
-  //  position in the "chain".
+  //  position in the "chain". When we do this, we perhaps need to replace the getContribution
+  //  function with an applyContribution function that directly applies the modulation to a 
+  //  pre-existing accumulator value passed by reference instead of returning a value that is 
+  //  supposed to be (additively) accumulated by the caller.
 
   inline void initTarget()
   {
@@ -244,8 +252,10 @@ public:
   }
   // maybe move to cpp
 
+  int getSourceIndex() const { return sourceIndex; }
 
 
+  Parameter* getTargetParam() const { return targetParam; }
 
 private:
 

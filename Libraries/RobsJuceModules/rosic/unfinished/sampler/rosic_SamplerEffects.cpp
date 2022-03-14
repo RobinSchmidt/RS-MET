@@ -57,6 +57,7 @@ void LowFreqOsc::prepareToPlay(uchar key, uchar vel, double sampleRate)
 float LowFreqOsc::getSample()
 {
   //RAPT::rsError("Not yet implemented");
+  return 0.1f;
   return 0.f;
 }
 
