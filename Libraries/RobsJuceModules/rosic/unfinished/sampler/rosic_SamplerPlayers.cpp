@@ -443,8 +443,8 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
   resetPlayerSettings();
   setupDspSettingsFor(region, fs, busMode, iv);
 
-
-  prepareToPlay1((Processor**) &modSources[0], (int) modSources.size(), key, vel, fs);
+  if(!modSources.empty())
+    prepareToPlay1((Processor**) &modSources[0], (int) modSources.size(), key, vel, fs);
 
 
 

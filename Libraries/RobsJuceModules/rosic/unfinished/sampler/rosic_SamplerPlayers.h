@@ -24,9 +24,11 @@ public:
   void processBlock(float* L, float* R, int N);
   void prepareToPlay(uchar key, uchar vel, double fs) 
   { 
-    //prepareToPlay1((Processor**) &processors[0], (int) processors.size(), key, vel, fs); 
+    if(!processors.empty())
+      prepareToPlay1((Processor**) &processors[0], (int) processors.size(), key, vel, fs); 
 
-    for(auto & p : processors) p->prepareToPlay(key, vel, fs); 
+
+    //for(auto & p : processors) p->prepareToPlay(key, vel, fs); // old
   }
   //void resetState()    { for(auto & p : processors) p->resetState();    }
   //void resetSettings() { for(auto & p : processors) p->resetSettings(); }
