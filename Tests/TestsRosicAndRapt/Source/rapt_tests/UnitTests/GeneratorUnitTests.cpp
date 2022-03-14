@@ -2919,9 +2919,9 @@ bool samplerFreeModulationsTest()
   //  -Done: Update RegionPlayer::prepareToPlay to prepare also the modSources (see comment there).
   //   Maybe we need to do similar things in GroupPlayer, InstrumentPlayer, too
   // -During playback, make use of the modulations:
-  //  -Done(?): Let all modulators update their output value in processFrame.
-  //  -Done(?): Init all modulated parameters to their unmodulated values.
-  //  -Apply all modulations in an accumulating loop over the modMatrix
+  //  -Done: Let all modulators compute their output value in processFrame.
+  //  -Done: Init all modulated parameters to their unmodulated values.
+  //  -Done: Apply all modulations in an accumulating loop over the modMatrix
   //  -Update the affected DSP units (effects and(!) modulators), i.e. recompute their affected
   //   algo-params
   // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
@@ -2939,16 +2939,18 @@ bool samplerFreeModulationsTest()
   //    (1) group mod-routings provide fallback values for missing region routings, sfz-default
   //    (2) group mod-routings only connect group modulators to group effects, levels_are_busses
   //    (3) both.
+  // -In RegionPlayer::processFrame, we should use a member of PlayStatus for the modBuffer instead
+  //  of having it as (heap-allocated(!!!)) local std::vector
+
   //
   // -Refactor:
   //  -See comment in DspResourcePool
   //  -See comment in SamplePlayer::assembleModulations
-  //  -Maybe get rid of class EffectChain (see comments there)
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
   //   effects and modulators.
   //  -Drag out PlaybackSetting from SfzInstrument
   //  -Maybe the SamplePlayer should also just be a Processor like everything else. That would lead 
-  //   to greater unification and more flexibility.
+  //   to greater unification and more flexibility and shrink the size of RegionPlayer.
 
 
 

@@ -38,6 +38,11 @@ void Processor::prepareToPlay(uchar key, uchar vel, double sampleRate)
   this->key = key;
   this->vel = vel;
   dirty = true;
+
+  // Maybe we need to init modulatedValues to the unmodulated ones:
+  for(size_t i = 0; i < params.size(); i++)  // maybe factor out into function and call it
+    params[i].initModulatedValue();          // also from  setParametersToDefaults
+
   updateCoeffs(sampleRate);
   resetState();
 }
@@ -304,9 +309,16 @@ void WaveShaper::processBlock(float* L, float* R, int N)
 
 void WaveShaper::updateCoeffs(double sampleRate)
 {
-  core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(),
-    params[2].getValue(), 1.f, 0.f, 0.f);
+  //core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(),
+  //  params[2].getValue(), 1.f, 0.f, 0.f);
+
+  core.setup((DistortShape)(int)params[0].getValue(), params[1].mv(),
+    params[2].mv(), 1.f, 0.f, 0.f);
+
+  // we use getValue for the unmodulatable values and mv() for the modulatable ones
+
   dirty = false;
+  // ToDo: we actually need to retrieve the modulatedValue not the (nominal) value
 }
 
 //=================================================================================================

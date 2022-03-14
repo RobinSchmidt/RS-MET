@@ -42,6 +42,13 @@ public:
     modulatedValue += m;
   }
 
+  /** Returns the modulated value. The function name is kept short to reduce the verbosity of the
+  boilerplate in the Processors. */
+  inline float mv() const
+  {
+    return modulatedValue;
+  }
+  // maybe use the conversion operator instead to make the code even shorter
 
 
 protected:
@@ -84,9 +91,16 @@ public:
   void setParametersToDefaults(int index);
   // rename to resetParameters or setParametersToDefaults, maybe make non-virtual
 
+  /** Sets our dirty flag. Used for optimizing modulation: updateCoeffs only needs to be called,
+  if the dirty flag is true. */
+  void setDirty() { dirty = true; }
+
   // Inquiry:
   OpcodeType getType() { return type; }
+
   int getNumParameters() const { return (int) params.size(); }
+
+  bool isDirty() const { return dirty; }
 
   /** Returns a pointer to our paramter object that "listens" to the given opcode if we have such a
   Parameter here, nullptr otherwise. The method is not const because the caller may modify the
@@ -265,6 +279,10 @@ public:
 
 
   Parameter* getTargetParam() const { return targetParam; }
+  // maybe should be non-const because it returns a mutable pointer
+
+
+  Processor* getTargetProcessor() { return targetProc; }
 
 private:
 
@@ -577,6 +595,9 @@ public:
   void allocateModulators();
   Processor* grabModulator(OpcodeType type);
   void repositModulator(Processor* p);
+
+  // Maybe we should just have grabProcessor/repositProcessor - we don't really need to distinguish
+  // between the two kinds here anymore. But first, get rid of EffectPool, ModulatorPool
 
   void allocateConnectors()
   {

@@ -195,20 +195,8 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     ModulationConnector* mc = dspPool->grabConnector();
     RAPT::rsAssert(mc); // we already verified that enough are available
 
-
     // Determine pointer to modulation source and its index in our modSources array and set it up 
     // in the connector:
-    /*
-    //old:
-    Processor* prc = findProcessor(
-      modSources[0], (int) modSources.size(), ms.getSourceType(), ms.getSourceIndex());
-    Modulator* src = dynamic_cast<Modulator*> (prc);
-    RAPT::rsAssert(src);
-    mc->setSource(src);
-    // ToDo: instead of storing the pointer, store the index into the modSources array 
-    // -> findProcessor should return an int
-    */
-    // new:
     int j = findProcessorIndex(modSources[0], (int) modSources.size(), ms.getSourceType(), 
       ms.getSourceIndex());
     RAPT::rsAssert(j >= 0);
@@ -216,7 +204,6 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     RAPT::rsAssert(src);
     mc->setSourceIndex(j);
     mc->setSource(src);
-
 
     // Determine pointer to modulation target (Processor and Parameter) and set it up in the
     // connector:
@@ -233,9 +220,6 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     mc->setTarget(prc, param);
     RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, prc);
     RAPT::rsAppend(modTargetParams, param);
-    // ToDo: instead of storing the pointer, store the index -> findProcessor should return an int
-    // -> append should return the index...maybe not...i think, we need that index only for the 
-    // modSource
 
     // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
@@ -363,6 +347,7 @@ void RegionPlayer::processFrame(float* L, float* R)
   //---------------------------------------------
   // Under construction - handle modulations:
 
+  double sampleRate = 44100.0; // preliminary - should be inquired from PlayStatus
   int numSources = (int) modSources.size();
   std::vector<float> modBuffer;
   modBuffer.resize(2*numSources);
@@ -402,10 +387,24 @@ void RegionPlayer::processFrame(float* L, float* R)
     Parameter* par = con->getTargetParam();
     int   si = con->getSourceIndex();
     float u  = par->getValue();                 // unmodulated value
-    //float m  = modSources[si]->modValue;        // modulator output
+
     float m  = modBuffer[2*i];                  // modulator output
+    // Preliminary - we currently only use the 1st channel output maybe use something like 
+    // rsVector2D<float> for m and do some appropriate casting.
+
     float c  = con->getContribution(m, u);      // compute modulation contribution
     par->applyModulation(c);                    // accumulate the contribution
+
+
+    con->getTargetProcessor()->setDirty();
+    // ToDo: dirtification should be more sophisticated: Detect whether the modulatedValue is 
+    // actually different than st the previous sample. Maybe collect all modulatedValues in a 
+    // buffer before modulation and then in the loop over the modTargetProcessors, call 
+    // updateCoeffs only if needed...maybe par->applyModulation should return a bool to 
+    // indicate, if the value did actually change ...maybe something like:
+    //   if(par->applyModulation(c))
+    //     con->getTargetProcessor()->setDirty(true);
+
     int dummy = 0;
     // We could avoid one dereferencing by avoiding the si variable and instead directly use a
     // con->getSource() function directly returning the pointer...but we want to refactor this 
@@ -423,13 +422,10 @@ void RegionPlayer::processFrame(float* L, float* R)
   // now containing the modulations:
   for(size_t i = 0; i < modTargetProcessors.size(); ++i)
   {
-    //if(modTargetProcessors[i].isDirty())
-    //  modTargetProcessors[i].updateCoefficients();
-    // Maybe updateCoefficients should itself check if coeffs are dirty..but maybe not because this
-    // is a boilerplate function and we want to keep the amount of boilerplate low. 
-    // updateCoefficients should be a purely virtual member function and do the stuff that we 
-    // currently do in prepareToPlay - we can call it from there and maybe make prepareToPlay
-    // non-virtual
+    if(modTargetProcessors[i]->isDirty())
+      modTargetProcessors[i]->updateCoeffs(sampleRate);
+    // check, if there could be duplicates in modTargetProcessors - if so, avoid that in the 
+    // assembly of the modulations
   }
 
   // End of modulation handling. Maybe factor this out into a member function of the baseclass 
