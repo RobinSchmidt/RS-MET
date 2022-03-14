@@ -102,8 +102,8 @@ public:
 
   // Processing:
   virtual void prepareToPlay(uchar key, uchar vel, double sampleRate);
-  // make non-virtual. It should assign key,vel members, call a purely virtual updateCoefficients()
-  // or handleParameterChange() and maybe a purely virtual resetState()
+  // Maybe make non-virtual. ...but maybe some subclasses want to override it? So far, none but 
+  // maybe later - but then we can make it virtual only if needed
 
 
 
@@ -111,7 +111,10 @@ public:
   from the user parameters. This will get called on in prepareToPlay and possibly also during 
   parameter modulation */
   virtual void updateCoeffs(double sampleRate) = 0;
-  //virtual void handleParameterChange(double sampleRate) = 0;
+  // Maybe it doesn't need to be purely virtual. Some very simple Processors may not have to do
+  // anything ...but that will be the exception, i guess so the vast majority will need to override
+  // it anyway
+
   // maybe it should take the sampleRate as parameter - then we don't nee a member for it - we 
   // could store it in the PlayStatus. actually, we could perhaps also directly access the 
   // PlayStatus object ourselves...but maybe it's more efficient to obtain it once in processFrame
@@ -128,8 +131,9 @@ protected:
   std::vector<Parameter> params;
   OpcodeType type = OpcodeType::Unknown;
   uchar key = 0, vel = 0;                 // Used for key/vel tracking
-  //double sampleRate = 44100.0;
-  bool dirty = true;
+  bool dirty = true; 
+  // Maybe some more advanced processors need a finer dirtification control - use a char of 8 flags
+  // to set certain parts of the coeff-set clean/dirty
 
   // For response to midi control:
   // MidiStatus midiStatus;
@@ -163,6 +167,10 @@ public:
 
   virtual void processFrame(float* L, float* R) = 0;
   virtual void processBlock(float* L, float* R, int N) = 0;
+
+  // Maybe processFrame should not be purely virtual. It's just more boilerplate. In most cases
+  // we will want to use processBlock exclusively anyway. We could have a default processFrame 
+  // function that just calls processBlock with N=1
 
 };
 

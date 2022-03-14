@@ -38,7 +38,7 @@ void Processor::prepareToPlay(uchar key, uchar vel, double sampleRate)
   this->key = key;
   this->vel = vel;
   dirty = true;
-  //handleParameterChange(sampleRate); // should set dirty to false at its end
+  updateCoeffs(sampleRate);
   resetState();
 }
 
@@ -106,36 +106,6 @@ void Amplifier::prepareToPlay(uchar key, uchar vel, double fs)
   this->key = key;
   this->vel = vel;
   updateCoeffs(fs);
-
-  // Maybe factor this out into an updateCoeffs function which may also be called on control-change 
-  // events
-
-  /*
-  // Extract nominal values from the parameters:
-  float volume   = params[0].getValue();
-  float pan      = params[1].getValue();
-  float width    = params[2].getValue();
-  float position = params[3].getValue();
-
-  // Extract key/vel modifiers:
-  float ampN_veltrack  = params[4].getValue();
-  float ampN_keytrack  = params[5].getValue();
-  float ampN_keycenter = params[6].getValue();
-
-  // Apply modifiers:
-  volume += ampN_veltrack * 0.01f * 40 * log10f(127.f/(float)vel);
-  volume += ampN_keytrack * ((float)key - ampN_keycenter);
-  // Unit of veltrack is percent and the formula is dB = 20 log (127^2 / Velocity^2). Keytracking 
-  // is adjusted in dB per key. See https://sfzformat.com/legacy/
-
-  // Set up the core:
-  core.setup(volume, pan, width, position);
-
-  // ToDo:
-  // -get rid of the getValue() calls by allowing the params to convert to float
-  // -it's not ideal that this code depends on the order, how we add the params in the 
-  //  constructor - try to avoid that - not sure, if that's possible
-  */
 }
 
 void Amplifier::processFrame(float* L, float* R) 
@@ -182,6 +152,7 @@ void Amplifier::updateCoeffs(double sampleRate)
 
   // Set up the core:
   core.setup(volume, pan, width, position);
+  dirty = false;
 
   // ToDo:
   // -get rid of the getValue() calls by allowing the params to convert to float
@@ -217,39 +188,7 @@ void Filter::prepareToPlay(uchar key, uchar vel, double fs)
   this->key = key;
   this->vel = vel;
   updateCoeffs(fs);
-
-  /*
-  // This is still somewhat ugly:
-  FilterType sfzType = (FilterType)(int)params[0].getValue();
-  FilterCore::Type coreType = convertTypeEnum(sfzType);
-
-  // Extract numeric parameters:
-  float cutoff    = params[1].getValue();
-  float resonance = params[2].getValue();
-  float keytrack  = params[3].getValue();
-  float keycenter = params[4].getValue();
-  float veltrack  = params[5].getValue();
-
-  // Apply modifiers to cutoff:
-  float pitchOffset = ((float)key - keycenter) * keytrack * 0.01f;  // pitch-offset from keytrack
-  float scl = 1.f - ((vel-1)/126.f);                                // 0 at vel = 127, 1 at vel = 1
-  pitchOffset += veltrack * 0.01f * scl;                            // pitch-offset from veltrack
-  cutoff *= RAPT::rsPitchOffsetToFreqFactor(pitchOffset);
-
-  // Set up core:
-  core.setupCutRes(coreType, cutoff*float(2*PI/fs), resonance);
   core.resetState();  // maybe get rid
-
-  // ToDo:
-  // Verify the formula used for velocity tracking. It's just a guess based on what I think, the 
-  // behavior should be. I think, at vel = 127, the cutoff should be unmodified and at vel=1, the 
-  // cutoff should be modified by the given amount of veltrack in cents. This is achieved by the
-  // formula with a percpetually sensible transition in between. But I don't know, if that's what
-  // a reference implementation does. 
-  // Maybe the implementation of key/vel tracking should be based on using the modulation system by
-  // allowing midi key/vel as modulation sources? But that may make key/vel tracking more expensive 
-  // because we would then need modulation connections which we otherwise don't need.
-  */
 }
 
 void Filter::processFrame(float* L, float* R) 
@@ -284,7 +223,7 @@ void Filter::updateCoeffs(double fs)
 
   // Set up core:
   core.setupCutRes(coreType, cutoff*float(2*PI/fs), resonance);
-  core.resetState();  // maybe get rid
+  dirty = false;
 
   // ToDo:
   // Verify the formula used for velocity tracking. It's just a guess based on what I think, the 
@@ -344,17 +283,7 @@ Equalizer::Equalizer()
 
 void Equalizer::prepareToPlay(uchar key, uchar vel, double fs)
 {
-  /*
-  core.setupGainFreqBw(
-    FilterCore::Type::BQ_Bell,
-    params[0].getValue(),
-    params[1].getValue() * float(2*PI/fs),
-    params[2].getValue()
-  );
-  */
   updateCoeffs(fs);
-
-
   core.resetState(); // get rid
 }
 
@@ -377,6 +306,7 @@ void Equalizer::updateCoeffs(double fs)
     params[1].getValue() * float(2*PI/fs),
     params[2].getValue()
   );
+  dirty = false;
 }
 
 //=================================================================================================
@@ -393,10 +323,6 @@ WaveShaper::WaveShaper()
 void WaveShaper::prepareToPlay(uchar key, uchar vel, double fs)
 {
   updateCoeffs(fs);
-
-  //core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(),
-  //  params[2].getValue(), 1.f, 0.f, 0.f);
-  //int dummy = 0;
 }
 
 void WaveShaper::processFrame(float* L, float* R)
@@ -414,6 +340,7 @@ void WaveShaper::updateCoeffs(double sampleRate)
 {
   core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(),
     params[2].getValue(), 1.f, 0.f, 0.f);
+  dirty = false;
 }
 
 //=================================================================================================
