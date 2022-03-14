@@ -373,29 +373,16 @@ void RegionPlayer::processFrame(float* L, float* R)
     // Actually, if we assume a single audio thread, the modBuffer could and should be shared among
     // all the RegionPlayers (if multi-threading is added later, it could be declared 
     // thread_local). Maybe the PlayStatus object could be an appropriate place to hold such a 
-    // buffer. It could also generally hold signal buffers for block processing.
+    // buffer. It could also generally hold the signal buffers needed for block processing.
   }
 
   // Initialize modulated parameters to non-modulated values:
   for(size_t i = 0; i < modTargetParams.size(); ++i)
     modTargetParams[i]->initModulatedValue();
 
-  //for(size_t i = 0; i < modMatrix.size(); ++i)
-  //  modMatrix[i]->initTarget();
-    // Will initialize targets with multiple incoming connections multiple times. I think, avoiding 
-    // the redundant initializations would require us to somehow store a (redundant) array of all 
-    // affected modulation targets. This may or may not be worth the effort...well..we actually did
-    // it....
-
-
   // Apply the modulations to the affected parameters:
   for(size_t i = 0; i < modMatrix.size(); ++i)
   {
-    //RAPT::rsError("Not yet implemented");
-    // ToDo:
-    // -Figure out modulation source and target where the target should be some parameter of an 
-    //  effect from our effectChain and later maybe also a parameter of another modulator
-
     ModulationConnector* con = modMatrix[i];
     Parameter* par = con->getTargetParam();
     int   si = con->getSourceIndex();
@@ -414,25 +401,24 @@ void RegionPlayer::processFrame(float* L, float* R)
     // compuations, if it didn't change (because all modulators have produced the same output as 
     // in the previous sample - which is common in envelope sustain and for midi based modulators).
     // But maybe this dirtification should be handled by Parameter itself.
-
-    /*
-    // It could look something like this:
-    size_t si = modMatrix[i]->getSourceIndex();
-    size_t ti = modMatrix[i]->getTargetIndex();
-    float u = modTargets[ti]->getValue();           // unmodulated value
-    float m = modSources[si]->modValue;             // modulator output
-    float c = modMatrix[i]->getContribution(m, u);  // modulation contribution
-    modTargets[i]->modulatedValue += c;
-    */
   }
 
   // Let the affected Processors update their algo-parameters according to the new user parameters
   // now containing the modulations:
-  // ...
+  for(size_t i = 0; i < modTargetProcessors.size(); ++i)
+  {
+    //if(modTargetProcessors[i].isDirty())
+    //  modTargetProcessors[i].updateCoefficients();
+    // Maybe updateCoefficients should itself check if coeffs are dirty..but maybe not because this
+    // is a boilerplate function and we want to keep the amount of boilerplate low. 
+    // updateCoefficients should be a purely virtual member function and do the stuff that we 
+    // currently do in prepareToPlay - we can call it from there and maybe make prepareToPlay
+    // non-virtual
+  }
 
-
-
-  // End of modulation handling
+  // End of modulation handling. Maybe factor this out into a member function of the baseclass 
+  // because we may need it in GroupPlayer etc. too in order to apply group modulations to the
+  // group effects.
   //---------------------------------------------
 
 
@@ -476,6 +462,9 @@ void RegionPlayer::processBlock(float* L, float* R, int N)
 {
   for(int n = 0; n < N; n++)
     processFrame(&L[n], &R[n]);
+    // Preliminary - ToDo: implement actual proper block processing using signal buffers. These
+    // buffers should be shared among all the player objects. Perhaps the best place for them is
+    // in the PlayStatus object.
 }
 
 bool RegionPlayer::isPlayable(const Region* region)

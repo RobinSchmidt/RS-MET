@@ -220,11 +220,13 @@ public:
   //  pre-existing accumulator value passed by reference instead of returning a value that is 
   //  supposed to be (additively) accumulated by the caller.
 
+  /* obsolete
   inline void initTarget()
   {
     RAPT::rsAssert(targetParam != nullptr);
     targetParam->initModulatedValue();
   }
+  */
 
   void setSource(Modulator* newSource) { source = newSource; }
 
