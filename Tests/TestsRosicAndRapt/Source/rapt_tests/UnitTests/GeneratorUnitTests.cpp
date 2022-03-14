@@ -2883,9 +2883,11 @@ bool samplerFreeModulationsTest()
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
   // routes free LFO 1 to DC parameter of waveshaper 1 with given modulation depth. Setting this
   // up seems to work. What remains to be done is to actually apply the modulations in the realtime
-  // thread. the freq param fro the LFO is still at 0. I think, we need to add some code to
-  // SamplePlayer::setupProcessorSetting and/or SamplePlayer::setupDspSettings. Maybe we need to
-  // add a branch codebook->isModulatorSetting
+  // thread. the freq param for the LFO is still at 0. 
+  
+  // Next: I think, we need to add some code to SamplePlayer::setupProcessorSetting and/or 
+  // SamplePlayer::setupDspSettings. Maybe we need to add a branch codebook->isModulatorSetting
+
 
 
   //ok &= !se.hasDanglingRoutings();
@@ -2943,6 +2945,14 @@ bool samplerFreeModulationsTest()
   //    (3) both.
   // -In RegionPlayer::processFrame, we should use a member of PlayStatus for the modBuffer instead
   //  of having it as (heap-allocated(!!!)) local std::vector
+  // -Maybe we should have a SamplePlayer as subclass of Processor and let the RegionPlayer use it
+  //  just like any other processor. The baseclass of RegionPlayer should then be renamed...maybe
+  //  something like (Level)PlayerBase or something. Maybe we could the also have a sampleN opcode
+  //  and also delayN, startN, etc.
+  // -What about feedback modulation? I think, it's impossible when we want to do block processing.
+  // -The sampleRate should probably be passed around as float. Typical sample rates can be exactly
+  //  represented by a float anyway and if we really need double precision for certain coeff
+  //  computations, we can convert the (exact) float to double as needed.
 
   //
   // -Refactor:

@@ -607,7 +607,8 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   // ToDo: 
   // -There are actually more points of failure which we may have to report. we need to report some
   //  sort of "parseError" or something - maybe we could be more specific about the kind of parse
-  //  error
+  //  error. Maybe instead of using a return code, return a std::string which is empty, if parsing 
+  //  works and otherwise contains an error report that we can show the user in the GUI.
   // -The general structure of the nested region is the similar to the enclosing group block 
   //  -> try to refactor to get rid of the duplication (maybe it can be implemented recursively)
   // -Maybe use string_view for the extracted substrings to avoid copying the data:

@@ -458,10 +458,11 @@ protected:
   // This amplitude factor is determined by key/vel crossfades, etc. but not by key/veltrack 
   // because these are is done by the Amplifier DSP
 
-
-
   LoopMode loopMode = LoopMode::no_loop;
   uchar key = 0;                 //< Midi note number used for starting this player
+  // Maybe we should have a SamplePlayer as subclass of Processor and let the RegionPlayer use it
+  // just like any other processor. The baseclass of RegionPlayer should then be renamer...maybe
+  // something like (Level)PlayerBase or something. Maybe we could the also have a sampleN opcode
 
 
 
