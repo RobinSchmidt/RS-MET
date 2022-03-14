@@ -189,43 +189,6 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-/** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
-can be envelopes, LFOs, etc. */
-class Modulator : public Processor
-{
-  // maybe don't derive from Effect but instead derive both Effect and Modulator from a common
-  // baseclass (maybe Processor) which contains only params and type
-
-// Maybe treat modulators uniformly with effects...this may actually simplify the implementation
-// *and* make it more flexible. We want stereo modulation anyway. Maybe let the LFO's load 
-// samples as well using a syntax like lfoN_wave="SingleCycle/TwoSines.wav"
-// https://sfzformat.com/opcodes/lfoN_wave
-
-public:
-
-
-  /*
-  virtual float getSample() = 0;
-
-
-  // get rid - use processFrame/Block uniformly instead:
-  void updateModValue() { modValue = getSample(); }
-  float modValue = 0.f;
-  */
-
-
-  // todo: processBlock
-};
-// To unify Effect and Modulator, we should use processFrame in modulators too to compute the 
-// output. Then we may get rid of Modulator::getSample() and updateModValue(). The modValue does
-// not need to be stored as member of the modulator - it can be held in a local variable in the 
-// per-sample processing. The purely virtual Effect::processFrame and Effect::processBlock would 
-// be moved into Processor and the Effect subclass would become obsolete. When doing it that way,
-// modulators would become inherently capable of producing stereo output because processFrame is 
-// layed out for producing stereo signals anyway. Not having to deal with these two subclasses 
-// will simplify the code in other ways as well.
-
-
 //=================================================================================================
 
 class ModulationConnector  // maybe rename to ModulationWire or just Modulation or ModConnector
@@ -243,7 +206,7 @@ public:
     {
     case ModMode::absolute: return depth * modulatorOutput;
     case ModMode::relative: return depth * modulatorOutput * unmodulatedValue;
-    default: RAPT::rsError("Unknown ModType");
+    default:                return 0.f;
     }
   }
   // ToDo:
@@ -270,7 +233,7 @@ public:
   }
   */
 
-  void setSource(Modulator* newSource) { source = newSource; }
+  void setSource(Processor* newSource) { source = newSource; }
 
   void setSourceIndex(int newIndex) { sourceIndex = newIndex; }
 
@@ -303,7 +266,7 @@ public:
 
 private:
 
-  Modulator* source      = nullptr;  // e.g. EnvGen, LowFreqOsc, etc.
+  Processor* source      = nullptr;  // e.g. EnvGen, LowFreqOsc, etc.
   Processor* targetProc  = nullptr;  // e.g. Filter, Amplifier, etc.
   // ToDo: replace source/targetProc with integers sourceIndex/targetProcIndex
 
@@ -334,7 +297,7 @@ private:
 
 /** Envelope generator for the sampler. */
 
-class EnvGen : public Modulator
+class EnvGen : public Processor
 {
 
 public:
@@ -390,7 +353,7 @@ protected:
 
 /** Low frequency oscillator for the sampler. */
 
-class LowFreqOsc : public Modulator
+class LowFreqOsc : public Processor
 {
 
 public:
@@ -558,8 +521,8 @@ public:
 
 
   void allocateModulators();
-  Modulator* grabModulator(OpcodeType type);
-  void repositModulator(Modulator* p);
+  Processor* grabModulator(OpcodeType type);
+  void repositModulator(Processor* p);
 
 
 protected:
@@ -610,8 +573,8 @@ public:
 
 
   void allocateModulators();
-  Modulator* grabModulator(OpcodeType type);
-  void repositModulator(Modulator* p);
+  Processor* grabModulator(OpcodeType type);
+  void repositModulator(Processor* p);
 
   void allocateConnectors()
   {

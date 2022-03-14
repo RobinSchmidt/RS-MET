@@ -63,7 +63,7 @@ int rsCount(const T* a, int N, T elem)
 // can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
 // closely. Then, we need to rename it
 // rename to getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeType type):
-size_t getNumModulators(const std::vector<Modulator*>& modSources, OpcodeType type)
+size_t getNumModulators(const std::vector<Processor*>& modSources, OpcodeType type)
 {
   size_t count = 0;
   for(size_t i = 0; i < modSources.size(); i++) {
@@ -154,7 +154,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1; 
       if(getNumModulators(modSources, opType) >= sfzIndex)
         continue;
-      Modulator* mod = getModulator(opType);  // maybe use a general getProcessor function
+      Processor* mod = getModulator(opType);  // maybe use a general getProcessor function
       if(mod) {
         mod->setParametersToDefaults(sfzIndex);
         modSources.push_back(mod);     }
@@ -212,7 +212,7 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     int j = findProcessorIndex(modSources[0], (int) modSources.size(), ms.getSourceType(), 
       ms.getSourceIndex());
     RAPT::rsAssert(j >= 0);
-    Modulator* src = modSources[j];
+    Processor* src = modSources[j];
     RAPT::rsAssert(src);
     mc->setSourceIndex(j);
     mc->setSource(src);

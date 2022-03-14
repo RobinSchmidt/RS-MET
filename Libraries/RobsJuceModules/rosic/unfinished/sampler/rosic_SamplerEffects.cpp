@@ -364,10 +364,10 @@ void ModulatorPool::allocateModulators()
   lowFreqOscs.init(64);
 }
 
-Modulator* ModulatorPool::grabModulator(OpcodeType type)
+Processor* ModulatorPool::grabModulator(OpcodeType type)
 {
   using OT = OpcodeType;
-  Modulator* p = nullptr;
+  Processor* p = nullptr;
   switch(type)
   {
   case OT::FreeEnv:   p = envGens.grabItem(); break;
@@ -385,7 +385,7 @@ Modulator* ModulatorPool::grabModulator(OpcodeType type)
   // if-statement that checks, if type is within some range
 }
 
-void ModulatorPool::repositModulator(Modulator* p)
+void ModulatorPool::repositModulator(Processor* p)
 {
   using OT = OpcodeType;
   int i = -1;
@@ -442,12 +442,12 @@ void DspResourcePool::allocateModulators()
   modulatorPool.allocateModulators();
 }
 
-Modulator* DspResourcePool::grabModulator(OpcodeType type)
+Processor* DspResourcePool::grabModulator(OpcodeType type)
 {
   return modulatorPool.grabModulator(type);
 }
 
-void DspResourcePool::repositModulator(Modulator* p)
+void DspResourcePool::repositModulator(Processor* p)
 {
   modulatorPool.repositModulator(p);
 }

@@ -233,7 +233,7 @@ protected:
     return dspPool->grabEffect(type);
   }
 
-  Modulator* getModulator(OpcodeType type)
+  Processor* getModulator(OpcodeType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
     return dspPool->grabModulator(type);
@@ -303,7 +303,7 @@ protected:
   of pointers to polymorphic effect classes (i.e. subclasses of the Effect baseclass) that can be 
   assembled at runtime, typically on noteOn. */
 
-  std::vector<Modulator*> modSources;
+  std::vector<Processor*> modSources;
   /**< Our array of modulation sources. ...tbc... */
 
   std::vector<Processor*> modTargetProcessors;
