@@ -137,7 +137,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       Effect* eff = getEffect(opType);
       if(eff)
       {
-        eff->resetSettings(sfzIndex);
+        eff->setParametersToDefaults(sfzIndex);
         effectChain.addEffect(eff);
       }
       else 
@@ -156,7 +156,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
         continue;
       Modulator* mod = getModulator(opType);  // maybe use a general getProcessor function
       if(mod) {
-        mod->resetSettings(sfzIndex);
+        mod->setParametersToDefaults(sfzIndex);
         modSources.push_back(mod);     }
       else {
         disassembleProcessors();
@@ -170,6 +170,13 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
   // add enough effects/modulators of the desired types to the chain/array or they were already 
   // present before. In both cases, the effectChain or modSources is now in the required state so 
   // we can report success.
+  //
+  // Maybe remove the calls to setParametersToDefaults - instead we should perhaps rest them to
+  // defaults when the object is reposited - but: when the default value depends on the index as
+  // in the eqN_freq opcode, we don't really know the index when the object is just sitting in the
+  // pool, so maybe it's indeed more appropriate to do it here. Maybe do both? The rationale is to
+  // have all objects in the pool in a well defined state. That's not actually important though but
+  // it somehow seems cleaner.
 }
 
 bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& modSettings)

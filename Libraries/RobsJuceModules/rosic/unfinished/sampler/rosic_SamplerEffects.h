@@ -81,8 +81,8 @@ public:
   and eq3_freq has 5000 as default. So, the index is the index of a dsp of the particular given 
   type within the dsp chain. i.e. in the case of the eqs 1,2,3. It's not the index at which point 
   it sits in the dspChain. Only dsps of the same type count. */
-  virtual void resetSettings(int index);
-  // rename to resetParameters or setParametersToDefaults
+  void setParametersToDefaults(int index);
+  // rename to resetParameters or setParametersToDefaults, maybe make non-virtual
 
   // Inquiry:
   OpcodeType getType() { return type; }
@@ -104,6 +104,8 @@ public:
   virtual void prepareToPlay(uchar key, uchar vel, double sampleRate) = 0;
   // make non-virtual. It should assign key,vel members, call a purely virtual updateCoefficients()
   // or handleParameterChange() and maybe a purely virtual resetState()
+
+
 
   //virtual void handleParameterChange() = 0;
   //virtual void resetState() = 0;  // maybe just call it reset()

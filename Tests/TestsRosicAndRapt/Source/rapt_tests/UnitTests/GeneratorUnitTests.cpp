@@ -3118,11 +3118,14 @@ bool samplerEngineUnitTest()
 
 
   // ToDo:
-  // -implement key/vel crossfade
   // -implement cutoff_ccN ..or actually cutoffN_ccX
   //  -extend the PlayStatus class to a MidiStatus class that provides the info about 
-  //   controllers, pitch-wheel, etc.
-  // -implement loop_mode=loop_sustain, 
+  //   controllers, pitch-wheel, etc. Maybe midi-controller response should internally be realized
+  //   via the modulation system. This saves us from defining all sorts of ccX Parameter objects 
+  //   and automatically makes all parameters available for midi-control without further ado.
+  // -implement key/vel crossfade
+  // -implement loop crossfade
+  // -implement loop_mode=loop_sustain
   // -implement and test loop_end beyond the last sample - it should append an appropriate amount 
   //  of silence before looping back. rationale: together with delay, the feature can be used to 
   //  create repititve hits (of a drum sample, say) to create looped rhythms

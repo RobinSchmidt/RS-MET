@@ -24,7 +24,7 @@ Parameter* Processor::getParameter(Opcode op)
   return nullptr;
 }
 
-void Processor::resetSettings(int index)
+void Processor::setParametersToDefaults(int index)
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   for(size_t i = 0; i < params.size(); i++) {
