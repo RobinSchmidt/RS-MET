@@ -101,20 +101,26 @@ public:
 
 
   // Processing:
-  virtual void prepareToPlay(uchar key, uchar vel, double sampleRate) = 0;
+  virtual void prepareToPlay(uchar key, uchar vel, double sampleRate);
   // make non-virtual. It should assign key,vel members, call a purely virtual updateCoefficients()
   // or handleParameterChange() and maybe a purely virtual resetState()
 
 
 
-  //virtual void handleParameterChange() = 0;
+  //virtual void handleParameterChange(double sampleRate) = 0; 
+  // maybe it should take the sampleRate as parameter - then we don't nee a member for it - we 
+  // could store it in the PlayStatus. actually, we could perhaps also directly access the 
+  // PlayStatus object ourselves...but maybe it's more efficient to obtain it once in processFrame
+  // and then pass it as parameter to all Processors
+
   //virtual void resetState() = 0;  // maybe just call it reset()
 
 protected:
 
   std::vector<Parameter> params;
   OpcodeType type = OpcodeType::Unknown;
-  uchar key = 0, vel = 0;                 // Used for key/vel tracking.
+  uchar key = 0, vel = 0;                 // Used for key/vel tracking
+  //double sampleRate = 44100.0; 
 
   // For response to midi control:
   // MidiStatus midiStatus;

@@ -3123,6 +3123,8 @@ bool samplerEngineUnitTest()
   //   controllers, pitch-wheel, etc. Maybe midi-controller response should internally be realized
   //   via the modulation system. This saves us from defining all sorts of ccX Parameter objects 
   //   and automatically makes all parameters available for midi-control without further ado.
+  // -implement send effects via opcodes effN_algo=reverb (chorus, phaser, flanger) ...but how 
+  //  should their parameters be modulated, if at all?
   // -implement key/vel crossfade
   // -implement loop crossfade
   // -implement loop_mode=loop_sustain

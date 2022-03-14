@@ -33,6 +33,15 @@ void Processor::setParametersToDefaults(int index)
     params[i].setValue(defVal); }
 }
 
+void Processor::prepareToPlay(uchar key, uchar vel, double sampleRate)
+{
+  this->key = key;
+  this->vel = vel;
+  //dirty = true;
+  //handleParameterChange(sampleRate); // should set dirty to false at its end
+  //resetState();
+}
+
 //=================================================================================================
 
 LowFreqOsc::LowFreqOsc()
