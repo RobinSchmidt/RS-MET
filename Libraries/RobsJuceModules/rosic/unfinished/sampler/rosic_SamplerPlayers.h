@@ -285,27 +285,25 @@ protected:
   of pointers to polymorphic effect classes (i.e. subclasses of the Effect baseclass) that can be 
   assembled at runtime, typically on noteOn. */
 
-  // Moved here from RegionPlayer subclass - I'm not yet sure, if they should be members here or
-  // there:
   std::vector<Modulator*> modSources;
-  /**< Our array of modulation sources. */
+  /**< Our array of modulation sources. ...tbc... */
 
-  //std::vector<Parameter*> modTargets; 
-  // redundant - maybe use later for optimizing initialization of modulations..well..we will 
-  // probably need it anyway in order to apply modulations efficiently by re-calculating coeffs 
-  // only on modulated effects...but maybe it should be an array of Processor*
+  std::vector<Processor*> modTargetProcessors;
+  /**< This array holds pointers to all processors that are being modulated, i.e. have modulation 
+  connections incoming to one or more of their parameters. This is used to update only those 
+  processors that actually need such an update whereas with "update" we mean a recomputation of 
+  the algorithm's coefficients when modulations occur. */
 
-  std::vector<Processor*> modTargets;
-  /** This array holds pointers to all processors that are being modulated (i.e. having incoming
-  modulation connections). This is used to update only those processors that actually need such an 
-  update whereas with "update" we mean a recomputation of the algorithm's coefficients. */
+  std::vector<Parameter*> modTargetParams; 
+  /**< This array holds pointers to all parameters that are being modulated, i.e. have one or more 
+  modulation connections incoming. This is used to loop over the modulated parameters to initialize
+  them to their unmodulated nominal during per sample processing. */
 
-
-  std::vector<ModulationConnector*> modMatrix;  
-  // not a literal matrix but conceptually - maybe rename to modRoutings..but maybe not - we may
-  // see it as sparse matrix
-
-
+  std::vector<ModulationConnector*> modMatrix;
+  /**< This array holds our modulation connection objects. Implementation-wise, it's not literally 
+  a "matrix" (as in 2D array) but users typically think of it that way. From the implementation 
+  perspective. we may view the array as a rudimentary data structure for a sparse matrix. The 
+  entries themselvses know their sources and targets, i.e. rows and columns.  */
 
   DspResourcePool* dspPool = nullptr;
   /**< A pool of DSP processor objects from which we can grab some as needed to assemble our DSP
