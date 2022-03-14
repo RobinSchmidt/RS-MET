@@ -106,6 +106,16 @@ public:
   // maybe later - but then we can make it virtual only if needed
 
 
+  virtual void processFrame(float* L, float* R) = 0;
+
+
+  virtual void processBlock(float* L, float* R, int N)
+  {
+    for(int n = 0; n < N; n++)
+      processFrame(&L[n], &R[n]);
+  }
+
+
 
   /** Subclasses should override this in order to compute the algorithm's internal coefficients 
   from the user parameters. This will get called on in prepareToPlay and possibly also during 
@@ -165,8 +175,8 @@ class Effect : public Processor  // maybe get rid -> unify Effect and Modulator
 {
 public:
 
-  virtual void processFrame(float* L, float* R) = 0;
-  virtual void processBlock(float* L, float* R, int N) = 0;
+  //virtual void processFrame(float* L, float* R) = 0;
+  //virtual void processBlock(float* L, float* R, int N) = 0;
 
   // Maybe processFrame should not be purely virtual. It's just more boilerplate. In most cases
   // we will want to use processBlock exclusively anyway. We could have a default processFrame 
@@ -193,12 +203,15 @@ class Modulator : public Processor
 
 public:
 
+
+  /*
   virtual float getSample() = 0;
 
 
   // get rid - use processFrame/Block uniformly instead:
   void updateModValue() { modValue = getSample(); }
   float modValue = 0.f;
+  */
 
 
   // todo: processBlock
@@ -331,8 +344,21 @@ public:
     float release, float sampleRate);
 
 
-  void reset() { sampleCount = 0; out = 0.f; }
+  void resetState() override 
+  { 
+    sampleCount = 0; out = 0.f;
+    //core.resetState(); 
+  }
 
+  void processFrame(float* L, float* R) override
+  {
+    *L = *R = 0.f;  // preliminary
+  }
+
+
+  //void reset() { sampleCount = 0; out = 0.f; }
+
+  /*
   void prepareToPlay(uchar key, uchar vel, double sampleRate) override
   {
     RAPT::rsError("Not yet implemented");
@@ -343,6 +369,7 @@ public:
     RAPT::rsError("Not yet implemented");
     return 0.f;
   }
+  */
   // get rid
 
   void updateCoeffs(double sampleRate) override { /* core.updateCoeffs(); */ }
@@ -369,10 +396,19 @@ class LowFreqOsc : public Modulator
 public:
 
   LowFreqOsc();
+
+
   //void prepareToPlay(uchar key, uchar vel, double sampleRate) override;
-  float getSample() override;
+  //float getSample() override;
 
   //void setup(float freq, float delay, float fade, float sampleRate); // move into a core class
+
+
+  void processFrame(float* L, float* R) override
+  {
+    *L = *R = 0.1f;  // preliminary
+  }
+
 
   void updateCoeffs(double sampleRate) override { /* core.updateCoeffs(); */ }
 

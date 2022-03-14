@@ -363,10 +363,18 @@ void RegionPlayer::processFrame(float* L, float* R)
   //---------------------------------------------
   // Under construction - handle modulations:
 
+  int numSources = (int) modSources.size();
+  std::vector<float> modBuffer;
+  modBuffer.resize(2*numSources);
+  // preliminary - should become a member of PlayStatus, the size should be pre-allocated according
+  // to the maximum number of modulators that a region/Group/Instrument has
+
+
   // Update our modulators:
   for(size_t i = 0; i < modSources.size(); ++i)
   {
-    modSources[i]->updateModValue();
+    //modSources[i]->updateModValue();
+    modSources[i]->processFrame(&modBuffer[2*i], &modBuffer[2*i+1]);
     // ToDo: Try to use processFrame instead. But then we need to store the output frames of all 
     // modulators in a local buffer here (maybe use a member modBuffer) and the 
     // ModulationConnection must somehow maintain an index into that buffer. Maybe the 
@@ -394,7 +402,8 @@ void RegionPlayer::processFrame(float* L, float* R)
     Parameter* par = con->getTargetParam();
     int   si = con->getSourceIndex();
     float u  = par->getValue();                 // unmodulated value
-    float m  = modSources[si]->modValue;        // modulator output
+    //float m  = modSources[si]->modValue;        // modulator output
+    float m  = modBuffer[2*i];                  // modulator output
     float c  = con->getContribution(m, u);      // compute modulation contribution
     par->applyModulation(c);                    // accumulate the contribution
     int dummy = 0;

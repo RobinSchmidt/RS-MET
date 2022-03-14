@@ -56,11 +56,13 @@ LowFreqOsc::LowFreqOsc()
   // ToDo: phase, wave, sync, ...
 }
 
+/*
 float LowFreqOsc::getSample()
 {
   //RAPT::rsError("Not yet implemented");
   return 0.1f;
 }
+*/
 
 
 //=================================================================================================
