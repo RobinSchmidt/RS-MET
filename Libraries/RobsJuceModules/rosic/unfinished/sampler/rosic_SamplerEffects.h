@@ -132,7 +132,7 @@ protected:
 /** Baseclass for effect processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
 
-class Effect : public Processor
+class Effect : public Processor  // maybe get rid -> unify Effect and Modulator
 {
 public:
 

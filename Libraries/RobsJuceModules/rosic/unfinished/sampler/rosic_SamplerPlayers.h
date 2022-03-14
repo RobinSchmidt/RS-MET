@@ -5,6 +5,15 @@ namespace rosic { namespace Sampler {
 
 //=================================================================================================
 
+inline void prepareToPlay1(Processor** processors, int numProcessors,
+  unsigned char key, unsigned char vel, double fs) 
+{ 
+  for(int i = 0; i < numProcessors; ++i)
+    processors[i]->prepareToPlay(key, vel, fs);
+}
+// rename, move to cpp, maybe move into class SamplePlayer
+
+
 class EffectChain
 {
 public:
@@ -14,7 +23,11 @@ public:
   void processFrame(float* L, float* R);
   void processBlock(float* L, float* R, int N);
   void prepareToPlay(uchar key, uchar vel, double fs) 
-  { for(auto & p : processors) p->prepareToPlay(key, vel, fs); }
+  { 
+    //prepareToPlay1((Processor**) &processors[0], (int) processors.size(), key, vel, fs); 
+
+    for(auto & p : processors) p->prepareToPlay(key, vel, fs); 
+  }
   //void resetState()    { for(auto & p : processors) p->resetState();    }
   //void resetSettings() { for(auto & p : processors) p->resetSettings(); }
   //void reset() { resetState(); resetSettings(); }

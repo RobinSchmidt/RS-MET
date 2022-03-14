@@ -426,6 +426,8 @@ void RegionPlayer::allocateMemory()
   // later
 }
 
+
+
 rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool busMode, 
   PlayStatus* iv)
 {
@@ -440,6 +442,11 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
 
   resetPlayerSettings();
   setupDspSettingsFor(region, fs, busMode, iv);
+
+
+  prepareToPlay1((Processor**) &modSources[0], (int) modSources.size(), key, vel, fs);
+
+
 
   effectChain.prepareToPlay(key, vel, fs);
   // Should be replaced by:
