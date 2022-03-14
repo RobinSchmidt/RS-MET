@@ -2900,12 +2900,15 @@ bool samplerFreeModulationsTest()
   }
   //rsPlotVectors(dc, tgt);
 
-  //ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true);
+  ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true);
   // tgt wiggles between 3.5 and 4.5 centered at 4.0, L/R outputs are currently constant at 4.0 as
   // expected (the plotted signal between -0.5 and +0.5 is the error)
 
   // -At the end of SamplePlayer::augmentOrCleanEffectChain, the modSources array correctly 
   //  contains one LFO, but it's still uninitialized (them members contain garbage values).
+
+  // Next:
+  // ModulationConnector shoudl store indices instead of pointers (see comments there)
 
   // ToDo:
   // -Done: Provide method to set up modulation routings in Region, Group, Global.
@@ -2916,8 +2919,8 @@ bool samplerFreeModulationsTest()
   //   depth and mode (formula).
   //  -Done: Assemble the modulation connections (and disassemble them when finished or an error 
   //   occurs).
-  //  -Update RegionPlayer::prepareToPlay to prepare also the modSources (see comment there). Maybe
-  //   we need to do similar things in GroupPlayer, InstrumentPlayer, too
+  //  -Done: Update RegionPlayer::prepareToPlay to prepare also the modSources (see comment there).
+  //   Maybe we need to do similar things in GroupPlayer, InstrumentPlayer, too
   // -During playback, make use of the modulations:
   //  -Done(?): Let all modulators update their output value in processFrame.
   //  -Done(?): Init all modulated parameters to their unmodulated values.

@@ -40,6 +40,9 @@ LowFreqOsc::LowFreqOsc()
   type = OpcodeType::FreeLfo;
   params.reserve(1);                      // index
   addParameter(Opcode::lfoN_freq);        //   0
+  //addParameter(Opcode::lfoN_fade);
+  //addParameter(Opcode::lfoN_delay);
+
 
   // ToDo: phase, wave, sync, ...
 }
@@ -198,7 +201,10 @@ void Filter::prepareToPlay(uchar key, uchar vel, double fs)
   // behavior should be. I think, at vel = 127, the cutoff should be unmodified and at vel=1, the 
   // cutoff should be modified by the given amount of veltrack in cents. This is achieved by the
   // formula with a percpetually sensible transition in between. But I don't know, if that's what
-  // a reference implementation does.
+  // a reference implementation does. 
+  // Maybe the implementation of key/vel tracking should be based on using the modulation system by
+  // allowing midi key/vel as modulation sources? But that may make key/vel tracking more expensive 
+  // because we would then need modulation connections which we otherwise don't need.
 }
 
 void Filter::processFrame(float* L, float* R) 

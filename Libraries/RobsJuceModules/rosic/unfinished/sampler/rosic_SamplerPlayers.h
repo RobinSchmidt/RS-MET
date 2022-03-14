@@ -22,6 +22,7 @@ public:
 
   void processFrame(float* L, float* R);
   void processBlock(float* L, float* R, int N);
+  
   void prepareToPlay(uchar key, uchar vel, double fs) 
   { 
     if(!processors.empty())
@@ -30,6 +31,8 @@ public:
 
     //for(auto & p : processors) p->prepareToPlay(key, vel, fs); // old
   }
+  // get rid...
+  
   //void resetState()    { for(auto & p : processors) p->resetState();    }
   //void resetSettings() { for(auto & p : processors) p->resetSettings(); }
   //void reset() { resetState(); resetSettings(); }
@@ -61,7 +64,7 @@ public:
 
 //protected:
 
-  std::vector<Effect*> processors;  // rename to effects
+  std::vector<Effect*> processors;
   // Where is this allocated, i.e. where do we call resize on this? I mean the vector itself, not
   // the pointed-to objects. This is not yet well defined, i think. It should probably also happen
   // on sfz load

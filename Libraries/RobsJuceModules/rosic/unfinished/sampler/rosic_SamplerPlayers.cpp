@@ -173,7 +173,10 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
       modSources[0], (int) modSources.size(), ms.getSourceType(), ms.getSourceIndex());
     Modulator* src = dynamic_cast<Modulator*> (prc);
     RAPT::rsAssert(src);
+
     mc->setSource(src);
+    // ToDo: instead of storing the pointer, store the index into the modSources array 
+    // -> findProcessor should return an int
 
     // Determine pointer to modulation target (Processor and Parameter) and set it up in the
     // connector:
@@ -186,8 +189,11 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     RAPT::rsAssert(prc);
     Parameter* param = prc->getParameter(ms.getTargetOpcode());
     RAPT::rsAssert(param);
+
     mc->setTarget(prc, param);
     RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, prc);
+    // ToDo: instead of storing the pointer, store the index -> findProcessor should return an int
+    // -> append should return the index
 
     // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
@@ -317,13 +323,22 @@ void RegionPlayer::processFrame(float* L, float* R)
 
   // Update our modulators:
   for(size_t i = 0; i < modSources.size(); ++i)
+  {
     modSources[i]->updateModValue();
+    // ToDo: Try to use processFrame instead. But then we need to store the output frames of all 
+    // modulators in a local buffer here (maybe use a member modBuffer) and the 
+    // ModulationConnection must somehow maintain an index into that buffer. Maybe the 
+    // ModualtionConnection could store array indices into our modSources, modTargetProcessors
+    // arrays instead of pointers to Modulator, Processor. The index into the modSources array
+    // could then double as index into the buffer of stored modulation signals...
+  }
 
   // Initialize modulated parameters to non-modulated values:
-  //for(size_t i = 0; i < modTargets.size(); ++i)
-  //  modTargets[i]->initModulatedValue();
-  for(size_t i = 0; i < modMatrix.size(); ++i)
-    modMatrix[i]->initTarget();
+  for(size_t i = 0; i < modTargetParams.size(); ++i)
+    modTargetParams[i]->initModulatedValue();
+
+  //for(size_t i = 0; i < modMatrix.size(); ++i)
+  //  modMatrix[i]->initTarget();
     // Will initialize targets with multiple incoming connections multiple times. I think, avoiding 
     // the redundant initializations would require us to somehow store a (redundant) array of all 
     // affected modulation targets. This may or may not be worth the effort...we'll see.
@@ -443,7 +458,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
   resetPlayerSettings();
   setupDspSettingsFor(region, fs, busMode, iv);
 
-
+  // new:
   if(!modSources.empty())
     prepareToPlay1((Processor**) &modSources[0], (int) modSources.size(), key, vel, fs);
   if(!effectChain.processors.empty())
@@ -454,7 +469,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
   // prepareToPlay1 can take a refecrence to a std::vector<Processor*> and inside it, we could use
   // a range-based loop. See also comment below class Modulator.
 
-
+  // old:
   //effectChain.prepareToPlay(key, vel, fs);
   // Should be replaced by:
   //   prepareToPlay(modSources,  key, vel, fs);

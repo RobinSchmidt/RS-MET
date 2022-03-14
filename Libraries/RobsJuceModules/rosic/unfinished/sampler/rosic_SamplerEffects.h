@@ -241,7 +241,19 @@ private:
 
   Modulator* source      = nullptr;  // e.g. EnvGen, LowFreqOsc, etc.
   Processor* targetProc  = nullptr;  // e.g. Filter, Amplifier, etc.
+  // ToDo: replace source/targetProc with integers sourceIndex/targetProcIndex
+
+
   Parameter* targetParam = nullptr;  // Parameter objects are members of a Processor
+  // ToDo: maybe replace targetParam with targetParamIndex...but maybe not because doing so would 
+  // require an additional indirection in the per-sample code - we would have to go to the params
+  // array of the target Processor...on the other hand, it may make the connector memory footprint 
+  // smaller (we store a 32 bit int instead of a 64 bit pointer - maybe even 16 bit int would be 
+  // enough)
+
+
+
+
   float depth  = 0.f;                // Strength of modulation
   ModMode mode = ModMode::absolute;  // maybe the default should depend on the target?
 
