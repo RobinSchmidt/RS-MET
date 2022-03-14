@@ -65,7 +65,7 @@ protected:
 
 /** Baseclass for Effect and Modulator factoring out some common stuff...tbc... */
 
-class Processor // maybe find a better name
+class Processor // maybe find a better name maybe SignalProcessor
 {
 
 public:
@@ -107,13 +107,19 @@ public:
 
 
 
+  /** Subclasses should override this in order to compute the algorithm's internal coefficients 
+  from the user parameters. This will get called on in prepareToPlay and possibly also during 
+  parameter modulation */
+  virtual void updateCoeffs(double sampleRate) = 0;
   //virtual void handleParameterChange(double sampleRate) = 0;
   // maybe it should take the sampleRate as parameter - then we don't nee a member for it - we 
   // could store it in the PlayStatus. actually, we could perhaps also directly access the 
   // PlayStatus object ourselves...but maybe it's more efficient to obtain it once in processFrame
   // and then pass it as parameter to all Processors
+  // Maybe sampleRate should be float -> make benchmarks and numeric accuracy tests with both 
+  // variants. Generally double -> float conversions tend to be somewhat expensive, i think.
 
-  /** Subclasses should override this functions to reset their internal state variables, if any, 
+  /** Subclasses should override this function to reset their internal state variables (if any), 
   such as a filter's past in- and output samples, an oscillator's phase etc. */
   virtual void resetState() {}
 
@@ -331,9 +337,12 @@ public:
     return 0.f;
   }
 
+  void updateCoeffs(double sampleRate) override { /* core.updateCoeffs(); */ }
+
 
 protected:
 
+  // move into a core class:
   RAPT::rsUint32 sampleCount;                          // sample counter
   RAPT::rsUint32 delay, attack, hold, decay, release;  // time parameters in samples
   float start, sustain;                                // level parameters 
@@ -357,7 +366,7 @@ public:
 
   //void setup(float freq, float delay, float fade, float sampleRate); // move into a core class
 
-
+  void updateCoeffs(double sampleRate) override { /* core.updateCoeffs(); */ }
 
 protected:
 
@@ -381,9 +390,10 @@ class Amplifier : public Effect
 {
 public:
   Amplifier();
-  void prepareToPlay(uchar key, uchar vel, double fs) override;
+  void prepareToPlay(uchar key, uchar vel, double fs) override; // get rid
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
+  void updateCoeffs(double sampleRate) override;
 protected:
   AmplifierCore core;
 };
@@ -395,6 +405,7 @@ public:
   void prepareToPlay(uchar key, uchar vel, double fs) override;
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
+  void updateCoeffs(double sampleRate) override;
   void resetState() override { core.resetState(); }
   static FilterCore::Type convertTypeEnum(FilterType sfzType);
 protected:
@@ -408,6 +419,7 @@ public:
   void prepareToPlay(uchar key, uchar vel, double fs) override;
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
+  void updateCoeffs(double sampleRate) override;
   void resetState() override { core.resetState(); }
 protected:
   FilterCore core;
@@ -429,6 +441,7 @@ public:
   void prepareToPlay(uchar key, uchar vel, double fs) override;
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N);
+  void updateCoeffs(double sampleRate) override;
 protected:
   WaveshaperCore core;
 };
