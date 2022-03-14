@@ -2883,7 +2883,9 @@ bool samplerFreeModulationsTest()
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
   // routes free LFO 1 to DC parameter of waveshaper 1 with given modulation depth. Setting this
   // up seems to work. What remains to be done is to actually apply the modulations in the realtime
-  // thread.
+  // thread. the freq param fro the LFO is still at 0. I think, we need to add some code to
+  // SamplePlayer::setupProcessorSetting and/or SamplePlayer::setupDspSettings. Maybe we need to
+  // add a branch codebook->isModulatorSetting
 
 
   //ok &= !se.hasDanglingRoutings();
@@ -3104,7 +3106,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  //ok &= samplerModulationsTest();
+  ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing sfz instruments

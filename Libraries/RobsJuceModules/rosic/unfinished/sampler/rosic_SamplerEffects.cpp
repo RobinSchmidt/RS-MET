@@ -61,6 +61,12 @@ LowFreqOsc::LowFreqOsc()
   // ToDo: phase, wave, sync, ...
 }
 
+void LowFreqOsc::updateCoeffs(double fs)
+{
+  core.setup(params[0].mv(), 0.f, 0.f, (float)fs);
+  dirty = false;
+}
+
 //=================================================================================================
 
 Amplifier::Amplifier()

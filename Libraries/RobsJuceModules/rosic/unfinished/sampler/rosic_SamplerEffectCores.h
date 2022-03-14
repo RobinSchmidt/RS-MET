@@ -15,6 +15,30 @@ namespace Sampler {
 
 //=================================================================================================
 
+class LowFreqOscCore
+{
+
+public:
+
+  void setup(float freq, float delay, float fade, float sampleRate); 
+  void processFrame(float* L, float* R);
+  void resetState() { pos = 0.f; }
+
+protected:
+
+  float pos = 0.f;                     // normalized position in the wave in 0..1
+  float inc = 0.f;                     // per sample increment for pos
+  RAPT::rsUint32 delay = 0, fade = 0;  // delay and fade-in time in samples
+
+};
+// -Maybe we can get rid of delay by initializing pos to -delay and the implementation of "fade"
+//  returns zero for pos < 0
+// -Introduce a start-phase variable
+// -Maybe have a function pointer to a function that produces the actual waveform
+
+
+//=================================================================================================
+
 class AmplifierCore
 {
 

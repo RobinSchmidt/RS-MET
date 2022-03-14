@@ -178,31 +178,6 @@ protected:
 
 };
 
-//-------------------------------------------------------------------------------------------------
-
-/** Baseclass for effect processors that can be applied to layers while they are the played back.
-Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
-
-/*
-class Effect : public Processor  // maybe get rid -> unify Effect and Modulator
-{
-public:
-
-  //virtual void processFrame(float* L, float* R) = 0;
-  //virtual void processBlock(float* L, float* R, int N) = 0;
-
-  // Maybe processFrame should not be purely virtual. It's just more boilerplate. In most cases
-  // we will want to use processBlock exclusively anyway. We could have a default processFrame 
-  // function that just calls processBlock with N=1
-  // Maybe the block-processing should use also buffers for the modulated parameters maintained in
-  // PlayStatus which can be re-used for all the different processors? Otherwise, I think, each 
-  // Parameter object would need its own buffer which would make Parameter quite heavyweight.
-
-};
-*/
-
-//-------------------------------------------------------------------------------------------------
-
 //=================================================================================================
 
 class ModulationConnector  // maybe rename to ModulationWire or just Modulation or ModConnector
@@ -336,23 +311,6 @@ public:
     *L = *R = 0.f;  // preliminary
   }
 
-
-  //void reset() { sampleCount = 0; out = 0.f; }
-
-  /*
-  void prepareToPlay(uchar key, uchar vel, double sampleRate) override
-  {
-    RAPT::rsError("Not yet implemented");
-  }
-
-  float getSample() override
-  {
-    RAPT::rsError("Not yet implemented");
-    return 0.f;
-  }
-  */
-  // get rid
-
   void updateCoeffs(double sampleRate) override { /* core.updateCoeffs(); */ }
 
 
@@ -369,48 +327,18 @@ protected:
 
 //=================================================================================================
 
-/** Low frequency oscillator for the sampler. */
+// ToDo: maybe let the preprocessor generate this boilerplate using a macro:
 
 class LowFreqOsc : public Processor
 {
-
 public:
-
   LowFreqOsc();
-
-
-  //void prepareToPlay(uchar key, uchar vel, double sampleRate) override;
-  //float getSample() override;
-
-  //void setup(float freq, float delay, float fade, float sampleRate); // move into a core class
-
-
-  void processFrame(float* L, float* R) override
-  {
-    *L = *R = 0.1f;  // preliminary
-  }
-
-
-  void updateCoeffs(double sampleRate) override { /* core.updateCoeffs(); */ }
-
+  void processFrame(float* L, float* R) override { core.processFrame(L, R); }
+  void updateCoeffs(double sampleRate) override;
+  void resetState() override { core.resetState(); }
 protected:
-
-  // move into a core class:
-  float pos;                   // normalized position in the wave in 0..1
-  float inc;                   // per sample increment for pos
-  RAPT::rsUint32 delay, fade;  // delay and fade-in time in samples
-
+  LowFreqOscCore core;
 };
-// -Maybe we can get rid of delay by initializing pos to -delay and the implementation of "fade"
-//  returns zero for pos < 0
-// -Introduce a start-phase variable
-// -Maybe have a function pointer to a function that produces the actual waveform
-
-
-//=================================================================================================
-
-// ToDo: maybe let the preprocessor generate this boilerplate using a macro:
-
 class Amplifier : public Processor
 {
 public:

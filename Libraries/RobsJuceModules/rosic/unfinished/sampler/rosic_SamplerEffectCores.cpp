@@ -1,6 +1,27 @@
 namespace rosic {
 namespace Sampler {
 
+
+void LowFreqOscCore::setup(float freq, float delay, float fade, float sampleRate)
+{
+  inc = freq / sampleRate;
+
+
+  int dummy = 0;
+}
+
+void LowFreqOscCore::processFrame(float* L, float* R)
+{
+  static const float tau = float(2.0*PI);
+  float out = sinf(tau * pos);
+  pos += inc;
+  while(pos >= tau)
+    pos -= tau;
+  *L = *R = out;
+  // ToDo: produce stereo output
+}
+
+
 //=================================================================================================
 
 void AmplifierCore::setup(float volume, float pan, float width, float pos)

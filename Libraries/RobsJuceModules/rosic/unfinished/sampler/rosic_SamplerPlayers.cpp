@@ -304,7 +304,7 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
   {
     PlaybackSetting s = settings[i];
     Opcode op = s.getOpcode();
-    if(     codebook->isEffectSetting(op))    { setupProcessorSetting(s);              }
+    if(     codebook->isEffectSetting(op)) { setupProcessorSetting(s);                  }
     else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, sampleRate, rp, iv); }
   }
 }
