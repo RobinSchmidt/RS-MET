@@ -73,6 +73,11 @@ Ideas for new opcodes
   cycles at 2x speed, then 4 cycles at 3x speed, thene 1 cycle at 5x speed, then 2 cycles at 1x 
   speed, etc. Could be useful for dubstep wobbles.
 
+- There could be opcodes for offline pre-processing of the samples similar to Straightliner's Osc
+  options in the "More" popup. This would require to create copies of the affected samples in 
+  memory because different regions may want to have different pre-processing effects to be applied.
+  We would then also need an infrastructure to address and identify the different modified copies.
+
 - param_mode (maybe find a better name): Switch the behavior of what happens when global, group and 
   region all define values for the same opcode. The default mode specified by sfz is "override": 
   group settings override global settings and region settings override global and/or group 

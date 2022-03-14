@@ -2946,6 +2946,8 @@ bool samplerFreeModulationsTest()
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
   //   effects and modulators.
   //  -Drag out PlaybackSetting from SfzInstrument
+  //  -Maybe the SamplePlayer should also just be a Processor like everything else. That would lead 
+  //   to greater unification and more flexibility.
 
 
 

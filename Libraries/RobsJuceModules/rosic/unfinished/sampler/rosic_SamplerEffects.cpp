@@ -315,18 +315,6 @@ void WaveShaper::processBlock(float* L, float* R, int N)
 }
 
 //=================================================================================================
-/*
-EffectPool::EffectPool()
-{
-  allocateEffects();
-  // Maybe don't do this on construction. Maybe client code should explicitly request this
-}
-
-EffectPool::~EffectPool()
-{
-
-}
-*/
 
 void EffectPool::allocateEffects()
 {
@@ -374,17 +362,6 @@ void EffectPool::repositEffect(Effect* p)
 }
 
 //=================================================================================================
-/*
-ModulatorPool::ModulatorPool()
-{
-  allocateModulators();
-}
-
-ModulatorPool::~ModulatorPool()
-{
-
-}
-*/
 
 void ModulatorPool::allocateModulators()
 {

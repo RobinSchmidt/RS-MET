@@ -204,6 +204,13 @@ public:
   // -Factor out the computations - we use similar computations in the mod-system in jura -> 
   //  consolidate the code
   // -Maybe move to .cpp to avoid inlining
+  // -Maybe the multiplicative mode should literally multiply and not "translate" it into addition.
+  //  The main reason for this trickery in jura's mod system was the fact that the ordering of the 
+  //  modulators was hidden under the hood there - but here in sfz files, it's visible, so it may 
+  //  be viable to make modulation dependent on the order of the connections...however, showing it 
+  //  as mod-matrix would then again hide the order unless the matrix entries also show it somehow.
+  //  It could be matrix of mod-widgets with a slider for amount, box for mode, draggable nuber for 
+  //  position in the "chain".
 
   inline void initTarget()
   {
@@ -408,8 +415,6 @@ class EffectPool  // get rid
 
 public:
 
-  //EffectPool();
-  //~EffectPool();
 
   /** Allocates the effects by resizing our vectors (which contain direct objects). */
   void allocateEffects();
@@ -463,8 +468,6 @@ class ModulatorPool // get rid
 
 public:
 
-  //ModulatorPool();
-  //~ModulatorPool();
 
   void allocateModulators();
   Modulator* grabModulator(OpcodeType type);
