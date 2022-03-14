@@ -56,18 +56,10 @@ LowFreqOsc::LowFreqOsc()
   // ToDo: phase, wave, sync, ...
 }
 
-void LowFreqOsc::prepareToPlay(uchar key, uchar vel, double sampleRate)
-{
-  //RAPT::rsError("Not yet implemented");
-
-  // todo: core.setup(freq, delay, fade, sampleRate);
-}
-
 float LowFreqOsc::getSample()
 {
   //RAPT::rsError("Not yet implemented");
   return 0.1f;
-  return 0.f;
 }
 
 
@@ -97,15 +89,6 @@ Amplifier::Amplifier()
   // share the same memory with the algo-parameters. The params are only accessed occasionally 
   // during processing (in case of handling midi controllers) but most of the time, it's good that 
   // they don't intefere with the algo params (stored directly in the DSP objects).
-}
-
-void Amplifier::prepareToPlay(uchar key, uchar vel, double fs)
-{
-  // Save key, vel for later. We may need those values again when we need to recompute our coeffs 
-  // on a control-change
-  this->key = key;
-  this->vel = vel;
-  updateCoeffs(fs);
 }
 
 void Amplifier::processFrame(float* L, float* R) 
@@ -181,14 +164,6 @@ Filter::Filter()
   // -More parameters: filN_bw: bandwidth in octaves (for peak and shelv filters), filN_design =
   //  default, moog, biquad, butter, cheby1, cheby2, ellip, ...
   //
-}
-
-void Filter::prepareToPlay(uchar key, uchar vel, double fs)
-{ 
-  this->key = key;
-  this->vel = vel;
-  updateCoeffs(fs);
-  core.resetState();  // maybe get rid
 }
 
 void Filter::processFrame(float* L, float* R) 
@@ -281,12 +256,6 @@ Equalizer::Equalizer()
   addParameter(Opcode::eqN_bw);
 }
 
-void Equalizer::prepareToPlay(uchar key, uchar vel, double fs)
-{
-  updateCoeffs(fs);
-  core.resetState(); // get rid
-}
-
 void Equalizer::processFrame(float* L, float* R)
 { 
   core.processFrame(L, R); 
@@ -318,11 +287,6 @@ WaveShaper::WaveShaper()
   addParameter(Opcode::distortN_shape);
   addParameter(Opcode::distortN_drive);  // maybe drive should be in dB
   addParameter(Opcode::distortN_dc);
-}
-
-void WaveShaper::prepareToPlay(uchar key, uchar vel, double fs)
-{
-  updateCoeffs(fs);
 }
 
 void WaveShaper::processFrame(float* L, float* R)

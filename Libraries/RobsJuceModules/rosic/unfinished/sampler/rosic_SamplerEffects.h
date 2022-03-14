@@ -171,6 +171,9 @@ public:
   // Maybe processFrame should not be purely virtual. It's just more boilerplate. In most cases
   // we will want to use processBlock exclusively anyway. We could have a default processFrame 
   // function that just calls processBlock with N=1
+  // Maybe the block-processing should use also buffers for the modulated parameters maintained in
+  // PlayStatus which can be re-used for all the different processors? Otherwise, I think, each 
+  // Parameter object would need its own buffer which would make Parameter quite heavyweight.
 
 };
 
@@ -193,14 +196,12 @@ public:
   virtual float getSample() = 0;
 
 
-  void updateModValue()
-  {
-    modValue = getSample();
-  }
+  // get rid - use processFrame/Block uniformly instead:
+  void updateModValue() { modValue = getSample(); }
   float modValue = 0.f;
 
 
-  // todo: processBlock, prepareToPlay
+  // todo: processBlock
 };
 // To unify Effect and Modulator, we should use processFrame in modulators too to compute the 
 // output. Then we may get rid of Modulator::getSample() and updateModValue(). The modValue does
@@ -329,9 +330,7 @@ public:
   void setup(float delay, float start, float attack, float hold, float decay, float sustain,
     float release, float sampleRate);
 
-  //float getSample();
 
-  //void processBlock(float* samples, int numSamples); 
   void reset() { sampleCount = 0; out = 0.f; }
 
   void prepareToPlay(uchar key, uchar vel, double sampleRate) override
@@ -344,6 +343,7 @@ public:
     RAPT::rsError("Not yet implemented");
     return 0.f;
   }
+  // get rid
 
   void updateCoeffs(double sampleRate) override { /* core.updateCoeffs(); */ }
 
@@ -369,7 +369,7 @@ class LowFreqOsc : public Modulator
 public:
 
   LowFreqOsc();
-  void prepareToPlay(uchar key, uchar vel, double sampleRate) override;
+  //void prepareToPlay(uchar key, uchar vel, double sampleRate) override;
   float getSample() override;
 
   //void setup(float freq, float delay, float fade, float sampleRate); // move into a core class
@@ -398,7 +398,6 @@ class Amplifier : public Effect
 {
 public:
   Amplifier();
-  void prepareToPlay(uchar key, uchar vel, double fs) override; // get rid
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
   void updateCoeffs(double sampleRate) override;
@@ -410,7 +409,6 @@ class Filter : public Effect
 {
 public:
   Filter();
-  void prepareToPlay(uchar key, uchar vel, double fs) override;
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
   void updateCoeffs(double sampleRate) override;
@@ -424,7 +422,6 @@ class Equalizer : public Effect
 {
 public:
   Equalizer();
-  void prepareToPlay(uchar key, uchar vel, double fs) override;
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N) override;
   void updateCoeffs(double sampleRate) override;
@@ -446,7 +443,6 @@ class WaveShaper : public Effect
 {
 public:
   WaveShaper();
-  void prepareToPlay(uchar key, uchar vel, double fs) override;
   void processFrame(float* L, float* R) override;
   void processBlock(float* L, float* R, int N);
   void updateCoeffs(double sampleRate) override;
