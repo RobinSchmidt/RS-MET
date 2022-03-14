@@ -3102,16 +3102,16 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerModulationsTest();
+  //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
-  ok &= samplerDataTest();           // datastructure for representing an sfz
+  ok &= samplerDataTest();           // datastructure for representing sfz instruments
   ok &= samplerRegionPlayerTest();   // basic playback of regions
   ok &= samplerBusModeTest();        // basic playback in busMode
   ok &= samplerSaveLoadTest();       // saving and loading of sfz files
-  ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
+  //ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
   ok &= samplerEffectsTest();        // effect chain
-  ok &= samplerModulationsTest();    // modulation system
+  //ok &= samplerModulationsTest();    // modulation system
   ok &= samplerOverloadTest();       // behavior in overload conditions
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes

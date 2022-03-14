@@ -101,15 +101,18 @@ public:
 
 
   // Processing:
-  virtual void prepareToPlay(uchar key, uchar vel, double sampleRate) = 0;  
+  virtual void prepareToPlay(uchar key, uchar vel, double sampleRate) = 0;
+  // make non-virtual. It should assign key,vel members, call a purely virtual updateCoefficients()
+  // or handleParameterChange() and maybe a purely virtual resetState()
+
+  //virtual void handleParameterChange() = 0;
+  //virtual void resetState() = 0;  // maybe just call it reset()
 
 protected:
 
   std::vector<Parameter> params;
   OpcodeType type = OpcodeType::Unknown;
-
-  uchar key = 0, vel = 0; 
-  // needed for key/vel tracking? maybe should be in baseclass? envelopes will need it, too
+  uchar key = 0, vel = 0;                 // Used for key/vel tracking.
 
   // For response to midi control:
   // MidiStatus midiStatus;
