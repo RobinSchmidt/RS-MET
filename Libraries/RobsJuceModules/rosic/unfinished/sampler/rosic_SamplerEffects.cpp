@@ -328,10 +328,10 @@ void EffectPool::allocateEffects()
   // kinds of modules?
 }
 
-Effect* EffectPool::grabEffect(OpcodeType type)
+Processor* EffectPool::grabEffect(OpcodeType type)
 {
   using OT = OpcodeType;
-  Effect* p = nullptr;
+  Processor* p = nullptr;
   switch(type)
   {
   case OT::Amplifier:  p = amplifiers.grabItem();  break;
@@ -342,7 +342,7 @@ Effect* EffectPool::grabEffect(OpcodeType type)
   return p;
 }
 
-void EffectPool::repositEffect(Effect* p)
+void EffectPool::repositEffect(Processor* p)
 {
   using OT = OpcodeType;
   int i = -1;
@@ -427,12 +427,12 @@ void DspResourcePool::allocateEffects()
   effectPool.allocateEffects();
 }
 
-Effect* DspResourcePool::grabEffect(OpcodeType type)
+Processor* DspResourcePool::grabEffect(OpcodeType type)
 {
   return effectPool.grabEffect(type);
 }
 
-void DspResourcePool::repositEffect(Effect* p)
+void DspResourcePool::repositEffect(Processor* p)
 {
   effectPool.repositEffect(p);
 }

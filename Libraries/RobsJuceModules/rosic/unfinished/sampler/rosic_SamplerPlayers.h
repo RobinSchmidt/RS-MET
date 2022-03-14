@@ -38,7 +38,7 @@ public:
   //void reset() { resetState(); resetSettings(); }
 
   void reserve(size_t num) { processors.reserve(num); }
-  void addEffect(Effect* p) { processors.push_back(p); }
+  void addEffect(Processor* p) { processors.push_back(p); }
   void clear() { processors.clear(); }
 
   bool isEmpty() const { return processors.empty(); }
@@ -50,7 +50,7 @@ public:
   size_t getNumEffects(OpcodeType type) const;
 
 
-  Effect* getEffect(int i) { return processors[i]; } 
+  Processor* getEffect(int i) { return processors[i]; } 
   // is this needed? it's confusing to have this and the function below because the indices mean
   // different things in both cases
 
@@ -60,11 +60,11 @@ public:
   index = 3. For certain opcodes, an index is not applicable. We usually encode this by setting the
   value to -1 in the data-record. Such a -1 will then be interpreted as "first-and-only" and in 
   this case, it doesn't really matter, if the caller passes -1 or +1 into this function. */
-  Effect* getEffect(OpcodeType type, int sfzIndex);
+  Processor* getEffect(OpcodeType type, int sfzIndex);
 
 //protected:
 
-  std::vector<Effect*> processors;
+  std::vector<Processor*> processors;
   // Where is this allocated, i.e. where do we call resize on this? I mean the vector itself, not
   // the pointed-to objects. This is not yet well defined, i think. It should probably also happen
   // on sfz load
@@ -227,7 +227,7 @@ protected:
 
   /** Returns a pointer to an effect of given type, if available, otherwise a nullptr. Used in
   assembleEffectChain. */
-  Effect* getEffect(OpcodeType type)
+  Processor* getEffect(OpcodeType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
     return dspPool->grabEffect(type);

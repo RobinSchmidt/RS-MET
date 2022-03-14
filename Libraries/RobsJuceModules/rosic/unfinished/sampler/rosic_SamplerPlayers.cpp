@@ -26,13 +26,13 @@ size_t EffectChain::getNumEffects(OpcodeType type) const
   return count;
 }
 
-Effect* EffectChain::getEffect(OpcodeType type, int index)
+Processor* EffectChain::getEffect(OpcodeType type, int index)
 {
   RAPT::rsAssert(index >= 1 || index == -1);
   index = RAPT::rsMax(index-1, 0);
   int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
   for(int i = 0; i < (int)processors.size(); i++) {
-    Effect* dsp = getEffect(i);
+    Processor* dsp = getEffect(i);
     if(dsp->getType() == type) {
       if(count == index)
         return dsp;
@@ -134,7 +134,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
         continue;
 
       // OK - now we actually need to grab another effect of given type from the pool:
-      Effect* eff = getEffect(opType);
+      Processor* eff = getEffect(opType);
       if(eff)
       {
         eff->setParametersToDefaults(sfzIndex);
@@ -302,7 +302,7 @@ void SamplePlayer::disassembleProcessors()
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  Effect* dsp = effectChain.getEffect(s.getTargetOpcodeType(), s.getIndex());
+  Processor* dsp = effectChain.getEffect(s.getTargetOpcodeType(), s.getIndex());
   if(dsp != nullptr)
     dsp->setParameter(s.getOpcode(), s.getValue());
   else

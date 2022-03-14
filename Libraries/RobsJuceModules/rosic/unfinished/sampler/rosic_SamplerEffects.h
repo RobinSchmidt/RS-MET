@@ -171,6 +171,7 @@ protected:
 /** Baseclass for effect processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
 
+/*
 class Effect : public Processor  // maybe get rid -> unify Effect and Modulator
 {
 public:
@@ -186,6 +187,7 @@ public:
   // Parameter object would need its own buffer which would make Parameter quite heavyweight.
 
 };
+*/
 
 //-------------------------------------------------------------------------------------------------
 
@@ -393,7 +395,7 @@ protected:
 
 // ToDo: maybe let the preprocessor generate this boilerplate using a macro:
 
-class Amplifier : public Effect
+class Amplifier : public Processor
 {
 public:
   Amplifier();
@@ -404,7 +406,7 @@ protected:
   AmplifierCore core;
 };
 
-class Filter : public Effect
+class Filter : public Processor
 {
 public:
   Filter();
@@ -417,7 +419,7 @@ protected:
   FilterCore core;
 };
 
-class Equalizer : public Effect
+class Equalizer : public Processor
 {
 public:
   Equalizer();
@@ -438,7 +440,7 @@ protected:
   // about EngineersFilter? maybe engfilN_type, engfilN_freq, etc.
 };
 
-class WaveShaper : public Effect
+class WaveShaper : public Processor
 {
 public:
   WaveShaper();
@@ -482,13 +484,13 @@ public:
   bypass dummy effect because that could have really bad consequences: imagine a missing 
   attenuation effect. Regions are always played back either correctly or not at all but never 
   wrongly. */
-  Effect* grabEffect(OpcodeType type);
+  Processor* grabEffect(OpcodeType type);
   // rename to grabProcessor
 
   /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 
   processor to the pool so it becomes available again for playing other notes. */
-  void repositEffect(Effect* p);
+  void repositEffect(Processor* p);
 
   /** This is currently only meant to facilitate unit testing overload conditions. In such tests,
   we want a well defined and small number of filters to be available so we can simulate conditions
@@ -564,12 +566,12 @@ public:
   bypass dummy effect because that could have really bad consequences: imagine a missing 
   attenuation effect. Regions are always played back either correctly or not at all but never 
   wrongly. */
-  Effect* grabEffect(OpcodeType type);
+  Processor* grabEffect(OpcodeType type);
 
   /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 
   processor to the pool so it becomes available again for playing other notes. */
-  void repositEffect(Effect* p);
+  void repositEffect(Processor* p);
 
 
   void allocateModulators();
