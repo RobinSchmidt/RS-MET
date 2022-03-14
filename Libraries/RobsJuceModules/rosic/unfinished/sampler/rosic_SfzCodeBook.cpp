@@ -225,8 +225,16 @@ SfzCodeBook::SfzCodeBook()
   // we want:  lfoN_amplitudeX, lfoN_volumeX, lfoN_cutoffX, ...
 
   // We also want LFO phases and we want to be able able to specify the LFO frequency in 
-  // temp-synced units - maybe an opcode lfoN_unit = hertz (cycles per second), cycles per beat or 
-  // maybe lfoN_sync = true/false
+  // temp-synced units - maybe an opcode lfoN_unit=hertz (cycles per second), cycles per beat or 
+  // maybe lfoN_sync = true/false. Or maybe allow the user to optionally give a unit like:
+  // like lfoN_freq=20_Hz ..here, _Hz would be optional becasue Hz is the default unit for LFO 
+  // freqs but it could also be a different unit like 20_perBeat or 20_perMeasure. This feature 
+  // could also be used to allow the user to specify other opcodes in different units like 
+  // cutoff=69_key instead of cutoff=440_Hz, attack=200_ms isntead of attack=0.02 (which would 
+  // default to attack=0.02_s), etc.
+  // Maybe go to KVR to talk about such proposals. Make a thread:
+  // "Extending SFZ: existing specifications, new proposals, general discussion"
+  // Maybe let's call the extended format SFZ++ :-)
 
 
   int dummy = 0;

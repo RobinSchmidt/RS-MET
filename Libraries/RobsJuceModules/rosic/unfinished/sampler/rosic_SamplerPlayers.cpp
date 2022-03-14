@@ -443,12 +443,19 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
   resetPlayerSettings();
   setupDspSettingsFor(region, fs, busMode, iv);
 
+
   if(!modSources.empty())
     prepareToPlay1((Processor**) &modSources[0], (int) modSources.size(), key, vel, fs);
+  if(!effectChain.processors.empty())
+    prepareToPlay1((Processor**) &effectChain.processors[0], (int) effectChain.processors.size(), 
+      key, vel, fs); 
+  // This should be cleaned up: Perhaps we should get rid of the two subclasses Effect and 
+  // Modulator of Processor and let modSources and effectChain both be vectors of Processor. Then
+  // prepareToPlay1 can take a refecrence to a std::vector<Processor*> and inside it, we could use
+  // a range-based loop. See also comment below class Modulator.
 
 
-
-  effectChain.prepareToPlay(key, vel, fs);
+  //effectChain.prepareToPlay(key, vel, fs);
   // Should be replaced by:
   //   prepareToPlay(modSources,  key, vel, fs);
   //   prepareToPlay(effectChain, key, vel, fs);

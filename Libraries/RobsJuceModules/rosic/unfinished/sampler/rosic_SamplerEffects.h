@@ -169,6 +169,15 @@ public:
 
   // todo: processBlock, prepareToPlay
 };
+// To unify Effect and Modulator, we should use processFrame in modulators too to compute the 
+// output. Then we may get rid of Modulator::getSample() and updateModValue(). The modValue does
+// not need to be stored as member of the modulator - it can be held in a local variable in the 
+// per-sample processing. The purely virtual Effect::processFrame and Effect::processBlock would 
+// be moved into Processor and the Effect subclass would become obsolete. When doing it that way,
+// modulators would become inherently capable of producing stereo output because processFrame is 
+// layed out for producing stereo signals anyway. Not having to deal with these two subclasses 
+// will simplify the code in other ways as well.
+
 
 //=================================================================================================
 

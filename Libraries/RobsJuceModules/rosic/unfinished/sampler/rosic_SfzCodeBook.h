@@ -324,9 +324,12 @@ enum class OpcodeType
 
   // Freely routable modulators:
   _TagFreeModulatorsStart,
-  FreeEnv,    // maybe rename to EnvGen
-  FreeLfo,    // maybe rename to LowFreqOsc
-  //MidiCtrl  // maybe allow midi-controllers to be modulators, too
+  FreeEnv,    // rename to EnvGen
+  FreeLfo,    // rename to LowFreqOsc
+
+  // Allow midi-inputs to be modulation sources, too:
+  //MidiCtrl, MidiKey, MidiOnVel, MidiOffVel, MidiAftertouch, ...
+
   _TagFreeModulatorsEnd,
   // Free modulators need to come immediately after the fixed modulators. Some code relies on that.
   // ToDo: maybe avoid this dependency by using _TagModulatorsStart, _TagModulatorsEnd and wrap 
