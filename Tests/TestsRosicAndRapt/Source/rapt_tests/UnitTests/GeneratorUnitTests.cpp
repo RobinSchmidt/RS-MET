@@ -2866,12 +2866,12 @@ bool samplerFreeModulationsTest()
   rsFill(dc, 1.f);
 
   // Set up a sampler engine with a sample that is just looped DC, a waveshaper with an identity
-  // function as shape but with an LFO-modulated DC parameter:
+  // function as shape but with an LFO-modulated DC parameter. We route lfo1 to the DC parameter of
+  // waveshaper1 with a modulation depth of 0.5.
   float fs       = 44100;   // sample rate
-  float baseDC   = 3.f;     // nominal DC value
+  float baseDC   = 3.f;     // nominal DC value fo waveshaper
   float lfoFreq  =  200.f;  // in Hz (SFZ has range 0..20 Hz, we allow audio-rate modulation)
-  float lfoDepth =    0.5;  // raw
-
+  float lfoDepth =    0.5;  // raw factor
   SE se;
   se.setSampleRate(fs);
   addSingleSampleRegion(&se, dc);
@@ -2881,24 +2881,23 @@ bool samplerFreeModulationsTest()
   se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
   se.setRegionSetting(0, 0, OC::lfoN_freq,   lfoFreq, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
-  // routes free LFO 1 to DC parameter of waveshaper 1 with given modulation depth. Setting this
-  // up seems to work. What remains to be done is to actually apply the modulations in the realtime
-  // thread. the freq param for the LFO is still at 0. 
-  
-  // Next: I think, we need to add some code to SamplePlayer::setupProcessorSetting and/or 
-  // SamplePlayer::setupDspSettings. Maybe we need to add a branch codebook->isModulatorSetting
 
   //ok &= !se.hasDanglingRoutings();
-  // should verify that all roútings that are set up in all regions have a valid source and target
+  // Function not yet implemented. It should verify that all roútings that are set up in all 
+  // regions have a valid source and target....tbc...
 
-
-  // Generate target signal:
+  // Generate target signal. We expect the DC of 1 from the looped sample itself plus the 
+  // sine-modulated DC coming from the waveshaper.
   Vec tgt(N);
   double w = 2*PI*(double)lfoFreq / (double)fs;
   for(int n = 0; n < N; n++)
   {
     float lfoOut = sin(w*n);
     tgt[n] = 1.f + (baseDC + lfoDepth * lfoOut);
+    // works
+
+    //tgt[n] = 1.f + (baseDC + lfoDepth * sin(w*n));
+    // fails - why?
   }
   //rsPlotVectors(dc, tgt);
 
@@ -2918,30 +2917,9 @@ bool samplerFreeModulationsTest()
   rsPlotVectors(tgt - outL, tgt - outR);
   */
 
-  // Next: 
-  // 
-
   // ToDo:
-
-  // Done:
-  // -Done: Provide method to set up modulation routings in Region, Group, Global.
-  // -During assembling the RegionPlayer, also assemble the modulators and connections.
-  //  -Done: Assemble modulators in a way similar to assembling the effects.
-  //  -Done: Implement ModulationConnection/Wire class. It should contain pointers to the modulator
-  //   (i.e. the source), the modulated parameter (i.e. the target) and parameters for modulation 
-  //   depth and mode (formula).
-  //  -Done: Assemble the modulation connections (and disassemble them when finished or an error 
-  //   occurs).
-  //  -Done: Update RegionPlayer::prepareToPlay to prepare also the modSources (see comment there).
-  //   Maybe we need to do similar things in GroupPlayer, InstrumentPlayer, too
-  // -During playback, make use of the modulations:
-  //  -Done: Let all modulators compute their output value in processFrame.
-  //  -Done: Init all modulated parameters to their unmodulated values.
-  //  -Done: Apply all modulations in an accumulating loop over the modMatrix
-  //  -Update the affected DSP units (effects and(!) modulators), i.e. recompute their affected
-  //   algo-params
-
-
+  // -In RegionPlayer::processFrame, we should use a member of PlayStatus for the modBuffer instead
+  //  of having it as (heap-allocated(!!!)) local std::vector
   // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
   //  need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
   //  additional modulators for the enclosing Group and Instrument and their contributions should 
@@ -2957,8 +2935,8 @@ bool samplerFreeModulationsTest()
   //    (1) group mod-routings provide fallback values for missing region routings, sfz-default
   //    (2) group mod-routings only connect group modulators to group effects, levels_are_busses
   //    (3) both.
-  // -In RegionPlayer::processFrame, we should use a member of PlayStatus for the modBuffer instead
-  //  of having it as (heap-allocated(!!!)) local std::vector
+  // -Check, if we need to change GroupPlayer and InstrumentPlayer, too - quite probably yes.
+  //  Check about prepareToPlay, processFrame
   // -Maybe we should have a SamplePlayer as subclass of Processor and let the RegionPlayer use it
   //  just like any other processor. The baseclass of RegionPlayer should then be renamed...maybe
   //  something like (Level)PlayerBase or something. Maybe we could the also have a sampleN opcode
@@ -2967,7 +2945,6 @@ bool samplerFreeModulationsTest()
   // -The sampleRate should probably be passed around as float. Typical sample rates can be exactly
   //  represented by a float anyway and if we really need double precision for certain coeff
   //  computations, we can convert the (exact) float to double as needed.
-
   //
   // -Refactor:
   //  -See comment in DspResourcePool
@@ -2980,8 +2957,6 @@ bool samplerFreeModulationsTest()
   //   should just accumulate its output into what's already there. Maybe that should be the 
   //   general behavior of "Source" or "Generator" types of Processors. Maybe make an oscillator
   //   Processor first to get a feeling of how it works and then make a SampleOscillator/Player
-
-
 
   // Notes: 
   // To specify free modulations in the sfz-file, we want to write things like lfo2_cutoff3=500 to 
@@ -3020,11 +2995,6 @@ bool samplerFreeModulationsTest()
   // could also have a Quantizer module that let's the user define a bunch of quantization levels. 
   // It could be useful to place such a quantizer behind a ValueGenerator. It could be controlled 
   // by opcodes of the form quantN_levelX
-
-
-
-
-
 
   rsAssert(ok);
   return ok;
