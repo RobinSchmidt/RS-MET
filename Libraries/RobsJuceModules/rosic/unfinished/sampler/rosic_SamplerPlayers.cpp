@@ -4,6 +4,25 @@ namespace Sampler {
 //=================================================================================================
 // rsSamplerEngine::SignalProcessorChain
 
+Processor* getProcessor(std::vector<Processor*>& processors, OpcodeType type, int index)
+{
+  RAPT::rsAssert(index >= 1 || index == -1);
+  index = RAPT::rsMax(index-1, 0);
+  int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
+  for(int i = 0; i < (int)processors.size(); i++) {
+    Processor* dsp = processors[i];
+    if(dsp->getType() == type) {
+      if(count == index)
+        return dsp;
+      else
+        count++;
+    }
+  }
+  return nullptr;
+}
+// move into some class, find better name
+
+
 void EffectChain::processFrame(float* L, float* R)
 {
   for(size_t i = 0; i < processors.size(); i++)
@@ -26,26 +45,11 @@ size_t EffectChain::getNumEffects(OpcodeType type) const
   return count;
 }
 
-
-
-
 Processor* EffectChain::getEffect(OpcodeType type, int index)
 {
-  RAPT::rsAssert(index >= 1 || index == -1);
-  index = RAPT::rsMax(index-1, 0);
-  int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
-  for(int i = 0; i < (int)processors.size(); i++) {
-    Processor* dsp = getEffect(i);
-    if(dsp->getType() == type) {
-      if(count == index)
-        return dsp;
-      else
-        count++;
-    }
-  }
-  return nullptr;
+  return getProcessor(processors, type, index);
 }
-// ToDo: turn into a free function
+// ToDo: turn into a free function - done -> use it everywhere and then get rid of this wrapper
 
 //=================================================================================================
 // SamplePlayer
