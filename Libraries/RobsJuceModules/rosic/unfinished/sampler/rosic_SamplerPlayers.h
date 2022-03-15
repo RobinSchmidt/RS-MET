@@ -5,16 +5,19 @@ namespace rosic { namespace Sampler {
 
 //=================================================================================================
 
+/*
 inline void prepareToPlay1(Processor** processors, int numProcessors,
   unsigned char key, unsigned char vel, double fs) 
 { 
   for(int i = 0; i < numProcessors; ++i)
     processors[i]->prepareToPlay(key, vel, fs);
 }
+*/
 // rename, move to cpp, maybe move into class SamplePlayer
 // maybe remove use function below
 
-inline void prepareToPlay(std::vector<Processor*>& processors, unsigned char key, unsigned char vel, double fs)
+inline void prepareToPlay1(std::vector<Processor*>& processors, // get rid of th 1 in the name
+  unsigned char key, unsigned char vel, double fs)
 {
   for(auto & p : processors) 
     p->prepareToPlay(key, vel, fs);

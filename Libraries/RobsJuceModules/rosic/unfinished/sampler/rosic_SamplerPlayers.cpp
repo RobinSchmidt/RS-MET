@@ -524,11 +524,11 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
 
   // new:
   double fs = playStatus->sampleRate;  // todo: use float
-  if(!modSources.empty())
-    prepareToPlay1((Processor**) &modSources[0], (int) modSources.size(), key, vel, fs);
-  if(!effectChain.processors.empty())
-    prepareToPlay1((Processor**) &effectChain.processors[0], (int) effectChain.processors.size(), 
-      key, vel, fs); 
+
+  //if(!modSources.empty())
+    prepareToPlay1(modSources, key, vel, fs);
+  //if(!effectChain.processors.empty())
+    prepareToPlay1(effectChain.processors, key, vel, fs); 
   // This should be cleaned up: Perhaps we should get rid of the two subclasses Effect and 
   // Modulator of Processor and let modSources and effectChain both be vectors of Processor. Then
   // prepareToPlay1 can take a refecrence to a std::vector<Processor*> and inside it, we could use
@@ -850,7 +850,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), rp, busMode);
-    prepareToPlay(effectChain.processors, key, vel, playStatus->sampleRate); 
+    prepareToPlay1(effectChain.processors, key, vel, playStatus->sampleRate); 
     rp->setupFromIntemediates(); // We need to do this again
   }
   return true;
