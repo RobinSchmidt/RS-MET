@@ -317,36 +317,37 @@ void SamplePlayer::setupModSourceSetting(const PlaybackSetting& s)
 }
 
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
-  double sampleRate, RegionPlayer* rp, bool busMode, PlayStatus* iv)
+  RegionPlayer* rp, bool busMode)
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   for(size_t i = 0; i < settings.size(); i++)
   {
     PlaybackSetting s = settings[i];
     Opcode op = s.getOpcode();
-    if(     cb->isEffectSetting(op))    { setupProcessorSetting(s); }
-    else if(cb->isModSourceSetting(op)) { setupModSourceSetting(s); }
-    else if(cb->isPlayerSetting(op))    { setupPlayerSetting(   s, sampleRate, rp, iv); }
+    if(     cb->isEffectSetting(op))    { setupProcessorSetting(s    ); }
+    else if(cb->isModSourceSetting(op)) { setupModSourceSetting(s    ); }
+    else if(cb->isPlayerSetting(op))    { setupPlayerSetting(   s, rp); }
   }
   // Try to refactor stuff in a way that lets use get rid of the branching and treat all cases
   // uniformly...I'm not yet sure, if that's possible in any meaningful way, though. Maybe first
   // try to avoid to pass all the additional parameters to setupPlayerSetting or if it really needs
   // them, pass them to setupProcessorSetting, too even it it doesn't make use of them
+  // Why has setupPlayerSetting a different signature, i.e. takes the additional rp parameter? Can
+  // we get rid of this?
 }
 
 //=================================================================================================
 // RegionPlayer
 
 rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay,
-  const AudioFileStream<float>* sampleStream, uchar key, uchar vel, double fs, bool busMode, 
-  PlayStatus* iv)
+  const AudioFileStream<float>* sampleStream, uchar key, uchar vel, bool busMode)
 {
   releaseResources(); // actually, it should not hold any at this point - or should it?
   region = regionToPlay;
   if(region == nullptr)
     return rsReturnCode::nothingToDo;
   stream = sampleStream;
-  return prepareToPlay(key, vel, fs, busMode, iv);
+  return prepareToPlay(key, vel, busMode);
 }
 
 void RegionPlayer::processFrame(float* L, float* R)
@@ -543,8 +544,7 @@ void RegionPlayer::allocateMemory()
 
 
 
-rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool busMode, 
-  PlayStatus* iv)
+rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
@@ -556,9 +556,10 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
     return rsReturnCode::layerOverload; }
 
   resetPlayerSettings();
-  setupDspSettingsFor(region, fs, busMode, iv);
+  setupDspSettingsFor(region, busMode);
 
   // new:
+  double fs = playStatus->sampleRate;  // todo: use float
   if(!modSources.empty())
     prepareToPlay1((Processor**) &modSources[0], (int) modSources.size(), key, vel, fs);
   if(!effectChain.processors.empty())
@@ -665,8 +666,7 @@ void RegionPlayer::resetPlayerSettings()
   // key = 0;   // uncommenting breaks unit tests - figure out why and document
 }
 
-void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode, 
-  PlayStatus* iv)
+void RegionPlayer::setupDspSettingsFor(const Region* r, bool busMode)
 {
   // To set up the settings, we call setupDspSettings 3 times to:
   //   (1) set up the general instrument-wide settings
@@ -676,21 +676,24 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode,
   // DSP objects on the groups which map to sub-busses and the instrument which maps to the final
   // master bus:
   if(!busMode) {
-    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, this, busMode, iv);  
-    setupDspSettings(region->getGroup()->getSettings(), fs, this, busMode, iv); }
-  setupDspSettings(region->getSettings(), fs, this, busMode, iv);
+    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), this, busMode);  
+    setupDspSettings(region->getGroup()->getSettings(), this, busMode); }
+  setupDspSettings(region->getSettings(), this, busMode);
   // Works for accumulative setting but not for those that should awlays override
 
   // Compute the final member variables from the intemediates:
-  setupFromIntemediates(*iv, fs);
+  setupFromIntemediates();
   // maybe call this only when not in busMode because in busMode, it will get called again later 
   // and we don't want to call it twice. It will not do anything wrong, but it does the computation
   // at the first time for nothing....
 }
 
-void RegionPlayer::setupFromIntemediates(const PlayStatus& iv, double fs) // fix typo!
+void RegionPlayer::setupFromIntemediates() // fix typo!..actually this function needs a better name anyway
 {
   // This may get called twice on noteOn in busMode -> verify and try to avoid the first call
+
+  PlayStatus& iv = *playStatus;  // maybe rename
+  double fs = iv.sampleRate; 
 
   // Compute the per-sample increment:
 
@@ -727,8 +730,7 @@ void RegionPlayer::setupFromIntemediates(const PlayStatus& iv, double fs) // fix
   //  default)? Try this and write unit tests..
 }
 
-void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-  RegionPlayer* rp, PlayStatus* iv)
+void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp)
 {
   RAPT::rsAssert(rp == this);
   // For RegionPlayer objects like this, this function is supposed to be called only for the object
@@ -736,6 +738,11 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   // GroupPlayers and InstrumPlayers, the pointer is supposed to hold the RegionPlayer to which 
   // this setting should be applied accumulatively in busMode. In default mode, GroupPlayer and 
   // InstrumPlayer play no role at all.
+
+  PlayStatus* iv = playStatus; // rename
+  double sampleRate = iv->sampleRate;
+
+
 
   float val = s.getValue();
   int   N   = s.getIndex();
@@ -778,8 +785,7 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
 //=================================================================================================
 // SampleBusPlayer
 
-void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs, 
-  RegionPlayer* rp, PlayStatus* iv)
+void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp)
 {
   // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
   // setting in question reaches through to an underlying (embedded) RegionPlayer object and must 
@@ -788,6 +794,10 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   // applied directly at the playback source. Some of them (like delay) *could* be achieved 
   // also by post-processing with a suitable effect but it's more efficient to do it at the source.
   // Others like all tuning related stuff indeed need to be done at the source.
+
+  PlayStatus* iv = playStatus; 
+  double fs = playStatus->sampleRate;
+
 
   RAPT::rsAssert(rp != nullptr);
   float val = s.getValue();
@@ -847,8 +857,7 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
 }
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLevel* thingToPlay,
-  uchar key, uchar vel, double sampleRate, RegionPlayer* rp, bool busMode, 
-  PlayStatus* intermediates)
+  uchar key, uchar vel, RegionPlayer* rp, bool busMode)
 {
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
@@ -860,7 +869,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
 
 
   if(thingToPlay == grpOrInstr) {
-    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, intermediates);
+    setupDspSettings(grpOrInstr->getSettings(), rp, busMode);
     return true;  }
     // This is not a new group or restart of the whole InstrumPlayer so we may only need to set up
     // those settings that affect the RegionPlayer, i.e. offset, delay, inc, etc. The other 
@@ -876,9 +885,9 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
     if(!assembleProcessors(busMode)) {
       grpOrInstr = nullptr;
       return false;   }
-    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, intermediates);
-    effectChain.prepareToPlay(key, vel, sampleRate); 
-    rp->setupFromIntemediates(*intermediates, sampleRate); // We need to do this again
+    setupDspSettings(grpOrInstr->getSettings(), rp, busMode);
+    effectChain.prepareToPlay(key, vel, playStatus->sampleRate); 
+    rp->setupFromIntemediates(); // We need to do this again
   }
   return true;
 }

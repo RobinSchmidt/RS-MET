@@ -464,8 +464,7 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
   // this happens, it indicates a bug at the call site.
 }
 
-RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r, uchar key, uchar vel, 
-  PlayStatus* iv)
+RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r, uchar key, uchar vel)
 {
   RAPT::rsAssert(r->getCustomPointer() != nullptr); // No stream connected
 
@@ -480,8 +479,7 @@ RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r, uchar key, uc
   if(idlePlayers.empty())
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
-  rsReturnCode rc = rp->setRegionToPlay(
-    r, getSampleStreamFor(r), key, vel, sampleRate, busMode, iv);
+  rsReturnCode rc = rp->setRegionToPlay(r, getSampleStreamFor(r), key, vel, busMode);
   if(rc == rsReturnCode::success)
   {
     activePlayers.push_back(rp);
@@ -559,7 +557,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar
     if(!shouldRegionPlay(r, key, vel))              // Check response constraints
       continue;
     // Try to create player for the new layer:
-    RegionPlayer* rp = getRegionPlayerFor(r, key, vel, &playStatus);  
+    RegionPlayer* rp = getRegionPlayerFor(r, key, vel);  
     if(rp == nullptr) {                             // When it fails, roll back all the
       stopMostRecentLayers(psc.numLayersStarted);   // players created so far and abort. 
       psc.numLayersStarted = 0;                     // We failed to trigger the note.
@@ -760,8 +758,10 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
   activeGroupPlayers.reserve(L);
   for(int i = 0; i < L; i++) {
     idleGroupPlayers[i] = &groupPlayerPool[i];
-    idleGroupPlayers[i]->setDspResourcePool(&dspPool); }
+    idleGroupPlayers[i]->setDspResourcePool(&dspPool); 
+    idleGroupPlayers[i]->setPlayStatusPointer(&playStatus); }
   instrumPlayer.setDspResourcePool(&dspPool);
+  instrumPlayer.setPlayStatusPointer(&playStatus);
 }
 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
@@ -769,7 +769,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, ucha
   //intermediates.reset();
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
   if(!canFallBackToBaseclass()) // Don't update the group players, if they are not used anyway
-    updateGroupPlayers(psc, key, vel, &playStatus);
+    updateGroupPlayers(psc, key, vel);
   return psc;
 }
 
@@ -778,7 +778,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uch
   //intermediates.reset();
   PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
   if(!canFallBackToBaseclass())
-    updateGroupPlayers(psc, key, vel, &playStatus);
+    updateGroupPlayers(psc, key, vel);
   return psc;
 }
 
@@ -850,8 +850,7 @@ int rsSamplerEngine2::stopAllPlayers()
 // -in addition to move the players back into their idle pool, we also need to move the dsp
 //  objects back
 
-void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, uchar key, uchar vel,  
-  PlayStatus* iv)
+void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, uchar key, uchar vel)
 {
   // Figure out, how many regions were triggered and add pointers to the freshly triggered 
   // RegionPlayers to an appropriate GroupPlayer - either to one that is already playing or grab a 
@@ -866,7 +865,7 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, uchar key, uchar
       activeGroupPlayers[gpi]->addRegionPlayer(rp);
       instrumPlayer.addRegionPlayer(rp); }
     else  {
-      if(!startGroupPlayerFor(rp, key, vel, iv)) {
+      if(!startGroupPlayerFor(rp, key, vel)) {
         stopRegionPlayer(i);
         numLayersNow--;  }
       if(numLayersBefore == 0) {                    // If nothing was playing before, we have to 
@@ -889,14 +888,13 @@ int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const SfzInstrument::Group* g
   return -1;
 }
 
-bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp, uchar key, uchar vel, 
-  PlayStatus* intermediates)
+bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp, uchar key, uchar vel)
 {
   if(idleGroupPlayers.empty())
     return false;
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
   const SfzInstrument::Group* grp = rp->getRegionToPlay()->getGroup();
-  bool ok = gp->setGroupToPlay(grp, key, vel, sampleRate, rp, busMode, intermediates);
+  bool ok = gp->setGroupToPlay(grp, key, vel, rp, busMode);
   if(!ok) {
     idleGroupPlayers.push_back(gp);
     return false; } // Not enough resources to start the player. Caller should roll back rp, too
@@ -924,8 +922,7 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
 
 bool rsSamplerEngine2::startInstrumPlayerFor(RegionPlayer* rp, uchar key, uchar vel)
 {
-  return instrumPlayer.setInstrumToPlay(
-    &sfz.global, key, vel, sampleRate, rp, busMode, &playStatus);
+  return instrumPlayer.setInstrumToPlay(&sfz.global, key, vel, rp, busMode);
 }
 
 void rsSamplerEngine2::stopInstrumPlayer()

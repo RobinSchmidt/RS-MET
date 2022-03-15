@@ -302,8 +302,7 @@ protected:
   player that may be managed by higher level players, accordingly. RegionPlayer itself sets
   up its own member variables, GroupPlayer manipulates one of its embedded RegionPlayers, 
   etc.  */
-  virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp, PlayStatus* iv) = 0;
+  virtual void setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp) = 0;
 
   /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
   applicable to the DSP chain, it finds the processor in our dspChain member to which this 
@@ -318,8 +317,8 @@ protected:
 
 
   /** ToDo: add documentation */
-  virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate, 
-    RegionPlayer* rp, bool busMode, PlayStatus* iv);
+  virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
+    RegionPlayer* rp, bool busMode);
   // Maybe return a bool to indicate, if the setting was handled (if false, the subclass may
   // want to do something in its override)...??? comment obsolete?
 
@@ -397,8 +396,7 @@ public:
   (false). Likewise, regionSettingsOverride = true lets the region settings override the group
   settings. */
   rsReturnCode setRegionToPlay(const Region* regionToPlay, 
-    const AudioFileStream<float>* sampleStream, uchar key, uchar vel, double outputSampleRate, 
-    bool busMode, PlayStatus* iv);
+    const AudioFileStream<float>* sampleStream, uchar key, uchar vel, bool busMode);
   // todo: later maybe have default values (false) for the busMode 
 
   const Region* getRegionToPlay() const { return region; }
@@ -448,8 +446,7 @@ protected:
   rsReturnCode::success, it means the player is now ready to play. If it returns anything else,
   it means that something went wrong. Presumably, not enough ressources were available. In such a 
   case, and the engine should discard the player object, i.e. put it back into the pool. */
-  rsReturnCode prepareToPlay(uchar key, uchar vel, double sampleRate, bool busMode,
-    PlayStatus* iv);
+  rsReturnCode prepareToPlay(uchar key, uchar vel, bool busMode);
 
   /** Assembles all signal processing objects that are needed to play this region, i.e. all the
   required effects, modulators and modulation connections and returns true, if all works well.
@@ -468,13 +465,11 @@ protected:
 
   // move to baseclass, if possible and/or maybe have a virtual detupDspSettings function in 
   // baseclass that we override here and in the GroupPlayer:
-  void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode, 
-    PlayStatus* iv);
+  void setupDspSettingsFor(const Region* r, bool busMode);
 
-  void setupFromIntemediates(const PlayStatus& iv, double sampleRate);
+  void setupFromIntemediates();
 
-  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp, PlayStatus* iv) override;
+  void setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp) override;
 
   const Region* region;                 //< The Region object that this object should play
   const AudioFileStream<float>* stream; //< Stream object to get the data from
@@ -543,12 +538,10 @@ public:
 
   using uchar = unsigned char;
 
-  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp, PlayStatus* iv) override;
+  void setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp) override;
 
   bool setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLevel* thingToPlay, 
-    uchar key, uchar vel, double sampleRate, RegionPlayer* regionPlayer, bool busMode, 
-    PlayStatus* intermediates);
+    uchar key, uchar vel, RegionPlayer* regionPlayer, bool busMode);
   // busMode is superfluous - when a SampleBusPlayer is invoked, we are in busMode by definition
 
   virtual void releaseResources()
@@ -607,8 +600,8 @@ public:
 
   /** Sets the group that should be played back by this player. */
   bool setGroupToPlay(const SfzInstrument::Group* groupToPlay, uchar key, uchar vel, 
-    double fs, RegionPlayer* rp, bool busMode, PlayStatus* iv)
-  { return setGroupOrInstrumToPlay(groupToPlay, key, vel, fs, rp, busMode, iv); }
+    RegionPlayer* rp, bool busMode)
+  { return setGroupOrInstrumToPlay(groupToPlay, key, vel, rp, busMode); }
     // ...it's just a convenience function to make the call site look nicer.
 
 protected:
@@ -632,8 +625,8 @@ public:
   // implement processBlock
 
   bool setInstrumToPlay(const SfzInstrument::Global* instrumToPlay, uchar key, uchar vel, 
-    double fs, RegionPlayer* rp, bool busMode, PlayStatus* iv)
-  { return setGroupOrInstrumToPlay(instrumToPlay, key, vel, fs, rp, busMode, iv); }
+    RegionPlayer* rp, bool busMode)
+  { return setGroupOrInstrumToPlay(instrumToPlay, key, vel, rp, busMode); }
     // Convenience function to make the call site look nicer.
 
 };

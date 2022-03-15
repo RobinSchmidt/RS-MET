@@ -268,10 +268,10 @@ public:
   /** Sets the sample-rate, at which this engine should operate. This change will affect only
   RegionPlayer objects that were started after calling this function. It's supposed to be called in
   a suspended state anyway, not in the middle of the processing. */
-  void setSampleRate(double newRate) 
+  void setSampleRate(double newRate) // use float
   { 
     playStatus.sampleRate = (float) newRate;
-    sampleRate = newRate;   // redundant -> remove
+    //sampleRate = newRate;   // redundant -> remove
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -376,7 +376,7 @@ public:
   std::string getAbsolutePath(const char* path, bool pathIsAbsolute = false) const;
 
   /** Returns the sample rate at which this engine runs, i.e. produces its output. */
-  double getOutputSampleRate() const { return sampleRate; }
+  float getOutputSampleRate() const { return playStatus.sampleRate; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -500,7 +500,7 @@ protected:
   activePlayers. If no player is available (i.e. idle), this will return a nullptr. The caller
   should interpret that as a layerOverload condition and return the appropriate return code to
   its caller. */
-  RegionPlayer* getRegionPlayerFor(const Region* r, uchar key, uchar vel, PlayStatus* iv);
+  RegionPlayer* getRegionPlayerFor(const Region* r, uchar key, uchar vel);
 
   /** Returns true, iff the given sample is used in the instrument definition represented by the
   given sfz */
@@ -625,13 +625,13 @@ protected:
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
 
-  PlayStatus playStatus;  // rename to playStatus
+  PlayStatus playStatus;
   /**< Intermediate variables used for the computation of things like per-sample increment, final 
   amplitude etc. according to key, vel, keytrack, veltrack, tune, transpose, etc. We need to pass 
   around such a struct from noteOn to have a place into which we can accumulate all the modifiers
   such that the RegionPlayer itself needs ot store only the final values. */
 
-  double sampleRate = 44100.0; // redundant with PlayStatus.sampleRate
+  //double sampleRate = 44100.0; // redundant with PlayStatus.sampleRate..obsolete
   /**< Sample rate at which this object runs. */
 
   // Some info that can be inquired from client code after loading a new sfz file:
@@ -798,7 +798,7 @@ protected:
 
   /** Updates our active/idleGroupPlayer arrays according to a status change in the
   active/idleRegionPlayer arrays...tbc... */
-  void updateGroupPlayers(PlayStatusChange psc, uchar key, uchar vel, PlayStatus* iv);
+  void updateGroupPlayers(PlayStatusChange psc, uchar key, uchar vel);
 
   /** Returns the index within our activeGroupPlayers array at which the group player for the given
   group is located or -1 if there is no currently active player for the given group. */
@@ -808,8 +808,7 @@ protected:
   when region players were triggered for which we do not already have an active group player in
   use. Return true, if the player could be started. If it could not be started, the caller may 
   need to take care of some cleanup (roll back the regionPlayer). */
-  bool startGroupPlayerFor(RegionPlayer* regionPlayer, uchar key, uchar vel, 
-    PlayStatus* intermediates);
+  bool startGroupPlayerFor(RegionPlayer* regionPlayer, uchar key, uchar vel);
 
   /** Stops the groupPlayer with the given activeIndex, i.e. moves it from the activeGroupPlayers
   array to the idleGroupPlayers array. */
@@ -903,8 +902,9 @@ public:
   {
     reset();
     playerPool.resize(newMax); // maybe rename to regionPlayerPool
-    for(auto & p : playerPool)
+    for(auto& p : playerPool) {
       p.setDspResourcePool(&dspPool);
+      p.setPlayStatusPointer(&playStatus); }
     rsSetupPointers(playerPool, idlePlayers);
   }
 
@@ -912,8 +912,9 @@ public:
   {
     reset();
     groupPlayerPool.resize(newMax);
-    for(auto & p : groupPlayerPool)
+    for(auto& p : groupPlayerPool)  {
       p.setDspResourcePool(&dspPool);
+      p.setPlayStatusPointer(&playStatus); }
     rsSetupPointers(groupPlayerPool, idleGroupPlayers);
   }
 
