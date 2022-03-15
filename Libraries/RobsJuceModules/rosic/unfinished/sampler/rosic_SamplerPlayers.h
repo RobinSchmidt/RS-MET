@@ -12,6 +12,13 @@ inline void prepareToPlay1(Processor** processors, int numProcessors,
     processors[i]->prepareToPlay(key, vel, fs);
 }
 // rename, move to cpp, maybe move into class SamplePlayer
+// maybe remove use function below
+
+inline void prepareToPlay(std::vector<Processor*>& processors, unsigned char key, unsigned char vel, double fs)
+{
+  for(auto & p : processors) 
+    p->prepareToPlay(key, vel, fs);
+}
 
 /** Returns the sfzIndex-th processor of the given type within the chain or nullptr, if there are
 not enough (i.e. less than i) processors of the given type in the chain. This is a 1-based index
@@ -32,6 +39,7 @@ public:
   void processFrame(float* L, float* R);
   void processBlock(float* L, float* R, int N);
   
+  /*
   void prepareToPlay(uchar key, uchar vel, double fs) 
   { 
     if(!processors.empty())
@@ -41,6 +49,7 @@ public:
     //for(auto & p : processors) p->prepareToPlay(key, vel, fs); // old
   }
   // get rid...
+  */
   
   //void resetState()    { for(auto & p : processors) p->resetState();    }
   //void resetSettings() { for(auto & p : processors) p->resetSettings(); }

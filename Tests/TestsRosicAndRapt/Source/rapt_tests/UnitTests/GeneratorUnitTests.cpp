@@ -2919,7 +2919,10 @@ bool samplerFreeModulationsTest()
   
 
   // ToDo:
-
+  // -Test behavior when we define the lfoN_freq for the Group instead of the Region. It should 
+  //  make no difference because the group setting is used as fallback...unless we are in 
+  //  busMode. In this case probably nothing should happen unless there is a waveshaper in the 
+  //  group - in which case the group lfo should modulate the dc of group's waveshaper.
   // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
   //  need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
   //  additional modulators for the enclosing Group and Instrument and their contributions should 

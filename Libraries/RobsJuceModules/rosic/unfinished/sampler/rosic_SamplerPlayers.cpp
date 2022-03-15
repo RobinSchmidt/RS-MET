@@ -32,23 +32,6 @@ size_t getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeT
   return count;
 }
 
-/*
-// make (static) member of SamplePlayer ...maybe it should take a vector of Processor* and then we
-// can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
-// closely. Then, we need to rename it
-// rename to getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeType type):
-size_t getNumModulators(const std::vector<Processor*>& modSources, OpcodeType type)
-{
-  size_t count = 0;
-  for(size_t i = 0; i < modSources.size(); i++) {
-    if(modSources[i]->getType() == type)
-      count++;
-  }
-  return count;
-}
-// obsolete
-*/
-
 void EffectChain::processFrame(float* L, float* R)
 {
   for(size_t i = 0; i < processors.size(); i++)
@@ -60,22 +43,6 @@ void EffectChain::processBlock(float* L, float* R, int N)
   for(int n = 0; n < N; n++)
     processFrame(L, R);
 }
-
-
-//=================================================================================================
-// SamplePlayer
-
-/** Counts the number of occurences of elem in array a of length N. */
-template<class T>
-int rsCount(const T* a, int N, T elem)
-{
-  int c = 0;  // counter
-  for(int i = 0; i < N; i++)
-    if(a[i] == elem)
-      c++;
-  return c;
-}
-// move into rsArrayTools
 
 int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type, int index)
 {
@@ -92,7 +59,6 @@ int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type
   return -1;
 }
 
-
 Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index)
 {
   int i = findProcessorIndex(processors, numProcessors, type, index);
@@ -100,23 +66,23 @@ Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType ty
     return nullptr;
   else
     return &processors[i]; 
-
-  /*
-  // old:
-  int count = 0;
-  for(int i = 0; i < numProcessors; ++i) {
-    if(processors[i].getType() == type) {
-      count++;
-      if(count == index)
-        return &processors[i]; }}
-  return nullptr;
-  */
 }
 
+/** Counts the number of occurences of elem in array a of length N. */
+template<class T>
+int rsCount(const T* a, int N, T elem)
+{
+  int c = 0;  // counter
+  for(int i = 0; i < N; i++)
+    if(a[i] == elem)
+      c++;
+  return c;
+}
+// move into rsArrayTools
 
 
-
-
+//=================================================================================================
+// SamplePlayer
 
 bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain)
 {
@@ -884,7 +850,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), rp, busMode);
-    effectChain.prepareToPlay(key, vel, playStatus->sampleRate); 
+    prepareToPlay(effectChain.processors, key, vel, playStatus->sampleRate); 
     rp->setupFromIntemediates(); // We need to do this again
   }
   return true;
