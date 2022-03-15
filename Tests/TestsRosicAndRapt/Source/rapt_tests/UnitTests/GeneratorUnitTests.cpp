@@ -2881,6 +2881,7 @@ bool samplerFreeModulationsTest()
   se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
   se.setRegionSetting(0, 0, OC::lfoN_freq,   lfoFreq, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
+  se.preAllocateDspMemory();
 
   //ok &= !se.hasDanglingRoutings();
   // Function not yet implemented. It should verify that all roútings that are set up in all 

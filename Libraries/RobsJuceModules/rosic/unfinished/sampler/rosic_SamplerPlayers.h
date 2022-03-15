@@ -356,13 +356,18 @@ protected:
   PlayStatus* playStatus = nullptr;
   // some functions such as setupPlayerSetting, setupDspSettings, etc. take a pointer to a 
   // PlayStatus object as parameter...but if we maintain it as member here, we don't need that
-  // parameter anymore
+  // parameter anymore.
 
   // ToDo:
   // -maybe instead of maintaining the tow pointers dspPool, playStatus, maintain only a single
   //  pointer to SamplerEngine - the SamplerEngine has these two as members, so we can access
   //  them then through that pointer...but maybe first implement benchmarks to see, which is more
-  //  efficient
+  //  efficient. Or maybe merge DspResourcePool and PlayStatus into a single class. But what
+  //  should its name be? It would be a sort of central hub maintained by the SamplerEngine from 
+  //  which the SamplePlayer objects request resources and inquire information....maybe 
+  //  ControlCenter, ResourceCenter
+
+
   // -make sure, that all the std::vectors reserve enough memory when an sfz-file is loaded
 };
 

@@ -374,11 +374,16 @@ void RegionPlayer::processFrame(float* L, float* R)
 
   double sampleRate = 44100.0; // preliminary - should be inquired from PlayStatus
   int numSources = (int) modSources.size();
-  std::vector<float> modBuffer;
-  modBuffer.resize(2*numSources);
+
+  //std::vector<float> modBuffer;
+  //modBuffer.resize(2*numSources);
+  // old
+
   // preliminary - should become a member of PlayStatus, the size should be pre-allocated according
   // to the maximum number of modulators that a region/Group/Instrument has
 
+  std::vector<float>& modBuffer = playStatus->modBuffer;
+  // new
 
   // Update our modulators:
   for(size_t i = 0; i < modSources.size(); ++i)

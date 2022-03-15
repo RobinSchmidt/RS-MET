@@ -858,6 +858,14 @@ public:
   //static int getRegionPlayerSize() { return sizeof(RegionPlayer); }
 
 
+  virtual void preAllocateDspMemory() override
+  {
+    rsSamplerEngine::preAllocateDspMemory() ;
+  }
+  // Function is protected in baseclass because normally, client code should not need to deal with
+  // it but in some unit tests, we call it manually so we un-protect it here by overriding it with
+  // a public function that just calls the basclass method.
+
   PlayStatusChange handleNoteOn(uchar key, uchar vel) override
   {
     return rsSamplerEngine::handleNoteOn(key, vel);
