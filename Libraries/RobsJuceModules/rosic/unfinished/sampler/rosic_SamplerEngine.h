@@ -268,7 +268,11 @@ public:
   /** Sets the sample-rate, at which this engine should operate. This change will affect only
   RegionPlayer objects that were started after calling this function. It's supposed to be called in
   a suspended state anyway, not in the middle of the processing. */
-  void setSampleRate(double newRate) { sampleRate = newRate; }
+  void setSampleRate(double newRate) 
+  { 
+    playStatus.sampleRate = (float) newRate;
+    sampleRate = newRate;   // redundant -> remove
+  }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -621,13 +625,13 @@ protected:
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
 
-  PlayStatus intermediates;  // rename to playStatus
+  PlayStatus playStatus;  // rename to playStatus
   /**< Intermediate variables used for the computation of things like per-sample increment, final 
   amplitude etc. according to key, vel, keytrack, veltrack, tune, transpose, etc. We need to pass 
   around such a struct from noteOn to have a place into which we can accumulate all the modifiers
   such that the RegionPlayer itself needs ot store only the final values. */
 
-  double sampleRate = 44100.0;
+  double sampleRate = 44100.0; // redundant with PlayStatus.sampleRate
   /**< Sample rate at which this object runs. */
 
   // Some info that can be inquired from client code after loading a new sfz file:

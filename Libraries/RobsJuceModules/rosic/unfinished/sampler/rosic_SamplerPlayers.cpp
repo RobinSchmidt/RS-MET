@@ -372,7 +372,9 @@ void RegionPlayer::processFrame(float* L, float* R)
   //---------------------------------------------
   // Under construction - handle modulations:
 
-  double sampleRate = 44100.0; // preliminary - should be inquired from PlayStatus
+  //double sampleRate = 44100.0; // preliminary - should be inquired from PlayStatus
+
+
   int numSources = (int) modSources.size();
 
   //std::vector<float> modBuffer;
@@ -453,7 +455,7 @@ void RegionPlayer::processFrame(float* L, float* R)
   for(size_t i = 0; i < modTargetProcessors.size(); ++i)
   {
     if(modTargetProcessors[i]->isDirty())
-      modTargetProcessors[i]->updateCoeffs(sampleRate);
+      modTargetProcessors[i]->updateCoeffs(playStatus->sampleRate);
     // check, if there could be duplicates in modTargetProcessors - if so, avoid that in the 
     // assembly of the modulations
   }

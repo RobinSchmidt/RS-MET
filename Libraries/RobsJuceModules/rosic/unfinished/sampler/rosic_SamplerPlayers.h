@@ -140,6 +140,8 @@ public:
   /**< A buffer used in RegionPlayer::processFrame to hold the outputs of the modulators. */
 
 
+  float sampleRate = 44100.f;
+
 private:
 
   PlayStatus()
@@ -151,7 +153,7 @@ private:
   }
   
 
-  void reset()
+  void resetIntermediates()
   {
     transpose       = 0.0;
     tune            = 0.0;
@@ -161,7 +163,8 @@ private:
     using namespace RAPT;
     rsFill(ampN_veltrack, 0.f);
   }
-  // maybe needed when we don't create it on the stack but rather re-use a member
+  // resets the intermediate values that are used in busMode...tbc...
+
 
   // under construction - not yet used:
   char  controllers[128];  // most recently received values of all controllers

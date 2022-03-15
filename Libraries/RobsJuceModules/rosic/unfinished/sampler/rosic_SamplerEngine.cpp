@@ -38,7 +38,7 @@ void rsSamplerEngine::setMaxNumLayers(int newMax)
   for(int i = 0; i < L; i++)
   {
     playerPool[i].setDspResourcePool(&dspPool);
-    playerPool[i].setPlayStatusPointer(&intermediates);
+    playerPool[i].setPlayStatusPointer(&playStatus);
     playerPool[i].allocateMemory();
     idlePlayers[i] = &playerPool[i];
   }
@@ -552,14 +552,14 @@ const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 {
   if(vel == 0) { return handleNoteOff(key, vel); }
-  intermediates.reset();
+  playStatus.resetIntermediates();
   PlayStatusChange psc;
   for(int i = 0; i < regionsForKey[key].getNumRegions(); i++) {
     const Region* r  = regionsForKey[key].getRegion(i);
     if(!shouldRegionPlay(r, key, vel))              // Check response constraints
       continue;
     // Try to create player for the new layer:
-    RegionPlayer* rp = getRegionPlayerFor(r, key, vel, &intermediates);  
+    RegionPlayer* rp = getRegionPlayerFor(r, key, vel, &playStatus);  
     if(rp == nullptr) {                             // When it fails, roll back all the
       stopMostRecentLayers(psc.numLayersStarted);   // players created so far and abort. 
       psc.numLayersStarted = 0;                     // We failed to trigger the note.
@@ -706,7 +706,7 @@ void rsSamplerEngine::preAllocateDspMemory()
   // Allocate memory for the modulation buffers:
   //modBuffer
 
-  intermediates.modBuffer.resize(64); // rename to playStatus
+  playStatus.modBuffer.resize(64); // rename to playStatus
   // preliminary - 64 allows for up to 32 modulation sources
   // ToDo: figure out, how many modulation sources are needed at maximum:
   // -loop through all regions and groups in the sfz and check also the instrument
@@ -769,7 +769,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, ucha
   //intermediates.reset();
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
   if(!canFallBackToBaseclass()) // Don't update the group players, if they are not used anyway
-    updateGroupPlayers(psc, key, vel, &intermediates);
+    updateGroupPlayers(psc, key, vel, &playStatus);
   return psc;
 }
 
@@ -778,7 +778,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uch
   //intermediates.reset();
   PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
   if(!canFallBackToBaseclass())
-    updateGroupPlayers(psc, key, vel, &intermediates);
+    updateGroupPlayers(psc, key, vel, &playStatus);
   return psc;
 }
 
@@ -925,7 +925,7 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
 bool rsSamplerEngine2::startInstrumPlayerFor(RegionPlayer* rp, uchar key, uchar vel)
 {
   return instrumPlayer.setInstrumToPlay(
-    &sfz.global, key, vel, sampleRate, rp, busMode, &intermediates);
+    &sfz.global, key, vel, sampleRate, rp, busMode, &playStatus);
 }
 
 void rsSamplerEngine2::stopInstrumPlayer()
