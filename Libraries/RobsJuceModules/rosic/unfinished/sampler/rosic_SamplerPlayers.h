@@ -25,8 +25,6 @@ inline void processBlock1(std::vector<Processor*>& processors, float* L, float* 
   // ToDo: use actualy proper block processing instead of falling back to per-sample processing
 }
 
-
-
 /** Returns the sfzIndex-th processor of the given type within the chain or nullptr, if there are
 not enough (i.e. less than i) processors of the given type in the chain. This is a 1-based index
 as it occurs in the sfz files. To get the 3rd filter, you would pass type = Dsp::Filter, 
@@ -37,23 +35,6 @@ Processor* getProcessor(std::vector<Processor*>& processors, OpcodeType type, in
 // move into some class as static member (maybe SamplePlayer), find better name
 
 
-class EffectChain
-{
-public:
-
-  using uchar = unsigned char;
-
-  //void processFrame(float* L, float* R);
-  //void processBlock(float* L, float* R, int N);
-  
-
-  std::vector<Processor*> processors;
-};
-// Maybe get rid of this class and instead use a std::vector<Effect*> directly for the effectChain
-// member of SamplePlayer and replace all member functions where it makes sense with free functions 
-// operating on a std::vector<Processor*> such that we can re-use these functions for the 
-// modSources array as well. Maybe collect the "free" functions as static functions in some class.
-// Maybe even in the SamplePlayer class.
 
 //=================================================================================================
 
@@ -192,7 +173,7 @@ RegionPlayer. GroupPlayer and InstrumPlayer are also subclasses of SamplePlayer 
 is mostly to sum the signals of their embedded lower level players and apply additional DSP
 processes to these sums. */
 
-class SamplePlayer  // maybe rename to ChannelPlayer
+class SamplePlayer  // maybe rename to ChannelPlayer, LayerPlayer
 {
 
 public:
@@ -212,7 +193,7 @@ public:
   as debug assertions. */
   bool areProcessorsEmpty() const
   {
-    return effectChain.processors.empty() && modSources.empty() && modMatrix.empty();
+    return effectChain.empty() && modSources.empty() && modMatrix.empty();
     // todo: && modTargetProcessors.empty() && modTargetParams.empty();
   }
 
@@ -293,7 +274,7 @@ protected:
   // want to do something in its override)...??? comment obsolete?
 
 
-  EffectChain effectChain;
+  std::vector<Processor*> effectChain;
   /**< This is the chain of our effect processor objects. An EffectChain is basically an array
   of pointers to polymorphic effect classes (i.e. subclasses of the Effect baseclass) that can be 
   assembled at runtime, typically on noteOn. */
@@ -590,11 +571,7 @@ public:
 
   void addRegionPlayer(RegionPlayer* newPlayer);
 
-  void processFrame(float* L, float* R) 
-  { 
-    processFrame1(effectChain.processors, L, R);
-    //effectChain.processFrame(L, R);  
-  }
+  void processFrame(float* L, float* R) { processFrame1(effectChain, L, R); }
 
   // implement processBlock
 

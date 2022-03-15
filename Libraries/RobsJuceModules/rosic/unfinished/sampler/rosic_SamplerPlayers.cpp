@@ -32,21 +32,6 @@ size_t getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeT
   return count;
 }
 
-/*
-void EffectChain::processFrame(float* L, float* R)
-{
-  for(size_t i = 0; i < processors.size(); i++)
-    processors[i]->processFrame(L, R);
-}
-
-void EffectChain::processBlock(float* L, float* R, int N)
-{
-  for(int n = 0; n < N; n++)
-    processFrame(L, R);
-}
-*/
-
-
 int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type, int index)
 {
   // ToDo: 
@@ -70,6 +55,7 @@ Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType ty
   else
     return &processors[i]; 
 }
+// take reference to vector instead of raw pointer
 
 /** Counts the number of occurences of elem in array a of length N. */
 template<class T>
@@ -104,7 +90,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       // nothing more to do in this iteration:
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1;
       //if(effectChain.getNumEffects(opType) >= sfzIndex) // old
-      if(getNumProcessorsOfType(effectChain.processors, opType) >= sfzIndex)
+      if(getNumProcessorsOfType(effectChain, opType) >= sfzIndex)
         continue;
 
       // OK - now we actually need to grab another effect of given type from the pool:
@@ -112,7 +98,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       if(eff)
       {
         eff->setParametersToDefaults(sfzIndex);
-        effectChain.processors.push_back(eff);
+        effectChain.push_back(eff);
       }
       else 
       {
@@ -187,7 +173,7 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
       prc = findProcessor(modSources[0], (int) modSources.size(), // Receiver is another modulator
         ms.getTargetType(), ms.getTargetIndex());  }
     else {
-      prc = findProcessor(effectChain.processors[0], (int) effectChain.processors.size(), 
+      prc = findProcessor(effectChain[0], (int) effectChain.size(), 
         ms.getTargetType(), ms.getTargetIndex());  }              // Receiver is an effect
     RAPT::rsAssert(prc);
     Parameter* param = prc->getParameter(ms.getTargetOpcode());
@@ -237,9 +223,9 @@ bool SamplePlayer::assembleProcessors(
 
 void SamplePlayer::disassembleProcessors()
 {
-  for(size_t i = 0; i < effectChain.processors.size(); i++)
-    dspPool->repositEffect(effectChain.processors[i]);
-  effectChain.processors.clear();
+  for(size_t i = 0; i < effectChain.size(); i++)
+    dspPool->repositEffect(effectChain[i]);
+  effectChain.clear();
 
   for(size_t i = 0; i < modSources.size(); ++i)
     dspPool->repositModulator(modSources[i]);
@@ -261,7 +247,7 @@ void SamplePlayer::disassembleProcessors()
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  Processor* dsp = getProcessor(effectChain.processors, s.getTargetOpcodeType(), s.getIndex());
+  Processor* dsp = getProcessor(effectChain, s.getTargetOpcodeType(), s.getIndex());
   if(dsp != nullptr)
     dsp->setParameter(s.getOpcode(), s.getValue());
   else
@@ -445,7 +431,7 @@ void RegionPlayer::processFrame(float* L, float* R)
   }
 
   // Apply the effect chain:
-  processFrame1(effectChain.processors, L, R);
+  processFrame1(effectChain, L, R);
 
 
   // ToDo:
@@ -503,7 +489,7 @@ void RegionPlayer::allocateMemory()
   modSources.reserve(8);
   //modTargets.reserve(8);
   modMatrix.reserve(32);
-  effectChain.processors.reserve(8);
+  effectChain.reserve(8);
   // These values are ad-hoc arbitrarily chosen. Maybe give the function some parameters to choose
   // how many of each should be pre-allocated. It should be enough to avoid having to allocate more
   // later. Actually , this should probably be done in SamplerEngine::preAllocateDspMemory
@@ -527,7 +513,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
 
   double fs = playStatus->sampleRate;  // todo: use float
   prepareToPlay1(modSources, key, vel, fs);
-  prepareToPlay1(effectChain.processors, key, vel, fs); 
+  prepareToPlay1(effectChain, key, vel, fs); 
   // The rationale for preparing the modSources first is that their initial output may already 
   // affect the initial parameters of the effects(?) ...but does that matter? Aren't the params 
   // recomputed in processFrame anyway?...perhaps it doesn't matter, but the order feels right 
@@ -837,7 +823,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), rp, busMode);
-    prepareToPlay1(effectChain.processors, key, vel, playStatus->sampleRate); 
+    prepareToPlay1(effectChain, key, vel, playStatus->sampleRate); 
     rp->setupFromIntemediates(); // We need to do this again
   }
   return true;
@@ -868,7 +854,7 @@ void GroupPlayer::processFrame(float* L, float* R)
     regionPlayers[i]->processFrame(&tmpL, &tmpR);
     *L += tmpL; 
     *R += tmpR; }
-  processFrame1(effectChain.processors, L, R);
+  processFrame1(effectChain, L, R);
 }
 
 void GroupPlayer::releaseResources()

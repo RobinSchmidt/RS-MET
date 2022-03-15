@@ -606,6 +606,10 @@ protected:
   may grab objects from this pool such as filters, waveshapers, etc. - whatever it needs to play 
   the region appropriately. */
 
+  //std::vector<Processor*> masterEffects; 
+  // not yet used..their oscs etc should probably retriggered only when there's currently no note
+  // playing *and* the output is silent
+
 
   std::vector<RegionPlayer*> activePlayers;
   /**< Array of pointers to region players that are currently active, i.e. playing. */
@@ -691,7 +695,7 @@ adding those features that are not part of the original SFZ specification. These
 flexible signal routing capabilities like the ability to apply the group- and instrument-wide
 settings on top of the region settings instead of using them as fallback values. */
 
-class rsSamplerEngine2 : public rsSamplerEngine
+class rsSamplerEngine2 : public rsSamplerEngine // maybe rename to SamplerMixEngine
 {
 
 public:
