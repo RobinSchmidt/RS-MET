@@ -701,10 +701,8 @@ void rsSamplerEngine::preAllocateDspMemory()
 {
   //RAPT::rsWarning("rsSamplerEngine::preAllocateDspMemory still under construction");
 
-  // Allocate memory for the modulation buffers:
-  //modBuffer
 
-  playStatus.modBuffer.resize(64); // rename to playStatus
+  playStatus.modBuffer.resize(64);   // memory for the modulation buffers
   // preliminary - 64 allows for up to 32 modulation sources
   // ToDo: figure out, how many modulation sources are needed at maximum:
   // -loop through all regions and groups in the sfz and check also the instrument
@@ -714,13 +712,14 @@ void rsSamplerEngine::preAllocateDspMemory()
   //  instead or raw float, we don't need to double the allocated size)
 
 
-
   // ToDo:
   // -allocate enough RegionPlayers in our playerPool - how much is enough should depend on how 
   //  many regions could potentially paly simultaneously. To figure out that number, we need to
   //  count for each key the number of regions it may play...but it gets more complicated when
   //  release-samples and overlapping one-shot samples are considered, so maybe that's 
   //  impractical and we should just use some reasonably large-ish number...like 512 maybe?
+  // -pre-allocate also the modSources and effects arrays in all SamplePlayers. This should also 
+  //  use the required maximum
   // -allocate "enough" DSP objects in our dspPool - here, the number will be even more complicated
   //  to calculate...maybe allocate for each region player 2 filters and 5 equalizers...maybe let
   //  the user control the amount of "allocation-headroom" and provide feedback about used-up 

@@ -5,19 +5,8 @@ namespace rosic { namespace Sampler {
 
 //=================================================================================================
 
-/*
-inline void prepareToPlay1(Processor** processors, int numProcessors,
-  unsigned char key, unsigned char vel, double fs) 
-{ 
-  for(int i = 0; i < numProcessors; ++i)
-    processors[i]->prepareToPlay(key, vel, fs);
-}
-*/
-// rename, move to cpp, maybe move into class SamplePlayer
-// maybe remove use function below
-
 inline void prepareToPlay1(std::vector<Processor*>& processors, // get rid of th 1 in the name
-  unsigned char key, unsigned char vel, double fs)
+  unsigned char key, unsigned char vel, double fs)              // use float for fs
 {
   for(auto & p : processors) 
     p->prepareToPlay(key, vel, fs);
@@ -42,27 +31,12 @@ public:
   void processFrame(float* L, float* R);
   void processBlock(float* L, float* R, int N);
   
-  /*
-  void prepareToPlay(uchar key, uchar vel, double fs) 
-  { 
-    if(!processors.empty())
-      prepareToPlay1((Processor**) &processors[0], (int) processors.size(), key, vel, fs); 
 
-
-    //for(auto & p : processors) p->prepareToPlay(key, vel, fs); // old
-  }
-  // get rid...
-  */
-  
-  //void resetState()    { for(auto & p : processors) p->resetState();    }
-  //void resetSettings() { for(auto & p : processors) p->resetSettings(); }
-  //void reset() { resetState(); resetSettings(); }
-
-  void reserve(size_t num) { processors.reserve(num); }
+  //void reserve(size_t num) { processors.reserve(num); }
   void addEffect(Processor* p) { processors.push_back(p); }
-  void clear() { processors.clear(); }
+  //void clear() { processors.clear(); }
 
-  bool isEmpty() const { return processors.empty(); }
+  //bool isEmpty() const { return processors.empty(); }
 
   /** Returns the total number of processors in the chain. */
   size_t getNumEffects() const { return processors.size(); }
@@ -75,21 +49,8 @@ public:
   // is this needed? it's confusing to have this and the function below because the indices mean
   // different things in both cases
 
-  /** Returns the sfzIndex-th processor of the given type within the chain or nullptr, if there are
-  not enough (i.e. less than i) processors of the given type in the chain. This is a 1-based index
-  as it occurs in the sfz files. To get the 3rd filter, you would pass type = Dsp::Filter, 
-  index = 3. For certain opcodes, an index is not applicable. We usually encode this by setting the
-  value to -1 in the data-record. Such a -1 will then be interpreted as "first-and-only" and in 
-  this case, it doesn't really matter, if the caller passes -1 or +1 into this function. */
-  //Processor* getEffect(OpcodeType type, int sfzIndex);
-
-//protected:
 
   std::vector<Processor*> processors;
-  // Where is this allocated, i.e. where do we call resize on this? I mean the vector itself, not
-  // the pointed-to objects. This is not yet well defined, i think. It should probably also happen
-  // on sfz load
-
 };
 // Maybe get rid of this class and instead use a std::vector<Effect*> directly for the effectChain
 // member of SamplePlayer and replace all member functions where it makes sense with free functions 
@@ -234,7 +195,7 @@ RegionPlayer. GroupPlayer and InstrumPlayer are also subclasses of SamplePlayer 
 is mostly to sum the signals of their embedded lower level players and apply additional DSP
 processes to these sums. */
 
-class SamplePlayer
+class SamplePlayer  // maybe rename to ChannelPlayer
 {
 
 public:
@@ -254,7 +215,7 @@ public:
   as debug assertions. */
   bool areProcessorsEmpty() const
   {
-    return effectChain.isEmpty() && modSources.empty() && modMatrix.empty();
+    return effectChain.processors.empty() && modSources.empty() && modMatrix.empty();
     // todo: && modTargetProcessors.empty() && modTargetParams.empty();
   }
 
@@ -389,7 +350,7 @@ protected:
 
 /** A class for playing back a given Region object. */
 
-class RegionPlayer : public SamplePlayer
+class RegionPlayer : public SamplePlayer  // maybe rename to LayerPlayer
 {
 
 public:
@@ -543,7 +504,7 @@ protected:
 
 //===============================================================================================
 
-class SampleBusPlayer : public SamplePlayer
+class SampleBusPlayer : public SamplePlayer  // maybe rename to BusPlayer or MixPlayer
 {
 
 public:
@@ -578,7 +539,7 @@ only when the group's DSP settings should go on top of the region's settings, i.
 "drum-sampler" mode where the groups map to sub-busses and the instrument maps to the master 
 bus. */
 
-class GroupPlayer : public SampleBusPlayer
+class GroupPlayer : public SampleBusPlayer  // maybe rename  VoicePlayer, SubBusPlayer, SubMixPLayer
 {
 
 public:
@@ -625,7 +586,7 @@ protected:
 
 //===============================================================================================
 
-class InstrumPlayer : public SampleBusPlayer
+class InstrumPlayer : public SampleBusPlayer // maybe rename  MasterPlayer, MasterBusPlayer, MasterMixPLayer
 {
 
 public:

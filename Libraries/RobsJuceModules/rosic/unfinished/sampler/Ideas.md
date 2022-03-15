@@ -102,6 +102,7 @@ Ideas for new opcodes
   alters the signal flow and is quite a big deal. When a waveshaper is set up in a group or 
   globally, this will now also allow intermodulation distortion between the regions, such that
   playing of powerchords becomes a possibility.
+  Or maybe the options should be named groups_are_mixes, levels_are_mixes
  
 - param_range: Decides, whether or not parameters should be restricted to the range specified by 
   sfz. Possible values could be "sfz1" or "clipped", "free". Perhaps there could also be some mode 

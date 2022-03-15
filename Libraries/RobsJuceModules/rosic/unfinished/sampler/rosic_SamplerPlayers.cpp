@@ -236,7 +236,7 @@ void SamplePlayer::disassembleProcessors()
 {
   for(int i = 0; i < effectChain.getNumEffects(); i++)
     dspPool->repositEffect(effectChain.getEffect(i));
-  effectChain.clear();
+  effectChain.processors.clear();
 
   for(size_t i = 0; i < modSources.size(); ++i)
     dspPool->repositModulator(modSources[i]);
@@ -500,10 +500,10 @@ void RegionPlayer::allocateMemory()
   modSources.reserve(8);
   //modTargets.reserve(8);
   modMatrix.reserve(32);
-  effectChain.reserve(8);
+  effectChain.processors.reserve(8);
   // These values are ad-hoc arbitrarily chosen. Maybe give the function some parameters to choose
   // how many of each should be pre-allocated. It should be enough to avoid having to allocate more
-  // later
+  // later. Actually , this should probably be done in SamplerEngine::preAllocateDspMemory
 }
 
 
@@ -522,29 +522,13 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
   resetPlayerSettings();
   setupDspSettingsFor(region, busMode);
 
-  // new:
   double fs = playStatus->sampleRate;  // todo: use float
-
-  //if(!modSources.empty())
-    prepareToPlay1(modSources, key, vel, fs);
-  //if(!effectChain.processors.empty())
-    prepareToPlay1(effectChain.processors, key, vel, fs); 
-  // This should be cleaned up: Perhaps we should get rid of the two subclasses Effect and 
-  // Modulator of Processor and let modSources and effectChain both be vectors of Processor. Then
-  // prepareToPlay1 can take a refecrence to a std::vector<Processor*> and inside it, we could use
-  // a range-based loop. See also comment below class Modulator.
-
-  // old:
-  //effectChain.prepareToPlay(key, vel, fs);
-  // Should be replaced by:
-  //   prepareToPlay(modSources,  key, vel, fs);
-  //   prepareToPlay(effectChain, key, vel, fs);
-  // prepareToPlay should take a std::vector<Processor> as input. The rationale for preparing the
-  // modulators first is that their initial output may already affect the initial parameters of
-  // the effects? ...but does that matter? Aren't the params recomputed in processFrame anyway?
-  // ...perhaps it doesn't matter, but the order feels right this way anyway. This prepareToPlay
-  // function may be a member of SamplePlayer.
-
+  prepareToPlay1(modSources, key, vel, fs);
+  prepareToPlay1(effectChain.processors, key, vel, fs); 
+  // The rationale for preparing the modSources first is that their initial output may already 
+  // affect the initial parameters of the effects(?) ...but does that matter? Aren't the params 
+  // recomputed in processFrame anyway?...perhaps it doesn't matter, but the order feels right 
+  // this way anyway. This prepareToPlay function may be a member of SamplePlayer.
 
   return rsReturnCode::success;
   // Overload should actually not happen in therory (as by the sfz spec, and unlimited number of 
@@ -912,3 +896,9 @@ void InstrumPlayer::addRegionPlayer(RegionPlayer* newPlayer)
 
 
 }}
+
+/*
+
+
+
+*/
