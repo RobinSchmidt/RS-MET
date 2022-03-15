@@ -2919,9 +2919,11 @@ bool samplerFreeModulationsTest()
   
 
   // ToDo:
-  // -In RegionPlayer::processFrame, we should use a member of PlayStatus for the modBuffer instead
-  //  of having it as (heap-allocated(!!!)) local std::vector
-  //  -> done - do the same with teh sampleRate, too - it should be stored in PLayStatus
+  // -remove redunadant SamplerEngien::sampleRate, in SamplePlayer, the functions that take a
+  //  PlayStatus pointer and/or sampleRate as parameter should remove these parameters because
+  //  they can now access the value via the PlayStatus pointer
+
+
   // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
   //  need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
   //  additional modulators for the enclosing Group and Instrument and their contributions should 
