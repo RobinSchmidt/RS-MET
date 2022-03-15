@@ -13,6 +13,15 @@ inline void prepareToPlay1(Processor** processors, int numProcessors,
 }
 // rename, move to cpp, maybe move into class SamplePlayer
 
+/** Returns the sfzIndex-th processor of the given type within the chain or nullptr, if there are
+not enough (i.e. less than i) processors of the given type in the chain. This is a 1-based index
+as it occurs in the sfz files. To get the 3rd filter, you would pass type = Dsp::Filter, 
+index = 3. For certain opcodes, an index is not applicable. We usually encode this by setting the
+value to -1 in the data-record. Such a -1 will then be interpreted as "first-and-only" and in 
+this case, it doesn't really matter, if the caller passes -1 or +1 into this function. */
+Processor* getProcessor(std::vector<Processor*>& processors, OpcodeType type, int index);
+// move into some class as static member (maybe SamplePlayer), find better name
+
 
 class EffectChain
 {
@@ -60,7 +69,7 @@ public:
   index = 3. For certain opcodes, an index is not applicable. We usually encode this by setting the
   value to -1 in the data-record. Such a -1 will then be interpreted as "first-and-only" and in 
   this case, it doesn't really matter, if the caller passes -1 or +1 into this function. */
-  Processor* getEffect(OpcodeType type, int sfzIndex);
+  //Processor* getEffect(OpcodeType type, int sfzIndex);
 
 //protected:
 

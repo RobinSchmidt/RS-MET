@@ -20,8 +20,6 @@ Processor* getProcessor(std::vector<Processor*>& processors, OpcodeType type, in
   }
   return nullptr;
 }
-// move into some class, find better name
-
 
 void EffectChain::processFrame(float* L, float* R)
 {
@@ -45,10 +43,12 @@ size_t EffectChain::getNumEffects(OpcodeType type) const
   return count;
 }
 
+/*
 Processor* EffectChain::getEffect(OpcodeType type, int index)
 {
   return getProcessor(processors, type, index);
 }
+*/
 // ToDo: turn into a free function - done -> use it everywhere and then get rid of this wrapper
 
 //=================================================================================================
@@ -294,7 +294,9 @@ void SamplePlayer::disassembleProcessors()
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  Processor* dsp = effectChain.getEffect(s.getTargetOpcodeType(), s.getIndex());
+  //Processor* dsp = effectChain.getEffect(s.getTargetOpcodeType(), s.getIndex()); // old
+  Processor* dsp = getProcessor(effectChain.processors, s.getTargetOpcodeType(), s.getIndex());
+
   if(dsp != nullptr)
     dsp->setParameter(s.getOpcode(), s.getValue());
   else
