@@ -291,6 +291,9 @@ protected:
   // rename to setDspOpcode or setEffectOpcode...but maybe it applies to modulators, too,
   // maybe the more general "processor" is actually appropriate
 
+  virtual void setupModSourceSetting(const PlaybackSetting& s);
+
+
   /** ToDo: add documentation */
   virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate, 
     RegionPlayer* rp, bool busMode, PlayStatus* iv);

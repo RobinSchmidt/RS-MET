@@ -26,6 +26,9 @@ size_t EffectChain::getNumEffects(OpcodeType type) const
   return count;
 }
 
+
+
+
 Processor* EffectChain::getEffect(OpcodeType type, int index)
 {
   RAPT::rsAssert(index >= 1 || index == -1);
@@ -42,6 +45,7 @@ Processor* EffectChain::getEffect(OpcodeType type, int index)
   }
   return nullptr;
 }
+// ToDo: turn into a free function
 
 //=================================================================================================
 // SamplePlayer
@@ -296,17 +300,31 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
     // dspChain.getProcessor.
 }
 
+void SamplePlayer::setupModSourceSetting(const PlaybackSetting& s)
+{
+
+
+  int dummy = 0;
+
+
+  // This almost duplicates setupProcessorSetting - refactor to get rid of the duplication
+}
+
+
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
   double sampleRate, RegionPlayer* rp, bool busMode, PlayStatus* iv)
 {
-  SfzCodeBook* codebook = SfzCodeBook::getInstance();
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
   for(size_t i = 0; i < settings.size(); i++)
   {
     PlaybackSetting s = settings[i];
     Opcode op = s.getOpcode();
-    if(     codebook->isEffectSetting(op)) { setupProcessorSetting(s);                  }
-    else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, sampleRate, rp, iv); }
+    if(     cb->isEffectSetting(op))    { setupProcessorSetting(s);                  }
+    else if(cb->isPlayerSetting(op))    { setupPlayerSetting(   s, sampleRate, rp, iv); }
+    else if(cb->isModSourceSetting(op)) { setupModSourceSetting(s); }
   }
+  // Try to refactor stuff in a way that lets use get rid of the branching and treat all cases
+  // unifromly
 }
 
 //=================================================================================================
