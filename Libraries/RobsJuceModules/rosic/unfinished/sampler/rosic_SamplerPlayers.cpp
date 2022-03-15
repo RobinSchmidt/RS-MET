@@ -32,6 +32,7 @@ size_t getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeT
   return count;
 }
 
+/*
 void EffectChain::processFrame(float* L, float* R)
 {
   for(size_t i = 0; i < processors.size(); i++)
@@ -43,6 +44,8 @@ void EffectChain::processBlock(float* L, float* R, int N)
   for(int n = 0; n < N; n++)
     processFrame(L, R);
 }
+*/
+
 
 int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type, int index)
 {
@@ -442,7 +445,7 @@ void RegionPlayer::processFrame(float* L, float* R)
   }
 
   // Apply the effect chain:
-  effectChain.processFrame(L, R);
+  processFrame1(effectChain.processors, L, R);
 
 
   // ToDo:
@@ -865,7 +868,7 @@ void GroupPlayer::processFrame(float* L, float* R)
     regionPlayers[i]->processFrame(&tmpL, &tmpR);
     *L += tmpL; 
     *R += tmpR; }
-  effectChain.processFrame(L, R);
+  processFrame1(effectChain.processors, L, R);
 }
 
 void GroupPlayer::releaseResources()

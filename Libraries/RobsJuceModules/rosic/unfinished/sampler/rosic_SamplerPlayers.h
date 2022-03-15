@@ -12,6 +12,21 @@ inline void prepareToPlay1(std::vector<Processor*>& processors, // get rid of th
     p->prepareToPlay(key, vel, fs);
 }
 
+inline void processFrame1(std::vector<Processor*>& processors, float* L, float* R)
+{
+  for(auto & p : processors) 
+    p->processFrame(L, R);
+}
+
+inline void processBlock1(std::vector<Processor*>& processors, float* L, float* R, int N)
+{
+  for(int n = 0; n < N; n++)
+    processFrame1(processors, &L[n], &R[n]);
+  // ToDo: use actualy proper block processing instead of falling back to per-sample processing
+}
+
+
+
 /** Returns the sfzIndex-th processor of the given type within the chain or nullptr, if there are
 not enough (i.e. less than i) processors of the given type in the chain. This is a 1-based index
 as it occurs in the sfz files. To get the 3rd filter, you would pass type = Dsp::Filter, 
@@ -28,8 +43,8 @@ public:
 
   using uchar = unsigned char;
 
-  void processFrame(float* L, float* R);
-  void processBlock(float* L, float* R, int N);
+  //void processFrame(float* L, float* R);
+  //void processBlock(float* L, float* R, int N);
   
 
   std::vector<Processor*> processors;
@@ -575,7 +590,11 @@ public:
 
   void addRegionPlayer(RegionPlayer* newPlayer);
 
-  void processFrame(float* L, float* R) { effectChain.processFrame(L, R);  }
+  void processFrame(float* L, float* R) 
+  { 
+    processFrame1(effectChain.processors, L, R);
+    //effectChain.processFrame(L, R);  
+  }
 
   // implement processBlock
 
