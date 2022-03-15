@@ -32,24 +32,6 @@ public:
   void processBlock(float* L, float* R, int N);
   
 
-  //void reserve(size_t num) { processors.reserve(num); }
-  void addEffect(Processor* p) { processors.push_back(p); }
-  //void clear() { processors.clear(); }
-
-  //bool isEmpty() const { return processors.empty(); }
-
-  /** Returns the total number of processors in the chain. */
-  size_t getNumEffects() const { return processors.size(); }
-
-  /** Returns the number of processors of given type in the chain. */
-  //size_t getNumEffects(OpcodeType type) const;
-
-
-  Processor* getEffect(int i) { return processors[i]; } 
-  // is this needed? it's confusing to have this and the function below because the indices mean
-  // different things in both cases
-
-
   std::vector<Processor*> processors;
 };
 // Maybe get rid of this class and instead use a std::vector<Effect*> directly for the effectChain

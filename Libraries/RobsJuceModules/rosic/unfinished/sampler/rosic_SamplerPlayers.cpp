@@ -109,7 +109,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       if(eff)
       {
         eff->setParametersToDefaults(sfzIndex);
-        effectChain.addEffect(eff);
+        effectChain.processors.push_back(eff);
       }
       else 
       {
@@ -234,8 +234,8 @@ bool SamplePlayer::assembleProcessors(
 
 void SamplePlayer::disassembleProcessors()
 {
-  for(int i = 0; i < effectChain.getNumEffects(); i++)
-    dspPool->repositEffect(effectChain.getEffect(i));
+  for(size_t i = 0; i < effectChain.processors.size(); i++)
+    dspPool->repositEffect(effectChain.processors[i]);
   effectChain.processors.clear();
 
   for(size_t i = 0; i < modSources.size(); ++i)
