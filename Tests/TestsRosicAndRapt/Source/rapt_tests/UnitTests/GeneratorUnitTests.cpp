@@ -2918,15 +2918,12 @@ bool samplerFreeModulationsTest()
   // This test fails badly if we don't call reset before. Perhaps because of loop. But still, the
   // error signal looks kinda weird. -> figure out what's going on and document it!
 
-
   // Now set up a group modulation connection. Because we are in default mode, the group setting 
   // should be used as fallback value but we still have the zero setting defined for the region, so
   // the zero should override the depth and we should get the same result as in the previous test:
   se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
   se.reset(); 
   ok &= testSamplerNote(&se, 69, 100, tgt2, tgt2, 1.e-17, true);
-  // ...
-  
   
   // Now we remove the region setting. The group setting should be used as fallback, so the result 
   // should be the same as in the first test:
@@ -2977,7 +2974,6 @@ bool samplerFreeModulationsTest()
   //  computations, we can convert the (exact) float to double as needed.
   //
   // -Refactor:
-  //  -get rid of class EffectChain
   //  -See comment in DspResourcePool
   //  -See comment in SamplePlayer::assembleModulations
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
@@ -2988,6 +2984,10 @@ bool samplerFreeModulationsTest()
   //   should just accumulate its output into what's already there. Maybe that should be the 
   //   general behavior of "Source" or "Generator" types of Processors. Maybe make an oscillator
   //   Processor first to get a feeling of how it works and then make a SampleOscillator/Player
+  //   ...or maybe the SamplePlayer class should be renamed into ChannelPlayer first. Then maybe
+  //  RegionPlayer into LayerPlayer, SampleBusPlayer into MixPlayer, GroupPlayer into SubMixPlayer
+  //  and InstrumPlayer into MasterMixPlayer. Or maybe RegionPlayer should be the ChannelPlayer
+  //  and SamplePlayer be PlayerBase
 
   // Notes: 
   // To specify free modulations in the sfz-file, we want to write things like lfo2_cutoff3=500 to 
