@@ -2,7 +2,7 @@ namespace rosic {
 namespace Sampler {
 
 //=================================================================================================
-// rsSamplerEngine::EffectChain
+// Move into SamplerEffects.cpp, maybe give declarations in .h:
 
 Processor* getProcessor(std::vector<Processor*>& processors, OpcodeType type, int index)
 {
@@ -32,7 +32,7 @@ size_t getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeT
   return count;
 }
 
-int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type, int index)
+int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type, int index) // take a std::vector
 {
   // ToDo: 
   // -Check, if index < 0 and if so, modify it processors.size() + abs(index) to use indices 
@@ -47,7 +47,7 @@ int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type
   return -1;
 }
 
-Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index)
+Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index) // take a std::vector
 {
   int i = findProcessorIndex(processors, numProcessors, type, index);
   if(i == -1)
@@ -75,8 +75,6 @@ int rsCount(const T* a, int N, T elem)
 
 bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain)
 {
-  //SfzCodeBook* cb = SfzCodeBook::getInstance();
-
   for(int i = 0; i < (int)dspTypeChain.size(); i++)
   {
     // Figure out the type of the effect or modulator that may need to be added to the effectChain 
@@ -89,16 +87,15 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       // Figure out, if we actually need to add another effect to the chain. If not, there's 
       // nothing more to do in this iteration:
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1;
-      //if(effectChain.getNumEffects(opType) >= sfzIndex) // old
       if(getNumProcessorsOfType(effectChain, opType) >= sfzIndex)
         continue;
 
       // OK - now we actually need to grab another effect of given type from the pool:
-      Processor* eff = getEffect(opType);
-      if(eff)
+      Processor* p = getEffect(opType);  // use a general getProcessor function
+      if(p)
       {
-        eff->setParametersToDefaults(sfzIndex);
-        effectChain.push_back(eff);
+        p->setParametersToDefaults(sfzIndex);
+        effectChain.push_back(p);
       }
       else 
       {
@@ -112,13 +109,12 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
     {
       // The logic for adding modulation sources is the same as for adding effect processors:
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1; 
-      //if(getNumModulators(modSources, opType) >= sfzIndex)
       if(getNumProcessorsOfType(modSources, opType) >= sfzIndex)
         continue;
-      Processor* mod = getModulator(opType);  // maybe use a general getProcessor function
-      if(mod) {
-        mod->setParametersToDefaults(sfzIndex);
-        modSources.push_back(mod);     }
+      Processor* p = getModulator(opType);  // use a general getProcessor function
+      if(p) {
+        p->setParametersToDefaults(sfzIndex);
+        modSources.push_back(p);     }
       else {
         disassembleProcessors();
         return false;  }

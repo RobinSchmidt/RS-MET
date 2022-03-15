@@ -26,7 +26,6 @@ void LowFreqOscCore::processFrame(float* L, float* R)
   //  assuming that phaseShift is in radians (the user parameter should perhaps be in degrees)
 }
 
-
 //=================================================================================================
 
 void AmplifierCore::setup(float volume, float pan, float width, float pos)

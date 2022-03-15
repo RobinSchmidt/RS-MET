@@ -4,6 +4,7 @@
 namespace rosic { namespace Sampler {
 
 //=================================================================================================
+// Move into SamplerEffects.h 
 
 inline void prepareToPlay1(std::vector<Processor*>& processors, // get rid of th 1 in the name
   unsigned char key, unsigned char vel, double fs)              // use float for fs
@@ -20,9 +21,13 @@ inline void processFrame1(std::vector<Processor*>& processors, float* L, float* 
 
 inline void processBlock1(std::vector<Processor*>& processors, float* L, float* R, int N)
 {
-  for(int n = 0; n < N; n++)
-    processFrame1(processors, &L[n], &R[n]);
-  // ToDo: use actualy proper block processing instead of falling back to per-sample processing
+  for(auto & p : processors) 
+    p->processBlock(L, R, N);
+
+  // This code might be useful for testing. It should produce the same results but in a less 
+  // efficient way:
+  //for(int n = 0; n < N; n++)
+  //  processFrame1(processors, &L[n], &R[n]); 
 }
 
 /** Returns the sfzIndex-th processor of the given type within the chain or nullptr, if there are
@@ -208,13 +213,12 @@ protected:
     return dspPool->grabEffect(type);
   }
 
+  /** Like getEffect but doe the modulators. ...can we somehow handle this in a unified way? */
   Processor* getModulator(OpcodeType type)
   {
     RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
     return dspPool->grabModulator(type);
   }
-  // Maybe just have one function that returns a pointer to Processor (baseclass of Effect and 
-  // Modulator)
 
   /** Adds the processors of the given types to our array of effects or modulators, if needed. 
   Adding a particular processor is needed, if no suitable such processor is already there in our 
