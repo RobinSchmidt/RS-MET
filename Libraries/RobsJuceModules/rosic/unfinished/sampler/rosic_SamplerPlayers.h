@@ -56,7 +56,7 @@ public:
   size_t getNumEffects() const { return processors.size(); }
 
   /** Returns the number of processors of given type in the chain. */
-  size_t getNumEffects(OpcodeType type) const;
+  //size_t getNumEffects(OpcodeType type) const;
 
 
   Processor* getEffect(int i) { return processors[i]; } 

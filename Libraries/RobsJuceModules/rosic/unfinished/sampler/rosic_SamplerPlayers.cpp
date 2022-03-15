@@ -2,7 +2,7 @@ namespace rosic {
 namespace Sampler {
 
 //=================================================================================================
-// rsSamplerEngine::SignalProcessorChain
+// rsSamplerEngine::EffectChain
 
 Processor* getProcessor(std::vector<Processor*>& processors, OpcodeType type, int index)
 {
@@ -21,6 +21,34 @@ Processor* getProcessor(std::vector<Processor*>& processors, OpcodeType type, in
   return nullptr;
 }
 
+/** Returns the total number of processors in the given array. */
+size_t getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeType type)
+{
+  size_t count = 0;
+  for(size_t i = 0; i < processors.size(); i++) {
+    if(processors[i]->getType() == type)
+      count++;
+  }
+  return count;
+}
+
+/*
+// make (static) member of SamplePlayer ...maybe it should take a vector of Processor* and then we
+// can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
+// closely. Then, we need to rename it
+// rename to getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeType type):
+size_t getNumModulators(const std::vector<Processor*>& modSources, OpcodeType type)
+{
+  size_t count = 0;
+  for(size_t i = 0; i < modSources.size(); i++) {
+    if(modSources[i]->getType() == type)
+      count++;
+  }
+  return count;
+}
+// obsolete
+*/
+
 void EffectChain::processFrame(float* L, float* R)
 {
   for(size_t i = 0; i < processors.size(); i++)
@@ -33,23 +61,6 @@ void EffectChain::processBlock(float* L, float* R, int N)
     processFrame(L, R);
 }
 
-size_t EffectChain::getNumEffects(OpcodeType type) const
-{
-  size_t count = 0;
-  for(size_t i = 0; i < processors.size(); i++) {
-    if(processors[i]->getType() == type)
-      count++;
-  }
-  return count;
-}
-
-/*
-Processor* EffectChain::getEffect(OpcodeType type, int index)
-{
-  return getProcessor(processors, type, index);
-}
-*/
-// ToDo: turn into a free function - done -> use it everywhere and then get rid of this wrapper
 
 //=================================================================================================
 // SamplePlayer
@@ -65,21 +76,6 @@ int rsCount(const T* a, int N, T elem)
   return c;
 }
 // move into rsArrayTools
-
-
-// make (static) member of SamplePlayer ...maybe it should take a vector of Processor* and then we
-// can use it also instead of effectChain.getNumEffects(opType) to match both branches more 
-// closely. Then, we need to rename it
-// rename to getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeType type):
-size_t getNumModulators(const std::vector<Processor*>& modSources, OpcodeType type)
-{
-  size_t count = 0;
-  for(size_t i = 0; i < modSources.size(); i++) {
-    if(modSources[i]->getType() == type)
-      count++;
-  }
-  return count;
-}
 
 int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type, int index)
 {
@@ -138,7 +134,8 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       // Figure out, if we actually need to add another effect to the chain. If not, there's 
       // nothing more to do in this iteration:
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1;
-      if(effectChain.getNumEffects(opType) >= sfzIndex)
+      //if(effectChain.getNumEffects(opType) >= sfzIndex) // old
+      if(getNumProcessorsOfType(effectChain.processors, opType) >= sfzIndex)
         continue;
 
       // OK - now we actually need to grab another effect of given type from the pool:
@@ -160,7 +157,8 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
     {
       // The logic for adding modulation sources is the same as for adding effect processors:
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1; 
-      if(getNumModulators(modSources, opType) >= sfzIndex)
+      //if(getNumModulators(modSources, opType) >= sfzIndex)
+      if(getNumProcessorsOfType(modSources, opType) >= sfzIndex)
         continue;
       Processor* mod = getModulator(opType);  // maybe use a general getProcessor function
       if(mod) {

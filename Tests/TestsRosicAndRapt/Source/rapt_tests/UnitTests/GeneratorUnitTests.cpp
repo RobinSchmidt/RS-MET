@@ -2919,10 +2919,6 @@ bool samplerFreeModulationsTest()
   
 
   // ToDo:
-  // -remove redunadant SamplerEngien::sampleRate, in SamplePlayer, the functions that take a
-  //  PlayStatus pointer and/or sampleRate as parameter should remove these parameters because
-  //  they can now access the value via the PlayStatus pointer
-
 
   // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
   //  need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
@@ -2951,6 +2947,7 @@ bool samplerFreeModulationsTest()
   //  computations, we can convert the (exact) float to double as needed.
   //
   // -Refactor:
+  //  -get rid of class EffectChain
   //  -See comment in DspResourcePool
   //  -See comment in SamplePlayer::assembleModulations
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
