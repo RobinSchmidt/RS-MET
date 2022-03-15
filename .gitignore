@@ -53,6 +53,8 @@ Tests/.DS_Store
 Tests/TestsRosicAndRapt/.DS_Store
 Tests/TestsRosicAndRapt/Builds/.DS_Store
 Tests/TestsRosicAndRapt/Builds/MacOSX/.DS_Store
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/
 .DS_Store
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile2.txt
