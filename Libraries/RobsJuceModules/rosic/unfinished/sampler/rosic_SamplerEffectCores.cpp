@@ -2,23 +2,28 @@ namespace rosic {
 namespace Sampler {
 
 
-void LowFreqOscCore::setup(float freq, float delay, float fade, float sampleRate)
+void LowFreqOscCore::setup(float freq, float _delay, float _fade, float sampleRate)
 {
-  inc = freq / sampleRate;
-
-
-  int dummy = 0;
+  inc   = (double)freq / (double)sampleRate;
+  delay = (int) round(_delay * sampleRate);
+  fade  = (int) round(_fade  * sampleRate);
 }
 
 void LowFreqOscCore::processFrame(float* L, float* R)
 {
-  static const float tau = float(2.0*PI);
-  float out = sinf(tau * pos);
+  static const double tau = 2.0*PI;
+  float out = (float) sin(tau * pos);
   pos += inc;
   while(pos >= tau)
     pos -= tau;
   *L = *R = out;
-  // ToDo: produce stereo output
+  // ToDo: 
+  // -use delay, fade members for fade-in and delay
+  // -Produce stereo output: maybe we should have a stereo_phase paramter or phase_shift_LR
+  //  and do: 
+  //    *L = sin(tau * pos - phaseShift/2);
+  //    *R = sin(tau * pos + phaseShift/2);
+  //  assuming that phaseShift is in radians (the user parameter should perhaps be in degrees)
 }
 
 

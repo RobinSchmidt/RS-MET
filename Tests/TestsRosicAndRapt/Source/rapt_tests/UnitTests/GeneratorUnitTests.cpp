@@ -2894,7 +2894,7 @@ bool samplerFreeModulationsTest()
 
   // Generate target signal:
   Vec tgt(N);
-  float w = 2*float(PI)*lfoFreq / fs;
+  double w = 2*PI*(double)lfoFreq / (double)fs;
   for(int n = 0; n < N; n++)
   {
     float lfoOut = sin(w*n);
@@ -2902,19 +2902,28 @@ bool samplerFreeModulationsTest()
   }
   //rsPlotVectors(dc, tgt);
 
-  ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-3, false);
-  int dummy = 0;
-  // We need a quite high tolerance because the error grows larger over time supposedly due to
-  // roudoff error accumulation leading to the phases drifting apart? Try to use a double for
-  // pos/inc
+  ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-17, false);
+  // If we would do all of our signal processing in single precision, we would need a very high 
+  // tolerance of 1.e-3 here. The error would grows larger over time supposedly due to roundoff 
+  // error accumulation leading to the phases drifting apart? Try to use a double for pos/inc.
+  // I'm not yet sure if we should accept such a high error in exchange for the (supposedly) 
+  // gained efficiency of using float. For the time being, we use double - here and, importantly, 
+  // in LowFreqOscCore.
 
+  /*
+  // Plot error between target and actual output:
   Vec outL(N), outR(N);
   se.reset();  // without it, the error is enormous - why?
   getSamplerNote(&se, 69, 100, outL, outR);
   rsPlotVectors(tgt - outL, tgt - outR);
+  */
 
+  // Next: 
+  // 
 
   // ToDo:
+
+  // Done:
   // -Done: Provide method to set up modulation routings in Region, Group, Global.
   // -During assembling the RegionPlayer, also assemble the modulators and connections.
   //  -Done: Assemble modulators in a way similar to assembling the effects.
@@ -2931,6 +2940,8 @@ bool samplerFreeModulationsTest()
   //  -Done: Apply all modulations in an accumulating loop over the modMatrix
   //  -Update the affected DSP units (effects and(!) modulators), i.e. recompute their affected
   //   algo-params
+
+
   // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
   //  need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
   //  additional modulators for the enclosing Group and Instrument and their contributions should 
@@ -3131,7 +3142,7 @@ bool samplerEngineUnitTest()
   ok &= samplerSaveLoadTest();       // saving and loading of sfz files
   //ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
   ok &= samplerEffectsTest();        // effect chain
-  //ok &= samplerModulationsTest();    // modulation system
+  ok &= samplerModulationsTest();    // modulation system
   ok &= samplerOverloadTest();       // behavior in overload conditions
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes
