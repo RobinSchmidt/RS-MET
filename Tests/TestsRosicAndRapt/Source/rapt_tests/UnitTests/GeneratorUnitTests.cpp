@@ -2921,7 +2921,10 @@ bool samplerFreeModulationsTest()
 
   // Now set up a group modulation connection. Because we are in default mode, the group setting 
   // should be used as fallback value but we still have the zero setting defined for the region, so
-  // the zero should override the depth and we should gte the same result as in the previous test:
+  // the zero should override the depth and we should get the same result as in the previous test:
+  se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
+  se.reset(); 
+  ok &= testSamplerNote(&se, 69, 100, tgt2, tgt2, 1.e-17, true);
   // ...
   
   

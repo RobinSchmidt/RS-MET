@@ -198,6 +198,12 @@ public:
       modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth, modMode);
   }
 
+  int setGroupModulation(int groupIndex, OpcodeType modSrcType, int modSrcIndex,
+    Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode)
+  {
+    return sfz.setGroupModulation(groupIndex, 
+      modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth, modMode);
+  }
 
 
   // ToDo: These functions are currently used only in test code. I think, they are not yet ready

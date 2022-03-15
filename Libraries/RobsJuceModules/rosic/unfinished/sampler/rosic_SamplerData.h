@@ -636,10 +636,13 @@ public:
   rsReturnCode setGroupSetting(int gi, Opcode type, float value, int index = -1);
   rsReturnCode setInstrumentSetting(Opcode type, float value, int index = -1);  // rename to setGlobalSetting for sfz compliance
 
+  // for setting up a modulation connection
   rsReturnCode setRegionModulation(int gi, int ri, OpcodeType modSrcType, int modSrcIndex,
     Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
-  // for setting up a modulation connection
-  // maybe rename to addRegionModulation
+
+  rsReturnCode setGroupModulation(int gi, OpcodeType modSrcType, int modSrcIndex,
+    Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
+
 
 
   rsReturnCode removeRegionSetting(int gi, int ri, Opcode type, int index);

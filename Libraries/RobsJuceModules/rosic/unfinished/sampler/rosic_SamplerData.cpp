@@ -366,6 +366,18 @@ rsReturnCode SfzInstrument::setRegionModulation(int gi, int ri, OpcodeType srcTy
   return rsReturnCode::success;
 }
 
+rsReturnCode SfzInstrument::setGroupModulation(int gi, OpcodeType srcType, int srcIndex, 
+  Opcode tgtParam, int tgtIndex, float depth, ModMode modMode)
+{
+  if(!isGroupIndexValid(gi)) {
+    RAPT::rsError("Invalid group index");
+    return rsReturnCode::invalidIndex; }
+  global.groups[gi]->setModulation(srcType, srcIndex, tgtParam, tgtIndex, depth, modMode);
+  return rsReturnCode::success;
+}
+
+
+
 rsReturnCode SfzInstrument::removeRegionSetting(int gi, int ri, Opcode type, int index)
 {
   if(!isIndexPairValid(gi, ri)) {
