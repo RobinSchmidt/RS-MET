@@ -2891,23 +2891,22 @@ bool samplerFreeModulationsTest()
   Vec tgt(N);
   double w = 2*PI*(double)lfoFreq / (double)fs;
   for(int n = 0; n < N; n++)
-  {
-    float lfoOut = sin(w*n);
-    tgt[n] = 1.f + (baseDC + lfoDepth * lfoOut);
-    // works
-
-    //tgt[n] = 1.f + (baseDC + lfoDepth * sin(w*n));
-    // fails - why?
-  }
-  //rsPlotVectors(dc, tgt);
+    tgt[n] = 1.f + (baseDC + lfoDepth * (float)sin(w*n));
+    // Converting the sin output to float is actually important to match the sampler engine's
+    // output. Without it, we would do all computations in double and only convert the final
+    // result to float. But this is not how the engine does it and the roundoff errors are
+    // different.
 
   ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-17, false);
+  //ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 0.0,    false); // fails - why?
   // If we would do all of our signal processing in single precision, we would need a very high 
   // tolerance of 1.e-3 here. The error would grows larger over time supposedly due to roundoff 
   // error accumulation leading to the phases drifting apart? Try to use a double for pos/inc.
   // I'm not yet sure if we should accept such a high error in exchange for the (supposedly) 
   // gained efficiency of using float. For the time being, we use double - here and, importantly, 
   // in LowFreqOscCore.
+
+  rsAssert(ok);
 
   /*
   // Plot error between target and actual output:
@@ -2916,6 +2915,7 @@ bool samplerFreeModulationsTest()
   getSamplerNote(&se, 69, 100, outL, outR);
   rsPlotVectors(tgt - outL, tgt - outR);
   */
+  
 
   // ToDo:
   // -In RegionPlayer::processFrame, we should use a member of PlayStatus for the modBuffer instead
