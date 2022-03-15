@@ -38,6 +38,7 @@ void rsSamplerEngine::setMaxNumLayers(int newMax)
   for(int i = 0; i < L; i++)
   {
     playerPool[i].setDspResourcePool(&dspPool);
+    playerPool[i].setPlayStatusPointer(&intermediates);
     playerPool[i].allocateMemory();
     idlePlayers[i] = &playerPool[i];
   }
@@ -701,6 +702,20 @@ void rsSamplerEngine::setupRegionsForKey()
 void rsSamplerEngine::preAllocateDspMemory()
 {
   //RAPT::rsWarning("rsSamplerEngine::preAllocateDspMemory still under construction");
+
+  // Allocate memory for the modulation buffers:
+  //modBuffer
+
+  intermediates.modBuffer.resize(64); // rename to playStatus
+  // preliminary - 64 allows for up to 32 modulation sources
+  // ToDo: figure out, how many modulation sources are needed at maximum:
+  // -loop through all regions and groups in the sfz and check also the instrument
+  //  -for each of them, check out, how many modSources it has
+  // -the maximum of all of them is half of our required size for the modBuffer (half because
+  //  we have stereo signals - mayby later when we use an rsFloat32x2 type for the modBuffer 
+  //  instead or raw float, we don't need to double the allocated size)
+
+
 
   // ToDo:
   // -allocate enough RegionPlayers in our playerPool - how much is enough should depend on how 

@@ -135,6 +135,11 @@ public:
   // parameter...we'll see...some math and design questions to figure out....this is still under 
   // construction...
 
+
+  std::vector<float> modBuffer;
+  /**< A buffer used in RegionPlayer::processFrame to hold the outputs of the modulators. */
+
+
 private:
 
   PlayStatus()
@@ -159,8 +164,9 @@ private:
   // maybe needed when we don't create it on the stack but rather re-use a member
 
   // under construction - not yet used:
-  char  controllers[128];  // most recnetly received values of all controllers
+  char  controllers[128];  // most recently received values of all controllers
   short pitchWheel;        // most recently received value of pitch wheel
+
   // todo: aftertouch, etc.
   bool  dirty = false;
   // ToDo: The dirty flag should be set to true by the midi event handlers when control, wheel, 
@@ -223,12 +229,18 @@ public:
   up by the engine soon after it has created all its players. */
   void setDspResourcePool(DspResourcePool* newPool) { dspPool = newPool; }
 
+  /** Sets up the pointer to the PlayStatus object that exists once per SamplerEngine (as member
+  thereof). This works similarly to the setDspResourcePool function: the engine owns the object
+  and all the players receive a pointer to it. */
+  void setPlayStatusPointer(PlayStatus* newPointer) { playStatus = newPointer; }
+
   /** Returns true if all our arrays related to the processors are empty, i.e. the
-  effectChain, modSources, modMatrix arrays. Mostly for self-testing purposes. */
+  effectChain, modSources, modMatrix arrays and related stuff. Mostly for self-testing purposes
+  as debug assertions. */
   bool areProcessorsEmpty() const
   {
     return effectChain.isEmpty() && modSources.empty() && modMatrix.empty();
-    // also include modTargets.empty() in case we use it later
+    // todo: && modTargetProcessors.empty() && modTargetParams.empty();
   }
 
 protected:
@@ -289,7 +301,6 @@ protected:
   etc.  */
   virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
     RegionPlayer* rp, PlayStatus* iv) = 0;
-  // rename to setPlayerOpcode
 
   /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
   applicable to the DSP chain, it finds the processor in our dspChain member to which this 
@@ -335,13 +346,23 @@ protected:
   perspective. we may view the array as a rudimentary data structure for a sparse matrix. The 
   entries themselvses know their sources and targets, i.e. rows and columns.  */
 
+
   DspResourcePool* dspPool = nullptr;
   /**< A pool of DSP processor objects from which we can grab some as needed to assemble our DSP
   chain. The assembly task is mostly done in the subclasses making use of addDspsIfNeeded 
   (verify - maybe now it's augmentOrCleanEffectChain?). The pointer should be set by the engine 
   once and for all when it creates its Player objects. */
 
+  PlayStatus* playStatus = nullptr;
+  // some functions such as setupPlayerSetting, setupDspSettings, etc. take a pointer to a 
+  // PlayStatus object as parameter...but if we maintain it as member here, we don't need that
+  // parameter anymore
+
   // ToDo:
+  // -maybe instead of maintaining the tow pointers dspPool, playStatus, maintain only a single
+  //  pointer to SamplerEngine - the SamplerEngine has these two as members, so we can access
+  //  them then through that pointer...but maybe first implement benchmarks to see, which is more
+  //  efficient
   // -make sure, that all the std::vectors reserve enough memory when an sfz-file is loaded
 };
 

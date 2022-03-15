@@ -621,7 +621,7 @@ protected:
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
 
-  PlayStatus intermediates;  // find a better name - maybe turn into a midiStatus
+  PlayStatus intermediates;  // rename to playStatus
   /**< Intermediate variables used for the computation of things like per-sample increment, final 
   amplitude etc. according to key, vel, keytrack, veltrack, tune, transpose, etc. We need to pass 
   around such a struct from noteOn to have a place into which we can accumulate all the modifiers
