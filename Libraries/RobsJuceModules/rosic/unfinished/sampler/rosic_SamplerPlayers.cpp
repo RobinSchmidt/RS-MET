@@ -294,9 +294,7 @@ void SamplePlayer::disassembleProcessors()
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  //Processor* dsp = effectChain.getEffect(s.getTargetOpcodeType(), s.getIndex()); // old
   Processor* dsp = getProcessor(effectChain.processors, s.getTargetOpcodeType(), s.getIndex());
-
   if(dsp != nullptr)
     dsp->setParameter(s.getOpcode(), s.getValue());
   else
@@ -308,14 +306,15 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 
 void SamplePlayer::setupModSourceSetting(const PlaybackSetting& s)
 {
-
-
-  int dummy = 0;
-
-
-  // This almost duplicates setupProcessorSetting - refactor to get rid of the duplication
+  Processor* dsp = getProcessor(modSources, s.getTargetOpcodeType(), s.getIndex());
+  if(dsp != nullptr)
+    dsp->setParameter(s.getOpcode(), s.getValue());
+  else
+    RAPT::rsError("No processor available for DSP opcode");
+  // This function almost duplicates setupProcessorSetting -> refactor to get rid of the 
+  // duplication. Maybe setupProcessorSetting should receive a pointer to effectChain.processors 
+  // or to modSources.
 }
-
 
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
   double sampleRate, RegionPlayer* rp, bool busMode, PlayStatus* iv)
@@ -325,12 +324,14 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
   {
     PlaybackSetting s = settings[i];
     Opcode op = s.getOpcode();
-    if(     cb->isEffectSetting(op))    { setupProcessorSetting(s);                  }
-    else if(cb->isPlayerSetting(op))    { setupPlayerSetting(   s, sampleRate, rp, iv); }
+    if(     cb->isEffectSetting(op))    { setupProcessorSetting(s); }
     else if(cb->isModSourceSetting(op)) { setupModSourceSetting(s); }
+    else if(cb->isPlayerSetting(op))    { setupPlayerSetting(   s, sampleRate, rp, iv); }
   }
   // Try to refactor stuff in a way that lets use get rid of the branching and treat all cases
-  // unifromly
+  // uniformly...I'm not yet sure, if that's possible in any meaningful way, though. Maybe first
+  // try to avoid to pass all the additional parameters to setupPlayerSetting or if it really needs
+  // them, pass them to setupProcessorSetting, too even it it doesn't make use of them
 }
 
 //=================================================================================================

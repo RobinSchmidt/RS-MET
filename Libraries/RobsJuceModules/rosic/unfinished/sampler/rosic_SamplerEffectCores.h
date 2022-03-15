@@ -14,6 +14,8 @@ namespace Sampler {
 
 
 //=================================================================================================
+// Modulators
+//=================================================================================================
 
 class LowFreqOscCore
 {
@@ -37,6 +39,35 @@ protected:
 // -Maybe have a function pointer to a function that produces the actual waveform
 
 
+
+//=================================================================================================
+// Generators
+//=================================================================================================
+
+
+class OscillatorCore
+{
+
+public:
+
+protected:
+
+};
+// Should work similar to LowFreqOsc but with the difference that in processFrame, the output gets
+// accumulated to what's already there. This should be generally be the case for Generators. For
+// Modulators, that may be not so suitable...unless we just init the modBuffer to all zeros first
+// in RegionPlayer::processFrame. If we do it that way, we could indeed handle Modulators and
+// Generators in the same way and actually make them interchangable. If we generally have 
+// dryGain/wetGain members, we could actually unify it with the effects, too. Generators and 
+// Modulators would be default have dryGain = wetGain = 1, Effects would have dryGain = 0, 
+// wetGain = 1 by default. Maybe these should be members of the outlying Processor. But perhaps it
+// could be more efficient to do the mixing directly in the cores -> make benchmarks.
+
+
+
+
+//=================================================================================================
+// Effects
 //=================================================================================================
 
 class AmplifierCore

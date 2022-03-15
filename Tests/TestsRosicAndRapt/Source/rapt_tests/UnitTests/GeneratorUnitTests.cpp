@@ -2888,8 +2888,6 @@ bool samplerFreeModulationsTest()
   // Next: I think, we need to add some code to SamplePlayer::setupProcessorSetting and/or 
   // SamplePlayer::setupDspSettings. Maybe we need to add a branch codebook->isModulatorSetting
 
-
-
   //ok &= !se.hasDanglingRoutings();
   // should verify that all roútings that are set up in all regions have a valid source and target
 
@@ -2904,12 +2902,17 @@ bool samplerFreeModulationsTest()
   }
   //rsPlotVectors(dc, tgt);
 
-  //ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true);
-  // tgt wiggles between 3.5 and 4.5 centered at 4.0, L/R outputs are currently constant at 4.0 as
-  // expected (the plotted signal between -0.5 and +0.5 is the error)
+  ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-3, false);
+  int dummy = 0;
+  // We need a quite high tolerance because the error grows larger over time supposedly due to
+  // roudoff error accumulation leading to the phases drifting apart? Try to use a double for
+  // pos/inc
 
-  // -At the end of SamplePlayer::augmentOrCleanEffectChain, the modSources array correctly 
-  //  contains one LFO, but it's still uninitialized (them members contain garbage values).
+  Vec outL(N), outR(N);
+  se.reset();  // without it, the error is enormous - why?
+  getSamplerNote(&se, 69, 100, outL, outR);
+  rsPlotVectors(tgt - outL, tgt - outR);
+
 
   // ToDo:
   // -Done: Provide method to set up modulation routings in Region, Group, Global.
@@ -2962,7 +2965,10 @@ bool samplerFreeModulationsTest()
   //   effects and modulators.
   //  -Drag out PlaybackSetting from SfzInstrument
   //  -Maybe the SamplePlayer should also just be a Processor like everything else. That would lead 
-  //   to greater unification and more flexibility and shrink the size of RegionPlayer.
+  //   to greater unification and more flexibility and shrink the size of RegionPlayer. Maybe it
+  //   should just accumulate its output into what's already there. Maybe that should be the 
+  //   general behavior of "Source" or "Generator" types of Processors. Maybe make an oscillator
+  //   Processor first to get a feeling of how it works and then make a SampleOscillator/Player
 
 
 

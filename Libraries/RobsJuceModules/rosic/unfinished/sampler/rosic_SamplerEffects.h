@@ -157,6 +157,12 @@ protected:
   // Maybe some more advanced processors need a finer dirtification control - use a char of 8 flags
   // to set certain parts of the coeff-set clean/dirty
 
+  // float dryGain = 0.f;
+  // float wetGain = 1.f;
+  // should by default be 0,1 for effects and 1,1 for generators and x,1 for modulators (dryGain
+  // doesn't matter for modulators because they receive no input signal anayway, i.e. all zeros).
+  // Maybe have a Parameter for dry/wet mix in all Processors.
+
   // For response to midi control:
   // MidiStatus midiStatus;
   // bool dirty = false;
