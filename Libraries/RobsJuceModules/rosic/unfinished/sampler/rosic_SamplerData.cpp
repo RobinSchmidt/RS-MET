@@ -186,6 +186,12 @@ bool SfzInstrument::HierarchyLevel::removeModulation(OpcodeType modSrcType, int 
       s.getTargetOpcode() == modTargetOpcode && s.getTargetIndex() == modTargetIndex; });
   return numRemoved > 0;
 }
+// I think, numRemoved should always be either 0 or 1. Any other number would mean that we had two
+// or more connections between the same pair of pins, which should not happen. When setModulation 
+// is called for a pair of pins between which there already is a connection, the existing 
+// connection should be updated rather than adding a second connection. In principle, the 
+// architecture of the modulation system should allow mutliple connections between the same pair of
+// pins but that doesn't seem to be a useful feature, so we don't do that.
 
 void SfzInstrument::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
 {

@@ -232,7 +232,10 @@ public:
     return sfz.removeRegionModulation(groupIndex, regionIdex, 
       modSrcType, modSrcIndex, modTarget, modTargetIndex);
   }
-  // maybe instead of a return code, it should return the number of removed connections
+  // Maybe instead of a return code, it should return the number of removed connections? But no:
+  // that's supposed to be 1 or 0 anyway because we don't allow multiple connections between the 
+  // same pair of pins. I think, that would be technically possible though, but it doesn't seem 
+  // to make much sense from a user perspective.
 
 
   /** NOT YET READY FOR PRODUCTION. */

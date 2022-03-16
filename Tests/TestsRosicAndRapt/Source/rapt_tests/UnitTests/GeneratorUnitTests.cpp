@@ -2928,10 +2928,6 @@ bool samplerFreeModulationsTest()
   // Now we remove the region setting. The group setting should be used as fallback, so the result 
   // should be the same as in the first test:
   ok &= se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1);
-  // Maybe it should return the number of removed connections. Then we could do a check here. But 
-  // actually, there should be at most one connection that can be removed - it removes either 0 or
-  // 1 connection - we don't allow multiple connections between the same pair of pins.
-
   se.reset(); 
   ok &= testSamplerNote(&se, 69, 100, tgt1, tgt1, 1.e-17, true);
   // FAILS!!!
@@ -2992,9 +2988,14 @@ bool samplerFreeModulationsTest()
   //   general behavior of "Source" or "Generator" types of Processors. Maybe make an oscillator
   //   Processor first to get a feeling of how it works and then make a SampleOscillator/Player
   //   ...or maybe the SamplePlayer class should be renamed into ChannelPlayer first. Then maybe
-  //  RegionPlayer into LayerPlayer, SampleBusPlayer into MixPlayer, GroupPlayer into SubMixPlayer
-  //  and InstrumPlayer into MasterMixPlayer. Or maybe RegionPlayer should be the ChannelPlayer
-  //  and SamplePlayer be PlayerBase
+  //   RegionPlayer into LayerPlayer, SampleBusPlayer into MixPlayer, GroupPlayer into SubMixPlayer
+  //   and InstrumPlayer into MasterMixPlayer. Or maybe RegionPlayer should be the ChannelPlayer
+  //   and SamplePlayer be PlayerBase. We want the free the SamplePlayer so we can use it for a
+  //   SamplePlayer subclass of Processor, which should be usable as "effect". Then we could make
+  //   the "sample" sfz opcode a parameter of taht (and also, delay, loop_start, etc.) and remove
+  //   these things from the ChannelPlayer. The goal is to treat the SamplePlayer just like any
+  //   other processor with respect to modulation - that is needed for supporting the 
+  //   pitch-envelope without needing any messy special casing.
 
   // Notes: 
   // To specify free modulations in the sfz-file, we want to write things like lfo2_cutoff3=500 to 
