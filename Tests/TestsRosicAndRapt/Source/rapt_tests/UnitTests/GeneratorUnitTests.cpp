@@ -2928,7 +2928,7 @@ bool samplerFreeModulationsTest()
   // Now we remove the region setting. The group setting should be used as fallback, so the result 
   // should be the same as in the first test:
   se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1);
-
+  // Maybe it should return the number of removed connections. Then we could do a check here
 
 
 

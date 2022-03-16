@@ -390,6 +390,7 @@ inline bool rsRemoveFirstOccurrence(std::vector<T>& v, T elementToRemove)
       return true; }
   return false;
 }
+// rename to rsRemoveFirstMatch
 
 template<class T>
 inline void rsReverse(std::vector<T>& v)

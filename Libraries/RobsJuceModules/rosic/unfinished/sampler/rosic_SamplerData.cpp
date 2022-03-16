@@ -114,6 +114,19 @@ bool SfzInstrument::HierarchyLevel::removeSetting(Opcode type, int index)
 
   // We should probably also remove all modulation routings that have this setting as target?
   // ...or maybe not?
+
+  // ToDo:
+  // -Try to clean this up by getting rid of the index == -1 branch: Maybe don't allow the index 
+  //  to be -1. If no index applies to a given Opcode, use index 1 as default. But in some places
+  //  we rely on the encoding that -1 means "not applicable"...this would then need to be changed.
+  // -Maybe implement a general library function removeAllMatches taking a vector and a predicate
+  //  and returning the number of removed items. The predicate can be passed as lambda. We can then
+  //  just do (assuming 1st branch was removed before): 
+  //    int numRemoved = RAPT::rsRemoveAllMatches(settings, 
+  //      [&](PlaybackSetting& s){ return s.getOpcode() == type && s.getIndex() == index; } );
+  //    updateDspsArray();
+  //    return numRemoved > 0;
+  //  see also implementation of removeModulation.
 }
 
 void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int modSrcIndex,
@@ -142,11 +155,36 @@ void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int mod
 // a sanity check for all connections after the region was fully set up. Maybe a member function
 // checkModRoutingSanity ..or hasDanglingRoutings or something
 
-bool SfzInstrument::HierarchyLevel::removeModulation(OpcodeType modSrcType, int modSrcIndex, 
-  Opcode modTarget, int modTargetIndex)
+template<class T, class P>
+size_t rsRemoveIf(std::vector<T>& vec, P pred)
 {
-  RAPT::rsError("not yet implemented"); // just a stub at the moment
-  return false;
+  if(vec.empty())
+    return 0;
+  size_t numRemoved = 0;
+  size_t i = vec.size()-1;
+  while(true) {
+    if(pred(vec[i])) {
+      RAPT::rsRemove(vec, i);
+      numRemoved++; }
+    if(i == 0)
+      break;
+    --i; }
+  return numRemoved;
+}
+// move to RAPT, implement unit tests
+// This is actually similar std::remove_if but the std function returns an iterator instead of a 
+// number of removed items...which is not so useful, in my opinion. Maybe this could be implemented
+// more efficiently using an int for i - we could just have a while(i >= 0) loop...but maybe we can
+// also do it with size_t by using while(i != -1) using the fact that -1 corresponds to 
+// max(size_t)...but that's ugly
+
+bool SfzInstrument::HierarchyLevel::removeModulation(OpcodeType modSrcType, int modSrcIndex, 
+  Opcode modTargetOpcode, int modTargetIndex)
+{
+  size_t numRemoved = rsRemoveIf(modRoutings, [&](ModulationSetting& s){ 
+    return s.getSourceType() == modSrcType && s.getSourceIndex() == modSrcIndex && 
+      s.getTargetOpcode() == modTargetOpcode && s.getTargetIndex() == modTargetIndex; });
+  return numRemoved > 0;
 }
 
 void SfzInstrument::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)

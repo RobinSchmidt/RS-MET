@@ -232,7 +232,7 @@ public:
     return sfz.removeRegionModulation(groupIndex, regionIdex, 
       modSrcType, modSrcIndex, modTarget, modTargetIndex);
   }
-
+  // maybe instead of a return code, it should return the number of removed connections
 
 
   /** NOT YET READY FOR PRODUCTION. */
