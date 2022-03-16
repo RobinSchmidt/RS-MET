@@ -2859,6 +2859,7 @@ bool samplerFreeModulationsTest()
   using OT    = rosic::Sampler::OpcodeType;
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
   using Mode  = rosic::Sampler::ModMode;
+  using RC    = rosic::Sampler::rsReturnCode;
 
   // Create a DC example sample:
   int N  = 1000;     // length of sample
@@ -2927,10 +2928,16 @@ bool samplerFreeModulationsTest()
   
   // Now we remove the region setting. The group setting should be used as fallback, so the result 
   // should be the same as in the first test:
-  ok &= se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1);
+  ok &= se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1) == RC::success;
   se.reset(); 
   ok &= testSamplerNote(&se, 69, 100, tgt1, tgt1, 1.e-17, true);
   // FAILS!!!
+  // in RegionPlayer::processFrame, the modMatrix is empty. check SamplePlayer::assembleModulations
+  // and RegionPlayer::assembleProcessors - i think in assembleProcessors, we need to add code to 
+  // the if(!busMode){ ... } block? but actually, that calls SamplePlayer::augmentOrCleanProcessors
+  // which itself already has all the mod-stuff in one of the branches...ahh - but these 
+  // mod-settings are only the modulator parameters (like lfoN_freq) but not the routing parameters
+  // (like lfoN_cutoffX)
 
 
 

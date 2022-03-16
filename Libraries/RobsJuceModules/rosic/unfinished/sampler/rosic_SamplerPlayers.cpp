@@ -565,6 +565,10 @@ bool RegionPlayer::assembleProcessors(bool busMode)
       return false; }
     if(!augmentOrCleanProcessors(glb->getOpcodeTypeChain())) {
       return false; }}
+  // I think, here we need to do more to set up the modulation connection settings. Not the 
+  // modulator parameter though. Things like lfoN_freq do already work but things like lfoN_cutoff
+  // don't. The latter one is a modulation routing or conection setting which has a different
+  // quality than the modulator's internal parameters....
 
   return true;
   // OK - everything went well so we report success. If, on the other hand, false is returned, it
