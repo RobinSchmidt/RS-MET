@@ -277,6 +277,9 @@ public:
     void setModulation(OpcodeType modSrcType, int modSrcIndex, 
       Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
 
+    bool removeModulation(OpcodeType modSrcType, int modSrcIndex, 
+      Opcode modTarget, int modTargetIndex);
+
 
 
     void setLoKey(uchar newKey) { loKey = newKey; }
@@ -439,9 +442,11 @@ public:
     how they should be applied (we assume a serial connection). But the list also contains the 
     modulation sources. The distinction between these two sorts of DSPs is not relevant here but
     will become relevant when actually assmebling the Player objects. */
+    // maybe rename - it contains also the settings for the modulators like lfoN_freq
 
     std::vector<ModulationSetting> modRoutings;
     /** Holds the modulation routings...tbc...  */
+    // this holds the settings for the modulation connections like lfoN_cutoffX etc.
 
     // ModulationConnection is for the objects that are used in sample processing whereas 
     // ModulationSetting/Routing is used in regions/groups/etc
@@ -643,13 +648,12 @@ public:
   rsReturnCode setGroupModulation(int gi, OpcodeType modSrcType, int modSrcIndex,
     Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
 
-
-
   rsReturnCode removeRegionSetting(int gi, int ri, Opcode type, int index);
   rsReturnCode removeGroupSetting(int gi, Opcode type, int index);
   rsReturnCode removeInstrumentSetting(Opcode type, int index);
 
-
+  rsReturnCode removeRegionModulation(int gi, int ri, OpcodeType modSrcType, 
+    int modSrcIndex,  Opcode modTarget, int modTargetIndex);
 
 
   rsReturnCode clearRegionSettings(int gi, int ri);

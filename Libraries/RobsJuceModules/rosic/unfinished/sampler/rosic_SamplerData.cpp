@@ -142,6 +142,13 @@ void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int mod
 // a sanity check for all connections after the region was fully set up. Maybe a member function
 // checkModRoutingSanity ..or hasDanglingRoutings or something
 
+bool SfzInstrument::HierarchyLevel::removeModulation(OpcodeType modSrcType, int modSrcIndex, 
+  Opcode modTarget, int modTargetIndex)
+{
+  RAPT::rsError("not yet implemented"); // just a stub at the moment
+  return false;
+}
+
 void SfzInstrument::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
 {
   samplePath = lvl->samplePath;
@@ -401,6 +408,18 @@ rsReturnCode SfzInstrument::removeGroupSetting(int gi, Opcode type, int index)
 rsReturnCode SfzInstrument::removeInstrumentSetting(Opcode type, int index)
 {
   bool wasRemoved = global.removeSetting(type, index);
+  if(wasRemoved) return rsReturnCode::success;
+  else           return rsReturnCode::nothingToDo;
+}
+
+rsReturnCode SfzInstrument::removeRegionModulation(int gi, int ri, OpcodeType modSrcType,
+  int modSrcIndex, Opcode modTarget, int modTargetIndex)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    RAPT::rsError("Invalid group- and/or region index");
+    return rsReturnCode::invalidIndex; }
+  bool wasRemoved = global.groups[gi]->regions[ri]->removeModulation(
+    modSrcType, modSrcIndex, modTarget, modTargetIndex);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
 }

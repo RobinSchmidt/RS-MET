@@ -225,11 +225,24 @@ public:
   {
     return sfz.removeInstrumentSetting(type, index);
   }
+
+  rsReturnCode removeRegionModulation(int groupIndex, int regionIdex, OpcodeType modSrcType, 
+    int modSrcIndex,  Opcode modTarget, int modTargetIndex)
+  {
+    return sfz.removeRegionModulation(groupIndex, regionIdex, 
+      modSrcType, modSrcIndex, modTarget, modTargetIndex);
+  }
+
+
+
   /** NOT YET READY FOR PRODUCTION. */
   rsReturnCode clearRegionSettings(int groupIndex, int regionIdex)
   {
     return sfz.clearRegionSettings(groupIndex, regionIdex);
   }
+
+
+
 
 
 

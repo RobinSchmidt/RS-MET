@@ -2923,11 +2923,12 @@ bool samplerFreeModulationsTest()
   // the zero should override the depth and we should get the same result as in the previous test:
   se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
   se.reset(); 
-  ok &= testSamplerNote(&se, 69, 100, tgt2, tgt2, 1.e-17, true);
+  ok &= testSamplerNote(&se, 69, 100, tgt2, tgt2, 1.e-17, false);
   
   // Now we remove the region setting. The group setting should be used as fallback, so the result 
   // should be the same as in the first test:
-  // ...
+  se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1);
+
 
 
 
