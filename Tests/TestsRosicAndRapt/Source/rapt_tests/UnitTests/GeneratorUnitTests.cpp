@@ -2889,16 +2889,16 @@ bool samplerFreeModulationsTest()
 
   // Generate target signal. We expect the DC of 1 from the looped sample itself plus the 
   // sine-modulated DC coming from the waveshaper.
-  Vec tgt(N);
+  Vec tgt1(N);
   double w = 2*PI*(double)lfoFreq / (double)fs;
   for(int n = 0; n < N; n++)
-    tgt[n] = 1.f + (baseDC + lfoDepth * (float)sin(w*n));
+    tgt1[n] = 1.f + (baseDC + lfoDepth * (float)sin(w*n));
     // Converting the sin output to float is actually important to match the sampler engine's
     // output. Without it, we would do all computations in double and only convert the final
     // result to float. But this is not how the engine does it and the roundoff errors are
     // different.
 
-  ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-17, false);
+  ok &= testSamplerNote(&se, 69, 100, tgt1, tgt1, 1.e-17, false);
   //ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 0.0,    false); // fails - why?
   // If we would do all of our signal processing in single precision, we would need a very high 
   // tolerance of 1.e-3 here. The error would grows larger over time supposedly due to roundoff 
@@ -2927,8 +2927,14 @@ bool samplerFreeModulationsTest()
   
   // Now we remove the region setting. The group setting should be used as fallback, so the result 
   // should be the same as in the first test:
-  se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1);
-  // Maybe it should return the number of removed connections. Then we could do a check here
+  ok &= se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1);
+  // Maybe it should return the number of removed connections. Then we could do a check here. But 
+  // actually, there should be at most one connection that can be removed - it removes either 0 or
+  // 1 connection - we don't allow multiple connections between the same pair of pins.
+
+  se.reset(); 
+  ok &= testSamplerNote(&se, 69, 100, tgt1, tgt1, 1.e-17, true);
+  // FAILS!!!
 
 
 
