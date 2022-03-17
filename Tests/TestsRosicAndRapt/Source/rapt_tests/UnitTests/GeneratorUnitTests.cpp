@@ -3001,9 +3001,57 @@ bool samplerFreeModulationsTest()
 
   // ok &= testMod( _ , _ , 200, 200,    0.2, 0.5, _ , 0.5,    tol, false);
 
+  // Define a helper function that lets us pass in the frequency and modulation depth settings for
+  // instrument, group, region along with the corresponding value that is expected to be observed
+  // at the sampler's output:
+  float none = 1.e20f;  // a code for "none" -> make sure that it's not used for a valid value
+  auto testMod = [&](
+    float insFreq,  float grpFreq,  float regFreq,    float expFreq,
+    float insDepth, float grpDepth, float regDepth,   float expDepth,
+    float tol, bool plot) 
+  { 
+    // Clear instrument and then set up the common settings:
+    //se.clearAllSfzSettings();
+    se.clearInstrument();
+    addSingleSampleRegion(&se, dc);
+    se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
+    se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
+    se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
+    se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
+    se.preAllocateDspMemory();  // needed?
 
+    // Set up the LFO frequency settings for instrument, group and region unless the respective 
+    // parameter value is the code for "none":
+    if(insFreq != none) se.setInstrumentSetting(  OC::lfoN_freq, insFreq, 1);
+    if(grpFreq != none) se.setGroupSetting( 0,    OC::lfoN_freq, grpFreq, 1);
+    if(regFreq != none) se.setRegionSetting(0, 0, OC::lfoN_freq, regFreq, 1);
+
+    // Similarly set up the routing of the LFO output to the DC parameter of the waveshaper:
+    // todo: if(insDepth ...
+    if(grpDepth != none) se.setGroupModulation( 0,    OT::FreeLfo, 1, OC::distortN_dc, 1, grpDepth, Mode::absolute);
+    if(regDepth != none) se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, regDepth, Mode::absolute);
+
+    // Run the test:
+    return testLfoToDc(expFreq, expDepth, tol, plot);
+  };
+
+
+  float _   = none;
+  float tol = 0.f;
+  // Do similar tests as before but now using our testMod helper function:
+  //
+  //            Modulator Frequency      Modulation Depth       Test Control
+  //            ins  grp  reg   exp     ins  grp  reg   exp  
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, true); // fails!
+  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, true); // crashes!
+  //ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);
+  //ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);
 
   rsAssert(ok);
+
+  // Maybe when we do the same test in busMode (or mixMode), we should set the basDC to zero 
+  // because otherwise our formula for computing the target signal in testLfoToDc is not correct
+  // anymore...
 
 
 
