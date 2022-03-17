@@ -2976,10 +2976,31 @@ bool samplerFreeModulationsTest()
   // unit tests with more and different scenarios and pay special attention to the functions:
   //   SamplePlayer::setupDspSettings, RegionPlayer::setupDspSettingsFor, 
   //   RegionPlayer::assembleProcessors
-  // especially to how they chaneg the state of the modMatrix member array. We also have introduced
+  // especially to how they change the state of the modMatrix member array. We also have introduced
   // the new function:
   //   SamplePlayer::setupModRoutingSetting
   // which currently doesn't get called anywhere - but may we will need to call it somewhere...
+
+  // Add a depth setting to the instrument. This should have no effect because it's overriden by
+  // the group setting:
+  //se.setInstrumenModulation(OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
+  //ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
+  //         ins  grp  reg   expect
+  // freq:    -    -   200    200
+  // depth:  0.2  0.5   -     0.5
+
+  // Maybe implement a helper function that we can call like
+  //
+  //   ok &= testMod( _ ,  _ , 200,   200,
+  //                 0.2, 0.5,  _ ,   0.5, 
+  //                 tol, false);
+  //
+  // where _ is a special value that indicates that the setting should be absent. Maybe we should
+  // have a function removeModSourceSettings and removeModRoutings that we can call at the start
+  // of this function. And then we add the desired mod-source and mod-routing settings.
+
+  // ok &= testMod( _ , _ , 200, 200,    0.2, 0.5, _ , 0.5,    tol, false);
+
 
 
   rsAssert(ok);
