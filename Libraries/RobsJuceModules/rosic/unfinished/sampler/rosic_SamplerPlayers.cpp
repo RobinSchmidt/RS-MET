@@ -128,7 +128,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
   // present before. In both cases, the effectChain or modSources is now in the required state so 
   // we can report success.
   //
-  // Maybe remove the calls to setParametersToDefaults - instead we should perhaps rest them to
+  // Maybe remove the calls to setParametersToDefaults - instead we should perhaps reset them to
   // defaults when the object is reposited - but: when the default value depends on the index as
   // in the eqN_freq opcode, we don't really know the index when the object is just sitting in the
   // pool, so maybe it's indeed more appropriate to do it here. Maybe do both? The rationale is to
@@ -139,7 +139,11 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
 bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& modSettings)
 {
   RAPT::rsAssert(dspPool);
-  RAPT::rsAssert(modMatrix.empty(), "Someone has not cleaned up the modMatrix");
+
+  //RAPT::rsAssert(modMatrix.empty(), "Someone has not cleaned up the modMatrix");
+  // no - we don't expect it to be empty here anymore because the function may get called 3
+  // times during assembly (with the region, group, global modSettings repectively)
+
 
   // Check, if enough connectors are available:
   if(dspPool->getNumIdleConnectors() < (int)modSettings.size())
@@ -265,6 +269,11 @@ void SamplePlayer::setupModSourceSetting(const PlaybackSetting& s)
   // or to modSources.
 }
 
+void SamplePlayer::setupModRoutingSetting(const PlaybackSetting& s)
+{
+  RAPT::rsError("Not yet implemented");
+}
+
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
   RegionPlayer* rp, bool busMode)
 {
@@ -273,9 +282,13 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
   {
     PlaybackSetting s = settings[i];
     Opcode op = s.getOpcode();
-    if(     cb->isEffectSetting(op))    { setupProcessorSetting(s    ); }
-    else if(cb->isModSourceSetting(op)) { setupModSourceSetting(s    ); }
-    else if(cb->isPlayerSetting(op))    { setupPlayerSetting(   s, rp); }
+    if(     cb->isEffectSetting(op))     { setupProcessorSetting( s    ); }
+    else if(cb->isModSourceSetting(op))  { setupModSourceSetting( s    ); }
+    else if(cb->isPlayerSetting(op))     { setupPlayerSetting(    s, rp); }
+    else if(cb->isModRoutingSetting(op)) { setupModRoutingSetting(s);     }
+
+
+
   }
   // Try to refactor stuff in a way that lets use get rid of the branching and treat all cases
   // uniformly...I'm not yet sure, if that's possible in any meaningful way, though. Maybe first
@@ -283,6 +296,8 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
   // them, pass them to setupProcessorSetting, too even it it doesn't make use of them
   // Why has setupPlayerSetting a different signature, i.e. takes the additional rp parameter? Can
   // we get rid of this?
+
+  // I think , we need also a branch setupModRouting
 }
 
 //=================================================================================================
@@ -560,15 +575,21 @@ bool RegionPlayer::assembleProcessors(bool busMode)
   // If we are not in busMode, the enclosing group and/or enclosing instrument settings act as
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
-  if(!busMode) {
-    if(!augmentOrCleanProcessors(grp->getOpcodeTypeChain())) {
-      return false; }
-    if(!augmentOrCleanProcessors(glb->getOpcodeTypeChain())) {
-      return false; }}
+  if(!busMode)  // maybe rename to mixMode
+  {
+    ok = augmentOrCleanProcessors(grp->getOpcodeTypeChain());    if(!ok) return false;
+    ok = assembleModulations(     grp->getModulationSettings()); if(!ok) return false;
+    ok = augmentOrCleanProcessors(grp->getOpcodeTypeChain());    if(!ok) return false;
+    ok = assembleModulations(     glb->getModulationSettings()); if(!ok) return false;
+    // Maybe factor out into a function assembleFallbackProcessors()
+  }
   // I think, here we need to do more to set up the modulation connection settings. Not the 
   // modulator parameter though. Things like lfoN_freq do already work but things like lfoN_cutoff
   // don't. The latter one is a modulation routing or conection setting which has a different
   // quality than the modulator's internal parameters....
+  // But this is wrong: when doing it in this order, the group and global modulation settings will
+  // override the region settings and not the other way around. we need to augment also
+  // setupDspSettingsFor
 
   return true;
   // OK - everything went well so we report success. If, on the other hand, false is returned, it
@@ -617,6 +638,8 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, bool busMode)
     setupDspSettings(region->getGroup()->getSettings(), this, busMode); }
   setupDspSettings(region->getSettings(), this, busMode);
   // Works for accumulative setting but not for those that should awlays override
+
+
 
   // Compute the final member variables from the intemediates:
   setupFromIntemediates();

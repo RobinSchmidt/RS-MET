@@ -486,14 +486,17 @@ public:
     // regardless whether its a fixed or free source.
   }
 
-
-
-
-
-
-
   bool isModSourceSetting(Opcode op) { return isModSourceSetting(getOpcodeType(op)); }
   // todo: needs test, make static
+
+
+  static bool isModRoutingSetting(OpcodeType type)
+  {
+    using OT = OpcodeType;
+    return type > OT::_TagModRoutingStart && type < OT::_TagModRoutingEnd;
+  }
+
+  bool isModRoutingSetting(Opcode op) { return isModRoutingSetting(getOpcodeType(op)); }
 
   // todo: isModulationSetting, isModulatorSetting  (modulatiON settings define mod-connections,
   // modulatOR settings parameters of the modulators), hasIndex..but this may be expensive to 

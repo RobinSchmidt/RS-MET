@@ -270,6 +270,8 @@ protected:
 
   virtual void setupModSourceSetting(const PlaybackSetting& s);
 
+  virtual void setupModRoutingSetting(const PlaybackSetting& s);
+
 
   /** ToDo: add documentation */
   virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
