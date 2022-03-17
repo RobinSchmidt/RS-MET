@@ -2869,10 +2869,8 @@ bool samplerFreeModulationsTest()
   // Set up a sampler engine with a sample that is just looped DC, a waveshaper with an identity
   // function as shape but with an LFO-modulated DC parameter. We route lfo1 to the DC parameter of
   // waveshaper1 with a modulation depth of 0.5.
-  float fs       = 44100;   // sample rate
-  float baseDC   = 3.f;     // nominal DC value fo waveshaper
-  //float lfoFreq  =  200.f;  // in Hz (SFZ has range 0..20 Hz, we allow audio-rate modulation)
-  //float lfoDepth =    0.5;  // raw factor
+  float fs     = 44100;   // sample rate
+  float baseDC = 3.f;     // nominal DC value fo waveshaper
   SE se;
   se.setSampleRate(fs);
   addSingleSampleRegion(&se, dc);
@@ -2880,20 +2878,16 @@ bool samplerFreeModulationsTest()
   se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
   se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
   se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
-
-
-  se.setRegionSetting(0, 0, OC::lfoN_freq,   200.f, 1);
-  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
   se.preAllocateDspMemory();
 
   //ok &= !se.hasDanglingRoutings();
   // Function not yet implemented. It should verify that all roútings that are set up in all 
   // regions have a valid source and target....tbc...
 
-  // Helper function for the tests. Takes the LFO-frequency and modulation depth as parameters. 
-  // These values are only used to produce the target signal. We do not call any setup functions
-  // on the sampler engine. The setup of the engine is supposed to be done by the caller before
-  // calling this function:
+  // Helper function for the tests. Takes the LFO-frequency (in Hz) and modulation depth (as raw 
+  // factor) as parameters. These values are only used to produce the target signal. We do not call
+  // any setup functions on the sampler engine. The setup of the engine is supposed to be done by 
+  // the caller before calling this function:
   auto testLfoToDc = [&](float lfoFreq, float lfoDepth, float tol, bool plot = false)
   {
     // Create target signal. We expect the DC of 1 from the looped sample itself plus the 
@@ -2909,13 +2903,15 @@ bool samplerFreeModulationsTest()
 
     // Create sampler output and error:
     Vec outL(N), outR(N);
-    //se.reset();  // maybe do this later here to save the caller from having to do it
+    se.reset();  // maybe do this later here to save the caller from having to do it
     getSamplerNote(&se, 69.f, 100.f, outL, outR);
     Vec errL = outL - tgt;
     Vec errR = outR - tgt;
     float maxErrL = rsMaxAbs(errL);
     float maxErrR = rsMaxAbs(errR);
     float maxErr  = rsMax(maxErrL, maxErrR);
+    // This test fails badly if we don't call se.reset() before. Perhaps because of loop. But 
+    // still, the error signal looks kinda weird. -> figure out what's going on and document it!
 
     // Plot, if desired and report pass or fail:
     if(plot)
@@ -2923,21 +2919,11 @@ bool samplerFreeModulationsTest()
     return maxErr <= tol;
   };
 
-
-  // Generate target signal. We expect the DC of 1 from the looped sample itself plus the 
-  // sine-modulated DC coming from the waveshaper.
-  /*
-  Vec tgt1(N);
-  double w = 2*PI*(double)lfoFreq / (double)fs;
-  for(int n = 0; n < N; n++)
-    tgt1[n] = 1.f + (baseDC + lfoDepth * (float)sin(w*n));
-    */
-
-  ok &= testLfoToDc(200.f, 0.5f, 1.e-17, true);
-  se.reset(); 
-  ok &= testLfoToDc(200.f, 0.5f, 0.0,    true);
-  //ok &= testSamplerNote(&se, 69, 100, tgt1, tgt1, 1.e-17, false);
-  //ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 0.0,    false); // fails - why?
+  // Set up an LFO freq of 200 Hz and route the LFOs output with a modulation depth of 0.5 to the
+  // DC parameter of the waveshaper. Both settings are applied on the region level: 
+  se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
+  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
+  ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
   // If we would do all of our signal processing in single precision, we would need a very high 
   // tolerance of 1.e-3 here. The error would grows larger over time supposedly due to roundoff 
   // error accumulation leading to the phases drifting apart? Try to use a double for pos/inc.
@@ -2945,38 +2931,23 @@ bool samplerFreeModulationsTest()
   // gained efficiency of using float. For the time being, we use double - here and, importantly, 
   // in LowFreqOscCore.
 
-  // Set the modulation amount to zero, create a new target signal containing no modulation and
-  // test with it:
+  // Set the modulation depth back to zero. 
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.f, Mode::absolute);
-  se.reset(); 
-  ok &= testLfoToDc(200.f, 0.0f, 1.e-17, true);
-  // This test fails badly if we don't call reset before. Perhaps because of loop. But still, the
-  // error signal looks kinda weird. -> figure out what's going on and document it!
-
-  /*
-  Vec tgt2(N);
-  for(int n = 0; n < N; n++)
-    tgt2[n] = 1.f + (baseDC + 0.f * (float)sin(w*n));
-  se.reset(); 
-  ok &= testSamplerNote(&se, 69, 100, tgt2, tgt2, 1.e-17, false);
-
-  */
+  ok &= testLfoToDc(200.f, 0.f, 0.f, false);
+  // I'm not yet sure, if setting a mod-depth to zero should actually remove the mod-connection
+  // entirely. At the moment, the connection remains in the modRoutings list but with zero depth.
 
   // Now set up a group modulation connection. Because we are in default mode, the group setting 
   // should be used as fallback value but we still have the zero setting defined for the region, so
   // the zero should override the depth and we should get the same result as in the previous test:
   se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
-  se.reset();
-  ok &= testLfoToDc(200.f, 0.0f, 1.e-17, true);
-  //ok &= testSamplerNote(&se, 69, 100, tgt2, tgt2, 1.e-17, false);
+  ok &= testLfoToDc(200.f, 0.0f, 0.f, false);
   
   // Now we remove the region setting. The group setting should be used as fallback, so the result 
-  // should be the same as in the first test:
+  // should be the same as in the first test but this time, the mod depth comes from the group 
+  // setting not the regions setting as in the first test:
   ok &= se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1) == RC::success;
-  se.reset(); 
-  ok &= testLfoToDc(200.f, 0.5f, 1.e-17, true);
-  //ok &= testSamplerNote(&se, 69, 100, tgt1, tgt1, 1.e-17, false);
-
+  ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
   // The test passes, but I'm actually not so sure, if it should and why. We need to implement more
   // unit tests with more and different scenarios and pay special attention to the functions:
   //   SamplePlayer::setupDspSettings, RegionPlayer::setupDspSettingsFor, 
@@ -2989,14 +2960,7 @@ bool samplerFreeModulationsTest()
 
   rsAssert(ok);
 
-  /*
-  // Plot error between target and actual output:
-  Vec outL(N), outR(N);
-  se.reset();  // without it, the error is enormous - why?
-  getSamplerNote(&se, 69, 100, outL, outR);
-  rsPlotVectors(tgt - outL, tgt - outR);
-  */
-  
+
 
   // ToDo:
   // -Test behavior when we define the lfoN_freq for the Group instead of the Region. It should 
