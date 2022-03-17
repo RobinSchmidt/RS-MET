@@ -2924,6 +2924,19 @@ bool samplerFreeModulationsTest()
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
   ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
+  // To document the settings that the engine is supposed to be in for this tets, we use a table 
+  // like this:
+  //
+  //         ins  grp  reg   expect
+  // freq:    -   -    200    200
+  // depth:   -   -    0.5    0.5
+  //
+  // To indicate the settings for mod-freq and mod-depth on the 3 hierarchy levels (reg: region,
+  // grp: group, ins: instrument) and what modulation we expect to see in the result. The - means
+  // that the respective setting is not present in the current setup. In override mode, the 
+  // rightmost number in the ins/grp/reg column should determine the number in the expect column of
+  // the same row.
+  //
   // If we would do all of our signal processing in single precision, we would need a very high 
   // tolerance of 1.e-3 here. The error would grows larger over time supposedly due to roundoff 
   // error accumulation leading to the phases drifting apart? Try to use a double for pos/inc.
@@ -2931,23 +2944,34 @@ bool samplerFreeModulationsTest()
   // gained efficiency of using float. For the time being, we use double - here and, importantly, 
   // in LowFreqOscCore.
 
-  // Set the modulation depth back to zero. 
+  // Set the modulation depth back to zero. I'm not yet sure, if setting a mod-depth to zero should 
+  // actually remove the mod-connection entirely. At the moment, the connection remains in the 
+  // modRoutings list but with zero depth.
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.f, Mode::absolute);
   ok &= testLfoToDc(200.f, 0.f, 0.f, false);
-  // I'm not yet sure, if setting a mod-depth to zero should actually remove the mod-connection
-  // entirely. At the moment, the connection remains in the modRoutings list but with zero depth.
+  //         ins  grp  reg   expect
+  // freq:    -    -   200    200
+  // depth:   -    -   0.0    0.0
 
   // Now set up a group modulation connection. Because we are in default mode, the group setting 
   // should be used as fallback value but we still have the zero setting defined for the region, so
   // the zero should override the depth and we should get the same result as in the previous test:
   se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
   ok &= testLfoToDc(200.f, 0.0f, 0.f, false);
-  
-  // Now we remove the region setting. The group setting should be used as fallback, so the result 
-  // should be the same as in the first test but this time, the mod depth comes from the group 
-  // setting not the regions setting as in the first test:
+  //         ins  grp  reg   expect
+  // freq:    -    -   200    200
+  // depth:   -   0.5  0.0    0.0
+
+  // Now we remove the region depth setting. The group setting should be used as fallback, so the
+  // result should be the same as in the first test but this time, the mod-depth comes from the 
+  // group setting not the region's setting as in the first test. However, the mod-freq still comes
+  // from the region setting:
   ok &= se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1) == RC::success;
   ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
+  //         ins  grp  reg   expect
+  // freq:    -    -   200    200
+  // depth:   -   0.5   -     0.5
+  //
   // The test passes, but I'm actually not so sure, if it should and why. We need to implement more
   // unit tests with more and different scenarios and pay special attention to the functions:
   //   SamplePlayer::setupDspSettings, RegionPlayer::setupDspSettingsFor, 
