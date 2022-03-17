@@ -536,7 +536,11 @@ public:
     connectorPool.init(512);  // preliminary
   }
   ModulationConnector* grabConnector() { return connectorPool.grabItem(); }
-  void repositConnector(ModulationConnector* c) { connectorPool.repositItem(c); }
+  void repositConnector(ModulationConnector* c) 
+  { 
+    c->reset();  // not really neceassry
+    connectorPool.repositItem(c); 
+  }
 
 
   /** This is currently only meant to facilitate unit testing overload conditions. In such tests,

@@ -285,9 +285,11 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
     if(     cb->isEffectSetting(op))     { setupProcessorSetting( s    ); }
     else if(cb->isModSourceSetting(op))  { setupModSourceSetting( s    ); }
     else if(cb->isPlayerSetting(op))     { setupPlayerSetting(    s, rp); }
-    else if(cb->isModRoutingSetting(op)) { setupModRoutingSetting(s);     }
 
-
+    //else if(cb->isModRoutingSetting(op)) { setupModRoutingSetting(s);   }
+    // This branch seems to never get hit...maybe check in the caller(s)...maybe *it* needs to call
+    // a different function because the modRoutings settings are not held in the same settings 
+    // array as all the other settings...yes, i think, that's the case..
 
   }
   // Try to refactor stuff in a way that lets use get rid of the branching and treat all cases

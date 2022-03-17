@@ -2924,25 +2924,21 @@ bool samplerFreeModulationsTest()
   // the zero should override the depth and we should get the same result as in the previous test:
   se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, lfoDepth, Mode::absolute);
   se.reset(); 
-  ok &= testSamplerNote(&se, 69, 100, tgt2, tgt2, 1.e-17, true);
+  ok &= testSamplerNote(&se, 69, 100, tgt2, tgt2, 1.e-17, false);
   
   // Now we remove the region setting. The group setting should be used as fallback, so the result 
   // should be the same as in the first test:
   ok &= se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1) == RC::success;
   se.reset(); 
-  ok &= testSamplerNote(&se, 69, 100, tgt1, tgt1, 1.e-17, true);
-  // FAILS!!!
-  // in RegionPlayer::processFrame, the modMatrix is empty. check SamplePlayer::assembleModulations
-  // and RegionPlayer::assembleProcessors - i think in assembleProcessors, we need to add code to 
-  // the if(!busMode){ ... } block? but actually, that calls SamplePlayer::augmentOrCleanProcessors
-  // which itself already has all the mod-stuff in one of the branches...ahh - but these 
-  // mod-settings are only the modulator parameters (like lfoN_freq) but not the routing parameters
-  // (like lfoN_cutoffX)
-  // update: ok - now it passed - but it actually shouldn't because we do not yet have any code in
-  // SamplePlayer::setupModRoutingSetting ..i think, it passes because the ModulationConnection 
-  // that is inserted just coincidentally has the right value because we don't reset it when 
-  // repositing it into the pool?
-
+  ok &= testSamplerNote(&se, 69, 100, tgt1, tgt1, 1.e-17, false);
+  // The test passes, but I'm actually not so sure, if it should and why. We need to implement more
+  // unit tests with more and different scenarios and pay special attention to the functions:
+  //   SamplePlayer::setupDspSettings, RegionPlayer::setupDspSettingsFor, 
+  //   RegionPlayer::assembleProcessors
+  // especially to how they chaneg the state of the modMatrix member array. We also have introduced
+  // the new function:
+  //   SamplePlayer::setupModRoutingSetting
+  // which currently doesn't get called anywhere - but may we will need to call it somewhere...
 
 
   rsAssert(ok);
