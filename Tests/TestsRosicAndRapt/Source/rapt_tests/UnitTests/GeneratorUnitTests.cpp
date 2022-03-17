@@ -2915,6 +2915,7 @@ bool samplerFreeModulationsTest()
 
     // Plot, if desired and report pass or fail:
     if(plot)
+      //rsPlotVectors(outL, outR, errL, errR);
       rsPlotVectors(tgt, outL, outR, errL, errR);
     return maxErr <= tol;
   };
@@ -3042,8 +3043,15 @@ bool samplerFreeModulationsTest()
   //
   //            Modulator Frequency      Modulation Depth       Test Control
   //            ins  grp  reg   exp     ins  grp  reg   exp  
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, true); // fails!
-  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, true); // crashes!
+  ok &= testMod( _ ,  _ , 200,  200,     _ ,  _ , 0.5,  0.5,    tol, false); // passes
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.5,  0.5,    tol, true);  // fails!
+  ok &= testMod( _ ,  _ , 500,  500,     _ ,  _ , 0.5,  0.5,    tol, true);  // fails!
+  // Seems like with a faster LFO freq, the LFO creates phase-jump at some point. All of a sudden
+  // the LFOs of the sampler are out of phase - so maybe the bug is in the implemenattion of the
+  // LFO core? -> Write a unit test for the LFO core. Or is it because the sample stops? But no
+  // it should loop indefinitely and if it would stop, the error shoud look different
+
+  //ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, true); 
   //ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);
   //ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);
 
