@@ -3090,29 +3090,30 @@ bool samplerFreeModulationsTest()
   // expected value (under "exp" for "expected") is always the same as the rightmost value of the 3
   // columns ("ins", "grp", "reg") before it in the same row. This is because the columns are 
   // ordered in the same way as the value overriding happens. The underscore signifies absence of 
-  // the respective setting by using the code number for "none".
+  // the respective setting by using the code number for "none". The tests are sorted 
+  // systematically like 3-bit binary numbers where _ is a 0 and a nonzero number like 0.x is a 1
   float _   = none;
   float tol = 0.f;
+
+  // Test modulation depth settings:
   //
-  //            Modulator Frequency      Modulation Depth       Test Control
+  //            Modulator Frequency      Modulation Depth       Test Control    Test Index
   //            ins  grp  reg   exp     ins  grp  reg   exp  
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ ,  _ ,  0.0,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ ,  _ ,  0.0,    tol, false);    // 000
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
+  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, false);    // 010
+  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);    // 011
+  ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ ,  _ ,  0.1,    tol, false);    // 100
+  ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ , 0.3,  0.3,    tol, false);    // 101
+  ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
+  ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
 
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
-  //ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
-  //ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
-
-  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, false); 
-  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);
-  ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);
-  ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ ,  _ ,  0.1,    tol, false);
-  ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ , 0.3,  0.3,    tol, false);
-  ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);
-  // ToDo: order the tests systematically
-
-
-
-  ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false); // crashes!
+  // Test modulator frequency settings:
+  //
+  //            Modulator Frequency      Modulation Depth       Test Control    Test Index
+  //            ins  grp  reg   exp     ins  grp  reg   exp  
+  ok &= testMod( _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000 crashes!
+  ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 010 crashes!
 
 
 
