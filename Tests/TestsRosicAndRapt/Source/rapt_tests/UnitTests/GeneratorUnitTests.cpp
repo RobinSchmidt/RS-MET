@@ -2846,6 +2846,56 @@ bool samplerEffectsTest()
   return ok;
 }
 
+
+bool samplerLfoTest()
+{
+  bool ok = true;
+
+
+  using namespace rosic::Sampler;
+  using Vec = std::vector<float>;
+
+  // Define LFO parameters:
+  float freq  = 500.f;
+  float delay = 0.f;
+  float fade  = 0.f;
+  float sampleRate = 44100.f;
+
+  // Create target signal:
+  int N = 1000;     // number of samples to produce
+  Vec tgt(1000);
+  float w = (float) (2*PI*freq/sampleRate);
+  for(int n = 0; n < N; n++)
+    tgt[n] = sin(w*n);
+  //rsPlotVectors(tgt);
+
+  // Create LFO outputs:
+  Vec outL(N), outR(N);
+  LowFreqOscCore lfo;
+  lfo.setup(freq, delay, fade, sampleRate);
+  for(int n = 0; n < N; n++)
+    lfo.processFrame(&outL[n], &outR[n]);
+  rsPlotVectors(tgt, outL, outR);
+
+  // BUG: with freq = 500, the LFO makes a phase-jump at sample 555
+
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
+bool samplerModulatorsTest()
+{
+  bool ok = true;
+
+  ok &= samplerLfoTest();
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool samplerFreeModulationsTest()
 {
   bool ok = true;
@@ -3260,6 +3310,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
+  ok &= samplerModulatorsTest();
   ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
