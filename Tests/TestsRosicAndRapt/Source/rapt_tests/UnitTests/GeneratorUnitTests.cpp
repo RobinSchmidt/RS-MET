@@ -2922,16 +2922,7 @@ bool samplerFreeModulationsTest()
   float baseDC = 3.f;     // nominal DC value fo waveshaper
   SE se;
   se.setSampleRate(fs);
-  addSingleSampleRegion(&se, dc);
-  se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
-  se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
-  se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
-  se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
   se.preAllocateDspMemory();
-
-  //ok &= !se.hasDanglingRoutings();
-  // Function not yet implemented. It should verify that all roútings that are set up in all 
-  // regions have a valid source and target....tbc...
 
   // Helper function for the tests. Takes the LFO-frequency (in Hz) and modulation depth (as raw 
   // factor) as parameters. These values are only used to produce the target signal. We do not call
@@ -2969,71 +2960,6 @@ bool samplerFreeModulationsTest()
     return maxErr <= tol;
   };
 
-  // Set up an LFO freq of 200 Hz and route the LFOs output with a modulation depth of 0.5 to the
-  // DC parameter of the waveshaper. Both settings are applied on the region level: 
-  se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
-  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
-  ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
-  // To document the settings that the engine is supposed to be in for this tets, we use a table 
-  // like this:
-  //
-  //         ins  grp  reg   expect
-  // freq:    -   -    200    200
-  // depth:   -   -    0.5    0.5
-  //
-  // To indicate the settings for mod-freq and mod-depth on the 3 hierarchy levels (reg: region,
-  // grp: group, ins: instrument) and what modulation we expect to see in the result. The - means
-  // that the respective setting is not present in the current setup. In override mode, the 
-  // rightmost number in the ins/grp/reg column should determine the number in the expect column of
-  // the same row.
-  //
-  // If we would do all of our signal processing in single precision, we would need a very high 
-  // tolerance of 1.e-3 here. The error would grows larger over time supposedly due to roundoff 
-  // error accumulation leading to the phases drifting apart? Try to use a double for pos/inc.
-  // I'm not yet sure if we should accept such a high error in exchange for the (supposedly) 
-  // gained efficiency of using float. For the time being, we use double - here and, importantly, 
-  // in LowFreqOscCore.
-
-  // Set the modulation depth back to zero. I'm not yet sure, if setting a mod-depth to zero should 
-  // actually remove the mod-connection entirely. At the moment, the connection remains in the 
-  // modRoutings list but with zero depth.
-  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.f, Mode::absolute);
-  ok &= testLfoToDc(200.f, 0.f, 0.f, false);
-  //         ins  grp  reg   expect
-  // freq:    -    -   200    200
-  // depth:   -    -   0.0    0.0
-
-  // Now set up a group modulation connection. Because we are in default mode, the group setting 
-  // should be used as fallback value but we still have the zero setting defined for the region, so
-  // the zero should override the depth and we should get the same result as in the previous test:
-  se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
-  ok &= testLfoToDc(200.f, 0.0f, 0.f, false);
-  //         ins  grp  reg   expect
-  // freq:    -    -   200    200
-  // depth:   -   0.5  0.0    0.0
-
-  // Now we remove the region depth setting. The group setting should be used as fallback, so the
-  // result should be the same as in the first test but this time, the mod-depth comes from the 
-  // group setting not the region's setting as in the first test. However, the mod-freq still comes
-  // from the region setting:
-  ok &= se.removeRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1) == RC::success;
-  ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
-  //         ins  grp  reg   expect
-  // freq:    -    -   200    200
-  // depth:   -   0.5   -     0.5
-
-  // Add a depth setting to the instrument. This should have no effect because it's overriden by
-  // the group setting:
-  se.setInstrumentModulation(OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
-  ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
-  //         ins  grp  reg   expect
-  // freq:    -    -   200    200
-  // depth:  0.2  0.5   -     0.5
-
-  // Actually, the tests above are now redundant with the more systematic tests below, so maybe we
-  // should delete them. They are obsolete and just clutter the codebase
-
-
   // Define a helper function that lets us pass in the frequency and modulation depth settings for
   // instrument, group, region along with the corresponding value that is expected to be observed
   // at the sampler's output:
@@ -3051,7 +2977,7 @@ bool samplerFreeModulationsTest()
     se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
     se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
     se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
-    se.preAllocateDspMemory();  // needed?
+    //se.preAllocateDspMemory();  // needed?
 
     // Set up the LFO frequency settings for instrument, group and region unless the respective 
     // parameter value is the code for "none":
@@ -3069,17 +2995,23 @@ bool samplerFreeModulationsTest()
   };
 
 
-  // Do similar tests as before but now using our testMod helper function. The pattern is: the 
-  // expected value (under "exp" for "expected") is always the same as the rightmost value of the 3
-  // columns ("ins", "grp", "reg") before it in the same row. This is because the columns are 
-  // ordered in the same way as the value overriding happens. The underscore signifies absence of 
-  // the respective setting by using the code number for "none". The tests are sorted 
-  // systematically like 3-bit binary numbers where _ is a 0 and a nonzero number like 0.x is a 1 
-  // (where 0 means: setting absent, 1: setting present)
-  float _   = none;
-  float tol = 0.f;
+  // Do similar tests as before but now using our testMod helper function. 
+  
+  // We systematically go through the 2^3 = 8 cases where a modulation depth setting is either 
+  // defined or not on instrument, group and region levels. The pattern is: the expected value 
+  // (under "exp" for "expected") is always the same as the rightmost value of the 3 columns 
+  // ("ins", "grp", "reg") before it in the same row. This is because the columns are ordered in 
+  // the same way as the value overriding happens. The underscore signifies absence of the 
+  // respective setting by using the code number for "none". The tests are sorted 
+  // like 3-bit binary numbers where _ is a 0 and a nonzero number like 0.x is a 1 (where 0 means:
+  // setting absent, 1: setting present). In all these 8 cases, the modulation freq is given on the
+  // region level. Then we do the same 8 cases for the modulation freq where this time the depth is
+  // always given at the region level. We always use numbers with 1,2,3 for the instrument, group 
+  // and region settings respectively.
+  float _   = none;  // _ is an even short code for "none"
+  float tol = 0.f;   // tolerance
 
-  // Test modulation depth settings (using a region setting for freq):
+  // Test overriding of modulation depth settings (using a region setting for freq):
   //
   //            Modulator Frequency      Modulation Depth       Test Control    Test Index
   //            ins  grp  reg   exp     ins  grp  reg   exp  
@@ -3092,7 +3024,7 @@ bool samplerFreeModulationsTest()
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
 
-  // Test modulator frequency settings (using a region setting for depth):
+  // Test overriding of modulator frequency settings (using a region setting for depth):
   //
   //            Modulator Frequency      Modulation Depth       Test Control    Test Index
   //            ins  grp  reg   exp     ins  grp  reg   exp  
@@ -3108,7 +3040,7 @@ bool samplerFreeModulationsTest()
   // Maybe we should try all 2^6 possible combinations instead of just 2 * 2^3. At the moment, we 
   // assume that presence/absence of freq/depth settings don't interact: we check all possible
   // combinations of depth settings (ins,grp,reg) while using a fixed freq setting (reg only) and
-  // vice versa...they probably indeed don't interact though..
+  // vice versa...they probably indeed don't interact though.
 
   // we need to change SamplePlayer::assembleProcessors and RegionPlayer::assembleProcessors 
   // ..maybe even get rid of SamplePlayer::assembleProcessors or make it purely virtual
@@ -3121,6 +3053,8 @@ bool samplerFreeModulationsTest()
 
   rsAssert(ok);
 
+
+  // ToDo: implement similar tests for the mix/bus mode
   // Maybe when we do the same test in busMode (or mixMode), we should set the baseDC to zero 
   // because otherwise our formula for computing the target signal in testLfoToDc is not correct
   // anymore...

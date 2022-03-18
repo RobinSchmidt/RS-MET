@@ -28,8 +28,9 @@ public:
 
 protected:
 
-  double pos = 0.f;                     // normalized position in the wave in 0..1
-  double inc = 0.f;                     // per sample increment for pos
+  double pos = 0.f;  // normalized position in the wave in 0..1
+  double inc = 0.f;  // per sample increment for pos
+  // Double precision is needed for phase accumulation
 
   RAPT::rsUint32 delay = 0, fade = 0;  // delay and fade-in time in samples
 
