@@ -2875,12 +2875,11 @@ bool samplerLfoTest()
   lfo.setup(freq, delay, fade, sampleRate);
   for(int n = 0; n < N; n++)
     lfo.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(tgt, outL, outR);
+  //rsPlotVectors(tgt, outL, outR, tgt-outL, tgt-outR);
 
-  // BUG: with freq = 500, the LFO makes a phase-jump at sample 555
-
-
-
+  float tol = 1.e-5;  // we need a quite high tolerance!!! :-O  why?
+  ok &= RAPT::rsMaxDeviation(outL, tgt) <= tol;
+  ok &= RAPT::rsMaxDeviation(outR, tgt) <= tol;
 
   rsAssert(ok);
   return ok;

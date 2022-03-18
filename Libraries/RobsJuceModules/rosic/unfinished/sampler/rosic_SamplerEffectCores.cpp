@@ -11,11 +11,10 @@ void LowFreqOscCore::setup(float freq, float _delay, float _fade, float sampleRa
 
 void LowFreqOscCore::processFrame(float* L, float* R)
 {
-  static const double tau = 2.0*PI;
-  float out = (float) sin(tau * pos);
+  float out = (float) sin(2.0*PI*pos);
   pos += inc;
-  while(pos >= tau)
-    pos -= tau;
+  while(pos >= 1.0)
+    pos -= 1.0;
   *L = *R = out;
   // ToDo: 
   // -use delay, fade members for fade-in and delay
