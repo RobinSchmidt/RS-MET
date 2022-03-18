@@ -3024,8 +3024,8 @@ bool samplerFreeModulationsTest()
 
   // Add a depth setting to the instrument. This should have no effect because it's overriden by
   // the group setting:
-  //se.setInstrumentModulation(OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
-  //ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
+  se.setInstrumentModulation(OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
+  ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
   //         ins  grp  reg   expect
   // freq:    -    -   200    200
   // depth:  0.2  0.5   -     0.5
@@ -3089,7 +3089,8 @@ bool samplerFreeModulationsTest()
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
 
-  // The first of these test fails, if we uncomment the test above defining the testMod function
+  // The first of these test fails, if we uncomment the test above defining the testMod function.
+  // se.clearInstrument(); does not seem to clear the instrument-level mod routings
 
   // Test modulator frequency settings (using a region setting for depth):
   //

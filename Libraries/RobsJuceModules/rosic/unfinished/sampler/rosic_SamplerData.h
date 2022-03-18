@@ -363,7 +363,7 @@ public:
     does an appropriate type cast. ToDo: try to find a better design, maybe move up into
     baseclass */
     const void* getCustomPointer() const { return custom; }
-    // replaces getSampleStream
+    // replaces getSampleStream..
 
     /** Returns true, iff this region should be played when the given key is pressed. */
     bool shouldPlayForKey(uchar key) const { return key >= loKey && key <= hiKey; }
@@ -414,6 +414,11 @@ public:
     // be pointless.
 
     const void* custom = nullptr;
+    // Try to get rid of that - or at least, make it a typed pointer. It's supposed to hold the 
+    // pointer to ths AudioStream. But we actually do not want to directly associate regions with
+    // samples anymore anyway but instead delegate sample playback to some SamplePlayer subclass
+    // of processor. If we do that, then *that* object needs to hold the pointer to the AudioStream
+
 
     HierarchyLevel* parent = nullptr;
 
@@ -677,6 +682,7 @@ public:
   void clearInstrument()
   {
     global.clearGroups();
+    global.clearSettings();
     //signalProcessors.clear();
   }
   //{ instrument.groups.clear(); }
