@@ -3091,11 +3091,12 @@ bool samplerFreeModulationsTest()
   // columns ("ins", "grp", "reg") before it in the same row. This is because the columns are 
   // ordered in the same way as the value overriding happens. The underscore signifies absence of 
   // the respective setting by using the code number for "none". The tests are sorted 
-  // systematically like 3-bit binary numbers where _ is a 0 and a nonzero number like 0.x is a 1
+  // systematically like 3-bit binary numbers where _ is a 0 and a nonzero number like 0.x is a 1 
+  // (where 0 means: setting absent, 1: setting present)
   float _   = none;
   float tol = 0.f;
 
-  // Test modulation depth settings:
+  // Test modulation depth settings (using a region setting for freq):
   //
   //            Modulator Frequency      Modulation Depth       Test Control    Test Index
   //            ins  grp  reg   exp     ins  grp  reg   exp  
@@ -3108,13 +3109,17 @@ bool samplerFreeModulationsTest()
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
 
-  // Test modulator frequency settings:
+  // Test modulator frequency settings (using a region setting for depth):
   //
   //            Modulator Frequency      Modulation Depth       Test Control    Test Index
   //            ins  grp  reg   exp     ins  grp  reg   exp  
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
+
   ok &= testMod( _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000 crashes!
   ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 010 crashes!
-
+  // in SamplePlayer::assembleModulations we dereference the 0th element of an empty std::vector
+  // by accessing modSources[0]. fix: the function that is called should take a reference to a 
+  // vector instead of a raw pointer
 
 
   // ToDo: implement and use setInstrumentModulation and activate this test:

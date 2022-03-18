@@ -46,6 +46,7 @@ int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type
         return i; }}
   return -1;
 }
+// take reference to vector instead of raw pointer
 
 Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index) // take a std::vector
 {
@@ -67,7 +68,7 @@ int rsCount(const T* a, int N, T elem)
       c++;
   return c;
 }
-// move into rsArrayTools
+// move into rsArrayTools...maybe we need also a version that takes a std::vector
 
 
 //=================================================================================================
@@ -108,7 +109,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
     else if(SfzCodeBook::isModSourceSetting(opType))
     {
       // The logic for adding modulation sources is the same as for adding effect processors:
-      int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1; 
+      int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1;
       if(getNumProcessorsOfType(modSources, opType) >= sfzIndex)
         continue;
       Processor* p = getModulator(opType);  // use a general getProcessor function
@@ -160,6 +161,9 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     // in the connector:
     int j = findProcessorIndex(modSources[0], (int) modSources.size(), ms.getSourceType(), 
       ms.getSourceIndex());
+    // crashes when modSources is empty
+
+
     RAPT::rsAssert(j >= 0);
     Processor* src = modSources[j];
     RAPT::rsAssert(src);
