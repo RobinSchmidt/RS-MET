@@ -229,6 +229,7 @@ public:
   */
 
   void setSource(Processor* newSource) { source = newSource; }
+  // maybe rename to setSourceProcessor
 
   void setSourceIndex(int newIndex) { sourceIndex = newIndex; }
 
@@ -254,6 +255,9 @@ public:
   }
   // maybe move to cpp
 
+
+  Processor* getSourceProcessor() { return source; }
+
   int getSourceIndex() const { return sourceIndex; }
 
 
@@ -262,6 +266,27 @@ public:
 
 
   Processor* getTargetProcessor() { return targetProc; }
+
+
+
+
+  /*
+  bool hasMatchingSource(ModulationConnector& c) const
+  {
+    return c.source == source;
+  }
+  bool hasMatchingTarget(const ModulationConnector& c) const
+  {
+    return c.targetParam == targetParam;
+    // If targetParam pointers match, it implies that targetProc pointers must also match (because
+    // the Processor objects own their Parameter objects), so we don't need to check both. 
+  }
+  bool hasMatchingEndpoints(const ModulationConnector& c) const
+  {
+    return hasMatchingSource(c) && hasMatchingTarget(c);
+  }
+  */
+
 
 private:
 

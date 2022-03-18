@@ -141,9 +141,63 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
 
   //RAPT::rsAssert(modMatrix.empty(), "Someone has not cleaned up the modMatrix");
   // no - we don't expect it to be empty here anymore because the function may get called 3
-  // times during assembly (with the region, group, global modSettings repectively)
+  // times during assembly (with the region, group, global modSettings repectively).
+  // But maybe the caller shoould have such an assert
+
+  for(size_t i = 0; i < modSettings.size(); i++)
+  {
+    ModulationSetting ms = modSettings[i];
+
+    // Determine pointer to modulation source Processor:
+    int j = findProcessorIndex(modSources, ms.getSourceType(), ms.getSourceIndex());
+    RAPT::rsAssert(j >= 0);
+    Processor* srcProc = modSources[j];
+
+    // Determine pointers to modulation target Processor and Parameter and append them to the 
+    // respective arrays, if they are not already present there:
+    Processor* tgtProc;
+    if(SfzCodeBook::isModSourceSetting(ms.getTargetType())) 
+      tgtProc = findProcessor(modSources,  ms.getTargetType(), ms.getTargetIndex()); // Receiver is another modulator
+    else
+      tgtProc = findProcessor(effectChain, ms.getTargetType(), ms.getTargetIndex()); // Receiver is an effect
+    RAPT::rsAssert(tgtProc);
+    Parameter* param = tgtProc->getParameter(ms.getTargetOpcode());
+    RAPT::rsAssert(param);
+    RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, tgtProc);
+    RAPT::rsAppendIfNotAlreadyThere(modTargetParams,     param); 
+
+    // Figure out, if a suitable connection already exists in out modMatrix, if so, update its 
+    // depth and mode. Such a thing happens when for example a group and region setting exists for
+    // a given connection and the region setting overrides the group setting:
+    bool conUpdated = false;  // flag that we set when we updated a connection
+    for(size_t k = 0; k < modMatrix.size(); k++) {
+      ModulationConnector* mc = modMatrix[k];
+      if(mc->getSourceProcessor() == srcProc && mc->getTargetParam() == param) {
+        mc->setDepth(ms.getDepth());
+        mc->setMode( ms.getMode());
+        conUpdated = true;
+        break;      }}     // Done! Leave loop early.
+
+    // If we could not update an existing connection, we must actually grab a new one from the pool
+    // and set it up from scratch:
+    if(!conUpdated) {
+      ModulationConnector* mc = dspPool->grabConnector();
+      if(mc == nullptr)
+        return false;      // Not enough connectors available in pool
+      mc->setSource(srcProc);
+      mc->setSourceIndex(j);
+      mc->setTarget(tgtProc, param);
+      mc->setDepth(ms.getDepth());
+      mc->setMode( ms.getMode());
+      modMatrix.push_back(mc); }
+
+    int dummy = 0;
+  }
+
+  return true;
 
 
+  /*
   // Check, if enough connectors are available:
   if(dspPool->getNumIdleConnectors() < (int)modSettings.size())
     return false;
@@ -151,6 +205,12 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
   // Do the assembly:
   for(size_t i = 0; i < modSettings.size(); i++)
   {
+    // todo: 
+    // -figure out, if the mod-matrix already contains a connection between the source and target
+    //  and if so, juts update its depth and mod parameters instead of adding a new connection
+    //  -maybe reorganize the loop such that we call grabConnector only when needed, i.e. when we
+    //   can't just update an existing connection
+
     ModulationSetting    ms = modSettings[i];
     ModulationConnector* mc = dspPool->grabConnector();
     RAPT::rsAssert(mc); // we already verified that enough are available
@@ -175,20 +235,21 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     Parameter* param = prc->getParameter(ms.getTargetOpcode());
     RAPT::rsAssert(param);
     mc->setTarget(prc, param);
-
     RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, prc);
-    RAPT::rsAppend(modTargetParams, param); // we also need to use rsAppendIfNotAlreadyThere here
-
+    RAPT::rsAppendIfNotAlreadyThere(modTargetParams,     param);  // new
+    //RAPT::rsAppend(modTargetParams, param); // old
+    
     // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
     mc->setMode(ms.getMode());
-
     modMatrix.push_back(mc);
     // here, we need to figure out, if such a connection already exists and if so, just overwrite 
     // its depth value instead of adding a new connection
   }
 
   return true;
+  */
+
 
   // Assembling the mod-connections may also fail if not enough are available - in this 
   // case we also need to roll back and return false. But: maybe we should do it in a way that 

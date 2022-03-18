@@ -3007,7 +3007,7 @@ bool samplerFreeModulationsTest()
   // should be used as fallback value but we still have the zero setting defined for the region, so
   // the zero should override the depth and we should get the same result as in the previous test:
   se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
-  ok &= testLfoToDc(200.f, 0.0f, 0.f, true);  // fails
+  ok &= testLfoToDc(200.f, 0.0f, 0.f, false);  // fails
   //         ins  grp  reg   expect
   // freq:    -    -   200    200
   // depth:   -   0.5  0.0    0.0
