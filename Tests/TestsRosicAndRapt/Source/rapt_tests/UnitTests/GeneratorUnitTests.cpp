@@ -3030,6 +3030,9 @@ bool samplerFreeModulationsTest()
   // freq:    -    -   200    200
   // depth:  0.2  0.5   -     0.5
 
+  // Actually, the tests above are now redundant with the more systematic tests below, so maybe we
+  // should delete them. They are obsolete and just clutter the codebase
+
 
   // Define a helper function that lets us pass in the frequency and modulation depth settings for
   // instrument, group, region along with the corresponding value that is expected to be observed
