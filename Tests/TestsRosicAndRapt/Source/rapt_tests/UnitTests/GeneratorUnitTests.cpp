@@ -3007,10 +3007,18 @@ bool samplerFreeModulationsTest()
   // should be used as fallback value but we still have the zero setting defined for the region, so
   // the zero should override the depth and we should get the same result as in the previous test:
   se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
-  ok &= testLfoToDc(200.f, 0.0f, 0.f, false);
+  ok &= testLfoToDc(200.f, 0.0f, 0.f, true);  // fails
   //         ins  grp  reg   expect
   // freq:    -    -   200    200
   // depth:   -   0.5  0.0    0.0
+  // fails: the call to assembleModulations(reg->getModulationSettings()); adds another modulation 
+  // connection  between source and target with depth 0 instead of overwriting the depth=0.5  value 
+  // in the existing connection with depth=0.0 as it should. I think, in
+  // SamplePlayer::assembleModulations the calls 
+  //  RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, prc);
+  //  RAPT::rsAppend(modTargetParams, param);
+  // need to be replaced by something that figures out, if a connection between source and target
+  // already exists, if so, overwrite the depth, otherwise add the new connection
 
   // Now we remove the region depth setting. The group setting should be used as fallback, so the
   // result should be the same as in the first test but this time, the mod-depth comes from the 
@@ -3126,7 +3134,7 @@ bool samplerFreeModulationsTest()
   // result in a modSources array of length 1 with the LFO being the element
 
   // we need to change SamplePlayer::assembleProcessors and RegionPlayer::assembleProcessors 
-  // ..maybe even get rid of SamplePlayer::assembleProcessors
+  // ..maybe even get rid of SamplePlayer::assembleProcessors or make it purely virtual
 
 
 

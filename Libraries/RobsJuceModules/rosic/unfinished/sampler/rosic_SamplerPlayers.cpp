@@ -175,13 +175,17 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     Parameter* param = prc->getParameter(ms.getTargetOpcode());
     RAPT::rsAssert(param);
     mc->setTarget(prc, param);
+
     RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, prc);
-    RAPT::rsAppend(modTargetParams, param);
+    RAPT::rsAppend(modTargetParams, param); // we also need to use rsAppendIfNotAlreadyThere here
 
     // Set up modulation depth and mode and add the connection to the modMatrix:
     mc->setDepth(ms.getDepth());
     mc->setMode(ms.getMode());
+
     modMatrix.push_back(mc);
+    // here, we need to figure out, if such a connection already exists and if so, just overwrite 
+    // its depth value instead of adding a new connection
   }
 
   return true;
@@ -564,10 +568,16 @@ bool RegionPlayer::hasFinished()
 
 bool RegionPlayer::assembleProcessors(bool busMode)
 {
+  if(!areProcessorsEmpty()) {    // Sanity check
+    RAPT::rsError("Someone has not cleaned up after finishing playback!");
+    disassembleProcessors();  }  // ...so we do it here. But this should be fixed elsewhere!
+
   const Region* reg = region;
   const Group*  grp = reg->getGroup();
-  const Global* glb = grp->getInstrument();
+  const Global* ins = grp->getInstrument();
 
+  // old:
+  /*
   // The DSPs for which the region itself defines settings/opcodes are always needed:
   bool ok = SamplePlayer::assembleProcessors(
     reg->getOpcodeTypeChain(), reg->getModulationSettings());
@@ -595,6 +605,39 @@ bool RegionPlayer::assembleProcessors(bool busMode)
   // But this is wrong: when doing it in this order, the group and global modulation settings will
   // override the region settings and not the other way around. we need to augment also
   // setupDspSettingsFor
+  */
+
+  // new:
+  bool ok = true;
+
+  // Assemble processors (modulators and effects):
+  ok &= augmentOrCleanProcessors(reg->getOpcodeTypeChain());
+  if(!busMode) { // maybe rename to mixMode
+    ok &= augmentOrCleanProcessors(grp->getOpcodeTypeChain());
+    ok &= augmentOrCleanProcessors(ins->getOpcodeTypeChain());  }
+  if(!ok) {
+    this->disassembleProcessors();
+    return false; }
+  // I think, here, the order of the 3 calls doesn't matter
+
+  // Assemble modulation connections:
+  if(!busMode) {
+    ok &= assembleModulations(ins->getModulationSettings());
+    ok &= assembleModulations(grp->getModulationSettings()); }
+  ok &= assembleModulations(reg->getModulationSettings());
+  if(!ok) {
+    this->disassembleProcessors();  // function also disassembles the modMatrix
+    return false; }
+  // ..but here, the order of the 3 calls does matter...i think
+  // ...but maybe we should make it consistent anyway - always call in the order: ins, grp, reg
+
+
+
+
+
+
+
+
 
   return true;
   // OK - everything went well so we report success. If, on the other hand, false is returned, it
