@@ -3086,23 +3086,31 @@ bool samplerFreeModulationsTest()
   };
 
 
+  // Do similar tests as before but now using our testMod helper function. The pattern is: the 
+  // expected value (under "exp" for "expected") is always the same as the rightmost value of the 3
+  // columns ("ins", "grp", "reg") before it in the same row. This is because the columns are 
+  // ordered in the same way as the value overriding happens. The underscore signifies absence of 
+  // the respective setting by using the code number for "none".
   float _   = none;
   float tol = 0.f;
-  // Do similar tests as before but now using our testMod helper function:
   //
   //            Modulator Frequency      Modulation Depth       Test Control
   //            ins  grp  reg   exp     ins  grp  reg   exp  
-  ok &= testMod( _ ,  _ , 200,  200,     _ ,  _ , 0.5,  0.5,    tol, false); // passes
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.5,  0.5,    tol, true);  // fails!
-  ok &= testMod( _ ,  _ , 500,  500,     _ ,  _ , 0.5,  0.5,    tol, true);  // fails!
-  // Seems like with a faster LFO freq, the LFO creates phase-jump at some point. All of a sudden
-  // the LFOs of the sampler are out of phase - so maybe the bug is in the implemenattion of the
-  // LFO core? -> Write a unit test for the LFO core. Or is it because the sample stops? But no
-  // it should loop indefinitely and if it would stop, the error shoud look different
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ ,  _ ,  0.0,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, false); 
+  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);
 
-  //ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, true); 
-  //ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);
+  ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false); // crashes!
+
+
+
+  // ToDo: implement and use setInstrumentModulation and activate this test:
   //ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);
+  // maybe implement a similar testing scheme for the effect parameters using a testEff function 
+  // very similar to our testMod function here
 
   rsAssert(ok);
 
