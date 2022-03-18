@@ -32,31 +32,29 @@ size_t getNumProcessorsOfType(const std::vector<Processor*>& processors, OpcodeT
   return count;
 }
 
-int findProcessorIndex(Processor* processors, int numProcessors, OpcodeType type, int index) // take a std::vector
+int findProcessorIndex(const std::vector<Processor*>& processors, OpcodeType type, int index)
 {
   // ToDo: 
-  // -Check, if index < 0 and if so, modify it processors.size() + abs(index) to use indices 
+  // -Check, if index < 0 and if so, modify it to processors.size() + abs(index) to use indices 
   //  -1,-2,-3 for the hardwired modulators for amp, cutoff, pitch (maybe -4 for cutoff2)
 
   int count = 0;
-  for(int i = 0; i < numProcessors; ++i) {
-    if(processors[i].getType() == type) {
+  for(size_t i = 0; i < processors.size(); ++i) {
+    if(processors[i]->getType() == type) {
       count++;
       if(count == index)
-        return i; }}
+        return (int)i; }}
   return -1;
 }
-// take reference to vector instead of raw pointer
 
-Processor* findProcessor(Processor* processors, int numProcessors, OpcodeType type, int index) // take a std::vector
+Processor* findProcessor(const std::vector<Processor*>& processors, OpcodeType type, int index)
 {
-  int i = findProcessorIndex(processors, numProcessors, type, index);
+  int i = findProcessorIndex(processors, type, index);
   if(i == -1)
     return nullptr;
   else
-    return &processors[i]; 
+    return processors[i]; 
 }
-// take reference to vector instead of raw pointer
 
 /** Counts the number of occurences of elem in array a of length N. */
 template<class T>
@@ -159,11 +157,7 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
 
     // Determine pointer to modulation source and its index in our modSources array and set it up 
     // in the connector:
-    int j = findProcessorIndex(modSources[0], (int) modSources.size(), ms.getSourceType(), 
-      ms.getSourceIndex());
-    // crashes when modSources is empty
-
-
+    int j = findProcessorIndex(modSources, ms.getSourceType(), ms.getSourceIndex());
     RAPT::rsAssert(j >= 0);
     Processor* src = modSources[j];
     RAPT::rsAssert(src);
@@ -173,12 +167,10 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
     // Determine pointer to modulation target (Processor and Parameter) and set it up in the
     // connector:
     Processor* prc;
-    if(SfzCodeBook::isModSourceSetting(ms.getTargetType())) {
-      prc = findProcessor(modSources[0], (int) modSources.size(), // Receiver is another modulator
-        ms.getTargetType(), ms.getTargetIndex());  }
-    else {
-      prc = findProcessor(effectChain[0], (int) effectChain.size(), 
-        ms.getTargetType(), ms.getTargetIndex());  }              // Receiver is an effect
+    if(SfzCodeBook::isModSourceSetting(ms.getTargetType())) 
+      prc = findProcessor(modSources,  ms.getTargetType(), ms.getTargetIndex()); // Receiver is another modulator
+    else
+      prc = findProcessor(effectChain, ms.getTargetType(), ms.getTargetIndex()); // Receiver is an effect
     RAPT::rsAssert(prc);
     Parameter* param = prc->getParameter(ms.getTargetOpcode());
     RAPT::rsAssert(param);
@@ -221,6 +213,10 @@ bool SamplePlayer::assembleProcessors(
   if(!assembleModulations(modSettings)) {
     disassembleProcessors();
     return false; }
+  // i think, we cannot call this here - we must call it after *all* 3 calls of 
+  // augmentOrCleanProcessors have been run through - otherwise we ma encounter a situation where
+  // we try to connect a parameter with a not yet existing group or global modulator that only 
+  // comes into existence after the group and global modulators have been added
 
   return true;
 }
@@ -584,8 +580,11 @@ bool RegionPlayer::assembleProcessors(bool busMode)
   if(!busMode)  // maybe rename to mixMode
   {
     ok = augmentOrCleanProcessors(grp->getOpcodeTypeChain());    if(!ok) return false;
-    ok = assembleModulations(     grp->getModulationSettings()); if(!ok) return false;
     ok = augmentOrCleanProcessors(grp->getOpcodeTypeChain());    if(!ok) return false;
+
+
+
+    ok = assembleModulations(     grp->getModulationSettings()); if(!ok) return false;
     ok = assembleModulations(     glb->getModulationSettings()); if(!ok) return false;
     // Maybe factor out into a function assembleFallbackProcessors()
   }

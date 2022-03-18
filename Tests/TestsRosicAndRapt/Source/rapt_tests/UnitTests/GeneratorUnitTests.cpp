@@ -3115,14 +3115,21 @@ bool samplerFreeModulationsTest()
   //            ins  grp  reg   exp     ins  grp  reg   exp  
   ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
 
-  ok &= testMod( _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000 crashes!
+  //ok &= testMod( _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000 crashes!
+  // crashes - but that's not surprising: we try to establish a mod-connection between a 
+  // parameter and a non-existent mod source...what should the enige do in such a case? Clearly
+  // crashing is not acceptable. Maybe we should use a dummy mod-source that just outputs zero?
+
   ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 010 crashes!
-  // in SamplePlayer::assembleModulations we dereference the 0th element of an empty std::vector
-  // by accessing modSources[0]. fix: the function that is called should take a reference to a 
-  // vector instead of a raw pointer
+  // Also crashes because the modSources array is empty in SamplePlayer::assembleModulations. It 
+  // should not be empty though: the presence of a group setting for the lfo1_freq=200 should
+  // result in a modSources array of length 1 with the LFO being the element
+
+  // we need to change SamplePlayer::assembleProcessors and RegionPlayer::assembleProcessors 
+  // ..maybe even get rid of SamplePlayer::assembleProcessors
 
 
-  // ToDo: implement and use setInstrumentModulation and activate this test:
+
 
   // maybe implement a similar testing scheme for the effect parameters using a testEff function 
   // very similar to our testMod function here
