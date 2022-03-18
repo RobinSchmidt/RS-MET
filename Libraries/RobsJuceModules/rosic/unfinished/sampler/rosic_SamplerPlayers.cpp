@@ -150,8 +150,14 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
 
     // Determine pointer to modulation source Processor:
     int j = findProcessorIndex(modSources, ms.getSourceType(), ms.getSourceIndex());
-    RAPT::rsAssert(j >= 0);
+    if(j == -1)
+      continue;
     Processor* srcProc = modSources[j];
+    // The j == -1 case may occur when a mod-routing exsists from some source like an LFO to some 
+    // parameter but the source itself does not exist because there is no frequency setting for the 
+    // LFO, example: lfo3_cutoff2 exists either on global, group or region level but on neither of 
+    // these levels does an lfo3_freq setting exist (or any other setting that would us cause to 
+    // put lfo3 into the modSources). In such a case, we just skip this loop iteration.
 
     // Determine pointers to modulation target Processor and Parameter and append them to the 
     // respective arrays, if they are not already present there:

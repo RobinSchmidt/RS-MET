@@ -3089,24 +3089,23 @@ bool samplerFreeModulationsTest()
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
 
-  // The first of these test fails, if we uncomment the test above defining the testMod function.
-  // se.clearInstrument(); does not seem to clear the instrument-level mod routings
-
   // Test modulator frequency settings (using a region setting for depth):
   //
   //            Modulator Frequency      Modulation Depth       Test Control    Test Index
   //            ins  grp  reg   exp     ins  grp  reg   exp  
+  ok &= testMod( _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000
   ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
+  ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 010
+  ok &= testMod( _ , 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 011
+  ok &= testMod(100,  _ ,  _ ,  100,     _ ,  _ , 0.3,  0.3,    tol, false);    // 100
+  ok &= testMod(100,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 101
+  ok &= testMod(100, 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 110
+  ok &= testMod(100, 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 111
 
-  //ok &= testMod( _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000 crashes!
-  // crashes - but that's not surprising: we try to establish a mod-connection between a 
-  // parameter and a non-existent mod source...what should the enige do in such a case? Clearly
-  // crashing is not acceptable. Maybe we should use a dummy mod-source that just outputs zero?
-
-  ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 010 crashes!
-  // Also crashes because the modSources array is empty in SamplePlayer::assembleModulations. It 
-  // should not be empty though: the presence of a group setting for the lfo1_freq=200 should
-  // result in a modSources array of length 1 with the LFO being the element
+  // Maybe we should try all 2^6 possible combinations instead of just 2 * 2^3. At the moment, we 
+  // assume that presence/absence of freq/depth settings don't interact: we check all possible
+  // combinations of depth settings (ins,grp,reg) while using a fixed freq setting (reg only) and
+  // vice versa...they probably indeed don't interact though..
 
   // we need to change SamplePlayer::assembleProcessors and RegionPlayer::assembleProcessors 
   // ..maybe even get rid of SamplePlayer::assembleProcessors or make it purely virtual
@@ -3119,7 +3118,7 @@ bool samplerFreeModulationsTest()
 
   rsAssert(ok);
 
-  // Maybe when we do the same test in busMode (or mixMode), we should set the basDC to zero 
+  // Maybe when we do the same test in busMode (or mixMode), we should set the baseDC to zero 
   // because otherwise our formula for computing the target signal in testLfoToDc is not correct
   // anymore...
 
