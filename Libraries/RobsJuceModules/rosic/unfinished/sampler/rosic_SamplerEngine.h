@@ -205,6 +205,13 @@ public:
       modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth, modMode);
   }
 
+  int setInstrumentModulation(OpcodeType modSrcType, int modSrcIndex,
+    Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode)
+  {
+    return sfz.setInstrumentModulation(
+      modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth, modMode);
+  }
+
 
   // ToDo: These functions are currently used only in test code. I think, they are not yet ready
   // for production because for certain removals, we may have to take additional actions such as 
@@ -236,6 +243,9 @@ public:
   // that's supposed to be 1 or 0 anyway because we don't allow multiple connections between the 
   // same pair of pins. I think, that would be technically possible though, but it doesn't seem 
   // to make much sense from a user perspective.
+  // todo: removeRegionModulation, removeInstrumentModulation...but maybe these function will not
+  // be needed in the context of loading sfz files...hmm...but on an interactive GUI, we probably
+  // want to be able to remove modulations one by one
 
 
 

@@ -17,7 +17,10 @@ void LowFreqOscCore::processFrame(float* L, float* R)
     pos -= 1.0;
   *L = *R = out;
   // ToDo: 
-  // -use delay, fade members for fade-in and delay
+  // -Add amp parameter. This will facilitate making LFO modulation depths themselves modulatable. 
+  //  Not on the connection level though, only once per modulator - but that's still better than 
+  //  nothing. Making depths modulatable per connection would be more complicated...
+  // -Use delay, fade members for fade-in and delay
   // -Produce stereo output: maybe we should have a stereo_phase paramter or phase_shift_LR
   //  and do: 
   //    *L = sin(tau * pos - phaseShift/2);

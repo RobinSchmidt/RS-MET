@@ -648,6 +648,14 @@ public:
   rsReturnCode setGroupModulation(int gi, OpcodeType modSrcType, int modSrcIndex,
     Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
 
+  rsReturnCode setInstrumentModulation(OpcodeType modSrcType, int modSrcIndex,
+    Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
+  // It actually always returns rsReturnCode::success. I'm not sure, if we should keep the 
+  // return-value or declare the function void. The former is nicer from a consistency perspective 
+  // but the value has actually no information. On the other hand, the returned success report 
+  // isn't false either - it's just that the function is always supposed to succeed...hmmm...
+
+
   rsReturnCode removeRegionSetting(int gi, int ri, Opcode type, int index);
   rsReturnCode removeGroupSetting(int gi, Opcode type, int index);
   rsReturnCode removeInstrumentSetting(Opcode type, int index);

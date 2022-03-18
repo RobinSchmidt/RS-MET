@@ -3077,7 +3077,7 @@ bool samplerFreeModulationsTest()
     if(regFreq != none) se.setRegionSetting(0, 0, OC::lfoN_freq, regFreq, 1);
 
     // Similarly set up the routing of the LFO output to the DC parameter of the waveshaper:
-    // todo: if(insDepth ...
+    if(insDepth != none) se.setInstrumentModulation(  OT::FreeLfo, 1, OC::distortN_dc, 1, insDepth, Mode::absolute);
     if(grpDepth != none) se.setGroupModulation( 0,    OT::FreeLfo, 1, OC::distortN_dc, 1, grpDepth, Mode::absolute);
     if(regDepth != none) se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, regDepth, Mode::absolute);
 
@@ -3097,18 +3097,27 @@ bool samplerFreeModulationsTest()
   //            Modulator Frequency      Modulation Depth       Test Control
   //            ins  grp  reg   exp     ins  grp  reg   exp  
   ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ ,  _ ,  0.0,    tol, false);
+
   ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
+  //ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
+  //ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);
+
   ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, false); 
   ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ ,  _ ,  0.1,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ , 0.3,  0.3,    tol, false);
+  ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);
+  // ToDo: order the tests systematically
+
+
 
   ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false); // crashes!
 
 
 
   // ToDo: implement and use setInstrumentModulation and activate this test:
-  //ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);
+
   // maybe implement a similar testing scheme for the effect parameters using a testEff function 
   // very similar to our testMod function here
 

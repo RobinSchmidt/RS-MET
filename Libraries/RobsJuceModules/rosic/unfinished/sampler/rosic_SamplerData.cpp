@@ -427,7 +427,12 @@ rsReturnCode SfzInstrument::setGroupModulation(int gi, OpcodeType srcType, int s
   return rsReturnCode::success;
 }
 
-
+rsReturnCode SfzInstrument::setInstrumentModulation(OpcodeType srcType, int srcIndex, 
+  Opcode tgtParam, int tgtIndex, float depth, ModMode modMode)
+{
+  global.setModulation(srcType, srcIndex, tgtParam, tgtIndex, depth, modMode);
+  return rsReturnCode::success;
+}
 
 rsReturnCode SfzInstrument::removeRegionSetting(int gi, int ri, Opcode type, int index)
 {
