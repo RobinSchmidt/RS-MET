@@ -3007,18 +3007,10 @@ bool samplerFreeModulationsTest()
   // should be used as fallback value but we still have the zero setting defined for the region, so
   // the zero should override the depth and we should get the same result as in the previous test:
   se.setGroupModulation(0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.5f, Mode::absolute);
-  ok &= testLfoToDc(200.f, 0.0f, 0.f, false);  // fails
+  ok &= testLfoToDc(200.f, 0.0f, 0.f, false);
   //         ins  grp  reg   expect
   // freq:    -    -   200    200
   // depth:   -   0.5  0.0    0.0
-  // fails: the call to assembleModulations(reg->getModulationSettings()); adds another modulation 
-  // connection  between source and target with depth 0 instead of overwriting the depth=0.5  value 
-  // in the existing connection with depth=0.0 as it should. I think, in
-  // SamplePlayer::assembleModulations the calls 
-  //  RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, prc);
-  //  RAPT::rsAppend(modTargetParams, param);
-  // need to be replaced by something that figures out, if a connection between source and target
-  // already exists, if so, overwrite the depth, otherwise add the new connection
 
   // Now we remove the region depth setting. The group setting should be used as fallback, so the
   // result should be the same as in the first test but this time, the mod-depth comes from the 
@@ -3029,35 +3021,15 @@ bool samplerFreeModulationsTest()
   //         ins  grp  reg   expect
   // freq:    -    -   200    200
   // depth:   -   0.5   -     0.5
-  //
-  // The test passes, but I'm actually not so sure, if it should and why. We need to implement more
-  // unit tests with more and different scenarios and pay special attention to the functions:
-  //   SamplePlayer::setupDspSettings, RegionPlayer::setupDspSettingsFor, 
-  //   RegionPlayer::assembleProcessors
-  // especially to how they change the state of the modMatrix member array. We also have introduced
-  // the new function:
-  //   SamplePlayer::setupModRoutingSetting
-  // which currently doesn't get called anywhere - but may we will need to call it somewhere...
 
   // Add a depth setting to the instrument. This should have no effect because it's overriden by
   // the group setting:
-  //se.setInstrumenModulation(OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
+  //se.setInstrumentModulation(OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
   //ok &= testLfoToDc(200.f, 0.5f, 0.f, false);
   //         ins  grp  reg   expect
   // freq:    -    -   200    200
   // depth:  0.2  0.5   -     0.5
 
-  // Maybe implement a helper function that we can call like
-  //
-  //   ok &= testMod( _ ,  _ , 200,   200,
-  //                 0.2, 0.5,  _ ,   0.5, 
-  //                 tol, false);
-  //
-  // where _ is a special value that indicates that the setting should be absent. Maybe we should
-  // have a function removeModSourceSettings and removeModRoutings that we can call at the start
-  // of this function. And then we add the desired mod-source and mod-routing settings.
-
-  // ok &= testMod( _ , _ , 200, 200,    0.2, 0.5, _ , 0.5,    tol, false);
 
   // Define a helper function that lets us pass in the frequency and modulation depth settings for
   // instrument, group, region along with the corresponding value that is expected to be observed
@@ -3116,6 +3088,8 @@ bool samplerFreeModulationsTest()
   ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ , 0.3,  0.3,    tol, false);    // 101
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
+
+  // The first of these test fails, if we uncomment the test above defining the testMod function
 
   // Test modulator frequency settings (using a region setting for depth):
   //
