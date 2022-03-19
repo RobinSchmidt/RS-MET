@@ -2908,7 +2908,8 @@ bool samplerFreeModulationsTest()
   bool ok = true;
 
   using Vec   = std::vector<float>;
-  using SE    = rosic::Sampler::rsSamplerEngine2Test;
+  using SE    = rosic::Sampler::rsSamplerEngineTest;   // rename to SET
+  using SE2   = rosic::Sampler::rsSamplerEngine2Test;  // rename to SE2T
   using OC    = rosic::Sampler::Opcode;
   using OT    = rosic::Sampler::OpcodeType;
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
@@ -2925,15 +2926,21 @@ bool samplerFreeModulationsTest()
   // waveshaper1 with a modulation depth of 0.5.
   float fs     = 44100;   // sample rate
   float baseDC = 3.f;     // nominal DC value for waveshaper, i.e. without modulation applied
-  SE se;                  // rename to se1
-  se.setSampleRate(fs);
-  se.preAllocateDspMemory();
+
+  SE  se1;
+  se1.setSampleRate(fs);
+  se1.preAllocateDspMemory();
+
+  SE2 se2;
+  se2.setSampleRate(fs);
+  se2.preAllocateDspMemory();
+
 
   // Helper function for the tests. Takes the LFO-frequency (in Hz) and modulation depth (as raw 
   // factor) as parameters. These values are only used to produce the target signal. We do not call
   // any setup functions on the sampler engine. The setup of the engine is supposed to be done by 
   // the caller before calling this function:
-  auto testLfoToDc = [&](float lfoFreq, float lfoDepth, float tol, bool plot = false)
+  auto testLfoToDc = [&](SE* se, float lfoFreq, float lfoDepth, float tol, bool plot = false)
   {
     // Create target signal. We expect the DC of 1 from the looped sample itself plus the 
     // sine-modulated DC coming from the waveshaper:
@@ -2948,8 +2955,8 @@ bool samplerFreeModulationsTest()
 
     // Create sampler output and error:
     Vec outL(N), outR(N);
-    se.reset();
-    getSamplerNote(&se, 69.f, 100.f, outL, outR);
+    se->reset();
+    getSamplerNote(se, 69.f, 100.f, outL, outR);
     Vec errL = outL - tgt;
     Vec errR = outR - tgt;
     float maxErrL = rsMaxAbs(errL);
@@ -2966,15 +2973,15 @@ bool samplerFreeModulationsTest()
 
   // Clears the instrument in the sample engine and then sets up the common settings that are 
   // needed in all tests:
-  auto setupCommonSettings = [&]()
+  auto setupCommonSettings = [&](SE* se)
   {
 
-    se.clearInstrument();
-    addSingleSampleRegion(&se, dc);
-    se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
-    se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
-    se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
-    se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
+    se->clearInstrument();
+    addSingleSampleRegion(se, dc);
+    se->setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
+    se->setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
+    se->setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
+    se->setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
   };
 
   // Define a helper function that lets us pass in the frequency and modulation depth settings for
@@ -2982,36 +2989,28 @@ bool samplerFreeModulationsTest()
   // at the sampler's output. This function set up the sampler engine accordingly and then tests
   // if it produces the expected output.
   float none = 1.e20f;  // a code for "none" -> make sure that it's not used for a valid value
-  auto testMod = [&](
+  auto testMod = [&](SE* se,
     float insFreq,  float grpFreq,  float regFreq,    float expFreq,
     float insDepth, float grpDepth, float regDepth,   float expDepth,
     float tol, bool plot) 
   { 
     // Clear instrument and then set up the common settings (maybe factor out into 
     // a setupCommonSettings function):
-    setupCommonSettings();
-    /*
-    se.clearInstrument();
-    addSingleSampleRegion(&se, dc);
-    se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
-    se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
-    se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
-    se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
-    */
+    setupCommonSettings(se);
 
     // Set up the LFO frequency settings for instrument, group and region unless the respective 
     // parameter value is the code for "none":
-    if(insFreq != none) se.setInstrumentSetting(  OC::lfoN_freq, insFreq, 1);
-    if(grpFreq != none) se.setGroupSetting( 0,    OC::lfoN_freq, grpFreq, 1);
-    if(regFreq != none) se.setRegionSetting(0, 0, OC::lfoN_freq, regFreq, 1);
+    if(insFreq != none) se->setInstrumentSetting(  OC::lfoN_freq, insFreq, 1);
+    if(grpFreq != none) se->setGroupSetting( 0,    OC::lfoN_freq, grpFreq, 1);
+    if(regFreq != none) se->setRegionSetting(0, 0, OC::lfoN_freq, regFreq, 1);
 
     // Similarly set up the routing of the LFO output to the DC parameter of the waveshaper:
-    if(insDepth != none) se.setInstrumentModulation(  OT::FreeLfo, 1, OC::distortN_dc, 1, insDepth, Mode::absolute);
-    if(grpDepth != none) se.setGroupModulation( 0,    OT::FreeLfo, 1, OC::distortN_dc, 1, grpDepth, Mode::absolute);
-    if(regDepth != none) se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, regDepth, Mode::absolute);
+    if(insDepth != none) se->setInstrumentModulation(  OT::FreeLfo, 1, OC::distortN_dc, 1, insDepth, Mode::absolute);
+    if(grpDepth != none) se->setGroupModulation( 0,    OT::FreeLfo, 1, OC::distortN_dc, 1, grpDepth, Mode::absolute);
+    if(regDepth != none) se->setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, regDepth, Mode::absolute);
 
     // Run the test:
-    return testLfoToDc(expFreq, expDepth, tol, plot);
+    return testLfoToDc(se, expFreq, expDepth, tol, plot);
   };
 
   // We systematically go through the 2^3 = 8 cases where a modulation depth setting is either 
@@ -3028,33 +3027,52 @@ bool samplerFreeModulationsTest()
   float _   = none;  // _ is an even short code for "none"
   float tol = 0.f;   // tolerance
 
-  // Test overriding of modulation depth settings (using a region setting for freq):
-  //
-  //            Modulator Frequency      Modulation Depth       Test Control    Test Index
-  //            ins  grp  reg   exp     ins  grp  reg   exp  
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ ,  _ ,  0.0,    tol, false);    // 000
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
-  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, false);    // 010
-  ok &= testMod( _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);    // 011
-  ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ ,  _ ,  0.1,    tol, false);    // 100
-  ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ , 0.3,  0.3,    tol, false);    // 101
-  ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
-  ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
-  // maybe factor out into testDepthOverride
+  // Tests overriding of modulation depth settings (using a region setting for freq) for the given 
+  // sampler engine:
+  auto testDepthOverride = [&](SE* se)
+  {
+    bool ok = true;
+    //                Modulator Frequency      Modulation Depth       Test Control    Test Index
+    //                ins  grp  reg   exp     ins  grp  reg   exp  
+    ok &= testMod(se,  _ ,  _ , 300,  300,     _ ,  _ ,  _ ,  0.0,    tol, false);    // 000
+    ok &= testMod(se,  _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
+    ok &= testMod(se,  _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, false);    // 010
+    ok &= testMod(se,  _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);    // 011
+    ok &= testMod(se,  _ ,  _ , 300,  300,    0.1,  _ ,  _ ,  0.1,    tol, false);    // 100
+    ok &= testMod(se,  _ ,  _ , 300,  300,    0.1,  _ , 0.3,  0.3,    tol, false);    // 101
+    ok &= testMod(se,  _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
+    ok &= testMod(se,  _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
+    return ok;
+  };
 
-  // Test overriding of modulator frequency settings (using a region setting for depth):
-  //
-  //            Modulator Frequency      Modulation Depth       Test Control    Test Index
-  //            ins  grp  reg   exp     ins  grp  reg   exp  
-  ok &= testMod( _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000
-  ok &= testMod( _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
-  ok &= testMod( _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 010
-  ok &= testMod( _ , 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 011
-  ok &= testMod(100,  _ ,  _ ,  100,     _ ,  _ , 0.3,  0.3,    tol, false);    // 100
-  ok &= testMod(100,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 101
-  ok &= testMod(100, 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 110
-  ok &= testMod(100, 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 111
-  // maybe factor out into testFreqOverride
+  // Tests overriding of modulator frequency settings (using a region setting for depth) for the 
+  // given sampler engine:
+  auto testFreqOverride = [&](SE* se)
+  {
+    bool ok = true;
+    //                Modulator Frequency      Modulation Depth       Test Control    Test Index
+    //                ins  grp  reg   exp     ins  grp  reg   exp  
+    ok &= testMod(se,  _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000
+    ok &= testMod(se,  _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
+    ok &= testMod(se,  _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 010
+    ok &= testMod(se,  _ , 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 011
+    ok &= testMod(se, 100,  _ ,  _ ,  100,     _ ,  _ , 0.3,  0.3,    tol, false);    // 100
+    ok &= testMod(se, 100,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 101
+    ok &= testMod(se, 100, 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 110
+    ok &= testMod(se, 100, 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 111
+    return ok;
+  };
+
+
+  ok &= testDepthOverride(&se1);
+  ok &= testFreqOverride( &se1);
+
+  //ok &= testDepthOverride(&se2);
+  //ok &= testFreqOverride( &se2);
+  // doesn't compile because SE2 is not subclass of SE. ToDo: the functions should take a pointer 
+  // to the SamplerEngine baseclass
+
+
 
   rsAssert(ok);
 
