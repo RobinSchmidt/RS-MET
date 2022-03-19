@@ -32,7 +32,7 @@ public:
 
   // Inquiry:
   Opcode getOpcode() const { return opcode; }
-  float getValue() const { return value; }
+  float getValue() const { return value; }  // rename to getNominalValue
 
   // provide operator to convert to float to help avoidng boilerplate later
 

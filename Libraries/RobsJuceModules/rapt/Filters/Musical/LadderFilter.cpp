@@ -321,15 +321,17 @@ void rsLadderFilter<TSig, TPar>::updateCoefficients()
 
 /*
 ToDo:
--maybe make a version based on a cascade of 1st order highpasses and/or allpasses
+-Maybe make a version based on a cascade of 1st order highpasses and/or allpasses
  -the mixing coeffs will then be different for the modes
  -we don't need gain-compensation for lowpass anyore (but then we need it for highpass)
--maybe make also versions based on a LP->HP->LP->HP chain
+-Maybe make also versions based on a LP->HP->LP->HP chain
  -this may need a feedback factor with non-inverted sign
  -perhaps we should use BLT 1st order sections for this
  -maybe make a version based on 1st order allpass filters
--more generally, the stages could all have a different cutoff frequency and/or mode
- -maybe more flexible response types can be created by this (maybe shelf, peak?)
+-More generally, the stages could all have a different cutoff frequency and/or mode
+ -Maybe more flexible response types can be created by this (maybe shelf, peak?). Maybe in such a
+  setup, the stages should be ordered by decreasing cutoff, i.e. the 1st stage has the highest 
+  cutoff. Ratiomale: this leaves more "to do" for the subsequent stages
 -Try to get arbitrary frequency responses out of it by forming the feedback signal also via a 
  linear combination, like (maybe) so: 
    y[0]  = in - (k[0]*y[0] + k[1]*y[1] + k[2]*y[2] + k[3]*y[3] + k[4]*y[4]);

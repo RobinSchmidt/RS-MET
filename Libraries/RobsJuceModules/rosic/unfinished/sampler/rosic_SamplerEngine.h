@@ -898,7 +898,7 @@ public:
   //static int getRegionPlayerSize() { return sizeof(RegionPlayer); }
 
 
-  virtual void preAllocateDspMemory() override
+  void preAllocateDspMemory() override
   {
     rsSamplerEngine::preAllocateDspMemory() ;
   }
@@ -953,6 +953,12 @@ public:
       p.setDspResourcePool(&dspPool);
       p.setPlayStatusPointer(&playStatus); }
     rsSetupPointers(groupPlayerPool, idleGroupPlayers);
+  }
+
+
+  void preAllocateDspMemory() override
+  {
+    rsSamplerEngine2::preAllocateDspMemory() ;
   }
 
 

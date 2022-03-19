@@ -2908,7 +2908,7 @@ bool samplerFreeModulationsTest()
   bool ok = true;
 
   using Vec   = std::vector<float>;
-  using SE    = rosic::Sampler::rsSamplerEngineTest;
+  using SE    = rosic::Sampler::rsSamplerEngine2Test;
   using OC    = rosic::Sampler::Opcode;
   using OT    = rosic::Sampler::OpcodeType;
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
@@ -2925,7 +2925,7 @@ bool samplerFreeModulationsTest()
   // waveshaper1 with a modulation depth of 0.5.
   float fs     = 44100;   // sample rate
   float baseDC = 3.f;     // nominal DC value for waveshaper, i.e. without modulation applied
-  SE se;
+  SE se;                  // rename to se1
   se.setSampleRate(fs);
   se.preAllocateDspMemory();
 
@@ -2964,6 +2964,19 @@ bool samplerFreeModulationsTest()
     return maxErr <= tol;
   };
 
+  // Clears the instrument in the sample engine and then sets up the common settings that are 
+  // needed in all tests:
+  auto setupCommonSettings = [&]()
+  {
+
+    se.clearInstrument();
+    addSingleSampleRegion(&se, dc);
+    se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
+    se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
+    se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
+    se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
+  };
+
   // Define a helper function that lets us pass in the frequency and modulation depth settings for
   // instrument, group, region along with the corresponding value that is expected to be observed
   // at the sampler's output. This function set up the sampler engine accordingly and then tests
@@ -2976,12 +2989,15 @@ bool samplerFreeModulationsTest()
   { 
     // Clear instrument and then set up the common settings (maybe factor out into 
     // a setupCommonSettings function):
+    setupCommonSettings();
+    /*
     se.clearInstrument();
     addSingleSampleRegion(&se, dc);
     se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
     se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
     se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
     se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
+    */
 
     // Set up the LFO frequency settings for instrument, group and region unless the respective 
     // parameter value is the code for "none":
@@ -3024,6 +3040,7 @@ bool samplerFreeModulationsTest()
   ok &= testMod( _ ,  _ , 300,  300,    0.1,  _ , 0.3,  0.3,    tol, false);    // 101
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
   ok &= testMod( _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
+  // maybe factor out into testDepthOverride
 
   // Test overriding of modulator frequency settings (using a region setting for depth):
   //
@@ -3037,13 +3054,16 @@ bool samplerFreeModulationsTest()
   ok &= testMod(100,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 101
   ok &= testMod(100, 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 110
   ok &= testMod(100, 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 111
+  // maybe factor out into testFreqOverride
 
   rsAssert(ok);
 
 
   // ToDo:
-  // -Factor out an applyModulations function from RegionPlayer::processFrame. Maybe it could be
-  //  moved into the SamplePlayer baseclass
+  // -Maybe factor out a test function that takes a pointer to the sampler engien so we can check
+  //  it with both: SamplerEngine and SamplerEngine2 - a simple driver function would call it with
+  //  both versions. Or maybe our internal helper functions testDepthOverride/testFreqOverride 
+  //  should take a pointer to a SamplerEngine and then we could call them with both variants.
   // -I think, we need to re-implement SampleBusPlayer::assembleProcessors. After this is done,
   //  the baseclass version in SamplePlayer may be obsolete. To test it, we should probably 
   //  introduce an amplitude parameter to the LFO and use this as LFO-parameter in testMod instead 
@@ -3058,6 +3078,10 @@ bool samplerFreeModulationsTest()
   //  vice versa...they probably indeed don't interact though (why would they?).
   // -Maybe implement a similar testing scheme for the effect parameters using a testEff function 
   //  very similar to our testMod function here
+  // -Create a test using a patch with two regions to make sure that the modBuffer that is shared
+  //  by all regions is indeed shared correctly, i.e. without the different regions corrupting it
+  //  with respect to other regions.
+  //
   // Older:
   // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
   //  need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 

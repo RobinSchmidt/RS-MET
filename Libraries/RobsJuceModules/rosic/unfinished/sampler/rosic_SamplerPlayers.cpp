@@ -324,7 +324,8 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
 
 void SamplePlayer::handleModulations()
 {
-  //int numSources = (int) modSources.size();
+  // ToDo: clean up the comments. Maybe move all the bigger ones to the bottom instead of 
+  // scattering them
 
   std::vector<float>& modBuffer = playStatus->modBuffer;
 
@@ -345,7 +346,7 @@ void SamplePlayer::handleModulations()
     ModulationConnector* con = modMatrix[i];
     Parameter* par = con->getTargetParam();
     float u  = par->getValue();                 // unmodulated value
-    float m  = modBuffer[2*i];                  // modulator output
+    float m  = modBuffer[2*i];                  // modulator output, left channel
     // Preliminary - we currently only use the 1st channel output maybe use something like 
     // rsVector2D<float> for m and do some appropriate casting. The 2nd stereo output of each
     // modulator would be in modBuffer[2*i+1]
