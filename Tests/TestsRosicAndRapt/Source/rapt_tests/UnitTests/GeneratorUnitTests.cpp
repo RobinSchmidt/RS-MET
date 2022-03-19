@@ -3064,14 +3064,22 @@ bool samplerFreeModulationsTest()
     return ok;
   };
 
-  // Test with the sfz sampler engine:
+  // Test override mode with the sfz sampler engine:
   ok &= testDepthOverride(&se1);
   ok &= testFreqOverride( &se1);
 
-  // Test with the mix sampler engine:
+  // Test override mode with the mix sampler engine:
   ok &= testDepthOverride(&se2);
   ok &= testFreqOverride( &se2);
 
+  // Test mix mode with the mix/accumulation sampler engine:
+  se2.setBusMode(true);            // rename to setMixMode
+  ok &= !testDepthOverride(&se2);  // fails successfully
+  ok &= !testFreqOverride( &se2);  // dito
+  // These tests predictably fail. We need to implement the proper modulation behavior for 
+  // mix mode and we will also need other test functions testDepthAccumulate, testAmpAccumulate
+  // with different expected values and we will also need some LFO parameter that has an easy to
+  // check accumulation behavior - LFO amplitude could be such a parameter
 
 
 
