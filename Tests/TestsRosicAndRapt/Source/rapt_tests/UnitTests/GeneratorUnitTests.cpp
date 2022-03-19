@@ -2908,8 +2908,9 @@ bool samplerFreeModulationsTest()
   bool ok = true;
 
   using Vec   = std::vector<float>;
-  using SE    = rosic::Sampler::rsSamplerEngineTest;   // rename to SET
-  using SE2   = rosic::Sampler::rsSamplerEngine2Test;  // rename to SE2T
+  using SE    = rosic::Sampler::rsSamplerEngine;
+  using SET   = rosic::Sampler::rsSamplerEngineTest;
+  using SE2T  = rosic::Sampler::rsSamplerEngine2Test;
   using OC    = rosic::Sampler::Opcode;
   using OT    = rosic::Sampler::OpcodeType;
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
@@ -2927,11 +2928,11 @@ bool samplerFreeModulationsTest()
   float fs     = 44100;   // sample rate
   float baseDC = 3.f;     // nominal DC value for waveshaper, i.e. without modulation applied
 
-  SE  se1;
+  SET se1;
   se1.setSampleRate(fs);
   se1.preAllocateDspMemory();
 
-  SE2 se2;
+  SE2T se2;
   se2.setSampleRate(fs);
   se2.preAllocateDspMemory();
 
@@ -3063,14 +3064,14 @@ bool samplerFreeModulationsTest()
     return ok;
   };
 
-
+  // Test with the sfz sampler engine:
   ok &= testDepthOverride(&se1);
   ok &= testFreqOverride( &se1);
 
-  //ok &= testDepthOverride(&se2);
-  //ok &= testFreqOverride( &se2);
-  // doesn't compile because SE2 is not subclass of SE. ToDo: the functions should take a pointer 
-  // to the SamplerEngine baseclass
+  // Test with the mix sampler engine:
+  ok &= testDepthOverride(&se2);
+  ok &= testFreqOverride( &se2);
+
 
 
 
