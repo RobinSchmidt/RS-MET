@@ -2990,7 +2990,7 @@ bool samplerFreeModulationsTest()
   // at the sampler's output. This function set up the sampler engine accordingly and then tests
   // if it produces the expected output.
   float none = 1.e20f;  // a code for "none" -> make sure that it's not used for a valid value
-  auto testMod = [&](SE* se,
+  auto testMod = [&](SE* se,  // find better name!
     float insFreq,  float grpFreq,  float regFreq,    float expFreq,
     float insDepth, float grpDepth, float regDepth,   float expDepth,
     float tol, bool plot) 
@@ -3013,6 +3013,29 @@ bool samplerFreeModulationsTest()
     // Run the test:
     return testLfoToDc(se, expFreq, expDepth, tol, plot);
   };
+
+  // Define a similar helper function but this time not taking LFO-freq and DC-depth but instead 
+  // LFO-amplitude and DC-depth:
+  auto testMod2 = [&](SE* se,    // find better name
+    float insAmp,   float grpAmp,   float regAmp,     float expAmp,
+    float insDepth, float grpDepth, float regDepth,   float expDepth,
+    float tol, bool plot)
+  {
+    setupCommonSettings(se);
+
+    /*
+    if(insAmp != none) se->setInstrumentSetting(  OC::lfoN_amp, insAmp, 1);
+    if(grpAmp != none) se->setGroupSetting( 0,    OC::lfoN_amp, grpAmp, 1);
+    if(regAmp != none) se->setRegionSetting(0, 0, OC::lfoN_amp, regAmp, 1);
+
+    if(insDepth != none) se->setInstrumentModulation(  OT::FreeLfo, 1, OC::distortN_dc, 1, insDepth, Mode::absolute);
+    if(grpDepth != none) se->setGroupModulation( 0,    OT::FreeLfo, 1, OC::distortN_dc, 1, grpDepth, Mode::absolute);
+    if(regDepth != none) se->setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, regDepth, Mode::absolute);
+
+    return testLfoToDc2(se, expAmp, expDepth, tol, plot);
+    */
+  };
+
 
   // We systematically go through the 2^3 = 8 cases where a modulation depth setting is either 
   // defined or not on instrument, group and region levels. The pattern is: the expected value 
