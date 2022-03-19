@@ -324,7 +324,7 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
 
 void SamplePlayer::handleModulations()
 {
-  int numSources = (int) modSources.size();
+  //int numSources = (int) modSources.size();
 
   std::vector<float>& modBuffer = playStatus->modBuffer;
 
@@ -344,9 +344,7 @@ void SamplePlayer::handleModulations()
   {
     ModulationConnector* con = modMatrix[i];
     Parameter* par = con->getTargetParam();
-    int   si = con->getSourceIndex();
     float u  = par->getValue();                 // unmodulated value
-
     float m  = modBuffer[2*i];                  // modulator output
     // Preliminary - we currently only use the 1st channel output maybe use something like 
     // rsVector2D<float> for m and do some appropriate casting. The 2nd stereo output of each
@@ -362,10 +360,10 @@ void SamplePlayer::handleModulations()
     // indicate, if the value did actually change ...maybe something like:
     //   if(par->applyModulation(c))
     //     con->getTargetProcessor()->setDirty(true);
-
-    int dummy = 0;
-    // We could avoid one dereferencing by avoiding the si variable and instead directly use a
-    // con->getSource() function directly returning the pointer. ?? comment obsolete?
+    // ...hmm - but no - i think, that would be wrong. Maybe each RegionPlayer needs it own 
+    // modBuffer and should keep track of whether its contents have changed with respect to the 
+    // previous call...but we actually want to keep track of changes per target, not per source.
+    // Maybe class Parameter needs a member oldModulatedValue or someting like that
   }
 
   // Let the affected Processors update their algo-parameters (coefficients) according to the new 
