@@ -318,7 +318,64 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
   // Why has setupPlayerSetting a different signature, i.e. takes the additional rp parameter? Can
   // we get rid of this?
 
-  // I think , we need also a branch setupModRouting
+  // I think , we need also a branch setupModRouting...hmm...maybe not - the branch is commented
+  // but the unit tests pass
+}
+
+void SamplePlayer::handleModulations()
+{
+  int numSources = (int) modSources.size();
+
+  std::vector<float>& modBuffer = playStatus->modBuffer;
+
+  // Let all modulators produce their outputs and record them into our modBuffer. The outputs are 
+  // stereo because modulators are just another type of signal processor just like the actual 
+  // effect processors. We currently only use the left output, though. But that may change later.
+  // Stereo modulators may be useful...
+  for(size_t i = 0; i < modSources.size(); ++i)
+    modSources[i]->processFrame(&modBuffer[2*i], &modBuffer[2*i+1]);
+
+  // Initialize modulated parameters to non-modulated values:
+  for(size_t i = 0; i < modTargetParams.size(); ++i)
+    modTargetParams[i]->initModulatedValue();
+
+  // Apply the modulations to the affected parameters:
+  for(size_t i = 0; i < modMatrix.size(); ++i)
+  {
+    ModulationConnector* con = modMatrix[i];
+    Parameter* par = con->getTargetParam();
+    int   si = con->getSourceIndex();
+    float u  = par->getValue();                 // unmodulated value
+
+    float m  = modBuffer[2*i];                  // modulator output
+    // Preliminary - we currently only use the 1st channel output maybe use something like 
+    // rsVector2D<float> for m and do some appropriate casting. The 2nd stereo output of each
+    // modulator would be in modBuffer[2*i+1]
+
+    float c  = con->getContribution(m, u);      // compute modulation contribution
+    par->applyModulation(c);                    // accumulate the contribution
+    con->getTargetProcessor()->setDirty();      // mark processor recomputing algo coeffs
+    // ToDo: dirtification may be more sophisticated later: Detect whether the modulatedValue is 
+    // actually different than the previous sample. Maybe collect all modulatedValues in a 
+    // buffer before modulation and then in the loop over the modTargetProcessors, call 
+    // updateCoeffs only if needed...maybe par->applyModulation should return a bool to 
+    // indicate, if the value did actually change ...maybe something like:
+    //   if(par->applyModulation(c))
+    //     con->getTargetProcessor()->setDirty(true);
+
+    int dummy = 0;
+    // We could avoid one dereferencing by avoiding the si variable and instead directly use a
+    // con->getSource() function directly returning the pointer. ?? comment obsolete?
+  }
+
+  // Let the affected Processors update their algo-parameters (coefficients) according to the new 
+  // user parameters now with the new modulations applied:
+  for(size_t i = 0; i < modTargetProcessors.size(); ++i)
+    if(modTargetProcessors[i]->isDirty())
+      modTargetProcessors[i]->updateCoeffs(playStatus->sampleRate);
+      // ToDo: check, if there are any duplicates in modTargetProcessors - if so, avoid that in the 
+      // assembly of the modulations. It would work with duplicates but we would have redundant
+      // coeff updates ...but maybe such a sanity check should be done in prepareToPlay...
 }
 
 //=================================================================================================
@@ -351,108 +408,11 @@ void RegionPlayer::processFrame(float* L, float* R)
     sampleTime = offset;
 
   stream->getFrameStereo((float)sampleTime, L, R);  
-  // try to avoid the conversion to float - use a 2nd template parameter for the time
+  // ToDo: Try to avoid the conversion to float, maybe by uning a 2nd template parameter for the 
+  // time in the AudioStream class template and use double for it
 
-
-
-  //---------------------------------------------
-  // Under construction - handle modulations:
-
-  //double sampleRate = 44100.0; // preliminary - should be inquired from PlayStatus
-
-
-  int numSources = (int) modSources.size();
-
-  //std::vector<float> modBuffer;
-  //modBuffer.resize(2*numSources);
-  // old
-
-  // preliminary - should become a member of PlayStatus, the size should be pre-allocated according
-  // to the maximum number of modulators that a region/Group/Instrument has
-
-  std::vector<float>& modBuffer = playStatus->modBuffer;
-  // new
-
-  // Update our modulators:
-  for(size_t i = 0; i < modSources.size(); ++i)
-  {
-    //modSources[i]->updateModValue();
-    modSources[i]->processFrame(&modBuffer[2*i], &modBuffer[2*i+1]);
-    // ToDo: Try to use processFrame instead. But then we need to store the output frames of all 
-    // modulators in a local buffer here (maybe use a member modBuffer) and the 
-    // ModulationConnection must somehow maintain an index into that buffer. Maybe the 
-    // ModualtionConnection could store array indices into our modSources, 
-    // modTargetProcessors arrays instead of pointers to Modulator, Processor. The index into the
-    // modSources array could then double as index into the buffer of stored modulation signals.
-    // ...done: we currently hold the index and the pointer - that's redundant because the pointer
-    // could be obtained from the index - but it may save one indirection in per-sample processing
-    // to store it redundantly...or does it...we'll see....if not, keep only the index.
-    //
-    // Actually, if we assume a single audio thread, the modBuffer could and should be shared among
-    // all the RegionPlayers (if multi-threading is added later, it could be declared 
-    // thread_local). Maybe the PlayStatus object could be an appropriate place to hold such a 
-    // buffer. It could also generally hold the signal buffers needed for block processing.
-  }
-
-  // Initialize modulated parameters to non-modulated values:
-  for(size_t i = 0; i < modTargetParams.size(); ++i)
-    modTargetParams[i]->initModulatedValue();
-
-  // Apply the modulations to the affected parameters:
-  for(size_t i = 0; i < modMatrix.size(); ++i)
-  {
-    ModulationConnector* con = modMatrix[i];
-    Parameter* par = con->getTargetParam();
-    int   si = con->getSourceIndex();
-    float u  = par->getValue();                 // unmodulated value
-
-    float m  = modBuffer[2*i];                  // modulator output
-    // Preliminary - we currently only use the 1st channel output maybe use something like 
-    // rsVector2D<float> for m and do some appropriate casting.
-
-    float c  = con->getContribution(m, u);      // compute modulation contribution
-    par->applyModulation(c);                    // accumulate the contribution
-
-
-    con->getTargetProcessor()->setDirty();
-    // ToDo: dirtification should be more sophisticated: Detect whether the modulatedValue is 
-    // actually different than st the previous sample. Maybe collect all modulatedValues in a 
-    // buffer before modulation and then in the loop over the modTargetProcessors, call 
-    // updateCoeffs only if needed...maybe par->applyModulation should return a bool to 
-    // indicate, if the value did actually change ...maybe something like:
-    //   if(par->applyModulation(c))
-    //     con->getTargetProcessor()->setDirty(true);
-
-    int dummy = 0;
-    // We could avoid one dereferencing by avoiding the si variable and instead directly use a
-    // con->getSource() function directly returning the pointer...but we want to refactor this 
-    // later in a way such that the output of the modSource is not stored in the modSource object 
-    // but rather in a modBuffer - for this we will need the index si because the same index will
-    // be used for this buffer...
-    // Here, we should perhaps also keep track of whether or not the modulatedValue in the target
-    // parameter actually changes and if so, set a dirty flag - and avoid subsequent update 
-    // compuations, if it didn't change (because all modulators have produced the same output as 
-    // in the previous sample - which is common in envelope sustain and for midi based modulators).
-    // But maybe this dirtification should be handled by Parameter itself.
-  }
-
-  // Let the affected Processors update their algo-parameters according to the new user parameters
-  // now containing the modulations:
-  for(size_t i = 0; i < modTargetProcessors.size(); ++i)
-  {
-    if(modTargetProcessors[i]->isDirty())
-      modTargetProcessors[i]->updateCoeffs(playStatus->sampleRate);
-    // check, if there could be duplicates in modTargetProcessors - if so, avoid that in the 
-    // assembly of the modulations
-  }
-
-  // End of modulation handling. Maybe factor this out into a member function of the baseclass 
-  // because we may need it in GroupPlayer etc. too in order to apply group modulations to the
-  // group effects.
-  //---------------------------------------------
-
-
-
+  // Update all modulators and apply their outputs to their targets via the mod-matrix:
+  handleModulations();
 
   // Update our sampleTime counter:
   sampleTime += increment;

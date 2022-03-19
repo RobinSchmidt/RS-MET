@@ -95,6 +95,11 @@ public:
   std::vector<float> modBuffer;
   /**< A buffer used in RegionPlayer::processFrame to hold the outputs of the modulators. */
 
+  // If we assume a single audio thread, the modBuffer could and can be shared among all the 
+  // RegionPlayers. But if multi-threading is added later where different RegionPlayers may run
+  // in different threads, the modBuffer should be declared thread_local because otherwise, the
+  // different RegionPlayers may race for the modBuffer contents therby corrupting it.
+
 
   float sampleRate = 44100.f;
 
@@ -278,6 +283,9 @@ protected:
     RegionPlayer* rp, bool busMode);
   // Maybe return a bool to indicate, if the setting was handled (if false, the subclass may
   // want to do something in its override)...??? comment obsolete?
+
+
+  void handleModulations();
 
 
   std::vector<Processor*> effectChain;
