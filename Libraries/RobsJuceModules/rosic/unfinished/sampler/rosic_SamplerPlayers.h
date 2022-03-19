@@ -270,7 +270,7 @@ protected:
 
   virtual void setupModSourceSetting(const PlaybackSetting& s);
 
-  virtual void setupModRoutingSetting(const PlaybackSetting& s);
+  //virtual void setupModRoutingSetting(const PlaybackSetting& s);
 
 
   /** ToDo: add documentation */

@@ -2897,10 +2897,15 @@ bool samplerModulatorsTest()
 
 bool samplerFreeModulationsTest()
 {
-  bool ok = true;
+  // We create a DC signal of 1.0 and use this as (looped) sample. To this DC value coming from the 
+  // sample, we add an additional "modulated DC" coming from a waveshaper using the identity as 
+  // transfer function and modulating the waveshaper's DC parameter with an LFO. We test different 
+  // configurations of where we specify the LFO's frequency parameter and the modulation depth, 
+  // i.e. we specify these parameters on the region and/or group and/or instrument level. Then we
+  // check in all these different configurations if the the output is as expected.
 
-  // ToDo:
-  // Create a DC signal with an LFO applied to the DC parameter of a waveshaper...
+
+  bool ok = true;
 
   using Vec   = std::vector<float>;
   using SE    = rosic::Sampler::rsSamplerEngineTest;
@@ -2919,7 +2924,7 @@ bool samplerFreeModulationsTest()
   // function as shape but with an LFO-modulated DC parameter. We route lfo1 to the DC parameter of
   // waveshaper1 with a modulation depth of 0.5.
   float fs     = 44100;   // sample rate
-  float baseDC = 3.f;     // nominal DC value fo waveshaper
+  float baseDC = 3.f;     // nominal DC value for waveshaper, i.e. without modulation applied
   SE se;
   se.setSampleRate(fs);
   se.preAllocateDspMemory();
@@ -2943,7 +2948,7 @@ bool samplerFreeModulationsTest()
 
     // Create sampler output and error:
     Vec outL(N), outR(N);
-    se.reset();  // maybe do this later here to save the caller from having to do it
+    se.reset();
     getSamplerNote(&se, 69.f, 100.f, outL, outR);
     Vec errL = outL - tgt;
     Vec errR = outR - tgt;
@@ -2955,29 +2960,28 @@ bool samplerFreeModulationsTest()
 
     // Plot, if desired and report pass or fail:
     if(plot)
-      //rsPlotVectors(outL, outR, errL, errR);
       rsPlotVectors(tgt, outL, outR, errL, errR);
     return maxErr <= tol;
   };
 
   // Define a helper function that lets us pass in the frequency and modulation depth settings for
   // instrument, group, region along with the corresponding value that is expected to be observed
-  // at the sampler's output:
+  // at the sampler's output. This function set up the sampler engine accordingly and then tests
+  // if it produces the expected output.
   float none = 1.e20f;  // a code for "none" -> make sure that it's not used for a valid value
   auto testMod = [&](
     float insFreq,  float grpFreq,  float regFreq,    float expFreq,
     float insDepth, float grpDepth, float regDepth,   float expDepth,
     float tol, bool plot) 
   { 
-    // Clear instrument and then set up the common settings:
-    //se.clearAllSfzSettings();
+    // Clear instrument and then set up the common settings (maybe factor out into 
+    // a setupCommonSettings function):
     se.clearInstrument();
     addSingleSampleRegion(&se, dc);
     se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
     se.setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
     se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
     se.setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
-    //se.preAllocateDspMemory();  // needed?
 
     // Set up the LFO frequency settings for instrument, group and region unless the respective 
     // parameter value is the code for "none":
@@ -2994,9 +2998,6 @@ bool samplerFreeModulationsTest()
     return testLfoToDc(expFreq, expDepth, tol, plot);
   };
 
-
-  // Do similar tests as before but now using our testMod helper function. 
-  
   // We systematically go through the 2^3 = 8 cases where a modulation depth setting is either 
   // defined or not on instrument, group and region levels. The pattern is: the expected value 
   // (under "exp" for "expected") is always the same as the rightmost value of the 3 columns 
@@ -3037,35 +3038,27 @@ bool samplerFreeModulationsTest()
   ok &= testMod(100, 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 110
   ok &= testMod(100, 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 111
 
-  // Maybe we should try all 2^6 possible combinations instead of just 2 * 2^3. At the moment, we 
-  // assume that presence/absence of freq/depth settings don't interact: we check all possible
-  // combinations of depth settings (ins,grp,reg) while using a fixed freq setting (reg only) and
-  // vice versa...they probably indeed don't interact though.
-
-  // we need to change SamplePlayer::assembleProcessors and RegionPlayer::assembleProcessors 
-  // ..maybe even get rid of SamplePlayer::assembleProcessors or make it purely virtual
-
-
-
-
-  // maybe implement a similar testing scheme for the effect parameters using a testEff function 
-  // very similar to our testMod function here
-
   rsAssert(ok);
 
 
-  // ToDo: implement similar tests for the mix/bus mode
-  // Maybe when we do the same test in busMode (or mixMode), we should set the baseDC to zero 
-  // because otherwise our formula for computing the target signal in testLfoToDc is not correct
-  // anymore...
-
-
-
   // ToDo:
-  // -Test behavior when we define the lfoN_freq for the Group instead of the Region. It should 
-  //  make no difference because the group setting is used as fallback...unless we are in 
-  //  busMode. In this case probably nothing should happen unless there is a waveshaper in the 
-  //  group - in which case the group lfo should modulate the dc of group's waveshaper.
+  // -Factor out an applyModulations function from RegionPlayer::processFrame. Maybe it could be
+  //  moved into the SamplePlayer baseclass
+  // -I think, we need to re-implement SampleBusPlayer::assembleProcessors. After this is done,
+  //  the baseclass version in SamplePlayer may be obsolete. To test it, we should probably 
+  //  introduce an amplitude parameter to the LFO and use this as LFO-parameter in testMod instead 
+  //  of freq because we can more easily define a target signal: the amplitudes will just add. We 
+  //  could also use a delay (this would also just add up).
+  // -When we do the same tests in busMode (or mixMode), we should set the baseDC to zero 
+  //  because otherwise our formula for computing the target signal in testLfoToDc is not correct
+  //  anymore.
+  // -Maybe we should try all 2^6 possible combinations instead of just 2 * 2^3. At the moment, we 
+  //  assume that presence/absence of freq/depth settings don't interact: we check all possible
+  //  combinations of depth settings (ins,grp,reg) while using a fixed freq setting (reg only) and
+  //  vice versa...they probably indeed don't interact though (why would they?).
+  // -Maybe implement a similar testing scheme for the effect parameters using a testEff function 
+  //  very similar to our testMod function here
+  // Older:
   // -Clarify how Group/Instrument modulations are supposed to be handled in busMode. Maybe we 
   //  need to change RegionPlayer::assembleProcessors? Maybe in busMode, there should be 
   //  additional modulators for the enclosing Group and Instrument and their contributions should 

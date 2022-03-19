@@ -202,61 +202,6 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
 
   return true;
 
-
-  /*
-  // Check, if enough connectors are available:
-  if(dspPool->getNumIdleConnectors() < (int)modSettings.size())
-    return false;
-
-  // Do the assembly:
-  for(size_t i = 0; i < modSettings.size(); i++)
-  {
-    // todo: 
-    // -figure out, if the mod-matrix already contains a connection between the source and target
-    //  and if so, juts update its depth and mod parameters instead of adding a new connection
-    //  -maybe reorganize the loop such that we call grabConnector only when needed, i.e. when we
-    //   can't just update an existing connection
-
-    ModulationSetting    ms = modSettings[i];
-    ModulationConnector* mc = dspPool->grabConnector();
-    RAPT::rsAssert(mc); // we already verified that enough are available
-
-    // Determine pointer to modulation source and its index in our modSources array and set it up 
-    // in the connector:
-    int j = findProcessorIndex(modSources, ms.getSourceType(), ms.getSourceIndex());
-    RAPT::rsAssert(j >= 0);
-    Processor* src = modSources[j];
-    RAPT::rsAssert(src);
-    mc->setSourceIndex(j);
-    mc->setSource(src);
-
-    // Determine pointer to modulation target (Processor and Parameter) and set it up in the
-    // connector:
-    Processor* prc;
-    if(SfzCodeBook::isModSourceSetting(ms.getTargetType())) 
-      prc = findProcessor(modSources,  ms.getTargetType(), ms.getTargetIndex()); // Receiver is another modulator
-    else
-      prc = findProcessor(effectChain, ms.getTargetType(), ms.getTargetIndex()); // Receiver is an effect
-    RAPT::rsAssert(prc);
-    Parameter* param = prc->getParameter(ms.getTargetOpcode());
-    RAPT::rsAssert(param);
-    mc->setTarget(prc, param);
-    RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, prc);
-    RAPT::rsAppendIfNotAlreadyThere(modTargetParams,     param);  // new
-    //RAPT::rsAppend(modTargetParams, param); // old
-    
-    // Set up modulation depth and mode and add the connection to the modMatrix:
-    mc->setDepth(ms.getDepth());
-    mc->setMode(ms.getMode());
-    modMatrix.push_back(mc);
-    // here, we need to figure out, if such a connection already exists and if so, just overwrite 
-    // its depth value instead of adding a new connection
-  }
-
-  return true;
-  */
-
-
   // Assembling the mod-connections may also fail if not enough are available - in this 
   // case we also need to roll back and return false. But: maybe we should do it in a way that 
   // can't fail by not grabbing pre-allocated connection objects from the pool but rather using a
@@ -340,10 +285,13 @@ void SamplePlayer::setupModSourceSetting(const PlaybackSetting& s)
   // or to modSources.
 }
 
+/*
+// may not be needed
 void SamplePlayer::setupModRoutingSetting(const PlaybackSetting& s)
 {
   RAPT::rsError("Not yet implemented");
 }
+*/
 
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
   RegionPlayer* rp, bool busMode)
@@ -642,50 +590,16 @@ bool RegionPlayer::assembleProcessors(bool busMode)
   const Region* reg = region;
   const Group*  grp = reg->getGroup();
   const Global* ins = grp->getInstrument();
-
-  // old:
-  /*
-  // The DSPs for which the region itself defines settings/opcodes are always needed:
-  bool ok = SamplePlayer::assembleProcessors(
-    reg->getOpcodeTypeChain(), reg->getModulationSettings());
-  if(!ok)
-    return false;
-
-  // If we are not in busMode, the enclosing group and/or enclosing instrument settings act as
-  // fallback values for the region so we may require additional DSPs to apply these opcodes
-  // to the region, too:
-  if(!busMode)  // maybe rename to mixMode
-  {
-    ok = augmentOrCleanProcessors(grp->getOpcodeTypeChain());    if(!ok) return false;
-    ok = augmentOrCleanProcessors(grp->getOpcodeTypeChain());    if(!ok) return false;
-
-
-
-    ok = assembleModulations(     grp->getModulationSettings()); if(!ok) return false;
-    ok = assembleModulations(     glb->getModulationSettings()); if(!ok) return false;
-    // Maybe factor out into a function assembleFallbackProcessors()
-  }
-  // I think, here we need to do more to set up the modulation connection settings. Not the 
-  // modulator parameter though. Things like lfoN_freq do already work but things like lfoN_cutoff
-  // don't. The latter one is a modulation routing or conection setting which has a different
-  // quality than the modulator's internal parameters....
-  // But this is wrong: when doing it in this order, the group and global modulation settings will
-  // override the region settings and not the other way around. we need to augment also
-  // setupDspSettingsFor
-  */
-
-  // new:
   bool ok = true;
 
   // Assemble processors (modulators and effects):
-  ok &= augmentOrCleanProcessors(reg->getOpcodeTypeChain());
   if(!busMode) { // maybe rename to mixMode
-    ok &= augmentOrCleanProcessors(grp->getOpcodeTypeChain());
-    ok &= augmentOrCleanProcessors(ins->getOpcodeTypeChain());  }
+    ok &= augmentOrCleanProcessors(ins->getOpcodeTypeChain());
+    ok &= augmentOrCleanProcessors(grp->getOpcodeTypeChain());  }
+  ok &= augmentOrCleanProcessors(reg->getOpcodeTypeChain());
   if(!ok) {
-    this->disassembleProcessors();
+    this->disassembleProcessors();  // call may be redundant, augment.. already does that when it fails
     return false; }
-  // I think, here, the order of the 3 calls doesn't matter
 
   // Assemble modulation connections:
   if(!busMode) {
@@ -695,16 +609,6 @@ bool RegionPlayer::assembleProcessors(bool busMode)
   if(!ok) {
     this->disassembleProcessors();  // function also disassembles the modMatrix
     return false; }
-  // ..but here, the order of the 3 calls does matter...i think
-  // ...but maybe we should make it consistent anyway - always call in the order: ins, grp, reg
-
-
-
-
-
-
-
-
 
   return true;
   // OK - everything went well so we report success. If, on the other hand, false is returned, it
@@ -969,6 +873,8 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
 
 bool SampleBusPlayer::assembleProcessors(bool busMode)
 {
+  // I think, this needs to be re-implemented in order to support modulations
+
   RAPT::rsAssert(busMode == true);
   // If we are not in busMode, this function should actually not even get called because only in
   // busMode, the Group- or InstrumentPlayer's own DSP chain is used. We need to take the busMode
