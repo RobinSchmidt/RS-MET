@@ -54,7 +54,7 @@ LowFreqOsc::LowFreqOsc()
   type = OpcodeType::FreeLfo;
   params.reserve(3);                      // index
   addParameter(Opcode::lfoN_freq);        //   0
-  //addParameter(Opcode::lfoN_amp);         //   1
+  addParameter(Opcode::lfoN_amp);         //   1
   //addParameter(Opcode::lfoN_fade);
   //addParameter(Opcode::lfoN_delay);
   // ToDo: phase, wave, sync, ...

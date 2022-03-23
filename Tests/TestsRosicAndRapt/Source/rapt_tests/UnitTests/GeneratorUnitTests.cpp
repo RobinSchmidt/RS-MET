@@ -2982,27 +2982,21 @@ bool samplerFreeModulationsTest()
       // different.
 
     return testSamplerOutput(se, tgt, tgt, tol, plot);
-
-    // obsolete - has been factored out into testSamplerOutput
-    /*
-    // Create sampler output and error:
-    Vec outL(N), outR(N);
-    se->reset();
-    getSamplerNote(se, 69.f, 100.f, outL, outR);
-    Vec errL = outL - tgt;
-    Vec errR = outR - tgt;
-    float maxErrL = rsMaxAbs(errL);
-    float maxErrR = rsMaxAbs(errR);
-    float maxErr  = rsMax(maxErrL, maxErrR);
-    // This test fails badly if we don't call se.reset() before. Perhaps because of loop. But 
-    // still, the error signal looks kinda weird. -> figure out what's going on and document it!
-
-    // Plot, if desired and report pass or fail:
-    if(plot)
-      rsPlotVectors(tgt, outL, outR, errL, errR);
-    return maxErr <= tol;
-    */
   };
+
+
+  auto testLfoToDc2 = [&](SE* se, float lfoFreq, float lfoAmp, float lfoDepth, float tol, 
+    bool plot = false)
+  {
+    double w = 2*PI*(double)lfoFreq / (double)fs;
+    Vec tgt(N);
+    for(int n = 0; n < N; n++)
+      tgt[n] = 1.f + ((lfoAmp*lfoDepth) * (float)sin(w*n));
+    return testSamplerOutput(se, tgt, tgt, tol, plot);
+  };
+  // hmm..it's almost the same
+
+
 
 
   // Clears the instrument in the sample engine and then sets up the common settings that are 
@@ -3072,28 +3066,10 @@ bool samplerFreeModulationsTest()
     if(grpDepth != none) se->setGroupModulation( 0,    OT::FreeLfo, 1, OC::distortN_dc, 1, grpDepth, Mode::absolute);
     if(regDepth != none) se->setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, regDepth, Mode::absolute);
 
-    /*
-
-    //return testLfoToDc2(se, expAmp, expDepth, tol, plot);
-    */
-
-
-
-    return true;
+    return testLfoToDc2(se, allFreqs, expAmp, expDepth, tol, plot);
   };
 
 
-  /*
-  auto testMod3 = [&](SE* se,    // find better name
-    float insAmp,   float grpAmp,   float regAmp,     float expAmp,
-    float insDepth, float grpDepth, float regDepth,   float expDepth,
-    float tol, bool plot)
-  {
-    setupCommonSettings(se);
-
-
-  };
-  */
 
 
   // We systematically go through the 2^3 = 8 cases where a modulation depth setting is either 
@@ -3166,12 +3142,14 @@ bool samplerFreeModulationsTest()
 
 
   float f = 200.f; // LFO freq (applies to all 3 levels equally)
+  baseDC = 0.f;
   auto testDepthAccumulate = [&](SE* se)
   {
     bool ok = true;
     //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
     //                    ins  grp  reg   exp     ins  grp  reg   exp  
-    ok &= testMod2(se, f,  _ ,  _ , 0.3,  0.3,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
 
 
 
