@@ -3136,8 +3136,8 @@ bool samplerFreeModulationsTest()
 
   // Test mix mode with the mix/accumulation sampler engine:
   se2.setBusMode(true);            // rename to setMixMode
-  //ok &= !testDepthOverride(&se2);  // fails successfully
-  //ok &= !testFreqOverride( &se2);  // dito
+  ok &= !testDepthOverride(&se2);  // fails successfully
+  ok &= !testFreqOverride( &se2);  // dito
   // These tests predictably fail. We need to implement the proper modulation behavior for 
   // mix mode and we will also need other test functions testDepthAccumulate, testAmpAccumulate
   // with different expected values and we will also need some LFO parameter that has an easy to
@@ -3152,11 +3152,10 @@ bool samplerFreeModulationsTest()
     bool ok = true;
     //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
     //                    ins  grp  reg   exp     ins  grp  reg   exp  
-    //ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
-    //ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
-
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2,  _ ,  0.2,  tol, true);   // 010
-    // FAILS! I think, we are not yet applying group modulations
+
 
     // in SamplePlayer::assembleModulations, we hit RAPT::rsAssert(tgtProc) when it is called from
     // rsSamplerEngine2::startGroupPlayerFor. I think, this is not surprising because in 
