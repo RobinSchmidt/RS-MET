@@ -824,7 +824,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const SfzInstrument::HierarchyLeve
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), rp, busMode);
-    prepareToPlay1(modSources,  key, vel, playStatus->sampleRate);   // new
+    prepareToPlay1(modSources,  key, vel, playStatus->sampleRate);
     prepareToPlay1(effectChain, key, vel, playStatus->sampleRate); 
     rp->setupFromIntemediates(); // We need to do this again
   }
@@ -858,17 +858,8 @@ void GroupPlayer::processFrame(float* L, float* R)
     regionPlayers[i]->processFrame(&tmpL, &tmpR);
     *L += tmpL; 
     *R += tmpR; }
-
-
-  std::vector<float>& modBuf = playStatus->modBuffer; // for debug
+  //std::vector<float>& modBuf = playStatus->modBuffer; // for debug
   handleModulations();
-  // BUG: after the call to handleModulations, the modBuf is set back to zero. before, it is 
-  // actually filled with the region's modulations. Somehow, the group LFO seems to produce a zero
-  // output? The group LFo has an inc of zero. Maybe in prepareToPlay it's not correctly 
-  // initialized? I think we need to update GroupPlayer::prepareToPlay to also prepare the group's
-  // modulators?
-  // ...added a line to SampleBusPlayer::setGroupOrInstrumToPlay
-
   processFrame1(effectChain, L, R);
 }
 
