@@ -3003,7 +3003,6 @@ bool samplerFreeModulationsTest()
   // needed in all tests:
   auto setupCommonSettings = [&](SE* se)
   {
-
     se->clearInstrument();
     addSingleSampleRegion(se, dc);
     se->setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
@@ -3040,8 +3039,7 @@ bool samplerFreeModulationsTest()
     // Run the test:
     return testLfoToDc(se, expFreq, expDepth, tol, plot);
   };
-
-
+  // rename to testModO (O for "override")
 
 
   // Define a similar helper function but this time not taking LFO-freq and DC-depth but instead 
@@ -3054,6 +3052,12 @@ bool samplerFreeModulationsTest()
     float tol, bool plot)
   {
     setupCommonSettings(se);
+
+    // Insert waveshapers also on the group- and instrument level:
+    se->setGroupSetting(0,   OC::distortN_dc, baseDC, 1);
+    se->setInstrumentSetting(OC::distortN_dc, baseDC, 1);
+
+    // Set up the same LFO frequency on all 3 levels:
     se->setRegionSetting(0, 0, OC::lfoN_freq, allFreqs, 1);
     se->setGroupSetting( 0,    OC::lfoN_freq, allFreqs, 1);
     se->setInstrumentSetting(  OC::lfoN_freq, allFreqs, 1);
@@ -3068,7 +3072,7 @@ bool samplerFreeModulationsTest()
 
     return testLfoToDc2(se, allFreqs, expAmp, expDepth, tol, plot);
   };
-
+  // rename to testModA (A for "accumulate")
 
 
 
@@ -3132,8 +3136,8 @@ bool samplerFreeModulationsTest()
 
   // Test mix mode with the mix/accumulation sampler engine:
   se2.setBusMode(true);            // rename to setMixMode
-  ok &= !testDepthOverride(&se2);  // fails successfully
-  ok &= !testFreqOverride( &se2);  // dito
+  //ok &= !testDepthOverride(&se2);  // fails successfully
+  //ok &= !testFreqOverride( &se2);  // dito
   // These tests predictably fail. We need to implement the proper modulation behavior for 
   // mix mode and we will also need other test functions testDepthAccumulate, testAmpAccumulate
   // with different expected values and we will also need some LFO parameter that has an easy to
@@ -3148,10 +3152,12 @@ bool samplerFreeModulationsTest()
     bool ok = true;
     //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
     //                    ins  grp  reg   exp     ins  grp  reg   exp  
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
+    //ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
+    //ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
 
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2,  _ ,  0.2,  tol, true);   // 010
+    // FAILS! I think, we are not yet applying group modulations
+
     // in SamplePlayer::assembleModulations, we hit RAPT::rsAssert(tgtProc) when it is called from
     // rsSamplerEngine2::startGroupPlayerFor. I think, this is not surprising because in 
     // setupCommonSettings (here), we only set up a waveshaper on the region level. Maybe we need
@@ -3159,7 +3165,7 @@ bool samplerFreeModulationsTest()
     // should we handle this in general, when an sfz author specifies a modulation target that 
     // doesn't even exist? Maybe in assembleModulations, we should check tgtProc against nulltpr
     // and if it is null indeed, just ignore the corresponding connection, i.e. skip the current
-    // loop iteration?
+    // loop iteration? We should have unit tests for such cases, too
 
 
     return ok;
@@ -3176,10 +3182,13 @@ bool samplerFreeModulationsTest()
 
 
   // ToDo:
-  // -Maybe factor out a test function that takes a pointer to the sampler engien so we can check
-  //  it with both: SamplerEngine and SamplerEngine2 - a simple driver function would call it with
-  //  both versions. Or maybe our internal helper functions testDepthOverride/testFreqOverride 
-  //  should take a pointer to a SamplerEngine and then we could call them with both variants.
+
+  // -Clarify what should happen when a modulation routing exists to a parameter for which there
+  //  isn't a static setting such that possibly the whole processor doesn't even get inserted into
+  //  the effect chain. I think, the most reasonable behavior would be to just ignore the 
+  //  modulation in such a case. Maybe in assembleModulations, we should check tgtProc against 
+  //  nulltpr and if it is null indeed, just ignore the corresponding connection, i.e. skip the 
+  //  current loop iteration? We should have unit tests for such cases, too.
   // -I think, we need to re-implement SampleBusPlayer::assembleProcessors. After this is done,
   //  the baseclass version in SamplePlayer may be obsolete. To test it, we should probably 
   //  introduce an amplitude parameter to the LFO and use this as LFO-parameter in testMod instead 
