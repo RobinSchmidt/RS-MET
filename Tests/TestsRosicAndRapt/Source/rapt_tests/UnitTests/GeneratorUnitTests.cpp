@@ -3151,6 +3151,15 @@ bool samplerFreeModulationsTest()
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
 
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2,  _ ,  0.2,  tol, true);   // 010
+    // in SamplePlayer::assembleModulations, we hit RAPT::rsAssert(tgtProc) when it is called from
+    // rsSamplerEngine2::startGroupPlayerFor. I think, this is not surprising because in 
+    // setupCommonSettings (here), we only set up a waveshaper on the region level. Maybe we need
+    // another setupCommonSettings2 function that sets up waveshapers on all 3 levels. But how 
+    // should we handle this in general, when an sfz author specifies a modulation target that 
+    // doesn't even exist? Maybe in assembleModulations, we should check tgtProc against nulltpr
+    // and if it is null indeed, just ignore the corresponding connection, i.e. skip the current
+    // loop iteration?
 
 
     return ok;
