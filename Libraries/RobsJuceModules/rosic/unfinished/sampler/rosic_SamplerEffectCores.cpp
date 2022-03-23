@@ -2,16 +2,18 @@ namespace rosic {
 namespace Sampler {
 
 
-void LowFreqOscCore::setup(float freq, float _delay, float _fade, float sampleRate)
+void LowFreqOscCore::setup(float freq, float _amp, float phase,  float _delay, float _fade, 
+  float sampleRate)
 {
   inc   = (double)freq / (double)sampleRate;
   delay = (int) round(_delay * sampleRate);
   fade  = (int) round(_fade  * sampleRate);
+  amp   = _amp;
 }
 
 void LowFreqOscCore::processFrame(float* L, float* R)
 {
-  float out = (float) sin(2.0*PI*pos);
+  float out = amp * (float) sin(2.0*PI*pos);
   pos += inc;
   while(pos >= 1.0)
     pos -= 1.0;

@@ -2857,6 +2857,8 @@ bool samplerLfoTest()
 
   // Define LFO parameters:
   float freq  = 500.f;
+  float amp   = 1.f;
+  float phase = 0.f;
   float delay = 0.f;
   float fade  = 0.f;
   float sampleRate = 44100.f;
@@ -2872,7 +2874,7 @@ bool samplerLfoTest()
   // Create LFO outputs:
   Vec outL(N), outR(N);
   LowFreqOscCore lfo;
-  lfo.setup(freq, delay, fade, sampleRate);
+  lfo.setup(freq, amp, phase, delay, fade, sampleRate);
   for(int n = 0; n < N; n++)
     lfo.processFrame(&outL[n], &outR[n]);
   //rsPlotVectors(tgt, outL, outR, tgt-outL, tgt-outR);
@@ -2937,6 +2939,31 @@ bool samplerFreeModulationsTest()
   se2.preAllocateDspMemory();
 
 
+
+  auto testSamplerOutput = [](SE* se, const std::vector<float>& tgtL, 
+    const std::vector<float>& tgtR, float tol, bool plot)
+  {
+    // Create sampler output and error:
+    int N = (int) tgtL.size();
+    Vec outL(N), outR(N);
+    se->reset();
+    getSamplerNote(se, 69.f, 100.f, outL, outR);
+    Vec errL = outL - tgtL;
+    Vec errR = outR - tgtR;
+    float maxErrL = rsMaxAbs(errL);
+    float maxErrR = rsMaxAbs(errR);
+    float maxErr  = rsMax(maxErrL, maxErrR);
+    // This test fails badly if we don't call se.reset() before. Perhaps because of loop. But 
+    // still, the error signal looks kinda weird. -> figure out what's going on and document it!
+
+    // Plot, if desired and report pass or fail:
+    if(plot)
+      rsPlotVectors(tgtL, tgtR, outL, outR, errL, errR);
+    return maxErr <= tol;
+  };
+  // Maybe move out and put somewhere near getSamplerNote. Maybe we even have such a function 
+  // there? Check that...could well be the case - if so, use it instead!
+
   // Helper function for the tests. Takes the LFO-frequency (in Hz) and modulation depth (as raw 
   // factor) as parameters. These values are only used to produce the target signal. We do not call
   // any setup functions on the sampler engine. The setup of the engine is supposed to be done by 
@@ -2954,6 +2981,10 @@ bool samplerFreeModulationsTest()
       // result to float. But this is not how the engine does it and the roundoff errors are
       // different.
 
+    return testSamplerOutput(se, tgt, tgt, tol, plot);
+
+    // obsolete - has been factored out into testSamplerOutput
+    /*
     // Create sampler output and error:
     Vec outL(N), outR(N);
     se->reset();
@@ -2970,7 +3001,9 @@ bool samplerFreeModulationsTest()
     if(plot)
       rsPlotVectors(tgt, outL, outR, errL, errR);
     return maxErr <= tol;
+    */
   };
+
 
   // Clears the instrument in the sample engine and then sets up the common settings that are 
   // needed in all tests:
@@ -3014,16 +3047,23 @@ bool samplerFreeModulationsTest()
     return testLfoToDc(se, expFreq, expDepth, tol, plot);
   };
 
+
+
+
   // Define a similar helper function but this time not taking LFO-freq and DC-depth but instead 
-  // LFO-amplitude and DC-depth:
-  auto testMod2 = [&](SE* se,    // find better name
+  // LFO-amplitude and DC-depth. We use a fixed LFO freq of allFreqs applied at all levels. This 
+  // function is supposed to be used in mix-mode and we expect the LFO depths to accumulate.
+  auto testMod2 = [&](SE* se,  // find better name!
+    float allFreqs,
     float insAmp,   float grpAmp,   float regAmp,     float expAmp,
     float insDepth, float grpDepth, float regDepth,   float expDepth,
     float tol, bool plot)
   {
     setupCommonSettings(se);
+    se->setRegionSetting(0, 0, OC::lfoN_freq, allFreqs, 1);
+    se->setGroupSetting( 0,    OC::lfoN_freq, allFreqs, 1);
+    se->setInstrumentSetting(  OC::lfoN_freq, allFreqs, 1);
 
-    /*
     if(insAmp != none) se->setInstrumentSetting(  OC::lfoN_amp, insAmp, 1);
     if(grpAmp != none) se->setGroupSetting( 0,    OC::lfoN_amp, grpAmp, 1);
     if(regAmp != none) se->setRegionSetting(0, 0, OC::lfoN_amp, regAmp, 1);
@@ -3032,9 +3072,28 @@ bool samplerFreeModulationsTest()
     if(grpDepth != none) se->setGroupModulation( 0,    OT::FreeLfo, 1, OC::distortN_dc, 1, grpDepth, Mode::absolute);
     if(regDepth != none) se->setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, regDepth, Mode::absolute);
 
-    return testLfoToDc2(se, expAmp, expDepth, tol, plot);
+    /*
+
+    //return testLfoToDc2(se, expAmp, expDepth, tol, plot);
     */
+
+
+
+    return true;
   };
+
+
+  /*
+  auto testMod3 = [&](SE* se,    // find better name
+    float insAmp,   float grpAmp,   float regAmp,     float expAmp,
+    float insDepth, float grpDepth, float regDepth,   float expDepth,
+    float tol, bool plot)
+  {
+    setupCommonSettings(se);
+
+
+  };
+  */
 
 
   // We systematically go through the 2^3 = 8 cases where a modulation depth setting is either 
@@ -3103,6 +3162,26 @@ bool samplerFreeModulationsTest()
   // mix mode and we will also need other test functions testDepthAccumulate, testAmpAccumulate
   // with different expected values and we will also need some LFO parameter that has an easy to
   // check accumulation behavior - LFO amplitude could be such a parameter
+
+
+
+  float f = 200.f; // LFO freq (applies to all 3 levels equally)
+  auto testDepthAccumulate = [&](SE* se)
+  {
+    bool ok = true;
+    //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
+    //                    ins  grp  reg   exp     ins  grp  reg   exp  
+    ok &= testMod2(se, f,  _ ,  _ , 0.3,  0.3,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
+
+
+
+    return ok;
+  };
+
+
+
+  ok &= testDepthAccumulate(&se2); 
+
 
 
 

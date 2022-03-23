@@ -22,7 +22,7 @@ class LowFreqOscCore
 
 public:
 
-  void setup(float freq, float delay, float fade, float sampleRate); 
+  void setup(float freq, float amp, float phase, float delay, float fade, float sampleRate); 
   void processFrame(float* L, float* R);
   void resetState() { pos = 0.f; }
 
@@ -31,6 +31,8 @@ protected:
   double pos = 0.f;  // normalized position in the wave in 0..1
   double inc = 0.f;  // per sample increment for pos
   // Double precision is needed for phase accumulation
+
+  float amp = 1.f;
 
   RAPT::rsUint32 delay = 0, fade = 0;  // delay and fade-in time in samples
 

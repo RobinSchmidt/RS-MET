@@ -52,18 +52,17 @@ void Processor::prepareToPlay(uchar key, uchar vel, double sampleRate)
 LowFreqOsc::LowFreqOsc()
 {
   type = OpcodeType::FreeLfo;
-  params.reserve(1);                      // index
+  params.reserve(3);                      // index
   addParameter(Opcode::lfoN_freq);        //   0
+  //addParameter(Opcode::lfoN_amp);         //   1
   //addParameter(Opcode::lfoN_fade);
   //addParameter(Opcode::lfoN_delay);
-
-
   // ToDo: phase, wave, sync, ...
 }
 
 void LowFreqOsc::updateCoeffs(double fs)
 {
-  core.setup(params[0].mv(), 0.f, 0.f, (float)fs);
+  core.setup(params[0].mv(), 1.f, 0.f, 0.f, 0.f, (float)fs);
   dirty = false;
 }
 

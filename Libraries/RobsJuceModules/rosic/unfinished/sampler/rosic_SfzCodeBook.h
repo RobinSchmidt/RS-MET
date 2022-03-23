@@ -103,16 +103,17 @@ enum class Opcode
   // egN_timeX, egN_levelX
   lfoN_freq,      // lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave,
   lfoN_volumeX,
-  lfoN_amplitudeX,
 
+  lfoN_amplitudeX, 
+  // is this supposed to control the amplitude of the LFO..or the routing of the LFO output to an
+  // amplitude parameter? in the former case, we need nee no second index X, in the latter, we do
 
 
   // ARIA:
   PanLaw,
 
 
-
-
+  //  RS-MET
   // My own extensions - preliminary, for experimentation. Before defining extensions, check what 
   // is already there in SFZ 2.0 and in other sfz engines with extensions. Try to be compatible 
   // with the  largest possible range of other engines. Discuss extensions on KVR before 
@@ -120,6 +121,12 @@ enum class Opcode
     
   distortN_shape, distortN_drive, distortN_dc, 
   //distortN_shape, distortN_drive, distortN_dc, // DistGain...may be redundant with Volume
+
+    
+  lfoN_amp, 
+  // ToDo: Check, if there is an opcode in sfz2 that controls the amplitude of the LFO. Maybe
+  // lfoN_amplitude is made for that? But I suppose, that controls the routing of lfoN to the
+  // signal amplitude
 
 
   // SFZ2 has opcode egN_driveshape but no driveshape as such? same with lfoN_drive. does that 
