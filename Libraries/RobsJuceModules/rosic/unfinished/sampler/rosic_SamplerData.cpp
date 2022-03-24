@@ -4,12 +4,12 @@ namespace Sampler {
 //-------------------------------------------------------------------------------------------------
 // The internal classes
 
-float SfzInstrument::PlaybackSetting::getDefaultValue(Opcode type, int index)
+float PlaybackSetting::getDefaultValue(Opcode type, int index)
 {
   SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeDefaultValue(type, index);
 }
-OpcodeType SfzInstrument::PlaybackSetting::getTargetOpcodeType(Opcode type)
+OpcodeType PlaybackSetting::getTargetOpcodeType(Opcode type)
 {
   SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->getOpcodeType(type);
@@ -750,7 +750,7 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
   //  because they are handled already by the caller because they require special treatment.
 }
 
-SfzInstrument::PlaybackSetting SfzInstrument::getSettingFromString(
+PlaybackSetting SfzInstrument::getSettingFromString(
   const std::string& opStr, const std::string& valStr)
 {
   using PS  = PlaybackSetting;
@@ -761,6 +761,7 @@ SfzInstrument::PlaybackSetting SfzInstrument::getSettingFromString(
   float val = t->stringToValue(op, valStr);
   return PS(op, val, idx);
 }
+// maybe move into a static "fromString" member function of PlaybackSetting
 
 void SfzInstrument::copy(const SfzInstrument& src, SfzInstrument& dst)
 {

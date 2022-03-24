@@ -3463,7 +3463,8 @@ bool samplerEngineUnitTest()
   //   these things from the ChannelPlayer. The goal is to treat the SamplePlayer just like any
   //   other processor with respect to modulation - that is needed for supporting the 
   //   pitch-envelope without needing any messy special casing.
-
+  // Misc:
+  // -Add documentaion to all the newly written mod-system code
 
   // ToDo:
   // -implement cutoff_ccN ..or actually cutoffN_ccX

@@ -4,10 +4,84 @@
 namespace rosic {
 namespace Sampler {
 
+//=================================================================================================
+
+/** A class to represent various playback settings of a region, group or instrument. Such settings 
+include constraints for the circumstances under which a particular sample should be played. Key- 
+and velocity ranges are the obvious primary constraints (and they therefore are directly baked into
+the Region class below), but sfz defines many more. But settings don't need to be playback 
+constraints. Other types are things like envelope settings, filter frequencies, etc. */
+
+class PlaybackSetting
+{
+
+public:
+
+  PlaybackSetting(Opcode type, float value, int index = -1) 
+  { 
+    this->type  = type; 
+    this->value = value; 
+    this->index = index;
+  }
+  // maybe remove the -1 default argument. callers should be explicit...maybe...or: check with an
+  // assert that no index applies to the given Opcode when index == -1
+
+  Opcode getOpcode() const { return type; }
+
+
+  /** Returns the stored value for this setting. Values are always stored as floats and it is
+  understood that in cases, where the corresponding parameter in the sfz spec is defined to be an
+  integer, we just represent it as that integer with all zeros after the decimal dot and the
+  caller is supposed to convert to int by writing e.g.:
+
+  int intValue = (int)setting.getValue();
+
+  For settings whose value is represented by text that indciates a particular choice, the caller
+  has to look up the int in an enumeration corresponding to the type of the parameter...tbc... */
+  float getValue() const { return value; }
+  // todo: (decide and) document, how choice parameters like filter-type are represented. In sfz,
+  // they are just represented as text. Maybe for each such choice parameter, we need another 
+  // enum to represent its allowed values.
+
+  /** Some settings need to specify an index in addtion to the value. An example is a setting
+  involving midi control changes. In the sfz file, they are written as e.g. loccN where the N is
+  replaced by the actual controller number, like locc74=20 to indicate, that the sample should
+  only play, if the last received value for CC#74 was >= 20. If indexing not applicable to a
+  particular setting/opcode, this will return -1. */
+  int getIndex() const { return index; }
+
+  /** Returns the default value for a given type of setting. */
+  static float getDefaultValue(Opcode op, int index);
+
+  /** For a given type of opcode, this function returns the type of signal processor to which the
+  opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
+  static OpcodeType getTargetOpcodeType(Opcode op);
+  // rename to getTargetOpcodeType
+
+
+  OpcodeType getTargetOpcodeType() const { return getTargetOpcodeType(type); }
+
+
+  bool operator==(const PlaybackSetting& rhs) const
+  {
+    return type == rhs.type && value == rhs.value && index == rhs.index;
+  }
+
+
+private:
+
+  Opcode type  = Opcode::Unknown;  // rename type to opcode
+  float  value = 0.f;
+  int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
+  // Maybe use 1 as default. If there's only one such setting anyway, that seems appropriate
+  // index should always be a positive real number. But maybe that's not such a good idea - see
+  // comment in SfzInstrument::writeSettingToString in the cpp file. For certain things, we need
+  // a code for "not applicable".
+};
 
 //=================================================================================================
 
-enum class ModMode  // renaem to ModulationMode
+enum class ModMode  // rename to ModulationMode, maybe move out of Sampler sub-namespace
 {
   absolute,
   relative
@@ -17,15 +91,12 @@ enum class ModMode  // renaem to ModulationMode
   // unknown
 };
 
-
 /** A class to represent the settings of a modulation routing. This class is used only to store the
 settings, not to actually connect modulator objects to parameters during processing. For this 
 purpose, the class ModulationConnection is used. ..tbc.... */
 
 class ModulationSetting  
 {
-// Drag out PlaybackSetting from SfzInstrument and put it before this class...they kinda belong
-// together and should be treated on same footing
 
 public:
 
@@ -93,9 +164,9 @@ private:
   //  that should be determined by the target...not sure yet maybe one of the mode options could be
   //  "automatic" or "default"
   // -Maybe use sourceIndex values < 1 for the special fixed modulators, like
-  //  0: amp, -1: filter, -2 pitch - maybe define constants for them
+  //  0: amp, -1: filter, -2 pitch - maybe define constants for them. 
+  //  Maybe -1: amp, -2: filter, -3: pitch is more convenient
 };
-
 
 //=================================================================================================
 
@@ -146,81 +217,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Helper classes (maybe drag out - we'll see)
 
-  //-----------------------------------------------------------------------------------------------
-  /** A class to represent various playback settings of a region, group or instrument. Such
-  settings include constraints for the circumstances under which a particular sample should be
-  played. Key- and velocity ranges are the obvious primary constraints (and they therefore are
-  directly baked into the Region class below), but sfz defines many more. But settings don't
-  need to be playback constraints. Other types are things like envelope settings, filter
-  frequencies, etc. */
-  class PlaybackSetting  // rename to Setting...or maybe not - it's too generic
-  {
-
-  public:
-
-
-    PlaybackSetting(Opcode type, float value, int index = -1) 
-    { 
-      this->type  = type; 
-      this->value = value; 
-      this->index = index;
-    }
-    // maybe remove the -1 default argument. callers should be explicit...maybe...or: check with an
-    // assert that no index applies to the givne Opcode when index == -1
-
-    Opcode getOpcode() const { return type; }
-    // rename to getOpcode
-
-
-    /** Returns the stored value for this setting. Values are always stored as floats and it is
-    understood that in cases, where the corresponding parameter in the sfz spec is defined to be an
-    integer, we just represent it as that integer with all zeros after the decimal dot and the
-    caller is supposed to convert to int by writing e.g.:
-
-      int intValue = (int)setting.getValue();
-
-    For settings whose value is represented by text that indciates a particular choice, the caller
-    has to look up the int in an enumeration corresponding to the type of the parameter...tbc... */
-    float getValue() const { return value; }
-    // todo: (decide and) document, how choice parameters like filter-type are represented. In sfz,
-    // they are just represented as text. Maybe for each such choice parameter, we need another 
-    // enum to represent its allowed values.
-
-    /** Some settings need to specify an index in addtion to the value. An example is a setting
-    involving midi control changes. In the sfz file, they are written as e.g. loccN where the N is
-    replaced by the actual controller number, like locc74=20 to indicate, that the sample should
-    only play, if the last received value for CC#74 was >= 20. If indexing not applicable to a
-    particular setting/opcode, this will return -1. */
-    int getIndex() const { return index; }
-
-    /** Returns the default value for a given type of setting. */
-    static float getDefaultValue(Opcode op, int index);
-
-    /** For a given type of opcode, this function returns the type of signal processor to which the
-    opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
-    static OpcodeType getTargetOpcodeType(Opcode op);
-    // rename to getTargetOpcodeType
-
-
-    OpcodeType getTargetOpcodeType() const { return getTargetOpcodeType(type); }
-
-
-    bool operator==(const PlaybackSetting& rhs) const
-    {
-      return type == rhs.type && value == rhs.value && index == rhs.index;
-    }
-
-
-  private:
-
-    Opcode type  = Opcode::Unknown;  // rename type to opcode
-    float  value = 0.f;
-    int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
-    // Maybe use 1 as default - if there's only one such setting anyway, that seems appropriate
-    // index should always be a positive real number. But maybe that's not such a good idea - see
-    // comment in SfzInstrument::writeSettingToString in the cpp file. For certain things, we need
-    // a code for "not applicable".
-  };
 
 
 

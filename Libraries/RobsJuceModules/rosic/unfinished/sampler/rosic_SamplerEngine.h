@@ -77,7 +77,6 @@ SFZ-Links:
   https://github.com/sfz  https://github.com/sfz/opcode-suggestions/issues
   https://www.kvraudio.com/forum/viewtopic.php?f=42&t=508861
 
-
 */
 
 class rsSamplerEngine
@@ -90,9 +89,6 @@ public:
   using uchar = unsigned char;
   using Region = SfzInstrument::Region; // todo: make a subclass here that adds the stream field
   using Group  = SfzInstrument::Group;
-  using PlaybackSetting = SfzInstrument::PlaybackSetting;
-
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Internal Helper Classes

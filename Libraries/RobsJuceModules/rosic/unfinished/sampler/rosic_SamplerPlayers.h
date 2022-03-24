@@ -252,10 +252,6 @@ protected:
   /** Reposits all the processors back into the dspPool. */
   void disassembleProcessors();
 
-
-  using PlaybackSetting = SfzInstrument::PlaybackSetting; // for convenience
-  // mayb rename to OpcodeSetting
-
   /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
   applicable to the sample playback source, the overriden version of this function in the 
   subclasses manipulate the corresponding state of the RegionPlayer, i.e. the lowest level 
@@ -352,7 +348,6 @@ public:
   using Region = SfzInstrument::Region; // todo: make a subclass here that adds the stream field
   using Group  = SfzInstrument::Group;
   using Global = SfzInstrument::Global;
-  using PlaybackSetting = SfzInstrument::PlaybackSetting;
 
   /** Sets up the region object that this player should play. You need to also pass the output
   sample-rate which is the sample rate at which the player should run (not the sample rate of the
