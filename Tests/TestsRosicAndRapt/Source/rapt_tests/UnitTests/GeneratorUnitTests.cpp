@@ -2985,13 +2985,12 @@ bool samplerFreeModulationsTest()
   };
 
 
-  auto testLfoToDc2 = [&](SE* se, float lfoFreq, float lfoAmp, float lfoDepth, float tol, 
-    bool plot = false)
+  auto testLfoToDc2 = [&](SE* se, float lfoFreq, float lfoDepth, float tol, bool plot = false)
   {
     double w = 2*PI*(double)lfoFreq / (double)fs;
     Vec tgt(N);
     for(int n = 0; n < N; n++)
-      tgt[n] = 1.f + ((lfoAmp*lfoDepth) * (float)sin(w*n));
+      tgt[n] = 1.f + (lfoDepth * (float)sin(w*n));
     return testSamplerOutput(se, tgt, tgt, tol, plot);
   };
   // hmm..it's almost the same
@@ -3047,9 +3046,9 @@ bool samplerFreeModulationsTest()
   // function is supposed to be used in mix-mode and we expect the LFO depths to accumulate.
   auto testMod2 = [&](SE* se,  // find better name!
     float allFreqs,
-    float insAmp,   float grpAmp,   float regAmp,     float expAmp,
-    float insDepth, float grpDepth, float regDepth,   float expDepth,
-    float tol, bool plot)
+    float insAmp,   float grpAmp,   float regAmp,   /*  float expAmp,*/
+    float insDepth, float grpDepth, float regDepth,   
+    float expDepth, float tol, bool plot)
   {
     setupCommonSettings(se);
 
@@ -3070,7 +3069,13 @@ bool samplerFreeModulationsTest()
     if(grpDepth != none) se->setGroupModulation( 0,    OT::FreeLfo, 1, OC::distortN_dc, 1, grpDepth, Mode::absolute);
     if(regDepth != none) se->setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, regDepth, Mode::absolute);
 
-    return testLfoToDc2(se, allFreqs, expAmp, expDepth, tol, plot);
+
+    return testLfoToDc2(se, allFreqs, expDepth, tol, plot);
+
+    //return testLfoToDc2(se, allFreqs, expAmp * expDepth, tol, plot);
+    // new but still wrong
+
+    //return testLfoToDc2(se, allFreqs, expAmp, expDepth, tol, plot); // old
   };
   // rename to testModA (A for "accumulate")
 
@@ -3155,36 +3160,38 @@ bool samplerFreeModulationsTest()
     // The expected outcome in the right group of columns (the mod-depth columns) is always the sum
     // of the values in the 3 columns left to it where _ counts as 0. The DC contributions from 
     // region, group, instrument are supposed to add up:
-    //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
-    //                    ins  grp  reg   exp     ins  grp  reg   exp  
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2,  _ ,  0.2,  tol, false);  // 010
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2, 0.4,  0.6,  tol, false);  // 011
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1,  _ ,  _ ,  0.1,  tol, false);  // 100
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1,  _ , 0.4,  0.5,  tol, false);  // 101
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1, 0.2,  _ ,  0.3,  tol, false);  // 110
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1, 0.2, 0.4,  0.7,  tol, false);  // 111
+    //                    Mod Amplitude      Mod Depth              Test Control  Test Index
+    //                    ins  grp  reg    ins  grp  reg     exp  
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,    _ ,  _ ,  _ ,    0.0,   tol, false);  // 000
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,    _ ,  _ , 0.4,    0.4,   tol, false);  // 001
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,    _ , 0.2,  _ ,    0.2,   tol, false);  // 010
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,    _ , 0.2, 0.4,    0.6,   tol, false);  // 011
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,   0.1,  _ ,  _ ,    0.1,   tol, false);  // 100
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,   0.1,  _ , 0.4,    0.5,   tol, false);  // 101
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,   0.1, 0.2,  _ ,    0.3,   tol, false);  // 110
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,   0.1, 0.2, 0.4,    0.7,   tol, false);  // 111
 
     // It should also work if we pass _ instead of 1.0 for the amplitudes because 1.0 is the 
     // default amplitude:
-    //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
-    //                    ins  grp  reg   exp     ins  grp  reg   exp  
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,     _ , 0.2,  _ ,  0.2,  tol, false);  // 010
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,     _ , 0.2, 0.4,  0.6,  tol, false);  // 011
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,    0.1,  _ ,  _ ,  0.1,  tol, false);  // 100
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,    0.1,  _ , 0.4,  0.5,  tol, false);  // 101
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,    0.1, 0.2,  _ ,  0.3,  tol, false);  // 110
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,    0.1, 0.2, 0.4,  0.7,  tol, false);  // 111
+    //                    Mod Amplitude       Mod Depth             Test Control  Test Index
+    //                    ins  grp  reg     ins  grp  reg    exp  
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,     _ ,  _ ,  _ ,   0.0,   tol, false);  // 000
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,     _ ,  _ , 0.4,   0.4,   tol, false);  // 001
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,     _ , 0.2,  _ ,   0.2,   tol, false);  // 010
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,     _ , 0.2, 0.4,   0.6,   tol, false);  // 011
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1,  _ ,  _ ,   0.1,   tol, false);  // 100
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1,  _ , 0.4,   0.5,   tol, false);  // 101
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1, 0.2,  _ ,   0.3,   tol, false);  // 110
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1, 0.2, 0.4,   0.7,   tol, false);  // 111
 
-
-
+    // Actually, the expected mod-depth (in the exp column) is a weighted sum of the mod-depths 
+    // using the mod-amplitudes as weights. A _ in a mod-depth column means 0 and in a mod-amp
+    // column, it means 1. It always means: settings is absent -> use default value. So:
+    //   exp = ins-amp * ins-depth  +  grp-amp * grp-depth  +  reg-amp * reg-depth
+    // where the amps default to 1 and the depths default to 0.
 
     return ok;
   };
-
 
   auto testAmpAccumulate = [&](SE* se)
   {
@@ -3196,8 +3203,12 @@ bool samplerFreeModulationsTest()
     // 1. We expect...tbc...
 
 
+    //                    Mod Amplitude       Mod Depth            Test Control  Test Index
+    //                    ins  grp  reg     ins  grp  reg    exp  
+    ok &= testMod2(se, f, 1.0, 2.0, 3.0,    0.1, 0.2, 0.4,   1.7,  tol, true);  // 111
 
-    ok &= testMod2(se, f, 1.0, 2.0, 3.0,  1.0,    0.1, 0.2, 0.4,  1.5,  tol, true);  // 111
+    // exp = 1.0 * 0.1  +  2.0 * 0.3 +  3.0 * 0.4 = 1.7
+
     // Fails - but I think, the implementation of testMod2 may be to blame. I think, we may use the
     // wrong formula to generate the target signal.
     // We expect the resulting mod-dpeth to be 1.0*0.1 + 2.0*0.2 + 3.0*0.4 = 1.5
