@@ -3220,12 +3220,12 @@ bool samplerFreeModulationsTest()
   ok &= testDepthAccumulate(&se2); 
   ok &= testAmpAccumulate(  &se2); 
 
-
   rsAssert(ok);
+
+  // ToDo next: clean up and refactor, while running all unit tests
 
 
   // ToDo:
-
   // -Clarify what should happen when a modulation routing exists to a parameter for which there
   //  isn't a static setting such that possibly the whole processor doesn't even get inserted into
   //  the effect chain. I think, the most reasonable behavior would be to just ignore the 
@@ -3277,26 +3277,7 @@ bool samplerFreeModulationsTest()
   //  represented by a float anyway and if we really need double precision for certain coeff
   //  computations, we can convert the (exact) float to double as needed.
   //
-  // -Refactor:
-  //  -See comment in DspResourcePool
-  //  -See comment in SamplePlayer::assembleModulations
-  //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
-  //   effects and modulators.
-  //  -Drag out PlaybackSetting from SfzInstrument
-  //  -Maybe the SamplePlayer should also just be a Processor like everything else. That would lead 
-  //   to greater unification and more flexibility and shrink the size of RegionPlayer. Maybe it
-  //   should just accumulate its output into what's already there. Maybe that should be the 
-  //   general behavior of "Source" or "Generator" types of Processors. Maybe make an oscillator
-  //   Processor first to get a feeling of how it works and then make a SampleOscillator/Player
-  //   ...or maybe the SamplePlayer class should be renamed into ChannelPlayer first. Then maybe
-  //   RegionPlayer into LayerPlayer, SampleBusPlayer into MixPlayer, GroupPlayer into SubMixPlayer
-  //   and InstrumPlayer into MasterMixPlayer. Or maybe RegionPlayer should be the ChannelPlayer
-  //   and SamplePlayer be PlayerBase. We want the free the SamplePlayer so we can use it for a
-  //   SamplePlayer subclass of Processor, which should be usable as "effect". Then we could make
-  //   the "sample" sfz opcode a parameter of taht (and also, delay, loop_start, etc.) and remove
-  //   these things from the ChannelPlayer. The goal is to treat the SamplePlayer just like any
-  //   other processor with respect to modulation - that is needed for supporting the 
-  //   pitch-envelope without needing any messy special casing.
+
 
   // Notes: 
   // To specify free modulations in the sfz-file, we want to write things like lfo2_cutoff3=500 to 
@@ -3443,8 +3424,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerModulatorsTest();
-  ok &= samplerModulationsTest();
+  //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing sfz instruments
@@ -3453,10 +3433,33 @@ bool samplerEngineUnitTest()
   ok &= samplerSaveLoadTest();       // saving and loading of sfz files
   //ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
   ok &= samplerEffectsTest();        // effect chain
-  ok &= samplerModulationsTest();    // modulation system
+  ok &= samplerModulatorsTest();     // modulation processors (LFOs, EGs, etc.)
+  ok &= samplerModulationsTest();    // modulation system (mod-matrix, routing)
   ok &= samplerOverloadTest();       // behavior in overload conditions
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes
+  rsAssert(ok);
+
+  // -Refactor:
+  //  -See comment in DspResourcePool
+  //  -See comment in SamplePlayer::assembleModulations
+  //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
+  //   effects and modulators.
+  //  -Drag out PlaybackSetting from SfzInstrument
+  //  -Maybe the SamplePlayer should also just be a Processor like everything else. That would lead 
+  //   to greater unification and more flexibility and shrink the size of RegionPlayer. Maybe it
+  //   should just accumulate its output into what's already there. Maybe that should be the 
+  //   general behavior of "Source" or "Generator" types of Processors. Maybe make an oscillator
+  //   Processor first to get a feeling of how it works and then make a SampleOscillator/Player
+  //   ...or maybe the SamplePlayer class should be renamed into ChannelPlayer first. Then maybe
+  //   RegionPlayer into LayerPlayer, SampleBusPlayer into MixPlayer, GroupPlayer into SubMixPlayer
+  //   and InstrumPlayer into MasterMixPlayer. Or maybe RegionPlayer should be the ChannelPlayer
+  //   and SamplePlayer be PlayerBase. We want the free the SamplePlayer so we can use it for a
+  //   SamplePlayer subclass of Processor, which should be usable as "effect". Then we could make
+  //   the "sample" sfz opcode a parameter of taht (and also, delay, loop_start, etc.) and remove
+  //   these things from the ChannelPlayer. The goal is to treat the SamplePlayer just like any
+  //   other processor with respect to modulation - that is needed for supporting the 
+  //   pitch-envelope without needing any messy special casing.
 
 
   // ToDo:
@@ -3486,9 +3489,6 @@ bool samplerEngineUnitTest()
   // -Test to define the sample opcode on instrument and group level. We can have various regions
   //  in a group that use the same sample, test what happens when a region has no sample defined
   //  (it should be silent, of course)
-  // -Add an overload test that simulates conditions when the engine is running out of resources 
-  //  such as DSPs, players, memory, etc. Make sure that things get cleaned up correctly in cases 
-  //  where a partially assembled RegionPlayer must be rolled back due to lack of resources.
   // -Figure out and implement the correct filter design formulas for lpf_2p, hpf_2p, bpf_2p and 
   //  the equalizers. It's rather interesting that for the filters, the range is 0..fs/2 and for
   //  equalizers it's 0..30kHz (done?)
