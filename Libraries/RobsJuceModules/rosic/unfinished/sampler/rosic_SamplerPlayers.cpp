@@ -93,18 +93,14 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
 
       // OK - now we actually need to grab another effect of given type from the pool:
       Processor* p = dspPool->grabProcessor(opType);
-      if(p)
-      {
+      if(p) {
         p->setParametersToDefaults(sfzIndex);
-        effectChain.push_back(p);
-      }
-      else 
-      {
+        effectChain.push_back(p); }
+      else {
         disassembleProcessors();
-        return false;
+        return false; }
         // Not enough effects of desired type are available in the pool so we roll back any partially 
         // built chain and report failure. 
-      }
     }
     else if(SfzCodeBook::isModSourceSetting(opType))
     {
@@ -119,8 +115,11 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       else {
         disassembleProcessors();
         return false;  }
-      // Try to get rid of the duplication by making the branches even more similar and then try to
-      // refactor....
+      // Try to get rid of the duplication by factoring out an "augmentProcessors" function taking
+      // a reference to either effectChain or modSources (depending on the branch), the opType and
+      // the loop index i. But it is complicated by the fact that both branches contain a continue
+      // and a return statement. Maybe for the time being, let's just leave it as is. It's not 
+      // pretty though - but the alternative wouldn't be either and may actually be worse.
     }
   }
   return true;
