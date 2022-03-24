@@ -3202,12 +3202,16 @@ bool samplerFreeModulationsTest()
     // set or not set on these levels. When they are not set, we assume a default amplitude of 
     // 1. We expect...tbc...
 
-
     //                    Mod Amplitude       Mod Depth            Test Control  Test Index
     //                    ins  grp  reg     ins  grp  reg    exp  
-    ok &= testMod2(se, f, 1.0, 2.0, 3.0,    0.1, 0.2, 0.4,   1.7,  tol, true);  // 111
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1, 0.2, 0.4,   0.7,  tol, false);  // 000
+    ok &= testMod2(se, f,  _ ,  _ , 3.0,    0.1, 0.2, 0.4,   1.5,  tol, false);  // 001
+    ok &= testMod2(se, f,  _ , 2.0,  _ ,    0.1, 0.2, 0.4,   0.9,  tol, false);  // 010
+    ok &= testMod2(se, f,  _ , 2.0, 3.0,    0.1, 0.2, 0.4,   1.7,  tol, false);  // 011
 
-    // exp = 1.0 * 0.1  +  2.0 * 0.3 +  3.0 * 0.4 = 1.7
+
+    ok &= testMod2(se, f, 5.0, 2.0, 3.0,    0.1, 0.2, 0.4,   2.1,  tol, false);  // 111
+    // exp = 5.0 * 0.1  +  2.0 * 0.3 +  3.0 * 0.4 = 2.3
 
     return ok;
   };
