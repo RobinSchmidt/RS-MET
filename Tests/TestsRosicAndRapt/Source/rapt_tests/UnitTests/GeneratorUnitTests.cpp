@@ -3150,11 +3150,11 @@ bool samplerFreeModulationsTest()
   tol = 1.e-6;
   auto testDepthAccumulate = [&](SE* se)
   {
+    bool ok = true;
+
     // The expected outcome in the right group of columns (the mod-depth columns) is always the sum
     // of the values in the 3 columns left to it where _ counts as 0. The DC contributions from 
-    // region, group, instrument are supposed to add up.
-
-    bool ok = true;
+    // region, group, instrument are supposed to add up:
     //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
     //                    ins  grp  reg   exp     ins  grp  reg   exp  
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
@@ -3167,16 +3167,48 @@ bool samplerFreeModulationsTest()
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1, 0.2, 0.4,  0.7,  tol, false);  // 111
 
     // It should also work if we pass _ instead of 1.0 for the amplitudes because 1.0 is the 
-    // default amplitude. Maybe test that in another array of tests
+    // default amplitude:
+    //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
+    //                    ins  grp  reg   exp     ins  grp  reg   exp  
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,     _ ,  _ ,  _ ,  0.0,  tol, false);  // 000
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,     _ , 0.2,  _ ,  0.2,  tol, false);  // 010
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,     _ , 0.2, 0.4,  0.6,  tol, false);  // 011
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,    0.1,  _ ,  _ ,  0.1,  tol, false);  // 100
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,    0.1,  _ , 0.4,  0.5,  tol, false);  // 101
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,    0.1, 0.2,  _ ,  0.3,  tol, false);  // 110
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,  1.0,    0.1, 0.2, 0.4,  0.7,  tol, false);  // 111
+
+
+
 
     return ok;
   };
 
 
+  auto testAmpAccumulate = [&](SE* se)
+  {
+    bool ok = true;
+
+    // The test is very similar to the first half of testDepthAccumulate just that now the, depth
+    // variables are fixed on all 3 levels to 0.1, 0.2, 0.4 respectively and the amplitudes are
+    // set or not set on these levels. When they are not set, we assume a default amplitude of 
+    // 1. We expect...tbc...
+
+
+
+    ok &= testMod2(se, f, 1.0, 2.0, 3.0,  1.0,    0.1, 0.2, 0.4,  1.5,  tol, true);  // 111
+    // Fails - but I think, the implementation of testMod2 may be to blame. I think, we may use the
+    // wrong formula to generate the target signal.
+    // We expect the resulting mod-dpeth to be 1.0*0.1 + 2.0*0.2 + 3.0*0.4 = 1.5
+
+
+    return ok;
+  };
+
 
   ok &= testDepthAccumulate(&se2); 
-
-
+  ok &= testAmpAccumulate(  &se2); 
 
 
   rsAssert(ok);
