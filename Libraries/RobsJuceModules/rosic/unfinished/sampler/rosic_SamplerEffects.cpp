@@ -62,7 +62,7 @@ LowFreqOsc::LowFreqOsc()
 
 void LowFreqOsc::updateCoeffs(double fs)
 {
-  core.setup(params[0].mv(), 1.f, 0.f, 0.f, 0.f, (float)fs);
+  core.setup(params[0].mv(), params[1].mv(), 0.f, 0.f, 0.f, (float)fs);
   dirty = false;
 }
 

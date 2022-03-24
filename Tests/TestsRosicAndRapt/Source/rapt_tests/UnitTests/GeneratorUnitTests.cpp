@@ -3209,11 +3209,6 @@ bool samplerFreeModulationsTest()
 
     // exp = 1.0 * 0.1  +  2.0 * 0.3 +  3.0 * 0.4 = 1.7
 
-    // Fails - but I think, the implementation of testMod2 may be to blame. I think, we may use the
-    // wrong formula to generate the target signal.
-    // We expect the resulting mod-dpeth to be 1.0*0.1 + 2.0*0.2 + 3.0*0.4 = 1.5
-
-
     return ok;
   };
 
