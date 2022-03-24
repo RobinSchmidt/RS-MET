@@ -3197,21 +3197,21 @@ bool samplerFreeModulationsTest()
   {
     bool ok = true;
 
-    // The test is very similar to the first half of testDepthAccumulate just that now the, depth
+    // The test is very similar to the first half of testDepthAccumulate just that now, the depth
     // variables are fixed on all 3 levels to 0.1, 0.2, 0.4 respectively and the amplitudes are
     // set or not set on these levels. When they are not set, we assume a default amplitude of 
-    // 1. We expect...tbc...
-
+    // 1. We expect again a weighted sum. For example, in the last "111" test, we expect:
+    //   exp = 5.0 * 0.1  +  2.0 * 0.3 +  3.0 * 0.4 = 2.1
     //                    Mod Amplitude       Mod Depth            Test Control  Test Index
     //                    ins  grp  reg     ins  grp  reg    exp  
     ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1, 0.2, 0.4,   0.7,  tol, false);  // 000
     ok &= testMod2(se, f,  _ ,  _ , 3.0,    0.1, 0.2, 0.4,   1.5,  tol, false);  // 001
     ok &= testMod2(se, f,  _ , 2.0,  _ ,    0.1, 0.2, 0.4,   0.9,  tol, false);  // 010
     ok &= testMod2(se, f,  _ , 2.0, 3.0,    0.1, 0.2, 0.4,   1.7,  tol, false);  // 011
-
-
+    ok &= testMod2(se, f, 5.0,  _ ,  _ ,    0.1, 0.2, 0.4,   1.1,  tol, false);  // 100
+    ok &= testMod2(se, f, 5.0,  _ , 3.0,    0.1, 0.2, 0.4,   1.9,  tol, false);  // 101
+    ok &= testMod2(se, f, 5.0, 2.0,  _ ,    0.1, 0.2, 0.4,   1.3,  tol, false);  // 110
     ok &= testMod2(se, f, 5.0, 2.0, 3.0,    0.1, 0.2, 0.4,   2.1,  tol, false);  // 111
-    // exp = 5.0 * 0.1  +  2.0 * 0.3 +  3.0 * 0.4 = 2.3
 
     return ok;
   };
