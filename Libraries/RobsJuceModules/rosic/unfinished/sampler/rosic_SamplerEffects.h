@@ -493,29 +493,6 @@ public:
 
 //=================================================================================================
 
-class ModulatorPool // get rid
-{
-
-public:
-
-
-  void allocateModulators();
-  Processor* grabModulator(OpcodeType type);
-  void repositModulator(Processor* p);
-
-
-protected:
-
-  rsObjectPool<EnvGen>     envGens;
-  rsObjectPool<LowFreqOsc> lowFreqOscs;
-
-};
-// Maybe consolidate the ModulatorPool and EffectPool into a single ProcessorPool class that 
-// contains both types of processors. The distinction seems to just lead to code duplication.
-
-
-
-
 
 //=================================================================================================
 
@@ -586,8 +563,15 @@ public:
 protected:
 
   EffectPool    effectPool;
-  ModulatorPool modulatorPool;
+
+
+  rsObjectPool<EnvGen>     envGens;
+  rsObjectPool<LowFreqOsc> lowFreqOscs;
+
+
   rsObjectPool<ModulationConnector> connectorPool;
+  // maybe this isn't needed - connections may be held as direct objects in the players - no
+  // pointers needed
 };
 // maybe turn this class into a sort of facade such that client code doesn't need to rech through
 // into the member - have functions like grab/reposit Effect/Modulator/Connector. Maybe get rid of

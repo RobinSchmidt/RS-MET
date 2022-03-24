@@ -366,54 +366,6 @@ void EffectPool::repositEffect(Processor* p)
 
 //=================================================================================================
 
-void ModulatorPool::allocateModulators()
-{
-  envGens.init(64);
-  lowFreqOscs.init(64);
-}
-
-Processor* ModulatorPool::grabModulator(OpcodeType type)
-{
-  using OT = OpcodeType;
-  Processor* p = nullptr;
-  switch(type)
-  {
-  case OT::FreeEnv:   p = envGens.grabItem(); break;
-  case OT::AmpEnv:    p = envGens.grabItem(); break;
-  case OT::FilterEnv: p = envGens.grabItem(); break;
-  case OT::PitchEnv:  p = envGens.grabItem(); break;
-
-  case OT::FreeLfo:   p = lowFreqOscs.grabItem(); break;
-  case OT::AmpLfo:    p = lowFreqOscs.grabItem(); break;
-  case OT::FilterLfo: p = lowFreqOscs.grabItem(); break;
-  case OT::PitchLfo:  p = lowFreqOscs.grabItem(); break;
-  };
-  return p;
-  // ToDo: maybe consolidate the cases that return from envGens or lowFreqOscs into some sort of
-  // if-statement that checks, if type is within some range
-}
-
-void ModulatorPool::repositModulator(Processor* p)
-{
-  using OT = OpcodeType;
-  int i = -1;
-  switch(p->getType())
-  {
-  case OT::FreeEnv:   i = envGens.repositItem(p); break;
-  case OT::AmpEnv:    i = envGens.repositItem(p); break;
-  case OT::FilterEnv: i = envGens.repositItem(p); break;
-  case OT::PitchEnv:  i = envGens.repositItem(p); break;
-
-  case OT::FreeLfo:   i = lowFreqOscs.repositItem(p);  break;
-  case OT::AmpLfo:    i = lowFreqOscs.repositItem(p);  break;
-  case OT::FilterLfo: i = lowFreqOscs.repositItem(p);  break;
-  case OT::PitchLfo:  i = lowFreqOscs.repositItem(p);  break;
-  }
-  RAPT::rsAssert(i != -1, "Reposited processor was not in pool");
-}
-
-
-
 
 // preliminary - just delegate - todo: move actual implementations here
 
@@ -447,17 +399,52 @@ void DspResourcePool::repositEffect(Processor* p)
 
 void DspResourcePool::allocateModulators()
 {
-  modulatorPool.allocateModulators();
+  envGens.init(64);
+  lowFreqOscs.init(64);
+  //modulatorPool.allocateModulators();
 }
 
 Processor* DspResourcePool::grabModulator(OpcodeType type)
 {
-  return modulatorPool.grabModulator(type);
+  using OT = OpcodeType;
+  Processor* p = nullptr;
+  switch(type)
+  {
+  case OT::FreeEnv:   p = envGens.grabItem(); break;
+  case OT::AmpEnv:    p = envGens.grabItem(); break;
+  case OT::FilterEnv: p = envGens.grabItem(); break;
+  case OT::PitchEnv:  p = envGens.grabItem(); break;
+
+  case OT::FreeLfo:   p = lowFreqOscs.grabItem(); break;
+  case OT::AmpLfo:    p = lowFreqOscs.grabItem(); break;
+  case OT::FilterLfo: p = lowFreqOscs.grabItem(); break;
+  case OT::PitchLfo:  p = lowFreqOscs.grabItem(); break;
+  };
+  return p;
+  // ToDo: maybe consolidate the cases that return from envGens or lowFreqOscs into some sort of
+  // if-statement that checks, if type is within some range
+
+  //return modulatorPool.grabModulator(type);
 }
 
 void DspResourcePool::repositModulator(Processor* p)
 {
-  modulatorPool.repositModulator(p);
+  using OT = OpcodeType;
+  int i = -1;
+  switch(p->getType())
+  {
+  case OT::FreeEnv:   i = envGens.repositItem(p); break;
+  case OT::AmpEnv:    i = envGens.repositItem(p); break;
+  case OT::FilterEnv: i = envGens.repositItem(p); break;
+  case OT::PitchEnv:  i = envGens.repositItem(p); break;
+
+  case OT::FreeLfo:   i = lowFreqOscs.repositItem(p);  break;
+  case OT::AmpLfo:    i = lowFreqOscs.repositItem(p);  break;
+  case OT::FilterLfo: i = lowFreqOscs.repositItem(p);  break;
+  case OT::PitchLfo:  i = lowFreqOscs.repositItem(p);  break;
+  }
+  RAPT::rsAssert(i != -1, "Reposited processor was not in pool");
+  //modulatorPool.repositModulator(p);
 }
 
 
