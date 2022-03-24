@@ -74,6 +74,8 @@ int rsCount(const T* a, int N, T elem)
 
 bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain)
 {
+  RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
+
   for(int i = 0; i < (int)dspTypeChain.size(); i++)
   {
     // Figure out the type of the effect or modulator that may need to be added to the effectChain 
@@ -90,7 +92,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
         continue;
 
       // OK - now we actually need to grab another effect of given type from the pool:
-      Processor* p = getEffect(opType);  // use a general getProcessor function
+      Processor* p = dspPool->grabProcessor(opType);
       if(p)
       {
         p->setParametersToDefaults(sfzIndex);
@@ -110,7 +112,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
       int sfzIndex = rsCount(&dspTypeChain[0], i, opType) + 1;
       if(getNumProcessorsOfType(modSources, opType) >= sfzIndex)
         continue;
-      Processor* p = getModulator(opType);  // use a general getProcessor function
+      Processor* p = dspPool->grabProcessor(opType);
       if(p) {
         p->setParametersToDefaults(sfzIndex);
         modSources.push_back(p);     }

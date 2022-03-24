@@ -210,25 +210,6 @@ public:
 protected:
 
 
-  /** Returns a pointer to an effect of given type, if available, otherwise a nullptr. Used in
-  assembleEffectChain. */
-  Processor* getEffect(OpcodeType type)
-  {
-    RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
-    return dspPool->grabProcessor(type);
-    //return dspPool->grabEffect(type);
-  }
-  // get rid
-
-  /** Like getEffect but doe the modulators. ...can we somehow handle this in a unified way? */
-  Processor* getModulator(OpcodeType type)
-  {
-    RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
-    return dspPool->grabProcessor(type);
-    //return dspPool->grabModulator(type);
-  }
-  // get rid
-
   /** Adds the processors of the given types to our array of effects or modulators, if needed. 
   Adding a particular processor is needed, if no suitable such processor is already there in our 
   effectChain (or modSources) where "suitable" means: "with right type and index". The return value
