@@ -166,7 +166,20 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
       tgtProc = findProcessor(modSources,  ms.getTargetType(), ms.getTargetIndex()); // Receiver is another modulator
     else
       tgtProc = findProcessor(effectChain, ms.getTargetType(), ms.getTargetIndex()); // Receiver is an effect
-    RAPT::rsAssert(tgtProc);
+    if(tgtProc == nullptr)
+      continue;
+      // It is not necessarily an error when there is no target processor avaibable within the 
+      // array of effects or modulators. Such a situation may occur when the user sets up 
+      // something like lfo3_cutoff2=200 but no nominal value like cutoff2=1000 is specified for
+      // the mod-target such that there actually is no flt2 available. In such a case, we just 
+      // ignore the modulation setting and skip the current iteration of the loop. Note that it 
+      // would be sufficient if the user specifies e.g. resonance2=0 for the flt2 to come into 
+      // existence and therefore also to let cutoff2 to be a valid mod-target. So lfo3_cutoff2=200
+      // may actually target a valid parameter even though there was no nominal value specified for that parameter. As soon as any other parameter is 
+      // specified for cutoff2. As long as any parameter is specified that makes the respective
+      // processor come into existence (such as resonance2=0), we should still establish an actual 
+      // connection.
+
     Parameter* param = tgtProc->getParameter(ms.getTargetOpcode());
     RAPT::rsAssert(param);
     RAPT::rsAppendIfNotAlreadyThere(modTargetProcessors, tgtProc);
@@ -196,8 +209,6 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
       mc->setDepth(ms.getDepth());
       mc->setMode( ms.getMode());
       modMatrix.push_back(mc); }
-
-    int dummy = 0;
   }
 
   return true;

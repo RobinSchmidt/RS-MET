@@ -181,11 +181,11 @@ The parameters are represented as key/value pairs where the key is called an opc
 terminology. So, regions can define playback parameters via opcodes, groups can define fallback 
 values for these parameters for all regions belonging the group and the global section can define
 fallback values for all its groups. We represent the 3 hierarchy levels of sfz (region, group, 
-global) by the 3 internal classes Region, Group, Global which havea common basclass 
+global) by the 3 internal classes Region, Group, Global which have a common basclass 
 HierarchyLevel. The common baseclass stores the opcodes defined on the respective level. 
 ...tbc...   */
 
-class SfzInstrument // todo: move into its own pair of .h/.cpp files, rename to SfzInstrument
+class SfzInstrument
 {
 
 public:
@@ -215,11 +215,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  // \name Helper classes (maybe drag out - we'll see)
-
-
-
-
+  // \name Helper classes
 
   //-----------------------------------------------------------------------------------------------
   /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their

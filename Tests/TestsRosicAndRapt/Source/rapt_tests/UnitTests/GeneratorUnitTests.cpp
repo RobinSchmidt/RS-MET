@@ -3441,7 +3441,6 @@ bool samplerEngineUnitTest()
   rsAssert(ok);
 
   // -Refactor:
-  //  -Drag out PlaybackSetting from SfzInstrument
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 
   //   pre-allocated objects. But maybe set up a benchmark for the mod-system first to make sure,
   //   this change won't degrade performace (I don't excpect it to - to the contrary actually - but
