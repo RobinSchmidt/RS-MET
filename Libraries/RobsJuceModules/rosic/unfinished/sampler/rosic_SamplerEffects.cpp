@@ -416,6 +416,13 @@ Processor* DspResourcePool::grabModulator(OpcodeType type)
   // seen in the PlayStatus anyway, so it should automatically work)
 }
 
+Processor* DspResourcePool::grabProcessor(OpcodeType type)
+{
+  if(SfzCodeBook::isEffectSetting(type))    return grabEffect(type);
+  if(SfzCodeBook::isModSourceSetting(type)) return grabModulator(type);
+  RAPT::rsError("type should be and effect or modulator setting");
+}
+
 void DspResourcePool::repositModulator(Processor* p)
 {
   using OT = OpcodeType;

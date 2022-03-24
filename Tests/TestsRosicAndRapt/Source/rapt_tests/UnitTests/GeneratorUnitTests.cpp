@@ -3445,9 +3445,10 @@ bool samplerEngineUnitTest()
   //   pre-allocated objects. But maybe set up a benchmark for the mod-system first to make sure,
   //   this change won't degrade performace (I don't excpect it to - to the contrary actually - but
   //   who knows....).
-  //  -See comment in SamplePlayer::assembleModulations
   //  -See comments in SamplePlayer::augmentOrCleanEffectChain how to unify the branches for the
   //   effects and modulators.
+  //   the dspPool should have a function grabProcessror that dispatches between 
+  //   grabEffect and grabModulator
   //  -Maybe the SamplePlayer should also just be a Processor like everything else. That would lead 
   //   to greater unification and more flexibility and shrink the size of RegionPlayer. Maybe it
   //   should just accumulate its output into what's already there. Maybe that should be the 

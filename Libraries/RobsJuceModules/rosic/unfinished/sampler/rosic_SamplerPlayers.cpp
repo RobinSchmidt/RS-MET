@@ -179,6 +179,7 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
       // specified for cutoff2. As long as any parameter is specified that makes the respective
       // processor come into existence (such as resonance2=0), we should still establish an actual 
       // connection.
+    // ToDo: this behavior needs unit tests!
 
     Parameter* param = tgtProc->getParameter(ms.getTargetOpcode());
     RAPT::rsAssert(param);

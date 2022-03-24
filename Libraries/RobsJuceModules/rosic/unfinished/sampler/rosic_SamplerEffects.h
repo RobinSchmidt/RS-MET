@@ -473,6 +473,9 @@ public:
   Processor* grabModulator(OpcodeType type);
   void repositModulator(Processor* p);
 
+  /** Dispatches between grabEffect and grabModulator. */
+  Processor* grabProcessor(OpcodeType type);
+
   // Maybe we should just have grabProcessor/repositProcessor - we don't really need to distinguish
   // between the two kinds here anymore. But first, get rid of EffectPool, ModulatorPool
 
