@@ -58,6 +58,11 @@ LowFreqOsc::LowFreqOsc()
   //addParameter(Opcode::lfoN_fade);
   //addParameter(Opcode::lfoN_delay);
   // ToDo: phase, wave, sync, ...
+  // allow the "wave" parameter to be something like "Samples/SingleCyle/Sine.wav". When the 
+  // implementation works, it can used as model for the SamplePlayer object which should replace
+  // the direct handling of samples in the RegionPlayer. Maybe the "wave" parameter could have a 
+  // setting "sample" in which case we also store a pointer to an AudioStream object containing
+  // the waveform
 }
 
 void LowFreqOsc::updateCoeffs(double fs)
@@ -319,7 +324,20 @@ void WaveShaper::updateCoeffs(double sampleRate)
 
 //=================================================================================================
 
-void EffectPool::allocateEffects()
+DspResourcePool::DspResourcePool()
+{
+  allocateEffects();
+  allocateModulators();
+  allocateConnectors();
+  // Maybe don't do this on construction. Maybe client code should explicitly request this when a
+  // new sfz file ist loaded. The content of the file should determine, how many of each type we 
+  // need to allocate. Maybe have an allocate function that takes a reference to the SfzInstrument
+  // object. Or: the xml file should say how much to pre-allocate - maybe it can have an option 
+  // that let's use allocate heuristically based on the sfz content. Or maybe define sfz opcodes
+  // for pre-allocation: max_filters, max_amplifiers, max_connections, etc.
+}
+
+void DspResourcePool::allocateEffects()
 {
   amplifiers.init(64);
   filters.init(64);
@@ -336,7 +354,7 @@ void EffectPool::allocateEffects()
   // kinds of modules?
 }
 
-Processor* EffectPool::grabEffect(OpcodeType type)
+Processor* DspResourcePool::grabEffect(OpcodeType type)
 {
   using OT = OpcodeType;
   Processor* p = nullptr;
@@ -350,7 +368,7 @@ Processor* EffectPool::grabEffect(OpcodeType type)
   return p;
 }
 
-void EffectPool::repositEffect(Processor* p)
+void DspResourcePool::repositEffect(Processor* p)
 {
   using OT = OpcodeType;
   int i = -1;
@@ -364,44 +382,10 @@ void EffectPool::repositEffect(Processor* p)
   RAPT::rsAssert(i != -1, "Reposited processor was not in pool");
 }
 
-//=================================================================================================
-
-
-// preliminary - just delegate - todo: move actual implementations here
-
-DspResourcePool::DspResourcePool()
-{
-  allocateEffects();
-  allocateModulators();
-  allocateConnectors();
-  // Maybe don't do this on construction. Maybe client code should explicitly request this when a
-  // new sfz file ist loaded. The content of the file should determine, how many of each type we 
-  // need to allocate. Maybe have an allocate function that takes a reference to the SfzInstrument
-  // object. Or: the xml file should say how much to pre-allocate - maybe it can have an option 
-  // that let's use allocate heuristically based on the sfz content. Or maybe define sfz opcodes
-  // for pre-allocation: max_filters, max_amplifiers, max_connections, etc.
-}
-
-void DspResourcePool::allocateEffects()
-{
-  effectPool.allocateEffects();
-}
-
-Processor* DspResourcePool::grabEffect(OpcodeType type)
-{
-  return effectPool.grabEffect(type);
-}
-
-void DspResourcePool::repositEffect(Processor* p)
-{
-  effectPool.repositEffect(p);
-}
-
 void DspResourcePool::allocateModulators()
 {
   envGens.init(64);
   lowFreqOscs.init(64);
-  //modulatorPool.allocateModulators();
 }
 
 Processor* DspResourcePool::grabModulator(OpcodeType type)
@@ -422,9 +406,14 @@ Processor* DspResourcePool::grabModulator(OpcodeType type)
   };
   return p;
   // ToDo: maybe consolidate the cases that return from envGens or lowFreqOscs into some sort of
-  // if-statement that checks, if type is within some range
-
-  //return modulatorPool.grabModulator(type);
+  // if-statement that checks, if type is within some range, like
+  //   if( isLfo(type)    ) return lowFreqOscs.grabItem();
+  //   if( isEnvGen(type) ) return envGens.grabItem();
+  // and only then enter the switch statement to switch between other kinds of modulators. Maybe
+  // also have isMidiInput(type) ...the implementation of midi input controllers can be simple 
+  // dsp-wise: it needs to hold a pointer to the PlayStatus object and just return the value 
+  // stored there as constant (but changing when the user changes it - but these changes will be
+  // seen in the PlayStatus anyway, so it should automatically work)
 }
 
 void DspResourcePool::repositModulator(Processor* p)
@@ -444,7 +433,6 @@ void DspResourcePool::repositModulator(Processor* p)
   case OT::PitchLfo:  i = lowFreqOscs.repositItem(p);  break;
   }
   RAPT::rsAssert(i != -1, "Reposited processor was not in pool");
-  //modulatorPool.repositModulator(p);
 }
 
 
