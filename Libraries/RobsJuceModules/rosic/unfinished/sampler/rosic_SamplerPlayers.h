@@ -265,7 +265,8 @@ protected:
   // Maybe return a bool to indicate, if the setting was handled (if false, the subclass may
   // want to do something in its override)...??? comment obsolete?
 
-
+  /** Handles the modulations by letting the modulators produce their outputs and setting up
+  the modulated values in the target parameters via the modulation matrix. */
   void handleModulations();
 
 
