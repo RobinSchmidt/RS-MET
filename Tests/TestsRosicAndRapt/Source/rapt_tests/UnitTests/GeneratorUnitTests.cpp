@@ -3157,10 +3157,7 @@ bool samplerFreeModulationsTest()
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ ,  _ , 0.4,  0.4,  tol, false);  // 001
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2,  _ ,  0.2,  tol, false);  // 010
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2, 0.4,  0.6,  tol, false);  // 011
-
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1,  _ ,  _ ,  0.1,  tol, true);  // 100
-    // fails!
-
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1,  _ ,  _ ,  0.1,  tol, false);  // 100
 
 
     return ok;

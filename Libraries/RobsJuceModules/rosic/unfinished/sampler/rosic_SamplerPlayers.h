@@ -585,7 +585,11 @@ public:
 
   void addRegionPlayer(RegionPlayer* newPlayer);
 
-  void processFrame(float* L, float* R) { processFrame1(effectChain, L, R); }
+  void processFrame(float* L, float* R) 
+  {
+    handleModulations();
+    processFrame1(effectChain, L, R); 
+  }
 
   // implement processBlock
 
