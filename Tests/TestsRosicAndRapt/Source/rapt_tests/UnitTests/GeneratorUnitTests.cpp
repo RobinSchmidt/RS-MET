@@ -3150,6 +3150,10 @@ bool samplerFreeModulationsTest()
   tol = 1.e-6;
   auto testDepthAccumulate = [&](SE* se)
   {
+    // The expected outcome in the right group of columns (the mod-depth columns) is always the sum
+    // of the values in the 3 columns left to it where _ counts as 0. The DC contributions from 
+    // region, group, instrument are supposed to add up.
+
     bool ok = true;
     //                    Modulator Amplitude      Modulation Depth     Test Control  Test Index
     //                    ins  grp  reg   exp     ins  grp  reg   exp  
@@ -3158,7 +3162,12 @@ bool samplerFreeModulationsTest()
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2,  _ ,  0.2,  tol, false);  // 010
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,     _ , 0.2, 0.4,  0.6,  tol, false);  // 011
     ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1,  _ ,  _ ,  0.1,  tol, false);  // 100
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1,  _ , 0.4,  0.5,  tol, false);  // 101
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1, 0.2,  _ ,  0.3,  tol, false);  // 110
+    ok &= testMod2(se, f, 1.0, 1.0, 1.0,  1.0,    0.1, 0.2, 0.4,  0.7,  tol, false);  // 111
 
+    // It should also work if we pass _ instead of 1.0 for the amplitudes because 1.0 is the 
+    // default amplitude. Maybe test that in another array of tests
 
     return ok;
   };
