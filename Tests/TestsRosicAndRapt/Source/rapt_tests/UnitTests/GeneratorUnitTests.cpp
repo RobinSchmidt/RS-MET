@@ -231,14 +231,21 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
 }
 
 // Helper funtion to set up the sampler engine with single a sinewave region:
-void setupForSineWave(rosic::Sampler::rsSamplerEngine* se)
+void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048)
 {
-  int N = 2048;
   std::vector<float> sineWave(N);
   for(int n = 0; n < N; n++)
     sineWave[n] = (float) sin(2.0*PI*n/N);
   se->clearInstrument();
-  addSingleSampleRegion(se, sineWave, 21, 56320);
+  addSingleSampleRegion(se, sineWave, 21.f, 56320.f);
+
+  /*
+  // Set up loop settings:
+  using namespace rosic::Sampler;
+  se->setRegionSetting(0, 0, Opcode::LoopMode, (float) LoopMode::loop_continuous, -1);
+  se->setRegionSetting(0, 0, Opcode::LoopStart, 0, -1);
+  se->setRegionSetting(0, 0, Opcode::LoopEnd,   N, -1);
+  */
 }
 
 //=================================================================================================

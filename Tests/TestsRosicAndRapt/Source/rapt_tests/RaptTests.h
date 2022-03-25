@@ -138,6 +138,7 @@ void ladderPerformance();
 void stateVectorFilterPerformance();
 void engineersFilterPerformance();
 void turtleGraphicsPerformance();
+void samplerEnginePerformance();
 
 // Math Performance Tests:
 void fftPerformance();

@@ -267,3 +267,33 @@ void turtleGraphicsPerformance()
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("Moore Curve 4, 2nd time", cycles); // around 350 000
 }
+
+void samplerEnginePerformance()
+{
+  using Vec   = std::vector<float>;
+  using SE    = rosic::Sampler::rsSamplerEngineTest;
+  using OC    = rosic::Sampler::Opcode;
+  using OT    = rosic::Sampler::OpcodeType;
+  using Shape = rosic::Sampler::WaveshaperCore::Shape;
+  using Mode  = rosic::Sampler::ModMode;
+  using RC    = rosic::Sampler::rsReturnCode;
+
+  float sampleRate = 44100.f;  // sample rate at whihc the engine runs
+  int sineLength = 2048;       // number of samples in the sinewave sample
+  int numSamples = 10000;      // number of samples to produce for the test
+
+  // Gene
+
+  SE se;
+  se.setSampleRate(sampleRate);
+
+  //setupForSineWave(se);  
+  // defined in GeneratorunitTets.cpp -> move elsewhere so we can use it here, too
+
+
+
+  //Vec
+
+
+  int dummy = 0;
+}
