@@ -319,20 +319,6 @@ bool samplerDataTest()
   return ok;
 }
 
-/** Fills the outL, outR arrays with the output of the given sampler engine for the given note. */
-void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
-  std::vector<float>& outL, std::vector<float>& outR)
-{
-  rsAssert(outL.size() == outR.size());
-  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
-  using EvTp = Ev::Type;
-  se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
-  for(int n = 0; n < (int) outL.size(); n++)
-    se->processFrame(&outL[n], &outR[n]);
-}
-// should we clear the outL/R arrays first? maybe not, if we want instruments to accumuluate 
-// their outputs in ToolChain
-
 bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<float>& targetL, const std::vector<float>& targetR,
   float tol = 0.f, bool plot = false)

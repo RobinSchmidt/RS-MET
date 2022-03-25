@@ -478,6 +478,10 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
 void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048);
 
 
+/** Fills the outL, outR arrays with the output of the given sampler engine for the given note. */
+void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
+  std::vector<float>& outL, std::vector<float>& outR);
+
 
 //=================================================================================================
 

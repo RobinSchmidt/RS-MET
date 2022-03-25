@@ -170,3 +170,16 @@ void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N)
   se->setRegionSetting(0, 0, Opcode::LoopStart, 0, -1);
   se->setRegionSetting(0, 0, Opcode::LoopEnd,   N, -1);
 }
+
+void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
+  std::vector<float>& outL, std::vector<float>& outR)
+{
+  rsAssert(outL.size() == outR.size());
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+  se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+  for(int n = 0; n < (int) outL.size(); n++)
+    se->processFrame(&outL[n], &outR[n]);
+  // Should we clear the outL/R arrays first? Maybe not, if we want instruments to accumuluate 
+  // their outputs in ToolChain
+}
