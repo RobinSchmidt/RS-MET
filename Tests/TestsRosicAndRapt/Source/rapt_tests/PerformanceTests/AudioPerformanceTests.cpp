@@ -277,26 +277,59 @@ void samplerEnginePerformance()
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
   using Mode  = rosic::Sampler::ModMode;
 
-  // Create and set up sampler engine. We use a single region with a single-cycle sinewave and 
-  // modulate the DC parameter of a waveshape with an LFO:
+
+  int N = 5000;                   // number of samples to produce for the test
+  Vec outL(N), outR(N);
+  PerformanceCounterTSC counter;
+
+
+  // Create and set up sampler engine. We use a single region with a single-cycle sinewave:
   SE se;
   se.setSampleRate(44100.f);
   se.preAllocateDspMemory();   // try to avoid the need to call this!
   setupForSineWave(&se, 2048);
-  se.setRegionSetting(0, 0, OC::distortN_dc,   0.f, 1);
-  se.setRegionSetting(0, 0, OC::lfoN_freq,   200.f, 1);
-  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
 
+  // Helper functions:
+  auto testSingleNote = [&](const std::string& testName, int key = 60, int vel = 100)
+  {
+    se.reset();
+    counter.init(); 
+    getSamplerNote(&se, key, vel, outL, outR);
+    double cycles = (double) counter.getNumCyclesSinceInit();
+    double cyclesPerSample = cycles / N;
+    printPerformanceTestResult("Single note, " + testName, cyclesPerSample);
+    // Maybe print key and vel for info. Maybe in the format: Key=60, Vel=100, testName
+  };
+  // maybe rename to testSingleKey or playSingleKey
+
+  // Triggers "numNotes" notes starting at the given lowest notes where each note is one semitone 
+  // higher than the previous.
+  auto testMultiNotes = [&](const std::string& testName, int numNotes, int lowest = 50)
+  {
+    // ...
+  };
+  // maybe rename to testManyKeys or playManyKeys
+
+  // Play just one layer of the looped single cycle sample:
+  testSingleNote("1 layer");  // 150
+  //rsPlotVectors(outL, outR);  // just to sanity check the output
+
+  // Modulate the DC parameter of a waveshape with an LFO:
+  se.setRegionSetting(   0, 0, OC::distortN_dc, 0.f, 1);
+  se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
+  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
+  testSingleNote("1 layer, 1 LFO to DC");    // 330
+  //rsPlotVectors(outL, outR); 
+
+  /*
   // Produce a note and measure the CPU cycles need to compute one sample:
-  int N = 5000;                   // number of samples to produce for the test
-  Vec outL(N), outR(N);
-  PerformanceCounterTSC counter;
   counter.init(); 
   getSamplerNote(&se, 60, 100, outL, outR);
   double cycles = (double) counter.getNumCyclesSinceInit();
   double cyclesPerSample = cycles / N;
   printPerformanceTestResult("1 layer with 1 LFO mapped to DC", cyclesPerSample); // 320
   //rsPlotVectors(outL, outR);  // just to sanity check the output
+  */
 
 
   int dummy = 0;
