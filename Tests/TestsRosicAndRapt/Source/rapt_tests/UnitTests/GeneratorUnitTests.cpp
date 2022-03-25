@@ -1,5 +1,6 @@
 
-// Helper functions:
+// Helper functions (todo: move them either into the library or into TestUtilities.cpp in the
+// rs_testing module):
 
 // Computes a linearly interpolated value from the given vector at the given position:
 template<class T>

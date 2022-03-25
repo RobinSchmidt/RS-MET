@@ -276,23 +276,17 @@ void samplerEnginePerformance()
   using OT    = rosic::Sampler::OpcodeType;
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
   using Mode  = rosic::Sampler::ModMode;
-  using RC    = rosic::Sampler::rsReturnCode;
+  //using RC    = rosic::Sampler::rsReturnCode;
 
   float sampleRate = 44100.f;  // sample rate at whihc the engine runs
-  int sineLength = 2048;       // number of samples in the sinewave sample
+  //int sineLength = 2048;       // number of samples in the sinewave sample
   int numSamples = 10000;      // number of samples to produce for the test
 
-  // Gene
-
+  // Create and set up sampler engine. We use a single region with a single-cycle sinewave and 
+  // modulate the DC parameter of a waveshape with an LFO:
   SE se;
   se.setSampleRate(sampleRate);
-
-  //setupForSineWave(se);  
-  // defined in GeneratorunitTets.cpp -> move elsewhere so we can use it here, too
-
-
-
-  //Vec
+  setupForSineWave(&se, 2048);
 
 
   int dummy = 0;

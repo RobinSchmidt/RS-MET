@@ -164,11 +164,9 @@ void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N)
   se->clearInstrument();
   addSingleSampleRegion(se, sineWave, 21.f, 56320.f);
 
-  /*
   // Set up loop settings:
   using namespace rosic::Sampler;
   se->setRegionSetting(0, 0, Opcode::LoopMode, (float) LoopMode::loop_continuous, -1);
   se->setRegionSetting(0, 0, Opcode::LoopStart, 0, -1);
   se->setRegionSetting(0, 0, Opcode::LoopEnd,   N, -1);
-  */
 }
