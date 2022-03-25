@@ -192,26 +192,6 @@ T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
   return p; 
 }
 
-template<class T>
-std::vector<T> createColoredNoise(int N, T spectralSlope, int seed = 0)
-{
-  // Create white noise:
-  std::vector<T> y(N);
-  RAPT::rsNoiseGenerator<T> ng;
-  ng.setSeed(seed);
-  for(int n = 0; n < N; n++)
-    y[n] = ng.getSample();
-
-  // Apply coloring:
-  rosic::SlopeFilter flt;
-  flt.setSlope(spectralSlope);
-  for(int n = 0; n < N; n++)
-    y[n] = (float)flt.getSample(y[n]);
-
-  return y;
-}
-// move to test tools
-
 // Helper function to add a single region for the given sample to the engine. The region is added
 // to the first group, which is added if not already there:
 void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,

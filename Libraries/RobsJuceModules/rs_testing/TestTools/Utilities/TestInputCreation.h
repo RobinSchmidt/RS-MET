@@ -73,12 +73,19 @@ double sineSum(double p, double *A, double N);
 template<class T>
 std::vector<T> createNoise(int numSamples, T min, T max, int seed = 0);
 
+/** Spectral slope is in dB/oct. 0.0: white, -3.01: pink, -6.02: brown, +6.02: blue, etc. */
+template<class T>
+std::vector<T> createColoredNoise(int N, T spectralSlope, int seed = 0);
+
 template<class T>
 std::vector<T> createCrackle(int numSamples, T cutoff = 0.02, int order = 7/*, int seed = 0*/);
 
 /** Returns an array of sampling instants with random time-differences dt between them. */
 template<class T>
 std::vector<T> randomSampleInstants(int numSamples, T dtMin, T dtMax, int seed = 0);
+
+
+
 
 
 void createRandomDataXY(double* x, double* y, int N, double dxMin, double dxMax, 

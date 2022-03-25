@@ -242,6 +242,28 @@ std::vector<T> createNoise(int numSamples, T min, T max, int seed)
 template std::vector<float> createNoise(int numSamples, float min, float max, int seed);
 template std::vector<double> createNoise(int numSamples, double min, double max, int seed);
 
+
+template<class T>
+std::vector<T> createColoredNoise(int N, T spectralSlope, int seed)
+{
+  // Create white noise:
+  std::vector<T> y(N);
+  RAPT::rsNoiseGenerator<T> ng;
+  ng.setSeed(seed);
+  for(int n = 0; n < N; n++)
+    y[n] = ng.getSample();
+
+  // Apply coloring:
+  rosic::SlopeFilter flt;
+  flt.setSlope(spectralSlope);
+  for(int n = 0; n < N; n++)
+    y[n] = (float)flt.getSample(y[n]);
+
+  return y;
+}
+template std::vector<float> createColoredNoise(int N, float spectralSlope, int seed);
+template std::vector<double> createColoredNoise(int N, double spectralSlope, int seed);
+
 template<class T>
 std::vector<T> createCrackle(int numSamples, T cutoff, int order/*, int seed*/)
 {
