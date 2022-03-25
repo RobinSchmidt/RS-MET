@@ -71,3 +71,4 @@ Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Debug/App/TestAppJ
 Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 Products/AudioPlugins/ToolChain/Builds/MacOSX/ToolChain.xcodeproj/xcuserdata/rob.xcuserdatad/xcschemes/xcschememanagement.plist
 *.7z
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Release/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt

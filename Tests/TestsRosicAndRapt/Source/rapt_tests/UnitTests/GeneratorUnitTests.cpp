@@ -192,42 +192,6 @@ T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
   return p; 
 }
 
-// Helper function to add a single region for the given sample to the engine. The region is added
-// to the first group, which is added if not already there:
-void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
-  const std::vector<float>& sample, float keyCenter = 60.f, double sampleRate = 44100)
-{
-  using PST  = rosic::Sampler::Opcode;
-  const float *pSmp = &sample[0];
-  int si = se->addSampleToPool((float**) &pSmp, (int)sample.size(), 1, sampleRate, "Sample");
-  if(se->getNumGroups() == 0)
-    se->addGroup();
-  int ri = se->addRegion(0);
-  se->setRegionSample( 0, ri, si);
-  se->setRegionSetting(0, ri, PST::PitchKeyCenter, keyCenter, -1);
-  // ToDo: try to get rid of casting ways the const in addSampleToPool((float**) &pSmp,...). 
-  // addSampleToPool does not modify anything - make it const correct...but that my need ugly
-  // and confusing syntax in the function declaration
-}
-
-// Helper funtion to set up the sampler engine with single a sinewave region:
-void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048)
-{
-  std::vector<float> sineWave(N);
-  for(int n = 0; n < N; n++)
-    sineWave[n] = (float) sin(2.0*PI*n/N);
-  se->clearInstrument();
-  addSingleSampleRegion(se, sineWave, 21.f, 56320.f);
-
-  /*
-  // Set up loop settings:
-  using namespace rosic::Sampler;
-  se->setRegionSetting(0, 0, Opcode::LoopMode, (float) LoopMode::loop_continuous, -1);
-  se->setRegionSetting(0, 0, Opcode::LoopStart, 0, -1);
-  se->setRegionSetting(0, 0, Opcode::LoopEnd,   N, -1);
-  */
-}
-
 //=================================================================================================
 
 bool samplerDataTest()

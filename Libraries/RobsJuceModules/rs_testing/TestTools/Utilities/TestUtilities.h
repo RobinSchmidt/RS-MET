@@ -466,6 +466,20 @@ bool checkEigensystem(
 }
 
 //=================================================================================================
+// Stuff for facilitating tests for the sampler engine
+
+/** Helper function to add a single region for the given sample to the engine. The region is added
+to the first group, which is added if not already there. */
+void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
+  const std::vector<float>& sample, float keyCenter = 60.f, double sampleRate = 44100);
+
+
+/** Helper funtion to set up the sampler engine with single a sinewave region. */
+void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048);
+
+
+
+//=================================================================================================
 
 /** Experimental - goal: resemble numpy/scipy/matplotlib functionality, so we may easily port such 
 code to C++. */
