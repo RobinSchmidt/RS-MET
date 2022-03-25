@@ -2874,7 +2874,10 @@ bool samplerFreeModulationsTest()
 
   SE2T se2;
   se2.setSampleRate(fs);
+
+
   se2.preAllocateDspMemory();
+  // It's important to call this but maybe it shouldn't be...
 
 
 

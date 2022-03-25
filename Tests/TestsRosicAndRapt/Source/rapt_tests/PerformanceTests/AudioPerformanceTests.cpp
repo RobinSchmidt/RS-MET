@@ -277,23 +277,27 @@ void samplerEnginePerformance()
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
   using Mode  = rosic::Sampler::ModMode;
 
-
-  int N = 2000;      // number of samples to produce for the test
-
   // Create and set up sampler engine. We use a single region with a single-cycle sinewave and 
   // modulate the DC parameter of a waveshape with an LFO:
   SE se;
   se.setSampleRate(44100.f);
+  se.preAllocateDspMemory();   // try to avoid the need to call this!
   setupForSineWave(&se, 2048);
-  Vec outL(N), outR(N);
+  se.setRegionSetting(0, 0, OC::distortN_dc,   0.f, 1);
+  se.setRegionSetting(0, 0, OC::lfoN_freq,   200.f, 1);
+  se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
 
+  // Produce a note and measure the CPU cycles need to compute one sample:
+  int N = 5000;                   // number of samples to produce for the test
+  Vec outL(N), outR(N);
   PerformanceCounterTSC counter;
-  double cycles;
   counter.init(); 
   getSamplerNote(&se, 60, 100, outL, outR);
-  cycles = (double) counter.getNumCyclesSinceInit();
+  double cycles = (double) counter.getNumCyclesSinceInit();
   double cyclesPerSample = cycles / N;
-  rsPlotVectors(outL, outR);
+  printPerformanceTestResult("1 layer with 1 LFO mapped to DC", cyclesPerSample); // 320
+  //rsPlotVectors(outL, outR);  // just to sanity check the output
+
 
   int dummy = 0;
 }
