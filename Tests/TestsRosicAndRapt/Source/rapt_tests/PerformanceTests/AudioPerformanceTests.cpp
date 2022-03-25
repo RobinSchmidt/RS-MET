@@ -319,17 +319,24 @@ void samplerEnginePerformance()
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
   testSingleNote("1 layer, 1 LFO to DC");    // 330
+  //rsPlotVectors(outL, outR);
+
+  // Modulate the DC parameter by a second LFO:
+  se.setRegionSetting(   0, 0, OC::lfoN_freq, 300.f, 2);
+  se.setRegionModulation(0, 0, OT::FreeLfo, 2, OC::distortN_dc, 1, 0.1f, Mode::absolute);
+  testSingleNote("1 layer, 2 LFOs to DC");  // 450
+  //rsPlotVectors(outL, outR); // does the waveshape look right? use high key to see shape better
+
+  // Modulate the DC parameter by a third LFO:
+  se.setRegionSetting(   0, 0, OC::lfoN_freq, 400.f, 3);
+  se.setRegionModulation(0, 0, OT::FreeLfo, 3, OC::distortN_dc, 1, 0.05f, Mode::absolute);
+  testSingleNote("1 layer, 3 LFOs to DC");  // 585
   //rsPlotVectors(outL, outR); 
 
-  /*
-  // Produce a note and measure the CPU cycles need to compute one sample:
-  counter.init(); 
-  getSamplerNote(&se, 60, 100, outL, outR);
-  double cycles = (double) counter.getNumCyclesSinceInit();
-  double cyclesPerSample = cycles / N;
-  printPerformanceTestResult("1 layer with 1 LFO mapped to DC", cyclesPerSample); // 320
-  //rsPlotVectors(outL, outR);  // just to sanity check the output
-  */
+  // Observations:
+  // -Adding another sine LFO to modulate DC seems to increase the per sample cost by roughly
+  //  130 cycles. That's for the additional modulation infrastructure and the LFO's signal
+  //  processing.
 
 
   int dummy = 0;
