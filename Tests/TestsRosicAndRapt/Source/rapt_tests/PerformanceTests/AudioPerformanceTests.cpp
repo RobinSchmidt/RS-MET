@@ -287,7 +287,7 @@ void samplerEnginePerformance()
   SE se;
   se.setSampleRate(44100.f);
   se.preAllocateDspMemory();   // try to avoid the need to call this!
-  setupForSineWave(&se, 2048);
+
 
   // Helper functions:
   auto testSingleNote = [&](const std::string& testName, int key = 60, int vel = 100)
@@ -297,7 +297,10 @@ void samplerEnginePerformance()
     getSamplerNote(&se, key, vel, outL, outR);
     double cycles = (double) counter.getNumCyclesSinceInit();
     double cyclesPerSample = cycles / N;
-    printPerformanceTestResult("Single note, " + testName, cyclesPerSample);
+    std::string str = testName + ", K=" + to_string(key);
+    printPerformanceTestResult(str, cyclesPerSample);
+
+    //printPerformanceTestResult("Single note, " + testName, cyclesPerSample);
     // Maybe print key and vel for info. Maybe in the format: Key=60, Vel=100, testName
   };
   // maybe rename to testSingleKey or playSingleKey
@@ -310,33 +313,46 @@ void samplerEnginePerformance()
   };
   // maybe rename to testManyKeys or playManyKeys
 
+  // Play the empty patch to figure out CPU load in idle state:
+  testSingleNote("Empty");  // 21
+
   // Play just one layer of the looped single cycle sample:
-  testSingleNote("1 layer");  // 150
+  setupForSineWave(&se, 2048);
+  testSingleNote("1 region");  // 150
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
   se.setRegionSetting(   0, 0, OC::distortN_dc, 0.f, 1);
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
-  testSingleNote("1 layer, 1 LFO to DC");    // 330
+  testSingleNote("1 region, 1 LFO to DC");    // 330
   //rsPlotVectors(outL, outR);
 
   // Modulate the DC parameter by a second LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 300.f, 2);
   se.setRegionModulation(0, 0, OT::FreeLfo, 2, OC::distortN_dc, 1, 0.1f, Mode::absolute);
-  testSingleNote("1 layer, 2 LFOs to DC");  // 450
+  testSingleNote("1 region, 2 LFOs to DC");  // 450
   //rsPlotVectors(outL, outR); // does the waveshape look right? use high key to see shape better
 
   // Modulate the DC parameter by a third LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 400.f, 3);
   se.setRegionModulation(0, 0, OT::FreeLfo, 3, OC::distortN_dc, 1, 0.05f, Mode::absolute);
-  testSingleNote("1 layer, 3 LFOs to DC");  // 585
+  testSingleNote("1 region, 3 LFOs to DC");  // 580
   //rsPlotVectors(outL, outR); 
 
   // Observations:
   // -Adding another sine LFO to modulate DC seems to increase the per sample cost by roughly
   //  130 cycles. That's for the additional modulation infrastructure and the LFO's signal
-  //  processing.
+  //  processing. The first LFO is more expensive because it triggers the one-time cost of invoking
+  //  the modulation infrastructure
+
+  // ToDo:
+  // -Add measurements for the cost of starting a new RegionPlayer on noteOn
+  // -Measure costs for handling midi-events
+  // -Implement block-based processing and measure its cost. It should hopefully be a lot cheaper
+  //  than sample-by-sample processing.
+  // -Implement EGs and make sure that they don't incur the coeff-recomputation costs when they
+  //  output a constant level. That may even be a unit test (but it may be a flaky one).
 
 
   int dummy = 0;
