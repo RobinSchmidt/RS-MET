@@ -281,7 +281,7 @@ void samplerEnginePerformance()
 
 
 
-  int N = 5000;             // number of samples to produce for the test in each run
+  int N = 500;             // number of samples to produce for the test in each run
   int numRuns = 100;        // number of test runs
 
   Vec outL(N), outR(N);
@@ -301,8 +301,14 @@ void samplerEnginePerformance()
   auto measureCyclesPerFrame = [&]()
   {
     counter.init(); 
+
+    //for(int n = 0; n < N; n++)
+    //  se.processFrame(&outL[n], &outR[n]);
+
+    float dummy;
     for(int n = 0; n < N; n++)
-      se.processFrame(&outL[n], &outR[n]);
+      se.processFrame(&dummy, &dummy);
+
     return (double) counter.getNumCyclesSinceInit() / (double) N;
     // ToDo: 
     // -Maybe don't write the produced samples to the outL, outR buffers but into dummy 
@@ -413,7 +419,10 @@ void samplerEnginePerformance()
   // -It's actually interesting to plot the collected data as time-series. There are patterns in it
   //  which are more easily visible with the simpler patches.
   // -The single note tests have clearly visible flat portions in the data when plotted as time 
-  //  series. The multi-note tests are more erratic
+  //  series. The multi-note tests are more erratic.
+  // -Using a smaller number of N (number of samples per run) like 500 makes the tests less 
+  //  erratic. Also not using the output arrays seems to make them less erratic. I think N=500,
+  //  numRuns=100 is a good setting. I think, the mode is quite reproducible in this setting.
   // -Adding another sine LFO to modulate DC seems to increase the per sample cost by roughly
   //  130 cycles. That's for the additional modulation infrastructure and the LFO's signal
   //  processing. The first LFO is more expensive because it triggers the one-time cost of invoking
@@ -426,7 +435,8 @@ void samplerEnginePerformance()
   //  the collected data.
   // -For better consistency, maybe run each test M times and take the minimum but with some 
   //  constraints to sort out mismeasurements (sometime we even get negative numbers)
-  // -Implement some data collection and visualize and analyze the data.
+  // -Implement some data collection and visualize and analyze the data. Maybe the mean, median and 
+  //  mode could be interesting.
   // -Add measurements for the cost of starting a new RegionPlayer on noteOn
   // -Measure costs for handling midi-events
   // -Implement block-based processing and measure its cost. It should hopefully be a lot cheaper
