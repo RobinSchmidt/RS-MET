@@ -300,7 +300,7 @@ void samplerEnginePerformance()
     getSamplerNote(&se, key, vel, outL, outR);
     double cycles = (double) counter.getNumCyclesSinceInit();
     double cyclesPerSample = cycles / N;
-    std::string str = testName + ", K=" + to_string(key); // maybe print also vel
+    std::string str = "Key=" + to_string(key); // maybe print also vel
     printPerformanceTestResult(str, cyclesPerSample);
   };
   // maybe rename to testSingleKey or playSingleKey
@@ -317,7 +317,7 @@ void samplerEnginePerformance()
       se.processFrame(&outL[n], &outR[n]);
     double cycles = (double) counter.getNumCyclesSinceInit();
     double cyclesPerSample = cycles / (N*numNotes); // actually per sample and note - rename!
-    std::string str = testName + ", numKeys=" + to_string(numNotes);
+    std::string str = "Num=" + to_string(numNotes);  // number of keys
     printPerformanceTestResult(str, cyclesPerSample);
   };
   // maybe rename to testManyKeys or playManyKeys, maybe take the event handling out of the 
@@ -327,37 +327,37 @@ void samplerEnginePerformance()
   // Calls both testSingleNote and testMultiNotes:
   auto playTests = [&](const std::string& testName, int loKey = 60, int numKeys = 10)
   {
-    //std::cout << testName << ":\n";
+    std::cout << testName << ":\n";
     testSingleNote(testName, loKey);
     testMultiNotes(testName, numKeys, loKey);
-    //std::cout << "\n\n";
+    std::cout << "\n\n";
   };
 
   // Play the empty patch to figure out CPU load in idle state:
-  playTests("Empty");     // 21 / 1
+  playTests("Empty");     // 25 / 2
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
-  playTests("1 region");  // 150
+  playTests("1 region");  // 150 / 125
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
   se.setRegionSetting(   0, 0, OC::distortN_dc, 0.f, 1);
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
-  playTests("1 region, 1 LFO to DC");    // 330
+  playTests("1 region, 1 LFO to DC");    // 330 / 235
   //rsPlotVectors(outL, outR);
 
   // Modulate the DC parameter by a second LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 300.f, 2);
   se.setRegionModulation(0, 0, OT::FreeLfo, 2, OC::distortN_dc, 1, 0.1f, Mode::absolute);
-  playTests("1 region, 2 LFOs to DC");  // 450
+  playTests("1 region, 2 LFOs to DC");  // 405 / 350
   //rsPlotVectors(outL, outR); // does the waveshape look right? use high key to see shape better
 
   // Modulate the DC parameter by a third LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 400.f, 3);
   se.setRegionModulation(0, 0, OT::FreeLfo, 3, OC::distortN_dc, 1, 0.05f, Mode::absolute);
-  playTests("1 region, 3 LFOs to DC");  // 580
+  playTests("1 region, 3 LFOs to DC");  // 585 / 510
   //rsPlotVectors(outL, outR); 
 
   // Observations:
@@ -369,8 +369,8 @@ void samplerEnginePerformance()
   //  a sort of quantity rebate. This is good news!
 
   // ToDo:
-  // -Add a function playTests which calls testSingleNote and testMultiNotes and doe a better 
-  //  output - tesName should appear only once.
+  // -For better consistency, maybe run each test M times and take the minimum but with some 
+  //  constraints to sort out mismeasurements (sometime we even get negative numbers)
   // -Add measurements for the cost of starting a new RegionPlayer on noteOn
   // -Measure costs for handling midi-events
   // -Implement block-based processing and measure its cost. It should hopefully be a lot cheaper
