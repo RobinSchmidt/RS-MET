@@ -276,6 +276,9 @@ void samplerEnginePerformance()
   using OT    = rosic::Sampler::OpcodeType;
   using Shape = rosic::Sampler::WaveshaperCore::Shape;
   using Mode  = rosic::Sampler::ModMode;
+  using Ev    = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp  = Ev::Type;
+
 
 
   int N = 5000;                   // number of samples to produce for the test
@@ -297,28 +300,38 @@ void samplerEnginePerformance()
     getSamplerNote(&se, key, vel, outL, outR);
     double cycles = (double) counter.getNumCyclesSinceInit();
     double cyclesPerSample = cycles / N;
-    std::string str = testName + ", K=" + to_string(key);
+    std::string str = testName + ", K=" + to_string(key); // maybe print also vel
     printPerformanceTestResult(str, cyclesPerSample);
-
-    //printPerformanceTestResult("Single note, " + testName, cyclesPerSample);
-    // Maybe print key and vel for info. Maybe in the format: Key=60, Vel=100, testName
   };
   // maybe rename to testSingleKey or playSingleKey
 
   // Triggers "numNotes" notes starting at the given lowest notes where each note is one semitone 
   // higher than the previous.
-  auto testMultiNotes = [&](const std::string& testName, int numNotes, int lowest = 50)
+  auto testMultiNotes = [&](const std::string& testName, int numNotes = 10, int lowest = 50)
   {
-    // ...
+    se.reset();
+    counter.init(); 
+    for(int i = 0; i < numNotes; i++)
+      se.handleMusicalEvent(Ev(EvTp::noteOn, lowest + i, 100));  // trigger the notes
+    for(int n = 0; n < N; n++)
+      se.processFrame(&outL[n], &outR[n]);
+    double cycles = (double) counter.getNumCyclesSinceInit();
+    double cyclesPerSample = cycles / (N*numNotes); // actually per sample and note - rename!
+    std::string str = testName + ", numKeys=" + to_string(numNotes);
+    printPerformanceTestResult(str, cyclesPerSample);
   };
-  // maybe rename to testManyKeys or playManyKeys
+  // maybe rename to testManyKeys or playManyKeys, maybe take the event handling out of the 
+  // measurement, i.e. drag it to before counter.init. But then we should probably do the same 
+  // thing in the single key test - getSamplerNote also contains the event handling
 
   // Play the empty patch to figure out CPU load in idle state:
   testSingleNote("Empty");  // 21
+  testMultiNotes("Empty");
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
   testSingleNote("1 region");  // 150
+  testMultiNotes("1 region");
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
@@ -326,18 +339,21 @@ void samplerEnginePerformance()
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
   testSingleNote("1 region, 1 LFO to DC");    // 330
+  testMultiNotes("1 region, 1 LFO to DC"); 
   //rsPlotVectors(outL, outR);
 
   // Modulate the DC parameter by a second LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 300.f, 2);
   se.setRegionModulation(0, 0, OT::FreeLfo, 2, OC::distortN_dc, 1, 0.1f, Mode::absolute);
   testSingleNote("1 region, 2 LFOs to DC");  // 450
+  testMultiNotes("1 region, 2 LFOs to DC"); 
   //rsPlotVectors(outL, outR); // does the waveshape look right? use high key to see shape better
 
   // Modulate the DC parameter by a third LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 400.f, 3);
   se.setRegionModulation(0, 0, OT::FreeLfo, 3, OC::distortN_dc, 1, 0.05f, Mode::absolute);
   testSingleNote("1 region, 3 LFOs to DC");  // 580
+  testMultiNotes("1 region, 3 LFOs to DC"); 
   //rsPlotVectors(outL, outR); 
 
   // Observations:
@@ -345,8 +361,12 @@ void samplerEnginePerformance()
   //  130 cycles. That's for the additional modulation infrastructure and the LFO's signal
   //  processing. The first LFO is more expensive because it triggers the one-time cost of invoking
   //  the modulation infrastructure
+  // -When multiple keys are playing, the cost per sample per key seems to go down. We seem to get
+  //  a sort of quantity rebate. This is good news!
 
   // ToDo:
+  // -Add a function playTests which calls testSingleNote and testMultiNotes and doe a better 
+  //  output - tesName should appear only once.
   // -Add measurements for the cost of starting a new RegionPlayer on noteOn
   // -Measure costs for handling midi-events
   // -Implement block-based processing and measure its cost. It should hopefully be a lot cheaper
