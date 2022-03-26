@@ -3385,7 +3385,15 @@ bool samplerEngineUnitTest()
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 
   //   pre-allocated objects. But maybe set up a benchmark for the mod-system first to make sure,
   //   this change won't degrade performace (I don't excpect it to - to the contrary actually - but
-  //   who knows....).
+  //   who knows....). hmmm...I've tried it and I'm getting the impression that the performance may
+  //   indeed have suffered from that change..it's not really plausible and the noise in the tests
+  //   if far too high to draw definitive conclusion. I've rolled it back and moved the modified 
+  //   versions of rosic_SamplerPlayers.h/cpp, rosic_SamplerEffetcs.h/cpp into the Temp folder. We 
+  //   really need more reproducible and less noisy tests and then maybe we can try again. Also, in 
+  //   release builds, the unit tests failed after the change was applied.
+  //   -ToDo: implement more reliable performance tests: split the tests into setup (per event) and
+  //    processing costs, do a whole bunch of tests and perform statistical analysis in the results.
+  //    maybe compute the median.
   //  -Maybe the SamplePlayer should also just be a Processor like everything else. That would lead 
   //   to greater unification and more flexibility and shrink the size of RegionPlayer. Maybe it
   //   should just accumulate its output into what's already there. Maybe that should be the 

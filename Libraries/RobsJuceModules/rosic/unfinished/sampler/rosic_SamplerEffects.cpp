@@ -421,6 +421,7 @@ Processor* DspResourcePool::grabProcessor(OpcodeType type)
   if(SfzCodeBook::isEffectSetting(type))    return grabEffect(type);
   if(SfzCodeBook::isModSourceSetting(type)) return grabModulator(type);
   RAPT::rsError("type should be and effect or modulator setting");
+  return nullptr;
 }
 
 void DspResourcePool::repositModulator(Processor* p)
