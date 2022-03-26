@@ -281,7 +281,9 @@ void samplerEnginePerformance()
 
 
 
-  int N = 5000;                   // number of samples to produce for the test
+  int N = 5000;             // number of samples to produce for the test in each run
+  int numRuns = 100;        // number of test runs
+
   Vec outL(N), outR(N);
   PerformanceCounterTSC counter;
 
@@ -318,6 +320,7 @@ void samplerEnginePerformance()
     std::vector<double> data(numDataPoints);
     for(int i = 0; i < numDataPoints; i++)
       data[i] = measureCyclesPerFrame();
+    return data;
   };
 
 
@@ -325,9 +328,17 @@ void samplerEnginePerformance()
   {
     se.reset();
     se.handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+
+    // new:
+    std::vector<double> data = collectCyclesPerFrameData(numRuns);
+    rsPlotVector(data);
+
+    /*
+    // old:
     double cycles = measureCyclesPerFrame();
     std::string str = "Key=" + to_string(key); // maybe print also vel
     printPerformanceTestResult(str, cycles);
+    */
   };
   // -Instead of printing a result of a single run, use collectCyclesPerFrameData and show a plot.
   //  Maybe write a reusable visualizePerformanceData function taking a vector of cyclesPerOp data
@@ -342,9 +353,17 @@ void samplerEnginePerformance()
     se.reset();
     for(int i = 0; i < numNotes; i++)
       se.handleMusicalEvent(Ev(EvTp::noteOn, lowest + i, 100));  // trigger the notes
+
+    // new:
+    std::vector<double> data = collectCyclesPerFrameData(numRuns) / double(numNotes);
+    rsPlotVector(data);
+
+    /*
+    // old:
     double cycles = measureCyclesPerFrame() / numNotes;          // per sample and note
     std::string str = "Num=" + to_string(numNotes);              // number of keys
     printPerformanceTestResult(str, cycles);
+    */
   };
   // maybe rename to testManyKeys or measureManyKeys, maybe take the event handling out of the 
   // measurement, i.e. drag it to before counter.init. But then we should probably do the same 
@@ -391,6 +410,10 @@ void samplerEnginePerformance()
   //rsPlotVectors(outL, outR); 
 
   // Observations:
+  // -It's actually interesting to plot the collected data as time-series. There are patterns in it
+  //  which are more easily visible with the simpler patches.
+  // -The single note tests have clearly visible flat portions in the data when plotted as time 
+  //  series. The multi-note tests are more erratic
   // -Adding another sine LFO to modulate DC seems to increase the per sample cost by roughly
   //  130 cycles. That's for the additional modulation infrastructure and the LFO's signal
   //  processing. The first LFO is more expensive because it triggers the one-time cost of invoking
@@ -399,6 +422,8 @@ void samplerEnginePerformance()
   //  a sort of quantity rebate. This is good news!
 
   // ToDo:
+  // -Try to not use the outL/outR arrays and investigate how (or if) that changes the patterns in
+  //  the collected data.
   // -For better consistency, maybe run each test M times and take the minimum but with some 
   //  constraints to sort out mismeasurements (sometime we even get negative numbers)
   // -Implement some data collection and visualize and analyze the data.
