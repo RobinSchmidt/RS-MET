@@ -294,24 +294,46 @@ void samplerEnginePerformance()
 
   // Helper functions:
 
+  // Measures the number of cycles that it takes the sampler engine to produce a single sample 
+  // frame by producing N sample frames (while writing them into the output buffers).
+  auto measureCyclesPerFrame = [&]()
+  {
+    counter.init(); 
+    for(int n = 0; n < N; n++)
+      se.processFrame(&outL[n], &outR[n]);
+    return (double) counter.getNumCyclesSinceInit() / (double) N;
+    // ToDo: 
+    // -Maybe don't write the produced samples to the outL, outR buffers but into dummy 
+    //  variables instead? This would allow us to take the number N as function parameter. It may 
+    //  be a less realistic scenario, though. 
+  };
 
+  // Using the measureCyclesPerFrame defined above, it collects data of running this function a 
+  // given number of times. This data may be visualized or analyzed statistically in order to draw 
+  // any conclusions about the performance. A single run of measureCyclesPerFrame is not conclusive
+  // because the result of a single run may vary wildly. Multiple runs and subsequent analysis of 
+  // the measurement data is necessary.
+  auto collectCyclesPerFrameData = [&](int numDataPoints)
+  {
+    std::vector<double> data(numDataPoints);
+    for(int i = 0; i < numDataPoints; i++)
+      data[i] = measureCyclesPerFrame();
+  };
 
 
   auto testSingleNote = [&](const std::string& testName, int key = 60, int vel = 100)
   {
     se.reset();
     se.handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
-
-    counter.init(); 
-    for(int n = 0; n < (int) outL.size(); n++)
-      se.processFrame(&outL[n], &outR[n]);
-    double cycles = (double) counter.getNumCyclesSinceInit();
-
-    double cyclesPerSample = cycles / N;
+    double cycles = measureCyclesPerFrame();
     std::string str = "Key=" + to_string(key); // maybe print also vel
-    printPerformanceTestResult(str, cyclesPerSample);
+    printPerformanceTestResult(str, cycles);
   };
-  // maybe rename to testSingleKey or playSingleKey
+  // -Instead of printing a result of a single run, use collectCyclesPerFrameData and show a plot.
+  //  Maybe write a reusable visualizePerformanceData function taking a vector of cyclesPerOp data
+  //  creates a plot that is suitable and meaningful. Maybe plot a histogram or a kernel density 
+  //  estimation.
+  // -maybe rename to testSingleKey or measureSingleKey
 
   // Triggers "numNotes" notes starting at the given lowest notes where each note is one semitone 
   // higher than the previous.
@@ -320,17 +342,11 @@ void samplerEnginePerformance()
     se.reset();
     for(int i = 0; i < numNotes; i++)
       se.handleMusicalEvent(Ev(EvTp::noteOn, lowest + i, 100));  // trigger the notes
-
-    counter.init(); 
-    for(int n = 0; n < N; n++)
-      se.processFrame(&outL[n], &outR[n]);
-    double cycles = (double) counter.getNumCyclesSinceInit();
-
-    double cyclesPerSample = cycles / (N*numNotes); // actually per sample and note - rename!
-    std::string str = "Num=" + to_string(numNotes);  // number of keys
-    printPerformanceTestResult(str, cyclesPerSample);
+    double cycles = measureCyclesPerFrame() / numNotes;          // per sample and note
+    std::string str = "Num=" + to_string(numNotes);              // number of keys
+    printPerformanceTestResult(str, cycles);
   };
-  // maybe rename to testManyKeys or playManyKeys, maybe take the event handling out of the 
+  // maybe rename to testManyKeys or measureManyKeys, maybe take the event handling out of the 
   // measurement, i.e. drag it to before counter.init. But then we should probably do the same 
   // thing in the single key test - getSamplerNote also contains the event handling
 
@@ -342,6 +358,10 @@ void samplerEnginePerformance()
     testMultiNotes(testName, numKeys, loKey);
     std::cout << "\n\n";
   };
+
+
+
+
 
   // Play the empty patch to figure out CPU load in idle state:
   playTests("Empty");     // 25 / 2
@@ -381,6 +401,7 @@ void samplerEnginePerformance()
   // ToDo:
   // -For better consistency, maybe run each test M times and take the minimum but with some 
   //  constraints to sort out mismeasurements (sometime we even get negative numbers)
+  // -Implement some data collection and visualize and analyze the data.
   // -Add measurements for the cost of starting a new RegionPlayer on noteOn
   // -Measure costs for handling midi-events
   // -Implement block-based processing and measure its cost. It should hopefully be a lot cheaper
@@ -392,11 +413,18 @@ void samplerEnginePerformance()
   //  analysis on this rest.
   // -Maybe plot results in histograms or using kernel density estimators.
   //  https://en.wikipedia.org/wiki/Kernel_density_estimation
-//    https://de.wikipedia.org/wiki/Kerndichtesch%C3%A4tzer
+  //  https://de.wikipedia.org/wiki/Kerndichtesch%C3%A4tzer
   // -Maybe just plot the sorted results (maybe cleaned up from outliers before). Maybe we can 
   //  identify a region which has very low slope - if so, then the height there could be a good 
   //  estimate for the value we are trying to measure. Rationale: where the plot has little slope,
   //  we had a lot of very similar results.
+  // -For kernel density plots, we can use non-unform filters: 
+  //  -sort the array of results
+  //  -use this sorted array as t-values
+  //  -use as x-array all ones
+  //  -apply non-uniform filtering to these t,x arrays (although t does not represent time in this
+  //   case but rather cpu-load and x represents the number of runs that had this kind of load)
+
 
 
 
