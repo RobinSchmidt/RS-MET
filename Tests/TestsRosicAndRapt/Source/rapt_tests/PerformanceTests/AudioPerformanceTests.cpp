@@ -324,36 +324,40 @@ void samplerEnginePerformance()
   // measurement, i.e. drag it to before counter.init. But then we should probably do the same 
   // thing in the single key test - getSamplerNote also contains the event handling
 
+  // Calls both testSingleNote and testMultiNotes:
+  auto playTests = [&](const std::string& testName, int loKey = 60, int numKeys = 10)
+  {
+    //std::cout << testName << ":\n";
+    testSingleNote(testName, loKey);
+    testMultiNotes(testName, numKeys, loKey);
+    //std::cout << "\n\n";
+  };
+
   // Play the empty patch to figure out CPU load in idle state:
-  testSingleNote("Empty");  // 21
-  testMultiNotes("Empty");
+  playTests("Empty");     // 21 / 1
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
-  testSingleNote("1 region");  // 150
-  testMultiNotes("1 region");
+  playTests("1 region");  // 150
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
   se.setRegionSetting(   0, 0, OC::distortN_dc, 0.f, 1);
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
-  testSingleNote("1 region, 1 LFO to DC");    // 330
-  testMultiNotes("1 region, 1 LFO to DC"); 
+  playTests("1 region, 1 LFO to DC");    // 330
   //rsPlotVectors(outL, outR);
 
   // Modulate the DC parameter by a second LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 300.f, 2);
   se.setRegionModulation(0, 0, OT::FreeLfo, 2, OC::distortN_dc, 1, 0.1f, Mode::absolute);
-  testSingleNote("1 region, 2 LFOs to DC");  // 450
-  testMultiNotes("1 region, 2 LFOs to DC"); 
+  playTests("1 region, 2 LFOs to DC");  // 450
   //rsPlotVectors(outL, outR); // does the waveshape look right? use high key to see shape better
 
   // Modulate the DC parameter by a third LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 400.f, 3);
   se.setRegionModulation(0, 0, OT::FreeLfo, 3, OC::distortN_dc, 1, 0.05f, Mode::absolute);
-  testSingleNote("1 region, 3 LFOs to DC");  // 580
-  testMultiNotes("1 region, 3 LFOs to DC"); 
+  playTests("1 region, 3 LFOs to DC");  // 580
   //rsPlotVectors(outL, outR); 
 
   // Observations:
