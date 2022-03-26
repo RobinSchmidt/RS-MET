@@ -3393,7 +3393,10 @@ bool samplerEngineUnitTest()
   //   release builds, the unit tests failed after the change was applied.
   //   -ToDo: implement more reliable performance tests: split the tests into setup (per event) and
   //    processing costs, do a whole bunch of tests and perform statistical analysis in the results.
-  //    maybe compute the median.
+  //    maybe compute the median. Maybe collect data and make some sort of scatter-plots of the 
+  //    results for visual inspection. Maybe use x-axis for single-key and y-axis for multi-key
+  //    tests. Maybe write test results into files, so we can compare scatter-plots pre and post
+  //    edits. Maybe collect data from runs on different machines.
   //  -Maybe the SamplePlayer should also just be a Processor like everything else. That would lead 
   //   to greater unification and more flexibility and shrink the size of RegionPlayer. Maybe it
   //   should just accumulate its output into what's already there. Maybe that should be the 
