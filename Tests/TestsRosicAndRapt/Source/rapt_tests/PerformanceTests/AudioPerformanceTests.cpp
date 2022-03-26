@@ -293,12 +293,20 @@ void samplerEnginePerformance()
 
 
   // Helper functions:
+
+
+
+
   auto testSingleNote = [&](const std::string& testName, int key = 60, int vel = 100)
   {
     se.reset();
+    se.handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+
     counter.init(); 
-    getSamplerNote(&se, key, vel, outL, outR);
+    for(int n = 0; n < (int) outL.size(); n++)
+      se.processFrame(&outL[n], &outR[n]);
     double cycles = (double) counter.getNumCyclesSinceInit();
+
     double cyclesPerSample = cycles / N;
     std::string str = "Key=" + to_string(key); // maybe print also vel
     printPerformanceTestResult(str, cyclesPerSample);
@@ -310,12 +318,14 @@ void samplerEnginePerformance()
   auto testMultiNotes = [&](const std::string& testName, int numNotes = 10, int lowest = 50)
   {
     se.reset();
-    counter.init(); 
     for(int i = 0; i < numNotes; i++)
       se.handleMusicalEvent(Ev(EvTp::noteOn, lowest + i, 100));  // trigger the notes
+
+    counter.init(); 
     for(int n = 0; n < N; n++)
       se.processFrame(&outL[n], &outR[n]);
     double cycles = (double) counter.getNumCyclesSinceInit();
+
     double cyclesPerSample = cycles / (N*numNotes); // actually per sample and note - rename!
     std::string str = "Num=" + to_string(numNotes);  // number of keys
     printPerformanceTestResult(str, cyclesPerSample);
@@ -377,6 +387,17 @@ void samplerEnginePerformance()
   //  than sample-by-sample processing.
   // -Implement EGs and make sure that they don't incur the coeff-recomputation costs when they
   //  output a constant level. That may even be a unit test (but it may be a flaky one).
+  // -Maybe collect batches of data, say 1000 datapoints each, sort results, throw away bottom and
+  //  top quartiles (outliers) and show visualizations of the rest. then appaly statistical 
+  //  analysis on this rest.
+  // -Maybe plot results in histograms or using kernel density estimators.
+  //  https://en.wikipedia.org/wiki/Kernel_density_estimation
+//    https://de.wikipedia.org/wiki/Kerndichtesch%C3%A4tzer
+  // -Maybe just plot the sorted results (maybe cleaned up from outliers before). Maybe we can 
+  //  identify a region which has very low slope - if so, then the height there could be a good 
+  //  estimate for the value we are trying to measure. Rationale: where the plot has little slope,
+  //  we had a lot of very similar results.
+
 
 
   int dummy = 0;
