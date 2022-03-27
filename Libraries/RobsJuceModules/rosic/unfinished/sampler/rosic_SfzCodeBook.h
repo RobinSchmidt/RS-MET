@@ -167,8 +167,26 @@ enum class Opcode
 // names. i think, that would be more convenient
 
 //-------------------------------------------------------------------------------------------------
-/** Enumeration of the different filter types that are available. */
 
+/** Enumeration of the waveforms that are available in the LFOs. */
+enum class WaveForm
+{
+  unknown = 0,
+
+  sine,
+  triangle,
+  square,
+  saw_up,
+  saw_down,
+
+  sample,          // let's the user specify a cingle-cycle .wav file
+
+  numWaveForms
+};
+// ToDo: compare names with sfz-spec - maybe the names are different there - if so, rename
+
+
+/** Enumeration of the different filter types that are available. */
 enum class FilterType // maybe rename to fil_type for consistency with sfz
 {
   Unknown = 0,

@@ -459,7 +459,11 @@ void samplerEnginePerformance()
   //  -use as x-array all ones
   //  -apply non-uniform filtering to these t,x arrays (although t does not represent time in this
   //   case but rather cpu-load and x represents the number of runs that had this kind of load)
-
+  // -Maybe make a test that measures the absolute time taken to render a larger section such that
+  //  rendering takes a couple of tens of seconds. To do fair comparisons, it's important to run 
+  //  the test always under the same conditions, e.g. no other program open at the same time, etc.
+  // -Maybe use a triangle wave for the lfo which is cheaper to compute and we are currently mainly
+  //  interested in measuring the infrastrcutural overhead.
 
 
 

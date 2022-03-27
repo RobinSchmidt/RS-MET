@@ -13,15 +13,18 @@ void LowFreqOscCore::setup(float freq, float _amp, float phase,  float _delay, f
 
 void LowFreqOscCore::processFrame(float* L, float* R)
 {
-  float out = amp * (float) sin(2.0*PI*pos);
+  *L = *R = amp * (float) sin(2.0*PI*pos);
+
+
+
+  // Update phase counter:
   pos += inc;
   while(pos >= 1.0)
     pos -= 1.0;
-  *L = *R = out;
+  //*L = *R = out;
   // ToDo: 
-  // -Add amp parameter. This will facilitate making LFO modulation depths themselves modulatable. 
-  //  Not on the connection level though, only once per modulator - but that's still better than 
-  //  nothing. Making depths modulatable per connection would be more complicated...
+  // -switch on the waveform
+  // -allow single-cylce wavefiles, maybe keep a pointer to an AudioFile as member for that.
   // -Use delay, fade members for fade-in and delay
   // -Produce stereo output: maybe we should have a stereo_phase paramter or phase_shift_LR
   //  and do: 

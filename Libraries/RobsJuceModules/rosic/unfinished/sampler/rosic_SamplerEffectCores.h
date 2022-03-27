@@ -36,6 +36,8 @@ protected:
 
   RAPT::rsUint32 delay = 0, fade = 0;  // delay and fade-in time in samples
 
+  WaveForm wave = WaveForm::sine;
+
 };
 // -Maybe we can get rid of delay by initializing pos to -delay and the implementation of "fade"
 //  returns zero for pos < 0
