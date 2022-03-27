@@ -388,31 +388,36 @@ void samplerEnginePerformance()
     std::cout << "\n\n";
   };
 
+  // The given numbers after the tests give the CPU cycle measurements (per sample and note), The 
+  // first pair of values was measured when the modMatrix contained pointers to 
+  // ModulationConnection objects, the 2nd pair was measured when modMatrix contained the objects 
+  // directly. It looks like using pointers improves performance...which may be a bit surprising.
+
   // Play the empty patch to figure out CPU load in idle state:
-  playTests("Empty");     // 25 / 2
+  playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
-  playTests("1 region");  // 150 / 125
+  playTests("1 region");  // 115.5 / 114.5,  118.45 / 117.1
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
   se.setRegionSetting(   0, 0, OC::distortN_dc, 0.f, 1);
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
-  playTests("1 region, 1 LFO to DC");    // 330 / 235
+  playTests("1 region, 1 LFO to DC");    // 347 / 282,  391 / 268
   //rsPlotVectors(outL, outR);
 
   // Modulate the DC parameter by a second LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 300.f, 2);
   se.setRegionModulation(0, 0, OT::FreeLfo, 2, OC::distortN_dc, 1, 0.1f, Mode::absolute);
-  playTests("1 region, 2 LFOs to DC");  // 405 / 350
+  playTests("1 region, 2 LFOs to DC");  // 480 / 380,  543 / 390
   //rsPlotVectors(outL, outR); // does the waveshape look right? use high key to see shape better
 
   // Modulate the DC parameter by a third LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 400.f, 3);
   se.setRegionModulation(0, 0, OT::FreeLfo, 3, OC::distortN_dc, 1, 0.05f, Mode::absolute);
-  playTests("1 region, 3 LFOs to DC");  // 585 / 510
+  playTests("1 region, 3 LFOs to DC");  // 625 / 495,  706 / 515
   //rsPlotVectors(outL, outR); 
 
   // Observations:
@@ -430,6 +435,16 @@ void samplerEnginePerformance()
   //  the modulation infrastructure
   // -When multiple keys are playing, the cost per sample per key seems to go down. We seem to get
   //  a sort of quantity rebate. This is good news!
+  // -I did some tests comparing the modMatrix in SamplePlayer holding pointers to pre-allocated
+  //  ModulationConnection objects vs storing such objects directly and it turned out that using 
+  //  the pointers is more efficient. The difference is almost 15% and it's relaibly reproducible,
+  //  so apparently, the effect is real. Maybe it's because the direct objects are more heavyweight
+  //  than just storing pointers. Maybe we could make it even more lightweight by storing integer
+  //  indices instead of pointers. Interestingly, some performance loss is also observed when there
+  //  aren't any connections - but then the loss in only about 3%. It also looks like the 
+  //  performance degradation becomes more severe when there are more connections, which seems to 
+  //  make some sense. ToDo: test it with other compilers, i.e. clang, look at the generated code 
+  //  to try to find out the real reason for this counterintuitive observation
 
   // ToDo:
   // -Try to not use the outL/outR arrays and investigate how (or if) that changes the patterns in
