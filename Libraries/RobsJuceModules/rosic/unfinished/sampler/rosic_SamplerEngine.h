@@ -6,51 +6,6 @@ namespace Sampler {
 
 //=================================================================================================
 
-/** A class for representing musical events such as note-on/off etc. Think of it as a class to
-represent MIDI events but with some of its anachronistic restrictions lifted, such as the abysmal
-resolution of values (typically 7 or 14 bit). The template parameter T is supposed to be either
-float or double. For easy conversion and compatibility with MIDI, we still follow the (now
-historical) convention that values are in the range 0..127, but now with much higher resolution
-due to the floating point representation. So, in a nutshell, this is a class for MIDI events but
-with higher resolution for all the values. */
-
-template<class T>
-class rsMusicalEvent
-{
-
-public:
-
-  enum class Type
-  {
-    noteOn,
-    noteOff,
-    controlChange,
-    pitchWheel,
-    reset
-    // ...tbc...
-  };
-
-  rsMusicalEvent(Type eventType, T value1, T value2)
-    : type(eventType), val1(value1), val2(value2) {}
-
-  Type getType() const { return type; }
-
-  T getValue1() const { return val1; }
-
-  T getValue2() const { return val2; }
-
-protected:
-
-  Type type;  // e.g. noteOn/Off, controlChange, pitchWheel
-  T    val1;  // e.g. key, controller number, pitchWheelMSB
-  T    val2;  // e.g. velocity, controller value, pitchWheelLSB
-
-};
-// maybe move the class elsewhere for more general use - maybe it should go into rapt due to the
-// templatized nature
-
-//=================================================================================================
-
 /** Under Construction. Not yet ready for general use.
 
 A sampler engine whose feature set roughly resembles the sfz specification. It's not necessarily

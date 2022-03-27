@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
   //stateVectorFilterPerformance();
   //engineersFilterPerformance();
   //turtleGraphicsPerformance();
-  samplerEnginePerformance();
+  //samplerEnginePerformance();
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:

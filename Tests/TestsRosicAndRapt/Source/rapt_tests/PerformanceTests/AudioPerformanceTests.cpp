@@ -280,9 +280,16 @@ void visualizePerformanceData(const std::vector<double>& data)
   AT::movingMedian3pt(&med3[0], N, &med3[0]);
   Vec med3_2(med3);
   AT::movingMedian3pt(&med3_2[0], N, &med3_2[0]);  // apply 3-pt median a 2nd time
-
-
   rsPlotArrays(N, &data[0], &med3[0], &med3_2[0]);
+
+  /*
+  Vec sorted(data);
+  Vec ones(N);
+  std::sort(sorted.begin(), sorted.end());
+  rsFill(ones, 1.0);
+  //rsPlotVectorsXY(sorted, ones); 
+  // nope - makes no sense - we want to se a unit spike at all values in "sorted"
+  */
 
   //rsPlotVector(data);  // preliminary
 }
@@ -392,6 +399,9 @@ void samplerEnginePerformance()
   // first pair of values was measured when the modMatrix contained pointers to 
   // ModulationConnection objects, the 2nd pair was measured when modMatrix contained the objects 
   // directly. It looks like using pointers improves performance...which may be a bit surprising.
+  // The data often looks like having a rather stable baseline and some outliers that are much 
+  // higher and sometimes a few outliers that are lower. We record the value of the baseline. 
+  // Sometimes the baseline seems to make a jump mid-processing, though...hmmm...
 
   // Play the empty patch to figure out CPU load in idle state:
   playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,

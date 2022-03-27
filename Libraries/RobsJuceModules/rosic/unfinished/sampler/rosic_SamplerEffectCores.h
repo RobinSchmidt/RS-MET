@@ -38,6 +38,8 @@ protected:
 
   WaveForm wave = WaveForm::sine;
 
+  AudioFileStream<float>* sampleWave = nullptr; // used when wave == WaveForm::sample
+
 };
 // -Maybe we can get rid of delay by initializing pos to -delay and the implementation of "fade"
 //  returns zero for pos < 0
