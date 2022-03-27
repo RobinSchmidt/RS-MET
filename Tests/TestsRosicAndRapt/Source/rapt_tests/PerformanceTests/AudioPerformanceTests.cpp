@@ -268,6 +268,26 @@ void turtleGraphicsPerformance()
   printPerformanceTestResult("Moore Curve 4, 2nd time", cycles); // around 350 000
 }
 
+
+void visualizePerformanceData(const std::vector<double>& data)
+{
+  using Vec = std::vector<double>;
+  using AT  = RAPT::rsArrayTools;
+  int N = (int) data.size();
+
+  // compute 3-point median:
+  Vec med3(data);
+  AT::movingMedian3pt(&med3[0], N, &med3[0]);
+  Vec med3_2(med3);
+  AT::movingMedian3pt(&med3_2[0], N, &med3_2[0]);  // apply 3-pt median a 2nd time
+
+
+  rsPlotArrays(N, &data[0], &med3[0], &med3_2[0]);
+
+  //rsPlotVector(data);  // preliminary
+}
+// maybe wrap this into a class that lets the user set up various viaualization options
+
 void samplerEnginePerformance()
 {
   using Vec   = std::vector<float>;
@@ -282,7 +302,7 @@ void samplerEnginePerformance()
 
 
   int N = 500;             // number of samples to produce for the test in each run
-  int numRuns = 100;        // number of test runs
+  int numRuns = 200;        // number of test runs
 
   Vec outL(N), outR(N);
   PerformanceCounterTSC counter;
@@ -334,17 +354,9 @@ void samplerEnginePerformance()
   {
     se.reset();
     se.handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
-
-    // new:
     std::vector<double> data = collectCyclesPerFrameData(numRuns);
-    rsPlotVector(data);
-
-    /*
-    // old:
-    double cycles = measureCyclesPerFrame();
-    std::string str = "Key=" + to_string(key); // maybe print also vel
-    printPerformanceTestResult(str, cycles);
-    */
+    visualizePerformanceData(data);
+    //rsPlotVector(data);
   };
   // -Instead of printing a result of a single run, use collectCyclesPerFrameData and show a plot.
   //  Maybe write a reusable visualizePerformanceData function taking a vector of cyclesPerOp data
@@ -359,17 +371,9 @@ void samplerEnginePerformance()
     se.reset();
     for(int i = 0; i < numNotes; i++)
       se.handleMusicalEvent(Ev(EvTp::noteOn, lowest + i, 100));  // trigger the notes
-
-    // new:
     std::vector<double> data = collectCyclesPerFrameData(numRuns) / double(numNotes);
-    rsPlotVector(data);
-
-    /*
-    // old:
-    double cycles = measureCyclesPerFrame() / numNotes;          // per sample and note
-    std::string str = "Num=" + to_string(numNotes);              // number of keys
-    printPerformanceTestResult(str, cycles);
-    */
+    visualizePerformanceData(data);
+    //rsPlotVector(data);
   };
   // maybe rename to testManyKeys or measureManyKeys, maybe take the event handling out of the 
   // measurement, i.e. drag it to before counter.init. But then we should probably do the same 
@@ -383,10 +387,6 @@ void samplerEnginePerformance()
     testMultiNotes(testName, numKeys, loKey);
     std::cout << "\n\n";
   };
-
-
-
-
 
   // Play the empty patch to figure out CPU load in idle state:
   playTests("Empty");     // 25 / 2
@@ -420,6 +420,7 @@ void samplerEnginePerformance()
   //  which are more easily visible with the simpler patches.
   // -The single note tests have clearly visible flat portions in the data when plotted as time 
   //  series. The multi-note tests are more erratic.
+  // -Sometimes the flat "baseline" seems to jump to another level.
   // -Using a smaller number of N (number of samples per run) like 500 makes the tests less 
   //  erratic. Also not using the output arrays seems to make them less erratic. I think N=500,
   //  numRuns=100 is a good setting. I think, the mode is quite reproducible in this setting.

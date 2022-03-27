@@ -13,18 +13,21 @@ void LowFreqOscCore::setup(float freq, float _amp, float phase,  float _delay, f
 
 void LowFreqOscCore::processFrame(float* L, float* R)
 {
-  *L = *R = amp * (float) sin(2.0*PI*pos);
-
-
+  // Read out the waveform at our current position/phase:
+  using WF = WaveForm;
+  switch(wave)
+  {
+  case WF::sine:     *L = *R = amp * (float) sin(2.0*PI*pos);             break;
+  case WF::triangle: *L = *R = amp * (float) RAPT::rsTriWave(2.0*PI*pos); break;
+  default: { RAPT::rsError("Unknown waveform"); *L = *R = 0.f; }
+  }
 
   // Update phase counter:
   pos += inc;
   while(pos >= 1.0)
     pos -= 1.0;
-  //*L = *R = out;
   // ToDo: 
-  // -switch on the waveform
-  // -allow single-cylce wavefiles, maybe keep a pointer to an AudioFile as member for that.
+  // -allow single-cycle wavefiles, maybe keep a pointer to an AudioFile as member for that.
   // -Use delay, fade members for fade-in and delay
   // -Produce stereo output: maybe we should have a stereo_phase paramter or phase_shift_LR
   //  and do: 

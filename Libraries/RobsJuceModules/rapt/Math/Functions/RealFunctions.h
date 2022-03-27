@@ -945,5 +945,9 @@ RS_INLINE double rsTriWave(double x)
   else
     return -1.0 + ((tmp-1.5*PI)/(0.5*PI));
 }
+// todo: make a function rsTriWave01 with its cycles between 0 and 1. That's more efficient to 
+// compute because we don't have to deal with PI. The caller will typically call the function with
+// an argument like 2*PI*pos and in our code here, we have do deal with PI as well. That's not 
+// needed!
 
 #endif
