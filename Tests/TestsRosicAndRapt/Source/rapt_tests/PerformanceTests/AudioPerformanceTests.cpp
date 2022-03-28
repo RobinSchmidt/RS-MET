@@ -465,30 +465,30 @@ void samplerEnginePerformance()
   // Sometimes the baseline seems to make a jump mid-processing, though...hmmm...
 
   // Play the empty patch to figure out CPU load in idle state:
-  //playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
+  playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
-  //playTests("1 region");  // 115.5 / 114.5,  
+  playTests("1 region");  // 115 / 114,  
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
   se.setRegionSetting(   0, 0, OC::distortN_dc, 0.f, 1);
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
-  playTests("1 region, 1 LFO to DC");    // 294 / 238,  
+  playTests("1 region, 1 LFO to DC");    // 294 / 238,  327 / 261
   //rsPlotVectors(outL, outR);
 
   // Modulate the DC parameter by a second LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 300.f, 2);
   se.setRegionModulation(0, 0, OT::FreeLfo, 2, OC::distortN_dc, 1, 0.1f, Mode::absolute);
-  playTests("1 region, 2 LFOs to DC");  // 426 / 338,
+  playTests("1 region, 2 LFOs to DC");  // 426 / 338,  480 / 379
   //rsPlotVectors(outL, outR); // does the waveshape look right? use high key to see shape better
 
   // Modulate the DC parameter by a third LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 400.f, 3);
   se.setRegionModulation(0, 0, OT::FreeLfo, 3, OC::distortN_dc, 1, 0.05f, Mode::absolute);
-  playTests("1 region, 3 LFOs to DC");  // 565 / 446,  
+  playTests("1 region, 3 LFOs to DC");  // 565 / 446,  641 / 506
   //rsPlotVectors(outL, outR); 
 
   // Observations:
@@ -497,6 +497,7 @@ void samplerEnginePerformance()
   // -The single note tests have clearly visible flat portions in the data when plotted as time 
   //  series. The multi-note tests are more erratic.
   // -Sometimes the flat "baseline" seems to jump to another level.
+  // -The 10-key tests seem to give more consistent and reproducible results than the 1-key tests.
   // -Using a smaller number of N (number of samples per run) like 500 makes the tests less 
   //  erratic. Also not using the output arrays seems to make them less erratic. I think N=500,
   //  numRuns=100 is a good setting. I think, the mode is quite reproducible in this setting.
@@ -508,8 +509,8 @@ void samplerEnginePerformance()
   //  a sort of quantity rebate. This is good news!
   // -I did some tests comparing the modMatrix in SamplePlayer holding pointers to pre-allocated
   //  ModulationConnection objects vs storing such objects directly and it turned out that using 
-  //  the pointers is more efficient. The difference is almost 15% and it's relaibly reproducible,
-  //  so apparently, the effect is real. Maybe it's because the direct objects are more heavyweight
+  //  the pointers is more efficient. The difference is between 10% and 15% and it's reliably 
+  //  reproducible. The effect is real. Maybe it's because the direct objects are more heavyweight
   //  than just storing pointers. Maybe we could make it even more lightweight by storing integer
   //  indices instead of pointers. Interestingly, some performance loss is also observed when there
   //  aren't any connections - but then the loss in only about 3%. It also looks like the 
