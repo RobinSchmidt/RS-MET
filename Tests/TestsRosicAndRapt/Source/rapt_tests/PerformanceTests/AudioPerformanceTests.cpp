@@ -268,48 +268,50 @@ void turtleGraphicsPerformance()
   printPerformanceTestResult("Moore Curve 4, 2nd time", cycles); // around 350 000
 }
 
-
 double visualizePerformanceData(const std::vector<double>& data)
 {
+  // Maybe rename to plotMeasurmentData - it may be useful in a more general context, not only for
+  // performance data. Move to the general plotting tools.
+
+  // We create a sort of kernel density estimation of the raw measurement data, then figure out
+  // the mode of the estimated probability density and plot the raw data together with a flat line
+  // at this estimated mode which is supposed to be the single number that best characterizes the
+  // given data...tbc...
+
   using Vec = std::vector<double>;
   using AT  = RAPT::rsArrayTools;
   int N = (int) data.size();
 
-  /*
-  // compute 3-point median:
-  Vec med3(data);
-  AT::movingMedian3pt(&med3[0], N, &med3[0]);
-  Vec med3_2(med3);
-  AT::movingMedian3pt(&med3_2[0], N, &med3_2[0]);  // apply 3-pt median a 2nd time
-  rsPlotArrays(N, &data[0], &med3[0], &med3_2[0]);
-  */
-
-  // We create something like a kernel density estimation plot...
-  auto kernel = [](double d, double w) // d: distance, w: kernel-width
+  // Our kernel function taking the distance d as argument and the kernel-width w as parameter:
+  auto kernel = [](double d, double w)
   {
     double x = RAPT::rsAbs(d / w);
-    return exp(-x);  // preliminary - todo: give the user choices
-    //return 1 / (1 + x*x);
+    return exp(-x); 
+    // We currently use a two-sided exponential kernel. I don't have a theoretical justification 
+    // for that but it seems to work well in practice. Maybe later we can give the user some 
+    // different choices here. Maybe 1/(1+x*x), exp(-x^2), triangular, Epanechnikov, etc. Kernels 
+    // with finite support allow for optimization: the inner loop may not need to run over all 
+    // samples but only over those within the kernel's support. Maybe the exact shape isn't that 
+    // important anyway (at least as far as the results are concerned)? ...more research needed.
   };
+
+  // Do a (sort of) a kernel density estimation. The result is an estimate of the  probability 
+  // denstity distribution. If we want to characterize the performance with one single number, 
+  // the mode of this distribution seems rather suitable. It's an estimate of the number of CPU 
+  // cycles that is most likely to be measured (kind of). Smaller is better.
   Vec sorted(data);
   std::sort(sorted.begin(), sorted.end());
   double width = sorted[N/2] / 20.0;  // median/20 gives a sharp but not overly narrow peak
   Vec weights(N);
   const double* x = &sorted[0];       // shorthand 
   double*       y = &weights[0];
-  for(int i = 0; i < N; i++)
-  {
+  for(int i = 0; i < N; i++) {
     y[i] = 0.0;
-    for(int j = 0; j < N; j++)
-    {
+    for(int j = 0; j < N; j++) {
       double d = x[i] - x[j];
       double k = kernel(d, width);
-      y[i] += k;
-    }
-  }
-
-  // Plot estimated probability denstity distribution:
-  //rsPlotArraysXY(N, x, y);
+      y[i] += k;  }}
+  //rsPlotArraysXY(N, x, y); // useful during development
 
   // Plot raw data together with a flat line at most likey value which is defined as the mode (i.e.
   // max-value) of our estimated density:
@@ -318,41 +320,22 @@ double visualizePerformanceData(const std::vector<double>& data)
   Vec mostLikely(N);
   rsFill(mostLikely, xMax);
   rsPlotArrays(N, &data[0], &mostLikely[0]);
+  return xMax; // The caller may be interested in that value. It's our main result here
 
-  return xMax;
-  // If we want to characterize the performance with one single number, this is it. It's an 
-  // estimate of the number of CPU cycles that is most likely to be measured. Smaller is better.
+  // ToDo: Make the plot look nicer. Make the window wider and use thicker lines, Print the xMax 
+  // value prominently in the plot. Maybe use 5 figures
 
-  /*
-  const double* x = &data[0];           // shorthand 
-  double xMed = AT::median(  x, N);     // we actually want the mode maybe the median is useful
-  double xMin = AT::minValue(x, N);
-  double xMax = AT::maxValue(x, N);
-  */
-  int dummy = 0;
-
-  // I think, we should try to estimate the mode of the underlying distribution. But that seems to
-  // be a nontrivial problem requiring kernel density estimation as sub-algorithm, see:
-  // https://math.stackexchange.com/questions/83322/how-to-find-the-mode-of-a-continuous-distribution-from-a-sample
-  // https://stats.stackexchange.com/questions/19952/computing-the-mode-of-data-sampled-from-a-continuous-distribution
-  // https://www.sciencedirect.com/science/article/abs/pii/0167715295000240
-
-  /*
-  Vec sorted(data);
-  std::sort(sorted.begin(), sorted.end());
-  Vec ones(N);
-  rsFill(ones, 1.0);
-  //rsPlotVectorsXY(sorted, ones); 
-  // nope - makes no sense - we want to se a unit spike at all values in "sorted"
-  */
-
-  //rsPlotVector(data);  // preliminary
-
-  // ToDo: make the plot look nicer. maybe make the window wider and use thicker lines
+  // Some info about estimating the mode of a probability density from data:
+  //   https://math.stackexchange.com/questions/83322/how-to-find-the-mode-of-a-continuous-distribution-from-a-sample
+  //   https://stats.stackexchange.com/questions/19952/computing-the-mode-of-data-sampled-from-a-continuous-distribution
+  //   https://www.sciencedirect.com/science/article/abs/pii/0167715295000240
+  //   https://stats.stackexchange.com/questions/215835/if-the-epanechnikov-kernel-is-theoretically-optimal-when-doing-kernel-density-es
+  // We do something similar here except that we don't use an x-axis with equidistant samples but 
+  // rather use the sample data itself. 
 }
 // ToDo: clean up, maybe wrap this into a class that lets the user set up various visualization 
 // options and to control the computations (for example, let the user set the width parameter 
-// manually)
+// manually). Maybe plot more flat lines at secondary, tertiary, etc. maxima?
 
 void samplerEnginePerformance()
 {
