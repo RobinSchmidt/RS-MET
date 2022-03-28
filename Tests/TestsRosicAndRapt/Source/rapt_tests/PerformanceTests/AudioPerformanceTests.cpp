@@ -268,7 +268,8 @@ void turtleGraphicsPerformance()
   printPerformanceTestResult("Moore Curve 4, 2nd time", cycles); // around 350 000
 }
 
-double visualizePerformanceData(const std::vector<double>& data)
+double visualizePerformanceData(const std::vector<double>& data, 
+  const std::string& name = std::string())
 {
   // Maybe rename to plotMeasurmentData - it may be useful in a more general context, not only for
   // performance data. Move to the general plotting tools.
@@ -321,12 +322,27 @@ double visualizePerformanceData(const std::vector<double>& data)
   double xMax = x[iMax];              // the most likely value
   Vec mostLikely(N);
   rsFill(mostLikely, xMax);
-  rsPlotArrays(N, &data[0], &mostLikely[0]);
+
+
+  //rsPlotArrays(N, &data[0], &mostLikely[0]);
+  GNUPlotter plt;
+  plt.addDataArrays(N, &mostLikely[0]);
+  plt.addDataArrays(N, &data[0]);
+  plt.setPixelSize(1200, 400);
+  std::string title;
+  if(name.empty())
+    title = to_string(xMax);
+  else
+    title = name + ": " + to_string(xMax);
+  plt.setTitle(title);
+  plt.setGraphStyles("lines lw 1.5");
+  plt.plot();
+
   return xMax; // The caller may be interested in this value. It's our main result here.
 
   // ToDo: Make the plot look nicer. Make the window wider and use thicker lines, Print the xMax 
   // value prominently in the plot. Maybe use 5 figures for that. Also print a headline with the 
-  // test's name.
+  // test's name. Maybe also optionally append the result to a textfile.
 
   // Some info about estimating the mode of a probability density from data:
   //   https://math.stackexchange.com/questions/83322/how-to-find-the-mode-of-a-continuous-distribution-from-a-sample
