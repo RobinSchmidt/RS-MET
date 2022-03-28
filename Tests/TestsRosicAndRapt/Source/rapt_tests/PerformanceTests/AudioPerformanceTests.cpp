@@ -469,26 +469,26 @@ void samplerEnginePerformance()
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
-  //playTests("1 region");  // 115.5 / 114.5,  118.45 / 117.1
+  //playTests("1 region");  // 115.5 / 114.5,  
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
   se.setRegionSetting(   0, 0, OC::distortN_dc, 0.f, 1);
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 200.f, 1);
   se.setRegionModulation(0, 0, OT::FreeLfo, 1, OC::distortN_dc, 1, 0.2f, Mode::absolute);
-  playTests("1 region, 1 LFO to DC");    // 347 / 282,  391 / 268
+  playTests("1 region, 1 LFO to DC");    // 294 / 238,  
   //rsPlotVectors(outL, outR);
 
   // Modulate the DC parameter by a second LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 300.f, 2);
   se.setRegionModulation(0, 0, OT::FreeLfo, 2, OC::distortN_dc, 1, 0.1f, Mode::absolute);
-  playTests("1 region, 2 LFOs to DC");  // 480 / 380,  543 / 390
+  playTests("1 region, 2 LFOs to DC");  // 426 / 338,
   //rsPlotVectors(outL, outR); // does the waveshape look right? use high key to see shape better
 
   // Modulate the DC parameter by a third LFO:
   se.setRegionSetting(   0, 0, OC::lfoN_freq, 400.f, 3);
   se.setRegionModulation(0, 0, OT::FreeLfo, 3, OC::distortN_dc, 1, 0.05f, Mode::absolute);
-  playTests("1 region, 3 LFOs to DC");  // 625 / 495,  706 / 515
+  playTests("1 region, 3 LFOs to DC");  // 565 / 446,  
   //rsPlotVectors(outL, outR); 
 
   // Observations:
@@ -518,8 +518,10 @@ void samplerEnginePerformance()
   //  to try to find out the real reason for this counterintuitive observation
 
   // ToDo:
+  // -Maybe do the test that we do now multiple times and compute an average over that (maybe 
+  //  removing outliers first where an otulier is defined to be more than 20% away from the median)
   // -Try to not use the outL/outR arrays and investigate how (or if) that changes the patterns in
-  //  the collected data.
+  //  the collected data. done.
   // -For better consistency, maybe run each test M times and take the minimum but with some 
   //  constraints to sort out mismeasurements (sometime we even get negative numbers)
   // -Implement some data collection and visualize and analyze the data. Maybe the mean, median and 
