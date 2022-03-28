@@ -423,7 +423,7 @@ void samplerEnginePerformance()
     se.reset();
     se.handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
     std::vector<double> data = collectCyclesPerFrameData(numRuns);
-    visualizePerformanceData(data);
+    visualizePerformanceData(data, testName + ", 1 key");
     //rsPlotVector(data);
   };
   // -Instead of printing a result of a single run, use collectCyclesPerFrameData and show a plot.
@@ -440,7 +440,7 @@ void samplerEnginePerformance()
     for(int i = 0; i < numNotes; i++)
       se.handleMusicalEvent(Ev(EvTp::noteOn, lowest + i, 100));  // trigger the notes
     std::vector<double> data = collectCyclesPerFrameData(numRuns) / double(numNotes);
-    visualizePerformanceData(data);
+    visualizePerformanceData(data, testName + ", " + to_string(numNotes) + " keys");
     //rsPlotVector(data);
   };
   // maybe rename to testManyKeys or measureManyKeys, maybe take the event handling out of the 
@@ -450,10 +450,10 @@ void samplerEnginePerformance()
   // Calls both testSingleNote and testMultiNotes:
   auto playTests = [&](const std::string& testName, int loKey = 60, int numKeys = 10)
   {
-    std::cout << testName << ":\n";
+    //std::cout << testName << ":\n";
     testSingleNote(testName, loKey);
     testMultiNotes(testName, numKeys, loKey);
-    std::cout << "\n\n";
+    //std::cout << "\n\n";
   };
 
   // The given numbers after the tests give the CPU cycle measurements (per sample and note), The 
@@ -465,11 +465,11 @@ void samplerEnginePerformance()
   // Sometimes the baseline seems to make a jump mid-processing, though...hmmm...
 
   // Play the empty patch to figure out CPU load in idle state:
-  playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
+  //playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
-  playTests("1 region");  // 115.5 / 114.5,  118.45 / 117.1
+  //playTests("1 region");  // 115.5 / 114.5,  118.45 / 117.1
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
