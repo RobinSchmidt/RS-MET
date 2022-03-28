@@ -269,37 +269,33 @@ void turtleGraphicsPerformance()
 }
 
 
-void visualizePerformanceData(const std::vector<double>& data)
+double visualizePerformanceData(const std::vector<double>& data)
 {
   using Vec = std::vector<double>;
   using AT  = RAPT::rsArrayTools;
   int N = (int) data.size();
 
+  /*
   // compute 3-point median:
   Vec med3(data);
   AT::movingMedian3pt(&med3[0], N, &med3[0]);
   Vec med3_2(med3);
   AT::movingMedian3pt(&med3_2[0], N, &med3_2[0]);  // apply 3-pt median a 2nd time
   rsPlotArrays(N, &data[0], &med3[0], &med3_2[0]);
+  */
 
-  // Preliminary, experimental - we try to make a kernel density estimation plot
-
+  // We create something like a kernel density estimation plot...
   auto kernel = [](double d, double w) // d: distance, w: kernel-width
   {
     double x = RAPT::rsAbs(d / w);
     return exp(-x);  // preliminary - todo: give the user choices
     //return 1 / (1 + x*x);
   };
-
-  double width = 20.0; 
-  // Preliminary - ToDo: let the user select it and or make it dependent on the data (maybe 
-  // proportional to interquartile interval). But if we just want to extract the maximum, maybe the
-  // value doesn't really matter much?
-
   Vec sorted(data);
   std::sort(sorted.begin(), sorted.end());
+  double width = sorted[N/2] / 20.0;  // median/20 gives a sharp but not overly narrow peak
   Vec weights(N);
-  const double* x = &sorted[0];         // shorthand 
+  const double* x = &sorted[0];       // shorthand 
   double*       y = &weights[0];
   for(int i = 0; i < N; i++)
   {
@@ -311,9 +307,21 @@ void visualizePerformanceData(const std::vector<double>& data)
       y[i] += k;
     }
   }
-  rsPlotArraysXY(N, x, y);
 
+  // Plot estimated probability denstity distribution:
+  //rsPlotArraysXY(N, x, y);
 
+  // Plot raw data together with a flat line at most likey value which is defined as the mode (i.e.
+  // max-value) of our estimated density:
+  int    iMax = AT::maxIndex(y, N);   // index with maximum weight, i.e. of most likely value
+  double xMax = x[iMax];              // the most likely value
+  Vec mostLikely(N);
+  rsFill(mostLikely, xMax);
+  rsPlotArrays(N, &data[0], &mostLikely[0]);
+
+  return xMax;
+  // If we want to characterize the performance with one single number, this is it. It's an 
+  // estimate of the number of CPU cycles that is most likely to be measured. Smaller is better.
 
   /*
   const double* x = &data[0];           // shorthand 
@@ -322,7 +330,6 @@ void visualizePerformanceData(const std::vector<double>& data)
   double xMax = AT::maxValue(x, N);
   */
   int dummy = 0;
-
 
   // I think, we should try to estimate the mode of the underlying distribution. But that seems to
   // be a nontrivial problem requiring kernel density estimation as sub-algorithm, see:
@@ -340,8 +347,12 @@ void visualizePerformanceData(const std::vector<double>& data)
   */
 
   //rsPlotVector(data);  // preliminary
+
+  // ToDo: make the plot look nicer. maybe make the window wider and use thicker lines
 }
-// maybe wrap this into a class that lets the user set up various viaualization options
+// ToDo: clean up, maybe wrap this into a class that lets the user set up various visualization 
+// options and to control the computations (for example, let the user set the width parameter 
+// manually)
 
 void samplerEnginePerformance()
 {
@@ -452,11 +463,11 @@ void samplerEnginePerformance()
   // Sometimes the baseline seems to make a jump mid-processing, though...hmmm...
 
   // Play the empty patch to figure out CPU load in idle state:
-  //playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
+  playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
-  //playTests("1 region");  // 115.5 / 114.5,  118.45 / 117.1
+  playTests("1 region");  // 115.5 / 114.5,  118.45 / 117.1
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
@@ -538,6 +549,9 @@ void samplerEnginePerformance()
   //  the test always under the same conditions, e.g. no other program open at the same time, etc.
   // -Maybe use a triangle wave for the lfo which is cheaper to compute and we are currently mainly
   //  interested in measuring the infrastrcutural overhead.
+  // -Try modMatrix holding an array of direct objects instead of pointers again after we have 
+  //  implemented block processing. Maybe it beahves differently in this case and block-processing 
+  //  will be the relevant mode of operation in practice.
 
 
 
