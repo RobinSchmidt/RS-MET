@@ -295,10 +295,10 @@ double visualizePerformanceData(const std::vector<double>& data)
     // important anyway (at least as far as the results are concerned)? ...more research needed.
   };
 
-  // Do a (sort of) a kernel density estimation. The result is an estimate of the  probability 
-  // denstity distribution. If we want to characterize the performance with one single number, 
-  // the mode of this distribution seems rather suitable. It's an estimate of the number of CPU 
-  // cycles that is most likely to be measured (kind of). Smaller is better.
+  // Do a (sort of) a kernel density estimation. The result is an estimate of the probability 
+  // denstity distribution of the given measurement data. If we want to characterize the data with
+  // one single number, the mode of this distribution seems rather suitable. It's an estimate of 
+  // the number of CPU cycles that is most likely to be measured (kind of). Smaller is better.
   Vec sorted(data);
   std::sort(sorted.begin(), sorted.end());
   double width = sorted[N/2] / 20.0;  // median/20 gives a sharp but not overly narrow peak
@@ -311,7 +311,9 @@ double visualizePerformanceData(const std::vector<double>& data)
       double d = x[i] - x[j];
       double k = kernel(d, width);
       y[i] += k;  }}
-  //rsPlotArraysXY(N, x, y); // useful during development
+  //rsPlotArraysXY(N, x, y); 
+  // Plots the estimated density. This is useful during development. Eventually, we are only 
+  // interested in the location of the maximum (or maybe the maxima) of this function.
 
   // Plot raw data together with a flat line at most likey value which is defined as the mode (i.e.
   // max-value) of our estimated density:
@@ -320,10 +322,11 @@ double visualizePerformanceData(const std::vector<double>& data)
   Vec mostLikely(N);
   rsFill(mostLikely, xMax);
   rsPlotArrays(N, &data[0], &mostLikely[0]);
-  return xMax; // The caller may be interested in that value. It's our main result here
+  return xMax; // The caller may be interested in this value. It's our main result here.
 
   // ToDo: Make the plot look nicer. Make the window wider and use thicker lines, Print the xMax 
-  // value prominently in the plot. Maybe use 5 figures
+  // value prominently in the plot. Maybe use 5 figures for that. Also print a headline with the 
+  // test's name.
 
   // Some info about estimating the mode of a probability density from data:
   //   https://math.stackexchange.com/questions/83322/how-to-find-the-mode-of-a-continuous-distribution-from-a-sample
