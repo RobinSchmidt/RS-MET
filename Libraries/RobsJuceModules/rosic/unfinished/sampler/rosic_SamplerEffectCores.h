@@ -47,6 +47,36 @@ protected:
 // -Maybe have a function pointer to a function that produces the actual waveform
 
 
+class EnvGenCore
+{
+
+public:
+
+
+protected:
+
+  // User parameters:
+  float start   = 0.f;  // Level to start from.
+  float delay   = 0.f;  // Delay between trigger and attack stage.
+  float attack  = 0.f;  // Length of attack stage.
+  float peak    = 1.f;  // Peak level, reached at end of attack stage.
+  float hold    = 0.f;  // Time that the peak level is being held before entering decay.
+  float decay   = 0.f;  // Length of the decay stage.
+  float sustain = 1.f;  // Level held during sustain after end of decay.
+  float release = 0.f;  // Length of release stage.
+  float end     = 0.f;  // Level to end at, reached at end of release.
+
+  // Algo data:
+  int sampleCount = 0;  // Keeps the current time in samples since triggering
+  int stage       = 0;  // Keeps track of which segment we are in
+
+};
+
+
+
+
+
+
 
 //=================================================================================================
 // Generators

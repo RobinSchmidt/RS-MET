@@ -282,10 +282,58 @@ void visualizePerformanceData(const std::vector<double>& data)
   AT::movingMedian3pt(&med3_2[0], N, &med3_2[0]);  // apply 3-pt median a 2nd time
   rsPlotArrays(N, &data[0], &med3[0], &med3_2[0]);
 
+  // Preliminary, experimental - we try to make a kernel density estimation plot
+
+  auto kernel = [](double d, double w) // d: distance, w: kernel-width
+  {
+    double x = RAPT::rsAbs(d / w);
+    return exp(-x);  // preliminary - todo: give the user choices
+    //return 1 / (1 + x*x);
+  };
+
+  double width = 20.0; 
+  // Preliminary - ToDo: let the user select it and or make it dependent on the data (maybe 
+  // proportional to interquartile interval). But if we just want to extract the maximum, maybe the
+  // value doesn't really matter much?
+
+  Vec sorted(data);
+  std::sort(sorted.begin(), sorted.end());
+  Vec weights(N);
+  const double* x = &sorted[0];         // shorthand 
+  double*       y = &weights[0];
+  for(int i = 0; i < N; i++)
+  {
+    y[i] = 0.0;
+    for(int j = 0; j < N; j++)
+    {
+      double d = x[i] - x[j];
+      double k = kernel(d, width);
+      y[i] += k;
+    }
+  }
+  rsPlotArraysXY(N, x, y);
+
+
+
+  /*
+  const double* x = &data[0];           // shorthand 
+  double xMed = AT::median(  x, N);     // we actually want the mode maybe the median is useful
+  double xMin = AT::minValue(x, N);
+  double xMax = AT::maxValue(x, N);
+  */
+  int dummy = 0;
+
+
+  // I think, we should try to estimate the mode of the underlying distribution. But that seems to
+  // be a nontrivial problem requiring kernel density estimation as sub-algorithm, see:
+  // https://math.stackexchange.com/questions/83322/how-to-find-the-mode-of-a-continuous-distribution-from-a-sample
+  // https://stats.stackexchange.com/questions/19952/computing-the-mode-of-data-sampled-from-a-continuous-distribution
+  // https://www.sciencedirect.com/science/article/abs/pii/0167715295000240
+
   /*
   Vec sorted(data);
-  Vec ones(N);
   std::sort(sorted.begin(), sorted.end());
+  Vec ones(N);
   rsFill(ones, 1.0);
   //rsPlotVectorsXY(sorted, ones); 
   // nope - makes no sense - we want to se a unit spike at all values in "sorted"
@@ -404,11 +452,11 @@ void samplerEnginePerformance()
   // Sometimes the baseline seems to make a jump mid-processing, though...hmmm...
 
   // Play the empty patch to figure out CPU load in idle state:
-  playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
+  //playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
 
   // Play just one layer of the looped single cycle sample:
   setupForSineWave(&se, 2048);
-  playTests("1 region");  // 115.5 / 114.5,  118.45 / 117.1
+  //playTests("1 region");  // 115.5 / 114.5,  118.45 / 117.1
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 
   // Modulate the DC parameter of a waveshape with an LFO:
