@@ -2789,7 +2789,6 @@ bool samplerLfoTest()
 {
   bool ok = true;
 
-
   using namespace rosic::Sampler;
   using Vec = std::vector<float>;
 
@@ -2825,11 +2824,25 @@ bool samplerLfoTest()
   return ok;
 }
 
+
+bool samplerEnvTest()
+{
+  bool ok = true;
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
+
+
 bool samplerModulatorsTest()
 {
   bool ok = true;
 
   ok &= samplerLfoTest();
+  ok &= samplerEnvTest();
 
   rsAssert(ok);
   return ok;

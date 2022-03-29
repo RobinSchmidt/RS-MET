@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
   //stateVectorFilterPerformance();
   //engineersFilterPerformance();
   //turtleGraphicsPerformance();
-  samplerEnginePerformance();
+  //samplerEnginePerformance();
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:
@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
 
   // Plotting:
   //gradientify();
-  //contours();
+  contours();
   //complexContours();
   //implicitCurves();
   //parametricCurve();
@@ -636,7 +636,7 @@ int main(int argc, char* argv[])
   //createPiano1();
 
   // The new renering scripts for creating sample content for the sfz engine:
-  createMiscSamples();
+  //createMiscSamples();
   //createSamplerWaveforms();
 
   // Older sample-map creations based on modal synthesis (they take long):
@@ -652,8 +652,8 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  //runModularUnitTests();
-  //runModularPerformanceTests(true);  // produces a memleak
+  //runModularUnitTests();             // MUST run before performance tests (or access violation)
+  //runModularPerformanceTests(true);  // produces a memleak unless we call clearRegisteredTypes() 
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code
   romos::moduleFactory.clearRegisteredTypes(); // avoids memleak in unit tests

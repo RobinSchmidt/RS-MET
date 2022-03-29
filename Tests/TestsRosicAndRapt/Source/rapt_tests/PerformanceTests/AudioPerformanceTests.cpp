@@ -309,7 +309,7 @@ double visualizePerformanceData(const std::vector<double>& data,
   for(int i = 0; i < N; i++) {
     y[i] = 0.0;
     for(int j = 0; j < N; j++) {
-      double d = x[i] - x[j];
+      double d = x[i] - x[j];        // maybe write it as x[i] - data[j] to make intent more clear
       double k = kernel(d, width);
       y[i] += k;  }}
   //rsPlotArraysXY(N, x, y); 
@@ -352,9 +352,21 @@ double visualizePerformanceData(const std::vector<double>& data,
   // We do something similar here except that we don't use an x-axis with equidistant samples but 
   // rather use the sample data itself. 
 }
-// ToDo: clean up, maybe wrap this into a class that lets the user set up various visualization 
-// options and to control the computations (for example, let the user set the width parameter 
-// manually). Maybe plot more flat lines at secondary, tertiary, etc. maxima?
+// ToDo: 
+// -clean up, maybe wrap this into a class that lets the user set up various visualization 
+//  options and to control the computations (for example, let the user set the width parameter 
+//  manually). Maybe plot more flat lines at secondary, tertiary, etc. maxima?
+// -Factor out a function for estimating the probabilty density. Let it take two independent arrays
+//  for the data and the x-axis. Here, we use the sorted data itself to also provide the x-axis for 
+//  the plot, but that doesn't need to be the case. With the same method, we can compute a density 
+//  estimate for any values. In the  d =  x[i] - x[j];  computation, x[i] is the point at which we
+//  estimate the density function and the x[j] are the datapoints used for that estimation. We 
+//  could also  use  d = x[i] - data[j];  and x could be another array containing arbitrary values.
+//  It should roughly span the same range as the data and should be sorted for plotting but it 
+//  doesn't need to be the exact same array. If we get measurements like 487,492,478,502,593,595,
+//  we can very well also estimate the density at 470,480,490,500,510 from this data with the same 
+//  algo and it may be actually confusing that we re-use the actual sorted data for the purpose of
+//  providing an x-axis as well. It could lead the reader astray about what we are doing.
 
 void samplerEnginePerformance()
 {

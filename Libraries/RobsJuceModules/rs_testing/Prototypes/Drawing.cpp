@@ -1085,6 +1085,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     }
     maxItsTaken = rsMax(maxItsTaken, its);
   }
+  writeImageToFilePPM(out, "AfterStep3.ppm");
 
   return maxItsTaken;
 

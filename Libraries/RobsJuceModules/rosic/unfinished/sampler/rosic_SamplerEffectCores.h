@@ -65,6 +65,9 @@ protected:
   float sustain = 1.f;  // Level held during sustain after end of decay.
   float release = 0.f;  // Length of release stage.
   float end     = 0.f;  // Level to end at, reached at end of release.
+  // I'm not sure whether the start value is supposed to become active before or after delay. The 
+  // sfz spec lists the delay parameter first, indicating that it may be the latter. We need to try
+  // this with a reference sfz engine like sfz+
 
   // Algo data:
   int sampleCount = 0;  // Keeps the current time in samples since triggering
