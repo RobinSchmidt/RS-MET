@@ -958,7 +958,11 @@ bool isCornerPixel(int i, int j, const rsImageF& img)
     ||   i == img.getWidth()-1 && j == img.getHeight()-1;  // bottom-right
 }
 
-bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
+// Checks, if the given predicate is true for any of the neighboring pixels of pixel i,j. The 
+// predicate should take the center pixel's value as first argument and the neighbor pixel's value
+// as second argument and return true, if the predicate holds for this pair of pixels.
+template<class P> // P: predicate
+bool isTrueForAnyNeighbor_I(int i, int j, const rsImageF& img, P pred)
 {
   rsAssert(isInteriorPixel(i, j, img), "Function is made only for interior pixels."); 
   // Trying to use it for boundary pixels will lead to an access violation. For boundary pixels,
@@ -966,24 +970,70 @@ bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 
   float p = img(i, j);  // pixel value
 
-  // Check against direct neighbors:
-  if( rsAbs(p-img(i-1,j)) > tol ) return false;
-  if( rsAbs(p-img(i+1,j)) > tol ) return false;
-  if( rsAbs(p-img(i,j-1)) > tol ) return false;
-  if( rsAbs(p-img(i,j+1)) > tol ) return false;
+  // Check against direct neighbors (maybe factor out):
+  if( pred(p, img(i-1,j)) ) return true;
+  if( pred(p, img(i+1,j)) ) return true;
+  if( pred(p, img(i,j-1)) ) return true;
+  if( pred(p, img(i,j+1)) ) return true;
 
-  // Check against diagonal neighbors:
-  if( rsAbs(p-img(i-1,j-1)) > tol ) return false;
-  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
-  if( rsAbs(p-img(i+1,j-1)) > tol ) return false;
-  if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
+  // Check against diagonal neighbors (maybe factor out):
+  if( pred(p, img(i-1,j-1)) ) return true;
+  if( pred(p, img(i-1,j+1)) ) return true;
+  if( pred(p, img(i+1,j-1)) ) return true;
+  if( pred(p, img(i+1,j+1)) ) return true;
 
-  // Pixel has same value as its 3x3 neighborhood up to tolerance, so it's considered to be part of
-  // a flat color region:
+  // Predicate holds for all neighbor pixels in 3x3 neighborhood:
+  return false;
+}
+// needs test
+
+// Checks, if the given predicate is true for any of the neighboring pixels of pixel i,j. 
+template<class P> 
+bool isTrueForAllNeighbors_I(int i, int j, const rsImageF& img, P pred)
+{
+  rsAssert(isInteriorPixel(i, j, img), "Function is made only for interior pixels."); 
+  float p = img(i, j); 
+  if( !pred(p, img(i-1,j  )) ) return false;
+  if( !pred(p, img(i+1,j  )) ) return false;
+  if( !pred(p, img(i,  j-1)) ) return false;
+  if( !pred(p, img(i,  j+1)) ) return false;
+  if( !pred(p, img(i-1,j-1)) ) return false;
+  if( !pred(p, img(i-1,j+1)) ) return false;
+  if( !pred(p, img(i+1,j-1)) ) return false;
+  if( !pred(p, img(i+1,j+1)) ) return false;
   return true;
+}
+
+template<class P> 
+bool isTrueForAllNeighbors_T(int i, int j, const rsImageF& img, P pred)
+{
+  // Code is the same as in isTrueForAllNeighbors_I but all lines involving j-1 have been deleted 
+  // because in the top row, j-1 is not a valid y-coordinate
+  rsAssert(isTopEdgePixel(i, j, img), "Made for top-edge pixels");
+  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
+  float p = img(i, j); 
+  if( !pred(p,img(i-1,j  )) ) return false;
+  if( !pred(p,img(i+1,j  )) ) return false;
+  if( !pred(p,img(i,  j+1)) ) return false;
+  if( !pred(p,img(i-1,j+1)) ) return false;
+  if( !pred(p,img(i+1,j+1)) ) return false;
+  return true;
+}
+
+
+
+ // ToDo:
+ // -Refactor also all the edge-case variations this function below to take a predicate, maybe 
+ //  append _I, _T, _L, _B, _R, _TL, _TR, _BL, _BR for interior, top, left, etc
+bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
+{
+  return isTrueForAllNeighbors_I(i, j, img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
 }
 bool isFlatTop3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
+  return isTrueForAllNeighbors_T(i, j, img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
+
+  /*
   // Code is the same as in isFlatInterior3x3 but all lines involving j-1 have been deleted because
   // in the top row, j-1 is not a valid y-coordinate
   rsAssert(isTopEdgePixel(i, j, img), "Made for top-edge pixels");
@@ -995,6 +1045,7 @@ bool isFlatTop3x3(int i, int j, const rsImageF& img, float tol = 0.f)
   if( rsAbs(p-img(i-1,j+1)) > tol ) return false;    // diagonal neighbors
   if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
   return true;
+  */
 }
 bool isFlatBottom3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
@@ -1095,6 +1146,9 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
       if(isFlatInterior3x3(i, j, img, tol)) 
         C(i, j) = F;
 
+  // The code below seems to make gradientifyFlatRegions fail, but the PixelClasses.ppm looks 
+  // actually right, so the code itself seems right but using it seems to break something on a
+  // higher level:
   // Classify edge pixels (excluding corners):
   for(int i = 1; i < w-1; i++) { 
     if(isFlatTop3x3(   i,   0,   img, tol))  C(i, 0  ) = F;    // top row
@@ -1108,6 +1162,7 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
   if(isFlatTopRight3x3(   img, tol))  C(w-1, 0  ) = F;
   if(isFlatBottomLeft3x3( img, tol))  C(0,   h-1) = F;
   if(isFlatBottomRight3x3(img, tol))  C(w-1, h-1) = F;
+  
 }
 
 std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c)
