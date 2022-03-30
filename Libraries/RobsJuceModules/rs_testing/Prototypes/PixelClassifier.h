@@ -49,7 +49,7 @@ public:
   any of img(i,j)'s 8 neighbors, the first is img(i,j) itself. Edge pixels have only 5 neighbors, 
   corner pixels have 3. The function takes this into account. */
   template<class P> 
-  void classifyWhenHasNeighborWith(char c, P pred);
+  void classifyWhenHasNeighborWith(char c, P pred, bool withEdges, bool withCorners);
   // API: maybe swap parameters, use "If" instead of "When" (shorter), maybe use assign instead of
   // classify (also shorter), mayb have boolean options includeEdges, includeCorners
 
@@ -57,7 +57,7 @@ public:
   predicate. Note that this is a different condition than having a neighbor that satisfies the
   negated predicate. This can be confusing. todo: verify...explain...give examples */
   template<class P> 
-  void classifyWhenHasNoNeighborWith(char c, P pred);
+  void classifyWhenHasNoNeighborWith(char c, P pred, bool withEdges, bool withCorners);
 
 
 
@@ -240,7 +240,8 @@ bool rsPixelClassifier<TPix>::hasNeighborWith_BR(P pred)
 
 template<class TPix>
 template<class P> 
-void rsPixelClassifier<TPix>::classifyWhenHasNeighborWith(char c, P pred)
+void rsPixelClassifier<TPix>::classifyWhenHasNeighborWith(
+  char c, P pred, bool withEdges, bool withCorners)
 {
   int w = img.getWidth();
   int h = img.getHeight();
@@ -253,23 +254,26 @@ void rsPixelClassifier<TPix>::classifyWhenHasNeighborWith(char c, P pred)
         C(i, j) = c;
 
   // Classify edge pixels (excluding corners):
-  for(int i = 1; i < w-1; i++) { 
-    if(hasNeighborWith_T(   i,   0,   pred)) C(i, 0  ) = c;    // top row
-    if(hasNeighborWith_B(   i,   h-1, pred)) C(i, h-1) = c; }  // bottom row
-  for(int j = 1; j < h-1; j++) {    
-    if(hasNeighborWith_L(   0,   j,   pred)) C(0,   j) = c;    // left column
-    if(hasNeighborWith_R(   w-1, j,   pred)) C(w-1, j) = c; }  // right column
+  if(withEdges) {
+    for(int i = 1; i < w-1; i++) {
+      if(hasNeighborWith_T(i,   0,   pred)) C(i,   0  ) = c;      // top row
+      if(hasNeighborWith_B(i,   h-1, pred)) C(i,   h-1) = c;  }   // bottom row
+    for(int j = 1; j < h-1; j++) {
+      if(hasNeighborWith_L(0,   j,   pred)) C(0,   j  ) = c;      // left column
+      if(hasNeighborWith_R(w-1, j,   pred)) C(w-1, j  ) = c;  }}  // right column
 
   // Classify corner pixels:
-  if(hasNeighborWith_TL(pred)) C(0,   0  ) = c;
-  if(hasNeighborWith_TR(pred)) C(w-1, 0  ) = c;
-  if(hasNeighborWith_BL(pred)) C(0,   h-1) = c;
-  if(hasNeighborWith_BR(pred)) C(w-1, h-1) = c;
+  if(withCorners)  {
+    if(hasNeighborWith_TL(pred)) C(0,   0  ) = c;
+    if(hasNeighborWith_TR(pred)) C(w-1, 0  ) = c;
+    if(hasNeighborWith_BL(pred)) C(0,   h-1) = c;
+    if(hasNeighborWith_BR(pred)) C(w-1, h-1) = c;  }
 }
 
 template<class TPix>
 template<class P> 
-void rsPixelClassifier<TPix>::classifyWhenHasNoNeighborWith(char c, P pred)
+void rsPixelClassifier<TPix>::classifyWhenHasNoNeighborWith(
+  char c, P pred, bool withEdges, bool withCorners)
 {
   int w = img.getWidth();
   int h = img.getHeight();
@@ -282,18 +286,20 @@ void rsPixelClassifier<TPix>::classifyWhenHasNoNeighborWith(char c, P pred)
         C(i, j) = c;
 
   // Edges:
-  for(int i = 1; i < w-1; i++) { 
-    if(!hasNeighborWith_T(   i,   0,   pred)) C(i, 0  ) = c;    // top row
-    if(!hasNeighborWith_B(   i,   h-1, pred)) C(i, h-1) = c; }  // bottom row
-  for(int j = 1; j < h-1; j++) {    
-    if(!hasNeighborWith_L(   0,   j,   pred)) C(0,   j) = c;    // left column
-    if(!hasNeighborWith_R(   w-1, j,   pred)) C(w-1, j) = c; }  // right column
+  if(withEdges) {
+    for(int i = 1; i < w-1; i++) { 
+      if(!hasNeighborWith_T(   i,   0,   pred)) C(i, 0  ) = c;     // top row
+      if(!hasNeighborWith_B(   i,   h-1, pred)) C(i, h-1) = c; }   // bottom row
+    for(int j = 1; j < h-1; j++) {    
+      if(!hasNeighborWith_L(   0,   j,   pred)) C(0,   j) = c;     // left column
+      if(!hasNeighborWith_R(   w-1, j,   pred)) C(w-1, j) = c; }}  // right column
 
   // Corners:
-  if(!hasNeighborWith_TL(pred)) C(0,   0  ) = c;
-  if(!hasNeighborWith_TR(pred)) C(w-1, 0  ) = c;
-  if(!hasNeighborWith_BL(pred)) C(0,   h-1) = c;
-  if(!hasNeighborWith_BR(pred)) C(w-1, h-1) = c;
+  if(withCorners) {
+    if(!hasNeighborWith_TL(pred)) C(0,   0  ) = c;
+    if(!hasNeighborWith_TR(pred)) C(w-1, 0  ) = c;
+    if(!hasNeighborWith_BL(pred)) C(0,   h-1) = c;
+    if(!hasNeighborWith_BR(pred)) C(w-1, h-1) = c; }
 }
 
 
