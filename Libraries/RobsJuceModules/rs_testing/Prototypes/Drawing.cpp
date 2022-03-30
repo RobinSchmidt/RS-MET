@@ -986,6 +986,15 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
 
 }
 
+std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c)
+{
+  std::vector<rsVector2D<int>> r; // result
+  for(int j = 0; j < C.getHeight(); j++)   
+    for(int i = 0; i < C.getWidth(); i++) 
+      if(C(i,j) == c)   
+        r.push_back(rsVector2D<int>(i,j));
+  return r;
+}
 
 
 
@@ -1018,26 +1027,10 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   C.fillAll(rest);                   // initially, all are "rest"
 
 
-  /*
-  // old:
-  for(j = 1; j < h-1; j++) {
-    for(i = 1; i < w-1; i++) {
-      if(isFlatInterior3x3(i, j, in)) {
-        F.push_back(Vec2D(i,j));
-        C(i,j) = flat;  }}} 
-  */
-
-  // new:
-  classifyFlatPixels3x3(in, C, flat);
-
-  for(j = 0; j < h; j++)          // factor out into a locatePixelsOfClass function or just more
-    for(i = 0; i < w; i++)        // generally locateMatches, findMatches...maybe:
-      if(C(i,j) == flat)          //   F = findAll(C, flat); or F = C.findAll(flat)
-        F.push_back(Vec2D(i,j));
-
-
-
-  auto isFlat = [&](int i, int j) { return C(i,j) == flat; }; // now faster!
+  // Identify pixels that belong to flat color regions:
+  classifyFlatPixels3x3(in, C, flat);  // C(i,j) == flat iff in(i,j) belongs to flat region
+  F = findAll(C, flat);                // F stores coordinates of all pixels in flat regions
+  auto isFlat = [&](int i, int j) { return C(i,j) == flat; }; // for convenience
   // hmm..this seems to give a different result than in the old implementation - but the old one 
   // was crap anyway. still - this part should actually have worked the same
 
