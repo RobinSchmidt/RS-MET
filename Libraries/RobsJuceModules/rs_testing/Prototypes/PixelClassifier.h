@@ -50,6 +50,14 @@ public:
   corner pixels have 3. The function takes this into account. */
   template<class P> 
   void classifyWhenHasNeighborWith(char c, P pred);
+  // API: maybe swap parameters, use "If" instead of "When" (shorter), maybe use assign instead of
+  // classify (also shorter)
+
+  /** Classifies a pixel as belonging to class c when it has no neighbor that satisfies the given 
+  predicate. Note that this is a different condition than having a neighbor that satisfies the
+  negated predicate. This can be confusing. todo: verify...explain...give examples */
+  template<class P> 
+  void classifyWhenHasNoNeighborWith(char c, P pred);
 
 
 
@@ -259,7 +267,33 @@ void rsPixelClassifier<TPix>::classifyWhenHasNeighborWith(char c, P pred)
   if(hasNeighborWith_BR(img, pred)) C(w-1, h-1) = c;
 }
 
+template<class P> 
+void classifyWhenHasNoNeighborWith(char c, P pred)
+{
+  int w = img.getWidth();
+  int h = img.getHeight();
 
+  // Interior:
+  rsImage<char>& C = classes;  // shorthand
+  for(int j = 1; j < h-1; j++) 
+    for(int i = 1; i < w-1; i++) 
+      if(!hasNeighborWith_I(i, j, img, pred)) 
+        C(i, j) = c;
+
+  // Edges:
+  for(int i = 1; i < w-1; i++) { 
+    if(!hasNeighborWith_T(   i,   0,   img, pred)) C(i, 0  ) = c;    // top row
+    if(!hasNeighborWith_B(   i,   h-1, img, pred)) C(i, h-1) = c; }  // bottom row
+  for(int j = 1; j < h-1; j++) {    
+    if(!hasNeighborWith_L(   0,   j,   img, pred)) C(0,   j) = c;    // left column
+    if(!hasNeighborWith_R(   w-1, j,   img, pred)) C(w-1, j) = c; }  // right column
+
+  // Corners:
+  if(!hasNeighborWith_TL(img, pred)) C(0,   0  ) = c;
+  if(!hasNeighborWith_TR(img, pred)) C(w-1, 0  ) = c;
+  if(!hasNeighborWith_BL(img, pred)) C(0,   h-1) = c;
+  if(!hasNeighborWith_BR(img, pred)) C(w-1, h-1) = c;
+}
 
 
 
