@@ -1040,6 +1040,53 @@ bool isFlatRight3x3(int i, int j, const rsImageF& img, float tol = 0.f)
   if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
 }
 
+bool isFlatTopLeft3x3(const rsImageF& img, float tol = 0.f)
+{
+  // Lines with i-1 and j-1 have been removed:
+  int i = 0;
+  int j = 0;
+  float p = img(i, j);
+  if( rsAbs(p-img(i+1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j+1)) > tol ) return false;
+  if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
+  return true;
+}
+
+bool isFlatTopRight3x3(const rsImageF& img, float tol = 0.f)
+{
+  // Lines with i+1 and j-1 have been removed:
+  int i = 0;
+  int j = img.getWidth()-1;  // maybe use img.getRight()
+  float p = img(i, j);
+  if( rsAbs(p-img(i-1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j+1)) > tol ) return false;
+  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
+  return true;
+}
+
+bool isFlatBottomLeft3x3(const rsImageF& img, float tol = 0.f)
+{
+  // Lines with i+1 and j-1 have been removed:
+  int i = img.getHeight()-1;  // maybe use img.getBottom
+  int j = 0;
+  float p = img(i, j);
+  if( rsAbs(p-img(i-1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j+1)) > tol ) return false;
+  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
+  return true;
+}
+
+bool isFlatBottomRight3x3(const rsImageF& img, float tol = 0.f)
+{
+  // Lines with i+1 and j+1 have been removed:
+  int i = img.getHeight()-1; 
+  int j = img.getWidth()-1; 
+  float p = img(i, j);
+  if( rsAbs(p-img(i-1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i-1,j-1)) > tol ) return false;
+  return true;
+}
 
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float tol)
 {
@@ -1066,8 +1113,10 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
       C(w-1, j) = F; }
 
   // Classify corner pixels:
-  // ...
-
+  if(isFlatTopLeft3x3(    img, tol))  C(0,   0  ) = F;
+  if(isFlatTopRight3x3(   img, tol))  C(w-1, 0  ) = F;
+  if(isFlatBottomLeft3x3( img, tol))  C(0,   h-1) = F;
+  if(isFlatBottomRight3x3(img, tol))  C(w-1, h-1) = F;
 }
 
 std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c)
@@ -1297,8 +1346,17 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   //  is done only for the flat pixels without an special handling of boundary pixels. Any non-flat
   //  pixels are kept as is. Rationale: the 3 classes compicate the algorithm and don't seem to
   //  be beneficial...at least not for gradientifying the flat regions in the Newton fractal.
+  // -Maybe for the fractal, we should just do the iteration for pixels that are either in flat 
+  //  regions or at a boundary but should not handle these two classes seperately but as one class
+  //  "flatOrBoundary"? Maybe then we could still get away with 3x3 neighborhoods? But maybe that 
+  //  class would thene includ all pixels in the whole image? Maybe not. ..we want to maintain 
+  //  the boundaries between regions that converge to a different attractor but smear the 
+  //  boundaries between regions that converge to the same attractor but with different speed.
+  //  Maybe we should just form pixel classes based on the attractor (directly in the fractal 
+  //  rendering) and do the heat-equation iteration separately with each such region?
   // -Maybe before running the iteration, extend the image by repeating boundary pixels and after
   //  the iteration, crop back to the original size.
+
 }
 
 //=================================================================================================
