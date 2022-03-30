@@ -964,7 +964,7 @@ bool isCornerPixel(int i, int j, const rsImageF& img)
 // predicate should take the center pixel's value as first argument and the neighbor pixel's value
 // as second argument and return true, if the predicate holds for this pair of pixels.
 template<class P> // P: predicate
-bool isTrueForAnyNeighbor_I(int i, int j, const rsImageF& img, P pred)
+bool hasNeighborWith_I(int i, int j, const rsImageF& img, P pred)
 {
   rsAssert(isInteriorPixel(i, j, img), "Function is made only for interior pixels."); 
   // Trying to use it for boundary pixels will lead to an access violation. For boundary pixels,
@@ -989,7 +989,7 @@ bool isTrueForAnyNeighbor_I(int i, int j, const rsImageF& img, P pred)
 }
 
 template<class P> 
-bool isTrueForAnyNeighbor_T(int i, int j, const rsImageF& img, P pred)
+bool hasNeighborWith_T(int i, int j, const rsImageF& img, P pred)
 {
   // Code is the same as in isTrueForAllNeighbors_I but all lines involving j-1 have been deleted 
   // because in the top row, j-1 is not a valid y-coordinate
@@ -1005,7 +1005,7 @@ bool isTrueForAnyNeighbor_T(int i, int j, const rsImageF& img, P pred)
 }
 
 template<class P> 
-bool isTrueForAnyNeighbor_B(int i, int j, const rsImageF& img, P pred)
+bool hasNeighborWith_B(int i, int j, const rsImageF& img, P pred)
 {
   // Lines with j+1 have been removed:
   rsAssert(isBottomEdgePixel(i, j, img), "Made for bottom-edge pixels");
@@ -1020,7 +1020,7 @@ bool isTrueForAnyNeighbor_B(int i, int j, const rsImageF& img, P pred)
 }
 
 template<class P> 
-bool isTrueForAnyNeighbor_L(int i, int j, const rsImageF& img, P pred)
+bool hasNeighborWith_L(int i, int j, const rsImageF& img, P pred)
 {
   // Lines with i-1 have been removed:
   rsAssert(isLeftEdgePixel(i, j, img), "Made for left-edge pixels");
@@ -1035,7 +1035,7 @@ bool isTrueForAnyNeighbor_L(int i, int j, const rsImageF& img, P pred)
 }
 
 template<class P> 
-bool isTrueForAnyNeighbor_R(int i, int j, const rsImageF& img, P pred)
+bool hasNeighborWith_R(int i, int j, const rsImageF& img, P pred)
 {
   // Lines with i+1 have been removed:
   rsAssert(isRightEdgePixel(i, j, img), "Made for right-edge pixels");
@@ -1050,7 +1050,7 @@ bool isTrueForAnyNeighbor_R(int i, int j, const rsImageF& img, P pred)
 }
 
 template<class P> 
-bool isTrueForAnyNeighbor_TL(const rsImageF& img, P pred)
+bool hasNeighborWith_TL(const rsImageF& img, P pred)
 {
   // Lines with i-1 and j-1 have been removed:
   int i = 0;
@@ -1063,7 +1063,7 @@ bool isTrueForAnyNeighbor_TL(const rsImageF& img, P pred)
 }
 
 template<class P> 
-bool isTrueForAnyNeighbor_TR(const rsImageF& img, P pred)
+bool hasNeighborWith_TR(const rsImageF& img, P pred)
 {
   // Lines with i+1 and j-1 have been removed:
   int i = 0;
@@ -1076,7 +1076,7 @@ bool isTrueForAnyNeighbor_TR(const rsImageF& img, P pred)
 }
 
 template<class P> 
-bool isTrueForAnyNeighbor_BL(const rsImageF& img, P pred)
+bool hasNeighborWith_BL(const rsImageF& img, P pred)
 {
   // Lines with i+1 and j-1 have been removed:
   int i = img.getHeight()-1;  // maybe use img.getBottom
@@ -1089,7 +1089,7 @@ bool isTrueForAnyNeighbor_BL(const rsImageF& img, P pred)
 }
 
 template<class P> 
-bool isTrueForAnyNeighbor_BR(const rsImageF& img, P pred)
+bool hasNeighborWith_BR(const rsImageF& img, P pred)
 {
   // Lines with i+1 and j+1 have been removed:
   int i = img.getHeight()-1; 
@@ -1106,7 +1106,7 @@ bool isTrueForAnyNeighbor_BR(const rsImageF& img, P pred)
 // a pixel at coordinates i,j the predicate holds for the pixel and any of its neighbors, The 
 // corresponding C(i,j) element is set to c.
 template<class P> 
-void classifyWhenTrueForAnyNeighbor(const rsImageF& img, rsImage<char>& C, char c, P pred)
+void classifyWhenHasNeighborWith(const rsImageF& img, rsImage<char>& C, char c, P pred)
 {
   rsAssert(C.hasSameShapeAs(img));
   int w = img.getWidth();
@@ -1115,28 +1115,30 @@ void classifyWhenTrueForAnyNeighbor(const rsImageF& img, rsImage<char>& C, char 
   // Classify interior pixels:
   for(int j = 1; j < h-1; j++) 
     for(int i = 1; i < w-1; i++) 
-      if(isTrueForAnyNeighbor_I(i, j, img, pred)) 
+      if(hasNeighborWith_I(i, j, img, pred)) 
         C(i, j) = c;
 
   // Classify edge pixels (excluding corners):
   for(int i = 1; i < w-1; i++) { 
-    if(isTrueForAnyNeighbor_T(   i,   0,   img, pred)) C(i, 0  ) = c;    // top row
-    if(isTrueForAnyNeighbor_B(   i,   h-1, img, pred)) C(i, h-1) = c; }  // bottom row
+    if(hasNeighborWith_T(   i,   0,   img, pred)) C(i, 0  ) = c;    // top row
+    if(hasNeighborWith_B(   i,   h-1, img, pred)) C(i, h-1) = c; }  // bottom row
   for(int j = 1; j < h-1; j++) {    
-    if(isTrueForAnyNeighbor_L(   0,   j,   img, pred)) C(0,   j) = c;    // left column
-    if(isTrueForAnyNeighbor_R(   w-1, j,   img, pred)) C(w-1, j) = c; }  // right column
+    if(hasNeighborWith_L(   0,   j,   img, pred)) C(0,   j) = c;    // left column
+    if(hasNeighborWith_R(   w-1, j,   img, pred)) C(w-1, j) = c; }  // right column
 
   // Classify corner pixels:
-  if(isTrueForAnyNeighbor_TL(img, pred)) C(0,   0  ) = c;
-  if(isTrueForAnyNeighbor_TR(img, pred)) C(w-1, 0  ) = c;
-  if(isTrueForAnyNeighbor_BL(img, pred)) C(0,   h-1) = c;
-  if(isTrueForAnyNeighbor_BR(img, pred)) C(w-1, h-1) = c;
+  if(hasNeighborWith_TL(img, pred)) C(0,   0  ) = c;
+  if(hasNeighborWith_TR(img, pred)) C(w-1, 0  ) = c;
+  if(hasNeighborWith_BL(img, pred)) C(0,   h-1) = c;
+  if(hasNeighborWith_BR(img, pred)) C(w-1, h-1) = c;
 }
 // I think, we may need two versions: classifyWhenTrue, classifyWhenFalse and in the wheFalse 
 // version we should negate the return values from isTrueFor... This is not the same as when the 
 // caller just passes the negated predicate! Maybe we also could need WhenFalseForAny, 
 // WhenTrueForAll, WhenFalseForAll...i think, we really need a unit test for this function
 
+// maybe rename the isTrueForAnyNeighbor_ functions to hasNeighborWith and also implement
+// hasNoNeighborWith which returns the negation
 
 
 
@@ -1145,50 +1147,50 @@ void classifyWhenTrueForAnyNeighbor(const rsImageF& img, rsImage<char>& C, char 
  //  append _I, _T, _L, _B, _R, _TL, _TR, _BL, _BR for interior, top, left, etc
 bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_I(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_I(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 bool isFlatTop3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_T(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_T(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 bool isFlatBottom3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_B(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_B(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 bool isFlatLeft3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_L(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_L(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 bool isFlatRight3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_R(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_R(i, j, img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 bool isFlatTopLeft3x3(const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_TL(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_TL(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 
 bool isFlatTopRight3x3(const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_TR(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_TR(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 
 bool isFlatBottomLeft3x3(const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_BL(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_BL(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 
 bool isFlatBottomRight3x3(const rsImageF& img, float tol = 0.f)
 {
-  return !isTrueForAnyNeighbor_BR(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
+  return !hasNeighborWith_BR(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 
 
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float tol)
 {
   // nope! that doesn't work:
-  //classifyPixels(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
-  //classifyPixels(img, C, F,  [=](float p, float n){ return !rsAbs(p-n) > tol; } ); return;
+  //classifyWhenTrueForAnyNeighbor(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
+  //classifyWhenTrueForAnyNeighbor(img, C, F,  [=](float p, float n){ return rsAbs(p-n) <= tol; } ); return;
 
 
   rsAssert(C.hasSameShapeAs(img));
