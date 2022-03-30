@@ -931,7 +931,7 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
 
 // Maybe move into a class rsPixelClassifier, maybe it could have the img as member (..the class is
 // under construction)
-
+/*
 // maybe get rid of the repititive "Pixel" in the names, maybe make them members of the image class
 bool isInteriorPixel(int i, int j, const rsImageF& img)
 {
@@ -1174,9 +1174,9 @@ void classifyWhenHasNoNeighborWith(const rsImageF& img, rsImage<char>& C, char c
 
 // maybe rename the isTrueForAnyNeighbor_ functions to hasNeighborWith and also implement
 // hasNoNeighborWith which returns the negation
+*/
 
-
-
+/*
  // ToDo:
  // -Refactor also all the edge-case variations this function below to take a predicate, maybe 
  //  append _I, _T, _L, _B, _R, _TL, _TR, _BL, _BR for interior, top, left, etc
@@ -1219,7 +1219,7 @@ bool isFlatBottomRight3x3(const rsImageF& img, float tol = 0.f)
 {
   return !hasNeighborWith_BR(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
-
+*/
 
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float tol)
 {
@@ -1234,7 +1234,14 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
   //pc.classifyWhenHasNoNeighborWith(F, pred, true, true);
   return;
 
+  // Passing true, true to classify... seems to get the correct classes also for the boundary 
+  // pixels but makes gradientifyFlatRegions fail. Using tthe correct pixel classes at the boundary
+  // seems to break something on a higher level so for the time being, we pass false, false. That 
+  // will leave the classes of the boundary pixels as is.
 
+
+
+  /*
   rsAssert(C.hasSameShapeAs(img));
   int w = img.getWidth();
   int h = img.getHeight();
@@ -1245,6 +1252,7 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
     for(int i = 1; i < w-1; i++) 
       if(isFlatInterior3x3(i, j, img, tol)) 
         C(i, j) = F;
+        */
 
   /*
   // The code below seems to make gradientifyFlatRegions fail, but the PixelClasses.ppm looks 
