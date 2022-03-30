@@ -987,7 +987,6 @@ bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
   // which need yet other variants), isFlatLeft, isFlatRight, isFlatTop, isFlatBottom, 
   // isFlatTopLeft, isFlatTopRight, isFlatBottomLeft, isFlatBottomRight
 }
-
 bool isFlatTop3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
   // Code is the same as in isFlatInterior3x3 but all lines involving j-1 have been deleted because
@@ -1002,9 +1001,9 @@ bool isFlatTop3x3(int i, int j, const rsImageF& img, float tol = 0.f)
   if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
   return true;
 }
-
 bool isFlatBottom3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
+  // Lines with j+1 have been removed:
   rsAssert(isBottomEdgePixel(i, j, img), "Made for bottom-edge pixels");
   rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
   float p = img(i, j);  // pixel value
@@ -1015,18 +1014,38 @@ bool isFlatBottom3x3(int i, int j, const rsImageF& img, float tol = 0.f)
   if( rsAbs(p-img(i+1,j-1)) > tol ) return false;
   return true;
 }
-
-
-
+bool isFlatLeft3x3(int i, int j, const rsImageF& img, float tol = 0.f)
+{
+  // Lines with i-1 have been removed:
+  rsAssert(isLeftEdgePixel(i, j, img), "Made for left-edge pixels");
+  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
+  float p = img(i, j);
+  if( rsAbs(p-img(i+1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i,j+1)) > tol ) return false;
+  if( rsAbs(p-img(i+1,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
+  return true;
+}
+bool isFlatRight3x3(int i, int j, const rsImageF& img, float tol = 0.f)
+{
+  // Lines with i+1 have been removed:
+  rsAssert(isRightEdgePixel(i, j, img), "Made for right-edge pixels");
+  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
+  float p = img(i, j);
+  if( rsAbs(p-img(i-1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i,j+1)) > tol ) return false;
+  if( rsAbs(p-img(i-1,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
+}
 
 
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float tol)
 {
   rsAssert(C.hasSameShapeAs(img));
-
   int w = img.getWidth();
   int h = img.getHeight();
-  //int i, j;
 
   // Classify interior pixels:
   for(int j = 1; j < h-1; j++) 
@@ -1036,18 +1055,15 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
 
   // Classify edge pixels (excluding corners):
   for(int i = 1; i < w-1; i++) {
-    if(isFlatTop3x3(   i, 0,   img, tol))   // top row
+    if(isFlatTop3x3(   i,  0,   img, tol))   // top row
       C(i, 0) = F;
-    if(isFlatBottom3x3(i, h-1, img, tol))   // bottom row
+    if(isFlatBottom3x3(i,  h-1, img, tol))   // bottom row
       C(i, h-1) = F; }
-
-
-  
-
-
-
-
-  // ...
+  for(int j = 1; j < h-1; j++) {
+    if(isFlatLeft3x3( 0,   j,   img, tol))   // left column
+      C(0, j) = F;
+    if(isFlatRight3x3(w-1, j,   img, tol))   // right column
+      C(w-1, j) = F; }
 
   // Classify corner pixels:
   // ...
