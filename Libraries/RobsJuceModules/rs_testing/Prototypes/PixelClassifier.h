@@ -51,7 +51,7 @@ public:
   template<class P> 
   void classifyWhenHasNeighborWith(char c, P pred);
   // API: maybe swap parameters, use "If" instead of "When" (shorter), maybe use assign instead of
-  // classify (also shorter)
+  // classify (also shorter), mayb have boolean options includeEdges, includeCorners
 
   /** Classifies a pixel as belonging to class c when it has no neighbor that satisfies the given 
   predicate. Note that this is a different condition than having a neighbor that satisfies the

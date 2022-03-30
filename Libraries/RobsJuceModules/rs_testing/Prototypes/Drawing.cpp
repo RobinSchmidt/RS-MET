@@ -1228,15 +1228,16 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
   //classifyWhenTrueForAnyNeighbor(img, C, F,  [=](float p, float n){ return rsAbs(p-n) <= tol; } ); return;
   //classifyWhenHasNoNeighborWith(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
 
-  rsPixelClassifier<float> pc(img, C);
-  pc.classifyWhenHasNoNeighborWith(F, [=](float p, float n){ return rsAbs(p-n) > tol; }); return;
 
-
+  //auto pred = [=](float p, float n){ return rsAbs(p-n) > tol; }; // pixel is different from neighbor
+  //rsPixelClassifier<float> pc(img, C);
+  //pc.classifyWhenHasNoNeighborWith(F, [=](float p, float n){ return rsAbs(p-n) > tol; }); return;
 
 
   rsAssert(C.hasSameShapeAs(img));
   int w = img.getWidth();
   int h = img.getHeight();
+
 
   // Classify interior pixels:
   for(int j = 1; j < h-1; j++) 
