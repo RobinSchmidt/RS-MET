@@ -49,7 +49,9 @@ protected:
   template<class P> bool hasNeighborWith_I(int x, int y, P pred); // P: predicate
 
   template<class P> bool hasNeighborWith_T(int x, int y, P pred); // variant for the top edge
-  template<class P> bool hasNeighborWith_B(int i, int j, P pred); // variant for the bottom edge
+  template<class P> bool hasNeighborWith_B(int x, int y, P pred); // variant for the bottom edge
+  template<class P> bool hasNeighborWith_L(int x, int y, P pred); // variant for left edge
+  template<class P> bool hasNeighborWith_R(int x, int y, P pred); // variant for right edge
 
 
 
@@ -124,6 +126,37 @@ bool rsPixelClassifier<TPix>::hasNeighborWith_B(int i, int j, P pred)
   return false;
 }
 
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_L(int i, int j, P pred)
+{
+  // Lines with i-1 have been removed:
+  rsAssert(isAtLeftEdge(i, j, img), "Made for left-edge pixels");
+  rsAssert(!isAtCorner( i, j, img), "Not made for corner pixels");
+  float p = img(i, j);
+  if( pred(p,img(i+1,j  )) ) return true;
+  if( pred(p,img(i,  j-1)) ) return true;
+  if( pred(p,img(i,  j+1)) ) return true;
+  if( pred(p,img(i+1,j-1)) ) return true;
+  if( pred(p,img(i+1,j+1)) ) return true;
+  return false;
+}
+
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_R(int i, int j, P pred)
+{
+  // Lines with i+1 have been removed:
+  rsAssert(isAtRightEdge(i, j, img), "Made for right-edge pixels");
+  rsAssert(!isAtCorner(  i, j, img), "Not made for corner pixels");
+  float p = img(i, j);
+  if( pred(p, img(i-1,j  )) ) return true;
+  if( pred(p, img(i,  j-1)) ) return true;
+  if( pred(p, img(i,  j+1)) ) return true;
+  if( pred(p, img(i-1,j-1)) ) return true;
+  if( pred(p, img(i-1,j+1)) ) return true;
+  return false;
+}
 
 
 
