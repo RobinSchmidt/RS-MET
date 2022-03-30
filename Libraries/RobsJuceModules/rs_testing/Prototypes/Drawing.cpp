@@ -1102,7 +1102,9 @@ bool isTrueForAnyNeighbor_BR(const rsImageF& img, P pred)
 }
 
 // Classifies the pixels as belongnig to class c where the given two-pixel predicate holds for the
-// given pixel at coordinates (i,j) with respect to any of its neighbor pixels.
+// given pixel at coordinates (i,j) with respect to any of its neighbor pixels. That means, if for 
+// a pixel at coordinates i,j the predicate holds for the pixel and any of its neighbors, The 
+// corresponding C(i,j) element is set to c.
 template<class P> 
 void classifyPixels(const rsImageF& img, rsImage<char>& C, char c, P pred)
 {
@@ -1116,24 +1118,23 @@ void classifyPixels(const rsImageF& img, rsImage<char>& C, char c, P pred)
       if(isTrueForAnyNeighbor_I(i, j, img, pred)) 
         C(i, j) = c;
 
-  // The code below seems to make gradientifyFlatRegions fail, but the PixelClasses.ppm looks 
-  // actually right, so the code itself seems right but using it seems to break something on a
-  // higher level:
   // Classify edge pixels (excluding corners):
   for(int i = 1; i < w-1; i++) { 
-    if(isTrueForAnyNeighbor_T(i,   0,   img, tol))  C(i, 0  ) = c;    // top row
-    if(isTrueForAnyNeighbor_B(i,   h-1, img, tol))  C(i, h-1) = c; }  // bottom row
+    if(isTrueForAnyNeighbor_T(   i,   0,   img, pred)) C(i, 0  ) = c;    // top row
+    if(isTrueForAnyNeighbor_B(   i,   h-1, img, pred)) C(i, h-1) = c; }  // bottom row
   for(int j = 1; j < h-1; j++) {    
-    if(isTrueForAnyNeighbor_L(0,   j,   img, tol))  C(0,   j) = c;    // left column
-    if(isTrueForAnyNeighbor_R(w-1, j,   img, tol))  C(w-1, j) = c; }  // right column
+    if(isTrueForAnyNeighbor_L(   0,   j,   img, pred)) C(0,   j) = c;    // left column
+    if(isTrueForAnyNeighbor_R(   w-1, j,   img, pred)) C(w-1, j) = c; }  // right column
 
   // Classify corner pixels:
-  if(isTrueForAnyNeighbor_TL(img, tol)) C(0,   0  ) = c;
-  if(isTrueForAnyNeighbor_TR(img, tol)) C(w-1, 0  ) = c;
-  if(isTrueForAnyNeighbor_BL(img, tol)) C(0,   h-1) = c;
-  if(isTrueForAnyNeighbor_BR(img, tol)) C(w-1, h-1) = c;
+  if(isTrueForAnyNeighbor_TL(img, pred)) C(0,   0  ) = c;
+  if(isTrueForAnyNeighbor_TR(img, pred)) C(w-1, 0  ) = c;
+  if(isTrueForAnyNeighbor_BL(img, pred)) C(0,   h-1) = c;
+  if(isTrueForAnyNeighbor_BR(img, pred)) C(w-1, h-1) = c;
 }
-
+// I think, we may need two versions: classifyWhenTrue, classifyWhenFalse and in the wheFalse 
+// version we should negate the return values from isTrueFor... This is not the same as when the 
+// caller just passes the negated predicate!
 
  // ToDo:
  // -Refactor also all the edge-case variations this function below to take a predicate, maybe 
@@ -1178,8 +1179,14 @@ bool isFlatBottomRight3x3(const rsImageF& img, float tol = 0.f)
   return !isTrueForAnyNeighbor_BR(img, [=](float p, float n){ return rsAbs(p-n) > tol; } );
 }
 
+
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float tol)
 {
+  // nope! that doesn't work:
+  //classifyPixels(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
+  //classifyPixels(img, C, F,  [=](float p, float n){ return !rsAbs(p-n) > tol; } ); return;
+
+
   rsAssert(C.hasSameShapeAs(img));
   int w = img.getWidth();
   int h = img.getHeight();
