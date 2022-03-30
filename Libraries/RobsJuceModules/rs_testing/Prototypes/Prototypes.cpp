@@ -11,6 +11,7 @@
 #include "Probability.cpp"
 #include "Projection3Dto2D.cpp"
 #include "Polygon.cpp"
+#include "PixelClassifier.cpp"
 #include "Drawing.cpp"
 #include "QuantumSystems.cpp"
 #include "Relativity.cpp"

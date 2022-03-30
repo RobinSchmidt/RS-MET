@@ -20,6 +20,7 @@ using namespace RAPT;
 #include "Probability.h"
 #include "Projection3Dto2D.h"
 #include "Polygon.h"
+#include "PixelClassifier.h"
 #include "Drawing.h"
 #include "QuantumSystems.h"
 #include "Relativity.h"

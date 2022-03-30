@@ -386,4 +386,11 @@ Should perhaps go into some rsImageAnalyzer class:
  filled triangle on red background -> switch background to blue -> boundary pixles should change 
  from dark yellowish to purple. Maybe there can be more pixel classes than these 3.
 
+-For blurring, see this: https://www.youtube.com/watch?v=LKnqECcg6Gw
+ We should square the pixel brighnesses, do the blur, then take the sqrt. Maybe we can let the user
+ specify an exponent or maybe even a pair of functions for pre- and post processing. On the other
+ hand, the caller could actually do pre- and post-procesing themselves. Maybe for common exponents
+ such as 1 or 2, we can use a cheaper implementation. 
+
+
 */

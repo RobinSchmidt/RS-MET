@@ -433,7 +433,7 @@ void samplerEnginePerformance()
   auto testSingleNote = [&](const std::string& testName, int key = 60, int vel = 100)
   {
     se.reset();
-    se.handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+    se.handleMusicalEvent(Ev(EvTp::noteOn, (float)key, (float)vel));
     std::vector<double> data = collectCyclesPerFrameData(numRuns);
     visualizePerformanceData(data, testName + ", 1 key");
     //rsPlotVector(data);
@@ -450,7 +450,7 @@ void samplerEnginePerformance()
   {
     se.reset();
     for(int i = 0; i < numNotes; i++)
-      se.handleMusicalEvent(Ev(EvTp::noteOn, lowest + i, 100));  // trigger the notes
+      se.handleMusicalEvent(Ev(EvTp::noteOn, float(lowest + i), 100.f));  // trigger the notes
     std::vector<double> data = collectCyclesPerFrameData(numRuns) / double(numNotes);
     visualizePerformanceData(data, testName + ", " + to_string(numNotes) + " keys");
     //rsPlotVector(data);
