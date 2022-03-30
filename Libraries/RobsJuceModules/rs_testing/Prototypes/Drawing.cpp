@@ -1020,6 +1020,22 @@ bool isTrueForAllNeighbors_T(int i, int j, const rsImageF& img, P pred)
   return true;
 }
 
+template<class P> 
+bool isTrueForAllNeighbors_B(int i, int j, const rsImageF& img, P pred)
+{
+  // Lines with j+1 have been removed:
+  rsAssert(isBottomEdgePixel(i, j, img), "Made for bottom-edge pixels");
+  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
+  float p = img(i, j);
+  if( !pred(p,img(i-1,j  )) ) return false;
+  if( !pred(p,img(i+1,j  )) ) return false;
+  if( !pred(p,img(i,  j-1)) ) return false;
+  if( !pred(p,img(i-1,j-1)) ) return false;
+  if( !pred(p,img(i+1,j-1)) ) return false;
+  return true;
+}
+
+
 
 
  // ToDo:
@@ -1032,33 +1048,10 @@ bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 bool isFlatTop3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
   return isTrueForAllNeighbors_T(i, j, img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
-
-  /*
-  // Code is the same as in isFlatInterior3x3 but all lines involving j-1 have been deleted because
-  // in the top row, j-1 is not a valid y-coordinate
-  rsAssert(isTopEdgePixel(i, j, img), "Made for top-edge pixels");
-  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
-  float p = img(i, j); 
-  if( rsAbs(p-img(i-1,j)) > tol ) return false;      // direct neighbors
-  if( rsAbs(p-img(i+1,j)) > tol ) return false;
-  if( rsAbs(p-img(i,j+1)) > tol ) return false;
-  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;    // diagonal neighbors
-  if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
-  return true;
-  */
 }
 bool isFlatBottom3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
-  // Lines with j+1 have been removed:
-  rsAssert(isBottomEdgePixel(i, j, img), "Made for bottom-edge pixels");
-  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
-  float p = img(i, j);  // pixel value
-  if( rsAbs(p-img(i-1,j)) > tol ) return false;
-  if( rsAbs(p-img(i+1,j)) > tol ) return false;
-  if( rsAbs(p-img(i,j-1)) > tol ) return false;
-  if( rsAbs(p-img(i-1,j-1)) > tol ) return false;
-  if( rsAbs(p-img(i+1,j-1)) > tol ) return false;
-  return true;
+  return isTrueForAllNeighbors_B(i, j, img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
 }
 bool isFlatLeft3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
