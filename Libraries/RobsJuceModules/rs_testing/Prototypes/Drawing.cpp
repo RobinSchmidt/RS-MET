@@ -929,6 +929,31 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
 
 //=================================================================================================
 
+
+bool isInteriorPixel(int i, int j, const rsImageF& img)
+{
+  return i > 0 && j > 0 && i < img.getWidth()-1 && j < img.getHeight()-1;
+}
+
+bool isFlatInterior3x3(int i, int j, const rsImageF& img)
+{
+  rsAssert(isInteriorPixel(i, j, img), "Function is made only for interior pixels."); 
+  // Trying to use it for boundary pixels will lead to an access violation. For boundary pixels,
+  // separate implementations exist.
+
+  float p = img(i, j);  // pixel value
+  if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
+    return false;
+  if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
+    return false;
+  return true;
+
+  // ToDo: 
+  // -Maybe allow for a tolerance
+}
+
+
+
 int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses) 
 {
   using Vec2D = rsVector2D<int>;
@@ -957,6 +982,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   static const char boundary = 175;  // ..that can be written to disk for debug purposes
   C.fillAll(rest);                   // initially, all are "rest"
 
+  /*
   // In a first pass, we identify the flat regions:
   auto isFlatSlow = [](int i, int j, const rsImageF& img)
   {
@@ -971,9 +997,15 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
       return false;
     return true;
   };
+  */
+  // ToDo: factor out, assert that i > 0 && i < w-1 && j > 0 && j < h-1, use a tolerance, implement
+  // variants of the function that can be used for the 4 edges (except the corners, which need yet 
+  // other variants)
+
+
   for(j = 1; j < h-1; j++) {
     for(i = 1; i < w-1; i++) {
-      if(isFlatSlow(i, j, in)) {
+      if(isFlatInterior3x3(i, j, in)) {
         F.push_back(Vec2D(i,j));
         C(i,j) = flat;  }}} 
   auto isFlat = [&](int i, int j) { return C(i,j) == flat; }; // now faster!
@@ -1147,6 +1179,21 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   //  because in the first pass, we may overestimate the true distance because some of the neighbor
   //  distances that should enter the min-computation are yet unassigned
   // -But it may not necessarily be a "fiber". It could also be just a single spot
+  // -Maybe define an "edgeness" feature for each pixel as the maximum of the absolute differences
+  //  between the pixel and its neighbors. It should be zero in flat regions. It could be used as
+  //  a scaler for pixel updates in the iteration (or rather 1-edgeness then edgeness itself). 
+  //  Pixels in flat regions would take an update step of 1, pixels in non-flat regions would 
+  //  take smaller steps.
+
+  // ToDo:
+  // -Implement another variant of this algo that uses only 2 classes: flat regions and the rest.
+  //  Here, the flat pixels are identified by having the same color as their 5x5 neighborhood 
+  //  (maybe without the corners) rather than a 3x3 neighborhood. The "heat" equation iteration 
+  //  is done only for the flat pixels without an special handling of boundary pixels. Any non-flat
+  //  pixels are kept as is. Rationale: the 3 classes compicate the algorithm and don't seem to
+  //  be beneficial...at least not for gradientifying the flat regions in the Newton fractal.
+  // -Maybe before running the iteration, extend the image by repeating boundary pixels and after
+  //  the iteration, crop back to the original size.
 }
 
 //=================================================================================================

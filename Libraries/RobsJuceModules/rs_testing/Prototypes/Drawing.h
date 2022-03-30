@@ -190,8 +190,18 @@ int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& b, const r
 
 //=================================================================================================
 
+/** Returns true if the pixel at coordinates x,y is an interior pixel of the given image. */
+bool isInteriorPixel(int x, int y, const rsImageF& img);
+
+
+
+
 int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses = 1);
 // i think, it can't work in place: in and out must be distinct
+
+
+int gradientifyFlatRegions2(const rsImageF& in, rsImageF& out, int numPasses = 1);
+
 
 //=================================================================================================
 

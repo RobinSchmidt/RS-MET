@@ -984,6 +984,8 @@ void gradientify()
   gradientifyFlatRegions(imgIn, imgOut, 3);
   writeImageToFilePPM(imgOut, "gradientifyOut3.ppm");
 
+  rsPrintLine("gradientify() done");
+
   // ToDo:
   // -Test it with more complex input images. It seems to work well with this particular test image
   //  but not so well with the Newton fractal rendering. Try some test inputs with a complexity 
