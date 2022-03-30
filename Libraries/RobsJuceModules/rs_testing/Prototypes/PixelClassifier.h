@@ -53,7 +53,10 @@ protected:
   template<class P> bool hasNeighborWith_L(int x, int y, P pred); // variant for left edge
   template<class P> bool hasNeighborWith_R(int x, int y, P pred); // variant for right edge
 
-
+  template<class P> bool hasNeighborWith_TL(P pred); // variant for top-left corner
+  template<class P> bool hasNeighborWith_TR(P pred); // variant for top-right corner
+  template<class P> bool hasNeighborWith_BL(P pred); // variant for bottom-left corner
+  template<class P> bool hasNeighborWith_BR(P pred); // variant for bottom-right corner
 
 
   const rsImage<TPix>& img;
@@ -157,6 +160,66 @@ bool rsPixelClassifier<TPix>::hasNeighborWith_R(int i, int j, P pred)
   if( pred(p, img(i-1,j+1)) ) return true;
   return false;
 }
+
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_TL(P pred)
+{
+  // Lines with i-1 and j-1 have been removed:
+  int i = 0;
+  int j = 0;
+  float p = img(i, j);
+  if( pred(p,img(i+1,j  )) ) return true;
+  if( pred(p,img(i,  j+1)) ) return true;
+  if( pred(p,img(i+1,j+1)) ) return true;
+  return false;
+}
+
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_TR(P pred)
+{
+  // Lines with i+1 and j-1 have been removed:
+  int i = 0;
+  int j = img.getWidth()-1;  // maybe use img.getRight()
+  float p = img(i, j);
+  if( pred(p,img(i-1,j  )) ) return true;
+  if( pred(p,img(i,  j+1)) ) return true;
+  if( pred(p,img(i-1,j+1)) ) return true;
+  return false;
+}
+
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_BL(P pred)
+{
+  // Lines with i+1 and j-1 have been removed:
+  int i = img.getHeight()-1;  // maybe use img.getBottom
+  int j = 0;
+  float p = img(i, j);
+  if( pred(p, img(i-1,j  )) ) return true;
+  if( pred(p, img(i,  j+1)) ) return true;
+  if( pred(p, img(i-1,j+1)) ) return true;
+  return false;
+}
+
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_BR(P pred)
+{
+  // Lines with i+1 and j+1 have been removed:
+  int i = img.getHeight()-1; 
+  int j = img.getWidth()-1; 
+  float p = img(i, j);
+  if( pred(p, img(i-1,j  )) ) return true;
+  if( pred(p, img(i,  j-1)) ) return true;
+  if( pred(p, img(i-1,j-1)) ) return true;
+  return false;
+}
+
+
+
+
 
 
 
