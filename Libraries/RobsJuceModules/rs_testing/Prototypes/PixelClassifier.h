@@ -49,6 +49,10 @@ protected:
   template<class P> // P: predicate
   bool hasNeighborWith_I(int x, int y, P pred);
 
+  template<class P> 
+  bool hasNeighborWith_T(int x, int y, P pred); // variant for the top edge
+
+
 
 
 
@@ -89,7 +93,22 @@ bool rsPixelClassifier<TPix>::hasNeighborWith_I(int i, int j, P pred)
   return false;
 }
 
-
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_T(int i, int j, P pred)
+{
+  // Code is the same as in hasNeighborWith_I but all lines involving j-1 have been deleted 
+  // because in the top row, j-1 is not a valid y-coordinate
+  rsAssert(isAtTopEdge(i, j, img), "Made for top-edge pixels");
+  rsAssert(!isAtCorner(i, j, img), "Not made for corner pixels");
+  float p = img(i, j); 
+  if( pred(p,img(i-1,j  )) ) return true;
+  if( pred(p,img(i+1,j  )) ) return true;
+  if( pred(p,img(i,  j+1)) ) return true;
+  if( pred(p,img(i-1,j+1)) ) return true;
+  if( pred(p,img(i+1,j+1)) ) return true;
+  return false;
+}
 
 
 
