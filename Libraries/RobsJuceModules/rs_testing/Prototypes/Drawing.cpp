@@ -1093,7 +1093,31 @@ bool isTrueForAllNeighbors_TR(const rsImageF& img, P pred)
   return true;
 }
 
+template<class P> 
+bool isTrueForAllNeighbors_BL(const rsImageF& img, P pred)
+{
+  // Lines with i+1 and j-1 have been removed:
+  int i = img.getHeight()-1;  // maybe use img.getBottom
+  int j = 0;
+  float p = img(i, j);
+  if( !pred(p, img(i-1,j  )) ) return false;
+  if( !pred(p, img(i,  j+1)) ) return false;
+  if( !pred(p, img(i-1,j+1)) ) return false;
+  return true;
+}
 
+template<class P> 
+bool isTrueForAllNeighbors_BR(const rsImageF& img, P pred)
+{
+  // Lines with i+1 and j+1 have been removed:
+  int i = img.getHeight()-1; 
+  int j = img.getWidth()-1; 
+  float p = img(i, j);
+  if( !pred(p, img(i-1,j  )) ) return false;
+  if( !pred(p, img(i,  j-1)) ) return false;
+  if( !pred(p, img(i-1,j-1)) ) return false;
+  return true;
+}
 
  // ToDo:
  // -Refactor also all the edge-case variations this function below to take a predicate, maybe 
@@ -1126,40 +1150,16 @@ bool isFlatTopLeft3x3(const rsImageF& img, float tol = 0.f)
 bool isFlatTopRight3x3(const rsImageF& img, float tol = 0.f)
 {
   return isTrueForAllNeighbors_TR(img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
-  /*
-  // Lines with i+1 and j-1 have been removed:
-  int i = 0;
-  int j = img.getWidth()-1;  // maybe use img.getRight()
-  float p = img(i, j);
-  if( rsAbs(p-img(i-1,j)) > tol ) return false;
-  if( rsAbs(p-img(i,j+1)) > tol ) return false;
-  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
-  return true;
-  */
 }
 
 bool isFlatBottomLeft3x3(const rsImageF& img, float tol = 0.f)
 {
-  // Lines with i+1 and j-1 have been removed:
-  int i = img.getHeight()-1;  // maybe use img.getBottom
-  int j = 0;
-  float p = img(i, j);
-  if( rsAbs(p-img(i-1,j)) > tol ) return false;
-  if( rsAbs(p-img(i,j+1)) > tol ) return false;
-  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
-  return true;
+  return isTrueForAllNeighbors_BL(img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
 }
 
 bool isFlatBottomRight3x3(const rsImageF& img, float tol = 0.f)
 {
-  // Lines with i+1 and j+1 have been removed:
-  int i = img.getHeight()-1; 
-  int j = img.getWidth()-1; 
-  float p = img(i, j);
-  if( rsAbs(p-img(i-1,j)) > tol ) return false;
-  if( rsAbs(p-img(i,j-1)) > tol ) return false;
-  if( rsAbs(p-img(i-1,j-1)) > tol ) return false;
-  return true;
+  return isTrueForAllNeighbors_BR(img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
 }
 
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float tol)
