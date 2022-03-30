@@ -958,7 +958,6 @@ bool isCornerPixel(int i, int j, const rsImageF& img)
     ||   i == img.getWidth()-1 && j == img.getHeight()-1;  // bottom-right
 }
 
-
 bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
   rsAssert(isInteriorPixel(i, j, img), "Function is made only for interior pixels."); 
@@ -982,10 +981,6 @@ bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
   // Pixel has same value as its 3x3 neighborhood up to tolerance, so it's considered to be part of
   // a flat color region:
   return true;
-
-  // ToDo: implement variants of the function that can be used for the 4 edges (except the corners, 
-  // which need yet other variants), isFlatLeft, isFlatRight, isFlatTop, isFlatBottom, 
-  // isFlatTopLeft, isFlatTopRight, isFlatBottomLeft, isFlatBottomRight
 }
 bool isFlatTop3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
@@ -1101,16 +1096,12 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
         C(i, j) = F;
 
   // Classify edge pixels (excluding corners):
-  for(int i = 1; i < w-1; i++) {
-    if(isFlatTop3x3(   i,  0,   img, tol))   // top row
-      C(i, 0) = F;
-    if(isFlatBottom3x3(i,  h-1, img, tol))   // bottom row
-      C(i, h-1) = F; }
-  for(int j = 1; j < h-1; j++) {
-    if(isFlatLeft3x3( 0,   j,   img, tol))   // left column
-      C(0, j) = F;
-    if(isFlatRight3x3(w-1, j,   img, tol))   // right column
-      C(w-1, j) = F; }
+  for(int i = 1; i < w-1; i++) { 
+    if(isFlatTop3x3(   i,   0,   img, tol))  C(i, 0  ) = F;    // top row
+    if(isFlatBottom3x3(i,   h-1, img, tol))  C(i, h-1) = F; }  // bottom row
+  for(int j = 1; j < h-1; j++) {    
+    if(isFlatLeft3x3(  0,   j,   img, tol))  C(0,   j) = F;    // left column
+    if(isFlatRight3x3( w-1, j,   img, tol))  C(w-1, j) = F; }  // right column
 
   // Classify corner pixels:
   if(isFlatTopLeft3x3(    img, tol))  C(0,   0  ) = F;
@@ -1186,7 +1177,9 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
         B.push_back(Vec2D(i,j));
         C(i,j) = boundary;  }}} 
   auto isAtBoundary = [&](int i, int j) { return C(i,j) == boundary; }; // now faster!
-  writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
+  writeImageToFilePPM(C, "PixelClasses.ppm");  
+  // For debug: pixels at the image edges are not correctly classified when they belong to a 
+  // boundary. It's because we loop hetre only over the interior pixels
 
   //...............................................................................................
   // Step 2: For all boundary pixels: replace them by the average of those of their neighbors which
