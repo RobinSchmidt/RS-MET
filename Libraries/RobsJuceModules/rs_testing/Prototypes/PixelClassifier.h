@@ -46,12 +46,10 @@ protected:
   predicate should take the center pixel's value as first argument and the neighbor pixel's value
   as second argument and return true, iff the predicate holds for this pair of pixels. This 
   function is meant to be used only for interior pixels, hence the suffix _I. */
-  template<class P> // P: predicate
-  bool hasNeighborWith_I(int x, int y, P pred);
+  template<class P> bool hasNeighborWith_I(int x, int y, P pred); // P: predicate
 
-  template<class P> 
-  bool hasNeighborWith_T(int x, int y, P pred); // variant for the top edge
-
+  template<class P> bool hasNeighborWith_T(int x, int y, P pred); // variant for the top edge
+  template<class P> bool hasNeighborWith_B(int i, int j, P pred); // variant for the bottom edge
 
 
 
@@ -107,6 +105,22 @@ bool rsPixelClassifier<TPix>::hasNeighborWith_T(int i, int j, P pred)
   if( pred(p,img(i,  j+1)) ) return true;
   if( pred(p,img(i-1,j+1)) ) return true;
   if( pred(p,img(i+1,j+1)) ) return true;
+  return false;
+}
+
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_B(int i, int j, P pred)
+{
+  // Lines with j+1 have been removed:
+  rsAssert(isAtBottomEdge(i, j, img), "Made for bottom-edge pixels");
+  rsAssert(!isAtCorner(   i, j, img), "Not made for corner pixels");
+  float p = img(i, j);
+  if( pred(p,img(i-1,j  )) ) return true;
+  if( pred(p,img(i+1,j  )) ) return true;
+  if( pred(p,img(i,  j-1)) ) return true;
+  if( pred(p,img(i-1,j-1)) ) return true;
+  if( pred(p,img(i+1,j-1)) ) return true;
   return false;
 }
 
