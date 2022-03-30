@@ -202,6 +202,8 @@ corresponding to pixels in non-flat regions are left as is. */
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& classes, char flatClassLabel, 
   float tol = 0.f);
 
+/** Returns an array of coordinates (x,y) for which C(x,y) == c. */
+std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c);
 
 
 int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses = 1);

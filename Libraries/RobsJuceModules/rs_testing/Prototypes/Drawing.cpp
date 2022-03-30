@@ -929,10 +929,35 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
 
 //=================================================================================================
 
+// maybe get rid of the repititive "Pixel" in the names, maybe make them members of the image class
 bool isInteriorPixel(int i, int j, const rsImageF& img)
 {
   return i > 0 && j > 0 && i < img.getWidth()-1 && j < img.getHeight()-1;
 }
+bool isLeftEdgePixel(int i, int j, const rsImageF& img)
+{
+  return i == 0;
+}
+bool isRightEdgePixel(int i, int j, const rsImageF& img)
+{
+  return i == img.getWidth()-1;
+}
+bool isTopEdgePixel(int i, int j, const rsImageF& img)
+{
+  return j == 0;
+}
+bool isBottomEdgePixel(int i, int j, const rsImageF& img)
+{
+  return j == img.getHeight()-1;
+}
+bool isCornerPixel(int i, int j, const rsImageF& img)
+{
+  return i == 0                && j == 0                   // top-left
+    ||   i == 0                && j == img.getHeight()-1   // bottom-left
+    ||   i == img.getWidth()-1 && j == 0                   // top-right
+    ||   i == img.getWidth()-1 && j == img.getHeight()-1;  // bottom-right
+}
+
 
 bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
@@ -963,22 +988,65 @@ bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
   // isFlatTopLeft, isFlatTopRight, isFlatBottomLeft, isFlatBottomRight
 }
 
+bool isFlatTop3x3(int i, int j, const rsImageF& img, float tol = 0.f)
+{
+  // Code is the same as in isFlatInterior3x3 but all lines involving j-1 have been deleted because
+  // in the top row, j-1 is not a valid y-coordinate
+  rsAssert(isTopEdgePixel(i, j, img), "Made for top-edge pixels");
+  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
+  float p = img(i, j); 
+  if( rsAbs(p-img(i-1,j)) > tol ) return false;      // direct neighbors
+  if( rsAbs(p-img(i+1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j+1)) > tol ) return false;
+  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;    // diagonal neighbors
+  if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
+  return true;
+}
+
+bool isFlatBottom3x3(int i, int j, const rsImageF& img, float tol = 0.f)
+{
+  rsAssert(isBottomEdgePixel(i, j, img), "Made for bottom-edge pixels");
+  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
+  float p = img(i, j);  // pixel value
+  if( rsAbs(p-img(i-1,j)) > tol ) return false;
+  if( rsAbs(p-img(i+1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i-1,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i+1,j-1)) > tol ) return false;
+  return true;
+}
+
+
+
+
+
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float tol)
 {
   rsAssert(C.hasSameShapeAs(img));
 
   int w = img.getWidth();
   int h = img.getHeight();
-
-
+  //int i, j;
 
   // Classify interior pixels:
   for(int j = 1; j < h-1; j++) 
     for(int i = 1; i < w-1; i++) 
       if(isFlatInterior3x3(i, j, img, tol)) 
-        C(i,j) = F;
+        C(i, j) = F;
 
-  // Classify edge pixels:
+  // Classify edge pixels (excluding corners):
+  for(int i = 1; i < w-1; i++) {
+    if(isFlatTop3x3(   i, 0,   img, tol))   // top row
+      C(i, 0) = F;
+    if(isFlatBottom3x3(i, h-1, img, tol))   // bottom row
+      C(i, h-1) = F; }
+
+
+  
+
+
+
+
   // ...
 
   // Classify corner pixels:
@@ -1026,7 +1094,6 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   static const char boundary = 175;  // ..that can be written to disk for debug purposes
   C.fillAll(rest);                   // initially, all are "rest"
 
-
   // Identify pixels that belong to flat color regions:
   classifyFlatPixels3x3(in, C, flat);  // C(i,j) == flat iff in(i,j) belongs to flat region
   F = findAll(C, flat);                // F stores coordinates of all pixels in flat regions
@@ -1042,6 +1109,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     if(isFlat(i-1, j-1) || isFlat(i-1, j+1)) return true;
     if(isFlat(i+1, j-1) || isFlat(i+1, j+1)) return true;
     return false;
+    // Maybe factor out into isAdjacentTo(int i, int j, const rsImage<char>& C, char c) or something
   };
   auto isAtBoundarySlow = [&](int i, int j, const rsImageF& img)
   {
@@ -1061,9 +1129,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   auto isRelevant = [&](int i, int j) 
   { 
     return isAtBoundary(i, j);
-
     //return !isFlat(i, j);  // test
-
     //return true;  // may also be useful. maybe provide different modes
   }; 
   for(k = 0; k < (int)B.size(); k++)
@@ -1106,6 +1172,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     float d = in(i,j) - avg;
     out(i,j) = in(i,j) - amount * d;
     return d;
+    // Factor out
   };
 
   int maxItsTaken = 0;
