@@ -935,21 +935,38 @@ bool isInteriorPixel(int i, int j, const rsImageF& img)
   return i > 0 && j > 0 && i < img.getWidth()-1 && j < img.getHeight()-1;
 }
 
-bool isFlatInterior3x3(int i, int j, const rsImageF& img)
+bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
   rsAssert(isInteriorPixel(i, j, img), "Function is made only for interior pixels."); 
   // Trying to use it for boundary pixels will lead to an access violation. For boundary pixels,
-  // separate implementations exist.
+  // separate implementations exist and higher level code is supposed to use these.
 
   float p = img(i, j);  // pixel value
+
+  // Check against direct neighbors:
+  if( rsAbs(p-img(i-1,j)) > tol ) return false;
+  if( rsAbs(p-img(i+1,j)) > tol ) return false;
+  if( rsAbs(p-img(i,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i,j+1)) > tol ) return false;
+
+  // Check against diagonal neighbors:
+  if( rsAbs(p-img(i-1,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
+  if( rsAbs(p-img(i+1,j-1)) > tol ) return false;
+  if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
+
+  // Pixel has same value as its 3x3 neighborhood up to tolerance, so it's considered to be part of
+  // a flat color region:
+  return true;
+
+  /*
+  // old - exact equality checks without tolerance:
   if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
     return false;
   if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
     return false;
   return true;
-
-  // ToDo: 
-  // -Maybe allow for a tolerance
+  */
 }
 
 
