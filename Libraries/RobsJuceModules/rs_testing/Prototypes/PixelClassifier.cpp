@@ -47,5 +47,7 @@ bool rsPixelClassifier<TPix>::isAtCorner(int i, int j)
 ToDo:
 -Maybe cache w,h, for convenience so we don't have to write img.getWidth() etc. all the time 
  And/or use r,b fro right,bottom to also get rid of the -1 all the time
+-Maybe move functions into.h file. The functions taking templatized predicates must go into the 
+ .h file anyway so we may just as well drop everything into it
 
 */

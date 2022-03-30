@@ -929,7 +929,8 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
 
 //=================================================================================================
 
-// Maybe move into a class rsPixelClassifier, maybe it could have the img as member
+// Maybe move into a class rsPixelClassifier, maybe it could have the img as member (..the class is
+// under construction)
 
 // maybe get rid of the repititive "Pixel" in the names, maybe make them members of the image class
 bool isInteriorPixel(int i, int j, const rsImageF& img)

@@ -40,9 +40,17 @@ public:
   bool isAtCorner(    int x, int y);
 
 
-
-
 protected:
+
+  /** Checks, if the given predicate is true for any of the neighboring pixels of pixel x,y. The 
+  predicate should take the center pixel's value as first argument and the neighbor pixel's value
+  as second argument and return true, iff the predicate holds for this pair of pixels. This 
+  function is meant to be used only for interior pixels, hence the suffix _I. */
+  template<class P> // P: predicate
+  bool hasNeighborWith_I(int x, int y, P pred);
+
+
+
 
   const rsImage<TPix>& img;
   /**< Reference to the image, whose pixels we want to classify. Must be assigned at 
@@ -53,6 +61,35 @@ protected:
   our img member. */
 
 };
+
+
+template<class TPix>
+template<class P> 
+bool rsPixelClassifier<TPix>::hasNeighborWith_I(int i, int j, P pred)
+{
+  rsAssert(isInInterior(i, j), "Function is made only for interior pixels."); 
+  // Trying to use it for boundary pixels will lead to an access violation. For boundary pixels,
+  // separate implementations exist and higher level code is supposed to use these.
+
+  float p = img(i, j);  // pixel value
+
+  // Check against direct neighbors (maybe factor out):
+  if( pred(p, img(i-1,j)) ) return true;
+  if( pred(p, img(i+1,j)) ) return true;
+  if( pred(p, img(i,j-1)) ) return true;
+  if( pred(p, img(i,j+1)) ) return true;
+
+  // Check against diagonal neighbors (maybe factor out):
+  if( pred(p, img(i-1,j-1)) ) return true;
+  if( pred(p, img(i-1,j+1)) ) return true;
+  if( pred(p, img(i+1,j-1)) ) return true;
+  if( pred(p, img(i+1,j+1)) ) return true;
+
+  // Predicate holds for all neighbor pixels in 3x3 neighborhood:
+  return false;
+}
+
+
 
 
 
