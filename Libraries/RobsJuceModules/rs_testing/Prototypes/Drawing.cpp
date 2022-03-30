@@ -1106,7 +1106,7 @@ bool isTrueForAnyNeighbor_BR(const rsImageF& img, P pred)
 // a pixel at coordinates i,j the predicate holds for the pixel and any of its neighbors, The 
 // corresponding C(i,j) element is set to c.
 template<class P> 
-void classifyPixels(const rsImageF& img, rsImage<char>& C, char c, P pred)
+void classifyWhenTrueForAnyNeighbor(const rsImageF& img, rsImage<char>& C, char c, P pred)
 {
   rsAssert(C.hasSameShapeAs(img));
   int w = img.getWidth();
@@ -1134,7 +1134,11 @@ void classifyPixels(const rsImageF& img, rsImage<char>& C, char c, P pred)
 }
 // I think, we may need two versions: classifyWhenTrue, classifyWhenFalse and in the wheFalse 
 // version we should negate the return values from isTrueFor... This is not the same as when the 
-// caller just passes the negated predicate!
+// caller just passes the negated predicate! Maybe we also could need WhenFalseForAny, 
+// WhenTrueForAll, WhenFalseForAll...i think, we really need a unit test for this function
+
+
+
 
  // ToDo:
  // -Refactor also all the edge-case variations this function below to take a predicate, maybe 
@@ -1197,6 +1201,7 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
       if(isFlatInterior3x3(i, j, img, tol)) 
         C(i, j) = F;
 
+  /*
   // The code below seems to make gradientifyFlatRegions fail, but the PixelClasses.ppm looks 
   // actually right, so the code itself seems right but using it seems to break something on a
   // higher level:
@@ -1213,6 +1218,7 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
   if(isFlatTopRight3x3(   img, tol))  C(w-1, 0  ) = F;
   if(isFlatBottomLeft3x3( img, tol))  C(0,   h-1) = F;
   if(isFlatBottomRight3x3(img, tol))  C(w-1, h-1) = F;
+  */
 }
 
 std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c)
