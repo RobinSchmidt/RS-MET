@@ -929,6 +929,8 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
 
 //=================================================================================================
 
+// Maybe move into a class rsPixelClassifier, maybe it could have the img as member
+
 // maybe get rid of the repititive "Pixel" in the names, maybe make them members of the image class
 bool isInteriorPixel(int i, int j, const rsImageF& img)
 {
@@ -1050,7 +1052,33 @@ bool isTrueForAllNeighbors_L(int i, int j, const rsImageF& img, P pred)
   return true;
 }
 
+template<class P> 
+bool isTrueForAllNeighbors_R(int i, int j, const rsImageF& img, P pred)
+{
+  // Lines with i+1 have been removed:
+  rsAssert(isRightEdgePixel(i, j, img), "Made for right-edge pixels");
+  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
+  float p = img(i, j);
+  if( !pred(p, img(i-1,j  )) ) return false;
+  if( !pred(p, img(i,  j-1)) ) return false;
+  if( !pred(p, img(i,  j+1)) ) return false;
+  if( !pred(p, img(i-1,j-1)) ) return false;
+  if( !pred(p, img(i-1,j+1)) ) return false;
+  return true;
+}
 
+template<class P> 
+bool isTrueForAllNeighbors_TL(const rsImageF& img, P pred)
+{
+  // Lines with i-1 and j-1 have been removed:
+  int i = 0;
+  int j = 0;
+  float p = img(i, j);
+  if( !pred(p,img(i+1,j  )) ) return false;
+  if( !pred(p,img(i,  j+1)) ) return false;
+  if( !pred(p,img(i+1,j+1)) ) return false;
+  return true;
+}
 
 
  // ToDo:
@@ -1074,27 +1102,11 @@ bool isFlatLeft3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 }
 bool isFlatRight3x3(int i, int j, const rsImageF& img, float tol = 0.f)
 {
-  // Lines with i+1 have been removed:
-  rsAssert(isRightEdgePixel(i, j, img), "Made for right-edge pixels");
-  rsAssert(!isCornerPixel(i, j, img), "Not made for corner pixels");
-  float p = img(i, j);
-  if( rsAbs(p-img(i-1,j)) > tol ) return false;
-  if( rsAbs(p-img(i,j-1)) > tol ) return false;
-  if( rsAbs(p-img(i,j+1)) > tol ) return false;
-  if( rsAbs(p-img(i-1,j-1)) > tol ) return false;
-  if( rsAbs(p-img(i-1,j+1)) > tol ) return false;
+  return isTrueForAllNeighbors_R(i, j, img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
 }
-
 bool isFlatTopLeft3x3(const rsImageF& img, float tol = 0.f)
 {
-  // Lines with i-1 and j-1 have been removed:
-  int i = 0;
-  int j = 0;
-  float p = img(i, j);
-  if( rsAbs(p-img(i+1,j)) > tol ) return false;
-  if( rsAbs(p-img(i,j+1)) > tol ) return false;
-  if( rsAbs(p-img(i+1,j+1)) > tol ) return false;
-  return true;
+  return isTrueForAllNeighbors_TL(img, [=](float p, float n){ return rsAbs(p-n) <= tol; } );
 }
 
 bool isFlatTopRight3x3(const rsImageF& img, float tol = 0.f)
