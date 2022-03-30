@@ -194,6 +194,14 @@ int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& b, const r
 bool isInteriorPixel(int x, int y, const rsImageF& img);
 
 
+/** Given an image "img", this function sets every entry in the "classes" pixel matrix to the
+given "flatClassLabel", iff the corresponding pixel in img belongs to a flat region. The criterion
+for a pixel to belong to a flat region is that it must have the same value/color as its 3x3 
+neighborhood up to some given tolerance. The other entries of the "classes" matrix, i.e. those 
+corresponding to pixels in non-flat regions are left as is. */
+void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& classes, char flatClassLabel, 
+  float tol = 0.f);
+
 
 
 int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses = 1);

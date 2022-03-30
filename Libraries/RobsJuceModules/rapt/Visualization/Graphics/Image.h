@@ -116,10 +116,12 @@ public:
     return this->width == width && this->height == height;
   }
 
-  /** Returns true, iff this image has the same shape as the given other image. */
-  bool hasSameShapeAs(const rsImage<TPix>& other) const
+  /** Returns true, iff this image has the same shape as the given other image. The other image may
+  have a different pixel type. */
+  template<class TPix2>
+  bool hasSameShapeAs(const rsImage<TPix2>& other) const
   {
-    return this->hasShape(other.width, other.height);
+    return this->hasShape(other.getWidth(), other.getHeight());
   }
 
   /** Compares all pixel values of this image to those of another image and returns true, if they 

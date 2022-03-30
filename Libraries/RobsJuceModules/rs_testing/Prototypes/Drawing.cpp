@@ -929,7 +929,6 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
 
 //=================================================================================================
 
-
 bool isInteriorPixel(int i, int j, const rsImageF& img)
 {
   return i > 0 && j > 0 && i < img.getWidth()-1 && j < img.getHeight()-1;
@@ -959,15 +958,34 @@ bool isFlatInterior3x3(int i, int j, const rsImageF& img, float tol = 0.f)
   // a flat color region:
   return true;
 
-  /*
-  // old - exact equality checks without tolerance:
-  if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
-    return false;
-  if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
-    return false;
-  return true;
-  */
+  // ToDo: implement variants of the function that can be used for the 4 edges (except the corners, 
+  // which need yet other variants), isFlatLeft, isFlatRight, isFlatTop, isFlatBottom, 
+  // isFlatTopLeft, isFlatTopRight, isFlatBottomLeft, isFlatBottomRight
 }
+
+void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float tol)
+{
+  rsAssert(C.hasSameShapeAs(img));
+
+  int w = img.getWidth();
+  int h = img.getHeight();
+
+
+
+  // Classify interior pixels:
+  for(int j = 1; j < h-1; j++) 
+    for(int i = 1; i < w-1; i++) 
+      if(isFlatInterior3x3(i, j, img, tol)) 
+        C(i,j) = F;
+
+  // Classify edge pixels:
+  // ...
+
+  // Classify corner pixels:
+  // ...
+
+}
+
 
 
 
@@ -999,32 +1017,26 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   static const char boundary = 175;  // ..that can be written to disk for debug purposes
   C.fillAll(rest);                   // initially, all are "rest"
 
+
   /*
-  // In a first pass, we identify the flat regions:
-  auto isFlatSlow = [](int i, int j, const rsImageF& img)
-  {
-    // This is the slow version of the function that needs to be used in the first pass. Later,
-    // we can use the C-matrix to retrieve that information faster. A pixel is considered to belong
-    // to a flat region, if it has the same value/color as all of its neighbors (todo: allow 
-    // tolerance).
-    float p = img(i, j);  // pixel value
-    if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
-      return false;
-    if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
-      return false;
-    return true;
-  };
-  */
-  // ToDo: factor out, assert that i > 0 && i < w-1 && j > 0 && j < h-1, use a tolerance, implement
-  // variants of the function that can be used for the 4 edges (except the corners, which need yet 
-  // other variants)
-
-
+  // old:
   for(j = 1; j < h-1; j++) {
     for(i = 1; i < w-1; i++) {
       if(isFlatInterior3x3(i, j, in)) {
         F.push_back(Vec2D(i,j));
         C(i,j) = flat;  }}} 
+  */
+
+  // new:
+  classifyFlatPixels3x3(in, C, flat);
+
+  for(j = 0; j < h; j++)          // factor out into a locatePixelsOfClass function or just more
+    for(i = 0; i < w; i++)        // generally locateMatches, findMatches...maybe:
+      if(C(i,j) == flat)          //   F = findAll(C, flat); or F = C.findAll(flat)
+        F.push_back(Vec2D(i,j));
+
+
+
   auto isFlat = [&](int i, int j) { return C(i,j) == flat; }; // now faster!
   // hmm..this seems to give a different result than in the old implementation - but the old one 
   // was crap anyway. still - this part should actually have worked the same
