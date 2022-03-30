@@ -1101,10 +1101,13 @@ bool hasNeighborWith_BR(const rsImageF& img, P pred)
   return false;
 }
 
-// Classifies the pixels as belongnig to class c where the given two-pixel predicate holds for the
-// given pixel at coordinates (i,j) with respect to any of its neighbor pixels. That means, if for 
-// a pixel at coordinates i,j the predicate holds for the pixel and any of its neighbors, The 
-// corresponding C(i,j) element is set to c.
+// Classifies a pixel as belonging to class c when it has at least one neighbor that satisfies the
+// given predicate. That means, if for the pixel at img(i,j) the predicate holds for the pixel
+// and any of its neighbors, the corresponding C(i,j) element is set to c, otherwise C(i,j) is left
+// as is. The predicate always takes two pixels as input: the pixel currently under investigation, 
+// i.e. img(i,j), and one of its neighbors, e.g. img(i,j+1) or img(i-1,j), etc. The 2nd argument to 
+// pred is supposed to be any of img(i,j)'s 8 neighbors, the first is img(i,j) itself. Edge pixels
+// have only 5 neighbors, corner pixels have 3. The function takes this into account.
 template<class P> 
 void classifyWhenHasNeighborWith(const rsImageF& img, rsImage<char>& C, char c, P pred)
 {
@@ -1131,6 +1134,37 @@ void classifyWhenHasNeighborWith(const rsImageF& img, rsImage<char>& C, char c, 
   if(hasNeighborWith_TR(img, pred)) C(w-1, 0  ) = c;
   if(hasNeighborWith_BL(img, pred)) C(0,   h-1) = c;
   if(hasNeighborWith_BR(img, pred)) C(w-1, h-1) = c;
+}
+
+// Classifies a pixel as belonging to class c when it has no neighbor that satisfies the given 
+// predicate. Note that this is a different condition than having a neighbor that satisfies the
+// negated predicate. This can be confusing. todo: verify...explain...give examples
+template<class P> 
+void classifyWhenHasNoNeighborWith(const rsImageF& img, rsImage<char>& C, char c, P pred)
+{
+  rsAssert(C.hasSameShapeAs(img));
+  int w = img.getWidth();
+  int h = img.getHeight();
+
+  // Classify interior pixels:
+  for(int j = 1; j < h-1; j++) 
+    for(int i = 1; i < w-1; i++) 
+      if(!hasNeighborWith_I(i, j, img, pred)) 
+        C(i, j) = c;
+
+  // Classify edge pixels (excluding corners):
+  for(int i = 1; i < w-1; i++) { 
+    if(!hasNeighborWith_T(   i,   0,   img, pred)) C(i, 0  ) = c;    // top row
+    if(!hasNeighborWith_B(   i,   h-1, img, pred)) C(i, h-1) = c; }  // bottom row
+  for(int j = 1; j < h-1; j++) {    
+    if(!hasNeighborWith_L(   0,   j,   img, pred)) C(0,   j) = c;    // left column
+    if(!hasNeighborWith_R(   w-1, j,   img, pred)) C(w-1, j) = c; }  // right column
+
+  // Classify corner pixels:
+  if(!hasNeighborWith_TL(img, pred)) C(0,   0  ) = c;
+  if(!hasNeighborWith_TR(img, pred)) C(w-1, 0  ) = c;
+  if(!hasNeighborWith_BL(img, pred)) C(0,   h-1) = c;
+  if(!hasNeighborWith_BR(img, pred)) C(w-1, h-1) = c;
 }
 // I think, we may need two versions: classifyWhenTrue, classifyWhenFalse and in the wheFalse 
 // version we should negate the return values from isTrueFor... This is not the same as when the 
@@ -1191,6 +1225,7 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
   // nope! that doesn't work:
   //classifyWhenTrueForAnyNeighbor(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
   //classifyWhenTrueForAnyNeighbor(img, C, F,  [=](float p, float n){ return rsAbs(p-n) <= tol; } ); return;
+  classifyWhenHasNoNeighborWith(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
 
 
   rsAssert(C.hasSameShapeAs(img));
