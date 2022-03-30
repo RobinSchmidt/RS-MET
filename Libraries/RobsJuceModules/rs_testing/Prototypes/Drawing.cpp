@@ -1226,7 +1226,12 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
   // nope! that doesn't work:
   //classifyWhenTrueForAnyNeighbor(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
   //classifyWhenTrueForAnyNeighbor(img, C, F,  [=](float p, float n){ return rsAbs(p-n) <= tol; } ); return;
-  classifyWhenHasNoNeighborWith(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
+  //classifyWhenHasNoNeighborWith(img, C, F,  [=](float p, float n){ return rsAbs(p-n) > tol; } ); return;
+
+  rsPixelClassifier<float> pc(img, C);
+  pc.classifyWhenHasNoNeighborWith(F, [=](float p, float n){ return rsAbs(p-n) > tol; }); return;
+
+
 
 
   rsAssert(C.hasSameShapeAs(img));

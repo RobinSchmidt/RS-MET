@@ -123,8 +123,8 @@ bool rsPixelClassifier<TPix>::hasNeighborWith_T(int i, int j, P pred)
 {
   // Code is the same as in hasNeighborWith_I but all lines involving j-1 have been deleted 
   // because in the top row, j-1 is not a valid y-coordinate
-  rsAssert(isAtTopEdge(i, j, img), "Made for top-edge pixels");
-  rsAssert(!isAtCorner(i, j, img), "Not made for corner pixels");
+  rsAssert(isAtTopEdge(i, j), "Made for top-edge pixels");
+  rsAssert(!isAtCorner(i, j), "Not made for corner pixels");
   float p = img(i, j); 
   if( pred(p,img(i-1,j  )) ) return true;
   if( pred(p,img(i+1,j  )) ) return true;
@@ -139,8 +139,8 @@ template<class P>
 bool rsPixelClassifier<TPix>::hasNeighborWith_B(int i, int j, P pred)
 {
   // Lines with j+1 have been removed:
-  rsAssert(isAtBottomEdge(i, j, img), "Made for bottom-edge pixels");
-  rsAssert(!isAtCorner(   i, j, img), "Not made for corner pixels");
+  rsAssert(isAtBottomEdge(i, j), "Made for bottom-edge pixels");
+  rsAssert(!isAtCorner(   i, j), "Not made for corner pixels");
   float p = img(i, j);
   if( pred(p,img(i-1,j  )) ) return true;
   if( pred(p,img(i+1,j  )) ) return true;
@@ -155,8 +155,8 @@ template<class P>
 bool rsPixelClassifier<TPix>::hasNeighborWith_L(int i, int j, P pred)
 {
   // Lines with i-1 have been removed:
-  rsAssert(isAtLeftEdge(i, j, img), "Made for left-edge pixels");
-  rsAssert(!isAtCorner( i, j, img), "Not made for corner pixels");
+  rsAssert(isAtLeftEdge(i, j), "Made for left-edge pixels");
+  rsAssert(!isAtCorner( i, j), "Not made for corner pixels");
   float p = img(i, j);
   if( pred(p,img(i+1,j  )) ) return true;
   if( pred(p,img(i,  j-1)) ) return true;
@@ -171,8 +171,8 @@ template<class P>
 bool rsPixelClassifier<TPix>::hasNeighborWith_R(int i, int j, P pred)
 {
   // Lines with i+1 have been removed:
-  rsAssert(isAtRightEdge(i, j, img), "Made for right-edge pixels");
-  rsAssert(!isAtCorner(  i, j, img), "Not made for corner pixels");
+  rsAssert(isAtRightEdge(i, j), "Made for right-edge pixels");
+  rsAssert(!isAtCorner(  i, j), "Not made for corner pixels");
   float p = img(i, j);
   if( pred(p, img(i-1,j  )) ) return true;
   if( pred(p, img(i,  j-1)) ) return true;
@@ -249,26 +249,27 @@ void rsPixelClassifier<TPix>::classifyWhenHasNeighborWith(char c, P pred)
   rsImage<char>& C = classes;  // shorthand
   for(int j = 1; j < h-1; j++) 
     for(int i = 1; i < w-1; i++) 
-      if(hasNeighborWith_I(i, j, img, pred)) 
+      if(hasNeighborWith_I(i, j, pred)) 
         C(i, j) = c;
 
   // Classify edge pixels (excluding corners):
   for(int i = 1; i < w-1; i++) { 
-    if(hasNeighborWith_T(   i,   0,   img, pred)) C(i, 0  ) = c;    // top row
-    if(hasNeighborWith_B(   i,   h-1, img, pred)) C(i, h-1) = c; }  // bottom row
+    if(hasNeighborWith_T(   i,   0,   pred)) C(i, 0  ) = c;    // top row
+    if(hasNeighborWith_B(   i,   h-1, pred)) C(i, h-1) = c; }  // bottom row
   for(int j = 1; j < h-1; j++) {    
-    if(hasNeighborWith_L(   0,   j,   img, pred)) C(0,   j) = c;    // left column
-    if(hasNeighborWith_R(   w-1, j,   img, pred)) C(w-1, j) = c; }  // right column
+    if(hasNeighborWith_L(   0,   j,   pred)) C(0,   j) = c;    // left column
+    if(hasNeighborWith_R(   w-1, j,   pred)) C(w-1, j) = c; }  // right column
 
   // Classify corner pixels:
-  if(hasNeighborWith_TL(img, pred)) C(0,   0  ) = c;
-  if(hasNeighborWith_TR(img, pred)) C(w-1, 0  ) = c;
-  if(hasNeighborWith_BL(img, pred)) C(0,   h-1) = c;
-  if(hasNeighborWith_BR(img, pred)) C(w-1, h-1) = c;
+  if(hasNeighborWith_TL(pred)) C(0,   0  ) = c;
+  if(hasNeighborWith_TR(pred)) C(w-1, 0  ) = c;
+  if(hasNeighborWith_BL(pred)) C(0,   h-1) = c;
+  if(hasNeighborWith_BR(pred)) C(w-1, h-1) = c;
 }
 
+template<class TPix>
 template<class P> 
-void classifyWhenHasNoNeighborWith(char c, P pred)
+void rsPixelClassifier<TPix>::classifyWhenHasNoNeighborWith(char c, P pred)
 {
   int w = img.getWidth();
   int h = img.getHeight();
@@ -277,22 +278,22 @@ void classifyWhenHasNoNeighborWith(char c, P pred)
   rsImage<char>& C = classes;  // shorthand
   for(int j = 1; j < h-1; j++) 
     for(int i = 1; i < w-1; i++) 
-      if(!hasNeighborWith_I(i, j, img, pred)) 
+      if(!hasNeighborWith_I(i, j, pred)) 
         C(i, j) = c;
 
   // Edges:
   for(int i = 1; i < w-1; i++) { 
-    if(!hasNeighborWith_T(   i,   0,   img, pred)) C(i, 0  ) = c;    // top row
-    if(!hasNeighborWith_B(   i,   h-1, img, pred)) C(i, h-1) = c; }  // bottom row
+    if(!hasNeighborWith_T(   i,   0,   pred)) C(i, 0  ) = c;    // top row
+    if(!hasNeighborWith_B(   i,   h-1, pred)) C(i, h-1) = c; }  // bottom row
   for(int j = 1; j < h-1; j++) {    
-    if(!hasNeighborWith_L(   0,   j,   img, pred)) C(0,   j) = c;    // left column
-    if(!hasNeighborWith_R(   w-1, j,   img, pred)) C(w-1, j) = c; }  // right column
+    if(!hasNeighborWith_L(   0,   j,   pred)) C(0,   j) = c;    // left column
+    if(!hasNeighborWith_R(   w-1, j,   pred)) C(w-1, j) = c; }  // right column
 
   // Corners:
-  if(!hasNeighborWith_TL(img, pred)) C(0,   0  ) = c;
-  if(!hasNeighborWith_TR(img, pred)) C(w-1, 0  ) = c;
-  if(!hasNeighborWith_BL(img, pred)) C(0,   h-1) = c;
-  if(!hasNeighborWith_BR(img, pred)) C(w-1, h-1) = c;
+  if(!hasNeighborWith_TL(pred)) C(0,   0  ) = c;
+  if(!hasNeighborWith_TR(pred)) C(w-1, 0  ) = c;
+  if(!hasNeighborWith_BL(pred)) C(0,   h-1) = c;
+  if(!hasNeighborWith_BR(pred)) C(w-1, h-1) = c;
 }
 
 
