@@ -649,9 +649,6 @@ template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
 template rsBivariatePolynomial<double> rsBivariatePolynomial<double>::getPolyaPotential(
   const rsPolynomial<std::complex<double>>& p);
 
-
-
-
 template class rsTrivariatePolynomial<double>;
 template class rsPiecewisePolynomial<double>;
 template class rsDampedSine<double>;
@@ -660,6 +657,9 @@ template class rsDampedSineSum<double>;
 template class rsSineSweeperBankIterative<float, 16>; // 16 is the simd-vector size
 template class rsAdditiveSynthVoice<16>; 
 template class rsMultiplicativeSynth<double>; 
+
+template class rsPixelClassifier<float>;
+
 
 //template class std::complex<rsSimdVector<float, 16>>;  
 // test - doesn't compile. the problem are things like _Isnan, _IsInf, etc. std::complex seems to 

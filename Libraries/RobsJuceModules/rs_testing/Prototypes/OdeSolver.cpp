@@ -33,14 +33,17 @@ std::vector<T> rsOdeCoeffs<T>::adamsMoulton(int s)
   return b;
 }
 // Maybe the algos can be turned into an O(N) algos by not creating the polynomial p from 
-// scratch leaving out the i=j factor each time but instead construction a "master" polynomial and 
+// scratch leaving out the i=j factor each time but instead constructing a "master" polynomial and 
 // dividing out the i=j factor in each iteration. Oh, and the factorials could be computed more 
 // efficiently on the fly, too. And we should avoid all these pesky re-allocations related to the
-// polynomials. We should just have a function adamsMoulton(int order, T* coeffs, T* work) and 
+// polynomials, i.e. the p = p * Poly(...) lines should use in-place convolution in production 
+// code. We should just have a function adamsMoulton(int order, T* coeffs, T* work) and 
 // don't allocate any heap memory. The workspace is required for the polynomials.
 // Maybe it's more convenient to return the arrays in reversed order - we'll see. That would just 
 // require to replace b[s-j-1] = ... and b[s-j] = ... by b[j] in A-Bashforth and A-Moulton 
 // respectively. Depends on which format is most convenient to use in the solvers themselves.
+// We should keep this prototype implementation for unit testing the prodcution version, though.
+// And for reference as they more clearly show what's going on math-wise.
 
 
 
