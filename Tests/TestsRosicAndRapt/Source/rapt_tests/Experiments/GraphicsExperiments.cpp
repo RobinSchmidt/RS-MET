@@ -1002,7 +1002,7 @@ void gradientify()
   {
     rsImageF imgOut(imgIn.getWidth(), imgIn.getHeight());
     int maxItsTaken = gradientifyFlatRegions(imgIn, imgOut, numIterations);
-    std::cout << "Max iterations taken: " + to_string(maxItsTaken);
+    std::cout << "Max iterations taken: " + to_string(maxItsTaken) + "\n";
     std::string name = "gradientifyOut" + to_string(numIterations) + ".ppm";
     writeImageToFilePPM(imgOut, name.c_str());
     rsPlotArray(imgOut.getPixelPointer(0, h/2), w);
@@ -1013,7 +1013,7 @@ void gradientify()
 
   //rsImageF imgIn = testImg3Regions(w, h);
 
-  w = 1500; h = 100;
+  w = 1000; h = 50;
   rsImageF imgIn = testImgVerticalStripes(w, h, 5);
   //fillRectangle(imgIn, 0, h/2-h/6, w-1, h/2+h/6, 0.5f); // add horizontal stripe of gray
 
@@ -1076,6 +1076,9 @@ void gradientify()
   //  is used as initial guess for the next higher resolution.
   //  -Maybe use such a multigrid method only for the flat-region pixels but not for the boundary
   //   pixels. 
+  // -To the helper function applyFilter, we we pass "out" for both parameters "in" and "out", i.e. 
+  //  we directly overwrite in-place. Maybe that is not a good idea and we should use separate 
+  //  arrays?
   // -Try to make a 1D implementation and check, if it has the same convergence problems. If so, we
   //  may try to find tricks speed up the convergence for 1D first and hope that it will be 
   //  applicable to the 2D case, too.

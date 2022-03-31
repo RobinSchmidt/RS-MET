@@ -971,7 +971,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   
 
 
-  float tol  = 1.e-5f;
+  float tol  = 1.e-6f;      // was 1.e-5
   int w = in.getWidth();
   int h = in.getHeight();
   int i, j, k;                   // loop iteration indices
@@ -1070,11 +1070,13 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     float avg;
     avg  = in(i,   j-1) + in(i,   j+1) + in(i-1, j  ) + in(i+1, j  );
     avg += in(i-1, j-1) + in(i-1, j+1) + in(i+1, j-1) + in(i+1, j+1);
-    avg *= 1.f/8.f;
-    float d = in(i,j) - avg;
+    avg *= 1.f/8.f;                    // average of neighbors
+    float d = in(i,j) - avg;           // estimate of Laplacian at i,j
     out(i,j) = in(i,j) - amount * d;
     return d;
-    // Factor out
+    // -Factor out into a "diffusionStep" function (it realizes a step in a diffusion equation 
+    //  solver), 
+    // -Test whether it converges also in in-place usage, i.e. when in and out are the same image
   };
 
   int maxItsTaken = 0;
