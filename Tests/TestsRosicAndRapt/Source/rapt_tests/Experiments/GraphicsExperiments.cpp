@@ -1190,7 +1190,13 @@ void contours()
   //  anti-aliasing in rsImageContourPlotter::fillBetweenContours in the if(!antiAlias) branch. The
   //  coloring of pixels that lie *on* a contour is weird. I tried this with the Cassini curve 
   //  100x100. With 500x500, we see additional artifacts at the image boundaries. They are not 
-  //  properly handled an the artifacts bleed into the interior
+  //  properly handled an the artifacts bleed into the interior. But perhaps that's due to the fact
+  //  that the conturization algo itself produces an output with a black frame. Maybe that needs to
+  //  operate on an extended image, too. The "bleeding edge" artifacts are correllated with the 
+  //  PixelClasses.ppm image: where the black classes bleed into the image, there's no bleed in the
+  //  result and vice versa. But apart from these artifacts, the "decontourized" version actually
+  //  looks quite good. We want ContourGrad25,ppm to be close to ContourInput.ppm which it indeed 
+  //  is aside from the artifacts.
 
 
   // Bugs:

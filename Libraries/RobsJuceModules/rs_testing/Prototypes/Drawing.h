@@ -210,7 +210,8 @@ to make the typical outputs of fractal rendering algorithms look nicer. They typ
 color to a pixel based on the number of iterations required to ensure divergence which leads to a 
 lot of flat color regions liek in stepped color-gradients where we would very much prefer to see
 a smooth gradient. This function aims to turn these steppy gradients onto smooth ones but without
-blurring ther overall image. It's a bit like blurring but only applied to flat color regions. Well,
+blurring ther overall image. In some sense, it attempts to be some sort of opposite of the countour
+filling algorithm. It's a bit like blurring but only applied to flat color regions. Well,
 that's a simplification...tbc... */
 int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses = 1);
 // I think, it can't work in place: in and out must be distinct. Maybe the result should be passed
