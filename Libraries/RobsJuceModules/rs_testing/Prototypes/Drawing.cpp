@@ -1081,13 +1081,13 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
 
   int maxItsTaken = 0;
   float step = 1.867f;
-  //float step = 1.875f;
-  // A value of 1.0 will replace the pixel with the average of its neighbors in each iteration
-  // (verify this!). Empirically it seems that using values > 1 may speed up the convergence.
-  // But if it's too high, it doesn't converge and produces garbage results. For the test with 5
-  // vertical stripes and a size of 1000x50, tol = 1.e-6f, a value of 1.867 seems optimal. That's
-  // close to 2 - 1/8. Is that an accident or a hint? With the optimal value, we reduce the number
-  // of iterations by a factor of 10. That's a lot!
+  //float step = 1.0f;  // step size
+  // A value of 1.0 will replace the pixel with the average of its neighbors in each iteration.
+  // Empirically it seems that using values > 1 may speed up the convergence. But if it's too high,
+  // it doesn't converge and produces garbage results. For the test with 5 vertical stripes and a 
+  // size of 1000x50, tol = 1.e-6f, a value of 1.867 seems optimal. That's close to 2 - 1/8. Is 
+  // that an accident or a hint at a theoretical optimum? With the optimal value, we reduce the 
+  // number of iterations by a factor of 10. That's a lot!
   // I don't really know why -> more research needed....
   // What about using a momentum term for the update:
   //   out = in - amount * (d + momentum * dOld)
@@ -1100,6 +1100,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     int its;
     float dMax, d;
 
+    // factor out into iterateFlatPixels:
     for(its = 0; its < maxIts; its++)                 // iteration over flat-region
     {
       dMax = 0.f;                                     // maximum delta applied
@@ -1112,6 +1113,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     }
     maxItsTaken = rsMax(maxItsTaken, its);
 
+    // factor out into iterateBoundaryPixels:
     for(its = 0; its < maxIts; its++)                 // iteration over boundary
     {
       dMax = 0.f;
@@ -1128,15 +1130,32 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
 
   return maxItsTaken;
 
+  // -Can we speed up the convergence? Maybe it's actually not such a good idea to work in place?
+  //  Try to compute all the updates first and then do all the upates at once. compare convergence
+  //  to what we do now (updating every pixel immediately after the update was computed, such that 
+  //  into computation of the next pixel, the current pixel enters already with updated color)
   // -Not using the tmp image and passing "out" for "in" and "out" to applyFilter seems to be 
   //  beneficial for convergence and give the same results despite being mathematically "wrong".
   //  This seems to remain true when we use step sizes > 1. Maybe it's a bit like with Jacobi vs
   //  Gauss/Seidel iteration - using already updated values when available in the computation of
   //  the updates of other pixels. 
-  // -Can we speed up the convergence? maybe it's actually not such a good idea to work in place?
-  //  Try to compute all the updates first and then do all the upates at once. compare convergence
-  //  to what we do now (updating every pixel immediately after the update was computed, such that 
-  //  into computation of the next pixel, the current pixel enters already with updated color)
+  // -Convergence is painfully slow when the flat regions are large. It seems to converge to a 
+  //  smoothed stairstep function but actually, it's just that the updates become so small that
+  //  they remain below the tolerance and we falsly conclude that we have converged when in fact
+  //  it should continue to creeeep sloooowly towards the optimum.
+  // -Maybe istead of doing thie pixel-wise diffusion equation, do the following:
+  //  -For each flat pixel at (x,y), do:
+  //   -find closest non-flat pixels to the left, right, up and down
+  //   -assign pixel at (x,y) to a value obtained from (bi-linearly) interpolating between these or
+  //    maybe as weighted sum of the 4 pixels where the weights are inversely proportional to the 
+  //    distances
+  //  -To implement that, first factor out the current iteration, so we can easily swap between
+  //   the two algorithms or include is as 1st step inside the outer loop over the passes, i.e. 
+  //   before the first "iterateFlatPixels" loop. This is a non-iterative step, so it shouldn't be
+  //   too expensive. Maybe call it interpolateFlatPixels. The subsequent iterateFlatPixels step
+  //   can then be cosidered as a refinement step. The interpoate step does the coarse stuff,
+  //   the iterate step is fine adjustement. Maybe the interpolate step shouldn't be in the loop
+  //   over the passes but just be done once before entering it.
   // -It seems to have problems when the boundaries of the flat regions are anti-aliased. When 
   //  applied to the image generated by "contours", it doesn't seem to do much. The flat regions 
   //  are correctly classified. But i think, we have problems with the boundaries because the 

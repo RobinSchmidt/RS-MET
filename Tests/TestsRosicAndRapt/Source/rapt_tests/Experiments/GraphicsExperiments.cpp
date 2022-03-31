@@ -1013,8 +1013,8 @@ void gradientify()
 
   //rsImageF imgIn = testImg3Regions(w, h);
 
-  w = 1000; h = 50;
-  rsImageF imgIn = testImgVerticalStripes(w, h, 5);
+  //w = 1000; h = 50;
+  //rsImageF imgIn = testImgVerticalStripes(w, h, 5);
   //fillRectangle(imgIn, 0, h/2-h/6, w-1, h/2+h/6, 0.5f); // add horizontal stripe of gray
 
 
