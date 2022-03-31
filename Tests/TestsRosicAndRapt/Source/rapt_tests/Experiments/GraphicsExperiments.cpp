@@ -977,9 +977,13 @@ rsImageF testImg3Regions(int w, int h)
 rsImageF testImgVerticalStripes(int w, int h, int numStripes)
 {
   rsImageF img(w, h);
-
-  // ...
-
+  for(int i = 0; i < numStripes; i++)
+  {
+    int   L = ( i   *w) / numStripes;          // left
+    int   R = ((i+1)*w) / numStripes - 1;      // right
+    float c = float(i)  / float(numStripes-1); // color, gray value
+    fillRectangle(img, L, 0, R,  h-1, c); 
+  }
   return img;
 }
 
@@ -988,7 +992,7 @@ void gradientify()
   // Tests the "gradientify" algorithm that turns flat regions in an image into smooth gradients.
 
   // User parameters for the test image:
-  int s = 2;      // scaler to control size conveniently
+  int s = 3;      // scaler to control size conveniently
   int w = s*80;   // width in pixels
   int h = s*60;   // height in pixels
 
@@ -1002,7 +1006,14 @@ void gradientify()
   };
 
   // Create the test input image and write it to disk:
+
   rsImageF imgIn = testImg3Regions(w, h);
+
+  //rsImageF imgIn = testImgVerticalStripes(w, h, 4);
+  //fillRectangle(imgIn, 0, h/2-h/6, w-1, h/2+h/6, 0.5f); // add horizontal stripe of gray
+
+
+
   writeImageToFilePPM(imgIn, "gradientifyIn.ppm");
 
   // Create outputs of the gradientify algorithm with a different setting for the number of 
@@ -1021,7 +1032,12 @@ void gradientify()
   // -The larger we choose s, the more iterations are needed to get a smooth gradient without 
   //  artifacts. With s=1, the artifacts are resaonably removed already after 3 iterations. With 
   //  s=3 and 3 iterations, the original class boundaries are quite smeared out but still easily
-  //  visible.
+  //  visible - at least with the test image with gray area in the middle. For the test with the
+  //  vertical stripes, it actually seems to converge quickly also for larger images. But as soon 
+  //  as we add the additional horizonatl stripe of gray, it again converges slowly. Maybe it's
+  //  problematic for convergence when 3 (or more) color regions meet in a single point? That seems
+  //  plausible because also in the 3-region test, the artifacts are most severe at the 3-color 
+  //  meeting points.
   //  -Maybe the algorithm can be optimized by first running it on a downsampled version and using
   //   the result as a sort of "initial guess" for a higher resolution version. That would be 
   //   similar to multigrid methods for solving PDEs.
@@ -1044,6 +1060,7 @@ void gradientify()
   //  algorithm. Maybe optimize that.
   // -Try it with the center section being black or white, too. Also, try to use RGB in various
   //  combinations for the 3 regions
+  // -Try the vertical sripes with some horizontal stripes overlaid
 }
 
 void contours()
