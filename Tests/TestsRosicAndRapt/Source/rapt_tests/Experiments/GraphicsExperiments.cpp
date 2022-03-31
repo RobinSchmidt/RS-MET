@@ -961,56 +961,78 @@ void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
 }
 // move to prototypes/drawing
 
-
+/** A test image with 3 flat color regions...tbc... */
 rsImageF testImg3Regions(int w, int h)
 {
   rsImageF img(w, h);
-  fillRectangle(img, w/2, 0,   w-1,   h-1,   1.0f);
-  fillRectangle(img, w/4, h/4, 3*w/4, 3*h/4, 0.5f); 
+  fillRectangle(img, w/2, 0,   w-1,   h-1,   1.0f); // white region on the right
+  fillRectangle(img, w/4, h/4, 3*w/4, 3*h/4, 0.5f); // gray region in the center
+  return img;
+  // ToDo:
+  // -Let the user specify the 3 colors, maybe templatize to allow also RGB colors
+  //  -Then we also explicity need to fill the left region that is now implicitly "filled" black by
+  //   leaving it as initialized.
+}
+
+rsImageF testImgVerticalStripes(int w, int h, int numStripes)
+{
+  rsImageF img(w, h);
+
+  // ...
+
   return img;
 }
 
 void gradientify()
 {
   // Tests the "gradientify" algorithm that turns flat regions in an image into smooth gradients.
-  int s = 3;      // scaler to control size conveniently
+
+  // User parameters for the test image:
+  int s = 2;      // scaler to control size conveniently
   int w = s*80;   // width in pixels
   int h = s*60;   // height in pixels
 
+  // Helper function to compute output of gradientification algo wnad write the result to disk:
+  auto computeResult = [](const rsImageF& imgIn, int numIterations)
+  {
+    rsImageF imgOut(imgIn.getWidth(), imgIn.getHeight());
+    gradientifyFlatRegions(imgIn, imgOut, numIterations);
+    std::string name = "gradientifyOut" + to_string(numIterations) + ".ppm";
+    writeImageToFilePPM(imgOut, name.c_str());
+  };
+
+  // Create the test input image and write it to disk:
   rsImageF imgIn = testImg3Regions(w, h);
-  writeImageToFilePPM(imgIn,  "gradientifyIn.ppm");
+  writeImageToFilePPM(imgIn, "gradientifyIn.ppm");
 
-  rsImageF imgOut(w, h);
+  // Create outputs of the gradientify algorithm with a different setting for the number of 
+  // iterations and write the results to disk (Shlemiel strikes again):
+  computeResult(imgIn, 1);
+  computeResult(imgIn, 2);
+  computeResult(imgIn, 3);
+  computeResult(imgIn, 4);
+  computeResult(imgIn, 8);
 
-
-  gradientifyFlatRegions(imgIn, imgOut, 1);
-  writeImageToFilePPM(imgOut, "gradientifyOut1.ppm");
-
-  gradientifyFlatRegions(imgIn, imgOut, 2);
-  writeImageToFilePPM(imgOut, "gradientifyOut2.ppm");
-
-  gradientifyFlatRegions(imgIn, imgOut, 3);
-  writeImageToFilePPM(imgOut, "gradientifyOut3.ppm");
-
-  gradientifyFlatRegions(imgIn, imgOut, 4);
-  writeImageToFilePPM(imgOut, "gradientifyOut4.ppm");
-
-  gradientifyFlatRegions(imgIn, imgOut, 8);
-  writeImageToFilePPM(imgOut, "gradientifyOut8.ppm");
-
-
+  // Report completion to console:
   rsPrintLine("gradientify() done");
+
 
   // Observations:
   // -The larger we choose s, the more iterations are needed to get a smooth gradient without 
   //  artifacts. With s=1, the artifacts are resaonably removed already after 3 iterations. With 
   //  s=3 and 3 iterations, the original class boundaries are quite smeared out but still easily
   //  visible.
-  // -The boundary pixels remain unmodified but one pixel in, we already see a nice smoothing 
-  //  effect so it seems workable to deal with boundary pixels by creating a temporary image that
-  //  adds a 1-pixel wide frame to the original image which repeats the boundary pixel, do the 
-  //  computations on that image and afterwards crop back to the original size, i.e. remove the 
-  //  frame.
+  //  -Maybe the algorithm can be optimized by first running it on a downsampled version and using
+  //   the result as a sort of "initial guess" for a higher resolution version. That would be 
+  //   similar to multigrid methods for solving PDEs.
+  // -The boundary pixels remain unmodified by the algo but one pixel in, we already see a nice 
+  //  smoothing effect so it seems workable to deal with boundary pixels by creating a temporary
+  //  image that adds a 1-pixel wide frame to the original image which repeats the boundary pixel, 
+  //  do the computations on that image and afterwards crop back to the original size, i.e. remove
+  //  the frame. This strategy would also make it easier to try a variant of the algo that uese 5x5
+  //  neighborhoods (instead of 3x3) to identify flat regions because then we would just need to 
+  //  add a 2 pixel wide frame and run the classifier only over interior pixels saving us from the 
+  //  mess of treating all the various edge cases differently.
   //
   // ToDo:
   // -Test it with more complex input images. It seems to work well with this particular test image
@@ -1020,6 +1042,8 @@ void gradientify()
   // -Use a pattern with vertical stripes
   // -Producing images with various numbers of iterations is actually a "Shlemiel the painter"
   //  algorithm. Maybe optimize that.
+  // -Try it with the center section being black or white, too. Also, try to use RGB in various
+  //  combinations for the 3 regions
 }
 
 void contours()

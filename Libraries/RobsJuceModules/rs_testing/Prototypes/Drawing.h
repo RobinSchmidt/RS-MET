@@ -205,9 +205,16 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& classes, char fla
 /** Returns an array of coordinates (x,y) for which C(x,y) == c. */
 std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c);
 
-
+/** Turns flat regions in an image into smooth gradients. This algorithm is be used, for example, 
+to make the typical outputs of fractal rendering algorithms look nicer. They typically assign a 
+color to a pixel based on the number of iterations required to ensure divergence which leads to a 
+lot of flat color regions liek in stepped color-gradients where we would very much prefer to see
+a smooth gradient. This function aims to turn these steppy gradients onto smooth ones but without
+blurring ther overall image. It's a bit like blurring but only applied to flat color regions. Well,
+that's a simplification...tbc... */
 int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses = 1);
-// i think, it can't work in place: in and out must be distinct
+// I think, it can't work in place: in and out must be distinct. Maybe the result should be passed
+// as return value. We may need an internal temporary image with extended borders anyway...
 
 
 int gradientifyFlatRegions2(const rsImageF& in, rsImageF& out, int numPasses = 1);
