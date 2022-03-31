@@ -1079,7 +1079,6 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     // -Test whether it converges also in in-place usage, i.e. when in and out are the same image
   };
 
-  int maxItsTaken = 0;
   float step = 1.867f;
   //float step = 1.0f;  // step size
   // A value of 1.0 will replace the pixel with the average of its neighbors in each iteration.
@@ -1094,13 +1093,36 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   // or something like that. But this may be useful only when d alternates a lot between iterations
   // or is otheriwse erratic which should perhaps be investigated before.
 
-  //rsImageF tmp(out);
+  // Iterates the applyFilter function over the flat pixels:
+  //rsImageF tmp(out);  
+  auto iterateFlatPixels = [&]()
+  {
+    int its = 0;
+    for(its = 0; its < maxIts; its++)                 // iteration over flat-region
+    {
+      float dMax = 0.f;                               // maximum delta applied
+      //tmp.copyPixelDataFrom(out);
+      for(k = 0; k < F.size(); k++) {
+        float d = applyFilter(out, out, F[k].x, F[k].y, step);
+        dMax = rsMax(d, dMax);   }
+      if(dMax <= tol)                                 // Check convergence criterion
+        break;
+    }
+    return its;
+  };
+
+
+
+  // The main iteartion
+  int maxItsTaken = 0;
+
   for(int i = 1; i <= numPasses; i++)
   {
     int its;
     float dMax, d;
 
     // factor out into iterateFlatPixels:
+    /*
     for(its = 0; its < maxIts; its++)                 // iteration over flat-region
     {
       dMax = 0.f;                                     // maximum delta applied
@@ -1112,6 +1134,8 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
         break;
     }
     maxItsTaken = rsMax(maxItsTaken, its);
+    */
+    maxItsTaken = rsMax(maxItsTaken, iterateFlatPixels());
 
     // factor out into iterateBoundaryPixels:
     for(its = 0; its < maxIts; its++)                 // iteration over boundary

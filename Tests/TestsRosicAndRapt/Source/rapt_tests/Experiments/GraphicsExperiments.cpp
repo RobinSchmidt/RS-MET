@@ -1011,7 +1011,7 @@ void gradientify()
 
   // Create the test input image and write it to disk:
 
-  //rsImageF imgIn = testImg3Regions(w, h);
+  rsImageF imgIn = testImg3Regions(w, h);
 
   //w = 1000; h = 50;
   //rsImageF imgIn = testImgVerticalStripes(w, h, 5);
