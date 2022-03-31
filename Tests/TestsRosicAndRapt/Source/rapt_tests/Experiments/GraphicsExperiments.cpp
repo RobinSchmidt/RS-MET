@@ -996,20 +996,26 @@ void gradientify()
   int w = s*80;   // width in pixels
   int h = s*60;   // height in pixels
 
+
   // Helper function to compute output of gradientification algo wnad write the result to disk:
-  auto computeResult = [](const rsImageF& imgIn, int numIterations)
+  auto computeResult = [&](const rsImageF& imgIn, int numIterations)
   {
     rsImageF imgOut(imgIn.getWidth(), imgIn.getHeight());
-    gradientifyFlatRegions(imgIn, imgOut, numIterations);
+    int maxItsTaken = gradientifyFlatRegions(imgIn, imgOut, numIterations);
+    std::cout << "Max iterations taken: " + to_string(maxItsTaken);
     std::string name = "gradientifyOut" + to_string(numIterations) + ".ppm";
     writeImageToFilePPM(imgOut, name.c_str());
+    rsPlotArray(imgOut.getPixelPointer(0, h/2), w);
+    return maxItsTaken;
   };
 
   // Create the test input image and write it to disk:
 
-  rsImageF imgIn = testImg3Regions(w, h);
+  //rsImageF imgIn = testImg3Regions(w, h);
 
-  //rsImageF imgIn = testImgVerticalStripes(w, h, 4);
+  //w = 1800; h = 200;
+  w = 1500; h = 100;
+  rsImageF imgIn = testImgVerticalStripes(w, h, 5);
   //fillRectangle(imgIn, 0, h/2-h/6, w-1, h/2+h/6, 0.5f); // add horizontal stripe of gray
 
 
@@ -1018,13 +1024,16 @@ void gradientify()
 
   // Create outputs of the gradientify algorithm with a different setting for the number of 
   // iterations and write the results to disk (Shlemiel strikes again):
-  computeResult(imgIn, 1);
-  computeResult(imgIn, 2);
-  computeResult(imgIn, 3);
-  computeResult(imgIn, 4);
-  computeResult(imgIn, 8);
+  int maxIts;
+  //computeResult(imgIn, 1);
+  //computeResult(imgIn, 2);
+  //computeResult(imgIn, 3);
+  //computeResult(imgIn, 4);
+  //computeResult(imgIn, 8);
+  maxIts = computeResult(imgIn, 25);
 
   // Report completion to console:
+  //std::cout << "Max iterations taken: " + to_string(maxIts);
   rsPrintLine("gradientify() done");
 
 
@@ -1041,14 +1050,20 @@ void gradientify()
   //  -Maybe the algorithm can be optimized by first running it on a downsampled version and using
   //   the result as a sort of "initial guess" for a higher resolution version. That would be 
   //   similar to multigrid methods for solving PDEs.
-  // -The boundary pixels remain unmodified by the algo but one pixel in, we already see a nice 
-  //  smoothing effect so it seems workable to deal with boundary pixels by creating a temporary
-  //  image that adds a 1-pixel wide frame to the original image which repeats the boundary pixel, 
-  //  do the computations on that image and afterwards crop back to the original size, i.e. remove
-  //  the frame. This strategy would also make it easier to try a variant of the algo that uese 5x5
-  //  neighborhoods (instead of 3x3) to identify flat regions because then we would just need to 
-  //  add a 2 pixel wide frame and run the classifier only over interior pixels saving us from the 
-  //  mess of treating all the various edge cases differently.
+  //  -When using 3 vertical stripes and a size of 1200x180, we can clearly see the effect: the 
+  //   transition between black and gray is fast (around 120 pixels wide), then we have a flat 
+  //   region of gray and then again a fast transition between gray and white. Maybe we should try
+  //   it with a 1D version of the algo to figure out, how it behaves. Define a piecewise 1D 
+  //   function with 3 levels and do throw sort of 1D heat equation solver at it..or maybe just fix
+  //   the boundaries at two positions (to 0 and 1, say) and do the diffusion iteration and look at
+  //   the final shape. ...Yes! Plotting the middle row of the gradientified vertical-stripes image
+  //   as 1D function clearly reveals this "smoothed stairstep" like shape. With w=1500, h=100,
+  //   numStripes=5, it's nicely visible. We see inflection points at 300,600,900,1200 and saddles
+  //   in between. Reducing w to 500 clearly reduces the "saddleness" or "stairsteppyness" feature.
+  //   The result looks more like a straight linear transition with some slight wavy/wobblyness. 
+  //   It's apparently the absoluate size in pixels of the flat regions that determines whether or
+  //   they will be sufficiently gradientified or remain (almost) flat. Maybe the tolerance it too
+  //   high?
   //
   // ToDo:
   // -Test it with more complex input images. It seems to work well with this particular test image
@@ -1061,6 +1076,15 @@ void gradientify()
   // -Try it with the center section being black or white, too. Also, try to use RGB in various
   //  combinations for the 3 regions
   // -Try the vertical sripes with some horizontal stripes overlaid
+  // -The boundary pixels remain unmodified by the algo but one pixel in, we already see a nice 
+  //  smoothing effect so it seems workable to deal with boundary pixels by creating a temporary
+  //  image that adds a 1-pixel wide frame to the original image which repeats the boundary pixel, 
+  //  do the computations on that image and afterwards crop back to the original size, i.e. remove
+  //  the frame. This strategy would also make it easier to try a variant of the algo that uese 5x5
+  //  neighborhoods (instead of 3x3) to identify flat regions because then we would just need to 
+  //  add a 2 pixel wide frame and run the classifier only over interior pixels saving us from the 
+  //  mess of treating all the various edge cases differently.
+
 }
 
 void contours()
@@ -2377,10 +2401,14 @@ void renderNewtonFractal()
   // only around 30, etc. Around pass 20, it's only 3 or 2 iterations per pass.
 
 
-  w = 960; h = 540; // for standard 16:9 ratio, half of regular screen resolution
+  //w = 800, h = 800;
+
+  //w = 960; h = 540; // for standard 16:9 ratio, half of regular screen resolution
 
   // Uncomment for high-quality rendering (takes long - use release build!)
-  //w  = 3840; h  = 2160; // UHD
+  //w = 1920; h = 1080;   // FHD
+  w = 3840; h = 2160; // UHD, 4K
+  //w = 7860; h = 4320;   // 8K
   //w *= 3;    h *= 3;    // ..with 3x oversampling
 
   using Complex = std::complex<double>;
@@ -2602,6 +2630,18 @@ void renderNewtonFractal()
   rsPrintLine("Newton fractal done");
 
 
+  // Observations:
+  // -When rendering at 1600x1600 and looking at the bottom-left of the PixelClasses.ppm (zoomed 
+  //  in), we see some "holes" in the boundary pixel class, i.e. pixels are classified into the 
+  //  black ("rest") class rather than in the lightgray ("boundary") class. That's weird! Figure
+  //  out, what's going on!
+  // -When rendering at really high resolution like UHD with 3x oversampling, the "gradientify"
+  //  algorithm seems to become less effective. Although the sharp boundaries between the flat 
+  //  regions are smoothed out, some amount of flatness remains. Maybe the absolute size of the 
+  //  flat regions (in pixels) determines, how effective gradientification is? Increasing the 
+  //  "smooth" variable here and the "maxIts" variable in gradientifyFlatRegions doesn't seem
+  //  to help against the flatness either, so it doesn't seem to be an issue of stopping before
+  //  convergence - the algo seems to actually converge to that final state.
 
   // Ideas:
   // -use the number of iteration for L and the root for H, see the frcatals here:
@@ -2613,6 +2653,12 @@ void renderNewtonFractal()
   // -maybe render raw image with some margins to facilitate post-processing without problems at 
   //  the edges
   // -try it with a higher order polynomial and the permute the roots-array in some way
+
+  // ToDo:
+  // -when rendering the fractal at very high resolution, the AfterStep3.ppm and also the final 
+  //  result again show flat-looking regions. Check, how many iterations are taken by the 
+  //  gradientify algorithm and whether we may stop iterating too early, i.e. before everything 
+  //  looks nice.
 
 }
 

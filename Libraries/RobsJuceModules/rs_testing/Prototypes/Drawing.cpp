@@ -963,7 +963,14 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
 {
   using Vec2D = rsVector2D<int>;
 
-  int maxIts = 200;   // make parameter, maybe return the number of iterations taken
+  int maxIts = 2000;   
+  // Maybe make this a user parameter. We had formerly a value of 200 but at this value, we are 
+  // sometimes not yet converged. In the gradientify() experiment, we get values around 1300
+  // for the vertical stripes with w = 1500; h = 100; numStripes = 5; (this value is returned by
+  // this function because it may be of interest to teh caller)
+  
+
+
   float tol  = 1.e-5f;
   int w = in.getWidth();
   int h = in.getHeight();
