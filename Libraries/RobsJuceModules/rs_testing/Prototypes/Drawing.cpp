@@ -1111,11 +1111,30 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     return its;
   };
 
+  // Iterates the applyFilter function over the boundary pixels:
+  auto iterateBoundaryPixels = [&]()
+  {
+    int its = 0;
+    for(its = 0; its < maxIts; its++) 
+    {
+      float dMax = 0.f;
+      //tmp.copyPixelDataFrom(out);
+      for(k = 0; k < B.size(); k++) {
+        float d = applyFilter(out, out, B[k].x, B[k].y, step);
+        dMax = rsMax(d, dMax);   }
+      if(dMax <= tol)
+        break;
+    }
+    return its;
+  };
+  // todo: merge with iterateFlatPixels - the function should take as inputs the array F or B.
+  // That's the only difference (i think). It could be called like 
+  //   iteratePixels(F)
+  //   iteratePixels(B)
 
 
-  // The main iteartion
+  // The main iteration
   int maxItsTaken = 0;
-
   for(int i = 1; i <= numPasses; i++)
   {
     int its;
@@ -1138,6 +1157,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     maxItsTaken = rsMax(maxItsTaken, iterateFlatPixels());
 
     // factor out into iterateBoundaryPixels:
+    /*
     for(its = 0; its < maxIts; its++)                 // iteration over boundary
     {
       dMax = 0.f;
@@ -1149,6 +1169,9 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
         break;
     }
     maxItsTaken = rsMax(maxItsTaken, its);
+    */
+
+    maxItsTaken = rsMax(maxItsTaken, iterateBoundaryPixels());
   }
   writeImageToFilePPM(out, "AfterStep3.ppm");
 
