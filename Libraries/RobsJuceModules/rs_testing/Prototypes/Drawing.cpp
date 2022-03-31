@@ -1094,6 +1094,43 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   // or is otheriwse erratic which should perhaps be investigated before.
 
 
+  // Loops through all pixels in the F array, i.e. all the flat-region pixels, and for each such 
+  // pixel, it finds the closest non-flat pixel in the left, right, up and down directions. Then it
+  // replaces the color value of the flat pixel with a weighted average of these 4 non-flat pixels
+  // where the weight is inversely proportional to the respective distance:
+  auto interpolateFlatPixels = [&]()
+  {
+    for(k = 0; k < F.size(); k++)
+    {
+      int x = F[k].x;  // x-coordinate
+      int y = F[k].y;  // y-coordinate
+
+      // Find coordinates of nearest non-flat pixels in all 4 directions:
+      int xL = x; while(xL > 0  ) { xL--; if(C(xL, y) != flat) break; }
+      int xR = x; while(xR < w-1) { xR++; if(C(xR, y) != flat) break; }
+      int yU = y; while(yU > 0  ) { yU--; if(C(x, yU) != flat) break; }
+      int yD = y; while(yD < h-1) { yD++; if(C(x, yD) != flat) break; }
+
+      // Compute weights for the 4 directions:
+      float wL = 1.f / abs(x-xL);
+      float wR = 1.f / abs(x-xR);
+      float wU = 1.f / abs(y-yU);
+      float wD = 1.f / abs(y-yD);
+      float s  = 1.f / (wL+wR+wU+wD);      // normalizer
+      wL *= s; wR *= s; wU *= s; wD *= s;  // they should sum to 1 now
+
+      // Assign new color as weighted average:
+      float c = wL*out(xL,y) + wR*out(xR,y) + wU*out(x,yU) + wD*out(x,yD);
+      out(x,y) = c;
+    }
+      
+    // Ideas: 
+    // -Maybe we could also take into account the 4 diagonal directions later.
+    // -Maybe instead of using weights inversely proportionla to distance use weights like in
+    //  linear interpolation. I think, that's not the same thing, right? But how would we take into
+    //  account the 2D-ness of the situation?
+  };
+
 
   // Iterates the applyFilter function over the pixels listed in the P array:
   //rsImageF tmp(out);  
@@ -1113,16 +1150,16 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     return its;
   };
 
-
   // The main iteration over the number of passes:
   int maxItsTaken = 0;
+  interpolateFlatPixels();
+  writeImageToFilePPM(out, "AfterStep3a.ppm");
   for(int i = 1; i <= numPasses; i++)
   {
-
     maxItsTaken = rsMax(maxItsTaken, iteratePixels(F)); // iteratetively adjust flat pixels
     maxItsTaken = rsMax(maxItsTaken, iteratePixels(B)); // same for boundary pixels
   }
-  writeImageToFilePPM(out, "AfterStep3.ppm");
+  writeImageToFilePPM(out, "AfterStep3b.ppm");
 
   return maxItsTaken;
 
