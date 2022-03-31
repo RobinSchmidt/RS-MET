@@ -1093,6 +1093,8 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   // or something like that. But this may be useful only when d alternates a lot between iterations
   // or is otheriwse erratic which should perhaps be investigated before.
 
+
+
   // Iterates the applyFilter function over the pixels listed in the P array:
   //rsImageF tmp(out);  
   auto iteratePixels = [&](std::vector<Vec2D>& P)
@@ -1112,63 +1114,13 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   };
 
 
-
-  // Iterates the applyFilter function over the flat pixels:
-  auto iterateFlatPixels = [&]()
-  {
-    return iteratePixels(F);
-
-    /*
-    int its = 0;
-    for(its = 0; its < maxIts; its++)                 // iteration over flat-region
-    {
-      float dMax = 0.f;                               // maximum delta applied
-      //tmp.copyPixelDataFrom(out);
-      for(k = 0; k < F.size(); k++) {
-        float d = applyFilter(out, out, F[k].x, F[k].y, step);
-        dMax = rsMax(d, dMax);   }
-      if(dMax <= tol)                                 // Check convergence criterion
-        break;
-    }
-    return its;
-    */
-  };
-
-  // Iterates the applyFilter function over the boundary pixels:
-  auto iterateBoundaryPixels = [&]()
-  {
-    return iteratePixels(B);
-
-    /*
-    int its = 0;
-    for(its = 0; its < maxIts; its++) 
-    {
-      float dMax = 0.f;
-      //tmp.copyPixelDataFrom(out);
-      for(k = 0; k < B.size(); k++) {
-        float d = applyFilter(out, out, B[k].x, B[k].y, step);
-        dMax = rsMax(d, dMax);   }
-      if(dMax <= tol)
-        break;
-    }
-    return its;
-    */
-  };
-  // todo: merge with iterateFlatPixels - the function should take as inputs the array F or B.
-  // That's the only difference (i think). It could be called like 
-  //   iteratePixels(F)
-  //   iteratePixels(B)
-
-
-  // The main iteration
+  // The main iteration over the number of passes:
   int maxItsTaken = 0;
   for(int i = 1; i <= numPasses; i++)
   {
 
-
-
-    maxItsTaken = rsMax(maxItsTaken, iterateFlatPixels());
-    maxItsTaken = rsMax(maxItsTaken, iterateBoundaryPixels());
+    maxItsTaken = rsMax(maxItsTaken, iteratePixels(F)); // iteratetively adjust flat pixels
+    maxItsTaken = rsMax(maxItsTaken, iteratePixels(B)); // same for boundary pixels
   }
   writeImageToFilePPM(out, "AfterStep3.ppm");
 
