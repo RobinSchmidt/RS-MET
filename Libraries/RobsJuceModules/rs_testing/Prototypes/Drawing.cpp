@@ -971,7 +971,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   
 
 
-  float tol  = 1.e-6f;      // was 1.e-5
+  float tol  = 1.e-5f;      // was 1.e-5
   int w = in.getWidth();
   int h = in.getHeight();
   int i, j, k;                   // loop iteration indices
@@ -1080,9 +1080,21 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   };
 
   int maxItsTaken = 0;
-  float step = 1.f;    // may not be needed, maybe get rid - but first, let's experiment with it
-                       // a little bit to see if it can be used to accelerate convergence
+  float step = 1.867f;
+  //float step = 1.875f;
+  // A value of 1.0 will replace the pixel with the average of its neighbors in each iteration
+  // (verify this!). Empirically it seems that using values > 1 may speed up the convergence.
+  // But if it's too high, it doesn't converge and produces garbage results. For the test with 5
+  // vertical stripes and a size of 1000x50, tol = 1.e-6f, a value of 1.867 seems optimal. That's
+  // close to 2 - 1/8. Is that an accident or a hint? With the optimal value, we reduce the number
+  // of iterations by a factor of 10. That's a lot!
+  // I don't really know why -> more research needed....
+  // What about using a momentum term for the update:
+  //   out = in - amount * (d + momentum * dOld)
+  // or something like that. But this may be useful only when d alternates a lot between iterations
+  // or is otheriwse erratic which should perhaps be investigated before.
 
+  //rsImageF tmp(out);
   for(int i = 1; i <= numPasses; i++)
   {
     int its;
@@ -1091,6 +1103,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     for(its = 0; its < maxIts; its++)                 // iteration over flat-region
     {
       dMax = 0.f;                                     // maximum delta applied
+      //tmp.copyPixelDataFrom(out);
       for(k = 0; k < F.size(); k++) {
         d = applyFilter(out, out, F[k].x, F[k].y, step);
         dMax = rsMax(d, dMax);   }
@@ -1102,6 +1115,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
     for(its = 0; its < maxIts; its++)                 // iteration over boundary
     {
       dMax = 0.f;
+      //tmp.copyPixelDataFrom(out);
       for(k = 0; k < B.size(); k++) {
         d = applyFilter(out, out, B[k].x, B[k].y, step);
         dMax = rsMax(d, dMax);   }
@@ -1114,6 +1128,11 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
 
   return maxItsTaken;
 
+  // -Not using the tmp image and passing "out" for "in" and "out" to applyFilter seems to be 
+  //  beneficial for convergence and give the same results despite being mathematically "wrong".
+  //  This seems to remain true when we use step sizes > 1. Maybe it's a bit like with Jacobi vs
+  //  Gauss/Seidel iteration - using already updated values when available in the computation of
+  //  the updates of other pixels. 
   // -Can we speed up the convergence? maybe it's actually not such a good idea to work in place?
   //  Try to compute all the updates first and then do all the upates at once. compare convergence
   //  to what we do now (updating every pixel immediately after the update was computed, such that 
