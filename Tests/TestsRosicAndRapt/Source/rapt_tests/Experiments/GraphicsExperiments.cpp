@@ -961,19 +961,27 @@ void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
 }
 // move to prototypes/drawing
 
+
+rsImageF testImg3Regions(int w, int h)
+{
+  rsImageF img(w, h);
+  fillRectangle(img, w/2, 0,   w-1,   h-1,   1.0f);
+  fillRectangle(img, w/4, h/4, 3*w/4, 3*h/4, 0.5f); 
+  return img;
+}
+
 void gradientify()
 {
   // Tests the "gradientify" algorithm that turns flat regions in an image into smooth gradients.
+  int s = 3;      // scaler to control size conveniently
+  int w = s*80;   // width in pixels
+  int h = s*60;   // height in pixels
 
-  int w = 80;               // width in pixels
-  int h = 50;               // height in pixels
-
-  rsImageF imgIn(w, h), imgOut(w, h);
-
-  fillRectangle(imgIn, w/2, 0, w-1, h-1, 1.0f);
-  fillRectangle(imgIn,  20, 10,  60, 40, 0.5f);
-
+  rsImageF imgIn = testImg3Regions(w, h);
   writeImageToFilePPM(imgIn,  "gradientifyIn.ppm");
+
+  rsImageF imgOut(w, h);
+
 
   gradientifyFlatRegions(imgIn, imgOut, 1);
   writeImageToFilePPM(imgOut, "gradientifyOut1.ppm");
@@ -984,12 +992,34 @@ void gradientify()
   gradientifyFlatRegions(imgIn, imgOut, 3);
   writeImageToFilePPM(imgOut, "gradientifyOut3.ppm");
 
+  gradientifyFlatRegions(imgIn, imgOut, 4);
+  writeImageToFilePPM(imgOut, "gradientifyOut4.ppm");
+
+  gradientifyFlatRegions(imgIn, imgOut, 8);
+  writeImageToFilePPM(imgOut, "gradientifyOut8.ppm");
+
+
   rsPrintLine("gradientify() done");
 
+  // Observations:
+  // -The larger we choose s, the more iterations are needed to get a smooth gradient without 
+  //  artifacts. With s=1, the artifacts are resaonably removed already after 3 iterations. With 
+  //  s=3 and 3 iterations, the original class boundaries are quite smeared out but still easily
+  //  visible.
+  // -The boundary pixels remain unmodified but one pixel in, we already see a nice smoothing 
+  //  effect so it seems workable to deal with boundary pixels by creating a temporary image that
+  //  adds a 1-pixel wide frame to the original image which repeats the boundary pixel, do the 
+  //  computations on that image and afterwards crop back to the original size, i.e. remove the 
+  //  frame.
+  //
   // ToDo:
   // -Test it with more complex input images. It seems to work well with this particular test image
   //  but not so well with the Newton fractal rendering. Try some test inputs with a complexity 
   //  somewhere in between to figure out what the problem may be.
+  // -Test with using striped patterns, maybe make a function that creates these images
+  // -Use a pattern with vertical stripes
+  // -Producing images with various numbers of iterations is actually a "Shlemiel the painter"
+  //  algorithm. Maybe optimize that.
 }
 
 void contours()
