@@ -1013,11 +1013,9 @@ void gradientify()
 
   //rsImageF imgIn = testImg3Regions(w, h);
 
-  //w = 1800; h = 200;
   w = 1500; h = 100;
   rsImageF imgIn = testImgVerticalStripes(w, h, 5);
   //fillRectangle(imgIn, 0, h/2-h/6, w-1, h/2+h/6, 0.5f); // add horizontal stripe of gray
-
 
 
   writeImageToFilePPM(imgIn, "gradientifyIn.ppm");
@@ -1064,8 +1062,23 @@ void gradientify()
   //   It's apparently the absoluate size in pixels of the flat regions that determines whether or
   //   they will be sufficiently gradientified or remain (almost) flat. Maybe the tolerance it too
   //   high?
+  //  -Bumping up maxIts = 2000; and reducing the tolerance to tol = 1.e-7f; clearly reduces the
+  //   saddleness a bit (visible only in direct comparison of the 1D plots). It seems to be a 
+  //   problem of painfully slow convergence and we indeed stop too early.
+  //  -Maybe we need indeed a "multigrid" approach. I think, for downsampling, we should use a 
+  //   naive algo without averaging because the averaging is like an anti-aliasing that may thwart
+  //   the classification of pixels on the boundaries between flat regions.
   //
   // ToDo:
+  // -Try to figure out why the convergence is so slow when the flat regions have a large absolute
+  //  size. Try to speed it up. One idea could be to try to do a kind of "multigrid" method - solve
+  //  the problem at increasing resolutions where a suitably interpolated lower-resolution result 
+  //  is used as initial guess for the next higher resolution.
+  //  -Maybe use such a multigrid method only for the flat-region pixels but not for the boundary
+  //   pixels. 
+  // -Try to make a 1D implementation and check, if it has the same convergence problems. If so, we
+  //  may try to find tricks speed up the convergence for 1D first and hope that it will be 
+  //  applicable to the 2D case, too.
   // -Test it with more complex input images. It seems to work well with this particular test image
   //  but not so well with the Newton fractal rendering. Try some test inputs with a complexity 
   //  somewhere in between to figure out what the problem may be.
@@ -2403,12 +2416,13 @@ void renderNewtonFractal()
 
   //w = 800, h = 800;
 
-  //w = 960; h = 540; // for standard 16:9 ratio, half of regular screen resolution
-
+  w = 240; h = 135;   // FHD/8
+  //w = 480; h = 270;   // FHD/4
+  //w = 960; h = 540; // FHD/2
   // Uncomment for high-quality rendering (takes long - use release build!)
   //w = 1920; h = 1080;   // FHD
-  w = 3840; h = 2160; // UHD, 4K
-  //w = 7860; h = 4320;   // 8K
+  //w = 3840; h = 2160; // UHD = 2 * FHD, 4K
+  //w = 7860; h = 4320;   // 2 * UHD = 4 * FHD, 8K
   //w *= 3;    h *= 3;    // ..with 3x oversampling
 
   using Complex = std::complex<double>;
