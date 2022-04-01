@@ -1119,18 +1119,35 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
       float s  = 1.f / (wL+wR+wU+wD);      // normalizer
       wL *= s; wR *= s; wU *= s; wD *= s;  // they should sum to 1 now
 
+      // Test:
+      float oldColor = out(x,y);
+
       // Assign new color as weighted average:
-      float c = wL*out(xL,y) + wR*out(xR,y) + wU*out(x,yU) + wD*out(x,yD);
-      out(x,y) = c;
+      //float cL = out(xL,y);  // left color
+      //float cR = out(xR,y);  // right color
+      //float cU = out(x,yU);  // upper color
+      //float cD = out(x,yD);  // lower color
+      float newColor = wL*out(xL,y) + wR*out(xR,y) + wU*out(x,yU) + wD*out(x,yD);
+      // cL, cR, cU, cD are often the same color as oldColor. Apparently, the boundary pixels that
+      // we find still have the same color as the rest of the region. They should have a color that
+      // is halfway between the region's color and the adjacent region's color. That's supposed to
+      // happen in step 2. This happens in contours(). aaahh - i know what this is! it's the 
+      // in-between color that is inserted by the contour-filling algo!
+
+      out(x,y) = newColor;
     }
       
     // Ideas: 
     // -Maybe we could also take into account the 4 diagonal directions later.
-    // -Maybe instead of using weights inversely proportionla to distance use weights like in
+    // -Maybe instead of using weights inversely proportional to distance use weights like in
     //  linear interpolation. I think, that's not the same thing, right? But how would we take into
-    //  account the 2D-ness of the situation?
+    //  account the 2D-ness of the situation? Maybe barycentric interpolation
+    // -Maybe it can be refined by considering a weight only if the pixel is a boundary pixel but 
+    //  ignore pixels of the "rest" class (typically image edges)...but in more general images 
+    //  there could be other "rest" pixesl, for example when a flat region is bordering a gradient
+    //  region...so maybe it's better to consider all non-flat pixels. ...but maybe we should 
+    //  explicitly exclude image edge pixels
   };
-
 
   // Iterates the applyFilter function over the pixels listed in the P array:
   //rsImageF tmp(out);  
@@ -1152,10 +1169,19 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
 
   // The main iteration over the number of passes:
   int maxItsTaken = 0;
+
   interpolateFlatPixels();
   writeImageToFilePPM(out, "AfterStep3a.ppm");
+  // This looks strange with eth Cassini curves. Not at all as i expected except in the top-center
+  // region. Maybe we should just do a 1D linear interpolation by first figuring out the "stripe" 
+  // direction. We would imagine a straight line through our pixel sweeping out all angles and 
+  // choosing the angle for which the distance between both boundaries (into the opposite 
+  // directions)is shortest. Along this direction, do 1D lerp. It's impractical to sweep out all
+  // angles but maybe 22.5,45.0,67.5,90.0,112.5,135.0,.... is good enough
+
   for(int i = 1; i <= numPasses; i++)
   {
+    //interpolateFlatPixels();  // test - may not make sense...
     maxItsTaken = rsMax(maxItsTaken, iteratePixels(F)); // iteratetively adjust flat pixels
     maxItsTaken = rsMax(maxItsTaken, iteratePixels(B)); // same for boundary pixels
   }

@@ -1011,10 +1011,10 @@ void gradientify()
 
   // Create the test input image and write it to disk:
 
-  rsImageF imgIn = testImg3Regions(w, h);
+  //rsImageF imgIn = testImg3Regions(w, h);
 
-  //w = 1000; h = 50;
-  //rsImageF imgIn = testImgVerticalStripes(w, h, 5);
+  w = 1500; h = 50;
+  rsImageF imgIn = testImgVerticalStripes(w, h, 5);
   //fillRectangle(imgIn, 0, h/2-h/6, w-1, h/2+h/6, 0.5f); // add horizontal stripe of gray
 
 
@@ -2419,12 +2419,12 @@ void renderNewtonFractal()
 
   //w = 800, h = 800;
 
-  w = 240; h = 135;   // FHD/8
+  //w = 240; h = 135;   // FHD/8
   //w = 480; h = 270;   // FHD/4
   //w = 960; h = 540; // FHD/2
   // Uncomment for high-quality rendering (takes long - use release build!)
   //w = 1920; h = 1080;   // FHD
-  //w = 3840; h = 2160; // UHD = 2 * FHD, 4K
+  w = 3840; h = 2160; // UHD = 2 * FHD, 4K
   //w = 7860; h = 4320;   // 2 * UHD = 4 * FHD, 8K
   //w *= 3;    h *= 3;    // ..with 3x oversampling
 
@@ -2676,6 +2676,8 @@ void renderNewtonFractal()
   //  result again show flat-looking regions. Check, how many iterations are taken by the 
   //  gradientify algorithm and whether we may stop iterating too early, i.e. before everything 
   //  looks nice.
+  // -The AfterSetp3b is useful: reduce green by 80, increase blue by 20 in IrfanViews color 
+  //  corrections -> looks good - maybe use as wallpaper
 
 }
 

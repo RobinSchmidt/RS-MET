@@ -168,18 +168,18 @@ void rsImageContourPlotter<TPix, TVal>::fillBetweenContours(const rsImage<TVal>&
           // What are we doing here? I think, the same as in the branch below but using a fixed
           // interpolation weight of 0.5 for blending between 0 (black) and the desired fillColor
           // instead of using weight baed on pixel coverage.
+          /*
           if(min < lo && max >= lo)                      // on low contour
             painter.plot(i, j, fillColor * TPix(0.5));
           else if(min < hi && max >= hi)                 // on hi contour
             painter.plot(i, j, fillColor * TPix(0.5)); 
+            */
 
-          /*
           // Test:
           if(min < lo && max >= lo)                      // on low contour
             painter.plot(i, j, fillColor);
           else if(min < hi && max >= hi)                 // on hi contour
             painter.plot(i, j, TPix(0.0)); 
-          */
 
           /*
           if(min < lo && max >= lo)                      // on low contour
@@ -189,7 +189,8 @@ void rsImageContourPlotter<TPix, TVal>::fillBetweenContours(const rsImage<TVal>&
             */
           // OK - yes - these two tested variants may also make sense - check with the contours()
           // experiment. Maybe the bool antiAlias should be an int allowing to switch between these
-          // 4 modes. 
+          // 4 modes: coverage, average, high, low - these are the values assigned to the contours,
+          // i.e. the 1-pixel wide boundaries between the contour fill colors
         }
         else {
           TVal c; // coverage
