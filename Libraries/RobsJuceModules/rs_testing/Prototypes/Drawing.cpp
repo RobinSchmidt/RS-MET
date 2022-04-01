@@ -1215,6 +1215,21 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   //  smoothed stairstep function but actually, it's just that the updates become so small that
   //  they remain below the tolerance and we falsly conclude that we have converged when in fact
   //  it should continue to creeeep sloooowly towards the optimum.
+  // -It seems to be the case that the convergence is slower for pixels which are deeper inside the
+  //  flat regions, i.e. farther away from a boundary. Maybe we could speed up the convergence 
+  //  there by using a momentum term whose size depends on the distance to the closest boundary. To
+  //  find that distance, we need to implement findClosestPixelWith and use as criterion membership
+  //  to another pixel class. We would need to run findClosestPixelWith with various directions and 
+  //  then take the minimum of these runs. But maybe a simpler variant could be to scale the 
+  //  step-size and/or momentum term by the variance of the 3x3 neighborhood. Would that make any 
+  //  sense? ..lower variances use larger steps. Initially, deep inside the flat regions, the 
+  //  update steps actually don't do anything at all because the center pixel's value is eactly 
+  //  equal to the neighborhood average. The work of the algo is based on the fact that the changes
+  //  coming from the boundaries slowly seep into the flat regions. Maybe magnifying the steps 
+  //  deeper inside flat regions can indeed make sense and after a few steps, the neighborhood 
+  //  variance should indeed be some function of that distance (after being initially zero). Maybe 
+  //  plot this neighborhood variance as function of distance and iteration number to get a feel 
+  //  for it. Maybe these plots will suggest an appropriate function how to magnify the steps...
   // -Maybe istead of doing thie pixel-wise diffusion equation, do the following:
   //  -For each flat pixel at (x,y), do:
   //   -find closest non-flat pixels to the left, right, up and down
@@ -1287,6 +1302,17 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   //  a scaler for pixel updates in the iteration (or rather 1-edgeness then edgeness itself). 
   //  Pixels in flat regions would take an update step of 1, pixels in non-flat regions would 
   //  take smaller steps.
+  //
+  // -Maybe instead of thes 2-phases per pass (to iterate over flat and boundary pixels), iterate
+  //  over both classes jointly, i.e. merge the F and B arrays into one, maybe "FB" and just call
+  //  iteratePixels(FB) instead of iteratePixels(F); iteratePixels(B); alternatingly.
+  //  -Maybe keep only local extrema (peaks, dents, ridges, valleys) as is, smooth everything else.
+  //  -Maybe even more aggressively, find all pixels that have at least one equal neighbor and 
+  //   iterate over these, leaving only pixels intact that don't even touch a flat region.
+  //
+  // -Maybe skeletonize the flat regions by using an erosion operator. Then, the remaining flat
+  //  skeleton pixels together with the original non-flat pixels are held fixed while all others 
+  //  are smoothed by the heat-equation solver.
 
   // ToDo:
   // -Implement another variant of this algo that uses only 2 classes: flat regions and the rest.

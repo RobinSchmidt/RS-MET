@@ -52,5 +52,10 @@ ToDo:
  predicates and move all code into the cpp file.
 -Use int for the classes. It's easily conceivable to need more than 256 classes.
 
+Ideas for pixel classes based on neighborhood features:
+-flat: pixel is equal to all its neighbors
+-peak: pixel is higher that all its neighbors (opposite: dent)
+-ridge: there are 3 pixels of equal height which are higher than the other 6? (opposite: valley)
+-edge: use edge detector
 
 */

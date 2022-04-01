@@ -213,7 +213,7 @@ to the next pixel. The predicate should take the color of the pixel at xc, yc as
 and the color of the pixel along the search line as second parameter and return a bool. ..tbc...*/
 template<class P>
 rsVector2D<int> findClosestPixelWith(const rsImageF& img, P pred, int xc, int yc, int dx, int dy);
-
+// maybe move into a class rsPixelFinder
 
 /** Returns an array of coordinates (x,y) for which C(x,y) == c. */
 std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c);
