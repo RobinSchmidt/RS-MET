@@ -202,6 +202,19 @@ corresponding to pixels in non-flat regions are left as is. */
 void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& classes, char flatClassLabel, 
   float tol = 0.f);
 
+/** Under construction...
+
+Finds the pixel closest to the given location xc, yc (the "center pixel") in the given image 
+that satisfies the given predicate in the search direction given by dx, dy. For example, 
+north-north-west would be given by dx = -1, dy = -2. It uses a Bresenham-style update equation for
+scanning through the pixels and for each encountered pixel (where Bresenham would color the pixel),
+it checks the predicate. If it's true, it returns the pixel's location, if it's false, it moves on
+to the next pixel. The predicate should take the color of the pixel at xc, yc as first parameter 
+and the color of the pixel along the search line as second parameter and return a bool. ..tbc...*/
+template<class P>
+rsVector2D<int> findClosestPixelWith(const rsImageF& img, P pred, int xc, int yc, int dx, int dy);
+
+
 /** Returns an array of coordinates (x,y) for which C(x,y) == c. */
 std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c);
 

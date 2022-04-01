@@ -949,6 +949,19 @@ void classifyFlatPixels3x3(const rsImageF& img, rsImage<char>& C, char F, float 
   // -edges: could perhaps use the same predicate but with a higher tolerance
 }
 
+template<class P>
+rsVector2D<int> findClosestPixelWith(const rsImageF& img, P pred, int xc, int yc, int dx, int dy)
+{
+  rsError("Not yet implemented");
+
+  // ToDo:
+  // -Refactor the Bresenham line drawing algorithm in a way that separates the pixel-location 
+  //  stepper from the "what-to-do-with-the-pixel" function. In the case of regular Bresenham, this
+  //  function is to set the pixel's color. Here, we want it to be to check the predicate.
+  // -Use the factored out Bresenham stepper (which may be a generator class) here to implement the 
+  //  search.
+}
+
 std::vector<rsVector2D<int>> findAll(const rsImage<char>& C, char c)
 {
   std::vector<rsVector2D<int>> r; // result
