@@ -2793,12 +2793,12 @@ bool samplerLfoTest()
   using Vec = std::vector<float>;
 
   // Define LFO parameters:
+  float sampleRate = 44100.f;
   float freq  = 500.f;
   float amp   = 1.f;
   float phase = 0.f;
   float delay = 0.f;
   float fade  = 0.f;
-  float sampleRate = 44100.f;
 
   // Create target signal:
   int N = 1000;     // number of samples to produce
@@ -2828,6 +2828,26 @@ bool samplerLfoTest()
 bool samplerEnvTest()
 {
   bool ok = true;
+
+  using namespace rosic::Sampler;
+  using Vec = std::vector<float>;
+
+  // Define EG parameters (times are in in seconds, levels a unitless):
+  float sampleRate = 10000.f;
+  float delay   = 0.f;
+  float start   = 0.f;
+  float attack  = 0.01f;
+  float peak    = 1.f;
+  float hold    = 0.f;
+  float decay   = 0.1f;
+  float sustain = 0.5f;
+  float release = 0.3f;
+  float end     = 0.f;
+
+
+  int N = 1000;     // number of samples to produce
+  Vec outL(N), outR(N);
+  EnvGenCore eg;
 
 
 
@@ -3378,7 +3398,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  //ok &= samplerModulationsTest();
+  ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing sfz instruments

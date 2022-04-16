@@ -43,7 +43,12 @@ float pixelCoverage(int x, int y, const rsVector2DF& a, const rsVector2DF& b,
 
 // This is the Wu line drawing algorithm, directly translated from the pseudocode here:
 // https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
-// todo: move to a Prototypes.h/cpp pair of files in the Shared folder
+// ToDo: Move to a Prototypes.h/cpp pair of files in the Shared folder, refactor, maybe drag these
+// helper functions into the main function or else make them generally available as library 
+// functions, try to get rid of duplication. Maybe create a target image using the algo as is, 
+// write it to a file (maybe .ppm or .qoi) and then set up a unit test that tests the 
+// implementation against this reference output - then refactor. Maybe do this in the RS-MET-Tests
+// repo
 inline int   ipart(float x)           { return (int) x;              }
 inline int   roundToInt(float x)      { return ipart(x + 0.5f);      }
 inline float fpart(float x)           { return x - ipart(x);         }
@@ -140,6 +145,12 @@ void drawLineBresenham(rsImageF& img, int x0, int y0, int x1, int y1, float colo
     if(error < 0){
       y += ystep;
       error += deltaX; }}
+
+  // ToDo:
+  // Factor out a rsBresenhamStepper class for generating the coordinates. It should do 
+  // everything execept for the calls to plot(). The idea is that we may want to use Bresenham 
+  // style steppers to do something other then coloring pixels - for example, searching for a 
+  // pixel satisfying some predicate along some direction.
 }
 // https://en.wikipedia.org/wiki/Bresenham's_line_algorithm
 // http://graphics.idav.ucdavis.edu/education/GraphicsNotes/Bresenhams-Algorithm.pdf

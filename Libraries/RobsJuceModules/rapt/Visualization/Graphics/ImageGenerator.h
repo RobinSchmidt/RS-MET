@@ -46,7 +46,7 @@ public:
   point at the pixel-coordinates and the points on the curve. This is expensive: scales like 
   img.getWidth() * img.getHeight() * N   */
   void plotDistanceMap(rsImage<TPix>& img, TVal* x, TVal* y, int N);
-  // todo: allow for different distance measurs (currently uses Euclidean distance)
+  // todo: allow for different distance measures (currently uses Euclidean distance)
   // maybe rename to fillDistanceMap
 
 
@@ -54,12 +54,13 @@ public:
   // \name Some interesting functions to plot (maybe move into other class)
 
   /** Given plane coordinates x,y, this function computes a height above the plane that has the 
-  shape of ridge (of height 1) that spirals around in a logarithmic spiral with the parametric 
+  shape of a ridge (of height 1) that spirals around in a logarithmic spiral with the parametric 
   equation:
-      x(t) = exp(a*t) * cos(sign * t + p); y(t) = exp(a*t) * sin(sign * t + p)
+      x(t) = exp(a*t) * cos(sign * t + p); 
+      y(t) = exp(a*t) * sin(sign * t + p);
   For points that are on the spiral, the function will return zero and for points that are 
   "halfway" in between two "arcs", it will return 1. Halfway is to be understood in the logarithmic 
-  sense - for example, if (1,0) and (2,0) are points on the spiral, the point (sqrt(2),0) would be 
+  sense. For example, if (1,0) and (2,0) are points on the spiral, the point (sqrt(2),0) would be 
   considered halfway between them. If the exponential growth parameter "a" is equal to 
   log(2)/(2*pi), the spiral will grow by a factor of 2 in each revolution. The "sign" parameter 
   should be +1 or -1 and determines the direction of the rotation. */

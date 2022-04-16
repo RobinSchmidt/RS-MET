@@ -189,16 +189,20 @@ public:
     x.x = s * (A.d * b.x - A.b * b.y);
     x.y = s * (A.a * b.y - A.c * b.x);
 
+    // Old implementation for reference:
     //rsMatrix2x2<T> Ai = A.getInverse();
     //x.x = Ai.a * b.x + Ai.b * b.y;
     //x.y = Ai.c * b.x + Ai.d * b.y;
   }
   // ToDo: 
-  // -handle singluar matrices: in the overdetermined case, produce a least squares
+  // -Handle singluar matrices: in the overdetermined case, produce a least squares
   //  approximation, in the underdetermined case, produce a minimum norm solution, maybe that 
   //  should be in a function solveSingular
-  // -maybe implement it without using rsVector2D - just take references to coordinates instead
-  //
+  // -Maybe implement it without using rsVector2D - just take references to coordinates instead
+  // -Maybe turn into free function rsSolve, which in general may have an abstract signature
+  //  TRhs rsSolve(const TOp& op, const TRhs& rhs) using templates for the operator type and 
+  //  right-hand-side type and returning an object of same type as rhs or mabye use a non-const ref
+  //  for the result.
 
   /** Like solve, but checks for division by zero and assigns zero to the result in this case. */
   static void solveSave(const rsMatrix2x2<T>& A, rsVector2D<T>& x, const rsVector2D<T>& b)
@@ -209,7 +213,12 @@ public:
     x.x = s * (A.d * b.x - A.b * b.y);
     x.y = s * (A.a * b.y - A.c * b.x);
   }
-  // ToDo: maybe use an absolute threshold that defaults to zero, like: if(abs(D) <= thresh) { ... } 
+  // ToDo: 
+  // -Maybe use an absolute threshold that defaults to zero, like: if(abs(D) <= thresh) { ... } 
+  // -Maybe don't return zero but instead a least-squares or minimum-norm solution. But maybe both
+  //  variants should be available under different names. Mayby call the function above solveOrZero
+  //  and the variant using least-squares/min-norm solveOrApprox or just solveApprox or 
+  //  solveLeastSquares or solveBest
 
 };
 
@@ -219,6 +228,13 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 {
   return rsMatrix2x2<T>(s*A.a, s*A.b, s*A.c, s*A.d);
 }
+
+// ToDo: 
+// -Implement matrix exponential for 2x2 matrices as free function rsExp. If A is invertible, use
+//  the formula based on diagonalization. If it isn't...dunno...maybe use Taylor expansion similar
+//  to the geometric algebra code in the research codebase? Or maybe Jordan normal form? See also
+//  https://www.youtube.com/watch?v=Iz7PSlTpjyI -> exp(tr(A)) = det(exp(A)) -> verify 
+//  experimentally. also: tr(A) = sum of eigenvalues, det(A) = product of eigenvalues
 
 //=================================================================================================
 

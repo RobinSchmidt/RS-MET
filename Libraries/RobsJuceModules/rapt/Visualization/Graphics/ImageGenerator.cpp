@@ -87,7 +87,7 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
         if(rsAbs(old) <= rsAbs(err)) {
           y += old / dy;
           break; }}}
-    // factor out the loops in these two branhces into two functions: newtonRefineX, newtonRefineY
+    // factor out the loops in these two branches into two functions: newtonRefineX, newtonRefineY
 
 
     // The stopping criterion for closed curves is that we have come back to (or very close to) the 
@@ -112,6 +112,9 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
     px = rsLinToLin(x, xMin, xMax, TVal(0), xMaxPixel);
     py = rsLinToLin(y, yMin, yMax, yMaxPixel, TVal(0));
     painter.paintDot(px, py, color);
+    // Optimize this! Some thing involving divisions can be precomputed Maybe use some sort of
+    // CoordinateConverter class that is set up once, computes some coeffs on setup time and has an
+    // efficient convert() function to be called per pixel/step
 
     // The stopping criterion for open curves is that we reach the image boundary - in such cases, 
     // we have just drawn one part of the curve (think of a hyperbola, for example), so we call 
@@ -131,16 +134,21 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
       break;  }
   }
 }
-// -maybe fill the shape by coloring all pixels for which f(x,y) < c
-// -maybe break the function up into one the generates an array of (x,y)-pairs and one that 
-//  actually draws them - then this generator function could also be used with other drawing
-//  backends such as juce or OpenGL
-// -question: how does this "find gradient, then rotate by 90°" method to figure out the direction
+// ToDo:
+// -Maybe fill the shape by coloring all pixels for which f(x,y) < c. If the shape is convex, maybe
+//  that can be done efficiently by starting at the top of curve and advance into down-left and 
+//  down-right directions simultaneously and when one pixel evrtical distance is travelled, fill in
+//  the row of pixels between the left and right curve arm.
+// -Maybe break the function up into one the generates an array of (x,y)-pairs and one that 
+//  actually draws them. Then this generator function could also be used with other drawing
+//  backends such as juce or OpenGL.
+// -Question: how does this "find gradient, then rotate by 90°" method to figure out the direction
 //  of the curve relate to implicit differentiation? it's probably equivalent?
-// -maybe have a scaler for the x- or y- pixel steps (currently, we go one pixel into x- or 
-//  y-direction) - this is especially useful in conjuction with the former idea because other
-//  backends will presumably connect the produced points with line-segmens in which case it may be
-//  overkill to generate one segment per pixel - done, but not yet accessible by client code
+// -Maybe have a scaler for the x- or y- pixel steps (currently, we go one pixel into x- or 
+//  y-direction). This is especially useful in conjuction with the former idea because other
+//  backends will presumably connect the produced points with line-segments in which case it may be
+//  overkill to generate one segment per pixel. ...done, but not yet accessible by client code. 
+//  It's the local variable "step".
 
 
 
