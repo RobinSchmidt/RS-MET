@@ -200,15 +200,16 @@ void attackDecayEnvelope()
 
   // User parameters:
   int N    = 1200;  // number of samples to produce
-  int nOff =  750;  // note-off sample instant
+  int nOff =  720;  // note-off sample instant
   int key  =   64;  // note number for the note-on triggers
   int vel  =   64;  // velocity for the note-on triggers
   int att  =   50;  // attack in samples
   int dec  =  100;  // decay in samples
   int dt   =  100;  // delta-t between the input impulses, i.e. trigger events for machine gun
-   
+                    // retrigger interval
 
-  std::vector<double> y(N);
+  using Vec = std::vector<double>;
+  Vec y(N);
   rsAttackDecayEnvelope<double> env;
   double dcGain;
 
@@ -234,6 +235,28 @@ void attackDecayEnvelope()
   for(int n = nOff; n < N; n++)
     y[n] = env.getSample();
   rsPlotVector(y);
+
+  // Helper function to compute the envelope generator's response to a rapid succession of note-on
+  // triggers:
+  auto getRetriggerResponse = [&](int retriggerInterval)
+  {
+    env.reset();
+    Vec y(N);
+    for(int n = 0; n < N; n++)
+    {
+      if(n % retriggerInterval == 0 && n < nOff)
+      {
+        env.noteOn(key, vel);       // machine gun triggers until nOff
+        env.noteOff(key, vel);      // should not matter, if we call noteOff here or not
+      }
+      if(n == nOff)
+        env.noteOff(key, vel);      // the last noteOff before the machine gun stops
+      y[n] = env.getSample();
+    }
+    return y;
+    // ToDo: Maybe pass also nOff and N as parameters, maybe renamed to lastNoteOff and numSamples.
+  };
+
   
   // Plot the response that we get when we fire a succession of several note-ons at it:
   env.setAttackSamples(att);
@@ -242,6 +265,10 @@ void attackDecayEnvelope()
   env.setAccumulationMode(AM::none);
   //env.setAccumulationMode(AM::one_minus_yd);
   //env.setAccumulationMode(AM::exact);  // does not yet work - has same effect as none
+
+  y = getRetriggerResponse(dt);
+
+  /*
   env.reset();
   for(int n = 0; n < N; n++)
   {
@@ -254,27 +281,40 @@ void attackDecayEnvelope()
       env.noteOff(key, vel);      // the last noteOff before the machine gun stops
     y[n] = env.getSample();
   }
+  */
+
+
+
   dcGain = env.getGainAtDC();
   rsPlotVector(y);
   // I think, we should attempt that the curve approaches 1 in a sort of saturation curve, when we
-  // send a note at each sample
+  // send a note at each sample.
+  // ToDo: plot results of all the different accumulations modes into one plot - make a helper 
+  // function getRetriggerResponse returns an array.
+  // 
 
 
-  // plot a family of envelopes with sustain settings 0.0,0.2,0.4,0.6,0.8,1.0:
-  plotSmoothEnvWithVariousSustains(50, 100);
+  // Plot a family of envelopes with sustain settings 0.0,0.2,0.4,0.6,0.8,1.0:
+  plotSmoothEnvWithVariousSustains(att, dec);
 
   int dummy = 0;
 
   // Observations:
-  // -the sustain level works but using nonzero sustain slightly changes the attack-time and
+  // -The sustain level works but using nonzero sustain slightly changes the attack-time and
   //  maximum peak level: the peak gets higher and occurs later with increasing sustain, for
   //  example, with attack = 20, decay = 100, sustain = 0.5, the actual peak occurs at 24 samples
-  //  and has a height of around 1.07 (as per the settings, it should occur at sample 20 witha
-  //  height of 1), with sustain = 1, we get apeak at sample 33 with height 1.16
-  // -we actually have some sort of smooth ADSR now in which D==R and the smoothness is meant in
-  //  the sense that there are not abrupt changes in slope - maybe we should now somehow lift the
-  //  D==R restriction to get a full smooth ADSR - maybe just switch the decay-coeff depending on
-  //  whether the note is on or off - the smoothness comes from the attack filter
+  //  and has a height of around 1.07 (as per the settings, it should occur at sample 20 with a
+  //  height of 1), with sustain = 1, we get a peak at sample 33 with height 1.16. Maybe try to 
+  //  decouple the peak value from the sustain parameter. But maybe this coupling between sustain
+  //  and peak could feel somehow "natural"? Dunno, but the current algo makes it occur naturally
+  //  which may or may not mean anything with regard to perception. We need to play with this in an 
+  //  actually realtime playable implementation. Maybe write an APE script for that.
+  // -We actually have some sort of smooth ADSR now in which D==R and the smoothness is meant in
+  //  the sense that there are not abrupt changes in slope. Maybe we should now somehow lift the
+  //  D==R restriction to get a smooth full ADSR. Maybe just switch the decay-coeff depending on
+  //  whether the note is on or off - the smoothness comes from the attack filter anyway. If we can
+  //  achieve this we have combined the parametrization of a standard ADSR with the smoothness and
+  //  naturalness of the simple attack-decay filter based envelope.
 
 
   // Notes:
