@@ -234,7 +234,7 @@ void attackDecayEnvelope()
   env.noteOff(key, vel);  // why does note-off need key and vel?
   for(int n = nOff; n < N; n++)
     y[n] = env.getSample();
-  rsPlotVector(y);
+  //rsPlotVector(y);
 
   // Helper function to compute the envelope generator's response to a rapid succession of note-on
   // triggers:
@@ -268,16 +268,28 @@ void attackDecayEnvelope()
   Vec y1 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
 
-  env.setRetriggerMode(RM::one_minus_yd);
+  env.setRetriggerMode(RM::compByDec);
   Vec y2 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
   // For longer decays, the overshoot is less severe.
+
+  env.setRetriggerMode(RM::test1);
+  Vec y3 = getRetriggerResponse(dt);
+  dcGain = env.getGainAtDC();
+  // Actually ducks the peak below 1 - not useful!
+
+  env.setRetriggerMode(RM::test2);
+  Vec y4 = getRetriggerResponse(dt);
+  dcGain = env.getGainAtDC();
 
   //env.setRetriggerMode(RM::exact);  // does not yet work - has same effect as none
   //Vec y3 = getRetriggerResponse(dt);
   //dcGain = env.getGainAtDC();
 
-  rsPlotVectors(y1, y2);
+  rsPlotVectors(y1, y2, /*y3,*/ y4);
+  // y4 is in between y1 and y2
+
+
   // I think, we should attempt that the curve approaches 1 in a sort of saturation curve, when we
   // send a note at each sample.
   // ToDo: plot results of all the different accumulations modes into one plot - make a helper 

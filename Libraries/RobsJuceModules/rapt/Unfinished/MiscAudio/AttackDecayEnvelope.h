@@ -100,7 +100,7 @@ public:
     exact,       
     // Not yet usable - sometimes the iteration diverges.
 
-    one_minus_yd,
+    compByDec,
     // Find better name, maybe compByDec (for compensate by the decay feedback state)
     // Scales the impulse by (1-yd). Rationale: When the so scaled impulse is added back to the
     // yd value which is received in the feedback path, they add up to unity or at least almost. 
@@ -108,6 +108,9 @@ public:
 
     //reset
     // Resets states to zero When a new trigger is received. Will produce clicks
+
+    test1,
+    test2
   };
 
   //-----------------------------------------------------------------------------------------------

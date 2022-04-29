@@ -103,8 +103,16 @@ T rsAttackDecayEnvelope<T>::getAccuCompensatedImpulse()
 
   switch(retrigMode)
   {
-  case RM::one_minus_yd: return T(1) - this->yd;
-  case RM::exact:        return getExactAccuCompensation();
+  case RM::none:      return T(1);
+  case RM::compByDec: return T(1) - this->yd;
+  case RM::exact:     return getExactAccuCompensation();              // not yet working
+
+  // Under investigation:
+  case RM::test1:     return T(1) - this->s * (this->yd - this->ya);  // not useful
+
+  case RM::test2:     return (2-ca*ya-cd*yd) / 2; 
+    // obtained requiring ya+yd == 2 in the upcoming call to getSample
+
   default: return T(1);
   }
 
