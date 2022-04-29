@@ -262,18 +262,18 @@ void attackDecayEnvelope()
   // various settings of the accumulation mode:
   env.setAttackSamples(att);
   env.setDecaySamples(dec);
-  using AM = rsAttackDecayEnvelope<double>::AccuFormula;
+  using RM = rsAttackDecayEnvelope<double>::RetriggerMode;
 
-  env.setAccumulationMode(AM::none);   // maybe rename to setRetriggerMode
+  env.setRetriggerMode(RM::none);   // maybe rename to setRetriggerMode
   Vec y1 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
 
-  env.setAccumulationMode(AM::one_minus_yd);
+  env.setRetriggerMode(RM::one_minus_yd);
   Vec y2 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
   // For longer decays, the overshoot is less severe.
 
-  //env.setAccumulationMode(AM::exact);  // does not yet work - has same effect as none
+  //env.setRetriggerMode(RM::exact);  // does not yet work - has same effect as none
   //Vec y3 = getRetriggerResponse(dt);
   //dcGain = env.getGainAtDC();
 

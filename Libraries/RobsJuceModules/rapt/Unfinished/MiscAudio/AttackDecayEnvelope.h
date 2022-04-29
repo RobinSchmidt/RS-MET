@@ -90,7 +90,7 @@ public:
 
   using Base = rsAttackDecayFilter<T>; // for conveniently calling basclass methods
 
-  enum class AccuFormula // rename to AccumulationMode or RetriggerMode
+  enum class RetriggerMode // rename to AccumulationMode or RetriggerMode
   {
     none,        
     // Find better name - we do no scaling of the impulse at all. It has the effect that retriggers
@@ -100,11 +100,14 @@ public:
     exact,       
     // Not yet usable - sometimes the iteration diverges.
 
-    one_minus_yd
+    one_minus_yd,
     // Find better name, maybe compByDec (for compensate by the decay feedback state)
     // Scales the impulse by (1-yd). Rationale: When the so scaled impulse is added back to the
     // yd value which is received in the feedback path, they add up to unity or at least almost. 
     // Maybe the yd value is one sample to old or new for the formula to be exact -> check that.
+
+    //reset
+    // Resets states to zero When a new trigger is received. Will produce clicks
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -114,10 +117,11 @@ public:
   is being held. */
   void setSustain(T newSustain) { sustain = newSustain; }
 
-  void setAccumulationMode(AccuFormula newMode)
-  {
-    accuFormula = newMode;
-  }
+  /** Sets up the behavior when a new trigger is received when the output has not yet decayed away.
+  The natural behavior due to the implementation with the RC filters is that a rapid succession of
+  triggers will let the responses to all these triggers pile up on top of one another. But there 
+  are several strategies implemented to counteract that piling up ...tbc...  */
+  void setRetriggerMode(RetriggerMode newMode) { retrigMode = newMode; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -156,10 +160,7 @@ public:
   // blend between accumulative and non-accumulative behavior
 
 
-  void noteOff(int key, int vel)
-  {
-    currentNote = -1;
-  }
+  void noteOff(int key, int vel) { currentNote = -1; }
   // why do we expect key and vel parameters? ...maybe we can do something with the note-off 
   // velocity later, like adjusting the release time?
 
@@ -199,7 +200,7 @@ protected:
   T getAccuCompensatedImpulse();
 
 
-  AccuFormula accuFormula = AccuFormula::none; // rename to retrigMode
+  RetriggerMode retrigMode = RetriggerMode::none;
 
   T sustain = T(0);
   int currentNote = -1;  // -1 is code for "none"

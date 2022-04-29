@@ -99,10 +99,12 @@ T rsAttackDecayEnvelope<T>::getExactAccuCompensation()
 template<class T>
 T rsAttackDecayEnvelope<T>::getAccuCompensatedImpulse()
 {
-  switch(accuFormula)
+  using RM = RetriggerMode;
+
+  switch(retrigMode)
   {
-  case AccuFormula::one_minus_yd: return T(1) - this->yd;
-  case AccuFormula::exact:        return getExactAccuCompensation();
+  case RM::one_minus_yd: return T(1) - this->yd;
+  case RM::exact:        return getExactAccuCompensation();
   default: return T(1);
   }
 
