@@ -101,6 +101,7 @@ public:
     // Not yet usable - sometimes the iteration diverges.
 
     one_minus_yd
+    // Find better name, maybe compByDec (for compensate by the decay feedback state)
     // Scales the impulse by (1-yd). Rationale: When the so scaled impulse is added back to the
     // yd value which is received in the feedback path, they add up to unity or at least almost. 
     // Maybe the yd value is one sample to old or new for the formula to be exact -> check that.
@@ -187,7 +188,7 @@ public:
 protected:
 
 
-
+  /** Under construction. */
   T getExactAccuCompensation();
 
   /** Returns the desired input impulse height taking into account the current state of the filter.

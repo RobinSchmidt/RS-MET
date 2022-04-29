@@ -44,17 +44,18 @@ T rsAttackDecayFilter<T>::getReciprocalGainAtDC() const
 template<class T>
 T rsAttackDecayEnvelope<T>::getExactAccuCompensation()
 {
+  rsError("Not yet ready to use"); return T(1);
+
   if( this->yd == 0 )
     return 1;
 
-
-  // some precomputations:
+  // Some precomputations:
   T lcd = log(this->cd);
   T lca = log(this->ca);
   T R   = this->cd / this->ca;
   T rlR = T(1)/log(R);
 
-  // objective function of which we want to find a root:
+  // Objective function of which we want to find a root:
   auto f = [=](T x)->T
   {
     //return getPeakForInputImpulse(x) - T(1); // naive, not optimized
@@ -70,11 +71,12 @@ T rsAttackDecayEnvelope<T>::getExactAccuCompensation()
 
 
     T np = log(A/D) * rlR;    // = rsLogB(A/D, R), peak location in samples
-    T dp = d0 * exp(lcd*np);  // = d0*pow(cd, np), decay output at peak
-    T ap = a0 * exp(lca*np);  // = a0*pow(ca, np), attack output at peak
+    T dp = d0 * exp(lcd*np);  // = d0 * cd^np, decay output at peak
+    T ap = a0 * exp(lca*np);  // = a0 * ca^np, attack output at peak
     T ep = this->s * (dp-ap); // env output at peak
     return ep - T(1);         // subtract target value of 1
   };
+  // ToDo: Make this a member function and unit-test it!
 
   return rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
   //return rsRootFinder<T>::falsePosition(f, T(0), T(1), T(0));
@@ -108,22 +110,22 @@ T rsAttackDecayEnvelope<T>::getAccuCompensatedImpulse()
   // we try to subtract some value that depends on the current state with the goal that a rapid
   // succession of many note-ons does not lead to an accumulation that lets the peaks go higher 
   // and higher for each note-on (until it saturates)
-  //x = 1 - s * (yd - ya);   // subtract last output of filter - nope! wrong!
-  //x = 1 - s * (cd*yd - ca*ya); 
-  //x = 1 - (yd - ya);       // maybe without the s-factor? - nope! also wrong
-  //x = 1 - (cd*yd - ca*ya); 
-  //x = (2-ca*ya-cd*yd) / 2; // obtained requiring ya+yd == 2 in the upcoming call to getSample
+  // x = 1 - s * (yd - ya);   // subtract last output of filter - nope! wrong!
+  // x = 1 - s * (cd*yd - ca*ya); 
+  // x = 1 - (yd - ya);       // maybe without the s-factor? - nope! also wrong
+  // x = 1 - (cd*yd - ca*ya); 
+  // x = (2-ca*ya-cd*yd) / 2; // obtained requiring ya+yd == 2 in the upcoming call to getSample
 
-  //x = (2-ya-yd) / 2;  // ad hoc - makes not a big difference to formula above - reasonably
+  // x = (2-ya-yd) / 2;  // ad hoc - makes not a big difference to formula above - reasonably
   // limits/saturates the output
-  //x = 1-yd;
+  // x = 1-yd;
 
-  //x = (s-ya-yd) / s;
-  //x = (2-ca*ca*ya*ya-cd*cd*yd*yd) / 2;  // ya^2 + yd^2 ==2
-  //x = (2-ya*ya-yd*yd) / 2;
-  //T d = s*(yd-ya);  x = 1 - d*d;
-  //x = 1 - yd;
-  //x = 1 - yd - ya;
+  // x = (s-ya-yd) / s;
+  // x = (2-ca*ca*ya*ya-cd*cd*yd*yd) / 2;  // ya^2 + yd^2 ==2
+  // x = (2-ya*ya-yd*yd) / 2;
+  // T d = s*(yd-ya);  x = 1 - d*d;
+  // x = 1 - yd;
+  // x = 1 - yd - ya;
   // todo: maybe have an "accumulationMode" member and do a switch between various formulas based
   // on it here
 

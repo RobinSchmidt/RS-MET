@@ -271,12 +271,13 @@ void attackDecayEnvelope()
   env.setAccumulationMode(AM::one_minus_yd);
   Vec y2 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
+  // For longer decays, the overshoot is less severe.
 
-  env.setAccumulationMode(AM::exact);  // does not yet work - has same effect as none
-  Vec y3 = getRetriggerResponse(dt);
-  dcGain = env.getGainAtDC();
+  //env.setAccumulationMode(AM::exact);  // does not yet work - has same effect as none
+  //Vec y3 = getRetriggerResponse(dt);
+  //dcGain = env.getGainAtDC();
 
-  rsPlotVectors(y1, y2, y3);
+  rsPlotVectors(y1, y2);
   // I think, we should attempt that the curve approaches 1 in a sort of saturation curve, when we
   // send a note at each sample.
   // ToDo: plot results of all the different accumulations modes into one plot - make a helper 
