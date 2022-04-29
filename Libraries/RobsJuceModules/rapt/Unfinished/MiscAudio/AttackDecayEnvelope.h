@@ -31,14 +31,14 @@ public:
   /** \name Inquiry */
 
   /** Returns the gain of this filter at DC. This value can be useful to know when you want to 
-  create an envelope with sustain - you may then feed the reciprocal of that value as constant 
+  create an envelope with sustain. You may then feed the reciprocal of that value as constant 
   input into the filter. */
-  T getGainAtDC() const { return s*(cd-ca) / (T(1)+ca*cd-cd-ca); }
+  T getGainAtDC() const; // { return s*(cd-ca) / (T(1)+ca*cd-cd-ca); }
 
   /** Computes the reciprocal of the DC gain of this filter. This is the constant value, you want 
   to feed into the filter when you want to get a sustained output of 1. It's used for implementing 
   sustain in subclass rsAttackDecayEnvelope. */
-  T getReciprocalGainAtDC() const { return (T(1)+ca*cd-cd-ca) / (s*(cd-ca)); }
+  T getReciprocalGainAtDC() const; // { return (T(1)+ca*cd-cd-ca) / (s*(cd-ca)); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -124,9 +124,11 @@ public:
 
   void noteOn(int key, int vel)
   {
-    currentNote = key;
+    currentNote = key; 
+    // Maybe we should store the velocity, too? It coul be useful if we want to scale the sustain 
+    // level by the velocity.
 
-    T x  = T(1);            // input to filter -  maybe should be scaled by vel?
+    //T x  = T(1);            // input to filter -  maybe should be scaled by vel?
 
     // under construction:
     // we try to subtract some value that depends on the current state with the goal that a rapid
@@ -152,11 +154,12 @@ public:
     // on it here
 
 
-    x = getAccuCompensatedImpulse();
+    T x = getAccuCompensatedImpulse();
+    // Maybe x should be scaled according to key and vel? But maybe it should be the job of a 
+    // higher level class to compute an overall strength which can be passed to this function. This
+    // "strength" should include the key- and velocity scaling and directly multiply x here.
 
-
-
-    Base::getSample(x);     //
+    Base::getSample(x);
     // We call geSample here to avoid the one sample delay due to the subtraction - the two
     // exponentials cancel each other at the very first sample
   }
