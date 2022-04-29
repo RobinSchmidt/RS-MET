@@ -258,40 +258,32 @@ void attackDecayEnvelope()
   };
 
   
-  // Plot the response that we get when we fire a succession of several note-ons at it:
+  // Plot the responses that we get when we fire a succession of several note-ons at it for the
+  // various settings of the accumulation mode:
   env.setAttackSamples(att);
   env.setDecaySamples(dec);
   using AM = rsAttackDecayEnvelope<double>::AccuFormula;
-  env.setAccumulationMode(AM::none);
-  //env.setAccumulationMode(AM::one_minus_yd);
-  //env.setAccumulationMode(AM::exact);  // does not yet work - has same effect as none
 
-  y = getRetriggerResponse(dt);
-
-  /*
-  env.reset();
-  for(int n = 0; n < N; n++)
-  {
-    if(n % dt == 0 && n < nOff)
-    {
-      env.noteOn(key, vel);       // machine gun triggers until nOff
-      env.noteOff(key, vel);      // should not matter, if we call noteOff here or not
-    }
-    if(n == nOff)
-      env.noteOff(key, vel);      // the last noteOff before the machine gun stops
-    y[n] = env.getSample();
-  }
-  */
-
-
-
+  env.setAccumulationMode(AM::none);   // maybe rename to setRetriggerMode
+  Vec y1 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
-  rsPlotVector(y);
+
+  env.setAccumulationMode(AM::one_minus_yd);
+  Vec y2 = getRetriggerResponse(dt);
+  dcGain = env.getGainAtDC();
+
+  env.setAccumulationMode(AM::exact);  // does not yet work - has same effect as none
+  Vec y3 = getRetriggerResponse(dt);
+  dcGain = env.getGainAtDC();
+
+  rsPlotVectors(y1, y2, y3);
   // I think, we should attempt that the curve approaches 1 in a sort of saturation curve, when we
   // send a note at each sample.
   // ToDo: plot results of all the different accumulations modes into one plot - make a helper 
   // function getRetriggerResponse returns an array.
   // 
+
+
 
 
   // Plot a family of envelopes with sustain settings 0.0,0.2,0.4,0.6,0.8,1.0:
