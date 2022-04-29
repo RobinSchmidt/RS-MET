@@ -106,11 +106,10 @@ public:
     // yd value which is received in the feedback path, they add up to unity or at least almost. 
     // Maybe the yd value is one sample to old or new for the formula to be exact -> check that.
 
-    //reset
+    reset,
     // Resets states to zero When a new trigger is received. Will produce clicks
 
-    test1,
-    test2
+    test1,test2, test3
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -141,6 +140,9 @@ public:
 
   void noteOn(int key, int vel)
   {
+    if(retrigMode == RetriggerMode::reset)
+      reset();
+
     currentNote = key; 
     // Maybe we should store the velocity, too? It coul be useful if we want to scale the sustain 
     // level by the velocity.

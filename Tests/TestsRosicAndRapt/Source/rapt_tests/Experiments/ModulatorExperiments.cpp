@@ -100,8 +100,8 @@ public:
       return ep - T(1);         // subtract target value of 1
     };
 
-    //return rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
-    return rsRootFinder<T>::falsePosition(f, T(0), T(1), T(0));
+    return rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
+    //return rsRootFinder<T>::falsePosition(f, T(0), T(1), T(0));
     // false position seems to work quite well but maybe try Newton, Brent, Ridders, ... and maybe
     // use a higher tolerance, try better initial interval - maybe (0,1-yd) - then test how many
     // iterations are typically taken
@@ -193,9 +193,17 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
 
 void attackDecayEnvelope()
 {
-  // Some preliminary tests (todo: move elsewhere)
+  /*
+  // Some preliminary tests (todo: move elsewhere):
+  //                 ca     cd     ya,  yd,  s,   x
+  plotAttDecResponse(0.95,  0.99,  0.1, 0.4, 2.0, 1.0); // good
+  plotAttDecResponse(0.95,  0.99,  0.2, 0.6, 2.0, 1.0); // good
+  plotAttDecResponse(0.95,  0.99,  0.7, 0.9, 2.0, 1.0); // bad
+  plotAttDecResponse(0.995, 0.999, 0.1, 0.4, 2.0, 1.0); // good
+  plotAttDecResponse(0.8,   0.9,   0.2, 0.3, 2.0, 1.0); // bad
+  plotAttDecResponse(0.8,   0.9,   0.1, 0.4, 2.0, 1.0); // bad
   //plotAttDecResponse(0.95, 0.99, 0.0, 0.0, 2.0, 1.0); // produces NaN in rsRootFinder
-  //plotAttDecResponse(0.95, 0.99, 0.1, 0.4, 2.0, 1.0);
+  */
 
 
   // User parameters:
@@ -264,7 +272,7 @@ void attackDecayEnvelope()
   env.setDecaySamples(dec);
   using RM = rsAttackDecayEnvelope<double>::RetriggerMode;
 
-  env.setRetriggerMode(RM::none);   // maybe rename to setRetriggerMode
+  env.setRetriggerMode(RM::none);
   Vec y1 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
 
@@ -273,21 +281,27 @@ void attackDecayEnvelope()
   dcGain = env.getGainAtDC();
   // For longer decays, the overshoot is less severe.
 
-  env.setRetriggerMode(RM::test1);
+  env.setRetriggerMode(RM::reset);
   Vec y3 = getRetriggerResponse(dt);
+  dcGain = env.getGainAtDC();
+
+  env.setRetriggerMode(RM::test1);
+  Vec y4 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
   // Actually ducks the peak below 1 - not useful!
 
   env.setRetriggerMode(RM::test2);
-  Vec y4 = getRetriggerResponse(dt);
+  Vec y5 = getRetriggerResponse(dt);
+  dcGain = env.getGainAtDC();
+  // somewhere in between none and compByDec
+
+  env.setRetriggerMode(RM::exact);  // does not yet work - has same effect as none
+  Vec y6 = getRetriggerResponse(dt);
   dcGain = env.getGainAtDC();
 
-  //env.setRetriggerMode(RM::exact);  // does not yet work - has same effect as none
-  //Vec y3 = getRetriggerResponse(dt);
-  //dcGain = env.getGainAtDC();
+  rsPlotVectors(y1, y2, y3, /*y4,*/ y5, y6);
+  //rsPlotVectors(y1, y6);
 
-  rsPlotVectors(y1, y2, /*y3,*/ y4);
-  // y4 is in between y1 and y2
 
 
   // I think, we should attempt that the curve approaches 1 in a sort of saturation curve, when we
@@ -321,25 +335,32 @@ void attackDecayEnvelope()
   //  achieve this we have combined the parametrization of a standard ADSR with the smoothness and
   //  naturalness of the simple attack-decay filter based envelope.
 
+  // ToDo:
+  // -Figure out how to implement a retrigger mode with exact compensation for the "piling up"
+  //  effect. Preliminary work is done in plotAttDecResponse, getPeakForInputImpulse, etc.
+
 
   // Notes:
-  // -i think, with sustain==0, the resulting envelope is infinitely smooth everywhere, i.e.
+  // -I think, with sustain==0, the resulting envelope is infinitely smooth everywhere, i.e.
   //  infinitely often differentiable. With nonzero sustain, there will be a discontinuity in the
   //  2nd derivative at the transition from sustain to release, so it's only second order smooth
   //  at this point (-> verify this)
 }
+
+
 /*
-trying to derive a formula to scale the input impulse to the filter when it has not yet decayed
+
+Trying to derive a formula to scale the input impulse to the filter when it has not yet decayed
 away completely so as to still reach 1.0 as peak height instead of overshooting it due to
 accumulation:
 
-  an = a0 * ca^n      attack filter output
+  an = a0 * ca^n      attack filter output, an is short for a[n]
   dn = d0 * cd^n      decay filter output
   en = s*(dn-an)      envelope output
 
 where:
 
-  a0 = x + ca*ya
+  a0 = x + ca*ya      x is height of input impulse, ya is state, ca is coeff
   d0 = x + cd*yd
 
 i think, we need to:
@@ -351,7 +372,16 @@ i think, we need to:
   -set it to 1
   -solve the equation for x
 
+the so found x the desired height/scaler of the input impulse.
 
+var("x ca ya cd yd t")                       # we use t instead of n for time
+f(t) = (x+ca*ya) * ca^t + (x+cd*yd) * cd^t   # our function of time, i.e. the env
+fp(t) = diff(f, t);                          # f'(t), the derivative of f
+eq1 = fp == 0                                # equation to solve
+tp = solve([eq1],[t])                        # solve it for t, time of the peak
+tp                                           # not explicitly solved for t :-(
 
+hmm...so it seems, already the "solve the equation for n" step fails - the equation may not be 
+possible to solve for tp explicitly
 
 */

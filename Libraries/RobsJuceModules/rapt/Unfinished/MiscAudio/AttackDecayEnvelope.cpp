@@ -44,7 +44,7 @@ T rsAttackDecayFilter<T>::getReciprocalGainAtDC() const
 template<class T>
 T rsAttackDecayEnvelope<T>::getExactAccuCompensation()
 {
-  rsError("Not yet ready to use"); return T(1);
+  //rsError("Not yet ready to use"); return T(1);
 
   if( this->yd == 0 )
     return 1;
@@ -78,12 +78,19 @@ T rsAttackDecayEnvelope<T>::getExactAccuCompensation()
   };
   // ToDo: Make this a member function and unit-test it!
 
-  return rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
+
+  T x = rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
+  return x;
+
+  //return rsRootFinder<T>::bisection(f, T(0), T(1), T(0));
+  // bisection seems to work but it's slow.
+
   //return rsRootFinder<T>::falsePosition(f, T(0), T(1), T(0));
-  // false position seems to work quite well but maybe try Newton, Brent, Ridders, ... and
-  // maybe use a higher tolerance, try better initial interval - maybe (0,1-yd) - then test
-  // how many iterations are typically taken
+  // false position seems to work quite well, so maybe try Newton, Brent, Ridders, 
+  // ... and maybe use a higher tolerance, try better initial interval - maybe (0,1-yd) - then 
+  // test how many iterations are typically taken
   // oh - damn - it is not guaranteed to converge - this is not yet usable
+  // why to we use 0 as initial guess? wouldn't 1 be better? or 0.5?
 
   // ToDo: 
   // -Document the derivation of the objective function f. I actually have no idea anymore how I 
@@ -92,7 +99,9 @@ T rsAttackDecayEnvelope<T>::getExactAccuCompensation()
   //  unit impulse is fed in. I think, the idea was to have a formula that computes the exact peak
   //  height that would be reached given the current state of the ya, yd variables when and impulse
   //  of height x is fed in. We then compute the difference of that value with the desired height 1
-  //  and drive this difference to zero.
+  //  and drive this difference to zero. ...Ah - there is something in plotAttDecResponse in 
+  //  ModulatorExperiments.cpp in the Tests project. Oh - and getPeakForInputImpulse is implemented 
+  //  in rsAttackDecayFilterTest also in this file. Maybe drag it into this class and test it
 }
 
 
@@ -111,7 +120,8 @@ T rsAttackDecayEnvelope<T>::getAccuCompensatedImpulse()
   case RM::test1:     return T(1) - this->s * (this->yd - this->ya);  // not useful
 
   case RM::test2:     return (2-ca*ya-cd*yd) / 2; 
-    // obtained requiring ya+yd == 2 in the upcoming call to getSample
+    // Obtained requiring ya+yd == 2 in the upcoming call to getSample...what's the rationale 
+    // behind requiring this? What, if require it to be some other value?
 
   default: return T(1);
   }
