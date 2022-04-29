@@ -102,5 +102,7 @@ ToDo:
 -maybe to implement a release time different from the decay time, just switch the decay time 
  constant to a different value in release phase or let the constant input not go down to zero 
  immediately but via another RC filter...but that would work well only if release >= decay
+-Maybe rename rsAttackDecayEnvelope to rsSmoothADSR, when release has been made independent from 
+ decay
 
 */

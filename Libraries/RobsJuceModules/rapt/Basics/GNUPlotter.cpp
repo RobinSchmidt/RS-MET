@@ -16,8 +16,8 @@ GNUPlotter::GNUPlotter()
   //gnuplotPath = "C:/Program Files/gnuplot/bin/wgnuplot.exe";
 
   // paths for data file and command batchfile:
-  dataPath    = "E:/Temp/gnuplotData.dat";
-  commandPath = "E:/Temp/gnuplotCommands.txt";   // this path may not contain whitepaces
+  dataPath    = "C:/Temp/gnuplotData.dat";
+  commandPath = "C:/Temp/gnuplotCommands.txt";   // this path may not contain whitepaces
 
   initialize();                                  // initializes data- and commandfile
 }

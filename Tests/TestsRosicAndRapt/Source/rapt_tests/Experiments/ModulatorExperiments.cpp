@@ -193,39 +193,39 @@ void plotAttDecResponse(T ca, T cd, T ya, T yd, T s, T x, int N = 500)
 
 void attackDecayEnvelope()
 {
-
-  //plotAttDecResponse(0.95, 0.99, 0.0, 0.0, 2.0, 1.0);
+  // Some preliminary tests (todo: move elsewhere)
+  //plotAttDecResponse(0.95, 0.99, 0.0, 0.0, 2.0, 1.0); // produces NaN in rsRootFinder
   //plotAttDecResponse(0.95, 0.99, 0.1, 0.4, 2.0, 1.0);
 
 
-
-  int N    = 1200;
-  int nOff = 800;     // note-off sample instant
-  int key  = 64;
-  int vel  = 64;
-
+  // User parameters:
+  int N    = 1200;  // number of samples to produce
+  int nOff =  750;  // note-off sample instant
+  int key  =   64;  // note number for the note-on triggers
+  int vel  =   64;  // velocity for the note-on triggers
+  int att  =   50;  // attack in samples
+  int dec  =  100;  // decay in samples
+  int dt   =  100;  // delta-t between the input impulses, i.e. trigger events for machine gun
+   
 
   std::vector<double> y(N);
-
-
-  rsAttackDecayFilter<double> flt;
   rsAttackDecayEnvelope<double> env;
-  // maybe rename to rsSmoothADSR, when release has been made independent from decay
+  double dcGain;
 
-
-
-  // plot DC response of filter:
+  /*
+  // Plot DC response of attack/decay-filter:
+  rsAttackDecayFilter<double> flt;
   flt.setAttackSamples(5);
   flt.setDecaySamples(15);
   for(int n = 0; n < N; n++)
     y[n] = flt.getSample(1.0);
-  //rsPlotVector(y);
-  double dcGain = flt.getGainAtDC();  // should be 22.335... - yep, works
+  rsPlotVector(y);
+  dcGain = flt.getGainAtDC();  // should be 22.335... - yep, works
+  */
 
-  /*
-  // plot a simple attack/decay envelope without sustain:
-  env.setAttackSamples(50);
-  env.setDecaySamples(100);
+  // Plot a simple attack/decay envelope without sustain:
+  env.setAttackSamples(att);
+  env.setDecaySamples(dec);
   env.setSustain(0.0);
   env.noteOn(key, vel);
   for(int n = 0; n < nOff; n++)
@@ -233,14 +233,11 @@ void attackDecayEnvelope()
   env.noteOff(key, vel);  // why does note-off need key and vel?
   for(int n = nOff; n < N; n++)
     y[n] = env.getSample();
-  //rsPlotVector(y);
-  */
-
-
-  // plot the response that we get when we fire a succession of several note-ons at it:
-  env.setAttackSamples(50);
-  env.setDecaySamples(100);
-  int dt = 30;  // delta-t between the input impulses
+  rsPlotVector(y);
+  
+  // Plot the response that we get when we fire a succession of several note-ons at it:
+  env.setAttackSamples(att);
+  env.setDecaySamples(dec);
   using AM = rsAttackDecayEnvelope<double>::AccuFormula;
   env.setAccumulationMode(AM::none);
   //env.setAccumulationMode(AM::one_minus_yd);
@@ -248,21 +245,23 @@ void attackDecayEnvelope()
   env.reset();
   for(int n = 0; n < N; n++)
   {
-    if(n % dt == 0)
+    if(n % dt == 0 && n < nOff)
     {
-      env.noteOn(key, vel);
-      env.noteOff(key, vel);  // should not matter, if we call noteOff or not
+      env.noteOn(key, vel);       // machine gun triggers until nOff
+      env.noteOff(key, vel);      // should not matter, if we call noteOff here or not
     }
+    if(n == nOff)
+      env.noteOff(key, vel);      // the last noteOff before the machine gun stops
     y[n] = env.getSample();
   }
   dcGain = env.getGainAtDC();
   rsPlotVector(y);
-  // i think, we should attempt that the curve approaches 1 in a sort of saturation curve, when we
-  // send a not at each sample
+  // I think, we should attempt that the curve approaches 1 in a sort of saturation curve, when we
+  // send a note at each sample
 
 
   // plot a family of envelopes with sustain settings 0.0,0.2,0.4,0.6,0.8,1.0:
-  //plotSmoothEnvWithVariousSustains(50, 100);
+  plotSmoothEnvWithVariousSustains(50, 100);
 
   int dummy = 0;
 
