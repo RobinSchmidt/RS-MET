@@ -90,11 +90,20 @@ public:
 
   using Base = rsAttackDecayFilter<T>; // for conveniently calling basclass methods
 
-  enum class AccuFormula // rename to AccumulationMode
+  enum class AccuFormula // rename to AccumulationMode or RetriggerMode
   {
-    none,
-    exact,       // not yet usable - sometimes the iteration diverges
+    none,        
+    // Find better name - we do no scaling of the impulse at all. It has the effect that retriggers
+    // pile up without any countermeasures. Maybe if we call this enum RetriggerMode, this mode 
+    // could be called accumulative
+
+    exact,       
+    // Not yet usable - sometimes the iteration diverges.
+
     one_minus_yd
+    // Scales the impulse by (1-yd). Rationale: When the so scaled impulse is added back to the
+    // yd value which is received in the feedback path, they add up to unity or at least almost. 
+    // Maybe the yd value is one sample to old or new for the formula to be exact -> check that.
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -128,32 +137,6 @@ public:
     // Maybe we should store the velocity, too? It coul be useful if we want to scale the sustain 
     // level by the velocity.
 
-    //T x  = T(1);            // input to filter -  maybe should be scaled by vel?
-
-    // under construction:
-    // we try to subtract some value that depends on the current state with the goal that a rapid
-    // succession of many note-ons does not lead to an accumulation that lets the peaks go higher 
-    // and higher for each note-on (until it saturates)
-    //x = 1 - s * (yd - ya);   // subtract last output of filter - nope! wrong!
-    //x = 1 - s * (cd*yd - ca*ya); 
-    //x = 1 - (yd - ya);       // maybe without the s-factor? - nope! also wrong
-    //x = 1 - (cd*yd - ca*ya); 
-    //x = (2-ca*ya-cd*yd) / 2; // obtained requiring ya+yd == 2 in the upcoming call to getSample
-
-    //x = (2-ya-yd) / 2;  // ad hoc - makes not a big difference to formula above - reasonably
-                        // limits/saturates the output
-    //x = 1-yd;
-
-    //x = (s-ya-yd) / s;
-    //x = (2-ca*ca*ya*ya-cd*cd*yd*yd) / 2;  // ya^2 + yd^2 ==2
-    //x = (2-ya*ya-yd*yd) / 2;
-    //T d = s*(yd-ya);  x = 1 - d*d;
-    //x = 1 - yd;
-    //x = 1 - yd - ya;
-    // todo: maybe have an "accumulationMode" member and do a switch between various formulas based
-    // on it here
-
-
     T x = getAccuCompensatedImpulse();
     // Maybe x should be scaled according to key and vel? But maybe it should be the job of a 
     // higher level class to compute an overall strength which can be passed to this function. This
@@ -163,7 +146,7 @@ public:
     // We call geSample here to avoid the one sample delay due to the subtraction - the two
     // exponentials cancel each other at the very first sample
   }
-  // Should we take into account the sustain here? the maximum excursion will increase, if we have
+  // Should we take into account the sustain here? The maximum excursion will increase, if we have
   // nonzero sustain. Can we compensate that by feeding some number other than 1? And if so, should 
   // we do it? Maybe that coupling is musically desirable?
   // Also: when anote-on is received before the envlope has decayed away, the overlapping impulse
@@ -215,7 +198,7 @@ protected:
   T getAccuCompensatedImpulse();
 
 
-  AccuFormula accuFormula = AccuFormula::none;
+  AccuFormula accuFormula = AccuFormula::none; // rename to retrigMode
 
   T sustain = T(0);
   int currentNote = -1;  // -1 is code for "none"

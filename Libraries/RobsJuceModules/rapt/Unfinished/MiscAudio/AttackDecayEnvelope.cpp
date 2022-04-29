@@ -85,7 +85,12 @@ T rsAttackDecayEnvelope<T>::getExactAccuCompensation()
 
   // ToDo: 
   // -Document the derivation of the objective function f. I actually have no idea anymore how I 
-  //  came up with it.
+  //  came up with it. Hmm - apparently, we once had a getPeakForInputImpulse function but that 
+  //  doesn't seem to exist anymore. I think, it probably computed the height of the peak when a
+  //  unit impulse is fed in. I think, the idea was to have a formula that computes the exact peak
+  //  height that would be reached given the current state of the ya, yd variables when and impulse
+  //  of height x is fed in. We then compute the difference of that value with the desired height 1
+  //  and drive this difference to zero.
 }
 
 
@@ -98,6 +103,30 @@ T rsAttackDecayEnvelope<T>::getAccuCompensatedImpulse()
   case AccuFormula::exact:        return getExactAccuCompensation();
   default: return T(1);
   }
+
+  // Other formulas that may or may not be useful:
+  // we try to subtract some value that depends on the current state with the goal that a rapid
+  // succession of many note-ons does not lead to an accumulation that lets the peaks go higher 
+  // and higher for each note-on (until it saturates)
+  //x = 1 - s * (yd - ya);   // subtract last output of filter - nope! wrong!
+  //x = 1 - s * (cd*yd - ca*ya); 
+  //x = 1 - (yd - ya);       // maybe without the s-factor? - nope! also wrong
+  //x = 1 - (cd*yd - ca*ya); 
+  //x = (2-ca*ya-cd*yd) / 2; // obtained requiring ya+yd == 2 in the upcoming call to getSample
+
+  //x = (2-ya-yd) / 2;  // ad hoc - makes not a big difference to formula above - reasonably
+  // limits/saturates the output
+  //x = 1-yd;
+
+  //x = (s-ya-yd) / s;
+  //x = (2-ca*ca*ya*ya-cd*cd*yd*yd) / 2;  // ya^2 + yd^2 ==2
+  //x = (2-ya*ya-yd*yd) / 2;
+  //T d = s*(yd-ya);  x = 1 - d*d;
+  //x = 1 - yd;
+  //x = 1 - yd - ya;
+  // todo: maybe have an "accumulationMode" member and do a switch between various formulas based
+  // on it here
+
 }
 
 
