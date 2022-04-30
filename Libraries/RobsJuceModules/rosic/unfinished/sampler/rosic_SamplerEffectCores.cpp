@@ -117,27 +117,32 @@ void EnvGenCore::processFrame(float* L, float* R)
   else if(sampleCount < delay+attack)
   {
     float t =  float(delay+attack - sampleCount) / float(attack);
-    *L = *R = (1-t) * peak + (t) * start;
+    *L = *R = (1-t) * peak + t * start;
   }
   else if(sampleCount < delay+attack+hold)
   {
-
+    *L = *R = peak;
   }
   else if(sampleCount < delay+attack+hold+decay)
   {
-
+    float t =  float(delay+attack+hold+decay - sampleCount) / float(decay);
+    *L = *R = (1-t) * sustain + t * peak;
   }
   else if(noteIsOn)
   {
-
+    *L = *R = sustain;
+    sampleCount--;      // counteracts sampleCount++ at end of function to effectively stop 
+                        // counting during sustain
   }
-  // todo: handle release
+  else if(sampleCount < delay+attack+hold+decay+release)
+  {
+    float t =  float(delay+attack+hold+decay+release - sampleCount) / float(release);
+    *L = *R = (1-t) * end + t * sustain;
+  }
   else
   {
-
+    *L = *R = end;
   }
-
-
 
   sampleCount++;
 }
