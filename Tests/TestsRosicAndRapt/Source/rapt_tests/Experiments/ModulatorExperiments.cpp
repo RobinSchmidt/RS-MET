@@ -345,6 +345,11 @@ void attackDecayEnvelope()
   //  infinitely often differentiable. With nonzero sustain, there will be a discontinuity in the
   //  2nd derivative at the transition from sustain to release, so it's only second order smooth
   //  at this point (-> verify this)
+
+  // Ideas:
+  // -We have the "reset" and "none" mode working. Maybe we could do a partial reset? Maybe 
+  //  multiply the filter states by a values between 0 and 1?
+  // 
 }
 
 

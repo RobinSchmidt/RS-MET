@@ -171,4 +171,10 @@ ToDo:
 -Maybe rename rsAttackDecayEnvelope to rsSmoothADSR, when release has been made independent from 
  decay
 
+Ideas:
+-Maybe implement the attack/decay filter as a series of two first order lowpasses. This may also 
+ allow for the edge case where attack == decay. Maybe this facilitates the derivation of an 
+ exact retrigger compensation formula? Maybe even if at the end, we use the parallel implementation
+ anyway?
+
 */

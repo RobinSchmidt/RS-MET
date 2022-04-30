@@ -1671,6 +1671,8 @@ void parametricCurve()
   // Variation: x(t) = sin(t - a*sin(t)), y(t) = b*cos(t - c*cos(t))
   // using b=1 and a=c=1.1, we get some sort of arrow-head:
   // https://www.desmos.com/calculator/v4crjw8cdo
+  //
+  // https://www.youtube.com/watch?v=tjyFw1BX4eM  another egg-equation
 
 
   // plot curve:
