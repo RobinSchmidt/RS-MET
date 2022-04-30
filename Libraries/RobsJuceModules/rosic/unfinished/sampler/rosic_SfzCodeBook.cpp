@@ -216,6 +216,8 @@ SfzCodeBook::SfzCodeBook()
   add(OC::egN_decay,   Flt, "egN_decay",   0.f,  100.f, 0.f, dsp, OU::Seconds, RsMet);
   add(OC::egN_sustain, Flt, "egN_sustain", 0.f,  1.f,   0.f, dsp, OU::Seconds, Sfz2);  // check default value!
   add(OC::egN_release, Flt, "egN_release", 0.f,  100.f, 0.f, dsp, OU::Seconds, RsMet);
+  // todo: add the other 5
+
 
   dsp = OpcodeType::FreeLfo;
   add(OC::lfoN_freq,  Flt, "lfoN_freq",    0.f,  20.f, 0.f, dsp, OU::Hertz,    Sfz2);

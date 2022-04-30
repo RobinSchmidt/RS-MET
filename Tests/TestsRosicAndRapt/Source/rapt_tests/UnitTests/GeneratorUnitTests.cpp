@@ -2844,20 +2844,29 @@ bool samplerEnvTest()
   float end     = 0.1f;
 
   // Test parameters:
-  int N    = 1500;     // number of samples to produce
-  int nOff = 1000;     // sample of noteOff event
+  int N    = 1500;     // Number of samples to produce
+  int nOff = 1000;     // Sample of noteOff event
 
   // Produce and plot envelope:
   Vec outL(N), outR(N);
-  EnvGenCore eg;
-  eg.setup(start, delay, attack, peak, hold, decay, sustain, release, end);
+  EnvGenCore egc;
+  egc.setup(start, delay, attack, peak, hold, decay, sustain, release, end);
   for(int n = 0; n < N; n++)
   {
     if(n == nOff)
-      eg.noteOff();
-    eg.processFrame(&outL[n], &outR[n]);
+      egc.noteOff();
+    egc.processFrame(&outL[n], &outR[n]);
   }
-  //rsPlotVectors(outL, outR);
+  rsPlotVectors(outL, outR);
+
+  // OK the envelope looks good. From now on, we treat it as target signal and let an actual 
+  // sampler engine make use of it, routing it to the amplitude using a DC sample.
+  Vec tgtL = outL, tgtR = outR;
+
+
+
+  //EnvGen eg;
+
 
 
 
@@ -2866,7 +2875,8 @@ bool samplerEnvTest()
   // -Implement different shapes for the segments.
   // -Optimize the envelope code and use the current code as prototype to compare against in a unit
   //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
-  // -Implement and test the sampler module
+  // -Implement and test the sampler module: create a DC sample and use the envelope for the 
+  //  amplitude and compare the result against
 
 
   //rsAssert(ok);

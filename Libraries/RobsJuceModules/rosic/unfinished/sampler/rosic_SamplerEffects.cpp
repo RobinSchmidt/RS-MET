@@ -76,18 +76,25 @@ void LowFreqOsc::updateCoeffs(double fs)
 EnvGen::EnvGen()
 {
   type = OpcodeType::FreeEnv;
-  params.reserve(4);
-  addParameter(Opcode::egN_attack);
-  addParameter(Opcode::egN_decay);
-  addParameter(Opcode::egN_sustain);
-  addParameter(Opcode::egN_release);
-  // todo: add other parameters. All in all, we need start, delay, attack, peak, hold, decay, 
-  // sustain, release, end
+  params.reserve(9);                   // index
+  addParameter(Opcode::egN_start);     //   0
+  addParameter(Opcode::egN_delay);     //   1
+  addParameter(Opcode::egN_attack);    //   2
+  addParameter(Opcode::egN_peak);      //   3
+  addParameter(Opcode::egN_hold);      //   4
+  addParameter(Opcode::egN_decay);     //   5
+  addParameter(Opcode::egN_sustain);   //   6
+  addParameter(Opcode::egN_release);   //   7
+  addParameter(Opcode::egN_end);       //   8
 }
 
 void EnvGen::updateCoeffs(double sampleRate)
 {
-
+  const std::vector<Parameter>& p = params;
+  float fs = (float) sampleRate;
+  core.setup(p[0].mv(), p[1].mv()*fs, p[2].mv()*fs, p[3].mv(), p[4].mv()*fs, p[5].mv()*fs,
+    p[6].mv(), p[7].mv()*fs, p[8].mv());
+  dirty = false;
 }
 
 //=================================================================================================

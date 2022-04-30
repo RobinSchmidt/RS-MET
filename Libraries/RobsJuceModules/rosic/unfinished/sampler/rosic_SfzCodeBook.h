@@ -100,8 +100,9 @@ enum class Opcode
   // fil_type, cutoff, etc. because that's what sfz 1 has. it doesn't have a concept of multiple
   // filters
 
-  // Envelope generators:
-  egN_attack, egN_decay, egN_sustain, egN_release,  // Not defined in SFZ except sustain
+  // ADSR+ envelope generators (opcodes not defined in SFZ except sustain):
+  egN_start, egN_delay, egN_attack, egN_peak, egN_hold, egN_decay, egN_sustain, egN_release, 
+  egN_end,
 
   // egN_timeX, egN_levelX
   lfoN_freq,      // lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave,
