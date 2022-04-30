@@ -42,13 +42,13 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   float _decay, float _sustain, float _release, float _end, float _sampleRate)
 {
   start      = _start;
-  delay      = _delay;
-  attack     = _attack;
+  delay      = RAPT::rsRoundToInt(_delay);
+  attack     = RAPT::rsRoundToInt(_attack);
   peak       = _peak;
-  hold       = _hold;
-  decay      = _decay;
+  hold       = RAPT::rsRoundToInt(_hold);
+  decay      = RAPT::rsRoundToInt(_decay);
   sustain    = _sustain;
-  release    = _release;
+  release    = RAPT::rsRoundToInt(_release);
   end        = _end;
   sampleRate = _sampleRate;
   resetState();
@@ -57,7 +57,89 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
 void EnvGenCore::processFrame(float* L, float* R)
 {
 
+  /*
+  switch(stage)
+  {
 
+  case 0:        // delay
+  {
+    *L = *R = 0.f;          // or should we return "start"?
+  } break;
+
+  case 1:        // attack
+  {
+
+  } break;
+
+  case 2:        // hold
+  {
+
+  } break;
+
+  case 3:        // decay
+  {
+
+  } break;
+
+  case 4:        // sustain
+  {
+
+  } break;
+
+  case 5:        // release
+  {
+
+  } break;
+
+  case 6:        // finished
+  {
+
+  } break;
+
+  }
+  */
+
+
+  /*
+  if(stage == 0)   // in delay stage
+  {
+
+  }
+  */
+
+  *L = *R = 0.f; 
+
+
+  if(sampleCount < delay)   // or should it be <= ?
+  { 
+    *L = *R = 0.f;          // or should we return "start"?
+  }
+  else if(sampleCount < delay+attack)
+  {
+    float t =  float(delay+attack - sampleCount) / float(attack);
+    *L = *R = (1-t) * peak + (t) * start;
+  }
+  else if(sampleCount < delay+attack+hold)
+  {
+
+  }
+  else if(sampleCount < delay+attack+hold+decay)
+  {
+
+  }
+  else if(noteIsOn)
+  {
+
+  }
+  // todo: handle release
+  else
+  {
+
+  }
+
+
+
+  sampleCount++;
 }
 
 //=================================================================================================

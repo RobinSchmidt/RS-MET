@@ -2832,15 +2832,15 @@ bool samplerEnvTest()
   using namespace rosic::Sampler;
   using Vec = std::vector<float>;
 
-  // Define EG parameters (times are in in seconds, levels a unitless):
-  float delay      = 0.f;
+  // Define EG parameters (times are in in samples, levels a unitless):
+  float delay      = 0;
   float start      = 0.f;
-  float attack     = 0.01f;
+  float attack     = 50;
   float peak       = 1.f;
-  float hold       = 0.f;
-  float decay      = 0.1f;
+  float hold       = 100;
+  float decay      = 200;
   float sustain    = 0.5f;
-  float release    = 0.3f;
+  float release    = 400;
   float end        = 0.f;
   float sampleRate = 10000.f;
 

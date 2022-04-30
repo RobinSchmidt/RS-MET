@@ -61,13 +61,13 @@ protected:
 
   // User parameters:
   float start   = 0.f;  // Level to start from.
-  float delay   = 0.f;  // Delay between trigger and attack stage.
-  float attack  = 0.f;  // Length of attack stage.
+  int   delay   = 0;    // Delay between trigger and attack stage.
+  int   attack  = 0;    // Length of attack stage.
   float peak    = 1.f;  // Peak level, reached at end of attack stage.
-  float hold    = 0.f;  // Time that the peak level is being held before entering decay.
-  float decay   = 0.f;  // Length of the decay stage.
+  int   hold    = 0;    // Time that the peak level is being held before entering decay.
+  int   decay   = 0;    // Length of the decay stage.
   float sustain = 1.f;  // Level held during sustain after end of decay.
-  float release = 0.f;  // Length of release stage.
+  int   release = 0;    // Length of release stage.
   float end     = 0.f;  // Level to end at, reached at end of release.
   // I'm not sure whether the start value is supposed to become active before or after delay. The 
   // sfz spec lists the delay parameter first, indicating that it may be the latter. We need to try
@@ -76,8 +76,9 @@ protected:
 
   // Algo data:
   float sampleRate  = 1;
-  int   sampleCount = 0;  // Keeps the current time in samples since triggering
-  int   stage       = 0;  // Keeps track of which segment we are in
+  int   sampleCount = 0;      // Keeps the current time in samples since triggering
+  int   stage       = 0;      // Keeps track of which segment we are in
+  bool  noteIsOn    = false;
 
 };
 
