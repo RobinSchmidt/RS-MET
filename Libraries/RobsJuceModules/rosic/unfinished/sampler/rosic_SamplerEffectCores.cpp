@@ -38,6 +38,30 @@ void LowFreqOscCore::processFrame(float* L, float* R)
 
 //=================================================================================================
 
+void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, float _hold, 
+  float _decay, float _sustain, float _release, float _end, float _sampleRate)
+{
+  start      = _start;
+  delay      = _delay;
+  attack     = _attack;
+  peak       = _peak;
+  hold       = _hold;
+  decay      = _decay;
+  sustain    = _sustain;
+  release    = _release;
+  end        = _end;
+  sampleRate = _sampleRate;
+  resetState();
+}
+
+void EnvGenCore::processFrame(float* L, float* R)
+{
+
+
+}
+
+//=================================================================================================
+
 void AmplifierCore::setup(float volume, float pan, float width, float pos)
 {
   using Mat = RAPT::rsMatrix2x2<float>;

@@ -52,6 +52,10 @@ class EnvGenCore
 
 public:
 
+  void setup(float start, float delay, float attack, float peak, float hold, float decay,
+    float sustain, float release, float end, float sampleRate);
+  void processFrame(float* L, float* R);
+  void resetState() { sampleCount = 0; stage = 0; }
 
 protected:
 
@@ -68,18 +72,14 @@ protected:
   // I'm not sure whether the start value is supposed to become active before or after delay. The 
   // sfz spec lists the delay parameter first, indicating that it may be the latter. We need to try
   // this with a reference sfz engine like sfz+
+  // Maybe the time params should be integers and the unit should be samples
 
   // Algo data:
-  int sampleCount = 0;  // Keeps the current time in samples since triggering
-  int stage       = 0;  // Keeps track of which segment we are in
+  float sampleRate  = 1;
+  int   sampleCount = 0;  // Keeps the current time in samples since triggering
+  int   stage       = 0;  // Keeps track of which segment we are in
 
 };
-
-
-
-
-
-
 
 //=================================================================================================
 // Generators

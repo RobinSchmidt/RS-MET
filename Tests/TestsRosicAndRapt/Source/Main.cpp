@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
   //multiplicativeSynth();
 
   // Modulators:
-  attackDecayEnvelope();
+  //attackDecayEnvelope();
 
   // Graphics:
   //colorGradientHSL();
