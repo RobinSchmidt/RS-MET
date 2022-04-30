@@ -2832,20 +2832,22 @@ bool samplerEnvTest()
   using namespace rosic::Sampler;
   using Vec = std::vector<float>;
 
-  // Define EG parameters (times are in in samples, levels a unitless):
-  float delay      = 30;
-  float start      = 0.2f;
-  float attack     = 70;
-  float peak       = 1.f;
-  float hold       = 100;
-  float decay      = 200;
-  float sustain    = 0.5f;
-  float release    = 400;
-  float end        = 0.1f;
+  // EG parameters (times are in in samples, levels a unitless):
+  float delay   = 30;
+  float start   = 0.2f;
+  float attack  = 70;
+  float peak    = 1.f;
+  float hold    = 100;
+  float decay   = 200;
+  float sustain = 0.5f;
+  float release = 400;
+  float end     = 0.1f;
 
+  // Test parameters:
   int N    = 1500;     // number of samples to produce
   int nOff = 1000;     // sample of noteOff event
 
+  // Produce and plot envelope:
   Vec outL(N), outR(N);
   EnvGenCore eg;
   eg.setup(start, delay, attack, peak, hold, decay, sustain, release, end);
@@ -2855,12 +2857,22 @@ bool samplerEnvTest()
       eg.noteOff();
     eg.processFrame(&outL[n], &outR[n]);
   }
+  //rsPlotVectors(outL, outR);
 
 
-  rsPlotVectors(outL, outR);
-  rsAssert(ok);
+
+
+  // ToDo:
+  // -Implement different shapes for the segments.
+  // -Optimize the envelope code and use the current code as prototype to compare against in a unit
+  //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
+  // -Implement and test the sampler module
+
+
+  //rsAssert(ok);
   return ok;
 }
+
 
 
 

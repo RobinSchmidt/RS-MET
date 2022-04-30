@@ -41,30 +41,29 @@ void LowFreqOscCore::processFrame(float* L, float* R)
 void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, float _hold, 
   float _decay, float _sustain, float _release, float _end)
 {
-  start      = _start;
-  delay      = RAPT::rsRoundToInt(_delay);
-  attack     = RAPT::rsRoundToInt(_attack);
-  peak       = _peak;
-  hold       = RAPT::rsRoundToInt(_hold);
-  decay      = RAPT::rsRoundToInt(_decay);
-  sustain    = _sustain;
-  release    = RAPT::rsRoundToInt(_release);
-  end        = _end;
-  //sampleRate = _sampleRate;
-  noteIsOn   = true;  // maybe this should be a function parameter?
+  start    = _start;
+  delay    = _delay;
+  attack   = _attack;
+  peak     = _peak;
+  hold     = _hold;
+  decay    = _decay;
+  sustain  = _sustain;
+  release  = _release;
+  end      = _end;
+  noteIsOn = true;         // Maybe this should be a function parameter?
   resetState();
 }
 
 void EnvGenCore::processFrame(float* L, float* R)
 {
-  if(sampleCount < delay)   // or should it be <= ?
+  if(sampleCount < delay)     // or should it be <= ?
   { 
     //*L = *R = 0.f;          // or should we return "start"?
     *L = *R = start;          // it seems to make more sense but compare to sfz+
   }
   else if(sampleCount < delay+attack)
   {
-    float t =  float(delay+attack - sampleCount) / float(attack);
+    float t =  (delay+attack - sampleCount) / attack;
     *L = *R = (1-t) * peak + t * start;
   }
   else if(sampleCount < delay+attack+hold)
@@ -73,7 +72,7 @@ void EnvGenCore::processFrame(float* L, float* R)
   }
   else if(sampleCount < delay+attack+hold+decay)
   {
-    float t =  float(delay+attack+hold+decay - sampleCount) / float(decay);
+    float t =  (delay+attack+hold+decay - sampleCount) / decay;
     *L = *R = (1-t) * sustain + t * peak;
   }
   else if(noteIsOn)
@@ -84,7 +83,7 @@ void EnvGenCore::processFrame(float* L, float* R)
   }
   else if(sampleCount < delay+attack+hold+decay+release)
   {
-    float t =  float(delay+attack+hold+decay+release - sampleCount) / float(release);
+    float t =  (delay+attack+hold+decay+release - sampleCount) / release;
     *L = *R = (1-t) * end + t * sustain;
   }
   else
@@ -99,7 +98,8 @@ void EnvGenCore::processFrame(float* L, float* R)
   //  output for unit tests.
   //  -The time variables should be float -> saves the conversion
   //  -Maybe we can keep a "stage" variable that keeps track of whether we are in delay, attack, 
-  //   hold, decay, sustain or finished stage and then use a switch on that variable
+  //   hold, decay, sustain or finished stage and then use a switch on that variable. This may 
+  //   also generalize better to MSEGs later.
   //  -Try to avoid or at least minimize the summation calculations, this kind of stuff: 
   //   delay+attack+hold+...
   //  -Avoid the division by computing the current output recursively, i.e. from previous output

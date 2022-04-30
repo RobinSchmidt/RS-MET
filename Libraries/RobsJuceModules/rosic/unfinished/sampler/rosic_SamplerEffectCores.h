@@ -56,29 +56,26 @@ public:
     float sustain, float release, float end);
   void processFrame(float* L, float* R);
   void noteOff() { noteIsOn = false; }
-  void resetState() { sampleCount = 0; /*stage = 0;*/ }
+  void resetState() { sampleCount = 0; }
 
 protected:
 
-  // User parameters:
+  // User parameters. Levels are raw numbers, times are in samples:
   float start   = 0.f;  // Level to start from.
-  int   delay   = 0;    // Delay between trigger and attack stage.
-  int   attack  = 0;    // Length of attack stage.
+  float delay   = 0;    // Delay between trigger and attack stage.
+  float attack  = 0;    // Length of attack stage.
   float peak    = 1.f;  // Peak level, reached at end of attack stage.
-  int   hold    = 0;    // Time that the peak level is being held before entering decay.
-  int   decay   = 0;    // Length of the decay stage.
+  float hold    = 0;    // Time that the peak level is being held before entering decay.
+  float decay   = 0;    // Length of the decay stage.
   float sustain = 1.f;  // Level held during sustain after end of decay.
-  int   release = 0;    // Length of release stage.
+  float release = 0;    // Length of release stage.
   float end     = 0.f;  // Level to end at, reached at end of release.
   // I'm not sure whether the start value is supposed to become active before or after delay. The 
   // sfz spec lists the delay parameter first, indicating that it may be the latter. We need to try
   // this with a reference sfz engine like sfz+
-  // Maybe the time params should be integers and the unit should be samples
 
   // Algo data:
-  //float sampleRate  = 1;
   int   sampleCount = 0;      // Keeps the current time in samples since triggering
-  //int   stage       = 0;      // Keeps track of which segment we are in
   bool  noteIsOn    = false;
 
 };

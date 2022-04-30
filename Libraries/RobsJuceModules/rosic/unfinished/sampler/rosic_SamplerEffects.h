@@ -323,12 +323,13 @@ private:
 
 /** Envelope generator for the sampler. */
 
+/*
 class EnvGen : public Processor
 {
 
 public:
 
-  /** Time parameters are in seconds. */
+  // Time parameters are in seconds. 
   void setup(float delay, float start, float attack, float hold, float decay, float sustain,
     float release, float sampleRate);
 
@@ -344,7 +345,7 @@ public:
     *L = *R = 0.f;  // preliminary
   }
 
-  void updateCoeffs(double sampleRate) override { /* core.updateCoeffs(); */ }
+  //void updateCoeffs(double sampleRate) override { // core.updateCoeffs();  }
 
 
 protected:
@@ -356,6 +357,7 @@ protected:
   float out;                                           // output signal (stored between calls)
 
 };
+*/
 // -What value is the env supposed to produce during the delay stage? the start value or zero?
 
 //=================================================================================================
@@ -372,6 +374,18 @@ public:
 protected:
   LowFreqOscCore core;
 };
+
+class EnvGen : public Processor
+{
+public:
+  EnvGen();
+  void processFrame(float* L, float* R) override { core.processFrame(L, R); }
+  void updateCoeffs(double sampleRate) override;
+  void resetState() override { core.resetState(); }
+protected:
+  EnvGenCore core;
+};
+
 class Amplifier : public Processor
 {
 public:

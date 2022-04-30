@@ -100,10 +100,12 @@ enum class Opcode
   // fil_type, cutoff, etc. because that's what sfz 1 has. it doesn't have a concept of multiple
   // filters
 
+  // Envelope generators:
+  egN_attack, egN_decay, egN_sustain, egN_release,  // Not defined in SFZ except sustain
+
   // egN_timeX, egN_levelX
   lfoN_freq,      // lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave,
   lfoN_volumeX,
-
   lfoN_amplitudeX, 
   // is this supposed to control the amplitude of the LFO..or the routing of the LFO output to an
   // amplitude parameter? in the former case, we need nee no second index X, in the latter, we do

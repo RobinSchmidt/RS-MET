@@ -73,6 +73,25 @@ void LowFreqOsc::updateCoeffs(double fs)
 
 //=================================================================================================
 
+EnvGen::EnvGen()
+{
+  type = OpcodeType::FreeEnv;
+  params.reserve(4);
+  addParameter(Opcode::egN_attack);
+  addParameter(Opcode::egN_decay);
+  addParameter(Opcode::egN_sustain);
+  addParameter(Opcode::egN_release);
+  // todo: add other parameters. All in all, we need start, delay, attack, peak, hold, decay, 
+  // sustain, release, end
+}
+
+void EnvGen::updateCoeffs(double sampleRate)
+{
+
+}
+
+//=================================================================================================
+
 Amplifier::Amplifier()
 {
   type = OpcodeType::Amplifier;

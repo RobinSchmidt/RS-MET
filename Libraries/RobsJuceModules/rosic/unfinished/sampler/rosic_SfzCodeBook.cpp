@@ -211,11 +211,20 @@ SfzCodeBook::SfzCodeBook()
   // Or should the amplfo_depth be of type ModulationRouting, ModConnection? ..we'll see
 
   // Routable modulators:
+  dsp = OpcodeType::FreeEnv;
+  add(OC::egN_attack,  Flt, "egN_attack",  0.f,  100.f, 0.f, dsp, OU::Seconds, RsMet);
+  add(OC::egN_decay,   Flt, "egN_decay",   0.f,  100.f, 0.f, dsp, OU::Seconds, RsMet);
+  add(OC::egN_sustain, Flt, "egN_sustain", 0.f,  1.f,   0.f, dsp, OU::Seconds, Sfz2);  // check default value!
+  add(OC::egN_release, Flt, "egN_release", 0.f,  100.f, 0.f, dsp, OU::Seconds, RsMet);
+
   dsp = OpcodeType::FreeLfo;
   add(OC::lfoN_freq,  Flt, "lfoN_freq",    0.f,  20.f, 0.f, dsp, OU::Hertz,    Sfz2);
   add(OC::lfoN_amp,   Flt, "lfoN_amp",    -1.f,  +1.f, 1.f, dsp, OU::RawFloat, RsMet);
   // ToDo: figure out what lfoN_amplitude in sfz2 is supposed to do - maybe it does what we want to
   // do with amp here?
+
+
+
 
 
   // Modulation routings:
