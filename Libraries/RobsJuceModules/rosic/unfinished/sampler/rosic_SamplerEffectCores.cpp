@@ -51,68 +51,16 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   release    = RAPT::rsRoundToInt(_release);
   end        = _end;
   sampleRate = _sampleRate;
+  noteIsOn   = true;  // maybe this should be a function parameter?
   resetState();
 }
 
 void EnvGenCore::processFrame(float* L, float* R)
 {
-
-  /*
-  switch(stage)
-  {
-
-  case 0:        // delay
-  {
-    *L = *R = 0.f;          // or should we return "start"?
-  } break;
-
-  case 1:        // attack
-  {
-
-  } break;
-
-  case 2:        // hold
-  {
-
-  } break;
-
-  case 3:        // decay
-  {
-
-  } break;
-
-  case 4:        // sustain
-  {
-
-  } break;
-
-  case 5:        // release
-  {
-
-  } break;
-
-  case 6:        // finished
-  {
-
-  } break;
-
-  }
-  */
-
-
-  /*
-  if(stage == 0)   // in delay stage
-  {
-
-  }
-  */
-
-  *L = *R = 0.f; 
-
-
   if(sampleCount < delay)   // or should it be <= ?
   { 
-    *L = *R = 0.f;          // or should we return "start"?
+    //*L = *R = 0.f;          // or should we return "start"?
+    *L = *R = start;          // it seems to make more sense but compare to sfz+
   }
   else if(sampleCount < delay+attack)
   {
@@ -145,6 +93,17 @@ void EnvGenCore::processFrame(float* L, float* R)
   }
 
   sampleCount++;
+
+  // ToDo:
+  // -Try to optimize this but keep the original code somewhere as prototype to create reference
+  //  output for unit tests.
+  //  -The time variables should be float -> saves the conversion
+  //  -Maybe we can keep a "stage" variable that keeps track of whether we are in delay, attack, 
+  //   hold, decay, sustain or finished stage and then use a switch on that variable
+  //  -Try to avoid or at least minimize the summation calculations, this kind of stuff: 
+  //   delay+attack+hold+...
+  //  -Avoid the division by computing the current output recursively, i.e. from previous output
+  //   and some increment
 }
 
 //=================================================================================================

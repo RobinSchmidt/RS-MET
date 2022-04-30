@@ -2833,23 +2833,30 @@ bool samplerEnvTest()
   using Vec = std::vector<float>;
 
   // Define EG parameters (times are in in samples, levels a unitless):
-  float delay      = 0;
-  float start      = 0.f;
-  float attack     = 50;
+  float delay      = 30;
+  float start      = 0.2f;
+  float attack     = 70;
   float peak       = 1.f;
   float hold       = 100;
   float decay      = 200;
   float sustain    = 0.5f;
   float release    = 400;
-  float end        = 0.f;
+  float end        = 0.1f;
   float sampleRate = 10000.f;
 
-  int N = 1000;     // number of samples to produce
+  int N    = 1500;     // number of samples to produce
+  int nOff = 1000;     // sample of noteOff event
+
+
   Vec outL(N), outR(N);
   EnvGenCore eg;
   eg.setup(start, delay, attack, peak, hold, decay, sustain, release, end, sampleRate);
   for(int n = 0; n < N; n++)
+  {
+    if(n == nOff)
+      eg.noteOff();
     eg.processFrame(&outL[n], &outR[n]);
+  }
 
 
   rsPlotVectors(outL, outR);
