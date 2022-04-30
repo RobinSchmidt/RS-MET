@@ -53,10 +53,10 @@ class EnvGenCore
 public:
 
   void setup(float start, float delay, float attack, float peak, float hold, float decay,
-    float sustain, float release, float end, float sampleRate);
+    float sustain, float release, float end);
   void processFrame(float* L, float* R);
   void noteOff() { noteIsOn = false; }
-  void resetState() { sampleCount = 0; stage = 0; }
+  void resetState() { sampleCount = 0; /*stage = 0;*/ }
 
 protected:
 
@@ -76,9 +76,9 @@ protected:
   // Maybe the time params should be integers and the unit should be samples
 
   // Algo data:
-  float sampleRate  = 1;
+  //float sampleRate  = 1;
   int   sampleCount = 0;      // Keeps the current time in samples since triggering
-  int   stage       = 0;      // Keeps track of which segment we are in
+  //int   stage       = 0;      // Keeps track of which segment we are in
   bool  noteIsOn    = false;
 
 };

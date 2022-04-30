@@ -39,7 +39,7 @@ void LowFreqOscCore::processFrame(float* L, float* R)
 //=================================================================================================
 
 void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, float _hold, 
-  float _decay, float _sustain, float _release, float _end, float _sampleRate)
+  float _decay, float _sustain, float _release, float _end)
 {
   start      = _start;
   delay      = RAPT::rsRoundToInt(_delay);
@@ -50,7 +50,7 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   sustain    = _sustain;
   release    = RAPT::rsRoundToInt(_release);
   end        = _end;
-  sampleRate = _sampleRate;
+  //sampleRate = _sampleRate;
   noteIsOn   = true;  // maybe this should be a function parameter?
   resetState();
 }

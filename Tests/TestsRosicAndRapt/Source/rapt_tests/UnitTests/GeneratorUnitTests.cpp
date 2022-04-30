@@ -2842,15 +2842,13 @@ bool samplerEnvTest()
   float sustain    = 0.5f;
   float release    = 400;
   float end        = 0.1f;
-  float sampleRate = 10000.f;
 
   int N    = 1500;     // number of samples to produce
   int nOff = 1000;     // sample of noteOff event
 
-
   Vec outL(N), outR(N);
   EnvGenCore eg;
-  eg.setup(start, delay, attack, peak, hold, decay, sustain, release, end, sampleRate);
+  eg.setup(start, delay, attack, peak, hold, decay, sustain, release, end);
   for(int n = 0; n < N; n++)
   {
     if(n == nOff)
