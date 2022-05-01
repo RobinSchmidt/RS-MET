@@ -192,6 +192,11 @@ void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   std::vector<float>& outL, std::vector<float>& outR)
 {
   rsAssert(outL.size() == outR.size());
+
+  rsZero(outL); 
+  rsZero(outR);
+  se->reset();
+
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
   se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
