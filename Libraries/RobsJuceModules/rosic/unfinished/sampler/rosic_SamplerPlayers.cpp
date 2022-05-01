@@ -426,7 +426,15 @@ void RegionPlayer::processFrame(float* L, float* R)
   {
     if(sampleTime >= loopEnd-1)
     {
-      stream->getFrameStereo(loopStart, &xL0, &xR0); // verify this!
+      stream->getFrameStereo(loopStart,   &xL0, &xR0); // verify this!
+
+
+      //stream->getFrameStereo(loopStart+1, &xL1, &xR1); 
+
+      stream->getFrameStereo(loopStart,   &xL1, &xR1); 
+
+
+      int dummy = 0;
     }
   }
   // ToDo: 
