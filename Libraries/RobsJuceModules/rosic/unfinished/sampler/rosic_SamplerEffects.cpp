@@ -86,16 +86,26 @@ EnvGen::EnvGen()
   addParameter(Opcode::egN_sustain);   //   6
   addParameter(Opcode::egN_release);   //   7
   addParameter(Opcode::egN_end);       //   8
+
+  // ToDo: 
+  // -Add the velocity-scaling params: vel2delay, vel2attack, vel2hold, etc. defined in sfz for
+  //  ampeg, fileg, etc.
+  // -Add key2attack, key2decay, etc. and/or maybe have a general key2length or key2timescale as we
+  //  have in Straightliner. These are not defined in sfz but make a lot of sense musically.
 }
 
 void EnvGen::updateCoeffs(double sampleRate)
 {
   const std::vector<Parameter>& p = params;
-  float fs = (float) sampleRate;
-  core.setup(p[0].mv(), p[1].mv()*fs, p[2].mv()*fs, p[3].mv(), p[4].mv()*fs, p[5].mv()*fs,
-    p[6].mv(), p[7].mv()*fs, p[8].mv());
+  float fs = (float) sampleRate;  // scales seconds to samples
+  float k  = 0.01;                // scales percents to raw factors
+
+  core.setup(p[0].mv()*k, p[1].mv()*fs, p[2].mv()*fs, p[3].mv()*k, p[4].mv()*fs, p[5].mv()*fs,
+    p[6].mv()*k, p[7].mv()*fs, p[8].mv()*k);
   dirty = false;
 }
+
+// peak is actually not defined in sfz - so maybe we should remove it
 
 //=================================================================================================
 

@@ -24,7 +24,7 @@ void SfzInstrument::HierarchyLevel::ensureDspsPresent(Opcode opcodeType, int how
   using namespace RAPT;
   using SPT = OpcodeType;
   SPT dspType = PlaybackSetting::getTargetOpcodeType(opcodeType);
-  rsAssert( dspType != SPT::Unknown );
+  rsAssert(dspType != SPT::Unknown, "Opcode refers to unknown kind of DSP object");
 
   // use: SfzCodeBook::isEffectSetting:
   if(dspType == SPT::SamplePlayer || dspType == SPT::Unknown)

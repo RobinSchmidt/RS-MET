@@ -212,12 +212,15 @@ SfzCodeBook::SfzCodeBook()
 
   // Routable modulators:
   dsp = OpcodeType::FreeEnv;
-  add(OC::egN_attack,  Flt, "egN_attack",  0.f,  100.f, 0.f, dsp, OU::Seconds, RsMet);
-  add(OC::egN_decay,   Flt, "egN_decay",   0.f,  100.f, 0.f, dsp, OU::Seconds, RsMet);
-  add(OC::egN_sustain, Flt, "egN_sustain", 0.f,  1.f,   0.f, dsp, OU::Seconds, Sfz2);  // check default value!
-  add(OC::egN_release, Flt, "egN_release", 0.f,  100.f, 0.f, dsp, OU::Seconds, RsMet);
-  // todo: add the other 5
-
+  add(OC::egN_delay,   Flt, "egN_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::egN_start,   Flt, "egN_start",   0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
+  add(OC::egN_attack,  Flt, "egN_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::egN_peak,    Flt, "egN_peak",    0.f, 100.f, 100.f, dsp, OU::Percent, RsMet); 
+  add(OC::egN_hold,    Flt, "egN_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::egN_decay,   Flt, "egN_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::egN_sustain, Flt, "egN_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz2);
+  add(OC::egN_release, Flt, "egN_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::egN_end,     Flt, "egN_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
 
   dsp = OpcodeType::FreeLfo;
   add(OC::lfoN_freq,  Flt, "lfoN_freq",    0.f,  20.f, 0.f, dsp, OU::Hertz,    Sfz2);

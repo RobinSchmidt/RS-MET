@@ -73,6 +73,8 @@ protected:
   // I'm not sure whether the start value is supposed to become active before or after delay. The 
   // sfz spec lists the delay parameter first, indicating that it may be the latter. We need to try
   // this with a reference sfz engine like sfz+
+  // peak, end are not defined in sfz for ampeg, fileg, pitcheg so maybe we can get rid of them 
+  // ...but check sfz2, too
 
   // Algo data:
   int   sampleCount = 0;      // Keeps the current time in samples since triggering

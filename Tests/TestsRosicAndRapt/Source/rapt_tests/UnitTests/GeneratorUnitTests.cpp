@@ -2870,17 +2870,17 @@ bool samplerEnvTest()
   SE se;
   setupForLoopedDC(&se, 100);
   se.setSampleRate(fs);
-  se.setRegionSetting(0,0, OC::egN_start,   start,        1);  // triggers assert
-  se.setRegionSetting(0,0, OC::egN_delay,   delay   / fs, 1);
-  se.setRegionSetting(0,0, OC::egN_attack,  attack  / fs, 1);
-  se.setRegionSetting(0,0, OC::egN_peak,    peak,         1);
-  se.setRegionSetting(0,0, OC::egN_hold,    hold    / fs, 1);
-  se.setRegionSetting(0,0, OC::egN_decay,   decay   / fs, 1);
-  se.setRegionSetting(0,0, OC::egN_sustain, sustain,      1);
-  se.setRegionSetting(0,0, OC::egN_release, release / fs, 1);
-  se.setRegionSetting(0,0, OC::egN_end,     end,          1);
+  se.setRegionSetting(0,0, OC::egN_start,   start   * 100, 1);
+  se.setRegionSetting(0,0, OC::egN_delay,   delay   / fs,  1);
+  se.setRegionSetting(0,0, OC::egN_attack,  attack  / fs,  1);
+  se.setRegionSetting(0,0, OC::egN_peak,    peak    * 100, 1);
+  se.setRegionSetting(0,0, OC::egN_hold,    hold    / fs,  1);
+  se.setRegionSetting(0,0, OC::egN_decay,   decay   / fs,  1);
+  se.setRegionSetting(0,0, OC::egN_sustain, sustain * 100, 1);
+  se.setRegionSetting(0,0, OC::egN_release, release / fs,  1);
+  se.setRegionSetting(0,0, OC::egN_end,     end     * 100, 1);
 
-  float tol = 1.e-7;
+  float tol = 1.e-6;
   ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
 
 
