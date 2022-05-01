@@ -2615,6 +2615,41 @@ bool samplerLoopTest()
   //rsPlotVectors(tgt, outL, outR);
 
 
+  // Test - should produce DC:
+  RAPT::rsFill(tgt, 1.f);
+  fs = 10000.f;
+  setupForLoopedDC(&se, 100);
+  se.setSampleRate(fs);
+
+  getSamplerNote(&se, 64, 64, outL, outR);
+  ok &= outL == tgt && outR == tgt;
+  rsPlotVectors(tgt, outL, outR);
+  // Fails even though plot looks good
+
+  getSamplerNote(&se, 60, 64, outL, outR);
+  ok &= outL == tgt && outR == tgt;
+  rsPlotVectors(tgt, outL, outR);
+  // Fails, plot looks bad, too
+
+  getSamplerNote(&se, 69, 64, outL, outR);
+  ok &= outL == tgt && outR == tgt;
+  rsPlotVectors(tgt, outL, outR);
+  // dito
+
+
+
+
+
+  // Produces DC when key == 64 but with other keys, there are artifacts at the loop-wraparounds
+  // (I guess). This should be investigated in a unit test of its own. It seems, the looping is not
+  // working correctly. Maybe this is because we assume the sample x[-1] to be zero? This makes 
+  // sense. in general, we should probably assume that x[-1] == x[loop_end] or maybe 
+  // x[-1] == x[0]? Or maybe we should just fix it by using loop_start = 1
+  // Strangely, with fs = 44100, it works well at other notes, too - but with fs = 10000, it 
+  // doesn't
+
+
+
   // ToDo:
   // -add reverse playback mode...maybe this should be one of the loop_modes? or do we need an extra 
   //  opcode for that?
@@ -3457,6 +3492,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
+  ok &= samplerLoopTest();           // loop modes
   ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
