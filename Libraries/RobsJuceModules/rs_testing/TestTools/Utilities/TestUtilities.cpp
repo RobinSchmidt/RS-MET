@@ -177,7 +177,11 @@ void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N)
   std::vector<float> dc(N);
   rsFill(dc, 1.f);
   se->clearInstrument();
+
   addSingleSampleRegion(se, dc);
+  // What about the root-key and sample-rate? We are depending on the defaults here (60, 44100)
+  // but that may not be the best thing to do. We see looping artifacts in samplerEnvTest
+
   se->setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
   se->setRegionSetting(0, 0, OC::LoopStart, 0.f,      1);
   se->setRegionSetting(0, 0, OC::LoopEnd,  (float) N, 1);

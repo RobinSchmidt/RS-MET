@@ -2870,6 +2870,19 @@ bool samplerEnvTest()
   SE se;
   setupForLoopedDC(&se, 100);
   se.setSampleRate(fs);
+
+  // Test - should produce DC:
+  //getSamplerNote(&se, 64, 64, outL, outR);
+  getSamplerNote(&se, 60, 64, outL, outR);
+  rsPlotVectors(outL, outR);
+  // Produces DC when key == 64 but with other keys, there are artifacts at the loop-wraparounds
+  // (I guess). This should be investigated in a unit test of its own. It seems, the looping is not
+  // working correctly. Maybe this is because we assume the sample x[-1] to be zero? This makes 
+  // sense. in general, we should probably assume that x[-1] == x[loop_end] or maybe 
+  // x[-1] == x[0]? Or maybe we should just fix it by using loop_start = 1
+
+
+  /*
   se.setRegionSetting(0,0, OC::egN_start,   start   * 100, 1);
   se.setRegionSetting(0,0, OC::egN_delay,   delay   / fs,  1);
   se.setRegionSetting(0,0, OC::egN_attack,  attack  / fs,  1);
@@ -2879,10 +2892,13 @@ bool samplerEnvTest()
   se.setRegionSetting(0,0, OC::egN_sustain, sustain * 100, 1);
   se.setRegionSetting(0,0, OC::egN_release, release / fs,  1);
   se.setRegionSetting(0,0, OC::egN_end,     end     * 100, 1);
+  */
 
   float tol = 1.e-6;
   ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
-
+  // Fails: enige produces an all-zeros signal
+  // -We actually have not yet routed the EG to the volume - but that should result in the engine
+  //  producing all ones instead of all zeros - something else seems wron, too
 
 
   // ToDo:
