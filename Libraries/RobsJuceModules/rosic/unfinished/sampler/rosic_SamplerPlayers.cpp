@@ -431,7 +431,10 @@ void RegionPlayer::processFrame(float* L, float* R)
   if(loopMode == LoopMode::loop_continuous)
   {
     if(sampleTime >= loopEnd)
+    {
       sampleTime -= (loopEnd - loopStart);
+      RAPT::rsAssert(sampleTime >= 0.0);
+    }
   }
 
   // Apply the effect chain:

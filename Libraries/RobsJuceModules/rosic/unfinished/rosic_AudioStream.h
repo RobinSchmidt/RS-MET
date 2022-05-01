@@ -28,17 +28,20 @@ public:
   sample and zero. */
   virtual void getFrameStereo(double samplePosition, T* left, T* right) const
   {
-    int i = (int) samplePosition;      // integer part
+    int i = (int) samplePosition;         // integer part
     T   f = T(samplePosition - T(i));     // fractional part
-    T xL0(0), xR0(0), xL1(0), xR1(0);
-    if(isValidFrameIndex(i  )) getFrameStereo(i,   &xL0, &xR0);
-    if(isValidFrameIndex(i+1)) getFrameStereo(i+1, &xL1, &xR1);
+
+    T xL0(0), xR0(0), xL1(0), xR1(0);     
+    // Is this good as default? Maybe we should use the very first and very last sample here. This
+    // may work better for looping.
+
+    if(isValidFrameIndex(i  ))  getFrameStereo(i,   &xL0, &xR0);
+    if(isValidFrameIndex(i+1))  getFrameStereo(i+1, &xL1, &xR1);
+
     *left  = (T(1)-f) * xL0 + f * xL1;
     *right = (T(1)-f) * xR0 + f * xR1;
 
     // ToDo:
-    // -maybe use double for the samplePosition because that's what the sampler engine uses for 
-    //  it's sampleCounter. It makes sense to use double for that to avoid accumulation
     // -Make a function that takes sampleIndex and frac as separate arguments
     // -Make an unsafe version that avoids the isValidFrameIndex checks
     // -Write a function that fills a whole buffer instead of producing one sample at a time. That

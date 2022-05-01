@@ -2628,12 +2628,12 @@ bool samplerLoopTest()
 
   rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 64, 64, outL, outR);
-  //ok &= outL == tgt && outR == tgt;  // passes
+  ok &= outL == tgt && outR == tgt;  // passes
   //rsPlotVectors(tgt, outL, outR);
 
   rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 60, 64, outL, outR);
-  //ok &= outL == tgt && outR == tgt;  // fails
+  ok &= outL == tgt && outR == tgt;  // fails
   rsPlotVectors(tgt, outL, outR);  
 
   rsZero(outL); rsZero(outR);
@@ -2644,6 +2644,8 @@ bool samplerLoopTest()
   // OK - one reason for the fails is that the SamplerEngine itself does accumultae into what is 
   // already there instead of overwriting the input buffers - fix: clear outL, outR before calling
   // getSamplerNote
+
+  // maybe chanhe impementation of AudioStream::getFrameStereo
 
 
 
@@ -2660,6 +2662,11 @@ bool samplerLoopTest()
 
 
   // ToDo:
+  // -Try it with a sinewave with different start phase in the sample. It should still work but 
+  //  probably won't. I think, problems occur when we try to read a sample between N-1 and N. 
+  //  currently, we assume sample[N] == 0 which happens to be true for a zero-phase sine but not
+  //  for an arbitrary phase sine. The relevant code is in AudioStream::getFrameStereo and maybe 
+  //  also RegionPlayer::processFrame.
   // -add reverse playback mode...maybe this should be one of the loop_modes? or do we need an extra 
   //  opcode for that?
   // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
