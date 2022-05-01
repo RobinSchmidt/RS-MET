@@ -33,7 +33,9 @@ public:
 
     T xL0(0), xR0(0), xL1(0), xR1(0);     
     // Is this good as default? Maybe we should use the very first and very last sample here. This
-    // may work better for looping.
+    // may work better for looping. Maybe they should be passed in optionally by the caller 
+    // defaulting to zero. At the call site in RegionPlayer::processFrame, we could pass other 
+    // values that are more suitable for the looping behavior
 
     if(isValidFrameIndex(i  ))  getFrameStereo(i,   &xL0, &xR0);
     if(isValidFrameIndex(i+1))  getFrameStereo(i+1, &xL1, &xR1);

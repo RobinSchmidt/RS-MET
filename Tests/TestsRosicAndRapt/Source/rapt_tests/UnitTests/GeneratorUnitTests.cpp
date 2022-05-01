@@ -2499,12 +2499,13 @@ bool samplerLoopTest()
   using OC  = rosic::Sampler::Opcode;
 
   // Create a sinewave with 3 cycles as example sample:
-  int cycleLength = 101;    // length of the sienwave cycle
-  int numCycles   = 3;      // number of cycles in the sample
-  Vec sinTable(numCycles*cycleLength); // sine wave sample 
-  double w = 2*PI/cycleLength; 
+  int cycleLength = 101;                       // length of the sienwave cycle
+  int numCycles   = 3;                         // number of cycles in the sample
+  Vec sinTable(numCycles*cycleLength);         // sine wave sample 
+  double w = 2*PI/cycleLength;                 // normalized radian frequency 
+  double p = 0.0;                              // sine sample start phase
   for(size_t n = 0; n < sinTable.size(); n++)
-    sinTable[n] = (float)sin(w*n);
+    sinTable[n] = (float)sin(w*n + p);
   //rsPlotVector(sinTable);
 
   // Playback settings:
@@ -2529,7 +2530,7 @@ bool samplerLoopTest()
     Vec tgt(N);
     w = 2*PI*freq/fs;
     for(int n = 0; n < N; n++)
-      tgt[n] = (float)sin(w*n);
+      tgt[n] = (float)sin(w*n + p);
 
     // Produce output and return error:
     Vec outL(N), outR(N);
@@ -2666,7 +2667,11 @@ bool samplerLoopTest()
   //  probably won't. I think, problems occur when we try to read a sample between N-1 and N. 
   //  currently, we assume sample[N] == 0 which happens to be true for a zero-phase sine but not
   //  for an arbitrary phase sine. The relevant code is in AudioStream::getFrameStereo and maybe 
-  //  also RegionPlayer::processFrame.
+  //  also RegionPlayer::processFrame. Our phase variable here: double p = 0.0;  can be changed to
+  //  something else, like 1.0, to make the sine-looping test fail. -> do this, let the test fail,
+  //  and then fix the looping code to make it pass again....
+
+
   // -add reverse playback mode...maybe this should be one of the loop_modes? or do we need an extra 
   //  opcode for that?
   // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
