@@ -474,8 +474,11 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<float>& sample, float keyCenter = 60.f, double sampleRate = 44100);
 
 
-/** Helper funtion to set up the sampler engine with single a sinewave region. */
+/** Helper function to set up the sampler engine with a single sinewave region. */
 void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048);
+
+/** Sets up the sampler engine with a looped DC region. */
+void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N = 100);
 
 
 /** Fills the outL, outR arrays with the output of the given sampler engine for the given note. */

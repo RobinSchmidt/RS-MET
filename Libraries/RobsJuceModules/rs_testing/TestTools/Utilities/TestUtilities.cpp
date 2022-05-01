@@ -171,6 +171,19 @@ void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N)
   se->setRegionSetting(0, 0, Opcode::LoopEnd,   N, -1);
 }
 
+void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N)
+{ 
+  using OC  = rosic::Sampler::Opcode;
+  std::vector<float> dc(N);
+  rsFill(dc, 1.f);
+  se->clearInstrument();
+  addSingleSampleRegion(se, dc);
+  se->setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
+  se->setRegionSetting(0, 0, OC::LoopStart, 0.f,      1);
+  se->setRegionSetting(0, 0, OC::LoopEnd,  (float) N, 1);
+  // code almost the same as for sine wave -> get rid of duplication
+}
+
 void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   std::vector<float>& outL, std::vector<float>& outR)
 {
@@ -183,3 +196,4 @@ void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   // Should we clear the outL/R arrays first? Maybe not, if we want instruments to accumuluate 
   // their outputs in ToolChain
 }
+

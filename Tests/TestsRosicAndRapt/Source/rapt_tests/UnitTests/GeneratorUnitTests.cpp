@@ -2857,17 +2857,31 @@ bool samplerEnvTest()
       egc.noteOff();
     egc.processFrame(&outL[n], &outR[n]);
   }
-  rsPlotVectors(outL, outR);
+  //rsPlotVectors(outL, outR);
 
   // OK the envelope looks good. From now on, we treat it as target signal and let an actual 
   // sampler engine make use of it, routing it to the amplitude using a DC sample.
   Vec tgtL = outL, tgtR = outR;
 
 
+  using SE = rsSamplerEngineTest;
+  using OC = Opcode;
+  float fs = 10000.f;     // sample rate
+  SE se;
+  setupForLoopedDC(&se, 100);
+  se.setSampleRate(fs);
+  se.setRegionSetting(0,0, OC::egN_start,   start,        1);  // triggers assert
+  se.setRegionSetting(0,0, OC::egN_delay,   delay   / fs, 1);
+  se.setRegionSetting(0,0, OC::egN_attack,  attack  / fs, 1);
+  se.setRegionSetting(0,0, OC::egN_peak,    peak,         1);
+  se.setRegionSetting(0,0, OC::egN_hold,    hold    / fs, 1);
+  se.setRegionSetting(0,0, OC::egN_decay,   decay   / fs, 1);
+  se.setRegionSetting(0,0, OC::egN_sustain, sustain,      1);
+  se.setRegionSetting(0,0, OC::egN_release, release / fs, 1);
+  se.setRegionSetting(0,0, OC::egN_end,     end,          1);
 
-  //EnvGen eg;
-
-
+  float tol = 1.e-7;
+  ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
 
 
 
