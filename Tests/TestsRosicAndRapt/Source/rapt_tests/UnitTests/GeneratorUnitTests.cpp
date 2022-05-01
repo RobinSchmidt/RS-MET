@@ -2503,7 +2503,7 @@ bool samplerLoopTest()
   int numCycles   = 3;                         // number of cycles in the sample
   Vec sinTable(numCycles*cycleLength);         // sine wave sample 
   double w = 2*PI/cycleLength;                 // normalized radian frequency 
-  double p = 1.0;                              // sine sample start phase, 0 works, 1 fails
+  double p = 1.0;                              // sine sample start phase
   for(size_t n = 0; n < sinTable.size(); n++)
     sinTable[n] = (float)sin(w*n + p);
   //rsPlotVector(sinTable);
@@ -2556,8 +2556,8 @@ bool samplerLoopTest()
 
   // Set the loop length to all 3 cycles and therefore equal to the total length of the sample:
   se.setRegionSetting(0,0, OC::LoopEnd, (float)sinTable.size(), -1);
-  Vec err3 = getError(69, 440, true);
-  ok &= rsMaxAbs(err3) <= tol; // Fails!
+  Vec err3 = getError(69, 440, false);
+  ok &= rsMaxAbs(err3) <= tol;
 
   // Plot error signals:
   //rsPlotVectors(err1, err2, err3);
@@ -2627,7 +2627,6 @@ bool samplerLoopTest()
   setupForLoopedDC(&se, 100);
   se.setSampleRate(fs);
 
-
   rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 64, 64, outL, outR);
   ok &= outL == tgt && outR == tgt;  // passes
@@ -2635,13 +2634,13 @@ bool samplerLoopTest()
 
   rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 60, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;  // fails
-  rsPlotVectors(tgt, outL, outR);  
+  ok &= outL == tgt && outR == tgt;  // passes
+  //rsPlotVectors(tgt, outL, outR);  
 
   rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 69, 64, outL, outR);
-  //ok &= outL == tgt && outR == tgt;  // fails
-  rsPlotVectors(tgt, outL, outR);
+  ok &= outL == tgt && outR == tgt;  // passes
+  //rsPlotVectors(tgt, outL, outR);
 
   // OK - one reason for the fails is that the SamplerEngine itself does accumultae into what is 
   // already there instead of overwriting the input buffers - fix: clear outL, outR before calling

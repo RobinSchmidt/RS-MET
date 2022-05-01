@@ -426,20 +426,16 @@ void RegionPlayer::processFrame(float* L, float* R)
   {
     if(sampleTime >= loopEnd-1)
     {
-      stream->getFrameStereo(loopStart,   &xL0, &xR0); // verify this!
-
-
-      //stream->getFrameStereo(loopStart+1, &xL1, &xR1); 
-
-      stream->getFrameStereo(loopStart,   &xL1, &xR1); 
-
-
-      int dummy = 0;
+      stream->getFrameStereo(loopStart, &xL0, &xR0);
+      stream->getFrameStereo(loopStart, &xL1, &xR1);
     }
   }
   // ToDo: 
   // -Can we absorb the sampleTime -= (loopEnd - loopStart); into this conditional also, so we
   //  can avoid the 2nd conditional below?
+  // -Maybe keep those as members defL, defR (for default) and init them to 
+  //  stream->getFrameStereo(loopStart, &defL, &defR); at setup time. Then we can get rid of this
+  //  per-sample conditionla here completely
 
 
   stream->getFrameStereo((float)sampleTime, L, R, xL0, xR0, xL1, xR1);
