@@ -2503,7 +2503,7 @@ bool samplerLoopTest()
   int numCycles   = 3;                         // number of cycles in the sample
   Vec sinTable(numCycles*cycleLength);         // sine wave sample 
   double w = 2*PI/cycleLength;                 // normalized radian frequency 
-  double p = 0.0;                              // sine sample start phase
+  double p = 1.0;                              // sine sample start phase, 0 works, 1 fails
   for(size_t n = 0; n < sinTable.size(); n++)
     sinTable[n] = (float)sin(w*n + p);
   //rsPlotVector(sinTable);
@@ -2539,24 +2539,27 @@ bool samplerLoopTest()
     for(int n = 0; n < N; n++)
       se.processFrame(&outL[n], &outR[n]);
     rsAssert(outR == outL);
+    rsPlotVectors(tgt, outL, tgt-outL);
     return tgt - outL;
   };
 
   // We expect some error due to the linear interpolation:  
   float tol = 1.e-3;
   Vec err1 = getError(69, 440);
+  //rsPlotVector(err1);
   ok &= rsMaxAbs(err1) <= tol;
-
 
   // Set the loop length to 2 cycles - this should make no difference up to roundoff:  
   se.setRegionSetting(0,0, OC::LoopEnd, float(2*cycleLength), -1);
   Vec err2 = getError(69, 440);
+  //rsPlotVector(err2);
   ok &= rsMaxAbs(err2) <= tol;
 
   // Set the loop length to all 3 cycles and therefore equal to the total length of the sample:
   se.setRegionSetting(0,0, OC::LoopEnd, (float)sinTable.size(), -1);
   Vec err3 = getError(69, 440);
-  ok &= rsMaxAbs(err3) <= tol;
+  //rsPlotVector(err3);
+  ok &= rsMaxAbs(err3) <= tol; // Fails!
 
   // Plot error signals:
   //rsPlotVectors(err1, err2, err3);

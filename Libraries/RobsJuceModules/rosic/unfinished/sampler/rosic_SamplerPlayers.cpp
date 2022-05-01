@@ -419,7 +419,22 @@ void RegionPlayer::processFrame(float* L, float* R)
   if(sampleTime == 0.0)
     sampleTime = offset;
 
-  stream->getFrameStereo((float)sampleTime, L, R);  
+  // Under construction - trying to achieve correct looping behavior when loopEnd == sampleLength:
+  float xL0(0), xR0(0), xL1(0), xR1(0);  // preliminary
+  // ToDo: assign these according to loop start- and end samples
+  if(loopMode == LoopMode::loop_continuous)
+  {
+    if(sampleTime >= loopEnd-1)
+    {
+      stream->getFrameStereo(loopStart, &xL0, &xR0); // verify this!
+    }
+  }
+  // ToDo: 
+  // -Can we absorb the sampleTime -= (loopEnd - loopStart); into this conditional also, so we
+  //  can avoid the 2nd conditional below?
+
+
+  stream->getFrameStereo((float)sampleTime, L, R, xL0, xR0, xL1, xR1);
   // ToDo: Try to avoid the conversion to float, maybe by uning a 2nd template parameter for the 
   // time in the AudioStream class template and use double for it
 

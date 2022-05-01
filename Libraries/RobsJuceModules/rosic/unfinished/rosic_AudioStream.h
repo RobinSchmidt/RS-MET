@@ -25,13 +25,17 @@ public:
   better quality interpolation and/or optimization purposes. If the samplePosition is outside the 
   valid range 0 <= samplePosition <= N-1, the signal there is taken to be zero. At positions in
   between -1..0 and N-1..N, linear interpolation will take place between the first (or last) actual
-  sample and zero. */
-  virtual void getFrameStereo(double samplePosition, T* left, T* right) const
+  sample and zero. 
+
+  The optional parameters are the values that are to be used in cases when floor(t) and/or 
+  floor(t)+1 are outside the valid range...tbc...   */
+  virtual void getFrameStereo(double samplePosition, T* left, T* right, 
+    T xL0 = T(0), T xR0 = T(0), T xL1 = T(0), T xR1 = T(0)) const
   {
     int i = (int) samplePosition;         // integer part
     T   f = T(samplePosition - T(i));     // fractional part
 
-    T xL0(0), xR0(0), xL1(0), xR1(0);     
+    //T xL0(0), xR0(0), xL1(0), xR1(0);     
     // Is this good as default? Maybe we should use the very first and very last sample here. This
     // may work better for looping. Maybe they should be passed in optionally by the caller 
     // defaulting to zero. At the call site in RegionPlayer::processFrame, we could pass other 
