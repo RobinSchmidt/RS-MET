@@ -8,7 +8,8 @@ library (STL), such as std::vector, std::map, etc. */
 // Convenience functions for any sort of container that has a size() function
 
 /** Given two containers a,b of the same type, this functions returns true, iff both have the same
-size. */
+size. Actually, a and b don't even have to be containers - they may be of any type that has a 
+size() member function. But STL containers are the intended use case. */
 template<class T>
 bool rsAreSameSize(const T& a, const T& b) 
 { 
@@ -40,8 +41,8 @@ size_t rsMinSize(const T& a, const T& b, Rest ...rest)
 }
 
 // ToDo: 
-// -in C++20, use a concept that encapsulates the feature of having a size() function. Maybe 
-//  SizedContainer or just Sized...it coul actually also apply to numbers, in which case we may 
+// -In C++20, use a concept that encapsulates the feature of having a size() function. Maybe 
+//  SizedContainer or just Sized...it could actually also apply to numbers, in which case we may 
 //  interpret the size as absolute value or norm. But then we would need to replace the method 
 //  calls to size with a free function call to some rsSize function. But maybe "size" is too 
 //  general a term here - what we actually mean is a number of elements...a cardinality - but 

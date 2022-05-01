@@ -53,6 +53,14 @@ inline double random(double min, double max)
 // returns x^2 = x*x, useful for testing application of a unary function using a function pointer
 //double rsSquare(double x);
 
+/** Fills the given vector a with all zeros. */
+template<class T>
+void rsZero(std::vector<T>& a) 
+{ 
+  RAPT::rsFill(a, T(0));
+}
+// maybe move to RAPT
+
 //
 template<class T>
 T square(T x)

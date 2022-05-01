@@ -2615,26 +2615,35 @@ bool samplerLoopTest()
   //rsPlotVectors(tgt, outL, outR);
 
 
-  // Test - should produce DC:
-  RAPT::rsFill(tgt, 1.f);
+  // Test looping a DC sample. The output should als be pured DC regardless of the note pitch, 
+  // sample rate, etc.:
+
+  using namespace RAPT;
+
+  rsFill(tgt, 1.f);
   fs = 10000.f;
   setupForLoopedDC(&se, 100);
   se.setSampleRate(fs);
 
+
+  rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 64, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;
-  rsPlotVectors(tgt, outL, outR);
-  // Fails even though plot looks good
+  ok &= outL == tgt && outR == tgt;  // passes
+  //rsPlotVectors(tgt, outL, outR);
 
+  rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 60, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;
-  rsPlotVectors(tgt, outL, outR);
-  // Fails, plot looks bad, too
+  ok &= outL == tgt && outR == tgt;  // fails
+  rsPlotVectors(tgt, outL, outR);  
 
+  rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 69, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;
+  ok &= outL == tgt && outR == tgt;  // fails
   rsPlotVectors(tgt, outL, outR);
-  // dito
+
+  // OK - one reason for the fails is that the SamplerEngine itself does accumultae into what is 
+  // already there instead of overwriting the input buffers - fix: clear outL, outR before calling
+  // getSamplerNote
 
 
 

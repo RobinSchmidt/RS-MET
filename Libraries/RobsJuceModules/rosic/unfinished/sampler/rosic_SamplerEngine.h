@@ -369,8 +369,15 @@ public:
 
   //virtual void processFrame(double* left, double* right);
 
+  /** Produces one stereo sample frame at a time. ...tbc... */
   virtual void processFrame(float* left, float* right);
 
+  /** Produces one block of stereo samples at a time. Note that the sampler's output will be added
+  to whatever audio data is already present in the block. The rationale behind this is that in the
+  context of ToolChain or on a DAW track, modules or plugins are supposed to be in a series 
+  connection but for instrument plugins, such a series connection would mean that we always only 
+  hear the last instrument in the chain whereas the desired behavior is most probably layering.
+  If you don't like that behavior, you need to clear the buffer before calling processBlock.  */
   virtual void processBlock(float** block, int numFrames);
 
   // void processFrameVoice, processBlockVoice
