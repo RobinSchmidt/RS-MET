@@ -2944,7 +2944,16 @@ bool samplerEnvTest()
 
 
   // ToDo:
-  // -Implement correct release behavior
+  // -Implement correct release behavior. But how? Maybe we should check on noteOn, if an amplifier
+  //  (at least one) is present and if so, if it has at least one envelope routed to it. If this is
+  //  the case, figure out, which amp-env is the longest and store a pointer to this env in the
+  //  RegionPlayer - this becomes the reference envelope which determines when the note actually 
+  //  ends. If this is a nullptr, we end abruptly...or maybe we play the sample until the end 
+  //  (leave the loop, if active). Maybe we should have different release modes:
+  //  abrupt, leave loop, env controlled - but maybe abrupt is useless - maybe just have the 
+  //  pointer to the reference envelope and if its a nullptr, use the "leave loop and play until 
+  //  end" strategy. But maybe a useful variant of the "abrupt" behavior would be to play until the
+  //  next zero crossing...or to use a quick fade-out
   // -Implement different shapes for the segments.
   // -Optimize the envelope code and use the current code as prototype to compare against in a unit
   //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests

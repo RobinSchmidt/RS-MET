@@ -307,6 +307,10 @@ protected:
   // PlayStatus object as parameter...but if we maintain it as member here, we don't need that
   // parameter anymore.
 
+
+
+
+
   // ToDo:
   // -maybe instead of maintaining the tow pointers dspPool, playStatus, maintain only a single
   //  pointer to SamplerEngine - the SamplerEngine has these two as members, so we can access
@@ -417,15 +421,25 @@ protected:
 
   void setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp) override;
 
-  const Region* region;                 //< The Region object that this object should play
-  const AudioFileStream<float>* stream; //< Stream object to get the data from
+  const Region* region;                 
+  /**< Pointer to the Region object that this player should play. */
+
+  const AudioFileStream<float>* stream; 
+  /**< Pointer to the AudioFileStream object where we get our actual audio data from. */
+
+  const EnvGen* releaseEnv = nullptr; // UNDER CONSTRUCTION
+  /**< Pointer to an envelope that is considered as the relevant one to determine when the release
+  phase has finished. Which envelope this is will be determined during prepareToPlay according to 
+  some heuristic rules (ToDo: explain more). If it is a nullptr, it means that the release behavior 
+  is not controlled by any envelope. Instead, the sample is just played until the end after a 
+  noteOff was received. If the region contains a loop, a noteOff event will trigger leaving the 
+  loop. */
 
   // Maybe we should use some sort of fixed-point format for this instead?
   double sampleTime = 0.0;  //< Time index in the sample. Negative values used for delay.
   double increment  = 1.0;  //< Increment of sampleTime per sample
   double loopStart  = 0;    //< Start of loop in samples
   double loopEnd    = 0;    //< End of loop in samples
-
 
 
   float  endTime    = 0;

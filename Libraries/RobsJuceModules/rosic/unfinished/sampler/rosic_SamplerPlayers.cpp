@@ -619,6 +619,7 @@ void RegionPlayer::resetPlayerSettings()
   xL0 = 0.f; xR0 = 0.f;
   xL1 = 0.f; xR1 = 0.f;
 
+  releaseEnv = nullptr; // Is this the righ place to reset this?
 
 
   // What about key?
