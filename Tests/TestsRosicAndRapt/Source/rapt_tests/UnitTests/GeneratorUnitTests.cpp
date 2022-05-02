@@ -2583,6 +2583,9 @@ bool samplerLoopTest()
   for(int key = 50; key <= 70; key++)
     ok &= testLoops(key);
 
+  // ToDo: 
+  // -Maybe try to use different phases for left and right channel
+
   // old:
   // Plot error signals:
   //rsPlotVectors(err1, err2, err3);
@@ -2641,44 +2644,6 @@ bool samplerLoopTest()
   ok &= outL == tgt && outR == tgt;
   //rsPlotVectors(tgt, outL, outR);
 
-  /*
-  // Test looping a DC sample. The output should als be pure DC regardless of the note pitch, 
-  // sample rate, etc. (may be redundant now bcs we have generalized the loop tests above to 
-  // cover the cases that are tested here, too):
-  rsFill(tgt, 1.f);
-  setupForLoopedDC(&se, 100);
-  fs = 10000.f;
-  se.setSampleRate(fs);
-
-  rsZero(outL); rsZero(outR);
-  getSamplerNote(&se, 64, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;
-  //rsPlotVectors(tgt, outL, outR);
-
-  rsZero(outL); rsZero(outR);
-  getSamplerNote(&se, 60, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;
-  //rsPlotVectors(tgt, outL, outR);  
-
-  rsZero(outL); rsZero(outR);
-  getSamplerNote(&se, 69, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;
-  //rsPlotVectors(tgt, outL, outR);
-  */
-
-  // ToDo: 
-  // -Try a couple of different settings for se.setSampleRate
-  // -Try higher keys -> more wrap-arounds
-  // -Test non-integer values for the loop-start and/or loop end. But DC signal is not suitable for
-  //  this. We need a signla where something is going on. Maybe use a sawtooth. Maybe let it have
-  //  3 cycles with a cycle-length of 10 samples. Or maybe include such loop settings above into 
-  //  the tests with the sine-wave
-
-
-
-
-
-
   // Produces DC when key == 64 but with other keys, there are artifacts at the loop-wraparounds
   // (I guess). This should be investigated in a unit test of its own. It seems, the looping is not
   // working correctly. Maybe this is because we assume the sample x[-1] to be zero? This makes 
@@ -2688,18 +2653,7 @@ bool samplerLoopTest()
   // doesn't
 
 
-
-  // ToDo:
-  // -Try it with a sinewave with different start phase in the sample. It should still work but 
-  //  probably won't. I think, problems occur when we try to read a sample between N-1 and N. 
-  //  currently, we assume sample[N] == 0 which happens to be true for a zero-phase sine but not
-  //  for an arbitrary phase sine. The relevant code is in AudioStream::getFrameStereo and maybe 
-  //  also RegionPlayer::processFrame. Our phase variable here: double p = 0.0;  can be changed to
-  //  something else, like 1.0, to make the sine-looping test fail. -> do this, let the test fail,
-  //  and then fix the looping code to make it pass again....
-
-
-  // -add reverse playback mode...maybe this should be one of the loop_modes? or do we need an extra 
+  // -Add reverse playback mode...maybe this should be one of the loop_modes? or do we need an extra 
   //  opcode for that?
   // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
   //  every sample after reaching loopEnd. We should probably ensure that this doesn't happen
@@ -2954,17 +2908,9 @@ bool samplerEnvTest()
   setupForLoopedDC(&se, 100);
   se.setSampleRate(fs);
 
-  // Test - should produce DC:
-  //getSamplerNote(&se, 64, 64, outL, outR);
-  getSamplerNote(&se, 60, 64, outL, outR);
-  rsPlotVectors(outL, outR);
-  // Produces DC when key == 64 but with other keys, there are artifacts at the loop-wraparounds
-  // (I guess). This should be investigated in a unit test of its own. It seems, the looping is not
-  // working correctly. Maybe this is because we assume the sample x[-1] to be zero? This makes 
-  // sense. in general, we should probably assume that x[-1] == x[loop_end] or maybe 
-  // x[-1] == x[0]? Or maybe we should just fix it by using loop_start = 1
+  //getSamplerNote(&se, 70, 64, outL, outR);
+  //rsPlotVectors(outL, outR);  // all ones -> correct!
 
-  /*
   se.setRegionSetting(0,0, OC::egN_start,   start   * 100, 1);
   se.setRegionSetting(0,0, OC::egN_delay,   delay   / fs,  1);
   se.setRegionSetting(0,0, OC::egN_attack,  attack  / fs,  1);
@@ -2974,13 +2920,19 @@ bool samplerEnvTest()
   se.setRegionSetting(0,0, OC::egN_sustain, sustain * 100, 1);
   se.setRegionSetting(0,0, OC::egN_release, release / fs,  1);
   se.setRegionSetting(0,0, OC::egN_end,     end     * 100, 1);
-  */
+  float tol = 1.e-6;
 
-  //float tol = 1.e-6;
+  se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
+  getSamplerNote(&se, 70, 64, outL, outR);  
+  // triggers assert - modBuffers not yet allocated?
+
+  rsPlotVectors(tgtL, tgtR, outL, outR); 
+
+
   //ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
-  // Fails: enige produces an all-zeros signal
-  // -We actually have not yet routed the EG to the volume - but that should result in the engine
-  //  producing all ones instead of all zeros - something else seems wron, too
+  // Fails: Engine produces an all-zeros signal
+  // -We actually have not yet routed the EG to the volume but that should result in the engine
+  //  producing all ones instead of all zeros, right? Something else seems wrong, too...
 
 
   // ToDo:
@@ -3539,7 +3491,6 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerLoopTest();           // loop modes
   ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
