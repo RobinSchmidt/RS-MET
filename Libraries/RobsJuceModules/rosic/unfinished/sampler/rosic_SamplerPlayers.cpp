@@ -404,6 +404,16 @@ rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay,
   return prepareToPlay(key, vel, busMode);
 }
 
+void RegionPlayer::noteOff()
+{
+  for(size_t i = 0; i < modSources.size(); ++i) {
+    EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
+    if(eg != nullptr)             // Trigger a noteOff in all envelope generators
+      eg->noteOff(); }
+  if(releaseEnv == nullptr)
+    loopMode = LoopMode::no_loop; // Leave the loop if release is not controlled by any envelope
+}
+
 void RegionPlayer::processFrame(float* L, float* R)
 {
   // Negatively initialized sampleTime implements delay. If we are still "waiting", we just 

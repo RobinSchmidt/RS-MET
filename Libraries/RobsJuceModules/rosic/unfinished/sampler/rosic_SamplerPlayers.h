@@ -355,6 +355,12 @@ public:
   receiving a noteOn. This information is used later when receiving a noteOff to identify which
   players need to stop. */
   //void setKey(uchar newKey) { key = newKey; }
+  // obsolete due to passing the key to setRegionToPlay?
+
+  /** The engine calls this when receiving a noteOff for the key that this RegionPlayer plays. In
+  response, the RegionPlayer triggers a noteOff in all envelopes such that they can enter their 
+  release phases. The RegionPlayer itself then determines what to do...tbc...  */
+  void noteOff();
 
   /** Generates one stereo sample frame at a time. */
   void processFrame(float* L, float* R);

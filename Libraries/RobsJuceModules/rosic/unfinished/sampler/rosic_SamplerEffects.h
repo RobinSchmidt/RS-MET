@@ -382,6 +382,8 @@ public:
   void processFrame(float* L, float* R) override { core.processFrame(L, R); }
   void updateCoeffs(double sampleRate) override;
   void resetState() override { core.resetState(); }
+
+  void noteOff() { core.noteOff(); }
   bool hasFinished() const { return core.hasFinished(); }
 protected:
   EnvGenCore core;
