@@ -108,7 +108,7 @@ void EnvGenCore::processFrame(float* L, float* R)
 
 //=================================================================================================
 
-void AmplifierCore::setup(float volume, float pan, float width, float pos, float scale)
+void AmplifierCore::setup(float amplitude, float volume, float pan, float width, float pos)
 {
   using Mat = RAPT::rsMatrix2x2<float>;
 
@@ -165,10 +165,10 @@ void AmplifierCore::setup(float volume, float pan, float width, float pos, float
 
   // Combine all 4 matrices and extract coeffs:
   Mat M = Q*W*P*S;              // application order is right-to-left (scale->pan->width->pos)
-  gLL = scale*M.a; 
-  gLR = scale*M.b; 
-  gRL = scale*M.c; 
-  gRR = scale*M.d;
+  gLL = amplitude*M.a; 
+  gLR = amplitude*M.b; 
+  gRL = amplitude*M.c; 
+  gRR = amplitude*M.d;
 
 
   int dummy = 0;
@@ -187,6 +187,7 @@ void AmplifierCore::setup(float volume, float pan, float width, float pos, float
   // -Maybe provide a different parametrization where the volume is expressed as linear gain, 
   //  so we may also model polarity inversions. Or maybe realize this here via an additional 
   //  boolean flag "invertPolarity"
+  // -This is still under cosntruction - check also comments in samplerAmplifierCoreTest.
 
   // See also:
   // https://en.wikipedia.org/wiki/Matrix_decoder

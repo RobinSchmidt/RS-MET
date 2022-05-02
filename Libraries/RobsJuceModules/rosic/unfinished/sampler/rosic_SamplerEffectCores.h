@@ -122,6 +122,11 @@ public:
   some additions of my own signified by [square brackets].
   (ToDo: verify, if this is implemented correctly - at the moment, my formulas are a guess)
 
+  amplitude: 0..1
+  A raw multiplier for the amplitude. Suitable as modulation target for amp-mod, tremolo and 
+  envelopes. Such a parameter is not present in the SFZ spec but in the ARIA spec. There, it's 
+  given in percent, here we expect a raw multiplier.
+
   volume: -144 to 6 dB
   The volume for the region, in decibels.
 
@@ -144,10 +149,11 @@ public:
   stereo signal, after channel mixing as defined in the width opcode. A value of zero means 
   centered, negative values move the panoramic to the left, positive to the right. Examples:
   width=0 position=-100 will mix both channels and play the result at left, width=50 position=30 
-  will make the stereo image narrower and play it slightly right. The scale parameter, not present
-  in the sfz sepc, is an overall scaler or multiplier suitable as target for implementing amplitude
-  modulation by EGs and LFOs. */
-  void setup(float volume, float pan, float width, float position, float scale);
+  will make the stereo image narrower and play it slightly right. The amplitude parameter is an 
+  overall scaler or multiplier suitable as target for implementing amplitude modulation by EGs and
+  LFOs. Such a parameter is not present in the sfz spec but in the ARIA spec (in percent - here we 
+  expect a raw multiplier). */
+  void setup(float amplitude, float volume, float pan, float width, float position);
 
   // ToDo: 
   // -Maybe provide a different parametrization where the volume is expressed as linear gain, 

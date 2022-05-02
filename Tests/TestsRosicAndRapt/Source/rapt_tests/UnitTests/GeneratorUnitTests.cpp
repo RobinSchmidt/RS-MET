@@ -1502,12 +1502,12 @@ bool samplerAmplifierCoreTest()
     return ok;
   };
 
-  // Helper function to check, if the givne set of parameters leads to the given set of desired
+  // Helper function to check, if the given set of parameters leads to the given set of desired
   // mix coeffs:
   auto testAmp = [&](float vol, float pan, float width, float pos, 
     float a, float b, float c, float d, float tol = 0.f)
   {
-    amp.setup(vol, pan, width, pos, 1.f);
+    amp.setup(1.f, vol, pan, width, pos);
     return checkCoeffs(a,b,c,d);
   };
 
@@ -2930,11 +2930,9 @@ bool samplerEnvTest()
   float tol = 1.e-6;
 
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-
-
   getSamplerNote(&se, 70, 64, outL, outR);
 
-  rsPlotVectors(tgtL, tgtR, outL, outR); 
+  //rsPlotVectors(tgtL, tgtR, outL, outR); 
 
 
   //ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
