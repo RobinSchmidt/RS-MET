@@ -2558,46 +2558,26 @@ bool samplerLoopTest()
   };
 
 
-  /*
-  se.setRegionSetting(0,0, OC::LoopEnd,   0 + (float)cycleLength, -1);
-  Vec err = getError(69, 440, false);
-  ok &= rsMaxAbs(err) <= tol;
-
-  // Set the loop length to 2 cycles - this should make no difference (up to roundoff):
-  se.setRegionSetting(0,0, OC::LoopEnd, float(2*cycleLength), -1);
-  err = getError(69, 440, false);
-  ok &= rsMaxAbs(err) <= tol;
-
-  // Set the loop length to all 3 cycles and therefore equal to the total length of the sample:
-  se.setRegionSetting(0,0, OC::LoopEnd, (float)sinTable.size(), -1);
-  err = getError(69, 440, false);
-  ok &= rsMaxAbs(err) <= tol;
-
-  // Ofsetting loop start and end should make no difference as long as the loop-length remains one
-  // complete cycle (or 2 or 3 cycles)
-  float offset = 20.f;
-  se.setRegionSetting(0,0, OC::LoopStart, offset,                      -1);
-  se.setRegionSetting(0,0, OC::LoopEnd,   offset + (float)cycleLength, -1);
-  err = getError(69, 440, true);
-  ok &= rsMaxAbs(err) <= tol;
-  */
-
-  float P = (float)cycleLength;           // Period as float
-  float d = 0.f;                          // delta/offset for the loopStart and loopEnd
-  ok &= testLoop(69, d, d + 1*P, false);
-  ok &= testLoop(69, d, d + 2*P, false);
-  ok &= testLoop(69, d, d + 3*P, false);  // 3*P == sinTable.size()
+  // We test looping the sample where the start and end of the loop can be placed anywhere as long
+  // as end-start is equal to an integer number of cycle-lengths (up to 3 because the sample itself
+  // contains 3 cycles but 3 is only possible, if the start is a zero):
+  int key = 69;
+  float P = (float)cycleLength;             // Period as float
+  float d = 0.f;                            // delta/offset for the loopStart and loopEnd
+  ok &= testLoop(key, d, d + 1*P, false);
+  ok &= testLoop(key, d, d + 2*P, false);
+  ok &= testLoop(key, d, d + 3*P, false);    // 3*P == sinTable.size()
   d = 0.3f;
-  ok &= testLoop(69, d, d + 1*P, false);
-  ok &= testLoop(69, d, d + 2*P, false);
-  //ok &= testLoop(69, d, d + 3*P, false);  // impossible: loopEnd is beyond end of sample
+  ok &= testLoop(key, d, d + 1*P, false);
+  ok &= testLoop(key, d, d + 2*P, false);
+  //ok &= testLoop(key, d, d + 3*P, false);  // impossible: loopEnd is beyond end of sample
   d = 20.f;
-  ok &= testLoop(69, d, d + 1*P, false);
-  ok &= testLoop(69, d, d + 2*P, false);
+  ok &= testLoop(key, d, d + 1*P, false);
+  ok &= testLoop(key, d, d + 2*P, false);
   d = 20.3f;
-  ok &= testLoop(69, d, d + 1*P, false);
-  ok &= testLoop(69, d, d + 2*P, false);
-
+  ok &= testLoop(key, d, d + 1*P, false);
+  ok &= testLoop(key, d, d + 2*P, false);
+  // Maybe warp into a function taking the key and then call that for various keys
 
 
 
