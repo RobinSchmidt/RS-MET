@@ -2913,6 +2913,7 @@ bool samplerEnvTest()
   //getSamplerNote(&se, 70, 64, outL, outR);
   //rsPlotVectors(outL, outR);  // all ones -> correct!
 
+  // Set up the envelope in the sampler engine:
   se.setRegionSetting(0,0, OC::egN_start,   start   * 100, 1);
   se.setRegionSetting(0,0, OC::egN_delay,   delay   / fs,  1);
   se.setRegionSetting(0,0, OC::egN_attack,  attack  / fs,  1);
@@ -2923,16 +2924,18 @@ bool samplerEnvTest()
   se.setRegionSetting(0,0, OC::egN_release, release / fs,  1);
   se.setRegionSetting(0,0, OC::egN_end,     end     * 100, 1);
 
-
-  //se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::ampN, 1, 1.f, Mode::absolute);
-
+  // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
+  // nominal value for the amplitude is 0:
+  se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
+  se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
 
   float tol = 1.e-6;
 
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   getSamplerNote(&se, 70, 64, outL, outR);
 
-  //rsPlotVectors(tgtL, tgtR, outL, outR); 
+  rsPlotVectors(tgtL, tgtR, outL, outR);
+  // Looks good except that the engine has no note-off yet so it remains in sustain.
 
 
   //ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
@@ -2945,6 +2948,10 @@ bool samplerEnvTest()
   // -Implement different shapes for the segments.
   // -Optimize the envelope code and use the current code as prototype to compare against in a unit
   //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
+  // -Figure out what the correct behavior with regard to start/delay is - should we output zero or
+  //  start during the delay phase? We need to test this using a reference implementation like 
+  //  sfz+.
+
   // -Implement and test the sampler module: create a DC sample and use the envelope for the 
   //  amplitude and compare the result against...hmm - but that requires an amplifier unit with an
   //  amp-scaling parameter that is 0 by default. The regular amp module only has a volume 
