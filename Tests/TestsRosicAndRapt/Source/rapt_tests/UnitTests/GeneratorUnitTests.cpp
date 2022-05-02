@@ -2509,10 +2509,11 @@ bool samplerLoopTest()
     sinTable[n] = (float)sin(w*n + p);
   //rsPlotVector(sinTable);
 
-  // Playback settings:
-  float fs = 44100;  // playback sample rate
-  float f  = 440.0;  // frequency of sinewave to generate
-  int   N  = 2000;   // number of samples to generate
+  // Settings:
+  float fs  = 44100;  // Playback sample rate
+  float f   = 440.0;  // Frequency of sinewave to generate
+  float tol = 1.e-3;  // Tolerance (we expect some interpolation error)
+  int   N   = 2000;   // Number of samples to generate
 
   // Set up the engine:
   SE se;
@@ -2546,7 +2547,18 @@ bool samplerLoopTest()
   };
   // todo: compute freq from key instead of passing it in as redundnat parameter
 
-  float tol = 1.e-3;       // We expect some interpolation error
+
+  auto testLoop = [&](int key, float loopStart, float loopEnd, bool plot)
+  {
+    se.setRegionSetting(0,0, OC::LoopStart, loopStart, -1);
+    se.setRegionSetting(0,0, OC::LoopEnd,   loopEnd,   -1);
+    float freq = (float)rsPitchToFreq((double) key);
+    Vec err = getError(key, freq, plot);
+    return rsMaxAbs(err) <= tol;
+  };
+
+
+  /*
   se.setRegionSetting(0,0, OC::LoopEnd,   0 + (float)cycleLength, -1);
   Vec err = getError(69, 440, false);
   ok &= rsMaxAbs(err) <= tol;
@@ -2568,12 +2580,34 @@ bool samplerLoopTest()
   se.setRegionSetting(0,0, OC::LoopEnd,   offset + (float)cycleLength, -1);
   err = getError(69, 440, true);
   ok &= rsMaxAbs(err) <= tol;
+  */
+
+  float P = (float)cycleLength;           // Period as float
+  float d = 0.f;                          // delta/offset for the loopStart and loopEnd
+  ok &= testLoop(69, d, d + 1*P, false);
+  ok &= testLoop(69, d, d + 2*P, false);
+  ok &= testLoop(69, d, d + 3*P, false);  // 3*P == sinTable.size()
+  d = 0.3f;
+  ok &= testLoop(69, d, d + 1*P, false);
+  ok &= testLoop(69, d, d + 2*P, false);
+  //ok &= testLoop(69, d, d + 3*P, false);  // impossible: loopEnd is beyond end of sample
+  d = 20.f;
+  ok &= testLoop(69, d, d + 1*P, false);
+  ok &= testLoop(69, d, d + 2*P, false);
+  d = 20.3f;
+  ok &= testLoop(69, d, d + 1*P, false);
+  ok &= testLoop(69, d, d + 2*P, false);
+
+
+
+
 
 
   int dummy = 0;
 
   // ToDo: 
-  // -Make a helper-function testLoop or something like that
+  // -Make a helper-function testLoop or something like that. Maybe it should take the key, the 
+  //  loopStart and the loopEnd as parameters and a flag for plotting.
   // -Try to use loopStart = 0.3, loopEnd = sinTable.size() + 0.3 or maybe:
   //  loopEnd = sinTable.size() - 0.3, loopStart = sinTable.size() - cycleLength - 0.3
   // -Try different sine-frequencies i.e. note-keys.
