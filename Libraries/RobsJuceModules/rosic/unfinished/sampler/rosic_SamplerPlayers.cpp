@@ -426,8 +426,9 @@ void RegionPlayer::processFrame(float* L, float* R)
   {
     if(sampleTime >= loopEnd-1)
     {
-      stream->getFrameStereo(loopStart, &xL0, &xR0);
-      stream->getFrameStereo(loopStart, &xL1, &xR1);
+      stream->getFrameStereo(loopStart, &xL0, &xR0); // maybe floor(loopStart)?
+      stream->getFrameStereo(loopStart, &xL1, &xR1); // maybe ceil(loopStart)?
+      // Maybe we should use floor(loopStart) and ceil()
     }
   }
   // ToDo: 
@@ -435,11 +436,11 @@ void RegionPlayer::processFrame(float* L, float* R)
   //  can avoid the 2nd conditional below?
   // -Maybe keep those as members defL, defR (for default) and init them to 
   //  stream->getFrameStereo(loopStart, &defL, &defR); at setup time. Then we can get rid of this
-  //  per-sample conditionla here completely
+  //  per-sample conditionla here completely.
 
 
   stream->getFrameStereo((float)sampleTime, L, R, xL0, xR0, xL1, xR1);
-  // ToDo: Try to avoid the conversion to float, maybe by uning a 2nd template parameter for the 
+  // ToDo: Try to avoid the conversion to float, maybe by using a 2nd template parameter for the 
   // time in the AudioStream class template and use double for it
 
   // Update all modulators and apply their outputs to their targets via the mod-matrix:
@@ -627,6 +628,8 @@ void RegionPlayer::resetPlayerSettings()
   //tune       = 0.f;
   //transpose  = 0.f;
   endTime    = (float)stream->getNumFrames();
+  defL       = 0.f;
+  defR       = 0.f;
   // Maybe use -1? That may require updating the unit tests. But maybe it's appropriate to use 
   // numFrames when assuming linear interpolation. I think, for general interpolators, we should 
   // use endTime = numFrames - 1 + kernelSize/2. Test this with very high downshifting factors and

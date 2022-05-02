@@ -440,6 +440,13 @@ protected:
   // This amplitude factor is determined by key/vel crossfades, etc. but not by key/veltrack 
   // because these are is done by the Amplifier DSP
 
+  float defL = 0.f, defR = 0.f;
+  // These are the values that the linear interpolator in our call to stream->getFrameStereo
+  // will use when we attempt to read a stream-sample out of the range. This happens during loop
+  // wrap-arounds and we need to make sure that defL, defR are assigned to the left/right samples
+  // at the loop start...this is confusing
+  // use  float xL0 = 0.f, xR0 = 0.f, xL1 = 0.f, xR1 = 0.f;
+
   LoopMode loopMode = LoopMode::no_loop;
   uchar key = 0;                 //< Midi note number used for starting this player
   // Maybe we should have a SamplePlayer as subclass of Processor and let the RegionPlayer use it

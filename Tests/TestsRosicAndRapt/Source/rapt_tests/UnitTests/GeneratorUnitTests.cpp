@@ -2559,6 +2559,13 @@ bool samplerLoopTest()
   Vec err3 = getError(69, 440, false);
   ok &= rsMaxAbs(err3) <= tol;
 
+  // ToDo: 
+  // -Try to use loopStart = 0.3, loopEnd = sinTable.size() + 0.3 or maybe:
+  //  loopEnd = sinTable.size() - 0.3, loopStart = sinTable.size() - cycleLength - 0.3
+  // -Try different sine-frequencies i.e. note-keys.
+
+
+
   // Plot error signals:
   //rsPlotVectors(err1, err2, err3);
   // Error is between +-0.0005. That's an SNR of about 66 dB. Actually not that bad for not even
@@ -2617,7 +2624,7 @@ bool samplerLoopTest()
   //rsPlotVectors(tgt, outL, outR);
 
 
-  // Test looping a DC sample. The output should als be pured DC regardless of the note pitch, 
+  // Test looping a DC sample. The output should als be pure DC regardless of the note pitch, 
   // sample rate, etc.:
 
   using namespace RAPT;
