@@ -2932,11 +2932,10 @@ bool samplerEnvTest()
   float tol = 1.e-6;
 
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  getSamplerNote(&se, 70, 64, outL, outR);
-
+  getSamplerNote(&se, 70, 64, outL, outR, nOff);
   rsPlotVectors(tgtL, tgtR, outL, outR);
-  // Looks good except that the engine has no note-off yet so it remains in sustain.
-
+  // Looks good except that the engine cuts the note off abruptly at noteOff instead of entering 
+  // release - but this is expected because we do not yet have release implemented.
 
   //ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
   // Fails: Engine produces an all-zeros signal
@@ -2945,6 +2944,7 @@ bool samplerEnvTest()
 
 
   // ToDo:
+  // -Implement correct release behavior
   // -Implement different shapes for the segments.
   // -Optimize the envelope code and use the current code as prototype to compare against in a unit
   //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests

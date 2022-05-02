@@ -189,7 +189,7 @@ void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N)
 }
 
 void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
-  std::vector<float>& outL, std::vector<float>& outR)
+  std::vector<float>& outL, std::vector<float>& outR, int noteOffAt)
 {
   rsAssert(outL.size() == outR.size());
 
@@ -200,8 +200,12 @@ void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
   se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
-  for(int n = 0; n < (int) outL.size(); n++)
+  for(int n = 0; n < (int)outL.size(); n++)
+  {
+    if(n == noteOffAt)
+      se->handleMusicalEvent(Ev(EvTp::noteOn, key, 0));
     se->processFrame(&outL[n], &outR[n]);
+  }
   // Should we clear the outL/R arrays first? Maybe not, if we want instruments to accumuluate 
   // their outputs in ToolChain...but maybe not here in this test function
   // ...also, we may want to reset the se just in case it already has notes running

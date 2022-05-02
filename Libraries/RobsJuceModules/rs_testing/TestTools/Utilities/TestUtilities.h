@@ -489,9 +489,11 @@ void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048);
 void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N = 100);
 
 
-/** Fills the outL, outR arrays with the output of the given sampler engine for the given note. */
+/** Fills the outL, outR arrays with the output of the given sampler engine for the given note. The
+optionla noteOffAt parameter specifies the sample instant at which a note-off is triggered in the
+engine, if any. By default, no note-off will be triggered at all. */
 void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
-  std::vector<float>& outL, std::vector<float>& outR);
+  std::vector<float>& outL, std::vector<float>& outR, int noteOffAt = -1);
 
 
 //=================================================================================================
