@@ -4,7 +4,7 @@
 namespace rosic { namespace Sampler {
 
 //=================================================================================================
-// Move into SamplerEffects.h 
+// Rename and move into SamplerEffects.h or into SamplePlayer:
 
 inline void prepareToPlay1(std::vector<Processor*>& processors, // get rid of th 1 in the name
   unsigned char key, unsigned char vel, double fs)              // use float for fs
@@ -420,6 +420,16 @@ protected:
   void setupFromIntemediates();
 
   void setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp) override;
+
+  /** UNDER CONSTRUCTION
+  Called during prepareToPlay to determine the envelope generator which is considered to be 
+  the relevant one for determining, when the release phase has finished. It may return a nullptr
+  which indicates that no such envelope exists. In such a case, the note-off behavior is to leave 
+  the loop (if any) and then continue to play the sample until the end. When it's not a nullptr,
+  the note-off behavior is to monitor this particular envelope for when it ends and if it ends,
+  we consider the note to be finished. A loop is continued during release in such a case. */
+  EnvGen* determineReleaseEnvelope();
+
 
   const Region* region;                 
   /**< Pointer to the Region object that this player should play. */

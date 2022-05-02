@@ -498,8 +498,6 @@ void RegionPlayer::allocateMemory()
   // later. Actually , this should probably be done in SamplerEngine::preAllocateDspMemory
 }
 
-
-
 rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
@@ -513,6 +511,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
 
   resetPlayerSettings();
   setupDspSettingsFor(region, busMode);
+  releaseEnv = determineReleaseEnvelope();
 
   double fs = playStatus->sampleRate;  // todo: use float
   prepareToPlay1(modSources, key, vel, fs);
@@ -520,7 +519,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
   // The rationale for preparing the modSources first is that their initial output may already 
   // affect the initial parameters of the effects(?) ...but does that matter? Aren't the params 
   // recomputed in processFrame anyway?...perhaps it doesn't matter, but the order feels right 
-  // this way anyway. This prepareToPlay function may be a member of SamplePlayer.
+  // this way anyway. 
 
   // Assign default values that the linear interpolator will use when we attempt to read a sample
   // value outside the valid range:
@@ -743,6 +742,13 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp
 // another parameter which is a pointer to a struct that holds all the temporary intermediate
 // values. This will become more relevant when more and more parameters are controlled by opcodes
 // which all influence a final value
+
+
+EnvGen* RegionPlayer::determineReleaseEnvelope()
+{
+
+  return nullptr;  // preliminary
+}
 
 //=================================================================================================
 // SampleBusPlayer

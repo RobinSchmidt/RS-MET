@@ -104,6 +104,19 @@ void EnvGenCore::processFrame(float* L, float* R)
   //   delay+attack+hold+...
   //  -Avoid the division by computing the current output recursively, i.e. from previous output
   //   and some increment
+  // -What if a note-off is received before we reach sustain? We actually need some sort of 
+  //  note-off handling anyway. I think, the desired behavior is to immediately enter the release
+  //  phase from whatever level we are currently on. Maybe we should keep a member y to hold the
+  //  most recent output value.
+}
+
+bool EnvGenCore::hasFinished() const
+{
+  return sampleCount >= delay+attack+hold+decay+release;
+  // Preliminary. I think, the formula is only valid when the release phase was entered from 
+  // sustain but when the key is release befor the sustain phase is reached, this is wrong. 
+  // However, the error will be that we may potenetially return false negatives which may be
+  // unproblematic...we'll see
 }
 
 //=================================================================================================

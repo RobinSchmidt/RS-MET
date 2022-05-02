@@ -57,6 +57,7 @@ public:
   void processFrame(float* L, float* R);
   void noteOff() { noteIsOn = false; }
   void resetState() { sampleCount = 0; }
+  bool hasFinished() const;
 
 protected:
 

@@ -92,6 +92,8 @@ EnvGen::EnvGen()
   //  ampeg, fileg, etc.
   // -Add key2attack, key2decay, etc. and/or maybe have a general key2length or key2timescale as we
   //  have in Straightliner. These are not defined in sfz but make a lot of sense musically.
+  // -peak is actually not defined in sfz - so maybe we should remove it but maybe it's useful 
+  //  enoguh to keep it
 }
 
 void EnvGen::updateCoeffs(double sampleRate)
@@ -104,8 +106,6 @@ void EnvGen::updateCoeffs(double sampleRate)
     p[6].mv()*k, p[7].mv()*fs, p[8].mv()*k);
   dirty = false;
 }
-
-// peak is actually not defined in sfz - so maybe we should remove it
 
 //=================================================================================================
 
