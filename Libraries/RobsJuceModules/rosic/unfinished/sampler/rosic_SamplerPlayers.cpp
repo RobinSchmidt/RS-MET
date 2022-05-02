@@ -419,9 +419,8 @@ void RegionPlayer::processFrame(float* L, float* R)
   if(sampleTime == 0.0)
     sampleTime = offset;
 
+  /*
   // Under construction - trying to achieve correct looping behavior when loopEnd == sampleLength:
-  float xL0(0), xR0(0), xL1(0), xR1(0);  // preliminary
-  // ToDo: assign these according to loop start- and end samples
   if(loopMode == LoopMode::loop_continuous)
   {
     if(sampleTime >= loopEnd-1)
@@ -431,12 +430,10 @@ void RegionPlayer::processFrame(float* L, float* R)
       // Maybe we should use floor(loopStart) and ceil()
     }
   }
+  */
   // ToDo: 
-  // -Can we absorb the sampleTime -= (loopEnd - loopStart); into this conditional also, so we
-  //  can avoid the 2nd conditional below?
-  // -Maybe keep those as members defL, defR (for default) and init them to 
-  //  stream->getFrameStereo(loopStart, &defL, &defR); at setup time. Then we can get rid of this
-  //  per-sample conditionla here completely.
+  // -Move this into prepareToPlay - done, but it seems, we stil need it here - why?
+
 
 
   stream->getFrameStereo((float)sampleTime, L, R, xL0, xR0, xL1, xR1);
@@ -546,6 +543,14 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
   // recomputed in processFrame anyway?...perhaps it doesn't matter, but the order feels right 
   // this way anyway. This prepareToPlay function may be a member of SamplePlayer.
 
+  // Assign default values that the linear interpolator will use when we attempt to read a sample
+  // value outside the valid range:
+  if(loopMode == LoopMode::loop_continuous) {    
+    stream->getFrameStereo((int) floor(loopStart), &xL0, &xR0);
+    stream->getFrameStereo((int)  ceil(loopStart), &xL1, &xR1); }
+  // ToDo: verify if floor/ceil are the correct thing to do here or whether it should be floor and
+  // floor+1. Unit test this with integer and noninteger values for loopStart
+
   return rsReturnCode::success;
   // Overload should actually not happen in therory (as by the sfz spec, and unlimited number of 
   // layers is available), but in practice, it may happen in extreme situations like triggering a
@@ -628,13 +633,16 @@ void RegionPlayer::resetPlayerSettings()
   //tune       = 0.f;
   //transpose  = 0.f;
   endTime    = (float)stream->getNumFrames();
-  defL       = 0.f;
-  defR       = 0.f;
   // Maybe use -1? That may require updating the unit tests. But maybe it's appropriate to use 
   // numFrames when assuming linear interpolation. I think, for general interpolators, we should 
   // use endTime = numFrames - 1 + kernelSize/2. Test this with very high downshifting factors and
   // maybe with a sample that is just 1 sample long with a value of 1. We should see the 
   // interpolation kernel as output.
+
+  xL0 = 0.f; xR0 = 0.f;
+  xL1 = 0.f; xR1 = 0.f;
+
+
 
   // What about key?
   // key = 0;   // uncommenting breaks unit tests - figure out why and document
