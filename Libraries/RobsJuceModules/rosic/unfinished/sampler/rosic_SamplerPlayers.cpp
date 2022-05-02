@@ -419,23 +419,6 @@ void RegionPlayer::processFrame(float* L, float* R)
   if(sampleTime == 0.0)
     sampleTime = offset;
 
-  /*
-  // Under construction - trying to achieve correct looping behavior when loopEnd == sampleLength:
-  if(loopMode == LoopMode::loop_continuous)
-  {
-    if(sampleTime >= loopEnd-1)
-    {
-      stream->getFrameStereo(loopStart, &xL0, &xR0); // maybe floor(loopStart)?
-      stream->getFrameStereo(loopStart, &xL1, &xR1); // maybe ceil(loopStart)?
-      // Maybe we should use floor(loopStart) and ceil()
-    }
-  }
-  */
-  // ToDo: 
-  // -Move this into prepareToPlay - done, but it seems, we stil need it here - why?
-
-
-
   stream->getFrameStereo((float)sampleTime, L, R, xL0, xR0, xL1, xR1);
   // ToDo: Try to avoid the conversion to float, maybe by using a 2nd template parameter for the 
   // time in the AudioStream class template and use double for it
@@ -445,14 +428,10 @@ void RegionPlayer::processFrame(float* L, float* R)
 
   // Update our sampleTime counter:
   sampleTime += increment;
-  if(loopMode == LoopMode::loop_continuous)
-  {
-    if(sampleTime >= loopEnd)
-    {
+  if(loopMode == LoopMode::loop_continuous) {
+    if(sampleTime >= loopEnd) {
       sampleTime -= (loopEnd - loopStart);
-      RAPT::rsAssert(sampleTime >= 0.0);
-    }
-  }
+      RAPT::rsAssert(sampleTime >= 0.0);   }}
 
   // Apply the effect chain:
   processFrame1(effectChain, L, R);

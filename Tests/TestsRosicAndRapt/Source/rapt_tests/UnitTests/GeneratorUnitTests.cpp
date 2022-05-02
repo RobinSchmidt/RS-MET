@@ -2493,6 +2493,7 @@ bool samplerLoopTest()
 
   bool ok = true;
 
+  using namespace RAPT;
   using namespace rosic::Sampler;
   using Vec = std::vector<float>;
   using SE  = rosic::Sampler::rsSamplerEngineTest;
@@ -2520,7 +2521,7 @@ bool samplerLoopTest()
   addSingleSampleRegion(&se, sinTable, (float)rootKey);
   se.setRegionSetting(0,0, OC::LoopMode,  (float)LoopMode::loop_continuous, -1);
   se.setRegionSetting(0,0, OC::LoopStart, 0,               -1);
-  se.setRegionSetting(0,0, OC::LoopEnd,   0 + (float)cycleLength, -1);
+  //se.setRegionSetting(0,0, OC::LoopEnd,   0 + (float)cycleLength, -1);
 
   // Helper function to produce the error signal between the ideal sinewave of given frequency and
   // the signal produced by the sampler engine for given key:
@@ -2543,13 +2544,14 @@ bool samplerLoopTest()
       rsPlotVectors(tgt, outL, tgt-outL);
     return tgt - outL;
   };
+  // todo: compute freq from key instead of passing it in as redundnat parameter
 
-  // We expect some error due to the linear interpolation:  
-  float tol = 1.e-3;
+  float tol = 1.e-3;       // We expect some interpolation error
+  se.setRegionSetting(0,0, OC::LoopEnd,   0 + (float)cycleLength, -1);
   Vec err1 = getError(69, 440, false);
   ok &= rsMaxAbs(err1) <= tol;
 
-  // Set the loop length to 2 cycles - this should make no difference up to roundoff:  
+  // Set the loop length to 2 cycles - this should make no difference (up to roundoff):
   se.setRegionSetting(0,0, OC::LoopEnd, float(2*cycleLength), -1);
   Vec err2 = getError(69, 440, false);
   ok &= rsMaxAbs(err2) <= tol;
@@ -2558,6 +2560,8 @@ bool samplerLoopTest()
   se.setRegionSetting(0,0, OC::LoopEnd, (float)sinTable.size(), -1);
   Vec err3 = getError(69, 440, false);
   ok &= rsMaxAbs(err3) <= tol;
+
+  int dummy = 0;
 
   // ToDo: 
   // -Try to use loopStart = 0.3, loopEnd = sinTable.size() + 0.3 or maybe:
@@ -2626,34 +2630,34 @@ bool samplerLoopTest()
 
   // Test looping a DC sample. The output should als be pure DC regardless of the note pitch, 
   // sample rate, etc.:
-
-  using namespace RAPT;
-
   rsFill(tgt, 1.f);
-  fs = 10000.f;
   setupForLoopedDC(&se, 100);
+  fs = 10000.f;
   se.setSampleRate(fs);
 
   rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 64, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;  // passes
+  ok &= outL == tgt && outR == tgt;
   //rsPlotVectors(tgt, outL, outR);
 
   rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 60, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;  // passes
+  ok &= outL == tgt && outR == tgt;
   //rsPlotVectors(tgt, outL, outR);  
 
   rsZero(outL); rsZero(outR);
   getSamplerNote(&se, 69, 64, outL, outR);
-  ok &= outL == tgt && outR == tgt;  // passes
+  ok &= outL == tgt && outR == tgt;
   //rsPlotVectors(tgt, outL, outR);
 
-  // OK - one reason for the fails is that the SamplerEngine itself does accumultae into what is 
-  // already there instead of overwriting the input buffers - fix: clear outL, outR before calling
-  // getSamplerNote
+  // ToDo: 
+  // -Try a couple of different settings for se.setSampleRate
+  // -Try higher keys -> more wrap-arounds
+  // -Test non-integer values for the loop-start and/or loop end. But DC signal is not suitable for
+  //  this. We need a signla where something is going on. Maybe use a sawtooth. Maybe let it have
+  //  3 cycles with a cycle-length of 10 samples. Or maybe include such loop settings above into 
+  //  the tests with the sine-wave
 
-  // maybe chanhe impementation of AudioStream::getFrameStereo
 
 
 
