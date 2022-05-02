@@ -2561,24 +2561,21 @@ bool samplerLoopTest()
   // contains 3 cycles but 3 is only possible, if the start is a zero):
   auto testLoops = [&](int key)
   {
-    bool ok = true;
-
     float P = (float)cycleLength;             // Period as float
     float d = 0.f;                            // delta/offset for the loopStart and loopEnd
+    bool ok = true;
     ok &= testLoop(key, d, d + 1*P, false);
     ok &= testLoop(key, d, d + 2*P, false);
-    ok &= testLoop(key, d, d + 3*P, false);    // 3*P == sinTable.size()
+    ok &= testLoop(key, d, d + 3*P, false);   // 3*P == sinTable.size(), only possible if d == 0
     d = 0.3f;
     ok &= testLoop(key, d, d + 1*P, false);
     ok &= testLoop(key, d, d + 2*P, false);
-    //ok &= testLoop(key, d, d + 3*P, false);  // impossible: loopEnd is beyond end of sample
     d = 20.f;
     ok &= testLoop(key, d, d + 1*P, false);
     ok &= testLoop(key, d, d + 2*P, false);
     d = 20.3f;
     ok &= testLoop(key, d, d + 1*P, false);
     ok &= testLoop(key, d, d + 2*P, false);
-
     return ok;
   };
 
@@ -2586,17 +2583,7 @@ bool samplerLoopTest()
   for(int key = 50; key <= 70; key++)
     ok &= testLoops(key);
 
-  int dummy = 0;
-
-  // ToDo: 
-  // -Make a helper-function testLoop or something like that. Maybe it should take the key, the 
-  //  loopStart and the loopEnd as parameters and a flag for plotting.
-  // -Try to use loopStart = 0.3, loopEnd = sinTable.size() + 0.3 or maybe:
-  //  loopEnd = sinTable.size() - 0.3, loopStart = sinTable.size() - cycleLength - 0.3
-  // -Try different sine-frequencies i.e. note-keys.
-
-
-
+  // old:
   // Plot error signals:
   //rsPlotVectors(err1, err2, err3);
   // Error is between +-0.0005. That's an SNR of about 66 dB. Actually not that bad for not even
@@ -2604,16 +2591,16 @@ bool samplerLoopTest()
   // frequencies. The error has strange discontinuities in the derivative - why? I tried without 
   // loop and the corners are still there. This seems to be a feature of the linear interpolator
   // and is not related to the loop implementation.
-
   // Let's have a look ad the difference of the error. We expect it to be nonzero due to different
   // roundoff errors when one is in the loop while the other one isn't:
   //rsPlotVectors(err1 - err2);
   //rsPlotVectors(err1 - err3);
   //rsPlotVectors(err2 - err3);
-  // The error difference is zero for 100 samples, the nonzero at a level of about 10^-6 for the 
+  // The error difference is zero for 100 samples, then nonzero at a level of about 10^-6 for the 
   // rest of the longer loop, then zero again when they are again "in phase", etc. That's quite 
   // interesting actually. Shouldn't the 2nd and 3rd cycle contain exactly the same data as the 
   // 1st?
+
 
   // To test the one-shot mode, we create a sample of an exponential decay and trigger the same 
   // note 3 times with note-offs in between the note-ons. The note-offs should be ignored and the 
@@ -2654,9 +2641,10 @@ bool samplerLoopTest()
   ok &= outL == tgt && outR == tgt;
   //rsPlotVectors(tgt, outL, outR);
 
-
+  /*
   // Test looping a DC sample. The output should als be pure DC regardless of the note pitch, 
-  // sample rate, etc.:
+  // sample rate, etc. (may be redundant now bcs we have generalized the loop tests above to 
+  // cover the cases that are tested here, too):
   rsFill(tgt, 1.f);
   setupForLoopedDC(&se, 100);
   fs = 10000.f;
@@ -2676,6 +2664,7 @@ bool samplerLoopTest()
   getSamplerNote(&se, 69, 64, outL, outR);
   ok &= outL == tgt && outR == tgt;
   //rsPlotVectors(tgt, outL, outR);
+  */
 
   // ToDo: 
   // -Try a couple of different settings for se.setSampleRate
