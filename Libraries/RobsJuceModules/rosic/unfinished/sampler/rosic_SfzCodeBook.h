@@ -70,6 +70,7 @@ enum class Opcode
   FadeInLoCtrlN, FadeInHiCtrlN, FadeOutLoCtrlN, FadeOutHiCtrlN, FadeCurveCtrl,
 
   // new amp-opcodes - will make the above ones obsolete:
+  amplitudeN,
   volumeN, panN, widthN, positionN, 
   ampN_keytrack, ampN_keycenter, ampN_veltrack,
   // ampN_velcurve_X /* ? */, ampN_random,
@@ -315,6 +316,7 @@ enum class OpcodeSpec
   Sfz_2,
   Sfz_2_E,      // e.g.: lfoN_volumeX (sfz2 has only lfoN_volume)
   Aria,
+  Aria_E,
   RsMet,
   //...etc...
 

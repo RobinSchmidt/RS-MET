@@ -28,6 +28,7 @@ SfzCodeBook::SfzCodeBook()
   OS Sfz1e = OS::Sfz_1_E;
   OS Sfz2  = OS::Sfz_2;
   OS Sfz2e = OS::Sfz_2_E;
+  OS ARIAe = OS::Aria_E;
 
   // Player response constraints (aka "Input Control" in the sfz doc):
   SP dsp = OpcodeType::SamplePlayer;  // rename to type or tp or ot
@@ -106,10 +107,12 @@ SfzCodeBook::SfzCodeBook()
 
   // Player amplifier:
   dsp = OpcodeType::Amplifier; 
-  add(OC::volumeN,   Flt, "volumeN",   -144.f,   +6.f,   0.f, dsp, OU::Decibels, Sfz1e);
-  add(OC::panN,      Flt, "panN",      -100.f, +100.f,   0.f, dsp, OU::RawFloat, Sfz1e);
-  add(OC::widthN,    Flt, "widthN",    -100.f, +100.f, 100.f, dsp, OU::Percent,  Sfz1e);
-  add(OC::positionN, Flt, "positionN", -100.f, +100.f,   0.f, dsp, OU::Percent,  Sfz1e);
+  add(OC::amplitudeN, Flt, "amplitudeN",    0.f,  100.f, 100.f, dsp, OU::Percent,  ARIAe);
+  add(OC::volumeN,    Flt, "volumeN",    -144.f,   +6.f,   0.f, dsp, OU::Decibels, Sfz1e);
+  add(OC::panN,       Flt, "panN",       -100.f, +100.f,   0.f, dsp, OU::RawFloat, Sfz1e);
+  add(OC::widthN,     Flt, "widthN",     -100.f, +100.f, 100.f, dsp, OU::Percent,  Sfz1e);
+  add(OC::positionN,  Flt, "positionN",  -100.f, +100.f,   0.f, dsp, OU::Percent,  Sfz1e);
+
   add(OC::ampN_keytrack,  Flt, "ampN_keytrack",  -96.0f, 12.f, 0.f, dsp, OU::DecibelPerKey, Sfz1e);
   add(OC::ampN_keycenter, Flt, "ampN_keycenter",   0.0f,127.f,60.f, dsp, OU::MidiKey,       Sfz1e);
   add(OC::ampN_veltrack,  Flt, "ampN_veltrack", -100.0f,100.f, 0.f, dsp, OU::Percent,       Sfz1e);
@@ -127,7 +130,7 @@ SfzCodeBook::SfzCodeBook()
   // ampN_scale, ampN_pan, ampN_width, ampN_position...or some other parametrization
 
 
-
+  // https://sfzformat.com/opcodes/amplitude
 
 
 

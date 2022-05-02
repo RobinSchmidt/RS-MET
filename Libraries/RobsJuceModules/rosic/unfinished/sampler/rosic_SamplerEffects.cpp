@@ -133,6 +133,9 @@ Amplifier::Amplifier()
   // share the same memory with the algo-parameters. The params are only accessed occasionally 
   // during processing (in case of handling midi controllers) but most of the time, it's good that 
   // they don't intefere with the algo params (stored directly in the DSP objects).
+
+  // Maybe add these:
+  // https://sfzformat.com/opcodes/amplitude
 }
 
 void Amplifier::processFrame(float* L, float* R) 
@@ -298,6 +301,10 @@ Equalizer::Equalizer()
   addParameter(Opcode::eqN_gain);
   addParameter(Opcode::eqN_freq);
   addParameter(Opcode::eqN_bw);
+
+  // Maybe add these:
+  // https://sfzformat.com/opcodes/eq_type
+  // https://sfzformat.com/opcodes/eqN_type
 }
 
 void Equalizer::processFrame(float* L, float* R)

@@ -3503,6 +3503,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
+  ok &= samplerModulatorsTest();
   ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
