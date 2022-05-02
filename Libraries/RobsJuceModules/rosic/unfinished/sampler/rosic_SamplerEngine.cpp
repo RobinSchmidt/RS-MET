@@ -570,7 +570,6 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar
 rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 {
   // Note-off events may also trigger the playback of regions (note-off samples are a thing)...
-  //intermediates.reset();  
   PlayStatusChange psc;
   for(int i = int(activePlayers.size()) - 1; i >= 0; i--)
   {
@@ -579,7 +578,8 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, ucha
       stopRegionPlayer(size_t(i));
       psc.numLayersStopped++;
       // ToDo: refine this later: we may not want to immediately stop the player but rather 
-      // trigger the release phase and mark for quick fade-out
+      // trigger the release phase and mark for quick fade-out. Maybe just call noteOff on all
+      // players regardless of LoopMode and what to do is then determined by the player itself
     }
   }
   return psc;

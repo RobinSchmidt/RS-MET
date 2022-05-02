@@ -2954,6 +2954,9 @@ bool samplerEnvTest()
   //  pointer to the reference envelope and if its a nullptr, use the "leave loop and play until 
   //  end" strategy. But maybe a useful variant of the "abrupt" behavior would be to play until the
   //  next zero crossing...or to use a quick fade-out
+  //  -Change rsSamplerEngine::handleNoteOff. It should not call stopRegionPlayer but instead
+  //   call activePlayers[i]->noteOff
+
   // -Implement different shapes for the segments.
   // -Optimize the envelope code and use the current code as prototype to compare against in a unit
   //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
