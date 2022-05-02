@@ -2547,7 +2547,6 @@ bool samplerLoopTest()
   };
   // todo: compute freq from key instead of passing it in as redundnat parameter
 
-
   auto testLoop = [&](int key, float loopStart, float loopEnd, bool plot)
   {
     se.setRegionSetting(0,0, OC::LoopStart, loopStart, -1);
@@ -2557,31 +2556,35 @@ bool samplerLoopTest()
     return rsMaxAbs(err) <= tol;
   };
 
-
-  // We test looping the sample where the start and end of the loop can be placed anywhere as long
+  // Tests looping the sample where the start and end of the loop can be placed anywhere as long
   // as end-start is equal to an integer number of cycle-lengths (up to 3 because the sample itself
   // contains 3 cycles but 3 is only possible, if the start is a zero):
-  int key = 69;
-  float P = (float)cycleLength;             // Period as float
-  float d = 0.f;                            // delta/offset for the loopStart and loopEnd
-  ok &= testLoop(key, d, d + 1*P, false);
-  ok &= testLoop(key, d, d + 2*P, false);
-  ok &= testLoop(key, d, d + 3*P, false);    // 3*P == sinTable.size()
-  d = 0.3f;
-  ok &= testLoop(key, d, d + 1*P, false);
-  ok &= testLoop(key, d, d + 2*P, false);
-  //ok &= testLoop(key, d, d + 3*P, false);  // impossible: loopEnd is beyond end of sample
-  d = 20.f;
-  ok &= testLoop(key, d, d + 1*P, false);
-  ok &= testLoop(key, d, d + 2*P, false);
-  d = 20.3f;
-  ok &= testLoop(key, d, d + 1*P, false);
-  ok &= testLoop(key, d, d + 2*P, false);
-  // Maybe warp into a function taking the key and then call that for various keys
+  auto testLoops = [&](int key)
+  {
+    bool ok = true;
 
+    float P = (float)cycleLength;             // Period as float
+    float d = 0.f;                            // delta/offset for the loopStart and loopEnd
+    ok &= testLoop(key, d, d + 1*P, false);
+    ok &= testLoop(key, d, d + 2*P, false);
+    ok &= testLoop(key, d, d + 3*P, false);    // 3*P == sinTable.size()
+    d = 0.3f;
+    ok &= testLoop(key, d, d + 1*P, false);
+    ok &= testLoop(key, d, d + 2*P, false);
+    //ok &= testLoop(key, d, d + 3*P, false);  // impossible: loopEnd is beyond end of sample
+    d = 20.f;
+    ok &= testLoop(key, d, d + 1*P, false);
+    ok &= testLoop(key, d, d + 2*P, false);
+    d = 20.3f;
+    ok &= testLoop(key, d, d + 1*P, false);
+    ok &= testLoop(key, d, d + 2*P, false);
 
+    return ok;
+  };
 
-
+  // Call out testLoops helper function for a bunch of keys:
+  for(int key = 50; key <= 70; key++)
+    ok &= testLoops(key);
 
   int dummy = 0;
 
