@@ -112,14 +112,15 @@ void EnvGen::updateCoeffs(double sampleRate)
 Amplifier::Amplifier()
 {
   type = OpcodeType::Amplifier;
-  params.reserve(7);                      // index
-  addParameter(Opcode::volumeN);          //   0
-  addParameter(Opcode::panN);             //   1
-  addParameter(Opcode::widthN);           //   2
-  addParameter(Opcode::positionN);        //   3
-  addParameter(Opcode::ampN_veltrack);    //   4
-  addParameter(Opcode::ampN_keytrack);    //   5
-  addParameter(Opcode::ampN_keycenter);   //   6
+  params.reserve(8);                      // index
+  addParameter(Opcode::amplitudeN);       //   0
+  addParameter(Opcode::volumeN);          //   1
+  addParameter(Opcode::panN);             //   2
+  addParameter(Opcode::widthN);           //   3
+  addParameter(Opcode::positionN);        //   4
+  addParameter(Opcode::ampN_veltrack);    //   5
+  addParameter(Opcode::ampN_keytrack);    //   6
+  addParameter(Opcode::ampN_keycenter);   //   7
 
   // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
   // way. The number of parameters is actually known at compile time. Maybe use std::array 
@@ -164,15 +165,17 @@ void Amplifier::updateCoeffs(double sampleRate)
 {
 
   // Extract nominal values from the parameters:
-  float volume   = params[0].mv();
-  float pan      = params[1].mv();
-  float width    = params[2].mv();
-  float position = params[3].mv();
+
+  float amplitude = params[0].mv();
+  float volume    = params[1].mv();
+  float pan       = params[2].mv();
+  float width     = params[3].mv();
+  float position  = params[4].mv();
 
   // Extract key/vel modifiers:
-  float ampN_veltrack  = params[4].mv();
-  float ampN_keytrack  = params[5].mv();
-  float ampN_keycenter = params[6].mv();
+  float ampN_veltrack  = params[5].mv();
+  float ampN_keytrack  = params[6].mv();
+  float ampN_keycenter = params[7].mv();
 
   // Apply modifiers:
   volume += ampN_veltrack * 0.01f * 40 * log10f(127.f/(float)vel);
@@ -181,7 +184,7 @@ void Amplifier::updateCoeffs(double sampleRate)
   // is adjusted in dB per key. See https://sfzformat.com/legacy/
 
   // Set up the core:
-  core.setup(1.f, volume, pan, width, position);
+  core.setup(amplitude*0.01f, volume, pan, width, position);
   dirty = false;
 
   // ToDo:
