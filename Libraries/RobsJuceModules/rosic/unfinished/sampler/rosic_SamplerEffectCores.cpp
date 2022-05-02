@@ -108,7 +108,7 @@ void EnvGenCore::processFrame(float* L, float* R)
 
 //=================================================================================================
 
-void AmplifierCore::setup(float volume, float pan, float width, float pos)
+void AmplifierCore::setup(float volume, float pan, float width, float pos, float scale)
 {
   using Mat = RAPT::rsMatrix2x2<float>;
 
@@ -165,7 +165,10 @@ void AmplifierCore::setup(float volume, float pan, float width, float pos)
 
   // Combine all 4 matrices and extract coeffs:
   Mat M = Q*W*P*S;              // application order is right-to-left (scale->pan->width->pos)
-  gLL = M.a; gLR = M.b; gRL = M.c; gRR = M.d;
+  gLL = scale*M.a; 
+  gLR = scale*M.b; 
+  gRL = scale*M.c; 
+  gRR = scale*M.d;
 
 
   int dummy = 0;

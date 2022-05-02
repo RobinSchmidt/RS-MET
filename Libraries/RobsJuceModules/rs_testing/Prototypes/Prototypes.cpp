@@ -77,6 +77,9 @@ void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& 
   //   prescribe a polynomial (i.e. FIR) transfer function. Maybe that can be infinite, too? Maybe
   //   a Hilbert filter would be H(z) = sum_k (-1)^k / k  for k != 0 and 0 for k = 0? Can we find 
   //   an expression for the Taylor coeffs of that?
+
+  // See:
+  // https://www.youtube.com/watch?v=szMaPkJEMrw
 }
 template void rsTaylorToPade(const std::vector<double>& T, std::vector<double>& P, 
   std::vector<double>& Q);

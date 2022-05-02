@@ -1507,7 +1507,7 @@ bool samplerAmplifierCoreTest()
   auto testAmp = [&](float vol, float pan, float width, float pos, 
     float a, float b, float c, float d, float tol = 0.f)
   {
-    amp.setup(vol, pan, width, pos);
+    amp.setup(vol, pan, width, pos, 1.f);
     return checkCoeffs(a,b,c,d);
   };
 
@@ -2867,7 +2867,9 @@ bool samplerEnvTest()
   bool ok = true;
 
   using namespace rosic::Sampler;
-  using Vec = std::vector<float>;
+  using Vec  = std::vector<float>;
+  using OT   = OpcodeType;
+  using Mode = ModMode;
 
   // EG parameters (times are in in samples, levels a unitless):
   float delay   = 30;
@@ -2920,11 +2922,17 @@ bool samplerEnvTest()
   se.setRegionSetting(0,0, OC::egN_sustain, sustain * 100, 1);
   se.setRegionSetting(0,0, OC::egN_release, release / fs,  1);
   se.setRegionSetting(0,0, OC::egN_end,     end     * 100, 1);
+
+
+  //se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::ampN, 1, 1.f, Mode::absolute);
+
+
   float tol = 1.e-6;
 
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  getSamplerNote(&se, 70, 64, outL, outR);  
-  // triggers assert - modBuffers not yet allocated?
+
+
+  getSamplerNote(&se, 70, 64, outL, outR);
 
   rsPlotVectors(tgtL, tgtR, outL, outR); 
 
@@ -2940,7 +2948,11 @@ bool samplerEnvTest()
   // -Optimize the envelope code and use the current code as prototype to compare against in a unit
   //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
   // -Implement and test the sampler module: create a DC sample and use the envelope for the 
-  //  amplitude and compare the result against
+  //  amplitude and compare the result against...hmm - but that requires an amplifier unit with an
+  //  amp-scaling parameter that is 0 by default. The regular amp module only has a volume 
+  //  parameter. Actually, it should be zero only, iff an amp-env is connected, otherwise 1 would 
+  //  be a more meaningful default. But making the default depend on whether an env is connected or
+  //  not creates a lot of complexity
 
 
   //rsAssert(ok);

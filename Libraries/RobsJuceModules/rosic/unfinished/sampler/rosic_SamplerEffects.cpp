@@ -178,7 +178,7 @@ void Amplifier::updateCoeffs(double sampleRate)
   // is adjusted in dB per key. See https://sfzformat.com/legacy/
 
   // Set up the core:
-  core.setup(volume, pan, width, position);
+  core.setup(volume, pan, width, position, 1.f);
   dirty = false;
 
   // ToDo:
