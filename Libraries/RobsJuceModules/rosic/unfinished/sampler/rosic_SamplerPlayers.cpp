@@ -527,8 +527,6 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
   if(loopMode == LoopMode::loop_continuous) {    
     stream->getFrameStereo((int) floor(loopStart), &xL0, &xR0);
     stream->getFrameStereo((int)  ceil(loopStart), &xL1, &xR1); }
-  // ToDo: verify if floor/ceil are the correct thing to do here or whether it should be floor and
-  // floor+1. Unit test this with integer and noninteger values for loopStart
 
   return rsReturnCode::success;
   // Overload should actually not happen in therory (as by the sfz spec, and unlimited number of 
