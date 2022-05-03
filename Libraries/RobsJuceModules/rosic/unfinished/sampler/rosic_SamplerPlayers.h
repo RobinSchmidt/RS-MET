@@ -430,10 +430,16 @@ protected:
   /** Called during prepareToPlay to determine the envelope generator which is considered to be 
   the relevant one for determining, when the release phase has finished. It may return a nullptr
   which indicates that no such envelope exists. In such a case, the note-off behavior is to leave 
-  the loop (if any) and then continue to play the sample until the end. When it's not a nullptr,
-  the note-off behavior is to monitor this particular envelope for when it ends and if it ends,
-  we consider the note to be finished. A loop is continued during release in such a case. The 
-  rules for determining this envelope are heuristic...tbc... */
+  the loop (if any) and then continue to play the sample until the end - the same behavior as in
+  one_shot loop-mode. When it's not a nullptr, the note-off behavior is to monitor this particular 
+  envelope for when it ends and if it ends, we consider the note to be finished. A loop (if any) is 
+  continued during release in such a case. The rules for determining this envelope are heuristic 
+  and work as follows: We consider all EGs as candidates that have an amplitudeN opcode/parameter 
+  as one of their targets but only if the end value of the EG is zero and the nominal value of the 
+  amplitudeN parameter is also zero. Among those candidates, the one with the longest release time 
+  is selected. If several have the same release time, it should not really matter which one of them
+  is chosen (we choose the one that happens to come last in the modMatrix because that is
+  implementationally most convenient). */
   EnvGen* determineReleaseEnvelope();
 
 

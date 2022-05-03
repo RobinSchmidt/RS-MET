@@ -775,7 +775,7 @@ EnvGen* RegionPlayer::determineReleaseEnvelope()
   // value of 0 and whose end value is 0. Those EGs are considered candidates. Among those 
   // candidates, select the one with the longest release time:
   float   maxRel = 0.f;      // Maximum relevant release time seen so far
-  EnvGen* relGen = nullptr;  // Pointer to EG to which this maxRel time applies
+  EnvGen* relEnv = nullptr;  // Pointer to EG to which this maxRel time applies
   for(size_t i = 0; i < modMatrix.size(); i++) {
     const ModulationConnector* con = modMatrix[i];
     EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
@@ -783,22 +783,28 @@ EnvGen* RegionPlayer::determineReleaseEnvelope()
       const Parameter* tgtPar = con->getTargetParam();
       if(tgtPar->getOpcode() == Opcode::amplitudeN && tgtPar->getValue() == 0.f) {
         float rel = eg->getRelease();
-        if(rel >= maxRel) {    // >= (and not >) to support release = 0, i.e. immediate cut off
+        if(rel >= maxRel) {  // >= (and not >) to support release = 0, i.e. immediate cut off
           maxRel = rel;
-          relGen = eg;   }}}}
-  return relGen;
+          relEnv = eg;   }}}}
+  return relEnv;
 
-  /*
-  // Old/Preliminary: just take the very first envelope that is found. This doesn't really make any 
-  // sense musically and is just a placeholder to get the ball rolling:
-  for(size_t i = 0; i < modSources.size(); i++) {
-    EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
-    if(eg != nullptr)
-      return eg; }
-  return nullptr; 
-  */
+  // Note:
+  // I'm not yet sure, if this heuristic criterion here to pick the relevant envelope is the best
+  // idea. Another option could be to pick the envelope with the the longest release that is routed
+  // to the last amplifier in the chain.
 
   // ToDo:
+  // Maybe this function should not be called from prepareToPlay but rather from noteOff and 
+  // instead of using the maximum release time, we should use the maximum remaining length which 
+  // may give different (and more meaningful) results when the noteOff is received before reaching 
+  // sustain and the envelope is in "one-shot" mode, i.e. always running through all phases, even 
+  // when an early noteOff is received (i.e. a noteOff before reaching sustain). This needs to be 
+  // done in noteOff because which envelope is selected may depend on where we are in the envs when
+  // the noteOff is received. The current way of doing it assumes that when we receive a noteOff, 
+  // we'll only run through the release phase from now on - but in one-shot envelopes, that may not
+  // be the case.
+
+  // ToDo (comment old - may be obsolete -> delete soon):
   // What we should actually do is to figure out, which of the EGs is routed to an amplitude 
   // parameter (and ends at zero, maybe...as an additional constraint - not sure yet). But there 
   // may be more than one such EG. Among those, maybe we should pick the one with the longest 
