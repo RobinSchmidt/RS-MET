@@ -2714,9 +2714,9 @@ bool samplerNoteOffTest()
   // maybe set the loop from 2 to 7, i.e.a 5 sample long loop
 
   // Set up the envelope in the sampler engine.
-  se.setRegionSetting(0, 0, OC::egN_attack, 50.f, 1);  // 50 samples or seconds
-  se.setRegionSetting(0, 0, OC::egN_decay, 150.f, 1);  // 100 samples or seconds
-  se.setRegionSetting(0, 0, OC::egN_sustain, 50.f, 1);  // 50 %
+  se.setRegionSetting(0, 0, OC::egN_attack,   50.f, 1);  // 50 samples or seconds
+  se.setRegionSetting(0, 0, OC::egN_decay,   150.f, 1);  // 100 samples or seconds
+  se.setRegionSetting(0, 0, OC::egN_sustain,  50.f, 1);  // 50 %
   se.setRegionSetting(0, 0, OC::egN_release, 300.f, 1);  // 80 samples or seconds
 
   // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
@@ -2744,12 +2744,27 @@ bool samplerNoteOffTest()
 
   out = getOutput(key, N, 100);  // note-off at sample 100 (during decay)
   rsPlotVectors(out);
-  // Wrong!
+  // Same as before
 
   out = getOutput(key, N, 30);   // note-off at sample 30 (during attack)
   rsPlotVectors(out);
-  // Wrong
+  // Same as before
 
+
+  // Currently, we always run through attack, decay and release phases even when the note-off 
+  // occurs before reaching the sustain phase. This behavior may actually be useful but I think,
+  // it's not the standard way that envelopes behave. Normally, we would expect the envelope to 
+  // immediately enter the release phase starting from whereever we currently are. Maybe the 
+  // behavior should be switchable between what is currently going on and the behavior just 
+  // described.
+  // But maybe we should postpone the implementation of the different behaviors and first get the
+  // higher level stuff all working like for example, the determination of the release envelope.
+
+
+  // ToDo:
+  // -Route a second envelope to the same amplifier, i.e. amplifier 1.
+  // -Insert a 2nd amplifier and route 2 other envelopes to that other amplifier, i.e. amp 2
+  // -Check, if the determination of the release envelope works as it should.
 
 
   rsAssert(ok);
