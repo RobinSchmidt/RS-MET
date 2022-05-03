@@ -819,7 +819,12 @@ EnvGen* RegionPlayer::determineReleaseEnvelope()
   // shortest. Maybe another constraint should be that the envelope's target is an amplifier with
   // a nominal amplitude setting of zero.
   // A simpler idea could be to just use the env with the longest release time that is routed to
-  // an amplitude parameter...that's how it's currently implemented
+  // an amplitude parameter...that's how it's currently implemented. But maybe that's better 
+  // anyway. Consider a patch containing an amp -> filter -> amp chain where the 1st amp is 
+  // responsible to produce some short impulsive input sample for a highly resonant filter and the
+  // 2nd amp is responsible for enveloping that and has longer release. In this case, we'd want
+  // the 2nd amp to be responsible. Hmm...maybe we shouldn't select the the one with longest 
+  // release time but the one that applies to the last amplifier if there are many?
 }
 
 //=================================================================================================
