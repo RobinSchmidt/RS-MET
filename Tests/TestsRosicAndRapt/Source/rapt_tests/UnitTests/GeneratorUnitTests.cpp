@@ -2713,11 +2713,18 @@ bool samplerNoteOffTest()
   se.setSampleRate(fs);
   // maybe set the loop from 2 to 7, i.e.a 5 sample long loop
 
+  // Params for the first env routed to the first amp. The first 1 in the double-index is the index 
+  // for the amplifier unit and the second index is for the envelope unit.
+  float att_11 =  50.f;  // 50 samples or seconds
+  float dec_11 = 150.f;  // 100 samples or seconds
+  float sus_11 =  50.f;  // 50 %
+  float rel_11 = 300.f;  // 80 samples or seconds
+
   // Set up the envelope in the sampler engine.
-  se.setRegionSetting(0, 0, OC::egN_attack,   50.f, 1);  // 50 samples or seconds
-  se.setRegionSetting(0, 0, OC::egN_decay,   150.f, 1);  // 100 samples or seconds
-  se.setRegionSetting(0, 0, OC::egN_sustain,  50.f, 1);  // 50 %
-  se.setRegionSetting(0, 0, OC::egN_release, 300.f, 1);  // 80 samples or seconds
+  se.setRegionSetting(0, 0, OC::egN_attack,  att_11, 1);
+  se.setRegionSetting(0, 0, OC::egN_decay,   dec_11, 1);
+  se.setRegionSetting(0, 0, OC::egN_sustain, sus_11, 1);
+  se.setRegionSetting(0, 0, OC::egN_release, rel_11, 1);
 
   // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
   // nominal value for the amplitude is 0:
@@ -2753,6 +2760,14 @@ bool samplerNoteOffTest()
   // the behavior just described.
   // But maybe we should postpone the implementation of the different behaviors and first get the
   // higher level stuff all working like for example, the determination of the release envelope.
+
+
+  // Set up a secobnd envelope and also route it to the first amplifier. The two envelopes should
+  // be added up on top of each other:
+
+
+
+
 
   // ToDo:
   // -Route a second envelope to the same amplifier, i.e. amplifier 1.
