@@ -2880,11 +2880,11 @@ bool samplerEnvTest()
   float decay   = 200;
   float sustain = 0.5f;
   float release = 400;
-  float end     = 0.1f;
+  float end     = 0.0f;    // We need it to end at zero for the unit test
 
   // Test parameters:
-  int N    = 1500;     // Number of samples to produce
-  int nOff = 1000;     // Sample of noteOff event
+  int N    = 1500;         // Number of samples to produce
+  int nOff = 1000;         // Sample of noteOff event
 
   // Produce and plot envelope:
   Vec outL(N), outR(N);
@@ -2929,20 +2929,15 @@ bool samplerEnvTest()
   se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
 
-  float tol = 1.e-6;
 
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   getSamplerNote(&se, 70, 64, outL, outR, nOff);
+  //ok &= tgtL == outL && tgtR == outR;   // Nope! We need a tolerance. Why?
+  float tol = 1.e-6;
+  ok &= rsIsCloseTo(outL, tgtL, tol);
+  ok &= rsIsCloseTo(outR, tgtR, tol);
   rsPlotVectors(tgtL, tgtR, outL, outR);
-
-  // Looks good except that the engine has an end value of 0, i.e. it doesn't respect the end value
-  // but this is actually OK - I think, maybe we should get rid of the "end" parameter in the EG
-  // anyway. It should always end at zero. But maybe not.
-
-  //ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
-  // Fails: Engine produces an all-zeros signal
-  // -We actually have not yet routed the EG to the volume but that should result in the engine
-  //  producing all ones instead of all zeros, right? Something else seems wrong, too...
+  rsPlotVectors(tgtL - outL);
 
 
   // ToDo:
