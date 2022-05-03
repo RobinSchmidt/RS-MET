@@ -415,7 +415,7 @@ void RegionPlayer::noteOff()
   // If the release is not controlled by any envelope, we behave as if we are in one_shot mode, 
   // i.e. we leave the loop (if any) and just play the sample until it ends:
   if(releaseEnv == nullptr)
-    loopMode == LoopMode::one_shot;
+    loopMode = LoopMode::one_shot;
 }
 
 void RegionPlayer::processFrame(float* L, float* R)
@@ -525,18 +525,21 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
 
   resetPlayerSettings();
   setupDspSettingsFor(region, busMode);
-  releaseEnv = determineReleaseEnvelope();
 
-  double fs = playStatus->sampleRate;  // todo: use float
-  prepareToPlay1(modSources, key, vel, fs);
+  double fs = playStatus->sampleRate;         // ToDo: use float
+  prepareToPlay1(modSources,  key, vel, fs);
   prepareToPlay1(effectChain, key, vel, fs); 
   // The rationale for preparing the modSources first is that their initial output may already 
   // affect the initial parameters of the effects(?) ...but does that matter? Aren't the params 
   // recomputed in processFrame anyway?...perhaps it doesn't matter, but the order feels right 
   // this way anyway. 
 
+  releaseEnv = determineReleaseEnvelope();
+  // Must be done after the two prepareToPlay1 calls above
+
   // Assign default values that the linear interpolator will use when we attempt to read a sample
-  // value outside the valid range:
+  // value outside the valid range. This is needed for correct looping behavior when the loop end
+  // is the last sample (...only then?):
   if(loopMode == LoopMode::loop_continuous) {    
     stream->getFrameStereo((int) floor(loopStart), &xL0, &xR0);
     stream->getFrameStereo((int)  ceil(loopStart), &xL1, &xR1); }
@@ -767,14 +770,33 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp
 
 EnvGen* RegionPlayer::determineReleaseEnvelope()
 {
-  // Preliminary: just take the very first envelope that is found. This doesn't really make any 
+  // Loop through all modulation connections and sift out those, whose source is an envelope 
+  // generator (EG). Among those EGs sift out those whose target Parameter is amplitudeN with a 
+  // value of 0 and whose end value is 0. Those EGs are considered candidates. Among those 
+  // candidates, select the one with the longest release time:
+  float   maxRel = 0.f;      // Maximum relevant release time seen so far
+  EnvGen* relGen = nullptr;  // Pointer to EG to which this maxRel time applies
+  for(size_t i = 0; i < modMatrix.size(); i++) {
+    const ModulationConnector* con = modMatrix[i];
+    EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
+    if(eg != nullptr && eg->getEnd() == 0.f) {
+      const Parameter* tgtPar = con->getTargetParam();
+      if(tgtPar->getOpcode() == Opcode::amplitudeN && tgtPar->getValue() == 0.f) {
+        float rel = eg->getRelease();
+        if(rel >= maxRel) {    // >= (and not >) to support release = 0, i.e. immediate cut off
+          maxRel = rel;
+          relGen = eg;   }}}}
+  return relGen;
+
+  /*
+  // Old/Preliminary: just take the very first envelope that is found. This doesn't really make any 
   // sense musically and is just a placeholder to get the ball rolling:
   for(size_t i = 0; i < modSources.size(); i++) {
     EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
     if(eg != nullptr)
       return eg; }
-
   return nullptr; 
+  */
 
   // ToDo:
   // What we should actually do is to figure out, which of the EGs is routed to an amplitude 
@@ -796,6 +818,8 @@ EnvGen* RegionPlayer::determineReleaseEnvelope()
   // So, among the envs going into a particular env, choose the longest. Among the amps, choose the
   // shortest. Maybe another constraint should be that the envelope's target is an amplifier with
   // a nominal amplitude setting of zero.
+  // A simpler idea could be to just use the env with the longest release time that is routed to
+  // an amplitude parameter...that's how it's currently implemented
 }
 
 //=================================================================================================

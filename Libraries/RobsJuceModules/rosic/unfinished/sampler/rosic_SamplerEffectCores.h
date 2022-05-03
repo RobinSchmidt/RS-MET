@@ -54,10 +54,15 @@ public:
 
   void setup(float start, float delay, float attack, float peak, float hold, float decay,
     float sustain, float release, float end);
+
+  bool hasFinished() const;
+  float getRelease() const { return release; }
+  float getEnd()     const { return end; }
+
   void processFrame(float* L, float* R);
   void noteOff() { noteIsOn = false; }
   void resetState() { sampleCount = 0; }
-  bool hasFinished() const;
+
 
 protected:
 

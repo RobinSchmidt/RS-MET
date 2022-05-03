@@ -258,18 +258,21 @@ public:
 
   Processor* getSourceProcessor() { return source; }
 
+  const Processor* getSourceProcessor() const { return source; }
+
   int getSourceIndex() const { return sourceIndex; }
   // document this: i think, this is a different index than the one in ModulationSetting, namely 
   // the index in modSources array used in SamplePlayer. 
 
 
-  Parameter* getTargetParam() const { return targetParam; }
-  // maybe should be non-const because it returns a mutable pointer
+  Parameter* getTargetParam() { return targetParam; }
+  const Parameter* getTargetParam() const { return targetParam; }
+  // maybe rename to getTargetParameter
 
 
   Processor* getTargetProcessor() { return targetProc; }
 
-
+  const Processor* getTargetProcessor() const { return targetProc; }
 
 
   /*
@@ -379,12 +382,16 @@ class EnvGen : public Processor
 {
 public:
   EnvGen();
+
+  float getRelease()  const { return core.getRelease();  }
+  float getEnd()      const { return core.getEnd();      }
+  bool  hasFinished() const { return core.hasFinished(); }
+
   void processFrame(float* L, float* R) override { core.processFrame(L, R); }
   void updateCoeffs(double sampleRate) override;
   void resetState() override { core.resetState(); }
-
   void noteOff() { core.noteOff(); }
-  bool hasFinished() const { return core.hasFinished(); }
+
 protected:
   EnvGenCore core;
 };

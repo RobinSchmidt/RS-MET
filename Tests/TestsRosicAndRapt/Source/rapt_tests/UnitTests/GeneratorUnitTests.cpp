@@ -2703,7 +2703,7 @@ bool samplerNoteOffTest()
   using OC   = Opcode;
 
   // Test parameters:
-  int N    = 1000;  // Number of samples to produce
+  int N    = 1200;  // Number of samples to produce
   int nOff =  500;  // Sample of noteOff event
   float fs = 1.0f;  // sample rate = 1  ->  no need to convert between seconds and samples
 
@@ -2773,6 +2773,14 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
   se.setRegionModulation(0, 0, OT::FreeEnv, 2, OC::amplitudeN, 1, 100.f, Mode::absolute);
   plot(N, 500); 
+
+  // Increase the release time of the second EG such that it becomes longer than the first. This 
+  // should have the effect that now the 2nd env becomes the relevant one for determining when 
+  // release has finished:
+  rel_12 = 500.f;
+  se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
+  plot(N, 500); 
+
 
 
 
