@@ -490,6 +490,12 @@ bool samplerRegionPlayerTest()
   // -Figure out, if 100% is really the right default value for the width. The sfz spec says so, 
   //  but that would be a bad default. It should be 100 because that leaves the sample unchanged.
 
+  /*
+  // This test has been commented out because it fails now because now we actually do have support 
+  // for an amp-envelope and don't just crudely cut off the note anymore. So this fail is OK. We 
+  // may need some new unit tests that test the new noteOff behavior. But maybe they should go 
+  // elsewhere. 
+
   // Test handling of noteOff. At the moment, we have no amp envelope yet, so a noteOff should 
   // immediately stop the playback of all layers which it applies to.
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
@@ -505,7 +511,7 @@ bool samplerRegionPlayerTest()
     ok &= outL[n] == 0.f;
     ok &= outR[n] == 0.f; }
   rsPlotVectors(outL, outR);
-  // OK - this test fails now because now we actually do have an amp-envelope
+  */
 
   // Test realtime downsampling. Play a note an octave above the root key:
   se.handleMusicalEvent(Ev(EvTp::noteOn, 81.f, 127.f));  // noteOn, 1 octave above root key
@@ -3514,6 +3520,12 @@ bool samplerEngineUnitTest()
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes
   rsAssert(ok);
+
+  // ToDo:
+  // -Make a dedicated releaseTest or noteOffTest, testing the behavior in various circumstances, 
+  //  i.e. different loop modes and/or different numbers of amplifiers and envelopes for these
+  //  amplifiers. This should also test the behavior when the noteOff is received before reaching
+  //  sustain.
 
   // -Refactor:
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 
