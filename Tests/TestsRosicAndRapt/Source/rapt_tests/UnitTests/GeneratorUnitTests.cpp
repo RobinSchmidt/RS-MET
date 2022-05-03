@@ -2732,34 +2732,27 @@ bool samplerNoteOffTest()
     return outL;  // ignore outR, should be the same
   };
 
-  // Produce and plot output for different instants of note-off event:
   int key = 60;
   Vec out;
+  auto plot = [&](int numSamples, int noteOffAt)
+  {
+    out = getOutput(key, numSamples, noteOffAt);
+    rsPlotVectors(out);
+  };
 
-  out = getOutput(key, N, 500);  // note-off at sample 500 (well within sustain)
-  rsPlotVectors(out); // OK
-
-  out = getOutput(key, N, 200);  // note-off at sample 200 (exactly at attack+decay)
-  rsPlotVectors(out); // OK
-
-  out = getOutput(key, N, 100);  // note-off at sample 100 (during decay)
-  rsPlotVectors(out);
-  // Same as before
-
-  out = getOutput(key, N, 30);   // note-off at sample 30 (during attack)
-  rsPlotVectors(out);
-  // Same as before
-
-
+  // Plot output for different instants of note-off event:
+  plot(N, 500); // note-off well within sustain
+  plot(N, 200); // note-off at start of sustain, i.e. at attack + decay
+  plot(N, 100); // note-off during decay
+  plot(N,  30); // note-off during attack
   // Currently, we always run through attack, decay and release phases even when the note-off 
-  // occurs before reaching the sustain phase. This behavior may actually be useful but I think,
-  // it's not the standard way that envelopes behave. Normally, we would expect the envelope to 
-  // immediately enter the release phase starting from whereever we currently are. Maybe the 
-  // behavior should be switchable between what is currently going on and the behavior just 
-  // described.
+  // occurs before reaching the sustain phase. This behavior may actually be useful, especially for
+  // one-shot samples, but I think, it's not the standard way that envelopes behave. Normally, we 
+  // would expect the envelope to immediately enter the release phase starting from whereever we 
+  // currently are. Maybe the behavior should be switchable between what is currently going on and 
+  // the behavior just described.
   // But maybe we should postpone the implementation of the different behaviors and first get the
   // higher level stuff all working like for example, the determination of the release envelope.
-
 
   // ToDo:
   // -Route a second envelope to the same amplifier, i.e. amplifier 1.
