@@ -2695,6 +2695,39 @@ bool samplerNoteOffTest()
 
   bool ok = true;
 
+  using namespace rosic::Sampler;
+  using Vec  = std::vector<float>;
+  using OT   = OpcodeType;
+  using Mode = ModMode;
+  using SE   = rsSamplerEngineTest;
+  using OC   = Opcode;
+
+  // Test parameters:
+  int N    = 1000;  // Number of samples to produce
+  int nOff =  500;  // Sample of noteOff event
+  float fs = 1.0f;  // sample rate = 1  ->  no need to convert between seconds and samples
+
+  SE se;
+  se.preAllocateDspMemory();  // It's important to call this but shouldn't be...
+  setupForLoopedDC(&se, 10);  // 10 samples of looped DC
+  se.setSampleRate(fs);
+  // maybe set the loop from 2 to 7, i.e.a 5 sample long loop
+
+  // Set up the envelope in the sampler engine.
+  se.setRegionSetting(0,0, OC::egN_attack,    50.f, 1);  // 50 samples or seconds
+  se.setRegionSetting(0,0, OC::egN_decay,    150.f, 1);  // 100 samples or seconds
+  se.setRegionSetting(0,0, OC::egN_sustain,   50.f, 1);  // 50 %
+  se.setRegionSetting(0,0, OC::egN_release,  300.f, 1);  // 80 samples or seconds
+
+  // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
+  // nominal value for the amplitude is 0:
+  se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
+  se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
+
+  // Produce output:
+  Vec outL(N), outR(N);
+  getSamplerNote(&se, 70, 64, outL, outR, nOff);
+  rsPlotVectors(outL);
 
 
   rsAssert(ok);
