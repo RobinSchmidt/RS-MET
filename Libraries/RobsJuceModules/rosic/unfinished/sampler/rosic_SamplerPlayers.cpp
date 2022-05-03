@@ -794,7 +794,8 @@ EnvGen* RegionPlayer::determineReleaseEnvelope()
   // soon as the *first* of them reaches zero amplitude. Each amplifier can have many envelopes and
   // one particular amplifier reaches zero as soon as the *last* of those envelopes reaches zero.
   // So, among the envs going into a particular env, choose the longest. Among the amps, choose the
-  // shortest.
+  // shortest. Maybe another constraint should be that the envelope's target is an amplifier with
+  // a nominal amplitude setting of zero.
 }
 
 //=================================================================================================

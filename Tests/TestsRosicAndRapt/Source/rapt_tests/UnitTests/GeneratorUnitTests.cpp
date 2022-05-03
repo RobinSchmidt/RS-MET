@@ -2728,7 +2728,7 @@ bool samplerNoteOffTest()
 
   // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
   // nominal value for the amplitude is 0:
-  se.setRegionSetting(0, 0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
+  se.setRegionSetting(0, 0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude1 to zero
   se.setRegionModulation(0, 0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
 
   // Helper function to produce output:
@@ -2749,9 +2749,9 @@ bool samplerNoteOffTest()
 
   // Plot output for different instants of note-off event:
   plot(N, 500); // note-off well within sustain
-  plot(N, 200); // note-off at start of sustain, i.e. at attack + decay
-  plot(N, 100); // note-off during decay
-  plot(N,  30); // note-off during attack
+  //plot(N, 200); // note-off at start of sustain, i.e. at attack + decay
+  //plot(N, 100); // note-off during decay
+  //plot(N,  30); // note-off during attack
   // Currently, we always run through attack, decay and release phases even when the note-off 
   // occurs before reaching the sustain phase. This behavior may actually be useful, especially for
   // one-shot samples, but I think, it's not the standard way that envelopes behave. Normally, we 
@@ -2761,11 +2761,18 @@ bool samplerNoteOffTest()
   // But maybe we should postpone the implementation of the different behaviors and first get the
   // higher level stuff all working like for example, the determination of the release envelope.
 
-
   // Set up a secobnd envelope and also route it to the first amplifier. The two envelopes should
   // be added up on top of each other:
-
-
+  float att_12 = 20.f;
+  float dec_12 = 40.f;
+  float sus_12 = 30.f;
+  float rel_12 = 80.f;
+  se.setRegionSetting(0, 0, OC::egN_attack,  att_12, 2);
+  se.setRegionSetting(0, 0, OC::egN_decay,   dec_12, 2);
+  se.setRegionSetting(0, 0, OC::egN_sustain, sus_12, 2);
+  se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
+  se.setRegionModulation(0, 0, OT::FreeEnv, 2, OC::amplitudeN, 1, 100.f, Mode::absolute);
+  plot(N, 500); 
 
 
 
@@ -2773,7 +2780,12 @@ bool samplerNoteOffTest()
   // -Route a second envelope to the same amplifier, i.e. amplifier 1.
   // -Insert a 2nd amplifier and route 2 other envelopes to that other amplifier, i.e. amp 2
   // -Check, if the determination of the release envelope works as it should.
-
+  // -Currently, this is more an Experiment than a unit test. Turn it into an actual unit test. We
+  //  need some convenient way to express/generate the target signals...this may be a bit 
+  //  complicated. Maybe we should write the data coming from the experiments into files when the
+  //  plots look good and use that data as reference. For this, we perhaps use a smaller N to not
+  //  bloat the repo with that data too much...but maybe we can generate the target data 
+  //  programmatically...
 
   rsAssert(ok);
   return ok;
