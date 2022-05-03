@@ -2714,20 +2714,42 @@ bool samplerNoteOffTest()
   // maybe set the loop from 2 to 7, i.e.a 5 sample long loop
 
   // Set up the envelope in the sampler engine.
-  se.setRegionSetting(0,0, OC::egN_attack,    50.f, 1);  // 50 samples or seconds
-  se.setRegionSetting(0,0, OC::egN_decay,    150.f, 1);  // 100 samples or seconds
-  se.setRegionSetting(0,0, OC::egN_sustain,   50.f, 1);  // 50 %
-  se.setRegionSetting(0,0, OC::egN_release,  300.f, 1);  // 80 samples or seconds
+  se.setRegionSetting(0, 0, OC::egN_attack, 50.f, 1);  // 50 samples or seconds
+  se.setRegionSetting(0, 0, OC::egN_decay, 150.f, 1);  // 100 samples or seconds
+  se.setRegionSetting(0, 0, OC::egN_sustain, 50.f, 1);  // 50 %
+  se.setRegionSetting(0, 0, OC::egN_release, 300.f, 1);  // 80 samples or seconds
 
   // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
   // nominal value for the amplitude is 0:
-  se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
-  se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
+  se.setRegionSetting(0, 0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
+  se.setRegionModulation(0, 0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
 
-  // Produce output:
-  Vec outL(N), outR(N);
-  getSamplerNote(&se, 70, 64, outL, outR, nOff);
-  rsPlotVectors(outL);
+  // Helper function to produce output:
+  auto getOutput = [&](int key, int numSamples, int noteOffAt)
+  {
+    Vec outL(numSamples), outR(numSamples);
+    getSamplerNote(&se, key, 64, outL, outR, noteOffAt);
+    return outL;  // ignore outR, should be the same
+  };
+
+  // Produce and plot output for different instants of note-off event:
+  int key = 60;
+  Vec out;
+
+  out = getOutput(key, N, 500);  // note-off at sample 500 (well within sustain)
+  rsPlotVectors(out); // OK
+
+  out = getOutput(key, N, 200);  // note-off at sample 200 (exactly at attack+decay)
+  rsPlotVectors(out); // OK
+
+  out = getOutput(key, N, 100);  // note-off at sample 100 (during decay)
+  rsPlotVectors(out);
+  // Wrong!
+
+  out = getOutput(key, N, 30);   // note-off at sample 30 (during attack)
+  rsPlotVectors(out);
+  // Wrong
+
 
 
   rsAssert(ok);
