@@ -2687,6 +2687,20 @@ bool samplerLoopTest()
   return ok;
 }
 
+bool samplerNoteOffTest()
+{
+  // Tests the responses to note-off events in various circumstances, i.e. different loop modes 
+  // and/or different numbers of amplifiers and envelopes for these amplifiers. This should also 
+  // test the behavior when the noteOff is received before reaching sustain.
+
+  bool ok = true;
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool samplerKeyVelTrackTest()
 {
   // Tests the key- and velocity tracking opcodes.
@@ -3504,8 +3518,9 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerModulatorsTest();
-  ok &= samplerModulationsTest();
+  ok &= samplerNoteOffTest();
+  //ok &= samplerModulatorsTest();
+  //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing sfz instruments
@@ -3519,13 +3534,11 @@ bool samplerEngineUnitTest()
   ok &= samplerOverloadTest();       // behavior in overload conditions
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes
+  ok &= samplerNoteOffTest();        // note off behavior, i.e. envelope release etc.
   rsAssert(ok);
 
   // ToDo:
-  // -Make a dedicated releaseTest or noteOffTest, testing the behavior in various circumstances, 
-  //  i.e. different loop modes and/or different numbers of amplifiers and envelopes for these
-  //  amplifiers. This should also test the behavior when the noteOff is received before reaching
-  //  sustain.
+
 
   // -Refactor:
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 
