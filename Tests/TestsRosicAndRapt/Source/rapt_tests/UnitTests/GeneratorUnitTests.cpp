@@ -2934,8 +2934,10 @@ bool samplerEnvTest()
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   getSamplerNote(&se, 70, 64, outL, outR, nOff);
   rsPlotVectors(tgtL, tgtR, outL, outR);
-  // Looks good except that the engine cuts the note off abruptly at noteOff instead of entering 
-  // release - but this is expected because we do not yet have release implemented.
+
+  // Looks good except that the engine has an end value of 0, i.e. it doesn't respect the end value
+  // but this is actually OK - I think, maybe we should get rid of the "end" parameter in the EG
+  // anyway. It should always end at zero. But maybe not.
 
   //ok &= testSamplerOutput(&se, tgtL, tgtR, tol, true);
   // Fails: Engine produces an all-zeros signal

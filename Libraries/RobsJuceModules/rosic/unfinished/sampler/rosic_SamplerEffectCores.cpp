@@ -117,6 +117,8 @@ bool EnvGenCore::hasFinished() const
   // sustain but when the key is release befor the sustain phase is reached, this is wrong. 
   // However, the error will be that we may potenetially return false negatives which may be
   // unproblematic...we'll see
+  // Get rid of the computation here. Maybe store the sum as length. This function is called per 
+  // sample in RegionPlayer::hasFinished, so it needs to be efficient.
 }
 
 //=================================================================================================

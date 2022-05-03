@@ -573,6 +573,12 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, ucha
   PlayStatusChange psc;
   for(int i = int(activePlayers.size()) - 1; i >= 0; i--)
   {
+    // New:
+    if(activePlayers[i]->getKey() == key)
+      activePlayers[i]->noteOff();
+
+    /*
+    // Old:
     if(activePlayers[i]->getKey() == key && activePlayers[i]->getLoopMode() != LoopMode::one_shot)
     {
       stopRegionPlayer(size_t(i));
@@ -581,6 +587,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, ucha
       // trigger the release phase and mark for quick fade-out. Maybe just call noteOff on all
       // players regardless of LoopMode and what to do is then determined by the player itself
     }
+    */
   }
   return psc;
 

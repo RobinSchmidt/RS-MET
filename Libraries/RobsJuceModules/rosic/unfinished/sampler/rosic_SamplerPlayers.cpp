@@ -406,12 +406,16 @@ rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay,
 
 void RegionPlayer::noteOff()
 {
+  // Trigger a noteOff in all envelope generators:
   for(size_t i = 0; i < modSources.size(); ++i) {
     EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
-    if(eg != nullptr)             // Trigger a noteOff in all envelope generators
+    if(eg != nullptr)
       eg->noteOff(); }
+
+  // If the release is not controlled by any envelope, we behave as if we are in one_shot mode, 
+  // i.e. we leave the loop (if any) and just play the sample until it ends:
   if(releaseEnv == nullptr)
-    loopMode = LoopMode::no_loop; // Leave the loop if release is not controlled by any envelope
+    loopMode == LoopMode::one_shot;
 }
 
 void RegionPlayer::processFrame(float* L, float* R)
@@ -548,11 +552,18 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
 
 bool RegionPlayer::hasFinished()
 {
-  //int numFrames = stream->getNumFrames();
-  //int tmp = stream->getNumFrames() - 1;
-  //if( sampleTime >= stream->getNumFrames() )  // old
-  if(sampleTime >= endTime)                   // new
-    return true;
+  // New:
+  if(releaseEnv == nullptr) {
+    if(sampleTime >= endTime)
+      return true;
+    else
+      return false; }
+  else
+    return releaseEnv->hasFinished();
+
+  //// Old:
+  //if(sampleTime >= endTime)
+  //  return true;
 
   // ToDo:
   // -Make sure that this function is inlined - it's called per sample.
@@ -779,6 +790,11 @@ EnvGen* RegionPlayer::determineReleaseEnvelope()
   // that the user makes sure that all amp-envs actually end at zero. But we probably shouldn't
   // enforce that. But if we don't provide an "end" parameter, it will actually be enforced and the
   // end parameter is not present if SFZ anyway so maybe we should leave it out. We'll see...
+  // The idea is: we can have many amplifiers in the chain and the note is considered finished as
+  // soon as the *first* of them reaches zero amplitude. Each amplifier can have many envelopes and
+  // one particular amplifier reaches zero as soon as the *last* of those envelopes reaches zero.
+  // So, among the envs going into a particular env, choose the longest. Among the amps, choose the
+  // shortest.
 }
 
 //=================================================================================================
