@@ -756,8 +756,29 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, RegionPlayer* rp
 
 EnvGen* RegionPlayer::determineReleaseEnvelope()
 {
+  // Preliminary: just take the very first envelope that is found. This doesn't really make any 
+  // sense musically and is just a placeholder to get the ball rolling:
+  for(size_t i = 0; i < modSources.size(); i++) {
+    EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
+    if(eg != nullptr)
+      return eg; }
 
-  return nullptr;  // preliminary
+  return nullptr; 
+
+  // ToDo:
+  // What we should actually do is to figure out, which of the EGs is routed to an amplitude 
+  // parameter (and ends at zero, maybe...as an additional constraint - not sure yet). But there 
+  // may be more than one such EG. Among those, maybe we should pick the one with the longest 
+  // release time. However, it's more complicated than that because different EGs may actually be
+  // routed to different amplifier modules. I think, among those which are routed to the same 
+  // amplifier, we should pick the one with longest release. This is the release associated with a
+  // particular amplifier unit. Then, among all the different amplifier units, we may pick the one
+  // with the shortest release. Actually, if one of the amp-envs does end at a nonzero value, the
+  // amplitude will not go down completely to zero anyway and there's nothing we can do about it so
+  // maybe we should not use that additional constraint - it doesn't really help. What helps is 
+  // that the user makes sure that all amp-envs actually end at zero. But we probably shouldn't
+  // enforce that. But if we don't provide an "end" parameter, it will actually be enforced and the
+  // end parameter is not present if SFZ anyway so maybe we should leave it out. We'll see...
 }
 
 //=================================================================================================

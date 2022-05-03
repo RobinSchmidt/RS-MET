@@ -1417,3 +1417,16 @@ rsImage<rsPixelRGB> rsConvertImage(
 //  images of float and one image rsFloat32x4
 // -maybe wrap all this functions into a class rsImageConverter
 // -function above could then be static members with names: floatToChar
+
+
+/*
+
+
+Graphics coding resources:
+https://www.youtube.com/watch?v=ASAowY6yJII Quirky Quad Trees Part1: Static Spatial Acceleration
+https://github.com/OneLoneCoder/olcPixelGameEngine/blob/master/Videos/OneLoneCoder_PGE_QuadTree1.cpp
+https://github.com/OneLoneCoder/olcPixelGameEngine
+
+
+
+*/
