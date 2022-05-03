@@ -504,7 +504,8 @@ bool samplerRegionPlayerTest()
   for(int n = N/2; n < N; n++) {
     ok &= outL[n] == 0.f;
     ok &= outR[n] == 0.f; }
-  //rsPlotVectors(outL, outR);
+  rsPlotVectors(outL, outR);
+  // OK - this test fails now because now we actually do have an amp-envelope
 
   // Test realtime downsampling. Play a note an octave above the root key:
   se.handleMusicalEvent(Ev(EvTp::noteOn, 81.f, 127.f));  // noteOn, 1 octave above root key
@@ -2929,47 +2930,27 @@ bool samplerEnvTest()
   se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
 
-
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   getSamplerNote(&se, 70, 64, outL, outR, nOff);
   //ok &= tgtL == outL && tgtR == outR;   // Nope! We need a tolerance. Why?
   float tol = 1.e-6;
   ok &= rsIsCloseTo(outL, tgtL, tol);
   ok &= rsIsCloseTo(outR, tgtR, tol);
-  rsPlotVectors(tgtL, tgtR, outL, outR);
-  rsPlotVectors(tgtL - outL);
-
+  //rsPlotVectors(tgtL, tgtR, outL, outR);
+  //rsPlotVectors(tgtL - outL);
 
   // ToDo:
-  // -Implement correct release behavior. But how? Maybe we should check on noteOn, if an amplifier
-  //  (at least one) is present and if so, if it has at least one envelope routed to it. If this is
-  //  the case, figure out, which amp-env is the longest and store a pointer to this env in the
-  //  RegionPlayer - this becomes the reference envelope which determines when the note actually 
-  //  ends. If this is a nullptr, we end abruptly...or maybe we play the sample until the end 
-  //  (leave the loop, if active). Maybe we should have different release modes:
-  //  abrupt, leave loop, env controlled - but maybe abrupt is useless - maybe just have the 
-  //  pointer to the reference envelope and if its a nullptr, use the "leave loop and play until 
-  //  end" strategy. But maybe a useful variant of the "abrupt" behavior would be to play until the
-  //  next zero crossing...or to use a quick fade-out
-  //  -Change rsSamplerEngine::handleNoteOff. It should not call stopRegionPlayer but instead
-  //   call activePlayers[i]->noteOff
-
-  // -Implement different shapes for the segments.
-  // -Optimize the envelope code and use the current code as prototype to compare against in a unit
-  //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
   // -Figure out what the correct behavior with regard to start/delay is - should we output zero or
   //  start during the delay phase? We need to test this using a reference implementation like 
   //  sfz+.
+  // -Implement different shapes for the segments.
+  // -Optimize the envelope code and use the current code as prototype to compare against in a unit
+  //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
+  // -Figure out what happens when the noteOff is received before the sustain phase is entered and
+  //  check if the behavior matchesn what is desired. We probably need to implement the EG 
+  //  recursively using somthing like y += dy
 
-  // -Implement and test the sampler module: create a DC sample and use the envelope for the 
-  //  amplitude and compare the result against...hmm - but that requires an amplifier unit with an
-  //  amp-scaling parameter that is 0 by default. The regular amp module only has a volume 
-  //  parameter. Actually, it should be zero only, iff an amp-env is connected, otherwise 1 would 
-  //  be a more meaningful default. But making the default depend on whether an env is connected or
-  //  not creates a lot of complexity
-
-
-  //rsAssert(ok);
+  rsAssert(ok);
   return ok;
 }
 
