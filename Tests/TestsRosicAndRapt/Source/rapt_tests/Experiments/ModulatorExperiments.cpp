@@ -349,7 +349,12 @@ void attackDecayEnvelope()
   // Ideas:
   // -We have the "reset" and "none" mode working. Maybe we could do a partial reset? Maybe 
   //  multiply the filter states by a values between 0 and 1?
-  // 
+  // -Maybe try to compensate both exponential decay envelopes seperately for retriggering and not 
+  //  just the weighted sum as a whole. Maybe that is simpler? Maybe instead of feeding teh impulse
+  //  into it as is, just feed 1-y where y is the previous output sample? I mean to first figure 
+  //  out the simpler problem of the correct compensation formula for a decay-only envelope. Maybe
+  //  that gives hints for how it may work for the more complex case of the attack-decay env. Maybe
+  //  we can just use two compensated decay envelopes instead of two regular ones?
 }
 
 
