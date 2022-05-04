@@ -575,9 +575,8 @@ protected:
   rsObjectPool<WaveShaper> waveShapers;
 
   // Modulators:
-  rsObjectPool<EnvGen>     envGens;     // rename to freeEnvGens
+  rsObjectPool<EnvGen>     freeEnvGens;
   rsObjectPool<EnvGenAmp>  ampEnvGens;
-
 
   rsObjectPool<LowFreqOsc> lowFreqOscs;
 

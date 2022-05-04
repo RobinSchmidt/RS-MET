@@ -2705,11 +2705,12 @@ bool samplerNoteOffTest()
   // Test parameters:
   int N    = 1200;  // Number of samples to produce
   int nOff =  500;  // Sample of noteOff event
+  int key  = 60;    // Key to play, also keyCenter for the DC sample
   float fs = 1.0f;  // sample rate = 1  ->  no need to convert between seconds and samples
 
   SE se;
-  se.preAllocateDspMemory();  // It's important to call this but shouldn't be...
-  setupForLoopedDC(&se, 10);  // 10 samples of looped DC
+  se.preAllocateDspMemory();           // It's important to call this but shouldn't be...
+  setupForLoopedDC(&se, 10, key, fs);  // 10 samples of looped DC
   se.setSampleRate(fs);
   // maybe set the loop from 2 to 7, i.e.a 5 sample long loop
 
@@ -2739,7 +2740,7 @@ bool samplerNoteOffTest()
     return outL;  // ignore outR, should be the same
   };
 
-  int key = 60;
+
   Vec out;
   auto plot = [&](int numSamples, int noteOffAt)
   {
@@ -2798,14 +2799,19 @@ bool samplerNoteOffTest()
 
   // Start anew with only an ampeg an nothing else:
   se.clearInstrument();
-  setupForLoopedDC(&se, 10); 
-  se.setRegionSetting(0, 0, OC::ampeg_attack,  att_amp, 1);
-  se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
-  se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
-  se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
+  setupForLoopedDC(&se, 10, key, fs); 
+  //se.setRegionSetting(0, 0, OC::ampeg_attack,  att_amp, 1);
+  //se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
+  //se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
+  //se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
   plot(N, 500); 
-  // Output is all zeros. We do not yet route the amp-env to any amplifier, in fact, we don't even
-  // have an amplifier unit yet.
+  // Output is a unit impulse. We do not yet route the amp-env to any amplifier, in fact, we don't 
+  // even have an amplifier unit yet. But I would expect the output to be all ones. It remains a 
+  // unit impulse even if we remove all the ampeg opcodes
+  // In rsSamplerEngine::processFrame, the call to activePlayers[i]->hasFinished() returns true in
+  // the very first sample. Why?
+  // RegionPlayer::sampleTime is 44090. It should be 0. The incremenet is 44100.000000000000. It's
+  // because the stream has a sampleRate of 44100 while the engine has one of 1
 
   // In SamplePlayer::setupModSourceSetting we hit an assert because s.type == ampe_attack and we 
   // find no Processor (modulator) that listens to the ampeg_attack opcode. This is because in the
@@ -2827,7 +2833,7 @@ bool samplerNoteOffTest()
   //  complicated. Maybe we should write the data coming from the experiments into files when the
   //  plots look good and use that data as reference. For this, we perhaps use a smaller N to not
   //  bloat the repo with that data too much...but maybe we can generate the target data 
-  //  programmatically...
+  //  programmatically.
   // -Envelope Features to do:
   //  -Release-Modes: 
   //   -one_shot: always run through the whole envelope even when noteOff is triggered before 
@@ -3088,7 +3094,7 @@ bool samplerEnvTest()
   using OC = Opcode;
   float fs = 10000.f;     // sample rate
   SE se;
-  setupForLoopedDC(&se, 100);
+  setupForLoopedDC(&se, 100, 60, fs);
   se.setSampleRate(fs);
 
   //getSamplerNote(&se, 70, 64, outL, outR);

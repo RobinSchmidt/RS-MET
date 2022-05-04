@@ -476,7 +476,7 @@ void DspResourcePool::repositEffect(Processor* p)
 
 void DspResourcePool::allocateModulators()
 {
-  envGens.init(64);
+  freeEnvGens.init(64);
   ampEnvGens.init(64);
 
 
@@ -489,15 +489,15 @@ Processor* DspResourcePool::grabModulator(OpcodeType type)
   Processor* p = nullptr;
   switch(type)
   {
-  case OT::FreeEnv:   p = envGens.grabItem(); break;
-  case OT::AmpEnv:    p = ampEnvGens.grabItem(); break;
-  case OT::FilterEnv: p = envGens.grabItem(); break;
-  case OT::PitchEnv:  p = envGens.grabItem(); break;
+  case OT::FreeEnv:   p = freeEnvGens.grabItem(); break;
+  case OT::AmpEnv:    p = ampEnvGens.grabItem();  break;
+  //case OT::FilterEnv: p = envGens.grabItem(); break;
+  //case OT::PitchEnv:  p = envGens.grabItem(); break;
 
   case OT::FreeLfo:   p = lowFreqOscs.grabItem(); break;
-  case OT::AmpLfo:    p = lowFreqOscs.grabItem(); break;
-  case OT::FilterLfo: p = lowFreqOscs.grabItem(); break;
-  case OT::PitchLfo:  p = lowFreqOscs.grabItem(); break;
+  //case OT::AmpLfo:    p = lowFreqOscs.grabItem(); break;
+  //case OT::FilterLfo: p = lowFreqOscs.grabItem(); break;
+  //case OT::PitchLfo:  p = lowFreqOscs.grabItem(); break;
   };
   return p;
   // ToDo: maybe consolidate the cases that return from envGens or lowFreqOscs into some sort of
@@ -525,15 +525,15 @@ void DspResourcePool::repositModulator(Processor* p)
   int i = -1;
   switch(p->getType())
   {
-  case OT::FreeEnv:   i = envGens.repositItem(p); break;
-  case OT::AmpEnv:    i = ampEnvGens.repositItem(p); break;
-  case OT::FilterEnv: i = envGens.repositItem(p); break;
-  case OT::PitchEnv:  i = envGens.repositItem(p); break;
+  case OT::FreeEnv:   i = freeEnvGens.repositItem(p); break;
+  case OT::AmpEnv:    i = ampEnvGens.repositItem(p);  break;
+  //case OT::FilterEnv: i = envGens.repositItem(p); break;
+  //case OT::PitchEnv:  i = envGens.repositItem(p); break;
 
   case OT::FreeLfo:   i = lowFreqOscs.repositItem(p);  break;
-  case OT::AmpLfo:    i = lowFreqOscs.repositItem(p);  break;
-  case OT::FilterLfo: i = lowFreqOscs.repositItem(p);  break;
-  case OT::PitchLfo:  i = lowFreqOscs.repositItem(p);  break;
+  //case OT::AmpLfo:    i = lowFreqOscs.repositItem(p);  break;
+  //case OT::FilterLfo: i = lowFreqOscs.repositItem(p);  break;
+  //case OT::PitchLfo:  i = lowFreqOscs.repositItem(p);  break;
   }
   RAPT::rsAssert(i != -1, "Reposited processor was not in pool");
 }

@@ -171,14 +171,14 @@ void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N)
   se->setRegionSetting(0, 0, Opcode::LoopEnd,   N, -1);
 }
 
-void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N)
+void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N, float keyCenter, double sampleRate)
 { 
   using OC  = rosic::Sampler::Opcode;
   std::vector<float> dc(N);
   rsFill(dc, 1.f);
   se->clearInstrument();
 
-  addSingleSampleRegion(se, dc);
+  addSingleSampleRegion(se, dc, keyCenter, sampleRate);
   // What about the root-key and sample-rate? We are depending on the defaults here (60, 44100)
   // but that may not be the best thing to do. We see looping artifacts in samplerEnvTest
 

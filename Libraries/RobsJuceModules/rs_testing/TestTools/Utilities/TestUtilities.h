@@ -486,7 +486,8 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
 void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048);
 
 /** Sets up the sampler engine with a looped DC region. */
-void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N = 100);
+void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N, float keyCenter, 
+  double sampleRate);
 
 
 /** Fills the outL, outR arrays with the output of the given sampler engine for the given note. The
