@@ -2803,11 +2803,25 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
   se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
   se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
-  plot(N, 500); // also triggers assert
+  plot(N, 500); 
+  // Output is all zeros. We do not yet route the amp-env to any amplifier, in fact, we don't even
+  // have an amplifier unit yet.
 
-
+  // In SamplePlayer::setupModSourceSetting we hit an assert because s.type == ampe_attack and we 
+  // find no Processor (modulator) that listens to the ampeg_attack opcode. This is because in the
+  // modSources member, there is no modulator of type AmpEnv. Instead, only a FreeEnv is present.
+  // Possible solutions are:
+  //   (1) Let the DspResourcePool object maintain a seperate arrays for the AmpEnv objects.
+  // or:
+  //   (2)
 
   // ToDo:
+  // -Implement ampeg_ stuff
+  //  -Maybe we should just use the regular EnvGen class (an not have subclasses like EnvGenAmp 
+  //  etc.) and interpret egN opcodes as applying to those when certain special values for the 
+  //  index are used. Maybe define ampIdx = -2, filIdx = -3, fil2Idx = -3, pitchIdx = -4 in some 
+  //  enum (maybe HardWireIndex
+
   // -Currently, this is more an Experiment than a unit test. Turn it into an actual unit test. We
   //  need some convenient way to express/generate the target signals...this may be a bit 
   //  complicated. Maybe we should write the data coming from the experiments into files when the

@@ -131,6 +131,7 @@ EnvGenAmp::EnvGenAmp()
   // the same as the general one, so we can re-use the code. Just the opcodes have different names
   // reflecting the specialization of the target.
 
+  type = OpcodeType::AmpEnv;
   replaceOpcode(Opcode::egN_start,   Opcode::ampeg_start);
   replaceOpcode(Opcode::egN_delay,   Opcode::ampeg_delay);
   replaceOpcode(Opcode::egN_attack,  Opcode::ampeg_attack);
@@ -476,6 +477,9 @@ void DspResourcePool::repositEffect(Processor* p)
 void DspResourcePool::allocateModulators()
 {
   envGens.init(64);
+  ampEnvGens.init(64);
+
+
   lowFreqOscs.init(64);
 }
 
@@ -486,7 +490,7 @@ Processor* DspResourcePool::grabModulator(OpcodeType type)
   switch(type)
   {
   case OT::FreeEnv:   p = envGens.grabItem(); break;
-  case OT::AmpEnv:    p = envGens.grabItem(); break;
+  case OT::AmpEnv:    p = ampEnvGens.grabItem(); break;
   case OT::FilterEnv: p = envGens.grabItem(); break;
   case OT::PitchEnv:  p = envGens.grabItem(); break;
 
@@ -522,7 +526,7 @@ void DspResourcePool::repositModulator(Processor* p)
   switch(p->getType())
   {
   case OT::FreeEnv:   i = envGens.repositItem(p); break;
-  case OT::AmpEnv:    i = envGens.repositItem(p); break;
+  case OT::AmpEnv:    i = ampEnvGens.repositItem(p); break;
   case OT::FilterEnv: i = envGens.repositItem(p); break;
   case OT::PitchEnv:  i = envGens.repositItem(p); break;
 
