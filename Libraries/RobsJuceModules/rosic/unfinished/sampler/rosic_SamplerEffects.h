@@ -27,8 +27,10 @@ public:
   // move to cpp
 
   // Setup:
-  void setValue(float newValue) { value = newValue; }
-  // maybe rename to setNominalValue
+
+  void setOpcode(Opcode newOpcode) {  opcode = newOpcode; }
+  
+  void setValue(float newValue) { value = newValue; }  // maybe rename to setNominalValue
 
   // Inquiry:
   Opcode getOpcode() const { return opcode; }
@@ -78,7 +80,20 @@ public:
   using uchar = unsigned char;
 
   // Setup:
+
+  /** Adds a parameter that is controlled by the given Opcode. */
   void addParameter(Opcode opcode); // maybe should return an integer parameter index?
+
+  /** Replaces the oldOpcode with the given newOpcode. This is used for re-assigning existing 
+  parameter objects to new opcodes. This is needed when we have different modules that are 
+  functionally the same but have different opcode names (like ampeg_, fileg_, pitcheg_, egN_).
+  See the constructor of EnvGenAmp for how this works and why we may want to do this. It returns 
+  the index of the parameter in our params array which was replaced array or -1, if no param 
+  listening to the given oldOpcode was found. */
+  int replaceOpcode(Opcode oldOpcode, Opcode newOpcode);
+
+
+
   void setParameter(Opcode opcode, float value);
 
   /** Resets all parameters to their default values. The caller needs to pass an index because 
@@ -378,6 +393,8 @@ protected:
   LowFreqOscCore core;
 };
 
+/** The general extended ADSR envelope generator controlled by the SFZ2 opocodes egN_attack, 
+egN_decay, etc.. */
 class EnvGen : public Processor
 {
 public:
@@ -395,6 +412,27 @@ public:
 protected:
   EnvGenCore core;
 };
+
+/** A specialization of the general extended ADSR EG for the amplitude controlled by the SFZ1
+opcodes ampeg_attack, ampeg_decay, etc.. */
+class EnvGenAmp : public EnvGen
+{
+public:
+  EnvGenAmp();
+};
+/*
+class EnvGenFil : public EnvGen
+{
+public:
+  EnvGenFil();
+};
+class EnvGenPitch : public EnvGen
+{
+public:
+  EnvGenPitch();
+};
+*/
+
 
 class Amplifier : public Processor
 {

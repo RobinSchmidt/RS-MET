@@ -6,6 +6,23 @@ void Processor::addParameter(Opcode opcode)
   params.push_back(Parameter(opcode));
 }
 
+int Processor::replaceOpcode(Opcode oldOpcode, Opcode newOpcode)
+{
+  // Maybe factor out into findParameter(oldOpcode):
+  int foundAt = -1;
+  for(size_t i = 0; i < params.size(); ++i) {
+    if(params[i].getOpcode() == oldOpcode) {
+      foundAt = (int) i;
+      break; }}
+
+  RAPT::rsAssert(foundAt != -1, "No such opcode found");
+
+  if(foundAt != -1)
+    params[foundAt].setOpcode(newOpcode);
+
+  return foundAt;
+}
+
 void Processor::setParameter(Opcode opcode, float value)
 {
   size_t i = 0;
@@ -105,6 +122,29 @@ void EnvGen::updateCoeffs(double sampleRate)
   core.setup(p[0].mv()*k, p[1].mv()*fs, p[2].mv()*fs, p[3].mv()*k, p[4].mv()*fs, p[5].mv()*fs,
     p[6].mv()*k, p[7].mv()*fs, p[8].mv()*k);
   dirty = false;
+}
+
+
+EnvGenAmp::EnvGenAmp()
+{
+  // We just replace the opcodes to which out parameters listen. Functionally, the EG works exactly 
+  // the same as the general one, so we can re-use the code. Just the opcodes have different names
+  // reflecting the specialization of the target.
+
+  replaceOpcode(Opcode::egN_start,   Opcode::AmpEnvStart);
+  replaceOpcode(Opcode::egN_delay,   Opcode::AmpEnvDelay);
+  replaceOpcode(Opcode::egN_attack,  Opcode::AmpEnvAttack);
+  //replaceOpcode(Opcode::egN_peak,    Opcode::AmpEnvPeak); // doesn't exist?
+  replaceOpcode(Opcode::egN_hold,    Opcode::AmpEnvHold);
+  replaceOpcode(Opcode::egN_decay,   Opcode::AmpEnvDecay);
+  replaceOpcode(Opcode::egN_sustain, Opcode::AmpEnvSustain);
+  replaceOpcode(Opcode::egN_release, Opcode::AmpEnvRelease);
+  //replaceOpcode(Opcode::egN_end,     Opcode::AmpEnvEnd);
+
+  // ToDo:
+  // -Do the same for pitcheg and fileg - maybe the latter should have an optional index, like
+  //  filNeg or filegN (see sfz2 spec - it has a 2nd filter). We also need to do soemthing similar
+  //  for the LFO
 }
 
 //=================================================================================================
