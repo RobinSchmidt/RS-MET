@@ -145,6 +145,11 @@ EnvGenAmp::EnvGenAmp()
   // -Do the same for pitcheg and fileg - maybe the latter should have an optional index, like
   //  filNeg or filegN (see sfz2 spec - it has a 2nd filter). We also need to do soemthing similar
   //  for the LFO
+  // -For the pre-allocation of env objects, it would actually be much more desirable, if the
+  //  different types of specialized envelopes would be interchangable at runtime, i.e. EnvGenAmp
+  //  is not a subclass of EnveGen but instead, we can somehow at runtime switch a general EG
+  //  into an AmpEG (and back). Then we can just pre-allocate an array of general EGs and use them
+  //  for all purposes. ...not yet sure, how to implement this, though - might be tricky.
 }
 
 //=================================================================================================

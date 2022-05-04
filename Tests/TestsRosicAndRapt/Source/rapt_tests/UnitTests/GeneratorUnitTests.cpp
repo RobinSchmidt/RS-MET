@@ -2792,10 +2792,18 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
   se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
   se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
-  plot(N, 500);
+  //plot(N, 500);
   // Triggers assert in SamplePlayer::setupModSourceSetting. There is no Processor available to which the opcode
   // applies. Hhhmm...yes - this makes sense because when assembling the effect chain...
 
+  // Start anew with only an ampeg an nothing else:
+  se.clearInstrument();
+  setupForLoopedDC(&se, 10); 
+  se.setRegionSetting(0, 0, OC::ampeg_attack,  att_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
+  plot(N, 500); // also triggers assert
 
 
 
@@ -2822,6 +2830,17 @@ bool samplerNoteOffTest()
   //   -pile_up: like restart_from_current, but in a rapid succession of notes, the envelopes pile
   //    up on each other like the filter-based ones triggered by impulses would do (see Experiments 
   //    with class rsAttackDecayEnvelope for how this behaves)
+  //  -Let the user select the shapes for the different stages
+  // -Implement pitch EGs
+  // -Implement MSEGs
+
+  // Questions:
+  // -Should an envelope routed to a filter cutoff (or the fileg_ opcodes) be relative or absolute?
+  // -What if fileg_attack etc. opcodes exist but no cutoff opcode? Should we insert a filter with
+  //  a defautl cutoff and route the fileg to that? Or should the fileg opcodes be ignored?
+  // -Similarly what if ampeg_attack opcodes exist but no amplitudeN opcode? Should we implicitly 
+  //  insert an amplifier. Maybe yes. The difference to the cutoff opcode is, that an amplitudeN
+  //  opcode actually does not even exist in the SFZ1 spec (only in the ARIA spec).
 
 
   rsAssert(ok);
