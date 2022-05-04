@@ -2797,9 +2797,18 @@ bool samplerNoteOffTest()
   // Triggers assert in SamplePlayer::setupModSourceSetting. There is no Processor available to which the opcode
   // applies. Hhhmm...yes - this makes sense because when assembling the effect chain...
 
-  // Start anew with only an ampeg an nothing else:
+  // Start anew witha DC sample without any envlope:
   se.clearInstrument();
-  setupForLoopedDC(&se, 10, key, fs); 
+  int L = 70;           // length of the DC sample
+  setupForLoopedDC(&se, L, key, fs);
+  plot(N, 500);
+  // Produces 560 samples of 1 (from n=0 to n=559) and then all zeros from n=560 onwards. At sample
+  // 500, a noteOff is received which triggers leaving the loop. At that instant, the sampleTime in
+  // the player is 500 % L = 500 % 70 = 10. That means, from then on, we have to run through the 
+  // remaining L - 10 = 70 - 10 = 60 samples until the sample has reached its end.
+  // ToDo: turn this into a unit test
+
+  // Add an ADSR ampeg:
   //se.setRegionSetting(0, 0, OC::ampeg_attack,  att_amp, 1);
   //se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
   //se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
