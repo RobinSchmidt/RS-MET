@@ -2781,19 +2781,30 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
   plot(N, 500); 
 
-
-
-
   // ToDo:
-  // -Route a second envelope to the same amplifier, i.e. amplifier 1.
-  // -Insert a 2nd amplifier and route 2 other envelopes to that other amplifier, i.e. amp 2
-  // -Check, if the determination of the release envelope works as it should.
   // -Currently, this is more an Experiment than a unit test. Turn it into an actual unit test. We
   //  need some convenient way to express/generate the target signals...this may be a bit 
   //  complicated. Maybe we should write the data coming from the experiments into files when the
   //  plots look good and use that data as reference. For this, we perhaps use a smaller N to not
   //  bloat the repo with that data too much...but maybe we can generate the target data 
   //  programmatically...
+  // -Envelope Features to do:
+  //  -Release-Modes: 
+  //   -one_shot: always run through the whole envelope even when noteOff is triggered before 
+  //    reaching sustain (this is the current behavior)
+  //   -immediate: enter release phase immediately, starting from current level
+  //  -Retrigger-Modes: determine behavior when a new noteOn is received during the release of a
+  //   voice/layer playing the same note
+  //   -new_layer: a new layer is started while the old one just keeps releasing (this is the 
+  //    current behavior, I think)
+  //   -restart: re-uses the releasing voice/layer and retriggers the envelope from the beginning,
+  //    LFOs (if any) should keep running
+  //   -restart_from_current: like restart but does not restart the envelope from its start level 
+  //    but from where it currently is.
+  //   -pile_up: like restart_from_current, but in a rapid succession of notes, the envelopes pile
+  //    up on each other like the filter-based ones triggered by impulses would do (see Experiments 
+  //    with class rsAttackDecayEnvelope for how this behaves)
+
 
   rsAssert(ok);
   return ok;
