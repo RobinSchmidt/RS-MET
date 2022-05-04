@@ -131,15 +131,15 @@ EnvGenAmp::EnvGenAmp()
   // the same as the general one, so we can re-use the code. Just the opcodes have different names
   // reflecting the specialization of the target.
 
-  replaceOpcode(Opcode::egN_start,   Opcode::AmpEnvStart);
-  replaceOpcode(Opcode::egN_delay,   Opcode::AmpEnvDelay);
-  replaceOpcode(Opcode::egN_attack,  Opcode::AmpEnvAttack);
-  //replaceOpcode(Opcode::egN_peak,    Opcode::AmpEnvPeak); // doesn't exist?
-  replaceOpcode(Opcode::egN_hold,    Opcode::AmpEnvHold);
-  replaceOpcode(Opcode::egN_decay,   Opcode::AmpEnvDecay);
-  replaceOpcode(Opcode::egN_sustain, Opcode::AmpEnvSustain);
-  replaceOpcode(Opcode::egN_release, Opcode::AmpEnvRelease);
-  //replaceOpcode(Opcode::egN_end,     Opcode::AmpEnvEnd);
+  replaceOpcode(Opcode::egN_start,   Opcode::ampeg_start);
+  replaceOpcode(Opcode::egN_delay,   Opcode::ampeg_delay);
+  replaceOpcode(Opcode::egN_attack,  Opcode::ampeg_attack);
+  //replaceOpcode(Opcode::egN_peak,    Opcode::ampeg_peak); // ampeg_peak doesn't exist
+  replaceOpcode(Opcode::egN_hold,    Opcode::ampeg_hold);
+  replaceOpcode(Opcode::egN_decay,   Opcode::ampeg_decay);
+  replaceOpcode(Opcode::egN_sustain, Opcode::ampeg_sustain);
+  replaceOpcode(Opcode::egN_release, Opcode::ampeg_release);
+  //replaceOpcode(Opcode::egN_end,     Opcode::ampeg_end);// ampeg_end doesn't exist
 
   // ToDo:
   // -Do the same for pitcheg and fileg - maybe the latter should have an optional index, like

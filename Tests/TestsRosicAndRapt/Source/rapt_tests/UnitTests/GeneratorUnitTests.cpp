@@ -2748,7 +2748,7 @@ bool samplerNoteOffTest()
   };
 
   // Plot output for different instants of note-off event:
-  plot(N, 500); // note-off well within sustain
+  //plot(N, 500); // note-off well within sustain
   //plot(N, 200); // note-off at start of sustain, i.e. at attack + decay
   //plot(N, 100); // note-off during decay
   //plot(N,  30); // note-off during attack
@@ -2772,17 +2772,30 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::egN_sustain, sus_12, 2);
   se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
   se.setRegionModulation(0, 0, OT::FreeEnv, 2, OC::amplitudeN, 1, 100.f, Mode::absolute);
-  plot(N, 500); 
+  //plot(N, 500); 
 
   // Increase the release time of the second EG such that it becomes longer than the first. This 
   // should have the effect that now the 2nd env becomes the relevant one for determining when 
   // release has finished:
   rel_12 = 500.f;
   se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
-  plot(N, 500); 
+  //plot(N, 500); 
 
   // Add settings for the ampeg_attack, ampeg_decay, etc. opcodes. These should apply additionally
-  // to the last (i.e. 2nd) amplifier unit.
+  // to the last (i.e. 2nd) amplifier unit. We do note need to set up a connection explicitly. The
+  // engine "knows" that the ampeg_ opcodes always apply to the last Amplifier unit:
+  float att_amp = 100.f;
+  float dec_amp = 200.f;
+  float sus_amp = 80.f;
+  float rel_amp = 600.f;
+  se.setRegionSetting(0, 0, OC::ampeg_attack,  att_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
+  plot(N, 500);
+  // Triggers assert in SamplePlayer::setupModSourceSetting. There is no Processor available to which the opcode
+  // applies. Hhhmm...yes - this makes sense because when assembling the effect chain...
+
 
 
 

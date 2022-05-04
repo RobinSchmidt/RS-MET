@@ -217,9 +217,10 @@ SfzCodeBook::SfzCodeBook()
   add(OC::ampeg_delay,   Flt, "ampeg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::ampeg_start,   Flt, "ampeg_start",   0.f, 100.f,   0.f, dsp, OU::Percent, Sfz1);
   add(OC::ampeg_attack,  Flt, "ampeg_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-
-  //ampeg_delay, ampeg_start, ampeg_attack, ampeg_hold, ampeg_decay, ampeg_sustain, ampeg_release, 
-
+  add(OC::ampeg_hold,    Flt, "ampeg_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::ampeg_decay,   Flt, "ampeg_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::ampeg_sustain, Flt, "ampeg_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz1);
+  add(OC::ampeg_release, Flt, "ampeg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz2);
 
   // Routable modulators:
   dsp = OpcodeType::FreeEnv;
