@@ -2781,6 +2781,11 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
   plot(N, 500); 
 
+  // Add settings for the ampeg_attack, ampeg_decay, etc. opcodes. These should apply additionally
+  // to the last (i.e. 2nd) amplifier unit.
+
+
+
   // ToDo:
   // -Currently, this is more an Experiment than a unit test. Turn it into an actual unit test. We
   //  need some convenient way to express/generate the target signals...this may be a bit 

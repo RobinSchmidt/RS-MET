@@ -76,11 +76,13 @@ enum class Opcode
   // ampN_velcurve_X /* ? */, ampN_random,
 
   // Amplifier Envelope:
-  AmpEnvDelay, AmpEnvStart, AmpEnvAttack, AmpEnvHold, AmpEnvDecay, AmpEnvSustain,
-  AmpEnvRelease, /*AmpEnvDepth,*/ AmpEnvVel2Delay, AmpEnvVel2Attack, AmpEnvVel2Hold, 
-  AmpEnvVel2Decay, AmpEnvVel2Sustain, AmpEnvVel2Release, /*AmpEnvVel2Depth,*/
-  AmpEnvDelayCtrlN, AmpEnvStartCtrlN, AmpEnvAttackCtrlN, AmpEnvHoldCtrlN, AmpEnvDecayCtrlN, 
-  AmpEnvSustainCtrlN, AmpEnvReleaseCtrlN, 
+  ampeg_delay, ampeg_start, ampeg_attack, ampeg_hold, ampeg_decay, ampeg_sustain, ampeg_release, 
+
+  //AmpEnvDelay, AmpEnvStart, AmpEnvAttack, AmpEnvHold, AmpEnvDecay, AmpEnvSustain,
+  //AmpEnvRelease, /*AmpEnvDepth,*/ AmpEnvVel2Delay, AmpEnvVel2Attack, AmpEnvVel2Hold, 
+  //AmpEnvVel2Decay, AmpEnvVel2Sustain, AmpEnvVel2Release, /*AmpEnvVel2Depth,*/
+  //AmpEnvDelayCtrlN, AmpEnvStartCtrlN, AmpEnvAttackCtrlN, AmpEnvHoldCtrlN, AmpEnvDecayCtrlN, 
+  //AmpEnvSustainCtrlN, AmpEnvReleaseCtrlN, 
   // depth-parameters do not exist in sfz for amp-env. wouldn't make much sense, i guess
 
     // Amplifier LFO:

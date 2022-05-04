@@ -213,6 +213,14 @@ SfzCodeBook::SfzCodeBook()
   add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1);
   // Or should the amplfo_depth be of type ModulationRouting, ModConnection? ..we'll see
 
+  dsp = OpcodeType::AmpEnv;
+  add(OC::ampeg_delay,   Flt, "ampeg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::ampeg_start,   Flt, "ampeg_start",   0.f, 100.f,   0.f, dsp, OU::Percent, Sfz1);
+  add(OC::ampeg_attack,  Flt, "ampeg_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+
+  //ampeg_delay, ampeg_start, ampeg_attack, ampeg_hold, ampeg_decay, ampeg_sustain, ampeg_release, 
+
+
   // Routable modulators:
   dsp = OpcodeType::FreeEnv;
   add(OC::egN_delay,   Flt, "egN_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
