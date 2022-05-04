@@ -138,6 +138,11 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
 
 bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& modSettings)
 {
+  return assembleRoutableModulations(modSettings);
+}
+
+bool SamplePlayer::assembleRoutableModulations(const std::vector<ModulationSetting>& modSettings)
+{
   RAPT::rsAssert(dspPool);
 
   //RAPT::rsAssert(modMatrix.empty(), "Someone has not cleaned up the modMatrix");
@@ -228,6 +233,8 @@ bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& mod
   // because now it stores objects instead of pointers...but this may actually help with caching. 
   // We would need less pointer chasing during playback.
 }
+
+
 
 bool SamplePlayer::assembleProcessors(
   const std::vector<OpcodeType>& dspTypes, const std::vector<ModulationSetting>& modSettings) 

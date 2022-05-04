@@ -2809,34 +2809,28 @@ bool samplerNoteOffTest()
   // ToDo: turn this into a unit test
 
   // Add an ADSR ampeg:
-  //se.setRegionSetting(0, 0, OC::ampeg_attack,  att_amp, 1);
-  //se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
-  //se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
-  //se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_attack,  att_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
+  se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
   plot(N, 500); 
-  // Output is a unit impulse. We do not yet route the amp-env to any amplifier, in fact, we don't 
-  // even have an amplifier unit yet. But I would expect the output to be all ones. It remains a 
-  // unit impulse even if we remove all the ampeg opcodes
-  // In rsSamplerEngine::processFrame, the call to activePlayers[i]->hasFinished() returns true in
-  // the very first sample. Why?
-  // RegionPlayer::sampleTime is 44090. It should be 0. The incremenet is 44100.000000000000. It's
-  // because the stream has a sampleRate of 44100 while the engine has one of 1
+  // Output is as above because we do not yet route the ampeg to an amplifier. In fact, we don't
+  // even have an Amplifier modules in the chain yet. What we need to do is:
+  // -After (or before) the modulation connections for the manually wired parameters are 
+  //  established, we need to establish the hardwired connections. The ampeg is hardwired to the
+  //  last Amplifier in the chain. If the chain does not already have at least one Amplifier, we 
+  //  need to insert one.
 
-  // In SamplePlayer::setupModSourceSetting we hit an assert because s.type == ampe_attack and we 
-  // find no Processor (modulator) that listens to the ampeg_attack opcode. This is because in the
-  // modSources member, there is no modulator of type AmpEnv. Instead, only a FreeEnv is present.
-  // Possible solutions are:
-  //   (1) Let the DspResourcePool object maintain a seperate arrays for the AmpEnv objects.
-  // or:
-  //   (2)
 
   // ToDo:
   // -Implement ampeg_ stuff
   //  -Maybe we should just use the regular EnvGen class (an not have subclasses like EnvGenAmp 
-  //  etc.) and interpret egN opcodes as applying to those when certain special values for the 
-  //  index are used. Maybe define ampIdx = -2, filIdx = -3, fil2Idx = -3, pitchIdx = -4 in some 
-  //  enum (maybe HardWireIndex
-
+  //   etc.) and interpret egN opcodes as applying to those when certain special values for the 
+  //   index are used. Maybe define ampIdx = -2, filIdx = -3, fil2Idx = -3, pitchIdx = -4 in some 
+  //   enum (maybe HardWireIndex
+  //
+  // -Test, if the env behaves correctly, if we don't specify certain parameters, i.e. check, if 
+  //  the defaults work as they should.
   // -Currently, this is more an Experiment than a unit test. Turn it into an actual unit test. We
   //  need some convenient way to express/generate the target signals...this may be a bit 
   //  complicated. Maybe we should write the data coming from the experiments into files when the

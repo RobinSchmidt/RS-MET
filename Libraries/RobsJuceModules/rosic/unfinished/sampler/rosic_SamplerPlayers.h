@@ -219,9 +219,14 @@ protected:
   disassembly is what is meant by the "or clean" part. */
   bool augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTypeChain);
 
+
   /** Under construction... */
   bool assembleModulations(const std::vector<ModulationSetting>& modSettings);
+
+  bool assembleRoutableModulations(const std::vector<ModulationSetting>& modSettings);
+
  
+
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available).  */
