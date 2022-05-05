@@ -182,17 +182,20 @@ void createSineWave(double *x, int N, double f, double a, double fs, double p)
     x[n] = a * sin(w*n+p);
 }
 
-void createSineWave(double *x, int N, double *f, double a, double fs)
+template<class T>
+void createSineWave(T *x, int N, T *f, T a, T fs)
 {
-  double s   = 2*PI/fs;       // frequency scaler
-  double phi = 0.0;           // instantaneous phase
+  T s   = 2*PI/fs;       // frequency scaler
+  T phi = 0.0;           // instantaneous phase
   for(int n = 0; n < N; n++)
   {
-    double fn = f[n];         // use temporary to allow x and f to be the same array
+    T fn = f[n];         // use temporary to allow x and f to be the same array
     x[n] = a * sin(phi);
     phi += s * fn;
   }
 }
+template void createSineWave(float  *x, int N, float  *f, float  a, float  fs);
+template void createSineWave(double *x, int N, double *f, double a, double fs);
 
 void createSineSweep(double* x, int N, double f1, double f2, double fs, double a)
 {

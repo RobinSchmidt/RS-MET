@@ -51,11 +51,10 @@ std::vector<double> createSineWave(int N, double f, double fs, double a = 1, dou
 
 void createSawWave(double *x, int N, double f, double fs, double a = 1, int numHarmonics = -1);
 
-
-
 /** Creates a sine-wave of length N (in samples) with an instantaneous frequency given by f at each 
 sample and an amplitude given by a, at samplerate fs. */
-void createSineWave(double *x, int N, double *f, double a, double fs);
+template<class T>
+void createSineWave(T *x, int N, T *f, T a, T fs);
 // make order of parameters consistent with other createSineWave functions
 
 void createSineSweep(double* x, int N, double f1, double f2, double fs = 1, double a = 1);

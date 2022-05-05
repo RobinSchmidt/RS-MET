@@ -3321,7 +3321,7 @@ bool samplerPitchEnvTest()
     freqs[n] = freq + fm;
   }
   Vec x(N);
-  //createSineWave(&x[0], N, &freqs[0], 1.f, fs);  // function works only for double atm
+  createSineWave(&x[0], N, &freqs[0], 1.f, fs);  // function works only for double atm
   rsPlotVectors(x);
 
 
