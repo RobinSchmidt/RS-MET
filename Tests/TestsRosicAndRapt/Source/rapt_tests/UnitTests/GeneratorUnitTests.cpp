@@ -18,7 +18,8 @@ T getSampleAt(const std::vector<T>& v, T pos)
 
   return (T(1) - f) * x0 + f * x1;
 };
-// move up or maybe move to library as rsInterpolateAt or rsLerpAt
+// Maybe rename to getSampleAtOld and/or move up or maybe move to library as rsInterpolateAt or 
+// rsLerpAt
 // hmmm...we assume here that between v[-1] and v[0], there is silence and between v[N-1] and 
 // v[N] we ramp linearly down to zero...maybe we should make that consistent - either ramp up and
 // ramp down or don't ramp at all - but the latter requires special handling of pos == N-1: if
@@ -51,10 +52,12 @@ T getSampleAtNew(const std::vector<T>& v, T pos, T xL = T(0), T xR = T(0))
 
   return (T(1) - f) * xL + f * xR;
 }
-// needs verification
+// needs verification, rename to getSampleAt
 
-bool testGetSampleAt()  // unit test for function above
+bool testGetSampleAt()  
 {
+  // This is a unit test for the getSampleAtNew function above
+
   bool ok = true;
   using Vec = std::vector<float>;
 
@@ -111,7 +114,6 @@ bool testGetSampleAt()  // unit test for function above
   // ToDo: maybe make a little function that can be called like: 
   //   ok &= test(-0.75, 0.75*xL + 0.25*x0); etc. to reduce boilerplate
 
-
   return ok;
 }
 
@@ -156,22 +158,6 @@ std::vector<T> rsApplyResampling(std::vector<T>& x, T readSpeed)
   return y;
 }
 
-std::vector<float> rsApplyFilter(std::vector<float>& x, rosic::Sampler::FilterType type, 
-  float cutoff, float sampleRate, float resonance)
-{
-  int N = (int)x.size();
-  std::vector<float> y(N);
-  using FilterDsp  = rosic::Sampler::Filter;
-  using FilterCore = rosic::Sampler::FilterCore;
-  FilterCore flt;
-  float omega = float(2*PI) * cutoff / sampleRate;
-  flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
-  for(int n = 0; n < N; n++) {
-    y[n] = x[n]; float dummy;
-    flt.processFrame(&y[n], &dummy); }
-  return y;
-}
-
 template<class T>
 T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 {
@@ -194,6 +180,82 @@ T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 }
 
 //=================================================================================================
+// Helper functions specifically for the sampler (those above are more generally useful and do not 
+// necessarily need to have anything to do with the sampler):
+
+// rename to rsApplySamplerFilter
+std::vector<float> rsApplyFilter(std::vector<float>& x, rosic::Sampler::FilterType type, 
+  float cutoff, float sampleRate, float resonance)
+{
+  int N = (int)x.size();
+  std::vector<float> y(N);
+  using FilterDsp  = rosic::Sampler::Filter;
+  using FilterCore = rosic::Sampler::FilterCore;
+  FilterCore flt;
+  float omega = float(2*PI) * cutoff / sampleRate;
+  flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
+  for(int n = 0; n < N; n++) {
+    y[n] = x[n]; float dummy;
+    flt.processFrame(&y[n], &dummy); }
+  return y;
+}
+// ToDo: maybe take an optional modulation signal for the cutoff
+
+std::vector<float> rsGetSamplerADSR(float att, float dec, float sus, float rel,
+  float sampleRate, int numSamples, int noteOffAt)
+{
+  // Uses the rosic::Sampler::EnvGenCore class to create an ADSR envelope with tne given 
+  // parameters. Time values are given in seconds, levels in percent.
+
+  std::vector<float> y(numSamples);
+  float fs = sampleRate;
+  float k  = 0.01f;
+  rosic::Sampler::EnvGenCore eg;
+  eg.setup(0.f, 0.f, fs*att, 1.f, 0.f, fs*dec, k*sus, fs*rel, 0.f);
+  for(int n = 0; n < numSamples; n++) {
+    if(n == noteOffAt)
+      eg.noteOff();
+    float dummy;
+    eg.processFrame(&y[n], &dummy); }
+  return y;
+}
+
+bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
+  const std::vector<float>& targetL, const std::vector<float>& targetR,
+  float tol = 0.f, bool plot = false)
+{
+  int N = (int) targetL.size();
+  rsAssert((int)targetR.size() == N);
+  std::vector<float> outL(N), outR(N);
+  for(int n = 0; n < N; n++)
+    se->processFrame(&outL[n], &outR[n]);
+  using AT   = RAPT::rsArrayTools;
+  float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
+  float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
+  if(plot)
+    rsPlotVectors(targetL, targetR, outL, outR, targetL-outL, targetR-outR);
+  return errL <= tol && errR <= tol;
+}
+
+bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
+  const std::vector<float>& targetL, const std::vector<float>& targetR, 
+  float tol = 0.f, bool plot = false)
+{
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+  se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+  return testSamplerOutput(se, targetL, targetR, tol, plot);
+};
+// maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
+// better when the caller does the reset directly, if desired - it's not much longer but clearer
+// factor out a getSamplerOutput(rosic::rsSamplerEngine* se, float key, float vel, 
+// const std::vector<float>& targetL, const std::vector<float>& targetR, bool plot) function
+
+
+
+
+//=================================================================================================
+// The actual unit tests for the sampler:
 
 bool samplerDataTest()
 {
@@ -283,10 +345,6 @@ bool samplerDataTest()
   d1 = d3;
   ok &= d1 == d3;
 
-
-
-
-
   // ToDo: make a more complex sfz patch, using more opcodes, samples, etc.
 
 
@@ -294,12 +352,6 @@ bool samplerDataTest()
   // Parser bugs:
   // -empty regions lead to crashes
   // -instument settings lead to crashes
-
-
-
-
-
-
 
 
 
@@ -318,37 +370,6 @@ bool samplerDataTest()
   rsAssert(ok);
   return ok;
 }
-
-bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
-  const std::vector<float>& targetL, const std::vector<float>& targetR,
-  float tol = 0.f, bool plot = false)
-{
-  int N = (int) targetL.size();
-  rsAssert((int)targetR.size() == N);
-  std::vector<float> outL(N), outR(N);
-  for(int n = 0; n < N; n++)
-    se->processFrame(&outL[n], &outR[n]);
-  using AT   = RAPT::rsArrayTools;
-  float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
-  float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
-  if(plot)
-    rsPlotVectors(targetL, targetR, outL, outR, targetL-outL, targetR-outR);
-  return errL <= tol && errR <= tol;
-}
-
-bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
-  const std::vector<float>& targetL, const std::vector<float>& targetR, 
-  float tol = 0.f, bool plot = false)
-{
-  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
-  using EvTp = Ev::Type;
-  se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
-  return testSamplerOutput(se, targetL, targetR, tol, plot);
-};
-// maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
-// better when the caller does the reset directly, if desired - it's not much longer but clearer
-// factor out a getSamplerOutput(rosic::rsSamplerEngine* se, float key, float vel, 
-// const std::vector<float>& targetL, const std::vector<float>& targetR, bool plot) function
 
 bool samplerRegionPlayerTest()
 {
@@ -3176,7 +3197,7 @@ bool samplerFilterEnvTest()
   using OC = Opcode;
 
   // Test parameters:
-  int   N      =  2000;       // Number of samples to produce
+  int   N      =  1000;       // Number of samples to produce
   int   L      =  2048;       // Length of single cycle wave
   int   nOff   =   500;       // Sample of noteOff event
   int   key    =    57;       // Key to play, 57 = A3 = 220 Hz
@@ -3184,16 +3205,22 @@ bool samplerFilterEnvTest()
   float depth  =  1200.f;     // Filter envelope depth in cents
   float cutoff =  1000.f;     // Filter cutoff freq (nominal, before modulation)
   float reso   =    20.f;     // Filter resonance in dB
+  float att    =   100/fs;    // attack in seconds, the 100 is in samples
+  float dec    =   200/fs;    // decay in seconds
+  float sus    =    50.f;     // sustain in percent
+  float rel    =   400/fs;    // release in seconds
+
 
   // Create target signal:
   float f = rsPitchToFreq((float)key);
   Vec tgt(N);
   createWaveform(&tgt[0], N, 1, f, fs, 0.f, false);
+  Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
 
   // ToDo:
-  // -Create filter env using a getADSR(a,d,s,r) function
   // -Apply filter to tgt using a FilterCore
 
+  rsPlotVectors(adsr);
   rsPlotVectors(tgt);
 
 

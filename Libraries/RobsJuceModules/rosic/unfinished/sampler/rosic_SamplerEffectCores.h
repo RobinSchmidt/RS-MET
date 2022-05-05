@@ -52,8 +52,11 @@ class EnvGenCore
 
 public:
 
+  /** Time parameters are given in samples, levels as raw values with nominal range 0..1. */
   void setup(float start, float delay, float attack, float peak, float hold, float decay,
     float sustain, float release, float end);
+  // Curently, the setup function also serves as noteOn but maybe that should be a separate 
+  // function
 
   bool hasFinished() const;
   float getRelease() const { return release; }
