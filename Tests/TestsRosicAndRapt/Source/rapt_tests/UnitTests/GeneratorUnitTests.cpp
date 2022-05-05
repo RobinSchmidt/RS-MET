@@ -3231,16 +3231,16 @@ bool samplerFilterEnvTest()
   Vec x(N);
   createWaveform(&x[0], N, 1, f, fs, 0.f, false);
   Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
-  rsPlotVectors(adsr);
-  rsPlotVectors(x);
+  //rsPlotVectors(adsr);
+  //rsPlotVectors(x);
   //depth = 0.f;  // test
   Vec y = rsApplySamplerFilter(x, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
-  rsPlotVectors(y);
+  //rsPlotVectors(y);
 
   // Create and set up engine:
   SE se;
-  setupForLoopedWave(&se, L, 1);
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
+  addSingleSampleRegion(&se, x, key, fs);
   se.setSampleRate(fs);
   se.setRegionSetting(0,0, OC::resonanceN, reso,   1); 
   se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
@@ -3252,9 +3252,6 @@ bool samplerFilterEnvTest()
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, 64, outL, outR, nOff);
   rsPlotVectors(y, outL, outR);
-  // Note is cut off some time after noteOff. That should be expected. Maybe we should use x as
-  // sample and not use a looped single cycle.
-
 
   rsAssert(ok);
   return ok;

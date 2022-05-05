@@ -226,6 +226,7 @@ public:
   bool setData(T** newData, int numFrames, int numDataChannels, double sampleRate,
     int numStreamChannels, const std::string& path);
   // todo: 
+  // -make const-correct
   // -we need to distiguish between the number of channels in the data and the desired number of 
   //  output channels (done?)
   // -maybe use double for the sampleRate

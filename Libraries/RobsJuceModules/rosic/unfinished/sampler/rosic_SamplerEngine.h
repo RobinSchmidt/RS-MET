@@ -92,6 +92,10 @@ public:
   // Maybe rename to addSample, it should return the index of the sample in the sample-pool
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
   // todo: take reference to a metaData object
+  // make const-correct
+
+  /** Conveninece function for mono samples stored in a std::vector. */
+  int addSampleToPool(const std::vector<float>& data, double sampleRate, const std::string& path);
 
   /** Loads a sample represented by the given path into our samplePool. The path is supposed to be
   relative to some fixed root directory which is typcally the directory in which sfz file resides,

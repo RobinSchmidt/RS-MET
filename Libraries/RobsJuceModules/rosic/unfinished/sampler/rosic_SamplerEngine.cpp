@@ -74,6 +74,15 @@ int rsSamplerEngine::addSampleToPool(
   return samplePool.addSample(stream);
 }
 
+int rsSamplerEngine::addSampleToPool(const std::vector<float>& data, double sampleRate, 
+  const std::string& path)
+{
+  const float*  pData  = &data[0];
+  const float** ppData = &pData;
+  return addSampleToPool((float**)ppData, (int) data.size(), 1, sampleRate, path);
+  // ToDo: get rid of casting away the const by making all functions const-correct
+}
+
 int rsSamplerEngine::loadSampleToPool(const std::string& path)
 {
   if(isSampleInPool(path))
