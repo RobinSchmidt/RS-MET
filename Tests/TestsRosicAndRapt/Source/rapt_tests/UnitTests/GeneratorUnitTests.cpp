@@ -3251,7 +3251,10 @@ bool samplerFilterEnvTest()
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, 64, outL, outR, nOff);
-  rsPlotVectors(y, outL, outR);
+  float tol = 1.e-5;
+  ok &= rsIsCloseTo(outL, y, tol);
+  //Vec err = outL - y;
+  //rsPlotVectors(y, outL, outR);
 
   rsAssert(ok);
   return ok;
