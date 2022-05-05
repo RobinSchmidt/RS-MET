@@ -3226,26 +3226,34 @@ bool samplerFilterEnvTest()
   float sus    =    50.f;     // sustain in percent
   float rel    =   400/fs;    // release in seconds
 
-
   // Create target signal:
   float f = rsPitchToFreq((float)key);
-  Vec tgt(N);
-  createWaveform(&tgt[0], N, 1, f, fs, 0.f, false);
+  Vec x(N);
+  createWaveform(&x[0], N, 1, f, fs, 0.f, false);
   Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
-  //rsPlotVectors(adsr);
-  //rsPlotVectors(tgt);
-  tgt = rsApplySamplerFilter(tgt, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
-  rsPlotVectors(tgt); // it's full of NaNs!
-
-
+  rsPlotVectors(adsr);
+  rsPlotVectors(x);
+  //depth = 0.f;  // test
+  Vec y = rsApplySamplerFilter(x, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
+  rsPlotVectors(y);
 
   // Create and set up engine:
   SE se;
   setupForLoopedWave(&se, L, 1);
+  se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   se.setSampleRate(fs);
-
-
-
+  se.setRegionSetting(0,0, OC::resonanceN, reso,   1); 
+  se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
+  //se.setRegionSetting(0,0, OC::egN_attack,  att, 1);
+  //se.setRegionSetting(0,0, OC::egN_decay,   dec, 1);
+  //se.setRegionSetting(0,0, OC::egN_sustain, sus, 1);
+  //se.setRegionSetting(0,0, OC::egN_release, rel, 1);
+  //se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
+  Vec outL(N), outR(N);
+  getSamplerNote(&se, key, 64, outL, outR, nOff);
+  rsPlotVectors(y, outL, outR);
+  // Note is cut off some time after noteOff. That should be expected. Maybe we should use x as
+  // sample and not use a looped single cycle.
 
 
   rsAssert(ok);
