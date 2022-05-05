@@ -183,30 +183,45 @@ T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 // Helper functions specifically for the sampler (those above are more generally useful and do not 
 // necessarily need to have anything to do with the sampler):
 
-// rename to rsApplySamplerFilter
-std::vector<float> rsApplyFilter(std::vector<float>& x, rosic::Sampler::FilterType type, 
-  float cutoff, float sampleRate, float resonance)
+/** Applies the sampler filter (class rosic::Sampler::FilterCore) with given parameters to the 
+given input signal x. You may optionally pass a modulation signal for the cutoff frequency. The
+unit of this modulation signal is assumed to be in cents. */
+std::vector<float> rsApplySamplerFilter(const std::vector<float>& x, 
+  rosic::Sampler::FilterType type, float cutoff, float sampleRate, float resonance,
+  std::vector<float> cutoffMod = std::vector<float>())
 {
   int N = (int)x.size();
+  rsAssert(cutoffMod.size() == 0 || cutoffMod.size() == N);
   std::vector<float> y(N);
   using FilterDsp  = rosic::Sampler::Filter;
   using FilterCore = rosic::Sampler::FilterCore;
   FilterCore flt;
-  float omega = float(2*PI) * cutoff / sampleRate;
-  flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
-  for(int n = 0; n < N; n++) {
-    y[n] = x[n]; float dummy;
-    flt.processFrame(&y[n], &dummy); }
+
+  if(cutoffMod.size() == 0) {          // Static cutoff frequency
+    float omega = float(2*PI) * cutoff / sampleRate;
+    flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
+    for(int n = 0; n < N; n++) {
+      y[n] = x[n];
+      float dummy;
+      flt.processFrame(&y[n], &dummy); }}
+  else {                               // Modulated cutoff frequency
+    for(int n = 0; n < N; n++) {
+      float k = rsPitchOffsetToFreqFactor(cutoffMod[n] / 100.f);
+      float omega = float(2*PI) * k * cutoff / sampleRate;
+      flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
+      y[n] = x[n];
+      float dummy;
+      flt.processFrame(&y[n], &dummy); }}
+
   return y;
 }
 // ToDo: maybe take an optional modulation signal for the cutoff
 
+/** Uses the rosic::Sampler::EnvGenCore class to create an ADSR envelope with tne given 
+parameters. Time values are given in seconds, levels in percent. */
 std::vector<float> rsGetSamplerADSR(float att, float dec, float sus, float rel,
   float sampleRate, int numSamples, int noteOffAt)
 {
-  // Uses the rosic::Sampler::EnvGenCore class to create an ADSR envelope with tne given 
-  // parameters. Time values are given in seconds, levels in percent.
-
   std::vector<float> y(numSamples);
   float fs = sampleRate;
   float k  = 0.01f;
@@ -2966,15 +2981,15 @@ bool samplerKeyVelTrackTest()
   se.setRegionSetting(0, 0, OC::cutoffN,        440.f,  1);  // at A4, cutoff is 440
   se.setRegionSetting(0, 0, OC::resonanceN,      40.f,  1);  // we use high resonance
   float fs = (float)se.getOutputSampleRate();
-  tgt = rsApplyFilter(noise, FT::bp_6_6, 880.f, fs, 40.f); 
+  tgt = rsApplySamplerFilter(noise, FT::bp_6_6, 880.f, fs, 40.f); 
   ok &= testSamplerNote(&se, 81, vel, tgt, tgt, 2.e-5f, false); // 81 = 69 + 12
 
   // Test vel-tracking:
   vel_track = -1200.f;  // -12 semitones reduction at min-vel, i.e. vel=1
   se.setRegionSetting(0, 0, OC::filN_veltrack, vel_track,  1); 
-  tgt = rsApplyFilter(noise, FT::bp_6_6, 440.f, fs, 40.f); 
+  tgt = rsApplySamplerFilter(noise, FT::bp_6_6, 440.f, fs, 40.f); 
   ok &= testSamplerNote(&se, 69, 127, tgt, tgt, 4.e-5f, false);  // at key=69, keytrack should be neutral
-  tgt = rsApplyFilter(noise, FT::bp_6_6, 220.f, fs, 40.f); 
+  tgt = rsApplySamplerFilter(noise, FT::bp_6_6, 220.f, fs, 40.f); 
   ok &= testSamplerNote(&se, 69, 1, tgt, tgt, 0.00015f, false);
   // We need quite high tolerances here. I'm not sure about the veltrack formula - it's just a 
   // guess based on what i think, the behavior should be. I think, at vel = 127, the cutoff should 
@@ -3216,12 +3231,10 @@ bool samplerFilterEnvTest()
   Vec tgt(N);
   createWaveform(&tgt[0], N, 1, f, fs, 0.f, false);
   Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
-
-  // ToDo:
-  // -Apply filter to tgt using a FilterCore
-
   rsPlotVectors(adsr);
   rsPlotVectors(tgt);
+  tgt = rsApplySamplerFilter(tgt, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
+  rsPlotVectors(tgt); // it's full of NaNs!
 
 
 
