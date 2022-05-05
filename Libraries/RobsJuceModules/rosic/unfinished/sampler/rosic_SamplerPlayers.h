@@ -183,7 +183,7 @@ RegionPlayer. GroupPlayer and InstrumPlayer are also subclasses of SamplePlayer 
 is mostly to sum the signals of their embedded lower level players and apply additional DSP
 processes to these sums. */
 
-class SamplePlayer  // maybe rename to ChannelPlayer, LayerPlayer
+class SamplePlayer  // maybe rename to ChannelPlayer, LayerPlayer, PlayerBase
 {
 
 public:

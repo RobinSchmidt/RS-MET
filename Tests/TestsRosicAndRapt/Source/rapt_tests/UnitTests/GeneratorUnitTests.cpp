@@ -3242,19 +3242,44 @@ bool samplerFilterEnvTest()
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   addSingleSampleRegion(&se, x, key, fs);
   se.setSampleRate(fs);
-  se.setRegionSetting(0,0, OC::resonanceN, reso,   1); 
-  se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
-  se.setRegionSetting(0,0, OC::egN_attack,  att, 1);
-  se.setRegionSetting(0,0, OC::egN_decay,   dec, 1);
-  se.setRegionSetting(0,0, OC::egN_sustain, sus, 1);
-  se.setRegionSetting(0,0, OC::egN_release, rel, 1);
+  se.setRegionSetting(0,0, OC::resonanceN,  reso,   1); 
+  se.setRegionSetting(0,0, OC::cutoffN,     cutoff, 1);
+  se.setRegionSetting(0,0, OC::egN_attack,  att,    1);
+  se.setRegionSetting(0,0, OC::egN_decay,   dec,    1);
+  se.setRegionSetting(0,0, OC::egN_sustain, sus,    1);
+  se.setRegionSetting(0,0, OC::egN_release, rel,    1);
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, 64, outL, outR, nOff);
   float tol = 1.e-5;
   ok &= rsIsCloseTo(outL, y, tol);
   //Vec err = outL - y;
-  //rsPlotVectors(y, outL, outR);
+  rsPlotVectors(y, outL, outR);
+
+  //se.removeModulations(); // should remove all modulation connections
+
+  // OK - manually routing an egN to cutoff seems to work. Next: use the filegN_attack, etc. 
+  // opcodes instead. Setting a filegN_depth opcode should translate to a call to 
+  // setRegionModulation. And it should not just add another mod-connection but rather check, if 
+  // one exists already and if so, modify it. I think, this already is the behavior.
+
+  // ToDo:
+  // -Define and implement parsing for modulation routing opcodes.
+  // -Implement and test pitch envelope. Somehow, this needs to affect the SamplePlayer source.
+  // -Maybe we should handle the fixed/hardwired modulations, i.e. filegN, ampegN, pitchegN, 
+  //  opcodes as follows:
+  //  -Implement a function translateHardwiredOpcodes that is supposed to be called at the end of
+  //   setFromSfz and should do the following:
+  //   -Figure out maxN, the maximum N in the existing egN opcodes.
+  //   -Translate the filegN, ampegN, pitchegN to egN opcodes with N values above maxN.
+  //   -Translate filegN_depth, pitchegN_depth to appropriate modulation routing opcodes.
+  //  -Avantages:
+  //   -We can handle all envelopes in unified way. in particular, we don't need separate arrays
+  //    for ampEnvs, pitchEnvs, filterEnvs in the DspPool.
+  //  -Disadvantages:
+  //   -When writing the state to an sfz file, we lose the information about what egN opcodes 
+  //    formerly actually were hardwirded opcodes. Unless we somehow store that information in the
+  //    egN opdcodes
 
   rsAssert(ok);
   return ok;
