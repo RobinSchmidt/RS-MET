@@ -223,7 +223,13 @@ protected:
   /** Under construction... */
   bool assembleModulations(const std::vector<ModulationSetting>& modSettings);
 
+  bool assembleHardwiredModulations();
+
   bool assembleRoutableModulations(const std::vector<ModulationSetting>& modSettings);
+
+
+
+
 
  
 

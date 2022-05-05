@@ -138,7 +138,22 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
 
 bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& modSettings)
 {
-  return assembleRoutableModulations(modSettings);
+  bool ok = assembleHardwiredModulations();
+  if(ok)
+    return assembleRoutableModulations(modSettings);
+  else
+    return false;
+}
+
+bool SamplePlayer::assembleHardwiredModulations()
+{
+  // we need to use opcodes fileg_depth, pitcheg_depth for the routing of filter and pitch EG
+  // ...hmm...not yet sure, how to handle this. Maybe for the hardwired connections, we should 
+  // nevertheless have entries in the modSettings array and they should be handled by the function
+  // below. Maybe having this extra function here is not a good idea.
+
+
+  return true;
 }
 
 bool SamplePlayer::assembleRoutableModulations(const std::vector<ModulationSetting>& modSettings)

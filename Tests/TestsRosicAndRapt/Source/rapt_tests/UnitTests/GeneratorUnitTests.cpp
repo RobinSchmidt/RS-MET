@@ -2705,14 +2705,29 @@ bool samplerNoteOffTest()
   // Test parameters:
   int N    = 1200;  // Number of samples to produce
   int nOff =  500;  // Sample of noteOff event
-  int key  = 60;    // Key to play, also keyCenter for the DC sample
+  int key  =   60;  // Key to play, also keyCenter for the DC sample
   float fs = 1.0f;  // sample rate = 1  ->  no need to convert between seconds and samples
 
   SE se;
-  se.preAllocateDspMemory();           // It's important to call this but shouldn't be...
+  se.preAllocateDspMemory();  // It's important to call this but shouldn't be...
+
+  // Helper functions to produce output and plot:
+  auto getOutput = [&](int key, int numSamples, int noteOffAt)
+  {
+    Vec outL(numSamples), outR(numSamples);
+    getSamplerNote(&se, key, 64, outL, outR, noteOffAt);
+    return outL;  // ignore outR, should be the same
+  };
+  auto plot = [&](int numSamples, int noteOffAt)
+  {
+    Vec out = getOutput(key, numSamples, noteOffAt);
+    rsPlotVectors(out);
+  };
+
+
+
   setupForLoopedDC(&se, 10, key, fs);  // 10 samples of looped DC
   se.setSampleRate(fs);
-  // maybe set the loop from 2 to 7, i.e.a 5 sample long loop
 
   // Params for the first env routed to the first amp. The first 1 in the double-index is the index 
   // for the amplifier unit and the second index is for the envelope unit.
@@ -2732,27 +2747,16 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude1 to zero
   se.setRegionModulation(0, 0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
 
-  // Helper function to produce output:
-  auto getOutput = [&](int key, int numSamples, int noteOffAt)
-  {
-    Vec outL(numSamples), outR(numSamples);
-    getSamplerNote(&se, key, 64, outL, outR, noteOffAt);
-    return outL;  // ignore outR, should be the same
-  };
 
 
-  Vec out;
-  auto plot = [&](int numSamples, int noteOffAt)
-  {
-    out = getOutput(key, numSamples, noteOffAt);
-    rsPlotVectors(out);
-  };
+
+
 
   // Plot output for different instants of note-off event:
-  //plot(N, 500); // note-off well within sustain
-  //plot(N, 200); // note-off at start of sustain, i.e. at attack + decay
-  //plot(N, 100); // note-off during decay
-  //plot(N,  30); // note-off during attack
+  plot(N, 500); // note-off well within sustain
+  plot(N, 200); // note-off at start of sustain, i.e. at attack + decay
+  plot(N, 100); // note-off during decay
+  plot(N,  30); // note-off during attack
   // Currently, we always run through attack, decay and release phases even when the note-off 
   // occurs before reaching the sustain phase. This behavior may actually be useful, especially for
   // one-shot samples, but I think, it's not the standard way that envelopes behave. Normally, we 
@@ -2773,7 +2777,7 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::egN_sustain, sus_12, 2);
   se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
   se.setRegionModulation(0, 0, OT::FreeEnv, 2, OC::amplitudeN, 1, 100.f, Mode::absolute);
-  //plot(N, 500); 
+  plot(N, 500); 
 
   // Increase the release time of the second EG such that it becomes longer than the first. This 
   // should have the effect that now the 2nd env becomes the relevant one for determining when 
@@ -2819,10 +2823,24 @@ bool samplerNoteOffTest()
   // -After (or before) the modulation connections for the manually wired parameters are 
   //  established, we need to establish the hardwired connections. The ampeg is hardwired to the
   //  last Amplifier in the chain. If the chain does not already have at least one Amplifier, we 
-  //  need to insert one.
+  //  need to insert one. Oh - maybe, we should only look for amplifiers with an amplitude 
+  //  value of 0
+
+  // Maybe a call to
+  //   se.setRegionSetting(0, 0, OC::fileg_depth, depth, 1);
+  // should map to a call
+  //   se.setRegionModulation(0, 0, OT::FilterEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
 
 
   // ToDo:
+  // -write a function getADSR(int a, int d, int s, int r, int numSamples, int noteOffAt) to 
+  //  produce reference output and use it to implement unit tests
+  // -Implement a filter env test (may be simpler than amp because we can assume the filter to
+  //  exist - the additional complication of nonexisting target module disappears):
+  //  -Produce target output using a sawtooth and a resonant lowpass. use the getADSR for that
+  //  -use an explicitly routed egN and test against target
+  //  -use a fileg and fileg_depth
+  // 
   // -Implement ampeg_ stuff
   //  -Maybe we should just use the regular EnvGen class (an not have subclasses like EnvGenAmp 
   //   etc.) and interpret egN opcodes as applying to those when certain special values for the 
@@ -2859,8 +2877,9 @@ bool samplerNoteOffTest()
 
   // Questions:
   // -Should an envelope routed to a filter cutoff (or the fileg_ opcodes) be relative or absolute?
+  //  Oh - it's in cents, specified by fileg_depth
   // -What if fileg_attack etc. opcodes exist but no cutoff opcode? Should we insert a filter with
-  //  a defautl cutoff and route the fileg to that? Or should the fileg opcodes be ignored?
+  //  a default cutoff and route the fileg to that? Or should the fileg opcodes be ignored?
   // -Similarly what if ampeg_attack opcodes exist but no amplitudeN opcode? Should we implicitly 
   //  insert an amplifier. Maybe yes. The difference to the cutoff opcode is, that an amplitudeN
   //  opcode actually does not even exist in the SFZ1 spec (only in the ARIA spec).
