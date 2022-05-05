@@ -480,7 +480,7 @@ void samplerEnginePerformance()
   playTests("Empty");     // 6.268 / 0.6268,  6.268 / 0.6268,
 
   // Play just one layer of the looped single cycle sample:
-  setupForSineWave(&se, 2048);
+  setupForLoopedWave(&se, 2048);
   playTests("1 region");  // 115 / 114,  
   //rsPlotVectors(outL, outR);  // just to sanity check the output
 

@@ -156,13 +156,38 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
   // and confusing syntax in the function declaration
 }
 
-void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N)
+void setupForLoopedWave(rosic::Sampler::rsSamplerEngine* se, int N, int shape)
 {
-  std::vector<float> sineWave(N);
-  for(int n = 0; n < N; n++)
-    sineWave[n] = (float) sin(2.0*PI*n/N);
+  std::vector<float> x(N);
+  double w = 2.0*PI/N;
+
+  switch(shape)
+  {
+  case 0:
+  {
+    for(int n = 0; n < N; n++)
+      x[n] = (float) sin(w*n);
+  } break;
+  case 1:
+  {
+    for(int n = 0; n < N; n++)
+      x[n] = (float) rsSawWave(w*n);
+  } break;
+  case 2:
+  {
+    for(int n = 0; n < N; n++)
+      x[n] = (float) rsSqrWave(w*n);
+  } break;
+  case 3:
+  {
+    for(int n = 0; n < N; n++)
+      x[n] = (float) rsTriWave(w*n);
+  } break;
+  }
+
   se->clearInstrument();
-  addSingleSampleRegion(se, sineWave, 21.f, 56320.f);
+  addSingleSampleRegion(se, x, 21.f, 56320.f);
+  // ToDo: Document rationale behind the sampleRate of 56320
 
   // Set up loop settings:
   using namespace rosic::Sampler;

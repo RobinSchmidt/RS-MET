@@ -3070,7 +3070,6 @@ bool samplerLfoTest()
   return ok;
 }
 
-
 bool samplerEnvTest()
 {
   bool ok = true;
@@ -3163,6 +3162,55 @@ bool samplerEnvTest()
 }
 
 
+bool samplerFilterEnvTest()
+{
+  // Tests the filter envelope...tbc...
+
+  bool ok = true;
+
+  using namespace rosic::Sampler;
+  using Vec  = std::vector<float>;
+  using OT   = OpcodeType;
+  using Mode = ModMode;
+  using SE = rsSamplerEngineTest;
+  using OC = Opcode;
+
+  // Test parameters:
+  int   N      =  2000;       // Number of samples to produce
+  int   L      =  2048;       // Length of single cycle wave
+  int   nOff   =   500;       // Sample of noteOff event
+  int   key    =    57;       // Key to play, 57 = A3 = 220 Hz
+  float fs     = 44100.f;     // Sample rate
+  float depth  =  1200.f;     // Filter envelope depth in cents
+  float cutoff =  1000.f;     // Filter cutoff freq (nominal, before modulation)
+  float reso   =    20.f;     // Filter resonance in dB
+
+  // Create target signal:
+  float f = rsPitchToFreq((float)key);
+  Vec tgt(N);
+  createWaveform(&tgt[0], N, 1, f, fs, 0.f, false);
+
+  // ToDo:
+  // -Create filter env using a getADSR(a,d,s,r) function
+  // -Apply filter to tgt using a FilterCore
+
+  rsPlotVectors(tgt);
+
+
+
+  // Create and set up engine:
+  SE se;
+  setupForLoopedWave(&se, L, 1);
+  se.setSampleRate(fs);
+
+
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 
 
 bool samplerModulatorsTest()
@@ -3171,6 +3219,7 @@ bool samplerModulatorsTest()
 
   ok &= samplerLfoTest();
   ok &= samplerEnvTest();
+  ok &= samplerFilterEnvTest();
 
   rsAssert(ok);
   return ok;
@@ -3706,8 +3755,8 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerNoteOffTest();
-  //ok &= samplerModulatorsTest();
+  //ok &= samplerNoteOffTest();
+  ok &= samplerModulatorsTest();
   //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:

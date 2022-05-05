@@ -483,7 +483,10 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
 
 
 /** Helper function to set up the sampler engine with a single sinewave region. */
-void setupForSineWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048);
+void setupForLoopedWave(rosic::Sampler::rsSamplerEngine* se, int N = 2048, int shape = 0);
+// rename to setupForLoopedWave
+// Shapes: 0: sine, 1: saw, 2: square, 3: triangle.
+
 
 /** Sets up the sampler engine with a looped DC region. */
 void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N, float keyCenter, 

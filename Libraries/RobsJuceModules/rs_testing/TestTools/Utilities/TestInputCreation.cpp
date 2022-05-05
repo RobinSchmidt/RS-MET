@@ -68,7 +68,7 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
   {
     if( !(frequency >= sampleRate/2 && antiAlias == true) )
     {
-      for(int n=0; n<N; n++)
+      for(int n = 0; n < N; n++)
         x[n] = sin(w*n + phase);
     }
   }
@@ -77,7 +77,7 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
   {
     if( antiAlias == false )
     {
-      for(int n=0; n<N; n++)
+      for(int n = 0; n < N; n++)
         x[n] = (T) rsSawWave(T(w*n) + T(phase));
     }
     else
@@ -86,7 +86,7 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
       while( k*frequency < sampleRate/2 )
       {
         T a = T(-2.f / (k*PI));
-        for(int n=0; n<N; n++)
+        for(int n = 0; n < N; n++)
           x[n] += T(a * sin(k*(w*n+PI) + phase));
         k++;
       }
@@ -97,7 +97,7 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
   {
     if( antiAlias == false )
     {
-      for(int n=0; n<N; n++)
+      for(int n = 0; n < N; n++)
         x[n] = rsSqrWave(T(w*n + phase));
     }
     else
@@ -106,7 +106,7 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
       while( k*frequency < sampleRate/2 )
       {
         T a = T(-4.f / (k*PI));
-        for(int n=0; n<N; n++)
+        for(int n = 0; n < N; n++)
           x[n] += T(a * sin(k*(w*n+PI) + phase));
         k+=2;
       }
@@ -117,7 +117,7 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
   {
     if( antiAlias == false )
     {
-      for(int n=0; n<N; n++)
+      for(int n = 0; n < N; n++)
         x[n] = rsTriWave(w*n + phase);
     }
     else
@@ -127,7 +127,7 @@ void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase, 
       while( k*frequency < sampleRate/2 )
       {
         T a = T(8.f / (k*k*PI*PI));
-        for(int n=0; n<N; n++)
+        for(int n = 0; n < N; n++)
           x[n] += s * a * sin(k*w*n + phase);
         k +=  2;
         s *= -1.0;
