@@ -20,7 +20,7 @@ public:
   /** Standard constructor. Leaves vector elements uninitialized. */
   rsVector2D() {}
 
-  /** Constructor to initialize form an integer. Both elements will be set to the given value. It's
+  /** Constructor to initialize from an integer. Both elements will be set to the given value. It's
   main purpose is to make it possible to use rsVector2D in places which call a constructor with an 
   int such as in code like: value = T(0); which has typically has scalar type T. But sometimes, we
   may want it to be a vector, too. */

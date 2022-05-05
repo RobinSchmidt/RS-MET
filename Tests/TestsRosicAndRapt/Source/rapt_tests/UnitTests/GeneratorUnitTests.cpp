@@ -195,14 +195,15 @@ std::vector<float> rsApplySamplerFilter(const std::vector<float>& x,
   std::vector<float> y(N);
   using FilterDsp  = rosic::Sampler::Filter;
   using FilterCore = rosic::Sampler::FilterCore;
-  FilterCore flt;
-
+  FilterCore flt; 
+  flt.setupCutRes(FilterDsp::convertTypeEnum(type), 1.f, 0.f);  // dummy call in order to..
+  flt.resetState();                                             // ..make this call do something
   if(cutoffMod.size() == 0) {          // Static cutoff frequency
     float omega = float(2*PI) * cutoff / sampleRate;
     flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
     for(int n = 0; n < N; n++) {
       y[n] = x[n];
-      float dummy;
+      float dummy = 0.f;
       flt.processFrame(&y[n], &dummy); }}
   else {                               // Modulated cutoff frequency
     for(int n = 0; n < N; n++) {
@@ -210,7 +211,7 @@ std::vector<float> rsApplySamplerFilter(const std::vector<float>& x,
       float omega = float(2*PI) * k * cutoff / sampleRate;
       flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
       y[n] = x[n];
-      float dummy;
+      float dummy = 0.f;
       flt.processFrame(&y[n], &dummy); }}
 
   return y;
@@ -3231,8 +3232,8 @@ bool samplerFilterEnvTest()
   Vec tgt(N);
   createWaveform(&tgt[0], N, 1, f, fs, 0.f, false);
   Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
-  rsPlotVectors(adsr);
-  rsPlotVectors(tgt);
+  //rsPlotVectors(adsr);
+  //rsPlotVectors(tgt);
   tgt = rsApplySamplerFilter(tgt, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
   rsPlotVectors(tgt); // it's full of NaNs!
 
