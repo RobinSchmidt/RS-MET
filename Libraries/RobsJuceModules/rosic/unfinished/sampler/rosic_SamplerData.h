@@ -84,7 +84,8 @@ private:
 enum class ModMode  // rename to ModulationMode, maybe move out of Sampler sub-namespace
 {
   absolute,
-  relative
+  relative,
+  cents
   //exponential,
   //multiplicative
 

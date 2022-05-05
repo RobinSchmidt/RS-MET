@@ -212,10 +212,24 @@ public:
   connection ...tbc.... */
   float getContribution(float modulatorOutput, float unmodulatedValue)
   {
+    float m = modulatorOutput;
+    float u = unmodulatedValue;
+    float d = depth;
+
     switch(mode)
     {
-    case ModMode::absolute: return depth * modulatorOutput;
-    case ModMode::relative: return depth * modulatorOutput * unmodulatedValue;
+    case ModMode::absolute: return d * m;
+    case ModMode::relative: return d * m * u;
+
+    case ModMode::cents:
+    {
+      float k = RAPT::rsPitchOffsetToFreqFactor(d * m / 100.f); // factor to be applied
+      float c = k*u - u;  // contribution, verify this!
+      return c;
+    }
+
+
+
     default:                return 0.f;
     }
   }

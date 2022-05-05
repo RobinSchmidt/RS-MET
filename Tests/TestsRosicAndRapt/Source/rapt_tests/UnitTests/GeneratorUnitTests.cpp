@@ -3244,11 +3244,11 @@ bool samplerFilterEnvTest()
   se.setSampleRate(fs);
   se.setRegionSetting(0,0, OC::resonanceN, reso,   1); 
   se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
-  //se.setRegionSetting(0,0, OC::egN_attack,  att, 1);
-  //se.setRegionSetting(0,0, OC::egN_decay,   dec, 1);
-  //se.setRegionSetting(0,0, OC::egN_sustain, sus, 1);
-  //se.setRegionSetting(0,0, OC::egN_release, rel, 1);
-  //se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
+  se.setRegionSetting(0,0, OC::egN_attack,  att, 1);
+  se.setRegionSetting(0,0, OC::egN_decay,   dec, 1);
+  se.setRegionSetting(0,0, OC::egN_sustain, sus, 1);
+  se.setRegionSetting(0,0, OC::egN_release, rel, 1);
+  se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, 64, outL, outR, nOff);
   rsPlotVectors(y, outL, outR);
