@@ -225,7 +225,7 @@ public:
     {
       float k = RAPT::rsPitchOffsetToFreqFactor(d * m / 100.f); // factor to be applied
       float c = k*u - u;  // contribution, verify this!
-      return c;
+      return c;           // what about applying the depth here? maybe in another mode
     }
 
 

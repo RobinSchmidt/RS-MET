@@ -3198,7 +3198,6 @@ bool samplerEnvTest()
   return ok;
 }
 
-
 bool samplerFilterEnvTest()
 {
   // Tests the filter envelope...tbc...
@@ -3214,7 +3213,7 @@ bool samplerFilterEnvTest()
 
   // Test parameters:
   int   N      =  1000;       // Number of samples to produce
-  int   L      =  2048;       // Length of single cycle wave
+  //int   L      =  2048;       // Length of single cycle wave
   int   nOff   =   500;       // Sample of noteOff event
   int   key    =    57;       // Key to play, 57 = A3 = 220 Hz
   float fs     = 44100.f;     // Sample rate
@@ -3230,9 +3229,9 @@ bool samplerFilterEnvTest()
   float f = rsPitchToFreq((float)key);
   Vec x(N);
   createWaveform(&x[0], N, 1, f, fs, 0.f, false);
-  Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
-  //rsPlotVectors(adsr);
   //rsPlotVectors(x);
+  Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
+  rsPlotVectors(adsr);
   //depth = 0.f;  // test
   Vec y = rsApplySamplerFilter(x, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
   //rsPlotVectors(y);
@@ -3254,7 +3253,7 @@ bool samplerFilterEnvTest()
   float tol = 1.e-5;
   ok &= rsIsCloseTo(outL, y, tol);
   //Vec err = outL - y;
-  rsPlotVectors(y, outL, outR);
+  //rsPlotVectors(y, outL, outR);
 
   //se.removeModulations(); // should remove all modulation connections
 
@@ -3286,6 +3285,50 @@ bool samplerFilterEnvTest()
 }
 
 
+bool samplerPitchEnvTest()
+{
+  bool ok = true;
+
+  using namespace rosic::Sampler;
+  using Vec  = std::vector<float>;
+  using OT   = OpcodeType;
+  using Mode = ModMode;
+  using SE = rsSamplerEngineTest;
+  using OC = Opcode;
+
+  // Test parameters:
+  int   N      =  1000;       // Number of samples to produce
+  //int   L      =  2048;       // Length of single cycle wave
+  int   nOff   =   500;       // Sample of noteOff event
+  int   key    =    57;       // Key to play, 57 = A3 = 220 Hz
+  float fs     = 44100.f;     // Sample rate
+  float depth  =  1200.f;     // Pitch envelope depth in cents
+  float att    =   100/fs;    // attack in seconds, the 100 is in samples
+  float dec    =   200/fs;    // decay in seconds
+  float sus    =    50.f;     // sustain in percent
+  float rel    =   400/fs;    // release in seconds
+
+
+  Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
+  rsPlotVectors(adsr);
+
+  float freq = RAPT::rsPitchToFreq((float)key);
+  Vec freqs(N);
+  for(int n = 0; n < N; n++)
+  {
+    float k  = RAPT::rsPitchOffsetToFreqFactor(depth * adsr[n] / 100.f);
+    float fm = (k-1) * freq;  // what about applying the depth here?
+    freqs[n] = freq + fm;
+  }
+  Vec x(N);
+  //createSineWave(&x[0], N, &freqs[0], 1.f, fs);  // function works only for double atm
+  rsPlotVectors(x);
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 
 bool samplerModulatorsTest()
 {
@@ -3294,6 +3337,7 @@ bool samplerModulatorsTest()
   ok &= samplerLfoTest();
   ok &= samplerEnvTest();
   ok &= samplerFilterEnvTest();
+  ok &= samplerPitchEnvTest();
 
   rsAssert(ok);
   return ok;
