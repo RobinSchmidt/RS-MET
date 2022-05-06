@@ -439,6 +439,10 @@ public:
   applicable to the given opcode, you should pass index = -1. */
   float opcodeDefaultValue(Opcode op, int index);
 
+  /** Returns the default modulation mode for the given opcode, i.e. the modulation mode that is 
+  used when the user doesn't use a unit suffix to the modulation depth opcode in the sfz file. */
+  ModMode opcodeDefaultModMode(Opcode op);
+
   /** Returns a string that represents the given opcode op with given index in a format that can be
   written into an .sfz file. The string is returned by value because for those opcodes that include 
   indices (such as eq2_freq), we need to generate the string dynamically. */
@@ -479,7 +483,7 @@ public:
 
   float stringToModDepth(const std::string& str, ModMode* modMode, Opcode targetOpcode);
 
-
+  ModMode stringToModMode(const std::string& str);
 
 
   //-----------------------------------------------------------------------------------------------

@@ -344,6 +344,23 @@ float SfzCodeBook::opcodeDefaultValue(Opcode op, int index)
   return opcodeEntries[(int)op].defVal;
 }
 
+ModMode SfzCodeBook::opcodeDefaultModMode(Opcode op)
+{
+  using MM = ModMode;
+  using OC = Opcode;
+
+  switch(op)
+  {
+  case OC::cutoffN: return MM::cents;
+    // ...more to come
+
+  }
+
+  RAPT::rsError("Unknown opcode in opcodeDefaultModMode");
+  return MM::unknown;
+}
+
+
 std::string SfzCodeBook::opcodeToString(Opcode op, int index) const
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
@@ -614,15 +631,10 @@ float SfzCodeBook::stringToModDepth(const std::string& str, ModMode* modMode, Op
   std::string sfxStr = str.substr(i, str.length()-i);
   // Test if this works also if there is no suffix at all. In this case, the sfxStr should be empty
 
-  /*
-  if(sfxStr.empty)
-    *modMode = getDefaultModMode(target);
+  if(sfxStr.empty())
+    *modMode = opcodeDefaultModMode(target);
   else
     *modMode = stringToModMode(sfxStr);
-  */
-
-
-
 
 
   // -Check, if str has a unit suffix. Maybe implement a general endsWith(str, pattern) function
@@ -633,6 +645,19 @@ float SfzCodeBook::stringToModDepth(const std::string& str, ModMode* modMode, Op
 
   return 0.f;
 }
+
+ModMode SfzCodeBook::stringToModMode(const std::string& str)
+{
+  using MM = ModMode;
+
+  if(str == "ct") return MM::cents;
+  // ...more to come
+
+
+  RAPT::rsError("Unknown string for modulation mode");
+  return MM::unknown;
+}
+
 
 std::string SfzCodeBook::valueToString(Opcode op, float val)
 {
