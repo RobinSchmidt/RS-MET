@@ -3826,7 +3826,7 @@ bool samplerEngineUnitTest()
   rsAssert(ok);
 
   // ToDo:
-
+  // make a sfzCodeBookTest that tests the from/to strin converrsions
 
   // -Refactor:
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 

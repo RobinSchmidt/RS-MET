@@ -827,17 +827,16 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
   Opcode targetOpcode = cb->stringToOpcode(tgtStr, &tgtIndex);
   OpcodeType targetType = cb->getOpcodeType(targetOpcode);
 
+  // Figure out modulation depth and mode:
+  ModMode mode;
+  float depth = cb->stringToModDepth(valStr, &mode, targetOpcode);
 
 
   // ToDo:
-  // -Check, if valStr has a unit suffix. Maybe implement a general endsWith(str, pattern) function
-  //  and use that for parsing unit suffixes. If it does have a suffix, assign the mod-mode 
-  //  according to the suffix, else according to the standard unit that is applicable to the given
-  //  target parameter.
-  // -...
   // -Maybe this whole code should go into SfzCodeBook. It seems to fit in there better than here.
   //  But the codebook doesn't know about class ModulationSetting, so how should we return the 
-  //  data?
+  //  data? Maybe a function that takes all the members of that class as pointer arguments? But maybe
+  //  it's ok to keep the code here
 
   return ModulationSetting();  // standard constructor will create an invalid object
 }

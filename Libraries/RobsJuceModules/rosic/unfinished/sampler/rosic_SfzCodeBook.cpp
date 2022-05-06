@@ -415,6 +415,17 @@ int lastNonDigit(const std::string& str, int startIndex = 0)
 // maybe a function firstDigit would be more useful? but no - we need something that works with 
 // strings that contain no digits, too
 
+/** Returns the index at which the unit suffix starts. If the is no suffix, it returns 
+str.length()-1. If the whole string is a suffix, it returns 0. */
+int suffixStart(const std::string& str)
+{
+  for(int i = (int)str.length()-1; i >= 0; --i)
+    if(isDigit(str[i]) || str[i] == '.')   // numbers end in a digit or a dot
+      return i+1;
+  return 0;
+}
+// maybe rename, needs tests
+
 int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
 {
   int num    = 0;
@@ -582,7 +593,6 @@ OpcodeType SfzCodeBook::stringToModSource(const std::string& str, int* index)
     *index = parseNaturalNumber(idxStr, 0, (int)idxStr.length()-1);
 
   using OT = OpcodeType;
-  OT type;
   if(srcStr == "eg")       return OT::FreeEnv;
   if(srcStr == "ampeg")    return OT::AmpEnv;
   if(srcStr == "fileg")    return OT::FilterEnv;
@@ -596,6 +606,33 @@ OpcodeType SfzCodeBook::stringToModSource(const std::string& str, int* index)
   return OpcodeType::Unknown;
 }
 
+float SfzCodeBook::stringToModDepth(const std::string& str, ModMode* modMode, Opcode target)
+{
+  int i = suffixStart(str);
+
+  std::string numStr = str.substr(0, i);
+  std::string sfxStr = str.substr(i, str.length()-i);
+  // Test if this works also if there is no suffix at all. In this case, the sfxStr should be empty
+
+  /*
+  if(sfxStr.empty)
+    *modMode = getDefaultModMode(target);
+  else
+    *modMode = stringToModMode(sfxStr);
+  */
+
+
+
+
+
+  // -Check, if str has a unit suffix. Maybe implement a general endsWith(str, pattern) function
+  //  and use that for parsing unit suffixes. If it does have a suffix, assign the mod-mode 
+  //  according to the suffix, else according to the standard unit that is applicable to the given
+  //  target parameter.
+
+
+  return 0.f;
+}
 
 std::string SfzCodeBook::valueToString(Opcode op, float val)
 {

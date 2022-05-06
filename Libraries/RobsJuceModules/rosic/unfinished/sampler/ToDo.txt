@@ -44,6 +44,11 @@ Sample playback
 Effect chain
 ============
 
+- Implement support of arbitrary (single cycle) waveforms for the LFOs. Maybe they don't even need 
+  to be single-cycle. We could also support arbitrary samples with loops. By default, we would use
+  a loop_start of 0 and loop_end of N. Having this in place will also make it easier to implement
+  the same thing for the sample player.
+
 - Implement different filter topologies which are automatically selected according to the sfz data
 
 

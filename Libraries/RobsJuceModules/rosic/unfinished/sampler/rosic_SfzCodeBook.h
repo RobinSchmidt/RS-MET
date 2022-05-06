@@ -477,6 +477,10 @@ public:
 
   OpcodeType stringToModSource(const std::string& str, int* index);
 
+  float stringToModDepth(const std::string& str, ModMode* modMode, Opcode targetOpcode);
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
