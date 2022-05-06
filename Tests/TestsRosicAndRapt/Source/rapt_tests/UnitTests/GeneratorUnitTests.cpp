@@ -3185,25 +3185,6 @@ bool samplerEnvTest()
 
   // ToDo:
 
-  // -Implement different shapes for the segments. See:
-  //    https://sfzformat.com/opcodes/ampeg_attack_shape
-  //    https://sfzformat.com/opcodes/ampeg_release_shape
-  //    https://sfzformat.com/opcodes/ampeg_decay_shape
-  //  analogous opcodes exist for fileg and pitcheg. These are opcodes specified in ARIA. For the 
-  //  egN opcodes, there is the 
-  //    https://sfzformat.com/opcodes/egN_shapeX
-  //  opcode defined in SFZ2. The egN opcodes are apparently supposed to be MSEGs rather than 
-  //  extended ADSR envelopes. They are defined via 
-  //    https://sfzformat.com/opcodes/egN_levelX
-  //    https://sfzformat.com/opcodes/egN_timeX
-  //  opcodes. Maybe we should define, for example, ampeg_attack as alias for ampeg_time1 which in 
-  //  turn is internally translated to egM_time1 where M is chosen to be > max(N) for the 
-  //  user-defined egN opcodes. And/or egN_attack is just an alias for egN_time1
-  // -Optimize the envelope code and use the current code as prototype to compare against in a unit
-  //  test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
-  // -Figure out what happens when the noteOff is received before the sustain phase is entered and
-  //  check if the behavior matchesn what is desired. We probably need to implement the EG 
-  //  recursively using somthing like y += dy
 
   rsAssert(ok);
   return ok;
@@ -3273,9 +3254,6 @@ bool samplerFilterEnvTest()
   // setRegionModulation. And it should not just add another mod-connection but rather check, if 
   // one exists already and if so, modify it. I think, this already is the behavior.
 
-  // ToDo:
-  // -Implement and test pitch envelope. Somehow, this needs to affect the SamplePlayer source.
-
 
   rsAssert(ok);
   return ok;
@@ -3324,18 +3302,9 @@ bool samplerPitchEnvTest()
   // engine. Maybe we should route it to the tune or transpose parameter? Seems reasonable
 
   // ToDo:
-  // -Implement and test parsing of mod-routing opcodes:
-  //  -
-  // -I think, implementing pitch envelopes in the sample engine should be postponed. We really 
-  //  need to redesign the way, the sample playback works by making the SamplePlayer a subclass of
-  //  Processor just like all the other signal processors. This may have some side benefits of 
-  //  simplfiying the code for the opcode accumulation vs override behavior (no special casing for
-  //  SamplePlayer opcodes anymore) and we will automatically also be able to modulate the loop
-  //  start and end points. With suitable samples, this will allow a wavtable synthesis a la 
-  //  Waldorf and also perhaps some sort of dubstep growls (apply loop-modulation to noisy 
-  //  samples).
-
-
+  // -I think, implementing pitch envelopes in the sample engine should be postponed until we have
+  //  done the redesign of the sample playback to use a SamplePlayer subclass of Processor (see 
+  //  ToDo.txt for more about this redesign idea)
 
 
   rsAssert(ok);
