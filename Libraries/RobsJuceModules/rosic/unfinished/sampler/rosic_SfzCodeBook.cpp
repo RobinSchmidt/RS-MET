@@ -428,6 +428,16 @@ Opcode SfzCodeBook::stringToOpcode(const std::string& strIn, int* index)
   for(int i = 0; i < opcodeEntries.size(); i++)
     if(opcodeEntries[i].text == str)
       return opcodeEntries[i].op;    // op should be equal to i
+
+  // If no fitting opcode was found among the regular opcodes, it may be a modulation routing 
+  // opcode. These need to be parsed differently...tbc...
+  // oh..but i think, that mus be handled by the caller when we return Opcode::Unknown here
+
+  //ModulationSetting m = stringToModRouting(str);
+  //if(m.isValid())
+
+
+
   RAPT::rsError("Unknown opcode in SfzCodeBook::stringToOpcode");
   return Opcode::Unknown;
 
@@ -438,7 +448,11 @@ Opcode SfzCodeBook::stringToOpcode(const std::string& strIn, int* index)
   // Another option could be to use a hash-table as in std::map.
 
   // ToDo:
-  // -We need a way to return the index, too!
+  // -Maybe we should not raise an error when we don't find a fitting opcode but just return
+  //  Opcode::Unknown and leave it to the caller to either raise an error or to try to parse the
+  //  string in another way. It could still be a modulation routing opcode. These are dynamically 
+  //  created and not handled by a simple lookup
+  // -We need a way to return the index, too! ...done?
   // -There are opcodes like pitcheg_vel2hold where the 2 is actually not an index!. In this case, 
   //  the 2 should not be removed. Maybe whenever a 2 is prefixed by vel, we should not remove it.
   //  This is a messy business with all sorts of special cases and needs thorough unit tests!
