@@ -599,8 +599,30 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     if(opcode == "sample") {     // needs to be treated in a special way
       lvl->setSamplePath(value);
       return;  }
+
     PlaybackSetting ps = getSettingFromString(opcode, value);
-    lvl->setSetting(ps);
+    if(ps.getOpcode() != Opcode::Unknown)
+      lvl->setSetting(ps);
+    else
+    {
+      // If it's not found among the regular opcodes, it may be a modulation routing setting.
+      ModulationSetting mr = getModRoutingFromString(opcode, value);
+      if(mr.isInvalid())
+        RAPT::rsError("String could not be parsed as modulation routing");
+      else
+      {
+        //lvl->setModulation(mr);
+        // function expects all the values destructured - todo: implement a function that takes
+        // a ModulationRouting object
+      }
+
+
+
+
+
+
+      int dummy = 0;
+    }
   };
 
   // Sets up the given level according to the given string which is supposed to contain one setting
@@ -771,13 +793,22 @@ PlaybackSetting SfzInstrument::getSettingFromString(
 {
   using PS  = PlaybackSetting;
   using PST = Opcode;
-  SfzCodeBook* t = SfzCodeBook::getInstance();
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
   int idx;
-  PST   op  = t->stringToOpcode(opStr, &idx);
-  float val = t->stringToValue(op, valStr);
+  PST   op  = cb->stringToOpcode(opStr, &idx);
+  float val = cb->stringToValue(op, valStr);
   return PS(op, val, idx);
 }
 // maybe move into a static "fromString" member function of PlaybackSetting
+
+ModulationSetting SfzInstrument::getModRoutingFromString(
+  const std::string& opStr, const std::string& valStr)
+{
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+
+
+  return ModulationSetting();  // standard constructor will create an invalid object
+}
 
 void SfzInstrument::copy(const SfzInstrument& src, SfzInstrument& dst)
 {

@@ -90,6 +90,9 @@ class ModulationSetting  // rename to ModulationRouting
 
 public:
 
+  //---------------------------------------------------------------------------------------------
+  // \name Lifetime
+
   ModulationSetting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex,
     float modDepth, ModMode modMode)
     : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
@@ -97,6 +100,25 @@ public:
   {
     targetType = SfzCodeBook::getInstance()->getOpcodeType(modTarget);
   }
+
+  /** Standard constructor. Will create an invalid object. All enum members are initialized to 
+  "unknown", indices to -1, etc. The object needs to be either set up correctly later via the 
+  setters or can serve as a sort of null-object or dummy-object that can be used, when a 
+  mod-routing string could not be parsed, for example. */
+  ModulationSetting() {}
+
+
+  //---------------------------------------------------------------------------------------------
+  // \name Setup
+
+  void setDepth(float newDepth) { depth = newDepth; }
+
+  void setMode(ModMode newMode) { mode = newMode; }
+
+
+  //---------------------------------------------------------------------------------------------
+  // \name Inquiry
+
 
   /** Returns true, iff the type and index of the source of the given routing matches ours. */
   bool hasMatchingSource(const ModulationSetting& r) const
@@ -133,21 +155,22 @@ public:
 
   float getDepth() const { return depth; } 
 
-
-  void setDepth(float newDepth) { depth = newDepth; }
-
-  void setMode(ModMode newMode) { mode = newMode; }
+  bool isInvalid() const
+  {
+    return sourceType == OpcodeType::Unknown || sourceIndex == -1 || mode   == ModMode::unknown
+        || targetType == OpcodeType::Unknown || targetIndex == -1 || target == Opcode::Unknown;
+  }
 
 
 private:
 
-  OpcodeType sourceType;   // Type of modulator, e.g. EnvGen, LowFreqOsc, etc.
-  int        sourceIndex;  // Index like the 3 in lfo3_freq 
-  OpcodeType targetType;   // Type of receiver object, e.g. Filter, Amplifier, etc.
-  Opcode     target;       // Target parameter like cutoffN, volumeN, etc. ..rename to targetParam
-  int        targetIndex;  // Index like the 2 in lfo3_cutoff2, lfo3_eq2gain, etc.
-  float      depth;        // Modulation depth
-  ModMode    mode;         // absolute, relative, exponential, etc.
+  OpcodeType sourceType  = OpcodeType::Unknown; // Type of modulator, e.g. EnvGen, LowFreqOsc, etc.
+  int        sourceIndex = -1;                  // Index like the 3 in lfo3_freq 
+  OpcodeType targetType  = OpcodeType::Unknown; // Type of receiver object, e.g. Filter, Amplifier,
+  int        targetIndex = -1;                  // Index like the 2 in lfo3_cutoff2, lfo3_eq2gain
+  Opcode     target      = Opcode::Unknown;     // Target parameter like cutoffN, volumeN, etc.   // rename to targetPar
+  float      depth       = 0.f;                 // Modulation depth
+  ModMode    mode        = ModMode::unknown;    // absolute, relative, exponential, etc.
 
   // ToDo:
   // -Maybe have a member for modulationMode (absolute, relative, exponential, etc.) but maybe
@@ -753,6 +776,10 @@ protected:
 
   static PlaybackSetting getSettingFromString(
     const std::string& opcode, const std::string& value);
+
+  static ModulationSetting getModRoutingFromString(
+    const std::string& opStr, const std::string& valStr);
+
 
   static void copy(const SfzInstrument& src, SfzInstrument& dst);
 

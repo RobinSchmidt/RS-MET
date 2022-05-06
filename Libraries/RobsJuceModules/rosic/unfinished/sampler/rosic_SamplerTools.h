@@ -46,14 +46,14 @@ enum class ModMode  // rename to ModulationMode, maybe move out of Sampler sub-n
 {
   absolute,
   relative,
-  cents
+  cents,
   //exponential,
   //multiplicative,
   //percent_of_nominal,
   //percent_absolute,    // used for ampeg where nominal value is 0
   //raw,
 
-  // unknown
+  unknown
 };
 
 
