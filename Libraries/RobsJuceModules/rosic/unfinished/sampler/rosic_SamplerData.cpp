@@ -142,18 +142,35 @@ void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int mod
     return; }
   ModulationSetting newRouting(
     modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth, modMode);
+
+  // new:
+  setModulation(newRouting);
+
+  /*
+  // old:
   for(size_t i = 0; i < modRoutings.size(); i++) {
     if( modRoutings[i].hasMatchingEndpoints(newRouting) ) {
       modRoutings[i].setDepth(modDepth);  // Overwrite existing routing
       modRoutings[i].setMode(modMode);
       return;  }}                         // ...and return early
   modRoutings.push_back(newRouting);      // or append a new routing
+  */
 }
 // Maybe return the index where the setting was modified or the last index if it was pushed.
 // Maybe we should have a sanity check that source and target exist...but maybe it's allowable to 
 // set up the modulation connections before these exist. But in this case, we should perhaps make
 // a sanity check for all connections after the region was fully set up. Maybe a member function
 // checkModRoutingSanity ..or hasDanglingRoutings or something
+
+void SfzInstrument::HierarchyLevel::setModulation(const ModulationSetting& r)
+{
+  for(size_t i = 0; i < modRoutings.size(); i++) {
+    if( modRoutings[i].hasMatchingEndpoints(r) ) {
+      modRoutings[i].setDepth(r.getDepth());  // Overwrite existing routing
+      modRoutings[i].setMode(r.getMode());
+      return;  }}                             // ...and return early
+  modRoutings.push_back(r);                   // or append a new routing
+}
 
 template<class T, class P>
 size_t rsRemoveIf(std::vector<T>& vec, P pred)
@@ -601,28 +618,14 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       return;  }
 
     PlaybackSetting ps = getSettingFromString(opcode, value);
-    if(ps.getOpcode() != Opcode::Unknown)
+    if(ps.getOpcode() != Opcode::Unknown)  // It's a regular opcode setting
       lvl->setSetting(ps);
-    else
-    {
-      // If it's not found among the regular opcodes, it may be a modulation routing setting.
+    else {                                 // It may be a modulation routing setting
       ModulationSetting mr = getModRoutingFromString(opcode, value);
       if(mr.isInvalid())
         RAPT::rsError("String could not be parsed as modulation routing");
       else
-      {
-        //lvl->setModulation(mr);
-        // function expects all the values destructured - todo: implement a function that takes
-        // a ModulationRouting object
-      }
-
-
-
-
-
-
-      int dummy = 0;
-    }
+        lvl->setModulation(mr); }
   };
 
   // Sets up the given level according to the given string which is supposed to contain one setting
@@ -806,6 +809,13 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
 
+  // ToDo:
+  // -Figure out DspType and index of source and target
+  // -Check, if valStr has a unit suffix. Maybe implement a general endsWith(str, pattern) function
+  //  and use that for parsing unit suffixes. If it does have a suffix, assign the mod-mode 
+  //  according to the suffix, else according to the standard unit that is applicable to the given
+  //  target parameter.
+  // -...
 
   return ModulationSetting();  // standard constructor will create an invalid object
 }

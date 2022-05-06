@@ -281,6 +281,11 @@ public:
 
     void setModulation(OpcodeType modSrcType, int modSrcIndex, 
       Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
+    // rename to setModRouting or setModulationRouting
+
+    void setModulation(const ModulationSetting& newRouting);
+
+
 
     bool removeModulation(OpcodeType modSrcType, int modSrcIndex, 
       Opcode modTarget, int modTargetIndex);
