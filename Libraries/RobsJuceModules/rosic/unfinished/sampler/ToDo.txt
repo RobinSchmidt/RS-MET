@@ -1,19 +1,6 @@
-
-
 ----------------------------------------------------------------------------------------------------
-Effect chain
-============
-
-- Redesign the way, the sample playback works: Make the SamplePlayer a subclass of Processor just 
-  like all the other signal processors. This may have some side benefits of simplfiying the code for
-  the opcode accumulation vs override behavior (no special casing for SamplePlayer opcodes anymore)
-  and we will automatically also be able to modulate the loop start and end points. With suitable 
-  samples, this will allow a wavtable synthesis a la Waldorf and also perhaps some sort of dubstep 
-  growls (apply loop-modulation to noisy or percussive samples).
-
-----------------------------------------------------------------------------------------------------
-Modulation system
-=================
+SFZ parsing
+===========
 
 - Define and implement parsing for modulation routing opcodes.
 
@@ -21,9 +8,73 @@ Modulation system
   the (first) filter envelope (i.e. the first EnvGenFil in the modSources array) to the first filter
   in the effectChain.
 
+- What if fileg_attack etc. opcodes exist but no cutoff opcode? Should we insert a filter with
+  a default cutoff and route the fileg to that? Or should the fileg opcodes be ignored? Similarly 
+  what if ampeg_attack opcodes exist but no amplitudeN opcode? Should we implicitly insert an 
+  amplifier? Maybe yes. The difference to the cutoff opcode is, that an amplitudeN opcode actually 
+  does not even exist in the SFZ1 spec (only in the ARIA spec).
+
+----------------------------------------------------------------------------------------------------
+Sample playback
+===============
+
+- Redesign the way, the sample playback works: Make the SamplePlayer a subclass of Processor just 
+  like all the other signal processors. This may have some side benefits of simplfiying the code for
+  the opcode accumulation vs override behavior (no special casing for SamplePlayer opcodes anymore)
+  and we will automatically also be able to modulate the loop start and end points. With suitable 
+  samples, this will allow a wavtable synthesis a la Waldorf and also perhaps some sort of dubstep 
+  growls (apply loop-modulation to noisy or percussive samples).
+  
+- Maybe switch to an int+float representation of the current sample position and increment and 
+  check, if this improves performance...even if not, it's still better because it doesn't lose 
+  precision for later samples
+  
+- Implement and test better realtime resampling (linear interpolation at first, later cubic and
+  sinc, maybe some sort of "Elephant" interpolation, too - although, they are supposed to work 
+  with 2x oversampling) 
+  - we need a double for the sample-time and an increment...but later, that increment shall be
+    modulated by pitch-env and -lfo, or maybe use and int and a a float to represent sampleTime
+    and increment -> do benchmarks, which is faster
+  - Should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
+    for controlling this? in some situations, that may makes sense (for creating comb-filter 
+    effects), in others not so much  
+  
+
+----------------------------------------------------------------------------------------------------
+Effect chain
+============
+
+- Implement different filter topologies which are automatically selected according to the sfz data
+
+
+
+----------------------------------------------------------------------------------------------------
+Modulation system
+=================
+
 - Figure out what the correct behavior with regard to start/delay is - should we output zero or
    start during the delay phase? We need to test this using a reference implementation like 
    sfz+.
+   
+- Verify the formula for vel_tracking of amplitude against some reference implemenetation (sfz+)   
+   
+- Release-Modes: 
+  - one_shot: always run through the whole envelope even when noteOff is triggered before 
+    reaching sustain (this is the current behavior)
+  - immediate: enter release phase immediately, starting from current level   
+   
+- Retrigger-Modes: determine behavior when a new noteOn is received during the release of a
+  voice/layer playing the same note
+  - new_layer: a new layer is started while the old one just keeps releasing (this is the 
+    current behavior, I think)
+  - restart: re-uses the releasing voice/layer and retriggers the envelope from the beginning,
+    LFOs (if any) should keep running
+  - restart_from_current: like restart but does not restart the envelope from its start level 
+    but from where it currently is.
+  - pile_up: like restart_from_current, but in a rapid succession of notes, the envelopes pile
+    up on each other like the filter-based ones triggered by impulses would do (see Experiments 
+    with class rsAttackDecayEnvelope for how this behaves)
+  - Let the user select the shapes for the different stages
 
 - Maybe we should handle the fixed/hardwired modulations, i.e. filegN, ampegN, pitchegN, 
   opcodes as follows:
@@ -44,7 +95,7 @@ Modulation system
   test. At the moment, we only plot stuff here and do not yet do any actualy unit tests
   
 - Figure out what happens when the noteOff is received before the sustain phase is entered and
-  check if the behavior matchesn what is desired. We probably need to implement the EG 
+  check if the behavior matches what is desired. We probably need to implement the EG 
   recursively using somthing like y += dy	
 
 - Implement different shapes for the segments. See:
@@ -61,4 +112,18 @@ Modulation system
   opcodes. Maybe we should define, for example, ampeg_attack as alias for ampeg_time1 which in 
   turn is internally translated to egM_time1 where M is chosen to be > max(N) for the 
   user-defined egN opcodes. And/or egN_attack is just an alias for egN_time1
+
+- Implement pitch EGs after the redesign of the SamplePlayer explained above. Pitch EGs are then 
+  just regular EGs routed to transpose and/or tune opcodes which are opcodes of the SamplePlayer
+  Processor. Maybe pitcheg_depth should be interpreted as an alias for routing the pitcheg to the
+  tune parameter of the first sample player because both opcodes operate with cents:
+    https://sfzformat.com/opcodes/pitcheg_depth
+    https://sfzformat.com/opcodes/tune
+  whereas transpose expect an integer (I guess in units of semitones):
+	https://sfzformat.com/opcodes/transpose
+
+- Implement MSEGs. Maybe when they are in place, the extended ADSRs can be implemented in terms of 
+  them as special case. Maybe as subclass, maybe using some aliases for the opcodes - we'll see.
   
+- Implement optional dynamic recalculation of envelope durations in response to MIDI CCs, see:  
+    https://sfzformat.com/opcodes/ampeg_dynamic

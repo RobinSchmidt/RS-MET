@@ -669,24 +669,7 @@ bool samplerRegionPlayerTest()
   // ...or should we? is this something we should be able to handle? What should actually be the
   // desired state of the samplePool after adding a sample of size 0? should we indeed add an
   // object with zero data or should we just don't add anything? ..I'm not yet sure...but perhaps
-  // 
-
-
-
-  // ToDo:
-  // -write a performance test for the sampler
-  // -switch to an int+float representation of the current sample position and increment and check, 
-  //  if this improves performance...even if not, it's still better because it doesn't lose 
-  //  precision for later samples
-  // -implement and test better realtime resampling (linear interpolation at first, later cubic and
-  //  sinc, maybe some sort of "Elephant" interpolation, too - although, they are supposed to work 
-  //  with 2x oversampling) 
-  //  -we need a double for the sample-time and an increment...but later, that increment shall be
-  //   modulated by pitch-env and -lfo, or maybe use and int and a a float to represent sampleTime
-  //   and increment -> do benchmarks, which is faster
-  //  -should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
-  //   for controlling this? in some situations, that may makes sense (for creating comb-filter 
-  //   effects), in others not so much
+  // create a dummy sample of length 1 and value 0?
 
 
   rsAssert(ok);
@@ -951,10 +934,6 @@ bool samplerBusModeTest()
   rsPlotVector(outL);
   */
 
-
-
-
-
   // Test behavior of pitch_keycenter when it's only defined on the group level:
 
   // Test behavior of pitch_keycenter when it's only defined on the instrument and group and level. 
@@ -962,9 +941,6 @@ bool samplerBusModeTest()
 
   // Test behavior of pitch_keycenter when it's defined on all 3 levels. The region setting should
   // override both:
-
-
-
 
   /*
   // Restore the instrument's tune setting and let the group settings override the instrument 
@@ -1017,9 +993,6 @@ bool samplerBusModeTest()
 
   // The same problem may arise when we want to support the stereo-width opcode because it 
   // interferes with Pan
-
-
-
 
 
   // ToDo: 
@@ -2726,6 +2699,7 @@ bool samplerLoopTest()
 
 bool samplerNoteOffTest()
 {
+  // UNDER CONSTRUCTION
   // Tests the responses to note-off events in various circumstances, i.e. different loop modes 
   // and/or different numbers of amplifiers and envelopes for these amplifiers. This should also 
   // test the behavior when the noteOff is received before reaching sustain.
@@ -2783,10 +2757,6 @@ bool samplerNoteOffTest()
   // nominal value for the amplitude is 0:
   se.setRegionSetting(0, 0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude1 to zero
   se.setRegionModulation(0, 0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
-
-
-
-
 
 
   // Plot output for different instants of note-off event:
@@ -2868,22 +2838,12 @@ bool samplerNoteOffTest()
   // should map to a call
   //   se.setRegionModulation(0, 0, OT::FilterEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
 
-
   // ToDo:
-  // -write a function getADSR(int a, int d, int s, int r, int numSamples, int noteOffAt) to 
-  //  produce reference output and use it to implement unit tests
-  // -Implement a filter env test (may be simpler than amp because we can assume the filter to
-  //  exist - the additional complication of nonexisting target module disappears):
-  //  -Produce target output using a sawtooth and a resonant lowpass. use the getADSR for that
-  //  -use an explicitly routed egN and test against target
-  //  -use a fileg and fileg_depth
-  // 
   // -Implement ampeg_ stuff
   //  -Maybe we should just use the regular EnvGen class (an not have subclasses like EnvGenAmp 
   //   etc.) and interpret egN opcodes as applying to those when certain special values for the 
   //   index are used. Maybe define ampIdx = -2, filIdx = -3, fil2Idx = -3, pitchIdx = -4 in some 
   //   enum (maybe HardWireIndex
-  //
   // -Test, if the env behaves correctly, if we don't specify certain parameters, i.e. check, if 
   //  the defaults work as they should.
   // -Currently, this is more an Experiment than a unit test. Turn it into an actual unit test. We
@@ -2892,35 +2852,6 @@ bool samplerNoteOffTest()
   //  plots look good and use that data as reference. For this, we perhaps use a smaller N to not
   //  bloat the repo with that data too much...but maybe we can generate the target data 
   //  programmatically.
-  // -Envelope Features to do:
-  //  -Release-Modes: 
-  //   -one_shot: always run through the whole envelope even when noteOff is triggered before 
-  //    reaching sustain (this is the current behavior)
-  //   -immediate: enter release phase immediately, starting from current level
-  //  -Retrigger-Modes: determine behavior when a new noteOn is received during the release of a
-  //   voice/layer playing the same note
-  //   -new_layer: a new layer is started while the old one just keeps releasing (this is the 
-  //    current behavior, I think)
-  //   -restart: re-uses the releasing voice/layer and retriggers the envelope from the beginning,
-  //    LFOs (if any) should keep running
-  //   -restart_from_current: like restart but does not restart the envelope from its start level 
-  //    but from where it currently is.
-  //   -pile_up: like restart_from_current, but in a rapid succession of notes, the envelopes pile
-  //    up on each other like the filter-based ones triggered by impulses would do (see Experiments 
-  //    with class rsAttackDecayEnvelope for how this behaves)
-  //  -Let the user select the shapes for the different stages
-  // -Implement pitch EGs
-  // -Implement MSEGs
-
-  // Questions:
-  // -Should an envelope routed to a filter cutoff (or the fileg_ opcodes) be relative or absolute?
-  //  Oh - it's in cents, specified by fileg_depth
-  // -What if fileg_attack etc. opcodes exist but no cutoff opcode? Should we insert a filter with
-  //  a default cutoff and route the fileg to that? Or should the fileg opcodes be ignored?
-  // -Similarly what if ampeg_attack opcodes exist but no amplitudeN opcode? Should we implicitly 
-  //  insert an amplifier. Maybe yes. The difference to the cutoff opcode is, that an amplitudeN
-  //  opcode actually does not even exist in the SFZ1 spec (only in the ARIA spec).
-
 
   rsAssert(ok);
   return ok;
@@ -2996,9 +2927,6 @@ bool samplerKeyVelTrackTest()
   // guess based on what i think, the behavior should be. I think, at vel = 127, the cutoff should 
   // be unmodified and at vel=1, the cutoff should be reduced by 1200 cents, i.e. 12 semitones, 
   // i.e. 1 octave
-
-  // ToDo:
-  // -Verify the formula for vel_tracking of amplitude against some reference implemenetation (sfz+)
 
   rsAssert(ok);
   return ok;
@@ -3261,6 +3189,9 @@ bool samplerFilterEnvTest()
 
 bool samplerPitchEnvTest()
 {
+  // UNDER CONSTRUCTION ...does not yet really test anything
+  // Tests correct behavior of pitch envelopes...tbc...
+
   bool ok = true;
 
   using namespace rosic::Sampler;
@@ -3295,16 +3226,16 @@ bool samplerPitchEnvTest()
     freqs[n] = freq + fm;
   }
   Vec x(N);
-  createSineWave(&x[0], N, &freqs[0], 1.f, fs);  // function works only for double atm
-  rsPlotVectors(x);
-
-  // OK: x is now our target signal. Now let's try to recreate it with a pitch env in a a sampler
-  // engine. Maybe we should route it to the tune or transpose parameter? Seems reasonable
+  createSineWave(&x[0], N, &freqs[0], 1.f, fs);
+  //rsPlotVectors(x);
+  // OK: x looks good and is now our target signal. Now let's try to recreate it with a pitch env 
+  // in a sampler engine. Then, we should route it to the tune and/or transpose parameter? Maybe by
+  // default
 
   // ToDo:
-  // -I think, implementing pitch envelopes in the sample engine should be postponed until we have
+  // -I think, implementing pitch envelopes in the sampler engine should be postponed until we have
   //  done the redesign of the sample playback to use a SamplePlayer subclass of Processor (see 
-  //  ToDo.txt for more about this redesign idea)
+  //  ToDo.txt for more about this redesign idea).
 
 
   rsAssert(ok);
