@@ -469,6 +469,10 @@ public:
   std::string loopModeToString(LoopMode loopMode);
 
 
+  std::string modSourceToString(OpcodeType sourceType);
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry

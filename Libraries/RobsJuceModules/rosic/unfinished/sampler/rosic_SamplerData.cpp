@@ -747,19 +747,27 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
   //if(val = PlaybackSetting::getDefaultValue(type))
   //  return; // default values need not to be stored - todo: maybe optionally store them anyway
 
-  SfzCodeBook* t = SfzCodeBook::getInstance();
-  s += t->opcodeToString(op, idx) + std::string("=") + t->valueToString(op, val)  + "\n";
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+  s += cb->opcodeToString(op, idx) + std::string("=") + cb->valueToString(op, val)  + "\n";
 
   // ToDo:
   // -Document why the lokey, hikey, lovel, hivel opcodes are not handled here. I think, it's 
   //  because they are handled already by the caller because they require special treatment.
 }
 
-void SfzInstrument::writeModRoutingToString(const ModulationSetting& routing, std::string& str)
+void SfzInstrument::writeModRoutingToString(const ModulationSetting& routing, std::string& s)
 {
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+  std::string tmp;
+  tmp = cb->modSourceToString(routing.getSourceType()) + to_string(routing.getSourceIndex());
 
-
+  //s += tmp;
   int dummy = 0;
+
+  // Notes:
+  // Maybe the codebook should also take the sourceIndex as parameter to modSourceToString because
+  // the codebook is supposed to know when an index is needed an when it isn't. Currently, we 
+  // always include a source index in the string. This may not be a problem, though.
 }
 
 

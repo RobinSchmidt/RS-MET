@@ -492,6 +492,7 @@ LoopMode SfzCodeBook::stringToLoopMode(const std::string& str)
   if(str == "loop_continuous") return LoopMode::loop_continuous;
   if(str == "one_shot")        return LoopMode::one_shot;
   return LoopMode::Unknown;
+  // ToDo: use a switch statement
 }
 
 std::string SfzCodeBook::loopModeToString(LoopMode lm)
@@ -500,6 +501,22 @@ std::string SfzCodeBook::loopModeToString(LoopMode lm)
   if(lm == LoopMode::loop_continuous) return "loop_continuous";
   if(lm == LoopMode::one_shot)        return "one_shot";
   return "unknown";
+  // ToDo: use a switch statement
+}
+
+std::string SfzCodeBook::modSourceToString(OpcodeType sourceType)
+{
+  using OT = OpcodeType;
+  switch(sourceType)
+  {
+  case OT::FreeEnv: return "eg";
+  case OT::FreeLfo: return "lfo";
+  default:
+  {
+    RAPT::rsError("Unknown type of modulation source.");
+    return "";
+  }
+  }
 }
 
 std::string SfzCodeBook::valueToString(Opcode op, float val)
