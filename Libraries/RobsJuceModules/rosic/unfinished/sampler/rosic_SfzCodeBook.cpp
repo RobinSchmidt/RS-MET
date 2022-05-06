@@ -551,6 +551,15 @@ std::string SfzCodeBook::modDepthToString(float depth, ModMode mode, Opcode opco
   return s;
 }
 
+OpcodeType SfzCodeBook::stringToModSource(const std::string& str, int* index)
+{
+
+
+
+  return OpcodeType::Unknown;
+}
+
+
 std::string SfzCodeBook::valueToString(Opcode op, float val)
 {
   switch(op)

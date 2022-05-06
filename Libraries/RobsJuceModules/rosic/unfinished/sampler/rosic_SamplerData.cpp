@@ -809,7 +809,8 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
 
-  // Split off the substrings for the modulation source and target by using the underscore as seperator:
+  // Split off the substrings for the modulation source and target by using the underscore as 
+  // seperator:
   std::string sep("_");
   int start  =  0;
   int length = -1;  // initial value should not matter
@@ -817,6 +818,9 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
   std::string srcStr = opStr.substr(start, length);
   std::string tgtStr = opStr.substr(length+1, opStr.length() - length - 1);
 
+  // Figure out type and index of the modulation source:
+  int srcIndex;
+  OpcodeType sourceType = cb->stringToModSource(srcStr, &srcIndex);
 
 
 
@@ -827,6 +831,8 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
   //  target parameter.
   // -...
   // -Maybe this whole code should go into SfzCodeBook. It seems to fit in there better than here.
+  //  But the codebook doesn't know about class ModulationSetting, so how should we return the 
+  //  data?
 
   return ModulationSetting();  // standard constructor will create an invalid object
 }

@@ -332,7 +332,7 @@ opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a f
 respective region. In order to facilitating to build the DSP chain for a region player,
 we also need an explicit representation of the DSP processor types. */
 
-enum class OpcodeType
+enum class OpcodeType   // Maybe rename to OpcodeTarget
 {
   Unknown,
 
@@ -475,7 +475,7 @@ public:
 
   std::string modDepthToString(float depth, ModMode mode, Opcode targetOpcode);
 
-
+  OpcodeType stringToModSource(const std::string& str, int* index);
 
 
   //-----------------------------------------------------------------------------------------------
