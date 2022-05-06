@@ -388,7 +388,7 @@ int firstDigit(const std::string& str)
 
 /** Returns the index of the last digit in a sequence of digits (i.e. in a number) starting at the 
 given startIndex. */
-int lastDigitInSeq(const std::string& str, int startIndex)
+int lastDigitInSeq(const std::string& str, int startIndex)  // remove the "InSeq" from name
 {
   RAPT::rsAssert(isDigit(str[startIndex]));
   int i = startIndex;
@@ -398,6 +398,23 @@ int lastDigitInSeq(const std::string& str, int startIndex)
     i++; }
   return i;
 }
+
+/** Returns the index of the last character in the string that is not a digit. For example, in the 
+string lfo13, it would return 2, the index of the letter o. */
+int lastNonDigit(const std::string& str, int startIndex = 0)
+{
+  for(int i = startIndex; i < (int)str.size(); i++)
+  {
+    if(isDigit(str[i]))
+      return i-1;
+  }
+  return (int)str.size() - 1;
+}
+// needs unit test, be sure to test also edge cases (empty string, no digits present, 1st char is 
+// digit etc.)
+// maybe a function firstDigit would be more useful? but no - we need something that works with 
+// strings that contain no digits, too
+
 int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
 {
   int num    = 0;
@@ -553,9 +570,29 @@ std::string SfzCodeBook::modDepthToString(float depth, ModMode mode, Opcode opco
 
 OpcodeType SfzCodeBook::stringToModSource(const std::string& str, int* index)
 {
+  int i = lastNonDigit(str);
 
+  std::string srcStr = str.substr(0,   i+1);
+  std::string idxStr = str.substr(i+1, str.length()-i-1);
+  // Test if this works also if there is no number at all. In this case, the idxStr should be empty
 
+  if(idxStr.empty())
+    *index = 1;
+  else
+    *index = parseNaturalNumber(idxStr, 0, (int)idxStr.length()-1);
 
+  using OT = OpcodeType;
+  OT type;
+  if(srcStr == "eg")       return OT::FreeEnv;
+  if(srcStr == "ampeg")    return OT::AmpEnv;
+  if(srcStr == "fileg")    return OT::FilterEnv;
+  if(srcStr == "pitcheg")  return OT::PitchEnv;
+  if(srcStr == "lfo")      return OT::FreeLfo;
+  if(srcStr == "amplfo")   return OT::AmpLfo;
+  if(srcStr == "fillfo")   return OT::FilterLfo;
+  if(srcStr == "pitchlfo") return OT::PitchLfo;
+
+  RAPT::rsError("Unknown string for modulation source");
   return OpcodeType::Unknown;
 }
 
