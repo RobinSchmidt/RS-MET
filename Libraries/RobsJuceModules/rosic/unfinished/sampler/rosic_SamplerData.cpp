@@ -809,13 +809,24 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
 
+  // Split off the substrings for the modulation source and target by using the underscore as seperator:
+  std::string sep("_");
+  int start  =  0;
+  int length = -1;  // initial value should not matter
+  rosic::rsFindToken(opStr, sep, &start, &length);
+  std::string srcStr = opStr.substr(start, length);
+  std::string tgtStr = opStr.substr(length+1, opStr.length() - length - 1);
+
+
+
+
   // ToDo:
-  // -Figure out DspType and index of source and target
   // -Check, if valStr has a unit suffix. Maybe implement a general endsWith(str, pattern) function
   //  and use that for parsing unit suffixes. If it does have a suffix, assign the mod-mode 
   //  according to the suffix, else according to the standard unit that is applicable to the given
   //  target parameter.
   // -...
+  // -Maybe this whole code should go into SfzCodeBook. It seems to fit in there better than here.
 
   return ModulationSetting();  // standard constructor will create an invalid object
 }
