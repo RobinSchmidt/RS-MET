@@ -822,6 +822,11 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
   int srcIndex;
   OpcodeType sourceType = cb->stringToModSource(srcStr, &srcIndex);
 
+  // Figure out Opcode and Processor type and index of the modulation target:
+  int tgtIndex;
+  Opcode targetOpcode = cb->stringToOpcode(tgtStr, &tgtIndex);
+  OpcodeType targetType = cb->getOpcodeType(targetOpcode);
+
 
 
   // ToDo:
