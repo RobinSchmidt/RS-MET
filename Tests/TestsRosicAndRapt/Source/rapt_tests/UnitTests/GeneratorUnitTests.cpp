@@ -3171,16 +3171,36 @@ bool samplerFilterEnvTest()
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, 64, outL, outR, nOff);
   float tol = 1.e-5;
-  ok &= rsIsCloseTo(outL, y, tol);
+  ok &= rsIsCloseTo(outL, y, tol);  // OK - manually routing an egN to cutoff seems to work. 
   //Vec err = outL - y;
   //rsPlotVectors(y, outL, outR);
 
+  std::string sfz = se.getAsSfz();
+  // The sfz string is missing the mod-routing setting which is not surprising
+
+  SE se2;  
+  se.setSampleRate(fs);
+  se2.setFromSFZ(sfz);
+
   //se.removeModulations(); // should remove all modulation connections
 
-  // OK - manually routing an egN to cutoff seems to work. Next: use the filegN_attack, etc. 
-  // opcodes instead. Setting a filegN_depth opcode should translate to a call to 
-  // setRegionModulation. And it should not just add another mod-connection but rather check, if 
-  // one exists already and if so, modify it. I think, this already is the behavior.
+  
+  // ToDo:
+  // -Retrieve the state of the se as a sfz-string and set up a second engien se2 from this string
+  //  and check, if it produces the same output. This should test the writing and parsing of the
+  //  modulation-rotuing related opcodes, i.e. the call to setRegionModulation. At the moment, we 
+  //  don't yet have anything in the sfz-parse to handle that. I think, the call to
+  //    se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
+  //  should translate to the opcode
+  //    eg1_cutoff1=1200
+  //  where the 2nd 1 should be optional, see:
+  //    https://sfzformat.com/opcodes/egN_cutoff
+  // -use the filegN_attack, etc. 
+  //  opcodes instead. Setting a filegN_depth opcode should translate to a call to 
+  //  setRegionModulation. And it should not just add another mod-connection but rather check, if 
+  //  one exists already and if so, modify it. I think, this already is the behavior.
+  // -Test what happens when the envelope breakpoints do not nicely coincide with sample instants.
+  //  Are they rounded in the right way? Or do we somehow allow fractional breakpoints?
 
 
   rsAssert(ok);
@@ -3788,7 +3808,7 @@ bool samplerEngineUnitTest()
   // The new test that is currently under construction:
   //ok &= samplerNoteOffTest();
   ok &= samplerModulatorsTest();
-  //ok &= samplerModulationsTest();
+  ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing sfz instruments

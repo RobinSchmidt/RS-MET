@@ -224,6 +224,7 @@ public:
   /** Sets up the engine from the given sfz data object and returns rsReturnCode::success, if all
   is well or...  */
   int setupFromSFZ(const SfzInstrument& sfz);
+  // rename to setFromSfz
 
   /** Sets up the root directory, with respect to which sfz file paths are interpreted in saveToSfz
   and loadFromSfz. This is supposed to be an absolute path. Returns false in case, the directory
@@ -250,7 +251,7 @@ public:
   testing the sfz-parser with programmatically created sfz-data which doesn't necessarily have to
   come from a file on disk. */
   int setFromSFZ(const std::string& sfzFileContents);
-
+  // maybe rename to setFromSfzString
 
 
   /** Sets the sample-rate, at which this engine should operate. This change will affect only
@@ -356,6 +357,12 @@ public:
   /** Returns a const pointer to the SfzInstrument object that represents the current instrument
   settings. */
   const SfzInstrument& getInstrumentData() const { return sfz; }
+  // (maybe) rename to getSfzData, add getSfzString
+
+  /** Returns the settings of the engine as a sfz string. */
+  std::string getAsSfz() const { return sfz.getAsSFZ(); }
+  // maybe rename to getAsSfzString
+
 
   /** Given a path which can be either relative to our sfzDir or absolute, this function returns
   the corresponding absolute path as std::string. That means, if pathIsAbsolute is true, it just
