@@ -504,19 +504,47 @@ std::string SfzCodeBook::loopModeToString(LoopMode lm)
   // ToDo: use a switch statement
 }
 
-std::string SfzCodeBook::modSourceToString(OpcodeType sourceType)
+std::string SfzCodeBook::modSourceToString(OpcodeType sourceType, int index)
 {
   using OT = OpcodeType;
+  std::string tmp;
+
   switch(sourceType)
   {
-  case OT::FreeEnv: return "eg";
-  case OT::FreeLfo: return "lfo";
+  case OT::FreeEnv: tmp = "eg";   break;
+  case OT::FreeLfo: tmp = "lfo";  break;
   default:
   {
     RAPT::rsError("Unknown type of modulation source.");
     return "";
   }
   }
+
+  tmp += to_string(index);
+  return tmp;
+}
+
+std::string SfzCodeBook::modTargetToString(OpcodeType type, int index, Opcode opcode)
+{
+  // Maybe the type parameter is superfluous. If so, remove it.
+
+  //using OT = OpcodeType;
+  using OC = Opcode;
+  std::string tmp;
+
+  switch(opcode)
+  {
+  case OC::cutoffN:     tmp = "cutoff";    break;
+  case OC::resonanceN:  tmp = "resonance"; break;
+  default:
+  {
+    RAPT::rsError("Unknown type of modulation target opcode.");
+    return "";
+  }
+  }
+
+  tmp += to_string(index);
+  return tmp;
 }
 
 std::string SfzCodeBook::valueToString(Opcode op, float val)

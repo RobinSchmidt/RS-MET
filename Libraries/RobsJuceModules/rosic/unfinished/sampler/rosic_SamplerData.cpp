@@ -755,19 +755,15 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
   //  because they are handled already by the caller because they require special treatment.
 }
 
-void SfzInstrument::writeModRoutingToString(const ModulationSetting& routing, std::string& s)
+void SfzInstrument::writeModRoutingToString(const ModulationSetting& r, std::string& s)
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   std::string tmp;
-  tmp = cb->modSourceToString(routing.getSourceType()) + to_string(routing.getSourceIndex());
+  tmp  = cb->modSourceToString(r.getSourceType(), r.getSourceIndex()) + "_";
+  tmp += cb->modTargetToString(r.getTargetType(), r.getTargetIndex(), r.getTargetOpcode()) + "=";
 
   //s += tmp;
   int dummy = 0;
-
-  // Notes:
-  // Maybe the codebook should also take the sourceIndex as parameter to modSourceToString because
-  // the codebook is supposed to know when an index is needed an when it isn't. Currently, we 
-  // always include a source index in the string. This may not be a problem, though.
 }
 
 
