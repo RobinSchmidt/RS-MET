@@ -266,6 +266,7 @@ void SfzInstrument::Region::copyDataFrom(const Region* src)
 bool SfzInstrument::Region::operator==(const SfzInstrument::Region& rhs) const
 {
   bool equal = settings == rhs.settings;
+  //equal &= modRoutings == rhs.modRoutings;  // compiler error! why?
   equal &= dspTypes == rhs.dspTypes;
   equal &= loKey == rhs.loKey;
   equal &= hiKey == rhs.hiKey;
@@ -340,6 +341,7 @@ SfzInstrument::Region* SfzInstrument::Group::getRegion(int i) const
 bool SfzInstrument::Group::operator==(const SfzInstrument::Group& rhs) const
 {
   bool equal = settings == rhs.settings;
+  //equal &= modRoutings == rhs.modRoutings;  // compiler error! why?
   equal &= dspTypes == rhs.dspTypes;
   equal &= regions.size() == rhs.regions.size();
   if(!equal) return false;
@@ -371,6 +373,7 @@ void SfzInstrument::Global::clearGroups()
 bool SfzInstrument::Global::operator==(const SfzInstrument::Global& rhs) const
 {
   bool equal = settings == rhs.settings;
+  //equal &= modRoutings == rhs.modRoutings;  // compiler error! why?
   equal &= dspTypes == rhs.dspTypes;
   equal &= groups.size() == rhs.groups.size();
   if(!equal) return false;
@@ -820,17 +823,18 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
 
   // Figure out type and index of the modulation source:
   int srcIndex;
-  OpcodeType sourceType = cb->stringToModSource(srcStr, &srcIndex);
+  OpcodeType srcType = cb->stringToModSource(srcStr, &srcIndex);
 
-  // Figure out Opcode and Processor type and index of the modulation target:
+  // Figure out Opcode and index of the modulation target:
   int tgtIndex;
-  Opcode targetOpcode = cb->stringToOpcode(tgtStr, &tgtIndex);
-  OpcodeType targetType = cb->getOpcodeType(targetOpcode);
+  Opcode tgtOpcode = cb->stringToOpcode(tgtStr, &tgtIndex);
+  //OpcodeType targetType = cb->getOpcodeType(targetOpcode);  // not needed
 
   // Figure out modulation depth and mode:
   ModMode mode;
-  float depth = cb->stringToModDepth(valStr, &mode, targetOpcode);
+  float depth = cb->stringToModDepth(valStr, &mode, tgtOpcode);
 
+  return ModulationSetting(srcType, srcIndex, tgtOpcode, tgtIndex, depth, mode);
 
   // ToDo:
   // -Maybe this whole code should go into SfzCodeBook. It seems to fit in there better than here.
@@ -838,7 +842,7 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
   //  data? Maybe a function that takes all the members of that class as pointer arguments? But maybe
   //  it's ok to keep the code here
 
-  return ModulationSetting();  // standard constructor will create an invalid object
+  //return ModulationSetting();  // standard constructor will create an invalid object
 }
 
 void SfzInstrument::copy(const SfzInstrument& src, SfzInstrument& dst)

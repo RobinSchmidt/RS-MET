@@ -3175,12 +3175,28 @@ bool samplerFilterEnvTest()
   //Vec err = outL - y;
   //rsPlotVectors(y, outL, outR);
 
+  // Retrieve the state as sfz string, set up a fresh engine from that string and check if it's in
+  // the same state and produces the same output:
   std::string sfz = se.getAsSfz();
-  // The sfz string is missing the mod-routing setting which is not surprising
-
-  SE se2;  
-  se.setSampleRate(fs);
+  SE se2;
+  se2.setSampleRate(fs);
+  //se2.copySamplePoolFrom(se);  // maybe implement such a function
   se2.setFromSFZ(sfz);
+  //ok &= se2.isInSameStateAs(se); // fails! why?
+  getSamplerNote(&se2, key, 64, outL, outR, nOff);
+  rsPlotVectors(y, outL, outR); // produces all zeros output
+  // ...ahh - i think, this fails because there is actually no sample file loaded. se uses an
+  // in-memory only sample and that cannot be transferred to the samplePool of se2. Solution:
+  // Maybe write the sawtooth sample out into a file. Maybe we could also implement a function
+  // se2.copySamplePoolFrom(se). Maybe that should only be present in the rsSamplerEngineTest class
+
+  // check also why we need to comment out the line
+  //   equal &= modRoutings == rhs.modRoutings; 
+  // in
+  //   SfzInstrument::Region::operator==
+  // and also in the Group and Instrument
+
+
 
   //se.removeModulations(); // should remove all modulation connections
 

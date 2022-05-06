@@ -456,6 +456,11 @@ int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
 }
 // needs unit tests
 
+float rsStringToFloat(const std::string& str)
+{
+  return std::stof(str);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 Opcode SfzCodeBook::stringToOpcode(const std::string& strIn, int* index)
@@ -636,14 +641,7 @@ float SfzCodeBook::stringToModDepth(const std::string& str, ModMode* modMode, Op
   else
     *modMode = stringToModMode(sfxStr);
 
-
-  // -Check, if str has a unit suffix. Maybe implement a general endsWith(str, pattern) function
-  //  and use that for parsing unit suffixes. If it does have a suffix, assign the mod-mode 
-  //  according to the suffix, else according to the standard unit that is applicable to the given
-  //  target parameter.
-
-
-  return 0.f;
+  return rsStringToFloat(numStr);
 }
 
 ModMode SfzCodeBook::stringToModMode(const std::string& str)
@@ -693,13 +691,16 @@ std::string SfzCodeBook::valueToString(Opcode op, float val)
   // Maybe use a switch statement later when we have more such special cases
 }
 
+
+
 float SfzCodeBook::stringToValue(Opcode op, const std::string& str)
 {
   switch(op)
   {
   case Opcode::filN_type: return (float) stringToFilterType(str);
   case Opcode::LoopMode:  return (float) stringToLoopMode(str);
-  default: return std::stof(str);
+  default: return rsStringToFloat(str);
+  //default: return std::stof(str);
   }
   // in the default path, we must first check, if the string represents a number - implement an 
   // rsStringToDouble function (may already exist), that is safe: it should return a sane default 
