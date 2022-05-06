@@ -96,7 +96,7 @@ enum class ModMode  // rename to ModulationMode, maybe move out of Sampler sub-n
 settings, not to actually connect modulator objects to parameters during processing. For this 
 purpose, the class ModulationConnection is used. ..tbc.... */
 
-class ModulationSetting  
+class ModulationSetting  // rename to ModulationRouting
 {
 
 public:
@@ -306,6 +306,9 @@ public:
     /** Returns a const reference to our playback settings. */
     const std::vector<PlaybackSetting>& getSettings() const { return settings; }
 
+    /** Returns a const reference to our modulation routings. */
+    const std::vector<ModulationSetting>& getModRoutings() const { return modRoutings; }
+
     /** Returns the value of the given setting, if present. If not present, it will try to figure
     out the parent's setting and so on all the way up the (3-level) hierarchy. If such a setting is
     found in none of the levels, the default value for that setting will be returned. If accumulate
@@ -435,6 +438,11 @@ public:
     /**< The settings which apply to this region/group/instrument, i.e. the opcodes along with 
     their values and, if appliable, index */
 
+    std::vector<ModulationSetting> modRoutings;
+    /**< Holds the modulation routings like egN_cutoffX, lfoN_amplitudeX, etc.. These are handled 
+    separately from the other settings because they have a different format and do different 
+    things. */
+
     std::vector<OpcodeType> dspTypes;
     /**< Listing of the types of signal processors used in this instrument in the same order like 
     how they should be applied (we assume a serial connection). But the list also contains the 
@@ -442,9 +450,7 @@ public:
     will become relevant when actually assmebling the Player objects. */
     // maybe rename - it contains also the settings for the modulators like lfoN_freq
 
-    std::vector<ModulationSetting> modRoutings;
-    /** Holds the modulation routings...tbc...  */
-    // this holds the settings for the modulation connections like lfoN_cutoffX etc.
+
 
     // ModulationConnection is for the objects that are used in sample processing whereas 
     // ModulationSetting/Routing is used in regions/groups/etc
@@ -751,6 +757,10 @@ public:
 protected:
 
   static void writeSettingToString(const PlaybackSetting& setting, std::string& str);
+
+
+  static void writeModRoutingToString(const ModulationSetting& routing, std::string& str);
+
 
   static PlaybackSetting getSettingFromString(
     const std::string& opcode, const std::string& value);

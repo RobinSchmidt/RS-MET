@@ -513,16 +513,21 @@ std::string SfzInstrument::getAsSFZ() const
   auto writeSettingsToString = [](const HierarchyLevel* lvl, std::string& str)
   {
     auto toStr = [](const uchar c) { return std::to_string(c); }; // uchar to string
+
     const std::string& samplePath = lvl->getSamplePath();
     if(!samplePath.empty()) str += "sample=" + samplePath + '\n';
     if(lvl->getLoKey() !=   0) str += "lokey=" + toStr(lvl->getLoKey()) + '\n';
     if(lvl->getHiKey() != 127) str += "hikey=" + toStr(lvl->getHiKey()) + '\n';
     if(lvl->getLoVel() !=   0) str += "lovel=" + toStr(lvl->getLoVel()) + '\n';
     if(lvl->getHiVel() != 127) str += "hivel=" + toStr(lvl->getHiVel()) + '\n';
-    using SettingsRef = const std::vector<PlaybackSetting> &;
-    SettingsRef settings = lvl->getSettings();
+
+    const std::vector<PlaybackSetting>& settings = lvl->getSettings();
     for(size_t i = 0; i < settings.size(); i++)
       writeSettingToString(settings[i], str);
+
+    const std::vector<ModulationSetting>& routings = lvl->getModRoutings();
+    for(size_t i = 0; i < routings.size(); i++)
+      writeModRoutingToString(routings[i], str);
   };
 
   std::string str;
@@ -749,6 +754,14 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
   // -Document why the lokey, hikey, lovel, hivel opcodes are not handled here. I think, it's 
   //  because they are handled already by the caller because they require special treatment.
 }
+
+void SfzInstrument::writeModRoutingToString(const ModulationSetting& routing, std::string& str)
+{
+
+
+  int dummy = 0;
+}
+
 
 PlaybackSetting SfzInstrument::getSettingFromString(
   const std::string& opStr, const std::string& valStr)
