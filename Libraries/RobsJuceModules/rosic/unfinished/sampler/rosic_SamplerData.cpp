@@ -761,9 +761,8 @@ void SfzInstrument::writeModRoutingToString(const ModulationSetting& r, std::str
   std::string tmp;
   tmp  = cb->modSourceToString(r.getSourceType(), r.getSourceIndex()) + "_";
   tmp += cb->modTargetToString(r.getTargetType(), r.getTargetIndex(), r.getTargetOpcode()) + "=";
-
-  //s += tmp;
-  int dummy = 0;
+  tmp += cb->modDepthToString(r.getDepth(), r.getMode(), r.getTargetOpcode());
+  s += tmp;
 }
 
 

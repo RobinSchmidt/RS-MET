@@ -471,10 +471,10 @@ public:
 
   std::string modSourceToString(OpcodeType sourceType, int sourceIndex);
 
-
   std::string modTargetToString(OpcodeType targetType, int targetIndex, Opcode targetOpcode);
-  // Maybe the 1st param is superfluous, maybe get rid and switch order of 2nd and 3rd (then
-  // 1st and 2nd)
+
+  std::string modDepthToString(float depth, ModMode mode, Opcode targetOpcode);
+
 
 
 

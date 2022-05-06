@@ -526,31 +526,26 @@ std::string SfzCodeBook::modSourceToString(OpcodeType sourceType, int index)
 
 std::string SfzCodeBook::modTargetToString(OpcodeType type, int index, Opcode opcode)
 {
-  // Maybe the type parameter is superfluous. If so, remove it.
+  // Maybe the type parameter is superfluous. If so, remove it. The whole function my be 
+  // superfluous and client code can just use opcodeToString instead. At the moment, we simply 
+  // delegate to that anyway. But maybe later, we may need to do something more complex?
 
-  //using OT = OpcodeType;
-  using OC = Opcode;
-  std::string tmp;
+  return opcodeToString(opcode, index);
+}
 
-  /*
-  switch(opcode)
-  {
-  case OC::cutoffN:     tmp = "cutoff";    break;
-  case OC::resonanceN:  tmp = "resonance"; break;
-  default:
-  {
-    RAPT::rsError("Unknown type of modulation target opcode.");
-    return "";
-  }
-  }
-  */
-  // Can'T we just use opcodeToString here? I think so
+std::string SfzCodeBook::modDepthToString(float depth, ModMode mode, Opcode opcode)
+{
+  std::string s = to_string(depth);
 
-  //tmp += to_string(index);
+  // ToDo: 
+  // If the mode is not the default modulation mode for the given target opcode, append a 
+  // unit suffix to the number string s like ct, Hz, %, st, oct. For example, for the cutoffN
+  // opcode, the default mode is cents, but if the user wants to modulate cutoff in absolute Hz or
+  // in percent, the value needs a unit suffix. We then also need to implement parsing of these
+  // suffixes. Such suffixes may be applied to other opcodes, too (not only to modulation 
+  // routings).
 
-
-  tmp = opcodeToString(opcode, index);
-  return tmp;
+  return s;
 }
 
 std::string SfzCodeBook::valueToString(Opcode op, float val)

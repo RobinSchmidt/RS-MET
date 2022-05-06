@@ -41,6 +41,21 @@ enum rsReturnCode
 //  errors on the GUI...maybe the "corrupted" should be even more specific: inform, which opcodes
 //  were to blame, etc.
 
+/** Enumeration of the available modulation modes. */
+enum class ModMode  // rename to ModulationMode, maybe move out of Sampler sub-namespace
+{
+  absolute,
+  relative,
+  cents
+  //exponential,
+  //multiplicative,
+  //percent_of_nominal,
+  //percent_absolute,    // used for ampeg where nominal value is 0
+  //raw,
+
+  // unknown
+};
+
 
 //=================================================================================================
 

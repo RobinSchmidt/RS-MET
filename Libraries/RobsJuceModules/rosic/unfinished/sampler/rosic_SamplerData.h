@@ -81,17 +81,6 @@ private:
 
 //=================================================================================================
 
-enum class ModMode  // rename to ModulationMode, maybe move out of Sampler sub-namespace
-{
-  absolute,
-  relative,
-  cents
-  //exponential,
-  //multiplicative
-
-  // unknown
-};
-
 /** A class to represent the settings of a modulation routing. This class is used only to store the
 settings, not to actually connect modulator objects to parameters during processing. For this 
 purpose, the class ModulationConnection is used. ..tbc.... */
