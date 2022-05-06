@@ -3184,9 +3184,7 @@ bool samplerEnvTest()
   //rsPlotVectors(tgtL - outL);
 
   // ToDo:
-  // -Figure out what the correct behavior with regard to start/delay is - should we output zero or
-  //  start during the delay phase? We need to test this using a reference implementation like 
-  //  sfz+.
+
   // -Implement different shapes for the segments. See:
   //    https://sfzformat.com/opcodes/ampeg_attack_shape
   //    https://sfzformat.com/opcodes/ampeg_release_shape
@@ -3276,22 +3274,8 @@ bool samplerFilterEnvTest()
   // one exists already and if so, modify it. I think, this already is the behavior.
 
   // ToDo:
-  // -Define and implement parsing for modulation routing opcodes.
   // -Implement and test pitch envelope. Somehow, this needs to affect the SamplePlayer source.
-  // -Maybe we should handle the fixed/hardwired modulations, i.e. filegN, ampegN, pitchegN, 
-  //  opcodes as follows:
-  //  -Implement a function translateHardwiredOpcodes that is supposed to be called at the end of
-  //   setFromSfz and should do the following:
-  //   -Figure out maxN, the maximum N in the existing egN opcodes.
-  //   -Translate the filegN, ampegN, pitchegN to egN opcodes with N values above maxN.
-  //   -Translate filegN_depth, pitchegN_depth to appropriate modulation routing opcodes.
-  //  -Avantages:
-  //   -We can handle all envelopes in unified way. in particular, we don't need separate arrays
-  //    for ampEnvs, pitchEnvs, filterEnvs in the DspPool.
-  //  -Disadvantages:
-  //   -When writing the state to an sfz file, we lose the information about what egN opcodes 
-  //    formerly actually were hardwirded opcodes. Unless we somehow store that information in the
-  //    egN opdcodes
+
 
   rsAssert(ok);
   return ok;
