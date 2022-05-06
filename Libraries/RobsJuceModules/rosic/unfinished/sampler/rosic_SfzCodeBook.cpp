@@ -532,6 +532,7 @@ std::string SfzCodeBook::modTargetToString(OpcodeType type, int index, Opcode op
   using OC = Opcode;
   std::string tmp;
 
+  /*
   switch(opcode)
   {
   case OC::cutoffN:     tmp = "cutoff";    break;
@@ -542,8 +543,13 @@ std::string SfzCodeBook::modTargetToString(OpcodeType type, int index, Opcode op
     return "";
   }
   }
+  */
+  // Can'T we just use opcodeToString here? I think so
 
-  tmp += to_string(index);
+  //tmp += to_string(index);
+
+
+  tmp = opcodeToString(opcode, index);
   return tmp;
 }
 
