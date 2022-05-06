@@ -3231,7 +3231,7 @@ bool samplerFilterEnvTest()
   createWaveform(&x[0], N, 1, f, fs, 0.f, false);
   //rsPlotVectors(x);
   Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
-  rsPlotVectors(adsr);
+  //rsPlotVectors(adsr);
   //depth = 0.f;  // test
   Vec y = rsApplySamplerFilter(x, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
   //rsPlotVectors(y);
@@ -3284,7 +3284,6 @@ bool samplerFilterEnvTest()
   return ok;
 }
 
-
 bool samplerPitchEnvTest()
 {
   bool ok = true;
@@ -3310,7 +3309,7 @@ bool samplerPitchEnvTest()
 
 
   Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
-  rsPlotVectors(adsr);
+  //rsPlotVectors(adsr);
 
   float freq = RAPT::rsPitchToFreq((float)key);
   Vec freqs(N);
@@ -3323,6 +3322,22 @@ bool samplerPitchEnvTest()
   Vec x(N);
   createSineWave(&x[0], N, &freqs[0], 1.f, fs);  // function works only for double atm
   rsPlotVectors(x);
+
+  // OK: x is now our target signal. Now let's try to recreate it with a pitch env in a a sampler
+  // engine. Maybe we should route it to the tune or transpose parameter? Seems reasonable
+
+  // ToDo:
+  // -Implement and test parsing of mod-routing opcodes
+  // -I think, implementing pitch envelopes in the sample engine should be postponed. We really 
+  //  need to redesign the way, the sample playback works by making the SamplePlayer a subclass of
+  //  Processor just like all the other signal processors. This may have some side benefits of 
+  //  simplfiying the code for the opcode accumulation vs override behavior (no special casing for
+  //  SamplePlayer opcodes anymore) and we will automatically also be able to modulate the loop
+  //  start and end points. With suitable samples, this will allow a wavtable synthesis a la 
+  //  Waldorf and also perhaps some sort of dubstep growls (apply loop-modulation to noisy 
+  //  samples).
+
+
 
 
   rsAssert(ok);
