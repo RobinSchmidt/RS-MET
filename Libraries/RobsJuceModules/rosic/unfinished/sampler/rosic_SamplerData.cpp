@@ -212,9 +212,10 @@ bool SfzInstrument::HierarchyLevel::removeModulation(OpcodeType modSrcType, int 
 
 void SfzInstrument::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
 {
-  samplePath = lvl->samplePath;
-  settings   = lvl->settings;
-  dspTypes   = lvl->dspTypes;
+  samplePath  = lvl->samplePath;
+  settings    = lvl->settings;
+  modRoutings = lvl->modRoutings;
+  dspTypes    = lvl->dspTypes;
 
   // not sure, if the pointers should be copied - maybe not:
   //custom = lvl->custom;  // this one may be, it's the pointer to the audio stream
