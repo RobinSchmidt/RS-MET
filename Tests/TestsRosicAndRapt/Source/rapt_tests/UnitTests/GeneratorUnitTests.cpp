@@ -3120,7 +3120,9 @@ bool samplerEnvTest()
 
 bool samplerFilterEnvTest()
 {
-  // Tests the filter envelope...tbc...
+  // Tests applying an extended ADSR envelope to the filter's cutoff frequency. It tests also 
+  // retrieval of the sfz state as string and setting and engine up from the string again. This 
+  // tests, if the parsing of the opcodes related to modulation routing can be parsed correctly.
 
   bool ok = true;
 
@@ -3133,7 +3135,6 @@ bool samplerFilterEnvTest()
 
   // Test parameters:
   int   N      =  1000;       // Number of samples to produce
-  //int   L      =  2048;       // Length of single cycle wave
   int   nOff   =   500;       // Sample of noteOff event
   int   key    =    57;       // Key to play, 57 = A3 = 220 Hz
   //float fs     = 44100.f;     // Sample rate
@@ -3153,7 +3154,6 @@ bool samplerFilterEnvTest()
   //rsPlotVectors(x);
   Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
   //rsPlotVectors(adsr);
-  //depth = 0.f;  // test
   Vec y = rsApplySamplerFilter(x, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
   //rsPlotVectors(y);
 
@@ -3183,43 +3183,16 @@ bool samplerFilterEnvTest()
   se2.setSampleRate(fs);
   addSingleSampleRegion(&se2, x, key, fs); // Needed because the sample is only in memory (no file)
   se2.setFromSFZ(sfz);
-
   ok &= se2.isInSameStateAs(se);
-  // Fails! modRoutings of se2 is empty! But actually, we do not yet check the modRoutings member 
-  // for equality because this gives a compiler error. There must be some other difference, too. 
-  // Ah - yes: some of the floating point numbers in the settings are not precisely round-tripped 
-  // through the string
-
   getSamplerNote(&se2, key, 64, outL, outR, nOff);
   ok &= rsIsCloseTo(outL, y, tol);  
-  // This fails then also, of course.
-
-  rsPlotVectors(y, outL, outR);
-  // The se2 produces a filtered saw without modulation of the filter freq which is what we expect 
-  // if the modRouting is missing
-
-
-  // check also why we need to comment out the line
-  //   equal &= modRoutings == rhs.modRoutings; 
-  // in
-  //   SfzInstrument::Region::operator==
-  // and also in the Group and Instrument
-
+  //rsPlotVectors(y, outL, outR);
 
 
   //se.removeModulations(); // should remove all modulation connections
 
   
   // ToDo:
-  // -Retrieve the state of the se as a sfz-string and set up a second engien se2 from this string
-  //  and check, if it produces the same output. This should test the writing and parsing of the
-  //  modulation-rotuing related opcodes, i.e. the call to setRegionModulation. At the moment, we 
-  //  don't yet have anything in the sfz-parse to handle that. I think, the call to
-  //    se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
-  //  should translate to the opcode
-  //    eg1_cutoff1=1200
-  //  where the 2nd 1 should be optional, see:
-  //    https://sfzformat.com/opcodes/egN_cutoff
   // -use the filegN_attack, etc. 
   //  opcodes instead. Setting a filegN_depth opcode should translate to a call to 
   //  setRegionModulation. And it should not just add another mod-connection but rather check, if 
