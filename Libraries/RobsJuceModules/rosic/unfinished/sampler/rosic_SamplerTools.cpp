@@ -98,5 +98,66 @@ void rsRemoveRepeats(std::string& s, char c)
 }
 // move into rosic, write unit test
 
+int firstDigit(const std::string& str)
+{
+  for(int i = 0; i < (int) str.size(); i++)
+    if(isDigit(str[i]))
+      return i;
+  return -1;
+}
+
+int lastDigitInSeq(const std::string& str, int startIndex)  // remove the "InSeq" from name
+{
+  RAPT::rsAssert(isDigit(str[startIndex]));
+  int i = startIndex;
+  while(i < ((int)str.size())-1) {
+    if(!isDigit(str[i+1]))
+      return i;
+    i++; }
+  return i;
+}
+
+int lastNonDigit(const std::string& str, int startIndex)
+{
+  for(int i = startIndex; i < (int)str.size(); i++)
+  {
+    if(isDigit(str[i]))
+      return i-1;
+  }
+  return (int)str.size() - 1;
+}
+// needs unit test, be sure to test also edge cases (empty string, no digits present, 1st char is 
+// digit etc.)
+// maybe a function firstDigit would be more useful? but no - we need something that works with 
+// strings that contain no digits, too
+
+int suffixStart(const std::string& str)
+{
+  for(int i = (int)str.length()-1; i >= 0; --i)
+    if(isDigit(str[i]) || str[i] == '.')   // numbers end in a digit or a dot
+      return i+1;
+  return 0;
+}
+// maybe rename, needs tests
+
+int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
+{
+  int num    = 0;
+  int scaler = 1;
+  for(int i = endIndex; i >= startIndex; i--)
+  {
+    num += scaler * charToInt(str[i]);
+    scaler *= 10;
+  }
+  return num;
+}
+// needs unit tests
+
+
+
+
+
+
+
 }
 }

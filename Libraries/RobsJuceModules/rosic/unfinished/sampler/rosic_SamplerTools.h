@@ -241,14 +241,43 @@ void rsSetupPointers(std::vector<T>& objectArray, std::vector<T*>& pointerArray)
 }
 // move to library, maybe use it in the production code, too
 
+//=================================================================================================
+// String processing:
 
 // Some helpers for string parsing:
 void rsRemoveLineComments(std::string& str, char commentStart);
 void rsReplaceCharacter(std::string& str, char oldChar, char newChar);
 void rsRemoveRepeats(std::string& s, char c);
 
-//=================================================================================================
-// String processing:
+/** Returns true, iff character c is a digit, i.e. one of 0,1,2,3,4,5,6,7,8,9. */
+inline bool isDigit(char c) { return c >= '0' && c <= '9'; }
+
+inline int charToInt(char c)
+{
+  RAPT::rsAssert(isDigit(c));
+  return c - '0';
+}
+
+/** Returns the index of the first digit that occurs in the string. For example, if 
+str = "Freq=3520Hz", it would return 5, i.e. the index of the digit 3. If no digit is found in the
+string, it returns -1. */
+int firstDigit(const std::string& str);
+
+/** Returns the index of the last digit in a sequence of digits (i.e. in a number) starting at the 
+given startIndex. */
+int lastDigitInSeq(const std::string& str, int startIndex);  // remove the "InSeq" from name
+
+/** Returns the index of the last character in the string that is not a digit. For example, in the 
+string lfo13, it would return 2, the index of the letter o. */
+int lastNonDigit(const std::string& str, int startIndex = 0);
+
+/** Returns the index at which the unit suffix starts. If the is no suffix, it returns 
+str.length()-1. If the whole string is a suffix, it returns 0. */
+int suffixStart(const std::string& str);
+
+int parseNaturalNumber(const std::string& str, int startIndex, int endIndex);
+
+inline float rsStringToFloat(const std::string& str) { return std::stof(str); }
 
 
 
