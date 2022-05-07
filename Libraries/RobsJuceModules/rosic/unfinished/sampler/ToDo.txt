@@ -2,11 +2,18 @@
 SFZ parsing
 ===========
 
-- Define and implement parsing for modulation routing opcodes.
+- Define and implement parsing for modulation routing opcodes. (Done?)
 
 - Define some aliases for certain routings. For example fileg_depth should be an alias for routing
   the (first) filter envelope (i.e. the first EnvGenFil in the modSources array) to the first filter
   in the effectChain.
+  
+- Currently, we use std::stof for converting strings to floating point numbers (wrapped into 
+  rsStringToFloat). This may lead to errors in a float -> string -> float roundtrip. We should use
+  a better implementation that allows for exact roundtrips. Maybe drag the old rsBigFloat code from
+  RSLib into RAPT or rosic. This conatins - among many other things - also a proper string -> float
+  parsing implementation. ...but maybe it's the float -> string part that's at fault? Or maybe even 
+  both? -> Check that!
 
 - What if fileg_attack etc. opcodes exist but no cutoff opcode? Should we insert a filter with
   a default cutoff and route the fileg to that? Or should the fileg opcodes be ignored? Similarly 
