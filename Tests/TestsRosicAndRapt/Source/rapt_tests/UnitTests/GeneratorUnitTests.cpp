@@ -3180,15 +3180,21 @@ bool samplerFilterEnvTest()
   std::string sfz = se.getAsSfz();
   SE se2;
   se2.setSampleRate(fs);
-  //se2.copySamplePoolFrom(se);  // maybe implement such a function
+  addSingleSampleRegion(&se2, x, key, fs); // Needed because the sample is only in memory (no file)
   se2.setFromSFZ(sfz);
-  //ok &= se2.isInSameStateAs(se); // fails! why?
+
+  ok &= se2.isInSameStateAs(se);
+  // Fails! modRoutings of se2 is empty! But actually, we do not yet check the modRoutings member for 
+  // equality because this gives a compiler error. There must be some other difference, too
+
   getSamplerNote(&se2, key, 64, outL, outR, nOff);
-  rsPlotVectors(y, outL, outR); // produces all zeros output
-  // ...ahh - i think, this fails because there is actually no sample file loaded. se uses an
-  // in-memory only sample and that cannot be transferred to the samplePool of se2. Solution:
-  // Maybe write the sawtooth sample out into a file. Maybe we could also implement a function
-  // se2.copySamplePoolFrom(se). Maybe that should only be present in the rsSamplerEngineTest class
+  ok &= rsIsCloseTo(outL, y, tol);  
+  // This fails then also, of course.
+
+  rsPlotVectors(y, outL, outR);
+  // The se2 produces a filtered saw without modulation of the filter freq which is what we expect 
+  // if the modRouting is missing
+
 
   // check also why we need to comment out the line
   //   equal &= modRoutings == rhs.modRoutings; 
