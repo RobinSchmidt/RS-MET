@@ -118,7 +118,8 @@ void EnvGen::updateCoeffs(double sampleRate)
   const std::vector<Parameter>& p = params;
   float fs = (float) sampleRate;  // scales seconds to samples
 
-  float k  = 0.01f; 
+  //float k  = 0.01f; 
+  float k = 1.f;
   // scales percents to raw factors...get rid!
 
   core.setup(p[0].mv()*k, p[1].mv()*fs, p[2].mv()*fs, p[3].mv()*k, p[4].mv()*fs, p[5].mv()*fs,

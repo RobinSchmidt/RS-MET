@@ -45,7 +45,8 @@ enum rsReturnCode
 enum class ModMode  // rename to ModulationMode, maybe move out of Sampler sub-namespace
 {
   // Defined in sfz:
-  cents,
+  cents,               // for fileg, pitcheg
+  percent_absolute,    // for ampeg
 
   // My own additions:
   absolute,     // maybe rename to raw_absolute
