@@ -3127,6 +3127,10 @@ bool samplerEnvTest()
   rsPlotVectors(tgtL, tgtR, outL, outR);
 
   // ToDo:
+  // -Use Mode::percent_absolute 
+  // -Check EnvAmp::process - it should probably not divide levels by 100? Instead, we should do
+  //  that in getContribution in a percent_absolute mode but take care to not break the
+  //  cents mode for the filter env
 
 
   rsAssert(ok);
