@@ -118,27 +118,16 @@ void EnvGen::updateCoeffs(double sampleRate)
   const std::vector<Parameter>& p = params;
   float fs = (float) sampleRate;  // scales seconds to samples
   float k  = 0.01f;               // scales percents to raw factors
-
-  //float k = 1.f;
-  // get rid! Or: keep the factors here and adapt the code in
-  // ModulationConnector::getContribution: in cent mode, get rid of a factor of 100, i.e. change
-  // 10000 to 100 and in percent_absolute get rid of the factor 0.01. It seems to be more 
-  // reasonable, to let the raw envelope produce numbers in the nominal range 0..1. Currently, the
-  // range is 0..100
-
   core.setup(p[0].mv()*k, p[1].mv()*fs, p[2].mv()*fs, p[3].mv()*k, p[4].mv()*fs, p[5].mv()*fs,
     p[6].mv()*k, p[7].mv()*fs, p[8].mv()*k);
-
-
   dirty = false;
 }
 
-
 EnvGenAmp::EnvGenAmp()
 {
-  // We just replace the opcodes to which out parameters listen. Functionally, the EG works exactly 
-  // the same as the general one, so we can re-use the code. Just the opcodes have different names
-  // reflecting the specialization of the target.
+  // We just replace the opcodes to which our parameters listen. Functionally, the ampeg opcodes 
+  // work exactly the same as the corresponding general adsrN, so we can re-use the code. Just the
+  // opcodes have different names reflecting the specialization for the specific modulation target.
 
   type = OpcodeType::AmpEnv;
   replaceOpcode(Opcode::adsrN_start,   Opcode::ampeg_start);
@@ -152,9 +141,8 @@ EnvGenAmp::EnvGenAmp()
   //replaceOpcode(Opcode::adsrN_end,     Opcode::ampeg_end);// ampeg_end doesn't exist
 
   // ToDo:
-  // -Do the same for pitcheg and fileg - maybe the latter should have an optional index, like
-  //  filNeg or filegN (see sfz2 spec - it has a 2nd filter). We also need to do soemthing similar
-  //  for the LFO
+  // -Do the same for pitcheg 
+  // -We also need to do soemthing similar for the LFO
   // -For the pre-allocation of env objects, it would actually be much more desirable, if the
   //  different types of specialized envelopes would be interchangable at runtime, i.e. EnvGenAmp
   //  is not a subclass of EnveGen but instead, we can somehow at runtime switch a general EG

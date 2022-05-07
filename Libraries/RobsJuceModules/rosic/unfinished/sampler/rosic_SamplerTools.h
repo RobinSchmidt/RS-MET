@@ -44,12 +44,12 @@ enum rsReturnCode
 /** Enumeration of the available modulation modes. */
 enum class ModMode  // rename to ModulationMode, maybe move out of Sampler sub-namespace
 {
-  // Defined in sfz:
+  // Used in sfz:
   absolute,          // for ampeg
   cents,             // for fileg, pitcheg
 
   // My own additions:
-  relative,
+  relative,          // not yet used
   //exponential,
   //multiplicative,
   //percent_of_nominal,  // maybe rename to percent_relative
