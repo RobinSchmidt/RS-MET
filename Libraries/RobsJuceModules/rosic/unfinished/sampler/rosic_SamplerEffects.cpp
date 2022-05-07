@@ -117,10 +117,10 @@ void EnvGen::updateCoeffs(double sampleRate)
 {
   const std::vector<Parameter>& p = params;
   float fs = (float) sampleRate;  // scales seconds to samples
+  float k  = 0.01f;               // scales percents to raw factors
 
-  //float k  = 0.01f; 
-  float k = 1.f;
-  // scales percents to raw factors...get rid! Or: keep the factors here and adapt the code in
+  //float k = 1.f;
+  // get rid! Or: keep the factors here and adapt the code in
   // ModulationConnector::getContribution: in cent mode, get rid of a factor of 100, i.e. change
   // 10000 to 100 and in percent_absolute get rid of the factor 0.01. It seems to be more 
   // reasonable, to let the raw envelope produce numbers in the nominal range 0..1. Currently, the
