@@ -120,7 +120,11 @@ void EnvGen::updateCoeffs(double sampleRate)
 
   //float k  = 0.01f; 
   float k = 1.f;
-  // scales percents to raw factors...get rid!
+  // scales percents to raw factors...get rid! Or: keep the factors here and adapt the code in
+  // ModulationConnector::getContribution: in cent mode, get rid of a factor of 100, i.e. change
+  // 10000 to 100 and in percent_absolute get rid of the factor 0.01. It seems to be more 
+  // reasonable, to let the raw envelope produce numbers in the nominal range 0..1. Currently, the
+  // range is 0..100
 
   core.setup(p[0].mv()*k, p[1].mv()*fs, p[2].mv()*fs, p[3].mv()*k, p[4].mv()*fs, p[5].mv()*fs,
     p[6].mv()*k, p[7].mv()*fs, p[8].mv()*k);

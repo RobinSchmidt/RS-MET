@@ -231,7 +231,7 @@ public:
       float k = RAPT::rsPitchOffsetToFreqFactor(d * m / 10000.f); // factor to be applied
       // Why do we need a factor of 10000? shouldn't 100 be enough? Ah! It'S because levels are in
       // percent, that's one factor of 100, and rsPitchOffse...expects semitones instead of cents,
-      // that's another factor of 100
+      // that's another factor of 100. chaneg that, see EnvGen::updateCoeffs
 
       float c = k*u - u;  // contribution, verify this!
       return c;           // what about applying the depth here? maybe in another mode
