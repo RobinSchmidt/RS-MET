@@ -3219,6 +3219,18 @@ bool samplerFilterEnvTest()
   //  one exists already and if so, modify it. I think, this already is the behavior.
   // -Test what happens when the envelope breakpoints do not nicely coincide with sample instants.
   //  Are they rounded in the right way? Or do we somehow allow fractional breakpoints?
+  // -Figure out what happens, if we specify the fileg_depth setting before cutoff and resonance, 
+  //  i.e. before a filter object is registered in the sfz. If we want to route the fileg_depth to 
+  //  all filters, maybe when handling the fileg_depth opcode we will need the information how many
+  //  filters there will eventually be in the effect chain, even if they have not yet been added. 
+  //  This may also apply to the ampeg when we want to route it to the last amplifier. Maybe we 
+  //  need to implement the parsing in a way that first collects all the regular parameter opcodes
+  //  and the mod-routing opcodes and then handles the regular opcodes first and only after that
+  //  is done it handles the routing opcodes. Or: we need to somehow figure out beforehand, how 
+  //  many amplifiers and filters ther will be. In any case, it seems, we need a two-pass parsing.
+  //  Maybe instead of immediately calling lvl->setModulation(mr); in SfzInstrument::setFromSFZ in 
+  //  the setupSetting helper function, we should record the opcode string into a string array and
+  //  handle all those - so far unhandled - opcodes in a second loop.
 
 
   rsAssert(ok);
