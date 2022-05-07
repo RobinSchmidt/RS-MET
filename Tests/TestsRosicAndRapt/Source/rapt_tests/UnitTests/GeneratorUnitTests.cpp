@@ -2760,10 +2760,10 @@ bool samplerNoteOffTest()
 
 
   // Plot output for different instants of note-off event:
-  plot(N, 500); // note-off well within sustain
-  plot(N, 200); // note-off at start of sustain, i.e. at attack + decay
-  plot(N, 100); // note-off during decay
-  plot(N,  30); // note-off during attack
+  //plot(N, 500); // note-off well within sustain
+  //plot(N, 200); // note-off at start of sustain, i.e. at attack + decay
+  //plot(N, 100); // note-off during decay
+  //plot(N,  30); // note-off during attack
   // Currently, we always run through attack, decay and release phases even when the note-off 
   // occurs before reaching the sustain phase. This behavior may actually be useful, especially for
   // one-shot samples, but I think, it's not the standard way that envelopes behave. Normally, we 
@@ -2784,7 +2784,7 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::egN_sustain, sus_12, 2);
   se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
   se.setRegionModulation(0, 0, OT::FreeEnv, 2, OC::amplitudeN, 1, 100.f, Mode::absolute);
-  plot(N, 500); 
+  //plot(N, 500); 
 
   // Increase the release time of the second EG such that it becomes longer than the first. This 
   // should have the effect that now the 2nd env becomes the relevant one for determining when 
@@ -2812,7 +2812,7 @@ bool samplerNoteOffTest()
   se.clearInstrument();
   int L = 70;           // length of the DC sample
   setupForLoopedDC(&se, L, key, fs);
-  plot(N, 500);
+  //plot(N, 500);
   // Produces 560 samples of 1 (from n=0 to n=559) and then all zeros from n=560 onwards. At sample
   // 500, a noteOff is received which triggers leaving the loop. At that instant, the sampleTime in
   // the player is 500 % L = 500 % 70 = 10. That means, from then on, we have to run through the 
@@ -2824,7 +2824,7 @@ bool samplerNoteOffTest()
   se.setRegionSetting(0, 0, OC::ampeg_decay,   dec_amp, 1);
   se.setRegionSetting(0, 0, OC::ampeg_sustain, sus_amp, 1);
   se.setRegionSetting(0, 0, OC::ampeg_release, rel_amp, 1);
-  plot(N, 500); 
+  //plot(N, 500); 
   // Output is as above because we do not yet route the ampeg to an amplifier. In fact, we don't
   // even have an Amplifier modules in the chain yet. What we need to do is:
   // -After (or before) the modulation connections for the manually wired parameters are 
@@ -3219,17 +3219,12 @@ bool samplerFilterEnvTest()
   ok &= rsIsCloseTo(outL, y, tol);
   //rsPlotVectors(y, outL);
 
-
-  //se.removeModulations(); // should remove all modulation connections
-
- 
   // ToDo:
+  // -Rename egN opcodes to adsrN. The egN opcodes shall be reserved for MSEGs because that's how
+  //  sfz2 does it.
   // -What happens, if we set up the depth in some other mode, i.e. not in cents? Check, if the 
-  //  behavior is reasonable.
-  // -use the filegN_attack, etc. 
-  //  opcodes instead. Setting a filegN_depth opcode should translate to a call to 
-  //  setRegionModulation. And it should not just add another mod-connection but rather check, if 
-  //  one exists already and if so, modify it. I think, this already is the behavior.
+  //  behavior is reasonable. Maybe the fileg_depth opcode should not support anything else except
+  //  cents? If we want something else, we need to use the the egN opcodes?
   // -Test what happens when the envelope breakpoints do not nicely coincide with sample instants.
   //  Are they rounded in the right way? Or do we somehow allow fractional breakpoints?
   // -Figure out what happens, if we specify the fileg_depth setting before cutoff and resonance, 
@@ -3245,8 +3240,6 @@ bool samplerFilterEnvTest()
   //  the setupSetting helper function, we should record the opcode string into a string array and
   //  handle all those - so far unhandled - opcodes in a second loop.
   //  See also SfzInstrument::HierarchyLevel::setSetting
-
-
 
   rsAssert(ok);
   return ok;
