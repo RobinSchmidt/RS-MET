@@ -54,27 +54,29 @@ void SfzInstrument::HierarchyLevel::updateDspsArray()
 
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 {
-  using OP = Opcode;
-  OP op = s.getOpcode();
+  using OT = OpcodeType;
+
+  using OC = Opcode;
+  OC op = s.getOpcode();
 
   // Handle the lo/hi key/vel opcodes as special cases:
-  if(op == OP::LoKey) { loKey = (uchar)s.getValue(); return; }
-  if(op == OP::HiKey) { hiKey = (uchar)s.getValue(); return; }
-  if(op == OP::LoVel) { loVel = (uchar)s.getValue(); return; }
-  if(op == OP::HiVel) { hiVel = (uchar)s.getValue(); return; }
+  if(op == OC::LoKey) { loKey = (uchar)s.getValue(); return; }
+  if(op == OC::HiKey) { hiKey = (uchar)s.getValue(); return; }
+  if(op == OC::LoVel) { loVel = (uchar)s.getValue(); return; }
+  if(op == OC::HiVel) { hiVel = (uchar)s.getValue(); return; }
   // ToDo: maybe we should assert that the value is an integer in the range 0..127
   // we should also handle the "key" opcode which specifies lokey, hikey, 
   // pitch_keycenter simultaneously?
 
   // The "key" opcode specifies lokey, hikey and pitch_keycenter at the same time:
-  if(op == OP::Key)
+  if(op == OC::Key)
   {
     loKey = hiKey = (uchar)s.getValue();
     setSetting(PlaybackSetting(Opcode::PitchKeyCenter, s.getValue(), -1));
     // Shouldn't we return here? If not, document why not.
   }
 
-  if(op == OP::fileg_depth)
+  if(op == OC::fileg_depth)
   {
     //addFilterEnvRoutings(s);
     // This needs to be implemented and is supposed to add a modulation routing from the filet env 
@@ -82,8 +84,11 @@ void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
     // before all the filters are added, so we may not know, how many connections we need to add.
     // ...it's a bit messy...
 
+    setModulation(OT::FilterEnv, 1, OC::cutoffN, 1, s.getValue(), ModMode::cents);
+    // Preliminary - we just establish one connection from the first (and only?) FilterEnv to the
+    // first filter in the effect chain.
 
-    RAPT::rsError("Not yet implemented");
+    //RAPT::rsError("Not yet implemented");
     return;
   }
 

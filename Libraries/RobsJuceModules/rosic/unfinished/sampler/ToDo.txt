@@ -11,7 +11,7 @@ SFZ parsing
 - Currently, we use std::stof for converting strings to floating point numbers (wrapped into 
   rsStringToFloat). This may lead to errors in a float -> string -> float roundtrip. We should use
   a better implementation that allows for exact roundtrips. Maybe drag the old rsBigFloat code from
-  RSLib into RAPT or rosic. This conatins - among many other things - also a proper string -> float
+  RSLib into RAPT or rosic. This contains - among many other things - also a proper string -> float
   parsing implementation. ...but maybe it's the float -> string part that's at fault? Or maybe even 
   both? -> Check that!
 

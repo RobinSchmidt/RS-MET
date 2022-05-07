@@ -3198,11 +3198,18 @@ bool samplerFilterEnvTest()
   se3.setSampleRate(fs);
   se3.setRegionSetting(0,0, OC::resonanceN,    reso,   1); 
   se3.setRegionSetting(0,0, OC::cutoffN,       cutoff, 1);
-  se3.setRegionSetting(0,0, OC::fileg_attack,  att,    1);
-  se3.setRegionSetting(0,0, OC::fileg_decay,   dec,    1);
-  se3.setRegionSetting(0,0, OC::fileg_sustain, sus,    1);
+  //se3.setRegionSetting(0,0, OC::fileg_attack,  att,    1);
+  //se3.setRegionSetting(0,0, OC::fileg_decay,   dec,    1);
+  //se3.setRegionSetting(0,0, OC::fileg_sustain, sus,    1);
   se3.setRegionSetting(0,0, OC::fileg_release, rel,    1);
   se3.setRegionSetting(0,0, OC::fileg_depth,   depth,  1);
+  getSamplerNote(&se3, key, 64, outL, outR, nOff);
+  ok &= rsIsCloseTo(outL, y, tol);  
+  rsPlotVectors(y, outL);  
+  // outL is all zeros. Removing the fileg_attack/decay/sustain/release opcodes leads to a signal
+  // with fixed filter. We can leave the fileg_depth setting in place, though. Only the ADSR 
+  // settings make this signal disappear. Maybe the FilterEnv is somehow inserted into the effect 
+  // chain rather than the modSources?
 
 
 
@@ -3231,6 +3238,8 @@ bool samplerFilterEnvTest()
   //  Maybe instead of immediately calling lvl->setModulation(mr); in SfzInstrument::setFromSFZ in 
   //  the setupSetting helper function, we should record the opcode string into a string array and
   //  handle all those - so far unhandled - opcodes in a second loop.
+  //  See also SfzInstrument::HierarchyLevel::setSetting
+
 
 
   rsAssert(ok);
