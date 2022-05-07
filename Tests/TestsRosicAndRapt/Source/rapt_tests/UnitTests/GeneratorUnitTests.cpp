@@ -3198,9 +3198,9 @@ bool samplerFilterEnvTest()
   se3.setSampleRate(fs);
   se3.setRegionSetting(0,0, OC::resonanceN,    reso,   1); 
   se3.setRegionSetting(0,0, OC::cutoffN,       cutoff, 1);
-  //se3.setRegionSetting(0,0, OC::fileg_attack,  att,    1);
-  //se3.setRegionSetting(0,0, OC::fileg_decay,   dec,    1);
-  //se3.setRegionSetting(0,0, OC::fileg_sustain, sus,    1);
+  se3.setRegionSetting(0,0, OC::fileg_attack,  att,    1);
+  se3.setRegionSetting(0,0, OC::fileg_decay,   dec,    1);
+  se3.setRegionSetting(0,0, OC::fileg_sustain, sus,    1);
   se3.setRegionSetting(0,0, OC::fileg_release, rel,    1);
   se3.setRegionSetting(0,0, OC::fileg_depth,   depth,  1);
   getSamplerNote(&se3, key, 64, outL, outR, nOff);
@@ -3210,10 +3210,9 @@ bool samplerFilterEnvTest()
   // with fixed filter. We can leave the fileg_depth setting in place, though. Only the ADSR 
   // settings make this signal disappear. Maybe the FilterEnv is somehow inserted into the effect 
   // chain rather than the modSources?
-  // We get a layerOverload error in rsSamplerEngine::getRegionPlayerFor. Maybe there are not enough
-  // FilterEnv objects allocated?
-
-
+  // We get a layerOverload error in RegionPlayer::setRegionToPlay. Maybe there are not enough
+  // SamplePlayer::augmentOrCleanProcessors fails, the passed dspTypeChain contains a Filter and a
+  // FilterEnv but the FilterEnv should actually be in the chain of modulators
 
   //se.removeModulations(); // should remove all modulation connections
 

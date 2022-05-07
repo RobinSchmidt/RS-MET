@@ -505,13 +505,14 @@ Processor* DspResourcePool::grabModulator(OpcodeType type)
   {
   case OT::FreeEnv:   p = freeEnvGens.grabItem(); break;
   case OT::AmpEnv:    p = ampEnvGens.grabItem();  break;
-  //case OT::FilterEnv: p = envGens.grabItem(); break;
+  case OT::FilterEnv: p = filEnvGens.grabItem();  break;
   //case OT::PitchEnv:  p = envGens.grabItem(); break;
 
   case OT::FreeLfo:   p = lowFreqOscs.grabItem(); break;
   //case OT::AmpLfo:    p = lowFreqOscs.grabItem(); break;
   //case OT::FilterLfo: p = lowFreqOscs.grabItem(); break;
   //case OT::PitchLfo:  p = lowFreqOscs.grabItem(); break;
+  default: { RAPT::rsError("Unknown modulator type"); }
   };
   return p;
   // ToDo: maybe consolidate the cases that return from envGens or lowFreqOscs into some sort of
@@ -541,7 +542,7 @@ void DspResourcePool::repositModulator(Processor* p)
   {
   case OT::FreeEnv:   i = freeEnvGens.repositItem(p); break;
   case OT::AmpEnv:    i = ampEnvGens.repositItem(p);  break;
-  //case OT::FilterEnv: i = envGens.repositItem(p); break;
+  case OT::FilterEnv: i = filEnvGens.repositItem(p);  break;
   //case OT::PitchEnv:  i = envGens.repositItem(p); break;
 
   case OT::FreeLfo:   i = lowFreqOscs.repositItem(p);  break;
