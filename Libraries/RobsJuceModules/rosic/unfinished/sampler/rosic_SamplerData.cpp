@@ -266,7 +266,7 @@ void SfzInstrument::Region::copyDataFrom(const Region* src)
 bool SfzInstrument::Region::operator==(const SfzInstrument::Region& rhs) const
 {
   bool equal = settings == rhs.settings;
-  //equal &= modRoutings == rhs.modRoutings;  // compiler error! why?
+  equal &= modRoutings == rhs.modRoutings;
   equal &= dspTypes == rhs.dspTypes;
   equal &= loKey == rhs.loKey;
   equal &= hiKey == rhs.hiKey;
@@ -341,7 +341,7 @@ SfzInstrument::Region* SfzInstrument::Group::getRegion(int i) const
 bool SfzInstrument::Group::operator==(const SfzInstrument::Group& rhs) const
 {
   bool equal = settings == rhs.settings;
-  //equal &= modRoutings == rhs.modRoutings;  // compiler error! why?
+  equal &= modRoutings == rhs.modRoutings;
   equal &= dspTypes == rhs.dspTypes;
   equal &= regions.size() == rhs.regions.size();
   if(!equal) return false;
@@ -373,7 +373,7 @@ void SfzInstrument::Global::clearGroups()
 bool SfzInstrument::Global::operator==(const SfzInstrument::Global& rhs) const
 {
   bool equal = settings == rhs.settings;
-  //equal &= modRoutings == rhs.modRoutings;  // compiler error! why?
+  equal &= modRoutings == rhs.modRoutings;
   equal &= dspTypes == rhs.dspTypes;
   equal &= groups.size() == rhs.groups.size();
   if(!equal) return false;

@@ -161,6 +161,18 @@ public:
         || targetType == OpcodeType::Unknown || targetIndex == -1 || target == Opcode::Unknown;
   }
 
+  bool operator==(const ModulationSetting& rhs) const
+  {
+    return sourceType == rhs.sourceType && sourceIndex == rhs.sourceIndex 
+      && targetType == rhs.targetType && targetIndex == rhs.targetIndex && target == rhs.target
+      && depth == rhs.depth && mode == rhs.mode;
+  }
+  // Why do we need to implement this ourselves? Shouldn't the compiler auto-generate it? All 
+  // members are trivial data fields. However, we do get strange compiler errors in MSVC saying 
+  // something about 
+  //   "operator __surrogate_func': no matching overloaded function found"
+  // if we don't implement it manually :-/
+
 
 private:
 
