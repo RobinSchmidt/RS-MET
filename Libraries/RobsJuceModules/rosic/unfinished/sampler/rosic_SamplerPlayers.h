@@ -221,11 +221,11 @@ protected:
 
 
   /** Under construction... */
-  bool assembleModulations(const std::vector<ModulationSetting>& modSettings);
+  bool assembleModulations(const std::vector<ModulationRouting>& modSettings);
 
   bool assembleHardwiredModulations();
 
-  bool assembleRoutableModulations(const std::vector<ModulationSetting>& modSettings);
+  bool assembleRoutableModulations(const std::vector<ModulationRouting>& modSettings);
 
 
 
@@ -243,7 +243,7 @@ protected:
   /** A helper function that is called from GroupPlayer::assembleDspChain(bool) and
   InstrumentPlayer::assembleDspChain(bool). ...verify comment - seems out of date  */
   bool assembleProcessors(const std::vector<OpcodeType>& dspTypes, 
-    const std::vector<ModulationSetting>& modSettings);
+    const std::vector<ModulationRouting>& modSettings);
 
   /** Reposits all the processors back into the dspPool. */
   void disassembleProcessors();

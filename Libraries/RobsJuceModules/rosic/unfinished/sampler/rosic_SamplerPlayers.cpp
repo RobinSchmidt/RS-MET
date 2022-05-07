@@ -136,7 +136,7 @@ bool SamplePlayer::augmentOrCleanProcessors(const std::vector<OpcodeType>& dspTy
   // it somehow seems cleaner.
 }
 
-bool SamplePlayer::assembleModulations(const std::vector<ModulationSetting>& modSettings)
+bool SamplePlayer::assembleModulations(const std::vector<ModulationRouting>& modSettings)
 {
   bool ok = assembleHardwiredModulations();
   if(ok)
@@ -156,7 +156,7 @@ bool SamplePlayer::assembleHardwiredModulations()
   return true;
 }
 
-bool SamplePlayer::assembleRoutableModulations(const std::vector<ModulationSetting>& modSettings)
+bool SamplePlayer::assembleRoutableModulations(const std::vector<ModulationRouting>& modSettings)
 {
   RAPT::rsAssert(dspPool);
 
@@ -167,7 +167,7 @@ bool SamplePlayer::assembleRoutableModulations(const std::vector<ModulationSetti
 
   for(size_t i = 0; i < modSettings.size(); i++)
   {
-    ModulationSetting ms = modSettings[i];
+    ModulationRouting ms = modSettings[i];
 
     // Determine pointer to modulation source Processor:
     int j = findProcessorIndex(modSources, ms.getSourceType(), ms.getSourceIndex());
@@ -252,7 +252,7 @@ bool SamplePlayer::assembleRoutableModulations(const std::vector<ModulationSetti
 
 
 bool SamplePlayer::assembleProcessors(
-  const std::vector<OpcodeType>& dspTypes, const std::vector<ModulationSetting>& modSettings) 
+  const std::vector<OpcodeType>& dspTypes, const std::vector<ModulationRouting>& modSettings) 
 {
   if(!areProcessorsEmpty()) {    // Sanity check
     RAPT::rsError("Someone has not cleaned up after finishing playback!");

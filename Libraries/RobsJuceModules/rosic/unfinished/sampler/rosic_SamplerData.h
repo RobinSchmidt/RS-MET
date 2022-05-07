@@ -85,7 +85,7 @@ private:
 settings, not to actually connect modulator objects to parameters during processing. For this 
 purpose, the class ModulationConnection is used. ..tbc.... */
 
-class ModulationSetting  // rename to ModulationRouting
+class ModulationRouting 
 {
 
 public:
@@ -93,7 +93,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // \name Lifetime
 
-  ModulationSetting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex,
+  ModulationRouting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex,
     float modDepth, ModMode modMode)
     : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
     , targetIndex(modTargetIndex), depth(modDepth), mode(modMode)
@@ -105,7 +105,7 @@ public:
   "unknown", indices to -1, etc. The object needs to be either set up correctly later via the 
   setters or can serve as a sort of null-object or dummy-object that can be used, when a 
   mod-routing string could not be parsed, for example. */
-  ModulationSetting() {}
+  ModulationRouting() {}
 
 
   //---------------------------------------------------------------------------------------------
@@ -121,17 +121,17 @@ public:
 
 
   /** Returns true, iff the type and index of the source of the given routing matches ours. */
-  bool hasMatchingSource(const ModulationSetting& r) const
+  bool hasMatchingSource(const ModulationRouting& r) const
   {
     return r.sourceType == sourceType && r.sourceIndex == sourceIndex;
   }
 
-  bool hasMatchingTarget(const ModulationSetting& r) const
+  bool hasMatchingTarget(const ModulationRouting& r) const
   {
     return r.target == target && r.targetIndex == targetIndex;
   }
 
-  bool hasMatchingEndpoints(const ModulationSetting& r) const
+  bool hasMatchingEndpoints(const ModulationRouting& r) const
   {
     return hasMatchingSource(r) && hasMatchingTarget(r);
   }
@@ -161,7 +161,7 @@ public:
         || targetType == OpcodeType::Unknown || targetIndex == -1 || target == Opcode::Unknown;
   }
 
-  bool operator==(const ModulationSetting& rhs) const
+  bool operator==(const ModulationRouting& rhs) const
   {
     return sourceType == rhs.sourceType && sourceIndex == rhs.sourceIndex 
       && targetType == rhs.targetType && targetIndex == rhs.targetIndex && target == rhs.target
@@ -295,7 +295,7 @@ public:
       Opcode modTarget, int modTargetIndex, float modDepth, ModMode modMode);
     // rename to setModRouting or setModulationRouting
 
-    void setModulation(const ModulationSetting& newRouting);
+    void setModulation(const ModulationRouting& newRouting);
 
 
 
@@ -336,7 +336,7 @@ public:
     const std::vector<PlaybackSetting>& getSettings() const { return settings; }
 
     /** Returns a const reference to our modulation routings. */
-    const std::vector<ModulationSetting>& getModRoutings() const { return modRoutings; }
+    const std::vector<ModulationRouting>& getModRoutings() const { return modRoutings; }
 
     /** Returns the value of the given setting, if present. If not present, it will try to figure
     out the parent's setting and so on all the way up the (3-level) hierarchy. If such a setting is
@@ -399,7 +399,7 @@ public:
     const std::vector<OpcodeType>& getOpcodeTypeChain() const { return dspTypes; }
 
 
-    const std::vector<ModulationSetting>& getModulationSettings() const { return modRoutings; }
+    const std::vector<ModulationRouting>& getModulationSettings() const { return modRoutings; }
 
 
   protected:
@@ -467,7 +467,7 @@ public:
     /**< The settings which apply to this region/group/instrument, i.e. the opcodes along with 
     their values and, if appliable, index */
 
-    std::vector<ModulationSetting> modRoutings;
+    std::vector<ModulationRouting> modRoutings;
     /**< Holds the modulation routings like egN_cutoffX, lfoN_amplitudeX, etc.. These are handled 
     separately from the other settings because they have a different format and do different 
     things. */
@@ -482,7 +482,7 @@ public:
 
 
     // ModulationConnection is for the objects that are used in sample processing whereas 
-    // ModulationSetting/Routing is used in regions/groups/etc
+    // ModulationRouting/Routing is used in regions/groups/etc
 
 
 
@@ -788,13 +788,13 @@ protected:
   static void writeSettingToString(const PlaybackSetting& setting, std::string& str);
 
 
-  static void writeModRoutingToString(const ModulationSetting& routing, std::string& str);
+  static void writeModRoutingToString(const ModulationRouting& routing, std::string& str);
 
 
   static PlaybackSetting getSettingFromString(
     const std::string& opcode, const std::string& value);
 
-  static ModulationSetting getModRoutingFromString(
+  static ModulationRouting getModRoutingFromString(
     const std::string& opStr, const std::string& valStr);
 
 

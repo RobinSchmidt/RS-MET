@@ -140,7 +140,7 @@ void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int mod
   if(!SfzCodeBook::isModSourceSetting(modSrcType)) {
     RAPT::rsError("modSrcType must be some sort of modulation source");
     return; }
-  ModulationSetting newRouting(
+  ModulationRouting newRouting(
     modSrcType, modSrcIndex, modTarget, modTargetIndex, modDepth, modMode);
 
   // new:
@@ -162,7 +162,7 @@ void SfzInstrument::HierarchyLevel::setModulation(OpcodeType modSrcType, int mod
 // a sanity check for all connections after the region was fully set up. Maybe a member function
 // checkModRoutingSanity ..or hasDanglingRoutings or something
 
-void SfzInstrument::HierarchyLevel::setModulation(const ModulationSetting& r)
+void SfzInstrument::HierarchyLevel::setModulation(const ModulationRouting& r)
 {
   for(size_t i = 0; i < modRoutings.size(); i++) {
     if( modRoutings[i].hasMatchingEndpoints(r) ) {
@@ -198,7 +198,7 @@ size_t rsRemoveIf(std::vector<T>& vec, P pred)
 bool SfzInstrument::HierarchyLevel::removeModulation(OpcodeType modSrcType, int modSrcIndex, 
   Opcode modTargetOpcode, int modTargetIndex)
 {
-  size_t numRemoved = rsRemoveIf(modRoutings, [&](ModulationSetting& s){ 
+  size_t numRemoved = rsRemoveIf(modRoutings, [&](ModulationRouting& s){ 
     return s.getSourceType() == modSrcType && s.getSourceIndex() == modSrcIndex && 
       s.getTargetOpcode() == modTargetOpcode && s.getTargetIndex() == modTargetIndex; });
   return numRemoved > 0;
@@ -546,7 +546,7 @@ std::string SfzInstrument::getAsSFZ() const
     for(size_t i = 0; i < settings.size(); i++)
       writeSettingToString(settings[i], str);
 
-    const std::vector<ModulationSetting>& routings = lvl->getModRoutings();
+    const std::vector<ModulationRouting>& routings = lvl->getModRoutings();
     for(size_t i = 0; i < routings.size(); i++)
       writeModRoutingToString(routings[i], str);
   };
@@ -625,7 +625,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     if(ps.getOpcode() != Opcode::Unknown)  // It's a regular opcode setting
       lvl->setSetting(ps);
     else {                                 // It may be a modulation routing setting
-      ModulationSetting mr = getModRoutingFromString(opcode, value);
+      ModulationRouting mr = getModRoutingFromString(opcode, value);
       if(mr.isInvalid())
         RAPT::rsError("String could not be parsed as modulation routing");
       else
@@ -784,7 +784,7 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
   //  because they are handled already by the caller because they require special treatment.
 }
 
-void SfzInstrument::writeModRoutingToString(const ModulationSetting& r, std::string& s)
+void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::string& s)
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   std::string tmp;
@@ -808,7 +808,7 @@ PlaybackSetting SfzInstrument::getSettingFromString(
 }
 // maybe move into a static "fromString" member function of PlaybackSetting
 
-ModulationSetting SfzInstrument::getModRoutingFromString(
+ModulationRouting SfzInstrument::getModRoutingFromString(
   const std::string& opStr, const std::string& valStr)
 {
   SfzCodeBook* cb = SfzCodeBook::getInstance();
@@ -835,15 +835,15 @@ ModulationSetting SfzInstrument::getModRoutingFromString(
   ModMode mode;
   float depth = cb->stringToModDepth(valStr, &mode, tgtOpcode);
 
-  return ModulationSetting(srcType, srcIndex, tgtOpcode, tgtIndex, depth, mode);
+  return ModulationRouting(srcType, srcIndex, tgtOpcode, tgtIndex, depth, mode);
 
   // ToDo:
   // -Maybe this whole code should go into SfzCodeBook. It seems to fit in there better than here.
-  //  But the codebook doesn't know about class ModulationSetting, so how should we return the 
+  //  But the codebook doesn't know about class ModulationRouting, so how should we return the 
   //  data? Maybe a function that takes all the members of that class as pointer arguments? But maybe
   //  it's ok to keep the code here
 
-  //return ModulationSetting();  // standard constructor will create an invalid object
+  //return ModulationRouting();  // standard constructor will create an invalid object
 }
 
 void SfzInstrument::copy(const SfzInstrument& src, SfzInstrument& dst)

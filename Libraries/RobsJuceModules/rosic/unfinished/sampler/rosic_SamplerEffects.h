@@ -290,7 +290,7 @@ public:
   const Processor* getSourceProcessor() const { return source; }
 
   int getSourceIndex() const { return sourceIndex; }
-  // document this: i think, this is a different index than the one in ModulationSetting, namely 
+  // document this: i think, this is a different index than the one in ModulationRouting, namely 
   // the index in modSources array used in SamplePlayer. 
 
 
