@@ -111,8 +111,12 @@ enum class Opcode
   // filters
 
   // ADSR+ envelope generators (opcodes not defined in SFZ except sustain):
-  egN_start, egN_delay, egN_attack, egN_peak, egN_hold, egN_decay, egN_sustain, egN_release, 
-  egN_end,
+  //egN_start, egN_delay, egN_attack, egN_peak, egN_hold, egN_decay, egN_sustain, egN_release, 
+  //egN_end,
+
+  adsrN_start, adsrN_delay, adsrN_attack, adsrN_peak, adsrN_hold, adsrN_decay, adsrN_sustain, 
+  adsrN_release, adsrN_end,
+
 
   // egN_timeX, egN_levelX
   lfoN_freq,      // lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave,
@@ -365,7 +369,7 @@ enum class OpcodeType   // Maybe rename to OpcodeTarget
 
   // Freely routable modulators:
   _TagFreeModulatorsStart,
-  FreeEnv,    // rename to EnvGen
+  FreeEnv,    // rename to EnvGen or FreeAdsr
   FreeLfo,    // rename to LowFreqOsc
 
   // Allow midi-inputs to be modulation sources, too:

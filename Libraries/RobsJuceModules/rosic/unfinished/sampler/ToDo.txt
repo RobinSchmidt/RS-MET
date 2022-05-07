@@ -71,7 +71,7 @@ Modulation system
    start during the delay phase? We need to test this using a reference implementation like 
    sfz+.
    
-- Verify the formula for vel_tracking of amplitude against some reference implemenetation (sfz+)   
+- Verify the formula for vel_tracking of amplitude against some reference implementation (sfz+)   
 
 - Maybe we should not define ADSR parameters for egN because in SFZ2, the egN opcodes work in 
   terms of egN_timeX egN_levelX. Maybe use adsrN instead. Or maybe the ADSR parameters can be

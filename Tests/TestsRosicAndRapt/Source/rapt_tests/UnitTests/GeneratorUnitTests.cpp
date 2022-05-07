@@ -2748,10 +2748,10 @@ bool samplerNoteOffTest()
   float rel_11 = 300.f;  // 80 samples or seconds
 
   // Set up the envelope in the sampler engine.
-  se.setRegionSetting(0, 0, OC::egN_attack,  att_11, 1);
-  se.setRegionSetting(0, 0, OC::egN_decay,   dec_11, 1);
-  se.setRegionSetting(0, 0, OC::egN_sustain, sus_11, 1);
-  se.setRegionSetting(0, 0, OC::egN_release, rel_11, 1);
+  se.setRegionSetting(0, 0, OC::adsrN_attack,  att_11, 1);
+  se.setRegionSetting(0, 0, OC::adsrN_decay,   dec_11, 1);
+  se.setRegionSetting(0, 0, OC::adsrN_sustain, sus_11, 1);
+  se.setRegionSetting(0, 0, OC::adsrN_release, rel_11, 1);
 
   // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
   // nominal value for the amplitude is 0:
@@ -2779,10 +2779,10 @@ bool samplerNoteOffTest()
   float dec_12 = 40.f;
   float sus_12 = 30.f;
   float rel_12 = 80.f;
-  se.setRegionSetting(0, 0, OC::egN_attack,  att_12, 2);
-  se.setRegionSetting(0, 0, OC::egN_decay,   dec_12, 2);
-  se.setRegionSetting(0, 0, OC::egN_sustain, sus_12, 2);
-  se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
+  se.setRegionSetting(0, 0, OC::adsrN_attack,  att_12, 2);
+  se.setRegionSetting(0, 0, OC::adsrN_decay,   dec_12, 2);
+  se.setRegionSetting(0, 0, OC::adsrN_sustain, sus_12, 2);
+  se.setRegionSetting(0, 0, OC::adsrN_release, rel_12, 2);
   se.setRegionModulation(0, 0, OT::FreeEnv, 2, OC::amplitudeN, 1, 100.f, Mode::absolute);
   //plot(N, 500); 
 
@@ -2790,7 +2790,7 @@ bool samplerNoteOffTest()
   // should have the effect that now the 2nd env becomes the relevant one for determining when 
   // release has finished:
   rel_12 = 500.f;
-  se.setRegionSetting(0, 0, OC::egN_release, rel_12, 2);
+  se.setRegionSetting(0, 0, OC::adsrN_release, rel_12, 2);
   //plot(N, 500); 
 
   // Add settings for the ampeg_attack, ampeg_decay, etc. opcodes. These should apply additionally
@@ -3087,15 +3087,15 @@ bool samplerEnvTest()
   //rsPlotVectors(outL, outR);  // all ones -> correct!
 
   // Set up the envelope in the sampler engine:
-  se.setRegionSetting(0,0, OC::egN_start,   start   * 100, 1);
-  se.setRegionSetting(0,0, OC::egN_delay,   delay   / fs,  1);
-  se.setRegionSetting(0,0, OC::egN_attack,  attack  / fs,  1);
-  se.setRegionSetting(0,0, OC::egN_peak,    peak    * 100, 1);
-  se.setRegionSetting(0,0, OC::egN_hold,    hold    / fs,  1);
-  se.setRegionSetting(0,0, OC::egN_decay,   decay   / fs,  1);
-  se.setRegionSetting(0,0, OC::egN_sustain, sustain * 100, 1);
-  se.setRegionSetting(0,0, OC::egN_release, release / fs,  1);
-  se.setRegionSetting(0,0, OC::egN_end,     end     * 100, 1);
+  se.setRegionSetting(0,0, OC::adsrN_start,   start   * 100, 1);
+  se.setRegionSetting(0,0, OC::adsrN_delay,   delay   / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_attack,  attack  / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_peak,    peak    * 100, 1);
+  se.setRegionSetting(0,0, OC::adsrN_hold,    hold    / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_decay,   decay   / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_sustain, sustain * 100, 1);
+  se.setRegionSetting(0,0, OC::adsrN_release, release / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_end,     end     * 100, 1);
 
   // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
   // nominal value for the amplitude is 0:
@@ -3162,12 +3162,12 @@ bool samplerFilterEnvTest()
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   addSingleSampleRegion(&se, x, key, fs);
   se.setSampleRate(fs);
-  se.setRegionSetting(0,0, OC::resonanceN,  reso,   1); 
-  se.setRegionSetting(0,0, OC::cutoffN,     cutoff, 1);
-  se.setRegionSetting(0,0, OC::egN_attack,  att,    1);
-  se.setRegionSetting(0,0, OC::egN_decay,   dec,    1);
-  se.setRegionSetting(0,0, OC::egN_sustain, sus,    1);
-  se.setRegionSetting(0,0, OC::egN_release, rel,    1);
+  se.setRegionSetting(0,0, OC::resonanceN,    reso,   1); 
+  se.setRegionSetting(0,0, OC::cutoffN,       cutoff, 1);
+  se.setRegionSetting(0,0, OC::adsrN_attack,  att,    1);
+  se.setRegionSetting(0,0, OC::adsrN_decay,   dec,    1);
+  se.setRegionSetting(0,0, OC::adsrN_sustain, sus,    1);
+  se.setRegionSetting(0,0, OC::adsrN_release, rel,    1);
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, 64, outL, outR, nOff);

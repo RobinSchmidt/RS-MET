@@ -234,15 +234,15 @@ SfzCodeBook::SfzCodeBook()
 
   // Routable modulators:
   dsp = OpcodeType::FreeEnv;
-  add(OC::egN_delay,   Flt, "egN_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::egN_start,   Flt, "egN_start",   0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
-  add(OC::egN_attack,  Flt, "egN_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::egN_peak,    Flt, "egN_peak",    0.f, 100.f, 100.f, dsp, OU::Percent, RsMet); 
-  add(OC::egN_hold,    Flt, "egN_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::egN_decay,   Flt, "egN_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::egN_sustain, Flt, "egN_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz2);
-  add(OC::egN_release, Flt, "egN_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::egN_end,     Flt, "egN_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
+  add(OC::adsrN_delay,   Flt, "adsrN_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::adsrN_start,   Flt, "adsrN_start",   0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
+  add(OC::adsrN_attack,  Flt, "adsrN_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::adsrN_peak,    Flt, "adsrN_peak",    0.f, 100.f, 100.f, dsp, OU::Percent, RsMet); 
+  add(OC::adsrN_hold,    Flt, "adsrN_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::adsrN_decay,   Flt, "adsrN_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::adsrN_sustain, Flt, "adsrN_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz2);
+  add(OC::adsrN_release, Flt, "adsrN_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
+  add(OC::adsrN_end,     Flt, "adsrN_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
   // Maybe rename to adsrN_..., see ToDo.txt
 
 
@@ -496,7 +496,7 @@ std::string SfzCodeBook::modSourceToString(OpcodeType sourceType, int index)
 
   switch(sourceType)
   {
-  case OT::FreeEnv:   tmp = "eg";    break;
+  case OT::FreeEnv:   tmp = "adsr";  break;
   case OT::FilterEnv: tmp = "fileg"; break;
   case OT::FreeLfo:   tmp = "lfo";   break;
   default:
@@ -548,7 +548,7 @@ OpcodeType SfzCodeBook::stringToModSource(const std::string& str, int* index)
     *index = parseNaturalNumber(idxStr, 0, (int)idxStr.length()-1);
 
   using OT = OpcodeType;
-  if(srcStr == "eg")       return OT::FreeEnv;
+  if(srcStr == "adsr")     return OT::FreeEnv;
   if(srcStr == "ampeg")    return OT::AmpEnv;
   if(srcStr == "fileg")    return OT::FilterEnv;
   if(srcStr == "pitcheg")  return OT::PitchEnv;

@@ -93,16 +93,16 @@ void LowFreqOsc::updateCoeffs(double fs)
 EnvGen::EnvGen()
 {
   type = OpcodeType::FreeEnv;
-  params.reserve(9);                   // index
-  addParameter(Opcode::egN_start);     //   0
-  addParameter(Opcode::egN_delay);     //   1
-  addParameter(Opcode::egN_attack);    //   2
-  addParameter(Opcode::egN_peak);      //   3
-  addParameter(Opcode::egN_hold);      //   4
-  addParameter(Opcode::egN_decay);     //   5
-  addParameter(Opcode::egN_sustain);   //   6
-  addParameter(Opcode::egN_release);   //   7
-  addParameter(Opcode::egN_end);       //   8
+  params.reserve(9);                     // index
+  addParameter(Opcode::adsrN_start);     //   0
+  addParameter(Opcode::adsrN_delay);     //   1
+  addParameter(Opcode::adsrN_attack);    //   2
+  addParameter(Opcode::adsrN_peak);      //   3
+  addParameter(Opcode::adsrN_hold);      //   4
+  addParameter(Opcode::adsrN_decay);     //   5
+  addParameter(Opcode::adsrN_sustain);   //   6
+  addParameter(Opcode::adsrN_release);   //   7
+  addParameter(Opcode::adsrN_end);       //   8
 
   // ToDo: 
   // -Add the velocity-scaling params: vel2delay, vel2attack, vel2hold, etc. defined in sfz for
@@ -132,15 +132,15 @@ EnvGenAmp::EnvGenAmp()
   // reflecting the specialization of the target.
 
   type = OpcodeType::AmpEnv;
-  replaceOpcode(Opcode::egN_start,   Opcode::ampeg_start);
-  replaceOpcode(Opcode::egN_delay,   Opcode::ampeg_delay);
-  replaceOpcode(Opcode::egN_attack,  Opcode::ampeg_attack);
-  //replaceOpcode(Opcode::egN_peak,    Opcode::ampeg_peak); // ampeg_peak doesn't exist
-  replaceOpcode(Opcode::egN_hold,    Opcode::ampeg_hold);
-  replaceOpcode(Opcode::egN_decay,   Opcode::ampeg_decay);
-  replaceOpcode(Opcode::egN_sustain, Opcode::ampeg_sustain);
-  replaceOpcode(Opcode::egN_release, Opcode::ampeg_release);
-  //replaceOpcode(Opcode::egN_end,     Opcode::ampeg_end);// ampeg_end doesn't exist
+  replaceOpcode(Opcode::adsrN_start,   Opcode::ampeg_start);
+  replaceOpcode(Opcode::adsrN_delay,   Opcode::ampeg_delay);
+  replaceOpcode(Opcode::adsrN_attack,  Opcode::ampeg_attack);
+  //replaceOpcode(Opcode::adsrN_peak,    Opcode::ampeg_peak); // ampeg_peak doesn't exist
+  replaceOpcode(Opcode::adsrN_hold,    Opcode::ampeg_hold);
+  replaceOpcode(Opcode::adsrN_decay,   Opcode::ampeg_decay);
+  replaceOpcode(Opcode::adsrN_sustain, Opcode::ampeg_sustain);
+  replaceOpcode(Opcode::adsrN_release, Opcode::ampeg_release);
+  //replaceOpcode(Opcode::adsrN_end,     Opcode::ampeg_end);// ampeg_end doesn't exist
 
   // ToDo:
   // -Do the same for pitcheg and fileg - maybe the latter should have an optional index, like
@@ -156,15 +156,15 @@ EnvGenAmp::EnvGenAmp()
 EnvGenFil::EnvGenFil()
 {
   type = OpcodeType::FilterEnv;
-  replaceOpcode(Opcode::egN_start,   Opcode::fileg_start);
-  replaceOpcode(Opcode::egN_delay,   Opcode::fileg_delay);
-  replaceOpcode(Opcode::egN_attack,  Opcode::fileg_attack);
-  //replaceOpcode(Opcode::egN_peak,    Opcode::fileg_peak);
-  replaceOpcode(Opcode::egN_hold,    Opcode::fileg_hold);
-  replaceOpcode(Opcode::egN_decay,   Opcode::fileg_decay);
-  replaceOpcode(Opcode::egN_sustain, Opcode::fileg_sustain);
-  replaceOpcode(Opcode::egN_release, Opcode::fileg_release);
-  //replaceOpcode(Opcode::egN_end,     Opcode::fileg_end);
+  replaceOpcode(Opcode::adsrN_start,   Opcode::fileg_start);
+  replaceOpcode(Opcode::adsrN_delay,   Opcode::fileg_delay);
+  replaceOpcode(Opcode::adsrN_attack,  Opcode::fileg_attack);
+  //replaceOpcode(Opcode::adsrN_peak,    Opcode::fileg_peak);
+  replaceOpcode(Opcode::adsrN_hold,    Opcode::fileg_hold);
+  replaceOpcode(Opcode::adsrN_decay,   Opcode::fileg_decay);
+  replaceOpcode(Opcode::adsrN_sustain, Opcode::fileg_sustain);
+  replaceOpcode(Opcode::adsrN_release, Opcode::fileg_release);
+  //replaceOpcode(Opcode::adsrN_end,     Opcode::fileg_end);
 }
 
 //=================================================================================================
