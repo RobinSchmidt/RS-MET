@@ -3196,13 +3196,13 @@ bool samplerFilterEnvTest()
   se3.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   addSingleSampleRegion(&se3, x, key, fs); 
   se3.setSampleRate(fs);
-  se3.setRegionSetting(0,0, OC::resonanceN,    reso,   1); 
-  se3.setRegionSetting(0,0, OC::cutoffN,       cutoff, 1);
-  se3.setRegionSetting(0,0, OC::fileg_attack,  att,    1);
-  se3.setRegionSetting(0,0, OC::fileg_decay,   dec,    1);
-  se3.setRegionSetting(0,0, OC::fileg_sustain, sus,    1);
-  se3.setRegionSetting(0,0, OC::fileg_release, rel,    1);
-  se3.setRegionSetting(0,0, OC::fileg_depth,   depth,  1);
+  se3.setRegionSetting(0,0, OC::resonanceN,    reso,    1); 
+  se3.setRegionSetting(0,0, OC::cutoffN,       cutoff,  1);
+  se3.setRegionSetting(0,0, OC::fileg_attack,  att,    -1);
+  se3.setRegionSetting(0,0, OC::fileg_decay,   dec,    -1);
+  se3.setRegionSetting(0,0, OC::fileg_sustain, sus,    -1);
+  se3.setRegionSetting(0,0, OC::fileg_release, rel,    -1);
+  se3.setRegionSetting(0,0, OC::fileg_depth,   depth,  -1);
   getSamplerNote(&se3, key, 64, outL, outR, nOff);
   ok &= rsIsCloseTo(outL, y, tol);
   //rsPlotVectors(y, outL);
@@ -3210,24 +3210,17 @@ bool samplerFilterEnvTest()
   // Again, retrieve the state as sfz string from se3 and set up a fresh engine from that and 
   // check its output:
   sfz = se3.getAsSfz();
-  // sfz has a fileg1_cutoff=1200.000000 opcode in it - but maybe it should be fileg_depth?
+  // sfz has a fileg1_cutoff=1200.000000 opcode in it - but maybe it should be fileg_depth? Maybe
+  // we need some special casing for the fileg, fillfo, pitcheg, etc. opcodes?
 
   SE se4;
   se4.setSampleRate(fs);
   addSingleSampleRegion(&se4, x, key, fs);
   se4.setFromSFZ(sfz);
-  ok &= se4.isInSameStateAs(se3); // fails!
+  ok &= se4.isInSameStateAs(se3);
   getSamplerNote(&se4, key, 64, outL, outR, nOff);
-  ok &= rsIsCloseTo(outL, y, tol);  // passes!
+  ok &= rsIsCloseTo(outL, y, tol);
   //rsPlotVectors(y, outL);
-  // s4.isInSameStateAs(se3); fails but nevertheless se4 produces the correct output
-  // signal. The settings for the fileg_attack, etc. opcodes have index==-1 in se4 ("this") and 
-  // index==1 in se3 ("rhs") in SfzInstrument::Region::operator==. I think, for fileg, -1 is 
-  // actually correct because the fileg opcodes are not supposed to have an index. So they
-  // actually have the worng value in the original se3 and the correct value in the reconstructed
-  // se4.
-
-
 
 
 
