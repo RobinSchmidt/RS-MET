@@ -805,14 +805,50 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
 
 void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::string& s)
 {
+  // Retrieve data from routing object:
+  using OT = OpcodeType;
+  using OC = Opcode;
+  using MM = ModMode;
+  OT  srcTp  = r.getSourceType();
+  OT  tgtTp  = r.getTargetType();
+  OC  tgtOp  = r.getTargetOpcode();
+  int srcIdx = r.getSourceIndex();
+  int tgtIdx = r.getTargetIndex();
+  MM  mode   = r.getMode();
+
+
+  // Handle special cases:
+  if(srcTp == OT::FilterEnv && tgtOp == OC::cutoffN && mode == MM::cents)
+  {
+    RAPT::rsAssert(srcIdx == 1, "There should be at most one FilterEnv");
+    // ...because in the sfz spec, the fileg_ opcodes are not indexed, i.e. there's no such thing
+    // as fileg2_cutoff3 or anything like that. There is just fileg_depth which we interpret as
+    // fileg1_cutoff1 at the moment. Maybe later, we should interpret it as fileg1_cutoffAll but
+    // for that, we will first generally have to support such an "All" syntax.
+
+    RAPT::rsAssert(tgtIdx == 1);
+    // Hmm...we currently interpret the fileg_depth opcode as applying to the first cutoff, i.e. 
+    // the cutoff of the first filter in the chain. But maybe it should apply to all filters? But 
+    // then we should probably only store it once in the sfz string...hmm...
+
+    // ToDo: store as fileg_depth
+
+    int dummy = 0;
+
+    // What happens, if we set up some other mode? -> make tests!
+  }
+  // ...
+
+
+
+  // Handle the general case:
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   std::string tmp;
-  tmp  = cb->modSourceToString(r.getSourceType(), r.getSourceIndex()) + "_";
-  tmp += cb->modTargetToString(r.getTargetType(), r.getTargetIndex(), r.getTargetOpcode()) + "=";
-  tmp += cb->modDepthToString(r.getDepth(), r.getMode(), r.getTargetOpcode());
+  tmp  = cb->modSourceToString(srcTp, srcIdx) + "_";
+  tmp += cb->modTargetToString(tgtTp, tgtIdx, tgtOp) + "=";
+  tmp += cb->modDepthToString(r.getDepth(), mode, tgtOp);
   s += tmp;
 }
-
 
 PlaybackSetting SfzInstrument::getSettingFromString(
   const std::string& opStr, const std::string& valStr)

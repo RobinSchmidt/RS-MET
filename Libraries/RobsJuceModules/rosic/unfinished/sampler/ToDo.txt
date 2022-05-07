@@ -77,6 +77,9 @@ Modulation system
   sustain = level3, release = time4, end = level4? Figure out, if that makes sense. But: it 
   would imply that we would need MSEGs even for ADSRs and MSEGs are probably more complex to
   implement, so maybe it's indeed better to use adsrN here.
+  
+- Maybe we could allow a syntax egN_cutoffAll or egN_cutoffA and/or egN_cutoffLast or egN_cutoffL to
+  use a single command to conveniently specify a whole bunch of modulation routings.
    
 - Release-Modes: 
   - one_shot: always run through the whole envelope even when noteOff is triggered before 

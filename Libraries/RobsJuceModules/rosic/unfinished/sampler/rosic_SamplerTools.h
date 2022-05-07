@@ -247,6 +247,13 @@ void rsRemoveLineComments(std::string& str, char commentStart);
 void rsReplaceCharacter(std::string& str, char oldChar, char newChar);
 void rsRemoveRepeats(std::string& s, char c);
 
+//=================================================================================================
+// String processing:
+
+
+
+//=================================================================================================
+// Container tools:
 
 /*
 template<class T> // Grow v by given amount

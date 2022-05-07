@@ -3211,7 +3211,8 @@ bool samplerFilterEnvTest()
   // check its output:
   sfz = se3.getAsSfz();
   // sfz has a fileg1_cutoff=1200.000000 opcode in it - but maybe it should be fileg_depth? Maybe
-  // we need some special casing for the fileg, fillfo, pitcheg, etc. opcodes?
+  // we need some special casing for the fileg, fillfo, pitcheg, etc. opcodes in
+  // SfzInstrument::writeModRoutingToString
 
   SE se4;
   se4.setSampleRate(fs);
