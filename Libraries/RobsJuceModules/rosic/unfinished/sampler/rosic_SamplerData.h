@@ -265,6 +265,9 @@ public:
     stored for that type (a situation that may arise from badly written sfz files), it will
     overwrite the last one, because that's the one that actually counts. */
     void setSetting(const PlaybackSetting& s);
+    // Maybe the function should take a second parameter that specifies the unit? Or maybe the 
+    // PlaybackSetting should have a field for that? this will be needed to support a syntax
+    // like fileg_depth=1000Hz or fileg_depth=70%
 
     /** Adds the given setting to our array of settings. */
     //void addSetting(const PlaybackSetting& s) { settings.push_back(s); }

@@ -54,35 +54,49 @@ void SfzInstrument::HierarchyLevel::updateDspsArray()
 
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 {
-  using TP = Opcode;
-  TP t = s.getOpcode();
+  using OP = Opcode;
+  OP op = s.getOpcode();
 
   // Handle the lo/hi key/vel opcodes as special cases:
-  if(t == TP::LoKey) { loKey = (uchar)s.getValue(); return; }
-  if(t == TP::HiKey) { hiKey = (uchar)s.getValue(); return; }
-  if(t == TP::LoVel) { loVel = (uchar)s.getValue(); return; }
-  if(t == TP::HiVel) { hiVel = (uchar)s.getValue(); return; }
+  if(op == OP::LoKey) { loKey = (uchar)s.getValue(); return; }
+  if(op == OP::HiKey) { hiKey = (uchar)s.getValue(); return; }
+  if(op == OP::LoVel) { loVel = (uchar)s.getValue(); return; }
+  if(op == OP::HiVel) { hiVel = (uchar)s.getValue(); return; }
   // ToDo: maybe we should assert that the value is an integer in the range 0..127
   // we should also handle the "key" opcode which specifies lokey, hikey, 
   // pitch_keycenter simultaneously?
 
   // The "key" opcode specifies lokey, hikey and pitch_keycenter at the same time:
-  if(t == TP::Key)
+  if(op == OP::Key)
   {
     loKey = hiKey = (uchar)s.getValue();
     setSetting(PlaybackSetting(Opcode::PitchKeyCenter, s.getValue(), -1));
+    // Shouldn't we return here? If not, document why not.
+  }
+
+  if(op == OP::fileg_depth)
+  {
+    //addFilterEnvRoutings(s);
+    // This needs to be implemented and is supposed to add a modulation routing from the filet env 
+    // (we suppose that there is only one) to all filter cutoffs. Problem: This may be called 
+    // before all the filters are added, so we may not know, how many connections we need to add.
+    // ...it's a bit messy...
+
+
+    RAPT::rsError("Not yet implemented");
+    return;
   }
 
   // All other settings are handled by either overwriting the last setting of that type in our 
   // array, if present or by appending the setting, if not present:
   int idx = s.getIndex();
-  int foundAt = findSetting(t, idx);
+  int foundAt = findSetting(op, idx);
   if(foundAt != -1)
     settings[foundAt] = s;
   else
   {
     settings.push_back(s);
-    ensureDspsPresent(t, RAPT::rsMax(idx, 1));
+    ensureDspsPresent(op, RAPT::rsMax(idx, 1));
     // The order in which the processors appear in the chain should reflect the order in which 
     // their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
     // the opcodes were added). The first opcode applying to a particular kind of processor 
