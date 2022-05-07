@@ -3216,12 +3216,16 @@ bool samplerFilterEnvTest()
   se4.setSampleRate(fs);
   addSingleSampleRegion(&se4, x, key, fs);
   se4.setFromSFZ(sfz);
-  //ok &= se4.isInSameStateAs(se3); // fails!
+  ok &= se4.isInSameStateAs(se3); // fails!
   getSamplerNote(&se4, key, 64, outL, outR, nOff);
   ok &= rsIsCloseTo(outL, y, tol);  // passes!
   //rsPlotVectors(y, outL);
-  // Strange: se4.isInSameStateAs(se3); fails but nevertheless se4 produces the correct output
-  // signal
+  // s4.isInSameStateAs(se3); fails but nevertheless se4 produces the correct output
+  // signal. The settings for the fileg_attack, etc. opcodes have index==-1 in se4 ("this") and 
+  // index==1 in se3 ("rhs") in SfzInstrument::Region::operator==. I think, for fileg, -1 is 
+  // actually correct because the fileg opcodes are not supposed to have an index. So they
+  // actually have the worng value in the original se3 and the correct value in the reconstructed
+  // se4.
 
 
 
