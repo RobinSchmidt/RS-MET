@@ -3058,6 +3058,8 @@ bool samplerEnvTest()
   // Test parameters:
   int N    = 1500;         // Number of samples to produce
   int nOff = 1000;         // Sample of noteOff event
+  int key  = 70;           // Key to play
+
 
   // Produce and plot envelope:
   Vec outL(N), outR(N);
@@ -3101,15 +3103,28 @@ bool samplerEnvTest()
   // nominal value for the amplitude is 0:
   se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
-
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  getSamplerNote(&se, 70, 64, outL, outR, nOff);
+  getSamplerNote(&se, key, 64, outL, outR, nOff);
   //ok &= tgtL == outL && tgtR == outR;   // Nope! We need a tolerance. Why?
   float tol = 1.e-6;
   ok &= rsIsCloseTo(outL, tgtL, tol);
   ok &= rsIsCloseTo(outR, tgtR, tol);
-  //rsPlotVectors(tgtL, tgtR, outL, outR);
+  rsPlotVectors(tgtL, tgtR, outL, outR);
   //rsPlotVectors(tgtL - outL);
+
+
+  // Retrieve the state as sfz string, set up a fresh engine from that string and check if it's in
+  // the same state and produces the same output:
+  std::string sfz = se.getAsSfz();
+  SE se2;
+  se2.setSampleRate(fs);
+  setupForLoopedDC(&se2, 100, 60, fs); // Needed because the sample is only in memory (no file)
+  se2.setFromSFZ(sfz);                 // triggers assert
+  ok &= se2.isInSameStateAs(se);
+  getSamplerNote(&se2, key, 64, outL, outR, nOff);
+  ok &= rsIsCloseTo(outL, tgtL, tol);  
+  ok &= rsIsCloseTo(outR, tgtR, tol);
+  rsPlotVectors(tgtL, tgtR, outL, outR);
 
   // ToDo:
 

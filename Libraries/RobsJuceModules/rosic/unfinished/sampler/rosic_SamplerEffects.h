@@ -230,7 +230,12 @@ public:
 
 
 
-    default:                return 0.f;
+    default:
+    {
+      RAPT::rsError("Unknown modulation mode");
+      return 0.f;
+    }
+
     }
   }
   // ToDo:
@@ -344,7 +349,8 @@ private:
 
 
   float depth  = 0.f;                // Strength of modulation
-  ModMode mode = ModMode::absolute;  // maybe the default should depend on the target?
+  //ModMode mode = ModMode::absolute;  // maybe the default should depend on the target?
+  ModMode mode = ModMode::unknown;   // Default mode depends on target, so we leave it blank here.
 
   // Maybe we also should keep a pointer to the target Processor not only the Parameter?
   // ...could be useful...we'll see
