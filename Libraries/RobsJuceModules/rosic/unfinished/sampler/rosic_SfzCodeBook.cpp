@@ -220,7 +220,17 @@ SfzCodeBook::SfzCodeBook()
   add(OC::ampeg_hold,    Flt, "ampeg_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::ampeg_decay,   Flt, "ampeg_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::ampeg_sustain, Flt, "ampeg_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz1);
-  add(OC::ampeg_release, Flt, "ampeg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz2);
+  add(OC::ampeg_release, Flt, "ampeg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+
+  dsp = OpcodeType::FilterEnv;
+  add(OC::fileg_delay,   Flt, "fileg_delay",        0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_start,   Flt, "fileg_start",        0.f,   100.f,   0.f, dsp, OU::Percent, Sfz1);
+  add(OC::fileg_attack,  Flt, "fileg_attack",       0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_hold,    Flt, "fileg_hold",         0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_decay,   Flt, "fileg_decay",        0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_sustain, Flt, "fileg_sustain",      0.f,   100.f, 100.f, dsp, OU::Percent, Sfz1);
+  add(OC::fileg_release, Flt, "fileg_release",      0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_depth,   Flt, "fileg_depth",   -12000.f, 12000.f,   0.f, dsp, OU::Cents,   Sfz1);
 
   // Routable modulators:
   dsp = OpcodeType::FreeEnv;
@@ -233,6 +243,14 @@ SfzCodeBook::SfzCodeBook()
   add(OC::egN_sustain, Flt, "egN_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz2);
   add(OC::egN_release, Flt, "egN_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
   add(OC::egN_end,     Flt, "egN_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
+  // Maybe we should not define ADSR parameters for egN because in SFZ2, the egN opcodes work in 
+  // terms of egN_timeX egN_levelX. Maybe use adsrN instead. Or maybe the ADSR parameters can be
+  // interpreted as aliases like delay = time0, start = level0, attack = time1, peak = level1,
+  // hold = time2, peak = level2 (yes, again - peak maps to level 1 and 2), decay = time3,
+  // sustain = level3, release = time4, end = level4? Figure out, if that makes sense. But: it 
+  // would imply that we would need MSEGs even for ADSRs and MSEGs are probably more complex to
+  // implement, so maybe it's indeed better to use adsrN here.
+
 
   dsp = OpcodeType::FreeLfo;
   add(OC::lfoN_freq,  Flt, "lfoN_freq",    0.f,  20.f, 0.f, dsp, OU::Hertz,    Sfz2);
@@ -240,6 +258,7 @@ SfzCodeBook::SfzCodeBook()
   // ToDo: figure out what lfoN_amplitude in sfz2 is supposed to do - maybe it does what we want to
   // do with amp here?
 
+  // ToDo: fillfo, amplfo
 
 
 

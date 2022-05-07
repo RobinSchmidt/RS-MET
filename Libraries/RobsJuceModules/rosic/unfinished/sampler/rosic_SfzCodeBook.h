@@ -50,12 +50,17 @@ enum class Opcode
 
   // todo: complete the list, then delete old, unindexed opcodes
 
-
-
   // Filter Envelope:
-  FilEnvDelay, FilEnvStart, FilEnvAttack, FilEnvHold, FilEnvDecay, FilEnvSustain,
-  FilEnvRelease, FilEnvDepth, FilEnvVel2Delay, FilEnvVel2Attack, FilEnvVel2Hold, 
-  FilEnvVel2Decay, FilEnvVel2Sustain, FilEnvVel2Release, FilEnvVel2Depth,
+  fileg_delay, fileg_start, fileg_attack, fileg_hold, fileg_decay, fileg_sustain, fileg_release, 
+  fileg_depth,
+  // Should we use filegN? SFZ2 does actually not define fileg2 opcodes! It defines stuff like 
+  // cutoff2, resonance2, fil2_type, fil2_gain. What is the supposed behavior? Will the fileg_
+  // opcode affect both filters or only filter 1? If it affects both - should we generalize it to
+  // affect all filters?
+
+  // Need to be converted to the new style:
+  // FilEnvVel2Delay, FilEnvVel2Attack, FilEnvVel2Hold, 
+  // FilEnvVel2Decay, FilEnvVel2Sustain, FilEnvVel2Release, FilEnvVel2Depth,
 
   // Filter LFO:
   FilLfoDelay, FilLfoFade, FilLfoFreq, FilLfoDepth, FilLfoDepthCtrlN, 
@@ -77,9 +82,11 @@ enum class Opcode
 
   // Amplifier Envelope:
   ampeg_delay, ampeg_start, ampeg_attack, ampeg_hold, ampeg_decay, ampeg_sustain, ampeg_release, 
+  // We are not using ampegN_delay etc. because there is only one hardwired ampeg which is always
+  // wired to the last Amplifier in the effect chain.
 
-  //AmpEnvDelay, AmpEnvStart, AmpEnvAttack, AmpEnvHold, AmpEnvDecay, AmpEnvSustain,
-  //AmpEnvRelease, /*AmpEnvDepth,*/ AmpEnvVel2Delay, AmpEnvVel2Attack, AmpEnvVel2Hold, 
+  // Need to be converted to the new style:
+  // /*AmpEnvDepth,*/ AmpEnvVel2Delay, AmpEnvVel2Attack, AmpEnvVel2Hold, 
   //AmpEnvVel2Decay, AmpEnvVel2Sustain, AmpEnvVel2Release, /*AmpEnvVel2Depth,*/
   //AmpEnvDelayCtrlN, AmpEnvStartCtrlN, AmpEnvAttackCtrlN, AmpEnvHoldCtrlN, AmpEnvDecayCtrlN, 
   //AmpEnvSustainCtrlN, AmpEnvReleaseCtrlN, 
@@ -206,10 +213,12 @@ enum class FilterType // maybe rename to fil_type for consistency with sfz
   // bell or sometimes band-shelf. The equalizer opcodes of sfz are realized using the same DSP 
   // objects as for the filter opcode, just with the pk_2p filter type.
   ls_1p, ls_2p, hs_1p, hs_2p, pk_2p, 
+  // Hmm... ARIA has lsh, hsh, peq - maybe use these. Are the shelvers there 1-poles or 2-poles?
 
 
   numTypes
 };
+// see: https://sfzformat.com/opcodes/fil_type
 
 enum class LoopMode   // maybe rename to loop_mode (as in sfz)
 {

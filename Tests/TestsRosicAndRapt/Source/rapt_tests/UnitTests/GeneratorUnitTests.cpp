@@ -3187,11 +3187,31 @@ bool samplerFilterEnvTest()
   getSamplerNote(&se2, key, 64, outL, outR, nOff);
   ok &= rsIsCloseTo(outL, y, tol);  
   //rsPlotVectors(y, outL, outR);
+  // Why does it work without calling se2.preAllocateDspMemory(); ? Does it get called 
+  // automatically somewhere from setFromSFZ?
+
+  // Set up a third sampler engine, this time using the opcodes for the hardwired modulation 
+  // connections, i.e. the filegN opcodes
+  SE se3;
+  se3.preAllocateDspMemory(); // It's important to call this but shouldn't be...
+  addSingleSampleRegion(&se3, x, key, fs); 
+  se3.setSampleRate(fs);
+  se3.setRegionSetting(0,0, OC::resonanceN,    reso,   1); 
+  se3.setRegionSetting(0,0, OC::cutoffN,       cutoff, 1);
+  se3.setRegionSetting(0,0, OC::fileg_attack,  att,    1);
+  se3.setRegionSetting(0,0, OC::fileg_decay,   dec,    1);
+  se3.setRegionSetting(0,0, OC::fileg_sustain, sus,    1);
+  se3.setRegionSetting(0,0, OC::fileg_release, rel,    1);
+  se3.setRegionSetting(0,0, OC::fileg_depth,   depth,  1);
+
+
 
 
   //se.removeModulations(); // should remove all modulation connections
 
   
+
+
   // ToDo:
   // -use the filegN_attack, etc. 
   //  opcodes instead. Setting a filegN_depth opcode should translate to a call to 
