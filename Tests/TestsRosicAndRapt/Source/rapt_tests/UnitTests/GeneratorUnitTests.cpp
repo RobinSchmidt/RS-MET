@@ -3210,7 +3210,8 @@ bool samplerFilterEnvTest()
   // with fixed filter. We can leave the fileg_depth setting in place, though. Only the ADSR 
   // settings make this signal disappear. Maybe the FilterEnv is somehow inserted into the effect 
   // chain rather than the modSources?
-
+  // We get a layerOverload error in rsSamplerEngine::getRegionPlayerFor. Maybe there are not enough
+  // FilterEnv objects allocated?
 
 
 

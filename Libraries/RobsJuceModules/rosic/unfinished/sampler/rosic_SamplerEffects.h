@@ -434,12 +434,13 @@ class EnvGenAmp : public EnvGen
 public:
   EnvGenAmp();
 };
-/*
 class EnvGenFil : public EnvGen
 {
 public:
   EnvGenFil();
 };
+
+/*
 class EnvGenPitch : public EnvGen
 {
 public:
@@ -589,8 +590,11 @@ protected:
   rsObjectPool<WaveShaper> waveShapers;
 
   // Modulators:
-  rsObjectPool<EnvGen>     freeEnvGens;
-  rsObjectPool<EnvGenAmp>  ampEnvGens;
+  rsObjectPool<EnvGen>    freeEnvGens;
+  rsObjectPool<EnvGenAmp> ampEnvGens;
+  rsObjectPool<EnvGenFil> filEnvGens;
+
+
 
   rsObjectPool<LowFreqOsc> lowFreqOscs;
 

@@ -153,6 +153,20 @@ EnvGenAmp::EnvGenAmp()
   //  for all purposes. ...not yet sure, how to implement this, though - might be tricky.
 }
 
+EnvGenFil::EnvGenFil()
+{
+  type = OpcodeType::FilterEnv;
+  replaceOpcode(Opcode::egN_start,   Opcode::fileg_start);
+  replaceOpcode(Opcode::egN_delay,   Opcode::fileg_delay);
+  replaceOpcode(Opcode::egN_attack,  Opcode::fileg_attack);
+  //replaceOpcode(Opcode::egN_peak,    Opcode::fileg_peak);
+  replaceOpcode(Opcode::egN_hold,    Opcode::fileg_hold);
+  replaceOpcode(Opcode::egN_decay,   Opcode::fileg_decay);
+  replaceOpcode(Opcode::egN_sustain, Opcode::fileg_sustain);
+  replaceOpcode(Opcode::egN_release, Opcode::fileg_release);
+  //replaceOpcode(Opcode::egN_end,     Opcode::fileg_end);
+}
+
 //=================================================================================================
 
 Amplifier::Amplifier()
@@ -478,7 +492,7 @@ void DspResourcePool::allocateModulators()
 {
   freeEnvGens.init(64);
   ampEnvGens.init(64);
-
+  filEnvGens.init(64);
 
   lowFreqOscs.init(64);
 }
