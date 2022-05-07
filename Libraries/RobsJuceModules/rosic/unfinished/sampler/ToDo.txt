@@ -69,6 +69,14 @@ Modulation system
    sfz+.
    
 - Verify the formula for vel_tracking of amplitude against some reference implemenetation (sfz+)   
+
+- Maybe we should not define ADSR parameters for egN because in SFZ2, the egN opcodes work in 
+  terms of egN_timeX egN_levelX. Maybe use adsrN instead. Or maybe the ADSR parameters can be
+  interpreted as aliases like delay = time0, start = level0, attack = time1, peak = level1,
+  hold = time2, peak = level2 (yes, again - peak maps to level 1 and 2), decay = time3,
+  sustain = level3, release = time4, end = level4? Figure out, if that makes sense. But: it 
+  would imply that we would need MSEGs even for ADSRs and MSEGs are probably more complex to
+  implement, so maybe it's indeed better to use adsrN here.
    
 - Release-Modes: 
   - one_shot: always run through the whole envelope even when noteOff is triggered before 

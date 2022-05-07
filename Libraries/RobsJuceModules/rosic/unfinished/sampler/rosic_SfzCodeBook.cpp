@@ -243,13 +243,7 @@ SfzCodeBook::SfzCodeBook()
   add(OC::egN_sustain, Flt, "egN_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz2);
   add(OC::egN_release, Flt, "egN_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
   add(OC::egN_end,     Flt, "egN_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
-  // Maybe we should not define ADSR parameters for egN because in SFZ2, the egN opcodes work in 
-  // terms of egN_timeX egN_levelX. Maybe use adsrN instead. Or maybe the ADSR parameters can be
-  // interpreted as aliases like delay = time0, start = level0, attack = time1, peak = level1,
-  // hold = time2, peak = level2 (yes, again - peak maps to level 1 and 2), decay = time3,
-  // sustain = level3, release = time4, end = level4? Figure out, if that makes sense. But: it 
-  // would imply that we would need MSEGs even for ADSRs and MSEGs are probably more complex to
-  // implement, so maybe it's indeed better to use adsrN here.
+  // Maybe rename to adsrN_..., see ToDo.txt
 
 
   dsp = OpcodeType::FreeLfo;
@@ -583,8 +577,9 @@ std::string SfzCodeBook::modSourceToString(OpcodeType sourceType, int index)
 
   switch(sourceType)
   {
-  case OT::FreeEnv: tmp = "eg";   break;
-  case OT::FreeLfo: tmp = "lfo";  break;
+  case OT::FreeEnv:   tmp = "eg";    break;
+  case OT::FilterEnv: tmp = "fileg"; break;
+  case OT::FreeLfo:   tmp = "lfo";   break;
   default:
   {
     RAPT::rsError("Unknown type of modulation source.");

@@ -3204,15 +3204,22 @@ bool samplerFilterEnvTest()
   se3.setRegionSetting(0,0, OC::fileg_release, rel,    1);
   se3.setRegionSetting(0,0, OC::fileg_depth,   depth,  1);
   getSamplerNote(&se3, key, 64, outL, outR, nOff);
-  ok &= rsIsCloseTo(outL, y, tol);  
-  rsPlotVectors(y, outL);  
-  // outL is all zeros. Removing the fileg_attack/decay/sustain/release opcodes leads to a signal
-  // with fixed filter. We can leave the fileg_depth setting in place, though. Only the ADSR 
-  // settings make this signal disappear. Maybe the FilterEnv is somehow inserted into the effect 
-  // chain rather than the modSources?
-  // We get a layerOverload error in RegionPlayer::setRegionToPlay. Maybe there are not enough
-  // SamplePlayer::augmentOrCleanProcessors fails, the passed dspTypeChain contains a Filter and a
-  // FilterEnv but the FilterEnv should actually be in the chain of modulators
+  ok &= rsIsCloseTo(outL, y, tol);
+  //rsPlotVectors(y, outL);
+
+  // Again, retrieve the state as sfz string from se3 and set up a fresh engine from that and 
+  // check its output:
+  sfz = se3.getAsSfz();
+  SE se4;
+  se4.setSampleRate(fs);
+  addSingleSampleRegion(&se4, x, key, fs);
+  se4.setFromSFZ(sfz);
+  ok &= se4.isInSameStateAs(se3);
+  // fails!
+
+
+
+
 
   //se.removeModulations(); // should remove all modulation connections
 
