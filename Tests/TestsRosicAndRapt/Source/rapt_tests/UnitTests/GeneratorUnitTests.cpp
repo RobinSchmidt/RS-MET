@@ -3210,10 +3210,6 @@ bool samplerFilterEnvTest()
   // Again, retrieve the state as sfz string from se3 and set up a fresh engine from that and 
   // check its output:
   sfz = se3.getAsSfz();
-  // sfz has a fileg1_cutoff=1200.000000 opcode in it - but maybe it should be fileg_depth? Maybe
-  // we need some special casing for the fileg, fillfo, pitcheg, etc. opcodes in
-  // SfzInstrument::writeModRoutingToString
-
   SE se4;
   se4.setSampleRate(fs);
   addSingleSampleRegion(&se4, x, key, fs);
@@ -3224,13 +3220,12 @@ bool samplerFilterEnvTest()
   //rsPlotVectors(y, outL);
 
 
-
   //se.removeModulations(); // should remove all modulation connections
 
-  
-
-
+ 
   // ToDo:
+  // -What happens, if we set up the depth in some other mode, i.e. not in cents? Check, if the 
+  //  behavior is reasonable.
   // -use the filegN_attack, etc. 
   //  opcodes instead. Setting a filegN_depth opcode should translate to a call to 
   //  setRegionModulation. And it should not just add another mod-connection but rather check, if 

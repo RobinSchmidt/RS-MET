@@ -689,6 +689,7 @@ int SfzCodeBook::getIndexAndReplaceByN(std::string& str) const
   str.replace(is, ie-is+1, "N");               // replace number by placeholder "N"
   return num;                                  // return the number
 }
+// move to SamplerTools
 
 void SfzCodeBook::makeImplicitIndexExplicit(std::string& str) const
 {
@@ -736,6 +737,8 @@ void SfzCodeBook::makeExplicitIndexImplicit(std::string& str) const
 /*
 
 ToDo:
+-replace all calls to to_string with rsFloatToString
+
 -Turn it into a Singleton: 
  -mostly done, still to do: make constructor and assignment operator protected
 -Add unit and spec fields to the opcode records. Maybe it should be possible to configure 

@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
-SFZ parsing
-===========
+SFZ parsing and generation
+==========================
 
 - Define and implement parsing for modulation routing opcodes. (Done?)
 
@@ -20,6 +20,9 @@ SFZ parsing
   what if ampeg_attack opcodes exist but no amplitudeN opcode? Should we implicitly insert an 
   amplifier? Maybe yes. The difference to the cutoff opcode is, that an amplitudeN opcode actually 
   does not even exist in the SFZ1 spec (only in the ARIA spec).
+  
+- Replace all calls to to_string with rsFloatToString in order to later replace the implementation.
+  Currently it just delegates to std::to_string but we may need soemthing better.
 
 ----------------------------------------------------------------------------------------------------
 Sample playback

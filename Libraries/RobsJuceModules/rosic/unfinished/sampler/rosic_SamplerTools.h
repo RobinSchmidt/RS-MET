@@ -279,6 +279,10 @@ int parseNaturalNumber(const std::string& str, int startIndex, int endIndex);
 
 inline float rsStringToFloat(const std::string& str) { return std::stof(str); }
 
+inline std::string rsFloatToString(float v) { return std::to_string(v); }
+
+//
+
 
 
 //=================================================================================================

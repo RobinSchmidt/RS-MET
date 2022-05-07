@@ -816,7 +816,6 @@ void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::str
   int tgtIdx = r.getTargetIndex();
   MM  mode   = r.getMode();
 
-
   // Handle special cases:
   if(srcTp == OT::FilterEnv && tgtOp == OC::cutoffN && mode == MM::cents)
   {
@@ -831,15 +830,12 @@ void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::str
     // the cutoff of the first filter in the chain. But maybe it should apply to all filters? But 
     // then we should probably only store it once in the sfz string...hmm...
 
-    // ToDo: store as fileg_depth
-
-    int dummy = 0;
-
-    // What happens, if we set up some other mode? -> make tests!
+    s += "fileg_depth=" + rsFloatToString(r.getDepth()) + "\n"; 
+    return;
   }
-  // ...
-
-
+  // ToDo: Add other special cases here one by one. For example, fillfo, pitcheg, amplfo, etc.
+  // Maybe factor out a function for handling the special cases, returning true, if the case was 
+  // handled, false if not and call it here...or maybe not...
 
   // Handle the general case:
   SfzCodeBook* cb = SfzCodeBook::getInstance();
