@@ -31,6 +31,11 @@ Windows:
  C:\Program Files\VstPlugins
 -copy the "RS-MET" folder into:
  C:\Users\[UserName]\AppData\Roaming 
+-The VST3 installation folder on windows is (a subfolder of):
+   C:\Program Files\Common Files\VST3
+ see: 
+   https://helpcenter.steinberg.de/hc/en-us/articles/115000177084-VST-plug-in-locations-on-Windows
+ 
 
 Mac OSX:
 -copy "ToolChain.component" into:

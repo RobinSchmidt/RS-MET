@@ -798,8 +798,16 @@ http://doc.linuxsampler.org/sfz/
 https://noisesculpture.com/cakewalk-synthesizers/
 https://noisesculpture.com/cakewalk-synthesizers-downloads/
 
+SFZ Players:
 https://sfzformat.com/software/players/  players (also open source)
-https://plugins4free.com/plugin/217/   sfz by rgcaudio
+
+https://plugins4free.com/plugin/217/   sfz by rgcaudio, the original legacy vst2 plugin (+ standalone)
+installation path: C:\Program Files (x86)\Vstplugins
+
+https://sfz.tools/sfizz/downloads   sfizz, open source, vst3 + lv2, supports many sfz2 opcodes
+installation paths: C:\Program Files\Common Files\VST3\sfizz.vst3
+                    C:\Program Files\Common Files\LV2\sfizz.lv2
+
 
 open source sfz players:
 https://github.com/swesterfeld/liquidsfz/

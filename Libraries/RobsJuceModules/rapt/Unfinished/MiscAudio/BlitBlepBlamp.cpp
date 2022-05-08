@@ -325,7 +325,7 @@ use a (windowed) impulse-, step- and ramp- response of an elliptic filter to win
 and ramp-response, subtract the naive versions, apply the window and add the naive versions
 back
 
-KVR threads:
+Resources:
 
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=523056
 mystran says:
@@ -352,6 +352,9 @@ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=364256
 
 Did any one get Minblep hardsync right?
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=461630
+
+Stefan Stenzel - The amazing usefulness of band limited impulse trains, shown for oscillator banks..
+https://www.youtube.com/watch?v=lpM4Tawq-XU
 
 
 

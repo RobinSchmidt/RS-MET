@@ -67,9 +67,18 @@ Effect chain
 Modulation system
 =================
 
+- Figure out, if the fileg_depth should apply to all filter cutoffs simultaneously by checking 
+  whether or not it affects both filters in sfz2. If so, make it so.
+  
+- Automatically route the ampeg_attack etc. parameters to the last Amplifier unit in the chain. If
+  ther is none, insert one at the end. Or: maybe always insert an Amplifier at the end, if the last 
+  module is not an amp?
+
 - Figure out what the correct behavior with regard to start/delay is - should we output zero or
-   start during the delay phase? We need to test this using a reference implementation like 
-   sfz+.
+  start during the delay phase? We need to test this using a reference implementation like 
+  sfz+. The zip-archive dwonloadable from here: https://plugins4free.com/plugin/217/ contains 
+  sfz197.exe and SFZ.pdf whcih discusses the envelopes on page 12 (pagenumber is 82). It doesn't
+  mention a start parameter at all.
    
 - Verify the formula for vel_tracking of amplitude against some reference implementation (sfz+)   
 
@@ -80,6 +89,7 @@ Modulation system
   sustain = level3, release = time4, end = level4? Figure out, if that makes sense. But: it 
   would imply that we would need MSEGs even for ADSRs and MSEGs are probably more complex to
   implement, so maybe it's indeed better to use adsrN here.
+  DONE: Renamed egN_attack etc. to adsrN_attack etc.
   
 - Maybe we could allow a syntax egN_cutoffAll or egN_cutoffA and/or egN_cutoffLast or egN_cutoffL to
   use a single command to conveniently specify a whole bunch of modulation routings.
