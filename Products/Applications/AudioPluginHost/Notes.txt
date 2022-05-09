@@ -1,0 +1,9 @@
+
+
+saves filtergraphs in:
+C:\Users\[username]\Documents
+
+and app settings in:
+C:\Users\[username]\AppData\Roaming\Juce Audio Plugin Host
+
+It sometimes helps to delete these files when the crahses on startup

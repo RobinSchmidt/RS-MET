@@ -22719,6 +22719,20 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/Ideas.md">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/ReadMe.md">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerData.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -22727,6 +22741,34 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerData.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerEffectCores.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerEffectCores.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerEffects.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerEffects.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option target="Shared Code | Debug32"/>
@@ -22761,14 +22803,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerProcessors.cpp">
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerTools.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option target="Shared Code | Debug32"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerProcessors.h">
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerTools.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option target="Shared Code | Debug32"/>
@@ -22789,7 +22831,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/Sampler.md">
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/ToDo.txt">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option target="Shared Code | Debug32"/>

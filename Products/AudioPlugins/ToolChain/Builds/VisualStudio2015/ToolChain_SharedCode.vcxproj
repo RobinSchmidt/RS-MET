@@ -4435,13 +4435,19 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerData.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerEffectCores.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerEffects.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerEngine.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerPlayers.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerProcessors.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SfzCodeBook.cpp">
@@ -6088,9 +6094,11 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_SpectralManipulator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerData.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerEffectCores.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerEffects.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerEngine.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerPlayers.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerProcessors.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SamplerTools.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\rosic_SfzCodeBook.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_DualFilter.h"/>
@@ -6154,7 +6162,9 @@
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\MovedToRAPT\ReadMe.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\minBlep.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt"/>
-    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Sampler.md"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\PolyphonyInRosic.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\RosicCodingStyle.txt"/>
