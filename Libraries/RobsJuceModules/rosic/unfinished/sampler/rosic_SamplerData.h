@@ -416,6 +416,10 @@ public:
     /** Updates our dspTypes array from scratch from the settings array. */
     void updateDspsArray();
 
+    /** Establishes modulation connections from the FilterEnv to the cutoff parameters of all Filter 
+    modules. Called from setSetting as a special case handling. */
+    void setFilterEnvDepth(float depthInCents);
+
 
 
 

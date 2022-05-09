@@ -52,10 +52,18 @@ void SfzInstrument::HierarchyLevel::updateDspsArray()
   }
 }
 
+void SfzInstrument::HierarchyLevel::setFilterEnvDepth(float depthInCents)
+{
+  using OT = OpcodeType;
+  using OC = Opcode;
+  int numFilters = (int)RAPT::rsCount(dspTypes, OT::Filter);
+  for(int i = 0; i < numFilters; i++)
+    setModulation(OT::FilterEnv, 1, OC::cutoffN, i+1, depthInCents, ModMode::cents);
+}
+
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 {
   using OT = OpcodeType;
-
   using OC = Opcode;
   OC op = s.getOpcode();
 
@@ -76,21 +84,9 @@ void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
     // Shouldn't we return here? If not, document why not.
   }
 
-  if(op == OC::fileg_depth)
-  {
-    //addFilterEnvRoutings(s);
-    // This needs to be implemented and is supposed to add a modulation routing from the filet env 
-    // (we suppose that there is only one) to all filter cutoffs. Problem: This may be called 
-    // before all the filters are added, so we may not know, how many connections we need to add.
-    // ...it's a bit messy...
-
-    setModulation(OT::FilterEnv, 1, OC::cutoffN, 1, s.getValue(), ModMode::cents);
-    // Preliminary - we just establish one connection from the first (and only?) FilterEnv to the
-    // first filter in the effect chain. ToDo: establish a connection to all filters
-
-    //RAPT::rsError("Not yet implemented");
-    return;
-  }
+  // Some modulation routing opcodes need to be also handled as special cases:
+  if(op == OC::fileg_depth) { setFilterEnvDepth(s.getValue()); return; }
+  // ToDo: pitcheg_depth, fillfo_depth, pitchlfo_depth
 
   // All other settings are handled by either overwriting the last setting of that type in our 
   // array, if present or by appending the setting, if not present:
