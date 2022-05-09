@@ -225,6 +225,12 @@ bool SfzInstrument::HierarchyLevel::removeModulation(OpcodeType modSrcType, int 
 // architecture of the modulation system should allow mutliple connections between the same pair of
 // pins but that doesn't seem to be a useful feature, so we don't do that.
 
+void SfzInstrument::HierarchyLevel::connectAmpEnv()
+{
+
+  int dummy = 0;
+}
+
 void SfzInstrument::HierarchyLevel::copyDataFrom(const HierarchyLevel* lvl)
 {
   samplePath  = lvl->samplePath;
@@ -676,6 +682,13 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
         RAPT::rsError("String could not be parsed as modulation routing");
       else
         lvl->setModulation(mr); }
+
+    // If some ampeg_ opcodes exist, we need to make sure that the AmpEnvGen is routed to an 
+    // Amplifier at the end of the effect chain. If no such amplifier exists, i.e. if the last 
+    // effect unit is not an Amplifier, an additional amplifier will be inserted. Otherwise, the 
+    // existing one will be used:
+    lvl->connectAmpEnv();
+    //
   };
 
 

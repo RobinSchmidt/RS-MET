@@ -66,6 +66,8 @@ protected:
   // channel1/channel2 instead of left/right and how they are used is opcode defined - some (like
   // cutoff) may interpret them as left/right, others (like pan) may just ignore the second 
   // channel. dunno...
+  // Maybe the Parameter should also have a dirty flag to allow for a more fine-grained control
+  // of the modulation optimization.
 };
 
 //=================================================================================================

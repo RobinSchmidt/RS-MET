@@ -300,10 +300,14 @@ public:
 
     void setModulation(const ModulationRouting& newRouting);
 
-
-
     bool removeModulation(OpcodeType modSrcType, int modSrcIndex, 
       Opcode modTarget, int modTargetIndex);
+
+    /** Establishes a modualtion connection from the AmpEnvGen (if one exists) to an Amplifier unit
+    at the end of the effect chain. If the last module in the effect chain already is an Amplifier
+    with a nominal "amplitudeN" of zero, it will be used. Otherwise, another Amplifier will be 
+    inserted at the end. */
+    void connectAmpEnv();
 
 
 
@@ -419,6 +423,7 @@ public:
     /** Establishes modulation connections from the FilterEnv to the cutoff parameters of all Filter 
     modules. Called from setSetting as a special case handling. */
     void setFilterEnvDepth(float depthInCents);
+
 
 
 
