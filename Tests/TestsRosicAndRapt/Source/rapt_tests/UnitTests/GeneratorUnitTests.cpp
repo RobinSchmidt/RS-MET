@@ -3122,14 +3122,13 @@ bool samplerEnvTest()
   se2.setSampleRate(fs);
   setupForLoopedDC(&se2, 100, 60, fs); // Needed because the sample is only in memory (no file)
   se2.setFromSFZ(sfz);                 // triggers assert
-  //ok &= se2.isInSameStateAs(se);   // FAILS!!!
+  ok &= se2.isInSameStateAs(se);
   getSamplerNote(&se2, key, 64, outL, outR, nOff);
   ok &= rsIsCloseTo(outL, tgtL, tol);  
   ok &= rsIsCloseTo(outR, tgtR, tol);
   //rsPlotVectors(tgtL, tgtR, outL, outR);
 
   // ToDo:
-
 
 
   rsAssert(ok);
