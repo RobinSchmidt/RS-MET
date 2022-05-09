@@ -3056,10 +3056,12 @@ bool samplerEnvTest()
   float end     = 0.0f;    // We need it to end at zero for the unit test
 
   // Test parameters:
-  int N    = 1500;         // Number of samples to produce
-  int nOff = 1000;         // Sample of noteOff event
-  int key  = 70;           // Key to play
-
+  int N     = 1500;         // Number of samples to produce
+  int nOff  = 1000;         // Sample of noteOff event
+  int key   =   70;         // Key to play
+  int vel   =   64;         // Velocity to play
+  int nDC   =  100;         // Number of DC samples in the loop
+  int keyDC =   60;         // Rootkey of the DC sample
 
   // Produce and plot envelope:
   Vec outL(N), outR(N);
@@ -3082,10 +3084,10 @@ bool samplerEnvTest()
   using OC = Opcode;
   float fs = 10000.f;     // sample rate
   SE se;
-  setupForLoopedDC(&se, 100, 60, fs);
+  setupForLoopedDC(&se, nDC, keyDC, fs);
   se.setSampleRate(fs);
 
-  //getSamplerNote(&se, 70, 64, outL, outR);
+  //getSamplerNote(&se, key, vel, outL, outR);
   //rsPlotVectors(outL, outR);  // all ones -> correct!
 
   // Set up the envelope in the sampler engine:
@@ -3102,11 +3104,10 @@ bool samplerEnvTest()
   // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
   // nominal value for the amplitude is 0:
   se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
-  //se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
 
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  getSamplerNote(&se, key, 64, outL, outR, nOff);
+  getSamplerNote(&se, key, vel, outL, outR, nOff);
   //ok &= tgtL == outL && tgtR == outR;   // Nope! We need a tolerance. Why?
   float tol = 1.e-6;
   ok &= rsIsCloseTo(outL, tgtL, tol);
@@ -3114,21 +3115,37 @@ bool samplerEnvTest()
   //rsPlotVectors(tgtL, tgtR, outL, outR);
   //rsPlotVectors(tgtL - outL);
 
-
   // Retrieve the state as sfz string, set up a fresh engine from that string and check if it's in
   // the same state and produces the same output:
   std::string sfz = se.getAsSfz();
   SE se2;
   se2.setSampleRate(fs);
-  setupForLoopedDC(&se2, 100, 60, fs); // Needed because the sample is only in memory (no file)
-  se2.setFromSFZ(sfz);                 // triggers assert
+  setupForLoopedDC(&se2, nDC, keyDC, fs); // Needed because the sample is only in memory (no file)
+  se2.setFromSFZ(sfz);
   ok &= se2.isInSameStateAs(se);
-  getSamplerNote(&se2, key, 64, outL, outR, nOff);
+  getSamplerNote(&se2, key, vel, outL, outR, nOff);
   ok &= rsIsCloseTo(outL, tgtL, tol);  
   ok &= rsIsCloseTo(outR, tgtR, tol);
   //rsPlotVectors(tgtL, tgtR, outL, outR);
 
+  // Set up another engine this time using the ampeg opcodes:
+  SE se3;
+  setupForLoopedDC(&se3, nDC, keyDC, fs);
+  se3.setSampleRate(fs);
+  se3.setRegionSetting(0,0, OC::ampeg_start,   start   * 100, 1);
+  se3.setRegionSetting(0,0, OC::ampeg_delay,   delay   / fs,  1);
+  se3.setRegionSetting(0,0, OC::ampeg_attack,  attack  / fs,  1);
+  //se3.setRegionSetting(0,0, OC::ampeg_peak,    peak    * 100, 1);
+  se3.setRegionSetting(0,0, OC::ampeg_hold,    hold    / fs,  1);
+  se3.setRegionSetting(0,0, OC::ampeg_decay,   decay   / fs,  1);
+  se3.setRegionSetting(0,0, OC::ampeg_sustain, sustain * 100, 1);
+  se3.setRegionSetting(0,0, OC::ampeg_release, release / fs,  1);
+  //se3.setRegionSetting(0,0, OC::ampeg_end,     end     * 100, 1);
+
+
   // ToDo:
+  // -Set up an engine using the ampeg opcodes. Do and don't manually insert or connect an 
+  //  Amplifier by defining the amplitudeN opcode (test both variations).
 
 
   rsAssert(ok);
