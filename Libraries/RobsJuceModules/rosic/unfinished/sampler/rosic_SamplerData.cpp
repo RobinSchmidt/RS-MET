@@ -55,11 +55,54 @@ void SfzInstrument::HierarchyLevel::updateDspsArray()
 void SfzInstrument::HierarchyLevel::setFilterEnvDepth(float depthInCents)
 {
   using OT = OpcodeType;
-  using OC = Opcode;
   int numFilters = (int)RAPT::rsCount(dspTypes, OT::Filter);
   for(int i = 0; i < numFilters; i++)
-    setModulation(OT::FilterEnv, 1, OC::cutoffN, i+1, depthInCents, ModMode::cents);
+    setModulation(OT::FilterEnv, 1, Opcode::cutoffN, i+1, depthInCents, ModMode::cents);
 }
+
+bool isEffect(OpcodeType ot)
+{
+  using OT = OpcodeType;
+  return ot > OT::_TagEffectsStart && ot < OT::_TagEffectsEnd;
+}
+// maybe move as static member function into SfzCodeBook
+
+void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
+{
+  // If the last effect DSP in the chain is not an Amplifier, we need to insert another Amplifier 
+  // at the end. We need this complicated logic with the effects and amplifiers because our
+  // dspTypes array stores also the modulators any they shouldn't count here:
+  using OT = OpcodeType;
+
+  int lastAmp = -1;        // Index of last Amplifier in the chain, -1 if none
+  for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
+    if(dspTypes[i] == OT::Amplifier) {
+      lastAmp = i;
+      break; }}
+
+  int lastNonAmpEff = -1;  // Index of the last effect that is not Amplifier.
+  for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
+    if(isEffect(dspTypes[i]) && dspTypes[i] != OT::Amplifier) {
+      lastNonAmpEff = i;
+      break; }}
+
+  if(lastNonAmpEff >= lastAmp)          // Last effect in the chain is not (yet) an amp...
+    dspTypes.push_back(OT::Amplifier);  // ...but now it is
+    // >= rather than > is needed to catch the case when lastAmp == lastNonAmpEff == -1 which 
+    // happens when there are no effects in the dspTypes array (it may be empty or there are only
+    // other kinds of devices such as modulators)
+
+
+  // OK, now we have ensured that the last effect in the chain is indeed an Amplifier. We need to
+  // figure out its index among any possible other Amplifiers (i.e. the N in the amplitudeN 
+  // opcode). This is the amplifier to which we route the amp-env:
+  int numAmps = (int)RAPT::rsCount(dspTypes, OT::Amplifier);
+  setModulation(OT::AmpEnv, 1, Opcode::amplitudeN, numAmps, depthInPercent, ModMode::absolute);
+  // don't we need to scale the depth by 0.01?
+
+  int dummy = 0;
+}
+// needs unit tests under various circumstances. The logic is quite complicated...
 
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 {
@@ -86,7 +129,8 @@ void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 
   // Some modulation routing opcodes need to be also handled as special cases:
   if(op == OC::fileg_depth) { setFilterEnvDepth(s.getValue()); return; }
-  // ToDo: pitcheg_depth, fillfo_depth, pitchlfo_depth
+  if(op == OC::ampeg_depth) { setAmpEnvDepth(   s.getValue()); return; }
+  // ToDo: pitcheg_depth, fillfo_depth, pitchlfo_depth, amplfo_depth
 
   // All other settings are handled by either overwriting the last setting of that type in our 
   // array, if present or by appending the setting, if not present:

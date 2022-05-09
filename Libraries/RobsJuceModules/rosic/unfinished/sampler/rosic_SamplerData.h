@@ -425,6 +425,8 @@ public:
     void setFilterEnvDepth(float depthInCents);
 
 
+    void setAmpEnvDepth(float depthInPercent);
+
 
 
 

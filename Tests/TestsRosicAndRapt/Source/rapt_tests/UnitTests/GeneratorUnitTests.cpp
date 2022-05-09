@@ -3124,7 +3124,7 @@ bool samplerEnvTest()
   se2.setFromSFZ(sfz);
   ok &= se2.isInSameStateAs(se);
   getSamplerNote(&se2, key, vel, outL, outR, nOff);
-  ok &= rsIsCloseTo(outL, tgtL, tol);  
+  ok &= rsIsCloseTo(outL, tgtL, tol);
   ok &= rsIsCloseTo(outR, tgtR, tol);
   //rsPlotVectors(tgtL, tgtR, outL, outR);
 
@@ -3132,16 +3132,25 @@ bool samplerEnvTest()
   SE se3;
   setupForLoopedDC(&se3, nDC, keyDC, fs);
   se3.setSampleRate(fs);
-  se3.setRegionSetting(0,0, OC::ampeg_start,   start   * 100, 1);
-  se3.setRegionSetting(0,0, OC::ampeg_delay,   delay   / fs,  1);
-  se3.setRegionSetting(0,0, OC::ampeg_attack,  attack  / fs,  1);
-  se3.setRegionSetting(0,0, OC::ampeg_peak,    peak    * 100, 1);
-  se3.setRegionSetting(0,0, OC::ampeg_hold,    hold    / fs,  1);
-  se3.setRegionSetting(0,0, OC::ampeg_decay,   decay   / fs,  1);
-  se3.setRegionSetting(0,0, OC::ampeg_sustain, sustain * 100, 1);
-  se3.setRegionSetting(0,0, OC::ampeg_release, release / fs,  1);
-  se3.setRegionSetting(0,0, OC::ampeg_end,     end     * 100, 1);
-  //se3.connectAmpEnv(); // maybe try to avoid calling this manually
+  se3.setRegionSetting(0,0, OC::ampeg_start,   start   * 100, -1);
+  se3.setRegionSetting(0,0, OC::ampeg_delay,   delay   / fs,  -1);
+  se3.setRegionSetting(0,0, OC::ampeg_attack,  attack  / fs,  -1);
+  se3.setRegionSetting(0,0, OC::ampeg_peak,    peak    * 100, -1);
+  se3.setRegionSetting(0,0, OC::ampeg_hold,    hold    / fs,  -1);
+  se3.setRegionSetting(0,0, OC::ampeg_decay,   decay   / fs,  -1);
+  se3.setRegionSetting(0,0, OC::ampeg_sustain, sustain * 100, -1);
+  se3.setRegionSetting(0,0, OC::ampeg_release, release / fs,  -1);
+  se3.setRegionSetting(0,0, OC::ampeg_end,     end     * 100, -1);
+  se3.setRegionSetting(0,0, OC::ampeg_depth,   100.f,         -1);
+
+  se3.preAllocateDspMemory(); // It's important to call this but shouldn't be...
+  getSamplerNote(&se3, key, vel, outL, outR, nOff);
+  ok &= rsIsCloseTo(outL, tgtL, tol);  // FAILS!!!
+  rsPlotVectors(tgtL, outL);
+  // The produces amp-env if offset by 1 and the note cuts off at noteOff. Maybe the EnvGenAmps are
+  // not taken into account in determining the releaseEnv?
+
+
 
 
 

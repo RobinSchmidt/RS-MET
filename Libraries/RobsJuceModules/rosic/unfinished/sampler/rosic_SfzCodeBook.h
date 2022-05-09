@@ -82,7 +82,7 @@ enum class Opcode
 
   // Amplifier Envelope:
   ampeg_delay, ampeg_start, ampeg_attack, ampeg_peak, ampeg_hold, ampeg_decay, ampeg_sustain, 
-  ampeg_release, ampeg_end,
+  ampeg_release, ampeg_end, ampeg_depth,
   // We are not using ampegN_delay etc. because there is only one hardwired ampeg which is always
   // wired to the last Amplifier in the effect chain.
 

@@ -223,6 +223,7 @@ SfzCodeBook::SfzCodeBook()
   add(OC::ampeg_sustain, Flt, "ampeg_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz1);
   add(OC::ampeg_release, Flt, "ampeg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::ampeg_end,     Flt, "ampeg_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
+  add(OC::ampeg_depth,   Flt, "ampeg_depth",   0.f, 100.f, 100.f, dsp, OU::Percent, RsMet);
 
   dsp = OpcodeType::FilterEnv;
   add(OC::fileg_delay,   Flt, "fileg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
