@@ -86,7 +86,7 @@ void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 
     setModulation(OT::FilterEnv, 1, OC::cutoffN, 1, s.getValue(), ModMode::cents);
     // Preliminary - we just establish one connection from the first (and only?) FilterEnv to the
-    // first filter in the effect chain.
+    // first filter in the effect chain. ToDo: establish a connection to all filters
 
     //RAPT::rsError("Not yet implemented");
     return;
@@ -650,37 +650,28 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
       unhandledOpcodes.push_back(std::pair<std::string, std::string>(opcode, value));
 
+      /*
       // Should go into an handleUnhandledOpcodes
       ModulationRouting mr = getModRoutingFromString(opcode, value);
       if(mr.isInvalid())
         RAPT::rsError("String could not be parsed as modulation routing");
       else
-      {
         lvl->setModulation(mr);
-      }
+        */
+
     }
   };
 
-  // Loops through the unhandledOpcodes array to handle those opcodes in a second pass that could
-  // not be handled in the first pass. The first pass only handles opcodes for regular parameters
-  // but not the modulation routing opcodes. These are handled in a second pass because some of 
-  // them require the "settings" and/or "dspTypes" members to be fully established (which happens 
-  // in the first pass):
-  auto handleUnhandledOpcodes = [&](HierarchyLevel* lvl)
-  {
 
-
-    int dummy = 0;
-  };
-
-
-
-  // Sets up the given level according to the given string which is supposed to contain one setting
-  // per line in the format "opocde=value\n":
+  // Sets up the given level according to the given string which is supposed to contain opcode 
+  // settings separated by single whitepaces in the format "opocde=value ":
   auto setupLevel = [&](HierarchyLevel* lvl, const std::string& str)
   {
+    // In a first pass, we tokenize the string into the "opcode=value" tokens and handle one such
+    // token at a time. Some modulation-routing related opcodes cannot be handled in this first 
+    // pass. These will be stored in the "unhandledOpcodes" array and may be handled in a second
+    // pass:
     unhandledOpcodes.clear();
-
     size_t start = 0;
     while(true)
     {
@@ -692,6 +683,17 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       //if(start >= str.length()) break;          // may be superfluous?
     }
 
+    // In the second pass, we loop through the unhandledOpcodes array to handle those opcodes that 
+    // could not be handled in the first pass. The modulation routing opcodes must be handled in a 
+    // second pass because some of them require the "settings" and/or "dspTypes" members to be 
+    // already fully established (which happens in the first pass):
+    for(size_t i = 0; i < unhandledOpcodes.size(); i++) {
+      ModulationRouting mr = getModRoutingFromString(
+        unhandledOpcodes[i].first, unhandledOpcodes[i].second);
+      if(mr.isInvalid())
+        RAPT::rsError("String could not be parsed as modulation routing");
+      else
+        lvl->setModulation(mr); }
   };
 
 
