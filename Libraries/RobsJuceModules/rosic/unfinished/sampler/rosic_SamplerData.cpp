@@ -100,6 +100,11 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
   setModulation(OT::AmpEnv, 1, Opcode::amplitudeN, numAmps, depthInPercent, ModMode::absolute);
   // don't we need to scale the depth by 0.01?
 
+  // Actually, we should not even count all amplifiers but only those with a zero value for
+  // amplitude. Maybe it makes more sense an is also simpler to just always insert another 
+  // Amplifier at the very end as target for the ampeg_ opccodes? An amp-LFO may also have the 
+  // undesirable effect of raising the amplitude above zero at the end
+
   int dummy = 0;
 }
 // needs unit tests under various circumstances. The logic is quite complicated...

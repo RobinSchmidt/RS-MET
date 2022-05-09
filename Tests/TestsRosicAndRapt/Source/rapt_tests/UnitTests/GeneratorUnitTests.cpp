@@ -3142,6 +3142,8 @@ bool samplerEnvTest()
   se3.setRegionSetting(0,0, OC::ampeg_release, release / fs,  -1);
   se3.setRegionSetting(0,0, OC::ampeg_end,     end     * 100, -1);
   se3.setRegionSetting(0,0, OC::ampeg_depth,   100.f,         -1);
+  // Calling setRegionSetting with ampeg_depth will establish the connection of the amp-env with 
+  // the last amplifier in teh chain
 
   se3.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   getSamplerNote(&se3, key, vel, outL, outR, nOff);
@@ -3152,12 +3154,19 @@ bool samplerEnvTest()
 
 
 
-
-
-
   // ToDo:
   // -Set up an engine using the ampeg opcodes. Do and don't manually insert or connect an 
   //  Amplifier by defining the amplitudeN opcode (test both variations).
+
+  // -The Amplifier to which the ampeg_ opcodes apply should stisfy:
+  //  -Be the last effect unit in the chain
+  //  -Have a zero value for the amplitude
+  //  -Is not modulated by any LFOs (i.e. amplfo opcodes)
+
+  // -I don't know...maybe we should have a dedicated module for the modulated amplitude, i.e. not 
+  //  implement ampeg and amplfo via the routing system. It's a mess! We need real multiplication.
+  //  But that also sucks because we may want to add several amp-envs to get a more complex one.
+  //  But adding LFO outputs is not good. 
 
 
   rsAssert(ok);
