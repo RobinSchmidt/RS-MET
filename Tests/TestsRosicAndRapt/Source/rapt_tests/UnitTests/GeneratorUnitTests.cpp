@@ -3150,7 +3150,8 @@ bool samplerEnvTest()
   ok &= rsIsCloseTo(outL, tgtL, tol);  // FAILS!!!
   rsPlotVectors(tgtL, outL);
   // The produces amp-env if offset by 1 and the note cuts off at noteOff. Maybe the EnvGenAmps are
-  // not taken into account in determining the releaseEnv?
+  // not taken into account in determining the releaseEnv? And the inserted Amplifier has an
+  // amplitude setting of 1.0 or 100%
 
 
 
@@ -3166,7 +3167,8 @@ bool samplerEnvTest()
   // -I don't know...maybe we should have a dedicated module for the modulated amplitude, i.e. not 
   //  implement ampeg and amplfo via the routing system. It's a mess! We need real multiplication.
   //  But that also sucks because we may want to add several amp-envs to get a more complex one.
-  //  But adding LFO outputs is not good. 
+  //  But adding LFO outputs is not good. Maybe the LFO should be routed to volume instead of
+  //  amplitude? that may work! Yes! amplfo_depth is in dB. OK - that solves the problem.
 
 
   rsAssert(ok);
