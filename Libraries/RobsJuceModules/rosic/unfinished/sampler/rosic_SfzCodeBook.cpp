@@ -364,9 +364,8 @@ ModMode SfzCodeBook::opcodeDefaultModMode(Opcode op)
 
   switch(op)
   {
-  case OC::cutoffN: return MM::cents;
-    // ...more to come
-
+  case OC::cutoffN:    return MM::cents;
+  case OC::amplitudeN: return MM::absolute;  // maybe this hould be subsumed in a default branch
   }
 
   RAPT::rsError("Unknown opcode in opcodeDefaultModMode");
