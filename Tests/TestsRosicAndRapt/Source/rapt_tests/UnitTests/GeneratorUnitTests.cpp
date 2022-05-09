@@ -3135,12 +3135,15 @@ bool samplerEnvTest()
   se3.setRegionSetting(0,0, OC::ampeg_start,   start   * 100, 1);
   se3.setRegionSetting(0,0, OC::ampeg_delay,   delay   / fs,  1);
   se3.setRegionSetting(0,0, OC::ampeg_attack,  attack  / fs,  1);
-  //se3.setRegionSetting(0,0, OC::ampeg_peak,    peak    * 100, 1);
+  se3.setRegionSetting(0,0, OC::ampeg_peak,    peak    * 100, 1);
   se3.setRegionSetting(0,0, OC::ampeg_hold,    hold    / fs,  1);
   se3.setRegionSetting(0,0, OC::ampeg_decay,   decay   / fs,  1);
   se3.setRegionSetting(0,0, OC::ampeg_sustain, sustain * 100, 1);
   se3.setRegionSetting(0,0, OC::ampeg_release, release / fs,  1);
-  //se3.setRegionSetting(0,0, OC::ampeg_end,     end     * 100, 1);
+  se3.setRegionSetting(0,0, OC::ampeg_end,     end     * 100, 1);
+  //se3.connectAmpEnv(); // maybe try to avoid calling this manually
+
+
 
 
   // ToDo:

@@ -133,12 +133,12 @@ EnvGenAmp::EnvGenAmp()
   replaceOpcode(Opcode::adsrN_start,   Opcode::ampeg_start);
   replaceOpcode(Opcode::adsrN_delay,   Opcode::ampeg_delay);
   replaceOpcode(Opcode::adsrN_attack,  Opcode::ampeg_attack);
-  //replaceOpcode(Opcode::adsrN_peak,    Opcode::ampeg_peak); // ampeg_peak doesn't exist
+  replaceOpcode(Opcode::adsrN_peak,    Opcode::ampeg_peak);
   replaceOpcode(Opcode::adsrN_hold,    Opcode::ampeg_hold);
   replaceOpcode(Opcode::adsrN_decay,   Opcode::ampeg_decay);
   replaceOpcode(Opcode::adsrN_sustain, Opcode::ampeg_sustain);
   replaceOpcode(Opcode::adsrN_release, Opcode::ampeg_release);
-  //replaceOpcode(Opcode::adsrN_end,     Opcode::ampeg_end);// ampeg_end doesn't exist
+  replaceOpcode(Opcode::adsrN_end,     Opcode::ampeg_end);
 
   // ToDo:
   // -Do the same for pitcheg 
@@ -156,12 +156,12 @@ EnvGenFil::EnvGenFil()
   replaceOpcode(Opcode::adsrN_start,   Opcode::fileg_start);
   replaceOpcode(Opcode::adsrN_delay,   Opcode::fileg_delay);
   replaceOpcode(Opcode::adsrN_attack,  Opcode::fileg_attack);
-  //replaceOpcode(Opcode::adsrN_peak,    Opcode::fileg_peak);
+  replaceOpcode(Opcode::adsrN_peak,    Opcode::fileg_peak);
   replaceOpcode(Opcode::adsrN_hold,    Opcode::fileg_hold);
   replaceOpcode(Opcode::adsrN_decay,   Opcode::fileg_decay);
   replaceOpcode(Opcode::adsrN_sustain, Opcode::fileg_sustain);
   replaceOpcode(Opcode::adsrN_release, Opcode::fileg_release);
-  //replaceOpcode(Opcode::adsrN_end,     Opcode::fileg_end);
+  replaceOpcode(Opcode::adsrN_end,     Opcode::fileg_end);
 }
 
 //=================================================================================================

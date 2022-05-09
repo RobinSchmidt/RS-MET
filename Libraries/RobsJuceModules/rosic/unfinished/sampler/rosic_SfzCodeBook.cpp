@@ -217,19 +217,23 @@ SfzCodeBook::SfzCodeBook()
   add(OC::ampeg_delay,   Flt, "ampeg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::ampeg_start,   Flt, "ampeg_start",   0.f, 100.f,   0.f, dsp, OU::Percent, Sfz1);
   add(OC::ampeg_attack,  Flt, "ampeg_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::ampeg_peak,    Flt, "ampeg_peak",    0.f, 100.f, 100.f, dsp, OU::Percent, RsMet); 
   add(OC::ampeg_hold,    Flt, "ampeg_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::ampeg_decay,   Flt, "ampeg_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::ampeg_sustain, Flt, "ampeg_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz1);
   add(OC::ampeg_release, Flt, "ampeg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::ampeg_end,     Flt, "ampeg_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
 
   dsp = OpcodeType::FilterEnv;
-  add(OC::fileg_delay,   Flt, "fileg_delay",        0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_start,   Flt, "fileg_start",        0.f,   100.f,   0.f, dsp, OU::Percent, Sfz1);
-  add(OC::fileg_attack,  Flt, "fileg_attack",       0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_hold,    Flt, "fileg_hold",         0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_decay,   Flt, "fileg_decay",        0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_sustain, Flt, "fileg_sustain",      0.f,   100.f, 100.f, dsp, OU::Percent, Sfz1);
-  add(OC::fileg_release, Flt, "fileg_release",      0.f,   100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_delay,   Flt, "fileg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_start,   Flt, "fileg_start",   0.f, 100.f,   0.f, dsp, OU::Percent, Sfz1);
+  add(OC::fileg_attack,  Flt, "fileg_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_peak,    Flt, "fileg_peak",    0.f, 100.f, 100.f, dsp, OU::Percent, RsMet); 
+  add(OC::fileg_hold,    Flt, "fileg_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_decay,   Flt, "fileg_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_sustain, Flt, "fileg_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz1);
+  add(OC::fileg_release, Flt, "fileg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
+  add(OC::fileg_end,     Flt, "fileg_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
   add(OC::fileg_depth,   Flt, "fileg_depth",   -12000.f, 12000.f,   0.f, dsp, OU::Cents,   Sfz1);
 
   // Routable modulators:

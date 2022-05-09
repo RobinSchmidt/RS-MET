@@ -51,8 +51,8 @@ enum class Opcode
   // todo: complete the list, then delete old, unindexed opcodes
 
   // Filter Envelope:
-  fileg_delay, fileg_start, fileg_attack, fileg_hold, fileg_decay, fileg_sustain, fileg_release, 
-  fileg_depth,
+  fileg_delay, fileg_start, fileg_attack, fileg_peak, fileg_hold, fileg_decay, fileg_sustain, 
+  fileg_release, fileg_end, fileg_depth,
   // Should we use filegN? SFZ2 does actually not define fileg2 opcodes! It defines stuff like 
   // cutoff2, resonance2, fil2_type, fil2_gain. What is the supposed behavior? Will the fileg_
   // opcode affect both filters or only filter 1? If it affects both - should we generalize it to
@@ -81,7 +81,8 @@ enum class Opcode
   // ampN_velcurve_X /* ? */, ampN_random,
 
   // Amplifier Envelope:
-  ampeg_delay, ampeg_start, ampeg_attack, ampeg_hold, ampeg_decay, ampeg_sustain, ampeg_release, 
+  ampeg_delay, ampeg_start, ampeg_attack, ampeg_peak, ampeg_hold, ampeg_decay, ampeg_sustain, 
+  ampeg_release, ampeg_end,
   // We are not using ampegN_delay etc. because there is only one hardwired ampeg which is always
   // wired to the last Amplifier in the effect chain.
 
