@@ -3043,6 +3043,9 @@ bool samplerEnvTest()
   using Vec  = std::vector<float>;
   using OT   = OpcodeType;
   using Mode = ModMode;
+  using SE   = rsSamplerEngineTest;
+  using OC   = Opcode;
+
 
   // EG parameters (times are in in samples, levels a unitless):
   float delay   = 30;
@@ -3062,27 +3065,22 @@ bool samplerEnvTest()
   int vel   =   64;         // Velocity to play
   int nDC   =  100;         // Number of DC samples in the loop
   int keyDC =   60;         // Rootkey of the DC sample
+  float fs  = 10000.f;      // sample rate
 
-  // Produce and plot envelope:
+
+  // Produce the reference envelope:
   Vec outL(N), outR(N);
   EnvGenCore egc;
   egc.setup(start, delay, attack, peak, hold, decay, sustain, release, end);
-  for(int n = 0; n < N; n++)
-  {
+  for(int n = 0; n < N; n++) {
     if(n == nOff)
       egc.noteOff();
-    egc.processFrame(&outL[n], &outR[n]);
-  }
-  //rsPlotVectors(outL, outR);
+    egc.processFrame(&outL[n], &outR[n]); }
+  //rsPlotVectors(outL, outR);  // for visual inspection
 
   // OK the envelope looks good. From now on, we treat it as target signal and let an actual 
   // sampler engine make use of it, routing it to the amplitude using a DC sample.
   Vec tgtL = outL, tgtR = outR;
-
-
-  using SE = rsSamplerEngineTest;
-  using OC = Opcode;
-  float fs = 10000.f;     // sample rate
   SE se;
   setupForLoopedDC(&se, nDC, keyDC, fs);
   se.setSampleRate(fs);
@@ -3094,7 +3092,6 @@ bool samplerEnvTest()
   // group 0):
   auto numAmps = [](const SE& se) {
     return se.getRegion(0,0)->getNumProcessorsOfType(OT::Amplifier);  };
-
 
   // Set up the envelope in the sampler engine:
   se.setRegionSetting(0,0, OC::adsrN_start,   start   * 100, 1);
@@ -3136,9 +3133,13 @@ bool samplerEnvTest()
   ok &= rsIsCloseTo(outL, tgtL, tol);
   ok &= rsIsCloseTo(outR, tgtR, tol);
   //rsPlotVectors(tgtL, tgtR, outL, outR);
+  // maybe wrap into a helper function testSfzRecall. 
 
-  // Set up another engine this time using the ampeg opcodes:
-  SE se3;
+  // Set up another engine this time using the ampeg opcodes. In the first test, we just define the
+  // ampeg_ opcodes and then finally the ampe_depth opcode. 
+  SE se3;  // maybe reuse se, use se.clearInstrument
+
+
   setupForLoopedDC(&se3, nDC, keyDC, fs);
   se3.setSampleRate(fs);
   se3.setRegionSetting(0,0, OC::ampeg_start,   start   * 100, -1);
@@ -3158,8 +3159,6 @@ bool samplerEnvTest()
   ok &= numAmps(se3) == 1;
   se3.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // does nothing (amp already there)
   ok &= numAmps(se3) == 1;
-
-
 
   // Check output signal:
   se3.preAllocateDspMemory(); // It's important to call this but shouldn't be...
@@ -3185,6 +3184,7 @@ bool samplerEnvTest()
   //   -no additional amp should be inserted
   // -Maybe use filters or waveshapers in bypass setting as dummy effects to create situations 
   //  where there is a filter last etc.
+  // -add additional amp envelopes, i.e. adsrN opcodes, to the existing ampeg
 
   // -The Amplifier to which the ampeg_ opcodes apply should stisfy:
   //  -Be the last effect unit in the chain
