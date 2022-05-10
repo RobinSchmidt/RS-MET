@@ -424,7 +424,11 @@ public:
     modules. Called from setSetting as a special case handling. */
     void setFilterEnvDepth(float depthInCents);
 
-
+    /** Establishes a modulation connection from the AmpEnv to the final (last) Amplifier in the 
+    effect chain subject to the constraint that this final Amplifier has an amplitudeN=0 setting. 
+    If this is not the case or there aren't any Amplifiers present at all or the final effect is 
+    something other than an Amplifier, an additional Amplifier with an amplitude=0 setting will be
+    appended and the connection will be routed to this new Amplifier. */
     void setAmpEnvDepth(float depthInPercent);
 
 

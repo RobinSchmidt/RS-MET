@@ -69,41 +69,56 @@ bool isEffect(OpcodeType ot)
 
 void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
 {
-  // If the last effect DSP in the chain is not an Amplifier, we need to insert another Amplifier 
-  // at the end. We need this complicated logic with the effects and amplifiers because our
-  // dspTypes array stores also the modulators any they shouldn't count here:
   using OT = OpcodeType;
+  using OC = Opcode;
 
-  int lastAmp = -1;        // Index of last Amplifier in the chain, -1 if none
+  // If the last effect DSP in the chain is not an Amplifier with amplitudeN==0, we need to insert 
+  // another Amplifier at the end. We need this complicated logic with the effects and amplifiers 
+  // because our dspTypes array stores also the modulators and they shouldn't count here:
+
+  // Figure out the index of the last Amplifier in the dspTypes array, -1 if none:
+  int lastAmp = -1;        
   for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
     if(dspTypes[i] == OT::Amplifier) {
       lastAmp = i;
       break; }}
-
-  int lastNonAmpEff = -1;  // Index of the last effect that is not Amplifier.
+ 
+  // Figure out the index in the dspTypes array of the last effect that is not Amplifier:
+  int lastNonAmpEff = -1; 
   for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
     if(isEffect(dspTypes[i]) && dspTypes[i] != OT::Amplifier) {
       lastNonAmpEff = i;
       break; }}
 
-  if(lastNonAmpEff >= lastAmp)          // Last effect in the chain is not (yet) an amp...
-    dspTypes.push_back(OT::Amplifier);  // ...but now it is
-    // >= rather than > is needed to catch the case when lastAmp == lastNonAmpEff == -1 which 
-    // happens when there are no effects in the dspTypes array (it may be empty or there are only
-    // other kinds of devices such as modulators)
-
-
-  // OK, now we have ensured that the last effect in the chain is indeed an Amplifier. We need to
-  // figure out its index among any possible other Amplifiers (i.e. the N in the amplitudeN 
-  // opcode). This is the amplifier to which we route the amp-env:
+  // Figure out the amplitudeN opcode/parameter of the last Amplifier in the chain, assume 1.f if 
+  // there are no Amplifiers:
   int numAmps = (int)RAPT::rsCount(dspTypes, OT::Amplifier);
-  setModulation(OT::AmpEnv, 1, Opcode::amplitudeN, numAmps, depthInPercent, ModMode::absolute);
-  // don't we need to scale the depth by 0.01?
+  float lastAmpParam = 1.f;
+  if(numAmps > 0)
+    lastAmpParam = getSettingValue(OC::amplitudeN, numAmps);
 
-  // Actually, we should not even count all amplifiers but only those with a zero value for
-  // amplitude. Maybe it makes more sense an is also simpler to just always insert another 
-  // Amplifier at the very end as target for the ampeg_ opccodes? An amp-LFO may also have the 
-  // undesirable effect of raising the amplitude above zero at the end
+  // Append another amplifier with amplitudeN=0 if necessary. We use >= rather than > is needed to 
+  // catch the case when lastAmp == lastNonAmpEff == -1 which happens when there are no effects in 
+  // the dspTypes array (it may be empty or there are only other kinds of devices such as 
+  // modulators):
+  bool newAmpNeeded = lastNonAmpEff >= lastAmp || lastAmpParam != 0.f;
+  if(newAmpNeeded) {
+    numAmps++; 
+    setSetting(PlaybackSetting(OC::amplitudeN, 0.f, numAmps)); }
+
+  // OK, now we have ensured that the last effect in the chain is indeed an Amplifier with a 
+  // setting of amplitudeN=0 and its index all other Amplifiers (i.e. the N in the amplitudeN 
+  // opcode - *not* the index in the dspTypes array). This is the amplifier to which we route the
+  // amp-env:
+  setModulation(OT::AmpEnv, 1, OC::amplitudeN, numAmps, depthInPercent, ModMode::absolute);
+
+
+  // For the amplfo opcodes, the logic is similar except that we don't need the lastAmpParam == 0.f
+  // constraint, i.e. the 
+  //   newAmpNeeded = lastNonAmpEff >= lastAmp || lastAmpParam != 0.f;
+  // needs to be changed to just
+  //   newAmpNeeded = lastNonAmpEff >= lastAmp;
+  // maybe we can somehow refactor the code to avoid duplication
 
   int dummy = 0;
 }
