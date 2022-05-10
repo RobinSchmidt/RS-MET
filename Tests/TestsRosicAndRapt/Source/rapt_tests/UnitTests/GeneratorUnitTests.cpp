@@ -3065,8 +3065,8 @@ bool samplerEnvTest()
   int vel   =   64;         // Velocity to play
   int nDC   =  100;         // Number of DC samples in the loop
   int keyDC =   60;         // Rootkey of the DC sample
-  float fs  = 10000.f;      // sample rate
-
+  float fs  = 10000.f;      // Sample rate
+  float tol = 1.e-6;        // Tolerance
 
   // Produce the reference envelope:
   Vec outL(N), outR(N);
@@ -3082,6 +3082,7 @@ bool samplerEnvTest()
   // sampler engine make use of it, routing it to the amplitude using a DC sample.
   Vec tgtL = outL, tgtR = outR;
   SE se;
+  se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   setupForLoopedDC(&se, nDC, keyDC, fs);
   se.setSampleRate(fs);
 
@@ -3112,18 +3113,22 @@ bool samplerEnvTest()
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
   ok &= numAmps(se) == 1;
 
-  se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  getSamplerNote(&se, key, vel, outL, outR, nOff);
-  //ok &= tgtL == outL && tgtR == outR;   // Nope! We need a tolerance. Why?
-  float tol = 1.e-6;
-  ok &= rsIsCloseTo(outL, tgtL, tol);
-  ok &= rsIsCloseTo(outR, tgtR, tol);
-  //rsPlotVectors(tgtL, tgtR, outL, outR);
-  //rsPlotVectors(tgtL - outL);
+  // Helper to let the sampler engien se produce the output signal and compare it against the 
+  // target signal:
+  auto checkOutput = [&]()
+  {
+    Vec outL(N), outR(N);
+    getSamplerNote(&se, key, vel, outL, outR, nOff);
+    bool ok = true;
+    ok &= rsIsCloseTo(outL, tgtL, tol);
+    ok &= rsIsCloseTo(outR, tgtR, tol);
+    //rsPlotVectors(tgtL, tgtR, outL, outR);
+    return ok;
+  };
 
   // Helper to retrieve the state of se as sfz string, set up a fresh engine se2 from that string 
   // and check if it's in the same state and produces the same output:
-  auto testSfzRecall = [&]()
+  auto checkSfzRecall = [&]()
   {
     std::string sfz = se.getAsSfz();
     SE se2;
@@ -3138,31 +3143,36 @@ bool samplerEnvTest()
     return ok;
   };
 
-  ok &= testSfzRecall();
 
+  ok &= checkOutput();
+  ok &= checkSfzRecall();
+
+
+
+  // Helper function to reset the engine se and set up the settings that all the following tests
+  // have in common
+  auto setupCommonSettings = [&]()
+  {
+    se.clearInstrument();
+    setupForLoopedDC(&se, nDC, keyDC, fs);
+    se.setSampleRate(fs);
+    se.setRegionSetting(0, 0, OC::ampeg_start, start   * 100, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_delay, delay   / fs, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_attack, attack  / fs, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_peak, peak    * 100, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_hold, hold    / fs, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_decay, decay   / fs, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_sustain, sustain * 100, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_release, release / fs, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_end, end     * 100, -1);
+  };
 
 
   // Set up the engine again, this time using the ampeg opcodes. In the first test, we just define 
-  // the ampeg_ opcodes and then finally the ampe_depth opcode. 
-  se.clearInstrument();
-  setupForLoopedDC(&se, nDC, keyDC, fs);
-  se.setSampleRate(fs);
-
-  // wrap into helper setup AmpEg:
-  se.setRegionSetting(0,0, OC::ampeg_start,   start   * 100, -1);
-  se.setRegionSetting(0,0, OC::ampeg_delay,   delay   / fs,  -1);
-  se.setRegionSetting(0,0, OC::ampeg_attack,  attack  / fs,  -1);
-  se.setRegionSetting(0,0, OC::ampeg_peak,    peak    * 100, -1);
-  se.setRegionSetting(0,0, OC::ampeg_hold,    hold    / fs,  -1);
-  se.setRegionSetting(0,0, OC::ampeg_decay,   decay   / fs,  -1);
-  se.setRegionSetting(0,0, OC::ampeg_sustain, sustain * 100, -1);
-  se.setRegionSetting(0,0, OC::ampeg_release, release / fs,  -1);
-  se.setRegionSetting(0,0, OC::ampeg_end,     end     * 100, -1);
-
-
-
-  // Calling setRegionSetting with ampeg_depth will establish the connection of the amp-env with 
-  // the last Amplifier in the chain or append another Amplifier (which is the case here):
+  // the ampeg_ opcodes and then finally the ampeg_depth opcode. Calling setRegionSetting with 
+  // ampeg_depth should establish the connection of the amp-env with the last Amplifier in the 
+  // chain or append another Amplifier (which is the case here):
+  setupCommonSettings();
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // appends an amp
   ok &= numAmps(se) == 1;
