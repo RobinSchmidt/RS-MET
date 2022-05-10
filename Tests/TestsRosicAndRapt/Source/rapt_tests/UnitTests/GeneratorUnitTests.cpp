@@ -3094,25 +3094,6 @@ bool samplerEnvTest()
   auto numAmps = [](const SE& se) {
     return se.getRegion(0,0)->getNumProcessorsOfType(OT::Amplifier);  };
 
-  // Set up the envelope in the sampler engine:
-  se.setRegionSetting(0,0, OC::adsrN_start,   start   * 100, 1);
-  se.setRegionSetting(0,0, OC::adsrN_delay,   delay   / fs,  1);
-  se.setRegionSetting(0,0, OC::adsrN_attack,  attack  / fs,  1);
-  se.setRegionSetting(0,0, OC::adsrN_peak,    peak    * 100, 1);
-  se.setRegionSetting(0,0, OC::adsrN_hold,    hold    / fs,  1);
-  se.setRegionSetting(0,0, OC::adsrN_decay,   decay   / fs,  1);
-  se.setRegionSetting(0,0, OC::adsrN_sustain, sustain * 100, 1);
-  se.setRegionSetting(0,0, OC::adsrN_release, release / fs,  1);
-  se.setRegionSetting(0,0, OC::adsrN_end,     end     * 100, 1);
-
-  // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
-  // nominal value for the amplitude is 0:
-  ok &= numAmps(se) == 0;
-  se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
-  ok &= numAmps(se) == 1;
-  se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
-  ok &= numAmps(se) == 1;
-
   // Helper to let the sampler engien se produce the output signal and compare it against the 
   // target signal:
   auto checkOutput = [&]()
@@ -3143,11 +3124,26 @@ bool samplerEnvTest()
     return ok;
   };
 
+  // Set up the envelope in the sampler engine:
+  se.setRegionSetting(0,0, OC::adsrN_start,   start   * 100, 1);
+  se.setRegionSetting(0,0, OC::adsrN_delay,   delay   / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_attack,  attack  / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_peak,    peak    * 100, 1);
+  se.setRegionSetting(0,0, OC::adsrN_hold,    hold    / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_decay,   decay   / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_sustain, sustain * 100, 1);
+  se.setRegionSetting(0,0, OC::adsrN_release, release / fs,  1);
+  se.setRegionSetting(0,0, OC::adsrN_end,     end     * 100, 1);
 
+  // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
+  // nominal value for the amplitude is 0:
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
+  ok &= numAmps(se) == 1;
+  se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
+  ok &= numAmps(se) == 1;
   ok &= checkOutput();
   ok &= checkSfzRecall();
-
-
 
   // Helper function to reset the engine se and set up the settings that all the following tests
   // have in common
@@ -3167,7 +3163,6 @@ bool samplerEnvTest()
     se.setRegionSetting(0, 0, OC::ampeg_end, end     * 100, -1);
   };
 
-
   // Set up the engine again, this time using the ampeg opcodes. In the first test, we just define 
   // the ampeg_ opcodes and then finally the ampeg_depth opcode. Calling setRegionSetting with 
   // ampeg_depth should establish the connection of the amp-env with the last Amplifier in the 
@@ -3178,12 +3173,11 @@ bool samplerEnvTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // does nothing (amp already there)
   ok &= numAmps(se) == 1;
+  ok &= checkOutput();
+  ok &= checkSfzRecall();  // triggers assert
 
-  // Check output signal:
-  se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  getSamplerNote(&se, key, vel, outL, outR, nOff);
-  ok &= rsIsCloseTo(outL, tgtL, tol); 
-  rsPlotVectors(tgtL, outL);
+
+  //rsPlotVectors(tgtL, outL);
 
   // -Check the following situations
   //    player            =>  append amp
