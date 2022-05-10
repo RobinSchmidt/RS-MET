@@ -3152,15 +3152,15 @@ bool samplerEnvTest()
     se.clearInstrument();
     setupForLoopedDC(&se, nDC, keyDC, fs);
     se.setSampleRate(fs);
-    se.setRegionSetting(0, 0, OC::ampeg_start, start   * 100, -1);
-    se.setRegionSetting(0, 0, OC::ampeg_delay, delay   / fs, -1);
-    se.setRegionSetting(0, 0, OC::ampeg_attack, attack  / fs, -1);
-    se.setRegionSetting(0, 0, OC::ampeg_peak, peak    * 100, -1);
-    se.setRegionSetting(0, 0, OC::ampeg_hold, hold    / fs, -1);
-    se.setRegionSetting(0, 0, OC::ampeg_decay, decay   / fs, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_start,   start   * 100, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_delay,   delay   / fs,  -1);
+    se.setRegionSetting(0, 0, OC::ampeg_attack,  attack  / fs,  -1);
+    se.setRegionSetting(0, 0, OC::ampeg_peak,    peak    * 100, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_hold,    hold    / fs,  -1);
+    se.setRegionSetting(0, 0, OC::ampeg_decay,   decay   / fs,  -1);
     se.setRegionSetting(0, 0, OC::ampeg_sustain, sustain * 100, -1);
-    se.setRegionSetting(0, 0, OC::ampeg_release, release / fs, -1);
-    se.setRegionSetting(0, 0, OC::ampeg_end, end     * 100, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_release, release / fs,  -1);
+    se.setRegionSetting(0, 0, OC::ampeg_end,     end     * 100, -1);
   };
 
   // Set up the engine again, this time using the ampeg opcodes. In the first test, we just define 
