@@ -382,8 +382,17 @@ public:
     /** Returns the highest velocity at which this region will be played. */
     uchar getHiVel() const { return hiVel; }
 
-    /** Returns the number of signal processors needed to play this region/group/etc. */
+    /** Returns the number of signal processors needed to play this region/group/etc. This includes
+    all processors regardless of their kind, i.e. all the effects *and* modulators. */
     int getNumProcessors() const { return (int) dspTypes.size(); }
+
+    /** Returns the number of effect processors needed to play this region/group/etc.  */
+    int getNumEffects() const;
+    // implement also getNumModulators. These count only the number of effects
+    // and modulators
+
+    /** Returns the number of processors of a given specific type. */
+    int getNumProcessorsOfType(OpcodeType type) const;
 
 
 

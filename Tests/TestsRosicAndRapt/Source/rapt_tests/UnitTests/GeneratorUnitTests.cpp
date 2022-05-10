@@ -3090,6 +3090,12 @@ bool samplerEnvTest()
   //getSamplerNote(&se, key, vel, outL, outR);
   //rsPlotVectors(outL, outR);  // all ones -> correct!
 
+  // Helper function to figure out the number of Amplifiers in the given engine (in region 0 of 
+  // group 0):
+  auto numAmps = [](const SE& se) {
+    return se.getRegion(0,0)->getNumProcessorsOfType(OT::Amplifier);  };
+
+
   // Set up the envelope in the sampler engine:
   se.setRegionSetting(0,0, OC::adsrN_start,   start   * 100, 1);
   se.setRegionSetting(0,0, OC::adsrN_delay,   delay   / fs,  1);
@@ -3103,8 +3109,11 @@ bool samplerEnvTest()
 
   // Route the envlope to an amplitude parameter of an amplifier module with 100% depth where the
   // nominal value for the amplitude is 0:
+  ok &= numAmps(se) == 0;
   se.setRegionSetting(0,0, OC::amplitudeN, 0.f, 1);  // Set nominal amplitude to zero
+  ok &= numAmps(se) == 1;
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
+  ok &= numAmps(se) == 1;
 
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   getSamplerNote(&se, key, vel, outL, outR, nOff);
@@ -3141,29 +3150,49 @@ bool samplerEnvTest()
   se3.setRegionSetting(0,0, OC::ampeg_sustain, sustain * 100, -1);
   se3.setRegionSetting(0,0, OC::ampeg_release, release / fs,  -1);
   se3.setRegionSetting(0,0, OC::ampeg_end,     end     * 100, -1);
-  se3.setRegionSetting(0,0, OC::ampeg_depth,   100.f,         -1);
-  // Calling setRegionSetting with ampeg_depth will establish the connection of the amp-env with 
-  // the last amplifier in teh chain
 
+  // Calling setRegionSetting with ampeg_depth will establish the connection of the amp-env with 
+  // the last Amplifier in the chain or append another Amplifier (which is the case here):
+  ok &= numAmps(se3) == 0;
+  se3.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // appends an amp
+  ok &= numAmps(se3) == 1;
+  se3.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // does nothing (amp already there)
+  ok &= numAmps(se3) == 1;
+
+
+
+  // Check output signal:
   se3.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   getSamplerNote(&se3, key, vel, outL, outR, nOff);
-  ok &= rsIsCloseTo(outL, tgtL, tol);  // FAILS!!!
+  ok &= rsIsCloseTo(outL, tgtL, tol); 
   rsPlotVectors(tgtL, outL);
-  // The produces amp-env if offset by 1 and the note cuts off at noteOff. Maybe the EnvGenAmps are
-  // not taken into account in determining the releaseEnv? And the inserted Amplifier has an
-  // amplitude setting of 1.0 or 100%
+
+  // -Check the following situations
+  //    player            =>  append amp
+  //    player -> amp(0)  =>  use last amp
+  //    player -> amp(1)  =>  append amp
+  //    player -> amp(0) -> filter  => append amp
+
+
 
 
 
   // ToDo:
   // -Set up an engine using the ampeg opcodes. Do and don't manually insert or connect an 
   //  Amplifier by defining the amplitudeN opcode (test both variations).
+  // -Try different configurations:
+  //  -There exists an amp in the chain and it is the last and has amplitudeN=0.
+  //   -no additional amp should be inserted
+  // -Maybe use filters or waveshapers in bypass setting as dummy effects to create situations 
+  //  where there is a filter last etc.
 
   // -The Amplifier to which the ampeg_ opcodes apply should stisfy:
   //  -Be the last effect unit in the chain
   //  -Have a zero value for the amplitude
   //  -Is not modulated by any LFOs (i.e. amplfo opcodes)
 
+
+  // 
   // -I don't know...maybe we should have a dedicated module for the modulated amplitude, i.e. not 
   //  implement ampeg and amplfo via the routing system. It's a mess! We need real multiplication.
   //  But that also sucks because we may want to add several amp-envs to get a more complex one.

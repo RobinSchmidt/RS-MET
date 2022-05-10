@@ -65,7 +65,8 @@ bool isEffect(OpcodeType ot)
   using OT = OpcodeType;
   return ot > OT::_TagEffectsStart && ot < OT::_TagEffectsEnd;
 }
-// maybe move as static member function into SfzCodeBook
+// maybe move as static member function into SfzCodeBook..there actually already is such a function
+// -> use that and remove this!
 
 void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
 {
@@ -93,6 +94,9 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
   // Figure out the amplitudeN opcode/parameter of the last Amplifier in the chain, assume 1.f if 
   // there are no Amplifiers:
   int numAmps = (int)RAPT::rsCount(dspTypes, OT::Amplifier);
+  // wrap into a function: getNumEffects(OT::Amplifier) and use it in unit tests
+
+
   float lastAmpParam = 1.f;
   if(numAmps > 0)
     lastAmpParam = getSettingValue(OC::amplitudeN, numAmps);
@@ -338,6 +342,25 @@ int SfzInstrument::HierarchyLevel::findSetting(Opcode type, int index) const
   }
   return -1;
 }
+
+int SfzInstrument::HierarchyLevel::getNumEffects() const
+{
+  int count = 0;
+  for(size_t i = 0; i < dspTypes.size(); ++i)
+    if(isEffect(dspTypes[i]))
+      count++;
+  return count;
+}
+
+int SfzInstrument::HierarchyLevel::getNumProcessorsOfType(OpcodeType type) const
+{
+  int count = 0;
+  for(size_t i = 0; i < dspTypes.size(); ++i) {
+    if(dspTypes[i] == type)
+      count++; }
+  return count;
+}
+
 
 void SfzInstrument::Region::copyDataFrom(const Region* src)
 {

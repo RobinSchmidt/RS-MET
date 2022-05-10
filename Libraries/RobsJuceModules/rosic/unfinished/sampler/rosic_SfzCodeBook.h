@@ -522,6 +522,8 @@ public:
     // ToDo: maybe use a helper function:
     // return isStrictlyBetween(type, OT::_TagEffectsStart, OT::_TagEffectsEnd);
   }
+  // maybe rename to isEffect
+
 
   /** Returns true iff the given opcode applies to an effect in the effect chain like e.g. volume, 
   cutoff, eq2_freq, etc. but not pitch_keycenter or tune. */
