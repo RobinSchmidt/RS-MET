@@ -3241,6 +3241,9 @@ bool samplerEnvTest()
   // Writing the ampeg1 stuff into the sfz is also wrong!
 
   // ToDo:
+  // -Make sure that line-breaks are correct in the sfz-string
+  // -Make sure, the ampeg_depth connection doesn't write anything into the sfz-string.
+
   // -Set up an engine using the ampeg opcodes. Do and don't manually insert or connect an 
   //  Amplifier by defining the amplitudeN opcode (test both variations).
   // -Try different configurations:
