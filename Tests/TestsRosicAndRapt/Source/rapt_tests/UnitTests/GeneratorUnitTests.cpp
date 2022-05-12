@@ -3096,14 +3096,15 @@ bool samplerEnvTest()
 
   // Helper to let the sampler engien se produce the output signal and compare it against the 
   // target signal:
-  auto checkOutput = [&]()
+  auto checkOutput = [&](bool plot = false)
   {
     Vec outL(N), outR(N);
     getSamplerNote(&se, key, vel, outL, outR, nOff);
     bool ok = true;
     ok &= rsIsCloseTo(outL, tgtL, tol);
     ok &= rsIsCloseTo(outR, tgtR, tol);
-    //rsPlotVectors(tgtL, tgtR, outL, outR);
+    if(plot)
+      rsPlotVectors(tgtL, tgtR, outL, outR);
     return ok;
   };
 
@@ -3174,7 +3175,24 @@ bool samplerEnvTest()
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // does nothing (amp already there)
   ok &= numAmps(se) == 1;
   ok &= checkOutput();
-  ok &= checkSfzRecall();  // triggers assert
+  ok &= checkSfzRecall();
+
+  // Now with one amp in the chain which has a nonzero amplitude parameter:
+  setupCommonSettings();
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0, 0, OC::amplitudeN, 100.f,  1);  // appends amp with 100% gain
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // appends another amp because amplitudeN..
+  ok &= numAmps(se) == 2;                                // ..of 1st amp is nonzero
+  se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 3rd amp neeeded
+  ok &= numAmps(se) == 2;
+  ok &= checkOutput();
+  ok &= checkSfzRecall();
+
+  // Now with one amp in the chain which has a zero amplitude parameter:
+
+
+
 
 
   //rsPlotVectors(tgtL, outL);
