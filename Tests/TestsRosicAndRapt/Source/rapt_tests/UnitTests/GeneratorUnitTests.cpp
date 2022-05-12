@@ -3190,9 +3190,16 @@ bool samplerEnvTest()
   ok &= checkSfzRecall();
 
   // Now with one amp in the chain which has a zero amplitude parameter:
-
-
-
+  setupCommonSettings();
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0, 0, OC::amplitudeN,  0.f,  1);  // appends amp with 0% gain
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // appends no other amp because gain..
+  ok &= numAmps(se) == 1;                                // ..of 1st amp is zero
+  se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 2nd amp neeeded
+  ok &= numAmps(se) == 1;
+  ok &= checkOutput();
+  ok &= checkSfzRecall();
 
 
   //rsPlotVectors(tgtL, outL);
