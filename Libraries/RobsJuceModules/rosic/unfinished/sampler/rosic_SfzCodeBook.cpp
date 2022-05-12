@@ -501,6 +501,7 @@ std::string SfzCodeBook::modSourceToString(OpcodeType sourceType, int index)
   switch(sourceType)
   {
   case OT::FreeEnv:   tmp = "adsr";  break;
+  case OT::AmpEnv:    tmp = "ampeg"; break;
   case OT::FilterEnv: tmp = "fileg"; break;
   case OT::FreeLfo:   tmp = "lfo";   break;
   default:
