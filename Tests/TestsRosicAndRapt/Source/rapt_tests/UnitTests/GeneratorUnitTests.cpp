@@ -3201,7 +3201,7 @@ bool samplerEnvTest()
   ok &= checkOutput();
   ok &= checkSfzRecall();
 
-  // Now with two amps in the chain, 1st has zero, 2nd nonzero gain:
+  // Now with two amps in the chain with nonzero gain:
   setupCommonSettings();
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0, 0, OC::amplitudeN,  50.f,  1);  // appends amp with 50% gain
@@ -3215,15 +3215,26 @@ bool samplerEnvTest()
   ok &= checkOutput();
   ok &= checkSfzRecall();
 
+  // Now with an amp and a waveshaper...
+  setupCommonSettings();
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0, 0, OC::amplitudeN,       0.f,  1);  // appends amp with 100% gain
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0, 0, OC::distortN_drive,   0.f,  1);
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0, 0, OC::ampeg_depth,    100.f, -1); 
+  ok &= numAmps(se) == 2;
 
-  //rsPlotVectors(tgtL, outL);
-
-  // -Check the following situations
-  //    player            =>  append amp
-  //    player -> amp(0)  =>  use last amp
-  //    player -> amp(1)  =>  append amp
-  //    player -> amp(0) -> filter  => append amp
-
+  // Calling checkOutput and checkSfzRecall would now fail because the first amp mutes the signal.
+  // But now let's insert another envelope modulating the amplitude 1 up:
+  se.setRegionSetting(0, 0, OC::adsrN_start, 100.f, -1);
+  se.setRegionSetting(0, 0, OC::adsrN_end,   100.f, -1);
+  se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
+  ok &= numAmps(se) == 2;
+  ok &= checkOutput(true); // Fails! output all zeros!
+  //ok &= checkSfzRecall();
+  // Actually, the additional adsrN envelope is supposed to open the first amp. This doesn't seem
+  // to work
 
 
 
@@ -3249,7 +3260,12 @@ bool samplerEnvTest()
   //  implement ampeg and amplfo via the routing system. It's a mess! We need real multiplication.
   //  But that also sucks because we may want to add several amp-envs to get a more complex one.
   //  But adding LFO outputs is not good. Maybe the LFO should be routed to volume instead of
-  //  amplitude? that may work! Yes! amplfo_depth is in dB. OK - that solves the problem.
+  //  amplitude? that may work! Yes! amplfo_depth is in dB. OK - that solves the problem. But still
+  //  it may be more convenient to handle it like that. Maybe call it SimpleAmp and it is 
+  //  specifically meant as target for the amp-env. Maybe EnvControlledAmp
+
+
+  // Notes:
 
 
   rsAssert(ok);
