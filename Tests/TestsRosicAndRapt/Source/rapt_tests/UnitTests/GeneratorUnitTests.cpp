@@ -3035,7 +3035,7 @@ bool samplerLfoTest()
   return ok;
 }
 
-bool samplerEnvTest()
+bool samplerAmpEnvTest()
 {
   bool ok = true;
 
@@ -3216,7 +3216,7 @@ bool samplerEnvTest()
   ok &= checkOutput();
   ok &= checkSfzRecall();
 
-  // Now with an amp and a waveshaper...
+  // Now with an amp and a waveshaper:
   setupCommonSettings();
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0, 0, OC::amplitudeN,       0.f,  1);  // appends amp with 100% gain
@@ -3225,9 +3225,9 @@ bool samplerEnvTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0, 0, OC::ampeg_depth,    100.f, -1); 
   ok &= numAmps(se) == 2;
-
   // Calling checkOutput and checkSfzRecall would now fail because the first amp mutes the signal.
-  // But now let's insert another envelope modulating the amplitude 1 up:
+  // But now let's insert another envelope modulating the amplitude 1 up, i.e. opening the first
+  // amp via the modulator while its nominal amplitude1 value still remains zero:
   se.setRegionSetting(0, 0, OC::adsrN_start, 100.f, -1);
   se.setRegionSetting(0, 0, OC::adsrN_end,   100.f, -1);
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
@@ -3235,7 +3235,12 @@ bool samplerEnvTest()
   ok &= checkOutput();
   ok &= checkSfzRecall();
 
+
+
   // ToDo:
+  // -Try to connect the amp-env additionally to other targets via opcodes like ampeg_cutoffN
+  // -Try to connect the final Amplifier to other envelopes - they should all add up and the 
+  //  longest should control the release
   // -Set up an engine using the ampeg opcodes. Do and don't manually insert or connect an 
   //  Amplifier by defining the amplitudeN opcode (test both variations).
   // -Try different configurations:
@@ -3456,7 +3461,7 @@ bool samplerModulatorsTest()
   bool ok = true;
 
   ok &= samplerLfoTest();
-  ok &= samplerEnvTest();
+  ok &= samplerAmpEnvTest();
   ok &= samplerFilterEnvTest();
   ok &= samplerPitchEnvTest();
 
