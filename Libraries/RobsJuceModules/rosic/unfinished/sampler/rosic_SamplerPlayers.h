@@ -203,9 +203,10 @@ public:
   as debug assertions. */
   bool areProcessorsEmpty() const
   {
-    return effectChain.empty() && modSources.empty() && modMatrix.empty();
-    // todo: && modTargetProcessors.empty() && modTargetParams.empty();
+    return effectChain.empty() && modSources.empty() && modMatrix.empty()
+      && modTargetProcessors.empty() && modTargetParams.empty();
   }
+  // Rename! Maybe something like isClean..or maybe not
 
 protected:
 

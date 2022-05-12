@@ -3204,15 +3204,22 @@ bool samplerEnvTest()
   // Now with two amps in the chain, 1st has zero, 2nd nonzero gain:
   setupCommonSettings();
   ok &= numAmps(se) == 0;
-  se.setRegionSetting(0, 0, OC::amplitudeN,   0.f,   1);  // appends amp with 0% gain
+  se.setRegionSetting(0, 0, OC::amplitudeN,   0.f,  1);  // appends amp with 0% gain
   ok &= numAmps(se) == 1;
-  se.setRegionSetting(0, 0, OC::amplitudeN, 100.f,   2);  // appends 2nd amp with 100% gain
+  se.setRegionSetting(0, 0, OC::amplitudeN, 100.f,  2);  // appends 2nd amp with 100% gain
   ok &= numAmps(se) == 2;
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // appends 3rd amp because gain..
   ok &= numAmps(se) == 3;                                // ..of 2nd amp is nonzero
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 4th amp neeeded
   ok &= numAmps(se) == 3;
+
   ok &= checkOutput(true);  // fails! output is all zero
+  // modTargetParams array in the RegionPlayer has 3 entries. It should only have one! Maybe there
+  // are some remnant parameters from the previous notes, i.e. the array doesn't get cleaned up 
+  // properly? Maybe introduce an isClean function that we may call in assertions? Maybe before
+  // the noteOn? ..ok done - but that doesn't fix it
+
+
   ok &= checkSfzRecall();
 
 

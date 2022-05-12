@@ -290,6 +290,9 @@ void SamplePlayer::disassembleProcessors()
 
   modTargetProcessors.clear();
 
+  modTargetParams.clear();      // new
+
+
   // ToDo: 
   // -let effectChain just be std::vector<Effect> to handle it uniformly with the modulators.
   //  Member functions should become free functions (maybe wrapped into a class...maybe this class)
