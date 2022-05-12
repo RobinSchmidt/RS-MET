@@ -3220,7 +3220,7 @@ bool samplerEnvTest()
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0, 0, OC::amplitudeN,       0.f,  1);  // appends amp with 100% gain
   ok &= numAmps(se) == 1;
-  se.setRegionSetting(0, 0, OC::distortN_drive,   0.f,  1);
+  se.setRegionSetting(0, 0, OC::distortN_drive,   1.f,  1);
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0, 0, OC::ampeg_depth,    100.f, -1); 
   ok &= numAmps(se) == 2;
@@ -3231,12 +3231,8 @@ bool samplerEnvTest()
   se.setRegionSetting(0, 0, OC::adsrN_end,   100.f, -1);
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
   ok &= numAmps(se) == 2;
-  ok &= checkOutput(true); // Fails! output all zeros!
-  //ok &= checkSfzRecall();
-  // Actually, the additional adsrN envelope is supposed to open the first amp. This doesn't seem
-  // to work
-
-
+  ok &= checkOutput();
+  ok &= checkSfzRecall();  // fails!
 
 
   // ToDo:
