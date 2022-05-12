@@ -3110,7 +3110,7 @@ bool samplerEnvTest()
 
   // Helper to retrieve the state of se as sfz string, set up a fresh engine se2 from that string 
   // and check if it's in the same state and produces the same output:
-  auto checkSfzRecall = [&]()
+  auto checkSfzRecall = [&](bool plot = false)
   {
     std::string sfz = se.getAsSfz();
     SE se2;
@@ -3121,7 +3121,8 @@ bool samplerEnvTest()
     getSamplerNote(&se2, key, vel, outL, outR, nOff);
     ok &= rsIsCloseTo(outL, tgtL, tol);
     ok &= rsIsCloseTo(outR, tgtR, tol);
-    //rsPlotVectors(tgtL, tgtR, outL, outR);
+    if(plot)
+      rsPlotVectors(tgtL, tgtR, outL, outR);
     return ok;
   };
 
@@ -3232,8 +3233,12 @@ bool samplerEnvTest()
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
   ok &= numAmps(se) == 2;
   ok &= checkOutput();
-  ok &= checkSfzRecall();  // fails!
-
+  ok &= checkSfzRecall(true);  // fails! output is zero
+  // The sfz string is wrong! the adsr1_depth is on the same line, i.e. a line-break is missing. The last 
+  // two lines are:
+  // adsrN_end=100.000000
+  // ampeg1_amplitude2=100.000000adsr1_amplitude1=100.000000
+  // Writing the ampeg1 stuff into the sfz is also wrong!
 
   // ToDo:
   // -Set up an engine using the ampeg opcodes. Do and don't manually insert or connect an 
