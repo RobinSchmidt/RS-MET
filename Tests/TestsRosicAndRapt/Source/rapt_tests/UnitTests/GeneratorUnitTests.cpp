@@ -3234,11 +3234,6 @@ bool samplerEnvTest()
   ok &= numAmps(se) == 2;
   ok &= checkOutput();
   ok &= checkSfzRecall();
-  // The sfz string is wrong! the adsr1_depth is on the same line, i.e. a line-break is missing. The last 
-  // two lines are:
-  // adsrN_end=100.000000
-  // ampeg1_amplitude2=100.000000adsr1_amplitude1=100.000000
-  // Writing the ampeg1 stuff into the sfz is also wrong!
 
   // ToDo:
   // -Set up an engine using the ampeg opcodes. Do and don't manually insert or connect an 

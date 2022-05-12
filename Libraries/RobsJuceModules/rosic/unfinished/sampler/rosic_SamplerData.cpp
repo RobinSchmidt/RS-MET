@@ -295,6 +295,11 @@ bool SfzInstrument::HierarchyLevel::removeModulation(OpcodeType modSrcType, int 
 
 void SfzInstrument::HierarchyLevel::connectAmpEnv()
 {
+  // New:
+  int numAmpEnvs = (int)RAPT::rsCount(dspTypes, OpcodeType::AmpEnv);
+  if(numAmpEnvs > 0) {
+    RAPT::rsAssert(numAmpEnvs == 1, "Number of AmpEns should be zero or one");
+    setAmpEnvDepth(100.f); }
 
   int dummy = 0;
 }
