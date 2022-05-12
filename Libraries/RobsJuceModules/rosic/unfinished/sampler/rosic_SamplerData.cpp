@@ -930,6 +930,17 @@ void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::str
   MM  mode   = r.getMode();
 
   // Handle special cases:
+  if(srcTp == OT::AmpEnv && tgtOp == OC::amplitudeN && mode == MM::absolute)
+  {
+    //return;
+    // Uncommenting makes unit test fail. I think, we need to connect the ampeg at the end of 
+    // setFromSFZ or something like that
+
+    // The ampeg is always implicitly routed to the last Amplifier in the chain.
+    // Maybe an additional constraint should be that tgtIdx is the index of the last Amplifier such
+    // that routings of the ampeg_ to other amplifiers will be stored. Currently we may throw away
+    // too many ampeg routings
+  }
   if(srcTp == OT::FilterEnv && tgtOp == OC::cutoffN && mode == MM::cents)
   {
     RAPT::rsAssert(srcIdx == 1, "There should be at most one FilterEnv");
@@ -955,7 +966,7 @@ void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::str
   std::string tmp;
   tmp  = cb->modSourceToString(srcTp, srcIdx) + "_";
   tmp += cb->modTargetToString(tgtTp, tgtIdx, tgtOp) + "=";
-  tmp += cb->modDepthToString(r.getDepth(), mode, tgtOp);
+  tmp += cb->modDepthToString(r.getDepth(), mode, tgtOp) + "\n";
   s += tmp;
 }
 
