@@ -736,12 +736,25 @@ inline std::vector<T> operator-(const std::vector<T>& v, const T& x)
 template<class T>
 inline std::vector<T> operator+(const std::vector<T>& x, const std::vector<T>& y)
 {
+  if(x.size() < y.size()) { return y + x; }
+  rsAssert(x.size() >=  y.size()); // x is assumed to be the longer vector
+  std::vector<T> result(x.size());
+  size_t i = 0;
+  while(i < y.size()) { result[i] = x[i] + y[i]; ++i; }
+  while(i < x.size()) { result[i] = x[i];        ++i; }
+  return result;
+
+  /*
+  // Old:
+  // It zero-pads the result for all samples beyond the shorter one. Better would be to zero-pad
+  // the shorter input
   size_t Nmax = std::max(x.size(), y.size());
   size_t Nmin = std::min(x.size(), y.size());
   std::vector<T> result(Nmax);
   for(size_t i = 0; i < Nmin; i++)
     result[i] = x[i] + y[i];
   return result;
+  */
 }
 
 /** Subtracts two vectors element wise. */

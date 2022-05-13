@@ -3219,7 +3219,7 @@ bool samplerAmpEnvTest()
   // Now with an amp and a waveshaper:
   setupCommonSettings();
   ok &= numAmps(se) == 0;
-  se.setRegionSetting(0, 0, OC::amplitudeN,       0.f,  1);  // appends amp with 100% gain
+  se.setRegionSetting(0, 0, OC::amplitudeN,       0.f,  1);  // appends amp with 0% gain
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0, 0, OC::distortN_drive,   1.f,  1);
   ok &= numAmps(se) == 1;
@@ -3228,19 +3228,39 @@ bool samplerAmpEnvTest()
   // Calling checkOutput and checkSfzRecall would now fail because the first amp mutes the signal.
   // But now let's insert another envelope modulating the amplitude 1 up, i.e. opening the first
   // amp via the modulator while its nominal amplitude1 value still remains zero:
-  se.setRegionSetting(0, 0, OC::adsrN_start, 100.f, -1);
-  se.setRegionSetting(0, 0, OC::adsrN_end,   100.f, -1);
+  se.setRegionSetting(0, 0, OC::adsrN_start, 100.f, 1);  // last was -1 and it also worked - why?
+  se.setRegionSetting(0, 0, OC::adsrN_end,   100.f, 1);
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
   ok &= numAmps(se) == 2;
   ok &= checkOutput();
   ok &= checkSfzRecall();
 
+  // Now with an ampeg and an additional adsrN routed to the amp with a longer release than the 
+  // ampeg:
+  float release2 = 2.f*release;
+  int N2 = 2000;                    // Output is longer than usual
+  setupCommonSettings();
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0, 0, OC::amplitudeN,       0.f,  1);  // appends amp with 0% gain
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0, 0, OC::ampeg_depth,    100.f, -1);
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0, 0, OC::adsrN_release, release2 / fs,  1);
+  se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
+  ok &= numAmps(se) == 1;
+
+  // Create target signal and check output::
+  Vec tgt2 = rsGetSamplerADSR(0.f, 0.f, 100.f, release2/fs, fs, N2, nOff);
+  Vec tgt3 = tgt2 + tgtL;
+  Vec outL2(N2), outR2(N2);
+  getSamplerNote(&se, key, vel, outL2, outR2, nOff);
+  ok &= rsIsCloseTo(outL2, tgt3, tol);
+  //rsPlotVectors(tgt3, outL2);ts everything up by one during attack..sustain
+  // and turns the release into a two-stage release 
 
 
   // ToDo:
   // -Try to connect the amp-env additionally to other targets via opcodes like ampeg_cutoffN
-  // -Try to connect the final Amplifier to other envelopes - they should all add up and the 
-  //  longest should control the release
   // -Set up an engine using the ampeg opcodes. Do and don't manually insert or connect an 
   //  Amplifier by defining the amplitudeN opcode (test both variations).
   // -Try different configurations:
