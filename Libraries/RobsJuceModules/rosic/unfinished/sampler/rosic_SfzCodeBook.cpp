@@ -209,10 +209,9 @@ SfzCodeBook::SfzCodeBook()
 
   // Fixed modulators:
   dsp = OpcodeType::AmpLfo;
-  add(OC::amplfo_freq,  Flt, "amplfo_freq", 0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1);
-
+  add(OC::amplfo_freq,  Flt, "amplfo_freq",    0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1);
   //add(OC::amplfo_amp,   Flt, "amplfo_amp",  0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1);
-  //add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1);
+  add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1);
   // Or should the amplfo_depth be of type ModulationRouting, ModConnection? ..we'll see
 
 
@@ -229,6 +228,7 @@ SfzCodeBook::SfzCodeBook()
   add(OC::ampeg_release, Flt, "ampeg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::ampeg_end,     Flt, "ampeg_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
   add(OC::ampeg_depth,   Flt, "ampeg_depth",   0.f, 100.f, 100.f, dsp, OU::Percent, RsMet);
+  // not sure, if depth should be among the AmpEnv opcodes or among the routing opcodes
 
   dsp = OpcodeType::FilterEnv;
   add(OC::fileg_delay,   Flt, "fileg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
@@ -241,6 +241,7 @@ SfzCodeBook::SfzCodeBook()
   add(OC::fileg_release, Flt, "fileg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::fileg_end,     Flt, "fileg_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
   add(OC::fileg_depth,   Flt, "fileg_depth",   -12000.f, 12000.f,   0.f, dsp, OU::Cents,   Sfz1);
+  // not sure, if depth should be among the FilterEnv opcodes or among the routing opcodes
 
   // Routable modulators:
   dsp = OpcodeType::FreeEnv;
