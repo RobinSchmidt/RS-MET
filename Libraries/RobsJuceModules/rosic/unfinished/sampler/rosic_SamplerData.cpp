@@ -76,8 +76,7 @@ bool isEffect(OpcodeType ot)
 void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
 {
   // If the last effect DSP in the chain is not an Amplifier with amplitudeN==0, we need to insert 
-  // another Amplifier at the end. We need this complicated logic with the effects and amplifiers 
-  // because our dspTypes array stores also the modulators and they shouldn't count here.
+  // another Amplifier at the end.
 
   using OT = OpcodeType;
   using OC = Opcode;
@@ -359,20 +358,21 @@ bool SfzInstrument::HierarchyLevel::isLastEffectAmplifier() const
   int lastAmp = -1;        
   for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
     if(dspTypes[i] == OpcodeType::Amplifier) {
-      lastAmp = i;
-      break; }}
+      lastAmp = i; break; }}
 
-  // Figure out the index in the dspTypes array of the last effect that is not Amplifier:
+  // Figure out the index in the dspTypes array of the last effect that is not Amplifier. We need 
+  // the isEffect() test because our dspTypes array stores also the modulators and they shouldn't 
+  // count here:
   int lastNonAmpEff = -1; 
   for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
     if(isEffect(dspTypes[i]) && dspTypes[i] != OpcodeType::Amplifier) {
-      lastNonAmpEff = i;
-      break; }}
+      lastNonAmpEff = i; break; }}
 
+  // Return true, iff the last effect in the chain is an Amplifier. We use < rather than <= to 
+  // catch the case when lastAmp == lastNonAmpEff == -1 which happens when there are no effects in 
+  // the dspTypes array (it may be empty or there are only other kinds of devices such as 
+  // modulators):
   return lastNonAmpEff < lastAmp;
-  // We use < rather than <= to catch the case when lastAmp == lastNonAmpEff == -1 which happens 
-  // when there are no effects in the dspTypes array (it may be empty or there are only other kinds
-  // of devices such as modulators)
 }
 
 void SfzInstrument::Region::copyDataFrom(const Region* src)

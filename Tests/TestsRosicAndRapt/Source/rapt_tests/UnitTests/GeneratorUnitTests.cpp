@@ -3091,14 +3091,6 @@ bool samplerAmpLFOTest()
   ok &= numAmps(se) == 1;
   ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, false);
 
-  /*
-  Vec outL(N), outR(N);
-  getSamplerNote(&se, key, vel, outL, outR);
-  //rsPlotVectors(tgt, outL, outR);
-  ok &= rsIsCloseTo(outL, tgt, tol) && rsIsCloseTo(outR, tgt, tol);
-  // This works
-  */
-
   // We manually insert an amplifier unit and route the amplfo to its amplitude parameter via the
   // amplfo_depth parameter. Desired behavior: se should route the amplfo to the existing 
   // amplifier:
@@ -3110,38 +3102,22 @@ bool samplerAmpLFOTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true); 
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, false);
  
-
-  // We do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
+  // Now we do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
   // Desired behavior: se should auto-insert an amplifier:
   setupForLoopedDC(&se, nDC, keyDC, fs);
-  // ...
-
-
-
-
-
-  /*
   ok &= numAmps(se) == 0;
-  se.setRegionSetting(0,0, OC::amplfo_freq,  freq,  1);
+  se.setRegionSetting(0,0, OC::amplfo_freq, freq, 1);
   ok &= numAmps(se) == 0;
-
-  //se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);  // Create an amp in the chain.
-  //ok &= numAmps(se) == 1;  // not yet working
-
-
-  // Produce output:
-  Vec outL(N), outR(N);
-  getSamplerNote(&se, key, vel, outL, outR);
-  //ok &= rsIsCloseTo(outL, tgt, tol);
-  //ok &= rsIsCloseTo(outR, tgt, tol);
-  rsPlotVectors(tgt, outL, outR);
-   // not yet working - output is 1 (predictably)
-   */
+  se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);
+  ok &= numAmps(se) == 1;
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, false);
 
 
-
+  // ToDo:
+  // -Implement sfz load/save functionality for the amplfo_depth opcode.
+  // -Maybe set up an engine from an sfz-string that we create here
 
   rsAssert(ok);
   return ok;
