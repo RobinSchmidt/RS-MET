@@ -338,7 +338,7 @@ public:
 
   void clear();
 
-  void copyContent(const SamplePool& other);
+  void copyContent(const SamplePool<T>& other);
 
 
   // todo:

@@ -84,7 +84,16 @@ void SamplePool<T>::clear()
 }
 
 template<class T>
-void SamplePool<T>::copyContent(const SamplePool& other)
+void SamplePool<T>::copyContent(const SamplePool<T>& other)
 {
+  clear();
+  for(int i = 0; i < other.getNumSamples(); i++)
+  {
+
+    int dummy = 0;
+  }
+
+
+
   RAPT::rsError("Not yet implemented");
 }

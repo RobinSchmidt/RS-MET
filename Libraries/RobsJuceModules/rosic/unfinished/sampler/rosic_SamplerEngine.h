@@ -855,16 +855,18 @@ public:
   using rsSamplerEngine::rsSamplerEngine;  // inherit constructors
 
 
-  void copySamplePool(const rsSamplerEngine* se)
+  inline void copySamplePool(const rsSamplerEngine* se)
   {
-    samplePool.copyContent(*(se->getSamplePool()));
+    RAPT::rsError("Not yet implemented");
+
+    //samplePool.copyContent(*(se->getSamplePool())); // causes linker error
   }
 
 
 
   /** Returns true, iff this object is in the same state (with regard to content of the sample pool
   and instrument definition) as the given other engine */
-  bool isInSameStateAs(const rsSamplerEngineTest& other) const
+  inline bool isInSameStateAs(const rsSamplerEngineTest& other) const
   {
     return sfz == other.sfz; // && samplePool.hasSameContentAs(other.samplePool);
     // todo: compare also content of samplePool in both objects..the function may optionally allow
@@ -879,7 +881,7 @@ public:
   //static int getRegionPlayerSize() { return sizeof(RegionPlayer); }
 
 
-  void preAllocateDspMemory() override
+  inline void preAllocateDspMemory() override
   {
     rsSamplerEngine::preAllocateDspMemory() ;
   }
@@ -887,7 +889,7 @@ public:
   // it but in some unit tests, we call it manually so we un-protect it here by overriding it with
   // a public function that just calls the basclass method.
 
-  PlayStatusChange handleNoteOn(uchar key, uchar vel) override
+  inline PlayStatusChange handleNoteOn(uchar key, uchar vel) override
   {
     return rsSamplerEngine::handleNoteOn(key, vel);
     // The purpose of this override is to make it public. It's protected in the baseclass because
