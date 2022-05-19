@@ -3013,7 +3013,7 @@ bool samplerLfoTest()
 
   // Create target signal:
   int N = 1000;     // number of samples to produce
-  Vec tgt(1000);
+  Vec tgt(N);
   float w = (float) (2*PI*freq/sampleRate);
   for(int n = 0; n < N; n++)
     tgt[n] = sin(w*n);
@@ -3034,6 +3034,72 @@ bool samplerLfoTest()
   rsAssert(ok);
   return ok;
 }
+
+bool samplerAmpLFOTest()
+{
+  bool ok = true;
+
+  using namespace rosic::Sampler;
+  using Vec  = std::vector<float>;
+  using OT   = OpcodeType;
+  using Mode = ModMode;
+  using SE   = rsSamplerEngineTest;
+  using OC   = Opcode;
+
+  // LFO parameters:
+  float freq  = 20.f;  // in Hz
+  float depth = 10.f;  // in dB
+
+  // Test parameters:
+  int N     = 1500;         // Number of samples to produce
+  int key   =   70;         // Key to play
+  int vel   =   64;         // Velocity to play
+  int nDC   =  100;         // Number of DC samples in the loop
+  int keyDC =   60;         // Rootkey of the DC sample
+  float fs  = 10000.f;      // Sample rate
+  float tol = 1.e-6;        // Tolerance
+
+  // Produce the reference output:
+  Vec tgt(N);
+  float w = (float) (2*PI*freq/fs);
+  for(int n = 0; n < N; n++) {
+    float lfoOut = sin(w*n); // raw LFO output
+    tgt[n] = RAPT::rsDbToAmp(depth * lfoOut); }
+  //rsPlotVectors(tgt);
+
+  // Set up sampler engine:
+  SE se;
+  se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
+  setupForLoopedDC(&se, nDC, keyDC, fs);
+  se.setSampleRate(fs);
+
+  // Helper function to figure out the number of Amplifiers in the given engine (in region 0 of 
+  // group 0):
+  auto numAmps = [](const SE& se) {
+    return se.getRegion(0,0)->getNumProcessorsOfType(OT::Amplifier);  };
+    // Maybe turn into static function of a rsSamplerTester class
+
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0,0, OC::amplfo_freq,  freq,  1);
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);  // Create an amp in the chain.
+  ok &= numAmps(se) == 1;
+
+
+  // Produce output:
+  Vec outL(N), outR(N);
+  getSamplerNote(&se, key, vel, outL, outR);
+  ok &= rsIsCloseTo(outL, tgt, tol);
+  ok &= rsIsCloseTo(outR, tgt, tol);
+  rsPlotVectors(tgt, outL, outR);
+
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 
 bool samplerAmpEnvTest()
 {
@@ -3094,7 +3160,7 @@ bool samplerAmpEnvTest()
   auto numAmps = [](const SE& se) {
     return se.getRegion(0,0)->getNumProcessorsOfType(OT::Amplifier);  };
 
-  // Helper to let the sampler engien se produce the output signal and compare it against the 
+  // Helper to let the sampler engine se produce the output signal and compare it against the 
   // target signal:
   auto checkOutput = [&](bool plot = false)
   {
@@ -3107,6 +3173,9 @@ bool samplerAmpEnvTest()
       rsPlotVectors(tgtL, tgtR, outL, outR);
     return ok;
   };
+  // Maybe move out of this function, so we can use it also inside the LFO test function...Maybe 
+  // into a class rsSamplerTester that takes the target signals in the constructor and/or in 
+  // setters
 
   // Helper to retrieve the state of se as sfz string, set up a fresh engine se2 from that string 
   // and check if it's in the same state and produces the same output:
@@ -3125,6 +3194,7 @@ bool samplerAmpEnvTest()
       rsPlotVectors(tgtL, tgtR, outL, outR);
     return ok;
   };
+  // dito - see comment after checkOutput
 
   // Set up the envelope in the sampler engine:
   se.setRegionSetting(0,0, OC::adsrN_start,   start   * 100, 1);
@@ -3480,10 +3550,15 @@ bool samplerModulatorsTest()
 {
   bool ok = true;
 
-  ok &= samplerLfoTest();
+  ok &= samplerLfoTest();             // tests the core LFO
+
+  ok &= samplerAmpLFOTest();
+
   ok &= samplerAmpEnvTest();
   ok &= samplerFilterEnvTest();
   ok &= samplerPitchEnvTest();
+
+
 
   rsAssert(ok);
   return ok;
