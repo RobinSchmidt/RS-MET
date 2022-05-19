@@ -328,6 +328,10 @@ public:
     return findSampleIndexInPool(sample) != -1;
   }
 
+  const SamplePool<float>* getSamplePool() const { return &samplePool; }
+  // ToDo: check constness (is it the right type?)
+
+
   /** Returns the maximum number of layers that can play simultaneously. */
   int getMaxNumLayers() const { return (int)playerPool.size(); }
 
@@ -849,6 +853,14 @@ class rsSamplerEngineTest : public rsSamplerEngine
 public:
 
   using rsSamplerEngine::rsSamplerEngine;  // inherit constructors
+
+
+  void copySamplePool(const rsSamplerEngine* se)
+  {
+    samplePool.copyContent(*(se->getSamplePool()));
+  }
+
+
 
   /** Returns true, iff this object is in the same state (with regard to content of the sample pool
   and instrument definition) as the given other engine */

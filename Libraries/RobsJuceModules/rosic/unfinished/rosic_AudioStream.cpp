@@ -82,3 +82,9 @@ void SamplePool<T>::clear()
     delete samples[i];
   samples.clear();
 }
+
+template<class T>
+void SamplePool<T>::copyContent(const SamplePool& other)
+{
+  RAPT::rsError("Not yet implemented");
+}

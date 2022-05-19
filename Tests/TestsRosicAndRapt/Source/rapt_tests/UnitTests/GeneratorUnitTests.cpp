@@ -3036,7 +3036,7 @@ bool samplerLfoTest()
   return ok;
 }
 
-bool samplerAmpLFOTest()
+bool samplerAmpLfoTest()
 {
   bool ok = true;
 
@@ -3209,7 +3209,10 @@ bool samplerAmpEnvTest()
     std::string sfz = se.getAsSfz();
     SE se2;
     se2.setSampleRate(fs);
+
     setupForLoopedDC(&se2, nDC, keyDC, fs); // Needed because the sample is only in memory (no file)
+    //se2.copySamplePool(se); // do this instead!
+
     se2.setFromSFZ(sfz);
     bool ok = se2.isInSameStateAs(se);
 
@@ -3221,7 +3224,9 @@ bool samplerAmpEnvTest()
       rsPlotVectors(tgtL, tgtR, outL, outR);
     return ok;
   };
-  // dito - see comment after checkOutput
+  // dito - see comment after checkOutput. Maybe we need some sort of se2.copySamplePoolFrom(se)
+  // function which can be called instead of setupForLoopedDC. Or maybe it should be a free 
+  // function copySamplePool(se, se2)
 
   // Set up the envelope in the sampler engine:
   se.setRegionSetting(0,0, OC::adsrN_start,   start   * 100, 1);
@@ -3390,6 +3395,41 @@ bool samplerAmpEnvTest()
   return ok;
 }
 
+bool samplerFilterLfoTest()
+{
+  bool ok = true;
+
+  using namespace rosic::Sampler;
+  using Vec  = std::vector<float>;
+  using OT   = OpcodeType;
+  using Mode = ModMode;
+  using SE   = rsSamplerEngineTest;
+  using OC   = Opcode;
+
+  // LFO parameters:
+  float freq  =   20.f;     // in Hz
+  float depth = 1000.f;     // in cents
+
+  // Test parameters:
+  int N     = 1500;         // Number of samples to produce
+  int key   =   70;         // Key to play
+  int vel   =   64;         // Velocity to play
+  int keyDC =   60;         // Rootkey of the DC sample
+  float fs  = 10000.f;      // Sample rate
+  float tol = 1.e-5;        // Tolerance
+
+  // Create target signal:
+  float f = rsPitchToFreq((float)key);
+  Vec x(N);
+  createWaveform(&x[0], N, 1, f, fs, 0.f, false);
+  rsPlotVectors(x);
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool samplerFilterEnvTest()
 {
   // Tests applying an extended ADSR envelope to the filter's cutoff frequency. It tests also 
@@ -3492,8 +3532,8 @@ bool samplerFilterEnvTest()
   //rsPlotVectors(y, outL);
 
   // ToDo:
-  // -Rename egN opcodes to adsrN. The egN opcodes shall be reserved for MSEGs because that's how
-  //  sfz2 does it.
+  // -Do tests with 2 filters (maybe a highpass and a lowpass). The envelope should affect both 
+  //  filters.
   // -What happens, if we set up the depth in some other mode, i.e. not in cents? Check, if the 
   //  behavior is reasonable. Maybe the fileg_depth opcode should not support anything else except
   //  cents? If we want something else, we need to use the the egN opcodes?
@@ -3579,10 +3619,14 @@ bool samplerModulatorsTest()
 
   ok &= samplerLfoTest();             // tests the core LFO
 
-  ok &= samplerAmpLFOTest();
-
+  ok &= samplerAmpLfoTest();
   ok &= samplerAmpEnvTest();
+
+
+  ok &= samplerFilterLfoTest();
   ok &= samplerFilterEnvTest();
+
+
   ok &= samplerPitchEnvTest();
 
 

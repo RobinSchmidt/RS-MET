@@ -338,6 +338,9 @@ public:
 
   void clear();
 
+  void copyContent(const SamplePool& other);
+
+
   // todo:
   // setup: removeSample...but if regions refer to it, we need to update them, too by 
   // invalidating their pointers. We either need an observer mechanism (complex and general) or 
