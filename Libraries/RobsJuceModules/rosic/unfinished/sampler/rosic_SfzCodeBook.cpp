@@ -209,9 +209,14 @@ SfzCodeBook::SfzCodeBook()
 
   // Fixed modulators:
   dsp = OpcodeType::AmpLfo;
-  add(OC::amplfo_freq,  Flt, "amplfo_freq",    0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1);
-  add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1);
+  add(OC::amplfo_freq,  Flt, "amplfo_freq", 0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1);
+
+  //add(OC::amplfo_amp,   Flt, "amplfo_amp",  0.0f,  20.f, 0.f, dsp, OU::Hertz,    Sfz1);
+  //add(OC::amplfo_depth, Flt, "amplfo_depth", -10.0f, +10.f, 0.f, dsp, OU::Decibels, Sfz1);
   // Or should the amplfo_depth be of type ModulationRouting, ModConnection? ..we'll see
+
+
+
 
   dsp = OpcodeType::AmpEnv;
   add(OC::ampeg_delay,   Flt, "ampeg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
@@ -253,9 +258,11 @@ SfzCodeBook::SfzCodeBook()
 
   dsp = OpcodeType::FreeLfo;
   add(OC::lfoN_freq,  Flt, "lfoN_freq",    0.f,  20.f, 0.f, dsp, OU::Hertz,    Sfz2);
-  add(OC::lfoN_amp,   Flt, "lfoN_amp",    -1.f,  +1.f, 1.f, dsp, OU::RawFloat, RsMet);
+
+  //add(OC::lfoN_amp,   Flt, "lfoN_amp",    -1.f,  +1.f, 1.f, dsp, OU::RawFloat, RsMet);
   // ToDo: figure out what lfoN_amplitude in sfz2 is supposed to do - maybe it does what we want to
-  // do with amp here?
+  // do with amp here? Maybe we should use percent instead of RawFloat? I suppose, lfoN_amplitude 
+  // is just the routing of lfoN to the amplitude
 
   // ToDo: fillfo, amplfo
 

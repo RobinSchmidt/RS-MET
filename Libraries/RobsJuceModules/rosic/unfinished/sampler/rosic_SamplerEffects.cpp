@@ -71,7 +71,7 @@ LowFreqOsc::LowFreqOsc()
   type = OpcodeType::FreeLfo;
   params.reserve(3);                      // index
   addParameter(Opcode::lfoN_freq);        //   0
-  addParameter(Opcode::lfoN_amp);         //   1
+  //addParameter(Opcode::lfoN_amp);         //   1
   //addParameter(Opcode::lfoN_fade);
   //addParameter(Opcode::lfoN_delay);
   // ToDo: phase, wave, sync, ...
@@ -84,9 +84,24 @@ LowFreqOsc::LowFreqOsc()
 
 void LowFreqOsc::updateCoeffs(double fs)
 {
-  core.setup(params[0].mv(), params[1].mv(), 0.f, 0.f, 0.f, (float)fs);
+  //core.setup(params[0].mv(), params[1].mv(), 0.f, 0.f, 0.f, (float)fs);
+
+  core.setup(params[0].mv(), 1.f, 0.f, 0.f, 0.f, (float)fs);
   dirty = false;
 }
+
+LowFreqOscAmp::LowFreqOscAmp()
+{
+  type = OpcodeType::AmpLfo;
+  replaceOpcode(Opcode::lfoN_freq,   Opcode::amplfo_freq);
+
+  //replaceOpcode(Opcode::lfoN_amp,    Opcode::amplfo_amp);
+  // Maybe we should remove the opcode instead? It's redundant with amplfo_depth, i guess. But i 
+  // generally think, removing opcodes is no good idea. It would then be better to not create them
+  // in the first place, memory-wise...not a big deal, but anyway
+}
+
+
 
 //=================================================================================================
 
@@ -487,11 +502,15 @@ void DspResourcePool::repositEffect(Processor* p)
 
 void DspResourcePool::allocateModulators()
 {
-  freeEnvGens.init(64);
-  ampEnvGens.init(64);
-  filEnvGens.init(64);
+  int N = 64; // Preliminary. Maybe it should depend on the patch. But even if not, N=64 is too
+              // small in practice.
 
-  lowFreqOscs.init(64);
+  freeEnvGens.init(N);
+  ampEnvGens.init(N);
+  filEnvGens.init(N);
+
+  freeLowFreqOscs.init(N);
+  ampLowFreqOscs.init(N);
 }
 
 Processor* DspResourcePool::grabModulator(OpcodeType type)
@@ -505,8 +524,8 @@ Processor* DspResourcePool::grabModulator(OpcodeType type)
   case OT::FilterEnv: p = filEnvGens.grabItem();  break;
   //case OT::PitchEnv:  p = envGens.grabItem(); break;
 
-  case OT::FreeLfo:   p = lowFreqOscs.grabItem(); break;
-  //case OT::AmpLfo:    p = lowFreqOscs.grabItem(); break;
+  case OT::FreeLfo:   p = freeLowFreqOscs.grabItem(); break;
+  case OT::AmpLfo:    p = ampLowFreqOscs.grabItem();  break;
   //case OT::FilterLfo: p = lowFreqOscs.grabItem(); break;
   //case OT::PitchLfo:  p = lowFreqOscs.grabItem(); break;
   default: { RAPT::rsError("Unknown modulator type"); }
@@ -542,8 +561,8 @@ void DspResourcePool::repositModulator(Processor* p)
   case OT::FilterEnv: i = filEnvGens.repositItem(p);  break;
   //case OT::PitchEnv:  i = envGens.repositItem(p); break;
 
-  case OT::FreeLfo:   i = lowFreqOscs.repositItem(p);  break;
-  //case OT::AmpLfo:    i = lowFreqOscs.repositItem(p);  break;
+  case OT::FreeLfo:   i = freeLowFreqOscs.repositItem(p); break;
+  case OT::AmpLfo:    i = ampLowFreqOscs.repositItem(p);  break;
   //case OT::FilterLfo: i = lowFreqOscs.repositItem(p);  break;
   //case OT::PitchLfo:  i = lowFreqOscs.repositItem(p);  break;
   }

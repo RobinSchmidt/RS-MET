@@ -98,6 +98,11 @@ enum class Opcode
   AmpLfoDepthChanAft, AmpLfoDepthPolyAft, AmpLfoFreqCtrlN, AmpLfoFreqChanAft, AmpLfoFreqPolyAft,
   amplfo_freq, amplfo_depth,
 
+  //amplfo_amp, 
+  // For consistency with lfoN_amp opcode. It doesn't really serve a meaningful purpose because we
+  // already have amplfo_depth. It's redundant and not in the original sfz spec.
+
+
   // Equalízer:
   eqN_freq, eqN_freqccX, eqN_vel2freq, eqN_bw, eqN_bwccX, eqN_gain, eqN_gainccX, eqN_vel2gain,
 

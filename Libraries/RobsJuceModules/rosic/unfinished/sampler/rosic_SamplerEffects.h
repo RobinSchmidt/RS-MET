@@ -412,8 +412,16 @@ protected:
   LowFreqOscCore core;
 };
 
+class LowFreqOscAmp : public LowFreqOsc
+{
+public:
+  LowFreqOscAmp();
+};
+
+
+
 /** The general extended ADSR envelope generator controlled by the SFZ2 opocodes egN_attack, 
-egN_decay, etc.. */
+egN_decay, egN_sustain, egN_release, etc.. */
 class EnvGen : public Processor
 {
 public:
@@ -439,6 +447,9 @@ class EnvGenAmp : public EnvGen
 public:
   EnvGenAmp();
 };
+
+/** A specialization of the general extended ADSR EG for the amplitude controlled by the SFZ1
+opcodes fileg_attack, fileg_decay, etc.. */
 class EnvGenFil : public EnvGen
 {
 public:
@@ -599,9 +610,9 @@ protected:
   rsObjectPool<EnvGenAmp> ampEnvGens;
   rsObjectPool<EnvGenFil> filEnvGens;
 
+  rsObjectPool<LowFreqOsc>    freeLowFreqOscs;
+  rsObjectPool<LowFreqOscAmp> ampLowFreqOscs;
 
-
-  rsObjectPool<LowFreqOsc> lowFreqOscs;
 
   // Connectors:
   rsObjectPool<ModulationConnector> connectorPool;
