@@ -70,27 +70,22 @@ bool isEffect(OpcodeType ot)
 
 void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
 {
-  using OT = OpcodeType;
-  using OC = Opcode;
-
   // If the last effect DSP in the chain is not an Amplifier with amplitudeN==0, we need to insert 
   // another Amplifier at the end. We need this complicated logic with the effects and amplifiers 
-  // because our dspTypes array stores also the modulators and they shouldn't count here:
+  // because our dspTypes array stores also the modulators and they shouldn't count here.
 
-  bool lastEffIsNoAmp = !isLastEffectAmplifier();
+  using OT = OpcodeType;
+  using OC = Opcode;
 
   // Figure out the amplitudeN opcode/parameter of the last Amplifier in the chain, assume 1.f if 
   // there are no Amplifiers:
   int numAmps = (int)RAPT::rsCount(dspTypes, OT::Amplifier);
-  // wrap into a function: getNumEffects(OT::Amplifier) and use it in unit tests
-
   float lastAmpParam = 1.f;
   if(numAmps > 0)
     lastAmpParam = getSettingValue(OC::amplitudeN, numAmps);
 
   // Append another amplifier with amplitudeN=0 if necessary:
-  bool newAmpNeeded = lastEffIsNoAmp || lastAmpParam != 0.f;
-  //bool newAmpNeeded = lastNonAmpEff >= lastAmp || lastAmpParam != 0.f;
+  bool newAmpNeeded = !isLastEffectAmplifier() || lastAmpParam != 0.f;
   if(newAmpNeeded) {
     numAmps++; 
     setSetting(PlaybackSetting(OC::amplitudeN, 0.f, numAmps)); }
@@ -100,27 +95,24 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
   // opcode - *not* the index in the dspTypes array). This is the amplifier to which we route the
   // amp-env:
   setModulation(OT::AmpEnv, 1, OC::amplitudeN, numAmps, depthInPercent, ModMode::absolute);
-
-
-  // For the amplfo opcodes, the logic is similar except that we don't need the lastAmpParam == 0.f
-  // constraint, i.e. the 
-  //   newAmpNeeded = lastNonAmpEff >= lastAmp || lastAmpParam != 0.f;
-  // needs to be changed to just
-  //   newAmpNeeded = lastNonAmpEff >= lastAmp;
-  // maybe we can somehow refactor the code to avoid duplication
-
-  int dummy = 0;
 }
 // needs unit tests under various circumstances. The logic is quite complicated...
 
-
 void SfzInstrument::HierarchyLevel::setAmpLfoDepth(float depthInDecibels)
 {
+  // The logic to figure out whether or not we need to append an Amplifier is similar to 
+  // setAmpEnvDepth except that we don't need the lastAmpParam == 0.f constraint.
 
+  using OT = OpcodeType;
+  using OC = Opcode;
 
-  int dummy = 0;
+  int numAmps = (int)RAPT::rsCount(dspTypes, OT::Amplifier);
+  if(!isLastEffectAmplifier()) {
+    numAmps++; 
+    setSetting(PlaybackSetting(OC::volumeN, 0.f, numAmps)); }
+
+  setModulation(OT::AmpLfo, 1, OC::volumeN, numAmps, depthInDecibels, ModMode::absolute);
 }
-
 
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 {
