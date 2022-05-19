@@ -394,8 +394,6 @@ public:
     /** Returns the number of processors of a given specific type. */
     int getNumProcessorsOfType(OpcodeType type) const;
 
-
-
     /** Returns the generic pointer for custom satellite data or objects that are associated with
     this region. This pointer is intended to be used for some sort of audio stream object that is
     used for accessing the sample data. It has been made a generic void pointer to decouple
@@ -420,6 +418,9 @@ public:
 
   protected:
 
+    //---------------------------------------------------------------------------------------------
+    // \name Misc
+
     /** For an opcode of given type, this function makes sure, that a corresponding signal 
     processor type is present in our signalProcessors array. It checks, if the right kind of 
     processor is already there and adds it, if not. You can also pass a parameter to require than
@@ -428,6 +429,11 @@ public:
 
     /** Updates our dspTypes array from scratch from the settings array. */
     void updateDspsArray();
+
+    //---------------------------------------------------------------------------------------------
+    // \name Hardwired modulations. The depths of the hardwired modulation connections need some 
+    // special case handling. The affected opcodes are: fileg_depth, ampeg_depth, pitcheg_depth, 
+    // fillfo_depth, amplfo_depth, pitchlfo_depth
 
     /** Establishes modulation connections from the FilterEnv to the cutoff parameters of all Filter 
     modules. Called from setSetting as a special case handling. */
@@ -441,6 +447,12 @@ public:
     void setAmpEnvDepth(float depthInPercent);
 
 
+    void setAmpLfoDepth(float depthInDecibels);
+
+
+
+    //---------------------------------------------------------------------------------------------
+    // \name Data
 
 
     /** Sets the audio stream object that should be used for this region. */

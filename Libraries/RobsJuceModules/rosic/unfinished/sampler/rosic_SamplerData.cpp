@@ -77,6 +77,9 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
   // another Amplifier at the end. We need this complicated logic with the effects and amplifiers 
   // because our dspTypes array stores also the modulators and they shouldn't count here:
 
+
+
+
   // Figure out the index of the last Amplifier in the dspTypes array, -1 if none:
   int lastAmp = -1;        
   for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
@@ -91,21 +94,28 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
       lastNonAmpEff = i;
       break; }}
 
+  bool lastEffIsAmp = lastNonAmpEff >= lastAmp;
+  // We use >= rather than > to catch the case when lastAmp == lastNonAmpEff == -1 which happens 
+  // when there are no effects in the dspTypes array (it may be empty or there are only other kinds
+  // of devices such as modulators)
+
+  // factor out into lastEffectIsAmplifier
+
+
+
+
   // Figure out the amplitudeN opcode/parameter of the last Amplifier in the chain, assume 1.f if 
   // there are no Amplifiers:
   int numAmps = (int)RAPT::rsCount(dspTypes, OT::Amplifier);
   // wrap into a function: getNumEffects(OT::Amplifier) and use it in unit tests
 
-
   float lastAmpParam = 1.f;
   if(numAmps > 0)
     lastAmpParam = getSettingValue(OC::amplitudeN, numAmps);
 
-  // Append another amplifier with amplitudeN=0 if necessary. We use >= rather than > is needed to 
-  // catch the case when lastAmp == lastNonAmpEff == -1 which happens when there are no effects in 
-  // the dspTypes array (it may be empty or there are only other kinds of devices such as 
-  // modulators):
-  bool newAmpNeeded = lastNonAmpEff >= lastAmp || lastAmpParam != 0.f;
+  // Append another amplifier with amplitudeN=0 if necessary:
+  bool newAmpNeeded = lastEffIsAmp || lastAmpParam != 0.f;
+  //bool newAmpNeeded = lastNonAmpEff >= lastAmp || lastAmpParam != 0.f;
   if(newAmpNeeded) {
     numAmps++; 
     setSetting(PlaybackSetting(OC::amplitudeN, 0.f, numAmps)); }
@@ -127,6 +137,15 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
   int dummy = 0;
 }
 // needs unit tests under various circumstances. The logic is quite complicated...
+
+
+void SfzInstrument::HierarchyLevel::setAmpLfoDepth(float depthInDecibels)
+{
+
+
+  int dummy = 0;
+}
+
 
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
 {

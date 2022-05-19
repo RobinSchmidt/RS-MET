@@ -3113,7 +3113,9 @@ bool samplerAmpLFOTest()
   //ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true); // ...now this triggers
   // ToDo: check how we handle the fileg_depth opcode and handle the amplfo_depth opcode similarly
 
-
+  // We have a special SfzInstrument::HierarchyLevel::setFilterEnvDepth function. I think, all 
+  // hardwired _depth opcodes need some sort of special case handling. Thes are:
+  // fileg_depth, ampeg_depth, pitcheg_depth, fillfo_depth, amplfo_depth, pitchlfo_depth
 
 
   // We do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.

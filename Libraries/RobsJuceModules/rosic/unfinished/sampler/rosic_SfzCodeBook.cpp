@@ -260,10 +260,11 @@ SfzCodeBook::SfzCodeBook()
   dsp = OpcodeType::FreeLfo;
   add(OC::lfoN_freq,  Flt, "lfoN_freq",    0.f,  20.f, 0.f, dsp, OU::Hertz,    Sfz2);
 
-  //add(OC::lfoN_amp,   Flt, "lfoN_amp",    -1.f,  +1.f, 1.f, dsp, OU::RawFloat, RsMet);
+  add(OC::lfoN_amp,   Flt, "lfoN_amp",    -1.f,  +1.f, 1.f, dsp, OU::RawFloat, RsMet);
   // ToDo: figure out what lfoN_amplitude in sfz2 is supposed to do - maybe it does what we want to
   // do with amp here? Maybe we should use percent instead of RawFloat? I suppose, lfoN_amplitude 
-  // is just the routing of lfoN to the amplitude
+  // is just the routing of lfoN to the amplitude. Also, we may want to set it up in percent for
+  // consistency with the amplifier's amplitude parameter
 
   // ToDo: fillfo, amplfo
 
