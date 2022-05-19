@@ -263,10 +263,17 @@ bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
   return testSamplerOutput(se, targetL, targetR, tol, plot);
 };
-// maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
+// Maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
 // better when the caller does the reset directly, if desired - it's not much longer but clearer
 // factor out a getSamplerOutput(rosic::rsSamplerEngine* se, float key, float vel, 
 // const std::vector<float>& targetL, const std::vector<float>& targetR, bool plot) function
+//
+// Maybe make a function that also retrieves the sfz-string and sets up a fresh engine from that
+// string and checks the output of that engine, too. But the fresh engine must also somehow copy
+// the content of the samplePool of the passed se and we don not yet have functionality for that.
+// But if this is done, then this new, extended function can be called in all places where now 
+// testSamplerNote is called and all theses tests will then cover also the sfz-string roundtrip
+// which greatly extends the coverage of our tests.
 
 
 
