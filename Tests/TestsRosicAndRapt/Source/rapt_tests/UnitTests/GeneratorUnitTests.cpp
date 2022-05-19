@@ -3080,7 +3080,6 @@ bool samplerAmpLFOTest()
     return se.getRegion(0,0)->getNumProcessorsOfType(OT::Amplifier);  };
     // Maybe turn into static function of a rsSamplerTester class
 
-
   // We manually insert an amplifier unit by setting a volume opcode and route a free LFO to the
   // volume parameter:
   ok &= numAmps(se) == 0;
@@ -3089,20 +3088,16 @@ bool samplerAmpLFOTest()
   se.setRegionSetting(0,0, OC::lfoN_freq, freq, 1);
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, depth, Mode::absolute);
   ok &= numAmps(se) == 1;
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, false);
 
+
+  /*
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, vel, outL, outR);
-  rsPlotVectors(tgt, outL, outR);
+  //rsPlotVectors(tgt, outL, outR);
   ok &= rsIsCloseTo(outL, tgt, tol) && rsIsCloseTo(outR, tgt, tol);
   // This works
-
-  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true); 
-  // But this FAILS!! ..why?
-
-
-
-
-  // ...
+  */
 
 
   // We manually insert an amplifier unit and route the amplfo to its amplitude parameter via the
