@@ -77,32 +77,7 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
   // another Amplifier at the end. We need this complicated logic with the effects and amplifiers 
   // because our dspTypes array stores also the modulators and they shouldn't count here:
 
-
-
-
-  // Figure out the index of the last Amplifier in the dspTypes array, -1 if none:
-  int lastAmp = -1;        
-  for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
-    if(dspTypes[i] == OT::Amplifier) {
-      lastAmp = i;
-      break; }}
- 
-  // Figure out the index in the dspTypes array of the last effect that is not Amplifier:
-  int lastNonAmpEff = -1; 
-  for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
-    if(isEffect(dspTypes[i]) && dspTypes[i] != OT::Amplifier) {
-      lastNonAmpEff = i;
-      break; }}
-
-  bool lastEffIsAmp = lastNonAmpEff >= lastAmp;
-  // We use >= rather than > to catch the case when lastAmp == lastNonAmpEff == -1 which happens 
-  // when there are no effects in the dspTypes array (it may be empty or there are only other kinds
-  // of devices such as modulators)
-
-  // factor out into lastEffectIsAmplifier
-
-
-
+  bool lastEffIsNoAmp = !isLastEffectAmplifier();
 
   // Figure out the amplitudeN opcode/parameter of the last Amplifier in the chain, assume 1.f if 
   // there are no Amplifiers:
@@ -114,7 +89,7 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
     lastAmpParam = getSettingValue(OC::amplitudeN, numAmps);
 
   // Append another amplifier with amplitudeN=0 if necessary:
-  bool newAmpNeeded = lastEffIsAmp || lastAmpParam != 0.f;
+  bool newAmpNeeded = lastEffIsNoAmp || lastAmpParam != 0.f;
   //bool newAmpNeeded = lastNonAmpEff >= lastAmp || lastAmpParam != 0.f;
   if(newAmpNeeded) {
     numAmps++; 
@@ -385,6 +360,27 @@ int SfzInstrument::HierarchyLevel::getNumProcessorsOfType(OpcodeType type) const
   return count;
 }
 
+bool SfzInstrument::HierarchyLevel::isLastEffectAmplifier() const
+{
+  // Figure out the index of the last Amplifier in the dspTypes array, -1 if none:
+  int lastAmp = -1;        
+  for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
+    if(dspTypes[i] == OpcodeType::Amplifier) {
+      lastAmp = i;
+      break; }}
+
+  // Figure out the index in the dspTypes array of the last effect that is not Amplifier:
+  int lastNonAmpEff = -1; 
+  for(int i = (int)dspTypes.size()-1; i >= 0; --i) {
+    if(isEffect(dspTypes[i]) && dspTypes[i] != OpcodeType::Amplifier) {
+      lastNonAmpEff = i;
+      break; }}
+
+  return lastNonAmpEff < lastAmp;
+  // We use < rather than <= to catch the case when lastAmp == lastNonAmpEff == -1 which happens 
+  // when there are no effects in the dspTypes array (it may be empty or there are only other kinds
+  // of devices such as modulators)
+}
 
 void SfzInstrument::Region::copyDataFrom(const Region* src)
 {

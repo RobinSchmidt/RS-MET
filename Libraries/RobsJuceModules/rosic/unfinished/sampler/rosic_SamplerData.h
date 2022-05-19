@@ -394,6 +394,11 @@ public:
     /** Returns the number of processors of a given specific type. */
     int getNumProcessorsOfType(OpcodeType type) const;
 
+    /** Returns true, iff the last effect in the effect chain is an amplifier. For an empty chain,
+    it will return false. */
+    bool isLastEffectAmplifier() const;
+
+
     /** Returns the generic pointer for custom satellite data or objects that are associated with
     this region. This pointer is intended to be used for some sort of audio stream object that is
     used for accessing the sample data. It has been made a generic void pointer to decouple
