@@ -181,7 +181,8 @@ T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 
 //=================================================================================================
 // Helper functions specifically for the sampler (those above are more generally useful and do not 
-// necessarily need to have anything to do with the sampler):
+// necessarily need to have anything to do with the sampler). ToDo: Maybe wrap them into a class
+// rsSamplerTester
 
 /** Applies the sampler filter (class rosic::Sampler::FilterCore) with given parameters to the 
 given input signal x. You may optionally pass a modulation signal for the cutoff frequency. The
@@ -3079,6 +3080,37 @@ bool samplerAmpLFOTest()
     return se.getRegion(0,0)->getNumProcessorsOfType(OT::Amplifier);  };
     // Maybe turn into static function of a rsSamplerTester class
 
+
+  // We manually insert an amplifier unit by setting a volume opcode and route a free LFO to the
+  // volume parameter:
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0,0, OC::volumeN, 1.f, 1);  // Set nominal volume to 0 dB
+  ok &= numAmps(se) == 1;
+  se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, 10.f, Mode::absolute);
+  ok &= numAmps(se) == 1;
+
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true); // FAILS!!
+
+
+
+  // ...
+
+
+  // We manually insert an amplifier unit and route the amplfo to its amplitude parameter via the
+  // amplfo_depth parameter. Desired behavior: se should route the amplfo to the existing 
+  // amplifier:
+  setupForLoopedDC(&se, nDC, keyDC, fs);
+
+  // We do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
+  // Desired behavior: se should auto-insert an amplifier:
+  setupForLoopedDC(&se, nDC, keyDC, fs);
+  // ...
+
+
+
+
+
+  /*
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0,0, OC::amplfo_freq,  freq,  1);
   ok &= numAmps(se) == 0;
@@ -3093,7 +3125,8 @@ bool samplerAmpLFOTest()
   //ok &= rsIsCloseTo(outL, tgt, tol);
   //ok &= rsIsCloseTo(outR, tgt, tol);
   rsPlotVectors(tgt, outL, outR);
-   // not yet working - predictably - but output should be 1 but is 0
+   // not yet working - output is 1 (predictably)
+   */
 
 
 
@@ -3174,6 +3207,8 @@ bool samplerAmpEnvTest()
     if(plot)
       rsPlotVectors(tgtL, tgtR, outL, outR);
     return ok;
+
+    // maybe we can use testSamplerNote...the code here seems to duplicate the code there
   };
   // Maybe move out of this function, so we can use it also inside the LFO test function...Maybe 
   // into a class rsSamplerTester that takes the target signals in the constructor and/or in 
@@ -3189,6 +3224,8 @@ bool samplerAmpEnvTest()
     setupForLoopedDC(&se2, nDC, keyDC, fs); // Needed because the sample is only in memory (no file)
     se2.setFromSFZ(sfz);
     bool ok = se2.isInSameStateAs(se);
+
+    // Maybe this can be realized as call to checkOutput:
     getSamplerNote(&se2, key, vel, outL, outR, nOff);
     ok &= rsIsCloseTo(outL, tgtL, tol);
     ok &= rsIsCloseTo(outR, tgtR, tol);
