@@ -3086,10 +3086,10 @@ bool samplerAmpLFOTest()
   se.setRegionSetting(0,0, OC::volumeN, 0.f, 1);  // Set nominal volume to 0 dB
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::lfoN_freq, freq, 1);
+  ok &= numAmps(se) == 1;
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, depth, Mode::absolute);
   ok &= numAmps(se) == 1;
   ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, false);
-
 
   /*
   Vec outL(N), outR(N);
@@ -3099,11 +3099,21 @@ bool samplerAmpLFOTest()
   // This works
   */
 
-
   // We manually insert an amplifier unit and route the amplfo to its amplitude parameter via the
   // amplfo_depth parameter. Desired behavior: se should route the amplfo to the existing 
   // amplifier:
   setupForLoopedDC(&se, nDC, keyDC, fs);
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0,0, OC::volumeN, 0.f, 1);  // Set nominal volume to 0 dB
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0,0, OC::amplfo_freq, freq, 1);
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);  // triggers assert
+  ok &= numAmps(se) == 1;
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true);
+
+
+
 
   // We do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
   // Desired behavior: se should auto-insert an amplifier:
