@@ -338,7 +338,19 @@ public:
 
   void clear();
 
-  void copyContent(const SamplePool<T>& other);
+  /*
+  inline void copyContent(const SamplePool<T>& other)
+  {
+    clear();
+    for(int i = 0; i < other.getNumSamples(); i++)
+    {
+      AudioFileStream<T>* newStream;
+      newStream->copyContent(other.getSampleStream(i)); // not yet implemented
+      samples.push_back(newStream);
+    }
+  }
+  */
+  // ToDo: move into cpp file...but i got linker errors when doing so
 
 
   // todo:

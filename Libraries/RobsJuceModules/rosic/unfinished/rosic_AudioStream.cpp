@@ -83,6 +83,7 @@ void SamplePool<T>::clear()
   samples.clear();
 }
 
+/*
 template<class T>
 void SamplePool<T>::copyContent(const SamplePool<T>& other)
 {
@@ -97,3 +98,4 @@ void SamplePool<T>::copyContent(const SamplePool<T>& other)
 
   RAPT::rsError("Not yet implemented");
 }
+*/

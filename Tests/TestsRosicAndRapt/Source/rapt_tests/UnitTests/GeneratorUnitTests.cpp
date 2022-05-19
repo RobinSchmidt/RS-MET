@@ -3407,22 +3407,42 @@ bool samplerFilterLfoTest()
   using OC   = Opcode;
 
   // LFO parameters:
-  float freq  =   20.f;     // in Hz
-  float depth = 1000.f;     // in cents
+  float freq   =   50.f;   // in Hz
+  float depth  = 1000.f;   // in cents
+  float cutoff = 1000.f;   // Filter cutoff freq (nominal, before modulation)
+  float reso   =   20.f;   // Filter resonance in dB
 
   // Test parameters:
   int N     = 1500;         // Number of samples to produce
-  int key   =   70;         // Key to play
+  int key   =   57;         // Key to play
   int vel   =   64;         // Velocity to play
   int keyDC =   60;         // Rootkey of the DC sample
-  float fs  = 10000.f;      // Sample rate
-  float tol = 1.e-5;        // Tolerance
+  float fs  = 40000.f;      // Sample rate
+  float tol = 1.e-4;        // Tolerance
 
   // Create target signal:
   float f = rsPitchToFreq((float)key);
   Vec x(N);
   createWaveform(&x[0], N, 1, f, fs, 0.f, false);
-  rsPlotVectors(x);
+  //rsPlotVectors(x);
+  Vec lfo(N);
+  for(int n = 0; n < N; n++)
+    lfo[n] = sin(n * 2*PI*freq/fs);
+  Vec y = rsApplySamplerFilter(x, FilterType::lp_12, cutoff, fs, reso, depth*lfo);
+  //rsPlotVectors(y);
+
+  // Create and set up engine:
+  SE se;
+  se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
+  addSingleSampleRegion(&se, x, key, fs);
+  se.setSampleRate(fs);
+  se.setRegionSetting(0,0, OC::resonanceN, reso,   1); 
+  se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
+  se.setRegionSetting(0,0, OC::lfoN_freq,  freq,   1);
+  se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 1, depth, Mode::cents);
+  ok &= testSamplerNote(&se, key, vel, y, y, tol, false);
+
+
 
 
 
@@ -3466,7 +3486,7 @@ bool samplerFilterEnvTest()
   //rsPlotVectors(x);
   Vec adsr = rsGetSamplerADSR(att, dec, sus, rel, fs, N, nOff);
   //rsPlotVectors(adsr);
-  Vec y = rsApplySamplerFilter(x, rosic::Sampler::FilterType::lp_12, cutoff, fs, reso, depth*adsr);
+  Vec y = rsApplySamplerFilter(x, FilterType::lp_12, cutoff, fs, reso, depth*adsr);
   //rsPlotVectors(y);
 
   // Create and set up engine:
@@ -3487,6 +3507,7 @@ bool samplerFilterEnvTest()
   ok &= rsIsCloseTo(outL, y, tol);  // OK - manually routing an egN to cutoff seems to work. 
   //Vec err = outL - y;
   //rsPlotVectors(y, outL, outR);
+  // use testSamplerNote
 
   // Retrieve the state as sfz string, set up a fresh engine from that string and check if it's in
   // the same state and produces the same output:

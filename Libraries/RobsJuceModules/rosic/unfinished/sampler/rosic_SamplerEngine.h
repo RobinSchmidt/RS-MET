@@ -855,12 +855,14 @@ public:
   using rsSamplerEngine::rsSamplerEngine;  // inherit constructors
 
 
+  /*
   inline void copySamplePool(const rsSamplerEngine* se)
   {
-    RAPT::rsError("Not yet implemented");
+    //RAPT::rsError("Not yet implemented");
 
-    //samplePool.copyContent(*(se->getSamplePool())); // causes linker error
+    samplePool.copyContent(*(se->getSamplePool())); // causes linker error
   }
+  */
 
 
 
