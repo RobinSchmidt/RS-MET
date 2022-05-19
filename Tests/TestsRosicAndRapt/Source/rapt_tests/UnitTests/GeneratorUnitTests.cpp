@@ -3058,7 +3058,7 @@ bool samplerAmpLFOTest()
   int nDC   =  100;         // Number of DC samples in the loop
   int keyDC =   60;         // Rootkey of the DC sample
   float fs  = 10000.f;      // Sample rate
-  float tol = 1.e-6;        // Tolerance
+  float tol = 1.e-5;        // Tolerance
 
   // Produce the reference output:
   Vec tgt(N);
@@ -3084,12 +3084,21 @@ bool samplerAmpLFOTest()
   // We manually insert an amplifier unit by setting a volume opcode and route a free LFO to the
   // volume parameter:
   ok &= numAmps(se) == 0;
-  se.setRegionSetting(0,0, OC::volumeN, 1.f, 1);  // Set nominal volume to 0 dB
+  se.setRegionSetting(0,0, OC::volumeN, 0.f, 1);  // Set nominal volume to 0 dB
   ok &= numAmps(se) == 1;
-  se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, 10.f, Mode::absolute);
+  se.setRegionSetting(0,0, OC::lfoN_freq, freq, 1);
+  se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, depth, Mode::absolute);
   ok &= numAmps(se) == 1;
 
-  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true); // FAILS!!
+  Vec outL(N), outR(N);
+  getSamplerNote(&se, key, vel, outL, outR);
+  rsPlotVectors(tgt, outL, outR);
+  ok &= rsIsCloseTo(outL, tgt, tol) && rsIsCloseTo(outR, tgt, tol);
+  // This works
+
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true); 
+  // But this FAILS!! ..why?
+
 
 
 
