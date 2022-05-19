@@ -65,6 +65,8 @@ enum class Opcode
   // Filter LFO:
   FilLfoDelay, FilLfoFade, FilLfoFreq, FilLfoDepth, FilLfoDepthCtrlN, 
   FilLfoDepthChanAft, FilLfoDepthPolyAft, FilLfoFreqCtrlN, FilLfoFreqChanAft, FilLfoFreqPolyAft,
+  fillfo_freq, fillfo_depth,
+
 
   // Amplifier:
   /*Volume, Pan, Width, Position, */  // replaced by volumeN, etc.

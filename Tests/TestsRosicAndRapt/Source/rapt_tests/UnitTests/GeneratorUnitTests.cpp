@@ -3108,15 +3108,10 @@ bool samplerAmpLFOTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::amplfo_freq, freq, 1);
   ok &= numAmps(se) == 1;
-  se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);  // triggers assert...fixed
+  se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);
   ok &= numAmps(se) == 1;
-  //ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true); // ...now this triggers
-  // ToDo: check how we handle the fileg_depth opcode and handle the amplfo_depth opcode similarly
-
-  // We have a special SfzInstrument::HierarchyLevel::setFilterEnvDepth function. I think, all 
-  // hardwired _depth opcodes need some sort of special case handling. Thes are:
-  // fileg_depth, ampeg_depth, pitcheg_depth, fillfo_depth, amplfo_depth, pitchlfo_depth
-
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, true); 
+ 
 
   // We do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
   // Desired behavior: se should auto-insert an amplifier:

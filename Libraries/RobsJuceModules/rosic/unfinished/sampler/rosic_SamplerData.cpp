@@ -60,6 +60,11 @@ void SfzInstrument::HierarchyLevel::setFilterEnvDepth(float depthInCents)
     setModulation(OT::FilterEnv, 1, Opcode::cutoffN, i+1, depthInCents, ModMode::cents);
 }
 
+void SfzInstrument::HierarchyLevel::setFilterLfoDepth(float depthInCents)
+{
+  RAPT::rsError("Not yet implemented");
+}
+
 bool isEffect(OpcodeType ot)
 {
   using OT = OpcodeType;
@@ -87,8 +92,7 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
   // Append another amplifier with amplitudeN=0 if necessary:
   bool newAmpNeeded = !isLastEffectAmplifier() || lastAmpParam != 0.f;
   if(newAmpNeeded) {
-    numAmps++; 
-    setSetting(PlaybackSetting(OC::amplitudeN, 0.f, numAmps)); }
+    numAmps++; setSetting(PlaybackSetting(OC::amplitudeN, 0.f, numAmps)); }
 
   // OK, now we have ensured that the last effect in the chain is indeed an Amplifier with a 
   // setting of amplitudeN=0 and its index all other Amplifiers (i.e. the N in the amplitudeN 
@@ -98,20 +102,15 @@ void SfzInstrument::HierarchyLevel::setAmpEnvDepth(float depthInPercent)
 }
 // needs unit tests under various circumstances. The logic is quite complicated...
 
-void SfzInstrument::HierarchyLevel::setAmpLfoDepth(float depthInDecibels)
+void SfzInstrument::HierarchyLevel::setAmpLfoDepth(float depth)
 {
   // The logic to figure out whether or not we need to append an Amplifier is similar to 
   // setAmpEnvDepth except that we don't need the lastAmpParam == 0.f constraint.
 
-  using OT = OpcodeType;
-  using OC = Opcode;
-
-  int numAmps = (int)RAPT::rsCount(dspTypes, OT::Amplifier);
+  int numAmps = (int)RAPT::rsCount(dspTypes, OpcodeType::Amplifier);
   if(!isLastEffectAmplifier()) {
-    numAmps++; 
-    setSetting(PlaybackSetting(OC::volumeN, 0.f, numAmps)); }
-
-  setModulation(OT::AmpLfo, 1, OC::volumeN, numAmps, depthInDecibels, ModMode::absolute);
+    numAmps++; setSetting(PlaybackSetting(Opcode::volumeN, 0.f, numAmps)); }
+  setModulation(OpcodeType::AmpLfo, 1, Opcode::volumeN, numAmps, depth, ModMode::absolute);
 }
 
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
@@ -138,9 +137,11 @@ void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
   }
 
   // Some modulation routing opcodes need to be also handled as special cases:
-  if(op == OC::fileg_depth) { setFilterEnvDepth(s.getValue()); return; }
-  if(op == OC::ampeg_depth) { setAmpEnvDepth(   s.getValue()); return; }
-  // ToDo: pitcheg_depth, fillfo_depth, pitchlfo_depth, amplfo_depth
+  if(op == OC::fileg_depth)  { setFilterEnvDepth(s.getValue()); return; }
+  if(op == OC::fillfo_depth) { setFilterLfoDepth(s.getValue()); return; }
+  if(op == OC::ampeg_depth)  { setAmpEnvDepth(   s.getValue()); return; }
+  if(op == OC::amplfo_depth) { setAmpLfoDepth(   s.getValue()); return; }
+  // ToDo: pitcheg_depth, pitchlfo_depth
 
   // All other settings are handled by either overwriting the last setting of that type in our 
   // array, if present or by appending the setting, if not present:
