@@ -268,6 +268,8 @@ bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
 // factor out a getSamplerOutput(rosic::rsSamplerEngine* se, float key, float vel, 
 // const std::vector<float>& targetL, const std::vector<float>& targetR, bool plot) function
 //
+// Maybe rename to testSamplerNote1 to let compiler help and replacing the calls with calls to 
+// the newer function belwo with extended test coverage.
 
 // Like testSamplerNote but also retrieves the sfz-string and sets up a fresh engine from that
 // string and checks the output of that engine, too. This extended testing function should be used
@@ -3427,7 +3429,8 @@ bool samplerFilterLfoTest()
   se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
   se.setRegionSetting(0,0, OC::lfoN_freq,  freq,   1);
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 1, depth, Mode::cents);
-  ok &= testSamplerNote(&se, key, vel, y, y, tol, false);
+  //ok &= testSamplerNote( &se, key, vel, y, y, tol);
+  ok &= testSamplerNote2(&se, key, vel, y, y, tol);
 
 
 
