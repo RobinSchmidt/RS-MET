@@ -3448,6 +3448,16 @@ bool samplerFilterLfoTest()
     se.setRegionSetting(0,0, OC::cutoffN,    lpCutoff, 1);
   };
 
+  auto setupCommonSettingsBp = [&]()
+  {  
+    setupCommonSettingsLp();
+    se.setRegionSetting(0,0, OC::resonanceN, reso,                     2);
+    se.setRegionSetting(0,0, OC::cutoffN,    hpCutoff,                 2);
+    se.setRegionSetting(0,0, OC::filN_type,  (float)FilterType::hp_12, 2);
+  };
+
+
+
   // Test using a manually routed free LFO and only the lowpass:
   setupCommonSettingsLp();
   se.setRegionSetting(0,0, OC::lfoN_freq,  freq,   1);
@@ -3460,12 +3470,31 @@ bool samplerFilterLfoTest()
   se.setRegionSetting(0,0, OC::fillfo_depth, depth, -1);
   ok &= testSamplerNote2(&se, key, vel, yLp, yLp, tol);
 
+  // Test with a second filter which is a highpass. The output should be a bandpassed signal. In the
+  // first test, we use a free LFO that we need to explicitly route to both cutoffs:
+  setupCommonSettingsBp();
+  se.setRegionSetting(0,0, OC::lfoN_freq,  freq,   1);
+  se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 1, depth, Mode::cents);
+  se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 2, depth, Mode::cents);
+  ok &= testSamplerNote2(&se, key, vel, yBp, yBp, tol, -1, true, true);
 
-
-  // Test with a second filter which is a highpass. The output should be a bandpassed signal where
+  
+  
+  // where
   // The LFO modulates both cutoffs
 
 
+
+
+
+
+
+
+
+  // Actually, the signals might not be quite the same because in the target signal, the highpass
+  // will also affect the sidebands that the FM of the first filter cutoff creates. They should be
+  // approximately equal for low modulation frequencies, though...but out actual modualtion freq is
+  // actually in the audible range
 
 
 
