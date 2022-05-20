@@ -3928,14 +3928,14 @@ bool samplerFreeModulationsTest()
     // region, group, instrument are supposed to add up:
     //                    Mod Amplitude      Mod Depth              Test Control  Test Index
     //                    ins  grp  reg    ins  grp  reg     exp  
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,    _ ,  _ ,  _ ,    0.0,   tol, false);  // 000
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,    _ ,  _ , 0.4,    0.4,   tol, false);  // 001
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,    _ , 0.2,  _ ,    0.2,   tol, false);  // 010
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,    _ , 0.2, 0.4,    0.6,   tol, false);  // 011
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,   0.1,  _ ,  _ ,    0.1,   tol, false);  // 100
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,   0.1,  _ , 0.4,    0.5,   tol, false);  // 101
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,   0.1, 0.2,  _ ,    0.3,   tol, false);  // 110
-    ok &= testMod2(se, f, 1.0, 1.0, 1.0,   0.1, 0.2, 0.4,    0.7,   tol, false);  // 111
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,  _ ,  _ ,    0.0,   tol, false);  // 000
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,  _ , 0.4,    0.4,   tol, false);  // 001
+    ok &= testMod2(se, f, 100, 100, 100,    _ , 0.2,  _ ,    0.2,   tol, false);  // 010
+    ok &= testMod2(se, f, 100, 100, 100,    _ , 0.2, 0.4,    0.6,   tol, false);  // 011
+    ok &= testMod2(se, f, 100, 100, 100,   0.1,  _ ,  _ ,    0.1,   tol, false);  // 100
+    ok &= testMod2(se, f, 100, 100, 100,   0.1,  _ , 0.4,    0.5,   tol, false);  // 101
+    ok &= testMod2(se, f, 100, 100, 100,   0.1, 0.2,  _ ,    0.3,   tol, false);  // 110
+    ok &= testMod2(se, f, 100, 100, 100,   0.1, 0.2, 0.4,    0.7,   tol, false);  // 111
 
     // It should also work if we pass _ instead of 1.0 for the amplitudes because 1.0 is the 
     // default amplitude:
@@ -3971,13 +3971,13 @@ bool samplerFreeModulationsTest()
     //                    Mod Amplitude       Mod Depth            Test Control  Test Index
     //                    ins  grp  reg     ins  grp  reg    exp  
     ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1, 0.2, 0.4,   0.7,  tol, false);  // 000
-    ok &= testMod2(se, f,  _ ,  _ , 3.0,    0.1, 0.2, 0.4,   1.5,  tol, false);  // 001
-    ok &= testMod2(se, f,  _ , 2.0,  _ ,    0.1, 0.2, 0.4,   0.9,  tol, false);  // 010
-    ok &= testMod2(se, f,  _ , 2.0, 3.0,    0.1, 0.2, 0.4,   1.7,  tol, false);  // 011
-    ok &= testMod2(se, f, 5.0,  _ ,  _ ,    0.1, 0.2, 0.4,   1.1,  tol, false);  // 100
-    ok &= testMod2(se, f, 5.0,  _ , 3.0,    0.1, 0.2, 0.4,   1.9,  tol, false);  // 101
-    ok &= testMod2(se, f, 5.0, 2.0,  _ ,    0.1, 0.2, 0.4,   1.3,  tol, false);  // 110
-    ok &= testMod2(se, f, 5.0, 2.0, 3.0,    0.1, 0.2, 0.4,   2.1,  tol, false);  // 111
+    ok &= testMod2(se, f,  _ ,  _ , 300,    0.1, 0.2, 0.4,   1.5,  tol, false);  // 001
+    ok &= testMod2(se, f,  _ , 200,  _ ,    0.1, 0.2, 0.4,   0.9,  tol, false);  // 010
+    ok &= testMod2(se, f,  _ , 200, 300,    0.1, 0.2, 0.4,   1.7,  tol, false);  // 011
+    ok &= testMod2(se, f, 500,  _ ,  _ ,    0.1, 0.2, 0.4,   1.1,  tol, false);  // 100
+    ok &= testMod2(se, f, 500,  _ , 300,    0.1, 0.2, 0.4,   1.9,  tol, false);  // 101
+    ok &= testMod2(se, f, 500, 200,  _ ,    0.1, 0.2, 0.4,   1.3,  tol, false);  // 110
+    ok &= testMod2(se, f, 500, 200, 300,    0.1, 0.2, 0.4,   2.1,  tol, false);  // 111
 
     return ok;
   };

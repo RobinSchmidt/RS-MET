@@ -91,7 +91,8 @@ LowFreqOsc::LowFreqOsc()
 
 void LowFreqOsc::updateCoeffs(double fs)
 {
-  core.setup(params[0].mv(), params[1].mv(), 0.f, 0.f, 0.f, (float)fs);
+  float k = 0.01f;     // scales percents to raw factors
+  core.setup(params[0].mv(), k*params[1].mv(), 0.f, 0.f, 0.f, (float)fs);
   //core.setup(params[0].mv(), 1.f, 0.f, 0.f, 0.f, (float)fs);
 
   dirty = false;
