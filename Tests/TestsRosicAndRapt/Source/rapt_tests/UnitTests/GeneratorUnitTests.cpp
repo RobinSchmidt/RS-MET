@@ -3406,8 +3406,8 @@ bool samplerFilterLfoTest()
   using OC   = Opcode;
 
   // LFO parameters:
-  float freq     =   50.f;   // in Hz
-  float depth    = 1000.f;   // in cents
+  float freq     =   50.f;   // LFO-freq in Hz
+  float depth    = 1000.f;   // LFO-depth in cents
   float lpCutoff = 1000.f;   // Lowpass cutoff freq (nominal, before modulation)
   float hpCutoff =  200.f;   // Highpass cutoff 
   float reso     =   20.f;   // Filter resonance in dB for both filters
@@ -3419,6 +3419,10 @@ bool samplerFilterLfoTest()
   int keyDC =   60;         // Rootkey of the DC sample
   float fs  = 40000.f;      // Sample rate
   float tol = 1.e-4;        // Tolerance
+
+  //// Test:
+  //reso = 0;
+  //freq = 1.f;
 
   // Create target signals:
   float f = rsPitchToFreq((float)key);
@@ -3477,6 +3481,14 @@ bool samplerFilterLfoTest()
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 1, depth, Mode::cents);
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 2, depth, Mode::cents);
   //ok &= testSamplerNote2(&se, key, vel, yBp, yBp, tol, -1, true, true); // fails!
+
+  Vec outL(N), outR(N);
+  getSamplerNote(&se, key, vel, outL, outR);
+  rsPlotVectors(x, yBp, outL);
+  // They look very different, even if we use a very slow LFO freq and zero resonance...but they do 
+  // look the same when we reduce the LFO freq to zero. In this case, we can even give resonance.
+  // Maybe try to create a target signal using two filters simultaneously.
+  // maybe a function rsApplySamplerFilters()
 
   
   

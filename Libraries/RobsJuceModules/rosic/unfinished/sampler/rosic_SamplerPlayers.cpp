@@ -802,20 +802,9 @@ EnvGen* RegionPlayer::determineReleaseEnvelope()
   float   maxRel = 0.f;      // Maximum relevant release time seen so far
   EnvGen* relEnv = nullptr;  // Pointer to EG to which this maxRel time applies
   for(size_t i = 0; i < modMatrix.size(); i++) {
-
     ModulationConnector* con = modMatrix[i];
-
-    // Old version:
-    //EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
-    // This is wrong! Tne index i is only an index into modMatrix but in general,we cannot just 
-    // use the same index into the modSources. Instead, we need something like
-    // con->getSource();
-
-    // New version:
-    Processor* src = con->getSourceProcessor();
-    EnvGen*    eg  = dynamic_cast<EnvGen*>(src);
-
-
+    Processor*           src = con->getSourceProcessor();
+    EnvGen*              eg  = dynamic_cast<EnvGen*>(src);
     if(eg != nullptr && eg->getEnd() == 0.f) {
       const Parameter* tgtPar = con->getTargetParam();
       if(tgtPar->getOpcode() == Opcode::amplitudeN && tgtPar->getValue() == 0.f) {
