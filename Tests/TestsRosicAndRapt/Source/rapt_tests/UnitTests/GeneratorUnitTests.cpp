@@ -3219,51 +3219,6 @@ bool samplerAmpEnvTest()
   auto numAmps = [](const SE& se) {
     return se.getRegion(0,0)->getNumProcessorsOfType(OT::Amplifier);  };
 
-  // Helper to let the sampler engine se produce the output signal and compare it against the 
-  // target signal:
-  auto checkOutput = [&](bool plot = false)
-  {
-    Vec outL(N), outR(N);
-    getSamplerNote(&se, key, vel, outL, outR, nOff);
-    bool ok = true;
-    ok &= rsIsCloseTo(outL, tgtL, tol);
-    ok &= rsIsCloseTo(outR, tgtR, tol);
-    if(plot)
-      rsPlotVectors(tgtL, tgtR, outL, outR);
-    return ok;
-
-    // maybe we can use testSamplerNote...the code here seems to duplicate the code there
-  };
-  // Maybe move out of this function, so we can use it also inside the LFO test function...Maybe 
-  // into a class rsSamplerTester that takes the target signals in the constructor and/or in 
-  // setters
-
-  // Helper to retrieve the state of se as sfz string, set up a fresh engine se2 from that string 
-  // and check if it's in the same state and produces the same output:
-  auto checkSfzRecall = [&](bool plot = false)
-  {
-    std::string sfz = se.getAsSfz();
-    SE se2;
-    se2.setSampleRate(fs);
-
-    //setupForLoopedDC(&se2, nDC, keyDC, fs); // old
-    se2.copySamplePool(&se); // new
-
-    se2.setFromSFZ(sfz);
-    bool ok = se2.isInSameStateAs(se);
-
-    // Maybe this can be realized as call to checkOutput:
-    getSamplerNote(&se2, key, vel, outL, outR, nOff);
-    ok &= rsIsCloseTo(outL, tgtL, tol);
-    ok &= rsIsCloseTo(outR, tgtR, tol);
-    if(plot)
-      rsPlotVectors(tgtL, tgtR, outL, outR);
-    return ok;
-  };
-  // dito - see comment after checkOutput. Maybe we need some sort of se2.copySamplePoolFrom(se)
-  // function which can be called instead of setupForLoopedDC. Or maybe it should be a free 
-  // function copySamplePool(se, se2)
-
   // Set up the envelope in the sampler engine:
   se.setRegionSetting(0,0, OC::adsrN_start,   start   * 100, 1);
   se.setRegionSetting(0,0, OC::adsrN_delay,   delay   / fs,  1);
@@ -3314,8 +3269,6 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // does nothing (amp already there)
   ok &= numAmps(se) == 1;
-  //ok &= checkOutput();
-  //ok &= checkSfzRecall();
   ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with one amp in the chain which has a nonzero amplitude parameter:
@@ -3327,8 +3280,6 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 2;                                // ..of 1st amp is nonzero
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 3rd amp neeeded
   ok &= numAmps(se) == 2;
-  //ok &= checkOutput();
-  //ok &= checkSfzRecall();
   ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with one amp in the chain which has a zero amplitude parameter:
@@ -3340,8 +3291,6 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 1;                                // ..of 1st amp is zero
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 2nd amp neeeded
   ok &= numAmps(se) == 1;
-  //ok &= checkOutput();
-  //ok &= checkSfzRecall();
   ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with two amps in the chain with nonzero gain:
@@ -3355,8 +3304,6 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 3;                                // ..of 2nd amp is nonzero
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 4th amp neeeded
   ok &= numAmps(se) == 3;
-  //ok &= checkOutput();
-  //ok &= checkSfzRecall();
   ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with an amp and a waveshaper:
@@ -3375,8 +3322,6 @@ bool samplerAmpEnvTest()
   se.setRegionSetting(0, 0, OC::adsrN_end,   100.f, 1);
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
   ok &= numAmps(se) == 2;
-  //ok &= checkOutput();
-  //ok &= checkSfzRecall();
   ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with an ampeg and an additional adsrN routed to the amp with a longer release than the 
