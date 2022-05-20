@@ -290,7 +290,7 @@ bool testSamplerNote2(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   ok &= rsIsCloseTo(outL, targetL, tol);
   ok &= rsIsCloseTo(outR, targetR, tol);
   if(plot1)
-    rsPlotVectors(targetL, targetR, outL, outR);
+    rsPlotVectors(targetL, targetR, outL, outR, targetL-outL, targetR-outR);
 
   // The next test retrieves the state of the passed engine as sfz-string and sets up a fresh 
   // engine from this string and checks if this second engine also produces the desired output:
@@ -304,7 +304,7 @@ bool testSamplerNote2(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   ok &= rsIsCloseTo(outL, targetL, tol);
   ok &= rsIsCloseTo(outR, targetR, tol);
   if(plot2)
-    rsPlotVectors(targetL, targetR, outL, outR);
+    rsPlotVectors(targetL, targetR, outL, outR, targetL-outL, targetR-outR);
 
   return ok;
 }
@@ -3137,16 +3137,12 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0,0, OC::volumeN, 0.f, 1);  // Set nominal volume to 0 dB
   ok &= numAmps(se) == 1;
-  se.setRegionSetting(0,0, OC::amplfo_freq, freq, 1);
+  se.setRegionSetting(0,0, OC::amplfo_freq, freq,   -1);
   ok &= numAmps(se) == 1;
-  se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);
+  se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 1;
   //ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
-  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);  // fails
-
-  // SfzInstrument::getModRoutingFromString doesn't get called. Perhaps it's because the 
-  // amplfo_depth opcode is filed under the AmpLfo and should be filed under ModRouting in the 
-  // codebook?
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
  
   // Now we do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
