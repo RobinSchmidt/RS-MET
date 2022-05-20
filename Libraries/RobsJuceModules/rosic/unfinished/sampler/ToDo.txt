@@ -23,6 +23,9 @@ SFZ parsing and generation
   
 - Replace all calls to to_string with rsFloatToString in order to later replace the implementation.
   Currently it just delegates to std::to_string but we may need soemthing better.
+  
+- Support the following opcodes:
+  https://sfzformat.com/opcodes/default_path
 
 ----------------------------------------------------------------------------------------------------
 Sample playback
@@ -49,6 +52,11 @@ Sample playback
     for controlling this? in some situations, that may makes sense (for creating comb-filter 
     effects), in others not so much  
   
+- Support the following opcodes:  
+  https://sfzformat.com/opcodes/direction
+  https://sfzformat.com/opcodes/loop_crossfade
+  https://sfzformat.com/opcodes/loop_type
+  https://sfzformat.com/opcodes/loop_count
 
 ----------------------------------------------------------------------------------------------------
 Effect chain
@@ -61,7 +69,11 @@ Effect chain
 
 - Implement different filter topologies which are automatically selected according to the sfz data
 
-
+- Support the following opcodes:  
+  https://sfzformat.com/opcodes/bus
+  https://sfzformat.com/opcodes/pan_keycenter
+  https://sfzformat.com/opcodes/pan_keytrack
+  https://sfzformat.com/opcodes/pan_veltrack
 
 ----------------------------------------------------------------------------------------------------
 Modulation system
@@ -163,3 +175,17 @@ Modulation system
   
 - Implement optional dynamic recalculation of envelope durations in response to MIDI CCs, see:  
     https://sfzformat.com/opcodes/ampeg_dynamic
+	
+- Support the following opcodes: 	
+  https://sfzformat.com/opcodes/lfoN_phase
+  https://sfzformat.com/opcodes/lfoN_count	
+  
+----------------------------------------------------------------------------------------------------
+MIDI behaviors
+============== 
+  
+- Support the following opcodes:   
+  https://sfzformat.com/opcodes/polyphony
+  https://sfzformat.com/opcodes/note_selfmask  
+  https://sfzformat.com/opcodes/set_ccN
+  https://sfzformat.com/opcodes/rt_dead

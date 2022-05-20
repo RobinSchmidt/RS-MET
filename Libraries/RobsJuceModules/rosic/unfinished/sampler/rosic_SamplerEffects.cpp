@@ -6,20 +6,19 @@ void Processor::addParameter(Opcode opcode)
   params.push_back(Parameter(opcode));
 }
 
+void Processor::removeParameter(Opcode opcode)
+{
+  int i = findParameter(opcode);
+  if(i != -1)
+    RAPT::rsRemove(params, (size_t)i);
+}
+
 int Processor::replaceOpcode(Opcode oldOpcode, Opcode newOpcode)
 {
-  // Maybe factor out into findParameter(oldOpcode):
-  int foundAt = -1;
-  for(size_t i = 0; i < params.size(); ++i) {
-    if(params[i].getOpcode() == oldOpcode) {
-      foundAt = (int) i;
-      break; }}
-
+  int foundAt = findParameter(oldOpcode);
   RAPT::rsAssert(foundAt != -1, "No such opcode found");
-
   if(foundAt != -1)
     params[foundAt].setOpcode(newOpcode);
-
   return foundAt;
 }
 
@@ -64,6 +63,14 @@ void Processor::prepareToPlay(uchar key, uchar vel, double sampleRate)
   resetState();
 }
 
+int Processor::findParameter(Opcode opcode)
+{
+  for(size_t i = 0; i < params.size(); ++i) 
+    if(params[i].getOpcode() == opcode) 
+      return (int) i;
+  return -1;
+}
+
 //=================================================================================================
 
 LowFreqOsc::LowFreqOsc()
@@ -93,14 +100,14 @@ void LowFreqOsc::updateCoeffs(double fs)
 LowFreqOscAmp::LowFreqOscAmp()
 {
   type = OpcodeType::AmpLfo;
-  replaceOpcode(Opcode::lfoN_freq,   Opcode::amplfo_freq);
+  replaceOpcode(Opcode::lfoN_freq, Opcode::amplfo_freq);
+  //replaceOpcode(Opcode::lfoN_amp,  Opcode::amplfo_amp);
 
 
-  //replaceOpcode(Opcode::lfoN_amp,    Opcode::amplfo_amp);
-
-  // Maybe we should remove the opcode instead? It's redundant with amplfo_depth, i guess. But i 
-  // generally think, removing opcodes is no good idea. It would then be better to not create them
-  // in the first place, memory-wise...not a big deal, but anyway
+  //removeParameter(Opcode::lfoN_amp);
+  // It would then be better to not create it in the first place, memory-wise...not a big deal,
+  // but still. But no - we shouldn't remove it - if we do, we also need to re-implement 
+  // updateCoeffs because it accesses the params array and assumed a certain content
 }
 
 

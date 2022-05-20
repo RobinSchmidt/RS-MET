@@ -86,7 +86,9 @@ public:
   /** Adds a parameter that is controlled by the given Opcode. */
   void addParameter(Opcode opcode); // maybe should return an integer parameter index?
 
-  // ToDo: removeParameter
+
+  void removeParameter(Opcode opcode);
+
 
   /** Replaces the oldOpcode with the given newOpcode. This is used for re-assigning existing 
   parameter objects to new opcodes. This is needed when we have different modules that are 
@@ -169,6 +171,12 @@ public:
   virtual void resetState() {}
 
 protected:
+
+  /** Returns the index of the Parameter object inside this Processor that listens to the given 
+  opcode  or -1 if no such Parameter is found */
+  int findParameter(Opcode opcode);
+
+
 
   std::vector<Parameter> params;
   OpcodeType type = OpcodeType::Unknown;

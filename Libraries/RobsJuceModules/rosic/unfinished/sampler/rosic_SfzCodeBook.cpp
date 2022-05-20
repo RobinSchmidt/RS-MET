@@ -264,6 +264,7 @@ SfzCodeBook::SfzCodeBook()
   // do with amp here? Maybe we should use percent instead of RawFloat? I suppose, lfoN_amplitude 
   // is just the routing of lfoN to the amplitude. Also, we may want to set it up in percent for
   // consistency with the amplifier's amplitude parameter
+  // maybe use "amount" instead of "amp"
 
   // Modulation routings:
   dsp = OpcodeType::LfoN_ParamX;

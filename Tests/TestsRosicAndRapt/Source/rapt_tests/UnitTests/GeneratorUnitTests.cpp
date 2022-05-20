@@ -3287,7 +3287,7 @@ bool samplerAmpEnvTest()
   // Now with one amp in the chain which has a zero amplitude parameter:
   setupCommonSettings();
   ok &= numAmps(se) == 0;
-  se.setRegionSetting(0, 0, OC::amplitudeN,  0.f,   1);  // appends amp with 0% gain
+  se.setRegionSetting(0, 0, OC::amplitudeN,   0.f,  1);  // appends amp with 0% gain
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // appends no other amp because gain..
   ok &= numAmps(se) == 1;                                // ..of 1st amp is zero
@@ -3444,8 +3444,8 @@ bool samplerFilterLfoTest()
 
   // Test using the fillfo_ opcodes:
   setupCommonSettings();
-  se.setRegionSetting(0,0, OC::fillfo_freq,  freq,  -1); // triggers assert
-  //se.setRegionSetting(0,0, OC::fillfo_depth, depth, -1);
+  se.setRegionSetting(0,0, OC::fillfo_freq,  freq,  -1);
+  //se.setRegionSetting(0,0, OC::fillfo_depth, depth, -1); // triggers assert
   //ok &= testSamplerNote2(&se, key, vel, y, y, tol);
 
 
