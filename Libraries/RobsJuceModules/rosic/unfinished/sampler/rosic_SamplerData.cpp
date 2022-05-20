@@ -62,7 +62,11 @@ void SfzInstrument::HierarchyLevel::setFilterEnvDepth(float depthInCents)
 
 void SfzInstrument::HierarchyLevel::setFilterLfoDepth(float depthInCents)
 {
-  RAPT::rsError("Not yet implemented");
+  using OT = OpcodeType;
+  int numFilters = (int)RAPT::rsCount(dspTypes, OT::Filter);
+  for(int i = 0; i < numFilters; i++)
+    setModulation(OT::FilterLfo, 1, Opcode::cutoffN, i+1, depthInCents, ModMode::cents);
+  //RAPT::rsError("Not yet implemented");
 }
 
 bool isEffect(OpcodeType ot)

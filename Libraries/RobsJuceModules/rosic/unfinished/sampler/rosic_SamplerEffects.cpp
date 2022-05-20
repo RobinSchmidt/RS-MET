@@ -111,6 +111,14 @@ LowFreqOscAmp::LowFreqOscAmp()
   // updateCoeffs because it accesses the params array and assumed a certain content
 }
 
+LowFreqOscFil::LowFreqOscFil()
+{
+  type = OpcodeType::FilterLfo;
+  replaceOpcode(Opcode::lfoN_freq, Opcode::fillfo_freq);
+  //replaceOpcode(Opcode::lfoN_amp,  Opcode::fillfo_amp);
+}
+
+
 
 
 //=================================================================================================
@@ -521,6 +529,7 @@ void DspResourcePool::allocateModulators()
 
   freeLowFreqOscs.init(N);
   ampLowFreqOscs.init(N);
+  filLowFreqOscs.init(N);
 }
 
 Processor* DspResourcePool::grabModulator(OpcodeType type)
@@ -536,8 +545,9 @@ Processor* DspResourcePool::grabModulator(OpcodeType type)
 
   case OT::FreeLfo:   p = freeLowFreqOscs.grabItem(); break;
   case OT::AmpLfo:    p = ampLowFreqOscs.grabItem();  break;
-  //case OT::FilterLfo: p = lowFreqOscs.grabItem(); break;
+  case OT::FilterLfo: p = filLowFreqOscs.grabItem();  break;
   //case OT::PitchLfo:  p = lowFreqOscs.grabItem(); break;
+
   default: { RAPT::rsError("Unknown modulator type"); }
   };
   return p;
@@ -573,7 +583,7 @@ void DspResourcePool::repositModulator(Processor* p)
 
   case OT::FreeLfo:   i = freeLowFreqOscs.repositItem(p); break;
   case OT::AmpLfo:    i = ampLowFreqOscs.repositItem(p);  break;
-  //case OT::FilterLfo: i = lowFreqOscs.repositItem(p);  break;
+  case OT::FilterLfo: i = filLowFreqOscs.repositItem(p);  break;
   //case OT::PitchLfo:  i = lowFreqOscs.repositItem(p);  break;
   }
   RAPT::rsAssert(i != -1, "Reposited processor was not in pool");

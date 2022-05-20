@@ -429,6 +429,12 @@ public:
   LowFreqOscAmp();
 };
 
+class LowFreqOscFil : public LowFreqOsc
+{
+public:
+  LowFreqOscFil();
+};
+
 
 
 /** The general extended ADSR envelope generator controlled by the SFZ2 opocodes egN_attack, 
@@ -623,6 +629,7 @@ protected:
 
   rsObjectPool<LowFreqOsc>    freeLowFreqOscs;
   rsObjectPool<LowFreqOscAmp> ampLowFreqOscs;
+  rsObjectPool<LowFreqOscFil> filLowFreqOscs;
 
 
   // Connectors:
