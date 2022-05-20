@@ -376,6 +376,7 @@ public:
 
   /** Returns the sample rate at which this engine runs, i.e. produces its output. */
   float getOutputSampleRate() const { return playStatus.sampleRate; }
+  // maybe rename to getSampleRate for consistency with setSampleRate
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -875,6 +876,12 @@ public:
   }
   // maybe rename to hasSameInstrument - isInSameState may also compare the state with regard to 
   // activeLayers, etc.
+
+  inline bool isInSameStateAs(const rsSamplerEngine* other) const
+  {
+    return sfz == other->getInstrumentData(); // && samplePool.hasSameContentAs(other.samplePool);
+  }
+
 
   /** Returns the byte size of the RegionPlayer class. We want to keep this small so we use this
   function to keep track of its size in the tests. */

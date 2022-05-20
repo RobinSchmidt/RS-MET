@@ -268,15 +268,44 @@ bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
 // factor out a getSamplerOutput(rosic::rsSamplerEngine* se, float key, float vel, 
 // const std::vector<float>& targetL, const std::vector<float>& targetR, bool plot) function
 //
-// Maybe make a function that also retrieves the sfz-string and sets up a fresh engine from that
-// string and checks the output of that engine, too. But the fresh engine must also somehow copy
-// the content of the samplePool of the passed se and we don not yet have functionality for that.
-// But if this is done, then this new, extended function can be called in all places where now 
-// testSamplerNote is called and all theses tests will then cover also the sfz-string roundtrip
-// which greatly extends the coverage of our tests.
 
+// Like testSamplerNote but also retrieves the sfz-string and sets up a fresh engine from that
+// string and checks the output of that engine, too. This extended testing function should be used
+// preferably also in all places where now testSamplerNote is called because all these tests will 
+// then cover also the sfz-string roundtrip which greatly extends the coverage of our tests.
+bool testSamplerNote2(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
+  const std::vector<float>& targetL, const std::vector<float>& targetR, int nOff = -1, 
+  float tol = 0.f, bool plot1 = false, bool plot2 = false)
+{
+  using namespace RAPT;
+  bool ok = true;
+  int N = (int) targetL.size();
+  rsAssert((int)targetR.size() == N);
+  std::vector<float> outL(N), outR(N);
 
+  // The first test uses the passed sampler-engine and checks, if it produces the desired output:
+  getSamplerNote(se, key, vel, outL, outR, nOff);
+  ok &= rsIsCloseTo(outL, targetL, tol);
+  ok &= rsIsCloseTo(outR, targetR, tol);
+  if(plot1)
+    rsPlotVectors(targetL, targetR, outL, outR);
 
+  // The next test retrieves the state of the passed engine as sfz-string and sets up a fresh 
+  // engine from this string and checks if this second engine also produces the desired output:
+  std::string sfz = se->getAsSfz();
+  rosic::Sampler::rsSamplerEngineTest se2;
+  se2.setSampleRate(se->getOutputSampleRate());
+  se2.copySamplePool(se);
+  se2.setFromSFZ(sfz);
+  ok = se2.isInSameStateAs(se);
+  getSamplerNote(&se2, key, vel, outL, outR, nOff);
+  ok &= rsIsCloseTo(outL, targetL, tol);
+  ok &= rsIsCloseTo(outR, targetR, tol);
+  if(plot2)
+    rsPlotVectors(targetL, targetR, outL, outR);
+
+  return ok;
+}
 
 //=================================================================================================
 // The actual unit tests for the sampler:
