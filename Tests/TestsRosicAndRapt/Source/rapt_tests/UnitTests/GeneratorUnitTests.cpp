@@ -3420,19 +3420,33 @@ bool samplerFilterLfoTest()
   Vec y = rsApplySamplerFilter(x, FilterType::lp_12, cutoff, fs, reso, depth*lfo);
   //rsPlotVectors(y);
 
+
   // Create and set up engine:
   SE se;
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  addSingleSampleRegion(&se, x, key, fs);
-  se.setSampleRate(fs);
-  se.setRegionSetting(0,0, OC::resonanceN, reso,   1);
-  se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
+
+  // Helper function to reset the engine se and set up the settings that all the following tests
+  // have in common
+  auto setupCommonSettings = [&]()
+  {  
+    se.clearInstrument();
+    addSingleSampleRegion(&se, x, key, fs);
+    se.setSampleRate(fs);
+    se.setRegionSetting(0,0, OC::resonanceN, reso,   1);
+    se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
+  };
+
+  // Test using a manually routed free LFO:
+  setupCommonSettings();
   se.setRegionSetting(0,0, OC::lfoN_freq,  freq,   1);
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 1, depth, Mode::cents);
-  //ok &= testSamplerNote( &se, key, vel, y, y, tol);
   ok &= testSamplerNote2(&se, key, vel, y, y, tol);
 
-
+  // Test using the fillfo_ opcodes:
+  setupCommonSettings();
+  //se.setRegionSetting(0,0, OC::fillfo_freq,  freq,  -1); // triggers assert
+  //se.setRegionSetting(0,0, OC::fillfo_depth, depth, -1);
+  //ok &= testSamplerNote2(&se, key, vel, y, y, tol);
 
 
 
