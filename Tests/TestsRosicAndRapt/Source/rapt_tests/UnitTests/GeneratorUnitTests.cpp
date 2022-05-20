@@ -3501,6 +3501,13 @@ bool samplerFilterLfoTest()
   // Maybe try to create a target signal using two filters simultaneously.
   // maybe a function rsApplySamplerFilters()
   // Apparently, the highpass freq doesn't get modulated. It remains static at 200 Hz
+
+  // I think, SamplePlayer::handleModulations is wrong. Specifically, the index i
+  //   float m  = modBuffer[2*i];
+  // in the loop over the mod matrix. We can't just use index i. We must figure out the array-index
+  // of the mod-source. ModulationConnector::getSourceIndex seems to be already made for this
+  // 
+
   
   
   // where

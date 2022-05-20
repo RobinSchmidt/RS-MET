@@ -304,9 +304,14 @@ public:
 
   const Processor* getSourceProcessor() const { return source; }
 
-  int getSourceIndex() const { return sourceIndex; }
+  int getSourceIndex() const 
+  { 
+    return sourceIndex; 
+  }
   // document this: i think, this is a different index than the one in ModulationRouting, namely 
-  // the index in modSources array used in SamplePlayer. 
+  // the index in modSources array used in SamplePlayer. The name should reflect that. Maybe call
+  // it getSourceArrayIndex...this is still not a very good name but potentially less confusing 
+  // than just getSourceIndex
 
 
   Parameter* getTargetParam() { return targetParam; }
