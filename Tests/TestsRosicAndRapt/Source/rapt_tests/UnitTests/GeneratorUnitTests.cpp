@@ -3127,7 +3127,8 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, depth, Mode::absolute);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, false);
+  //ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
   // We manually insert an amplifier unit and route the amplfo to its amplitude parameter via the
   // amplfo_depth parameter. Desired behavior: se should route the amplfo to the existing 
@@ -3140,7 +3141,8 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, false);
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
+  //ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);  // triggers assert!
  
   // Now we do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
   // Desired behavior: se should auto-insert an amplifier:
@@ -3150,8 +3152,8 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol, false);
-
+  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
+  //ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);  // fails!
 
   // ToDo:
   // -Implement sfz load/save functionality for the amplfo_depth opcode.

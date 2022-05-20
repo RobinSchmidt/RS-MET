@@ -375,6 +375,8 @@ ModMode SfzCodeBook::opcodeDefaultModMode(Opcode op)
   switch(op)
   {
   case OC::cutoffN:    return MM::cents;
+
+  case OC::volumeN:    return MM::absolute;  
   case OC::amplitudeN: return MM::absolute;  // maybe this hould be subsumed in a default branch
   }
 
@@ -505,10 +507,13 @@ std::string SfzCodeBook::modSourceToString(OpcodeType sourceType, int index)
 
   switch(sourceType)
   {
-  case OT::FreeEnv:   tmp = "adsr";  break;
-  case OT::AmpEnv:    tmp = "ampeg"; break;
-  case OT::FilterEnv: tmp = "fileg"; break;
-  case OT::FreeLfo:   tmp = "lfo";   break;
+  case OT::FreeEnv:   tmp = "adsr";   break;
+  case OT::AmpEnv:    tmp = "ampeg";  break;
+  case OT::FilterEnv: tmp = "fileg";  break;
+
+  case OT::FreeLfo:   tmp = "lfo";    break;
+  case OT::AmpLfo:    tmp = "amplfo"; break;
+
   default:
   {
     RAPT::rsError("Unknown type of modulation source.");
