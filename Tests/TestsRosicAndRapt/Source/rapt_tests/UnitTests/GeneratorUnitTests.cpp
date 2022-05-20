@@ -3127,7 +3127,6 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, depth, Mode::absolute);
   ok &= numAmps(se) == 1;
-  //ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
   ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
   // We manually insert an amplifier unit and route the amplfo to its amplitude parameter via the
@@ -3141,29 +3140,24 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 1;
-  //ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
   ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
- 
   // Now we do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
   // Desired behavior: se should auto-insert an amplifier:
   setupForLoopedDC(&se, nDC, keyDC, fs);
   ok &= numAmps(se) == 0;
-  se.setRegionSetting(0,0, OC::amplfo_freq, freq, 1);
+  se.setRegionSetting(0,0, OC::amplfo_freq, freq,   -1);
   ok &= numAmps(se) == 0;
-  se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);
+  se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
-  //ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);  // fails!
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
   // ToDo:
-  // -Implement sfz load/save functionality for the amplfo_depth opcode.
-  // -Maybe set up an engine from an sfz-string that we create here
+  // -Do tests with a couple of more amplifiers in the chain
 
   rsAssert(ok);
   return ok;
 }
-
 
 bool samplerAmpEnvTest()
 {
@@ -3449,8 +3443,10 @@ bool samplerFilterLfoTest()
   setupCommonSettings();
   se.setRegionSetting(0,0, OC::fillfo_freq,  freq,  -1);
   se.setRegionSetting(0,0, OC::fillfo_depth, depth, -1);
-  //ok &= testSamplerNote(&se, key, vel, y, y, tol); // old
   ok &= testSamplerNote2(&se, key, vel, y, y, tol);
+
+  // ToDo:
+  // -Test with two filters - the LFO should affect both
 
   rsAssert(ok);
   return ok;
@@ -3649,14 +3645,10 @@ bool samplerModulatorsTest()
   ok &= samplerAmpLfoTest();
   ok &= samplerAmpEnvTest();
 
-
   ok &= samplerFilterLfoTest();
   ok &= samplerFilterEnvTest();
 
-
   ok &= samplerPitchEnvTest();
-
-
 
   rsAssert(ok);
   return ok;
