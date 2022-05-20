@@ -274,8 +274,8 @@ bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
 // preferably also in all places where now testSamplerNote is called because all these tests will 
 // then cover also the sfz-string roundtrip which greatly extends the coverage of our tests.
 bool testSamplerNote2(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
-  const std::vector<float>& targetL, const std::vector<float>& targetR, int nOff = -1, 
-  float tol = 0.f, bool plot1 = false, bool plot2 = false)
+  const std::vector<float>& targetL, const std::vector<float>& targetR, float tol = 0.f,
+  int nOff = -1, bool plot1 = false, bool plot2 = false)
 {
   using namespace RAPT;
   bool ok = true;
@@ -3282,8 +3282,9 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 1;
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
   ok &= numAmps(se) == 1;
-  ok &= checkOutput();
-  ok &= checkSfzRecall();
+  //ok &= checkOutput();
+  //ok &= checkSfzRecall();
+  ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Helper function to reset the engine se and set up the settings that all the following tests
   // have in common
@@ -3313,8 +3314,9 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // does nothing (amp already there)
   ok &= numAmps(se) == 1;
-  ok &= checkOutput();
-  ok &= checkSfzRecall();
+  //ok &= checkOutput();
+  //ok &= checkSfzRecall();
+  ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with one amp in the chain which has a nonzero amplitude parameter:
   setupCommonSettings();
@@ -3325,8 +3327,9 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 2;                                // ..of 1st amp is nonzero
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 3rd amp neeeded
   ok &= numAmps(se) == 2;
-  ok &= checkOutput();
-  ok &= checkSfzRecall();
+  //ok &= checkOutput();
+  //ok &= checkSfzRecall();
+  ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with one amp in the chain which has a zero amplitude parameter:
   setupCommonSettings();
@@ -3337,8 +3340,9 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 1;                                // ..of 1st amp is zero
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 2nd amp neeeded
   ok &= numAmps(se) == 1;
-  ok &= checkOutput();
-  ok &= checkSfzRecall();
+  //ok &= checkOutput();
+  //ok &= checkSfzRecall();
+  ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with two amps in the chain with nonzero gain:
   setupCommonSettings();
@@ -3351,8 +3355,9 @@ bool samplerAmpEnvTest()
   ok &= numAmps(se) == 3;                                // ..of 2nd amp is nonzero
   se.setRegionSetting(0,0, OC::ampeg_depth, 100.f, -1);  // no 4th amp neeeded
   ok &= numAmps(se) == 3;
-  ok &= checkOutput();
-  ok &= checkSfzRecall();
+  //ok &= checkOutput();
+  //ok &= checkSfzRecall();
+  ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with an amp and a waveshaper:
   setupCommonSettings();
@@ -3370,8 +3375,9 @@ bool samplerAmpEnvTest()
   se.setRegionSetting(0, 0, OC::adsrN_end,   100.f, 1);
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::amplitudeN, 1, 100.f, Mode::absolute);
   ok &= numAmps(se) == 2;
-  ok &= checkOutput();
-  ok &= checkSfzRecall();
+  //ok &= checkOutput();
+  //ok &= checkSfzRecall();
+  ok &= testSamplerNote2(&se, key, vel, tgtL, tgtR, tol, nOff);
 
   // Now with an ampeg and an additional adsrN routed to the amp with a longer release than the 
   // ampeg:
