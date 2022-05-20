@@ -86,6 +86,8 @@ public:
   /** Adds a parameter that is controlled by the given Opcode. */
   void addParameter(Opcode opcode); // maybe should return an integer parameter index?
 
+  // ToDo: removeParameter
+
   /** Replaces the oldOpcode with the given newOpcode. This is used for re-assigning existing 
   parameter objects to new opcodes. This is needed when we have different modules that are 
   functionally the same but have different opcode names (like ampeg_, fileg_, pitcheg_, egN_).
@@ -93,6 +95,7 @@ public:
   the index of the parameter in our params array which was replaced array or -1, if no param 
   listening to the given oldOpcode was found. */
   int replaceOpcode(Opcode oldOpcode, Opcode newOpcode);
+
 
 
 

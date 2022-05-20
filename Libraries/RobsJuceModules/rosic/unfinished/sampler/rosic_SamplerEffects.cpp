@@ -95,7 +95,9 @@ LowFreqOscAmp::LowFreqOscAmp()
   type = OpcodeType::AmpLfo;
   replaceOpcode(Opcode::lfoN_freq,   Opcode::amplfo_freq);
 
+
   //replaceOpcode(Opcode::lfoN_amp,    Opcode::amplfo_amp);
+
   // Maybe we should remove the opcode instead? It's redundant with amplfo_depth, i guess. But i 
   // generally think, removing opcodes is no good idea. It would then be better to not create them
   // in the first place, memory-wise...not a big deal, but anyway

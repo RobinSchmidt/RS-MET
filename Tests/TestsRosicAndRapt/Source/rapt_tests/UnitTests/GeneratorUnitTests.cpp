@@ -3444,7 +3444,7 @@ bool samplerFilterLfoTest()
 
   // Test using the fillfo_ opcodes:
   setupCommonSettings();
-  //se.setRegionSetting(0,0, OC::fillfo_freq,  freq,  -1); // triggers assert
+  se.setRegionSetting(0,0, OC::fillfo_freq,  freq,  -1); // triggers assert
   //se.setRegionSetting(0,0, OC::fillfo_depth, depth, -1);
   //ok &= testSamplerNote2(&se, key, vel, y, y, tol);
 

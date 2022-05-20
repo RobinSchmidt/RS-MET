@@ -134,6 +134,7 @@ enum class Opcode
   // amplitude parameter? in the former case, we need nee no second index X, in the latter, we do
 
 
+
   // ARIA:
   PanLaw,
 
