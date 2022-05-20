@@ -3168,9 +3168,6 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
-  // ToDo:
-  // -Do tests with a couple of more amplifiers in the chain
-
   rsAssert(ok);
   return ok;
 }
