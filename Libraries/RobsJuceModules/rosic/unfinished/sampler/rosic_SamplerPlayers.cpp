@@ -384,18 +384,11 @@ void SamplePlayer::handleModulations()
     ModulationConnector* con = modMatrix[i];
     Parameter* par = con->getTargetParam();
     float u  = par->getValue();                 // unmodulated value
-
-
-    //int j = i;  // old, wrong!
-    int j = con->getSourceArrayIndex();  // new
-
+    int   j  = con->getSourceArrayIndex();
     float m  = modBuffer[2*j];                  // modulator output, left channel
     // Preliminary - we currently only use the 1st channel output maybe use something like 
     // rsVector2D<float> for m and do some appropriate casting. The 2nd stereo output of each
-    // modulator would be in modBuffer[2*i+1]
-    // I think, using index i is wrong here. We must figure out the array-index of the mod-source.
-    // Something like modBuffer[2*j] where j = con->getSourceArrayIndex
-
+    // modulator would be in modBuffer[2*j+1]
 
     float c  = con->getContribution(m, u);      // compute modulation contribution
     par->applyModulation(c);                    // accumulate the contribution
