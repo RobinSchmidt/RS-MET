@@ -3406,10 +3406,11 @@ bool samplerFilterLfoTest()
   using OC   = Opcode;
 
   // LFO parameters:
-  float freq   =   50.f;   // in Hz
-  float depth  = 1000.f;   // in cents
-  float cutoff = 1000.f;   // Filter cutoff freq (nominal, before modulation)
-  float reso   =   20.f;   // Filter resonance in dB
+  float freq     =   50.f;   // in Hz
+  float depth    = 1000.f;   // in cents
+  float lpCutoff = 1000.f;   // Lowpass cutoff freq (nominal, before modulation)
+  float hpCutoff =  200.f;   // Highpass cutoff 
+  float reso     =   20.f;   // Filter resonance in dB for both filters
 
   // Test parameters:
   int N     = 1500;         // Number of samples to produce
@@ -3419,7 +3420,7 @@ bool samplerFilterLfoTest()
   float fs  = 40000.f;      // Sample rate
   float tol = 1.e-4;        // Tolerance
 
-  // Create target signal:
+  // Create target signals:
   float f = rsPitchToFreq((float)key);
   Vec x(N);
   createWaveform(&x[0], N, 1, f, fs, 0.f, false);
@@ -3427,8 +3428,9 @@ bool samplerFilterLfoTest()
   Vec lfo(N);
   for(int n = 0; n < N; n++)
     lfo[n] = sin(n * 2*PI*freq/fs);
-  Vec y = rsApplySamplerFilter(x, FilterType::lp_12, cutoff, fs, reso, depth*lfo);
-  //rsPlotVectors(y);
+  Vec yLp = rsApplySamplerFilter(x,   FilterType::lp_12, lpCutoff, fs, reso, depth*lfo);
+  Vec yBp = rsApplySamplerFilter(yLp, FilterType::hp_12, hpCutoff, fs, reso, depth*lfo);
+  //rsPlotVectors(x, yLp, yBp);
 
 
   // Create and set up engine:
@@ -3437,26 +3439,36 @@ bool samplerFilterLfoTest()
 
   // Helper function to reset the engine se and set up the settings that all the following tests
   // have in common
-  auto setupCommonSettings = [&]()
+  auto setupCommonSettingsLp = [&]()
   {  
     se.clearInstrument();
     addSingleSampleRegion(&se, x, key, fs);
     se.setSampleRate(fs);
-    se.setRegionSetting(0,0, OC::resonanceN, reso,   1);
-    se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
+    se.setRegionSetting(0,0, OC::resonanceN, reso,     1);
+    se.setRegionSetting(0,0, OC::cutoffN,    lpCutoff, 1);
   };
 
-  // Test using a manually routed free LFO:
-  setupCommonSettings();
+  // Test using a manually routed free LFO and only the lowpass:
+  setupCommonSettingsLp();
   se.setRegionSetting(0,0, OC::lfoN_freq,  freq,   1);
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 1, depth, Mode::cents);
-  ok &= testSamplerNote2(&se, key, vel, y, y, tol);
+  ok &= testSamplerNote2(&se, key, vel, yLp, yLp, tol);
 
-  // Test using the fillfo_ opcodes:
-  setupCommonSettings();
+  // Test using the fillfo_ opcodes and only the lowpass:
+  setupCommonSettingsLp();
   se.setRegionSetting(0,0, OC::fillfo_freq,  freq,  -1);
   se.setRegionSetting(0,0, OC::fillfo_depth, depth, -1);
-  ok &= testSamplerNote2(&se, key, vel, y, y, tol);
+  ok &= testSamplerNote2(&se, key, vel, yLp, yLp, tol);
+
+
+
+  // Test with a second filter which is a highpass. The output should be a bandpassed signal where
+  // The LFO modulates both cutoffs
+
+
+
+
+
 
   // ToDo:
   // -Test with two filters - the LFO should affect both
