@@ -117,17 +117,24 @@ void SamplePool<T>::copyContent(const SamplePool<T>& other)
 {
   clear();
   for(int i = 0; i < other.getNumSamples(); i++) {
-    AudioFileStream<T>* s = other.getSampleStream(i);
+    const AudioFileStream<T>* s = other.getSampleStream(i);
     AudioFileStream<T>* newStream = nullptr;
-    if(AudioFileStreamPreloaded<T>* sp = dynamic_cast<AudioFileStreamPreloaded<T>*>(s)) {
+    if(const AudioFileStreamPreloaded<T>* sp = dynamic_cast<const AudioFileStreamPreloaded<T>*>(s))
+    {
       newStream = new AudioFileStreamPreloaded<T>;
-      newStream->clone(sp);  }
-    else {
-      newStream = new AudioFileStream<T>;
-      newStream->clone(sp); }
+      newStream->clone(sp);  
+    }
+    else 
+    {
+      RAPT::rsError();
+      //newStream = new AudioFileStream<T>; // Impossible! The class is abstract!
+      //newStream->clone(sp); 
+    }
     samples.push_back(newStream); }
 
 
   //RAPT::rsError("Not yet implemented");
 }
 
+template class rosic::SamplePool<float>;
+// without it, we get a linker error for copyContent when building the test project

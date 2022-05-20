@@ -3217,8 +3217,8 @@ bool samplerAmpEnvTest()
     SE se2;
     se2.setSampleRate(fs);
 
-    setupForLoopedDC(&se2, nDC, keyDC, fs); // Needed because the sample is only in memory (no file)
-    //se2.copySamplePool(&se); // do this instead!
+    //setupForLoopedDC(&se2, nDC, keyDC, fs); // old
+    se2.copySamplePool(&se); // new
 
     se2.setFromSFZ(sfz);
     bool ok = se2.isInSameStateAs(se);
