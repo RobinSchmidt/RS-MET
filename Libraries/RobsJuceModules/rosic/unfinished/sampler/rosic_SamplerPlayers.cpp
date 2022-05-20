@@ -805,15 +805,15 @@ EnvGen* RegionPlayer::determineReleaseEnvelope()
 
     ModulationConnector* con = modMatrix[i];
 
-    // Old:
-    EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
+    // Old version:
+    //EnvGen* eg = dynamic_cast<EnvGen*>(modSources[i]);
     // This is wrong! Tne index i is only an index into modMatrix but in general,we cannot just 
     // use the same index into the modSources. Instead, we need something like
     // con->getSource();
 
     // New version:
-    //Processor* src = con->getSourceProcessor();
-    //EnvGen*    eg  = dynamic_cast<EnvGen*>(src);
+    Processor* src = con->getSourceProcessor();
+    EnvGen*    eg  = dynamic_cast<EnvGen*>(src);
 
 
     if(eg != nullptr && eg->getEnd() == 0.f) {
