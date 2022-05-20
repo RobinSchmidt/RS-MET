@@ -3443,7 +3443,7 @@ bool samplerFilterLfoTest()
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
   addSingleSampleRegion(&se, x, key, fs);
   se.setSampleRate(fs);
-  se.setRegionSetting(0,0, OC::resonanceN, reso,   1); 
+  se.setRegionSetting(0,0, OC::resonanceN, reso,   1);
   se.setRegionSetting(0,0, OC::cutoffN,    cutoff, 1);
   se.setRegionSetting(0,0, OC::lfoN_freq,  freq,   1);
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 1, depth, Mode::cents);

@@ -1,3 +1,32 @@
+
+template<class T>
+void AudioFileStream<T>::clone(const AudioStream<T>* stream)
+{
+  const AudioFileStream<T>* afs = dynamic_cast<const AudioFileStream*>(stream);
+  if(afs) {
+    AudioStream<T>::clone(stream);
+    path = afs->path;
+    rootDirIndex = afs->rootDirIndex; }
+  else  {
+    RAPT::rsError(); clear(); }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
+void AudioFileStreamPreloaded<T>::clone(const AudioStream<T>* stream)
+{
+  const AudioFileStreamPreloaded<T>* pl = dynamic_cast<const AudioFileStreamPreloaded*>(stream);
+  if(pl) {
+    AudioFileStream<T>::clone(stream);
+    setData(pl->channelPointers, pl->numFrames, pl->numChannels, pl->sampleRate, 
+      pl->numChannels, pl->path); }
+  else {
+    RAPT::rsError(); clear(); }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 template<class T>
 bool AudioFileStreamPreloaded<T>::setData(
   T** newData, int numFrames, int numDataChannels, double sampleRate, int numStreamChannels, 
@@ -83,19 +112,22 @@ void SamplePool<T>::clear()
   samples.clear();
 }
 
-/*
 template<class T>
 void SamplePool<T>::copyContent(const SamplePool<T>& other)
 {
   clear();
-  for(int i = 0; i < other.getNumSamples(); i++)
-  {
+  for(int i = 0; i < other.getNumSamples(); i++) {
+    AudioFileStream<T>* s = other.getSampleStream(i);
+    AudioFileStream<T>* newStream = nullptr;
+    if(AudioFileStreamPreloaded<T>* sp = dynamic_cast<AudioFileStreamPreloaded<T>*>(s)) {
+      newStream = new AudioFileStreamPreloaded<T>;
+      newStream->clone(sp);  }
+    else {
+      newStream = new AudioFileStream<T>;
+      newStream->clone(sp); }
+    samples.push_back(newStream); }
 
-    int dummy = 0;
-  }
 
-
-
-  RAPT::rsError("Not yet implemented");
+  //RAPT::rsError("Not yet implemented");
 }
-*/
+

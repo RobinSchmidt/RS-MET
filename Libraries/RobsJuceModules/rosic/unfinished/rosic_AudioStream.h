@@ -88,6 +88,15 @@ public:
 
   void clear() { sampleRate  = 1; numChannels = 0; numFrames   = 0; }
 
+
+  virtual void clone(const AudioStream<T>* stream)
+  {
+    sampleRate  = stream->sampleRate;
+    numChannels = stream->numChannels;
+    numFrames   = stream->numFrames;
+  }
+
+
 protected:
 
   double sampleRate  = T(44100);  // or maybe init to 0? or 1? or 666?
@@ -170,6 +179,10 @@ public:
 
   void clear() { AudioStream<T>::clear(); path.clear(); rootDirIndex = 0; }
 
+
+  void clone(const AudioStream<T>* stream) override;
+
+
 protected:
 
   //rsAudioFileInfo fileInfo;
@@ -245,6 +258,8 @@ public:
 
   void clear();
 
+  void clone(const AudioStream<T>* stream) override;
+
 
   void getFrame(int sampleIndex, T* destination) const override
   {
@@ -290,7 +305,7 @@ need a more complex referencing system for the AudioStream objects - regions wou
 something like AudioStreamClients, that register/deregister themselves, etc. Maybe AudioStream 
 should be a subclass of some DataStream baseclass. We'll see... */
 
-template<class T>
+template<class T>  // Maybe get rid of the templatization - use float directly
 class SamplePool
 {
 
@@ -338,19 +353,7 @@ public:
 
   void clear();
 
-  /*
-  inline void copyContent(const SamplePool<T>& other)
-  {
-    clear();
-    for(int i = 0; i < other.getNumSamples(); i++)
-    {
-      AudioFileStream<T>* newStream;
-      newStream->copyContent(other.getSampleStream(i)); // not yet implemented
-      samples.push_back(newStream);
-    }
-  }
-  */
-  // ToDo: move into cpp file...but i got linker errors when doing so
+  inline void copyContent(const SamplePool<T>& other);
 
 
   // todo:
