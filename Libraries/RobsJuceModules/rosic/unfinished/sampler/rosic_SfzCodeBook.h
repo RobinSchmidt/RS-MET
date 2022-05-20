@@ -390,10 +390,11 @@ enum class OpcodeType   // Maybe rename to OpcodeTarget
   // them all between these tags ...but maybe some code needs to distinguish the cases...we'll see
   // wehn the mod-system is finished...we coul actually also have both by nesting those tags
 
-  // Routing of free modulators:
+  // Routing of modulators:
   _TagModRoutingStart,
   EnvN_ParamX,
   LfoN_ParamX,
+  HardwiredModRouting,
   _TagModRoutingEnd,
 
 

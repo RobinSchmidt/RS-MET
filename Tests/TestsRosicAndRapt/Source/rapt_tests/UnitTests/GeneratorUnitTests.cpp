@@ -3144,6 +3144,10 @@ bool samplerAmpLfoTest()
   //ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
   ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);  // fails
 
+  // SfzInstrument::getModRoutingFromString doesn't get called. Perhaps it's because the 
+  // amplfo_depth opcode is filed under the AmpLfo and should be filed under ModRouting in the 
+  // codebook?
+
  
   // Now we do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
   // Desired behavior: se should auto-insert an amplifier:

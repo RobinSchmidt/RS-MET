@@ -267,7 +267,7 @@ SfzCodeBook::SfzCodeBook()
   // consistency with the amplifier's amplitude parameter
   // maybe use "amount" instead of "amp"
 
-  // Modulation routings:
+  // Free modulation routings:
   dsp = OpcodeType::LfoN_ParamX;
   add(OC::lfoN_volumeX, Flt, "lfoN_volumeX",    -10.0f,  10.f, 0.f, dsp, OU::Decibels, Sfz2e);
   //add(OC::lfoN_volumeX, Flt, "lfoN_amplitudeX",   0.0f,  20.f, 0.f, dsp, OU::RawFloat, Sfz2e);
@@ -276,6 +276,12 @@ SfzCodeBook::SfzCodeBook()
 
   // SFZ2 has: lfoN_freq, lfoN_amplitude, lfoN_volume, lfoN_pan, lfoN_cutoff, lfoN_cutoff2
   // we want:  lfoN_amplitudeX, lfoN_volumeX, lfoN_cutoffX, ...
+
+  // Hardwired modulation routings:
+  dsp = OpcodeType::HardwiredModRouting;
+
+
+
 
   // We also want LFO phases and we want to be able able to specify the LFO frequency in 
   // temp-synced units - maybe an opcode lfoN_unit=hertz (cycles per second), cycles per beat or 
