@@ -513,6 +513,7 @@ std::string SfzCodeBook::modSourceToString(OpcodeType sourceType, int index)
 
   case OT::FreeLfo:   tmp = "lfo";    break;
   case OT::AmpLfo:    tmp = "amplfo"; break;
+  case OT::FilterLfo: tmp = "fillfo"; break;
 
   default:
   {
