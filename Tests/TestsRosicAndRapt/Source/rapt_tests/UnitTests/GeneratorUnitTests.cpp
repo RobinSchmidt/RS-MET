@@ -3142,6 +3142,22 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
+  // Like before but with another (neutral) amplifier before the last one. Desired behavior: se 
+  // should route the amplfo to the second amplifier:
+  setupForLoopedDC(&se, nDC, keyDC, fs);
+  ok &= numAmps(se) == 0;
+  se.setRegionSetting(0,0, OC::volumeN, 0.f, 1);
+  ok &= numAmps(se) == 1;
+  se.setRegionSetting(0,0, OC::volumeN, 0.f, 2);
+  ok &= numAmps(se) == 2;
+  se.setRegionSetting(0,0, OC::amplfo_freq, freq,   -1);
+  ok &= numAmps(se) == 2;
+  se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
+  ok &= numAmps(se) == 2;
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
+  const std::vector<ModulationRouting>& mr = se.getRegion(0,0)->getModulationSettings();
+  ok &= mr[0].getTargetIndex() == 2;  // mod-connection should be routed to the 2nd amp
+
   // Now we do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
   // Desired behavior: se should auto-insert an amplifier:
   setupForLoopedDC(&se, nDC, keyDC, fs);
