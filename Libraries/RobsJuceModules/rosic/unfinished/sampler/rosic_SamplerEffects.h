@@ -275,7 +275,8 @@ public:
   void setSource(Processor* newSource) { source = newSource; }
   // maybe rename to setSourceProcessor
 
-  void setSourceIndex(int newIndex) { sourceIndex = newIndex; }
+  void setSourceArrayIndex(int newIndex) { sourceIndex = newIndex; }
+  // maybe get rid and instead give a 2nd int parameter to setSource
 
 
   void setTarget(Processor* newTargetProcessor, Parameter* newTargetParameter) 
@@ -304,7 +305,7 @@ public:
 
   const Processor* getSourceProcessor() const { return source; }
 
-  int getSourceIndex() const 
+  int getSourceArrayIndex() const 
   { 
     return sourceIndex; 
   }
@@ -357,6 +358,7 @@ private:
   // enough)
 
   int sourceIndex = -1;
+  // rename to sourceArrayIndex
   // maybe get rid - if this is needed in the SamplePlayer, it should just keep an array of 
   // integers modSourceIndices for that purpose...hmm..or maybe it's ok this way..it's actually
   // more economic to avoid having an additional array there
