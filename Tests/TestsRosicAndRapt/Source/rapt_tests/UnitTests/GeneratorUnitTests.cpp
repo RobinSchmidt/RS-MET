@@ -3420,10 +3420,6 @@ bool samplerFilterLfoTest()
   float fs  = 40000.f;      // Sample rate
   float tol = 1.e-4;        // Tolerance
 
-  //// Test:
-  //reso = 0;
-  freq = 1.f;
-
   // Create target signals:
   float f = rsPitchToFreq((float)key);
   Vec x(N);
@@ -3450,7 +3446,7 @@ bool samplerFilterLfoTest()
   SE se;
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
 
-  // Helper function to reset the engine se and set up the settings that all the following tests
+  // Helper functions to reset the engine se and set up the settings that all the following tests
   // have in common
   auto setupCommonSettingsLp = [&]()
   {  
@@ -3460,7 +3456,6 @@ bool samplerFilterLfoTest()
     se.setRegionSetting(0,0, OC::resonanceN, reso,     1);
     se.setRegionSetting(0,0, OC::cutoffN,    lpCutoff, 1);
   };
-
   auto setupCommonSettingsBp = [&]()
   {  
     setupCommonSettingsLp();
@@ -3468,7 +3463,6 @@ bool samplerFilterLfoTest()
     se.setRegionSetting(0,0, OC::cutoffN,    hpCutoff,                 2);
     se.setRegionSetting(0,0, OC::filN_type,  (float)FilterType::hp_12, 2);
   };
-
 
 
   // Test using a manually routed free LFO and only the lowpass:
@@ -3484,10 +3478,10 @@ bool samplerFilterLfoTest()
   ok &= testSamplerNote2(&se, key, vel, yLp, yLp, tol);
 
   // Test with a second filter which is a highpass. The output should be a bandpassed signal. In 
-  // the first test, we use a free LFO that we need to explicitly route to both cutoffs. We need a
-  // rather high tolerance here because (i think) in the target signal, the highpass will also 
-  // affect the sidebands that the FM of the first filter cutoff creates. They should be 
-  // approximately equal for low modulation frequencies, though...but out actual modualtion freq is
+  // the first such test, we use a free LFO that we need to explicitly route to both cutoffs. We 
+  // need a rather high tolerance here because (i think) in the target signal, the highpass will
+  // also affect the sidebands that the FM of the first filter cutoff creates. They should be 
+  // approximately equal for low modulation frequencies, though...but out actual modulation freq is
   // actually in the audible range. ...ToDo: investignate this more thoroughly:
   tol = 1.e-3;
   setupCommonSettingsBp();
@@ -3496,43 +3490,16 @@ bool samplerFilterLfoTest()
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 2, depth, Mode::cents);
   ok &= testSamplerNote2(&se, key, vel, yLpHp, yLpHp, tol);
 
-  /*
-  Vec outL(N), outR(N);
-  getSamplerNote(&se, key, vel, outL, outR);
-  //rsPlotVectors(x, yLpHp, outL);
-  //rsPlotVectors(x, yHpLp, outL);
-  rsPlotVectors(x, yLpHp, yHpLp, outL);
-  // They look very different, even if we use a very slow LFO freq and zero resonance...but they do 
-  // look the same when we reduce the LFO freq to zero. In this case, we can even give resonance.
-  // Maybe try to create a target signal using two filters simultaneously.
-  // maybe a function rsApplySamplerFilters()
-  // Apparently, the highpass freq doesn't get modulated. It remains static at 200 Hz
-  */
-
-  // I think, SamplePlayer::handleModulations is wrong. Specifically, the index i
-  //   float m  = modBuffer[2*i];
-  // in the loop over the mod matrix. We can't just use index i. We must figure out the array-index
-  // of the mod-source. ModulationConnector::getSourceIndex seems to be already made for this
-  // 
-
-  
   // Now use the fillfo opcodes - fillfo_depth should automatically modulate both filters (or in 
   // general: all filters, if there are more than 1):
-
-
-
-
-
-
-
-
-
-
-
+  setupCommonSettingsBp();
+  se.setRegionSetting(0,0, OC::fillfo_freq,  freq,  -1);
+  se.setRegionSetting(0,0, OC::fillfo_depth, depth, -1);
+  ok &= testSamplerNote2(&se, key, vel, yLpHp, yLpHp, tol);
 
 
   // ToDo:
-  // -Test with two filters - the LFO should affect both
+  // -Maybe test with more than two filters - the LFO should affect them all.
 
   rsAssert(ok);
   return ok;
