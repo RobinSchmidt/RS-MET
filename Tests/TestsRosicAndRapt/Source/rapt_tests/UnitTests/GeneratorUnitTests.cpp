@@ -3141,8 +3141,9 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, 1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
-  //ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);  // triggers assert!
+  //ok &= testSamplerNote(&se, key, vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);  // fails
+
  
   // Now we do not manually insert an amplifier. Instead, we just use the amplfo_depth opcode.
   // Desired behavior: se should auto-insert an amplifier:

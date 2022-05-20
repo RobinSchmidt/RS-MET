@@ -946,6 +946,12 @@ void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::str
   MM  mode   = r.getMode();
 
   // Handle special cases:
+  if(srcTp == OT::AmpLfo && tgtOp == OC::volumeN && mode == MM::absolute)
+  {
+    RAPT::rsAssert(srcIdx == 1, "There should be at most one AmpLfo");
+    s += "amplfo_depth=" + rsFloatToString(r.getDepth()) + "\n";
+    return;
+  }
   if(srcTp == OT::AmpEnv && tgtOp == OC::amplitudeN && mode == MM::absolute)
   {
     //return;
