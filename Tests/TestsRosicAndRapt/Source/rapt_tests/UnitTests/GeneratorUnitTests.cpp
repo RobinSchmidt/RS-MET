@@ -3422,7 +3422,7 @@ bool samplerFilterLfoTest()
 
   //// Test:
   //reso = 0;
-  //freq = 1.f;
+  freq = 1.f;
 
   // Create target signals:
   float f = rsPitchToFreq((float)key);
@@ -3432,9 +3432,18 @@ bool samplerFilterLfoTest()
   Vec lfo(N);
   for(int n = 0; n < N; n++)
     lfo[n] = sin(n * 2*PI*freq/fs);
-  Vec yLp = rsApplySamplerFilter(x,   FilterType::lp_12, lpCutoff, fs, reso, depth*lfo);
-  Vec yBp = rsApplySamplerFilter(yLp, FilterType::hp_12, hpCutoff, fs, reso, depth*lfo);
-  //rsPlotVectors(x, yLp, yBp);
+  Vec mod = depth*lfo;  // modulation signal
+  Vec yLp   = rsApplySamplerFilter(x,   FilterType::lp_12, lpCutoff, fs, reso, mod);
+  Vec yHp   = rsApplySamplerFilter(x,   FilterType::hp_12, hpCutoff, fs, reso, mod);
+  Vec yLpHp = rsApplySamplerFilter(yLp, FilterType::hp_12, hpCutoff, fs, reso, mod); // LP -> HP
+  Vec yHpLp = rsApplySamplerFilter(yHp, FilterType::lp_12, lpCutoff, fs, reso, mod); // HP -> LP
+  //rsPlotVectors(x, yLp,   yHp);
+  //rsPlotVectors(x, yLpHp, yHpLp);
+  // OK - it doesn't seem to make a difference, if we apply LP or HP first. The modulation does not
+  // seem to destroy the interchangebility. Oh - wait - towards the end, they diverge more, 
+  // especially with low reso
+  // But the highpass output yHp looks weird with high resonance - but yes - i think, it's 
+  // plausible: it has a lower resonance frequency
 
 
   // Create and set up engine:
@@ -3484,12 +3493,14 @@ bool samplerFilterLfoTest()
 
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, vel, outL, outR);
-  rsPlotVectors(x, yBp, outL);
+  //rsPlotVectors(x, yLpHp, outL);
+  //rsPlotVectors(x, yHpLp, outL);
+  rsPlotVectors(x, yLpHp, yHpLp, outL);
   // They look very different, even if we use a very slow LFO freq and zero resonance...but they do 
   // look the same when we reduce the LFO freq to zero. In this case, we can even give resonance.
   // Maybe try to create a target signal using two filters simultaneously.
   // maybe a function rsApplySamplerFilters()
-
+  // Apparently, the highpass freq doesn't get modulated. It remains static at 200 Hz
   
   
   // where
