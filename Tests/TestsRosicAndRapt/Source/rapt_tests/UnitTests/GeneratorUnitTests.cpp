@@ -254,7 +254,7 @@ bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   return errL <= tol && errR <= tol;
 }
 
-bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
+bool testSamplerNote1(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
   const std::vector<float>& targetL, const std::vector<float>& targetR, 
   float tol = 0.f, bool plot = false)
 {
@@ -671,7 +671,7 @@ bool samplerRegionPlayerTest()
   VecF tgt = sin440;
   float tol = 1.e-7f;  // ~= 140 dB SNR
   rsApplyDelay(tgt, delaySamples);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false); 
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgt, tgt, tol); 
 
   // Test some corner cases:
 
@@ -772,14 +772,14 @@ bool samplerBusModeTest()
   // In bus-mode, we want to see all 3 settings applied:
   se.setBusMode(true);
   tgt = instrAmp*groupAmp*regionAmp*sin440;
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false);
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgt, tgt, tol);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
   // In default mode (i.e. non-busMode), we want to see only the region setting applied:
   se.setBusMode(false);
   tgt = regionAmp*sin440;
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.0, false);
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgt, tgt, 0.0);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
@@ -800,7 +800,7 @@ bool samplerBusModeTest()
   se.setBusMode(false);
   tgtL = tgtR = sin440;
   rsApplyPan(tgtL, tgtR, regionPan/100);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f, false); 
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f); 
 
   // Now we want to see region, group and instrument pan combined:
   se.setBusMode(true);
@@ -808,7 +808,7 @@ bool samplerBusModeTest()
   rsApplyPan(tgtL, tgtR, regionPan/100);
   rsApplyPan(tgtL, tgtR, groupPan /100);
   rsApplyPan(tgtL, tgtR, instrPan /100);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f, false);
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f);
 
   // ToDo: test it also with constant power pan rule
 
@@ -828,7 +828,7 @@ bool samplerBusModeTest()
   se.setBusMode(false);
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7f, false);
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgt, tgt, 1.e-7f);
   ok &= se.getNumActiveLayers() == 1;        // it's still playing due to the delay
   ok &= se.getNumActiveGroupPlayers() == 0;  // no group player is/was used due to settings
 
@@ -838,7 +838,7 @@ bool samplerBusModeTest()
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
   rsApplyDelay(tgt, instrDelay);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7f, false);
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgt, tgt, 1.e-7f);
 
   //---------------------------------------------------------------------------
   // Test offset accumulation:
@@ -856,7 +856,7 @@ bool samplerBusModeTest()
   se.setBusMode(false);
   tgt = sin440;
   rsApplyDelay(tgt, -regionOffset);  // offset is like a negative delay
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7f, false);
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgt, tgt, 1.e-7f);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0; 
 
@@ -866,7 +866,7 @@ bool samplerBusModeTest()
   rsApplyDelay(tgt, -regionOffset); 
   rsApplyDelay(tgt, -groupOffset); 
   rsApplyDelay(tgt, -instrOffset); 
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7f, false);
+  ok &= testSamplerNote1(&se, 69.f, 127.f, tgt, tgt, 1.e-7f);
 
   //---------------------------------------------------------------------------
   // Test offset and delay (but only for the region setting):
@@ -1054,7 +1054,7 @@ bool samplerBusModeTest()
 
 
 
-  //rsAssert(ok, "samplerEngine2UnitTest failed");
+  rsAssert(ok, "samplerEngine2UnitTest failed");
   return ok;
 }
 
@@ -1618,11 +1618,11 @@ bool samplerAmplifierTest()
   addSingleSampleRegion(&se, noise, 60.f);
 
   // Test panning:
-  ok &= testSamplerNote(&se, 60.f, 127.f, noise, noise, 0.0, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, noise, noise, 0.0);
   se.setRegionSetting(0, 0, PST::panN, +100.f, 1);  // hard right
-  ok &= testSamplerNote(&se, 60.f, 127.f, 0.f*noise, 2.f*noise, 0.f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, 0.f*noise, 2.f*noise, 0.f);
   se.setRegionSetting(0, 0, PST::panN, -100.f, 1);  // hard left
-  ok &= testSamplerNote(&se, 60.f, 127.f, 2.f*noise, 0.f*noise, 0.f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, 2.f*noise, 0.f*noise, 0.f);
   se.setRegionSetting(0, 0, PST::panN, 0.f, 1);     // back to center
 
   // Set amplifier settings for region, group, instrument to 1,2,3 respectively and test it in both
@@ -1639,18 +1639,18 @@ bool samplerAmplifierTest()
   se.setInstrumentSetting(  PST::volumeN, iVol, 1);
   se.setBusMode(false);                // it should actually already be in that mode but anyway
   float g1 = RAPT::rsDbToAmp(rVol);    // only region gain counts
-  ok &= testSamplerNote(&se, 60.f, 127.f, g1*noise, g1*noise, 0.f, false);
+  ok &= testSamplerNote1(&se, 60.f, 127.f, g1*noise, g1*noise, 0.f);
 
   float g2 = RAPT::rsDbToAmp(rVol + gVol + iVol);  // gains accumulate
   se.setBusMode(true); 
-  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, false);
+  ok &= testSamplerNote1(&se, 60.f, 127.f, g2*noise, g2*noise, tol);
 
   // Now also with instrument-wide gain:
   iVol = 12.f;
   g2 = RAPT::rsDbToAmp(rVol + gVol + iVol);
   //se.reset();
   se.setInstrumentSetting(  PST::volumeN, iVol, 1);
-  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, false);
+  ok &= testSamplerNote1(&se, 60.f, 127.f, g2*noise, g2*noise, tol);
 
 
   return ok;
@@ -1705,7 +1705,7 @@ bool samplerFilterTest()
     for(int n = 0; n < N; n++)
       tgt[n] = flt.getSample(noise[n]);
     se.setRegionSetting(0, 0, PST::filN_type, (float) sfzType, 1);
-    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7f, plot);
+    return testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-7f, -1, plot, plot);
 
   };
   ok &= testAgainstOpf(flt.LOWPASS_IIT,  Type::lp_6, false);
@@ -1772,7 +1772,7 @@ bool samplerFilterTest()
     se.setRegionSetting(0, 0, PST::filN_type,  (float) sfzType, 1);
     se.setRegionSetting(0, 0, PST::cutoffN,    cutoff,          1);
     se.setRegionSetting(0, 0, PST::resonanceN, resoGain,        1); 
-    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, tol, plot);
+    return testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, tol, -1, plot, plot);
     // Tolerance needs to be a bit higher for 2nd order filters. 1/10^5 corresponds to a relative
     // SNR of 100 dB. It's "relative" in the sense that it is measured against the actual signal 
     // level and not against the maximum possible signal level (i think).
@@ -1902,7 +1902,7 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
   se.setRegionSetting(0, 0, PST::distortN_shape, float(shape1), 1);
   se.setRegionSetting(0, 0, PST::distortN_drive, drive1, 1);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-7f);
 
   // Set up one region within one group and add a waveshaper to the group. When two notes are being 
   // played, the waveshaper should be applied to the sum of both notes:
@@ -1974,7 +1974,7 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::distortN_dc, dc1, 1);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(drive1 * sin440[n] + dc1);  // maybe include a gain1, too
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7f, false);
+  ok &= testSamplerNote1(&se, 60.f, 127.f, tgt, tgt, 1.e-7f);
 
   // ToDo:
   // -Try different shapes, use different sets of parameters, use DC, postGain, etc.
@@ -2134,7 +2134,7 @@ bool samplerDspChainTest()
   se.setRegionSetting(0, 0, PST::cutoffN,   cutoff1, 1);
   se.setRegionSetting(0, 0, PST::filN_type, (float)Type::hp_6, 2);
   se.setRegionSetting(0, 0, PST::cutoffN,   cutoff2, 2);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
 
   // Add a waveshaper and after that a 3rd (lowpass) filter into the chain, such that 
   // the chain is now: LPF -> HPF -> WS -> LPF:
@@ -2152,7 +2152,7 @@ bool samplerDspChainTest()
   flt.reset();
   for(int n = 0; n < N; n++)
     tgt[n] = flt.getSample(tanh(drive * tgt[n]));
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
 
   // Updates the target signal according to new values of cutoff1,2,3 and drive
   auto updateTgt = [&]()
@@ -2178,19 +2178,19 @@ bool samplerDspChainTest()
   cutoff2 = 100.f;
   se.setRegionSetting(0, 0, PST::cutoffN, cutoff2, 2);
   updateTgt();
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
   cutoff1 = 4000.f;
   se.setRegionSetting(0, 0, PST::cutoffN, cutoff1, 1);
   updateTgt();
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
   cutoff3 = 3000.f;
   se.setRegionSetting(0, 0, PST::cutoffN, cutoff3, 3);
   updateTgt();
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
   drive = 8.0;
   se.setRegionSetting(0, 0, PST::distortN_drive, drive, -1);
   updateTgt();
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
 
   // OK - we currently have 3 filters with a waveshaper between filter 2 and filter 3. Now let's
   // check the behavior when we try to add a 5th filter without adding a 4th before. The desired 
@@ -2209,7 +2209,7 @@ bool samplerDspChainTest()
   svf.setGain(G);
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(tgt[n]);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
 
   // ToDo: 
   // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
@@ -2305,7 +2305,7 @@ bool samplerEqualizerTest()
   r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 1;
   applyEqs(noise, tgt, { gain1 }, { freq1 }, { bw1 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-5f);
   // Tolerance needs to be even higher than in the filter tests
 
   // Now we set only the gain of eq1. The freq and bandwidth should default to 50 Hz and 1 oct:
@@ -2315,7 +2315,7 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   ok &= r->getNumProcessors() == 1;
   applyEqs(noise, tgt, { gain1 }, { 50 }, { 1 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-3f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-3f);
   // Whoa - here we need a really high tolerance! OK, we have a moderately high Q and high gain and
   // a low frequency. Settings which are prone to numeric errors. But still, this is actually quite 
   // bad. Maybe we need to use double precision for filters and equalizers indeed. Or maybe use 
@@ -2333,17 +2333,17 @@ bool samplerEqualizerTest()
   r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 3;
   applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
 
   // Add band 2. This has a default freq of 500Hz:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain2, 2); 
   applyEqs(noise, tgt, { gain2, gain3 }, { 500.f, 5000.f }, { 1.f, 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-4f);
 
   // Add band 1. This has a default freq of 50Hz:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { 50.f, 500.f, 5000.f }, { 1.f, 1.f, 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-3f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-3f);
   // Here, we also need a high tolerance
 
   // Change settings of band 1 to something more benign from a numeric point of view:
@@ -2354,7 +2354,7 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_freq, freq1, 1);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw1, 1);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, 500.f, 5000.f }, { bw1, 1.f, 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-4f);
 
   // Change settings of band 2:
   gain2 = -6;
@@ -2364,7 +2364,7 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_freq, freq2, 2);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw2, 2);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, freq2, 5000.f }, { bw1, bw2, 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-4f);
 
   // Change settings of band 3:
   gain3 = 7;
@@ -2374,7 +2374,7 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_freq, freq3, 3);
   se.setRegionSetting(0, 0, OC::eqN_bw,     bw3, 3);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, freq2, freq3 }, { bw1, bw2, bw3 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-4f);
 
   // Add a 5th band with no 4th in between, so we get a dspChain with 5 eqs but the 4th is neutral.
   // The new eq should be at its default freq of 1000:
@@ -2386,7 +2386,7 @@ bool samplerEqualizerTest()
   ok &= r->getNumProcessors() == 5;
   applyEqs(noise, tgt, { gain1, gain2, gain3, gain5 }, { freq1, freq2, freq3, 1000 }, 
     { bw1, bw2, bw3, bw5 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4f, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-4f);
 
   // ToDo:
   // -Check that it all works also when we have one or more filters (via the actual filter opcode)
@@ -2920,7 +2920,7 @@ bool samplerKeyVelTrackTest()
   // Compute target amplitude for given settings of velocity and vel_track:
   float dB  = 40 * log10(127.f/vel);    // change of volume at given velocity
   float amp = RAPT::rsDbToAmp(0.01f * vel_track * dB);
-  ok &= testSamplerNote(&se, 60, vel, amp*noise, amp*noise, 0.f, false);
+  ok &= testSamplerNote2(&se, 60, vel, amp*noise, amp*noise, 0.f);
   // unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
   // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
 
@@ -2933,7 +2933,7 @@ bool samplerKeyVelTrackTest()
   se.setRegionSetting(0, 0, OC::ampN_keytrack,  key_track,  1);  // -1 dB/key (range: -96..+12)
   se.setRegionSetting(0, 0, OC::ampN_keycenter, 60,         1);  // neutral at A4
   se.setRegionSetting(0, 0, OC::PitchKeyCenter, key,       -1);  // to avoid transposition
-  ok &= testSamplerNote(&se, key, vel, amp*noise, amp*noise, 0.f, false);
+  ok &= testSamplerNote2(&se, key, vel, amp*noise, amp*noise, 0.f);
 
   // Test pitch-keytracking by setting it to 50% (or 50 cents per key), triggering a note 2 octaves
   // above the pitch_keycenter and verify that it gets transposed only by one octave:
@@ -2941,7 +2941,7 @@ bool samplerKeyVelTrackTest()
   key_track = 50.f;              // 50 cents per key
   se.setRegionSetting(0, 0, OC::PitchKeyTrack, key_track, -1);
   Vec tgt = rsApplyResampling(noise, 2.f);
-  ok &= testSamplerNote(&se, 84, vel, tgt, tgt, 0.f, false);  // 84 = 60 + 2*12
+  ok &= testSamplerNote2(&se, 84, vel, tgt, tgt, 0.f);  // 84 = 60 + 2*12
 
   // Test filter keytracking by creating a sort filter-whistle patch:
   se.clearRegionSettings(0, 0); 
@@ -2953,15 +2953,15 @@ bool samplerKeyVelTrackTest()
   se.setRegionSetting(0, 0, OC::resonanceN,      40.f,  1);  // we use high resonance
   float fs = (float)se.getOutputSampleRate();
   tgt = rsApplySamplerFilter(noise, FT::bp_6_6, 880.f, fs, 40.f); 
-  ok &= testSamplerNote(&se, 81, vel, tgt, tgt, 2.e-5f, false); // 81 = 69 + 12
+  ok &= testSamplerNote2(&se, 81, vel, tgt, tgt, 2.e-5f); // 81 = 69 + 12
 
   // Test vel-tracking:
   vel_track = -1200.f;  // -12 semitones reduction at min-vel, i.e. vel=1
   se.setRegionSetting(0, 0, OC::filN_veltrack, vel_track,  1); 
   tgt = rsApplySamplerFilter(noise, FT::bp_6_6, 440.f, fs, 40.f); 
-  ok &= testSamplerNote(&se, 69, 127, tgt, tgt, 4.e-5f, false);  // at key=69, keytrack should be neutral
+  ok &= testSamplerNote2(&se, 69, 127, tgt, tgt, 4.e-5f);  // at key=69, keytrack should be neutral
   tgt = rsApplySamplerFilter(noise, FT::bp_6_6, 220.f, fs, 40.f); 
-  ok &= testSamplerNote(&se, 69, 1, tgt, tgt, 0.00015f, false);
+  ok &= testSamplerNote2(&se, 69, 1, tgt, tgt, 0.00015f);
   // We need quite high tolerances here. I'm not sure about the veltrack formula - it's just a 
   // guess based on what i think, the behavior should be. I think, at vel = 127, the cutoff should 
   // be unmodified and at vel=1, the cutoff should be reduced by 1200 cents, i.e. 12 semitones, 
@@ -4174,7 +4174,7 @@ bool samplerFixedModulationsTest()
   // Produce sampler output signal and check against target:
 
   //Vec outL(N), outR(N);
-  ok &= testSamplerNote(&se, 69, 100, tgt, tgt, 1.e-7, true); // triggers assert
+  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, 1.e-7); // triggers assert
   //rsPlotVectors(dc, tgt, outL, outR);
 
   rsAssert(ok);
