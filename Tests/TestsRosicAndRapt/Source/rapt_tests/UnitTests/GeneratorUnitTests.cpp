@@ -4290,6 +4290,7 @@ bool samplerPatchTest_BandpassSaw()
   // Or maybe the tests could go into the existing RS-MET-Tests repo
   // see also here: https://github.com/sfz/tests/
 
+  // A Sawtooth with resonant lowpass and filter envelope:
   std::string sfz1 = "\
 <group>\n\
 <region>\n\
@@ -4299,6 +4300,7 @@ cutoff=2000 resonance=15 fil_type=lpf_2p\n\
 fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=0.5 fileg_release=0.5 fileg_depth=600\n\
 volume=-10\n\
 ";
+
 
   std::string sfz2 = "\
 <group>\n\
@@ -4315,6 +4317,17 @@ amplfo_freq=11 amplfo_depth=3\n\
 ";
   // there are two amplifiers in this patch in the se - i think, one should be sufficient
   // todo: add an fillfo, amplfo
+
+  // A sawtooth with amp env using shape parameters:
+  std::string sfz3 = "\
+<group>\n\
+<region>\n\
+sample=Saw2048.wav\n\
+loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
+ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
+ampeg_attack_shape=0.5\n\
+";
+  // triggers assert due to ampeg_attack_shape
 
   // Create the playback data:
   float fs = 44100;
