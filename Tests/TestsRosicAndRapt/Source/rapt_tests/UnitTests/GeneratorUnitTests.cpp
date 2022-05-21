@@ -4282,7 +4282,8 @@ bool samplerPatchTest_BandpassSaw()
 {
   bool ok = true;
 
-  // Create the sfz-strings defining the instruments:
+  // Create the sfz-strings defining the instruments (maybe factor out into separate functions - 
+  // one for each patch):
 
   std::string sfz1 = "\
 <group>\n\
@@ -4314,14 +4315,14 @@ volume=-10\n\
 
   using Note = rsTestNoteEvent;
   using NoteList = std::vector<Note>;
-  NoteList notes = { Note{45, v, 0, 50000} };
-  //NoteList notes = { Note{45, v, 0, 30000},  Note{52, v, 10000, 30000} };
+  //NoteList notes = { Note{45, v, 0, 50000} };
+  NoteList notes = { Note{45, v, 0, 50000},  Note{52, v, 10000, 50000} };
 
   // Create a sampler engine, set it up from the sfz string and let it produce the output according
   // to our sequence of notes
   rosic::Sampler::rsSamplerEngine2 se;
   se.setSampleRate(fs);
-  se.setFromSFZ(sfz1);
+  se.setFromSFZ(sfz2);
   using Vec = std::vector<float>;
   Vec outL(N), outR(N);
   getSamplerNotes(&se, notes, outL, outR);
