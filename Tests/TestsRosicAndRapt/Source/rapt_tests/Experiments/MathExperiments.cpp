@@ -4523,4 +4523,10 @@ https://oeis.org/A003415/list
 // https://en.wikipedia.org/wiki/Arithmetic_derivative
 // https://web.archive.org/web/20050426071741/http://web.mit.edu/lwest/www/intmain.pdf
 // http://oeis.org/wiki/Arithmetic_derivative
-
+// https://www.youtube.com/watch?v=lh1qbp7LpFU
+//
+// How to Differentiate a Number:
+// https://cs.uwaterloo.ca/journals/JIS/VOL6/Ufnarovski/ufnarovski.pdf - has generalization to irrationals
+//
+// The Arithmetic Derivative and Antiderivative:
+// https://cs.uwaterloo.ca/journals/JIS/VOL15/Kovic/kovic4.pdf
