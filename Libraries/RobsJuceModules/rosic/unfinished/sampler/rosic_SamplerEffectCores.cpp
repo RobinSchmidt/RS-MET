@@ -39,7 +39,8 @@ void LowFreqOscCore::processFrame(float* L, float* R)
 //=================================================================================================
 
 void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, float _hold, 
-  float _decay, float _sustain, float _release, float _end)
+  float _decay, float _sustain, float _release, float _end, float _attack_shape, 
+  float _decay_shape, float _release_shape)
 {
   start    = _start;
   delay    = _delay;
@@ -51,6 +52,29 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   release  = _release;
   end      = _end;
   noteIsOn = true;         // Maybe this should be a function parameter?
+
+
+
+
+  // Under construction:
+  // Compute internal shape parameters:
+
+  // Helper function to convert user-parameters for shapes to corresponding algo parameters:
+  auto convertShape = [](float p)
+  {
+    float c = 0.5f * (p + 1.f);       // -1...+1  ->  0...1
+    return 2.f * logf((1.f-c)/c);
+  };
+  // Adapted from rsNodeBasedFunction in romos. Probaly needs further adaptions. We should expect
+  // the input in -10...+10 instead of -1...+1
+
+  attShp = convertShape(_attack_shape);
+  decShp = convertShape(_decay_shape);
+  relShp = convertShape(_release_shape);
+
+
+
+
   resetState();
 }
 
@@ -108,6 +132,13 @@ void EnvGenCore::processFrame(float* L, float* R)
   //  note-off handling anyway. I think, the desired behavior is to immediately enter the release
   //  phase from whatever level we are currently on. Maybe we should keep a member y to hold the
   //  most recent output value.
+
+  //-For implementing the shape parameter, see EnvelopeADSR::processWithoutTriggerFlagCheck in 
+  // romos. It implements the formula...i think...from teh Ken steighlitz book? ..check that!
+  // See:
+  // https://sfzformat.com/opcodes/ampeg_attack_shape
+  // https://sfzformat.com/opcodes/ampeg_decay_shape
+  // https://sfzformat.com/opcodes/ampeg_release_shape
 }
 
 bool EnvGenCore::hasFinished() const

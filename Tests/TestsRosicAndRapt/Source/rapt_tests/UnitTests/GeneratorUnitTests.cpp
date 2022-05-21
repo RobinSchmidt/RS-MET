@@ -4288,6 +4288,7 @@ bool samplerPatchTest_BandpassSaw()
   // could also contain some unit tests. Maybe it should contain some example sfz patches along 
   // with their expected output. Maybe have two repos - one for the patches and one for the tests.
   // Or maybe the tests could go into the existing RS-MET-Tests repo
+  // see also here: https://github.com/sfz/tests/
 
   std::string sfz1 = "\
 <group>\n\

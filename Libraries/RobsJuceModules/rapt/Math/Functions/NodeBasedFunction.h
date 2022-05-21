@@ -259,7 +259,7 @@ public:
   an exponential saturation. */
   static inline T linVsExpFormulaScaler(T p)
   {
-    T c = T(0.5) * (p + 1);
+    T c = T(0.5) * (p + 1);       // -1...+1  ->  0...1
     return T(2) * log((1-c)/c);
   }
   // maybe move somewhere else

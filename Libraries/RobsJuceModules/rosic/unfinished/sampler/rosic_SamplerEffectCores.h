@@ -54,7 +54,8 @@ public:
 
   /** Time parameters are given in samples, levels as raw values with nominal range 0..1. */
   void setup(float start, float delay, float attack, float peak, float hold, float decay,
-    float sustain, float release, float end);
+    float sustain, float release, float end, float attack_shape = 0.f, 
+    float decay_shape = 0.f, float release_shape = 0.f);
   // Curently, the setup function also serves as noteOn but maybe that should be a separate 
   // function
 
@@ -86,8 +87,13 @@ protected:
   // ...but check sfz2, too
 
   // Algo data:
+  float attShp      = 0.f;    // Shape parameter for attack
+  float decShp      = 0.f;    // Shape parameter for decay
+  float relShp      = 0.f;    // Shape parameter for release
   int   sampleCount = 0;      // Keeps the current time in samples since triggering
   bool  noteIsOn    = false;
+
+
 
 };
 
