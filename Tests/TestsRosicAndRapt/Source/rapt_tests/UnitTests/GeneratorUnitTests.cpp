@@ -4231,15 +4231,88 @@ bool samplerModulationsTest()
   return ok;
 }
 
+/** Creates the directory with given name as subdirectory of the current working directory. The 
+path may or may not include a final slash or backslash character - that doesn't matter. */
+void rsCreateDirectory(const std::string& path)
+{
+  std::string tmp;
+  size_t L = path.length();
+  if(path[L-1] == '/' || path[L-1] == '\\')
+    tmp = path.substr(0, L-1);
+  else
+    tmp = path;
+  tmp = "mkdir " + tmp;
+  system(tmp.c_str());
+}
+// Maybe move as static function into rosic::File
+
+/** Generates the samples that are used in the test patches. */
+void generateTestSamples()
+{
+  // Create sample directory, if needed:
+  std::string path = "TestSamples/";
+  rsCreateDirectory(path);
+
+  // Shorthands for convenience:
+  using Vec = std::vector<float>;
+  std::string wav = ".wav";
+
+  // Create a single cycle sawtooth sample:
+  std::string name = "Saw2048";
+  float fs  = 56320;               // sample rate
+  int   N   = 2048;                // length of single cycle sample
+  float key = rsFreqToPitch(fs/N); // keycenter for test, should be 21 ~ A0 ~ 27.5 Hz
+  Vec   sample(N); 
+  double w = 2.0*PI/N;
+  for(int n = 0; n < N; n++)
+    sample[n] = (float) rsSawWave(w*n);
+  //rsPlotVectors(sample);
+  rosic::writeToMonoWaveFile((path+name+wav).c_str(), &sample[0], N, (int)fs, 16);
+
+
+  int dummy = 0;
+}
+
+bool samplerPatchTest_BandpassSaw()
+{
+  bool ok = true;
+
+
+  // ToDo:
+  // -use the Saw2048 sample, apply a lowpass and a highpass (both 1st order) with an ADSR 
+  //  envelope, maybe use keytracking at least for the highpass, maybe both
+  // -Make a patch featuring 3 eq bands at 500, 1000, 2000 Hz, the outer ones narrow dips, the 
+  //  inner a broad peak, Modulate all frequencies by an LFO. Emulates smallstone phaser.
+  //  Maybe use a stereo-shift
+  // -Make another similar patch but this time with the phaser on the group level in a mode where
+  //  the group acts as a sub-bus
+
+
+  rsAssert(ok);
+  return ok;
+}
+
+bool samplerExamplePatchesTest()
+{
+  bool ok = true;
+
+  generateTestSamples();
+  ok &= samplerPatchTest_BandpassSaw();
+
+  rsAssert(ok);
+  return ok;
+}
+
+
+
 
 bool samplerEngineUnitTest()
 {
   bool ok = true;
 
   // The new test that is currently under construction:
-  //ok &= samplerNoteOffTest();
-  ok &= samplerModulatorsTest();
-  ok &= samplerModulationsTest();
+  ok &= samplerExamplePatchesTest(); 
+
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataTest();           // datastructure for representing sfz instruments
@@ -4254,6 +4327,7 @@ bool samplerEngineUnitTest()
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes
   ok &= samplerNoteOffTest();        // note off behavior, i.e. envelope release etc.
+  ok &= samplerExamplePatchesTest(); // checks outputs of somewhat more complex patches
   rsAssert(ok);
 
   // ToDo:
