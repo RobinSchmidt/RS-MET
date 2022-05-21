@@ -494,10 +494,26 @@ void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N, float keyCente
 
 
 /** Fills the outL, outR arrays with the output of the given sampler engine for the given note. The
-optionla noteOffAt parameter specifies the sample instant at which a note-off is triggered in the
+optional noteOffAt parameter specifies the sample instant at which a note-off is triggered in the
 engine, if any. By default, no note-off will be triggered at all. */
 void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   std::vector<float>& outL, std::vector<float>& outR, int noteOffAt = -1);
+
+/** Class for representing midi note events for use in some of the sampler tests.  */
+struct rsTestNoteEvent
+{
+  int key    = 0;   // note number in 0..127
+  int vel    = 0;   // velocity in 0..127
+  int time   = 0;   // in samples
+  int length = 0;   // in samples
+};
+
+/** Fills the outL, outR arrays with the output of the given sampler engine for the given sequence
+of notes. */
+void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se, 
+  const std::vector<rsTestNoteEvent>& notes,
+  std::vector<float>& outL, std::vector<float>& outR);
+
 
 
 //=================================================================================================

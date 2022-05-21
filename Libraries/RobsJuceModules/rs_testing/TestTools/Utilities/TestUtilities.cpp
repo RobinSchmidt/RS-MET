@@ -236,3 +236,13 @@ void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   // ...also, we may want to reset the se just in case it already has notes running
 }
 
+void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se, 
+  const std::vector<rsTestNoteEvent>& notes,
+  std::vector<float>& outL, std::vector<float>& outR)
+{
+
+
+  int dummy = 0;
+}
+
+

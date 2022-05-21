@@ -4276,6 +4276,8 @@ void generateTestSamples()
   int dummy = 0;
 }
 
+
+
 bool samplerPatchTest_BandpassSaw()
 {
   bool ok = true;
@@ -4290,23 +4292,26 @@ cutoff=500 resonance=5 fil_type=hpf_2p\n\
 cutoff2=2000 resonance2=5 fil2_type=lpf_2p\n\
 fileg_attack=0.1 fileg_decay=0.2 fileg_sustain=0.5 fileg_release=0.5\n\
 ";
+  // todo: add an ampeg
 
   // Create the playback data:
-  float fs      = 44100;
-  int   N       = 5000;
+  float fs = 44100;
+  int   N  = 5000;
+  int   v  = 64;    // velocity
 
-  int   key1    = 45;       // key of first note
-  int   start1  = 0;        // start sample of 1st note, i.e. noteOn sample index
-  int   length1 = 3000;     // length between start1 and corresponding noteOff
+  using Note = rsTestNoteEvent;
+  using NoteList = std::vector<Note>;
+  NoteList notes = { Note{45, v, 0, 3000},  Note{52, v, 1000, 3000} };
 
-  int   key2    = 52;
-  // ToDo: make a data-structure for notes containing: key, vel, time, length
-
-
-
-
+  // Create a sampler engine, set it up from the sfz string and let it produce the output according
+  // to our sequence of notes
   rosic::Sampler::rsSamplerEngine2 se;
+  se.setSampleRate(fs);
   se.setFromSFZ(sfz);
+  using Vec = std::vector<float>;
+  Vec outL(N), outR(N);
+  getSamplerNotes(&se, notes, outL, outR);
+  rsPlotVectors(outL, outR);
 
 
   // ToDo:
