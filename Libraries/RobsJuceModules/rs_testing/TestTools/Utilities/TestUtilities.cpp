@@ -216,14 +216,14 @@ void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N, float keyCente
 void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   std::vector<float>& outL, std::vector<float>& outR, int noteOffAt)
 {
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
   rsAssert(outL.size() == outR.size());
-
-  rsZero(outL); 
+  rsZero(outL);
   rsZero(outR);
   se->reset();
 
-  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
-  using EvTp = Ev::Type;
+
   se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
   for(int n = 0; n < (int)outL.size(); n++)
   {
@@ -240,7 +240,28 @@ void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<rsTestNoteEvent>& notes,
   std::vector<float>& outL, std::vector<float>& outR)
 {
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+  rsAssert(outL.size() == outR.size());
+  rsZero(outL);
+  rsZero(outR);
+  se->reset();
 
+  for(int n = 0; n < (int)outL.size(); n++)
+  {
+    // Handle all note-ons for this sample:
+    for(int i = 0; i < notes.size(); ++i) {
+      if(notes[i].time == n)
+        se->handleMusicalEvent(Ev(EvTp::noteOn, notes[i].key, notes[i].vel)); }
+
+    // Handle all note-offs for this sample:
+    for(int i = 0; i < notes.size(); ++i) {
+      if(notes[i].time + notes[i].length == n)
+        se->handleMusicalEvent(Ev(EvTp::noteOn, notes[i].key, 0)); }
+
+    // Process audio sample:
+    se->processFrame(&outL[n], &outR[n]);
+  }
 
   int dummy = 0;
 }

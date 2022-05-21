@@ -4287,21 +4287,22 @@ bool samplerPatchTest_BandpassSaw()
 <group>\n\
 <region>\n\
 sample=Saw2048.wav\n\
-loop_start=0 loop_end=2048 pitch_keycenter=21\n\
+loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
 cutoff=500 resonance=5 fil_type=hpf_2p\n\
 cutoff2=2000 resonance2=5 fil2_type=lpf_2p\n\
 fileg_attack=0.1 fileg_decay=0.2 fileg_sustain=0.5 fileg_release=0.5\n\
+volume=-10\n\
 ";
-  // todo: add an ampeg
+  // todo: add an ampeg  loop_continuous
 
   // Create the playback data:
   float fs = 44100;
-  int   N  = 5000;
+  int   N  = 50000;
   int   v  = 64;    // velocity
 
   using Note = rsTestNoteEvent;
   using NoteList = std::vector<Note>;
-  NoteList notes = { Note{45, v, 0, 3000},  Note{52, v, 1000, 3000} };
+  NoteList notes = { Note{45, v, 0, 30000},  Note{52, v, 10000, 30000} };
 
   // Create a sampler engine, set it up from the sfz string and let it produce the output according
   // to our sequence of notes
@@ -4311,7 +4312,9 @@ fileg_attack=0.1 fileg_decay=0.2 fileg_sustain=0.5 fileg_release=0.5\n\
   using Vec = std::vector<float>;
   Vec outL(N), outR(N);
   getSamplerNotes(&se, notes, outL, outR);
-  rsPlotVectors(outL, outR);
+  //rsPlotVectors(outL, outR);
+
+  rosic::writeToStereoWaveFile("BandpassSaw1.wav", &outL[0], &outR[0], N, (int)fs, 16);
 
 
   // ToDo:
