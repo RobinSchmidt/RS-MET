@@ -4282,8 +4282,12 @@ bool samplerPatchTest_BandpassSaw()
 {
   bool ok = true;
 
-  // Create the sfz-strings defining the instruments (maybe factor out into separate functions - 
-  // one for each patch):
+  // Create the sfz-strings defining the instruments. Maybe factor out into separate functions - 
+  // one for each patch - maybe as static functions in a class. Maybe this example patch stuff 
+  // should go into an Experiment. Or maybe we should create repo for example patches and this repo
+  // could also contain some unit tests. Maybe it should contain some example sfz patches along 
+  // with their expected output. Maybe have two repos - one for the patches and one for the tests.
+  // Or maybe the tests could go into the existing RS-MET-Tests repo
 
   std::string sfz1 = "\
 <group>\n\
