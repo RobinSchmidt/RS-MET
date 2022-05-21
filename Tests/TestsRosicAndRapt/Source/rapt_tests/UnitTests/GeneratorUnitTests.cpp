@@ -4282,33 +4282,46 @@ bool samplerPatchTest_BandpassSaw()
 {
   bool ok = true;
 
-  // Create the sfz-string defining the instrument:
-  std::string sfz = "\
+  // Create the sfz-strings defining the instruments:
+
+  std::string sfz1 = "\
+<group>\n\
+<region>\n\
+sample=Saw2048.wav\n\
+loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
+cutoff=2000 resonance=15 fil_type=lpf_2p\n\
+fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=0.5 fileg_release=0.5 fileg_depth=600\n\
+volume=-10\n\
+";
+
+  std::string sfz2 = "\
 <group>\n\
 <region>\n\
 sample=Saw2048.wav\n\
 loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
 cutoff=500 resonance=5 fil_type=hpf_2p\n\
-cutoff2=2000 resonance2=5 fil2_type=lpf_2p\n\
-fileg_attack=0.1 fileg_decay=0.2 fileg_sustain=0.5 fileg_release=0.5\n\
+cutoff2=2000 resonance2=15 fil2_type=lpf_2p\n\
+fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=0.5 fileg_release=0.5 fileg_depth=600\n\
 volume=-10\n\
 ";
-  // todo: add an ampeg  loop_continuous
+  // fileg_depth seems to have no effect
+  // todo: add an ampeg  
 
   // Create the playback data:
   float fs = 44100;
-  int   N  = 50000;
+  int   N  = 80000;
   int   v  = 64;    // velocity
 
   using Note = rsTestNoteEvent;
   using NoteList = std::vector<Note>;
-  NoteList notes = { Note{45, v, 0, 30000},  Note{52, v, 10000, 30000} };
+  NoteList notes = { Note{45, v, 0, 50000} };
+  //NoteList notes = { Note{45, v, 0, 30000},  Note{52, v, 10000, 30000} };
 
   // Create a sampler engine, set it up from the sfz string and let it produce the output according
   // to our sequence of notes
   rosic::Sampler::rsSamplerEngine2 se;
   se.setSampleRate(fs);
-  se.setFromSFZ(sfz);
+  se.setFromSFZ(sfz1);
   using Vec = std::vector<float>;
   Vec outL(N), outR(N);
   getSamplerNotes(&se, notes, outL, outR);
