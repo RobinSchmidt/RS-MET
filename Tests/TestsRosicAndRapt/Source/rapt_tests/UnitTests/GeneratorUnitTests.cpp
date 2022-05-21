@@ -4300,13 +4300,15 @@ volume=-10\n\
 <region>\n\
 sample=Saw2048.wav\n\
 loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
-cutoff=500 resonance=5 fil_type=hpf_2p\n\
-cutoff2=2000 resonance2=15 fil2_type=lpf_2p\n\
-fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=50 fileg_release=0.2 fileg_depth=600\n\
-volume=-10\n\
+cutoff=200 resonance=5 fil_type=hpf_2p\n\
+cutoff2=1500 resonance2=15 fil2_type=lpf_2p\n\
+fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=50 fileg_release=0.2 fileg_depth=1200\n\
+fillfo_freq=7 fillfo_depth=300\n\
+volume=-15\n\
 ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
+amplfo_freq=11 amplfo_depth=3\n\
 ";
-  // 
+  // there are two amplifiers in this patch in the se - i think, one should be sufficient
   // todo: add an fillfo, amplfo
 
   // Create the playback data:
@@ -4316,8 +4318,8 @@ ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
 
   using Note = rsTestNoteEvent;
   using NoteList = std::vector<Note>;
-  //NoteList notes = { Note{45, v, 0, 50000} };
-  NoteList notes = { Note{45, v, 0, 50000},  Note{52, v, 10000, 50000} };
+  NoteList notes = { Note{45, v, 0, 50000} };
+  //NoteList notes = { Note{45, v, 0, 50000},  Note{52, v, 10000, 50000} };
 
   // Create a sampler engine, set it up from the sfz string and let it produce the output according
   // to our sequence of notes
