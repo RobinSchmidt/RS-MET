@@ -2,6 +2,21 @@
 // Helper functions (todo: move them either into the library or into TestUtilities.cpp in the
 // rs_testing module):
 
+/** Creates the directory with given name as subdirectory of the current working directory. The 
+path may or may not include a final slash or backslash character - that doesn't matter. */
+void rsCreateDirectory(const std::string& path)
+{
+  std::string tmp;
+  size_t L = path.length();
+  if(path[L-1] == '/' || path[L-1] == '\\')
+    tmp = path.substr(0, L-1);
+  else
+    tmp = path;
+  tmp = "mkdir " + tmp;
+  system(tmp.c_str());
+}
+// Maybe move as static function into rosic::File
+
 // Computes a linearly interpolated value from the given vector at the given position:
 template<class T>
 T getSampleAt(const std::vector<T>& v, T pos)
@@ -4231,20 +4246,7 @@ bool samplerModulationsTest()
   return ok;
 }
 
-/** Creates the directory with given name as subdirectory of the current working directory. The 
-path may or may not include a final slash or backslash character - that doesn't matter. */
-void rsCreateDirectory(const std::string& path)
-{
-  std::string tmp;
-  size_t L = path.length();
-  if(path[L-1] == '/' || path[L-1] == '\\')
-    tmp = path.substr(0, L-1);
-  else
-    tmp = path;
-  tmp = "mkdir " + tmp;
-  system(tmp.c_str());
-}
-// Maybe move as static function into rosic::File
+
 
 /** Generates the samples that are used in the test patches. */
 void generateTestSamples()
@@ -4278,7 +4280,7 @@ bool samplerPatchTest_BandpassSaw()
 {
   bool ok = true;
 
-  // Create an sfz-string:
+  // Create the sfz-string defining the instrument:
   std::string sfz = "\
 <group>\n\
 <region>\n\
@@ -4288,6 +4290,20 @@ cutoff=500 resonance=5 fil_type=hpf_2p\n\
 cutoff2=2000 resonance2=5 fil2_type=lpf_2p\n\
 fileg_attack=0.1 fileg_decay=0.2 fileg_sustain=0.5 fileg_release=0.5\n\
 ";
+
+  // Create the playback data:
+  float fs      = 44100;
+  int   N       = 5000;
+
+  int   key1    = 45;       // key of first note
+  int   start1  = 0;        // start sample of 1st note, i.e. noteOn sample index
+  int   length1 = 3000;     // length between start1 and corresponding noteOff
+
+  int   key2    = 52;
+  // ToDo: make a data-structure for notes containing: key, vel, time, length
+
+
+
 
   rosic::Sampler::rsSamplerEngine2 se;
   se.setFromSFZ(sfz);
