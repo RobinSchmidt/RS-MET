@@ -4250,15 +4250,16 @@ void rsCreateDirectory(const std::string& path)
 void generateTestSamples()
 {
   // Create sample directory, if needed:
-  std::string path = "TestSamples/";
-  rsCreateDirectory(path);
+  //std::string path = "TestSamples/";
+  //rsCreateDirectory(path);
+  //...hmm...maybe it's better to just write the files into the current directory
 
   // Shorthands for convenience:
   using Vec = std::vector<float>;
-  std::string wav = ".wav";
+  //std::string wav = ".wav";
 
   // Create a single cycle sawtooth sample:
-  std::string name = "Saw2048";
+  std::string name = "Saw2048.wav";
   float fs  = 56320;               // sample rate
   int   N   = 2048;                // length of single cycle sample
   float key = rsFreqToPitch(fs/N); // keycenter for test, should be 21 ~ A0 ~ 27.5 Hz
@@ -4267,7 +4268,7 @@ void generateTestSamples()
   for(int n = 0; n < N; n++)
     sample[n] = (float) rsSawWave(w*n);
   //rsPlotVectors(sample);
-  rosic::writeToMonoWaveFile((path+name+wav).c_str(), &sample[0], N, (int)fs, 16);
+  rosic::writeToMonoWaveFile(name.c_str(), &sample[0], N, (int)fs, 16);
 
 
   int dummy = 0;
@@ -4276,6 +4277,20 @@ void generateTestSamples()
 bool samplerPatchTest_BandpassSaw()
 {
   bool ok = true;
+
+  // Create an sfz-string:
+  std::string sfz = "\
+<group>\n\
+<region>\n\
+sample=Saw2048.wav\n\
+loop_start=0 loop_end=2048 pitch_keycenter=21\n\
+cutoff=500 resonance=5 fil_type=hpf_2p\n\
+cutoff2=2000 resonance2=5 fil2_type=lpf_2p\n\
+fileg_attack=0.1 fileg_decay=0.2 fileg_sustain=0.5 fileg_release=0.5\n\
+";
+
+  rosic::Sampler::rsSamplerEngine2 se;
+  se.setFromSFZ(sfz);
 
 
   // ToDo:
