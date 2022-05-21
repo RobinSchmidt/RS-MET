@@ -72,14 +72,22 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   decShp = convertShape(_decay_shape);
   relShp = convertShape(_release_shape);
 
-
-
+  // ToDo: precompute:
+  //   attScl = 1.f / (1.f - exp(attShp))
+  // etc. to avoid second per-sample call to exp in processFrame
 
   resetState();
 }
 
 void EnvGenCore::processFrame(float* L, float* R)
 {
+  auto shape = [](float t, float shp)
+  {
+    return (1.f - expf(t*shp)) / (1.f - expf(shp));
+    // return (1.f - expf(t*shp)) * scl;  // todo: optimization
+  };
+
+
   if(sampleCount < delay)     // or should it be <= ?
   { 
     //*L = *R = 0.f;          // or should we return "start"?
@@ -87,8 +95,12 @@ void EnvGenCore::processFrame(float* L, float* R)
   }
   else if(sampleCount < delay+attack)
   {
-    float t =  (delay+attack - sampleCount) / attack;
-    *L = *R = (1-t) * peak + t * start;
+    float t =  (delay+attack - sampleCount) / attack; // maybe keep attackRec = 1/attack
+    if(attShp == 0.f)
+      *L = *R = (1-t) * peak + t * start;   // maybe use start + (peak-start) * t
+    else
+      *L = *R = start + (peak-start) * shape(t, attShp);   // verify!
+
   }
   else if(sampleCount < delay+attack+hold)
   {
