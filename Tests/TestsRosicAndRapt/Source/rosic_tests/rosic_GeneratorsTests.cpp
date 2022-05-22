@@ -394,7 +394,7 @@ void samplerEnvelopeTest()
   float sustain   = 0.6f; // Level held during sustain after end of decay.
   float release   = 600;  // Length of release stage.
   float end       = 0.f;  // Level to end at, reached at end of release.
-  float att_shape = 0.5f; // Shape parameter for attack
+  float att_shape = 0.9f; // Shape parameter for attack
   float dec_shape = 0.f;  // Shape parameter for decay
   float rel_shape = 0.f;  // Shape parameter for release
 
@@ -415,6 +415,13 @@ void samplerEnvelopeTest()
   rsPlotVectors(outL);
 
   //romos::EnvelopeADSR eg1;
+
+  // ToDo:
+  // -I think, in the original formula, the shape parameter deterimines thorugh which 
+  //  y-coordinate the curve passes at the midpoint of the section. For shape=0.9, it goes
+  //  thorugh y=0.95 for t=0.5 (t normalized to 0..1). That's 90% off from where it would be
+  //  supposed to be, when there is no curvature (namely at 0.5).
+  // -Maybe parametrize the shape in terms of
 
 
 

@@ -99,13 +99,10 @@ void EnvGenCore::processFrame(float* L, float* R)
     if(attShp == 0.f)
       *L = *R = (1-t) * peak + t * start;   // maybe use start + (peak-start) * t
     else
-      *L = *R = start + (peak-start) * shape(-t, attShp);   // verify!
-    // hmm,... neither shape(t, attShp) nor shape(-t, attShp) works. todo: compare with 
-    // implementation in romos
+      *L = *R = start + (peak-start) * shape(1-t, attShp);   // verify!
 
-    // actually, we should probably use t = (sampleCount - (delay+attack)) / attack and adapt the
-    // formulas
-
+    // Actually, we should probably use t = (sampleCount - (delay+attack)) / attack and adapt the
+    // formulas, i.e. swap the roles of t and 1-t. That makes more sense
   }
   else if(sampleCount < delay+attack+hold)
   {
