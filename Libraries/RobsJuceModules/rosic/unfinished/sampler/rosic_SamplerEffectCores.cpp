@@ -97,12 +97,9 @@ void EnvGenCore::processFrame(float* L, float* R)
   {
     float t =  (delay+attack - sampleCount) / attack; // maybe keep attackRec = 1/attack
     if(attShp == 0.f)
-      *L = *R = (1-t) * peak + t * start;   // maybe use start + (peak-start) * t
+      *L = *R = (1-t) * peak + t * start; 
     else
-      *L = *R = start + (peak-start) * shape(1-t, attShp);   // verify!
-
-    // Actually, we should probably use t = (sampleCount - (delay+attack)) / attack and adapt the
-    // formulas, i.e. swap the roles of t and 1-t. That makes more sense
+      *L = *R = start + (peak-start) * shape(1-t, attShp);
   }
   else if(sampleCount < delay+attack+hold)
   {
@@ -111,7 +108,10 @@ void EnvGenCore::processFrame(float* L, float* R)
   else if(sampleCount < delay+attack+hold+decay)
   {
     float t =  (delay+attack+hold+decay - sampleCount) / decay;
-    *L = *R = (1-t) * sustain + t * peak;
+    if(decShp == 0.f)
+      *L = *R = (1-t) * sustain + t * peak;
+    else
+      *L = *R = peak + (sustain-peak) * shape(1-t, decShp);
   }
   else if(noteIsOn)
   {
@@ -146,9 +146,11 @@ void EnvGenCore::processFrame(float* L, float* R)
   //  note-off handling anyway. I think, the desired behavior is to immediately enter the release
   //  phase from whatever level we are currently on. Maybe we should keep a member y to hold the
   //  most recent output value.
+  // -Maybe use t = (sampleCount - (delay+attack)) / attack and adapt the formulas, i.e. swap the
+  //  roles of t and 1-t. That makes more sense...but that doesn't seem to work? WTF?
 
-  //-For implementing the shape parameter, see EnvelopeADSR::processWithoutTriggerFlagCheck in 
-  // romos. It implements the formula...i think...from teh Ken steighlitz book? ..check that!
+  //-For implementing the correct scaling of shape parameters, generate some reference output 
+  // using sfz+ using a DC with an amp env and shapes of 1,2,..,10
   // See:
   // https://sfzformat.com/opcodes/ampeg_attack_shape
   // https://sfzformat.com/opcodes/ampeg_decay_shape
