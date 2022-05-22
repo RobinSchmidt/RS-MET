@@ -379,6 +379,20 @@ void rotes::testTurtleSource()
 
 }
 
+void samplerEnvelopeTest()
+{
+  // Test parameters:
+  float fs = 1.f;       // sample rate
+  
+
+  using namespace rosic::Sampler;
+  EnvGenCore eg;
+
+
+
+  int dummy = 0;
+}
+
 void samplerPatchTest_BandpassSaw()
 {
   // Create the sfz-strings defining the instruments. Maybe factor out into separate functions - 
@@ -464,9 +478,10 @@ ampeg_attack_shape=0.5\n\
 
 void rotes::testSamplerEngine()
 {
+  samplerEnvelopeTest();
 
-  generateTestSamples();
-  samplerPatchTest_BandpassSaw();
+  //generateTestSamples();
+  //samplerPatchTest_BandpassSaw();
 
 
   int dummy = 0;
