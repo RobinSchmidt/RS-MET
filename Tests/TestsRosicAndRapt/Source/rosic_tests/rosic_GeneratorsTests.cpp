@@ -394,7 +394,7 @@ void samplerEnvelopeTest()
   float sustain   = 0.6f; // Level held during sustain after end of decay.
   float release   = 600;  // Length of release stage.
   float end       = 0.f;  // Level to end at, reached at end of release.
-  float att_shape = 0.f;  // Shape parameter for attack
+  float att_shape = 0.5f; // Shape parameter for attack
   float dec_shape = 0.f;  // Shape parameter for decay
   float rel_shape = 0.f;  // Shape parameter for release
 
@@ -413,6 +413,8 @@ void samplerEnvelopeTest()
   }
   rsAssert(outR == outL);
   rsPlotVectors(outL);
+
+  //romos::EnvelopeADSR eg1;
 
 
 
