@@ -4246,138 +4246,19 @@ bool samplerModulationsTest()
   return ok;
 }
 
-
-
-/** Generates the samples that are used in the test patches. */
-void generateTestSamples()
-{
-  // Create sample directory, if needed:
-  //std::string path = "TestSamples/";
-  //rsCreateDirectory(path);
-  //...hmm...maybe it's better to just write the files into the current directory
-
-  // Shorthands for convenience:
-  using Vec = std::vector<float>;
-  //std::string wav = ".wav";
-
-  // Create a single cycle sawtooth sample:
-  std::string name = "Saw2048.wav";
-  float fs  = 56320;               // sample rate
-  int   N   = 2048;                // length of single cycle sample
-  float key = rsFreqToPitch(fs/N); // keycenter for test, should be 21 ~ A0 ~ 27.5 Hz
-  Vec   sample(N); 
-  double w = 2.0*PI/N;
-  for(int n = 0; n < N; n++)
-    sample[n] = (float) rsSawWave(w*n);
-  //rsPlotVectors(sample);
-  rosic::writeToMonoWaveFile(name.c_str(), &sample[0], N, (int)fs, 16);
-
-
-  int dummy = 0;
-}
-
-
-
-bool samplerPatchTest_BandpassSaw()
-{
-  bool ok = true;
-
-  // Create the sfz-strings defining the instruments. Maybe factor out into separate functions - 
-  // one for each patch - maybe as static functions in a class. Maybe this example patch stuff 
-  // should go into an Experiment. Or maybe we should create repo for example patches and this repo
-  // could also contain some unit tests. Maybe it should contain some example sfz patches along 
-  // with their expected output. Maybe have two repos - one for the patches and one for the tests.
-  // Or maybe the tests could go into the existing RS-MET-Tests repo
-  // see also here: https://github.com/sfz/tests/
-
-  // A Sawtooth with resonant lowpass and filter envelope:
-  std::string sfz1 = "\
-<group>\n\
-<region>\n\
-sample=Saw2048.wav\n\
-loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
-cutoff=2000 resonance=15 fil_type=lpf_2p\n\
-fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=0.5 fileg_release=0.5 fileg_depth=600\n\
-volume=-10\n\
-";
-
-
-  std::string sfz2 = "\
-<group>\n\
-<region>\n\
-sample=Saw2048.wav\n\
-loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
-cutoff=200 resonance=5 fil_type=hpf_2p\n\
-cutoff2=1500 resonance2=15 fil2_type=lpf_2p\n\
-fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=50 fileg_release=0.2 fileg_depth=1200\n\
-fillfo_freq=7 fillfo_depth=300\n\
-volume=-15\n\
-ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
-amplfo_freq=11 amplfo_depth=3\n\
-";
-  // there are two amplifiers in this patch in the se - i think, one should be sufficient
-  // todo: add an fillfo, amplfo
-
-  // A sawtooth with amp env using shape parameters:
-  std::string sfz3 = "\
-<group>\n\
-<region>\n\
-sample=Saw2048.wav\n\
-loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
-ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
-ampeg_attack_shape=0.5\n\
-";
-  // triggers assert due to ampeg_attack_shape
-
-  // Create the playback data:
-  float fs = 44100;
-  int   N  = 90000;
-  int   v  = 64;    // velocity
-
-  using Note = rsTestNoteEvent;
-  using NoteList = std::vector<Note>;
-  NoteList notes = { Note{45, v, 0, 50000} };
-  //NoteList notes = { Note{45, v, 0, 50000},  Note{52, v, 10000, 50000} };
-
-  // Create a sampler engine, set it up from the sfz string and let it produce the output according
-  // to our sequence of notes
-  rosic::Sampler::rsSamplerEngine2 se;
-  se.setSampleRate(fs);
-  se.setFromSFZ(sfz2);
-  using Vec = std::vector<float>;
-  Vec outL(N), outR(N);
-  getSamplerNotes(&se, notes, outL, outR);
-  //rsPlotVectors(outL, outR);
-
-  rosic::writeToStereoWaveFile("BandpassSaw1.wav", &outL[0], &outR[0], N, (int)fs, 16);
-
-
-  // ToDo:
-  // -use the Saw2048 sample, apply a lowpass and a highpass (both 1st order) with an ADSR 
-  //  envelope, maybe use keytracking at least for the highpass, maybe both
-  // -Make a patch featuring 3 eq bands at 500, 1000, 2000 Hz, the outer ones narrow dips, the 
-  //  inner a broad peak, Modulate all frequencies by an LFO. Emulates smallstone phaser.
-  //  Maybe use a stereo-shift
-  // -Make another similar patch but this time with the phaser on the group level in a mode where
-  //  the group acts as a sub-bus
-
-
-  rsAssert(ok);
-  return ok;
-}
-
+/*
 bool samplerExamplePatchesTest()
 {
   bool ok = true;
 
-  generateTestSamples();
-  ok &= samplerPatchTest_BandpassSaw();
+  //generateTestSamples();
+  //ok &= samplerPatchTest_BandpassSaw();
+  // moved to Experiments
 
   rsAssert(ok);
   return ok;
 }
-
-
+*/
 
 
 bool samplerEngineUnitTest()
@@ -4385,7 +4266,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerExamplePatchesTest(); 
+  //ok &= samplerExamplePatchesTest(); 
 
 
   // The tests, that already pass and are supposed to continue to do so:
@@ -4401,7 +4282,7 @@ bool samplerEngineUnitTest()
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes
   ok &= samplerNoteOffTest();        // note off behavior, i.e. envelope release etc.
-  ok &= samplerExamplePatchesTest(); // checks outputs of somewhat more complex patches
+  //ok &= samplerExamplePatchesTest(); // checks outputs of somewhat more complex patches
   rsAssert(ok);
 
   // ToDo:

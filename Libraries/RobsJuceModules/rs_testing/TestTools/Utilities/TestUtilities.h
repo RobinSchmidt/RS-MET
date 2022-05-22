@@ -514,6 +514,8 @@ void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<rsTestNoteEvent>& notes,
   std::vector<float>& outL, std::vector<float>& outR);
 
+/** Generates the samples that are used in the test patches. */
+void generateTestSamples();
 
 
 //=================================================================================================

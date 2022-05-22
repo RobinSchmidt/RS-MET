@@ -266,4 +266,29 @@ void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se,
   int dummy = 0;
 }
 
+void generateTestSamples()  // rename to gerenrateSamplerTestSamples
+{
+  // Create sample directory, if needed:
+  //std::string path = "TestSamples/";
+  //rsCreateDirectory(path);
+  //...hmm...maybe it's better to just write the files into the current directory
 
+  // Shorthands for convenience:
+  using Vec = std::vector<float>;
+  //std::string wav = ".wav";
+
+  // Create a single cycle sawtooth sample:
+  std::string name = "Saw2048.wav";
+  float fs  = 56320;               // sample rate
+  int   N   = 2048;                // length of single cycle sample
+  float key = rsFreqToPitch(fs/N); // keycenter for test, should be 21 ~ A0 ~ 27.5 Hz
+  Vec   sample(N); 
+  double w = 2.0*PI/N;
+  for(int n = 0; n < N; n++)
+    sample[n] = (float) rsSawWave(w*n);
+  //rsPlotVectors(sample);
+  rosic::writeToMonoWaveFile(name.c_str(), &sample[0], N, (int)fs, 16);
+
+
+  int dummy = 0;
+}

@@ -73,6 +73,7 @@ bool testSnowflake();
 bool testResetter();
 void testTurtleReverse();
 void testTurtleSource();
+void testSamplerEngine();
 
 // modulators:
 void testConsecutiveExponentialDecay();

@@ -378,3 +378,96 @@ void rotes::testTurtleSource()
   result &= runTurtleTest(ts1, ts2, N, true);
 
 }
+
+void samplerPatchTest_BandpassSaw()
+{
+  // Create the sfz-strings defining the instruments. Maybe factor out into separate functions - 
+  // one for each patch - maybe as static functions in a class. Maybe this example patch stuff 
+  // should go into an Experiment. Or maybe we should create repo for example patches and this repo
+  // could also contain some unit tests. Maybe it should contain some example sfz patches along 
+  // with their expected output. Maybe have two repos - one for the patches and one for the tests.
+  // Or maybe the tests could go into the existing RS-MET-Tests repo
+  // see also here: https://github.com/sfz/tests/
+
+  // A Sawtooth with resonant lowpass and filter envelope:
+  std::string sfz1 = "\
+<group>\n\
+<region>\n\
+sample=Saw2048.wav\n\
+loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
+cutoff=2000 resonance=15 fil_type=lpf_2p\n\
+fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=0.5 fileg_release=0.5 fileg_depth=600\n\
+volume=-10\n\
+";
+
+
+  std::string sfz2 = "\
+<group>\n\
+<region>\n\
+sample=Saw2048.wav\n\
+loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
+cutoff=200 resonance=5 fil_type=hpf_2p\n\
+cutoff2=1500 resonance2=15 fil2_type=lpf_2p\n\
+fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=50 fileg_release=0.2 fileg_depth=1200\n\
+fillfo_freq=7 fillfo_depth=300\n\
+volume=-15\n\
+ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
+amplfo_freq=11 amplfo_depth=3\n\
+";
+  // there are two amplifiers in this patch in the se - i think, one should be sufficient
+  // todo: add an fillfo, amplfo
+
+  // A sawtooth with amp env using shape parameters:
+  std::string sfz3 = "\
+<group>\n\
+<region>\n\
+sample=Saw2048.wav\n\
+loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
+ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
+ampeg_attack_shape=0.5\n\
+";
+  // triggers assert due to ampeg_attack_shape
+
+  // Create the playback data:
+  float fs = 44100;
+  int   N  = 90000;
+  int   v  = 64;    // velocity
+
+  using Note = rsTestNoteEvent;
+  using NoteList = std::vector<Note>;
+  NoteList notes = { Note{45, v, 0, 50000} };
+  //NoteList notes = { Note{45, v, 0, 50000},  Note{52, v, 10000, 50000} };
+
+  // Create a sampler engine, set it up from the sfz string and let it produce the output according
+  // to our sequence of notes
+  rosic::Sampler::rsSamplerEngine2 se;
+  se.setSampleRate(fs);
+  se.setFromSFZ(sfz2);
+  using Vec = std::vector<float>;
+  Vec outL(N), outR(N);
+  getSamplerNotes(&se, notes, outL, outR);
+  //rsPlotVectors(outL, outR);
+
+  rosic::writeToStereoWaveFile("BandpassSaw1.wav", &outL[0], &outR[0], N, (int)fs, 16);
+
+
+  // ToDo:
+  // -use the Saw2048 sample, apply a lowpass and a highpass (both 1st order) with an ADSR 
+  //  envelope, maybe use keytracking at least for the highpass, maybe both
+  // -Make a patch featuring 3 eq bands at 500, 1000, 2000 Hz, the outer ones narrow dips, the 
+  //  inner a broad peak, Modulate all frequencies by an LFO. Emulates smallstone phaser.
+  //  Maybe use a stereo-shift
+  // -Make another similar patch but this time with the phaser on the group level in a mode where
+  //  the group acts as a sub-bus
+}
+
+
+void rotes::testSamplerEngine()
+{
+
+  generateTestSamples();
+  samplerPatchTest_BandpassSaw();
+
+
+  int dummy = 0;
+}
