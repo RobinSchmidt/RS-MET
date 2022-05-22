@@ -382,11 +382,37 @@ void rotes::testTurtleSource()
 void samplerEnvelopeTest()
 {
   // Test parameters:
-  float fs = 1.f;       // sample rate
-  
+  float fs        = 1.f;  // sample rate
+  int   N         = 1500; // number of samples
+  int   nOff      =  800; 
+  float start     = 0.f;  // Level to start from.
+  float delay     = 0;    // Delay between trigger and attack stage.
+  float attack    = 100;  // Length of attack stage.
+  float peak      = 1.f;  // Peak level, reached at end of attack stage.
+  float hold      = 0;    // Time that the peak level is being held before entering decay.
+  float decay     = 300;  // Length of the decay stage.
+  float sustain   = 0.6f; // Level held during sustain after end of decay.
+  float release   = 600;  // Length of release stage.
+  float end       = 0.f;  // Level to end at, reached at end of release.
+  float att_shape = 0.f;  // Shape parameter for attack
+  float dec_shape = 0.f;  // Shape parameter for decay
+  float rel_shape = 0.f;  // Shape parameter for release
 
+  // Create and plot envelope:
   using namespace rosic::Sampler;
+  using Vec = std::vector<float>;
   EnvGenCore eg;
+  eg.setup(start, delay, attack, peak, hold, decay, sustain, release, end, att_shape, dec_shape,
+    rel_shape);
+  Vec outL(N), outR(N);
+  for(int n = 0; n < N; n++)
+  {
+    if(n == nOff)
+      eg.noteOff();
+    eg.processFrame(&outL[n], &outR[n]);
+  }
+  rsAssert(outR == outL);
+  rsPlotVectors(outL);
 
 
 
