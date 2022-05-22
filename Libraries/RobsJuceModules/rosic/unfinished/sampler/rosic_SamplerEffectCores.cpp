@@ -87,6 +87,16 @@ void EnvGenCore::processFrame(float* L, float* R)
     // return (1.f - expf(t*shp)) * scl;  // todo: optimization
   };
 
+  auto assignOutputs = [&](float t, float y0, float y1, float shp)
+  {
+    if(shp == 0.f)
+      *L = *R = (1.f-t) * y1 + t * y0; 
+    else
+      *L = *R = y0 + (y1-y0) * shape(1.f-t, shp);
+    // ToDo: verify, if this gets inlined. If not, try to enforce it maybe by dragging it into
+    // the .h file. Or maybe "inline" can be used on lambda functions as well?
+  };
+
 
   if(sampleCount < delay)     // or should it be <= ?
   { 
@@ -96,10 +106,7 @@ void EnvGenCore::processFrame(float* L, float* R)
   else if(sampleCount < delay+attack)
   {
     float t =  (delay+attack - sampleCount) / attack; // maybe keep attackRec = 1/attack
-    if(attShp == 0.f)
-      *L = *R = (1-t) * peak + t * start; 
-    else
-      *L = *R = start + (peak-start) * shape(1-t, attShp);
+    assignOutputs(t, start, peak, attShp);
   }
   else if(sampleCount < delay+attack+hold)
   {
@@ -108,10 +115,7 @@ void EnvGenCore::processFrame(float* L, float* R)
   else if(sampleCount < delay+attack+hold+decay)
   {
     float t =  (delay+attack+hold+decay - sampleCount) / decay;
-    if(decShp == 0.f)
-      *L = *R = (1-t) * sustain + t * peak;
-    else
-      *L = *R = peak + (sustain-peak) * shape(1-t, decShp);
+    assignOutputs(t, peak, sustain, decShp);
   }
   else if(noteIsOn)
   {
@@ -122,10 +126,7 @@ void EnvGenCore::processFrame(float* L, float* R)
   else if(sampleCount < delay+attack+hold+decay+release)
   {
     float t = (delay+attack+hold+decay+release - sampleCount) / release;
-    if(relShp == 0.f)
-      *L = *R = (1-t) * end + t * sustain;
-    else
-      *L = *R = sustain + (end-sustain) * shape(1-t, relShp);
+    assignOutputs(t, sustain, end, relShp);
   }
   else
   {
@@ -146,6 +147,9 @@ void EnvGenCore::processFrame(float* L, float* R)
   //   delay+attack+hold+...
   //  -Avoid the division by computing the current output recursively, i.e. from previous output
   //   and some increment
+  //  -convert divisions to multiplications.
+  //  -precompute the 1 / (1.f - expf(shp))  used in the shape function
+  //  -use an optimized exp implementation
   // -What if a note-off is received before we reach sustain? We actually need some sort of 
   //  note-off handling anyway. I think, the desired behavior is to immediately enter the release
   //  phase from whatever level we are currently on. Maybe we should keep a member y to hold the
