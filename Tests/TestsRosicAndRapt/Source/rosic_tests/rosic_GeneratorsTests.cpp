@@ -396,7 +396,7 @@ void samplerEnvelopeTest()
   float end       =  0.f;  // Level to end at, reached at end of release.
   float att_shape = +0.7f; // Shape parameter for attack
   float dec_shape = +0.7f; // Shape parameter for decay
-  float rel_shape =  0.f;  // Shape parameter for release
+  float rel_shape = +0.7f; // Shape parameter for release
 
   // Create and plot envelope:
   using namespace rosic::Sampler;

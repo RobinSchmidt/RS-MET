@@ -121,8 +121,11 @@ void EnvGenCore::processFrame(float* L, float* R)
   }
   else if(sampleCount < delay+attack+hold+decay+release)
   {
-    float t =  (delay+attack+hold+decay+release - sampleCount) / release;
-    *L = *R = (1-t) * end + t * sustain;
+    float t = (delay+attack+hold+decay+release - sampleCount) / release;
+    if(relShp == 0.f)
+      *L = *R = (1-t) * end + t * sustain;
+    else
+      *L = *R = sustain + (end-sustain) * shape(1-t, relShp);
   }
   else
   {
@@ -132,6 +135,7 @@ void EnvGenCore::processFrame(float* L, float* R)
   sampleCount++;
 
   // ToDo:
+  // -Factor out the shape-generation into a little (hoepfully inlined) helper function
   // -Try to optimize this but keep the original code somewhere as prototype to create reference
   //  output for unit tests.
   //  -The time variables should be float -> saves the conversion
