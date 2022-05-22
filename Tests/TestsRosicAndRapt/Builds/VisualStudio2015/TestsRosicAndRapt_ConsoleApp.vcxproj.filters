@@ -5201,6 +5201,9 @@
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </None>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\PolyphonyInRosic.txt">
       <Filter>JUCE Modules\rosic</Filter>
     </None>

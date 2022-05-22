@@ -3292,6 +3292,7 @@
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md"/>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\PolyphonyInRosic.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\RosicCodingStyle.txt"/>
