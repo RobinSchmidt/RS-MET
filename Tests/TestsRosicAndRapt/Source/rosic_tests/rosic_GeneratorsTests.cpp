@@ -394,9 +394,9 @@ void samplerEnvelopeTest()
   float sustain   =  0.6f; // Level held during sustain after end of decay.
   float release   =  600;  // Length of release stage.
   float end       =  0.f;  // Level to end at, reached at end of release.
-  float att_shape = +0.2f; // Shape parameter for attack
-  float dec_shape = -0.7f; // Shape parameter for decay
-  float rel_shape = +0.7f; // Shape parameter for release
+  float att_shape =  0.0f;     // Shape parameter for attack
+  float dec_shape = -10.3616f; // Shape parameter for decay, -10.3616 is the default in sfz
+  float rel_shape = -10.3616f; // Shape parameter for release
 
   // Create and plot envelope:
   using namespace rosic::Sampler;
@@ -424,6 +424,9 @@ void samplerEnvelopeTest()
   // -Do some unit tests that looks at the values in the middles of the sections for shape=0,
   //  +0.9 and -0.9 (should be 0.5, 0.95 and 0.05).
   // -Maybe parametrize the shape in terms of
+  // -Compute the level at the end when shape = -10.3616...maybe it's some nice target value like
+  //  0.0001 or something? Try to figure out, where this strange number comes from. Hmm...nope:
+  //  exp(-10.3616) = 0.0000316238175923419
 
 
 

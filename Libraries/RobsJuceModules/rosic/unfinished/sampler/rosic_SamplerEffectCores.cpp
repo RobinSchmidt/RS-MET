@@ -62,6 +62,8 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   // Helper function to convert user-parameters for shapes to corresponding algo parameters:
   auto convertShape = [](float p)
   {
+    return p;  // perhaps, we should just use the raw value without any conversion formula?
+    
     float c = 0.5f * (p + 1.f);       // -1...+1  ->  0...1
     return 2.f * logf((1.f-c)/c);
   };
@@ -71,6 +73,10 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   attShp = convertShape(_attack_shape);
   decShp = convertShape(_decay_shape);
   relShp = convertShape(_release_shape);
+
+
+
+
 
   // ToDo: precompute:
   //   attScl = 1.f / (1.f - exp(attShp))
@@ -84,7 +90,7 @@ void EnvGenCore::processFrame(float* L, float* R)
   auto shape = [](float t, float shp)
   {
     return (1.f - expf(t*shp)) / (1.f - expf(shp));
-    // return (1.f - expf(t*shp)) * scl;  // todo: optimization
+    // return (1.f - expf(t*shp)) * scl;  // Optimize: precompute 1/(1-exp(shp))
   };
 
   auto assignOutputs = [&](float t, float y0, float y1, float shp)
@@ -163,6 +169,29 @@ void EnvGenCore::processFrame(float* L, float* R)
   // https://sfzformat.com/opcodes/ampeg_attack_shape
   // https://sfzformat.com/opcodes/ampeg_decay_shape
   // https://sfzformat.com/opcodes/ampeg_release_shape
+  // https://sfzformat.com/opcodes/egN_shapeX
+  // ...or wait: maybe sfz+ doesn't support it because it's not part of sfz v1? Maybe look at the 
+  // sfizz source code
+  // https://github.com/sfztools/sfizz/blob/develop/src/sfizz/modulations/sources/FlexEnvelope.cpp
+  // https://github.com/sfztools/sfizz/blob/develop/src/sfizz/modulations/sources/ADSREnvelope.cpp
+  // https://github.com/sfztools/sfizz/blob/develop/src/sfizz/ADSREnvelope.cpp
+
+  // https://github.com/sfztools/sfizz/blob/develop/src/sfizz/FlexEnvelope.cpp
+  // apparently, the DSP is in FlexEnvelope::Impl::process - i don't see any shape handling there,
+  // so maybe it's not implemented, i.e. they support only linear envelopes?
+  //
+  // https://github.com/sfztools/sfizz/blob/develop/tests/ADSREnvelopeT.cpp
+  // ..i didn't find the relevant code yet
+  //
+  // Or maybe here:
+  // https://github.com/surge-synthesizer/shortcircuit-xt/blob/main/src/synthesis/envelope.cpp
+  // https://github.com/linuxsampler/linuxsampler/blob/master/src/engines/sfz/EGADSR.cpp
+  // https://github.com/christophhart/HISE/blob/master/hi_modules/modulators/mods/AhdsrEnvelope.cpp
+
+  // See also:
+  // https://github.com/sfztools/sfizz/issues/1009
+  // https://sfzformat.com/modulations/envelope_generators
+
 }
 
 bool EnvGenCore::hasFinished() const

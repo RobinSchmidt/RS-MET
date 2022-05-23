@@ -52,11 +52,12 @@ enum class Opcode
 
   // Filter Envelope:
   fileg_delay, fileg_start, fileg_attack, fileg_peak, fileg_hold, fileg_decay, fileg_sustain, 
-  fileg_release, fileg_end, fileg_depth,
+  fileg_release, fileg_end, fileg_attack_shape, fileg_decay_shape, fileg_release_shape,
+  fileg_depth,
   // Should we use filegN? SFZ2 does actually not define fileg2 opcodes! It defines stuff like 
   // cutoff2, resonance2, fil2_type, fil2_gain. What is the supposed behavior? Will the fileg_
   // opcode affect both filters or only filter 1? If it affects both - should we generalize it to
-  // affect all filters?
+  // affect all filters? ...that's what we currently do
 
   // Need to be converted to the new style:
   // FilEnvVel2Delay, FilEnvVel2Attack, FilEnvVel2Hold, 
@@ -84,7 +85,8 @@ enum class Opcode
 
   // Amplifier Envelope:
   ampeg_delay, ampeg_start, ampeg_attack, ampeg_peak, ampeg_hold, ampeg_decay, ampeg_sustain, 
-  ampeg_release, ampeg_end, ampeg_depth,
+  ampeg_release, ampeg_end, ampeg_attack_shape, ampeg_decay_shape, ampeg_release_shape,
+  ampeg_depth,
   // We are not using ampegN_delay etc. because there is only one hardwired ampeg which is always
   // wired to the last Amplifier in the effect chain.
 
@@ -123,7 +125,8 @@ enum class Opcode
   //egN_end,
 
   adsrN_start, adsrN_delay, adsrN_attack, adsrN_peak, adsrN_hold, adsrN_decay, adsrN_sustain, 
-  adsrN_release, adsrN_end,
+  adsrN_release, adsrN_end, adsrN_attack_shape, adsrN_decay_shape, adsrN_release_shape,
+
 
 
   // egN_timeX, egN_levelX

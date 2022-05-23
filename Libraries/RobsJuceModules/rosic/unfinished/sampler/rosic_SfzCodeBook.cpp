@@ -28,6 +28,7 @@ SfzCodeBook::SfzCodeBook()
   OS Sfz1e = OS::Sfz_1_E;
   OS Sfz2  = OS::Sfz_2;
   OS Sfz2e = OS::Sfz_2_E;
+  OS Aria  = OS::Aria;
   OS ARIAe = OS::Aria_E;
 
   // Player response constraints (aka "Input Control" in the sfz doc):
@@ -218,16 +219,23 @@ SfzCodeBook::SfzCodeBook()
   add(OC::fillfo_depth, Flt, "fillfo_depth", -12000.f, 12000.f, 0.f, dsp, OU::Cents, Sfz1);
 
   dsp = OpcodeType::AmpEnv;
-  add(OC::ampeg_delay,   Flt, "ampeg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::ampeg_start,   Flt, "ampeg_start",   0.f, 100.f,   0.f, dsp, OU::Percent, Sfz1);
-  add(OC::ampeg_attack,  Flt, "ampeg_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::ampeg_peak,    Flt, "ampeg_peak",    0.f, 100.f, 100.f, dsp, OU::Percent, RsMet); 
-  add(OC::ampeg_hold,    Flt, "ampeg_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::ampeg_decay,   Flt, "ampeg_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::ampeg_sustain, Flt, "ampeg_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz1);
-  add(OC::ampeg_release, Flt, "ampeg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::ampeg_end,     Flt, "ampeg_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
-  add(OC::ampeg_depth,   Flt, "ampeg_depth",   0.f, 100.f, 100.f, dsp, OU::Percent, RsMet);
+  add(OC::ampeg_delay,         Flt, "ampeg_delay",           0.f, 100.f,   0.f,     dsp, OU::Seconds,  Sfz1);
+  add(OC::ampeg_start,         Flt, "ampeg_start",           0.f, 100.f,   0.f,     dsp, OU::Percent,  Sfz1);
+  add(OC::ampeg_attack,        Flt, "ampeg_attack",          0.f, 100.f,   0.f,     dsp, OU::Seconds,  Sfz1);
+  add(OC::ampeg_peak,          Flt, "ampeg_peak",            0.f, 100.f, 100.f,     dsp, OU::Percent,  RsMet); 
+  add(OC::ampeg_hold,          Flt, "ampeg_hold",            0.f, 100.f,   0.f,     dsp, OU::Seconds,  Sfz1);
+  add(OC::ampeg_decay,         Flt, "ampeg_decay",           0.f, 100.f,   0.f,     dsp, OU::Seconds,  Sfz1);
+  add(OC::ampeg_sustain,       Flt, "ampeg_sustain",         0.f, 100.f, 100.f,     dsp, OU::Percent,  Sfz1);
+  add(OC::ampeg_release,       Flt, "ampeg_release",         0.f, 100.f,   0.f,     dsp, OU::Seconds,  Sfz1);
+  add(OC::ampeg_end,           Flt, "ampeg_end",             0.f, 100.f,   0.f,     dsp, OU::Percent,  RsMet);
+  add(OC::ampeg_depth,         Flt, "ampeg_depth",           0.f, 100.f, 100.f,     dsp, OU::Percent,  RsMet);
+  add(OC::ampeg_attack_shape,  Flt, "ampeg_attack_shape",  -20.f,  20.f,   0.f,     dsp, OU::RawFloat, Aria);
+  add(OC::ampeg_decay_shape,   Flt, "ampeg_decay_shape",   -20.f,  20.f, -10.3616f, dsp, OU::RawFloat, Aria);
+  add(OC::ampeg_release_shape, Flt, "ampeg_release_shape", -20.f,  20.f, -10.3616f, dsp, OU::RawFloat, Aria);
+  // ToDo: Check the ranges for the shape parameters. It's not documented on sfzformat.com. Also, I think, 
+  // they may be defined also in sfz2 not only in Aria, see here:
+  //   https://sfzformat.com/opcodes/egN_shapeX
+  // In such a case, in may be better to file them under the Sfz2 spec
   // not sure, if depth should be among the AmpEnv opcodes or among the routing opcodes
 
   dsp = OpcodeType::FilterEnv;
@@ -241,6 +249,8 @@ SfzCodeBook::SfzCodeBook()
   add(OC::fileg_release, Flt, "fileg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
   add(OC::fileg_end,     Flt, "fileg_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
   add(OC::fileg_depth,   Flt, "fileg_depth",   -12000.f, 12000.f,   0.f, dsp, OU::Cents,   Sfz1);
+
+
   // not sure, if depth should be among the FilterEnv opcodes or among the routing opcodes
 
   // Routable modulators:
