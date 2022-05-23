@@ -239,16 +239,23 @@ SfzCodeBook::SfzCodeBook()
   // not sure, if depth should be among the AmpEnv opcodes or among the routing opcodes
 
   dsp = OpcodeType::FilterEnv;
-  add(OC::fileg_delay,   Flt, "fileg_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_start,   Flt, "fileg_start",   0.f, 100.f,   0.f, dsp, OU::Percent, Sfz1);
-  add(OC::fileg_attack,  Flt, "fileg_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_peak,    Flt, "fileg_peak",    0.f, 100.f, 100.f, dsp, OU::Percent, RsMet); 
-  add(OC::fileg_hold,    Flt, "fileg_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_decay,   Flt, "fileg_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_sustain, Flt, "fileg_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz1);
-  add(OC::fileg_release, Flt, "fileg_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, Sfz1);
-  add(OC::fileg_end,     Flt, "fileg_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
-  add(OC::fileg_depth,   Flt, "fileg_depth",   -12000.f, 12000.f,   0.f, dsp, OU::Cents,   Sfz1);
+  add(OC::fileg_delay,         Flt, "fileg_delay",             0.f,   100.f,   0.f, dsp, OU::Seconds,  Sfz1);
+  add(OC::fileg_start,         Flt, "fileg_start",             0.f,   100.f,   0.f, dsp, OU::Percent,  Sfz1);
+  add(OC::fileg_attack,        Flt, "fileg_attack",            0.f,   100.f,   0.f, dsp, OU::Seconds,  Sfz1);
+  add(OC::fileg_peak,          Flt, "fileg_peak",              0.f,   100.f, 100.f, dsp, OU::Percent,  RsMet); 
+  add(OC::fileg_hold,          Flt, "fileg_hold",              0.f,   100.f,   0.f, dsp, OU::Seconds,  Sfz1);
+  add(OC::fileg_decay,         Flt, "fileg_decay",             0.f,   100.f,   0.f, dsp, OU::Seconds,  Sfz1);
+  add(OC::fileg_sustain,       Flt, "fileg_sustain",           0.f,   100.f, 100.f, dsp, OU::Percent,  Sfz1);
+  add(OC::fileg_release,       Flt, "fileg_release",           0.f,   100.f,   0.f, dsp, OU::Seconds,  Sfz1);
+  add(OC::fileg_end,           Flt, "fileg_end",               0.f,   100.f,   0.f, dsp, OU::Percent,  RsMet);
+  add(OC::fileg_depth,         Flt, "fileg_depth",        -12000.f, 12000.f,   0.f, dsp, OU::Cents,    Sfz1);
+  add(OC::fileg_attack_shape,  Flt, "fileg_attack_shape",    -20.f,    20.f,   0.f, dsp, OU::RawFloat, Aria);
+  add(OC::fileg_decay_shape,   Flt, "fileg_decay_shape",     -20.f,    20.f,   0.f, dsp, OU::RawFloat, Aria);
+  add(OC::fileg_release_shape, Flt, "fileg_release_shape",   -20.f,    20.f,   0.f, dsp, OU::RawFloat, Aria);
+  // yes, the fileg decay and release shapes have 0 as default, different from th -10.3616 of the
+  // ampeg. The same is true for the pitcheg decay/release shapes. Only the ameg has these "weird"
+  // default values. I'm still not sure about the min/max values.
+
 
 
   // not sure, if depth should be among the FilterEnv opcodes or among the routing opcodes
