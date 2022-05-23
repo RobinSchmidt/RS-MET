@@ -255,23 +255,24 @@ SfzCodeBook::SfzCodeBook()
   // yes, the fileg decay and release shapes have 0 as default, different from th -10.3616 of the
   // ampeg. The same is true for the pitcheg decay/release shapes. Only the ameg has these "weird"
   // default values. I'm still not sure about the min/max values.
-
-
-
   // not sure, if depth should be among the FilterEnv opcodes or among the routing opcodes
 
   // Routable modulators:
   dsp = OpcodeType::FreeEnv;
-  add(OC::adsrN_delay,   Flt, "adsrN_delay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::adsrN_start,   Flt, "adsrN_start",   0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
-  add(OC::adsrN_attack,  Flt, "adsrN_attack",  0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::adsrN_peak,    Flt, "adsrN_peak",    0.f, 100.f, 100.f, dsp, OU::Percent, RsMet); 
-  add(OC::adsrN_hold,    Flt, "adsrN_hold",    0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::adsrN_decay,   Flt, "adsrN_decay",   0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::adsrN_sustain, Flt, "adsrN_sustain", 0.f, 100.f, 100.f, dsp, OU::Percent, Sfz2);
-  add(OC::adsrN_release, Flt, "adsrN_release", 0.f, 100.f,   0.f, dsp, OU::Seconds, RsMet);
-  add(OC::adsrN_end,     Flt, "adsrN_end",     0.f, 100.f,   0.f, dsp, OU::Percent, RsMet);
-  // Maybe rename to adsrN_..., see ToDo.txt
+  add(OC::adsrN_delay,         Flt, "adsrN_delay",           0.f, 100.f,   0.f, dsp, OU::Seconds,  RsMet);
+  add(OC::adsrN_start,         Flt, "adsrN_start",           0.f, 100.f,   0.f, dsp, OU::Percent,  RsMet);
+  add(OC::adsrN_attack,        Flt, "adsrN_attack",          0.f, 100.f,   0.f, dsp, OU::Seconds,  RsMet);
+  add(OC::adsrN_peak,          Flt, "adsrN_peak",            0.f, 100.f, 100.f, dsp, OU::Percent,  RsMet); 
+  add(OC::adsrN_hold,          Flt, "adsrN_hold",            0.f, 100.f,   0.f, dsp, OU::Seconds,  RsMet);
+  add(OC::adsrN_decay,         Flt, "adsrN_decay",           0.f, 100.f,   0.f, dsp, OU::Seconds,  RsMet);
+  add(OC::adsrN_sustain,       Flt, "adsrN_sustain",         0.f, 100.f, 100.f, dsp, OU::Percent,  RsMet);
+  add(OC::adsrN_release,       Flt, "adsrN_release",         0.f, 100.f,   0.f, dsp, OU::Seconds,  RsMet);
+  add(OC::adsrN_end,           Flt, "adsrN_end",             0.f, 100.f,   0.f, dsp, OU::Percent,  RsMet);
+  add(OC::adsrN_attack_shape,  Flt, "adsrN_attack_shape",  -20.f,  20.f,   0.f, dsp, OU::RawFloat, RsMet);
+  add(OC::adsrN_decay_shape,   Flt, "adsrN_decay_shape",   -20.f,  20.f,   0.f, dsp, OU::RawFloat, RsMet);
+  add(OC::adsrN_release_shape, Flt, "adsrN_release_shape", -20.f,  20.f,   0.f, dsp, OU::RawFloat, RsMet);
+
+
 
 
   dsp = OpcodeType::FreeLfo;

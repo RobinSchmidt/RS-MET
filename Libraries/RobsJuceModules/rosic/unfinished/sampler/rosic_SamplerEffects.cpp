@@ -126,16 +126,19 @@ LowFreqOscFil::LowFreqOscFil()
 EnvGen::EnvGen()
 {
   type = OpcodeType::FreeEnv;
-  params.reserve(9);                     // index
-  addParameter(Opcode::adsrN_start);     //   0
-  addParameter(Opcode::adsrN_delay);     //   1
-  addParameter(Opcode::adsrN_attack);    //   2
-  addParameter(Opcode::adsrN_peak);      //   3
-  addParameter(Opcode::adsrN_hold);      //   4
-  addParameter(Opcode::adsrN_decay);     //   5
-  addParameter(Opcode::adsrN_sustain);   //   6
-  addParameter(Opcode::adsrN_release);   //   7
-  addParameter(Opcode::adsrN_end);       //   8
+  params.reserve(12);                          // index
+  addParameter(Opcode::adsrN_start);           //   0
+  addParameter(Opcode::adsrN_delay);           //   1
+  addParameter(Opcode::adsrN_attack);          //   2
+  addParameter(Opcode::adsrN_peak);            //   3
+  addParameter(Opcode::adsrN_hold);            //   4
+  addParameter(Opcode::adsrN_decay);           //   5
+  addParameter(Opcode::adsrN_sustain);         //   6
+  addParameter(Opcode::adsrN_release);         //   7
+  addParameter(Opcode::adsrN_end);             //   8
+  addParameter(Opcode::adsrN_attack_shape);    //   9
+  addParameter(Opcode::adsrN_decay_shape);     //  10
+  addParameter(Opcode::adsrN_release_shape);   //  11
 
   // ToDo: 
   // -Add the velocity-scaling params: vel2delay, vel2attack, vel2hold, etc. defined in sfz for
@@ -143,7 +146,7 @@ EnvGen::EnvGen()
   // -Add key2attack, key2decay, etc. and/or maybe have a general key2length or key2timescale as we
   //  have in Straightliner. These are not defined in sfz but make a lot of sense musically.
   // -peak is actually not defined in sfz - so maybe we should remove it but maybe it's useful 
-  //  enoguh to keep it
+  //  enough to keep it
 }
 
 void EnvGen::updateCoeffs(double sampleRate)
