@@ -3284,6 +3284,10 @@ bool samplerAmpEnvTest()
     se.setRegionSetting(0, 0, OC::ampeg_sustain, sustain * 100, -1);
     se.setRegionSetting(0, 0, OC::ampeg_release, release / fs,  -1);
     se.setRegionSetting(0, 0, OC::ampeg_end,     end     * 100, -1);
+
+    // Override the weird default values of -10.3616 for the shapes:
+    se.setRegionSetting(0, 0, OC::ampeg_decay_shape,   0.f, -1);
+    se.setRegionSetting(0, 0, OC::ampeg_release_shape, 0.f, -1);
   };
 
   // Set up the engine again, this time using the ampeg opcodes. In the first test, we just define 

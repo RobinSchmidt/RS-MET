@@ -156,7 +156,7 @@ void EnvGen::updateCoeffs(double sampleRate)
   float fs = (float) sampleRate;  // scales seconds to samples
   float k  = 0.01f;               // scales percents to raw factors
   core.setup(p[0].mv()*k, p[1].mv()*fs, p[2].mv()*fs, p[3].mv()*k, p[4].mv()*fs, p[5].mv()*fs,
-    p[6].mv()*k, p[7].mv()*fs, p[8].mv()*k);
+    p[6].mv()*k, p[7].mv()*fs, p[8].mv()*k, p[9].mv(), p[10].mv(), p[11].mv());
   dirty = false;
 }
 

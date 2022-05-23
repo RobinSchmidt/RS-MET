@@ -49,7 +49,8 @@ public:
   /** Returns the modulated value. The function name is kept short to reduce the verbosity of the
   boilerplate in the Processors. */
   inline float mv() const { return modulatedValue; }
-  // maybe use the conversion operator instead to make the code even shorter
+  // Maybe use the conversion operator instead to make the code even shorter...but this may be a
+  // bit ambiguous because the caller may think that this refers to the unmodulated value
 
 
 protected:
