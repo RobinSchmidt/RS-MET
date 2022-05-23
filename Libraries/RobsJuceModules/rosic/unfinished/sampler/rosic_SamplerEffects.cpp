@@ -126,19 +126,20 @@ LowFreqOscFil::LowFreqOscFil()
 EnvGen::EnvGen()
 {
   type = OpcodeType::FreeEnv;
-  params.reserve(12);                          // index
-  addParameter(Opcode::adsrN_start);           //   0
-  addParameter(Opcode::adsrN_delay);           //   1
-  addParameter(Opcode::adsrN_attack);          //   2
-  addParameter(Opcode::adsrN_peak);            //   3
-  addParameter(Opcode::adsrN_hold);            //   4
-  addParameter(Opcode::adsrN_decay);           //   5
-  addParameter(Opcode::adsrN_sustain);         //   6
-  addParameter(Opcode::adsrN_release);         //   7
-  addParameter(Opcode::adsrN_end);             //   8
-  addParameter(Opcode::adsrN_attack_shape);    //   9
-  addParameter(Opcode::adsrN_decay_shape);     //  10
-  addParameter(Opcode::adsrN_release_shape);   //  11
+  using OC = Opcode;
+  params.reserve(12);                      // index
+  addParameter(OC::adsrN_start);           //   0
+  addParameter(OC::adsrN_delay);           //   1
+  addParameter(OC::adsrN_attack);          //   2
+  addParameter(OC::adsrN_peak);            //   3
+  addParameter(OC::adsrN_hold);            //   4
+  addParameter(OC::adsrN_decay);           //   5
+  addParameter(OC::adsrN_sustain);         //   6
+  addParameter(OC::adsrN_release);         //   7
+  addParameter(OC::adsrN_end);             //   8
+  addParameter(OC::adsrN_attack_shape);    //   9
+  addParameter(OC::adsrN_decay_shape);     //  10
+  addParameter(OC::adsrN_release_shape);   //  11
 
   // ToDo: 
   // -Add the velocity-scaling params: vel2delay, vel2attack, vel2hold, etc. defined in sfz for
@@ -166,15 +167,20 @@ EnvGenAmp::EnvGenAmp()
   // opcodes have different names reflecting the specialization for the specific modulation target.
 
   type = OpcodeType::AmpEnv;
-  replaceOpcode(Opcode::adsrN_start,   Opcode::ampeg_start);
-  replaceOpcode(Opcode::adsrN_delay,   Opcode::ampeg_delay);
-  replaceOpcode(Opcode::adsrN_attack,  Opcode::ampeg_attack);
-  replaceOpcode(Opcode::adsrN_peak,    Opcode::ampeg_peak);
-  replaceOpcode(Opcode::adsrN_hold,    Opcode::ampeg_hold);
-  replaceOpcode(Opcode::adsrN_decay,   Opcode::ampeg_decay);
-  replaceOpcode(Opcode::adsrN_sustain, Opcode::ampeg_sustain);
-  replaceOpcode(Opcode::adsrN_release, Opcode::ampeg_release);
-  replaceOpcode(Opcode::adsrN_end,     Opcode::ampeg_end);
+  using OC = Opcode;
+  replaceOpcode(OC::adsrN_start,         OC::ampeg_start);
+  replaceOpcode(OC::adsrN_delay,         OC::ampeg_delay);
+  replaceOpcode(OC::adsrN_attack,        OC::ampeg_attack);
+  replaceOpcode(OC::adsrN_peak,          OC::ampeg_peak);
+  replaceOpcode(OC::adsrN_hold,          OC::ampeg_hold);
+  replaceOpcode(OC::adsrN_decay,         OC::ampeg_decay);
+  replaceOpcode(OC::adsrN_sustain,       OC::ampeg_sustain);
+  replaceOpcode(OC::adsrN_release,       OC::ampeg_release);
+  replaceOpcode(OC::adsrN_end,           OC::ampeg_end);
+  replaceOpcode(OC::adsrN_attack_shape,  OC::ampeg_attack_shape);
+  replaceOpcode(OC::adsrN_decay_shape,   OC::ampeg_decay_shape);
+  replaceOpcode(OC::adsrN_release_shape, OC::ampeg_release_shape);
+
 
   // ToDo:
   // -Do the same for pitcheg 
@@ -189,15 +195,19 @@ EnvGenAmp::EnvGenAmp()
 EnvGenFil::EnvGenFil()
 {
   type = OpcodeType::FilterEnv;
-  replaceOpcode(Opcode::adsrN_start,   Opcode::fileg_start);
-  replaceOpcode(Opcode::adsrN_delay,   Opcode::fileg_delay);
-  replaceOpcode(Opcode::adsrN_attack,  Opcode::fileg_attack);
-  replaceOpcode(Opcode::adsrN_peak,    Opcode::fileg_peak);
-  replaceOpcode(Opcode::adsrN_hold,    Opcode::fileg_hold);
-  replaceOpcode(Opcode::adsrN_decay,   Opcode::fileg_decay);
-  replaceOpcode(Opcode::adsrN_sustain, Opcode::fileg_sustain);
-  replaceOpcode(Opcode::adsrN_release, Opcode::fileg_release);
-  replaceOpcode(Opcode::adsrN_end,     Opcode::fileg_end);
+  using OC = Opcode;
+  replaceOpcode(OC::adsrN_start,         OC::fileg_start);
+  replaceOpcode(OC::adsrN_delay,         OC::fileg_delay);
+  replaceOpcode(OC::adsrN_attack,        OC::fileg_attack);
+  replaceOpcode(OC::adsrN_peak,          OC::fileg_peak);
+  replaceOpcode(OC::adsrN_hold,          OC::fileg_hold);
+  replaceOpcode(OC::adsrN_decay,         OC::fileg_decay);
+  replaceOpcode(OC::adsrN_sustain,       OC::fileg_sustain);
+  replaceOpcode(OC::adsrN_release,       OC::fileg_release);
+  replaceOpcode(OC::adsrN_end,           OC::fileg_end);
+  replaceOpcode(OC::adsrN_attack_shape,  OC::fileg_attack_shape);
+  replaceOpcode(OC::adsrN_decay_shape,   OC::fileg_decay_shape);
+  replaceOpcode(OC::adsrN_release_shape, OC::fileg_release_shape);
 }
 
 //=================================================================================================
