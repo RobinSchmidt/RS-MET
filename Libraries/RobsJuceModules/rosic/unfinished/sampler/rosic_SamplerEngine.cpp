@@ -239,7 +239,10 @@ int rsSamplerEngine::setupFromSFZ(const SfzInstrument& newSfz)
   if(rc1 >= 0 && rc2 == rsReturnCode::success)
     return rsReturnCode::success;
   else
-    return rsReturnCode::fileLoadError;  
+  {
+    clearInstrument();
+    return rsReturnCode::fileLoadError;
+  }
     // ToDo: be more specific about the error condition
 
   // Maybe have state variables numSamplesAdded, numSamplesRemoved, numSamplesNotFound that can be 
@@ -279,6 +282,8 @@ bool rsSamplerEngine::saveToSFZ(const char* path, bool pathIsAbsolute) const
 
 int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
 {
+  reset();  // Stop playing
+
   std::string absPath = getAbsolutePath(path, pathIsAbsolute);
   SfzInstrument newSfz;
   rsReturnCode rc = newSfz.loadFromSFZ(absPath.c_str());
@@ -295,6 +300,8 @@ int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
 
 int rsSamplerEngine::setFromSFZ(const std::string& sfzFileContents)
 {
+  reset();  // Stop playing
+
   SfzInstrument newSfz;
   rsReturnCode rc = newSfz.setFromSFZ(sfzFileContents);
   if(rc != rsReturnCode::success) {
@@ -638,13 +645,16 @@ int rsSamplerEngine::addSamplesUsedIn(const SfzInstrument& sfz)
     for(int ri = 0; ri < g->getNumRegions(); ri++) {
       Region* r = g->getRegion(ri); 
       const std::string& relativePath = r->getSamplePath();
+      if(relativePath.empty())
+        continue;
       std::string path = getAbsolutePath(relativePath.c_str());  // preliminary
       if(isValidSamplePath(path) && !isSampleInPool(path)) {
         int rc = loadSampleToPool(path);
         if(rc >= 0)
           numSamplesLoaded++;
-        else
-          numSamplesFailed++; }}}
+        else {
+          RAPT::rsError("Failed to load sample");
+          numSamplesFailed++;  }}}}
   if(numSamplesFailed == 0)
     return numSamplesLoaded;
   else
@@ -668,8 +678,9 @@ int rsSamplerEngine::setupAudioStreams()
       r->setCustomPointer(nullptr);
       return true; }
     int si = findSampleIndexInPool(path);
-    if(si == -1)
-      return false;
+    if(si == -1) {
+      RAPT::rsError("Sample not found in pool");
+      return false;  }
     const AudioFileStream<float>* stream = samplePool.getSampleStream(si);
     r->setCustomPointer(stream);
     return true;
@@ -685,6 +696,8 @@ int rsSamplerEngine::setupAudioStreams()
     {
       Region* r = g->getRegion(ri);
       const std::string& relativePath = r->getSamplePath();
+      if(relativePath.empty())
+        continue;
       std::string path = getAbsolutePath(relativePath.c_str());  // preliminary
       allOK &= setupStream(r, path);
     }

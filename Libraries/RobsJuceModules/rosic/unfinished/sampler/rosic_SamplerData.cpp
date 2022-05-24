@@ -112,7 +112,12 @@ void SfzInstrument::HierarchyLevel::setAmpLfoDepth(float depth)
   int numAmps = (int)RAPT::rsCount(dspTypes, OpcodeType::Amplifier);
   if(!isLastEffectAmplifier()) {
     numAmps++; setSetting(PlaybackSetting(Opcode::volumeN, 0.f, numAmps)); }
-  setModulation(OpcodeType::AmpLfo, 1, Opcode::volumeN, numAmps, depth, ModMode::absolute);
+  setModulation(OpcodeType::AmpLfo, 1, Opcode::volumeN, numAmps, 0.5f*depth, ModMode::absolute);
+
+  // ToDo:
+  // -Figure out, if we need the factor of 0.5 in 0.5*depth to compensate for the bipolarity of the
+  //  LFO signal. Check against reference sfz player. Check the same thing also for the filter env
+  //  ...and quite generally for all LFO routings
 }
 
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)
@@ -840,8 +845,10 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       j0 = groupDef.find(region, j1);
 
       RAPT::rsAssert(j0 != endOfFile);  
-      // for debug - gets triggered when we have empty regions ...but also in other case, i 
+      // For debug - gets triggered when we have empty regions ...but also in other cases, i 
       // think
+      // I think, it also happens, when there's an empty line before the first <group> and/or a 
+      // comment. Patches that start with <group> on the first line work well
 
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {

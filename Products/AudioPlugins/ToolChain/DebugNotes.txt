@@ -1,3 +1,12 @@
+The standalone version creates a ToolChain.settings file in the folder:
+
+C:\Users\rob\AppData\Roaming\ToolChain
+
+sometimes, it may be necessary to delete this file when the App crashes on startup. I sometimes hit 
+a jassert in MidiMessageCollector::addMessageToQueue at startup. Deleting the settings file can help
+to get passed this.
+
+
 For an easy workflow for debugging, build the PluginHost (in the 
 AudioApplications folder) and set up the visual studio project such that it
 runs the just built Plugin Host. For this to work, set on the Property settings
@@ -36,10 +45,18 @@ occurences of "libcurl" from the makefile, makes it build
 for the juce PluginHost - additionally this is needed:
 sudo apt-get install libgl-dev
 
-
 The CodeBlocksWindows build has been set to a 32 bit build because i was getting errors in 64 bit.
 This is meant only for fixing gcc build errors on windows without the  need to switch to linux or
 osx.
+
+
+
+
+
+
+
+
+
 
 To view an array (say named A) in the Visual Sudio debugger:
 -right-click on A in the code -> select Add watch

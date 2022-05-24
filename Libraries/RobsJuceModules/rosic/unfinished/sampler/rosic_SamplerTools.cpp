@@ -21,7 +21,7 @@ void rsRemoveLineComments(std::string& str, char commentStart)
 
     // Check if we need to change our state:
     char c = str[ri];
-    if(c == '"') {                             // Detect start and end of strings
+    if(c == '"' && state != inComment) {       // Detect start and end of strings
       if(state != inString)
         state = inString;
       else

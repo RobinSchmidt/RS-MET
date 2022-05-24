@@ -62,20 +62,20 @@ void EnvGenCore::setup(float _start, float _delay, float _attack, float _peak, f
   // Helper function to convert user-parameters for shapes to corresponding algo parameters:
   auto convertShape = [](float p)
   {
-    return p;  // perhaps, we should just use the raw value without any conversion formula?
+    return p;  
+    // We currently just use the raw value without any conversion formula. That seems somwhat 
+    // plausible, see: https://www.kvraudio.com/forum/viewtopic.php?t=582201
+
     
+    // My old formula, currently not used:
     float c = 0.5f * (p + 1.f);       // -1...+1  ->  0...1
     return 2.f * logf((1.f-c)/c);
   };
-  // Adapted from rsNodeBasedFunction in romos. Probaly needs further adaptions. We should expect
-  // the input in -10...+10 instead of -1...+1
+
 
   attShp = convertShape(_attack_shape);
   decShp = convertShape(_decay_shape);
   relShp = convertShape(_release_shape);
-
-
-
 
 
   // ToDo: precompute:

@@ -139,6 +139,12 @@ http://www.kvraudio.com/forum/viewtopic.php?&t=466649 Trying to optimize sin, po
 http://www.kvraudio.com/forum/viewtopic.php?&t=464290 faster exp and log
 http://www.kvraudio.com/forum/viewtopic.php?&t=468645 Using Double instead of Float increase noise? (it has stuff about avoiding denormals by using cpu flags)
 
+Function evaluation/approximation:
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=519852
+https://www.kvraudio.com/forum/viewtopic.php?p=7161124#p7161124
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=510794
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=519852
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=519728
 
 
 Business:

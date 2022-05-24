@@ -463,6 +463,7 @@ loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
 cutoff=200 resonance=5 fil_type=hpf_2p\n\
 cutoff2=1500 resonance2=15 fil2_type=lpf_2p\n\
 fileg_attack=0.2 fileg_decay=0.4 fileg_sustain=50 fileg_release=0.2 fileg_depth=1200\n\
+fileg_attack_shape=-10\n\
 fillfo_freq=7 fillfo_depth=300\n\
 volume=-15\n\
 ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
@@ -478,7 +479,7 @@ amplfo_freq=11 amplfo_depth=3\n\
 sample=Saw2048.wav\n\
 loop_start=0 loop_end=2048 loop_mode=loop_continuous pitch_keycenter=21\n\
 ampeg_attack=0.1 ampeg_decay=0.5 ampeg_sustain=50 ampeg_release=0.4\n\
-ampeg_attack_shape=0.5\n\
+ampeg_attack_shape=-5\n\
 ";
   // triggers assert due to ampeg_attack_shape
 
@@ -508,6 +509,12 @@ ampeg_attack_shape=0.5\n\
   // ToDo:
   // -use the Saw2048 sample, apply a lowpass and a highpass (both 1st order) with an ADSR 
   //  envelope, maybe use keytracking at least for the highpass, maybe both
+  // -Create a filter sweep with slow attack and try different shapes. By default, the attack 
+  //  portion should be linear in the pitch domain which translates to a convex curve in the
+  //  frequency domain. Perhaps there is some  setting for the shape which counteracts this 
+  //  convexity exactly to achieve a linear frequency sweep? and beyond that value, we actually get
+  //  the desirable "analog" shapes? I guess, without using attack_shape, all attacks will sound 
+  //  wrong.
   // -Make a patch featuring 3 eq bands at 500, 1000, 2000 Hz, the outer ones narrow dips, the 
   //  inner a broad peak, Modulate all frequencies by an LFO. Emulates smallstone phaser.
   //  Maybe use a stereo-shift
@@ -518,10 +525,10 @@ ampeg_attack_shape=0.5\n\
 
 void rotes::testSamplerEngine()
 {
-  samplerEnvelopeTest();
+  //samplerEnvelopeTest();
 
   //generateTestSamples();
-  //samplerPatchTest_BandpassSaw();
+  samplerPatchTest_BandpassSaw();
 
 
   int dummy = 0;
