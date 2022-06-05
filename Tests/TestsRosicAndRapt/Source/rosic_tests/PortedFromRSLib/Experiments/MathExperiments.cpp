@@ -3872,9 +3872,6 @@ void bernoulliPolynomials()
   for(int N = 1; N < maxN; N++)
     bk[N] = B[N][0];
 
-
-
-
   int dummy = 0;
 
   // ToDo:
@@ -3882,14 +3879,43 @@ void bernoulliPolynomials()
   //  -> switch to rsInt64, figure out and document safe ranges, compare those ranges to the ranges
   //  of other algos that can compute Bernoulli numbers
 
-
   // See also: The Basel Problem Part 1: Euler-Maclaurin Approximation
   // https://www.youtube.com/watch?v=nxJI4Uk4i00&list=PLbaA3qJlbE93DiTYMzl0XKnLn5df_QWqY&index=2
-
-  // Some useful facts:
+  // Some useful facts from teh video (verify!):
   //   int_x^{x+1} B_k(t) dt = x^k
   //   int_0^{n+1} B_k(x) dx = sum_{i=0}^n i^k
 }
+
+// ToDo when time permits:
+// Try to rederive the recursion rule for the V polynomials based on the following problem 
+// setting (I'm not sure, if that's possible, i.e. if I'm understanding the meaning of these 
+// polynomials correctly): We want to approximate the definite integral int_a^b f(x) dx for some
+// given function f(x). We are allowed to evaluate f and its derivatives at the interval limits 
+// a and b and want to derive a good approximation formula for the sought integral based on these
+// values. A simple idea would be to fit a Hermite interpolant with the desired values at a,b and
+// integrate that. But here, we take a different approach: Consider the general formula for 
+// integration by parts:
+//                                          |b
+//   int_a^b g'(x) * f(x) dx  = g(x) * f(x) |   - int_a^b g(x) * f'(x) dx
+//                                          |a
+//
+// If we pick g'(x) = 1 then the LHS is our desired integral and it's exactly equal to the RHS. An 
+// antiderivative of g'(x) is given by g(x) = x + c for any integration constant c. I think, the 
+// idea is now to pick a particular c in such a way, that the first term in the RHS, i.e. the 
+// boundary term, becomes a good approximation of the LHS and the remaining correction term on the 
+// RHS, i.e. the integral on the RHS, becomes small. If we pick c such that the integral of g(x) 
+// over [a,b] becomes zero, we can achieve that...right? or wrong? I'm not sure...if so, why?
+// ...and this same process can then be applied to approximate the correction integral as well and
+// so on. I think, the polynomials that are produced along the way in this manner are a generalized 
+// variant of the V-polynomials in the code above. ...but as said: I'm not sure about that. For the
+// special case a=0, b=1, the optimal c would come out as c=-1/2 so g(x) = x - 1/2. I think, in 
+// this case, the boundary term on the RHS becomes equal to the trapezoidal rule? See also this
+// video for more ideas:
+// https://www.youtube.com/watch?v=nxJI4Uk4i00&list=PLbaA3qJlbE93DiTYMzl0XKnLn5df_QWqY&index=2
+// but it has a somewhat different problem setting with some perhaps unnecessary complications. 
+// Maybe approaching it like above results in a simpler way to understand what the Bernoulli
+// polynomials actually mean.
+
 
 
 void sequenceSquareRoot()
