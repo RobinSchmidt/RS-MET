@@ -3847,21 +3847,29 @@ void bernoulliPolynomials()
     int dummy = 0;
   };
 
+  // Produce V and B polynomials:
   std::vector<Vec> V(maxN), B(maxN);
-
   V[0].resize(1); V[0][0] = 1;       // V[0](x) = 1
+  B[0].resize(1); B[0][0] = 1;       // B[0](x) = 1
   for(int N = 1; N < maxN; N++)
   {
+    // The V-polynomial:
     V[N].resize(N+1);
     nextV(N-1, &V[N-1][0], &V[N][0], a, b);
 
-
-
-    int dummy = 0;
+    // The B-polynomial (the actual Bernoulli polynomial) results from scaling V:
+    B[N].resize(N+1);
+    int fac = rsFactorial(N);
+    for(int n = 0; n <= N; n++)
+      B[N][n] = fac * V[N][n];
   }
 
 
   int dummy = 0;
+
+
+  // See also: The Basel Problem Part 1: Euler-Maclaurin Approximation
+  // https://www.youtube.com/watch?v=nxJI4Uk4i00&list=PLbaA3qJlbE93DiTYMzl0XKnLn5df_QWqY&index=2
 }
 
 
