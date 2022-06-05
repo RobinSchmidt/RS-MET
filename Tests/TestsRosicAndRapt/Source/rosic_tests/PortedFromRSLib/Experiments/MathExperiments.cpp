@@ -3766,8 +3766,8 @@ rsFraction<T> rsBernoulliNumber(T n)
 // https://en.wikipedia.org/wiki/Bernoulli_number#An_algorithmic_view:_the_Seidel_triangle
 // https://en.wikipedia.org/wiki/Bernoulli_number#Efficient_computation_of_Bernoulli_numbers
 // https://projecteuclid.org/download/pdf_1/euclid.pja/1195510576
-// where did i get this algo from? i think, wikipedia but i don't find it there anymore. oh - it
-// seems to have been removed:
+// where did i get this algo from? i think, it was wikipedia but i don't find it there anymore. oh 
+// - it seems to have been removed:
 // https://en.wikipedia.org/w/index.php?title=Bernoulli_number&oldid=789762667#Recursive_definition
 // it's the Akiyama–Tanigawa algorithm
 // https://rosettacode.org/wiki/Bernoulli_numbers
@@ -3776,8 +3776,12 @@ rsFraction<T> rsBernoulliNumber(T n)
 //   B[n] = (-1/(n+1)) * sum_{k=0}^{n-1} C(n+1,k) B[k]
 // where B[n] is the n-th Bernoulli number and C(n+1,k) is the binomial coeff (n+1)-choose-k. Maybe
 // such a table of binomial coeffs should be stored globally somewhere...maybe as lazy-initialized
-// singleton that starts empty and grows as needed
+// singleton that starts empty and grows as needed. Now (as of 2022/06/05), the main page
+// https://en.wikipedia.org/wiki/Bernoulli_number
+// has also an algo based on binomial coeffs. I'm not yet sure what's best to use in production, 
+// should we ever need that
 //
+// see also:
 // https://web.maths.unsw.edu.au/~davidharvey/talks/bernoulli.pdf
 
 
@@ -3816,15 +3820,16 @@ void bernoulliPolynomials()
   // gives the Bernoulli numbers (these are two conventions which differ only by a sign in the B1 
   // number anyway).
 
-  using Fraction = rsFraction<int>;
+  using Int      = int;
+  using Fraction = rsFraction<Int>;
   using Poly     = rsPolynomial<Fraction>;
   using Vec      = std::vector<Fraction>;
 
 
   // User Parameters:
-  int maxN   = 8;   // maximum order
-  Fraction a = 0;   // lower integration limit, a=0 for regular Bernoulli polynomials
-  Fraction b = 1;   // upper integration limit, b=1 for regular Bernoulli polynomials
+  int maxN   = 15;   // maximum order
+  Fraction a =  0;   // lower integration limit, a=0 for regular Bernoulli polynomials
+  Fraction b =  1;   // upper integration limit, b=1 for regular Bernoulli polynomials
 
 
   // Helper function to produce the coeff array of P(x) := V[k](x) from the coeff array of 
@@ -3842,9 +3847,6 @@ void bernoulliPolynomials()
     P[0] -= I;               // Subtract the value to make the definite integral zero
     // todo: factor out into single-line call like:
     //   P[0] -= Poly::definiteIntegral(P, N+1, a, b)
-
-
-    int dummy = 0;
   };
 
   // Produce V and B polynomials:
@@ -3859,17 +3861,34 @@ void bernoulliPolynomials()
 
     // The B-polynomial (the actual Bernoulli polynomial) results from scaling V:
     B[N].resize(N+1);
-    int fac = rsFactorial(N);
+    Int fac = rsFactorial(N);
     for(int n = 0; n <= N; n++)
       B[N][n] = fac * V[N][n];
   }
 
+  // Produce the Bernoulli numbers by evaluating the Bernoulli polynomials at 0. That amounts to
+  // just take the constant coeff:
+  Vec bk(maxN);
+  for(int N = 1; N < maxN; N++)
+    bk[N] = B[N][0];
+
+
+
 
   int dummy = 0;
+
+  // ToDo:
+  // -for N >= 9, we seem to get overflow errors (numbers are garbage) 
+  //  -> switch to rsInt64, figure out and document safe ranges, compare those ranges to the ranges
+  //  of other algos that can compute Bernoulli numbers
 
 
   // See also: The Basel Problem Part 1: Euler-Maclaurin Approximation
   // https://www.youtube.com/watch?v=nxJI4Uk4i00&list=PLbaA3qJlbE93DiTYMzl0XKnLn5df_QWqY&index=2
+
+  // Some useful facts:
+  //   int_x^{x+1} B_k(t) dt = x^k
+  //   int_0^{n+1} B_k(x) dx = sum_{i=0}^n i^k
 }
 
 
