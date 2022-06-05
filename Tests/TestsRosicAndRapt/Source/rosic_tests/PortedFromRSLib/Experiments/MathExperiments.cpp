@@ -3878,12 +3878,22 @@ void bernoulliPolynomials()
   // -for N >= 9, we seem to get overflow errors (numbers are garbage) 
   //  -> switch to rsInt64, figure out and document safe ranges, compare those ranges to the ranges
   //  of other algos that can compute Bernoulli numbers
+  // -what's the relationship to sums of powers? Is sum_{i=1}^n i^k equal to B[k](n)? or B[k](n+1)?
 
   // See also: The Basel Problem Part 1: Euler-Maclaurin Approximation
   // https://www.youtube.com/watch?v=nxJI4Uk4i00&list=PLbaA3qJlbE93DiTYMzl0XKnLn5df_QWqY&index=2
   // Some useful facts from teh video (verify!):
   //   int_x^{x+1} B_k(t) dt = x^k
   //   int_0^{n+1} B_k(x) dx = sum_{i=0}^n i^k
+
+  // See also:
+  // https://de.wikipedia.org/wiki/Bernoulli-Zahl#Bernoulli-Polynome
+  // https://www.mathi.uni-heidelberg.de/~theiders/PS-Analysis/Bernoullische_Polynome.pdf
+  // Bn(x + 1) - Bn(x) = n * x^{n?1}    for n >= 1
+
+  // Power sum MASTER CLASS: How to sum quadrillions of powers ... by hand! (Euler-Maclaurin formula):
+  // https://www.youtube.com/watch?v=fw1kRz83Fj0  
+
 }
 
 // ToDo when time permits:
@@ -3916,6 +3926,11 @@ void bernoulliPolynomials()
 // Maybe approaching it like above results in a simpler way to understand what the Bernoulli
 // polynomials actually mean.
 
+// maybe see here:
+// https://de.wikipedia.org/wiki/Euler-Maclaurin-Formel#Euler-Maclaurin-Formel_zur_Integralapproximation
+// https://en.wikipedia.org/wiki/Euler%E2%80%93Maclaurin_formula#Approximation_of_integrals
+// https://de.frwiki.wiki/wiki/Formule_d%27Euler-Maclaurin
+// https://mathworld.wolfram.com/Euler-MaclaurinIntegrationFormulas.html
 
 
 void sequenceSquareRoot()
