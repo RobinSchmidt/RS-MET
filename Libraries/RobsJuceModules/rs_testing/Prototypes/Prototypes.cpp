@@ -1633,7 +1633,7 @@ std::vector<int> rsConvolveNTT(const std::vector<int>& x, const std::vector<int>
   LT::fourierRadix2DIF(&X[0], N, WN); // unscaled inverse NTT
   MI S(MI::lengthsInv[k]);            // scaler = 1/N
   for(int i = 0; i < N; i++)
-    X[i] = S * X[i];                  // this magic scaling turns garbage into result
+    X[i] = S * X[i];                  // this magic (modular) scaling turns garbage into result
 
   // Convert result to output:
   std::vector<int> y(Ny);
@@ -1647,11 +1647,22 @@ std::vector<int> rsConvolveNTT(const std::vector<int>& x, const std::vector<int>
 // cryptography - the NTT totally is some sort of crypto-FFT! :-) Maybe we can encrypt sequences
 // by modular convolution and decrypt by deconvoltion...but wait...modular convolution is not 
 // really what we are doing here. We actually compute a regular integer convolution by means of 
-// going through modular arithmetic. But the end result is just regular convolved integer array.
+// going through modular arithmetic. The end result is just regular convolved integer array.
 // But the whole thing only works for short sequences of small numbers because the overflow 
 // problems kick in really soon. That's a bit sad because it means, we can't use it for convolution
 // reverb :-( Maybe with a 128 bit integer type, it could become practical? -> try it with 
 // rsBigInt.
+// Questions:
+// -Could actual modular de/convolution be an interesting (i.e. useful) process?
+// -Can we use the algorithm above with a more restricted range of the inputs, maybe just using
+//  numbers in -2^16...2^16-1. That would give us more headroom. Maybe the eyponent doesn't need
+//  to be a power of two. We could also try -2^25...2^25-1 or some other range. Maybe with a bit of
+//  tweaking and experimentation, we could make it work in practice. In practice, the range
+//  -2^23...2^23-1 might be a good choice when assuming our actual float datat to be single 
+//  precision. A product of two such numbers would be at most of the order of 2^46 which leaves 
+//  still a lot of headroom to the 2^63 at which overflow occurs. The headroom is needed because
+//  we are doing (big) sums of such numbers. Maybe we need to make sure that our internally used 
+//  constants (the "magic numbers") are also within that reduced range?
 
 //-------------------------------------------------------------------------------------------------
 

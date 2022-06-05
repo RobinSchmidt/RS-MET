@@ -131,7 +131,7 @@ int main(int argc, char* argv[])
   //ratiosMetallic();
   //sinCosTable();   // new polynomial approximation is called from unit tests
   //twoParamRemap();
-  //numberTheoreticTrafo();
+  //numberTheoreticTrafo();   // move to unit tests!
   //numberTheoreticTrafoModuli();
   //powerIterator();
   //gaussianIterator();
@@ -298,6 +298,7 @@ int main(int argc, char* argv[])
   //logarithmQuotient();
   //stirlingNumbers();
   //bernoulliNumbers();
+  bernoulliPolynomials();
   //sequenceSquareRoot();
   //conicSystem();
   ////logisticMapNoise();                   // takes long to compute
@@ -308,7 +309,7 @@ int main(int argc, char* argv[])
   //primeSieveAtkin();
   ////primeSieve();  // crashes
   //primeDistribution();
-  ////numberTheoreticTransform();           // triggers assert
+  //numberTheoreticTransform();           // triggers assert
   //variousFunctions();
   //functionOperators();
 

@@ -112,12 +112,18 @@ void SfzInstrument::HierarchyLevel::setAmpLfoDepth(float depth)
   int numAmps = (int)RAPT::rsCount(dspTypes, OpcodeType::Amplifier);
   if(!isLastEffectAmplifier()) {
     numAmps++; setSetting(PlaybackSetting(Opcode::volumeN, 0.f, numAmps)); }
-  setModulation(OpcodeType::AmpLfo, 1, Opcode::volumeN, numAmps, 0.5f*depth, ModMode::absolute);
 
+
+  //setModulation(OpcodeType::AmpLfo, 1, Opcode::volumeN, numAmps, 0.5f*depth, ModMode::absolute); // depth is meant as peak-to-peak
+  setModulation(OpcodeType::AmpLfo, 1, Opcode::volumeN, numAmps, depth, ModMode::absolute);        //
   // ToDo:
   // -Figure out, if we need the factor of 0.5 in 0.5*depth to compensate for the bipolarity of the
-  //  LFO signal. Check against reference sfz player. Check the same thing also for the filter env
-  //  ...and quite generally for all LFO routings
+  //  LFO signal. Check against reference sfz players. Check the same thing also for the filter 
+  //  env. Is the depth opcode meant as total peak-to-peak modulation range, i.e. should the value 
+  //  oscillate in (nominal +- depth/2) or in (nominal +- depth). Figure this out generally for all 
+  //  LFO routings. It probably should be consistent and I tend to think that (nominal +- depth) 
+  //  could make more sense because it would be more consistent with the interpretation of envelope
+  //  depth settings.
 }
 
 void SfzInstrument::HierarchyLevel::setSetting(const PlaybackSetting& s)

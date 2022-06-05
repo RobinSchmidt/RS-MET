@@ -3264,7 +3264,7 @@ void numberTheoreticTrafoModuli()
   //rsUint64 P = 16;              // power
   //rsUint64 M = rsPowInt(B, P);  // candidate modulus, 2^64 wraps around to 0
 
-  rsUint64 M = 3221225473;
+  rsUint64 M = 3221225473;        // from https://www.programmersought.com/article/8906403181/
   //rsUint64 M = 7681;
   //rsUint64 M = 97;
   rsUint64 R = 2;               // candidate radix
@@ -3278,8 +3278,8 @@ void numberTheoreticTrafoModuli()
   // root_list = Zp.zeta(R^k);  # replace the k
   // root_list
   //
-  // produces and error message: "NotImplementedError: factorization of polynomials over rings with
-  // composite characteristic is not implemented". Maybe, for a preliminary investingation using 
+  // produces an error message: "NotImplementedError: factorization of polynomials over rings with
+  // composite characteristic is not implemented". Maybe, for a preliminary investigation using 
   // small numbers (small P), we can just do an exhaustive search. Later, for bigger and more 
   // realistic P, we may have to look for some software that can handle the job. Maybe Mathematica?
 
@@ -3360,7 +3360,7 @@ void numberTheoreticTrafoModuli()
 
 
   int dummy = 0;
-  // I think, it would make more sense to rund the loop from high to low values, too, because if 
+  // I think, it would make more sense to run the loop from high to low values, too, because if 
   // a root for a high power is found, i think, we can be sure that the other roots also exist and 
   // we may obtain them by multiplying by some power of R
 
@@ -3408,7 +3408,7 @@ void numberTheoreticTrafoModuli()
   // http://www.faginfamily.net/barry/Papers/Discrete%20Weighted%20Transforms.pdf
   // says: p = 2^61 - 1 is a Mersenne prime and 
   // h = 2147483648 + 1033321771269002680i is primitive root of unity in Z_p...oh! it has a 
-  // imaginary part? Is this some sort of complex modular arithemtic?
+  // imaginary part? Is this some sort of complex modular arithmetic?
 
   // https://www.programmersought.com/article/13432387902/
   // 998244353,1004535809, 469762049, 998244353
@@ -3450,6 +3450,68 @@ void numberTheoreticTrafoModuli()
   // limit - why is that the case? Maybe the algo does just a linear search starting at the highest
   // possible number? Maybe when starting at the high end, the algo is more likely to find a root 
   // more quickly?
+
+
+  // Table of suitable prime moduli for NTT from here
+  // https://www.programmersought.com/article/8906403181/:
+  //
+  //  g is the original root of mod(r*2^k+1)
+  //  Prime number        r   k   g
+  //  3                   1   1   2
+  //  5                   1   2   2
+  //  17                  1   4   3
+  //  97                  3   5   5
+  //  193                 3   6   5
+  //  257                 1   8   3
+  //  7681                15  9   17
+  //  12289               3   12  11
+  //  40961               5   13  3
+  //  65537               1   16  3
+  //  786433              3   18  10
+  //  5767169             11  19  3
+  //  7340033             7   20  3
+  //  23068673            11  21  3
+  //  104857601           25  22  3
+  //  167772161           5   25  3
+  //  469762049           7   26  3
+  //  1004535809          479 21  3
+  //  2013265921          15  27  31
+  //  2281701377          17  27  3
+  //  3221225473          3   30  5
+  //  75161927681         35  31  3
+  //  77309411329         9   33  7
+  //  206158430209        3   36  22
+  //  2061584302081       15  37  7
+  //  2748779069441       5   39  3
+  //  6597069766657       3   41  5
+  //  39582418599937      9   42  5
+  //  79164837199873      9   43  5
+  //  263882790666241     15  44  7
+  //  1231453023109121    35  45  3
+  //  1337006139375617    19  46  3
+  //  3799912185593857    27  47  5
+  //  4222124650659841    15  48  19
+  //  7881299347898369    7   50  6
+  //  31525197391593473   7   52  3
+  //  180143985094819841  5   55  6
+  //  1945555039024054273 27  56  5
+  //  4179340454199820289 29  57  3
+  //
+  // I'm not sure, what the r,k,g values mean. I think, g may be the primitive (2^k)th root of 
+  // unity. ...hmm...dunno...the webpage surrounding that table is a total mess. I think, we want
+  // modulus with large k, because length 2^k is the maximum supported NTT length?`..i think, 
+  // that's why I picked 3221225473, IIRC. Because we can do NTTs up to length 2^30 with it?
+  // Perhaps 65537 = 2^16+1 could be useful as modulus? Are r and g relevant for this application?
+
+  // Some potentially interesting facts given by wolfram alpha:
+  //   7340033    = 1063^2     + 2492^2
+  //   7340033^2  = 5080095^2  + 5297992^2
+  //   23068673   = 2288^2     + 4223^2
+  //   23068673^2 = 12598785^2 + 19324448^2
+  // Hey! I tried to enter a handful of numbers from the list into wolfram alpha and they all are 
+  // the sum of two two squares and the hypothenuse of a Pythagorean triple. Is that a coincidence 
+  // or are these features so common that we should expect them? Or do these features have anything 
+  // to do with the suitability for NTT? If so, what?
 }
 
 

@@ -34,7 +34,8 @@
 
 
 General Pattern (Load Spreading/Smoothing):
-Setting:
+
+Problem:
 -There's a realtime callback, that is invoked at short
  (possibly irregular) time intervals.
 -Every once in a while, we must perform a computationally
@@ -45,6 +46,7 @@ Setting:
 -It is desired to split the task over some number of subsequent
  invocations such that the computational load is spread evenly over
  time and the result becomes available when needed.
+ 
 Solution:
 -Wrap the task into a class that can perform partial steps of the
  task and keeps track of the current processing state (i.e. at which

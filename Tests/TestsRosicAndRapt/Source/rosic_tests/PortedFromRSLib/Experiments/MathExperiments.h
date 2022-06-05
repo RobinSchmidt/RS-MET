@@ -56,6 +56,7 @@ void sineIntegral();
 void logarithmQuotient();
 void stirlingNumbers();
 void bernoulliNumbers();
+void bernoulliPolynomials();
 void sequenceSquareRoot();
 void conicSystem();
 void logisticMapNoise();

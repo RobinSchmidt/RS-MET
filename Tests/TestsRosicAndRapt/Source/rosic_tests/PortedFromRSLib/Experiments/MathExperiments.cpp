@@ -3790,7 +3790,7 @@ void bernoulliNumbers()
   // Producing this array is O(nMax^3) - can we do better? Is this a Shlemiel the painter algo? Can
   // it be optimized to produce the array in a way that re-uses results from previous iterations?
 
-  //int dummy = 0;
+  int dummy = 0;
 }
 // maybe move to unit tests
 
@@ -3800,6 +3800,69 @@ void bernoulliNumbers()
 // a suitable number to get rid of denominators - the result must be an integer, so it's somehow
 // dissatisfying to have to turn to fractions within the computation
 
+void bernoulliPolynomials()
+{
+  // We produce the coefficient arrays of the first few Bernoulli polynomials. These are defined as
+  // follows: Let V[0](x) = 1 be the constant polynomial. Then use the following recursion to 
+  // produce the next polynomial V[k](x) from V[k-1](x):
+  //   -Obtain an antiderivative P(x) of V[k](x), the integration constant doesn't matter
+  //   -Adjust the constant term of the found antiderivative such that the definite integral of the
+  //    antiderivative (yes, that's a 2nd integration) over the interval [a..b] equals zero. That 
+  //    means to evaluate the definite integral of P(x) as is and subtract the result from its 
+  //    constant coefficient.
+  // The Bernoulli polynomials are those polynomials that result from choosing the integration 
+  // limits a=0, b=1 in the above algorithm and then scaling the whole resulting polynomial by
+  // k! (or was it (k+1)! ...figure out). Evaluating those Bernoulli polynomials at x=0 or at x=1
+  // gives the Bernoulli numbers (these are two conventions which differ only by a sign in the B1 
+  // number anyway).
+
+  using Fraction = rsFraction<int>;
+  using Poly     = rsPolynomial<Fraction>;
+  using Vec      = std::vector<Fraction>;
+
+
+  // User Parameters:
+  int maxN   = 8;   // maximum order
+  Fraction a = 0;   // lower integration limit, a=0 for regular Bernoulli polynomials
+  Fraction b = 1;   // upper integration limit, b=1 for regular Bernoulli polynomials
+
+
+  // Helper function to produce the coeff array of P(x) := V[k](x) from the coeff array of 
+  // p(x) := V[k-1](x). May be factored out and moved into the library later:
+  auto nextV = [](int N, const Fraction* p, Fraction* P, Fraction a, Fraction b)
+  {
+    // Compute any antiderivative of p and store the coeffs in P. We choose the one with 
+    // integration constant 0:
+    Poly::integral(p, P, N, 0);
+
+    // Adjust the constant coeff in P such that the definite integral of P over [a,b] gives zero:
+    Fraction Pa = Poly::evaluateIntegral(a, P, N+1);
+    Fraction Pb = Poly::evaluateIntegral(b, P, N+1);
+    Fraction I  = Pb - Pa;   // Compute the definite integral as it currently is
+    P[0] -= I;               // Subtract the value to make the definite integral zero
+    // todo: factor out into single-line call like:
+    //   P[0] -= Poly::definiteIntegral(P, N+1, a, b)
+
+
+    int dummy = 0;
+  };
+
+  std::vector<Vec> V(maxN), B(maxN);
+
+  V[0].resize(1); V[0][0] = 1;       // V[0](x) = 1
+  for(int N = 1; N < maxN; N++)
+  {
+    V[N].resize(N+1);
+    nextV(N-1, &V[N-1][0], &V[N][0], a, b);
+
+
+
+    int dummy = 0;
+  }
+
+
+  int dummy = 0;
+}
 
 
 void sequenceSquareRoot()
