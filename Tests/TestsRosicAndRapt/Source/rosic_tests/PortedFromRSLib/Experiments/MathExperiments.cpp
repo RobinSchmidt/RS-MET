@@ -3925,6 +3925,30 @@ void bernoulliPolynomials()
 // but it has a somewhat different problem setting with some perhaps unnecessary complications. 
 // Maybe approaching it like above results in a simpler way to understand what the Bernoulli
 // polynomials actually mean.
+//
+// Maybe insteaad of using the V[k] polynomials as above, define a related sequence of W[k] 
+// polynomials whose only difference to the V[k] is that they already incorporate the -(1)^k factor
+// which would otherwise have to creep in later and uglify the formulas. So, they are just like the
+// V[k], but the recursion applies an additional minus sign to the result. Then, a sort of 
+// generalized Euler-Maclaurin approximation formula could look like:
+//   int_a^b f(x) dx = sum_k (W[k](b)*f^(k)(b) - W[k](a)*f^(k)(a))
+// where the notation f^(k)(b) means to evaluate the k-th derivative of f at b. The summation index
+// k runs from 0 to inf and truncating the sum at a finite upper index should give an approximation
+// of the integral. This formula should arise naturally from iteratively applying the integration 
+// by parts formula to the remaining integral on the RHS the minus sign in the formuls is taken 
+// care of in the sign-alteration in the recursion, so no ugly (-1)^k factor needs to appear in the
+// sum in the RHS of the above "int_a^b = sum_k" formula.
+// So, we form an approximation of the desired integral by a weighted sum over function and 
+// derivative values at the boundaries where the weights come from evaluating our W-polynomials at 
+// the boundaries. I think, W[0](a) = w[0](b) = (b-a)/2 ...verify that! That should give the
+// trapezoidal rule if we take only the 1st term of the sum (the one with index 0). Perhaps we can
+// find explicit expressions for the other W[k](a), W[k](b). Maybe we can relate them to the 
+// Bernoulli numbers, maybe something like: a + (b-a)*B[k]/k! ...not sure
+//
+// Try to use the idea numerically evaluate some example integrals, like int_2^5 1/x dx. Compare 
+// results to other numeric approximations, maybe also based on a Hermite interpolant and/or based
+// on more standard numeric integration formulas that evaluate the function at various points 
+// inside the interval.
 
 // maybe see here:
 // https://de.wikipedia.org/wiki/Euler-Maclaurin-Formel#Euler-Maclaurin-Formel_zur_Integralapproximation
