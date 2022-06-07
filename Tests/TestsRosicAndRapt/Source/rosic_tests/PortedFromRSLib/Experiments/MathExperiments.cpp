@@ -3799,10 +3799,12 @@ void bernoulliNumbers()
 // maybe move to unit tests
 
 // todo: implement Faulhaber's formula using the Bernoulli numbers:
-// https://en.wikipedia.org/wiki/Faulhaber%27s_formula
+//   https://en.wikipedia.org/wiki/Faulhaber%27s_formula
+//   https://de.wikipedia.org/wiki/Faulhabersche_Formel
 // maybe try to avoid using fractions as much as possible - try to multiply everything through by
 // a suitable number to get rid of denominators - the result must be an integer, so it's somehow
 // dissatisfying to have to turn to fractions within the computation
+
 
 void bernoulliPolynomials()
 {
@@ -3849,15 +3851,40 @@ void bernoulliPolynomials()
     //   P[0] -= Poly::definiteIntegral(P, N+1, a, b)
   };
 
+  // This operator takes a W-polynomial and produces the next one. They are defined just like the
+  // V-polynomials just with the sign alternation already baked in for more convenient higher 
+  // level formulas, i.e. to get rid of the sign alternation factors (-1)^k.
+  auto nextW = [&](int N, const Fraction* p, Fraction* P, Fraction a, Fraction b)
+  {
+    nextV(N, p, P, a, b);
+    for(int i = 0; i <= N+1; i++)
+      P[i] = -P[i];
+    // maybe we need an exception for N=1 to not invert the signs in this case? ..but no, i 
+    // don't think so
+    // The W-polynomials with even indices are equal to the corresponding V-polynomials, those with
+    // odd indices have oppositie sign, i.e. W[k] = V[k] if k is even and W[k] = -V[k] if k is odd.
+  };
+
+
+  std::vector<Vec> V(maxN), W(maxN), B(maxN);
+  Vec bk(maxN);            // rename to B0: B0[k] = B[k](0)
+  Vec Wa(maxN), Wb(maxN);  // Wa[k] = W[k](a),  Wb[k] = W[k](b)
+
+  // Factor into helper function computeCoeffs(a, b):
+
   // Produce V and B polynomials:
-  std::vector<Vec> V(maxN), B(maxN);
   V[0].resize(1); V[0][0] = 1;       // V[0](x) = 1
+  W[0].resize(1); W[0][0] = 1;       // W[0](x) = 1
   B[0].resize(1); B[0][0] = 1;       // B[0](x) = 1
   for(int N = 1; N < maxN; N++)
   {
     // The V-polynomial:
     V[N].resize(N+1);
     nextV(N-1, &V[N-1][0], &V[N][0], a, b);
+
+    // The W-polynomial:
+    W[N].resize(N+1);
+    nextW(N-1, &W[N-1][0], &W[N][0], a, b);
 
     // The B-polynomial (the actual Bernoulli polynomial) results from scaling V:
     B[N].resize(N+1);
@@ -3868,9 +3895,10 @@ void bernoulliPolynomials()
 
   // Produce the Bernoulli numbers by evaluating the Bernoulli polynomials at 0. That amounts to
   // just take the constant coeff:
-  Vec bk(maxN);
   for(int N = 1; N < maxN; N++)
     bk[N] = B[N][0];
+
+
 
   int dummy = 0;
 
@@ -3891,6 +3919,10 @@ void bernoulliPolynomials()
   // https://www.mathi.uni-heidelberg.de/~theiders/PS-Analysis/Bernoullische_Polynome.pdf
   // Bn(x + 1) - Bn(x) = n * x^{n?1}    for n >= 1
 
+  // Generating Function:
+  // f(x) = x / (e^x - 1) = sum_k b_k x^k / k!, i.e. if f(x) = x / (e^x-1) then b_k = f^(k)(0)
+  // wher f^(k)(0) means to evaluate the k-th derivative of f at 0
+
   // Power sum MASTER CLASS: How to sum quadrillions of powers ... by hand! (Euler-Maclaurin formula):
   // https://www.youtube.com/watch?v=fw1kRz83Fj0  
 
@@ -3900,61 +3932,104 @@ void bernoulliPolynomials()
 // Try to rederive the recursion rule for the V polynomials based on the following problem 
 // setting (I'm not sure, if that's possible, i.e. if I'm understanding the meaning of these 
 // polynomials correctly): We want to approximate the definite integral int_a^b f(x) dx for some
-// given function f(x). We are allowed to evaluate f and its derivatives at the interval limits 
-// a and b and want to derive a good approximation formula for the sought integral based on these
+// given function f(x). We are allowed to evaluate f and its derivatives at the interval boundaries 
+// a and b (but not at intermediate points, which is usual problem setting for numeric integration)
+// and we want to derive a good approximation formula for the sought integral based on these
 // values. A simple idea would be to fit a Hermite interpolant with the desired values at a,b and
 // integrate that. But here, we take a different approach: Consider the general formula for 
 // integration by parts:
+// 
 //                                          |b
 //   int_a^b g'(x) * f(x) dx  = g(x) * f(x) |   - int_a^b g(x) * f'(x) dx
 //                                          |a
 //
-// If we pick g'(x) = 1 then the LHS is our desired integral and it's exactly equal to the RHS. An 
-// antiderivative of g'(x) is given by g(x) = x + c for any integration constant c. I think, the 
-// idea is now to pick a particular c in such a way, that the first term in the RHS, i.e. the 
-// boundary term, becomes a good approximation of the LHS and the remaining correction term on the 
-// RHS, i.e. the integral on the RHS, becomes small. If we pick c such that the integral of g(x) 
-// over [a,b] becomes zero, we can achieve that...right? or wrong? I'm not sure...if so, why?
-// ...and this same process can then be applied to approximate the correction integral as well and
-// so on. I think, the polynomials that are produced along the way in this manner are a generalized 
-// variant of the V-polynomials in the code above. ...but as said: I'm not sure about that. For the
-// special case a=0, b=1, the optimal c would come out as c=-1/2 so g(x) = x - 1/2. I think, in 
-// this case, the boundary term on the RHS becomes equal to the trapezoidal rule? See also this
-// video for more ideas:
+// The f(x) here is our given function and g(x) is some other function that we pick to make it 
+// work. If we pick g'(x) = 1 then the LHS is our desired integral. This is exactly equal to the 
+// RHS. An antiderivative of g'(x) is given by g(x) = x + c for any integration constant c. I 
+// think, the idea is now to pick a particular c in such a way, that the first term in the RHS, 
+// i.e. the boundary term, becomes a good approximation of the LHS and the remaining correction 
+// term on the RHS, i.e. the integral on the RHS, becomes small. If we pick c such that the 
+// integral of g(x) over [a,b] becomes zero, we can achieve that...right? or wrong? I'm not 
+// sure...if so, why? This same process can now then be applied to approximate the correction 
+// integral as well and so on. I think, the polynomials that are produced along the way in this 
+// manner are a generalized variant of the V-polynomials in the code above. ...but as said: I'm not
+// sure about that. For the special case a=0, b=1, the optimal c in the first step would come out 
+// as c=-1/2 so  g(x) = x - 1/2. I think, in this case, the boundary term on the RHS becomes equal 
+// to the trapezoidal rule? See also this video for more ideas:
 // https://www.youtube.com/watch?v=nxJI4Uk4i00&list=PLbaA3qJlbE93DiTYMzl0XKnLn5df_QWqY&index=2
 // but it has a somewhat different problem setting with some perhaps unnecessary complications. 
 // Maybe approaching it like above results in a simpler way to understand what the Bernoulli
-// polynomials actually mean.
+// polynomials actually mean and an alternative way to motivate them. 
 //
-// Maybe insteaad of using the V[k] polynomials as above, define a related sequence of W[k] 
+// Maybe instead of using the V[k] polynomials as above, define a related sequence of W[k] 
 // polynomials whose only difference to the V[k] is that they already incorporate the -(1)^k factor
 // which would otherwise have to creep in later and uglify the formulas. So, they are just like the
 // V[k], but the recursion applies an additional minus sign to the result. Then, a sort of 
-// generalized Euler-Maclaurin approximation formula could look like:
-//   int_a^b f(x) dx = sum_k (W[k](b)*f^(k)(b) - W[k](a)*f^(k)(a))
+// generalized Euler-Maclaurin approximation formula could look like (verify!):
+//
+//   int_a^b f(x) dx = sum_{k=0}^infty (W[k](b)*f^(k)(b) - W[k](a)*f^(k)(a))
+//
 // where the notation f^(k)(b) means to evaluate the k-th derivative of f at b. The summation index
 // k runs from 0 to inf and truncating the sum at a finite upper index should give an approximation
-// of the integral. This formula should arise naturally from iteratively applying the integration 
-// by parts formula to the remaining integral on the RHS the minus sign in the formuls is taken 
-// care of in the sign-alteration in the recursion, so no ugly (-1)^k factor needs to appear in the
-// sum in the RHS of the above "int_a^b = sum_k" formula.
+// of the integral. This formula should arise naturally (verify!) from iteratively applying the 
+// integration by parts formula to the remaining integral on the RHS. The minus sign in the 
+// formulas is taken care of in the sign-alteration in the recursion, so no ugly (-1)^k alternation
+// factor needs to appear in the sum in the RHS of the above "int_a^b = sum_k" formula.
 // So, we form an approximation of the desired integral by a weighted sum over function and 
 // derivative values at the boundaries where the weights come from evaluating our W-polynomials at 
 // the boundaries. I think, W[0](a) = w[0](b) = (b-a)/2 ...verify that! That should give the
 // trapezoidal rule if we take only the 1st term of the sum (the one with index 0). Perhaps we can
 // find explicit expressions for the other W[k](a), W[k](b). Maybe we can relate them to the 
-// Bernoulli numbers, maybe something like: a + (b-a)*B[k]/k! ...not sure
+// Bernoulli numbers, maybe something like: a + (b-a)*B[k]/k! ...not sure - figure out! Maybe an 
+// additional advantage of using the interval 0..1 as opposed to a general interval a..b is that
+// the coeffs for the odd order terms vanish - or maybe that will happen in the general case, too?
+// Maybe a good latex notaion for thw W-polynomials would be W^{a,b}_k (x) to emphasize that they
+// also depend of the integration limits a,b. The Bernoulli polynomials B_k (up to some factor of
+// -+k!) would then be equal to W^{0,1}_k (x). we actually can split out a finite the sum (up ot 
+// n-1) and express the rest as correction integral:
 //
-// Try to use the idea numerically evaluate some example integrals, like int_2^5 1/x dx. Compare 
-// results to other numeric approximations, maybe also based on a Hermite interpolant and/or based
-// on more standard numeric integration formulas that evaluate the function at various points 
-// inside the interval.
+//   int_a^b f(x) dx =   sum_{k=0}^{n-1} (W[k](b)*f^(k)(b) - W[k](a)*f^(k)(a))
+//                     + int_a^b W[n](x)*f^(n)(x) dx
+//
+// ..check this for off-by-one errors! In the regular derivation of the Euler-Maclaurin formula,
+// the alternating signs disappear anyway when we remove all the terms that are zero...soo maybe
+// the V[k] as above are better than the W[k]...maybe use both - whichever is more convenient
+// in the given context.
+//
+// After the derivation is done, try to use the resulting weight-computation algorithm to 
+// numerically evaluate some example integrals, like int_2^5 1/x dx. Compare results to other 
+// numeric approximations, maybe also based on a Hermite interpolant and/or based on more standard
+// numeric integration formulas that evaluate the function at various points inside the interval.
+// The method could be a viable alternative to regular numeric integration methods when it's easier
+// to evaluate function derivatives at the integration boundaries rather than evaluating more 
+// function values in the interior of the interval, as the regular methods require. It could become
+// a new tool in the library, to be used, when such problems arise. Maybe revisit the problem of
+// computing the length of a cubic spline segment in 2D - we have used a numeric integration with 
+// 16 points for this. Maybe it could be replaced by such a formula involving derivtaives. See if 
+// going up to order k with the formula allows us to exactly integrate polynomials of degrees up to
+// k. The derivative information at the endpoints should clearly make this possible because we 
+// could also use it to fit an Hermite interpolaant and integrate that - and that strategy would 
+// indeed allow exact integration of polynomials upt ot a certain order. If it works out, then 
+// maybe both strategies are equivalent in some sense? Actually, yes: the k-th correction integral
+// should be zero for a polynomial of degree k or less beccause then f^(k)(x) vanishes. Maybe
+// there's an off-by-one error, i.e. maybe the (k+1)th correction vanishes.
+//
+// From this basic building block to approximate an integral for a given single interval, we can
+// build an integration method that applies this to a series of successive intervals and adds them
+// all up. Such a method may also benefit compuationally from some "telescoping" effect in the
+// resulting double sum. This method could also be used to numerically integrate datapoints when we
+// also have derivative data available.
 
 // maybe see here:
 // https://de.wikipedia.org/wiki/Euler-Maclaurin-Formel#Euler-Maclaurin-Formel_zur_Integralapproximation
 // https://en.wikipedia.org/wiki/Euler%E2%80%93Maclaurin_formula#Approximation_of_integrals
 // https://de.frwiki.wiki/wiki/Formule_d%27Euler-Maclaurin
 // https://mathworld.wolfram.com/Euler-MaclaurinIntegrationFormulas.html
+// https://www.colorado.edu/amath/sites/default/files/attached-files/gregory.pdf
+// https://scholar.colorado.edu/downloads/3n2040476
+// The "Gregory Method" for numeric integration seems to be a related concept. I think, it may be
+// the same idea but applied to a bunch of intervales (we consider only a single interval here) and
+// using numeric estimates of the required derivatives?
 
 
 void sequenceSquareRoot()
