@@ -3870,6 +3870,7 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   std::vector<Vec> V(maxN), W(maxN), B(maxN);
   Vec Ba(maxN), Bb(maxN);  // rename to Ba: Ba[k] = B[k](a), etc.
   Vec Wa(maxN), Wb(maxN);  // Wa[k] = W[k](a),  Wb[k] = W[k](b)
+  Vec Va(maxN), Vb(maxN);  // Va[k] = V[k](a),  Vb[k] = V[k](b)
   auto computeCoeffs = [&](Fraction a, Fraction b)
   {
     // Produce V,W and B polynomials:
@@ -3907,6 +3908,9 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
       // Values of weight polynomials:
       Wa[N] = Poly::evaluate(a, &W[N][0], N);
       Wb[N] = Poly::evaluate(b, &W[N][0], N);
+
+      Va[N] = Poly::evaluate(a, &V[N][0], N);
+      Vb[N] = Poly::evaluate(b, &V[N][0], N);
     }
   };
   computeCoeffs(a, b); // needs to be called again whenever a,b change
@@ -3929,16 +3933,35 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   Fraction x = 3;
   Fraction y = f(x);
 
-  // Compute integral and various approximations:
-  Fraction I  = F(b) - F(a);               // true value = 1/2
-  Fraction It = (b-a) * (f(a) + f(b)) / 2; // trapezoidal approximation = 5/8
+  Fraction I, It, I1, I2, I3, I4;
 
-  Fraction I1 = Wb[1]*f(b) - Wa[1]*f(a);   // 1st Bernoulli approximation (= trapezoidal)
+  // Compute integral and various approximations:
+  I  = F(b) - F(a);               // true value = 1/2
+  It = (b-a) * (f(a) + f(b)) / 2; // trapezoidal approximation = 5/8
+
+  // Try it using the V-polynomials:
+  I1 =      (Vb[1]*f( b) - Va[1]*f( a));  // 5/8     = 0.0625
+  I2 = I1 - (Vb[2]*f1(b) - Va[2]*f1(a));  // 23/48   = 0.47916666666
+  I3 = I2 + (Vb[3]*f2(b) - Va[3]*f2(a));  // same
+  I4 = I3 - (Vb[4]*f3(b) - Va[4]*f3(a));  // 491/960 = 0.51145833333
+  // OK - we seem to indeed get closer to the real value of 0.5 by using more terms. The odd
+  // terms except the 1st do nothing for us - as predicted. The improvement from I1 to I2 is
+  // quite good but from I2 to I4 not so much.
+  //
+  // ToDo: Evaluate a few terms more. Maybe derive an explicit rule involving only the 1st
+  // derivative. Try a different interval. It could be that we need a factor of (b-a) in front
+  // of each term.
+
+
+
+
+
+  I1 = Wb[1]*f(b) - Wa[1]*f(a);   // 1st Bernoulli approximation (= trapezoidal)
   // has wrong sign but is otherwise the same as trapezoidal
 
-  Fraction I2 = I1 + (Wb[2]*f1(b) - Wa[2]*f1(a));
-  Fraction I3 = I2 + (Wb[3]*f2(b) - Wa[3]*f2(a)); // same as I2
-  Fraction I4 = I3 + (Wb[4]*f3(b) - Wa[4]*f3(a));
+  I2 = I1 + (Wb[2]*f1(b) - Wa[2]*f1(a));
+  I3 = I2 + (Wb[3]*f2(b) - Wa[3]*f2(a)); // same as I2
+  I4 = I3 + (Wb[4]*f3(b) - Wa[4]*f3(a));
 
   a = Fraction(1, 2); b = Fraction(3, 2);
   computeCoeffs(a, b);
@@ -3974,7 +3997,10 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   //  general a..b.
   // -Try to figure out, at which point we should expect overflow errors. I think, we need 
   //  really small values for a and b. I also think, the values of Wa,Wb depend only on b-a?
-  //
+  // -I think, the first term in the W-polynomials need to be positive indeed
+  // -I think, we will also need a (b-a) factor in front of each term
+  // -Maybe we should indeed just use the V-polynomials or even the B polynomials and just
+  //  put up with the ugly factors
 
   // ...
 
