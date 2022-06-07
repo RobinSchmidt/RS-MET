@@ -3936,7 +3936,16 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   Fraction I1 = Wb[1]*f(b) - Wa[1]*f(a);   // 1st Bernoulli approximation (= trapezoidal)
   // has wrong sign but is otherwise the same as trapezoidal
 
-  // (W[k](b)*f^(k)(b) - W[k](a)*f^(k)(a))
+  Fraction I2 = I1 + (Wb[2]*f1(b) - Wa[2]*f1(a));
+  Fraction I3 = I2 + (Wb[3]*f2(b) - Wa[3]*f2(a)); // same as I2
+  Fraction I4 = I3 + (Wb[4]*f3(b) - Wa[4]*f3(a));
+
+
+  // Now let's try a more interesting integration interval of 3/4...9/5 = 0.75...1.8:
+  a = Fraction(3, 4); b = Fraction(9, 5); 
+  computeCoeffs(a, b); // crashes!
+  // 1/0 - 1/0
+
 
 
   // Results from wolfram alpha for some definite intergals of 1/x^2:
