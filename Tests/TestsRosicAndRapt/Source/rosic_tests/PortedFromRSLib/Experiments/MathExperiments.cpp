@@ -3920,20 +3920,23 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
 
   using Func = std::function<Fraction(Fraction)>;
   Func F  = [](Fraction x){ return  -1 /  x;        }; // antiderivative of f
-  Func f0 = [](Fraction x){ return   1 / (x*x);     }; // f^(0)(x) = f(x). Function f itself.
+  Func f  = [](Fraction x){ return   1 / (x*x);     }; // f^(0)(x) = f(x). Function f itself.
   Func f1 = [](Fraction x){ return  -2 / (x*x*x);   }; // f'(x)
   Func f2 = [](Fraction x){ return   6 / (x*x*x*x); }; // f''(x)
   Func f3 = [](Fraction x){ return -24 / (x*x*x*x*x); };
   
   // Test:
   Fraction x = 3;
-  Fraction y = f0(x);
+  Fraction y = f(x);
 
+  // Compute integral and various approximations:
+  Fraction I  = F(b) - F(a);               // true value = 1/2
+  Fraction It = (b-a) * (f(a) + f(b)) / 2; // trapezoidal approximation = 5/8
 
-  // Compute trapezoidal approximation:
+  Fraction I1 = Wb[1]*f(b) - Wa[1]*f(a);   // 1st Bernoulli approximation (= trapezoidal)
+  // has wrong sign but is otherwise the same as trapezoidal
 
-  //Fraction I1 = 
-
+  // (W[k](b)*f^(k)(b) - W[k](a)*f^(k)(a))
 
 
   // Results from wolfram alpha for some definite intergals of 1/x^2:
