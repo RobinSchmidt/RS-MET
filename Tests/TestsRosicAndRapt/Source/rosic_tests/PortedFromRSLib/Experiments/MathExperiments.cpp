@@ -3806,7 +3806,7 @@ void bernoulliNumbers()
 // dissatisfying to have to turn to fractions within the computation
 
 
-void bernoulliPolynomials()
+void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
 {
   // We produce the coefficient arrays of the first few Bernoulli polynomials. These are defined as
   // follows: Let V[0](x) = 1 be the constant polynomial. Then use the following recursion to 
@@ -3917,6 +3917,22 @@ void bernoulliPolynomials()
   // derivatives are: f^(1)(x) = -2 / x^3, f^(2)(x) = 6 / x^4, f^(3)(x) = -24 / x^5,
   // f^(4)(x) = 120 / x^6, ..., f^(k)(x) = (-1)^k * (k+1)! / x^(k+2)
   a = 1; b = 2; computeCoeffs(a, b);
+
+  using Func = std::function<Fraction(Fraction)>;
+  Func F  = [](Fraction x){ return  -1 /  x;        }; // antiderivative of f
+  Func f0 = [](Fraction x){ return   1 / (x*x);     }; // f^(0)(x) = f(x). Function f itself.
+  Func f1 = [](Fraction x){ return  -2 / (x*x*x);   }; // f'(x)
+  Func f2 = [](Fraction x){ return   6 / (x*x*x*x); }; // f''(x)
+  Func f3 = [](Fraction x){ return -24 / (x*x*x*x*x); };
+  
+  // Test:
+  Fraction x = 3;
+  Fraction y = f0(x);
+
+
+  // Compute trapezoidal approximation:
+
+  //Fraction I1 = 
 
 
 
