@@ -3829,7 +3829,7 @@ void bernoulliPolynomials()
 
 
   // User Parameters:
-  int maxN   = 15;   // maximum order
+  int maxN   =  8;   // maximum order
   Fraction a =  0;   // lower integration limit, a=0 for regular Bernoulli polynomials
   Fraction b =  1;   // upper integration limit, b=1 for regular Bernoulli polynomials
 
@@ -3865,48 +3865,89 @@ void bernoulliPolynomials()
     // odd indices have oppositie sign, i.e. W[k] = V[k] if k is even and W[k] = -V[k] if k is odd.
   };
 
-
+  // Compute the coeffs that we need for numeric integrations as well as Bernoulli numbers,
+  // the whole generalized Bernoulli polynomials etc:
   std::vector<Vec> V(maxN), W(maxN), B(maxN);
-  Vec bk(maxN);            // rename to B0: B0[k] = B[k](0)
+  Vec Ba(maxN), Bb(maxN);  // rename to Ba: Ba[k] = B[k](a), etc.
   Vec Wa(maxN), Wb(maxN);  // Wa[k] = W[k](a),  Wb[k] = W[k](b)
-
-  // Factor into helper function computeCoeffs(a, b):
-
-  // Produce V and B polynomials:
-  V[0].resize(1); V[0][0] = 1;       // V[0](x) = 1
-  W[0].resize(1); W[0][0] = 1;       // W[0](x) = 1
-  B[0].resize(1); B[0][0] = 1;       // B[0](x) = 1
-  for(int N = 1; N < maxN; N++)
+  auto computeCoeffs = [&](Fraction a, Fraction b)
   {
-    // The V-polynomial:
-    V[N].resize(N+1);
-    nextV(N-1, &V[N-1][0], &V[N][0], a, b);
+    // Produce V,W and B polynomials:
+    V[0].resize(1); V[0][0] = 1;       // V[0](x) = 1
+    W[0].resize(1); W[0][0] = 1;       // W[0](x) = 1
+    B[0].resize(1); B[0][0] = 1;       // B[0](x) = 1
+    for(int N = 1; N < maxN; N++)
+    {
+      // The V-polynomial:
+      V[N].resize(N+1);
+      nextV(N-1, &V[N-1][0], &V[N][0], a, b);
 
-    // The W-polynomial:
-    W[N].resize(N+1);
-    nextW(N-1, &W[N-1][0], &W[N][0], a, b);
+      // The W-polynomial:
+      W[N].resize(N+1);
+      nextW(N-1, &W[N-1][0], &W[N][0], a, b);
 
-    // The B-polynomial (the actual Bernoulli polynomial) results from scaling V:
-    B[N].resize(N+1);
-    Int fac = rsFactorial(N);
-    for(int n = 0; n <= N; n++)
-      B[N][n] = fac * V[N][n];
-  }
+      // The B-polynomial (the actual Bernoulli polynomial) results from scaling V:
+      B[N].resize(N+1);
+      Int fac = rsFactorial(N);
+      for(int n = 0; n <= N; n++)
+        B[N][n] = fac * V[N][n];
+    }
 
-  // Produce the Bernoulli numbers by evaluating the Bernoulli polynomials at 0. That amounts to
-  // just take the constant coeff:
-  for(int N = 1; N < maxN; N++)
-    bk[N] = B[N][0];
+    // Produce the generalized Bernoulli numbers by evaluating the Bernoulli polynomials at a. 
+    // If a==0, that amounts to just take the constant coeff, but we don't asume a==0 here. we 
+    // also compute the values at a,b of our weight polynomials W. These are used in the 
+    // numeric integration formula:
+    for(int N = 0; N < maxN; N++)
+    {
+      // Values of generalized Bernoulli polynomials:
+      //Ba[N] = B[N][0];                         // works only, iff a==0
+      Ba[N] = Poly::evaluate(a, &B[N][0], N);  // works more generally
+      Bb[N] = Poly::evaluate(b, &B[N][0], N);
+
+      // Values of weight polynomials:
+      Wa[N] = Poly::evaluate(a, &W[N][0], N);
+      Wb[N] = Poly::evaluate(b, &W[N][0], N);
+    }
+  };
+  computeCoeffs(a, b); // needs to be called again whenever a,b change
+
+
+  // Now use the so produced numbers to peform a numeric integration task. We integrate the
+  // function f(x) = 1 / x^2 from a=1 to b=2. The antiderivative is F(x) = -1/x + c. The 
+  // derivatives are: f^(1)(x) = -2 / x^3, f^(2)(x) = 6 / x^4, f^(3)(x) = -24 / x^5,
+  // f^(4)(x) = 120 / x^6, ..., f^(k)(x) = (-1)^k * (k+1)! / x^(k+2)
+  a = 1; b = 2; computeCoeffs(a, b);
+
+
+
+  // Results from wolfram alpha for some definite intergals of 1/x^2:
+  // int_1^2 1/x^2 dx = 1/2
+  // int_2^3 1/x^2 dx = 1/6
+  // int_3^4 1/x^2 dx = 1/12
+  // int_4^5 1/x^2 dx = 1/20
+  // int_5^6 1/x^2 dx = 1/30
+
+
+  // ToDo: 
+  // -Try to figure out, at which point we should expect overflow errors. I think, we need 
+  //  really small values for a and b. I also think, the values of Wa,Wb depend only on b-a?
+  //
+
+  // ...
+
 
 
 
   int dummy = 0;
 
   // ToDo:
-  // -for N >= 9, we seem to get overflow errors (numbers are garbage) 
+  // -for maxN >= 9, we seem to get overflow errors (numbers are garbage) 
   //  -> switch to rsInt64, figure out and document safe ranges, compare those ranges to the ranges
   //  of other algos that can compute Bernoulli numbers
   // -what's the relationship to sums of powers? Is sum_{i=1}^n i^k equal to B[k](n)? or B[k](n+1)?
+  // -Maybe use float/double for numeric integration tests. Use f(x) = 1/x - we need float for
+  //  that because then F(x) = log(x) + c, so the result of a definite integration may be 
+  //  irrational.
 
   // See also: The Basel Problem Part 1: Euler-Maclaurin Approximation
   // https://www.youtube.com/watch?v=nxJI4Uk4i00&list=PLbaA3qJlbE93DiTYMzl0XKnLn5df_QWqY&index=2
