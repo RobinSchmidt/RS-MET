@@ -3940,11 +3940,23 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   Fraction I3 = I2 + (Wb[3]*f2(b) - Wa[3]*f2(a)); // same as I2
   Fraction I4 = I3 + (Wb[4]*f3(b) - Wa[4]*f3(a));
 
+  a = Fraction(1, 2); b = Fraction(3, 2);
+  computeCoeffs(a, b);
+  I  = F(b) - F(a);                         //  4/3   = 1.3333
+  It = (b-a) * (f(a) + f(b)) / 2;           //  20/9  = 2.2222
+  I1 =      (Wb[1]*f( b) - Wa[1]*f( a));    // -20/9  = -2.2222
+  I2 = I1 + (Wb[2]*f1(b) - Wa[2]*f1(a));    // -76/81 = 0.93827...
+  I3 = I2 + (Wb[3]*f2(b) - Wa[3]*f2(a));    // like I2
+  I4 = I3 + (Wb[4]*f3(b) - Wa[4]*f3(a));    // -7292/3645 = 2.00054...
 
   // Now let's try a more interesting integration interval of 3/4...9/5 = 0.75...1.8:
   a = Fraction(3, 4); b = Fraction(9, 5); 
-  computeCoeffs(a, b); // crashes!
-  // 1/0 - 1/0
+  computeCoeffs(a, b); // crashes! we get an 1/0 - 1/0. How can a 1/0 fraction arise at all?
+  // is that an overflow error that occurs for thsi specific choice? try something else!
+
+  // a=1/2, b=4/3 also has this problem...figure out!
+
+
 
 
 
@@ -3957,6 +3969,9 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
 
 
   // ToDo: 
+  // -Something is still going wrong in the numercial integration scheme. Try using simpler 
+  //  functions f(x) to integrate and/or use the default interval 0..1 instead of the more
+  //  general a..b.
   // -Try to figure out, at which point we should expect overflow errors. I think, we need 
   //  really small values for a and b. I also think, the values of Wa,Wb depend only on b-a?
   //
