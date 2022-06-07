@@ -3920,7 +3920,7 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   // function f(x) = 1 / x^2 from a=1 to b=2. The antiderivative is F(x) = -1/x + c. The 
   // derivatives are: f^(1)(x) = -2 / x^3, f^(2)(x) = 6 / x^4, f^(3)(x) = -24 / x^5,
   // f^(4)(x) = 120 / x^6, ..., f^(k)(x) = (-1)^k * (k+1)! / x^(k+2)
-  a = 1; b = 2; computeCoeffs(a, b);
+  a = 2; b = 3; computeCoeffs(a, b);
 
   using Func = std::function<Fraction(Fraction)>;
   Func F  = [](Fraction x){ return  -1 /  x;        }; // antiderivative of f
@@ -3933,28 +3933,33 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   Fraction x = 3;
   Fraction y = f(x);
 
-  Fraction I, It, I1, I2, I3, I4;
+  Fraction L, I, It, I1, I2, I3, I4;
 
   // Compute integral and various approximations:
+  L  = b-a;
   I  = F(b) - F(a);               // true value = 1/2
-  It = (b-a) * (f(a) + f(b)) / 2; // trapezoidal approximation = 5/8
+  It = L * (f(a) + f(b)) / 2; // trapezoidal approximation = 5/8
 
   // Try it using the V-polynomials:
-  I1 =      (Vb[1]*f( b) - Va[1]*f( a));  // 5/8     = 0.0625
-  I2 = I1 - (Vb[2]*f1(b) - Va[2]*f1(a));  // 23/48   = 0.47916666666
-  I3 = I2 + (Vb[3]*f2(b) - Va[3]*f2(a));  // same
-  I4 = I3 - (Vb[4]*f3(b) - Va[4]*f3(a));  // 491/960 = 0.51145833333
+  I1 =      L * (Vb[1]*f( b) - Va[1]*f( a));  // 5/8     = 0.0625
+  I2 = I1 - L * (Vb[2]*f1(b) - Va[2]*f1(a));  // 23/48   = 0.47916666666
+  I3 = I2 + L * (Vb[3]*f2(b) - Va[3]*f2(a));  // same
+  I4 = I3 - L * (Vb[4]*f3(b) - Va[4]*f3(a));  // 491/960 = 0.51145833333
   // OK - we seem to indeed get closer to the real value of 0.5 by using more terms. The odd
   // terms except the 1st do nothing for us - as predicted. The improvement from I1 to I2 is
-  // quite good but from I2 to I4 not so much.
+  // quite good but from I2 to I4 not so much. I'm not sure, if we should use the L factor in
+  // every term. We seem to get bad results unless b-a = 1. The approximants seem to be 
+  // alternating around the true value. Maybe in a actual implementation this can be used for
+  // extrapolation. Or simpler: just apply only half of the last correction
   //
   // ToDo: Evaluate a few terms more. Maybe derive an explicit rule involving only the 1st
   // derivative. Try a different interval. It could be that we need a factor of (b-a) in front
-  // of each term.
+  // of each term. Try simpler functions (polynomials) and use the default interval to encircle
+  // the error.
 
 
 
-
+  // The stuff below is not yet working at all:
 
   I1 = Wb[1]*f(b) - Wa[1]*f(a);   // 1st Bernoulli approximation (= trapezoidal)
   // has wrong sign but is otherwise the same as trapezoidal
@@ -3978,9 +3983,6 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   // is that an overflow error that occurs for thsi specific choice? try something else!
 
   // a=1/2, b=4/3 also has this problem...figure out!
-
-
-
 
 
   // Results from wolfram alpha for some definite intergals of 1/x^2:
