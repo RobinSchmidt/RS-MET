@@ -3920,20 +3920,23 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   // function f(x) = 1 / x^2 from a=1 to b=2. The antiderivative is F(x) = -1/x + c. The 
   // derivatives are: f^(1)(x) = -2 / x^3, f^(2)(x) = 6 / x^4, f^(3)(x) = -24 / x^5,
   // f^(4)(x) = 120 / x^6, ..., f^(k)(x) = (-1)^k * (k+1)! / x^(k+2)
-  a = 2; b = 3; computeCoeffs(a, b);
+  a = 1; b = 2; computeCoeffs(a, b);
 
   using Func = std::function<Fraction(Fraction)>;
-  Func F  = [](Fraction x){ return  -1 /  x;        }; // antiderivative of f
-  Func f  = [](Fraction x){ return   1 / (x*x);     }; // f^(0)(x) = f(x). Function f itself.
-  Func f1 = [](Fraction x){ return  -2 / (x*x*x);   }; // f'(x)
-  Func f2 = [](Fraction x){ return   6 / (x*x*x*x); }; // f''(x)
-  Func f3 = [](Fraction x){ return -24 / (x*x*x*x*x); };
-  
+  Func F  = [](Fraction x){ return   -1 /  x;        }; // antiderivative of f
+  Func f  = [](Fraction x){ return    1 / (x*x);     }; // f^(0)(x) = f(x). Function f itself.
+  Func f1 = [](Fraction x){ return   -2 / (x*x*x);   }; // f'(x)
+  Func f2 = [](Fraction x){ return    6 / (x*x*x*x); }; // f''(x)
+  Func f3 = [](Fraction x){ return  -24 / (x*x*x*x*x); };
+  Func f4 = [](Fraction x){ return  120 / (x*x*x*x*x*x); };
+  Func f5 = [](Fraction x){ return -720 / (x*x*x*x*x*x*x); };
+
+
   // Test:
   Fraction x = 3;
   Fraction y = f(x);
 
-  Fraction L, I, It, I1, I2, I3, I4;
+  Fraction L, I, It, I1, I2, I3, I4, I5, I6;
 
   // Compute integral and various approximations:
   L  = b-a;
@@ -3941,16 +3944,21 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   It = L * (f(a) + f(b)) / 2; // trapezoidal approximation = 5/8
 
   // Try it using the V-polynomials:
-  I1 =      L * (Vb[1]*f( b) - Va[1]*f( a));  // 5/8     = 0.0625
-  I2 = I1 - L * (Vb[2]*f1(b) - Va[2]*f1(a));  // 23/48   = 0.47916666666
+  L  = 1;  // Test - I don't think, we need the factor here
+  I1 =      L * (Vb[1]*f( b) - Va[1]*f( a));  // 5/8       = 0.0625
+  I2 = I1 - L * (Vb[2]*f1(b) - Va[2]*f1(a));  // 23/48     = 0.47916666666
   I3 = I2 + L * (Vb[3]*f2(b) - Va[3]*f2(a));  // same
-  I4 = I3 - L * (Vb[4]*f3(b) - Va[4]*f3(a));  // 491/960 = 0.51145833333
+  I4 = I3 - L * (Vb[4]*f3(b) - Va[4]*f3(a));  // 491/960   = 0.51145833333
+  I5 = I4 + L * (Vb[5]*f4(b) - Va[5]*f4(a));  // same
+  I6 = I5 - L * (Vb[6]*f5(b) - Va[6]*f5(a));  // 4371/8960 = 0.48783482142
   // OK - we seem to indeed get closer to the real value of 0.5 by using more terms. The odd
   // terms except the 1st do nothing for us - as predicted. The improvement from I1 to I2 is
   // quite good but from I2 to I4 not so much. I'm not sure, if we should use the L factor in
-  // every term. We seem to get bad results unless b-a = 1. The approximants seem to be 
-  // alternating around the true value. Maybe in a actual implementation this can be used for
-  // extrapolation. Or simpler: just apply only half of the last correction
+  // every term. We seem to get bad results unless b-a = 1. Actually, as per the derivtaion,
+  // it shouldn't be needed. The effct should be baked in into the Vb coeffs.
+  // The approximants seem to be alternating around the true value. Maybe in a actual 
+  // implementation this can be used for extrapolation. Or simpler: just apply only half of 
+  // the last correction
   //
   // ToDo: Evaluate a few terms more. Maybe derive an explicit rule involving only the 1st
   // derivative. Try a different interval. It could be that we need a factor of (b-a) in front
@@ -3959,7 +3967,7 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
 
 
 
-  // The stuff below is not yet working at all:
+  // The stuff below is not yet working at all - but that's actually not too surprising:
 
   I1 = Wb[1]*f(b) - Wa[1]*f(a);   // 1st Bernoulli approximation (= trapezoidal)
   // has wrong sign but is otherwise the same as trapezoidal
@@ -3980,7 +3988,7 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   // Now let's try a more interesting integration interval of 3/4...9/5 = 0.75...1.8:
   a = Fraction(3, 4); b = Fraction(9, 5); 
   computeCoeffs(a, b); // crashes! we get an 1/0 - 1/0. How can a 1/0 fraction arise at all?
-  // is that an overflow error that occurs for thsi specific choice? try something else!
+  // is that an overflow error that occurs for this specific choice? try something else!
 
   // a=1/2, b=4/3 also has this problem...figure out!
 
