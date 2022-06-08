@@ -3963,7 +3963,12 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
   // ToDo: Evaluate a few terms more. Maybe derive an explicit rule involving only the 1st
   // derivative. Try a different interval. It could be that we need a factor of (b-a) in front
   // of each term. Try simpler functions (polynomials) and use the default interval to encircle
-  // the error.
+  // the error. It'S actually a bit strange and undesirable that making use of the information 
+  // about even derivatives does not give any improvements. Maybe we are better off using an 
+  // Hermite interpolant. In practice, we'll probably use up to 3 derivatives for which we have
+  // an efficient formula.
+  // Try to derive formulas for integrals of f(x) = 1 / x^n from 1 to inf. There should probably
+  // be some further simplifications due to telescoping effects.
 
 
 

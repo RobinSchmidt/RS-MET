@@ -74,6 +74,11 @@ TUInt rsGcd(TUInt m, TUInt n)
 // -> figure out -> yes, seems to be the case:
 // https://www.geeksforgeeks.org/gcd-two-array-numbers/
 // https://stackoverflow.com/questions/21128981/finding-gcd-of-array-code-c-language
+// Is it possible to also output the quotients of both inputs after dividing by the gcd? Often, we
+// compute the gcd in order to reduce fractions in which case we then also need to divide both
+// numbers by their gcd which is another two divisions. Could the algo directly output
+// g = gcd(m, n) and m/g, n/g to avoid having to compute m/g, n/g by two extra divisions? Note that
+// this is *not* what the extended Euclidean algo produces.
 
 template<class TInt>
 TInt rsGeneralizedDelta(TInt superscripts[], TInt subscripts[], TInt N)
