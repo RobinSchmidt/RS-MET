@@ -189,3 +189,17 @@ MIDI behaviors
   https://sfzformat.com/opcodes/note_selfmask  
   https://sfzformat.com/opcodes/set_ccN
   https://sfzformat.com/opcodes/rt_dead
+
+----------------------------------------------------------------------------------------------------
+Effects
+=======
+
+- Autogain: Analyzes the gain difference between the signal at the input of the effect chain and 
+  its own input and applies an inverse gain to compensate (partially or fully) for the measured
+  difference. The goal is to make the signal come out of the effect chain with the same loudness as
+  it enters the effect chain. We would either somehow need to sidechain the original input into a
+  sidechain input or just somehow have a hardwired levelmeter at the input of the chain, whenever
+  an Autogain effect is present. Sidechain inputs could be useful anyway...but how would we define
+  the routing in the the sfz? The parameters of such an autogain device could be: attack, release,
+  amount. Maybe also mode (RMS, Peak, loudness, etc.). Maybe it could also use lookahead. That would
+  require to pre-render some samples/blocks before they are actually needed.
