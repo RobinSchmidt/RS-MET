@@ -447,4 +447,11 @@ integration stuff may depend on interpolation and if we templatize the functions
 take care that everything is defined before it gets used.
 
 
+Can we use Cauchy's formula for repeated intergration:
+https://www.youtube.com/watch?v=jNpKKDekS6k
+to evaluate multiple integrals with the code for single-variable integrals?
+
+
 */
+
+

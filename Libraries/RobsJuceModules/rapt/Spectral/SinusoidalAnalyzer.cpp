@@ -532,6 +532,11 @@ peakPhase = rsInterpolateWrapped(pPhs[binInt], pPhs[binInt+1], binFrac, -PI, PI)
 https://ccrma.stanford.edu/~jos/sasp/Phase_Interpolation_Peak.html
 
 
+Frequency estimation methods
+https://dspguru.com/dsp/howtos/how-to-interpolate-fft-peak/ 
+https://espace.library.uq.edu.au/view/UQ:10626 A Review of the Frequency Estimation and Tracking Problems
+
+__
 see here for window functions:
 https://en.wikipedia.org/wiki/Window_function
 implement blackman-harris and maybe blackman-nutall, dolph-chebychev - i think, low sidelobes are
