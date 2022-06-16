@@ -119,7 +119,7 @@ T rsAttackDecayEnvelope<T>::getAccuCompensatedImpulse()
   // Under investigation:
   case RM::test1:     return T(1) - this->s * (this->yd - this->ya);  // not useful
 
-  case RM::test2:     return (2-ca*ya-cd*yd) / 2; 
+  case RM::test2:     return (2-this->ca * this->ya - this->cd * this->yd) / 2; 
     // Obtained requiring ya+yd == 2 in the upcoming call to getSample...what's the rationale 
     // behind requiring this? What, if require it to be some other value?
 
