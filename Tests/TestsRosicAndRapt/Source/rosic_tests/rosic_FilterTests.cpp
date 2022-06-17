@@ -215,39 +215,41 @@ void rotes::testBiquadPhasePlot()
 
 void rotes::testFiniteImpulseResponseDesigner()
 {
-  // User parameters:
-  static const int length    = 201;   // Filter kernel length
-  static const int fftLength = 8192;  // FFT length for plot
-  double plotMinDb  = -200;           // Minimum for y-axis in the plot in dB
-  double plotMaxDb  =  +10;           // Maximum ...
-  double sampleRate = 44100.0;        // Cutoff or center frequency
-  double freq       =  1000.0;
-
-
   using FD = rosic::FiniteImpulseResponseDesigner;
   using WD = rosic::WindowDesigner;
   using AT = RAPT::rsArrayTools;
+  using Window = WD::windowTypes;
+  using Mode   = FD::modes;
 
+
+  // User parameters:
+  static const int length    = 201;      // Filter kernel length
+  static const int fftLength = 8192;     // FFT length for plot
+  double plotMinDb  = -200;              // Minimum for y-axis in the plot in dB
+  double plotMaxDb  =  +10;              // Maximum ...
+  double sampleRate = 44100.0;           // Cutoff or center frequency
+  double frequency  =  1000.0;
+  Mode   mode       = Mode::LOWPASS;
+  Window window     = Window::BLACKMAN;
+
+
+  // Plot the impulse response:
+  double impulseResponse[length];
+  FD designer;
+  designer.setMode(mode);
+  designer.setWindowType(window);
+  designer.setFrequency(frequency);
+  designer.getImpulseResponse(impulseResponse, length);
+  //designer.spectralReversal(impulseResponse, length);   // ?
+  double indices[length];
+  AT::fillWithIndex(indices, length);
+  plotData(length, indices, impulseResponse);
 
 
   /* 
-  double impulseResponse[length];
-
-  //FiniteImpulseResponseDesigner designer;
-  //designer.setMode(FiniteImpulseResponseDesigner::BANDREJECT);
-  //designer.setFrequency(5000.0);
-  //designer.getImpulseResponse(impulseResponse, length);
-  //designer.spectralReversal(impulseResponse, length);
-
   // plot the impulse response:
-  //double indices[length];
-  //AT::fillWithIndex(indices, length);
-  //plotData(length, indices, impulseResponse);
-
-
   double magnitudes[fftLength];
   double phases[fftLength];
-
   fftMagnitudesAndPhases(impulseResponse, length, magnitudes, phases, fftLength);
   //Plotter::plotData(fftLength/2, frequencies, magnitudes);
   //Plotter::plotData(fftLength/2, frequencies, phases);
@@ -255,7 +257,7 @@ void rotes::testFiniteImpulseResponseDesigner()
  
 
 
-  // plot the magnitude response:
+  // Plot the magnitude response:
   double frequencies[fftLength];
   AT::fillWithIndex(frequencies, fftLength);
   AT::scale(frequencies, frequencies, fftLength, sampleRate/fftLength);
@@ -267,11 +269,11 @@ void rotes::testFiniteImpulseResponseDesigner()
 
 
   FiniteImpulseResponseFilter filter;
-  filter.setMode(FD::LOWPASS);
+  filter.setMode(mode);
   filter.setImpulseResponseLength(length);
-  filter.setWindowType(WD::RECTANGULAR);
-  filter.setFrequency(10000.0);
+  filter.setFrequency(frequency);
 
+  filter.setWindowType(WD::RECTANGULAR);
   filter.getMagnitudeResponse(frequencies, magnitudes1, fftLength, true, false);
   AT::clip(magnitudes1, fftLength, plotMinDb, plotMaxDb);
 
