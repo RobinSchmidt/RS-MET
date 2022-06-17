@@ -228,8 +228,8 @@ void rotes::testFiniteImpulseResponseDesigner()
   double plotMinDb  = -200;              // Minimum for y-axis in the plot in dB
   double plotMaxDb  =  +10;              // Maximum ...
   double sampleRate = 44100.0;           // Sample rate
-  double frequency  =  1000.0;           // Cutoff or center frequency
-  Mode   mode       = Mode::LOWPASS;
+  double frequency  = 10000.0;           // Cutoff or center frequency
+  Mode   mode       = Mode::BANDPASS;
   Window window     = Window::BLACKMAN;
 
 
@@ -280,20 +280,20 @@ void rotes::testFiniteImpulseResponseDesigner()
 
   filter.setWindowType(WD::HAMMING);
   filter.getMagnitudeResponse(frequencies, mags3, fftLength, true, false);
-  AT::clip(mags2, fftLength, plotMinDb, plotMaxDb);
+  AT::clip(mags3, fftLength, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::HANN);
   filter.getMagnitudeResponse(frequencies, mags4, fftLength, true, false);
-  AT::clip(mags2, fftLength, plotMinDb, plotMaxDb);
+  AT::clip(mags4, fftLength, plotMinDb, plotMaxDb);
 
-  filter.setWindowType(WD::COSINE_SQUARED); // isn't this the same as Hann?
+  filter.setWindowType(WD::COSINE_SQUARED); // isn't this the same as Hann? ...not exactly..why?
   filter.getMagnitudeResponse(frequencies, mags5, fftLength, true, false);
-  AT::clip(mags2, fftLength, plotMinDb, plotMaxDb);
+  AT::clip(mags4, fftLength, plotMinDb, plotMaxDb);
 
-  plotData(fftLength/2, frequencies, mags1, mags2, mags3, mags4, mags5);
-  //plotData(fftLength/2, frequencies, magnitudes4, magnitudes5); // Hann vs cos^2
-  //plotData(fftLength/2, frequencies, magnitudes4, magnitudes2);   // Hann vs Blackman
-  //plotData(fftLength/2, frequencies, magnitudes2);   // Blackman
+  plotData(fftLength/2, frequencies, mags1, mags2, mags3, mags4, mags5); // plot all 5
+  plotData(fftLength/2, frequencies, mags4, mags5);                      // Hann vs cos^2
+  plotData(fftLength/2, frequencies, mags4, mags2);                      // Hann vs Blackman
+  plotData(fftLength/2, frequencies, mags2);                             // Blackman only
 
   /*
   // create some noise, filter it and write it into a file:
