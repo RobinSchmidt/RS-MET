@@ -1,7 +1,6 @@
-//#include "rosic_FiniteImpulseResponseDesigner.h"
-//using namespace rosic;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 FiniteImpulseResponseDesigner::FiniteImpulseResponseDesigner()
@@ -18,7 +17,7 @@ FiniteImpulseResponseDesigner::~FiniteImpulseResponseDesigner()
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void FiniteImpulseResponseDesigner::setSampleRate(double newSampleRate)
@@ -65,7 +64,7 @@ void FiniteImpulseResponseDesigner::setWindowType(int newWindow)
   windowType = newWindow;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 bool FiniteImpulseResponseDesigner::hasCurrentModeBandwidthParameter()
@@ -87,10 +86,12 @@ void FiniteImpulseResponseDesigner::getImpulseResponse(double *impulseResponse, 
     getHighpassResponse(impulseResponse, length, 2*PI*frequency/sampleRate, windowType);                                       
     break;
   case BANDREJECT: 
-    getBandrejectResponse(impulseResponse, length, 2*PI*lowerFrequency/sampleRate, 2*PI*upperFrequency/sampleRate, windowType);  
+    getBandrejectResponse(impulseResponse, length, 2*PI*lowerFrequency/sampleRate, 
+      2*PI*upperFrequency/sampleRate, windowType);  
     break;
   case BANDPASS:   
-    getBandpassResponse(impulseResponse, length, 2*PI*lowerFrequency/sampleRate, 2*PI*upperFrequency/sampleRate, windowType);  
+    getBandpassResponse(impulseResponse, length, 2*PI*lowerFrequency/sampleRate, 
+      2*PI*upperFrequency/sampleRate, windowType);  
     break;
   case DIFFERENTIATOR:    
     getDifferentiatorResponse(impulseResponse, length, windowType);       
@@ -102,7 +103,8 @@ void FiniteImpulseResponseDesigner::getImpulseResponse(double *impulseResponse, 
   }
 }
 
-void FiniteImpulseResponseDesigner::getLowpassResponse(double *impulseResponse, int length, double omega, int windowType)
+void FiniteImpulseResponseDesigner::getLowpassResponse(double *impulseResponse, int length, 
+  double omega, int windowType)
 {
   rassert( length >= 1 && RAPT::rsIsOdd(length) ); // only odd lengths are supported
 
@@ -122,23 +124,25 @@ void FiniteImpulseResponseDesigner::getLowpassResponse(double *impulseResponse, 
   normalizeSumToUnity(impulseResponse, length); // normalizes to unit gain at DC
 }
 
-void FiniteImpulseResponseDesigner::getHighpassResponse(double *impulseResponse, int length, double omega, int windowType)
+void FiniteImpulseResponseDesigner::getHighpassResponse(double *impulseResponse, int length,
+  double omega, int windowType)
 {
   getLowpassResponse(impulseResponse, length, omega, windowType);
   spectralInversion(impulseResponse, length);
 }
 
-void FiniteImpulseResponseDesigner::getBandpassResponse(double *impulseResponse, int length, double omegaLow, double omegaHigh, 
-                                                        int windowType)
+void FiniteImpulseResponseDesigner::getBandpassResponse(double *impulseResponse, int length, 
+  double omegaLow, double omegaHigh, int windowType)
 {
   getBandrejectResponse(impulseResponse, length, omegaLow, omegaHigh, windowType);
   spectralInversion(impulseResponse, length);
 }
 
-void FiniteImpulseResponseDesigner::getBandrejectResponse(double *impulseResponse, int length, double omegaLow, double omegaHigh, 
-                                                          int windowType)
+void FiniteImpulseResponseDesigner::getBandrejectResponse(double *impulseResponse, int length, 
+  double omegaLow, double omegaHigh, int windowType)
 {
-  // bandreject filters are obtained by adding a lowpass and a highpass output (which amounts to adding their impulse responses):
+  // bandreject filters are obtained by adding a lowpass and a highpass output (which amounts to 
+  // adding their impulse responses):
   getLowpassResponse(impulseResponse, length, omegaLow, windowType);
 
   double *tmpHighpass = new double[length];
@@ -150,7 +154,8 @@ void FiniteImpulseResponseDesigner::getBandrejectResponse(double *impulseRespons
   delete[] tmpHighpass;
 }
 
-void FiniteImpulseResponseDesigner::getDifferentiatorResponse(double *impulseResponse, int length, int windowType)
+void FiniteImpulseResponseDesigner::getDifferentiatorResponse(double *impulseResponse, int length, 
+  int windowType)
 {
   double *h = impulseResponse;
   int    M  = length-1; 
@@ -162,12 +167,14 @@ void FiniteImpulseResponseDesigner::getDifferentiatorResponse(double *impulseRes
       h[n] = 0.0;
     else
       h[n] = (cos(PI*x) / x) - (sin(PI*x) / (PI*x*x)); 
-      // \todo simplify this - the cosines and sines are actually just alternating -1s and +1s (i think so, at least).
+      // \todo simplify this - the cosines and sines are actually just alternating -1s and +1s (i
+      // think so, at least).
   }
   WindowDesigner::applyWindow(impulseResponse, length, windowType);
 }
 
-void FiniteImpulseResponseDesigner::getHilbertTransformerResponse(double *impulseResponse, int length, int windowType)
+void FiniteImpulseResponseDesigner::getHilbertTransformerResponse(double *impulseResponse, 
+  int length, int windowType)
 {
   rassert( RAPT::rsIsOdd(length) ); // only odd lengths supported
 
@@ -217,7 +224,7 @@ void FiniteImpulseResponseDesigner::normalizeSumToUnity(double *impulseResponse,
     impulseResponse[i] *= normalizer;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // internal functions:
 
 void FiniteImpulseResponseDesigner::calculateLowerAndUpperFrequency()

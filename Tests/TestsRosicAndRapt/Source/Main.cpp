@@ -298,7 +298,7 @@ int main(int argc, char* argv[])
   //logarithmQuotient();
   //stirlingNumbers();
   //bernoulliNumbers();
-  bernoulliPolynomials();
+  //bernoulliPolynomials();
   //sequenceSquareRoot();
   //conicSystem();
   ////logisticMapNoise();                   // takes long to compute
@@ -433,7 +433,7 @@ int main(int argc, char* argv[])
   //transientModeling();
   //windowFunctionsContinuous();
   //windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
-  //windowedSinc();
+//  windowedSinc();
   //waveMorph();  // under construction
 
 
@@ -591,7 +591,7 @@ int main(int argc, char* argv[])
   //testModalFilter();
   //testModalFilterWithAttack();
   //testBiquadPhasePlot();
-  //testFiniteImpulseResponseDesigner();
+  testFiniteImpulseResponseDesigner();
   //testFilterAnalyzer();
   //testBiquadCascade();
   //testSlopeFilter();
@@ -605,7 +605,7 @@ int main(int argc, char* argv[])
   //testCrossover4Way();
   //testCrossover4Way2();
   //testConvolverPartitioned();         // is unit test?
-  //testFiniteImpulseResponseFilter();  // is unit test?
+  testFiniteImpulseResponseFilter();  // is unit test?
 
   // Genrators:
   //testOscillatorStereo();

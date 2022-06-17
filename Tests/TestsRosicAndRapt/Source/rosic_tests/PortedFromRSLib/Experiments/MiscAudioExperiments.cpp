@@ -1033,6 +1033,8 @@ void windowFunctionSpectra()
 
 void windowedSinc()
 {
+  // Produces plot of a windowed sinc function using rsWindowFunction.
+
   static const int N = 5000;   // number of values
   double xMin    = -10.0;
   double xMax    = +10.0;

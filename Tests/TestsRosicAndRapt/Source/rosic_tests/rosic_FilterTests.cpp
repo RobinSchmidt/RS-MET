@@ -215,7 +215,22 @@ void rotes::testBiquadPhasePlot()
 
 void rotes::testFiniteImpulseResponseDesigner()
 {
-  static const int length = 201;
+  // User parameters:
+  static const int length    = 201;   // Filter kernel length
+  static const int fftLength = 8192;  // FFT length for plot
+  double plotMinDb  = -200;           // Minimum for y-axis in the plot in dB
+  double plotMaxDb  =  +10;           // Maximum ...
+  double sampleRate = 44100.0;        // Cutoff or center frequency
+  double freq       =  1000.0;
+
+
+  using FD = rosic::FiniteImpulseResponseDesigner;
+  using WD = rosic::WindowDesigner;
+  using AT = RAPT::rsArrayTools;
+
+
+
+  /* 
   double impulseResponse[length];
 
   //FiniteImpulseResponseDesigner designer;
@@ -225,59 +240,63 @@ void rotes::testFiniteImpulseResponseDesigner()
   //designer.spectralReversal(impulseResponse, length);
 
   // plot the impulse response:
-  double indices[length];
-  RAPT::rsArrayTools::fillWithIndex(indices, length);
-  //Plotter::plotData(length, indices, impulseResponse);
+  //double indices[length];
+  //AT::fillWithIndex(indices, length);
+  //plotData(length, indices, impulseResponse);
+
+
+  double magnitudes[fftLength];
+  double phases[fftLength];
+
+  fftMagnitudesAndPhases(impulseResponse, length, magnitudes, phases, fftLength);
+  //Plotter::plotData(fftLength/2, frequencies, magnitudes);
+  //Plotter::plotData(fftLength/2, frequencies, phases);
+  */
+ 
+
 
   // plot the magnitude response:
-  static const int fftLength = 8192;
   double frequencies[fftLength];
-  double magnitudes[fftLength];
+  AT::fillWithIndex(frequencies, fftLength);
+  AT::scale(frequencies, frequencies, fftLength, sampleRate/fftLength);
   double magnitudes1[fftLength];
   double magnitudes2[fftLength];
   double magnitudes3[fftLength];
   double magnitudes4[fftLength];
   double magnitudes5[fftLength];
-  double phases[fftLength];
-  double sampleRate = 44100.0;
-  RAPT::rsArrayTools::fillWithIndex(frequencies, fftLength);
-  RAPT::rsArrayTools::scale(frequencies, frequencies, fftLength, sampleRate/fftLength);
-  fftMagnitudesAndPhases(impulseResponse, length, magnitudes, phases, fftLength);
-  //Plotter::plotData(fftLength/2, frequencies, magnitudes);
-  //Plotter::plotData(fftLength/2, frequencies, phases);
- 
 
 
   FiniteImpulseResponseFilter filter;
-  filter.setMode(FiniteImpulseResponseDesigner::LOWPASS);
+  filter.setMode(FD::LOWPASS);
   filter.setImpulseResponseLength(length);
-  filter.setWindowType(WindowDesigner::RECTANGULAR);
+  filter.setWindowType(WD::RECTANGULAR);
   filter.setFrequency(10000.0);
 
   filter.getMagnitudeResponse(frequencies, magnitudes1, fftLength, true, false);
-  RAPT::rsArrayTools::clip(magnitudes1, fftLength, -200.0, 10.0);
+  AT::clip(magnitudes1, fftLength, plotMinDb, plotMaxDb);
 
-  filter.setWindowType(WindowDesigner::BLACKMAN);
+  filter.setWindowType(WD::BLACKMAN);
   filter.getMagnitudeResponse(frequencies, magnitudes2, fftLength, true, false);
-  RAPT::rsArrayTools::clip(magnitudes2, fftLength, -200.0, 10.0);
+  AT::clip(magnitudes2, fftLength, plotMinDb, plotMaxDb);
 
-  filter.setWindowType(WindowDesigner::HAMMING);
+  filter.setWindowType(WD::HAMMING);
   filter.getMagnitudeResponse(frequencies, magnitudes3, fftLength, true, false);
-  RAPT::rsArrayTools::clip(magnitudes2, fftLength, -200.0, 10.0);
+  AT::clip(magnitudes2, fftLength, plotMinDb, plotMaxDb);
 
-  filter.setWindowType(WindowDesigner::HANN);
+  filter.setWindowType(WD::HANN);
   filter.getMagnitudeResponse(frequencies, magnitudes4, fftLength, true, false);
-  RAPT::rsArrayTools::clip(magnitudes2, fftLength, -200.0, 10.0);
+  AT::clip(magnitudes2, fftLength, plotMinDb, plotMaxDb);
 
-  filter.setWindowType(WindowDesigner::COSINE_SQUARED);
+  filter.setWindowType(WD::COSINE_SQUARED); // isn't this the same as Hann?
   filter.getMagnitudeResponse(frequencies, magnitudes5, fftLength, true, false);
-  RAPT::rsArrayTools::clip(magnitudes2, fftLength, -200.0, 10.0);
+  AT::clip(magnitudes2, fftLength, plotMinDb, plotMaxDb);
 
 
-  //plotData(fftLength/2, frequencies, magnitudes1, magnitudes2, magnitudes3, magnitudes4, magnitudes5);
+  plotData(fftLength/2, frequencies, magnitudes1, magnitudes2, magnitudes3, magnitudes4, 
+    magnitudes5);
   //plotData(fftLength/2, frequencies, magnitudes4, magnitudes5); // Hann vs cos^2
   //plotData(fftLength/2, frequencies, magnitudes4, magnitudes2);   // Hann vs Blackman
-  plotData(fftLength/2, frequencies, magnitudes2);   // Blackman
+  //plotData(fftLength/2, frequencies, magnitudes2);   // Blackman
 
 
 
@@ -357,6 +376,8 @@ bool rotes::testConvolverPartitioned()
 
 bool rotes::testFiniteImpulseResponseFilter()
 {
+  // ToDo: move to unit tests
+
   bool ok = true;
   using AT  = RAPT::rsArrayTools;
   using Vec = std::vector<double>;
@@ -385,7 +406,7 @@ bool rotes::testFiniteImpulseResponseFilter()
   double maxDiff = AT::maxDeviation(&r[0], &y[0], M);
   double tol = 1.e-15; 
   ok &= maxDiff <= tol;
-  //rsPlotVectors(x, y, r);
+  rsPlotVectors(x, y, r);
   
   //writeToStereoWaveFile("D:/TmpAudio/FilteredNoise.wav", noise, filteredNoise, testLength, 44100, 16);
 
