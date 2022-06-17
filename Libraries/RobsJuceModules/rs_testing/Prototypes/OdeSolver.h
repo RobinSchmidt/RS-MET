@@ -118,11 +118,11 @@ public:
 
   enum class StepMethod
   {                   // implicit
-    forwardEuler,     //
+    forwardEuler,     //   no
     backwardEuler,    //   yes
     trapezoidal,      //   yes
-    midpoint,         //
-    heun,             //
+    midpoint,         //    ?
+    heun,             //    ?
     rungeKutta3,
     rungeKutta4,
     cashKarp

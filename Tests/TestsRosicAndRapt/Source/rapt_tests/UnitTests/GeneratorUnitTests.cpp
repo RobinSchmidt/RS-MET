@@ -1463,9 +1463,12 @@ bool samplerParserTest()
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79\n");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 ");
 
-
   ok &= test("<group> <region>sample=Sin440Hz.wav pan=79");
+
+
   ok &= test(" <group> <region>sample=Sin440Hz.wav pan=79"); // triggers assert (but passes)
+  // the only difference to the test before is the space before the first group
+
   // In SfzInstrument::setFromSFZ, the very 1st region that gets added gets an empty string
   // for tmp = groupDef.substr(j0+Lr, j1-j0-Lr); at the bottom of the while(!allRegionsDone) loop.
   // This result in the 1st region being empty. Then 2nd region seems to be the actually correct
@@ -4278,7 +4281,7 @@ bool samplerEngineUnitTest()
   ok &= samplerRegionPlayerTest();   // basic playback of regions
   ok &= samplerBusModeTest();        // basic playback in busMode
   ok &= samplerSaveLoadTest();       // saving and loading of sfz files
-  //ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
+  ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
   ok &= samplerEffectsTest();        // effect chain
   ok &= samplerModulatorsTest();     // modulation processors (LFOs, EGs, etc.)
   ok &= samplerModulationsTest();    // modulation system (mod-matrix, routing)

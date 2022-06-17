@@ -4046,7 +4046,7 @@ void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
 
   // Generating Function:
   // f(x) = x / (e^x - 1) = sum_k b_k x^k / k!, i.e. if f(x) = x / (e^x-1) then b_k = f^(k)(0)
-  // wher f^(k)(0) means to evaluate the k-th derivative of f at 0
+  // where f^(k)(0) means to evaluate the k-th derivative of f at 0
 
   // Power sum MASTER CLASS: How to sum quadrillions of powers ... by hand! (Euler-Maclaurin formula):
   // https://www.youtube.com/watch?v=fw1kRz83Fj0  
