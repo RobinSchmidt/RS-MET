@@ -247,12 +247,12 @@ void rotes::testFiniteImpulseResponseDesigner()
 
   // Plot the magnitude and phase response:
   static const int N = fftLength;  // shorter name for convenience
-  double frequencies[N];
-  double magnitudes[N];
+  double freqs[N];
+  double mags[N];
   double phases[N];
-  AT::fillWithIndex(frequencies, N);
-  AT::scale(frequencies, frequencies, N, sampleRate/N);
-  fftMagnitudesAndPhases(impulseResponse, length, magnitudes, phases, N);
+  AT::fillWithIndex(freqs, N);
+  AT::scale(freqs, freqs, N, sampleRate/N);
+  fftMagnitudesAndPhases(impulseResponse, length, mags, phases, N);
   //plotData(fftLength/2, frequencies, magnitudes);
   //plotData(fftLength/2, frequencies, phases);
 
@@ -272,29 +272,29 @@ void rotes::testFiniteImpulseResponseDesigner()
   filter.setFrequency(frequency);
 
   filter.setWindowType(WD::RECTANGULAR);
-  filter.getMagnitudeResponse(frequencies, mags1, N, true, false);
+  filter.getMagnitudeResponse(freqs, mags1, N, true, false);
   AT::clip(mags1, N, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::BLACKMAN);
-  filter.getMagnitudeResponse(frequencies, mags2, N, true, false);
+  filter.getMagnitudeResponse(freqs, mags2, N, true, false);
   AT::clip(mags2, N, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::HAMMING);
-  filter.getMagnitudeResponse(frequencies, mags3, N, true, false);
+  filter.getMagnitudeResponse(freqs, mags3, N, true, false);
   AT::clip(mags3, N, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::HANN);
-  filter.getMagnitudeResponse(frequencies, mags4, N, true, false);
+  filter.getMagnitudeResponse(freqs, mags4, N, true, false);
   AT::clip(mags4, N, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::COSINE_SQUARED); // isn't this the same as Hann? ...not exactly..why?
-  filter.getMagnitudeResponse(frequencies, mags5, N, true, false);
+  filter.getMagnitudeResponse(freqs, mags5, N, true, false);
   AT::clip(mags4, N, plotMinDb, plotMaxDb);
 
-  plotData(N/2, frequencies, mags1, mags2, mags3, mags4, mags5); // plot all 5
-  plotData(N/2, frequencies, mags4, mags5);                      // Hann vs cos^2
-  plotData(N/2, frequencies, mags4, mags2);                      // Hann vs Blackman
-  plotData(N/2, frequencies, mags2);                             // Blackman only
+  plotData(N/2, freqs, mags1, mags2, mags3, mags4, mags5); // plot all 5
+  plotData(N/2, freqs, mags4, mags5);                      // Hann vs cos^2
+  plotData(N/2, freqs, mags4, mags2);                      // Hann vs Blackman
+  plotData(N/2, freqs, mags2);                             // Blackman only
 
   /*
   // create some noise, filter it and write it into a file:
