@@ -1452,23 +1452,19 @@ bool samplerParserTest()
   ok &= test("<group>\n<region>sample=Sin440Hz.wav\n<region>sample=Cos440Hz.wav");
   ok &= test("<group>\n<region>sample=Sin440Hz.wav");
   ok &= test("<group>\n<region>\nsample=Sin440Hz.wav");
-
   ok &= test("<group>\n<region>sample=Sin440Hz.wav pan=79");
-
   ok &= test("<group>\n<region>sample=Sin440Hz.wav volume=35 pan=79");
-
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 pan=79");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 \n");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79  ");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79\n");
   ok &= test("<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 ");
-
   ok &= test("<group> <region>sample=Sin440Hz.wav pan=79");
 
-
-  ok &= test(" <group> <region>sample=Sin440Hz.wav pan=79"); // triggers assert (but passes)
-  // the only difference to the test before is the space before the first group
-
+  ok &= test(" <group> <region>sample=Sin440Hz.wav pan=79"); 
+  // triggers assert (but passes) when we uncomment the RAPT::rsAssert(j0 != endOfFile);  
+  // line in SfzInstrument::setFromSFZ
+  // The only difference to the test before is the space before the first group
   // In SfzInstrument::setFromSFZ, the very 1st region that gets added gets an empty string
   // for tmp = groupDef.substr(j0+Lr, j1-j0-Lr); at the bottom of the while(!allRegionsDone) loop.
   // This result in the 1st region being empty. Then 2nd region seems to be the actually correct
@@ -4273,6 +4269,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
+  //ok &= samplerParserTest();
   //ok &= samplerExamplePatchesTest(); 
 
 

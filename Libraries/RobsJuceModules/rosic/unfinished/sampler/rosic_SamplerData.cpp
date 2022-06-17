@@ -850,11 +850,14 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // Find start and end index of next region definition:
       j0 = groupDef.find(region, j1);
 
-      RAPT::rsAssert(j0 != endOfFile);  
+      //RAPT::rsAssert(j0 != endOfFile);  
       // For debug - gets triggered when we have empty regions ...but also in other cases, i 
       // think
       // I think, it also happens, when there's an empty line before the first <group> and/or a 
       // comment. Patches that start with <group> on the first line work well
+      // It also happens when there's a space before the first group. in this case, the j1 variable
+      // points to the '<' character of the <region> tag, i.e. it is one too far right
+      // ...maybe it's actually OK to *not* assert this condition?
 
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {
