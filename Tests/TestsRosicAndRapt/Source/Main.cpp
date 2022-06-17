@@ -591,7 +591,6 @@ int main(int argc, char* argv[])
   //testModalFilter();
   //testModalFilterWithAttack();
   //testBiquadPhasePlot();
-  testFiniteImpulseResponseDesigner();
   //testFilterAnalyzer();
   //testBiquadCascade();
   //testSlopeFilter();
@@ -604,8 +603,9 @@ int main(int argc, char* argv[])
   //highOrderFilterPolesAndZeros();
   //testCrossover4Way();
   //testCrossover4Way2();
-  //testConvolverPartitioned();         // is unit test?
-  testFiniteImpulseResponseFilter();  // is unit test?
+  //testFiniteImpulseResponseDesigner();
+  //testConvolverPartitioned();         // is unit test
+  testFiniteImpulseResponseFilter();  // is unit test
 
   // Genrators:
   //testOscillatorStereo();

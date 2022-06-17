@@ -383,7 +383,7 @@ bool rotes::testFiniteImpulseResponseFilter()
   filter.setFrequency(1000.0);
   int L = filter.getKernelLength();
   const double* h = filter.getKernelPointer();
-  //rsPlotArray(h, L);
+  rsPlotArray(h, L);
 
   // Create some noise and apply the filter:
   static const int N = 2000;
