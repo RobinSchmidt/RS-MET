@@ -227,8 +227,8 @@ void rotes::testFiniteImpulseResponseDesigner()
   static const int fftLength = 8192;     // FFT length for plot
   double plotMinDb  = -200;              // Minimum for y-axis in the plot in dB
   double plotMaxDb  =  +10;              // Maximum ...
-  double sampleRate = 44100.0;           // Cutoff or center frequency
-  double frequency  =  1000.0;
+  double sampleRate = 44100.0;           // Sample rate
+  double frequency  =  1000.0;           // Cutoff or center frequency
   Mode   mode       = Mode::LOWPASS;
   Window window     = Window::BLACKMAN;
 
@@ -243,30 +243,27 @@ void rotes::testFiniteImpulseResponseDesigner()
   //designer.spectralReversal(impulseResponse, length);   // ?
   double indices[length];
   AT::fillWithIndex(indices, length);
-  plotData(length, indices, impulseResponse);
+  //plotData(length, indices, impulseResponse);
 
-
-  /* 
-  // plot the impulse response:
+  // Plot the magnitude and phase response:
+  double frequencies[fftLength];
   double magnitudes[fftLength];
   double phases[fftLength];
-  fftMagnitudesAndPhases(impulseResponse, length, magnitudes, phases, fftLength);
-  //Plotter::plotData(fftLength/2, frequencies, magnitudes);
-  //Plotter::plotData(fftLength/2, frequencies, phases);
-  */
- 
-
-
-  // Plot the magnitude response:
-  double frequencies[fftLength];
   AT::fillWithIndex(frequencies, fftLength);
   AT::scale(frequencies, frequencies, fftLength, sampleRate/fftLength);
-  double magnitudes1[fftLength];
-  double magnitudes2[fftLength];
-  double magnitudes3[fftLength];
-  double magnitudes4[fftLength];
-  double magnitudes5[fftLength];
+  fftMagnitudesAndPhases(impulseResponse, length, magnitudes, phases, fftLength);
+  //plotData(fftLength/2, frequencies, magnitudes);
+  //plotData(fftLength/2, frequencies, phases);
 
+
+
+
+  // Plot more magnitude responses wit different windows:
+  double mags1[fftLength];
+  double mags2[fftLength];
+  double mags3[fftLength];
+  double mags4[fftLength];
+  double mags5[fftLength];
 
   FiniteImpulseResponseFilter filter;
   filter.setMode(mode);
@@ -274,33 +271,29 @@ void rotes::testFiniteImpulseResponseDesigner()
   filter.setFrequency(frequency);
 
   filter.setWindowType(WD::RECTANGULAR);
-  filter.getMagnitudeResponse(frequencies, magnitudes1, fftLength, true, false);
-  AT::clip(magnitudes1, fftLength, plotMinDb, plotMaxDb);
+  filter.getMagnitudeResponse(frequencies, mags1, fftLength, true, false);
+  AT::clip(mags1, fftLength, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::BLACKMAN);
-  filter.getMagnitudeResponse(frequencies, magnitudes2, fftLength, true, false);
-  AT::clip(magnitudes2, fftLength, plotMinDb, plotMaxDb);
+  filter.getMagnitudeResponse(frequencies, mags2, fftLength, true, false);
+  AT::clip(mags2, fftLength, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::HAMMING);
-  filter.getMagnitudeResponse(frequencies, magnitudes3, fftLength, true, false);
-  AT::clip(magnitudes2, fftLength, plotMinDb, plotMaxDb);
+  filter.getMagnitudeResponse(frequencies, mags3, fftLength, true, false);
+  AT::clip(mags2, fftLength, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::HANN);
-  filter.getMagnitudeResponse(frequencies, magnitudes4, fftLength, true, false);
-  AT::clip(magnitudes2, fftLength, plotMinDb, plotMaxDb);
+  filter.getMagnitudeResponse(frequencies, mags4, fftLength, true, false);
+  AT::clip(mags2, fftLength, plotMinDb, plotMaxDb);
 
   filter.setWindowType(WD::COSINE_SQUARED); // isn't this the same as Hann?
-  filter.getMagnitudeResponse(frequencies, magnitudes5, fftLength, true, false);
-  AT::clip(magnitudes2, fftLength, plotMinDb, plotMaxDb);
+  filter.getMagnitudeResponse(frequencies, mags5, fftLength, true, false);
+  AT::clip(mags2, fftLength, plotMinDb, plotMaxDb);
 
-
-  plotData(fftLength/2, frequencies, magnitudes1, magnitudes2, magnitudes3, magnitudes4, 
-    magnitudes5);
+  plotData(fftLength/2, frequencies, mags1, mags2, mags3, mags4, mags5);
   //plotData(fftLength/2, frequencies, magnitudes4, magnitudes5); // Hann vs cos^2
   //plotData(fftLength/2, frequencies, magnitudes4, magnitudes2);   // Hann vs Blackman
   //plotData(fftLength/2, frequencies, magnitudes2);   // Blackman
-
-
 
   /*
   // create some noise, filter it and write it into a file:
@@ -314,9 +307,8 @@ void rotes::testFiniteImpulseResponseDesigner()
   writeToStereoWaveFile("D:/TmpAudio/FilteredNoise.wav", noise, filteredNoise, testLength, 44100, 16);
   */
 
-
-
   // test cosine power window overlap:
+
 
   int dummy = 0;
 }
