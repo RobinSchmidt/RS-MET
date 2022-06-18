@@ -108,6 +108,8 @@ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=547778 VST3 SDK could need s
 https://www.kvraudio.com/forum/viewtopic.php?f=31&t=574861 About CLAP
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=574866 Cool new plug in format on the way -- CLAP
 https://www.kvraudio.com/forum/viewtopic.php?f=7&t=574273
+https://www.kvraudio.com/forum/viewtopic.php?t=583172      CLAP... thoughts?
+
 https://gist.github.com/abique/4c1b9b40f3413f0df1591d2a7c760db4
 
 https://forums.steinberg.net/t/cubase-12-and-vst2-support/748993/5
@@ -117,6 +119,8 @@ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=546433 VST3 SDK: separation 
 https://www.kvraudio.com/forum/viewtopic.php?f=31&t=398532 VST3 - known issues (Updated Jan 2019)
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=172013 VST3 Rumours
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=204080 Don't know if anyone noticed... VST3
+
+https://forums.steinberg.net/t/a-shot-across-steinbergs-vst3-bow/791643
 
 
 Misc
