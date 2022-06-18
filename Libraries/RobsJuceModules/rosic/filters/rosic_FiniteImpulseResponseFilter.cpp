@@ -6,7 +6,8 @@ FiniteImpulseResponseFilter::FiniteImpulseResponseFilter()
 {
   kernelLength = 0;
   h            = NULL;
-  setImpulseResponseLength(401);
+  //setImpulseResponseLength(401);
+  setImpulseResponseLength(801);
 }
 
 FiniteImpulseResponseFilter::~FiniteImpulseResponseFilter()

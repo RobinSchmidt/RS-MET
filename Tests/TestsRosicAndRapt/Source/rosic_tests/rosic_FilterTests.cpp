@@ -378,14 +378,16 @@ bool rotes::testFiniteImpulseResponseFilter()
   using AT  = RAPT::rsArrayTools;
   using Vec = std::vector<double>;
   using FD  = FiniteImpulseResponseDesigner;
+  using WT  = rosic::WindowDesigner::windowTypes;
 
   // Setup:
-  double sampleRate   = 44100;         // in Hz
-  double filterFreq   =  1000;         // in Hz
-  double bandwidth    =     2;         // in octaves -> 500..2000 Hz passband
-  int    kernelLength =   401;         // in samples
-  int    N            = 80000;         // number of samples to produce
+  double sampleRate   = 44100;           // in Hz
+  double filterFreq   =  1000;           // in Hz
+  double bandwidth    =     2;           // in octaves -> 500..2000 Hz passband
+  int    kernelLength =   801;           // in samples
+  int    N            = 80000;           // number of samples to produce
   FD::modes mode      = FD::BANDPASS;
+  WT window           = WT::BLACKMAN;    // Blackman is the default
 
 
 
@@ -396,7 +398,7 @@ bool rotes::testFiniteImpulseResponseFilter()
   filter.setFrequency(filterFreq);
   filter.setBandwidth(bandwidth);
   filter.setImpulseResponseLength(kernelLength);
-  //filter.setWindowType();    // to do...
+  filter.setWindowType(window);
 
   // Retrieve and plot impulse response:
   int L = filter.getKernelLength();
@@ -424,7 +426,14 @@ bool rotes::testFiniteImpulseResponseFilter()
   writeToMonoWaveFile("FilteredNoise.wav", &y[0], (int)y.size(), sampleRate, 16);
 
   // ToDo: 
-  // -Test even and odd lengths
+  // -If we set the kernel length to something that is larger than the initialö default of 401,
+  //  we get an access violation ..wait, no: 403,501 works, 601 crashes in rftfsub - an FFT 
+  //  subroutine, 701 in cft1st, 801,901 in ConvolverFFT::setImpulseResponse
+  //  801 is OK, if we bump the original default up to 801 in the constructor of
+  //  FiniteImpulseResponseFilter -> write a unit test for this ...and maybe update/modernize
+  //  all the code (templatize, etc.)
+  // -Support even lengths and test with it
+  // -Support Dolph-Chebychev and Kaiser windows
 
   return ok;
 }

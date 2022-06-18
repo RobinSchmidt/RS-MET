@@ -32,6 +32,7 @@ ConvolverFFT::~ConvolverFFT()
   if( X  != NULL ) delete[] X;
   if( H  != NULL ) delete[] H;
 }
+// remove the ifs - it's ok to delete nulltprs!
 
 //-------------------------------------------------------------------------------------------------
 // parameter settings:
@@ -107,6 +108,7 @@ void ConvolverFFT::allocateBuffers(int newImpulseResponseLength)
     if( h  != NULL ) delete[] h;
     if( X  != NULL ) delete[] X;
     if( H  != NULL ) delete[] H;
+    // remove the ifs - it's ok to delete nulltprs!
 
     x  = new double[M];
     y1 = new double[M];
