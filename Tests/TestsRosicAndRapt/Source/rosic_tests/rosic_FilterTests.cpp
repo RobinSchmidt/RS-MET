@@ -369,43 +369,62 @@ bool rotes::testConvolverPartitioned()
   return ok;
 }
 
+
+
 bool rotes::testFiniteImpulseResponseFilter()
 {
-  // ToDo: move to unit tests
+  // ToDo: move to unit tests...or maybe factor out a unit test
 
-  bool ok = true;
   using AT  = RAPT::rsArrayTools;
   using Vec = std::vector<double>;
+  using FD  = FiniteImpulseResponseDesigner;
+
+  // Setup:
+  double sampleRate   = 44100;         // in Hz
+  double filterFreq   =  1000;         // in Hz
+  double bandwidth    =     2;         // in octaves -> 500..2000 Hz passband
+  int    kernelLength =   401;         // in samples
+  int    N            = 80000;         // number of samples to produce
+  FD::modes mode      = FD::BANDPASS;
+
+
 
   // Create the filter and retrieve its impulse response h with length L:
   FiniteImpulseResponseFilter filter;
-  filter.setMode(FiniteImpulseResponseDesigner::BANDPASS);
-  filter.setFrequency(1000.0);
+  filter.setMode(mode);
+  filter.setSampleRate(sampleRate);
+  filter.setFrequency(filterFreq);
+  filter.setBandwidth(bandwidth);
+  filter.setImpulseResponseLength(kernelLength);
+  //filter.setWindowType();    // to do...
+
+  // Retrieve and plot impulse response:
   int L = filter.getKernelLength();
   const double* h = filter.getKernelPointer();
-  rsPlotArray(h, L);
+  rsPlotArray(h, L);                   // looks good!
 
   // Create some noise and apply the filter:
-  static const int N = 2000;
-  int M = N+L+10;
-  Vec x(N), y(M);
-  for(int n = 0; n < N; n++) {
+  int M = N+L+10;                      // actual nonzero output length should be N+L-1
+  Vec x(N), y(M);                      // input and output signals
+  for(int n = 0; n < N; n++) {         // apply filter to input
     x[n] = random(-1.0, 1.0);
     y[n] = filter.getSample(x[n]); }
-  for(int m = N; m < M; m++)
+  for(int m = N; m < M; m++)           // apply filter to tail
     y[m] = filter.getSample(0.0);
 
   // Create reference signal by naive convolution and compare:
   Vec r(M);
   AT::convolve(&x[0], N, &h[0], L, &r[0]);
   double maxDiff = AT::maxDeviation(&r[0], &y[0], M);
-  double tol = 1.e-15; 
-  ok &= maxDiff <= tol;
-  rsPlotVectors(x, y, r);
+  double tol = 1.e-14; 
+  bool ok = maxDiff <= tol;            // yep - test passes
+  //rsPlotVectors(x, y, r);            // uncomment this only when N is short
   
-  //writeToStereoWaveFile("D:/TmpAudio/FilteredNoise.wav", noise, filteredNoise, testLength, 44100, 16);
+  // Write wavefile for inspection:
+  writeToMonoWaveFile("FilteredNoise.wav", &y[0], (int)y.size(), sampleRate, 16);
 
-  // todo: test even and odd lengths
+  // ToDo: 
+  // -Test even and odd lengths
 
   return ok;
 }
