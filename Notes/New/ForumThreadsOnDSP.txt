@@ -109,6 +109,9 @@ https://www.kvraudio.com/forum/viewtopic.php?f=31&t=574861 About CLAP
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=574866 Cool new plug in format on the way -- CLAP
 https://www.kvraudio.com/forum/viewtopic.php?f=7&t=574273
 https://www.kvraudio.com/forum/viewtopic.php?t=583172      CLAP... thoughts?
+https://www.kvraudio.com/forum/viewtopic.php?t=583138      CLAP: The New Audio Plug-in Standard (by U-he, Bitwig and others)
+
+https://community.native-instruments.com/discussion/comment/20904/#Comment_20904
 
 https://gist.github.com/abique/4c1b9b40f3413f0df1591d2a7c760db4
 
