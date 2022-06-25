@@ -46,8 +46,44 @@ std::vector<T> rsOdeCoeffs<T>::adamsMoulton(int s)
 // And for reference as they more clearly show what's going on math-wise.
 
 
+template<class T>
+void rsInitialValueSolver2<T>::stepForwardEuler(const Func& f, int N, T* y, T* v, T h)
+{
+  f(y, v);                         // compute derivative, i.e. velocity: v = dy/dt
+  for(int i = 0; i < N; i++)       // update state (maybe factor out)
+    y[i] += h * v[i];
+}
+
+
+template<class T>
+void rsInitialValueSolver2<T>::init(int dimensionality, T* initialPosition, T* initialVelocity)
+{
+
+
+}
+
+
 
 /*
+
+Goals:
+-The API should be:
+ -Efficient:
+  -no memory allocations in the stepper-methods, ideally none at all
+ -Flexible - it should allow for:
+  -ODE-systems of arbitrary dimensionality
+  -explicitly and implicitly given ODEs, i.e. y' = f(y) or f(y,y') = 0
+   -in the implicit case f(y,y') = 0, the y' that is passed into f should be a reasonable initial
+    guess, namely the computed value from the previuos step - client code should be able to rely on 
+    this (maybe it wants to implement Newton iteration of something similar)
+  -explicit and implicit solver methods
+  -single- and multistep methods
+  -extensible by subclasses for error-estimation and stepsize control
+ -I think, convenience for the client and readability of the implementation needs to be sacrificed 
+  a little bit to achieve these goals
+ -Maybe a convenience class can be built on top of the core number-cruncher class
+
+
 
 ToDo: 
 -implement similar methods to generate coeffs for other types of solvers such as Runge-Kutta:
@@ -56,12 +92,20 @@ ToDo:
  https://www.ams.org/journals/mcom/1962-16-080/S0025-5718-1962-0150954-0/S0025-5718-1962-0150954-0.pdf
 
 
+
+
+
 -Maybe have a baseclass that implements explicit solvers, a subclass that implements implicit 
  solvers (maybe using an explicit fomrula for the initial guess which may also serve for error
  estimation using the explicit method as predicttor and the implicit method as corrector.
 -Maybe factopr out another class that contains only the explicit single-step methods
 -Make subclass with stepsize control...or maybe that should be a driver class that has a pointer
  to the stepper, so it may work with the baseclass or the subclass
+-hmm...maybe it's better to lump all stateless solvers into the baseclass..or maybe all solvers 
+ should at least keep the current iterate y[n] as state? Mutlistep solvers may additionally keep
+ y[n-1], y[n-2], etc. as needed. The client would just call methods like stepForwardEuler, 
+ stepBackwardEuler, stepTrapezoidal, stepRungeKutta4, etc. and could occasionally retrieve the 
+ state via getState()
 
 -Baseclass: rsOdeSolverBase, contains a virtual method doStep() and/or doStep(Tx dx)
 -rsOdeSolverMultistep : rsOdeSolverBase: contains pointer to rsOdeSolver for the initial section 
@@ -95,6 +139,9 @@ ToDo:
  extrapolation for the guess himself, but we have these yd values available here anyway, so that
  would be (a small amount of) redundant data storage..hmmm...
 
+-For multistep and BDF methods, see:
+ https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods
+ https://en.wikipedia.org/wiki/Backward_differentiation_formula
 
 
 https://en.wikipedia.org/wiki/Ordinary_differential_equation

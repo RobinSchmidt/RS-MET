@@ -136,7 +136,8 @@ int main(int argc, char* argv[])
   //powerIterator();
   //gaussianIterator();
   //expPolyIterator();
-  //reciprocalIterator();  // rename to multiStepSolverIVP (initial value problem)
+  reciprocalIterator();  // rename to multiStepSolverIVP (initial value problem)
+                           // implements prototypes of Adams-Bashforth methods and more
 
 
   // Filter:

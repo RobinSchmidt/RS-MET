@@ -46,14 +46,78 @@ protected:
    
 };
 
+
 //=================================================================================================
 
+/** A class for solving initial value problems for ordinary differential equations (ODEs). The 
+problem has to be given in the general form:
+
+  y' = f(y)
+
+where y is a state vector of the system and y' is its derivative with respect to the independent 
+variable which is typically time, so we'll denote it by t. The function f shall be passed as an 
+object of type std::function that takes the array representing y as first parameter and produces
+the corresponding y' in its second (output) parameter. This class is intended for ODE systems with
+arbitrary dimensionality. The stepper methods use a loop over the dimensions.
+
+...tbc...  */
+
+template<class T>
+class rsInitialValueSolver2
+{
+
+public:
+
+  using Func = std::function<void(const T* y, T* dy)>;
+
+  static void stepForwardEuler(const Func& f, int N, T* y, T* v, T h);
+
+
+  void init(int dimensionality, T* initialPosition, T* initialVelocity);
+
+
+protected:
+
+  T*   y = nullptr; // current state vector, i.e. position in phase-space y = y(t)
+  T*   v = nullptr; // current derivative, i.e. velocity in phase space, v = y' = dy/dt
+  T    h = 1;       // step size
+  int  N = 0;       // dimensionality of the system, length of y and v
+  Func f;           // function to compute y' = f(y)
+
+};
+
+// ToDo:
+// -Define, what should be passed into f as "initial guess" for y' - namely, the computed y' from
+//  the previous iteration. If the ODE system is given explicitly as y' = f(y), the f can just 
+//  ignore the initial content of dy, but if the ODE given implicitly as f(y,y') = 0, f may use 
+//  the initial content of dy as initial guess for e.g. Newton iteration
+// -Maybe the y and v arrays should be owned by client code. For multistep methods, we may require
+//  that they must be of length N*a, N*b where a and b are the numbers of past states for y and v
+//  that the repective method uses, e.g. a=1, b=2 for 2nd order Adams-Bashforth or a=2, b=1 for 
+//  BDF-2 (I think)
+
+
+
+
+
+
+
+//=================================================================================================
+// Another idea with a different API
+
 /** Baseclass for all ODE solvers. Defines a common interface and implements the simplemost 
-forward Euler method. Subclasses are supposed to extend that basic functionality by more 
-sophisticated solver methods, error estimation, stepsize control, etc. */
+forward Euler method for reference. Subclasses are supposed to extend that very basic functionality 
+by more sophisticated solver methods (higher order, implicit, multistep, predictor-corrector, etc.) 
+and/or have more features like error estimation, stepsize adaption, etc. 
+
+This implementation is intended for ODE systems of low dimensionality such that states can be held
+in variables like rsVector2D or rsVector3D which do not require memory allocations or loops on 
+assigment.
+
+*/
 
 template<class Tx, class Ty>
-class rsOdeSolverBase   // renam to rsInitialValueSolver, we may also want rsBoundaryValueSolver
+class rsOdeSolverBase   // rename to rsInitialValueSolver, we may also want an rsBoundaryValueSolver
 {
 
 public:
@@ -70,7 +134,8 @@ public:
 
   void setStepSize(Tx newStepSize) { h = newStepSize; }
   // maybe it should have a 2nd boolean parameter "fixed" that can be used later by subclasses to 
-  // switch between fixed and variable step sizes
+  // switch between fixed and variable step sizes. In the case of variable stepsizes, this function
+  // here will serve for initializing the stepsize
 
   /** Performs one integration step at a time. The baseclass implementation just does the 
   simplemost thing: a forward Euler step. Subclasses can override this to implement more 
@@ -83,8 +148,12 @@ public:
   }
   // maybe it should take a bool adaptStepSize defaulting to false
 
-  /** Resets x,y,y' to 0. Does not reset the setp-size (should it? maybe not). */
+  /** Resets x,y,y' to all zeros. Does not reset the step-size (should it? maybe not). */
   virtual void reset() { x = 0; y = 0; yd = 0; }
+  // maybe allow the user to pass values - but maybe that should be left to another function that
+  // we may call setState. Maybe that function should avoid the assignment operator because we
+  // anticipate that the class Ty may be something like std::vector<float> and we want to avoid
+  // allocations in setState. ...not yet sure how to best solve that...
 
 
   const Tx& getAbscissa() const { return x; }

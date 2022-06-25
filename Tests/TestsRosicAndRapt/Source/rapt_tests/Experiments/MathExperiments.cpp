@@ -3768,7 +3768,7 @@ void expPolyIterator()
 }
 
 
-void reciprocalIterator() // rename to odeMultiStep
+void reciprocalIterator() // rename to odeMultiStep or odeSolvers
 {
   // We want to iteratively compute an approximation of y(x) = 1/x. To do this, we find the ODE
   // whose solution is given by our target function y(x). This can be found by differentiating:
@@ -4099,7 +4099,7 @@ void reciprocalIterator() // rename to odeMultiStep
   //  oscillate more than the lower order ones.
   // -What Nyström and Milne-Simpson have in common is that the use the value 2 samples past as the
   //  starting point: to compute y[n], they do somthing like y[n-2] + ... rather than y[n-1] + ...
-  //  as the other methods do. Both show oscillations, so oscillation my be realted to that 
+  //  as the other methods do. Both show oscillations, so oscillation my be related to that 
   //  feature. Q: Is this like the "leapfrog" method? -> figure out relation to that
   // -Seems like the BDF-n method have an accuracy comparable to Adams-Moulton methods of order 
   //  n-2. Apparently the better stability is payed for by less accuracy, so maybe we should resort
@@ -4146,7 +4146,7 @@ void reciprocalIterator() // rename to odeMultiStep
   //  https://en.wikiversity.org/wiki/Adams-Bashforth_and_Adams-Moulton_methods
   //  https://en.wikipedia.org/wiki/Predictor%E2%80%93corrector_method
   // -Implement a function that computes the coefficients for arbitrary order Adams-Bashforth
-  //  methods
+  //  methods (done)
   // -It seems Adams methods use a lot of past y' (or f) values and only one past y-value whereas
   //  BDF method use a lot of past y-values but only one past f value. What about methods that use
   //  a bunch of both types? wouldn't that give yet better accuray? ah - see 
