@@ -6,6 +6,8 @@ rsModularInteger<T>::rsModularInteger(rsUint64 initialValue, rsUint64 modulusToU
   modulus = modulusToUse;
   value   = initialValue;
   rsAssert( value >= T(0) && value < modulus );
+  // Although we received unsigned integers for the parameters, value < 0 could happen when there's
+  // wraparound in the assignments...right?
 }
 
 template<class T>
@@ -68,12 +70,14 @@ rsModularInteger<T> rsModularInteger<T>::operator*(const rsModularInteger<T> &ot
   return rsModularInteger<T>(r, modulus);
 }
 
-//template<class T>
-//rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &other)
-//{
-//  rsAssert( modulus == other.modulus );
-//  return *this * rsModularInverse(other.value, modulus);
-//}
+template<class T>
+rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &other)
+{
+  rsWarning("Tests needed for: rsModularInteger<T>::operator/");
+  rsAssert( modulus == other.modulus );
+  return *this * rsModularInteger<T>(rsModularInverse(other.value, modulus), modulus);
+  //return *this * rsModularInverse(other.value, modulus); // old, doesn't compile
+}
 // what, if there is no modular inverse (i think, it exists only if the value is coprime with the 
 // modulus - verify)
 
@@ -95,12 +99,13 @@ rsModularInteger<T>& rsModularInteger<T>::operator*=(const rsModularInteger<T> &
   *this = *this * other;
   return *this;
 }
-//template<class T>
-//rsModularInteger<T>& rsModularInteger<T>::operator/=(const rsModularInteger<T> &other)
-//{
-//  *this = *this / other;
-//  return *this;
-//}
+template<class T>
+rsModularInteger<T>& rsModularInteger<T>::operator/=(const rsModularInteger<T> &other)
+{
+  rsWarning("Tests needed for: rsModularInteger<T>::operator/=");
+  *this = *this / other;
+  return *this;
+}
 template<class T>
 rsModularInteger<T>& rsModularInteger<T>::operator++()
 {

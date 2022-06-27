@@ -31,6 +31,7 @@ public:
   rsModularInteger(const rsModularInteger& other);
 
 
+
   /** \name Operators */
 
   rsModularInteger& operator=(const rsModularInteger& b)
@@ -44,12 +45,12 @@ public:
   rsModularInteger operator+(const rsModularInteger& other);
   rsModularInteger operator-(const rsModularInteger& other);
   rsModularInteger operator*(const rsModularInteger& other);
-  //rsModularInteger operator/(const rsModularInteger& other);
+  rsModularInteger operator/(const rsModularInteger& other);
 
   rsModularInteger& operator+=(const rsModularInteger& other);
   rsModularInteger& operator-=(const rsModularInteger& other);
   rsModularInteger& operator*=(const rsModularInteger& other);
-  //rsModularInteger& operator/=(const rsModularInteger& other);
+  rsModularInteger& operator/=(const rsModularInteger& other);
 
   rsModularInteger& operator++();
   rsModularInteger& operator--();

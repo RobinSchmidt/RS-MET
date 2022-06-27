@@ -175,6 +175,24 @@ inline double rsIntegerPower(double x, int exponent)
     accu *= x;
   return accu;
 }
+// use depraction macro
+
+/** Computes the inverse a.k.a. reciprocal of the given input. */
+template <class T>
+inline T rsInv(const T& x)
+{
+  //return T(1) / x;
+  return rsUnityValue(x) / x;
+  // Computes and returns 1/x but we can't write it like that for e.g. T = rsModularInteger<>.
+}
+// ToDo:
+// -Explicit specializations may be needed for types like rsMatrix at some point. In cases where
+//  it matters, we should sepcify, if this should compute the left or right inverse (I think, 
+//  left-inverse is more common). Maybe the function name should reflect this? Check, what MatLab
+//  or Mathematica or Sage do in such cases and if there's a consensus among them, adhere to it.
+//  What if x is not invertible? Should we raise an assert? Or compute some sort of pseudoinverse
+//  like the Moore-Penrose pseudoinverse of matrices?
+
 
 /*
 // redundant with rsClip
@@ -244,6 +262,11 @@ inline T rsNextPowerOfTwo(T x)
 template <class T>
 T rsPow(const T& base, int exponent)
 {
+  //rsAssert(exponent >= 0, "Doesn't work yet for negative exponents");
+  // ToDo: fix this. maybe something like:
+  if(exponent < 0)
+    return rsPow(rsInv(base), -exponent);  // recursive call with inverse arguments
+
   T result = rsUnityValue(base);
   T square(base);
   while(true)
