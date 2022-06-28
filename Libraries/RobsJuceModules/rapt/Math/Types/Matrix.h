@@ -773,7 +773,26 @@ public:
         for(int k = 0; k < A.numCols; k++)
           (*C)(i, j) += A.at(i, k) * B.at(k, j); }}
   }
-  // maybe implement matrixDivide: A/B := A * inverse(B)
+  // -maybe implement matrixDivide: A/B := A * inverse(B)
+
+
+  /** Performs the multiply-and-accumulate operation: C = C + A * B. */
+  static void matrixMultiplyAccumulate(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  {
+    rsAssert(A.numCols  == B.numRows);
+    rsAssert(C->numCols == B.numCols);
+    rsAssert(C->numRows == A.numRows);
+    for(int i = 0; i < C->numRows; i++) {
+      for(int j = 0; j < C->numCols; j++) {
+        for(int k = 0; k < A.numCols; k++)
+          (*C)(i, j) += A.at(i, k) * B.at(k, j); }}
+  }
+
+
+
+
+
 
 
   /** Computes the matrix product C = A^T * B. */
