@@ -581,7 +581,7 @@ void rsArrayTools::filter(const T *x, int xLength, T *y, int yLength, const T *b
     y[n]    = tmp;
   }
 
-  // todo: we should divide the final value by a[0]
+  // ToDo: maybe we should divide the final value by a[0], if it's not 1
 
   // clean up memory:
   delete[] xOld;
@@ -683,8 +683,9 @@ void rsArrayTools::filterBiDirectional(const T *x, int xLength, T *y, int yLengt
     y[n]    = tmp;
   }
 
-  // \todo: get rid of the code duplication - the loop could be factored out into a function
-  //
+  // \todo: 
+  // -get rid of the code duplication - the loop could be factored out into a function
+  // -maybe the final result hsould be divided by a[0]^2 if it isn't unity
 
   // clean up memory:
   delete[] xOld;
