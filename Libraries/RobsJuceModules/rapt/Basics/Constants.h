@@ -7,7 +7,7 @@
 // mathematical constants (maybe prepend RS_ - but turn them into constexpr):
 
 #define PI 3.1415926535897932384626433832795
-#define TWO_PI 6.283185307179586476925286766559                     // maybe use TAU
+#define TWO_PI 6.283185307179586476925286766559                     // maybe use TAU, https://tauday.com/tau-manifesto
 #define PI_INV 0.31830988618379067153776752674503                   // 1/PI
 #define EULER 2.7182818284590452353602874713527
 #define EULER_CONSTANT 0.5772156649015328606065120900824024310421
