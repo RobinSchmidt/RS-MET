@@ -321,27 +321,37 @@ rsVector3D<T> operator*(const T A[3][3], const rsVector3D<T>& v)
 
 /** Computes the dot-product between two 3D vectors a and b. */
 template<class T>
+T rsDot(const rsVector3D<T>& a, const rsVector3D<T>& b)
+{
+  return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+template<class T>
 T dot(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
   return a.x*b.x + a.y*b.y + a.z*b.z;
 }
-// rename to rsDot
+// old name, deprecated
 
 template<class T>
 T rsNorm(const rsVector3D<T>& a)
 {
-  return sqrt(dot(a, a));
+  return sqrt(rsDot(a, a));  // use rsSqrt
 }
 
 /** Computes the cross-product between two 3D vectors a and b. Here, a is the left operand. That's 
 important, because the cross-product is not commutative. Instead, we have (a x b) = -(b x a) where 
 the x symbol is used here to denote the cross-product. */
 template<class T>
+rsVector3D<T> rsCross(const rsVector3D<T>& a, const rsVector3D<T>& b)
+{
+  return rsVector3D<T>(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x); 
+}
+template<class T>
 rsVector3D<T> cross(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
   return rsVector3D<T>(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x); 
 }
-// move into class
+// old name, deprecated
 
 
 /** Returns the determinant of the matrix that results from writing the 3 given vectors as columns
@@ -353,7 +363,8 @@ T det(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
 {
   return a.x*b.y*c.z + b.x*c.y*a.z + c.x*a.y*b.z - c.x*b.y*a.z - b.x*a.y*c.z - a.x*c.y*b.z;
 }
-// isn't that the saem as the triple-product and therefore redundant?
+// isn't that the same as the triple-product and therefore redundant?
+// rename to rsDet
 
 /** Returns the angle between vectors a and b. */
 // not yet tested
@@ -362,6 +373,7 @@ T angle(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
   return acos(dot(a, b) / sqrt(a.getSquaredEuclideanNorm() * b.getSquaredEuclideanNorm()));
 }
+// rename to rsAngle
 
 // maybe return references from operators - avoid copying
 
