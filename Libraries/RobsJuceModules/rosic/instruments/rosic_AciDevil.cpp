@@ -369,3 +369,22 @@ void AciDevil::updateNormalizer2()
     sampleRate);
   n2 = 1.0; // test
 }
+
+
+
+/*
+
+
+Ideas:
+
+-Let each note have its own length (or length-scaler)
+-Let each note have an adjustable amount of accent rather than just a binary on/off switch
+-Let each note define its own scaler for the slide time
+-Provide more waveforms. maybe morphable ones, pulse-width control, etc.
+-Let the filter have a ResoByCutoff parameter. At the moment, the resonance at high cutoffs is a
+ bit too low - we need to turn it up as function of cutoff a little bit. Maybe get a TD3 and make
+ measurements to mimic it behavior.
+-Let the filter have nonlinearities that make it growl, scream, etc.
+
+
+*/

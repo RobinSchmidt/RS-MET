@@ -69,6 +69,16 @@ Effect chain
 
 - Implement different filter topologies which are automatically selected according to the sfz data
 
+- Provide an automatic gain compensation for the whole effect chain by measuring the loudness of 
+  the input i.e. the source signal at the start of the effect chain and at the end of the effect 
+  chain, compute the gain difference and apply an inverse gain. The loudness measurement can either
+  be done in realtime to apply a dynamic gain comepnsation or by doing some sort of precomputation 
+  and the applying a static gain. If it's done in realtime, we may want some sort of envelope 
+  follower with look-ahead. To compensate the latency introduced by that, we may need a 
+  render-ahead functionality. Maybe when the user plays a note, we should render a few hundreds of
+  samples ahead of the time when they are actually needed? ...that may be messy to implement, 
+  though.
+
 - Support the following opcodes:  
   https://sfzformat.com/opcodes/bus
   https://sfzformat.com/opcodes/pan_keycenter
