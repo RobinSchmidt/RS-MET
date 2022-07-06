@@ -975,8 +975,8 @@ void windowFunctionSpectra()
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
-  //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
+  plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+  rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
 
   //plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
@@ -1027,7 +1027,20 @@ void windowFunctionSpectra()
   // dividing the read-off value by 10.
 
   // ToDo:
-  // Figure out a formula
+  // -Figure out a formula
+  // -Try bump-function f(x) = exp(-1/(1-x^2)) and piecewise window using integrated bump tapers. 
+  //  Maybe windows based on
+  //  the bump function should give a good roll-off due to the smoothness at the ends? See:
+  //  https://en.wikipedia.org/wiki/Bump_function
+  //  https://math.stackexchange.com/questions/101480/are-there-other-kinds-of-bump-functions-than-e-frac1x2-1
+  //  https://www.desmos.com/calculator/ccf2goi9bj
+  //  http://staff.ustc.edu.cn/~wangzuoq/Courses/18F-Manifolds/Notes/Lec03.pdf
+
+  // Notes:
+  // -I think, the windows cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5 can perhaps be created
+  //  in a much simpler way as (cos(t))^n for n=0,1,2,3,....? Maybe I have re-invented the 
+  //  power-of-cosine family? -> Figure out!
+  //  See https://ccrma.stanford.edu/~jos/sasp/Power_of_Cosine_Window_Family.html
 };
 
 

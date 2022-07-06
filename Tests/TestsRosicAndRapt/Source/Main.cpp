@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  //ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -136,8 +136,10 @@ int main(int argc, char* argv[])
   //powerIterator();
   //gaussianIterator();
   //expPolyIterator();
-  reciprocalIterator();  // rename to multiStepSolverIVP (initial value problem)
-                           // implements prototypes of Adams-Bashforth methods and more
+
+  //reciprocalIterator();  // rename to multiStepSolverIVP (initial value problem)
+  // It implements prototypes of Adams-Bashforth, Adams-Moulton, BDF methods and more using the 
+  // ODE for 1/x as example problem (I think)
 
 
   // Filter:
@@ -433,7 +435,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  //windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
+  windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
 //  windowedSinc();
   //waveMorph();  // under construction
 
