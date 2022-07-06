@@ -941,12 +941,13 @@ void windowFunctionSpectra()
   // first cross:  1.935  3.423  4.9037 6.379  7.845
   // first zero:   2.19   3.57   5.01   6.46   7.91
   double cw20, cw40, cw60, cw80, cw100;
-  cw20  = WF::dolphChebychevMainLobeWidth(N, -20.0);
-  cw40  = WF::dolphChebychevMainLobeWidth(N, -40.0);
-  cw60  = WF::dolphChebychevMainLobeWidth(N, -60.0);
-  cw80  = WF::dolphChebychevMainLobeWidth(N, -80.0);
-  cw100 = WF::dolphChebychevMainLobeWidth(N, -100.0); // linker error
-  // these values look ok - now do more precise numerical tests with short windows (like 10, 11)
+  cw20  = WF::dolphChebychevMainLobeWidth(N,  -20.0);
+  cw40  = WF::dolphChebychevMainLobeWidth(N,  -40.0);
+  cw60  = WF::dolphChebychevMainLobeWidth(N,  -60.0);
+  cw80  = WF::dolphChebychevMainLobeWidth(N,  -80.0);
+  cw100 = WF::dolphChebychevMainLobeWidth(N, -100.0);
+  // These values look ok. Now we should do more precise numerical tests with short windows 
+  // (like 10, 11)
 
   // maybe optionally plot the window functions themselves
   // note that gnuplot issues an error when we try to plot the window itself and immediately 
@@ -979,9 +980,10 @@ void windowFunctionSpectra()
   rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
 
-  //plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
-  //  &hannPoisson4[0], &hannPoisson5[0]);
-  //rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
+  plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
+    &hannPoisson4[0], &hannPoisson5[0]);
+  rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
+  // Something goes wrong here - the plot window immediately closes itself
 
   //plt.plotDecibelSpectra(N, &cheby20[0], &rectangular[0]);// compare rectangular and cheby20
   //plt.plotDecibelSpectra(N, &cheby40[0], &hamming[0]);  // compare hamming and cheby40
@@ -1016,25 +1018,41 @@ void windowFunctionSpectra()
 
 
   // Observations:
-  // To read off the mainlobe width from spectrum plot, it makes sense to use 
-  // fftSize == windowLength and plt.setFreqAxisUnit(FU::binIndex). In this case, the mainlobe 
-  // width is twice the value that is read off from the spectrum (twice, because the mainlobe goes 
-  // from minus to plus that value). For example, the rectangular and triangular windows have their
-  // first zero at 1 or 2 respectively, so their widths (if we define them at the first zero) are 2 
-  // or 4 which is what rsWindowFunction::getMainLobeWidth returns for these windows. For Hann and 
-  // Hamming window, the slope has a kink at 2. When using an fftSize == 20*windowSize, we see the
-  // structure of the sidelobes better and we can also directly read off the mainblobe-width by 
-  // dividing the read-off value by 10.
+  // -To read off the mainlobe width from spectrum plot, it makes sense to use 
+  //  fftSize == windowLength and plt.setFreqAxisUnit(FU::binIndex). In this case, the mainlobe 
+  //  width is twice the value that is read off from the spectrum (twice, because the mainlobe goes 
+  //  from minus to plus that value). For example, the rectangular and triangular windows have 
+  //  their first zero at 1 or 2 respectively, so their widths (if we define them at the first 
+  //  zero) are 2 or 4 which is what rsWindowFunction::getMainLobeWidth returns for these windows. 
+  //  For Hann and Hamming window, the slope has a kink at 2. When using an 
+  //  fftSize == 20*windowSize, we see the structure of the sidelobes better and we can also 
+  //  directly read off the mainblobe-width by dividing the read-off value by 10.
+  //  -> Try to figure out a formula
+  // -The Dolph-Chebychev window may have spikes at the start and end of the window (especially for
+  //  longer windows). In certain context (especially, when (re-)synthesis is involved), these may 
+  //  be undesirable. Maybe we can avoid them by creating a window that is two samples too long and
+  //  discard first and last sample? Or maybe we should replace these spike values by extrapolating
+  //  from the inner part of the wndow. MatLab and SciPy have the Taylor window for this:
+  //  https://www.mathworks.com/help/signal/ref/taylorwin.html
+  //  https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.windows.taylor.html
+  //  -> figure out, what that does
 
-  // ToDo:
-  // -Figure out a formula
-  // -Try bump-function f(x) = exp(-1/(1-x^2)) and piecewise window using integrated bump tapers. 
-  //  Maybe windows based on
-  //  the bump function should give a good roll-off due to the smoothness at the ends? See:
+  // ToDo: 
+  // -Try bump-function f(x) = exp(-1/(1-x^2)) and piecewise window using integrated bump tapers,
+  //  i.e. integrate the bump function to obtain a smoothed step function and combine two of those
+  //  to obtain a zero-centered smoothed rectangular block. Maybe insert a truly constant middle 
+  //  section. I think, the bump function should give a good roll-off due to the smoothness at the
+  //  ends? See:
   //  https://en.wikipedia.org/wiki/Bump_function
   //  https://math.stackexchange.com/questions/101480/are-there-other-kinds-of-bump-functions-than-e-frac1x2-1
   //  https://www.desmos.com/calculator/ccf2goi9bj
   //  http://staff.ustc.edu.cn/~wangzuoq/Courses/18F-Manifolds/Notes/Lec03.pdf
+  // -Implement the Kaiser window:
+  //  https://en.wikipedia.org/wiki/Window_function#Kaiser_window
+  //  ..and maybe also the DPSS aka Slepian window which the Kaiser window approximates. But that 
+  //  may be complicated. Maybe it needs an iterative eigenvector finder (like vector iteration?) 
+  //  using the Kaiser window as initial guess? I actually think, I have Kaiser already implemented
+  //  somewhere in the codebase. -> Dig it out, clean it up and document it properly!
 
   // Notes:
   // -I think, the windows cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5 can perhaps be created
