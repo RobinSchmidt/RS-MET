@@ -222,3 +222,16 @@ void MultiLayerPerceptron::vectorizeWeightMatrices(rosic::Matrix *weightMatrices
     }
   }
 }
+
+
+/*
+
+Ideas:
+
+Fun with the "swish" function:
+https://www.desmos.com/calculator/tfkbmkiq8p
+https://www.desmos.com/calculator/soqbsrcmfh
+the swish function itself could be interesting as an activation function
+
+
+*/
