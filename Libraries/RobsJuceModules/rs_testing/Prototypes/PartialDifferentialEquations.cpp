@@ -656,4 +656,11 @@ Ideas:
 -i would expect to see interesting musical effects when the lengths (or tensions) of the string are
  tuned to harmonic ratios
 
+
+Interesting video about Burger's equation:
+  https://www.youtube.com/watch?v=zQJkve_hnHk
+-It's like the transport equation where the height of u = u(x,t) determines the propagation speed.
+-The initial wave builds up a vertical front and then breaks, see:
+ https://math.stackexchange.com/questions/1670521/wave-breaking-in-burgers-equation
+
 */

@@ -847,6 +847,9 @@ void windowFunctionSpectra()
   //int fftSize = 8192;
   //int fftSize = 16384;
 
+  bool chebyDeSpike = false;   // Remove time domain spikes in Dolph-Chebychev windows (or not)
+
+
   // create various window functions:
   typedef RAPT::rsWindowFunction WF;
   typedef WF::WindowType WT; 
@@ -936,6 +939,27 @@ void windowFunctionSpectra()
   // "modified Dolph-Chebychev" or something ..or maybe "de-spiked ..." ...but that may defeat the 
   // purpose of the equiripples...we'll see
 
+  // Despike the Dolph-Chebychev windows, if deired:
+  auto despike = [](std::vector<double>& w)
+  {
+    int N = (int) w.size();
+    w[0]   = RAPT::rsMin(w[0],   w[1]);
+    w[N-1] = RAPT::rsMin(w[N-1], w[N-2]);
+    // Actually, due to the symmetry of the window, we could directly do it in one line:
+    // w[0] = w[N-1] = RAPT::rsMin(w[0], w[1]);
+  };
+  if(chebyDeSpike)
+  {
+    despike(chebyTweak);
+    despike(cheby20);
+    despike(cheby40);
+    despike(cheby60);
+    despike(cheby80);
+    despike(cheby100);
+  }
+
+
+
   // measurements of the mainlobe-widths of the cheby window for N=64
   // attenuation:  20     40     60     80     100
   // first cross:  1.935  3.423  4.9037 6.379  7.845
@@ -948,6 +972,12 @@ void windowFunctionSpectra()
   cw100 = WF::dolphChebychevMainLobeWidth(N, -100.0);
   // These values look ok. Now we should do more precise numerical tests with short windows 
   // (like 10, 11)
+
+
+
+
+
+
 
   // maybe optionally plot the window functions themselves
   // note that gnuplot issues an error when we try to plot the window itself and immediately 
@@ -976,13 +1006,13 @@ void windowFunctionSpectra()
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 
-  plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
-  rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
+  //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+  //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
 
-  plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
-    &hannPoisson4[0], &hannPoisson5[0]);
-  rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
+  //plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
+  //  &hannPoisson4[0], &hannPoisson5[0]);
+  //rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
   // Something goes wrong here - the plot window immediately closes itself
 
   //plt.plotDecibelSpectra(N, &cheby20[0], &rectangular[0]);// compare rectangular and cheby20
@@ -1036,6 +1066,11 @@ void windowFunctionSpectra()
   //  https://www.mathworks.com/help/signal/ref/taylorwin.html
   //  https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.windows.taylor.html
   //  -> figure out, what that does
+  //  -Maybe, we should just make sure that the values at index 0 and N-1 are less or equal to 
+  //   those at index 1 and N-2? ...done (via the boolean "chebyDeSpike" option)
+  //   -If the modification kicks in, it results in the stopband not being equiripple anymore but
+  //    rather featuring some anount a sidelobe roll-off until the sidelobes settle. This comes
+  //    at the cost of a widened mainlobe.
 
   // ToDo: 
   // -Try bump-function f(x) = exp(-1/(1-x^2)) and piecewise window using integrated bump tapers,
@@ -1057,7 +1092,7 @@ void windowFunctionSpectra()
   // Notes:
   // -I think, the windows cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5 can perhaps be created
   //  in a much simpler way as (cos(t))^n for n=0,1,2,3,....? Maybe I have re-invented the 
-  //  power-of-cosine family? -> Figure out!
+  //  power-of-cosine family? -> Figure out! It seems plausible.
   //  See https://ccrma.stanford.edu/~jos/sasp/Power_of_Cosine_Window_Family.html
 };
 
