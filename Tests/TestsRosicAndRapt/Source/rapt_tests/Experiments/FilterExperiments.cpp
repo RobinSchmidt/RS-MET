@@ -131,6 +131,8 @@ void bandpassAndNotch()
   Vec  bw = {    2,    2,   2,   2 };   // Bandwidths in octaves
   Real fl = 62.5;                       // Lowpass cutoff in Hz
   Real fh = 16000;                      // Highpass cutoff in Hz
+  int noiseLength   = 8192;
+  int impulseLength = 2048;
 
   // Create and set up the filters:
   int numBPFs  = (int) fc.size();
@@ -144,6 +146,23 @@ void bandpassAndNotch()
     coeffsAllpassDAFX(wc, wb, &b0, &b1, &b2, &a1, &a2);
     bpfs[i].setCoefficients(b0, b1, b2, -a1, -a2);  // uses the other sign convention
   }
+
+  // Create a couple of example input signals: white noise, impulse, sawtooth, sine-sweep
+  Vec noise   = createNoise(noiseLength, -1.0, +1.0);
+  Vec impulse = createImpulse(impulseLength);
+  // ...more to do...
+
+
+  // Create and set up some local vars and 2D arrays
+  int M = numBPFs + 2;    // M: Number of signals: bandpass outputs plus low and high band
+  int N;                  // N: Number of samples
+
+  // rsMatrix<Real> \\||\\\\\\||\
+
+  // Split the noise into bands:
+  N = (int) noise.size();
+
+
 
 
 
@@ -161,7 +180,7 @@ void bandpassAndNotch()
   // -Try reversing the order of the filters, starting at low freqs and going up. I think, this 
   //  should delay the high frequencies more - which is undesirable which is why by default, the
   //  high bands should come first.
-  // -Maybe try to somehow split off the highpass part first and investigat, what difference that
+  // -Maybe try to somehow split off the highpass part first and investigate, what difference that
   //  makes
 
   int dummmy = 0;
