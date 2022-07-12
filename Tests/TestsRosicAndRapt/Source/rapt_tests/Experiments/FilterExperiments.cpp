@@ -119,6 +119,7 @@ void bandpassAndNotch()
 
   using Real   = double;
   using Vec    = std::vector<Real>;
+  using Mat    = rsMatrix<Real>;
   using Biquad = rsBiquadDF1<Real, Real>;
   //using BQD    = RAPT::rsBiquadDesigner;
 
@@ -127,16 +128,16 @@ void bandpassAndNotch()
   // -The 1st BP passes 4k..16k, the 2nd 1k..4k, the 3rd 250..1000, the 4th 62.5..250
   // -The lowpass passes freqs below 62.5 and the highpass freqs above 16k
   Real fs = 44100;                      // Sample rate
-  Vec  fc = { 8000, 2000, 500, 125 };   // Bandpass center frequencies in Hz
-  Vec  bw = {    2,    2,   2,   2 };   // Bandwidths in octaves
+  Vec  fc ={ 8000, 2000, 500, 125 };   // Bandpass center frequencies in Hz
+  Vec  bw ={ 2,    2,   2,   2 };   // Bandwidths in octaves
   Real fl = 62.5;                       // Lowpass cutoff in Hz
   Real fh = 16000;                      // Highpass cutoff in Hz
   int noiseLength   = 8192;
   int impulseLength = 2048;
 
   // Create and set up the filters:
-  int numBPFs  = (int) fc.size();
-  std::vector<Biquad> bpfs(numBPFs);    // bandpass filters
+  int numBPFs  = (int)fc.size();
+  std::vector<Biquad> apfs(numBPFs);    // allpass filters
   Biquad lpf, hpf;                      // lowpass and highpass
   Real b0, b1, b2, a1, a2;              // temporary biquad coeffs
   for(int i = 0; i < numBPFs; i++)
@@ -144,7 +145,7 @@ void bandpassAndNotch()
     Real wc = 2*PI*fc[i]/fs;
     Real wb = 2*wc;               // preliminary - should later be computed from bw[i]
     coeffsAllpassDAFX(wc, wb, &b0, &b1, &b2, &a1, &a2);
-    bpfs[i].setCoefficients(b0, b1, b2, -a1, -a2);  // uses the other sign convention
+    apfs[i].setCoefficients(b0, b1, b2, -a1, -a2);  // uses the other sign convention
   }
 
   // Create a couple of example input signals: white noise, impulse, sawtooth, sine-sweep
@@ -153,14 +154,71 @@ void bandpassAndNotch()
   // ...more to do...
 
 
-  // Create and set up some local vars and 2D arrays
+  // Create and set up some local vars and a 2D array for the outputs:
   int M = numBPFs + 2;    // M: Number of signals: bandpass outputs plus low and high band
-  int N;                  // N: Number of samples
+  //int N;                  // N: Number of samples
+  //rsMatrix<Real> Y;       // Our M band output signals as 2D array
 
-  // rsMatrix<Real> \\||\\\\\\||\
+  // Helper function to produce the M output signals from the given input signal:
+  auto splitIntoBands = [&](const Vec& x)
+  {
+    int N = (int) x.size();
+    rsMatrix<Real> Y(M, N);
+    int i, n;
+
+    // Maybe factor out into resetFilters:
+    lpf.reset();
+    hpf.reset();
+    for(i = 0; i < (int) apfs.size(); i++)
+      apfs[i].reset();
+
+    // Apply bandsplitting filters:
+    for(n = 0; n < N; n++) 
+    {
+      // Apply highpass to obtain topmost band:
+      Real res    = x[n];                      // Residual is initially equal to input
+      Real sum    = 0.0;                       // Total sum of outputs is initially zero
+      Real hpOut  = hpf.getSample(res);        // Apply highpass - we slice off highs first
+      Y(M-1, n)   = hpOut;                     // Record highpass output
+      sum        += hpOut;                     // Accumulate what we have sliced off already
+      res         = hpOut - x[n];              // Residual of highpass filter
+
+      // Apply the bandpasses. They should fill the rows with indices M-2 down to 1. The first stage
+      // stage gets the residual from the highpass as input and subsequent stages get the bandstop 
+      // output of of the previous stage as input. The final residual is considered the lowpass
+      // band:
+      for(i = 0; i < numBPFs; i++) 
+      {
+        Real apOut   = apfs[i].getSample(res); // Allpass output of stage i
+        Real bpOut   = 0.5 * (res + apOut);    // Bandpass output of stage i
+        Real bsOut   = 0.5 * (res - apOut);    // Bandstop output of stage i
+        Y(M-2-i, n)  = bpOut;                  // Record bandpass output into final output
+        sum         += bpOut;
+        res          = bsOut; }
+      Y(0, n) = res;
+      sum += res;
+
+      // After slicing off frequency content band by band and accumulating it into our sum 
+      // variable, at the very end, the sum should be equal to x[n] up to roundoff. That is the
+      // prefect reconstruction condition which we check here:
+      Real tol = 1.e-14;
+      Real err = x[n] - sum;
+      rsAssert(rsAbs(err) <= tol);
+    } 
+
+  };
+  // Actually, we don't really use the lpf here. Instead, the lowpass output is taken to be the 
+  // final residual. Maybe get rid of the object...but maybe in some other implementation (one that
+  // slices off frequency content starting at low frequencies), we'll use it, so maybe don't delete
+  // it yet.
+
+
+
 
   // Split the noise into bands:
-  N = (int) noise.size();
+  //N = (int) noise.size();
+  //Y.setShape(M, N);
+
 
 
 
