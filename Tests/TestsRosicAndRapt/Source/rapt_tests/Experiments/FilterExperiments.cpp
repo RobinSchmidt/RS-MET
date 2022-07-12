@@ -133,7 +133,7 @@ void bandpassAndNotch()
   Vec  bw = {    2,    2,   2,   2 };   // Bandwidths in octaves
   Real fl = 62.5;                       // Lowpass cutoff in Hz
   Real fh = 16000;                      // Highpass cutoff in Hz
-  int noiseLength   = 2048;
+  int noiseLength   = 256;
   int impulseLength = 2048;
 
   // Create and set up the filters:
@@ -183,6 +183,9 @@ void bandpassAndNotch()
     // Apply bandsplitting filters:
     for(n = 0; n < N; n++) 
     {
+      Real tol = 1.e-14;
+      Real err;
+
       // Apply highpass to obtain topmost band:
       Real res    = x[n];                      // Residual is initially equal to input
       Real sum    = 0.0;                       // Total sum of outputs is initially zero
@@ -200,17 +203,24 @@ void bandpassAndNotch()
         Real apOut   = apfs[i].getSample(res); // Allpass output of stage i
         Real bpOut   = 0.5 * (res + apOut);    // Bandpass output of stage i
         Real bsOut   = 0.5 * (res - apOut);    // Bandstop output of stage i
+        Real test    = bpOut + bsOut;          // Should equal res. That means the BP and BR sum to
+        err          = res - test;             // their input. 
+        rsAssert(rsAbs(err) <= tol);           // ...that seems to work indeed.
         Y(M-2-i, n)  = bpOut;                  // Record bandpass output into final output
         sum         += bpOut;
-        res          = bsOut; }
-      Y(0, n) = res;
-      sum += res;
+        test         = res - bpOut;
+        res          = bsOut;                  // Should be the same - yes, looks good
+        err          = res - test;
+        rsAssert(rsAbs(err) <= tol);
+      }
+      Y(0, n) = res;                           // The last residual is the low band
+      sum += res; 
 
       // After slicing off frequency content band by band and accumulating it into our sum 
       // variable, at the very end, the sum should be equal to x[n] up to roundoff. That is the
       // prefect reconstruction condition which we check here:
-      Real tol = 1.e-14;
-      Real err = x[n] - sum;
+      err = x[n] - sum;
+      int dummy = 0;
       //rsAssert(rsAbs(err) <= tol);
     } 
 
@@ -220,6 +230,7 @@ void bandpassAndNotch()
     // that slices off frequency content starting at low frequencies), we'll use it, so maybe don't
     // delete it yet.
   };
+  // ToDo: write a function to reconstruct - it should add the matrix rows into a single row
 
 
   // Split the noise into bands:
@@ -230,6 +241,12 @@ void bandpassAndNotch()
 
 
   // Something is still wrong - the rsAssert(rsAbs(err) <= tol); triggers
+  // That the bandpass and bandstop outputs sum to their input seems to work correctly. Maybe it
+  // has to do with our preliminary (and wrong) calculation of wb in the setup of the filters?
+  // But that actually shouldn't affect the perfect reconstruction property, only the 
+  // freq-responses of the bdan filters. Reconstruction should work no matter how messed up they 
+  // are...I think.
+  // Try it with only 1 bandpass or even with 0 bandpasses, i.e. only with low- and highpass
 
 
   // ToDo:
