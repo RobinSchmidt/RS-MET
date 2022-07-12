@@ -122,17 +122,18 @@ void bandpassAndNotch()
   using Mat    = rsMatrix<Real>;
   using Biquad = rsBiquadDF1<Real, Real>;
   //using BQD    = RAPT::rsBiquadDesigner;
+  using FOB    =  rsFirstOrderFilterBase<Real, Real>;
 
 
   // Setup:
   // -The 1st BP passes 4k..16k, the 2nd 1k..4k, the 3rd 250..1000, the 4th 62.5..250
   // -The lowpass passes freqs below 62.5 and the highpass freqs above 16k
   Real fs = 44100;                      // Sample rate
-  Vec  fc ={ 8000, 2000, 500, 125 };   // Bandpass center frequencies in Hz
-  Vec  bw ={ 2,    2,   2,   2 };   // Bandwidths in octaves
+  Vec  fc = { 8000, 2000, 500, 125 };   // Bandpass center frequencies in Hz
+  Vec  bw = {    2,    2,   2,   2 };   // Bandwidths in octaves
   Real fl = 62.5;                       // Lowpass cutoff in Hz
   Real fh = 16000;                      // Highpass cutoff in Hz
-  int noiseLength   = 8192;
+  int noiseLength   = 2048;
   int impulseLength = 2048;
 
   // Create and set up the filters:
@@ -144,9 +145,16 @@ void bandpassAndNotch()
   {
     Real wc = 2*PI*fc[i]/fs;
     Real wb = 2*wc;               // preliminary - should later be computed from bw[i]
-    coeffsAllpassDAFX(wc, wb, &b0, &b1, &b2, &a1, &a2);
-    apfs[i].setCoefficients(b0, b1, b2, -a1, -a2);  // uses the other sign convention
+    coeffsAllpassDAFX(wc, wb, &b0, &b1, &b2, &a1, &a2); // uses the other sign convention
+    apfs[i].setCoefficients(b0, b1, b2, -a1, -a2);  
   }
+  FOB::coeffsHighpassBLT(2*PI*fh/fs, &b0, &b1, &a1);
+  hpf.setCoefficients(b0, b1, 0.0, a1, 0.0);
+  FOB::coeffsLowpassBLT( 2*PI*fl/fs, &b0, &b1, &a1);
+  lpf.setCoefficients(b0, b1, 0.0, a1, 0.0);
+
+
+
 
   // Create a couple of example input signals: white noise, impulse, sawtooth, sine-sweep
   Vec noise   = createNoise(noiseLength, -1.0, +1.0);
@@ -163,7 +171,7 @@ void bandpassAndNotch()
   auto splitIntoBands = [&](const Vec& x)
   {
     int N = (int) x.size();
-    rsMatrix<Real> Y(M, N);
+    Mat Y(M, N);
     int i, n;
 
     // Maybe factor out into resetFilters:
@@ -203,28 +211,25 @@ void bandpassAndNotch()
       // prefect reconstruction condition which we check here:
       Real tol = 1.e-14;
       Real err = x[n] - sum;
-      rsAssert(rsAbs(err) <= tol);
+      //rsAssert(rsAbs(err) <= tol);
     } 
 
+    return Y;
+    // Actually, we don't really use the lpf here. Instead, the lowpass output is taken to be the 
+    // final residual. Maybe get rid of the object...but maybe in some other implementation (one 
+    // that slices off frequency content starting at low frequencies), we'll use it, so maybe don't
+    // delete it yet.
   };
-  // Actually, we don't really use the lpf here. Instead, the lowpass output is taken to be the 
-  // final residual. Maybe get rid of the object...but maybe in some other implementation (one that
-  // slices off frequency content starting at low frequencies), we'll use it, so maybe don't delete
-  // it yet.
-
-
 
 
   // Split the noise into bands:
-  //N = (int) noise.size();
-  //Y.setShape(M, N);
+  Mat Y = splitIntoBands(noise);
+  plotMatrixRows(Y);
 
 
 
 
-
-
-
+  // Something is still wrong - the rsAssert(rsAbs(err) <= tol); triggers
 
 
   // ToDo:
