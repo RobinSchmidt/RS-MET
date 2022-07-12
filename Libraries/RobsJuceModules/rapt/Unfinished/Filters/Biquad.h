@@ -21,7 +21,8 @@ class rsBiquad
 
 public:
 
-  /** \name Construction/Destruction: */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
 
   /** Constructor. */
   rsBiquad();
@@ -30,12 +31,15 @@ public:
   ~rsBiquad();
 
 
-  /** \name Parameter Settings: */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup: */
 
   /** Sets the filter coefficients to new values. */
   void setCoefficients(TCof newB0, TCof newB1, TCof newB2, TCof newA1, TCof newA2);
 
 
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Misc: */
 
   /** Initializes the biquad coefficients to b0=1.0, b1=b2=a1=a2=0.0 which is essentially a
@@ -51,7 +55,7 @@ protected:
 };
 
 
-//===============================================================================================
+//=================================================================================================
 
 /**
 

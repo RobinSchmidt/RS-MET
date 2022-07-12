@@ -494,6 +494,8 @@ template double RAPT::rsBandwidthConverter::lowpassResoGainToQ(double a);
 
 // Filters-Basic:
 template class RAPT::rsOnePoleFilter<float, float>;
+template class RAPT::rsBiquadDF1<double, double>;
+
 
 // Filters-Musical:
 template class RAPT::rsSmoothingFilter<float, float>;

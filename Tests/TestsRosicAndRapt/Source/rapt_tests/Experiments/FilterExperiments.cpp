@@ -2,6 +2,68 @@
 
 using namespace RAPT;
 
+// Move these into the prototypes and later maybe into the library:
+
+/** Computes coefficients for 2nd order (biquad) allpass for the difference equation:
+  
+  y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] - a1*y[n-1] - a2*y[n-2]
+
+The formula is from DAFX (1st Ed), pg 41 and implements a bilinear transfrom design (verify!).
+
+ToDo: document what wb is. It determines the steepness of the phase response and therefore the
+bandwidth of a derived bandpass or bandreject filter. But how exactly? Is this an absolute 
+bandwidth in Hz? Or is it somehow in terms of Q? What would be the formula to convert from a 
+desired bandwidth in octaves to wb? Compare to RBJ allpass formula. They use also the BLT, so 
+maybe they are equivalent? Or maybe not? RBJ writes something about prewarping center-freq and
+bandwidth but I guess, one could also choose to match lower and upper band-edges or maybe do
+something else. */
+template<class T> 
+void coeffsAllpassDAFX(T wc, T wb, T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  T d = -cos(wc);
+  T t =  tan(T(0.5)*wb);
+  T c =  (t-T(1)) / (t+T(1));
+  *b0 = -c;
+  *b1 = d * (T(1)-c);
+  *b2 = T(1);
+  *a1 = *b1;
+  *a2 = *b0;
+
+  // The a-coeffs are obtained by reversing the array of b-coeffs (generally for allpass filters)
+}
+
+/** Computes coeffs for a biquad bandpass derived from an allpass via: 
+
+  y[n] = (x[n] + a[n]) / 2
+
+where a[n] is the output of the allpass filter. See DAFX (1st Ed), pg 43. */
+template<class T> 
+void coeffsBandpassDAFX(T wc, T wb, T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  coeffsAllpassDAFX(wc, wb, b0, b1, b2, a1, a2);
+  *b0  = T(1) + *b0;
+  *b0 *= T(0.5);
+  *b1 *= T(0.5);
+  *b2 *= T(0.5);
+}
+
+/** Computes coeffs for a biquad bandstop derived from an allpass via: 
+
+  y[n] = (x[n] - a[n]) / 2
+
+where a[n] is the output of the allpass filter. See DAFX (1st Ed), pg 43. */
+template<class T> 
+void coeffsBandstopDAFX(T wc, T wb, T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  coeffsAllpassDAFX(wc, wb, b0, b1, b2, a1, a2);
+  *b0  = T(1) - *b0;
+  *b0 *= T(0.5);
+  *b1 *= T(0.5);
+  *b2 *= T(0.5);
+}
+
+
+
 void bandpassAndNotch()
 {
   // Under construction...
@@ -55,6 +117,43 @@ void bandpassAndNotch()
   //  only every other notch. Do whatever gives the least amount of delay.
 
 
+  using Real   = double;
+  using Vec    = std::vector<Real>;
+  //using Biquad = rsBiquadDF1<Real, Real>;
+  //using BQD    = RAPT::rsBiquadDesigner;
+
+  // Setup:
+  // -The 1st BP passes 4k..16k, the 2nd 1k..4k, the 3rd 250..1000, the 4th 62.5..250
+  // -The lowpass passes freqs below 62.5 and the highpass freqs above 16k
+  Real fs = 44100;                      // Sample rate
+  Vec  fc = { 8000, 2000, 500, 125 };   // Bandpass center frequencies in Hz
+  Vec  bw = {    2,    2,   2,   2 };   // Bandwidths in octaves
+  Real fl = 62.5;                       // Lowpass cutoff in Hz
+  Real fh = 16000;                      // Highpass cutoff in Hz
+
+  // Create and set up the filters:
+  int numBPFs  = (int) fc.size();
+  //std::vector<Biquad> bpfs(numBPFs);    // bandpass filters
+  //Biquad lpf, hpf;                      // lowpass and highpass
+
+
+
+
+
+
+  // ToDo:
+  // -Plot the magnitude- and phase-responses of all the band outputs. I think, we should bandpass 
+  //  responses with additional notches above the main lobe. The first BP has no notch, the 2nd has
+  //  one 1, the 3rd has 2 and so on -> check, if that is actually the case
+  // -Plot the impulse responses, step-responses, delay, etc.
+  // -Verify perfect reconstruction numerically
+  // -Try using more filters with narrower bandwidths (maybe 1, 1/2, 1/3, 1/6, 1/12 oct) and 
+  //  investigate how this changes the responses - especially with respect to delay.
+  // -Try reversing the order of the filters, starting at low freqs and going up. I think, this 
+  //  should delay the high frequencies more - which is undesirable which is why by default, the
+  //  high bands should come first.
+  // -Maybe try to somehow split off the highpass part first and investigat, what difference that
+  //  makes
 
   int dummmy = 0;
 }
@@ -261,6 +360,10 @@ void bandSplitFreqResponses()
     // -The last 2 are correct, the others only similar
     // -It plots the freq-range up to fs rather than fs/2. Is that intentional? I don't think so.
   }
+
+  // ToDo:
+  // -Instead of making a tree, maybe do a salami-sclicing strategy, shaving off more and more
+  //  high (or low) frequency content from the signal
 }
 
 void complementaryFiltersIIR()

@@ -72,11 +72,11 @@ T rsBiquadDesigner::getBiquadMagnitudeAt(const T &b0, const T &b1, const T &b2,
 }
 
 template<class T>
-void rsBiquadDesigner::calculateFirstOrderLowpassCoeffsPrescribedNyquist(T &b0, T &b1,                                                                        
+void rsBiquadDesigner::calculateFirstOrderLowpassCoeffsPrescribedNyquist(T &b0, T &b1,
   T &b2, T &a1, T &a2, const T &sampleRate, const T &frequency)
 {
   T wc = 2.0*PI*frequency/sampleRate;        // normalized radian cutoff frequency
-  T Wp = tan(wc/2.0);                        // pre-warped analog cutoff frequency                     
+  T Wp = tan(wc/2.0);                        // pre-warped analog cutoff frequency
   T Wn = PI*sampleRate;                      // radian Nyquist frequency
   T Wc = 2.0*PI*frequency;                   // non-pre-warped analog cutoff frequency
   T k2 = 1.0 / (1.0 + ((Wn*Wn)/(Wc*Wc)) );   // gain of prototype at the Nyquist frequency
@@ -84,10 +84,10 @@ void rsBiquadDesigner::calculateFirstOrderLowpassCoeffsPrescribedNyquist(T &b0, 
   // compute analog filter coefficients:
   T A2  = 1.0 / (Wp*Wp*(1.0-2.0*k2));        // A^2
   T B2  = k2*A2;                             // B^2
-  T G02 = 1.0;                               // G0^2                          
+  T G02 = 1.0;                               // G0^2
   T A   = rsSqrt(A2);
   T B   = rsSqrt(B2);
-  T G0  = rsSqrt(G02);                         // == 1.0 -> optimize out
+  T G0  = rsSqrt(G02);                       // == 1.0 -> optimize out
   T rD  = 1.0 / (1.0+A);                     // reciprocal of denominator
 
   // compute digital filter coefficients:
@@ -99,7 +99,7 @@ void rsBiquadDesigner::calculateFirstOrderLowpassCoeffsPrescribedNyquist(T &b0, 
 }
 
 template<class T>
-void rsBiquadDesigner::calculateFirstOrderHighpassCoeffsPrescribedNyquist(T &b0, T &b1,           
+void rsBiquadDesigner::calculateFirstOrderHighpassCoeffsPrescribedNyquist(T &b0, T &b1,
   T &b2, T &a1, T &a2, const T &sampleRate, const T &frequency)
 {
   T wc = 2.0*PI*frequency/sampleRate;
