@@ -131,16 +131,18 @@ void bandpassAndNotch()
   Real fs = 44100;                      // Sample rate
   Vec  fc = { 8000, 2000, 500, 125 };   // Bandpass center frequencies in Hz
   Vec  bw = {    2,    2,   2,   2 };   // Bandwidths in octaves
-  Real fl = 62.5;                       // Lowpass cutoff in Hz
+  //Real fl = 62.5;                       // Lowpass cutoff in Hz
   Real fh = 16000;                      // Highpass cutoff in Hz
-  int noiseLength   = 256;
-  int impulseLength = 256;
+  int noiseLength   = 512;
+  int impulseLength = 512;
 
   // Create and set up the filters:
   int numBPFs  = (int)fc.size();
-  std::vector<Biquad> apfs(numBPFs);    // allpass filters
-  Biquad lpf, hpf;                      // lowpass and highpass
-  Real b0, b1, b2, a1, a2;              // temporary biquad coeffs
+  int numBands = numBPFs + 2;           // = num bandpass outputs plus low and high
+  std::vector<Biquad> apfs(numBPFs);    // Allpass filters
+  //Biquad lpf;                           // Lowpass
+  Biquad hpf;                           // Highpass
+  Real b0, b1, b2, a1, a2;              // Temporary biquad coeffs
   for(int i = 0; i < numBPFs; i++)
   {
     Real wc = 2*PI*fc[i]/fs;
@@ -150,28 +152,20 @@ void bandpassAndNotch()
   }
   FOB::coeffsHighpassBLT(2*PI*fh/fs, &b0, &b1, &a1);
   hpf.setCoefficients(b0, b1, 0.0, a1, 0.0);
-  FOB::coeffsLowpassBLT( 2*PI*fl/fs, &b0, &b1, &a1);
-  lpf.setCoefficients(b0, b1, 0.0, a1, 0.0);
+  //FOB::coeffsLowpassBLT( 2*PI*fl/fs, &b0, &b1, &a1);
+  //lpf.setCoefficients(b0, b1, 0.0, a1, 0.0);
 
-
-  // Create a couple of example input signals: white noise, impulse, sawtooth, sine-sweep
-  Vec noise   = createNoise(noiseLength, -1.0, +1.0);
-  Vec impulse = createImpulse(impulseLength);
-  // ...more to do...
-
-  // Create and set up some local vars and a 2D array for the outputs:
-  int M = numBPFs + 2;    // M: Number of signals: bandpass outputs plus low and high band
-  Mat Y;
 
   // Helper function to produce the M output signals from the given input signal:
   auto splitIntoBands = [&](const Vec& x)
   {
+    int M = numBands;
     int N = (int) x.size();
     Mat Y(M, N);
     int i, n;
 
     // Maybe factor out into resetFilters:
-    lpf.reset();
+    //lpf.reset();
     hpf.reset();
     for(i = 0; i < (int) apfs.size(); i++)
       apfs[i].reset();
@@ -227,24 +221,40 @@ void bandpassAndNotch()
   };
 
 
+
+  // Create a couple of example input signals: white noise, impulse, sawtooth, sine-sweep
+  Vec noise   = createNoise(noiseLength, -1.0, +1.0);
+  Vec impulse = createImpulse(impulseLength);
+  // ...more to do...
+
+
+  // Create and set up some local vars and a 2D array for the outputs:
+
+  Mat Y;
+
+
   // Split the test signals into bands and plot results:
   //Y = splitIntoBands(noise);   plotMatrixRows(Y);
   Y = splitIntoBands(impulse); plotMatrixRows(Y);
 
-
+  // Observations:
+  // -The purple impulse resonse looks strange - it has only positive values but is very erratic.
+  //  Is this the highpass response? Or the highest bandpass? But it's the only one that's only 
+  //  positive which could mean, it's actually the lowpass response? Figure out - it's strange!
 
   // ToDo:
   // -Write a helper function to reconstruct the full signal from the individual bands. It should 
   //  add the matrix rows into a single row, i.e. each column is summed to give a single signal 
-  //  value.
+  //  value. Maybe it should allow partial reconstructions
   // -In setting up the filters, we need to find a correct formula to compute the wb variable. 
   //  Currently, we use a preliminary (wrong) formula. this doesn't affect the perfect 
   //  reconstruction, though - it only messes up the frequency responsesof our band filters.
   // -Plot the magnitude- and phase-responses of all the band outputs. I think, we should bandpass 
   //  responses with additional notches above the main lobe. The first BP has no notch, the 2nd has
   //  one 1, the 3rd has 2 and so on -> check, if that is actually the case
+  // -Plot also responses of partial reconstructions, i.e. reconstructions that use only a subset
+  //  of all bands.
   // -Plot the impulse responses, step-responses, delay, etc.
-  // -Verify perfect reconstruction numerically
   // -Try using more filters with narrower bandwidths (maybe 1, 1/2, 1/3, 1/6, 1/12 oct) and 
   //  investigate how this changes the responses - especially with respect to delay.
   // -Try reversing the order of the filters, starting at low freqs and going up. I think, this 
