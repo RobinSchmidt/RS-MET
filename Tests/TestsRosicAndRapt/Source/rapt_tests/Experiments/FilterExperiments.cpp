@@ -2,6 +2,63 @@
 
 using namespace RAPT;
 
+void bandpassAndNotch()
+{
+  // Under construction...
+
+  // We create a bandpass filter and a complementary notch filter by subtracting the bandpass 
+  // signal from the original. Eventually, the goal is to use this as a building block to design a
+  // bandpass filter bank with perfect reconstruction capabilities. In the DAFX book page 44, we
+  // see that a biquad bandpass has a phase response of zero at the center frequency (it goes from
+  // +90° at DC to -90° at fs/2), so subtraction of the bandpass signal from the original should
+  // indeed yield a notch...although in the book itself, they create both bandpass and notch from
+  // adding or subtracting an allpass signal from the original (and dividing by 2). The allpass
+  // has a phase response from 0° at DC to -360° at fs/2, going through -180° at the "cutoff". I
+  // find that a bit confusing - is it possible to create the notch in either of the two ways:
+  // adding the allpass (and dividing by 2) or subtracting the bandpass? ...Yes! Let: 
+  //
+  //   x                      input 
+  //   y_a                    allpass output
+  //   y_b = (x - y_a) / 2    bandpass output
+  //   y_n = (x + y_a) / 2    notch output as in DAFX book
+  //       =  x/2 + y_a/2     ...some algebra
+  //       =  x - (x-y_a)/2   ...some more
+  //       =  x - y_b         notch output as I want to see it
+  //
+  // So the signal flow diagram may look likt this:
+  //
+  //                  -                  -                  -    
+  //  x -----> BFF1 ---+--------> BPF2 ---+--------> BPF3 ---+------   ...and so on
+  //      |            ^     |            ^     |            ^
+  //      |            |     |            |     |            |
+  //      --------------     --------------     --------------
+  //
+  // Notes:
+  // -The band ouptuts are the outputs of the bandpasses
+  // -At the adders, we produce the notch outputs which are only intermediate signals except maybe
+  //  for the last one which we may then split into lowpass and highpass parts and provide as 
+  //  additional output bands
+  // -The filters should perhaps be ordered by descending center frequencies such that the total 
+  //  delay is largest in low freqs and smallest in the high freqs because delay matters more in 
+  //  the highs.
+  //
+  // Questions:
+  // -Maybe it does indeed make sense to implement the BPF/BRF pair as an allpass and then do the
+  //  add/subtract? Maybe that could be an optimization in terms of memory usage because allpasses
+  //  only need 2 coeffs rather than 5
+  // -What if we use higher order bandpasses (or allpasses) instead of 2nd order? Will we get 
+  //  wiggles in the responses of the BPFs and or BRFs? 
+  // -What about sign inverting the notch signals? Could that helpwith the phase/delay response?
+  //  But no - that will mess up the reconstruction...unless we take the inversion into account in
+  //  the reconstruction which would be easy to do - just invert again. Experiment with this, Plot
+  //  phase delay and group delay responses for various configurations of inversions. Maybe invert
+  //  only every other notch. Do whatever gives the least amount of delay.
+
+
+
+  int dummmy = 0;
+}
+
 void bandSplittingTwoWay()
 {
   // user parameters:
@@ -124,7 +181,8 @@ void bandSplittingTreeAlgo()
   // input and then run exactly that type of iteration using y[pos] as input to the two-way 
   // splitters, y[pos] (also) as lowpass output and y[pos+inc/2] as highpass output
 
-  bool works = (str2 == str1);
+  bool ok = (str2 == str1);
+  // return ok;  // todo: make function return a bool
 }
 
 void bandSplitFreqResponses()
@@ -200,7 +258,8 @@ void bandSplitFreqResponses()
       plt.initialize();
       plt.plotFunctionTables(N, &fftFreqs[0], &magFFT[0], &magTF[0]);
     }
-    // the last 2 are correct, the others only similar
+    // -The last 2 are correct, the others only similar
+    // -It plots the freq-range up to fs rather than fs/2. Is that intentional? I don't think so.
   }
 }
 
@@ -209,12 +268,17 @@ void complementaryFiltersIIR()
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
   // splitter with perfect reconstruction...
 
+  // Maybe useful:
   analyzeComplementaryFilter( complementaryLowpass1p1z()   );
   analyzeComplementaryFilter( complementaryLowpass2p2z()   );
-  analyzeComplementaryFilter( complementaryLowpass2p3z()   );
+
+  // Probably useless:
+  //analyzeComplementaryFilter( complementaryLowpass2p3z()   );  // highly resonant
   //analyzeComplementaryFilter( complementaryLowpass4p4z1t() );  // unstable
-  analyzeComplementaryFilter( complementaryLowpass4p4z()   );  // weird
+  //analyzeComplementaryFilter( complementaryLowpass4p4z()   );  // weird
   //analyzeComplementaryFilter( complementaryLowpass4p5z()   );  // unstable
+
+  // -Freq-axis scaling seems wrong - see comments in analyzeComplementaryFilter 
 }
 
 

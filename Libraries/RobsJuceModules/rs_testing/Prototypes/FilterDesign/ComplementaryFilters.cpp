@@ -18,7 +18,7 @@ bool isComplementary(const rsFilterSpecificationBA<double>& lpfBA)
 {
   // Given the filter-prototype specifications for a lowpass filter, this function checks, if the 
   // filter satisfies the conditions for a perfect reconstruction crossover, assuming the highpass
-  // signal is obtained by subtracting the lowpass signal fro the original input - that in itself 
+  // signal is obtained by subtracting the lowpass signal from the original input. That in itself 
   // ensures perfect reconstruction, but we check here for additional conditions such as symmetry 
   // of the responses.
 
@@ -131,12 +131,23 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addFilterSpecificationBA(compBA);
   //plt.usePiAxisTics();    // should make the axis tics multiples of pi
 
+
+  //plt.initialize();  // needed?
   plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
   plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
 
-  //plt.plotPolesAndZeros();
+  plt.initialize();  // needed?
+  plt.plotPolesAndZeros();
 
   return result;
+
+  // Notes:
+  // -Something seems to be wrong about the frequency axis. The responses look repeated several
+  //  times. Actually, it's a bit more than 3 times....like...pi times maybe? Maybe I have confused
+  //  normalized freq from 0..0.5 with normalized *radian* freq from 0..pi?
+  // -Plotting the poles and zeros first and then the magnitude produces a messed up plot. -> Debug
+  //  FilterPlotter (or maybe GNUPlotCPP). It may have something to do with a not properly 
+  //  (re)initialized commandFile and/or dataFile
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -151,7 +162,7 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
 // -from normalization, we have a0 = 1, so with even-b rule, b0 = 0.5 always
 // -when the number of poles is even, we may have either the same number of poles and zeros or one 
 //  zero more than poles - otherwise constraint (2) is violated
-// -an odd number of poles is not possible (but what about 1st order?) because the odf a-coeffs are
+// -an odd number of poles is not possible (but what about 1st order?) because the odd a-coeffs are
 //  constrained to be zero
 // After a prototype halfband filter is designed, it can be tuned to any frequency by applying the 
 // Constantinides frequency warping formulas to the poles and zeros.
@@ -382,9 +393,6 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z()
   return ba;
 }
 
-
-
-
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 {
   // preliminary:
@@ -392,6 +400,8 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
   ba.a.resize(4); 
   return ba;
 }
+
+
 
 
 
@@ -587,7 +597,6 @@ void splitterPrototypeD_2_3_new(double* k, std::complex<double>* p, std::complex
   *k = abs(dcGainNormalizer(z, 3, p, 2));
 }
 
-
 // digital 3-pole/3-zero - doesn't work:
 void splitterPrototypeD_3_3(double* k, std::complex<double>* p, std::complex<double>* z)
 {
@@ -626,25 +635,26 @@ void splitterPrototypeD_4_6(double* k, std::complex<double>* p, std::complex<dou
 
 
 
+/*
 
-// putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
-// shallower - the lowpass should have all of its zeros at infinity
+Notes:
 
-// ...soooo that means we have to use an allpole lowpass filter and therefore the highpass should
-// have all its zeros at s=0. the only wiggle room is the exact placement of the poles
 
-// OR: we design a halfband lowpass prototype in the digital domain, leave the zeros at z = -1 
-// and add *additional* zeros. this seems to work for the 2nd order case at least
+-putting additional finite zeros into the s-plane is not a good idea - it makes the final slope
+ shallower - the lowpass should have all of its zeros at infinity...soooo that means we have to use
+ an allpole lowpass filter and therefore the highpass should have all its zeros at s=0. the only 
+ wiggle room is the exact placement of the poles
+-OR: we design a halfband lowpass prototype in the digital domain, leave the zeros at z = -1 
+ and add *additional* zeros. this seems to work for the 2nd order case at least
+-try "contracted Butterworth" - all pole angles are scaled by a factor < 1
+ try to place poles on a ellipse instead of a circle - let the user select a width/height 
+ ratio or eccentricity
+-maybe experiment with multiplicities
+-maybe start with z-plane prototype poles (and zeros), maybe aligned along the imaginary axis
+ and spread in various ways
+-place N poles along the imaginary axis and N zeros at z = -1. then try to place additional 
+ zeros into the z-plane such that we get a nice crossover...maybe we need a GUI for freely
+ placing poles and zeros into the z-plane
 
-// try "contracted Butterworth" - all pole angles are scaled by a factor < 1
-// try to place poles on a ellipse instead of a circle - let the user select a width/height 
-// ratio or eccentricity
 
-// maybe experiment with multiplicities
-
-// maybe start with z-plane prototype poles (and zeros), maybe aligned along the imaginary axis
-// and spread in various ways
-
-// place N poles along the imaginary axis and N zeros at z = -1. then try to place additional 
-// zeros into the z-plane such that we get a nice crossover...maybe we need a GUI for freely
-// placing poles and zeros into the z-plane
+*/

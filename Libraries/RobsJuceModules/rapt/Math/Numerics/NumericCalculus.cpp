@@ -362,6 +362,13 @@ todo:
  for templatizing the function-type, see:
  https://stackoverflow.com/questions/1174169/function-passed-as-template-argument
  https://stackoverflow.com/questions/10871100/pass-a-function-as-an-explicit-template-parameter
+
+
+Steve Brunton on using the FFT to compute derivatives:
+ https://www.youtube.com/watch?v=y8SqkjoKV4k
+Maybe implement this. See also comments in the PDE-solver prototype code. Be careful about the 
+Gibbs phenomenon when the data is not smooth enough. And what about noisy data?
+
 */
 
 

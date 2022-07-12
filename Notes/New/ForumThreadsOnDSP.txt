@@ -123,7 +123,9 @@ https://www.kvraudio.com/forum/viewtopic.php?f=31&t=398532 VST3 - known issues (
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=172013 VST3 Rumours
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=204080 Don't know if anyone noticed... VST3
 
+more CLAP discussions:
 https://forums.steinberg.net/t/a-shot-across-steinbergs-vst3-bow/791643
+https://forum.juce.com/t/juce7-technical-preview-branch/50866/140
 
 
 Misc

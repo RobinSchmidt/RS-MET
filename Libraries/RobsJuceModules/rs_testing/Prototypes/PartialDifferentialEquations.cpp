@@ -663,4 +663,26 @@ Interesting video about Burger's equation:
 -The initial wave builds up a vertical front and then breaks, see:
  https://math.stackexchange.com/questions/1670521/wave-breaking-in-burgers-equation
 
+Steve Brunton on using the FFT in PDE solvers:
+  https://www.youtube.com/watch?v=hDeARtZdq-U
+  https://www.youtube.com/watch?v=mMdIxa5qC9Y
+-The idea is to use the FFT to compute an estimate of the spatial derivative because taking 
+ derivatives in the spatial domain corresponds to multiplying by some power of (i*k) where i is
+ the imaginary unit and k is the bin index, i.e. proportional to the spatial frequency aka 
+ wave-number. Maybe this way, we can compute more accurate estimates than with what we currently do
+ via finite difference approximations? ...try it!
+-This turns the PDE into a set of ODEs, one for each k, i.e. one for each spatial frequency bin. And 
+ in the case of the wave equation, we actually know the analytic solution of this ODE, namely 
+ exp(i*lamda*t). The Fourier transform decouples the equations.
+-Q: Is it also possible to somehow benefit from using FFTs in the time domain? I currently can't 
+ see how, though.
+-Advantage: more stable and numerically accurate?
+-Disadvantages: 
+ -time steps costs O(N*log(N)) instead of O(N)
+ -we cannot easily inject or pick up signals at arbitrary places (or can we?)
+-The videos also link to this book which is not specifically about PDEs but seems to be very good 
+ anyway:
+ http://databookuw.com/databook.pdf
+
+
 */

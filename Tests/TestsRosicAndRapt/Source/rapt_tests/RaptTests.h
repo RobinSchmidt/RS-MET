@@ -7,6 +7,7 @@
 
 // Filters Experiments:
 
+void bandpassAndNotch();
 void bandSplittingTwoWay();
 void bandSplittingMultiWay();
 void bandSplittingTreeAlgo();
