@@ -119,8 +119,9 @@ void bandpassAndNotch()
 
   using Real   = double;
   using Vec    = std::vector<Real>;
-  //using Biquad = rsBiquadDF1<Real, Real>;
+  using Biquad = rsBiquadDF1<Real, Real>;
   //using BQD    = RAPT::rsBiquadDesigner;
+
 
   // Setup:
   // -The 1st BP passes 4k..16k, the 2nd 1k..4k, the 3rd 250..1000, the 4th 62.5..250
@@ -133,8 +134,16 @@ void bandpassAndNotch()
 
   // Create and set up the filters:
   int numBPFs  = (int) fc.size();
-  //std::vector<Biquad> bpfs(numBPFs);    // bandpass filters
-  //Biquad lpf, hpf;                      // lowpass and highpass
+  std::vector<Biquad> bpfs(numBPFs);    // bandpass filters
+  Biquad lpf, hpf;                      // lowpass and highpass
+  Real b0, b1, b2, a1, a2;              // temporary biquad coeffs
+  for(int i = 0; i < numBPFs; i++)
+  {
+    Real wc = 2*PI*fc[i]/fs;
+    Real wb = 2*wc;               // preliminary - should later be computed from bw[i]
+    coeffsAllpassDAFX(wc, wb, &b0, &b1, &b2, &a1, &a2);
+    bpfs[i].setCoefficients(b0, b1, b2, -a1, -a2);  // uses the other sign convention
+  }
 
 
 
