@@ -192,7 +192,7 @@ void bandpassAndNotch()
       Real hpOut  = hpf.getSample(res);        // Apply highpass - we slice off highs first
       Y(M-1, n)   = hpOut;                     // Record highpass output
       sum        += hpOut;                     // Accumulate what we have sliced off already
-      res         = hpOut - x[n];              // Residual of highpass filter
+      res         = x[n] - hpOut;              // Residual of highpass filter
 
       // Apply the bandpasses. They should fill the rows with indices M-2 down to 1. The first stage
       // stage gets the residual from the highpass as input and subsequent stages get the bandstop 
@@ -221,7 +221,7 @@ void bandpassAndNotch()
       // prefect reconstruction condition which we check here:
       err = x[n] - sum;
       int dummy = 0;
-      //rsAssert(rsAbs(err) <= tol);
+      rsAssert(rsAbs(err) <= tol);
     } 
 
     return Y;
@@ -239,17 +239,10 @@ void bandpassAndNotch()
 
 
 
-
-  // Something is still wrong - the rsAssert(rsAbs(err) <= tol); triggers
-  // That the bandpass and bandstop outputs sum to their input seems to work correctly. Maybe it
-  // has to do with our preliminary (and wrong) calculation of wb in the setup of the filters?
-  // But that actually shouldn't affect the perfect reconstruction property, only the 
-  // freq-responses of the bdan filters. Reconstruction should work no matter how messed up they 
-  // are...I think.
-  // Try it with only 1 bandpass or even with 0 bandpasses, i.e. only with low- and highpass
-
-
   // ToDo:
+  // -In setting up the filters, we need to find a correct formula to compute the wb variable. 
+  //  Currently, we use a preliminary (wrong) formula. this doesn't affect the perfect 
+  //  reconstruction, though - it only messes up the frequency responsesof our band filters.
   // -Plot the magnitude- and phase-responses of all the band outputs. I think, we should bandpass 
   //  responses with additional notches above the main lobe. The first BP has no notch, the 2nd has
   //  one 1, the 3rd has 2 and so on -> check, if that is actually the case
