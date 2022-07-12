@@ -66,7 +66,9 @@ void coeffsBandstopDAFX(T wc, T wb, T* b0, T* b1, T* b2, T* a1, T* a2)
 
 void bandpassAndNotch()
 {
-  // Under construction...
+  // Under construction...so far, perfect reconstruction seems to work but I did not yet check the
+  // frequency responses of the bands and they are almost certain to be still a mess because I have
+  // not yet figured out how to compute wb from bw (see code comments below).
 
   // We create a bandpass filter and a complementary notch filter by subtracting the bandpass 
   // signal from the original. Eventually, the goal is to use this as a building block to design a
@@ -87,13 +89,17 @@ void bandpassAndNotch()
   //       =  x - (x-y_a)/2   ...some more
   //       =  x - y_b         notch output as I want to see it
   //
-  // So the signal flow diagram may look likt this:
+  // So the signal flow diagram may look like this:
   //
   //                  -                  -                  -    
   //  x -----> BFF1 ---+--------> BPF2 ---+--------> BPF3 ---+------   ...and so on
   //      |            ^     |            ^     |            ^
   //      |            |     |            |     |            |
   //      --------------     --------------     --------------
+  //
+  // However, this is only the way I like to think about it conceptually. The actual implementation
+  // below uses an allpass for each stage and creates the BP and BR signals via the add/subtract 
+  // formulas above. Also we have added an inital highpass stage there.
   //
   // Notes:
   // -The band ouptuts are the outputs of the bandpasses
@@ -116,14 +122,11 @@ void bandpassAndNotch()
   //  phase delay and group delay responses for various configurations of inversions. Maybe invert
   //  only every other notch. Do whatever gives the least amount of delay.
 
-
   using Real   = double;
   using Vec    = std::vector<Real>;
   using Mat    = rsMatrix<Real>;
   using Biquad = rsBiquadDF1<Real, Real>;
-  //using BQD    = RAPT::rsBiquadDesigner;
   using FOB    =  rsFirstOrderFilterBase<Real, Real>;
-
 
   // Setup:
   // -The 1st BP passes 4k..16k, the 2nd 1k..4k, the 3rd 250..1000, the 4th 62.5..250
@@ -221,19 +224,10 @@ void bandpassAndNotch()
   };
 
 
-
-  // Create a couple of example input signals: white noise, impulse, sawtooth, sine-sweep
+  // Create a couple of example input signals,split them into bands and plot results:
+  Mat Y;
   Vec noise   = createNoise(noiseLength, -1.0, +1.0);
   Vec impulse = createImpulse(impulseLength);
-  // ...more to do...
-
-
-  // Create and set up some local vars and a 2D array for the outputs:
-
-  Mat Y;
-
-
-  // Split the test signals into bands and plot results:
   //Y = splitIntoBands(noise);   plotMatrixRows(Y);
   Y = splitIntoBands(impulse); plotMatrixRows(Y);
 
