@@ -134,7 +134,7 @@ void bandpassAndNotch()
   Real fl = 62.5;                       // Lowpass cutoff in Hz
   Real fh = 16000;                      // Highpass cutoff in Hz
   int noiseLength   = 256;
-  int impulseLength = 2048;
+  int impulseLength = 256;
 
   // Create and set up the filters:
   int numBPFs  = (int)fc.size();
@@ -154,18 +154,14 @@ void bandpassAndNotch()
   lpf.setCoefficients(b0, b1, 0.0, a1, 0.0);
 
 
-
-
   // Create a couple of example input signals: white noise, impulse, sawtooth, sine-sweep
   Vec noise   = createNoise(noiseLength, -1.0, +1.0);
   Vec impulse = createImpulse(impulseLength);
   // ...more to do...
 
-
   // Create and set up some local vars and a 2D array for the outputs:
   int M = numBPFs + 2;    // M: Number of signals: bandpass outputs plus low and high band
-  //int N;                  // N: Number of samples
-  //rsMatrix<Real> Y;       // Our M band output signals as 2D array
+  Mat Y;
 
   // Helper function to produce the M output signals from the given input signal:
   auto splitIntoBands = [&](const Vec& x)
@@ -220,7 +216,6 @@ void bandpassAndNotch()
       // variable, at the very end, the sum should be equal to x[n] up to roundoff. That is the
       // prefect reconstruction condition which we check here:
       err = x[n] - sum;
-      int dummy = 0;
       rsAssert(rsAbs(err) <= tol);
     } 
 
@@ -230,16 +225,18 @@ void bandpassAndNotch()
     // that slices off frequency content starting at low frequencies), we'll use it, so maybe don't
     // delete it yet.
   };
-  // ToDo: write a function to reconstruct - it should add the matrix rows into a single row
 
 
-  // Split the noise into bands:
-  Mat Y = splitIntoBands(noise);
-  plotMatrixRows(Y);
+  // Split the test signals into bands and plot results:
+  //Y = splitIntoBands(noise);   plotMatrixRows(Y);
+  Y = splitIntoBands(impulse); plotMatrixRows(Y);
 
 
 
   // ToDo:
+  // -Write a helper function to reconstruct the full signal from the individual bands. It should 
+  //  add the matrix rows into a single row, i.e. each column is summed to give a single signal 
+  //  value.
   // -In setting up the filters, we need to find a correct formula to compute the wb variable. 
   //  Currently, we use a preliminary (wrong) formula. this doesn't affect the perfect 
   //  reconstruction, though - it only messes up the frequency responsesof our band filters.
