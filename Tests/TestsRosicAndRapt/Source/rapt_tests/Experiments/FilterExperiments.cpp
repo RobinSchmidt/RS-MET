@@ -242,7 +242,9 @@ void bandpassAndNotch()
   //  value. Maybe it should allow partial reconstructions
   // -In setting up the filters, we need to find a correct formula to compute the wb variable. 
   //  Currently, we use a preliminary (wrong) formula. this doesn't affect the perfect 
-  //  reconstruction, though - it only messes up the frequency responsesof our band filters.
+  //  reconstruction, though - it only messes up the frequency responses of our band filters.
+  //  Check out the RBJ allpass design formulas for that - maybe also the bandpass (const peak 
+  //  gain) formulas
   // -Plot the magnitude- and phase-responses of all the band outputs. I think, we should bandpass 
   //  responses with additional notches above the main lobe. The first BP has no notch, the 2nd has
   //  one 1, the 3rd has 2 and so on -> check, if that is actually the case
