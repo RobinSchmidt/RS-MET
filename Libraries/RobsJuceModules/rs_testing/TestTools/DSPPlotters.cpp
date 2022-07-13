@@ -519,10 +519,12 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
   const vector<const T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
 
   int N = rsMax(signalLength, fftSize);
-  int maxBin = fftSize/2; // later have a user option for that -> zoom
+  int maxBin = fftSize/2; 
+  // Later have a user option for that -> zoom ...or maybe even better: let the use choose minBin and 
+  // maxBin
 
+  // Factor out into addSpectralData(&inputArrays[0], (int) inputArrays.size()) :
   std::vector<T> f = getFreqAxis(maxBin);
-
   std::vector<std::complex<T>> tmp(N);
   std::vector<T> dB(N);
   //std::vector<T> phs(N);
@@ -532,7 +534,7 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
       RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
     transformer.transformComplexBufferInPlace(&tmp[0]);
 
-    // this may be not quite correct at DC (i think, because we need to incorporate the value
+    // This may be not quite correct at DC (i think, because we need to incorporate the value
     // at fftSize/2 or something?)
     T compFactor = T(fftSize) / T(signalLength);
     for(int k = 0; k < N; k++)
@@ -545,10 +547,25 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
 
   if(logFreqAxis)
     setLogScale("x"); // uses decadic ticks -> use octaves instead
-
   plot();
 }
 // maybe factor out addSpectra
+
+template <class T>
+void SpectrumPlotter<T>::plotDecibelSpectraOfRows(const rsMatrix<T>& X)
+{
+  rsError("Not yet implemented");
+
+  // ToDo:
+  // -Refactor plotDecibelSpectra such that we can re-use much of its code here
+  // -Create an inputArrays vector here which contains pointers pointing to the beginnings of
+  //  the rows
+  // -The goal is to re-use all code and just replace inputArrays = collectLeadingNonNullArguments
+  //  by inputArrays = getRowPointers(X); which should retrun a vector to the starts of the rows
+
+  int dummy = 0;
+}
+
 
 template <class T>
 std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)

@@ -159,8 +159,12 @@ void bandpassAndNotch()
   Vec  bw = {    2,    2,   2,   2 };   // Bandwidths in octaves
   //Real fl = 62.5;                       // Lowpass cutoff in Hz
   Real fh = 16000;                      // Highpass cutoff in Hz
-  int noiseLength   = 512;
-  int impulseLength = 512;
+  //int noiseLength   = 512;
+  //int impulseLength = 512;
+  int N = 512;                          // Signal length in samples
+  int fftOversample = 8;                // Oversampling factor for the FFT for spectral plots
+
+
 
   // Create and set up the filters:
   int numBPFs  = (int)fc.size();
@@ -254,12 +258,20 @@ void bandpassAndNotch()
   };
 
 
+  // Create and set up plotter object fro plotting the frequency responses:
+  SpectrumPlotter<Real> plt;
+  plt.setFftSize(fftOversample*N);
+
+
   // Create a couple of example input signals,split them into bands and plot results:
   Mat Y;
-  Vec noise   = createNoise(noiseLength, -1.0, +1.0);
-  Vec impulse = createImpulse(impulseLength);
+  Vec noise   = createNoise(  N, -1.0, +1.0);
+  Vec impulse = createImpulse(N);
   //Y = splitIntoBands(noise);   plotMatrixRows(Y);
-  Y = splitIntoBands(impulse); plotMatrixRows(Y);
+
+  Y = splitIntoBands(impulse); 
+  plotMatrixRows(Y);
+  plt.plotDecibelSpectraOfRows(Y);
 
   // Observations:
   // -The purple impulse resonse looks strange - it has only positive values but is very erratic.
