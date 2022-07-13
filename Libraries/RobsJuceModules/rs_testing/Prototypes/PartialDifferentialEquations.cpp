@@ -666,6 +666,7 @@ Interesting video about Burger's equation:
 Steve Brunton on using the FFT in PDE solvers:
   https://www.youtube.com/watch?v=hDeARtZdq-U
   https://www.youtube.com/watch?v=mMdIxa5qC9Y
+  https://www.youtube.com/watch?v=RilggJd1_LY
 -The idea is to use the FFT to compute an estimate of the spatial derivative because taking 
  derivatives in the spatial domain corresponds to multiplying by some power of (i*k) where i is
  the imaginary unit and k is the bin index, i.e. proportional to the spatial frequency aka 
@@ -676,6 +677,8 @@ Steve Brunton on using the FFT in PDE solvers:
  exp(i*lamda*t). The Fourier transform decouples the equations.
 -Q: Is it also possible to somehow benefit from using FFTs in the time domain? I currently can't 
  see how, though.
+-I think, using the FFT implicitly assumes periodic boundary conditions because the DFT sees the 
+ spatial domain as a single period of some periodic waveform?
 -Advantage: more stable and numerically accurate?
 -Disadvantages: 
  -time steps costs O(N*log(N)) instead of O(N)
