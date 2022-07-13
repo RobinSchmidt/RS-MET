@@ -270,7 +270,7 @@ void bandpassAndNotch()
   //Y = splitIntoBands(noise);   plotMatrixRows(Y);
 
   Y = splitIntoBands(impulse); 
-  plotMatrixRows(Y);
+  //plotMatrixRows(Y);
   plt.plotDecibelSpectraOfRows(Y);
 
   // Observations:

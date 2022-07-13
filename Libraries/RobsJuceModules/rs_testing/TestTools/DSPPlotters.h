@@ -228,6 +228,13 @@ public:
 
 protected:
 
+
+  /** Plots the spectra of the given signals. The first index is the signal, the second the sample
+  index. All signals are assumed to have the same length. */
+  void plotSpectra(const T** signals, int numSignals, int signalLength);
+  // maybe make public
+
+
   std::vector<T> getFreqAxis(int maxBin);
 
   FreqAxisUnits freqAxisUnit = FreqAxisUnits::binIndex;

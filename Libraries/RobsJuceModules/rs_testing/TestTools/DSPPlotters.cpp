@@ -504,6 +504,17 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
   const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8,
   const T *x9)
 {
+
+  /*
+  const vector<const T*> signals = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+
+  plotSpectra(&(&signals[0]), (int) signals.size(), signalLength);
+  const T*  ptr1 = signals[0];
+  const T** ptr2 = &ptr1;
+  plotSpectra(ptr2, (int) signals.size(), signalLength);
+  */
+
+
   RAPT::rsAssert(signalLength <= fftSize);
 
   // maybe factor out into setupTransformer:
@@ -516,7 +527,7 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
 
   //std::vector<T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
-  const vector<const T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+  std::vector<const T*> inputArrays = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
 
   int N = rsMax(signalLength, fftSize);
   int maxBin = fftSize/2; 
@@ -565,6 +576,57 @@ void SpectrumPlotter<T>::plotDecibelSpectraOfRows(const rsMatrix<T>& X)
 
   int dummy = 0;
 }
+
+
+template <class T>
+void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int signalLength)
+{
+  RAPT::rsAssert(signalLength <= fftSize);
+
+  // Maybe factor out into setupTransformer:
+  typedef RAPT::rsFourierTransformerRadix2<T> FT;
+  transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+  transformer.setDirection(        FT::FORWARD);
+  transformer.setBlockSize(fftSize);
+
+  // Use this for y-axis minimum - let the user set it up:
+  T ampFloor = RAPT::rsDbToAmp(dBFloor);
+
+  int N = rsMax(signalLength, fftSize);
+  int maxBin = fftSize/2; 
+  // Later have a user option for that -> zoom ...or maybe even better: let the use choose minBin and 
+  // maxBin
+
+  // Factor out into addSpectralData(&inputArrays[0], (int) inputArrays.size()) :
+  std::vector<T> f = getFreqAxis(maxBin);
+  std::vector<T> dB(N);
+  //std::vector<T> phs(N);
+  std::vector<std::complex<T>> tmp(N);
+  for(int i = 0; i < numSignals; i++) {
+
+    RAPT::rsArrayTools::convert(signals[i], &tmp[0], signalLength);
+    if(signalLength < N)
+      RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
+    transformer.transformComplexBufferInPlace(&tmp[0]);
+
+    // This may be not quite correct at DC (i think, because we need to incorporate the value
+    // at fftSize/2 or something?)
+    T compFactor = T(fftSize) / T(signalLength);
+    for(int k = 0; k < N; k++)
+      dB[k] = RAPT::rsAmpToDbWithCheck(compFactor * abs(tmp[k]), ampFloor);
+
+    addDataArrays(maxBin, &f[0], &dB[0]);
+    //addDataArrays(fftSize/2, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2
+    int dummy = 0;
+  }
+
+  if(logFreqAxis)
+    setLogScale("x"); // uses decadic ticks -> use octaves instead
+  plot();
+}
+
+
+
 
 
 template <class T>
