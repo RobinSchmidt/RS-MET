@@ -504,17 +504,44 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
   const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8,
   const T *x9)
 {
+  const vector<const T*> signals = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+
+  plotSpectra((const T**) &signals[0], (int) signals.size(), signalLength);
+
 
   /*
   const vector<const T*> signals = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
-
-  plotSpectra(&(&signals[0]), (int) signals.size(), signalLength);
-  const T*  ptr1 = signals[0];
-  const T** ptr2 = &ptr1;
+  int numSignals = (int) signals.size();
+  const T** ptr2 = new const T*[numSignals];
+  for(int i = 0; i < numSignals; i++)
+    ptr2[i] = (const T*) &signals[i];
   plotSpectra(ptr2, (int) signals.size(), signalLength);
+  delete ptr2;
+  */
+  
+  
+  //const T*  ptr1 = signals[0];
+
+  /*
+  const vector<const T*> signals = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+  // vector of pointers, i.e. contiguous array of pointers
+
+  const T** const ptr2 = &signals[0];
   */
 
 
+  /*
+  plotSpectra(&(&signals[0]), (int) signals.size(), signalLength);
+
+
+  const T** ptr2 = &ptr1;
+  plotSpectra(ptr2, (int) signals.size(), signalLength);
+  */
+ 
+
+
+  /*
+  // old:
   RAPT::rsAssert(signalLength <= fftSize);
 
   // maybe factor out into setupTransformer:
@@ -559,6 +586,7 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
   if(logFreqAxis)
     setLogScale("x"); // uses decadic ticks -> use octaves instead
   plot();
+  */
 }
 // maybe factor out addSpectra
 
