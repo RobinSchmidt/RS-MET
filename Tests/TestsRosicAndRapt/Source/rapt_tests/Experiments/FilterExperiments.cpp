@@ -77,6 +77,23 @@ void coeffsAllpassRBJ(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2)
   *a2 = *b0;
 }
 
+/** RBJ cookbook bandpass with constant peak gain for analog prototype transfer function:
+  H(s) = (s/Q) / (s^2 + s/Q + 1) */
+template<class T> 
+void coeffsBandpassPeakRBJ(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  T s, c; rsSinCos(w0, &s, &c);   // s = sin(w0), c = cos(w0)
+  T a = s / (T( 2) * Q);          // alpha
+  T k = 1 / (T( 1) + a);          // 1/a0, scaler for all coeffs
+  *b0 =  k * a;
+  *b1 =  T(0);
+  *b2 = -k * a;
+  *a1 =  k * T(-2) * c;
+  *a2 =  k * (T(1) - a);
+}
+
+//coeffsBandpassPeakRBJ(wc, Q, &b0, &b1, &b2, &a1, &a2);
+
 /** RBJ cookbook formula for converting from a bandwidth bw given in octaves to the quality factor
 "Q" of a digital filter using the bilinear transform (BLT). */
 template<class T>  
@@ -167,9 +184,9 @@ void bandpassAndNotch()
 
 
   // Test:
-  fc = { 4000, 250 };   // Bandpass center frequencies in Hz
-  B  = 3.0;
-  bw = {    B,    B}; 
+  //fc = { 4000, 250 }; B  = 3.0; bw = { B, B}; 
+  fc ={ 1000 }; bw = { 0.2 };
+
 
 
   // Create and set up the filters:
@@ -296,6 +313,14 @@ void bandpassAndNotch()
   //  probably need linear-phase FIR filters.
 
   // ToDo:
+  // -Maybe try a different algorithm for a 3-band splitter:
+  //  -Extract the middle band first by a bandpass.
+  //  -The residual is splitted further into low/high by a pair of complementary LPF/HPF whose
+  //   split frequency equals the bandpass center frequency.
+  // -Maybe to create more bands, the same idea can now be applied recursively to the so extracted
+  //  low/mid/high bands...it could be especially interesting to split the low and high bands 
+  //  further - either by another such 3-way splitter or by a two way splitter. We could combine 
+  //  such 2-way and 3-way splitters in various ways to build multi-way splitters
   // -Write a helper function to reconstruct the full signal from the individual bands. It should 
   //  add the matrix rows into a single row, i.e. each column is summed to give a single signal 
   //  value. Maybe it should allow partial reconstructions
@@ -340,10 +365,79 @@ void bandSplittingTwoWay()
   // ...
 }
 
+void bandSplittingThreeWay()
+{
+  // Under construction...
+
+  // We first split a mid signal off using a 2nd order bandpass filter, then obtain the difference
+  // between original and bandpass signal which should give a bandreject signal. Then we split this
+  // bandreject signal further using a complementary lowpass/highpass pair with split frequency 
+  // equal to the bandpass center frequency. What we expect to see is a clean bandpass magnitude
+  // response and the resulting lowpass/highpass responses should feature an additional notch at
+  // that frequency. Their "cutoffs" will be determined implicitly by the bandwidth given to the 
+  // bandpass filter.
+
+  using Real   = double;
+  using Vec    = std::vector<Real>;
+  using Mat    = rsMatrix<Real>;
+
+  // Setup:
+  Real fs = 44100;     // Sample rate
+  Real fc =  1000;     // Bandpass center frequencies in Hz
+  Real bw =  1.0;      // Bandwdith in octaves
+  int  N  = 512;       // Signal length in samples
+
+  // Compute intermediate variables, create and set up filters:
+  Real wc = 2*PI*fc/fs;
+  Real Q = bandwidthToDigitalQualityRBJ(wc, bw);
+  Real b0, b1, b2, a1, a2;                             // Temporary biquad coeffs
+  coeffsBandpassPeakRBJ(wc, Q, &b0, &b1, &b2, &a1, &a2);
+  rsBiquadDF1<Real, Real> bpf;
+  bpf.setCoefficients(b0, b1, b2, -a1, -a2);
+  rsTwoBandSplitter<Real, Real> splitter;
+  splitter.setOmega(wc);
+
+
+  // Create input signal, split into 3 bands and plot results:
+  Mat Y(3, N);
+  Vec x = createImpulse(N);
+  for(int n = 0; n < N; n++)
+  {
+    // Apply the filters:
+    Real yB = bpf.getSample(x[n]);            // Bandpass output
+    Real yN = x[n] - yB;                      // Notch output
+    Real yL = splitter.getLowpassSample(yN);  // Lowpass output
+    Real yH = yN - yL;                        // Highpass output
+
+    // Record lowpass, bandpass and highpass outputs:
+    Y(0, n) = yL;
+    Y(1, n) = yB;
+    Y(2, n) = yH;
+
+    // Check perfect reconstruction
+    Real xR  = yL + yB + yH;                  // Reconstructed input
+    Real err = x[n] - xR;
+    rsAssert(rsAbs(err) < 1.e-14);
+  }
+
+  // Plot results:
+  //plotMatrixRows(Y);  // impulse responses
+  SpectrumPlotter<Real> plt;
+  plt.setFftSize(8*N);
+  plt.setLogFreqAxis(true);
+  plt.plotDecibelSpectraOfRows(Y);
+
+
+
+  int dummmy = 0;
+}
+
 void bandSplittingMultiWay()
 {
+  // Uses rsMultiBandSplitter to split a test signal (a unit impulse or noise) into various bands.
+
   // user parameters:
-  int numSamples = 100;
+  int numSamples = 128;
   float sampleRate = 44100;
   //vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
   //vector<float> splitFreqs = { 80, 150, 250, 500, 1000, 2000, 4000, 8000 };
@@ -369,7 +463,7 @@ void bandSplittingMultiWay()
   x[0] = 1;
   for(n = 0; n < numSamples; n++)
   {
-    //x[n] = ng.getSample();
+    //x[n] = ng.getSample();  // uncomment to use noise as test signal
     splitter.processSampleFrame(x[n], &tmp[0]);
     for(k = 0; k < numBands; k++)
       y[k][n] = tmp[k];
@@ -388,10 +482,21 @@ void bandSplittingMultiWay()
     writeToMonoWaveFile("Output"+to_string(k)+".wav", &y[k][0], numSamples, (int) sampleRate, 16);
 
   //FilterPlotter<float> plt;
+
+  // Plot impulse responses:
   GNUPlotter plt;
   for(k = 0; k < numBands; k++)
     plt.addDataArrays(numSamples, &y[k][0]);
   plt.plot();
+
+  // Plot magnitude responses:
+  SpectrumPlotter<float> splt;
+  splt.setFftSize(8*numSamples);
+  splt.setLogFreqAxis(true);
+  //splt.plotSpectra(y);  // doesn't compile because y has the wrong format
+  // ToDo: ass a function to SpectrumPlotter that can deal with a vector of vectors or use rsMatrix
+  // for the band outputs
+
 }
 
 //void append(std::string& str, std::string& appendix

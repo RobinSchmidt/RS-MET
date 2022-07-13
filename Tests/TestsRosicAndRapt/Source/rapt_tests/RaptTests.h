@@ -9,6 +9,7 @@
 
 void bandpassAndNotch();
 void bandSplittingTwoWay();
+void bandSplittingThreeWay();
 void bandSplittingMultiWay();
 void bandSplittingTreeAlgo();
 void bandSplitFreqResponses();

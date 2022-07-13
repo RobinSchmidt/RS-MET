@@ -210,6 +210,12 @@ public:
   time domain, e.g. an impulse response. */
   void plotDecibelSpectraOfRows(const rsMatrix<T>& signals);
 
+  /** Plots the spectra of the given signals. The first index is the signal, the second the sample
+  index. All signals are assumed to have the same length. */
+  void plotSpectra(const T** signals, int numSignals, int signalLength);
+  // rename to plotDecibelSpectra
+
+
 
   /** Sets the FFT size. Does not have to be a power of 2 - we use Bluestein FFT here. */
   void setFftSize(int newSize) { fftSize = newSize; }
@@ -229,10 +235,7 @@ public:
 protected:
 
 
-  /** Plots the spectra of the given signals. The first index is the signal, the second the sample
-  index. All signals are assumed to have the same length. */
-  void plotSpectra(const T** signals, int numSignals, int signalLength);
-  // maybe make public
+
 
 
   std::vector<T> getFreqAxis(int maxBin);

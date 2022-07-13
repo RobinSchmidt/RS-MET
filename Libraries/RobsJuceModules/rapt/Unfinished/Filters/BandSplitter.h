@@ -70,7 +70,8 @@ public:
     // the test function bandSplittingMultiWay() fails, if we don't make a copy of "in" in "tmp"
     // ...i don't know why - perhaps something about overwriting something that shouldn't be?
     // well - the multiband splitter uses the same variable for input and one of the outputs...
-    // -> figure out -> write better comment
+    // -> figure out -> write better comment...yeah - i see - it's because we take the input signal
+    // by (const) reference
   }
 
   // old:

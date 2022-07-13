@@ -143,8 +143,9 @@ int main(int argc, char* argv[])
 
 
   // Filter:
-  bandpassAndNotch();          // stub - trying to build complementary bandpass/notch pairs
+  //bandpassAndNotch();          // trying to build a bank of complementary bandpass/notch pairs
   //bandSplittingTwoWay();
+  bandSplittingThreeWay();     // stub
   //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
