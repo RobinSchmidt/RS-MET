@@ -156,7 +156,8 @@ void bandpassAndNotch()
   // -The lowpass passes freqs below 62.5 and the highpass freqs above 16k
   Real fs = 44100;                      // Sample rate
   Vec  fc = { 8000, 2000, 500, 125 };   // Bandpass center frequencies in Hz
-  Vec  bw = {    2,    2,   2,   2 };   // Bandwidths in octaves
+  Real B = 1.5;
+  Vec  bw = {    B,    B,   B,   B };   // Bandwidths in octaves
   //Real fl = 62.5;                       // Lowpass cutoff in Hz
   Real fh = 16000;                      // Highpass cutoff in Hz
   //int noiseLength   = 512;
@@ -164,6 +165,11 @@ void bandpassAndNotch()
   int N = 512;                          // Signal length in samples
   int fftOversample = 8;                // Oversampling factor for the FFT for spectral plots
 
+
+  // Test:
+  fc = { 4000, 250 };   // Bandpass center frequencies in Hz
+  B  = 3.0;
+  bw = {    B,    B}; 
 
 
   // Create and set up the filters:
@@ -261,6 +267,7 @@ void bandpassAndNotch()
   // Create and set up plotter object fro plotting the frequency responses:
   SpectrumPlotter<Real> plt;
   plt.setFftSize(fftOversample*N);
+  plt.setLogFreqAxis(true);
 
 
   // Create a couple of example input signals,split them into bands and plot results:
@@ -279,6 +286,14 @@ void bandpassAndNotch()
   //  positive which could mean, it's actually the lowpass response? Figure out - it's strange!
   //  ...with the new RBJ formulas, it looks different and actually goes slightly below zero. I 
   //  think, it's indeed the highest bandpass response
+  // -The magnitude responses look totally useless. Looks like I have created a splitter that has
+  //  the nice perfect reconstruction property but kinda useless per band frequency responses.
+  // -Most of the frequency content seems to end up in the final residual (= "lowpass") band.
+
+  // Conclusion:
+  // -So far, the idea seems not to lead to a useful bandpass-based frequency splitter. We should 
+  //  probably stick to the LP/HP tree in case of IIR bandpasses and for a bandpass bank, we'll
+  //  probably need linear-phase FIR filters.
 
   // ToDo:
   // -Write a helper function to reconstruct the full signal from the individual bands. It should 
