@@ -383,8 +383,8 @@ void bandSplittingThreeWay()
 
   // Setup:
   Real fs = 44100;     // Sample rate
-  Real fc =  1000;     // Bandpass center frequencies in Hz
-  Real bw =  1.0;      // Bandwdith in octaves
+  Real fc = 1000;      // Bandpass center frequencies in Hz
+  Real bw = 2.0;       // Bandwdith in octaves
   int  N  = 512;       // Signal length in samples
 
   // Compute intermediate variables, create and set up filters:
@@ -426,6 +426,11 @@ void bandSplittingThreeWay()
   plt.setFftSize(8*N);
   plt.setLogFreqAxis(true);
   plt.plotDecibelSpectraOfRows(Y);
+
+  // Observations:
+  // -We do indeed see a nice bandpass response and punctured lowpass and highpass responses
+  // -Plot is not normalized - perhaps the plotting code is buggy. the freq-axis also looks wrong
+
 
 
 
