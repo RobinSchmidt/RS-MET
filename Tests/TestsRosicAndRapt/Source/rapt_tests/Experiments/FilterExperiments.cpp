@@ -62,6 +62,29 @@ void coeffsBandstopDAFX(T wc, T wb, T* b0, T* b1, T* b2, T* a1, T* a2)
   *b2 *= T(0.5);
 }
 
+/** RBJ cookbook allpass for analog prototype transfer function:
+  H(s) = (s^2 - s/Q + 1) / (s^2 + s/Q + 1)  */
+template<class T> 
+void coeffsAllpassRBJ(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  T s, c; rsSinCos(w0, &s, &c);   // s = sin(w0), c = cos(w0)
+  T a = s / (T( 2) * Q);          // alpha
+  T k = 1 / (T( 1) + a);          // 1/a0, scaler for all coeffs
+  *b0 = k * (T( 1) - a);
+  *b1 = k * (T(-2) * c);
+  *b2 = T(1);
+  *a1 = *b1;
+  *a2 = *b0;
+}
+
+/** RBJ cookbook formula for converting from a bandwidth bw given in octaves to the quality factor
+"Q" of a digital filter using the bilinear transform (BLT). */
+template<class T>  
+T bandwidthToDigitalQualityRBJ(T w0, T bw)
+{
+  return T(1) / (T(2)*sinh(log(2)/2 * bw * w0/sin(w0)));
+}
+
 
 
 void bandpassAndNotch()
@@ -149,9 +172,16 @@ void bandpassAndNotch()
   for(int i = 0; i < numBPFs; i++)
   {
     Real wc = 2*PI*fc[i]/fs;
-    Real wb = 2*wc;               // preliminary - should later be computed from bw[i]
-    coeffsAllpassDAFX(wc, wb, &b0, &b1, &b2, &a1, &a2); // uses the other sign convention
-    apfs[i].setCoefficients(b0, b1, b2, -a1, -a2);  
+
+    // Old:
+    //Real wb = 2*wc;               // preliminary - should later be computed from bw[i]...somehow
+    //coeffsAllpassDAFX(wc, wb, &b0, &b1, &b2, &a1, &a2);
+
+    // New:
+    Real Q = bandwidthToDigitalQualityRBJ(wc, bw[i]);
+    coeffsAllpassRBJ(wc, Q, &b0, &b1, &b2, &a1, &a2);
+
+    apfs[i].setCoefficients(b0, b1, b2, -a1, -a2);   // uses the other sign convention
   }
   FOB::coeffsHighpassBLT(2*PI*fh/fs, &b0, &b1, &a1);
   hpf.setCoefficients(b0, b1, 0.0, a1, 0.0);
@@ -235,6 +265,8 @@ void bandpassAndNotch()
   // -The purple impulse resonse looks strange - it has only positive values but is very erratic.
   //  Is this the highpass response? Or the highest bandpass? But it's the only one that's only 
   //  positive which could mean, it's actually the lowpass response? Figure out - it's strange!
+  //  ...with the new RBJ formulas, it looks different and actually goes slightly below zero. I 
+  //  think, it's indeed the highest bandpass response
 
   // ToDo:
   // -Write a helper function to reconstruct the full signal from the individual bands. It should 
@@ -245,6 +277,9 @@ void bandpassAndNotch()
   //  reconstruction, though - it only messes up the frequency responses of our band filters.
   //  Check out the RBJ allpass design formulas for that - maybe also the bandpass (const peak 
   //  gain) formulas
+  // -Verify that subtracting a bandpass signal from the original (i.e. previous resiudal) gives 
+  //  the same results as we get with the allpass add/sub technique. Maybe using a bandpass may be
+  //  even more efficient? But maybe using an allpass is better in terms of modulation? Try it!
   // -Plot the magnitude- and phase-responses of all the band outputs. I think, we should bandpass 
   //  responses with additional notches above the main lobe. The first BP has no notch, the 2nd has
   //  one 1, the 3rd has 2 and so on -> check, if that is actually the case
