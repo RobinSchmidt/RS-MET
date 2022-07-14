@@ -363,6 +363,21 @@ void bandSplittingTwoWay()
   // plot poles/zeros and magnitude responses:
   FilterPlotter<float> plt;
   // ...
+
+  // ToDo:
+  // -Plot the magnitude responses
+
+
+  // Ideas:
+  // -Try to design higher order perfect reconstruction 2-way splitters by first designing an 
+  //  allpass filter with 0° phase-shift at DC and -180° phase shift at fs/2. Adding the allpass 
+  //  signal to the original and dividing by two will yield a lowpass signal, subtracting it from
+  //  the original and dividing by two gives a highpass signal. Try to impose flatness (vanishing 
+  //  derivatives) constraints to the phase response at 0 and fs/2.
+  // -If this works, this strategy to design a complementary LP/HP can perhaps be extended to a 
+  //  BP/BR pair by requesting a +180° phase response at DC, a -180° phase at fs/2, at 0° phase 
+  //  response at f0 (typically fs/4 for a digital prototype) and flatness constraints at all these
+  //  3 points.
 }
 
 void bandSplittingThreeWay()
@@ -382,9 +397,11 @@ void bandSplittingThreeWay()
   // Setup:
   Real fs = 44100;     // Sample rate
   Real fc = 1000;      // Bandpass center frequency in Hz
-  Real bw = 2.5;       // Bandwidth in octaves
+  Real bw = 3.0;       // Bandwidth in octaves
   int  N  = 1024;      // Signal length in samples
   int  K  = 4*N;       // Number of FFT bins for plot
+
+  //fc = fs/4;
 
   // Compute intermediate variables, create and set up filters:
   Real wc = 2*PI*fc/fs;
@@ -422,7 +439,9 @@ void bandSplittingThreeWay()
   //plotMatrixRows(Y);  // Impulse responses
   SpectrumPlotter<Real> plt;
   plt.setFftSize(K);
+  plt.setSampleRate(fs);
   plt.setLogFreqAxis(true);
+  plt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
   plt.plotDecibelSpectraOfRows(Y);
 
   // Observations:
@@ -437,6 +456,10 @@ void bandSplittingThreeWay()
   //  zero bandwidth coming from some nonzero value, we don't want the oscillation to persist. 
   //  This is a very nice feature because the 3-way splitter then reduces to our old 2-way 
   //  splitter, using only low and high bands. The mid-band just becomes zero for such a setting.
+  // -At around bw = 4./3, the bandpass skirt is very close to the lowpass and highpass skirts. At
+  //  lower bandwidths (e.g. bw = 1.0), the low- and high skirt are above the mid skirt and at
+  //  higher bandwidths (e.g. bw = 2.0) the mid skirt is below the low/high skirts. bw = 3 seems to
+  //  be a sweet spot for a nice looking plot.
 
   // ToDo:
   // -Maybe add a parameter midSeparation going from 0 to 1. It should scale yB in:
@@ -452,6 +475,8 @@ void bandSplittingThreeWay()
   //  bandpass and lowpass.
   // -Try to figure out hwo to do splitters with steeper slopes like we already did for the 2-way
   //  splitter
+
+
 
   int dummmy = 0;
 }
