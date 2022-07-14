@@ -367,8 +367,6 @@ void bandSplittingTwoWay()
 
 void bandSplittingThreeWay()
 {
-  // Under construction...
-
   // We first split a mid signal off using a 2nd order bandpass filter, then obtain the difference
   // between original and bandpass signal which should give a bandreject signal. Then we split this
   // bandreject signal further using a complementary lowpass/highpass pair with split frequency 
@@ -383,9 +381,10 @@ void bandSplittingThreeWay()
 
   // Setup:
   Real fs = 44100;     // Sample rate
-  Real fc = 1000;      // Bandpass center frequencies in Hz
-  Real bw = 2.0;       // Bandwdith in octaves
-  int  N  = 512;       // Signal length in samples
+  Real fc = 1000;      // Bandpass center frequency in Hz
+  Real bw = 2.5;       // Bandwidth in octaves
+  int  N  = 1024;      // Signal length in samples
+  int  K  = 4*N;       // Number of FFT bins for plot
 
   // Compute intermediate variables, create and set up filters:
   Real wc = 2*PI*fc/fs;
@@ -396,7 +395,6 @@ void bandSplittingThreeWay()
   bpf.setCoefficients(b0, b1, b2, -a1, -a2);
   rsTwoBandSplitter<Real, Real> splitter;
   splitter.setOmega(wc);
-
 
   // Create input signal, split into 3 bands and plot results:
   Mat Y(3, N);
@@ -421,18 +419,39 @@ void bandSplittingThreeWay()
   }
 
   // Plot results:
-  //plotMatrixRows(Y);  // impulse responses
+  //plotMatrixRows(Y);  // Impulse responses
   SpectrumPlotter<Real> plt;
-  plt.setFftSize(8*N);
+  plt.setFftSize(K);
   plt.setLogFreqAxis(true);
   plt.plotDecibelSpectraOfRows(Y);
 
   // Observations:
   // -We do indeed see a nice bandpass response and punctured lowpass and highpass responses
-  // -Plot is not normalized - perhaps the plotting code is buggy. the freq-axis also looks wrong
+  // -Plot is not normalized - perhaps the plotting code is buggy. Or maybe it's the division by 
+  //  the FFT size which is not appropriate here? The freq-axis also looks wrong
+  // -When the bandwidth gets small (e.g. 0.1), the freq responses show ripples. I think, it's 
+  //  because of the truncation of the impulse response after a finite length
+  // -When bw = 0, the bandpass becomes an oscillator (a2 = 1) and the input gain (b0,b1,b2) 
+  //  becomes zero. In an implementation for production use, it may make more sense to have the 
+  //  zeros after the poles (i.e. use DF2 or TDF1) for this very reason - when the user dials in a
+  //  zero bandwidth coming from some nonzero value, we don't want the oscillation to persist. 
+  //  This is a very nice feature because the 3-way splitter then reduces to our old 2-way 
+  //  splitter, using only low and high bands. The mid-band just becomes zero for such a setting.
 
-
-
+  // ToDo:
+  // -Maybe add a parameter midSeparation going from 0 to 1. It should scale yB in:
+  //    yB = midSeparation * bpf.getSample(x[n])
+  //  can be used to fade between 2-way and 3-way modes.
+  //  -what if we dial it beyond the 0..1 range?
+  // -Can we also have some other seperation parameter that somehow puts the whole signal into the
+  //  mid channel? Maybe it would be nice if that would happen for our existing midSeparation when
+  //  it's at -1?...but no - that makes no sense. Maybe a parameter that when at 0 gives full 
+  //  seperation, at -1 reduces to a 2-way, i.e. puts nothing in the mid-band and at +1 puts 
+  //  everything into the mid band?
+  // -Try to avoid the bilinear frequency cramping by using prescribed Nyquist gain designs for
+  //  bandpass and lowpass.
+  // -Try to figure out hwo to do splitters with steeper slopes like we already did for the 2-way
+  //  splitter
 
   int dummmy = 0;
 }

@@ -6,7 +6,11 @@ is obtained by subtracting the lowpass part from the original signal. This means
 highpass and lowpass outputs together gives the original signal back - the splitter provides
 perfect reconstruction. That's a feature that not all band-splitters have. For example, 
 Linkwitz/Riley splitters provide only allpass reconstruction (adding high and low bands gives an
-allpassed version of the input). */
+allpassed version of the input). 
+
+ToDo:
+-use an rsFirstOrderFilter object for the lowpass
+-use a design formula with prescribed Nyquist gain (currently we use BLT) */
 
 template<class TSig, class TPar>
 class rsTwoBandSplitter
