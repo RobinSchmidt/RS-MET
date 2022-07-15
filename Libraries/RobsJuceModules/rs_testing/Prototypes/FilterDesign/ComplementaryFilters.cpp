@@ -424,28 +424,19 @@ void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c)
   for(int i = 0; i < zpk.p.size(); i++) zpk.p[i] = mapRoot(zpk.p[i]);
   double kt = rsAbs(zpk.transferFunctionAt(one));
   zpk.k = k * (kp/kt);
+
+  // See:
+  // http://www.rs-met.com/documents/dsp/TwoInterpretationsOfFrequencyWarpedTransferFunctions.pdf
 }
 
 RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
   const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
 {
   rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
-
-
-  double  s1 = sin(0.5*(wp-wt));
-  double  s2 = sin(0.5*(wp+wt));
-  double  c  = -s1/s2;
-  double  g  = 1;
-
-  zMapFirstOrder(zpk, g, c);
-
-
-
+  zMapFirstOrder(zpk, 1.0,  -sin(0.5*(wp-wt)) / sin(0.5*(wp+wt)));
   return zpk.toBA();
-
-  // See:
-  // http://www.rs-met.com/documents/dsp/TwoInterpretationsOfFrequencyWarpedTransferFunctions.pdf
 }
+
 
 
 
