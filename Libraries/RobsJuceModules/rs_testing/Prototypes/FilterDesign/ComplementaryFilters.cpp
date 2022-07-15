@@ -412,7 +412,8 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 
 //-------------------------------------------------------------------------------------------------
 
-void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c)
+void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c, 
+  std::complex<double> zNorm)
 {
   using Complex = std::complex<double>;
   Complex one(1);
@@ -422,7 +423,7 @@ void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c)
   auto mapRoot = [&](Complex r) { return (g*r - c) / (one - g*r*c); };
   for(int i = 0; i < zpk.z.size(); i++) zpk.z[i] = mapRoot(zpk.z[i]);
   for(int i = 0; i < zpk.p.size(); i++) zpk.p[i] = mapRoot(zpk.p[i]);
-  double kt = rsAbs(zpk.transferFunctionAt(one));
+  double kt = rsAbs(zpk.transferFunctionAt(zNorm));
   zpk.k = k * (kp/kt);
 
   // See:
@@ -433,11 +434,17 @@ RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
   const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
 {
   rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
-  zMapFirstOrder(zpk, 1.0,  -sin(0.5*(wp-wt)) / sin(0.5*(wp+wt)));
+  zMapFirstOrder(zpk, 1.0, -sin(0.5*(wp-wt)) / sin(0.5*(wp+wt)), 1.0);
   return zpk.toBA();
 }
 
-
+RAPT::rsFilterSpecificationBA<double> zLowpassToHighpass(
+  const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
+{
+  rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
+  zMapFirstOrder(zpk, -1.0, -cos(0.5*(wp+wt)) / cos(0.5*(wp-wt)), -1.0);
+  return zpk.toBA();
+}
 
 
 // Maybe requiring C(z) = B(-z) is too restrictive - we assumed that A(z) = A(-z) in the step going 

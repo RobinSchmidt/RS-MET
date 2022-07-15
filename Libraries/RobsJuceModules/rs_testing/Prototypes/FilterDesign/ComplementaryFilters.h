@@ -33,7 +33,8 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z();
 
 
 /** Used internally by zLowpassToLowpass, zLowpassToHighpass. */
-void zMapFirstOrder(RAPT::rsFilterSpecificationZPK<double>& zpk, double g, double c);
+void zMapFirstOrder(RAPT::rsFilterSpecificationZPK<double>& zpk, double g, double c, 
+  std::complex<double> zNorm);
 
 
 /** Transforms the given prototype lowpass filter specification with cutoff wp (in radians) into 
@@ -41,7 +42,13 @@ another lowpass specification with some target cutoff wt (also in radians) using
 Constantinides transform formula. */
 RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
   const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wt);
-// Maybe this function should go into class rsPoleZeroMapper - the functionality fits there well
+// Maybe this function should go into class rsPoleZeroMapper - the functionality fits there well. But
+// there, it should operate on raw arrays for production use. We can the keep this function here as
+// convenience function that callsthe other one
+
+RAPT::rsFilterSpecificationBA<double> zLowpassToHighpass(
+  const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wt);
+// does not yet seem to work, polynomial root finder asserts
 
 
 // ToDo: 

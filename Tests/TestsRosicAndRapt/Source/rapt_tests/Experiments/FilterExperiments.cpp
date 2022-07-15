@@ -701,20 +701,22 @@ void complementaryFiltersIIR()
   //analyzeComplementaryFilter( complementaryLowpass4p4z()   );  // weird
   //analyzeComplementaryFilter( complementaryLowpass4p5z()   );  // unstable
 
-  // Now with with adjustble split frequency:
+  // Now with with adjustable split frequency:
   double wp = PI/2;  // Prototype lowpass cutoff
   double wt = PI/8;  // Target lowpass cutoff
   analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass1p1z(), wp, wt));
   analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass2p2z(), wp, wt));
 
+  // Now we exchange lowpass and highpass to test the LP -> HP transform:
+  analyzeComplementaryFilter(zLowpassToHighpass(complementaryLowpass1p1z(), wp, wt));
+  analyzeComplementaryFilter(zLowpassToHighpass(complementaryLowpass2p2z(), wp, wt));
 
 
   // Now the derived bandpass/notch pairs:
+  // ...
 
 
 
-
-  // -Freq-axis scaling seems wrong - see comments in analyzeComplementaryFilter ...done
 }
 
 
