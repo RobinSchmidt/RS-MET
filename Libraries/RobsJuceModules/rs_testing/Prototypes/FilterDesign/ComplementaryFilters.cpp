@@ -421,18 +421,18 @@ RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
 
   using Complex = std::complex<double>;
   Complex one(1);
-  double s1 = sin(0.5*(wp-wt));
-  double s2 = sin(0.5*(wp+wt));
-  double c  = -s1/s2;
-  double g  = 1;
+  double  s1 = sin(0.5*(wp-wt));
+  double  s2 = sin(0.5*(wp+wt));
+  double  c  = -s1/s2;
+  double  g  = 1;
+  Complex k  = zpk.k;
+  zpk.k = one;
   double kp = rsAbs(zpk.transferFunctionAt(one));
   auto mapRoot = [&](Complex r) { return (g*r - c) / (one - g*r*c); };
   for(int i = 0; i < zpk.z.size(); i++) zpk.z[i] = mapRoot(zpk.z[i]);
   for(int i = 0; i < zpk.p.size(); i++) zpk.p[i] = mapRoot(zpk.p[i]);
   double kt = rsAbs(zpk.transferFunctionAt(one));
-  zpk.k = kp/kt;
-  // Oh - we actually should evaluate the transfer function without k, right? Or does that actually
-  // matter?
+  zpk.k = k * (kp/kt);
 
   return zpk.toBA();
 

@@ -703,12 +703,9 @@ void complementaryFiltersIIR()
 
   // Now with with adjustble split frequency:
   double wp = PI/2;  // Prototype lowpass cutoff
-  double wt = PI/4;  // Target lowpass cutoff
+  double wt = PI/8;  // Target lowpass cutoff
   analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass1p1z(), wp, wt));
   analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass2p2z(), wp, wt));
-  // These still don't work correctly...the zero is outside the unit circle, the magnitude 
-  // responses look wrong (lowpass has a gain of 2, highpass looks flat(ish))
-
 
 
 
