@@ -410,27 +410,34 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 }
 
 
+//-------------------------------------------------------------------------------------------------
 
 RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
   const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
 {
-  RAPT::rsError("Not yet implemented");  // something to do....
+  //RAPT::rsError("Not yet working correctly");  // something to do....
 
-  rsFilterSpecificationZPK<double> zpkProto = baProto.toZPK();
+  rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
 
+  using Complex = std::complex<double>;
+  Complex one(1);
+  double s1 = sin(0.5*(wp-wt));
+  double s2 = sin(0.5*(wp+wt));
+  double c  = -s1/s2;
+  double g  = 1;
+  double kp = rsAbs(zpk.transferFunctionAt(one));
+  auto mapRoot = [&](Complex r) { return (g*r - c) / (one - g*r*c); };
+  for(int i = 0; i < zpk.z.size(); i++) zpk.z[i] = mapRoot(zpk.z[i]);
+  for(int i = 0; i < zpk.p.size(); i++) zpk.p[i] = mapRoot(zpk.p[i]);
+  double kt = rsAbs(zpk.transferFunctionAt(one));
+  zpk.k = kp/kt;
+  // Oh - we actually should evaluate the transfer function without k, right? Or does that actually
+  // matter?
 
+  return zpk.toBA();
 
-
-
-  rsFilterSpecificationBA<double> baTarget;
-
-
-
-
-
-
-
-  return baTarget;
+  // See:
+  // http://www.rs-met.com/documents/dsp/TwoInterpretationsOfFrequencyWarpedTransferFunctions.pdf
 }
 
 
