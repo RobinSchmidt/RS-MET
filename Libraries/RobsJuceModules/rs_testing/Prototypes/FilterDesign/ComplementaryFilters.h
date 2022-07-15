@@ -32,6 +32,10 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z();
 //RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z();
 
 
+/** Used internally by zLowpassToLowpass, zLowpassToHighpass. */
+void zMapFirstOrder(RAPT::rsFilterSpecificationZPK<double>& zpk, double g, double c);
+
+
 /** Transforms the given prototype lowpass filter specification with cutoff wp (in radians) into 
 another lowpass specification with some target cutoff wt (also in radians) using the 
 Constantinides transform formula. */

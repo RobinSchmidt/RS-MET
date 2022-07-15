@@ -412,19 +412,10 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 
 //-------------------------------------------------------------------------------------------------
 
-RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
-  const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
+void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c)
 {
-  //RAPT::rsError("Not yet working correctly");  // something to do....
-
-  rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
-
   using Complex = std::complex<double>;
   Complex one(1);
-  double  s1 = sin(0.5*(wp-wt));
-  double  s2 = sin(0.5*(wp+wt));
-  double  c  = -s1/s2;
-  double  g  = 1;
   Complex k  = zpk.k;
   zpk.k = one;
   double kp = rsAbs(zpk.transferFunctionAt(one));
@@ -433,6 +424,22 @@ RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
   for(int i = 0; i < zpk.p.size(); i++) zpk.p[i] = mapRoot(zpk.p[i]);
   double kt = rsAbs(zpk.transferFunctionAt(one));
   zpk.k = k * (kp/kt);
+}
+
+RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
+  const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
+{
+  rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
+
+
+  double  s1 = sin(0.5*(wp-wt));
+  double  s2 = sin(0.5*(wp+wt));
+  double  c  = -s1/s2;
+  double  g  = 1;
+
+  zMapFirstOrder(zpk, g, c);
+
+
 
   return zpk.toBA();
 
