@@ -188,21 +188,28 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z()
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z()
 {
   // We start with the numerator B(z) of the transfer function H(z) = B(z)/A(z) and write it as:
-  // B(z) = b0*(1-q1/z)*(1-q2/z)   defining r = 1/z = z^-1, this becomes:
-  // B(z) = b0*(1-q1*r)*(1-q2*r)   we fix the first zero q1 at z = -1, i.e. q1 = -1, so:
-  // B(z) = b0*(1+r)*(1-q2*r)      multiplying out and using r=1/z:
-  // B(z) = b0 + b0*(1-q2)/z - b0*q2/z^2
-  // with our constraints, we get:
-  // b0 = 0.5, b1 = 0.5*(1-q2), b2 = -0.5*q2, a0 = 1, a1 = 0, a2 = -q2
-  // leaving us one tweakable zero to adjust the filter response to taste.
+  //
+  //   B(z) = b0*(1-q1/z)*(1-q2/z)      defining r = 1/z = z^-1, this becomes:
+  //   B(z) = b0*(1-q1*r)*(1-q2*r)      we fix the first zero q1 at z = -1, i.e. q1 = -1, so:
+  //   B(z) = b0*(1+r)*(1-q2*r)         multiplying out and using r=1/z:
+  //   B(z) = b0 + b0*(1-q2)/z - b0*q2/z^2
+  //
+  // With our constraints, we get:
+  //
+  //   b0 = 0.5, b1 = 0.5*(1-q2), b2 = -0.5*q2, a0 = 1, a1 = 0, a2 = -q2
+  //
+  // This leaves us one tweakable zero q2 to adjust the filter response to taste.
 
   rsFilterSpecificationBA<double> ba;
   ba.sampleRate = 1;
   ba.a.resize(3);
   ba.b.resize(3);
 
-  double q2 = -0.101; // tweakable -0.101 seems to be (near) the value where there's no overshoot
-                      // todo: numerically optimize that value
+  double q2 = -0.101; 
+  // Our tweakable. q2 = -0.101 seems to be (near) the value where there's no overshoot. With
+  // -0.102, we can seen some slight overshoot/resonant peak when zooming in.
+  // ToDo: numerically optimize that value. So far, I have only eyeballed it. The goal is to get
+  // to the point just before an overshoot peak forms.
 
   ba.a[0] = 1;
   ba.b[0] = 0.5;
@@ -215,6 +222,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z()
 
   return ba;
 }
+// ToDo: maybe factor out a function that designs the filter directly as zpk specification
 
 rsFilterSpecificationBA<double> complementaryLowpass2p3z()
 {
@@ -402,6 +410,24 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 }
 
 
+
+RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
+  const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
+{
+  RAPT::rsError("Not yet implemented");  // something to do....
+
+  rsFilterSpecificationZPK<double> zpkProto = baProto.toZPK();
+
+  rsFilterSpecificationBA<double> baTarget;
+
+
+
+
+
+
+
+  return baTarget;
+}
 
 
 

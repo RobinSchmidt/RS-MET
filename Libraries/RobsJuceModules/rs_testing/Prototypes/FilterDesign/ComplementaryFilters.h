@@ -7,6 +7,12 @@ frequency response of the difference-filter is a mirror image of the frequency r
 given filter. */
 bool isComplementary(const RAPT::rsFilterSpecificationBA<double>& specBA);
 // todo: maybe rename the condition...or maybe not
+// Actually, that condition of being a mirror image only applies to lowpass and highpass filters. 
+// For bandpass filters, the complementary filter will be a bandreject filter and in this case, the
+// condition for complementarity may be a bit more complicated to specify. Maybe this function 
+// should be renamed to reflect that. Maybe isComplementaryLowpass - we usually think of the 
+// lowpass as the actual filter and the highpass is obtained by subtraction although it could be
+// done the other way around as well.
 
 /** Makes some plots, etc. */
 bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA);
@@ -26,8 +32,18 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z();
 //RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z();
 
 
+/** Transforms the given prototype lowpass filter specification with cutoff wp (in radians) into 
+another lowpass specification with some target cutoff wt (also in radians) using the 
+Constantinides transform formula. */
+RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
+  const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wt);
+// Maybe this function should go into class rsPoleZeroMapper - the functionality fits there well
+
 
 // ToDo: 
+// -Maybe wrap into a class mainly to have a scope under which we can do a
+//    using FilterSpecBA = RAPT::rsFilterSpecificationBA<double>
+//  so we don't have to write it out that often. Maybe a class rsComplementaryFilterDesigner
 // -Obtain frequency warped versions via Constantinides formulas. The functions above design
 //  prototypes with their cutoff frequency being a quarter of the sample rate (halfband filters).
 //  we need the Constantinides transforms to eventually make the split frequency tweakable by the

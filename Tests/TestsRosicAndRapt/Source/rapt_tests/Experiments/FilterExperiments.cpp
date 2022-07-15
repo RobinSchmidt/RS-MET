@@ -692,7 +692,7 @@ void complementaryFiltersIIR()
   // splitter with perfect reconstruction...
 
   // Maybe useful:
-  analyzeComplementaryFilter( complementaryLowpass1p1z()   );
+  //analyzeComplementaryFilter( complementaryLowpass1p1z()   );
   analyzeComplementaryFilter( complementaryLowpass2p2z()   );
 
   // Probably useless:
