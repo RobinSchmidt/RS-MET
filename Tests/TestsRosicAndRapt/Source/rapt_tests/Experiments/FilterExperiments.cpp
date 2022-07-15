@@ -691,17 +691,32 @@ void complementaryFiltersIIR()
   // Experiment to figure out pole/zero placements in the s-domain to obtain a high/low IIR 
   // splitter with perfect reconstruction...
 
-  // Maybe useful:
-  //analyzeComplementaryFilter( complementaryLowpass1p1z()   );
+  // Useful prototypes:
+  analyzeComplementaryFilter( complementaryLowpass1p1z()   );
   analyzeComplementaryFilter( complementaryLowpass2p2z()   );
 
-  // Probably useless:
+  // Useless prototypes:
   //analyzeComplementaryFilter( complementaryLowpass2p3z()   );  // highly resonant
   //analyzeComplementaryFilter( complementaryLowpass4p4z1t() );  // unstable
   //analyzeComplementaryFilter( complementaryLowpass4p4z()   );  // weird
   //analyzeComplementaryFilter( complementaryLowpass4p5z()   );  // unstable
 
-  // -Freq-axis scaling seems wrong - see comments in analyzeComplementaryFilter 
+  // Now with with adjustble split frequency:
+  double wp = PI/2;  // Prototype lowpass cutoff
+  double wt = PI/4;  // Target lowpass cutoff
+  //analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass1p1z(), wp, wt));
+  //analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass2p2z(), wp, wt));
+  // These calls still crash...it's not yet implemented
+
+
+
+
+  // Now the derived bandpass/notch pairs:
+
+
+
+
+  // -Freq-axis scaling seems wrong - see comments in analyzeComplementaryFilter ...done
 }
 
 
