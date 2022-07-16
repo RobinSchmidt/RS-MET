@@ -39,6 +39,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z();
 // Prototype allpass designs. The lowpass/highpass signals are obtained as input plus/minus allpass 
 // divided by two.
 
+RAPT::rsFilterSpecificationBA<double> complementaryAllpass1p1z();
 RAPT::rsFilterSpecificationBA<double> complementaryAllpass2p2z();
 
 

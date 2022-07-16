@@ -692,8 +692,8 @@ void complementaryFiltersIIR()
   // splitter with perfect reconstruction...
 
   // Useful prototypes:
-  //analyzeComplementaryFilter( complementaryLowpass1p1z() );
-  //analyzeComplementaryFilter( complementaryLowpass2p2z() );
+  analyzeComplementaryFilter( complementaryLowpass1p1z() );
+  analyzeComplementaryFilter( complementaryLowpass2p2z() );
 
   // Useless prototypes:
   //analyzeComplementaryFilter( complementaryLowpass2p3z()   );  // highly resonant
@@ -704,8 +704,8 @@ void complementaryFiltersIIR()
   // Now with with adjustable split frequency:
   double wp = PI/2;  // Prototype lowpass cutoff
   double wt = PI/8;  // Target lowpass cutoff
-  //analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass1p1z(), wp, wt));
-  //analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass2p2z(), wp, wt));
+  analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass1p1z(), wp, wt));
+  analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass2p2z(), wp, wt));
 
   // Now we exchange lowpass and highpass to test the LP -> HP transform:
   //analyzeComplementaryFilter(zLowpassToHighpass(complementaryLowpass1p1z(), wp, wt));
@@ -723,8 +723,12 @@ void complementaryFiltersIIR()
   //analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass2p2z(), wp, wl, wu));
 
 
-  // Now try the allpass based prototype designs:
-  //analyzeComplementaryAllpass( complementaryAllpass1p1z() );
+  // Now try the allpass based prototype designs (this does not yet work properly):
+  //analyzeComplementaryAllpass( complementaryAllpass1p1z() );  
+  // Asserts - i think, it's because the allpass design was based on an IIT lowpass and should 
+  // perhaps be based on a BLT lowpass. Maybe the function name of the lowpass design should 
+  // reflect the IIT nature of the design
+
   analyzeComplementaryAllpass( complementaryAllpass2p2z() );
 
 

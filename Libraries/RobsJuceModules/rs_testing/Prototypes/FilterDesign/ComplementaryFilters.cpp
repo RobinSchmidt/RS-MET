@@ -1,18 +1,43 @@
 //typedef std::complex<double> Complex;
 
 
-rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationBA<double>& baSpec)
+rsFilterSpecificationBA<double> weightedSumWithOne(
+  const rsFilterSpecificationBA<double>& baSpec, double w1, double wH)
 {
   rsFilterSpecificationBA<double> ba = baSpec, r;
   r.sampleRate = ba.sampleRate;
   int Na = (int)ba.a.size()-1;
   int Nb = (int)ba.b.size()-1;
-  //r.b.resize(std::max(Na,Nb)+1);
+  r.b.resize(rsMax(Na,Nb)+1);
+  r.a = ba.a;                // denominator is the same
+  rsPolynomial<std::complex<double>>::weightedSum(&ba.a[0], Na, w1, &ba.b[0], Nb, wH, &r.b[0]);
+  return r;
+}
+// Verify this formula!
+
+
+rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationBA<double>& baSpec)
+{
+  return weightedSumWithOne(baSpec, 1, -1);
+
+  /*
+  // old:
+  rsFilterSpecificationBA<double> ba = baSpec, r;
+  r.sampleRate = ba.sampleRate;
+  int Na = (int)ba.a.size()-1;
+  int Nb = (int)ba.b.size()-1;
   r.b.resize(rsMax(Na,Nb)+1);
   r.a = ba.a;                // denominator is the same
   rsPolynomial<std::complex<double>>::subtract(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
   return r;
-} // move to FilterPlotter or rapt rsFilterSpecificationBA
+  */
+} 
+// -Move to FilterPlotter or rapt rsFilterSpecificationBA
+// -Maybe factor out a function to obtain a weighted sum of unity and the given transfer function:
+//  w1 * 1 + wH * H(z). We also need 1/2 + H(z)/2 and 1/2 - H(z)/2 to turn an allpass into a LP/HP
+//  pair
+// -Maybe implement an even more general function that adds two arbitrary transfer functions. But 
+//  actually it would make more sense to just use rsRationalFunction for that
 
 bool isComplementary(const rsFilterSpecificationBA<double>& lpfBA)
 {
@@ -22,32 +47,34 @@ bool isComplementary(const rsFilterSpecificationBA<double>& lpfBA)
   // ensures perfect reconstruction, but we check here for additional conditions such as symmetry 
   // of the responses.
 
+  using Complex = std::complex<double>; 
+
   bool result = true;
   rsFilterSpecificationBA<double> hpfBA = complementaryFilter(lpfBA);
   rsFilterSpecificationZPK<double> lpfZPK = lpfBA.toZPK();
   rsFilterSpecificationZPK<double> hpfZPK = hpfBA.toZPK();
 
-  // check, if the poles are equal:
+  // Check, if the poles are equal:
   // ...
 
 
-  // check if zeros are mirrored along the imaginary axis:
+  // Check if zeros are mirrored along the imaginary axis:
   // ...
 
 
-  // check symmetry: H(z) = G(-z), use some random values for z for that
+  // Check symmetry H(z) = G(-z) numerically using some random values for z:
   int numValues = 100;
   RAPT::rsNoiseGenerator<double> prng;
   prng.setRange(-2.0, +2.0);
   double tol = 1.e-13;
   for(int i = 0; i < numValues; i++)
   {
-    std::complex<double> z   = std::complex<double>(prng.getSample(), prng.getSample());
-    std::complex<double> Hz  = lpfBA.transferFunctionAt( z);   // H(z)
-    std::complex<double> Gz  = hpfBA.transferFunctionAt( z);   // G(z)
-    std::complex<double> Gzm = hpfBA.transferFunctionAt(-z);   // G(-z)
-    std::complex<double> sum = Hz + Gz;   // Complement: H(z) + G(z) = 1, ensured by complementaryFilter
-    std::complex<double> dif = Hz - Gzm;  // Symmetry:   H(z) = G(-z) -> H(z)-G(-z) = 0
+    Complex z   = std::complex<double>(prng.getSample(), prng.getSample());
+    Complex Hz  = lpfBA.transferFunctionAt( z);   // H(z)
+    Complex Gz  = hpfBA.transferFunctionAt( z);   // G(z)
+    Complex Gzm = hpfBA.transferFunctionAt(-z);   // G(-z)
+    Complex sum = Hz + Gz;   // Complement: H(z) + G(z) = 1, ensured by complementaryFilter
+    Complex dif = Hz - Gzm;  // Symmetry:   H(z) = G(-z) -> H(z)-G(-z) = 0
     result &= abs(1.0-sum) < tol;
     result &= abs(dif)     < tol;
     // for the 2p3z filter, the sum is totally off and Hz+Gzm is zero instead of Hz-Gzm
@@ -417,6 +444,23 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
   // preliminary:
   rsFilterSpecificationBA<double> ba = complementaryLowpass2p3z();
   ba.a.resize(4); 
+  return ba;
+}
+
+
+
+RAPT::rsFilterSpecificationBA<double> complementaryAllpass1p1z()
+{
+  rsFilterSpecificationBA<double> ba;
+  ba.sampleRate = 1;
+
+  ba.a.resize(2);
+  ba.a[0] = 1;
+  ba.a[1] = 0;
+
+  ba.b = ba.a;  
+  rsReverse(ba.b);
+
   return ba;
 }
 
