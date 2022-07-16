@@ -715,12 +715,18 @@ void complementaryFiltersIIR()
   // Now the derived bandpass/notch pairs:
   double wl = 1*PI/4;  // lower bandedge
   double wu = 3*PI/4;  // upper bandedge
-  analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass1p1z(), wp, wl, wu));
-  analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass2p2z(), wp, wl, wu));
+  //analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass1p1z(), wp, wl, wu));
+  //analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass2p2z(), wp, wl, wu));
 
   // Now with exchange of bandpass and notch:
-  analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass1p1z(), wp, wl, wu));
-  analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass2p2z(), wp, wl, wu));
+  //analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass1p1z(), wp, wl, wu));
+  //analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass2p2z(), wp, wl, wu));
+
+
+  // Now try the allpass based prototype designs:
+  //analyzeComplementaryAllpass( complementaryAllpass1p1z() );
+  analyzeComplementaryAllpass( complementaryAllpass2p2z() );
+
 
   // ToDo:
   // -Make a function analyzeComplementaryAllpass and test it with allpass version of the 2p2z

@@ -16,6 +16,9 @@ bool isComplementary(const RAPT::rsFilterSpecificationBA<double>& specBA);
 
 /** Makes some plots, etc. */
 bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA);
+// maybe rename to analyzeComplementaryLowpass ...although it also works for a bandpass.
+
+bool analyzeComplementaryAllpass(const RAPT::rsFilterSpecificationBA<double>& specBA);
 
 
 // The actual prototype designs that satisfy the mirror-image conditions. The highpass signal is
@@ -46,7 +49,7 @@ void zMapFirstOrder(RAPT::rsFilterSpecificationZPK<double>& zpk, double g, doubl
 
 /** Used internally by zLowpassToBandpass, zLowpassToBandreject. */
 void zMapSecondOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c, double d,
-  std::complex<double> zNorm)
+  std::complex<double> zNorm);
 
 /** Transforms the given prototype lowpass filter specification with cutoff wp (in radians) into 
 another lowpass specification with some target cutoff wt (also in radians) using the 

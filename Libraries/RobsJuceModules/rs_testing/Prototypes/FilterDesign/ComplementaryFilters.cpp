@@ -144,10 +144,21 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   // Notes:
   // -Something seems to be wrong about the frequency axis. The responses look repeated several
   //  times. Actually, it's a bit more than 3 times....like...pi times maybe? Maybe I have confused
-  //  normalized freq from 0..0.5 with normalized *radian* freq from 0..pi?
+  //  normalized freq from 0..0.5 with normalized *radian* freq from 0..pi? ...seems fixed now
   // -Plotting the poles and zeros first and then the magnitude produces a messed up plot. -> Debug
   //  FilterPlotter (or maybe GNUPlotCPP). It may have something to do with a not properly 
   //  (re)initialized commandFile and/or dataFile
+}
+
+bool analyzeComplementaryAllpass(const RAPT::rsFilterSpecificationBA<double>& specBA)
+{
+  analyzeComplementaryFilter(specBA);
+  // Preliminary. It should show an allpass response an twice a highpass response. ...but it 
+  // actually shows an allpass and bandpass response...hmmm...
+
+
+  return true; 
+  // Preliminary. Maybe obtain a lowpass spec as (1+H(z))/2 and use isComplementary
 }
 
 //-------------------------------------------------------------------------------------------------
