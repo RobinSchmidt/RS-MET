@@ -557,6 +557,7 @@ void bandSplittingThreeWay2p2z()
   splt.setFftSize(N);
   splt.setSampleRate(fs);
   splt.setLogFreqAxis(true);
+  //splt.setRange(15.625, fs/2);  // doesn't have any effect
   splt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
   splt.plotDecibelSpectraOfRows(Y);
 
@@ -569,7 +570,10 @@ void bandSplittingThreeWay2p2z()
   //  fails!
 
   // ToDo:
-  // -Make it work for bw = 0.
+  // -Make it work for bw = 0. Maybe start directly with a zpk based design. Bypass the root-finder
+  //  completely. ...but actually: why does the root-finder have problems with this in the first
+  //  place? Shouldn't it just find the roots as usual? Figure out what exactly goes wrong and try
+  //  to fix it!
   // -Build a multiband waveshaper using this splitter
   // -Try to get rid of the frequency cramping by transforming the filters by inverse BLT into the
   //  s-domain, do all transformations there and transform the results back to the z-domain using
@@ -794,11 +798,11 @@ void complementaryFiltersIIR()
 
   // Useful prototypes:
   //analyzeComplementaryFilter( complementaryLowpass1p1z() );
-  analyzeComplementaryFilter( complementaryLowpass2p2z() );
+  //analyzeComplementaryFilter( complementaryLowpass2p2z() );
 
   // Useless prototypes:
   //analyzeComplementaryFilter( complementaryLowpass2p3z()   );  // highly resonant
-  //analyzeComplementaryFilter( complementaryLowpass4p4z1t() );  // unstable
+  analyzeComplementaryFilter( complementaryLowpass4p4z1t() );  // unstable
   //analyzeComplementaryFilter( complementaryLowpass4p4z()   );  // weird
   //analyzeComplementaryFilter( complementaryLowpass4p5z()   );  // unstable
 

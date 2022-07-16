@@ -47,6 +47,9 @@ RAPT::rsFilterSpecificationBA<double> complementaryAllpass1p1z();
 RAPT::rsFilterSpecificationBA<double> complementaryAllpass2p2z();
 
 
+void makeStableMinPhase(RAPT::rsFilterSpecificationBA<double>& ba);
+// needs tests
+
 
 /** Used internally by zLowpassToLowpass, zLowpassToHighpass. */
 void zMapFirstOrder(RAPT::rsFilterSpecificationZPK<double>& zpk, double g, double c, 

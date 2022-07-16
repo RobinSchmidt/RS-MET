@@ -149,8 +149,8 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
   //plt.plotMagnitude(10000, 0.0, PI, false, false); 
 
-  //plt.initialize();  // needed?
-  //plt.plotPolesAndZeros();
+  plt.initialize();  // needed?
+  plt.plotPolesAndZeros();
 
   return result;
 
@@ -284,7 +284,10 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
   // We also need: b2 = a2/2 giving: a2 = 1 - 2*q3
 
   // ..ok - let's try it:
-  double q3 = 0.2;  // 0.5 leads to a2=0 - does this mean, there are no poles?
+  double q3 = +0.2;
+  // 0.2 leads to highly resonant filters (useless for splitters but maybe for special effects?)
+  // 0.5 leads to a2=0 - does this mean, there are no poles?
+
   ba.a[2] = 1 - 2*q3;
   ba.b[1] = 1 - q3/2;
   ba.b[2] = ba.a[2] / 2.0; // == 1/2 - q3
@@ -352,7 +355,13 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z1t()
   ba.sampleRate = 1;
   ba.a = { a0, a1, a2, a3, a4 };
   ba.b = { b0, b1, b2, b3, b4 };
+  //makeStableMinPhase(ba);
   return ba;
+
+  // Notes:
+  // -With q4 = -1, we get nice responses but an unstable filter and using makeStableMinPhase 
+  //  messes up the nice responses. Can we somehow solve this? Maybe make it only stable but not
+  //  necessarily min-phase?
 }
 
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
@@ -395,6 +404,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
   ba.sampleRate = 1;
   ba.a = { a0, a1, a2, a3, a4 };
   ba.b = { b0, b1, b2, b3, b4 };
+  //makeStableMinPhase(ba);
   return ba;
 }
 
@@ -512,6 +522,30 @@ RAPT::rsFilterSpecificationBA<double> complementaryAllpass2p2z()
 
 
 //-------------------------------------------------------------------------------------------------
+
+void makeStableMinPhase(RAPT::rsFilterSpecificationBA<double>& ba)
+{
+  rsFilterSpecificationZPK<double> zpk = ba.toZPK();
+
+  for(size_t i = 0; i < zpk.z.size(); i++)
+  {
+    if(rsAbs(zpk.z[i]) > 1.0)
+      zpk.z[i] = 1.0 / conj(zpk.z[i]);
+  }
+
+  for(size_t i = 0; i < zpk.p.size(); i++)
+  {
+    if(rsAbs(zpk.p[i]) > 1.0)
+      zpk.p[i] = 1.0 / conj(zpk.p[i]);
+  }
+
+  ba = zpk.toBA();
+
+  // -Is the formula correct? I think so:
+  //  https://math.libretexts.org/Bookshelves/Geometry/Geometry_with_an_Introduction_to_Cosmic_Topology_(Hitchman)/03%3A_Transformations/3.02%3A_Inversion
+  // -Do we need to do something with the gain?
+}
+// needs tests.
 
 void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c, 
   std::complex<double> zNorm)

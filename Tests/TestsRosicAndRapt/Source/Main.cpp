@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
   //bandpassAndNotch();          // trying to build a bank of complementary bandpass/notch pairs
   //bandSplittingTwoWay();
   //bandSplittingThreeWay();
-  bandSplittingThreeWay2p2z();
+  //bandSplittingThreeWay2p2z();
   //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
