@@ -355,13 +355,16 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z1t()
   ba.sampleRate = 1;
   ba.a = { a0, a1, a2, a3, a4 };
   ba.b = { b0, b1, b2, b3, b4 };
-  //makeStableMinPhase(ba);
+  makeStableMinPhase(ba);
   return ba;
 
   // Notes:
   // -With q4 = -1, we get nice responses but an unstable filter and using makeStableMinPhase 
   //  messes up the nice responses. Can we somehow solve this? Maybe make it only stable but not
-  //  necessarily min-phase?
+  //  necessarily min-phase? ...Nope - that doesn't make a difference. I guess, the zeros were
+  //  inside the unit circle to begin with. Hmm...it looks like the lowpass response looks still
+  //  good but ha acquired a wrong gain. Due to this gain error, the highpass response is bound to
+  //  be messed up. ToDo: fix gain in makeStableMinPhase, maybe let it take a zNorm parameter
 }
 
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
@@ -447,6 +450,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z()
   ba.sampleRate = 1;
   ba.a = { a0, a1, a2, a3, a4 };
   ba.b = { b0, b1, b2, b3, b4, b5 };
+  //makeStableMinPhase(ba);
   return ba;
 }
 
@@ -527,17 +531,13 @@ void makeStableMinPhase(RAPT::rsFilterSpecificationBA<double>& ba)
 {
   rsFilterSpecificationZPK<double> zpk = ba.toZPK();
 
-  for(size_t i = 0; i < zpk.z.size(); i++)
-  {
+  for(size_t i = 0; i < zpk.z.size(); i++) {
     if(rsAbs(zpk.z[i]) > 1.0)
-      zpk.z[i] = 1.0 / conj(zpk.z[i]);
-  }
+      zpk.z[i] = 1.0 / conj(zpk.z[i]); }
 
-  for(size_t i = 0; i < zpk.p.size(); i++)
-  {
+  for(size_t i = 0; i < zpk.p.size(); i++) {
     if(rsAbs(zpk.p[i]) > 1.0)
-      zpk.p[i] = 1.0 / conj(zpk.p[i]);
-  }
+      zpk.p[i] = 1.0 / conj(zpk.p[i]); }
 
   ba = zpk.toBA();
 
