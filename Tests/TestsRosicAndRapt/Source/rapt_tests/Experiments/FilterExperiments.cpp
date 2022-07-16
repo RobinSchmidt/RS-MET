@@ -731,11 +731,6 @@ void complementaryFiltersIIR()
 
   //analyzeComplementaryAllpass( complementaryAllpass2p2z() );
   // Responses look wrong. See comment in complementaryAllpass2p2z
-
-
-  // ToDo:
-  // -Make a function analyzeComplementaryAllpass and test it with allpass version of the 2p2z
-  //  design
 }
 
 

@@ -239,11 +239,13 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z()
   ba.a.resize(3);
   ba.b.resize(3);
 
-  double q2 = -0.101; 
+  //double q2 = -0.101;
+  double q2 = -0.1010454;
   // Our tweakable. q2 = -0.101 seems to be (near) the value where there's no overshoot. With
   // -0.102, we can seen some slight overshoot/resonant peak when zooming in.
   // ToDo: numerically optimize that value. So far, I have only eyeballed it. The goal is to get
-  // to the point just before an overshoot peak forms.
+  // to the point just before an overshoot peak forms. Maybe find the peak of the freq-response and
+  // then adjust q2 to the maximum value possible such that the peak is still at DC.
 
   ba.a[0] = 1;
   ba.b[0] = 0.5;
