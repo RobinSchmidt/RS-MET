@@ -47,7 +47,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryAllpass1p1z();
 RAPT::rsFilterSpecificationBA<double> complementaryAllpass2p2z();
 
 
-void makeStableMinPhase(RAPT::rsFilterSpecificationBA<double>& ba);
+void makeStableMinPhase(RAPT::rsFilterSpecificationBA<double>& ba, std::complex<double> zNorm);
 // needs tests
 
 

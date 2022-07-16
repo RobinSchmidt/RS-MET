@@ -355,7 +355,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z1t()
   ba.sampleRate = 1;
   ba.a = { a0, a1, a2, a3, a4 };
   ba.b = { b0, b1, b2, b3, b4 };
-  makeStableMinPhase(ba);
+  //makeStableMinPhase(ba, 1.0);
   return ba;
 
   // Notes:
@@ -364,7 +364,9 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z1t()
   //  necessarily min-phase? ...Nope - that doesn't make a difference. I guess, the zeros were
   //  inside the unit circle to begin with. Hmm...it looks like the lowpass response looks still
   //  good but ha acquired a wrong gain. Due to this gain error, the highpass response is bound to
-  //  be messed up. ToDo: fix gain in makeStableMinPhase, maybe let it take a zNorm parameter
+  //  be messed up. ToDo: fix gain in makeStableMinPhase, maybe let it take a zNorm parameter.
+  //  OK - done - lowpass response looks good now, highpass is still a mess but at least somehow
+  //  generally highpass in nature. But with a resonance bump and wrong cutoff (too low).
 }
 
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z()
@@ -450,7 +452,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z()
   ba.sampleRate = 1;
   ba.a = { a0, a1, a2, a3, a4 };
   ba.b = { b0, b1, b2, b3, b4, b5 };
-  //makeStableMinPhase(ba);
+  //makeStableMinPhase(ba, 1.0);
   return ba;
 }
 
@@ -527,9 +529,11 @@ RAPT::rsFilterSpecificationBA<double> complementaryAllpass2p2z()
 
 //-------------------------------------------------------------------------------------------------
 
-void makeStableMinPhase(RAPT::rsFilterSpecificationBA<double>& ba)
+void makeStableMinPhase(RAPT::rsFilterSpecificationBA<double>& ba, std::complex<double> zNorm)
 {
   rsFilterSpecificationZPK<double> zpk = ba.toZPK();
+
+  double g0 = rsAbs(zpk.transferFunctionAt(zNorm));
 
   for(size_t i = 0; i < zpk.z.size(); i++) {
     if(rsAbs(zpk.z[i]) > 1.0)
@@ -539,11 +543,17 @@ void makeStableMinPhase(RAPT::rsFilterSpecificationBA<double>& ba)
     if(rsAbs(zpk.p[i]) > 1.0)
       zpk.p[i] = 1.0 / conj(zpk.p[i]); }
 
+  zpk.k = 1.0;
+
+  double g1 = rsAbs(zpk.transferFunctionAt(zNorm));
+
+  zpk.k = g0/g1;
+
+
   ba = zpk.toBA();
 
   // -Is the formula correct? I think so:
   //  https://math.libretexts.org/Bookshelves/Geometry/Geometry_with_an_Introduction_to_Cosmic_Topology_(Hitchman)/03%3A_Transformations/3.02%3A_Inversion
-  // -Do we need to do something with the gain?
 }
 // needs tests.
 
