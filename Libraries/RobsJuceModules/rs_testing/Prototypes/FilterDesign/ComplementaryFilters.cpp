@@ -409,13 +409,28 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
   return ba;
 }
 
+// Maybe requiring C(z) = B(-z) is too restrictive - we assumed that A(z) = A(-z) in the step going 
+// from requiring G(z) = H(-z) - maybe by not imposing such a symmetry constraint on A(z), more 
+// degrees of freedom can be unlocked?
+// G(z) = H(-z) -> C(z)/A(z) =  (A(z)-B(z))/A(z) = B(-z)/A(-z) ...this is less restrictive than
+// C(z) = B(-z)
+
+// let's start with (A(z)-B(z))/A(z) = B(-z)/A(-z) and define A=A(z),A'=A(-z),B=B(z),B'=B(-z), so:
+// (A-B)/A = B'/A' -> A'*(A-B) = A*B' -> A' * A - A' * B = A * B' 
+// -> A'A - A'B - AB' = 0 for all z...maybe by strategically selecting some particular z, this 
+// leads to useful equations? and/or maybe we can throw a multidimensinal root-finder at this 
+// problem? or maybe we can cast this as a constrained optimization problem - the target function
+// is some function of the magnitude response - for example, how far it is away from the 
+// butterworth lowpass of the same order and the constraint equation is A'A - A'B - AB' = 0?
+// maybe start the optimization with a butterworth filter as initial guess?
+
 
 //-------------------------------------------------------------------------------------------------
 
 void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c, 
   std::complex<double> zNorm)
 {
-  using Complex = std::complex<double>;
+  using Complex = std::complex<double>;  // Maybe use rsComplex
   Complex one(1);
   Complex k = zpk.k;
   zpk.k = one;
@@ -456,8 +471,6 @@ void zMapSecondOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c, 
   zpk.k = k * (kp/kt);
 }
 
-
-
 RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
   const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
 {
@@ -480,35 +493,42 @@ RAPT::rsFilterSpecificationBA<double> zLowpassToBandpass(
   using Complex = std::complex<double>;
   rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
 
-  // Maybe factor out (is needed also for LP -> BR):
+  // Maybe factor out (is used also for LP -> BR):
   double a  = - cos(0.5*(wu+wl)) / cos(0.5*(wu-wl));
   double t1 = tan(0.5*wp);
   double t2 = tan(0.5*(wu-wl));
 
   double k  = t1/t2;
-  double wc = 2*atan(sqrt(tan(wl/2.)*tan(wu/2.)));
+  double wc = 2*atan(sqrt(tan(wl/2.)*tan(wu/2.))); // Normalize at prewarped center frequency
   Complex j(0,1);
-  Complex zNorm = exp(j*wc);
+  Complex zNorm = exp(j*wc); // Maybe use std::polar instead or maybe write an rsPolarToCartesian
   zMapSecondOrder(zpk, -1.0, 2*a*k/(k+1.0), (k-1.0)/(k+1.0), zNorm);
   return zpk.toBA();
 }
 
+RAPT::rsFilterSpecificationBA<double> zLowpassToBandreject(
+  const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wl, double wu)
+{
+  using Complex = std::complex<double>;
+  rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
+
+  // Maybe factor out (is used also for LP -> BP):
+  double a  = - cos(0.5*(wu+wl)) / cos(0.5*(wu-wl));
+  double t1 = tan(0.5*wp);
+  double t2 = tan(0.5*(wu-wl));
+
+  double k = t1*t2;
+  zMapSecondOrder(zpk, 1.0, 2.0*a/(k+1.0), (1.0-k)/(1.0+k), 1.0);
+  return zpk.toBA();
+}
 
 
-// Maybe requiring C(z) = B(-z) is too restrictive - we assumed that A(z) = A(-z) in the step going 
-// from requiring G(z) = H(-z) - maybe by not imposing such a symmetry constraint on A(z), more 
-// degrees of freedom can be unlocked?
-// G(z) = H(-z) -> C(z)/A(z) =  (A(z)-B(z))/A(z) = B(-z)/A(-z) ...this is less restrictive than
-// C(z) = B(-z)
-
-// let's start with (A(z)-B(z))/A(z) = B(-z)/A(-z) and define A=A(z),A'=A(-z),B=B(z),B'=B(-z), so:
-// (A-B)/A = B'/A' -> A'*(A-B) = A*B' -> A' * A - A' * B = A * B' 
-// -> A'A - A'B - AB' = 0 for all z...maybe by strategically selecting some particular z, this 
-// leads to useful equations? and/or maybe we can throw a multidimensinal root-finder at this 
-// problem? or maybe we can cast this as a constrained optimization problem - the target function
-// is some function of the magnitude response - for example, how far it is away from the 
-// butterworth lowpass of the same order and the constraint equation is A'A - A'B - AB' = 0?
-// maybe start the optimization with a butterworth filter as initial guess?
+// -These formulas are quite expensive to implement. Maybe it would be cheaper to do a bilinear
+//  z-to-s transform, then do an s-domain frequency transformation, then transform back to the
+//  z-domain by a bilinear s-to-z transform?
+// -What about a lowpass-to-lowshelf trafo in the z-domain?
+// -Maybe implement the same functions for rsFilterSpecificationZPK. the BA versions may then
+//  just call return zLowpassToLowpass(baProto.toZPK(), wp, wt).toBA(); etc.
 
 //-------------------------------------------------------------------------------------------------
 // code below doesn't give rise to working complementary filters but contains a lot of info in the

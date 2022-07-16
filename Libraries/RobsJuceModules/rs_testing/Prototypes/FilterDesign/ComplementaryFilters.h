@@ -52,6 +52,9 @@ RAPT::rsFilterSpecificationBA<double> zLowpassToHighpass(
 RAPT::rsFilterSpecificationBA<double> zLowpassToBandpass(
   const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wl, double wu);
 
+RAPT::rsFilterSpecificationBA<double> zLowpassToBandreject(
+  const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wl, double wu);
+
 
 
 // ToDo: 

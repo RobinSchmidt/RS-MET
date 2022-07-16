@@ -718,6 +718,10 @@ void complementaryFiltersIIR()
   analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass1p1z(), wp, wl, wu));
   analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass2p2z(), wp, wl, wu));
 
+  // Now with exchange of bandpass and notch:
+  analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass1p1z(), wp, wl, wu));
+  analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass2p2z(), wp, wl, wu));
+
 
   // ...
 
