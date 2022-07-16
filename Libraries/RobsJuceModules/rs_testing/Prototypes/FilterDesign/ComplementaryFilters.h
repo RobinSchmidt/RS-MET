@@ -14,6 +14,10 @@ bool isComplementary(const RAPT::rsFilterSpecificationBA<double>& specBA);
 // lowpass as the actual filter and the highpass is obtained by subtraction although it could be
 // done the other way around as well.
 
+/** For a given filter specification, this function returns the specification of the complementary
+filter that is obtained by sutracting the given filter's output from the original signal. */
+rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationBA<double>& baSpec);
+
 /** Makes some plots, etc. */
 bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA);
 // maybe rename to analyzeComplementaryLowpass ...although it also works for a bandpass.

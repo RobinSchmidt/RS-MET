@@ -506,15 +506,27 @@ void bandSplittingThreeWay2p2z()
   Real wu = 2*PI*fu/fs;
   SpecBA protoBA = complementaryLowpass2p2z();
   SpecBA lpfBA   = zLowpassToLowpass( protoBA, wp, wc);
+  SpecBA hpfBA   = complementaryFilter(lpfBA);
   SpecBA bpfBA   = zLowpassToBandpass(protoBA, wp, wl, wu);
 
 
   // Plot analytically computed magnitude responses:
-  //...
+  FilterPlotter<Real> plt;
+  plt.addFilterSpecificationBA(bpfBA);
+  plt.addFilterSpecificationBA(lpfBA);
+  plt.addFilterSpecificationBA(hpfBA);
+  plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
+  plt.plotMagnitude(1000, 0.0, PI, false, false); 
+  // But here, we plot only the LP/HP responses themselves. In an actual splitter, they are applied
+  // to the notch output. To plot these responses theoretically, we need to obtain the complement
+  // of the bandpass and compose (multiply) it with the given LP/HP responses. It would also be 
+  // nicer to use a logarithmic frequency axis.
 
 
   // Plot numerically computed magnitude responses:
   //...
+
+
 
 
   int dummmy = 0;
