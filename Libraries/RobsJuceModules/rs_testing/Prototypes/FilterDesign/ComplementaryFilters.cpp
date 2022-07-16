@@ -330,8 +330,14 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
   zpk.z[1] = -1.0;
   zpk.z[2] = -1.0;
 
+  std::complex<double> j(0,1);
+  zpk.p[0] = -0.5;
+  zpk.p[1] = +0.5 * j;
+  zpk.p[2] = -0.5 * j;
 
-  zpk.k = 1.0 / 8.0;
+
+  double g0 = abs(zpk.transferFunctionAt(1.0));
+  zpk.k = 1.0 / g0;
 
 
   return zpk.toBA();
