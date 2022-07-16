@@ -19,23 +19,8 @@ rsFilterSpecificationBA<double> weightedSumWithOne(
 rsFilterSpecificationBA<double> complementaryFilter(const rsFilterSpecificationBA<double>& baSpec)
 {
   return weightedSumWithOne(baSpec, 1, -1);
-
-  /*
-  // old:
-  rsFilterSpecificationBA<double> ba = baSpec, r;
-  r.sampleRate = ba.sampleRate;
-  int Na = (int)ba.a.size()-1;
-  int Nb = (int)ba.b.size()-1;
-  r.b.resize(rsMax(Na,Nb)+1);
-  r.a = ba.a;                // denominator is the same
-  rsPolynomial<std::complex<double>>::subtract(&ba.a[0], Na, &ba.b[0], Nb, &r.b[0]);
-  return r;
-  */
 } 
 // -Move to FilterPlotter or rapt rsFilterSpecificationBA
-// -Maybe factor out a function to obtain a weighted sum of unity and the given transfer function:
-//  w1 * 1 + wH * H(z). We also need 1/2 + H(z)/2 and 1/2 - H(z)/2 to turn an allpass into a LP/HP
-//  pair
 // -Maybe implement an even more general function that adds two arbitrary transfer functions. But 
 //  actually it would make more sense to just use rsRationalFunction for that
 
@@ -163,8 +148,8 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
   plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
 
-  plt.initialize();  // needed?
-  plt.plotPolesAndZeros();
+  //plt.initialize();  // needed?
+  //plt.plotPolesAndZeros();
 
   return result;
 
@@ -177,15 +162,26 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   //  (re)initialized commandFile and/or dataFile
 }
 
-bool analyzeComplementaryAllpass(const RAPT::rsFilterSpecificationBA<double>& specBA)
+bool analyzeComplementaryAllpass(const RAPT::rsFilterSpecificationBA<double>& apfBA)
 {
-  analyzeComplementaryFilter(specBA);
-  // Preliminary. It should show an allpass response an twice a highpass response. ...but it 
-  // actually shows an allpass and bandpass response...hmmm...
+  // Obtain the derived lowpass and highpass responses by forming half the sum and difference of
+  // allpass transfer function and unity:
+  RAPT::rsFilterSpecificationBA<double> lpfBA, hpfBA;
+  lpfBA = weightedSumWithOne(apfBA, 0.5,  0.5);
+  hpfBA = weightedSumWithOne(apfBA, 0.5, -0.5);
 
+  // Plot lowpass and highpass responses:
+  FilterPlotter<double> plt;
+  plt.addFilterSpecificationBA(lpfBA);
+  plt.addFilterSpecificationBA(hpfBA);
+  plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
+  plt.plotMagnitude(1000, 0.0, PI, false, false); 
+  // This shows a bandpass and bandreject response
 
-  return true; 
-  // Preliminary. Maybe obtain a lowpass spec as (1+H(z))/2 and use isComplementary
+  //analyzeComplementaryFilter(lpfBA);
+  // This shows the responses, as it should
+
+  return isComplementary(lpfBA) && isComplementary(hpfBA);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -480,12 +476,17 @@ RAPT::rsFilterSpecificationBA<double> complementaryAllpass2p2z()
   ba.a[1] =  0;
   ba.a[2] = -q2;
 
-  ba.b = ba.a;  
+  ba.b = ba.a;
   rsReverse(ba.b);
 
   return ba;
 }
-// Needs test.
+// Hmmm...the responses of the derived lowpass and highpass do not look right. Maybe the idea that
+// we can just use a lowpass design, turn it into an allpass by using the same poles and invert 
+// them to obtain the zeros and then getting the lowpass back by doing (1 + H(z)) / 2 is 
+// fundamentally flawed? I kinda assumed that it may work without much justification other than 
+// having it seen working for the 1st order case. The responses we get here look more like the
+// bandpass/bandstop responses that we would get by starting from a 1st order prototype.
 
 
 
