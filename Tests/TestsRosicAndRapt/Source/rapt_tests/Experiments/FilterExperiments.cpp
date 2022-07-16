@@ -705,22 +705,22 @@ void complementaryFiltersIIR()
   double wp = PI/2;  // Prototype lowpass cutoff
   double wt = PI/8;  // Target lowpass cutoff
   //analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass1p1z(), wp, wt));
-  analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass2p2z(), wp, wt));
+  //analyzeComplementaryFilter(zLowpassToLowpass(complementaryLowpass2p2z(), wp, wt));
 
   // Now we exchange lowpass and highpass to test the LP -> HP transform:
   //analyzeComplementaryFilter(zLowpassToHighpass(complementaryLowpass1p1z(), wp, wt));
-  analyzeComplementaryFilter(zLowpassToHighpass(complementaryLowpass2p2z(), wp, wt));
+  //analyzeComplementaryFilter(zLowpassToHighpass(complementaryLowpass2p2z(), wp, wt));
 
 
   // Now the derived bandpass/notch pairs:
   double wl = 1*PI/4;  // lower bandedge
   double wu = 3*PI/4;  // upper bandedge
   //analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass1p1z(), wp, wl, wu));
-  analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass2p2z(), wp, wl, wu));
+  //analyzeComplementaryFilter(zLowpassToBandpass(complementaryLowpass2p2z(), wp, wl, wu));
 
   // Now with exchange of bandpass and notch:
   //analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass1p1z(), wp, wl, wu));
-  analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass2p2z(), wp, wl, wu));
+  //analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass2p2z(), wp, wl, wu));
 
 
   // Now try the allpass based prototype designs (this does not yet work properly):

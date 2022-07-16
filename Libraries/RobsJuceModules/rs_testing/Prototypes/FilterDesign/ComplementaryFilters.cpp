@@ -147,6 +147,7 @@ bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& spe
   //plt.initialize();  // needed?
   plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
   plt.plotMagnitude(1000, 0.0, PI, false, false); // todo: write pi/2, pi, 2pi etc on the w-axis
+  //plt.plotMagnitude(10000, 0.0, PI, false, false); 
 
   //plt.initialize();  // needed?
   //plt.plotPolesAndZeros();
@@ -240,12 +241,14 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z()
   ba.b.resize(3);
 
   //double q2 = -0.101;
-  double q2 = -0.1010454;
+  double q2 = -0.1010452;
   // Our tweakable. q2 = -0.101 seems to be (near) the value where there's no overshoot. With
   // -0.102, we can seen some slight overshoot/resonant peak when zooming in.
   // ToDo: numerically optimize that value. So far, I have only eyeballed it. The goal is to get
   // to the point just before an overshoot peak forms. Maybe find the peak of the freq-response and
   // then adjust q2 to the maximum value possible such that the peak is still at DC.
+  // ...OK - i have refined it to -0.1010452 using the plots. It may be necessary to use a higher 
+  // plot resoultion to do this (10000 instead of 1000 points)
 
   ba.a[0] = 1;
   ba.b[0] = 0.5;
