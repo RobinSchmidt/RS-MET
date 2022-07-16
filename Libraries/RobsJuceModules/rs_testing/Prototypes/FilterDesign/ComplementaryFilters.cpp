@@ -409,6 +409,31 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
   return ba;
 }
 
+
+RAPT::rsFilterSpecificationBA<double> complementaryAllpass2p2z()
+{
+  // We replicate the poles (i.e. the feedback coeffs) of the complementaryLowpass2p2z design and
+  // obtain the feedforward coeffs by array reversal of the feedback coeffs.
+
+  rsFilterSpecificationBA<double> ba;
+  ba.sampleRate = 1;
+  ba.a.resize(3);
+
+  double q2 = -0.101; // Our tweakable. See comments in the 2p2z lowpass design.
+
+  ba.a[0] =  1;
+  ba.a[1] =  0;
+  ba.a[2] = -q2;
+
+  ba.b = ba.a;  
+  rsReverse(ba.b);
+
+  return ba;
+}
+// Needs test.
+
+
+
 // Maybe requiring C(z) = B(-z) is too restrictive - we assumed that A(z) = A(-z) in the step going 
 // from requiring G(z) = H(-z) - maybe by not imposing such a symmetry constraint on A(z), more 
 // degrees of freedom can be unlocked?
@@ -522,10 +547,15 @@ RAPT::rsFilterSpecificationBA<double> zLowpassToBandreject(
   return zpk.toBA();
 }
 
-
+// -Maybe these functions should go into class rsPoleZeroMapper. The functionality fits there well.
+//  But there, they should operate on raw arrays for production use. We can the keep these 
+//  functions here as convenience functions that call the other ones.
 // -These formulas are quite expensive to implement. Maybe it would be cheaper to do a bilinear
 //  z-to-s transform, then do an s-domain frequency transformation, then transform back to the
-//  z-domain by a bilinear s-to-z transform?
+//  z-domain by a bilinear s-to-z transform? How should be deal with wl, wu? How did RBJ do it? He
+//  says something about prewarping the bandwidth - how does that work? Maybe it would make sense
+//  to match the center frequency and lower bandedge and just ignore the upper bandedge and let it 
+//  fall whereever it falls?
 // -What about a lowpass-to-lowshelf trafo in the z-domain?
 // -Maybe implement the same functions for rsFilterSpecificationZPK. the BA versions may then
 //  just call return zLowpassToLowpass(baProto.toZPK(), wp, wt).toBA(); etc.

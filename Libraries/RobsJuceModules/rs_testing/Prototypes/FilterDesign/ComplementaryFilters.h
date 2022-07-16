@@ -18,7 +18,8 @@ bool isComplementary(const RAPT::rsFilterSpecificationBA<double>& specBA);
 bool analyzeComplementaryFilter(const RAPT::rsFilterSpecificationBA<double>& specBA);
 
 
-// The actual prototype designs that satisfy the mirror-image conditions:
+// The actual prototype designs that satisfy the mirror-image conditions. The highpass signal is
+// obtained by subtracting the lowpass signal from the original.
 
 // Probably useful:
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z();
@@ -32,19 +33,26 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z();
 //RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z();
 
 
+// Prototype allpass designs. The lowpass/highpass signals are obtained as input plus/minus allpass 
+// divided by two.
+
+RAPT::rsFilterSpecificationBA<double> complementaryAllpass2p2z();
+
+
+
 /** Used internally by zLowpassToLowpass, zLowpassToHighpass. */
 void zMapFirstOrder(RAPT::rsFilterSpecificationZPK<double>& zpk, double g, double c, 
   std::complex<double> zNorm);
 
+/** Used internally by zLowpassToBandpass, zLowpassToBandreject. */
+void zMapSecondOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c, double d,
+  std::complex<double> zNorm)
 
 /** Transforms the given prototype lowpass filter specification with cutoff wp (in radians) into 
 another lowpass specification with some target cutoff wt (also in radians) using the 
 Constantinides transform formula. */
 RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
   const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wt);
-// Maybe this function should go into class rsPoleZeroMapper - the functionality fits there well. But
-// there, it should operate on raw arrays for production use. We can the keep this function here as
-// convenience function that callsthe other one
 
 RAPT::rsFilterSpecificationBA<double> zLowpassToHighpass(
   const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wt);

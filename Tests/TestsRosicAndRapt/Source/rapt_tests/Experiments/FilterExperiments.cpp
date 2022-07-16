@@ -722,11 +722,9 @@ void complementaryFiltersIIR()
   analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass1p1z(), wp, wl, wu));
   analyzeComplementaryFilter(zLowpassToBandreject(complementaryLowpass2p2z(), wp, wl, wu));
 
-
-  // ...
-
-
-
+  // ToDo:
+  // -Make a function analyzeComplementaryAllpass and test it with allpass version of the 2p2z
+  //  design
 }
 
 
