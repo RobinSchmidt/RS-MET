@@ -513,7 +513,7 @@ void bandSplittingThreeWay2p2z()
   int  N  = 4096;
   Real fs = 44100;
   Real fc = 1000;
-  Real bw = 3;
+  Real bw = 5.0;
 
   Real k  = sqrt(pow(2.0, bw));
   Real fl = fc / k;
@@ -560,12 +560,21 @@ void bandSplittingThreeWay2p2z()
   splt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
   splt.plotDecibelSpectraOfRows(Y);
 
-
-
   // Observations:
   // -Filters have a slope of 20 dB/dec = 6 dB/oct, so they are not really steeper that the old
   //  filters based on a one-pole prototype. However, the responses look better nonetheless. The
   //  bandpass now hs a flat region in the passband which the old didn't have.
+  // -Using very small bandwidths like bw = 0.01, we also have the feature that the notches 
+  //  disappear in the LP/HP responses. But: using bw = 0 doesn't work. The polynomial root-finder
+  //  fails!
+
+  // ToDo:
+  // -Make it work for bw = 0.
+  // -Build a multiband waveshaper using this splitter
+  // -Try to get rid of the frequency cramping by transforming the filters by inverse BLT into the
+  //  s-domain, do all transformations there and transform the results back to the z-domain using
+  //  a prescribed Nyquist gain approach. Maybe map the poles via MZT and adjust the feedforward
+  //  coeffs according to the constraints like in Martin Vicanek's paper. 
 
 
   int dummmy = 0;
