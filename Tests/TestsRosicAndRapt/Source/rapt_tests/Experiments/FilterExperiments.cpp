@@ -483,12 +483,33 @@ void bandSplittingThreeWay()
   int dummmy = 0;
 }
 
+template<class T>
+void applyFilter(const rsFilterSpecificationBA<T>& spec, T* x, T* y, int N)
+{
+  // Convert complex coeffs to real (we assume that the imaginary parts are zero anyway - otherwise
+  // it won't work):
+  std::vector<T> a(spec.a.size()), b(spec.b.size());
+  for(size_t i = 0; i < a.size(); i++) a[i] = real(spec.a[i]);
+  for(size_t i = 0; i < b.size(); i++) b[i] = real(spec.b[i]);
+
+  // Create and set up a direct from filter:
+  int order = rsMax(spec.a.size(), spec.b.size()) - 1;
+  rsDirectFormFilter<T, T> flt(order);
+  flt.setCoefficients(&a[0], &b[0], order);
+
+  // Filter the signal:
+  for(int n = 0; n < N; n++)
+    y[n] = flt.getSample(x[n]);
+}
+
 void bandSplittingThreeWay2p2z()
 {
   using Real = double;
+  using Vec  = std::vector<Real>;
   using SpecBA = rsFilterSpecificationBA<Real>;
 
 
+  int  N  = 4096;
   Real fs = 44100;
   Real fc = 1000;
   Real bw = 2;
@@ -516,14 +537,19 @@ void bandSplittingThreeWay2p2z()
   plt.addFilterSpecificationBA(lpfBA);
   plt.addFilterSpecificationBA(hpfBA);
   plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
-  plt.plotMagnitude(1000, 0.0, PI, false, false); 
+  //plt.plotMagnitude(1000, 0.0, PI, false, false); 
   // But here, we plot only the LP/HP responses themselves. In an actual splitter, they are applied
   // to the notch output. To plot these responses theoretically, we need to obtain the complement
   // of the bandpass and compose (multiply) it with the given LP/HP responses. It would also be 
   // nicer to use a logarithmic frequency axis.
 
-
   // Plot numerically computed magnitude responses:
+  rsDirectFormFilter<Real, Real> bpf(4), lpf(2);
+  Vec x(N), yL(N), yM(N), yH(N);             // input and low/mid/high outputs
+  x[0] = 1;
+  applyFilter(bpfBA, &x[0], &yM[0], N);      // mid signal (bandpassed)
+
+
   //...
 
 
