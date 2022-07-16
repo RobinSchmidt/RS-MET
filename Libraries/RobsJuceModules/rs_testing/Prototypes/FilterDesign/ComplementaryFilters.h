@@ -48,7 +48,10 @@ RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
 
 RAPT::rsFilterSpecificationBA<double> zLowpassToHighpass(
   const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wt);
-// does not yet seem to work, polynomial root finder asserts
+
+RAPT::rsFilterSpecificationBA<double> zLowpassToBandpass(
+  const RAPT::rsFilterSpecificationBA<double>& spec, double wp, double wl, double wu);
+
 
 
 // ToDo: 

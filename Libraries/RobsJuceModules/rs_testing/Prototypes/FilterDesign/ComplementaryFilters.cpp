@@ -417,7 +417,7 @@ void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c,
 {
   using Complex = std::complex<double>;
   Complex one(1);
-  Complex k  = zpk.k;
+  Complex k = zpk.k;
   zpk.k = one;
   double kp = rsAbs(zpk.transferFunctionAt(one));
   auto mapRoot = [&](Complex r) { return (g*r - c) / (one - g*r*c); };
@@ -429,6 +429,34 @@ void zMapFirstOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c,
   // See:
   // http://www.rs-met.com/documents/dsp/TwoInterpretationsOfFrequencyWarpedTransferFunctions.pdf
 }
+
+void zMapSecondOrder(rsFilterSpecificationZPK<double>& zpk, double g, double c, double d,
+  std::complex<double> zNorm)
+{
+  using Complex = std::complex<double>;
+  Complex one(1);
+  Complex k = zpk.k;
+  zpk.k = one;
+  double kp = rsAbs(zpk.transferFunctionAt(one));
+  auto mapRoot = [&](Complex r, Complex* r1, Complex* r2) 
+  { 
+    Complex k1, k2, k3, k4;
+    k1 = 1.0 / (2.*d*g*r - 2.0);
+    k2 = k1 * c * (1.0 - g*r);
+    k3 = c*c - 4.0*d;
+    k4 = k1 * rsSqrt(k3*(1.0+g*g*r*r) + (4.*d*d-2.*c*c+4.)*g*r);
+    *r1 = k2 - k4;
+    *r2 = k2 + k4;
+  };
+  int M = (int) zpk.z.size(); zpk.z.resize(2*M);
+  int N = (int) zpk.p.size(); zpk.p.resize(2*N);
+  for(int i = M-1; i >= 0; --i) mapRoot(zpk.z[i], &zpk.z[2*i], &zpk.z[2*i+1]);
+  for(int i = N-1; i >= 0; --i) mapRoot(zpk.p[i], &zpk.p[2*i], &zpk.p[2*i+1]);
+  double kt = rsAbs(zpk.transferFunctionAt(zNorm));
+  zpk.k = k * (kp/kt);
+}
+
+
 
 RAPT::rsFilterSpecificationBA<double> zLowpassToLowpass(
   const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wt)
@@ -445,6 +473,26 @@ RAPT::rsFilterSpecificationBA<double> zLowpassToHighpass(
   zMapFirstOrder(zpk, -1.0, -cos(0.5*(wp+wt)) / cos(0.5*(wp-wt)), -1.0);
   return zpk.toBA();
 }
+
+RAPT::rsFilterSpecificationBA<double> zLowpassToBandpass(
+  const RAPT::rsFilterSpecificationBA<double>& baProto, double wp, double wl, double wu)
+{
+  using Complex = std::complex<double>;
+  rsFilterSpecificationZPK<double> zpk = baProto.toZPK();
+
+  // Maybe factor out (is needed also for LP -> BR):
+  double a  = - cos(0.5*(wu+wl)) / cos(0.5*(wu-wl));
+  double t1 = tan(0.5*wp);
+  double t2 = tan(0.5*(wu-wl));
+
+  double k  = t1/t2;
+  double wc = 2*atan(sqrt(tan(wl/2.)*tan(wu/2.)));
+  Complex j(0,1);
+  Complex zNorm = exp(j*wc);
+  zMapSecondOrder(zpk, -1.0, 2*a*k/(k+1.0), (k-1.0)/(k+1.0), zNorm);
+  return zpk.toBA();
+}
+
 
 
 // Maybe requiring C(z) = B(-z) is too restrictive - we assumed that A(z) = A(-z) in the step going 
