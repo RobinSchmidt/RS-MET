@@ -473,13 +473,54 @@ void bandSplittingThreeWay()
   //  everything into the mid band?
   // -Try to avoid the bilinear frequency cramping by using prescribed Nyquist gain designs for
   //  bandpass and lowpass.
-  // -Try to figure out hwo to do splitters with steeper slopes like we already did for the 2-way
-  //  splitter
+  // -Try to figure out how to do splitters with steeper slopes like we already did for the 2-way
+  //  splitter. Adapt the 2p2z lowpass design (turn it into a bandbass) and combine it with the
+  //  lowpass highpass of that same sort. In general, we can actually let the use select the 
+  //  bandpass and lowpass design prototypes independently although it certainly makes sense from
+  //  an aesthetic point of view to base both on the same prototype...but who cares about pretty
+  //  plots? It's about the sound!
 
+  int dummmy = 0;
+}
+
+void bandSplittingThreeWay2p2z()
+{
+  using Real = double;
+  using SpecBA = rsFilterSpecificationBA<Real>;
+
+
+  Real fs = 44100;
+  Real fc = 1000;
+  Real bw = 2;
+
+
+  Real fl = 500;
+  Real fu = 2000;
+  // ToDo: 
+  // -Compute them from fc and bw. Maybe we somehow need to prewarp bw? If so, how?
+
+  // Design lowpass and bandpass:
+  Real wp = PI/2;          // prototype cutoff
+  Real wc = 2*PI*fc/fs;
+  Real wl = 2*PI*fl/fs;
+  Real wu = 2*PI*fu/fs;
+  SpecBA protoBA = complementaryLowpass2p2z();
+  SpecBA lpfBA   = zLowpassToLowpass( protoBA, wp, wc);
+  SpecBA bpfBA   = zLowpassToBandpass(protoBA, wp, wl, wu);
+
+
+  // Plot analytically computed magnitude responses:
+  //...
+
+
+  // Plot numerically computed magnitude responses:
+  //...
 
 
   int dummmy = 0;
 }
+
+
 
 void bandSplittingMultiWay()
 {
