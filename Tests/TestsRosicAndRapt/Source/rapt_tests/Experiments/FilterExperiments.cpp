@@ -504,8 +504,9 @@ void applyFilter(const rsFilterSpecificationBA<T>& spec, T* x, T* y, int N)
 
 void bandSplittingThreeWay2p2z()
 {
-  using Real = double;
-  using Vec  = std::vector<Real>;
+  using Real   = double;
+  using Vec    = std::vector<Real>;
+  using Mat    = rsMatrix<Real>;
   using SpecBA = rsFilterSpecificationBA<Real>;
 
 
@@ -532,27 +533,39 @@ void bandSplittingThreeWay2p2z()
 
 
   // Plot analytically computed magnitude responses:
-  FilterPlotter<Real> plt;
-  plt.addFilterSpecificationBA(bpfBA);
-  plt.addFilterSpecificationBA(lpfBA);
-  plt.addFilterSpecificationBA(hpfBA);
-  plt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
-  //plt.plotMagnitude(1000, 0.0, PI, false, false); 
+  FilterPlotter<Real> fplt;
+  fplt.addFilterSpecificationBA(bpfBA);
+  fplt.addFilterSpecificationBA(lpfBA);
+  fplt.addFilterSpecificationBA(hpfBA);
+  fplt.addCommand("set xtics ('0' 0, 'sr/4' pi/2, 'sr/2' pi)");
+  //fplt.plotMagnitude(1000, 0.0, PI, false, false); 
   // But here, we plot only the LP/HP responses themselves. In an actual splitter, they are applied
   // to the notch output. To plot these responses theoretically, we need to obtain the complement
   // of the bandpass and compose (multiply) it with the given LP/HP responses. It would also be 
   // nicer to use a logarithmic frequency axis.
 
   // Plot numerically computed magnitude responses:
-  rsDirectFormFilter<Real, Real> bpf(4), lpf(2);
-  Vec x(N), yL(N), yM(N), yH(N);             // input and low/mid/high outputs
-  x[0] = 1;
-  applyFilter(bpfBA, &x[0], &yM[0], N);      // mid signal (bandpassed)
+  Mat Y(3, N);
+  Vec x = createImpulse(N);
+  Vec tmp(N);
+  applyFilter(bpfBA, &x[0], Y.getRowPointer(0), N);       // mid signal (bandpassed)
+  for(int n = 0; n < N; n++) tmp[n] = x[n] - Y(0, n);     // notch signal (in - bandpass)
+  applyFilter(lpfBA, &tmp[0], Y.getRowPointer(1), N);     // low signal
+  for(int n = 0; n < N; n++) Y(2, n) = tmp[n] - Y(1, n);  // high signal
+
+  SpectrumPlotter<Real> splt;
+  splt.setFftSize(N);
+  splt.setSampleRate(fs);
+  splt.setLogFreqAxis(true);
+  splt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
+  splt.plotDecibelSpectraOfRows(Y);
 
 
-  //...
 
-
+  // Observations:
+  // -Filters have a slope of 20 dB/dec = 6 dB/oct, so they are not really steeper that the old
+  //  filters based on a one-pole prototype. However, the responses look better nonetheless. The
+  //  bandpass now hs a flat region in the passband which the old didn't have.
 
 
   int dummmy = 0;
