@@ -32,8 +32,10 @@ bool analyzeComplementaryAllpass(const RAPT::rsFilterSpecificationBA<double>& sp
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass1p1z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p2z();
 
+
 // Probably useless:
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass2p3z();
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z();
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z1t(); // 1t: one tweakable
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z();   // 2t
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z();

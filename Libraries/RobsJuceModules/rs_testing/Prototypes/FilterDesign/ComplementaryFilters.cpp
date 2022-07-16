@@ -318,6 +318,25 @@ rsFilterSpecificationBA<double> complementaryLowpass2p3z()
   return ba;
 }
 
+RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
+{
+  rsFilterSpecificationZPK<double> zpk;
+  zpk.sampleRate = 1;
+  zpk.z.resize(3);
+  zpk.p.resize(3);
+
+
+  zpk.z[0] = -1.0;
+  zpk.z[1] = -1.0;
+  zpk.z[2] = -1.0;
+
+
+  zpk.k = 1.0 / 8.0;
+
+
+  return zpk.toBA();
+}
+
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p4z1t()
 {
   // sage:
@@ -456,6 +475,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass4p5z()
   return ba;
 }
 
+/*
 RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
 {
   // preliminary:
@@ -463,6 +483,7 @@ RAPT::rsFilterSpecificationBA<double> complementaryLowpass3p3z()
   ba.a.resize(4); 
   return ba;
 }
+*/
 
 
 
