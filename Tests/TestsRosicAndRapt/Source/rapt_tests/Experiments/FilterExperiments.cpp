@@ -513,13 +513,13 @@ void bandSplittingThreeWay2p2z()
   int  N  = 4096;
   Real fs = 44100;
   Real fc = 1000;
-  Real bw = 2;
+  Real bw = 3;
 
-
-  Real fl = 500;
-  Real fu = 2000;
+  Real k  = sqrt(pow(2.0, bw));
+  Real fl = fc / k;
+  Real fu = fc * k;
   // ToDo: 
-  // -Compute them from fc and bw. Maybe we somehow need to prewarp bw? If so, how?
+  // -Maybe we somehow need to prewarp bw? If so, how?
 
   // Design lowpass and bandpass:
   Real wp = PI/2;          // prototype cutoff
