@@ -717,9 +717,15 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
   // Pre-process the string to make parsing easier:
   std::string str = strIn;
-  rsRemoveLineComments(str, '/');     // remove the comments
-  rsReplaceCharacter(str, '\n', ' '); // replace newlines with whitespaces
-  rsRemoveRepeats(str, ' ');          // replace sequences of whitespaces with single whitespace
+
+  //rsReplace(str, "\r\n", "\n");       // convert CR+LF with LF line endings
+  // Maybe it would be more efficient to just replace the '\r' character with '\n' and leave the
+  // removal/ of the resulting double "\n\n" to the code below? ...yeah, let's try that:
+  rsReplaceCharacter(str, '\r', '\n'); // convert CR+LF with LF+LF line endings
+
+  rsRemoveLineComments(str, '/');      // remove the comments
+  rsReplaceCharacter(str, '\n', ' ');  // replace newlines with whitespaces
+  rsRemoveRepeats(str, ' ');           // replace sequences of whitespaces with single whitespace
   // -Factor out into a function preProcessSfz
   // -prepend a <group> tag if the file doesn't start with one, i.e. starts with a naked region
   // -Include stripping away comments (done?). A comment begins with a slash '/' and extends until 
@@ -1011,19 +1017,21 @@ void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::str
 PlaybackSetting SfzInstrument::getSettingFromString(
   const std::string& opStr, const std::string& valStr)
 {
-
-  
   using PS  = PlaybackSetting;
   using PST = Opcode;
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   int idx;
   PST   op  = cb->stringToOpcode(opStr, &idx);
   
-  RAPT::rsAssert(op != PST::Unknown);
+  //RAPT::rsAssert(op != PST::Unknown);
   // I get crashed on the Mac here when opStr == "\r" and valStr == "\r". Apparently, this happens
   // when sthe .sfz file contains CR + LF line endings. The "\r" shouldn't actually be there. I
   // never wrote it, at least. I think, we need some unit tests that check correct parsing
   // regardless whether LF or CR+LF is used in the sfz file.
+  // ...but maybe asserting in case of unknown is wrong? We hit this assert in the unit tests and 
+  // the caller actually also tests if the result is PST::Unknown which seems to be a valid 
+  // situation - modulation routing opcodes are treated here as "Unknown" because they are
+  // dynamically generated
   
   float val = cb->stringToValue(op, valStr);
   return PS(op, val, idx);

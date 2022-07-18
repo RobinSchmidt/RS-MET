@@ -31,11 +31,11 @@ bool testFeedbackDelayNetwork();
 bool testMultiComp();
 
 // filters:
-void testLadderFilter();                   // is esperiment
-void testModalFilter();                    // is esperiment
-void testModalFilterWithAttack();          // is esperiment
-void testBiquadPhasePlot();                // is esperiment
-void testFiniteImpulseResponseDesigner();  // is esperiment
+void testLadderFilter();                   // is experiment
+void testModalFilter();                    // is experiment
+void testModalFilterWithAttack();          // is experiment
+void testBiquadPhasePlot();                // is experiment
+void testFiniteImpulseResponseDesigner();  // is experiment
 bool testConvolverPartitioned();
 bool testFiniteImpulseResponseFilter();
 void testFilterAnalyzer();
