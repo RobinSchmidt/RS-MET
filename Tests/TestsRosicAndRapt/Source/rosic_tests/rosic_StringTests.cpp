@@ -53,6 +53,19 @@ bool testStringBufferCopying()
   return ok;
 }
 
+bool testSubstringReplace()
+{
+  bool ok = true;
+
+  std::string s  = "abcdabcdcfab";
+  std::string s1 = s;
+
+  rosic::rsReplace(s1, "ab", "abc");
+  ok &= s1 == "abccdabccdcfabc";
+
+  return ok;
+}
+
 bool testStringIntConversions(int numIterations)
 {
   bool ok = true;
@@ -185,7 +198,7 @@ bool testRosicString()
   bool ok = true;
   ok &= testCharacterComparisons();
   ok &= testStringBufferCopying();
-  // ok &= testSubstringReplace();    // needs to be written
+  ok &= testSubstringReplace();
   ok &= testStringIntConversions(10000);
   ok &= testStringDoubleConversions();  // fails!
   // ToDo: testStringConcatenation(), testStringComparison()
