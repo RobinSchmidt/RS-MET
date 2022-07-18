@@ -4,7 +4,30 @@ using namespace rosic;
 //#include "../RSLib/Core/RSCore.h"  // get rid
 #include "PortedFromRSLib/RSLib/Core/RSCore.h"  // get rid - it should go to rosic
 
-bool rotes::testFileText()
+namespace rotes
+{
+
+rsString createStringWithAllCharacters()
+{
+  char cString[256];
+  for(int i=0; i<256; i++)
+    cString[256-i-1] = i;  // backwards for compliance with C strings
+  return rsString(cString);
+}
+rsString createStringWithAllPrintableCharacters()
+{
+  static const int firstPrintableIndex = 32;   // whitespace ' '
+  static const int lastPrintableIndex  = 127;  // tilde '~'
+  static const int numPrintables       = lastPrintableIndex-firstPrintableIndex;
+
+  char cString[numPrintables+1];
+  for(int i=0; i<numPrintables; i++)
+    cString[i] = i+firstPrintableIndex;
+  cString[numPrintables] = '\0';
+  return rsString(cString);
+}
+
+bool testFileText()
 {
   // Tests, if we can write a string into a file and retrieve it again, the string must not 
   // contain non-printable characters..
@@ -32,7 +55,7 @@ bool rotes::testFileText()
   // -test rsWriteStringToFile, rsReadStringFromFile
 }
 
-bool rotes::testFileWave()
+bool testFileWave()
 {
   bool ok = true;
 
@@ -47,7 +70,7 @@ bool rotes::testFileWave()
   i = WF::float32ToInt16(+1.f);      // maps to +32767
   for(i = -32768; i <= 32767; i++)
   {
-    f = WF::int16ToFloat32((rsInt16) i);
+    f = WF::int16ToFloat32((rsInt16)i);
     rsInt16 j = WF::float32ToInt16(f);
     ok &= i == j;
   }
@@ -67,8 +90,12 @@ bool rotes::testFileWave()
   return ok;
 
   // ToDo:
-  // -for the sake of completeness, implement and test 8 bit conversion
+  // -For the sake of completeness, implement and test 8 bit conversion and maybe also 32-bit int
+  //  ...but for that, exhaustive testing my take too long...although, 4 billion may still be
+  //  managable
   // -test actually writing and reading files in various formats (different bit-depths, 
   //  sample-rates, numbers of channels, etc.)
+  // -maybe use constants min16 = -32768, max16 = +32767, etc.
 }
 
+}

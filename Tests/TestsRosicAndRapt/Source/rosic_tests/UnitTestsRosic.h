@@ -20,11 +20,6 @@ namespace rotes  // maybe get rid of this namespace
 // string
 bool testRosicString(); // all tests for rosic::String
 
-// Move these into the file tests - that's where they are needed - when done, we may get rid of the
-// forward declarations here :
-rosic::rsString createStringWithAllCharacters();
-rosic::rsString createStringWithAllPrintableCharacters();
-
 // file:
 bool testFileText();
 bool testFileWave();  

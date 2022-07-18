@@ -180,26 +180,6 @@ bool testStringDoubleConversions()
   return ok;
 }
 
-rsString rotes::createStringWithAllCharacters()
-{
-  char cString[256];
-  for(int i=0; i<256; i++)
-    cString[256-i-1] = i;  // backwards for compliance with C strings
-  return rsString(cString);
-}
-rsString createStringWithAllPrintableCharacters()
-{
-  static const int firstPrintableIndex = 32;   // whitespace ' '
-  static const int lastPrintableIndex  = 127;  // tilde '~'
-  static const int numPrintables       = lastPrintableIndex-firstPrintableIndex;
-
-  char cString[numPrintables+1];
-  for(int i=0; i<numPrintables; i++)
-    cString[i] = i+firstPrintableIndex;
-  cString[numPrintables] = '\0';
-  return rsString(cString);
-}
-
 bool testRosicString()
 {
   bool ok = true;
@@ -208,8 +188,6 @@ bool testRosicString()
   // ok &= testSubstringReplace();    // needs to be written
   ok &= testStringIntConversions(10000);
   ok &= testStringDoubleConversions();  // fails!
-
-
   // ToDo: testStringConcatenation(), testStringComparison()
   return ok;
 }
