@@ -1496,6 +1496,12 @@ pan=100.000000";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   ok &= se2.isInSameStateAs(se);
 
+  // ToDo: convert "\n" to "\r\n" via string replacement in sfzStr and then do the same test again
+  // See:
+  // https://stackoverflow.com/questions/1552749/difference-between-cr-lf-lf-and-cr-line-break-types
+
+  // we actually already have rosic::rsReplace which is supposed to do exactly that
+
   // Now we try it with spaces instead of newlines between the region opcodes:
   sfzStr = "\
 <group>\n\
@@ -4290,7 +4296,11 @@ bool samplerEngineUnitTest()
   rsAssert(ok);
 
   // ToDo:
-  // make a sfzCodeBookTest that tests the from/to strin converrsions
+  // -unit test the parser with both LF (i.e. "\n") and CRLF (i.e. "\r\n") line endings. Into some
+  //  of my sfz files, apparently, some CRLF lines endings have sneaked in. The parser should be 
+  //  able to hanlde both types of line endings. Maybe just convert any '\r' characters to '\n' 
+  //  characters. 
+  // -make a sfzCodeBookTest that tests the from/to string converrsions
 
   // -Refactor:
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 

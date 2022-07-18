@@ -11,6 +11,7 @@ bool rotes::testRosicString()
   ok &= testStringBufferCopying();
   ok &= testStringIntConversions();
   ok &= testStringDoubleConversions();  // fails!
+  // ok &= testSubstringReplace();    // needs to be written
   return ok;
 }
 

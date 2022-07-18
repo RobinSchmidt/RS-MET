@@ -34,7 +34,7 @@ bool runUnitTestsRosic()
   ok &= runUnitTest(&testRosicFilter,         "Filter");
   ok &= runUnitTest(&testRosicNonRealTime,    "NonRealTime");
   ok &= runUnitTest(&testRosicEffects,        "Effects");
-  ok &= runUnitTest(&testRosicMath,           "Math");
+  ok &= runUnitTest(&testRosicMath,           "Math");              // Fails in polynomial root finder test
   ok &= runUnitTest(&testRosicNumerical,      "Numerical");
   ok &= runUnitTest(&testRosicString,         "String");            // Fails! reason: double/string roundtrip..see comments in the tests
   ok &= runUnitTest(&testTypeSizes,           "TypeSizes");

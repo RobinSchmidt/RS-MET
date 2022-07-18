@@ -495,5 +495,9 @@ void rosic::rsReplace(std::string& subject, const std::string& search, const std
   // Code taken from answer 20 here:
   // https://stackoverflow.com/questions/4643512/replace-substring-with-another-substring-c
   // has no unit tests yet -> write some!
+  // See also:
+  // https://stackoverflow.com/questions/3418231/replace-part-of-a-string-with-another-string
+  // https://riptutorial.com/cplusplus/example/1604/string-replacement
+  // https://www.delftstack.com/howto/cpp/string-replace-cpp/
 }
 // maybe rename to rsReplaceAll, write also rsReplaceFirst, rsReplaceLast

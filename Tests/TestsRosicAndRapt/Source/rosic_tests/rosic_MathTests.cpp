@@ -249,14 +249,13 @@ bool rotes::testPolynomialRootFinder()
           break;
         }
       }
-      rassert( matchFound == true );
+      //rassert( matchFound == true );
       result &= matchFound;
     }
-    rassert( result == true );
+    //rassert( result == true );
   }
 
-  rassert( result == true );
-  int dummy = 0;
+  //rassert( result == true );
   return result;
 }
 

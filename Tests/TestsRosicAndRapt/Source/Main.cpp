@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
   // Unit tests:
   bool ok = true;
   //ok &= runUnitTestsRapt();
-  //ok &= runUnitTestsRosic();
+  ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
   //bandSplitFreqResponses();
   //biDirectionalStateInit();
   //biquadTail();
-  complementaryFiltersIIR();
+  //complementaryFiltersIIR();
   //engineersFilterRingResp();   // ringing response (experimental idea)
   //engineersFilterFreqResps();
   //firstOrderFilters();
@@ -438,7 +438,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
+  //windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
   //windowedSinc();
   //waveMorph();  // under construction
 

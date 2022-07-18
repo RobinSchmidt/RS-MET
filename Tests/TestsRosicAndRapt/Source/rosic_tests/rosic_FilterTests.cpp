@@ -403,7 +403,7 @@ bool rotes::testFiniteImpulseResponseFilter()
   // Retrieve and plot impulse response:
   int L = filter.getKernelLength();
   const double* h = filter.getKernelPointer();
-  rsPlotArray(h, L);                   // looks good!
+  //rsPlotArray(h, L);                   // looks good!
 
   // Create some noise and apply the filter:
   int M = N+L+10;                      // actual nonzero output length should be N+L-1
@@ -423,7 +423,7 @@ bool rotes::testFiniteImpulseResponseFilter()
   //rsPlotVectors(x, y, r);            // uncomment this only when N is short
   
   // Write wavefile for inspection:
-  writeToMonoWaveFile("FilteredNoise.wav", &y[0], (int)y.size(), sampleRate, 16);
+  //writeToMonoWaveFile("FilteredNoise.wav", &y[0], (int)y.size(), sampleRate, 16);
 
   // ToDo: 
   // -If we set the kernel length to something that is larger than the initialö default of 401,
