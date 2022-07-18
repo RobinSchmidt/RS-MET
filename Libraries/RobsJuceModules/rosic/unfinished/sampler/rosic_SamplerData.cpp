@@ -1011,11 +1011,20 @@ void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::str
 PlaybackSetting SfzInstrument::getSettingFromString(
   const std::string& opStr, const std::string& valStr)
 {
+
+  
   using PS  = PlaybackSetting;
   using PST = Opcode;
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   int idx;
   PST   op  = cb->stringToOpcode(opStr, &idx);
+  
+  RAPT::rsAssert(op != PST::Unknown);
+  // I get crashed on the Mac here when opStr == "\r" and valStr == "\r". Apparently, this happens
+  // when sthe .sfz file contains CR + LF line endings. The "\r" shouldn't actually be there. I
+  // never wrote it, at least. I think, we need some unit tests that check correct parsing
+  // regardless whether LF or CR+LF is used in the sfz file.
+  
   float val = cb->stringToValue(op, valStr);
   return PS(op, val, idx);
 }
