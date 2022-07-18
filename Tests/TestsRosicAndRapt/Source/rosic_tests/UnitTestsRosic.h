@@ -19,18 +19,7 @@ namespace rotes  // maybe get rid of this namespace
 
 // string
 bool testRosicString(); // all tests for rosic::String
-//void testStringComparisons();   // why commented?
-bool testCharacterComparisons();
-bool testStringBufferCopying();
-bool testStringIntConversions(int numIterations = 10000);
-bool testStringDoubleConversions();
-bool testStringDoubleConversionsRandom(int numIterations = 10000); 
-bool testStringDoubleConversionsSpecialValues(); 
-bool testStringDoubleConversionsDenormals(); 
-bool testStringDoubleConversionsLarge(); 
-bool testStringDoubleConversionsGeometricProgression(double start, double factor);
-//void testStringConcatenation();
-//void testStringComparison();...
+
 rosic::rsString createStringWithAllCharacters();
 rosic::rsString createStringWithAllPrintableCharacters();
 

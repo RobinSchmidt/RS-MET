@@ -1,21 +1,10 @@
-//#include "rosic_StringTests.h"
-using namespace rotes;
+using namespace rotes;  // get rid
+using namespace rosic;  // maybe get rid
 
-//#include "rosic/rosic.h"
-using namespace rosic;
-
-bool rotes::testRosicString()
+namespace rotes
 {
-  bool ok = true;
-  ok &= testCharacterComparisons();
-  ok &= testStringBufferCopying();
-  ok &= testStringIntConversions();
-  ok &= testStringDoubleConversions();  // fails!
-  // ok &= testSubstringReplace();    // needs to be written
-  return ok;
-}
 
-bool rotes::testCharacterComparisons()
+bool testCharacterComparisons()
 {
   bool ok = true;
 
@@ -43,14 +32,14 @@ bool rotes::testCharacterComparisons()
   return ok;
 }
 
-bool rotes::testStringBufferCopying()
+bool testStringBufferCopying()
 {
   bool ok = true;
 
   static const int charBufferLength = 20;
-  char charBufferOriginal[     charBufferLength];
+  char charBufferOriginal[charBufferLength];
   char charBufferReconstructed[charBufferLength];
-  RAPT::rsArrayTools::fillWithValue(charBufferOriginal,      charBufferLength, 'X');
+  RAPT::rsArrayTools::fillWithValue(charBufferOriginal, charBufferLength, 'X');
   RAPT::rsArrayTools::fillWithValue(charBufferReconstructed, charBufferLength, 'X');
   strcpy(charBufferOriginal, "0123456789");
 
@@ -64,14 +53,14 @@ bool rotes::testStringBufferCopying()
   return ok;
 }
 
-bool rotes::testStringIntConversions(int numIterations)
+bool testStringIntConversions(int numIterations)
 {
   bool ok = true;
   int    numberOriginal, numberReconstructed;
   rsString numString;
   for(int i=0; i<numIterations; i++)
   {
-    numberOriginal      = (int) RAPT::rsRandomUniform(INT_MIN, INT_MAX);
+    numberOriginal      = (int)RAPT::rsRandomUniform(INT_MIN, INT_MAX);
     numString           = numberOriginal;
     numberReconstructed = numString.asInt();
     ok &= numberReconstructed == numberOriginal;
@@ -79,17 +68,7 @@ bool rotes::testStringIntConversions(int numIterations)
   return ok;
 }
 
-bool rotes::testStringDoubleConversions()
-{
-  bool ok = true;
-  ok &= testStringDoubleConversionsRandom(10000);    // fails!
-  ok &= testStringDoubleConversionsSpecialValues();
-  ok &= testStringDoubleConversionsDenormals();      // fails!
-  ok &= testStringDoubleConversionsLarge();          // fails!
-  return ok;
-}
-
-bool rotes::testStringDoubleConversionsRandom(int numIterations)
+bool testStringDoubleConversionsRandom(int numIterations)
 {
   bool ok = true;
   double numberOriginal, numberReconstructed;
@@ -116,8 +95,7 @@ bool rotes::testStringDoubleConversionsRandom(int numIterations)
   // or drag in the code from RSLib for rsBigFloat - i have implemented a parsing algo there, too 
   // and it may be useful anyway
 }
-
-bool rotes::testStringDoubleConversionsSpecialValues()
+bool testStringDoubleConversionsSpecialValues()
 {
   bool ok = true;
   double numberOriginal      = INF;
@@ -147,25 +125,7 @@ bool rotes::testStringDoubleConversionsSpecialValues()
   */
   return ok;
 }
-
-bool rotes::testStringDoubleConversionsDenormals()
-{
-  bool ok = true;
-  ok &= testStringDoubleConversionsGeometricProgression(1.0,  0.5/SQRT2);
-  ok &= testStringDoubleConversionsGeometricProgression(1.0, -0.5/SQRT2);
-  return ok;
-}
-
-
-bool rotes::testStringDoubleConversionsLarge()
-{
-  bool ok = true;
-  ok &= testStringDoubleConversionsGeometricProgression(1.0,  SQRT2);
-  ok &= testStringDoubleConversionsGeometricProgression(1.0, -SQRT2);
-  return ok;
-}
-
-bool rotes::testStringDoubleConversionsGeometricProgression(double start, double factor)
+bool testStringDoubleConversionsGeometricProgression(double start, double factor)
 {
   bool ok = true;
 
@@ -176,16 +136,16 @@ bool rotes::testStringDoubleConversionsGeometricProgression(double start, double
 
   double limit;
   double absFactor = fabs(factor);
-  if( absFactor < 1.0 )
+  if(absFactor < 1.0)
   {
     limit = 0.0;
     ok &= absFactor < 0.5;
     // factors between 0.5...1.0 will make the iteration stall at a finite denormal number
   }
-  else if( absFactor > 1.0 )
+  else if(absFactor > 1.0)
     limit = INF;
 
-  while( fabs(numberOriginal) != limit )
+  while(fabs(numberOriginal) != limit)
   {
     numberOriginal     *= factor;
     numString           = numberOriginal;
@@ -193,6 +153,30 @@ bool rotes::testStringDoubleConversionsGeometricProgression(double start, double
     ok &= numberReconstructed == numberOriginal;
     iteration++;
   }
+  return ok;
+}
+bool testStringDoubleConversionsDenormals()
+{
+  bool ok = true;
+  ok &= testStringDoubleConversionsGeometricProgression(1.0, 0.5/SQRT2);
+  ok &= testStringDoubleConversionsGeometricProgression(1.0, -0.5/SQRT2);
+  return ok;
+}
+bool testStringDoubleConversionsLarge()
+{
+  bool ok = true;
+  ok &= testStringDoubleConversionsGeometricProgression(1.0, SQRT2);
+  ok &= testStringDoubleConversionsGeometricProgression(1.0, -SQRT2);
+  return ok;
+}
+
+bool testStringDoubleConversions()
+{
+  bool ok = true;
+  ok &= testStringDoubleConversionsRandom(10000);    // fails!
+  ok &= testStringDoubleConversionsSpecialValues();
+  ok &= testStringDoubleConversionsDenormals();      // fails!
+  ok &= testStringDoubleConversionsLarge();          // fails!
   return ok;
 }
 
@@ -203,8 +187,7 @@ rsString rotes::createStringWithAllCharacters()
     cString[256-i-1] = i;  // backwards for compliance with C strings
   return rsString(cString);
 }
-
-rsString rotes::createStringWithAllPrintableCharacters()
+rsString createStringWithAllPrintableCharacters()
 {
   static const int firstPrintableIndex = 32;   // whitespace ' '
   static const int lastPrintableIndex  = 127;  // tilde '~'
@@ -215,4 +198,20 @@ rsString rotes::createStringWithAllPrintableCharacters()
     cString[i] = i+firstPrintableIndex;
   cString[numPrintables] = '\0';
   return rsString(cString);
+}
+
+bool testRosicString()
+{
+  bool ok = true;
+  ok &= testCharacterComparisons();
+  ok &= testStringBufferCopying();
+  // ok &= testSubstringReplace();    // needs to be written
+  ok &= testStringIntConversions(10000);
+  ok &= testStringDoubleConversions();  // fails!
+
+
+  // ToDo: testStringConcatenation(), testStringComparison()
+  return ok;
+}
+
 }
