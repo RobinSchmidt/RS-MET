@@ -1,4 +1,20 @@
 
+
+
+bool SfzPlayer::loadFile(const juce::File& fileToLoad)
+{
+  return true;
+}
+
+bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
+{
+  return true;
+}
+
+
+
+//=================================================================================================
+
 SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse) 
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse)
 {
@@ -233,17 +249,7 @@ void SamplerModule::reset()
   engine.reset();
 }
 
-/*
-bool SamplerModule::loadFile(const juce::File& fileToLoad)
-{
-  return true;
-}
 
-bool SamplerModule::saveToFile(const juce::File& fileToSaveTo)
-{
-  return true;
-}
-*/
 
 //=================================================================================================
 
@@ -321,8 +327,6 @@ void SamplerEditor::resized()
   //x = instrumentLabel->getRight()+2;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 
-
-
   sfzFileLoader->setBounds(x, y, 200, 16);
   y += 16;
   sfzEditor.setBounds(x, y, w, getHeight()-y);  // preliminary, uses the full available space
@@ -385,7 +389,7 @@ void SamplerEditor::createWidgets()
 
 
   // The SFZ editor:
-  sfzFileLoader = new jura::FileSelectionBox("", samplerModule);
+  sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->engine);
   addWidgetSet(sfzFileLoader);
   addAndMakeVisible(sfzEditor);
 }

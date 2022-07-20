@@ -2,9 +2,21 @@
 
 
 
+class JUCE_API SfzPlayer : public jura::FileManager, public rosic::Sampler::rsSamplerEngine2
+{
+
+public:
+
+  // Overrides from jura::FileManager to load/save the current .sfz file:
+  bool loadFile(const juce::File& fileToLoad) override;
+  bool saveToFile(const juce::File& fileToSaveTo) override;
+
+protected:
 
 
+};
 
+//=================================================================================================
 
 /** A sampler with functionality roughly based on the sfz specification. It has jura::FileManager
 as baseclass to keep track of the currently loaded .sfz file. The editor has also FileManager as
@@ -54,9 +66,6 @@ public:
   void reset() override;
 
 
-  // Overrides from jura::FileManager to load/save the current .sfz file:
-  //bool loadFile(const juce::File& fileToLoad) override;
-  //bool saveToFile(const juce::File& fileToSaveTo) override;
 
 
 
@@ -82,16 +91,19 @@ protected:
 
   // Shorthands for convenience:
   //using Engine = rosic::rsSamplerEngine;  // old
-  using Engine     = rosic::Sampler::rsSamplerEngine2;   // new
+  //using Engine     = rosic::Sampler::rsSamplerEngine2;   // new
+  using Engine     = jura::SfzPlayer;   // newer - maybe get rid
   using ReturnCode = rosic::Sampler::rsReturnCode;
   using Event      = rosic::Sampler::rsMusicalEvent<float>;
 
-  Engine engine;
+  Engine engine;  // maybe rename to sfzPlayer
   //juce::File sfzFile;
 
   // under construction:
   juce::String sfzRootDir;
   //juce::String sampleRootDir;
+
+  friend class SamplerEditor;  // maybe try to get rid
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };
