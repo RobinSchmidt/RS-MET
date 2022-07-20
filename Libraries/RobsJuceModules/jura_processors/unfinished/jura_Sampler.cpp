@@ -7,6 +7,9 @@ SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* m
   setModuleName("Sampler");
   setupDirectories();
   createParameters();
+
+  // initialize the current directory for sfz loading:
+  //FileManager::setActiveDirectory(getSupportDirectory() + "/SamplerInstruments");
 }
 
 void SamplerModule::createParameters()
@@ -226,16 +229,12 @@ void SamplerModule::reset()
   engine.reset();
 }
 
-//=================================================================================================
-
-
-
-bool SfzFileManager::loadFile(const juce::File& fileToLoad)
+bool SamplerModule::loadFile(const juce::File& fileToLoad)
 {
   return true;
 }
 
-bool SfzFileManager::saveToFile(const juce::File& fileToSaveTo)
+bool SamplerModule::saveToFile(const juce::File& fileToSaveTo)
 {
   return true;
 }
@@ -251,9 +250,6 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   ScopedLock scopedLock(*lock);
   //samplerModule = samplerToEdit;
 
-  // initialize the current directory for sfz loading:
-  //FileManager::setActiveDirectory(getSupportDirectory() + "/SamplerInstruments");
-
   FileManager::setActiveDirectory(getApplicationDirectory());  // preliminary
   createWidgets();
   setSize(400, 200);
@@ -263,8 +259,9 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
 SamplerEditor::~SamplerEditor()
 {
+  /*
   ScopedLock scopedLock(*lock);
-  delete sfzFileManager;
+  //delete sfzFileManager;
   // Hmm - if we don't delete it here, we'll get a memleak but if we do delete it, we'll get an 
   // access violation, at least, if we do:
   //  sfzFileLoader = new jura::FileSelectionBox("", sfzFileManager);
@@ -276,6 +273,7 @@ SamplerEditor::~SamplerEditor()
   // seems actually quite natural.
 
   delete sfzFileLoader;
+  */
 }
 
 bool SamplerEditor::loadFile(const juce::File& fileToLoad)
@@ -393,13 +391,12 @@ void SamplerEditor::createWidgets()
 
 
   // The SFZ editor:
-  sfzFileManager = new jura::SfzFileManager( samplerModule );
-  sfzFileLoader = new jura::FileSelectionBox("", sfzFileManager);
-  //addWidgetSet(sfzFileLoader);
-
-  //addAndMakeVisible(sfzEditor);
+  sfzFileLoader = new jura::FileSelectionBox("", samplerModule);
+  addWidgetSet(sfzFileLoader);
+  addAndMakeVisible(sfzEditor);
 }
 
+//=================================================================================================
 
 /*
 Bugs:

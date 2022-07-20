@@ -1,8 +1,13 @@
 #pragma once
 
-/** A sampler with functionality roughly based on the sfz specification */
 
-class JUCE_API SamplerModule : public jura::AudioModuleWithMidiIn
+/** A sampler with functionality roughly based on the sfz specification. It has jura::FileManager
+as baseclass to keep track of the currently loaded .sfz file. The editor has also FileManager as
+baseclass and uses it, as usual, for keeping track of the loaded .xml file - .xml load/save is 
+managed by the GUI but .sfz load/save is managed by the AudioModule. That's a bit like with the 
+wavefiles on oscillator modules (right?). */
+
+class JUCE_API SamplerModule : public jura::AudioModuleWithMidiIn, public jura::FileManager
 {
 
 public:
@@ -38,6 +43,12 @@ public:
   void reset() override;
 
 
+  // Overrides from jura::FileManager to load/save the current .sfz file:
+  bool loadFile(const juce::File& fileToLoad) override;
+  bool saveToFile(const juce::File& fileToSaveTo) override;
+
+
+
 protected:
 
   /** Creates the parameters of the sampler that sit directly in the xml file. They have nothing to
@@ -71,24 +82,19 @@ protected:
   juce::String sfzRootDir;
   //juce::String sampleRootDir;
 
-
-
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };
 
 
 //=================================================================================================
 
-/** A subclass of jura::FileManager that deals specifically with .sfz files and has a pointer to
-a jura::SamplerModule which it maintains in sync with the loaded file...tbc...  */
-
+/** A subclass of jura::FileManager that deals specifically with .sfz files.  */
+/*
 class JUCE_API SfzFileManager : public jura::FileManager
 {
 
 public:
 
-  SfzFileManager(SamplerModule *moduleToSetup) : samplerModule(moduleToSetup) {}
   bool loadFile(const juce::File& fileToLoad) override;
   bool saveToFile(const juce::File& fileToSaveTo) override;
 
@@ -98,6 +104,7 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzFileManager)
 };
+*/
 
 
 //=================================================================================================
@@ -131,7 +138,6 @@ protected:
   jura::MeteringDisplayWithText *layersMeter;
 
   // SFZ text editor:
-  jura::SfzFileManager *sfzFileManager;
   jura::FileSelectionBox *sfzFileLoader;
   juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a 
   juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)
