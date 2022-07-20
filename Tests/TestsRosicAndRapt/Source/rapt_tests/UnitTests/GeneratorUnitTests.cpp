@@ -3092,6 +3092,22 @@ bool samplerLfoTest()
 
   rsAssert(ok);
   return ok;
+
+  // ToDo: 
+  // -Implement and test opcodes for delay, fade, amp
+  //  -delay and fade are already part of sfz1. they range from 0 to 100s
+  // -Figure out, if the depths of the LFOs are supposed to be unipolar or bipolar (peak-to-peak) 
+  //  for amplfo, pitchlfo, fillfo
+  // -Implement lfoN_phase https://sfzformat.com/opcodes/lfoN_phase
+  //  the range is 0..1, not 0..360 as i often use
+  // -Implement
+  //  https://sfzformat.com/opcodes/lfoN_count
+  //  https://sfzformat.com/opcodes/lfoN_offset   requires a multi LFO (multiple freqs)
+  //  https://sfzformat.com/opcodes/lfoN_ratio    seems to set the same thing in different unit?
+  //  https://sfzformat.com/opcodes/lfoN_wave     requires a wavetable LFO
+  // -What is:
+  //  https://sfzformat.com/opcodes/lfoN_smooth   a lowpass acting on the waveform?
+
 }
 
 bool samplerAmpLfoTest()
