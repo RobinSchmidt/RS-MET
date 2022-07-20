@@ -271,6 +271,11 @@ SamplerEditor::~SamplerEditor()
   // i.e wire the file manager to the sfzFileLoader
   // maybe the sfzFileManager should be part of the module, not the editor. check how it's done in
   // SampleBasedAudioModuleEditor (class is in AudioModule.h)
+  // ...hmm - there, it's done differently - but I still think, it would be best to move the 
+  // "SfzFileManager" functionality into SamplerModule. Maybe it should even be a baseclass. That
+  // seems actually quite natural.
+
+  delete sfzFileLoader;
 }
 
 bool SamplerEditor::loadFile(const juce::File& fileToLoad)
@@ -389,8 +394,9 @@ void SamplerEditor::createWidgets()
 
   // The SFZ editor:
   sfzFileManager = new jura::SfzFileManager( samplerModule );
-  //sfzFileLoader = new jura::FileSelectionBox("", sfzFileManager);
+  sfzFileLoader = new jura::FileSelectionBox("", sfzFileManager);
   //addWidgetSet(sfzFileLoader);
+
   //addAndMakeVisible(sfzEditor);
 }
 
