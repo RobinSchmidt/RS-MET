@@ -403,6 +403,16 @@ ToDo:
  -show some data about the loaded patch: number of samples, regions, groups, filters, equalizers, 
   waveshapers etc.
  -maybe display also, how many filters, eqs, etc. are allocated and how many are currently in use
+ -In the left section, show a tree-view of the instrument with levels <global>, <group>, <region>
+  where <global> may be implicit, i.e. the top-level without an opening "folder" widget
+  -The leaves are the individual opcodes for the pamaters. When the user clicks on one, it gets 
+   selected an widgets for adjusting it appear in the main view (maybe it the middle)
+  -Maybe mutliple leaves can be selected simultaneously.
+  -Maybe the selection should be stored in the .xml file, such that the right widgets can be made
+   to appear on preset load
+  -Maybe there could be some section with performance parameters, maybe use MIDI-controllers for 
+   that. What about polyphonic and non-destructive modulation, i.e. the new features of CLAP? We 
+   should definitely consider to support them in some way.
  -maybe show a warning, if the number of dsp objects was exceeded...or somehow prevent that from
   ever happening
  -Have 2 views: one for performing and one for editing the patch. the edit view may have largei'sh
