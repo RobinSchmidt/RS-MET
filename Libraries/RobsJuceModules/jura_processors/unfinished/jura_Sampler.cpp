@@ -9,7 +9,10 @@ SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* m
   createParameters();
 
   // initialize the current directory for sfz loading:
-  //FileManager::setActiveDirectory(getSupportDirectory() + "/SamplerInstruments");
+  //FileManager::setActiveDirectory(getSupportDirectory() + "/SamplerPatches");
+  FileManager::setActiveDirectory(getSupportDirectory() + "/SFZ");
+  // maybe using SamplerPatches is more aesthetically pleasing than SFZ because of consistency 
+  // with the existing folder structure
 }
 
 void SamplerModule::createParameters()
@@ -259,21 +262,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
 SamplerEditor::~SamplerEditor()
 {
-  /*
-  ScopedLock scopedLock(*lock);
-  //delete sfzFileManager;
-  // Hmm - if we don't delete it here, we'll get a memleak but if we do delete it, we'll get an 
-  // access violation, at least, if we do:
-  //  sfzFileLoader = new jura::FileSelectionBox("", sfzFileManager);
-  // i.e wire the file manager to the sfzFileLoader
-  // maybe the sfzFileManager should be part of the module, not the editor. check how it's done in
-  // SampleBasedAudioModuleEditor (class is in AudioModule.h)
-  // ...hmm - there, it's done differently - but I still think, it would be best to move the 
-  // "SfzFileManager" functionality into SamplerModule. Maybe it should even be a baseclass. That
-  // seems actually quite natural.
 
-  delete sfzFileLoader;
-  */
 }
 
 bool SamplerEditor::loadFile(const juce::File& fileToLoad)
@@ -330,8 +319,10 @@ void SamplerEditor::resized()
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 
 
-  sfzEditor.setBounds(x, y, 200, 100);  // preliminary
 
+  sfzFileLoader->setBounds(x, y, 200, 16);
+  y += 16;
+  sfzEditor.setBounds(x, y, w, getHeight()-y);  // preliminary, uses the full available space
 }
 
 void SamplerEditor::createWidgets()
@@ -451,6 +442,8 @@ ToDo:
   where <global> may be implicit, i.e. the top-level without an opening "folder" widget
   -The leaves are the individual opcodes for the pamaters. When the user clicks on one, it gets 
    selected an widgets for adjusting it appear in the main view (maybe it the middle)
+  -If the selected leaf is a "sample" opcode, show a little waveform view. Maybe it could allow the
+   use to load a new sample.
   -Maybe mutliple leaves can be selected simultaneously.
   -Maybe the selection should be stored in the .xml file, such that the right widgets can be made
    to appear on preset load
@@ -464,6 +457,9 @@ ToDo:
   destructive edits on samples with undo/save/etc. But maybe such edits could also be 
   non-destructive? the sampler just stores all actions and when the patch is loaded, re-applies 
   them? ...in this context, we may also develop a GUI for the sinusoidal models.
+ -Maybe we should use a Mediator pattern similar to the Liberty GUI to coordinate TreeView and
+  CodeEditor.
+ 
  
   
  
