@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  //ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -145,8 +145,8 @@ int main(int argc, char* argv[])
   // Filter:
   //bandpassAndNotch();          // trying to build a bank of complementary bandpass/notch pairs
   //bandSplittingTwoWay();
-  bandSplittingThreeWay();
-  bandSplittingThreeWay2p2z();
+  //bandSplittingThreeWay();
+  //bandSplittingThreeWay2p2z();
   //bandSplittingMultiWay();   // turn into unit test (it currently hits an assert on fail)
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
