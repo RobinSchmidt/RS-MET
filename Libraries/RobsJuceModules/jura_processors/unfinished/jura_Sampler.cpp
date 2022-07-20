@@ -2,16 +2,21 @@
 SfzPlayer::SfzPlayer()
 {
   setupDirectories();
+  wildcardPatterns = String("*.sfz");  // To show only .sfz files in the dialog box?
+  defaultExtension = String(".sfz");   // To append this as default extension when saving?
+  updateFileList();
 }
 
 bool SfzPlayer::loadFile(const juce::File& fileToLoad)
 {
-  return true;
+  showWarningBox("Error", "SfzPlayer::loadFile not yet implemented");
+  return false;
 }
 
 bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
 {
-  return true;
+  showWarningBox("Error", "SfzPlayer::saveToFile not yet implemented");
+  return false;
 }
 
 bool SfzPlayer::loadFile(const juce::String& relativePath)
@@ -45,7 +50,6 @@ bool SfzPlayer::loadFile(const juce::String& relativePath)
   // todo:
   // -catch other errors, such as sfzParseError, unknownOpcode, sampleLoadError, etc.
   // -figure out, hwat exactly went wrong and show a more specific error message
-
 
   return true;
 
@@ -82,6 +86,7 @@ void SfzPlayer::setupDirectories()
 {
   juce::String sep = File::getSeparatorString();
   sfzRootDir = jura::getSupportDirectory() + sep + "SFZ" + sep;
+  FileManager::setActiveDirectory(jura::getSupportDirectory() + "/SFZ");  // use sfzRootDir
   // Maybe using SamplerPatches is more aesthetically pleasing than SFZ because of consistency 
   // with the existing folder structure
 
@@ -192,11 +197,6 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
     return; }
   else
     engine.loadFile(jSfzPath);
-
-
-
-
-
 }
 
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)

@@ -87,9 +87,6 @@ public:
   void reset() override;
 
 
-
-
-
 protected:
 
   /** Creates the parameters of the sampler that sit directly in the xml file. They have nothing to
