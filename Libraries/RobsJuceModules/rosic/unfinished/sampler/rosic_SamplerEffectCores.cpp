@@ -144,7 +144,7 @@ void EnvGenCore::processFrame(float* L, float* R)
   sampleCount++;
 
   // ToDo:
-  // -Factor out the shape-generation into a little (hoepfully inlined) helper function
+  // -Factor out the shape-generation into a little (hopefully inlined) helper function - done
   // -Try to optimize this but keep the original code somewhere as prototype to create reference
   //  output for unit tests.
   //  -The time variables should be float -> saves the conversion
@@ -206,6 +206,12 @@ bool EnvGenCore::hasFinished() const
   // Get rid of the computation here. Maybe store the sum as length. This function is called per 
   // sample in RegionPlayer::hasFinished, so it needs to be efficient.
 }
+
+// ToDo:
+// -Introduce a RetriggerMode parameter.
+// -Maybe if we can think of even more behaviors, introduce an ReleaseMode enum to replace the 
+//  oneShot flag. Maybe another useful behavior could be to always at least run through (delay 
+//  and) attack.
 
 //=================================================================================================
 

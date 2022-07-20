@@ -56,6 +56,14 @@ class EnvGenCore
 
 public:
 
+  /*
+  enum class ReleaseMode
+  {
+    immediately = 0,
+    oneShot
+  };
+  */
+
   /** Time parameters are given in samples, levels as raw values with nominal range 0..1. */
   void setup(float start, float delay, float attack, float peak, float hold, float decay,
     float sustain, float release, float end, float attack_shape = 0.f, 
@@ -70,6 +78,8 @@ public:
   void processFrame(float* L, float* R);
   void noteOff() { noteIsOn = false; }
   void resetState() { sampleCount = 0; }
+
+  // Mostly for internal use but made public to facilitate certain unit-tests
 
 
 protected:
@@ -97,7 +107,11 @@ protected:
   int   sampleCount = 0;      // Keeps the current time in samples since triggering
   bool  noteIsOn    = false;
 
-
+  bool  oneShot     = true;
+  // In one-shot mode, we always run through the envelope completely even when a noteOff is 
+  // received before reaching sustain. If we are not in oneShot mode, we immediately enter the
+  // release phase from whereever we currently are. Currently, only oneShot is implemented. The 
+  // default should be to release immediately
 
 };
 

@@ -495,6 +495,16 @@ void bandSplittingThreeWay()
   //  version? Maybe we could obtain a difference signal for the anti-image-filtered signal in the
   //  upsampled domain which we mix back in before downsampling? That feels a bit like cheating, 
   //  though. Maybe it's a bad idea...
+  // -For perfect reconstruction bandpsplitting, maybe use FIR filters but not based on windowed 
+  //  sinc itself but rather on some power of the sinc ((sin(x)/x)^2 or maybe sin(x)/x^2). The
+  //  sinc itself requests an infinite slope from the ideal filter - but if we want to request a 
+  //  finite slope instead, maybe raising the sinc to a power. Finite slopes are easier to achieve
+  //  and also more musical, so defining the ideal filter as one with a finite slope may give
+  //  useful filters. Maybe define an idealized response in the frequency domain as a constant 
+  //  transition band and then an 1/w^n decay...or maybe just use the Butterworth response as ideal
+  //  and obtain linear-phase Butterworth filters..or maybe make linear-phase versions of 
+  //  Linkwitz-Riely filters. Or maybe request an exp(-w^n) response. For n=2 that would be a
+  //  Gaussian. https://www.desmos.com/calculator/mmu5ryfgwz
 
   int dummmy = 0;
 }

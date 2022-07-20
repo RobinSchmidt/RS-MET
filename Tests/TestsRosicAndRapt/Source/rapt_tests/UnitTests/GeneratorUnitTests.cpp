@@ -3101,7 +3101,7 @@ bool samplerLfoTest()
   // -Figure out, if the depths of the LFOs are supposed to be unipolar or bipolar (peak-to-peak) 
   //  for amplfo, pitchlfo, fillfo
   // -Implement lfoN_phase https://sfzformat.com/opcodes/lfoN_phase
-  //  the range is 0..1, not 0..360 as i often use
+  //  the range is 0..1, not 0..360 as i often use - ok done, but not yet as opcode for the parser
   // -Implement
   //  https://sfzformat.com/opcodes/lfoN_count
   //  https://sfzformat.com/opcodes/lfoN_offset   requires a multi LFO (multiple freqs)
@@ -3417,6 +3417,18 @@ bool samplerAmpEnvTest()
   //  -Be the last effect unit in the chain
   //  -Have a zero value for the amplitude
   //  -Is not modulated by any LFOs (i.e. amplfo opcodes)
+
+  // -Implement MSEGs with opcodes:
+  //  https://sfzformat.com/opcodes/egN_timeX
+  //  https://sfzformat.com/opcodes/egN_levelX
+  //  https://sfzformat.com/opcodes/egN_loop
+  //  https://sfzformat.com/opcodes/egN_loop_count
+
+  // -Figure out what this is:
+  //  https://sfzformat.com/opcodes/egN_ampeg
+  //  it says: "eg1_ampeg=1 //ARIA boolean value, 1=true, 0=false"
+  //  I think, it is supposed to switch the ampeg from the regular DAHDSR to the MSEG?
+
 
 
   // 
