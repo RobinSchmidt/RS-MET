@@ -282,6 +282,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second)
   sfzDoc.addListener(this);
+  parseButton->addRButtonListener(this);
 }
 
 SamplerEditor::~SamplerEditor()
@@ -361,6 +362,14 @@ void SamplerEditor::codeDocumentTextDeleted(int startIndex, int endIndex)
   setCodeIsDirty();
 }
 
+void SamplerEditor::rButtonClicked(RButton* b)
+{
+  if(b == parseButton)
+    parseCurrentEditorContent();
+  else
+    AudioModuleEditor::rButtonClicked(b);
+}
+
 void SamplerEditor::createWidgets()
 {
   addWidget(instrumentLabel = new RTextField);
@@ -438,6 +447,17 @@ void SamplerEditor::setCodeIsParsed(bool isParsed)
 void SamplerEditor::setCodeIsSaved(bool isSaved)
 {
   // ToDo: make an atserisk appear in the sfz file box, if is not saved, disappea, if it is saved
+}
+
+void SamplerEditor::parseCurrentEditorContent()
+{
+  // -try to parse the code
+  // -setCodeIsParsed(true) ...maybe only in case of success?
+}
+
+void SamplerEditor::saveCurrentEditorContent()
+{
+
 }
 
 //=================================================================================================

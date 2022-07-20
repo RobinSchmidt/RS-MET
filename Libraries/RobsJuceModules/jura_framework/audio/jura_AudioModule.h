@@ -770,18 +770,18 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks:
 
-  //virtual bool keyPressed(const KeyPress &key, Component *originatingComponent) override;
-  virtual void mouseDown(const MouseEvent& e) override;
-  virtual void rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged) override;
-  virtual void rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave) override;
-  virtual void rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled) override;
-  virtual void rButtonClicked(RButton *buttonThatWasClicked) override;
-  virtual void changeListenerCallback(juce::ChangeBroadcaster *objectThatHasChanged) override;
-  virtual void resized() override;
+  //bool keyPressed(const KeyPress &key, Component *originatingComponent) override;
+  void mouseDown(const MouseEvent& e) override;
+  void rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged) override;
+  void rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave) override;
+  void rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled) override;
+  void rButtonClicked(RButton *buttonThatWasClicked) override;
+  void changeListenerCallback(juce::ChangeBroadcaster *objectThatHasChanged) override;
+  void resized() override;
 
   /** Updates the widgets according to the state of the assignedParameter (if any) and updates the 
   state-widget set. calls updateWidgetEnablement(). */
-  virtual void updateWidgetsAccordingToState() override;
+  void updateWidgetsAccordingToState() override;
 
   /** Override this if you want to update the enablement of some widgets according to the state
   of the module. Will be called from updateWidgetsAccordingToState(). */

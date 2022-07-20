@@ -163,6 +163,7 @@ public:
   void resized() override;                       //   AudioModuleEditor
   void codeDocumentTextInserted(const String &newText, int insertIndex) override; // CodeDocument::Listener 
   void codeDocumentTextDeleted(int startIndex, int endIndex) override;            // CodeDocument::Listener 
+  void rButtonClicked(RButton *buttonThatWasClicked) override;
 
 
 
@@ -170,12 +171,14 @@ protected:
 
   virtual void createWidgets();
 
-
   virtual void setCodeIsParsed(bool isParsed);
 
   virtual void setCodeIsSaved(bool isSaved);
 
   virtual void setCodeIsDirty() { setCodeIsParsed(false); setCodeIsSaved(false); }
+
+  void parseCurrentEditorContent();  // maybe should return a bool?
+  void saveCurrentEditorContent();   // dito?
 
 
   SamplerModule* samplerModule = nullptr;
