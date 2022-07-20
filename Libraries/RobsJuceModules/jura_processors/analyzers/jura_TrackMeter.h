@@ -77,7 +77,7 @@ protected:
   MeteringDisplay *leftLevelMeter, *rightLevelMeter, *midLevelMeter, *sideLevelMeter, 
     *correlationMeter;
 
-  double rangeMin, rangeMax;
+  float rangeMin, rangeMax;
 
   juce_UseDebuggingNewOperator;
 };

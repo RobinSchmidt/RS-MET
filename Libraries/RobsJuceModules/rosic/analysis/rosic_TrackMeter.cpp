@@ -78,10 +78,10 @@ SignalMeasures TrackMeter::getCurrentMeasurement(bool reset)
     return currentMeasures; // if this gets called multiple times during one sample
 
   // assign the measured levels:
-  currentMeasures.leftLevel  = RAPT::rsMax( -200.0, RAPT::rsAmpToDb(sqrt(maxLeftLevel))  );
-  currentMeasures.rightLevel = RAPT::rsMax( -200.0, RAPT::rsAmpToDb(sqrt(maxRightLevel)) );
-  currentMeasures.midLevel   = RAPT::rsMax( -200.0, RAPT::rsAmpToDb(sqrt(maxMidLevel))   );
-  currentMeasures.sideLevel  = RAPT::rsMax( -200.0, RAPT::rsAmpToDb(sqrt(maxSideLevel))  );
+  currentMeasures.leftLevel  = (float) RAPT::rsMax( -200.0, RAPT::rsAmpToDb(sqrt(maxLeftLevel))  );
+  currentMeasures.rightLevel = (float) RAPT::rsMax( -200.0, RAPT::rsAmpToDb(sqrt(maxRightLevel)) );
+  currentMeasures.midLevel   = (float) RAPT::rsMax( -200.0, RAPT::rsAmpToDb(sqrt(maxMidLevel))   );
+  currentMeasures.sideLevel  = (float) RAPT::rsMax( -200.0, RAPT::rsAmpToDb(sqrt(maxSideLevel))  );
 
   // calculate and assign the cross-correlation:
   double factor          = 1.0 / (double)sampleCounter;
@@ -90,9 +90,9 @@ SignalMeasures TrackMeter::getCurrentMeasurement(bool reset)
   double meanProduct     = factor * sumOfProducts;
   double normalizer      = sqrt(meanSquareLeft * meanSquareRight);
   if(normalizer < RAPT::rsDbToAmp(-120.0))
-    currentMeasures.crossCorrelation = 0.0;
+    currentMeasures.crossCorrelation = 0.f;
   else
-    currentMeasures.crossCorrelation = meanProduct / normalizer;
+    currentMeasures.crossCorrelation = (float) (meanProduct / normalizer);
 
   // reset the accumulating variables:
   if( reset )

@@ -4,11 +4,9 @@
 namespace rosic
 {
 
-  /**
+  /** This is a class which wraps certain measurements of a signal.
 
-  This is a class which wraps certain measurements of a signal.
-
-  */
+  ToDo: move this code into the TrackMeter class, make it a struct.  */
 
   class SignalMeasures
   {
@@ -16,12 +14,14 @@ namespace rosic
 
     SignalMeasures();  /**< Constructor. */
 
-    double leftLevel;
-    double rightLevel;
-    double midLevel;
-    double sideLevel;
-    double crossCorrelation;
+    float leftLevel;
+    float rightLevel;
+    float midLevel;
+    float sideLevel;
+    float crossCorrelation;
   };
+
+
 
 
 } // end namespace rosic

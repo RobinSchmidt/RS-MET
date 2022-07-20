@@ -85,8 +85,8 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   jassert(newTrackMeterAudioModule != NULL ); // you must pass a valid module here
   trackMeterModuleToEdit = newTrackMeterAudioModule;
 
-  rangeMin = -60.0;
-  rangeMax = +6.0;
+  rangeMin = -60.f;
+  rangeMax = +6.f;
 
   // create the widgets and assign the automatable parameters to them:
   addWidget( riseSlider = new RSlider("RiseSlider") );
