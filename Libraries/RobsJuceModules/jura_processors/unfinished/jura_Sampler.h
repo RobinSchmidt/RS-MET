@@ -19,6 +19,8 @@ public:
   wrong, we will revert to our lastValidSfz and return false. */
   bool loadFile(const juce::File& fileToLoad) override;
 
+  /** Opens a file saving dialog by which the user can save the current content of our lastValidSfz
+  variable into a file. */
   bool saveToFile(const juce::File& fileToSaveTo) override;
 
   /** Tries to load an .sfz file whose relative (to our sfzRootDir) path is given by the passed 
@@ -26,7 +28,7 @@ public:
   bool loadFile(const juce::String& relativePath);
 
 
-  // bool setupFromSfzString(const juce::String& newSfz);
+  bool setupFromSfzString(const juce::String& newSfz);
   // this may be called from the editor or some widget near it to try to update the instrument 
   // according to the given string...
 

@@ -1,4 +1,3 @@
-
 SfzPlayer::SfzPlayer()
 {
   setupDirectories();
@@ -9,16 +8,13 @@ SfzPlayer::SfzPlayer()
 
 bool SfzPlayer::loadFile(const juce::File& fileToLoad)
 {
-  bool ok = loadFile(fileToLoad.getRelativePathFrom(sfzRootDir));
-
-  if(!ok)
-  {
-    //bool ok2 = setupFromSfzString(lastValidsfz);
-    //jassert(ok2);
+  bool ok = loadFile(fileToLoad.getRelativePathFrom(sfzRootDir));             // This may fail,
+  if(!ok) {                                                       // ...and in case of failure, 
+    bool ok2 = setupFromSfzString(lastValidSfz);   // ...we revert to the last known valid sfz
+    jassert(ok2); }
     // This should actually never fail because lastValidSfz is supposed to be a valid sfz. But what
     // if the user has deleted some required sample files in the meantime? Maybe in that case, we
     // should reset lastValidSfz and reset the engine, too
-  }
 
   return ok;
 }
@@ -83,6 +79,14 @@ bool SfzPlayer::loadFile(const juce::String& relativePath)
   //  and the debug break makes the app exit immediately?). 
   //  ...i think, this should be fixed now because we now load the sfz files from the proper 
   //  content directory
+}
+
+bool SfzPlayer::setupFromSfzString(const juce::String& newSfz)
+{
+
+
+
+  return true;
 }
 
 void SfzPlayer::setupDirectories()

@@ -72,3 +72,5 @@ Threading Model:
 -use a lock-free queue for synchronization -> the main/GUI thread produces data 
  that is consumed by the audio threads
 
+
+maybe call it PlayDaw
