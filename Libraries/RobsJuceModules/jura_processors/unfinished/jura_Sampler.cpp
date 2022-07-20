@@ -269,6 +269,8 @@ SamplerEditor::~SamplerEditor()
   // access violation, at least, if we do:
   //  sfzFileLoader = new jura::FileSelectionBox("", sfzFileManager);
   // i.e wire the file manager to the sfzFileLoader
+  // maybe the sfzFileManager should be part of the module, not the editor. check how it's done in
+  // SampleBasedAudioModuleEditor (class is in AudioModule.h)
 }
 
 bool SamplerEditor::loadFile(const juce::File& fileToLoad)
