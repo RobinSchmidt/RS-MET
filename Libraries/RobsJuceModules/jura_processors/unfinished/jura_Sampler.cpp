@@ -265,8 +265,6 @@ void SamplerModule::reset()
   engine.reset();
 }
 
-
-
 //=================================================================================================
 
 SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) 
@@ -283,6 +281,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   setSize(400, 200);
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second)
+  sfzDoc.addListener(this);
 }
 
 SamplerEditor::~SamplerEditor()
@@ -348,6 +347,16 @@ void SamplerEditor::resized()
   sfzEditor.setBounds(x, y, w, getHeight()-y);  // preliminary, uses the full available space
 }
 
+void SamplerEditor::codeDocumentTextInserted(const String& newText, int insertIndex)
+{
+  setCodeIsDirty();
+}
+
+void SamplerEditor::codeDocumentTextDeleted(int startIndex, int endIndex)
+{
+  setCodeIsDirty();
+}
+
 void SamplerEditor::createWidgets()
 {
   addWidget(instrumentLabel = new RTextField);
@@ -411,6 +420,16 @@ void SamplerEditor::createWidgets()
 
   addAndMakeVisible(sfzEditor);
   // ToDo: set up the description of the editor...but it's not a subclass of RWidget...hmmm..
+
+}
+
+void SamplerEditor::setCodeIsParsed(bool isParsed)
+{
+
+}
+
+void SamplerEditor::setCodeIsSaved(bool isSaved)
+{
 
 }
 

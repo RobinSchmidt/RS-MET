@@ -130,15 +130,10 @@ protected:
   void setBusMode(bool shouldAccumulate);
 
   // Shorthands for convenience:
-  //using Engine = rosic::rsSamplerEngine;  // old
-  //using Engine     = rosic::Sampler::rsSamplerEngine2;   // new
-  using Engine     = jura::SfzPlayer;   // newer - maybe get rid
   using ReturnCode = rosic::Sampler::rsReturnCode;
   using Event      = rosic::Sampler::rsMusicalEvent<float>;
 
-  Engine engine;  // maybe rename to sfzPlayer
-  //juce::File sfzFile;
-
+  jura::SfzPlayer engine;  // maybe rename to sfzPlayer
 
 
   friend class SamplerEditor;  // maybe try to get rid
@@ -149,31 +144,10 @@ protected:
 
 //=================================================================================================
 
-/** A subclass of jura::FileManager that deals specifically with .sfz files.  */
-/*
-class JUCE_API SfzFileManager : public jura::FileManager
-{
-
-public:
-
-  bool loadFile(const juce::File& fileToLoad) override;
-  bool saveToFile(const juce::File& fileToSaveTo) override;
-
-protected:
-
-  SamplerModule *samplerModule;
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzFileManager)
-};
-*/
-
-
-//=================================================================================================
-
 /** Editor for SamplerAudioModule */
 
 class JUCE_API SamplerEditor : public jura::AudioModuleEditor, public jura::FileManager, 
-  public Timer
+  public juce::Timer, public juce::CodeDocument::Listener 
 {
 
 public:
@@ -187,10 +161,21 @@ public:
   bool saveToFile(const juce::File& f) override; //   FileManager
   void timerCallback() override;                 //   Timer
   void resized() override;                       //   AudioModuleEditor
+  void codeDocumentTextInserted(const String &newText, int insertIndex) override; // CodeDocument::Listener 
+  void codeDocumentTextDeleted(int startIndex, int endIndex) override;            // CodeDocument::Listener 
+
+
 
 protected:
 
   virtual void createWidgets();
+
+
+  virtual void setCodeIsParsed(bool isParsed);
+
+  virtual void setCodeIsSaved(bool isSaved);
+
+  virtual void setCodeIsDirty() { setCodeIsParsed(false); setCodeIsSaved(false); }
 
 
   SamplerModule* samplerModule = nullptr;
@@ -209,6 +194,12 @@ protected:
   // else already did that? Check open-source SFZ sampler projects. When we have that, we need to 
   // pass a pointer to our tokenizer to the constructor of the editor
 
+  // Maybe have an RClickButton for Reparse/Parse/Update ...hwoever we want to call it. maybe it 
+  // should get automatically highlighted, as soon as text was edited such that the engine is out
+  // of date. The FileLoader should also show a "Dirty" star next to the filenam, when the current
+  // state is not save inot a file
+
+
 
   /*
 
@@ -220,12 +211,9 @@ protected:
   // remaining available
   */
 
-
-
-
-
-
-
+  // Flags to indicate whether the current content of our sfz code is parsed and/or saved to disk:
+  bool codeIsParsed = false;
+  bool codeIsSaved  = false;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerEditor)
