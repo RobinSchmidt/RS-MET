@@ -77,6 +77,28 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };
 
+
+//=================================================================================================
+
+/** A subclass of jura::FileManager that deals specifically with .sfz files and has a pointer to
+a rosic::rsSamplerEngine which it maintains in sync with the loaded file...tbc...  */
+
+class JUCE_API SfzFileManager : public FileManager
+{
+
+public:
+
+  bool loadFile(const juce::File& fileToLoad) override;
+  bool saveToFile(const juce::File& fileToSaveTo) override;
+
+protected:
+
+  rosic::Sampler::rsSamplerEngine2 samplerEngine;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzFileManager)
+};
+
+
 //=================================================================================================
 
 /** Editor for SamplerAudioModule */

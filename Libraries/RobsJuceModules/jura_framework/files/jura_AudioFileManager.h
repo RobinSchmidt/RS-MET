@@ -8,6 +8,7 @@
 
 class JUCE_API AudioFileManager : virtual public FileManager
 {
+  // why do we need virtual inheritance from FileManager?
 
 public:
 
