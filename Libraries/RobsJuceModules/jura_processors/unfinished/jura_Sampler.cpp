@@ -10,9 +10,10 @@ SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* m
 
   // initialize the current directory for sfz loading:
   //FileManager::setActiveDirectory(getSupportDirectory() + "/SamplerPatches");
-  FileManager::setActiveDirectory(getSupportDirectory() + "/SFZ");
+  //FileManager::setActiveDirectory(getSupportDirectory() + "/SFZ");
   // maybe using SamplerPatches is more aesthetically pleasing than SFZ because of consistency 
   // with the existing folder structure
+  //
 }
 
 void SamplerModule::createParameters()
@@ -232,6 +233,7 @@ void SamplerModule::reset()
   engine.reset();
 }
 
+/*
 bool SamplerModule::loadFile(const juce::File& fileToLoad)
 {
   return true;
@@ -241,6 +243,7 @@ bool SamplerModule::saveToFile(const juce::File& fileToSaveTo)
 {
   return true;
 }
+*/
 
 //=================================================================================================
 

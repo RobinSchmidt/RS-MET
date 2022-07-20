@@ -8,7 +8,9 @@
 
 class JUCE_API AudioFileManager : virtual public FileManager
 {
-  // why do we need virtual inheritance from FileManager?
+  // why do we need virtual inheritance from FileManager? I think, it is because AudioModule 
+  // derives from StateFileManager and some subclasses of it must also handle other types of files
+  // such as .wav and .sfz?
 
 public:
 

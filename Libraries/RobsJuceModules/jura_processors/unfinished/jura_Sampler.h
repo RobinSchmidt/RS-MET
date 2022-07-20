@@ -1,14 +1,25 @@
 #pragma once
 
 
+
+
+
+
+
 /** A sampler with functionality roughly based on the sfz specification. It has jura::FileManager
 as baseclass to keep track of the currently loaded .sfz file. The editor has also FileManager as
 baseclass and uses it, as usual, for keeping track of the loaded .xml file - .xml load/save is 
 managed by the GUI but .sfz load/save is managed by the AudioModule. That's a bit like with the 
 wavefiles on oscillator modules (right?). */
 
-class JUCE_API SamplerModule : public jura::AudioModuleWithMidiIn, public jura::FileManager
+class JUCE_API SamplerModule : public jura::AudioModuleWithMidiIn /*, public jura::FileManager*/
 {
+
+  // Oh no - we should not derive from FileManager. We are already an indirect subclass of it due
+  // to AudioModule which is a StateFileManager...what can we do?
+  // Maybe we need to make a class SfzEngine that derives from jura::FileManager and 
+  // rosic::Sampler::SamplerEngine2 and this call is then responsible for keeping track of the sfz
+  // file
 
 public:
 
@@ -44,8 +55,8 @@ public:
 
 
   // Overrides from jura::FileManager to load/save the current .sfz file:
-  bool loadFile(const juce::File& fileToLoad) override;
-  bool saveToFile(const juce::File& fileToSaveTo) override;
+  //bool loadFile(const juce::File& fileToLoad) override;
+  //bool saveToFile(const juce::File& fileToSaveTo) override;
 
 
 
