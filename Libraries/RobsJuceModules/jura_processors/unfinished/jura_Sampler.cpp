@@ -1,5 +1,8 @@
 
-
+SfzPlayer::SfzPlayer()
+{
+  setupDirectories();
+}
 
 bool SfzPlayer::loadFile(const juce::File& fileToLoad)
 {
@@ -11,7 +14,97 @@ bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
   return true;
 }
 
+bool SfzPlayer::loadFile(const juce::String& relativePath)
+{
+  //juce::String path = sfzRootDir + File::getSeparatorString() + relativePath;
 
+  // Check, if such an instrument file exists in the folder where we expect it:
+  juce::String path = sfzRootDir + relativePath;
+  juce::File sfzFile(path);
+  if(!sfzFile.existsAsFile())
+  {
+    showWarningBox("SFZ Load Error", "File " + path + " does not exist.");
+    return false;
+    // ToDo: Maybe have a warning box with a more comprehensive error message that makes some 
+    // suggestions why this could have happened. In this case, it could be that the sfzRootDir
+    // does not exist on the machine
+  }
+  // ToDo: i think, this error handling here is redundant with the error handling in 
+  // Engine::loadFromSFZ  - verify that and if so, maybe get rid of it here
+
+
+  std::string sSfzPath = relativePath.toStdString();
+  int rc =  Engine::loadFromSFZ(sSfzPath.c_str());
+  if(rc == ReturnCode::fileLoadError)
+  {
+    //RAPT::rsError("File load error"); // preliminary, for debug
+    showWarningBox("SFZ Load Error", "File " + path + " could not be loaded.");
+    return false;
+    // The .sfz file that was specified in the .xml file was not found
+  }
+  // todo:
+  // -catch other errors, such as sfzParseError, unknownOpcode, sampleLoadError, etc.
+  // -figure out, hwat exactly went wrong and show a more specific error message
+
+
+  return true;
+
+  // Notes:
+  // -it currently only works, if the .sfz file and its required .wav files reside in the project
+  //  directory, i.e.:
+  //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019  
+  //  when launching ToolChain from Visual Studio for debugging or in the same directory where 
+  //  ToolChain.exe resides, i.e.:
+  //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019\x64\Debug\Standalone Plugin
+  //  when launching the .exe directly
+  // -when using RAPT::rsError("File load error"); directly starting the exe doesn't work. I 
+  //  guess it triggers the error on startup (because it tries to load a file with empty path)
+  //  and the debug break makes the app exit immediately?). 
+  //  ...i think, this should be fixed now because we now load the sfz files from the proper 
+  //  content directory
+
+  // ToDo:
+  // -Support placing the .sfz and .wav files in different folders. Maybe the path to the .sfz 
+  //  file should be specified relatively to the .xml file. The paths to the .wav files should be
+  //  either relatively to the .sfz file or relatively to some global sample directory that can be
+  //  specified in the xml and/or sfz ...maybe the latter is better but requires us to introduce a 
+  //  new opcode to the sfz spec...maybe sample_folder or sample_directory. options should be
+  // -retrieve the .sfz and sample folder ...the latter either from the xml or from sfz (not sure
+  //  yet, what's best)  
+  // -set up the folders in the engine before caling engine.loadFromSFZ
+  // ToDo (maybe): 
+  // -extract the directory from the path
+  // -set the current working directory to that directory
+  // -use as sSfzPath below only the part of the path with the directory stripped off
+}
+
+void SfzPlayer::setupDirectories()
+{
+  juce::String sep = File::getSeparatorString();
+  sfzRootDir = jura::getSupportDirectory() + sep + "SFZ" + sep;
+  // Maybe using SamplerPatches is more aesthetically pleasing than SFZ because of consistency 
+  // with the existing folder structure
+
+  // Sanity check:
+  juce::File sfzDirAsFile(sfzRootDir);
+  if(!sfzDirAsFile.exists())
+    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " does not exist.");
+  else if(!sfzDirAsFile.isDirectory())
+    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " is not a directory.");
+
+  // Tell the engine, where to find the sfz files:
+  bool ok = Engine::setSfzRootDir(sfzRootDir.toStdString().c_str());
+  if(!ok)
+    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " could not be set.");
+
+  // todo: 
+  // -assign sampleRootDir, then allow the samples to be located either in the sampleRootDir
+  //  *or* as relative path with respect to the .sfz file. Maybe the sampler engine should search 
+  //  for the files in the following directories (in  that order):
+  //  -subdirectory of the .sfz file
+  //  -user defined sample directory
+  //  -global default sample directory (defined app-wide)
+}
 
 //=================================================================================================
 
@@ -21,15 +114,7 @@ SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* m
   ScopedLock scopedLock(*lock);
   setModuleTypeName("Sampler");
   setModuleName("Sampler");
-  setupDirectories();
   createParameters();
-
-  // initialize the current directory for sfz loading:
-  //FileManager::setActiveDirectory(getSupportDirectory() + "/SamplerPatches");
-  //FileManager::setActiveDirectory(getSupportDirectory() + "/SFZ");
-  // maybe using SamplerPatches is more aesthetically pleasing than SFZ because of consistency 
-  // with the existing folder structure
-  //
 }
 
 void SamplerModule::createParameters()
@@ -51,41 +136,6 @@ void SamplerModule::createParameters()
   // ToDo: InterpolationMethod (Linear, LagrangeCubic, HermiteCubic, Sinc), SincLength (2-512), 
   // Oversample (1-16), MaxLayers (16-8192), MaxFilters (16-8192), MaxEqualizers, MaxWaveshapers,
 
-}
-
-void SamplerModule::setupDirectories()
-{
-  ScopedLock scopedLock(*lock);
-  juce::String sep = File::getSeparatorString();
-  sfzRootDir = jura::getSupportDirectory() + sep + "SFZ" + sep;
-
-  // Sanity check:
-  juce::File sfzDirAsFile(sfzRootDir);
-  if(!sfzDirAsFile.exists())
-    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " does not exist.");
-  else if(!sfzDirAsFile.isDirectory())
-    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " is not a directory.");
-
-  // Tell the engine, where to find the sfz files:
-  bool ok = engine.setSfzRootDir(sfzRootDir.toStdString().c_str());
-  if(!ok)
-    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " could not be set.");
-
-  // todo: 
-  // -assign sampleRootDir, then allow the samples to be located either in the sampleRootDir
-  //  *or* as relative path with respect to the .sfz file. Maybe the sampler engine should search 
-  //  for the files in the following directories (in  that order):
-  //  -subdirectory of the .sfz file
-  //  -user defined sample directory
-  //  -global default sample directory (defined app-wide)
-}
-
-bool SamplerModule::doesSfzFileExist(const juce::String& relativePath)
-{
-  ScopedLock scopedLock(*lock);
-  juce::String path = sfzRootDir + File::getSeparatorString() + relativePath;
-  juce::File sfzFile(path);
-  return sfzFile.existsAsFile();
 }
 
 void SamplerModule::setBusMode(bool shouldAccumulate)
@@ -140,57 +190,13 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   if(jSfzPath.isEmpty()) {
     engine.clearInstrument();
     return; }
-
-  // Check, if such an instrument file exists in the folder where we expect it:
-  if(!doesSfzFileExist(jSfzPath))
-  {
-    showWarningBox("SFZ Load Error", "File " + jSfzPath + " does not exist.");
-    // ToDo: Maybe have a warning box with a more comprehensive error message that makes some 
-    // suggestions why this could have happened. In this case, it could be that the sfzRootDir
-    // does not exist on the machine
-  }
-
-  std::string sSfzPath = jSfzPath.toStdString();
-  int rc = engine.loadFromSFZ(sSfzPath.c_str());
-  if(rc == ReturnCode::fileLoadError)
-  {
-    //RAPT::rsError("File load error"); // preliminary, for debug
-    showWarningBox("SFZ Load Error", "File " + jSfzPath + " could not be loaded.");
-    // The .sfz file that was specified in the .xml file was not found
-  }
-  // todo:
-  // -catch other errors, such as sfzParseError, unknownOpcode, sampleLoadError, etc.
-  // -figure out, hwat exactly went wrong and show a more specific error message
+  else
+    engine.loadFile(jSfzPath);
 
 
 
-  // Notes:
-  // -it currently only works, if the .sfz file and its required .wav files reside in the project
-  //  directory, i.e.:
-  //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019  
-  //  when launching ToolChain from Visual Studio for debugging or in the same directory where 
-  //  ToolChain.exe resides, i.e.:
-  //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019\x64\Debug\Standalone Plugin
-  //  when launching the .exe directly
-  // -when using RAPT::rsError("File load error"); directly starting the exe doesn't work. I 
-  //  guess it triggers the error on startup (because it tries to load a file with empty path)
-  //  and the debug break makes the app exit immediately?). 
-  //  ...i think, this should be fixed now because we now load the sfz files from the proper 
-  //  content directory
 
-  // ToDo:
-  // -Support placing the .sfz and .wav files in different folders. Maybe the path to the .sfz 
-  //  file should be specified relatively to the .xml file. The paths to the .wav files should be
-  //  either relatively to the .sfz file or relatively to some global sample directory that can be
-  //  specified in the xml and/or sfz ...maybe the latter is better but requires us to introduce a 
-  //  new opcode to the sfz spec...maybe sample_folder or sample_directory. options should be
-  // -retrieve the .sfz and sample folder ...the latter either from the xml or from sfz (not sure
-  //  yet, what's best)  
-  // -set up the folders in the engine before caling engine.loadFromSFZ
-  // ToDo (maybe): 
-  // -extract the directory from the path
-  // -set the current working directory to that directory
-  // -use as sSfzPath below only the part of the path with the directory stripped off
+
 }
 
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)

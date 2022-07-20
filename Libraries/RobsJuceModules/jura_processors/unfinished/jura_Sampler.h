@@ -1,18 +1,39 @@
 #pragma once
 
 
+/** An SFZ engine that keeps track of which .sfz file is currently loaded and allows for skipping
+through a directory of .sfz files. This functionality is inherited from jura::FileManager whereas 
+the actual sfz playback functionality is inherited from rosic::Sampler::rsSamplerEngine2. */
 
 class JUCE_API SfzPlayer : public jura::FileManager, public rosic::Sampler::rsSamplerEngine2
 {
 
 public:
 
+  SfzPlayer();
+
   // Overrides from jura::FileManager to load/save the current .sfz file:
   bool loadFile(const juce::File& fileToLoad) override;
+
   bool saveToFile(const juce::File& fileToSaveTo) override;
+
+
+  bool loadFile(const juce::String& path);
+
 
 protected:
 
+  using Engine     = rosic::Sampler::rsSamplerEngine2;  
+  using ReturnCode = rosic::Sampler::rsReturnCode;
+
+  /** Sets up the member variables that define where the app expects sfz-files, samples, etc. 
+  Called in constructor. */
+  virtual void setupDirectories();
+
+  // under construction:
+  juce::String sfzRootDir;
+  //juce::String sampleRootDir;
+  // move to SfzPlayer
 
 };
 
@@ -79,13 +100,9 @@ protected:
   accumulatively or overridingly, polyphony, a global gain, etc.. */
   virtual void createParameters();
 
-  /** Sets up the member variables that define where the app expects sfz-files, samples, etc. 
-  Called in constructor. */
-  virtual void setupDirectories();
 
-  /** Checks, whether or not an .sfz file with the given path exists. The path is supposed to be 
-  relative with respect to our "sfzRootDir" member. */
-  virtual bool doesSfzFileExist(const juce::String& path);
+
+
 
   void setBusMode(bool shouldAccumulate);
 
@@ -99,9 +116,7 @@ protected:
   Engine engine;  // maybe rename to sfzPlayer
   //juce::File sfzFile;
 
-  // under construction:
-  juce::String sfzRootDir;
-  //juce::String sampleRootDir;
+
 
   friend class SamplerEditor;  // maybe try to get rid
 
