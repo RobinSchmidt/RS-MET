@@ -99,15 +99,13 @@ protected:
 
   virtual void createWidgets();
 
-
   jura::RTextField *instrumentLabel;
-  //jura::RTextField *numLayersLabel, *numLayersField; // numLayersField may become obsolete
   jura::MeteringDisplayWithText *layersMeter;
 
 
-  juce::CodeDocument sfzCodeDoc;
-  juce::CodeEditorComponent sfzEditor;
-  // ToDo: check if destruction order is correct (the editor holds a reference to the doc)
+  // SFZ text editor:
+  juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a 
+  juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)
   //juce::CodeTokeniser sfzTokenizer;
   // ToDo: implement this, see:
   //   https://docs.juce.com/master/classCodeTokeniser.html

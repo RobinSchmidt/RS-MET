@@ -229,7 +229,7 @@ void SamplerModule::reset()
 //=================================================================================================
 
 SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) 
-  : AudioModuleEditor(samplerToEdit), sfzEditor(sfzCodeDoc, nullptr)
+  : AudioModuleEditor(samplerToEdit), sfzEditor(sfzDoc, nullptr)
 {
   ScopedLock scopedLock(*lock);
   samplerModule = samplerToEdit;
