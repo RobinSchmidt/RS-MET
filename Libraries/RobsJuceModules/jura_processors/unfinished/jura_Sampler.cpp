@@ -9,14 +9,15 @@ SfzPlayer::SfzPlayer()
 
 bool SfzPlayer::loadFile(const juce::File& fileToLoad)
 {
-  showWarningBox("Error", "SfzPlayer::loadFile not yet implemented");
-  return false;
+  return loadFile(fileToLoad.getRelativePathFrom(sfzRootDir));
 }
 
 bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
 {
   showWarningBox("Error", "SfzPlayer::saveToFile not yet implemented");
   return false;
+  // ToDo: we somehow need to connect this to the string shown in the code-editor. Maybe we need to
+  // keep (a copy of) that string here in this class as member, maybe a tmpSfz juce::String
 }
 
 bool SfzPlayer::loadFile(const juce::String& relativePath)
@@ -34,8 +35,8 @@ bool SfzPlayer::loadFile(const juce::String& relativePath)
     // suggestions why this could have happened. In this case, it could be that the sfzRootDir
     // does not exist on the machine
   }
-  // ToDo: i think, this error handling here is redundant with the error handling in 
-  // Engine::loadFromSFZ  - verify that and if so, maybe get rid of it here
+  // ToDo: I think, this error handling here is redundant with the error handling in the call
+  // Engine::loadFromSFZ below - verify that and if so, maybe get rid of it here
 
 
   std::string sSfzPath = relativePath.toStdString();
@@ -191,12 +192,11 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
 
   // The actual instrument definition is loaded from an sfz file that is defined in the xml (just 
   // like sample-files are defined in the xml for the wavetable oscillator):
-  juce::String jSfzPath = xmlState.getStringAttribute("InstrumentFile", juce::String());
-  if(jSfzPath.isEmpty()) {
-    engine.clearInstrument();
-    return; }
+  juce::String sfzPath = xmlState.getStringAttribute("InstrumentFile", juce::String());
+  if(sfzPath.isEmpty())  
+    engine.clearInstrument();    // no sfz file was specified in the xml
   else
-    engine.loadFile(jSfzPath);
+    engine.loadFile(sfzPath);
 }
 
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
@@ -208,6 +208,7 @@ XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool mar
   juce::String sfzPath = sfzFile.getRelativePathFrom(getPresetDirectory());
   xmlState->setAttribute("InstrumentFile", sfzPath);
   //xmlState->setAttribute("SampleDirectory", sampleDir);
+  // ToDo: Maybe Retrieve the filename of the currently loaded .sfz file and store it in the xml
   */
 
   return xmlState;
@@ -447,7 +448,13 @@ ToDo:
  TreeView that represents the SFZ and may allows to edit it
 
 -GUI:
- -show, which .sfz file is loaded and give the user a text editor to edit it
+ -Make sfz editor functional:
+  -The sfz load/save field does not show the loaded sfz filename
+  -We may need to dirtify the xml-state when the user loads a new sfz
+  -We need to implement saving of the sfz.
+  -Maybe we should have an update button that tries to parse the current editor content. If it 
+   fails, it would be nice to know where...give the user some sort of error indicator in the file. 
+   Maybe have some sort of sfzValidator class.
  -show some data about the loaded patch: number of samples, regions, groups, filters, equalizers, 
   waveshapers etc.
  -maybe display also, how many filters, eqs, etc. are allocated and how many are currently in use
