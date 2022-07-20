@@ -102,8 +102,9 @@ protected:
   jura::RTextField *instrumentLabel;
   jura::MeteringDisplayWithText *layersMeter;
 
-
   // SFZ text editor:
+  jura::FileManager *sfzFileManager;
+  jura::FileSelectionBox *sfzFileLoader;
   juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a 
   juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)
   //juce::CodeTokeniser sfzTokenizer;
@@ -115,7 +116,7 @@ protected:
 
 
   /*
-  FileSelectionBox *sfzFileLoader;
+
   RTextField *numLayersLabel, *numLayersOfLabel, ;
   RDraggableNumber *maxNumLayersSlider;
 

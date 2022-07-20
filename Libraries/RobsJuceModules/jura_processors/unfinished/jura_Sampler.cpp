@@ -359,6 +359,14 @@ void SamplerEditor::createWidgets()
 
 
   // The SFZ editor:
+
+  
+  //sfzFileManager = new jura::FileManager();
+  //sfzFileLoader = new jura::FileSelectionBox(&sfzFileManager);
+  // does not yet compile because FileManager is abstract. We probably need a subclass SfzFileManager
+
+
+
   addAndMakeVisible(sfzEditor);
 }
 
