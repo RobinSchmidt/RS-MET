@@ -228,7 +228,8 @@ void SamplerModule::reset()
 
 //=================================================================================================
 
-SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) : AudioModuleEditor(samplerToEdit)
+SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) 
+  : AudioModuleEditor(samplerToEdit), sfzEditor(sfzCodeDoc, nullptr)
 {
   ScopedLock scopedLock(*lock);
   samplerModule = samplerToEdit;
@@ -295,6 +296,10 @@ void SamplerEditor::resized()
   //instrumentLabel->setBounds(x, y, 68, 16);
   //x = instrumentLabel->getRight()+2;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
+
+
+  sfzEditor.setBounds(x, y, 200, 100);  // preliminary
+
 }
 
 void SamplerEditor::createWidgets()
@@ -351,6 +356,10 @@ void SamplerEditor::createWidgets()
   // warning lamps for overloads. maybe have a total-ram display, too? maybe that should inquire
   // the ram-suage of the process from the OS like int the system monitor? maybe we can also 
   // display information about the smoothness/speikeyness of the CPU load?
+
+
+  // The SFZ editor:
+  addAndMakeVisible(sfzEditor);
 }
 
 
@@ -423,7 +432,7 @@ ToDo:
  
   
  
-  
+-Allow optional voice retriggering and voice stealing. At the moment, Each note starts a new voice.
 -optimize by using block-wise processing instead of sample-by-sample
 -maybe instead of opening a message box on load error, show the error message in the load/save
  widget set 

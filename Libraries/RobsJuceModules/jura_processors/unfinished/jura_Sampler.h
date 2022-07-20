@@ -104,6 +104,18 @@ protected:
   //jura::RTextField *numLayersLabel, *numLayersField; // numLayersField may become obsolete
   jura::MeteringDisplayWithText *layersMeter;
 
+
+  juce::CodeDocument sfzCodeDoc;
+  juce::CodeEditorComponent sfzEditor;
+  // ToDo: check if destruction order is correct (the editor holds a reference to the doc)
+  //juce::CodeTokeniser sfzTokenizer;
+  // ToDo: implement this, see:
+  //   https://docs.juce.com/master/classCodeTokeniser.html
+  // The CodeTokeniser class is abstract. We need to make a subclass rsSfzTokenizer. Maybe someone
+  // else already did that? Check open-source SFZ sampler projects. When we have that, we need to 
+  // pass a pointer to our tokenizer to the constructor of the editor
+
+
   /*
   FileSelectionBox *sfzFileLoader;
   RTextField *numLayersLabel, *numLayersOfLabel, ;

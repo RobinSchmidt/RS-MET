@@ -49,6 +49,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 //#include <juce_graphics/juce_graphics.h>
 //#include <juce_gui_basics/juce_gui_basics.h>
+//#include <juce_gui_extra/juce_gui_extra.h>
 using namespace juce;  // get rid of that
 
 //#include <rapt/rapt.h> // maybe include rosic instead? rosic now depends on rapt
