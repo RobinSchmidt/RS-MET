@@ -2731,3 +2731,12 @@ void LibertyEditor::updateWidgetsAccordingToState()
   structureTreeView->getInterfaceMediator()->setContainerToShowInDiagram(structureTreeView->getInterfaceMediator()->getTopLevelModule());
   // the mediator will take care to update all panels
 }
+
+
+/*
+
+Bugs:
+-The Poly switch on the GUI seems to have no effect
+
+
+*/

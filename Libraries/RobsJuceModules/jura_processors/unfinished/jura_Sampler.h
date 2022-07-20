@@ -10,15 +10,25 @@ class JUCE_API SfzPlayer : public jura::FileManager, public rosic::Sampler::rsSa
 
 public:
 
+  /** Constructor. Configures the .sfz and .wav directories which are to be used. */
   SfzPlayer();
 
-  // Overrides from jura::FileManager to load/save the current .sfz file:
+  /** Overriden from jura::FileManager to try to load the given file which is assumed to be an .sfz
+  file. If all works well, on return, we will have loaded the given sfz file and our lastValidSfz 
+  member will have stored the content of the file and the function will return true. It it goes 
+  wrong, we will revert to our lastValidSfz and return false. */
   bool loadFile(const juce::File& fileToLoad) override;
 
   bool saveToFile(const juce::File& fileToSaveTo) override;
 
+  /** Tries to load an .sfz file whose relative (to our sfzRootDir) path is given by the passed 
+  string and reports whether or not this was successful.  */
+  bool loadFile(const juce::String& relativePath);
 
-  bool loadFile(const juce::String& path);
+
+  // bool setupFromSfzString(const juce::String& newSfz);
+  // this may be called from the editor or some widget near it to try to update the instrument 
+  // according to the given string...
 
 
 protected:
@@ -30,10 +40,24 @@ protected:
   Called in constructor. */
   virtual void setupDirectories();
 
-  // under construction:
+
+  /** The root directory where we expect all the sfz files to be. */
   juce::String sfzRootDir;
+  // I think, sfzRootDir is redundant with the std::string in the rsSamplerEngine2 baseclass, so
+  // maybe try to get rid.
+
   //juce::String sampleRootDir;
-  // move to SfzPlayer
+  // This is (or should be) also stored in the Engine baseclass object (as std::string)
+
+  /** When trying to update according to a new sfz string or file, we may fail because the sfz may
+  be malformed, files may be missing, etc. In such a case, we'll revert to the last known valid
+  sfz string which we keep in this variable. */
+  juce::String lastValidSfz;
+
+  // Maybe we need a boolean flag to indicate, whether the current state was saved and/or our
+  // lastValidSfz is in sync with the most recently loaded or saved sfz-file. The current state
+  // of the engine should always be in sync with our lastValidSfz member...we should actually make
+  // that a class invariant, I think.
 
 };
 

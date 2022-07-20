@@ -14,8 +14,8 @@ public:
   enum labelPositions
   {
     LABEL_INVISIBLE,
-    LABEL_LEFT,
-    LABEL_ABOVE
+    LABEL_LEFT,        // Label is left to the box
+    LABEL_ABOVE        // Label is above the box
   };
 
   /** Positions where the load/save/+/- buttons can appear. */

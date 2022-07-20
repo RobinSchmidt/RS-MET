@@ -27,13 +27,15 @@ FileSelectionBox::FileSelectionBox(const String& componentName, FileManager *fil
   saveButton->setClickingTogglesState(false);
   saveButton->setToggleState(false, false);
 
-  addWidget( minusButton = new RButton(RButton::MINUS) );
+  //addWidget( minusButton = new RButton(RButton::MINUS) );
+  addWidget( minusButton = new RButton(RButton::ARROW_LEFT) );
   minusButton->addRButtonListener(this);
   minusButton->setDescription(String("Skip to previous file in current directory"));
   minusButton->setClickingTogglesState(false);
   minusButton->setToggleState(false, false);
 
-  addWidget( plusButton = new RButton(RButton::PLUS) );
+  //addWidget( plusButton = new RButton(RButton::PLUS) );
+  addWidget( plusButton = new RButton(RButton::ARROW_RIGHT) );
   plusButton->addRButtonListener(this);
   plusButton->setDescription(String("Skip to next file in current directory"));
   plusButton->setClickingTogglesState(false);
@@ -54,14 +56,10 @@ FileSelectionBox::~FileSelectionBox()
 
 void FileSelectionBox::rButtonClicked(RButton *buttonThatWasClicked)
 {
-  if( buttonThatWasClicked == loadButton )
-    fileManager->openLoadingDialog();
-  else if( buttonThatWasClicked == saveButton )
-    fileManager->openSavingDialog();
-  else if( buttonThatWasClicked == plusButton )
-    fileManager->loadNextFile();
-  else if( buttonThatWasClicked == minusButton )
-    fileManager->loadPreviousFile();
+  if(      buttonThatWasClicked == loadButton  ) fileManager->openLoadingDialog();
+  else if( buttonThatWasClicked == saveButton  ) fileManager->openSavingDialog();
+  else if( buttonThatWasClicked == plusButton  ) fileManager->loadNextFile();
+  else if( buttonThatWasClicked == minusButton ) fileManager->loadPreviousFile();
   updateBoxContent();
 }
 
@@ -108,15 +106,15 @@ void FileSelectionBox::resized()
   }
 
   fileLabel->setBounds(0, 0, labelWidth, boxHeight);
-  fileNameBox->setBounds(boxX, boxY, boxWidth, boxHeight);
+
+
+  //fileNameBox->setBounds(boxX, boxY, boxWidth, boxHeight);  // old, buggy?
+  fileNameBox->setBounds(boxX, buttonsY, boxWidth, boxHeight);
 
   int x = getWidth()-boxHeight;
-  plusButton->setBounds( x, buttonsY, boxHeight, boxHeight);
-  x -= (boxHeight-2);
-  minusButton->setBounds(x, buttonsY, boxHeight, boxHeight);
-  x -= (40-2);
-  loadButton->setBounds( x, buttonsY, 40,        boxHeight);
-  x -= (40-2);
+  plusButton->setBounds( x, buttonsY, boxHeight, boxHeight); x -= (boxHeight-2);
+  minusButton->setBounds(x, buttonsY, boxHeight, boxHeight); x -= (40-2);
+  loadButton->setBounds( x, buttonsY, 40,        boxHeight); x -= (40-2);
   saveButton->setBounds( x, buttonsY, 40,        boxHeight);
 }
 

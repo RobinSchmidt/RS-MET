@@ -9,7 +9,18 @@ SfzPlayer::SfzPlayer()
 
 bool SfzPlayer::loadFile(const juce::File& fileToLoad)
 {
-  return loadFile(fileToLoad.getRelativePathFrom(sfzRootDir));
+  bool ok = loadFile(fileToLoad.getRelativePathFrom(sfzRootDir));
+
+  if(!ok)
+  {
+    //bool ok2 = setupFromSfzString(lastValidsfz);
+    //jassert(ok2);
+    // This should actually never fail because lastValidSfz is supposed to be a valid sfz. But what
+    // if the user has deleted some required sample files in the meantime? Maybe in that case, we
+    // should reset lastValidSfz and reset the engine, too
+  }
+
+  return ok;
 }
 
 bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
@@ -18,43 +29,48 @@ bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
   return false;
   // ToDo: we somehow need to connect this to the string shown in the code-editor. Maybe we need to
   // keep (a copy of) that string here in this class as member, maybe a tmpSfz juce::String
+  // I think, we can use the lastValid Sfz member for this
 }
 
 bool SfzPlayer::loadFile(const juce::String& relativePath)
 {
   //juce::String path = sfzRootDir + File::getSeparatorString() + relativePath;
 
-  // Check, if such an instrument file exists in the folder where we expect it:
+  // Check, if such an sfz file exists in the folder where we expect it:
   juce::String path = sfzRootDir + relativePath;
   juce::File sfzFile(path);
   if(!sfzFile.existsAsFile())
   {
     showWarningBox("SFZ Load Error", "File " + path + " does not exist.");
-    return false;
+    return false; // The .sfz file that was specified in the relativePath file was not found
     // ToDo: Maybe have a warning box with a more comprehensive error message that makes some 
     // suggestions why this could have happened. In this case, it could be that the sfzRootDir
     // does not exist on the machine
   }
   // ToDo: I think, this error handling here is redundant with the error handling in the call
-  // Engine::loadFromSFZ below - verify that and if so, maybe get rid of it here
+  // Engine::loadFromSFZ below - verify that and if so, maybe get rid of it here. But before 
+  // getting rid, we should make sure that the subsequent error reporting code is a bit more 
+  // specific than it currently is. File not existent is a different condition than the general
+  // "unable to load file" condition which may have lots of other reasons.
 
-
+  // OK, the file exists. Let the engine try to load it:
   std::string sSfzPath = relativePath.toStdString();
-  int rc =  Engine::loadFromSFZ(sSfzPath.c_str());
+  int rc = Engine::loadFromSFZ(sSfzPath.c_str());
   if(rc == ReturnCode::fileLoadError)
   {
-    //RAPT::rsError("File load error"); // preliminary, for debug
     showWarningBox("SFZ Load Error", "File " + path + " could not be loaded.");
     return false;
-    // The .sfz file that was specified in the .xml file was not found
   }
   // todo:
   // -catch other errors, such as sfzParseError, unknownOpcode, sampleLoadError, etc.
-  // -figure out, hwat exactly went wrong and show a more specific error message
+  // -figure out, what exactly went wrong and show a more specific error message
 
+  // OK, the engine did apparently load the new sfz file successully. Now we need to store the
+  // content of the file here in a member here too:
+  lastValidSfz = sfzFile.loadFileAsString();
   return true;
 
-  // Notes:
+  // Old Notes (obsolete):
   // -it currently only works, if the .sfz file and its required .wav files reside in the project
   //  directory, i.e.:
   //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019  
@@ -67,20 +83,6 @@ bool SfzPlayer::loadFile(const juce::String& relativePath)
   //  and the debug break makes the app exit immediately?). 
   //  ...i think, this should be fixed now because we now load the sfz files from the proper 
   //  content directory
-
-  // ToDo:
-  // -Support placing the .sfz and .wav files in different folders. Maybe the path to the .sfz 
-  //  file should be specified relatively to the .xml file. The paths to the .wav files should be
-  //  either relatively to the .sfz file or relatively to some global sample directory that can be
-  //  specified in the xml and/or sfz ...maybe the latter is better but requires us to introduce a 
-  //  new opcode to the sfz spec...maybe sample_folder or sample_directory. options should be
-  // -retrieve the .sfz and sample folder ...the latter either from the xml or from sfz (not sure
-  //  yet, what's best)  
-  // -set up the folders in the engine before caling engine.loadFromSFZ
-  // ToDo (maybe): 
-  // -extract the directory from the path
-  // -set the current working directory to that directory
-  // -use as sSfzPath below only the part of the path with the directory stripped off
 }
 
 void SfzPlayer::setupDirectories()
@@ -334,7 +336,7 @@ void SamplerEditor::resized()
   //x = instrumentLabel->getRight()+2;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 
-  sfzFileLoader->setBounds(x, y, 200, 16);
+  sfzFileLoader->setBounds(x, y, 300, 16);
   y += 16;
   sfzEditor.setBounds(x, y, w, getHeight()-y);  // preliminary, uses the full available space
 }
@@ -398,7 +400,11 @@ void SamplerEditor::createWidgets()
   // The SFZ editor:
   sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->engine);
   addWidgetSet(sfzFileLoader);
+  sfzFileLoader->setDescription("Current SFZ file");
+
   addAndMakeVisible(sfzEditor);
+  // ToDo: set up the description of the editor...but it's not a subclass of RWidget...hmmm..
+
 }
 
 //=================================================================================================
