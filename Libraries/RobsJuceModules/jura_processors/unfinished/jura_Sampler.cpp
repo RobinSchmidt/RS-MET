@@ -83,9 +83,12 @@ bool SfzPlayer::loadFile(const juce::String& relativePath)
 
 bool SfzPlayer::setupFromSfzString(const juce::String& newSfz)
 {
-
-
-
+  bool ok = Engine::setFromSFZ(newSfz.toStdString());
+  if(!ok) {
+    bool ok2 = setupFromSfzString(lastValidSfz); 
+    jassert(ok2);        // This should never happen, see comments in SfzPlayer::loadFile.
+    return false; }
+  lastValidSfz = newSfz;
   return true;
 }
 
