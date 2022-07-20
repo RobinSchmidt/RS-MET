@@ -855,7 +855,7 @@ let the class have some member variables such that we don't always have to pass 
 parameters into a static function */
 
 template<class T>
-class rsInstantaneousFundamentalEstimator
+class rsInstantaneousFundamentalEstimator // maybe rename to rsPitchEstimator(Offline)
 {
 
 public:

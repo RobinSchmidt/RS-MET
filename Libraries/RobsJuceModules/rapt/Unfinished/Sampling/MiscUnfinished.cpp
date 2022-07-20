@@ -1586,6 +1586,15 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(const T *x, int 
   return f;
 }
 
+/*
+Ideas:
+-Implement a frequency domain algorithm based on finding spectral (quasi-harmonic) peaks and using 
+ their (average) difference as f0-estimate. Maybe in the averaging, there should be a weighting by
+ (some power of) the actual peak magnitude and/or maybe some (1/n)^c lowpass'ish frequency 
+ weighting. See Julius O. Smith - Spectral Audio Processing, pg 570.
+
+*/
+
 //=================================================================================================
 
 template<class T>

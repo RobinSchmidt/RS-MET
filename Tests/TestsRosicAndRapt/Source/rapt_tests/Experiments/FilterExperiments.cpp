@@ -471,6 +471,12 @@ void bandSplittingThreeWay()
   //  it's at -1?...but no - that makes no sense. Maybe a parameter that when at 0 gives full 
   //  seperation, at -1 reduces to a 2-way, i.e. puts nothing in the mid-band and at +1 puts 
   //  everything into the mid band?
+  //  -Maybe it should work as follows: 
+  //   -in the mid position (0), the splitting is complete as it is now
+  //   -in right position (+1), everything goes into the mid signal, notch signal is silent
+  //   -in left position (-1), everything goes into the notch-signal, mid is silent
+  //   -maybe a similar scheme can be applied to the subsequent low/high splitter: -1 all goes to
+  //    low, +1: all goes to high, 0: normal (full) splitting operation
   // -Try to avoid the bilinear frequency cramping by using prescribed Nyquist gain designs for
   //  bandpass and lowpass.
   // -Try to figure out how to do splitters with steeper slopes like we already did for the 2-way
@@ -479,6 +485,16 @@ void bandSplittingThreeWay()
   //  bandpass and lowpass design prototypes independently although it certainly makes sense from
   //  an aesthetic point of view to base both on the same prototype...but who cares about pretty
   //  plots? It's about the sound!
+  // -How about just using a regular Butterworth or Chebychev-2 filter lowpass or highpass and 
+  //  obtaining the complementary signal via subtraction. Sure the high (or low)pass freq response
+  //  will be a bit messy, but maybe it's useful nonetheless. The user could pick, which of the two
+  //  responses should be nice and which would then be messy. Maybe there's a way to distribute the
+  //  messiness between low- and highpass?
+  // -A bit unrelated: how would we go about implementing a transparent upsampling/downsampling 
+  //  scheme where we get oru original signal back exactly, if we don't modify the upsampled 
+  //  version? Maybe we could obtain a difference signal for the anti-image-filtered signal in the
+  //  upsampled domain which we mix back in before downsampling? That feels a bit like cheating, 
+  //  though. Maybe it's a bad idea...
 
   int dummmy = 0;
 }
@@ -513,7 +529,7 @@ void bandSplittingThreeWay2p2z()
   int  N  = 4096;
   Real fs = 44100;
   Real fc = 1000;
-  Real bw = 5.0;
+  Real bw = 3.0;
 
   Real k  = sqrt(pow(2.0, bw));
   Real fl = fc / k;

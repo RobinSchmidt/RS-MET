@@ -4296,10 +4296,7 @@ bool samplerEngineUnitTest()
   rsAssert(ok);
 
   // ToDo:
-  // -unit test the parser with both LF (i.e. "\n") and CRLF (i.e. "\r\n") line endings. Into some
-  //  of my sfz files, apparently, some CRLF lines endings have sneaked in. The parser should be 
-  //  able to hanlde both types of line endings. Maybe just convert any '\r' characters to '\n' 
-  //  characters. 
+  // -Finish features of LFO, EG
   // -make a sfzCodeBookTest that tests the from/to string converrsions
 
   // -Refactor:

@@ -101,5 +101,14 @@ ToDo:
  and imaginary inputs of the filter (using a sin/cos rule such that sum-of-squares of weights is
  always 1)? Maybe that's equivalen to forming linear combinations of the outputs?
 
+Ideas:
+-Maybe also implement a bona-fide Hilbert transform wilter, i.e. a filter which takes the original
+ signal as is as real part and produces a fitting imaginary part. The impuse response af a digital
+ ideal Hilbert filter is h[k] = (1-cos(pi*k)) / (pi*k) = 2/(pi*k) for odd k, 0 for even k. The 
+ analog Hilbert filter has h(t) = 1 / (pi*t). Applying the Hilbert transform 3 times yields the 
+ inverse transform, so applying it 4 times yields the identity: sin -> cos -> -sin -> -cos -> sin.
+ https://en.wikipedia.org/wiki/Hilbert_transform
+ https://de.wikipedia.org/wiki/Hilbert-Transformation
+
 
 */
