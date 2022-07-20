@@ -24,7 +24,11 @@ public:
 
   void setup(float freq, float amp, float phase, float delay, float fade, float sampleRate); 
   void processFrame(float* L, float* R);
+
   void resetState() { pos = 0.f; }
+  // Maybe we need to do: pos = phase? We currently don't keep the start-phase as member but only
+  // set pos to phase in setup which gets called on noteOn. Maybe we don't need to keep the phase
+  // as member...we'll see
 
 protected:
 

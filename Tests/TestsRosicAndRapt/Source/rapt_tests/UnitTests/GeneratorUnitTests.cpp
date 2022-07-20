@@ -3066,7 +3066,7 @@ bool samplerLfoTest()
   float sampleRate = 44100.f;
   float freq  = 500.f;
   float amp   = 1.f;
-  float phase = 0.f;
+  float phase = 0.2f;
   float delay = 0.f;
   float fade  = 0.f;
 
@@ -3074,8 +3074,9 @@ bool samplerLfoTest()
   int N = 1000;     // number of samples to produce
   Vec tgt(N);
   float w = (float) (2*PI*freq/sampleRate);
+  float p = 2*PI*phase;
   for(int n = 0; n < N; n++)
-    tgt[n] = sin(w*n);
+    tgt[n] = sin(w*n + p);
   //rsPlotVectors(tgt);
 
   // Create LFO outputs:
@@ -3094,6 +3095,7 @@ bool samplerLfoTest()
   return ok;
 
   // ToDo: 
+  // -Try it with phases beyond 0..1. It should wrap around.
   // -Implement and test opcodes for delay, fade, amp
   //  -delay and fade are already part of sfz1. they range from 0 to 100s
   // -Figure out, if the depths of the LFOs are supposed to be unipolar or bipolar (peak-to-peak) 
