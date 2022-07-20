@@ -81,19 +81,20 @@ protected:
 //=================================================================================================
 
 /** A subclass of jura::FileManager that deals specifically with .sfz files and has a pointer to
-a rosic::rsSamplerEngine which it maintains in sync with the loaded file...tbc...  */
+a jura::SamplerModule which it maintains in sync with the loaded file...tbc...  */
 
-class JUCE_API SfzFileManager : public FileManager
+class JUCE_API SfzFileManager : public jura::FileManager
 {
 
 public:
 
+  SfzFileManager(SamplerModule *moduleToSetup) : samplerModule(moduleToSetup) {}
   bool loadFile(const juce::File& fileToLoad) override;
   bool saveToFile(const juce::File& fileToSaveTo) override;
 
 protected:
 
-  rosic::Sampler::rsSamplerEngine2 samplerEngine;
+  SamplerModule *samplerModule;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzFileManager)
 };
@@ -111,6 +112,8 @@ public:
 
   SamplerEditor(SamplerModule* samplerToEdit);
 
+  virtual ~SamplerEditor();
+
   // Overrides                                   // overriden from...
   bool loadFile(const juce::File& f) override;   //   FileManager
   bool saveToFile(const juce::File& f) override; //   FileManager
@@ -121,11 +124,14 @@ protected:
 
   virtual void createWidgets();
 
+
+  SamplerModule* samplerModule = nullptr;
+
   jura::RTextField *instrumentLabel;
   jura::MeteringDisplayWithText *layersMeter;
 
   // SFZ text editor:
-  jura::FileManager *sfzFileManager;
+  jura::SfzFileManager *sfzFileManager;
   jura::FileSelectionBox *sfzFileLoader;
   juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a 
   juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)
@@ -153,7 +159,7 @@ protected:
 
 
 
-  SamplerModule* samplerModule = nullptr;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerEditor)
 };

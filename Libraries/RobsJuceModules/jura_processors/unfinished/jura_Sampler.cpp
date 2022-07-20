@@ -228,11 +228,28 @@ void SamplerModule::reset()
 
 //=================================================================================================
 
+
+
+bool SfzFileManager::loadFile(const juce::File& fileToLoad)
+{
+  return true;
+}
+
+bool SfzFileManager::saveToFile(const juce::File& fileToSaveTo)
+{
+  return true;
+}
+
+//=================================================================================================
+
 SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) 
-  : AudioModuleEditor(samplerToEdit), sfzEditor(sfzDoc, nullptr)
+  : AudioModuleEditor(samplerToEdit)
+  , samplerModule(samplerToEdit)
+  , sfzEditor(sfzDoc, nullptr)
+  //, sfzFileManager(samplerToEdit)
 {
   ScopedLock scopedLock(*lock);
-  samplerModule = samplerToEdit;
+  //samplerModule = samplerToEdit;
 
   // initialize the current directory for sfz loading:
   //FileManager::setActiveDirectory(getSupportDirectory() + "/SamplerInstruments");
@@ -242,6 +259,16 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   setSize(400, 200);
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second)
+}
+
+SamplerEditor::~SamplerEditor()
+{
+  ScopedLock scopedLock(*lock);
+  delete sfzFileManager;
+  // Hmm - if we don't delete it here, we'll get a memleak but if we do delete it, we'll get an 
+  // access violation, at least, if we do:
+  //  sfzFileLoader = new jura::FileSelectionBox("", sfzFileManager);
+  // i.e wire the file manager to the sfzFileLoader
 }
 
 bool SamplerEditor::loadFile(const juce::File& fileToLoad)
@@ -262,7 +289,7 @@ void SamplerEditor::timerCallback()
 
   int num = samplerModule->getNumActiveLayers();
 
-  layersMeter->setCurrentValue(num);
+  layersMeter->setCurrentValue((float)num);
   //numLayersField->setText(juce::String(num));
 
   // see: TrackMeterModuleEditor::timerCallback
@@ -359,15 +386,10 @@ void SamplerEditor::createWidgets()
 
 
   // The SFZ editor:
-
-  
-  //sfzFileManager = new jura::FileManager();
-  //sfzFileLoader = new jura::FileSelectionBox(&sfzFileManager);
-  // does not yet compile because FileManager is abstract. We probably need a subclass SfzFileManager
-
-
-
-  addAndMakeVisible(sfzEditor);
+  sfzFileManager = new jura::SfzFileManager( samplerModule );
+  //sfzFileLoader = new jura::FileSelectionBox("", sfzFileManager);
+  //addWidgetSet(sfzFileLoader);
+  //addAndMakeVisible(sfzEditor);
 }
 
 

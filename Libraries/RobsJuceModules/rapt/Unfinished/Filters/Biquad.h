@@ -891,9 +891,9 @@ RS_INLINE void rsBiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(T& b0,
   T bw = bandwidthInOctaves;          // bandwidth in octaves
 
   // intermediate variables:
-  T fLo = fc  / pow(2.0, 0.5*bw);      // lower bandedge frequency
-  T fHi = fLo * pow(2.0, bw);         // upper bandedge frequency
-  T GB  = rsSqrt(G);                    // gain at bandedge frequencies
+  T fLo = fc  / pow(T(2), T(0.5)*bw);  // lower bandedge frequency
+  T fHi = fLo * pow(T(2), bw);         // upper bandedge frequency
+  T GB  = rsSqrt(G);                   // gain at bandedge frequencies
   T w0  = 2*PI*fc*oneOverSampleRate;
   T wLo = 2*PI*fLo*oneOverSampleRate;
   T wHi = 2*PI*fHi*oneOverSampleRate;
