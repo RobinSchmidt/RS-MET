@@ -344,7 +344,11 @@ void SamplerEditor::resized()
 
   sfzFileLoader->setBounds(x, y, 300, 16);
   y += 16;
-  sfzEditor.setBounds(x, y, w, getHeight()-y);  // preliminary, uses the full available space
+  sfzEditor.setBounds(x, y, w-8, getHeight()-y);  // preliminary, uses almost the full available space
+  y -= 16;
+  w  = 48;
+  x  = sfzEditor.getRight() - w;
+  parseButton->setBounds(x, y, w, 16);
 }
 
 void SamplerEditor::codeDocumentTextInserted(const String& newText, int insertIndex)
@@ -418,6 +422,9 @@ void SamplerEditor::createWidgets()
   addWidgetSet(sfzFileLoader);
   sfzFileLoader->setDescription("Current SFZ file");
 
+  addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
+  parseButton->setDescription("Parse the current sfz document");
+
   addAndMakeVisible(sfzEditor);
   // ToDo: set up the description of the editor...but it's not a subclass of RWidget...hmmm..
 
@@ -425,12 +432,12 @@ void SamplerEditor::createWidgets()
 
 void SamplerEditor::setCodeIsParsed(bool isParsed)
 {
-
+  // ToDo: Highlight or ungray the Parse button
 }
 
 void SamplerEditor::setCodeIsSaved(bool isSaved)
 {
-
+  // ToDo: make an atserisk appear in the sfz file box, if is not saved, disappea, if it is saved
 }
 
 //=================================================================================================
