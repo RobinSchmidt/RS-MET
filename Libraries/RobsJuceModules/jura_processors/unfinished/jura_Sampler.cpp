@@ -54,11 +54,6 @@ bool SfzPlayer::setupFromSfzString(const juce::String& newSfz, bool stringComesF
   {
     lastValidSfz = newSfz; // If all went well, the newSfz becomes the lastValidSfz for next time
     markFileAsClean(stringComesFromFile); // Controls "dirty" asterisk in sfz file-widget
-
-    //markFileAsDirty();
-    // The file on disk is now out of date...wait - this gets called from loading a file, too. 
-    // Maybe we need a function parameter to control the dirtification
-
     return true;
   }
 }
@@ -337,7 +332,7 @@ void SamplerEditor::codeDocumentTextDeleted(int startIndex, int endIndex)
 void SamplerEditor::rButtonClicked(RButton* b)
 {
   if(b == parseButton)
-    parseCurrentEditorContent();
+    parseCodeEditorContent();
   else
     AudioModuleEditor::rButtonClicked(b);
 }
@@ -458,13 +453,13 @@ void SamplerEditor::setCodeIsSaved(bool isSaved)
   // ToDo: make an atserisk appear in the sfz file box, if is not saved, disappea, if it is saved
 }
 
-void SamplerEditor::parseCurrentEditorContent()
+void SamplerEditor::parseCodeEditorContent()
 {
   bool ok = samplerModule->setupFromSfzString(sfzEditor.getDocument().getAllContent(), false);
   setCodeIsParsed(ok);  // ...maybe we should do this only in case of success?
 }
 
-void SamplerEditor::saveCurrentEditorContent()
+void SamplerEditor::saveCodeEditorContent()
 {
 
 }
@@ -472,8 +467,17 @@ void SamplerEditor::saveCurrentEditorContent()
 //=================================================================================================
 
 /*
-Bugs:
 
+ToDo:
+-add activeFileBecameDirty callback to FileManagerListener for subclasses to optionally override
+-implement it in FileSelectionBox
+-> this should make the astersik appear in the sfz-widget after parsing the editor content
+But: the widget will not save the editor content but instead the most recently parsed *valid*
+content...that may actually be a plus: it disallows saving invalid sfz files - but it's not what a
+user would expect. How should we deal with that? Maybe the save button should disappear when the
+editor content is not in sync with the lastvalidSfz? That may be good solution
+
+Bugs:
 -FilterBlip.xml behaves weird in the low keyrange at low velocities - that's strange because the 
  patch doesn't specify any veltrack stuff. It does have amp-keytrack, though. Also, multiple hits
  seem to get louder with each hit - check if there's maybe some remnant filter state that 

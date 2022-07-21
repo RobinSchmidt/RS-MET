@@ -190,9 +190,8 @@ protected:
   void setCodeIsDirty() { setCodeIsParsed(false); setCodeIsSaved(false); }
   void setCodeIsClean() { setCodeIsParsed(true);  setCodeIsSaved(true);  }
 
-  void parseCurrentEditorContent();  // maybe should return a bool?
-  void saveCurrentEditorContent();   // dito?
-  // rename to parse/saveCodeEditorContent
+  void parseCodeEditorContent();  // maybe should return a bool?
+  void saveCodeEditorContent();   // dito?
 
   SamplerModule* samplerModule = nullptr;
 

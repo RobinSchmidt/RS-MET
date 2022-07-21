@@ -77,6 +77,8 @@ public:
   to which we have registered as listener. */
   virtual void activeFileChanged(FileManager *fileManagerThatHasChanged) = 0;
 
+  // virtual void activeFileBecameDirty() {}  
+
   juce_UseDebuggingNewOperator;
 
 };
@@ -240,6 +242,8 @@ protected:
   /** Sends out a message to our listeners to inform them that the currently active file was
   changed. */
   virtual void notifyListeners();
+  // rename to sendActiveFileChangeNotification and add sendActiveFileBecameDirtyNotification
+
 
   bool         fileIsDirty;
   bool         recurseSubDirectories;
