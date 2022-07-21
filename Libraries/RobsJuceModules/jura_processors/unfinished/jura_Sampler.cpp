@@ -21,6 +21,10 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
 
   return ok;
 }
+// This is called from the sfz load widgets but *not* from the xml load widget leading to the 
+// situation that after loading a new xml, the code editor is not updated. I think, we should 
+// probably call loadFile(File&) from loadFile(String&) instead of letting the latter invoke
+// sfzFile.loadFileAsString() directly on the engine
 
 bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
 {
