@@ -16,6 +16,9 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
     // if the user has deleted some required sample files in the meantime? Maybe in that case, we
     // should reset lastValidSfz and reset the engine, too
 
+  if(ok)
+    notifyListeners();
+
   return ok;
 }
 
@@ -382,6 +385,7 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
   // receive a callback from the samplerModule->engine here, then the code shown in the editor
   // actually is actually clean (i.e. parsed and saved).
   // ...verify this...
+
 
 
   int dummy = 0;
