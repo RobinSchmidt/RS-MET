@@ -92,6 +92,9 @@ public:
   void setSampleRate(double newSampleRate) override;
   void setGain(double newGain);
 
+  bool setupFromSfzString(const juce::String& newSfz) { return engine.setupFromSfzString(newSfz); }
+
+
 
   int getNumActiveLayers() const { return engine.getNumActiveLayers(); }
 

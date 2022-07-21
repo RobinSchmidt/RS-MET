@@ -670,6 +670,12 @@ float SfzCodeBook::stringToValue(Opcode op, const std::string& str)
 {
   switch(op)
   {
+  //case Opcode::Unknown:   return 0.f;
+    // Workaround to fix crashes with malformed sfz files. Actually, we should fall through to 
+    // default and rsStringToFloat should return 0 when the string contains nonsense but that 
+    // doesn't work yet because at the moment rsStringToFloat just calls stof which can't handle
+    // nonsense gracefully.
+
   case Opcode::filN_type: return (float) stringToFilterType(str);
   case Opcode::LoopMode:  return (float) stringToLoopMode(str);
   default: return rsStringToFloat(str);

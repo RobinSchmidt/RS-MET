@@ -441,7 +441,9 @@ void SamplerEditor::createWidgets()
 
 void SamplerEditor::setCodeIsParsed(bool isParsed)
 {
-  // ToDo: Highlight or ungray the Parse button
+  codeIsParsed = isParsed;
+  //parseButton->setEnabled(!codeIsParsed); // doesn't seem to have any effect
+  parseButton->setVisible(!codeIsParsed);   // works but is a bit drastic
 }
 
 void SamplerEditor::setCodeIsSaved(bool isSaved)
@@ -451,6 +453,9 @@ void SamplerEditor::setCodeIsSaved(bool isSaved)
 
 void SamplerEditor::parseCurrentEditorContent()
 {
+  bool ok = samplerModule->setupFromSfzString(sfzEditor.getDocument().getAllContent());
+  setCodeIsParsed(ok);
+
   // -try to parse the code
   // -setCodeIsParsed(true) ...maybe only in case of success?
 }

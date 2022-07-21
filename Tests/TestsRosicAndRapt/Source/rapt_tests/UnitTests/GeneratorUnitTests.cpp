@@ -1548,8 +1548,10 @@ pan=100.000000";
   // ToDo: test with a sample path that contains a '/', i.e. goes into a subdirectory. In this 
   // case, the '/' within that path should not be mistaken for a comment
 
-
-
+  // Throw total nonsense at the parser:
+  se2.setFromSFZ("");
+  se2.setFromSFZ("f");    // asserts
+  se2.setFromSFZ("fds");  // asserts
 
 
 
@@ -4327,7 +4329,8 @@ bool samplerEngineUnitTest()
 
   // ToDo:
   // -Finish features of LFO, EG
-  // -make a sfzCodeBookTest that tests the from/to string converrsions
+  // -Throw total nonsense at the sfz parser and make sure, it handles it gracefully
+  // -make a sfzCodeBookTest that tests the from/to string conversions
 
   // -Refactor:
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 
