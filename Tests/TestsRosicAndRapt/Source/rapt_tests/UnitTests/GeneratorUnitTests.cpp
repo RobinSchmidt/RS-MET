@@ -1548,11 +1548,42 @@ pan=100.000000";
   // ToDo: test with a sample path that contains a '/', i.e. goes into a subdirectory. In this 
   // case, the '/' within that path should not be mistaken for a comment
 
+  // Test string-to-float conversion:
+  using namespace rosic::Sampler;
+  float x; 
+
+  ok &= rsStringToFloat("0")     == 0.f;
+  ok &= rsStringToFloat("0.")    == 0.f;
+  ok &= rsStringToFloat("0.0")   == 0.f;
+  ok &= rsStringToFloat("0.00")  == 0.f;
+  ok &= rsStringToFloat("0.f")   == 0.f;
+
+  ok &= rsStringToFloat("-0")    == 0.f;
+  ok &= rsStringToFloat("-0.")   == 0.f;
+  ok &= rsStringToFloat("-0.0")  == 0.f;
+  ok &= rsStringToFloat("-0.00") == 0.f;
+  ok &= rsStringToFloat("-0.f")  == 0.f;
+
+  ok &= rsStringToFloat("+0")    == 0.f;
+  ok &= rsStringToFloat("+0.")   == 0.f;
+  ok &= rsStringToFloat("+0.0")  == 0.f;
+  ok &= rsStringToFloat("+0.00") == 0.f;
+  ok &= rsStringToFloat("+0.f")  == 0.f;
+
+  // ToDo: 
+  // -Move rsStringToFloat into a more general part of the library
+  // -Move the parsing tests into the general unit tests
+  // -Test it with nonzero numbers
+  // -Test it with invalid inputs (should return +-nan, -nan if it starts with '-' ...maybe)
+  // -Test parsing scientific notation
+  // -Test it with leading 0s
+
+
   // Throw total nonsense at the parser:
   se2.setFromSFZ("");
   se2.setFromSFZ("f");    // asserts
   se2.setFromSFZ("fds");  // asserts
-
+  // maybe first try rsStringToFloat in isolation
 
 
 

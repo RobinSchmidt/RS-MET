@@ -151,8 +151,19 @@ int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
   }
   return num;
 }
-// needs unit tests
+// maybe rename to rsStringToUnsigned, needs unit tests
 
+float rsStringToFloat(const std::string& str) 
+{ 
+  return std::stof(str);
+  // Preliminary. It's not a good idea to use stof. It doesn't seem to be error tolerant at all. It
+  // may crash the plugin, if the input is not a valid float ..hmm..well...it just raises an assert 
+  // but still - oh - no - it actually also triggers a std::bad_alloc exception. Maybe use a custom
+  // parser....maybe include the rsBigInt/rsBigFloat classes from RSLib into RAPT. They contain 
+  // such a parser. But maybe for that, we'll also move the RSLib::rsString code into RAPT where it
+  // more or less will parallel/obviate rosic::rsString. 
+  // ...hmm...not sure what's best
+}
 
 
 
