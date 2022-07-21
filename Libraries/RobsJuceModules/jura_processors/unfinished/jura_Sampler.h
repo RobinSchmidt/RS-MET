@@ -149,9 +149,11 @@ protected:
 
 /** Editor for SamplerAudioModule */
 
-class JUCE_API SamplerEditor : public jura::AudioModuleEditor, public jura::FileManager, 
-  public juce::Timer, public juce::CodeDocument::Listener 
+class JUCE_API SamplerEditor : public jura::AudioModuleEditor, // public jura::FileManager, 
+  public juce::Timer, public juce::CodeDocument::Listener//, public jura::FileManagerListener
 {
+
+  // Do we still need the jura::FileManager baseclass? it may be obsolete
 
 public:
 
@@ -160,8 +162,8 @@ public:
   virtual ~SamplerEditor();
 
   // Overrides                                   // overriden from...
-  bool loadFile(const juce::File& f) override;   //   FileManager
-  bool saveToFile(const juce::File& f) override; //   FileManager
+  //bool loadFile(const juce::File& f) override;   //   FileManager
+  //bool saveToFile(const juce::File& f) override; //   FileManager
   void timerCallback() override;                 //   Timer
   void resized() override;                       //   AudioModuleEditor
   void codeDocumentTextInserted(const String &newText, int insertIndex) override; // CodeDocument::Listener 

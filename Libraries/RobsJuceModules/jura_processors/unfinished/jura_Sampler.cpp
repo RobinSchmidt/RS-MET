@@ -276,11 +276,13 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   ScopedLock scopedLock(*lock);
   //samplerModule = samplerToEdit;
 
-  FileManager::setActiveDirectory(getApplicationDirectory());  // preliminary
+  //FileManager::setActiveDirectory(getApplicationDirectory());  // preliminary
+
+
   createWidgets();
   setSize(400, 200);
   //startTimer(20);  // in ms
-  startTimerHz(50);   // in Hz, i.e. fps (frames per second)
+  startTimerHz(50);   // in Hz, i.e. fps (frames per second) for the metering widgets
   sfzDoc.addListener(this);
   parseButton->addRButtonListener(this);
 }
@@ -290,6 +292,7 @@ SamplerEditor::~SamplerEditor()
 
 }
 
+/*
 bool SamplerEditor::loadFile(const juce::File& fileToLoad)
 {
   RAPT::rsError("not yet implemented");
@@ -301,6 +304,7 @@ bool SamplerEditor::saveToFile(const juce::File& fileToSaveTo)
   RAPT::rsError("not yet implemented");
   return false;
 }
+*/
 
 void SamplerEditor::timerCallback()
 {
@@ -513,7 +517,7 @@ ToDo:
 
 -GUI:
  -Make sfz editor functional:
-  -The sfz load/save field does not show the loaded sfz filename
+  -Show the sfz content in the editor after loading an xml or sfz file
   -We may need to dirtify the xml-state when the user loads a new sfz
   -We need to implement saving of the sfz.
   -Maybe we should have an update button that tries to parse the current editor content. If it 
