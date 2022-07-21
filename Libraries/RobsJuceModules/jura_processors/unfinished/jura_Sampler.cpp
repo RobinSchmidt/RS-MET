@@ -11,7 +11,7 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
   if(!fileToLoad.existsAsFile())
   {
     showWarningBox("SFZ Load Error", "File " + fileToLoad.getFullPathName() + " does not exist.");
-    return false; // The .sfz file that was specified in the relativePath file was not found
+    return false;
     // ToDo: Maybe have a warning box with a more comprehensive error message that makes some 
     // suggestions why this could have happened. In this case, it could be that the sfzRootDir
     // does not exist on the machine
@@ -22,6 +22,9 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
     bool ok = setupFromSfzString(sfzString);
     if(ok)
       notifyListeners();
+      // We notify the listeners only when we successfully loaded the new patch because otherwise, 
+      // setupFromSfzString restores the old patch from our lastValidSfz variable such that from 
+      // the outside it would appear as if nothing has happened, so no notification is required.
     return ok;
   }
 }
@@ -30,45 +33,29 @@ bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
 {
   showWarningBox("Error", "SfzPlayer::saveToFile not yet implemented");
   return false;
-  // ToDo: we somehow need to connect this to the string shown in the code-editor. Maybe we need to
-  // keep (a copy of) that string here in this class as member, maybe a tmpSfz juce::String
-  // I think, we can use the lastValid Sfz member for this
+  // ToDo: we should write the lastValidSfz string into a file
 }
 
 bool SfzPlayer::loadFile(const juce::String& relativePath)
 {
   return loadFile(juce::File(sfzRootDir + relativePath));
-
-  // Old Notes (obsolete - may be deleted soon):
-  // -it currently only works, if the .sfz file and its required .wav files reside in the project
-  //  directory, i.e.:
-  //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019  
-  //  when launching ToolChain from Visual Studio for debugging or in the same directory where 
-  //  ToolChain.exe resides, i.e.:
-  //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019\x64\Debug\Standalone Plugin
-  //  when launching the .exe directly
-  // -when using RAPT::rsError("File load error"); directly starting the exe doesn't work. I 
-  //  guess it triggers the error on startup (because it tries to load a file with empty path)
-  //  and the debug break makes the app exit immediately?). 
-  //  ...i think, this should be fixed now because we now load the sfz files from the proper 
-  //  content directory
 }
 
 bool SfzPlayer::setupFromSfzString(const juce::String& newSfz)
 {
-  bool ok = Engine::setFromSFZ(newSfz.toStdString());
-  if(!ok) 
-  {
-    bool ok2 = Engine::setFromSFZ(lastValidSfz.toStdString());
-    jassert(ok2);
-    // This should never fail because lastValidSfz is supposed to be a valid sfz. But what
-    // if the user has deleted some required sample files in the meantime? Maybe in that case, we
-    // should reset lastValidSfz and reset the engine, too
+  bool ok = Engine::setFromSFZ(newSfz.toStdString());  // This may fail due to malformed sfz, etc.
+  if(!ok) {
+    // In case of failure to set up the engine from the new sfz string, we restore the old patch.
+    // Restoring should never fail because lastValidSfz is always supposed to be a valid sfz. But 
+    // what if the user has deleted some required sample files in the meantime? Maybe in that case,
+    // we should reset lastValidSfz and reset the engine, too?
+    bool restored = Engine::setFromSFZ(lastValidSfz.toStdString());
+    jassert(restored);
     return false; 
   }
   else
   {
-    lastValidSfz = newSfz;
+    lastValidSfz = newSfz; // If all went well, the newSfz becomes the lastValidSfz for next time
     return true;
   }
 }
@@ -468,7 +455,8 @@ void SamplerEditor::saveCurrentEditorContent()
 
 /*
 Bugs:
--When switching the sfz file, the xml file widget is not dirtified
+-When switching the sfz file, the xml file widget is not dirtified.
+-When loading a new xml, the .sfz file widget is not updated
 -FilterBlip.xml behaves weird in the low keyrange at low velocities - that's strange because the 
  patch doesn't specify any veltrack stuff. It does have amp-keytrack, though. Also, multiple hits
  seem to get louder with each hit - check if there's maybe some remnant filter state that 
