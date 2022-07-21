@@ -281,15 +281,13 @@ int suffixStart(const std::string& str);
 
 int parseNaturalNumber(const std::string& str, int startIndex, int endIndex);
 
-float rsStringToFloat(const std::string& str); /* { return std::stof(str); }*/
-// Nope - it's not a good idea to use stof. it doesn't seem to be error tolerant at all. It may
-// crash the plugin, if the input is not a valid float ..hmm..well...it just raises an assert 
-// but still - oh - no - it actually also triggers a std::bad_alloc exception
+/** Tries to parse the given string as floating point number and returns the result. If parsing 
+fails, i.e. the given string does not represent a valid floating point number, it will return 
+positive NaN. */
+float rsStringToFloat(const std::string& str);
 
+/** Converts the given floating point number into a string. */
 inline std::string rsFloatToString(float v) { return std::to_string(v); }
-
-//
-
 
 
 //=================================================================================================

@@ -1550,26 +1550,21 @@ pan=100.000000";
 
   // Test string-to-float conversion:
   using namespace rosic::Sampler;
-  float x; 
-
-  ok &= rsStringToFloat("0")     == 0.f;
+  ok &= rsStringToFloat("0")     == 0.f;  //  0
   ok &= rsStringToFloat("0.")    == 0.f;
   ok &= rsStringToFloat("0.0")   == 0.f;
   ok &= rsStringToFloat("0.00")  == 0.f;
   ok &= rsStringToFloat("0.f")   == 0.f;
-
-  ok &= rsStringToFloat("-0")    == 0.f;
+  ok &= rsStringToFloat("-0")    == 0.f;  // -0
   ok &= rsStringToFloat("-0.")   == 0.f;
   ok &= rsStringToFloat("-0.0")  == 0.f;
   ok &= rsStringToFloat("-0.00") == 0.f;
   ok &= rsStringToFloat("-0.f")  == 0.f;
-
-  ok &= rsStringToFloat("+0")    == 0.f;
+  ok &= rsStringToFloat("+0")    == 0.f;  // +0
   ok &= rsStringToFloat("+0.")   == 0.f;
   ok &= rsStringToFloat("+0.0")  == 0.f;
   ok &= rsStringToFloat("+0.00") == 0.f;
   ok &= rsStringToFloat("+0.f")  == 0.f;
-
   // ToDo: 
   // -Move rsStringToFloat into a more general part of the library
   // -Move the parsing tests into the general unit tests
@@ -1578,13 +1573,10 @@ pan=100.000000";
   // -Test parsing scientific notation
   // -Test it with leading 0s
 
-
   // Throw total nonsense at the parser:
   se2.setFromSFZ("");
-  se2.setFromSFZ("f");    // asserts
-  se2.setFromSFZ("fds");  // asserts
-  // maybe first try rsStringToFloat in isolation
-
+  //se2.setFromSFZ("f");    // asserts
+  //se2.setFromSFZ("fds");  // asserts
 
 
 
@@ -4360,8 +4352,10 @@ bool samplerEngineUnitTest()
 
   // ToDo:
   // -Finish features of LFO, EG
-  // -Throw total nonsense at the sfz parser and make sure, it handles it gracefully
-  // -make a sfzCodeBookTest that tests the from/to string conversions
+  // -Throw total nonsense at the sfz parser and make sure, it handles it gracefully. There are 
+  //  some commented lines in samplerParserTest which already do a bit of this. Uncomment these, 
+  //  make them pass and add more of such tests.
+  // -Make a sfzCodeBookTest that tests the from/to string conversions
 
   // -Refactor:
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 

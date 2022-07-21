@@ -155,14 +155,36 @@ int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
 
 float rsStringToFloat(const std::string& str) 
 { 
-  return std::stof(str);
-  // Preliminary. It's not a good idea to use stof. It doesn't seem to be error tolerant at all. It
+  //rsAssert(rsIsFloatNumber(str)); 
+  // Maybe we should do this to avoid more severe crashes in stof when a non-number string is
+  // passed. stof may throw std::bad_alloc exceptions in such cases. Or maybe we should just
+  // try and catch them?
+
+  //return std::stof(str);
+  // Old. It's not a good idea to use stof raw. It doesn't seem to be error tolerant at all. It
   // may crash the plugin, if the input is not a valid float ..hmm..well...it just raises an assert 
   // but still - oh - no - it actually also triggers a std::bad_alloc exception. Maybe use a custom
   // parser....maybe include the rsBigInt/rsBigFloat classes from RSLib into RAPT. They contain 
   // such a parser. But maybe for that, we'll also move the RSLib::rsString code into RAPT where it
-  // more or less will parallel/obviate rosic::rsString. 
+  // more or less will parallel/obviate rosic::rsString. Or Maybe move the rsBigInt/Float code into
+  // rosic and on not (yet) templatize it on the integer type. If really needed, this can be done 
+  // later.
   // ...hmm...not sure what's best
+
+  // Maybe not the best solution yet, but good enough for now:
+  try
+  {
+    return std::stof(str);
+  }
+  catch(std::invalid_argument)
+  {
+    RAPT::rsError("Failed to parse string in rsStringToFloat");
+    return RS_NAN(float);  // Or maybe we should return 0? Or maybe the caller should check against
+    // NaN, and turn it into 0, if it wants to? API-wise, it seems most sensible to indeed return 
+    // NaN from a general stringToFloat function in case of an invalid argument. But then it would 
+    // necessarily be inconsistent with a corresponding strToint function because int doesn't have 
+    // a concept of NaN
+  }
 }
 
 
