@@ -21,10 +21,7 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
     juce::String sfzString = fileToLoad.loadFileAsString();
     bool ok = setupFromSfzString(sfzString);
     if(ok)
-      notifyListeners();
-      // We notify the listeners only when we successfully loaded the new patch because otherwise, 
-      // setupFromSfzString restores the old patch from our lastValidSfz variable such that from 
-      // the outside it would appear as if nothing has happened, so no notification is required.
+      FileManager::setActiveFile(fileToLoad);
     return ok;
   }
 }
@@ -416,6 +413,8 @@ void SamplerEditor::createWidgets()
   sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->sfzPlayer);
   addWidgetSet(sfzFileLoader);
   sfzFileLoader->setDescription("Current SFZ file");
+  //sfzFileLoader->addFileManagerListener(this); 
+
 
   addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
   parseButton->setDescription("Parse the current sfz document");
@@ -456,7 +455,6 @@ void SamplerEditor::saveCurrentEditorContent()
 /*
 Bugs:
 -When switching the sfz file, the xml file widget is not dirtified.
--When loading a new xml, the .sfz file widget is not updated
 -FilterBlip.xml behaves weird in the low keyrange at low velocities - that's strange because the 
  patch doesn't specify any veltrack stuff. It does have amp-keytrack, though. Also, multiple hits
  seem to get louder with each hit - check if there's maybe some remnant filter state that 
