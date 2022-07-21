@@ -285,6 +285,8 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
   samplerModule->engine.addFileManagerListener(this); 
   // We want to receive activeFileChanged callbacks when the currently active sfz file changes.
+
+  //setCodeIsClean();  //
 }
 
 SamplerEditor::~SamplerEditor()
@@ -362,16 +364,27 @@ void SamplerEditor::rButtonClicked(RButton* b)
 
 void SamplerEditor::activeFileChanged(FileManager* fileMan)
 {
-
+  jassert(fileMan == &samplerModule->engine);
   // There are actually two FileManager objects that we could listen to: the SamplerModule object
-  // which manages the preset .xml file of the whole sampler and the SfzPlayer object embedded in
-  // the former which manages the currently loaded .sfz instrument definition. We currently listen
-  // only to the latter. Changes in the former are of no interest because a preset change due to 
-  // the user loading another xml will usually imply also a change of the sfz file, i.e. loading
-  // a new xml will trigger loading a new sfz. Which sfz should be loaded is defined in the xml 
-  // preset. The xml-presets are on a higher level than the sfz instruments. Think of the loaded
-  // sfz instrument more like a waveform sample that is loaded into an oscillator. We treat it in
-  // a similar way.
+  // itself which manages the preset .xml file of the whole sampler and the SfzPlayer object 
+  // embedded in the former which manages the currently loaded .sfz instrument definition. We 
+  // currently listen only to the latter. Changes in the former are of no interest because a preset
+  // change due to the user loading another xml will usually imply also a change of the sfz file, 
+  // i.e. loading a new xml will trigger loading a new sfz. Which sfz should be loaded is defined 
+  // in the xml preset. The xml-presets are on a higher level than the sfz instruments. Think of 
+  // the loaded sfz instrument more like a waveform sample that is loaded into an oscillator. We 
+  // treat it in a similar way.
+
+  juce::String currentSfz = samplerModule->engine.getCurrentSfz();
+  sfzDoc.replaceAllContent(currentSfz);
+  setCodeIsClean();
+  // Needed because sfzDoc.replaceAllContent will trigger calls to setCodeIsDirty() but when we 
+  // receive a callback from the samplerModule->engine here, then the code shown in the editor
+  // actually is actually clean (i.e. parsed and saved).
+  // ...verify this...
+
+
+  int dummy = 0;
 }
 
 void SamplerEditor::createWidgets()

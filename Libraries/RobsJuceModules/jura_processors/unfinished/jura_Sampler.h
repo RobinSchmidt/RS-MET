@@ -32,6 +32,8 @@ public:
   // this may be called from the editor or some widget near it to try to update the instrument 
   // according to the given string...
 
+  const juce::String& getCurrentSfz() const { return lastValidSfz; }
+
 
 protected:
 
@@ -177,7 +179,8 @@ protected:
 
   virtual void setCodeIsSaved(bool isSaved);
 
-  virtual void setCodeIsDirty() { setCodeIsParsed(false); setCodeIsSaved(false); }
+  void setCodeIsDirty() { setCodeIsParsed(false); setCodeIsSaved(false); }
+  void setCodeIsClean() { setCodeIsParsed(true);  setCodeIsSaved(true);  }
 
   void parseCurrentEditorContent();  // maybe should return a bool?
   void saveCurrentEditorContent();   // dito?
