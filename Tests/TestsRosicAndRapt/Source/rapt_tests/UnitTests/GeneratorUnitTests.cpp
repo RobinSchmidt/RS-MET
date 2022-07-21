@@ -1576,7 +1576,8 @@ pan=100.000000";
 
 
   // Throw total nonsense at the parser:
-  se2.setFromSFZ("");
+  se.clearInstrument();     // se is now in initial, empty state
+  se2.setFromSFZ(""); ok &= se2.isInSameStateAs(se);
   //se2.setFromSFZ("f");    // asserts
   //se2.setFromSFZ("fds");  // asserts
   // I'm not yet sure what the best desirable behavior should be in such a case: Should the engine
@@ -1584,7 +1585,11 @@ pan=100.000000";
   // be retained? From a user perspective perhaps the latter would be more convenient but it will 
   // be more complex to implement...hmm...not sure yet...but yeah...perhaps an empty instrument is 
   // the most reasonable behavior. It shouldn't happen that often anyway so optimizing the user 
-  // experience of these situations may not be worth the mess and effort.
+  // experience of these situations may not be worth the mess and effort. But maybe the sample-pool
+  // should be retained. The idea is that the user may make errors in editing the sfz file quite
+  // often and we don't want each such little typing error result in wiping out the sample-pool and
+  // having to reload all samples after fixing the typo. But clearInstrument actually *does* wipe 
+  // out the sample pool.
 
   rsAssert(ok);
   return ok;
