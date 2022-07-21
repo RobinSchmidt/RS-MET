@@ -144,16 +144,14 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };
 
-
 //=================================================================================================
 
-/** Editor for SamplerAudioModule */
+/** Editor for SamplerAudioModule. It features a code editor to edit the sfz file some metering
+widgets showing the current system load, etc...tbc...  */
 
-class JUCE_API SamplerEditor : public jura::AudioModuleEditor, // public jura::FileManager, 
-  public juce::Timer, public juce::CodeDocument::Listener//, public jura::FileManagerListener
+class JUCE_API SamplerEditor : public jura::AudioModuleEditor, 
+  public juce::Timer, public juce::CodeDocument::Listener, public jura::FileManagerListener
 {
-
-  // Do we still need the jura::FileManager baseclass? it may be obsolete
 
 public:
 
@@ -162,13 +160,12 @@ public:
   virtual ~SamplerEditor();
 
   // Overrides                                   // overriden from...
-  //bool loadFile(const juce::File& f) override;   //   FileManager
-  //bool saveToFile(const juce::File& f) override; //   FileManager
   void timerCallback() override;                 //   Timer
   void resized() override;                       //   AudioModuleEditor
   void codeDocumentTextInserted(const String &newText, int insertIndex) override; // CodeDocument::Listener 
   void codeDocumentTextDeleted(int startIndex, int endIndex) override;            // CodeDocument::Listener 
   void rButtonClicked(RButton *buttonThatWasClicked) override;
+  void activeFileChanged(FileManager *fileMan) override;                    // FileManagerListener
 
 
 

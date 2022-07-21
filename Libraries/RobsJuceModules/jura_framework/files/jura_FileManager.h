@@ -80,7 +80,7 @@ public:
   juce_UseDebuggingNewOperator;
 
 };
-// todo: rename to FileManagerObserver
+// todo: rename to FileManagerObserver, absorb into FileManager as nested class
 
 //=================================================================================================
 

@@ -276,35 +276,21 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   ScopedLock scopedLock(*lock);
   //samplerModule = samplerToEdit;
 
-  //FileManager::setActiveDirectory(getApplicationDirectory());  // preliminary
-
-
   createWidgets();
   setSize(400, 200);
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second) for the metering widgets
   sfzDoc.addListener(this);
   parseButton->addRButtonListener(this);
+
+  samplerModule->engine.addFileManagerListener(this); 
+  // We want to receive activeFileChanged callbacks when the currently active sfz file changes.
 }
 
 SamplerEditor::~SamplerEditor()
 {
-
+  samplerModule->engine.removeFileManagerListener(this);
 }
-
-/*
-bool SamplerEditor::loadFile(const juce::File& fileToLoad)
-{
-  RAPT::rsError("not yet implemented");
-  return false;
-}
-
-bool SamplerEditor::saveToFile(const juce::File& fileToSaveTo)
-{
-  RAPT::rsError("not yet implemented");
-  return false;
-}
-*/
 
 void SamplerEditor::timerCallback()
 {
@@ -372,6 +358,20 @@ void SamplerEditor::rButtonClicked(RButton* b)
     parseCurrentEditorContent();
   else
     AudioModuleEditor::rButtonClicked(b);
+}
+
+void SamplerEditor::activeFileChanged(FileManager* fileMan)
+{
+
+  // There are actually two FileManager objects that we could listen to: the SamplerModule object
+  // which manages the preset .xml file of the whole sampler and the SfzPlayer object embedded in
+  // the former which manages the currently loaded .sfz instrument definition. We currently listen
+  // only to the latter. Changes in the former are of no interest because a preset change due to 
+  // the user loading another xml will usually imply also a change of the sfz file, i.e. loading
+  // a new xml will trigger loading a new sfz. Which sfz should be loaded is defined in the xml 
+  // preset. The xml-presets are on a higher level than the sfz instruments. Think of the loaded
+  // sfz instrument more like a waveform sample that is loaded into an oscillator. We treat it in
+  // a similar way.
 }
 
 void SamplerEditor::createWidgets()
