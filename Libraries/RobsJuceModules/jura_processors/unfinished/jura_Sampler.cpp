@@ -19,7 +19,7 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
   else
   {
     juce::String sfzString = fileToLoad.loadFileAsString();
-    bool ok = setupFromSfzString(sfzString);
+    bool ok = setupFromSfzString(sfzString, true);
     if(ok)
       FileManager::setActiveFile(fileToLoad);  // makes the sfz-file box reflect the new file
     return ok;
@@ -38,7 +38,7 @@ bool SfzPlayer::loadFile(const juce::String& relativePath)
   return loadFile(juce::File(sfzRootDir + relativePath));
 }
 
-bool SfzPlayer::setupFromSfzString(const juce::String& newSfz)
+bool SfzPlayer::setupFromSfzString(const juce::String& newSfz, bool stringComesFromFile)
 {
   bool ok = Engine::setFromSFZ(newSfz.toStdString());  // This may fail due to malformed sfz, etc.
   if(!ok) {
@@ -53,6 +53,12 @@ bool SfzPlayer::setupFromSfzString(const juce::String& newSfz)
   else
   {
     lastValidSfz = newSfz; // If all went well, the newSfz becomes the lastValidSfz for next time
+    markFileAsClean(stringComesFromFile); // Controls "dirty" asterisk in sfz file-widget
+
+    //markFileAsDirty();
+    // The file on disk is now out of date...wait - this gets called from loading a file, too. 
+    // Maybe we need a function parameter to control the dirtification
+
     return true;
   }
 }
@@ -454,11 +460,8 @@ void SamplerEditor::setCodeIsSaved(bool isSaved)
 
 void SamplerEditor::parseCurrentEditorContent()
 {
-  bool ok = samplerModule->setupFromSfzString(sfzEditor.getDocument().getAllContent());
-  setCodeIsParsed(ok);
-
-  // -try to parse the code
-  // -setCodeIsParsed(true) ...maybe only in case of success?
+  bool ok = samplerModule->setupFromSfzString(sfzEditor.getDocument().getAllContent(), false);
+  setCodeIsParsed(ok);  // ...maybe we should do this only in case of success?
 }
 
 void SamplerEditor::saveCurrentEditorContent()
@@ -470,7 +473,7 @@ void SamplerEditor::saveCurrentEditorContent()
 
 /*
 Bugs:
--When switching the sfz file, the xml file widget is not dirtified.
+
 -FilterBlip.xml behaves weird in the low keyrange at low velocities - that's strange because the 
  patch doesn't specify any veltrack stuff. It does have amp-keytrack, though. Also, multiple hits
  seem to get louder with each hit - check if there's maybe some remnant filter state that 
@@ -514,6 +517,14 @@ ToDo:
  TreeView that represents the SFZ and may allows to edit it
 
 -GUI:
+ -After parsing the code, the sfz-field should get dirtified, maybe also already after editing the 
+  code without parsing? After saving, it should be makred as clean again (i think, this should 
+  happen automatically? Maybe next to the "Parse" button, there could be a Revert button that 
+  reverts to ..yeah - to what? the last saved or the last valid parsed code? Both could be useful.
+ -FileManager::markFileAsClean just sets a boolean flag but doesn't rigger any callbacks, so the 
+  sfz-widget does not acquire the "dirty" asterisk. Maybe let FileManager have a second callback
+  activeFileWasDirtified or activeFileIsOutOfDate, activeFileBecameDirty or similar which the
+  load/save widget then overrides
  -Make sfz editor functional:
   -Show the sfz content in the editor after loading an xml or sfz file
   -We may need to dirtify the xml-state when the user loads a new sfz

@@ -145,6 +145,10 @@ public:
   the filename. */
   virtual void markFileAsClean(bool shouldBeMarkedAsClean);
 
+  /** Opposite of markFileAsClean. */
+  virtual void markFileAsDirty() { markFileAsClean(false); }
+  // maybe remove markFileAsClean and keep only markfileAsDirty
+
   /** Override this function to load a new file. */
   virtual bool loadFile(const juce::File& fileToLoad) = 0;
 

@@ -27,8 +27,15 @@ public:
   string and reports whether or not this was successful.  */
   bool loadFile(const juce::String& relativePath);
 
-
-  bool setupFromSfzString(const juce::String& newSfz);
+  /** Tries to set up the sfz engine according to the given string which is supposed to be an sfz
+  instrument definition and reports whether or not thsi was successful. It may fail due to 
+  malformed sfz code, missing sample files, etc. In case of failure, the old instrument will be 
+  restored. the function needs to know whether the string comes from an .sfz file on disk or from
+  some in memory buffer in order decide if the inherited state of the FileManager's activeFile 
+  should be considered dirty or not. If we update from an internal memory buffer, the sfz 
+  file-widget will show a asterisk next to the filename to mark it as "dirty". If we update from a
+  file, no asterisk will be shown. */
+  bool setupFromSfzString(const juce::String& newSfz, bool stringComesFromFile);
   // this may be called from the editor or some widget near it to try to update the instrument 
   // according to the given string...
 
@@ -94,7 +101,8 @@ public:
   void setSampleRate(double newSampleRate) override;
   void setGain(double newGain);
 
-  bool setupFromSfzString(const juce::String& newSfz) { return sfzPlayer.setupFromSfzString(newSfz); }
+  bool setupFromSfzString(const juce::String& newSfz, bool stringComesFromFile) 
+  { return sfzPlayer.setupFromSfzString(newSfz, stringComesFromFile); }
 
 
 
@@ -184,7 +192,7 @@ protected:
 
   void parseCurrentEditorContent();  // maybe should return a bool?
   void saveCurrentEditorContent();   // dito?
-
+  // rename to parse/saveCodeEditorContent
 
   SamplerModule* samplerModule = nullptr;
 
