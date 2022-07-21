@@ -21,7 +21,7 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
     juce::String sfzString = fileToLoad.loadFileAsString();
     bool ok = setupFromSfzString(sfzString);
     if(ok)
-      FileManager::setActiveFile(fileToLoad);
+      FileManager::setActiveFile(fileToLoad);  // makes the sfz-file box reflect the new file
     return ok;
   }
 }
@@ -347,6 +347,13 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
   // receive a callback from the samplerModule->engine here, then the code shown in the editor
   // actually is actually clean (i.e. parsed and saved).
   // ...verify this...
+
+
+  //samplerModule->markStateAsDirty();  // Dirtify the xml load/save widget
+  // but should we do this in the module? i think so? I think, we should not reach through into the
+  // embedded SfzPlayer but instead call samplerModule
+  // ...nnnah - the samplerModule should isefl listen to the sfzPlayer and dirtify itself in the
+  // callback
 
 
 
