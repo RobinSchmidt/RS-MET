@@ -1549,22 +1549,23 @@ pan=100.000000";
   // case, the '/' within that path should not be mistaken for a comment
 
   // Test string-to-float conversion:
+  auto s2f = [](const std::string& s) { return rosic::Sampler::rsStringToFloat(s); };
   using namespace rosic::Sampler;
-  ok &= rsStringToFloat("0")     == 0.f;  //  0
-  ok &= rsStringToFloat("0.")    == 0.f;
-  ok &= rsStringToFloat("0.0")   == 0.f;
-  ok &= rsStringToFloat("0.00")  == 0.f;
-  ok &= rsStringToFloat("0.f")   == 0.f;
-  ok &= rsStringToFloat("-0")    == 0.f;  // -0
-  ok &= rsStringToFloat("-0.")   == 0.f;
-  ok &= rsStringToFloat("-0.0")  == 0.f;
-  ok &= rsStringToFloat("-0.00") == 0.f;
-  ok &= rsStringToFloat("-0.f")  == 0.f;
-  ok &= rsStringToFloat("+0")    == 0.f;  // +0
-  ok &= rsStringToFloat("+0.")   == 0.f;
-  ok &= rsStringToFloat("+0.0")  == 0.f;
-  ok &= rsStringToFloat("+0.00") == 0.f;
-  ok &= rsStringToFloat("+0.f")  == 0.f;
+  ok &= s2f("0")     == 0.f;  //  0
+  ok &= s2f("0.")    == 0.f;
+  ok &= s2f("0.0")   == 0.f;
+  ok &= s2f("0.00")  == 0.f;
+  ok &= s2f("0.f")   == 0.f;
+  ok &= s2f("-0")    == 0.f;  // -0
+  ok &= s2f("-0.")   == 0.f;
+  ok &= s2f("-0.0")  == 0.f;
+  ok &= s2f("-0.00") == 0.f;
+  ok &= s2f("-0.f")  == 0.f;
+  ok &= s2f("+0")    == 0.f;  // +0
+  ok &= s2f("+0.")   == 0.f;
+  ok &= s2f("+0.0")  == 0.f;
+  ok &= s2f("+0.00") == 0.f;
+  ok &= s2f("+0.f")  == 0.f;
   // ToDo: 
   // -Move rsStringToFloat into a more general part of the library
   // -Move the parsing tests into the general unit tests
@@ -1573,12 +1574,17 @@ pan=100.000000";
   // -Test parsing scientific notation
   // -Test it with leading 0s
 
+
   // Throw total nonsense at the parser:
   se2.setFromSFZ("");
   //se2.setFromSFZ("f");    // asserts
   //se2.setFromSFZ("fds");  // asserts
-
-
+  // I'm not yet sure what the best desirable behavior should be in such a case: Should the engine
+  // put iteself into initial/empty state (no instrument loaded) or should the old state/instrument
+  // be retained? From a user perspective perhaps the latter would be more convenient but it will 
+  // be more complex to implement...hmm...not sure yet...but yeah...perhaps an empty instrument is 
+  // the most reasonable behavior. It shouldn't happen that often anyway so optimizing the user 
+  // experience of these situations may not be worth the mess and effort.
 
   rsAssert(ok);
   return ok;
