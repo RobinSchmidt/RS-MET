@@ -73,7 +73,7 @@ baseclass and uses it, as usual, for keeping track of the loaded .xml file - .xm
 managed by the GUI but .sfz load/save is managed by the AudioModule. That's a bit like with the 
 wavefiles on oscillator modules (right?). */
 
-class JUCE_API SamplerModule : public jura::AudioModuleWithMidiIn /*, public jura::FileManager*/
+class JUCE_API SamplerModule : public jura::AudioModuleWithMidiIn, public jura::FileManagerListener
 {
 
   // Oh no - we should not derive from FileManager. We are already an indirect subclass of it due
@@ -104,6 +104,8 @@ public:
   void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
   XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
+
+  void activeFileChanged(FileManager *fileMan) override; 
 
 
   // Midi Handling:

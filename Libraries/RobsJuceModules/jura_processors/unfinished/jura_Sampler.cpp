@@ -95,6 +95,7 @@ SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* m
   setModuleTypeName("Sampler");
   setModuleName("Sampler");
   createParameters();
+  sfzPlayer.addFileManagerListener(this); 
 }
 
 void SamplerModule::createParameters()
@@ -186,6 +187,14 @@ XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool mar
   */
 
   return xmlState;
+}
+
+void SamplerModule::activeFileChanged(FileManager* fileMan)
+{
+  jassert(fileMan == &sfzPlayer);
+  markStateAsDirty();
+  // The .xml preset file may not reflect the currently loaded .sfz file anymore. It's like when 
+  // you load a new waveform for an oscillator.
 }
 
 void SamplerModule::noteOn(int key, int vel)
