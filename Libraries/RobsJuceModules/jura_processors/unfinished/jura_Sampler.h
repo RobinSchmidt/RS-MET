@@ -94,11 +94,11 @@ public:
   void setSampleRate(double newSampleRate) override;
   void setGain(double newGain);
 
-  bool setupFromSfzString(const juce::String& newSfz) { return engine.setupFromSfzString(newSfz); }
+  bool setupFromSfzString(const juce::String& newSfz) { return sfzPlayer.setupFromSfzString(newSfz); }
 
 
 
-  int getNumActiveLayers() const { return engine.getNumActiveLayers(); }
+  int getNumActiveLayers() const { return sfzPlayer.getNumActiveLayers(); }
 
 
   void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
@@ -128,20 +128,18 @@ protected:
   accumulatively or overridingly, polyphony, a global gain, etc.. */
   virtual void createParameters();
 
-
-
-
-
   void setBusMode(bool shouldAccumulate);
+
+
 
   // Shorthands for convenience:
   using ReturnCode = rosic::Sampler::rsReturnCode;
   using Event      = rosic::Sampler::rsMusicalEvent<float>;
 
-  jura::SfzPlayer engine;  // maybe rename to sfzPlayer
+  jura::SfzPlayer sfzPlayer;
 
 
-  friend class SamplerEditor;  // maybe try to get rid
+  friend class SamplerEditor;  // Maybe try to get rid
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };

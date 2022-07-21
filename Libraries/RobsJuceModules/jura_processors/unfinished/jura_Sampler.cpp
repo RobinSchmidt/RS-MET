@@ -158,7 +158,7 @@ void SamplerModule::createParameters()
 
 void SamplerModule::setBusMode(bool shouldAccumulate)
 {
-  engine.setBusMode(shouldAccumulate);
+  sfzPlayer.setBusMode(shouldAccumulate);
 }
 
 AudioModuleEditor* SamplerModule::createEditor(int type)
@@ -169,7 +169,7 @@ AudioModuleEditor* SamplerModule::createEditor(int type)
 void SamplerModule::setSampleRate(double newSampleRate)
 { 
   ScopedLock scopedLock(*lock);
-  engine.setSampleRate(newSampleRate); 
+  sfzPlayer.setSampleRate(newSampleRate); 
 }
 
 void SamplerModule::setGain(double newGain)
@@ -206,9 +206,9 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   // like sample-files are defined in the xml for the wavetable oscillator):
   juce::String sfzPath = xmlState.getStringAttribute("InstrumentFile", juce::String());
   if(sfzPath.isEmpty())  
-    engine.clearInstrument();    // no sfz file was specified in the xml
+    sfzPlayer.clearInstrument();    // no sfz file was specified in the xml
   else
-    engine.loadFile(sfzPath);
+    sfzPlayer.loadFile(sfzPath);
 }
 
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
@@ -229,13 +229,13 @@ XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool mar
 void SamplerModule::noteOn(int key, int vel)
 {
   Event ev(Event::Type::noteOn, (float)key, (float)vel);
-  engine.handleMusicalEvent(ev);
+  sfzPlayer.handleMusicalEvent(ev);
 }
 
 void SamplerModule::noteOff(int key)
 {
   Event ev(Event::Type::noteOff, (float)key, 0.f);
-  engine.handleMusicalEvent(ev);
+  sfzPlayer.handleMusicalEvent(ev);
 }
 
 //void SamplerModule::handleMidiMessage(MidiMessage message) 
@@ -249,7 +249,7 @@ void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numS
   for(int n = 0; n < numSamples; n++)
   {
     float fL, fR;
-    engine.processFrame(&fL, &fR);
+    sfzPlayer.processFrame(&fL, &fR);
     inOutBuffer[0][n] = fL;
     inOutBuffer[1][n] = fR;
   }
@@ -258,14 +258,14 @@ void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numS
 void SamplerModule::processStereoFrame(double *dL, double *dR)
 {
   float fL, fR;
-  engine.processFrame(&fL, &fR);
+  sfzPlayer.processFrame(&fL, &fR);
   *dL = fL;
   *dR = fR;
 }
 
 void SamplerModule::reset()
 { 
-  engine.reset();
+  sfzPlayer.reset();
 }
 
 //=================================================================================================
@@ -286,7 +286,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   sfzDoc.addListener(this);
   parseButton->addRButtonListener(this);
 
-  samplerModule->engine.addFileManagerListener(this); 
+  samplerModule->sfzPlayer.addFileManagerListener(this); 
   // We want to receive activeFileChanged callbacks when the currently active sfz file changes.
 
   //setCodeIsClean();  //
@@ -294,7 +294,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
 SamplerEditor::~SamplerEditor()
 {
-  samplerModule->engine.removeFileManagerListener(this);
+  samplerModule->sfzPlayer.removeFileManagerListener(this);
 }
 
 void SamplerEditor::timerCallback()
@@ -367,7 +367,7 @@ void SamplerEditor::rButtonClicked(RButton* b)
 
 void SamplerEditor::activeFileChanged(FileManager* fileMan)
 {
-  jassert(fileMan == &samplerModule->engine);
+  jassert(fileMan == &samplerModule->sfzPlayer);
   // There are actually two FileManager objects that we could listen to: the SamplerModule object
   // itself which manages the preset .xml file of the whole sampler and the SfzPlayer object 
   // embedded in the former which manages the currently loaded .sfz instrument definition. We 
@@ -378,7 +378,7 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
   // the loaded sfz instrument more like a waveform sample that is loaded into an oscillator. We 
   // treat it in a similar way.
 
-  juce::String currentSfz = samplerModule->engine.getCurrentSfz();
+  juce::String currentSfz = samplerModule->sfzPlayer.getCurrentSfz();
   sfzDoc.replaceAllContent(currentSfz);
   setCodeIsClean();
   // Needed because sfzDoc.replaceAllContent will trigger calls to setCodeIsDirty() but when we 
@@ -448,7 +448,7 @@ void SamplerEditor::createWidgets()
 
 
   // The SFZ editor:
-  sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->engine);
+  sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->sfzPlayer);
   addWidgetSet(sfzFileLoader);
   sfzFileLoader->setDescription("Current SFZ file");
 
