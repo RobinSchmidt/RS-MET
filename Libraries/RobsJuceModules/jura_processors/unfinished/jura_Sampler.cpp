@@ -23,52 +23,8 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
     if(ok)
       notifyListeners();
     return ok;
-
-
-
-    /*
-    bool ok = setupFromSfzString(sfzString.toStdString());
-    if(ok)
-    {
-      lastValidSfz = sfzString;
-      notifyListeners();
-      return true;
-    }
-    else
-    {
-      setupFromSfzString(lastValidSfz.toStdString());
-      return false;
-      // In case of failure, we restore the old state. The idea is that this is more convenient to
-      // the user while editing sfz files (and thereby making errors) than always immediately ending
-      // up with an empty instrument after an error. 
-      // ToDo: Verify that the sample pool is retained and not reloaded. This is the most time 
-      // consuming operation that we want to avoid. We don't want the sample-pool to get wiped out
-      // everytime the sfz author makes a typo.
-      // Maybe we should indeed empty the instrument in case of an invalid sfz but nevertheless 
-      // retain the sample pool
-    }
-    */
   }
-
-  /*
-  bool ok = loadFile(fileToLoad.getRelativePathFrom(sfzRootDir));             // This may fail,
-  if(!ok) {                                                       // ...and in case of failure, 
-    bool ok2 = setupFromSfzString(lastValidSfz);   // ...we revert to the last known valid sfz
-    jassert(ok2); }
-    // This should actually never fail because lastValidSfz is supposed to be a valid sfz. But what
-    // if the user has deleted some required sample files in the meantime? Maybe in that case, we
-    // should reset lastValidSfz and reset the engine, too
-
-  if(ok)
-    notifyListeners();
-
-  return ok;
-  */
 }
-// This is called from the sfz load widgets but *not* from the xml load widget leading to the 
-// situation that after loading a new xml, the code editor is not updated. I think, we should 
-// probably call loadFile(File&) from loadFile(String&) instead of letting the latter invoke
-// sfzFile.loadFileAsString() directly on the engine
 
 bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
 {
@@ -83,58 +39,7 @@ bool SfzPlayer::loadFile(const juce::String& relativePath)
 {
   return loadFile(juce::File(sfzRootDir + relativePath));
 
-  /*
-  //juce::String path = sfzRootDir + File::getSeparatorString() + relativePath;
-
-  // Check, if such an sfz file exists in the folder where we expect it:
-  juce::String path = sfzRootDir + relativePath;
-  juce::File sfzFile(path);
-
-
-
-  if(!sfzFile.existsAsFile())
-  {
-    showWarningBox("SFZ Load Error", "File " + path + " does not exist.");
-    return false; // The .sfz file that was specified in the relativePath file was not found
-    // ToDo: Maybe have a warning box with a more comprehensive error message that makes some 
-    // suggestions why this could have happened. In this case, it could be that the sfzRootDir
-    // does not exist on the machine
-  }
-  else
-    loadFile(sfzFile);
-    */
-
-  // old:
-
-  // ToDo: I think, this error handling here is redundant with the error handling in the call
-  // Engine::loadFromSFZ below - verify that and if so, maybe get rid of it here. But before 
-  // getting rid, we should make sure that the subsequent error reporting code is a bit more 
-  // specific than it currently is. File not existent is a different condition than the general
-  // "unable to load file" condition which may have lots of other reasons.
-
-
-
-
-  /*
-  // OK, the file exists. Let the engine try to load it:
-  std::string sSfzPath = relativePath.toStdString();
-  int rc = Engine::loadFromSFZ(sSfzPath.c_str());
-  if(rc == ReturnCode::fileLoadError)
-  {
-    showWarningBox("SFZ Load Error", "File " + path + " could not be loaded.");
-    return false;
-  }
-  // todo:
-  // -catch other errors, such as sfzParseError, unknownOpcode, sampleLoadError, etc.
-  // -figure out, what exactly went wrong and show a more specific error message
-
-  // OK, the engine did apparently load the new sfz file successully. Now we need to store the
-  // content of the file here in a member here too:
-  lastValidSfz = sfzFile.loadFileAsString();
-  return true;
-  */
-
-  // Old Notes (obsolete):
+  // Old Notes (obsolete - may be deleted soon):
   // -it currently only works, if the .sfz file and its required .wav files reside in the project
   //  directory, i.e.:
   //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019  
@@ -563,6 +468,7 @@ void SamplerEditor::saveCurrentEditorContent()
 
 /*
 Bugs:
+-When switching the sfz file, the xml file widget is not dirtified
 -FilterBlip.xml behaves weird in the low keyrange at low velocities - that's strange because the 
  patch doesn't specify any veltrack stuff. It does have amp-keytrack, though. Also, multiple hits
  seem to get louder with each hit - check if there's maybe some remnant filter state that 
