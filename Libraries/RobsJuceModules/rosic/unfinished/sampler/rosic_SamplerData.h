@@ -77,6 +77,9 @@ private:
   // index should always be a positive real number. But maybe that's not such a good idea - see
   // comment in SfzInstrument::writeSettingToString in the cpp file. For certain things, we need
   // a code for "not applicable".
+  
+  // Maybe store, where the opcode appears in the to facilitate highlighting the relevant 
+  // section - but actually that would violate separation of concerns
 };
 
 //=================================================================================================

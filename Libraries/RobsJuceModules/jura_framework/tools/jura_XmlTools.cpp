@@ -49,6 +49,8 @@ bool saveXmlToFile(const XmlElement &xmlToSave, const File &fileToSaveTo, bool a
 
   fileToSaveTo.create();
   fileToSaveTo.appendText(myXmlDoc);
+  // Maybe instead of appendText, we should use replaceWithText?
+  // https://docs.juce.com/master/classFile.html#ace1786a60bfc469bfa75b3638923e163
 
   return true;
 }

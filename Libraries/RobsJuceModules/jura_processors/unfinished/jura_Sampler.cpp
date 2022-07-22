@@ -28,8 +28,30 @@ bool SfzPlayer::loadFile(const juce::File& fileToLoad)
 
 bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
 {
-  showWarningBox("Error", "SfzPlayer::saveToFile not yet implemented");
-  return false;
+  juce::Result res = fileToSaveTo.create();
+  if(!res.wasOk())
+  {
+    showWarningBox("Error", "File could not be created");
+    return false;
+  }
+  else
+  {
+    bool ok = fileToSaveTo.replaceWithText(lastValidSfz);
+    if(!ok)
+    {
+      showWarningBox("Error", "File could not be written");
+      return false;
+    }
+    return true;
+  }
+
+
+  //fileToSaveTo.appendText(lastValidSfz);
+  // Maybe instead of appendText, we should use replaceWithText?
+
+
+  //showWarningBox("Error", "SfzPlayer::saveToFile not yet implemented");
+  //return false;
   // ToDo: we should write the lastValidSfz string into a file
 }
 
@@ -463,12 +485,17 @@ void SamplerEditor::saveCodeEditorContent()
 {
 
 }
+// hmm - maybe thsi is not needed?
 
 //=================================================================================================
 
 /*
 
 ToDo:
+-Make Save button disappear (or grayed out) when the lastValidSfz in the SfzPlayer is not in sync 
+ with the code editor content. We always save the lastValidSfz but the user will assume that we 
+ save the code editor's content so we need to make sure that they are in sync when saving is 
+ executed. This is needed because the SfzPlayer has no access to the editor's content.
 -add activeFileBecameDirty callback to FileManagerListener for subclasses to optionally override
 -implement it in FileSelectionBox
 -> this should make the astersik appear in the sfz-widget after parsing the editor content
