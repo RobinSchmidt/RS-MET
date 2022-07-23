@@ -200,6 +200,7 @@ protected:
 
   // SFZ text editor and adjacent widgets:
   jura::FileSelectionBox *sfzFileLoader;
+  jura::RLabeledTextEntryField *sfzStatusField;
   jura::RClickButton     *parseButton;
   juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a 
   juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)

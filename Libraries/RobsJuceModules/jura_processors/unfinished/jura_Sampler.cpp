@@ -288,11 +288,14 @@ void SamplerEditor::resized()
   int x = 0;
   int y = getPresetSectionBottom()+4;
   int w = getWidth();
-  int h = getHeight() - y;
-  int m = 4;      // margin
+  int h = getHeight() - y;  // maybe set to 16 for widget-height
+  int m = 4;                // margin
+
+
 
   // Status info widgets
   layersMeter->setBounds(x+m, y, w/2-2*m, 16);
+
 
   //numLayersLabel->setBounds(x, y, 48, 16);
   //x = numLayersLabel->getRight();
@@ -306,6 +309,7 @@ void SamplerEditor::resized()
   // Instrument definition widgets:
   y += 20;
   x  = 2;
+  //h  = 16;
   //instrumentLabel->setBounds(x, y, 68, 16);
   //x = instrumentLabel->getRight()+2;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
@@ -317,6 +321,14 @@ void SamplerEditor::resized()
   w  = 48;
   x  = sfzEditor.getRight() - w;
   parseButton->setBounds(x, y, w, 16);
+
+
+  x = sfzFileLoader->getRight() + 24;
+  //y = sfzFileLoader->getTop();
+  sfzStatusField->setBounds(x, y, 150, 16);
+  // or maybe move to the right, directly next to (left of) the parseButton.
+
+
 }
 
 void SamplerEditor::codeDocumentTextInserted(const String& newText, int insertIndex)
@@ -431,6 +443,12 @@ void SamplerEditor::createWidgets()
   addWidgetSet(sfzFileLoader);
   sfzFileLoader->setDescription("Current SFZ file");
   //sfzFileLoader->addFileManagerListener(this); 
+
+
+  addWidget(sfzStatusField = new jura::RLabeledTextEntryField);
+  sfzStatusField->setLabelText("SFZ Status:");
+  //sfzStatusField->setEntryEditable(false);
+
 
 
   addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
