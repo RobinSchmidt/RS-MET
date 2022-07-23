@@ -1107,6 +1107,9 @@ Bugs:
 
 ToDo:
 -FuncShaper: have a DryDelay parameter - mostly for compensating the latency of the AA filter but 
- may be an interestinf effect as well
+ may be an interesting effect as well
+-Let ToolChain host plugins. I'm specifically interested in hosting APE and a modular (sub)host. 
+ There are open source ones, see: https://www.kvraudio.com/forum/viewtopic.php?t=479385
+ https://github.com/kushview/Element
 
 */

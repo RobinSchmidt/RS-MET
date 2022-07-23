@@ -8,51 +8,32 @@ SfzPlayer::SfzPlayer()
 
 bool SfzPlayer::loadFile(const juce::File& fileToLoad)
 {
-  if(!fileToLoad.existsAsFile())
-  {
+  if(!fileToLoad.existsAsFile()) {
     showWarningBox("SFZ Load Error", "File " + fileToLoad.getFullPathName() + " does not exist.");
-    return false;
+    return false; }
     // ToDo: Maybe have a warning box with a more comprehensive error message that makes some 
     // suggestions why this could have happened. In this case, it could be that the sfzRootDir
-    // does not exist on the machine
-  }
-  else
-  {
+    // does not exist on the machine 
+  else {
     juce::String sfzString = fileToLoad.loadFileAsString();
     bool ok = setupFromSfzString(sfzString, true);
     if(ok)
       FileManager::setActiveFile(fileToLoad);  // makes the sfz-file box reflect the new file
-    return ok;
-  }
+    return ok; }
 }
 
 bool SfzPlayer::saveToFile(const juce::File& fileToSaveTo)
 {
   juce::Result res = fileToSaveTo.create();
-  if(!res.wasOk())
-  {
+  if(!res.wasOk()) {
     showWarningBox("Error", "File could not be created");
-    return false;
-  }
-  else
-  {
+    return false; }
+  else {
     bool ok = fileToSaveTo.replaceWithText(lastValidSfz);
-    if(!ok)
-    {
+    if(!ok) {
       showWarningBox("Error", "File could not be written");
-      return false;
-    }
-    return true;
-  }
-
-
-  //fileToSaveTo.appendText(lastValidSfz);
-  // Maybe instead of appendText, we should use replaceWithText?
-
-
-  //showWarningBox("Error", "SfzPlayer::saveToFile not yet implemented");
-  //return false;
-  // ToDo: we should write the lastValidSfz string into a file
+      return false; }
+    return true; }
 }
 
 bool SfzPlayer::loadFile(const juce::String& relativePath)
@@ -70,14 +51,11 @@ bool SfzPlayer::setupFromSfzString(const juce::String& newSfz, bool stringComesF
     // we should reset lastValidSfz and reset the engine, too?
     bool restored = Engine::setFromSFZ(lastValidSfz.toStdString());
     jassert(restored);
-    return false; 
-  }
-  else
-  {
+    return false; }
+  else {
     lastValidSfz = newSfz; // If all went well, the newSfz becomes the lastValidSfz for next time
     markFileAsClean(stringComesFromFile); // Controls "dirty" asterisk in sfz file-widget
-    return true;
-  }
+    return true; }
 }
 
 void SfzPlayer::setupDirectories()
@@ -456,7 +434,7 @@ void SamplerEditor::createWidgets()
 
 
   addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
-  parseButton->setDescription("Parse the current sfz document");
+  parseButton->setDescription("Parse the current content of the code editor as sfz");
 
   addAndMakeVisible(sfzEditor);
   // ToDo: set up the description of the editor...but it's not a subclass of RWidget...hmmm..
@@ -478,6 +456,16 @@ void SamplerEditor::setCodeIsSaved(bool isSaved)
 void SamplerEditor::parseCodeEditorContent()
 {
   bool ok = samplerModule->setupFromSfzString(sfzEditor.getDocument().getAllContent(), false);
+  if(!ok)
+  {
+    showWarningBox("Error", "Code editor content could not be parsed as SFZ.");
+    // ToDo: maybe add some persistent warning sign to the GUI. Like a warning lamp or something. 
+    // Maybe a red frame around the code editor. Or maybe an info/status field showing
+    // Parsed/Unparsed/Malformed, Parsed/Edited/Malformed
+    // ...maybe the frame around the code editor should be green if parsed...but maybe not. It may
+    // destroy the color-scheme
+  }
+
   setCodeIsParsed(ok);  // ...maybe we should do this only in case of success?
 }
 
@@ -492,10 +480,18 @@ void SamplerEditor::saveCodeEditorContent()
 /*
 
 ToDo:
+-Try what happens when the editor content is not a valid sfz. The old instruemnt should be retained
+ (or restored) and maybe we should somehow indicate a parsing error to the user
 -Make Save button disappear (or grayed out) when the lastValidSfz in the SfzPlayer is not in sync 
  with the code editor content. We always save the lastValidSfz but the user will assume that we 
  save the code editor's content so we need to make sure that they are in sync when saving is 
- executed. This is needed because the SfzPlayer has no access to the editor's content.
+ invoked. This is needed because the SfzPlayer that is out FileManager has no access to the 
+ editor's content. We always save what we hear, not what we see - so to speak. That may be 
+ confusing to the user when these two things are not the same (i.e. when the code editor content 
+ has not yet been parsed). Maybe we should always parse? But no, that would try to parse 
+ excessively often, namely after each character deletion/insertion. Moreover, it may often fail to
+ parse because duringg editing, it is likely to encounter an intermediate malformed sfz. Maybe
+ we should try to parse when the editor loses keyboard focus?
 -add activeFileBecameDirty callback to FileManagerListener for subclasses to optionally override
 -implement it in FileSelectionBox
 -> this should make the astersik appear in the sfz-widget after parsing the editor content
