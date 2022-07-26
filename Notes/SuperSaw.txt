@@ -8,15 +8,39 @@ Frequency Spreading:
 
 
 Amplitude Scaling:
-
+-The oscillators do not need to all have the same amplitude. We could apply a sort of Bell curve to
+ attenuate outer oscs more than inner ones...or vice versa with an inverted Bell. Maybe cos^n(x) 
+ could be a nice shape where n is a user parameter (not necessarily integer) and x is the distance
+ of the osc's freq from the master freq.
 
 Filtering:
-
+-We could try to restrict the Supersaw effect to the high frequencies by passing the master osc 
+ alone through a lowpass, the sum of all oscs (including master) through a complementary highpass 
+ and adding the signals up after giving the lopassed master a gain of sqrt(N). I think that gain 
+ would be most appropriate but experimentation may be a good idea. If the oscs use amplitude scaling 
+ as described above, we may use the sqrt of the sum of the amplitudes...or maybe the sum of the 
+ squares? Perhaps it's better to leave the lowpassed matser signal as is and apply an inverse gain
+ to the highpass signal instead? That would make the total gain independent from the number of 
+ voices?
+-The filter freqs may track the fundamental and be adjusted as pitch-offset with respect to it.
+-The filter freqs of LP and HP do not necessarily need to be the same. Maybe the user can dial in 
+ some gap or overlap  of the responses.
+-Maybe we could also use the bandpass/notch split to have only mid frequencies have the 
+ "super"-effect. ...not sure though if this will sound good.
+-Try using allpass filters to shift the phases around.
+-We could use a highpass tuned below the fundamental to get rid of the most annoying aliasing 
+ artifacts below the fundamental.
 
 Frequency Swapping:
--Let the slave oscillators always come in pairs, one above and one below the master osc with a 
+-Maybe after each cycle of the master, permute the increments in some pseudo-random way. Or maybe
+ swap those farthese away from their taget phase (see below)? But maybe amplitudes then need to swap
+ as well which may produce discontinuities? ...but we have a phase-wraparound anyway, so if we 
+ manage to put it on the discontinuity of the master saw, we may compute a blep for that anyway so 
+ maybe we can accumulate the additional discontinuities coming from amplitude swaps into this blep, 
+ too.
+-Or: Let the slave oscillators always come in pairs, one above and one below the master osc with a 
  roughly comparable frequency difference, i.e. the outermost ones are paired, the innermost ones 
- too, etc.
+ too, etc. and...
 -When a slave osc has its phase wraparound, compute a delta/error between the inital phase offset of 
  this slave with respect to the master and its current actual offset. The initial offsett is 
  considered here as a desired, target phase offset that we wish to maintain over time, on average. 
@@ -25,7 +49,9 @@ Frequency Swapping:
  we always have one osc playing at each of the desired frequencies, but which osc plays which 
  frequency is changed in accordance to some phase desiderata.
 -When the user requests an even number of oscillators, maybe just treat the center master osc as a 
- ghost, i.e. just don't output its output signal but do the phase updates per sample.
+ ghost, i.e. just don't output its output signal but do the phase updates per sample. Or: just fade
+ the pairs in out and when an even integer is requensted the last pair would have a gain of 1/2. Two
+ half-gain oscillators make one full-gain oscillator, so to speak.
 -Maybe instead of measuring the phase offset with respect to the master, we may also measure it with 
  respect to some sort of mean/average phase, averaged over all oscs. I guess, it may lead to some 
  chaotic interaction between the oscs which may be desirable. But computing the mean phase may be 
@@ -55,6 +81,9 @@ Misc Ideas:
 -Maybe don't try to avoid phase crossings (i.e. instants at which some oscillators have the same 
  phase) but instead try to make them occurr when the oscs have theri zero crossings.
 -Maybe phase-invert some of the saws (which is the same thing as playing them backwards)
+-Maybe let the superosc run at a fixed sample-rate harmonically related to the osc-freq. Doing so 
+ will make aliasing components fall on harmonic frequencies, so they may not only not annoying 
+ anymore but actually beneficial....maybe...
  
 Implementation:
 -The driver logic, i.e. the computation of the phases, increments and amplitudes of the individual
