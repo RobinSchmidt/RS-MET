@@ -385,6 +385,16 @@ Ideas:
  bit too low - we need to turn it up as function of cutoff a little bit. Maybe get a TD3 and make
  measurements to mimic it behavior.
 -Let the filter have nonlinearities that make it growl, scream, etc.
-
+-Allow the user to adjust the ratio of the SubOsc. Maybe it could be interesting to produce a 
+ frequency that will produce power-chord like intermodulation distortion in a subsequent distorion
+ unit. Maybe st 1/1.5 = 2/3 = 0.666..., but maybe 1.5 itself could also be useful. Actually, it 
+ would turn the subosc into a bona-fide second oscillator and thereby expand the sonic range 
+ drastically. Maybe we could even do AM and/or RM with the main oscillator.
+-The filter FM may be controlled separately by 3 signals: main-osc, sub-osc, feedback.
+-...puh - so many features. Maybe they should be hidden in an "Advanced Features" section which 
+ should have a "Reset" button to set them to defaults, i.e. turn them off in order to get back to
+ an original, authentic 303 sound. Maybe the GUI should be switchable between 2 layouts: one where
+ the advanced featues have their own section and another one where they are situated where they
+ logically belong in the signal flow.
 
 */

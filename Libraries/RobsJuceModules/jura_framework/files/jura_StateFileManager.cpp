@@ -69,7 +69,6 @@ bool StateFileManager::saveStateToXmlFile(const File& fileToSaveTo)
   XmlElement* xmlState = getStateAsXml(fileToSaveTo.getFileNameWithoutExtension(), true);
   if( xmlState == NULL )
     return false;
-  //String myXmlDoc = xmlState->createDocument(String());
   String myXmlDoc = xmlState->toString();
   if( fileToSaveTo.existsAsFile() )
   {

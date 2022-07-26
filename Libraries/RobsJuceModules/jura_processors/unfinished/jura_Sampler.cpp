@@ -322,13 +322,13 @@ void SamplerEditor::resized()
   x  = sfzEditor.getRight() - w;
   parseButton->setBounds(x, y, w, 16);
 
-
+  /*
+  // Under construction: display the status of the code editor content (Parsed/Malformed/Edited)
   x = sfzFileLoader->getRight() + 24;
-  //y = sfzFileLoader->getTop();
+  sfzStatusField->setLabelWidth(64);
   sfzStatusField->setBounds(x, y, 150, 16);
   // or maybe move to the right, directly next to (left of) the parseButton.
-
-
+  */
 }
 
 void SamplerEditor::codeDocumentTextInserted(const String& newText, int insertIndex)
@@ -449,8 +449,6 @@ void SamplerEditor::createWidgets()
   sfzStatusField->setLabelText("SFZ Status:");
   //sfzStatusField->setEntryEditable(false);
 
-
-
   addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
   parseButton->setDescription("Parse the current content of the code editor as sfz");
 
@@ -498,6 +496,8 @@ void SamplerEditor::saveCodeEditorContent()
 /*
 
 ToDo:
+-Status: Parsed/Unparsed/Malformed or e.g.:   Parsed OK, Unsaved,  Unparsed, Malformed etc.
+ or: Parsed: OK/Error/Not yet, or Parsed: Yes/No/Error, Saved: Yes/No
 -Try what happens when the editor content is not a valid sfz. The old instruemnt should be retained
  (or restored) and maybe we should somehow indicate a parsing error to the user
 -Make Save button disappear (or grayed out) when the lastValidSfz in the SfzPlayer is not in sync 
@@ -519,6 +519,19 @@ user would expect. How should we deal with that? Maybe the save button should di
 editor content is not in sync with the lastvalidSfz? That may be good solution
 
 Bugs:
+-When saving an sfz file, it seems liek the internal file list is not updated: switching through
+ the presets with the forward/backward buttons seems to not load the newly saved file, as if it's 
+ not there. Also, the file-widget is not updated, i.e. the new filename is not shown. Maybe these 
+ two things have the same underlying reason?
+ Maybe in FileManager::openSavingDialog, we need to call updateFileList after successful saving?
+ -> check the behavior with xml files? Do we have the same problem there? Nope! There it works as
+ it should! -> Check what steps it does and which of these are missing the case of sfz saving!
+ hmm - OK: StateFileManager::saveStateToXmlFile actively calls updateFileList() towards the end, 
+ so maybe we should aslo do that in SfzPlayer::saveToFile(). Or: move the call into 
+ FileManager::openSavingDialog. Also check, if the overwriting code in 
+ StateFileManager::saveStateToXmlFile is still needed. I think File::replaceText already implements
+ the same functionality (create temp-file, then delete old file, then rename tempfile), so we may 
+ not have to do that ourselves.
 -FilterBlip.xml behaves weird in the low keyrange at low velocities - that's strange because the 
  patch doesn't specify any veltrack stuff. It does have amp-keytrack, though. Also, multiple hits
  seem to get louder with each hit - check if there's maybe some remnant filter state that 

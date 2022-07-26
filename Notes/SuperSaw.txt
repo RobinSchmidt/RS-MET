@@ -1,0 +1,60 @@
+In this file, I collect some ideas for how to implement a good sounding oscillator ensemble that may
+minimize the ugly phasiness/flanginess that may appear when we just naively spread out the 
+frequencies equidistantly and give all oscillators equal amplitude. If applied to a sawtooth 
+oscillator and when the number of saws is 7, this is also known as the famous "supersaw" oscillator
+popularized by the Roland JP-8000 synthesizer
+
+Frequency Spreading:
+
+
+Amplitude Scaling:
+
+
+Filtering:
+
+
+Frequency Swapping:
+-Let the slave oscillators always come in pairs, one above and one below the master osc with a 
+ roughly comparable frequency difference, i.e. the outermost ones are paired, the innermost ones 
+ too, etc.
+-When a slave osc has its phase wraparound, compute a delta/error between the inital phase offset of 
+ this slave with respect to the master and its current actual offset. The initial offsett is 
+ considered here as a desired, target phase offset that we wish to maintain over time, on average. 
+ If the actual offset is too far away from its target value, swap increments (i.e. frequencies) with
+ its paired partner osc. The rationale of the frequency swapping between paired partner oscs is that
+ we always have one osc playing at each of the desired frequencies, but which osc plays which 
+ frequency is changed in accordance to some phase desiderata.
+-Maybe instead of measuring the phase offset with respect to the master, we may also measure it with 
+ respect to some sort of mean/average phase, averaged over all oscs. I guess, it may lead to some 
+ chaotic interaction between the oscs which may be desirable. But computing the mean phase may be 
+ expensive, so I'm not sure about that.
+-To compute the mean phase, see here:
+ Mean angle is not a usual average. Means on circle - Intro to directional statistics (3B1B SoME1)
+ https://www.youtube.com/watch?v=cYVmcaRAbJg
+ especially at 19:16 for a way to compute the intrisic mean:
+ -Multiply all factors exp(i*p1) * exp(i*p2) * ... * exp(i*pN)
+ -take the N-th root - this gives N possible solutions
+ -pick the solution for which the Frechet-function has the lowest value
+ -See also:
+  https://math.stackexchange.com/questions/4230404/how-can-i-calculate-the-mean-position-on-the-circle-or-mean-direction
+  https://arxiv.org/abs/1108.2141
+  https://ieeexplore.ieee.org/document/4217894
+ 
+Misc Ideas:
+-Let the slave oscillators not maintain their positions/phases but rather a phase offset with 
+ respect to the master osc. This offset should use an increment equal to the difference frequency of
+ the slave's and master's frequencies (I think). Normally, we would modulate this offset with 
+ another sawtooth wave, but it may be advantageous to try a triangle or trisaw wave instead. The
+ rationale behind this is that the offset would undulate around a given initial offset and may avoid
+ phase crossings with the master osc (or the other slave oscs). ...not sure about that, though.
+-Maybe we should detune the outermost slaves not in terms of an absolute frequency difference but in 
+ terms of a musical interval (like +- 50 cents).
+-Maybe don't try to avoid phase crossings (i.e. instants at which some oscillators have the same 
+ phase) but instead try to make them occurr when the oscs have theri zero crossings.
+-Maybe phase-invert some of the saws (which is the same thing as playing them backwards)
+ 
+ 
+-See also:
+ https://de.wikipedia.org/wiki/SuperSaw
+ https://producelikeapro.com/blog/supersaw-synth-explained/
+ https://www.soundandrecording.de/tutorials/sounddesign-gedanken-zum-aufbau-eines-super-saw-sounds/
