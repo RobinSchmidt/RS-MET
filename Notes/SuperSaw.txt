@@ -24,10 +24,13 @@ Frequency Swapping:
  its paired partner osc. The rationale of the frequency swapping between paired partner oscs is that
  we always have one osc playing at each of the desired frequencies, but which osc plays which 
  frequency is changed in accordance to some phase desiderata.
+-When the user requests an even number of oscillators, maybe just treat the center master osc as a 
+ ghost, i.e. just don't output its output signal but do the phase updates per sample.
 -Maybe instead of measuring the phase offset with respect to the master, we may also measure it with 
  respect to some sort of mean/average phase, averaged over all oscs. I guess, it may lead to some 
  chaotic interaction between the oscs which may be desirable. But computing the mean phase may be 
- expensive, so I'm not sure about that.
+ expensive, so I'm not sure about that. Maybe it could be beneficial to use a weighted mean where 
+ the weights may come from the amplitudes (maybe some power of them).
 -To compute the mean phase, see here:
  Mean angle is not a usual average. Means on circle - Intro to directional statistics (3B1B SoME1)
  https://www.youtube.com/watch?v=cYVmcaRAbJg
@@ -53,6 +56,11 @@ Misc Ideas:
  phase) but instead try to make them occurr when the oscs have theri zero crossings.
 -Maybe phase-invert some of the saws (which is the same thing as playing them backwards)
  
+Implementation:
+-The driver logic, i.e. the computation of the phases, increments and amplitudes of the individual
+ oscs, should be factored out into its own class seperate from the actual signal generation code. 
+ This signal generation may then be a wavetable-based, blep-based or any other type of oscillator. 
+ Maybe even a full blwon instrument sample player.
  
 -See also:
  https://de.wikipedia.org/wiki/SuperSaw
