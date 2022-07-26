@@ -337,6 +337,55 @@ general idea:
 -into source, filter- and modulator slots, differnt sorts of modules can be 
  plugged in
 
+-------------------------------------------------------------------------------
+
+Phase-Randomization:
+
+-It is observed that when using a large-ish FFT buffer (in the 2^16..2^20 
+ ballpark, i.e. e few seconds) with arbitrary magnitudes and randomly 
+ distributed phases, then the time-signal that we get from IFFTing that usually
+ loops perfectly.
+-This is the basic idea behind the PadSynth algorithm first seen in ZynAddSubFX 
+ where the magnitude spectrum was generated using Gaussians of increasing 
+ widths and random phases. If prefer to call this method "spectral cluster 
+ synthesis".
+-We can get a very nice stereo effect by choosing the starting point within the
+ sample differently for left and right channel, for example at 0 and N/2 where
+ N is the total length.
+-Q: instead of choosing random phases, is there some other way to create nice
+ phase distributions? Maybe by imposing constraints that harmonic frequencies
+ (e.g. 100,200,300, ....Hz) should have unrelated phases and also frequencies
+ of neighboring FFT bins should have unrelated phases, where "unrelated" here 
+ should mean "maximally dispersed" in some sense to be defined?
+ -How about an equidistant distribution between 0..2pi within each cluster 
+  (i.e. spectral peak, Gaussian) or within each harmonic interval.
+-Maybe allow the sampler engine to have opcodes for offline pre-processing of 
+ the samples, one of which could be spectral phase randomization. It could be 
+ combined with some sort of amplitude smearing (i.e. lowpassing of magnitude 
+ spectrum). We could derive such magnitude spectra from single-cycle spectra
+ by doing a long FFT on them but not via zero-padding by by periodic extension
+ and then apply some sort of Gaussian lowpass to the resulting spike-like 
+ spectrum. But maybe it should be a "time"-varying Gaussian which gets broader
+ further to the right. I've put time in quotes here because our independent 
+ variable is actually frequency here.
+ -Maybe instead of using using samples, also allow the user to enter spectra
+  as formulas, like:
+  spectral_cluster_freqs=f0*n 
+  spectral_cluster_amps=1/n 
+  spectral_cluster_widths=sqrt(n)
+  spectral_cluster_shape=exp(-d^2)
 
 
- 
+-------------------------------------------------------------------------------
+
+Signal Decompositions and Models
+
+-It's common to decompose and audio signal into sinusoidal components, but what
+ about other waveshapes such as sawtooths or squarewaves? Could such a 
+ decomposition be useful for musically altering it? I guess, we would either 
+ need a of orthogonal waveforms or we subtract out the waveform one at a time 
+ after having determined its coefficient (probably via cross-correlation).
+-For transients, it could be useful to model them with poles and zeros in the 
+ z-plane, i.e. as an impulse respone of a quite general digital filter.
+-We could (re)synthesize a sound from a single cycle, an attack-transient, a 
+ single-cycle and an amplitude-smeared/phase-randomized version of the cycle.
