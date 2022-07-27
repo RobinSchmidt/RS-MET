@@ -583,13 +583,17 @@ ToDo:
   sfz-widget does not acquire the "dirty" asterisk. Maybe let FileManager have a second callback
   activeFileWasDirtified or activeFileIsOutOfDate, activeFileBecameDirty or similar which the
   load/save widget then overrides
- -Make sfz editor functional:
-  -Show the sfz content in the editor after loading an xml or sfz file
-  -We may need to dirtify the xml-state when the user loads a new sfz
-  -We need to implement saving of the sfz.
-  -Maybe we should have an update button that tries to parse the current editor content. If it 
-   fails, it would be nice to know where...give the user some sort of error indicator in the file. 
-   Maybe have some sort of sfzValidator class.
+ -SFZ editor functionality:
+  -Dirtify the xml-state when the user loads a new sfz
+  -Check dirtification of the .sfz while when the docmument has been edited
+  -It would be nice, if the right-click menu could have options:
+   -Add Opcode... presenting an (organized) list of opcodes that the user can insert
+   -Create Slider... Cretaes a parameter slider for the opcode that is currently selected (there's
+    no such selection feature yet, though - another thing to do)
+ -Show some sliders that are connected to MIDI controllers. Maybe they should go to a separate
+  "Perform" page. The code editor is shown on an "Edit" page. The MIDI controllers are then 
+  connected to parameters of the patch using the modulation system. Perhaps a separate automation
+  system may not be needed then. It would be kinda redundant and confusing anyway.
  -show some data about the loaded patch: number of samples, regions, groups, filters, equalizers, 
   waveshapers etc.
  -maybe display also, how many filters, eqs, etc. are allocated and how many are currently in use
