@@ -3799,6 +3799,8 @@ bool samplerModulatorsTest()
 
 bool samplerFreeModulationsTest()
 {
+  // Test for the freely routable modulations
+
   // We create a DC signal of 1.0 and use this as (looped) sample. To this DC value coming from the 
   // sample, we add an additional "modulated DC" coming from a waveshaper using the identity as 
   // transfer function and modulating the waveshaper's DC parameter with an LFO. We test different 
@@ -3832,15 +3834,10 @@ bool samplerFreeModulationsTest()
 
   SET se1;
   se1.setSampleRate(fs);
-  se1.preAllocateDspMemory();
-
+  se1.preAllocateDspMemory();  // GET RID! It should automatically do that - somewhere, somehow...
   SE2T se2;
   se2.setSampleRate(fs);
-
-
-  se2.preAllocateDspMemory();
-  // It's important to call this but maybe it shouldn't be...
-
+  se2.preAllocateDspMemory();  // GET RID! It's important to call this but maybe it shouldn't be...
 
 
   auto testSamplerOutput = [](SE* se, const std::vector<float>& tgtL, 
@@ -4224,8 +4221,28 @@ bool samplerFreeModulationsTest()
   return ok;
 }
 
+bool samplerMidiModulationsTest()
+{
+  // We test using MIDI events such as note-key/vel and control-changes as modulation sources.
+
+  bool ok = true;
+
+
+
+
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool samplerFixedModulationsTest()
 {
+  // Tests the hardwired modulations, i.e. amplfo, etc
+  // Actually, at the moment, not much tests are implemented - we test only some simple amplfo. 
+  // ToDo: test pitchlfo, fillfo, ampeg, pitcheg, fileg, etc.
+
   bool ok = true;
 
   using Vec = std::vector<float>;
@@ -4250,6 +4267,7 @@ bool samplerFixedModulationsTest()
   float lfoDepth =    6.02f;  // in dB
   se.setRegionSetting(0, 0, OC::amplfo_freq,  lfoFreq,  1);
   se.setRegionSetting(0, 0, OC::amplfo_depth, lfoDepth, 1);
+  se.preAllocateDspMemory();     // GET RID!
 
   // Produce target signal:
   Vec tgt(N);
@@ -4262,9 +4280,8 @@ bool samplerFixedModulationsTest()
   //rsPlotVectors(dc, tgt);
 
   // Produce sampler output signal and check against target:
-
   //Vec outL(N), outR(N);
-  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, 1.e-7); // triggers assert
+  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, 1.e-7, -1, true, true);
   //rsPlotVectors(dc, tgt, outL, outR);
 
   rsAssert(ok);
@@ -4275,10 +4292,8 @@ bool samplerModulationsTest()
 {
   bool ok = true;
   ok &= samplerFreeModulationsTest();
-
-  //ok &= samplerFixedModulationsTest();  
-  // does not yet pass - we should first implement the free modulations and do the fixed ones
-  // later
+  ok &= samplerMidiModulationsTest();
+  //ok &= samplerFixedModulationsTest();  // FAILS!
 
 
   /*
