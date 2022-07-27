@@ -74,6 +74,47 @@ protected:
 
 //=================================================================================================
 
+/** A subclass of jura::Parameter that can be connected to an SFZ opcode ...tbc...
+
+ToDo: 
+-Maybe later derive from AutomatableParameter or some other Parameter subclass to enable more 
+ features. I think ModulatableParameter would not be adequate though because modulation is managed
+ within the sampler engine itself. But how about smoothing? */
+
+class JUCE_API SfzOpcodeParameter : public jura::Parameter 
+{
+
+public:
+
+  using jura::Parameter::Parameter;        // Inherit constructors
+  using Opcode = rosic::Sampler::Opcode;   // Shorthand for convenience
+
+  // Inquiry:
+  bool isGlobalSetting()  const { return groupIndex == -1 && regionIndex == -1; }
+  bool isGroupSetting()   const { return groupIndex != -1 && regionIndex == -1; }
+  bool isRegionSetting()  const { return groupIndex != -1 && regionIndex != -1; }
+
+
+protected:
+
+  int    groupIndex  = -1;
+  int    regionIndex = -1;
+  Opcode opcode      = Opcode::Unknown;
+
+  // Maybe add later:
+  // int location = -1; // position in the sfz code as character index of the first character of 
+     // the opcode. Maybe it could be convenient to store line and column, too
+
+  // Maybe instead of storing group- and region indices, we should stor pointers to the actual
+  // object. Rationale: when the suer edits the sfz file, the indices may become out of date 
+  // whereas a pointer may still remain valid. But actually, re-parsing will rebuild the SFZ 
+  // datastructure anyway, so actually no, the pointers would be invalidated anyway. Hmm...Maybe
+  // we need to figure out the new indices based on the new and old location of the opcode in the 
+  // code whenever the code changes?
+};
+
+//=================================================================================================
+
 /** A sampler with functionality roughly based on the sfz specification. It has jura::FileManager
 as baseclass to keep track of the currently loaded .sfz file. The editor has also FileManager as
 baseclass and uses it, as usual, for keeping track of the loaded .xml file - .xml load/save is 
@@ -106,7 +147,14 @@ public:
 
 
 
+  /** Returns the number of layers that are currently playing. Used for displaying that information
+  on the GUI.  */
   int getNumActiveLayers() const { return sfzPlayer.getNumActiveLayers(); }
+
+  /** Returns the number of SfzOpcodeParameter objects that we allocate on construction. The 
+  objects can be connected to SFZ opcodes at runtime in order to enable the user to control the 
+  value of a given opcode via a slider in the GUI. */
+  int getNumOpcodeParameters() const { return numOpcodeParams; }
 
 
   void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
@@ -114,6 +162,10 @@ public:
   XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   void activeFileChanged(FileManager *fileMan) override; 
+
+  /** Overriden from AudioModuleWithMidiIn to handle the SfzOpcodeParameters in a different way 
+  than usual */
+  void parameterChanged(Parameter* param) override;
 
 
   // Midi Handling:
@@ -148,11 +200,16 @@ protected:
 
   jura::SfzPlayer sfzPlayer;
 
+  static const int numOpcodeParams = 8;  // Preliminary. Maybe have more later
+
 
   friend class SamplerEditor;  // Maybe try to get rid
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };
+
+
+
 
 //=================================================================================================
 

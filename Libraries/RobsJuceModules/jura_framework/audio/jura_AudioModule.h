@@ -241,7 +241,7 @@ public:
 
   /** Callback to indicate that a parameter has changed - subclasses should override this and
   update their signal processing accordingly. */
-  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
+  void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   /** Calls a parameterChanged for each of the observed parameters - this should trigger the
   appropriate updating of the signal processing core in the subclasses. */

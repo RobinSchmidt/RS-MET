@@ -197,7 +197,7 @@ T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 //=================================================================================================
 // Helper functions specifically for the sampler (those above are more generally useful and do not 
 // necessarily need to have anything to do with the sampler). ToDo: Maybe wrap them into a class
-// rsSamplerTester
+// rsSamplerTester and/or move them to TestUtilities.h/cpp in rs_testing
 
 /** Applies the sampler filter (class rosic::Sampler::FilterCore) with given parameters to the 
 given input signal x. You may optionally pass a modulation signal for the cutoff frequency. The
@@ -252,6 +252,10 @@ std::vector<float> rsGetSamplerADSR(float att, float dec, float sus, float rel,
   return y;
 }
 
+/** Lets the passed sampler engine se produce output and compares it to the given target output, 
+i.e. checks whether or not they match, up to some numerical tolerance. Optionally plots the 
+target, output and error signals. This plotting may be activated during debug sessions when a test
+fails to help figuring out, what goes wrong. */
 bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<float>& targetL, const std::vector<float>& targetR,
   float tol = 0.f, bool plot = false)
@@ -288,7 +292,7 @@ bool testSamplerNote1(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
 
 // Like testSamplerNote but also retrieves the sfz-string and sets up a fresh engine from that
 // string and checks the output of that engine, too. This extended testing function should be used
-// preferably also in all places where now testSamplerNote is called because all these tests will 
+// preferably also in all places where now testSamplerNote1 is called because all these tests will 
 // then cover also the sfz-string roundtrip which greatly extends the coverage of our tests.
 bool testSamplerNote2(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
   const std::vector<float>& targetL, const std::vector<float>& targetR, float tol = 0.f,
@@ -4228,8 +4232,8 @@ bool samplerMidiModulationsTest()
   bool ok = true;
 
 
-
-
+  // ToDo: use the new function:
+  //getSamplerOutput(se, events, &outL[0], &outR[0], N);lsGu
 
 
 
@@ -4378,6 +4382,7 @@ bool samplerEngineUnitTest()
 
   // ToDo:
   // -Finish features of LFO, EG
+  // -Implement responses to MIDI controllers, make them available as modulators
   // -Throw total nonsense at the sfz parser and make sure, it handles it gracefully. There are 
   //  some commented lines in samplerParserTest which already do a bit of this. Uncomment these, 
   //  make them pass and add more of such tests.

@@ -266,6 +266,15 @@ void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se,
   int dummy = 0;
 }
 
+void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
+  const std::vector<rosic::Sampler::rsMusicalEvent<float>>& events,
+  float* outL, float* outR, int numFrames)
+{
+
+
+  int dummy = 0;
+}
+
 void generateTestSamples()  // rename to gerenrateSamplerTestSamples
 {
   // Create sample directory, if needed:

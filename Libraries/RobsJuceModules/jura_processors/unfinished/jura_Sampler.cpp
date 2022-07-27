@@ -103,6 +103,24 @@ void SamplerModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
+  // Create a fixed number of sfzParameter objects that can be dynamically connected to SFZ 
+  // opcodes.
+  using SM = SamplerModule;
+  using OP = SfzOpcodeParameter;
+  for(int i = 0; i < numOpcodeParams; i++)
+  {
+    OP* p =  new OP("OpcodeParam" + juce::String(i), 0.0, 1.0, 0.01, jura::Parameter::LINEAR);
+    addObservedParameter(p);              // This call will register ouselves as observer for p
+  }
+  // Or: Maybe create the parameters dynamically - create always one parameter for each opcode and
+  // show the sliders in the TreeView...maybe make a TreeView, whose leafs are the sliders.
+
+
+
+
+  /*
+  // Code currently not used.
+
   typedef SamplerModule SM;
   typedef Parameter Param;
   Param* p;
@@ -117,6 +135,7 @@ void SamplerModule::createParameters()
 
   // ToDo: InterpolationMethod (Linear, LagrangeCubic, HermiteCubic, Sinc), SincLength (2-512), 
   // Oversample (1-16), MaxLayers (16-8192), MaxFilters (16-8192), MaxEqualizers, MaxWaveshapers,
+  */
 
 }
 
@@ -196,6 +215,21 @@ void SamplerModule::activeFileChanged(FileManager* fileMan)
   markStateAsDirty();
   // The .xml preset file may not reflect the currently loaded .sfz file anymore. It's like when 
   // you load a new waveform for an oscillator.
+}
+
+void SamplerModule::parameterChanged(Parameter* param)
+{
+  // ToDo:
+  // -Try to dyncmically cast param into an SfzOpcodeParamter
+  // -If successful:
+  //  -Update the corresponding setting in the instrument definition. To do this, we need:
+  //   -Figure out where the setting is in the instrument defintion datastructure. This is given by
+  //    the groupIndex/regionIndex/opcode data
+  //   -Call sfzPlayer->setRegionSetting or setGroupSetting or setInstrumentSetting depending on 
+  //    whether its a global, group or instrument setting.
+  // -If unsuccessful, fall back to baseclass implementation
+
+  int dummy = 0;
 }
 
 void SamplerModule::noteOn(int key, int vel)
@@ -496,6 +530,10 @@ void SamplerEditor::saveCodeEditorContent()
 /*
 
 ToDo:
+-Maybe SamplerModule should override parameterChanged. There, it should figure out, if the changed
+ parameter was an opcode-parameter (maybe via dynamic_cast) and if so, update the corresponding
+ sfz-opcode in the engine's currently loaded instrument. We also somehow make the editor aware of 
+ it to let it update its contents.
 -Status: Parsed/Unparsed/Malformed or e.g.:   Parsed OK, Unsaved,  Unparsed, Malformed etc.
  or: Parsed: OK/Error/Not yet, or Parsed: Yes/No/Error, Saved: Yes/No
 -Try what happens when the editor content is not a valid sfz. The old instruemnt should be retained
@@ -517,6 +555,11 @@ But: the widget will not save the editor content but instead the most recently p
 content...that may actually be a plus: it disallows saving invalid sfz files - but it's not what a
 user would expect. How should we deal with that? Maybe the save button should disappear when the
 editor content is not in sync with the lastvalidSfz? That may be good solution
+-Total recall: Maybe we should have an xml-tag that defines whether the sfz text is referenced, 
+ i.e. resides in its own file, or is textually embedded in the xml. Maybe as 
+ SfzLocation="EmbeddedInThisXml"|"ReferencedFromFile". Or maybe we could have either a tag
+ SfzFile or a tag SfzText. If both are present (which perhaps should actually not occurr), the 
+ embedded text takes precedence over the referenced file
 
 Bugs:
 -When saving an sfz file, it seems liek the internal file list is not updated: switching through

@@ -87,8 +87,10 @@ public:
     // ...tbc...
   };
 
-  rsMusicalEvent(Type eventType, T value1, T value2)
-    : type(eventType), val1(value1), val2(value2) {}
+  using uint = RAPT::rsUint32;
+
+  rsMusicalEvent(Type eventType, T value1, T value2, uint sampleTime = 0)
+    : type(eventType), val1(value1), val2(value2), time(sampleTime) {}
 
   Type getType() const { return type; }
 
@@ -101,6 +103,7 @@ protected:
   Type type;  // e.g. noteOn/Off, controlChange, pitchWheel
   T    val1;  // e.g. key, controller number, pitchWheelMSB
   T    val2;  // e.g. velocity, controller value, pitchWheelLSB
+  uint time;  // time-stamp of the event in samples, usually relative to the buffer start
 
 };
 // maybe move the class elsewhere for more general use - maybe it should go into rapt due to the

@@ -514,6 +514,12 @@ void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<rsTestNoteEvent>& notes,
   std::vector<float>& outL, std::vector<float>& outR);
 
+/** Fills the outL, outR arrays with the output of the given sampler engine for the given sequence
+of musicla events (note-ons, note-offs, control-changes, etc.). */
+void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se, 
+  const std::vector<rosic::Sampler::rsMusicalEvent<float>>& events,
+  float* outL, float* outR, int numFrames);
+
 /** Generates the samples that are used in the test patches. */
 void generateTestSamples();
 
