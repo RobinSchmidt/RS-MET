@@ -298,8 +298,16 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   // can also avoid rebuilding the tree and just update the tree nodes accordingly.
 
   using Node = SfzTreeViewNode;
+  Node* node;
+  rootNode.deleteChildNodesRecursively();
+  for(int gi = 0; gi < sfz.getNumGroups(); gi++)
+  {
+    node = new Node("<group>");
+    rootNode.addChildNode(node);
 
-  //Node* node = new Node("<global>");
+
+    int dummy = 0;
+  }
 
 
 
