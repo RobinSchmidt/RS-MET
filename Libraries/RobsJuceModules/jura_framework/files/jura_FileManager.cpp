@@ -221,9 +221,11 @@ bool FileManager::openLoadingDialog(const String &dialogTitle)
     bool result     = loadFile(fileToLoad);
     if( result == true )
     {
-      setActiveFile(fileToLoad); 
+      //setActiveFile(fileToLoad); 
       // BUG (possibly): I think, this call may be superfluous. The loadFile call did already call
       // that. Calling it here again may lead to redundant activeFileChanged callbacks.
+      // ...OK...commenting it out seems to have fixed the issue. More tests are needed. If all
+      // works well, we may delete it finally (and then simplify the remaining code)
 
       return true;
     }
