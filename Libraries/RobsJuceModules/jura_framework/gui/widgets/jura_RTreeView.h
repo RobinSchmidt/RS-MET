@@ -147,15 +147,18 @@ public:
   /** Creates a deep copy of this node and returns a pointer to it. The caller is responsible for 
   deleting it eventually. */
   virtual RTreeViewNode* getCopy();
+  // maybe rename to createDeepCopy
 
 
 protected:
 
   // node-data:
   juce::String nodeText, description;
-  int          identifier;  //, level;
-  bool         isEnabled, isTicked, isOpen;
-  void         *userData; // arbitrary data that is associated with this node
+  int  identifier;  //, level;
+  bool isEnabled, isTicked, isOpen;  // , isHidden  - maybe remove the "is" prefix, reserve it for functions like isTicked()
+  void *userData; // arbitrary data that is associated with this node
+  // bool userDataOwned = false;
+
 
   // data for maniging the tree-structure:
   RTreeViewNode               *parentNode;
@@ -422,9 +425,7 @@ protected:
 // class RTreeLeafNodeSelector:
 
 /** This class is a subclass of RTreeView that allows for selecting one of the leaf-nodes. This is
-useful for popup-menus that are used by comboboxes.
-
-*/
+useful for popup-menus that are used by comboboxes. */
 
 class JUCE_API RTreeLeafNodeSelector : public RTreeView
 {

@@ -103,6 +103,12 @@ void SamplerModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
+  // I'm not yet sure, if it makes sense to have the sampler engine have parameters in the same 
+  // sense that the other AudioModule subclasses have. Maybe we need none of these...
+
+
+  /*
+  // Hmm maybe that's not the right way to go about it:
   // Create a fixed number of sfzParameter objects that can be dynamically connected to SFZ 
   // opcodes.
   using SM = SamplerModule;
@@ -114,8 +120,7 @@ void SamplerModule::createParameters()
   }
   // Or: Maybe create the parameters dynamically - create always one parameter for each opcode and
   // show the sliders in the TreeView...maybe make a TreeView, whose leafs are the sliders.
-
-
+  */
 
 
   /*
@@ -618,6 +623,16 @@ ToDo:
  TreeView that represents the SFZ and may allows to edit it
 
 -GUI:
+ -we need a TreeView that represents the SFZs structure: the root/top-level node represents the 
+  whole instrument, subnodes represnet groups and subsubsnodes represent regions. Each of these 
+  levels can have opcodes as leafs.
+  -The leafs should be wigdges appropriate for the given opcode: sliders, comboboxes, textfields
+  -It should be possible to add/remove nodes from the TreeView and edit the data of the leafs
+  -The changes should be reflected in the code editor, too. And vice versa, changes to the code 
+   should be immediately reflected in the TreeView
+  -Maybe the CodeEditor and TreeView should communicate via a Mediator, as I do in Liberty. Let's
+   have classes SfzCodeEditor, SfzTreeView, SfzEditingMediator. Maybe later we will also find other
+   representations such as a piano-style region editor like in Kontakt.
  -After parsing the code, the sfz-field should get dirtified, maybe also already after editing the 
   code without parsing? After saving, it should be makred as clean again (i think, this should 
   happen automatically? Maybe next to the "Parse" button, there could be a Revert button that 

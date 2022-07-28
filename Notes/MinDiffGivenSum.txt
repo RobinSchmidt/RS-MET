@@ -136,7 +136,8 @@ and after re-ordering:
 
 //-------------------------------------------------------------------------------------------------
 
-Let's consider now a different cost function - one that penalizes curvature, i.e. deviations from a straight line. To see the pattern better, let's this time use 6 datapoints (and therefore 5 sums):
+Let's consider now a different cost function - one that penalizes curvature, i.e. deviations from a 
+straight line. To see the pattern better, let's this time use 6 datapoints (and therefore 5 sums):
 
 minimize:    (2*v2-v1-v3)^2 + (2*v3-v2-v4)^2 + (2*v4-v3-v5)^2 + (2*v5-v4-v6)^2 = D
 constraints: v1+v2 = s1, v2+v3 = s2, v3+v4 = s3, v4+v5 = s4, v5+v6 = s5

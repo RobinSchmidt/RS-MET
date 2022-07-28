@@ -81,6 +81,9 @@ ToDo:
  features. I think ModulatableParameter would not be adequate though because modulation is managed
  within the sampler engine itself. But how about smoothing? */
 
+/*
+// Code currently commented - I'm not yet sure, if that's the right way to handle it. Maybe it can
+// be deleted at some stage.
 class JUCE_API SfzOpcodeParameter : public jura::Parameter 
 {
 
@@ -105,13 +108,14 @@ protected:
   // int location = -1; // position in the sfz code as character index of the first character of 
      // the opcode. Maybe it could be convenient to store line and column, too
 
-  // Maybe instead of storing group- and region indices, we should stor pointers to the actual
+  // Maybe instead of storing group- and region indices, we should store pointers to the actual
   // object. Rationale: when the suer edits the sfz file, the indices may become out of date 
   // whereas a pointer may still remain valid. But actually, re-parsing will rebuild the SFZ 
   // datastructure anyway, so actually no, the pointers would be invalidated anyway. Hmm...Maybe
   // we need to figure out the new indices based on the new and old location of the opcode in the 
   // code whenever the code changes?
 };
+*/
 
 //=================================================================================================
 
@@ -208,7 +212,70 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };
 
+//=================================================================================================
 
+/** A class for represneting the tree nodes in the tree-view for showing the sfz structure. Nodes
+can represent either structuring elements like the <group> or <region> tags in the sfz spec or 
+opcodes. Opcodes are leaf nodes, structural elements typically not (unless they are empty). For 
+technical reasons (namely for facilitating communication between TreeView and CodeEditor), nodes 
+may also be dummy nodes for representing text-formatting elements and comments. 
+
+ToDo:
+-Try to get rid of the dummy nodes. They are unelegant. */
+
+class SfzTreeViewNode : public jura::RTreeViewNode
+{
+
+public:
+
+  enum class Type
+  {
+    opcode,       // e.g. tune, volume, ...
+    structure,    // e.g. group, region, ...
+    formatting,   // dummy nodes for text formatting (spaces, tabs, linebreaks, etc.)
+    comment,      // dummy nodes for sfz comments
+    unknown
+  };
+
+
+protected:
+
+
+  Type type = Type::unknown;
+
+
+
+  //jura::RWidget* widget = nullptr;
+
+
+};
+
+//=================================================================================================
+
+/** A subclass of RTreeView for displaying and manipulating the structure of an sfz instrument 
+definition. Because sfz instruments have 3 hierarchy levels (global, group, region), the tree has
+3 levels, too. Leaf nodes are the individual opcodes. 
+
+ToDo:
+When the user clicks on such an opcode node, we'll show some appropriate widgets in some other area 
+of the GUI to manipulate the data of the node. In particular, we'll show some textbox that 
+describes the type of opcode in more detail along with its range, unit, default value, etc and, 
+importantly, a slider to manipulate the numeric value or a combobox to switch between the available
+options - whatever is appropriate to the given opcode at hand...tbc... 
+
+When the user clicks on a group node, we may show the number of regions in this group and perhaps 
+some other relevant information. In case of a region node, we may show key- and velocity range,
+number of opcodes (well...maybe that's not very useful...maybe there's more interesting data to 
+show - but we need to fill the space with something). */
+
+class SfzTreeView : public jura::RTreeView
+{
+
+public:
+
+  // I'm not sure, if we actually need a subclass. Maybe we can just use RTreeeView as is...
+
+};
 
 
 //=================================================================================================
