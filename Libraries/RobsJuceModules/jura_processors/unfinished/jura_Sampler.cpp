@@ -347,16 +347,20 @@ void SamplerEditor::resized()
 
   // Instrument definition widgets:
   y += 20;
-  x  = 2;
+  x  = 0;
   //h  = 16;
   //instrumentLabel->setBounds(x, y, 68, 16);
   //x = instrumentLabel->getRight()+2;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 
-  sfzFileLoader->setBounds(x, y, 300, 16);
-  y += 16;
-  sfzEditor.setBounds(x, y, w-8, getHeight()-y);  // preliminary, uses almost the full available space
-  y -= 16;
+  // Preliminary GUI layout for editing:
+  w = 300;
+  sfzFileLoader->setBounds(x, y, w, 16);
+  y += 14;
+  sfzTree->setBounds(x, y, w, getHeight()-y);
+  x = sfzTree->getRight();
+  sfzEditor.setBounds(x, y, getWidth()-x-8, getHeight()-y);
+  y -= 14;
   w  = 48;
   x  = sfzEditor.getRight() - w;
   parseButton->setBounds(x, y, w, 16);
@@ -368,6 +372,17 @@ void SamplerEditor::resized()
   sfzStatusField->setBounds(x, y, 150, 16);
   // or maybe move to the right, directly next to (left of) the parseButton.
   */
+}
+
+void SamplerEditor::treeNodeClicked(RTreeView* treeView, RTreeViewNode* node, 
+  const MouseEvent& mouseEvent,int clickPosition)
+{
+
+}
+
+void SamplerEditor::treeNodeChanged(RTreeView* treeView, RTreeViewNode* node)
+{
+
 }
 
 void SamplerEditor::codeDocumentTextInserted(const String& newText, int insertIndex)
@@ -477,10 +492,14 @@ void SamplerEditor::createWidgets()
   // display information about the smoothness/speikeyness of the CPU load?
 
 
-  // The SFZ editor:
+  // The SFZ TreeView:
+  addWidget(sfzTree = new SfzTreeView);
+  sfzTree->setDescription("Structure Current SFZ instrument");
+
+  // The SFZ CodeEditor:
   sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->sfzPlayer);
   addWidgetSet(sfzFileLoader);
-  sfzFileLoader->setDescription("Current SFZ file");
+  sfzFileLoader->setDescription("Code of Current SFZ instrument");
   //sfzFileLoader->addFileManagerListener(this); 
 
 
@@ -488,12 +507,15 @@ void SamplerEditor::createWidgets()
   sfzStatusField->setLabelText("SFZ Status:");
   //sfzStatusField->setEntryEditable(false);
 
+  addAndMakeVisible(sfzEditor);
+  // ToDo: set up the description of the editor...but it's not a subclass of RWidget...hmmm... 
+  // maybe we can make a subclass of juce::CodeEditorComponent and jura::DescribedItem
+
   addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
   parseButton->setDescription("Parse the current content of the code editor as sfz");
 
-  addAndMakeVisible(sfzEditor);
-  // ToDo: set up the description of the editor...but it's not a subclass of RWidget...hmmm..
-
+  // The order in which we call add...() for the widgets determines, which widgets are in the 
+  // foreground when they overlap.
 }
 
 void SamplerEditor::setCodeIsParsed(bool isParsed)

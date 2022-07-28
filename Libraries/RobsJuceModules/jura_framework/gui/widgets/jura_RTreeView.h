@@ -194,7 +194,7 @@ public:
   virtual void treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked, 
     const MouseEvent &mouseEvent, int clickPosition) = 0;
 
-/** Callback that gets called when a node in the tree was changed somehow. */
+  /** Callback that gets called when a node in the tree was changed somehow. */
   virtual void treeNodeChanged(RTreeView *treeView, RTreeViewNode *nodeThatHasChanged) = 0;
 
 };

@@ -284,7 +284,8 @@ public:
 widgets showing the current system load, etc...tbc...  */
 
 class JUCE_API SamplerEditor : public jura::AudioModuleEditor, 
-  public juce::Timer, public juce::CodeDocument::Listener, public jura::FileManagerListener
+  public juce::Timer, public juce::CodeDocument::Listener, public jura::FileManagerListener,
+  public jura::RTreeViewObserver
 {
 
 public:
@@ -296,8 +297,12 @@ public:
   // Overrides                                   // overriden from...
   void timerCallback() override;                 //   Timer
   void resized() override;                       //   AudioModuleEditor
+  void treeNodeClicked(RTreeView *treeView, RTreeViewNode *node, const MouseEvent &mouseEvent, 
+    int clickPosition) override;
+  void treeNodeChanged(RTreeView *treeView, RTreeViewNode *node) override;
   void codeDocumentTextInserted(const String &newText, int insertIndex) override; // CodeDocument::Listener 
   void codeDocumentTextDeleted(int startIndex, int endIndex) override;            // CodeDocument::Listener 
+
   void rButtonClicked(RButton *buttonThatWasClicked) override;
   void activeFileChanged(FileManager *fileMan) override;                    // FileManagerListener
 
@@ -321,6 +326,12 @@ protected:
 
   jura::RTextField *instrumentLabel;
   jura::MeteringDisplayWithText *layersMeter;
+
+
+  // SFZ tree view and adjacent widgets:
+  SfzTreeView* sfzTree;
+  //SfzTreeNodeWidgetSet* nodeWidgets;
+
 
   // SFZ text editor and adjacent widgets:
   jura::FileSelectionBox *sfzFileLoader;
