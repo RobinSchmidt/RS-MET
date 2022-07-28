@@ -298,12 +298,29 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   // can also avoid rebuilding the tree and just update the tree nodes accordingly.
 
   using Node = SfzTreeViewNode;
-  Node* node;
   rootNode.deleteChildNodesRecursively();
+
+  // todo: add instrument opcodes
+
   for(int gi = 0; gi < sfz.getNumGroups(); gi++)
   {
-    node = new Node("<group>");
-    rootNode.addChildNode(node);
+    Node* groupNode = new Node("<group>");
+
+    // todo: add group opcodes
+
+
+
+    for(int ri = 0; ri < sfz.getNumRegions(gi); ri++)
+    {
+      Node* regionNode = new Node("<region>");
+
+      // todo: add region opcodes
+
+
+      groupNode->addChildNode(regionNode);
+    }
+    rootNode.addChildNode(groupNode);
+
 
 
     int dummy = 0;
@@ -320,7 +337,10 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   int dummy = 0;
 
   // Is called twice when we load a new sfz file. Maybe the activeFileChanged callback is invoked
-  // twice for some reason? -> figure out!
+  // twice for some reason? -> figure out! ...seems fixed
+
+  // -The update of the GUI is quite slow/laggy.
+  // -The instruments with 1 regions show 2 region nodes
 }
 // needs test
 
