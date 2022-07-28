@@ -329,8 +329,16 @@ protected:
   void setCodeIsDirty() { setCodeIsParsed(false); setCodeIsSaved(false); }
   void setCodeIsClean() { setCodeIsParsed(true);  setCodeIsSaved(true);  }
 
+
+  /** Tries to parse the current content of the code editor and set up the engine accordingly. If
+  parsing fails, the engine will revert into its previous settings. ...tbc... ToDo: explain 
+  rationale of this behavior. */
   void parseCodeEditorContent();  // maybe should return a bool?
-  void saveCodeEditorContent();   // dito?
+  //void saveCodeEditorContent();   // dito?
+
+  /** Updates the TreeView with the sfz structure accoring to the instrument definition that is
+  currently loaded in the engine. */
+  void updateTreeView();
 
   SamplerModule* samplerModule = nullptr;
 

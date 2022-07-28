@@ -286,6 +286,9 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 
 
   int dummy = 0;
+
+  // Is called twice when we load a new sfz file. Maybe the activeFileChanged callback is invoked
+  // twice for some reason? -> figure out!
 }
 // needs test
 
@@ -421,6 +424,11 @@ void SamplerEditor::rButtonClicked(RButton* b)
 
 void SamplerEditor::activeFileChanged(FileManager* fileMan)
 {
+  // BUG:
+  // This callback is invoked twice when loading a file via the load button. When loading a file
+  // via forward/backward buttons, it's only invoked once, as it should be. Figure out why it gets
+  // invoked twice in the former case and fix that!
+
   jassert(fileMan == &samplerModule->sfzPlayer);
   // There are actually two FileManager objects that we could listen to: the SamplerModule object
   // itself which manages the preset .xml file of the whole sampler and the SfzPlayer object 
@@ -447,9 +455,7 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
   // ...nnnah - the samplerModule should isefl listen to the sfzPlayer and dirtify itself in the
   // callback
 
-
-
-  int dummy = 0;
+  updateTreeView();
 }
 
 void SamplerEditor::createWidgets()
@@ -539,15 +545,6 @@ void SamplerEditor::setCodeIsParsed(bool isParsed)
   codeIsParsed = isParsed;
   //parseButton->setEnabled(!codeIsParsed); // doesn't seem to have any effect
   parseButton->setVisible(!codeIsParsed);   // works but is a bit drastic, graying out would be better
-
-  if(isParsed)
-    sfzTree->buildTreeFromSfz(samplerModule->sfzPlayer.getInstrumentData());
-  else
-    sfzTree->clearTree();
-    // This will clear the TreeView. This is also preliminary. I'm not yet sure, what the desired
-    // behavior should be in such a case. It means that the current editor content failed to parse.
-    // The player will actually have reverted to the last parsable version though, so maybe we 
-    // should display that in the TreeView. To do so, we would just have to get rid of the "if".
 }
 
 void SamplerEditor::setCodeIsSaved(bool isSaved)
@@ -569,13 +566,29 @@ void SamplerEditor::parseCodeEditorContent()
   }
 
   setCodeIsParsed(ok);  // ...maybe we should do this only in case of success?
+  updateTreeView();
 }
 
+/*
 void SamplerEditor::saveCodeEditorContent()
 {
 
 }
-// hmm - maybe thsi is not needed?
+// hmm - maybe this is not needed?
+*/
+
+void SamplerEditor::updateTreeView()
+{
+  if(codeIsParsed)
+    sfzTree->buildTreeFromSfz(samplerModule->sfzPlayer.getInstrumentData());
+  else
+    sfzTree->clearTree();
+  // I'm not yet sure, what the desired behavior should be in case of having unparsed code in the
+  //  code editor. It means that the current editor content failed to parse. The player will 
+  // actually have reverted to the last parsable version though, so maybe we should display that 
+  // in the TreeView. To do so, we would just have to get rid of the "if" and just always take the
+  // first branch. We'll see...
+}
 
 //=================================================================================================
 
