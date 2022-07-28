@@ -281,8 +281,32 @@ void SamplerModule::reset()
 
 //=================================================================================================
 
+SfzTreeView::SfzTreeView()
+{
+  rootNode.setDeleteChildNodesOnDestruction(true); // root node manages lifetime of child nodes
+  rootNode.setNodeText("<global>");
+  RTreeView::setRootNode(&rootNode);
+  //RTreeView::setDrawRootNode(false);
+}
+
 void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 {
+  // Perhaps we should first check, if the current tree alreday is in sync with the given sfz and 
+  // if so, avoid re-building the tree from scratch. Maybe such situation could occur when the user
+  // has just edited some comments in the code editor. Such edits don't change the structure of the
+  // instrument. Maybe if the structure matches and just some numerical opcode values differ, we
+  // can also avoid rebuilding the tree and just update the tree nodes accordingly.
+
+  using Node = SfzTreeViewNode;
+
+  //Node* node = new Node("<global>");
+
+
+
+
+
+
+
 
 
   int dummy = 0;
@@ -308,6 +332,8 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 {
   ScopedLock scopedLock(*lock);
   //samplerModule = samplerToEdit;
+
+
 
   createWidgets();
   setSize(400, 200);

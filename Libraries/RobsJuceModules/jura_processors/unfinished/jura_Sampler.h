@@ -228,6 +228,9 @@ class SfzTreeViewNode : public jura::RTreeViewNode
 
 public:
 
+
+  using jura::RTreeViewNode::RTreeViewNode;
+
   enum class Type
   {
     opcode,       // e.g. tune, volume, ...
@@ -273,6 +276,8 @@ class SfzTreeView : public jura::RTreeView
 
 public:
 
+  SfzTreeView();
+
   //using SfzInstrument = rosic::Sampler::SfzInstrument;
 
   /** Builds (or updates) the internal tree from the given sfz instrument datastructure. This needs
@@ -282,6 +287,10 @@ public:
 
   void clearTree();
 
+
+protected:
+
+  SfzTreeViewNode rootNode;  // Manages the lifetimes of all its child-nodes
 
   //jura::SfzPlayer* player = nullptr; 
   // hmm..nahhh...Let's try to avoid the coupling to this class as long as possible

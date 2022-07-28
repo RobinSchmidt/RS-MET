@@ -247,10 +247,13 @@ public:
   // setup:
 
   /** Sets the root node for the tree to be shown. The RTreeView will NOT delete the root-node in 
-  its destructor - that is: it does not take over ownership over the node. If the node is not 
-  needed anymore, you may call setRootNode with a NULL pointer as argument and delete the node 
-  yourself. */
+  its destructor. Tha means it does not take over ownership over the node. If the node is not 
+  needed anymore, you may call setRootNode with a nullptr as argument and delete the node 
+  yourself.  */
   virtual void setRootNode(RTreeViewNode *newRootNode);
+  // ToDo: Document how the lifetime of the nodes is supposed to be managed. I think the node 
+  // objects themselves maintain the lifetime of their child-nodes, at least, if the flag
+  // deleteChildNodesOnDestruction in the class is true (which it isn't by default).
 
   /** Selects whether or not the root node should be drawn. */
   virtual void setDrawRootNode(bool shouldBeDrawn);
