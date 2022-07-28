@@ -225,7 +225,8 @@ bool FileManager::openLoadingDialog(const String &dialogTitle)
       // BUG (possibly): I think, this call may be superfluous. The loadFile call did already call
       // that. Calling it here again may lead to redundant activeFileChanged callbacks.
       // ...OK...commenting it out seems to have fixed the issue. More tests are needed. If all
-      // works well, we may delete it finally (and then simplify the remaining code)
+      // works well, we may delete it finally (and then simplify the remaining code). Try loading
+      // xml presets in various modules, waveforms ins Straightliner's oscs, colormaps in scope
 
       return true;
     }
