@@ -340,7 +340,9 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   // twice for some reason? -> figure out! ...seems fixed
 
   // -The update of the GUI is quite slow/laggy.
-  // -The instruments with 1 regions show 2 region nodes
+  // -The instruments with 1 regions show 2 region nodes - Test with FilterBlip.sfz. the sft does
+  //  indeed have two regions - the first contains all the settinsg, the 2nd only the sample. Oddly
+  //  enough, the FilterBlipe patch is nevertheless playable. It actually shouldn't be...i think.
 }
 // needs test
 
@@ -681,6 +683,8 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
+-When switching sfz-files while playing, access violations occur. I think, I need to acquire locks
+ in all the GUI functions ...or at least in parseCodeEditorContent
 -When saving an sfz file, it seems liek the internal file list is not updated: switching through
  the presets with the forward/backward buttons seems to not load the newly saved file, as if it's 
  not there. Also, the file-widget is not updated, i.e. the new filename is not shown. Maybe these 
