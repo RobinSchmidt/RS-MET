@@ -197,7 +197,7 @@ RTreeView::~RTreeView()
 void RTreeView::setRootNode(RTreeViewNode *newRootNode)
 {
   rootNode = newRootNode;
-  repaint();
+  repaint();  // shouldn't the be repaintOnMainThread or soemthing?
 }
 
 void RTreeView::setDrawRootNode(bool shouldBeDrawn)
@@ -406,7 +406,7 @@ void RTreeView::paint(Graphics &g)
   g.setColour(getOutlineColour());
   g.drawRect(0, 0, getWidth(), getHeight(), RWidget::outlineThickness);
 
-  if( rootNode == NULL )
+  if( rootNode == nullptr )
     return;
 
   int x = getRootNodeX();

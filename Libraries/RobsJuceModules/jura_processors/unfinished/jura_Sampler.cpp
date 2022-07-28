@@ -281,6 +281,22 @@ void SamplerModule::reset()
 
 //=================================================================================================
 
+void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
+{
+
+
+  int dummy = 0;
+}
+// needs test
+
+void SfzTreeView::clearTree()
+{
+  RTreeView::setRootNode(nullptr);
+}
+// needs test
+
+//=================================================================================================
+
 SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) 
   : AudioModuleEditor(samplerToEdit)
   , samplerModule(samplerToEdit)
@@ -522,7 +538,16 @@ void SamplerEditor::setCodeIsParsed(bool isParsed)
 {
   codeIsParsed = isParsed;
   //parseButton->setEnabled(!codeIsParsed); // doesn't seem to have any effect
-  parseButton->setVisible(!codeIsParsed);   // works but is a bit drastic
+  parseButton->setVisible(!codeIsParsed);   // works but is a bit drastic, graying out would be better
+
+  if(isParsed)
+    sfzTree->buildTreeFromSfz(samplerModule->sfzPlayer.getInstrumentData());
+  else
+    sfzTree->clearTree();
+    // This will clear the TreeView. This is also preliminary. I'm not yet sure, what the desired
+    // behavior should be in such a case. It means that the current editor content failed to parse.
+    // The player will actually have reverted to the last parsable version though, so maybe we 
+    // should display that in the TreeView. To do so, we would just have to get rid of the "if".
 }
 
 void SamplerEditor::setCodeIsSaved(bool isSaved)

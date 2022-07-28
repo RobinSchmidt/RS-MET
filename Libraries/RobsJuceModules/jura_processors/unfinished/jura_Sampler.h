@@ -273,8 +273,18 @@ class SfzTreeView : public jura::RTreeView
 
 public:
 
-  // I'm not sure, if we actually need a subclass. Maybe we can just use RTreeeView as is...
+  //using SfzInstrument = rosic::Sampler::SfzInstrument;
 
+  /** Builds (or updates) the internal tree from the given sfz instrument datastructure. This needs
+  to be called from the editor, whenever the instrument was changed by some other widget, e.g. the
+  code editor to update the contents of the TreeView. */
+  void buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz);
+
+  void clearTree();
+
+
+  //jura::SfzPlayer* player = nullptr; 
+  // hmm..nahhh...Let's try to avoid the coupling to this class as long as possible
 };
 
 
