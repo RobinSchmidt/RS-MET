@@ -244,7 +244,10 @@ public:
 protected:
 
 
-  Type type = Type::unknown;
+  //Type type = Type::unknown;
+  // Maybe store data like group/region index (if applicable) etc. Data, such that we can find the
+  // corresponding settings in an rosic::Sampler::SfzInstrument. We may need to retrieve pointers
+  // to regions and settings...we'll see...
 
 
 

@@ -314,6 +314,16 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   auto addOpcodeChildNodes = [](const Level* lvl, Node* node)
   {
     SfzCodeBook* cb = SfzCodeBook::getInstance();
+
+    // The special opcode settings:
+    std::string str = lvl->getSamplePath();
+    if(str != "")
+    {
+      Node* sampleNode = new Node("sample=" + str);
+      node->addChildNode(sampleNode);
+    }
+
+    // The general opcode settings:
     const Settings& settings = lvl->getSettings();
     for(int i = 0; i < settings.size(); i++)
     {
@@ -322,6 +332,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
       node->addChildNode(opcodeNode);
     }
 
+    // The modulation routings:
     const Routings& routings = lvl->getModRoutings();
     for(int i = 0; i < routings.size(); i++)
     {
@@ -331,7 +342,9 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     }
 
     // ToDo: 
-    // -sample-opcode doesn't appear -> fix that
+    // -Later, we may want to allow more than one sample per level. Then we need to display the 
+    //  sample index, too. Maybe we should be able to treat the sample-opcode like all the others.
+    //  It's unelegant to have these exceptions.
     // -lokey/hikey opcodes don't appear ...maybe some others, too? there are some opcodes that are
     //  treated in special ways by the engine. We need some speical handling for them here, too.
     //  hivel/lovel
@@ -359,7 +372,10 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     rootNode.addChildNode(groupNode);
   }
 
-  // -The update of the GUI is quite slow/laggy.
+  // -The update of the GUI is quite slow/laggy. I don't think that it's a general problem with the
+  //  TreeView because it's much more responsive in the module-selector in ToolChain. Figure out 
+  //  what makes it so unresponsive in this context. Do we get bombarded with lots of redundant
+  //  callbacks or something?
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately.
