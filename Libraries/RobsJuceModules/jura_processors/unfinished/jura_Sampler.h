@@ -216,12 +216,7 @@ protected:
 
 /** A class for represneting the tree nodes in the tree-view for showing the sfz structure. Nodes
 can represent either structuring elements like the <group> or <region> tags in the sfz spec or 
-opcodes. Opcodes are leaf nodes, structural elements typically not (unless they are empty). For 
-technical reasons (namely for facilitating communication between TreeView and CodeEditor), nodes 
-may also be dummy nodes for representing text-formatting elements and comments. 
-
-ToDo:
--Try to get rid of the dummy nodes. They are unelegant. */
+opcodes. Opcodes are leaf nodes, structural elements typically not (unless they are empty). */
 
 class SfzTreeViewNode : public jura::RTreeViewNode
 {
@@ -231,15 +226,36 @@ public:
 
   using jura::RTreeViewNode::RTreeViewNode;
 
-  enum class Type
-  {
-    opcode,       // e.g. tune, volume, ...
-    structure,    // e.g. group, region, ...
-    formatting,   // dummy nodes for text formatting (spaces, tabs, linebreaks, etc.)
-    comment,      // dummy nodes for sfz comments
-    unknown
-  };
 
+  /** Type for the user-data that can be stored at the tree-nodes. It contains the information that
+  is required to find the corresponding setting in the SfzInstrument datastructure. ToDo: maybe 
+  also store information to find it in the sfz-code such as line/column/location. */
+  struct Data
+  {
+    /** The type of the data stored at the nodes depends on the type of the node. In order to be 
+    able to tell, which type it is, we define an enum. */
+    enum class Type
+    {
+      group,
+      region,
+      playbackSetting,    // e.g. tune, volume, ...
+      modulationRouting,  // e.g. lfo3_cutoff2, adsr2_volume1
+      unknown             // maybe get rid - type should always be known
+    };
+
+    /** We define a sum-type of the passible datatypes that can be stored at the nodes here. 
+    ToDo: maybe use std::variant instead (but that requires C++17). */
+    union Variant  // find better name
+    {
+      rosic::Sampler::PlaybackSetting   playbackSetting;
+      rosic::Sampler::ModulationRouting modRouting;
+    };
+
+    Type type = Type::unknown;
+    Variant data;
+    int groupIndex  = -1;
+    int regionIndex = -1;
+  };
 
 protected:
 
@@ -255,6 +271,10 @@ protected:
 
 
 };
+// Maybe we don't need ot make a subclass of RTreeViewNode. Instead, attach the additional data
+// in the data pointer that RTreeViewNode defines for exactly this purpose. Maybe the data stored
+// should be Type tag, and an PlaybackSetting object which we may leave empty when it's no 
+// applicable
 
 //=================================================================================================
 

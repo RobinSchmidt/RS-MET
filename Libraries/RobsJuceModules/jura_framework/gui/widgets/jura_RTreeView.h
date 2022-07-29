@@ -46,6 +46,12 @@ public:
   the node is deleted, the data pointed to will not be freed here (\todo make this optionally 
   possible). */
   virtual void setUserData(void *newDataPointer) { userData = newDataPointer; }
+  // ToDo: add a bool takeOwnership parameter, then we need to: 
+  // -on calls to setUserData, check the (member) flag, if true, delete the current data (but maybe
+  //  only if it's different from the new data)
+  // -check it also on destruction and if true, delete data
+  // -set the flag to the passed value
+
 
   /** Sets this and all the child-nodes into unticked state. */
   virtual void setAllNodesUnticked();

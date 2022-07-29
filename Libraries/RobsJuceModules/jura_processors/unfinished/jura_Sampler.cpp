@@ -286,7 +286,7 @@ SfzTreeView::SfzTreeView()
   rootNode.setDeleteChildNodesOnDestruction(true); // root node manages lifetime of child nodes
   rootNode.setNodeText("<global>");
   RTreeView::setRootNode(&rootNode);
-  //RTreeView::setDrawRootNode(false);
+  RTreeView::setDrawRootNode(false);
 }
 
 void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
@@ -308,6 +308,14 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   using Routings = std::vector<ModulationRouting>;
   // Maybe get rid of some of them - we seem to use them only one time so defining these aliases 
   // doesn't seem to pull its weight.
+
+
+  auto addNode = [](Node* parent, const juce::String& nodeText)
+  {
+    parent->addChildNode(new Node(nodeText));
+  };
+  // ToDo: add Type parameter, maybe do more setup stuff, maybe take a pointer to a sum-type 
+  // (union or std::variant) of PlaybackSetting/ModulationRouting
 
 
   // Helper function to add the leaf nodes:
@@ -343,7 +351,6 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     //  It's unelegant to have these exceptions.
   };
 
-
   // Build the tree with 3 hierarchy levels:
   rootNode.deleteChildNodesRecursively();
   const Global* global = sfz.getGlobal();
@@ -363,10 +370,13 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     rootNode.addChildNode(groupNode);
   }
 
+  repaintOnMessageThread();
+
   // -The update of the GUI is quite slow/laggy. I don't think that it's a general problem with the
   //  TreeView because it's much more responsive in the module-selector in ToolChain. Figure out 
   //  what makes it so unresponsive in this context. Do we get bombarded with lots of redundant
-  //  callbacks or something?
+  //  callbacks or something? Or is it because we allocate the nodes on the heap and they are more 
+  //  scattered in memory than in the other case? Maybe we should pre-allocate a pool of nodes?
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately.
@@ -386,6 +396,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 void SfzTreeView::clearTree()
 {
   RTreeView::setRootNode(nullptr);
+  repaintOnMessageThread();
 }
 // needs test
 
