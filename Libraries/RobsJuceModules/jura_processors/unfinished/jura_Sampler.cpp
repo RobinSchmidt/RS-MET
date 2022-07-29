@@ -322,6 +322,16 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
       Node* sampleNode = new Node("sample=" + str);
       node->addChildNode(sampleNode);
     }
+    //Node* tmpNode;
+    node->addChildNode(new Node("lokey=" + std::to_string(lvl->getLoKey())));
+
+
+
+    // ToDo: lokey/hikey/lovel/hivel - but how should we format them? maybe the keyrange should be 
+    // displayed like lokey=40 hikey= 54, i.e. put two opcodes into a node? because otherwise, the
+    // tree may get unnecessarily large
+
+
 
     // The general opcode settings:
     const Settings& settings = lvl->getSettings();
