@@ -297,7 +297,17 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   // instrument. Maybe if the structure matches and just some numerical opcode values differ, we
   // can also avoid rebuilding the tree and just update the tree nodes accordingly.
 
-  using Node = SfzTreeViewNode;
+  // Some shorthands:
+  using namespace rosic::Sampler;
+  using Node     = SfzTreeViewNode;
+  using Group    = SfzInstrument::Group;
+  using Region   = SfzInstrument::Region;
+  using Settings = std::vector<PlaybackSetting>;
+  using Routings = std::vector<ModulationRouting>;
+
+
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+
   rootNode.deleteChildNodesRecursively();
 
   // todo: add instrument opcodes
@@ -313,8 +323,29 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     for(int ri = 0; ri < sfz.getNumRegions(gi); ri++)
     {
       Node* regionNode = new Node("<region>");
+      const Region* region = sfz.getRegion(gi, ri);
+      const Settings& settings = region->getSettings();
 
-      // todo: add region opcodes
+
+      // Add region opcodes:
+      for(int si = 0; si < settings.size(); si++)
+      {
+        // Maybe factor out into helper function and call it for all 3 levels:
+        PlaybackSetting s = settings[si];
+        int idx = s.getIndex();
+        int val = s.getValue();
+        Opcode oc = s.getOpcode();
+        std::string str = cb->opcodeToString(oc, idx);
+        //if(idx != -1) str += std::to_string(idx); // nah - opcodeToString already includes the index
+        str += "=" + rsFloatToString(val);
+        juce::String jstr = str;
+        Node* opcodeNode = new Node(jstr);
+        regionNode->addChildNode(opcodeNode);
+        int dummy = 0;
+      }
+
+      // ToDo: add mod-roting opcodes....
+      // sample-opcode doesn't appear
 
 
       groupNode->addChildNode(regionNode);
