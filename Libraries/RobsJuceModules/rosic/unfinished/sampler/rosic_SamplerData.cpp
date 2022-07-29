@@ -937,6 +937,10 @@ rsReturnCode SfzInstrument::loadFromSFZ(const char* path)
 
 void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
+  // refactor to:
+  // s += cb->settingToString(setting) + "\n";
+
+
   using PST = Opcode;
   PST    op = setting.getOpcode();
   float val = setting.getValue();
@@ -949,6 +953,8 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   s += cb->opcodeToString(op, idx) + std::string("=") + cb->valueToString(op, val)  + "\n";
 
+
+
   // ToDo:
   // -Document why the lokey, hikey, lovel, hivel opcodes are not handled here. I think, it's 
   //  because they are handled already by the caller because they require special treatment.
@@ -956,6 +962,9 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
 
 void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::string& s)
 {
+  // refactor to:
+  // s += cb->modRoutingToString(r) + "\n";
+
   // Retrieve data from routing object:
   using OT = OpcodeType;
   using OC = Opcode;

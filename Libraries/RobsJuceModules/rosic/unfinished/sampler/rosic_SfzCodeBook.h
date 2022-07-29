@@ -512,6 +512,7 @@ public:
   ModMode stringToModMode(const std::string& str);
 
   // We need also a modRoutingToString(const ModulationRouting& routing) to show it in the tree
+  // for consistency we also want settingToString(const PlaybackSetting& s)
 
 
   //-----------------------------------------------------------------------------------------------
