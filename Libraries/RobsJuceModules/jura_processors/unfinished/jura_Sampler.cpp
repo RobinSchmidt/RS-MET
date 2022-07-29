@@ -322,10 +322,11 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
       Node* sampleNode = new Node("sample=" + str);
       node->addChildNode(sampleNode);
     }
-    //Node* tmpNode;
     node->addChildNode(new Node("lokey=" + std::to_string(lvl->getLoKey())));
-
-
+    node->addChildNode(new Node("hikey=" + std::to_string(lvl->getHiKey())));
+    node->addChildNode(new Node("lovel=" + std::to_string(lvl->getLoVel())));
+    node->addChildNode(new Node("hivel=" + std::to_string(lvl->getHiVel())));
+    // Maybe show them only when not at default values. It gets too cluttered otherwise
 
     // ToDo: lokey/hikey/lovel/hivel - but how should we format them? maybe the keyrange should be 
     // displayed like lokey=40 hikey= 54, i.e. put two opcodes into a node? because otherwise, the
