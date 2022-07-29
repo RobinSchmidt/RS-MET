@@ -348,6 +348,10 @@ public:
     /** Returns a const reference to our modulation routings. */
     const std::vector<ModulationRouting>& getModRoutings() const { return modRoutings; }
 
+    const std::vector<ModulationRouting>& getModulationSettings() const { return modRoutings; }
+    // replica! get rid! use only getModRoutings
+
+
     /** Returns the value of the given setting, if present. If not present, it will try to figure
     out the parent's setting and so on all the way up the (3-level) hierarchy. If such a setting is
     found in none of the levels, the default value for that setting will be returned. If accumulate
@@ -420,8 +424,6 @@ public:
     build the dsp chain when this region should be played.*/
     const std::vector<OpcodeType>& getOpcodeTypeChain() const { return dspTypes; }
 
-
-    const std::vector<ModulationRouting>& getModulationSettings() const { return modRoutings; }
 
 
   protected:

@@ -316,9 +316,9 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   auto addOpcodeChildNodes = [&](const Level* lvl, Node* node)
   {
     const Settings& settings = lvl->getSettings();
-    for(int si = 0; si < settings.size(); si++)
+    for(int i = 0; i < settings.size(); i++)
     {
-      PlaybackSetting s = settings[si];
+      PlaybackSetting s = settings[i];
       int idx = s.getIndex();
       int val = s.getValue();
       Opcode oc = s.getOpcode();
@@ -327,13 +327,41 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
       juce::String jstr = str;
       Node* opcodeNode = new Node(jstr);
       node->addChildNode(opcodeNode);
+
+      // Maybe building the string should be moved into SfzCodeBook such that here, we just do:
+      // std::string str = cb->settingToString(s);
+      // -> check how we build the strings when saving an sfz file. Maybe we do it in some other 
+      // class like SfzInstrument ...if so, move the code into SfzCodeBook
+    }
+
+    const Routings& routings = lvl->getModRoutings();
+    for(int i = 0; i < routings.size(); i++)
+    {
+      /*
+      ModulationRouting r = routings[i];
+
+      OpcodeType srcType = r.getSourceType();
+      OpcodeType tgtType = r.getTargetType();
+      int srcIdx = r.getSourceIndex();
+      int tgtIdx = r.getTargetIndex();
+      */
+
+      // We need to implement a function like:
+      // std::string str = cb->modRoutingToString
+
+
+
+
       int dummy = 0;
     }
+
+
     // ToDo: 
     // -add mod-routing opcodes
     // -sample-opcode doesn't appear
     // -lokey/hikey opcodes don't appear ...maybe some others, too? there are some opcodes that are
     //  treated in special ways by the engine. We need some speical handling for them here, too.
+    //  hivel/lovel
   };
 
 
@@ -357,11 +385,19 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   }
 
   // -The update of the GUI is quite slow/laggy.
+  // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately.
   // -The instruments with 1 regions show 2 region nodes - Test with FilterBlip.sfz. the sft does
   //  indeed have two regions - the first contains all the settinsg, the 2nd only the sample. Oddly
   //  enough, the FilterBlipe patch is nevertheless playable. It actually shouldn't be...i think.
+  // -Maybe trying to edit the patch via the tree is a too tall order. Maybe use the tree only for
+  //  display purposes and for selecting opcodes to interact with via sliders but leave the patch 
+  //  editing to the code editor. Maybe put the editor to the left and the tree to the right to 
+  //  clarify the dirction of information flow (editor -> tree). The "Parse" button may somehow be 
+  //  associated with this "flow"...clikcing it, makes the information "flow" from code editor to 
+  //  tree - so maybe place it somewhere at the intersection. Maybe indicate invalidation/
+  //  dirtification of the tree after code edits
 }
 // needs test
 

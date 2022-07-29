@@ -511,6 +511,8 @@ public:
 
   ModMode stringToModMode(const std::string& str);
 
+  // We need also a modRoutingToString(const ModulationRouting& routing) to show it in the tree
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
