@@ -300,6 +300,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   // Some shorthands:
   using namespace rosic::Sampler;
   using Node     = SfzTreeViewNode;
+  using Level    = SfzInstrument::HierarchyLevel;
   using Group    = SfzInstrument::Group;
   using Region   = SfzInstrument::Region;
   using Settings = std::vector<PlaybackSetting>;
@@ -307,6 +308,31 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 
 
   SfzCodeBook* cb = SfzCodeBook::getInstance();
+
+
+  // Helper function:
+  auto addOpcodeChildNodes = [&](const Level* lvl, Node* node)
+  {
+    const Settings& settings = lvl->getSettings();
+    for(int si = 0; si < settings.size(); si++)
+    {
+      PlaybackSetting s = settings[si];
+      int idx = s.getIndex();
+      int val = s.getValue();
+      Opcode oc = s.getOpcode();
+      std::string str = cb->opcodeToString(oc, idx);
+      str += "=" + rsFloatToString(val);
+      juce::String jstr = str;
+      Node* opcodeNode = new Node(jstr);
+      node->addChildNode(opcodeNode);
+      int dummy = 0;
+    }
+    // ToDo: 
+    // -add mod-roting opcodes....
+    // -sample-opcode doesn't appear
+    // -lokey/hikey opcodes don't appear
+  };
+
 
   rootNode.deleteChildNodesRecursively();
 
@@ -318,35 +344,11 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 
     // todo: add group opcodes
 
-
-
     for(int ri = 0; ri < sfz.getNumRegions(gi); ri++)
     {
       Node* regionNode = new Node("<region>");
       const Region* region = sfz.getRegion(gi, ri);
-      const Settings& settings = region->getSettings();
-
-
-      // Add region opcodes:
-      for(int si = 0; si < settings.size(); si++)
-      {
-        // Maybe factor out into helper function and call it for all 3 levels:
-        PlaybackSetting s = settings[si];
-        int idx = s.getIndex();
-        int val = s.getValue();
-        Opcode oc = s.getOpcode();
-        std::string str = cb->opcodeToString(oc, idx);
-        //if(idx != -1) str += std::to_string(idx); // nah - opcodeToString already includes the index
-        str += "=" + rsFloatToString(val);
-        juce::String jstr = str;
-        Node* opcodeNode = new Node(jstr);
-        regionNode->addChildNode(opcodeNode);
-        int dummy = 0;
-      }
-
-      // ToDo: add mod-roting opcodes....
-      // sample-opcode doesn't appear
-
+      addOpcodeChildNodes(region, regionNode);
 
       groupNode->addChildNode(regionNode);
     }
