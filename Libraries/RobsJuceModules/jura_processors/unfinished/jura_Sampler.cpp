@@ -310,51 +310,33 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   // doesn't seem to pull its weight.
 
 
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-
   // Helper function to add the leaf nodes:
-  auto addOpcodeChildNodes = [&](const Level* lvl, Node* node)
+  auto addOpcodeChildNodes = [](const Level* lvl, Node* node)
   {
+    SfzCodeBook* cb = SfzCodeBook::getInstance();
     const Settings& settings = lvl->getSettings();
     for(int i = 0; i < settings.size(); i++)
     {
       PlaybackSetting s = settings[i];
-      int idx = s.getIndex();
-      int val = s.getValue();
-      Opcode oc = s.getOpcode();
-      std::string str = cb->opcodeToString(oc, idx);
-      str += "=" + rsFloatToString(val);
-      juce::String jstr = str;
-      Node* opcodeNode = new Node(jstr);
+      Node* opcodeNode = new Node(cb->settingToString(s));
       node->addChildNode(opcodeNode);
-
-      // Maybe building the string should be moved into SfzCodeBook such that here, we just do:
-      // std::string str = cb->settingToString(s);
-      // -> check how we build the strings when saving an sfz file. Maybe we do it in some other 
-      // class like SfzInstrument ...if so, move the code into SfzCodeBook. It fits well there
-      // logically anyway ..i think, it's implemented in SfzInstrument::writeSettingToString. 
-      // There's also writeModRoutingToString. This code needs to be refactored
     }
 
     const Routings& routings = lvl->getModRoutings();
     for(int i = 0; i < routings.size(); i++)
     {
       ModulationRouting r = routings[i];
-      std::string str = cb->modRoutingToString(r);
-      juce::String jstr = str;
-      Node* opcodeNode = new Node(jstr);
+      Node* opcodeNode = new Node(cb->modRoutingToString(r));
       node->addChildNode(opcodeNode);
-      int dummy = 0;
     }
 
-
     // ToDo: 
-    // -use cb->settingToString, streamline the code (use less temp variables)
-    // -add mod-routing opcodes
-    // -sample-opcode doesn't appear
+    // -sample-opcode doesn't appear -> fix that
     // -lokey/hikey opcodes don't appear ...maybe some others, too? there are some opcodes that are
     //  treated in special ways by the engine. We need some speical handling for them here, too.
     //  hivel/lovel
+    // -streamline the code: use less temp variables ..although, for debugging they may be useful, 
+    //  so maybe let's keep them at least for a while
   };
 
 
