@@ -788,6 +788,8 @@ public:
   //const Group& getGroupRef(int i) const { return *instrument.groups[i]; }
   // replace by getGroupPtr ..maybe rename to just getGroup
 
+  const Global* getGlobal() const { return &global; }
+
   const Group* getGroup(int i) const { return global.groups[i]; }
 
   const Region* getRegion(int gi, int ri) const { return global.groups[gi]->regions[ri]; }
