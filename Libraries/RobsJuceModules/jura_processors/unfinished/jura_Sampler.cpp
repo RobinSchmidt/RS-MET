@@ -319,10 +319,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // this level and show the key/vel settings only when they are not at their deafults:
     std::string str = lvl->getSamplePath();
     if(str != "")
-    {
-      Node* sampleNode = new Node("sample=" + str);
-      node->addChildNode(sampleNode);
-    }
+      node->addChildNode(new Node("sample=" + str));
     int i;
     i = lvl->getLoKey(); if(i !=   0) node->addChildNode(new Node("lokey=" + std::to_string(i)));
     i = lvl->getHiKey(); if(i != 127) node->addChildNode(new Node("hikey=" + std::to_string(i)));
@@ -330,44 +327,20 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     i = lvl->getHiVel(); if(i != 127) node->addChildNode(new Node("hivel=" + std::to_string(i)));
     // Can we somehow reduce the boilerplate here?
 
-    /*
-    node->addChildNode(new Node("hikey=" + std::to_string(lvl->getHiKey())));
-    node->addChildNode(new Node("lovel=" + std::to_string(lvl->getLoVel())));
-    node->addChildNode(new Node("hivel=" + std::to_string(lvl->getHiVel())));
-    */
-    // Maybe show them only when not at default values. It gets too cluttered otherwise
-
-    // ToDo: lokey/hikey/lovel/hivel - but how should we format them? maybe the keyrange should be 
-    // displayed like lokey=40 hikey= 54, i.e. put two opcodes into a node? because otherwise, the
-    // tree may get unnecessarily large
-
-
-
     // The general opcode settings:
     const Settings& settings = lvl->getSettings();
     for(int i = 0; i < settings.size(); i++)
-    {
-      PlaybackSetting s = settings[i];
-      Node* opcodeNode = new Node(cb->settingToString(s));
-      node->addChildNode(opcodeNode);
-    }
+      node->addChildNode(new Node(cb->settingToString(settings[i])));
 
     // The modulation routings:
     const Routings& routings = lvl->getModRoutings();
     for(int i = 0; i < routings.size(); i++)
-    {
-      ModulationRouting r = routings[i];
-      Node* opcodeNode = new Node(cb->modRoutingToString(r));
-      node->addChildNode(opcodeNode);
-    }
+      node->addChildNode(new Node(cb->modRoutingToString(routings[i])));
 
     // ToDo: 
     // -Later, we may want to allow more than one sample per level. Then we need to display the 
     //  sample index, too. Maybe we should be able to treat the sample-opcode like all the others.
     //  It's unelegant to have these exceptions.
-    // -lokey/hikey opcodes don't appear ...maybe some others, too? there are some opcodes that are
-    //  treated in special ways by the engine. We need some speical handling for them here, too.
-    //  hivel/lovel
     // -streamline the code: use less temp variables ..although, for debugging they may be useful, 
     //  so maybe let's keep them at least for a while
   };
