@@ -315,17 +315,26 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   {
     SfzCodeBook* cb = SfzCodeBook::getInstance();
 
-    // The special opcode settings:
+    // The special opcode settings. We display the sample opcode only if a sample is defined at 
+    // this level and show the key/vel settings only when they are not at their deafults:
     std::string str = lvl->getSamplePath();
     if(str != "")
     {
       Node* sampleNode = new Node("sample=" + str);
       node->addChildNode(sampleNode);
     }
-    node->addChildNode(new Node("lokey=" + std::to_string(lvl->getLoKey())));
+    int i;
+    i = lvl->getLoKey(); if(i !=   0) node->addChildNode(new Node("lokey=" + std::to_string(i)));
+    i = lvl->getHiKey(); if(i != 127) node->addChildNode(new Node("hikey=" + std::to_string(i)));
+    i = lvl->getLoVel(); if(i !=   0) node->addChildNode(new Node("lovel=" + std::to_string(i)));
+    i = lvl->getHiVel(); if(i != 127) node->addChildNode(new Node("hivel=" + std::to_string(i)));
+    // Can we somehow reduce the boilerplate here?
+
+    /*
     node->addChildNode(new Node("hikey=" + std::to_string(lvl->getHiKey())));
     node->addChildNode(new Node("lovel=" + std::to_string(lvl->getLoVel())));
     node->addChildNode(new Node("hivel=" + std::to_string(lvl->getHiVel())));
+    */
     // Maybe show them only when not at default values. It gets too cluttered otherwise
 
     // ToDo: lokey/hikey/lovel/hivel - but how should we format them? maybe the keyrange should be 
