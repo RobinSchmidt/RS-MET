@@ -339,26 +339,17 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     const Routings& routings = lvl->getModRoutings();
     for(int i = 0; i < routings.size(); i++)
     {
-      /*
       ModulationRouting r = routings[i];
-
-      OpcodeType srcType = r.getSourceType();
-      OpcodeType tgtType = r.getTargetType();
-      int srcIdx = r.getSourceIndex();
-      int tgtIdx = r.getTargetIndex();
-      */
-
-      // We need to implement a function like:
-      // std::string str = cb->modRoutingToString
-
-
-
-
+      std::string str = cb->modRoutingToString(r);
+      juce::String jstr = str;
+      Node* opcodeNode = new Node(jstr);
+      node->addChildNode(opcodeNode);
       int dummy = 0;
     }
 
 
     // ToDo: 
+    // -use cb->settingToString, streamline the code (use less temp variables)
     // -add mod-routing opcodes
     // -sample-opcode doesn't appear
     // -lokey/hikey opcodes don't appear ...maybe some others, too? there are some opcodes that are
