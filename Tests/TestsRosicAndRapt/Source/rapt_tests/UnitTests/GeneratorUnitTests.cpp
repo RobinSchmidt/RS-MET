@@ -1549,8 +1549,30 @@ pan=100.000000";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   ok &= se2.isInSameStateAs(se);
 
-  // ToDo: test with a sample path that contains a '/', i.e. goes into a subdirectory. In this 
-  // case, the '/' within that path should not be mistaken for a comment
+  // Now with the sample opcodes after the playback settings:
+  sfzStr = "\
+<group>\n\
+<region> \
+pitch_keycenter=69.000000 \
+pan=-100.000000 \
+sample=Sin440Hz.wav\n\
+<region> \
+pitch_keycenter=69.000000 \
+pan=100.000000 \
+sample=Cos440Hz.wav";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  ok &= se2.isInSameStateAs(se);
+
+
+
+
+
+  // ToDo: 
+  // -Test with a sample path that contains a '/', i.e. goes into a subdirectory. In this 
+  //  case, the '/' within that path should not be mistaken for a comment
+  // -Test it with group settings. See the patch filterBlip.sfz. It has group settings and then
+  //  for the region it defines only the sample opcode. In ToolChain, this patch does not load 
+  //  correctly: there are two regions in the engine after loading
 
   // Test string-to-float conversion:
   auto s2f = [](const std::string& s) { return rosic::Sampler::rsStringToFloat(s); };
