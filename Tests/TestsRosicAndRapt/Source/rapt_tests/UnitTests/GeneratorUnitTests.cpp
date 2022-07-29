@@ -1572,7 +1572,8 @@ sample=Cos440Hz.wav";
   //  case, the '/' within that path should not be mistaken for a comment
   // -Test it with group settings. See the patch filterBlip.sfz. It has group settings and then
   //  for the region it defines only the sample opcode. In ToolChain, this patch does not load 
-  //  correctly: there are two regions in the engine after loading
+  //  correctly: there are two regions in the engine after loading. Try also defining the sample
+  //  on the group level and see, if regions work as expected in such a situation
 
   // Test string-to-float conversion:
   auto s2f = [](const std::string& s) { return rosic::Sampler::rsStringToFloat(s); };

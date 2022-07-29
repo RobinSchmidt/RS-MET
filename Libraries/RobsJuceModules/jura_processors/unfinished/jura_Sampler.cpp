@@ -331,7 +331,9 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
       // Maybe building the string should be moved into SfzCodeBook such that here, we just do:
       // std::string str = cb->settingToString(s);
       // -> check how we build the strings when saving an sfz file. Maybe we do it in some other 
-      // class like SfzInstrument ...if so, move the code into SfzCodeBook
+      // class like SfzInstrument ...if so, move the code into SfzCodeBook. It fits well there
+      // logically anyway ..i think, it's implemented in SfzInstrument::writeSettingToString. 
+      // There's also writeModRoutingToString. This code needs to be refactored
     }
 
     const Routings& routings = lvl->getModRoutings();
