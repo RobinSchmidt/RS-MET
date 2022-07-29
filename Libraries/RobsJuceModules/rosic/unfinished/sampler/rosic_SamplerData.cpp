@@ -1006,8 +1006,12 @@ ModulationRouting SfzInstrument::getModRoutingFromString(
   // ToDo:
   // -Maybe this whole code should go into SfzCodeBook. It seems to fit in there better than here.
   //  But the codebook doesn't know about class ModulationRouting, so how should we return the 
-  //  data? Maybe a function that takes all the members of that class as pointer arguments? But maybe
-  //  it's ok to keep the code here
+  //  data? Maybe a function that takes all the members of that class as pointer arguments? But 
+  //  maybe it's ok to keep the code here
+  //  update: since we factored out the settingToString and modRoutingToString into SfzCodeBook, 
+  //  these inverse conversions getSettingFromString, getModRoutingFromString now really belong 
+  //  there. The problem mentioned above has been solved by moving the code for 
+  //  ModulationRouting and PlaybackSetting into SfzCodeBook.h
 
   //return ModulationRouting();  // standard constructor will create an invalid object
 }
