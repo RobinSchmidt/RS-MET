@@ -473,7 +473,8 @@ void SamplerEditor::resized()
   x = sfzEditor.getRight();
   sfzTree->setBounds(x, y, getWidth()-x, getHeight()-y);
   w = 48;
-  x = sfzTree->getX();
+  //x = sfzTree->getX();
+  x = sfzEditor.getRight() - w;
   y = sfzFileLoader->getY();
   parseButton->setBounds(x, y, w, 16);
 
