@@ -964,9 +964,11 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
 
 void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::string& s)
 {
-  // refactor to:
-  // s += cb->modRoutingToString(r) + "\n";
+  // New:
+  s += SfzCodeBook::getInstance()->modRoutingToString(r) + "\n";
 
+  /*
+  // Old:
   // Retrieve data from routing object:
   using OT = OpcodeType;
   using OC = Opcode;
@@ -1023,6 +1025,7 @@ void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::str
   tmp += cb->modTargetToString(tgtTp, tgtIdx, tgtOp) + "=";
   tmp += cb->modDepthToString(r.getDepth(), mode, tgtOp) + "\n";
   s += tmp;
+  */
 }
 
 PlaybackSetting SfzInstrument::getSettingFromString(
