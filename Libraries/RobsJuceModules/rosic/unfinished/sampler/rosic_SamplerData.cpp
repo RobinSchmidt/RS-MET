@@ -937,25 +937,8 @@ rsReturnCode SfzInstrument::loadFromSFZ(const char* path)
 
 void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
-  // New:
   s += SfzCodeBook::getInstance()->settingToString(setting) + "\n";
   // ...maybe we now can get rid of this function entirely
-
-  /*
-  // Old:
-  using PST = Opcode;
-  PST    op = setting.getOpcode();
-  float val = setting.getValue();
-  int   idx = setting.getIndex();  // not yet used but shall be later
-
-  // This makes the unit test fail - why?:
-  //if(val = PlaybackSetting::getDefaultValue(type))
-  //  return; // default values need not to be stored - todo: maybe optionally store them anyway
-
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-  s += cb->opcodeToString(op, idx) + std::string("=") + cb->valueToString(op, val)  + "\n";
-  */
-
 
   // ToDo:
   // -Document why the lokey, hikey, lovel, hivel opcodes are not handled here. I think, it's 
@@ -964,68 +947,7 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
 
 void SfzInstrument::writeModRoutingToString(const ModulationRouting& r, std::string& s)
 {
-  // New:
   s += SfzCodeBook::getInstance()->modRoutingToString(r) + "\n";
-
-  /*
-  // Old:
-  // Retrieve data from routing object:
-  using OT = OpcodeType;
-  using OC = Opcode;
-  using MM = ModMode;
-  OT  srcTp  = r.getSourceType();
-  OT  tgtTp  = r.getTargetType();
-  OC  tgtOp  = r.getTargetOpcode();
-  int srcIdx = r.getSourceIndex();
-  int tgtIdx = r.getTargetIndex();
-  MM  mode   = r.getMode();
-
-  // Handle special cases:
-  if(srcTp == OT::AmpLfo && tgtOp == OC::volumeN && mode == MM::absolute)
-  {
-    RAPT::rsAssert(srcIdx == 1, "There should be at most one AmpLfo");
-    s += "amplfo_depth=" + rsFloatToString(r.getDepth()) + "\n";
-    return;
-  }
-  if(srcTp == OT::AmpEnv && tgtOp == OC::amplitudeN && mode == MM::absolute)
-  {
-    //return;
-    // Uncommenting makes unit test fail. I think, we need to connect the ampeg at the end of 
-    // setFromSFZ or something like that
-
-    // The ampeg is always implicitly routed to the last Amplifier in the chain.
-    // Maybe an additional constraint should be that tgtIdx is the index of the last Amplifier such
-    // that routings of the ampeg_ to other amplifiers will be stored. Currently we may throw away
-    // too many ampeg routings
-  }
-  if(srcTp == OT::FilterEnv && tgtOp == OC::cutoffN && mode == MM::cents)
-  {
-    RAPT::rsAssert(srcIdx == 1, "There should be at most one FilterEnv");
-    // ...because in the sfz spec, the fileg_ opcodes are not indexed, i.e. there's no such thing
-    // as fileg2_cutoff3 or anything like that. There is just fileg_depth which we interpret as
-    // fileg1_cutoff1 at the moment. Maybe later, we should interpret it as fileg1_cutoffAll but
-    // for that, we will first generally have to support such an "All" syntax.
-
-    RAPT::rsAssert(tgtIdx == 1);
-    // Hmm...we currently interpret the fileg_depth opcode as applying to the first cutoff, i.e. 
-    // the cutoff of the first filter in the chain. But maybe it should apply to all filters? But 
-    // then we should probably only store it once in the sfz string...hmm...
-
-    s += "fileg_depth=" + rsFloatToString(r.getDepth()) + "\n"; 
-    return;
-  }
-  // ToDo: Add other special cases here one by one. For example, fillfo, pitcheg, amplfo, etc.
-  // Maybe factor out a function for handling the special cases, returning true, if the case was 
-  // handled, false if not and call it here...or maybe not...
-
-  // Handle the general case:
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-  std::string tmp;
-  tmp  = cb->modSourceToString(srcTp, srcIdx) + "_";
-  tmp += cb->modTargetToString(tgtTp, tgtIdx, tgtOp) + "=";
-  tmp += cb->modDepthToString(r.getDepth(), mode, tgtOp) + "\n";
-  s += tmp;
-  */
 }
 
 PlaybackSetting SfzInstrument::getSettingFromString(

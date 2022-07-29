@@ -650,9 +650,8 @@ public:
 
 protected:
 
+  // Maybe get rid of these - they have become one-liners in the refactoring:
   static void writeSettingToString(const PlaybackSetting& setting, std::string& str);
-
-
   static void writeModRoutingToString(const ModulationRouting& routing, std::string& str);
 
   // These should perhaps also go into SfzCodeBook beacuse the inverse conversions are also there 
