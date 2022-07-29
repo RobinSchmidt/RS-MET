@@ -316,7 +316,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     SfzCodeBook* cb = SfzCodeBook::getInstance();
 
     // The special opcode settings. We display the sample opcode only if a sample is defined at 
-    // this level and show the key/vel settings only when they are not at their deafults:
+    // this level and show the key/vel settings only when they are not at their defaults:
     std::string str = lvl->getSamplePath();
     if(str != "")
       node->addChildNode(new Node("sample=" + str));
@@ -341,8 +341,6 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // -Later, we may want to allow more than one sample per level. Then we need to display the 
     //  sample index, too. Maybe we should be able to treat the sample-opcode like all the others.
     //  It's unelegant to have these exceptions.
-    // -streamline the code: use less temp variables ..although, for debugging they may be useful, 
-    //  so maybe let's keep them at least for a while
   };
 
 
@@ -467,6 +465,20 @@ void SamplerEditor::resized()
   //x = instrumentLabel->getRight()+2;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 
+
+  int treeWidth = 300;
+  sfzFileLoader->setBounds(x, y, 300, 16);
+  y += 16;
+  sfzEditor.setBounds(x, y, getWidth()-x-treeWidth, getHeight()-y);
+  x = sfzEditor.getRight();
+  sfzTree->setBounds(x, y, getWidth()-x, getHeight()-y);
+  w = 48;
+  x = sfzTree->getX();
+  y = sfzFileLoader->getY();
+  parseButton->setBounds(x, y, w, 16);
+
+
+  /*
   // Preliminary GUI layout for editing:
   w = 300;
   sfzFileLoader->setBounds(x, y, w, 16);
@@ -478,6 +490,7 @@ void SamplerEditor::resized()
   w  = 48;
   x  = sfzEditor.getRight() - w;
   parseButton->setBounds(x, y, w, 16);
+  */
 
   /*
   // Under construction: display the status of the code editor content (Parsed/Malformed/Edited)
@@ -794,6 +807,8 @@ ToDo:
   code without parsing? After saving, it should be makred as clean again (i think, this should 
   happen automatically? Maybe next to the "Parse" button, there could be a Revert button that 
   reverts to ..yeah - to what? the last saved or the last valid parsed code? Both could be useful.
+ -Maybe when the text is unparsed, indicate it in the TreeView - maybe make it empty? Or show some
+  text like: "SFZ code was edited. Click "Parse" to update engine"
  -FileManager::markFileAsClean just sets a boolean flag but doesn't rigger any callbacks, so the 
   sfz-widget does not acquire the "dirty" asterisk. Maybe let FileManager have a second callback
   activeFileWasDirtified or activeFileIsOutOfDate, activeFileBecameDirty or similar which the
