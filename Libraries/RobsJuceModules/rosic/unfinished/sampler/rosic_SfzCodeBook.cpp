@@ -1,5 +1,15 @@
 namespace rosic { namespace Sampler {
 
+
+ModulationRouting::ModulationRouting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, 
+  int modTargetIndex, float modDepth, ModMode modMode)
+  : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
+  , targetIndex(modTargetIndex), depth(modDepth), mode(modMode)
+{
+  targetType = SfzCodeBook::getInstance()->getOpcodeType(modTarget);
+}
+
+
 SfzCodeBook* SfzCodeBook::instance = nullptr;
 
 SfzCodeBook::SfzCodeBook()
@@ -693,6 +703,76 @@ float SfzCodeBook::stringToValue(Opcode op, const std::string& str)
     return (float) ft;
   }
   return std::stof(str);
+  */
+}
+
+std::string SfzCodeBook::settingToString(const PlaybackSetting& s)
+{
+  return std::string();
+
+  /*
+  using PST = Opcode;
+  PST    op = s.getOpcode();
+  float val = s.getValue();
+  int   idx = s.getIndex();
+  return opcodeToString(op, idx) + std::string("=") + valueToString(op, val);
+  */
+}
+
+std::string SfzCodeBook::modRoutingToString(const ModulationRouting& r)
+{
+  return std::string();
+
+  /*
+  // Retrieve data from routing object:
+  using OT = OpcodeType;
+  using OC = Opcode;
+  using MM = ModMode;
+  OT  srcTp  = r.getSourceType();
+  OT  tgtTp  = r.getTargetType();
+  OC  tgtOp  = r.getTargetOpcode();
+  int srcIdx = r.getSourceIndex();
+  int tgtIdx = r.getTargetIndex();
+  MM  mode   = r.getMode();
+
+  // Handle special cases:
+  if(srcTp == OT::AmpLfo && tgtOp == OC::volumeN && mode == MM::absolute)
+  {
+    RAPT::rsAssert(srcIdx == 1, "There should be at most one AmpLfo");
+    return "amplfo_depth=" + rsFloatToString(r.getDepth());
+  }
+  if(srcTp == OT::AmpEnv && tgtOp == OC::amplitudeN && mode == MM::absolute)
+  {
+    // The ampeg is always implicitly routed to the last Amplifier in the chain.
+    // Maybe an additional constraint should be that tgtIdx is the index of the last Amplifier such
+    // that routings of the ampeg_ to other amplifiers will be stored. Currently we may throw away
+    // too many ampeg routings
+  }
+  if(srcTp == OT::FilterEnv && tgtOp == OC::cutoffN && mode == MM::cents)
+  {
+    RAPT::rsAssert(srcIdx == 1, "There should be at most one FilterEnv");
+    // ...because in the sfz spec, the fileg_ opcodes are not indexed, i.e. there's no such thing
+    // as fileg2_cutoff3 or anything like that. There is just fileg_depth which we interpret as
+    // fileg1_cutoff1 at the moment. Maybe later, we should interpret it as fileg1_cutoffAll but
+    // for that, we will first generally have to support such an "All" syntax.
+
+    RAPT::rsAssert(tgtIdx == 1);
+    // Hmm...we currently interpret the fileg_depth opcode as applying to the first cutoff, i.e. 
+    // the cutoff of the first filter in the chain. But maybe it should apply to all filters? But 
+    // then we should probably only store it once in the sfz string...hmm...
+
+    return "fileg_depth=" + rsFloatToString(r.getDepth()); 
+  }
+  // ToDo: Add other special cases here one by one. For example, fillfo, pitcheg, amplfo, etc.
+  // Maybe factor out a function for handling the special cases, returning true, if the case was 
+  // handled, false if not and call it here...or maybe not...
+
+  // Handle the general case:
+  std::string tmp;
+  tmp  = modSourceToString(srcTp, srcIdx) + "_";
+  tmp += modTargetToString(tgtTp, tgtIdx, tgtOp) + "=";
+  tmp += modDepthToString(r.getDepth(), mode, tgtOp);
+  return tmp;
   */
 }
 

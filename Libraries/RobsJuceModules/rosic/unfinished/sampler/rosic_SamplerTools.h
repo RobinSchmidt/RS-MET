@@ -248,6 +248,30 @@ void rsSetupPointers(std::vector<T>& objectArray, std::vector<T*>& pointerArray)
 }
 // move to library, maybe use it in the production code, too
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //=================================================================================================
 // String processing:
 
