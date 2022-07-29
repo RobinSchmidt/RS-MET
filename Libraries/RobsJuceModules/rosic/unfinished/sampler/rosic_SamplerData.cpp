@@ -937,10 +937,12 @@ rsReturnCode SfzInstrument::loadFromSFZ(const char* path)
 
 void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
-  // refactor to:
-  // s += cb->settingToString(setting) + "\n";
+  // New:
+  s += SfzCodeBook::getInstance()->settingToString(setting) + "\n";
+  // ...maybe we now can get rid of this function entirely
 
-
+  /*
+  // Old:
   using PST = Opcode;
   PST    op = setting.getOpcode();
   float val = setting.getValue();
@@ -952,7 +954,7 @@ void SfzInstrument::writeSettingToString(const PlaybackSetting& setting, std::st
 
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   s += cb->opcodeToString(op, idx) + std::string("=") + cb->valueToString(op, val)  + "\n";
-
+  */
 
 
   // ToDo:

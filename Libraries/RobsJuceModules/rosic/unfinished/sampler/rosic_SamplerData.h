@@ -655,12 +655,15 @@ protected:
 
   static void writeModRoutingToString(const ModulationRouting& routing, std::string& str);
 
-
+  // These should perhaps also go into SfzCodeBook beacuse the inverse conversions are also there 
+  // since we reafctored it that way:
   static PlaybackSetting getSettingFromString(
     const std::string& opcode, const std::string& value);
 
   static ModulationRouting getModRoutingFromString(
     const std::string& opStr, const std::string& valStr);
+
+
 
 
   static void copy(const SfzInstrument& src, SfzInstrument& dst);

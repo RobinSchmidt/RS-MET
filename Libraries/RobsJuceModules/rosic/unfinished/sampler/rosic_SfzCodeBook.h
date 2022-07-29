@@ -505,13 +505,6 @@ public:
 
   ModulationRouting(OpcodeType modSrcType, int modSrcIndex, Opcode modTarget, int modTargetIndex,
     float modDepth, ModMode modMode);
-  /*
-    : sourceType(modSrcType), sourceIndex(modSrcIndex), target(modTarget)
-    , targetIndex(modTargetIndex), depth(modDepth), mode(modMode)
-  {
-    targetType = SfzCodeBook::getInstance()->getOpcodeType(modTarget);
-  }
-  */
 
   /** Standard constructor. Will create an invalid object. All enum members are initialized to 
   "unknown", indices to -1, etc. The object needs to be either set up correctly later via the 

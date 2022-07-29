@@ -708,22 +708,19 @@ float SfzCodeBook::stringToValue(Opcode op, const std::string& str)
 
 std::string SfzCodeBook::settingToString(const PlaybackSetting& s)
 {
-  return std::string();
+  //return std::string();
 
-  /*
   using PST = Opcode;
   PST    op = s.getOpcode();
   float val = s.getValue();
   int   idx = s.getIndex();
   return opcodeToString(op, idx) + std::string("=") + valueToString(op, val);
-  */
 }
 
 std::string SfzCodeBook::modRoutingToString(const ModulationRouting& r)
 {
-  return std::string();
+  //return std::string();
 
-  /*
   // Retrieve data from routing object:
   using OT = OpcodeType;
   using OC = Opcode;
@@ -773,7 +770,6 @@ std::string SfzCodeBook::modRoutingToString(const ModulationRouting& r)
   tmp += modTargetToString(tgtTp, tgtIdx, tgtOp) + "=";
   tmp += modDepthToString(r.getDepth(), mode, tgtOp);
   return tmp;
-  */
 }
 
 SfzCodeBook* SfzCodeBook::getInstance()
