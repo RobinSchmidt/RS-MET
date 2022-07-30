@@ -675,10 +675,12 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
 
 void SamplerEditor::createWidgets()
 {
+  /*
   addWidget(instrumentLabel = new RTextField);
   instrumentLabel->setText("Instrument:");
   instrumentLabel->setDescription("Currently loaded sfz instrument");
   instrumentLabel->setDescriptionField(infoField);
+  */
 
   //addWidgetSet(sfzFileLoader = new FileSelectionBox("", this) );
   // causes a crash on destruction
@@ -924,7 +926,8 @@ ToDo:
  -Maybe show the compatibility of the patch with sfz 1.0, 2.0, ARIA, RS-MET, etc. Maybe the code 
   editor could somehow be configured to highlight opcodes that require a higher standard. This is
   convenient for authoring sfz files. Maybe the engine could be configured to ignore opcodes of
-  ceratin standards.
+  ceratin standards. Maybe also show some more status info in additional fields, like number of 
+  groups, regions, samples, configuration (i.e. busMode or not)
  -SFZ editor functionality:
   -Dirtify the xml-state when the user loads a new sfz
   -Check dirtification of the .sfz while when the docmument has been edited

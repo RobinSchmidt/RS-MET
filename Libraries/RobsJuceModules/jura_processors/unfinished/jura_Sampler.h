@@ -349,7 +349,7 @@ class FlexiWidget : public WidgetSet
 
 public:
 
-  FlexiWidget() {}
+  FlexiWidget();
   virtual ~FlexiWidget() {}
 
 
@@ -370,7 +370,7 @@ protected:
   jura::RTextEntryField* textField = nullptr;  // For freeform string parameters
   // Maybe they should be public to allow client code to register observers...
 
-  WidgetMode mode == WidgetMode::none;
+  WidgetMode mode = WidgetMode::none;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FlexiWidget)
 };
@@ -457,7 +457,13 @@ protected:
 
   SamplerModule* samplerModule = nullptr;
 
-  jura::RTextField *instrumentLabel;
+
+  jura::RButton *performButton, *editButton;
+
+
+
+  //jura::RTextField *instrumentLabel;  // what is this? obsolete?
+
   jura::MeteringDisplayWithText *layersMeter;
 
 
