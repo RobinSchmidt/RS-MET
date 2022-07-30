@@ -105,7 +105,8 @@ void WidgetColourScheme::updateColours()
       outlineAHSL.setLuminance(   0.625);
       handleAHSL.setLuminance(    0.6875);
       textAHSL.setLuminance(      0.f);
-      textAHSL.setAlpha(          0.8125f);
+      //textAHSL.setAlpha(          0.8125f);
+      textAHSL.setAlpha(               0.6875);
       weakHighlightAHSL.setLuminance(0.5f);
       strongHighlightAHSL.setLuminance(0.0f);
     }
@@ -116,7 +117,8 @@ void WidgetColourScheme::updateColours()
       outlineAHSL.setLuminance(        0.5);
       handleAHSL.setLuminance(         0.435f);
       textAHSL.setLuminance(           1.f);
-      textAHSL.setAlpha(               0.8125f);
+      //textAHSL.setAlpha(               0.8125f);
+      textAHSL.setAlpha(               0.6875);
       weakHighlightAHSL.setLuminance(  0.75f);
       strongHighlightAHSL.setLuminance(1.0f);
     }
