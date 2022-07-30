@@ -358,7 +358,7 @@ void RTreeView::scrollBarMoved(RScrollBar* scrollBarThatHasMoved, const double n
   else if( scrollBarThatHasMoved == leftRightScrollBar )
     xOffset = -roundToInt(newRangeStart);
 
-  //repaint();
+  repaint();  // Needed for updating view during scrolling.
   // ToDo: if we call repaint directly instead of repaintOnMessageThread, we should assert that we
   // actually are on the message thread. Some of these callbacks are indeed expected to be called
   // on the message thread. In such cases, calling repaint directly is slightly cheaper.
@@ -373,7 +373,7 @@ void RTreeView::mouseEnter(const MouseEvent &e)
 void RTreeView::mouseExit(const MouseEvent &e)
 {
   RWidget::mouseExit(e);
-  //repaint();
+  repaint();
 }
 
 void RTreeView::mouseDown(const MouseEvent &e)
