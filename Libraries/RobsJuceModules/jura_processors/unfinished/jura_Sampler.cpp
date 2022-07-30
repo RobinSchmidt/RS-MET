@@ -317,14 +317,6 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 
   SfzCodeBook* cb = SfzCodeBook::getInstance();
 
-
-
-  auto addNode = [](Node* parent, const juce::String& nodeText)
-  {
-    parent->addChildNode(new Node(nodeText));
-    // ...maybe, get rid of this function - it doesn't do much anymore
-  };
-
   auto addSettingNode = [&](Node* parent, const PS& setting, int groupIndex, int regionIndex)
   {
     Node* child = new Node(cb->settingToString(setting));
@@ -346,7 +338,6 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   };
 
 
-
   // Helper function to add the leaf nodes:
   auto addOpcodeChildNodes = [&](const Level* lvl, Node* node, int groupIndex, int regionIndex)
   {
@@ -359,13 +350,13 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 
     // New:
     s = lvl->getSamplePath(); if(s !=  "") addSettingNode(node, PS(OC::Sample, 0.0), gi, ri);
-    // Fails because cb->settingToString produces nonsense for the sample opcode. i think, we may 
+    // Fails because cb->settingToString produces nonsense for the sample opcode. I think, we may 
     // need to able to store strings in PlaybackSetting. Some settings, such as samples, really 
-    // need a freeform string as value and can't be translated to enum values. later, we may want
+    // need a freeform string as value and can't be translated to enum values. Later, we may want
     // to allow formula-based opcodes, too. These will also need to deal with strings. Maybe the 
-    // value could be a sum-type of float and string...but then, we may as well use double because
-    // the string dictates the size anyway Maybe PlaybackSetting should have an alternative 
-    // constructor that takes a std::string instead of a float as 2nd parameter
+    // value could be a sum-type (e.g. union) of float and string...but then, we may as well use 
+    // double because the string dictates the size anywa.y Maybe PlaybackSetting should have an
+    // alternative constructor that takes a std::string instead of a float as 2nd parameter
 
     i = lvl->getLoKey(); if(i !=   0) addSettingNode(node, PS(OC::LoKey, i), gi, ri);
     i = lvl->getHiKey(); if(i != 127) addSettingNode(node, PS(OC::HiKey, i), gi, ri);
@@ -431,7 +422,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //  (either make it invisible or comment out the createion code)
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
-  //  should update immediately.
+  //  should update immediately. -> fixed by calling repaintOnMessageThread() at the end
   // -The instruments with 1 regions show 2 region nodes - Test with FilterBlip.sfz. the sft does
   //  indeed have two regions - the first contains all the settings, the 2nd only the sample. Oddly
   //  enough, the FilterBlipe patch is nevertheless playable. It actually shouldn't be...i think.
