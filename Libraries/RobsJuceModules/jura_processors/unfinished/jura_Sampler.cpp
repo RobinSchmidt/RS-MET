@@ -319,36 +319,35 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 
 
   // Helper function to add the leaf nodes:
-  auto addOpcodeChildNodes = [](const Level* lvl, Node* node)
+  auto addOpcodeChildNodes = [&](const Level* lvl, Node* node)
   {
     SfzCodeBook* cb = SfzCodeBook::getInstance();
 
-    // The special opcode settings. We display the sample opcode only if a sample is defined at 
-    // this level and show the key/vel settings only when they are not at their defaults:
-    std::string str = lvl->getSamplePath();
-    if(str != "")
-      node->addChildNode(new Node("sample=" + str));
-    int i;
-    i = lvl->getLoKey(); if(i !=   0) node->addChildNode(new Node("lokey=" + std::to_string(i)));
-    i = lvl->getHiKey(); if(i != 127) node->addChildNode(new Node("hikey=" + std::to_string(i)));
-    i = lvl->getLoVel(); if(i !=   0) node->addChildNode(new Node("lovel=" + std::to_string(i)));
-    i = lvl->getHiVel(); if(i != 127) node->addChildNode(new Node("hivel=" + std::to_string(i)));
+    // Add nodes for certain special opcode settings. We display the sample opcode only if a sample
+    // is defined at this level and show the key/vel settings only when they are not at their 
+    // defaults:
+    std::string s; int i;
+    s = lvl->getSamplePath(); if(s !=  "") addNode(node, "sample=" + s);
+    i = lvl->getLoKey();      if(i !=   0) addNode(node, "lokey=" + std::to_string(i));
+    i = lvl->getHiKey();      if(i != 127) addNode(node, "hikey=" + std::to_string(i));
+    i = lvl->getLoVel();      if(i !=   0) addNode(node, "lovel=" + std::to_string(i));
+    i = lvl->getHiVel();      if(i != 127) addNode(node, "hivel=" + std::to_string(i));
     // Can we somehow reduce the boilerplate here?
 
-    // The general opcode settings:
+    // Add nodes for the general opcode settings:
     const Settings& settings = lvl->getSettings();
     for(int i = 0; i < settings.size(); i++)
-      node->addChildNode(new Node(cb->settingToString(settings[i])));
+      addNode(node, cb->settingToString(settings[i]));
 
-    // The modulation routings:
+    // Add nodes for modulation routings:
     const Routings& routings = lvl->getModRoutings();
     for(int i = 0; i < routings.size(); i++)
-      node->addChildNode(new Node(cb->modRoutingToString(routings[i])));
+      addNode(node, cb->modRoutingToString(routings[i]));
 
     // ToDo: 
     // -Later, we may want to allow more than one sample per level. Then we need to display the 
-    //  sample index, too. Maybe we should be able to treat the sample-opcode like all the others.
-    //  It's unelegant to have these exceptions.
+    //  sample index, too. Maybe we should be able to treat the sample-opcode just like all the
+    //  others. It's unelegant to have these exceptions.
   };
 
   // Build the tree with 3 hierarchy levels:

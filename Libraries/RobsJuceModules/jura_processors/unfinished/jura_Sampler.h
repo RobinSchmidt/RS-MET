@@ -228,8 +228,9 @@ public:
 
 
   /** Type for the user-data that can be stored at the tree-nodes. It contains the information that
-  is required to find the corresponding setting in the SfzInstrument datastructure. ToDo: maybe 
-  also store information to find it in the sfz-code such as line/column/location. */
+  is required to find the corresponding setting in the SfzInstrument datastructure. 
+  ToDo: Maybe also store information to find it in the sfz-code such as line/column/location. Maybe
+  drag the class out of SfzTreeViewNode and get rid of SfzTreeViewNode. */
   struct Data
   {
     /** The type of the data stored at the nodes depends on the type of the node. In order to be 
