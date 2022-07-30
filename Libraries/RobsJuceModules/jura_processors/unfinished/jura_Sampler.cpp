@@ -357,7 +357,8 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // defaults:
     std::string s; int i;
 
-    s = lvl->getSamplePath(); if(s !=  "") addSettingNode(node, PS(OC::Sample, 0.0, -1), gi, ri);
+    // New:
+    s = lvl->getSamplePath(); if(s !=  "") addSettingNode(node, PS(OC::Sample, 0.0), gi, ri);
     // Fails because cb->settingToString produces nonsense for the sample opcode. i think, we may 
     // need to able to store strings in PlaybackSetting. Some settings, such as samples, really 
     // need a freeform string as value and can't be translated to enum values. later, we may want
@@ -365,16 +366,24 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // value could be a sum-type of float and string...but then, we may as well use double because
     // the string dictates the size anyway
 
+    i = lvl->getLoKey(); if(i !=   0) addSettingNode(node, PS(OC::LoKey, i), gi, ri);
+    i = lvl->getHiKey(); if(i != 127) addSettingNode(node, PS(OC::HiKey, i), gi, ri);
+    i = lvl->getLoVel(); if(i !=   0) addSettingNode(node, PS(OC::LoVel, i), gi, ri);
+    i = lvl->getHiVel(); if(i != 127) addSettingNode(node, PS(OC::HiVel, i), gi, ri);
+    // Doesn't seem to work either. maybe because the lokey/hikey/lovel/hivel opcodes are treated 
+    // differently? check what cb->settingToString does in such a case....
+    // but without the ifs, it seems to work - strange!
 
 
     /*
+    // Old - this creates the nodes but does not store our desired additional information at them:
     s = lvl->getSamplePath(); if(s !=  "") addNode(node, "sample=" + s);
     i = lvl->getLoKey();      if(i !=   0) addNode(node, "lokey=" + std::to_string(i));
     i = lvl->getHiKey();      if(i != 127) addNode(node, "hikey=" + std::to_string(i));
     i = lvl->getLoVel();      if(i !=   0) addNode(node, "lovel=" + std::to_string(i));
     i = lvl->getHiVel();      if(i != 127) addNode(node, "hivel=" + std::to_string(i));
     */
-    // Can we somehow reduce the boilerplate here?
+
 
 
 
