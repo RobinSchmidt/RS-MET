@@ -458,11 +458,9 @@ protected:
   SamplerModule* samplerModule = nullptr;
 
 
-  jura::RButton *performButton, *editButton;
+  jura::RButton *playButton, *editButton;
 
 
-
-  //jura::RTextField *instrumentLabel;  // what is this? obsolete?
 
   jura::MeteringDisplayWithText *layersMeter;
 

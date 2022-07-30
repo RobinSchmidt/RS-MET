@@ -547,10 +547,17 @@ void SamplerEditor::resized()
   int h = getHeight() - y;  // maybe set to 16 for widget-height
   int m = 4;                // margin
 
+  int buttonWidth = 48;
+  playButton->setBounds(x, y, buttonWidth, 24);
+  x = playButton->getRight() + m;
+  editButton->setBounds(x, y, buttonWidth, 24);
+  // Maybe place them right to the xml load/save widgets, i.e. make the preset section a bit less wide
+
 
 
   // Status info widgets
-  layersMeter->setBounds(x+m, y, w/2-2*m, 16);
+  //layersMeter->setBounds(x+m, y, w/2-2*m, 16);
+
 
 
   //numLayersLabel->setBounds(x, y, 48, 16);
@@ -562,12 +569,10 @@ void SamplerEditor::resized()
   //x = numLayersOfLabel->getRight();
   //maxNumLayersSlider->setBounds(x, y, 32, 16);
 
-  // Instrument definition widgets:
-  y += 20;
-  x  = 0;
-  //h  = 16;
-  //instrumentLabel->setBounds(x, y, 68, 16);
-  //x = instrumentLabel->getRight()+2;
+  //y += 20;
+
+  y = playButton->getBottom() + m;
+  x = 0;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 
 
@@ -682,8 +687,18 @@ void SamplerEditor::createWidgets()
   instrumentLabel->setDescriptionField(infoField);
   */
 
+
+  addWidget(playButton = new jura::RButton("Play"));
+  playButton->setDescription("Switch GUI to play/perform mode");
+
+  addWidget(editButton = new jura::RButton("Edit"));
+  editButton->setDescription("Switch GUI to SFZ editing mode");
+
+
   //addWidgetSet(sfzFileLoader = new FileSelectionBox("", this) );
   // causes a crash on destruction
+
+
 
   layersMeter = new MeteringDisplayWithText();
   layersMeter->setMeasurementName("Layers");
