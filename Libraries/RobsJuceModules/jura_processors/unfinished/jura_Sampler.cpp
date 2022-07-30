@@ -329,14 +329,16 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // misc nodes, i.e. addSettingNode, addmodulationNode.
   };
 
-  auto addSettingNode = [&](Node* node, const PS setting)
+  auto addSettingNode = [&](Node* parent, const PS setting)
   {
-    addNode(node, cb->settingToString(setting));  // preliminary
+    //addNode(node, cb->settingToString(setting));  // preliminary
     // todo: store also the setting itself in the node...oh and also the indices for group and 
     // region
 
-
-    int dummy = 0;
+    Node* child = new Node(cb->settingToString(setting));
+    child->data.type = Node::Data::Type::playbackSetting;
+    child->data.data.playbackSetting = setting;
+    parent->addChildNode(child);
   };
 
 
@@ -347,8 +349,6 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   // Helper function to add the leaf nodes:
   auto addOpcodeChildNodes = [&](const Level* lvl, Node* node)
   {
-
-
     // Add nodes for certain special opcode settings. We display the sample opcode only if a sample
     // is defined at this level and show the key/vel settings only when they are not at their 
     // defaults:
@@ -406,6 +406,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //  what makes it so unresponsive in this context. Do we get bombarded with lots of redundant
   //  callbacks or something? Or is it because we allocate the nodes on the heap and they are more 
   //  scattered in memory than in the other case? Maybe we should pre-allocate a pool of nodes?
+  //  Use Visual Studio's profiler...maybe try also CodeBlocks and XCode profiling
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately.

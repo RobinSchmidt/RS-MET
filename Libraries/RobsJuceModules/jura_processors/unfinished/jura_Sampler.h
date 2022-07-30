@@ -233,6 +233,8 @@ public:
   drag the class out of SfzTreeViewNode and get rid of SfzTreeViewNode. */
   struct Data
   {
+    Data(){}
+
     /** The type of the data stored at the nodes depends on the type of the node. In order to be 
     able to tell, which type it is, we define an enum. */
     enum class Type
@@ -248,6 +250,8 @@ public:
     ToDo: maybe use std::variant instead (but that requires C++17). */
     union Variant  // find better name
     {
+      Variant(){}
+
       rosic::Sampler::PlaybackSetting   playbackSetting;
       rosic::Sampler::ModulationRouting modRouting;
     };
@@ -258,7 +262,12 @@ public:
     int regionIndex = -1;
   };
 
+
+  Data data;
+
 protected:
+
+
 
 
   //Type type = Type::unknown;
