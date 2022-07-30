@@ -357,7 +357,11 @@ void RTreeView::scrollBarMoved(RScrollBar* scrollBarThatHasMoved, const double n
     yOffset = -roundToInt(newRangeStart);
   else if( scrollBarThatHasMoved == leftRightScrollBar )
     xOffset = -roundToInt(newRangeStart);
+
   repaint();
+  // ToDo: if we call repaint directly instead of repaintOnMessageThread, we should assert that we
+  // actually are on the message thread. Some of these callbacks are indeed expected to be called
+  // on the message thread. In such cases, calling repaint directly is slightly cheaper.
 }
 
 void RTreeView::mouseEnter(const MouseEvent &e)
@@ -532,61 +536,64 @@ void RTreeView::updateScrollBarBoundsAndVisibility()
 int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDraw)
 {
   // Avoid drawing nodes that are invisible because they are too high up or too low down:
-  //if(y < -getNodeHeight() || y > getHeight() ) 
-  //if(y < yOffset - getNodeHeight() || y > yOffset + getHeight() ) 
-  //if(y < -yOffset - getNodeHeight() )
-  //if(y < -yOffset || y > getHeight() - yOffset )
-  //if(y < -yOffset)
-  //  return y + getNodeHeight(); 
-  // This doesn't work correctly yet because of the recursion at the bottom. We may not need to 
-  // draw a particular node but may still have to draw some of its child-nodes. So maybe we should
-  // not return early but instead do the actual drawing within a conditional
+  // ...this optimization is under construction and not yet working correctly:
+  bool nodeIsVisible = true;
+  nodeIsVisible &= y < getHeight() - yOffset;
+  //nodeIsVisible &= y > yOffset;
 
-
-  // Highlight background for ticked nodes:
-  if( nodeToDraw->isTicked )
+  if(!nodeIsVisible)
   {
-    g.setColour(getHandleColour());
-    g.fillRect(outlineThickness, y, getWidth()-2*outlineThickness, getNodeHeight()-lineSpacing);
+    int dummy = 0;   // for a debug breakpoint to debug the visibility optimization
   }
 
-  // Semi-highlight background for nodes where the mouse is over:
-  Point<int> mousePosition = getMouseXYRelative();
-  if( contains(mousePosition)
-    && mousePosition.getY() >= y-lineSpacing/2
-    && mousePosition.getY() <  y+getNodeHeight()-lineSpacing/2
-    && nodeToDraw->isEnabled )
+
+  if(nodeIsVisible)
   {
-    //g.setColour(getHandleColour().withMultipliedAlpha(0.325f));
-    g.setColour(getHandleColour().withMultipliedAlpha(0.625f));
-    g.fillRect(outlineThickness, y, getWidth()-2*outlineThickness, getNodeHeight()-lineSpacing);
-  }
+    // Highlight background for ticked nodes:
+    if(nodeToDraw->isTicked)
+    {
+      g.setColour(getHandleColour());
+      g.fillRect(outlineThickness, y, getWidth()-2*outlineThickness, getNodeHeight()-lineSpacing);
+    }
 
-  // Draw the plus/minus button, if appropriate:
-  if( nodeToDraw->hasChildNodes() )
-  {
-    float yOffset = 0.5f * (getNodeHeight() - plusMinusSize - lineSpacing);
-    float yTmp    = y + yOffset;
+    // Semi-highlight background for nodes where the mouse is over:
+    Point<int> mousePosition = getMouseXYRelative();
+    if(contains(mousePosition)
+      && mousePosition.getY() >= y-lineSpacing/2
+      && mousePosition.getY() <  y+getNodeHeight()-lineSpacing/2
+      && nodeToDraw->isEnabled)
+    {
+      //g.setColour(getHandleColour().withMultipliedAlpha(0.325f));
+      g.setColour(getHandleColour().withMultipliedAlpha(0.625f));
+      g.fillRect(outlineThickness, y, getWidth()-2*outlineThickness, getNodeHeight()-lineSpacing);
+    }
 
-    g.setColour(getTextColour());
-    g.drawRect((float)x, (float)yTmp, (float)plusMinusSize, (float)plusMinusSize, 1.f);
+    // Draw the plus/minus button, if appropriate:
+    if(nodeToDraw->hasChildNodes())
+    {
+      float yOffset = 0.5f * (getNodeHeight() - plusMinusSize - lineSpacing);
+      float yTmp    = y + yOffset;
 
-    if( nodeToDraw->isOpen )
-      drawBitmapFontText(g, x+2, (int) yTmp, "-", font, getTextColour());
+      g.setColour(getTextColour());
+      g.drawRect((float)x, (float)yTmp, (float)plusMinusSize, (float)plusMinusSize, 1.f);
+
+      if(nodeToDraw->isOpen)
+        drawBitmapFontText(g, x+2, (int)yTmp, "-", font, getTextColour());
+      else
+        drawBitmapFontText(g, x+2, (int)yTmp, "+", font, getTextColour());
+
+      x += plusMinusSize + textMargin;
+    }
     else
-      drawBitmapFontText(g, x+2, (int) yTmp, "+", font, getTextColour());
+      x += plusMinusSize + textMargin;
 
-    x += plusMinusSize + textMargin;
+    // Draw the node text:
+    Colour textColour = getTextColour();
+    if(!nodeToDraw->isEnabled)
+      textColour = textColour.withMultipliedAlpha(0.625f);
+    drawBitmapFontText(g, x, y, nodeToDraw->nodeText, font, textColour,
+      font->getDefaultKerning(), Justification::topLeft);
   }
-  else
-    x += plusMinusSize + textMargin;
-
-  // Draw the node text:
-  Colour textColour = getTextColour();
-  if( !nodeToDraw->isEnabled )
-    textColour = textColour.withMultipliedAlpha(0.625f);
-  drawBitmapFontText(g, x, y, nodeToDraw->nodeText, font, textColour,
-    font->getDefaultKerning(), Justification::topLeft);
 
   // Draw child nodes recursively:
   if( nodeToDraw->hasChildNodes() && nodeToDraw->isOpen )
