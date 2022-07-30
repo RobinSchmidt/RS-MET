@@ -506,11 +506,15 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   //samplerModule = samplerToEdit;
 
 
-
   createWidgets();
-  setSize(400, 200);
+  setSize(800, 400);
+
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second) for the metering widgets
+  // ToDo: maybe stop the time when in edit mode - only in play mode, the metering widgets are 
+  // shown
+
+
   sfzDoc.addListener(this);
   parseButton->addRButtonListener(this);
 
@@ -518,6 +522,8 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   // We want to receive activeFileChanged callbacks when the currently active sfz file changes.
 
   //setCodeIsClean();  //
+
+  updateVisibilities();
 }
 
 SamplerEditor::~SamplerEditor()
@@ -548,6 +554,11 @@ void SamplerEditor::resized()
   int m = 4;                // margin
 
   int buttonWidth = 48;
+
+  //stateWidgetSet->setBounds(
+
+
+  x = m;
   playButton->setBounds(x, y, buttonWidth, 24);
   x = playButton->getRight() + m;
   editButton->setBounds(x, y, buttonWidth, 24);
@@ -688,11 +699,14 @@ void SamplerEditor::createWidgets()
   */
 
 
-  addWidget(playButton = new jura::RButton("Play"));
+  addWidget(playButton = new jura::RRadioButton("Play"));
   playButton->setDescription("Switch GUI to play/perform mode");
+  playButton->addToRadioButtonGroup(&guiPageButtonGroup);
+  playButton->setToggleState(true, false);
 
-  addWidget(editButton = new jura::RButton("Edit"));
+  addWidget(editButton = new jura::RRadioButton("Edit"));
   editButton->setDescription("Switch GUI to SFZ editing mode");
+  editButton->addToRadioButtonGroup(&guiPageButtonGroup);
 
 
   //addWidgetSet(sfzFileLoader = new FileSelectionBox("", this) );
@@ -758,8 +772,8 @@ void SamplerEditor::createWidgets()
   //sfzFileLoader->addFileManagerListener(this); 
 
 
-  addWidget(sfzStatusField = new jura::RLabeledTextEntryField);
-  sfzStatusField->setLabelText("SFZ Status:");
+  //addWidget(sfzStatusField = new jura::RLabeledTextEntryField);
+  //sfzStatusField->setLabelText("SFZ Status:");
   //sfzStatusField->setEntryEditable(false);
 
   addAndMakeVisible(sfzEditor);
@@ -817,10 +831,15 @@ void SamplerEditor::updateTreeView()
   else
     sfzTree->clearTree();
   // I'm not yet sure, what the desired behavior should be in case of having unparsed code in the
-  //  code editor. It means that the current editor content failed to parse. The player will 
+  // code editor. It means that the current editor content failed to parse. The player will 
   // actually have reverted to the last parsable version though, so maybe we should display that 
   // in the TreeView. To do so, we would just have to get rid of the "if" and just always take the
   // first branch. We'll see...
+}
+
+void SamplerEditor::updateVisibilities()
+{
+  //RAPT::rsError("Not yet implemented");
 }
 
 //=================================================================================================

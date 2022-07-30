@@ -1011,7 +1011,7 @@ MultiAnalyzerModuleEditor::MultiAnalyzerModuleEditor(CriticalSection *newPlugInL
 
   // todo: add meters, spectrogram, pitch
 
-  loadPreferencesFromFile();
+  loadPreferencesFromFile();       // is this still needed?
   updateWidgetsAccordingToState();
 
   setSize(600, 300);

@@ -263,6 +263,7 @@ public:
 
   /** Sets the radio-group of which this button should become a member. */
   virtual void addToRadioButtonGroup(RRadioButtonGroup *newGroupToUse);
+  // maybe rename to setRadioButtonGroup
 
   /** Overriden clicked to make sure that all other buttons in the same radio-group are going to be
   siwtched off. */
