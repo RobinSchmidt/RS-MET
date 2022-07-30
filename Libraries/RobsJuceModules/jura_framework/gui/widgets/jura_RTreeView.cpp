@@ -536,17 +536,21 @@ void RTreeView::updateScrollBarBoundsAndVisibility()
 int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDraw)
 {
   // Avoid drawing nodes that are invisible because they are too high up or too low down:
-  // ...this optimization is under construction and not yet working correctly:
-  bool nodeIsVisible = true;
-  nodeIsVisible &= y < getHeight() - yOffset;
-  //nodeIsVisible &= y > yOffset;
-
-  if(!nodeIsVisible)
+  // ...this optimization needs some verification - it seems to work, though:
+  bool tooFarDown = y >= getHeight() - yOffset;  // this seems to be OK
+  bool tooHighUp  = y <= 0;                      // Why do we not need the yOffset here?
+  /*
+  if(tooFarDown)
   {
-    int dummy = 0;   // for a debug breakpoint to debug the visibility optimization
+    bool dummy = true;   // for a debug breakpoint to debug the visibility optimization
   }
+  if(tooHighUp)
+  {
+    bool dummy = true;
+  }
+  */
 
-
+  bool nodeIsVisible = !tooFarDown && !tooHighUp;
   if(nodeIsVisible)
   {
     // Highlight background for ticked nodes:
@@ -613,6 +617,7 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
   // -For larger TreeViews, the drawing performance is really bad. It becomes very unresponsive. 
   //  Maybe we should check x and y on entry and return early if they are such that we would draw
   //  outside the visible area. Maybe check, if JUCE has a TreeView and use that
+  // -It seems that paint gets called twice. Fix that! It will still be too slow, though.
   // -Maybe compare with juce::TreeView, see https://docs.juce.com/master/classTreeView.html
 }
 
