@@ -230,7 +230,8 @@ public:
   /** Type for the user-data that can be stored at the tree-nodes. It contains the information that
   is required to find the corresponding setting in the SfzInstrument datastructure. 
   ToDo: Maybe also store information to find it in the sfz-code such as line/column/location. Maybe
-  drag the class out of SfzTreeViewNode and get rid of SfzTreeViewNode. */
+  drag the class out of SfzTreeViewNode and get rid of SfzTreeViewNode. But when we build the tree,
+  this information is actually not available...hmm... */
   struct Data
   {
     Data(){}

@@ -322,57 +322,72 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   auto addNode = [](Node* parent, const juce::String& nodeText)
   {
     parent->addChildNode(new Node(nodeText));
-
-    // ToDo: add Type parameter, maybe do more setup stuff, maybe take a pointer to a sum-type 
-    // (union or std::variant) of PlaybackSetting/ModulationRouting
-    // maybe we need different variants of this function for playback-settings, mod-routings and
-    // misc nodes, i.e. addSettingNode, addmodulationNode.
+    // ...maybe, get rid of this function - it doesn't do much anymore
   };
 
-  auto addSettingNode = [&](Node* parent, const PS setting)
+  auto addSettingNode = [&](Node* parent, const PS& setting, int groupIndex, int regionIndex)
   {
-    //addNode(node, cb->settingToString(setting));  // preliminary
-    // todo: store also the setting itself in the node...oh and also the indices for group and 
-    // region
-
     Node* child = new Node(cb->settingToString(setting));
     child->data.type = Node::Data::Type::playbackSetting;
     child->data.data.playbackSetting = setting;
+    child->data.groupIndex  = groupIndex;
+    child->data.regionIndex = regionIndex;
+    parent->addChildNode(child);
+  };
+
+  auto addModRoutingNode = [&](Node* parent, const MR& routing, int groupIndex, int regionIndex)
+  {
+    Node* child = new Node(cb->modRoutingToString(routing));
+    child->data.type = Node::Data::Type::modulationRouting;
+    child->data.data.modRouting = routing;
+    child->data.groupIndex  = groupIndex;
+    child->data.regionIndex = regionIndex;
     parent->addChildNode(child);
   };
 
 
 
-
-
-
   // Helper function to add the leaf nodes:
-  auto addOpcodeChildNodes = [&](const Level* lvl, Node* node)
+  auto addOpcodeChildNodes = [&](const Level* lvl, Node* node, int groupIndex, int regionIndex)
   {
+    int gi = groupIndex, ri = regionIndex;
+
     // Add nodes for certain special opcode settings. We display the sample opcode only if a sample
     // is defined at this level and show the key/vel settings only when they are not at their 
     // defaults:
     std::string s; int i;
+
+    s = lvl->getSamplePath(); if(s !=  "") addSettingNode(node, PS(OC::Sample, 0.0, -1), gi, ri);
+    // Fails because cb->settingToString produces nonsense for the sample opcode. i think, we may 
+    // need to able to store strings in PlaybackSetting. Some settings, such as samples, really 
+    // need a freeform string as value and can't be translated to enum values. later, we may want
+    // to allow formula-based opcodes, too. These will also need to deal with strings. Maybe the 
+    // value could be a sum-type of float and string...but then, we may as well use double because
+    // the string dictates the size anyway
+
+
+
+    /*
     s = lvl->getSamplePath(); if(s !=  "") addNode(node, "sample=" + s);
     i = lvl->getLoKey();      if(i !=   0) addNode(node, "lokey=" + std::to_string(i));
     i = lvl->getHiKey();      if(i != 127) addNode(node, "hikey=" + std::to_string(i));
     i = lvl->getLoVel();      if(i !=   0) addNode(node, "lovel=" + std::to_string(i));
     i = lvl->getHiVel();      if(i != 127) addNode(node, "hivel=" + std::to_string(i));
+    */
     // Can we somehow reduce the boilerplate here?
+
+
+
 
     // Add nodes for the general opcode settings:
     const Settings& settings = lvl->getSettings();
     for(int i = 0; i < settings.size(); i++)
-    {
-      addSettingNode(node, settings[i]);
-
-      //addNode(node, cb->settingToString(settings[i]));
-    }
+      addSettingNode(node, settings[i], groupIndex, regionIndex);
 
     // Add nodes for modulation routings:
     const Routings& routings = lvl->getModRoutings();
     for(int i = 0; i < routings.size(); i++)
-      addNode(node, cb->modRoutingToString(routings[i]));
+      addModRoutingNode(node, routings[i], groupIndex, regionIndex);
 
     // ToDo: 
     // -Later, we may want to allow more than one sample per level. Then we need to display the 
@@ -383,23 +398,23 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   // Build the tree with 3 hierarchy levels:
   rootNode.deleteChildNodesRecursively();
   const Global* global = sfz.getGlobal();
-  addOpcodeChildNodes(global, &rootNode);
+  addOpcodeChildNodes(global, &rootNode, -1, -1);
   for(int gi = 0; gi < sfz.getNumGroups(); gi++)
   {
     Node* groupNode = new Node("<group>");
     const Group* group = sfz.getGroup(gi);
-    addOpcodeChildNodes(group, groupNode);
+    addOpcodeChildNodes(group, groupNode, gi, -1);
     for(int ri = 0; ri < sfz.getNumRegions(gi); ri++)
     {
       Node* regionNode = new Node("<region>");
       const Region* region = sfz.getRegion(gi, ri);
-      addOpcodeChildNodes(region, regionNode);
+      addOpcodeChildNodes(region, regionNode, gi, ri);
       groupNode->addChildNode(regionNode);
     }
     rootNode.addChildNode(groupNode);
   }
 
-  repaintOnMessageThread();
+  //repaintOnMessageThread();
 
   // -The update of the GUI is quite slow/laggy. I don't think that it's a general problem with the
   //  TreeView because it's much more responsive in the module-selector in ToolChain. Figure out 
@@ -407,12 +422,18 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //  callbacks or something? Or is it because we allocate the nodes on the heap and they are more 
   //  scattered in memory than in the other case? Maybe we should pre-allocate a pool of nodes?
   //  Use Visual Studio's profiler...maybe try also CodeBlocks and XCode profiling
+  //  ...btw: this was already the case before SfzTreeViewNode got its additional datafields
+  //  commenting out the repaintOnMessageThread calls does not seem to help. Even the patch-loading
+  //  and editor update takes unreasobaly long. try to tmporarily get rid of the whole tree-view
+  //  (either make it invisible or comment out the createion code)
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately.
   // -The instruments with 1 regions show 2 region nodes - Test with FilterBlip.sfz. the sft does
-  //  indeed have two regions - the first contains all the settinsg, the 2nd only the sample. Oddly
+  //  indeed have two regions - the first contains all the settings, the 2nd only the sample. Oddly
   //  enough, the FilterBlipe patch is nevertheless playable. It actually shouldn't be...i think.
+  // -Maybe the function should also get the sfz-string passed along and identify and store the
+  //  code-locations in the nodes - but finding them is a nontrivial task.
   // -Maybe trying to edit the patch via the tree is a too tall order. Maybe use the tree only for
   //  display purposes and for selecting opcodes to interact with via sliders but leave the patch 
   //  editing to the code editor. Maybe put the editor to the left and the tree to the right to 
@@ -426,7 +447,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 void SfzTreeView::clearTree()
 {
   RTreeView::setRootNode(nullptr);
-  repaintOnMessageThread();
+  //repaintOnMessageThread();
 }
 // needs test
 
