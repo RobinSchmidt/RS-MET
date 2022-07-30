@@ -533,11 +533,14 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
 {
   // Avoid drawing nodes that are invisible because they are too high up or too low down:
   //if(y < -getNodeHeight() || y > getHeight() ) 
+  //if(y < yOffset - getNodeHeight() || y > yOffset + getHeight() ) 
+  //if(y < -yOffset - getNodeHeight() )
+  //if(y < -yOffset || y > getHeight() - yOffset )
+  //if(y < -yOffset)
   //  return y + getNodeHeight(); 
-  // This doesn't work correctly yet because it doesn't take into account the position of the 
-  // scrollbar. When scrolling down, we see no nodes anymore. If determinin the visibility becoms 
-  // more complex, maybe write a function isNodeVisible or isNodeWithinVisibleRange or something
-  // like that (the name isNodeVisible may be confused with the visibility setting)
+  // This doesn't work correctly yet because of the recursion at the bottom. We may not need to 
+  // draw a particular node but may still have to draw some of its child-nodes. So maybe we should
+  // not return early but instead do the actual drawing within a conditional
 
 
   // Highlight background for ticked nodes:
