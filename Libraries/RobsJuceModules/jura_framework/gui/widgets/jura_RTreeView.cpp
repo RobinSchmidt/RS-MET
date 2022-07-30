@@ -358,7 +358,7 @@ void RTreeView::scrollBarMoved(RScrollBar* scrollBarThatHasMoved, const double n
   else if( scrollBarThatHasMoved == leftRightScrollBar )
     xOffset = -roundToInt(newRangeStart);
 
-  repaint();
+  //repaint();
   // ToDo: if we call repaint directly instead of repaintOnMessageThread, we should assert that we
   // actually are on the message thread. Some of these callbacks are indeed expected to be called
   // on the message thread. In such cases, calling repaint directly is slightly cheaper.
@@ -373,7 +373,7 @@ void RTreeView::mouseEnter(const MouseEvent &e)
 void RTreeView::mouseExit(const MouseEvent &e)
 {
   RWidget::mouseExit(e);
-  repaint();
+  //repaint();
 }
 
 void RTreeView::mouseDown(const MouseEvent &e)
@@ -390,7 +390,7 @@ void RTreeView::mouseDown(const MouseEvent &e)
 
 void RTreeView::mouseMove(const MouseEvent &e)
 {
-  repaint();
+  repaint(); // Needed for semi-highlighting on mouse-hovering.
 }
 
 void RTreeView::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
@@ -433,6 +433,13 @@ void RTreeView::paint(Graphics &g)
     g.setColour(getOutlineColour());
     g.drawRect(r, outlineThickness);
   }
+
+  // ToDo:
+  // -Figure out, why repaint gets called twice when, for example, the mouse enters - and try to 
+  //  fix that. Both calls originate from the juce library. OK - done - commenting out the 
+  //  manual repaint() call in the mouse callbacks seems to fix it. But we still get two calls
+  //  when the scrollbar moves. Also, the semi-highlighting on mouse-hovering doesn't work anymore.
+  //  Maybe the semi-highlighting can be implemented differently?
 }
 
 void RTreeView::resized()
