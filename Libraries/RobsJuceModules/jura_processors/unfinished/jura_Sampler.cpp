@@ -291,6 +291,9 @@ SfzTreeView::SfzTreeView()
 
 void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 {
+  //return;  // For debug - when uncommenting this, the GUI indeed becomes responsive again
+
+
   // Perhaps we should first check, if the current tree alreday is in sync with the given sfz and 
   // if so, avoid re-building the tree from scratch. Maybe such situation could occur when the user
   // has just edited some comments in the code editor. Such edits don't change the structure of the
@@ -412,8 +415,11 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //  ...btw: this was already the case before SfzTreeViewNode got its additional datafields
   //  commenting out the repaintOnMessageThread calls does not seem to help. Even the patch-loading
   //  and editor update takes unreasobaly long. Try to tmporarily get rid of the whole tree-view.
-  //  OK - commenting out the line addWidget(sfzTree) in createWidgets, does indeed mak patch 
-  //  loading much more responsive
+  //  OK - commenting out the line addWidget(sfzTree) in createWidgets, does indeed make patch 
+  //  loading much more responsive. Try making the TreeView smaller
+  //  -> done -> hmm...it helps a little bit but not that much
+  //  returning early from RTreeView::paint helps. It is apparently the painting that bogs down
+  //  the machine
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately. -> fixed by calling repaintOnMessageThread() at the end
@@ -521,7 +527,8 @@ void SamplerEditor::resized()
   y += 16;
   sfzEditor.setBounds(x, y, getWidth()-x-treeWidth, getHeight()-y);
   x = sfzEditor.getRight();
-  sfzTree->setBounds(x, y, getWidth()-x, getHeight()-y);
+  //sfzTree->setBounds(x, y, getWidth()-x, getHeight()-y);
+  sfzTree->setBounds(x, y, 200, 100);  // for test/debug
   w = 48;
   //x = sfzTree->getX();
   x = sfzEditor.getRight() - w;
