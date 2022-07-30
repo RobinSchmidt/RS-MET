@@ -347,30 +347,23 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // is defined at this level and show the key/vel settings only when they are not at their 
     // defaults:
     std::string s; int i;
-
-    // New:
-    s = lvl->getSamplePath(); if(s !=  "") addSettingNode(node, PS(OC::Sample, 0.0), gi, ri);
-    // Fails because cb->settingToString produces nonsense for the sample opcode. I think, we may 
-    // need to able to store strings in PlaybackSetting. Some settings, such as samples, really 
-    // need a freeform string as value and can't be translated to enum values. Later, we may want
-    // to allow formula-based opcodes, too. These will also need to deal with strings. Maybe the 
-    // value could be a sum-type (e.g. union) of float and string...but then, we may as well use 
-    // double because the string dictates the size anywa.y Maybe PlaybackSetting should have an
-    // alternative constructor that takes a std::string instead of a float as 2nd parameter
+    s = lvl->getSamplePath(); if(s !=  "") node->addChildNode(new Node("sample=" + s));  // old
+    //s = lvl->getSamplePath(); if(s !=  "") addSettingNode(node, PS(OC::Sample, 0.0), gi, ri);  // new
+    // The new version fails because cb->settingToString produces nonsense for the sample opcode. I
+    // think, we may need to able to store strings in PlaybackSetting. Some settings, such as 
+    // samples, really need a freeform string as value and can't be translated to enum values. 
+    // Later, we may want to allow formula-based opcodes, too. These will also need to deal with 
+    // strings. Maybe the value could be a sum-type (e.g. union) of float and string...but then, we
+    // may as well use double because the string dictates the size anywa.y Maybe PlaybackSetting 
+    // should have an alternative constructor that takes a std::string instead of a float as 2nd 
+    // parameter
 
     i = lvl->getLoKey(); if(i !=   0) addSettingNode(node, PS(OC::LoKey, i), gi, ri);
     i = lvl->getHiKey(); if(i != 127) addSettingNode(node, PS(OC::HiKey, i), gi, ri);
     i = lvl->getLoVel(); if(i !=   0) addSettingNode(node, PS(OC::LoVel, i), gi, ri);
     i = lvl->getHiVel(); if(i != 127) addSettingNode(node, PS(OC::HiVel, i), gi, ri);
+    // Values are shown like 45.0000 - we need a better float-to-string conversion
 
-    /*
-    // Old - this creates the nodes but does not store our desired additional information at them:
-    s = lvl->getSamplePath(); if(s !=  "") addNode(node, "sample=" + s);
-    i = lvl->getLoKey();      if(i !=   0) addNode(node, "lokey=" + std::to_string(i));
-    i = lvl->getHiKey();      if(i != 127) addNode(node, "hikey=" + std::to_string(i));
-    i = lvl->getLoVel();      if(i !=   0) addNode(node, "lovel=" + std::to_string(i));
-    i = lvl->getHiVel();      if(i != 127) addNode(node, "hivel=" + std::to_string(i));
-    */
 
 
     // Add nodes for the general opcode settings:
@@ -418,8 +411,9 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //  Use Visual Studio's profiler...maybe try also CodeBlocks and XCode profiling
   //  ...btw: this was already the case before SfzTreeViewNode got its additional datafields
   //  commenting out the repaintOnMessageThread calls does not seem to help. Even the patch-loading
-  //  and editor update takes unreasobaly long. try to tmporarily get rid of the whole tree-view
-  //  (either make it invisible or comment out the createion code)
+  //  and editor update takes unreasobaly long. Try to tmporarily get rid of the whole tree-view.
+  //  OK - commenting out the line addWidget(sfzTree) in createWidgets, does indeed mak patch 
+  //  loading much more responsive
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately. -> fixed by calling repaintOnMessageThread() at the end
@@ -680,7 +674,8 @@ void SamplerEditor::createWidgets()
 
 
   // The SFZ TreeView:
-  addWidget(sfzTree = new SfzTreeView);
+  sfzTree = new SfzTreeView;
+  addWidget(sfzTree);
   sfzTree->setDescription("Structure Current SFZ instrument");
 
   // The SFZ CodeEditor:
