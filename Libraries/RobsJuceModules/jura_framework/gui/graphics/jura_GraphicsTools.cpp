@@ -145,8 +145,9 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
 
   // Make sure that g's opacity is set up right, otherwise glyph-images may be drawn transparent
   // regardless of their own opacity values (why is that the case?):
-  g.saveState();                // ToDo: try to avoid this - it may be expensive
+  //g.saveState();                // ToDo: try to avoid this - it may be expensive
   g.setColour(colourToUse);
+  g.setOpacity(1.f);
 
   for(int i = 0; i < textToDraw.length(); ++i)
   {
@@ -159,7 +160,7 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
     }
   }
 
-  g.restoreState();             // Try to avoid, see comment on g.saveState()
+  //g.restoreState();             // Try to avoid, see comment on g.saveState()
   return x;
 
   // ToDo:
@@ -168,7 +169,15 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   //   costly? Seems like the only state-chaning action is g.setColour(), so perhaps, we could 
   //   just retrieve the old color and set it back when done. Write a benchmark and then try
   //   to do that optimization. The saveState creates an object with new and puts it on some 
-  //   stack, so yeah - it could plausibly be an expensive operation.
+  //   stack, so yeah - it could plausibly be an expensive operation. But Graphics has no 
+  //   getColour() function, so how can we figure out the current color? I actually tried to just
+  //   commenting out the save/restore calls with no immediate ill effects, so maybe we don't
+  //   actually need them? It's not good to call them in such a low-level function. What if we
+  //   comment the setColour call also? ...this messes up the colors. When calling setOpacity()
+  //   instead of setColour(), the font seems to be a bit brighter. When calling both, it's also
+  //   brighter. Apparently, the opacity is set to a lower value somewhere on a higher level?
+  //   OK, let's keep it at full opacity here. Text is a little bit too bright now, though. 
+  //   -> Adjust the color elsewhere (in RWidget possibly)
 }
 
 void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai)
