@@ -127,8 +127,6 @@ void dataMatrixToImage(float **data, juce::Image &image, uint8 red, uint8 green,
 int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   const BitmapFont* fontToUse, const Colour& colourToUse, int kerning, Justification justification)
 {
-  g.saveState();
-
   //jassert(colourToUse != Colours::yellow); // for test only
   if( kerning == -1 )
     kerning = fontToUse->getDefaultKerning();
@@ -145,28 +143,32 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   else if( justification.testFlags(vFlags & Justification::bottom) )
     y -= fontToUse->getFontAscent();
 
-  const  Image* image;
-  //tchar  c;
-  juce_wchar c;
-
-  // make sure that g's opacity is set up right, otherwise glyph-images may be drawn transparent
-  // regardless of their own opacity values:
+  // Make sure that g's opacity is set up right, otherwise glyph-images may be drawn transparent
+  // regardless of their own opacity values (why is that the case?):
+  g.saveState();                // ToDo: try to avoid this - it may be expensive
   g.setColour(colourToUse);
 
-  for(int i=0; i<textToDraw.length(); i++)
+  for(int i = 0; i < textToDraw.length(); ++i)
   {
-    c     = textToDraw[i];
-    image = fontToUse->getGlyphImage(c, colourToUse);
-    //jassert( image != NULL );
-    if( image != NULL )
+    juce_wchar c = textToDraw[i];
+    const Image* image = fontToUse->getGlyphImage(c, colourToUse);
+    if( image != nullptr )
     {
       g.drawImageAt(*image, x, y, false);
       x += fontToUse->getGlyphWidth(c) + kerning;
     }
   }
 
-  g.restoreState();
+  g.restoreState();             // Try to avoid, see comment on g.saveState()
   return x;
+
+  // ToDo:
+  // -Try to optimize this. This function is very important for the responsiveness of the GUI.
+  //  -What about the g.saveState()/g.restoreState() calls? Can we avoid them? Maybe they are 
+  //   costly? Seems like the only state-chaning action is g.setColour(), so perhaps, we could 
+  //   just retrieve the old color and set it back when done. Write a benchmark and then try
+  //   to do that optimization. The saveState creates an object with new and puts it on some 
+  //   stack, so yeah - it could plausibly be an expensive operation.
 }
 
 void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai)

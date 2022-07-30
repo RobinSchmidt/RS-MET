@@ -422,7 +422,8 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //  painting that bogs down the machine. Maybe because we alway draw all nodes, even if they
   //  are not within the visible area?
   //  ...ooookayy...after adding the optimization to draw only the visible nodes, it got a lot
-  //  better. ...still a bit sluggish, though
+  //  better. ...still a bit sluggish, though...although...actually, now it seems to feel quite OK,
+  //  at least in a release build
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately. -> fixed by calling repaintOnMessageThread() at the end

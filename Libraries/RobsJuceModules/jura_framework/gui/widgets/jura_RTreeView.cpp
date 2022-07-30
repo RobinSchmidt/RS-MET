@@ -547,6 +547,7 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
   bool tooFarDown = y >= getHeight() - yOffset;  // this seems to be OK
   bool tooHighUp  = y <= 0;                      // Why do we not need the yOffset here?
   /*
+  // Code for verifying/debugging the don't-draw-invisible-nodes optimization:
   if(tooFarDown)
   {
     bool dummy = true;   // for a debug breakpoint to debug the visibility optimization
@@ -626,6 +627,7 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
   //  outside the visible area. Maybe check, if JUCE has a TreeView and use that
   // -It seems that paint gets called twice. Fix that! It will still be too slow, though.
   // -Maybe compare with juce::TreeView, see https://docs.juce.com/master/classTreeView.html
+  // -Try to optimize drawBitmapFontText. Maybe we can do this in the context of the TestAppJURA
 }
 
 RTreeViewNode* RTreeView::getNodeAtY(int y)
