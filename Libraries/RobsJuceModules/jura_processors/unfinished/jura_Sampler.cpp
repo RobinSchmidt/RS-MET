@@ -555,9 +555,9 @@ void SamplerEditor::resized()
 
   int buttonWidth = 48;
 
+
+  // Set up general widgets that are always visible:
   //stateWidgetSet->setBounds(
-
-
   x = m;
   playButton->setBounds(x, y, buttonWidth, 24);
   x = playButton->getRight() + m;
@@ -565,27 +565,18 @@ void SamplerEditor::resized()
   // Maybe place them right to the xml load/save widgets, i.e. make the preset section a bit less wide
 
 
-
-  // Status info widgets
-  //layersMeter->setBounds(x+m, y, w/2-2*m, 16);
-
+  // Set up widgets visible on "Play" page:
+  layersMeter->setBounds(x+m, y, w/2-2*m, 16);  // is misplaced
 
 
-  //numLayersLabel->setBounds(x, y, 48, 16);
-  //x = numLayersLabel->getRight();
-  //numLayersField->setBounds(x, y, 32, 16);
 
-  //x = numLayersField->getRight();
-  //numLayersOfLabel->setBounds(x, y, 16, 16);
-  //x = numLayersOfLabel->getRight();
-  //maxNumLayersSlider->setBounds(x, y, 32, 16);
 
-  //y += 20;
+
+
 
   y = playButton->getBottom() + m;
   x = 0;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
-
 
   int treeWidth = 300;
   sfzFileLoader->setBounds(x, y, 300, 16);
@@ -649,6 +640,8 @@ void SamplerEditor::rButtonClicked(RButton* b)
 {
   if(b == parseButton)
     parseCodeEditorContent();
+  else if(b == playButton || b == editButton)
+    updateVisibilities();
   else
     AudioModuleEditor::rButtonClicked(b);
 }
@@ -703,10 +696,12 @@ void SamplerEditor::createWidgets()
   playButton->setDescription("Switch GUI to play/perform mode");
   playButton->addToRadioButtonGroup(&guiPageButtonGroup);
   playButton->setToggleState(true, false);
+  playButton->addRButtonListener(this);
 
   addWidget(editButton = new jura::RRadioButton("Edit"));
   editButton->setDescription("Switch GUI to SFZ editing mode");
   editButton->addToRadioButtonGroup(&guiPageButtonGroup);
+  editButton->addRButtonListener(this);
 
 
   //addWidgetSet(sfzFileLoader = new FileSelectionBox("", this) );
@@ -782,9 +777,13 @@ void SamplerEditor::createWidgets()
 
   addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
   parseButton->setDescription("Parse the current content of the code editor as sfz");
+  //parseButton->addRButtonListener(this); // Needed? It initially worked without that. ...but why?
 
   // The order in which we call add...() for the widgets determines, which widgets are in the 
   // foreground when they overlap.
+
+  // ToDo: set up better descriptions for the xml and sfz loader widget sets. Maybe:
+  // Load .xml preset from file, Load .sfz instrument from file, etc.
 }
 
 void SamplerEditor::setCodeIsParsed(bool isParsed)
@@ -839,7 +838,32 @@ void SamplerEditor::updateTreeView()
 
 void SamplerEditor::updateVisibilities()
 {
-  //RAPT::rsError("Not yet implemented");
+  if(playButton->getToggleState())
+  {
+    makePlayWidgetsVisible(true);
+    makeEditWidgetsVisible(false);
+  }
+  else
+  {
+    makePlayWidgetsVisible(false);
+    makeEditWidgetsVisible(true);
+  }
+
+  // ToDo: 
+  // -maybe stop the time when in edit mode - only in play mode, the metering widgets are 
+  //  shown. Maybe the function should be renamed to switchGuiPage
+}
+
+void SamplerEditor::makePlayWidgetsVisible(bool visible)
+{
+  layersMeter->setVisible(visible);
+}
+
+void SamplerEditor::makeEditWidgetsVisible(bool visible)
+{
+  sfzTree->setVisible(visible);
+  parseButton->setVisible(visible);
+  sfzEditor.setVisible(visible);
 }
 
 //=================================================================================================

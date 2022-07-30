@@ -457,6 +457,10 @@ protected:
 
   void updateVisibilities();
 
+  void makePlayWidgetsVisible(bool shouldBeVisible);
+  void makeEditWidgetsVisible(bool shouldBeVisible);
+
+
   SamplerModule* samplerModule = nullptr;
 
 
@@ -469,11 +473,13 @@ protected:
 
 
   // SFZ tree view and adjacent widgets:
+  //jura::RTextField* structureField;  // Says: "Patch Structure", placed above the TreeView
   SfzTreeView* sfzTree;
   //SfzTreeNodeWidgetSet* nodeWidgets;
 
 
   // SFZ text editor and adjacent widgets:
+
   jura::FileSelectionBox *sfzFileLoader;
   //jura::RLabeledTextEntryField *sfzStatusField;  // still needed?
   jura::RClickButton     *parseButton;
