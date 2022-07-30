@@ -304,24 +304,50 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   using Global   = SfzInstrument::Global;
   using Group    = SfzInstrument::Group;
   using Region   = SfzInstrument::Region;
-  using Settings = std::vector<PlaybackSetting>;
-  using Routings = std::vector<ModulationRouting>;
+
+  using OC = Opcode;
+  using PS = PlaybackSetting;
+  using MR = ModulationRouting;
+
+  using Settings = std::vector<PS>;
+  using Routings = std::vector<MR>;
   // Maybe get rid of some of them - we seem to use them only one time so defining these aliases 
   // doesn't seem to pull its weight.
+
+
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+
 
 
   auto addNode = [](Node* parent, const juce::String& nodeText)
   {
     parent->addChildNode(new Node(nodeText));
+
+    // ToDo: add Type parameter, maybe do more setup stuff, maybe take a pointer to a sum-type 
+    // (union or std::variant) of PlaybackSetting/ModulationRouting
+    // maybe we need different variants of this function for playback-settings, mod-routings and
+    // misc nodes, i.e. addSettingNode, addmodulationNode.
   };
-  // ToDo: add Type parameter, maybe do more setup stuff, maybe take a pointer to a sum-type 
-  // (union or std::variant) of PlaybackSetting/ModulationRouting
+
+  auto addSettingNode = [&](Node* node, const PS setting)
+  {
+    addNode(node, cb->settingToString(setting));  // preliminary
+    // todo: store also the setting itself in the node...oh and also the indices for group and 
+    // region
+
+
+    int dummy = 0;
+  };
+
+
+
+
 
 
   // Helper function to add the leaf nodes:
   auto addOpcodeChildNodes = [&](const Level* lvl, Node* node)
   {
-    SfzCodeBook* cb = SfzCodeBook::getInstance();
+
 
     // Add nodes for certain special opcode settings. We display the sample opcode only if a sample
     // is defined at this level and show the key/vel settings only when they are not at their 
@@ -337,7 +363,11 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // Add nodes for the general opcode settings:
     const Settings& settings = lvl->getSettings();
     for(int i = 0; i < settings.size(); i++)
-      addNode(node, cb->settingToString(settings[i]));
+    {
+      addSettingNode(node, settings[i]);
+
+      //addNode(node, cb->settingToString(settings[i]));
+    }
 
     // Add nodes for modulation routings:
     const Routings& routings = lvl->getModRoutings();
