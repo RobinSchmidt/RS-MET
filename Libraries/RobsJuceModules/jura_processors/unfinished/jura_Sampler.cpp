@@ -418,8 +418,9 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //  OK - commenting out the line addWidget(sfzTree) in createWidgets, does indeed make patch 
   //  loading much more responsive. Try making the TreeView smaller
   //  -> done -> hmm...it helps a little bit but not that much
-  //  returning early from RTreeView::paint helps. It is apparently the painting that bogs down
-  //  the machine
+  //  returning early from RTreeView::paint or RTreeView::drawNode helps. It is apparently the 
+  //  painting that bogs down the machine. Maybe because we alway draw all nodes, even if they
+  //  are not within the visible area?
   // -Scrollbars do not correctly appear/disappear
   // -The TreeView seems to update/repaint itself only on mouseOver after loading a new patch. It 
   //  should update immediately. -> fixed by calling repaintOnMessageThread() at the end

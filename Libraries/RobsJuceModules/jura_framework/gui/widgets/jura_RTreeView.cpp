@@ -531,14 +531,23 @@ void RTreeView::updateScrollBarBoundsAndVisibility()
 
 int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDraw)
 {
-  // highlight background for ticked nodes:
+  // Avoid drawing nodes that are invisible because they are too high up or too low down:
+  //if(y < -getNodeHeight() || y > getHeight() ) 
+  //  return y + getNodeHeight(); 
+  // This doesn't work correctly yet because it doesn't take into account the position of the 
+  // scrollbar. When scrolling down, we see no nodes anymore. If determinin the visibility becoms 
+  // more complex, maybe write a function isNodeVisible or isNodeWithinVisibleRange or something
+  // like that (the name isNodeVisible may be confused with the visibility setting)
+
+
+  // Highlight background for ticked nodes:
   if( nodeToDraw->isTicked )
   {
     g.setColour(getHandleColour());
     g.fillRect(outlineThickness, y, getWidth()-2*outlineThickness, getNodeHeight()-lineSpacing);
   }
 
-  // semi-highlight background for nodes where the mouse is over:
+  // Semi-highlight background for nodes where the mouse is over:
   Point<int> mousePosition = getMouseXYRelative();
   if( contains(mousePosition)
     && mousePosition.getY() >= y-lineSpacing/2
@@ -550,7 +559,7 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
     g.fillRect(outlineThickness, y, getWidth()-2*outlineThickness, getNodeHeight()-lineSpacing);
   }
 
-  // draw the plus/minus button, if appropriate:
+  // Draw the plus/minus button, if appropriate:
   if( nodeToDraw->hasChildNodes() )
   {
     float yOffset = 0.5f * (getNodeHeight() - plusMinusSize - lineSpacing);
@@ -569,18 +578,18 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
   else
     x += plusMinusSize + textMargin;
 
-  // draw the node text:
+  // Draw the node text:
   Colour textColour = getTextColour();
   if( !nodeToDraw->isEnabled )
     textColour = textColour.withMultipliedAlpha(0.625f);
   drawBitmapFontText(g, x, y, nodeToDraw->nodeText, font, textColour,
     font->getDefaultKerning(), Justification::topLeft);
 
-  // draw child nodes recursively:
+  // Draw child nodes recursively:
   if( nodeToDraw->hasChildNodes() && nodeToDraw->isOpen )
   {
     y += getNodeHeight();
-    for(int i=0; i<nodeToDraw->getNumChildNodes(); i++)
+    for(int i = 0; i < nodeToDraw->getNumChildNodes(); ++i)
       y = drawNode(g, x, y, nodeToDraw->childNodes[i]);
     return y;
   }
@@ -589,6 +598,12 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
     y += getNodeHeight();
     return y;
   }
+
+  // ToDo:
+  // -For larger TreeViews, the drawing performance is really bad. It becomes very unresponsive. 
+  //  Maybe we should check x and y on entry and return early if they are such that we would draw
+  //  outside the visible area. Maybe check, if JUCE has a TreeView and use that
+  // -Maybe compare with juce::TreeView, see https://docs.juce.com/master/classTreeView.html
 }
 
 RTreeViewNode* RTreeView::getNodeAtY(int y)
