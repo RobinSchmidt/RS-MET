@@ -449,6 +449,51 @@ void SfzTreeView::clearTree()
 }
 // needs test
 
+
+//=================================================================================================
+
+FlexiWidget::FlexiWidget()
+{
+  addWidget(slider    = new jura::RSlider(),         true, false);
+  addWidget(button    = new jura::RButton(),         true, false);
+  addWidget(comboBox  = new jura::RComboBox(),       true, false);
+  addWidget(textField = new jura::RTextEntryField(), true, false);
+}
+
+void FlexiWidget::setWidgetMode(WidgetMode newMode)
+{
+  if(newMode != mode)
+  {
+    mode = newMode;
+    updateVisibilities();
+  }
+}
+
+void FlexiWidget::updateVisibilities()
+{
+  slider->setVisible(false);
+  button->setVisible(false);
+  comboBox->setVisible(false);
+  textField->setVisible(false);
+  switch(mode)
+  {
+  case WidgetMode::slider:  slider->setVisible(true);    break;
+  case WidgetMode::button:  button->setVisible(true);    break;
+  case WidgetMode::chooser: comboBox->setVisible(true);  break;
+  case WidgetMode::text:    textField->setVisible(true); break;
+  }
+}
+
+//=================================================================================================
+
+SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
+{
+  addWidget(opcodeField = new jura::RTextField());
+  addWidget(helpField   = new jura::RTextField());
+}
+
+
+
 //=================================================================================================
 
 SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) 
@@ -876,6 +921,10 @@ ToDo:
   sfz-widget does not acquire the "dirty" asterisk. Maybe let FileManager have a second callback
   activeFileWasDirtified or activeFileIsOutOfDate, activeFileBecameDirty or similar which the
   load/save widget then overrides
+ -Maybe show the compatibility of the patch with sfz 1.0, 2.0, ARIA, RS-MET, etc. Maybe the code 
+  editor could somehow be configured to highlight opcodes that require a higher standard. This is
+  convenient for authoring sfz files. Maybe the engine could be configured to ignore opcodes of
+  ceratin standards.
  -SFZ editor functionality:
   -Dirtify the xml-state when the user loads a new sfz
   -Check dirtification of the .sfz while when the docmument has been edited

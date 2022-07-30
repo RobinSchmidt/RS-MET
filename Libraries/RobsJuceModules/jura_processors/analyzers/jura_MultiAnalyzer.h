@@ -312,7 +312,8 @@ protected:
 
 //=================================================================================================
 
-// todo - maybe move this class to another file - might be useful for EQ with spectrum display later also
+// todo - maybe move this class to another file - might be useful for EQ with spectrum display 
+// later also
 class AudioModuleEditorAnimated : public AudioModuleEditor, public Timer, public RSliderListener
 {
 
@@ -443,6 +444,7 @@ public:
 protected:
 
   virtual void updateSubEditorVisibilitiesAndTabButtonStates();
+  // Boah - what a monstrous name! Find something shorter! maybe updateVisibilities
 
   MultiAnalyzerAudioModule     *multiAnalyzerAudioModule;
 

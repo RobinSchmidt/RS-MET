@@ -1087,6 +1087,7 @@ Bugs:
   it should be - seems like updateSelectorArray is called too late (asynchronously)
   -maybe in audioModuleWillBeDeleted, we should call a function deleteSelector(index) similar to
    deleteEditor(index) instead of scheduleSelectorArrayUpdate
+-Plug in MultiAnalyzer, switch to wave, click on TooChain's preset "next" button -> crash
 -start the standalone app in clean slate state, plug in echolab, close app -> memleak
  actually, the memleak also happens, when we just re-open it in a state with ehcolab loaded and 
  close it

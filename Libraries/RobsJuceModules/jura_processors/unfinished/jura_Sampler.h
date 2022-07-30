@@ -70,6 +70,7 @@ protected:
   // of the engine should always be in sync with our lastValidSfz member...we should actually make
   // that a class invariant, I think.
 
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzPlayer)
 };
 
 //=================================================================================================
@@ -226,6 +227,8 @@ public:
 
   using jura::RTreeViewNode::RTreeViewNode;
 
+  SfzTreeViewNode() {}
+
 
   /** Type for the user-data that can be stored at the tree-nodes. It contains the information that
   is required to find the corresponding setting in the SfzInstrument datastructure. 
@@ -244,7 +247,7 @@ public:
       region,
       playbackSetting,    // e.g. tune, volume, ...
       modulationRouting,  // e.g. lfo3_cutoff2, adsr2_volume1
-      unknown             // maybe get rid - type should always be known
+      unknown             // maybe get rid, maybe type should always be known
     };
 
     /** We define a sum-type of the passible datatypes that can be stored at the nodes here. 
@@ -280,7 +283,7 @@ protected:
 
   //jura::RWidget* widget = nullptr;
 
-
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzTreeViewNode)
 };
 // Maybe we don't need ot make a subclass of RTreeViewNode. Instead, attach the additional data
 // in the data pointer that RTreeViewNode defines for exactly this purpose. Maybe the data stored
@@ -328,7 +331,76 @@ protected:
 
   //jura::SfzPlayer* player = nullptr; 
   // hmm..nahhh...Let's try to avoid the coupling to this class as long as possible
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzTreeView)
 };
+
+//=================================================================================================
+
+/** A widget that can be either a slider or a button or a combobox or a textfield. It's meant to be
+dynamically switched between these modes, depending on what sort of parameter is currently being
+edited. It's used for the opcode manipulation widget in the sampler GUI...tbc...
+
+ToDo:
+-Maybe move into jura_framework. It may be usabel in other contexts, too  */
+
+class FlexiWidget : public WidgetSet
+{
+
+public:
+
+  FlexiWidget() {}
+  virtual ~FlexiWidget() {}
+
+
+  enum class WidgetMode { slider, button, chooser, text, none };
+
+  virtual void setWidgetMode(WidgetMode newMode);
+
+
+  //setBounds
+
+protected:
+
+  virtual void updateVisibilities();
+
+  jura::RSlider* slider = nullptr;             // For continuous parameters
+  jura::RButton* button = nullptr;             // For boolean parameters
+  jura::RComboBox* comboBox = nullptr;         // For choice parameters
+  jura::RTextEntryField* textField = nullptr;  // For freeform string parameters
+  // Maybe they should be public to allow client code to register observers...
+
+  WidgetMode mode == WidgetMode::none;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FlexiWidget)
+};
+
+
+//=================================================================================================
+
+/** A widget set for displaying and manipulating an sfz opcode. It will show the name of the 
+opcode and a little help text that tells the user about what the opcode does, what its nominal 
+range is, which unit it has, etc. It will also show a widget that is appropriate to manipulate the
+actual parameter value. */
+
+class SfzOpcodeWidgetSet : public FlexiWidget
+{
+
+public:
+
+  SfzOpcodeWidgetSet();
+  virtual ~SfzOpcodeWidgetSet() {}
+
+protected:
+
+  jura::RTextField *opcodeField, *helpField;
+
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeWidgetSet)
+};
+
+
 
 
 //=================================================================================================
