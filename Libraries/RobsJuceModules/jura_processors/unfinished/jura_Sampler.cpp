@@ -364,16 +364,13 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // need a freeform string as value and can't be translated to enum values. later, we may want
     // to allow formula-based opcodes, too. These will also need to deal with strings. Maybe the 
     // value could be a sum-type of float and string...but then, we may as well use double because
-    // the string dictates the size anyway
+    // the string dictates the size anyway Maybe PlaybackSetting should have an alternative 
+    // constructor that takes a std::string instead of a float as 2nd parameter
 
     i = lvl->getLoKey(); if(i !=   0) addSettingNode(node, PS(OC::LoKey, i), gi, ri);
     i = lvl->getHiKey(); if(i != 127) addSettingNode(node, PS(OC::HiKey, i), gi, ri);
     i = lvl->getLoVel(); if(i !=   0) addSettingNode(node, PS(OC::LoVel, i), gi, ri);
     i = lvl->getHiVel(); if(i != 127) addSettingNode(node, PS(OC::HiVel, i), gi, ri);
-    // Doesn't seem to work either. maybe because the lokey/hikey/lovel/hivel opcodes are treated 
-    // differently? check what cb->settingToString does in such a case....
-    // but without the ifs, it seems to work - strange!
-
 
     /*
     // Old - this creates the nodes but does not store our desired additional information at them:
@@ -383,9 +380,6 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     i = lvl->getLoVel();      if(i !=   0) addNode(node, "lovel=" + std::to_string(i));
     i = lvl->getHiVel();      if(i != 127) addNode(node, "hivel=" + std::to_string(i));
     */
-
-
-
 
 
     // Add nodes for the general opcode settings:
@@ -423,7 +417,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     rootNode.addChildNode(groupNode);
   }
 
-  //repaintOnMessageThread();
+  repaintOnMessageThread();
 
   // -The update of the GUI is quite slow/laggy. I don't think that it's a general problem with the
   //  TreeView because it's much more responsive in the module-selector in ToolChain. Figure out 
@@ -456,7 +450,7 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 void SfzTreeView::clearTree()
 {
   RTreeView::setRootNode(nullptr);
-  //repaintOnMessageThread();
+  repaintOnMessageThread();
 }
 // needs test
 
