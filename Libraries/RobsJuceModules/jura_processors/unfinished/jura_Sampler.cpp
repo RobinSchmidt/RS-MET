@@ -595,6 +595,39 @@ void SamplerEditor::resized()
   editButton->setBounds(x, y, bw, h);
 
 
+  // Lay out widgets for "Play" page:
+  y = sfzFileLoader->getBottom() + m;
+  x = m;
+  w = getWidth() / 3;
+  // ToDo: 
+  // -Split the page into 3 regions: left/center/right
+  // -Into the left region goes some information about the patch (author, comments, number of 
+  //  samples, regions, groups, etc.)
+  // -Into the center region go realtime performance controllers like sliders, vector-pads etc. 
+  //  that can be assigned to midi controllers.
+  // -Into right section go metering devices like RAM and CPU usage, maybe a scope, output levels,
+  //  stereo width etc.
+
+
+
+
+
+  // Lay out widgets for "Edit" page:
+  // ToDo:
+  // -Split the page into 3 sections: top-left, top-right and bottom. the top-sections should take
+  //  roughly 3/4 of the vertical space and the bottom section the remaining 1/4 (or maybe use even
+  //  4/5, 1/5). And the top-left should take roughly 2/3 to 3/4 of the horizontal space
+  // -The top-left section is the sfz code editor
+  // -The top-right section is the sfz structure tree-view
+  // -The bottom section dynamically shows appropriate edit or display widgets for the node that is
+  //  selected in the tree-view, like a slider for continuously adjustable opcodes, a sample-view 
+  //  for sample opcodes (maybe it should allow to load samples using a file-browser)
+  // -It would be nice, if we could sync the code-editor and the tree-view, i.e. highlight the code
+  //  corresponding to the selected node and maybe even modify it via the widgets.
+
+
+
+
 
 
 

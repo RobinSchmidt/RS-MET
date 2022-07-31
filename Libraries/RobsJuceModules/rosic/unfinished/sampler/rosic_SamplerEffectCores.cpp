@@ -466,3 +466,22 @@ void FilterCore::resetState()
 
 }
 }
+
+/*
+
+Ideas for effects:
+-A tunable comb-filter with feedback and adjustable filters in the feedback path to produce 
+ Karplus-Strong like sounds when driven by noise or noise bursts.
+-A modal filter with freely adjustable mode frequencies, phases, amplitudes, attack- and 
+ decay-times
+-A resonant filter with independent control for resonance-gain and resonance-decaytime or
+ bandwidth (these two are reciprocally related). Maybe call the filter type resoflex-ladder, make
+ resonance waveform selectable. We need formulas to compute feedback-amount and resonance-gain
+ from user parameters "resonance" (in dB in sfz) and maybe reso_bw (in Hz or octaves?). We can also
+ do a similar resonance separation with other kinds of filters.
+-The sample player should be treated like an effect module. To prepare that, let LFOs import 
+ waveforms. We can then use the same strategy for loading samples. Maybe it should contain a 
+ "multi" or "super(saw)" or "unison" mode
+
+
+*/
