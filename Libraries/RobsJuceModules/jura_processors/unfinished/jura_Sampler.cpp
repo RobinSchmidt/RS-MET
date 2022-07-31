@@ -1049,6 +1049,7 @@ ToDo:
   "Perform" page. The code editor is shown on an "Edit" page. The MIDI controllers are then 
   connected to parameters of the patch using the modulation system. Perhaps a separate automation
   system may not be needed then. It would be kinda redundant and confusing anyway.
+ -Have some routable XY-Pad controllers
  -show some data about the loaded patch: number of samples, regions, groups, filters, equalizers, 
   waveshapers etc.
  -maybe display also, how many filters, eqs, etc. are allocated and how many are currently in use
