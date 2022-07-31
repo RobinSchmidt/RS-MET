@@ -559,9 +559,9 @@ void SamplerEditor::resized()
   int x  = stateWidgetSet->getX();
   int y  = stateWidgetSet->getY();
   int h  = stateWidgetSet->getHeight();
-  int m  = 4;                             // margin
-  int bw = 48;                            // button width
-  int w  = getWidth() - x - 2*(bw + m);   // new width for preset section
+  int m  = 4;                              // margin
+  int bw = 48;                             // button width
+  int w  = getWidth() - x - 2*(bw+m) - m;  // new width for preset section
   stateWidgetSet->setBounds(x, y, w, h);
   // Actually, that's still a bit too wide. But maybe later we'll get more pages such that we need
   // more buttons. Then we can reduce the width further to make more space. Maybe then the 
@@ -586,12 +586,13 @@ void SamplerEditor::resized()
   w = 360;
   sfzFileLoader->setBounds(x, y, w, h);
 
-
-
   // Place the page buttons to the right of the preset section:
-
-
-
+  y = stateWidgetSet->getY();
+  x = stateWidgetSet->getRight() + m;
+  h = 24;      // GUI page buttons are a bit bigger than regular buttons (which are 16 pixels high)
+  playButton->setBounds(x, y, bw, h);
+  x += bw+m;
+  editButton->setBounds(x, y, bw, h);
 
 
 
