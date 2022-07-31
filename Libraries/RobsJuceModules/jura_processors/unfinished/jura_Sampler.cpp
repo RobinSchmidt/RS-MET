@@ -512,6 +512,8 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
   createWidgets();
   setSize(800, 400);
+  // Maybe choose an initial size such that lines with a 100 character limit fit exactly int the 
+  // code editor window. That's my preferred line-width in code.
 
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second) for the metering widgets
@@ -550,7 +552,39 @@ void SamplerEditor::timerCallback()
 void SamplerEditor::resized()
 {
   ScopedLock scopedLock(*lock);  // do we actually nee the lock here?
+
+  // Let the baseclass take care of positioning the xml preset widget set, then reduce its width to 
+  // make space for the buttons that switch between the GUI pages:
   AudioModuleEditor::resized();
+  int x  = stateWidgetSet->getX();
+  int y  = stateWidgetSet->getY();
+  int h  = stateWidgetSet->getHeight();
+  int m  = 4;                             // margin
+  int bw = 48;                            // button width
+  int w  = getWidth() - x - 2*(bw + m);   // new width for preset section
+  stateWidgetSet->setBounds(x, y, w, h);
+  // Actually, that's still a bit too wide. But maybe later we'll get more pages such that we need
+  // more buttons. Then we can reduce the width further to make more space. Maybe then the 
+  // 2*(bw + m) should be replaced by numButtons*(bw + m). We could actually reduce the width 
+  // regardless of whether or not we need more page buttons and maybe just leae some empty space. 
+  // We'll see....
+
+
+  // Place the sfz load/save widget set immediately below the xml load/save widgets:
+
+
+
+
+  // Place the page buttons to the right of the preset section:
+
+
+
+
+
+
+
+
+  /*
   int x = 0;
   int y = getPresetSectionBottom()+4;
   int w = getWidth();
@@ -572,12 +606,6 @@ void SamplerEditor::resized()
   // Set up widgets visible on "Play" page:
   layersMeter->setBounds(x+m, y, w/2-2*m, 16);  // is misplaced
 
-
-
-
-
-
-
   y = playButton->getBottom() + m;
   x = 0;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
@@ -594,6 +622,12 @@ void SamplerEditor::resized()
   x = sfzEditor.getRight() - w;
   y = sfzFileLoader->getY();
   parseButton->setBounds(x, y, w, 16);
+  */
+
+
+
+
+
 
 
   /*
