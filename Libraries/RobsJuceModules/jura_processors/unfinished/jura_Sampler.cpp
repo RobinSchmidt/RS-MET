@@ -511,7 +511,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
 
   createWidgets();
-  setSize(900, 480);  // width should be divisible by 3
+  setSize(900, 540);  // width should be divisible by 3
   // Maybe choose an initial size such that lines with a 100 character limit fit exactly int the 
   // code editor window. That's my preferred line-width in code. Hmm - that's a bit wide. Maybe
   // use a limit of 80 in the sfz files. Also, remove the line-numbering from the code editor
