@@ -511,9 +511,11 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
 
   createWidgets();
-  setSize(840, 420);  // width should be divisible by 3
+  setSize(900, 480);  // width should be divisible by 3
   // Maybe choose an initial size such that lines with a 100 character limit fit exactly int the 
-  // code editor window. That's my preferred line-width in code.
+  // code editor window. That's my preferred line-width in code. Hmm - that's a bit wide. Maybe
+  // use a limit of 80 in the sfz files. Also, remove the line-numbering from the code editor
+  // to get more space for the actual code
 
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second) for the metering widgets
@@ -604,9 +606,9 @@ void SamplerEditor::resized()
   // -Into right section go metering devices like RAM and CPU usage, maybe a scope, output levels,
   //  stereo width etc.
   // -Hmm...or maybe it's better to put the performance controls left, patch info centered? 
-  y = sfzFileLoader->getBottom() + m;
   x = 2 * getWidth() / 3 + m;
-  w =     getWidth() / 3 - 2*m;
+  y = sfzFileLoader->getBottom() + m;
+  w = getWidth() / 3 - 2*m;
   h = 20;
   layersMeter->setBounds(x, y, w, h); 
 
@@ -622,10 +624,17 @@ void SamplerEditor::resized()
   //  for sample opcodes (maybe it should allow to load samples using a file-browser)
   // -It would be nice, if we could sync the code-editor and the tree-view, i.e. highlight the code
   //  corresponding to the selected node and maybe even modify it via the widgets.
+  x = 0;
+  y = sfzFileLoader->getBottom();
+  w = 2 * getWidth() / 3;
+  h = 3 * (getHeight() - y) / 4;
+  sfzEditor.setBounds(x, y, w, h);
+  x = sfzEditor.getRight();
+  w = getWidth() - x;
+  sfzTree->setBounds(x, y, w, h);
 
-
-
-
+  // ToDo:
+  // -place the parse button and Structure label
 
 
 
@@ -843,18 +852,19 @@ void SamplerEditor::createWidgets()
   addWidget(sfzTree);
   sfzTree->setDescription("Structure Current SFZ instrument");
 
-  // The SFZ CodeEditor:
+
   sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->sfzPlayer);
   addWidgetSet(sfzFileLoader);
   sfzFileLoader->setDescription("Code of Current SFZ instrument");
   //sfzFileLoader->addFileManagerListener(this); 
 
-
   //addWidget(sfzStatusField = new jura::RLabeledTextEntryField);
   //sfzStatusField->setLabelText("SFZ Status:");
   //sfzStatusField->setEntryEditable(false);
 
+  // The SFZ CodeEditor:
   addAndMakeVisible(sfzEditor);
+  sfzEditor.setLineNumbersShown(false);
   // ToDo: set up the description of the editor...but it's not a subclass of RWidget...hmmm... 
   // maybe we can make a subclass of juce::CodeEditorComponent and jura::DescribedItem
 
