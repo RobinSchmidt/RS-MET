@@ -252,5 +252,32 @@ for audio files. That could be useful for the sampler but also in other contexts
 how about .adi (audio data info), .afi (audio file info), .adp (audio data properties)
 
 
+Non-Destructive Sample Editing:
+-------------------------------
+
+We currently hold all samples in memory (RAM), i.e. there's no direct-from-disk (DFD) streaming
+implemented. This would in principle allow, that we apply some sort of pre-processing to these
+in-memory samples. Maybe we could define a new sfz header <sample> where the user can load a 
+sample file, give it a name and later in the sfz (i.e. in groups/regiosn etc.) can refer to that
+sample by name (rather than by filename on disk). For example:
+
+<sample>
+name=StringsA4
+file=StringsA4.wav
+effect=filter1
+
+Where the filter1 effect could be defined in yet another section like:
+
+<sample_effect>
+name=filter1
+cutoff=1000
+fil_type=lpf_butter4        / 4th order Butterworth lowpass
+direction=forward_backward  / apply filter bidirectionally
+
+...and should perhaps actually be defined before it is used. But be careful - there are already 
+extensions like <sample> and <effect> with a different meaning:
+  https://sfzformat.com/headers/
+But maybe our definitions could be made compatible with that. All so defined effects could have
+dry_level and wet_level parameters to allow parallel processing, too.
 
 

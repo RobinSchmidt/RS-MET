@@ -4,6 +4,10 @@ SfzPlayer::SfzPlayer()
   wildcardPatterns = String("*.sfz");  // To show only .sfz files in the dialog box?
   defaultExtension = String(".sfz");   // To append this as default extension when saving?
   updateFileList();
+
+  // ToDo: maybe support this opcode:
+  //   https://sfzformat.com/opcodes/default_path
+  // ...but that actually be handled by the sfz-engine
 }
 
 bool SfzPlayer::loadFile(const juce::File& fileToLoad)
