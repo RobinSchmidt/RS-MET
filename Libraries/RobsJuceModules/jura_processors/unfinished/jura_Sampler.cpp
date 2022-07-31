@@ -632,11 +632,13 @@ void SamplerEditor::resized()
   x = sfzEditor.getRight();
   w = getWidth() - x;
   sfzTree->setBounds(x, y, w, h);
-
+  x = x - bw; w = bw; h = 16;
+  parseButton->setBounds(x, y, w, h);
   // ToDo:
-  // -place the parse button and Structure label
+  // -position "Structure" label (which we don'T have yet)
 
 
+  // I think, this old code can be deleted now - verify it and then do it!
 
   /*
   int x = 0;
@@ -644,9 +646,7 @@ void SamplerEditor::resized()
   int w = getWidth();
   int h = getHeight() - y;  // maybe set to 16 for widget-height
   int m = 4;                // margin
-
   int buttonWidth = 48;
-
 
   // Set up general widgets that are always visible:
   //stateWidgetSet->setBounds(
@@ -678,12 +678,6 @@ void SamplerEditor::resized()
   parseButton->setBounds(x, y, w, 16);
   */
 
-
-
-
-
-
-
   /*
   // Preliminary GUI layout for editing:
   w = 300;
@@ -704,6 +698,9 @@ void SamplerEditor::resized()
   sfzStatusField->setLabelWidth(64);
   sfzStatusField->setBounds(x, y, 150, 16);
   // or maybe move to the right, directly next to (left of) the parseButton.
+  // Maybe don't have an extra field for that - reuse the tree. fill it only, if the instrument is
+  // successfully parsed, otherwise show an empty tree and a message that tells the user that the
+  // sfz could not be parsed...ideally with some more specific error message.
   */
 }
 
