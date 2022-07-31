@@ -564,6 +564,7 @@ void SamplerEditor::resized()
   int m  = 4;                              // margin
   int bw = 48;                             // button width
   int w  = getWidth() - x - 2*(bw+m) - m;  // new width for preset section
+  w = jmin(w, 360);
   stateWidgetSet->setBounds(x, y, w, h);
   // Actually, that's still a bit too wide. But maybe later we'll get more pages such that we need
   // more buttons. Then we can reduce the width further to make more space. Maybe then the 
@@ -632,10 +633,22 @@ void SamplerEditor::resized()
   x = sfzEditor.getRight();
   w = getWidth() - x;
   sfzTree->setBounds(x, y, w, h);
-  x = x - bw; w = bw; h = 16;
+  x = x - bw;
+  y = sfzFileLoader->getY();
+  w = bw; 
+  h = 16;
   parseButton->setBounds(x, y, w, h);
   // ToDo:
-  // -position "Structure" label (which we don'T have yet)
+  // -position "Structure" label (which we don't have yet)
+  // -Maybe the Play/Edit Buttons should be next to the Load/Save buttons of the sfz loader. The 
+  //  free space in the top-right corner can perhaps be used to display some status into like 
+  //  number of playing notes, last received event or maybe a level meter. The most important of 
+  //  the metering widgets which should be shown permanently. This can be done for other modules
+  //  with big editors, too. Maybe make a baseclass AudioModuleEditorWithMetering. Maybe the stereo
+  //  meters shoudl both start int the middle and expand to left and right.
+  // 
+
+
 
 
   // I think, this old code can be deleted now - verify it and then do it!
