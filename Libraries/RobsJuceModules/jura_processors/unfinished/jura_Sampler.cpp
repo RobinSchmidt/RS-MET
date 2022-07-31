@@ -569,9 +569,22 @@ void SamplerEditor::resized()
   // regardless of whether or not we need more page buttons and maybe just leae some empty space. 
   // We'll see....
 
-
+  // Nope - no good:
   // Place the sfz load/save widget set immediately below the xml load/save widgets:
+  //y += h;
+  //sfzFileLoader->setBounds(x, y, w, h);
+  // WUT?! It's wider than the xml-widget set! Maybe there are some internal margins in the xml set
+  // that are not present in the sfz set?. Also, we should perhaps only do y += h-2 because of the
+  // 2 pixel line thickness. But actually, I'm not so sure, if the sfz widget should reall go there
+  // anyway. Maybe move it to the left directly above the code-editor. maybe give it a label:
+  // SFZ-File: or something like that
 
+  // Place the sfz load/save widgets to the extreme left of the editor, directly on top of the code 
+  // editor, at a y-position that leaves enough vertical space for the page buttons:
+  y = getPresetSectionBottom() + 8;
+  x = 0;
+  w = 360;
+  sfzFileLoader->setBounds(x, y, w, h);
 
 
 
