@@ -511,7 +511,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
 
   createWidgets();
-  setSize(800, 400);
+  setSize(840, 420);  // width should be divisible by 3
   // Maybe choose an initial size such that lines with a 100 character limit fit exactly int the 
   // code editor window. That's my preferred line-width in code.
 
@@ -594,11 +594,7 @@ void SamplerEditor::resized()
   x += bw+m;
   editButton->setBounds(x, y, bw, h);
 
-
   // Lay out widgets for "Play" page:
-  y = sfzFileLoader->getBottom() + m;
-  x = m;
-  w = getWidth() / 3;
   // ToDo: 
   // -Split the page into 3 regions: left/center/right
   // -Into the left region goes some information about the patch (author, comments, number of 
@@ -607,10 +603,12 @@ void SamplerEditor::resized()
   //  that can be assigned to midi controllers.
   // -Into right section go metering devices like RAM and CPU usage, maybe a scope, output levels,
   //  stereo width etc.
-
-
-
-
+  // -Hmm...or maybe it's better to put the performance controls left, patch info centered? 
+  y = sfzFileLoader->getBottom() + m;
+  x = 2 * getWidth() / 3 + m;
+  w =     getWidth() / 3 - 2*m;
+  h = 20;
+  layersMeter->setBounds(x, y, w, h); 
 
   // Lay out widgets for "Edit" page:
   // ToDo:
