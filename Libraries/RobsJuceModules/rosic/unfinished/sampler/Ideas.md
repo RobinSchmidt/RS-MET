@@ -251,6 +251,10 @@ for audio files. That could be useful for the sampler but also in other contexts
 "audio meta data" - not sure, if a certain CPU vendor would be happy with this choice, though...
 how about .adi (audio data info), .afi (audio file info), .adp (audio data properties)
 
+Maybe sfz files could also have metadata embedded in them under a <meta> header. This could include
+author, genre/category, date, version, variant, description (maybe short and long). we could 
+display that on the performance screen.
+
 
 Non-Destructive Sample Editing:
 -------------------------------

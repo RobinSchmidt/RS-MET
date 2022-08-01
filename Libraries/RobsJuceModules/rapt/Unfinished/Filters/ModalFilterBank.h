@@ -693,6 +693,10 @@ RS_INLINE TSig rsNonlinearModalFilter<TSig, TPar>::getSample(TSig in)
   }
   */
 
+
+  // ToDo:
+  // -Try to derive cheap signals that can be meaningfully used as modulators. Examples:
+  //  re^2 + im ^2, abs(re) + abs(im), abs(z) (not so cheap due to sqrt)
 }
 
 template<class TSig, class TPar>

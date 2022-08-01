@@ -486,6 +486,10 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
 
   //juce::String debugInfo = "w=" + String(w) + ", h=" + String(h);
   //graphics.drawText(debugInfo, 0, 0, w, h, Justification::centred, false);
+
+  // Notes:
+  // -When fillig a big rectangle, artifacts can be seen: areas of same color separated by 
+  //  hyperbolas. Maybe using floating point arithemtic could avodi this? Try it!
 }
 
 void fillRectWithBilinearGradient(Graphics &graphics, Rectangle<int> r,  Colour topLeftColour,

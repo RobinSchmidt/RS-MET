@@ -572,16 +572,6 @@ void SamplerEditor::resized()
   // regardless of whether or not we need more page buttons and maybe just leae some empty space. 
   // We'll see....
 
-  // Nope - no good:
-  // Place the sfz load/save widget set immediately below the xml load/save widgets:
-  //y += h;
-  //sfzFileLoader->setBounds(x, y, w, h);
-  // WUT?! It's wider than the xml-widget set! Maybe there are some internal margins in the xml set
-  // that are not present in the sfz set?. Also, we should perhaps only do y += h-2 because of the
-  // 2 pixel line thickness. But actually, I'm not so sure, if the sfz widget should reall go there
-  // anyway. Maybe move it to the left directly above the code-editor. maybe give it a label:
-  // SFZ-File: or something like that
-
   // Place the sfz load/save widgets to the extreme left of the editor, directly on top of the code 
   // editor, at a y-position that leaves enough vertical space for the page buttons:
   y = getPresetSectionBottom() + 8;
@@ -596,6 +586,10 @@ void SamplerEditor::resized()
   playButton->setBounds(x, y, bw, h);
   x += bw+m;
   editButton->setBounds(x, y, bw, h);
+  // Not so good. Let's try place them next to sfz load/save button isnetad (with some margin of 
+  // distance). Top-right area can be used for level meters and/or midi activity indicator. Maybe 
+  // the module records per buffer, whether or not events were received and the editor looks at 
+  // that field
 
   // Lay out widgets for "Play" page:
   // ToDo: 
@@ -647,63 +641,6 @@ void SamplerEditor::resized()
   //  with big editors, too. Maybe make a baseclass AudioModuleEditorWithMetering. Maybe the stereo
   //  meters shoudl both start int the middle and expand to left and right.
   // 
-
-
-
-
-  // I think, this old code can be deleted now - verify it and then do it!
-
-  /*
-  int x = 0;
-  int y = getPresetSectionBottom()+4;
-  int w = getWidth();
-  int h = getHeight() - y;  // maybe set to 16 for widget-height
-  int m = 4;                // margin
-  int buttonWidth = 48;
-
-  // Set up general widgets that are always visible:
-  //stateWidgetSet->setBounds(
-  x = m;
-  playButton->setBounds(x, y, buttonWidth, 24);
-  x = playButton->getRight() + m;
-  editButton->setBounds(x, y, buttonWidth, 24);
-  // Maybe place them right to the xml load/save widgets, i.e. make the preset section a bit less wide
-
-
-  // Set up widgets visible on "Play" page:
-  layersMeter->setBounds(x+m, y, w/2-2*m, 16);  // is misplaced
-
-  y = playButton->getBottom() + m;
-  x = 0;
-  //sfzFileLoader->setBounds(x, y, w-x-4, 16);
-
-  int treeWidth = 300;
-  sfzFileLoader->setBounds(x, y, 300, 16);
-  y += 16;
-  sfzEditor.setBounds(x, y, getWidth()-x-treeWidth, getHeight()-y);
-  x = sfzEditor.getRight();
-  sfzTree->setBounds(x, y, getWidth()-x, getHeight()-y);
-  //sfzTree->setBounds(x, y, 200, 100);  // for test/debug
-  w = 48;
-  //x = sfzTree->getX();
-  x = sfzEditor.getRight() - w;
-  y = sfzFileLoader->getY();
-  parseButton->setBounds(x, y, w, 16);
-  */
-
-  /*
-  // Preliminary GUI layout for editing:
-  w = 300;
-  sfzFileLoader->setBounds(x, y, w, 16);
-  y += 14;
-  sfzTree->setBounds(x, y, w, getHeight()-y);
-  x = sfzTree->getRight();
-  sfzEditor.setBounds(x, y, getWidth()-x-8, getHeight()-y);
-  y -= 14;
-  w  = 48;
-  x  = sfzEditor.getRight() - w;
-  parseButton->setBounds(x, y, w, 16);
-  */
 
   /*
   // Under construction: display the status of the code editor content (Parsed/Malformed/Edited)
@@ -1080,6 +1017,12 @@ ToDo:
   reverts to ..yeah - to what? the last saved or the last valid parsed code? Both could be useful.
  -Maybe when the text is unparsed, indicate it in the TreeView - maybe make it empty? Or show some
   text like: "SFZ code was edited. Click "Parse" to update engine"
+ -Maybe rename the "Edit" page to "Code" and let the actual Edit page show the tree (like in code) 
+  on the left and then have also an area for keymapping, proper sample editing, envelope editors,
+  filter editors, LFO editors, etc. Maybe there could also be a "View" page that somehwo shows
+  the patch-structure in a more user friendly way...with or without editing capabilities. A proper
+  sample editor, could have views for: waveform, spectrogram, spectrum (of whole file), scalogram,
+  phasogram, views can swicth between L//R and M/S mode
  -FileManager::markFileAsClean just sets a boolean flag but doesn't rigger any callbacks, so the 
   sfz-widget does not acquire the "dirty" asterisk. Maybe let FileManager have a second callback
   activeFileWasDirtified or activeFileIsOutOfDate, activeFileBecameDirty or similar which the
