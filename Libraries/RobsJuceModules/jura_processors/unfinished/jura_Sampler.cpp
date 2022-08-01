@@ -584,21 +584,6 @@ void SamplerEditor::resized()
   x += bw-2;
   editButton->setBounds(x, y, bw, h);
 
-
-  /*
-  // Place the page buttons to the right of the preset section:
-  y = stateWidgetSet->getY();
-  x = stateWidgetSet->getRight() + m;
-  h = 24;      // GUI page buttons are a bit bigger than regular buttons (which are 16 pixels high)
-  playButton->setBounds(x, y, bw, h);
-  x += bw+m;
-  editButton->setBounds(x, y, bw, h);
-  // Not so good. Let's try place them next to sfz load/save button isnetad (with some margin of 
-  // distance). Top-right area can be used for level meters and/or midi activity indicator. Maybe 
-  // the module records per buffer, whether or not events were received and the editor looks at 
-  // that field
-  */
-
   // Lay out widgets for "Play" page:
   // ToDo: 
   // -Split the page into 3 regions: left/center/right
@@ -622,6 +607,9 @@ void SamplerEditor::resized()
   //  4/5, 1/5). And the top-left should take roughly 2/3 to 3/4 of the horizontal space
   // -The top-left section is the sfz code editor
   // -The top-right section is the sfz structure tree-view
+  // -Maybe the code editor should use the full height. We may not need that much space for the
+  //  opcode edit widgets...although, for a sample preview, it's rather nice to have the full width
+  //  available.
   // -The bottom section dynamically shows appropriate edit or display widgets for the node that is
   //  selected in the tree-view, like a slider for continuously adjustable opcodes, a sample-view 
   //  for sample opcodes (maybe it should allow to load samples using a file-browser)
@@ -648,9 +636,7 @@ void SamplerEditor::resized()
 
 
   // ToDo:
-  // -position "Structure" label (which we don't have yet)
-  // -Maybe the Play/Edit Buttons should be next to the Load/Save buttons of the sfz loader. The 
-  //  free space in the top-right corner can perhaps be used to display some status into like 
+  // -The free space in the top-right corner can perhaps be used to display some status into like 
   //  number of playing notes, last received event or maybe a level meter. The most important of 
   //  the metering widgets which should be shown permanently. This can be done for other modules
   //  with big editors, too. Maybe make a baseclass AudioModuleEditorWithMetering. Maybe the stereo

@@ -399,7 +399,7 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeWidgetSet)
 };
-
+// Maybe turn this into a subeditor rather than a mere widget set.
 
 
 
