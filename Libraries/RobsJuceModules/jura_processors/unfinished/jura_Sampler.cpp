@@ -456,6 +456,7 @@ void SfzTreeView::clearTree()
 
 //=================================================================================================
 
+/*
 FlexiWidget::FlexiWidget()
 {
   addWidget(slider    = new jura::RSlider(),         true, false);
@@ -487,11 +488,13 @@ void FlexiWidget::updateVisibilities()
   case WidgetMode::text:    textField->setVisible(true); break;
   }
 }
+*/
 
 //=================================================================================================
 
-SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
+SfzOpcodeEditor::SfzOpcodeEditor()
 {
+  // Maybe factor out into createWidgets:
   addWidget(opcodeField = new jura::RTextField());
   addWidget(helpField   = new jura::RTextField());
 }
@@ -1075,7 +1078,9 @@ ToDo:
   non-destructive? the sampler just stores all actions and when the patch is loaded, re-applies 
   them? ...in this context, we may also develop a GUI for the sinusoidal models.
  -Maybe we should use a Mediator pattern similar to the Liberty GUI to coordinate TreeView and
-  CodeEditor.
+  CodeEditor. See: https://refactoring.guru/design-patterns/mediator  ...yes, that seems like a 
+  good idea. We may introduce even more GUI pages and elements later, so having a centralized
+  facility to coordinate them seems like a good idea.
  
  
   

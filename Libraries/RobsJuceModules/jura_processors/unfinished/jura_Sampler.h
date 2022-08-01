@@ -344,6 +344,7 @@ edited. It's used for the opcode manipulation widget in the sampler GUI...tbc...
 ToDo:
 -Maybe move into jura_framework. It may be usabel in other contexts, too  */
 
+/*
 class FlexiWidget : public WidgetSet
 {
 
@@ -374,30 +375,46 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FlexiWidget)
 };
-
+*/
+// Hmm...maybe we don't really need this
 
 //=================================================================================================
 
-/** A widget set for displaying and manipulating an sfz opcode. It will show the name of the 
+/** A subeditor for displaying and manipulating an sfz opcode. It will show the name of the 
 opcode and a little help text that tells the user about what the opcode does, what its nominal 
 range is, which unit it has, etc. It will also show a widget that is appropriate to manipulate the
 actual parameter value. */
 
-class SfzOpcodeWidgetSet : public FlexiWidget
+class SfzOpcodeEditor : public jura::Editor
 {
 
 public:
 
-  SfzOpcodeWidgetSet();
-  virtual ~SfzOpcodeWidgetSet() {}
+  SfzOpcodeEditor();
+  virtual ~SfzOpcodeEditor() {}
+
+
+  enum class WidgetMode { slider, button, chooser, text, none };
+
+  //virtual void setWidgetMode(WidgetMode newMode);
+
 
 protected:
 
-  jura::RTextField *opcodeField, *helpField;
+
+  //virtual void updateVisibilities();
+
+  jura::RTextField *opcodeField;     // Shows name/syntax of active opcode
+  jura::RTextField *helpField;       // Shows a description text for active opcode
+  jura::RSlider* slider;             // Sets continuous parameters
+  jura::RButton* button;             // Sets boolean parameters
+  jura::RComboBox* comboBox;         // Sets choice parameters
+  jura::RTextEntryField* textField;  // Sets freeform string parameters
 
 
+  WidgetMode mode = WidgetMode::none;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeWidgetSet)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeEditor)
 };
 // Maybe turn this into a subeditor rather than a mere widget set.
 
@@ -463,24 +480,26 @@ protected:
 
   SamplerModule* samplerModule = nullptr;
 
-
+  // Buttons to toggle between the different pages:
   jura::RRadioButton *playButton, *editButton;
   jura::RRadioButtonGroup guiPageButtonGroup;
 
 
-
+  // Realtime metering widgets for the "Play" page:
   jura::MeteringDisplayWithText *layersMeter;
+  // ToDo: meters for CPU and RAM usage (maybe later disk traffic, when DFD is implemented), 
+  // output level, MIDI activity indicator, maybe RAM meter should also show the total occupation
+  // (by all apps) and the remaining available, if that is possible
 
 
   // SFZ tree view and adjacent widgets:
   jura::RTextField* structureField;  // Says: "Patch Structure", placed above the TreeView
   SfzTreeView* sfzTree;
-  //SfzTreeNodeWidgetSet* nodeWidgets;
 
 
   // SFZ text editor and adjacent widgets:
   jura::FileSelectionBox *sfzFileLoader;
-  jura::RClickButton     *parseButton;
+  jura::RClickButton *parseButton;
   juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a 
   juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)
   //juce::CodeTokeniser sfzTokenizer;
@@ -490,21 +509,10 @@ protected:
   // else already did that? Check open-source SFZ sampler projects. When we have that, we need to 
   // pass a pointer to our tokenizer to the constructor of the editor
 
-  SfzOpcodeWidgetSet* opcodeWidgets;
+
+  SfzOpcodeEditor* opcodeEditor;
 
 
-
-
-
-  /*
-
-  RTextField *numLayersLabel, *numLayersOfLabel, ;
-  RDraggableNumber *maxNumLayersSlider;
-
-  RTextField *cpuLoadLabel, *cpuLoadField, *ramLoadLabel, *ramLoadField;  
-  // todo: diskLoad - maybe ram should also show the total occupation (by all apps) and the 
-  // remaining available
-  */
 
   // Flags to indicate whether the current content of our sfz code is parsed and/or saved to disk:
   bool codeIsParsed = false;
