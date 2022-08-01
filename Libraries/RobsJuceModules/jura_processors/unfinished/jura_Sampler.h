@@ -396,13 +396,13 @@ public:
 
   enum class WidgetMode { slider, button, chooser, text, none };
 
-  //virtual void setWidgetMode(WidgetMode newMode);
+  virtual void setWidgetMode(WidgetMode newMode);
 
 
 protected:
 
 
-  //virtual void updateVisibilities();
+  virtual void updateVisibilities();
 
   jura::RTextField *opcodeField;     // Shows name/syntax of active opcode
   jura::RTextField *helpField;       // Shows a description text for active opcode
@@ -416,7 +416,7 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeEditor)
 };
-// Maybe turn this into a subeditor rather than a mere widget set.
+// Later, this should communicate with an SfzEditorMediator
 
 
 
@@ -508,7 +508,6 @@ protected:
   // The CodeTokeniser class is abstract. We need to make a subclass rsSfzTokenizer. Maybe someone
   // else already did that? Check open-source SFZ sampler projects. When we have that, we need to 
   // pass a pointer to our tokenizer to the constructor of the editor
-
 
   SfzOpcodeEditor* opcodeEditor;
 

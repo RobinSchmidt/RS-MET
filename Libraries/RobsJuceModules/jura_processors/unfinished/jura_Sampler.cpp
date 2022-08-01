@@ -494,12 +494,46 @@ void FlexiWidget::updateVisibilities()
 
 SfzOpcodeEditor::SfzOpcodeEditor()
 {
-  // Maybe factor out into createWidgets:
+  // The widgets that are always present:
   addWidget(opcodeField = new jura::RTextField());
+  opcodeField->setDescription("Name of currently active opcode");
+
   addWidget(helpField   = new jura::RTextField());
+  helpField->setDescription("Short description of the opcode");
+
+  // The widgets that dynamically appear or disappear:
+  addWidget(slider    = new jura::RSlider(),         true, false);
+  addWidget(button    = new jura::RButton(),         true, false);
+  addWidget(comboBox  = new jura::RComboBox(),       true, false);
+  addWidget(textField = new jura::RTextEntryField(), true, false);
+  // May add description to these widgets, too - but maybe these descriptions should also change
+  // dynamically? We'll see
 }
 
 
+void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
+{
+  if(newMode != mode)
+  {
+    mode = newMode;
+    updateVisibilities();
+  }
+}
+
+void SfzOpcodeEditor::updateVisibilities()
+{
+  slider->setVisible(false);
+  button->setVisible(false);
+  comboBox->setVisible(false);
+  textField->setVisible(false);
+  switch(mode)
+  {
+  case WidgetMode::slider:  slider->setVisible(true);    break;
+  case WidgetMode::button:  button->setVisible(true);    break;
+  case WidgetMode::chooser: comboBox->setVisible(true);  break;
+  case WidgetMode::text:    textField->setVisible(true); break;
+  }
+}
 
 //=================================================================================================
 
@@ -621,9 +655,11 @@ void SamplerEditor::resized()
   x = 0;
   y = sfzFileLoader->getBottom();
   w = 2 * getWidth() / 3;
-  h = 3 * (getHeight() - y) / 4;
+  //h = 3 * (getHeight() - y) / 4;    // 3/4 of remeining height
+  h = getHeight() - y;
   sfzEditor.setBounds(x, y, w, h);
   x = sfzEditor.getRight();
+  h = 3 * (getHeight() - y) / 4;      // 3/4 of remeining height
   w = getWidth() - x;
   sfzTree->setBounds(x, y, w, h);
   x = x - bw;
@@ -635,7 +671,11 @@ void SamplerEditor::resized()
   w = structureField->getWidthToFitText();
   x = (sfzTree->getX() + sfzTree->getRight() - w) / 2;  // centered above tree-view
   structureField->setBounds(x, y, w, h);
-
+  x = sfzTree->getX();
+  y = sfzTree->getBottom() - 2;
+  w = getWidth()  - x;
+  h = getHeight() - y;
+  opcodeEditor->setBounds(x, y, w, h);
 
 
   // ToDo:
@@ -801,7 +841,7 @@ void SamplerEditor::createWidgets()
   // The SFZ TreeView and adjacent widgets:
   sfzTree = new SfzTreeView;
   addWidget(sfzTree);
-  sfzTree->setDescription("Structure Current SFZ instrument");
+  sfzTree->setDescription("Structure of current SFZ patch");
   addWidget(structureField = new RTextField("Patch Structure"));
 
 
@@ -823,12 +863,20 @@ void SamplerEditor::createWidgets()
   addWidget(parseButton = new jura::RClickButton("Parse"));  // Maybe use a right-arrow ("Play")
   parseButton->setDescription("Parse the current content of the code editor as sfz");
   //parseButton->addRButtonListener(this); // Needed? It initially worked without that. ...but why?
+  // ToDo: Ctrl-P should also trigger parsing. Write that into the description when it's 
+  // implemented.
+ 
+  addChildEditor(opcodeEditor = new jura::SfzOpcodeEditor);
+  opcodeEditor->setDescription("Editor for the currently selected opcode in the tree");
+
+
 
   // The order in which we call add...() for the widgets determines, which widgets are in the 
   // foreground when they overlap.
 
-  // ToDo: set up better descriptions for the xml and sfz loader widget sets. Maybe:
-  // Load .xml preset from file, Load .sfz instrument from file, etc.
+  // ToDo: 
+  // -set up better descriptions for the xml and sfz loader widget sets. Maybe:
+  //  Load .xml preset from file, Load .sfz instrument from file, etc.
 }
 
 void SamplerEditor::setCodeIsParsed(bool isParsed)
@@ -915,6 +963,7 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
   parseButton->setVisible(visible);
   sfzEditor.setVisible(visible);
   structureField->setVisible(visible);
+  opcodeEditor->setVisible(visible);
 }
 
 //=================================================================================================
