@@ -573,12 +573,19 @@ void SamplerEditor::resized()
   // We'll see....
 
   // Place the sfz load/save widgets to the extreme left of the editor, directly on top of the code 
-  // editor, at a y-position that leaves enough vertical space for the page buttons:
-  y = getPresetSectionBottom() + 8;
+  // editor. Next to these widgets, we place the GUI page buttons. The y-position should leave a 
+  // comfortable vertical space between xml loader and sfz loader:
+  y = getPresetSectionBottom() + 2*m;
   x = 0;
   w = 360;
   sfzFileLoader->setBounds(x, y, w, h);
+  x = sfzFileLoader->getRight() + 2*m; 
+  playButton->setBounds(x, y, bw, h);
+  x += bw-2;
+  editButton->setBounds(x, y, bw, h);
 
+
+  /*
   // Place the page buttons to the right of the preset section:
   y = stateWidgetSet->getY();
   x = stateWidgetSet->getRight() + m;
@@ -590,6 +597,7 @@ void SamplerEditor::resized()
   // distance). Top-right area can be used for level meters and/or midi activity indicator. Maybe 
   // the module records per buffer, whether or not events were received and the editor looks at 
   // that field
+  */
 
   // Lay out widgets for "Play" page:
   // ToDo: 
@@ -632,6 +640,13 @@ void SamplerEditor::resized()
   w = bw; 
   h = 16;
   parseButton->setBounds(x, y, w, h);
+  y = sfzFileLoader->getY();
+  w = structureField->getWidthToFitText();
+  x = (sfzTree->getX() + sfzTree->getRight() - w) / 2;  // centered above tree-view
+  structureField->setBounds(x, y, w, h);
+
+
+
   // ToDo:
   // -position "Structure" label (which we don't have yet)
   // -Maybe the Play/Edit Buttons should be next to the Load/Save buttons of the sfz loader. The 
@@ -794,10 +809,11 @@ void SamplerEditor::createWidgets()
   // display information about the smoothness/speikeyness of the CPU load?
 
 
-  // The SFZ TreeView:
+  // The SFZ TreeView and adjacent widgets:
   sfzTree = new SfzTreeView;
   addWidget(sfzTree);
   sfzTree->setDescription("Structure Current SFZ instrument");
+  addWidget(structureField = new RTextField("Patch Structure"));
 
 
   sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->sfzPlayer);
@@ -831,6 +847,8 @@ void SamplerEditor::setCodeIsParsed(bool isParsed)
   codeIsParsed = isParsed;
   //parseButton->setEnabled(!codeIsParsed); // doesn't seem to have any effect
   parseButton->setVisible(!codeIsParsed);   // works but is a bit drastic, graying out would be better
+  // ToDo: 
+  // -Figure out why graying out the button doesn't work and fix it
 }
 
 void SamplerEditor::setCodeIsSaved(bool isSaved)
@@ -890,8 +908,11 @@ void SamplerEditor::updateVisibilities()
   }
 
   // ToDo: 
-  // -maybe stop the time when in edit mode - only in play mode, the metering widgets are 
-  //  shown. Maybe the function should be renamed to switchGuiPage
+  // -Maybe stop the timer when in edit mode - only in play mode, the metering widgets are 
+  //  shown. Maybe the function should be renamed to switchGuiPage...but maybe we need it for the
+  //  MIDI status and level meters anyway on all screens.
+  // -Maybe rename the "Edit" button to "Code" and have have another "Edit" button that shows more
+  //  user oriented editing widgets. We want to make a convenient sfz authoring tool.
 }
 
 void SamplerEditor::makePlayWidgetsVisible(bool visible)
@@ -904,6 +925,7 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
   sfzTree->setVisible(visible);
   parseButton->setVisible(visible);
   sfzEditor.setVisible(visible);
+  structureField->setVisible(visible);
 }
 
 //=================================================================================================

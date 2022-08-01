@@ -473,15 +473,13 @@ protected:
 
 
   // SFZ tree view and adjacent widgets:
-  //jura::RTextField* structureField;  // Says: "Patch Structure", placed above the TreeView
+  jura::RTextField* structureField;  // Says: "Patch Structure", placed above the TreeView
   SfzTreeView* sfzTree;
   //SfzTreeNodeWidgetSet* nodeWidgets;
 
 
   // SFZ text editor and adjacent widgets:
-
   jura::FileSelectionBox *sfzFileLoader;
-  //jura::RLabeledTextEntryField *sfzStatusField;  // still needed?
   jura::RClickButton     *parseButton;
   juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a 
   juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)
@@ -492,10 +490,9 @@ protected:
   // else already did that? Check open-source SFZ sampler projects. When we have that, we need to 
   // pass a pointer to our tokenizer to the constructor of the editor
 
-  // Maybe have an RClickButton for Reparse/Parse/Update ...hwoever we want to call it. maybe it 
-  // should get automatically highlighted, as soon as text was edited such that the engine is out
-  // of date. The FileLoader should also show a "Dirty" star next to the filenam, when the current
-  // state is not save inot a file
+  SfzOpcodeWidgetSet* opcodeWidgets;
+
+
 
 
 
