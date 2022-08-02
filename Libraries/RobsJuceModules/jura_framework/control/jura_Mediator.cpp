@@ -52,7 +52,7 @@ void Mediator::sendNotificationToColleagues(MediatedColleague *originatingCollea
   int messageCode, void* messageData)
 {
   for(size_t i = 0; i < colleagues.size(); i++)
-    colleagues[i]->mediatorHasSentNotification(originatingColleague, messageCode, messageData);
+    colleagues[i]->handleMediatorNotification(originatingColleague, messageCode, messageData);
 }
 
 void Mediator::colleagueHasSentNotification(MediatedColleague *originatingColleague, 

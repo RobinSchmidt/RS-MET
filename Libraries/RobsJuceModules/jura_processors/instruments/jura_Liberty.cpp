@@ -566,7 +566,7 @@ ModularStructureTreeView::~ModularStructureTreeView()
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void ModularStructureTreeView::mediatorHasSentNotification(
+void ModularStructureTreeView::handleMediatorNotification(
   MediatedColleague *originatingColleague, int messageCode, void* messageData)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
@@ -699,7 +699,7 @@ ModulePropertiesEditorHolder::~ModulePropertiesEditorHolder()
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void ModulePropertiesEditorHolder::mediatorHasSentNotification(
+void ModulePropertiesEditorHolder::handleMediatorNotification(
   MediatedColleague *originatingColleague, int messageCode, void* messageData)
 {
   // \todo maybe include a switch on the messageCode later - we may not want to re-create the 
@@ -1378,7 +1378,7 @@ void ModularBlockDiagramPanel::treeNodeChanged(RTreeView *treeView, RTreeViewNod
 
 }
 
-void ModularBlockDiagramPanel::mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+void ModularBlockDiagramPanel::handleMediatorNotification(MediatedColleague *originatingColleague, 
   int messageCode, void* messageData)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));

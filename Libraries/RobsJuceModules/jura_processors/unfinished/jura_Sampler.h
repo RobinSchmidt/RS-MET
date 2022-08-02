@@ -254,6 +254,13 @@ public:
   /** Subclasses must override this to deal with changes of the patch structure. */
   virtual void handlePatchUpdate(const PatchChangeInfo& info) = 0;
 
+  /** Overrides the inherited callback from jura::MediatedColleague to try to dynamically cast the
+  passed messageData into a PatchChangeInfo and, if successful, calls the more specific 
+  handlePatchUpdate with it (which subclasses must override). If the cast fails, it will trigger an 
+  assertion. This should not happen and indicates a bug somewhere else. */
+  void handleMediatorNotification(MediatedColleague* originator,
+    int messageCode = 0, void* messageData = nullptr) override;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerInterfaceComponent)
 };

@@ -285,6 +285,23 @@ void SamplerModule::reset()
 
 //=================================================================================================
 
+void SamplerInterfaceComponent::handleMediatorNotification(MediatedColleague* originator, 
+  int messageCode, void* messageData)
+{
+  //PatchChangeInfo *info = dynamic_cast<PatchChangeInfo*>(messageData);  // ToDo later
+
+  PatchChangeInfo *info = static_cast<PatchChangeInfo*>(messageData); // not safe enough
+
+  if(info != nullptr)
+    handlePatchUpdate(*info);
+  else
+    jassertfalse; // messageData must be of type jura::PatchChangeInfo
+}
+
+
+
+//=================================================================================================
+
 SfzTreeView::SfzTreeView()
 {
   rootNode.setDeleteChildNodesOnDestruction(true); // root node manages lifetime of child nodes

@@ -45,12 +45,14 @@ public:
   colleagues notifies the mediator via notifyMediator. The mediator passes the originating 
   colleague through, together with some optional message code which can be used to further dispatch 
   on some message code and/or with some subclass-defined message data.  */
-  virtual void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+  virtual void handleMediatorNotification(MediatedColleague *originatingColleague, 
     int messageCode = 0, void* messageData = nullptr) = 0;
   // ToDo:
-  // -Maybe rename to handleMediatorNotification
   // -Maybe pass a void pointer to a data-object. Sometimes, an integer message-code is not enough
-  //  and we need some more data
+  //  and we need some more data...maybe it should not be a void pointer but a pointer to some 
+  //  rsMessageData class - this is needed because dynamic_cast doesn't work for void-pointers. We
+  //  could do a static cast, but that may be a bit dangerous - we should perhaps be amore 
+  //  defensive
 
 
 protected:
