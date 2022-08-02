@@ -424,7 +424,7 @@ class PlaybackSetting
 
 public:
 
-  PlaybackSetting(Opcode type, float value, int index = -1) 
+  PlaybackSetting(Opcode type = Opcode::Unknown, float value = 0.f, int index = -1) 
   { 
     this->type  = type; 
     this->value = value; 

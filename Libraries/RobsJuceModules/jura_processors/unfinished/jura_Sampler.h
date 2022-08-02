@@ -248,11 +248,13 @@ public:
   class PatchChangeInfo : public jura::rsMessageData
   {
   public:
+    PatchChangeInfo() {}
     PatchChangeType type = PatchChangeType::unknown;
     int groupIndex  = -1;
     int regionIndex = -1;
     rosic::Sampler::PlaybackSetting newSetting; 
-    // Maybe we should also have oldSetting to ease the process of finding it?
+    // Maybe we should also have oldSetting to ease the process of finding it? Maybe eventually, 
+    // but let's try to avoid that as long as possible
   };
 
 
@@ -428,11 +430,7 @@ class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceCompon
   public jura::RTextEntryFieldObserver
 {
 
-  // ToDo: 
-  // -derive from RSliderListener etc and implement the relevant callbacks (done)
-  // -inside these callbacks:
-  //  -find the relevant setting in the uderlying sfz-datastructure
-  //  -spawn a message and send it out to our colleagues
+
 
 public:
 
@@ -469,8 +467,14 @@ protected:
   jura::RComboBox* comboBox;         // Sets choice parameters
   jura::RTextEntryField* textField;  // Sets freeform string parameters
 
-
   WidgetMode mode = WidgetMode::none;
+
+  PatchChangeInfo patchChangeInfo;
+  // In our widget callbacks, we (re)assign the value field in the embedded 
+  // rosic::Sampler::PlaybackSetting member and then send out a change message to the mediator 
+  // which will, in turn, will inform all colleagues about the desired change ...maybe it should
+  // actually perform the change before broadcasting the change message? Or shall some other object
+  // be responsible for actually performing the change? Maybe the editor itself? Not sure yet...
 
 
   //SfzPlayer* sfzPlayer = nullptr; 

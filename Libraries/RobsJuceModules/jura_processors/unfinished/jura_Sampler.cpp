@@ -497,11 +497,14 @@ void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
   }
 }
 
-
-
 void SfzOpcodeEditor::rSliderValueChanged(RSlider* s)
 {
+  // ToDo: 
+  // -update our patchChangeInfo member
+  // -spawn a message to the mediator (and therefoe, to our colleagues)
 
+
+  //patchChangeInfo
 }
 
 void SfzOpcodeEditor::rButtonClicked(RButton* b)
