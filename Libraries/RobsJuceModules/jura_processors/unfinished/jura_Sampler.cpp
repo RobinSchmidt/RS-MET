@@ -761,7 +761,12 @@ void SamplerEditor::resized()
 void SamplerEditor::treeNodeClicked(RTreeView* treeView, RTreeViewNode* node, 
   const MouseEvent& mouseEvent,int clickPosition)
 {
+  // ToDo:
+  // -Put the node (exclusively) in selected state
+  // -Tell the OpcodeEditor about what kind of node is selected to make it update its widgets
 
+
+  int dummy = 0;
 }
 
 void SamplerEditor::treeNodeChanged(RTreeView* treeView, RTreeViewNode* node)
@@ -903,17 +908,22 @@ void SamplerEditor::createWidgets()
   // display information about the smoothness/speikeyness of the CPU load?
 
 
-  // The SFZ TreeView and adjacent widgets:
-  sfzTree = new SfzTreeView;
-  addWidget(sfzTree);
-  sfzTree->setDescription("Structure of current SFZ patch");
-  addWidget(structureField = new RTextField("Patch Structure"));
-
-
+  // SFZ file loading widgets:
   sfzFileLoader = new jura::FileSelectionBox("", &samplerModule->sfzPlayer);
   addWidgetSet(sfzFileLoader);
-  sfzFileLoader->setDescription("Code of Current SFZ instrument");
+  //sfzFileLoader->setDescription("Code of Current SFZ instrument");  // ??? Do better!
   //sfzFileLoader->addFileManagerListener(this); 
+
+
+  // The SFZ TreeView and adjacent widgets:
+  juce::String desc = "Structure of current SFZ patch";
+  addWidget(structureField = new RTextField("Patch Structure"));
+  structureField->setDescription(desc);
+  addWidget(sfzTree = new SfzTreeView);
+  sfzTree->setDescription(desc);
+  sfzTree->registerTreeViewObserver(this);
+
+
 
   //addWidget(sfzStatusField = new jura::RLabeledTextEntryField);
   //sfzStatusField->setLabelText("SFZ Status:");
