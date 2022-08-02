@@ -773,6 +773,43 @@ void SamplerEditor::treeNodeClicked(RTreeView* treeView, RTreeViewNode* node,
   // -Put the node (exclusively) in selected state
   // -Tell the OpcodeEditor about what kind of node is selected to make it update its widgets
 
+  SfzTreeViewNode* sfzNode = dynamic_cast<SfzTreeViewNode*>(node);
+  jassert(sfzNode);  // You should only add SfzTreeViewNodes into the tree!
+
+
+  int gi = sfzNode->data.groupIndex;
+  int ri = sfzNode->data.regionIndex;
+  using TP = SfzTreeViewNode::Data::Type;
+  switch(sfzNode->data.type)
+  {
+  case TP::playbackSetting:
+  {
+    rosic::Sampler::PlaybackSetting ps = sfzNode->data.data.playbackSetting;
+    // That's kinda ugly, especially the data.data part. Try to do better!
+
+
+
+    int dummy = 0;
+  } break;
+  case TP::modulationRouting:
+  {
+
+  } break;
+  case TP::group:
+  {
+
+  } break;
+  case TP::region:
+  {
+
+  } break;
+  default:
+  {
+
+  }
+
+
+  }
 
   int dummy = 0;
 }

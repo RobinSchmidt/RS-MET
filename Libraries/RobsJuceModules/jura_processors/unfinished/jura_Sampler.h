@@ -116,6 +116,7 @@ protected:
   // we need to figure out the new indices based on the new and old location of the opcode in the 
   // code whenever the code changes?
 };
+// may be oboslete. we are doing it differently...
 */
 
 //=================================================================================================
