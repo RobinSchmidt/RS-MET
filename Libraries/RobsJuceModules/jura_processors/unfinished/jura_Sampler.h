@@ -469,6 +469,12 @@ actual parameter value. */
 class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceComponent
 {
 
+  // ToDo: 
+  // -derive from RSliderListener etc and implement the relevant callbacks
+  // -inside these callbacks:
+  //  -find the relevant setting in the uderlying sfz-datastructure
+  //  -spawn a message and send it out to our colleagues
+
 public:
 
   SfzOpcodeEditor();

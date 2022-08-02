@@ -469,7 +469,11 @@ void SfzTreeView::clearTree()
 
 void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
 {
+  // ToDo:
+  // -Find the node in the tree that is affected by the change
+  // -Update the affected node
 
+  int dummy = 0;
 }
 
 //=================================================================================================
@@ -528,7 +532,6 @@ SfzOpcodeEditor::SfzOpcodeEditor()
   // dynamically? We'll see
 }
 
-
 void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
 
@@ -562,7 +565,9 @@ void SfzOpcodeEditor::updateVisibilities()
 
 void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
-
+  // ToDo:
+  // -Find the location in the code that is affected by the change
+  // -Change the code there
 }
 
 //=================================================================================================
@@ -602,7 +607,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   guiMediator.registerColleague(this);
   guiMediator.registerColleague(opcodeEditor);
   guiMediator.registerColleague(sfzTree);
-  //guiMediator.registerColleague(sfzEditor); // sfzEditor should be of class rsSfzCodeEditor
+  guiMediator.registerColleague(&sfzEditor);
 
 
   updateVisibilities();
