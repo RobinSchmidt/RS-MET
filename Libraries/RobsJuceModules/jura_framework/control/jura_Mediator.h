@@ -47,7 +47,10 @@ public:
   on some message code.  */
   virtual void mediatorHasSentNotification(
     MediatedColleague *originatingColleague, int messageCode = 0) = 0;
-  // maybe rename to handleMediatorNotification
+  // ToDo:
+  // -Maybe rename to handleMediatorNotification
+  // -Maybe pass a void pointer to a data-object. Sometimes, an integer message-code is not enough
+  //  and we need some more data
 
 
 protected:

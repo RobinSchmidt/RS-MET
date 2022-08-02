@@ -259,12 +259,15 @@ public:
 };
 // hmm...maybe we should not use the MediatedColleague baseclass because it has only simple 
 // integers for the callback parameters but we need more data
+// we should override mediatorHasSentNotification, there, dynamically cast the passed 
+// void-pointer to a PatchChangeInfo, jassert that the cast was successful and then call
+// handlePatchUpdate with the object
 
 
 /** The mediator class that coordinates the interaction between the various components of the
 sampler-engine's graphical user interface. */
 
-class SamplerInterfaceMediator
+class SamplerInterfaceMediator : public jura::Mediator
 {
 
   
