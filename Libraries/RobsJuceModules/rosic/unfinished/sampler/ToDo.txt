@@ -44,13 +44,16 @@ Sample playback
   
 - Implement and test better realtime resampling (linear interpolation at first, later cubic and
   sinc, maybe some sort of "Elephant" interpolation, too - although, they are supposed to work 
-  with 2x oversampling) 
+  with 2x oversampling). But maybe a bit of oversampling would be beneficial anyway.
   - we need a double for the sample-time and an increment...but later, that increment shall be
     modulated by pitch-env and -lfo, or maybe use and int and a a float to represent sampleTime
     and increment -> do benchmarks, which is faster
   - Should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
     for controlling this? in some situations, that may makes sense (for creating comb-filter 
-    effects), in others not so much  
+    effects), in others not so much
+
+- Maybe we could also use mip-maps or integrated (lowpass-filtered) samples in memory and apply 
+  the inverse filter during playback (after resampling).
   
 - Support the following opcodes:  
   https://sfzformat.com/opcodes/direction

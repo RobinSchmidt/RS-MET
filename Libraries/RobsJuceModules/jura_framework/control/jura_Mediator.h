@@ -47,6 +47,7 @@ public:
   on some message code.  */
   virtual void mediatorHasSentNotification(
     MediatedColleague *originatingColleague, int messageCode = 0) = 0;
+  // maybe rename to handleMediatorNotification
 
 
 protected:

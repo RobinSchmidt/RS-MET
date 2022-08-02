@@ -285,3 +285,22 @@ But maybe our definitions could be made compatible with that. All so defined eff
 dry_level and wet_level parameters to allow parallel processing, too.
 
 
+Macros:
+-------
+
+Allow sfz authors to define macros under the header <macro> which can be given a name and later be
+invoked by a macro opcode. For example:
+
+/ Macro definition:
+<macro>
+name=Lowpass1000
+cutoff=1000
+fil_type=lpf
+
+/ macro invocation:
+macro=Lowpass1000
+
+I'm not yet sure, if that's really the most convenien syntax for such a thing though. What about 
+opcodes with indices which are actually the majority? Maybe check out, how the "script" opcode is
+supposed in LinuxSampler: http://doc.linuxsampler.org/sfz/script_opcode/  Maybe we should support
+that, too.

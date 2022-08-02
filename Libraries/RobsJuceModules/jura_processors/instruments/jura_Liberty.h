@@ -208,7 +208,12 @@ protected:
 
 //=================================================================================================
 
-/** A mix-in class to mix into the basic jura widget classes. */
+/** A mix-in class to mix into the basic jura widget classes. 
+
+ToDo:
+-Docmuent intention - why do we need this? Maybe it can be useful in other contexts as well. If so,
+ rename it with a more general name, e.g. NamedParameterWidget or soemthing  */
+
 class LibertyModuleWidget
 {
 
@@ -371,7 +376,8 @@ class LibertyInterfaceComponent : public MediatedColleague
 
 public:
 
-  /** Enumeration to be used in the moduleChanged callback. */
+  /** Enumeration to be used in the moduleChanged callback (? is that comment out of date? where is
+  this callback -> figure out and update comment). */
   enum moduleChangeTypeIndices
   {
     MODULE_NAME,               // the module's name in the diagram was changed

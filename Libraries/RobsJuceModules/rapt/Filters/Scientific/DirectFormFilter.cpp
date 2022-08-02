@@ -106,3 +106,21 @@ void rsDirectFormFilter<TSig, TCoef>::initializeCoefficients()
     a[i] = 0.0;
   }
 }
+
+
+/*
+
+Ideas:
+-Allow to use it in TDF-1 form, too. I think, it can be done by re-interpreting the state-buffer. 
+ We just need another function getSampleTDF1 (and maybe rename getSample to getSampleDF2, but keep
+ getSample as alias).
+-Maybe make a subclass that allows for non-delay-canonical computation, i.e. DF-1 and TDF-2. This 
+ needs a 2nd state buffer, that's why it should go into a subclass.
+-Try to replace the unit delays with multi-sample delays, i.e. z^-1 is replaced by z^-M for some 
+ natural number M. I think, we'll get spectral replications of the frequency responses, i.e. a 
+ lowpass turns into a sort of comb-filter? Maybe that can be useful to create higher order 
+ comb-filters with flatter passbands? If we get useful results, maybe try to do the same thing
+ with more modulatable filter structures such as biquad cascades where biquads may be implemented
+ as ZDF-SVF.
+
+*/

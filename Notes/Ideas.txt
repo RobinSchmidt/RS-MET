@@ -389,3 +389,20 @@ Signal Decompositions and Models
  z-plane, i.e. as an impulse respone of a quite general digital filter.
 -We could (re)synthesize a sound from a single cycle, an attack-transient, a 
  single-cycle and an amplitude-smeared/phase-randomized version of the cycle.
+ 
+-------------------------------------------------------------------------------
+PWM via PM
+
+-Pulse width modulation (PWM) is a feature that certain synthesizers offer for
+ the square/pulse waveform. Maybe it can be rephrased as phase modulation (PM) 
+ and as such be made available for arbitrary waveforms and even sample 
+ playback?
+-We need to scan through the first half of the cycle faster and through the 
+ second half slower such that the overall time to pass through one cycle stays
+ the same (at least on average but maybe also for each individual cycle).
+-Maybe it can be achieved by phase-modulating a square-wave with a 
+ triangle-wave of the saem frequency? Or maybe a sawtooth or sine? Maybe the 
+ exact waveform doesn't matter too much as long as its above 0 in the 1st half
+ and below zero in the 2nd half?
+-Or maybe it needs to be true frequency modulation (FM) to work as intended? 
+ That may be even more convenient in the context of the sampler engine.

@@ -214,8 +214,74 @@ protected:
 };
 
 //=================================================================================================
+// The Mediator pattern infrastructure for coordinating the interaction of different GUI elements:
 
-/** A class for represneting the tree nodes in the tree-view for showing the sfz structure. Nodes
+class SamplerInterfaceMediator;
+
+/** Baseclass for the GUI components of the sampler. These components coordinate with one another 
+through the use of a mediator. */
+
+class SamplerInterfaceComponent : public jura::MediatedColleague
+{
+
+public:
+
+  /** Enumeration to be used in the patchChanged callback. */
+  enum class PatchChangeType
+  {
+    opcodeValueChanged,
+    //opcodeAdded,
+    //opcodeRemoved,
+    //opcodeReplaced,
+    //regionAdded,
+    //regionRemoved,
+    //groupAdded,
+    //groupRemoved
+
+    unknown
+  };
+
+  struct PatchChangeInfo
+  {
+    PatchChangeType type = PatchChangeType::unknown;
+    int groupIndex  = -1;
+    int regionIndex = -1;
+    rosic::Sampler::PlaybackSetting newSetting; 
+    // Maybe we should also have oldSetting to ease the process of finding it?
+  };
+
+
+  /** Subclasses must override this to deal with changes of the patch structure. */
+  virtual void handlePatchUpdate(const PatchChangeInfo& info) = 0;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerInterfaceComponent)
+};
+// hmm...maybe we should not use the MediatedColleague baseclass because it has only simple 
+// integers for the callback parameters but we need more data
+
+
+/** The mediator class that coordinates the interaction between the various components of the
+sampler-engine's graphical user interface. */
+
+class SamplerInterfaceMediator
+{
+
+  
+public:
+
+
+protected:
+
+  std::vector<SamplerInterfaceComponent*> colleagues;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerInterfaceMediator)
+};
+
+
+//=================================================================================================
+
+/** A class for representing the tree nodes in the tree-view for showing the sfz structure. Nodes
 can represent either structuring elements like the <group> or <region> tags in the sfz spec or 
 opcodes. Opcodes are leaf nodes, structural elements typically not (unless they are empty). */
 
