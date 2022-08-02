@@ -253,9 +253,13 @@ public:
     PatchChangeType type = PatchChangeType::unknown;
     int groupIndex  = -1;
     int regionIndex = -1;
+
     rosic::Sampler::PlaybackSetting newSetting; 
     // Maybe we should also have oldSetting to ease the process of finding it? Maybe eventually, 
-    // but let's try to avoid that as long as possible
+    // but let's try to avoid that as long as possible.
+    // maybe we need it to be a sum-type of PlaybackSetting and ModulationRouting ...just like
+    // we have done in SfzTreeViewNode. Maybe factor that "Variant" internal class out and use it
+    // here too
   };
 
 
@@ -435,15 +439,19 @@ class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceCompon
 
 public:
 
+  //using namespace rosic::Sampler;
+
   SfzOpcodeEditor();
   virtual ~SfzOpcodeEditor() {}
 
 
+
+  void setSettingToEdit(int groupIndex, int regionIndex, 
+    const rosic::Sampler::PlaybackSetting& setting);
+
+
+
   void handlePatchUpdate(const PatchChangeInfo& info) override;
-
-  enum class WidgetMode { slider, button, chooser, text, none };
-
-  void setWidgetMode(WidgetMode newMode);
 
   // Overriden callbacks for the widgets:
   void rSliderValueChanged(RSlider* s) override;
@@ -456,6 +464,10 @@ public:
 
 
 protected:
+
+
+  enum class WidgetMode { slider, button, chooser, text, none };
+  void setWidgetMode(WidgetMode newMode);
 
   void createWidgets();
 

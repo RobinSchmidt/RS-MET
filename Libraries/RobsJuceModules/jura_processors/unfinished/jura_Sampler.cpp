@@ -483,6 +483,25 @@ SfzOpcodeEditor::SfzOpcodeEditor()
   createWidgets();
 }
 
+void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex, 
+  const rosic::Sampler::PlaybackSetting& setting)
+{
+  // Update our info about what we actually edit:
+  patchChangeInfo.type = PatchChangeType::opcodeValueChanged;
+  patchChangeInfo.groupIndex = groupIndex;
+  patchChangeInfo.regionIndex = regionIndex;
+  patchChangeInfo.newSetting = setting;
+
+  // Update our widgets:
+  using namespace rosic::Sampler;
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+
+
+
+
+  int dummy = 0;
+}
+
 void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
 
@@ -787,8 +806,7 @@ void SamplerEditor::treeNodeClicked(RTreeView* treeView, RTreeViewNode* node,
     rosic::Sampler::PlaybackSetting ps = sfzNode->data.data.playbackSetting;
     // That's kinda ugly, especially the data.data part. Try to do better!
 
-
-
+    opcodeEditor->setSettingToEdit(gi, ri, ps);
     int dummy = 0;
   } break;
   case TP::modulationRouting:
