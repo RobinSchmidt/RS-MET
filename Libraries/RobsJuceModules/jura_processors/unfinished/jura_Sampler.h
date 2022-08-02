@@ -40,7 +40,7 @@ public:
   // according to the given string...
 
   const juce::String& getCurrentSfz() const { return lastValidSfz; }
-
+  // rename to getCurrentSfzString
 
 protected:
 
@@ -444,7 +444,7 @@ public:
 
   enum class WidgetMode { slider, button, chooser, text, none };
 
-  virtual void setWidgetMode(WidgetMode newMode);
+  void setWidgetMode(WidgetMode newMode);
 
   // Overriden callbacks for the widgets:
   void rSliderValueChanged(RSlider* s) override;
@@ -452,11 +452,15 @@ public:
   void rComboBoxChanged(RComboBox* cb) override;
   void textChanged(RTextEntryField *tf) override;
 
+  // Overriden juce callbacks:
+  void resized() override;
+
 
 protected:
 
+  void createWidgets();
 
-  virtual void updateVisibilities();
+  void updateVisibilities();
 
   jura::RTextField *opcodeField;     // Shows name/syntax of active opcode
   jura::RTextField *helpField;       // Shows a description text for active opcode
@@ -467,6 +471,13 @@ protected:
 
 
   WidgetMode mode = WidgetMode::none;
+
+
+  //SfzPlayer* sfzPlayer = nullptr; 
+  // Pointer to the underlying s SFZ player. Should be assigned after construction and remain valid
+  // for the whole lifetime of the SfzOpcodeEditor object. 
+  // ...not yet sure, if we need this - avoiding it would promote a looser coupling
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeEditor)
 };

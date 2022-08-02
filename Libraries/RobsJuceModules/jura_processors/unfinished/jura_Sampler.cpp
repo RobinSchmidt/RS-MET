@@ -480,20 +480,7 @@ void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
 
 SfzOpcodeEditor::SfzOpcodeEditor()
 {
-  // The widgets that are always present:
-  addWidget(opcodeField = new jura::RTextField());
-  opcodeField->setDescription("Name of currently active opcode");
-
-  addWidget(helpField   = new jura::RTextField());
-  helpField->setDescription("Short description of the opcode");
-
-  // The widgets that dynamically appear or disappear:
-  addWidget(slider    = new jura::RSlider(),         true, false);
-  addWidget(button    = new jura::RButton(),         true, false);
-  addWidget(comboBox  = new jura::RComboBox(),       true, false);
-  addWidget(textField = new jura::RTextEntryField(), true, false);
-  // May add description to these widgets, too - but maybe these descriptions should also change
-  // dynamically? We'll see
+  createWidgets();
 }
 
 void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
@@ -510,20 +497,7 @@ void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
   }
 }
 
-void SfzOpcodeEditor::updateVisibilities()
-{
-  slider->setVisible(false);
-  button->setVisible(false);
-  comboBox->setVisible(false);
-  textField->setVisible(false);
-  switch(mode)
-  {
-  case WidgetMode::slider:  slider->setVisible(true);    break;
-  case WidgetMode::button:  button->setVisible(true);    break;
-  case WidgetMode::chooser: comboBox->setVisible(true);  break;
-  case WidgetMode::text:    textField->setVisible(true); break;
-  }
-}
+
 
 void SfzOpcodeEditor::rSliderValueChanged(RSlider* s)
 {
@@ -544,6 +518,63 @@ void SfzOpcodeEditor::textChanged(RTextEntryField* tf)
 {
 
 }
+
+void SfzOpcodeEditor::resized()
+{
+  int m = 4; // margin;
+  int x = m;
+  int y = m;
+  int w = getWidth() - x - m;
+  int h = 16;
+  opcodeField->setBounds(x, y, w, h); // todo: Maybe center it in the editor
+
+  // ...more to do...
+
+}
+
+void SfzOpcodeEditor::createWidgets()
+{
+  // The widgets that are always present:
+  addWidget(opcodeField = new jura::RTextField());
+  opcodeField->setText("Opcode"); // preliminary...maybe get rid
+  opcodeField->setDescription("Name of currently active opcode");
+
+  addWidget(helpField = new jura::RTextField());
+  helpField->setDescription("Short description of the opcode");
+
+  // The widgets that dynamically appear or disappear:
+  addWidget(slider = new jura::RSlider(), true, false);
+  slider->addListener(this);
+
+  addWidget(button = new jura::RButton(), true, false);
+  button->addRButtonListener(this);
+
+  addWidget(comboBox = new jura::RComboBox(), true, false);
+  comboBox->registerComboBoxObserver(this);
+
+  addWidget(textField = new jura::RTextEntryField(), true, false);
+  textField->registerTextEntryFieldObserver(this);
+
+  // May add descriptions to these widgets, too - but maybe these descriptions should also change
+  // dynamically? We'll see
+}
+
+void SfzOpcodeEditor::updateVisibilities()
+{
+  slider->setVisible(false);
+  button->setVisible(false);
+  comboBox->setVisible(false);
+  textField->setVisible(false);
+  switch(mode)
+  {
+  case WidgetMode::slider:  slider->setVisible(true);    break;
+  case WidgetMode::button:  button->setVisible(true);    break;
+  case WidgetMode::chooser: comboBox->setVisible(true);  break;
+  case WidgetMode::text:    textField->setVisible(true); break;
+  }
+}
+
+
 
 //=================================================================================================
 
