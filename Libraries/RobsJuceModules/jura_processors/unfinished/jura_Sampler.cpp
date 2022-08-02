@@ -478,42 +478,6 @@ void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
 
 //=================================================================================================
 
-/*
-FlexiWidget::FlexiWidget()
-{
-  addWidget(slider    = new jura::RSlider(),         true, false);
-  addWidget(button    = new jura::RButton(),         true, false);
-  addWidget(comboBox  = new jura::RComboBox(),       true, false);
-  addWidget(textField = new jura::RTextEntryField(), true, false);
-}
-
-void FlexiWidget::setWidgetMode(WidgetMode newMode)
-{
-  if(newMode != mode)
-  {
-    mode = newMode;
-    updateVisibilities();
-  }
-}
-
-void FlexiWidget::updateVisibilities()
-{
-  slider->setVisible(false);
-  button->setVisible(false);
-  comboBox->setVisible(false);
-  textField->setVisible(false);
-  switch(mode)
-  {
-  case WidgetMode::slider:  slider->setVisible(true);    break;
-  case WidgetMode::button:  button->setVisible(true);    break;
-  case WidgetMode::chooser: comboBox->setVisible(true);  break;
-  case WidgetMode::text:    textField->setVisible(true); break;
-  }
-}
-*/
-
-//=================================================================================================
-
 SfzOpcodeEditor::SfzOpcodeEditor()
 {
   // The widgets that are always present:
@@ -559,6 +523,26 @@ void SfzOpcodeEditor::updateVisibilities()
   case WidgetMode::chooser: comboBox->setVisible(true);  break;
   case WidgetMode::text:    textField->setVisible(true); break;
   }
+}
+
+void SfzOpcodeEditor::rSliderValueChanged(RSlider* s)
+{
+
+}
+
+void SfzOpcodeEditor::rButtonClicked(RButton* b)
+{
+
+}
+
+void SfzOpcodeEditor::rComboBoxChanged(RComboBox* cb)
+{
+
+}
+
+void SfzOpcodeEditor::textChanged(RTextEntryField* tf)
+{
+
 }
 
 //=================================================================================================

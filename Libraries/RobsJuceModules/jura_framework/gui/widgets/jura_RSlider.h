@@ -5,7 +5,7 @@ class RSlider;
 
 //=================================================================================================
 
-class JUCE_API RSliderListener // rename to RSliderObserver
+class JUCE_API RSliderListener // rename to RSliderObserver, move into RSlider
 {
 public:
   RSliderListener() {}

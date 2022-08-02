@@ -418,59 +418,18 @@ protected:
 
 //=================================================================================================
 
-/** A widget that can be either a slider or a button or a combobox or a textfield. It's meant to be
-dynamically switched between these modes, depending on what sort of parameter is currently being
-edited. It's used for the opcode manipulation widget in the sampler GUI...tbc...
-
-ToDo:
--Maybe move into jura_framework. It may be usabel in other contexts, too  */
-
-/*
-class FlexiWidget : public WidgetSet
-{
-
-public:
-
-  FlexiWidget();
-  virtual ~FlexiWidget() {}
-
-
-  enum class WidgetMode { slider, button, chooser, text, none };
-
-  virtual void setWidgetMode(WidgetMode newMode);
-
-
-  //setBounds
-
-protected:
-
-  virtual void updateVisibilities();
-
-  jura::RSlider* slider = nullptr;             // For continuous parameters
-  jura::RButton* button = nullptr;             // For boolean parameters
-  jura::RComboBox* comboBox = nullptr;         // For choice parameters
-  jura::RTextEntryField* textField = nullptr;  // For freeform string parameters
-  // Maybe they should be public to allow client code to register observers...
-
-  WidgetMode mode = WidgetMode::none;
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FlexiWidget)
-};
-*/
-// Hmm...maybe we don't really need this
-
-//=================================================================================================
-
 /** A subeditor for displaying and manipulating an sfz opcode. It will show the name of the 
 opcode and a little help text that tells the user about what the opcode does, what its nominal 
 range is, which unit it has, etc. It will also show a widget that is appropriate to manipulate the
 actual parameter value. */
 
-class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceComponent
+class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceComponent, 
+  public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver,
+  public jura::RTextEntryFieldObserver
 {
 
   // ToDo: 
-  // -derive from RSliderListener etc and implement the relevant callbacks
+  // -derive from RSliderListener etc and implement the relevant callbacks (done)
   // -inside these callbacks:
   //  -find the relevant setting in the uderlying sfz-datastructure
   //  -spawn a message and send it out to our colleagues
@@ -481,14 +440,17 @@ public:
   virtual ~SfzOpcodeEditor() {}
 
 
-
   void handlePatchUpdate(const PatchChangeInfo& info) override;
 
   enum class WidgetMode { slider, button, chooser, text, none };
 
   virtual void setWidgetMode(WidgetMode newMode);
 
-
+  // Overriden callbacks for the widgets:
+  void rSliderValueChanged(RSlider* s) override;
+  void rButtonClicked(RButton* b) override;
+  void rComboBoxChanged(RComboBox* cb) override;
+  void textChanged(RTextEntryField *tf) override;
 
 
 protected:
