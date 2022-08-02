@@ -530,9 +530,16 @@ void SfzOpcodeEditor::resized()
   int w = getWidth() - x - m;
   int h = 16;
   opcodeField->setBounds(x, y, w, h); // todo: Maybe center it in the editor
+  y += h + m;
+  helpField->setBounds(x, y, w, h); 
+  y += h + 2*m;
+  slider->setBounds(x, y, w, h);
+  button->setBounds(x, y, w, h);
+  comboBox->setBounds(x, y, w, h);
+  textField->setBounds(x, y, w, h);
 
-  // ...more to do...
-
+  // Maybe the opcodeField should just say e.g. volume= and the slider should be right next to it
+  // showing and adjusting the value. The help text can appear below
 }
 
 void SfzOpcodeEditor::createWidgets()
@@ -543,6 +550,7 @@ void SfzOpcodeEditor::createWidgets()
   opcodeField->setDescription("Name of currently active opcode");
 
   addWidget(helpField = new jura::RTextField());
+  helpField->setText("ToDo: Opcode description goes here");   // also preliminary
   helpField->setDescription("Short description of the opcode");
 
   // The widgets that dynamically appear or disappear:
