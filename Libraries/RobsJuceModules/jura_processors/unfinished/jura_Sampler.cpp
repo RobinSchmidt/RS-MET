@@ -560,6 +560,13 @@ void SfzOpcodeEditor::updateVisibilities()
 
 //=================================================================================================
 
+void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
+{
+
+}
+
+//=================================================================================================
+
 SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) 
   : AudioModuleEditor(samplerToEdit)
   , samplerModule(samplerToEdit)

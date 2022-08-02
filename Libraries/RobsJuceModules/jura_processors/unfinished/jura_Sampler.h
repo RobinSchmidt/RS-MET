@@ -387,7 +387,7 @@ some other relevant information. In case of a region node, we may show key- and 
 number of opcodes (well...maybe that's not very useful...maybe there's more interesting data to 
 show - but we need to fill the space with something). */
 
-class SfzTreeView : public jura::RTreeView, public SamplerInterfaceComponent
+class SfzTreeView : public jura::RTreeView, public jura::SamplerInterfaceComponent
 {
 
 public:
@@ -466,7 +466,7 @@ opcode and a little help text that tells the user about what the opcode does, wh
 range is, which unit it has, etc. It will also show a widget that is appropriate to manipulate the
 actual parameter value. */
 
-class SfzOpcodeEditor : public jura::Editor, public SamplerInterfaceComponent
+class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceComponent
 {
 
 public:
@@ -504,6 +504,31 @@ protected:
 };
 // Later, this should communicate with an SfzEditorMediator
 
+
+//=================================================================================================
+
+/** A subclass of juce::CodeEditor specifically for editing sfz files and for interacting with 
+other sfz manipulation components  */
+
+class SfzCodeEditor : public juce::CodeEditorComponent, public jura::SamplerInterfaceComponent
+{
+
+public:
+
+  using juce::CodeEditorComponent::CodeEditorComponent;
+
+  void handlePatchUpdate(const PatchChangeInfo& info) override;
+
+protected:
+
+  //juce::CodeTokeniser sfzTokenizer;
+  // ToDo: implement this, see:
+  //   https://docs.juce.com/master/classCodeTokeniser.html
+  // The CodeTokeniser class is abstract. We need to make a subclass rsSfzTokenizer. Maybe someone
+  // else already did that? Check open-source SFZ sampler projects. When we have that, we need to 
+  // pass a pointer to our tokenizer to the constructor of CodeEditorComponent
+
+};
 
 
 //=================================================================================================
@@ -588,14 +613,10 @@ protected:
   // SFZ text editor and adjacent widgets:
   jura::FileSelectionBox *sfzFileLoader;
   jura::RClickButton *parseButton;
-  juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a 
-  juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)
-  //juce::CodeTokeniser sfzTokenizer;
-  // ToDo: implement this, see:
-  //   https://docs.juce.com/master/classCodeTokeniser.html
-  // The CodeTokeniser class is abstract. We need to make a subclass rsSfzTokenizer. Maybe someone
-  // else already did that? Check open-source SFZ sampler projects. When we have that, we need to 
-  // pass a pointer to our tokenizer to the constructor of the editor
+  juce::CodeDocument sfzDoc;           // Declare doc before the editor because the editor holds a
+  //juce::CodeEditorComponent sfzEditor; // reference to it (-> order of construction/destruction)
+  jura::SfzCodeEditor sfzEditor; 
+
 
   SfzOpcodeEditor* opcodeEditor;
 
