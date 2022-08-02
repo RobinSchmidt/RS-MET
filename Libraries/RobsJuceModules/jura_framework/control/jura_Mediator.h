@@ -37,16 +37,16 @@ public:
   /** Notifies the mediator (if any) by calling its 
   colleagueHasSentNotification(MediatedColleague*, int) function with "this" as first argument. The
   second argument is assigned from the functions parameter (i.e. passed through). */
-  virtual void notifyMediator(int messageCode = 0);
+  virtual void notifyMediator(int messageCode = 0, void* messageData = nullptr);
 
   /** This is the callback function that you must override in your concrete MediatedColleague 
   subclass in order to respond to notifications from the mediator. The mediator spawns this 
   callback on all colleagues (including the colleague that originated the call) whenever one of the 
   colleagues notifies the mediator via notifyMediator. The mediator passes the originating 
   colleague through, together with some optional message code which can be used to further dispatch 
-  on some message code.  */
-  virtual void mediatorHasSentNotification(
-    MediatedColleague *originatingColleague, int messageCode = 0) = 0;
+  on some message code and/or with some subclass-defined message data.  */
+  virtual void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+    int messageCode = 0, void* messageData = nullptr) = 0;
   // ToDo:
   // -Maybe rename to handleMediatorNotification
   // -Maybe pass a void pointer to a data-object. Sometimes, an integer message-code is not enough
@@ -94,14 +94,14 @@ public:
   /** This will call mediatorHasSentNotification(MediatedColleague*, int messageCode) on all 
   participating colleagues with parameters passed through from the function's arguments. */
   virtual void sendNotificationToColleagues(
-    MediatedColleague *originatingColleague, int messageCode = 0);
+    MediatedColleague *originatingColleague, int messageCode = 0, void* messageData = nullptr);
 
   /** This is the callback function that gets called whenever one of the colleagues notifies "this" 
   mediator. The baseclass implementation will just call sendNotificationToColleagues with the 
   parameters passed through. You may want override it in your Mediator subclass in order to 
   implement more specific behavior. */
-  virtual void colleagueHasSentNotification(
-    MediatedColleague *originatingColleague, int messageCode = 0);
+  virtual void colleagueHasSentNotification(MediatedColleague *originatingColleague, 
+    int messageCode = 0, void* messageData = nullptr);
 
 
 protected:

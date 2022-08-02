@@ -487,12 +487,12 @@ public:
 
   /** Callback that is called from the mediator when another GUI component has changed something 
   that might be interest here. */
-  virtual void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
-    int messageCode = 0);
+  void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+    int messageCode = 0, void* messageData = nullptr) override;
 
   /** Overriden from RTreeView to .... */
-  virtual void nodeClicked(RTreeViewNode *nodeThatWasClicked, const MouseEvent &mouseEvent, 
-    int clickPosition);
+  void nodeClicked(RTreeViewNode *nodeThatWasClicked, const MouseEvent &mouseEvent, 
+    int clickPosition) override;
 
 protected:
 
@@ -539,11 +539,11 @@ public:
 
   /** Callback that is called from the mediator when another GUI component has changed something 
   that might be interest here. */
-  virtual void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
-    int messageCode = 0);
+  void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+    int messageCode = 0, void* messageData = nullptr) override;
 
-  virtual void paint(Graphics &g);
-  virtual void resized();
+  void paint(Graphics &g) override;
+  void resized() override;
 
 
 protected:
@@ -683,8 +683,8 @@ public:
 
   /** Callback that is called from the mediator when another GUI component has changed something 
   that might be interest here. */
-  virtual void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
-    int messageCode = 0);
+  void mediatorHasSentNotification(MediatedColleague *originatingColleague, int messageCode = 0, 
+    void* messageData = nullptr) override;
 
   //virtual void modulePropertiesChanged(romos::Module* module, int whichProperty);
 

@@ -567,7 +567,7 @@ ModularStructureTreeView::~ModularStructureTreeView()
 // callbacks:
 
 void ModularStructureTreeView::mediatorHasSentNotification(
-  MediatedColleague *originatingColleague, int messageCode)
+  MediatedColleague *originatingColleague, int messageCode, void* messageData)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
 
@@ -700,7 +700,7 @@ ModulePropertiesEditorHolder::~ModulePropertiesEditorHolder()
 // callbacks:
 
 void ModulePropertiesEditorHolder::mediatorHasSentNotification(
-  MediatedColleague *originatingColleague, int messageCode)
+  MediatedColleague *originatingColleague, int messageCode, void* messageData)
 {
   // \todo maybe include a switch on the messageCode later - we may not want to re-create the 
   // editor on all kinds of messages
@@ -1378,7 +1378,8 @@ void ModularBlockDiagramPanel::treeNodeChanged(RTreeView *treeView, RTreeViewNod
 
 }
 
-void ModularBlockDiagramPanel::mediatorHasSentNotification(MediatedColleague *originatingColleague, int messageCode)
+void ModularBlockDiagramPanel::mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+  int messageCode, void* messageData)
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
   selectedAudioConnections.clear();
