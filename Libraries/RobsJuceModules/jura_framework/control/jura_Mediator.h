@@ -15,9 +15,17 @@ in the observer pattern and maybe in others, too. */
 
 class rsMessageData
 {
-  // Yes, the baseclass is empty and shall remain so. This is not a class under construction. It's
-  // the responsibility of the subclasses to fill it with whatever data they need for their 
-  // concrete messages.
+
+public:
+
+  virtual ~rsMessageData() {}
+
+  // The baseclass is empty and shall remain so. This is not a class under construction. It's the 
+  // responsibility of the subclasses to fill it with whatever data they need for their concrete 
+  // messages. We define a virtual destructor though, to make the class polymorphic. Otherwise the 
+  // compiler will produce: "error C2683: 'dynamic_cast' [MyClass] is not a polymorphic type". See:
+  // https://www.bogotobogo.com/cplusplus/dynamic_cast.php
+
 };
 
 class Mediator;

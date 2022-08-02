@@ -241,8 +241,10 @@ public:
     unknown
   };
 
-  struct PatchChangeInfo
+
+  class PatchChangeInfo : public jura::rsMessageData
   {
+  public:
     PatchChangeType type = PatchChangeType::unknown;
     int groupIndex  = -1;
     int regionIndex = -1;
@@ -264,12 +266,6 @@ public:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerInterfaceComponent)
 };
-// hmm...maybe we should not use the MediatedColleague baseclass because it has only simple 
-// integers for the callback parameters but we need more data
-// we should override mediatorHasSentNotification, there, dynamically cast the passed 
-// void-pointer to a PatchChangeInfo, jassert that the cast was successful and then call
-// handlePatchUpdate with the object
-
 
 /** The mediator class that coordinates the interaction between the various components of the
 sampler-engine's graphical user interface. */
@@ -279,6 +275,10 @@ class SamplerInterfaceMediator : public jura::Mediator
 
   
 public:
+
+  //using jura::Mediator::Mediator;  // inherit constructor...doesn't seem to work
+
+  SamplerInterfaceMediator() {}      // ...so let's define an empty constructor ourselves
 
 
 protected:
@@ -384,7 +384,7 @@ some other relevant information. In case of a region node, we may show key- and 
 number of opcodes (well...maybe that's not very useful...maybe there's more interesting data to 
 show - but we need to fill the space with something). */
 
-class SfzTreeView : public jura::RTreeView
+class SfzTreeView : public jura::RTreeView // , public SamplerInterfaceComponent
 {
 
 public:
@@ -461,7 +461,7 @@ opcode and a little help text that tells the user about what the opcode does, wh
 range is, which unit it has, etc. It will also show a widget that is appropriate to manipulate the
 actual parameter value. */
 
-class SfzOpcodeEditor : public jura::Editor
+class SfzOpcodeEditor : public jura::Editor // , public SamplerInterfaceComponent
 {
 
 public:
@@ -503,7 +503,7 @@ widgets showing the current system load, etc...tbc...  */
 
 class JUCE_API SamplerEditor : public jura::AudioModuleEditor, 
   public juce::Timer, public juce::CodeDocument::Listener, public jura::FileManagerListener,
-  public jura::RTreeViewObserver
+  public jura::RTreeViewObserver // , public SamplerInterfaceComponent
 {
 
 public:
@@ -586,6 +586,9 @@ protected:
   // pass a pointer to our tokenizer to the constructor of the editor
 
   SfzOpcodeEditor* opcodeEditor;
+
+  // The mediator object that coordinates the interactions between the different parts of the GUI:
+  SamplerInterfaceMediator guiMediator;
 
 
 

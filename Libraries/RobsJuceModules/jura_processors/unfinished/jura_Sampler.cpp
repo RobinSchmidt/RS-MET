@@ -288,16 +288,11 @@ void SamplerModule::reset()
 void SamplerInterfaceComponent::handleMediatorNotification(MediatedColleague* originator, 
   int messageCode, rsMessageData* messageData)
 {
-  //PatchChangeInfo *info = dynamic_cast<PatchChangeInfo*>(messageData);  // ToDo later
-
-  /*
-  PatchChangeInfo *info = static_cast<PatchChangeInfo*>(messageData); // not safe enough
-
+  PatchChangeInfo *info = dynamic_cast<PatchChangeInfo*>(messageData);
   if(info != nullptr)
     handlePatchUpdate(*info);
   else
     jassertfalse; // messageData must be of type jura::PatchChangeInfo
-    */
 }
 
 
