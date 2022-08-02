@@ -591,6 +591,13 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
   //setCodeIsClean();  //
 
+
+  guiMediator.registerColleague(this);
+  guiMediator.registerColleague(opcodeEditor);
+  guiMediator.registerColleague(sfzTree);
+  //guiMediator.registerColleague(sfzEditor); // sfzEditor should be of class rsSfzCodeEditor
+
+
   updateVisibilities();
 }
 
