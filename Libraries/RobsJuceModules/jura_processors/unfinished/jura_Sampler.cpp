@@ -467,6 +467,10 @@ void SfzTreeView::clearTree()
 }
 // needs test
 
+void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
+{
+
+}
 
 //=================================================================================================
 
@@ -524,6 +528,11 @@ SfzOpcodeEditor::SfzOpcodeEditor()
   // dynamically? We'll see
 }
 
+
+void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
+{
+
+}
 
 void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
 {
@@ -777,6 +786,11 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
   // callback
 
   updateTreeView();
+}
+
+void SamplerEditor::handlePatchUpdate(const PatchChangeInfo& info)
+{
+
 }
 
 void SamplerEditor::createWidgets()

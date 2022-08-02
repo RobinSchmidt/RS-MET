@@ -226,6 +226,9 @@ class SamplerInterfaceComponent : public jura::MediatedColleague
 
 public:
 
+  SamplerInterfaceComponent() {}
+  virtual ~SamplerInterfaceComponent() {}
+
   /** Enumeration to be used in the patchChanged callback. */
   enum class PatchChangeType
   {
@@ -384,7 +387,7 @@ some other relevant information. In case of a region node, we may show key- and 
 number of opcodes (well...maybe that's not very useful...maybe there's more interesting data to 
 show - but we need to fill the space with something). */
 
-class SfzTreeView : public jura::RTreeView // , public SamplerInterfaceComponent
+class SfzTreeView : public jura::RTreeView, public SamplerInterfaceComponent
 {
 
 public:
@@ -399,6 +402,8 @@ public:
   void buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz);
 
   void clearTree();
+
+  void handlePatchUpdate(const PatchChangeInfo& info) override;
 
 
 protected:
@@ -461,7 +466,7 @@ opcode and a little help text that tells the user about what the opcode does, wh
 range is, which unit it has, etc. It will also show a widget that is appropriate to manipulate the
 actual parameter value. */
 
-class SfzOpcodeEditor : public jura::Editor // , public SamplerInterfaceComponent
+class SfzOpcodeEditor : public jura::Editor, public SamplerInterfaceComponent
 {
 
 public:
@@ -470,9 +475,14 @@ public:
   virtual ~SfzOpcodeEditor() {}
 
 
+
+  void handlePatchUpdate(const PatchChangeInfo& info) override;
+
   enum class WidgetMode { slider, button, chooser, text, none };
 
   virtual void setWidgetMode(WidgetMode newMode);
+
+
 
 
 protected:
@@ -503,7 +513,7 @@ widgets showing the current system load, etc...tbc...  */
 
 class JUCE_API SamplerEditor : public jura::AudioModuleEditor, 
   public juce::Timer, public juce::CodeDocument::Listener, public jura::FileManagerListener,
-  public jura::RTreeViewObserver // , public SamplerInterfaceComponent
+  public jura::RTreeViewObserver, public SamplerInterfaceComponent
 {
 
 public:
@@ -523,6 +533,8 @@ public:
 
   void rButtonClicked(RButton *buttonThatWasClicked) override;
   void activeFileChanged(FileManager *fileMan) override;                    // FileManagerListener
+
+  void handlePatchUpdate(const PatchChangeInfo& info) override;
 
 
 
