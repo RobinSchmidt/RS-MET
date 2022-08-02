@@ -16,7 +16,7 @@ void MediatedColleague::setMediator(Mediator *newMediator)
     mediator->registerColleague(this);
 }
 
-void MediatedColleague::notifyMediator(int messageCode, void* messageData)
+void MediatedColleague::notifyMediator(int messageCode, rsMessageData* messageData)
 {
   if( mediator != nullptr )
     mediator->colleagueHasSentNotification(this, messageCode, messageData);
@@ -49,14 +49,14 @@ void Mediator::deRegisterColleague(MediatedColleague *colleagueDeToRegister)
 }
 
 void Mediator::sendNotificationToColleagues(MediatedColleague *originatingColleague, 
-  int messageCode, void* messageData)
+  int messageCode, rsMessageData* messageData)
 {
   for(size_t i = 0; i < colleagues.size(); i++)
     colleagues[i]->handleMediatorNotification(originatingColleague, messageCode, messageData);
 }
 
 void Mediator::colleagueHasSentNotification(MediatedColleague *originatingColleague, 
-  int messageCode, void* messageData)
+  int messageCode, rsMessageData* messageData)
 {
   sendNotificationToColleagues(originatingColleague, messageCode, messageData);
 }
