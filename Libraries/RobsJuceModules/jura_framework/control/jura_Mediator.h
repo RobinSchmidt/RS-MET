@@ -3,6 +3,23 @@
 
 // todo: maybe move to rosic, prepend rs prefix
 
+/** An empty class to be used as baseclass for all sorts of messages. It's purpose in life is to be
+subclassed and pointers to subclasses of it can be passed around to all sorts of callbacks. Inside 
+those callbacks, the receiver can ascertain that the passed pointer is actually of the right kind 
+by means of a dynamic_cast. That's a lot safer (albeit slightly more expensive) than passing around
+void-pointers and statically casting them into the expected datatypes. We use this to generically 
+and abstractly implement message passing mechanisms that occur in design patterns without knowing 
+in advance what kind of data the concrete messages will have to hold. It's currently used in the 
+abstract implementation of the mediator pattern but could potentially also be used in the same way 
+in the observer pattern and maybe in others, too. */
+
+class rsMessageData
+{
+  // Yes, the baseclass is empty and shall remain so. This is not a class under construction. It's
+  // the responsibility of the subclasses to fill it with whatever data they need for their 
+  // concrete messages.
+};
+
 class Mediator;
 
 /** This class represents an object that can communicate with other objects through a mediator 
