@@ -3062,22 +3062,26 @@ void puleWidthModulationViaTwoSaws()
 
   int  N = 300;  // Number of samples to produce
   int  P = 100;  // Period of the waveform in samples
-  Real s = 0.5;  // Shift between 1st and 2nd saw
+  Real s = 0.5;  // Shift between 1st and 2nd saw, 0.5 gives a square wave
 
-  Real p = 0.99; // trisaw parameter
 
+  // Helper function to produce the raw sawtooth signals:
+  auto saw = [](Real p)
+  {
+    p = fmod(p, 1.0);
+    return (p - 0.5) * 2.0;
+  };
+
+  // Create the two saws and pulse wave that results from subtracting then 2nd from the 1st:
   Vec saw1(N), saw2(N), pls(N);
   for(int n = 0; n < N; n++)
   {
-    Real pos1 = fmod(Real(n) / Real(P),     p); saw1[n] = RAPT::rsTriSaw(pos1, 1.0);
-    Real pos2 = fmod(Real(n) / Real(P) + s, p); saw2[n] = RAPT::rsTriSaw(pos2, 1.0);
+    Real pos1 = Real(n) / Real(P);     saw1[n] = saw(pos1);
+    Real pos2 = Real(n) / Real(P) + s; saw2[n] = saw(pos2);
     pls[n]    = saw1[n] - saw2[n];  // perhaps * 0.5?
   }
-
   rsPlotVectors(saw1, saw2, pls);
-  // hmm..the saws are unipolar and at wrong amplitude...maybe the rsTriSaw function does not work
-  // the way i think it does? maybe define a simple saw(t) function here and use that
-
+  rsPlotVectors(pls);
 
 
   int dummy = 0;
