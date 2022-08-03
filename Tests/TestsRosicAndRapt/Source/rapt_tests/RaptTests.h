@@ -67,6 +67,7 @@ void xoxosOsc();
 void shepardTone();
 void additiveEngine();
 void multiplicativeSynth();
+void puleWidthModulationViaTwoSaws();
 
 
 // Graphics Experiments:

@@ -2908,12 +2908,6 @@ void multiplicativeSynth()
   ms.setCombinatorWeightsP( wP);
   ms.setGain(1.0);
 
-
-
-
-
-
-
   // Define a function to synthesize a sound and write it to a file:
   auto render = [&](Vec ff, Vec wA, Vec wB, Vec wP)
   {
@@ -3049,6 +3043,42 @@ void multiplicativeSynth()
 
   // Notes:
   //
+
+  int dummy = 0;
+}
+
+void puleWidthModulationViaTwoSaws()
+{
+  // In many analog synthesizers, the pulse-wave is created by adding two sawtooth waves, one of
+  // which is sign-inverted and phase-shifted. When the phase-shift is exactly one half-cycle, we
+  // get asymmetric square-wave. Pulse-width-modulation is achieved by phase- or frequency 
+  // modulating one of the saws (or maybe both). In this experiment we create a pulse-width by that
+  // technique with the goal to find a meaningful way to generalize the idea to arbitrary 
+  // waveforms. ...tbc...
+
+  using Real = double;
+  using Vec = std::vector<Real>;
+
+
+  int  N = 300;  // Number of samples to produce
+  int  P = 100;  // Period of the waveform in samples
+  Real s = 0.5;  // Shift between 1st and 2nd saw
+
+  Real p = 0.99; // trisaw parameter
+
+  Vec saw1(N), saw2(N), pls(N);
+  for(int n = 0; n < N; n++)
+  {
+    Real pos1 = fmod(Real(n) / Real(P),     p); saw1[n] = RAPT::rsTriSaw(pos1, 1.0);
+    Real pos2 = fmod(Real(n) / Real(P) + s, p); saw2[n] = RAPT::rsTriSaw(pos2, 1.0);
+    pls[n]    = saw1[n] - saw2[n];  // perhaps * 0.5?
+  }
+
+  rsPlotVectors(saw1, saw2, pls);
+  // hmm..the saws are unipolar and at wrong amplitude...maybe the rsTriSaw function does not work
+  // the way i think it does? maybe define a simple saw(t) function here and use that
+
+
 
   int dummy = 0;
 }
