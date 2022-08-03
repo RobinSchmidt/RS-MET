@@ -3060,10 +3060,13 @@ void puleWidthModulationViaTwoSaws()
   //
   // where w(t) is the output waveform (pulse-wave) and v(t) is the waveform used to construct it
   // by the above rule for some phase-shift value s. In the case of w(t) being a pulse-wave, v(t)
-  // is a sawtooth wave. What we want is a way to derive a suitabel v(t) from a given w(t) that 
+  // is a sawtooth wave. What we want is a way to derive a suitable v(t) from a given w(t) that 
   // satisfies the above equation for all s. This is probably not generally possible, probably 
   // w(t) must satisfy some constraints to be able to find a suitable v. Maybe symmetry?
-  // -> figure out!
+  // -> figure out! ...wait - no - the equation doesn't need to hold for *all* s but only for 
+  // s = 0.5. So, we have to solve w(t) = v(t) - v(t+0.5) for v(t) for a given w(t). We must have
+  // v(t+0.5) = v(t) - w(t). Mayb obtain the 1st half-wave of v(t) as the integral of w(t) and 
+  // generate the 2nd half-wave by this condition?
 
   using Real = double;
   using Vec = std::vector<Real>;
