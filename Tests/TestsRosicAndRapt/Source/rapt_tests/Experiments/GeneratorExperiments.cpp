@@ -3059,11 +3059,9 @@ void puleWidthModulationViaTwoSaws()
   using Real = double;
   using Vec = std::vector<Real>;
 
-
   int  N = 300;  // Number of samples to produce
   int  P = 100;  // Period of the waveform in samples
-  Real s = 0.5;  // Shift between 1st and 2nd saw, 0.5 gives a square wave
-
+  Real s = 0.4;  // Shift between 1st and 2nd saw, 0.5 gives a square wave
 
   // Helper function to produce the raw sawtooth signals:
   auto saw = [](Real p)
@@ -3076,9 +3074,10 @@ void puleWidthModulationViaTwoSaws()
   Vec saw1(N), saw2(N), pls(N);
   for(int n = 0; n < N; n++)
   {
-    Real pos1 = Real(n) / Real(P);     saw1[n] = saw(pos1);
-    Real pos2 = Real(n) / Real(P) + s; saw2[n] = saw(pos2);
-    pls[n]    = saw1[n] - saw2[n];  // perhaps * 0.5?
+    Real pos = Real(n) / Real(P);  // position or phase
+    saw1[n]  = saw(pos);
+    saw2[n]  = saw(pos + s);
+    pls[n]   = saw1[n] - saw2[n];
   }
   rsPlotVectors(saw1, saw2, pls);
   rsPlotVectors(pls);
