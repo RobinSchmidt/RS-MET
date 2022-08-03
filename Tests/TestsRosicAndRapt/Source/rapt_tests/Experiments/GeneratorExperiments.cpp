@@ -3054,7 +3054,16 @@ void puleWidthModulationViaTwoSaws()
   // get asymmetric square-wave. Pulse-width-modulation is achieved by phase- or frequency 
   // modulating one of the saws (or maybe both). In this experiment we create a pulse-width by that
   // technique with the goal to find a meaningful way to generalize the idea to arbitrary 
-  // waveforms. ...tbc...
+  // waveforms. The general setup is:
+  //  
+  //   w(t) = v(t) - v(t+s)
+  //
+  // where w(t) is the output waveform (pulse-wave) and v(t) is the waveform used to construct it
+  // by the above rule for some phase-shift value s. In the case of w(t) being a pulse-wave, v(t)
+  // is a sawtooth wave. What we want is a way to derive a suitabel v(t) from a given w(t) that 
+  // satisfies the above equation for all s. This is probably not generally possible, probably 
+  // w(t) must satisfy some constraints to be able to find a suitable v. Maybe symmetry?
+  // -> figure out!
 
   using Real = double;
   using Vec = std::vector<Real>;
@@ -3080,7 +3089,7 @@ void puleWidthModulationViaTwoSaws()
     pls[n]   = saw1[n] - saw2[n];
   }
   rsPlotVectors(saw1, saw2, pls);
-  rsPlotVectors(pls);
+  //rsPlotVectors(pls);
 
 
   int dummy = 0;
