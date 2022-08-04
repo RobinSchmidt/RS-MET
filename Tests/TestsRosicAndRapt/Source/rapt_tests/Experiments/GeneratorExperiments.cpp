@@ -3072,11 +3072,11 @@ void puleWidthModulationViaTwoSaws()
   using Vec = std::vector<Real>;
 
   int  N = 300;  // Number of samples to produce
-  int  P = 100;  // Period of the waveform in samples
+  int  P = 100;  // Period (aka cycle length) of the waveform in samples
   Real s = 0.4;  // Shift between 1st and 2nd saw, 0.5 gives a square wave
 
-  // Helper function to produce the raw sawtooth signals:
-  auto saw = [](Real p)
+  // Helper function to produce the raw sawtooth signals of period 1:
+  auto sawWave = [](Real p)
   {
     p = fmod(p, 1.0);
     return (p - 0.5) * 2.0;
@@ -3086,13 +3086,40 @@ void puleWidthModulationViaTwoSaws()
   Vec saw1(N), saw2(N), pls(N);
   for(int n = 0; n < N; n++)
   {
-    Real pos = Real(n) / Real(P);  // position or phase
-    saw1[n]  = saw(pos);
-    saw2[n]  = saw(pos + s);
+    Real pos = Real(n) / Real(P);    // position or phase
+    saw1[n]  = sawWave(pos);
+    saw2[n]  = sawWave(pos + s);
     pls[n]   = saw1[n] - saw2[n];
   }
-  rsPlotVectors(saw1, saw2, pls);
-  //rsPlotVectors(pls);
+  //rsPlotVectors(saw1, saw2, pls);    // plot both constituent saws and resulting pulse-wave
+  //rsPlotVectors(pls);              // plot resulting pulse-wave only
+
+  // OK, that works as expected. Now we create one cycle (of length P) of a perfectly symmetric 
+  // square-wave and try to derive the (non-shifted) sawtooth from it by means of the ideas 
+  // explained above. The square-wave that we get when setting s = 0.5 starts at -1, so we do the
+  // same for our square-wave here:
+  Vec sqr(P);
+  for(int n = 0;   n < P/2; n++) sqr[n] = -1;
+  for(int n = P/2; n < P;   n++) sqr[n] = +1;
+  //rsPlotVectors(sqr);  // OK - yes - that's a square-wave of length P
+  Vec saw(P);
+  saw[0] = 0;
+
+  // The 1st half of the saw is obtained by trapezoidally integrating the square-wave:
+  for(int n = 1; n < P/2; n++) saw[n] = saw[n-1] + 0.5 * (sqr[n-1] + sqr[n]); 
+
+  // We get a saw-down. Maybe we should normalize the intermediate signal here? Or maybe we should
+  // just divide by P/2?
+  for(int n = 0; n < P/2; n++) saw[n] *= 1./(P/2);
+
+
+  // The 2nd half is obtained by the condition v(t+0.5) = v(t) - w(t):
+  for(int n = P/2; n < P; n++) saw[n] = saw[n-P/2] - sqr[n];
+  rsPlotVectors(saw);
+  // Hmm...OK - it is a saw - but a downward saw and it has a DC component (of -1, i think). We 
+  // could of course fudge it now into a DC-free upward saw, but that would seem like cheating, so
+  // let's first try to figure out, how else it could be done...
+
 
 
   int dummy = 0;
