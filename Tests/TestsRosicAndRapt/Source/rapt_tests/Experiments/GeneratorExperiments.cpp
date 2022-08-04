@@ -3125,43 +3125,33 @@ void puleWidthModulationViaTwoSaws()
   for(int n = P/2; n < P;   n++) sqr[n] = +1;
   //rsPlotVectors(sqr);  // OK - yes - that's a square-wave of length P
   Vec saw(P);
-
-  
-  /*
-  saw[0] = 0;
-
-  // The 1st half of the saw is obtained by trapezoidally integrating the square-wave:
-  for(int n = 1; n < P/2; n++) saw[n] = saw[n-1] + 0.5 * (sqr[n-1] + sqr[n]); 
-
-  // We get a saw-down. Maybe we should normalize the intermediate signal here? Or maybe we should
-  // just divide by P/2?
-  for(int n = 0; n < P/2; n++) saw[n] *= 1./(P/2);
-
-
-  // The 2nd half is obtained by the condition v(t+0.5) = v(t) - w(t):
-  for(int n = P/2; n < P; n++) saw[n] = saw[n-P/2] - sqr[n];
-  //rsPlotVectors(saw);
-  // Hmm...OK - it is a saw - but a downward saw and it has a DC component (of -1, i think).
-
-  // Fudge the saw by removing DC and turning from downward to upward. However, this fudging feels 
-  // a bit like cheating, so I should really try to figure out, if we can avoid it somehow. Maybe 
-  // the problem formulation wasn't entirel correct?
-  for(int n = 0; n < P; n++) saw[n] = -(saw[n] + 1);
-  
-
-
-  */
-
-  rsSquareToSaw(&sqr[0], &saw[0], P); // WUT? produces a different result. i just copy/pasted the code form here
+  rsSquareToSaw(&sqr[0], &saw[0], P);
   rsPlotVectors(saw);
   // Yep, that's a bona-fide upward sawtooth of period P. We completely derived it algorithmically
   // from the square-wave and the same algo could now be applied to arbitrary waveforms and thereby
   // generate some sort of "constituents" by means of which we could implement a sort of 
   // generalization of (analog-like) PWM for any waveform.
 
+  // Compare target saw ("saw1") and generated saw ("saw"):
+  rsPlotArrays(P, &saw1[0], &saw[0]);  // yep: we have a perfect match! :-)
+
+
+  // Now let's try what the algorithm produces when the input signal is a square-wave that is 1 in
+  // the 1st half and -1 in the 2nd half. Hopefully, we'll see a saw-down...
+  for(int n = 0;n < P; n++) sqr[n] = -sqr[n];
+  rsSquareToSaw(&sqr[0], &saw[0], P);
+  rsPlotVectors(saw);
+  // It is a downward saw, but with DC: it goes from -1 to -3.
+
+
+
+
+
+  // Observations:
+  // -The derived saw goes from -1 at n = 0 to +0.98 at n = P-1 (for P = 100). This perfectly 
+  //  matches the saw1 signal in the range 0...P-1. 
 
   // ToDo:
-  // -Factor out the algorithm that derives the saw from the square into a function.
   // -Apply the algorithm to sine, triangle and sawtooth waves and see, what it produces. In the 
   //  case of s = 0.5, it should reproduce the original waveform by construction. Verify that. Then
   //  try other values of s. Do we get meaningful/interesting/useful waveforms?
