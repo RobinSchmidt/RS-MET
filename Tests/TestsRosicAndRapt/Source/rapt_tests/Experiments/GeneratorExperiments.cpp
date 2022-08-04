@@ -3171,6 +3171,37 @@ void puleWidthModulationViaTwoSaws()
   rsPlotVectors(y);  // Reproduces a sine-wave, as expected
 
 
+  // Helper function to produce a generalized PWM waveform from a wavetable (of length P) 
+  // containing the "semiwave". I call the constituent wave v(t) with the feature that the target
+  // wave w(t) is produced by w(t) = v(t) - v(t+s) the "semiwave" of w. I made that term up myself.
+  // It reflects the fact that we need to add two of them (with a phase-shift) to get out our 
+  // actually desired waveform w(t).
+  auto pwmWave = [](Real p, Real s, const Real* semiWave, int P)
+  {
+    Real p1 = P *  p;
+    Real p2 = P * (p+s);
+
+    // Compute the readout indices
+    // This is crude truncation - use linear interpolation later (it's further complicated when we
+    // are at a wraparound position):
+    int m1 = ((int) p1) % P;
+    int m2 = ((int) p2) % P;
+
+    return semiWave[m1] - semiWave[m2];
+  };
+
+  // Produce the sine again, this time using our helper function:
+  for(int n = 0; n < N; n++)
+  {
+    Real p = Real(n) / Real(P);    // position or phase
+    y[n] = pwmWave(p, 0.5, &sin1c[0], P);
+  }
+  rsPlotVectors(y); 
+  // Well - okay - it looks like a sine but with rather severe artifacts presumably coming from our
+  // crude truncation. We really need interpolation.
+
+
+
 
   // Observations:
   // -The derived saw goes from -1 at n = 0 to +0.98 at n = P-1 (for P = 100). This perfectly 
