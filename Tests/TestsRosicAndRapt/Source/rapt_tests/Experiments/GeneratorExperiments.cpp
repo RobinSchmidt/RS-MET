@@ -3085,25 +3085,18 @@ void rsSquareToSaw2(const T* sqr, T* saw, int P)
 
   // for developement - fill saw with all zeros:
   RAPT::rsArrayTools::fillWithZeros(saw, P);
-
   saw[0] = 0;
   for(int n = 1; n < P/2; n++)
     saw[n] = saw[n-1] + 0.5 * (sqr[n-1] + sqr[n]);  // Compute 1st half by integraion
-
   for(int n = 0; n < P/2; n++) 
     saw[n] *= 1./(P/2);                             // Normalize
-
   for(int n = 0; n < P/2; n++)    
     saw[n] = -saw[n];                               // Invert
   // If we leave this step out, we get a downward saw from 0 to -2 when the input is a square
   // starting at -1 and ending at +1
 
-  //rsPlotArrays(P, saw);
-
   for(int n = P/2; n < P; n++) 
     saw[n] = saw[n-P/2] - sqr[n];                   // Compute 2nd half by constraint
-
-  //rsPlotArrays(P, saw);
 }
 
 
@@ -3251,19 +3244,19 @@ void puleWidthModulationViaTwoSaws()
 
   // Now let's try it with a saw:
   Vec saw1c(P);  
-  rsSquareToSaw(&saw[0], &saw1c[0], P);
-  //rsSquareToSaw2(&saw[0], &saw1c[0], P);
-  rsPlotVectors(saw, saw1c); 
+  //rsSquareToSaw(&saw[0], &saw1c[0], P);
+  rsSquareToSaw2(&saw[0], &saw1c[0], P);
+  //rsPlotVectors(saw, saw1c); 
   for(int n = 0; n < N; n++)
     y[n] = pwmWave(Real(n) / Real(P), 0.5, &saw1c[0], P);
   rsPlotVectors(y); 
-  // This does NOT produce a saw-wave! ...why not?! Maybe because the saw doesn't have the right
+  // This does NOT reproduce a saw-wave! ...why not?! Maybe because the saw doesn't have the right
   // symmetry properties? ...but actually, it should work by construction. If we can't reconstruct
   // the input wave at s = 0.5, something is still very wrong. I think, it may be because we do 
   // some fudging with the resulting waveform *after* applying the constraint equation. We should 
   // really fudge the 1st half and *then* apply the constraint v(t+0.5) = v(t) - w(t).
-  // Hmm...okay...with rsSquareToSaw2, we actually do apply the constraint equation as last step
-  // but it still doesn't reconstruct the saw. That's really strange! I must have some severe
+  // Hmm...okay - done...with rsSquareToSaw2, we actually do apply the constraint equation as last
+  // step but it still doesn't reconstruct the saw. That's really strange! I must have some severe
   // misconception somewhere.
 
   for(int n = 0; n < N; n++)
@@ -3272,6 +3265,10 @@ void puleWidthModulationViaTwoSaws()
   // Although the results are totally not what I was trying to achieve, they look like they could
   // be useful nonetheless. 
 
+
+  for(int n = 0; n < N; n++)
+    y[n] = pwmWave(Real(n) / Real(P), 0.45, &saw1c[0], P);
+  rsPlotVectors(y); 
 
 
   // Observations:
