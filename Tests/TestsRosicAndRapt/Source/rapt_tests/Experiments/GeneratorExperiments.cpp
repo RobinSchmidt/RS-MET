@@ -3115,11 +3115,24 @@ void puleWidthModulationViaTwoSaws()
 
   // The 2nd half is obtained by the condition v(t+0.5) = v(t) - w(t):
   for(int n = P/2; n < P; n++) saw[n] = saw[n-P/2] - sqr[n];
-  rsPlotVectors(saw);
-  // Hmm...OK - it is a saw - but a downward saw and it has a DC component (of -1, i think). We 
-  // could of course fudge it now into a DC-free upward saw, but that would seem like cheating, so
-  // let's first try to figure out, how else it could be done...
+  //rsPlotVectors(saw);
+  // Hmm...OK - it is a saw - but a downward saw and it has a DC component (of -1, i think).
 
+  // Fudge the saw by removing DC and turning from downward to upward. However, this fudging feels 
+  // a bit like cheating, so I should really try to figure out, if we can avoid it somehow. Maybe 
+  // the problem formulation wasn't entirel correct?
+  for(int n = 0; n < P; n++) saw[n] = -(saw[n] + 1);
+  rsPlotVectors(saw);
+  // Yep, that's a bona-fide upward sawtooth of period P. We completely derived it algorithmically
+  // from the square-wave and the same algo could now be applied to arbitrary waveforms and thereby
+  // generate some sort of "constituents" by means of which we could implement a sort of 
+  // generalization of PWM for any waveform.
+
+  // ToDo:
+  // -Factor out the algorithm that derives the saw from the square into a function.
+  // -Apply the algorithm to sine, triangle and sawtooth waves and see, what it produces. In the 
+  //  case of s = 0.5, it should reproduce the original waveform by construction. Check that. Then
+  //  try other values of s. Do we get meaningful/interesting/useful waveforms?
 
 
   int dummy = 0;
