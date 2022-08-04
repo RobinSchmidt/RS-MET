@@ -3145,7 +3145,6 @@ void puleWidthModulationViaTwoSaws()
   // Compare target saw ("saw1") and generated saw ("saw"):
   rsPlotArrays(P, &saw1[0], &saw[0]);  // Yes: We have a perfect match! :-)
 
-
   // Now let's try what the algorithm produces when the input signal is a square-wave that is 1 in
   // the 1st half and -1 in the 2nd half. Hopefully, we'll see a saw-down...
   for(int n = 0;n < P; n++) sqr[n] = -sqr[n];
@@ -3153,6 +3152,23 @@ void puleWidthModulationViaTwoSaws()
   rsPlotVectors(saw);  // Yes: It's a downward saw as it should be.
 
 
+  // Now let's try a sine-wave as input:
+  Vec sin1(P), sin1c(P);      // the "c" stands for constituent
+  for(int n = 0; n < P; n++)
+    sin1[n] = sin(2*PI*n/P);
+  //rsPlotVectors(sin1);
+  rsSquareToSaw(&sin1[0], &sin1c[0], P);
+  rsPlotVectors(sin1, sin1c); // Puuh! This is a strange result!
+  // Let's try to re-create a sine by using 2 shifted copies of sin1c
+
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+  {
+    int m1 = n       % P;  // readout index of 1st constituent
+    int m2 = (n+P/2) % P;  // readout index of 2nd constituent
+    y[n] = sin1c[m1] - sin1c[m2];
+  }
+  rsPlotVectors(y);  // Reproduces a sine-wave, as expected
 
 
 
@@ -3164,6 +3180,8 @@ void puleWidthModulationViaTwoSaws()
   // -Apply the algorithm to sine, triangle and sawtooth waves and see, what it produces. In the 
   //  case of s = 0.5, it should reproduce the original waveform by construction. Verify that. Then
   //  try other values of s. Do we get meaningful/interesting/useful waveforms?
+  // -Factor out a function that takes a wavetable of the constituent, e.g. sin1c, a sample-index 
+  //  n, and a shift parameter s...
 
 
   int dummy = 0;
