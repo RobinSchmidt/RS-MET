@@ -3047,6 +3047,28 @@ void multiplicativeSynth()
   int dummy = 0;
 }
 
+template<class T>
+void rsSquareToSaw(const T* sqr, T* saw, int P)
+{
+  // The 1st half of the saw is obtained by trapezoidally integrating the square-wave:
+  saw[0] = 0;
+  for(int n = 1; n < P/2; n++) 
+    saw[n] = saw[n-1] + 0.5 * (sqr[n-1] + sqr[n]);
+
+  // Normalize the intermediate signal:
+  for(int n = 0; n < P/2; n++) saw[n] *= 1./(P/2);
+
+  // The 2nd half is obtained by the condition v(t+0.5) = v(t) - w(t):
+  for(int n = P/2; n < P; n++) 
+    saw[n] = saw[n-P/2] - sqr[n];
+
+  // Fudge the saw by removing DC and turning from downward to upward. However, this fudging feels 
+  // a bit like cheating, so I should really try to figure out, if we can avoid it somehow. Maybe 
+  // the problem formulation wasn't entirel correct?
+  for(int n = 0; n < P; n++) 
+    saw[n] = -(saw[n] + 1);
+}
+
 void puleWidthModulationViaTwoSaws()
 {
   // In many analog synthesizers, the pulse-wave is created by adding two sawtooth waves, one of
@@ -3103,6 +3125,9 @@ void puleWidthModulationViaTwoSaws()
   for(int n = P/2; n < P;   n++) sqr[n] = +1;
   //rsPlotVectors(sqr);  // OK - yes - that's a square-wave of length P
   Vec saw(P);
+
+  
+  /*
   saw[0] = 0;
 
   // The 1st half of the saw is obtained by trapezoidally integrating the square-wave:
@@ -3122,16 +3147,23 @@ void puleWidthModulationViaTwoSaws()
   // a bit like cheating, so I should really try to figure out, if we can avoid it somehow. Maybe 
   // the problem formulation wasn't entirel correct?
   for(int n = 0; n < P; n++) saw[n] = -(saw[n] + 1);
+  
+
+
+  */
+
+  rsSquareToSaw(&sqr[0], &saw[0], P); // WUT? produces a different result. i just copy/pasted the code form here
   rsPlotVectors(saw);
   // Yep, that's a bona-fide upward sawtooth of period P. We completely derived it algorithmically
   // from the square-wave and the same algo could now be applied to arbitrary waveforms and thereby
   // generate some sort of "constituents" by means of which we could implement a sort of 
-  // generalization of PWM for any waveform.
+  // generalization of (analog-like) PWM for any waveform.
+
 
   // ToDo:
   // -Factor out the algorithm that derives the saw from the square into a function.
   // -Apply the algorithm to sine, triangle and sawtooth waves and see, what it produces. In the 
-  //  case of s = 0.5, it should reproduce the original waveform by construction. Check that. Then
+  //  case of s = 0.5, it should reproduce the original waveform by construction. Verify that. Then
   //  try other values of s. Do we get meaningful/interesting/useful waveforms?
 
 
