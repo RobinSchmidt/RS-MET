@@ -3093,10 +3093,10 @@ void rsSquareToSaw2(const T* sqr, T* saw, int P)
   for(int n = 0; n < P/2; n++) 
     saw[n] *= 1./(P/2);                             // Normalize
 
-
-  for(int n = 0; n < P/2; n++) 
-    saw[n] = -saw[n];
-  // What if we leave this step out?
+  for(int n = 0; n < P/2; n++)    
+    saw[n] = -saw[n];                               // Invert
+  // If we leave this step out, we get a downward saw from 0 to -2 when the input is a square
+  // starting at -1 and ending at +1
 
   //rsPlotArrays(P, saw);
 
@@ -3164,7 +3164,7 @@ void puleWidthModulationViaTwoSaws()
   //rsPlotVectors(sqr);  // OK - yes - that's a square-wave of length P
   Vec saw(P);
   rsSquareToSaw(&sqr[0], &saw[0], P);
-  rsPlotVectors(saw);
+  //rsPlotVectors(saw);
   // Yep, that's a bona-fide upward sawtooth of period P. We completely derived it algorithmically
   // from the square-wave and the same algo could now be applied to arbitrary waveforms and thereby
   // generate some sort of "constituents" by means of which we could implement a sort of 
@@ -3175,17 +3175,19 @@ void puleWidthModulationViaTwoSaws()
 
   // Try second version:
   rsSquareToSaw2(&sqr[0], &saw[0], P); 
-  rsPlotVectors(saw);
+  //rsPlotVectors(saw);
   // Hmmm...we do get a saw, but one starting at zero with the discontinuity in the middle
-
-
-
 
   // Now let's try what the algorithm produces when the input signal is a square-wave that is 1 in
   // the 1st half and -1 in the 2nd half. Hopefully, we'll see a saw-down...
   for(int n = 0;n < P; n++) sqr[n] = -sqr[n];
   rsSquareToSaw(&sqr[0], &saw[0], P);
-  rsPlotVectors(saw);  // Yes: It's a downward saw as it should be.
+  //rsPlotVectors(saw);  // Yes: It's a downward saw as it should be.
+
+  // Now throw the 2nd variant of the algorithm at the inverted square:
+  rsSquareToSaw2(&sqr[0], &saw[0], P); 
+  //rsPlotVectors(saw);
+  // OK, nice - it's also a saw-down but phase-shifted
 
 
   // Now let's try a sine-wave as input:
@@ -3194,9 +3196,11 @@ void puleWidthModulationViaTwoSaws()
     sin1[n] = sin(2*PI*n/P);
   //rsPlotVectors(sin1);
   rsSquareToSaw(&sin1[0], &sin1c[0], P);
-  //rsPlotVectors(sin1, sin1c); // Puuh! This is a strange result!
-  // Let's try to re-create a sine by using 2 shifted copies of sin1c
+  //rsPlotVectors(sin1, sin1c);               // Puuh! This is a strange result!
+  rsSquareToSaw2(&sin1[0], &sin1c[0], P);   // Let's try the 2nd algorithm
+  //rsPlotVectors(sin1, sin1c);               // also strange, but in a different way
 
+  // Let's try to re-create a sine by using 2 shifted copies of sin1c:
   Vec y(N);
   for(int n = 0; n < N; n++)
   {
@@ -3248,6 +3252,7 @@ void puleWidthModulationViaTwoSaws()
   // Now let's try it with a saw:
   Vec saw1c(P);  
   rsSquareToSaw(&saw[0], &saw1c[0], P);
+  //rsSquareToSaw2(&saw[0], &saw1c[0], P);
   rsPlotVectors(saw, saw1c); 
   for(int n = 0; n < N; n++)
     y[n] = pwmWave(Real(n) / Real(P), 0.5, &saw1c[0], P);
@@ -3257,10 +3262,15 @@ void puleWidthModulationViaTwoSaws()
   // the input wave at s = 0.5, something is still very wrong. I think, it may be because we do 
   // some fudging with the resulting waveform *after* applying the constraint equation. We should 
   // really fudge the 1st half and *then* apply the constraint v(t+0.5) = v(t) - w(t).
+  // Hmm...okay...with rsSquareToSaw2, we actually do apply the constraint equation as last step
+  // but it still doesn't reconstruct the saw. That's really strange! I must have some severe
+  // misconception somewhere.
 
   for(int n = 0; n < N; n++)
     y[n] = pwmWave(Real(n) / Real(P), s, &saw1c[0], P);
   rsPlotVectors(y); 
+  // Although the results are totally not what I was trying to achieve, they look like they could
+  // be useful nonetheless. 
 
 
 
