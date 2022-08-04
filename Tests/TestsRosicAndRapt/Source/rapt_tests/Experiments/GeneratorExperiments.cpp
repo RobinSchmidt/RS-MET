@@ -3062,11 +3062,21 @@ void rsSquareToSaw(const T* sqr, T* saw, int P)
   for(int n = P/2; n < P; n++) 
     saw[n] = saw[n-P/2] - sqr[n];
 
+  // Compute DC component:
+  T dc = T(0);
+  for(int n = 0; n < P; n++) 
+    dc += saw[n];
+  dc /= (P-1);
+
+
   // Fudge the saw by removing DC and turning from downward to upward. However, this fudging feels 
   // a bit like cheating, so I should really try to figure out, if we can avoid it somehow. Maybe 
   // the problem formulation wasn't entirel correct?
-  for(int n = 0; n < P; n++) 
-    saw[n] = -(saw[n] + 1);
+  for(int n = 0; n < P; n++)
+  {
+    saw[n] = -(saw[n] - dc);
+    //saw[n] = -(saw[n] + 1);  // old, works only for square going from -1 to +1
+  }
 }
 
 void puleWidthModulationViaTwoSaws()
@@ -3126,22 +3136,21 @@ void puleWidthModulationViaTwoSaws()
   //rsPlotVectors(sqr);  // OK - yes - that's a square-wave of length P
   Vec saw(P);
   rsSquareToSaw(&sqr[0], &saw[0], P);
-  rsPlotVectors(saw);
+  //rsPlotVectors(saw);
   // Yep, that's a bona-fide upward sawtooth of period P. We completely derived it algorithmically
   // from the square-wave and the same algo could now be applied to arbitrary waveforms and thereby
   // generate some sort of "constituents" by means of which we could implement a sort of 
   // generalization of (analog-like) PWM for any waveform.
 
   // Compare target saw ("saw1") and generated saw ("saw"):
-  rsPlotArrays(P, &saw1[0], &saw[0]);  // yep: we have a perfect match! :-)
+  rsPlotArrays(P, &saw1[0], &saw[0]);  // Yes: We have a perfect match! :-)
 
 
   // Now let's try what the algorithm produces when the input signal is a square-wave that is 1 in
   // the 1st half and -1 in the 2nd half. Hopefully, we'll see a saw-down...
   for(int n = 0;n < P; n++) sqr[n] = -sqr[n];
   rsSquareToSaw(&sqr[0], &saw[0], P);
-  rsPlotVectors(saw);
-  // It is a downward saw, but with DC: it goes from -1 to -3.
+  rsPlotVectors(saw);  // Yes: It's a downward saw as it should be.
 
 
 
