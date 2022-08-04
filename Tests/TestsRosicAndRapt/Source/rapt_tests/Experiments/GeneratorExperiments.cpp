@@ -3068,7 +3068,6 @@ void rsSquareToSaw(const T* sqr, T* saw, int P)
     dc += saw[n];
   dc /= (P-1);
 
-
   // Fudge the saw by removing DC and turning from downward to upward. However, this fudging feels 
   // a bit like cheating, so I should really try to figure out, if we can avoid it somehow. Maybe 
   // the problem formulation wasn't entirel correct?
@@ -3078,6 +3077,35 @@ void rsSquareToSaw(const T* sqr, T* saw, int P)
     //saw[n] = -(saw[n] + 1);  // old, works only for square going from -1 to +1
   }
 }
+
+template<class T>
+void rsSquareToSaw2(const T* sqr, T* saw, int P)
+{
+  // Another variant that moves the fudging to before applying the constraint equation
+
+  // for developement - fill saw with all zeros:
+  RAPT::rsArrayTools::fillWithZeros(saw, P);
+
+  saw[0] = 0;
+  for(int n = 1; n < P/2; n++)
+    saw[n] = saw[n-1] + 0.5 * (sqr[n-1] + sqr[n]);  // Compute 1st half by integraion
+
+  for(int n = 0; n < P/2; n++) 
+    saw[n] *= 1./(P/2);                             // Normalize
+
+
+  for(int n = 0; n < P/2; n++) 
+    saw[n] = -saw[n];
+  // What if we leave this step out?
+
+  //rsPlotArrays(P, saw);
+
+  for(int n = P/2; n < P; n++) 
+    saw[n] = saw[n-P/2] - sqr[n];                   // Compute 2nd half by constraint
+
+  //rsPlotArrays(P, saw);
+}
+
 
 void puleWidthModulationViaTwoSaws()
 {
@@ -3136,7 +3164,7 @@ void puleWidthModulationViaTwoSaws()
   //rsPlotVectors(sqr);  // OK - yes - that's a square-wave of length P
   Vec saw(P);
   rsSquareToSaw(&sqr[0], &saw[0], P);
-  //rsPlotVectors(saw);
+  rsPlotVectors(saw);
   // Yep, that's a bona-fide upward sawtooth of period P. We completely derived it algorithmically
   // from the square-wave and the same algo could now be applied to arbitrary waveforms and thereby
   // generate some sort of "constituents" by means of which we could implement a sort of 
@@ -3145,11 +3173,19 @@ void puleWidthModulationViaTwoSaws()
   // Compare target saw ("saw1") and generated saw ("saw"):
   //rsPlotArrays(P, &saw1[0], &saw[0]);  // Yes: We have a perfect match! :-)
 
+  // Try second version:
+  rsSquareToSaw2(&sqr[0], &saw[0], P); 
+  rsPlotVectors(saw);
+  // Hmmm...we do get a saw, but one starting at zero with the discontinuity in the middle
+
+
+
+
   // Now let's try what the algorithm produces when the input signal is a square-wave that is 1 in
   // the 1st half and -1 in the 2nd half. Hopefully, we'll see a saw-down...
   for(int n = 0;n < P; n++) sqr[n] = -sqr[n];
   rsSquareToSaw(&sqr[0], &saw[0], P);
-  //rsPlotVectors(saw);  // Yes: It's a downward saw as it should be.
+  rsPlotVectors(saw);  // Yes: It's a downward saw as it should be.
 
 
   // Now let's try a sine-wave as input:
@@ -3218,11 +3254,15 @@ void puleWidthModulationViaTwoSaws()
   rsPlotVectors(y); 
   // This does NOT produce a saw-wave! ...why not?! Maybe because the saw doesn't have the right
   // symmetry properties? ...but actually, it should work by construction. If we can't reconstruct
-  // the input wave at s = 0.5, something is still very wrong. 
+  // the input wave at s = 0.5, something is still very wrong. I think, it may be because we do 
+  // some fudging with the resulting waveform *after* applying the constraint equation. We should 
+  // really fudge the 1st half and *then* apply the constraint v(t+0.5) = v(t) - w(t).
 
   for(int n = 0; n < N; n++)
     y[n] = pwmWave(Real(n) / Real(P), s, &saw1c[0], P);
   rsPlotVectors(y); 
+
+
 
   // Observations:
   // -The derived saw goes from -1 at n = 0 to +0.98 at n = P-1 (for P = 100). This perfectly 
