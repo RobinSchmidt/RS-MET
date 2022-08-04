@@ -3143,13 +3143,13 @@ void puleWidthModulationViaTwoSaws()
   // generalization of (analog-like) PWM for any waveform.
 
   // Compare target saw ("saw1") and generated saw ("saw"):
-  rsPlotArrays(P, &saw1[0], &saw[0]);  // Yes: We have a perfect match! :-)
+  //rsPlotArrays(P, &saw1[0], &saw[0]);  // Yes: We have a perfect match! :-)
 
   // Now let's try what the algorithm produces when the input signal is a square-wave that is 1 in
   // the 1st half and -1 in the 2nd half. Hopefully, we'll see a saw-down...
   for(int n = 0;n < P; n++) sqr[n] = -sqr[n];
   rsSquareToSaw(&sqr[0], &saw[0], P);
-  rsPlotVectors(saw);  // Yes: It's a downward saw as it should be.
+  //rsPlotVectors(saw);  // Yes: It's a downward saw as it should be.
 
 
   // Now let's try a sine-wave as input:
@@ -3158,7 +3158,7 @@ void puleWidthModulationViaTwoSaws()
     sin1[n] = sin(2*PI*n/P);
   //rsPlotVectors(sin1);
   rsSquareToSaw(&sin1[0], &sin1c[0], P);
-  rsPlotVectors(sin1, sin1c); // Puuh! This is a strange result!
+  //rsPlotVectors(sin1, sin1c); // Puuh! This is a strange result!
   // Let's try to re-create a sine by using 2 shifted copies of sin1c
 
   Vec y(N);
@@ -3168,7 +3168,7 @@ void puleWidthModulationViaTwoSaws()
     int m2 = (n+P/2) % P;  // readout index of 2nd constituent
     y[n] = sin1c[m1] - sin1c[m2];
   }
-  rsPlotVectors(y);  // Reproduces a sine-wave, as expected
+  //rsPlotVectors(y);  // Reproduces a sine-wave, as expected
 
 
   // Helper function to produce a generalized PWM waveform from a wavetable (of length P) 
@@ -3196,12 +3196,33 @@ void puleWidthModulationViaTwoSaws()
     Real p = Real(n) / Real(P);    // position or phase
     y[n] = pwmWave(p, 0.5, &sin1c[0], P);
   }
-  rsPlotVectors(y); 
+  //rsPlotVectors(y); 
   // Well - okay - it looks like a sine but with rather severe artifacts presumably coming from our
   // crude truncation. We really need interpolation.
 
+  // Now let's try to use our s variable as deined above, not 0.5:
+  for(int n = 0; n < N; n++)
+  {
+    Real p = Real(n) / Real(P);    // position or phase
+    y[n] = pwmWave(p, s, &sin1c[0], P);
+  }
+  //rsPlotVectors(y); 
+  // That looks really weird! I have no idea, if that is useful in any way...
 
+  // Now let's try it with a saw:
+  Vec saw1c(P);  
+  rsSquareToSaw(&saw[0], &saw1c[0], P);
+  rsPlotVectors(saw, saw1c); 
+  for(int n = 0; n < N; n++)
+    y[n] = pwmWave(Real(n) / Real(P), 0.5, &saw1c[0], P);
+  rsPlotVectors(y); 
+  // This does NOT produce a saw-wave! ...why not?! Maybe because the saw doesn't have the right
+  // symmetry properties? ...but actually, it should work by construction. If we can't reconstruct
+  // the input wave at s = 0.5, something is still very wrong. 
 
+  for(int n = 0; n < N; n++)
+    y[n] = pwmWave(Real(n) / Real(P), s, &saw1c[0], P);
+  rsPlotVectors(y); 
 
   // Observations:
   // -The derived saw goes from -1 at n = 0 to +0.98 at n = P-1 (for P = 100). This perfectly 
