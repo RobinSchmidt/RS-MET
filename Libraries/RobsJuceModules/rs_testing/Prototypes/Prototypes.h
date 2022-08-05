@@ -540,8 +540,8 @@ vector by a matrix (and adding the input value to both components). The output i
 linear combination of the state-vector's coordinates and the input. The state update matrix will
 have one of these two general forms:
 
-  |p1 0 |     or:     r * |cos(w)  -sin(w)|
-  |0  p2|                 |sin(w)   cos(w)|
+  [p1 0 ]     or:     r * [cos(w)  -sin(w)]
+  [0  p2]                 [sin(w)   cos(w)]
 
 where in the first case, p1 and p2 are the two real poles and the x and y states decay
 exponentially and independently from each other when the input is switched off. In the second case,
@@ -550,7 +550,19 @@ poles and we will see a spiraling/decaying rotation of the states when there's n
 The filter structure can realize almost any biquad transfer function - the singular problematic
 case is when there are two equal real poles - in this case, they will be made artificially distinct
 by fudging them a bit. The effect of that fudging on the transfer function will be miniscule. The
-advanatge of that filter structure is that it (presumably) responds well to modulation. */
+advantage of that filter structure is that it (presumably) responds well to modulation. 
+
+\todo:
+-Try to find a real solution to the edge case of two equal poles that doesn't require fudging. 
+ Maybe a matrix of the form:
+
+   [p1 0 ]
+   [1  p2]
+
+ could be used to model a series connection of the two one-poles? But then the problem arises when
+ to "switch" (or maybe "fade") from parallel to serial mode - or if at all. Maybe in the case of 
+ two real poles, we should always use this kind of matrix? But what would be the implications of 
+ doing so with regard to state invalidation? */
 
 template<class TSig, class TPar>
 class rsStateVectorFilter

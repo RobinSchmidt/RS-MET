@@ -3083,8 +3083,10 @@ void rsSquareToSaw2(const T* sqr, T* saw, int P)
 {
   // Another variant that moves the fudging to before applying the constraint equation
 
-  // for developement - fill saw with all zeros:
+  // for development - fill saw with all zeros:
   RAPT::rsArrayTools::fillWithZeros(saw, P);
+
+
   saw[0] = 0;
   for(int n = 1; n < P/2; n++)
     saw[n] = saw[n-1] + 0.5 * (sqr[n-1] + sqr[n]);  // Compute 1st half by integraion
@@ -3189,12 +3191,12 @@ void puleWidthModulationViaTwoSaws()
     sin1[n] = sin(2*PI*n/P);
   //rsPlotVectors(sin1);
   rsSquareToSaw(&sin1[0], &sin1c[0], P);
-  //rsPlotVectors(sin1, sin1c);               // Puuh! This is a strange result!
+  rsPlotVectors(sin1, sin1c);               // Puuh! This is a strange result!
   rsSquareToSaw2(&sin1[0], &sin1c[0], P);   // Let's try the 2nd algorithm
-  //rsPlotVectors(sin1, sin1c);               // also strange, but in a different way
+  rsPlotVectors(sin1, sin1c);               // also strange, but in a different way
 
   // Let's try to re-create a sine by using 2 shifted copies of sin1c:
-  Vec y(N);
+  Vec y(N), y1(N), y2(N);
   for(int n = 0; n < N; n++)
   {
     int m1 = n       % P;  // readout index of 1st constituent
@@ -3209,7 +3211,8 @@ void puleWidthModulationViaTwoSaws()
   // wave w(t) is produced by w(t) = v(t) - v(t+s) the "semiwave" of w. I made that term up myself.
   // It reflects the fact that we need to add two of them (with a phase-shift) to get out our 
   // actually desired waveform w(t).
-  auto pwmWave = [](Real p, Real s, const Real* semiWave, int P)
+  auto pwmWave = [](Real p, Real s, const Real* semiWave, int P, 
+    Real* s1 = nullptr, Real* s2 = nullptr)
   {
     Real p1 = P *  p;
     Real p2 = P * (p+s);
@@ -3219,6 +3222,11 @@ void puleWidthModulationViaTwoSaws()
     // are at a wraparound position):
     int m1 = ((int) p1) % P;
     int m2 = ((int) p2) % P;
+
+    // Assign outputs of the constituent waves, if client code wants them:
+    if(s1 != nullptr) *s1 =  semiWave[m1];
+    if(s2 != nullptr) *s2 = -semiWave[m2];
+
 
     return semiWave[m1] - semiWave[m2];
   };
@@ -3231,9 +3239,9 @@ void puleWidthModulationViaTwoSaws()
   }
   //rsPlotVectors(y); 
   // Well - okay - it looks like a sine but with rather severe artifacts presumably coming from our
-  // crude truncation. We really need interpolation.
+  // crude truncation. We really need a more proper interpolation.
 
-  // Now let's try to use our s variable as deined above, not 0.5:
+  // Now let's try to use our s variable as defined above, not 0.5:
   for(int n = 0; n < N; n++)
   {
     Real p = Real(n) / Real(P);    // position or phase
@@ -3248,8 +3256,8 @@ void puleWidthModulationViaTwoSaws()
   rsSquareToSaw2(&saw[0], &saw1c[0], P);
   //rsPlotVectors(saw, saw1c); 
   for(int n = 0; n < N; n++)
-    y[n] = pwmWave(Real(n) / Real(P), 0.5, &saw1c[0], P);
-  rsPlotVectors(y); 
+    y[n] = pwmWave(Real(n) / Real(P), 0.5, &saw1c[0], P, &y1[n], &y2[n]);
+  rsPlotVectors(y, y1, y2); 
   // This does NOT reproduce a saw-wave! ...why not?! Maybe because the saw doesn't have the right
   // symmetry properties? ...but actually, it should work by construction. If we can't reconstruct
   // the input wave at s = 0.5, something is still very wrong. I think, it may be because we do 
@@ -3257,7 +3265,14 @@ void puleWidthModulationViaTwoSaws()
   // really fudge the 1st half and *then* apply the constraint v(t+0.5) = v(t) - w(t).
   // Hmm...okay - done...with rsSquareToSaw2, we actually do apply the constraint equation as last
   // step but it still doesn't reconstruct the saw. That's really strange! I must have some severe
-  // misconception somewhere.
+  // misconception somewhere. Ah! wait! We use the constraint equation only to produce the 2nd half
+  // of the semiwave so only for that 2nd half we should expect it to be satisfied! The first half 
+  // is obtained by our integration rule, but actually our only justification for that was the 
+  // heuristic idea that integrating a constant gives a ramp and a ramp is what we want when the 
+  // input is a (part of) a square wave.
+  // Try producing and plotting the constituent waves, too - done
+  // Maybe the strategy works only for waveforms that have only odd harmonics and if applied to 
+  // waveforms with even harmonics, they get canceled? Try a cosine wave and maybe DC
 
   for(int n = 0; n < N; n++)
     y[n] = pwmWave(Real(n) / Real(P), s, &saw1c[0], P);
@@ -3281,6 +3296,27 @@ void puleWidthModulationViaTwoSaws()
   //  try other values of s. Do we get meaningful/interesting/useful waveforms?
   // -Factor out a function that takes a wavetable of the constituent, e.g. sin1c, a sample-index 
   //  n, and a shift parameter s...
+
+  // Ideas:
+  // -Maybe try to compute v[n] and v[n+P/2] from w[n] and w[n+P/2] by solving the 2x2 system:
+  //    w[n]     = v[n] - v[n+P/2]
+  //    w[n+P/2] = v[n+P/2] - v[n+P] = v[n+P/2] - v[n]
+  //  for each n in 0...P/2-1. Will this always have a solution and if so, is it unique? If it's
+  //  not unique, maybe we should pick the one that turns 2 saws into a square (if that's enough
+  //  of a constraint...maybe it's not when the input wave is actually a square because then it 
+  //  doesn't impose any further constraint?). For convenience, let's define a := w[n], 
+  //  b := w[n+P/2], A := v[n], B := v[n+P/2]. Then our system looks like:
+  //    a = A - B  ->  A = a + B
+  //    b = B - A  ->  B = b + A = b + a + B  ->  0 = b + a  ->  b = -a
+  //  so it seems, we get a solution only if b = -a (i.e. the function w[n] has odd symmetry around
+  //  the midpoint) and in this case we get infinitely many solutions. We can pick any B (or A) and
+  //  then compute A (or B) from A = a + B. ...Hmmm...yeah...that's kind of what we did: we picked
+  //  A to be the integrated input and then computed B from the constraint. Square and sine happen
+  //  to satisfy this b = -a condition which is why it worked for these waveforms. Wait - is this 
+  //  condition actually equivalen to odd symmetry aorund the midpoint? The cosine has even 
+  //  symmetry around the midpoint but also satisfies the constraint. Maybe it's enough if the 
+  //  waveform has odd symmetry around some point, not necessarily the midpoint? Also, the sawtooth
+  //  actually does have odd symmetry, right? ...it's confusing
 
 
   int dummy = 0;

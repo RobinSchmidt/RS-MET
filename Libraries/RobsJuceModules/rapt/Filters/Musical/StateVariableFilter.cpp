@@ -74,7 +74,7 @@ template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
 {
   // \todo look at this paper - it has simpler formulas and even formulas that work for biquads 
-  // with arbitrary coefiicients:
+  // with arbitrary coefficients:
   // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
   // make a function setupFromBiquad in the same way as in rsStateVectorFilter
 
