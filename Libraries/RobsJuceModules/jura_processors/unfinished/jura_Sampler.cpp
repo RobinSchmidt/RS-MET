@@ -519,6 +519,8 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
       sliderInterval = 1.0;
     slider->setRange(minVal, maxVal, sliderInterval, defVal, false);
     slider->setValue(val);
+    //slider->setName(opStr);
+    slider->setSliderName(opStr);
     setWidgetMode(WM::slider);
     // ToDo: maybe have a different quantization interval depending on the parameter
   }
