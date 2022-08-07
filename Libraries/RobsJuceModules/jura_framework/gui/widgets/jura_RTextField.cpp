@@ -305,6 +305,13 @@ bool RTextEntryField::keyPressed(const KeyPress &key)
   else
   {
     juce_wchar ch = key.getTextCharacter();
+
+    //if(key == KeyPress::numberPadDecimalPoint) ch = '.';    // Allow decimal point be entered on german number pad
+    // doesn't work
+
+    if(ch == ',')
+      ch = '.';
+
     if( permittedCharacters != String() && !permittedCharacters.containsChar(ch) )
       return true; // character is not among the permitted ones 
     getHeadAndTailString(head, tail);
@@ -316,7 +323,13 @@ bool RTextEntryField::keyPressed(const KeyPress &key)
     repaint();
   }
   deSelect();
-  return true; // KeyPress was consumed and will not be passed any further to possibly registered KeyListeners
+
+  return true; 
+  // KeyPress was consumed and will not be passed any further to possibly registered KeyListeners
+
+  // ToDo:
+  // -interpret the ',' on the number pad as '.'. JUCE defines
+  //  KeyPress::numberPadDecimalPoint
 }
 
 void RTextEntryField::focusGained(FocusChangeType cause)

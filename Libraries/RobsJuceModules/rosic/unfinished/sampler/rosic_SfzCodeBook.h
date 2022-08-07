@@ -310,7 +310,8 @@ enum class OpcodeFormat
   Natural,  // a.k.a. unsigned int
   Integer,
   Float,
-  String,    // rename to Text
+  String,    // rename to Text and use it only for freeform strings, add a "choice" format for
+             // strings taken from a specified set (such as lpf_1p, hpf_1p, etc.)
 
   NumTypes
 };

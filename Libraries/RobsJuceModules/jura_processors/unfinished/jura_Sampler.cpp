@@ -503,18 +503,7 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
   Opcode op = setting.getOpcode();
   int idx = setting.getIndex();
   std::string opStr = cb->opcodeToString(op, idx);
-  OF fmt  = cb->getOpcodeFormat(op);
-
-  switch(fmt)
-  {
-  case OF::Float:   setWidgetMode(WM::slider); break;
-  case OF::Integer: setWidgetMode(WM::slider); break;
-  case OF::Natural: setWidgetMode(WM::slider); break;
-
-    // ToDo: implemente boolean/choice/text parameters
-
-  default: RAPT::rsError("Not yet implemented");
-  }
+  OF fmt = cb->getOpcodeFormat(op);
 
   // Retrieve value, range and default value:
   float val    = setting.getValue();
@@ -522,18 +511,29 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
   float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
   float defVal = cb->opcodeDefaultValue(op, idx);
 
-  // Set up the appropriate widget
-  double sliderInterval = 0.0;
-  if(fmt == OF::Integer || fmt == OF::Natural)
-    sliderInterval = 1.0;
+  // Display the appropriate widget and set it up:
+  if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
+  {
+    double sliderInterval = 0.0;
+    if(fmt != OF::Float )
+      sliderInterval = 1.0;
+    slider->setRange(minVal, maxVal, sliderInterval, defVal, false);
+    slider->setValue(val);
+    setWidgetMode(WM::slider);
+    // ToDo: maybe have a different quantization interval depending on the parameter
+  }
+  else if(fmt == OF::String)
+  {
+    // Maybe we need to distinguish between choice-parameters and free text. In case of the former,
+    // we want acombobox, in case of the latter, a text-edit-fiel
+  }
+  else
+  {
+    setWidgetMode(WM::none);
+  }
 
 
-  // ToDo: 
-  // -Set slider interval/quantization to 1 in case of integer or natural parameters:
-
-
-
-
+  // ToDo: also show the group and region indices, if applicable
 
 
   int dummy = 0;
