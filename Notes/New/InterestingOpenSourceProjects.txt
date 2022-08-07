@@ -57,6 +57,17 @@ Audacity is a sample editor
 https://github.com/LMMS/lmms
 LMMS is a DAW
 
+https://github.com/elk-audio/mda-vst2
+https://github.com/elk-audio/mda-vst3
+https://github.com/moddevices/mda-lv2
+https://sourceforge.net/projects/mda-vst/
+MDA-Plugins by Paul Kellet
+
+
+https://sourceforge.net/p/juno6/code/
+Roland Juno 6 Emulation
+
+
 todo: IPlug2, tracktion engine, juce forks with lv2
 
 sort this list by relevance

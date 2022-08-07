@@ -3317,6 +3317,10 @@ void puleWidthModulationViaTwoSaws()
   //  symmetry around the midpoint but also satisfies the constraint. Maybe it's enough if the 
   //  waveform has odd symmetry around some point, not necessarily the midpoint? Also, the sawtooth
   //  actually does have odd symmetry, right? ...it's confusing
+  // -Maybe the idea of trying to compute the "underlying" constituent saw from the squarewave is
+  //  not so useful for generalizing PWM after all. Maybe we should just do the more obvious thing:
+  //  pass through the 1st half of the waveform faster and through the 2nd half slower, so as to 
+  //  maintain the overall periodicity, i.e. do some sort of phase-shaping/distortion/modulation.
 
 
   int dummy = 0;

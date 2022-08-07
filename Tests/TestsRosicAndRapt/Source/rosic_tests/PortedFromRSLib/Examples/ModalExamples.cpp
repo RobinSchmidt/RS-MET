@@ -626,6 +626,7 @@ void createBass1()
 {
   SampleMapGeneratorModal g;
   g.setName("Bass1");
+  g.setAmbience(true);
 
   int numPartials = 800; 
   rsModalBankParametersD p;
@@ -665,12 +666,16 @@ void createBass1()
   //g.setKeyRangeToRender(93, 93);
 
   //g.setKeyRangeToRender(45, 46);
-  g.setKeyRangeToRender(33, 45);
+  //g.setKeyRangeToRender(33, 45);
 
   //g.setTruncationLevel(-10);
   //g.setTruncationLevel(-1);
   //g.setTruncationLevel(-3);
   //g.setTruncationLevel(-20);
+
+  // For production;
+  g.setKeyRangeToRender(21, 93);
+  g.setTruncationLevel(-80);
 
   g.generateSampleMap(true);
 }
@@ -729,6 +734,7 @@ void createPluck1()
 {
   SampleMapGeneratorModal g;
   g.setName("Pluck1");
+  g.setAmbience(true);
 
   int numPartials = 800; 
   rsModalBankParametersD p;
@@ -831,7 +837,7 @@ void createPluck1()
   // ToDo: maybe use an increment (default 1, 12 means one sample per octave - which is also good 
   // for preview), see SampleMapGenerator::generateAllSamples
 
-  g.setTruncationLevel(-50);
+  g.setTruncationLevel(-80);
   // For production rendering, use -80 or -60. For preview -40
 
 

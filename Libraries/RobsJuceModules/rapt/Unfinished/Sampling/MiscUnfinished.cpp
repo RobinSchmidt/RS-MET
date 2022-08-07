@@ -970,11 +970,19 @@ TSig rsResampler<TSig, TPos>::signalValueViaSincAt(const TSig *x, int N, TPos t,
   }
   return y/ws;
 }
-// \todo: make a version of this function for periodic signals, maybe the loop should look like:
+// ToDo: 
+// -make a version of this function for periodic signals, maybe the loop should look like:
 //  for(int m = sincLength/2; m <= sincLength/2; m++)
 //    y += x[(ti+m)%N] * rsWindowedSinc(m-tf, sincLength, stretch);
-// ...but we need to check, if this is correct. This version could be used for looped
-// sample-playback (for example, in a sampler) or for wavetable-oscillators
+//  ...but we need to check, if this is correct. This version could be used for looped
+//  sample-playback (for example, in a sampler) or for wavetable-oscillators
+// -Currently, we initialize the recursions at the leftmost weight/datapoint and compute the 
+//  weights rightward to that initialization point by recursion. It may be numerically better to
+//  initialize the recursion at the center and compute the weights outward (leftward *and* 
+//  rightward) by recursion. That way, the center weights (which are most important, I guess) are
+//  computed directly and therefore accurately and we only have half as may recursive steps into 
+//  either direction in which the error accumulates. So, all weights should be more accurate and
+//  the center weights are totally accurate...more or less.
 
 template<class TSig, class TPos>
 void rsResampler<TSig, TPos>::transposeLinear(const TSig *x, int xN, TSig *y, int yN, TPos factor)

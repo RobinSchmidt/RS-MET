@@ -302,7 +302,7 @@ enum class DistortShape
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of the different data formats of the values of the opcode. */
 
-enum class OpcodeFormat  // maybe rename to OpcodeFormat
+enum class OpcodeFormat
 {
   Unknown = 0,
 
@@ -644,6 +644,16 @@ public:
   // consistent..maybe rename this function to just getType and opcodeDefaultValue to 
   // getDefault(Value)
 
+  OpcodeFormat getOpcodeFormat(Opcode op);
+
+
+  // Maybe these housl go into the "Inquiry" section
+
+  float opcodeMinValue(Opcode op);
+
+  float opcodeMaxValue(Opcode op);
+
+
   /** Returns the default value for the given opcode as floating point number. If the format of the
   value is integer or an enum value, you'll need to convert the returned value to int and then
   possibly to the enum. Some opcodes contain an index like eq2_freq. For these, you need to pass 
@@ -651,6 +661,7 @@ public:
   defaults are 50,500,5000 respectively for eq1_freq, eq2_freq, eq3_freq. If indexing is not 
   applicable to the given opcode, you should pass index = -1. */
   float opcodeDefaultValue(Opcode op, int index);
+
 
   /** Returns the default modulation mode for the given opcode, i.e. the modulation mode that is 
   used when the user doesn't use a unit suffix to the modulation depth opcode in the sfz file. */
@@ -712,6 +723,12 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
+
+
+  bool isValidOpcode(Opcode op)
+  {
+    return (int)op >= 0 && (int)op < (int)opcodeEntries.size();
+  }
 
   /** Returns true iff the given opcode applies to the sample playback source such as tune, 
   delay, offset, etc. */

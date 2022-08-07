@@ -223,7 +223,7 @@ int main(int argc, char* argv[])
   //shepardTone();
   //additiveEngine();
   //multiplicativeSynth();
-  puleWidthModulationViaTwoSaws();  // just a stub at the moment
+  //puleWidthModulationViaTwoSaws();  // just a stub at the moment
 
   // Modulators:
   //attackDecayEnvelope();
@@ -612,7 +612,7 @@ int main(int argc, char* argv[])
   //testCrossover4Way2();
   //testFiniteImpulseResponseDesigner();
   //testConvolverPartitioned();         // is unit test
-  testFiniteImpulseResponseFilter();  // is unit test
+  //testFiniteImpulseResponseFilter();  // is unit test
 
   // Genrators:
   //testOscillatorStereo();
@@ -621,7 +621,7 @@ int main(int argc, char* argv[])
   //testResetter();
   //testTurtleReverse();
   //testTurtleSource();
-  testSamplerEngine();
+  //testSamplerEngine();
 
   // Modulators:
   //testConsecutiveExponentialDecay();
@@ -649,7 +649,7 @@ int main(int argc, char* argv[])
   //createSamplerWaveforms();
 
   // Older sample-map creations based on modal synthesis (they take long):
-  //createBass1();
+  createBass1();
   //createGong1();
   //createPluck1();
   //testHighPluck();

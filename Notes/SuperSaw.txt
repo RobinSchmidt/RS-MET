@@ -5,7 +5,8 @@ oscillator and when the number of saws is 7, this is also known as the famous "s
 popularized by the Roland JP-8000 synthesizer
 
 Frequency Spreading:
-
+...tbc...How should we determine the frequencies of the individual saws? Equidistant (in pitch or 
+frequency) sounds really bad, i.e. flangy.
 
 Amplitude Scaling:
 -The oscillators do not need to all have the same amplitude. We could apply a sort of Bell curve to
@@ -16,24 +17,24 @@ Amplitude Scaling:
 Filtering:
 -We could try to restrict the Supersaw effect to the high frequencies by passing the master osc 
  alone through a lowpass, the sum of all oscs (including master) through a complementary highpass 
- and adding the signals up after giving the lopassed master a gain of sqrt(N). I think that gain 
+ and adding the signals up after giving the lowpassed master a gain of sqrt(N). I think that gain 
  would be most appropriate but experimentation may be a good idea. If the oscs use amplitude scaling 
  as described above, we may use the sqrt of the sum of the amplitudes...or maybe the sum of the 
- squares? Perhaps it's better to leave the lowpassed matser signal as is and apply an inverse gain
- to the highpass signal instead? That would make the total gain independent from the number of 
- voices?
+ squares? Perhaps it's better to leave the lowpassed master signal as is and apply an inverse gain
+ to the highpass signal instead? Would that make the total gain (in the sense of power or loudness) 
+ independent from the number of voices?
 -The filter freqs may track the fundamental and be adjusted as pitch-offset with respect to it.
 -The filter freqs of LP and HP do not necessarily need to be the same. Maybe the user can dial in 
- some gap or overlap  of the responses.
+ some gap or overlap of the responses.
 -Maybe we could also use the bandpass/notch split to have only mid frequencies have the 
  "super"-effect. ...not sure though if this will sound good.
 -Try using allpass filters to shift the phases around.
 -We could use a highpass tuned below the fundamental to get rid of the most annoying aliasing 
- artifacts below the fundamental.
+ artifacts below the fundamental. That's what the JP-8000 did (I think).
 
 Frequency Swapping:
 -Maybe after each cycle of the master, permute the increments in some pseudo-random way. Or maybe
- swap those farthese away from their taget phase (see below)? But maybe amplitudes then need to swap
+ swap those far away from their taget phase (see below)? But maybe amplitudes then need to swap
  as well which may produce discontinuities? ...but we have a phase-wraparound anyway, so if we 
  manage to put it on the discontinuity of the master saw, we may compute a blep for that anyway so 
  maybe we can accumulate the additional discontinuities coming from amplitude swaps into this blep, 
@@ -42,7 +43,7 @@ Frequency Swapping:
  roughly comparable frequency difference, i.e. the outermost ones are paired, the innermost ones 
  too, etc. and...
 -When a slave osc has its phase wraparound, compute a delta/error between the inital phase offset of 
- this slave with respect to the master and its current actual offset. The initial offsett is 
+ this slave with respect to the master and its current actual offset. The initial offset is 
  considered here as a desired, target phase offset that we wish to maintain over time, on average. 
  If the actual offset is too far away from its target value, swap increments (i.e. frequencies) with
  its paired partner osc. The rationale of the frequency swapping between paired partner oscs is that
@@ -50,8 +51,9 @@ Frequency Swapping:
  frequency is changed in accordance to some phase desiderata.
 -When the user requests an even number of oscillators, maybe just treat the center master osc as a 
  ghost, i.e. just don't output its output signal but do the phase updates per sample. Or: just fade
- the pairs in out and when an even integer is requensted the last pair would have a gain of 1/2. Two
- half-gain oscillators make one full-gain oscillator, so to speak.
+ the pairs in out and when an even integer is requested the last pair would have a gain of 1/2. Two
+ half-gain oscillators make one full-gain oscillator, so to speak. ...but I actually don't really 
+ like that idea. 
 -Maybe instead of measuring the phase offset with respect to the master, we may also measure it with 
  respect to some sort of mean/average phase, averaged over all oscs. I guess, it may lead to some 
  chaotic interaction between the oscs which may be desirable. But computing the mean phase may be 
@@ -68,6 +70,33 @@ Frequency Swapping:
   https://math.stackexchange.com/questions/4230404/how-can-i-calculate-the-mean-position-on-the-circle-or-mean-direction
   https://arxiv.org/abs/1108.2141
   https://ieeexplore.ieee.org/document/4217894
+  
+Continuous Density Parameter:
+-It would be nice to be able to adjust the "Count"/"Density"/"NumVoices" parameter continuously and
+ even make it modulatable.
+-Let's say, the fundamental is at 100 Hz and the detune parameter is set up such that the lowest saw
+ is at 94 Hz and the highest at 106 and let's for simplicity assume, the frequencies are spread out
+ equidistantly (this should not actually be the case, though - because it sounds flangy). For the 
+ integer values of density, we would have the following (unnormalized*) distribution of frequencies 
+ and amplitudes:
+   1:                 (100,1)
+   2:             ( 94,1)  (106,1)
+   3:         ( 94,1) (100,1) (106,1)
+   4:     ( 94,1) ( 98,1) (102,1) (106,1)
+   5: ( 94,1) ( 97,1) (100,1) (103,1) (106,1)
+-Now, for sweeping the setting between 1 and 2, what we would like to see is that the saw at 100 Hz
+ either rises or falls in frequency (reaching 106 or 94 at 2) while a second saw below or above 
+ fades in. The weighted (by the amplitudes or their squares) mean of the 2 frequencies should always
+ remain at 100. Whether the existing saw rises or falls (and therefore the new one pops up below or 
+ above) could be a user switch. I assume that both strategies may sound different.
+-(*) After frequencies and amplitudes have been determined algorithmically, we may need to take a 
+ renormalization step such that the weighted mean of the frequencies is exactly at the desired 
+ fundamental (the weights can be given by the amplitudes or their squares) and the power or RMS 
+ value of the amplitudes is unity. Maybe the two outer saws should be exempt from the frequency 
+ renormalization? We may want them to be some sort of fixed anchor points that stay put when 
+ tweaking the density. But maybe that's not a good idea...we'll see....
+ 
+ 
  
 Misc Ideas:
 -Let the slave oscillators not maintain their positions/phases but rather a phase offset with 
@@ -79,17 +108,26 @@ Misc Ideas:
 -Maybe we should detune the outermost slaves not in terms of an absolute frequency difference but in 
  terms of a musical interval (like +- 50 cents).
 -Maybe don't try to avoid phase crossings (i.e. instants at which some oscillators have the same 
- phase) but instead try to make them occurr when the oscs have theri zero crossings.
--Maybe phase-invert some of the saws (which is the same thing as playing them backwards)
+ phase) but instead try to make them occurr when the oscs have their zero crossings.
+-Maybe phase-invert some of the saws (which is the same thing as playing them backwards). Actually,
+ that's how PWM in a pulse-wave is created from 2 saws.
 -Maybe let the superosc run at a fixed sample-rate harmonically related to the osc-freq. Doing so 
- will make aliasing components fall on harmonic frequencies, so they may not only not annoying 
- anymore but actually beneficial....maybe...
+ will make aliasing components fall on harmonic frequencies, so they may not only not be annoying 
+ anymore but actually beneficial....maybe...or maybe not
+-"Random-and-Glide": Generate random numbers at a given interval determined by a "Speed" parameter,
+ linearly interpolate between them and route them to the frequencies (or increments). Each voice 
+ gets its own random signal.
+
  
 Implementation:
 -The driver logic, i.e. the computation of the phases, increments and amplitudes of the individual
  oscs, should be factored out into its own class seperate from the actual signal generation code. 
  This signal generation may then be a wavetable-based, blep-based or any other type of oscillator. 
- Maybe even a full blwon instrument sample player.
+ Maybe even a full blown instrument sample player.
+-The computation of the frequency ratios is implemented in its own class here:
+   https://github.com/RobinSchmidt/RS-MET/blob/master/Libraries/RobsJuceModules/rapt/Math/Misc/RatioGenerator.h
+ I assume that these ratios can also be useful for tuning the lengths of the delaylines in an FDN.
+ That's why it makes sense to factor this out into a class.
  
 -See also:
  https://de.wikipedia.org/wiki/SuperSaw

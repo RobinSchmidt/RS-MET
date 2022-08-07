@@ -494,7 +494,44 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
 
   // Update our widgets:
   using namespace rosic::Sampler;
+  using OF = OpcodeFormat;
+  using WM = WidgetMode;
+
   SfzCodeBook* cb = SfzCodeBook::getInstance();
+
+  // Figure out what kind of opcode we are dealing with and set up the widgetMode accordingly:
+  Opcode op = setting.getOpcode();
+  int idx = setting.getIndex();
+  std::string opStr = cb->opcodeToString(op, idx);
+  OF fmt  = cb->getOpcodeFormat(op);
+
+  switch(fmt)
+  {
+  case OF::Float:   setWidgetMode(WM::slider); break;
+  case OF::Integer: setWidgetMode(WM::slider); break;
+  case OF::Natural: setWidgetMode(WM::slider); break;
+
+    // ToDo: implemente boolean/choice/text parameters
+
+  default: RAPT::rsError("Not yet implemented");
+  }
+
+  // Retrieve value, range and default value:
+  float val    = setting.getValue();
+  float minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
+  float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
+  float defVal = cb->opcodeDefaultValue(op, idx);
+
+  // Set up the appropriate widget
+  double sliderInterval = 0.0;
+  if(fmt == OF::Integer || fmt == OF::Natural)
+    sliderInterval = 1.0;
+
+
+  // ToDo: 
+  // -Set slider interval/quantization to 1 in case of integer or natural parameters:
+
+
 
 
 

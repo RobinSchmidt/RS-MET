@@ -365,16 +365,41 @@ bool SfzCodeBook::isFilterRelated(Opcode op) const
 
 OpcodeType SfzCodeBook::getOpcodeType(Opcode op)
 {
-  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
+  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {  // todo: use if(!isValidOpcode(op))
     RAPT::rsError("Unknown opcode in SfzCodeBook::getOpcodeType");
     return OpcodeType::Unknown; 
   }
-  return opcodeEntries[(int)op].dsp;
+  return opcodeEntries[(int)op].dsp;  // ToDo: rename the "dsp" field to "type"
+}
+
+OpcodeFormat SfzCodeBook::getOpcodeFormat(Opcode op)
+{
+  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {  // todo: use if(!isValidOpcode(op))
+    RAPT::rsError("Unknown opcode in SfzCodeBook::getOpcodeFormat");
+    return OpcodeFormat::Unknown; 
+  }
+  return opcodeEntries[(int)op].format;
+}
+
+float SfzCodeBook::opcodeMinValue(Opcode op)
+{
+  if(!isValidOpcode(op)) {
+    RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeMinValue");
+    return 0.f;  }
+  return opcodeEntries[(int)op].minVal;
+}
+
+float SfzCodeBook::opcodeMaxValue(Opcode op)
+{
+  if(!isValidOpcode(op)) {
+    RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeMaxValue");
+    return 0.f;  }
+  return opcodeEntries[(int)op].maxVal;
 }
 
 float SfzCodeBook::opcodeDefaultValue(Opcode op, int index)
 {
-  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
+  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {  // todo: use if(!isValidOpcode(op))
     RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeDefaultValue");
     return 0.f;
   }
@@ -421,7 +446,7 @@ ModMode SfzCodeBook::opcodeDefaultModMode(Opcode op)
 
 std::string SfzCodeBook::opcodeToString(Opcode op, int index) const
 {
-  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
+  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {  // todo: use if(!isValidOpcode(op))
     RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToString");
     return dummyString; }
   RAPT::rsAssert(index > 0 || index == -1, "Invalid index in SfzCodeBook::opcodeToString");

@@ -129,6 +129,10 @@ public:
   highest key on the keyboard respectively. */
   void setKeyRangeToRender(int newLowKey, int newHighKey);
 
+  void setAmbience(bool shouldHaveAmbience) { ambience = shouldHaveAmbience; }
+  // maybe have a function setAmbienceLength - if zero, no ambience is generated, if nonzero, 
+  // ambience of length 2^k is generated
+
 
 
   /** \name Inquiry */
@@ -201,8 +205,8 @@ protected:
 
   int loKey, hiKey;   // lowest and highest key for which a sample has to be generated
 
-  bool ambience;      // determines whether ambience should be generated
 
+  bool ambience;      // determines whether ambience should be generated
   //static const int fftSize = 262144;
   static const int fftSize = 131072;
   //rsFourierTransformerRadix2 ft; // for the ambience
