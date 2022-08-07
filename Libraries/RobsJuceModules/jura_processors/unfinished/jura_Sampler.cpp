@@ -486,17 +486,9 @@ SfzOpcodeEditor::SfzOpcodeEditor()
 void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex, 
   const rosic::Sampler::PlaybackSetting& setting)
 {
-  // Update our info about what we actually edit:
-  patchChangeInfo.type = PatchChangeType::opcodeValueChanged;
-  patchChangeInfo.groupIndex = groupIndex;
-  patchChangeInfo.regionIndex = regionIndex;
-  patchChangeInfo.newSetting = setting;
-
-  // Update our widgets:
   using namespace rosic::Sampler;
   using OF = OpcodeFormat;
   using WM = WidgetMode;
-
   SfzCodeBook* cb = SfzCodeBook::getInstance();
 
   // Figure out what kind of opcode we are dealing with and set up the widgetMode accordingly:
@@ -511,6 +503,13 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
   float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
   float defVal = cb->opcodeDefaultValue(op, idx);
 
+  // Update our info about what we actually edit:
+  patchChangeInfo.type = PatchChangeType::opcodeValueChanged;
+  patchChangeInfo.groupIndex = groupIndex;
+  patchChangeInfo.regionIndex = regionIndex;
+  patchChangeInfo.oldSetting = setting;
+  patchChangeInfo.newValue = val; 
+
   // Display the appropriate widget and set it up:
   if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
   {
@@ -518,11 +517,9 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
     if(fmt != OF::Float )
       sliderInterval = 1.0;
     slider->setRange(minVal, maxVal, sliderInterval, defVal, false);
-    slider->setValue(val);
-    //slider->setName(opStr);
+    slider->setValue(val, false, false);
     slider->setSliderName(opStr);
     setWidgetMode(WM::slider);
-    // ToDo: maybe have a different quantization interval depending on the parameter
   }
   else if(fmt == OF::String)
   {
@@ -535,8 +532,9 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
   }
 
 
-  // ToDo: also show the group and region indices, if applicable
-
+  // ToDo: 
+  // -Also show the group and region indices, if applicable
+  // -Maybe have a different quantization interval depending on the parameter
 
   int dummy = 0;
 }
@@ -557,12 +555,8 @@ void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
 
 void SfzOpcodeEditor::rSliderValueChanged(RSlider* s)
 {
-  // ToDo: 
-  // -update our patchChangeInfo member
-  // -spawn a message to the mediator (and therefoe, to our colleagues)
-
-
-  //patchChangeInfo
+  patchChangeInfo.newValue = s->getValue(); // Store the desired change of value
+  notifyMediator(0, &patchChangeInfo);      // Notify colleague objects (TreeView, CodeEditor, ...)
 }
 
 void SfzOpcodeEditor::rButtonClicked(RButton* b)
@@ -687,18 +681,19 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
   //setCodeIsClean();  //
 
-
-  guiMediator.registerColleague(this);
-  guiMediator.registerColleague(opcodeEditor);
-  guiMediator.registerColleague(sfzTree);
-  guiMediator.registerColleague(&sfzEditor);
-
+  guiMediator.registerColleague(this);         this->setMediator(&guiMediator);
+  guiMediator.registerColleague(opcodeEditor); opcodeEditor->setMediator(&guiMediator);
+  guiMediator.registerColleague(sfzTree);      sfzTree->setMediator(&guiMediator);
+  guiMediator.registerColleague(&sfzEditor);   sfzEditor.setMediator(&guiMediator);
+  // Maybe have a function that does it both setMediator/registerColleague in one single call to
+  // reduce the boilerplate
 
   updateVisibilities();
 }
 
 SamplerEditor::~SamplerEditor()
 {
+  ScopedLock scopedLock(*lock);
   samplerModule->sfzPlayer.removeFileManagerListener(this);
 }
 

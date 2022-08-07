@@ -254,14 +254,14 @@ public:
     int groupIndex  = -1;
     int regionIndex = -1;
 
-    rosic::Sampler::PlaybackSetting newSetting; 
-    // Maybe we should also have oldSetting to ease the process of finding it? Maybe eventually, 
-    // but let's try to avoid that as long as possible.
+
+
+    rosic::Sampler::PlaybackSetting oldSetting; 
     // maybe we need it to be a sum-type of PlaybackSetting and ModulationRouting ...just like
     // we have done in SfzTreeViewNode. Maybe factor that "Variant" internal class out and use it
     // here too
-    // Maybe we we should just store the oldSetting here and have a simple float or string for 
-    // the new value
+
+    float newValue = 0.f;  // Value that we want to set the oldSetting to
   };
 
 

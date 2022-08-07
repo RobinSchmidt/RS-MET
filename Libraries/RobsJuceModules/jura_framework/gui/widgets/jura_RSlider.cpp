@@ -94,7 +94,12 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
       assignedParameter->setValue(currentValue, true, true); // ...in this call
       ParameterObserver::setLocalAutomationSwitch(true);
     }
+
     notifyListeners();
+    // BUG: I think, we should call this only when sendUpdateMessage == true. Also, I think, we 
+    // should pass the sendMessageSynchronously on to notifyListeners() which will then switch 
+    // between directly calling the callback or spawning it as asyc message
+
     repaintOnMessageThread();
   }
 }
