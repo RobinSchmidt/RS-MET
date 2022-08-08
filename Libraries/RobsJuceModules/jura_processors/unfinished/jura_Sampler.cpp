@@ -677,15 +677,37 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   *position = -1;
   *length   = -1;
 
+  using namespace rosic::Sampler;
+
   int gi = info.groupIndex;
   int ri = info.regionIndex;
 
+  // Maybe streamline these calls into a chain like getDocument().getallContent().toStdString().
+  // But maybe we actually need to hold the reference to the doc for calling replaceSection() on 
+  // it. We'll see..
+  juce::CodeDocument& doc = CodeEditorComponent::getDocument();
+  juce::String jStr = doc.getAllContent();
+  std::string code = jStr.toStdString();
+
+  // Find location in the code, where the group definition starts:
+  int groupStart, groupEnd; 
+  findSfzGroup(code, gi, &groupStart, &groupEnd);
+  //RAPT::rsAssert(groupStart != -1, "Group not found in code");
+  return;
+
+
+
+  int dummy = 0;
+
   // ToDo: 
-  // -Find the segement for the correct group
+  // -Find the segment for the correct group
   // -Within that segment, find the segment for the correct region
-  // -Within that, find the *last* occurence of the given opcode identifier. We need the last 
-  //  because that's the one that counts, when the same opcode is set multiple times - which is 
-  //  actually a silly way to write an sfz but we need some rule to handle such cases
+  // -Within that, find the *last* occurence of the given opcode identifier, e.g. "volume=" or
+  //  "volume1=". We need the last one because that's the one that counts, when the same opcode is
+  //  set multiple times - which is actually a silly way to write an sfz but we need some rule to 
+  //  handle such cases. Maybe we can use std::regex for that?
+  // -Replace the numeric value after the e.g. "volume=" substring. We probably can use 
+  //  CodeDocument::replaceSection for that.
   // -Actually, it would be better to find the code-segment (or at least its start), when the user
   //  selects a new node in the tree - not on every slider-movement. The starting position does not
   //  change (the length may, depending on the text-formatting of floating point numbers and also

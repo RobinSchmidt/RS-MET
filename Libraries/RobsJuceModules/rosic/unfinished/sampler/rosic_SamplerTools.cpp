@@ -187,6 +187,18 @@ float rsStringToFloat(const std::string& str)
   }
 }
 
+void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int* endIndex)
+{
+  *startIndex = -1;
+  *endIndex   = -1;
+
+
+
+
+
+  return;
+}
+
 
 
 

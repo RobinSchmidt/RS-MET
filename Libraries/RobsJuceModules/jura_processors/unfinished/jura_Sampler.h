@@ -524,11 +524,6 @@ public:
 
 protected:
 
-  /** Finds the chracter index immediately after the closing angle-bracket '>' in the "<group>" 
-  header for the group with given index. */
-  int findGroupStart(int groupIndex);
-
-
 
   //juce::CodeTokeniser sfzTokenizer;
   // ToDo: implement this, see:

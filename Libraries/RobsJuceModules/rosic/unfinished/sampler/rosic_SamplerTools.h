@@ -317,6 +317,22 @@ float rsStringToFloat(const std::string& str);
 inline std::string rsFloatToString(float v) { return std::to_string(v); }
 
 
+// Some SFZ-specific string processing tools (ToDo: maybe try to generalize them in a meaningful 
+// way):
+
+/** Finds the chracter index immediately after the closing angle-bracket '>' in the "<group>" 
+header for the group with given index. */
+void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int *endIndex);
+
+
+
+// ToDo: check if using start/end is consistent with the rest of the code or if we should use 
+// start/length instead
+
+
+
+
+
 //=================================================================================================
 // Container tools:
 
