@@ -1639,6 +1639,7 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 0, &s, &e); ok &= s == -1 && e == -1;
   findSfzGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
   findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
+  // maybe we should expect 0,0 for an empty string?
 
   // When we just have the string "<group>", then the group definition of group 0 starts at 0 and 
   // ends at 6. For groups with higher indices, we again expect (-1,-1) to be returned.
@@ -1671,10 +1672,16 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 2, &s, &e); ok &= s == 19 && e == 29;
 
   // Test it with an implicit first group by putting the first <region> before the first <group>
+  //     01234567
+  str = "<region>";
+  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
+
+
+  // Test it with an implicit first group by putting the first <region> before the first <group>
   //               1         2
   //     01234567890123456789012345678
   str = "<region><group><group><group>";
-  //findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7; // fails
+  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7; // fails
 
 
 
