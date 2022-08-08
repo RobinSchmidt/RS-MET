@@ -320,9 +320,11 @@ inline std::string rsFloatToString(float v) { return std::to_string(v); }
 // Some SFZ-specific string processing tools (ToDo: maybe try to generalize them in a meaningful 
 // way):
 
-/** Finds the chracter index immediately after the closing angle-bracket '>' in the "<group>" 
-header for the group with given index. */
-void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int *endIndex);
+/** Finds the character index within the given sfzCode of the opening angle-bracket '<' of the 
+"<group>" header for the group with given index and assigns it to the output variable "startIndex".
+The endIndex is assigned to the last character before the '<' of the next group or the last 
+character in the string (if the group is the last one and no other group follows). */
+void findSfzGroup(const std::string& sfzCode, int groupIndex, int* startIndex, int *endIndex);
 
 
 

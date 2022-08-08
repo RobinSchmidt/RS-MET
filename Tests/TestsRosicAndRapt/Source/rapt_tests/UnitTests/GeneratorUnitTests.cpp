@@ -1641,31 +1641,36 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
 
   // When we just have the string "<group>", then the group definition of group 0 starts at 0 and 
-  // ends at 6:
-  //   0123456
-  //   <group>
-  // For groups with higher indices, we again expect (-1,-1) to be returned:
+  // ends at 6. For groups with higher indices, we again expect (-1,-1) to be returned.
+  //     0123456
   str = "<group>";
   findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  6;
   findSfzGroup(str, 1, &s, &e);  ok &= s == -1 && e == -1;
   findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
 
   // For the string "<group><group>", group 0 again ranges from 0 to 6 and group 1 from 7 to 13:
-  //             1
-  //   01234567890123
-  //   <group><group>
+  //               1
+  //     01234567890123
   str = "<group><group>";
   findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  6;
   findSfzGroup(str, 1, &s, &e);  ok &= s ==  7 && e == 13;
   findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
 
-  //             1         2
-  //   012345678901234567890
-  //   <group><group><group>
+  //               1         2
+  //     012345678901234567890
   str = "<group><group><group>";
   findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  6;
   findSfzGroup(str, 1, &s, &e);  ok &= s ==  7 && e == 13;
   findSfzGroup(str, 2, &s, &e);  ok &= s == 14 && e == 20;
+
+  //               1         2         3
+  //     0123456789012345678901234567890
+  str = "<group>abc<group>de<group>fghj";
+  findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  9;
+  findSfzGroup(str, 1, &s, &e);  ok &= s == 10 && e == 18;
+  findSfzGroup(str, 2, &s, &e);  ok &= s == 19 && e == 29;
+
+
 
 
   /*
