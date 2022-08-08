@@ -187,6 +187,29 @@ float rsStringToFloat(const std::string& str)
   }
 }
 
+
+bool hasImplicitFirstGroup(const std::string& code)
+{
+  // An implicit first group definition (starting at the begin of the string) occurs, if the first
+  // <region> header appears before the first <group> header.
+
+  size_t firstGroupStart  = code.find("<group>");
+  if(firstGroupStart == string::npos)
+    return true;
+    // No <group> header was found at all. In this case, there is just one group and that group is
+    // indeed implicit.
+
+  size_t firstRegionStart = code.find("<region>");
+  if(firstGroupStart > firstRegionStart)
+    return true;
+    // I think, if no <region> header is found, the correct behavior depends on the implementation
+    // detail that string::npos is the max-value of size_t? Maybe if in some compiler, size_t is a 
+    // signed int and string::npos is defined as -1, it won't work? Can that possibly happen?
+    // -> Figure out and maybe fix the code, if so!
+
+  return false;
+}
+
 void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int* endIndex)
 {
   *startIndex = -1;
@@ -196,6 +219,11 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
   size_t L = pattern.length();
   int foundIndex = -1;
   size_t start = 0;
+
+  //if(hasImplicitFirstGroup(code)) {
+  //  *startIndex = 0;
+  //  foundIndex  = 0; }
+  // makes unit test fail with empty string
 
   // Find the start:
   while(foundIndex < groupIndex) {
@@ -223,7 +251,9 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
   // ToDo: 
   // -We may need a special rule for groupIndex == 0 because in this case, the <group> header is 
   //  optional, i.e. when there is only one single group in the whole sfz, the <group> header needs
-  //  not to be there
+  //  not to be there. Maybe write a function hasImplicitFirstGroup that returns true, iff the 1st
+  //  <region> header is encountered before the 1st <group> header. In such a case, the group
+  //  0 starts at character 0 and ends right before the 1st <group> header
 
 
   // See:

@@ -1636,58 +1636,53 @@ bool samplerCodeAnalyzerTest()
 
   // When we have an empty string, both numbers (start and end) should be -1 by convention:
   str = "";
-  findSfzGroup(str, 0, &s, &e);  ok &= s == -1 && e == -1;
-  findSfzGroup(str, 1, &s, &e);  ok &= s == -1 && e == -1;
-  findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
+  findSfzGroup(str, 0, &s, &e); ok &= s == -1 && e == -1;
+  findSfzGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
+  findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
 
   // When we just have the string "<group>", then the group definition of group 0 starts at 0 and 
   // ends at 6. For groups with higher indices, we again expect (-1,-1) to be returned.
   //     0123456
   str = "<group>";
-  findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  6;
-  findSfzGroup(str, 1, &s, &e);  ok &= s == -1 && e == -1;
-  findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
+  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
+  findSfzGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
+  findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
 
   // For the string "<group><group>", group 0 again ranges from 0 to 6 and group 1 from 7 to 13:
   //               1
   //     01234567890123
   str = "<group><group>";
-  findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  6;
-  findSfzGroup(str, 1, &s, &e);  ok &= s ==  7 && e == 13;
-  findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
+  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
+  findSfzGroup(str, 1, &s, &e); ok &= s ==  7 && e == 13;
+  findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
 
   //               1         2
   //     012345678901234567890
   str = "<group><group><group>";
-  findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  6;
-  findSfzGroup(str, 1, &s, &e);  ok &= s ==  7 && e == 13;
-  findSfzGroup(str, 2, &s, &e);  ok &= s == 14 && e == 20;
+  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
+  findSfzGroup(str, 1, &s, &e); ok &= s ==  7 && e == 13;
+  findSfzGroup(str, 2, &s, &e); ok &= s == 14 && e == 20;
 
   //               1         2         3
   //     0123456789012345678901234567890
   str = "<group>abc<group>de<group>fghj";
-  findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  9;
-  findSfzGroup(str, 1, &s, &e);  ok &= s == 10 && e == 18;
-  findSfzGroup(str, 2, &s, &e);  ok &= s == 19 && e == 29;
+  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  9;
+  findSfzGroup(str, 1, &s, &e); ok &= s == 10 && e == 18;
+  findSfzGroup(str, 2, &s, &e); ok &= s == 19 && e == 29;
+
+  // Test it with an implicit first group by putting the first <region> before the first <group>
+  //               1         2
+  //     01234567890123456789012345678
+  str = "<region><group><group><group>";
+  //findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7; // fails
 
 
 
 
-  /*
-  str = "\
-<group>\n\
-<region>\n\
-sample=Sin440Hz.wav\n\
-pitch_keycenter=69.000000\n\
-<region>\n\
-sample=Cos440Hz.wav\n\
-pitch_keycenter=69.000000";
-*/
-
-
-
-
-
+  // ToDo:
+  // -Implement and test similar functions to find the locations of region- and opcode definitions.
+  //  The region finder should take a start-index (so we may skip the groups before the one to 
+  //  which the region belongs) 
 
 
 
