@@ -649,6 +649,34 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   // -Change the code there. Replace the substring with the appropriate new string. Don't reparse.
   //  Otherwise, we would reparse on slider movement which is obviously totally silly and 
   //  impractical
+
+  // Find the location in the code that is affected by the change:
+  int pos, length;
+  findCodeSegment(info, &pos, &length);
+  if(pos == -1 || length == -1) {
+    RAPT::rsError("No appropriate code segment found"); 
+    return; 
+  }
+    // I'm not yet sure, if we should trigger an assert in such a situation. Maybe we should expect
+    // that to happen in normal operation? We'll see....
+
+  // Apply the required change to the code document: 
+  
+  
+
+
+
+  // Note:
+  // The change we make to the code should not trigger a re-parsing, at least not automatically 
+  // (but that doesn't really happen anyway). Otherwise, we would reparse on slider movement which 
+  // is obviously totally silly and impractical If the "Parse" button appears, that might be 
+  // tolerable, although it would be better if it doesn't.
+}
+
+void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, int* length)
+{
+  *position = -1;
+  *length   = -1;
 }
 
 //=================================================================================================
