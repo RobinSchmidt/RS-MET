@@ -1671,17 +1671,16 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 1, &s, &e); ok &= s == 10 && e == 18;
   findSfzGroup(str, 2, &s, &e); ok &= s == 19 && e == 29;
 
-  // Test it with an implicit first group by putting the first <region> before the first <group>
+  // Test it with an implicit first group with a single <region>
   //     01234567
   str = "<region>";
   findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
 
-
-  // Test it with an implicit first group by putting the first <region> before the first <group>
+  // Implicit first group by putting the first <region> before the first <group>
   //               1         2
   //     01234567890123456789012345678
   str = "<region><group><group><group>";
-  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7; // fails
+  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
 
 
 

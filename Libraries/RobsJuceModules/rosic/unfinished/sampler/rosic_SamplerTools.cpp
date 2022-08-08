@@ -208,15 +208,6 @@ bool hasImplicitFirstGroup(const std::string& code)
   return firstGroupStart > firstRegionStart;
   // When both <group> and <region> headers actually do exist, we need to compare their positions. 
   // If the first region header comes befeore the first group header, the first group is implicit.
-
-
-    // Obsolete:
-    // I think, if no <region> header is found, the correct behavior depends on the implementation
-    // detail that string::npos is the max-value of size_t? Maybe if in some compiler, size_t is a 
-    // signed int and string::npos is defined as -1, it won't work? Can that possibly happen?
-    // -> Figure out and maybe fix the code, if so!
-
-  //return false;
 }
 
 void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int* endIndex)
@@ -231,10 +222,10 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
   int foundIndex = -1;
   size_t start = 0;
 
+  // Handle special case when the first group header is missing and therefore implicit:
   if(hasImplicitFirstGroup(code)) {
     *startIndex = 0;
     foundIndex  = 0; }
-  // makes unit test fail with empty string
 
   // Find the start:
   while(foundIndex < groupIndex) {
@@ -264,7 +255,7 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
   //  optional, i.e. when there is only one single group in the whole sfz, the <group> header needs
   //  not to be there. Maybe write a function hasImplicitFirstGroup that returns true, iff the 1st
   //  <region> header is encountered before the 1st <group> header. In such a case, the group
-  //  0 starts at character 0 and ends right before the 1st <group> header
+  //  0 starts at character 0 and ends right before the 1st <group> header...done?
 
 
   // See:
