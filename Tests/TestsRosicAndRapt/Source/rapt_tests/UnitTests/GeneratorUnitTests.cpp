@@ -1635,19 +1635,20 @@ bool samplerCodeAnalyzerTest()
   int s, e;           // start and end
 
   // When we have an empty string, both numbers (start and end) should be -1 by convention:
-  /*
   str = "";
   findSfzGroup(str, 0, &s, &e);  ok &= s == -1 && e == -1;
   findSfzGroup(str, 1, &s, &e);  ok &= s == -1 && e == -1;
   findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
-  */
 
-
-  // When we just have the string "<group>", then the group definition starts at 0 and ends at 6:
-  // 0123456
-  // <group>
+  // When we just have the string "<group>", then the group definition of group 0 starts at 0 and 
+  // ends at 6, see:
+  //   0123456
+  //   <group>
+  // For groups with higher indices, we again expect (-1,-1) to be returned:
   str = "<group>";
-  findSfzGroup(str, 0, &s, &e);  ok &= s == 0 && e == 6; // fails successfully!
+  findSfzGroup(str, 0, &s, &e);  ok &= s ==  0 && e ==  6;
+  findSfzGroup(str, 1, &s, &e);  ok &= s == -1 && e == -1;
+  findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
 
 
 
