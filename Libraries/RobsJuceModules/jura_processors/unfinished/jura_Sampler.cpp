@@ -655,9 +655,8 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   findCodeSegment(info, &pos, &length);
   if(pos == -1 || length == -1) {
     RAPT::rsError("No appropriate code segment found"); 
-    return; 
-  }
-    // I'm not yet sure, if we should trigger an assert in such a situation. Maybe we should expect
+    return; }
+    // I'm not yet sure, if we should trigger an error in such a situation. Maybe we should expect
     // that to happen in normal operation? We'll see....
 
   // Apply the required change to the code document: 

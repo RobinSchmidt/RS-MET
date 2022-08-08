@@ -1,5 +1,24 @@
+For the standalone version of ToolChain, the JUCE framework provides functionality to recall the 
+last plugin state when the plugin is launched, i.e. on startup, it tries to restore the state from
+when it was closed. The file where this persistent state data is stored is found (on my machines) 
+in:
 
-I sometimes run into this when building ToolChain standalone and run it in the debugger:
+  Windows: C:\Users\rob\AppData\Roaming\ToolChain\ToolChain.settings
+  macOS:   ToDo: figure out!
+  Linux:   ToDo: figure out!
+
+These folders and files are created and updated silently by the JUCE framework. I found the 
+location(s) with the search function of windows explorer (searching for "ToolChain"). Sometimes, 
+it's necessary to manually delete this file, for example when the app crashes on startup during the 
+state recall. When the file is missing, the app will start in a "blank" state and the file will be 
+re-created when closing the app.
+
+
+I sometimes run into this problem when building ToolChain standalone and run it in the debugger:
 
 https://forum.juce.com/t/standalone-plugin-assertion-fails/22091/9
 https://forum.juce.com/t/juce-plugin-host-assert-in-midimessagecollector/6456
+
+ToDo: Figure out and document, how this problem can be solved! I can't tell for sure anymore, but if
+I remember correctly, deleting the .settings file can also help with this. But that doesn't seem to 
+make sense - what has MIDI to do with state-recall? ...but I may misremember this.
