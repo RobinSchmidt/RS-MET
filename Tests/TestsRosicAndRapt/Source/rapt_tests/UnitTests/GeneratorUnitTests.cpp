@@ -1675,14 +1675,25 @@ bool samplerCodeAnalyzerTest()
   //     01234567
   str = "<region>";
   findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
+  findSfzGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
+  findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
 
   // Implicit first group by putting the first <region> before the first <group>
   //               1         2
   //     01234567890123456789012345678
   str = "<region><group><group><group>";
   findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
+  findSfzGroup(str, 1, &s, &e); ok &= s ==  8 && e == 14;
+  findSfzGroup(str, 2, &s, &e); ok &= s == 15 && e == 21;
+  findSfzGroup(str, 3, &s, &e); ok &= s == 22 && e == 28;
 
-
+  //               1         2         3
+  //     0123456789012345678901234567890123456
+  str = "<region><region><group><group><group>";
+  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e == 15;
+  findSfzGroup(str, 1, &s, &e); ok &= s == 16 && e == 22;
+  findSfzGroup(str, 2, &s, &e); ok &= s == 23 && e == 29;
+  findSfzGroup(str, 3, &s, &e); ok &= s == 30 && e == 36;
 
 
   // ToDo:
