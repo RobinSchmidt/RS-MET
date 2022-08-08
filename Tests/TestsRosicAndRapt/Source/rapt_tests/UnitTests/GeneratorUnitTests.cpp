@@ -1634,13 +1634,21 @@ bool samplerCodeAnalyzerTest()
   std::string str;
   int s, e;           // start and end
 
+  // When we have an empty string, both numbers (start and end) should be -1 by convention:
+  /*
   str = "";
   findSfzGroup(str, 0, &s, &e);  ok &= s == -1 && e == -1;
   findSfzGroup(str, 1, &s, &e);  ok &= s == -1 && e == -1;
   findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
+  */
 
+
+  // When we just have the string "<group>", then the group definition starts at 0 and ends at 6:
+  // 0123456
+  // <group>
   str = "<group>";
-  findSfzGroup(str, 0, &s, &e);  ok &= s == 7 && e == 7; // fails successfully!
+  findSfzGroup(str, 0, &s, &e);  ok &= s == 0 && e == 6; // fails successfully!
+
 
 
 

@@ -192,9 +192,43 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
   *startIndex = -1;
   *endIndex   = -1;
 
+  std::string pattern = "<group>";   // Search pattern
+  size_t L = pattern.length();
+  int foundIndex = -1;
+  size_t start = 0;
+
+  // Find the start:
+  while(foundIndex < groupIndex) {
+    start = code.find(pattern, start);
+    if(start != string::npos) {
+      foundIndex++;
+      *startIndex = (int) start;
+      start += L;
+      if(foundIndex == groupIndex)
+        break; }
+    else {
+      *startIndex = -1;
+      return;  }}           // No group with given index could be found in the given sfz code
+
+  // Find the end. The end is defined to be either the last character in the string or the 
+  // character immediately before the subsequent <group> header:
+  start = code.find(pattern, start);
+  if(start != string::npos)
+    *endIndex = (int) start - 1;
+  else
+    *endIndex = (int) code.length() - 1;
 
 
 
+  // ToDo: 
+  // -We may need a special rule for groupIndex == 0 because in this case, the <group> header is 
+  //  optional, i.e. when there is only one single group in the whole sfz, the <group> header needs
+  //  not to be there
+
+
+  // See:
+  // https://cplusplus.com/reference/string/string/find/
+  // If no matches were found, the find() function returns string::npos.
 
   return;
 }
