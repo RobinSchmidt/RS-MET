@@ -1622,6 +1622,52 @@ sample=Cos440Hz.wav";
   return ok;
 }
 
+bool samplerCodeAnalyzerTest()
+{
+  // Tests the utilities to help analyzing sfz code, such as locating the segments in the code 
+  // where certain groups or regions are defined, where opcodes are defined, etc.
+
+  bool ok = true;
+
+  using namespace rosic::Sampler;
+
+  std::string str;
+  int s, e;           // start and end
+
+  str = "";
+  findSfzGroup(str, 0, &s, &e);  ok &= s == -1 && e == -1;
+  findSfzGroup(str, 1, &s, &e);  ok &= s == -1 && e == -1;
+  findSfzGroup(str, 2, &s, &e);  ok &= s == -1 && e == -1;
+
+  str = "<group>";
+  findSfzGroup(str, 0, &s, &e);  ok &= s == 7 && e == 7; // fails successfully!
+
+
+
+
+
+  /*
+  str = "\
+<group>\n\
+<region>\n\
+sample=Sin440Hz.wav\n\
+pitch_keycenter=69.000000\n\
+<region>\n\
+sample=Cos440Hz.wav\n\
+pitch_keycenter=69.000000";
+*/
+
+
+
+
+
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool samplerAmplifierCoreTest()
 {
   bool ok = true;
@@ -4393,6 +4439,7 @@ bool samplerEngineUnitTest()
   ok &= samplerBusModeTest();        // basic playback in busMode
   ok &= samplerSaveLoadTest();       // saving and loading of sfz files
   ok &= samplerParserTest();         // uses some files created by "..FileIO" -> order matters!
+  ok &= samplerCodeAnalyzerTest();   // utilities for locating groups/regions//opcodes in sfz code
   ok &= samplerEffectsTest();        // effect chain
   ok &= samplerModulatorsTest();     // modulation processors (LFOs, EGs, etc.)
   ok &= samplerModulationsTest();    // modulation system (mod-matrix, routing)
