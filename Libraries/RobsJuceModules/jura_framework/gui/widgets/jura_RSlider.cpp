@@ -59,9 +59,9 @@ void RSlider::setRange(double newMin, double newMax, double newInt, double newDe
 
   // initialize to default-value or keep the current value inside the new range:
   if( initToDefault == true )
-    setValue(defaultValue, false, false);
+    setValue(defaultValue, false);
   else
-    setValue(currentValue, false, false);
+    setValue(currentValue, false);
 
   //repaintOnMessageThread();
   //repaint();
@@ -80,8 +80,8 @@ void RSlider::setScaling(int newScaling)
   //  jassertfalse; // minValue must be strictly greater than 0 for exponential scaling
 }
 
-void RSlider::setValue(double newValue, const bool sendUpdateMessage, 
-  const bool sendMessageSynchronously)
+void RSlider::setValue(double newValue,
+  const bool sendUpdateMessage /*, const bool sendMessageSynchronously*/)
 {
   newValue = constrainValue(newValue); // why not constrainAndQuantize 
   //valueSanityCheck();  // what does this do? ...without parameters when we not have updated any member yet?
@@ -95,10 +95,16 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
       ParameterObserver::setLocalAutomationSwitch(true);
     }
 
-    notifyListeners();
-    // BUG: I think, we should call this only when sendUpdateMessage == true. Also, I think, we 
-    // should pass the sendMessageSynchronously on to notifyListeners() which will then switch 
-    // between directly calling the callback or spawning it as asyc message
+    if(sendUpdateMessage)
+      notifyListeners();
+    // former bug: we always called notifylisteners() without the conditional. Old comment:
+    // "I think, we should call this only when sendUpdateMessage == true. Also, I 
+    // think, we should pass the sendMessageSynchronously on to notifyListeners() which will then 
+    // switch between directly calling the callback or spawning it as asyc message. Check, how we 
+    // handle this in the other kinds of widgets. Maybe try to get rid of the "sendSync.." 
+    // parameter"
+    // ...OK - done. Let's leave this comment in for a while, but if everything seems to work fine,
+    // it may eventually be deleted
 
     repaintOnMessageThread();
   }
@@ -110,8 +116,8 @@ void RSlider::setStateFromString(const juce::String &stateString, bool sendChang
   setValue(value, sendChangeMessage);
 }
 
-void RSlider::setNormalizedValue(double newValue, const bool sendUpdateMessage, 
-  const bool sendMessageSynchronously)
+void RSlider::setNormalizedValue(double newValue, const bool sendUpdateMessage
+  /*, const bool sendMessageSynchronously*/)
 {
   //if(needsToSetNormalizedParameter())
   if(assignedParameter != nullptr)
@@ -130,7 +136,7 @@ void RSlider::setNormalizedValue(double newValue, const bool sendUpdateMessage,
     }
   }
   else
-    setValue(proportionOfLengthToValue(newValue), sendUpdateMessage, sendMessageSynchronously);
+    setValue(proportionOfLengthToValue(newValue), sendUpdateMessage);
 }
 
 void RSlider::setDefaultValue(double newDefaultValue)
@@ -148,12 +154,12 @@ void RSlider::setDefaultValues(std::vector<double> newDefaultValues)
   defaultValues = newDefaultValues;
 }
 
-void RSlider::setToDefaultValue(const bool sendUpdateMessage, const bool sendMessageSynchronously)
+void RSlider::setToDefaultValue(const bool sendUpdateMessage/*, const bool sendMessageSynchronously*/)
 {
   if(assignedParameter != nullptr)
-    setNormalizedValue(getNormalizedDefaultValue(), sendUpdateMessage, sendMessageSynchronously);
+    setNormalizedValue(getNormalizedDefaultValue(), sendUpdateMessage);
   else
-    setValue(defaultValue, sendUpdateMessage, sendMessageSynchronously);
+    setValue(defaultValue, sendUpdateMessage);
 }
 
 void RSlider::assignParameter(Parameter *parameterToAssign)
@@ -368,11 +374,11 @@ void RSlider::mouseDown(const MouseEvent& e)
   if( isEnabled() )
   {
     if( e.mods.isCommandDown() )
-      setToDefaultValue(false, false);
+      setToDefaultValue(false);
     else if( e.mods.isLeftButtonDown() /*&& ModifierKeys::getCurrentModifiers().isAltDown()*/ )
     {
       if(e.mods.isAltDown())
-        setNormalizedValue((double)e.x / (double)getWidth(), false, false); // why false?
+        setNormalizedValue((double)e.x / (double)getWidth(), false); // why false?
       normalizedValueOnMouseDown = getNormalizedValue();
       oldDragDistance  = 0;
       dragValue        = 0.0;
@@ -420,7 +426,7 @@ void RSlider::mouseDrag(const MouseEvent& e)
 void RSlider::mouseDoubleClick(const MouseEvent& e)
 {
   if( isEnabled() && e.mods.isLeftButtonDown() )
-    setValue(openModalNumberEntryField(getValue()), false, false);
+    setValue(openModalNumberEntryField(getValue()), false);
 }
 
 void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
@@ -441,10 +447,10 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
     if( interval > 0.0 )
     {
       tmpValue = getValue() + s * interval;
-      setValue(constrainAndQuantizeValue(tmpValue), false, false);
+      setValue(constrainAndQuantizeValue(tmpValue), false);
     }
     else
-      setNormalizedValue(getNormalizedValue() + scale * 0.01 * wheel.deltaY, false, false);
+      setNormalizedValue(getNormalizedValue() + scale * 0.01 * wheel.deltaY, false);
   }
 }
 

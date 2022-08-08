@@ -375,18 +375,18 @@ void PolyphonicInstrumentEditor::updateWidgetsAccordingToState()
   AudioModuleEditor::updateWidgetsAccordingToState();
 
   // update tuning widgets:
-  masterTuneSlider->setValue( instrumentEngine->getMasterTuneA4(),        false, false);
+  masterTuneSlider->setValue( instrumentEngine->getMasterTuneA4(),        false);
   tuningFileNameLabel->setText(juce::String(instrumentEngine->tuningTable.getName()));
 
   // update global widgets:
-  levelSlider->setValue(       instrumentEngine->getMasterLevel(),         false, false);
-  levelByKeySlider->setValue(  instrumentEngine->getVoiceLevelByKey(),     false, false);
-  levelByVelSlider->setValue(  instrumentEngine->getVoiceLevelByVel(),     false, false);
-  midSideRatioSlider->setValue(instrumentEngine->getMidSideRatio(),        false, false);
-  numVoicesSlider->setValue(   instrumentEngine->getNumPlayableVoices(),   false, false);
-  compSlider->setValue(        instrumentEngine->getMasterLevelByVoices(), false, false);
-  wheelRangeSlider->setValue(  instrumentEngine->getPitchWheelRange(),     false, false);
-  glideTimeSlider->setValue(   instrumentEngine->getGlideTime(),           false, false);
+  levelSlider->setValue(       instrumentEngine->getMasterLevel(),         false);
+  levelByKeySlider->setValue(  instrumentEngine->getVoiceLevelByKey(),     false);
+  levelByVelSlider->setValue(  instrumentEngine->getVoiceLevelByVel(),     false);
+  midSideRatioSlider->setValue(instrumentEngine->getMidSideRatio(),        false);
+  numVoicesSlider->setValue(   instrumentEngine->getNumPlayableVoices(),   false);
+  compSlider->setValue(        instrumentEngine->getMasterLevelByVoices(), false);
+  wheelRangeSlider->setValue(  instrumentEngine->getPitchWheelRange(),     false);
+  glideTimeSlider->setValue(   instrumentEngine->getGlideTime(),           false);
   glideButton->setToggleState( instrumentEngine->isInGlideMode(),          false);
 
   stateWidgetSet->stateFileNameLabel->setText(moduleToEdit->getStateNameWithStarIfDirty());

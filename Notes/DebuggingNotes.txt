@@ -1,0 +1,5 @@
+
+I sometimes run into this when building ToolChain standalone and run it in the debugger:
+
+https://forum.juce.com/t/standalone-plugin-assertion-fails/22091/9
+https://forum.juce.com/t/juce-plugin-host-assert-in-midimessagecollector/6456

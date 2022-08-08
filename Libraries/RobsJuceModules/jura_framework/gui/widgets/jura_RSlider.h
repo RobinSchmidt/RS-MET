@@ -102,8 +102,7 @@ public:
   now get rid of these boolean parameters - but test it before we do that clean up, so we may
   roll back, if necessary */
   virtual void setValue(double newValue, 
-    const bool sendUpdateMessage = true,
-    const bool sendMessageSynchronously = false);
+    const bool sendUpdateMessage = true /*, const bool sendMessageSynchronously = false*/);
 
   /** Overriden from RWidget - sets the current value of the slider from a string and optionally
   sends out a callback message. */
@@ -111,8 +110,8 @@ public:
 
   /** Sets the value of the slider expressed as proportion of the slider's range, taking into
   account the scaling behaviour. The value is thus between 0...1. */
-  virtual void setNormalizedValue(double newValue, const bool sendUpdateMessage = true, 
-    const bool sendMessageSynchronously = false);
+  virtual void setNormalizedValue(double newValue, const bool sendUpdateMessage = true
+    /*, const bool sendMessageSynchronously = false*/);
     // todo: rename to setNormalizedValue
 
   /** Sets the single default value that will be used on ctrl-click. */
@@ -123,8 +122,8 @@ public:
 
   /** Sets the current value of the slider to the default value and optionally sends out a callback
   message.. */
-  virtual void setToDefaultValue(const bool sendUpdateMessage = true,
-    const bool sendMessageSynchronously = false);
+  virtual void setToDefaultValue(const bool sendUpdateMessage = true
+    /*, const bool sendMessageSynchronously = false*/);
 
   /** Overrides a RWidget::assignParameter in order to retrieve some infos from the Parameter (such
   as range, default-value, etc.) and sets up the slider accordingly. It will also set the slider's 

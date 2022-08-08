@@ -39,5 +39,5 @@ void TuningSlider::applySemitoneShiftToValue(double numSemitones)
   if( assignedParameter != NULL ) 
     assignedParameter->setValue(assignedParameter->getValue()+numSemitones, true, true);
   else
-    setValue(getValue()+numSemitones, true, false);
+    setValue(getValue()+numSemitones, true);
 }

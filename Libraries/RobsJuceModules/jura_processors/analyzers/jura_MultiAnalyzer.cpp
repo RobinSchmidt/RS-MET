@@ -633,7 +633,7 @@ void AudioModuleEditorAnimated::rSliderValueChanged(RSlider *sliderThatHasChange
 
 void AudioModuleEditorAnimated::setFrameRate(double newFrameRate)
 {
-  frameRateSlider->setValue(newFrameRate, false, false);
+  frameRateSlider->setValue(newFrameRate, false);
   updateTimerSettings();
 }
 

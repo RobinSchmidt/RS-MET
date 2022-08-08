@@ -224,8 +224,8 @@ void TrackMeterModuleEditor::rButtonClicked(RButton* buttonThatWasClicked)
   tauFall *= 1000.0;
 
   // set the slider values (which also causes an update in the audio engine):
-  riseSlider->setValue(tauRise, true, false);
-  fallSlider->setValue(tauFall, true, false);
+  riseSlider->setValue(tauRise, true);
+  fallSlider->setValue(tauFall, true);
 }
 
 void TrackMeterModuleEditor::paint(Graphics &g)

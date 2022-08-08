@@ -448,7 +448,7 @@ void DspWorkbenchModuleEditor::rTextFieldChanged(RTextField *textFieldThatHasCha
       parameterMaxFields[p]->setText(    juce::String(max)         );
       parameterDefaultFields[p]->setText(juce::String(defaultValue));
       parameterSliders[p]->setRange(min, max, 0.0, defaultValue,     false);
-      parameterSliders[p]->setValue(            value,         false, false);
+      parameterSliders[p]->setValue(            value,         false);
 
       return;
       /*
@@ -568,7 +568,7 @@ void DspWorkbenchModuleEditor::updateWidgetsAccordingToState()
     parameterDefaultFields[p]->setText(juce::String(defaultValue));
 
     parameterSliders[p]->setRange(min, max, 0.0, defaultValue, false);
-    parameterSliders[p]->setValue(            value,         false, false);
+    parameterSliders[p]->setValue(            value,         false);
 
     bool expScaling
       = dspWorkbenchAudioModule->getParameterByIndex(p)->getScaling() == Parameter::EXPONENTIAL;

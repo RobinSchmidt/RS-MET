@@ -279,7 +279,7 @@ void ParameterModuleEditor::updateWidgetsFromModuleState()
     double value        = pm->getValue();
     double quantization = 0.0;  // preliminary
     valueSlider->setRange(minValue, maxValue, quantization, defaultValue, false);
-    valueSlider->setValue(value, false, false);
+    valueSlider->setValue(value, false);
 
     int scaling = pm->getMappingFunction();
     if(scaling == romos::ParameterModule::EXPONENTIAL_MAPPING)

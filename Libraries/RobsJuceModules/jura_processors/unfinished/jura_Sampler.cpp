@@ -517,7 +517,7 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
     if(fmt != OF::Float )
       sliderInterval = 1.0;
     slider->setRange(minVal, maxVal, sliderInterval, defVal, false);
-    slider->setValue(val, false, false);
+    slider->setValue(val, false);
     slider->setSliderName(opStr);
     setWidgetMode(WM::slider);
   }
@@ -535,6 +535,7 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
   // ToDo: 
   // -Also show the group and region indices, if applicable
   // -Maybe have a different quantization interval depending on the parameter
+  // -Maybe also have linear or exponential scaling depending on parameter
 
   int dummy = 0;
 }
@@ -555,7 +556,7 @@ void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
 
 void SfzOpcodeEditor::rSliderValueChanged(RSlider* s)
 {
-  patchChangeInfo.newValue = s->getValue(); // Store the desired change of value
+  patchChangeInfo.newValue = s->getValue(); // Store the desired new value
   notifyMediator(0, &patchChangeInfo);      // Notify colleague objects (TreeView, CodeEditor, ...)
 }
 
@@ -637,15 +638,17 @@ void SfzOpcodeEditor::updateVisibilities()
   }
 }
 
-
-
 //=================================================================================================
 
 void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
   // ToDo:
-  // -Find the location in the code that is affected by the change
-  // -Change the code there
+  // -Find the location in the code that is affected by the change, write a function 
+  //  findCodeToModify. It should perhaps return a pair of indices or an index and a length for 
+  //  where the relevant opcode (or region, etc.) substring starts and ends.
+  // -Change the code there. Replace the substring with the appropriate new string. Don't reparse.
+  //  Otherwise, we would reparse on slider movement which is obviously totally silly and 
+  //  impractical
 }
 
 //=================================================================================================

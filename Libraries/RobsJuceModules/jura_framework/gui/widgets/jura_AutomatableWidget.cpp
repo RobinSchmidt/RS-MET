@@ -903,8 +903,8 @@ void rsAutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 
   switch( selectedIdentifier )
   {
-  case ENTER_VALUE:   setValue(openModalNumberEntryField(getValue()),        true, false); break;
-  case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break; //?
+  case ENTER_VALUE:   setValue(openModalNumberEntryField(getValue()),        true); break;
+  case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true); break; //?
   default: rsAutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
   }
 }

@@ -754,14 +754,14 @@ void MultiModeFilterModuleEditor::updateWidgetsAccordingToState()
 
   // something to do here...?
 
-  freqSlider->setValue(filterToEdit->getFrequencyNominal(),               false, false);
-  freqByKeySlider->setValue(filterToEdit->getFrequencyByKey(),            false, false);
-  freqByVelSlider->setValue(filterToEdit->getFrequencyByVel(),            false, false);
-  resoSlider->setValue(filterToEdit->getResonance(),                      false, false);
-  qSlider->setValue(filterToEdit->getQ(),                                 false, false);
-  gainSlider->setValue(filterToEdit->getGain(),                           false, false);
-  driveSlider->setValue(filterToEdit->getDrive(),                         false, false);
-  morphSlider->setValue(filterToEdit->getMorph(),                         false, false);
+  freqSlider->setValue(filterToEdit->getFrequencyNominal(),               false);
+  freqByKeySlider->setValue(filterToEdit->getFrequencyByKey(),            false);
+  freqByVelSlider->setValue(filterToEdit->getFrequencyByVel(),            false);
+  resoSlider->setValue(filterToEdit->getResonance(),                      false);
+  qSlider->setValue(filterToEdit->getQ(),                                 false);
+  gainSlider->setValue(filterToEdit->getGain(),                           false);
+  driveSlider->setValue(filterToEdit->getDrive(),                         false);
+  morphSlider->setValue(filterToEdit->getMorph(),                         false);
   /*
   freq2ScaleSlider->setValue(
   filterToEdit->twoStageBiquad.getSecondFrequencyScaleFactor(),         false, false);
@@ -772,10 +772,10 @@ void MultiModeFilterModuleEditor::updateWidgetsAccordingToState()
   gain2ScaleSlider->setValue(
   filterToEdit->twoStageBiquad.getSecondGainScaleFactor(),              false, false);
   */
-  orderSlider->setValue(filterToEdit->getOrder(),                         false, false);
+  orderSlider->setValue(filterToEdit->getOrder(),                         false);
   twoStagesButton->setToggleState(filterToEdit->usesTwoStages(),          false);
-  preAllpassSlider->setValue(filterToEdit->getAllpassFreq(),              false, false);
-  makeUpSlider->setValue(filterToEdit->getMakeUp(),                       false, false);
+  preAllpassSlider->setValue(filterToEdit->getAllpassFreq(),              false);
+  makeUpSlider->setValue(filterToEdit->getMakeUp(),                       false);
 
   updateWidgetArrangement();
   frequencyResponseDisplay->updatePlot();
