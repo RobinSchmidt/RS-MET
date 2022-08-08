@@ -654,7 +654,7 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   int pos, length;
   findCodeSegment(info, &pos, &length);
   if(pos == -1 || length == -1) {
-    RAPT::rsError("No appropriate code segment found"); 
+    //RAPT::rsError("No appropriate code segment found"); 
     return; }
     // I'm not yet sure, if we should trigger an error in such a situation. Maybe we should expect
     // that to happen in normal operation? We'll see....
@@ -676,6 +676,20 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
 {
   *position = -1;
   *length   = -1;
+
+  int gi = info.groupIndex;
+  int ri = info.regionIndex;
+
+  // ToDo: 
+  // -Find the segement for the correct group
+  // -Within that segment, find the segment for the correct region
+  // -Within that, find the *last* occurence of the given opcode identifier. We need the last 
+  //  because that's the one that counts, when the same opcode is set multiple times - which is 
+  //  actually a silly way to write an sfz but we need some rule to handle such cases
+  // -Actually, it would be better to find the code-segment (or at least its start), when the user
+  //  selects a new node in the tree - not on every slider-movement. The starting position does not
+  //  change (the length may, depending on the text-formatting of floating point numbers and also
+  //  when we are dealing with a choice opcode)
 }
 
 //=================================================================================================
