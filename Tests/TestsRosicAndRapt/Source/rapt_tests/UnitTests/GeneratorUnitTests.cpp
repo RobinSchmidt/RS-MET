@@ -1664,6 +1664,8 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 1, &s, &e); ok &= s ==  7 && e == 13;
   findSfzGroup(str, 2, &s, &e); ok &= s == 14 && e == 20;
 
+  // Now let the groups have some content. It doesn't really matter whether the "content" makes
+  // sense or not, so we just enter some garbage:
   //               1         2         3
   //     0123456789012345678901234567890
   str = "<group>abc<group>de<group>fghj";

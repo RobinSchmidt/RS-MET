@@ -187,7 +187,7 @@ float rsStringToFloat(const std::string& str)
   }
 }
 
-
+// Not declared in header file because we currently only use it internally:
 bool hasImplicitFirstGroup(const std::string& code)
 {
   // An implicit first group definition (starting at the begin of the string) occurs, if the first
@@ -217,7 +217,7 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
   if(code.empty())
     return;
 
-  std::string pattern = "<group>";   // Search pattern
+  std::string pattern = "<group>";       // Search pattern
   size_t L = pattern.length();
   int foundIndex = -1;
   size_t start = 0;
@@ -230,7 +230,7 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
   // Find the start:
   while(foundIndex < groupIndex) {
     start = code.find(pattern, start);
-    if(start != string::npos) {
+    if(start != string::npos) {          // npos is returned when no match was found
       foundIndex++;
       *startIndex = (int) start;
       start += L;
@@ -247,22 +247,6 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
     *endIndex = (int) start - 1;
   else
     *endIndex = (int) code.length() - 1;
-
-
-
-  // ToDo: 
-  // -We may need a special rule for groupIndex == 0 because in this case, the <group> header is 
-  //  optional, i.e. when there is only one single group in the whole sfz, the <group> header needs
-  //  not to be there. Maybe write a function hasImplicitFirstGroup that returns true, iff the 1st
-  //  <region> header is encountered before the 1st <group> header. In such a case, the group
-  //  0 starts at character 0 and ends right before the 1st <group> header...done?
-
-
-  // See:
-  // https://cplusplus.com/reference/string/string/find/
-  // If no matches were found, the find() function returns string::npos.
-
-  return;
 }
 
 
