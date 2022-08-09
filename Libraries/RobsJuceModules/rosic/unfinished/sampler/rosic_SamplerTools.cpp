@@ -254,7 +254,7 @@ void findSfzRegion(const std::string& code, int regionIndex, int searchStart, in
 {
   *startIndex = -1;
   *endIndex   = -1;
-  if(code.size() < searchStart)
+  if(code.size() < searchStart)  // maybe <=?
     return;
 
   std::string pattern = "<region>";       // Search pattern
@@ -262,10 +262,44 @@ void findSfzRegion(const std::string& code, int regionIndex, int searchStart, in
   int foundIndex = -1;
   size_t start = (size_t) searchStart;
 
+  // Find the start:
+  while(foundIndex < regionIndex && (int) start <= searchEnd) {
+    start = code.find(pattern, start);
+    if(start != string::npos) {          // npos is returned when no match was found
+      foundIndex++;
+      *startIndex = (int) start;
+      start += L;
+      if(foundIndex == regionIndex)
+        break; }
+    else {
+      *startIndex = -1;
+      return;  }}  
 
-  // ...more to do...
+  // Handle case when we left the loop due to the 2nd loop condition. In this case the caller is
+  // searching for a region with an index higher than present in the code:
+  if(foundIndex < regionIndex) {
+    *startIndex = -1;
+    return; }
+    // ToDo: document, why we don't have/need a similar handling in findSfzGroup. I think, it's 
+    // because there, the 2nd loop condition doesn't exist
 
+  // Find the end. The end is defined to be either the searchEnd or the character immediately 
+  // before the subsequent <region> header:
+  start = code.find(pattern, start);
+  if(start != string::npos)
+    *endIndex = (int) start - 1;
+  else
+    *endIndex = searchEnd;
 }
+// needs tests
+// Can we get rid of the code duplication? Maybe like this:
+// -Pass the search pattern as argument
+// -Let searchstart/End be optional parameters that defualt to 0 and code.length()-1
+// -I think the conditionals:
+//    if(code.size() < searchStart) 
+//    while(foundIndex < regionIndex && (int) start <= searchEnd)
+//  in findSfzRegion are compatible with those in findSfzGroup. 
+// -The if(hasImplicitFirstGroup(code)) in findSfzGroup could be problematic, though
 
 
 

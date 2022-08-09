@@ -1634,6 +1634,9 @@ bool samplerCodeAnalyzerTest()
   std::string str;
   int s, e;           // start and end
 
+  //-----------------------------------------------------------------
+  // Test findSfzGroup
+
   // When we have an empty string, both numbers (start and end) should be -1 by convention:
   str = "";
   findSfzGroup(str, 0, &s, &e); ok &= s == -1 && e == -1;
@@ -1711,6 +1714,19 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 2, &s, &e); ok &= s == 23 && e == 29;
   findSfzGroup(str, 3, &s, &e); ok &= s == 30 && e == 36;
   findSfzGroup(str, 4, &s, &e); ok &= s == -1 && e == -1;
+
+  //-----------------------------------------------------------------
+  // Test findSfzRegion
+
+  str = "";
+  findSfzRegion(str, 0, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+  findSfzRegion(str, 1, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+
+  //     01234567
+  str = "<region>";
+  findSfzRegion(str, 0, 0, 7, &s, &e); ok &= s ==  0 && e ==  7;
+  findSfzRegion(str, 1, 0, 7, &s, &e); ok &= s == -1 && e == -1;
+  findSfzRegion(str, 2, 0, 7, &s, &e); ok &= s == -1 && e == -1;
 
 
 
