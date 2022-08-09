@@ -290,6 +290,10 @@ void findSfzRegion(const std::string& code, int regionIndex, int searchStart, in
     *endIndex = (int) start - 1;
   else
     *endIndex = searchEnd;
+
+  // ToDo:
+  // -Maybe add some assertions to the beginning, namely that the searchEnd is not beyond the end
+  //  of the code string and that no <group> header appears between searchStart and searchEnd.
 }
 // needs tests
 // Can we get rid of the code duplication? Maybe like this:

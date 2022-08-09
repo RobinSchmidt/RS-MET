@@ -1753,13 +1753,16 @@ bool samplerCodeAnalyzerTest()
   findSfzRegion(str, 2, 0, 28, &s, &e); ok &= s == 21 && e == 28;
 
 
+  //-----------------------------------------------------------------
+  // Test findSfzOpcode
+
+
+
 
   // ToDo:
-  // -Implement and test similar functions to find the locations of region- and opcode definitions.
-  //  The region finder should take a start-index (so we may skip the groups before the one to 
-  //  which the region belongs) 
-
-
+  // -Implement and test function to locate (the last) opcode definition for a given opcode within
+  //  a region definition. Take care to handle opcodes with an optional index 1 correctly. Both 
+  //  syntax variants - with and without the 1 - should be considered.
 
   rsAssert(ok);
   return ok;
