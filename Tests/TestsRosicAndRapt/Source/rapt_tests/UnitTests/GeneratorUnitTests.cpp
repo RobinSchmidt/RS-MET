@@ -1641,6 +1641,16 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
   // maybe we should expect 0,0 for an empty string?
 
+  // The same should result for a meaningless string:
+  str = "abc";
+  //findSfzGroup(str, 0, &s, &e); ok &= s == -1 && e == -1;
+  // Fails! The code considers the string abc as the content of the implicit group 0. We get 
+  // s = 0, e = 2 as result. But maybe that's actually an acceptable behavior? Actually, it could
+  // make sense. It could be an empty group containing only a comment
+  findSfzGroup(str, 0, &s, &e); ok &= s == 0 && e == 2;
+  // ..yeah..ok
+
+
   // When we just have the string "<group>", then the group definition of group 0 starts at 0 and 
   // ends at 6. For groups with higher indices, we again expect (-1,-1) to be returned.
   //     0123456
@@ -1663,6 +1673,7 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
   findSfzGroup(str, 1, &s, &e); ok &= s ==  7 && e == 13;
   findSfzGroup(str, 2, &s, &e); ok &= s == 14 && e == 20;
+  findSfzGroup(str, 3, &s, &e); ok &= s == -1 && e == -1;
 
   // Now let the groups have some content. It doesn't really matter whether the "content" makes
   // sense or not, so we just enter some garbage:
@@ -1672,6 +1683,8 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  9;
   findSfzGroup(str, 1, &s, &e); ok &= s == 10 && e == 18;
   findSfzGroup(str, 2, &s, &e); ok &= s == 19 && e == 29;
+  findSfzGroup(str, 3, &s, &e); ok &= s == -1 && e == -1;
+
 
   // Test it with an implicit first group with a single <region>
   //     01234567
@@ -1688,6 +1701,7 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 1, &s, &e); ok &= s ==  8 && e == 14;
   findSfzGroup(str, 2, &s, &e); ok &= s == 15 && e == 21;
   findSfzGroup(str, 3, &s, &e); ok &= s == 22 && e == 28;
+  findSfzGroup(str, 4, &s, &e); ok &= s == -1 && e == -1;
 
   //               1         2         3
   //     0123456789012345678901234567890123456
@@ -1696,6 +1710,9 @@ bool samplerCodeAnalyzerTest()
   findSfzGroup(str, 1, &s, &e); ok &= s == 16 && e == 22;
   findSfzGroup(str, 2, &s, &e); ok &= s == 23 && e == 29;
   findSfzGroup(str, 3, &s, &e); ok &= s == 30 && e == 36;
+  findSfzGroup(str, 4, &s, &e); ok &= s == -1 && e == -1;
+
+
 
 
   // ToDo:
