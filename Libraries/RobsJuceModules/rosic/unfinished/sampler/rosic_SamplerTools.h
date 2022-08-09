@@ -326,9 +326,12 @@ The endIndex is assigned to the last character before the '<' of the next group 
 character in the string (if the group is the last one and no other group follows). */
 void findSfzGroup(const std::string& sfzCode, int groupIndex, int* startIndex, int *endIndex);
 
+void findSfzRegion(const std::string& sfzCode, int regionIndex, int searchStart, int searchEnd,
+  int* startIndex, int *endIndex);
 
 
-
+//findSfzRegion(code, groupStart, &regionStart, &regionEnd);
+// findSfzRegion(code, ri, groupStart, &regionStart, &regionEnd);
 
 // ToDo: check if using start/end is consistent with the rest of the code or if we should use 
 // start/length instead

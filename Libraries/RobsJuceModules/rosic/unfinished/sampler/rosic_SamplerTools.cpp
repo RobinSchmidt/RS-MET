@@ -249,6 +249,24 @@ void findSfzGroup(const std::string& code, int groupIndex, int* startIndex, int*
     *endIndex = (int) code.length() - 1;
 }
 
+void findSfzRegion(const std::string& code, int regionIndex, int searchStart, int searchEnd,
+  int* startIndex, int* endIndex)
+{
+  *startIndex = -1;
+  *endIndex   = -1;
+  if(code.size() < searchStart)
+    return;
+
+  std::string pattern = "<region>";       // Search pattern
+  size_t L = pattern.length();
+  int foundIndex = -1;
+  size_t start = (size_t) searchStart;
+
+
+  // ...more to do...
+
+}
+
 
 
 

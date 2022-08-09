@@ -690,17 +690,25 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   std::string code = jStr.toStdString();
 
   // Find location in the code, where the group definition starts:
-  int groupStart, groupEnd; 
+  int groupStart, groupEnd;
   findSfzGroup(code, gi, &groupStart, &groupEnd);
-  //RAPT::rsAssert(groupStart != -1, "Group not found in code");
-  return;
+  RAPT::rsAssert(groupStart != -1, "Group not found in code");
+
+  // Find location in the code, where the region definition starts:
+  int regionStart, regionEnd;
+  findSfzRegion(code, ri, groupStart, groupEnd, &regionStart, &regionEnd);
+  RAPT::rsAssert(regionStart != -1, "Region not found in code");
+
+
+
+
 
 
 
   int dummy = 0;
 
   // ToDo: 
-  // -Find the segment for the correct group
+  // -Find the segment for the correct group - done
   // -Within that segment, find the segment for the correct region
   // -Within that, find the *last* occurence of the given opcode identifier, e.g. "volume=" or
   //  "volume1=". We need the last one because that's the one that counts, when the same opcode is
@@ -710,8 +718,9 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   //  CodeDocument::replaceSection for that.
   // -Actually, it would be better to find the code-segment (or at least its start), when the user
   //  selects a new node in the tree - not on every slider-movement. The starting position does not
-  //  change (the length may, depending on the text-formatting of floating point numbers and also
-  //  when we are dealing with a choice opcode)
+  //  change. The length may, depending on the text-formatting of floating point numbers and also
+  //  when we are dealing with a choice opcode. But even the length of the segment is a thing, we 
+  //  may keep track of without repeatedly figuring it out again and again.
 }
 
 //=================================================================================================
@@ -1299,6 +1308,7 @@ ToDo:
  TreeView that represents the SFZ and may allows to edit it
 
 -GUI:
+ -The Opcode-Widgets need to be cleared when anew sfz or xml is loaded
  -we need a TreeView that represents the SFZs structure: the root/top-level node represents the 
   whole instrument, subnodes represnet groups and subsubsnodes represent regions. Each of these 
   levels can have opcodes as leafs.
@@ -1364,10 +1374,18 @@ ToDo:
   destructive edits on samples with undo/save/etc. But maybe such edits could also be 
   non-destructive? the sampler just stores all actions and when the patch is loaded, re-applies 
   them? ...in this context, we may also develop a GUI for the sinusoidal models.
+  Maybe later add more views:
+  -Play: performance parameters, patch meta-data, metering
+  -Code: code editor with tree-view and slider
+  -Edit: Visual key/vel mapping editor with piano roll, sample-edit window etc. (maybe call it Map)
+  -View: 
+  -Maybe some sort of destructive sample editor window ("Sample-Edit") with waveform-view, 
+   spectrogram, spectrum, visual representation of sinusoidal model data, etc.
+
  -Maybe we should use a Mediator pattern similar to the Liberty GUI to coordinate TreeView and
   CodeEditor. See: https://refactoring.guru/design-patterns/mediator  ...yes, that seems like a 
   good idea. We may introduce even more GUI pages and elements later, so having a centralized
-  facility to coordinate them seems like a good idea.
+  facility to coordinate them seems like a good idea. OK ..done
  
  
   
