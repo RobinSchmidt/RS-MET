@@ -1625,7 +1625,10 @@ sample=Cos440Hz.wav";
 bool samplerCodeAnalyzerTest()
 {
   // Tests the utilities to help analyzing sfz code, such as locating the segments in the code 
-  // where certain groups or regions are defined, where opcodes are defined, etc.
+  // where certain groups or regions are defined, where opcodes are defined, etc. These utilities
+  // are (currently) not used by the engine itself but they are there to facilitate certain GUI
+  // functionalities such as automatically updating the code when the user moves a slider for 
+  // setting the value of an opcode.
 
   bool ok = true;
 
@@ -1728,6 +1731,12 @@ bool samplerCodeAnalyzerTest()
   findSfzRegion(str, 1, 0, 7, &s, &e); ok &= s == -1 && e == -1;
   findSfzRegion(str, 2, 0, 7, &s, &e); ok &= s == -1 && e == -1;
 
+  //               1
+  //     0123456789012345678
+  str = "<region>abc<region>";
+  findSfzRegion(str, 0, 0, 18, &s, &e); ok &= s ==  0 && e == 10;
+  findSfzRegion(str, 1, 0, 18, &s, &e); ok &= s == 11 && e == 18;
+  findSfzRegion(str, 2, 0, 18, &s, &e); ok &= s == -1 && e == -1;
 
 
 
