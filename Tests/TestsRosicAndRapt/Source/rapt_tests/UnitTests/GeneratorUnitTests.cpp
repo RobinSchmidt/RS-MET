@@ -1745,6 +1745,13 @@ bool samplerCodeAnalyzerTest()
   findSfzRegion(str, 1, 0, 20, &s, &e); ok &= s == 11 && e == 20;
   findSfzRegion(str, 2, 0, 20, &s, &e); ok &= s == -1 && e == -1;
 
+  //               1         2
+  //     01234567890123456789012345678
+  str = "<region>abc<region>de<region>";
+  findSfzRegion(str, 0, 0, 28, &s, &e); ok &= s ==  0 && e == 10;
+  findSfzRegion(str, 1, 0, 28, &s, &e); ok &= s == 11 && e == 20;
+  findSfzRegion(str, 2, 0, 28, &s, &e); ok &= s == 21 && e == 28;
+
 
 
   // ToDo:
