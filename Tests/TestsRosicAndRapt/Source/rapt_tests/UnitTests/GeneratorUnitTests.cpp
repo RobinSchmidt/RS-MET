@@ -1765,6 +1765,55 @@ bool samplerCodeAnalyzerTest()
   str = "";
   cb->findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
 
+  //     01234
+  str = "pan=0";
+  cb->findOpcode(str, op, idx, 0, 4, &s, &e); ok &= s == 0 && e == 2;
+
+  //     012345
+  str = "pan1=0";
+  cb->findOpcode(str, op, idx, 0, 5, &s, &e); ok &= s == 0 && e == 3;
+
+  //               1
+  //     01234567890
+  str = "pan=0 pan=0";
+  cb->findOpcode(str, op, idx, 0, 10, &s, &e); ok &= s == 6 && e == 8;
+
+
+
+
+  //     0123456
+  str = "pan1pan";
+  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 4 && e == 6;
+
+  //     0123456
+  str = "panpan1";
+  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 3 && e == 6;
+
+  //     01234567
+  str = "pan1pan1";
+  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 4 && e == 7;
+
+  //     01234567
+  str = "pan2pan1";
+  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 4 && e == 7;
+
+  //     01234567
+  str = "pan1pan2";
+  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 0 && e == 3;
+  // fails! returns 4,6. the "2" at the end of pan2 is not relevant in th search for the pattern
+  // "pan". Maybe implementing the meetsCriteria function correctly could fix this if one of the
+  // criteria is that the opcode name must be followed by '=' immediately
+
+  //     0123456
+  str = "pan2pan";
+  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 4 && e == 6;
+
+  //     0123456
+  str = "panpan2";
+
+
+
+  /*
   //     012
   str = "pan";
   cb->findOpcode(str, op, idx, 0, 2, &s, &e); ok &= s == 0 && e == 2;
@@ -1806,6 +1855,7 @@ bool samplerCodeAnalyzerTest()
 
   //     0123456
   str = "panpan2";
+  */
 
   // Oh - now our test hangs. OK - we now check for an '=' after the opcode, so they ashould fail
   // because our test-strings are actually malformed...but the hang is problematic anyway.

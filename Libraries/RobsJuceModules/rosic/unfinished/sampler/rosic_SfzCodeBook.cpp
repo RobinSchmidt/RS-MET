@@ -939,8 +939,8 @@ void SfzCodeBook::findGroup(const std::string& code, int groupIndex,
       *startIndex = -1;
       return;  }}           // No group with given index could be found in the given sfz code
 
-                            // Find the end. The end is defined to be either the last character in the string or the 
-                            // character immediately before the subsequent <group> header:
+  // Find the end. The end is defined to be either the last character in the string or the 
+  // character immediately before the subsequent <group> header:
   start = code.find(pattern, start);
   if(start != string::npos)
     *endIndex = (int) start - 1;
@@ -1031,6 +1031,8 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
 
     return false; // preliminary
   };
+  // Maybe factor this out. This may be needed in findGroup/findRegion, too. SFZ authors may want
+  // to comment out groups or regions
 
   // Returns true, iff the given position in the code is located within a right-hand-side of an 
   // assignment:
