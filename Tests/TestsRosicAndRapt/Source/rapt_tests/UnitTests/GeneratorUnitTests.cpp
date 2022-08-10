@@ -1774,29 +1774,24 @@ bool samplerCodeAnalyzerTest()
   };
 
 
-//  str = "";
-  //cb->findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+
   ok &= testFindOpcode("", op, idx,   0, 0,   -1, -1);
-
-  //     01234
-  //str = "pan=0";
-  //cb->findOpcode(str, op, idx, 0, 4, &s, &e); ok &= s == 0 && e == 2;
   ok &= testFindOpcode("pan=0", op, idx,   0, 4,   0, 2);
+  ok &= testFindOpcode("pan1=0", op, idx,   0, 5,   0, 3);
 
-
-
-  //     012345
-  str = "pan1=0";
-  cb->findOpcode(str, op, idx, 0, 5, &s, &e); ok &= s == 0 && e == 3;
 
   //               1
   //     01234567890
-  str = "pan=0 pan=0";
-  cb->findOpcode(str, op, idx, 0, 10, &s, &e); ok &= s == 6 && e == 8;
+  //str = "pan=0 pan=0";
+  //cb->findOpcode(str, op, idx, 0, 10, &s, &e); ok &= s == 6 && e == 8;
+  ok &= testFindOpcode("pan=0 pan=0", op, idx,   0, 10,   6, 8);
+
   //               1
   //     012345678901
   str = "pan1=0 pan=0";
   cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 7 && e == 9;
+  ok &= testFindOpcode("pan1=0 pan=0", op, idx,   0, 11,   7, 9);
+
 
   //               1
   //     012345678901
