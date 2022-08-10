@@ -1765,8 +1765,44 @@ bool samplerCodeAnalyzerTest()
   str = "";
   cb->findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
 
+  //     012
+  str = "pan";
+  cb->findOpcode(str, op, idx, 0, 2, &s, &e); ok &= s == 0 && e == 2;
 
+  //     0123
+  str = "pan1";
+  cb->findOpcode(str, op, idx, 0, 2, &s, &e); ok &= s == 0 && e == 3;
 
+  //     012345
+  str = "panpan";
+  cb->findOpcode(str, op, idx, 0, 5, &s, &e); ok &= s == 3 && e == 5;
+
+  //     0123456
+  str = "pan1pan";
+  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 4 && e == 6;
+
+  //     0123456
+  str = "panpan1";
+  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 3 && e == 6;
+
+  //     01234567
+  str = "pan1pan1";
+  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 4 && e == 7;
+
+  //     01234567
+  str = "pan2pan1";
+  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 4 && e == 7;
+
+  //     01234567
+  str = "pan1pan2";
+  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 0 && e == 3;
+
+  //     0123456
+  str = "pan2pan";
+  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 4 && e == 6;
+
+  //     0123456
+  str = "panpan2";
 
 
 
@@ -1774,6 +1810,23 @@ bool samplerCodeAnalyzerTest()
   // -Implement and test function to locate (the last) opcode definition for a given opcode within
   //  a region definition. Take care to handle opcodes with an optional index 1 correctly. Both 
   //  syntax variants - with and without the 1 - should be considered.
+  // -...wait - searching for the opcod string may fail when the opcode-string occurs as substring 
+  //  of some other string. maybe we should include the ' ' before and the '=' after in the search
+  //  string. But that's not really bulletproof either. Oh - there doesn't need to be a ' ' before 
+  //  the opcode anyway (it could also be a newline/tab or we could be at the begin of the search 
+  //  region. Also, what about comments? Actually, the search for <group> and <region> also doesn't
+  //  take this into account. Maybe we really need some state-machine approach. Or maybe we can 
+  //  work internally with a pre-processed version of the code that has the comments stripped off. 
+  //  Then we would need keep some information around where code has been stripped. Also, In a 
+  //  state machine approach, we may not be able to scan backward - but that's not so critical
+  //  anyway. Maybe instead of simple passing searchStart/searchEnd, we should pass a list of
+  //  start/end pairs that excludes comment segments. Or maybe first find all occurences and 
+  //  consider them potential cadidates and figure out later, which candidate is the right one?
+  //  ...but that may also be complicated. Maybe, for the time being, use the simple approach
+  //  and take it into account when writing sfz files. Just don't produce these problematic 
+  //  situations - don't use sfz syntax in comments, etc. ...but that's really a severe 
+  //  limitation...nnnaaaahhh....that sucks!
+
 
   rsAssert(ok);
   SfzCodeBook::deleteInstance();  // clean up
