@@ -1005,6 +1005,21 @@ void SfzCodeBook::findRegion(const std::string& code, int regionIndex,
 void SfzCodeBook::findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex,
   int searchStart, int searchEnd, int* startIndex, int* endIndex)
 {
+  *startIndex = -1;
+  *endIndex   = -1;
+
+  // ToDo:
+  // -In a way similar to findGroup/Region, search for the string that corresponds to the given
+  //  opcode...oh...maybe that means we can't implement it in a static method because the 
+  //  translation from index to string requires an actual codebook object.
+  // -The important difference is how we interpret the index. In the methods above, the index was
+  //  just a count of how many times the <group> or <region> opcode already had appeared within the
+  //  search region. Here, the opcodeIndex is a part of the search-pattern (and it is optional when 
+  //  it's equal to 1) and we always try to find the *last* occurence of a matching string as 
+  //  opposed to the index-th occurence as we did in the other methods.
+  // -Actually, it would ake sense to search through the search-range in backward direction. Then 
+  //  we could just take the first match. So we should probably use rfind:
+//    https://cplusplus.com/reference/string/string/rfind/
 
 
   int dummy = 0;
