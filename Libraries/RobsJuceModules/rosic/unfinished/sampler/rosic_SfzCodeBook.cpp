@@ -1040,22 +1040,26 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     return false; // preliminary
   };
 
-  auto meetsCriteria = [&](const std::string& code, size_t pos)
+  //auto
+
+  auto meetsCriteria = [&](const std::string& code, size_t startPos, size_t endPos)
   {
-    if(pos == string::npos)
-      return false;
-    return !isInComment(code, pos) && !isInAssignment(code, pos);
+    if(startPos == string::npos) return false; // ...this check may be redundant
+    if(endPos > searchEnd-1)     return false; // Must be in search range
+    if(code[endPos+1] != '=')    return false; // Must be followed by '='
+
+    return !isInComment(code, startPos) && !isInAssignment(code, startPos);
     // Is this enough or do we need to impose further constraints?
   };
 
 
   while(true) // The stopping conditions are complex and handled by breaks
   {
-    size_t pos1 = code.rfind(ptn1, end);  // or should it be end-L1?
+    size_t pos1 = code.rfind(ptn1, end-L1+1);  // or should it be end-L1?
 
     size_t pos2 = string::npos;
-    if(opcodeIndex == 1)                 // Special case for optional index 1
-      pos2 = code.rfind(ptn2, end);    // or should it be end-L2?
+    if(opcodeIndex == 1)                    // Special case for optional index 1
+      pos2 = code.rfind(ptn2, end-L2+1);    // or should it be end-L2?
 
     // If neither ptn1 nor ptn2 was found within the current search range, we return without having
     // found anything:
@@ -1067,8 +1071,8 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     // is our result. If both meet the criteria, the one that appears later is our result. If none 
     // of them meets the criteria, we set "end" to the lower of the two positions and keep 
     // searching:
-    bool pos1ok = meetsCriteria(code, pos1);
-    bool pos2ok = meetsCriteria(code, pos2);
+    bool pos1ok = meetsCriteria(code, pos1, pos1 + L1 - 1);
+    bool pos2ok = meetsCriteria(code, pos2, pos2 + L2 - 1);
     if(pos1ok && !pos2ok)
     {
       *startIndex = (int) pos1;
@@ -1110,6 +1114,8 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     else if(!pos1ok && !pos2ok)
     {
       end = std::min(pos1, pos2);
+      if(end <= searchStart)
+        break;
     }
 
     int dummy = 0;
