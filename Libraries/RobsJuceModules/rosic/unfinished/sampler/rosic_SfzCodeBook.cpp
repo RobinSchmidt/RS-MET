@@ -444,7 +444,7 @@ ModMode SfzCodeBook::opcodeDefaultModMode(Opcode op)
 }
 
 
-std::string SfzCodeBook::opcodeToString(Opcode op, int index) const
+std::string SfzCodeBook::opcodeToString(Opcode op, int index, bool withIndex1) const
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {  // todo: use if(!isValidOpcode(op))
     RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToString");
@@ -457,7 +457,8 @@ std::string SfzCodeBook::opcodeToString(Opcode op, int index) const
   if(index != -1) {                              // if we are dealing with an indexed opcode...
     std::string s = opcodeEntries[(int)op].text; //   retrieve opcode template (e.g. eqN_freq)
     rsReplace(s, "N", std::to_string(index));    //   replace placeholder "N" with actual index
-    makeExplicitIndexImplicit(s);                //   turn e.g. fil1_type into fil_type
+    if(!withIndex1)
+      makeExplicitIndexImplicit(s);              //   turn e.g. fil1_type into fil_type
     return s; }
   else
     return opcodeEntries[(int)op].text;
@@ -1010,6 +1011,12 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
 {
   *startIndex = -1;
   *endIndex   = -1;
+
+
+  std::string ptnN = opcodeToString(opcode, opcodeIndex);
+  size_t L1 = ptnN.length();
+
+
 
   // ToDo:
   // -In a way similar to findGroup/Region, search for the string that corresponds to the given

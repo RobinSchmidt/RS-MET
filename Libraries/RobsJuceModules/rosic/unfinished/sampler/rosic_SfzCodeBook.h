@@ -670,8 +670,12 @@ public:
 
   /** Returns a string that represents the given opcode op with given index in a format that can be
   written into an .sfz file. The string is returned by value because for those opcodes that include 
-  indices (such as eq2_freq), we need to generate the string dynamically. */
-  std::string opcodeToString(Opcode op, int index) const;
+  indices (such as eq2_freq), we need to generate the string dynamically. The optional parameter 
+  withOptionalIndex1 is relevant only if the index is 1 and if for the given opcode, an index 1 is 
+  optional. For example "cutoff=500" and "cutoff1=500" are both valid syntaxes. in such a case, if 
+  you pass false (the default) the string "cutoff" will be returned and if you aps true "cutoff1" 
+  will be returned. */
+  std::string opcodeToString(Opcode op, int index, bool withOptionalIndex1 = false) const;
 
   /** Translates an opcode string into the corresponding enum value. Some opcodes contain an index.
   For these, the index is passed in the "index" output parameter. For opcodes without index, it 
@@ -797,7 +801,9 @@ public:
   // realtime add another field to the OpcodeEntry record. maybe a set of flags
 
   //-----------------------------------------------------------------------------------------------
-  // \name Text search utilities
+  // \name Text search utilities (maybe move inot a class SfzParser which should then also contain
+  //  some of the code that we now have in rsSamplerData (mainly setFromSfz, IIRC maybe getAsSfz 
+  //  should go into this class as well - or maybe int an SfzSerializer class)).
 
   static bool hasImplicitFirstGroup(const std::string& code);
   // used internally in findGroup, maybe move to protected

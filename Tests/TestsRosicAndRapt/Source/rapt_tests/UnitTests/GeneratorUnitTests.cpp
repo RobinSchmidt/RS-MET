@@ -1765,6 +1765,7 @@ bool samplerCodeAnalyzerTest()
   str = "";
   cb->findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
 
+  /*
   //     012
   str = "pan";
   cb->findOpcode(str, op, idx, 0, 2, &s, &e); ok &= s == 0 && e == 2;
@@ -1803,6 +1804,7 @@ bool samplerCodeAnalyzerTest()
 
   //     0123456
   str = "panpan2";
+  */
 
 
 
@@ -1810,7 +1812,7 @@ bool samplerCodeAnalyzerTest()
   // -Implement and test function to locate (the last) opcode definition for a given opcode within
   //  a region definition. Take care to handle opcodes with an optional index 1 correctly. Both 
   //  syntax variants - with and without the 1 - should be considered.
-  // -...wait - searching for the opcod string may fail when the opcode-string occurs as substring 
+  // -...wait - searching for the opcode string may fail when the opcode-string occurs as substring 
   //  of some other string. maybe we should include the ' ' before and the '=' after in the search
   //  string. But that's not really bulletproof either. Oh - there doesn't need to be a ' ' before 
   //  the opcode anyway (it could also be a newline/tab or we could be at the begin of the search 
@@ -1825,7 +1827,33 @@ bool samplerCodeAnalyzerTest()
   //  ...but that may also be complicated. Maybe, for the time being, use the simple approach
   //  and take it into account when writing sfz files. Just don't produce these problematic 
   //  situations - don't use sfz syntax in comments, etc. ...but that's really a severe 
-  //  limitation...nnnaaaahhh....that sucks!
+  //  limitation. we may want to comment out syntax elements...nnnaaaahhh....that sucks!
+  //  Maybe have a simple isInComment function that just scans leftward and if it finds a '/' 
+  //  before it finds a '\n' then we are in a comment....but no...scanning leftwar for every found
+  //  occurence maes the algo inefficient. Maybe we need indeed keep two versions of the code
+  //  around one with and one without comments, then apply our search to the one witghout comments
+  //  and the somehow map the results back to the originla code version with comments. Maybe
+  //  write a stripComments function that keeps a list of positions/lengths or start/end positions
+  //  What if something like " volume=10 " appears in a filename? That's not too far-fetched. We 
+  //  may need a version of the code that has removed all freeform strings...but for some opcode
+  //  widgets, we actually want to access precisely such freeform strings
+
+  // -If we have found the substring "pan", let's try to define other conditions that must be met 
+  //  in order for this substring to be possibly part of an opcode defition:
+  //  -Immediately left to it must be ' ' or '\n'  unless it's itself the leftmost character
+  //  -Immediately to the right to it, there must be the index (optionally, when it's 1) followed by
+  //   '='
+  //   ...oh - no - the index is not necessarily the last substring - for example, we have opcodes
+  //   like fil1_type
+  //  -It should not be inside a comment, filename or other kind of allowed freefrom string that
+  //   may occur within an sfz
+  //   -To identify it as part of comment, we may scan leftward. If we encounter a '/' before we 
+  //    encounter a '\n' or the beginning, then it is indeed part of a comment, otherwise, it isn't
+  //   -To identify it as part of a freeform value-string, we may also scan leftward and if we 
+  //    encounter a '=' before we encounter a ' ' or '\n' or the beginning, we can say that it is
+  //    the right-hand-side of some opcode assignment, so it may indeed be a freeform string, but:
+  //    what if the '=' itself is also part of the string? It may not be uncommon to have a '=' as
+  //    part of a filename, for example.
 
 
   rsAssert(ok);
