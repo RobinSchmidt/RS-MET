@@ -1773,25 +1773,14 @@ bool samplerCodeAnalyzerTest()
     return foundStart == startPos && foundEnd == endPos;
   };
 
+  ok &= testFindOpcode("",             op, idx,   0,  0,   -1, -1);
+  ok &= testFindOpcode("pan=0",        op, idx,   0,  4,    0,  2);
+  ok &= testFindOpcode("pan1=0",       op, idx,   0,  5,    0,  3);
+  ok &= testFindOpcode("pan=0 pan=0",  op, idx,   0, 10,    6,  8);
+  ok &= testFindOpcode("pan1=0 pan=0", op, idx,   0, 11,    7,  9);
 
 
-  ok &= testFindOpcode("", op, idx,   0, 0,   -1, -1);
-  ok &= testFindOpcode("pan=0", op, idx,   0, 4,   0, 2);
-  ok &= testFindOpcode("pan1=0", op, idx,   0, 5,   0, 3);
-
-
-  //               1
-  //     01234567890
-  //str = "pan=0 pan=0";
-  //cb->findOpcode(str, op, idx, 0, 10, &s, &e); ok &= s == 6 && e == 8;
-  ok &= testFindOpcode("pan=0 pan=0", op, idx,   0, 10,   6, 8);
-
-  //               1
-  //     012345678901
-  str = "pan1=0 pan=0";
-  cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 7 && e == 9;
-  ok &= testFindOpcode("pan1=0 pan=0", op, idx,   0, 11,   7, 9);
-
+  // ToDo: Update these tests below to use the helper function to turn them into one-liners:
 
   //               1
   //     012345678901
@@ -1812,9 +1801,6 @@ bool samplerCodeAnalyzerTest()
   //     0123456789012
   str = "pan1=0 pan2=0";
   cb->findOpcode(str, op, idx, 0, 12, &s, &e); ok &= s == 0 && e == 3;
-  // fails! returns 4,6. the "2" at the end of pan2 is not relevant in th search for the pattern
-  // "pan". Maybe implementing the meetsCriteria function correctly could fix this if one of the
-  // criteria is that the opcode name must be followed by '=' immediately
 
   //               1 
   //     012345678901
