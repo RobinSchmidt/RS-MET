@@ -1787,31 +1787,39 @@ bool samplerCodeAnalyzerTest()
   str = "pan=0 pan1=0";
   cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 6 && e == 9;
 
+  //               1
+  //     0123456789012
+  str = "pan1=0 pan1=0";
+  cb->findOpcode(str, op, idx, 0, 12, &s, &e); ok &= s == 7 && e == 10;
 
+  //               1
+  //     0123456789012
+  str = "pan2=0 pan1=0";
+  cb->findOpcode(str, op, idx, 0, 12, &s, &e); ok &= s == 7 && e == 10;
 
-
-
-  //     01234567
-  str = "pan1pan1";
-  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 4 && e == 7;
-
-  //     01234567
-  str = "pan2pan1";
-  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 4 && e == 7;
-
-  //     01234567
-  str = "pan1pan2";
-  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 0 && e == 3;
+  //               1
+  //     0123456789012
+  str = "pan1=0 pan2=0";
+  cb->findOpcode(str, op, idx, 0, 12, &s, &e); ok &= s == 0 && e == 3;
   // fails! returns 4,6. the "2" at the end of pan2 is not relevant in th search for the pattern
   // "pan". Maybe implementing the meetsCriteria function correctly could fix this if one of the
   // criteria is that the opcode name must be followed by '=' immediately
 
-  //     0123456
-  str = "pan2pan";
-  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 4 && e == 6;
+  //               1 
+  //     012345678901
+  str = "pan2=0 pan=0";
+  cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 7 && e == 9;
+
+
+
+
 
   //     0123456
   str = "panpan2";
+
+  // ToDo:
+  // -Wrap the test into a helper function that can be called in a one-line like:
+  //  ok &= testFindOpcode("pan2=0 pan1=0", op, idx, 0, 12, 7, 10)
 
 
 
