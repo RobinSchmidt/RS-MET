@@ -317,47 +317,6 @@ float rsStringToFloat(const std::string& str);
 inline std::string rsFloatToString(float v) { return std::to_string(v); }
 
 
-// Some SFZ-specific string processing tools (ToDo: maybe try to generalize them in a meaningful 
-// way):
-// ...move them into class SfzCodeBook (as static functions)
-
-/** Finds the character index within the given sfzCode of the opening angle-bracket '<' of the 
-"<group>" header for the group with given index and assigns it to the output variable "startIndex".
-The endIndex is assigned to the last character before the '<' of the next group or the last 
-character in the string (if the group is the last one and no other group follows). */
-//void findSfzGroup(const std::string& sfzCode, int groupIndex, int* startIndex, int *endIndex);
-// maybe rename startIndex/endIndex to startPos/endPos
-
-/** Similar to findSfzGroup but for the <region> header and with an additional specification of the
-search range within the code. The intention is that client code first figures out, where a given 
-group definition starts and ends and then searches for a region *within* the group definition, i.e.
-the "startIndex", "endIndex" outputs of findSfzGroup are suitable as inputs for "searchStart" and 
-"searchEnd" in a subsequent findSfzRegion call. */
-//void findSfzRegion(const std::string& sfzCode, int regionIndex, int searchStart, int searchEnd,
-//  int* startIndex, int *endIndex);
-
-/** Similar to findSfzGroup and findSfzRegion but finds a single opcode definition. For example, if
-you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 
-and "opcodeIndex" parameters and the function would assign "startIndex" to the character position 
-of the 'c' and "endIndex" to the character position of the '5'. If there are multiple definitions 
-of cutoff2 within the given search range, it will return the position of the last one. This is 
-because the last one is the one that will actually be used (re-assigning an opcode in sfz code 
-works like re-assigning variables in program code). */
-//void findSfzOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
-//  int searchStart, int searchEnd, int* startIndex, int *endIndex);
-
-
-
-
-// ToDo: 
-// -Implement findSfzOpcode
-// -Check if using start/end is consistent with the rest of the code or if we should use 
-//  start/length instead
-
-
-
-
-
 //=================================================================================================
 // Container tools:
 
