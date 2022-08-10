@@ -1816,6 +1816,18 @@ bool samplerCodeAnalyzerTest()
 
   // The same thing again, but now the search also starts one position later. This should make no
   // difference in the results:
+  ok &= testFindOpcode(" pan=0",         panN, 1,   1,  5,    1,  3);
+  ok &= testFindOpcode(" pan1=0",        panN, 1,   1,  6,    1,  4);
+  ok &= testFindOpcode(" pan=0 pan=0",   panN, 1,   1, 11,    7,  9);
+  ok &= testFindOpcode(" pan1=0 pan=0",  panN, 1,   1, 12,    8, 10);
+  ok &= testFindOpcode(" pan=0 pan1=0",  panN, 1,   1, 12,    7, 10);
+  ok &= testFindOpcode(" pan1=0 pan1=0", panN, 1,   1, 13,    8, 11);
+  ok &= testFindOpcode(" pan2=0 pan1=0", panN, 1,   1, 13,    8, 11);
+  ok &= testFindOpcode(" pan1=0 pan2=0", panN, 1,   1, 13,    1,  4);
+  ok &= testFindOpcode(" pan2=0 pan=0",  panN, 1,   1, 12,    8, 10);
+  ok &= testFindOpcode(" pan=0 pan2=0",  panN, 1,   1, 12,    1,  3);
+
+
 
 
 
