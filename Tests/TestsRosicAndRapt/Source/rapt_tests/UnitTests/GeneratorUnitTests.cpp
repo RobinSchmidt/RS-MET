@@ -1775,6 +1775,7 @@ bool samplerCodeAnalyzerTest()
 
   // Try finding the last "pan=" or "pan1=" substring:
   ok &= testFindOpcode("",              panN, 1,   0,  0,   -1, -1);
+  ok &= testFindOpcode("abc",           panN, 1,   0,  2,   -1, -1);
   ok &= testFindOpcode("pan=0",         panN, 1,   0,  4,    0,  2);
   ok &= testFindOpcode("pan1=0",        panN, 1,   0,  5,    0,  3);
   ok &= testFindOpcode("pan=0 pan=0",   panN, 1,   0, 10,    6,  8);
@@ -1799,31 +1800,27 @@ bool samplerCodeAnalyzerTest()
   ok &= testFindOpcode("pan2=0 pan=0",  panN, 2,   0, 11,    0,  3);
   ok &= testFindOpcode("pan=0 pan2=0",  panN, 2,   0, 11,    6,  9);
 
+  // Try finding the last "pan=" or "pan1=" substring again but this time, the strings have a space
+  // as first character so everythin starts one position later. we nevertheless start the search
+  // at index 0:
+  ok &= testFindOpcode(" pan=0",         panN, 1,   0,  5,    1,  3);
+  ok &= testFindOpcode(" pan1=0",        panN, 1,   0,  6,    1,  4);
+  ok &= testFindOpcode(" pan=0 pan=0",   panN, 1,   0, 11,    7,  9);
+  ok &= testFindOpcode(" pan1=0 pan=0",  panN, 1,   0, 12,    8, 10);
+  ok &= testFindOpcode(" pan=0 pan1=0",  panN, 1,   0, 12,    7, 10);
+  ok &= testFindOpcode(" pan1=0 pan1=0", panN, 1,   0, 13,    8, 11);
+  ok &= testFindOpcode(" pan2=0 pan1=0", panN, 1,   0, 13,    8, 11);
+  ok &= testFindOpcode(" pan1=0 pan2=0", panN, 1,   0, 13,    1,  4);
+  ok &= testFindOpcode(" pan2=0 pan=0",  panN, 1,   0, 12,    8, 10);
+  ok &= testFindOpcode(" pan=0 pan2=0",  panN, 1,   0, 12,    1,  3);
 
+  // The same thing again, but now the search also starts one position later. This should make no
+  // difference in the results:
 
 
 
   // ToDo: 
-  // -Try to find pan2, where it is present...and also where it isn't
   // -Try to put the startIndex not at 0 (maybe at 1 should be enough to be general?)
-
-  //               1 
-  //     012345678901
-  //str = "pan2=0 pan=0";
-  //cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 7 && e == 9;
-
-
-  //     012345678901
-  //str = "pan=0 pan2=0";
-  //cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 0 && e == 2;
-
-
-
-
-  // ToDo:
-  // -Wrap the test into a helper function that can be called in a one-line like:
-  //  ok &= testFindOpcode("pan2=0 pan1=0", op, idx, 0, 12, 7, 10)
-
 
   rsAssert(ok);
 
