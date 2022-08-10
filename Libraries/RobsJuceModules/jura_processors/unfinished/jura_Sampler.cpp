@@ -679,8 +679,11 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
 
   using namespace rosic::Sampler;
 
-  int gi = info.groupIndex;
-  int ri = info.regionIndex;
+  int    gi  = info.groupIndex;
+  int    ri  = info.regionIndex;
+  Opcode op  = info.oldSetting.getOpcode();
+  int    idx = info.oldSetting.getIndex();
+
 
   // Maybe streamline these calls into a chain like getDocument().getallContent().toStdString().
   // But maybe we actually need to hold the reference to the doc for calling replaceSection() on 
@@ -689,16 +692,24 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   juce::String jStr = doc.getAllContent();
   std::string code = jStr.toStdString();
 
-  // Find location in the code, where the group definition starts:
+
+  // ToDo: maybe wrap these steps into a convenience function taking gi, ri, op, idx as inputs:
+
+  // Find locations in the code, where the group definition starts and ends:
   int groupStart, groupEnd;
   findSfzGroup(code, gi, &groupStart, &groupEnd);
   RAPT::rsAssert(groupStart != -1, "Group not found in code");
 
-  // Find location in the code, where the region definition starts:
+  // Find locations in the code, where the region definition starts and ends:
   int regionStart, regionEnd;
   findSfzRegion(code, ri, groupStart, groupEnd, &regionStart, &regionEnd);
   RAPT::rsAssert(regionStart != -1, "Region not found in code");
 
+  // Find locations in the code, where the opcode definition starts and ends (this includes the 
+  // value):
+  int opcodeStart, opcodeEnd;
+  SfzCodeBook::findOpcode(code, op, idx, regionStart, regionEnd, &opcodeStart, &opcodeEnd);
+  RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
 
 
 

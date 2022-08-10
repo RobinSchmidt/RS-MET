@@ -879,6 +879,15 @@ void SfzCodeBook::makeExplicitIndexImplicit(std::string& str) const
 // finding a match.
 
 
+void SfzCodeBook::findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex,
+  int searchStart, int searchEnd, int* startIndex, int* endIndex)
+{
+
+
+  int dummy = 0;
+}
+
+
 }}
 
 /*

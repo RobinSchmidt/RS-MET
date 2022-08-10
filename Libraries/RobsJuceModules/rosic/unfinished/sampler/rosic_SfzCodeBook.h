@@ -796,6 +796,21 @@ public:
   // non-realtime code but perhaps not good to call in realtime. Or, maybe, if we need that at 
   // realtime add another field to the OpcodeEntry record. maybe a set of flags
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Text search utilities
+
+  /** Similar to findSfzGroup and findSfzRegion but finds a single opcode definition. For example, if
+  you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 
+  and "opcodeIndex" parameters and the function would assign "startIndex" to the character position 
+  of the 'c' and "endIndex" to the character position of the '5'. If there are multiple definitions 
+  of cutoff2 within the given search range, it will return the position of the last one. This is 
+  because the last one is the one that will actually be used (re-assigning an opcode in sfz code 
+  works like re-assigning variables in program code). */
+  static void findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
+    int searchStart, int searchEnd, int* startIndex, int *endIndex);
+
+
+
 
 protected:
 
@@ -886,6 +901,9 @@ protected:
   /**< Constructor is protected due to singleton pattern. */
 
 };
+
+
+
 
 
 }}      // namespaces

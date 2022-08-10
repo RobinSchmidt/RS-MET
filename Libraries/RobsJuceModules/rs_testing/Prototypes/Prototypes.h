@@ -1622,6 +1622,9 @@ std::vector<T> rsContinuedFraction(rsFraction<T> x)
 // https://en.wikipedia.org/wiki/Continued_fraction#Infinite_continued_fractions_and_convergents
 // ...verify this. Knowing this could be useful
 
+// This is interesting for doing computations with continued fractions:
+// https://srossd.com/posts/2020-09-18-gosper-1/
+
 // other fun stuff that can be done with fractions:
 // https://en.wikipedia.org/wiki/Egyptian_fraction
 

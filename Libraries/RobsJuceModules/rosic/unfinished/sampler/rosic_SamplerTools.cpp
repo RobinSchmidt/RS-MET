@@ -305,6 +305,16 @@ void findSfzRegion(const std::string& code, int regionIndex, int searchStart, in
 //  in findSfzRegion are compatible with those in findSfzGroup. 
 // -The if(hasImplicitFirstGroup(code)) in findSfzGroup could be problematic, though
 
+/*
+void findSfzOpcode(const std::string& code, Opcode opcode, int opcodeIndex,
+  int searchStart, int searchEnd, int* startIndex, int* endIndex)
+{
+
+
+  int dummy = 0;
+}
+*/
+
 
 
 
