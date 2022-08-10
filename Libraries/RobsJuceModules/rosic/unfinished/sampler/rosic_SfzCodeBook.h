@@ -829,7 +829,9 @@ public:
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
   // used internally in findOpcodeAssignment, maybe move to protected
 
-  /** Similar to findGroup and findRegion but finds a single opcode definition. For example, if
+  /** UNDER CONSTRUCTION
+  
+  Similar to findGroup and findRegion but finds a single opcode definition. For example, if
   you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 
   and "opcodeIndex" parameters and the function would assign "startIndex" to the character position 
   of the 'c' and "endIndex" to the character position of the '5'. If there are multiple definitions 

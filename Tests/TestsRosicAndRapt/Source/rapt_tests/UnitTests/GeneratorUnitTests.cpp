@@ -1853,7 +1853,9 @@ bool samplerCodeAnalyzerTest()
   //    encounter a '=' before we encounter a ' ' or '\n' or the beginning, we can say that it is
   //    the right-hand-side of some opcode assignment, so it may indeed be a freeform string, but:
   //    what if the '=' itself is also part of the string? It may not be uncommon to have a '=' as
-  //    part of a filename, for example.
+  //    part of a filename, for example. We should test it with filenames that contain '=' *and* 
+  //    ' ' in various orderings. Comments are comparatively easy to detect and discard, but this 
+  //    stuff may be problematic
 
 
   rsAssert(ok);
