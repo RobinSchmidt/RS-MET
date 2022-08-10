@@ -325,7 +325,7 @@ inline std::string rsFloatToString(float v) { return std::to_string(v); }
 "<group>" header for the group with given index and assigns it to the output variable "startIndex".
 The endIndex is assigned to the last character before the '<' of the next group or the last 
 character in the string (if the group is the last one and no other group follows). */
-void findSfzGroup(const std::string& sfzCode, int groupIndex, int* startIndex, int *endIndex);
+//void findSfzGroup(const std::string& sfzCode, int groupIndex, int* startIndex, int *endIndex);
 // maybe rename startIndex/endIndex to startPos/endPos
 
 /** Similar to findSfzGroup but for the <region> header and with an additional specification of the
@@ -333,8 +333,8 @@ search range within the code. The intention is that client code first figures ou
 group definition starts and ends and then searches for a region *within* the group definition, i.e.
 the "startIndex", "endIndex" outputs of findSfzGroup are suitable as inputs for "searchStart" and 
 "searchEnd" in a subsequent findSfzRegion call. */
-void findSfzRegion(const std::string& sfzCode, int regionIndex, int searchStart, int searchEnd,
-  int* startIndex, int *endIndex);
+//void findSfzRegion(const std::string& sfzCode, int regionIndex, int searchStart, int searchEnd,
+//  int* startIndex, int *endIndex);
 
 /** Similar to findSfzGroup and findSfzRegion but finds a single opcode definition. For example, if
 you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 

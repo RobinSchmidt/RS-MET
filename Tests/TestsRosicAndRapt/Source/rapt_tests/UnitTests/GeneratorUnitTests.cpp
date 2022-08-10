@@ -1633,6 +1633,7 @@ bool samplerCodeAnalyzerTest()
   bool ok = true;
 
   using namespace rosic::Sampler;
+  using CB = SfzCodeBook;
 
   std::string str;
   int s, e;           // start and end
@@ -1642,9 +1643,9 @@ bool samplerCodeAnalyzerTest()
 
   // When we have an empty string, both numbers (start and end) should be -1 by convention:
   str = "";
-  findSfzGroup(str, 0, &s, &e); ok &= s == -1 && e == -1;
-  findSfzGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
-  findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 0, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
   // maybe we should expect 0,0 for an empty string?
 
   // The same should result for a meaningless string:
@@ -1653,7 +1654,7 @@ bool samplerCodeAnalyzerTest()
   // Fails! The code considers the string abc as the content of the implicit group 0. We get 
   // s = 0, e = 2 as result. But maybe that's actually an acceptable behavior? Actually, it could
   // make sense. It could be an empty group containing only a comment
-  findSfzGroup(str, 0, &s, &e); ok &= s == 0 && e == 2;
+  CB::findGroup(str, 0, &s, &e); ok &= s == 0 && e == 2;
   // ..yeah..ok
 
 
@@ -1661,96 +1662,96 @@ bool samplerCodeAnalyzerTest()
   // ends at 6. For groups with higher indices, we again expect (-1,-1) to be returned.
   //     0123456
   str = "<group>";
-  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
-  findSfzGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
-  findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
+  CB::findGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
 
   // For the string "<group><group>", group 0 again ranges from 0 to 6 and group 1 from 7 to 13:
   //               1
   //     01234567890123
   str = "<group><group>";
-  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
-  findSfzGroup(str, 1, &s, &e); ok &= s ==  7 && e == 13;
-  findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
+  CB::findGroup(str, 1, &s, &e); ok &= s ==  7 && e == 13;
+  CB::findGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
 
   //               1         2
   //     012345678901234567890
   str = "<group><group><group>";
-  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
-  findSfzGroup(str, 1, &s, &e); ok &= s ==  7 && e == 13;
-  findSfzGroup(str, 2, &s, &e); ok &= s == 14 && e == 20;
-  findSfzGroup(str, 3, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  6;
+  CB::findGroup(str, 1, &s, &e); ok &= s ==  7 && e == 13;
+  CB::findGroup(str, 2, &s, &e); ok &= s == 14 && e == 20;
+  CB::findGroup(str, 3, &s, &e); ok &= s == -1 && e == -1;
 
   // Now let the groups have some content. It doesn't really matter whether the "content" makes
   // sense or not, so we just enter some garbage:
   //               1         2         3
   //     0123456789012345678901234567890
   str = "<group>abc<group>de<group>fghj";
-  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  9;
-  findSfzGroup(str, 1, &s, &e); ok &= s == 10 && e == 18;
-  findSfzGroup(str, 2, &s, &e); ok &= s == 19 && e == 29;
-  findSfzGroup(str, 3, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  9;
+  CB::findGroup(str, 1, &s, &e); ok &= s == 10 && e == 18;
+  CB::findGroup(str, 2, &s, &e); ok &= s == 19 && e == 29;
+  CB::findGroup(str, 3, &s, &e); ok &= s == -1 && e == -1;
 
 
   // Test it with an implicit first group with a single <region>
   //     01234567
   str = "<region>";
-  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
-  findSfzGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
-  findSfzGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
+  CB::findGroup(str, 1, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 2, &s, &e); ok &= s == -1 && e == -1;
 
   // Implicit first group by putting the first <region> before the first <group>
   //               1         2
   //     01234567890123456789012345678
   str = "<region><group><group><group>";
-  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
-  findSfzGroup(str, 1, &s, &e); ok &= s ==  8 && e == 14;
-  findSfzGroup(str, 2, &s, &e); ok &= s == 15 && e == 21;
-  findSfzGroup(str, 3, &s, &e); ok &= s == 22 && e == 28;
-  findSfzGroup(str, 4, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 0, &s, &e); ok &= s ==  0 && e ==  7;
+  CB::findGroup(str, 1, &s, &e); ok &= s ==  8 && e == 14;
+  CB::findGroup(str, 2, &s, &e); ok &= s == 15 && e == 21;
+  CB::findGroup(str, 3, &s, &e); ok &= s == 22 && e == 28;
+  CB::findGroup(str, 4, &s, &e); ok &= s == -1 && e == -1;
 
   //               1         2         3
   //     0123456789012345678901234567890123456
   str = "<region><region><group><group><group>";
-  findSfzGroup(str, 0, &s, &e); ok &= s ==  0 && e == 15;
-  findSfzGroup(str, 1, &s, &e); ok &= s == 16 && e == 22;
-  findSfzGroup(str, 2, &s, &e); ok &= s == 23 && e == 29;
-  findSfzGroup(str, 3, &s, &e); ok &= s == 30 && e == 36;
-  findSfzGroup(str, 4, &s, &e); ok &= s == -1 && e == -1;
+  CB::findGroup(str, 0, &s, &e); ok &= s ==  0 && e == 15;
+  CB::findGroup(str, 1, &s, &e); ok &= s == 16 && e == 22;
+  CB::findGroup(str, 2, &s, &e); ok &= s == 23 && e == 29;
+  CB::findGroup(str, 3, &s, &e); ok &= s == 30 && e == 36;
+  CB::findGroup(str, 4, &s, &e); ok &= s == -1 && e == -1;
 
   //-----------------------------------------------------------------
   // Test findSfzRegion
 
   str = "";
-  findSfzRegion(str, 0, 0, 0, &s, &e); ok &= s == -1 && e == -1;
-  findSfzRegion(str, 1, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+  CB::findRegion(str, 0, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+  CB::findRegion(str, 1, 0, 0, &s, &e); ok &= s == -1 && e == -1;
 
   //     01234567
   str = "<region>";
-  findSfzRegion(str, 0, 0, 7, &s, &e); ok &= s ==  0 && e ==  7;
-  findSfzRegion(str, 1, 0, 7, &s, &e); ok &= s == -1 && e == -1;
-  findSfzRegion(str, 2, 0, 7, &s, &e); ok &= s == -1 && e == -1;
+  CB::findRegion(str, 0, 0, 7, &s, &e); ok &= s ==  0 && e ==  7;
+  CB::findRegion(str, 1, 0, 7, &s, &e); ok &= s == -1 && e == -1;
+  CB::findRegion(str, 2, 0, 7, &s, &e); ok &= s == -1 && e == -1;
 
   //               1
   //     0123456789012345678
   str = "<region>abc<region>";
-  findSfzRegion(str, 0, 0, 18, &s, &e); ok &= s ==  0 && e == 10;
-  findSfzRegion(str, 1, 0, 18, &s, &e); ok &= s == 11 && e == 18;
-  findSfzRegion(str, 2, 0, 18, &s, &e); ok &= s == -1 && e == -1;
+  CB::findRegion(str, 0, 0, 18, &s, &e); ok &= s ==  0 && e == 10;
+  CB::findRegion(str, 1, 0, 18, &s, &e); ok &= s == 11 && e == 18;
+  CB::findRegion(str, 2, 0, 18, &s, &e); ok &= s == -1 && e == -1;
 
   //               1         2
   //     012345678901234567890
   str = "<region>abc<region>de";
-  findSfzRegion(str, 0, 0, 20, &s, &e); ok &= s ==  0 && e == 10;
-  findSfzRegion(str, 1, 0, 20, &s, &e); ok &= s == 11 && e == 20;
-  findSfzRegion(str, 2, 0, 20, &s, &e); ok &= s == -1 && e == -1;
+  CB::findRegion(str, 0, 0, 20, &s, &e); ok &= s ==  0 && e == 10;
+  CB::findRegion(str, 1, 0, 20, &s, &e); ok &= s == 11 && e == 20;
+  CB::findRegion(str, 2, 0, 20, &s, &e); ok &= s == -1 && e == -1;
 
   //               1         2
   //     01234567890123456789012345678
   str = "<region>abc<region>de<region>";
-  findSfzRegion(str, 0, 0, 28, &s, &e); ok &= s ==  0 && e == 10;
-  findSfzRegion(str, 1, 0, 28, &s, &e); ok &= s == 11 && e == 20;
-  findSfzRegion(str, 2, 0, 28, &s, &e); ok &= s == 21 && e == 28;
+  CB::findRegion(str, 0, 0, 28, &s, &e); ok &= s ==  0 && e == 10;
+  CB::findRegion(str, 1, 0, 28, &s, &e); ok &= s == 11 && e == 20;
+  CB::findRegion(str, 2, 0, 28, &s, &e); ok &= s == 21 && e == 28;
 
 
   //-----------------------------------------------------------------

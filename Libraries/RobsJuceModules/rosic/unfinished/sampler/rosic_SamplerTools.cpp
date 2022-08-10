@@ -187,6 +187,11 @@ float rsStringToFloat(const std::string& str)
   }
 }
 
+
+
+
+/*
+
 // Not declared in header file because we currently only use it internally:
 bool hasImplicitFirstGroup(const std::string& code)
 {
@@ -304,6 +309,7 @@ void findSfzRegion(const std::string& code, int regionIndex, int searchStart, in
 //    while(foundIndex < regionIndex && (int) start <= searchEnd)
 //  in findSfzRegion are compatible with those in findSfzGroup. 
 // -The if(hasImplicitFirstGroup(code)) in findSfzGroup could be problematic, though
+*/
 
 /*
 void findSfzOpcode(const std::string& code, Opcode opcode, int opcodeIndex,

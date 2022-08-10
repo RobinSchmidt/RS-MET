@@ -697,12 +697,12 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
 
   // Find locations in the code, where the group definition starts and ends:
   int groupStart, groupEnd;
-  findSfzGroup(code, gi, &groupStart, &groupEnd);
+  SfzCodeBook::findGroup(code, gi, &groupStart, &groupEnd);
   RAPT::rsAssert(groupStart != -1, "Group not found in code");
 
   // Find locations in the code, where the region definition starts and ends:
   int regionStart, regionEnd;
-  findSfzRegion(code, ri, groupStart, groupEnd, &regionStart, &regionEnd);
+  SfzCodeBook::findRegion(code, ri, groupStart, groupEnd, &regionStart, &regionEnd);
   RAPT::rsAssert(regionStart != -1, "Region not found in code");
 
   // Find locations in the code, where the opcode definition starts and ends (this includes the 
