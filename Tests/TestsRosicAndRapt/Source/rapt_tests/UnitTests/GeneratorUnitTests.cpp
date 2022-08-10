@@ -1828,21 +1828,10 @@ bool samplerCodeAnalyzerTest()
   ok &= testFindOpcode(" pan=0 pan2=0",  panN, 1,   1, 12,    1,  3);
 
 
-
-
-
-  // ToDo: 
-  // -Try to put the startIndex not at 0 (maybe at 1 should be enough to be general?)
-
   rsAssert(ok);
 
   // ToDo:
-  // -Test findOpcode with an opcode where the optionla index 1 is not the last character. This 
-  //  takes a different code path. Maybe use fil1_type for that.
-  // -Implement and test function to locate (the last) opcode definition for a given opcode within
-  //  a region definition. Take care to handle opcodes with an optional index 1 correctly. Both 
-  //  syntax variants - with and without the 1 - should be considered.
-  // -...wait - searching for the opcode string may fail when the opcode-string occurs as substring 
+  // -Searching for the opcode string may fail when the opcode-string occurs as substring 
   //  of some other string. maybe we should include the ' ' before and the '=' after in the search
   //  string. But that's not really bulletproof either. Oh - there doesn't need to be a ' ' before 
   //  the opcode anyway (it could also be a newline/tab or we could be at the begin of the search 
@@ -1868,7 +1857,13 @@ bool samplerCodeAnalyzerTest()
   //  may need a version of the code that has removed all freeform strings...but for some opcode
   //  widgets, we actually want to access precisely such freeform strings
 
-  // -If we have found the substring "pan", let's try to define other conditions that must be met 
+  // -If we have found the substring "pan=" or its indexed variant, we need to verify some other 
+  //  constraints to avoid false positives because these substrings may also occur within comments
+  //  or as parts of filenames. These other constraints are not yet implemented but there are
+  //  stubs. 
+  //  -> Implement and test them
+  
+  // let's try to define other conditions that must be met 
   //  in order for this substring to be possibly part of an opcode defition:
   //  -Immediately left to it must be ' ' or '\n'  unless it's itself the leftmost character
   //  -Immediately to the right to it, there must be the index (optionally, when it's 1) followed by

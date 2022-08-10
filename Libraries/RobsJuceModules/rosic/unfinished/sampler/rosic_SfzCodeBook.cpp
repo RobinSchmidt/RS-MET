@@ -1032,7 +1032,8 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     return false; // preliminary
   };
   // Maybe factor this out. This may be needed in findGroup/findRegion, too. SFZ authors may want
-  // to comment out groups or regions
+  // to comment out groups or regions. Our code section finder is not yet prepared to weed out
+  // commented groups and regions.
 
   // Returns true, iff the given position in the code is located within a right-hand-side of an 
   // assignment:
@@ -1042,16 +1043,22 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     return false; // preliminary
   };
 
-  //auto
-
+  // Helper function to determine whether a found susbtring that *looks like* an instance of the 
+  // desired opcode definition really is one. This function is used to weed out the false 
+  // positives that may occur due to the following conditions:
+  // -The substring may occur as part of a comment
+  // -The substring may occur as part of a filename or other kind of free-form string that occurs
+  //  on a right-hand-side of an assignment
+  // -The substring may occur as part of another opcode string. For example, the string "cutoff"
+  //  appears in "cutoff_ccN". These are weeded out by checking, that the next character is a '='.
   auto meetsCriteria = [&](const std::string& code, size_t startPos, size_t endPos)
   {
-    if(startPos == string::npos) return false; // ...this check may be redundant
+    if(startPos == string::npos) return false; // This check may be redundant
     if(endPos > searchEnd-1)     return false; // Must be in search range
     if(code[endPos+1] != '=')    return false; // Must be followed by '='
-
     return !isInComment(code, startPos) && !isInAssignment(code, startPos);
-    // Is this enough or do we need to impose further constraints?
+    // Are these constraints really enough to catch all false positives or do we need to impose 
+    // further constraints?
   };
 
 
@@ -1105,7 +1112,7 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
       {
         // pos1 == pos2. This happens when the opcode without 1 is a prefix of the one with 1. In 
         // this case, both variants were found and the one *with* the 1 is the one we are 
-        // interested in ...i think
+        // interested in because the one without is just its substring ...i think.
         *startIndex = (int) pos1;
         *endIndex   = (int) pos1 + L1 - 1;
         break;
@@ -1128,16 +1135,12 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
 
   // ToDo:
   // -In a way similar to findGroup/Region, search for the string that corresponds to the given
-  //  opcode...oh...maybe that means we can't implement it in a static method because the 
-  //  translation from index to string requires an actual codebook object.
+  //  opcode. ...done
   // -The important difference is how we interpret the index. In the methods above, the index was
   //  just a count of how many times the <group> or <region> opcode already had appeared within the
   //  search region. Here, the opcodeIndex is a part of the search-pattern (and it is optional when 
   //  it's equal to 1) and we always try to find the *last* occurence of a matching string as 
   //  opposed to the index-th occurence as we did in the other methods.
-  // -Actually, it would ake sense to search through the search-range in backward direction. Then 
-  //  we could just take the first match. So we should probably use rfind:
-  //    https://cplusplus.com/reference/string/string/rfind/
 
   // -Or maybe use a regular expression and std::regex. But let's try avoiding the big guns as long
   //  as possible.
