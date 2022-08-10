@@ -1810,65 +1810,14 @@ bool samplerCodeAnalyzerTest()
   str = "pan2=0 pan=0";
   cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 7 && e == 9;
 
+  //     012345678901
+  str = "pan=0 pan2=0";
+  cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 0 && e == 2;
 
-
-
-
-  //     0123456
-  str = "panpan2";
 
   // ToDo:
   // -Wrap the test into a helper function that can be called in a one-line like:
   //  ok &= testFindOpcode("pan2=0 pan1=0", op, idx, 0, 12, 7, 10)
-
-
-
-  /*
-  //     012
-  str = "pan";
-  cb->findOpcode(str, op, idx, 0, 2, &s, &e); ok &= s == 0 && e == 2;
-
-  //     0123
-  str = "pan1";
-  cb->findOpcode(str, op, idx, 0, 2, &s, &e); ok &= s == 0 && e == 3;
-
-  //     012345
-  str = "panpan";
-  cb->findOpcode(str, op, idx, 0, 5, &s, &e); ok &= s == 3 && e == 5;
-
-  //     0123456
-  str = "pan1pan";
-  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 4 && e == 6;
-
-  //     0123456
-  str = "panpan1";
-  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 3 && e == 6;
-
-  //     01234567
-  str = "pan1pan1";
-  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 4 && e == 7;
-
-  //     01234567
-  str = "pan2pan1";
-  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 4 && e == 7;
-
-  //     01234567
-  str = "pan1pan2";
-  cb->findOpcode(str, op, idx, 0, 7, &s, &e); ok &= s == 0 && e == 3;
-  // fails! returns 4,6. the "2" at the end of pan2 is not relevant in th search for the pattern
-  // "pan". Maybe implementing the meetsCriteria function correctly could fix this if one of the
-  // criteria is that the opcode name must be followed by '=' immediately
-
-  //     0123456
-  str = "pan2pan";
-  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 4 && e == 6;
-
-  //     0123456
-  str = "panpan2";
-  */
-
-  // Oh - now our test hangs. OK - we now check for an '=' after the opcode, so they ashould fail
-  // because our test-strings are actually malformed...but the hang is problematic anyway.
 
 
   rsAssert(ok);
