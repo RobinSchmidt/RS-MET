@@ -800,6 +800,7 @@ public:
   // \name Text search utilities
 
   static bool hasImplicitFirstGroup(const std::string& code);
+  // used internally in findGroup, maybe move to protected
 
   /** Finds the character index within the given sfzCode of the opening angle-bracket '<' of the 
   "<group>" header for the group with given index and assigns it to the output variable "startIndex".
@@ -817,6 +818,11 @@ public:
   static void findRegion(const std::string& sfzCode, int regionIndex, int searchStart, int searchEnd,
     int* startIndex, int *endIndex);
 
+
+  void findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
+    int searchStart, int searchEnd, int* startIndex, int *endIndex);
+  // used internally in findOpcodeAssignment, maybe move to protected
+
   /** Similar to findGroup and findRegion but finds a single opcode definition. For example, if
   you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 
   and "opcodeIndex" parameters and the function would assign "startIndex" to the character position 
@@ -824,7 +830,7 @@ public:
   of cutoff2 within the given search range, it will return the position of the last one. This is 
   because the last one is the one that will actually be used (re-assigning an opcode in sfz code 
   works like re-assigning variables in program code). */
-  static void findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
+  void findOpcodeAssignment(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
   // ToDo: split into findOpcode and findOpcodeAssignment - only the latter whould include the
   // "=765" part, the former only the cutoff2 part. The latter can use the former as subroutine.

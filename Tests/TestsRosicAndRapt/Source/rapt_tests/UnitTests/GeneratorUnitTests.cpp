@@ -1759,8 +1759,11 @@ bool samplerCodeAnalyzerTest()
   Opcode op  = Opcode::panN;
   int    idx = 1;
 
+  SfzCodeBook::createInstance();
+  CB *cb = CB::getInstance();
+
   str = "";
-  CB::findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+  cb->findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
 
 
 
@@ -1773,6 +1776,7 @@ bool samplerCodeAnalyzerTest()
   //  syntax variants - with and without the 1 - should be considered.
 
   rsAssert(ok);
+  SfzCodeBook::deleteInstance();  // clean up
   return ok;
 }
 

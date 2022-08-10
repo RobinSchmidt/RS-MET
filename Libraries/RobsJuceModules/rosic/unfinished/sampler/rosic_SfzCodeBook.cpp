@@ -804,10 +804,11 @@ SfzCodeBook* SfzCodeBook::getInstance()
   // before using it. It should also clean up by calling deleteInstance(), when the object is not 
   // needed anymore. We need this explicit lifetime management (in particular, the clean up) of 
   // the singleton to prevent false positives from the memory leak checker. Well, it's actually
-  // a valid positive - the (GoF) textbook version of the pattern doesn't clean up.
+  // a valid positive - the (GoF) textbook version of the pattern doesn't do any clean up. The book
+  // "Pattern Hatching" addresses this omission.
 
-  if(instance == nullptr)  // ...yeah, ok - just in case...but it's really cleaner to do an 
-    createInstance();      // explicit creation somewhere before usage.
+  if(instance == nullptr)  // ...yeah, ok - just in case - defensive programming. But it's really 
+    createInstance();      // cleaner to do an explicit creation somewhere before usage.
   return instance;
 }
 
@@ -1002,7 +1003,9 @@ void SfzCodeBook::findRegion(const std::string& code, int regionIndex,
 //  in findSfzRegion are compatible with those in findSfzGroup. 
 // -The if(hasImplicitFirstGroup(code)) in findSfzGroup could be problematic, though
 
-void SfzCodeBook::findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex,
+
+
+void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeIndex,
   int searchStart, int searchEnd, int* startIndex, int* endIndex)
 {
   *startIndex = -1;
@@ -1019,7 +1022,22 @@ void SfzCodeBook::findOpcode(const std::string& sfzCode, Opcode opcode, int opco
   //  opposed to the index-th occurence as we did in the other methods.
   // -Actually, it would ake sense to search through the search-range in backward direction. Then 
   //  we could just take the first match. So we should probably use rfind:
-//    https://cplusplus.com/reference/string/string/rfind/
+  //    https://cplusplus.com/reference/string/string/rfind/
+
+
+  int dummy = 0;
+}
+
+
+void SfzCodeBook::findOpcodeAssignment(const std::string& code, Opcode opcode, int opcodeIndex,
+  int searchStart, int searchEnd, int* startIndex, int* endIndex)
+{
+  findOpcode(code, opcode, opcodeIndex, searchStart, searchEnd, startIndex, endIndex);
+
+  // ToDo:
+  // -Adjust endIndex to point to the last digit of the numeric value in case of numeric parameters
+  //  or the last letter of a choice or string parameter. On return of findOpcode, it should point
+  //  to the character immediately before the '='.
 
 
   int dummy = 0;
