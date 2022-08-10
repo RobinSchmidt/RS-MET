@@ -1762,14 +1762,16 @@ bool samplerCodeAnalyzerTest()
   SfzCodeBook::createInstance();
   CB *cb = CB::getInstance();
 
+  /*
   str = "";
   cb->findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+  */
 
-  /*
   //     012
   str = "pan";
   cb->findOpcode(str, op, idx, 0, 2, &s, &e); ok &= s == 0 && e == 2;
 
+  /*
   //     0123
   str = "pan1";
   cb->findOpcode(str, op, idx, 0, 2, &s, &e); ok &= s == 0 && e == 3;

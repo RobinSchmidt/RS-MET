@@ -1012,7 +1012,7 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
   *startIndex = -1;
   *endIndex   = -1;
 
-  return;  // preliminary
+  //return;  // preliminary
 
 
   // If the index is 1, we have in some cases to search for two alternative search patterns, e.g.
@@ -1049,31 +1049,36 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
   };
 
 
-  //bool opcodeFound = false;
-  while(true)
+  while(true) // The stopping conditions are complex and handled by breaks
   {
-    size_t pos1 = code.find(ptn1, end);  // or should it be end-L1?
+    size_t pos1 = code.rfind(ptn1, end);  // or should it be end-L1?
 
-    // Special case for optional index 1:
     size_t pos2 = string::npos;
-    if(opcodeIndex == 1)
-      pos2 = code.find(ptn2, end);  // or should it be end-L2?
+    if(opcodeIndex == 1)                 // Special case for optional index 1
+      pos2 = code.rfind(ptn2, end);    // or should it be end-L2?
 
-    // If only one of the two found positions meets the additional constraints/criteria, this is 
-    // our result. If both meet the criteria, the one that appears later is our result. If none of
-    // them meets the criteria, we set "end" to the lower of the two positions and keep searching:
+    // If neither ptn1 nor ptn2 was found within the current search range, we return without having
+    // found anything:
+    if(  (pos1 == string::npos || (int) pos1 < searchStart)
+      && (pos2 == string::npos || (int) pos2 < searchStart) )
+      break;
+
+    // If only one of the two found positions meets our additional constraints/criteria, then this
+    // is our result. If both meet the criteria, the one that appears later is our result. If none 
+    // of them meets the criteria, we set "end" to the lower of the two positions and keep 
+    // searching:
     bool pos1ok = meetsCriteria(code, pos1);
     bool pos2ok = meetsCriteria(code, pos2);
     if(pos1ok && !pos2ok)
     {
       *startIndex = (int) pos1;
-      *endIndex   = (int) pos1 + L1;
+      *endIndex   = (int) pos1 + L1 - 1;
       break;
     }
     else if(pos2ok && !pos1ok)
     {
       *startIndex = (int) pos2;
-      *endIndex   = (int) pos2 + L2;
+      *endIndex   = (int) pos2 + L2 - 1;
       break;
     }
     else if(pos1ok && pos2ok)
@@ -1081,34 +1086,31 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
       if(pos1 > pos2)
       {
         *startIndex = (int) pos1;
-        *endIndex   = (int) pos1 + L1;
+        *endIndex   = (int) pos1 + L1 - 1;
         break;
       }
       else if(pos2 > pos1)
       {
         *startIndex = (int) pos2;
-        *endIndex   = (int) pos2 + L2;
+        *endIndex   = (int) pos2 + L2 - 1;
         break;
       }
       else
       {
-        // pos1 == pos2. This happens when the opcode without 1 is a prefic of the one with 1. In 
-        // this case, the one *with* the one was found
-        // ..i think
+        // pos1 == pos2. This happens when the opcode without 1 is a prefix of the one with 1. In 
+        // this case, both variants were found and the one *with* the 1 is the one we are 
+        // interested in ...i think
         *startIndex = (int) pos1;
-        *endIndex   = (int) pos1 + L1;
+        *endIndex   = (int) pos1 + L1 - 1;
         break;
-        // This branch can actually be absorbed into 1st branch by using <= instead of <
+        // This branch can actually be absorbed into 1st branch by using >= instead of >
       }
 
     }
     else if(!pos1ok && !pos2ok)
     {
-
+      end = std::min(pos1, pos2);
     }
-
-    //....
-
 
     int dummy = 0;
   }
@@ -1129,7 +1131,8 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
   //  we could just take the first match. So we should probably use rfind:
   //    https://cplusplus.com/reference/string/string/rfind/
 
-  // -or maybe use a regular expression
+  // -Or maybe use a regular expression and std::regex. But let's try avoiding the big guns as long
+  //  as possible.
 
   int dummy = 0;
 }
