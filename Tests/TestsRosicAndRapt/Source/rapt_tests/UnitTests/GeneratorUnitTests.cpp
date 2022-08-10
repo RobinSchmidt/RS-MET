@@ -1756,8 +1756,8 @@ bool samplerCodeAnalyzerTest()
   //-----------------------------------------------------------------
   // Test findSfzOpcode
 
-  Opcode op  = Opcode::panN;  // rename to panN
-  int    idx = 1;
+  Opcode panN  = Opcode::panN;  // rename to panN
+  //int    idx = 1;
 
   SfzCodeBook::createInstance();
   CB *cb = CB::getInstance();
@@ -1773,19 +1773,23 @@ bool samplerCodeAnalyzerTest()
     return foundStart == startPos && foundEnd == endPos;
   };
 
-  ok &= testFindOpcode("",              op, idx,   0,  0,   -1, -1);
-  ok &= testFindOpcode("pan=0",         op, idx,   0,  4,    0,  2);
-  ok &= testFindOpcode("pan1=0",        op, idx,   0,  5,    0,  3);
-  ok &= testFindOpcode("pan=0 pan=0",   op, idx,   0, 10,    6,  8);
-  ok &= testFindOpcode("pan1=0 pan=0",  op, idx,   0, 11,    7,  9);
-  ok &= testFindOpcode("pan=0 pan1=0",  op, idx,   0, 11,    6,  9);
-  ok &= testFindOpcode("pan1=0 pan1=0", op, idx,   0, 12,    7, 10);
-  ok &= testFindOpcode("pan2=0 pan1=0", op, idx,   0, 12,    7, 10);
-  ok &= testFindOpcode("pan1=0 pan2=0", op, idx,   0, 12,    0,  3);
-  ok &= testFindOpcode("pan2=0 pan=0",  op, idx,   0, 11,    7,  9);
-  ok &= testFindOpcode("pan=0 pan2=0",  op, idx,   0, 11,    0,  2);
+  ok &= testFindOpcode("",              panN, 1,   0,  0,   -1, -1);
+  ok &= testFindOpcode("pan=0",         panN, 1,   0,  4,    0,  2);
+  ok &= testFindOpcode("pan1=0",        panN, 1,   0,  5,    0,  3);
+  ok &= testFindOpcode("pan=0 pan=0",   panN, 1,   0, 10,    6,  8);
+  ok &= testFindOpcode("pan1=0 pan=0",  panN, 1,   0, 11,    7,  9);
+  ok &= testFindOpcode("pan=0 pan1=0",  panN, 1,   0, 11,    6,  9);
+  ok &= testFindOpcode("pan1=0 pan1=0", panN, 1,   0, 12,    7, 10);
+  ok &= testFindOpcode("pan2=0 pan1=0", panN, 1,   0, 12,    7, 10);
+  ok &= testFindOpcode("pan1=0 pan2=0", panN, 1,   0, 12,    0,  3);
+  ok &= testFindOpcode("pan2=0 pan=0",  panN, 1,   0, 11,    7,  9);
+  ok &= testFindOpcode("pan=0 pan2=0",  panN, 1,   0, 11,    0,  2);
 
-  // ToDo: rename opt to pan and replace idx by 1
+
+
+  // ToDo: 
+  // -Try to find pan2, where it is present...and also where it isn't
+  // -Try to put the startIndex not at 0 (maybe at 1 should be enough to be general?)
 
   //               1 
   //     012345678901
