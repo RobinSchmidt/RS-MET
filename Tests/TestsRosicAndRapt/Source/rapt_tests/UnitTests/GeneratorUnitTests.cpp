@@ -1777,17 +1777,19 @@ bool samplerCodeAnalyzerTest()
   //     01234567890
   str = "pan=0 pan=0";
   cb->findOpcode(str, op, idx, 0, 10, &s, &e); ok &= s == 6 && e == 8;
+  //               1
+  //     012345678901
+  str = "pan1=0 pan=0";
+  cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 7 && e == 9;
+
+  //               1
+  //     012345678901
+  str = "pan=0 pan1=0";
+  cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 6 && e == 9;
 
 
 
 
-  //     0123456
-  str = "pan1pan";
-  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 4 && e == 6;
-
-  //     0123456
-  str = "panpan1";
-  cb->findOpcode(str, op, idx, 0, 6, &s, &e); ok &= s == 3 && e == 6;
 
   //     01234567
   str = "pan1pan1";
