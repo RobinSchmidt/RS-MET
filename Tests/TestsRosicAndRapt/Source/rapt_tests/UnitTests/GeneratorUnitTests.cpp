@@ -1756,14 +1756,31 @@ bool samplerCodeAnalyzerTest()
   //-----------------------------------------------------------------
   // Test findSfzOpcode
 
-  Opcode op  = Opcode::panN;
+  Opcode op  = Opcode::panN;  // rename to panN
   int    idx = 1;
 
   SfzCodeBook::createInstance();
   CB *cb = CB::getInstance();
 
-  str = "";
-  cb->findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+
+  // Helper function to test, if the SfzCodeBook::findOpcode produces the correct result for the
+  // given inpu data
+  auto testFindOpcode = [&](const std::string& code, Opcode op, int idx,
+    int searchStart, int searchEnd, int startPos, int endPos)
+  {
+    int foundStart, foundEnd;
+    cb->findOpcode(code, op, idx, searchStart, searchEnd, &foundStart, &foundEnd);
+    return foundStart == startPos && foundEnd == endPos;
+  };
+
+
+//  str = "";
+  //cb->findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+
+  ok &= testFindOpcode("", op, idx,   0, 0,   -1, -1);
+
+
+
 
   //     01234
   str = "pan=0";
