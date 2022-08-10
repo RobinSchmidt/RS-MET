@@ -1773,6 +1773,7 @@ bool samplerCodeAnalyzerTest()
     return foundStart == startPos && foundEnd == endPos;
   };
 
+  // Try finding the last "pan=" or "pan1=" substring:
   ok &= testFindOpcode("",              panN, 1,   0,  0,   -1, -1);
   ok &= testFindOpcode("pan=0",         panN, 1,   0,  4,    0,  2);
   ok &= testFindOpcode("pan1=0",        panN, 1,   0,  5,    0,  3);
@@ -1784,6 +1785,21 @@ bool samplerCodeAnalyzerTest()
   ok &= testFindOpcode("pan1=0 pan2=0", panN, 1,   0, 12,    0,  3);
   ok &= testFindOpcode("pan2=0 pan=0",  panN, 1,   0, 11,    7,  9);
   ok &= testFindOpcode("pan=0 pan2=0",  panN, 1,   0, 11,    0,  2);
+
+  // Try finding the last "pan2=" substring:
+  ok &= testFindOpcode("",              panN, 2,   0,  0,   -1, -1);
+  ok &= testFindOpcode("pan=0",         panN, 2,   0,  4,   -1, -1);
+  ok &= testFindOpcode("pan1=0",        panN, 2,   0,  5,   -1, -1);
+  ok &= testFindOpcode("pan=0 pan=0",   panN, 2,   0, 10,   -1, -1);
+  ok &= testFindOpcode("pan1=0 pan=0",  panN, 2,   0, 11,   -1, -1);
+  ok &= testFindOpcode("pan=0 pan1=0",  panN, 2,   0, 11,   -1, -1);
+  ok &= testFindOpcode("pan1=0 pan1=0", panN, 2,   0, 12,   -1, -1);
+  ok &= testFindOpcode("pan2=0 pan1=0", panN, 2,   0, 12,    0,  3);
+  ok &= testFindOpcode("pan1=0 pan2=0", panN, 2,   0, 12,    7, 10);
+  ok &= testFindOpcode("pan2=0 pan=0",  panN, 2,   0, 11,    0,  3);
+  ok &= testFindOpcode("pan=0 pan2=0",  panN, 2,   0, 11,    6,  9);
+
+
 
 
 
