@@ -1780,29 +1780,24 @@ bool samplerCodeAnalyzerTest()
   ok &= testFindOpcode("pan1=0 pan=0",  op, idx,   0, 11,    7,  9);
   ok &= testFindOpcode("pan=0 pan1=0",  op, idx,   0, 11,    6,  9);
   ok &= testFindOpcode("pan1=0 pan1=0", op, idx,   0, 12,    7, 10);
+  ok &= testFindOpcode("pan2=0 pan1=0", op, idx,   0, 12,    7, 10);
+  ok &= testFindOpcode("pan1=0 pan2=0", op, idx,   0, 12,    0,  3);
+  ok &= testFindOpcode("pan2=0 pan=0",  op, idx,   0, 11,    7,  9);
+  ok &= testFindOpcode("pan=0 pan2=0",  op, idx,   0, 11,    0,  2);
 
-
-  // ToDo: Update these tests below to use the helper function to turn them into one-liners:
-
-
-  //               1
-  //     0123456789012
-  str = "pan2=0 pan1=0";
-  cb->findOpcode(str, op, idx, 0, 12, &s, &e); ok &= s == 7 && e == 10;
-
-  //               1
-  //     0123456789012
-  str = "pan1=0 pan2=0";
-  cb->findOpcode(str, op, idx, 0, 12, &s, &e); ok &= s == 0 && e == 3;
+  // ToDo: rename opt to pan and replace idx by 1
 
   //               1 
   //     012345678901
-  str = "pan2=0 pan=0";
-  cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 7 && e == 9;
+  //str = "pan2=0 pan=0";
+  //cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 7 && e == 9;
+
 
   //     012345678901
-  str = "pan=0 pan2=0";
-  cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 0 && e == 2;
+  //str = "pan=0 pan2=0";
+  //cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 0 && e == 2;
+
+
 
 
   // ToDo:
