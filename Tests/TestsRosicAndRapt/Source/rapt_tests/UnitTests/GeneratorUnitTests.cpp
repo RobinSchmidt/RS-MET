@@ -1773,24 +1773,17 @@ bool samplerCodeAnalyzerTest()
     return foundStart == startPos && foundEnd == endPos;
   };
 
-  ok &= testFindOpcode("",             op, idx,   0,  0,   -1, -1);
-  ok &= testFindOpcode("pan=0",        op, idx,   0,  4,    0,  2);
-  ok &= testFindOpcode("pan1=0",       op, idx,   0,  5,    0,  3);
-  ok &= testFindOpcode("pan=0 pan=0",  op, idx,   0, 10,    6,  8);
-  ok &= testFindOpcode("pan1=0 pan=0", op, idx,   0, 11,    7,  9);
+  ok &= testFindOpcode("",              op, idx,   0,  0,   -1, -1);
+  ok &= testFindOpcode("pan=0",         op, idx,   0,  4,    0,  2);
+  ok &= testFindOpcode("pan1=0",        op, idx,   0,  5,    0,  3);
+  ok &= testFindOpcode("pan=0 pan=0",   op, idx,   0, 10,    6,  8);
+  ok &= testFindOpcode("pan1=0 pan=0",  op, idx,   0, 11,    7,  9);
+  ok &= testFindOpcode("pan=0 pan1=0",  op, idx,   0, 11,    6,  9);
+  ok &= testFindOpcode("pan1=0 pan1=0", op, idx,   0, 12,    7, 10);
 
 
   // ToDo: Update these tests below to use the helper function to turn them into one-liners:
 
-  //               1
-  //     012345678901
-  str = "pan=0 pan1=0";
-  cb->findOpcode(str, op, idx, 0, 11, &s, &e); ok &= s == 6 && e == 9;
-
-  //               1
-  //     0123456789012
-  str = "pan1=0 pan1=0";
-  cb->findOpcode(str, op, idx, 0, 12, &s, &e); ok &= s == 7 && e == 10;
 
   //               1
   //     0123456789012
