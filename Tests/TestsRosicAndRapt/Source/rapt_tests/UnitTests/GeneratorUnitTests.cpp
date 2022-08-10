@@ -1753,9 +1753,16 @@ bool samplerCodeAnalyzerTest()
   CB::findRegion(str, 1, 0, 28, &s, &e); ok &= s == 11 && e == 20;
   CB::findRegion(str, 2, 0, 28, &s, &e); ok &= s == 21 && e == 28;
 
-
   //-----------------------------------------------------------------
   // Test findSfzOpcode
+
+  Opcode op  = Opcode::panN;
+  int    idx = 1;
+
+  str = "";
+  CB::findOpcode(str, op, idx, 0, 0, &s, &e); ok &= s == -1 && e == -1;
+
+
 
 
 
