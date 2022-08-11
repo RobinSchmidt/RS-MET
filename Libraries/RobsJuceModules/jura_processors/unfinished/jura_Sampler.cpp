@@ -705,7 +705,7 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   SfzCodeBook::findRegion(code, ri, groupStart, groupEnd, &regionStart, &regionEnd);
   RAPT::rsAssert(regionStart != -1, "Region not found in code");
 
-  // Find locations in the code, where the opcode definition starts and ends (this includes the 
+  // Find locations in the code, where the opcode definition starts and ends (this does not include 
   // value):
   int opcodeStart, opcodeEnd;
   SfzCodeBook* cb = SfzCodeBook::getInstance();
@@ -713,7 +713,16 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
   // This fails! I think, it is because we use the forward slash as seperator in the file-names, 
   // which is wrong anyway (rgc:sfz doesn't accept it, for example). ToDo: change the 
-  // forward-slashes to backslashes in the patches and see, if this fixes the problem.
+  // forward-slashes to backslashes in the patches and see, if this fixes the problem. OK - yes
+  // it does (done only for the 1st patch - ToDo: fix this for all patches). However, the returned 
+  // range currently only inludes the string for the opcode name itself. The part of the code that 
+  // we need to modify is actually the value that comes after it. For example for something like 
+  // volume=-6.02, opcodeStart returns the position of the 'v' and opcodeEnd the position opf the 
+  // 'e'. We now need to figure out the range of the "-6.02" string. ...that should be easy, 
+  // though. Maybe all of that can be wrapped inot a convenience function 
+  //   findOpcodeValueStringPosition(code, gi, ri, op, idx, &startPos, &endPos)
+
+
 
 
 
