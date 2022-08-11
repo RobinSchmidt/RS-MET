@@ -1756,9 +1756,7 @@ bool samplerCodeAnalyzerTest()
   //-----------------------------------------------------------------
   // Test findSfzOpcode
 
-  Opcode panN  = Opcode::panN;  // rename to panN
-  //int    idx = 1;
-
+  Opcode panN = Opcode::panN;      // we use pan as example because it is nicely short
   SfzCodeBook::createInstance();
   CB *cb = CB::getInstance();
 
@@ -1827,6 +1825,23 @@ bool samplerCodeAnalyzerTest()
   ok &= testFindOpcode(" pan2=0 pan=0",  panN, 1,   1, 12,    8, 10);
   ok &= testFindOpcode(" pan=0 pan2=0",  panN, 1,   1, 12,    1,  3);
 
+  // Test, if opcode defintions that appear in comments are ignored:
+  ok &= testFindOpcode("pan=0 pan=0 / pan=0", panN, 1,   0, 18,    6,  8);
+  ok &= testFindOpcode("pan=0 /pan=0",        panN, 1,   0, 11,    0,  2);
+  //                    0123456789012345678901234567890
+  //                    0         1         2         3
+
+
+  // Test, if opcode defintions that appear in right-hand-side of assignments are
+  // correctly discarded/ignored:
+  // ...
+
+
+  // https://sfzformat.com/opcodes/sample says:
+  // ...names with blank spaces and other special characters (excepting the = character) are 
+  // allowed...
+  // OK - so we may use a '=' character that appears somewhere to the left to identify a RHS
+  // of an assignment. But the allowance of blank spaces makes it a bit more difficult
 
   rsAssert(ok);
 

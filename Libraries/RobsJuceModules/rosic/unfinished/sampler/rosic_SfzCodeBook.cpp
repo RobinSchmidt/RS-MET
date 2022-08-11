@@ -1040,8 +1040,9 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     return false;
     // In sfz, everything after a '/' on a given line is a comment, so we may detect a position
     // within a comment by going leftward. If we encounter a '/' before we encounter a line-break,
-    // pos is indeed in a comment. If, on the other hand, we encounter a line-break before a /', we
-    // may conclude that ps is not within a comment.
+    // pos is indeed in a comment. If, on the other hand, we encounter a line-break before a '/', 
+    // we may conclude that ps is not within a comment because the above way is the only way to
+    // write comments in sfz.
   };
   // Maybe factor this out. This may be needed in findGroup/findRegion, too. SFZ authors may want
   // to comment out groups or regions. Our code section finder is not yet prepared to weed out
@@ -1062,6 +1063,23 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     }
     return false;
   };
+  // I think, that may not work when blank spaces occur within a filename, which is allowed 
+  // according to the sfz spec, see: https://sfzformat.com/opcodes/sample which says:
+  //   "...names with blank spaces and other special characters (excepting the = character) are 
+  //    allowed..."
+  // OK - so we may use a '=' character that appears somewhere to the left to identify a RHS
+  // of an assignment, i.e. the "if(c == '=') return true;" segment should be ok. But the allowance
+  // of blank spaces makes the other if-statement a bit more difficult. We should not actually 
+  // conclude that we are not within a right-hand-side, as soon as we see a ' '. ...so what can we 
+  // do instead? Hmm...I think, we can still immediately return false as soon as we see any of the 
+  // other characters ('\n', '>', 't') but when we encounter a ' ', we should not immediately jump
+  // to the conclusion that this is not a RHS but instead need some more complex test to figure 
+  // out, if the space is part of a RHS string. Maybe introduce a 3rd if-statement like
+  //   if(c == ' ' !isSpaceInRhsString(code, pos) ) return false
+  // or something like that. Allowing spaces in RHS strings is ait of a burden here, but I actually
+  // think, it's a good thing to allow this, especially when we later want to introduce a formula
+  // opcode (in which spaces really shoudl be allowed for nicer formatting)
+  // Maybe factor out both functions isInComment and isInAssignment and test them on their own.
 
   // Helper function to determine whether a found susbtring that *looks like* an instance of the 
   // desired opcode definition really is one. This function is used to weed out the false 
