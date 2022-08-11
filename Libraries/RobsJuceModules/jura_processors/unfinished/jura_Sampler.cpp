@@ -708,9 +708,12 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   // Find locations in the code, where the opcode definition starts and ends (this includes the 
   // value):
   int opcodeStart, opcodeEnd;
-  SfzCodeBook::findOpcode(code, op, idx, regionStart, regionEnd, &opcodeStart, &opcodeEnd);
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+  cb->findOpcode(code, op, idx, regionStart, regionEnd, &opcodeStart, &opcodeEnd);
   RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
-
+  // This fails! I think, it is because we use the forward slash as seperator in the file-names, 
+  // which is wrong anyway (rgc:sfz doesn't accept it, for example). ToDo: change the 
+  // forward-slashes to backslashes in the patches and see, if this fixes the problem.
 
 
 

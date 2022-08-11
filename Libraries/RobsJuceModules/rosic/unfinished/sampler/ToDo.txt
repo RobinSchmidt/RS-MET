@@ -203,6 +203,31 @@ MIDI behaviors
   https://sfzformat.com/opcodes/set_ccN
   https://sfzformat.com/opcodes/rt_dead
 
+- See this video for inspiration for how to implement different glide/legato/retrigger modes in
+  monophonic operation:
+  https://www.youtube.com/watch?v=7hjhkPhxQLc&list=PLlczpwSXEOybYYaBCTcjxxKz1QmxytbIf&index=12
+  Whether or not a note is being held while a new noteOn arrives can be used to switch between
+  - Invoking a glide or immediately jumping to the new frequency. Maybe glide should have the 
+    modes: (1) "never", (2) "legato": glide only when note is held, (3) "always"
+  - Retriggering or not retriggering the envelope(s). Maybe this should be a feature of each 
+    envelope seperately. We may retrigger some envelopes but not others. It could have the modes:
+    (1) "always", (2) "portato": retrigger only when note is not held. Other modes like "never" or
+    "legato" do not seem to be useful
+  - Implement constant rate/speed vs constant time glide. The former has a constant rate like 
+    1 octave´per second whereas the latter always needs the same amount of time to reach the new 
+    note, no matter hwo far away it is from the old. Maybe the "exponential" mode in the video is
+    using an RC lowpass?
+  - What about the glide curves? Should we use the same curves as for the envelopes? Maybe a linear
+    glide in the pitch domain is the most musically natural? Or maybe using RC-filtering is better?
+    I think, RC-filters are the same as a linear-pitch-glide for glide-down but inverted/mirrored 
+    curves for glide-up.
+  - It has this interesting "gated" glide mode. While that may indeed be not that useful, what 
+    about immediately jumping to the new note at the moment, the old one is released? This would 
+    also "stop gliding" - but not just stop wherever it happens to be at that moment but jump to
+    target. ...maybe it could be called "jump_on_release" or something
+  - Maybe glide should be available per sample/source. At the moment, we only have one sample per
+    region anyway, but we want more in the future
+
 ----------------------------------------------------------------------------------------------------
 Effects
 =======
