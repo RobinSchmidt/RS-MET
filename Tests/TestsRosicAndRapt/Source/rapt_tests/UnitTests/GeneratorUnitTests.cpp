@@ -1828,6 +1828,9 @@ bool samplerCodeAnalyzerTest()
   // Test, if opcode defintions that appear in comments are ignored:
   ok &= testFindOpcode("pan=0 pan=0 / pan=0", panN, 1,   0, 18,    6,  8);
   ok &= testFindOpcode("pan=0 /pan=0",        panN, 1,   0, 11,    0,  2);
+
+
+  ok &= testFindOpcode("pan=0 /pan=0\n pan=0",        panN, 1,   0, 20,   16, 18); // fails!
   //                    0123456789012345678901234567890
   //                    0         1         2         3
 
