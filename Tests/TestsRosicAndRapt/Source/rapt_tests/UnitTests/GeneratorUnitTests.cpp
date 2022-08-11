@@ -1831,7 +1831,10 @@ bool samplerCodeAnalyzerTest()
   rsAssert(ok);
 
   // ToDo:
-  // -Searching for the opcode string may fail when the opcode-string occurs as substring 
+  // -Test it with strings that contain comments and/or assignments which also contain the search
+  //  pattern. These should be discarded by the find-function as false positives. They match the
+  //  pattern but are within a text-section that doesn't count.
+  // -Old: Searching for the opcode string may fail when the opcode-string occurs as substring 
   //  of some other string. maybe we should include the ' ' before and the '=' after in the search
   //  string. But that's not really bulletproof either. Oh - there doesn't need to be a ' ' before 
   //  the opcode anyway (it could also be a newline/tab or we could be at the begin of the search 

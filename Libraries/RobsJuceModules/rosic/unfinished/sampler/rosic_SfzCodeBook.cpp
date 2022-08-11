@@ -1026,10 +1026,22 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
 
 
   // Returns true, iff the given position in the code is located within a comment:
-  auto isInComment = [](const std::string& code, size_t pos)
+  auto isInComment = [&](const std::string& code, size_t pos)
   {
-
-    return false; // preliminary
+    while(pos > searchStart)
+    {
+      char c = code[pos];
+      if(c == '/')
+        return true;
+      if(c == '\n')
+        return false;
+      --pos;
+    }
+    return false;
+    // In sfz, everything after a '/' on a given line is a comment, so we may detect a position
+    // within a comment by going leftward. If we encounter a '/' before we encounter a line-break,
+    // pos is indeed in a comment. If, on the other hand, we encounter a line-break before a /', we
+    // may conclude that ps is not within a comment.
   };
   // Maybe factor this out. This may be needed in findGroup/findRegion, too. SFZ authors may want
   // to comment out groups or regions. Our code section finder is not yet prepared to weed out
@@ -1037,10 +1049,18 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
 
   // Returns true, iff the given position in the code is located within a right-hand-side of an 
   // assignment:
-  auto isInAssignment = [](const std::string& code, size_t pos)
+  auto isInAssignment = [&](const std::string& code, size_t pos)
   {
-
-    return false; // preliminary
+    while(pos > searchStart)
+    {
+      char c = code[pos];
+      if(c == '=')
+        return true;
+      if(c == '\n' || c == ' ' || c == '>' || c == '\t')
+        return false;
+      --pos;
+    }
+    return false;
   };
 
   // Helper function to determine whether a found susbtring that *looks like* an instance of the 
