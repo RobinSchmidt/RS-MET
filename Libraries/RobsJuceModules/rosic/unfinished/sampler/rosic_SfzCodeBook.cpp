@@ -1078,8 +1078,14 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
   //   if(c == ' ' !isSpaceInRhsString(code, pos) ) return false
   // or something like that. Allowing spaces in RHS strings is ait of a burden here, but I actually
   // think, it's a good thing to allow this, especially when we later want to introduce a formula
-  // opcode (in which spaces really shoudl be allowed for nicer formatting)
+  // opcode (in which spaces really shoudl be allowed for nicer formatting). Oh - actually, we want
+  // to allow the '=' in formulas as well...hmmm....maybe we should require strings to be entered
+  // in quotes like "This is a string", except for sample-names where the quotes are optional for
+  // historic reasons...but waht if the string itself contains quotes?
   // Maybe factor out both functions isInComment and isInAssignment and test them on their own.
+  // Actually, just removing the "|| c == ' '" might actually be enough in this context because 
+  // before we even call "isInAssignment", we check, if the next character to the right is a '=' 
+  // and if it isn't
 
   // Helper function to determine whether a found susbtring that *looks like* an instance of the 
   // desired opcode definition really is one. This function is used to weed out the false 

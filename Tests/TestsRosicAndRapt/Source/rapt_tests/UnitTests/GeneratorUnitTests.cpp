@@ -1826,11 +1826,11 @@ bool samplerCodeAnalyzerTest()
   ok &= testFindOpcode(" pan=0 pan2=0",  panN, 1,   1, 12,    1,  3);
 
   // Test, if opcode defintions that appear in comments are ignored:
-  ok &= testFindOpcode("pan=0 pan=0 / pan=0", panN, 1,   0, 18,    6,  8);
-  ok &= testFindOpcode("pan=0 /pan=0",        panN, 1,   0, 11,    0,  2);
-
-
-  ok &= testFindOpcode("pan=0 /pan=0\n pan=0",        panN, 1,   0, 20,   16, 18); // fails!
+  ok &= testFindOpcode("pan=0 pan=0 / pan=0",        panN, 1,   0, 18,    6,  8);
+  ok &= testFindOpcode("pan=0 /pan=0",               panN, 1,   0, 11,    0,  2);
+  ok &= testFindOpcode("pan=0 /pan=0\n pan=0",       panN, 1,   0, 18,   14, 16);
+  ok &= testFindOpcode("pan=0 /pan=0\n pan=0/pan=0", panN, 1,   0, 24,   14, 16);
+  ok &= testFindOpcode("pan=0 /pan=0\n pan=0/pan=0", panN, 1,   0, 15,    0,  2); // checks only first part of string
   //                    0123456789012345678901234567890
   //                    0         1         2         3
 
@@ -1852,6 +1852,8 @@ bool samplerCodeAnalyzerTest()
   // -Test it with strings that contain comments and/or assignments which also contain the search
   //  pattern. These should be discarded by the find-function as false positives. They match the
   //  pattern but are within a text-section that doesn't count.
+  // -Test in more cases, if it works, when searchStart/End are not the first/last character in the
+  //  string. Only one such test is currently done
   // -Old: Searching for the opcode string may fail when the opcode-string occurs as substring 
   //  of some other string. maybe we should include the ' ' before and the '=' after in the search
   //  string. But that's not really bulletproof either. Oh - there doesn't need to be a ' ' before 
