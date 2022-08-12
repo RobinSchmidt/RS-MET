@@ -675,11 +675,15 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   // is obviously totally silly and impractical If the "Parse" button appears, that might be 
   // tolerable, although it would be better if it doesn't.
 
+  // ToDo:
   // -Actually, it would be better to find the code-segment (or at least its start), when the user
   //  selects a new node in the tree - not on every slider-movement. The starting position does not
   //  change. The length may, depending on the text-formatting of floating point numbers and also
   //  when we are dealing with a choice opcode. But even the length of the segment is a thing, we 
   //  may keep track of without repeatedly figuring it out again and again. 
+  // -Maybe include a test that the updated document indeed refelcts the settings of the engine.
+  //  Retrieve the sfz-data, re-parse the code, check if there is a match. This should be done only
+  //  in debug situations.
 }
 
 void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos)
