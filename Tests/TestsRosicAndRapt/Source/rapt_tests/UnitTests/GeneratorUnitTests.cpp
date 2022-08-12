@@ -1835,20 +1835,26 @@ bool samplerCodeAnalyzerTest()
   //                    0         1         2         3
 
   
-  //     0         1         2         3
-  //     0123456789012345678901234567890
+
   str = "<group><region>cutoff=467.352";
-  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e);
-  ok &= s == 22 && e == 28;
+  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 22 && e == 28;
 
-  /*
   str = "<group><region>cutoff=467.352 pan=30";
+  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 22 && e == 28;
+  cb->findOpcodeValueString(str, 0, 0, Opcode::panN,    1, &s, &e); ok &= s == 34 && e == 35;
 
-
+  //     0         1         2         3         4         5
+  //     012345678901234567890123456789012345678901234567890
   str = "<group><region>cutoff=467.352 pan=30 volume=6";
+  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 22 && e == 28;
+  cb->findOpcodeValueString(str, 0, 0, Opcode::panN,    1, &s, &e); ok &= s == 34 && e == 35;
+  cb->findOpcodeValueString(str, 0, 0, Opcode::volumeN, 1, &s, &e); ok &= s == 44 && e == 44;
 
-  str = "<group><region>cutoff=467.352 pan=30 volume=6   resonance=20";
-  */
+
+
+  str = "<group><region>cutoff=467.352 pan=30 volume=6  width=20";
+
+  // Maybe make the same test lcking the <group>, i.e. having an implicit group
 
 
 
