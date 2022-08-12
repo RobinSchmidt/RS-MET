@@ -661,8 +661,12 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
   // Apply the required change to the code document:
   juce::CodeDocument& doc = CodeEditorComponent::getDocument();
+  juce::String newValueString = juce::String(info.newValue);
+  // ToDo: let info have a function getNewValueString() that dispatches between string-values and 
+  // numeric values depending on the opcode...or maybe have that dispatcher functionality somewhere
+  // else - but currently, we just assume a numeric value which is sometimes not the case...
 
-
+  doc.replaceSection(startPos, endPos, newValueString);
 
   int dummy = 0;
   
@@ -691,6 +695,8 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
 void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos)
 {
+  using namespace rosic::Sampler;
+
   int    gi  = info.groupIndex;
   int    ri  = info.regionIndex;
   Opcode op  = info.oldSetting.getOpcode();
@@ -703,7 +709,6 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, 
   juce::String jStr = doc.getAllContent();
   std::string code = jStr.toStdString();
 
-  using namespace rosic::Sampler;
   SfzCodeBook* cb = SfzCodeBook::getInstance();
   cb->findOpcodeValueString(code, gi, ri, op, idx, startPos, endPos);
 }
