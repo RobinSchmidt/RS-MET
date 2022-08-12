@@ -1057,14 +1057,15 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
       char c = code[pos];
       if(c == '=')
         return true;
-      if(c == '\n' || c == ' ' || c == '>' || c == '\t')
+      //if(c == '\n' || c == ' ' || c == '>' || c == '\t')
+      if(c == '\n' || c == '>' || c == '\t') // See comment below why we don't test against ' ' 
         return false;
       --pos;
     }
     return false;
   };
-  // I think, that may not work when blank spaces occur within a filename, which is allowed 
-  // according to the sfz spec, see: https://sfzformat.com/opcodes/sample which says:
+  // I think, testing against ' ' may break it when blank spaces occur within a filename, which is 
+  // allowed according to the sfz spec, see: https://sfzformat.com/opcodes/sample which says:
   //   "...names with blank spaces and other special characters (excepting the = character) are 
   //    allowed..."
   // OK - so we may use a '=' character that appears somewhere to the left to identify a RHS
@@ -1074,27 +1075,37 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
   // do instead? Hmm...I think, we can still immediately return false as soon as we see any of the 
   // other characters ('\n', '>', 't') but when we encounter a ' ', we should not immediately jump
   // to the conclusion that this is not a RHS but instead need some more complex test to figure 
-  // out, if the space is part of a RHS string. Maybe introduce a 3rd if-statement like
+  // out, if the space is part of a RHS freeform-string. Maybe introduce a 3rd if-statement like
   //   if(c == ' ' !isSpaceInRhsString(code, pos) ) return false
-  // or something like that. Allowing spaces in RHS strings is ait of a burden here, but I actually
+  // or something like that. Allowing spaces in RHS strings is bit of a burden here, but I actually
   // think, it's a good thing to allow this, especially when we later want to introduce a formula
-  // opcode (in which spaces really shoudl be allowed for nicer formatting). Oh - actually, we want
+  // opcode (in which spaces really should be allowed for nicer formatting). Oh - actually, we want
   // to allow the '=' in formulas as well...hmmm....maybe we should require strings to be entered
   // in quotes like "This is a string", except for sample-names where the quotes are optional for
-  // historic reasons...but waht if the string itself contains quotes?
+  // historic reasons...but what if the string itself contains quotes?
   // Maybe factor out both functions isInComment and isInAssignment and test them on their own.
   // Actually, just removing the "|| c == ' '" might actually be enough in this context because 
   // before we even call "isInAssignment", we check, if the next character to the right is a '=' 
-  // and if it isn't
+  // and if it isn't, we are already done and don't even get here. I think, within the current 
+  // feature set, the only way that freeform strings can possibly occur in an sfz is in comments 
+  // and in filenames where in filenames, the '=' is explicitly forbidden, so, I think, we shold be
+  // on the safe side. If, however, we want to extend the feature set with more opcodes that allow 
+  // freeform strings (such as a "formula" opcode within which we definitely want to allow '=', we
+  // will have to rethink/revise this code here. Maybe we will indeed need some way to create 
+  // tree-like document-structure, i.e. a class like SfzDocument that contains nodes which can be 
+  // group/region/opcode/comment/etc. and maybe a proper class SfzParser that creates such a 
+  // structured document from a string. Maybe the class should contain the orginal string together
+  // with metadata about the structure. The "Nodes" could contain a start (and maybe end) position
+  // within the string, etc. ...we'll see....
 
-  // Helper function to determine whether a found susbtring that *looks like* an instance of the 
-  // desired opcode definition really is one. This function is used to weed out the false 
+  // Helper function to determine whether a found susbtring s that *looks like* an instance of the 
+  // desired opcode definition really *is* one. This function is used to weed out the false 
   // positives that may occur due to the following conditions:
-  // -The substring may occur as part of a comment
-  // -The substring may occur as part of a filename or other kind of free-form string that occurs
-  //  on a right-hand-side of an assignment
-  // -The substring may occur as part of another opcode string. For example, the string "cutoff"
-  //  appears in "cutoff_ccN". These are weeded out by checking, that the next character is a '='.
+  // -s may occur as part of another opcode string. For example, the string "cutoff" appears in 
+  //  "cutoff_ccN". These are weeded out by checking, that the next character is a '='.
+  // -s may occur as part of a comment -> weeded out by isInComment()
+  // -s may occur as part of a filename or other kind of free-form string that occurs on a 
+  //  right-hand-side of an assignment -> weeded out by isInAssignment()
   auto meetsCriteria = [&](const std::string& code, size_t startPos, size_t endPos)
   {
     if(startPos == string::npos) return false; // This check may be redundant
@@ -1102,8 +1113,12 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     if(code[endPos+1] != '=')    return false; // Must be followed by '='
     return !isInComment(code, startPos) && !isInAssignment(code, startPos);
     // Are these constraints really enough to catch all false positives or do we need to impose 
-    // further constraints?
+    // further constraints? -> Implement more unit test! We have some but the coverage of all the
+    // possible scenarios by our tests is still far from being exhaustive....
   };
+  // Maybe move this function also out of SfzCodeBook::findOpcode and give it a more proper name
+  // like "isOpcodeDefinition" or "isActualOpcodeDefinition"
+
 
 
   while(true) // The stopping conditions are complex and handled by breaks
@@ -1170,26 +1185,14 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
       if(end <= searchStart)
         break;
     }
-
-    int dummy = 0;
   }
 
-
-
-
-  // ToDo:
-  // -In a way similar to findGroup/Region, search for the string that corresponds to the given
-  //  opcode. ...done
-  // -The important difference is how we interpret the index. In the methods above, the index was
-  //  just a count of how many times the <group> or <region> opcode already had appeared within the
-  //  search region. Here, the opcodeIndex is a part of the search-pattern (and it is optional when 
-  //  it's equal to 1) and we always try to find the *last* occurence of a matching string as 
-  //  opposed to the index-th occurence as we did in the other methods.
-
-  // -Or maybe use a regular expression and std::regex. But let's try avoiding the big guns as long
-  //  as possible.
-
-  int dummy = 0;
+  // Notes:
+  // -The important difference to findGroup/Region is how we interpret the index. In the methods
+  //  above, the index was just a count of how many times the <group> or <region> opcode already 
+  //  had appeared within the search region. Here, the opcodeIndex is a part of the search-pattern
+  //  (and it is optional when it's equal to 1) and we always try to find the *last* occurence of a
+  //  matching string as opposed to the index-th occurence as we did in the other methods.
 }
 
 
