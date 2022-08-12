@@ -1858,7 +1858,7 @@ bool samplerCodeAnalyzerTest()
   cb->findOpcodeValueString(str, 0, 0, Opcode::volumeN, 1, &s, &e); ok &= s == 44 && e == 44;
   cb->findOpcodeValueString(str, 0, 0, Opcode::widthN,  1, &s, &e); ok &= s == 53 && e == 54;
 
-  // Maybe make the same test lcking the <group>, i.e. having an implicit group
+  // Maybe make the same test lacking the <group>, i.e. having an implicit group
 
 
 

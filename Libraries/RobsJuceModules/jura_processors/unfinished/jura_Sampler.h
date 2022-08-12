@@ -520,7 +520,7 @@ public:
   /** For the given PatchChangeInfo, this function figures out the starting position and length of
   the code segment that is responsible for this setting and stores them in the output parameters
   "position" and "length". If no fitting segment is found, it will assign both outputs to -1. */
-  void findCodeSegment(const PatchChangeInfo& info, int* position, int* length);
+  void findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos);
 
 protected:
 

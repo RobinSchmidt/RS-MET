@@ -651,52 +651,21 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   //  impractical
 
   // Find the location in the code that is affected by the change:
-  int pos, length;
-  findCodeSegment(info, &pos, &length);
-  if(pos == -1 || length == -1) {
+  int startPos, endPos;
+  findCodeSegment(info, &startPos, &endPos);
+  if(startPos == -1 || endPos == -1) {
     //RAPT::rsError("No appropriate code segment found"); 
     return; }
     // I'm not yet sure, if we should trigger an error in such a situation. Maybe we should expect
     // that to happen in normal operation? We'll see....
 
-  // Apply the required change to the code document: 
-  
-  
-
-
-
-  // Note:
-  // The change we make to the code should not trigger a re-parsing, at least not automatically 
-  // (but that doesn't really happen anyway). Otherwise, we would reparse on slider movement which 
-  // is obviously totally silly and impractical If the "Parse" button appears, that might be 
-  // tolerable, although it would be better if it doesn't.
-}
-
-void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, int* length)
-{
-  *position = -1;
-  *length   = -1;
-
-  using namespace rosic::Sampler;
-
-  int    gi  = info.groupIndex;
-  int    ri  = info.regionIndex;
-  Opcode op  = info.oldSetting.getOpcode();
-  int    idx = info.oldSetting.getIndex();
-
-
-  // Maybe streamline these calls into a chain like getDocument().getallContent().toStdString().
-  // But maybe we actually need to hold the reference to the doc for calling replaceSection() on 
-  // it. We'll see..
+  // Apply the required change to the code document:
   juce::CodeDocument& doc = CodeEditorComponent::getDocument();
-  juce::String jStr = doc.getAllContent();
-  std::string code = jStr.toStdString();
 
- 
-  int startPos, endPos;
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-  cb->findOpcodeValueString(code, gi, ri, op, idx, &startPos, &endPos);
 
+
+  int dummy = 0;
+  
   // ToDo:
   // -Retrieve the new value from the widget
   // -Convert it to a string (if it isn't already a string)
@@ -705,59 +674,38 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   //
 
 
+  // we need void doc.replaceSection (int startIndex, int endIndex, const String &newText)
 
+  // Note:
+  // The change we make to the code should not trigger a re-parsing, at least not automatically 
+  // (but that doesn't really happen anyway). Otherwise, we would reparse on slider movement which 
+  // is obviously totally silly and impractical If the "Parse" button appears, that might be 
+  // tolerable, although it would be better if it doesn't.
 
-  /*
-  // ToDo: maybe wrap these steps into a convenience function taking gi, ri, op, idx as inputs:
-  // ...done
-
-  // Find locations in the code, where the group definition starts and ends:
-  int groupStart, groupEnd;
-  SfzCodeBook::findGroup(code, gi, &groupStart, &groupEnd);
-  RAPT::rsAssert(groupStart != -1, "Group not found in code");
-
-  // Find locations in the code, where the region definition starts and ends:
-  int regionStart, regionEnd;
-  SfzCodeBook::findRegion(code, ri, groupStart, groupEnd, &regionStart, &regionEnd);
-  RAPT::rsAssert(regionStart != -1, "Region not found in code");
-
-  // Find locations in the code, where the opcode definition starts and ends (this does not include 
-  // value):
-  int opcodeStart, opcodeEnd;
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-  cb->findOpcode(code, op, idx, regionStart, regionEnd, &opcodeStart, &opcodeEnd);
-  RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
-  // This fails! I think, it is because we use the forward slash as seperator in the file-names, 
-  // which is wrong anyway (rgc:sfz doesn't accept it, for example). ToDo: change the 
-  // forward-slashes to backslashes in the patches and see, if this fixes the problem. OK - yes
-  // it does (done only for the 1st patch - ToDo: fix this for all patches). However, the returned 
-  // range currently only inludes the string for the opcode name itself. The part of the code that 
-  // we need to modify is actually the value that comes after it. For example for something like 
-  // volume=-6.02, opcodeStart returns the position of the 'v' and opcodeEnd the position opf the 
-  // 'e'. We now need to figure out the range of the "-6.02" string. ...that should be easy, 
-  // though. Maybe all of that can be wrapped inot a convenience function 
-  //   findOpcodeValueStringPosition(code, gi, ri, op, idx, &startPos, &endPos)
-  */
-
-
-
-
-  int dummy = 0;
-
-  // ToDo: 
-  // -Find the segment for the correct group - done
-  // -Within that segment, find the segment for the correct region
-  // -Within that, find the *last* occurence of the given opcode identifier, e.g. "volume=" or
-  //  "volume1=". We need the last one because that's the one that counts, when the same opcode is
-  //  set multiple times - which is actually a silly way to write an sfz but we need some rule to 
-  //  handle such cases. Maybe we can use std::regex for that?
-  // -Replace the numeric value after the e.g. "volume=" substring. We probably can use 
-  //  CodeDocument::replaceSection for that.
   // -Actually, it would be better to find the code-segment (or at least its start), when the user
   //  selects a new node in the tree - not on every slider-movement. The starting position does not
   //  change. The length may, depending on the text-formatting of floating point numbers and also
   //  when we are dealing with a choice opcode. But even the length of the segment is a thing, we 
   //  may keep track of without repeatedly figuring it out again and again. 
+}
+
+void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos)
+{
+  int    gi  = info.groupIndex;
+  int    ri  = info.regionIndex;
+  Opcode op  = info.oldSetting.getOpcode();
+  int    idx = info.oldSetting.getIndex();
+
+  // Maybe streamline these calls into a chain like getDocument().getallContent().toStdString().
+  // But maybe we actually need to hold the reference to the doc for calling replaceSection() on 
+  // it. We'll see..
+  juce::CodeDocument& doc = CodeEditorComponent::getDocument();
+  juce::String jStr = doc.getAllContent();
+  std::string code = jStr.toStdString();
+
+  using namespace rosic::Sampler;
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+  cb->findOpcodeValueString(code, gi, ri, op, idx, startPos, endPos);
 }
 
 //=================================================================================================
