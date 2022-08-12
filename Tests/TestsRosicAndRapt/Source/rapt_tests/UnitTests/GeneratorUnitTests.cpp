@@ -1834,6 +1834,25 @@ bool samplerCodeAnalyzerTest()
   //                    0123456789012345678901234567890
   //                    0         1         2         3
 
+  
+  //     0         1         2         3
+  //     0123456789012345678901234567890
+  str = "<group><region>cutoff=467.352";
+  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e);
+  ok &= s == 22 && e == 28;
+
+  /*
+  str = "<group><region>cutoff=467.352 pan=30";
+
+
+  str = "<group><region>cutoff=467.352 pan=30 volume=6";
+
+  str = "<group><region>cutoff=467.352 pan=30 volume=6   resonance=20";
+  */
+
+
+
+
 
   // Test, if opcode defintions that appear in right-hand-side of assignments are
   // correctly discarded/ignored:

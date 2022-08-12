@@ -1229,11 +1229,30 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
   // 'e'. We now need to figure out the range of the "-6.02" string. ...that should be easy, 
   // though. Maybe all of that can be wrapped inot a convenience function 
 
+  // To figure out the value's start/end position, scan rightward until we encounter a 
+  // ' ', '\n', '\t', '/'
+  int codeLength = (int) code.length();
+  RAPT::rsAssert(opcodeEnd <= regionEnd);
+  RAPT::rsAssert(opcodeEnd <= codeLength-3); // ex.: "pan=2" has length 5, the 'n' is at 2
+  int i = opcodeEnd+1;
+  RAPT::rsAssert(code[i] == '=');
+  while(i <= regionEnd)
+  {
+    char c = code[i];
+    if(c == ' ' || c == '\n' || c == '\t' || c == '/')
+      break;
+    ++i;
+  }
+  *startPos = opcodeEnd+2;
+  *endPos   = i-1;
 
 
 
 
 
+  // ToDo:
+  // -Maybe remove some of the assertions and just return -1,-1 in such a cases. I think, we should 
+  //  be able to handle this error condition gracefully.
   int dummy = 0;
 }
 
