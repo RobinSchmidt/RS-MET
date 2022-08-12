@@ -1835,7 +1835,8 @@ bool samplerCodeAnalyzerTest()
   //                    0         1         2         3
 
   
-
+  // Test finding the positions of the actual values of the opcodes. That's the high-level 
+  // functionality needed by the GUI to replace the values in the code on slider movement:
   str = "<group><region>cutoff=467.352";
   cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 22 && e == 28;
 
@@ -1843,16 +1844,19 @@ bool samplerCodeAnalyzerTest()
   cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 22 && e == 28;
   cb->findOpcodeValueString(str, 0, 0, Opcode::panN,    1, &s, &e); ok &= s == 34 && e == 35;
 
-  //     0         1         2         3         4         5
-  //     012345678901234567890123456789012345678901234567890
+
   str = "<group><region>cutoff=467.352 pan=30 volume=6";
   cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 22 && e == 28;
   cb->findOpcodeValueString(str, 0, 0, Opcode::panN,    1, &s, &e); ok &= s == 34 && e == 35;
   cb->findOpcodeValueString(str, 0, 0, Opcode::volumeN, 1, &s, &e); ok &= s == 44 && e == 44;
 
-
-
+  //     0         1         2         3         4         5         6
+  //     0123456789012345678901234567890123456789012345678901234567890
   str = "<group><region>cutoff=467.352 pan=30 volume=6  width=20";
+  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 22 && e == 28;
+  cb->findOpcodeValueString(str, 0, 0, Opcode::panN,    1, &s, &e); ok &= s == 34 && e == 35;
+  cb->findOpcodeValueString(str, 0, 0, Opcode::volumeN, 1, &s, &e); ok &= s == 44 && e == 44;
+  cb->findOpcodeValueString(str, 0, 0, Opcode::widthN,  1, &s, &e); ok &= s == 53 && e == 54;
 
   // Maybe make the same test lcking the <group>, i.e. having an implicit group
 
