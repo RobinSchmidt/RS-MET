@@ -1097,7 +1097,12 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
   // structured document from a string. Maybe the class should contain the orginal string together
   // with metadata about the structure. The "Nodes" could contain a start (and maybe end) position
   // within the string, etc. ...we'll see....
-  // DAMN: levaing out the test aginst ' ' makes it fail!
+  // DAMN: levaing out the test aginst ' ' makes it fail when loading the BassdrumPsy1.sfz patch
+  // in ToolChain, selecting the volume opcode of the 1st region and tweaking it (we hit an 
+  // assert). The unit test with " pan2=0 pan1=0" even hangs. So for the time being, I leave the 
+  // check in which may imply that locating the correct code segment may fail when the patch 
+  // contains space in sfz filenames, so for the time being, we disallow spaces in filenames. This
+  // needs to be fixed some other day....We should file this in a "known bugs" list.
 
   // Helper function to determine whether a found susbtring s that *looks like* an instance of the 
   // desired opcode definition really *is* one. This function is used to weed out the false 
