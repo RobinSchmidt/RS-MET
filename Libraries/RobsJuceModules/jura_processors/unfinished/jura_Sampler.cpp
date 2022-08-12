@@ -668,18 +668,7 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
   doc.replaceSection(startPos, endPos, newValueString);
 
-  int dummy = 0;
-  
-  // ToDo:
-  // -Retrieve the new value from the widget
-  // -Convert it to a string (if it isn't already a string)
-  // -Replace the section between starPos and endPos (both inclusive) in the "doc" with that 
-  //  string.
-  //
-
-
-  // we need void doc.replaceSection (int startIndex, int endIndex, const String &newText)
-
+ 
   // Note:
   // The change we make to the code should not trigger a re-parsing, at least not automatically 
   // (but that doesn't really happen anyway). Otherwise, we would reparse on slider movement which 
@@ -695,13 +684,6 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
 void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos)
 {
-  using namespace rosic::Sampler;
-
-  int    gi  = info.groupIndex;
-  int    ri  = info.regionIndex;
-  Opcode op  = info.oldSetting.getOpcode();
-  int    idx = info.oldSetting.getIndex();
-
   // Maybe streamline these calls into a chain like getDocument().getallContent().toStdString().
   // But maybe we actually need to hold the reference to the doc for calling replaceSection() on 
   // it. We'll see..
@@ -709,8 +691,18 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, 
   juce::String jStr = doc.getAllContent();
   std::string code = jStr.toStdString();
 
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-  cb->findOpcodeValueString(code, gi, ri, op, idx, startPos, endPos);
+  rosic::Sampler::SfzCodeBook::getInstance()->findOpcodeValueString(code, info.groupIndex, 
+    info.regionIndex, info.oldSetting.getOpcode(), info.oldSetting.getIndex(), startPos, endPos);
+
+  // ToDo:
+  // -Try to avoid the conversion from juce::String to std::string by letting findOpcodeValueString
+  //  operate on const char*
+  // -Make sure, this function is called only when the user selects a new opcode from the tree, not
+  //  on every slider movement as we do now.
+  // -Make it so that we immediately hear the effect of the new setting, not only on a new noteOn.
+  //  To achieve this, we must decouple the setup function from the noteOn, i.e. not only set up
+  //  the modules on note on and then leave them be but allow to call setup during the module is
+  //  running.
 }
 
 //=================================================================================================
