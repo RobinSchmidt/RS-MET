@@ -824,12 +824,20 @@ public:
   static void findRegion(const std::string& sfzCode, int regionIndex, int searchStart, int searchEnd,
     int* startIndex, int *endIndex);
 
-
   void findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
-  // used internally in findOpcodeAssignment, maybe move to protected
+  // used internally in findOpcodeValueString, maybe move to protected
 
-  /** UNDER CONSTRUCTION
+  void findOpcodeValueString(const std::string& code, int groupIndex, int regionIndex, Opcode op, 
+    int opIndex, int* startPos, int* endPos);
+
+  // ToDo: maybe instead of operating on std::string, let those functions operate on a 
+  // const char* pointer (together with an int for the length. That saves us from converting 
+  // juce::String to std::string and lets use operate directly on the juce-Strings
+
+
+
+  /** UNDER CONSTRUCTION - maybe obsolete - use findOpcodeValueString instead...
   
   Similar to findGroup and findRegion but finds a single opcode definition. For example, if
   you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 

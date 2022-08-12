@@ -692,8 +692,24 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   juce::String jStr = doc.getAllContent();
   std::string code = jStr.toStdString();
 
+ 
+  int startPos, endPos;
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+  cb->findOpcodeValueString(code, gi, ri, op, idx, &startPos, &endPos);
 
+  // ToDo:
+  // -Retrieve the new value from the widget
+  // -Convert it to a string (if it isn't already a string)
+  // -Replace the section between starPos and endPos (both inclusive) in the "doc" with that 
+  //  string.
+  //
+
+
+
+
+  /*
   // ToDo: maybe wrap these steps into a convenience function taking gi, ri, op, idx as inputs:
+  // ...done
 
   // Find locations in the code, where the group definition starts and ends:
   int groupStart, groupEnd;
@@ -721,9 +737,7 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   // 'e'. We now need to figure out the range of the "-6.02" string. ...that should be easy, 
   // though. Maybe all of that can be wrapped inot a convenience function 
   //   findOpcodeValueStringPosition(code, gi, ri, op, idx, &startPos, &endPos)
-
-
-
+  */
 
 
 
@@ -743,7 +757,7 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* position, 
   //  selects a new node in the tree - not on every slider-movement. The starting position does not
   //  change. The length may, depending on the text-formatting of floating point numbers and also
   //  when we are dealing with a choice opcode. But even the length of the segment is a thing, we 
-  //  may keep track of without repeatedly figuring it out again and again.
+  //  may keep track of without repeatedly figuring it out again and again. 
 }
 
 //=================================================================================================

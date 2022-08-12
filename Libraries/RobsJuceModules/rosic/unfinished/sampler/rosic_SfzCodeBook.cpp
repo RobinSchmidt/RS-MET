@@ -1057,8 +1057,8 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
       char c = code[pos];
       if(c == '=')
         return true;
-      //if(c == '\n' || c == ' ' || c == '>' || c == '\t')
-      if(c == '\n' || c == '>' || c == '\t') // See comment below why we don't test against ' ' 
+      if(c == '\n' || c == ' ' || c == '>' || c == '\t')
+      //if(c == '\n' || c == '>' || c == '\t') // See comment below why we don't test against ' ' 
         return false;
       --pos;
     }
@@ -1097,6 +1097,7 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
   // structured document from a string. Maybe the class should contain the orginal string together
   // with metadata about the structure. The "Nodes" could contain a start (and maybe end) position
   // within the string, etc. ...we'll see....
+  // DAMN: levaing out the test aginst ' ' makes it fail!
 
   // Helper function to determine whether a found susbtring s that *looks like* an instance of the 
   // desired opcode definition really *is* one. This function is used to weed out the false 
@@ -1195,6 +1196,41 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
   //  matching string as opposed to the index-th occurence as we did in the other methods.
 }
 
+void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex, int regionIndex, 
+  Opcode op, int opIndex, int* startPos, int* endPos)
+{
+  // Find locations in the code, where the group definition starts and ends:
+  int groupStart, groupEnd;
+  findGroup(code, groupIndex, &groupStart, &groupEnd);
+  RAPT::rsAssert(groupStart != -1, "Group not found in code");
+
+  // Find locations in the code, where the region definition starts and ends:
+  int regionStart, regionEnd;
+  findRegion(code, regionIndex, groupStart, groupEnd, &regionStart, &regionEnd);
+  RAPT::rsAssert(regionStart != -1, "Region not found in code");
+
+  // Find locations in the code, where the opcode definition starts and ends (this does not include 
+  // value):
+  int opcodeStart, opcodeEnd;
+  findOpcode(code, op, opIndex, regionStart, regionEnd, &opcodeStart, &opcodeEnd);
+  RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
+  // This fails for some patches because we use the forward slash as seperator in the file-names, 
+  // which is wrong anyway (rgc:sfz doesn't accept it, for example). ToDo: change the 
+  // forward-slashes to backslashes in the patches and see, if this fixes the problem. OK - yes
+  // it does (done only for the 1st patch - ToDo: fix this for all patches). However, the returned 
+  // range currently only inludes the string for the opcode name itself. The part of the code that 
+  // we need to modify is actually the value that comes after it. For example for something like 
+  // volume=-6.02, opcodeStart returns the position of the 'v' and opcodeEnd the position opf the 
+  // 'e'. We now need to figure out the range of the "-6.02" string. ...that should be easy, 
+  // though. Maybe all of that can be wrapped inot a convenience function 
+
+
+
+
+
+
+  int dummy = 0;
+}
 
 void SfzCodeBook::findOpcodeAssignment(const std::string& code, Opcode opcode, int opcodeIndex,
   int searchStart, int searchEnd, int* startIndex, int* endIndex)
