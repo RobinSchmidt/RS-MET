@@ -742,12 +742,19 @@ ToDo:
   depend on m. 
 -pg 682 gives the follwing table for the harmonic ratios of the important partials:
 
-Mode    Name                        Note     Ideal   Equal   Real
-(2,0)   Hum                         D4       0.500   0.500   0.500
-(2,1#)  Prime, fundamental          D5       1.000   1.000   1.000
-(3,1)   Tierce, minor third         F5       1.200   1.189   1.183
-(3,1#)  Quint, fifth                A5       1.500   1.498   1.506
-(4,1)   Nominal, octave             D6       2.000   2.000   2.000
+Mode    Name                          Note     Ideal   Equal   Real     Decay (pg 690)
+(2,0)   Hum                           D4       0.500   0.500   0.500
+(2,1#)  Prime, fundamental            D5       1.000   1.000   1.000
+(3,1)   Tierce, minor third           F5       1.200   1.189   1.183
+(3,1#)  Quint, fifth                  A5       1.500   1.498   1.506
+(4,1)   Nominal, octave               D6       2.000   2.000   2.000
+(4,1#)  Major third, deciem           F#6      2.500   2.520   2.514
+(2,2)   Fourth, undeciem              C6       2.667   2.670   2.662
+(5,1)   Twelfth, duodeciem            A6       3.000   2.997   3.011
+(6,1)   Upper octave, double octave   D7       4.000   4.000   4.166
+(7,1)   Upper fourth, undeciem        G7       5.333   5.339   5.433
+(8,1)   Upper sixth                   B7       6.667   6.727   6.796
+(9,1)   Triple octave                 D8       8.000   8.000   8.215
 
 todo: augment by decay time from pg 690
 
