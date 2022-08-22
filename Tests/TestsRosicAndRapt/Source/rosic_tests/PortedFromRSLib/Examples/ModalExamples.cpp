@@ -733,8 +733,8 @@ void createGong1()
 /**
 ToDo:
 
--Create bell sound with modal synthesis using numbers from "The Physics of Musical Instruments", 
- Ch. 22
+-Create bell sound with modal synthesis using numbers from "The Physics of Musical Instruments" 
+ (PMI), Ch. 22
 -pg 681 - modified Chladni's law for the partial frequencies: f_mn = c * (m + b*n)^p  for some
  constants c,b,p (not given in the book - but there's a reference). The unmodified Chladni's law 
   is f_mn = c*(m+2*n)^p. It's an empirical law that holds for larger values of (m+2*n) in flat 
@@ -784,6 +784,18 @@ void createBell1()
 
 
   int dummy = 0;
+
+  // ToDo:
+  // -Find free bell samples on the internet and analyze them using the sinusoidal modeling code to
+  //  get some more data. Maybe try to automate the parameter extraction.
+  // -Experiment with the third being tuned to a major third instead of a minor third and maybe 
+  //  also try a "neutral" third halfway between minor and major, i.e. 
+  //  sqrt(1.2*1.25) = sqrt(1.5) = 1.2247..., PMI says that such bells were attempted to create but
+  //  unsuccessfully so because trying to tune the mode that is responsible for the third also 
+  //  detunes other modes.
+  // -Implement "warble": This is a superimposed amplitude modulation of the partials due to nearby
+  //  modes that interfere. But maybe it's more flexible to implement the amplitude modulation 
+  //  directly?
 }
 
 
