@@ -768,7 +768,7 @@ void createBell1()
   int    fs        = 44100;   // sample rate
   int    key       = 74;      // D5 = 74 as MIDI note number
   double length    = 3.0;     // length in seconds
-  double timeScale = 0.1;
+  double timeScale = 0.07;
 
 
   int N = (int) ceil(length * fs);  // number of samples;
@@ -776,10 +776,12 @@ void createBell1()
 
   // Use ideal tuning:
   rsModalBankParametersD p;
-  p.f = {0.5, 1.0, 1.2, 1.5, 2.0, 2.5, 2.667, 3.0, 4.0, 5.333, 6.667, 8.0}; // todo: use exact fractions for 2.667 etc.
+  //p.f = {0.5, 1.0, 1.2, 1.5, 2.0, 2.5, 2.667, 3.0, 4.0, 5.333, 6.667, 8.0}; // todo: use exact fractions for 2.667 etc.
+  p.f = {0.5, 1.0, 1.2, 1.5, 2.0, 2.5, 8./3, 3.0, 4.0, 16./3, 20./3, 8.0};
   p.g = rsApplyFunction(p.f, -0.5,  &pow);
   p.p = rsLinearRangeVector(numPartials, 0.0, 0.0);
-  p.d = { 52, 16, 16, 6, 3, 1.4, 3.6, 5,4.2, 3, 2, 1};  // final 1 was made up by me
+  //p.d = { 52, 16, 16, 6, 3, 1.4, 3.6, 5,4.2, 3, 2, 1};  // final 1 was made up by me
+  p.d = { 30, 16, 16, 6, 3, 1.4, 3.6, 5,4.2, 3, 2, 1};   // reduced decay time of hum
   p.a = rsLinearRangeVector(numPartials, 1.0, 1.0);
   p.frequency = rsPitchToFreq(key);
   p.gain      = 1.0;
