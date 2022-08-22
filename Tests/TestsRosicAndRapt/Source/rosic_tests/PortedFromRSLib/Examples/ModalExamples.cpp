@@ -774,15 +774,34 @@ void createBell1()
   int N = (int) ceil(length * fs);  // number of samples;
   int numPartials = 12;
 
+
+  //static const double E = exp(1.0);  // Euler's number
+  //double T60_to_tau = log(1./1000) / log(1./E);
+  //double T60_to_tau = log(1000/E);
+
+
+  //double tierce = 1.2;
+  //double tierce = 1.25;
+  double tierce = sqrt(1.2 * 1.25);
+
+
   // Use ideal tuning:
   rsModalBankParametersD p;
-  //p.f = {0.5, 1.0, 1.2, 1.5, 2.0, 2.5, 2.667, 3.0, 4.0, 5.333, 6.667, 8.0}; // todo: use exact fractions for 2.667 etc.
-  p.f = {0.5, 1.0, 1.2, 1.5, 2.0, 2.5, 8./3, 3.0, 4.0, 16./3, 20./3, 8.0};
+  p.f = {0.5, 1.0, tierce, 1.5, 2.0, 2.5, 8./3, 3.0, 4.0, 16./3, 20./3, 8.0};
   p.g = rsApplyFunction(p.f, -0.5,  &pow);
   p.p = rsLinearRangeVector(numPartials, 0.0, 0.0);
   //p.d = { 52, 16, 16, 6, 3, 1.4, 3.6, 5,4.2, 3, 2, 1};  // final 1 was made up by me
   p.d = { 30, 16, 16, 6, 3, 1.4, 3.6, 5,4.2, 3, 2, 1};   // reduced decay time of hum
   p.a = rsLinearRangeVector(numPartials, 1.0, 1.0);
+
+  // Test - a bit lower - the note D5 is rather high
+  key = 62; 
+  p.g = rsApplyFunction(p.f, -0.25,  &pow);  // It's a bit dull otherwise
+
+
+
+
+
   p.frequency = rsPitchToFreq(key);
   p.gain      = 1.0;
   p.decay     = 1.0 * timeScale;
@@ -794,10 +813,11 @@ void createBell1()
   g.setAmbience(true);
   g.setModalParametersForKey(key, p);
 
-
   g.setKeyRangeToRender(key, key);
   g.setTruncationLevel(-80);
   g.generateSampleMap(true);
+
+
 
 
   int dummy = 0;
@@ -816,21 +836,20 @@ void createBell1()
   //  modes that interfere. But maybe it's more flexible to implement the amplitude modulation 
   //  directly?
 
-  // Converting exponential time constants, in general:
-  //   exp(t/T1) = A1, exp(t/T2) = A2     -> multiply the equations
-  //   exp(t/T1) * exp(t/T2) = A1 * A2    -> simplify
-  //   exp(t/T1 + t/T2) = A1 * A2         -> set t=1, take natural logarith
-  //   1/T1 + 1/T2 = log(A1*A2)           -> solve for T2
-  //   T2 = 1 / (log(A1*A2) - 1/T1)
-  // here we have the T1 given as the T60 with A1 = 1/1000 and we also know that A2 = 1/e and we
-  // want to compute the time constant tau. So we have:
-  //   T2 = tau = 1 / (log((1/1000)*(1/e)) - 1/T60)
-  // ...err..wait - no - that makes no sense. I think, converting from RT60 to tau should be a mere
-  // constant scale factor, right? ...maybe solve both equations for t and set them equal:
+  // Notes:
+  // -Using key = 60 make it sound a bit dull. Maybe we need higher overtone amplitudes in this case
+
+
+
+
+  // Converting exponential time constants, in general:  T2 = T1 * log(A1) / log(A2)
   //   exp(t/T1) = A1  ->  t/T1 = log(A1)  ->  t = T1*log(A1)
   //   exp(t/T2) = A2  ->  t/T2 = log(A2)  ->  t = T2*log(A2)
   //   -> T1*log(A1) = T2*log(A2)
   //   -> T2 = T1 * log(A1) / log(A2)
+  //  Here A1 = 1/1000 and A2 = 1/e, so the scale factor is log(1/1000) / log(1/e). But that seems 
+  //  wrong - the factor is > 1. Maybe my derivation is nonsense? Maybe we can't just eliminate t 
+  //  like that? Figure this out later - it should be basic stuff...but I'm a bit confused...
 
 }
 
