@@ -741,30 +741,49 @@ ToDo:
   circular plates. The modified version can be used for church bells but the values of c,b,p 
   depend on m. 
 -pg 682 gives the follwing table for the harmonic ratios of the important partials:
-
-Mode    Name                          Note     Ideal   Equal   Real     Decay (pg 690)
-(2,0)   Hum                           D4       0.500   0.500   0.500
-(2,1#)  Prime, fundamental            D5       1.000   1.000   1.000
-(3,1)   Tierce, minor third           F5       1.200   1.189   1.183
-(3,1#)  Quint, fifth                  A5       1.500   1.498   1.506
-(4,1)   Nominal, octave               D6       2.000   2.000   2.000
-(4,1#)  Major third, deciem           F#6      2.500   2.520   2.514
-(2,2)   Fourth, undeciem              C6       2.667   2.670   2.662
-(5,1)   Twelfth, duodeciem            A6       3.000   2.997   3.011
-(6,1)   Upper octave, double octave   D7       4.000   4.000   4.166
-(7,1)   Upper fourth, undeciem        G7       5.333   5.339   5.433
-(8,1)   Upper sixth                   B7       6.667   6.727   6.796
-(9,1)   Triple octave                 D8       8.000   8.000   8.215
-
-todo: augment by decay time from pg 690
-
+   Mode    Name                          Note     Ideal   Equal   Real     Decay (pg 690)
+   (2,0)   Hum                           D4       0.500   0.500   0.500    52
+   (2,1#)  Prime, fundamental            D5       1.000   1.000   1.000    16
+   (3,1)   Tierce, minor third           F5       1.200   1.189   1.183    16
+   (3,1#)  Quint, fifth                  A5       1.500   1.498   1.506     6
+   (4,1)   Nominal, octave               D6       2.000   2.000   2.000     3
+   (4,1#)  Major third, deciem           F#6      2.500   2.520   2.514     1.4
+   (2,2)   Fourth, undeciem              C6       2.667   2.670   2.662     3.6
+   (5,1)   Twelfth, duodeciem            A6       3.000   2.997   3.011     5
+   (6,1)   Upper octave, double octave   D7       4.000   4.000   4.166     4.2
+   (7,1)   Upper fourth, undeciem        G7       5.333   5.339   5.433     3
+   (8,1)   Upper sixth                   B7       6.667   6.727   6.796     2
+   (9,1)   Triple octave                 D8       8.000   8.000   8.215     -
+ I have augmented the table form page 682 by the decays times (given as T60 in seconds) from page 
+ 690, although they may come from a different bell. They should only give a rough idea about in 
+ which ballpark we should expect these values. I don't even know, if the two bells have the same
+ fundamental frequency (probably not), but the ratios of the decay-times may be more important
+ than the absolute times anyway. We may scale the uniformly to taste anyway.
   
 */
 void createBell1()
 {
 
 
+  int    fs         = 44100;   // sample rate
+  double key        = 74;      // D5 = 74 as MIDI note number
+  double length     = 3.0;     // length in seconds
+  double decayScale = 1.0;
 
+
+  int N = (int) ceil(length * fs);  // number of samples;
+  int numPartials = 12;
+
+  // Use ideal tuning:
+  rsModalBankParametersD p;
+  p.f = {0.5, 1.0, 1.2, 1.5, 2.0, 2.5, 2.667, 3.0, 4.0, 5.333, 6.667, 8.0}; // todo: use exact fractions for 2.667 etc.
+  p.g = rsApplyFunction(p.f, -0.5,  &pow);
+  p.p = rsLinearRangeVector(numPartials, 0.0, 0.0);
+  p.d = { 52, 16, 16, 6, 3, 1.4, 3.6, 5,4.2, 3, 2, 1};  // final 1 was made up by me
+  p.a = rsLinearRangeVector(numPartials, 1.0, 1.0);
+
+
+  int dummy = 0;
 }
 
 

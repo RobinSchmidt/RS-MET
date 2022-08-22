@@ -13,6 +13,7 @@ void createPiano1();
 // Multisample + sfz sample-map creations:
 void createBass1();
 void createGong1();
+void createBell1();
 void createPluck1();
 
 // Experimental:
