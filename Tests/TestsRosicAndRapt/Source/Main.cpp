@@ -313,7 +313,7 @@ int main(int argc, char* argv[])
   //primeRecursion();
   ////primeSieveSchmidt1(); // crashes
   ////primeSieveSchmidt2(); // crashes
-  //primeSieveAtkin();
+  primeSieveAtkin();
   ////primeSieve();  // crashes
   //primeDistribution();
   //numberTheoreticTransform();           // triggers assert

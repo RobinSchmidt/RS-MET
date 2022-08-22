@@ -5368,6 +5368,16 @@ primes themselves (this will make the output prettier, so it might be easier to 
 maybe, we should also look at higher order differences
 */
 
+/*
+
+ToDo:
+-Maybe implement this algorithm:
+ https://en.wikipedia.org/wiki/Sieve_of_Pritchard   (has pseudocode)
+ https://www.youtube.com/watch?v=h9EHkZLekoY
+
+*/
+
+
 
 // Returns the last index in the ascendingly sorted array "A", where the value is less-than or
 // equal-to "key", if 0 is returned, and the 0th element does not equal "key", then all values in 
