@@ -815,6 +815,23 @@ void createBell1()
   // -Implement "warble": This is a superimposed amplitude modulation of the partials due to nearby
   //  modes that interfere. But maybe it's more flexible to implement the amplitude modulation 
   //  directly?
+
+  // Converting exponential time constants, in general:
+  //   exp(t/T1) = A1, exp(t/T2) = A2     -> multiply the equations
+  //   exp(t/T1) * exp(t/T2) = A1 * A2    -> simplify
+  //   exp(t/T1 + t/T2) = A1 * A2         -> set t=1, take natural logarith
+  //   1/T1 + 1/T2 = log(A1*A2)           -> solve for T2
+  //   T2 = 1 / (log(A1*A2) - 1/T1)
+  // here we have the T1 given as the T60 with A1 = 1/1000 and we also know that A2 = 1/e and we
+  // want to compute the time constant tau. So we have:
+  //   T2 = tau = 1 / (log((1/1000)*(1/e)) - 1/T60)
+  // ...err..wait - no - that makes no sense. I think, converting from RT60 to tau should be a mere
+  // constant scale factor, right? ...maybe solve both equations for t and set them equal:
+  //   exp(t/T1) = A1  ->  t/T1 = log(A1)  ->  t = T1*log(A1)
+  //   exp(t/T2) = A2  ->  t/T2 = log(A2)  ->  t = T2*log(A2)
+  //   -> T1*log(A1) = T2*log(A2)
+  //   -> T2 = T1 * log(A1) / log(A2)
+
 }
 
 
