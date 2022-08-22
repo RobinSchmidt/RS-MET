@@ -1196,15 +1196,46 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
 
 
 /*
+
 Ideas:
--user defines modal parameters for various keys and velocities (at least two keys at two 
+
+-User defines modal parameters for various keys and velocities (at least two keys at two 
  velocities)
--for key/vel in between the defined ones, an appropriate interpolation is used (maybe
- log -> natural cubic spline -> exp), outside the range, extrapolation is used - for the spline, 
- it may make sense to just use the a0, a1 polynomial coeffs of the endpoints - a2 is zero anyway 
- due to the "natural" end conditions and in extrapolation we artificially set a3 also to zero in 
- order to prevent the polynomial from going crazy
--maybe we can emulate mode-beating by using two modes of nearby frequencies (not necessarily with 
+ -For key/vel in between the defined ones, an appropriate interpolation is used (maybe
+  log -> natural cubic spline -> exp), outside the range, extrapolation is used - for the spline, 
+  it may make sense to just use the a0, a1 polynomial coeffs of the endpoints - a2 is zero anyway 
+  due to the "natural" end conditions and in extrapolation we artificially set a3 also to zero in 
+  order to prevent the polynomial from going crazy
+ -Have an SFZ export function - user selects keyrange, numKeysPerSample, NumVelsPerSample
+  -> partially done
+
+-Maybe we can emulate mode-beating by using two modes of nearby frequencies (not necessarily with 
  the same envelope/amplitude
--have an SFZ export function - user selects keyrange, numKeysPerSample, NumVelsPerSample
+
+-Implement "warble" (see The Physics of Musical Instruments, pg 686,696). Maybe use two slightly 
+ detuned modes, but maybe we could also implement ampitude modulation more directly by letting each
+ modal filter run a 2nd (sub-audio) modal filter running along that implements AM directly. Maybe 
+ that would give more immediate control about the frequency and amount of warble. What's actually 
+ the math behind mixing two detuned sines with unequal amplitudes? With equal amplitudes, we can 
+ actually re-express the signal as RM - does this generalize to AM when the amplitudes are unequal?
+
+
+-Implement a mock stick-and-slip exciter (as is typical for bowed strings) as follows:
+ -Let an exciter signal e[n] produce an upward sawtooth: e[n] = a*n for some constant a.
+ -Consider the sum or difference of a more general linear combination of the output signal y[n] and
+  e[n]: z[n] = b*e[n] + c*y[n] (or maybe place a unit delay somewhere, if necessary)
+ -Compare z[n] against some threshold t. If it exceeds the threshold, do:
+  -Feed an impulse into the modal filter (maybe filteredn and/or delayed)
+  -Restart/reset the exciter back to zero or maybe subtract the threshold
+ -As variations, maybe try using the absolute value of y[n] instead of y[n] itself, or maybe the 
+  square.
+ -Maybe the idea is actually better suited for use with a delayline or a waveguide. That would seem
+  more physically plausible. However, maybe with a modal filter (bank) it can produce useful 
+  results?
+ -Check, if we observe mode-locking, i.e. a periodic waveform.
+ -See:
+  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5302002/
+  http://www.phys.unsw.edu.au/jw/Bows.html
+
+
 */

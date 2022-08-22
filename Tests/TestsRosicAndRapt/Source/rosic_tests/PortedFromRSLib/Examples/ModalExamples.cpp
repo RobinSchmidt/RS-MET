@@ -730,6 +730,37 @@ void createGong1()
 
 
 
+/**
+ToDo:
+
+-Create bell sound with modal synthesis using numbers from "The Physics of Musical Instruments", 
+ Ch. 22
+-pg 681 - modified Chladni's law for the partial frequencies: f_mn = c * (m + b*n)^p  for some
+ constants c,b,p (not given in the book - but there's a reference). The unmodified Chladni's law 
+  is f_mn = c*(m+2*n)^p. It's an empirical law that holds for larger values of (m+2*n) in flat 
+  circular plates. The modified version can be used for church bells but the values of c,b,p 
+  depend on m. 
+-pg 682 gives the follwing table for the harmonic ratios of the important partials:
+
+Mode    Name                        Note     Ideal   Equal   Real
+(2,0)   Hum                         D4       0.500   0.500   0.500
+(2,1#)  Prime, fundamental          D5       1.000   1.000   1.000
+(3,1)   Tierce, minor third         F5       1.200   1.189   1.183
+(3,1#)  Quint, fifth                A5       1.500   1.498   1.506
+(4,1)   Nominal, octave             D6       2.000   2.000   2.000
+
+todo: augment by decay time from pg 690
+
+  
+*/
+void createBell1()
+{
+
+
+
+}
+
+
 void createPluck1()
 {
   SampleMapGeneratorModal g;
@@ -1170,3 +1201,7 @@ void createBubbleSortSound()
 */
 
 
+
+/*
+
+*/
