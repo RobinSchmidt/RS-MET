@@ -780,9 +780,9 @@ void createBell1()
   //double T60_to_tau = log(1000/E);
 
 
-  //double tierce = 1.2;
-  //double tierce = 1.25;
-  double tierce = sqrt(1.2 * 1.25);
+  double tierce = 1.2;                 // Usually, a minor third is used
+  //double tierce = 1.25;              // There are also bells which use a major third
+  //double tierce = sqrt(1.2 * 1.25);  // A neutral third was attempted but is difficult to make
 
 
   // Use ideal tuning:
