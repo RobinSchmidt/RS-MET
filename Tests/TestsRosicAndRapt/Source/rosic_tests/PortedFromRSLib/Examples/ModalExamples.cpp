@@ -765,10 +765,10 @@ void createBell1()
 {
 
 
-  int    fs         = 44100;   // sample rate
-  double key        = 74;      // D5 = 74 as MIDI note number
-  double length     = 3.0;     // length in seconds
-  double decayScale = 1.0;
+  int    fs        = 44100;   // sample rate
+  int    key       = 74;      // D5 = 74 as MIDI note number
+  double length    = 3.0;     // length in seconds
+  double timeScale = 0.1;
 
 
   int N = (int) ceil(length * fs);  // number of samples;
@@ -781,11 +781,28 @@ void createBell1()
   p.p = rsLinearRangeVector(numPartials, 0.0, 0.0);
   p.d = { 52, 16, 16, 6, 3, 1.4, 3.6, 5,4.2, 3, 2, 1};  // final 1 was made up by me
   p.a = rsLinearRangeVector(numPartials, 1.0, 1.0);
+  p.frequency = rsPitchToFreq(key);
+  p.gain      = 1.0;
+  p.decay     = 1.0 * timeScale;
+  p.attack    = 0.1 * timeScale;
+
+
+  SampleMapGeneratorModal g;
+  g.setName("Bell1");
+  g.setAmbience(true);
+  g.setModalParametersForKey(key, p);
+
+
+  g.setKeyRangeToRender(key, key);
+  g.setTruncationLevel(-80);
+  g.generateSampleMap(true);
 
 
   int dummy = 0;
 
   // ToDo:
+  // -Find the scale factor to convert to the attack/decay time constants as used by the modal bank
+  //  from the given T60 values
   // -Find free bell samples on the internet and analyze them using the sinusoidal modeling code to
   //  get some more data. Maybe try to automate the parameter extraction.
   // -Experiment with the third being tuned to a major third instead of a minor third and maybe 
