@@ -52,6 +52,15 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
+/** 
+From pg 125 here: https://www.cs.otago.ac.nz/graphics/Geoff/tartini/papers/Philip_McLeod_PhD.pdf
+@param x Input
+@param y Output
+@param n Size of Symmetric Hanning Window
+@param len The size of x and y  */
+template<class T>
+void complexMovingAverage(const T* x, T* y, int N, int L);
+
 
 
 /** Returns the index of the element in the array A (of length N) that is the best match to the 

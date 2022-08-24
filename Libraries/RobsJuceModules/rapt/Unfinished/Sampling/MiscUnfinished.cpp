@@ -1595,11 +1595,22 @@ T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(const T *x, int 
 }
 
 /*
+
 Ideas:
 -Implement a frequency domain algorithm based on finding spectral (quasi-harmonic) peaks and using 
  their (average) difference as f0-estimate. Maybe in the averaging, there should be a weighting by
  (some power of) the actual peak magnitude and/or maybe some (1/n)^c lowpass'ish frequency 
  weighting. See Julius O. Smith - Spectral Audio Processing, pg 570.
+
+-Implement the SNAC (specially normalized autocorrelation) algorithm:
+   https://www.cs.otago.ac.nz/graphics/Geoff/tartini/papers/Philip_McLeod_PhD.pdf
+   http://www.tartini.net/  (implementation of the paper)
+   https://www.katjaas.nl/helmholtz/helmholtz.html
+
+-Implement the square-difference function (SDF) as alternatove for autocorrelation (also explained
+ in McLead's thesis, Ch. 3.3.1). It has the advantage of being insensitive to the initial phase of 
+ the input signal (at least, for a sinewave). That is: the estimate does not fluctuate depending on
+ where within the wave's cycle the analysis window starts.
 
 */
 

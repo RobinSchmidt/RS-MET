@@ -30,6 +30,38 @@ using namespace RAPT;
 
 
 template<class T>
+void complexMovingAverage(const T* x, T* y, int n, int len)
+{
+  using Complex = std::complex<T>;
+
+  T theta = 2.0 * M_PI / (n+1);
+  Complex r = Complex(cos(theta), sin(theta)); // use std::polar or rsSinCos
+  Complex z = Complex(0.0, 0.0);
+  T a = 0.0, s = 0.0, old_x = 0.0;
+
+  // Precalculate the scaling factor:
+  for(int j = 0; j < n; j++) 
+    s += 1.0 - cos((j+1)*theta);
+
+  for(int t = 0; t < len; t++) {
+    if(t >= n) 
+      old_x = x[t-n];
+    a += x[t] - old_x;
+    z = (z + x[t]) * r - old_x;        // complex multiplication
+    y[t] = (a - z.real()) / s;         
+  }
+  // ToDo:
+  // -Precompute 1/s instead of s and replace division by multiplication.
+  // -Generalize to arbitrary windows from the generalized cosine family. Maybe other families are
+  //  possible, too?
+  // -Implement the strategy explained on page 126 and let the user optionally use it.
+  // -Maybe split the loop into a section for t < n and t >= n to avoid the if-statement inside the 
+  //  loop
+
+}
+
+
+template<class T>
 void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& q)
 {
   int M =  (int) p.size() - 1;           // degree of numerator

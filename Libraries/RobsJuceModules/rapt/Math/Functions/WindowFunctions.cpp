@@ -357,6 +357,13 @@ void rsWindowFunction::hamming(T *window, int length)
   for(int n = 0; n < length; n++)
     window[n] = 0.54 -  0.46 * cos(2.0*PI*n / (T) (length-1)) ;
 }
+// ToDo:
+// In this thesis, page 14:
+// https://www.cs.otago.ac.nz/graphics/Geoff/tartini/papers/Philip_McLeod_PhD.pdf
+// coeffs 0.53836, 0.46164 are used -> figure out why - apparently, the standard coeffs 0.54, 0.46
+// are rounded versions of something? Figure out what that *something* is exactly. I think, the 
+// numbers result from a certain cancellation of 1st and 2nd sidelobes or soemthing...Maybe 
+// implement an "exactHamming" (we also already have exactBlackman, so that would fit nicely)
 
 template<class T>
 void rsWindowFunction::hanning(T *window, int length)

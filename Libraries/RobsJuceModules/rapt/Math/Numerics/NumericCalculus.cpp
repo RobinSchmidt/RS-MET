@@ -453,10 +453,20 @@ because some interpolation stuff depends on numeric derivatives but some numeric
 integration stuff may depend on interpolation and if we templatize the functions, we need to 
 take care that everything is defined before it gets used.
 
+Ideas:
 
-Can we use Cauchy's formula for repeated intergration:
-https://www.youtube.com/watch?v=jNpKKDekS6k
-to evaluate multiple integrals with the code for single-variable integrals?
+-Can we use Cauchy's formula for repeated integration:
+ https://www.youtube.com/watch?v=jNpKKDekS6k
+ to evaluate multiple integrals with the code for single-variable integrals?
+
+-Maybe try to implement fractional derivatives and integrals for data-arrays, see:
+ https://www.youtube.com/watch?v=2dwQUUDt5Is
+ Maybe, to create a 1.5-th derivative a geometric interpolation between 1st and 2nd should be used,
+ i.e. sqrt(1st * 2nd) and in general for the 1.x-th derivative something like 1st^(1-x) * 2nd^x?
+ Maybe we should use this approach to evaluate general (non-integer) powers:
+ https://www.youtube.com/watch?v=_lb1AxwXLaM
+ i.e. use the complex definition. We should perhaps first implement a "half-complex" (real input, 
+ complex output) plotting function as convenience function for GNUPlotCPP.
 
 
 */

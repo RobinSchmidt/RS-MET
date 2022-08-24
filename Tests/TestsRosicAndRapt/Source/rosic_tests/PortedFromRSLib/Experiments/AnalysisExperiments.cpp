@@ -270,12 +270,6 @@ void autoCorrelationPitchDetector()
 }
 
 
-
-
-
-
-
-
 void autoCorrelationPitchDetectorOffline()
 {
   // We create a linear sine-sweep with known instantaneous frequency at each sample and try to
