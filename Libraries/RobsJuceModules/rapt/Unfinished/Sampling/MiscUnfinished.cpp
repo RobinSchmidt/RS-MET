@@ -1612,6 +1612,12 @@ Ideas:
  the input signal (at least, for a sinewave). That is: the estimate does not fluctuate depending on
  where within the wave's cycle the analysis window starts.
 
+-For finding the zero-crossings: Maybe instead of using a linear interpolant for the initial guess
+ for Newton iteration, try using the zero of linear regression line involving the same samples as 
+ are used for the polynomial interpolant (whose zero we want to find). That could give a better 
+ initial guess and thereby reduce the number of iterations needed, so it may be especially 
+ beneficial for the realtime pitch-detector.
+
 */
 
 //=================================================================================================

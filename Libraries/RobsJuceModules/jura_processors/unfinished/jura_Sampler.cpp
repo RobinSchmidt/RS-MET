@@ -676,6 +676,10 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   // tolerable, although it would be better if it doesn't.
 
   // ToDo:
+  // -We need to update not only the sfz-code but also the sfz-datastructure. Currently, when 
+  //  changing a value via a slider, the value in the tree is not updated. When we then select 
+  //  another opcode in the tree and the the previous opcode again, the slider will start out at
+  //  the previous value. 
   // -Actually, it would be better to find the code-segment (or at least its start), when the user
   //  selects a new node in the tree - not on every slider-movement. The starting position does not
   //  change. The length may, depending on the text-formatting of floating point numbers and also

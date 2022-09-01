@@ -1096,3 +1096,19 @@ void MultiAnalyzerModuleEditor::updateSubEditorVisibilitiesAndTabButtonStates()
   }
 }
 
+
+
+/*
+
+ToDo:
+
+-Provide better window functions: 
+ -flat-top window, i.e. spectrally flat top - to get more accurate peak amplitudes even when the input 
+  freq is away from the bin center
+ -Gaussian
+ -Use spectral peak estimation (fit a quadratic) - should wokr best with Gaussina window, i guess.
+
+-Implement views for cross-sprctrum and coherence (see MDFT pg. 188, 193) for showing stereo-width as
+ function of frequency.
+
+*/
