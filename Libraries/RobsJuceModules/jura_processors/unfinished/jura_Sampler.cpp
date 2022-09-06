@@ -469,6 +469,7 @@ void SfzTreeView::clearTree()
 
 void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
 {
+  //RAPT::rsError("Not yet implemeneted");
   // ToDo:
   // -Find the node in the tree that is affected by the change
   // -Update the affected node
@@ -542,7 +543,17 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
 
 void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
-
+  //RAPT::rsError("Not yet implemeneted");
+  int dummy = 0;
+  // Maybe we can leave this function empty? I don't really see what we would need to do here. At 
+  // the moment only the widget needs to be updated which takes care of itself because only the 
+  // widget triggers such patch changes. But perhaps later, we could visualize the effect of the 
+  // parameter somehow? Maybe a plot of a freq-response in case of a cutoff or resonance parameter?
+  // We'll see....
+  // Or: Maybe if such a patch-update event later can be triggered by something else than the 
+  // opcode-widget, we may have to take care to update the widget here manually. But at the moment, 
+  // there seems to be nothing to do here. Of course, we can also change values in tne code but 
+  // that actually triggers a full re-parse at the moment (but that may change, too)
 }
 
 void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
@@ -668,7 +679,6 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
   doc.replaceSection(startPos, endPos, newValueString);
 
- 
   // Note:
   // The change we make to the code should not trigger a re-parsing, at least not automatically 
   // (but that doesn't really happen anyway). Otherwise, we would reparse on slider movement which 
@@ -679,13 +689,14 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   // -We need to update not only the sfz-code but also the sfz-datastructure. Currently, when 
   //  changing a value via a slider, the value in the tree is not updated. When we then select 
   //  another opcode in the tree and the the previous opcode again, the slider will start out at
-  //  the previous value. 
+  //  the previous value. But that should be done inside the callbacks of the other colleagues, not
+  //  here.
   // -Actually, it would be better to find the code-segment (or at least its start), when the user
   //  selects a new node in the tree - not on every slider-movement. The starting position does not
   //  change. The length may, depending on the text-formatting of floating point numbers and also
   //  when we are dealing with a choice opcode. But even the length of the segment is a thing, we 
   //  may keep track of without repeatedly figuring it out again and again. 
-  // -Maybe include a test that the updated document indeed refelcts the settings of the engine.
+  // -Maybe include a test that the updated document indeed reflects the settings of the engine.
   //  Retrieve the sfz-data, re-parse the code, check if there is a match. This should be done only
   //  in debug situations.
 }
@@ -994,6 +1005,12 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
 
 void SamplerEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
+  //RAPT::rsError("Not yet implemeneted");
+  int dummy = 0;
+  // ToDo:
+  // -Figure out which opcode in the underlying sfz-datstructure inside the engine needs to be be
+  //  updated
+  // -Update it
 
 }
 
@@ -1208,6 +1225,8 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
+-Implement handelPatchUpdate in SfzCodeEditor (done?), SamplerEditor, SfzOpcodeEditor (maybe 
+ nothing to do there?), SfzTreeView
 -Maybe SamplerModule should override parameterChanged. There, it should figure out, if the changed
  parameter was an opcode-parameter (maybe via dynamic_cast) and if so, update the corresponding
  sfz-opcode in the engine's currently loaded instrument. We also somehow make the editor aware of 
