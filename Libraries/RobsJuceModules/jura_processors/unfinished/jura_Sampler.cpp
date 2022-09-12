@@ -474,7 +474,23 @@ void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
   // -Find the node in the tree that is affected by the change
   // -Update the affected node
 
+  SfzTreeViewNode* node = findNode(info);
+  if(node != nullptr)
+  {
+
+
+    int dummy = 0;
+    // ...something to do...
+  }
+
   int dummy = 0;
+}
+
+SfzTreeViewNode* SfzTreeView::findNode(const PatchChangeInfo& info)
+{
+  // ...something to do...
+
+  return nullptr;
 }
 
 //=================================================================================================
@@ -1019,6 +1035,9 @@ void SamplerEditor::handlePatchUpdate(const PatchChangeInfo& info)
   int dummy = 0;
 
   // ToDo:
+  // -Inspect the return values of samplerModule->set... They return a success or error code. Maybe
+  //  we should assert here that it returns the code for success. We don't expect it to fail here. 
+  //  That would be a bug.
   // -Instead of checking gi, ri against -1 here, let info have member functions isGroupSetting, 
   //  isGlobalSetting, isRegionSetting. The intention is that the class PatchChangeInfo should be
   //  responsible for encoding and retrieving the information, which kind of setting is being 

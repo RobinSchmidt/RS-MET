@@ -434,6 +434,8 @@ public:
   void handlePatchUpdate(const PatchChangeInfo& info) override;
 
 
+  SfzTreeViewNode* findNode(const PatchChangeInfo& info);
+
 protected:
 
   SfzTreeViewNode rootNode;  // Manages the lifetimes of all its child-nodes
