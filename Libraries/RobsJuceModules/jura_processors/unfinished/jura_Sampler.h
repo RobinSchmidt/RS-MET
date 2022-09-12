@@ -148,6 +148,25 @@ public:
   void setSampleRate(double newSampleRate) override;
   void setGain(double newGain);
 
+
+  using Opcode     = rosic::Sampler::Opcode;
+  using ReturnCode = rosic::Sampler::rsReturnCode;
+
+  // ToDo: return a ReturnCode instead of an int:
+
+  int setRegionSetting(int groupIndex, int regionIndex, Opcode type, float value, int index)
+  { return sfzPlayer.setRegionSetting(groupIndex, regionIndex, type, value, index); }
+
+  int setGroupSetting(int groupIndex, Opcode type, float value, int index)
+  { return sfzPlayer.setGroupSetting(groupIndex, type, value, index); }
+
+  int setInstrumentSetting(Opcode type, float value, int index)
+  { return sfzPlayer.setInstrumentSetting(type, value, index); }
+
+
+
+
+
   bool setupFromSfzString(const juce::String& newSfz, bool stringComesFromFile) 
   { return sfzPlayer.setupFromSfzString(newSfz, stringComesFromFile); }
 

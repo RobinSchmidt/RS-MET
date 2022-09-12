@@ -1007,11 +1007,37 @@ void SamplerEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
   //RAPT::rsError("Not yet implemeneted");
 
+  int gi = info.groupIndex;
+  int ri = info.regionIndex;
+
+
+  rosic::Sampler::PlaybackSetting os = info.oldSetting;
+
+
+
+  if(gi == -1)         // It's a global setting
+    samplerModule->setInstrumentSetting(os.getOpcode(), info.newValue, os.getIndex());
+  else if(ri == -1)    // It's a group setting
+    samplerModule->setGroupSetting(gi, os.getOpcode(), info.newValue, os.getIndex());
+  else                 // It's a region setting
+    samplerModule->setRegionSetting(gi, ri, os.getOpcode(), info.newValue, os.getIndex());
+
+
+
+
+
+
+
 
   int dummy = 0;
   // ToDo:
   // -Figure out which opcode in the underlying sfz-datstructure inside the engine needs to be be
-  //  updated
+  //  updated. For this, we need to: 
+  //  -inspect info.groupIndex, info.regionIndex, info.newValue, 
+  //   info.oldSetting.type, info.oldSetting.index.
+  //  -samplerModule needs a member function that delegates to 
+  //   sfzPlayer.setRegionSetting or setGroupSetting or setInstrumentSetting, the dispatch is based
+  //   on groupIndex and/or regionIndex
   // -Update it
 
 }
