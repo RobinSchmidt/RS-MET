@@ -527,7 +527,8 @@ SfzTreeViewNode* SfzTreeView::findNode(const PatchChangeInfo& info)
 SfzTreeViewNode* SfzTreeView::getGroupNode(SfzTreeViewNode* parent, int groupIndex)
 {
   jassert(parent != nullptr);
-  return nullptr; // preliminary
+  return (SfzTreeViewNode*) parent->findDirectChildByText("<group>", groupIndex);
+  // Maybe return a RTreeViewNode - leave the cast to the caller
 }
 
 SfzTreeViewNode* SfzTreeView::getRegionNode(SfzTreeViewNode* parent, int regionIndex)

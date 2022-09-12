@@ -124,6 +124,7 @@ public:
   NULL otherwise. Its up to the user to interpret this data. */
   virtual void* getUserData() const { return userData; }
 
+
   /** Searches inside this node and its descendants for a particular pointer to user-data. If a 
   node containing this data-pointer is found, this function will return a pointer to the 
   respective node. If none is found, it returns a NULL pointer. If several nodes with the 
@@ -135,6 +136,19 @@ public:
 
   /** Similar to findNodeByData, but searches for a particular text. */
   RTreeViewNode* findNodeByText(const juce::String& textToFind);
+
+  /** Returns a pointer to a direct child node with given index or a nullptr if the index is out
+  of range. */
+  //RTreeViewNode* getDirectChildNode(int index);
+  // needs test
+
+  /** Tries to find a child node with given text among our direct (!) child nodes and returns a 
+  pointer to it, if one is found. If the index is 0, it returns the first match (starting from the 
+  start of the childNodes array), if it's n, it returns the (n+1)th match. So this function allows
+  to index child-nodes that have the same text. If no such child node is found, it return a 
+  nullptr. */
+  RTreeViewNode* findDirectChildByText(const juce::String& textToFind, int index = 0);
+
 
   /** Returns the text of this node. */
   const juce::String& getText() const { return nodeText; }

@@ -155,6 +155,28 @@ RTreeViewNode* RTreeViewNode::findNodeByText(const juce::String& textToFind)
   return NULL;
 }
 
+/*
+RTreeViewNode* RTreeViewNode::getDirectChildNode(int index)
+{
+  if(index < 0 || index >= getNumChildNodes())
+    return nullptr;
+  return childNodes[index];
+}
+*/
+
+RTreeViewNode* RTreeViewNode::findDirectChildByText(const juce::String& textToFind, int index)
+{
+  int foundIndex = -1;
+  for(int i = 0; i < size(childNodes); i++)
+  {
+    if(childNodes[i]->getText() == textToFind)
+      foundIndex++;
+    if(foundIndex == index)
+      return childNodes[i];
+  }
+  return nullptr;
+}
+
 RTreeViewNode* RTreeViewNode::getCopy()
 {
   RTreeViewNode *copiedNode = new RTreeViewNode(nodeText, identifier, description, isEnabled,
