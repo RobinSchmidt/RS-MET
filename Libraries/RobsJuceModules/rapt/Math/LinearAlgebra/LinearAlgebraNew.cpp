@@ -374,11 +374,62 @@ matrix "division" is an arithmetic operation - we'll see
  the arrays - oh - but inverse returns a matrix and we really want it to be that way because 
  it's the most convenient way - so the dependency is perhaps inavoidable
 
+-Implement the eigendecomposition
+ -Other names: spectral decomposition, diagonalization, similarity transform (into the eigenbasis)
+ -The NxN matrix A is decomposed into: A = Q^-1 D Q, where
+  -D is an NxN diagonal matrix whose (n,n)-th entry is the n-th eigenvalue of A
+  -Q is an NxN matrix whose n-th column is the n-th eigenvector of A
+ -The decomposition exists, iff A has N linearly independent eigenvectors
+ -For normal matrices, this is always satisfied. Normal matrices include real symmetric matrices.
+ -If A is real symmetric, then the eigenvectors are orthogonal (and can be chosen orthonormal) 
+  which implies that Q is an orthogonal matrix which, in turn, implies that Q^-1 = Q^T (or 
+  Q^-1 = Q^H in the complex case, when A is Hermitian).
+ -See:
+  https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix
+  https://en.wikipedia.org/wiki/Matrix_similarity
+  https://en.wikipedia.org/wiki/Normal_matrix
+  https://www.youtube.com/watch?v=mhy-ZKSARxI&list=PLWhu9osGd2dB9uMG5gKBARmk73oHUUQZS&index=3
+
+-Implement singular value decomposition (SVD):
+ -The MxN matrix A is decomposed into: A = U S V^H, where:
+  -U has the eigenvectors of A A^H (aka left singular vectors) as columns
+  -V has the eigenvectors of A^H T (aka right singular vectors) as columns
+  -S has the square roots of the nonzero eigenvalues of U or V (they are equal?) on the diagonal 
+   and zeros elsewhere. S is usually denoted as Sigma.
+ -This decomposition exists unconditionally for any MxN matrix because U and V^H are Hermitian 
+  (verify!)
+ -Interpretation: when A is viewed as representing the linear transform y = A*x where x,y are 
+  vectors in R^N,R^M respectively, then: 
+  -V^H can be interpreted as rotation in R^M
+  -S as scaling along the (new) coordinate axes and dimensionality conversion from R^M to R^N by 
+   truncation or zero-extension
+  -U as rotation in R^M
+ -SVD is useful for:
+  -Dimensionality reduction
+  -Data Compression
+  -Numerically stable algorithms for:
+   -Solving linear systems
+   -Computing the pseudo-inverse
+ -See:
+  https://en.wikipedia.org/wiki/Singular_value_decomposition
+  https://www.youtube.com/watch?v=vSczTbgc8Rc&list=PLWhu9osGd2dB9uMG5gKBARmk73oHUUQZS&index=4
+
+-Implement polar decomposition:
+ -See:
+  https://en.wikipedia.org/wiki/Polar_decomposition
+
+-Implement QR-decomp, Jordan Normal Form
+
+
 
  Interesting reads:
  https://nhigham.com/2021/02/02/what-is-a-unitarily-invariant-norm/
  https://nhigham.com/2020/07/28/what-is-the-polar-decomposition/
  https://nhigham.com/2015/11/24/faster-svd-via-polar-decomposition/
  https://nhigham.com/2020/04/03/what-is-a-generalized-inverse/
+
+
+
+
 
 */
