@@ -501,12 +501,18 @@ SfzTreeViewNode* SfzTreeView::findNode(const PatchChangeInfo& info)
   if(ri >= 0)
     node = getRegionNode(node, ri);
 
+  // Find the node for the opcode itself and return it as SfzTreeViewNode:
+  node = getOpcodeNode(node, info);
+  return dynamic_cast<SfzTreeViewNode*>(node);
+
+  /*
   // Find the node for the opcode itself:
   node = getOpcodeNode(node, info);
 
   SfzTreeViewNode* sfzNode = dynamic_cast<SfzTreeViewNode*>(node);
   jassert(sfzNode != nullptr);
   return sfzNode;
+  */
 
   // ToDo:
   // -Clean up jasserts - some are redundant with those in the caller
@@ -1346,6 +1352,7 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
+-Change cutoff, then volume then cutoff again ...somewhere, there's still an update missing
 -When switching sfz-files while playing, access violations occur. I think, I need to acquire locks
  in all the GUI functions ...or at least in parseCodeEditorContent
 -When saving an sfz file, it seems liek the internal file list is not updated: switching through
