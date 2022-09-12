@@ -1005,15 +1005,9 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
 
 void SamplerEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
-  //RAPT::rsError("Not yet implemeneted");
-
+  rosic::Sampler::PlaybackSetting os = info.oldSetting;
   int gi = info.groupIndex;
   int ri = info.regionIndex;
-
-
-  rosic::Sampler::PlaybackSetting os = info.oldSetting;
-
-
 
   if(gi == -1)         // It's a global setting
     samplerModule->setInstrumentSetting(os.getOpcode(), info.newValue, os.getIndex());
@@ -1022,24 +1016,18 @@ void SamplerEditor::handlePatchUpdate(const PatchChangeInfo& info)
   else                 // It's a region setting
     samplerModule->setRegionSetting(gi, ri, os.getOpcode(), info.newValue, os.getIndex());
 
-
-
-
-
-
-
-
   int dummy = 0;
-  // ToDo:
-  // -Figure out which opcode in the underlying sfz-datstructure inside the engine needs to be be
-  //  updated. For this, we need to: 
-  //  -inspect info.groupIndex, info.regionIndex, info.newValue, 
-  //   info.oldSetting.type, info.oldSetting.index.
-  //  -samplerModule needs a member function that delegates to 
-  //   sfzPlayer.setRegionSetting or setGroupSetting or setInstrumentSetting, the dispatch is based
-  //   on groupIndex and/or regionIndex
-  // -Update it
 
+  // ToDo:
+  // -Instead of checking gi, ri against -1 here, let info have member functions isGroupSetting, 
+  //  isGlobalSetting, isRegionSetting. The intention is that the class PatchChangeInfo should be
+  //  responsible for encoding and retrieving the information, which kind of setting is being 
+  //  modified. We are basically looking into an implementation detail of PatchChangeInfo here 
+  //  which is no good style (although perhaps more efficient - but we are not in a performance
+  //  critical code section here).
+  //  -isRegionSetting returns true, iff gi != 0 && ri != 0
+  //  -isGlobalSetting returns true, iff gi == -1
+  //  -isGroupSetting return true, iff gi >= 0 && ri == -1
 }
 
 void SamplerEditor::createWidgets()
