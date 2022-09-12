@@ -444,8 +444,7 @@ protected:
   jura::RTreeViewNode* getRegionNode(jura::RTreeViewNode* parent, int regionIndex);
 
 
-  jura::RTreeViewNode* getOpcodeNode(jura::RTreeViewNode* parent, Opcode op, int index, 
-    const PatchChangeInfo& info);
+  jura::RTreeViewNode* getOpcodeNode(jura::RTreeViewNode* parent, const PatchChangeInfo& info);
 
 
 

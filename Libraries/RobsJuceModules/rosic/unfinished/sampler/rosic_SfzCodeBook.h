@@ -475,6 +475,8 @@ public:
     return type == rhs.type && value == rhs.value && index == rhs.index;
   }
 
+  void setValue(float newValue) { value = newValue; }
+
 
 private:
 

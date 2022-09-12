@@ -469,21 +469,17 @@ void SfzTreeView::clearTree()
 
 void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
 {
-  //RAPT::rsError("Not yet implemeneted");
-  // ToDo:
-  // -Find the node in the tree that is affected by the change
-  // -Update the affected node
-
   SfzTreeViewNode* node = findNode(info);
+  jassert(node != nullptr);
   if(node != nullptr)
   {
-
-
-    int dummy = 0;
-    // ...something to do...
+    // Update the content of the node:
+    rosic::Sampler::PlaybackSetting newSetting = info.oldSetting;
+    newSetting.setValue(info.newValue);
+    rosic::Sampler::SfzCodeBook* cb = rosic::Sampler::SfzCodeBook::getInstance();
+    std::string newText = cb->settingToString(newSetting);
+    node->setNodeText(newText);
   }
-
-  int dummy = 0;
 }
 
 SfzTreeViewNode* SfzTreeView::findNode(const PatchChangeInfo& info)
@@ -502,17 +498,17 @@ SfzTreeViewNode* SfzTreeView::findNode(const PatchChangeInfo& info)
     node = getRegionNode(node, ri);
 
   // Find the node for the opcode itself:
-  node = getOpcodeNode(node, op, idx, info);
+  node = getOpcodeNode(node, info);
 
   SfzTreeViewNode* sfzNode = dynamic_cast<SfzTreeViewNode*>(node);
   jassert(sfzNode != nullptr);
+  return sfzNode;
 
-  // Update the content of the node:
+  // ToDo:
+  // -Clean up jasserts - some are redundant with those in the caller
+  // -Maybe streamline the code - get rid of some local assignments
 
-
-
-
-  return nullptr; // preliminary
+  //return nullptr; // preliminary
 }
 
 jura::RTreeViewNode* SfzTreeView::getGroupNode(jura::RTreeViewNode* parent, int groupIndex)
@@ -527,32 +523,15 @@ jura::RTreeViewNode* SfzTreeView::getRegionNode(jura::RTreeViewNode* parent, int
   return parent->findDirectChildByText("<region>", regionIndex);
 }
 
-jura::RTreeViewNode* SfzTreeView::getOpcodeNode(jura::RTreeViewNode* parent, Opcode op, int index, 
+jura::RTreeViewNode* SfzTreeView::getOpcodeNode(jura::RTreeViewNode* parent, 
   const PatchChangeInfo& info)
 {
   jassert(parent != nullptr);
   rosic::Sampler::SfzCodeBook* cb = rosic::Sampler::SfzCodeBook::getInstance();
-  //std::string str = cb->opcodeToString(op, index);
-
   std::string str = cb->settingToString(info.oldSetting);
-
-  //cb->valueToString
-
-
-  // -this string is not enough! it needs to include the "=1000.0", for example
-  // -maybe we need to take the info as parameter and use cb->settingToString(info.oldSetting)
-  //  op and index are then irrelevant and can be removed
-
-
   return parent->findDirectChildByText(str, 0);
-
-  //return nullptr; // preliminary
-  // ToDo:
-  // -from the op and index, create the node-string, call it nodeText
-  // -return parent->findDirectChildByText(nodeText, 0);
-  //  yes - we pass 0 to the index - the index needs to be baked into the text, we expect opcode 
-  //  node texts to be unique - there are no 2 "cutoff" leaves in the tree, there's cutoff1 and 
-  //  cutoff2 ...but maybe the 1 is left out...hmm...we'll see, how to handle this...
+  // We pass 0 to the index parameter of findDirectChildByText because the string already uniquely
+  // identifies the node. The index (and more) is already baked into the search-string.
 }
 
 //=================================================================================================
