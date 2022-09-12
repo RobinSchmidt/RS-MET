@@ -439,12 +439,13 @@ public:
 
 protected:
 
-  SfzTreeViewNode* getGroupNode(SfzTreeViewNode* parent, int groupIndex);
+  jura::RTreeViewNode* getGroupNode(jura::RTreeViewNode* parent, int groupIndex);
 
-  SfzTreeViewNode* getRegionNode(SfzTreeViewNode* parent, int regionIndex);
+  jura::RTreeViewNode* getRegionNode(jura::RTreeViewNode* parent, int regionIndex);
 
 
-  SfzTreeViewNode* getOpcodeNode(SfzTreeViewNode* parent, Opcode op, int index);
+  jura::RTreeViewNode* getOpcodeNode(jura::RTreeViewNode* parent, Opcode op, int index, 
+    const PatchChangeInfo& info);
 
 
 

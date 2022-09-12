@@ -495,52 +495,64 @@ SfzTreeViewNode* SfzTreeView::findNode(const PatchChangeInfo& info)
 
   // Find the node that corresponds to the hierarchy level that contains the opcode that needs to
   // be updated:
-  SfzTreeViewNode* node = &rootNode;
+  RTreeViewNode* node = &rootNode;
   if(gi >= 0)
     node = getGroupNode(node, gi);
   if(ri >= 0)
     node = getRegionNode(node, ri);
 
   // Find the node for the opcode itself:
-  getOpcodeNode(node, op, idx);
-  jassert(node != nullptr);
+  node = getOpcodeNode(node, op, idx, info);
+
+  SfzTreeViewNode* sfzNode = dynamic_cast<SfzTreeViewNode*>(node);
+  jassert(sfzNode != nullptr);
 
   // Update the content of the node:
 
 
 
 
-
-
-
-
-
-  // ...something to do...
-
-  // -traverse the tree, starting from rootNode
-
-
-
   return nullptr; // preliminary
 }
 
-SfzTreeViewNode* SfzTreeView::getGroupNode(SfzTreeViewNode* parent, int groupIndex)
+jura::RTreeViewNode* SfzTreeView::getGroupNode(jura::RTreeViewNode* parent, int groupIndex)
 {
   jassert(parent != nullptr);
-  return (SfzTreeViewNode*) parent->findDirectChildByText("<group>", groupIndex);
-  // Maybe return a RTreeViewNode - leave the cast to the caller
+  return parent->findDirectChildByText("<group>", groupIndex);
 }
 
-SfzTreeViewNode* SfzTreeView::getRegionNode(SfzTreeViewNode* parent, int regionIndex)
+jura::RTreeViewNode* SfzTreeView::getRegionNode(jura::RTreeViewNode* parent, int regionIndex)
 {
   jassert(parent != nullptr);
-  return nullptr; // preliminary
+  return parent->findDirectChildByText("<region>", regionIndex);
 }
 
-SfzTreeViewNode* SfzTreeView::getOpcodeNode(SfzTreeViewNode* parent, Opcode op, int index)
+jura::RTreeViewNode* SfzTreeView::getOpcodeNode(jura::RTreeViewNode* parent, Opcode op, int index, 
+  const PatchChangeInfo& info)
 {
   jassert(parent != nullptr);
-  return nullptr; // preliminary
+  rosic::Sampler::SfzCodeBook* cb = rosic::Sampler::SfzCodeBook::getInstance();
+  //std::string str = cb->opcodeToString(op, index);
+
+  std::string str = cb->settingToString(info.oldSetting);
+
+  //cb->valueToString
+
+
+  // -this string is not enough! it needs to include the "=1000.0", for example
+  // -maybe we need to take the info as parameter and use cb->settingToString(info.oldSetting)
+  //  op and index are then irrelevant and can be removed
+
+
+  return parent->findDirectChildByText(str, 0);
+
+  //return nullptr; // preliminary
+  // ToDo:
+  // -from the op and index, create the node-string, call it nodeText
+  // -return parent->findDirectChildByText(nodeText, 0);
+  //  yes - we pass 0 to the index - the index needs to be baked into the text, we expect opcode 
+  //  node texts to be unique - there are no 2 "cutoff" leaves in the tree, there's cutoff1 and 
+  //  cutoff2 ...but maybe the 1 is left out...hmm...we'll see, how to handle this...
 }
 
 //=================================================================================================
