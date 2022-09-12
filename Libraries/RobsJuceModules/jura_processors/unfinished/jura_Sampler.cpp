@@ -488,9 +488,58 @@ void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
 
 SfzTreeViewNode* SfzTreeView::findNode(const PatchChangeInfo& info)
 {
+  int gi = info.groupIndex;
+  int ri = info.regionIndex;
+  rosic::Sampler::Opcode op = info.oldSetting.getOpcode();
+  int idx = info.oldSetting.getIndex();
+
+  // Find the node that corresponds to the hierarchy level that contains the opcode that needs to
+  // be updated:
+  SfzTreeViewNode* node = &rootNode;
+  if(gi >= 0)
+    node = getGroupNode(node, gi);
+  if(ri >= 0)
+    node = getRegionNode(node, ri);
+
+  // Find the node for the opcode itself:
+  getOpcodeNode(node, op, idx);
+  jassert(node != nullptr);
+
+  // Update the content of the node:
+
+
+
+
+
+
+
+
+
   // ...something to do...
 
-  return nullptr;
+  // -traverse the tree, starting from rootNode
+
+
+
+  return nullptr; // preliminary
+}
+
+SfzTreeViewNode* SfzTreeView::getGroupNode(SfzTreeViewNode* parent, int groupIndex)
+{
+  jassert(parent != nullptr);
+  return nullptr; // preliminary
+}
+
+SfzTreeViewNode* SfzTreeView::getRegionNode(SfzTreeViewNode* parent, int regionIndex)
+{
+  jassert(parent != nullptr);
+  return nullptr; // preliminary
+}
+
+SfzTreeViewNode* SfzTreeView::getOpcodeNode(SfzTreeViewNode* parent, Opcode op, int index)
+{
+  jassert(parent != nullptr);
+  return nullptr; // preliminary
 }
 
 //=================================================================================================

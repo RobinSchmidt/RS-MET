@@ -423,6 +423,7 @@ public:
   SfzTreeView();
 
   //using SfzInstrument = rosic::Sampler::SfzInstrument;
+  using Opcode = rosic::Sampler::Opcode;
 
   /** Builds (or updates) the internal tree from the given sfz instrument datastructure. This needs
   to be called from the editor, whenever the instrument was changed by some other widget, e.g. the
@@ -437,6 +438,15 @@ public:
   SfzTreeViewNode* findNode(const PatchChangeInfo& info);
 
 protected:
+
+  SfzTreeViewNode* getGroupNode(SfzTreeViewNode* parent, int groupIndex);
+
+  SfzTreeViewNode* getRegionNode(SfzTreeViewNode* parent, int regionIndex);
+
+
+  SfzTreeViewNode* getOpcodeNode(SfzTreeViewNode* parent, Opcode op, int index);
+
+
 
   SfzTreeViewNode rootNode;  // Manages the lifetimes of all its child-nodes
 
