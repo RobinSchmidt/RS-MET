@@ -653,14 +653,6 @@ void SfzOpcodeEditor::updateVisibilities()
 
 void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
-  // ToDo:
-  // -Find the location in the code that is affected by the change, write a function 
-  //  findCodeToModify. It should perhaps return a pair of indices or an index and a length for 
-  //  where the relevant opcode (or region, etc.) substring starts and ends.
-  // -Change the code there. Replace the substring with the appropriate new string. Don't reparse.
-  //  Otherwise, we would reparse on slider movement which is obviously totally silly and 
-  //  impractical
-
   // Find the location in the code that is affected by the change:
   int startPos, endPos;
   findCodeSegment(info, &startPos, &endPos);
@@ -684,6 +676,14 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   // (but that doesn't really happen anyway). Otherwise, we would reparse on slider movement which 
   // is obviously totally silly and impractical If the "Parse" button appears, that might be 
   // tolerable, although it would be better if it doesn't.
+
+  // Done:
+  // -Find the location in the code that is affected by the change, write a function 
+  //  findCodeToModify. It should perhaps return a pair of indices or an index and a length for 
+  //  where the relevant opcode (or region, etc.) substring starts and ends.
+  // -Change the code there. Replace the substring with the appropriate new string. Don't reparse.
+  //  Otherwise, we would reparse on slider movement which is obviously totally silly and 
+  //  impractical
 
   // ToDo:
   // -We need to update not only the sfz-code but also the sfz-datastructure. Currently, when 
@@ -1006,6 +1006,8 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
 void SamplerEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
   //RAPT::rsError("Not yet implemeneted");
+
+
   int dummy = 0;
   // ToDo:
   // -Figure out which opcode in the underlying sfz-datstructure inside the engine needs to be be
