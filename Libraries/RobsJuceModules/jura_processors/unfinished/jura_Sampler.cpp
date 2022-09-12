@@ -479,6 +479,10 @@ void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
     rosic::Sampler::SfzCodeBook* cb = rosic::Sampler::SfzCodeBook::getInstance();
     std::string newText = cb->settingToString(newSetting);
     node->setNodeText(newText);
+    repaintOnMessageThread();
+    // Calling repaint here makes the opcode slider a bit unresponsive but not calling it will 
+    // leave the tree node dirty, i.e. it will continue to show anoutdated value which will update
+    // itself only when we hover with the mouse over the tree-view
   }
 }
 
@@ -507,8 +511,6 @@ SfzTreeViewNode* SfzTreeView::findNode(const PatchChangeInfo& info)
   // ToDo:
   // -Clean up jasserts - some are redundant with those in the caller
   // -Maybe streamline the code - get rid of some local assignments
-
-  //return nullptr; // preliminary
 }
 
 jura::RTreeViewNode* SfzTreeView::getGroupNode(jura::RTreeViewNode* parent, int groupIndex)
@@ -601,6 +603,10 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
 void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
   //RAPT::rsError("Not yet implemeneted");
+
+  patchChangeInfo.oldSetting.setValue(info.newValue);
+
+
   int dummy = 0;
   // Maybe we can leave this function empty? I don't really see what we would need to do here. At 
   // the moment only the widget needs to be updated which takes care of itself because only the 
@@ -611,6 +617,8 @@ void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   // opcode-widget, we may have to take care to update the widget here manually. But at the moment, 
   // there seems to be nothing to do here. Of course, we can also change values in tne code but 
   // that actually triggers a full re-parse at the moment (but that may change, too)
+
+  // patchChangeInfo
 }
 
 void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
@@ -815,9 +823,12 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   //setCodeIsClean();  //
 
   guiMediator.registerColleague(this);         this->setMediator(&guiMediator);
-  guiMediator.registerColleague(opcodeEditor); opcodeEditor->setMediator(&guiMediator);
   guiMediator.registerColleague(sfzTree);      sfzTree->setMediator(&guiMediator);
   guiMediator.registerColleague(&sfzEditor);   sfzEditor.setMediator(&guiMediator);
+  guiMediator.registerColleague(opcodeEditor); opcodeEditor->setMediator(&guiMediator);
+  // It's important that opcodeEditor is registered last because it holds the patchChangeInfo which
+  // must be updated last (or at least, after the sfzTree)
+
   // Maybe have a function that does it both setMediator/registerColleague in one single call to
   // reduce the boilerplate
 
