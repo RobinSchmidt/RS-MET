@@ -1353,6 +1353,11 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
 
 Bugs:
 -Change cutoff, then volume then cutoff again ...somewhere, there's still an update missing
+-When loading Saw_1forAllBiFilterEnv.sfz, we hit an assert in SfzCodeBook::modRoutingToString. It
+ seems to be because when building the tree-view and we encounter a mod-routing fileg_depth that 
+ goes to two filters, we add two tree-nodes. When building the tree, We need to somehow figure out,
+ if we have already a node for a given mod-routing. The problem is that a single mod-routin opcode
+ in the sfz can produce two or more mod-connections in the sfz datastructure...
 -When switching sfz-files while playing, access violations occur. I think, I need to acquire locks
  in all the GUI functions ...or at least in parseCodeEditorContent
 -When saving an sfz file, it seems liek the internal file list is not updated: switching through
