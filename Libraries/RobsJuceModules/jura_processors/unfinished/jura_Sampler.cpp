@@ -594,6 +594,20 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
     slider->setValue(val, false);
     slider->setSliderName(opStr);
     setWidgetMode(WM::slider);
+
+    /*
+    // Under construction - siwtch between linear and exponential slider mode:
+    // This criterion to switch between linear and exponential mode is ad hoc and heuristic. It 
+    // doesn't seem to work though, because for cutoff, the minVal is actually 0. Maybe we need 
+    // some expWithOffset characteristic for that. Maybe the offset should be maxVal / rangeFactor 
+    // where rangeFactor is 20000/20 = 1000 in the case of frequencies, i.e. the maximum over the 
+    // minimum meaningful value. Or maybe something based on sinh?
+    if(minVal > 0.f && maxVal > 0.f && maxVal >= 50.f*minVal)     
+      slider->setScaling(jura::Parameter::scalings::EXPONENTIAL);
+    else
+      slider->setScaling(jura::Parameter::scalings::LINEAR);
+    */
+
   }
   else if(fmt == OF::String)
   {
@@ -634,6 +648,31 @@ void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
   // patchChangeInfo
 }
+
+/*
+bool SfzOpcodeEditor::wantsExponentialSlider(const rosic::Sampler::PlaybackSetting& setting)
+{
+  using namespace rosic::Sampler;
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+  float min = cb->opcodeMinValue(setting.getOpcode());
+  float max = cb->opcodeMaxValue(setting.getOpcode());
+  float k   = 50.f;
+  if(min > 0.f && max > 0.f && max >= k*min)
+    return true;
+  else
+    return false;
+
+  // This criterion is heuristic. Maybe later do something more appropriate. Maybe we will also 
+  // need other kinds of scalings besides linear and exponential as well. In this case, make a 
+  // function getSliderScaling which returns a value from the jura::Parameter::scalings enum.
+  // Or maybe return a (pointer to) ParameterMapper object and name the function 
+  // getParameterMapper. We could have a couple of mappers as members and just return a pointer
+  // to the appropriate one. But: the slider itself doesn't actually use a ParameterMapper. We
+  // actually do the mapping the assignedParameter, so maybe we should keep a Parameter object
+  // here as well, assign that to the slider, and let the Parameter handle the mapping. To the 
+  // Parameter, we *can* assign a custom mapper.
+}
+*/
 
 void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
 {
@@ -1326,7 +1365,13 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
--The slider needs exponential characteristic for certain parameters
+-The slider needs exponential characteristic for certain parameters. Maybe to start, just use a 
+ heuristic: if min and max are both strictly greater than 0 and max >= k*min for some constant k
+ like k=50, then use exp-mode. Maybe make a function wantsExponentialSlider(Opcode op). There's 
+ some preliminary code in SfzOpcodeEditor::setSettingToEdit - refine that. See also the commented
+ SfzOpcodeEditor::wantsExponentialSlider function. We may need a more flexible way for dealing 
+ with the mapping, so we may need to use a jura::Parameter object to whcih we cann assign a
+ ParameterMapper.
 -The currently active parameter should stay selected in the tree as long as we can tweak it with 
  the slider -> better visual feedback for the user
 -It would be nice if the change would be audibel immeidately wehn movin the slider -> we need to 

@@ -650,7 +650,7 @@ public:
   OpcodeFormat getOpcodeFormat(Opcode op);
 
 
-  // Maybe these housl go into the "Inquiry" section
+  // Maybe these should go into the "Inquiry" section
 
   float opcodeMinValue(Opcode op);
 

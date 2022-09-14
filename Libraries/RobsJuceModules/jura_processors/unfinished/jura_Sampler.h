@@ -498,6 +498,8 @@ public:
 
 protected:
 
+  //bool wantsExponentialSlider(const rosic::Sampler::PlaybackSetting& setting);
+
 
   enum class WidgetMode { slider, button, chooser, text, none };
   void setWidgetMode(WidgetMode newMode);
