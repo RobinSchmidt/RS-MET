@@ -1365,7 +1365,8 @@ Bugs:
 -Saw_1forAllFilterEnv.sfz: change cutoff -> assert! We fail to find the correct code segment in
  sfz document. -> make a unit test with an sfz patch content similar to the content of that patch.
  maybe it's because the patch start witha comment? Or is it because we now use a backslash? Try 
- some variations of the patch
+ some variations of the patch. Yes! I made a copy where I stripped the initial comment and with 
+ that patch, it works!
 -When loading Saw_1forAllBiFilterEnv.sfz, we hit an assert in SfzCodeBook::modRoutingToString. It
  seems to be because when building the tree-view and we encounter a mod-routing fileg_depth that 
  goes to two filters, we add two tree-nodes. When building the tree, We need to somehow figure out,
