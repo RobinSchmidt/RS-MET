@@ -1326,6 +1326,12 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
+-The slider needs exponential characteristic for certain parameters
+-The currently active parameter should stay selected in the tree as long as we can tweak it with 
+ the slider -> better visual feedback for the user
+-It would be nice if the change would be audibel immeidately wehn movin the slider -> we need to 
+ decouple the "setup" function form "noteOn" in the engine
+-We canot yet properly edit mod-routing parameters
 -Implement handelPatchUpdate in SfzCodeEditor (done?), SamplerEditor, SfzOpcodeEditor (maybe 
  nothing to do there?), SfzTreeView
 -Maybe SamplerModule should override parameterChanged. There, it should figure out, if the changed
