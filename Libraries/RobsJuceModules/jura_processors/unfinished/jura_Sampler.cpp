@@ -479,6 +479,14 @@ void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
     rosic::Sampler::SfzCodeBook* cb = rosic::Sampler::SfzCodeBook::getInstance();
     std::string newText = cb->settingToString(newSetting);
     node->setNodeText(newText);
+
+    node->data.data.playbackSetting = newSetting;
+    // I'm not sure, if it's a good idea to have a plybackSetting member in the node. Isn't that 
+    // redundant with the patchChangeInfo.oldSetting field in SfzOpcodeEditor? Figure out! But 
+    // maybe the we shoul rather get rid of that "oldSetting" field. Not sure yet what's best.
+    // Also, the node may also represent a mod-routing rather than a playbackSetting, so if we keep
+    // it, we need to dispatch here.
+
     repaintOnMessageThread();
     // Calling repaint here makes the opcode slider a bit unresponsive but not calling it will 
     // leave the tree node dirty, i.e. it will continue to show anoutdated value which will update
@@ -1353,6 +1361,7 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
 
 Bugs:
 -Change cutoff, then volume then cutoff again ...somewhere, there's still an update missing
+ SfzTreeViewNode.data.playbackSetting still has the old value. 
 -When loading Saw_1forAllBiFilterEnv.sfz, we hit an assert in SfzCodeBook::modRoutingToString. It
  seems to be because when building the tree-view and we encounter a mod-routing fileg_depth that 
  goes to two filters, we add two tree-nodes. When building the tree, We need to somehow figure out,
