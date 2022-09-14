@@ -1362,7 +1362,10 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
 Bugs:
 -[fixed?] Change cutoff, then volume then cutoff again ...somewhere, there's still an update 
  missing SfzTreeViewNode.data.playbackSetting still has the old value. 
--Saw_1forAllFilterEnv.sfz: change cutoff -> assert!
+-Saw_1forAllFilterEnv.sfz: change cutoff -> assert! We fail to find the correct code segment in
+ sfz document. -> make a unit test with an sfz patch content similar to the content of that patch.
+ maybe it's because the patch start witha comment? Or is it because we now use a backslash? Try 
+ some variations of the patch
 -When loading Saw_1forAllBiFilterEnv.sfz, we hit an assert in SfzCodeBook::modRoutingToString. It
  seems to be because when building the tree-view and we encounter a mod-routing fileg_depth that 
  goes to two filters, we add two tree-nodes. When building the tree, We need to somehow figure out,
