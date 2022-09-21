@@ -1370,15 +1370,13 @@ ToDo:
  like k=50, then use exp-mode. Maybe make a function wantsExponentialSlider(Opcode op). There's 
  some preliminary code in SfzOpcodeEditor::setSettingToEdit - refine that. See also the commented
  SfzOpcodeEditor::wantsExponentialSlider function. We may need a more flexible way for dealing 
- with the mapping, so we may need to use a jura::Parameter object to whcih we cann assign a
+ with the mapping, so we may need to use a jura::Parameter object to whcih we can assign a
  ParameterMapper.
 -The currently active parameter should stay selected in the tree as long as we can tweak it with 
  the slider -> better visual feedback for the user
 -It would be nice if the change would be audibel immeidately wehn movin the slider -> we need to 
  decouple the "setup" function form "noteOn" in the engine
 -We canot yet properly edit mod-routing parameters
--Implement handelPatchUpdate in SfzCodeEditor (done?), SamplerEditor, SfzOpcodeEditor (maybe 
- nothing to do there?), SfzTreeView
 -Maybe SamplerModule should override parameterChanged. There, it should figure out, if the changed
  parameter was an opcode-parameter (maybe via dynamic_cast) and if so, update the corresponding
  sfz-opcode in the engine's currently loaded instrument. We also somehow make the editor aware of 
