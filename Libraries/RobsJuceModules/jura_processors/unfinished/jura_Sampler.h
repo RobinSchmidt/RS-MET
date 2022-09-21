@@ -220,7 +220,7 @@ protected:
 
 
   // Shorthands for convenience:
-  using ReturnCode = rosic::Sampler::rsReturnCode;
+  //using ReturnCode = rosic::Sampler::rsReturnCode;
   using Event      = rosic::Sampler::rsMusicalEvent<float>;
 
   jura::SfzPlayer sfzPlayer;
