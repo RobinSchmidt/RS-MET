@@ -867,7 +867,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // Find start and end index of next region definition:
       j0 = groupDef.find(region, j1);
 
-      //RAPT::rsAssert(j0 != endOfFile);  
+      RAPT::rsAssert(j0 != endOfFile);  
       // For debug - gets triggered when we have empty regions ...but also in other cases, i 
       // think
       // I think, it also happens, when there's an empty line before the first <group> and/or a 
