@@ -1441,6 +1441,28 @@ bool samplerParserTest()
   SE se2(maxLayers);
 
 
+
+  
+  // Now with an initial blank line - this results in having empty ghost regions. This
+  // is a unit test to expose this behavior:
+  sfzStr = "\
+\n\
+<group>\n\
+<region> \
+pitch_keycenter=69.000000 \
+pan=-100.000000 \
+sample=Sin440Hz.wav\n";
+  rc = se2.setFromSFZ(sfzStr); 
+  ok &= rc == RC::success;
+  ok &= se2.getNumGroups()   == 1;
+  ok &= se2.getNumRegions(0) == 1;  // FAILS successfully!
+  // ...the group with index 0 has 2 regions instead of one. For some reason, a "ghost region" gets
+  // created -> figure out why this happens and fix it!
+  // It'S probably in SfzInstrument::setFromSFZ
+
+
+
+
   // Some tests that previously have triggered asserts:
   auto test = [&](const std::string& str)
   {
@@ -1563,22 +1585,6 @@ sample=Cos440Hz.wav";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   ok &= se2.isInSameStateAs(se);
 
-
-  // Now with an initial blank line - this results in having empty ghost regions. This
-  // is a unit test to expose this behavior:
-  sfzStr = "\
-\n\
-<group>\n\
-<region> \
-pitch_keycenter=69.000000 \
-pan=-100.000000 \
-sample=Sin440Hz.wav\n";
-  rc = se2.setFromSFZ(sfzStr); 
-  ok &= rc == RC::success;
-  ok &= se2.getNumGroups()   == 1;
-  ok &= se2.getNumRegions(0) == 1;  // FAILS successfully!
-  // ...the group with index 0 has 2 regions instead of one. For some reason, a "ghost region" gets
-  // created -> figure out why this happens and fix it!
 
 
 

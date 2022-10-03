@@ -722,10 +722,21 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   // Maybe it would be more efficient to just replace the '\r' character with '\n' and leave the
   // removal/ of the resulting double "\n\n" to the code below? ...yeah, let's try that:
   rsReplaceCharacter(str, '\r', '\n'); // convert CR+LF with LF+LF line endings
-
   rsRemoveLineComments(str, '/');      // remove the comments
   rsReplaceCharacter(str, '\n', ' ');  // replace newlines with whitespaces
   rsRemoveRepeats(str, ' ');           // replace sequences of whitespaces with single whitespace
+
+  // Remove an initial whitespace, if present. Somehow an initial whitespace messes up the 
+  // subsequent parsing. I actually think this shouldn't be the case, so this "fix" here is more of
+  // a workaround for this messed up parsing later:
+  if(str.size() > 0 && str[0] == ' ')
+  {
+    // We need to left-shift the whole string by one character and shorten it by 1:
+    RAPT::rsArrayTools::shift(&str[0], (int) str.size(), -1);
+    str.resize(str.size()-1);
+    int dummy = 0;
+  }
+
   // -Factor out into a function preProcessSfz
   // -prepend a <group> tag if the file doesn't start with one, i.e. starts with a naked region
   // -Include stripping away comments (done?). A comment begins with a slash '/' and extends until 
@@ -864,6 +875,8 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // It also happens when there's a space before the first group. in this case, the j1 variable
       // points to the '<' character of the <region> tag, i.e. it is one too far right
       // ...maybe it's actually OK to *not* assert this condition?
+      // Maybe as a workaround, we should just remove any initial whitespaces during pre-processing
+      // -> do it and after that, re-activate the assert
 
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {
