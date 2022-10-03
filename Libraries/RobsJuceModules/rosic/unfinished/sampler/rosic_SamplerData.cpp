@@ -876,7 +876,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // points to the '<' character of the <region> tag, i.e. it is one too far right
       // ...maybe it's actually OK to *not* assert this condition?
       // Maybe as a workaround, we should just remove any initial whitespaces during pre-processing
-      // -> do it and after that, re-activate the assert
+      // -> do it and after that, re-activate the assert -> done!
 
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {
