@@ -1420,6 +1420,11 @@ Bugs:
  region - something is wrong in the creation of the patch tree. I think, this is the reason.
  ToDo: after creating the tree, compare it to the actual sfz structure and put an assert like
  jassert( treeViewMatchesPatch(...) );
+ ...looks like the problem is not in creating the tree but already in creating the sfz 
+ datastrcuture: it sometimes contains an empty region -> debug  SfzInstrument::setFromSFZ
+ Oh! the problem seems to be not the comment but the initial empty line after the comment. If I
+ remove the comment but leave a blank line in, the datastructure somehow creates a "ghost" region
+ -> write a unit test that exposes this behavior!
 
 -[fixed?] Change cutoff, then volume then cutoff again ...somewhere, there's still an update 
  missing SfzTreeViewNode.data.playbackSetting still has the old value. 

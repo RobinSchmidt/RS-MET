@@ -1564,6 +1564,22 @@ sample=Cos440Hz.wav";
   ok &= se2.isInSameStateAs(se);
 
 
+  // Now with an initial blank line - this results in having empty ghost regions. This
+  // is a unit test to expose this behavior:
+  sfzStr = "\
+\n\
+<group>\n\
+<region> \
+pitch_keycenter=69.000000 \
+pan=-100.000000 \
+sample=Sin440Hz.wav\n";
+  rc = se2.setFromSFZ(sfzStr); 
+  ok &= rc == RC::success;
+  ok &= se2.getNumGroups()   == 1;
+  ok &= se2.getNumRegions(0) == 1;  // FAILS successfully!
+  // ...the group with index 0 has 2 regions instead of one. For some reason, a "ghost region" gets
+  // created -> figure out why this happens and fix it!
+
 
 
 
@@ -1600,6 +1616,9 @@ sample=Cos440Hz.wav";
   // -Test it with invalid inputs (should return +-nan, -nan if it starts with '-' ...maybe)
   // -Test parsing scientific notation
   // -Test it with leading 0s
+
+
+
 
 
   // Throw total nonsense at the parser:
@@ -1870,6 +1889,10 @@ bool samplerCodeAnalyzerTest()
 
   str = "/Some comment with spaces\n\n<group>\n<region> \ncutoff=1000 \nresonance=10 ";
   cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 52 && e == 55;
+
+  //str = "\n<group>\n<region>\ncutoff=1000\nresonance=10";
+  //cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); 
+
 
 
   // Test, if opcode defintions that appear in right-hand-side of assignments are
