@@ -1410,7 +1410,7 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
 
 Bugs:
 
--Saw_1forAllFilterEnv.sfz: change cutoff -> assert! We fail to find the correct code segment in
+-[fixed] Saw_1forAllFilterEnv.sfz: change cutoff -> assert! We fail to find the correct code segment in
  sfz document. -> make a unit test with an sfz patch content similar to the content of that patch.
  maybe it's because the patch start witha comment? Or is it because we now use a backslash? Try 
  some variations of the patch. Yes! I made a copy where I stripped the initial comment and with 
@@ -1434,6 +1434,9 @@ Bugs:
  goes to two filters, we add two tree-nodes. When building the tree, We need to somehow figure out,
  if we have already a node for a given mod-routing. The problem is that a single mod-routin opcode
  in the sfz can produce two or more mod-connections in the sfz datastructure...
+
+
+
 -When switching sfz-files while playing, access violations occur. I think, I need to acquire locks
  in all the GUI functions ...or at least in parseCodeEditorContent
 -When saving an sfz file, it seems liek the internal file list is not updated: switching through
