@@ -1861,7 +1861,15 @@ bool samplerCodeAnalyzerTest()
   // Maybe make the same test lacking the <group>, i.e. having an implicit group
 
 
+  // Try patches that start with a comment:
+  str = "/Comment\n\n<group>\n<region>\ncutoff=1000\nresonance=10";
+  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e);  ok &= s == 34 && e == 37;
 
+  str = "/Some comment with spaces\n\n<group>\n<region>\ncutoff=1000\nresonance=10";
+  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e);  ok &= s == 51 && e == 54;
+
+  str = "/Some comment with spaces\n\n<group>\n<region> \ncutoff=1000 \nresonance=10 ";
+  cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 52 && e == 55;
 
 
   // Test, if opcode defintions that appear in right-hand-side of assignments are

@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  //ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -324,7 +324,7 @@ int main(int argc, char* argv[])
   //autoCorrelation();
   //autocorrelationPeakVariation();
   //autoCorrelationPitchDetector();
-  autoCorrelationPitchDetectorOffline();
+  //autoCorrelationPitchDetectorOffline();
   //crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
   //envelopeFollower();
@@ -651,7 +651,7 @@ int main(int argc, char* argv[])
   // Older sample-map creations based on modal synthesis (they take long):
   //createBass1();
   //createGong1();
-  createBell1();
+  //createBell1();
   //createPluck1();
   //testHighPluck();
   // ToDo: create from the same sample-sets also soundfonts with 1,2,3,4,6 samples per octave via

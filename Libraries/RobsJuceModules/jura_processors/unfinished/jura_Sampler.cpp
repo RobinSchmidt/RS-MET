@@ -1409,13 +1409,21 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
--[fixed?] Change cutoff, then volume then cutoff again ...somewhere, there's still an update 
- missing SfzTreeViewNode.data.playbackSetting still has the old value. 
+
 -Saw_1forAllFilterEnv.sfz: change cutoff -> assert! We fail to find the correct code segment in
  sfz document. -> make a unit test with an sfz patch content similar to the content of that patch.
  maybe it's because the patch start witha comment? Or is it because we now use a backslash? Try 
  some variations of the patch. Yes! I made a copy where I stripped the initial comment and with 
- that patch, it works!
+ that patch, it works! In the call to
+   findOpcodeValueString(const std::string& code, int groupIndex, int regionIndex, ...
+ is 1 - i think, it should be zero - also, the patch-structure in the tree shown an empty
+ region - something is wrong in the creation of the patch tree. I think, this is the reason.
+ ToDo: after creating the tree, compare it to the actual sfz structure and put an assert like
+ jassert( treeViewMatchesPatch(...) );
+
+-[fixed?] Change cutoff, then volume then cutoff again ...somewhere, there's still an update 
+ missing SfzTreeViewNode.data.playbackSetting still has the old value. 
+
 -When loading Saw_1forAllBiFilterEnv.sfz, we hit an assert in SfzCodeBook::modRoutingToString. It
  seems to be because when building the tree-view and we encounter a mod-routing fileg_depth that 
  goes to two filters, we add two tree-nodes. When building the tree, We need to somehow figure out,
