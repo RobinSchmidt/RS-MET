@@ -2309,7 +2309,41 @@ int numIterationsToDivergence(std::function<T(T, T)> fx, std::function<T(T, T)> 
   //  something like (rNew-rOld) / ((rNew+rOld)/2). 
 }
 
+/** A variant that returns a floating point number whoe fractional part tries to somehow provide for
+a smoother image ....tbc... */
+template<class T>
+float numIterationsToDivergence2(std::function<T(T, T)> fx, std::function<T(T, T)> fy, T x0, T y0,
+  T thresh, int maxNumIterations)
+{
+  T xOld = x0;
+  T yOld = y0;
+  for(int i = 0; i <= maxNumIterations; i++)
+  {
+    float xNew  = fx(xOld, yOld);
+    float yNew  = fy(xOld, yOld);
+    float r2Old = xOld*xOld + yOld*yOld;
+    float r2New = xNew*xNew + yNew*yNew;
+    if(r2New > thresh)
+    {
+      //float r = r2Old / r2New;
+      float r = 2.f * (r2New - r2Old) / (r2New + r2Old); // difference normalized by average
 
+      float f = r;  // fractional part - preliminary - we may need some function f = func(r)
+      //f = sqrt(r);
+
+      f = pow(r, 8.0f);
+
+
+      return (float) i + f;
+
+
+      //return (float) i;  // preliminary, no fractional part yet
+    }
+    xOld = xNew;
+    yOld = yNew;
+  }
+  return -1;
+}
 
 
 void mandelbrot(rsImage<float>& img, int maxIterations, 
@@ -2324,18 +2358,20 @@ void mandelbrot(rsImage<float>& img, int maxIterations,
     for(int i = 0; i < img.getWidth(); i++) {
       cx = rsLinToLin((double)i, 0.0,  double(img.getWidth()-1), xMin, xMax);
       cy = rsLinToLin((double)j, double(img.getHeight()-1), 0.0, yMin, yMax);
-      int its = numIterationsToDivergence(fx, fy, 0.0, 0.0, 4.0, maxIterations);
+
+      //float its = (float) numIterationsToDivergence(fx, fy, 0.0, 0.0, 4.0, maxIterations);
+      float its = (float) numIterationsToDivergence2(fx, fy, 0.0, 0.0, 4.0, maxIterations);
 
       // simple black/white:
-      //if(its >= 0) img(i, j) = 0.f; // iteration diverged -> pixel is outside the set
-      //else         img(i, j) = 1.f; // not diverged -> pixel is inside the set
+      //if(its >= 0.f) img(i, j) = 0.f; // iteration diverged -> pixel is outside the set
+      //else           img(i, j) = 1.f; // not diverged -> pixel is inside the set
 
       // white inside, shaded outside:
-      //if(its >= 0) img(i, j) = scl * float(its);
-      //else         img(i, j) = 1.f;
+      //if(its >= 0.f) img(i, j) = scl * float(its);
+      //else           img(i, j) = 1.f;
 
       // test:
-      img(i, j) = float(its); 
+      img(i, j) = its;
     }}
     // maybe do: if(its >= 0) -> black, else white
 
