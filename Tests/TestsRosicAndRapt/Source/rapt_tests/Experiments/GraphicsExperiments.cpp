@@ -2296,12 +2296,21 @@ int numIterationsToDivergence(std::function<T(T, T)> fx, std::function<T(T, T)> 
     y  = fy(x, y);
     x  = r2; }
   return -1;  // -1 indicates that threshold was not exceeded in any iteration
+
+  // ToDo: 
+  // -Maybe instead of returning just the number of iterations until divergence is assured, 
+  //  return some more elaborate information about the trajectory - for example: 
+  //  -the total (squared?) distance taken in all the steps
+  //  -the total x- and/or y-direction travelled
+  //  -this data could also be used to shade the inside
+  // -Maybe return a float instead of an int where the fractional part tries to somehow "refine" 
+  //  the number in order to achieve continuous gradients in the resulting image. One idea could be
+  //  to take the ratio of the (squared) radii in the previous and current iteration: rOld/rNew or
+  //  something like (rNew-rOld) / ((rNew+rOld)/2). 
 }
-// todo: maybe instead of returning just the number of iterations until divergence is assured, 
-// return some more elaborate information about the trajectory - for example: 
-// -the total (squared?) distance taken in all the steps
-// -the total x- and/or y-direction travelled
-// -this data could also be used to shade the inside
+
+
+
 
 void mandelbrot(rsImage<float>& img, int maxIterations, 
   double xMin, double xMax, double yMin, double yMax)
@@ -2326,9 +2335,10 @@ void mandelbrot(rsImage<float>& img, int maxIterations,
       //else         img(i, j) = 1.f;
 
       // test:
-      img(i, j) = float(its);
+      img(i, j) = float(its); 
     }}
-      // maybe do: if(its >= 0) -> black, else white
+    // maybe do: if(its >= 0) -> black, else white
+
 }
 // todo: maybe do not use the numIterationsToDivergence function - directly implement all the 
 // formulas of the inner loop here - avoid overhead of using std::function...or maybe make an 
@@ -2631,6 +2641,9 @@ void renderNewtonFractal()
     //  gradientifyFlatRegions. There are still more or less flat regions. Bumping up our smooth
     //  parameter here doesn't seem to help. I think the grandientify method does not yet work
     //  as intended -> investigate the method experimentally more thoroughly
+
+    // Ideas:
+    // 
   
     return;
   };
@@ -2705,8 +2718,8 @@ void renderNewtonFractal()
 
 void fractal()
 {
-  renderNewtonFractal();
-  //renderMandelbrot(500, 500);
+  //renderNewtonFractal();
+  renderMandelbrot(500, 500);
   //renderMandelbrot(2000, 2000);
 }
 
