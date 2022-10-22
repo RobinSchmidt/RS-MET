@@ -2755,8 +2755,9 @@ void renderNewtonFractal()
 void fractal()
 {
   //renderNewtonFractal();
-  renderMandelbrot(500, 500);
+  //renderMandelbrot(500, 500);
   //renderMandelbrot(2000, 2000);
+  renderMandelbrot(5000, 5000);
 }
 
 void parametricCurve2D()
