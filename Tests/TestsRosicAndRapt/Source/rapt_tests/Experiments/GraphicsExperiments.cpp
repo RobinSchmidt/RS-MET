@@ -1170,7 +1170,20 @@ void contours()
    // exponent 3 makes for good balance between black and white - but middle gray is 
    // underrepresented - todo: apply expansion of middle gray and compression of black/white values
 
-  // todo: cassini curves
+
+  // A nice rational function which shows a lot of features that may be interesting for
+  // demo/visualization plots (minima, maxima, saddles):
+  r = 4;
+  f = [&](float x, float y)
+  {
+    float px = x * (x+1) * (x-1);  // p(x): polynomial in x with roots at -1,0,+1
+    float py = y * (y+1) * (y-1);  // same in y
+    float num = 1*px + 2*py + 1*x*y;
+    float den = 1 + x*x*x*x + y*y*y*y;  
+    //den = 1 + x*x + y*y; den *= den;  // a variation
+    return num/den;
+  };
+
 
 
   float xMin = -r;
@@ -1202,6 +1215,16 @@ void contours()
   // the highest levels are not white but gray - ah: it was because the painter used the saturating
   // mode - saturating mode should *NOT* be used for filling contours!!!
 
+  // write images to files:
+  writeScaledImageToFilePPM(imgFunc,  "ContourInput.ppm",  1);
+  writeScaledImageToFilePPM(imgCont,  "ContourLines.ppm",  1);
+  writeScaledImageToFilePPM(imgFills, "ContourFills.ppm",  1);
+
+
+
+
+  // This takes long and does not work very well yet:
+
   // Try to undo the contouring by an experimental decontourize algorithm:
   rsImageF grad1(w, h);
   gradientifyFlatRegions(imgFills, grad1, 1);
@@ -1209,9 +1232,6 @@ void contours()
   gradientifyFlatRegions(imgFills, grad25, 25);
 
   // write images to files:
-  writeScaledImageToFilePPM(imgFunc,  "ContourInput.ppm",  1);
-  writeScaledImageToFilePPM(imgCont,  "ContourLines.ppm",  1);
-  writeScaledImageToFilePPM(imgFills, "ContourFills.ppm",  1);
   writeScaledImageToFilePPM(grad1,    "ContourGrad1.ppm",  1);
   writeScaledImageToFilePPM(grad25,   "ContourGrad25.ppm", 1);
 
