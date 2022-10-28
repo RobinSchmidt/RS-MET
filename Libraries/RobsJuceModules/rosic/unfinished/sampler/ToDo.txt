@@ -250,6 +250,7 @@ Fine-grained llist of basic tasks to do next (in order)
 -Presets showcasing all currently implemented features:
  -Modulation of 3 EQ-frequencies (in notch-peak-notch configuration at 500/1000/2000) to simualte 
   smallstone-phaser as Niko explained. Do that on the region-level and on the group (or global level)
+  ...i think, this requires first to implement the routing of LFO to EQ-freq in general
 
 -Figure out (and fix, if necessary) the desired behavior of the Amp-LFO depth: sould it go up and 
  down by X decibels or is X the peak-to-peak modulation depth? Compare to reference sfz player.
