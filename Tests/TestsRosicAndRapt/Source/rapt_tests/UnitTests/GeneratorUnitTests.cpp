@@ -4756,7 +4756,11 @@ bool samplerEngineUnitTest()
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes
   ok &= samplerNoteOffTest();        // note off behavior, i.e. envelope release etc.
+
   //ok &= samplerExamplePatchesTest(); // checks outputs of somewhat more complex patches
+  // ...something to do - but maybe this should be done in the RS-MET-Tests repo where we can also
+  // have some reference .wav files containing what the sampler is supposed to produce
+
   rsAssert(ok);
 
   // ToDo:

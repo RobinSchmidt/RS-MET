@@ -1,0 +1,9 @@
+
+Sampler
+-load NoiseWhistel.sfz, then in teh TreeView:
+ -click on cutoff -> cutoff slider appears
+ -click on resonance -> reso slide does not appear
+ -click volume -> slider appears
+ -click resonance -> now the silder appears correctly
+-Saving the sfz file seems to save the old (buffered) text unless the new code was parsed. Not sure
+ if that behavior is good or bad...but probably bad

@@ -602,7 +602,29 @@ std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TP
 }
 
 /*
-Idea 
+
+
+
+
+
+
+Ideas
+
+-Don't demand modes to start at zero amplitude - allow envelopes whose start-amplitude is nonzero.
+ startAmp must be <= peakAmp though ...or oes it? Maybe if it's not, we can do a 2-stage decay? We 
+ would need to define what the peakTime is then supposed to mean - it should still be the instant
+ at which peakAmp is reached, although the term "peak" is then wrong. Being able to start from 
+ nonzero seems to refelct some data seen in the real-world better and should not impact any 
+ per-sample calculations
+
+-Make a class rsKeyVelMap<T> that stores datapoints of type T for an arbitrary number of midi key 
+ and velocities an lets the user retrieve the data for an arbitrary key/vel pair using (bilinear) 
+ interpolation using the data, i.e. find the 4 closest available key/vel datapoints and form a
+ weighted average. The type T is intended to be, for example, a specification of ModalFilterBank 
+ data - but it should work for arbitrary types. The intention is to simulate multisamples but using
+ synthesis data instead of samples. Maybe make it more general like rsBilinearMap or 
+ rsBivariateData<TIdx, TData> with different possibilities for the index (e.g. float or int). 
+ Should work similar to rsNodeBasedFunction but with node-locations in 2D.
 
 use an adjustable mix of different imput signals: 
 -unit impulse: pluck/strike, maybe use other kinds of impulse-like signals

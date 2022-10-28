@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  //ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
   //implicitCurves();
   //parametricCurve();
   //spirals();   // move to somewhere else...
-  fractal();
+  //fractal();
   //differentialGeometry();
 
   // just for fun (todo: move to research repo):
@@ -621,7 +621,7 @@ int main(int argc, char* argv[])
   //testResetter();
   //testTurtleReverse();
   //testTurtleSource();
-  //testSamplerEngine();
+  testSamplerEngine();
 
   // Modulators:
   //testConsecutiveExponentialDecay();
@@ -646,7 +646,7 @@ int main(int argc, char* argv[])
 
   // The new renering scripts for creating sample content for the sfz engine:
   //createMiscSamples();
-  //createSamplerWaveforms();
+  createSamplerWaveforms();
 
   // Older sample-map creations based on modal synthesis (they take long):
   //createBass1();

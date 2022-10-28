@@ -241,3 +241,28 @@ Effects
   the routing in the the sfz? The parameters of such an autogain device could be: attack, release,
   amount. Maybe also mode (RMS, Peak, loudness, etc.). Maybe it could also use lookahead. That would
   require to pre-render some samples/blocks before they are actually needed.
+
+
+
+===================================================================================================
+Fine-grained llist of basic tasks to do next (in order)
+
+-Presets showcasing all currently implemented features:
+ -Modulation of 3 EQ-frequencies (in notch-peak-notch configuration at 500/1000/2000) to simualte 
+  smallstone-phaser as Niko explained. Do that on the region-level and on the group (or global level)
+
+-Figure out (and fix, if necessary) the desired behavior of the Amp-LFO depth: sould it go up and 
+ down by X decibels or is X the peak-to-peak modulation depth? Compare to reference sfz player.
+-Implement responses to MIDI controllers, make them available as modulators
+-Finish features of LFO, EG (release behavior)
+-Throw total nonsense at the sfz parser and make sure, it handles it gracefully. There are 
+ some commented lines in samplerParserTest which already do a bit of this. Uncomment these, 
+ make them pass and add more of such tests.
+-Make a sfzCodeBookTest that tests the from/to string conversions
+-Maybe implement the patches in a cpp-file like
+ RS-MET\Tests\TestsRosicAndRapt\Source\rosic_tests\rosic_GeneratorsTests.cpp
+ and produce reference output and turn them into unit tests...but the reference output should go
+ into the RS-MET-Tests repo. Actually, it may be better to produce .sfz files and let the unti 
+ tests load them - that would also test the loading mechanism
+
+
