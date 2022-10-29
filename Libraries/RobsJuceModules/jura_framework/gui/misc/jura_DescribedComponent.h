@@ -80,6 +80,7 @@ public:
   controllers or automation and should repaint a slider), but triggering repaint from the audio 
   thread (or any other thread than the message thread) isn't allowed in juce. */
   void repaintOnMessageThread();
+  // Maybe turn this into a free function taking a pointer to a juce::Component
 
   juce_UseDebuggingNewOperator;
 };

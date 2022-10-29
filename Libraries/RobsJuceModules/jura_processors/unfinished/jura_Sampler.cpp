@@ -681,6 +681,13 @@ void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
     mode = newMode;
     updateVisibilities();
   }
+  repaint();
+  // Without calling repaint() here, sometimes the slider doesn't update correctly when selecting a
+  // new parameter in the TreeView. For example, in teh patch NoiseWhistle.sfz, selecting first 
+  // cutoff and then resonance, the resonance slider is correctly displayed only when calling 
+  // repaint here
+  // ToDo: maybe use something like repaintOnMessageThread() or repaintOnMessageThread(this) 
+  // instead.
 }
 
 void SfzOpcodeEditor::rSliderValueChanged(RSlider* s)

@@ -294,6 +294,7 @@ SfzCodeBook::SfzCodeBook()
   // is just the routing of lfoN to the amplitude. Also, we may want to set it up in percent for
   // consistency with the amplifier's amplitude parameter
   // maybe use "amount" instead of "amp"
+  // implement phase, delay, fade, etc.
 
   // Free modulation routings:
   dsp = OpcodeType::LfoN_ParamX;

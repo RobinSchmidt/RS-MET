@@ -1,10 +1,17 @@
 
 Sampler
--load NoiseWhistel.sfz, then in teh TreeView:
+-[FIXED] load NoiseWhistle.sfz, then in the TreeView:
  -click on cutoff -> cutoff slider appears
  -click on resonance -> reso slide does not appear
  -click volume -> slider appears
  -click resonance -> now the silder appears correctly
+ 
+-load NoiseWhistle.sfz, then in the TreeView:
+ -click on cutoff 
+ -change value
+  -> debug assertion is triggered. Maybe it's because it's a group setting rather thana region 
+  setting?
+
 -Saving the sfz file seems to save the old (buffered) text unless the new code was parsed. Not sure
  if that behavior is good or bad...but probably bad
 -When a new sfz file is added to the directory, the file-manager doesn't seem to recognize it - when 
