@@ -429,24 +429,22 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   // maybe use a loop
 
   // Draw the lines between the piano-roll white keys:
-  //g.setColour(getColorLines());
-  g.setColour(red);
+  g.setColour(getColorLines());
+  //g.setColour(red);
   x = 0.f;
   w = keyLength;
   h = (float) rowHeight;
   y = keyboardY + 13*rowHeight - (h+h/2);
+  float x2 = x+bkw, w2 = x+w;                       // for shortened lines due to black keys
+  g.drawLine(x2, y, w2, y, thickness); y -= 2*h;
+  g.drawLine(x2, y, w2, y, thickness); y -= h+h/2;
+  g.drawLine(x,  y, w,  y, thickness); y -= h+h/2;
+  g.drawLine(x2, y, w2, y, thickness); y -= 2*h;
+  g.drawLine(x2, y, w2, y, thickness); y -= 2*h;
+  g.drawLine(x2, y, w2, y, thickness); y -= h+h/2;
+  g.drawLine(x,  y, w,  y, thickness);
 
-  float x2 = x, w2 = w;  // for shortened lines due to black keys
-  g.drawLine(x, y, w, y, thickness); y -= 2*h;
-  g.drawLine(x, y, w, y, thickness); y -= h+h/2;
-  g.drawLine(x, y, w, y, thickness); y -= h+h/2;
-  g.drawLine(x, y, w, y, thickness); y -= 2*h;
-  g.drawLine(x, y, w, y, thickness); y -= 2*h;
-  g.drawLine(x, y, w, y, thickness); y -= h+h/2;
-  g.drawLine(x, y, w, y, thickness);
-  // maybe we should use the color of the black key for this?
-
-  // draw the vertical lines between the steps:
+  // Draw the vertical lines between the steps:
   int numSteps = rosic::AcidPattern::getMaxNumSteps();
   x = keyLength;
   y = 0.f;
@@ -461,7 +459,9 @@ void AcidPatternEditor::paint(juce::Graphics &g)
     g.drawLine(x, y, x, h, thickness);
   }
 
-  // draw the pattern data:
+
+
+  // Draw the pattern data:
   if( patternToEdit != NULL )
   {
     x            = keyLength;
