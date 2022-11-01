@@ -510,7 +510,6 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   isTopLevelEditor = false;
 
   patternEditor = new AcidPatternEditor(acidSequencerModuleToEdit->wrappedAcidSequencer);
-  //addAndMakeVisible(patternEditor);  // old
   addChildColourSchemeComponent(patternEditor);
   patternEditor->setPatternToEdit(acidSequencerModuleToEdit->wrappedAcidSequencer->getPattern(0));
   patternEditor->setDescriptionField(infoField, true);
@@ -537,38 +536,6 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   addWidget( shiftLabel = new RTextField( juce::String("Shift:")) );
   shiftLabel->setDescription("Shift the whole pattern for left or right (circularly)");
   shiftLabel->setDescriptionField(infoField);
-
-  /*
-  addWidget( shiftLeftButton = new RButton(juce::String("L")) );
-  shiftLeftButton->setDescription(juce::String("Shift the whole pattern one postion to the left (circularly)"));
-  shiftLeftButton->setDescriptionField(infoField);
-  shiftLeftButton->setClickingTogglesState(false);
-  shiftLeftButton->addRButtonListener(this);
-  */
-
-  /*
-  addWidget( shiftRightButton = new RButton(juce::String("R")) );
-  shiftRightButton->setDescription(juce::String("Shift the whole pattern one postion to the right (circularly)"));
-  shiftRightButton->setDescriptionField(infoField);
-  shiftRightButton->setClickingTogglesState(false);
-  shiftRightButton->addRButtonListener(this);
-  */
-
-  /*
-  addWidget( shiftAccentsLeftButton = new RButton("L") );
-  shiftAccentsLeftButton->setDescription("Shift the accents one postion to the left (circularly)");
-  shiftAccentsLeftButton->setDescriptionField(infoField);
-  shiftAccentsLeftButton->setClickingTogglesState(false);
-  shiftAccentsLeftButton->addRButtonListener(this);
-  */
-
-  /*
-  addWidget( shiftAccentsRightButton = new RButton("R") );
-  shiftAccentsRightButton->setDescription("Shift the accents one postion to the right (circularly)");
-  shiftAccentsRightButton->setDescriptionField(infoField);
-  shiftAccentsRightButton->setClickingTogglesState(false);
-  shiftAccentsRightButton->addRButtonListener(this);
-  */
 
   // Helper function to reduce boilerplate for button creation:
   auto addButton = [&](RButton** pButton, const String& name, const String& description)

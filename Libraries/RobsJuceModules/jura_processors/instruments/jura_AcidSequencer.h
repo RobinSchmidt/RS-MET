@@ -68,6 +68,8 @@ protected:
 class AcidPatternEditor : public jura::ColourSchemeComponent // old: : public Component 
 {
 
+  // maybe we should derive from jura::RWidget instead. That may be more economic
+
 public:
 
   //-----------------------------------------------------------------------------------------------
@@ -237,15 +239,15 @@ protected:
   RTextField *modeLabel, *shiftLabel;  // shiftLabel not use anymore
   RComboBox  *modeBox;
   RSlider    *stepLengthSlider;
-  RButton    *shiftLeftButton, *shiftRightButton;
+
   RButton    *lockButton;  // prevents the sequencer data from being changed and preset-change
 
-  // new:
+  // Sequence manipulators:
+  RButton    *shiftLeftButton, *shiftRightButton;
   RButton    *shiftAccentsLeftButton, *shiftAccentsRightButton;
   RButton    *shiftSlidesLeftButton,  *shiftSlidesRightButton;
   RButton    *shiftNotesLeftButton,   *shiftNotesRightButton;
   RButton    *shiftOctavesLeftButton, *shiftOctavesRightButton;
-
   RButton    *reverseAllButton;
   RButton    *reverseAccentsButton;
   RButton    *reverseSlidesButton;
@@ -254,7 +256,6 @@ protected:
   RButton    *swapAccentsSlidesButton;
   RButton    *xorAccentsSlidesButton;
   RButton    *xorSlidesAccentsButton;
-
   RButton    *invertAccentsButton;
   RButton    *invertSlidesButton;
   RButton    *invertOctavesButton;
