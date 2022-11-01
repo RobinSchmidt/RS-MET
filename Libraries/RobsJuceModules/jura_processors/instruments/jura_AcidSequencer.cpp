@@ -364,12 +364,12 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.fillRect(0.f, keyboardY, keyLength, (float)(13*rowHeight));
 
   // Draw background for sequencer. The color will eventually become the color for the white lanes:
-  //g.setColour(backgroundColourWhiteKey);
   g.setColour(getColorWhiteLanes());
   g.fillRect(keyLength, keyboardY, (float)getWidth()-keyLength, (float)(13*rowHeight));
 
   // draw black keys:
-  g.setColour(blackKeyColour);
+  //g.setColour(red);
+  g.setColour(getColorBlackKeys());
   x = 0;
   w = 2*keyLength/3;
   h = (float) rowHeight;
@@ -439,6 +439,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.drawLine(x, y, w, y, thickness); y -= 2*h;
   g.drawLine(x, y, w, y, thickness); y -= h+h/2;
   g.drawLine(x, y, w, y, thickness);
+  // maybe we should use the color of the black key for this?
 
   // draw the vertical lines between the steps:
   int numSteps = rosic::AcidPattern::getMaxNumSteps();
