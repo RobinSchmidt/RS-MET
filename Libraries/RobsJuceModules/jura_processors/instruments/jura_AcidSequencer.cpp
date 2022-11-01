@@ -538,17 +538,21 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   shiftLabel->setDescription("Shift the whole pattern for left or right (circularly)");
   shiftLabel->setDescriptionField(infoField);
 
+  /*
   addWidget( shiftLeftButton = new RButton(juce::String("L")) );
   shiftLeftButton->setDescription(juce::String("Shift the whole pattern one postion to the left (circularly)"));
   shiftLeftButton->setDescriptionField(infoField);
   shiftLeftButton->setClickingTogglesState(false);
   shiftLeftButton->addRButtonListener(this);
+  */
 
+  /*
   addWidget( shiftRightButton = new RButton(juce::String("R")) );
   shiftRightButton->setDescription(juce::String("Shift the whole pattern one postion to the right (circularly)"));
   shiftRightButton->setDescriptionField(infoField);
   shiftRightButton->setClickingTogglesState(false);
   shiftRightButton->addRButtonListener(this);
+  */
 
   /*
   addWidget( shiftAccentsLeftButton = new RButton("L") );
@@ -566,7 +570,7 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   shiftAccentsRightButton->addRButtonListener(this);
   */
 
-  // reduces boilerplate - todo: update code above to use this code, too:
+  // Helper function to reduce boilerplate for button creation:
   auto addButton = [&](RButton** pButton, const String& name, const String& description)
   {
     addWidget( *pButton = new RButton(name) );
@@ -576,13 +580,10 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
     (*pButton)->addRButtonListener(this);
   };
 
-
-
-
-  addButton(&shiftAccentsLeftButton,    "L", "Shift the accents one postion to the left (circularly)");
-  addButton(&shiftAccentsRightButton,   "R", "Shift the accents one postion to the right (circularly)");
-
-
+  addButton(&shiftLeftButton,         "L", "Shift the whole pattern one postion to the left (circularly)");
+  addButton(&shiftRightButton,        "R", "Shift the whole pattern one postion to the right (circularly)");
+  addButton(&shiftAccentsLeftButton,  "L", "Shift the accents one postion to the left (circularly)");
+  addButton(&shiftAccentsRightButton, "R", "Shift the accents one postion to the right (circularly)");
   addButton(&shiftSlidesLeftButton,   "L", "Shift the slides one postion to the left (circularly)");
   addButton(&shiftSlidesRightButton,  "R", "Shift the slides one postion to the right (circularly)");
   addButton(&shiftNotesLeftButton,    "L", "Shift the notes one postion to the left (circularly)");
