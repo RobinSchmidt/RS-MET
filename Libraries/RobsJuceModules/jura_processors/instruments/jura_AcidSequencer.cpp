@@ -730,7 +730,8 @@ void AcidSequencerModuleEditor::resized()
 -implement copy/paste for patterns
 -fix colors (done)
 -fix manipulator button positioning
--maybe use triangles instead of L/R letters
+-when there's glide on the last entry, the horizontal line leaving the gui to the right should wrap 
+ around and re-enter on the left
 -animate the sequencer - highlight the column where we currently are or let a cursor step through. Take other
  animated widgets as reference, such as level-metering widgets
 
