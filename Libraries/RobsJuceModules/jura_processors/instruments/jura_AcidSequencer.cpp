@@ -436,26 +436,29 @@ void AcidPatternEditor::paint(juce::Graphics &g)
     float dx     = columnWidth   / 2.f;
     float dy     = topLaneHeight / 2.f;
     int numSteps = patternToEdit->getNumSteps();
+
     //g.setColour(getColorHandles());
     g.setColour(red);
+
+
     for(int i=0; i<patternToEdit->getMaxNumSteps(); i++)
     {
+      // Draw the circles that indicate presence of a step's feature (like gate, slide, accent):
+      g.setColour(getColorHandles());
       bool slide = patternToEdit->getSlide(i) && patternToEdit->getGate((i+1)%numSteps);
       y = 0;
-      if( patternToEdit->getGate(i) == true )
-      {
+      if( patternToEdit->getGate(i) == true )  {
         g.fillEllipse(x+5, y+3, w-10, h-6);
         if( slide )
-          g.drawLine(x+dx, y+dy, x+3.f*dx, y+dy, 4.f);
-      }
-
+          g.drawLine(x+dx, y+dy, x+3.f*dx, y+dy, 4.f); }
       y += topLaneHeight;
       if( patternToEdit->getAccent(i) == true )
         g.fillEllipse(x+5, y+3, w-10, h-6);
-
       y += topLaneHeight;
       if( patternToEdit->getSlide(i) == true )
         g.fillEllipse(x+5, y+3, w-10, h-6);
+
+
 
       y += topLaneHeight;
       juce::String octString = valueToStringWithSign0( patternToEdit->getOctave(i) );
@@ -745,5 +748,6 @@ void AcidSequencerModuleEditor::resized()
 -implement copy/paste for patterns
 -fix colors
 -animate the sequencer - highlight the column where we currently are or let a cursor step through
+-the hit-button should fslh when clicked
 
 */

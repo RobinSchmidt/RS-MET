@@ -10,7 +10,8 @@ To view an array (say named A) in the Visual Sudio debugger:
 -one can also view another chunk of the array by adding an offset like: A+100,10
 
 To debug drawing/painting code, it's sometimes useful to temporarily switch to some flashy color 
-(like red) in the drawing code to get a better idea for which part of code draws which elements.
+(like red or yellow) in the drawing code to get a better idea for which part of code draws which 
+elements.
 
 
 For the standalone version of ToolChain, the JUCE framework provides functionality to recall the 

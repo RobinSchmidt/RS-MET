@@ -156,7 +156,8 @@ public:
   juce::Colour getColorHandles() { return widgetColourScheme.handle; }
   // use widgetColourScheme.handle
 
-  juce::Colour getColorText() { return editorColourScheme.text; }
+  //juce::Colour getColorText() { return editorColourScheme.text; }
+  juce::Colour getColorText() { return widgetColourScheme.text; }
   // use widgetColourScheme.text
 
   juce::Colour getColorLines() { return plotColourScheme.coarseGrid; }
@@ -252,6 +253,8 @@ protected:
   RButton    *invertAccentsButton;
   RButton    *invertSlidesButton;
   RButton    *invertOctavesButton;
+
+  // use RClickButton instead
 
 
   juce_UseDebuggingNewOperator;
