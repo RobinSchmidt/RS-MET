@@ -353,8 +353,16 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   // draw background for white keys and black keys on top of it:
   float keyboardY = 4*topLaneHeight;
 
-  g.setColour(whiteKeyColour);
+
+  Colour red = Colours::red; // for debugging:
+
+  // Draw background for keyboard. The color will eventually become the color of the white keys as
+  // all other elements like black keys and key separators are drawn on top:
+  //g.setColour(whiteKeyColour);
+  //g.setColour(red);
+  g.setColour(getColorWhiteKeys());
   g.fillRect(0.f, keyboardY, keyLength, (float)(13*rowHeight));
+
 
   g.setColour(backgroundColourWhiteKey);
   g.fillRect(keyLength, keyboardY, (float)getWidth()-keyLength, (float)(13*rowHeight));

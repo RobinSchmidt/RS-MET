@@ -116,7 +116,7 @@ public:
   bool isInKeyboardColumn(float xCoordinate);
 
   /** Returns the height of one row in the top lane (for accent, slide, etc.) */
-  int getTopLaneHeight() const { return (int) topLaneHeight; } // why is this a fdloat?
+  int getTopLaneHeight() const { return (int) topLaneHeight; } // why is this a float?
 
   /** Returns the color to be used to draw the white keys in the little keyboard at the left. */
   juce::Colour getColorWhiteKeys() { return whiteKeyColour; }
@@ -163,6 +163,7 @@ protected:
 
 
   float rowHeight, columnWidth, keyLength, topLaneHeight;
+  // Why are these floats? Can't we make them integers?
 
   juce_UseDebuggingNewOperator;
 };
