@@ -556,11 +556,13 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   shiftAccentsLeftButton->setClickingTogglesState(false);
   shiftAccentsLeftButton->addRButtonListener(this);
 
+  /*
   addWidget( shiftAccentsRightButton = new RButton("R") );
   shiftAccentsRightButton->setDescription("Shift the accents one postion to the right (circularly)");
   shiftAccentsRightButton->setDescriptionField(infoField);
   shiftAccentsRightButton->setClickingTogglesState(false);
   shiftAccentsRightButton->addRButtonListener(this);
+  */
 
   // reduces boilerplate - todo: update code above to use this code, too:
   auto addButton = [&](RButton** pButton, const String& name, const String& description)
@@ -571,6 +573,11 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
     (*pButton)->setClickingTogglesState(false);
     (*pButton)->addRButtonListener(this);
   };
+
+
+
+  addButton(&shiftAccentsRightButton,   "R", "Shift the accents one postion to the right (circularly)");
+
 
   addButton(&shiftSlidesLeftButton,   "L", "Shift the slides one postion to the left (circularly)");
   addButton(&shiftSlidesRightButton,  "R", "Shift the slides one postion to the right (circularly)");
