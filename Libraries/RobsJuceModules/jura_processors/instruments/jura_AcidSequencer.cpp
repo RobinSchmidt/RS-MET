@@ -425,57 +425,62 @@ void AcidPatternEditor::paint(juce::Graphics &g)
     g.drawLine(x, y, x, h, thickness);
   }
 
-
-
   // Draw the pattern data:
-  if( patternToEdit != NULL )
+  rosic::AcidPattern* ptn = patternToEdit;
+  if( ptn != nullptr )
   {
     x            = keyLength;
     w            = columnWidth;
     h            = topLaneHeight;
     float dx     = columnWidth   / 2.f;
     float dy     = topLaneHeight / 2.f;
-    int numSteps = patternToEdit->getNumSteps();
+    int numSteps = ptn->getNumSteps();
 
     //g.setColour(getColorHandles());
     g.setColour(red);
 
 
-    for(int i=0; i<patternToEdit->getMaxNumSteps(); i++)
+    for(int i=0; i < ptn->getMaxNumSteps(); i++)
     {
       // Draw the circles that indicate presence of a step's feature (like gate, slide, accent):
       g.setColour(getColorHandles());
-      bool slide = patternToEdit->getSlide(i) && patternToEdit->getGate((i+1)%numSteps);
+      bool slide = ptn->getSlide(i) && ptn->getGate((i+1)%numSteps);
       y = 0;
-      if( patternToEdit->getGate(i) == true )  {
+      if( ptn->getGate(i) == true )  {
         g.fillEllipse(x+5, y+3, w-10, h-6);
         if( slide )
           g.drawLine(x+dx, y+dy, x+3.f*dx, y+dy, 4.f); }
       y += topLaneHeight;
-      if( patternToEdit->getAccent(i) == true )
+      if( ptn->getAccent(i) == true )
         g.fillEllipse(x+5, y+3, w-10, h-6);
       y += topLaneHeight;
-      if( patternToEdit->getSlide(i) == true )
+      if( ptn->getSlide(i) == true )
         g.fillEllipse(x+5, y+3, w-10, h-6);
 
       // Draw the octave shift indicators:
       y += topLaneHeight;
-      juce::String octString = valueToStringWithSign0( patternToEdit->getOctave(i) );
+      juce::String octString = valueToStringWithSign0( ptn->getOctave(i) );
       drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, font, getColorText(), 
         -1, Justification::centred);
 
       // Draw the events in the actual sequencer view, possibly with slide-connectors:
       y = keyboardY + 12*rowHeight;
-      if( patternToEdit->getGate(i) == true )
+      if( ptn->getGate(i) == true )
       {
-        y -= patternToEdit->getKey(i) * rowHeight;
-        float w2 = (float) patternToEdit->getStepLength();
+        int key1 = ptn->getKey(i);
+        y -= key1 * rowHeight;
+        float w2 = (float) ptn->getStepLength();
         if( slide )
         {
+          int key2 = ptn->getKey(i+1);
           float x2 = x + columnWidth;
-          float y2 = keyboardY + 12*rowHeight - patternToEdit->getKey(i+1) * rowHeight;
+          float y2 = keyboardY + 12*rowHeight - key2 * rowHeight;
 
-          g.drawLine(x2, y+dy, x2, y2+dy, 3.f);
+          if(key1 > key2)
+            g.drawLine(x2, y, x2, y2+rowHeight, 3.f);
+          else
+            g.drawLine(x2, y+dy, x2, y2+dy, 3.f);
+
           // Maybe use a color with a bit of transparency here to make the slide indicators less
           // weighty
 
