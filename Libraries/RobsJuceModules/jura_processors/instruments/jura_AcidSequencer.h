@@ -154,7 +154,8 @@ public:
   // only for dark-on-bright, i think
 
   //juce::Colour getColorHandles() { return handleColor; }
-  juce::Colour getColorHandles() { return widgetColourScheme.handle; }
+  //juce::Colour getColorHandles() { return widgetColourScheme.handle; }
+  juce::Colour getColorHandles() { return widgetColourScheme.weakHighlight; }
   // use widgetColourScheme.handle
 
   //juce::Colour getColorText() { return editorColourScheme.text; }
