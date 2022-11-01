@@ -470,7 +470,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
     float dx     = columnWidth   / 2.f;
     float dy     = topLaneHeight / 2.f;
     int numSteps = patternToEdit->getNumSteps();
-    g.setColour(handleColor);
+    g.setColour(getColorHandles());
     for(int i=0; i<patternToEdit->getMaxNumSteps(); i++)
     {
       bool slide = patternToEdit->getSlide(i) && patternToEdit->getGate((i+1)%numSteps);
@@ -770,5 +770,6 @@ void AcidSequencerModuleEditor::resized()
 -add selector for pattern (maybe a 4x4 array)
 -implement copy/paste for patterns
 -fix colors
+-animate the sequencer - highlight the column where we currently are or let a cursor step through
 
 */

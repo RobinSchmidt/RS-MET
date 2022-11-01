@@ -140,15 +140,15 @@ public:
   juce::Colour getColorBlackLanes() { return widgetColourScheme.background.brighter(0.25f); }
   // use same color as for white key lanes with some additional layover gray
 
-
-  juce::Colour getColorHandles() { return handleColor; }
+  //juce::Colour getColorHandles() { return handleColor; }
+  juce::Colour getColorHandles() { return widgetColourScheme.handle; }
   // use widgetColourScheme.handle
 
-  juce::Colour getColorText() { return textColour; }
+  juce::Colour getColorText() { return editorColourScheme.text; }
   // use editorColourScheme.text
 
-  juce::Colour getColorLines() { return lineColour; }
-  // use plotColourScheme coarseGrid
+  juce::Colour getColorLines() { return plotColourScheme.coarseGrid; }
+  // use plotColourScheme.coarseGrid
 
 
   //---------------------------------------------------------------------------------------------
