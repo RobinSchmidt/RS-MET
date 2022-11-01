@@ -354,7 +354,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   float keyboardY = 4*topLaneHeight;
 
 
-  Colour red = Colours::red; // for debugging:
+  Colour red = Colours::red; // for debugging
 
   // Draw background for keyboard. The color will eventually become the color of the white keys as
   // all other elements like black keys and key separators are drawn on top:
@@ -363,8 +363,9 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.setColour(getColorWhiteKeys());
   g.fillRect(0.f, keyboardY, keyLength, (float)(13*rowHeight));
 
-
-  g.setColour(backgroundColourWhiteKey);
+  // Draw background for sequencer. The color will eventually become the color for the white lanes:
+  //g.setColour(backgroundColourWhiteKey);
+  g.setColour(getColorWhiteLanes());
   g.fillRect(keyLength, keyboardY, (float)getWidth()-keyLength, (float)(13*rowHeight));
 
   // draw black keys:
