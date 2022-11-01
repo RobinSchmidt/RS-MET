@@ -520,8 +520,12 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   isTopLevelEditor = false;
 
   patternEditor = new AcidPatternEditor(acidSequencerModuleToEdit->wrappedAcidSequencer);
+
   addAndMakeVisible(patternEditor);
   //addWidget(patternEditor);
+  // todo: use addChildcolourSchemeComponen instead
+
+
   patternEditor->setPatternToEdit(acidSequencerModuleToEdit->wrappedAcidSequencer->getPattern(0));
 
   addWidget( modeLabel = new RTextField( juce::String("Mode:")) );
