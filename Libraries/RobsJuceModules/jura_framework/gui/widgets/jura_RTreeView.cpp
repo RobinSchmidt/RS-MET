@@ -580,6 +580,11 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
   }
   */
 
+  //g.setOpacity(1.f);  // Needed? Yes! Otherwise, some items may be (semi) transparent
+  g.resetToDefaultState(); // This works also and is probably cleaner. Maybe we should do this in
+                           // many more places.
+
+
   bool nodeIsVisible = !tooFarDown && !tooHighUp;
   if(nodeIsVisible)
   {
@@ -623,6 +628,9 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
 
     // Draw the node text:
     Colour textColour = getTextColour();
+
+    //textColour = Colours::red;  // debug
+
     if(!nodeToDraw->isEnabled)
       textColour = textColour.withMultipliedAlpha(0.625f);
     drawBitmapFontText(g, x, y, nodeToDraw->nodeText, font, textColour,
