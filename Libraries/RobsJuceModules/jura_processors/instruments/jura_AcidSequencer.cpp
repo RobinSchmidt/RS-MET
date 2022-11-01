@@ -446,10 +446,16 @@ void AcidPatternEditor::paint(juce::Graphics &g)
       g.setColour(getColorHandles());
       bool slide = ptn->getSlide(i) && ptn->getGate((i+1)%numSteps);
       y = 0;
-      if( ptn->getGate(i) == true )  {
+      if( ptn->getGate(i) == true )  
+      {
         g.fillEllipse(x+5, y+3, w-10, h-6);
-        if( slide )
-          g.drawLine(x+dx, y+dy, x+3.f*dx, y+dy, 4.f); }
+        if(slide)
+        {
+          g.drawLine(x+dx, y+dy, x+3.f*dx, y+dy, 4.f);
+          if(i == ptn->getMaxNumSteps()-1)                // wrap around of slide indicator
+            g.drawLine(keyLength, y+dy, keyLength+dx, y+dy, 4.f); 
+        }
+      }
       y += topLaneHeight;
       if( ptn->getAccent(i) == true )
         g.fillEllipse(x+5, y+3, w-10, h-6);
@@ -732,6 +738,7 @@ void AcidSequencerModuleEditor::resized()
 -fix manipulator button positioning
 -when there's glide on the last entry, the horizontal line leaving the gui to the right should wrap 
  around and re-enter on the left
+ -> done for the gate row - now do it also for the sequencer!
 -animate the sequencer - highlight the column where we currently are or let a cursor step through. Take other
  animated widgets as reference, such as level-metering widgets
 
