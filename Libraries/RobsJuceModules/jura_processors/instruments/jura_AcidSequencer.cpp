@@ -435,6 +435,8 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   w = keyLength;
   h = (float) rowHeight;
   y = keyboardY + 13*rowHeight - (h+h/2);
+
+  float x2 = x, w2 = w;  // for shortened lines due to black keys
   g.drawLine(x, y, w, y, thickness); y -= 2*h;
   g.drawLine(x, y, w, y, thickness); y -= h+h/2;
   g.drawLine(x, y, w, y, thickness); y -= h+h/2;
