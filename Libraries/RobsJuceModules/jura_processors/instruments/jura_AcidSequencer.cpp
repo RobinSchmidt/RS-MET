@@ -480,11 +480,29 @@ void AcidPatternEditor::paint(juce::Graphics &g)
         {
           int key2 = ptn->getKey(i+1);
           float x2 = x + columnWidth;
+
+          float y1 = y;
           float y2 = keyboardY + 12*rowHeight - key2 * rowHeight;
           if(key1 > key2)
-            g.drawLine(x2, y, x2, y2+rowHeight, 3.f);
+            y2 += rowHeight;
           else
-            g.drawLine(x2, y+rowHeight, x2, y2, 3.f);
+            y1 += rowHeight;
+          g.drawLine(x2, y1, x2, y2, 5.f);   // 3.f
+
+          /*
+          float y2 = keyboardY + 12*rowHeight - key2 * rowHeight;
+          if(key1 > key2)
+            g.drawLine(x2, y, x2, y2+rowHeight, 5.f);   // 3.f
+          else
+            g.drawLine(x2, y+rowHeight, x2, y2, 5.f);
+            */
+
+          if(i == ptn->getMaxNumSteps()-1)                // wrap around of slide indicator
+          {
+            // ...
+          }
+
+
           w2 = 1.f;
         }
         g.fillRect(x, y, w2*columnWidth, rowHeight);
