@@ -458,17 +458,13 @@ void AcidPatternEditor::paint(juce::Graphics &g)
       if( patternToEdit->getSlide(i) == true )
         g.fillEllipse(x+5, y+3, w-10, h-6);
 
-
-
+      // Draw the octave shift indicators:
       y += topLaneHeight;
       juce::String octString = valueToStringWithSign0( patternToEdit->getOctave(i) );
-
       drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, font, getColorText(), 
         -1, Justification::centred);
-      // this calls g.setColour but doesn't reset it - and we don't want to call g.save/restorState there
-      // because thta would be expensive
 
-
+      // Draw the events in the actual sequencer view, possibly with slide-connectors:
       y = keyboardY + 12*rowHeight;
       if( patternToEdit->getGate(i) == true )
       {
