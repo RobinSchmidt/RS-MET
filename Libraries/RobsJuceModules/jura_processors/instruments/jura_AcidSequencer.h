@@ -118,17 +118,23 @@ public:
   /** Returns the height of one row in the top lane (for accent, slide, etc.) */
   int getTopLaneHeight() const { return (int) topLaneHeight; } // why is this a float?
 
+
   /** Returns the color to be used to draw the white keys in the little keyboard at the left. */
   juce::Colour getColorWhiteKeys() { return whiteKeyColour; }
+  // maybe use a whitened widget handle color
 
   /** Returns the color to be used to draw the black keys in the little keyboard at the left. */
   juce::Colour getColorBlackKeys() { return blackKeyColour; }
+  // maybe use a darkened widget handle color
 
   /** Returns the color to be used to draw the lanes for the white keys. */
   juce::Colour getColorWhiteLanes() { return backgroundColourWhiteKey; }
+  // use plotColourScheme.getFlatBackgroundColour()
+
 
   /** Returns the color to be used to draw the lanes for the black keys. */
   juce::Colour getColorBlackLanes() { return backgroundColourBlackKey; }
+  // use same color as for white key lanes with some additional layover gray
 
 
   juce::Colour getColorHandles() { return handleColor; }

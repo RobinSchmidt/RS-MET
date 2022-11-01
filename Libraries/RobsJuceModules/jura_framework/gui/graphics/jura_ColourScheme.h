@@ -245,6 +245,8 @@ public:
   Colour getCurveColourUniform(int index) const;
   Colour getCurveColourAlternating(int index) const;
 
+  // getFlatBackgroundColour() // returns (topLeft+topRight+bottomLeft+bottomRight) / 4
+
 
   Colour     topLeft, topRight, bottomLeft, bottomRight, outline, text, axes, coarseGrid, fineGrid; //, curves;
   ColourAHSL curvesAHSL;
