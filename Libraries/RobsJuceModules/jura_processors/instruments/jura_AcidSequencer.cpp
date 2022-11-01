@@ -478,7 +478,11 @@ void AcidPatternEditor::paint(juce::Graphics &g)
         float w2 = (float) ptn->getStepLength();
         if( slide )
         {
-          int key2 = ptn->getKey(i+1);
+          int key2 = ptn->getKey(0);      // wrap-around case
+          if(i < ptn->getNumSteps()-1 )
+            key2 = ptn->getKey(i+1);      // typical case
+
+
           float x2 = x + columnWidth;
 
           float y1 = y;
@@ -499,6 +503,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 
           if(i == ptn->getMaxNumSteps()-1)                // wrap around of slide indicator
           {
+            g.drawLine(x2-2, y1, x2-2, y2, 5.f); 
             // ...
           }
 
