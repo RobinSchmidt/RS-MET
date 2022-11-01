@@ -367,7 +367,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.setColour(getColorWhiteLanes());
   g.fillRect(keyLength, keyboardY, (float)getWidth()-keyLength, (float)(13*rowHeight));
 
-  // draw black keys:
+  // Draw black keys:
   //g.setColour(red);
   g.setColour(getColorBlackKeys());
   x = 0;
@@ -380,11 +380,12 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.fillRect(x, y, w, h); y -= 2*h;
   g.fillRect(x, y, w, h);
 
-  // draw lanes for the black keys:
+  // Draw lanes for the black keys:
   x = keyLength;
   w = (float)getWidth()-keyLength;
   y = keyboardY + 11*rowHeight;
-  g.setColour(backgroundColourBlackKey);
+  g.setColour(getColorBlackLanes());
+  //g.setColour(red);
   g.fillRect(x, y, w, h);  y -= 2*h;
   g.fillRect(x, y, w, h);  y -= 3*h;
   g.fillRect(x, y, w, h);  y -= 2*h;
