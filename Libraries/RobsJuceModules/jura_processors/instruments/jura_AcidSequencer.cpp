@@ -538,9 +538,9 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   shiftLabel->setDescriptionField(infoField);
 
   // Helper function to reduce boilerplate for button creation:
-  auto addButton = [&](RButton** pButton, const String& name, const String& description)
+  auto addButton = [&](RClickButton** pButton, const String& name, const String& description)
   {
-    addWidget( *pButton = new RButton(name) );
+    addWidget( *pButton = new RClickButton(name) );
     (*pButton)->setDescription(description);
     (*pButton)->setDescriptionField(infoField);
     (*pButton)->setClickingTogglesState(false);

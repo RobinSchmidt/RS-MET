@@ -243,24 +243,14 @@ protected:
   RButton    *lockButton;  // prevents the sequencer data from being changed and preset-change
 
   // Sequence manipulators:
-  RButton    *shiftLeftButton, *shiftRightButton;
-  RButton    *shiftAccentsLeftButton, *shiftAccentsRightButton;
-  RButton    *shiftSlidesLeftButton,  *shiftSlidesRightButton;
-  RButton    *shiftNotesLeftButton,   *shiftNotesRightButton;
-  RButton    *shiftOctavesLeftButton, *shiftOctavesRightButton;
-  RButton    *reverseAllButton;
-  RButton    *reverseAccentsButton;
-  RButton    *reverseSlidesButton;
-  RButton    *reverseNotesButton;
-  RButton    *reverseOctavesButton;
-  RButton    *swapAccentsSlidesButton;
-  RButton    *xorAccentsSlidesButton;
-  RButton    *xorSlidesAccentsButton;
-  RButton    *invertAccentsButton;
-  RButton    *invertSlidesButton;
-  RButton    *invertOctavesButton;
-
-  // use RClickButton instead
+  RClickButton *shiftLeftButton, *shiftRightButton, *shiftAccentsLeftButton, *shiftAccentsRightButton, 
+    *shiftSlidesLeftButton,  *shiftSlidesRightButton, *shiftNotesLeftButton, *shiftNotesRightButton,
+    *shiftOctavesLeftButton, *shiftOctavesRightButton, *reverseAllButton, *reverseAccentsButton,
+    *reverseSlidesButton, *reverseNotesButton, *reverseOctavesButton, *swapAccentsSlidesButton,
+    *xorAccentsSlidesButton, *xorSlidesAccentsButton, *invertAccentsButton, *invertSlidesButton, 
+    *invertOctavesButton;
+  // other ideas: swap first and second halves, maybe recursively (we want operations that are their own 
+  // inverses) -> swapSlidesButton, etc. ...
 
 
   juce_UseDebuggingNewOperator;
