@@ -161,7 +161,9 @@ public:
   juce::Colour getColorText() { return widgetColourScheme.text; }
   // use widgetColourScheme.text
 
-  juce::Colour getColorLines() { return plotColourScheme.coarseGrid; }
+  juce::Colour getColorLines() { return widgetColourScheme.outline; }
+
+  //juce::Colour getColorLines() { return plotColourScheme.coarseGrid; }
   // use wdigetColourScheme.coarseGrid
   // widgetColourScheme.outline
 
