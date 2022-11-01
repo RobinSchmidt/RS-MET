@@ -392,12 +392,12 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.fillRect(x, y, w, h);  y -= 2*h;
   g.fillRect(x, y, w, h);
 
-  // draw horizontal lines for the 4 top-lanes:
+  // Draw horizontal lines for the 4 top-lanes:
   thickness = 2.f;
   x = 0.f;
   y = topLaneHeight;
   w = (float) getWidth();
-  g.setColour(lineColour);
+  g.setColour(getColorLines());
   g.drawLine(x, y, w, y, thickness);
   y += topLaneHeight;
   g.drawLine(x, y, w, y, thickness);
@@ -407,8 +407,8 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.drawLine(x, y, w, y, thickness);
   g.drawLine(keyLength, 0, keyLength, (float)getHeight(), thickness); // vertical
 
-  // draw the lines between the piano-roll rows:
-  g.setColour(lineColour);
+  // Draw the lines between the piano-roll rows:
+  g.setColour(getColorLines());
   x = keyLength;
   h = (float) rowHeight;
   y = keyboardY + h;
@@ -425,10 +425,11 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.drawLine(x, y, w, y, thickness);  y += h;
   g.drawLine(x, y, w, y, thickness);  y += h;
   g.drawLine(x, y, w, y, thickness);
-  // maybe use loop
+  // maybe use a loop
 
-  // draw the lines between the piano-roll white keys:
-  g.setColour(lineColour);
+  // Draw the lines between the piano-roll white keys:
+  //g.setColour(getColorLines());
+  g.setColour(red);
   x = 0.f;
   w = keyLength;
   h = (float) rowHeight;
