@@ -540,7 +540,10 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   // Helper function to reduce boilerplate for button creation:
   auto addButton = [&](RClickButton** pButton, const String& name, const String& description)
   {
-    addWidget( *pButton = new RClickButton(name) );
+    addWidget( *pButton = new jura::RClickButton(name) );
+    if(name == "L") (*pButton)->setSymbolIndex(jura::RButton::buttonSymbols::ARROW_LEFT);
+    if(name == "R") (*pButton)->setSymbolIndex(jura::RButton::buttonSymbols::ARROW_RIGHT);
+
     (*pButton)->setDescription(description);
     (*pButton)->setDescriptionField(infoField);
     (*pButton)->setClickingTogglesState(false);
