@@ -163,7 +163,9 @@ protected:
   WidgetColourScheme widgetColourScheme;
   EditorColourScheme editorColourScheme;
   PlotColourScheme   plotColourScheme;
-    // todo: use pointers
+  // ToDo: Use pointers or referencese to allow sharing these among sub-editors. This requires to
+  // elect some higher/highest level Component to be the maintainer of the actual objects which
+  // will need some changes that ripple through the whole framework
 
   // we maintain components that should adhere to the colour-schemes above as arrays:
   std::vector<RWidget*>   widgets;

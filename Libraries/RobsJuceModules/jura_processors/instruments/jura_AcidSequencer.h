@@ -65,8 +65,11 @@ protected:
 
 //=================================================================================================
 
-class AcidPatternEditor : public Component // public RWidget ...maybe needs to inherit from ColouSchemeComponent?
+class AcidPatternEditor : public Component 
 {
+
+// public RWidget ...maybe needs to inherit from ColouSchemeComponent?
+
 
 public:
 
@@ -131,8 +134,12 @@ protected:
   rosic::AcidPattern   *patternToEdit;
   rosic::AcidSequencer *sequencerToEdit;
 
+
+
   Colour whiteKeyColour, blackKeyColour, backgroundColourWhiteKey, backgroundColourBlackKey,
     handleColor, textColour, lineColour;
+  // replace these member by member function getColorWhiteKeys, etc.
+
 
   float rowHeight, columnWidth, keyLength, topLaneHeight;
 

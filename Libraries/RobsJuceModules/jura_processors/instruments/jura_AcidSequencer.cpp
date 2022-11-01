@@ -149,6 +149,10 @@ AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit)
   handleColor              = Colours::black;
   textColour               = Colours::black;
   lineColour               = Colours::black;
+  // ToDo: inherit from ColourSchemeComponent and grab these colors from the embedded
+  // WidgetColourScheme and/or PlotColourScheme. Maybe implement functions like
+  // getWhiteKeyColor etc. that just do somthing like 
+  // { return widgetColourScheme.handle; }
 
   rowHeight     = 12.f;
   columnWidth   = 20.f;
