@@ -369,16 +369,17 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 
   // Draw black keys:
   //g.setColour(red);
+  float bkw = 2*keyLength/3;         // width of black the keys
   g.setColour(getColorBlackKeys());
   x = 0;
-  w = 2*keyLength/3;
+  //w = 2*keyLength/3;    // use a variable bkw for black key width - is need later again
   h = (float) rowHeight;
   y = keyboardY + 11*rowHeight;
-  g.fillRect(x, y, w, h); y -= 2*h;
-  g.fillRect(x, y, w, h); y -= 3*h;
-  g.fillRect(x, y, w, h); y -= 2*h;
-  g.fillRect(x, y, w, h); y -= 2*h;
-  g.fillRect(x, y, w, h);
+  g.fillRect(x, y, bkw, h); y -= 2*h;
+  g.fillRect(x, y, bkw, h); y -= 3*h;
+  g.fillRect(x, y, bkw, h); y -= 2*h;
+  g.fillRect(x, y, bkw, h); y -= 2*h;
+  g.fillRect(x, y, bkw, h);
 
   // Draw lanes for the black keys:
   x = keyLength;

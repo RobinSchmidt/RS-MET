@@ -164,6 +164,7 @@ protected:
 
   float rowHeight, columnWidth, keyLength, topLaneHeight;
   // Why are these floats? Can't we make them integers?
+  // rename keyLength to keySize..hmm..no
 
   juce_UseDebuggingNewOperator;
 };
