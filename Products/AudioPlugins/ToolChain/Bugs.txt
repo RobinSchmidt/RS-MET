@@ -1,4 +1,7 @@
 
+General:
+-coloring of popup menu items in comboboxes is wrong when mousing over
+
 Sampler
 -[FIXED] load NoiseWhistle.sfz, then in the TreeView:
  -click on cutoff -> cutoff slider appears
@@ -11,6 +14,9 @@ Sampler
  -change value
   -> debug assertion is triggered. Maybe it's because it's a group setting rather thana region 
   setting?
+
+EchoLab:
+-Produces memory leak when clsing the app
 
 -Saving the sfz file seems to save the old (buffered) text unless the new code was parsed. Not sure
  if that behavior is good or bad...but probably bad

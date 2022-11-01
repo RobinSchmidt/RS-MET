@@ -685,30 +685,24 @@ void AcidSequencerModuleEditor::resized()
   int w2 = 28;
   reverseAllButton->setBounds(x2, y, w2, h);
   y += h;
-  shiftAccentsLeftButton->setBounds( x,       y, w, h);
-  shiftAccentsRightButton->setBounds(x+  w-2, y, w, h);
-
-
-  //reverseAccentsButton->setBounds(   x+2*w-4, y, w, h);
-  //invertAccentsButton->setBounds(    x+3*w-6, y, w, h); // test - if looks good, use for others, too
-
+  shiftAccentsLeftButton->setBounds( x,       y, w,  h);
+  shiftAccentsRightButton->setBounds(x+  w-2, y, w,  h);
   reverseAccentsButton->setBounds(   x2,      y, w2, h);
-  invertAccentsButton->setBounds(    x2+w2-2, y, w2, h); // test - if looks good, use for others, too
-
+  invertAccentsButton->setBounds(    x2+w2-2, y, w2, h);
   y += h;
-  shiftSlidesLeftButton->setBounds( x,       y, w, h);
-  shiftSlidesRightButton->setBounds(x+  w-2, y, w, h);
-  reverseSlidesButton->setBounds(   x+2*w-4, y, w, h);
-  invertSlidesButton->setBounds(    x+3*w-6, y, w, h);
+  shiftSlidesLeftButton->setBounds(  x,       y, w,  h);
+  shiftSlidesRightButton->setBounds( x+  w-2, y, w,  h);
+  reverseSlidesButton->setBounds(    x2,      y, w2, h);
+  invertSlidesButton->setBounds(     x2+w2-2, y, w2, h);
   y += h;
-  shiftOctavesLeftButton->setBounds( x,       y, w, h);
-  shiftOctavesRightButton->setBounds(x+  w-2, y, w, h);
-  reverseOctavesButton->setBounds(   x+2*w-4, y, w, h);
-  invertOctavesButton->setBounds(    x+3*w-6, y, w, h);
+  shiftOctavesLeftButton->setBounds( x,       y, w,  h);
+  shiftOctavesRightButton->setBounds(x+  w-2, y, w,  h);
+  reverseOctavesButton->setBounds(   x2,      y, w2, h);
+  invertOctavesButton->setBounds(    x2+w2-2, y, w2, h);
   y += h;
-  shiftNotesLeftButton->setBounds( x,       y, w, h);
-  shiftNotesRightButton->setBounds(x+  w-2, y, w, h);
-  reverseNotesButton->setBounds(   x+2*w-4, y, w, h);
+  shiftNotesLeftButton->setBounds(   x,       y, w,  h);
+  shiftNotesRightButton->setBounds(  x+  w-2, y, w,  h);
+  reverseNotesButton->setBounds(     x2,      y, w2, h);
 
   x = patternEditor->getRight();
   y = stateWidgetSet->getY();
