@@ -128,6 +128,7 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   const BitmapFont* fontToUse, const Colour& colourToUse, int kerning, Justification justification)
 {
   //jassert(colourToUse != Colours::yellow); // for test only
+
   if( kerning == -1 )
     kerning = fontToUse->getDefaultKerning();
 
@@ -147,12 +148,19 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   // regardless of their own opacity values (why is that the case?):
   //g.saveState();                // ToDo: try to avoid this - it may be expensive
   //g.setColour(colourToUse);
-  //g.setOpacity(1.f);
+
+  g.setOpacity(1.f); 
+  // We really seem to need that, otherwise certain entries in TreeViews are not drawn correctly.
+  // Maybe when we call setColour on the g object in the caller, this also sets the opacity and 
+  // when we call g.drawImageAt, the image is also drawn transparently? Maybe we need a low-level
+  // drawImageAt() ...Yes! That's it! The juce doc of g.drawImageAt says that images are drawn with
+  // the current opacity setting. That's really bad! It forces us to call setOpacity here!
 
   for(int i = 0; i < textToDraw.length(); ++i)
   {
     juce_wchar c = textToDraw[i];
     const Image* image = fontToUse->getGlyphImage(c, colourToUse);
+    //const Image* image = fontToUse->getGlyphImage(c, Colours::red);  // for debug
     if( image != nullptr )
     {
       g.drawImageAt(*image, x, y, false);

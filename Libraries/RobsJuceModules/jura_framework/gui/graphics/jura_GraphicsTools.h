@@ -45,7 +45,12 @@ JUCE_API void dataToImageOpaqueFloat32x4(float *data, juce::Image &image);
 // maybe rename into something more meaningful
 
 /** Draws a text with a BitmapFont with the given style-settings and returns the x-coordinate where 
-the drawn text ends (and subsequent text can be appended, if desired). */
+the drawn text ends (and subsequent text can be appended, if desired). For technical reasons (see 
+comments in implementation), this function needs to call setOpacity(1.f) on the juce::Graphics 
+object g and doesn't reatore the old opacity before returning because doing so requires to 
+save/restore the whole state of g because the opacity cannot be retrieved. That really sucks! 
+So, if you call that function, make sure that all drawing calls after that set the correct opacity
+and do not rely on any setOpacity call that you did before calling drawBitmapFontText! */
 JUCE_API int drawBitmapFontText(Graphics &g, int x, int y, const juce::String& textToDraw, 
   const BitmapFont* fontToUse, const Colour& colourToUse, int kerning = -1, 
   Justification justification = Justification::topLeft);

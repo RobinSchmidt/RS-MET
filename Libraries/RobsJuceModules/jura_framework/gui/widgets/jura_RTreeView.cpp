@@ -428,6 +428,8 @@ void RTreeView::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &whe
 
 void RTreeView::paint(Graphics &g)
 {
+  g.resetToDefaultState(); 
+
   g.fillAll(getBackgroundColour());
   g.setColour(getOutlineColour());
   g.drawRect(0, 0, getWidth(), getHeight(), RWidget::outlineThickness);
@@ -582,7 +584,9 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
 
   //g.setOpacity(1.f);  // Needed? Yes! Otherwise, some items may be (semi) transparent
   g.resetToDefaultState(); // This works also and is probably cleaner. Maybe we should do this in
-                           // many more places.
+  // many more places. ...but maybe call this in the caller paint() - done. But doing it only there 
+  // darkens/grays even more entries
+
 
 
   bool nodeIsVisible = !tooFarDown && !tooHighUp;
@@ -629,10 +633,16 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
     // Draw the node text:
     Colour textColour = getTextColour();
 
-    //textColour = Colours::red;  // debug
+    //textColour = Colours::yellow;  // debug
 
     if(!nodeToDraw->isEnabled)
       textColour = textColour.withMultipliedAlpha(0.625f);
+
+    //jassert(textColour.getAlpha() == 255);  // debug
+
+
+
+
     drawBitmapFontText(g, x, y, nodeToDraw->nodeText, font, textColour,
       font->getDefaultKerning(), Justification::topLeft);
   }
@@ -658,6 +668,10 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
   // -It seems that paint gets called twice. Fix that! It will still be too slow, though.
   // -Maybe compare with juce::TreeView, see https://docs.juce.com/master/classTreeView.html
   // -Try to optimize drawBitmapFontText. Maybe we can do this in the context of the TestAppJURA
+  // -The expandable nodes (i.e. with a +) are drawn semi-transparently it seems - why?). Or maybe 
+  //  darkened? It seems like the color we pass to drawBitmapFontText is correct because if we 
+  //  there locally use red instead of the passed color, the problem still persists, as if if it's
+  //  darkened by some post-processing effect
 }
 
 RTreeViewNode* RTreeView::getNodeAtY(int y)
