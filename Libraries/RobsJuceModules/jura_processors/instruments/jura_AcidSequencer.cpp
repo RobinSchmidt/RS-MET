@@ -144,22 +144,6 @@ AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit)
   this->sequencerToEdit = sequencerToEdit;
   setDescription("Editor for acid patterns");
 
-
-  // get rid of these members:
-  whiteKeyColour           = Colours::white;
-  blackKeyColour           = Colours::black;
-  backgroundColourWhiteKey = Colours::white;      // for white key lanes
-  backgroundColourBlackKey = Colours::lightgrey;  // for black key lanes
-  handleColor              = Colours::black;
-  textColour               = Colours::black;
-  lineColour               = Colours::black;
-  // ToDo: inherit from ColourSchemeComponent and grab these colors from the embedded
-  // WidgetColourScheme and/or PlotColourScheme. Maybe implement functions like
-  // getWhiteKeyColor etc. that just do somthing like 
-  // { return widgetColourScheme.handle; }
-
-
-
   rowHeight     = 12.f;
   columnWidth   = 20.f;
   keyLength     = 48.f;
@@ -173,24 +157,6 @@ void AcidPatternEditor::setPatternToEdit(rosic::AcidPattern *newPatternToEdit)
 {
   patternToEdit = newPatternToEdit;
 }
-
-/*
-void AcidPatternEditor::setColourScheme(const WidgetColourScheme& newColourScheme)
-{
-  RWidget::setColourScheme(newColourScheme);
-
-  // colors we can use:
-  // getOutlineColour(), getHandleColour(), getTextColour(), getSpecialColour1()
-
-  whiteKeyColour           = getHandleColour();
-  blackKeyColour           = Colours::black;
-  backgroundColourWhiteKey = Colours::white;      // for white key lanes
-  backgroundColourBlackKey = Colours::lightgrey;  // for black key lanes
-  handleColor              = getHandleColour();
-  textColour               = getTextColour();
-  lineColour               = getOutlineColour();
-}
-*/
 
 //-------------------------------------------------------------------------------------------------
 // inquiry:

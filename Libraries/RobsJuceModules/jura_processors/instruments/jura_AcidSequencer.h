@@ -165,13 +165,6 @@ protected:
   rosic::AcidSequencer *sequencerToEdit;
 
 
-
-  Colour whiteKeyColour, blackKeyColour, 
-    backgroundColourWhiteKey, backgroundColourBlackKey,
-    handleColor, textColour, lineColour;
-  // replace these member by member function getColorWhiteKeys, etc.
-
-
   float rowHeight, columnWidth, keyLength, topLaneHeight;
   // Why are these floats? Can't we make them integers?
   // rename keyLength to keySize..hmm..no
