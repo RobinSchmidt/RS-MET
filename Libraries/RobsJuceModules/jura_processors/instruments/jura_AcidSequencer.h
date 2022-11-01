@@ -249,8 +249,6 @@ protected:
     *reverseSlidesButton, *reverseNotesButton, *reverseOctavesButton, *swapAccentsSlidesButton,
     *xorAccentsSlidesButton, *xorSlidesAccentsButton, *invertAccentsButton, *invertSlidesButton, 
     *invertOctavesButton;
-  // other ideas: swap first and second halves, maybe recursively (we want operations that are their own 
-  // inverses) -> swapSlidesButton, etc. ...
 
 
   juce_UseDebuggingNewOperator;

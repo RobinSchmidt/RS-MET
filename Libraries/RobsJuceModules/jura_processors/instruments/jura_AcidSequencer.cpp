@@ -721,9 +721,24 @@ void AcidSequencerModuleEditor::resized()
 -make step-length available for modulation
 -add selector for pattern (maybe a 4x4 array)
 -implement copy/paste for patterns
--fix colors
+-fix colors (done)
+-fix manipulator button positioning
+-maybe use triangles instead of L/R letters
 -animate the sequencer - highlight the column where we currently are or let a cursor step through. Take other
  animated widgets as reference, such as level-metering widgets
--the hit-button should fslh when clicked
+
+
+Ideas for sequence manipulations:
+-Generally, we want operations that are their own inverses to be able to undo them easily as long 
+ as we don't have a proper "Undo" functionality
+-Permutations:
+ -Swap first and second halves recursively ...well, doing it recursively just results in reversing 
+  the array, so that's nothing new. How about non-recursively or with limited recursion depth?
+ -De/interleave via viewing the pattern of length 16 as 2 patterns of length 8
+-Unary functions: logical not - we call it "Inv" on teh buttons
+-Combinations: XOR (done), NXOR, swap accents/slides
+ 
+
+
 
 */
