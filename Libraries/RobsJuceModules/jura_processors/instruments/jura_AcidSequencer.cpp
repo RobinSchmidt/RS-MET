@@ -475,15 +475,10 @@ void AcidPatternEditor::paint(juce::Graphics &g)
           int key2 = ptn->getKey(i+1);
           float x2 = x + columnWidth;
           float y2 = keyboardY + 12*rowHeight - key2 * rowHeight;
-
           if(key1 > key2)
             g.drawLine(x2, y, x2, y2+rowHeight, 3.f);
           else
-            g.drawLine(x2, y+dy, x2, y2+dy, 3.f);
-
-          // Maybe use a color with a bit of transparency here to make the slide indicators less
-          // weighty
-
+            g.drawLine(x2, y+rowHeight, x2, y2, 3.f);
           w2 = 1.f;
         }
         g.fillRect(x, y, w2*columnWidth, rowHeight);
