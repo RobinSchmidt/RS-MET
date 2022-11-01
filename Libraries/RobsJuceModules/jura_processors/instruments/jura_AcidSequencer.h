@@ -65,11 +65,8 @@ protected:
 
 //=================================================================================================
 
-class AcidPatternEditor : public Component 
+class AcidPatternEditor : public jura::ColourSchemeComponent // old: : public Component 
 {
-
-// public RWidget ...maybe needs to inherit from ColouSchemeComponent?
-
 
 public:
 

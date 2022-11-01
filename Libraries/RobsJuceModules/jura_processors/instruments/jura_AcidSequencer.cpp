@@ -120,6 +120,7 @@ void AcidSequencerAudioModule::createParameters()
   addObservedParameter(p);
 
   // #001:
+  // ...this should *not* be automatable!
   p = new AutomatableParameter(lock, juce::String("Mode"), 0.0, 1.0, 1.0, 1.0, Parameter::STRING);
   p->addStringValue(juce::String("Off"));
   p->addStringValue(juce::String("Key"));
@@ -137,19 +138,18 @@ void AcidSequencerAudioModule::createParameters()
 
 
 AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit)
-  : Component(juce::String("AcidPatternEditor"))
+  : jura::ColourSchemeComponent(juce::String("AcidPatternEditor"))
 {
-  patternToEdit         = NULL;
+  patternToEdit         = nullptr;
   this->sequencerToEdit = sequencerToEdit;
+  setDescription("Editor for acid patterns");
 
+
+  // get rid of these members:
   whiteKeyColour           = Colours::white;
   blackKeyColour           = Colours::black;
-
   backgroundColourWhiteKey = Colours::white;      // for white key lanes
   backgroundColourBlackKey = Colours::lightgrey;  // for black key lanes
-  // rename
-
-
   handleColor              = Colours::black;
   textColour               = Colours::black;
   lineColour               = Colours::black;
@@ -157,6 +157,8 @@ AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit)
   // WidgetColourScheme and/or PlotColourScheme. Maybe implement functions like
   // getWhiteKeyColor etc. that just do somthing like 
   // { return widgetColourScheme.handle; }
+
+
 
   rowHeight     = 12.f;
   columnWidth   = 20.f;
@@ -520,13 +522,12 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   isTopLevelEditor = false;
 
   patternEditor = new AcidPatternEditor(acidSequencerModuleToEdit->wrappedAcidSequencer);
-
-  addAndMakeVisible(patternEditor);
-  //addWidget(patternEditor);
-  // todo: use addChildcolourSchemeComponen instead
-
-
+  //addAndMakeVisible(patternEditor);  // old
+  addChildColourSchemeComponent(patternEditor);
   patternEditor->setPatternToEdit(acidSequencerModuleToEdit->wrappedAcidSequencer->getPattern(0));
+  patternEditor->setDescriptionField(infoField, true);
+
+
 
   addWidget( modeLabel = new RTextField( juce::String("Mode:")) );
   modeLabel->setDescription("Chooses the sequencer mode");
