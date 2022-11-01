@@ -326,6 +326,9 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 {
   g.fillAll(Colours::white);
 
+  // Maybe use ints instead of floats - simplifies code below as well...but maybe there's a reason
+  // we use floats, maybe to accomodate for GUI size settings for which things do not add up 
+  // nicely?
   float x = 0.f;
   float y = 0.f;
   float w = (float) getWidth();
@@ -334,13 +337,14 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   float thickness = 2.f;
 
 
-  drawBitmapFontText(g, (int)x+3, (int)y+3, "Gate:", &BitmapFontRoundedBoldA10D0::instance, textColour);
+  const BitmapFont* font = &BitmapFontRoundedBoldA10D0::instance;
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Gate:", font, getColorText());
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, "Accent:", &BitmapFontRoundedBoldA10D0::instance, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Accent:", font, getColorText());
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, "Slide:", &BitmapFontRoundedBoldA10D0::instance, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Slide:", font, getColorText());
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, "Octave:", &BitmapFontRoundedBoldA10D0::instance, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Octave:", font, getColorText());
 
   w = keyLength;
 
@@ -472,8 +476,8 @@ void AcidPatternEditor::paint(juce::Graphics &g)
       y += topLaneHeight;
       juce::String octString = valueToStringWithSign0( patternToEdit->getOctave(i) );
 
-      drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString,
-        &BitmapFontRoundedBoldA10D0::instance, textColour, -1, Justification::centred);
+      drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, font, getColorText(), 
+        -1, Justification::centred);
 
       y = keyboardY + 12*rowHeight;
       if( patternToEdit->getGate(i) == true )
