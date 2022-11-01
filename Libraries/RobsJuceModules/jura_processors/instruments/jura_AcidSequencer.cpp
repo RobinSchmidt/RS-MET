@@ -722,7 +722,8 @@ void AcidSequencerModuleEditor::resized()
 -add selector for pattern (maybe a 4x4 array)
 -implement copy/paste for patterns
 -fix colors
--animate the sequencer - highlight the column where we currently are or let a cursor step through
+-animate the sequencer - highlight the column where we currently are or let a cursor step through. Take other
+ animated widgets as reference, such as level-metering widgets
 -the hit-button should fslh when clicked
 
 */
