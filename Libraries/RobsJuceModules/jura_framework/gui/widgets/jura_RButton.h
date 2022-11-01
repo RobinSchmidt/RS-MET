@@ -53,7 +53,7 @@ public:
     NO_SYMBOL = 0,
     PLUS,
     MINUS,
-    ARROW_UP,
+    ARROW_UP,    // rename to TRIANGLE_UP etc.
     ARROW_DOWN,
     ARROW_LEFT,
     ARROW_RIGHT,

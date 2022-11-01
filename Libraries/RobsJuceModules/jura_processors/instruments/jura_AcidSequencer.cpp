@@ -570,9 +570,9 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   addButton(&reverseNotesButton,  "Rev", "Reverses the notes");
   addButton(&reverseOctavesButton,"Rev", "Reverses the octaves");
 
-  addButton(&invertAccentsButton, "Inv", "Inverts the accents");
-  addButton(&invertSlidesButton,  "Inv", "Inverts the slides");
-  addButton(&invertOctavesButton, "Inv", "Inverts the octaves");
+  addButton(&invertAccentsButton, "Inv", "Inverts the accents (logical not)");
+  addButton(&invertSlidesButton,  "Inv", "Inverts the slides (logical not)");
+  addButton(&invertOctavesButton, "Inv", "Inverts the octaves (logical not)");
 
 
   addButton(&swapAccentsSlidesButton, "A2S", "Swaps accents with slides");
@@ -672,19 +672,29 @@ void AcidSequencerModuleEditor::resized()
   y = getPresetSectionBottom()+4;
   x = 4;
   patternEditor->setBounds(x, y, 368, 220);
-  x = patternEditor->getRight();
+  x = patternEditor->getRight()-2;
   y = patternEditor->getY();
   setRightKeepLeft(stateWidgetSet, x);
   int h = patternEditor->getTopLaneHeight();
-  w = 28; 
+  //w = 28; 
+  w = 16;
+  //int sw = 16;
   shiftLeftButton->setBounds( x,       y, w, h);
   shiftRightButton->setBounds(x+  w-2, y, w, h);
-  reverseAllButton->setBounds(x+2*w-4, y, w, h);
+  int x2 = shiftRightButton->getRight()-2;
+  int w2 = 28;
+  reverseAllButton->setBounds(x2, y, w2, h);
   y += h;
   shiftAccentsLeftButton->setBounds( x,       y, w, h);
   shiftAccentsRightButton->setBounds(x+  w-2, y, w, h);
-  reverseAccentsButton->setBounds(   x+2*w-4, y, w, h);
-  invertAccentsButton->setBounds(    x+3*w-6, y, w, h); // test - if looks good, use for others, too
+
+
+  //reverseAccentsButton->setBounds(   x+2*w-4, y, w, h);
+  //invertAccentsButton->setBounds(    x+3*w-6, y, w, h); // test - if looks good, use for others, too
+
+  reverseAccentsButton->setBounds(   x2,      y, w2, h);
+  invertAccentsButton->setBounds(    x2+w2-2, y, w2, h); // test - if looks good, use for others, too
+
   y += h;
   shiftSlidesLeftButton->setBounds( x,       y, w, h);
   shiftSlidesRightButton->setBounds(x+  w-2, y, w, h);
