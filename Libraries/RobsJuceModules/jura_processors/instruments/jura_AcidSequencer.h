@@ -122,7 +122,8 @@ public:
 
   juce::Colour getColorBackground()
   {
-    return juce::Colours::black; 
+    return widgetColourScheme.background;
+    //return juce::Colours::black; 
   }
   // preliminary - maybe use the average/flattened background color fo the plots
 
@@ -161,7 +162,8 @@ public:
   // use widgetColourScheme.text
 
   juce::Colour getColorLines() { return plotColourScheme.coarseGrid; }
-  // use plotColourScheme.coarseGrid
+  // use wdigetColourScheme.coarseGrid
+  // widgetColourScheme.outline
 
 
   //---------------------------------------------------------------------------------------------
