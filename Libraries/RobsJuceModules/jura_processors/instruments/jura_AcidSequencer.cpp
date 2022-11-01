@@ -503,7 +503,12 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 
           if(i == ptn->getMaxNumSteps()-1)                // wrap around of slide indicator
           {
-            g.drawLine(x2-2, y1, x2-2, y2, 5.f); 
+            g.drawLine(x2-2,        y1, x2-2,        y2, 5.f);
+
+            g.drawLine(keyLength+1, y1, keyLength+1, y2, 3.f);
+
+            //keyLength
+
             // ...
           }
 
@@ -762,8 +767,8 @@ void AcidSequencerModuleEditor::resized()
 -when there's glide on the last entry, the horizontal line leaving the gui to the right should wrap 
  around and re-enter on the left
  -> done for the gate row - now do it also for the sequencer!
--animate the sequencer - highlight the column where we currently are or let a cursor step through. Take other
- animated widgets as reference, such as level-metering widgets
+-animate the sequencer - highlight the column where we currently are or let a cursor step through. 
+ Take other animated widgets as reference, such as level-metering widgets
 
 
 Ideas for sequence manipulations:
@@ -775,7 +780,15 @@ Ideas for sequence manipulations:
  -De/interleave via viewing the pattern of length 16 as 2 patterns of length 8
 -Unary functions: logical not - we call it "Inv" on teh buttons
 -Combinations: XOR (done), NXOR, swap accents/slides
- 
+-Maybe interpret the bit-patterns of slide and accent as 16-bit numbers and let the user apply 
+ single iterations of a linear congruential PRNG. Maybe have forward/backward buttons for next/prev
+ random pattern. To go backward, we'd need to solve the equation y = (a*x + b) % m  for x. I'm not 
+ sure, but it could be that x = ((y-b)/a) % m could work where division by a is defined as 
+ multiplication of the modular inverse of a in modulus m -> look up modular arithmetic! If this is 
+ correct, we'd need to find an appropriate a and its modular inverse in some given, suitable 
+ modulus. This could be done offline once and for all by direct search (unless a better algorithm 
+ is available for that -> research!). Such a PRNG that can go backward could be generally useful
+ anyway.
 
 
 
