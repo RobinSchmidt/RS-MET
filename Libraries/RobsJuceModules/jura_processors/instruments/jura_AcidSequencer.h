@@ -120,20 +120,24 @@ public:
 
 
   /** Returns the color to be used to draw the white keys in the little keyboard at the left. */
-  juce::Colour getColorWhiteKeys() { return whiteKeyColour; }
+  //juce::Colour getColorWhiteKeys() { return whiteKeyColour; }
+  juce::Colour getColorWhiteKeys() { return widgetColourScheme.handle.brighter(0.5f); }
   // maybe use a whitened widget handle color
 
   /** Returns the color to be used to draw the black keys in the little keyboard at the left. */
-  juce::Colour getColorBlackKeys() { return blackKeyColour; }
+  //juce::Colour getColorBlackKeys() { return blackKeyColour; }
+  juce::Colour getColorBlackKeys() { return widgetColourScheme.handle.darker(0.5f); }
   // maybe use a darkened widget handle color
 
   /** Returns the color to be used to draw the lanes for the white keys. */
-  juce::Colour getColorWhiteLanes() { return backgroundColourWhiteKey; }
+  //juce::Colour getColorWhiteLanes() { return backgroundColourWhiteKey; }
+  juce::Colour getColorWhiteLanes() { return widgetColourScheme.background; }
   // use plotColourScheme.getFlatBackgroundColour()
 
 
   /** Returns the color to be used to draw the lanes for the black keys. */
-  juce::Colour getColorBlackLanes() { return backgroundColourBlackKey; }
+  //juce::Colour getColorBlackLanes() { return backgroundColourBlackKey; }
+  juce::Colour getColorBlackLanes() { return widgetColourScheme.background.brighter(0.25f); }
   // use same color as for white key lanes with some additional layover gray
 
 
