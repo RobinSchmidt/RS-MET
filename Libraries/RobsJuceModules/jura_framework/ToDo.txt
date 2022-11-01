@@ -1,3 +1,8 @@
+-in the free functions in GraphicsTools.h/cpp, remove all color parameters because they require 
+ setting the color in th state of the juce::Graphics objects and we want to avoid calling 
+ state-changing functions there because the caller may not expect such state changes and we don't 
+ want to call saveState/restoreState there because they are potentially expensive and these drawing
+ functions are supposed to be called a lot - they are low-level
 -make the editors skinnable (background image, etc.)
 -make the widgets skinnable (choose colors, fonts, images (.png or .svg), etc.)
 -it should be possible to load skins at runtime or compile them into the binary

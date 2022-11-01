@@ -1,3 +1,18 @@
+
+
+
+
+To view an array (say named A) in the Visual Sudio debugger:
+-right-click on A in the code -> select Add watch
+-double-click on A in watch window and edit it to A,10 to watch 10 elements
+-now it can be expanded just like std::vector
+-one can also typecast a void-pointer by prepending e.g. (*double)
+-one can also view another chunk of the array by adding an offset like: A+100,10
+
+To debug drawing/painting code, it's sometimes useful to temporarily switch to some flashy color 
+(like red) in the drawing code to get a better idea for which part of code draws which elements.
+
+
 For the standalone version of ToolChain, the JUCE framework provides functionality to recall the 
 last plugin state when the plugin is launched, i.e. on startup, it tries to restore the state from
 when it was closed. The file where this persistent state data is stored is found (on my machines) 

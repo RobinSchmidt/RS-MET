@@ -136,6 +136,8 @@ JUCE_API void setupCoordinateMapper(RAPT::rsCoordinateMapper2D<double>& mapper,
 /** Specifically used in coordinate-system drawing - maybe make more general, rename. */
 JUCE_API void drawBitmapText(Graphics &g, const juce::String &text, double x, double y,
   double w, double h, BitmapFont const* font, Justification justification, Colour color);
+// get rid of the color parameter - it requires changing the state of g which we want to avoid 
+// because restoring it is potentially expensive
 
 /** Draws equidistant horizontal grid-lines. The spacing must be given in model coordinates and 
 will be interpreted as a factor in the case of a logarithmic y-axis. */
@@ -146,6 +148,7 @@ JUCE_API void drawHorizontalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<d
 color the Graphics object is set up to, values are drawn in textColor. */
 JUCE_API void drawAxisValuesY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double xPosition, juce::String (*yToString) (double y), Colour textColor);
+// get rid of the textColor parameter
 
 /** Analog to drawHorizontalGrid. */
 JUCE_API void drawVerticalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
@@ -154,6 +157,8 @@ JUCE_API void drawVerticalGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<dou
 /** Analog to drawAxisValuesY. */
 JUCE_API void drawAxisValuesX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double spacing, double yPosition, juce::String (*xToString) (double x), Colour textColor);
+// get rid of the textColor parameter
+
 
 /** Draws concentric circles centered at the origin of given spacing of the radii. */
 JUCE_API void drawRadialGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
@@ -167,10 +172,12 @@ JUCE_API void drawAngularGrid(Graphics& g, const RAPT::rsCoordinateMapper2D<doub
 /** Draws the x-axis for a coordinate system. */
 JUCE_API void drawAxisX(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double yPosition, const juce::String& label, Colour labelColor);
+// get rid of the labelColor parameter
 
 /** Draws the y-axis for a coordinate system. */
 JUCE_API void drawAxisY(Graphics& g, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double xPosition, const juce::String& label, Colour labelColor);
+// get rid of the labelColor parameter
 
 //=================================================================================================
 // corresponding functions that create the svg elements instead of drawing to a Graphics object

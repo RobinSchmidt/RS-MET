@@ -119,14 +119,25 @@ public:
   int getTopLaneHeight() const { return (int) topLaneHeight; } // why is this a float?
 
 
+
+  juce::Colour getColorBackground()
+  {
+    return juce::Colours::black; 
+  }
+  // preliminary - maybe use the average/flattened background color fo the plots
+
   /** Returns the color to be used to draw the white keys in the little keyboard at the left. */
   //juce::Colour getColorWhiteKeys() { return whiteKeyColour; }
-  juce::Colour getColorWhiteKeys() { return widgetColourScheme.handle.brighter(0.5f); }
+  juce::Colour getColorWhiteKeys() { return widgetColourScheme.handle.brighter(0.75f); }
   // maybe use a whitened widget handle color
 
   /** Returns the color to be used to draw the black keys in the little keyboard at the left. */
   //juce::Colour getColorBlackKeys() { return blackKeyColour; }
-  juce::Colour getColorBlackKeys() { return widgetColourScheme.handle.darker(0.5f); }
+  juce::Colour getColorBlackKeys() 
+  { 
+    //return Colours::red;  // debug
+    return widgetColourScheme.handle.darker(0.75f); 
+  }
   // maybe use a darkened widget handle color
 
   /** Returns the color to be used to draw the lanes for the white keys. */
@@ -137,15 +148,16 @@ public:
 
   /** Returns the color to be used to draw the lanes for the black keys. */
   //juce::Colour getColorBlackLanes() { return backgroundColourBlackKey; }
-  juce::Colour getColorBlackLanes() { return widgetColourScheme.background.brighter(0.25f); }
-  // use same color as for white key lanes with some additional layover gray
+  juce::Colour getColorBlackLanes() { return widgetColourScheme.background.brighter(0.15f); }
+  // use same color as for white key lanes with some additional layover gray using brighter works
+  // only for dark-on-bright, i think
 
   //juce::Colour getColorHandles() { return handleColor; }
   juce::Colour getColorHandles() { return widgetColourScheme.handle; }
   // use widgetColourScheme.handle
 
   juce::Colour getColorText() { return editorColourScheme.text; }
-  // use editorColourScheme.text
+  // use widgetColourScheme.text
 
   juce::Colour getColorLines() { return plotColourScheme.coarseGrid; }
   // use plotColourScheme.coarseGrid

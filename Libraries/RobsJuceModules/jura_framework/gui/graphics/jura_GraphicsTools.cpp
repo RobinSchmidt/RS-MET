@@ -178,6 +178,12 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   //   brighter. Apparently, the opacity is set to a lower value somewhere on a higher level?
   //   OK, let's keep it at full opacity here. Text is a little bit too bright now, though. 
   //   -> Adjust the color elsewhere (in RWidget possibly)
+
+  // -Graphics does not seem to have a member like getCurrentColour - it has getCurrentFont though
+  //  can we nonetheless somehow inquire the current color
+
+  // -maybe try to avoid using g.setColor/setOpacity - client code should do this
+  //  -> remove the colourToUse parameter...this will ripple through the codebase
 }
 
 void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai)

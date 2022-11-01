@@ -292,7 +292,7 @@ void AcidPatternEditor::mouseDown(const MouseEvent &e)
 
 void AcidPatternEditor::paint(juce::Graphics &g)
 {
-  g.fillAll(Colours::white);
+  g.fillAll(getColorBackground());
 
   // Maybe use ints instead of floats - simplifies code below as well...but maybe there's a reason
   // we use floats, maybe to accomodate for GUI size settings for which things do not add up 
@@ -436,7 +436,8 @@ void AcidPatternEditor::paint(juce::Graphics &g)
     float dx     = columnWidth   / 2.f;
     float dy     = topLaneHeight / 2.f;
     int numSteps = patternToEdit->getNumSteps();
-    g.setColour(getColorHandles());
+    //g.setColour(getColorHandles());
+    g.setColour(red);
     for(int i=0; i<patternToEdit->getMaxNumSteps(); i++)
     {
       bool slide = patternToEdit->getSlide(i) && patternToEdit->getGate((i+1)%numSteps);
@@ -461,6 +462,9 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 
       drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, font, getColorText(), 
         -1, Justification::centred);
+      // this calls g.setColour but doesn't reset it - and we don't want to call g.save/restorState there
+      // because thta would be expensive
+
 
       y = keyboardY + 12*rowHeight;
       if( patternToEdit->getGate(i) == true )
@@ -471,7 +475,11 @@ void AcidPatternEditor::paint(juce::Graphics &g)
         {
           float x2 = x + columnWidth;
           float y2 = keyboardY + 12*rowHeight - patternToEdit->getKey(i+1) * rowHeight;
+
           g.drawLine(x2, y+dy, x2, y2+dy, 3.f);
+          // Maybe use a color with a bit of transparency here to make the slide indicators less
+          // weighty
+
           w2 = 1.f;
         }
         g.fillRect(x, y, w2*columnWidth, rowHeight);
