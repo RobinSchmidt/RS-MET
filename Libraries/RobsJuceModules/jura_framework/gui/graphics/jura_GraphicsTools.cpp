@@ -146,8 +146,8 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   // Make sure that g's opacity is set up right, otherwise glyph-images may be drawn transparent
   // regardless of their own opacity values (why is that the case?):
   //g.saveState();                // ToDo: try to avoid this - it may be expensive
-  g.setColour(colourToUse);
-  g.setOpacity(1.f);
+  //g.setColour(colourToUse);
+  //g.setOpacity(1.f);
 
   for(int i = 0; i < textToDraw.length(); ++i)
   {

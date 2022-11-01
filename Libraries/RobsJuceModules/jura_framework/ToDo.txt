@@ -1,4 +1,4 @@
--in the free functions in GraphicsTools.h/cpp, remove all color parameters because they require 
+-in the free functions in GraphicsTools.h/cpp, remove all color parameters if they require 
  setting the color in th state of the juce::Graphics objects and we want to avoid calling 
  state-changing functions there because the caller may not expect such state changes and we don't 
  want to call saveState/restoreState there because they are potentially expensive and these drawing
