@@ -550,11 +550,13 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   shiftRightButton->setClickingTogglesState(false);
   shiftRightButton->addRButtonListener(this);
 
+  /*
   addWidget( shiftAccentsLeftButton = new RButton("L") );
   shiftAccentsLeftButton->setDescription("Shift the accents one postion to the left (circularly)");
   shiftAccentsLeftButton->setDescriptionField(infoField);
   shiftAccentsLeftButton->setClickingTogglesState(false);
   shiftAccentsLeftButton->addRButtonListener(this);
+  */
 
   /*
   addWidget( shiftAccentsRightButton = new RButton("R") );
@@ -576,6 +578,8 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
 
 
 
+
+  addButton(&shiftAccentsLeftButton,    "L", "Shift the accents one postion to the left (circularly)");
   addButton(&shiftAccentsRightButton,   "R", "Shift the accents one postion to the right (circularly)");
 
 
