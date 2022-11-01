@@ -144,8 +144,12 @@ AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit)
 
   whiteKeyColour           = Colours::white;
   blackKeyColour           = Colours::black;
+
   backgroundColourWhiteKey = Colours::white;      // for white key lanes
   backgroundColourBlackKey = Colours::lightgrey;  // for black key lanes
+  // rename
+
+
   handleColor              = Colours::black;
   textColour               = Colours::black;
   lineColour               = Colours::black;

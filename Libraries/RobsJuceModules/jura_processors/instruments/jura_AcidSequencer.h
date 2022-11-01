@@ -74,21 +74,21 @@ class AcidPatternEditor : public Component
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Lifetime
 
   /** Constructor. */
   AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit);
 
-  //---------------------------------------------------------------------------------------------
-  // setup:
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   /** Sets the pattern that is to be edited. */
   void setPatternToEdit(rosic::AcidPattern *newPatternToEdit);
 
   //virtual void setColourScheme(const WidgetColourScheme& newColourScheme) override;
 
-  //---------------------------------------------------------------------------------------------
-  // inquiry:
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   /** Returns the step-number (starting at 0) that corresponds to the given x-coordinate. 
   Returns -1, if no step is at the given x-coordinate (i.e. the x-coordinate is left from the 
@@ -121,8 +121,31 @@ public:
   /** Returns the height of one row in the top lane (for accent, slide, etc.) */
   int getTopLaneHeight() const { return (int) topLaneHeight; } // why is this a fdloat?
 
+  /** Returns the color to be used to draw the white keys in the little keyboard at the left. */
+  juce::Colour getColorWhiteKeys() { return whiteKeyColour; }
+
+  /** Returns the color to be used to draw the black keys in the little keyboard at the left. */
+  juce::Colour getColorBlackKeys() { return blackKeyColour; }
+
+  /** Returns the color to be used to draw the lanes for the white keys. */
+  juce::Colour getColorWhiteLanes() { return backgroundColourWhiteKey; }
+
+  /** Returns the color to be used to draw the lanes for the black keys. */
+  juce::Colour getColorBlackLanes() { return backgroundColourBlackKey; }
+
+
+  juce::Colour getColorHandles() { return handleColor; }
+  // use widgetColourScheme.handle
+
+  juce::Colour getColorText() { return textColour; }
+  // use editorColourScheme.text
+
+  juce::Colour getColorLines() { return lineColour; }
+  // use plotColourScheme coarseGrid
+
+
   //---------------------------------------------------------------------------------------------
-  // callbacks:
+  // \name Callback overrides :
 
   virtual void mouseDown(const MouseEvent &e) override;
   virtual void paint(Graphics &g) override;
@@ -136,7 +159,8 @@ protected:
 
 
 
-  Colour whiteKeyColour, blackKeyColour, backgroundColourWhiteKey, backgroundColourBlackKey,
+  Colour whiteKeyColour, blackKeyColour, 
+    backgroundColourWhiteKey, backgroundColourBlackKey,
     handleColor, textColour, lineColour;
   // replace these member by member function getColorWhiteKeys, etc.
 
