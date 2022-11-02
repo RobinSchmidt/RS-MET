@@ -148,6 +148,7 @@ Ideas:
  would be a rather unique (and useful) feature. The prev button would be like an "undo" button for a 
  "randomize" function (realized by the "next" button) but we could do it without actually 
  implementing an expensive undo/redo infrastructure.
+ ...see experiment noiseReverseMode() for some first tests - it seems to work!
 
 -Maybe allow to create correlated noise by doing only one state-update per sample and
  doing the sum over the past N states, like:

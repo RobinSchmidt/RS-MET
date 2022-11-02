@@ -253,6 +253,14 @@ void noiseReverseMode()
     ok &= xr == x;
   }
 
+  // Ideas:
+  // -Use this algorithm to scramble data:
+  //  -init PRNG by choosing a,b,m and seed state x
+  //  -generate the random sequence
+  //  -the output sequence is obtained by xoring the input sequence with the random sequence
+  //  -the final state ist stored with the scrambled data and to descrambel, we run the process
+  //   in reverse
+  //  -maybe the xor operation can be embedded into a feedback loop for the state
 
   int dummy = 0;
 }
