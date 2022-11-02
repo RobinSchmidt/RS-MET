@@ -316,11 +316,11 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 
   w = keyLength;
 
-  // draw background for white keys and black keys on top of it:
+  // Draw background for white keys and black keys on top of it:
   float keyboardY = 4*topLaneHeight;
 
 
-  Colour red = Colours::red; // for debugging
+  //Colour red = Colours::red; // for debugging
 
   // Draw background for keyboard. The color will eventually become the color of the white keys as
   // all other elements like black keys and key separators are drawn on top:
@@ -335,10 +335,9 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 
   // Draw black keys:
   //g.setColour(red);
-  float bkw = 2*keyLength/3;         // width of black the keys
+  float bkw = 2*keyLength/3;         // width of the black keys
   g.setColour(getColorBlackKeys());
   x = 0;
-  //w = 2*keyLength/3;    // use a variable bkw for black key width - is need later again
   h = (float) rowHeight;
   y = keyboardY + 11*rowHeight;
   g.fillRect(x, y, bkw, h); y -= 2*h;
@@ -437,8 +436,6 @@ void AcidPatternEditor::paint(juce::Graphics &g)
     int numSteps = ptn->getNumSteps();
 
     //g.setColour(getColorHandles());
-    g.setColour(red);
-
 
     for(int i=0; i < ptn->getMaxNumSteps(); i++)
     {
@@ -469,53 +466,49 @@ void AcidPatternEditor::paint(juce::Graphics &g)
       drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, font, getColorText(), 
         -1, Justification::centred);
 
-      // Draw the events in the actual sequencer view, possibly with slide-connectors:
+      //g.setColour(getColorHandles());
+      // Seems not needed - could potentially be due to drawBitmapFontText calling setOpacity on g
+
+      // Draw the note events in the actual sequencer view:
       y = keyboardY + 12*rowHeight;
       if( ptn->getGate(i) == true )
       {
         int key1 = ptn->getKey(i);
         y -= key1 * rowHeight;
-        float w2 = (float) ptn->getStepLength();
-        if( slide )
-        {
-          int key2 = ptn->getKey(0);      // wrap-around case
+        float ws = (float) ptn->getStepLength();                   // width-scaler for note rectangle
+
+        // Draw vertical connector to indicate slide, if active:
+        if( slide ) {
+          int key2 = ptn->getKey(0);                               // wrap-around case
           if(i < ptn->getNumSteps()-1 )
-            key2 = ptn->getKey(i+1);      // typical case
-
-
+            key2 = ptn->getKey(i+1);                               // typical case
           float x2 = x + columnWidth;
-
           float y1 = y;
           float y2 = keyboardY + 12*rowHeight - key2 * rowHeight;
           if(key1 > key2)
             y2 += rowHeight;
           else
             y1 += rowHeight;
-          g.drawLine(x2, y1, x2, y2, 5.f);   // 3.f
-
-          if(i == ptn->getMaxNumSteps()-1)                // wrap around of slide indicator
-          {
+          g.drawLine(x2, y1, x2, y2, 5.f);
+          if(i == ptn->getMaxNumSteps()-1) {                       // wrap around of slide indicator
             g.drawLine(x2-2,        y1, x2-2,        y2, 5.f);
-            g.drawLine(keyLength+1, y1, keyLength+1, y2, 3.f);
-          }
-
-
-          w2 = 1.f;
+            g.drawLine(keyLength+1, y1, keyLength+1, y2, 3.f); }
+          ws = 1.f;                                                // lengthen the note rectangle
         }
 
-        g.fillRect(x, y, w2*columnWidth, rowHeight);
-
+        // Draw actual note rectangle, perhaps with "ears" in case of accent:
+        g.fillRect(x, y, ws*columnWidth, rowHeight);
         if(ptn->getAccent(i) == true)
         {
           // ToDo: draw "ears"
         }
-
       }
-      x += columnWidth;
+
+      x += columnWidth;   // advance x-coordinate to skip to next step
     }
   }
 
-  // draw enclosing rectangle:
+  // Draw enclosing rectangle:
   g.drawRect(0, 0, getWidth(), getHeight(), 2);
 }
 
