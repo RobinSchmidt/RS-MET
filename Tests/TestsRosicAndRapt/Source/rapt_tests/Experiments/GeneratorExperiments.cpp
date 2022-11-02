@@ -220,6 +220,20 @@ void noise()
   // testNoiseGen(int numSamples, int order, bool plotHistogram, bool writeWaveFile)
 }
 
+void noiseReverseMode()
+{
+  // We imﬂplement a reverse mode for a PRNG by solving the modular updtae equation for the old 
+  // state in terms of the new state...tbc...
+
+  // Coefficients for the linear congruential PRNG algorithm (same as in RAPT::rsNoiseGenerator):
+  rsUint64 a = 1664525;     // multiplier
+  rsUint64 b = 1013904223;  // additive offset
+  rsUint64 m = 4294967296;  // modulus
+
+
+  int dummy = 0;
+}
+
 void noiseTriModal()
 {
   int numSamples = 100000;

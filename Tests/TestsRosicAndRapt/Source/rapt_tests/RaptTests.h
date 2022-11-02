@@ -38,6 +38,7 @@ void seriesConnectionDecay();
 
 void waveformFractalization();
 void noise();
+void noiseReverseMode();
 void noiseTriModal();
 void noiseWaveShaped();
 void blit();

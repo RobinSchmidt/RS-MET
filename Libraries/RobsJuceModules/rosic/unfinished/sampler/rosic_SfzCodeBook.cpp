@@ -1150,28 +1150,28 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     bool pos2ok = meetsCriteria(code, pos2, pos2 + L2 - 1);
     if(pos1ok && !pos2ok)
     {
-      *startIndex = (int) pos1;
-      *endIndex   = (int) pos1 + L1 - 1;
+      *startIndex = (int)  pos1;
+      *endIndex   = (int) (pos1 + L1) - 1;
       break;
     }
     else if(pos2ok && !pos1ok)
     {
-      *startIndex = (int) pos2;
-      *endIndex   = (int) pos2 + L2 - 1;
+      *startIndex = (int)  pos2;
+      *endIndex   = (int) (pos2 + L2) - 1;
       break;
     }
     else if(pos1ok && pos2ok)
     {
       if(pos1 > pos2)
       {
-        *startIndex = (int) pos1;
-        *endIndex   = (int) pos1 + L1 - 1;
+        *startIndex = (int)  pos1;
+        *endIndex   = (int) (pos1 + L1) - 1;
         break;
       }
       else if(pos2 > pos1)
       {
-        *startIndex = (int) pos2;
-        *endIndex   = (int) pos2 + L2 - 1;
+        *startIndex = (int)  pos2;
+        *endIndex   = (int) (pos2 + L2) - 1;
         break;
       }
       else
@@ -1179,8 +1179,8 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
         // pos1 == pos2. This happens when the opcode without 1 is a prefix of the one with 1. In 
         // this case, both variants were found and the one *with* the 1 is the one we are 
         // interested in because the one without is just its substring ...i think.
-        *startIndex = (int) pos1;
-        *endIndex   = (int) pos1 + L1 - 1;
+        *startIndex = (int)  pos1;
+        *endIndex   = (int) (pos1 + L1) - 1;
         break;
         // This branch can actually be absorbed into 1st branch by using >= instead of >
       }
