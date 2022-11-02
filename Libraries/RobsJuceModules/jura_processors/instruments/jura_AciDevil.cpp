@@ -539,5 +539,6 @@ Ideas:
 -The filter needs some more work: the resonance drops too much towards higher cutoffs for the
  mid/high resonance range - at the upper end, it seems better, but slightly below, the behavior is
  suboptimal.
+-Maybe implement a simple undo/redo mechanism by keeping track of the applied transformations
 
 */

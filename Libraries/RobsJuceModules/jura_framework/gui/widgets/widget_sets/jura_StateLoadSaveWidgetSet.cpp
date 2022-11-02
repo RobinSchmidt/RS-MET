@@ -109,15 +109,18 @@ void StateLoadSaveWidgetSet::stateDirtyFlagChanged(StateManager *stateManager)
   updateStateNameField();
 }
 
+/*
 void StateLoadSaveWidgetSet::paint(Graphics &g)
 {
-  //g.fillAll(Colours::black); // only for test
+  g.fillAll(Colours::red); // only for test
 }
+
 
 void StateLoadSaveWidgetSet::paintOverChildren(Graphics &g)
 {
 
 }
+*/
 
 void StateLoadSaveWidgetSet::resized()
 {

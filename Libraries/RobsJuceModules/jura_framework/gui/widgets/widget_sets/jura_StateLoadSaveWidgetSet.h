@@ -67,20 +67,20 @@ public:
   // callbacks:
 
   /** Implements the purely virtual rButtonClicked()-method of the ButtonListener base-class. */
-  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  void rButtonClicked(RButton *buttonThatWasClicked) override;
 
   /** Implements the purely virtual method inherited from StateWatcher. */
-  virtual void stateDirtyFlagChanged(StateManager* stateManager);
+  void stateDirtyFlagChanged(StateManager* stateManager) override;
 
-  /** Overrides piant in order to possibly draw the headline. */
-  virtual void paint(Graphics &g);
+  /** Overrides paint in order to possibly draw the headline. */
+  //void paint(Graphics &g) override;
 
   /** Overrides the paint-method of the component base-class in order not to draw the outline
   on top of the child components. */
-  virtual void paintOverChildren(Graphics &g);
+  //void paintOverChildren(Graphics &g) override;
 
   /** Overrides the resized()-method of the component base-class. */
-  virtual void resized();
+  void resized() override;
 
   //-----------------------------------------------------------------------------------------------
   // public data members:
