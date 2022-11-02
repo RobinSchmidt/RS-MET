@@ -648,16 +648,23 @@ void AcidSequencerModuleEditor::updateWidgetsAccordingToState()
   patternEditor->repaint();
 }
 
+void AcidSequencerModuleEditor::timerCallback()
+{
+
+}
+
 void AcidSequencerModuleEditor::rSliderValueChanged(RSlider *rSliderThatHasChanged)
 {
   if( rSliderThatHasChanged == stepLengthSlider )
     patternEditor->repaint();
 }
 
+/*
 void AcidSequencerModuleEditor::paint(Graphics &g)
 {
   AudioModuleEditor::paint(g);
 }
+*/
 
 void AcidSequencerModuleEditor::resized()
 {

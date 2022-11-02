@@ -59,7 +59,9 @@ protected:
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::AcidSequencer *wrappedAcidSequencer;
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AcidSequencerAudioModule);
+  //juce_UseDebuggingNewOperator;
 };
 
 
@@ -189,14 +191,16 @@ protected:
   // Why are these floats? Can't we make them integers?
   // rename keyLength to keySize..hmm..no
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AcidPatternEditor);
+  //juce_UseDebuggingNewOperator;
 };
 
 
 //===============================================================================================
 // class AcidSequencerModuleEditor:
 
-class AcidSequencerModuleEditor : public AudioModuleEditor, public RSliderListener
+class AcidSequencerModuleEditor : public jura::AudioModuleEditor, public jura::RSliderListener, 
+  public juce::Timer
 {
 
 public:
@@ -205,7 +209,8 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  AcidSequencerModuleEditor(CriticalSection *newPlugInLock, AcidSequencerAudioModule* newAcidSequencerAudioModule);
+  AcidSequencerModuleEditor(CriticalSection *newPlugInLock, 
+    AcidSequencerAudioModule* newAcidSequencerAudioModule);
 
   //---------------------------------------------------------------------------------------------
   // setup:
@@ -215,20 +220,23 @@ public:
 
   /** Overrides rButtonClicked() for triggering various actions and update the display 
   accordingly. */
-  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  void rButtonClicked(RButton *buttonThatWasClicked) override; 
 
   /** Overrides rSliderValueChanged to update the sequencer display when the steLength slider 
   changes. */  
-  virtual void rSliderValueChanged(RSlider *rSliderThatHasChanged);
+  void rSliderValueChanged(RSlider *rSliderThatHasChanged) override; 
+
+  /**  */    
+  //void paint(Graphics &g) override; 
 
   /** Overrides resized(). */    
-  virtual void paint(Graphics &g);
-
-  /** Overrides resized(). */    
-  virtual void resized();
+  void resized() override; 
 
   /** Overrides the method inherited from AudioModuleEditor. */
-  virtual void updateWidgetsAccordingToState();
+  void updateWidgetsAccordingToState() override; 
+
+  /** Overrides the method inherited from juce::Timer. */
+  void timerCallback() override; 
 
 protected:
 
@@ -240,7 +248,8 @@ protected:
   RComboBox  *modeBox;
   RSlider    *stepLengthSlider;
 
-  RButton    *lockButton;  // prevents the sequencer data from being changed and preset-change
+  RButton    *lockButton;  // prevents the sequencer data from being changed in preset-change
+  // not yet used
 
   // Sequence manipulators:
   RClickButton *shiftLeftButton, *shiftRightButton, *shiftAccentsLeftButton, *shiftAccentsRightButton, 
@@ -250,8 +259,12 @@ protected:
     *xorAccentsSlidesButton, *xorSlidesAccentsButton, *invertAccentsButton, *invertSlidesButton, 
     *invertOctavesButton;
 
+  // The vertical line that moves horizontally in the sequencer:
+  //RectangleComponent* timeCursor;
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AcidSequencerModuleEditor);
+  //juce_UseDebuggingNewOperator;
 };
 
 #endif
