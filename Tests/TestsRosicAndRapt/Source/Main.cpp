@@ -543,6 +543,8 @@ int main(int argc, char* argv[])
   //sigmoidPrototypes();
   //sixticPositive();
 
+  // Distortion:
+
   //-----------------------------------------------------------------------------------------------
   // Performance Tests:
 

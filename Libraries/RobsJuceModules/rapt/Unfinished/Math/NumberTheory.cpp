@@ -229,6 +229,11 @@ T rsModularInverse(const T& x, const T& m)
   }
   else
     return T(0);
+
+  // See:
+  // Edmund Weitz - Konkrete Mathematik (nicht nur) für Informatiker, pg. 65
+  // https://www.youtube.com/watch?v=op_mD9n1qLA , https://www.youtube.com/watch?v=J0zCSAExkK0
+  // https://www.youtube.com/watch?v=hYYmWI_oqjI , https://www.youtube.com/watch?v=-WlpjAbWjws
 }
 
 template <class T>
