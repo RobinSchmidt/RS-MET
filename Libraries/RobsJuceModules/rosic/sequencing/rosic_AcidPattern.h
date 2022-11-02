@@ -105,7 +105,9 @@ namespace rosic
     /** Circularly shifts the whole pattern by the given number of steps. */
     void circularShiftAll(int numStepsToShift);
 
-    // under construction:
+    // under construction - see comments in AcidSequencer fro hwo they work (it has function with the
+    // same names which just delegate):
+
     void circularShiftAccents(int numStepsToShift);
     void circularShiftSlides( int numStepsToShift);
     void circularShiftOctaves(int numStepsToShift);

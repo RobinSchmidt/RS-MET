@@ -660,13 +660,18 @@ void AcidSequencerModuleEditor::timerCallback()
 
   rosic::AcidSequencer *seq = seqModule->wrappedAcidSequencer;
 
-
   //if(seq->getSequencerMode() == rosic::AcidSequencer::sequencerModes::OFF)
   if(seq->isRunning())
   {
+    //rosic::AcidNote* note = seq->getNote();
+    int step = seq->getCurrentStep();
+
+
     timeCursor->setVisible(true);
 
-    timeCursor->setBounds(0, 0, 10, 100);
+    int w = 10;
+
+    timeCursor->setBounds(step*w, 0, w, 100);
     // ToDo:
     // -figure out current step and adjust x-coordinate accordingly
     // -use columnWidth from embedded AcidPatternEditor instead of 10
