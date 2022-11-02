@@ -222,7 +222,7 @@ void noise()
 
 void noiseReverseMode()
 {
-  // We imﬂplement a reverse mode for a PRNG by solving the modular updtae equation for the old 
+  // We implement a reverse mode for a PRNG by solving the modular updtae equation for the old 
   // state in terms of the new state...tbc...
 
   // Coefficients for the linear congruential PRNG algorithm (same as in RAPT::rsNoiseGenerator):
@@ -238,9 +238,20 @@ void noiseReverseMode()
   auto next = [&](Int x) { return ((a * x) + b ) % m; };
   auto prev = [&](Int y) { return ((y - b) * ai) % m; };
 
+  // A first manual test with a hand-picked current state x:
   Int x  = 42;
   Int y  = next(x);
-  Int xr = prev(y);  // reconstructed x ...yes! It's indeed 42
+  Int xr = prev(y);  // reconstructed x ...yes! It's indeed 42! It works as intended!
+
+  // An automated test for many values of x:
+  Int  xMax = 1000;
+  bool ok   = true;
+  for(x = 0; x < xMax; x++)
+  {
+    y   = next(x);
+    xr  = prev(y);
+    ok &= xr == x;
+  }
 
 
   int dummy = 0;
