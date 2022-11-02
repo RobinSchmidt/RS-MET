@@ -235,7 +235,7 @@ void noiseReverseMode()
   Int m = 4294967296;  // modulus
 
   // Find modular inverse of the multiplier a:
-  Int ai = rsModularInverse(a, m);
+  Int ai = rsModularInverse(a, m);   // ai = 1/a = a^-1 = 4276115653
 
   // Helper function to perform the mathematically correct modulo operation even for negative 
   // inputs x:
@@ -246,8 +246,8 @@ void noiseReverseMode()
       return r + m;
     return r;
     // See https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
-    // there's also code for when m is negative, but we don't need that here.
-    // Maybe move that function into the library as rsModulo
+    // There's also code for when m is negative, but we don't need that here. What would that even
+    // mean? Maybe move the function into the library as rsModulo.
   };
 
   // Functions to update and downdate a state of the PRNG:
