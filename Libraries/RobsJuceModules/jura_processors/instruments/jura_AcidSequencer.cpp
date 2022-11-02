@@ -474,18 +474,11 @@ void AcidPatternEditor::paint(juce::Graphics &g)
         g.fillRect(x, y, ws*columnWidth, rowHeight);
         if(ptn->getAccent(i) == true)
         {
-          g.setColour(Colours::red);
+          //g.setColour(Colours::red);
+          drawTriangle(g, x, y,           x, y-dy,           x+dx, y,           true);
+          drawTriangle(g, x, y+rowHeight, x, y+dy+rowHeight, x+dx, y+rowHeight, true);
 
-          //drawTriangle(g, x, y+dy, x, y-dy, x+dx, y, true);
-
-          drawTriangle(g, x, y, x, y-dy, x+dx, y, true);
-
-          //drawTriangle(g, x, y+dy, x, y, x+dx, y, true);
-
-
-          //drawTriangle(g, x, y+dy+h, x, y-dy+h, x+dx, y+h, true);
-
-          // ToDo: draw "ears"
+          // looks bad when StepLength is short
         }
       }
 
