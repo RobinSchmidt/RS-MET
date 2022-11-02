@@ -503,13 +503,13 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
 
   // assign the pointer to the rosic::AcidSequencer object to be used as aduio engine:
   jassert(newAcidSequencerAudioModule != NULL ); // you must pass a valid module here
-  acidSequencerModuleToEdit = newAcidSequencerAudioModule;
+  seqModule = newAcidSequencerAudioModule;
 
   isTopLevelEditor = false;
 
-  patternEditor = new AcidPatternEditor(acidSequencerModuleToEdit->wrappedAcidSequencer);
+  patternEditor = new AcidPatternEditor(seqModule->wrappedAcidSequencer);
   addChildColourSchemeComponent(patternEditor);
-  patternEditor->setPatternToEdit(acidSequencerModuleToEdit->wrappedAcidSequencer->getPattern(0));
+  patternEditor->setPatternToEdit(seqModule->wrappedAcidSequencer->getPattern(0));
   patternEditor->setDescriptionField(infoField, true);
 
 
@@ -525,7 +525,7 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   modeBox->setDescriptionField(infoField);
 
   addWidget( stepLengthSlider = new RSlider ("StepLengthSlider") );
-  stepLengthSlider->assignParameter( acidSequencerModuleToEdit->getParameterByName("StepLength") );
+  stepLengthSlider->assignParameter( seqModule->getParameterByName("StepLength") );
   stepLengthSlider->setDescription(juce::String("Length of the steps in 16th notes"));
   stepLengthSlider->setStringConversionFunction(valueToString2);
   stepLengthSlider->setDescriptionField(infoField);
@@ -580,8 +580,12 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   // maybe let new accents be old accenzts xor'ed with slides, smae for slides
 
 
-  // set up the widgets:
+  // Set up the widgets:
   updateWidgetsAccordingToState();
+
+  // Animated cursor:
+  addChildComponent(timeCursor = new RectangleComponent);
+  startTimerHz(50);  // used to update cursor position and visibility
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -594,10 +598,10 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
 
 void AcidSequencerModuleEditor::rButtonClicked(RButton *b)
 {
-  if( acidSequencerModuleToEdit==NULL || acidSequencerModuleToEdit->wrappedAcidSequencer==NULL )
+  if( seqModule == nullptr || seqModule->wrappedAcidSequencer == nullptr )
     return;
 
-  auto seq = acidSequencerModuleToEdit->wrappedAcidSequencer;
+  auto seq = seqModule->wrappedAcidSequencer;
 
   if(      b == shiftLeftButton         ) seq->circularShiftAll(-1);
   else if( b == shiftRightButton        ) seq->circularShiftAll(+1);
@@ -650,6 +654,27 @@ void AcidSequencerModuleEditor::updateWidgetsAccordingToState()
 
 void AcidSequencerModuleEditor::timerCallback()
 {
+  if( seqModule == nullptr || seqModule->wrappedAcidSequencer == nullptr )
+    return;
+
+
+  rosic::AcidSequencer *seq = seqModule->wrappedAcidSequencer;
+
+
+  //if(seq->getSequencerMode() == rosic::AcidSequencer::sequencerModes::OFF)
+  if(seq->isRunning())
+  {
+    timeCursor->setVisible(true);
+
+    timeCursor->setBounds(0, 0, 10, 100);
+    // ToDo:
+    // -figure out current step and adjust x-coordinate accordingly
+    // -use columnWidth from embedded AcidPatternEditor instead of 10
+    // -maybe override setColorScheme to also set the colors of the cursor
+  }
+  else
+    timeCursor->setVisible(false);
+
 
 }
 

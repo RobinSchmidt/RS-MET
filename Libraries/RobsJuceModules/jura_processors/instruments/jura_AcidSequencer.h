@@ -1,13 +1,9 @@
 #ifndef jura_AcidSequencer_h
 #define jura_AcidSequencer_h
 
-//#include "../../../rosic/sequencing/rosic_AcidSequencer.h"
-//using namespace rosic;
-//
-//#include "../rosof_AudioModule.h"
 
 
-/** This class wraps rosic::AcidSequencer into a rosof::AudioModule. */
+/**  */
 
 class AcidSequencerAudioModule : public AudioModule
 {
@@ -240,8 +236,7 @@ public:
 
 protected:
 
-  /** This is the actual plugin engine which does all the dsp and automation handling. */
-  AcidSequencerAudioModule *acidSequencerModuleToEdit;
+  AcidSequencerAudioModule *seqModule;
   AcidPatternEditor        *patternEditor;
 
   RTextField *modeLabel, *shiftLabel;  // shiftLabel not use anymore
@@ -260,7 +255,7 @@ protected:
     *invertOctavesButton;
 
   // The vertical line that moves horizontally in the sequencer:
-  //RectangleComponent* timeCursor;
+  RectangleComponent* timeCursor;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AcidSequencerModuleEditor);
