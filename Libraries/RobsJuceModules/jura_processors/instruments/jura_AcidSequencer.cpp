@@ -379,6 +379,8 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   h = (float) rowHeight;
   y = keyboardY + h;
   thickness = 1.f;
+
+  /*
   g.drawLine(x, y, w, y, thickness);  y += h;
   g.drawLine(x, y, w, y, thickness);  y += h;
   g.drawLine(x, y, w, y, thickness);  y += h;
@@ -392,6 +394,12 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.drawLine(x, y, w, y, thickness);  y += h;
   g.drawLine(x, y, w, y, thickness);
   // maybe use a loop
+  */
+
+  for(int i = 1; i <= 12; i++) {
+    g.drawLine(x, y, w, y, thickness); y += h; }
+
+
 
   // Draw the lines between the piano-roll white keys:
   g.setColour(getColorLines());
