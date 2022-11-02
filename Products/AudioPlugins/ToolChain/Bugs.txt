@@ -1,6 +1,8 @@
 
 General:
--coloring of popup menu items in comboboxes is wrong when mousing over
+-load Acid8.xml in ToolChain, switch to next preset -> crash
+ -it seems to have to do with the StereoDelay in Slot 2 (?)
+
 
 Sampler
 -[FIXED] load NoiseWhistle.sfz, then in the TreeView:

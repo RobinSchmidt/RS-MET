@@ -475,10 +475,9 @@ void AcidPatternEditor::paint(juce::Graphics &g)
         if(ptn->getAccent(i) == true)
         {
           //g.setColour(Colours::red);
-          drawTriangle(g, x, y,           x, y-dy,           x+dx, y,           true);
-          drawTriangle(g, x, y+rowHeight, x, y+dy+rowHeight, x+dx, y+rowHeight, true);
-
-          // looks bad when StepLength is short
+          float xr = x + jmin(dx, ws*columnWidth); // jmin needed for short StepLength
+          drawTriangle(g, x, y,           x, y-dy,           xr, y,           true);
+          drawTriangle(g, x, y+rowHeight, x, y+dy+rowHeight, xr, y+rowHeight, true);
         }
       }
 
