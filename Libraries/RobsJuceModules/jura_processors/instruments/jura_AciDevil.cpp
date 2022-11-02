@@ -79,8 +79,13 @@ void AciDevilAudioModule::createParameters()
   addObservedParameter(p);
 
   p = new Param("Cutoff", 200.0, 10000.0, 300.0, Parameter::EXPONENTIAL, 0.0);
+  //p = new Param("Cutoff", 20.0, 10000.0, 300.0, Parameter::EXPONENTIAL, 0.0);
   p->setValueChangeCallback<AD>(ad, &AD::setCutoff);
   addObservedParameter(p);
+  // The cutoff should have a lower minimum setting. Just changing the parameter's minimum from 200 to
+  // 20, for example, doesn't seem to work though. Somewhere below 200, the cutoff stops responding to
+  // further changes as if there's some sort of cutoff = max(cutoff, 180) or something going on. Check 
+  // in the DSP code, if we limit the cutoff range there and try to do something about it.
 
   p = new Param("Resonance", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setResonance);
@@ -528,10 +533,8 @@ void AciDevilModuleEditor::resized()
 }
 
 /*
-Ideas:
--the shift functionality for the sequencer should be available separately for accent, glide, 
- octave and notes - currently everything is shifted togther
 
-Todo: move the amplifier secstion under the filter env, maybe ad some more distortion options
+Ideas:
+-The cutoff should have a lower minimum setting. See comment in createParameters().
 
 */

@@ -999,11 +999,25 @@ void ToolChainEditor::paintOverChildren(Graphics& g)
   g.setColour(Colour::fromFloatRGBA(0.8125f, 0.8125f, 0.8125f, 1.f));
   // maybe switch depending on widget color-scheme (dark-on-bright vs bright-on-dark)
 
+  // New code that works around occasional crashes:
+  int slotHighlight = chain->activeSlot;
+  if( slotHighlight >= selectors.size() )  // How can this happen? Try to avoid this from
+    slotHighlight = 0;                     // occurring in the first place!
+  juce::Rectangle<int> rect = selectors[slotHighlight]->getBounds();
+  g.drawRect(rect, 2);  // 2nd param: thickness
+  // I think, the crash happened, when the chain->activeSlot value was still at the value of the
+  // old preset and the new preset has not enough filled slots? Maybe the activeSlot member needs
+  // to be updated first or at least be temporarily set to zero before we load a new patch? 
+  // Figure out!
+
+  /*
+  // Old code that sometimes crashed:
   jassert(chain->activeSlot < selectors.size()); 
   // ..i once had a weird crash - not sure, if that was out of range
 
   juce::Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
+  */
 }
 
 void ToolChainEditor::rComboBoxChanged(RComboBox* box)

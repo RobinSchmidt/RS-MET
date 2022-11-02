@@ -1,6 +1,6 @@
 
 General:
--load Acid8.xml in ToolChain, switch to next preset -> crash
+-[fixed?] load Acid8.xml in ToolChain, switch to next preset -> crash
  -it seems to have to do with the StereoDelay in Slot 2 (?)
 
 
