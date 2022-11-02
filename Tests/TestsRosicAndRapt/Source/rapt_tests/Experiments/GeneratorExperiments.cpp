@@ -222,11 +222,11 @@ void noise()
 
 void noiseReverseMode()
 {
-  // We implement a reverse mode for a PRNG by solving the modular update equation 
-  // y = (a*x + b) % m where x is the old state and y the new state for the old state x. This 
-  // gives: x = ((y-b) / a) % m. This formula can be used to "downdate" the PRNG stae, i.e. compute
-  // the previous state from the current one. The division by a is realized as multiplication by 
-  // the modular inverse of a for the given modulus m. ...tbc...
+  // We implement a reverse gear mode for a PRNG by solving the modular update equation 
+  // y = (a*x + b) mod m where x is the old state and y the new state for the old state x. This 
+  // gives: x = ((y-b) / a) mod m. This formula can be used to "downdate" the PRNG state, i.e. 
+  // compute the previous state from the current one. The division by a is realized as 
+  // multiplication by the modular inverse of a for the given modulus m. ...tbc...
 
   // Coefficients for the linear congruential PRNG algorithm (same as in RAPT::rsNoiseGenerator):
   using Int = rsInt64;
@@ -242,7 +242,7 @@ void noiseReverseMode()
   auto mod = [](Int x, Int m)
   {
     Int r = x % m;     // remainder
-    if(r < 0)
+    if(r < 0)          // r < 0 happens for x < 0
       return r + m;
     return r;
     // See https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
