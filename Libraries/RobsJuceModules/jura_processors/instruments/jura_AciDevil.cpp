@@ -536,5 +536,8 @@ void AciDevilModuleEditor::resized()
 
 Ideas:
 -The cutoff should have a lower minimum setting. See comment in createParameters().
+-The filter needs some more work: the resonance drops too much towards higher cutoffs for the
+ mid/high resonance range - at the upper end, it seems better, but slightly below, the behavior is
+ suboptimal.
 
 */

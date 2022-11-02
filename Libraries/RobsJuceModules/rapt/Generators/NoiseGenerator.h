@@ -129,44 +129,64 @@ protected:
 
 };
 
-// ToDo: maybe allow to create correlated noise by doing only one state-update per sample and
-// doing the sum over the past N states, like:
-//   accu -= state;   // subtract old state
-//   updateState();   // compute new state
-//   accu += state;   // add new state
-//   return scale * accu + shift;
-// where accu is remembered between calls to getSample. But that's actually a differencing filter, 
-// i.e. a highpass, so it will change the spectrum. Maybe such things as filtering should better be
-// left to client code.
+/*
 
-// ToDo: allow for bi-, tri- and multimodal distributions: for example to get 3 bells at -1, 0, 1,
-// first select (according to some probability), which bell is
+Ideas:
 
-// getSampleTriModal
-//   double selector = selectorGenerator.getSample(); // in 0..1
-//   double randomVal = randomGenerator.getSample();
-//   if(selector < thresh1)
-//     return randomVal + offset1;
-//   if(selector > thresh2)
-//     return randomVal + offset2;
-//   return randomVal
+-In analogy to updateState(), implement a function "downdateState" of "updateStateReverse" or 
+ something like that. The idea is that from the current state x, we cannot only compute the *next*
+ state y by the formula y = (a*x + b) % m but also solve the formula for the *previous* state like:
+ x = ((y-b) / a) % m where the division by a is realized as multiplication by the modular inverse
+ of a for the given modulus m. I think, the condition for such a modular inverse to exist is that
+ a and m are coprime which is the case here because a is odd and m is a power of 2. I think, the 
+ modular inverse can be found by the extended Euclidean algorithm. Implement this stuff in the 
+ experiments and if it works, drag over the code into the library. We could use a PRNG of that kind
+ for the randomization features in the acid sequencer. There, we'd interpret the bit patterns for 
+ the accents and slides as k-bit numbers where where the modulus is given by m = 2^k with k being 
+ the number of steps in the sequence (typically 16). We can give the user next/prev buttons to skip 
+ forward/backward through random patterns. Being able to skip back to the previous "random" pattern 
+ would be a rather unique (and useful) feature. The prev button would be like an "undo" button for a 
+ "randomize" function (realized by the "next" button) but we could do it without actually 
+ implementing an expensive undo/redo infrastructure.
 
-// thresh1/2 would determine the weights of the 3 modes, for example with thresh1 = 0.3,
-// thresh2 = 0.7, we would have a 30% chance to get a sample of the low mode a 40% chance for the
-// middle mode and again a 30% chance for the high mode - we could give the user parameters
-// modeCenter, modeSpread, modeSkew...there is some prototype code for this in the experiments
-//
-// Idea:
-// In the modal synthesizer, we could make these chances dependent on the output signal to
-// establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator.
-// When the output signal value is strongly negative, we should have a high chance of getting a
-// positive excitation impulse value (i.e. choose the generator with positive center) and vice
-// versa - this sort of simulates the probability for slip/slide events in a bowed string - if the
-// string is under tension in one direction it has a higher chance to slip into the other 
-// direction. Or Maybe we need a trimodal distribution with thresholds like 0.01, 0.09, and also 
-// have amplitude weights for the 3 possible outputs, like 1.0, 0.01, 1.0. Then 99% of the time, we 
-// would select the middle mode and only output a very quiet noise and the remaining 1 % we would 
-// see positive or negative spikes.....experimentation needed
+-Maybe allow to create correlated noise by doing only one state-update per sample and
+ doing the sum over the past N states, like:
+   accu -= state;   // subtract old state
+   updateState();   // compute new state
+   accu += state;   // add new state
+   return scale * accu + shift;
+ where accu is remembered between calls to getSample. But that's actually a differencing filter, 
+ i.e. a highpass, so it will change the spectrum. Maybe such things as filtering should better be
+ left to client code.
+
+-Allow for bi-, tri- and multimodal distributions: for example to get 3 bells at -1, 0, 1,
+ first select (according to some probability), which bell is used, then generate a sample from that
+ bell's distribution. Maybe like:
+  getSampleTriModal
+    double selector = selectorGenerator.getSample(); // in 0..1
+    double randomVal = randomGenerator.getSample();
+    if(selector < thresh1)
+      return randomVal + offset1;
+    if(selector > thresh2)
+      return randomVal + offset2;
+    return randomVal
+ thresh1/2 would determine the weights of the 3 modes, for example with thresh1 = 0.3,
+ thresh2 = 0.7, we would have a 30% chance to get a sample of the low mode a 40% chance for the
+ middle mode and again a 30% chance for the high mode - we could give the user parameters
+ modeCenter, modeSpread, modeSkew...there is some prototype code for this in the experiments.
+
+-In the modal synthesizer, we could make these chances dependent on the output signal to
+ establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator.
+ When the output signal value is strongly negative, we should have a high chance of getting a
+ positive excitation impulse value (i.e. choose the generator with positive center) and vice
+ versa. I think, this kinda simulates the probability for slip/slide events in a bowed string: If
+ the string is under tension in one direction it has a higher chance to slip into the other 
+ direction. Or Maybe we need a trimodal distribution with thresholds like 0.01, 0.09, and also 
+ have amplitude weights for the 3 possible outputs, like 1.0, 0.01, 1.0. Then 99% of the time, we 
+ would select the middle mode and only output a very quiet noise and the remaining 1 % we would 
+ see positive or negative spikes.....experimentation needed
+
+*/
 
 
 
