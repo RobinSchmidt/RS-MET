@@ -222,8 +222,11 @@ void noise()
 
 void noiseReverseMode()
 {
-  // We implement a reverse mode for a PRNG by solving the modular updtae equation for the old 
-  // state in terms of the new state...tbc...
+  // We implement a reverse mode for a PRNG by solving the modular update equation 
+  // y = (a*x + b) % m where x is the old state and y the new state for the old state x. This 
+  // gives: x = ((y-b) / a) % m. This formula can be used to "downdate" the PRNG stae, i.e. compute
+  // the previous state from the current one. The division by a is realized as multiplication by 
+  // the modular inverse of a for the given modulus m. ...tbc...
 
   // Coefficients for the linear congruential PRNG algorithm (same as in RAPT::rsNoiseGenerator):
   using Int = rsInt64;
@@ -243,15 +246,29 @@ void noiseReverseMode()
   Int y  = next(x);
   Int xr = prev(y);  // reconstructed x ...yes! It's indeed 42! It works as intended!
 
-  // An automated test for many values of x:
+  // An automated test for many values of x (can be turned into unit test later, if needed):
   Int  xMax = 1000;
   bool ok   = true;
-  for(x = 0; x < xMax; x++)
-  {
+  for(x = 0; x < xMax; x++) {
     y   = next(x);
     xr  = prev(y);
+    ok &= xr == x; }
+
+  // Now with some random bigger numbers:
+  Int iMax = 1000;
+  x = 0;
+  for(Int i = 0; i < iMax; i++)
+  {
+    y  = next(x);
+    xr = prev(y);
     ok &= xr == x;
+    x = y;
   }
+  // This fails! The reconstructed x can become negative - the % m operation in prev should also
+  // convert negative numbers into positive representants of the same equivalence class
+  // -> implement and use a helper function modulo(x, m) that also works for negative inputs x 
+  // correctly
+
 
   // Ideas:
   // -Use this algorithm to scramble data:
