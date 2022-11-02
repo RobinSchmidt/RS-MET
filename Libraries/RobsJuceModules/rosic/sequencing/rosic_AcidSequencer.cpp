@@ -18,6 +18,8 @@ AcidSequencer::AcidSequencer()
 
   for(int k=0; k<=12; k++)
     keyPermissible[k] = true;
+
+  //bpm = 30;  // very slow, for debugging the animation
 }
 
 //-------------------------------------------------------------------------------------------------

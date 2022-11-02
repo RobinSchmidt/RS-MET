@@ -124,7 +124,8 @@ public:
   float getColumnWidth() const { return columnWidth; }
 
   /** Returns the left coordinate of the actual sequencer excluding the keyboard on the left. */
-  float getSequencerLeft() const { return keyLength; }
+  float getSequencerLeft() const { return keyLength + 4; }
+  // +4 for the 2-pixel outline left and right
 
   //float getSequencerTop() const { return 5*topLaneHeight; };
 

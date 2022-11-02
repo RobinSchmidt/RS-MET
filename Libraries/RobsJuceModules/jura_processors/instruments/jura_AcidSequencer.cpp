@@ -585,6 +585,8 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
 
   // Animated cursor:
   addChildComponent(timeCursor = new RectangleComponent);
+  timeCursor->setOutlineThickness(0);
+  timeCursor->setFillColour(juce::Colour(uint8(128), uint8(128), uint8(128), 0.5f));
   startTimerHz(50);  // used to update cursor position and visibility
 }
 
