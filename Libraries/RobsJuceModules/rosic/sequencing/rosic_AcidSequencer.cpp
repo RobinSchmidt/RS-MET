@@ -107,7 +107,17 @@ void AcidSequencer::start()
 {
   // set up members such that we will trap in the else-branch in the next call to getNote():
   running    = true;
-  countDown  = -1;    
+
+
+  //countDown  = -1;    // is this wrong?
+
+  // new:
+  double secondsToNextStep = RAPT::rsBeatsToSeconds(0.25, bpm);
+  double samplesToNextStep = secondsToNextStep * sampleRate;
+  countDown                = roundToInt(samplesToNextStep);
+  // code is duplicated in getNote() - try to refactor!
+
+
   step       = 0;
   driftError = 0.0;
 }

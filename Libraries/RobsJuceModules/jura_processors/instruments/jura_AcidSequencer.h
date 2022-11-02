@@ -117,7 +117,16 @@ public:
 
   /** Returns the height of one row in the top lane (for accent, slide, etc.) */
   int getTopLaneHeight() const { return (int) topLaneHeight; } // why is this a float?
+  // rename to getTopLaneRowHeight - it's confusing because the caller may assume it's the sum
+  // of all rows
 
+  /** Returns the width of one sequencer column, i.e. the width available for each note. */
+  float getColumnWidth() const { return columnWidth; }
+
+  /** Returns the left coordinate of the actual sequencer excluding the keyboard on the left. */
+  float getSequencerLeft() const { return keyLength; }
+
+  //float getSequencerTop() const { return 5*topLaneHeight; };
 
 
   juce::Colour getColorBackground()

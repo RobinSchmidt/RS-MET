@@ -313,7 +313,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   // Draw background for keyboard. The color will eventually become the color of the white keys as
   // all other elements like black keys and key separators are drawn on top:
   g.setColour(getColorWhiteKeys());
-  float keyboardY = 4*topLaneHeight;
+  float keyboardY = 4*topLaneHeight;  // maybe use getSequencerTop() - but it uses factor 5 - why do we have 4 here?
   w = keyLength;
   g.fillRect(0.f, keyboardY, keyLength, (float)(13*rowHeight));
 
@@ -669,9 +669,14 @@ void AcidSequencerModuleEditor::timerCallback()
 
     timeCursor->setVisible(true);
 
-    int w = 10;
 
-    timeCursor->setBounds(step*w, 0, w, 100);
+    int w = patternEditor->getColumnWidth();
+    int x = patternEditor->getSequencerLeft() + step*w;
+    //int y = patternEditor->getSequencerTop();
+    int y = patternEditor->getY();
+    int h = patternEditor->getHeight();
+
+    timeCursor->setBounds(x, y, w, h);
     // ToDo:
     // -figure out current step and adjust x-coordinate accordingly
     // -use columnWidth from embedded AcidPatternEditor instead of 10
