@@ -493,29 +493,23 @@ void AcidPatternEditor::paint(juce::Graphics &g)
             y1 += rowHeight;
           g.drawLine(x2, y1, x2, y2, 5.f);   // 3.f
 
-          /*
-          float y2 = keyboardY + 12*rowHeight - key2 * rowHeight;
-          if(key1 > key2)
-            g.drawLine(x2, y, x2, y2+rowHeight, 5.f);   // 3.f
-          else
-            g.drawLine(x2, y+rowHeight, x2, y2, 5.f);
-            */
-
           if(i == ptn->getMaxNumSteps()-1)                // wrap around of slide indicator
           {
             g.drawLine(x2-2,        y1, x2-2,        y2, 5.f);
-
             g.drawLine(keyLength+1, y1, keyLength+1, y2, 3.f);
-
-            //keyLength
-
-            // ...
           }
 
 
           w2 = 1.f;
         }
+
         g.fillRect(x, y, w2*columnWidth, rowHeight);
+
+        if(ptn->getAccent(i) == true)
+        {
+          // ToDo: draw "ears"
+        }
+
       }
       x += columnWidth;
     }
@@ -759,16 +753,17 @@ void AcidSequencerModuleEditor::resized()
 
 
 /*
+-add some sort accent indicators to the note rectangles in the sequencer view. maybe give them some 
+ "ears" (traigles at top-right, bottom-right)
+-animate the sequencer - highlight the column where we currently are or let a cursor step through. 
+ Take other animated widgets as reference, such as level-metering widgets
+-let the suer set the BPM (globally - maybe in Setup - maybe have two sections: one for GUI colors 
+ and one for audio engine)
 -make step-length available for modulation
 -add selector for pattern (maybe a 4x4 array)
 -implement copy/paste for patterns
--fix colors (done)
--fix manipulator button positioning
--when there's glide on the last entry, the horizontal line leaving the gui to the right should wrap 
- around and re-enter on the left
- -> done for the gate row - now do it also for the sequencer!
--animate the sequencer - highlight the column where we currently are or let a cursor step through. 
- Take other animated widgets as reference, such as level-metering widgets
+-evaluate and maybe fix manipulator button positioning
+
 
 
 Ideas for sequence manipulations:
