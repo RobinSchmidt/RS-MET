@@ -226,9 +226,21 @@ void noiseReverseMode()
   // state in terms of the new state...tbc...
 
   // Coefficients for the linear congruential PRNG algorithm (same as in RAPT::rsNoiseGenerator):
-  rsUint64 a = 1664525;     // multiplier
-  rsUint64 b = 1013904223;  // additive offset
-  rsUint64 m = 4294967296;  // modulus
+  using Int = rsInt64;
+  Int a = 1664525;     // multiplier
+  Int b = 1013904223;  // additive offset
+  Int m = 4294967296;  // modulus
+
+  // Find modular inverse of the multiplier a:
+  Int ai = rsModularInverse(a, m);
+
+  // Functions to update and downdate a state of the PRNG:
+  auto next = [&](Int x) { return ((a * x) + b ) % m; };
+  auto prev = [&](Int y) { return ((y - b) * ai) % m; };
+
+  Int x  = 42;
+  Int y  = next(x);
+  Int xr = prev(y);  // reconstructed x ...yes! It's indeed 42
 
 
   int dummy = 0;
