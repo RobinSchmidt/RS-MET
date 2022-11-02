@@ -237,9 +237,22 @@ void noiseReverseMode()
   // Find modular inverse of the multiplier a:
   Int ai = rsModularInverse(a, m);
 
+  // Helper function to perform the mathematically correct modulo operation even for negative 
+  // inputs x:
+  auto mod = [](Int x, Int m)
+  {
+    while(x < 0)
+      x += m;     // painfully slow! implement it using % operator on the abs-value of x
+    return x % m;
+  };
+
   // Functions to update and downdate a state of the PRNG:
-  auto next = [&](Int x) { return ((a * x) + b ) % m; };
-  auto prev = [&](Int y) { return ((y - b) * ai) % m; };
+  //auto next = [&](Int x) { return ((a * x) + b ) % m; };
+  //auto prev = [&](Int y) { return ((y - b) * ai) % m; };
+
+  auto next = [&](Int x) { return mod((a * x) + b , m); };
+  auto prev = [&](Int y) { return mod((y - b) * ai, m); };
+
 
   // A first manual test with a hand-picked current state x:
   Int x  = 42;
@@ -254,6 +267,9 @@ void noiseReverseMode()
     xr  = prev(y);
     ok &= xr == x; }
 
+
+  /*
+  // This is too slow!
   // Now with some random bigger numbers:
   Int iMax = 1000;
   x = 0;
@@ -264,6 +280,7 @@ void noiseReverseMode()
     ok &= xr == x;
     x = y;
   }
+  */
   // This fails! The reconstructed x can become negative - the % m operation in prev should also
   // convert negative numbers into positive representants of the same equivalence class
   // -> implement and use a helper function modulo(x, m) that also works for negative inputs x 
