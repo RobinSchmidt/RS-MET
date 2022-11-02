@@ -2,6 +2,7 @@
 General:
 -after loading a patch with AcidDevil, the "Preset" label of AcidDevil is drawn in black. When 
  switching to another slot and back, this gets fixed
+ check the painting of the stateWidgetSet member in jura::EditorWithStateFile
 -[fixed?] load Acid8.xml in ToolChain, switch to next preset -> crash
  -it seems to have to do with the StereoDelay in Slot 2 (?)
 
