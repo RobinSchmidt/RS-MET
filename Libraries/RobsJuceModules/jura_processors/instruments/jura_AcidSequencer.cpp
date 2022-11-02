@@ -301,32 +301,20 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   float y = 0.f;
   float w = (float) getWidth();
   float h = (float) getHeight();
-  //float s = (float) rowHeight;
   float thickness = 2.f;
 
-
+  // Draw the texts for the headers of the top-rows:
   const BitmapFont* font = &BitmapFontRoundedBoldA10D0::instance;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, "Gate:", font, getColorText());
-  y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, "Accent:", font, getColorText());
-  y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, "Slide:", font, getColorText());
-  y += topLaneHeight;
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Gate:",   font, getColorText()); y += topLaneHeight;
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Accent:", font, getColorText()); y += topLaneHeight;
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Slide:",  font, getColorText()); y += topLaneHeight;
   drawBitmapFontText(g, (int)x+3, (int)y+3, "Octave:", font, getColorText());
-
-  w = keyLength;
-
-  // Draw background for white keys and black keys on top of it:
-  float keyboardY = 4*topLaneHeight;
-
-
-  //Colour red = Colours::red; // for debugging
 
   // Draw background for keyboard. The color will eventually become the color of the white keys as
   // all other elements like black keys and key separators are drawn on top:
-  //g.setColour(whiteKeyColour);
-  //g.setColour(red);
   g.setColour(getColorWhiteKeys());
+  float keyboardY = 4*topLaneHeight;
+  w = keyLength;
   g.fillRect(0.f, keyboardY, keyLength, (float)(13*rowHeight));
 
   // Draw background for sequencer. The color will eventually become the color for the white lanes:
@@ -334,7 +322,6 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.fillRect(keyLength, keyboardY, (float)getWidth()-keyLength, (float)(13*rowHeight));
 
   // Draw black keys:
-  //g.setColour(red);
   float bkw = 2*keyLength/3;         // width of the black keys
   g.setColour(getColorBlackKeys());
   x = 0;
@@ -351,7 +338,6 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   w = (float)getWidth()-keyLength;
   y = keyboardY + 11*rowHeight;
   g.setColour(getColorBlackLanes());
-  //g.setColour(red);
   g.fillRect(x, y, w, h);  y -= 2*h;
   g.fillRect(x, y, w, h);  y -= 3*h;
   g.fillRect(x, y, w, h);  y -= 2*h;
@@ -379,31 +365,11 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   h = (float) rowHeight;
   y = keyboardY + h;
   thickness = 1.f;
-
-  /*
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  // maybe use a loop
-  */
-
   for(int i = 1; i <= 12; i++) {
     g.drawLine(x, y, w, y, thickness); y += h; }
 
-
-
   // Draw the lines between the piano-roll white keys:
   g.setColour(getColorLines());
-  //g.setColour(red);
   x = 0.f;
   w = keyLength;
   h = (float) rowHeight;
@@ -764,6 +730,8 @@ void AcidSequencerModuleEditor::resized()
 -add selector for pattern (maybe a 4x4 array)
 -implement copy/paste for patterns
 -evaluate and maybe fix manipulator button positioning
+-the distortion unit should get a mode, maybe pre/post filters and and some manipluators for the 
+ transfer function and perhaps a little display for the function
 
 
 
