@@ -241,18 +241,18 @@ void noiseReverseMode()
   // inputs x:
   auto mod = [](Int x, Int m)
   {
-    while(x < 0)
-      x += m;     // painfully slow! implement it using % operator on the abs-value of x
-    return x % m;
+    Int r = x % m;     // remainder
+    if(r < 0)
+      return r + m;
+    return r;
+    // See https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
+    // there's also code for when m is negative, but we don't need that here.
+    // Maybe move that function into the library as rsModulo
   };
 
   // Functions to update and downdate a state of the PRNG:
-  //auto next = [&](Int x) { return ((a * x) + b ) % m; };
-  //auto prev = [&](Int y) { return ((y - b) * ai) % m; };
-
   auto next = [&](Int x) { return mod((a * x) + b , m); };
   auto prev = [&](Int y) { return mod((y - b) * ai, m); };
-
 
   // A first manual test with a hand-picked current state x:
   Int x  = 42;
@@ -267,9 +267,6 @@ void noiseReverseMode()
     xr  = prev(y);
     ok &= xr == x; }
 
-
-  /*
-  // This is too slow!
   // Now with some random bigger numbers:
   Int iMax = 1000;
   x = 0;
@@ -280,12 +277,6 @@ void noiseReverseMode()
     ok &= xr == x;
     x = y;
   }
-  */
-  // This fails! The reconstructed x can become negative - the % m operation in prev should also
-  // convert negative numbers into positive representants of the same equivalence class
-  // -> implement and use a helper function modulo(x, m) that also works for negative inputs x 
-  // correctly
-
 
   // Ideas:
   // -Use this algorithm to scramble data:
