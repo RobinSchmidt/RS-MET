@@ -269,6 +269,7 @@ void noiseReverseMode()
 
   // Now with some random bigger numbers:
   Int iMax = 1000;
+  //iMax = m+10;  // takes a few minutes to run it through all possible numbers (and a few extra)
   x = 0;
   for(Int i = 0; i < iMax; i++)
   {
