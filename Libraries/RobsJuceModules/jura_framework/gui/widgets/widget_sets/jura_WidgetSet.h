@@ -28,7 +28,7 @@ class JUCE_API WidgetSet : public ColourSchemeComponent
 #ifdef RS_BLAH  // for commenting out
 
 // OK - this was the old implementation, used until 2022/11/03. It's not used anymore and can 
-// probably e deleted soon
+// probably e deleted soon - yay! let's get rid of this garbage code!
 class JUCE_API WidgetSetOld : public ColourSchemeComponent
 {
 

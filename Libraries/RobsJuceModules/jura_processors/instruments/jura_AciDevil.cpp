@@ -158,12 +158,12 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
   AciDevilAudioModule* newAciDevilAudioModule) 
   : AudioModuleEditor(newAciDevilAudioModule)
 {
-  setHeadlineStyle(MAIN_HEADLINE);
-  //setHeadlineStyle(SUB_HEADLINE); // Aletnative - allows the GUI to be smaller - maybe we should do it
+  //setHeadlineStyle(MAIN_HEADLINE);  // old
 
-  //AudioModuleEditor::setPresetSectionPosition
+  setHeadlineStyle(SUB_HEADLINE); // Aletnative - allows the GUI to be smaller - maybe we should do it
+  setPresetSectionPosition(BELOW_HEADLINE);
 
-  // assign the pointer to the rosic::AciDevil object to be used as aduio engine:
+  // Assign the pointer to the rosic::AciDevil object to be used as aduio engine:
   jassert(newAciDevilAudioModule != NULL ); // you must pass a valid module here
   aciDevilModuleToEdit = newAciDevilAudioModule;
 
@@ -171,7 +171,8 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
   createWidgets();
   updateWidgetsAccordingToState();
   //setSize(772, 394);
-  setSize(634, 394);
+  //setSize(634, 394);
+  setSize(634, 370);
 }
 
 void AciDevilModuleEditor::createWidgets()
@@ -403,7 +404,9 @@ void AciDevilModuleEditor::resized()
   int w = getWidth();
   int h = getHeight();
 
-  y = getHeadlineBottom()+4;
+  //y = getHeadlineBottom()+4;  // results in y = 24
+
+
   w = 220;
   h = 120;
 
@@ -437,14 +440,16 @@ void AciDevilModuleEditor::resized()
 
 
   x = globalRectangle.getX();
-  y = globalRectangle.getY();
+  //y = globalRectangle.getY();
+  y = getHeadlineBottom()+4;
   w = globalRectangle.getWidth();
-
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
   stateWidgetSet->setBounds(x+4, y+4, w-8, 32);
+
+
   y = stateWidgetSet->getBottom()+4;
 
-  y = stateWidgetSet->getBottom() + 4 + 32; // leave space for tuning widgets
+  //y = stateWidgetSet->getBottom() + 4 + 32; // leave space for tuning widgets
 
   masterLevelSlider->setBounds(x+4, y+4, w-8, 16);
   y = masterLevelSlider->getBottom();

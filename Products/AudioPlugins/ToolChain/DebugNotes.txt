@@ -2,9 +2,12 @@ The standalone version creates a ToolChain.settings file in the folder:
 
 C:\Users\rob\AppData\Roaming\ToolChain
 
-sometimes, it may be necessary to delete this file when the App crashes on startup. I sometimes hit 
+Sometimes, it may be necessary to delete this file when the App crashes on startup. I sometimes hit 
 a jassert in MidiMessageCollector::addMessageToQueue at startup. Deleting the settings file can help
 to get passed this.
+
+In ColourSchemeComponent::paintOverChildren, there's a switch to turn on showing the pixel size of
+GUI editors which is useful for figuring out the optimal size.
 
 
 For an easy workflow for debugging, build the PluginHost (in the 
