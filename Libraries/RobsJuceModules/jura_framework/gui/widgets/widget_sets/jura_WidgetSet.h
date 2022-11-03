@@ -8,6 +8,10 @@
 \todo: we should store the pointer to the description field here and pass it to widgets 
 when they are added
 
+Why do we need this call at all? the baseclass ColourSchemeComponent alredady does have
+a widgets array. Seems like we are shadowing it here? Why? Does that make any sense? If so, 
+document it, if not, try to get rid of this class
+
 */
 
 class JUCE_API WidgetSet : public ColourSchemeComponent
@@ -54,7 +58,7 @@ protected:
   addChildComponent allows for looping through all the widgets to set up their colours, 
   description-fields etc. */
   void addWidget(RWidget* widgetToAdd, bool addAsChildComponent = true, 
-    bool makeVisible = true) override; // overrdie?
+    bool makeVisible = true) override;
 
   /** Analog to addWidget() but specifically for labels - they are kept in a separate array because 
   they should be treated separately. */

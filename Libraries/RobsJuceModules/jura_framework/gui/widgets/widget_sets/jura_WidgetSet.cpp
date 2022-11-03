@@ -63,6 +63,9 @@ void WidgetSet::addWidget(RWidget *widgetToAdd, bool addAsChildComponent, bool m
         comp->setVisible(true);
     }
   }
+
+  widgetToAdd->setColourScheme(widgetColourScheme);
+
 }
 // -Compare to baseclass method 
 //  -it has also a call to widgetToAdd->setColourScheme(widgetColourScheme);
