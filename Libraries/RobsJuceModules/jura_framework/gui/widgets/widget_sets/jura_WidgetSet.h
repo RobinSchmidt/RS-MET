@@ -34,15 +34,17 @@ public:
     // should this not be an override - also available in ColourSchemeComponent?
 
   /** Sets up the colour-scheme from an XmlElement. */
+  //void setColourSchemeFromXml(const XmlElement* widgetColours) override;
   virtual void setColourSchemeFromXml(const XmlElement* widgetColours); /* override; ?*/
-    //
+  // hmm - the baseclass method takes a reference, we take a pointe here - why?
+  //   virtual void setColourSchemeFromXml(const XmlElement& xmlColorScheme);
 
   /** Sets the juce::Label in which the descriptions for the widgets will appear. */
-  virtual void setDescriptionField(RTextField* newDescriptionField) override;
+  void setDescriptionField(RTextField* newDescriptionField) override;
 
   // Empty overrides for paint/OverChildren to avoid background and outline drawing:
-  virtual void paint(Graphics &g) override {}
-  virtual void paintOverChildren(Graphics &g) override {}
+  void paint(Graphics &g) override {}
+  void paintOverChildren(Graphics &g) override {}
 
 
 protected:
@@ -51,8 +53,8 @@ protected:
   one). Having the widget added by this method rather than directly using Component's 
   addChildComponent allows for looping through all the widgets to set up their colours, 
   description-fields etc. */
-  virtual void addWidget(RWidget* widgetToAdd, bool addAsChildComponent = true, 
-    bool makeVisible = true);
+  void addWidget(RWidget* widgetToAdd, bool addAsChildComponent = true, 
+    bool makeVisible = true) override; // overrdie?
 
   /** Analog to addWidget() but specifically for labels - they are kept in a separate array because 
   they should be treated separately. */

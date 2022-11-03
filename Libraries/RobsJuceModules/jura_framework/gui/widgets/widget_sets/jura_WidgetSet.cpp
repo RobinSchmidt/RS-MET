@@ -64,6 +64,10 @@ void WidgetSet::addWidget(RWidget *widgetToAdd, bool addAsChildComponent, bool m
     }
   }
 }
+// -Compare to baseclass method 
+//  -it has also a call to widgetToAdd->setColourScheme(widgetColourScheme);
+//  -why do we override it at all?
+// 
 
 /*
 void WidgetSet::addWidget(RLabel *labelToAdd, bool addAsChildComponent, bool makeVisible)

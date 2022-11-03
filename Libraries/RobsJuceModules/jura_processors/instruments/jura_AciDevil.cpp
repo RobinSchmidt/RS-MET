@@ -159,10 +159,14 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
   : AudioModuleEditor(newAciDevilAudioModule)
 {
   setHeadlineStyle(MAIN_HEADLINE);
+  //setHeadlineStyle(SUB_HEADLINE); // Aletnative - allows the GUI to be smaller - maybe we should do it
+
+  //AudioModuleEditor::setPresetSectionPosition
 
   // assign the pointer to the rosic::AciDevil object to be used as aduio engine:
   jassert(newAciDevilAudioModule != NULL ); // you must pass a valid module here
   aciDevilModuleToEdit = newAciDevilAudioModule;
+
 
   createWidgets();
   updateWidgetsAccordingToState();
@@ -540,5 +544,8 @@ Ideas:
  mid/high resonance range - at the upper end, it seems better, but slightly below, the behavior is
  suboptimal.
 -Maybe implement a simple undo/redo mechanism by keeping track of the applied transformations
+-Maybe make a smaller headline not at the top but at the top-left - move preset section some 20 
+ pixels down and say Slot1-AcidDevil - similar to FuncShaper's GUI and all the other, "smaller"
+ plugins, see AudioModuleEditor::setHeadlineStyle
 
 */

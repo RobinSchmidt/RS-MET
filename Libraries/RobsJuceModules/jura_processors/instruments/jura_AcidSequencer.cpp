@@ -767,10 +767,9 @@ void AcidSequencerModuleEditor::resized()
 
 
 /*
--add some sort accent indicators to the note rectangles in the sequencer view. maybe give them some 
- "ears" (traigles at top-right, bottom-right)
--animate the sequencer - highlight the column where we currently are or let a cursor step through. 
- Take other animated widgets as reference, such as level-metering widgets
+-In the animation, highlight the currently played key in the virtual keyboard on the left. But not 
+ for the whole step (unit the next arrives) but only as long as the note plays, i.e. take 
+ StepLength into account
 -let the suer set the BPM (globally - maybe in Setup - maybe have two sections: one for GUI colors 
  and one for audio engine)
 -make step-length available for modulation

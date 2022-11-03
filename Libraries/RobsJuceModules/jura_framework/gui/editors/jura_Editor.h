@@ -70,8 +70,8 @@ public:
   //virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged) {}
   //virtual void rLabelTextChanged(RLabel* rLabelThatHasChanged) {}
   //virtual void rSliderValueChanged(RSlider *sliderThatHasChanged) {}
-  virtual void paint(Graphics &g);
-  virtual void resized();
+  void paint(Graphics &g) override;
+  void resized() override;
 
 protected:
 
