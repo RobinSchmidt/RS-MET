@@ -62,7 +62,29 @@ Modules:
 -some sort of transient generator
 
 
- 
+-Camera: 
+ -outputs: x,y coordinates
+ -inputs:  x,y,z coordinates and parameters that determine the perspective
+  -maybe the camera should always look at the origin (x,y,z) = (0,0,0) and parameters to set up the
+   persective could be spherical coordinates for the camera position plus a rotation angle for the 
+   camera around the viewing axis and maybe a sort of "perspectivity" parameter that determines how 
+   close/far away the camera is from the scene, but when moving closer, the size should stay the 
+   same using some scaling (zoom) that compensates for the distance setting. When perspectivity is 
+   zero, we get a parallel projection, when it's one, we get "full" perspective (whatever that 
+   means -> figure out). But I want to be able to independently control the image size and 
+   perspectivity - the distance parameter in the spherical coordinates couples these two things.
+  -by default the camera should be located at (0,0,1) and look at (0,0,0) in a ways such that x,y
+   are just passed through as is
+ -Useful for doing oscilloscope music using either explicitly generated parametric space curves 
+  (via the already existing formula module) or an ODE solver (to be written, think of Lorenz system 
+  like stuff)
 
+-ODE solver:
+ -should have fields to enter the formulas x', y', z' etc. as function of x,y,z and some input 
+  parameters (a,b,c,d,..), this should work similar to the formual module
+ -user can pick solver method via a menu: forward Euler, backward Euler, trapezoidal, RK4, 
+  Adams-Bashforth, etc.
+ -User ca set up stepsize - maybe this should someho be related to some sort of "frequency"
+  input
 
 

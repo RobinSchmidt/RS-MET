@@ -1,3 +1,7 @@
+
+
+#ifdef RS_BLAH  // for commenting out
+
 //#include "rojue_WidgetSet.h"
 //using namespace rojue;
 
@@ -86,3 +90,4 @@ void WidgetSet::addWidget(RLabel *labelToAdd, bool addAsChildComponent, bool mak
   }
 }
 */
+#endif // end of commenting out

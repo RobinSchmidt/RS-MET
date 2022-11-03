@@ -25,6 +25,8 @@ class JUCE_API WidgetSet : public ColourSchemeComponent
 
 };
 
+#ifdef RS_BLAH  // for commenting out
+
 // OK - this was the old implementation, used until 2022/11/03. It's not used anymore and can 
 // probably e deleted soon
 class JUCE_API WidgetSetOld : public ColourSchemeComponent
@@ -86,6 +88,8 @@ protected:
 
   juce_UseDebuggingNewOperator;
 };
+
+#endif // end of commenting out
 
 
 #endif  
