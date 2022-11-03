@@ -27,7 +27,7 @@ void ColourSchemeComponent::setDescriptionField(RTextField *newDescriptionField,
   for(i=0; i<widgets.size(); i++)
     widgets[i]->setDescriptionField(newDescriptionField);
   for(i=0; i<widgetSets.size(); i++)
-    widgetSets[i]->setDescriptionField(newDescriptionField);
+    widgetSets[i]->setDescriptionField(newDescriptionField, callAlsoForChildColourSchemeComponents);
   for(i=0; i<plots.size(); i++)
     plots[i]->setDescriptionField(newDescriptionField);
   if( callAlsoForChildColourSchemeComponents == true )
@@ -132,6 +132,13 @@ void ColourSchemeComponent::setWidgetsVisible(bool shouldBeVisible)
   }
   for(int i=0; i<widgetSets.size(); i++)
     widgetSets[i]->setVisible(shouldBeVisible);
+}
+
+void ColourSchemeComponent::setColourScheme(const WidgetColourScheme& newColourScheme)
+{
+  ScopedLock scopedLock(arrayLock);
+  for(int w=0; w<widgets.size(); w++)
+    widgets[w]->setColourScheme(newColourScheme);
 }
 
 void ColourSchemeComponent::setColourSchemeFromXml(const XmlElement& xml)
@@ -277,6 +284,8 @@ void ColourSchemeComponent::removeWidget(RWidget* widgetToRemove, bool removeAsC
 
 void ColourSchemeComponent::updateEmbeddedObjectsAndRepaint()
 {
+  ScopedLock scopedLock(arrayLock);  // added 2022/11/03
+
   int i;
   for(i=0; i<widgets.size(); i++)
     widgets[i]->setColourScheme(widgetColourScheme);  

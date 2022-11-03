@@ -4,12 +4,12 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-WidgetSet::WidgetSet() 
+WidgetSetOld::WidgetSetOld() 
 {
 
 }
 
-WidgetSet::~WidgetSet()
+WidgetSetOld::~WidgetSetOld()
 {
 
 }
@@ -17,7 +17,7 @@ WidgetSet::~WidgetSet()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void WidgetSet::setColourScheme(const WidgetColourScheme& newColourScheme)
+void WidgetSetOld::setColourScheme(const WidgetColourScheme& newColourScheme)
 {
   widgets.getLock().enter();
   for(int w=0; w<widgets.size(); w++)
@@ -25,7 +25,7 @@ void WidgetSet::setColourScheme(const WidgetColourScheme& newColourScheme)
   widgets.getLock().exit();
 }
 
-void WidgetSet::setColourSchemeFromXml(const XmlElement* widgetColours)
+void WidgetSetOld::setColourSchemeFromXml(const XmlElement* widgetColours)
 {
   if( widgetColours != NULL )
   {
@@ -35,7 +35,7 @@ void WidgetSet::setColourSchemeFromXml(const XmlElement* widgetColours)
   }
 }
 
-void WidgetSet::setDescriptionField(RTextField *newDescriptionField)
+void WidgetSetOld::setDescriptionField(RTextField *newDescriptionField)
 {
   widgets.getLock().enter();
   for(int w=0; w<widgets.size(); w++)
@@ -48,7 +48,7 @@ void WidgetSet::setDescriptionField(RTextField *newDescriptionField)
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void WidgetSet::addWidget(RWidget *widgetToAdd, bool addAsChildComponent, bool makeVisible)
+void WidgetSetOld::addWidget(RWidget *widgetToAdd, bool addAsChildComponent, bool makeVisible)
 {
   widgets.getLock().enter();
   widgets.addIfNotAlreadyThere(widgetToAdd);

@@ -14,7 +14,20 @@ document it, if not, try to get rid of this class
 
 */
 
+
 class JUCE_API WidgetSet : public ColourSchemeComponent
+{
+  // Temporary, during trying to get rid of the WidgetSet class
+
+  // Empty overrides for paint/OverChildren to avoid background and outline drawing:
+  void paint(Graphics &g) override {}
+  void paintOverChildren(Graphics &g) override {}
+
+};
+
+// OK - this was the old implementation, used until 2022/11/03. It's not used anymore and can 
+// probably e deleted soon
+class JUCE_API WidgetSetOld : public ColourSchemeComponent
 {
 
   friend class Editor;
@@ -25,10 +38,10 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  WidgetSet();
+  WidgetSetOld();
 
   /** Destructor. */
-  virtual ~WidgetSet();
+  virtual ~WidgetSetOld();
 
   //-----------------------------------------------------------------------------------------------
   // setup:

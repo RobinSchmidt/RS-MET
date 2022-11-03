@@ -80,6 +80,7 @@ public:
   virtual void setWidgetsVisible(bool shouldBeVisible);
 
 
+  virtual void setColourScheme(const WidgetColourScheme& newColourScheme); 
   //virtual void setColourScheme(const WidgetColourScheme& newColourScheme);
     // i think, this needs to be added
 
