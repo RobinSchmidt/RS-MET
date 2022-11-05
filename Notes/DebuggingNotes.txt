@@ -13,6 +13,10 @@ To debug drawing/painting code, it's sometimes useful to temporarily switch to s
 (like red or yellow) in the drawing code to get a better idea for which part of code draws which 
 elements.
 
+When a bug is discovered, it may be better to not just find and fix it but instead write a 
+unit-test that exposes the bug, i.e. fails successfully, and *then* find and fix the bug. The 
+rationale is that the unit test may expose the bug in the simplemost scenario and with the new unit
+test in place, we are much safer from re-introducing the bug somehow later.
 
 For the standalone version of ToolChain, the JUCE framework provides functionality to recall the 
 last plugin state when the plugin is launched, i.e. on startup, it tries to restore the state from
