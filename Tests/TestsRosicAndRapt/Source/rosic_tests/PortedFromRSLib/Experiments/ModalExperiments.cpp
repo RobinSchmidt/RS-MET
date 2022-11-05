@@ -1031,6 +1031,23 @@ void modalAnalysis1()
   //rsPlotVector(x);
   rsPlotVectors(x, ys, ym);
   //rosic::writeToMonoWaveFile("ModalOriginal.wav", &x[0], N, fs);
+
+
+  // ToDo:
+  // -Implement a different modal analysis algorithm that works as follows:
+  //  -In a preliminary analysis, figure out the mode frequencies. We could actually also extract 
+  //   that data from the sinusoidal model above. But maybe we can do a simpler algo: just do
+  //   a big FFT on the whole signal and find the peak freqs.
+  //  -Analyze each mode one at a time by bandpassing the original signal with a bandpass tuned to 
+  //   the respective modal frequency and then using an envelope follower on the bandpassed signal.
+  //   The bandwidth of the bandpass should sufficiently suppress adajacent partials (calling for 
+  //   smaller bandwidth) but without introducing too much time-domain smoothing on the estimated 
+  //   envelope (calling for a larger bandwidth). Maybe we can strike an optimal compromise by 
+  //   (somehow) making it dependent on some preliminary mode-bandwidth measurement from the FFT 
+  //   spectrum?
+  //  -Maybe that algorithm could be more accurate than the one based on the rsHarmonicAnalyzer, 
+  //   especially for inharmonic signals? For harmonic signals, it's probably hard tro beat the
+  //   rsHarmonicAnalyzer...we'll see...
 }
 
 void modalAnalysisPluck()

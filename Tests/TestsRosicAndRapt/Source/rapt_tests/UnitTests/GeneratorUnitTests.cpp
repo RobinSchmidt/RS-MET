@@ -1861,9 +1861,14 @@ bool samplerCodeAnalyzerTest()
 
 
   // Test, if a later opcode can have a suffix that corresponds to an actual opcode:
-  ok &= testFindOpcode(" pan=0 lfo1_pan=0",   panN, 1,   0,  16,    1,  3); // foundStart is 12, foundEnd is 14
-  ok &= testFindOpcode(" pan=0\nlfo1_pan=0",  panN, 1,   0,  16,    1,  3); // dito
-  // FAILS!!!
+  ok &= testFindOpcode(" pan=0 lfo1_pan=0",   panN, 1,   0,  16,    1,  3); // FAILS!!! 
+  ok &= testFindOpcode(" pan=0\nlfo1_pan=0",  panN, 1,   0,  16,    1,  3); // FAILS!!! 
+  // foundStart is 12, foundEnd is 14 in both cases, so the algorithm thinks "pan=0" suffix of the
+  // "lfo1_pan=0" opcode is actually the pan opcode. We probably need additional conditions that 
+  // the character to the right of the search-string is one of the 3: ' ', '\n', '\t'. Or maybe it's 
+  // enough to demand that it's not a '_'. But that's perhaps not such a good idea because maybe 
+  // there are some other opcodes where we still have the suffix condition but without an '_'. 
+  // For example, "tune" could appear as suffix of some "...detune" parameter
 
 
 

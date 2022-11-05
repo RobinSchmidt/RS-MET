@@ -264,6 +264,9 @@ public:
   //  function with an applyContribution function that directly applies the modulation to a 
   //  pre-existing accumulator value passed by reference instead of returning a value that is 
   //  supposed to be (additively) accumulated by the caller.
+  // -see https://sfzformat.com/opcodes/_mod , https://sfzformat.com/opcodes/varNN_mod for how the 
+  //  ARIA engine handles additive vs multiplicative modulation. It specifies it per modulation 
+  //  target, not per connection
 
   /* obsolete
   inline void initTarget()
