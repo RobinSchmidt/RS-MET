@@ -1796,6 +1796,9 @@ bool samplerCodeAnalyzerTest()
     return foundStart == startPos && foundEnd == endPos;
   };
 
+  // Failing test, temporarily copied to the top:
+  ok &= testFindOpcode(" pan=0 lfo1_pan=0",   panN, 1,   0,  16,    1,  3); // FAILS!!! 
+
   // Try finding the last "pan=" or "pan1=" substring:
   ok &= testFindOpcode("",              panN, 1,   0,  0,   -1, -1);
   ok &= testFindOpcode("abc",           panN, 1,   0,  2,   -1, -1);
