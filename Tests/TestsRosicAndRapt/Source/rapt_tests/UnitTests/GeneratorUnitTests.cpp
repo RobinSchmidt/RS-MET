@@ -1861,10 +1861,12 @@ bool samplerCodeAnalyzerTest()
 
 
   // Test, if a later opcode can have a suffix that corresponds to an actual opcode:
-  ok &= testFindOpcode(" pan=0 lfo1_pan=0",  panN, 1,   1,  5,    1,  3);
-  ok &= testFindOpcode(" pan=0\nlfo1_pan=0",  panN, 1,   1,  5,    1,  3);
+  ok &= testFindOpcode(" pan=0 lfo1_pan=0",   panN, 1,   0,  16,    1,  3); // foundStart is 12, foundEnd is 14
+  ok &= testFindOpcode(" pan=0\nlfo1_pan=0",  panN, 1,   0,  16,    1,  3); // dito
+  // FAILS!!!
 
-  
+
+
   // Test finding the positions of the actual values of the opcodes. That's the high-level 
   // functionality needed by the GUI to replace the values in the code on slider movement:
   str = "<group><region>cutoff=467.352";
