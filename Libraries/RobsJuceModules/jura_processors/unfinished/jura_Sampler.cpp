@@ -1372,6 +1372,8 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
+-Keep the selcetd TreeNode highleighted as long as the slider for it is visible. Also highlight 
+ the relevant section of the code in the editor.
 -The slider needs exponential characteristic for certain parameters. Maybe to start, just use a 
  heuristic: if min and max are both strictly greater than 0 and max >= k*min for some constant k
  like k=50, then use exp-mode. Maybe make a function wantsExponentialSlider(Opcode op). There's 

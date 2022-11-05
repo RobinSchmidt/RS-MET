@@ -543,7 +543,16 @@ void AciDevilModuleEditor::resized()
 
 /*
 
+
+
 Ideas:
+-Give the oscillators a start-phase parameter and also a polarity switch (both for main and subosc 
+ separately). That's potentially important when mixing the 303 basslines with bassdrums and/or bass
+ sounds. Maybe the subosc should have and adjustable detune. That would bring us actually into 2 
+ osc subtractive synth territory.
+-Maybe instead of just blending between Saw/Pulse, let the user load custom waveforms.
+-Provide a pulse-width parameter. Maybe it should depend on osc frequency via some other parameter
+ like PulseWidthByFreq.
 -The cutoff should have a lower minimum setting. See comment in createParameters().
 -The filter needs some more work: the resonance drops too much towards higher cutoffs for the
  mid/high resonance range - at the upper end, it seems better, but slightly below, the behavior is
@@ -552,5 +561,16 @@ Ideas:
 -Maybe make a smaller headline not at the top but at the top-left - move preset section some 20 
  pixels down and say Slot1-AcidDevil - similar to FuncShaper's GUI and all the other, "smaller"
  plugins, see AudioModuleEditor::setHeadlineStyle
+
+-Maybe make important sliders bigger (20 or 24 pixel high): Level (maybe), Saw/Pulse, Cutoff, 
+ Drive, EnvMod, Resonance ...those that the user is likely to automate. Accent is actually also a
+ good automation target
+
+ -The distortion unit should get a mode, maybe pre/post filters and and some manipluators for the 
+  transfer function and perhaps a little display for the function...or maybe not. But it should 
+  have a DC parameter. And maye it should be a softclipper with afjustable hardness. Maybe for 
+  that, the smooth-crossfade function in the research codebase in testSmoothCrossFade() could be
+  used. Maybe experiment with that in the context of the sampler engine. The next milestone is to
+  get some more serious DSP algos going anyway.
 
 */

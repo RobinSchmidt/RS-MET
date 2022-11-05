@@ -3,6 +3,8 @@ General:
 -Plug in AcidDevil, load ToolChain preset Acid8.xml, skip one forward - it should load Acid8_2.xml 
  but instead, it loads Acid.xml instead. When skipping formward through the list, we'll eventually 
  arrive at Acid9.xml again and the skipping one further actually loads the correct patch.
+-Check, if StereoDelay, EchoLab etc have the same BPM setting as AcidDevil. Actually, it would be 
+ better to specify the BPM for ToolChain as a whole. Maybe in the Setup
 -[fixed ]after loading a patch with AcidDevil, the "Preset" label of AcidDevil is drawn in black. 
  When switching to another slot and back, this gets fixed
  -check the painting of the stateWidgetSet member in jura::EditorWithStateFile

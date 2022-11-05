@@ -771,13 +771,17 @@ void AcidSequencerModuleEditor::resized()
  for the whole step (unit the next arrives) but only as long as the note plays, i.e. take 
  StepLength into account
 -let the suer set the BPM (globally - maybe in Setup - maybe have two sections: one for GUI colors 
- and one for audio engine)
--make step-length available for modulation
--add selector for pattern (maybe a 4x4 array)
--implement copy/paste for patterns
--evaluate and maybe fix manipulator button positioning
--the distortion unit should get a mode, maybe pre/post filters and and some manipluators for the 
- transfer function and perhaps a little display for the function
+ and one for audio engine). Make sure that the Delay plugin in the effct chain uses the same BPM.
+-Allow user to adjust number of steps in the sequence. Maybe from 1 to 64.
+-Add selector for pattern - maybe a 4x4 array or 16 radio buttons in a row (maybe 16x16 pixels 
+ big). Have always 16 patterns simultaneously in memory. The buttons select, which pattern we edit.
+ Give the user a text entry field to specify, how the patterns should be played, for example:
+ 1,1,2,1,3,2,1,2 plays pattern 1 two times, then pattern 2 twice, then pattern 1 once, etc. and 
+ when done, wraps around. When one of the sequences runs, highlight the corresponding button. 
+-Make step-length available for modulation
+-Implement copy/paste for patterns.
+-Evaluate and maybe fix manipulator button positioning
+
 
 
 
@@ -799,6 +803,9 @@ Ideas for sequence manipulations:
  modulus. This could be done offline once and for all by direct search (unless a better algorithm 
  is available for that -> research!). Such a PRNG that can go backward could be generally useful
  anyway.
+-Maybe have xor for accent-octave, slide-octave, too - but octave is no simple binary switch...hmm
+ maybe map 1 to +1. ...but we wnat an undoable action. Not sure, what to do. Maybe add/subtract the 
+ slides/accents from the octaves? And also ne non-slides/non-octaves
 
 
 
