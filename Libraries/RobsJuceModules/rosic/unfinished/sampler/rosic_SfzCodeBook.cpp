@@ -1114,9 +1114,13 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     else
       return code[pos-1] == ' ' || code[pos-1] == '\n' || code[pos-1] == '\t' 
           || code[pos-1] == '>';
-    // Any substring of the code that doesn't have a whitespace, newline tab or '>' immediately to
-    // the left, is considered to be a suffix of a longer string. The case for which no character 
-    // to the left exists is treated separately
+    // Any substring of the code that doesn't have a whitespace, newline, tabulator or '>' 
+    // immediately to the left, is considered to be a suffix of a longer string. The case for which
+    // no character to the left exists is treated separately. With this test, we avoid false 
+    // positives in cases  such as when "tune" appears as suffix of some "...detune" parameter or 
+    // cutoff appears as suffix of lfo1_cutoff. The '>' character is allowed as left neighbor 
+    // because opcodes can appear immediately after the closing angle bracket of a <group> or 
+    // <region> tag.
   };
 
   // Helper function to determine whether a found susbtring s that *looks like* an instance of the 
@@ -1132,12 +1136,8 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
     if(startPos == string::npos) return false; // This check may be redundant
     if(endPos > searchEnd-1)     return false; // Must be in search range
     if(code[endPos+1] != '=')    return false; // Must be followed by '='
-
-
-    //return !isInComment(code, startPos) && !isInAssignment(code, startPos);  // old
-    return !isInComment(code, startPos) && !isInAssignment(code, startPos)     // new
+    return !isInComment(code, startPos) && !isInAssignment(code, startPos)
       && isNoSuffix(code, startPos);
-
     // Are these constraints really enough to catch all false positives or do we need to impose 
     // further constraints? -> Implement more unit test! We have some but the coverage of all the
     // possible scenarios by our tests is still far from being exhaustive....

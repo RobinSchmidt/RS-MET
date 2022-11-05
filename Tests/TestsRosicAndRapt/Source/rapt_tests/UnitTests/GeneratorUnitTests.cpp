@@ -1796,9 +1796,6 @@ bool samplerCodeAnalyzerTest()
     return foundStart == startPos && foundEnd == endPos;
   };
 
-  // Failing test, temporarily copied to the top:
-  ok &= testFindOpcode(" pan=0 lfo1_pan=0",   panN, 1,   0,  16,    1,  3); // FAILS!!! 
-
   // Try finding the last "pan=" or "pan1=" substring:
   ok &= testFindOpcode("",              panN, 1,   0,  0,   -1, -1);
   ok &= testFindOpcode("abc",           panN, 1,   0,  2,   -1, -1);
@@ -1862,18 +1859,9 @@ bool samplerCodeAnalyzerTest()
   //                    0123456789012345678901234567890
   //                    0         1         2         3
 
-
   // Test, if a later opcode can have a suffix that corresponds to an actual opcode:
-  ok &= testFindOpcode(" pan=0 lfo1_pan=0",   panN, 1,   0,  16,    1,  3); // FAILS!!! 
-  ok &= testFindOpcode(" pan=0\nlfo1_pan=0",  panN, 1,   0,  16,    1,  3); // FAILS!!! 
-  // foundStart is 12, foundEnd is 14 in both cases, so the algorithm thinks "pan=0" suffix of the
-  // "lfo1_pan=0" opcode is actually the pan opcode. We probably need additional conditions that 
-  // the character to the right of the search-string is one of the 3: ' ', '\n', '\t'. Or maybe it's 
-  // enough to demand that it's not a '_'. But that's perhaps not such a good idea because maybe 
-  // there are some other opcodes where we still have the suffix condition but without an '_'. 
-  // For example, "tune" could appear as suffix of some "...detune" parameter
-
-
+  ok &= testFindOpcode(" pan=0 lfo1_pan=0",   panN, 1,   0,  16,    1,  3);
+  ok &= testFindOpcode(" pan=0\nlfo1_pan=0",  panN, 1,   0,  16,    1,  3);
 
   // Test finding the positions of the actual values of the opcodes. That's the high-level 
   // functionality needed by the GUI to replace the values in the code on slider movement:
