@@ -634,7 +634,13 @@ rsSamplerFilter:
  that a simple 1st order lowpass is a quite common thing to use.
  -Maybe
  -Use the filter also for the equalizer opcode. No need to define a different class for that. Maybe
- extend sfz to support 4 instead of 3 bands when we later can realize 2 bands per filter...
+  extend sfz to support 4 instead of 3 bands when we later can realize 2 bands per filter...
+-Implement Martin Vicanek's design formulas based on the IIT for the poles and magnitude matching for
+ the zeros. Maybe implement a general biquad s-to-z transform based on that idea but try to also 
+ derive optimized cookbook formulas for the same types as the RBJ cookbook, just not using bilinear
+ trafo but Martin's approach.
+-For the filter realization, use a ZDF-SVF design. Maybe try to directly derive cookbook formulas
+ for the SVF.
 
  -to figure out the correct design formulas, check source code of sfizz and linuxsampler
   https://github.com/sfztools/sfizz/blob/develop/src/sfizz/dsp/filters/filters_modulable.dsp
@@ -680,6 +686,17 @@ rsSamplerAmplifier:
 -user params should be: scale (linear overall scale factor), pan, width and as 3rd...dunno - maybe
  pos? whatever is left to determine the rest.
 
+
+-rsSamplerSlopeFilter
+ -should be based on 2 shelving filters using the Vicanek designs
+ -numerically optimize the values of the free design parameters, i.e. the shelving freqs and Qs. 
+  The optimization criterion should be the match between an ideal slope and what the filter 
+  actually produces, taking only the freq-range 20-20k into account. We specifically don't care what
+  happens below 20 Hz - the ideal 1/f^s slope would approach infinity at DC which we clearly don't 
+  want. It's actually good that our filter deviates from the mathematically idealized function.
+  ...hmm...but what sort of slope should we choose for the optimization? Maybe 6 dB/oct? Or maybe
+  the freqs and Qs should depend on the gain setting? Maybe do the optimization for different 
+  slopes (1,2,3,...,48) and fit simple functions to the results.
 
 ToDo:
 -Maybe at some later stage, generalize the dspChain in the sampler engine to a more flexible 

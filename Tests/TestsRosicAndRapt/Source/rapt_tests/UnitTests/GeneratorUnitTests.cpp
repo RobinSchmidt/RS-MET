@@ -1859,6 +1859,11 @@ bool samplerCodeAnalyzerTest()
   //                    0123456789012345678901234567890
   //                    0         1         2         3
 
+
+  // Test, if a later opcode can have a suffix that corresponds to an actual opcode:
+  ok &= testFindOpcode(" pan=0 lfo1_pan=0",  panN, 1,   1,  5,    1,  3);
+  ok &= testFindOpcode(" pan=0\nlfo1_pan=0",  panN, 1,   1,  5,    1,  3);
+
   
   // Test finding the positions of the actual values of the opcodes. That's the high-level 
   // functionality needed by the GUI to replace the values in the code on slider movement:
@@ -1882,6 +1887,7 @@ bool samplerCodeAnalyzerTest()
   cb->findOpcodeValueString(str, 0, 0, Opcode::panN,    1, &s, &e); ok &= s == 34 && e == 35;
   cb->findOpcodeValueString(str, 0, 0, Opcode::volumeN, 1, &s, &e); ok &= s == 44 && e == 44;
   cb->findOpcodeValueString(str, 0, 0, Opcode::widthN,  1, &s, &e); ok &= s == 53 && e == 54;
+
 
   // Maybe make the same test lacking the <group>, i.e. having an implicit group
 
