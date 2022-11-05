@@ -288,6 +288,24 @@ void noiseReverseMode()
   //   in reverse
   //  -maybe the xor operation can be embedded into a feedback loop for the state
 
+
+  // See also: https://papa.bretmulvey.com/post/124027987928/hash-functions This stuff could be 
+  // useful for other kinds of reversible randomization steps. Of particluar interest are 
+  // reversible oprations. The post lists those:
+  //   hash ^= constant;
+  //   hash *= constant; // if constant is odd
+  //   hash += constant;
+  //   hash -= constant;
+  //   hash ^= hash >> constant;
+  //   hash ^= hash << constant;
+  //   hash += hash << constant;
+  //   hash -= hash << constant;
+  //   hash = (hash << 27) | (hash >> 5); // if 32 bits
+  // also reversible are permutations of the entries/bits which includes cyclic bit-rotations. 
+  // What does the last one do? Does it generalize to  (hash << k) | (hash >> n-k); for n bits?
+  // Is this a bit-rotation?
+
+
   int dummy = 0;
 }
 
