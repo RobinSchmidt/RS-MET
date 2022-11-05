@@ -279,6 +279,8 @@ void noiseReverseMode()
     x = y;
   }
 
+  int dummy = 0;
+
   // Ideas:
   // -Use this algorithm to scramble data:
   //  -init PRNG by choosing a,b,m and seed state x
@@ -288,10 +290,11 @@ void noiseReverseMode()
   //   in reverse
   //  -maybe the xor operation can be embedded into a feedback loop for the state
 
-
-  // See also: https://papa.bretmulvey.com/post/124027987928/hash-functions This stuff could be 
-  // useful for other kinds of reversible randomization steps. Of particluar interest are 
-  // reversible oprations. The post lists those:
+  // See also: 
+  // https://github.com/skeeto/hash-prospector 
+  // https://papa.bretmulvey.com/post/124027987928/hash-functions 
+  // This stuff could be useful for other kinds of reversible randomization steps. Of particluar 
+  // interest are reversible oprations in the 2nd link. The post lists those:
   //   hash ^= constant;
   //   hash *= constant; // if constant is odd
   //   hash += constant;
@@ -304,9 +307,6 @@ void noiseReverseMode()
   // also reversible are permutations of the entries/bits which includes cyclic bit-rotations. 
   // What does the last one do? Does it generalize to  (hash << k) | (hash >> n-k); for n bits?
   // Is this a bit-rotation?
-
-
-  int dummy = 0;
 }
 
 void noiseTriModal()
