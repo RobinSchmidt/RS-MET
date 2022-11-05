@@ -769,3 +769,19 @@ void StereoDelayModuleEditor::resized()
   y = outputSliderR2R->getBottom()-2;
   outDelaySliderR->setBounds(x+4, y, w-8, 16);
 }
+
+
+
+/*
+
+Ideas:
+-Improve the diffusors, perhaps as follows:
+ -Start with the general 1st order allpass difference equation:
+    y[n] = c*x[n] + x[n-1] - c * y[n-1]   (see DAFX, pg 39)
+ -Replace the unit delay with a delay by k samples:
+    y[n] = c*x[n] + x[n-k] - c * y[n-k]
+ -Maybe allow for non-integer k, using delayline interpolation and use the warped allpass 
+  interpolation algorithm or Thiran interpolation for that
+    
+
+*/

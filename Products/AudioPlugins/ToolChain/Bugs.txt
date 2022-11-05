@@ -1,5 +1,6 @@
 
 General:
+-For some Straightliner factory patches, it doesn't find the waveform files
 -Plug in AcidDevil, load ToolChain preset Acid8.xml, skip one forward - it should load Acid8_2.xml 
  but instead, it loads Acid.xml instead. When skipping formward through the list, we'll eventually 
  arrive at Acid9.xml again and the skipping one further actually loads the correct patch.

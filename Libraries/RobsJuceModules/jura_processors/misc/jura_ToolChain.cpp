@@ -1121,6 +1121,11 @@ Bugs:
 
 
 ToDo:
+-GUI:
+ -Maybe include a virtual keyboard at the bottom that can be swicthed on/off by a little button at the 
+  bottom. Maybe the keyboard can also be some more general "MIDI Status" section with a bit more info 
+  like he current BPM setting (as received from the host or set up by the user). a flashlight for 
+  clock/beat (like my JX-305), last received event, button for panic, etc.
 -FuncShaper: have a DryDelay parameter - mostly for compensating the latency of the AA filter but 
  may be an interesting effect as well
 -Let ToolChain host plugins. I'm specifically interested in hosting APE and a modular (sub)host. 
