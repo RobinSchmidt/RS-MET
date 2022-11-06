@@ -16,7 +16,22 @@ General:
  -it seems to have to do with the StereoDelay in Slot 2 (?)
 
 
-Sampler
+Sampler:
+-load Saw_FilterTwoEnvs.sfz
+ -adsr1_cutoff slider seems to do nothing, adsr1_attack also - no audible changes
+ -fileg_depth is not in the right position in the tree...maybe because it's a mod-routing? But 
+  that's confusing for the user. But maybe we can collect the modulations under a child-node
+  called ModMatrix or something. Then it may be less confusing. SFZ has no concept of a mod-matrix
+  so the textual representation of a patch deviates from the internal data structures
+-the roundtrip between moving a slider and-re-parsing the code introduces small errors. Has it to 
+ do with float rounding? Or with the float -> string -> float roundtrip?
+-when cutoff is set to 0 via the slider, in the code a 00 shows up instead of 0
+ -what is actually the desired behavior? currently, the filter turns to bypass, but I actually 
+ think, in case of a lowpass, it should turn off the sound. In a highpass filter, switching to 
+ bypass seems appropriate, though.
+ 
+
+
 -[FIXED] load NoiseWhistle.sfz, then in the TreeView:
  -click on cutoff -> cutoff slider appears
  -click on resonance -> reso slide does not appear

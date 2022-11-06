@@ -223,3 +223,17 @@ XmlElement* ColourSchemeSetupDialog::getStateAsXml(const juce::String& stateName
   return ColourSchemeComponent::getColourSchemeAsXml();
 }
 
+
+
+/*
+
+ToDo:
+-Actually, it does't make much sense to have comboboxes to switch between the 2 options 
+ dark-on-bright and broght-on-dark. Just use a button for each. Maybe just call it "Dark" which
+ stands for "Bright on Dark", i.e. it means the background color as that is the dominant one.
+-Maybe we could have brightness and contrast sliders as well. Maybe a power rule and some sort of
+ sigmoid rule can be used? But which should be first? Or maybe use power -> sigmoid -> power
+ ...or wait - no - power is the gamma. brightness would be an additive constant. maybe do 
+ add -> contrast -> add, i.e. a sigmoid with pre- and post shift
+
+*/

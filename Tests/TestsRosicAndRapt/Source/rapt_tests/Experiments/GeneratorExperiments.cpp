@@ -307,6 +307,11 @@ void noiseReverseMode()
   // also reversible are permutations of the entries/bits which includes cyclic bit-rotations. 
   // What does the last one do? Does it generalize to  (hash << k) | (hash >> n-k); for n bits?
   // Is this a bit-rotation?
+  // See also this thread for some talk about PRNGs with random access:
+  //   https://www.kvraudio.com/forum/viewtopic.php?t=588891&start=15
+  // based on applying a hash function to a counter
+  //   https://www.kvraudio.com/forum/viewtopic.php?p=8092383
+  //   https://www.kvraudio.com/forum/viewtopic.php?p=8430196&hilit=hash#p8430196
 }
 
 void noiseTriModal()

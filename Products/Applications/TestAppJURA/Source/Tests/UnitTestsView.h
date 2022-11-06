@@ -21,6 +21,7 @@ public:
     PARAMETERS,
     MODULATION,
     TOOL_CHAIN,
+    //SFZ_SAMPLER,
     MISC,
 
 

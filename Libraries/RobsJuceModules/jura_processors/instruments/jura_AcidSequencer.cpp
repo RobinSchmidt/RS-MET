@@ -808,5 +808,14 @@ Ideas for sequence manipulations:
  slides/accents from the octaves? And also ne non-slides/non-octaves
 
 
+Ideas:
+-use the ideas from Euclidean rhythms (i.e. distribute events evenly) to disperse the accent and 
+ slide events, see:  https://www.youtube.com/watch?v=bKazVnHh2w4
+ the numer of steps is the sequence length (16), the number of events is the number of 
+ accents/slides. maybe introduce mor types of events ...how about a "scream" event that 
+ temporarily uses higher distortion than normal? Or temporarily increases the amoutn of some other
+ effect?
+
+
 
 */
