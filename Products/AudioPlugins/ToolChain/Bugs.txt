@@ -15,7 +15,6 @@ General:
 -[fixed?] load Acid8.xml in ToolChain, switch to next preset -> crash
  -it seems to have to do with the StereoDelay in Slot 2 (?)
 
-
 Sampler:
 -load Saw_FilterTwoEnvs.sfz
  -adsr1_cutoff slider seems to do nothing, adsr1_attack also - no audible changes

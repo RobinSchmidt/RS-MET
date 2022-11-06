@@ -148,7 +148,7 @@ void AcidPattern::xorAccentsWithSlides()
 void AcidPattern::xorSlidesWithAccents()
 {
   for(int i = 0; i < numSteps; i++)
-    notes[i].accent = rsXor(notes[i].accent, notes[i].slide);
+    notes[i].slide = rsXor(notes[i].accent, notes[i].slide);
 }
 
 
