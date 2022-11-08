@@ -5,6 +5,9 @@
 // Basics/BasicFunctions.h (the min/max stuff could go into Basics)
 
 
+// Maybe use naming conventions the parallel the built-in functions of GLSL: 
+// https://docs.gl/sl4/inversesqrt
+
 /** Returns the absolute value of the input argument. It is intended to replace the standard
 "abs" and "fabs" c-functions where genericity is desired. */
 //template <class T>

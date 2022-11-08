@@ -570,14 +570,14 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
 
   addButton(&invertAccentsButton, "Inv", "Inverts the accents (logical not)");
   addButton(&invertSlidesButton,  "Inv", "Inverts the slides (logical not)");
-  addButton(&invertOctavesButton, "Inv", "Inverts the octaves (logical not)");
+  addButton(&invertOctavesButton, "Inv", "Inverts the octaves (flips signs)");
 
 
   addButton(&swapAccentsSlidesButton, "A2S", "Swaps accents with slides");
   addButton(&xorAccentsSlidesButton,  "AXS", "Xors accents with slides");
   addButton(&xorSlidesAccentsButton,  "SXA", "Xors slides with accents");
 
-  // maybe let new accents be old accenzts xor'ed with slides, smae for slides
+  // maybe let new accents be old accents xor'ed with slides, smae for slides
 
 
   // Set up the widgets:
@@ -782,7 +782,17 @@ void AcidSequencerModuleEditor::resized()
 -Implement copy/paste for patterns.
 -Evaluate and maybe fix manipulator button positioning
 
+-Allow to save sequences in MIDI format. Maybe the current save dialog can be used for that: the 
+ user should be able to select to save as .xml as it currently is but also as .mid. I think, this 
+ is possible in JUCE -> figure out!
 
+-Try to take the sequencer out as standalone MIDI module 
+ -AcidDevil still keeps it but we want to have it available also to dirve other synths
+ -When finished, this can serve as basis for a polyphonic appregiator
+ -we need to specify ToolChain's behavior with respect to MIDI plugins. It should be possible, to
+  drive - say - Straightliner or the Sampler via the 303 sequencer
+ -Maybe we can make AcidDevil itself optionally let output MIDI. Maybe have button in the Sequencer
+  that let's the user switch the MIDI output on.
 
 
 Ideas for sequence manipulations:
@@ -806,7 +816,9 @@ Ideas for sequence manipulations:
 -Maybe have xor for accent-octave, slide-octave, too - but octave is no simple binary switch...hmm
  maybe map 1 to +1. ...but we wnat an undoable action. Not sure, what to do. Maybe add/subtract the 
  slides/accents from the octaves? And also ne non-slides/non-octaves
-
+-Randomize the notes but use only those notes that already exist in the pattern. Maybe also match 
+ their number of occurence in the new pattern. Basically, that would mean to apply a permutation to 
+ the notes, I think. Maybe have some way to generate more interesting random permutations.
 
 Ideas:
 -use the ideas from Euclidean rhythms (i.e. distribute events evenly) to disperse the accent and 
@@ -815,6 +827,10 @@ Ideas:
  accents/slides. maybe introduce mor types of events ...how about a "scream" event that 
  temporarily uses higher distortion than normal? Or temporarily increases the amoutn of some other
  effect?
+
+
+-For inspiration, have a look at what other 303 emus do:
+ https://d16.pl/pub/manuals/Phoscyon%202-manual-gb.pdf
 
 
 
