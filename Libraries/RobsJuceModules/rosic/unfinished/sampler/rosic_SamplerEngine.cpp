@@ -648,6 +648,12 @@ int rsSamplerEngine::addSamplesUsedIn(const SfzInstrument& sfz)
       if(relativePath.empty())
         continue;
       std::string path = getAbsolutePath(relativePath.c_str());  // preliminary
+      
+      rsReplace(path,"\\","/");
+      // TEST: Without it, on the Mac, we now get a sample load error when trying to load, for
+      // example Saw.sfz. With it, we don't get that load error anymore but some other error
+      // later....
+      
       if(isValidSamplePath(path) && !isSampleInPool(path)) {
         int rc = loadSampleToPool(path);
         if(rc >= 0)
@@ -699,6 +705,9 @@ int rsSamplerEngine::setupAudioStreams()
       if(relativePath.empty())
         continue;
       std::string path = getAbsolutePath(relativePath.c_str());  // preliminary
+      
+      rsReplace(path, "\\", "/");
+      
       allOK &= setupStream(r, path);
     }
   }
