@@ -785,6 +785,8 @@ void AcidSequencerModuleEditor::resized()
 -Allow to save sequences in MIDI format. Maybe the current save dialog can be used for that: the 
  user should be able to select to save as .xml as it currently is but also as .mid. I think, this 
  is possible in JUCE -> figure out!
+ https://docs.juce.com/master/classMidiFile.html
+ https://docs.juce.com/master/classMidiMessageSequence.html
 
 -Try to take the sequencer out as standalone MIDI module 
  -AcidDevil still keeps it but we want to have it available also to dirve other synths
@@ -819,6 +821,18 @@ Ideas for sequence manipulations:
 -Randomize the notes but use only those notes that already exist in the pattern. Maybe also match 
  their number of occurence in the new pattern. Basically, that would mean to apply a permutation to 
  the notes, I think. Maybe have some way to generate more interesting random permutations.
+-Maybe have a Permuter that can be applied to anything with parameters:
+ -Target via ComboBox: Notes, Accents, Slides, ...
+ -Mode via ComboBox: 
+  -Swap 1st/2nd half of whole pattern or maybe of a selected sub-pattern...yeah - that would be 
+   interesting anyway: limit the action of all buttons to a selectd region of the pattern only. By 
+   default, the whole pattern is selected. maybe the region does not need to be connected, i.e. can
+   have gaps. Maybe have for each step a button/dot to select, whether or not that step is affected
+   by the action
+  -Circular shift 
+
+( - selected by ComboBox
+-Maybe have buttons to swap 1st and 2nd half
 
 Ideas:
 -use the ideas from Euclidean rhythms (i.e. distribute events evenly) to disperse the accent and 
@@ -831,6 +845,11 @@ Ideas:
 
 -For inspiration, have a look at what other 303 emus do:
  https://d16.pl/pub/manuals/Phoscyon%202-manual-gb.pdf
+
+
+
+ https://en.wikipedia.org/wiki/Xorshift
+ https://en.wikipedia.org/wiki/Linear-feedback_shift_register
 
 
 
