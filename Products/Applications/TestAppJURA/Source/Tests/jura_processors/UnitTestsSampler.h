@@ -3,7 +3,7 @@
 
 #include "../../../JuceLibraryCode/JuceHeader.h"
 
-/** A Sampler meant for copy-and-paste to create a new unit test. */
+/**  */
 
 class JUCE_API UnitTestsSampler : public juce::UnitTest
 {
@@ -23,5 +23,18 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestsSampler)
 };
+
+
+class JUCE_API SamplerModuleTest : public jura::SamplerModule
+{
+
+public:
+
+  jura::AudioModuleEditor* createEditor(int type) override;
+
+};
+
+
+
 
 #endif

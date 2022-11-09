@@ -32,6 +32,14 @@ void UnitTestsSampler::testSamplerAudioModule()
   int dummy = 0;
 }
 
+
+jura::AudioModuleEditor* SamplerModuleTest::createEditor(int type)
+{
+  return new jura::SamplerEditor(this);
+}
+
+
+
 /*
 
 ToDo:
@@ -40,6 +48,7 @@ ToDo:
 -In SamplerEditorTest have additional functions that test certain functionality. These tests need
  to access the (protected) widgets - that's hwy we need to create a subclass.
  
+-Test selecting am opcode node in the TreeView and check, if the correct slider is displayed
 
 
 */
