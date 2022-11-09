@@ -6,15 +6,15 @@ UnitTestsView::UnitTestsView()
   createWidgets();
 }
 
-void UnitTestsView::runTest(int testIndex)
+void UnitTestsView::runTest(testIndices testIndex)
 {
   juce::Array<UnitTest*> tests;
 
-  if(includeTest(PARAMETERS))  tests.add(new UnitTestParameter);
-  if(includeTest(MODULATION))  tests.add(new UnitTestModulation);
-  if(includeTest(MISC))        tests.add(new UnitTestMisc);
-  if(includeTest(TOOL_CHAIN))  tests.add(new UnitTestToolChain);
-  if(includeTest(SFZ_SAMPLER)) tests.add(new UnitTestsSampler);
+  if(includeTest(testIndices::PARAMETERS))  tests.add(new UnitTestParameter);
+  if(includeTest(testIndices::MODULATION))  tests.add(new UnitTestModulation);
+  if(includeTest(testIndices::MISC))        tests.add(new UnitTestMisc);
+  if(includeTest(testIndices::TOOL_CHAIN))  tests.add(new UnitTestToolChain);
+  if(includeTest(testIndices::SFZ_SAMPLER)) tests.add(new UnitTestsSampler);
 
 
   //beginTest();
@@ -46,7 +46,7 @@ void UnitTestsView::resized()
 void UnitTestsView::rButtonClicked(RButton* b)
 {
   if(b == runButton)
-    runTest(ALL); // todo: inquire combobox, which test to run
+    runTest(testIndices::ALL); // todo: inquire combobox, which test to run
 }
 
 void UnitTestsView::resultsUpdated()
@@ -72,7 +72,7 @@ void UnitTestsView::resultsUpdated()
   testResultView->setText(str);
 }
 
-bool UnitTestsView::includeTest(int testIndex)
+bool UnitTestsView::includeTest(testIndices testIndex)
 {
   juce::String selection = testSelectorBox->getSelectedItemText();
 
@@ -83,11 +83,11 @@ bool UnitTestsView::includeTest(int testIndex)
 
   // Otherwise, we must check, whether the selection string matches with its corresponding 
   // testIndex:
-  if(selection == "Parameters" && testIndex == PARAMETERS)  return true;
-  if(selection == "Modulation" && testIndex == MODULATION)  return true;
-  if(selection == "Misc"       && testIndex == MISC)        return true;
-  if(selection == "ToolChain"  && testIndex == TOOL_CHAIN)  return true;
-  if(selection == "Sampler"    && testIndex == SFZ_SAMPLER) return true;
+  if(selection == "Parameters" && testIndex == testIndices::PARAMETERS)  return true;
+  if(selection == "Modulation" && testIndex == testIndices::MODULATION)  return true;
+  if(selection == "Misc"       && testIndex == testIndices::MISC)        return true;
+  if(selection == "ToolChain"  && testIndex == testIndices::TOOL_CHAIN)  return true;
+  if(selection == "Sampler"    && testIndex == testIndices::SFZ_SAMPLER) return true;
 
   // This is the default path which we end up with, when we have just implemented a new test and 
   // not yet added a corresponding line to the if-chain above:
@@ -101,15 +101,15 @@ void UnitTestsView::createWidgets()
   addWidget(runTestsLabel);
 
   testSelectorBox = new RComboBox;
-  testSelectorBox->addItem(ALL,        "All Tests");
+  testSelectorBox->addItem((int)testIndices::ALL,        "All Tests");
 
-  testSelectorBox->addItem(PARAMETERS, "Parameters");
-  testSelectorBox->addItem(MODULATION, "Modulation");
-  //testSelectorBox->addItem(WIDGETS, "Widgets");
-  testSelectorBox->addItem(MISC,       "Misc");
+  testSelectorBox->addItem((int)testIndices::PARAMETERS, "Parameters");
+  testSelectorBox->addItem((int)testIndices::MODULATION, "Modulation");
+  //testSelectorBox->addItem((int)testIndices::WIDGETS, "Widgets");
+  testSelectorBox->addItem((int)testIndices::MISC,       "Misc");
 
-  testSelectorBox->addItem(MODULATION, "ToolChain");
-  testSelectorBox->addItem(SFZ_SAMPLER, "Sampler");
+  testSelectorBox->addItem((int)testIndices::MODULATION, "ToolChain");
+  testSelectorBox->addItem((int)testIndices::SFZ_SAMPLER, "Sampler");
 
   testSelectorBox->selectItemFromText("All Tests", false);
   addWidget(testSelectorBox);
@@ -125,3 +125,16 @@ void UnitTestsView::createWidgets()
   // todo: add descriptions
 }
 
+
+/*
+
+Bugs:
+-When anything other than "All Tests" is selected in the combobox, we hit an assert in 
+ UnitTestsView::includeTest. It seems like, for example, when we select "Parameters" in the 
+ combobox, we receive the index for "Modulation".
+ -To fix it: maybe first implement a unit-test for the combo-box that ensures that the 
+  returned item-id and the selected optin text are in sync
+ 
+
+
+*/

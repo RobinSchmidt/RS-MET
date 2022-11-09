@@ -17,7 +17,7 @@ class JUCE_API UnitTestsView : public jura::Editor, public juce::UnitTestRunner,
 
 public:
 
-  enum testIndices
+  enum class testIndices  // rename to TestIndex
   {
     ALL = 1,
     PARAMETERS,
@@ -34,7 +34,7 @@ public:
   UnitTestsView();
 
   /** Runs the tests with given index (see enum testIndices). */
-  void runTest(int testIndex);
+  void runTest(testIndices testIndex);
 
   virtual void resized() override;
   virtual void rButtonClicked(jura::RButton* button) override;
@@ -44,7 +44,7 @@ protected:
 
   /** Returns true, if the test with given index should be included in the next run. This 
   depends on what the user hase selected via the testSelectorBox. */
-  bool includeTest(int testIndex);
+  bool includeTest(testIndices testIndex);
 
   void createWidgets();
 
