@@ -476,7 +476,6 @@ number of opcodes (well...maybe that's not very useful...maybe there's more inte
 show - but we need to fill the space with something). */
 
 class SfzTreeView : public jura::RTreeView, public jura::SamplerInterfaceComponent
-  //,public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver
 {
 
 public:
@@ -498,15 +497,7 @@ public:
 
   SfzTreeViewNode* findNode(const PatchChangeInfo& info);
 
-  /*
-  // Overriden callbacks for the widgets:
-  void rSliderValueChanged(RSlider* s) override;
-  void rButtonClicked(RButton* b) override;
-  void rComboBoxChanged(RComboBox* cb) override;
-  */
-
   void mouseMove(const MouseEvent& e) override;
-
 
 
 protected:
@@ -518,16 +509,6 @@ protected:
 
   SfzTreeViewNode rootNode;  // Manages the lifetimes of all its child-nodes
 
-  /*
-  // Under construction - the overlay widgets:
-  jura::RSlider* slider;             // Sets continuous parameters
-  jura::RButton* button;             // Sets boolean parameters
-  jura::RComboBox* comboBox;         // Sets choice parameters
-  // factor out into a class SfzOpcodeWidgetSet that can be used here and in SfzOpcodeEditor
-  // and contains all the code for making the right kind of widget visible, setting up the
-  // min/max values and so on
-  */
-
   void createWidgets();
   //void updateVisibilities();
 
@@ -538,8 +519,7 @@ protected:
 
   /** Shows the overlay widget that is suitable for the given tree node at the given y-coordinate, 
   i.e. a slider for a continuous parameter, a box for a choice parameter, etc. */
-  void showOverlayWidget(RTreeViewNode* node, int y);
-
+  void showOverlayWidget(SfzTreeViewNode* node, int y);
 
 
   //jura::SfzPlayer* player = nullptr; 

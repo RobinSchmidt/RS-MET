@@ -727,7 +727,8 @@ void SfzTreeView::mouseMove(const MouseEvent& e)
   if(e.mods.isCtrlDown())
   {
     int y = e.getPosition().y;
-    RTreeViewNode* node = getNodeAtY(y);
+    //RTreeViewNode* node = getNodeAtY(y);
+    SfzTreeViewNode* node = dynamic_cast<SfzTreeViewNode*> (getNodeAtY(y));
     if(node != nullptr)
       showOverlayWidget(node, y);
   }
@@ -744,25 +745,6 @@ void SfzTreeView::createWidgets()
   addChildComponent(overlayWidgets = new SfzOpcodeWidgetSet());               // preliminary
   //addChildColourSchemeComponent(overlayWidgets = new SfzOpcodeWidgetSet()); // we want something
   //addWidget(overlayWidgets = new SfzOpcodeWidgetSet());                     // like this instead
-
-
-
-
-
-  /*
-  // The widgets that may dynamically appear or disappear:
-  //addWidget(slider = new jura::RSlider(), true, false);
-  addChildComponent(slider = new jura::RSlider());
-  slider->addListener(this);
-
-  //addWidget(button = new jura::RButton(), true, false);
-  addChildComponent(button = new jura::RButton());
-  button->addRButtonListener(this);
-
-  //addWidget(comboBox = new jura::RComboBox(), true, false);
-  addChildComponent(comboBox = new jura::RComboBox());
-  comboBox->registerComboBoxObserver(this);
-  */
 }
 
 /*
@@ -775,18 +757,21 @@ void SfzTreeView::updateVisibilities()
 void SfzTreeView::hideOverlayWidgets()
 {
   overlayWidgets->setVisible(false);
-
-  //slider->setVisible(false);
-  //button->setVisible(false);
-  //comboBox->setVisible(false);
 }
 
-void SfzTreeView::showOverlayWidget(RTreeViewNode* node, int y)
+void SfzTreeView::showOverlayWidget(SfzTreeViewNode* node, int y)
 {
-  // set up the bounds of overlayWidgets
   overlayWidgets->setBounds(16, y, getWidth()-32, 16);
-
   overlayWidgets->setVisible(true);
+
+  int dummy = 0;
+
+  // Hmm...the widgets do not seem to appear. I think we need to call:
+
+  //overlayWidgets->setSettingToEdit(int groupIndex, int regionIndex,
+  //  const rosic::Sampler::PlaybackSetting& setting)
+
+  // To figure out what the pameters should be, we need to look into the node. It has the data.
 }
 
 //=================================================================================================
