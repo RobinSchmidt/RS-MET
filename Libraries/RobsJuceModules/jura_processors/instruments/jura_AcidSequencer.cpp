@@ -833,6 +833,8 @@ Ideas for sequence manipulations:
 
 ( - selected by ComboBox
 -Maybe have buttons to swap 1st and 2nd half
+-How about y[n] = xor(x[n-1], x[n+1])? Is that reversible? Of course, the indexing is understood 
+ with wraparound. Or what about y[n] = xor(x[n], x[n+1])?
 
 Ideas:
 -use the ideas from Euclidean rhythms (i.e. distribute events evenly) to disperse the accent and 
