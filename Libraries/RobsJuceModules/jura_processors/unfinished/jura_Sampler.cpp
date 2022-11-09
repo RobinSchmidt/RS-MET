@@ -570,11 +570,16 @@ void SfzTreeView::mouseMove(const MouseEvent& e)
 {
   if(e.mods.isCtrlDown())
   {
-
-    int dummy = 0;
+    int y = e.getPosition().y;
+    RTreeViewNode* node = getNodeAtY(y);
+    if(node != nullptr)
+      showOverlayWidget(node, y);
   }
   else
+  {
+    hideOverlayWidgets();
     jura::RTreeView::mouseMove(e);
+  }
 }
 
 void SfzTreeView::createWidgets()
@@ -593,9 +598,25 @@ void SfzTreeView::createWidgets()
   comboBox->registerComboBoxObserver(this);
 }
 
+/*
 void SfzTreeView::updateVisibilities()
 {
 
+}
+*/
+
+void SfzTreeView::hideOverlayWidgets()
+{
+  slider->setVisible(false);
+  button->setVisible(false);
+  comboBox->setVisible(false);
+}
+
+void SfzTreeView::showOverlayWidget(RTreeViewNode* node, int y)
+{
+
+
+  int dummy = 0;
 }
 
 //=================================================================================================

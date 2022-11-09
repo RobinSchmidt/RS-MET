@@ -463,7 +463,15 @@ protected:
   jura::RComboBox* comboBox;         // Sets choice parameters
 
   void createWidgets();
-  void updateVisibilities();
+  //void updateVisibilities();
+
+  /** Hides all the overlay widgets, i.e. calls juce::Component::setVisible(false) on them. */
+  void hideOverlayWidgets();
+
+  /** Shows the overlay widget that is suitable for the given tree node at the given y-coordinate, 
+  i.e. a slider for a continuous parameter, a box for a choice parameter, etc. */
+  void showOverlayWidget(RTreeViewNode* node, int y);
+
 
 
   //jura::SfzPlayer* player = nullptr; 
