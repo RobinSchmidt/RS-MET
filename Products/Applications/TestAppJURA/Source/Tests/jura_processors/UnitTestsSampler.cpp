@@ -46,16 +46,15 @@ bool SamplerEditorTest::testTreeViewNodeSelection()
   bool ok = true;
 
   // ToDo:
-  // -Create an example sfz-string:
-  //  -One group containign one region
-  //  -No sample opcode
-  //  -Have opcodes for cutoff, lfo1_freq, lfo1_cutoff
-  // -Let the sampler set itself up from that sfz string
+  // -Check, if the CodeEditor and TreeView have the expected content (text, nodes, etc.)
   // -Simulate clicking on the cutoff node in the TreeView
   // -Check, if the slider appears as it should
   // -Do the same for the other sliders for lfo1_freq, lfo1_cutoff
 
   juce::String sfzString = "<group><region>cutoff=1000 lfo1_freq=2.5 lfo1_cutoff=500";
+  samplerModule->setupFromSfzString(sfzString, false);
+
+
 
   return ok;
 }
