@@ -1418,7 +1418,7 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
-
+-For the modulation connections, we don't get any sliders to appear
 -[fixed] Saw_1forAllFilterEnv.sfz: change cutoff -> assert! We fail to find the correct code segment in
  sfz document. -> make a unit test with an sfz patch content similar to the content of that patch.
  maybe it's because the patch start witha comment? Or is it because we now use a backslash? Try 
