@@ -406,6 +406,8 @@ fil_type=lpf_2p) it will show a combo box, for freeform text parameters (e.g. sa
 text entry field. */
 
 class SfzOpcodeWidgetSet : public jura::WidgetSet, public SamplerInterfaceComponent
+  ,public jura::RSliderListener, public jura::RComboBoxObserver
+  , public jura::RTextEntryFieldObserver
 {
 
 public:
@@ -421,6 +423,11 @@ public:
     const rosic::Sampler::PlaybackSetting& setting);
 
   void handlePatchUpdate(const PatchChangeInfo& info) override;
+
+  // Overriden callbacks for the widgets:
+  void rSliderValueChanged(RSlider* s) override;
+  void rComboBoxChanged(RComboBox* cb) override;
+  void textChanged(RTextEntryField *tf) override;
 
 
   enum class WidgetMode { slider, button, chooser, text, none };
@@ -544,6 +551,8 @@ range is, which unit it has, etc. It will also show a widget that is appropriate
 actual parameter value. */
 
 class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceComponent, 
+
+  // these baseclasses may be obsolete after refactoring:
   public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver,
   public jura::RTextEntryFieldObserver
 {

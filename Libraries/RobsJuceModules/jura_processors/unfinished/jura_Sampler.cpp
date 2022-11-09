@@ -384,6 +384,22 @@ void SfzOpcodeWidgetSet::handlePatchUpdate(const PatchChangeInfo& info)
   patchChangeInfo.oldSetting.setValue(info.newValue);
 }
 
+void SfzOpcodeWidgetSet::rSliderValueChanged(RSlider* s)
+{
+  patchChangeInfo.newValue = s->getValue(); // Store the desired new value
+  notifyMediator(0, &patchChangeInfo);      // Notify colleague objects (TreeView, CodeEditor, ...)
+}
+
+void SfzOpcodeWidgetSet::rComboBoxChanged(RComboBox* cb)
+{
+
+}
+
+void SfzOpcodeWidgetSet::textChanged(RTextEntryField* tf)
+{
+
+}
+
 void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
 {
   if(newMode != mode)
@@ -407,13 +423,13 @@ void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
 void SfzOpcodeWidgetSet::createWidgets()
 {
   addWidget(slider = new jura::RSlider(), true, false);
-  //slider->addListener(this);
+  slider->addListener(this);
 
   addWidget(comboBox = new jura::RComboBox(), true, false);
-  //comboBox->registerComboBoxObserver(this);
+  comboBox->registerComboBoxObserver(this);
 
   addWidget(textField = new jura::RTextEntryField(), true, false);
-  //textField->registerTextEntryFieldObserver(this);
+  textField->registerTextEntryFieldObserver(this);
 
   // May add descriptions to these widgets, too - but maybe these descriptions should also change
   // dynamically? We'll see
