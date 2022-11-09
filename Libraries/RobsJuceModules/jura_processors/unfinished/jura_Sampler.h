@@ -399,6 +399,30 @@ protected:
 
 //=================================================================================================
 
+/** A class that holds different types of widgets for the different kinds of SFZ opcodes that makes
+one of those widgets visible at a time - whatever is appropriate for the opcode in question. 
+For continuous parameter opcodes (e.g. cutoff=1000) it will show a slider, for choice opcodes (e.g. 
+fil_type=lpf_2p) it will show a combo box, for freeform text parameters (e.g. sample="Guitar.wav") a
+text entry field. */
+
+class SfzOpcodeWidgetSet : public jura::WidgetSet
+{
+
+public:
+
+protected:
+
+  jura::RSlider*         slider;     // For continuous parameters, e.g. cutoff=1000
+  //jura::RButton*         button;     // For boolean parameters, e.g. ??? ...are there any?
+  jura::RComboBox*       comboBox;   // For choice parameters, e.g. fil_type=lpf_2p
+  jura::RTextEntryField* textField;  // For freeform string parameters, e.g. sample="Guitar.wav"
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeWidgetSet)
+};
+
+
+//=================================================================================================
+
 /** A subclass of RTreeView for displaying and manipulating the structure of an sfz instrument 
 definition. Because sfz instruments have 3 hierarchy levels (global, group, region), the tree has
 3 levels, too. Leaf nodes are the individual opcodes. 
@@ -461,6 +485,9 @@ protected:
   jura::RSlider* slider;             // Sets continuous parameters
   jura::RButton* button;             // Sets boolean parameters
   jura::RComboBox* comboBox;         // Sets choice parameters
+  // factor out into a class SfzOpcodeWidgetSet that can be used here and in SfzOpcodeEditor
+  // and contains all the code for making the right kind of widget visible, setting up the
+  // min/max values and so on
 
   void createWidgets();
   //void updateVisibilities();
@@ -534,6 +561,8 @@ protected:
 
   jura::RTextField *opcodeField;     // Shows name/syntax of active opcode
   jura::RTextField *helpField;       // Shows a description text for active opcode
+
+  // 
   jura::RSlider* slider;             // Sets continuous parameters
   jura::RButton* button;             // Sets boolean parameters
   jura::RComboBox* comboBox;         // Sets choice parameters

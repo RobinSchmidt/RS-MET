@@ -3,14 +3,11 @@
 
 //#include "rojue_RWidget.h"
 
-/** This class assembles some widgets int a set that can be treated as one entity then.
+/** This class assembles some widgets into a set that can be treated as one entity then.
 
 \todo: we should store the pointer to the description field here and pass it to widgets 
-when they are added
+when they are added [obsolete?]
 
-Why do we need this call at all? the baseclass ColourSchemeComponent alredady does have
-a widgets array. Seems like we are shadowing it here? Why? Does that make any sense? If so, 
-document it, if not, try to get rid of this class
 
 */
 
@@ -18,6 +15,8 @@ document it, if not, try to get rid of this class
 class JUCE_API WidgetSet : public ColourSchemeComponent
 {
   // Temporary, during trying to get rid of the WidgetSet class
+
+protected:
 
   // Empty overrides for paint/OverChildren to avoid background and outline drawing:
   void paint(Graphics &g) override {}

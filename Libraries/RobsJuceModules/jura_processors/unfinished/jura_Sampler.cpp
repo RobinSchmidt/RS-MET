@@ -665,7 +665,7 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
     setWidgetMode(WM::slider);
 
     /*
-    // Under construction - siwtch between linear and exponential slider mode:
+    // Under construction - switch between linear and exponential slider mode:
     // This criterion to switch between linear and exponential mode is ad hoc and heuristic. It 
     // doesn't seem to work though, because for cutoff, the minVal is actually 0. Maybe we need 
     // some expWithOffset characteristic for that. Maybe the offset should be maxVal / rangeFactor 
