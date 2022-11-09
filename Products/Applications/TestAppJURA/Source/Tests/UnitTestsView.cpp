@@ -13,8 +13,9 @@ void UnitTestsView::runTest(int testIndex)
   if(includeTest(PARAMETERS))  tests.add(new UnitTestParameter);
   if(includeTest(MODULATION))  tests.add(new UnitTestModulation);
   if(includeTest(MISC))        tests.add(new UnitTestMisc);
-  if(includeTest(SFZ_SAMPLER)) tests.add(new UnitTestsSampler);
   if(includeTest(TOOL_CHAIN))  tests.add(new UnitTestToolChain);
+  if(includeTest(SFZ_SAMPLER)) tests.add(new UnitTestsSampler);
+
 
   //beginTest();
   runTests(tests);

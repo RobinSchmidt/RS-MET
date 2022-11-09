@@ -22,9 +22,9 @@ public:
     ALL = 1,
     PARAMETERS,
     MODULATION,
+    MISC,
     TOOL_CHAIN,
     SFZ_SAMPLER,
-    MISC,
 
 
     NUM_UNIT_TESTS
