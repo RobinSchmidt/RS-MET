@@ -1120,6 +1120,26 @@ Ideas:
    which doesn't have its cutoff changing over time, but its slope - this models faster decay of 
    high frequencies
 
+-support .flac files - some decoder libraries are:
+   https://xiph.org/flac/                          reference implementation
+   https://mackron.github.io/dr_flac               single header, ~500kB
+   https://github.com/astoeckel/libfoxenflac       1 .h file, 11 kB, 1 .c file 50 kB)
+   https://github.com/jprjr/miniflac               52 files (.h, .c), 328 kB
+ libfoxenflac looks most lightweight, dr_flac has the most convenient API - loading a .flac file
+ looks like:
+   unsigned int channels;
+   unsigned int sampleRate;
+   drflac_uint64 totalPCMFrameCount;
+   drflac_int32* pSampleData = drflac_open_file_and_read_pcm_frames_s32("MySong.flac", &channels, 
+   &sampleRate, &totalPCMFrameCount, NULL);
+   if (pSampleData == NULL) {
+     // Failed to open and decode FLAC file.
+   }
+   drflac_free(pSampleData, NULL);
+ maybe we can get rid of the int32 buffer by directly reading the data into a float buffer by a 
+ similar function like drflac_open_file_and_read_pcm_frames_f32? There's also an mp3 decoder with
+ a similar API
+
 -maybe have a multi-output version (e.g. 16 stereo outs) and allow groups to be routed to different
  output busses. 16 seems nice because of the possible correspondence to the 16 available midi 
  channels. an/or maybe introduce another "ensemble" level above the instrument and allows whole 

@@ -689,10 +689,12 @@ rsSamplerWaveShaper:
 
 rsSamplerAmplifier:
 -Controlled by opcodes:
- -done (preliminary): volumeN, panN, widthN, balanceN(?)
+ -done (preliminary): amplitudeN (new), volumeN (sfz), panN (sfz), widthN (sfz), positionN (sfz)
 -internal algo parameters should be gLL, gLR, gRL, gRR - the 4 gains for the channel-mix matrix
 -user params should be: scale (linear overall scale factor), pan, width and as 3rd...dunno - maybe
  pos? whatever is left to determine the rest.
+
+
 
 
 -rsSamplerSlopeFilter

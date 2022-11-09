@@ -1506,6 +1506,10 @@ ToDo:
  TreeView that represents the SFZ and may allows to edit it
 
 -GUI:
+ -Make a GUI page that shows all available patch parameters at once. Maybe call it the "Tweak"
+  page. Or: maybe try to make the TreeView nodes themselves "draggable". Maybe we need to subclass
+  TreeView to make TreeViewWithDraggableNodes or TreeViewWithNodeWidgets. Or: when the user holds
+  shift while hovering over the tree, display an overlaid slider that can be directly manipulated.
  -The Opcode-Widgets need to be cleared when anew sfz or xml is loaded
  -we need a TreeView that represents the SFZs structure: the root/top-level node represents the 
   whole instrument, subnodes represnet groups and subsubsnodes represent regions. Each of these 
