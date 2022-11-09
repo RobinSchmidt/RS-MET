@@ -6,6 +6,8 @@
 #include "jura_framework/UnitTestsMisc.h"
 
 #include "jura_processors/UnitTestsToolChain.h"
+#include "jura_processors/UnitTestsSampler.h"
+
 
 /** A component to perform unit tests for jura classes, print results, etc. */
 
@@ -21,7 +23,7 @@ public:
     PARAMETERS,
     MODULATION,
     TOOL_CHAIN,
-    //SFZ_SAMPLER,
+    SFZ_SAMPLER,
     MISC,
 
 

@@ -5,13 +5,13 @@
 
 /** A template meant for copy-and-paste to create a new unit test. */
 
-class JUCE_API jura_UnitTestsTemplate_h : public juce::UnitTest
+class JUCE_API UnitTestsTemplate : public juce::UnitTest
 {
 
 public:
 
 
-  jura_UnitTestsTemplate_h() : juce::UnitTest("Tamplate", "Processors") {}
+  UnitTestsTemplate() : juce::UnitTest("Template", "Processors") {}
 
   void runTest() override;
 
@@ -19,7 +19,7 @@ public:
 protected:
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(jura_UnitTestsTemplate_h)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestsTemplate)
 };
 
 #endif

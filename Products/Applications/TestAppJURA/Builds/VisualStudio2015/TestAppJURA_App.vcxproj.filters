@@ -832,6 +832,9 @@
     <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsParameter.cpp">
       <Filter>TestAppJURA\Source\Tests\jura_framework</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Tests\jura_processors\UnitTestsSampler.cpp">
+      <Filter>TestAppJURA\Source\Tests\jura_processors</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Tests\jura_processors\UnitTestsToolChain.cpp">
       <Filter>TestAppJURA\Source\Tests\jura_processors</Filter>
     </ClCompile>
@@ -5390,6 +5393,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsParameter.h">
       <Filter>TestAppJURA\Source\Tests\jura_framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Tests\jura_processors\UnitTestsSampler.h">
+      <Filter>TestAppJURA\Source\Tests\jura_processors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Tests\jura_processors\UnitTestsToolChain.h">
       <Filter>TestAppJURA\Source\Tests\jura_processors</Filter>

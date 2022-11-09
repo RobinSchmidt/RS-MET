@@ -46,6 +46,7 @@
 		C3536DCE69A7ED790F0FCFCB /* ../../Source/Tests/RAPT/Tests.cpp */ = {isa = PBXBuildFile; fileRef = CF9628FABA5D8F48A9D2613F; };
 		C60C18B37F3018CCC4663733 /* ../../JuceLibraryCode/include_jura_framework.cpp */ = {isa = PBXBuildFile; fileRef = 95700476FA1B7096E5F43C0D; };
 		CC74ADE9B1F5304EDBA7D00F /* ../../JuceLibraryCode/include_rapt_templates.cpp */ = {isa = PBXBuildFile; fileRef = 27F1D7B93F27EF7FC715A2A6; };
+		D3BBA84E8DC8A7A82D714A22 /* ../../Source/Tests/jura_processors/UnitTestsSampler.cpp */ = {isa = PBXBuildFile; fileRef = DAA84C9F19FE0C6A670CCF39; };
 		DE1D018A9B57DE35C07A6394 /* ../../JuceLibraryCode/include_juce_opengl.mm */ = {isa = PBXBuildFile; fileRef = 1CC59CED341BD0331FEC098B; };
 		E19326A0EB005FA07558DA36 /* System/Library/Frameworks/DiscRecording.framework */ = {isa = PBXBuildFile; fileRef = D348E0AD4AA6AE128CB1754E; };
 		E244DB3A7470C83FC6AAD382 /* System/Library/Frameworks/Foundation.framework */ = {isa = PBXBuildFile; fileRef = FD8D62BDC7553A7D467C6F89; };
@@ -63,6 +64,7 @@
 		188DEBA6F3E3AFD1B495FE70 /* ../../Source/Tests/jura_processors/UnitTestsToolChain.h */ /* UnitTestsToolChain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnitTestsToolChain.h; path = ../../Source/Tests/jura_processors/UnitTestsToolChain.h; sourceTree = SOURCE_ROOT; };
 		193C13F517523C92E089B5BA /* RecentFilesMenuTemplate.nib */ /* RecentFilesMenuTemplate.nib */ = {isa = PBXFileReference; lastKnownFileType = file.nib; name = RecentFilesMenuTemplate.nib; path = RecentFilesMenuTemplate.nib; sourceTree = SOURCE_ROOT; };
 		19E3FE7914F4E0FDA2F675BD /* ../../JuceLibraryCode/include_rapt.cpp */ /* include_rapt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rapt.cpp; path = ../../JuceLibraryCode/include_rapt.cpp; sourceTree = SOURCE_ROOT; };
+		1C63DB635A7792691A5E7782 /* ../../Source/Tests/jura_processors/UnitTestsSampler.h */ /* UnitTestsSampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnitTestsSampler.h; path = ../../Source/Tests/jura_processors/UnitTestsSampler.h; sourceTree = SOURCE_ROOT; };
 		1CC59CED341BD0331FEC098B /* ../../JuceLibraryCode/include_juce_opengl.mm */ /* include_juce_opengl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_opengl.mm; path = ../../JuceLibraryCode/include_juce_opengl.mm; sourceTree = SOURCE_ROOT; };
 		1F1B8914EFD22EDDB2DA3449 /* System/Library/Frameworks/Carbon.framework */ /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		1F3489F78C8F423E5835A1BF /* ../../JuceLibraryCode/include_juce_gui_basics.mm */ /* include_juce_gui_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_basics.mm; path = ../../JuceLibraryCode/include_juce_gui_basics.mm; sourceTree = SOURCE_ROOT; };
@@ -122,6 +124,7 @@
 		D348E0AD4AA6AE128CB1754E /* System/Library/Frameworks/DiscRecording.framework */ /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
 		D48A282E40298EE243B1F6F7 /* ../../../../../Libraries/JUCE/modules/juce_audio_basics */ /* juce_audio_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_basics; path = ../../../../../Libraries/JUCE/modules/juce_audio_basics; sourceTree = SOURCE_ROOT; };
 		D4E1BF4A07EF30EF16D0104A /* ../../JuceLibraryCode/include_juce_audio_formats.mm */ /* include_juce_audio_formats.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_formats.mm; path = ../../JuceLibraryCode/include_juce_audio_formats.mm; sourceTree = SOURCE_ROOT; };
+		DAA84C9F19FE0C6A670CCF39 /* ../../Source/Tests/jura_processors/UnitTestsSampler.cpp */ /* UnitTestsSampler.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTestsSampler.cpp; path = ../../Source/Tests/jura_processors/UnitTestsSampler.cpp; sourceTree = SOURCE_ROOT; };
 		E165006DE5C94258A575482A /* ../../JuceLibraryCode/include_rosic.cpp */ /* include_rosic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rosic.cpp; path = ../../JuceLibraryCode/include_rosic.cpp; sourceTree = SOURCE_ROOT; };
 		E2E397E906DFAA15A1326DA2 /* ../../JuceLibraryCode/include_juce_audio_devices.mm */ /* include_juce_audio_devices.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_devices.mm; path = ../../JuceLibraryCode/include_juce_audio_devices.mm; sourceTree = SOURCE_ROOT; };
 		E340249C5CCA7FCEC5F8C03A /* System/Library/Frameworks/AVKit.framework */ /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
@@ -165,6 +168,8 @@
 		0F251C73B271FE0D5B59B354 /* jura_processors */ = {
 			isa = PBXGroup;
 			children = (
+				DAA84C9F19FE0C6A670CCF39,
+				1C63DB635A7792691A5E7782,
 				C054D4912E278EF5781D1075,
 				188DEBA6F3E3AFD1B495FE70,
 			);
@@ -437,6 +442,7 @@
 				4D1A8D0326B3AF1B3CC7F1C4,
 				34AFE236D4026C49F8A1C791,
 				55F9888FA58D9C8D3F8A43C9,
+				D3BBA84E8DC8A7A82D714A22,
 				1B76BC5C6BA77167E40B28E7,
 				75CD2D3FE56FB8A7E2DE6980,
 				C3536DCE69A7ED790F0FCFCB,

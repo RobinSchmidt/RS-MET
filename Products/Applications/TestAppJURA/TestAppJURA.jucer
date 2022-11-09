@@ -22,6 +22,10 @@
                 file="Source/Tests/jura_framework/UnitTestsParameter.h"/>
         </GROUP>
         <GROUP id="{0834D3BF-8C32-54D1-0BE9-8016F712ABBF}" name="jura_processors">
+          <FILE id="VRqDN3" name="UnitTestsSampler.cpp" compile="1" resource="0"
+                file="Source/Tests/jura_processors/UnitTestsSampler.cpp"/>
+          <FILE id="fg66Pi" name="UnitTestsSampler.h" compile="0" resource="0"
+                file="Source/Tests/jura_processors/UnitTestsSampler.h"/>
           <FILE id="FfNYL8" name="UnitTestsToolChain.cpp" compile="1" resource="0"
                 file="Source/Tests/jura_processors/UnitTestsToolChain.cpp"/>
           <FILE id="K9JGb8" name="UnitTestsToolChain.h" compile="0" resource="0"

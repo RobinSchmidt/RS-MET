@@ -5,13 +5,13 @@
 
 /** A Sampler meant for copy-and-paste to create a new unit test. */
 
-class JUCE_API jura_UnitTestsSampler_h : public juce::UnitTest
+class JUCE_API UnitTestsSampler : public juce::UnitTest
 {
 
 public:
 
 
-  jura_UnitTestsSampler_h() : juce::UnitTest("Tamplate", "Processors") {}
+  UnitTestsSampler() : juce::UnitTest("Sampler", "Processors") {}
 
   void runTest() override;
 
@@ -19,7 +19,7 @@ public:
 protected:
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(jura_UnitTestsSampler_h)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestsSampler)
 };
 
 #endif

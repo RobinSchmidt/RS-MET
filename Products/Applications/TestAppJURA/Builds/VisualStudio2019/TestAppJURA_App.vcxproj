@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsMisc.cpp"/>
     <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsModulation.cpp"/>
     <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Tests\jura_processors\UnitTestsSampler.cpp"/>
     <ClCompile Include="..\..\Source\Tests\jura_processors\UnitTestsToolChain.cpp"/>
     <ClCompile Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.cpp"/>
     <ClCompile Include="..\..\Source\Tests\RAPT\Tests.cpp"/>
@@ -4517,6 +4518,7 @@
     <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsMisc.h"/>
     <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsModulation.h"/>
     <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsParameter.h"/>
+    <ClInclude Include="..\..\Source\Tests\jura_processors\UnitTestsSampler.h"/>
     <ClInclude Include="..\..\Source\Tests\jura_processors\UnitTestsToolChain.h"/>
     <ClInclude Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.h"/>
     <ClInclude Include="..\..\Source\Tests\RAPT\Tests.h"/>
