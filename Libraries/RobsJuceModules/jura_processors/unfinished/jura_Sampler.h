@@ -399,7 +399,7 @@ protected:
 
 //=================================================================================================
 
-/** A class that holds different types of widgets for the different kinds of SFZ opcodes that makes
+/** A class that holds different types of widgets for the different kinds of SFZ opcodes. It makes
 one of those widgets visible at a time - whatever is appropriate for the opcode in question. 
 For continuous parameter opcodes (e.g. cutoff=1000) it will show a slider, for choice opcodes (e.g. 
 fil_type=lpf_2p) it will show a combo box, for freeform text parameters (e.g. sample="Guitar.wav") a
@@ -475,8 +475,8 @@ some other relevant information. In case of a region node, we may show key- and 
 number of opcodes (well...maybe that's not very useful...maybe there's more interesting data to 
 show - but we need to fill the space with something). */
 
-class SfzTreeView : public jura::RTreeView, public jura::SamplerInterfaceComponent,
-  public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver
+class SfzTreeView : public jura::RTreeView, public jura::SamplerInterfaceComponent
+  //,public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver
 {
 
 public:
@@ -498,10 +498,12 @@ public:
 
   SfzTreeViewNode* findNode(const PatchChangeInfo& info);
 
+  /*
   // Overriden callbacks for the widgets:
   void rSliderValueChanged(RSlider* s) override;
   void rButtonClicked(RButton* b) override;
   void rComboBoxChanged(RComboBox* cb) override;
+  */
 
   void mouseMove(const MouseEvent& e) override;
 
@@ -516,7 +518,7 @@ protected:
 
   SfzTreeViewNode rootNode;  // Manages the lifetimes of all its child-nodes
 
-
+  /*
   // Under construction - the overlay widgets:
   jura::RSlider* slider;             // Sets continuous parameters
   jura::RButton* button;             // Sets boolean parameters
@@ -524,9 +526,12 @@ protected:
   // factor out into a class SfzOpcodeWidgetSet that can be used here and in SfzOpcodeEditor
   // and contains all the code for making the right kind of widget visible, setting up the
   // min/max values and so on
+  */
 
   void createWidgets();
   //void updateVisibilities();
+
+  SfzOpcodeWidgetSet *overlayWidgets = nullptr;
 
   /** Hides all the overlay widgets, i.e. calls juce::Component::setVisible(false) on them. */
   void hideOverlayWidgets();
@@ -580,6 +585,7 @@ public:
   void rButtonClicked(RButton* b) override;
   void rComboBoxChanged(RComboBox* cb) override;
   void textChanged(RTextEntryField *tf) override;
+  // also obsolete after refactoring
 
   // Overriden juce callbacks:
   void resized() override;
@@ -617,7 +623,7 @@ protected:
 
 
   //SfzPlayer* sfzPlayer = nullptr; 
-  // Pointer to the underlying s SFZ player. Should be assigned after construction and remain valid
+  // Pointer to the underlying SFZ player. Should be assigned after construction and remain valid
   // for the whole lifetime of the SfzOpcodeEditor object. 
   // ...not yet sure, if we need this - avoiding it would promote a looser coupling
 

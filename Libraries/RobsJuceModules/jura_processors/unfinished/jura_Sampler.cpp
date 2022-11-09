@@ -705,6 +705,7 @@ jura::RTreeViewNode* SfzTreeView::getOpcodeNode(jura::RTreeViewNode* parent,
   // identifies the node. The index (and more) is already baked into the search-string.
 }
 
+/*
 void SfzTreeView::rSliderValueChanged(RSlider* s)
 {
 
@@ -719,6 +720,7 @@ void SfzTreeView::rComboBoxChanged(RComboBox* cb)
 {
 
 }
+*/
 
 void SfzTreeView::mouseMove(const MouseEvent& e)
 {
@@ -737,7 +739,17 @@ void SfzTreeView::mouseMove(const MouseEvent& e)
 }
 
 void SfzTreeView::createWidgets()
-{
+{ 
+
+  addChildComponent(overlayWidgets = new SfzOpcodeWidgetSet());               // preliminary
+  //addChildColourSchemeComponent(overlayWidgets = new SfzOpcodeWidgetSet()); // we want something
+  //addWidget(overlayWidgets = new SfzOpcodeWidgetSet());                     // like this instead
+
+
+
+
+
+  /*
   // The widgets that may dynamically appear or disappear:
   //addWidget(slider = new jura::RSlider(), true, false);
   addChildComponent(slider = new jura::RSlider());
@@ -750,6 +762,7 @@ void SfzTreeView::createWidgets()
   //addWidget(comboBox = new jura::RComboBox(), true, false);
   addChildComponent(comboBox = new jura::RComboBox());
   comboBox->registerComboBoxObserver(this);
+  */
 }
 
 /*
@@ -761,16 +774,19 @@ void SfzTreeView::updateVisibilities()
 
 void SfzTreeView::hideOverlayWidgets()
 {
-  slider->setVisible(false);
-  button->setVisible(false);
-  comboBox->setVisible(false);
+  overlayWidgets->setVisible(false);
+
+  //slider->setVisible(false);
+  //button->setVisible(false);
+  //comboBox->setVisible(false);
 }
 
 void SfzTreeView::showOverlayWidget(RTreeViewNode* node, int y)
 {
+  // set up the bounds of overlayWidgets
+  overlayWidgets->setBounds(16, y, getWidth()-32, 16);
 
-
-  int dummy = 0;
+  overlayWidgets->setVisible(true);
 }
 
 //=================================================================================================
