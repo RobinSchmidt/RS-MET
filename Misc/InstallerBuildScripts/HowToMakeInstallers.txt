@@ -42,9 +42,12 @@ Mac OSX:
  Users/[UserName]/Library/Audio/Plug-Ins/Components
 -copy "RS-MET" folder into:
  Users/[UserName]/Library
--If you can't find these folders in "Finder" (they are hidden), click on your
- main harddisk, choose "Go" from the menu and enter the path directly. Or 
- better: Use Shift + Cmd + . to make hidden files visible.
+-If you can't find these folders in "Finder" (they are hidden), click on your main harddisk, choose 
+ "Go" from the menu and enter the path directly. Or  better: Use Shift + Cmd + . to make hidden 
+ files visible. But this doesn't work with all Windows keyboards - one of mine initiates the same 
+ action as Shift + Alt + . when using the "Windows" button for Cmd. It behaves as if the Windows 
+ button is just an alias for Alt (WTF!!!)
+
 
 -------------------------------------------------------------------------------
 
