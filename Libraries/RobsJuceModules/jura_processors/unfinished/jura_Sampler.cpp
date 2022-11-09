@@ -312,7 +312,76 @@ void SfzOpcodeWidgetSet::resized()
 void SfzOpcodeWidgetSet::setSettingToEdit(int groupIndex, int regionIndex,
   const rosic::Sampler::PlaybackSetting& setting)
 {
+  using namespace rosic::Sampler;
+  using OF = OpcodeFormat;
+  using WM = WidgetMode;
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
 
+  // Figure out what kind of opcode we are dealing with and set up the widgetMode accordingly:
+  Opcode op = setting.getOpcode();
+  int idx = setting.getIndex();
+  std::string opStr = cb->opcodeToString(op, idx);
+  OF fmt = cb->getOpcodeFormat(op);
+
+  // Retrieve value, range and default value:
+  float val    = setting.getValue();
+  float minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
+  float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
+  float defVal = cb->opcodeDefaultValue(op, idx);
+
+  // Update our info about what we actually edit:
+  patchChangeInfo.type = PatchChangeType::opcodeValueChanged;
+  patchChangeInfo.groupIndex = groupIndex;
+  patchChangeInfo.regionIndex = regionIndex;
+  patchChangeInfo.oldSetting = setting;
+  patchChangeInfo.newValue = val; 
+
+  // Display the appropriate widget and set it up:
+  if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
+  {
+    double sliderInterval = 0.0;
+    if(fmt != OF::Float )
+      sliderInterval = 1.0;
+    slider->setRange(minVal, maxVal, sliderInterval, defVal, false);
+    slider->setValue(val, false);
+    slider->setSliderName(opStr);
+    setWidgetMode(WM::slider);
+
+    /*
+    // Under construction - switch between linear and exponential slider mode:
+    // This criterion to switch between linear and exponential mode is ad hoc and heuristic. It 
+    // doesn't seem to work though, because for cutoff, the minVal is actually 0. Maybe we need 
+    // some expWithOffset characteristic for that. Maybe the offset should be maxVal / rangeFactor 
+    // where rangeFactor is 20000/20 = 1000 in the case of frequencies, i.e. the maximum over the 
+    // minimum meaningful value. Or maybe something based on sinh?
+    if(minVal > 0.f && maxVal > 0.f && maxVal >= 50.f*minVal)     
+    slider->setScaling(jura::Parameter::scalings::EXPONENTIAL);
+    else
+    slider->setScaling(jura::Parameter::scalings::LINEAR);
+    */
+
+  }
+  else if(fmt == OF::String)
+  {
+    // Maybe we need to distinguish between choice-parameters and free text. In case of the former,
+    // we want acombobox, in case of the latter, a text-edit-fiel
+  }
+  else
+  {
+    setWidgetMode(WM::none);
+  }
+
+
+  // ToDo: 
+  // -Maybe have a different quantization interval depending on the parameter
+  // -Maybe also have linear or exponential scaling depending on parameter
+
+  int dummy = 0;
+}
+
+void SfzOpcodeWidgetSet::handlePatchUpdate(const PatchChangeInfo& info)
+{
+  patchChangeInfo.oldSetting.setValue(info.newValue);
 }
 
 void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
@@ -323,15 +392,14 @@ void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
     updateVisibilities();
   }
 
-  // May be obsolete - verify:
+  // May be obsolete - verify if it still applies. This comment is older, from before factoring out
+  // SfzOpcodeWidgetSet from SfzOpcodeEditor. 
   repaint();
   // Without calling repaint() here, sometimes the slider doesn't update correctly when selecting a
   // new parameter in the TreeView. For example, in teh patch NoiseWhistle.sfz, selecting first 
   // cutoff and then resonance, the resonance slider is correctly displayed only when calling 
   // repaint here
   // ToDo: 
-  // -This comment is older, from before factoring out SfzOpcodeWidgetSet from SfzOpcodeEditor. 
-  //  Check, if it still applies
   // -Maybe use something like repaintOnMessageThread() or repaintOnMessageThread(this) 
   //  instead.
 }
@@ -378,7 +446,9 @@ SfzTreeView::SfzTreeView()
 
 void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 {
-  //return;  // For debug - when uncommenting this, the GUI indeed becomes responsive again
+  //return; 
+  // For debug - when uncommenting this, the GUI becomes much more responsive. Try to optimize the
+  // GUI such that it remains responsive when we actually run the code of this function
 
 
   // Perhaps we should first check, if the current tree alreday is in sync with the given sfz and 

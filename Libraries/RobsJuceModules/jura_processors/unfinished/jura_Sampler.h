@@ -405,7 +405,7 @@ For continuous parameter opcodes (e.g. cutoff=1000) it will show a slider, for c
 fil_type=lpf_2p) it will show a combo box, for freeform text parameters (e.g. sample="Guitar.wav") a
 text entry field. */
 
-class SfzOpcodeWidgetSet : public jura::WidgetSet
+class SfzOpcodeWidgetSet : public jura::WidgetSet, public SamplerInterfaceComponent
 {
 
 public:
@@ -419,6 +419,8 @@ public:
   available options in the combobox, etc. */
   void setSettingToEdit(int groupIndex, int regionIndex, 
     const rosic::Sampler::PlaybackSetting& setting);
+
+  void handlePatchUpdate(const PatchChangeInfo& info) override;
 
 
   enum class WidgetMode { slider, button, chooser, text, none };
@@ -441,6 +443,8 @@ protected:
   jura::RTextEntryField* textField;  // For freeform string parameters, e.g. sample="Guitar.wav"
 
   WidgetMode mode = WidgetMode::none;
+
+  PatchChangeInfo patchChangeInfo;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeWidgetSet)
 };
@@ -586,7 +590,6 @@ protected:
   jura::RTextField *opcodeField;     // Shows name/syntax of active opcode
   jura::RTextField *helpField;       // Shows a description text for active opcode
 
-  // 
   // This stuff shall be factored out into SfzOpcodeWidgetSet and then we will use an object of 
   // this class here:
   enum class WidgetMode { slider, button, chooser, text, none };
@@ -596,9 +599,6 @@ protected:
   jura::RComboBox* comboBox;         // Sets choice parameters
   jura::RTextEntryField* textField;  // Sets freeform string parameters
   WidgetMode mode = WidgetMode::none;
-
-
-
   PatchChangeInfo patchChangeInfo;
   // In our widget callbacks, we (re)assign the value field in the embedded 
   // rosic::Sampler::PlaybackSetting member and then send out a change message to the mediator 
