@@ -295,6 +295,32 @@ void SamplerInterfaceComponent::handleMediatorNotification(MediatedColleague* or
     jassertfalse; // messageData must be of type jura::PatchChangeInfo
 }
 
+//=================================================================================================
+
+SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
+{
+  createWidgets();
+}
+
+void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
+{
+
+}
+
+void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
+{
+
+}
+
+void SfzOpcodeWidgetSet::createWidgets()
+{
+
+}
+
+void SfzOpcodeWidgetSet::updateVisibilities()
+{
+
+}
 
 
 //=================================================================================================

@@ -410,12 +410,31 @@ class SfzOpcodeWidgetSet : public jura::WidgetSet
 
 public:
 
+  SfzOpcodeWidgetSet();
+
+  virtual~SfzOpcodeWidgetSet();
+
+  enum class WidgetMode { slider, button, chooser, text, none };
+
 protected:
+
+
+  void setWidgetMode(WidgetMode newMode);
+
+
+  void createWidgets();
+
+  void updateVisibilities();
+
+
+
 
   jura::RSlider*         slider;     // For continuous parameters, e.g. cutoff=1000
   //jura::RButton*         button;     // For boolean parameters, e.g. ??? ...are there any?
   jura::RComboBox*       comboBox;   // For choice parameters, e.g. fil_type=lpf_2p
   jura::RTextEntryField* textField;  // For freeform string parameters, e.g. sample="Guitar.wav"
+
+  WidgetMode mode = WidgetMode::none;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeWidgetSet)
 };
@@ -552,8 +571,7 @@ protected:
   //bool wantsExponentialSlider(const rosic::Sampler::PlaybackSetting& setting);
 
 
-  enum class WidgetMode { slider, button, chooser, text, none };
-  void setWidgetMode(WidgetMode newMode);
+
 
   void createWidgets();
 
@@ -563,12 +581,17 @@ protected:
   jura::RTextField *helpField;       // Shows a description text for active opcode
 
   // 
+  // This stuff shall be factored out into SfzOpcodeWidgetSet and then we will use an object of 
+  // this class here:
+  enum class WidgetMode { slider, button, chooser, text, none };
+  void setWidgetMode(WidgetMode newMode);
   jura::RSlider* slider;             // Sets continuous parameters
   jura::RButton* button;             // Sets boolean parameters
   jura::RComboBox* comboBox;         // Sets choice parameters
   jura::RTextEntryField* textField;  // Sets freeform string parameters
-
   WidgetMode mode = WidgetMode::none;
+
+
 
   PatchChangeInfo patchChangeInfo;
   // In our widget callbacks, we (re)assign the value field in the embedded 
