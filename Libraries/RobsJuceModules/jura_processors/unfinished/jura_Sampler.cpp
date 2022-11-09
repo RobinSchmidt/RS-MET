@@ -1372,7 +1372,7 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
--Keep the selcetd TreeNode highleighted as long as the slider for it is visible. Also highlight 
+-Keep the selcetd TreeNode highlighted as long as the slider for it is visible. Also highlight 
  the relevant section of the code in the editor.
 -The slider needs exponential characteristic for certain parameters. Maybe to start, just use a 
  heuristic: if min and max are both strictly greater than 0 and max >= k*min for some constant k
@@ -1419,6 +1419,8 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
 
 Bugs:
 -For the modulation connections, we don't get any sliders to appear
+ -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
+  and fix this bug
 -[fixed] Saw_1forAllFilterEnv.sfz: change cutoff -> assert! We fail to find the correct code segment in
  sfz document. -> make a unit test with an sfz patch content similar to the content of that patch.
  maybe it's because the patch start witha comment? Or is it because we now use a backslash? Try 

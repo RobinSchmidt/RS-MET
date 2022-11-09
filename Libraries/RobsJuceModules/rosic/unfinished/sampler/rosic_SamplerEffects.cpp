@@ -697,6 +697,10 @@ rsSamplerAmplifier:
   ...hmm...but what sort of slope should we choose for the optimization? Maybe 6 dB/oct? Or maybe
   the freqs and Qs should depend on the gain setting? Maybe do the optimization for different 
   slopes (1,2,3,...,48) and fit simple functions to the results.
+ -maybe it should not a module in its own right but rather yet another mode for the regular filter 
+  and/or eq like lpf_2p, peak_2p, tilt_2p, tilt_4p, see:
+  https://hofa-plugins.de/plugins/4u-dynamictilteq/
+  https://www.elysia.com/de/plugins/niveau-filter/
 
 ToDo:
 -Maybe at some later stage, generalize the dspChain in the sampler engine to a more flexible 

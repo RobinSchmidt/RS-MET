@@ -1122,14 +1122,21 @@ Bugs:
 
 ToDo:
 -GUI:
- -Maybe include a virtual keyboard at the bottom that can be swicthed on/off by a little button at the 
-  bottom. Maybe the keyboard can also be some more general "MIDI Status" section with a bit more info 
-  like he current BPM setting (as received from the host or set up by the user). a flashlight for 
-  clock/beat (like my JX-305), last received event, button for panic, etc.
+ -Maybe include a virtual keyboard at the bottom that can be swicthed on/off by a little button at 
+  the bottom. Maybe the keyboard can also be some more general "MIDI Status" section with a bit 
+  more info like he current BPM setting (as received from the host or set up by the user). a 
+  flashlight for clock/beat (like my JX-305), last received event, number of active notes, a button
+  for "panic" (i.e. MIDI reset), etc.
 -FuncShaper: have a DryDelay parameter - mostly for compensating the latency of the AA filter but 
  may be an interesting effect as well
 -Let ToolChain host plugins. I'm specifically interested in hosting APE and a modular (sub)host. 
  There are open source ones, see: https://www.kvraudio.com/forum/viewtopic.php?t=479385
  https://github.com/kushview/Element
+-New Modules:
+ -Arranger:
+  -take the old Mixsonic codebase to arrange samples
+  -it should be possible to receive start, stop, position/tempo-info from the host and follow along
+   with the playback
+
 
 */
