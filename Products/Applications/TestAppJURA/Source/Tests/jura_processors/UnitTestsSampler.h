@@ -46,6 +46,8 @@ public:
 
   using jura::SamplerEditor::SamplerEditor; // inherit constructors
 
+  bool testTreeViewNodeSelection();
+
 
 };
 

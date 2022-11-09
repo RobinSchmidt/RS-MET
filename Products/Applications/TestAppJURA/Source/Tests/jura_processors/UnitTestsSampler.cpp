@@ -13,10 +13,10 @@ void UnitTestsSampler::testSamplerAudioModule()
   // Create an instance of jura::SamplerModule:
   juce::CriticalSection pluginLock;        // The AudioModule constructor expects pointers to...
   jura::MetaParameterManager metaManager;  // ...such objects
-  jura::SamplerModule sampler(&pluginLock, &metaManager);
+  SamplerModuleTest sampler(&pluginLock, &metaManager);
 
 
-  jura::SamplerEditor* editor = dynamic_cast<jura::SamplerEditor*> (sampler.createEditor(0));
+  SamplerEditorTest* editor = dynamic_cast<SamplerEditorTest*> (sampler.createEditor(0));
 
   //expectNotEquals((void*) editor, nullptr, "Failed to create jura::SamplerEditor");
   // ...that doesn't compile - let's do a workaround:
@@ -28,14 +28,36 @@ void UnitTestsSampler::testSamplerAudioModule()
 
 
 
+  ok &= editor->testTreeViewNodeSelection(); expectEquals((int)ok, 1); 
 
-  int dummy = 0;
+
+
+  delete editor;  // clean up memory
 }
 
 
 jura::AudioModuleEditor* SamplerModuleTest::createEditor(int type)
 {
   return new SamplerEditorTest(this);
+}
+
+bool SamplerEditorTest::testTreeViewNodeSelection()
+{
+  bool ok = true;
+
+  // ToDo:
+  // -Create an example sfz-string:
+  //  -One group containign one region
+  //  -No sample opcode
+  //  -Have opcodes for cutoff, lfo1_freq, lfo1_cutoff
+  // -Let the sampler set itself up from that sfz string
+  // -Simulate clicking on the cutoff node in the TreeView
+  // -Check, if the slider appears as it should
+  // -Do the same for the other sliders for lfo1_freq, lfo1_cutoff
+
+  juce::String sfzString = "<group><region>cutoff=1000 lfo1_freq=2.5 lfo1_cutoff=500";
+
+  return ok;
 }
 
 
