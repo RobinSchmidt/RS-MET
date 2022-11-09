@@ -32,4 +32,14 @@ void UnitTestsSampler::testSamplerAudioModule()
   int dummy = 0;
 }
 
-// 
+/*
+
+ToDo:
+-Make subclasses SamplerModuleTest/SamplerEditorTest of SamplerModule/SamplerEditor here
+-In SamplerModuleTest, override createEditor to return an object of class SamplerEditorTest
+-In SamplerEditorTest have additional functions that test certain functionality. These tests need
+ to access the (protected) widgets - that's hwy we need to create a subclass.
+ 
+
+
+*/
