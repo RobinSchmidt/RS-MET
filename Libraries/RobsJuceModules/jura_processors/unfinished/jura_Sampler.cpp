@@ -302,24 +302,66 @@ SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
   createWidgets();
 }
 
-void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
+void SfzOpcodeWidgetSet::resized()
+{
+  slider->setBounds(getBounds());
+  comboBox->setBounds(getBounds());
+  textField->setBounds(getBounds());
+}
+
+void SfzOpcodeWidgetSet::setSettingToEdit(int groupIndex, int regionIndex,
+  const rosic::Sampler::PlaybackSetting& setting)
 {
 
 }
 
 void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
 {
+  if(newMode != mode)
+  {
+    mode = newMode;
+    updateVisibilities();
+  }
 
+  // May be obsolete - verify:
+  repaint();
+  // Without calling repaint() here, sometimes the slider doesn't update correctly when selecting a
+  // new parameter in the TreeView. For example, in teh patch NoiseWhistle.sfz, selecting first 
+  // cutoff and then resonance, the resonance slider is correctly displayed only when calling 
+  // repaint here
+  // ToDo: 
+  // -This comment is older, from before factoring out SfzOpcodeWidgetSet from SfzOpcodeEditor. 
+  //  Check, if it still applies
+  // -Maybe use something like repaintOnMessageThread() or repaintOnMessageThread(this) 
+  //  instead.
 }
 
 void SfzOpcodeWidgetSet::createWidgets()
 {
+  addWidget(slider = new jura::RSlider(), true, false);
+  //slider->addListener(this);
 
+  addWidget(comboBox = new jura::RComboBox(), true, false);
+  //comboBox->registerComboBoxObserver(this);
+
+  addWidget(textField = new jura::RTextEntryField(), true, false);
+  //textField->registerTextEntryFieldObserver(this);
+
+  // May add descriptions to these widgets, too - but maybe these descriptions should also change
+  // dynamically? We'll see
 }
 
 void SfzOpcodeWidgetSet::updateVisibilities()
 {
-
+  slider->setVisible(false);
+  comboBox->setVisible(false);
+  textField->setVisible(false);
+  switch(mode)
+  {
+  case WidgetMode::slider:  slider->setVisible(true);    break;
+  case WidgetMode::chooser: comboBox->setVisible(true);  break;
+  case WidgetMode::text:    textField->setVisible(true); break;
+  }
 }
 
 

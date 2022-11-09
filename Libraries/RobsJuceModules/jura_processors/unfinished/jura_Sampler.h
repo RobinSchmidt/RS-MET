@@ -412,25 +412,31 @@ public:
 
   SfzOpcodeWidgetSet();
 
-  virtual~SfzOpcodeWidgetSet();
+  virtual~SfzOpcodeWidgetSet() {}
+
+  /** Client cod calls this to set up the kind of opcode/setting that this widget set edits. This 
+  will determine whther we will show a slider, combobox, etc. and the range of the slider, the 
+  available options in the combobox, etc. */
+  void setSettingToEdit(int groupIndex, int regionIndex, 
+    const rosic::Sampler::PlaybackSetting& setting);
+
 
   enum class WidgetMode { slider, button, chooser, text, none };
 
 protected:
 
+  // Overriden juce callbacks:
+  void resized() override;
+
 
   void setWidgetMode(WidgetMode newMode);
-
 
   void createWidgets();
 
   void updateVisibilities();
 
 
-
-
   jura::RSlider*         slider;     // For continuous parameters, e.g. cutoff=1000
-  //jura::RButton*         button;     // For boolean parameters, e.g. ??? ...are there any?
   jura::RComboBox*       comboBox;   // For choice parameters, e.g. fil_type=lpf_2p
   jura::RTextEntryField* textField;  // For freeform string parameters, e.g. sample="Guitar.wav"
 
