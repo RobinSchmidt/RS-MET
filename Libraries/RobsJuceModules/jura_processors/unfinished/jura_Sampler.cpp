@@ -305,6 +305,7 @@ SfzTreeView::SfzTreeView()
   rootNode.setNodeText("<global>");
   RTreeView::setRootNode(&rootNode);
   RTreeView::setDrawRootNode(false);
+  createWidgets();
 }
 
 void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
@@ -489,8 +490,8 @@ void SfzTreeView::handlePatchUpdate(const PatchChangeInfo& info)
 
     repaintOnMessageThread();
     // Calling repaint here makes the opcode slider a bit unresponsive but not calling it will 
-    // leave the tree node dirty, i.e. it will continue to show anoutdated value which will update
-    // itself only when we hover with the mouse over the tree-view
+    // leave the tree node dirty, i.e. it will continue to show an outdated value which will update
+    // itself only when we hover with the mouse over the tree-view.
   }
 }
 
@@ -549,6 +550,29 @@ jura::RTreeViewNode* SfzTreeView::getOpcodeNode(jura::RTreeViewNode* parent,
   // We pass 0 to the index parameter of findDirectChildByText because the string already uniquely
   // identifies the node. The index (and more) is already baked into the search-string.
 }
+
+void SfzTreeView::createWidgets()
+{
+  /*
+
+  // The widgets that may dynamically appear or disappear:
+  addWidget(slider = new jura::RSlider(), true, false);
+  slider->addListener(this);
+
+  addWidget(button = new jura::RButton(), true, false);
+  button->addRButtonListener(this);
+
+  addWidget(comboBox = new jura::RComboBox(), true, false);
+  comboBox->registerComboBoxObserver(this);
+
+  */
+}
+
+void SfzTreeView::updateVisibilities()
+{
+
+}
+
 
 //=================================================================================================
 

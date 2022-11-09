@@ -440,15 +440,21 @@ public:
 protected:
 
   jura::RTreeViewNode* getGroupNode(jura::RTreeViewNode* parent, int groupIndex);
-
   jura::RTreeViewNode* getRegionNode(jura::RTreeViewNode* parent, int regionIndex);
-
-
   jura::RTreeViewNode* getOpcodeNode(jura::RTreeViewNode* parent, const PatchChangeInfo& info);
 
 
-
   SfzTreeViewNode rootNode;  // Manages the lifetimes of all its child-nodes
+
+
+  // Under construction - the overlay widgets:
+  jura::RSlider* slider;             // Sets continuous parameters
+  jura::RButton* button;             // Sets boolean parameters
+  jura::RComboBox* comboBox;         // Sets choice parameters
+
+  void createWidgets();
+  void updateVisibilities();
+
 
   //jura::SfzPlayer* player = nullptr; 
   // hmm..nahhh...Let's try to avoid the coupling to this class as long as possible
