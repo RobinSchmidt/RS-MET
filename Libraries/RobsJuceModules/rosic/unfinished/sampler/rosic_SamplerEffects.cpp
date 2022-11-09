@@ -629,10 +629,16 @@ options according to which opcodes are defined.
 
 
 rsSamplerFilter:
+ -Controlled by opcodes: 
+  -done: cutoffN, resonanceN, filN_type,
+  -todo: filN_gain, filN_slope/tilt
+ -Modes:
+  -done: lpf_1p, lpf_2p, hpf_1p, hpf_2p, bpf_2p (preliminary)
+  -todo: eq_peak, eq_loshelf, eq_hishelf, eq_tilt, brf_2p (look up what other engines do, be 
+         compatible)
  -Maybe make also a struct for very basic 1-pole/1-zero filter. It can be realized by the biquad 
  (and by the other structures, too), but maybe it's more efficient to do it like that. I expect 
  that a simple 1st order lowpass is a quite common thing to use.
- -Maybe
  -Use the filter also for the equalizer opcode. No need to define a different class for that. Maybe
   extend sfz to support 4 instead of 3 bands when we later can realize 2 bands per filter...
 -Implement Martin Vicanek's design formulas based on the IIT for the poles and magnitude matching for
@@ -682,6 +688,8 @@ rsSamplerWaveShaper:
   https://www.desmos.com/calculator/uiobrmwgyy, https://www.desmos.com/calculator/go7o7j6eil
 
 rsSamplerAmplifier:
+-Controlled by opcodes:
+ -done (preliminary): volumeN, panN, widthN, balanceN(?)
 -internal algo parameters should be gLL, gLR, gRL, gRR - the 4 gains for the channel-mix matrix
 -user params should be: scale (linear overall scale factor), pan, width and as 3rd...dunno - maybe
  pos? whatever is left to determine the rest.
@@ -701,6 +709,10 @@ rsSamplerAmplifier:
   and/or eq like lpf_2p, peak_2p, tilt_2p, tilt_4p, see:
   https://hofa-plugins.de/plugins/4u-dynamictilteq/
   https://www.elysia.com/de/plugins/niveau-filter/
+
+-rsSamplerComb and/or rsSamplerDelay
+ -maybe it should be a delay bank controlled by opcodes like:
+  delayN_timeX or combN_freqX
 
 ToDo:
 -Maybe at some later stage, generalize the dspChain in the sampler engine to a more flexible 
