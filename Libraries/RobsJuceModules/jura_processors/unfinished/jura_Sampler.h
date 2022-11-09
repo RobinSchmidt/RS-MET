@@ -415,7 +415,8 @@ some other relevant information. In case of a region node, we may show key- and 
 number of opcodes (well...maybe that's not very useful...maybe there's more interesting data to 
 show - but we need to fill the space with something). */
 
-class SfzTreeView : public jura::RTreeView, public jura::SamplerInterfaceComponent
+class SfzTreeView : public jura::RTreeView, public jura::SamplerInterfaceComponent,
+  public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver
 {
 
 public:
@@ -436,6 +437,15 @@ public:
 
 
   SfzTreeViewNode* findNode(const PatchChangeInfo& info);
+
+  // Overriden callbacks for the widgets:
+  void rSliderValueChanged(RSlider* s) override;
+  void rButtonClicked(RButton* b) override;
+  void rComboBoxChanged(RComboBox* cb) override;
+
+  void mouseMove(const MouseEvent& e) override;
+
+
 
 protected:
 

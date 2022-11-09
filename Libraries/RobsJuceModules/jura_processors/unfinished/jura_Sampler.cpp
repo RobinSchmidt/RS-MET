@@ -551,28 +551,52 @@ jura::RTreeViewNode* SfzTreeView::getOpcodeNode(jura::RTreeViewNode* parent,
   // identifies the node. The index (and more) is already baked into the search-string.
 }
 
+void SfzTreeView::rSliderValueChanged(RSlider* s)
+{
+
+}
+
+void SfzTreeView::rButtonClicked(RButton* b)
+{
+
+}
+
+void SfzTreeView::rComboBoxChanged(RComboBox* cb)
+{
+
+}
+
+void SfzTreeView::mouseMove(const MouseEvent& e)
+{
+  if(e.mods.isCtrlDown())
+  {
+
+    int dummy = 0;
+  }
+  else
+    jura::RTreeView::mouseMove(e);
+}
+
 void SfzTreeView::createWidgets()
 {
-  /*
-
   // The widgets that may dynamically appear or disappear:
-  addWidget(slider = new jura::RSlider(), true, false);
+  //addWidget(slider = new jura::RSlider(), true, false);
+  addChildComponent(slider = new jura::RSlider());
   slider->addListener(this);
 
-  addWidget(button = new jura::RButton(), true, false);
+  //addWidget(button = new jura::RButton(), true, false);
+  addChildComponent(button = new jura::RButton());
   button->addRButtonListener(this);
 
-  addWidget(comboBox = new jura::RComboBox(), true, false);
+  //addWidget(comboBox = new jura::RComboBox(), true, false);
+  addChildComponent(comboBox = new jura::RComboBox());
   comboBox->registerComboBoxObserver(this);
-
-  */
 }
 
 void SfzTreeView::updateVisibilities()
 {
 
 }
-
 
 //=================================================================================================
 
