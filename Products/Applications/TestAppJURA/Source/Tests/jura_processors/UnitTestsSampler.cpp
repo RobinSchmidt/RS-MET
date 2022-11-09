@@ -35,7 +35,7 @@ void UnitTestsSampler::testSamplerAudioModule()
 
 jura::AudioModuleEditor* SamplerModuleTest::createEditor(int type)
 {
-  return new jura::SamplerEditor(this);
+  return new SamplerEditorTest(this);
 }
 
 

@@ -25,15 +25,29 @@ protected:
 };
 
 
+
+
 class JUCE_API SamplerModuleTest : public jura::SamplerModule
 {
 
 public:
 
+  using jura::SamplerModule::SamplerModule; // inherit constructors
+
   jura::AudioModuleEditor* createEditor(int type) override;
 
 };
 
+
+class JUCE_API SamplerEditorTest : public jura::SamplerEditor
+{
+
+public:
+
+  using jura::SamplerEditor::SamplerEditor; // inherit constructors
+
+
+};
 
 
 
