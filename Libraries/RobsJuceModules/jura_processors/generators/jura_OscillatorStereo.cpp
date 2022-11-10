@@ -45,7 +45,8 @@ XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlEle
     xmlState = xmlElementToStartFrom;
 
   juce::String samplePath = juce::String(osc->waveTable->getSampleName());
-  xmlState->setAttribute("AudioFileRelativePath", samplePath);
+  if(!samplePath.isEmpty())   // new
+    xmlState->setAttribute("AudioFileRelativePath", samplePath);
   return xmlState;
 }
 

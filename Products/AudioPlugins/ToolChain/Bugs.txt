@@ -30,8 +30,8 @@ Sampler:
  bypass seems appropriate, though.
  
 Wavetable oscillator:
--It sometimes happens when opening ToolChain and it wants to recall the Straighliner state, that the
- xml-element for the osc section looks like this:
+-It sometimes happens when opening ToolChain and it wants to recall the Straightliner state, that 
+ the xml-element for the osc section looks like this:
    <OscSection PatchFormat="1">
     <Osc1 PatchFormat="1" AudioFileRelativePath=""/>
     <Osc2 PatchFormat="1" AudioFileRelativePath=""/>
@@ -42,7 +42,15 @@ Wavetable oscillator:
  complains that it can't open the file "C:\Users\rob\AppData\Roaming\RS-MET". 
  -Check, what the oscillator produces as xml output, when no file is loaded. Does it just produce
   the directory path? It should actually not create an AudioFileRelativePath xml-attribute at all in
-  such a case.
+  such a case. Look at oscillatorStereoStateToXml. It does:
+    juce::String samplePath = juce::String(osc->waveTable->getSampleName());  
+    xmlState->setAttribute("AudioFileRelativePath", samplePath);
+  apparently, the osc->waveTable->getSampleName() returns the empty string such that the absolute
+  path that is generated becomes "C:\Users\rob\AppData\Roaming\RS-MET". OK, I added:
+    if(!samplePath.isEmpty())
+  before setting the attribute. That should hopefully fix it.
+  
+  because someone, somewhere has set the path member to this value
  
 
 -[FIXED] load NoiseWhistle.sfz, then in the TreeView:
