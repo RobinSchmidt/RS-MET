@@ -297,6 +297,11 @@ void SamplerInterfaceComponent::handleMediatorNotification(MediatedColleague* or
 
 //=================================================================================================
 
+bool SfzTreeViewNode::isOpcodeNode()
+{
+  return data.type == Data::Type::modulationRouting || data.type == Data::Type::playbackSetting;
+}
+
 SfzTreeViewNode::OpcodeFormat SfzTreeViewNode::getOpcodeFormat()
 {
   using namespace rosic::Sampler;
@@ -783,17 +788,23 @@ void SfzTreeView::hideOverlayWidgets()
 
 void SfzTreeView::showOverlayWidget(SfzTreeViewNode* node, int y)
 {
-  overlayWidgets->setBounds(16, y, getWidth()-32, 16);
-  overlayWidgets->setVisible(true);
+  if(node->isOpcodeNode())
+  {
+    overlayWidgets->setBounds(16, y, getWidth()-32, 16);
+    overlayWidgets->setVisible(true);
 
-  int dummy = 0;
-
-  // Hmm...the widgets do not seem to appear. I think we need to call:
-
-  //overlayWidgets->setSettingToEdit(int groupIndex, int regionIndex,
-  //  const rosic::Sampler::PlaybackSetting& setting)
-
-  // To figure out what the pameters should be, we need to look into the node. It has the data.
+    RAPT::rsError("Not yet implemented");
+    // The overlay widgets do not seem to appear. I think we need to call:
+    // We need to call overlayWidgets->setSettingToEdit(int groupIndex, int regionIndex,
+    //   const rosic::Sampler::PlaybackSetting& setting)
+    // but the problem is: in case of modulation nodes, there actually is no associated 
+    // PlaybackSetting - instead, there's ModulationRouting. Maybe the function should take a 
+    // parameter of type SfzTreeViewNode::Data - but maybe that data structure should be taken
+    // out of the class because it makes not much sense to couple it to the tree. Maybe call it
+    // SfzNodeData.
+  }
+  else
+    overlayWidgets->setVisible(false);
 }
 
 //=================================================================================================
@@ -1618,7 +1629,8 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
--make the overlay-slider appear when hovering whil holding crtl
+-make the overlay-slider appear when hovering whil holding crtl -> finsih implementation of
+ SfzTreeView::showOverlayWidget. See comments there for what needs to be done
 -SfzOpcodeEditor should also use an SfzOpcodeWidgetSet just like SfzTreeView. All the separate 
  widgets can then be removed, simplifying the code
 -The SfzOpcodeWidgetSets in the tree-view and opcode-editor will then need to be wired to the

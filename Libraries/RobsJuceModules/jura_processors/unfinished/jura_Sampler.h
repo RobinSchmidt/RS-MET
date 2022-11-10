@@ -385,20 +385,23 @@ public:
 
 
 
+
+  /** Returns true, if this is a node for an opcode, i.e. a leaf-node. Among other things, this 
+  determines whether or not it makes sense to show an editing widget for the node to the user. */
+  bool isOpcodeNode();
+
   using OpcodeFormat = rosic::Sampler::OpcodeFormat;
 
   /** Returns the format of the data that is stored at this node. The return type is a type 
   used in the SfzCodeBook in rosic. Typical values are: Boolean, Natural (unsigned int), Integer,
   Float, String. This information is used to decide, what kind of widget should be displayed to 
-  edit the data (button, slider, combobox, text-field, etc.). */
+  edit the data (button, slider, combobox, text-field, etc.).  */
   OpcodeFormat getOpcodeFormat();
 
 
 
 
-
 protected:
-
 
 
 
