@@ -297,23 +297,68 @@ void SamplerInterfaceComponent::handleMediatorNotification(MediatedColleague* or
 
 //=================================================================================================
 
-bool SfzTreeViewNode::isOpcodeNode()
+SfzNodeData::SfzNodeData(const SfzNodeData& other)
 {
-  return data.type == Data::Type::modulationRouting || data.type == Data::Type::playbackSetting;
-  // todo: delegate to a to-be-written data.isOpcodeData()
+  type = other.type;
+  data = other.data;
+  groupIndex  = other.groupIndex;
+  regionIndex = other.regionIndex;
 }
 
-SfzTreeViewNode::OpcodeFormat SfzTreeViewNode::getOpcodeFormat()
+SfzNodeData SfzNodeData::createGroupNode(int groupIndex)
+{
+  SfzNodeData node;
+  node.type = Type::group;
+  node.groupIndex = groupIndex;
+  return node;
+}
+
+SfzNodeData SfzNodeData::createRegionNode(int groupIndex, int regionIndex)
+{
+  SfzNodeData node;
+  node.type = Type::region;
+  node.groupIndex = groupIndex;
+  node.regionIndex = regionIndex;
+  return node;
+}
+
+SfzNodeData SfzNodeData::createPlaybackSettingNode(int groupIndex, int regionIndex,
+  const rosic::Sampler::PlaybackSetting& playbackSetting)
+{
+  SfzNodeData node;
+  node.type = Type::playbackSetting;
+  node.groupIndex = groupIndex;
+  node.regionIndex = regionIndex;
+  node.data.playbackSetting = playbackSetting;
+  return node;
+}
+
+SfzNodeData SfzNodeData::createModulationRoutingNode(int groupIndex, int regionIndex,
+  const rosic::Sampler::ModulationRouting& modulationRouting)
+{
+  SfzNodeData node;
+  node.type = Type::modulationRouting;
+  node.groupIndex = groupIndex;
+  node.regionIndex = regionIndex;
+  node.data.modRouting = modulationRouting;
+  return node;
+}
+
+bool SfzNodeData::isOpcodeNode()
+{
+  return type == Type::modulationRouting || type == Type::playbackSetting;
+}
+
+SfzNodeData::OpcodeFormat SfzNodeData::getOpcodeFormat()
 {
   using namespace rosic::Sampler;
-  if(data.type == Data::Type::modulationRouting) {
+  if(type == Type::modulationRouting) {
     return OpcodeFormat::Float; }
-  if(data.type == Data::Type::playbackSetting) {
-    Opcode op = data.data.playbackSetting.getOpcode();
+  if(type == Type::playbackSetting) {
+    Opcode op = data.playbackSetting.getOpcode();
     SfzCodeBook* cb = SfzCodeBook::getInstance();
     return cb->getOpcodeFormat(op); }
   return OpcodeFormat::Unknown;
-  // todo: delegate to a to-be-written data.getOpcodeFormat()
 }
 
 //=================================================================================================
@@ -524,21 +569,38 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 
   auto addSettingNode = [&](Node* parent, const PS& setting, int groupIndex, int regionIndex)
   {
+    /*
+    // old:
     Node* child = new Node(cb->settingToString(setting));
     child->data.type = Node::Data::Type::playbackSetting;
     child->data.data.playbackSetting = setting;
     child->data.groupIndex  = groupIndex;
     child->data.regionIndex = regionIndex;
+    */
+
+    // new:
+    Node* child = Node::createPlaybackSettingNode(
+      cb->settingToString(setting), groupIndex, regionIndex, setting);
+
+
     parent->addChildNode(child);
   };
 
   auto addModRoutingNode = [&](Node* parent, const MR& routing, int groupIndex, int regionIndex)
   {
+    /*
+    // old:
     Node* child = new Node(cb->modRoutingToString(routing));
     child->data.type = Node::Data::Type::modulationRouting;
     child->data.data.modRouting = routing;
     child->data.groupIndex  = groupIndex;
     child->data.regionIndex = regionIndex;
+    */
+
+    // new:
+    Node* child = Node::createModulationRoutingNode(
+      cb->modRoutingToString(routing), groupIndex, regionIndex, routing);
+
     parent->addChildNode(child);
   };
 
@@ -552,7 +614,11 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // is defined at this level and show the key/vel settings only when they are not at their 
     // defaults:
     std::string s; int i;
-    s = lvl->getSamplePath(); if(s !=  "") node->addChildNode(new Node("sample=" + s));  // old
+    s = lvl->getSamplePath(); 
+
+    //if(s !=  "") 
+    //  node->addChildNode(new Node("sample=" + s));  // old
+
     //s = lvl->getSamplePath(); if(s !=  "") addSettingNode(node, PS(OC::Sample, 0.0), gi, ri);  // new
     // The new version fails because cb->settingToString produces nonsense for the sample opcode. I
     // think, we may need to able to store strings in PlaybackSetting. Some settings, such as 
@@ -562,6 +628,14 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // may as well use double because the string dictates the size anywa.y Maybe PlaybackSetting 
     // should have an alternative constructor that takes a std::string instead of a float as 2nd 
     // parameter
+
+    // newer:
+    if(s !=  "")
+    {
+      PS ps(OC::Sample);
+      node->addChildNode(Node::createPlaybackSettingNode(("sample=" + s), gi, ri, ps)); 
+    }
+     
 
     i = lvl->getLoKey(); if(i !=   0) addSettingNode(node, PS(OC::LoKey, i), gi, ri);
     i = lvl->getHiKey(); if(i != 127) addSettingNode(node, PS(OC::HiKey, i), gi, ri);
@@ -593,12 +667,14 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   addOpcodeChildNodes(global, &rootNode, -1, -1);
   for(int gi = 0; gi < sfz.getNumGroups(); gi++)
   {
-    Node* groupNode = new Node("<group>");
+    //Node* groupNode = new Node("<group>");
+    Node* groupNode = Node::createGroupNode("<group>", gi);
     const Group* group = sfz.getGroup(gi);
     addOpcodeChildNodes(group, groupNode, gi, -1);
     for(int ri = 0; ri < sfz.getNumRegions(gi); ri++)
     {
-      Node* regionNode = new Node("<region>");
+      //Node* regionNode = new Node("<region>");
+      Node* regionNode = Node::createRegionNode("<region>", gi, ri);
       const Region* region = sfz.getRegion(gi, ri);
       addOpcodeChildNodes(region, regionNode, gi, ri);
       groupNode->addChildNode(regionNode);
@@ -1295,7 +1371,8 @@ void SamplerEditor::treeNodeClicked(RTreeView* treeView, RTreeViewNode* node,
 
   int gi = sfzNode->data.groupIndex;
   int ri = sfzNode->data.regionIndex;
-  using TP = SfzTreeViewNode::Data::Type;
+  //using TP = SfzTreeViewNode::Data::Type;
+  using TP = SfzNodeData::Type;
   switch(sfzNode->data.type)
   {
   case TP::playbackSetting:

@@ -337,7 +337,7 @@ class SfzNodeData
 
 public:
 
-  SfzNodeData(){}
+
 
   /** The type of the data stored at the nodes depends on the type of the node. In order to be 
   able to tell, which type it is, we define an enum. */
@@ -351,7 +351,52 @@ public:
   };
 
 
-protected:
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
+  SfzNodeData(){}  
+  // Try to enforce usage of the factory methods by making the constructor private to ensure that 
+  // only valid nodes can be created 
+
+  SfzNodeData(const SfzNodeData& other);
+
+
+  static SfzNodeData createGroupNode(int groupIndex);
+
+  static SfzNodeData createRegionNode(int groupIndex, int regionIndex);
+
+  static SfzNodeData createPlaybackSettingNode(int groupIndex, int regionIndex, 
+    const rosic::Sampler::PlaybackSetting& playbackSetting);
+
+  static SfzNodeData createModulationRoutingNode(int groupIndex, int regionIndex, 
+    const rosic::Sampler::ModulationRouting& playbackSetting);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Returns true, if this is a node for an opcode, i.e. a leaf-node. Among other things, this 
+  determines whether or not it makes sense to show an editing widget for the node to the user. */
+  bool isOpcodeNode();
+
+  using OpcodeFormat = rosic::Sampler::OpcodeFormat;
+
+  /** Returns the format of the data that is stored at this node. The return type is a type 
+  used in the SfzCodeBook in rosic. Typical values are: Boolean, Natural (unsigned int), Integer,
+  Float, String. This information is used to decide, what kind of widget should be displayed to 
+  edit the data (button, slider, combobox, text-field, etc.).  */
+  OpcodeFormat getOpcodeFormat();
+
+
+
+
+
+//protected:  // todo: make protected
 
   /** We define a sum-type of the passible datatypes that can be stored at the nodes here. 
   ToDo: maybe use std::variant instead (but that requires C++17). */
@@ -369,7 +414,12 @@ protected:
   int regionIndex = -1;
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzNodeData)
+private:
+
+  //SfzNodeData() {} 
+
+
+  //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzNodeData)
 };
 
 //=================================================================================================
@@ -384,63 +434,44 @@ class SfzTreeViewNode : public jura::RTreeViewNode
 public:
 
 
-  using jura::RTreeViewNode::RTreeViewNode;
+  //using jura::RTreeViewNode::RTreeViewNode;
 
-  SfzTreeViewNode() {}
+  SfzTreeViewNode() {}  // maybe make protected
 
-  //enum class OpcodeType { realNumber, booleanSwitch, choice, text, none };
+  SfzTreeViewNode(const juce::String& nodeText, const SfzNodeData& nodeData) 
+    : RTreeViewNode(nodeText), data(nodeData) {}
 
 
-
-
-  // Move into protected region:
-
-  /** Type for the user-data that can be stored at the tree-nodes. It contains the information that
-  is required to find the corresponding setting in the SfzInstrument datastructure. 
-  ToDo: Maybe also store information to find it in the sfz-code such as line/column/location. Maybe
-  drag the class out of SfzTreeViewNode and get rid of SfzTreeViewNode. But when we build the tree,
-  this information is actually not available...hmm... */
-  struct Data  // obsolete - use SfzNodeData instead
+  static SfzTreeViewNode* createGroupNode(const juce::String& nodeText, int groupIndex)
   {
-    Data(){}
+    return new SfzTreeViewNode(nodeText, SfzNodeData::createGroupNode(groupIndex));
+  }
 
-    /** The type of the data stored at the nodes depends on the type of the node. In order to be 
-    able to tell, which type it is, we define an enum. */
-    enum class Type  // maybe rename to NodeType
-    {
-      group,
-      region,
-      playbackSetting,    // e.g. tune, volume, ...
-      modulationRouting,  // e.g. lfo3_cutoff2, adsr2_volume1
-      unknown             // maybe get rid, maybe type should always be known
-    };
+  static SfzTreeViewNode* createRegionNode(const juce::String& nodeText, int groupIndex, 
+    int regionIndex)
+  {
+    return new SfzTreeViewNode(nodeText, SfzNodeData::createRegionNode(groupIndex, regionIndex));
+  }
 
+  static SfzTreeViewNode* createPlaybackSettingNode(const juce::String& nodeText, int groupIndex, 
+    int regionIndex, const rosic::Sampler::PlaybackSetting& playbackSetting)
+  {
+    return new SfzTreeViewNode(nodeText, 
+      SfzNodeData::createPlaybackSettingNode(groupIndex, regionIndex, playbackSetting));
+  }
 
-
-    /** We define a sum-type of the passible datatypes that can be stored at the nodes here. 
-    ToDo: maybe use std::variant instead (but that requires C++17). */
-    union Variant  // find better name
-    {
-      Variant(){}
-
-      rosic::Sampler::PlaybackSetting   playbackSetting;
-      rosic::Sampler::ModulationRouting modRouting;
-    };
-
-    Type type = Type::unknown;
-    Variant data;
-    int groupIndex  = -1;
-    int regionIndex = -1;
-  };
-
-  Data data;
-
+  static SfzTreeViewNode* createModulationRoutingNode(const juce::String& nodeText, int groupIndex, 
+    int regionIndex, const rosic::Sampler::ModulationRouting& playbackSetting)
+  {
+    return new SfzTreeViewNode(nodeText, 
+      SfzNodeData::createModulationRoutingNode(groupIndex, regionIndex, playbackSetting));
+  }
 
 
 
   /** Returns true, if this is a node for an opcode, i.e. a leaf-node. Among other things, this 
   determines whether or not it makes sense to show an editing widget for the node to the user. */
-  bool isOpcodeNode();
+  bool isOpcodeNode() { return data.isOpcodeNode(); }
 
   using OpcodeFormat = rosic::Sampler::OpcodeFormat;
 
@@ -448,23 +479,15 @@ public:
   used in the SfzCodeBook in rosic. Typical values are: Boolean, Natural (unsigned int), Integer,
   Float, String. This information is used to decide, what kind of widget should be displayed to 
   edit the data (button, slider, combobox, text-field, etc.).  */
-  OpcodeFormat getOpcodeFormat();
+  OpcodeFormat getOpcodeFormat() { return data.getOpcodeFormat(); }
 
 
-
+  SfzNodeData data; // make protected!
 
 protected:
 
 
 
-  //Type type = Type::unknown;
-  // Maybe store data like group/region index (if applicable) etc. Data, such that we can find the
-  // corresponding settings in an rosic::Sampler::SfzInstrument. We may need to retrieve pointers
-  // to regions and settings...we'll see...
-
-
-
-  //jura::RWidget* widget = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzTreeViewNode)
 };
