@@ -297,6 +297,20 @@ void SamplerInterfaceComponent::handleMediatorNotification(MediatedColleague* or
 
 //=================================================================================================
 
+SfzTreeViewNode::OpcodeFormat SfzTreeViewNode::getOpcodeFormat()
+{
+  using namespace rosic::Sampler;
+  if(data.type == Data::Type::modulationRouting) {
+    return OpcodeFormat::Float; }
+  if(data.type == Data::Type::playbackSetting) {
+    Opcode op = data.data.playbackSetting.getOpcode();
+    SfzCodeBook* cb = SfzCodeBook::getInstance();
+    return cb->getOpcodeFormat(op); }
+  return OpcodeFormat::Unknown;
+}
+
+//=================================================================================================
+
 SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
 {
   createWidgets();
@@ -304,9 +318,17 @@ SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
 
 void SfzOpcodeWidgetSet::resized()
 {
+  int w = getWidth();
+  int h = getHeight();
+  slider->setBounds(0, 0, w, h);
+  comboBox->setBounds(0, 0, w, h);
+  textField->setBounds(0, 0, w, h);
+
+  /*
   slider->setBounds(getBounds());
   comboBox->setBounds(getBounds());
   textField->setBounds(getBounds());
+  */
 }
 
 void SfzOpcodeWidgetSet::setSettingToEdit(int groupIndex, int regionIndex,

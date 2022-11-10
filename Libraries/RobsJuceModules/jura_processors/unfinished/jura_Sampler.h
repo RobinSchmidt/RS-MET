@@ -336,6 +336,12 @@ public:
 
   SfzTreeViewNode() {}
 
+  //enum class OpcodeType { realNumber, booleanSwitch, choice, text, none };
+
+
+
+
+  // Move into protected region:
 
   /** Type for the user-data that can be stored at the tree-nodes. It contains the information that
   is required to find the corresponding setting in the SfzInstrument datastructure. 
@@ -348,7 +354,7 @@ public:
 
     /** The type of the data stored at the nodes depends on the type of the node. In order to be 
     able to tell, which type it is, we define an enum. */
-    enum class Type
+    enum class Type  // maybe rename to NodeType
     {
       group,
       region,
@@ -356,6 +362,8 @@ public:
       modulationRouting,  // e.g. lfo3_cutoff2, adsr2_volume1
       unknown             // maybe get rid, maybe type should always be known
     };
+
+
 
     /** We define a sum-type of the passible datatypes that can be stored at the nodes here. 
     ToDo: maybe use std::variant instead (but that requires C++17). */
@@ -373,8 +381,21 @@ public:
     int regionIndex = -1;
   };
 
-
   Data data;
+
+
+
+  using OpcodeFormat = rosic::Sampler::OpcodeFormat;
+
+  /** Returns the format of the data that is stored at this node. The return type is a type 
+  used in the SfzCodeBook in rosic. Typical values are: Boolean, Natural (unsigned int), Integer,
+  Float, String. This information is used to decide, what kind of widget should be displayed to 
+  edit the data (button, slider, combobox, text-field, etc.). */
+  OpcodeFormat getOpcodeFormat();
+
+
+
+
 
 protected:
 
