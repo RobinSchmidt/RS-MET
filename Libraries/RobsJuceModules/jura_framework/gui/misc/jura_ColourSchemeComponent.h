@@ -167,6 +167,10 @@ protected:
   // ToDo: Use pointers or referencese to allow sharing these among sub-editors. This requires to
   // elect some higher/highest level Component to be the maintainer of the actual objects which
   // will need some changes that ripple through the whole framework
+  // ...but the mid-term plan is to replace this by a class "rsSkinnableComponent" soon. This 
+  // should then just hold a pointer to an rsSkin object, the skin may then also countain 
+  // color-schemes (among other things such as fonts, graphics, etc.). When done, this class 
+  // should be made obsolete
 
   // we maintain components that should adhere to the colour-schemes above as arrays:
   std::vector<RWidget*>   widgets;
