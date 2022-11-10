@@ -455,6 +455,10 @@ void AudioModule::setStateFromXml(const XmlElement& xml, const juce::String& sta
 {
   ScopedLock scopedLock(*lock);
 
+#ifdef JUCE_DEBUG
+  juce::String xmlString = xml.toString(); // to look at the xml content in the debugger
+#endif
+
   bool smoothingIsBypassed = true;
   if (smoothingManager != nullptr)
   {

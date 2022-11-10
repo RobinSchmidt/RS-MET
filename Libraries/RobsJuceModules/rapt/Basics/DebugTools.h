@@ -29,7 +29,11 @@ inline void rsError(const char *message = nullptr)
   // maybe open an error message box, etc.
 #endif
 }
-// maybe have an else branch that writes to some error log file and/or maybe throws and exception
+// -Maybe have an else branch that writes to some error log file and/or maybe throws and exception
+// -Maybe have a stronger version rsFatalError that also triggers some action in release builds
+// -Maybe call the error function that only affects debug builds rsDebugError
+
+
 
 inline void rsWarning(const char* message = nullptr)
 {

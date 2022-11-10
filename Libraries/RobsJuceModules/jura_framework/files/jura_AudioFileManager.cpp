@@ -30,6 +30,7 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
 
   if( !theAudioFile.existsAsFile() )
   {
+    RAPT::rsError("File not found");
     if( showAlertBoxWhenFailed == true )
     {
       AlertWindow::showMessageBox(AlertWindow::WarningIcon,
@@ -50,6 +51,7 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
   FileInputStream* inputStream = new FileInputStream(theAudioFile);
   if( inputStream == NULL )
   {
+    RAPT::rsError("File could not be opened");
     if( showAlertBoxWhenFailed == true )
     {
       AlertWindow::showMessageBox(AlertWindow::WarningIcon,
@@ -81,6 +83,7 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
   }
   if( reader == NULL )
   {
+    RAPT::rsError("File not readable");
     if( showAlertBoxWhenFailed == true )
     {
       AlertWindow::showMessageBox(AlertWindow::WarningIcon,
@@ -107,6 +110,7 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
   } // end of  if( fileIsReadable )
   else
   {
+    RAPT::rsError("File format not supported");
     if( showAlertBoxWhenFailed == true )
     {
       AlertWindow::showMessageBox(AlertWindow::WarningIcon,

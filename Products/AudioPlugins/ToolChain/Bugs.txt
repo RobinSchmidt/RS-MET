@@ -29,7 +29,21 @@ Sampler:
  think, in case of a lowpass, it should turn off the sound. In a highpass filter, switching to 
  bypass seems appropriate, though.
  
-
+Wavetable oscillator:
+-It sometimes happens when opening ToolChain and it wants to recall the Straighliner state, that the
+ xml-element for the osc section looks like this:
+   <OscSection PatchFormat="1">
+    <Osc1 PatchFormat="1" AudioFileRelativePath=""/>
+    <Osc2 PatchFormat="1" AudioFileRelativePath=""/>
+    <Osc3 PatchFormat="1" AudioFileRelativePath=""/>
+    <Osc4 PatchFormat="1" AudioFileRelativePath=""/>
+  </OscSection>
+ and then, when AudioFileManager::createAudioSampleBufferFromFile is called, we get an error that 
+ complains that it can't open the file "C:\Users\rob\AppData\Roaming\RS-MET". 
+ -Check, what the oscillator produces as xml output, when no file is loaded. Does it just produce
+  the directory path? It should actually not create an AudioFileRelativePath xml-attribute at all in
+  such a case.
+ 
 
 -[FIXED] load NoiseWhistle.sfz, then in the TreeView:
  -click on cutoff -> cutoff slider appears

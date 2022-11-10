@@ -300,6 +300,7 @@ void SamplerInterfaceComponent::handleMediatorNotification(MediatedColleague* or
 bool SfzTreeViewNode::isOpcodeNode()
 {
   return data.type == Data::Type::modulationRouting || data.type == Data::Type::playbackSetting;
+  // todo: delegate to a to-be-written data.isOpcodeData()
 }
 
 SfzTreeViewNode::OpcodeFormat SfzTreeViewNode::getOpcodeFormat()
@@ -312,6 +313,7 @@ SfzTreeViewNode::OpcodeFormat SfzTreeViewNode::getOpcodeFormat()
     SfzCodeBook* cb = SfzCodeBook::getInstance();
     return cb->getOpcodeFormat(op); }
   return OpcodeFormat::Unknown;
+  // todo: delegate to a to-be-written data.getOpcodeFormat()
 }
 
 //=================================================================================================

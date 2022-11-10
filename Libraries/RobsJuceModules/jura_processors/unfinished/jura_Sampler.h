@@ -319,6 +319,58 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerInterfaceMediator)
 };
 
+//=================================================================================================
+
+/** Class for representing the data at a node in the SFZ patch structure. You can think of the node
+as a tree-node where <group> and <region> nodes are intermediate levels and the opcodes are the 
+leaf nodes. This class stores the information that is required to facilitate the implementation of
+certain GUI elements such as the overlay widgets in the TreeView. The information stored here can 
+also be used to find the corresponding setting in the SfzInstrument datastructure which is needed 
+in order to update the data inside the engine such that parameter changes are audible.
+ToDo:
+-Maybe also store information to find it in the sfz-code such as line/column/location. 
+-Maybe drag the class out of SfzTreeViewNode and get rid of SfzTreeViewNode. But when we build the
+ tree, this information is actually not available...hmm... */
+
+class SfzNodeData
+{
+
+public:
+
+  SfzNodeData(){}
+
+  /** The type of the data stored at the nodes depends on the type of the node. In order to be 
+  able to tell, which type it is, we define an enum. */
+  enum class Type
+  {
+    group,
+    region,
+    playbackSetting,    // e.g. tune, volume, ...
+    modulationRouting,  // e.g. lfo3_cutoff2, adsr2_volume1
+    unknown             // maybe get rid, maybe type should always be known
+  };
+
+
+protected:
+
+  /** We define a sum-type of the passible datatypes that can be stored at the nodes here. 
+  ToDo: maybe use std::variant instead (but that requires C++17). */
+  union Variant  // find better name
+  {
+    Variant(){}
+
+    rosic::Sampler::PlaybackSetting   playbackSetting;
+    rosic::Sampler::ModulationRouting modRouting;
+  };
+
+  Type type = Type::unknown;
+  Variant data;
+  int groupIndex  = -1;
+  int regionIndex = -1;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzNodeData)
+};
 
 //=================================================================================================
 
@@ -348,7 +400,7 @@ public:
   ToDo: Maybe also store information to find it in the sfz-code such as line/column/location. Maybe
   drag the class out of SfzTreeViewNode and get rid of SfzTreeViewNode. But when we build the tree,
   this information is actually not available...hmm... */
-  struct Data
+  struct Data  // obsolete - use SfzNodeData instead
   {
     Data(){}
 
