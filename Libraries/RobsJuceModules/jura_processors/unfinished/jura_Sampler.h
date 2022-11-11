@@ -419,7 +419,11 @@ private:
   //SfzNodeData() {} 
 
 
-  //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzNodeData)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzNodeData)
+  // Doesn't compile when this is not commented out. VS-compiler says:
+  //   SfzNodeData::SfzNodeData(const jura::SfzNodeData &)  member function already defined or 
+  //   declared
+  // Figure out why and fix it!
 };
 
 //=================================================================================================

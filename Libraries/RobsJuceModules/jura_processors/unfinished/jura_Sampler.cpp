@@ -386,6 +386,11 @@ void SfzOpcodeWidgetSet::resized()
 void SfzOpcodeWidgetSet::setSettingToEdit(int groupIndex, int regionIndex,
   const rosic::Sampler::PlaybackSetting& setting)
 {
+  // ToDo: intead of taking a rosic::Sampler::PlaybackSetting parameter, take the full SfzNodeData
+  // object. It has the playbackSetting as member and contains some more information - in 
+  // particular, it also contians the info, whether it's a regular playback setting or a modulation
+  // setting, etc.
+
   using namespace rosic::Sampler;
   using OF = OpcodeFormat;
   using WM = WidgetMode;
