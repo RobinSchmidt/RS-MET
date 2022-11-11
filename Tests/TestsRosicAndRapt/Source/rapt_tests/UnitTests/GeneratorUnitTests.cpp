@@ -4774,6 +4774,14 @@ bool samplerEngineUnitTest()
   //  some commented lines in samplerParserTest which already do a bit of this. Uncomment these, 
   //  make them pass and add more of such tests.
   // -Make a sfzCodeBookTest that tests the from/to string conversions
+  // -Implement support for 24 and 32 bit wavefiles and make it possible to use JUCE for 
+  //  supporting the flac format by abstracting out the sample-loading/reading into an abstract 
+  //  class rosic::rsAudioFileReader. In rosic, a concrete subclass rosic::rsAudioFileReaderWav can
+  //  be implemented. The implementation of another subclass jura::rsAudioFileReaderFlac is 
+  //  "postponed" to jura. The sampler engine should have a std::vector of (pointers to?) 
+  //  rsAudioFileReader, one for each supported format. In jura::SfzPlayer, we can pass the engine 
+  //  then the flac reader. It would be nice, if rsAudioFileReader would also provide an interface 
+  //  for direct-from-disk (DFD) streming - a feature, we may want to implement later.
 
   // -Refactor:
   //  -Get rid of connectorPool in DspResourcePool. Use direct objects instead of pointed-to 
