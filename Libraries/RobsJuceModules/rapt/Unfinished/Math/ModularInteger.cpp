@@ -147,8 +147,23 @@ Ideas:
  and exponent. For the special case of an exponent of 1, it would reduce to modular arithmetic in
  modulus p. For higher exponents, we can't just use modular arithmetic anymore. Instead, a more 
  elaborate implementation is necessary, see:
- https://www.youtube.com/watch?v=4BfCmZgOKP8
-
+ https://www.youtube.com/watch?v=4BfCmZgOKP8 at 22:02, or Weitz book pg 715ff,740ff - to do:
+ -Generalize to extended Euclidean algorithm to datatypes that are not necessarily positive integers.
+  It should work also for negative integers, for polynomials (over the integers and modular 
+  integers for prime modulus, i.e. Z_2, Z_3, Z_5, Z_7, ), ... 
+ -Find the prime elements of Z_p, i.e. the set of irreducible polynomials. Maybe it's enough to find
+  one such polynomial? I think so. We need to pick one such polynomial that play the role of the 
+  prime p in modular arithmetic. But it would perhaps be a good excercise to write an algorithm that
+  can find the set of all irreducible polynomials (up to a given degree) over a given field. See:
+  https://www.youtube.com/watch?v=CBD0ZXc-i7Q
+  https://www.youtube.com/watch?v=AL1Bg_9d4LQ
+ -For our chosen polynomial P(x) over Z_p, consider the quotient ring Z_p[x] / P(x) that is the ring 
+  of polynomials over Z_p modulo our particular polynomial P(x). That means, we need to implement
+  the computation of the remainder of polynomial division...I think, rsPolynomial already doe that.
+  https://en.wikipedia.org/wiki/Quotient_ring
+  -We need to find all the polynomials that may occur as division remainder for our chosen P(x). 
+   This should be a set of p^k polynomials where p is our modulus and k is the degree of P(x).
+  -We primitive roots of unity in in our ring of polynomials...tbc...
 
 ToDo: 
 -plot lcm(x,y) / (x*y) ...this should be some sort of measure, how small the lcm of of x and y 
