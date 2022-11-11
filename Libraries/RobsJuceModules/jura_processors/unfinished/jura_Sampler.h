@@ -354,12 +354,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Lifetime
 
-  SfzNodeData(){}  
+  SfzNodeData();
+  //SfzNodeData(){}  
   // Try to enforce usage of the factory methods by making the constructor private to ensure that 
   // only valid nodes can be created 
 
   SfzNodeData(const SfzNodeData& other);
 
+
+  //static SfzNodeData createEmptyNode();
 
   static SfzNodeData createGroupNode(int groupIndex);
 
@@ -419,7 +422,7 @@ private:
   //SfzNodeData() {} 
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzNodeData)
+  //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzNodeData)
   // Doesn't compile when this is not commented out. VS-compiler says:
   //   SfzNodeData::SfzNodeData(const jura::SfzNodeData &)  member function already defined or 
   //   declared

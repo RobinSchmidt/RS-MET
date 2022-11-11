@@ -297,6 +297,11 @@ void SamplerInterfaceComponent::handleMediatorNotification(MediatedColleague* or
 
 //=================================================================================================
 
+SfzNodeData::SfzNodeData()
+{
+
+}  
+
 SfzNodeData::SfzNodeData(const SfzNodeData& other)
 {
   type = other.type;
