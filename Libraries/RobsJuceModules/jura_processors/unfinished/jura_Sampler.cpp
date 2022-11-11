@@ -349,12 +349,12 @@ SfzNodeData SfzNodeData::createModulationRoutingNode(int groupIndex, int regionI
   return node;
 }
 
-bool SfzNodeData::isOpcodeNode()
+bool SfzNodeData::isOpcodeNode() const
 {
   return type == Type::modulationRouting || type == Type::playbackSetting;
 }
 
-SfzNodeData::OpcodeFormat SfzNodeData::getOpcodeFormat()
+SfzNodeData::OpcodeFormat SfzNodeData::getOpcodeFormat() const
 {
   using namespace rosic::Sampler;
   if(type == Type::modulationRouting) {
@@ -373,6 +373,26 @@ SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
   createWidgets();
 }
 
+bool SfzOpcodeWidgetSet::wantsExponentialSlider(rosic::Sampler::Opcode op) const
+{
+  return false;
+  // Preliminary. ToDo: either apply a heuristic based on the range of the opcode's values or 
+  // decide it in a case-statement based on the opcode. Maybe later we also want scalings other 
+  // than linear or exponential?
+
+  using namespace rosic::Sampler;
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+  float minVal = cb->opcodeMinValue(op);
+  float maxVal = cb->opcodeMaxValue(op);
+  if(minVal > 0.f && maxVal > 0.f && maxVal >= 50.f*minVal)
+    return true;
+    // This criterion to switch between linear and exponential mode is ad hoc and heuristic. It 
+    // doesn't seem to work though, because for cutoff, the minVal is actually 0. Maybe we need 
+    // some expWithOffset characteristic for that. Maybe the offset should be maxVal / rangeFactor 
+    // where rangeFactor is 20000/20 = 1000 in the case of frequencies, i.e. the maximum over the 
+    // minimum meaningful value. Or maybe something based on sinh?
+}
+
 void SfzOpcodeWidgetSet::resized()
 {
   int w = getWidth();
@@ -388,13 +408,27 @@ void SfzOpcodeWidgetSet::resized()
   */
 }
 
-void SfzOpcodeWidgetSet::setSettingToEdit(int groupIndex, int regionIndex,
-  const rosic::Sampler::PlaybackSetting& setting)
+void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
 {
   // ToDo: intead of taking a rosic::Sampler::PlaybackSetting parameter, take the full SfzNodeData
   // object. It has the playbackSetting as member and contains some more information - in 
   // particular, it also contians the info, whether it's a regular playback setting or a modulation
   // setting, etc.
+
+
+  if(!nodeData.isOpcodeNode())
+    return;
+
+
+  int groupIndex = nodeData.getGroupIndex();
+  int regionIndex = nodeData.getRegionIndex();
+
+  rosic::Sampler::PlaybackSetting setting = nodeData.getPlaybackSetting();
+  // todo: retrieve that only after we had made sure that the data at the node actually is a
+  // PlaybackSetting by putting it in an if-block. It could also be a ModulationRouting or a 
+  // <region> tag
+
+
 
   using namespace rosic::Sampler;
   using OF = OpcodeFormat;
@@ -420,6 +454,9 @@ void SfzOpcodeWidgetSet::setSettingToEdit(int groupIndex, int regionIndex,
   patchChangeInfo.oldSetting = setting;
   patchChangeInfo.newValue = val; 
 
+
+
+
   // Display the appropriate widget and set it up:
   if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
   {
@@ -430,20 +467,10 @@ void SfzOpcodeWidgetSet::setSettingToEdit(int groupIndex, int regionIndex,
     slider->setValue(val, false);
     slider->setSliderName(opStr);
     setWidgetMode(WM::slider);
-
-    /*
-    // Under construction - switch between linear and exponential slider mode:
-    // This criterion to switch between linear and exponential mode is ad hoc and heuristic. It 
-    // doesn't seem to work though, because for cutoff, the minVal is actually 0. Maybe we need 
-    // some expWithOffset characteristic for that. Maybe the offset should be maxVal / rangeFactor 
-    // where rangeFactor is 20000/20 = 1000 in the case of frequencies, i.e. the maximum over the 
-    // minimum meaningful value. Or maybe something based on sinh?
-    if(minVal > 0.f && maxVal > 0.f && maxVal >= 50.f*minVal)     
-    slider->setScaling(jura::Parameter::scalings::EXPONENTIAL);
+    if(wantsExponentialSlider(op))
+      slider->setScaling(jura::Parameter::scalings::EXPONENTIAL);
     else
-    slider->setScaling(jura::Parameter::scalings::LINEAR);
-    */
-
+      slider->setScaling(jura::Parameter::scalings::LINEAR);
   }
   else if(fmt == OF::String)
   {

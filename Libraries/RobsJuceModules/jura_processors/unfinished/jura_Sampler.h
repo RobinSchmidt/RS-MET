@@ -385,7 +385,7 @@ public:
 
   /** Returns true, if this is a node for an opcode, i.e. a leaf-node. Among other things, this 
   determines whether or not it makes sense to show an editing widget for the node to the user. */
-  bool isOpcodeNode();
+  bool isOpcodeNode() const;
 
   using OpcodeFormat = rosic::Sampler::OpcodeFormat;
 
@@ -393,9 +393,21 @@ public:
   used in the SfzCodeBook in rosic. Typical values are: Boolean, Natural (unsigned int), Integer,
   Float, String. This information is used to decide, what kind of widget should be displayed to 
   edit the data (button, slider, combobox, text-field, etc.).  */
-  OpcodeFormat getOpcodeFormat();
+  OpcodeFormat getOpcodeFormat() const;
 
 
+
+  rosic::Sampler::PlaybackSetting getPlaybackSetting() const
+  {
+    RAPT::rsAssert(type == Type::playbackSetting);
+    // Retrieving a meaningless PlaybackSetting is probably a bug
+
+    return data.playbackSetting;
+  }
+
+  int getGroupIndex() const { return groupIndex; }
+
+  int getRegionIndex() const { return regionIndex; }
 
 
 
@@ -525,8 +537,14 @@ public:
   /** Client cod calls this to set up the kind of opcode/setting that this widget set edits. This 
   will determine whther we will show a slider, combobox, etc. and the range of the slider, the 
   available options in the combobox, etc. */
-  void setSettingToEdit(int groupIndex, int regionIndex, 
-    const rosic::Sampler::PlaybackSetting& setting);
+  //void setSettingToEdit(int groupIndex, int regionIndex, 
+  //  const rosic::Sampler::PlaybackSetting& setting);
+
+
+  void setSfzNodeToEdit(const SfzNodeData& nodeData);
+
+
+
 
   void handlePatchUpdate(const PatchChangeInfo& info) override;
 
@@ -539,6 +557,8 @@ public:
   enum class WidgetMode { slider, button, chooser, text, none };
 
 protected:
+
+  bool wantsExponentialSlider(rosic::Sampler::Opcode op) const;
 
   // Overriden juce callbacks:
   void resized() override;
