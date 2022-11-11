@@ -1598,7 +1598,7 @@ const rsUint64 rsModularIntegerNTT::lengthsInv[15] =
 // k  = 1                        # exponent for length N = 2^k
 // p  = 3221225473               # modulus
 // Zp = Integers(p)
-// r  = Zp.zeta(2^k, all=False); # currentl root
+// r  = Zp.zeta(2^k, all=False); # current root
 // N  = Zp(2^k)                  # current length (exponent = array index + 2)
 // ri = 1/r                      # inverse root
 // Ni = 1/N                      # inverse length
@@ -1690,11 +1690,18 @@ std::vector<int> rsConvolveNTT(const std::vector<int>& x, const std::vector<int>
 //  numbers in -2^16...2^16-1. That would give us more headroom. Maybe the eyponent doesn't need
 //  to be a power of two. We could also try -2^25...2^25-1 or some other range. Maybe with a bit of
 //  tweaking and experimentation, we could make it work in practice. In practice, the range
-//  -2^23...2^23-1 might be a good choice when assuming our actual float datat to be single 
+//  -2^23...2^23-1 might be a good choice when assuming our actual float data to be single 
 //  precision. A product of two such numbers would be at most of the order of 2^46 which leaves 
 //  still a lot of headroom to the 2^63 at which overflow occurs. The headroom is needed because
 //  we are doing (big) sums of such numbers. Maybe we need to make sure that our internally used 
 //  constants (the "magic numbers") are also within that reduced range?
+// -Is it possible to run the same or a similar algorithm in a more general finite field (aka 
+//  Galois field) GF(p) for p being a prime power rather than in the field Z_p of modular 
+//  integers with prime modulus p? That gives us more choices with respect to the choice of p. in
+//  particular, powers of two would become available which may be very useful. Figure out! Maybe
+//  implement a class rsGaloisField similar to rsModularInteger. The user should be able to set up
+//  the base and the exponent. Modular integers would then be a special case of that for when the
+//  exponent is 1.
 
 //-------------------------------------------------------------------------------------------------
 

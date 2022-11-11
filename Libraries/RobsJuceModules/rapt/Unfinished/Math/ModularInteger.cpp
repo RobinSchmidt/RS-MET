@@ -122,9 +122,10 @@ rsModularInteger<T>& rsModularInteger<T>::operator--()
 /*
 
 Ideas:
--templatize on the integer type to use - allow for arbitrary size integers
--make it work also for negative values (-> verify, if the % operator works correctly, when the 
- left operand is negative - if not, use a custom function instead)
+-templatize on the integer type to use - allow for arbitrary size integers (done?)
+-make it work also for negative values -> verify, if the % operator works correctly, when the 
+ left operand is negative - if not, use a custom function instead, see noiseReverseMode() 
+ experiment - it has such a function - maybe drag it out into the RAPT library as rsModulo
 -how about negative moduli?
 -currently, the arithmetic operations make sense only when the two operands have the same modulus
  -generalize this to a sort of "multi-modular" or "mixed-modular" arithmetic
@@ -142,6 +143,12 @@ Ideas:
   constraints for an equivalence relation? ...i think, it breaks transitivity...
 -does the notion of a modular rational number make any sense? i.e. numerator and/or denominator are 
  modular integers?
+-What about Galois fields? Maybe we can have a class rsGaloisField where the user can set the base
+ and exponent. For the special case of an exponent of 1, it would reduce to modular arithmetic in
+ modulus p. For higher exponents, we can't just use modular arithmetic anymore. Instead, a more 
+ elaborate implementation is necessary, see:
+ https://www.youtube.com/watch?v=4BfCmZgOKP8
+
 
 ToDo: 
 -plot lcm(x,y) / (x*y) ...this should be some sort of measure, how small the lcm of of x and y 

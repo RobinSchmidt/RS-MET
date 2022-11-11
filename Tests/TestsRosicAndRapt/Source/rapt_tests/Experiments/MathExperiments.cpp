@@ -3099,7 +3099,7 @@ void numberTheoreticTrafo()
   // maximum supported transform size and we also need the inveres of all these N (verify - i may
   // have the factor 2 wrong...). ...I'm also not sure anymore that p being prime ensures the 
   // existence of all desired N-th roots of unity (where N = 2^k for all k < p). Maybe it only 
-  // ensures, that they are invertible, if the yhappen to exist? I think, typically, there is some 
+  // ensures, that they are invertible, if they happen to exist? I think, typically, there is some 
   // highest k, for which the root exists, but it may be much less than p/2...figure out..
 
   // Sage code to find the primitive n-th roots of unity for n = 2^k, k = 1,..,5
@@ -3183,7 +3183,7 @@ void numberTheoreticTrafo()
 
 
   // Create two sequences of integers and convolve them using naive convolution and reduce to the 
-  // modulus afterwards. It doesn't matter whether do the reduction afterwards or after each 
+  // modulus afterwards. It doesn't matter whether we do the reduction afterwards or after each 
   // operation:
   using VecI = std::vector<int>;
   VecI x  = VecI({11,32,15,75,51});       // input signal
