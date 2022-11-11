@@ -155,8 +155,17 @@ Ideas:
   one such polynomial? I think so. We need to pick one such polynomial that play the role of the 
   prime p in modular arithmetic. But it would perhaps be a good excercise to write an algorithm that
   can find the set of all irreducible polynomials (up to a given degree) over a given field. See:
-  https://www.youtube.com/watch?v=CBD0ZXc-i7Q
-  https://www.youtube.com/watch?v=AL1Bg_9d4LQ
+  https://www.youtube.com/watch?v=CBD0ZXc-i7Q Polynome über endlichen Körpern
+  https://www.youtube.com/watch?v=1PLzxn1Tfb0 Welche Polynome Computer am liebsten mögen (Algebra mit Polynomen)
+  https://www.youtube.com/watch?v=AL1Bg_9d4LQ Wann ist ein Polynom irreduzibel? (Substitution, Eisenstein-Kriterium und Reduktionskriterium)
+  I think, we could just produce an irredicuble polynomial of degree k by expressing it as a product
+  of linear factors and maybe add constant? Maybe try: P(x) = x * (x+1) * (x+2) * ... * (x+k-1) + 1
+  or P(x) = (x+1) * (x+2) * ... * (x+k) + 1. Or maybe build a polynomial only from complex-conjugat 
+  pairs roots to guarantee that it has not rational roots? But we may need to allow at least one 
+  real root for odd degree polynomials - in this, we need to make sure that this real root is 
+  irrational (I think). I think, via the Eisenstein criterion, we could juts use P(x) = x^p + q 
+  for some prime q. q may or may not be equal to p, I think - maybe we can just always use q=2 
+  indenpendently from p - ah no: 2 is divisible by 2^2. 
  -For our chosen polynomial P(x) over Z_p, consider the quotient ring Z_p[x] / P(x) that is the ring 
   of polynomials over Z_p modulo our particular polynomial P(x). That means, we need to implement
   the computation of the remainder of polynomial division...I think, rsPolynomial already doe that.
@@ -164,6 +173,15 @@ Ideas:
   -We need to find all the polynomials that may occur as division remainder for our chosen P(x). 
    This should be a set of p^k polynomials where p is our modulus and k is the degree of P(x).
   -We primitive roots of unity in in our ring of polynomials...tbc...
+ -see also: 
+  https://en.wikipedia.org/wiki/Cyclotomic_fast_Fourier_transform
+  https://mathoverflow.net/questions/40485/ffts-over-finite-fields
+  https://math.stackexchange.com/questions/40634/galois-field-fourier-transform
+  https://stackoverflow.com/questions/52270320/implementing-fft-over-finite-fields
+  The (finite field) Fast Fourier Transform: https://redirect.cs.umbc.edu/~phatak/691a/fft-lnotes/fftnotes.pdf
+  The Fast Fourier Transform in a Finite Field: https://www.ams.org/journals/mcom/1971-25-114/S0025-5718-1971-0301966-0/S0025-5718-1971-0301966-0.pdf
+  https://hackage.haskell.org/package/galois-fft
+-Nice intro to NTT: https://www.nayuki.io/page/number-theoretic-transform-integer-dft
 
 ToDo: 
 -plot lcm(x,y) / (x*y) ...this should be some sort of measure, how small the lcm of of x and y 

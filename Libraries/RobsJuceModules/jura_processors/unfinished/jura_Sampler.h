@@ -269,18 +269,33 @@ public:
   {
   public:
     PatchChangeInfo() {}
+
+
     PatchChangeType type = PatchChangeType::unknown;
     int groupIndex  = -1;
     int regionIndex = -1;
 
 
 
-    rosic::Sampler::PlaybackSetting oldSetting; 
+    rosic::Sampler::PlaybackSetting oldSetting;
     // maybe we need it to be a sum-type of PlaybackSetting and ModulationRouting ...just like
     // we have done in SfzTreeViewNode. Maybe factor that "Variant" internal class out and use it
     // here too
 
     float newValue = 0.f;  // Value that we want to set the oldSetting to
+
+
+
+    void reset()
+    {
+      type = PatchChangeType::unknown;
+      groupIndex  = -1;
+      regionIndex = -1;
+      oldSetting.reset();
+      newValue = 0.f;
+    }
+    // move to .cpp
+
   };
 
 
@@ -362,7 +377,7 @@ public:
   SfzNodeData(const SfzNodeData& other);
 
 
-  //static SfzNodeData createEmptyNode();
+  static SfzNodeData createEmptyNode();
 
   static SfzNodeData createGroupNode(int groupIndex);
 
@@ -500,6 +515,8 @@ public:
   edit the data (button, slider, combobox, text-field, etc.).  */
   OpcodeFormat getOpcodeFormat() { return data.getOpcodeFormat(); }
 
+  const SfzNodeData& getNodeData() const { return data; }
+
 
   SfzNodeData data; // make protected!
 
@@ -540,7 +557,9 @@ public:
   //void setSettingToEdit(int groupIndex, int regionIndex, 
   //  const rosic::Sampler::PlaybackSetting& setting);
 
-
+  /** Client code calls this to set up the kind of node that this widget set edits. This will 
+  determine whther we will show a slider, combobox, etc. and the range of the slider, the available
+  options in the combobox, etc. */
   void setSfzNodeToEdit(const SfzNodeData& nodeData);
 
 

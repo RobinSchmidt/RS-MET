@@ -310,6 +310,12 @@ SfzNodeData::SfzNodeData(const SfzNodeData& other)
   regionIndex = other.regionIndex;
 }
 
+SfzNodeData SfzNodeData::createEmptyNode()
+{
+  SfzNodeData node;
+  return node;
+}
+
 SfzNodeData SfzNodeData::createGroupNode(int groupIndex)
 {
   SfzNodeData node;
@@ -415,9 +421,18 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   // particular, it also contians the info, whether it's a regular playback setting or a modulation
   // setting, etc.
 
+  using namespace rosic::Sampler;
+  using OF = OpcodeFormat;
+  using WM = WidgetMode;
+
 
   if(!nodeData.isOpcodeNode())
+  {
+    patchChangeInfo.reset();  // We clean up what has become meaningless
+    setWidgetMode(WM::none);
     return;
+  }
+
 
 
   int groupIndex = nodeData.getGroupIndex();
@@ -428,11 +443,6 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   // PlaybackSetting by putting it in an if-block. It could also be a ModulationRouting or a 
   // <region> tag
 
-
-
-  using namespace rosic::Sampler;
-  using OF = OpcodeFormat;
-  using WM = WidgetMode;
   SfzCodeBook* cb = SfzCodeBook::getInstance();
 
   // Figure out what kind of opcode we are dealing with and set up the widgetMode accordingly:
@@ -903,12 +913,15 @@ void SfzTreeView::hideOverlayWidgets()
 
 void SfzTreeView::showOverlayWidget(SfzTreeViewNode* node, int y)
 {
-  if(node->isOpcodeNode())
+  if(node->isOpcodeNode())  // ToDo: Check node against nullptr before deref or assert non-null
   {
     overlayWidgets->setBounds(16, y, getWidth()-32, 16);
     overlayWidgets->setVisible(true);
 
-    RAPT::rsError("Not yet implemented");
+
+    overlayWidgets->setSfzNodeToEdit(node->getNodeData()); // rename to setSfzNodeDataToEdit
+    int dummy = 0;
+    //RAPT::rsError("Not yet finished and tested");
     // The overlay widgets do not seem to appear. I think we need to call:
     // We need to call overlayWidgets->setSettingToEdit(int groupIndex, int regionIndex,
     //   const rosic::Sampler::PlaybackSetting& setting)
@@ -919,7 +932,10 @@ void SfzTreeView::showOverlayWidget(SfzTreeViewNode* node, int y)
     // SfzNodeData.
   }
   else
-    overlayWidgets->setVisible(false);
+  {
+    overlayWidgets->setSfzNodeToEdit(SfzNodeData::createEmptyNode());
+    //overlayWidgets->setVisible(false);
+  }
 }
 
 //=================================================================================================

@@ -482,6 +482,17 @@ public:
 
   void setValue(float newValue) { value = newValue; }
 
+  void setup(Opcode newType, float newValue, int newIndex)
+  {
+    type  = newType;
+    value = newValue;
+    index = newIndex;
+  }
+
+  /** Resets the object to default values for the members., i.e. into the same state as immediately
+  after default construction. */
+  void reset() { setup(Opcode::Unknown, 0.f, -1);  }
+
 
 private:
 
