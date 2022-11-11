@@ -1761,15 +1761,15 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
--make the overlay-slider appear when hovering whil holding crtl -> finsih implementation of
- SfzTreeView::showOverlayWidget. See comments there for what needs to be done
--SfzOpcodeEditor should also use an SfzOpcodeWidgetSet just like SfzTreeView. All the separate 
- widgets can then be removed, simplifying the code
--The SfzOpcodeWidgetSets in the tree-view and opcode-editor will then need to be wired to the
- mediator. Maybe SfzOpcodeEditor then doesn't need to be wired to it anymore because its child
- component has taken over the responsibility of updating itself when the patch changed due to some
- other action.
--Keep the selcetd TreeNode highlighted as long as the slider for it is visible. Also highlight 
+-Make the overlay-slider appear when hovering whil holding crtl -> done. It does appear but is not 
+ yet functional - make it so!
+ -SfzOpcodeEditor should also use an SfzOpcodeWidgetSet just like SfzTreeView. All the separate 
+  widgets can then be removed, simplifying the code
+ -The SfzOpcodeWidgetSets in the tree-view and opcode-editor will then need to be wired to the
+  mediator. Maybe SfzOpcodeEditor then doesn't need to be wired to it anymore because its child
+  component has taken over the responsibility of updating itself when the patch changed due to some
+  other action.
+-Keep the selcted TreeNode highlighted as long as the slider for it is visible. Also highlight 
  the relevant section of the code in the editor.
 -The slider needs exponential characteristic for certain parameters. Maybe to start, just use a 
  heuristic: if min and max are both strictly greater than 0 and max >= k*min for some constant k
