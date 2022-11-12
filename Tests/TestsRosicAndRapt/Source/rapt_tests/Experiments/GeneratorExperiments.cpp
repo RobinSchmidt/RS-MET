@@ -241,10 +241,15 @@ void noiseReverseMode()
   // inputs x:
   auto mod = [](Int x, Int m)
   {
+    return rsModularInteger<Int>::modulo(x, m);
+
+    /*
+    // old - moved into rsModularInteger:
     Int r = x % m;     // remainder
     if(r < 0)          // r < 0 happens for x < 0
       return r + m;
     return r;
+    */
     // See https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
     // There's also code for when m is negative, but we don't need that here. What would that even
     // mean? Maybe move the function into the library as rsModulo.

@@ -17,6 +17,20 @@ rsModularInteger<T>::rsModularInteger(const rsModularInteger<T>& other)
   value   = other.value;
 }
 
+// setup:
+
+template<class T>
+void rsModularInteger<T>::set(T newValue, T newModulus) 
+{ 
+  rsAssert(newModulus > 1);  // Or can we admit modulus 1? Maybe programming-wise yes, but that
+  value   = newValue;        // ..doesn't make much sense mathematically.
+  modulus = newModulus; 
+  canonicalize();            // We only allow canonical representations!
+}
+
+
+
+
 // operators:
 
 template<class T>
@@ -118,6 +132,17 @@ rsModularInteger<T>& rsModularInteger<T>::operator--()
   *this = *this - rsModularInteger<T>(1, modulus);
   return *this;
 }
+
+// internal:
+
+template<class T>
+void rsModularInteger<T>::canonicalize()
+{
+
+
+}
+
+
 
 /*
 

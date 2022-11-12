@@ -12,6 +12,10 @@ class rsFraction
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
+
   rsFraction(T numerator = T(0), T denominator = T(1)) : num(numerator), den(denominator)
   { 
     canonicalize(); 
@@ -169,7 +173,7 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 // -Maybe it's sometimes convenient to keep fractions in unreduced form. It may be easier to spot 
 //  patterns in sequences of unreduced rational numbers that come from some computation
 //  -but this will be relevant only for research code, not production code
-//  -maybe we could introduce a compile-time switch (maybe a boolen template parameter) that 
+//  -maybe we could introduce a compile-time switch (maybe a boolean template parameter) that 
 //   controls if we canonicalize or not
 //  -enforced canonical representation is important for the == operator to work properly...maybe it 
 //   should be implemented in a way that admits non-canonical representations? 

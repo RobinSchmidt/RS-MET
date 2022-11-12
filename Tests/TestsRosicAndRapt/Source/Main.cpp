@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
   //ratiosMetallic();
   //sinCosTable();   // new polynomial approximation is called from unit tests
   //twoParamRemap();
-  //numberTheoreticTrafo();   // move to unit tests!
+  numberTheoreticTrafo();   // move to unit tests!
   //numberTheoreticTrafoModuli();
   //powerIterator();
   //gaussianIterator();
@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
   // Generators:
   //waveformFractalization();
   //noise();
-  //noiseReverseMode();
+  noiseReverseMode();
   //noiseTriModal();
   //noiseWaveShaped();
   //blit();

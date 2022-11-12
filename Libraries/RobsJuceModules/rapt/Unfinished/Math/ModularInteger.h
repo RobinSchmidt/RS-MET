@@ -19,7 +19,8 @@ class rsModularInteger
 
 public:
 
-  /** \name Construction/Destruction */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
 
   /** Default constructor. Leaves value and modulus uninitialized. */
   rsModularInteger() {}
@@ -31,7 +32,23 @@ public:
   rsModularInteger(const rsModularInteger& other);
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
+  /** Sets up this modular integer to a new value and modulus. The modulus must be > 1. The value
+  will be stored in its canonical representation. For example, when the modulus is 5, it doesn't 
+  matter if you pass 3 or 8 or 13,... or -2 or -7 or -12,... for the value. It will always be 
+  stored as 3. */
+  void set(T newValue, T newModulus);
+
+
+
+
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   rsModularInteger& operator=(const rsModularInteger& b)
@@ -56,9 +73,39 @@ public:
   rsModularInteger& operator--();
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
+
+
+  /** Implements the modulo operation in a way that works also for when the value is negative.
+  The result of the C++ operator % is equal to modulo-result only when the left operand is >= 0.
+  ToDo: Maybe allow m to be negative, too.  */
+  static T modulo (T x, T m)
+  {
+    rsAssert(m > 1);   // modulus must be positive integer >= 2
+    T r = x % m;       // division remainder
+    if(r < 0)          // r < 0 happens for x < 0
+      return r + m;
+    return r;
+    // See https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
+    // There's also code for when m is negative, but we don't need that here. What would that even
+    // mean? Maybe move the function into the library as rsModulo.
+  };
+  // maybe move to .cpp
+
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  T value, modulus;
+  T value, modulus;  
+  // ToDo: make protected, provide accessors. Reason: Setters should canonicalize the 
+  // representation, similar to rsFraction
+
+protected:
+
+  void canonicalize();
+
 
 };
 
