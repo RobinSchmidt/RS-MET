@@ -996,10 +996,12 @@ bool testModularInteger()
 {
   bool ok = true;
 
-  /*
   using Int = int;
   using ModInt = rsModularInteger<Int>;
 
+
+
+  /*
   ModInt a(2, 7);  // value is 2, modulus is 7
   ModInt b(3, 7);
   */
@@ -1009,7 +1011,15 @@ bool testModularInteger()
   // and include that file from Main.cpp. But apparently that doesn't work. The linker actually
   // complains about a missing implementation of
   //   RAPT::rsModularInteger<int>::rsModularInteger<int>(unsigned __int64,unsigned __int64)
-  // which is strange
+  // which is strange. OK - I see. the class defines a constructor only for uint64 parameters. It
+  // seems, the implementation is made for unsinged integers - which is problematic anyway. 
+  // ToDo: 
+  //  -drag the experiment with the NTT convolution into the unit test
+  //  -change implementation of rsModularInteger to admit negative numbers
+  //   -I think,this only requires to modify the implementations of the (unary and binary) 
+  //    minus-operator because that's the only way, negative numbers could arise. Oh - and in the 
+  //    constructor(s), we need to check, if the user passes a negative number and if so, 
+  //    canocicalize it
 
 
 
