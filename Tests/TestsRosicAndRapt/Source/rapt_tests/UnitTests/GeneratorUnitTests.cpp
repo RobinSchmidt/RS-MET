@@ -4448,16 +4448,16 @@ bool samplerFreeModulationsTest()
     // The expected outcome in the right group of columns (the mod-depth columns) is always the sum
     // of the values in the 3 columns left to it where _ counts as 0. The DC contributions from 
     // region, group, instrument are supposed to add up:
-    //                    Mod Amplitude      Mod Depth               Test Control  Test Index
+    //                    Mod Amplitude      Mod Depth                Test Control  Test Index
     //                    ins  grp  reg    ins   grp   reg    exp  
-    ok &= testMod2(se, f, 100, 100, 100,    _ ,   _ ,   _ ,   0.0,   tol, false);  // 000
-    ok &= testMod2(se, f, 100, 100, 100,    _ ,   _ ,  0.4f,  0.4,   tol, false);  // 001
-    ok &= testMod2(se, f, 100, 100, 100,    _ ,  0.2f,  _ ,   0.2,   tol, false);  // 010
-    ok &= testMod2(se, f, 100, 100, 100,    _ ,  0.2f, 0.4f,  0.6,   tol, false);  // 011
-    ok &= testMod2(se, f, 100, 100, 100,   0.1f,  _ ,   _ ,   0.1,   tol, false);  // 100
-    ok &= testMod2(se, f, 100, 100, 100,   0.1f,  _ ,  0.4f,  0.5,   tol, false);  // 101
-    ok &= testMod2(se, f, 100, 100, 100,   0.1f, 0.2f,  _ ,   0.3,   tol, false);  // 110
-    ok &= testMod2(se, f, 100, 100, 100,   0.1f, 0.2f, 0.4f,  0.7,   tol, false);  // 111
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,   _ ,   _ ,   0.0f,   tol, false);  // 000
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,   _ ,  0.4f,  0.4f,   tol, false);  // 001
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,  0.2f,  _ ,   0.2f,   tol, false);  // 010
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,  0.2f, 0.4f,  0.6f,   tol, false);  // 011
+    ok &= testMod2(se, f, 100, 100, 100,   0.1f,  _ ,   _ ,   0.1f,   tol, false);  // 100
+    ok &= testMod2(se, f, 100, 100, 100,   0.1f,  _ ,  0.4f,  0.5f,   tol, false);  // 101
+    ok &= testMod2(se, f, 100, 100, 100,   0.1f, 0.2f,  _ ,   0.3f,   tol, false);  // 110
+    ok &= testMod2(se, f, 100, 100, 100,   0.1f, 0.2f, 0.4f,  0.7f,   tol, false);  // 111
 
     // It should also work if we pass _ instead of 1.0 for the amplitudes because 1.0 is the 
     // default amplitude:
@@ -4490,16 +4490,16 @@ bool samplerFreeModulationsTest()
     // set or not set on these levels. When they are not set, we assume a default amplitude of 
     // 1. We expect again a weighted sum. For example, in the last "111" test, we expect:
     //   exp = 5.0 * 0.1  +  2.0 * 0.3 +  3.0 * 0.4 = 2.1
-    //                    Mod Amplitude       Mod Depth            Test Control  Test Index
-    //                    ins  grp  reg     ins  grp  reg    exp  
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1, 0.2, 0.4,   0.7,  tol, false);  // 000
-    ok &= testMod2(se, f,  _ ,  _ , 300,    0.1, 0.2, 0.4,   1.5,  tol, false);  // 001
-    ok &= testMod2(se, f,  _ , 200,  _ ,    0.1, 0.2, 0.4,   0.9,  tol, false);  // 010
-    ok &= testMod2(se, f,  _ , 200, 300,    0.1, 0.2, 0.4,   1.7,  tol, false);  // 011
-    ok &= testMod2(se, f, 500,  _ ,  _ ,    0.1, 0.2, 0.4,   1.1,  tol, false);  // 100
-    ok &= testMod2(se, f, 500,  _ , 300,    0.1, 0.2, 0.4,   1.9,  tol, false);  // 101
-    ok &= testMod2(se, f, 500, 200,  _ ,    0.1, 0.2, 0.4,   1.3,  tol, false);  // 110
-    ok &= testMod2(se, f, 500, 200, 300,    0.1, 0.2, 0.4,   2.1,  tol, false);  // 111
+    //                    Mod Amplitude    Mod Depth                 Test Control  Test Index
+    //                    ins  grp  reg    ins   grp  reg     exp  
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,   0.1f, 0.2f, 0.4f,  0.7f,  tol, false);  // 000
+    ok &= testMod2(se, f,  _ ,  _ , 300,   0.1f, 0.2f, 0.4f,  1.5f,  tol, false);  // 001
+    ok &= testMod2(se, f,  _ , 200,  _ ,   0.1f, 0.2f, 0.4f,  0.9f,  tol, false);  // 010
+    ok &= testMod2(se, f,  _ , 200, 300,   0.1f, 0.2f, 0.4f,  1.7f,  tol, false);  // 011
+    ok &= testMod2(se, f, 500,  _ ,  _ ,   0.1f, 0.2f, 0.4f,  1.1f,  tol, false);  // 100
+    ok &= testMod2(se, f, 500,  _ , 300,   0.1f, 0.2f, 0.4f,  1.9f,  tol, false);  // 101
+    ok &= testMod2(se, f, 500, 200,  _ ,   0.1f, 0.2f, 0.4f,  1.3f,  tol, false);  // 110
+    ok &= testMod2(se, f, 500, 200, 300,   0.1f, 0.2f, 0.4f,  2.1f,  tol, false);  // 111
 
     return ok;
   };
@@ -4669,7 +4669,7 @@ bool samplerFixedModulationsTest()
 
   // Produce sampler output signal and check against target:
   //Vec outL(N), outR(N);
-  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, 1.e-7, -1, true, true);
+  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, 1.e-7f, -1, true, true);
   //rsPlotVectors(dc, tgt, outL, outR);
 
   rsAssert(ok);
