@@ -57,6 +57,8 @@ public:
 
   T getModulus() const { return modulus; }
 
+  bool hasInverse() const;
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */

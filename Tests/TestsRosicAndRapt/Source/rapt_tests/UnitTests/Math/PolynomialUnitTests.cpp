@@ -2571,6 +2571,8 @@ bool testPolynomial()
   ok &= testSpecialPolynomials();
   ok &= testQuadraticTo3Points();
 
+  // ToDo: testModIntPolynomial
+
   // under construction:
   ok &= testPowersChebychevExpansionConversion(       reportString);
 

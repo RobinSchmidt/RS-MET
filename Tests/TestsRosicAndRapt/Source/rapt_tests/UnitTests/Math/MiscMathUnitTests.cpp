@@ -999,30 +999,49 @@ bool testModularInteger()
   using Int = int;
   using ModInt = rsModularInteger<Int>;
 
+ // shorthands for convenience
+  auto val = [](ModInt x){ return x.getValue();   };
+  auto mod = [](ModInt x){ return x.getModulus(); };
+
+
   // Test canonicalization in construction:
   Int    m = 5;                                            // modulus
   ModInt p0( 0,m), p1( 1,m), p2( 2,m), p3( 3,m), p4( 4,m); // positive 0..4
   ModInt p5( 5,m), p6( 6,m), p7( 7,m), p8( 8,m), p9( 9,m); // positive 5..9
   ModInt n1(-1,m), n2(-2,m), n3(-3,m), n4(-4,m), n5(-5,m); // negative 1..5
-
   ok &= p0.getValue() == 0 && p5.getValue() == 0 && n5.getValue() == 0;
   ok &= p1.getValue() == 1 && p6.getValue() == 1 && n4.getValue() == 1;
   ok &= p2.getValue() == 2 && p7.getValue() == 2 && n3.getValue() == 2;
   ok &= p3.getValue() == 3 && p8.getValue() == 3 && n2.getValue() == 3;
   ok &= p4.getValue() == 4 && p9.getValue() == 4 && n1.getValue() == 4;
 
+  // Test arithmetic operators:
+  ModInt r;  // result
+  r = p2 + p4; ok &= val(r) == 1 && mod(r) == 5;
+  r = p2 - p4; ok &= val(r) == 3 && mod(r) == 5;
+  r = p2 * p4; ok &= val(r) == 3 && mod(r) == 5;
 
+  // Test modular inversion:
+  ModInt q;  // quotient with a numerator of 1, i.e. the modular inverse of p1,p2, p3,...
+  q = p1 / p1; r = q * p1; ok &= r == p1;
+  q = p1 / p2; r = q * p2; ok &= r == p1;
+  q = p1 / p3; r = q * p3; ok &= r == p1;
+  q = p1 / p4; r = q * p4; ok &= r == p1;
 
+  // When dividing by zero, we arbitrarily define the quotient to be zero. That makes no 
+  // mathematical sense but we just want to have some defined behavior:
+  q = p1 / p0; ok &= q == p0; r = q * p0; ok &= r == p0;
+  ok &= p0.hasInverse() == false;
 
   // ToDo: 
-  //  -drag the experiment with the NTT convolution into the unit test
-  //  -change implementation of rsModularInteger to admit negative numbers
-  //   -I think,this only requires to modify the implementations of the (unary and binary) 
-  //    minus-operator because that's the only way, negative numbers could arise. Oh - and in the 
-  //    constructor(s), we need to check, if the user passes a negative number and if so, 
-  //    canocicalize it
-
-
+  // -Drag the experiment with the NTT convolution into the unit test
+  // -Test it with an unsigned integer type, too. Maybe templatize this function...hmm - but we use
+  //  constructor calls with negative numbers here. When using them with an unsigned int type, they
+  //  will first wrap around to some big potive number using a power-of-2 modulus
+  // -Do tests with modulus 6. Modular inverses should exist only for numbers comprime with 6, i.e.
+  //  1 and 5. If we try division by numbers other than 1 and 5, we should get the result zero, 
+  //  even though that makes no mathematical sense - it's just how we arbitrarily define the 
+  //  behavior.
 
   return ok;
 }

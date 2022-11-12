@@ -41,6 +41,19 @@ void rsModularInteger<T>::set(T newValue, T newModulus)
   canonicalize();            // We only allow canonical representations!
 }
 
+// inquiry:
+
+template<class T>
+bool rsModularInteger<T>::hasInverse() const
+{
+  // Try to find the modular inverse of the right operand. It may or may not exist. If it doesn't
+  // exist, we detect it by multiplying the (tentative) inverse by our value and check, if that 
+  // gives 1:
+  T inv = rsModularInverse(value, modulus);
+  T one = (value * inv) % modulus;           // should be 1, if inv is indeed the modular inverse
+  return one == T(1);
+}
+
 // operators:
 
 template<class T>
@@ -99,8 +112,7 @@ rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &ot
 {
   rsWarning("Tests needed for: rsModularInteger<T>::operator/");
   rsAssert( modulus == other.modulus );
-  return *this * rsModularInteger<T>(rsModularInverse(other.value, modulus), modulus);
-  //return *this * rsModularInverse(other.value, modulus); // old, doesn't compile
+  return *this * rsModularInteger<T>( rsModularInverse(other.value, modulus), modulus);
 }
 // what, if there is no modular inverse (i think, it exists only if the value is coprime with the 
 // modulus - verify)
