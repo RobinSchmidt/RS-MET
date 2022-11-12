@@ -733,6 +733,8 @@ public:
     std::complex<R> a0, std::complex<R> a1, 
     std::complex<R> a2, std::complex<R> a3, 
     std::complex<R>* r1, std::complex<R>* r2, std::complex<R>* r3);
+  // todo: move to Protoptypes and fix it there and bring it back only when it works (and passes 
+  // the unit tests)
 
 
   // implement rootsQuadraticReal, rootsQuadraticComplex, rootsCubicReal, rootsCubicComplex

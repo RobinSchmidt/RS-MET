@@ -66,7 +66,9 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&testPolygon2D,                  "rsPolygon2D");
   ok &= runUnitTest(&testMultiArray,                 "rsMultiArray");
   ok &= runUnitTest(&testPolynomial,                 "rsPolynomial");
-  //ok &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // fails! ...absorb in rsPolynomial
+
+  //ok &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); 
+  // FAILS! Fix it and the absorb the test in testPolynomial
 
 
   // Filters:

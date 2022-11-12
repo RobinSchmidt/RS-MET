@@ -61,7 +61,12 @@ bool rotes::testRosicMath()
   ok &= testPolynomialComposition();
   ok &= testPolynomialWeightedSum();
   ok &= testPolynomialIntegrationWithPolynomialLimits();
+
   ok &= testPolynomialRootFinder();
+  // I had to set it to a quite high tolerance to make it pass. -> Figure out why and try to 
+  // reduce the tolerance. It seems that it did pass with lower tolerances at some point (there
+  // are code remnants of running the test with lower tolerance)
+
   ok &= testLinearSystemSolver();
   return ok;
 }
