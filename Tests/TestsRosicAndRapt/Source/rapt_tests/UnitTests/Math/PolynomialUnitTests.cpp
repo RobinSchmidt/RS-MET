@@ -76,9 +76,8 @@ using namespace RAPT;
   */
 
 
-bool testConvolution(std::string &reportString)
+bool testConvolution()
 {
-  std::string testName = "(De)Convolution";
   bool testResult = true;
 
   static const int xN = 10;
@@ -180,9 +179,8 @@ bool testConvolution(std::string &reportString)
 }
 
 
-bool testCubicCoeffsFourPoints(std::string &reportString)
+bool testCubicCoeffsFourPoints()
 {
-  std::string testName = "CubicCoeffsFourPoints";
   bool testResult = true;
 
   double  y[4] = {3, -2, 5, 1};
@@ -205,9 +203,8 @@ bool testCubicCoeffsFourPoints(std::string &reportString)
   return testResult;
 }
 
-bool testCubicCoeffsTwoPointsAndDerivatives(std::string &reportString)
+bool testCubicCoeffsTwoPointsAndDerivatives()
 {
-  std::string testName = "CubicCoeffsTwoPointsAndDerivatives";
   bool ok = true;
 
   double  x[2] = {-3, 2};
@@ -283,10 +280,8 @@ bool testCubicCoeffsTwoPointsAndDerivatives(std::string &reportString)
   return ok;
 }
 
-
-bool testPolynomialEvaluation(std::string &reportString)
+bool testPolynomialEvaluation()
 {
-  std::string testName = "PolynomialEvaluation";
   bool testResult = true;
 
   // establish 5th order polynomial and its 1st 3 derivatives:
@@ -319,9 +314,8 @@ bool testPolynomialEvaluation(std::string &reportString)
 }
 
 
-bool testPolynomialDivision(std::string &reportString)
+bool testPolynomialDivision()
 {
-  std::string testName = "PolynomialDivision";
   bool testResult = true;
 
   // given a polynomial p and a divisor polynomial d, polynomial division finds two polynomials
@@ -349,9 +343,8 @@ bool testPolynomialDivision(std::string &reportString)
   return testResult;
 }
 
-bool testPolynomialArgumentShift(std::string &reportString)
+bool testPolynomialArgumentShift()
 {
-  std::string testName = "PolynomialArgumentShift";
   bool testResult = true;
 
   // define polynomial p(x) and the shift value x0:
@@ -375,9 +368,8 @@ bool testPolynomialArgumentShift(std::string &reportString)
   return testResult;
 }
 
-bool testPolynomialDiffAndInt(std::string &reportString)
+bool testPolynomialDiffAndInt()
 {
-  std::string testName = "PolynomialDiffAndInt";
   bool testResult = true;
 
   double a[6]  = {2, -1, 5, 7, -3, 2};
@@ -462,9 +454,8 @@ bool testPolynomialDiffAndInt(std::string &reportString)
   // a stepsize (the standard stirling numbers assume h = 1)
   // write unit tests for all this stuff
 
-bool testPolynomialFiniteDifference(std::string &reportString)
+bool testPolynomialFiniteDifference()
 {
-  std::string testName = "PolynomialFiniteDifference";
   bool testResult = true;
 
   static const int order = 5;
@@ -509,9 +500,8 @@ bool testPolynomialFiniteDifference(std::string &reportString)
   return testResult;
 }
 
-bool testPolynomialComposition(std::string &reportString)
+bool testPolynomialComposition()
 {
-  std::string testName = "PolynomialComposition";
   bool testResult = true;
 
   using Poly = rsPolynomial<double>;
@@ -546,9 +536,8 @@ bool testPolynomialComposition(std::string &reportString)
   return testResult;
 }
 
-bool testPolynomialWeightedSum(std::string &reportString)
+bool testPolynomialWeightedSum()
 {
-  std::string testName = "PolynomialWeightedSum";
   bool testResult = true;
 
   static const int pN = 5;
@@ -590,9 +579,8 @@ bool testPolynomialWeightedSum(std::string &reportString)
   return testResult;
 }
 
-bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
+bool testPolynomialIntegrationWithPolynomialLimits()
 {
-  std::string testName = "PolynomialIntegrationWithPolynomialLimits";
   bool testResult = true;
 
   static const int np = 5;
@@ -629,9 +617,8 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
   return testResult;
 }
 
-bool testPolynomialInterpolation(std::string &reportString)
+bool testPolynomialInterpolation()
 {
-  std::string testName = "PolynomialInterpolation";
   bool testResult = true;
 
   double tol = 1.e-13; // error tolerance
@@ -691,9 +678,8 @@ bool testPolynomialInterpolation(std::string &reportString)
 // todo: test the different algorithms (Vandermonde-matrix, Lagrange, Newton) to see, if they give 
 // the same results
 
-bool testPolynomialRootFinder(std::string &reportString)
+bool testPolynomialRootFinder()
 {
-  std::string testName = "PolynomialRootFinder";
   bool testResult = true;
 
   // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 
@@ -777,17 +763,11 @@ bool testPolynomialRootFinder(std::string &reportString)
   // current estimate - steps are supposed to be not too large - but no - roots near zero do not
   // seem to warrant smaller thresholds
 
-
-
-
-
-
   return testResult;
 }
 
-bool testPartialFractionExpansion(std::string &reportString)
+bool testPartialFractionExpansion()
 {
-  std::string testName = "PartialFractionExpansion";
   bool testResult = true;
 
   typedef std::complex<double> Complex;
@@ -843,9 +823,8 @@ bool testPartialFractionExpansion(std::string &reportString)
   return testResult;
 }
 
-bool testPartialFractionExpansion2(std::string& reportString)
+bool testPartialFractionExpansion2()
 {
-  std::string testName = "PartialFractionExpansion2";
   bool testResult = true;
 
   typedef std::vector<std::complex<double>> Vec;
@@ -897,9 +876,8 @@ bool testPartialFractionExpansion2(std::string& reportString)
   return testResult;
 }
 
-bool testPolynomialBaseChange(std::string &reportString)
+bool testPolynomialBaseChange()
 {
-  std::string testName = "PolynomialBaseChange";
   bool testResult = true;
 
   static const int N = 7; // polynomial order
@@ -1035,11 +1013,8 @@ double rsEvaluateChebychevExpansion(double x, double *a, int N)
   return y;
 }
 
-
-
-bool testPowersChebychevExpansionConversion(std::string &reportString)
+bool testPowersChebychevExpansionConversion()
 {
-  std::string testName = "PowersChebychevExpansionConversion";
   bool testResult = true;
 
   // we my express any polynomial P(x) as linear combination of powers of x:
@@ -1155,9 +1130,8 @@ bool testPowersChebychevExpansionConversion(std::string &reportString)
 }
 
 
-bool testPolynomialRecursion(std::string &reportString)
+bool testPolynomialRecursion()
 {
-  std::string testName = "PolynomialRecursion";
   bool testResult = true;
 
   static const int N = 5;   // == maxOrder-1
@@ -1213,9 +1187,8 @@ bool testPolynomialRecursion(std::string &reportString)
   return testResult;
 }
 
-bool testJacobiPolynomials(std::string &reportString)
+bool testJacobiPolynomials()
 {
-  std::string testName = "JacobiPolynomials";
   bool testResult = true;
 
   static const int maxOrder = 4;   // maximum order of Jacobi polynomial
@@ -1312,12 +1285,10 @@ bool testSpecialPolynomials()
 //-------------------------------------------------------------------------------------------------
 
 // rename to testPolynomialClass
-bool testPolynomialOperators(std::string &reportString)
+bool testPolynomialOperators()
 {
-  std::string testName = "PolynomialOperators";
   bool testResult = true;
   typedef rsPolynomial<double> PL;
-
 
 
   PL p({ 7,  5,  3,  2    });   // p(x) =  7 +  5*x +  3*x^2 +  2*x^3
@@ -1372,9 +1343,8 @@ bool testPolynomialOperators(std::string &reportString)
   return testResult;
 }
 
-bool testRationalFunction(std::string& reportString)
+bool testRationalFunction()
 {
-  std::string testName = "RationalFunction";
   bool ok = true;
 
   typedef rsPolynomial<double> PL;
@@ -2547,40 +2517,40 @@ bool testPadeApproximation()
 
 bool testPolynomial()
 {
-  std::string reportString = "Polynomial"; // dummy -> remove
+  //std::string reportString = "Polynomial"; // dummy -> remove
   bool ok = true;
 
-  ok &= testConvolution(                              reportString);
-  ok &= testCubicCoeffsFourPoints(                    reportString);
-  ok &= testCubicCoeffsTwoPointsAndDerivatives(       reportString);
-  ok &= testPolynomialEvaluation(                     reportString);
-  ok &= testPolynomialDivision(                       reportString);
-  ok &= testPolynomialArgumentShift(                  reportString);
-  ok &= testPolynomialDiffAndInt(                     reportString);
-  ok &= testPolynomialFiniteDifference(               reportString);
-  ok &= testPolynomialComposition(                    reportString);
-  ok &= testPolynomialWeightedSum(                    reportString);
-  ok &= testPolynomialIntegrationWithPolynomialLimits(reportString);
-  ok &= testPolynomialInterpolation(                  reportString);
-  ok &= testPolynomialRootFinder(                     reportString);
-  ok &= testPartialFractionExpansion(                 reportString);
-  ok &= testPartialFractionExpansion2(                reportString);
-  ok &= testPolynomialBaseChange(                     reportString);
-  ok &= testPolynomialRecursion(                      reportString);
-  ok &= testJacobiPolynomials(                        reportString);
+  ok &= testConvolution();
+  ok &= testCubicCoeffsFourPoints();
+  ok &= testCubicCoeffsTwoPointsAndDerivatives();
+  ok &= testPolynomialEvaluation();
+  ok &= testPolynomialDivision();
+  ok &= testPolynomialArgumentShift();
+  ok &= testPolynomialDiffAndInt();
+  ok &= testPolynomialFiniteDifference();
+  ok &= testPolynomialComposition();
+  ok &= testPolynomialWeightedSum();
+  ok &= testPolynomialIntegrationWithPolynomialLimits();
+  ok &= testPolynomialInterpolation();
+  ok &= testPolynomialRootFinder();
+  ok &= testPartialFractionExpansion();
+  ok &= testPartialFractionExpansion2();
+  ok &= testPolynomialBaseChange();
+  ok &= testPolynomialRecursion();
+  ok &= testJacobiPolynomials();
   ok &= testSpecialPolynomials();
   ok &= testQuadraticTo3Points();
 
   // ToDo: testModIntPolynomial
 
   // under construction:
-  ok &= testPowersChebychevExpansionConversion(       reportString);
+  ok &= testPowersChebychevExpansionConversion();
 
   // polynomial class:
-  ok &= testPolynomialOperators(                      reportString);
+  ok &= testPolynomialOperators();
     // fails!
 
-  ok &= testRationalFunction(reportString);
+  ok &= testRationalFunction();
   ok &= testPadeApproximation();
   // Maybe this should be a test in its own right, not in testPolynomial - on the other hand, 
   // dealing with rational functions is mostly manipulation of polynomials.
