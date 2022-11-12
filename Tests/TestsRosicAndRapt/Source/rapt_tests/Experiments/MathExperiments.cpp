@@ -3156,9 +3156,9 @@ void numberTheoreticTrafo()
 
 
   // Check, if the magic numbers satisfy the requirements:
-  using ModInt = RAPT::rsModularInteger<rsUint64>;
-  ModInt zero = ModInt(0, modulus);
-  ModInt one  = ModInt(1, modulus);
+  using ModInt = RAPT::rsModularInteger<rsUint64>;       // Why do we use rsUnt64 internally? To
+  ModInt zero = ModInt(rsUint64(0), rsUint64(modulus));  // increase headroom befor overflow 
+  ModInt one  = ModInt(rsUint64(1), rsUint64(modulus));  // occurs? Document!
   ModInt a, b, c;
   bool ok = true;
   for(int i = 0; i < (int)numRoots; i++) {

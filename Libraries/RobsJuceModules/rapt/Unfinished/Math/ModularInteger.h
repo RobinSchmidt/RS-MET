@@ -26,7 +26,12 @@ public:
   rsModularInteger() {}
 
   /** Constructor. You may initialize the number by passing some unsigned 64-bit integer. */
-  rsModularInteger(rsUint64 initialValue, rsUint64 modulusToUse);
+  //rsModularInteger(rsUint64 initialValue, rsUint64 modulusToUse);
+  // This is weird! Why does the constructor not just take a pair of type T? Try to get rid!
+
+
+
+  rsModularInteger(const T& initialValue, const T& modulusToUse);
 
   /** Copy constructor. */
   rsModularInteger(const rsModularInteger& other);
@@ -97,6 +102,7 @@ public:
     // There's also code for when m is negative, but we don't need that here. What would that even
     // mean? Maybe move the function into the library as rsModulo.
   };
+  // But what if T is unsigned?
   // maybe move to .cpp
 
 

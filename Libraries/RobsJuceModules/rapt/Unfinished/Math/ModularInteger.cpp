@@ -1,5 +1,6 @@
 // construction/destruction:
 
+/*
 template<class T>
 rsModularInteger<T>::rsModularInteger(rsUint64 initialValue, rsUint64 modulusToUse)
 {
@@ -10,6 +11,15 @@ rsModularInteger<T>::rsModularInteger(rsUint64 initialValue, rsUint64 modulusToU
   //rsAssert( value >= T(0) && value < modulus );
   // Although we received unsigned integers for the parameters, value < 0 could happen when there's
   // wraparound in the assignments...right?
+}
+*/
+
+template<class T>
+rsModularInteger<T>::rsModularInteger(const T& initialValue, const T& modulusToUse)
+{
+  modulus = modulusToUse;
+  value   = initialValue;
+  canonicalize();
 }
 
 template<class T>

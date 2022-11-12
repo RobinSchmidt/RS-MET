@@ -999,11 +999,16 @@ bool testModularInteger()
   using Int = int;
   using ModInt = rsModularInteger<Int>;
 
+  /*
+  ModInt i0(0, 5);  // value is 0, modulus is 5
+  ModInt i1(1, 5);
+  */
+
 
 
   /*
-  ModInt a(2, 7);  // value is 2, modulus is 7
-  ModInt b(3, 7);
+  ModInt a(2, 5); 
+  ModInt b(3, 5);
   */
 
   // Does not yet build - we get linker errors. I do instantiate the template explicitly in
