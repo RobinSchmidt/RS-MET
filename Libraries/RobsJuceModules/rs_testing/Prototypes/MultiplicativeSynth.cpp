@@ -14,7 +14,7 @@ std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int numSamples)
   // production code, we don't want to pass vectors around anyway because of all the copying and
   // allocs....
 
-  int numStages = rsMinSize(opFreqFactors, cmWeightsA, cmWeightsB, cmWeightsP);
+  int numStages = (int) rsMinSize(opFreqFactors, cmWeightsA, cmWeightsB, cmWeightsP);
   // ...well, actually, we can tolerate different length arrays - we just take the shortest of
   // them here. But it's probably an error at the call site anyway, if the lengths are different.
   // Oh, and our computed gain factor from getSumOfSquaresOfWeights() will probably come out wrong

@@ -136,7 +136,7 @@ bool testGetSampleAt()
 template<class T>
 void rsApplyPan(std::vector<T>& L, std::vector<T>& R, T pan, bool constPow = false)
 {
-  int N = L.size(); rsAssert((int)R.size() == N);
+  int N = (int)L.size(); rsAssert((int)R.size() == N);
   using AT = RAPT::rsArrayTools;
 
   T t = (pan + 1) * T(0.5);    // -1...+1  ->   0...1
@@ -188,10 +188,10 @@ T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
   // indeed more precise than eyballing - but with precision setting of zero, we should actually
   // find the zeros of an linear interpolant...hmmm...investigate this at some point
 
-  double T = (marks[1] - marks[0]) / sampleRate;  // period of 1st cycle in seconds
-  double f = 1/T;
+  double P = (marks[1] - marks[0]) / sampleRate;  // period of 1st cycle in seconds
+  double f = 1/P;
   double p = rsFreqToPitch(f);
-  return p; 
+  return (T)p;
 }
 
 //=================================================================================================
@@ -818,15 +818,15 @@ bool samplerBusModeTest()
   // We want to see only the region pan:
   se.setBusMode(false);
   tgtL = tgtR = sin440;
-  rsApplyPan(tgtL, tgtR, regionPan/100);
+  rsApplyPan(tgtL, tgtR, regionPan/100.f);
   ok &= testSamplerNote1(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f); 
 
   // Now we want to see region, group and instrument pan combined:
   se.setBusMode(true);
   tgtL = tgtR = sin440;
-  rsApplyPan(tgtL, tgtR, regionPan/100);
-  rsApplyPan(tgtL, tgtR, groupPan /100);
-  rsApplyPan(tgtL, tgtR, instrPan /100);
+  rsApplyPan(tgtL, tgtR, regionPan/100.f);
+  rsApplyPan(tgtL, tgtR, groupPan /100.f);
+  rsApplyPan(tgtL, tgtR, instrPan /100.f);
   ok &= testSamplerNote1(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f);
 
   // ToDo: test it also with constant power pan rule

@@ -32,7 +32,7 @@ template<class T> inline T rsUnityValue(T /*value*/) { return T(1);  }
 template<class T> inline T rsZeroValue( T /*value*/) { return T(0);  }
 
 template<class TVal, class TTgt> 
-inline TTgt rsConstantValue(TVal value, TTgt targetTemplate) { return value; }
+inline TTgt rsConstantValue(TVal value, TTgt targetTemplate) { return (TTgt) value; }
 
 template<class T> inline T rsIdentity(  T value) { return value; }
 
