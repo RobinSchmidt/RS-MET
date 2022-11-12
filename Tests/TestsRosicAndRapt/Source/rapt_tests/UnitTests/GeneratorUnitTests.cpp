@@ -4440,7 +4440,7 @@ bool samplerFreeModulationsTest()
 
   float f = 200.f; // LFO freq (applies to all 3 levels equally)
   baseDC = 0.f;
-  tol = 1.e-6;
+  tol = 1.e-6f;
   auto testDepthAccumulate = [&](SE* se)
   {
     bool ok = true;
@@ -4448,29 +4448,29 @@ bool samplerFreeModulationsTest()
     // The expected outcome in the right group of columns (the mod-depth columns) is always the sum
     // of the values in the 3 columns left to it where _ counts as 0. The DC contributions from 
     // region, group, instrument are supposed to add up:
-    //                    Mod Amplitude      Mod Depth              Test Control  Test Index
-    //                    ins  grp  reg    ins  grp  reg     exp  
-    ok &= testMod2(se, f, 100, 100, 100,    _ ,  _ ,  _ ,    0.0,   tol, false);  // 000
-    ok &= testMod2(se, f, 100, 100, 100,    _ ,  _ , 0.4,    0.4,   tol, false);  // 001
-    ok &= testMod2(se, f, 100, 100, 100,    _ , 0.2,  _ ,    0.2,   tol, false);  // 010
-    ok &= testMod2(se, f, 100, 100, 100,    _ , 0.2, 0.4,    0.6,   tol, false);  // 011
-    ok &= testMod2(se, f, 100, 100, 100,   0.1,  _ ,  _ ,    0.1,   tol, false);  // 100
-    ok &= testMod2(se, f, 100, 100, 100,   0.1,  _ , 0.4,    0.5,   tol, false);  // 101
-    ok &= testMod2(se, f, 100, 100, 100,   0.1, 0.2,  _ ,    0.3,   tol, false);  // 110
-    ok &= testMod2(se, f, 100, 100, 100,   0.1, 0.2, 0.4,    0.7,   tol, false);  // 111
+    //                    Mod Amplitude      Mod Depth               Test Control  Test Index
+    //                    ins  grp  reg    ins   grp   reg    exp  
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,   _ ,   _ ,   0.0,   tol, false);  // 000
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,   _ ,  0.4f,  0.4,   tol, false);  // 001
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,  0.2f,  _ ,   0.2,   tol, false);  // 010
+    ok &= testMod2(se, f, 100, 100, 100,    _ ,  0.2f, 0.4f,  0.6,   tol, false);  // 011
+    ok &= testMod2(se, f, 100, 100, 100,   0.1f,  _ ,   _ ,   0.1,   tol, false);  // 100
+    ok &= testMod2(se, f, 100, 100, 100,   0.1f,  _ ,  0.4f,  0.5,   tol, false);  // 101
+    ok &= testMod2(se, f, 100, 100, 100,   0.1f, 0.2f,  _ ,   0.3,   tol, false);  // 110
+    ok &= testMod2(se, f, 100, 100, 100,   0.1f, 0.2f, 0.4f,  0.7,   tol, false);  // 111
 
     // It should also work if we pass _ instead of 1.0 for the amplitudes because 1.0 is the 
     // default amplitude:
-    //                    Mod Amplitude       Mod Depth             Test Control  Test Index
-    //                    ins  grp  reg     ins  grp  reg    exp  
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,     _ ,  _ ,  _ ,   0.0,   tol, false);  // 000
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,     _ ,  _ , 0.4,   0.4,   tol, false);  // 001
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,     _ , 0.2,  _ ,   0.2,   tol, false);  // 010
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,     _ , 0.2, 0.4,   0.6,   tol, false);  // 011
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1,  _ ,  _ ,   0.1,   tol, false);  // 100
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1,  _ , 0.4,   0.5,   tol, false);  // 101
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1, 0.2,  _ ,   0.3,   tol, false);  // 110
-    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    0.1, 0.2, 0.4,   0.7,   tol, false);  // 111
+    //                    Mod Amplitude    Mod Depth                  Test Control  Test Index
+    //                    ins  grp  reg    ins   grp   reg    exp  
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    _ ,   _ ,   _ ,   0.0f,   tol, false);  // 000
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    _ ,   _ ,  0.4f,  0.4f,   tol, false);  // 001
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    _ ,  0.2f,  _ ,   0.2f,   tol, false);  // 010
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,    _ ,  0.2f, 0.4f,  0.6f,   tol, false);  // 011
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,   0.1f,  _ ,   _ ,   0.1f,   tol, false);  // 100
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,   0.1f,  _ ,  0.4f,  0.5f,   tol, false);  // 101
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,   0.1f, 0.2f,  _ ,   0.3f,   tol, false);  // 110
+    ok &= testMod2(se, f,  _ ,  _ ,  _ ,   0.1f, 0.2f, 0.4f,  0.7f,   tol, false);  // 111
 
     // Actually, the expected mod-depth (in the exp column) is a weighted sum of the mod-depths 
     // using the mod-amplitudes as weights. A _ in a mod-depth column means 0 and in a mod-amp
