@@ -3660,10 +3660,10 @@ bool samplerAmpEnvTest()
   // Test parameters:
   int N     = 1500;         // Number of samples to produce
   int nOff  = 1000;         // Sample of noteOff event
-  int key   =   70;         // Key to play
-  int vel   =   64;         // Velocity to play
   int nDC   =  100;         // Number of DC samples in the loop
   int keyDC =   60;         // Rootkey of the DC sample
+  float key =   70.f;       // Key to play
+  float vel =   64.f;       // Velocity to play
   float fs  = 10000.f;      // Sample rate
   float tol = 1.e-6;        // Tolerance
 
@@ -3892,9 +3892,9 @@ bool samplerFilterLfoTest()
 
   // Test parameters:
   int N     = 1500;         // Number of samples to produce
-  int key   =   57;         // Key to play
-  int vel   =   64;         // Velocity to play
   int keyDC =   60;         // Rootkey of the DC sample
+  float key =   57.f;       // Key to play
+  float vel =   64.f;       // Velocity to play
   float fs  = 40000.f;      // Sample rate
   float tol = 1.e-4;        // Tolerance
 
