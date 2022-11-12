@@ -85,6 +85,9 @@ template void RAPT::rsFindPrimesUpTo(std::vector<RAPT::rsUint64>& primes, RAPT::
 template void RAPT::rsPrimeFactors(RAPT::rsUint32 x, std::vector<RAPT::rsUint32>& factors,
   std::vector<RAPT::rsUint32>& exponents, std::vector<RAPT::rsUint32>* primeTable);
 
+template int RAPT::rsPow(const int& base, int exponent);
+
+
 // Interpolation:
 template void RAPT::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
   double yd2, double *a3, double *a2, double *a1, double *a0);

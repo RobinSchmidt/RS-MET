@@ -111,11 +111,9 @@ template <class T>
 inline T rsNextPowerOfTwo(T x);
 
 /** Returns the base raised to the power given by the exponent. It uses an algorithm based on
-repeated squaring which has a complexity of O(log(exponent)).
-for details, see: Jörg Arndt - Matters Computational, Ch.28.5
-\todo bring back the naive implementation, to be used for small powers (there, it may be more
-efficient - well..will it? questionable!), in rsPow, switch between rsPowSmall, rsPowBig 
-depending on the size of the exponent */
+repeated squaring which has a complexity of O(log(exponent)). The base need not be an integer. It 
+can also be a float, complex, rsModularInteger, rsPolynomial, rsMatrix - whatever type implements 
+an appropriate multiplication operator. */
 template <class T>
 T rsPow(const T& base, int exponent);
 

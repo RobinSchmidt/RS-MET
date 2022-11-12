@@ -279,6 +279,12 @@ T rsPow(const T& base, int exponent)
     square *= square;
   }
   return result;
+
+  // For details, see: Jörg Arndt - Matters Computational, Ch.28.5
+  //
+  // Maybe bring back the naive implementation to be used for small powers (there, it may be more
+  // efficient - well...will it? questionable!). Make rsPow a dispatcher between rsPowSmall and 
+  // rsPowBig depending on the size of the exponent.
 }
 
 inline double rsRandomUniform(double min, double max, int seed)
