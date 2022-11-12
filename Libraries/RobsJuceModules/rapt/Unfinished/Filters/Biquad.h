@@ -587,15 +587,15 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookBandrejectCoeffsViaBandwidth(T
 {
   T sine, cosine;
   calculateSineAndCosine(sine, cosine, frequency, oneOverSampleRate);
-  T alpha = sine * sinh(0.5*log(2.0) * bandwidth
-    * 2.0*PI*frequency*oneOverSampleRate / sine);
-  T a0Rec = 1.0/(1.0+alpha);
+  //T alpha = sine * sinh(T(0.5*log(2.0)) * bandwidth * T(2.0*PI)*frequency*oneOverSampleRate / sine);
+  T alpha = sine * sinh(T(log(2.0)*PI) * bandwidth*frequency*oneOverSampleRate / sine);
+  T a0Rec = T(1)/(T(1)+alpha);
 
-  a1 = 2.0*cosine  * a0Rec;
-  a2 = (alpha-1.0) * a0Rec;
-  b0 = 1.0         * a0Rec;
-  b1 = -2.0*cosine * a0Rec;
-  b2 = 1.0         * a0Rec;
+  a1 = T(2)*cosine  * a0Rec;
+  a2 = (alpha-T(1)) * a0Rec;
+  b0 = T(1)         * a0Rec;
+  b1 = T(-2)*cosine * a0Rec;
+  b2 = T(1)         * a0Rec;
 }
 
 template<class T>
@@ -605,15 +605,15 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookPeakFilterCoeffsViaQ(T &b0, T 
 {
   T sine, cosine;
   calculateSineAndCosine(sine, cosine, frequency, oneOverSampleRate);
-  T alpha = sine/(2.0*q);
+  T alpha = sine/(T(2)*q);
   T A     = gainFactor;
-  T a0Rec = 1.0/(1.0+alpha/A);
+  T a0Rec = T(1)/(T(1)+alpha/A);
 
-  a1 = 2.0*cosine        * a0Rec;
-  a2 = ((alpha/A) - 1.0) * a0Rec;
-  b0 = (1.0+alpha*A)     * a0Rec;
-  b1 = -2.0*cosine       * a0Rec;
-  b2 = (1.0-alpha*A)     * a0Rec;
+  a1 = T(2)*cosine        * a0Rec;
+  a2 = ((alpha/A) - T(1)) * a0Rec;
+  b0 = (T(1)+alpha*A)     * a0Rec;
+  b1 = T(-2)*cosine       * a0Rec;
+  b2 = (T(1)-alpha*A)     * a0Rec;
 }
 
 template<class T>
