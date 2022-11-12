@@ -4388,16 +4388,16 @@ bool samplerFreeModulationsTest()
   auto testDepthOverride = [&](SE* se)
   {
     bool ok = true;
-    //                Modulator Frequency      Modulation Depth       Test Control    Test Index
-    //                ins  grp  reg   exp     ins  grp  reg   exp  
-    ok &= testMod(se,  _ ,  _ , 300,  300,     _ ,  _ ,  _ ,  0.0,    tol, false);    // 000
-    ok &= testMod(se,  _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
-    ok &= testMod(se,  _ ,  _ , 300,  300,     _ , 0.2,  _ ,  0.2,    tol, false);    // 010
-    ok &= testMod(se,  _ ,  _ , 300,  300,     _ , 0.2, 0.3,  0.3,    tol, false);    // 011
-    ok &= testMod(se,  _ ,  _ , 300,  300,    0.1,  _ ,  _ ,  0.1,    tol, false);    // 100
-    ok &= testMod(se,  _ ,  _ , 300,  300,    0.1,  _ , 0.3,  0.3,    tol, false);    // 101
-    ok &= testMod(se,  _ ,  _ , 300,  300,    0.1, 0.2,  _ ,  0.2,    tol, false);    // 110
-    ok &= testMod(se,  _ ,  _ , 300,  300,    0.1, 0.2, 0.3,  0.3,    tol, false);    // 111
+    //                Modulator Frequency    Modulation Depth           Test Control   Test Index
+    //                ins  grp  reg   exp    ins   grp   reg    exp  
+    ok &= testMod(se,  _ ,  _ , 300,  300,    _ ,   _ ,   _ ,   0.0f,   tol, false);   // 000
+    ok &= testMod(se,  _ ,  _ , 300,  300,    _ ,   _ ,  0.3f,  0.3f,   tol, false);   // 001
+    ok &= testMod(se,  _ ,  _ , 300,  300,    _ ,  0.2f,  _ ,   0.2f,   tol, false);   // 010
+    ok &= testMod(se,  _ ,  _ , 300,  300,    _ ,  0.2f, 0.3f,  0.3f,   tol, false);   // 011
+    ok &= testMod(se,  _ ,  _ , 300,  300,   0.1f,  _ ,   _ ,   0.1f,   tol, false);   // 100
+    ok &= testMod(se,  _ ,  _ , 300,  300,   0.1f,  _ ,  0.3f,  0.3f,   tol, false);   // 101
+    ok &= testMod(se,  _ ,  _ , 300,  300,   0.1f, 0.2f,  _ ,   0.2f,   tol, false);   // 110
+    ok &= testMod(se,  _ ,  _ , 300,  300,   0.1f, 0.2f, 0.3f,  0.3f,   tol, false);   // 111
     return ok;
   };
 
@@ -4406,16 +4406,16 @@ bool samplerFreeModulationsTest()
   auto testFreqOverride = [&](SE* se)
   {
     bool ok = true;
-    //                Modulator Frequency      Modulation Depth       Test Control    Test Index
-    //                ins  grp  reg   exp     ins  grp  reg   exp  
-    ok &= testMod(se,  _ ,  _ ,  _ ,   0 ,     _ ,  _ , 0.3,  0.3,    tol, false);    // 000
-    ok &= testMod(se,  _ ,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 001
-    ok &= testMod(se,  _ , 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 010
-    ok &= testMod(se,  _ , 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 011
-    ok &= testMod(se, 100,  _ ,  _ ,  100,     _ ,  _ , 0.3,  0.3,    tol, false);    // 100
-    ok &= testMod(se, 100,  _ , 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 101
-    ok &= testMod(se, 100, 200,  _ ,  200,     _ ,  _ , 0.3,  0.3,    tol, false);    // 110
-    ok &= testMod(se, 100, 200, 300,  300,     _ ,  _ , 0.3,  0.3,    tol, false);    // 111
+    //                Modulator Frequency    Modulation Depth         Test Control   Test Index
+    //                ins  grp  reg   exp    ins  grp  reg    exp  
+    ok &= testMod(se,  _ ,  _ ,  _ ,   0 ,    _ ,  _ , 0.3f,  0.3f,   tol, false);   // 000
+    ok &= testMod(se,  _ ,  _ , 300,  300,    _ ,  _ , 0.3f,  0.3f,   tol, false);   // 001
+    ok &= testMod(se,  _ , 200,  _ ,  200,    _ ,  _ , 0.3f,  0.3f,   tol, false);   // 010
+    ok &= testMod(se,  _ , 200, 300,  300,    _ ,  _ , 0.3f,  0.3f,   tol, false);   // 011
+    ok &= testMod(se, 100,  _ ,  _ ,  100,    _ ,  _ , 0.3f,  0.3f,   tol, false);   // 100
+    ok &= testMod(se, 100,  _ , 300,  300,    _ ,  _ , 0.3f,  0.3f,   tol, false);   // 101
+    ok &= testMod(se, 100, 200,  _ ,  200,    _ ,  _ , 0.3f,  0.3f,   tol, false);   // 110
+    ok &= testMod(se, 100, 200, 300,  300,    _ ,  _ , 0.3f,  0.3f,   tol, false);   // 111
     return ok;
   };
 
