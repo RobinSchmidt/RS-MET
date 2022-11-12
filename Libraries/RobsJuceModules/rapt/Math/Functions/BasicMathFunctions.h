@@ -195,6 +195,13 @@ template<class T>
 inline T rsZeroValue(T value);
 // Merge with basics
 
+/** Turns a given constant of type TVal into another targt type TTgt using a value from that 
+target type as template. It is used, for example, to convert an integer into a modular integer. The
+template value is used to copy the modulus from the template into the result */
+template<class TVal, class TTgt>
+inline TTgt rsConstantValue(TVal value, TTgt targetTemplate);
+
+
 // \todo - is it somehow possible to get rid of the inlining?
 
 //=================================================================================================

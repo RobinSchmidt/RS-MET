@@ -62,10 +62,20 @@ public:
 
 };
 
-/** Explicit template instantiation, to be used by the rsPow template-function. */
+/** Explicit template instantiation, to be used by the rsPow template-function and also in 
+rsPolynomial etc.. */
 template<class T>
 rsModularInteger<T> rsUnityValue(rsModularInteger<T> value)
-{ return rsModularInteger<T>(T(1), value.modulus); }
+{ 
+  return rsModularInteger<T>(T(1), value.modulus); 
+}
 
+template<class T> 
+rsModularInteger<T> rsConstantValue(T value, rsModularInteger<T> targetTemplate) 
+{ 
+  return rsModularInteger<T>(value, targetTemplate.modulus);
+}
+
+// todo: add also rsZeroValue
 
 #endif

@@ -30,7 +30,13 @@ inline void rsSwap(T& x, T& y)
 
 template<class T> inline T rsUnityValue(T /*value*/) { return T(1);  }
 template<class T> inline T rsZeroValue( T /*value*/) { return T(0);  }
+
+template<class TVal, class TTgt> 
+inline TTgt rsConstantValue(TVal value, TTgt targetTemplate) { return value; }
+
 template<class T> inline T rsIdentity(  T value) { return value; }
+
+
 
 /** Returns true, if x is not-a-number, false otherwise. */
 template<class T> inline bool rsIsNaN(T x)

@@ -527,7 +527,7 @@ void rotes::testSamplerEngine()
 {
   //samplerEnvelopeTest();
 
-  //generateTestSamples();
+  generateTestSamples();
   samplerPatchTest_BandpassSaw();
 
 
