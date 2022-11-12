@@ -8,7 +8,10 @@
 //#include "Shared/Shared.h"
 
 
+
 #include "rapt_tests/RaptTests.h"
+#include "TemplateInstantiations.h"
+
 
 // get rid of these includes - the best would be, to move all that stuff into the rs_testing juce
 // module:
@@ -16,7 +19,7 @@
 
 
 #include "rosic_tests/UnitTestsRosic.h"
-using namespace rotes;
+using namespace rotes;  // get rid of this
 
 
 #include "PerformanceTests/PerformanceTests.h"
@@ -25,6 +28,9 @@ using namespace rotes;
 // compilation unit -> faster build times for testing
 
 #include "../../../Libraries/RobsJuceModules/romos/TestSuite/TestsMain.h"
+
+
+
 
 // crash (access violation) if runAllUnitTests and envelopeDeBeating are run one after another
 // it goes away when commenting out the code from

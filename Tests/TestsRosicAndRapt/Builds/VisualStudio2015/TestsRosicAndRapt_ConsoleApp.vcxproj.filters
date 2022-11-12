@@ -2724,6 +2724,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\TemplateInstantiations.h">
+      <Filter>TestsRosicAndRapt\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Misc\Misc.h">
       <Filter>TestsRosicAndRapt\Source\Misc</Filter>
     </ClInclude>

@@ -62,6 +62,7 @@
 		203B1AECBFC671E5B0653D47 /* ../../Source/rapt_tests/RaptTests.h */ /* RaptTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RaptTests.h; path = ../../Source/rapt_tests/RaptTests.h; sourceTree = SOURCE_ROOT; };
 		2182ED301BEF1F950D9731B1 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Tree.h */ /* Tree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Tree.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Tree.h; sourceTree = SOURCE_ROOT; };
 		21BDE8754B3007B8D442EED5 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.h */ /* ResamplingExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResamplingExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.h; sourceTree = SOURCE_ROOT; };
+		22A6C04FD538EB8D927C9DB6 /* ../../Source/TemplateInstantiations.h */ /* TemplateInstantiations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TemplateInstantiations.h; path = ../../Source/TemplateInstantiations.h; sourceTree = SOURCE_ROOT; };
 		22F56D67A25C6E980741550B /* ../../Source/Experiments/Experiments.cpp */ /* Experiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Experiments.cpp; path = ../../Source/Experiments/Experiments.cpp; sourceTree = SOURCE_ROOT; };
 		26C1987CEDB3E7CCF102367E /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h */ /* PerformanceTestsRSLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PerformanceTestsRSLib.h; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h; sourceTree = SOURCE_ROOT; };
 		28EF555365FB48D2C169107A /* ../../Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.cpp */ /* ExamplesRSLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ExamplesRSLib.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.cpp; sourceTree = SOURCE_ROOT; };
@@ -512,6 +513,7 @@
 		8B733865DD5BE84460F15693 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				22A6C04FD538EB8D927C9DB6,
 				7A4AEC915A393CE8BDEA3AF5,
 				B112FBD07BE0E2AD39D7B1B5,
 				64EFC8BFCD889C05A9321982,

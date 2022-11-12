@@ -992,6 +992,30 @@ bool testFraction()  // maybe move up
   return res;
 }
 
+bool testModularInteger()
+{
+  bool ok = true;
+
+  /*
+  using Int = int;
+  using ModInt = rsModularInteger<Int>;
+
+  ModInt a(2, 7);  // value is 2, modulus is 7
+  ModInt b(3, 7);
+  */
+
+  // Does not yet build - we get linker errors. I do instantiate the template explicitly in
+  //   RS-MET/Tests/TestsRosicAndRapt/SourceTemplateInstatiations.h
+  // and include that file from Main.cpp. But apparently that doesn't work. The linker actually
+  // complains about a missing implementation of
+  //   RAPT::rsModularInteger<int>::rsModularInteger<int>(unsigned __int64,unsigned __int64)
+  // which is strange
+
+
+
+  return ok;
+}
+
 bool testMeshDerivatives()
 {
   bool ok = true;
@@ -1174,6 +1198,7 @@ bool testMiscMath()
   bool ok = true;
 
   ok &= testFraction();
+  ok &= testModularInteger();
   ok &= testExponentialCurveFitting(  dummy);
   ok &= testRootFinding(              dummy);
   ok &= testGradientBasedOptimization(dummy);
