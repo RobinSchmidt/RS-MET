@@ -510,18 +510,18 @@ public:
   polynomial in r(x) which is of degree max(pN, qN). */
   static void add(const T* p, int pN, const T* q, int qN, T* r)
   { 
-    weightedSum(p, pN, T(1), q, qN, T(1), r); // old
-    //T one = rsUnityValue(p[0]);
-    //weightedSum(p, pN, one, q, qN, one, r); 
+    //weightedSum(p, pN, T(1), q, qN, T(1), r); // old
+    T one = rsUnityValue(p[0]);
+    weightedSum(p, pN, one, q, qN, one, r); 
   }
 
   /** Subtracts polynomial q(x) from polynomial p(x) and stores the coeffficients of the resulting
   polynomial in r(x) which is of degree max(pN, qN). */
   static void subtract(const T* p, int pN, const T* q, int qN, T* r) 
   { 
-    weightedSum(p, pN, T(1), q, qN, T(-1), r);  // old
-    //T one = rsUnityValue(p[0]);
-    //weightedSum(p, pN, one, q, qN, -one, r); 
+    //weightedSum(p, pN, T(1), q, qN, T(-1), r);  // old
+    T one = rsUnityValue(p[0]);
+    weightedSum(p, pN, one, q, qN, -one, r); 
   }
 
   /** Multiplies the polynomials represented by the coefficient vectors 'a' and 'b' and stores the
@@ -1059,13 +1059,13 @@ public:
   static T chebychevRecursive(T x, int N)
   {
     rsAssert(N >= 0, "polynomial degree must be non-negative");
-    T t0 = T(1); T t1 = x; T tn = T(1);  // old - doesn't compile for T = rsModularInteger<int>
-    //T t0  = rsUnityValue(x);  // Needed to make it compile with T = rsModularInteger. t0 is still
-    //T t1  = x;                // ..initialized to 1 but it needs to copy the modulus from x
-    //T tn  = rsUnityValue(x);
-    //T two = rsConstantValue(2, x);
+    //T t0 = T(1); T t1 = x; T tn = T(1);  // old - doesn't compile for T = rsModularInteger<int>
+    T t0  = rsUnityValue(x);  // Needed to make it compile with T = rsModularInteger. t0 is still
+    T t1  = x;                // ..initialized to 1 but it needs to copy the modulus from x
+    T tn  = rsUnityValue(x);
+    T two = rsConstantValue(2, x);
     for(int i = 0; i < N; i++) {
-      tn = T(2)*x*t1 - t0; t0 = t1; t1 = tn; }
+      tn = two*x*t1 - t0; t0 = t1; t1 = tn; }
     return t0;
   }
   // maybe rename to evalChebyRecursive, have also a function coeffsCheby
