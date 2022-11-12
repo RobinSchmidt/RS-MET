@@ -999,7 +999,7 @@ bool testModularInteger()
   using Int = int;
   using ModInt = rsModularInteger<Int>;
 
-  // Test canocalization in construction:
+  // Test canonicalization in construction:
   Int    m = 5;                                            // modulus
   ModInt p0( 0,m), p1( 1,m), p2( 2,m), p3( 3,m), p4( 4,m); // positive 0..4
   ModInt p5( 5,m), p6( 6,m), p7( 7,m), p8( 8,m), p9( 9,m); // positive 5..9
@@ -1007,16 +1007,13 @@ bool testModularInteger()
 
   ok &= p0.getValue() == 0 && p5.getValue() == 0 && n5.getValue() == 0;
   ok &= p1.getValue() == 1 && p6.getValue() == 1 && n4.getValue() == 1;
+  ok &= p2.getValue() == 2 && p7.getValue() == 2 && n3.getValue() == 2;
+  ok &= p3.getValue() == 3 && p8.getValue() == 3 && n2.getValue() == 3;
+  ok &= p4.getValue() == 4 && p9.getValue() == 4 && n1.getValue() == 4;
 
 
 
-  // Does not yet build - we get linker errors. I do instantiate the template explicitly in
-  //   RS-MET/Tests/TestsRosicAndRapt/SourceTemplateInstatiations.h
-  // and include that file from Main.cpp. But apparently that doesn't work. The linker actually
-  // complains about a missing implementation of
-  //   RAPT::rsModularInteger<int>::rsModularInteger<int>(unsigned __int64,unsigned __int64)
-  // which is strange. OK - I see. the class defines a constructor only for uint64 parameters. It
-  // seems, the implementation is made for unsinged integers - which is problematic anyway. 
+
   // ToDo: 
   //  -drag the experiment with the NTT convolution into the unit test
   //  -change implementation of rsModularInteger to admit negative numbers
