@@ -53,9 +53,9 @@ public:
   // \name Inquiry
 
 
+  T getValue() const { return value; }
 
-
-
+  T getModulus() const { return modulus; }
 
 
   //-----------------------------------------------------------------------------------------------

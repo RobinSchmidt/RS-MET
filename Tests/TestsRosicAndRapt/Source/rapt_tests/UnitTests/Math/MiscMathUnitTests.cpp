@@ -999,17 +999,16 @@ bool testModularInteger()
   using Int = int;
   using ModInt = rsModularInteger<Int>;
 
-  /*
-  ModInt i0(0, 5);  // value is 0, modulus is 5
-  ModInt i1(1, 5);
-  */
+  // Test canocialization in construction:
+  Int    m = 5;                                            // modulus
+  ModInt p0( 0,m), p1( 1,m), p2( 2,m), p3( 3,m), p4( 4,m); // positive 0..4
+  ModInt p5( 5,m), p6( 6,m), p7( 7,m), p8( 8,m), p9( 9,m); // positive 5..9
+  ModInt n1(-1,m), n2(-2,m), n3(-3,m), n4(-4,m), n5(-5,m); // negative 1..5
+
+  ok &= p0.getValue() == 0 && p5.getValue() == 0;
+  ok &= p1.getValue() == 1 && p6.getValue() == 1;
 
 
-
-  /*
-  ModInt a(2, 5); 
-  ModInt b(3, 5);
-  */
 
   // Does not yet build - we get linker errors. I do instantiate the template explicitly in
   //   RS-MET/Tests/TestsRosicAndRapt/SourceTemplateInstatiations.h

@@ -10,7 +10,7 @@
 
 
 #include "rapt_tests/RaptTests.h"
-#include "TemplateInstantiations.h"
+
 
 
 // get rid of these includes - the best would be, to move all that stuff into the rs_testing juce
@@ -29,7 +29,7 @@ using namespace rotes;  // get rid of this
 
 #include "../../../Libraries/RobsJuceModules/romos/TestSuite/TestsMain.h"
 
-
+//#include "TemplateInstantiations.h" // nope! we do this in rs_testing
 
 
 // crash (access violation) if runAllUnitTests and envelopeDeBeating are run one after another

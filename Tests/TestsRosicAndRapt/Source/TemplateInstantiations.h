@@ -8,7 +8,9 @@ we need to delete the corresponding instantiation here to avoid a double-instant
 associated linker error. */
 
 
-template class RAPT::rsModularInteger<int>;
+//template class RAPT::rsModularInteger<int>;
+
+// Oh - wait - this file is not needed - we do these instantiations in the rs_testing module!
 
 
 

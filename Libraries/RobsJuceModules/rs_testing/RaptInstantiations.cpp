@@ -362,6 +362,9 @@ template void RAPT::rsFillPrimeTable(rsUint32 *primes, rsUint32 numPrimes, rsUin
 
 
 template class RAPT::rsModularInteger<rsUint64>;
+template class RAPT::rsModularInteger<int>;
+
+
 
 //template void RAPT::rsNextPascalTriangleLine(const double* x, double* y, int N);
 template void RAPT::rsPascalTriangleLine(double* y, int N);
