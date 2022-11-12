@@ -3113,7 +3113,7 @@ bool samplerLoopTest()
   // Render and set up "shot" sample:
   Vec decay(L);
   for(int n = 0; n < L; n++)
-    decay[n] = exp(-0.01*n);
+    decay[n] = exp(-0.01f * n);
   //rsPlotVector(decay);
   se.clearInstrument();
   addSingleSampleRegion(&se, decay, 60);
@@ -3207,7 +3207,7 @@ bool samplerNoteOffTest()
   auto getOutput = [&](int key, int numSamples, int noteOffAt)
   {
     Vec outL(numSamples), outR(numSamples);
-    getSamplerNote(&se, key, 64, outL, outR, noteOffAt);
+    getSamplerNote(&se, (float)key, (float)64, outL, outR, noteOffAt);
     return outL;  // ignore outR, should be the same
   };
   auto plot = [&](int numSamples, int noteOffAt)
