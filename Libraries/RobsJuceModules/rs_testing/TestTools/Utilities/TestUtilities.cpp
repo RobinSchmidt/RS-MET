@@ -192,8 +192,8 @@ void setupForLoopedWave(rosic::Sampler::rsSamplerEngine* se, int N, int shape)
   // Set up loop settings:
   using namespace rosic::Sampler;
   se->setRegionSetting(0, 0, Opcode::LoopMode, (float) LoopMode::loop_continuous, -1);
-  se->setRegionSetting(0, 0, Opcode::LoopStart, 0, -1);
-  se->setRegionSetting(0, 0, Opcode::LoopEnd,   N, -1);
+  se->setRegionSetting(0, 0, Opcode::LoopStart, 0.f,      -1);
+  se->setRegionSetting(0, 0, Opcode::LoopEnd,   (float)N, -1);
 }
 
 void setupForLoopedDC(rosic::Sampler::rsSamplerEngine* se, int N, float keyCenter, double sampleRate)
@@ -252,12 +252,12 @@ void getSamplerNotes(rosic::Sampler::rsSamplerEngine* se,
     // Handle all note-ons for this sample:
     for(int i = 0; i < notes.size(); ++i) {
       if(notes[i].time == n)
-        se->handleMusicalEvent(Ev(EvTp::noteOn, notes[i].key, notes[i].vel)); }
+        se->handleMusicalEvent(Ev(EvTp::noteOn, (float)notes[i].key, (float)notes[i].vel)); }
 
     // Handle all note-offs for this sample:
     for(int i = 0; i < notes.size(); ++i) {
       if(notes[i].time + notes[i].length == n)
-        se->handleMusicalEvent(Ev(EvTp::noteOn, notes[i].key, 0)); }
+        se->handleMusicalEvent(Ev(EvTp::noteOn, (float)notes[i].key, 0.f)); }
 
     // Process audio sample:
     se->processFrame(&outL[n], &outR[n]);

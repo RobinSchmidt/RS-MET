@@ -3008,10 +3008,10 @@ bool samplerLoopTest()
   //rsPlotVector(sinTable);
 
   // Settings:
-  float fs  = 44100;  // Playback sample rate
-  float f   = 440.0;  // Frequency of sinewave to generate
-  float tol = 1.e-3;  // Tolerance (we expect some interpolation error)
-  int   N   = 2000;   // Number of samples to generate
+  float fs  = 44100.f;  // Playback sample rate
+  float f   = 440.f;    // Frequency of sinewave to generate
+  float tol = 1.e-3f;   // Tolerance (we expect some interpolation error)
+  int   N   = 2000;     // Number of samples to generate
 
   // Set up the engine:
   SE se;

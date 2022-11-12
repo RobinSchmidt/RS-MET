@@ -511,8 +511,8 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookHighpassCoeffs(T& b0, T& b1,
 {
   T sine, cosine;
   calculateSineAndCosine(sine, cosine, frequency, oneOverSampleRate);
-  T alpha = sine/(2.0*q);
-  T a0Rec = 1.0/(1.0+alpha);
+  T alpha = sine/(T(2)*q);
+  T a0Rec = T(1)/(T(1)+alpha);
 
   a1 = 2.0*cosine    * a0Rec;
   a2 = (alpha-1.0)   * a0Rec;

@@ -127,7 +127,8 @@ than the default the 440 Hz. */
 template<class T>
 inline T rsFreqToPitch(T freq, T masterTuneA4 = T(440))
 {
-  return 12.0 * rsLog2(freq / masterTuneA4) + 69.0;
+  //return 12.0 * rsLog2(freq / masterTuneA4) + 69.0;  // old - produced compiler warnings
+  return T(12) * rsLog2(freq / masterTuneA4) + T(69);  // new - may be less precise for T=float
 }
 
 /** Returns, how far two phase values are apart after wrapping them both into the interval
