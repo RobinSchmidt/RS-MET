@@ -551,13 +551,15 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookBandpassConstSkirtCoeffsViaBan
   calculateSineAndCosine(sine, cosine, f, oneOverSampleRate);
 
   // we need some if( sine == 0 )  ..check the limit
-  T alpha = sine * sinh(0.5*log(2.0) * b * 2.0*PI*f*oneOverSampleRate / sine);
-  T a0Rec = 1.0/(1.0+alpha);
+  //T alpha = sine * sinh(T(0.5)*log(T(2)) * b * T(2.0*PI)*f*oneOverSampleRate / sine);
+  T alpha = sine * sinh( T(log(2.0)*PI) * b*f*oneOverSampleRate / sine);
 
-  a1 = 2.0*cosine   * a0Rec;
-  a2 = (alpha-1.0)  * a0Rec;
-  b1 = 0.0;
-  b0 = 0.5*sine     * a0Rec;
+  T a0Rec = T(1)/(T(1)+alpha);
+
+  a1 = T(2)*cosine   * a0Rec;
+  a2 = (alpha-T(1))  * a0Rec;
+  b1 = T(0);
+  b0 = T(0.5)*sine   * a0Rec;
   b2 = -b0;
 }
 
@@ -568,14 +570,14 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookBandrejectCoeffsViaQ(T &b0, T 
 {
   T sine, cosine;
   calculateSineAndCosine(sine, cosine, frequency, oneOverSampleRate);
-  T alpha = sine/(2.0*q);
-  T a0Rec = 1.0/(1.0+alpha);
+  T alpha = sine/(T(2)*q);
+  T a0Rec = T(1)/(T(1)+alpha);
 
-  a1 = 2.0*cosine  * a0Rec;
-  a2 = (alpha-1.0) * a0Rec;
-  b0 = 1.0         * a0Rec;
-  b1 = -2.0*cosine * a0Rec;
-  b2 = 1.0         * a0Rec;
+  a1 = T(2)*cosine  * a0Rec;
+  a2 = (alpha-T(1)) * a0Rec;
+  b0 = T(1)         * a0Rec;
+  b1 = T(-2)*cosine * a0Rec;
+  b2 = T(1)         * a0Rec;
 }
 
 template<class T>
