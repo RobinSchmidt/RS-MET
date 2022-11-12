@@ -162,7 +162,7 @@ template <class T>
 void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree, T *results,
   int numDerivatives)
 {
-  rsAssert(numDerivatives < 32, "numDerivatives must be < 32"); // rsFactorials has 32 entries
+  //rsAssert(numDerivatives < 32, "numDerivatives must be < 32"); // rsFactorials has 32 entries
   results[0] = a[degree];
   rsArrayTools::fillWithZeros(&results[1], numDerivatives);
   for(int i = degree-1; i >= 0; i--) {
@@ -171,7 +171,14 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
       results[j] = results[j]*x + results[j-1];
     results[0] = results[0]*x + a[i];
   }
-  rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
+
+  // new - should work without warning also for T = rsFraction<int>:
+  T fac = 2;
+  for(int i = 2; i <= numDerivatives; i++) {
+    results[i] *= fac; fac *= T(i+1);  }
+
+  // old:
+  //rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
   // todo: maybe lift the restriction to < 32 derivatives by computing additional factorials on 
   // the fly, if needed - but we need to be careful about overflow - i think 31! will already 
   // overflow int64...yep...easily. Using a table of fixed precision floating point numbers would
