@@ -751,14 +751,14 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookAllpassCoeffs(T &b0, T &b1,
 {
   T sine, cosine;
   calculateSineAndCosine(sine, cosine, frequency, oneOverSampleRate);
-  T alpha = sine/(2.0*q);
-  T a0Rec = 1.0/(1.0+alpha);
+  T alpha = sine/(T(2)*q);
+  T a0Rec = T(1)/(T(1)+alpha);
 
-  a1 = 2.0*cosine    * a0Rec;
-  a2 = (alpha-1.0)   * a0Rec;
-  b0 = (1.0-alpha)   * a0Rec;
-  b1 = (-2.0*cosine) * a0Rec;
-  b2 = (1.0+alpha)   * a0Rec;
+  a1 = T(2)*cosine    * a0Rec;
+  a2 = (alpha-T(1))   * a0Rec;
+  b0 = (T(1)-alpha)   * a0Rec;
+  b1 = (T(-2)*cosine) * a0Rec;
+  b2 = (T(1)+alpha)   * a0Rec;
 }
 
 template<class T>
@@ -774,34 +774,34 @@ RS_INLINE void calculateLowHighpassChainCoeffs(T& b0, T& b1, T& b2,
   // decay between adjacent samples for LPFs):
 
   // calculate lowpass coefficients (see dspguide for details):
-  if(lowpassCutoff == 0.0)
+  if(lowpassCutoff == T(0))
   {
-    b0Lpf = 1.0;
-    b1Lpf = 0.0;
-    a1Lpf = 0.0;
+    b0Lpf = T(1);
+    b1Lpf = T(0);
+    a1Lpf = T(0);
   }
   else
   {
-    x = exp(-2.0 * PI * lowpassCutoff * oneOverSampleRate);
+    x = exp(T(-2.0 * PI) * lowpassCutoff * oneOverSampleRate);
 
-    b0Lpf = 1-x;
-    b1Lpf = 0.0;
+    b0Lpf = T(1)-x;
+    b1Lpf = T(0);
     a1Lpf = -x;
   }
 
   // calculate highpass coefficients (see dspguide for details):
-  if(highpassCutoff == 0.0)
+  if(highpassCutoff == T(0))
   {
-    b0Hpf = 1.0;
-    b1Hpf = 0.0;
-    a1Hpf = 0.0;
+    b0Hpf = T(1);
+    b1Hpf = T(0);
+    a1Hpf = T(0);
   }
   else
   {
-    x = exp(-2.0 * PI * highpassCutoff * oneOverSampleRate);
+    x = exp(T(-2.0 * PI) * highpassCutoff * oneOverSampleRate);
 
-    b0Hpf =  0.5*(1+x);
-    b1Hpf = -0.5*(1+x);
+    b0Hpf =  T(0.5)*(1+x);
+    b1Hpf = T(-0.5)*(1+x);
     a1Hpf = -x;
   }
 
