@@ -3896,7 +3896,7 @@ bool samplerFilterLfoTest()
   float key =   57.f;       // Key to play
   float vel =   64.f;       // Velocity to play
   float fs  = 40000.f;      // Sample rate
-  float tol = 1.e-4;        // Tolerance
+  float tol = 1.e-4f;       // Tolerance
 
   // Create target signals:
   float f = rsPitchToFreq((float)key);
@@ -3905,7 +3905,7 @@ bool samplerFilterLfoTest()
   //rsPlotVectors(x);
   Vec lfo(N);
   for(int n = 0; n < N; n++)
-    lfo[n] = sin(n * 2*PI*freq/fs);
+    lfo[n] = (float)sin(n * 2.f*PI*freq/fs);
   Vec mod = depth*lfo;  // modulation signal
   Vec yLp   = rsApplySamplerFilter(x,   FilterType::lp_12, lpCutoff, fs, reso, mod);
   Vec yHp   = rsApplySamplerFilter(x,   FilterType::hp_12, hpCutoff, fs, reso, mod);
@@ -3961,7 +3961,7 @@ bool samplerFilterLfoTest()
   // also affect the sidebands that the FM of the first filter cutoff creates. They should be 
   // approximately equal for low modulation frequencies, though...but out actual modulation freq is
   // actually in the audible range. ...ToDo: investignate this more thoroughly:
-  tol = 1.e-3;
+  tol = 1.e-3f;
   setupCommonSettingsBp();
   se.setRegionSetting(0,0, OC::lfoN_freq,  freq,   1);
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::cutoffN, 1, depth, Mode::cents);
@@ -4001,7 +4001,7 @@ bool samplerFilterEnvTest()
   // Test parameters:
   int   N      =  1000;       // Number of samples to produce
   int   nOff   =   500;       // Sample of noteOff event
-  int   key    =    57;       // Key to play, 57 = A3 = 220 Hz
+  float key    =    57.f;     // Key to play, 57 = A3 = 220 Hz
   //float fs     = 44100.f;     // Sample rate
   float fs     = 40000.f;     // Preliminary because float -> string -> float roundtrip has errors
   float depth  =  1200.f;     // Filter envelope depth in cents
@@ -4036,7 +4036,7 @@ bool samplerFilterEnvTest()
   se.setRegionModulation(0,0, OT::FreeEnv, 1, OC::cutoffN, 1, depth, Mode::cents);
   Vec outL(N), outR(N);
   getSamplerNote(&se, key, 64, outL, outR, nOff);
-  float tol = 1.e-5;
+  float tol = 1.e-5f;
   ok &= rsIsCloseTo(outL, y, tol);  // OK - manually routing an egN to cutoff seems to work. 
   //Vec err = outL - y;
   //rsPlotVectors(y, outL, outR);
