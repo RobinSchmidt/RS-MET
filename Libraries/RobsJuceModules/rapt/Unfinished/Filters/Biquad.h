@@ -382,11 +382,11 @@ template<class T>
 RS_INLINE void rsBiquadDesigner::makeBypassBiquad(T& b0, T& b1, T& b2, T& a1,
   T& a2)
 {
-  b0 = 1.0;
-  b1 = 0.0;
-  b2 = 0.0;
-  a1 = 0.0;
-  a2 = 0.0;
+  b0 = T(1);
+  b1 = T(0);
+  b2 = T(0);
+  a1 = T(0);
+  a2 = T(0);
 }
 
 template<class T>
@@ -394,7 +394,7 @@ RS_INLINE void rsBiquadDesigner::calculateSineAndCosine(T& sinResult, T& cosResu
   const T& frequency, const T& oneOverSampleRate)
 {
   // calculate intermediate variables:
-  T omega  = 2.0 * PI * frequency * oneOverSampleRate;
+  T omega  = T(2.0 * PI) * frequency * oneOverSampleRate;
   rsSinCos(omega, &sinResult, &cosResult);
 }
 
@@ -402,14 +402,14 @@ template<class T>
 RS_INLINE void rsBiquadDesigner::calculateFirstOrderLowpassCoeffs(T &b0, T &b1,
   T &b2, T &a1, T &a2, const T &oneOverSampleRate, const T &frequency)
 {
-  T omega = 2.0 * PI * frequency * oneOverSampleRate;
+  T omega = T(2.0 * PI) * frequency * oneOverSampleRate;
   T x     = exp(-omega);
 
   a1 = x;
-  a2 = 0.0;
-  b0 = 1.0-x;
-  b1 = 0.0;
-  b2 = 0.0;
+  a2 = T(0);
+  b0 = T(1)-x;
+  b1 = T(0);
+  b2 = T(0);
 }
 
 template<class T>
@@ -417,13 +417,13 @@ RS_INLINE void rsBiquadDesigner::calculateFirstOrderLowpassCoeffsBilinear(T &b0,
   T &b2, T &a1, T &a2, const T &oneOverSampleRate, const T &frequency)
 {
   T omegaPreWarped = tan(PI * frequency * oneOverSampleRate);
-  T pAnalog        = -omegaPreWarped;
-  a1                    = (1.0+pAnalog)/(1.0-pAnalog);
-  a2                    = 0.0;
-  T g              = 0.5*rsSqrt(1.0+a1*a1-2.0*a1); // gain-factor for normalization at DC
-  b0                    = g;
-  b1                    = g;
-  b2                    = 0.0;
+  T pAnalog = -omegaPreWarped;
+  a1        = (T(1)+pAnalog)/(T(1)-pAnalog);
+  a2        = T(0);
+  T g       = T(0.5)*rsSqrt(T(1)+a1*a1-T(2)*a1); // gain-factor for normalization at DC
+  b0        = g;
+  b1        = g;
+  b2        = T(0);
 }
 
 /*
@@ -943,10 +943,10 @@ RS_INLINE void rsBiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(T& b0,
   T W2  = rsSqrt(G11 / G00) * ta*ta;
   T DW  = (1 + rsSqrt(F00 / F11) * W2) * tan(Dw/2);
   T C   = F11 * DW*DW - 2 * W2 * (F01 - rsSqrt(F00 * F11));
-  T D   = 2 * W2 * (G01 - rsSqrt(G00 * G11));
+  T D   = T(2) * W2 * (G01 - rsSqrt(G00 * G11));
   T A   = rsSqrt((C + D) / F);
   T B   = rsSqrt((G*G * C + GB*GB * D) / F);
-  T s   = 1.0 / (1 + W2 + A);
+  T s   = T(1) / (T(1) + W2 + A);
 
   b0         =  (G1 + G0*W2 + B)   * s;
   b1         =  (-2*(G1 - G0*W2))  * s;

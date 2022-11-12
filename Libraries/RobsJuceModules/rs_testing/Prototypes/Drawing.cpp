@@ -1014,9 +1014,10 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   std::vector<Vec2D> F, B;           // sets of (F)lat, (B)oundary
   rsImage<char> C(w, h);             // pixel classification matrix
   static const char rest     = 0;    // symbolic constants used in the code below, the values are
-  static const char flat     = 100;  // ..also used as grayscale to encode the classes in an image 
-  static const char boundary = 175;  // ..that can be written to disk for debug purposes
+  static const char flat     = 50;   // ..also used as grayscale to encode the classes in an image 
+  static const char boundary = 100;  // ..that can be written to disk for debug purposes
   C.fillAll(rest);                   // initially, all are "rest"
+  // todo: maybe use unsigned char and values 0, 127, 255
 
   // Identify pixels that belong to flat color regions:
   classifyFlatPixels3x3(in, C, flat);  // C(i,j) == flat iff in(i,j) belongs to flat region

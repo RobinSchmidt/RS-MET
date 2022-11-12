@@ -2591,7 +2591,7 @@ void renderNewtonFractal()
     float distSum = 0.f;                // sum of the distances
     Vec2D root = roots[k];
     for(int i = 0; i < (int)t.size(); i++)
-      distSum += rsNorm(root - t[i]);
+      distSum += (float) rsNorm(root - t[i]);
 
     // maybe normalize the distSum by the initial distance and/or t.size()
     distSum /= t.size();  // test

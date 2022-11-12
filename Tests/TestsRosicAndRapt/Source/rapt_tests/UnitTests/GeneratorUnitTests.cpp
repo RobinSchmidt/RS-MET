@@ -3552,13 +3552,13 @@ bool samplerAmpLfoTest()
   float depth = 10.f;  // in dB
 
   // Test parameters:
-  int N     = 1500;         // Number of samples to produce
-  int key   =   70;         // Key to play
-  int vel   =   64;         // Velocity to play
-  int nDC   =  100;         // Number of DC samples in the loop
-  int keyDC =   60;         // Rootkey of the DC sample
-  float fs  = 10000.f;      // Sample rate
-  float tol = 1.e-5f;       // Tolerance
+  int N       = 1500;       // Number of samples to produce
+  int nDC     =  100;       // Number of DC samples in the loop
+  float key   =   70.f;     // Key to play
+  float vel   =   64.f;     // Velocity to play
+  float keyDC =   60.f;     // Rootkey of the DC sample
+  float fs    = 10000.f;    // Sample rate
+  float tol   = 1.e-5f;     // Tolerance
 
   // Produce the reference output:
   Vec tgt(N);
@@ -3571,7 +3571,7 @@ bool samplerAmpLfoTest()
   // Set up sampler engine:
   SE se;
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  setupForLoopedDC(&se, nDC, (float)keyDC, fs);
+  setupForLoopedDC(&se, nDC, keyDC, fs);
   se.setSampleRate(fs);
 
   // Helper function to figure out the number of Amplifiers in the given engine (in region 0 of 
@@ -3589,7 +3589,7 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, depth, Mode::absolute);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote2(&se, (float)key, (float)vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
   // We manually insert an amplifier unit and route the amplfo to its amplitude parameter via the
   // amplfo_depth parameter. Desired behavior: se should route the amplfo to the existing 
@@ -3602,7 +3602,7 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote2(&se, (float)key, (float)vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
   // Like before but with another (neutral) amplifier before the last one. Desired behavior: se 
   // should route the amplfo to the second amplifier:
@@ -3616,7 +3616,7 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 2;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 2;
-  ok &= testSamplerNote2(&se, (float)key, (float)vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
   const std::vector<ModulationRouting>& mr = se.getRegion(0,0)->getModulationSettings();
   ok &= mr[0].getTargetIndex() == 2;  // mod-connection should be routed to the 2nd amp
 
@@ -3628,7 +3628,7 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote2(&se, (float)key, (float)vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
 
   rsAssert(ok);
   return ok;
@@ -3661,11 +3661,11 @@ bool samplerAmpEnvTest()
   int N     = 1500;         // Number of samples to produce
   int nOff  = 1000;         // Sample of noteOff event
   int nDC   =  100;         // Number of DC samples in the loop
-  int keyDC =   60;         // Rootkey of the DC sample
-  float key =   70.f;       // Key to play
-  float vel =   64.f;       // Velocity to play
-  float fs  = 10000.f;      // Sample rate
-  float tol = 1.e-6;        // Tolerance
+  float keyDC =   60.f;     // Rootkey of the DC sample
+  float key   =   70.f;     // Key to play
+  float vel   =   64.f;     // Velocity to play
+  float fs    = 10000.f;    // Sample rate
+  float tol   = 1.e-6f;     // Tolerance
 
   // Produce the reference envelope:
   Vec outL(N), outR(N);

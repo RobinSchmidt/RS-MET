@@ -185,11 +185,11 @@ void createSineWave(double *x, int N, double f, double a, double fs, double p)
 template<class T>
 void createSineWave(T *x, int N, T *f, T a, T fs)
 {
-  T s   = 2*PI/fs;       // frequency scaler
-  T phi = 0.0;           // instantaneous phase
+  T s   = T(2*PI)/fs;     // frequency scaler
+  T phi = T(0);           // instantaneous phase
   for(int n = 0; n < N; n++)
   {
-    T fn = f[n];         // use temporary to allow x and f to be the same array
+    T fn = f[n];          // use temporary to allow x and f to be the same array
     x[n] = a * sin(phi);
     phi += s * fn;
   }
