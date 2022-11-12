@@ -622,36 +622,36 @@ RS_INLINE void rsBiquadDesigner::calculateFirstOrderLowShelvCoeffs(T& b0, T& b1,
   const T& gainFactor)
 {
   T A     = gainFactor;
-  T omega = 2.0 * PI * frequency * oneOverSampleRate;
-  T x     = tan(0.5*omega);
-  T c     = 0.5*(A*A-1.0);  // A is the square root of the gain-factor -> V_0 = A^2
-  T a     = 0.0;
+  T omega = T(2) * PI * frequency * oneOverSampleRate;
+  T x     = tan(T(0.5)*omega);
+  T c     = T(0.5)*(A*A-T(1));  // A is the square root of the gain-factor -> V_0 = A^2
+  T a     = T(0);
 
-  if(A > 1.0001) // boost
+  if(A > T(1.0001)) // boost
   {
-    a  = (x-1)/(x+1);
-    b0 = 1.0 + c*a + c;
+    a  = (x-T(1))/(x+T(1));
+    b0 = T(1) + c*a + c;
     b1 = a   + c*a + c;
-    b2 = 0.0;
+    b2 = T(0);
     a1 = -a;
-    a2 = 0.0;
+    a2 = T(0);
   }
-  else if(A < 0.999) // cut
+  else if(A < T(0.999)) // cut
   {
     a  = (x-A*A)/(x+A*A);
-    b0 = 1.0 + c*a + c;
+    b0 = T(1) + c*a + c;
     b1 = a   + c*a + c;
-    b2 = 0.0;
+    b2 = T(0);
     a1 = -a;
-    a2 = 0.0;
+    a2 = T(0);
   }
   else
   {
-    b0 = 1.0;
-    b1 = 0.0;
-    b2 = 0.0;
-    a1 = 0.0;
-    a2 = 0.0;
+    b0 = T(1);
+    b1 = T(0);
+    b2 = T(0);
+    a1 = T(0);
+    a2 = T(0);
   }
 }
 
@@ -664,13 +664,13 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookLowShelvCoeffs(T &b0, T &b1,
   calculateSineAndCosine(sine, cosine, frequency, oneOverSampleRate);
   T A     = gainFactor;
   T beta  = rsSqrt(A) / q;
-  T a0Rec = 1.0 / ((A+1.0) + (A-1.0)*cosine + beta*sine);
+  T a0Rec = T(1) / ((A+T(1)) + (A-T(1))*cosine + beta*sine);
 
-  a1 = 2.0 *     ((A-1.0) + (A+1.0)*cosine) * a0Rec;
-  a2 = -((A+1.0) + (A-1.0)*cosine - beta*sine) * a0Rec;
-  b0 =       A * ((A+1.0) - (A-1.0)*cosine + beta*sine) * a0Rec;
-  b1 = 2.0 * A * ((A-1.0) - (A+1.0)*cosine) * a0Rec;
-  b2 =       A * ((A+1.0) - (A-1.0)*cosine - beta*sine) * a0Rec;
+  a1 = T(2) *     ((A-T(1)) + (A+T(1))*cosine) * a0Rec;
+  a2 = -((A+1.0) + (A-T(1))*cosine - beta*sine) * a0Rec;
+  b0 =        A * ((A+T(1)) - (A-T(1))*cosine + beta*sine) * a0Rec;
+  b1 = T(2) * A * ((A-T(1)) - (A+T(1))*cosine) * a0Rec;
+  b2 =        A * ((A+T(1)) - (A-T(1))*cosine - beta*sine) * a0Rec;
 }
 
 template<class T>
@@ -679,36 +679,36 @@ RS_INLINE void rsBiquadDesigner::calculateFirstOrderHighShelvCoeffs(T &b0, T &b1
   const T &frequency, const T &gainFactor)
 {
   T A     = gainFactor;
-  T omega = 2.0 * PI * frequency * oneOverSampleRate;
-  T x     = tan(0.5*omega);
-  T c     = 0.5*(A*A-1.0);  // A is the square root of the gain-factor -> V_0 = A^2
-  T a     = 0.0;
+  T omega = T(2) * PI * frequency * oneOverSampleRate;
+  T x     = tan(T(0.5)*omega);
+  T c     = T(0.5)*(A*A-T(1));  // A is the square root of the gain-factor -> V_0 = A^2
+  T a     = T(0);
 
-  if(A > 1.0001) // boost
+  if(A > T(1.0001)) // boost
   {
-    a  = (x-1)/(x+1);
-    b0 = 1.0 - c*a + c;
-    b1 = a   + c*a - c;
-    b2 = 0.0;
+    a  = (x-T(1))/(x+T(1));
+    b0 = T(1) - c*a + c;
+    b1 = a    + c*a - c;
+    b2 = T(0);
     a1 = -a;
-    a2 = 0.0;
+    a2 = T(0);
   }
-  else if(A < 0.999) // cut
+  else if(A < T(0.999)) // cut
   {
-    a  = (A*A*x-1)/(A*A*x+1);
-    b0 = 1.0 - c*a + c;
-    b1 = a   + c*a - c;
-    b2 = 0.0;
+    a  = (A*A*x-T(1))/(A*A*x+T(1));
+    b0 = T(1) - c*a + c;
+    b1 = a    + c*a - c;
+    b2 = T(0);
     a1 = -a;
-    a2 = 0.0;
+    a2 = T(0);
   }
   else
   {
-    b0 = 1.0;
-    b1 = 0.0;
-    b2 = 0.0;
-    a1 = 0.0;
-    a2 = 0.0;
+    b0 = T(1);
+    b1 = T(0);
+    b2 = T(0);
+    a1 = T(0);
+    a2 = T(0);
   }
 }
 
