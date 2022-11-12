@@ -721,13 +721,13 @@ RS_INLINE void rsBiquadDesigner::calculateCookbookHighShelvCoeffs(T &b0, T &b1,
   calculateSineAndCosine(sine, cosine, frequency, oneOverSampleRate);
   T A     = gainFactor;
   T beta  = rsSqrt(A) / q;
-  T a0Rec = 1.0  /  ((A+1.0) - (A-1.0)*cosine + beta*sine);
+  T a0Rec = T(1)  /  ((A+T(1)) - (A-T(1))*cosine + beta*sine);
 
-  a1 = -2.0 *     ((A-1.0) - (A+1.0)*cosine) * a0Rec;
-  a2 = -((A+1.0) - (A-1.0)*cosine - beta*sine) * a0Rec;
-  b0 =        A * ((A+1.0) + (A-1.0)*cosine + beta*sine) * a0Rec;
-  b1 = -2.0 * A * ((A-1.0) + (A+1.0)*cosine) * a0Rec;
-  b2 =        A * ((A+1.0) + (A-1.0)*cosine - beta*sine) * a0Rec;
+  a1 = T(-2) *     ((A-T(1)) - (A+T(1))*cosine)             * a0Rec;
+  a2 = -((A+T(1)) - (A-T(1))*cosine - beta*sine)            * a0Rec;
+  b0 =         A * ((A+T(1)) + (A-T(1))*cosine + beta*sine) * a0Rec;
+  b1 = T(-2) * A * ((A-T(1)) + (A+T(1))*cosine)             * a0Rec;
+  b2 =         A * ((A+T(1)) + (A-T(1))*cosine - beta*sine) * a0Rec;
 }
 
 template<class T>
@@ -735,13 +735,13 @@ RS_INLINE void rsBiquadDesigner::calculateFirstOrderAllpassCoeffs(T &b0, T &b1,
   T &b2, T &a1, T &a2, const T &oneOverSampleRate, const T &frequency)
 {
   T t = tan(PI*frequency*oneOverSampleRate);
-  T x = (t-1.0) / (t+1.0);
+  T x = (t-T(1)) / (t+T(1));
 
   b0 = x;
-  b1 = 1.0;
-  b2 = 0.0;
+  b1 = T(1);
+  b2 = T(0);
   a1 = -x;
-  a2 = 0.0;
+  a2 = T(0);
 }
 
 template<class T>
