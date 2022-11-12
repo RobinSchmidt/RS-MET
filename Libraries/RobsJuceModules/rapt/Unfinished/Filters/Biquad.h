@@ -820,35 +820,35 @@ RS_INLINE void rsBiquadDesigner::calculateLowPeakHighMorphCoeffs(T &b0, T &b1,
   const T &morph, const bool &scaleGainForTwoStages)
 {
   // calculate normalized radian frequencies (digital and pre-warped analog):
-  T wd = 2.0 * PI * frequency * oneOverSampleRate; // optimize to one mul
-  T wa = 2.0 * sampleRate * tan(0.5*wd);
+  T wd = T(2 * PI) * frequency * oneOverSampleRate; // optimize to one mul
+  T wa = T(2) * sampleRate * tan(T(0.5)*wd);
 
   // calculate the position of the analog pole-pair:
-  T tmp1 = -wa / (2.0*q);
+  T tmp1 = -wa / (T(2)*q);
   T tmp2;
-  if(q >= 0.5)
-    tmp2 = rsSqrt(-wa*wa*(0.25/(q*q) - 1.0));
+  if(q >= T(0.5))
+    tmp2 = rsSqrt(-wa*wa*(T(0.25)/(q*q) - T(1)));
   else
   {
-    tmp2 = 0.0;
+    tmp2 = T(0);
     RS_DEBUG_BREAK; // this design procedure assumes q >= 0.5
   }
 
   std::complex<T> pa = std::complex<T>(tmp1, tmp2);
 
   // calculate the position of the digital pole-pair:
-  std::complex<T> z  = 0.5 * oneOverSampleRate * pa;
-  std::complex<T> pd = (1.0+z) / (1.0-z);
+  std::complex<T> z  = T(0.5) * oneOverSampleRate * pa;
+  std::complex<T> pd = (T(1)+z) / (T(1)-z);
 
   // convert poles to biquad feedback coefficients:
-  a1 = 2.0 * pd.re;
+  a1 = T(2) * pd.re;
   a2 = -(pd.re*pd.re + pd.im*pd.im);
 
   // calculate the (T) zero for a peak filter:
-  T num  = (1.0-pd.re)*(1.0-pd.re) + pd.im*pd.im;
-  T den  = (1.0+pd.re)*(1.0+pd.re) + pd.im*pd.im;
+  T num  = (T(1)-pd.re)*(T(1)-pd.re) + pd.im*pd.im;
+  T den  = (T(1)+pd.re)*(T(1)+pd.re) + pd.im*pd.im;
   T c    = rsSqrt(num / den);
-  T z_pk = (1.0-c) / (1.0+c);
+  T z_pk = (T(1)-c) / (T(1)+c);
 
   // obtain the zero by interpolating the zero position between lowpass and peak or peak
   // and highpass:
@@ -857,15 +857,15 @@ RS_INLINE void rsBiquadDesigner::calculateLowPeakHighMorphCoeffs(T &b0, T &b1,
   //m = sign(m) * pow(abs(m), 1.5);
   T zd;
   //T a = -z_pk;
-  if(m < -0.99)
-    zd = -0.99;
-  else if(m > 0.99)
-    zd = +0.99;
+  if(m < T(-0.99))
+    zd = T(-0.99);
+  else if(m > T(0.99))
+    zd = T(+0.99);
   else
-    zd = (m+z_pk) / (1.0+z_pk*m);
+    zd = (m+z_pk) / (T(1)+z_pk*m);
 
   // convert zeros to biquad feedforward coefficients:
-  b0 = 1.0;
+  b0 = T(1);
   b1 = -(zd+zd);
   b2 = zd*zd;
 
@@ -881,6 +881,8 @@ RS_INLINE void rsBiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(T& b0,
   const T& frequency, const T& bandwidthInOctaves, const T& gainFactor,
   const T& referenceGain)
 {
+  // ToDo: use rsAbs instead of fabs
+
   if(fabs(rsAmp2dB(gainFactor/referenceGain)) < 0.001)
   {
     makeBypassBiquad(b0, b1, b2, a1, a2);
@@ -896,23 +898,24 @@ RS_INLINE void rsBiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(T& b0,
   T fLo = fc  / pow(T(2), T(0.5)*bw);  // lower bandedge frequency
   T fHi = fLo * pow(T(2), bw);         // upper bandedge frequency
   T GB  = rsSqrt(G);                   // gain at bandedge frequencies
-  T w0  = 2*PI*fc*oneOverSampleRate;
-  T wLo = 2*PI*fLo*oneOverSampleRate;
-  T wHi = 2*PI*fHi*oneOverSampleRate;
+  T w0  = T(2*PI)*fc*oneOverSampleRate;
+  T wLo = T(2*PI)*fLo*oneOverSampleRate;
+  T wHi = T(2*PI)*fHi*oneOverSampleRate;
   T Dw  = wHi-wLo;
 
   // the design procedure (ported from peq.m by Sophocles Orfanidis) - may be optimized:
-  T F   = fabs(G*G   - GB*GB);
-  T G00 = fabs(G*G   - G0*G0);
-  T F00 = fabs(GB*GB - G0*G0);
-  T num = G0*G0 * (w0*w0-PI*PI)*(w0*w0-PI*PI) + G*G * F00 * PI*PI * Dw*Dw / F;
-  T den = (w0*w0-PI*PI)*(w0*w0-PI*PI) + F00 * PI*PI * Dw*Dw / F;
-  T G1  = rsSqrt(num/den);
+  T piSq = T(PI*PI);
+  T F    = fabs(G*G   - GB*GB);
+  T G00  = fabs(G*G   - G0*G0);
+  T F00  = fabs(GB*GB - G0*G0);
+  T num  = G0*G0 * (w0*w0-piSq)*(w0*w0-piSq) + G*G * F00 * piSq * Dw*Dw / F;
+  T den  = (w0*w0-piSq)*(w0*w0-piSq) + F00 * piSq * Dw*Dw / F;
+  T G1   = rsSqrt(num/den);
 
   //---------------------------------
   // inserted modification by Robin Schmidt: enforce InEq.37 to hold:
   {
-    T Delta = 2*PI*(fHi-fLo);                              // bandwidth in 2*pi Hz
+    T Delta = T(2*PI)*(fHi-fLo);                           // bandwidth in 2*pi Hz
     T ASq   = Delta*Delta * (GB*GB-G0*G0) / (G*G-GB*GB);   // Eq.5
 
     // redefine bandedge gain to enforce InEq.37 to hold:
@@ -926,8 +929,8 @@ RS_INLINE void rsBiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(T& b0,
     // re-calculate affected intermediate variables:
     F   = fabs(G*G   - GB*GB);
     F00 = fabs(GB*GB - G0*G0);
-    num = G0*G0 * (w0*w0-PI*PI)*(w0*w0-PI*PI) + G*G * F00 * PI*PI * Dw*Dw / F;
-    den = (w0*w0-PI*PI)*(w0*w0-PI*PI) + F00 * PI*PI * Dw*Dw / F;
+    num = G0*G0 * (w0*w0-piSq)*(w0*w0-piSq) + G*G * F00 * piSq * Dw*Dw / F;
+    den = (w0*w0-piSq)*(w0*w0-piSq) + F00 * piSq * Dw*Dw / F;
     G1  = rsSqrt(num/den);
   }
   //---------------------------------
