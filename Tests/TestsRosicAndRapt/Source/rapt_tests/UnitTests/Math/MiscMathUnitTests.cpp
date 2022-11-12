@@ -999,14 +999,14 @@ bool testModularInteger()
   using Int = int;
   using ModInt = rsModularInteger<Int>;
 
-  // Test canocialization in construction:
+  // Test canocalization in construction:
   Int    m = 5;                                            // modulus
   ModInt p0( 0,m), p1( 1,m), p2( 2,m), p3( 3,m), p4( 4,m); // positive 0..4
   ModInt p5( 5,m), p6( 6,m), p7( 7,m), p8( 8,m), p9( 9,m); // positive 5..9
   ModInt n1(-1,m), n2(-2,m), n3(-3,m), n4(-4,m), n5(-5,m); // negative 1..5
 
-  ok &= p0.getValue() == 0 && p5.getValue() == 0;
-  ok &= p1.getValue() == 1 && p6.getValue() == 1;
+  ok &= p0.getValue() == 0 && p5.getValue() == 0 && n5.getValue() == 0;
+  ok &= p1.getValue() == 1 && p6.getValue() == 1 && n4.getValue() == 1;
 
 
 
