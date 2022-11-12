@@ -44,6 +44,11 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+
+
 
 
 
@@ -77,9 +82,10 @@ public:
   /** \name Misc */
 
 
-  /** Implements the modulo operation in a way that works also for when the value is negative.
-  The result of the C++ operator % is equal to modulo-result only when the left operand is >= 0.
-  ToDo: Maybe allow m to be negative, too.  */
+  /** Implements the modulo operation in a way that works also for when the left operand (or first
+  function parameter) is negative. The result of the C++ operator % is equal to modulo-result only 
+  when the left operand is >= 0. ToDo: Maybe allow m to be negative, too - but what would a 
+  negative modulus even mean mathematically? Does it even make sense? */
   static T modulo (T x, T m)
   {
     rsAssert(m > 1);   // modulus must be positive integer >= 2
@@ -104,7 +110,13 @@ public:
 
 protected:
 
-  void canonicalize();
+  void canonicalize() { value = modulo(value, modulus); }
+
+  /** Checks, if the representation is canonical. It's protected because we use it only internally 
+  for assertions and unit tests. Client code is supposed to assume that the value is always 
+  represented canonically or it shouldn't even care how it is represented, so there shouldn't be a
+  situation where client code wants to check that condition. If it isn't, we have a bug. */
+  bool isCanonical() const { return value >= 0 && value < modulus; }
 
 
 };
@@ -123,6 +135,7 @@ rsModularInteger<T> rsConstantValue(T value, rsModularInteger<T> targetTemplate)
   return rsModularInteger<T>(value, targetTemplate.modulus);
 }
 
-// todo: add also rsZeroValue
+// todo: add also rsZeroValue OR better: implement rsZeroValue and rsUnityvalue in terms of 
+// rsConstantValue and implement it once and for all
 
 #endif

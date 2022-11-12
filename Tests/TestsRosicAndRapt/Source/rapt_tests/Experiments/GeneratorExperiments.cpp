@@ -239,21 +239,7 @@ void noiseReverseMode()
 
   // Helper function to perform the mathematically correct modulo operation even for negative 
   // inputs x:
-  auto mod = [](Int x, Int m)
-  {
-    return rsModularInteger<Int>::modulo(x, m);
-
-    /*
-    // old - moved into rsModularInteger:
-    Int r = x % m;     // remainder
-    if(r < 0)          // r < 0 happens for x < 0
-      return r + m;
-    return r;
-    */
-    // See https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
-    // There's also code for when m is negative, but we don't need that here. What would that even
-    // mean? Maybe move the function into the library as rsModulo.
-  };
+  auto mod = [](Int x, Int m) { return rsModularInteger<Int>::modulo(x, m); };
 
   // Functions to update and downdate a state of the PRNG:
   auto next = [&](Int x) { return mod((a * x) + b , m); };

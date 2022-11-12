@@ -5,7 +5,9 @@ rsModularInteger<T>::rsModularInteger(rsUint64 initialValue, rsUint64 modulusToU
 {
   modulus = modulusToUse;
   value   = initialValue;
-  rsAssert( value >= T(0) && value < modulus );
+  canonicalize();
+  // old:
+  //rsAssert( value >= T(0) && value < modulus );
   // Although we received unsigned integers for the parameters, value < 0 could happen when there's
   // wraparound in the assignments...right?
 }
@@ -13,6 +15,7 @@ rsModularInteger<T>::rsModularInteger(rsUint64 initialValue, rsUint64 modulusToU
 template<class T>
 rsModularInteger<T>::rsModularInteger(const rsModularInteger<T>& other)
 {
+  rsAssert(other.isCanonical());
   modulus = other.modulus;
   value   = other.value;
 }
@@ -27,9 +30,6 @@ void rsModularInteger<T>::set(T newValue, T newModulus)
   modulus = newModulus; 
   canonicalize();            // We only allow canonical representations!
 }
-
-
-
 
 // operators:
 
@@ -134,13 +134,6 @@ rsModularInteger<T>& rsModularInteger<T>::operator--()
 }
 
 // internal:
-
-template<class T>
-void rsModularInteger<T>::canonicalize()
-{
-
-
-}
 
 
 
