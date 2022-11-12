@@ -270,6 +270,8 @@ void noiseReverseMode()
     x = y;
   }
 
+
+  rsAssert(ok);
   int dummy = 0;
 
   // Ideas:

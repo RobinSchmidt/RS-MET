@@ -2515,6 +2515,25 @@ bool testPadeApproximation()
   return ok;
 }
 
+bool testModularIntegerPolynomial()
+{
+  // We test the class rsPolynomial using rsModularInteger<int> for the template parameter.
+  // ...tbc...
+
+  bool ok = true;
+
+  using Int    = int;
+  using ModInt = rsModularInteger<Int>;
+  using Poly   = rsPolynomial<ModInt>;
+
+
+  //Poly p; // doesn't compile yet
+
+
+  return ok;
+}
+
+
 bool testPolynomial()
 {
   //std::string reportString = "Polynomial"; // dummy -> remove
@@ -2541,19 +2560,18 @@ bool testPolynomial()
   ok &= testSpecialPolynomials();
   ok &= testQuadraticTo3Points();
 
-  // ToDo: testModIntPolynomial
-
   // under construction:
   ok &= testPowersChebychevExpansionConversion();
 
   // polynomial class:
-  ok &= testPolynomialOperators();
-    // fails!
+  ok &= testPolynomialOperators(); // has some lines commented because they fail?
 
   ok &= testRationalFunction();
   ok &= testPadeApproximation();
   // Maybe this should be a test in its own right, not in testPolynomial - on the other hand, 
   // dealing with rational functions is mostly manipulation of polynomials.
+
+  ok &= testModularIntegerPolynomial();
 
   ok &= testBivariatePolynomial();
   ok &= testBivariatePolynomial2();
