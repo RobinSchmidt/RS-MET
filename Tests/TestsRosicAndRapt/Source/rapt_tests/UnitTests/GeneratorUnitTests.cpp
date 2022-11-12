@@ -3218,7 +3218,7 @@ bool samplerNoteOffTest()
 
 
 
-  setupForLoopedDC(&se, 10, key, fs);  // 10 samples of looped DC
+  setupForLoopedDC(&se, 10, (float)key, fs);  // 10 samples of looped DC
   se.setSampleRate(fs);
 
   // Params for the first env routed to the first amp. The first 1 in the double-index is the index 
@@ -3292,7 +3292,7 @@ bool samplerNoteOffTest()
   // Start anew witha DC sample without any envlope:
   se.clearInstrument();
   int L = 70;           // length of the DC sample
-  setupForLoopedDC(&se, L, key, fs);
+  setupForLoopedDC(&se, L, (float)key, fs);
   //plot(N, 500);
   // Produces 560 samples of 1 (from n=0 to n=559) and then all zeros from n=560 onwards. At sample
   // 500, a noteOff is received which triggers leaving the loop. At that instant, the sampleTime in
@@ -3498,7 +3498,7 @@ bool samplerLfoTest()
   int N = 1000;     // number of samples to produce
   Vec tgt(N);
   float w = (float) (2*PI*freq/sampleRate);
-  float p = 2*PI*phase;
+  float p = float(2*PI)*phase;
   for(int n = 0; n < N; n++)
     tgt[n] = sin(w*n + p);
   //rsPlotVectors(tgt);
@@ -3511,7 +3511,7 @@ bool samplerLfoTest()
     lfo.processFrame(&outL[n], &outR[n]);
   //rsPlotVectors(tgt, outL, outR, tgt-outL, tgt-outR);
 
-  float tol = 1.e-5;  // we need a quite high tolerance!!! :-O  why?
+  float tol = 1.e-5f;  // we need a quite high tolerance!!! :-O  why?
   ok &= RAPT::rsMaxDeviation(outL, tgt) <= tol;
   ok &= RAPT::rsMaxDeviation(outR, tgt) <= tol;
 
@@ -3558,7 +3558,7 @@ bool samplerAmpLfoTest()
   int nDC   =  100;         // Number of DC samples in the loop
   int keyDC =   60;         // Rootkey of the DC sample
   float fs  = 10000.f;      // Sample rate
-  float tol = 1.e-5;        // Tolerance
+  float tol = 1.e-5f;       // Tolerance
 
   // Produce the reference output:
   Vec tgt(N);
@@ -3571,7 +3571,7 @@ bool samplerAmpLfoTest()
   // Set up sampler engine:
   SE se;
   se.preAllocateDspMemory(); // It's important to call this but shouldn't be...
-  setupForLoopedDC(&se, nDC, keyDC, fs);
+  setupForLoopedDC(&se, nDC, (float)keyDC, fs);
   se.setSampleRate(fs);
 
   // Helper function to figure out the number of Amplifiers in the given engine (in region 0 of 
@@ -3589,7 +3589,7 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionModulation(0,0, OT::FreeLfo, 1, OC::volumeN, 1, depth, Mode::absolute);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, (float)key, (float)vel, tgt, tgt, tol);
 
   // We manually insert an amplifier unit and route the amplfo to its amplitude parameter via the
   // amplfo_depth parameter. Desired behavior: se should route the amplfo to the existing 
@@ -3602,7 +3602,7 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 1;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, (float)key, (float)vel, tgt, tgt, tol);
 
   // Like before but with another (neutral) amplifier before the last one. Desired behavior: se 
   // should route the amplfo to the second amplifier:
@@ -3616,7 +3616,7 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 2;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 2;
-  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, (float)key, (float)vel, tgt, tgt, tol);
   const std::vector<ModulationRouting>& mr = se.getRegion(0,0)->getModulationSettings();
   ok &= mr[0].getTargetIndex() == 2;  // mod-connection should be routed to the 2nd amp
 
@@ -3628,7 +3628,7 @@ bool samplerAmpLfoTest()
   ok &= numAmps(se) == 0;
   se.setRegionSetting(0,0, OC::amplfo_depth, depth, -1);
   ok &= numAmps(se) == 1;
-  ok &= testSamplerNote2(&se, key, vel, tgt, tgt, tol);
+  ok &= testSamplerNote2(&se, (float)key, (float)vel, tgt, tgt, tol);
 
   rsAssert(ok);
   return ok;
