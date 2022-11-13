@@ -1670,16 +1670,16 @@ void SamplerEditor::connectGuiElementsToMediator()
   // -We need to override setMediator in the sfzTree opcodeEditor to allow it to connect not only 
   //  itself but also its embedded SfzOpcodeWidgetSet
 
-  guiMediator.registerColleague(this); 
+  //guiMediator.registerColleague(this); 
   this->setMediator(&guiMediator);
 
-  guiMediator.registerColleague(sfzTree);
+  //guiMediator.registerColleague(sfzTree);
   sfzTree->setMediator(&guiMediator);
 
-  guiMediator.registerColleague(&sfzEditor);
+  //guiMediator.registerColleague(&sfzEditor);
   sfzEditor.setMediator(&guiMediator);
 
-  guiMediator.registerColleague(opcodeEditor); 
+  //guiMediator.registerColleague(opcodeEditor); 
   opcodeEditor->setMediator(&guiMediator);
   // It's important that opcodeEditor is registered last because it holds the patchChangeInfo which
   // must be updated last (or at least, after the sfzTree)
