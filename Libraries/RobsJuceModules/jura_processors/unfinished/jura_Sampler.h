@@ -243,6 +243,8 @@ through the use of a mediator. */
 
 class SamplerInterfaceComponent : public jura::MediatedColleague
 {
+  // rename to SamplerInterfaceElement to avoid confusion with juce' use of the term - this is NOT 
+  // a juce::Component!!!
 
 public:
 
@@ -628,6 +630,15 @@ public:
   void handlePatchUpdate(const PatchChangeInfo& info) override;
   void mouseMove(const MouseEvent& e) override;
   void setMediator(Mediator *newMediator) override;
+
+  void setColourScheme(const WidgetColourScheme& newColourScheme) override
+  {
+    RTreeView::setColourScheme(newColourScheme);
+    jassert(overlayWidgets != nullptr);
+    overlayWidgets->setColourScheme(newColourScheme);
+    // What if this function is called before overlayWidgets is assigned? Should we test for
+    // nullptr first
+  }
 
 protected:
 
