@@ -226,7 +226,9 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 
 //template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
 // Fails to compile. It complains about rsPolynomial::integralAt. See comment there for a possible
-// solution. - fixed - but there are still other, similar issues
+// solution. - fixed - but there are still other, similar issues. What remains to be done is to 
+// replace occurrences of expressions like T(0), T(1), T(i+1) etc. by calls to e.g. 
+// rsZeroValue(coeffs[0]) or rsZeroValue(x), rsUnityValue(...), rsConstantValue(...),
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int

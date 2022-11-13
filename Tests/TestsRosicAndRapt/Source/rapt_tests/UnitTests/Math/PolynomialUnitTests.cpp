@@ -2533,6 +2533,8 @@ bool testModularIntegerPolynomial()
   // Nov 2022), near the other instatiations of rsPolynomial. When we try to add such an 
   // instatiation there, the compiler complains about Poly::integralAt. See comment there for a 
   // possible solution....
+  // OK - solved - but there are many similar problems which still need to be solved in the same 
+  // way. It's a bit of grunt work. See comment at the relevant place in RaptInstantiations.cpp.
 
 
   return ok;
