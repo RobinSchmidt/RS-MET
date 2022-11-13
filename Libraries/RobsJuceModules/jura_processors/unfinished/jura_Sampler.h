@@ -575,6 +575,8 @@ public:
 
   enum class WidgetMode { slider, button, chooser, text, none };
 
+  void updateVisibilities();
+
 protected:
 
   bool wantsExponentialSlider(rosic::Sampler::Opcode op) const;
@@ -587,7 +589,7 @@ protected:
 
   void createWidgets();
 
-  void updateVisibilities();
+
 
 
   jura::RSlider*         slider;     // For continuous parameters, e.g. cutoff=1000
@@ -685,11 +687,11 @@ opcode and a little help text that tells the user about what the opcode does, wh
 range is, which unit it has, etc. It will also show a widget that is appropriate to manipulate the
 actual parameter value. */
 
-class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceComponent, 
+class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceComponent
 
   // these baseclasses may be obsolete after refactoring:
-  public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver,
-  public jura::RTextEntryFieldObserver
+  //,public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver
+  //,public jura::RTextEntryFieldObserver
 {
 
 
@@ -706,10 +708,12 @@ public:
   // old, soon obsolete:
   void setSettingToEdit(int groupIndex, int regionIndex, 
     const rosic::Sampler::PlaybackSetting& setting);
+  /*
   void rSliderValueChanged(RSlider* s) override;
   void rButtonClicked(RButton* b) override;
   void rComboBoxChanged(RComboBox* cb) override;
   void textChanged(RTextEntryField *tf) override;
+  */
 
 
   // new:
@@ -733,6 +737,7 @@ protected:
   jura::RTextField *opcodeField;     // Shows name/syntax of active opcode
   jura::RTextField *helpField;       // Shows a description text for active opcode
 
+  /*
   // old, soon obsolete:
   // This stuff shall be factored out into SfzOpcodeWidgetSet and then we will use an object of 
   // this class here:
@@ -749,9 +754,10 @@ protected:
   // which will, in turn, will inform all colleagues about the desired change ...maybe it should
   // actually perform the change before broadcasting the change message? Or shall some other object
   // be responsible for actually performing the change? Maybe the editor itself? Not sure yet...
+  */
 
   // new - soon to be used:
-  //SfzOpcodeWidgetSet *oopcodeWidgets = nullptr;
+  SfzOpcodeWidgetSet *opcodeWidgets = nullptr;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeEditor)

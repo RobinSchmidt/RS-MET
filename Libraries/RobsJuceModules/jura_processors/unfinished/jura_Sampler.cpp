@@ -951,9 +951,14 @@ SfzOpcodeEditor::SfzOpcodeEditor()
   createWidgets();
 }
 
+
+
 void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex, 
   const rosic::Sampler::PlaybackSetting& setting)
 {
+  int dummy = 0;
+
+  /*
   using namespace rosic::Sampler;
   using OF = OpcodeFormat;
   using WM = WidgetMode;
@@ -988,20 +993,6 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
     slider->setValue(val, false);
     slider->setSliderName(opStr);
     setWidgetMode(WM::slider);
-
-    /*
-    // Under construction - switch between linear and exponential slider mode:
-    // This criterion to switch between linear and exponential mode is ad hoc and heuristic. It 
-    // doesn't seem to work though, because for cutoff, the minVal is actually 0. Maybe we need 
-    // some expWithOffset characteristic for that. Maybe the offset should be maxVal / rangeFactor 
-    // where rangeFactor is 20000/20 = 1000 in the case of frequencies, i.e. the maximum over the 
-    // minimum meaningful value. Or maybe something based on sinh?
-    if(minVal > 0.f && maxVal > 0.f && maxVal >= 50.f*minVal)     
-      slider->setScaling(jura::Parameter::scalings::EXPONENTIAL);
-    else
-      slider->setScaling(jura::Parameter::scalings::LINEAR);
-    */
-
   }
   else if(fmt == OF::String)
   {
@@ -1020,13 +1011,15 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
   // -Maybe also have linear or exponential scaling depending on parameter
 
   int dummy = 0;
+  */
 }
+
 
 void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
   //RAPT::rsError("Not yet implemeneted");
 
-  patchChangeInfo.oldSetting.setValue(info.newValue);
+  //patchChangeInfo.oldSetting.setValue(info.newValue);
 
 
   int dummy = 0;
@@ -1068,6 +1061,7 @@ bool SfzOpcodeEditor::wantsExponentialSlider(const rosic::Sampler::PlaybackSetti
 }
 */
 
+/*
 void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
 {
   if(newMode != mode)
@@ -1083,7 +1077,9 @@ void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
   // ToDo: maybe use something like repaintOnMessageThread() or repaintOnMessageThread(this) 
   // instead.
 }
+*/
 
+/*
 void SfzOpcodeEditor::rSliderValueChanged(RSlider* s)
 {
   patchChangeInfo.newValue = s->getValue(); // Store the desired new value
@@ -1104,11 +1100,12 @@ void SfzOpcodeEditor::textChanged(RTextEntryField* tf)
 {
 
 }
+*/
 
 void SfzOpcodeEditor::setMediator(Mediator* newMediator)
 {
   SamplerInterfaceComponent::setMediator(newMediator);
-  //opcodeWidgets->setMediator(newMediator);
+  opcodeWidgets->setMediator(newMediator);
 }
 
 void SfzOpcodeEditor::resized()
@@ -1122,10 +1119,17 @@ void SfzOpcodeEditor::resized()
   y += h + m;
   helpField->setBounds(x, y, w, h); 
   y += h + 2*m;
+
+  // new:
+  opcodeWidgets->setBounds(x, y, w, h);
+
+  // old:
+  /*
   slider->setBounds(x, y, w, h);
   button->setBounds(x, y, w, h);
   comboBox->setBounds(x, y, w, h);
   textField->setBounds(x, y, w, h);
+  */
 
   // Maybe the opcodeField should just say e.g. volume= and the slider should be right next to it
   // showing and adjusting the value. The help text can appear below
@@ -1142,6 +1146,9 @@ void SfzOpcodeEditor::createWidgets()
   helpField->setText("ToDo: Opcode description goes here");   // also preliminary
   helpField->setDescription("Short description of the opcode");
 
+
+  /*
+  // old:
   // The widgets that dynamically appear or disappear:
   addWidget(slider = new jura::RSlider(), true, false);
   slider->addListener(this);
@@ -1154,6 +1161,11 @@ void SfzOpcodeEditor::createWidgets()
 
   addWidget(textField = new jura::RTextEntryField(), true, false);
   textField->registerTextEntryFieldObserver(this);
+  */
+
+  addAndMakeVisible(opcodeWidgets = new SfzOpcodeWidgetSet());               // preliminary
+  //addChildColourSchemeComponent(opcodeWidgets = new SfzOpcodeWidgetSet()); // we want something
+  //addWidget(opcodeWidgets = new SfzOpcodeWidgetSet());                     // like this instead
 
   // May add descriptions to these widgets, too - but maybe these descriptions should also change
   // dynamically? We'll see
@@ -1161,6 +1173,9 @@ void SfzOpcodeEditor::createWidgets()
 
 void SfzOpcodeEditor::updateVisibilities()
 {
+  opcodeWidgets->updateVisibilities();  // Needed? Verify!
+
+  /*
   slider->setVisible(false);
   button->setVisible(false);
   comboBox->setVisible(false);
@@ -1172,6 +1187,7 @@ void SfzOpcodeEditor::updateVisibilities()
   case WidgetMode::chooser: comboBox->setVisible(true);  break;
   case WidgetMode::text:    textField->setVisible(true); break;
   }
+  */
 }
 
 //=================================================================================================
@@ -1437,7 +1453,11 @@ void SamplerEditor::treeNodeClicked(RTreeView* treeView, RTreeViewNode* node,
     rosic::Sampler::PlaybackSetting ps = sfzNode->data.data.playbackSetting;
     // That's kinda ugly, especially the data.data part. Try to do better!
 
-    opcodeEditor->setSettingToEdit(gi, ri, ps);
+    opcodeEditor->setSettingToEdit(gi, ri, ps);  // old
+
+    //opcodeEditor->opcodeWidgets->setSfzNodeToEdit(sfzNode);  // new
+
+
     int dummy = 0;
   } break;
   case TP::modulationRouting:
