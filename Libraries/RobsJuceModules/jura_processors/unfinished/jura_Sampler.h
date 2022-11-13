@@ -703,35 +703,28 @@ public:
 
 
 
+  // old, soon obsolete:
   void setSettingToEdit(int groupIndex, int regionIndex, 
     const rosic::Sampler::PlaybackSetting& setting);
+  void rSliderValueChanged(RSlider* s) override;
+  void rButtonClicked(RButton* b) override;
+  void rComboBoxChanged(RComboBox* cb) override;
+  void textChanged(RTextEntryField *tf) override;
+
+
+  // new:
+  //void setSfzNodeToEdit(const SfzNodeData& nodeData);
+  void setMediator(Mediator *newMediator) override;
 
 
 
   void handlePatchUpdate(const PatchChangeInfo& info) override;
 
-  // Overriden callbacks for the widgets:
-  void rSliderValueChanged(RSlider* s) override;
-  void rButtonClicked(RButton* b) override;
-  void rComboBoxChanged(RComboBox* cb) override;
-  void textChanged(RTextEntryField *tf) override;
-  // also obsolete after refactoring
-
-  void setMediator(Mediator *newMediator) override;
-
-
   // Overriden juce callbacks:
   void resized() override;
 
 
-
-
 protected:
-
-  //bool wantsExponentialSlider(const rosic::Sampler::PlaybackSetting& setting);
-
-
-
 
   void createWidgets();
 
@@ -740,6 +733,7 @@ protected:
   jura::RTextField *opcodeField;     // Shows name/syntax of active opcode
   jura::RTextField *helpField;       // Shows a description text for active opcode
 
+  // old, soon obsolete:
   // This stuff shall be factored out into SfzOpcodeWidgetSet and then we will use an object of 
   // this class here:
   enum class WidgetMode { slider, button, chooser, text, none };
@@ -756,16 +750,12 @@ protected:
   // actually perform the change before broadcasting the change message? Or shall some other object
   // be responsible for actually performing the change? Maybe the editor itself? Not sure yet...
 
-
-  //SfzPlayer* sfzPlayer = nullptr; 
-  // Pointer to the underlying SFZ player. Should be assigned after construction and remain valid
-  // for the whole lifetime of the SfzOpcodeEditor object. 
-  // ...not yet sure, if we need this - avoiding it would promote a looser coupling
+  // new - soon to be used:
+  //SfzOpcodeWidgetSet *oopcodeWidgets = nullptr;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeEditor)
 };
-// Later, this should communicate with an SfzEditorMediator
 
 
 //=================================================================================================
