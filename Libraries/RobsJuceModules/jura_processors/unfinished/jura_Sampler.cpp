@@ -824,6 +824,15 @@ void SfzTreeView::setMediator(Mediator* newMediator)
   overlayWidgets->setMediator(newMediator);
 }
 
+void SfzTreeView::setColourScheme(const WidgetColourScheme& newColourScheme)
+{
+  RTreeView::setColourScheme(newColourScheme);
+  jassert(overlayWidgets != nullptr);
+  overlayWidgets->setColourScheme(newColourScheme);
+  // What if this function is called before overlayWidgets is assigned? Should we test for
+  // nullptr first
+}
+
 void SfzTreeView::createWidgets()
 { 
 
@@ -1541,14 +1550,8 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
--Make the overlay-slider appear when hovering whil holding crtl -> done. It does appear but is not 
- yet functional - make it so!
- -SfzOpcodeEditor should also use an SfzOpcodeWidgetSet just like SfzTreeView. All the separate 
-  widgets can then be removed, simplifying the code
- -The SfzOpcodeWidgetSets in the tree-view and opcode-editor will then need to be wired to the
-  mediator. Maybe SfzOpcodeEditor then doesn't need to be wired to it anymore because its child
-  component has taken over the responsibility of updating itself when the patch changed due to some
-  other action.
+-The widget in the OpcodeEditor doesn't update when we change the value of an opcode via the 
+ overlay slider -> fix that!
 -Keep the selcted TreeNode highlighted as long as the slider for it is visible. Also highlight 
  the relevant section of the code in the editor.
 -The slider needs exponential characteristic for certain parameters. Maybe to start, just use a 

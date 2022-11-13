@@ -630,15 +630,7 @@ public:
   void handlePatchUpdate(const PatchChangeInfo& info) override;
   void mouseMove(const MouseEvent& e) override;
   void setMediator(Mediator *newMediator) override;
-
-  void setColourScheme(const WidgetColourScheme& newColourScheme) override
-  {
-    RTreeView::setColourScheme(newColourScheme);
-    jassert(overlayWidgets != nullptr);
-    overlayWidgets->setColourScheme(newColourScheme);
-    // What if this function is called before overlayWidgets is assigned? Should we test for
-    // nullptr first
-  }
+  void setColourScheme(const WidgetColourScheme& newColourScheme) override;
 
 protected:
 
