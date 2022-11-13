@@ -629,6 +629,8 @@ public:
 
   void handlePatchUpdate(const PatchChangeInfo& info) override;
   void mouseMove(const MouseEvent& e) override;
+  void mouseExit(const MouseEvent& e) override;
+
   void setMediator(Mediator *newMediator) override;
   void setColourScheme(const WidgetColourScheme& newColourScheme) override;
 

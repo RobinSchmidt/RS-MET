@@ -818,6 +818,18 @@ void SfzTreeView::mouseMove(const MouseEvent& e)
   }
 }
 
+void SfzTreeView::mouseExit(const MouseEvent& e)
+{
+  //hideOverlayWidgets();
+  jura::RTreeView::mouseExit(e);
+
+  // Calling hideOverlayWidgets() prevents the widgets from appearing in the first place. I guess
+  // mouseExit events are spawned also when the overlay widget appears because then it is under the
+  // mouse. The intention is to make the overlay widgets disappear whenever the mouse exits the 
+  // tree-view - but mousing over the overlay-widget should not count as exiting the tree-view.
+  // Maybe check the mouse-coordinates...
+}
+
 void SfzTreeView::setMediator(Mediator* newMediator)
 {
   SamplerInterfaceComponent::setMediator(newMediator);
