@@ -523,8 +523,6 @@ public:
 protected:
 
 
-
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzTreeViewNode)
 };
 // Maybe we don't need ot make a subclass of RTreeViewNode. Instead, attach the additional data
@@ -541,7 +539,7 @@ fil_type=lpf_2p) it will show a combo box, for freeform text parameters (e.g. sa
 text entry field. */
 
 class SfzOpcodeWidgetSet : public jura::WidgetSet, public SamplerInterfaceComponent
-  ,public jura::RSliderListener, public jura::RComboBoxObserver
+  , public jura::RSliderListener, public jura::RComboBoxObserver
   , public jura::RTextEntryFieldObserver
 {
 
@@ -551,18 +549,10 @@ public:
 
   virtual~SfzOpcodeWidgetSet() {}
 
-  /** Client cod calls this to set up the kind of opcode/setting that this widget set edits. This 
-  will determine whther we will show a slider, combobox, etc. and the range of the slider, the 
-  available options in the combobox, etc. */
-  //void setSettingToEdit(int groupIndex, int regionIndex, 
-  //  const rosic::Sampler::PlaybackSetting& setting);
-
   /** Client code calls this to set up the kind of node that this widget set edits. This will 
   determine whther we will show a slider, combobox, etc. and the range of the slider, the available
   options in the combobox, etc. */
   void setSfzNodeToEdit(const SfzNodeData& nodeData);
-
-
 
 
   void handlePatchUpdate(const PatchChangeInfo& info) override;
@@ -584,20 +574,14 @@ protected:
   // Overriden juce callbacks:
   void resized() override;
 
-
   void setWidgetMode(WidgetMode newMode);
-
   void createWidgets();
-
-
-
 
   jura::RSlider*         slider;     // For continuous parameters, e.g. cutoff=1000
   jura::RComboBox*       comboBox;   // For choice parameters, e.g. fil_type=lpf_2p
   jura::RTextEntryField* textField;  // For freeform string parameters, e.g. sample="Guitar.wav"
 
   WidgetMode mode = WidgetMode::none;
-
   PatchChangeInfo patchChangeInfo;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeWidgetSet)
@@ -639,18 +623,11 @@ public:
 
   void clearTree();
 
-  void handlePatchUpdate(const PatchChangeInfo& info) override;
-
-
   SfzTreeViewNode* findNode(const PatchChangeInfo& info);
 
-
+  void handlePatchUpdate(const PatchChangeInfo& info) override;
   void mouseMove(const MouseEvent& e) override;
   void setMediator(Mediator *newMediator) override;
-
-
-
-
 
 protected:
 
@@ -673,10 +650,6 @@ protected:
   i.e. a slider for a continuous parameter, a box for a choice parameter, etc. */
   void showOverlayWidget(SfzTreeViewNode* node, int y);
 
-
-  //jura::SfzPlayer* player = nullptr; 
-  // hmm..nahhh...Let's try to avoid the coupling to this class as long as possible
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzTreeView)
 };
 
@@ -688,49 +661,20 @@ range is, which unit it has, etc. It will also show a widget that is appropriate
 actual parameter value. */
 
 class SfzOpcodeEditor : public jura::Editor, public jura::SamplerInterfaceComponent
-
-  // these baseclasses may be obsolete after refactoring:
-  //,public jura::RSliderListener, public jura::RButtonListener, public jura::RComboBoxObserver
-  //,public jura::RTextEntryFieldObserver
 {
 
-
-
 public:
-
-  //using namespace rosic::Sampler;
 
   SfzOpcodeEditor();
   virtual ~SfzOpcodeEditor() {}
 
-  void setSfzNodeToEdit(const SfzNodeData& nodeData)
-  {
-    opcodeWidgets->setSfzNodeToEdit(nodeData);
-    // just a delegation
-  }
+  void setSfzNodeToEdit(const SfzNodeData& nodeData) { opcodeWidgets->setSfzNodeToEdit(nodeData); }
+  // just a delegation
 
-  /*
-  // old, soon obsolete:
-  void setSettingToEdit(int groupIndex, int regionIndex, 
-    const rosic::Sampler::PlaybackSetting& setting);
-  void rSliderValueChanged(RSlider* s) override;
-  void rButtonClicked(RButton* b) override;
-  void rComboBoxChanged(RComboBox* cb) override;
-  void textChanged(RTextEntryField *tf) override;
-  */
-
-
-  // new:
-  //void setSfzNodeToEdit(const SfzNodeData& nodeData);
+  // Overrides:
   void setMediator(Mediator *newMediator) override;
-
-
-
   void handlePatchUpdate(const PatchChangeInfo& info) override;
-
-  // Overriden juce callbacks:
   void resized() override;
-
 
 protected:
 
@@ -738,31 +682,9 @@ protected:
 
   void updateVisibilities();
 
-  jura::RTextField *opcodeField;     // Shows name/syntax of active opcode
-  jura::RTextField *helpField;       // Shows a description text for active opcode
-
-  /*
-  // old, soon obsolete:
-  // This stuff shall be factored out into SfzOpcodeWidgetSet and then we will use an object of 
-  // this class here:
-  enum class WidgetMode { slider, button, chooser, text, none };
-  void setWidgetMode(WidgetMode newMode);
-  jura::RSlider* slider;             // Sets continuous parameters
-  jura::RButton* button;             // Sets boolean parameters
-  jura::RComboBox* comboBox;         // Sets choice parameters
-  jura::RTextEntryField* textField;  // Sets freeform string parameters
-  WidgetMode mode = WidgetMode::none;
-  PatchChangeInfo patchChangeInfo;
-  // In our widget callbacks, we (re)assign the value field in the embedded 
-  // rosic::Sampler::PlaybackSetting member and then send out a change message to the mediator 
-  // which will, in turn, will inform all colleagues about the desired change ...maybe it should
-  // actually perform the change before broadcasting the change message? Or shall some other object
-  // be responsible for actually performing the change? Maybe the editor itself? Not sure yet...
-  */
-
-  // new - soon to be used:
-  SfzOpcodeWidgetSet *opcodeWidgets = nullptr;
-
+  jura::RTextField *opcodeField;            // Shows name/syntax of active opcode
+  jura::RTextField *helpField;              // Shows a description text for active opcode
+  jura::SfzOpcodeWidgetSet *opcodeWidgets;  // Shows a slider, combobox or textfield for editing
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SfzOpcodeEditor)
 };
