@@ -74,7 +74,12 @@ public:
 
   /** Stretches (or compresses) the polynomial along the x axis. */
   void stretch(T factor)
-  { scaleArgument(&coeffs[0], &coeffs[0], getDegree(), T(1)/factor); }
+  {
+    T scaler = rsUnityValue(factor) / factor;  // scaler = 1/factor
+    scaleArgument(&coeffs[0], &coeffs[0], getDegree(), scaler); 
+   
+    //scaleArgument(&coeffs[0], &coeffs[0], getDegree(), T(1)/factor); // old
+  }
 
   /** Scales the output of the whole polynomial by the given factor. */
   void scale(T factor)

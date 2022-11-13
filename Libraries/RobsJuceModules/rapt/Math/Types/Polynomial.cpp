@@ -70,7 +70,8 @@ template <class T>
 T rsPolynomial<T>::evaluate(const T& x, const T *a, int degree)
 {
   if(degree < 0)
-    return T(0);
+    return rsZeroValue(x); // new
+    //return T(0);  // old
   T y = a[degree];
   for(int i = degree-1; i >= 0; i--)
     y = y*x + a[i];
