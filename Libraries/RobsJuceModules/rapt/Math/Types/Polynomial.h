@@ -164,7 +164,8 @@ public:
   { 
     rsAssert(i >= 0); 
     if(i > getDegree())
-      return T(0);
+      return rsZeroValue(coeffs[0]); // new
+      //return T(0);  // old
     return coeffs[i]; 
   }
 
@@ -178,7 +179,11 @@ public:
   /** Returns true, iff this polynomial is monic, i.e. the coefficient for the highest power (the
   leading coefficient) is unity. Monic polynomials are important because they arise when 
   multiplying out the product form. */
-  bool isMonic() const { return getLeadingCoeff() == T(1); }
+  bool isMonic() const 
+  { 
+    return getLeadingCoeff() == rsUnityValue(coeffs[0]); // new
+    //return getLeadingCoeff() == T(1);  // old
+  }
   // what if we have trailing zeros in the coeff array? should we have a tolerance?
 
 
@@ -192,9 +197,19 @@ public:
   /** Adds two polynomials. */
   rsPolynomial<T> operator+(const rsPolynomial<T>& q) const {
     rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
-    weightedSum(coeffs.data(), getDegree(), T(1),
-      q.coeffs.data(), q.getDegree(), T(1),
+
+    // new:
+    T one = rsUnityValue(coeffs[0]);
+    weightedSum(coeffs.data(), getDegree(), one,
+      q.coeffs.data(), q.getDegree(), one,
       r.coeffs.data());
+
+
+    // old:
+    //weightedSum(coeffs.data(), getDegree(), T(1),
+    //  q.coeffs.data(), q.getDegree(), T(1),
+    //  r.coeffs.data());
+
     return r;
   }
 
@@ -210,9 +225,18 @@ public:
   /** Subtracts two polynomials. */
   rsPolynomial<T> operator-(const rsPolynomial<T>& q) const {
     rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
-    weightedSum(coeffs.data(), getDegree(), T(+1),
-      q.coeffs.data(), q.getDegree(), T(-1),
+
+    // new:
+    T one = rsUnityValue(coeffs[0]);
+    weightedSum(coeffs.data(), getDegree(), one,
+      q.coeffs.data(), q.getDegree(), -one,
       r.coeffs.data());
+
+    // old:
+    //weightedSum(coeffs.data(), getDegree(), T(+1),
+    //  q.coeffs.data(), q.getDegree(), T(-1),
+    //  r.coeffs.data());
+
     return r;
   }
 
@@ -269,7 +293,15 @@ public:
   {
     // optimize: allocate once and repeatedly convolve the coeff-array of r with the coeff array 
     // of this (in place)
-    rsPolynomial<T> r(std::vector<T>({T(1)}));
+
+    // new:
+    T one = rsUnityValue(coeffs[0]);
+    rsPolynomial<T> r(std::vector<T>({one}));
+
+    // old:
+    //rsPolynomial<T> r(std::vector<T>({T(1)}));
+
+
     for(int i = 1; i <= k; i++)
       r = r * (*this);
     return r;
