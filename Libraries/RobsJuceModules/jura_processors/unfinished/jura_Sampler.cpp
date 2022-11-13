@@ -891,6 +891,12 @@ void SfzTreeView::mouseMove(const MouseEvent& e)
   }
 }
 
+void SfzTreeView::setMediator(Mediator* newMediator)
+{
+  SamplerInterfaceComponent::setMediator(newMediator);
+  overlayWidgets->setMediator(newMediator);
+}
+
 void SfzTreeView::createWidgets()
 { 
 

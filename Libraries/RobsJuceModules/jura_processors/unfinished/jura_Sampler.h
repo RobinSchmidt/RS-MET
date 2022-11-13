@@ -642,7 +642,9 @@ public:
 
   SfzTreeViewNode* findNode(const PatchChangeInfo& info);
 
+
   void mouseMove(const MouseEvent& e) override;
+  void setMediator(Mediator *newMediator) override;
 
 
 
