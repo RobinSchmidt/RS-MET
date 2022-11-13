@@ -1105,6 +1105,12 @@ void SfzOpcodeEditor::textChanged(RTextEntryField* tf)
 
 }
 
+void SfzOpcodeEditor::setMediator(Mediator* newMediator)
+{
+  SamplerInterfaceComponent::setMediator(newMediator);
+  //opcodeWidgets->setMediator(newMediator);
+}
+
 void SfzOpcodeEditor::resized()
 {
   int m = 4; // margin;

@@ -717,8 +717,13 @@ public:
   void textChanged(RTextEntryField *tf) override;
   // also obsolete after refactoring
 
+  void setMediator(Mediator *newMediator) override;
+
+
   // Overriden juce callbacks:
   void resized() override;
+
+
 
 
 protected:
