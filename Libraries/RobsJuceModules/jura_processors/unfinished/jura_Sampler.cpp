@@ -853,10 +853,7 @@ void SfzTreeView::setColourScheme(const WidgetColourScheme& newColourScheme)
 
 void SfzTreeView::createWidgets()
 { 
-
-  addChildComponent(overlayWidgets = new SfzOpcodeWidgetSet());               // preliminary
-  //addChildColourSchemeComponent(overlayWidgets = new SfzOpcodeWidgetSet()); // we want something
-  //addWidget(overlayWidgets = new SfzOpcodeWidgetSet());                     // like this instead
+  addChildComponent(overlayWidgets = new SfzOpcodeWidgetSet());
 }
 
 void SfzTreeView::hideOverlayWidgets()
@@ -870,19 +867,9 @@ void SfzTreeView::showOverlayWidget(SfzTreeViewNode* node, int y)
   {
     overlayWidgets->setBounds(16, y, getWidth()-32, 16);
     overlayWidgets->setVisible(true);
-
-
-    overlayWidgets->setSfzNodeToEdit(node->getNodeData()); // rename to setSfzNodeDataToEdit
+    overlayWidgets->setSfzNodeToEdit(node->getNodeData()); 
     int dummy = 0;
     //RAPT::rsError("Not yet finished and tested");
-    // The overlay widgets do not seem to appear. I think we need to call:
-    // We need to call overlayWidgets->setSettingToEdit(int groupIndex, int regionIndex,
-    //   const rosic::Sampler::PlaybackSetting& setting)
-    // but the problem is: in case of modulation nodes, there actually is no associated 
-    // PlaybackSetting - instead, there's ModulationRouting. Maybe the function should take a 
-    // parameter of type SfzTreeViewNode::Data - but maybe that data structure should be taken
-    // out of the class because it makes not much sense to couple it to the tree. Maybe call it
-    // SfzNodeData.
   }
   else
   {
@@ -1569,7 +1556,8 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 
 ToDo:
 -The widget in the OpcodeEditor doesn't update when we change the value of an opcode via the 
- overlay slider -> fix that!
+ overlay slider -> fix that! Check SfzOpcodeEditor::handlePatchUpdate - we may need to do something 
+ there
 -Keep the selcted TreeNode highlighted as long as the slider for it is visible. Also highlight 
  the relevant section of the code in the editor.
 -The slider needs exponential characteristic for certain parameters. Maybe to start, just use a 
