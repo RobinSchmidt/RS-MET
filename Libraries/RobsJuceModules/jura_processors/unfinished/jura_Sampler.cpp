@@ -1270,17 +1270,9 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
   //setCodeIsClean();  //
 
-  guiMediator.registerColleague(this);         this->setMediator(&guiMediator);
-  guiMediator.registerColleague(sfzTree);      sfzTree->setMediator(&guiMediator);
-  guiMediator.registerColleague(&sfzEditor);   sfzEditor.setMediator(&guiMediator);
-  guiMediator.registerColleague(opcodeEditor); opcodeEditor->setMediator(&guiMediator);
-  // It's important that opcodeEditor is registered last because it holds the patchChangeInfo which
-  // must be updated last (or at least, after the sfzTree)
+  connectGuiElementsToMediator();
 
-  // Maybe have a function that does it both setMediator/registerColleague in one single call to
-  // reduce the boilerplate
 
-  updateVisibilities();
 }
 
 SamplerEditor::~SamplerEditor()
@@ -1667,6 +1659,21 @@ void SamplerEditor::createWidgets()
   // ToDo: 
   // -set up better descriptions for the xml and sfz loader widget sets. Maybe:
   //  Load .xml preset from file, Load .sfz instrument from file, etc.
+}
+
+void SamplerEditor::connectGuiElementsToMediator()
+{
+  guiMediator.registerColleague(this);         this->setMediator(&guiMediator);
+  guiMediator.registerColleague(sfzTree);      sfzTree->setMediator(&guiMediator);
+  guiMediator.registerColleague(&sfzEditor);   sfzEditor.setMediator(&guiMediator);
+  guiMediator.registerColleague(opcodeEditor); opcodeEditor->setMediator(&guiMediator);
+  // It's important that opcodeEditor is registered last because it holds the patchChangeInfo which
+  // must be updated last (or at least, after the sfzTree)
+
+  // Maybe have a function that does it both setMediator/registerColleague in one single call to
+  // reduce the boilerplate
+
+  updateVisibilities();
 }
 
 void SamplerEditor::setCodeIsParsed(bool isParsed)

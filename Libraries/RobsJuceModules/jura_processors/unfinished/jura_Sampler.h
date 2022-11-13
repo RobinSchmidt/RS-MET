@@ -826,6 +826,10 @@ protected:
 
   virtual void createWidgets();
 
+  virtual void connectGuiElementsToMediator();
+
+
+
   virtual void setCodeIsParsed(bool isParsed);
 
   virtual void setCodeIsSaved(bool isSaved);
