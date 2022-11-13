@@ -921,12 +921,9 @@ void SfzOpcodeEditor::createWidgets()
   helpField->setText("ToDo: Opcode description goes here");   // also preliminary
   helpField->setDescription("Short description of the opcode");
 
-  addAndMakeVisible(opcodeWidgets = new SfzOpcodeWidgetSet());               // preliminary
-  //addChildColourSchemeComponent(opcodeWidgets = new SfzOpcodeWidgetSet()); // we want something
-  //addWidget(opcodeWidgets = new SfzOpcodeWidgetSet());                     // like this instead
-
-  // May add descriptions to these widgets, too - but maybe these descriptions should also change
-  // dynamically? We'll see
+  addChildColourSchemeComponent(opcodeWidgets = new SfzOpcodeWidgetSet());
+  // Maybe add descriptions to these widgets, too - but maybe these descriptions should also 
+  // change dynamically? We'll see...
 }
 
 void SfzOpcodeEditor::updateVisibilities()
