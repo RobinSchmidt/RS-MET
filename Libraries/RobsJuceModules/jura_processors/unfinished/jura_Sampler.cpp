@@ -406,12 +406,6 @@ void SfzOpcodeWidgetSet::resized()
   slider->setBounds(0, 0, w, h);
   comboBox->setBounds(0, 0, w, h);
   textField->setBounds(0, 0, w, h);
-
-  /*
-  slider->setBounds(getBounds());
-  comboBox->setBounds(getBounds());
-  textField->setBounds(getBounds());
-  */
 }
 
 void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
@@ -432,8 +426,6 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
     setWidgetMode(WM::none);
     return;
   }
-
-
 
   int groupIndex = nodeData.getGroupIndex();
   int regionIndex = nodeData.getRegionIndex();
@@ -464,9 +456,6 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   patchChangeInfo.oldSetting = setting;
   patchChangeInfo.newValue = val; 
 
-
-
-
   // Display the appropriate widget and set it up:
   if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
   {
@@ -492,7 +481,6 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
     setWidgetMode(WM::none);
   }
 
-
   // ToDo: 
   // -Maybe have a different quantization interval depending on the parameter
   // -Maybe also have linear or exponential scaling depending on parameter
@@ -513,12 +501,12 @@ void SfzOpcodeWidgetSet::rSliderValueChanged(RSlider* s)
 
 void SfzOpcodeWidgetSet::rComboBoxChanged(RComboBox* cb)
 {
-
+  RAPT::rsError("Not yet implemented");
 }
 
 void SfzOpcodeWidgetSet::textChanged(RTextEntryField* tf)
 {
-
+  RAPT::rsError("Not yet implemented");
 }
 
 void SfzOpcodeWidgetSet::setWidgetMode(WidgetMode newMode)
@@ -569,7 +557,6 @@ void SfzOpcodeWidgetSet::updateVisibilities()
   }
 }
 
-
 //=================================================================================================
 
 SfzTreeView::SfzTreeView()
@@ -586,7 +573,6 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //return; 
   // For debug - when uncommenting this, the GUI becomes much more responsive. Try to optimize the
   // GUI such that it remains responsive when we actually run the code of this function
-
 
   // Perhaps we should first check, if the current tree alreday is in sync with the given sfz and 
   // if so, avoid re-building the tree from scratch. Maybe such situation could occur when the user
@@ -616,41 +602,17 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
 
   auto addSettingNode = [&](Node* parent, const PS& setting, int groupIndex, int regionIndex)
   {
-    /*
-    // old:
-    Node* child = new Node(cb->settingToString(setting));
-    child->data.type = Node::Data::Type::playbackSetting;
-    child->data.data.playbackSetting = setting;
-    child->data.groupIndex  = groupIndex;
-    child->data.regionIndex = regionIndex;
-    */
-
-    // new:
     Node* child = Node::createPlaybackSettingNode(
       cb->settingToString(setting), groupIndex, regionIndex, setting);
-
-
     parent->addChildNode(child);
   };
 
   auto addModRoutingNode = [&](Node* parent, const MR& routing, int groupIndex, int regionIndex)
   {
-    /*
-    // old:
-    Node* child = new Node(cb->modRoutingToString(routing));
-    child->data.type = Node::Data::Type::modulationRouting;
-    child->data.data.modRouting = routing;
-    child->data.groupIndex  = groupIndex;
-    child->data.regionIndex = regionIndex;
-    */
-
-    // new:
     Node* child = Node::createModulationRoutingNode(
       cb->modRoutingToString(routing), groupIndex, regionIndex, routing);
-
     parent->addChildNode(child);
   };
-
 
   // Helper function to add the leaf nodes:
   auto addOpcodeChildNodes = [&](const Level* lvl, Node* node, int groupIndex, int regionIndex)
@@ -662,35 +624,17 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
     // defaults:
     std::string s; int i;
     s = lvl->getSamplePath(); 
-
-    //if(s !=  "") 
-    //  node->addChildNode(new Node("sample=" + s));  // old
-
-    //s = lvl->getSamplePath(); if(s !=  "") addSettingNode(node, PS(OC::Sample, 0.0), gi, ri);  // new
-    // The new version fails because cb->settingToString produces nonsense for the sample opcode. I
-    // think, we may need to able to store strings in PlaybackSetting. Some settings, such as 
-    // samples, really need a freeform string as value and can't be translated to enum values. 
-    // Later, we may want to allow formula-based opcodes, too. These will also need to deal with 
-    // strings. Maybe the value could be a sum-type (e.g. union) of float and string...but then, we
-    // may as well use double because the string dictates the size anywa.y Maybe PlaybackSetting 
-    // should have an alternative constructor that takes a std::string instead of a float as 2nd 
-    // parameter
-
-    // newer:
     if(s !=  "")
     {
       PS ps(OC::Sample);
       node->addChildNode(Node::createPlaybackSettingNode(("sample=" + s), gi, ri, ps)); 
     }
      
-
     i = lvl->getLoKey(); if(i !=   0) addSettingNode(node, PS(OC::LoKey, i), gi, ri);
     i = lvl->getHiKey(); if(i != 127) addSettingNode(node, PS(OC::HiKey, i), gi, ri);
     i = lvl->getLoVel(); if(i !=   0) addSettingNode(node, PS(OC::LoVel, i), gi, ri);
     i = lvl->getHiVel(); if(i != 127) addSettingNode(node, PS(OC::HiVel, i), gi, ri);
     // Values are shown like 45.0000 - we need a better float-to-string conversion
-
-
 
     // Add nodes for the general opcode settings:
     const Settings& settings = lvl->getSettings();
@@ -857,23 +801,6 @@ jura::RTreeViewNode* SfzTreeView::getOpcodeNode(jura::RTreeViewNode* parent,
   // identifies the node. The index (and more) is already baked into the search-string.
 }
 
-/*
-void SfzTreeView::rSliderValueChanged(RSlider* s)
-{
-
-}
-
-void SfzTreeView::rButtonClicked(RButton* b)
-{
-
-}
-
-void SfzTreeView::rComboBoxChanged(RComboBox* cb)
-{
-
-}
-*/
-
 void SfzTreeView::mouseMove(const MouseEvent& e)
 {
   if(e.mods.isCtrlDown())
@@ -904,13 +831,6 @@ void SfzTreeView::createWidgets()
   //addChildColourSchemeComponent(overlayWidgets = new SfzOpcodeWidgetSet()); // we want something
   //addWidget(overlayWidgets = new SfzOpcodeWidgetSet());                     // like this instead
 }
-
-/*
-void SfzTreeView::updateVisibilities()
-{
-
-}
-*/
 
 void SfzTreeView::hideOverlayWidgets()
 {
@@ -951,77 +871,9 @@ SfzOpcodeEditor::SfzOpcodeEditor()
   createWidgets();
 }
 
-
-  /*
-void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex, 
-  const rosic::Sampler::PlaybackSetting& setting)
-{
-  int dummy = 0;
-
-
-  using namespace rosic::Sampler;
-  using OF = OpcodeFormat;
-  using WM = WidgetMode;
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-
-  // Figure out what kind of opcode we are dealing with and set up the widgetMode accordingly:
-  Opcode op = setting.getOpcode();
-  int idx = setting.getIndex();
-  std::string opStr = cb->opcodeToString(op, idx);
-  OF fmt = cb->getOpcodeFormat(op);
-
-  // Retrieve value, range and default value:
-  float val    = setting.getValue();
-  float minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
-  float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
-  float defVal = cb->opcodeDefaultValue(op, idx);
-
-  // Update our info about what we actually edit:
-  patchChangeInfo.type = PatchChangeType::opcodeValueChanged;
-  patchChangeInfo.groupIndex = groupIndex;
-  patchChangeInfo.regionIndex = regionIndex;
-  patchChangeInfo.oldSetting = setting;
-  patchChangeInfo.newValue = val; 
-
-  // Display the appropriate widget and set it up:
-  if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
-  {
-    double sliderInterval = 0.0;
-    if(fmt != OF::Float )
-      sliderInterval = 1.0;
-    slider->setRange(minVal, maxVal, sliderInterval, defVal, false);
-    slider->setValue(val, false);
-    slider->setSliderName(opStr);
-    setWidgetMode(WM::slider);
-  }
-  else if(fmt == OF::String)
-  {
-    // Maybe we need to distinguish between choice-parameters and free text. In case of the former,
-    // we want acombobox, in case of the latter, a text-edit-fiel
-  }
-  else
-  {
-    setWidgetMode(WM::none);
-  }
-
-
-  // ToDo: 
-  // -Also show the group and region indices, if applicable
-  // -Maybe have a different quantization interval depending on the parameter
-  // -Maybe also have linear or exponential scaling depending on parameter
-
-  int dummy = 0;
-
-}
-  */
-
-
 void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 {
-  //RAPT::rsError("Not yet implemeneted");
-
-  //patchChangeInfo.oldSetting.setValue(info.newValue);
-
+  //patchChangeInfo.oldSetting.setValue(info.newValue);  // old
 
   int dummy = 0;
   // Maybe we can leave this function empty? I don't really see what we would need to do here. At 
@@ -1033,75 +885,7 @@ void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   // opcode-widget, we may have to take care to update the widget here manually. But at the moment, 
   // there seems to be nothing to do here. Of course, we can also change values in tne code but 
   // that actually triggers a full re-parse at the moment (but that may change, too)
-
-  // patchChangeInfo
 }
-
-/*
-bool SfzOpcodeEditor::wantsExponentialSlider(const rosic::Sampler::PlaybackSetting& setting)
-{
-  using namespace rosic::Sampler;
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-  float min = cb->opcodeMinValue(setting.getOpcode());
-  float max = cb->opcodeMaxValue(setting.getOpcode());
-  float k   = 50.f;
-  if(min > 0.f && max > 0.f && max >= k*min)
-    return true;
-  else
-    return false;
-
-  // This criterion is heuristic. Maybe later do something more appropriate. Maybe we will also 
-  // need other kinds of scalings besides linear and exponential as well. In this case, make a 
-  // function getSliderScaling which returns a value from the jura::Parameter::scalings enum.
-  // Or maybe return a (pointer to) ParameterMapper object and name the function 
-  // getParameterMapper. We could have a couple of mappers as members and just return a pointer
-  // to the appropriate one. But: the slider itself doesn't actually use a ParameterMapper. We
-  // actually do the mapping the assignedParameter, so maybe we should keep a Parameter object
-  // here as well, assign that to the slider, and let the Parameter handle the mapping. To the 
-  // Parameter, we *can* assign a custom mapper.
-}
-*/
-
-/*
-void SfzOpcodeEditor::setWidgetMode(WidgetMode newMode)
-{
-  if(newMode != mode)
-  {
-    mode = newMode;
-    updateVisibilities();
-  }
-  repaint();
-  // Without calling repaint() here, sometimes the slider doesn't update correctly when selecting a
-  // new parameter in the TreeView. For example, in teh patch NoiseWhistle.sfz, selecting first 
-  // cutoff and then resonance, the resonance slider is correctly displayed only when calling 
-  // repaint here
-  // ToDo: maybe use something like repaintOnMessageThread() or repaintOnMessageThread(this) 
-  // instead.
-}
-*/
-
-/*
-void SfzOpcodeEditor::rSliderValueChanged(RSlider* s)
-{
-  patchChangeInfo.newValue = s->getValue(); // Store the desired new value
-  notifyMediator(0, &patchChangeInfo);      // Notify colleague objects (TreeView, CodeEditor, ...)
-}
-
-void SfzOpcodeEditor::rButtonClicked(RButton* b)
-{
-
-}
-
-void SfzOpcodeEditor::rComboBoxChanged(RComboBox* cb)
-{
-
-}
-
-void SfzOpcodeEditor::textChanged(RTextEntryField* tf)
-{
-
-}
-*/
 
 void SfzOpcodeEditor::setMediator(Mediator* newMediator)
 {
@@ -1120,17 +904,7 @@ void SfzOpcodeEditor::resized()
   y += h + m;
   helpField->setBounds(x, y, w, h); 
   y += h + 2*m;
-
-  // new:
   opcodeWidgets->setBounds(x, y, w, h);
-
-  // old:
-  /*
-  slider->setBounds(x, y, w, h);
-  button->setBounds(x, y, w, h);
-  comboBox->setBounds(x, y, w, h);
-  textField->setBounds(x, y, w, h);
-  */
 
   // Maybe the opcodeField should just say e.g. volume= and the slider should be right next to it
   // showing and adjusting the value. The help text can appear below
@@ -1147,23 +921,6 @@ void SfzOpcodeEditor::createWidgets()
   helpField->setText("ToDo: Opcode description goes here");   // also preliminary
   helpField->setDescription("Short description of the opcode");
 
-
-  /*
-  // old:
-  // The widgets that dynamically appear or disappear:
-  addWidget(slider = new jura::RSlider(), true, false);
-  slider->addListener(this);
-
-  addWidget(button = new jura::RButton(), true, false);
-  button->addRButtonListener(this);
-
-  addWidget(comboBox = new jura::RComboBox(), true, false);
-  comboBox->registerComboBoxObserver(this);
-
-  addWidget(textField = new jura::RTextEntryField(), true, false);
-  textField->registerTextEntryFieldObserver(this);
-  */
-
   addAndMakeVisible(opcodeWidgets = new SfzOpcodeWidgetSet());               // preliminary
   //addChildColourSchemeComponent(opcodeWidgets = new SfzOpcodeWidgetSet()); // we want something
   //addWidget(opcodeWidgets = new SfzOpcodeWidgetSet());                     // like this instead
@@ -1175,20 +932,6 @@ void SfzOpcodeEditor::createWidgets()
 void SfzOpcodeEditor::updateVisibilities()
 {
   opcodeWidgets->updateVisibilities();  // Needed? Verify!
-
-  /*
-  slider->setVisible(false);
-  button->setVisible(false);
-  comboBox->setVisible(false);
-  textField->setVisible(false);
-  switch(mode)
-  {
-  case WidgetMode::slider:  slider->setVisible(true);    break;
-  case WidgetMode::button:  button->setVisible(true);    break;
-  case WidgetMode::chooser: comboBox->setVisible(true);  break;
-  case WidgetMode::text:    textField->setVisible(true); break;
-  }
-  */
 }
 
 //=================================================================================================
