@@ -490,7 +490,7 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
 
 void SfzOpcodeWidgetSet::handlePatchUpdate(const PatchChangeInfo& info)
 {
-  // updateWidgetContent(info);
+  updateWidgetContent(info);
   patchChangeInfo.oldSetting.setValue(info.newValue);
 }
 
@@ -543,6 +543,13 @@ void SfzOpcodeWidgetSet::createWidgets()
 
   // May add descriptions to these widgets, too - but maybe these descriptions should also change
   // dynamically? We'll see
+}
+
+void SfzOpcodeWidgetSet::updateWidgetContent(const PatchChangeInfo& info)
+{
+  if(mode == WidgetMode::slider) {
+    if(slider->getValue() != info.newValue)
+      slider->setValue(info.newValue, false); }
 }
 
 void SfzOpcodeWidgetSet::updateVisibilities()

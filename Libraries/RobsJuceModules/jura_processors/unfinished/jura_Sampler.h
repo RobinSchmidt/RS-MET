@@ -579,6 +579,8 @@ protected:
   void setWidgetMode(WidgetMode newMode);
   void createWidgets();
 
+  void updateWidgetContent(const PatchChangeInfo& info);
+
   jura::RSlider*         slider;     // For continuous parameters, e.g. cutoff=1000
   jura::RComboBox*       comboBox;   // For choice parameters, e.g. fil_type=lpf_2p
   jura::RTextEntryField* textField;  // For freeform string parameters, e.g. sample="Guitar.wav"
