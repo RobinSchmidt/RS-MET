@@ -346,6 +346,14 @@ public:
 
   T integralAt(const T& x, const T c = T(0)) const
   { return evaluateIntegral(x, &coeffs[0], getDegree(), c); }
+  // I think c = T(0) refuses to compile with T = rsModularInteger<int> because a modular integer 
+  // can't be just set to zero without also specifying a modulus, which should be copied from x. I
+  // think, we need functionally something like c = rsZeroValue(x). I'm not sure, if that will 
+  // compile...maybe if we make rsZeroValue constexpr? ...try it!
+  // If nothing helps, we may need to get rid of the default value and enforce client code to pass
+  // zero - which would be a shame! Or just provide a constructor for rsModularInteger from a 
+  // single int - but then, a so produced modular integer would have to have an undefined modulus.
+  // ...we'll see...
 
   T definiteIntegral(const T& lowerLimit, const T& upperLimit) const
   { return integralAt(upperLimit) - integralAt(lowerLimit); }

@@ -767,6 +767,10 @@ void AcidSequencerModuleEditor::resized()
 
 
 /*
+
+Issues:
+-the left/right buttons for the whole sequence create the impression that shift is applie only to
+ the gates because of their positioning. Put them somewhere else on the GUI
 -In the animation, highlight the currently played key in the virtual keyboard on the left. But not 
  for the whole step (unit the next arrives) but only as long as the note plays, i.e. take 
  StepLength into account
@@ -830,6 +834,11 @@ Ideas for sequence manipulations:
    have gaps. Maybe have for each step a button/dot to select, whether or not that step is affected
    by the action
   -Circular shift 
+-Maybe have for each key a pair of buttons that moves the first note at that key one unit to the 
+ left or right (swapping place with whatever there is) and another pair of buttons that does the 
+ same to the last note at that key. But what if there is nothing immediately to the right? Maybe 
+ then it should swap with the first note that actually occurs to the right, no matter how many steps
+ away it is
 
 ( - selected by ComboBox
 -Maybe have buttons to swap 1st and 2nd half

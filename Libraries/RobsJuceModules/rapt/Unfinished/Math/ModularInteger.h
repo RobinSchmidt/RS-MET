@@ -71,10 +71,10 @@ public:
   bool operator==(const rsModularInteger& other) const;
   bool operator!=(const rsModularInteger& other) const;
 
-  rsModularInteger operator+(const rsModularInteger& other);
-  rsModularInteger operator-(const rsModularInteger& other);
-  rsModularInteger operator*(const rsModularInteger& other);
-  rsModularInteger operator/(const rsModularInteger& other);
+  rsModularInteger operator+(const rsModularInteger& other) const;
+  rsModularInteger operator-(const rsModularInteger& other) const;
+  rsModularInteger operator*(const rsModularInteger& other) const;
+  rsModularInteger operator/(const rsModularInteger& other) const;
 
   rsModularInteger& operator+=(const rsModularInteger& other);
   rsModularInteger& operator-=(const rsModularInteger& other);

@@ -2527,7 +2527,12 @@ bool testModularIntegerPolynomial()
   using Poly   = rsPolynomial<ModInt>;
 
 
-  //Poly p; // doesn't compile yet
+  //Poly p; 
+  // Produces linker error because we have no instantiation of rsPolynomial with rsModularInteger. 
+  // For adding one, see file RaptInstantiations.cpp in the rs_tetsing project, line 227 (as of 
+  // Nov 2022), near the other instatiations of rsPolynomial. When we try to add such an 
+  // instatiation there, the compiler complains about Poly::integralAt. See comment there for a 
+  // possible solution....
 
 
   return ok;

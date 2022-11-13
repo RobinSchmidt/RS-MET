@@ -223,6 +223,11 @@ template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
+
+//template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
+// Fails to compile. It complains about rsPolynomial::integralAt. See comment there for a possible
+// solution.
+
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
 // todo: instantiate rsPolynomial also for float, int, maybe also for 

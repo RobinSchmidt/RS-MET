@@ -78,7 +78,7 @@ bool rsModularInteger<T>::operator!=(const rsModularInteger<T>& other) const
 }
 
 template<class T>
-rsModularInteger<T> rsModularInteger<T>::operator+(const rsModularInteger<T> &other)
+rsModularInteger<T> rsModularInteger<T>::operator+(const rsModularInteger<T> &other) const
 {
   rsAssert( modulus == other.modulus );
   T r = this->value + other.value;
@@ -88,7 +88,7 @@ rsModularInteger<T> rsModularInteger<T>::operator+(const rsModularInteger<T> &ot
 }
 
 template<class T>
-rsModularInteger<T> rsModularInteger<T>::operator-(const rsModularInteger<T> &other)
+rsModularInteger<T> rsModularInteger<T>::operator-(const rsModularInteger<T> &other) const
 {
   rsAssert( modulus == other.modulus );
   T r;
@@ -100,7 +100,7 @@ rsModularInteger<T> rsModularInteger<T>::operator-(const rsModularInteger<T> &ot
 }
 
 template<class T>
-rsModularInteger<T> rsModularInteger<T>::operator*(const rsModularInteger<T> &other)
+rsModularInteger<T> rsModularInteger<T>::operator*(const rsModularInteger<T> &other) const
 {
   rsAssert( modulus == other.modulus );
   T r = (this->value * other.value) % modulus;
@@ -108,7 +108,7 @@ rsModularInteger<T> rsModularInteger<T>::operator*(const rsModularInteger<T> &ot
 }
 
 template<class T>
-rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &other)
+rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &other) const
 {
   rsWarning("Tests needed for: rsModularInteger<T>::operator/");
   rsAssert( modulus == other.modulus );
