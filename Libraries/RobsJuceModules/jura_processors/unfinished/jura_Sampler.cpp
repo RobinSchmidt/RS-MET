@@ -952,13 +952,13 @@ SfzOpcodeEditor::SfzOpcodeEditor()
 }
 
 
-
+  /*
 void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex, 
   const rosic::Sampler::PlaybackSetting& setting)
 {
   int dummy = 0;
 
-  /*
+
   using namespace rosic::Sampler;
   using OF = OpcodeFormat;
   using WM = WidgetMode;
@@ -1011,8 +1011,9 @@ void SfzOpcodeEditor::setSettingToEdit(int groupIndex, int regionIndex,
   // -Maybe also have linear or exponential scaling depending on parameter
 
   int dummy = 0;
-  */
+
 }
+  */
 
 
 void SfzOpcodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
@@ -1450,12 +1451,11 @@ void SamplerEditor::treeNodeClicked(RTreeView* treeView, RTreeViewNode* node,
   {
   case TP::playbackSetting:
   {
-    rosic::Sampler::PlaybackSetting ps = sfzNode->data.data.playbackSetting;
+    //rosic::Sampler::PlaybackSetting ps = sfzNode->data.data.playbackSetting;
     // That's kinda ugly, especially the data.data part. Try to do better!
+    //opcodeEditor->setSettingToEdit(gi, ri, ps);  // old
 
-    opcodeEditor->setSettingToEdit(gi, ri, ps);  // old
-
-    //opcodeEditor->opcodeWidgets->setSfzNodeToEdit(sfzNode);  // new
+    opcodeEditor->setSfzNodeToEdit(sfzNode->data);  // new
 
 
     int dummy = 0;

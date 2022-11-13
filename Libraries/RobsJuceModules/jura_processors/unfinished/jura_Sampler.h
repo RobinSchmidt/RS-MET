@@ -703,12 +703,16 @@ public:
   SfzOpcodeEditor();
   virtual ~SfzOpcodeEditor() {}
 
+  void setSfzNodeToEdit(const SfzNodeData& nodeData)
+  {
+    opcodeWidgets->setSfzNodeToEdit(nodeData);
+    // just a delegation
+  }
 
-
+  /*
   // old, soon obsolete:
   void setSettingToEdit(int groupIndex, int regionIndex, 
     const rosic::Sampler::PlaybackSetting& setting);
-  /*
   void rSliderValueChanged(RSlider* s) override;
   void rButtonClicked(RButton* b) override;
   void rComboBoxChanged(RComboBox* cb) override;
