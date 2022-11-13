@@ -328,7 +328,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Evaluation (High Level) */
+  /** \name Evaluation and Calculus (High Level) */
 
   /** Evaluates the polynomial at the given input x. */
   T evaluate(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
@@ -344,8 +344,8 @@ public:
   // todo: maybe make it also work for negative orders (in which case the antiderivative of 
   // given order will be evaluated (setting integration constants to zero))
 
-  T integralAt(const T& x, const T c = T(0)) const
-  { return evaluateIntegral(x, &coeffs[0], getDegree(), c); }
+  //T integralAt(const T& x, const T c = T(0)) const
+  //{ return evaluateIntegral(x, &coeffs[0], getDegree(), c); }
   // I think c = T(0) refuses to compile with T = rsModularInteger<int> because a modular integer 
   // can't be just set to zero without also specifying a modulus, which should be copied from x. I
   // think, we need functionally something like c = rsZeroValue(x). I'm not sure, if that will 
@@ -353,7 +353,27 @@ public:
   // If nothing helps, we may need to get rid of the default value and enforce client code to pass
   // zero - which would be a shame! Or just provide a constructor for rsModularInteger from a 
   // single int - but then, a so produced modular integer would have to have an undefined modulus.
-  // ...we'll see...
+  // Alternatively, provide two implementations, one with a single parameter and one with two 
+  // parameters...yes - that seems to work - see below.
+
+  // This doesn't compile - predictably:
+  //T integralAt(const T& x, const T c = rsZeroValue(x)) const
+  //{ return evaluateIntegral(x, &coeffs[0], getDegree(), c);   }
+
+
+  // This does compile:
+  T integralAt(const T& x, const T& c) const
+  { 
+    return evaluateIntegral(x, &coeffs[0], getDegree(), c); 
+  }
+
+  T integralAt(const T& x) const
+  { 
+    return evaluateIntegral(x, &coeffs[0], getDegree(), rsZeroValue(x)); 
+  }
+
+
+
 
   T definiteIntegral(const T& lowerLimit, const T& upperLimit) const
   { return integralAt(upperLimit) - integralAt(lowerLimit); }
@@ -366,11 +386,6 @@ public:
   {
     evaluateWithDerivative(x, &coeffs[0], getDegree(), y, yp);
   }
-
-
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Calculus (High Level) */
 
   rsPolynomial<T> derivative() const
   { 
