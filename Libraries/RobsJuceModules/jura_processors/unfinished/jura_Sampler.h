@@ -645,6 +645,9 @@ public:
   void mouseMove(const MouseEvent& e) override;
 
 
+
+
+
 protected:
 
   jura::RTreeViewNode* getGroupNode(jura::RTreeViewNode* parent, int groupIndex);

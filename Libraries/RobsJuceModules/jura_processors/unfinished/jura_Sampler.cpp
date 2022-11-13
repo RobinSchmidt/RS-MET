@@ -1663,10 +1663,24 @@ void SamplerEditor::createWidgets()
 
 void SamplerEditor::connectGuiElementsToMediator()
 {
-  guiMediator.registerColleague(this);         this->setMediator(&guiMediator);
-  guiMediator.registerColleague(sfzTree);      sfzTree->setMediator(&guiMediator);
-  guiMediator.registerColleague(&sfzEditor);   sfzEditor.setMediator(&guiMediator);
-  guiMediator.registerColleague(opcodeEditor); opcodeEditor->setMediator(&guiMediator);
+  // ToDo: 
+  // -The call to setMediator should perhaps trigger the call to registerColleague on the mediator 
+  //  such that we need only one call here. Oh! It already does! so the additional calls to it here
+  //  are probably redundant - try to get rid of them!
+  // -We need to override setMediator in the sfzTree opcodeEditor to allow it to connect not only 
+  //  itself but also its embedded SfzOpcodeWidgetSet
+
+  guiMediator.registerColleague(this); 
+  this->setMediator(&guiMediator);
+
+  guiMediator.registerColleague(sfzTree);
+  sfzTree->setMediator(&guiMediator);
+
+  guiMediator.registerColleague(&sfzEditor);
+  sfzEditor.setMediator(&guiMediator);
+
+  guiMediator.registerColleague(opcodeEditor); 
+  opcodeEditor->setMediator(&guiMediator);
   // It's important that opcodeEditor is registered last because it holds the patchChangeInfo which
   // must be updated last (or at least, after the sfzTree)
 
