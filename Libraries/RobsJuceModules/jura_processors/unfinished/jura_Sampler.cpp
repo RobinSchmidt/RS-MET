@@ -490,6 +490,7 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
 
 void SfzOpcodeWidgetSet::handlePatchUpdate(const PatchChangeInfo& info)
 {
+  // updateWidgetContent(info);
   patchChangeInfo.oldSetting.setValue(info.newValue);
 }
 
@@ -1557,7 +1558,9 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 ToDo:
 -The widget in the OpcodeEditor doesn't update when we change the value of an opcode via the 
  overlay slider -> fix that! Check SfzOpcodeEditor::handlePatchUpdate - we may need to do something 
- there
+ there. Or maybe in SfzOpcodeWidgetSet::handlePatchUpdate we need to trigger some action to update 
+ the currently visible widget - but without sending a notification because that may lead to an
+ infinite loop of mutual notifications.
 -Keep the selcted TreeNode highlighted as long as the slider for it is visible. Also highlight 
  the relevant section of the code in the editor.
 -The slider needs exponential characteristic for certain parameters. Maybe to start, just use a 
