@@ -873,6 +873,7 @@ void SfzTreeView::showOverlayWidget(SfzTreeViewNode* node, int y)
 {
   if(node->isOpcodeNode())  // ToDo: Check node against nullptr before deref or assert non-null
   {
+    y -= overlayWidgets->getHeight() / 2;
     overlayWidgets->setBounds(16, y, getWidth()-32, 16);
     overlayWidgets->setVisible(true);
     overlayWidgets->setSfzNodeToEdit(node->getNodeData()); 
