@@ -381,9 +381,10 @@ template <class T>
 void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c, T* workspace)
 {
   rsAssert(c != a && c != b, "Does not work in place");
-  int cN = aN*bN;     // degree of c
-  T*  an = workspace; // array for the successive powers of a[]
-  an[0]  = T(1);      // initialize to a[]^0
+  int cN = aN*bN;               // degree of c
+  T*  an = workspace;           // array for the successive powers of a[]
+  an[0]  = rsUnityValue(a[0]);  // initialize to a[]^0
+  //an[0]  = T(1);   // old
 
   // accumulation:
   rsArrayTools::fillWithZeros(c, cN+1);
@@ -408,13 +409,17 @@ void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
 template<class T>
 void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)
 {
-  T b02 = b0*b0;
-  T b12 = b1*b1;
-  c[0]  = a[3]*b0*b02 + a[2]*b02 + a[1]*b0 + a[0];
-  c[1]  = T(3)*a[3]*b02*b1 + T(2)*a[2]*b0*b1 + a[1]*b1;
-  c[2]  = T(3)*a[3]*b0*b12 + a[2]*b12;
-  c[3]  = a[3]*b1*b12;
+  T two   = rsConstantValue(2, a[0]);
+  T three = rsConstantValue(3, a[0]);
+  T b02   = b0*b0;
+  T b12   = b1*b1;
+  c[0]    = a[3]*b0*b02 + a[2]*b02 + a[1]*b0 + a[0];
+  c[1]    = three*a[3]*b02*b1 + two*a[2]*b0*b1 + a[1]*b1;
+  c[2]    = three*a[3]*b0*b12 + a[2]*b12;
+  c[3]    = a[3]*b1*b12;
 }
+// needs unit test
+
 // We can compute the coeffs of the nested polynomial easily with sage:
 //   var("a0 a1 a2 a3 b0 b1 c0 c1 c2 c3")
 //   a(x) = a0 + a1*x + a2*x^2 + a3*x^3   # outer polynomial
