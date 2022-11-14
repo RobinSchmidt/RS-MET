@@ -701,8 +701,11 @@ public:
   in "a" and stores them in "ai". The degree of the polynomial represented by the coeffs in "ai"
   will be N+1. The constant term in the ai[] polynomial is the arbitrary integration constant
   which may be passed in as parameter "c" - this parameter is optional, it defaults to zero.  */
-  static void integral(const T *a, T *ai, int N, T c = T(0));
+  static void integral(const T *a, T *ai, int N, T c);
   // maybe rename to antiderivative?
+
+  static void integral(const T* a, T* ai, int N) { integral(a, ai, N, rsZeroValue(a[0])); }
+
 
   /** Computes the definite integral of the polynomial "p" where the lower integration limit is
   given by the polynomial "a" and the upper limit is given by the polynomial "b". "p", "a", "b"
