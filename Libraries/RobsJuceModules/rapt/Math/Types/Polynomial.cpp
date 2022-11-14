@@ -419,7 +419,6 @@ void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)
   c[3]    = a[3]*b1*b12;
 }
 // needs unit test
-
 // We can compute the coeffs of the nested polynomial easily with sage:
 //   var("a0 a1 a2 a3 b0 b1 c0 c1 c2 c3")
 //   a(x) = a0 + a1*x + a2*x^2 + a3*x^3   # outer polynomial
@@ -438,13 +437,15 @@ void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)
 template <class T>
 void rsPolynomial<T>::negateArgument(const T *a, T *am, int N)
 {
-  scaleArgument(a, am, N, T(-1));
+  scaleArgument(a, am, N, rsConstantValue(-1, a[0]));
+  //scaleArgument(a, am, N, T(-1));
 }
 
 template <class T>
 void rsPolynomial<T>::scaleArgument(const T* a, T* as, int N, T scaler)
 {
-  T s = T(1);
+  //T s = T(1);
+  T s = rsUnityValue(a[0]);
   for(int n = 0; n <= N; n++) {
     as[n] = s*a[n]; 
     s    *= scaler;  }
