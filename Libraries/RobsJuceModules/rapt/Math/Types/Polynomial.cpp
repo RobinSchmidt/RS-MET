@@ -1271,8 +1271,9 @@ void rsPolynomial<T>::fitQuadraticLagrange(T* a, const T* x, const T* y)
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)
 {
-  //a[2] = T(0.5)*(y[0]+y[2])-y[1];
-  a[2] = (T(1)/T(2))*(y[0]+y[2])-y[1];
+  T one = rsUnityValue(a[0]);
+  T two = rsConstantValue(2, a[0]);
+  a[2] = (one/two)*(y[0]+y[2])-y[1];
   a[1] = y[1]-y[0]-a[2];
   a[0] = y[0];
 }
@@ -1280,18 +1281,20 @@ void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)
 template<class T>
 void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, const T *y)
 {
+  T one = rsUnityValue(a[0]);
+  T two = rsConstantValue(2, a[0]);
   a[0] = y[1];
-  a[1] = (T(1)/T(2))*(y[2]-y[0]);
-  //a[1] = T(0.5)*(y[2]-y[0]);
+  a[1] = (one/two)*(y[2]-y[0]);
   a[2] = y[2] - a[0] - a[1];
 }
 
 template<class T>
 T rsPolynomial<T>::quadraticExtremumPosition(const T *a)
 {
-  return (T(-1)/T(2)) * a[1]/a[2]; // it's the client's responsibility to ensure that a[2] is nonzero
-
-  //return T(-0.5) * a[1]/a[2]; // it's the client's responsibility to ensure that a[2] is nonzero
+  T minusOne = rsConstantValue(-1, a[0]);
+  T two = rsConstantValue(2, a[0]);
+  return (minusOne/two) * a[1]/a[2]; 
+  // it's the client's responsibility to ensure that a[2] is nonzero
 }
 
 template<class T>
