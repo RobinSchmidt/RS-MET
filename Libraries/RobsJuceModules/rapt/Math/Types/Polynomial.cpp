@@ -137,9 +137,11 @@ T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
   rsAssert(n >= 0, "derivative order must be non-negative");
   if(n > N)
     return rsZeroValue(x); // avoid evaluating products including zero (starting at negative indices)
-  T y = T(rsProduct(N-n+1, N)) * a[N];
+  //T y = T(rsProduct(N-n+1, N)) * a[N];
+  T y = rsConstantValue(rsProduct(N-n+1, N), x) * a[N];
   for(int i = N-1; i >= n; i--)
-    y = y*x + T(rsProduct(i-n+1, i)) * a[i];
+    y = y*x + rsConstantValue(rsProduct(i-n+1, i), x) * a[i];
+    //y = y*x + T(rsProduct(i-n+1, i)) * a[i];
   return y;
 }
 // runtime: (N-n)*n? ..the number of terms in each product is n, the i-loop runs N-n times
@@ -480,6 +482,7 @@ void rsPolynomial<T>::shiftArgument(const T *a, T *as, int N, T x0)
   delete[] x0n;
   */
 }
+// needs unit test
 
 //-------------------------------------------------------------------------------------------------
 // calculus:
@@ -527,7 +530,8 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
   // (possibly alternating) powers of the stepsize h:
   T *hk = new T[N+1];
   T hs  = T(direction)*h;
-  hk[0] = T(1);
+  //hk[0] = T(1);
+  hk[0] = rsUnityValue(h);
   for(int k = 1; k <= N; k++)
     hk[k] = hk[k-1] * hs;
 
@@ -545,7 +549,8 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
       ad[n-k] += a[n] * T(rsPascalTriangle(binomCoeffs, n, k)) * hk[k];
   }
   if(direction == -1)
-    rsArrayTools::scale(ad, N, -1);
+    rsArrayTools::scale(ad, N, rsConstantValue(-1, h));
+    //rsArrayTools::scale(ad, N, -1);
 
   delete[] hk;
   delete[] binomCoeffs;
@@ -564,8 +569,10 @@ template<class T>
 template<class R>
 void rsPolynomial<T>::roots(const std::complex<R>* a, int degree, std::complex<R>* roots)
 {
-  const R eps = R(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
-                            // maybe something like 100*epsilon?
+  const R eps = R(2.0e-14); 
+  // For float, it was 2.0e-6 - use template numeric_limit<T>. Maybe something like 100*epsilon?
+  // Numerical recipies actually recommends to use something of the order of sqrt(epsilon) but 
+  // empirically it seems that we can often do (a lot) better than that.
 
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
@@ -625,6 +632,8 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
   // fractions for taking fractional update steps to break a limit cycles:
   static R fractions[numFractions+1] =
     { R(0.0),  R(0.5),  R(0.25), R(0.75), R(0.13), R(0.38), R(0.62), R(0.88), R(1.0) };
+  // Do they intend the numbers to be multiples of 0.125 but rounded to two decimal digits?
+
 
   std::complex<R> r = initialGuess; // the current estimate for the root
   for(int i = 1; i <= maxNumIterations; i++)
@@ -683,9 +692,9 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
 template<class T>
 T rsPolynomial<T>::rootLinear(const T& a, const T& b)
 {
-  if(a == T(0)) {  // hmm...maybe returning (+-)inf as root would actually be appropriate
+  if(a == rsZeroValue(a)) {  // hmm...maybe returning (+-)inf as root would actually be appropriate
     RS_DEBUG_BREAK;
-    return T(0);
+    return rsZeroValue(a);
   }
   else
     return -b/a;
@@ -696,7 +705,7 @@ template<class R>
 std::vector<std::complex<R>> rsPolynomial<T>::rootsQuadratic(const R& a, const R& b, const R& c)
 {
   // catch degenerate case with zero leading coefficient:
-  if(a == 0.0) {
+  if(a == rsZeroValue(a)) {
     std::vector<std::complex<R>> roots(1);
     roots[0] = rootLinear(b, c);
     return roots;
@@ -1606,7 +1615,15 @@ constructor. This can be done by explicitly calling a two-parameter constructor 
 being the parameters) or based on a prototype object from which it just copies the modulus. In the 
 latter case, the value is either taken from the first parameter in rsConstantValue or just set to 
 zero or one in rsZeroValue and rsUnityValue respectively. We need to use this kind of 
-prototye-based construction here.
+prototype-based construction here.
+
+...but before we can actually make it work with rsModularInteger, there will be more problems to 
+address. For example, we need to implement a square-root for modular integers as that is called in 
+many places such as root-finding algorithms. See here for how that can be done:
+https://math.stackexchange.com/questions/633160/modular-arithmetic-find-the-square-root
+https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm
+...however - quite probably, these algorithms that call sqrt won't make much sense in modular 
+arithmetic, but we need to satisfy the compiler nonetheless.
 
 
 ToDo:

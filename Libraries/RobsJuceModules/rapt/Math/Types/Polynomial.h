@@ -730,7 +730,9 @@ public:
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
   template<class R>
   static void roots(const std::complex<R>* a, int degree, std::complex<R>* roots);
-  // allocates heap memory
+  // ToDo:
+  // -It allocates heap memory - try to avoid that.
+  // -Let the user (optionally) pass a tolerance for the numeric convergence test.
 
   /** Same, but for real coefficients */
   template<class R>

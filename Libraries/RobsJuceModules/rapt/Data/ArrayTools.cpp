@@ -207,8 +207,10 @@ bool rsArrayTools::contains(const T *buffer, const int length, const T elementTo
 template <class T>
 void rsArrayTools::convolve(const T *x, const int xLength, const T *h, const int hLength, T *y)
 {
+  rsAssert(hLength > 0);
   for(int n = xLength+hLength-2; n >= 0; n--) {
-    T s = T(0);
+    T s = rsZeroValue(h[0]);  // new
+    //T s = T(0);             // old
     for(int k = rsMax(0, n-xLength+1); k <= rsMin(hLength-1, n); k++)
       s += h[k] * x[n-k];
     y[n] = s;
