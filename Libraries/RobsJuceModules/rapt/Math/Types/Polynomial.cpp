@@ -1069,22 +1069,27 @@ void rsPolynomial<T>::newtonToMonomialCoeffs(T* x, T* a, int N)
 template<class T>
 void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const T *y, const T *dy)
 {
+  T one   = rsUnityValue(a[0]);
+  T two   = rsConstantValue(2, a[0]);
+  T three = rsConstantValue(3, a[0]);
+  T six   = rsConstantValue(6, a[0]);
+
   // compute intermediate variables:
   T x0_2 = x[0]*x[0]; // x[0]^2
   T x0_3 = x0_2*x[0]; // x[0]^3
   T x1_2 = x[1]*x[1]; // x[1]^2
   T x1_3 = x1_2*x[1]; // x[1]^3
-  T k1   = T(3)*x[0]*x1_2;
-  T k2   = -T(3)*x[1]*y[1];
+  T k1   = three*x[0]*x1_2;
+  T k2   = -three*x[1]*y[1];
   T k3   = dy[1]-dy[0];
-  T s    = T(1)/(-x1_3+k1-T(3)*x0_2*x[1]+x0_3);  // scaler
+  T s    = one/(-x1_3+k1-T(3)*x0_2*x[1]+x0_3);  // scaler
 
   a[0] =  s*(x0_2*(x1_2*k3+k2) + x0_3*(y[1]-x[1]*dy[1]) + x[0]*x1_3*dy[0] + y[0]*(-x1_3+k1));
-  a[1] = -s*(x[0]*(x1_2*(T(2)*dy[1]+dy[0])-T(6)*x[1]*y[1]) - x0_3*dy[1]
-             + x0_2*x[1]*(-dy[1]-T(2)*dy[0]) + x1_3*dy[0] + T(6)*x[0]*x[1]*y[0]);
-  a[2] =  s*(x[0]*(x[1]*k3-T(3)*y[1]) + x1_2*(dy[1]+T(2)*dy[0]) + x0_2*(-dy[0]-T(2)*dy[1]) + k2
-             + y[0]*(T(3)*x[1]+T(3)*x[0]));
-  a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - T(2)*y[1] + T(2)*y[0]);
+  a[1] = -s*(x[0]*(x1_2*(two*dy[1]+dy[0])-six*x[1]*y[1]) - x0_3*dy[1]
+             + x0_2*x[1]*(-dy[1]-two*dy[0]) + x1_3*dy[0] + six*x[0]*x[1]*y[0]);
+  a[2] =  s*(x[0]*(x[1]*k3-three*y[1]) + x1_2*(dy[1]+two*dy[0]) + x0_2*(-dy[0]-two*dy[1]) + k2
+             + y[0]*(three*x[1]+three*x[0]));
+  a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - two*y[1] + two*y[0]);
 }
 
 template<class T>
