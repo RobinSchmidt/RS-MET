@@ -172,7 +172,7 @@ as the size of "value"). If no explicit instantiation exists for the given type,
 back to the default implementation, which returns T(1). It's also useful for modular integers to
 create 1 with the same modulus as some other number. */
 template<class T>
-inline T rsUnityValue(T value);
+inline T rsUnityValue(T valuePrototype);
 // Merge with Basics, maybe rename to rsOne or rsOneValue..but no - that's ambiguous
 
 /** Wraps the number to the interval 0...length. */
@@ -192,14 +192,14 @@ inline double rsZeroFunction(double x);
 
 /** Returns a zero value of the given type. @see rsUnityValue */
 template<class T>
-inline T rsZeroValue(T value);
+inline T rsZeroValue(T valuePrototype);
 // Merge with basics
 
 /** Turns a given constant of type TVal into another targt type TTgt using a value from that 
 target type as prototype. It is used, for example, to convert an integer into a modular integer. The
 prototype value is used to copy the modulus from the prototype into the result. */
 template<class TVal, class TTgt>
-inline TTgt rsConstantValue(TVal value, TTgt targetTemplate);
+inline TTgt rsConstantValue(TVal value, TTgt targetPrototype);
 
 
 // \todo - is it somehow possible to get rid of the inlining?

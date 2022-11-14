@@ -454,12 +454,13 @@ void rsPolynomial<T>::scaleArgument(const T* a, T* as, int N, T scaler)
 template <class T>
 void rsPolynomial<T>::shiftArgument(const T *a, T *as, int N, T x0)
 {
-  T r[2] = { -x0, T(1) };
+  //T r[2] = { -x0, T(1) };
+  T r[2] = { -x0, rsUnityValue(x0) };
   compose(r, 1, a, N, as);
   return;
   // todo: provide workspace based version that uses the non-allocating version of compose
 
-
+  /*
   // inefficient old implementation - todo: move to prototypes, it's worth to keep the code 
   // somewhere because it shows the algorithm derived from the binomial theorem:
   rsUint32 Nu = rsUint32(N); // used to fix warnings
@@ -477,6 +478,7 @@ void rsPolynomial<T>::shiftArgument(const T *a, T *as, int N, T x0)
       as[n] += T(rsPascalTriangle(pt, k, k-n)) * x0n[k-n] * a[k]; }
   delete[] pt;
   delete[] x0n;
+  */
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -494,7 +496,8 @@ template <class T>
 void rsPolynomial<T>::integral(const T *a, T *ai, int N, T c)
 {
   for(int n = N+1; n >= 1; n--)
-    ai[n] = a[n-1] / T(n);
+    ai[n] = a[n-1] / rsConstantValue(n, c);
+    //ai[n] = a[n-1] / T(n);
   ai[0] = c;
 }
 
