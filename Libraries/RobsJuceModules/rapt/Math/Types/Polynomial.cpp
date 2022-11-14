@@ -1451,11 +1451,16 @@ void rsPolynomial<T>::legendrePolynomial(R *a, int degree)
 template<class T>
 void rsPolynomial<T>::jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1, T *w1x, T *w2)
 {
-  T k  = T(2*n)+a+b;
-  *w0  = T(2*n)*(T(n)+a+b)*(k-T(2));
-  *w1  = (k-T(1))*(a*a-b*b);
-  *w1x = k*(k-T(1))*(k-T(2));
-  *w2  = -T(2)*k*(T(n)+a-T(1))*(T(n)+b-T(1));
+  T one  = rsUnityValue(a);
+  T two  = rsConstantValue(2, a);
+  T enn  = rsConstantValue(n, a);
+  T enn2 = rsConstantValue(2*n, a);
+
+  T k  = enn2+a+b;
+  *w0  = enn2*(enn+a+b)*(k-two);
+  *w1  = (k-one)*(a*a-b*b);
+  *w1x = k*(k-one)*(k-two);
+  *w2  = -two*k*(enn+a-one)*(enn+b-one);
   // from: https://en.wikipedia.org/wiki/Jacobi_polynomials#Recurrence_relation
 }
 
