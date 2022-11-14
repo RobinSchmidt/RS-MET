@@ -1130,6 +1130,7 @@ T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
       xij *= xi; }}
   return A;
 }
+// needs unit test
 
 /*
 // Old implementation using Gaussian elimination with the Vandermonde matrix:
@@ -1176,17 +1177,18 @@ void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N, T* wrk)
   using AT = rsArrayTools;
   AT::fillWithZeros(a, N);
   T* num = &wrk[0];
+  T one = rsUnityValue(a[0]);
   for(int n = 0; n < N; n++)
   {
     // init num and den to 1:
     AT::fillWithZeros(num, N);
-    num[0] = 1;
-    T den = 1;
+    num[0] = one;
+    T den = one;
 
     // convolutive and multiplicative accumulation of num and den:
     for(int k = 0; k < N; k++) {
       if(k != n) {
-        AT::convolveWithTwoElems(num, k+1, -x[k], T(1), num);
+        AT::convolveWithTwoElems(num, k+1, -x[k], one, num);
         den *= x[n] - x[k];  }}
 
     // accumulate this result additively into coeff-array:
