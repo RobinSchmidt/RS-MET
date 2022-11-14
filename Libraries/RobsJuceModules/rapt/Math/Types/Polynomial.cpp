@@ -1124,7 +1124,7 @@ T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
   T **A; rsArrayTools::allocateSquareArray2D(A, N);
   for(int i = 0; i < N; i++) {
     T xi  = x[i];
-    T xij = T(1);  // xi^j
+    T xij = rsUnityValue(xi);  // xi^j
     for(int j = 0; j < N; j++) {
       A[i][j] = xij;
       xij *= xi; }}
@@ -1205,7 +1205,7 @@ void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, in
 {
   T *x = new T[N];
   for(int n = 0; n < N; n++)
-    x[n] = x0 + T(n)*dx;
+    x[n] = x0 + rsConstantValue(n, x0)*dx;
   interpolant(a, x, y, N);
   delete[] x;
 }
