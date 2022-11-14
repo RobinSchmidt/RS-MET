@@ -216,9 +216,9 @@ R rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
 template<class T>
 T rsPolynomial<T>::evaluateIntegral(const T& x, const T* a, int N, T c)
 {
-  T y = a[N] / T(N+1);
+  T y = a[N] / rsConstantValue(N+1, x);
   for(int i = N-1; i >= 0; i--)
-    y = y*x + a[i] / T(i+1);
+    y = y*x + a[i] / rsConstantValue(i+1, x);
   return y*x + c;
 }
 // maybe make a variant that takes lower and upper integration limits a,b - this can be optimized:
@@ -230,12 +230,14 @@ T rsPolynomial<T>::evaluateIntegral(const T& x, const T* a, int N, T c)
 template<class T>
 T rsPolynomial<T>::evaluateHermite(const T& x, int n)
 {
-  if(n == 0) return T(1);
-  if(n == 1) return T(2)*x;
-  T h0 = T(1);
-  T h1 = T(2)*x;
+  T one = rsUnityValue(x);
+  T two = rsConstantValue(2, x);
+  if(n == 0) return one;
+  if(n == 1) return two*x;
+  T h0 = one;
+  T h1 = two*x;
   for(int i = 1; i < n; i++) {
-    T tmp = T(2) * (x*h1 - T(i)*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
+    T tmp = two * (x*h1 - rsConstantValue(i, x)*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
     h0 = h1;
     h1 = tmp;
   }
