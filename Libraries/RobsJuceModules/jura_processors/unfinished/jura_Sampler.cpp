@@ -1564,11 +1564,10 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
--The widget in the OpcodeEditor doesn't update when we change the value of an opcode via the 
- overlay slider -> fix that! Check SfzOpcodeEditor::handlePatchUpdate - we may need to do something 
- there. Or maybe in SfzOpcodeWidgetSet::handlePatchUpdate we need to trigger some action to update 
- the currently visible widget - but without sending a notification because that may lead to an
- infinite loop of mutual notifications.
+-When we lcik on e.g. volume to make it appear in the opcode editor, the manipulate e.g. 
+ pitch_keycenter via the overlay widgets, the volume slider updates itself to show the new
+ keycenter value - which makes no sense. Maybe before updating the widget content, we should check,
+ if the patchChange applies to the shown widget
 -Keep the selcted TreeNode highlighted as long as the slider for it is visible. Also highlight 
  the relevant section of the code in the editor.
 -The slider needs exponential characteristic for certain parameters. Maybe to start, just use a 
