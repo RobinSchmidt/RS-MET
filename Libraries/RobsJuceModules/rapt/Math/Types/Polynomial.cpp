@@ -1300,12 +1300,23 @@ T rsPolynomial<T>::quadraticExtremumPosition(const T *a)
 template<class T>
 void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, const T *y, const T& s0, const T& s2)
 {
+  T c2  = rsConstantValue( 2, a[0]);
+  T c3  = rsConstantValue( 3, a[0]);
+  T c4  = rsConstantValue( 4, a[0]);
+  T c5  = rsConstantValue( 5, a[0]);
+  T c7  = rsConstantValue( 7, a[0]);
+  T c8  = rsConstantValue( 8, a[0]);
+  T c9  = rsConstantValue( 9, a[0]);
+  T c11 = rsConstantValue(11, a[0]);
+  T c16 = rsConstantValue(16, a[0]);
+
   a[0] = y[0];
   a[1] = s0;
-  a[2] = -(T(5)*y[2]-T(16)*y[1]+T(11)*y[0]-T(2)*s2+T(8)*s0)/T(4);
-  a[3] =  (T(7)*y[2]-T(16)*y[1]+T( 9)*y[0]-T(3)*s2+T(5)*s0)/T(4);
-  a[4] = -(T(2)*y[2]-T( 4)*y[1]+T( 2)*y[0]-  s2  +s0)/T(4);
+  a[2] = -(c5*y[2]-c16*y[1]+c11*y[0]-c2*s2+c8*s0)/c4;
+  a[3] =  (c7*y[2]-c16*y[1]+ c9*y[0]-c3*s2+c5*s0)/c4;
+  a[4] = -(c2*y[2]- c4*y[1]+ c2*y[0]-  s2  +s0)/c4;
 }
+// needs unit test
 
 template<class T>
 template<class R>
