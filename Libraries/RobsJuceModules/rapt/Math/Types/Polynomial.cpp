@@ -1082,7 +1082,7 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const
   T k1   = three*x[0]*x1_2;
   T k2   = -three*x[1]*y[1];
   T k3   = dy[1]-dy[0];
-  T s    = one/(-x1_3+k1-T(3)*x0_2*x[1]+x0_3);  // scaler
+  T s    = one/(-x1_3+k1-three*x0_2*x[1]+x0_3);  // scaler
 
   a[0] =  s*(x0_2*(x1_2*k3+k2) + x0_3*(y[1]-x[1]*dy[1]) + x[0]*x1_3*dy[0] + y[0]*(-x1_3+k1));
   a[1] = -s*(x[0]*(x1_2*(two*dy[1]+dy[0])-six*x[1]*y[1]) - x0_3*dy[1]
@@ -1107,10 +1107,14 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *y, const
 template<class T>
 void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
 {
+  T one  = rsUnityValue(a[0]);
+  T two  = rsConstantValue(2, a[0]);
+  T four = rsConstantValue(4, a[0]);
+  T six  = rsConstantValue(6, a[0]);
   a[0] = y[0];
-  a[2] = (T(1)/T(2))*(y[-1]+y[1]-T(2)*a[0]);
-  a[3] = (T(1)/T(6))*(y[2]-y[1]+y[-1]-a[0]-T(4)*a[2]);
-  a[1] = (T(1)/T(2))*(y[1]-y[-1]-T(2)*a[3]);
+  a[2] = (one/two)*(y[-1]+y[1]-two*a[0]);
+  a[3] = (one/six)*(y[2]-y[1]+y[-1]-a[0]-four*a[2]);
+  a[1] = (one/two)*(y[1]-y[-1]-two*a[3]);
 }
 
 // move to a function rsMatrixView:vandermonde(const T* x, int N, T* V)
