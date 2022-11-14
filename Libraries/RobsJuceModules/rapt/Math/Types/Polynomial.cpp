@@ -250,8 +250,8 @@ T rsPolynomial<T>::evaluateHermite(const T& x, int n)
 template<class T>
 T rsPolynomial<T>::evaluateNewton(const T& x, const T* c, const T* r, int N)
 {
-  T p = T(1);   // accumulator for Newton basis polynomials
-  T y = c[0];   // accumulator for result
+  T p = rsUnityValue(x);   // accumulator for Newton basis polynomials
+  T y = c[0];              // accumulator for result
   for(int i = 0; i < N; i++) {
     p *= x - r[i];
     y += c[i+1] * p; }
@@ -293,14 +293,15 @@ void rsPolynomial<T>::weightedSum(
 template <class T>
 void rsPolynomial<T>::divide(const T *p, int pDegree, const T *d, int dDegree, T *q, T *r)
 {
-  rsArrayTools::copy(p, r, pDegree+1); // init remainder with p
-  rsArrayTools::fillWithZeros(q, pDegree+1); // init quotient with zeros
+  using AT = rsArrayTools;
+  AT::copy(p, r, pDegree+1);       // init remainder with p
+  AT::fillWithZeros(q, pDegree+1); // init quotient with zeros
   for(int k = pDegree-dDegree; k >= 0; k--) {
     q[k] = r[dDegree+k] / d[dDegree];
     for(int j = dDegree+k-1; j >= k; j--)
       r[j] -= q[k] * d[j-k];
   }
-  rsArrayTools::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
+  AT::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
   // maybe return the degree of the quotient, the degree of the remainder is then
   // pDegree-qDegree - ...what if dDegree > pDegree? the most sensibe thing in this case would be,
   // if the remainder is equal to p ...and the quotient should be 0 ...i think, the model is:
@@ -313,7 +314,8 @@ void rsPolynomial<T>::divideByMonomialInPlace(S *dividendAndResult, int dividend
   S x0, S *remainder)
 {
   *remainder = dividendAndResult[dividendDegree];
-  dividendAndResult[dividendDegree] = T(0);
+  //dividendAndResult[dividendDegree] = T(0);
+  dividendAndResult[dividendDegree] = rsZeroValue(x0);
   for(int i=dividendDegree-1; i>=0; i--) {
     S swap               = dividendAndResult[i];
     dividendAndResult[i] = *remainder;

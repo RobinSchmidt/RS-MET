@@ -619,7 +619,7 @@ public:
   // shouldn't x0 be const S& ? ...comment, what S is and why we don't use T ..it has to do with
   // real vs complex
 
-
+  /** !!! NOT YET IMPLEMENTED !!! */
   static void greatestCommonDivisor(const T* p, int pDegree, const T* q, int qDegree, 
     T* gcd, int* gcdDegree, T tolerance = T(0));
   // under construction
