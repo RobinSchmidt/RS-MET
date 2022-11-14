@@ -129,8 +129,16 @@ protected:
 
 };
 
-/** Explicit template instantiation, to be used by the rsPow template-function and also in 
+/** Explicit template instantiations, to be used by the rsPow template-function and also in 
 rsPolynomial etc.. */
+
+
+template<class T>
+rsModularInteger<T> rsZeroValue(rsModularInteger<T> value)
+{ 
+  return rsModularInteger<T>(T(0), value.modulus); 
+}
+
 template<class T>
 rsModularInteger<T> rsUnityValue(rsModularInteger<T> value)
 { 
@@ -143,7 +151,8 @@ rsModularInteger<T> rsConstantValue(T value, rsModularInteger<T> targetTemplate)
   return rsModularInteger<T>(value, targetTemplate.modulus);
 }
 
-// todo: add also rsZeroValue OR better: implement rsZeroValue and rsUnityvalue in terms of 
-// rsConstantValue and implement it once and for all
+// ToDo: Implement the default, templatized rsZeroValue and rsUnityValue functions in terms of 
+// rsConstantValue uch that rsModularInteger and all other similar classes need to provide only an 
+// implementation of rsConstantValue
 
 #endif
