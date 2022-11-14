@@ -1369,35 +1369,41 @@ void rsPolynomial<T>::threeTermRecursion(T* a, const T& w0, int degree, const T*
 template<class T>
 void rsPolynomial<T>::besselPolynomial(T *a, int degree)
 {
+  T zero = rsZeroValue(a[0]);
+  T one  = rsUnityValue(a[0]);
+  // It's a bit problematic to use a[0] as prototype because it may be uninitialized...hmm...
+
   int m, n;
-  for(n=0; n<=degree; n++)
-    a[n] = T(0);
+  for(n = 0; n <= degree; n++)
+    a[n] = zero;
 
   if( degree == 0 ) {
-    a[0] = T(1);
+    a[0] = one;
     return; }
   else if( degree == 1 )  {
-    a[0] = T(1);
-    a[1] = T(1);
+    a[0] = one;
+    a[1] = one;
     return; }
 
   // the general case is treated by recursion:
-  a[0]  = T(1);
+  a[0]  = one;
   T *b1 = new T[degree+1]; // why +1?
   T *b2 = new T[degree+1];
-  b2[0] = T(1); b2[1] = T(0);
-  b1[0] = T(1); b1[1] = T(1);
+  b2[0] = one; b2[1] = zero;
+  b1[0] = one; b1[1] = one;
   for(n = 2; n <= degree; n++) {
-    T c = (T) (2*n-1);
+    T c = rsConstantValue(2*n-1, a[0]);
     for(m = n; m >  0; m--)   a[m]  = c*b1[m-1];
-    a[0] = 0;
+    a[0] = zero;
     for(m = 0; m <  n-1; m++) a[m] += b2[m];
     for(m = 0; m <  n;   m++) b2[m] = b1[m];
     for(m = 0; m <= n;   m++) b1[m] = a[m];  }
   delete[] b1;
   delete[] b2;
 }
-// can this be optimized? i think so
+// ToDo:
+// -avoid memory allocations - provide a workspace-based version
+// -can this be optimized? i think so
 
 template<class T>
 template<class R>
