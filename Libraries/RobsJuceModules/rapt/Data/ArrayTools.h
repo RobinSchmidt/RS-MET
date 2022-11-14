@@ -1041,7 +1041,8 @@ template <class T>
 inline void rsArrayTools::fillWithZeros(T *buffer, int length)
 {
   for(int i = 0; i < length; i++)
-    buffer[i] = T(0);
+    buffer[i] = rsZeroValue(buffer[0]);  // new
+    //buffer[i] = T(0);   // old
 }
 
 template <class T>
