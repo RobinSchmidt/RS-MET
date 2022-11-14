@@ -1045,20 +1045,21 @@ void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N, T scaler)
   rsArrayTools::fillWithZeros(a, N+1);
   a[0] = scaler;
   for(int n = 1; n <= N; n++)
-    rsArrayTools::convolveWithTwoElems(a, n, -r[n-1], T(1), a);
+    rsArrayTools::convolveWithTwoElems(a, n, -r[n-1], rsUnityValue(scaler), a);
 }
 
 template<class T>
 void rsPolynomial<T>::newtonToMonomialCoeffs(T* x, T* a, int N)
 {
-  T x0 = x[0]; 
-  x[0] = T(1);     // x is re-used as our convolutive accumulator (and destroyed in the process)
+  T x0  = x[0]; 
+  T one = rsUnityValue(x0);
+  x[0]  = one;     // x is re-used as our convolutive accumulator (and destroyed in the process)
   for(int i = 1; i < N; i++) {
-    T x1 = x[i];                                            // save x[i] because the next line..
-    rsArrayTools::convolveWithTwoElems(x, i, -x0, T(1), x); // ..overwrites x up to x[i] but we..
-    x0 = x1;                                                // ..still need it in next iteration
+    T x1 = x[i];                                           // save x[i] because the next line..
+    rsArrayTools::convolveWithTwoElems(x, i, -x0, one, x); // ..overwrites x up to x[i] but we..
+    x0 = x1;                                               // ..still need it in next iteration
     for(int j = 0; j < i; j++)
-      a[j] += a[i] * x[j]; }                                // accumulation of final coeffs
+      a[j] += a[i] * x[j]; }                               // accumulation of final coeffs
 }
 
 
@@ -1089,10 +1090,13 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const
 template<class T>
 void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *y, const T *dy)
 {
+  T one   = rsUnityValue(a[0]);
+  T two   = rsConstantValue(2, a[0]);
+  T three = rsConstantValue(3, a[0]);
   a[0] = y[0];
   a[1] = dy[0];
-  a[2] = T(3)*(y[1]-a[1]-a[0])-dy[1]+a[1];
-  a[3] = (T(1)/T(3)) * (dy[1]-T(2)*a[2]-a[1]);
+  a[2] = three*(y[1]-a[1]-a[0])-dy[1]+a[1];
+  a[3] = (one/three) * (dy[1]-two*a[2]-a[1]);
 }
 
 template<class T>
