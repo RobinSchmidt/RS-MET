@@ -618,6 +618,8 @@ public:
   // result array may or may not point to the same array as the dividend
   // shouldn't x0 be const S& ? ...comment, what S is and why we don't use T ..it has to do with
   // real vs complex
+  // ToDo: Document, why a second template parameter S is introduced here and what it means. It's
+  // confusing.
 
   /** !!! NOT YET IMPLEMENTED !!! */
   static void greatestCommonDivisor(const T* p, int pDegree, const T* q, int qDegree, 

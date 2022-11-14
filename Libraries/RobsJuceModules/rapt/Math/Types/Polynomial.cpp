@@ -349,7 +349,8 @@ void rsPolynomial<T>::greatestCommonDivisor(
 template <class T>
 void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)
 {
-  aPowers[0][0] = 1;
+  //aPowers[0][0] = 1; // old
+  aPowers[0][0] = rsUnityValue(a[0]);
   if(highestPower < 1)
     return;
   rsArrayTools::copy(a, aPowers[1], N+1);
@@ -363,7 +364,8 @@ void rsPolynomial<T>::powers(const T* a, int N, T* aPowers, int highestPower, in
   //rsError("Not yet tested");
   rsAssert(stride >= (N+1)*highestPower-1); // is this correct? or N*highestPower + 1
 
-  aPowers[0] = 1;
+  //aPowers[0] = 1; // old
+  aPowers[0] = rsUnityValue(a[0]);
   if(highestPower < 1)
     return;
   rsArrayTools::copy(a, &aPowers[stride], N+1);
