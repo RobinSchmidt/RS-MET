@@ -1495,9 +1495,14 @@ void rsPolynomial<T>::jacobiPolynomials(T **c, T a, T b, int maxDegree)
 template<class T>
 void rsPolynomial<T>::legendreRecursion(T *a, int n, T *a1, T *a2)
 {
-  if( n == 0 ) { a[0] = T(1);             return; }
-  if( n == 1 ) { a[0] = T(0); a[1] = T(1); return; }
-  threeTermRecursion(a, T(n), n, a1, T(0), T(2*n)-T(1), a2, -(T(n)-T(1))); // soem Ts can be moved out
+  T zero = rsZeroValue(a1[0]);
+  T one  = rsUnityValue(a1[0]);
+  T enn  = rsConstantValue(n, a1[0]);
+  T enn2 = rsConstantValue(2*n, a1[0]);
+
+  if( n == 0 ) { a[0] = one;              return; }
+  if( n == 1 ) { a[0] = zero; a[1] = one; return; }
+  threeTermRecursion(a, enn, n, a1, zero, enn2-one, a2, -(enn-one)); // soem Ts can be moved out
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
   // jacobiRecursion(a, n, a1, a2, 0.0, 0.0);
 }
