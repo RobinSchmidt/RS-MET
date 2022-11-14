@@ -228,12 +228,8 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 // Fails to compile. It complains about rsPolynomial::integralAt. See comment there for a possible
 // solution. - fixed - but there are still other, similar issues. What remains to be done is to 
 // replace occurrences of expressions like T(0), T(1), T(i+1) etc. by calls to e.g. 
-// rsZeroValue(coeffs[0]) or rsZeroValue(x), rsUnityValue(...), rsConstantValue(...). The problem 
-// is that rsModularInteger refuses to construct based on a single int - and for a good reason:
-// It needs to somehow get the modulus to be used into the constructor. This can be done by 
-// explicitly calling a two-parameter constructor (value and modulus being the parameters) or based
-// on a prototype object from which it just copies the modulus. We need to use the prototye-based 
-// construction.
+// rsZeroValue(coeffs[0]) or rsZeroValue(x), rsUnityValue(...), rsConstantValue(...). See comment at 
+// the bottom of rsPolynomial.cpp
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int

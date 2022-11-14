@@ -196,8 +196,8 @@ inline T rsZeroValue(T value);
 // Merge with basics
 
 /** Turns a given constant of type TVal into another targt type TTgt using a value from that 
-target type as template. It is used, for example, to convert an integer into a modular integer. The
-template value is used to copy the modulus from the template into the result */
+target type as prototype. It is used, for example, to convert an integer into a modular integer. The
+prototype value is used to copy the modulus from the prototype into the result. */
 template<class TVal, class TTgt>
 inline TTgt rsConstantValue(TVal value, TTgt targetTemplate);
 

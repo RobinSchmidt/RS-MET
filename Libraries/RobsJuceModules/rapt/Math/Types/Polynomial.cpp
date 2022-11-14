@@ -70,8 +70,7 @@ template <class T>
 T rsPolynomial<T>::evaluate(const T& x, const T *a, int degree)
 {
   if(degree < 0)
-    return rsZeroValue(x); // new
-    //return T(0);  // old
+    return rsZeroValue(x);
   T y = a[degree];
   for(int i = degree-1; i >= 0; i--)
     y = y*x + a[i];
@@ -126,9 +125,9 @@ std::complex<R> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
 template<class T>
 T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N)
 {
-  T y = T(N) * a[N];
+  T y = rsConstantValue(N, x) * a[N];
   for(int i = N-1; i >= 1; i--)
-    y = y*x + T(i) * a[i];
+    y = y*x + rsConstantValue(i, x) * a[i];
   return y;
 }
 
@@ -137,7 +136,7 @@ T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
 {
   rsAssert(n >= 0, "derivative order must be non-negative");
   if(n > N)
-    return T(0); // avoid evaluating products including zero (starting at negative indices)
+    return rsZeroValue(x); // avoid evaluating products including zero (starting at negative indices)
   T y = T(rsProduct(N-n+1, N)) * a[N];
   for(int i = N-1; i >= n; i--)
     y = y*x + T(rsProduct(i-n+1, i)) * a[i];
@@ -152,7 +151,7 @@ template <class T>
 void rsPolynomial<T>::evaluateWithDerivative(const T& x, const T *a, int degree, T *y, T *yd)
 {
   *y  = a[degree];
-  *yd = T(0);
+  *yd = rsZeroValue(x);
   for(int i = degree-1; i >= 0; i--) {
     *yd = *yd * x + *y;
     *y  = *y  * x + a[i];
@@ -174,7 +173,7 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
   }
 
   // new - should work without warning also for T = rsFraction<int>:
-  T fac = 2;
+  T fac = rsConstantValue(2, x);
   for(int i = 2; i <= numDerivatives; i++) {
     results[i] *= fac; fac *= T(i+1);  }
 
@@ -473,7 +472,8 @@ template <class T>
 void rsPolynomial<T>::derivative(const T *a, T *ad, int N)
 {
   for(int n = 1; n <= N; n++)
-    ad[n-1] = T(n) * a[n];
+    ad[n-1] = rsConstantValue(n, a[0]) * a[n]; // new
+    //ad[n-1] = T(n) * a[n]; // old
 }
 
 template <class T>
@@ -1577,7 +1577,24 @@ void rsPolynomial<T>::coeffsNewton(const T* x, T* y, int N)
 // https://en.wikipedia.org/wiki/Neville%27s_algorithm
 
 /*
+
+Notes:
+
+In a lot of places you will see things like rsZeroValue(x), rsUnityValue(x), rsConstantValue(x) 
+where it would seem that a simpler T(0), T(1), T(i), etc. could have been used. The complication is 
+necessarry to make rsPolynomial admit taking e.g. rsModularInteger<int> as template parameter.
+The problem is that rsModularInteger refuses to construct based on a single int - and for a good
+reason: It needs to somehow get the modulus to be used into the constructor. This can be done by 
+explicitly calling a two-parameter constructor (value and modulus being the parameters) or based
+on a prototype object from which it just copies the modulus. In the latter case, the value is 
+either taken from the first parameter in rsConstantValue or just set to zero or one in rsZeroValue
+and rsUnityValue respectively. We need to use the prototye-based construction here.
+
+
 ToDo:
+-Try to avoid explicit usage of std::complex. The user should decide, if they want to use 
+ std::complex or something else, like e.g. rsComplex
+
 -check the rootsToCoeffs functions - these can (should!) be improved
 
 -for those static functions that explicitly expect real or complex parameters, use a different
