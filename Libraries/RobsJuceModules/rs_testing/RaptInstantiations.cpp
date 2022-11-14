@@ -225,11 +225,14 @@ template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 
 //template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
-// Fails to compile. It complains about rsPolynomial::integralAt. See comment there for a possible
-// solution. - fixed - but there are still other, similar issues. What remains to be done is to 
-// replace occurrences of expressions like T(0), T(1), T(i+1) etc. by calls to e.g. 
-// rsZeroValue(coeffs[0]) or rsZeroValue(x), rsUnityValue(...), rsConstantValue(...). See comment at 
-// the bottom of rsPolynomial.cpp
+// Fails to compile. We need to replace occurrences of expressions like T(0), T(1), T(i+1) etc. by
+// calls to e.g. rsZeroValue(coeffs[0]) or rsZeroValue(x), rsUnityValue(...), rsConstantValue(...). 
+// See comment at the bottom of rsPolynomial.cpp - there, it is done. We now get an error that says
+// "cannot convert from 'TVal' to 'TTgt' with TVal=RAPT::rsUint32 and 
+// TTgt=RAPT::rsModularInteger<int>" ...it seems that the compiler tries to use the fallback 
+// implementation of rsConstantValue in BasicFunctions.h instead of the explicit specialization in
+// rsModularInteger.h. Maybe rsConstantValue function gets called somewhere before the compiler has 
+// seen the explicit specialization? -> figure that out and fix it!
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int

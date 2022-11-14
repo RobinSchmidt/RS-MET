@@ -76,7 +76,8 @@ void rsMatrixTools::transposedMatrixVectorMultiply(T **A, T *x, T *y, int N, int
 {
   for(int i = 0; i < M; i++)
   {
-    y[i] = T(0);
+    //y[i] = T(0);
+    y[i] = rsZeroValue(x[0]);
     for(int j = 0; j < N; j++)
       y[i] += A[j][i] * x[j];
   }
