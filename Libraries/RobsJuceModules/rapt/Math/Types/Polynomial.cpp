@@ -177,7 +177,7 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
   // new - should work without warning also for T = rsFraction<int>:
   T fac = rsConstantValue(2, x);
   for(int i = 2; i <= numDerivatives; i++) {
-    results[i] *= fac; fac *= T(i+1);  }
+    results[i] *= fac; fac *= rsConstantValue(i+1, x);  }
 
   // old:
   //rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
@@ -529,7 +529,7 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
 {
   // (possibly alternating) powers of the stepsize h:
   T *hk = new T[N+1];
-  T hs  = T(direction)*h;
+  T hs  = rsConstantValue(direction, h) * h;
   //hk[0] = T(1);
   hk[0] = rsUnityValue(h);
   for(int k = 1; k <= N; k++)
@@ -546,7 +546,8 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
   for(unsigned int n = 0; n <= (rsUint32)N; n++)
   {
     for(unsigned int k = 1; k <= n; k++)
-      ad[n-k] += a[n] * T(rsPascalTriangle(binomCoeffs, n, k)) * hk[k];
+      ad[n-k] += a[n] * rsConstantValue(rsPascalTriangle(binomCoeffs, n, k), h) * hk[k];
+      //ad[n-k] += a[n] * T(rsPascalTriangle(binomCoeffs, n, k)) * hk[k];
   }
   if(direction == -1)
     rsArrayTools::scale(ad, N, rsConstantValue(-1, h));
