@@ -1594,15 +1594,16 @@ void rsPolynomial<T>::coeffsNewton(const T* x, T* y, int N)
 
 Notes:
 
-In a lot of places you will see things like rsZeroValue(x), rsUnityValue(x), rsConstantValue(x) 
+In a lot of places you will see things like rsZeroValue(x), rsUnityValue(x), rsConstantValue(i, x) 
 where it would seem that a simpler T(0), T(1), T(i), etc. could have been used. The complication is 
 necessarry to make rsPolynomial admit taking e.g. rsModularInteger<int> as template parameter.
 The problem is that rsModularInteger refuses to construct based on a single int - and for a good
-reason: It needs to somehow get the modulus to be used into the constructor. This can be done by 
-explicitly calling a two-parameter constructor (value and modulus being the parameters) or based
-on a prototype object from which it just copies the modulus. In the latter case, the value is 
-either taken from the first parameter in rsConstantValue or just set to zero or one in rsZeroValue
-and rsUnityValue respectively. We need to use the prototye-based construction here.
+reason: It needs to somehow not only get the value but also the modulus to be used into the 
+constructor. This can be done by explicitly calling a two-parameter constructor (value and modulus 
+being the parameters) or based on a prototype object from which it just copies the modulus. In the 
+latter case, the value is either taken from the first parameter in rsConstantValue or just set to 
+zero or one in rsZeroValue and rsUnityValue respectively. We need to use this kind of 
+prototye-based construction here.
 
 
 ToDo:
