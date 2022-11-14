@@ -1467,13 +1467,16 @@ void rsPolynomial<T>::jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1, T *w1
 template<class T>
 void rsPolynomial<T>::jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b)
 {
+  T one = rsUnityValue(a);
+  T two = rsConstantValue(2, a);
+
   // initialization:
   if( n == 0 ) {
-    c[0] = T(1);
+    c[0] = one;
     return; }
   if( n == 1 ) {
-    c[0] = (T(1)/T(2))*(a-b);
-    c[1] = (T(1)/T(2))*(a+b+T(2));
+    c[0] = (one/two)*(a-b);
+    c[1] = (one/two)*(a+b+two);
     return; }
 
   // recursion:
