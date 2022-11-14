@@ -828,11 +828,11 @@ void SfzTreeView::mouseMove(const MouseEvent& e)
 
 void SfzTreeView::mouseExit(const MouseEvent& e)
 {
-  MouseEvent e2 = e.getEventRelativeTo(this); // seems to be the same as e
+  //MouseEvent e2 = e.getEventRelativeTo(this); // seems to be the same as e
   int margin = 4;
-  if(e2.x < margin || e2.x > getWidth()-margin)
+  if(e.x < margin || e.x > getWidth()-margin)
     hideOverlayWidgets();
-  if(e2.y < margin || e2.y > getHeight()-margin)
+  if(e.y < margin || e.y > getHeight()-margin)
     hideOverlayWidgets();
 
   jura::RTreeView::mouseExit(e);
