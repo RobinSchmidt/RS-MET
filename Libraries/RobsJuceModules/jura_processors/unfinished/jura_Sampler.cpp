@@ -1564,7 +1564,7 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
--When we lcik on e.g. volume to make it appear in the opcode editor, the manipulate e.g. 
+-When we click on e.g. volume to make it appear in the opcode editor, the manipulate e.g. 
  pitch_keycenter via the overlay widgets, the volume slider updates itself to show the new
  keycenter value - which makes no sense. Maybe before updating the widget content, we should check,
  if the patchChange applies to the shown widget
