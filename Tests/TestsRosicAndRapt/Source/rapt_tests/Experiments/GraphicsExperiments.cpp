@@ -1334,13 +1334,13 @@ void complexContours()
   // Some strange function i came up with when trying to invent non-orthogonal coordinate systems
   // for practicing calculations with metric tensors - might be called spiral-coordinates or 
   // something?:
-  xMin = -1; xMax = +1; yMin = -PI; yMax = PI;
+  xMin = -1; xMax = +1; yMin = -1; yMax = +1;
   f = [=](Complex z) 
   { 
     double a = real(z);
     double t = imag(z);
-    double x = exp(-a*t) * cos(t);  // maybe use exp(-a*t) * cos(t)
-    double y = exp(-a*t) * sin(t);
+    double x = exp(-a*t) * cos(PI*t);  // maybe use exp(-a*t) * cos(t)
+    double y = exp(-a*t) * sin(PI*t);
     return Complex(x, y);
   };
   // 
