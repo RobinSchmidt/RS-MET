@@ -1172,7 +1172,8 @@ void contours()
 
 
   // A nice rational function which shows a lot of features that may be interesting for
-  // demo/visualization plots (minima, maxima, saddles):
+  // demo/visualization plots (minima, maxima, saddles), especially in the context of gradient 
+  // descent:
   r = 4;
   f = [&](float x, float y)
   {
@@ -1183,7 +1184,8 @@ void contours()
     //den = 1 + x*x + y*y; den *= den;  // a variation
     return num/den;
   };
-
+  // The function doesn't feature any poles though. That's appropriate for some sort of plausible 
+  // "terrain"
 
 
   float xMin = -r;
@@ -1222,7 +1224,7 @@ void contours()
 
 
 
-
+  /*
   // This takes long and does not work very well yet:
 
   // Try to undo the contouring by an experimental decontourize algorithm:
@@ -1234,6 +1236,7 @@ void contours()
   // write images to files:
   writeScaledImageToFilePPM(grad1,    "ContourGrad1.ppm",  1);
   writeScaledImageToFilePPM(grad25,   "ContourGrad25.ppm", 1);
+  */
 
   rsPrintLine("contours() done.");
 
@@ -1301,8 +1304,8 @@ void complexContours()
   //  -maybe plot the contour lines into green channel
 
   // setup:
-  int w           = 400;               // width in pixels
-  int h           = 400;               // height in pixels
+  int w           = 800;               // width in pixels
+  int h           = 800;               // height in pixels
   int numLevels   = 20;                // number of contour levels
   int numColors   = numLevels + 1;     // number of contour colors
   double r        = 5;                 // range x = -r..+r, y = -r...+r
@@ -1323,8 +1326,8 @@ void complexContours()
   // pick complex function to plot
   //f = [=](Complex z) { return z; };
   //f = [=](Complex z) { return z + 0.5*z*z + (1./6)*z*z*z; };
-  //f = [=](Complex z) { return z*z; };
-  f = [=](Complex z) { return z*z*z; };
+  f = [=](Complex z) { return z*z; };
+  //f = [=](Complex z) { return z*z*z; };
   //f = [=](Complex z) { return z*z*z*z; };
   //f = [=](Complex z) { return 1./(1. + z); };
 
@@ -1345,6 +1348,8 @@ void complexContours()
     levels[i] = pow(levels[i], levelPow);
   rsImageF contRe = cp.getContourLines(funcRe, levels, { 1.0f }, antiAlias);
   rsImageF contIm = cp.getContourLines(funcIm, levels, { 1.0f }, antiAlias);
+  rsImageF contReIm(contRe);
+  contReIm.blendWith(contIm, 1.f, 1.f);
 
   // get countour fills:
   std::vector<float> colors = rsRangeLinear(0.f, 1.f, numColors);
@@ -1378,8 +1383,9 @@ void complexContours()
   writeImageToFilePPM(funcRe, "FunctionRe.ppm");
   writeImageToFilePPM(funcIm, "FunctionIm.ppm");
 
-  writeImageToFilePPM(contRe, "ContourLinesRe.ppm");
-  writeImageToFilePPM(contIm, "ContourLinesIm.ppm");
+  writeImageToFilePPM(contRe,   "ContourLinesRe.ppm");
+  writeImageToFilePPM(contIm,   "ContourLinesIm.ppm");
+  writeImageToFilePPM(contReIm, "ContourLinesReIm.ppm");
 
   writeImageToFilePPM(fillsRe, "ContourFillsRe.ppm");
   writeImageToFilePPM(fillsIm, "ContourFillsIm.ppm");

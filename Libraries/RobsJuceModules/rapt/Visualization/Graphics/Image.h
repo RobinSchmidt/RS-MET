@@ -186,6 +186,9 @@ public:
   // todo: maybe if the source has a different shape, change the shape of this image
 
 
+  void blendWith(const rsImage<TPix>& img2, TPix weight1, TPix weight2);
+  // maybe rename params to: otherImage, weightForSelf, weightForOther
+
 
 
 

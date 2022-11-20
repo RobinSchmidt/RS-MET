@@ -250,6 +250,10 @@ struct rsPixelRGB // maybe rename to rsPixel24BitRGB
     r = g = b = gray;
   }
 
+
+  rsPixelRGB(unsigned char red, unsigned char green, unsigned char blue) 
+    : r(red), g(green), b(blue) {}
+
   rsPixelRGB(int gray) 
   { 
     r = g = b = (unsigned char) (gray);
@@ -270,8 +274,46 @@ struct rsPixelRGB // maybe rename to rsPixel24BitRGB
     b = (unsigned char)(255.f * B);
   }
 
+
+
   unsigned char r = 0, g = 0, b = 0;
 };
+
+/*
+rsPixelRGB operator*(const float& a, const rsPixelRGB& b) 
+{ 
+  return rsPixelRGB((unsigned char)(a*b.r), (unsigned char)(a*b.g), (unsigned char)(a*b.b)); 
+}
+rsPixelRGB operator*(const rsPixelRGB& a, const float& b)
+{ 
+  return rsPixelRGB((unsigned char)(a.r*b), (unsigned char)(a.g*b), (unsigned char)(a.b*b));
+}
+*/
+
+inline rsPixelRGB operator*(const rsPixelRGB& a, const rsPixelRGB& b)
+{ 
+  using uCh = unsigned char;
+  using uSh = unsigned short;
+  return rsPixelRGB((uCh)((uSh)a.r*b.r >> 8), (uCh)((uSh)a.g*b.g >> 8), (uCh)((uSh)a.b*b.b >> 8));
+  // Verify, if this makes sense. The intention is to map the 0..255 range as 0..1, then 
+  // multiply, then map back to 0..255
+  
+  //return rsPixelRGB((unsigned char)(a.r*b.r), (unsigned char)(a.g*b.g), (unsigned char)(a.b*b.b));
+}
+inline rsPixelRGB operator+(const rsPixelRGB& a, const rsPixelRGB& b)
+{ 
+  using uCh = unsigned char;
+  return rsPixelRGB((uCh)(a.r + b.r), (uCh)(a.g + b.g), (uCh)(a.b + b.b));
+
+  // Why can't we just write:
+  //return rsPixelRGB( (a.r + b.r), (a.g + b.g), (a.b + b.b));
+  // Is there some implicit conversion going on when adding the elements? But I don't see, why this
+  // should be the case
+}
+// ToDo: 
+// -implement other oprators similarly
+// -needs unit tests
+
 
 inline bool rsAlmostEqual(const unsigned char& x, const unsigned char& y, const unsigned char& tol)
 {
@@ -283,6 +325,8 @@ inline bool rsAlmostEqual(const unsigned char& x, const unsigned char& y, const 
       return false; }
   return true;
 }
+// get rid - there's something in RAPT already with the same purpose
+
 
 // explicit specialization:
 inline bool rsAlmostEqual(const rsPixelRGB& x, const rsPixelRGB& y, const rsPixelRGB& tol)

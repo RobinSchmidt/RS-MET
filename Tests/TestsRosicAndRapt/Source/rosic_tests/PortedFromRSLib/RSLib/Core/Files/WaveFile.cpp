@@ -362,5 +362,12 @@ References:
 https://en.wikipedia.org/wiki/WAV
 https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
 http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+https://sites.google.com/site/musicgapi/technical-documents/wav-file-format
+
+
+
+See also:
+Write a WAV file from scratch - C++ Audio Programming https://www.youtube.com/watch?v=qqjvB_VxMRM&list=PLbqhA-NKGP6Cwrh-FUMFpc_pOQbardIRh
+
 
 */

@@ -389,4 +389,8 @@ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=521377
 May also be relevant:
 https://en.wikipedia.org/wiki/Smoothstep
 
+
+https://www.youtube.com/watch?v=60VoL-F-jIQ Smoothstep: The most useful function
+https://www.youtube.com/watch?v=YJ4iyff7zbk&list=PLGmrMu-IwbgsY3onv9rrzHvm7OpG43Uvk Function Smoothing Explained!
+
 */

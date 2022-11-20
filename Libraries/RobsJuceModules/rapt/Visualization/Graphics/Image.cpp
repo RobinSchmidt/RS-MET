@@ -77,6 +77,22 @@ void rsImage<TPix>::fillAll(const TPix &colorToFillWith)
 //  free(tmpLine);
 //}
 
+
+template<class TPix>
+void rsImage<TPix>::blendWith(const rsImage<TPix>& img2, TPix w1, TPix w2)
+{
+  int w = rsMin(getWidth(),  img2.getWidth());
+  int h = rsMin(getHeight(), img2.getHeight());
+  for(int y = 0; y < h; y++)
+    for(int x = 0; x < w; x++)
+      (*this)(x, y) = w1 * (*this)(x, y) + w2 * img2(x, y);
+
+  // ToDo:
+  // -Maybe use an optimized version of the code when both images have the same dimensions. In this
+  //  case addressing the individual pixels via img2(x, y) etc is not necessary
+  // -Needs unit test.
+}
+
 //-------------------------------------------------------------------------------------------------
 
 template<class TPix>
