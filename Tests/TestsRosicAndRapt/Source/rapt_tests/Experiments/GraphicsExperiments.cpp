@@ -1334,6 +1334,7 @@ void complexContours()
   // Some strange function i came up with when trying to invent non-orthogonal coordinate systems
   // for practicing calculations with metric tensors - might be called spiral-coordinates or 
   // something?:
+  /*
   xMin = -1.5; xMax = +1.5; yMin = -1; yMax = +1;
   f = [=](Complex z) 
   { 
@@ -1343,7 +1344,22 @@ void complexContours()
     double y = exp(-a*t) * sin(PI*t);
     return Complex(x, y);
   };
-  // ...maybe move this to somewhere else
+  */
+
+  f = [=](Complex z) 
+  { 
+    double u = real(z);
+    double v = imag(z);
+    //return Complex(u*u - u*v, v*v - u*v);
+    //return Complex(u*u + v*v, u*v + u + v);
+    //return Complex(u + v, u * v);
+    return Complex(u*u + v, v*v + u);
+  };
+  // -maybe move this to somewhere else - maybe the section where we experiment with metrics and
+  //  differential geometry.
+  // -maybe define a z-coordinate in terms as the determinant of the Jacobian of this 2D -> 2D 
+  //  mapping ...or maybe something in terms of the (Gaussian?) curvature. The goal is to somehow
+  //  "plausibly" embedd that weird resulting metric into a 3D space.
 
 
   // render images of function values for real and imaginary part:
