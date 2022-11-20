@@ -1326,10 +1326,24 @@ void complexContours()
   // pick complex function to plot
   //f = [=](Complex z) { return z; };
   //f = [=](Complex z) { return z + 0.5*z*z + (1./6)*z*z*z; };
-  f = [=](Complex z) { return z*z; };
+  //f = [=](Complex z) { return z*z; };
   //f = [=](Complex z) { return z*z*z; };
   //f = [=](Complex z) { return z*z*z*z; };
   //f = [=](Complex z) { return 1./(1. + z); };
+
+  // Some strange function i came up with when trying to invent non-orthogonal coordinate systems
+  // for practicing calculations with metric tensors - might be called spiral-coordinates or 
+  // something?:
+  xMin = -1; xMax = +1; yMin = -PI; yMax = PI;
+  f = [=](Complex z) 
+  { 
+    double a = real(z);
+    double t = imag(z);
+    double x = exp(-a*t) * cos(t);  // maybe use exp(-a*t) * cos(t)
+    double y = exp(-a*t) * sin(t);
+    return Complex(x, y);
+  };
+  // 
 
 
   // render images of function values for real and imaginary part:
