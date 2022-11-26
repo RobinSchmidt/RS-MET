@@ -1672,7 +1672,10 @@ many places such as root-finding algorithms. See here for how that can be done:
 https://math.stackexchange.com/questions/633160/modular-arithmetic-find-the-square-root
 https://en.wikipedia.org/wiki/Tonelli%E2%80%93Shanks_algorithm
 ...however - quite probably, these algorithms that call sqrt won't make much sense in modular 
-arithmetic, but we need to satisfy the compiler nonetheless.
+arithmetic, but we need to satisfy the compiler nonetheless. But maybe it would be better to drag
+these functions out of the class and turn them into free functions. We may also want to instantiate 
+polynomials for integers anyway - sooo...it seems like requiring the type T to support an sqrt
+operation is perhaps a bit much to ask for for a general purpose polynomial class.
 
 
 ToDo:

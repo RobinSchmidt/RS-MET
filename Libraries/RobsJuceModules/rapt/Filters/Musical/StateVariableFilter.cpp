@@ -73,10 +73,7 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
 template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
 {
-  // \todo look at this paper - it has simpler formulas and even formulas that work for biquads 
-  // with arbitrary coefficients:
-  // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
-  // make a function setupFromBiquad in the same way as in rsStateVectorFilter
+
 
 
   g = tan( TPar(PI) * fc/fs);  // embedded integrator gain (Fig 3.11)
@@ -207,3 +204,29 @@ void rsStateVariableFilter<TSig, TPar>::reset()
 {
   s1 = s2 = 0.0;
 }
+
+
+
+/*
+
+ToDo:
+
+-Implement formulas from at this paper 
+ http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
+ -> it has simpler formulas and even formulas that work for biquads with arbitrary coefficients
+ -> make a function setupFromBiquad in the same way as in rsStateVectorFilter
+
+-When done, maybe use these formulas for the biquad design:
+ https://www.vicanek.de/articles/BiquadFits.pdf
+
+-Maybe have a look at this, too:
+ https://zrna.org/akso/object/contrib/tiar/filter/ZDF-SVF-1
+ The coefficient computation seems to start from a UDF design (Chamberlin) and then (Newton?) 
+ iterate to refine for the ZDF case? Figure out!
+
+-See also:
+ https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
+
+
+
+*/

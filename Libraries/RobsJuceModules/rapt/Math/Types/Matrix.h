@@ -170,7 +170,9 @@ public:
   static rsMatrix2x2<T> commutator(const rsMatrix2x2<T>& A, const rsMatrix2x2<T>& B)
   { return A*B - B*A; }
   // see: https://en.wikipedia.org/wiki/Commutator#Ring_theory
-  // maybe implement also the anticommutatior defined there as: {A,B} = A*B + B*A
+  // -Maybe implement also the anticommutatior defined there as: {A,B} = A*B + B*A
+  // -Maybe implement it as a free function rsCommutator for arbitrary types. The notion of a 
+  //  commutator may make sense for other things as well (for example, multivectors)
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */

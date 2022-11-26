@@ -24,8 +24,24 @@ SFZ parsing and generation
 - Replace all calls to to_string with rsFloatToString in order to later replace the implementation.
   Currently it just delegates to std::to_string but we may need soemthing better.
   
-- Support the following opcodes:
-  https://sfzformat.com/opcodes/default_path
+- Support the following opcodes: https://sfzformat.com/opcodes/default_path
+
+- Support definition of variables: https://sfzformat.com/opcodes/define
+
+- Support inclusion of other sfz files: https://sfzformat.com/opcodes/include
+
+- Support the <control> header: https://sfzformat.com/headers/control
+  especially the label_ccN and set_ccN commands. note_offset and octave_offset are easy to 
+  implement, so maybe support them, too. Maybe the control header could also be the appropriate 
+  place to switch between fallback and "groups-are-busses" mode for the global signal flow.
+
+- Maybe introduce a <gui> header which may define sliders, buttons, menus, etc. and allow the 
+  sliders to control midi controllers.
+
+- Maybe allow the <global> header to be used: https://sfzformat.com/headers/global It seems to me 
+  that this actually just what I call the "instrument". But apparently, there can be more than one 
+  global header in sfz.
+
 
 ----------------------------------------------------------------------------------------------------
 Sample playback
@@ -120,9 +136,10 @@ Modulation system
   use a single command to conveniently specify a whole bunch of modulation routings.
    
 - Release-Modes: 
-  - one_shot: always run through the whole envelope even when noteOff is triggered before 
-    reaching sustain (this is the current behavior)
-  - immediate: enter release phase immediately, starting from current level   
+  - one_shot (or from_sustain): always run through the whole envelope even when noteOff is 
+    triggered before reaching sustain (this is the current behavior)
+  - immediate (or from_current): enter release phase immediately, starting from current level
+  - from_peak: always go at least to the peak (i.e. the end of the attack-phase)
    
 - Retrigger-Modes: determine behavior when a new noteOn is received during the release of a
   voice/layer playing the same note
@@ -193,6 +210,11 @@ Modulation system
   https://sfzformat.com/opcodes/lfoN_phase
   https://sfzformat.com/opcodes/lfoN_count	
   
+- Maybe have mod-source that just puts out am (opcode-controlled) constant. It's not very 
+  interesting in itself but may open the door for doing modular synthesis when that constant itself
+  is being modulated by some other modulator. Maybe that's not the only or best way to do it but it
+  seems to be the most straightforward approach to me.
+
 ----------------------------------------------------------------------------------------------------
 MIDI behaviors
 ============== 

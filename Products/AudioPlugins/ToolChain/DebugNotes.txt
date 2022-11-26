@@ -4,7 +4,8 @@ C:\Users\rob\AppData\Roaming\ToolChain
 
 Sometimes, it may be necessary to delete this file when the App crashes on startup. I sometimes hit 
 a jassert in MidiMessageCollector::addMessageToQueue at startup. Deleting the settings file can help
-to get passed this.
+to get passed this. This error also seems to happen when I have ToolChain already open and switch on 
+the MIDI keyboard - and after that, it happens on restarting ToolChain.
 
 In ColourSchemeComponent::paintOverChildren, there's a switch to turn on showing the pixel size of
 GUI editors which is useful for figuring out the optimal size.

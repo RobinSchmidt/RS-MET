@@ -185,11 +185,19 @@ rsComplex<T> rsConj(rsComplex<T> z)
 }
 
 template<class T>
+T rsAbsSqr(rsComplex<T> z)
+{
+  return z.re*z.re + z.im*z.im;
+}
+
+template<class T>
 T rsAbs(rsComplex<T> z)
 {
-  return rsSqrt(z.re*z.re + z.im*z.im); 
-  // try hypot, measure performance...but first make sure that hypot doesn't branch, if it does,
-  // maybe try to implement a branchless rsHypot
+  return rsSqrt(rsAbsSqr(z));
+  //return rsSqrt(z.re*z.re + z.im*z.im); // old
+  // ToDo:
+  // -try hypot, measure performance...but first make sure that hypot doesn't branch, if it does,
+  // -maybe try to implement a branchless rsHypot
 }
 
 template<class T>

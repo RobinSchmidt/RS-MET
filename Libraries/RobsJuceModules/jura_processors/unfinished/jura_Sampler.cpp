@@ -1707,7 +1707,22 @@ ToDo:
   TreeView to make TreeViewWithDraggableNodes or TreeViewWithNodeWidgets. Or: when the user holds
   shift while hovering over the tree, display an overlaid slider that can be directly manipulated.
   ...ok - this is in the works....
- -The Opcode-Widgets need to be cleared when anew sfz or xml is loaded
+ -OR: allow the user to define custom GUIs either in the sfz itself (maybe under a a <gui> header)
+  or in the .xml file
+ -Maybe make use of:
+    https://sfzformat.com/headers/control
+    https://sfzformat.com/opcodes/label_ccN
+    https://sfzformat.com/opcodes/set_ccN
+  and use MIDI controllers to allow the user to control the patch. The controllers woul become 
+  available as´modulation sources. Thereby, one controller could control multiple opcodes at once
+  (like several cutoff frequencies - for different regions). Also, a single opcode could respond
+  to multiple controllers (not sure, if that's useful though - maybe for implementing thinsg like
+  reso-by-cutoff - resonance would be controlled by the resonance controller but also by cutoff.
+  We would realize a many-to-many mapping of sliders to opcodes rather than a one-to-one mapping.
+  Maybe allow the user to define sliders for the midi-controllers. A slider would have a position
+  defined by x,y,w,h, a mode (horz, vert, rot), a mapping (linear, exponential, etc.), an 
+  (optional) image (png, defining stripes or being rotated by code at runtime)
+ -The Opcode-Widgets need to be cleared when a new sfz or xml is loaded
  -we need a TreeView that represents the SFZs structure: the root/top-level node represents the 
   whole instrument, subnodes represnet groups and subsubsnodes represent regions. Each of these 
   levels can have opcodes as leafs.

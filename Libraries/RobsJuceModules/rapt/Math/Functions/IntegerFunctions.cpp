@@ -266,3 +266,21 @@ TInt rsWrapAround(TInt numberToWrap, TInt length)
   return numberToWrap;
 }
 */
+
+/*
+
+ToDo:
+
+-Maybe implement a sqrt function for integers with semantics similar to integer division: if the 
+ real result is non-integer, just round down. For example sqrt(15) = 3.8729..., so we would return
+ 3. 3*3 = 9, so we would get an analog of a remainder of 15-9 = 6. I don't know, if such a function
+ makes sense mathematically, but we may need it to satisfy the compiler for certain class template 
+ instantiations where the template was initially conceived for float/double/complex/... and uses 
+ sqrt calls because (for example, in class rsPolynomial, sqrt gets called in the root-finder algo).
+ ...but then, these algos may return nonsensical results, so it would actually be better, if the
+ respective functions wouldn't even be compiled for an <int> instantiation. Maybe, we should drag 
+ such functions out of the class rsPolynomial and make them free functions instead...or maybe 
+ assemble them as static functions in some other class.
+
+
+*/

@@ -29,6 +29,16 @@ Sampler:
  think, in case of a lowpass, it should turn off the sound. In a highpass filter, switching to 
  bypass seems appropriate, though.
  
+ 
+-Straightliner:
+ -The ToolChain patch StraightlinerTest3.xml ha Osc2 muted even though whensaving the patch, the osc
+  was not muted. Figure out, how it happens that a wrong value for the Mute attibute gets written 
+  into the xml. Try to reproduce the behavior: start with init-patch, activate Osc2, save the patch 
+  (in ToolChain and in Straightliner) - inspect it
+ 
+ 
+Fixed(?):
+ 
 Wavetable oscillator:
 -It sometimes happens when opening ToolChain and it wants to recall the Straightliner state, that 
  the xml-element for the osc section looks like this:
