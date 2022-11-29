@@ -856,10 +856,13 @@ void createBell1()
 void createBellGloriosa()
 {
 
-  int fs = 44100;  // sample rate
+  int sampleRate = 44100;  // sample rate
+  double length  = 3.0;    // in seconds
   
 
   using Vec = std::vector<double>;
+  using AT  = RAPT::rsArrayTools;
+  using MFB = rsModalFilterBankDD;
 
   // Measurements were taken from
   //   https://www.youtube.com/watch?v=9ssM8cMYmbQ
@@ -867,25 +870,51 @@ void createBellGloriosa()
   // spectrum plot in Audacity using the cursor wo figure out the frequencies. They are somewhat 
   // inexact, but we intend to sort of "quantize" them to equal temperament or to just intonation
   // anyway.
-  Vec freqs = {  38,    48,    81,   130,   168,   200,   243,   265,   330,   417,   489,   533,   673,   875,  1089,  1313,  1544,  1772,  2013,  2248,  2491,  2716,  2944,  3185,  3420,  3432,  3623,  3885    };
-  Vec levls = { -66.9, -64.9, -37.7, -57.9, -24.9, -20.8, -35.4, -54.3, -27.9, -36.4, -32.8, -43.6, -32.1, -35.0, -42.7, -48.2, -49.7, -62.3, -63.4, -62.5, -69.7, -63.5, -75.2, -74.7, -77.9, -86.5, -77.2, -85.0  };
+  Vec frq = {  38,    48,    81,   130,   168,   200,   243,   265,   330,   417,   489,   533,   673,   875,  1089,  1313,  1544,  1772,  2013,  2248,  2491,  2716,  2944,  3185,  3420,  3432,  3623,  3885    };
+  Vec lvl = { -66.9, -64.9, -37.7, -57.9, -24.9, -20.8, -35.4, -54.3, -27.9, -36.4, -32.8, -43.6, -32.1, -35.0, -42.7, -48.2, -49.7, -62.3, -63.4, -62.5, -69.7, -63.5, -75.2, -74.7, -77.9, -86.5, -77.2, -85.0  };
 
-  int N = (int) freqs.size(); 
+  int numPartials = (int) frq.size(); 
+  int N = numPartials;
 
-  Vec amps(N);
+  // Convert from decibels to raw amplitude;
+  Vec amp(N);
   for(int n = 0; n < N; n++)
-    amps[n] = rsDbToAmp(levls[n]);
+    amp[n] = rsDbToAmp(lvl[n]);
 
-  // We just make someting up:
-  int decay = 1.0; // in seconds
-  Vec attacks(N), decays(N);
+  // Convert from frequencies in Hz to relative frequencies with respect to the fundamental. I 
+  // think, 81 is the fundamental ...but not so sure - could be a subharmonic as well -> figure out!
+  double fundamental = 168;
+  for(int n = 0; n < N; n++)
+    frq[n] /= fundamental;
+
+  // Ad-hoc: We just make something up for the attacks and decays - later we want an algorithm to 
+  // measure these:
+  int decay  = 1.0;          // in seconds
+  int attack = 0.1*decay;
+  Vec att(N), dec(N);
   double p = 0.5;
   for(int n = 0; n < N; n++)
   {
-    decays[n]  = decay * pow(n+1, -p);
-    attacks[n] = 0.1 * decays[n];
+    dec[n] = pow(n+1, -p);
+    att[n] = dec[n];
   }
 
+  // For the phases, we just use zero. Later, we want the algorithm to measure these, too:
+  Vec phs(N);
+  phs = rsRandomVector(N, 0, 0, 0);  // use rsZeroVector
+
+
+  int numSamples  = (int) ceil(sampleRate * length);
+  MFB mfb;
+  mfb.setReferenceFrequency(fundamental);
+  mfb.setReferenceAttack(attack);
+  mfb.setReferenceDecay(decay);
+  mfb.setModalParameters(frq, amp, att, dec, phs);
+  N = numSamples;
+  Vec x(N);  // the main signal
+  x[0] = mfb.getSample(1.0);
+  for(int n = 1; n < N; n++)
+    x[n] = mfb.getSample(0.0);
 
 
 
