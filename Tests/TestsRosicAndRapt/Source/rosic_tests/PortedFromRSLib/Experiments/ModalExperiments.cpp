@@ -1212,7 +1212,18 @@ void modalPartialResynthesis()
 
 void modalAnalysisGloriosa()
 {
+  int sampleRate = 44100;
+  int length = 5.0;
 
+  //std::vector<double> x = getBellGloriosa(int sampleRate, double length);
+  // not found - maybe move into file for creation of example sounds
+
+  // Do it the same way as above:
+  //Vec x = createModalPluck(key, sampleRate, N);
+  // rename the function to createModalBellGloriosa
+
+
+  int dummy = 0;
 }
 
 
