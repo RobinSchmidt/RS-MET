@@ -267,6 +267,23 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* sampleDa
   using ModalParams = rsModalFilterParameters<T>;
   std::vector<ModalParams> mp;
 
+  // ToDo:
+  // -In a preliminary analysis, figure out the mode frequencies using a big FFT on the whole 
+  //  signal and find the peak freqs.
+  // -Analyze each mode one at a time by bandpassing the signal with a bandpass tuned to the 
+  //  respective modal frequency and then using an envelope follower on the bandpassed signal.
+
+  
+  // Notes:
+  // -The bandwidth of the bandpass should sufficiently suppress adajacent partials (calling for 
+  //   smaller bandwidth) but without introducing too much time-domain smoothing on the estimated 
+  //   envelope (calling for a larger bandwidth). 
+  // -Maybe we can strike an optimal compromise by (somehow) making it dependent on some 
+  //  preliminary mode-bandwidth measurement from the FFT spectrum? 
+  // -Maybe it would also be good, if the bandpasses feature a flat-top, especially when the 
+  //  partials have a time-varying frequency?
+  // -Or maybe we should try to approximate a Gaussian filter for an optimal compromise between
+  //  bandwidth and time-domain smoothing/smearing of the envelope?
 
   return mp;
 }

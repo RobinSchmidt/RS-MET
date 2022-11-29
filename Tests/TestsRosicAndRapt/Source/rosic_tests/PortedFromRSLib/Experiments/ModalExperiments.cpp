@@ -1218,18 +1218,34 @@ void modalAnalysisGloriosa()
   // work well on a signal that was actually generated via modal synthesis is the first step. 
   // Later, we want to analyze sampled natural sounds, of course - but first things first!
 
-  // Create the bell sound that we want to analyze
+  // Create the bell sound that we want to analyze:
   int sampleRate = 44100;  // sample rate
   double length  = 3.0;    // in seconds
   auto x = createModalBellGloriosa(sampleRate, length);
 
+  // Create and set up the analyzer:
+  rsModalAnalyzer2<double> ma;
+  ma.setSampleRate(sampleRate);
+
+  // Analyze the sound, i.e. estimate the modal parameters from the signal:
+  auto modalParams = ma.analyze(&x[0], (int)x.size());
 
 
 
+
+
+
+
+  // Write output files:
   //rosic::writeToMonoWaveFile("GloriosaModalOriginal.wav", &x[0], (int)x.size(), (int)sampleRate);
-
-
   int dummy = 0;
+
+  // ToDo: 
+  // -Refactor createModalBellGloriosa into a function that provides the modal parameters and one
+  //  that does the actual synthesis because we are interested here in using the true modal
+  //  parameters as reference for our analysis result.
+  // -Resynthesize the sound from the estimated parameters and compare result with original.
+  // -Add some plots/visualizations
 }
 
 
