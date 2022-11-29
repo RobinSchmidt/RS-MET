@@ -985,7 +985,7 @@ void modalDecayFit2()
 
 void modalDecayFit()
 {
-  //modalDecayFit1();
+  modalDecayFit1();
   modalDecayFit2();
 }
 
@@ -1026,8 +1026,6 @@ void modalAnalysis1()
 
   Vec ym = synthesizeModal(p2, fs, N);
 
-
-
   //rsPlotVector(x);
   rsPlotVectors(x, ys, ym);
   //rosic::writeToMonoWaveFile("ModalOriginal.wav", &x[0], N, fs);
@@ -1046,7 +1044,7 @@ void modalAnalysis1()
   //   (somehow) making it dependent on some preliminary mode-bandwidth measurement from the FFT 
   //   spectrum?
   //  -Maybe that algorithm could be more accurate than the one based on the rsHarmonicAnalyzer, 
-  //   especially for inharmonic signals? For harmonic signals, it's probably hard tro beat the
+  //   especially for inharmonic signals? For harmonic signals, it's probably hard to beat the
   //   rsHarmonicAnalyzer...we'll see...
 }
 
@@ -1103,10 +1101,11 @@ void modalAnalysisPluck()
   //  as its target length
 }
 
-
-// maybe move this before modalAnalysisPluck - it's sort of a preliminary - it analyzes only a 
-// single partial
-void modalPartialResynthesis() // maybe rename to exponentialTailModeling
+// Maybe move this before modalAnalysisPluck. It's sort of a preliminary to it: it analyzes only 
+// a single partial. It may be useful to inspect what's going on for a single partial.
+// Maybe rename to exponentialTailModeling or modalAnalysisPluckPartial and the function above into
+// modalAnalysisPluckFull or soemthing like that
+void modalPartialResynthesis()
 {
   // Tries to resynthesize a partial via an exponentially decaying sinusoid. The difference to the
   // function above is that we use the original phase of the analyzed partials. This is mostly for 
@@ -1209,6 +1208,11 @@ void modalPartialResynthesis() // maybe rename to exponentialTailModeling
   */
 
   //rosic::writeToMonoWaveFile("ModalPluckOriginal.wav", &x[0],  length, (int)sampleRate);
+}
+
+void modalAnalysisGloriosa()
+{
+
 }
 
 

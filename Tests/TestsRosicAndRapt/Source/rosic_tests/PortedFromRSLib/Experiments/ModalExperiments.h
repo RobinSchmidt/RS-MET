@@ -24,6 +24,7 @@ void modalDecayFit();
 void modalAnalysis1();
 void modalAnalysisPluck();
 void modalPartialResynthesis();
+void modalAnalysisGloriosa();
 
 
 

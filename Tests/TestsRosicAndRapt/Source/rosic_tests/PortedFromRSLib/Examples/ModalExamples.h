@@ -14,7 +14,10 @@ void createPiano1();
 void createBass1();
 void createGong1();
 void createBell1();
+
+std::vector<double> getBellGloriosa(int sampleRate, double length);
 void createBellGloriosa();
+
 void createPluck1();
 
 // Experimental:

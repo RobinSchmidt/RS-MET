@@ -23,7 +23,7 @@ std::vector<double> synthesizeModal(
 /** A class for creating a modal model of a sound. The input is a sinusoidal model. */
 
 template<class T>
-class rsModalAnalyzer
+class rsModalAnalyzer  // maybe rename into rsModalAnalyzerFromSineModel
 {
 
 public:
@@ -57,3 +57,37 @@ protected:
 
 };
 
+//=================================================================================================
+
+/** Another modal analyzer that operates directly on the time domain signal. */
+
+template<class T>
+class rsModalAnalyzer2
+{
+
+
+public:
+
+  //---------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets up the sample-rate. This determines the values of the frequencies that will be written
+  into the model. */
+  void setSampleRate(T newRate) { sampleRate = newRate; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Takes a time domain signal as input and creates the set/array of modal filter parameters that 
+  can be used to approximate the given model. */
+  std::vector<rsModalFilterParameters<T>> analyze(T* sampleData, int numSamples);
+    // has same name, signature and semantics as rsHarmonicAnalyzer::analyze
+
+
+
+protected:
+
+  T sampleRate = T(1);
+
+};

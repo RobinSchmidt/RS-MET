@@ -432,6 +432,7 @@ int main(int argc, char* argv[])
   //modalAnalysis1();
   //modalAnalysisPluck();
   //modalPartialResynthesis();
+  modalAnalysisGloriosa();
 
   // Misc Audio:
   //centroid();
@@ -661,7 +662,7 @@ int main(int argc, char* argv[])
   //createBass1();
   //createGong1();
   //createBell1();
-  createBellGloriosa();
+  //createBellGloriosa();
   //createPluck1();
   //testHighPluck();
   // ToDo: create from the same sample-sets also soundfonts with 1,2,3,4,6 samples per octave via

@@ -26,8 +26,6 @@ std::vector<double> synthesizeModal(
   return x;
 }
 
-
-
 template<class T>
 std::vector<rsModalFilterParameters<T>> rsModalAnalyzer<T>::getModalModel(
   const RAPT::rsSinusoidalModel<T>& model)
@@ -204,7 +202,7 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   // maybe use gradient descent for more accurate estimates
 
 
-  plotModeVsSineAmpEnv(params, partial);  // for development
+  //plotModeVsSineAmpEnv(params, partial);  // for development
   // ok - the rhodes sample really has a problem with the 9th partial which causes the estimated
   // decay to be way too short - i think, that's the main reason for the "wiggle" in the 
   // resynthesized signal: an (amost) missing partial (due to short decay) which is supposed to be
@@ -212,7 +210,6 @@ rsModalFilterParameters<T> rsModalAnalyzer<T>::getModalModel(
   // very well
 
   return params;
-  //return rsModalFilterParameters<T>(); // preliminary
 }
 
 template<class T>
@@ -262,8 +259,23 @@ T rsModalAnalyzer<T>::estimateFrequency(
   // take the average freq as (endPhase-startPhase)/(2*PI*(endTime-startTime))
 }
 
+//=================================================================================================
 
-template class rsModalAnalyzer<double>;
+template<class T>
+std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* sampleData, int numSamples)
+{
+  using ModalParams = rsModalFilterParameters<T>;
+  std::vector<ModalParams> mp;
+
+
+  return mp;
+}
+
+
+
+
+// instantiations (maybe move elsewhere):
+//template class rsModalAnalyzer<double>;
 
 //template std::vector<rsModalFilterParameters<double>> 
 //  getModalModel(const RAPT::rsSinusoidalModel<double>& model);

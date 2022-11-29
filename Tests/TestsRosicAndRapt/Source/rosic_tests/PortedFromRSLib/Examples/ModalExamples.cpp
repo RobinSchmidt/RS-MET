@@ -853,13 +853,8 @@ void createBell1()
 
 }
 
-void createBellGloriosa()
+std::vector<double> getBellGloriosa(int sampleRate, double length)
 {
-
-  int sampleRate = 44100;  // sample rate
-  double length  = 5.0;    // in seconds
-  
-
   using Vec = std::vector<double>;
   using AT  = RAPT::rsArrayTools;
   using MFB = rsModalFilterBankDD;
@@ -903,7 +898,7 @@ void createBellGloriosa()
   Vec phs(N);
   phs = rsRandomVector(N, 0, 0, 0);  // use rsZeroVector
 
-
+  // Generate the sound and return it:
   int numSamples  = (int) ceil(sampleRate * length);
   MFB mfb;
   mfb.setReferenceFrequency(fundamental);
@@ -915,11 +910,8 @@ void createBellGloriosa()
   x[0] = mfb.getSample(1.0);
   for(int n = 1; n < N; n++)
     x[n] = mfb.getSample(0.0);
-
-
   AT::normalize(&x[0], N);
-  rosic::writeToMonoWaveFile("GloriosaTest1.wav", &x[0], N, (int)sampleRate);
-  int dummy = 0;
+  return x;
 
   // OK - it goes into the right direction but still sounds kinda wrong. The original sound a a lot 
   // brighter. I think, this is because we conflate amplitudes and decay times, attribute our 
@@ -928,6 +920,14 @@ void createBellGloriosa()
   // problem. There's also a lot of the complexity missing - but maybe this is mostly about reverb?
   // Maybe some warble is going on, too which we don't capture. And maybe we need more of these 
   // intermediate in-between partials with lower amplitude
+}
+
+void createBellGloriosa()
+{
+  int sampleRate = 44100;  // sample rate
+  double length  = 5.0;    // in seconds
+  auto x = getBellGloriosa(sampleRate, length);
+  rosic::writeToMonoWaveFile("GloriosaTest1.wav", &x[0], (int)x.size(), (int)sampleRate);
 }
 
 void createPluck1()

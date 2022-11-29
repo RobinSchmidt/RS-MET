@@ -648,8 +648,9 @@ template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const 
 template class rsBivariatePolynomial<double>;
 template class rsBivariatePolynomial<std::complex<double>>;
 
-// it's really annoying that we have to instantiate these member functions separately - maybe move 
-// their code to the header file, so it can be inlined - it is short anyway:
+// It's really annoying that we have to instantiate these member functions separately. Lots of 
+// boilerplate! Can we avoid this? Maybe move their code to the header file, so it can be inlined. 
+// It is short anyway:
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
   rsPolynomial<double> a, rsPolynomial<double> b) const;
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
@@ -676,6 +677,8 @@ template class rsMultiplicativeSynth<double>;
 
 template class rsPixelClassifier<float>;
 
+template class rsModalAnalyzer<double>;
+template class rsModalAnalyzer2<double>;
 
 //template class std::complex<rsSimdVector<float, 16>>;  
 // test - doesn't compile. the problem are things like _Isnan, _IsInf, etc. std::complex seems to 
