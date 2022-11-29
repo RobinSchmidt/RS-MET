@@ -262,14 +262,40 @@ T rsModalAnalyzer<T>::estimateFrequency(
 //=================================================================================================
 
 template<class T>
-std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* sampleData, int numSamples)
+std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N)
 {
+  //rsPlotArray(x, N);
+
   using ModalParams = rsModalFilterParameters<T>;
   std::vector<ModalParams> mp;
 
+  // Step 1: Figure out the mode frequencies using a big FFT on the whole signal and find the 
+  // peak freqs:
+  int N2 = rsNextPowerOfTwo(N);
+  std::vector<double> x2(N2), mags(N2);
+  rsZero(x2);                              // May not be needed
+  for(int n = 0; n < N; n++)
+    x2[n] = x[n];
+  rsFourierTransformerRadix2<T> ft;
+  ft.setDirection(ft.FORWARD);
+  ft.setBlockSize(N2);
+  ft.setNormalizationMode(ft.NORMALIZE_ON_FORWARD_TRAFO);
+  ft.getRealSignalMagnitudes(&x2[0], &mags[0]);
+
+  rsPlotSpectrum(mags, sampleRate, -100.0, false);  // for development
+  // looks like the axis are scaled wrong - all freqs appear to be one octave too low or something
+
+
+  // for finding the peaks, maybe we can re-use some code already written in rsHarmonicAnalyzer 
+  // and/or rsSinusoidalAnalyzer - but that code may have to be refactored. Maybe we need to factor
+  // out some "getPeakFrequencies" function that takes a magnitude spectrum as input. We'll see.
+  
+
+
+
+
   // ToDo:
-  // -In a preliminary analysis, figure out the mode frequencies using a big FFT on the whole 
-  //  signal and find the peak freqs.
+
   // -Analyze each mode one at a time by bandpassing the signal with a bandpass tuned to the 
   //  respective modal frequency and then using an envelope follower on the bandpassed signal.
 

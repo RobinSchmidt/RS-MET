@@ -443,44 +443,41 @@ std::vector<double> createModalBellGloriosa(double sampleRate, int length)
   Vec frq = {  38,    48,    81,   130,   168,   200,   243,   265,   330,   417,   489,   533,   673,   875,  1089,  1313,  1544,  1772,  2013,  2248,  2491,  2716,  2944,  3185,  3420,  3432,  3623,  3885    };
   Vec lvl = { -66.9, -64.9, -37.7, -57.9, -24.9, -20.8, -35.4, -54.3, -27.9, -36.4, -32.8, -43.6, -32.1, -35.0, -42.7, -48.2, -49.7, -62.3, -63.4, -62.5, -69.7, -63.5, -75.2, -74.7, -77.9, -86.5, -77.2, -85.0  };
 
-  int numPartials = (int) frq.size(); 
-  int N = numPartials;
-
   // Convert from decibels to raw amplitude;
-  Vec amp(N);
-  for(int n = 0; n < N; n++)
-    amp[n] = rsDbToAmp(lvl[n]);
+  int M = (int) frq.size();  // M: number of modes
+  Vec amp(M);
+  for(int m = 0; m < M; m++)
+    amp[m] = rsDbToAmp(lvl[m]);
 
   // Convert from frequencies in Hz to relative frequencies with respect to the fundamental. I 
   // think, 81 is the fundamental ...but not so sure - could be a subharmonic as well -> figure out!
   double fundamental = 168;
-  for(int n = 0; n < N; n++)
-    frq[n] /= fundamental;
+  for(int m = 0; m < M; m++)
+    frq[m] /= fundamental;
 
   // Ad-hoc: We just make something up for the attacks and decays - later we want an algorithm to 
   // measure these:
   double decay  = 1.5;          // in seconds
   double attack = 0.1*decay;
-  Vec att(N), dec(N);
+  Vec att(M), dec(M);
   double p = 0.4;
-  for(int n = 0; n < N; n++)
+  for(int m = 0; m < M; m++)
   {
-    dec[n] = pow(n+1, -p);
-    att[n] = dec[n];
+    dec[m] = pow(m+1, -p);
+    att[m] = dec[m];
   }
 
   // For the phases, we just use zero. Later, we want the algorithm to measure these, too:
-  Vec phs(N);
-  phs = rsRandomVector(N, 0, 0, 0);  // use rsZeroVector
+  Vec phs(M);
+  phs = rsRandomVector(M, 0, 0, 0);  // use rsZeroVector
 
   // Generate the sound and return it:
-  int numSamples  = (int) ceil(sampleRate * length);
+  int N = length;
   MFB mfb;
   mfb.setReferenceFrequency(fundamental);
   mfb.setReferenceAttack(attack);
   mfb.setReferenceDecay(decay);
   mfb.setModalParameters(frq, amp, att, dec, phs);
-  N = numSamples;
   Vec x(N);  // the main signal
   x[0] = mfb.getSample(1.0);
   for(int n = 1; n < N; n++)

@@ -1220,8 +1220,13 @@ void modalAnalysisGloriosa()
 
   // Create the bell sound that we want to analyze:
   int sampleRate = 44100;  // sample rate
+
   double length  = 3.0;    // in seconds
-  auto x = createModalBellGloriosa(sampleRate, length);
+  length = 0.5;  // for tests with plots
+
+
+  int N = (int) ceil(length*sampleRate);
+  auto x = createModalBellGloriosa(sampleRate, N);
 
   // Create and set up the analyzer:
   rsModalAnalyzer2<double> ma;
@@ -1237,7 +1242,7 @@ void modalAnalysisGloriosa()
 
 
   // Write output files:
-  //rosic::writeToMonoWaveFile("GloriosaModalOriginal.wav", &x[0], (int)x.size(), (int)sampleRate);
+  rosic::writeToMonoWaveFile("GloriosaModalOriginal.wav", &x[0], (int)x.size(), (int)sampleRate);
   int dummy = 0;
 
   // ToDo: 
