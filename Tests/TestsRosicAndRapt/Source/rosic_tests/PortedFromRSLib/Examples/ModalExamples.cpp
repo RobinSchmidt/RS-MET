@@ -857,7 +857,7 @@ void createBellGloriosa()
 {
 
   int sampleRate = 44100;  // sample rate
-  double length  = 3.0;    // in seconds
+  double length  = 5.0;    // in seconds
   
 
   using Vec = std::vector<double>;
@@ -889,10 +889,10 @@ void createBellGloriosa()
 
   // Ad-hoc: We just make something up for the attacks and decays - later we want an algorithm to 
   // measure these:
-  int decay  = 1.0;          // in seconds
-  int attack = 0.1*decay;
+  double decay  = 1.5;          // in seconds
+  double attack = 0.1*decay;
   Vec att(N), dec(N);
-  double p = 0.5;
+  double p = 0.4;
   for(int n = 0; n < N; n++)
   {
     dec[n] = pow(n+1, -p);
@@ -917,9 +917,17 @@ void createBellGloriosa()
     x[n] = mfb.getSample(0.0);
 
 
-
+  AT::normalize(&x[0], N);
+  rosic::writeToMonoWaveFile("GloriosaTest1.wav", &x[0], N, (int)sampleRate);
   int dummy = 0;
 
+  // OK - it goes into the right direction but still sounds kinda wrong. The original sound a a lot 
+  // brighter. I think, this is because we conflate amplitudes and decay times, attribute our 
+  // measured amplitude data solely to the amplitudes and additionaly (!) apply fatser decays to 
+  // higher partials. I hope that estimating the decay times will at least partially fix this 
+  // problem. There's also a lot of the complexity missing - but maybe this is mostly about reverb?
+  // Maybe some warble is going on, too which we don't capture. And maybe we need more of these 
+  // intermediate in-between partials with lower amplitude
 }
 
 void createPluck1()
