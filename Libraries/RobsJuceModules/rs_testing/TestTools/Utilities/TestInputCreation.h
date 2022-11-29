@@ -127,6 +127,10 @@ void createModalPluck(double* x, int N, double key, double sampleRate);
 
 std::vector<double> createModalPluck(double key, double sampleRate, int length); // convenience function
 
+std::vector<double> createModalBellGloriosa(double sampleRate, int length);
+// maybe also take a key paramter...but maybe not - we just create it at its original frequency
+
+
 
 void applyVibrato(double *x, int N, double freq, double sampleRate, double depth);
 // depth is in semitones, introduces delay due to delayline

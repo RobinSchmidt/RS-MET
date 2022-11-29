@@ -1212,15 +1212,12 @@ void modalPartialResynthesis()
 
 void modalAnalysisGloriosa()
 {
-  int sampleRate = 44100;
-  int length = 5.0;
+  int sampleRate = 44100;  // sample rate
+  double length  = 5.0;    // in seconds
+  auto x = createModalBellGloriosa(sampleRate, length);
 
-  //std::vector<double> x = getBellGloriosa(int sampleRate, double length);
-  // not found - maybe move into file for creation of example sounds
 
-  // Do it the same way as above:
-  //Vec x = createModalPluck(key, sampleRate, N);
-  // rename the function to createModalBellGloriosa
+  rosic::writeToMonoWaveFile("GloriosaTest1.wav", &x[0], (int)x.size(), (int)sampleRate);
 
 
   int dummy = 0;
