@@ -251,10 +251,10 @@ int main(int argc, char* argv[])
   // Plotting:
   //gradientify();
   //contours();
-  complexContours();
-  implicitCurves();
-  parametricCurve();
-  spirals();   // move to somewhere else...
+  //complexContours();
+  //implicitCurves();
+  //parametricCurve();
+  //spirals();   // move to somewhere else...
   //fractal();
   //differentialGeometry();
 
@@ -661,6 +661,7 @@ int main(int argc, char* argv[])
   //createBass1();
   //createGong1();
   //createBell1();
+  createBellGloriosa();
   //createPluck1();
   //testHighPluck();
   // ToDo: create from the same sample-sets also soundfonts with 1,2,3,4,6 samples per octave via

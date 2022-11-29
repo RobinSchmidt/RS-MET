@@ -853,6 +853,27 @@ void createBell1()
 
 }
 
+void createBellGloriosa()
+{
+  //int numPartials = 38;
+
+  using Vec = std::vector<double>;
+
+  // Measurements were taken from
+  //   https://www.youtube.com/watch?v=9ssM8cMYmbQ
+  // from around 2:55, selecting the whole range where the bell rings and inspecting it with the 
+  // spectrum plot in Audacity using the cursor wo figure out the frequencies. They are somewhat 
+  // inexact, but we intend to sort of "quantize" them to equal temperament or to just intonation
+  // anyway.
+  Vec freqs = {  38,    48,    81,   130,   168,   200,   243,   265,   330,   417,   489,   533,   673,   875,  1089,  1313,  1544,  1772,  2013,  2248,  2491,  2716,  2944,  3185,  3420,  3432,  3623,  3885    };
+  Vec levls = { -66.9, -64.9, -37.7, -57.9, -24.9, -20.8, -35.4, -54.3, -27.9, -36.4, -32.8, -43.6, -32.1, -35.0, -42.7, -48.2, -49.7, -62.3, -63.4, -62.5, -69.7, -63.5, -75.2, -74.7, -77.9, -86.5, -77.2, -85.0  };
+
+
+
+
+  int dummy = 0;
+
+}
 
 void createPluck1()
 {
