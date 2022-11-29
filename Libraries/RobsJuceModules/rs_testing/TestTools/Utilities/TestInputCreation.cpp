@@ -485,8 +485,16 @@ std::vector<double> createModalBellGloriosa(double sampleRate, int length)
   x[0] = mfb.getSample(1.0);
   for(int n = 1; n < N; n++)
     x[n] = mfb.getSample(0.0);
+
+  // Post-process:
   AT::normalize(&x[0], N);
+  double fadeOutMs = 50;    // 50 milliseconds fade-out
+  int fadeOutSamples = (int) round(sampleRate * fadeOutMs / 1000);
+  RAPT::rsFadeOut(&x[0], N-fadeOutSamples, N-1);
   return x;
+
+  // ToDo:
+  // -Maybe apply a smooth fade-out over 50 ms
 
   // OK - it goes into the right direction but still sounds kinda wrong. The original sound a a lot 
   // brighter. I think, this is because we conflate amplitudes and decay times, attribute our 

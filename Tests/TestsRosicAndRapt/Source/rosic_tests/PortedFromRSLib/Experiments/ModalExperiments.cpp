@@ -1212,12 +1212,21 @@ void modalPartialResynthesis()
 
 void modalAnalysisGloriosa()
 {
+  // We create a bell sound via modal synthesis using some analysis data from the Gloriosa bell
+  // in the cathedral of Erfurt. Then we feed that sound into the modal analyzer to try retrieve 
+  // the modal synthesis parameters from the signal itself. Getting the modal analysis algorithm to
+  // work well on a signal that was actually generated via modal synthesis is the first step. 
+  // Later, we want to analyze sampled natural sounds, of course - but first things first!
+
+  // Create the bell sound that we want to analyze
   int sampleRate = 44100;  // sample rate
-  double length  = 5.0;    // in seconds
+  double length  = 3.0;    // in seconds
   auto x = createModalBellGloriosa(sampleRate, length);
 
 
-  rosic::writeToMonoWaveFile("GloriosaTest1.wav", &x[0], (int)x.size(), (int)sampleRate);
+
+
+  //rosic::writeToMonoWaveFile("GloriosaModalOriginal.wav", &x[0], (int)x.size(), (int)sampleRate);
 
 
   int dummy = 0;
