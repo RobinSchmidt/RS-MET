@@ -2335,7 +2335,7 @@ void rsEnvelopeExtractor<T>::getAmpEnvelope(const T* x, int N,
     size_t n = peakIndices[m];
     sampleTime[m] = (T) n;
     envValue[m]   = xAbs[n];
-    // todo: optionally refine to subsample-precision
+    // ToDo: (optionally) refine time and value to subsample-precision by parabolic interpolation
   }
 }
 

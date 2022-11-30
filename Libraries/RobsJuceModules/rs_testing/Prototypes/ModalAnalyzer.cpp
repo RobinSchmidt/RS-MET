@@ -300,7 +300,9 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // -For finding the peaks, maybe we can re-use some code already written in rsHarmonicAnalyzer 
   //  and/or rsSinusoidalAnalyzer - but that code may have to be refactored. Maybe we need to 
   //  factor out some "getPeakFrequencies" function that takes a magnitude spectrum as input.
-  //  ...check class rsPeakPicker (iirc) - embed an object of this class here.
+  //  ...check class rsPeakPicker (iirc) - embed an object of this class here. Look at:
+  //  rsEnvelopeExtractor (MiscUnfinished.h), especially findPeakIndices - maybe trun into free
+  //  function or make static member of some PeakFinder class
   // -Looking at the spectrum plot, it appears that the peak-finding could also benefit from
   //  a sort of peak-shadowing algorithm similar to what we use for the amplitude envelopes. Seems
   //  like it could be worthwhile to factor that functionality out into a class rsPeakShadower.
@@ -313,6 +315,13 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //  partials have a time-varying frequency?
   // -Or maybe we should try to approximate a Gaussian filter for an optimal compromise between
   //  bandwidth and time-domain smoothing/smearing of the envelope?
+  // -To the bandpassed signal, apply an envelope follower and from the envelope, find the 
+  //  peak and estimate the decay by fitting an exponential. Somewhere, I already have some code
+  //  to fit a sum of exponentials - maybe use that. Apply it to the section from the peak onwards.
+  //  maybe we can use error-weigths of zero for the section before? It will result a decay and 
+  //  amplitude for the decay. With that in hand, maybe we can compute the remaining parameters
+  //  that are responsible for the attack...
+  //  
 
   return mp;
 }
