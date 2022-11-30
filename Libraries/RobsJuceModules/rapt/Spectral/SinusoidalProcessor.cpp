@@ -417,3 +417,18 @@ std::vector<T> rsPartialBeatingRemover<T>::smoothPhases(
 
   return p;
 }
+
+
+//=================================================================================================
+
+/*
+
+Ideas for processors::
+
+-Insert phase anomalies into partials - maybe at regular intervals, offset the phase by a certain
+ dp (delta-phi) - this should impose some sort of periodic pattern, maybe a sort of robotization
+ ...but maybe that time-interval of the phase anomalies could be different for different partials
+ "Phase-Bumper"
+
+
+*/

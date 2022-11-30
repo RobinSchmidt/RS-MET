@@ -475,17 +475,19 @@ Peak-Tracking:
 
 Window:
 -use a Dolph-Chebychev window and let the user only select the amplitude threshold for partials
- -the window will then be automatically tuned such the sidelobes are some reasonable margin below 
-  the detection threshold (the margin has to figured out empirically - maybe 15 or 20 dB)
- -this, in turn, determines the mainlobe width of the window which in turn determines the required
-  block-size
- ...soo in the high-level setup, the user just selects frequency resolution amplitude threshold 
- (and possibly the margin - but maybe not) and anything else can then be set up automatically
- ...nevertheless, provide the low-level setup anyway
- -maybe the allowed frequency deviation between two frames (which should be proportional to the 
+ -The window will then be automatically tuned such the sidelobes are some reasonable margin below 
+  the detection threshold (the margin has to figured out empirically - maybe 15 or 20 dB). Maybe 
+  use a modified version that avoids the spikes at the ends that occur for ceratin settings.
+ -This, in turn, determines the mainlobe width of the window which in turn determines the required
+  block-size ...soo in the high-level setup, the user just selects frequency resolution amplitude 
+  threshold (and possibly the margin - but maybe not) and anything else can then be set up 
+  automatically...nevertheless, provide the low-level setup anyway
+ -Maybe the allowed frequency deviation between two frames (which should be proportional to the 
   hopSize) can be set up in a way that is independent from the hopSize - maybe in Hz/s
-  10 Hz/s means the frequency is allowed to change by 10 Hz in one second
- -but also have a look at the phase-response - make sure, the window doesn't mess up phase 
+  10 Hz/s means the frequency is allowed to change by 10 Hz in one second. But maybe that should
+  depend on frequency because a vibrato with cause a greater absolute frequency deviation at the
+  higher harmonics than at the fundamental - maybe freq-deviation it should be set up in percent.
+ -But also have a look at the phase-response - make sure, the window doesn't mess up phase 
   measurement
 
 -when a Chebychev window is used, we may make the block-size a function of the threshold (because
@@ -536,21 +538,43 @@ Frequency estimation methods
 https://dspguru.com/dsp/howtos/how-to-interpolate-fft-peak/ 
 https://espace.library.uq.edu.au/view/UQ:10626 A Review of the Frequency Estimation and Tracking Problems
 
-__
 see here for window functions:
 https://en.wikipedia.org/wiki/Window_function
 implement blackman-harris and maybe blackman-nutall, dolph-chebychev - i think, low sidelobes are
 important for sinusoidal parameter estimation...maybe gaussian for frequency estimation? or use 
 re-assignment?
-*/
 
 
-/*
-Ideas for transformations:
--insert phase anomalies into partials - maybe at regular intervals, offset the phase by a certain
- dp (delta-phi) - this should impose some sort of periodic pattern, maybe a sort of robotization
- ...but maybe that time-interval of the phase anomalies could be different for different partials
- "Phase-Bumper"
+Other ideas fro estimating parameters of time-varying sinusoidal components:
+-Generally, a representation of any signal as a sum of sines with time-varying frequencies and 
+ amplitudes is not unique. That means, we are working in an overcomplete representation space 
+ inside which we want to find the one representation that "makes the most sense" - however we 
+ define that. Perhaps in terms of simplicity (number of components), continuity of the 
+ components (freqs and amps should not jump around), ...
+-Maybe to find a good representation, a sort of (pseudo) continuous wavelet transform can be 
+ helpful. This is also an overcomplete representation space and if the wavelets are of an 
+ windowed-sine type, the analysis data may be translated into time-varying sines.
+ -At each instant in time, try a wavelets of all possible frequencies and among those, choose those
+  for the signal represnetation that yield mamximum correlations, subject to some continuity 
+  constraints.
+ -After a signal component has been matched by a time-varying sine, subtract it off from the
+  remaining signal and repeat the process to extract the next partial. This way, we exctract 
+  partials one by one, starting from low frequencies and working our way up. Maybe for the lower
+  freqs, we can work with a downsampled signal. Maybe creating a mip-map of the input signal 
+  upfront could be beneficial
+ -For the wavelet function, choose some pair of enveloped cosine/sine (or use a complex wavelet).
+  Maybe take 1.5 cycles and use a window function (from -0.75...+0.75), which gives the middle 
+  interval (from -0.25...+0.25) the same total weight/area as the two outer intevals 
+  (-0.75...-0.25, +0.25...+0.75) together. Rationale: for a cosine, the middle section is the 
+  positive half-cycle, the outer sections are negative half-cycles. So we have only one positive 
+  but two negative half-cycles which we compensate by weighting...but check, what that means for 
+  the sine-component. Or maybe use only the cosine component. We also don't wat to have any DC
+  in the wavlet. Maybe use a bump-function for the envelope (-> smooth ends), maybe raised to some
+  power, selected to satisfy our desiderata.
+  -> Test the idea on an electronic bassdrum sound (fast sine-sweepdown).
+
+
+
 
 
 */
