@@ -283,12 +283,6 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   ft.getRealSignalMagnitudes(&x2[0], &mags[0]);
 
   rsPlotSpectrum(mags, sampleRate, -100.0, false);  // for development
-  // Looks like the axis are scaled wrong - all freqs appear to be one octave too low or something.
-  // In rsPlotSpectrum, we divide by 2N with a comment "2 bcs we assume that we get an array of 
-  // only positive freq bins". Is tt because of that? But actually, getRealSignalMagnitudes is 
-  // supposed to return only the positive frequencies - otherwise we'd see a symmetric spectrum 
-  // anyway - which isn't the case -> figure out! Check out other places that call 
-  // getRealSignalMagnitudes and/or rsPlotSpectrum (preferably both like we do here)!
 
 
   // for finding the peaks, maybe we can re-use some code already written in rsHarmonicAnalyzer 

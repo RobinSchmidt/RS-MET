@@ -160,7 +160,10 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0),
   std::vector<T> f(N), db(N);
   for(int k = 0; k < N; k++) {
     if(sampleRate > T(0))
-      f[k] = k * sampleRate / (2*N); // 2 bcs we assume that we get an array of only positive freq bins
+    {
+      //f[k] = k * sampleRate / (2*N); // 2 bcs we assume that we get an array of only positive freq bins
+      f[k] =  k * sampleRate / N;      // ...hmm - the gfactor fo 2 seemed to be wrong -> verify!
+    }
     else
       f[k] = T(k);
     db[k] = std::max(floorDb, 20*log10(scl*fftMagnitudes[k]));
