@@ -282,7 +282,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   ft.setNormalizationMode(ft.NORMALIZE_ON_FORWARD_TRAFO);
   ft.getRealSignalMagnitudes(&x2[0], &mags[0]);
 
-  rsPlotSpectrum(mags, sampleRate, -100.0, false);  // for development
+  //rsPlotSpectrum(mags, sampleRate, -100.0, false);  // for development
   // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
   // frequencies.
 
@@ -292,13 +292,28 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   std::vector<T> peakPositions, peakHeights;
   T pos, height;
   int precision = 1;
-  for(int n = 1; n < N-1; n++) {
-    if( AT::isPeakOrValley(&x[0], n) ) {
-      PF::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
+  for(int n = 1; n < N2-1; n++) {
+    if( AT::isPeak(&mags[0], n) ) {
+      PF::exactPeakPositionAndHeight(&mags[0], N2, n, precision, &pos, &height);
       peakPositions.push_back(pos);
       peakHeights.push_back(height); }}
   // Code copied from peakFinder in AnalysisExperiments.cpp - maybe factor out into a member of
-  // rsPeakFinder which can be called from both places
+  // rsPeakFinder which can be called from both places - ah - no, it's different - we only care for
+  // peaks here, there also for valleys. But it may nonetheless make sense to move this function 
+  // into this class
+
+  /*
+  // For development:
+  GNUPlotter plt;
+  plt.addDataArrays(N2, &mags[0]);
+  plt.addDataArrays((int)peakHeights.size(), &peakPositions[0], &peakHeights[0]);
+  plt.setGraphStyles("lines", "points");
+  plt.setPixelSize(1200, 400);
+  plt.plot();
+  */
+  // ooookay - this works but it extracts *a lot* of spurious peaks. Remedies:
+  // -smooth the spectrum beofre extracting the peaks (kinda crude but maybe not that bad)
+  // -use rsPeakPicker -> use peak shadowing and other more sophisticated ideas.
 
   // ...
 
