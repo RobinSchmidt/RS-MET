@@ -1682,7 +1682,7 @@ inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
   }
 }
 // lerp peaks from nL to nR (not including nR)
-// maybe make member
+// -ToDo: make member of rsPeakFinder
 
 template<class T>
 void rsPeakFinder<T>::connectPeaks(const T* y, int N, T* a, bool useParabola)

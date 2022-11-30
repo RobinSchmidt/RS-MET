@@ -272,7 +272,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // Step 1: Figure out the mode frequencies using a big FFT on the whole signal and find the 
   // peak freqs:
   int N2 = rsNextPowerOfTwo(N);
-  std::vector<double> x2(N2), mags(N2);
+  std::vector<T> x2(N2), mags(N2);
   rsZero(x2);                              // May not be needed
   for(int n = 0; n < N; n++)
     x2[n] = x[n];
@@ -286,12 +286,24 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
   // frequencies.
 
+  // Find all peaks:
+  using PF = rsPeakFinder<T>;
+  using AT = rsArrayTools;
+  std::vector<T> peakPositions, peakHeights;
+  T pos, height;
+  int precision = 1;
+  for(int n = 1; n < N-1; n++) {
+    if( AT::isPeakOrValley(&x[0], n) ) {
+      PF::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
+      peakPositions.push_back(pos);
+      peakHeights.push_back(height); }}
+  // Code copied from peakFinder in AnalysisExperiments.cpp - maybe factor out into a member of
+  // rsPeakFinder which can be called from both places
 
-
- 
+  // ...
 
   // ToDo:
-
+  // -Of all the peaks, figure out those that correspond to modes (that's the tricky part)
   // -Analyze each mode one at a time by bandpassing the signal with a bandpass tuned to the 
   //  respective modal frequency and then using an envelope follower on the bandpassed signal.
 
