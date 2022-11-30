@@ -309,6 +309,9 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //  partials have a time-varying frequency?
   // -Or maybe we should try to approximate a Gaussian filter for an optimal compromise between
   //  bandwidth and time-domain smoothing/smearing of the envelope?
+  // -Looking at the spectrum plot, it appears that the peak-finding could also benefit from
+  //  a sort of peak-shadowing algorithm similar to what we use for the amplitude envelopes. Seems
+  //  like it could be worthwhile to factor that functionality out into a class rsPeakShadower.
 
   return mp;
 }
