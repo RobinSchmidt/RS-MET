@@ -903,10 +903,25 @@ class rsPeakFinder
 
 public:
 
+  static void exactPeakPositionAndHeight(
+    const T* x, int N, int n0, int precision, T* pos, T* height);
+  // ALLOCATES HEAP! -> avoid it - i think, it should be easy, see comments in code.
+  // move to somewhere else
+
+  static void connectPeaks(const T* x, int N, T* env, bool useParabola);
+  // env == x is allowed - it can overwrite the content of a given array
+
+  static void connectPeaks(const T* xt, const T* xi, int N, T* env, int precision);
+  // under construction - uses a polynomial of order 2*precision to estimate the actual locations 
+  // and heights of the peaks - using a parabolo already improves results, but there are still
+  // frequency jaggies, so we may need higher accuracy for the amp-env
+  // we need two inputs - one to determine the peak locations and one for using in the 
+  // interpolator
+
+
   // ToDo:
   // -Drag in code from:
   //  -rsEnvelopeExtractor<T>::findPeakIndices
-  //  -rsSingleSineModeler<T>::exactPeakPositionAndHeight
 
 };
 
@@ -1151,7 +1166,8 @@ protected:
   // maybe get rid - we should probably always include the endpoints
 
 };
-// -move to Analysis
+// ToDo:
+// -Move to Analysis when finished
 
 
 //=================================================================================================

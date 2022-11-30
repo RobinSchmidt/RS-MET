@@ -340,7 +340,7 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //maxShortTimeRMS();
   //arrayRMS();
-  //peakFinder();                    // find peaks with subsample precision
+  peakFinder();                    // find peaks with subsample precision
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();

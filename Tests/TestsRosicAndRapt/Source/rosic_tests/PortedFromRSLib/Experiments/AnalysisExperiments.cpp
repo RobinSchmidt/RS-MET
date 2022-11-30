@@ -638,14 +638,14 @@ void arrayRMS()
 
 void peakFinder()
 {
-  // Create a sinuosid and find its peaks with subsample precision
+  // Create a sinuosid and find its minima and maxima with subsample precision
 
   int N = 50;
   int oversampling = 40;
   int precision = 4;
   double w = 1.5;  // omega
 
-  // create the test signal:
+  // Create the test signal:
   int No = N*oversampling;
   using Vec = std::vector<double>;
   Vec t(N), to(No);
@@ -658,22 +658,20 @@ void peakFinder()
     to[n] /= oversampling;
     xo[n] = sin(w*to[n]);  }
 
-  // find the peaks:
-  using SSM = rsSingleSineModeler<double>;
-  using AT  = rsArrayTools;
+  // Find the minima and maxima:
+  using PF = rsPeakFinder<double>;
+  using AT = rsArrayTools;
   Vec peakPositions, peakHeights;
   double pos, height;
-  //SPE::exactPeakPositionAndHeight(&x[0], N, 27, precision, &pos, &height);
   for(int n = 1; n < N-1; n++) {
-    if( AT::isPeakOrValley(&x[0], n) )
-    {
-      SSM::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
+    if( AT::isPeakOrValley(&x[0], n) ) {
+      PF::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
       peakPositions.push_back(pos);
-      peakHeights.push_back(height); 
-    }
-  }
+      peakHeights.push_back(height); }}
 
-
+  // Plot underlying (pseudo) continuous signal, the sampled signal and the peaks that were 
+  // obtained from the sampled signal. They should be in the positions of the actual peaks of the
+  // underlying continuous signal:
   GNUPlotter plt;
   plt.addDataArrays(N,  &t[ 0], &x[ 0]);
   plt.addDataArrays(No, &to[0], &xo[0]);

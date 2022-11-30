@@ -283,7 +283,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   ft.getRealSignalMagnitudes(&x2[0], &mags[0]);
 
   rsPlotSpectrum(mags, sampleRate, -100.0, false);  // for development
-  // Whe peak-finding is implemented, maybe plot the specttrum with markers at the found peak
+  // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
   // frequencies.
 
 

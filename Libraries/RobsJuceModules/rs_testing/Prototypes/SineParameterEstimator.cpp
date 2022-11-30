@@ -345,7 +345,7 @@ void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int prec
     T* y = a;
     for(int n = 0; n < N; n++)
       y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
-    connectPeaks(y, N, a, precision == 1);  
+    rsPeakFinder<T>::connectPeaks(y, N, a, precision == 1);  
     return;
   }
 
@@ -354,7 +354,7 @@ void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int prec
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = rsAbs(x[n]);        // use shadower
-  connectPeaks(&y[0], x, N, a, precision); 
+  rsPeakFinder<T>::connectPeaks(&y[0], x, N, a, precision); 
   // todo: pass y as xTest and x as xInterpolate
 
   //rsError("High preicison not yet implemented");
@@ -489,6 +489,7 @@ void rsSingleSineModeler<T>::smoothFreqs(T* w, int N, int medianOrder, int avera
     rsArrayTools::movingAverage3pt(w, N, w);
 }
 
+/*
 template<class T>
 inline void lerpPeaks(const T* y, int nL, int nR, T tL, T tR, T yL, T yR, T* a)
 {
@@ -547,7 +548,10 @@ void rsSingleSineModeler<T>::connectPeaks(const T* y, int N, T* a, bool useParab
 //  peaks rather than just using the first and last sample - that would work better for artificial, 
 //  pure sine tones - but maybe for more natural sounds, the current strategy is actually the 
 //  better way? using linear extrapolation would complicate the code
+*/
 
+// moved:
+/*
 template<class T>
 void rsSingleSineModeler<T>::exactPeakPositionAndHeight(
   const T* x, int N, int n0, int precision, T* pos, T* height)
@@ -597,7 +601,8 @@ void rsSingleSineModeler<T>::exactPeakPositionAndHeight(
 // be used to increase the time-resolution of pitch-estimation to quarter cycles - we would use:
 // locations of upward-zero -> peak -> downward-zero -> trough for each cycle (makes sense only
 // for bandpass signals, i.e. signals that have sinusoidal shape)
-
+*/
+/*
 template<class T>
 void rsSingleSineModeler<T>::connectPeaks(
   const T* xt, const T* xi, int N, T* env, int precision)
@@ -627,6 +632,7 @@ void rsSingleSineModeler<T>::connectPeaks(
 // for using higher order interpolation, it's actually a bad idea to use an array of absolute 
 // values - when the intepolant-width exceeds the width of the sinusoids lobe, we should actually
 // use the original signal itself - but then we may have to look for maxima *and* minima
+*/
 
 template<class T>
 T refinePhase(T p, T pL, T pR, int n) // n is only passed for debugging
