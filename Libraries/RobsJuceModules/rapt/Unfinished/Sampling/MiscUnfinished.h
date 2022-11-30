@@ -892,13 +892,43 @@ protected:
 
 };
 
+
+//=================================================================================================
+
+/** A class for finding peak values in an array of data. */
+
+template<class T>
+class rsPeakFinder
+{
+
+public:
+
+  // ToDo:
+  // -Drag in code from:
+  //  -rsEnvelopeExtractor<T>::findPeakIndices
+  //  -rsSingleSineModeler<T>::exactPeakPositionAndHeight
+
+};
+
+
 //=================================================================================================
 
 /** A class for identifying relevant peak values in an array of data. In the simplest possible 
 scenario, a peak is just a value that is greater than its left and right neighbor - but in many 
 applications, that criterion alone may sift out a lot of spurious peaks that are actually 
 irrelevant and not desired to be included. Therefore, more sophisticated decision criteria may be 
-employed to decide what is and what isn't a relevant peak. This is what this class is made for. */
+employed to decide what is and what isn't a relevant peak. This is what this class is made for. 
+
+One situation that is often encountered is that near a high relevant peak, we see some smaller 
+irrelevant peaks - like when small mini-peaks sit on the slope of some larger mountain. Due to 
+sitting on the big mountain's flank, its actual value may be quite high - higher than the peaks of
+some smaller mountains but nontheless, it's less important than those smaller mountains, so a 
+filtering by absolute height is not suitable. We want some criterion that sifts out minipeaks that
+piggyback on the largest mountains, so to speak.
+
+On of the criteria that we employ is that minipeaks need to have soem threshold height with respect
+to their "parent" peak. We realize this by what I call "peak-shadowing". Each peaks casts "shadows"
+left and right ...tbc...see the plots in the experiments  */
 
 template<class T>
 class rsPeakPicker
