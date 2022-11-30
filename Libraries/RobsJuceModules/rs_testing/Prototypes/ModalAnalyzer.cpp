@@ -283,15 +283,12 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   ft.getRealSignalMagnitudes(&x2[0], &mags[0]);
 
   rsPlotSpectrum(mags, sampleRate, -100.0, false);  // for development
-
-
-  // for finding the peaks, maybe we can re-use some code already written in rsHarmonicAnalyzer 
-  // and/or rsSinusoidalAnalyzer - but that code may have to be refactored. Maybe we need to factor
-  // out some "getPeakFrequencies" function that takes a magnitude spectrum as input. We'll see.
-  
+  // Whe peak-finding is implemented, maybe plot the specttrum with markers at the found peak
+  // frequencies.
 
 
 
+ 
 
   // ToDo:
 
@@ -300,6 +297,12 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
   
   // Notes:
+  // -For finding the peaks, maybe we can re-use some code already written in rsHarmonicAnalyzer 
+  //  and/or rsSinusoidalAnalyzer - but that code may have to be refactored. Maybe we need to 
+  //  factor out some "getPeakFrequencies" function that takes a magnitude spectrum as input.
+  // -Looking at the spectrum plot, it appears that the peak-finding could also benefit from
+  //  a sort of peak-shadowing algorithm similar to what we use for the amplitude envelopes. Seems
+  //  like it could be worthwhile to factor that functionality out into a class rsPeakShadower.
   // -The bandwidth of the bandpass should sufficiently suppress adajacent partials (calling for 
   //   smaller bandwidth) but without introducing too much time-domain smoothing on the estimated 
   //   envelope (calling for a larger bandwidth). 
@@ -309,9 +312,6 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //  partials have a time-varying frequency?
   // -Or maybe we should try to approximate a Gaussian filter for an optimal compromise between
   //  bandwidth and time-domain smoothing/smearing of the envelope?
-  // -Looking at the spectrum plot, it appears that the peak-finding could also benefit from
-  //  a sort of peak-shadowing algorithm similar to what we use for the amplitude envelopes. Seems
-  //  like it could be worthwhile to factor that functionality out into a class rsPeakShadower.
 
   return mp;
 }
