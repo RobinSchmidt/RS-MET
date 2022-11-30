@@ -1778,7 +1778,7 @@ void rsPeakPicker<T>::postProcessPeaks(std::vector<int>& peaks, const T* x, cons
 template<class T>
 void rsPeakPicker<T>::shadowLeft(const T* t, const T* x, T* y, int N)
 {
-  rsPeakTrailDragger<T> ps;
+  rsPeakShadower<T> ps;
   ps.setDecaySamples(shadowWidthL);
   ps.applyBackward(t, &x[0], &y[0], N);
 }
@@ -1786,7 +1786,7 @@ void rsPeakPicker<T>::shadowLeft(const T* t, const T* x, T* y, int N)
 template<class T>
 void rsPeakPicker<T>::shadowRight(const T* t, const T* x, T* y, int N)
 {
-  rsPeakTrailDragger<T> ps;
+  rsPeakShadower<T> ps;
   ps.setDecaySamples(shadowWidthR);
   ps.applyForward(t, &x[0], &y[0], N);
 }

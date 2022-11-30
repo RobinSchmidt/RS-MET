@@ -340,7 +340,7 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //maxShortTimeRMS();
   //arrayRMS();
-  peakFinder();                    // find peaks with subsample precision
+  //peakFinder();                    // find peaks with subsample precision
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
@@ -348,8 +348,8 @@ int main(int argc, char* argv[])
   //cycleMarkErrors();
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
-  ropewayAlgo();
-  peakPicker();
+  //ropewayAlgo();
+  //peakPicker();
   //singleSineModel();
 
   // Delay:

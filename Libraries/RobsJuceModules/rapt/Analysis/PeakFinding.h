@@ -6,10 +6,10 @@ version of an envelope follower with zero attack time. So, in effect, it respond
 any peaks and then drags an exponentially decaying trail from that peak. If additional smaller 
 peaks occur under the umbrella of that trail, they will not be seen separately, they will be 
 subsumed/shadowed by the larger peak. This class can be useful for distinguishing major, relevant
-peaks from the minor, irrelevant ones. */
+peaks from the minor, irrelevant ones that often sit on the flanks of the major mountains. */
 
 template<class T>
-class rsPeakTrailDragger  // rename to rsPeakShadower - move to PeakFinding.h/cpp
+class rsPeakShadower
 {
 
 public:
@@ -76,14 +76,14 @@ protected:
   T y = T(0);
 
 };
-// -maybe make a version with hold - could be useful for limiters
-// -maybe make a version with linear instead of exponential decay - maybe the slope should be 
-//  adapted in the "if" according to x (be proportional) ...hmm...maybe not
-// -i think, it works correctly only if the input signal is always nonnegative - this is the case 
-//  for envelopes but maybe it's useful to have a class that works also when the input may go
-//  negative
 
 // ToDo:
+// -Maybe make a version with hold - could be useful for limiters
+// -Maybe make a version with linear instead of exponential decay - maybe the slope should be 
+//  adapted in the "if" according to x (be proportional) ...hmm...maybe not
+// -I think, it works correctly only if the input signal is always nonnegative - this is the case 
+//  for envelopes but maybe it's useful to have a class that works also when the input may go
+//  negative. -> Implement unit tests that cover both cases and make them pass
 // -There's some peak-finding/picking related code in MiscUnfinished.h/cpp. That should be moved 
 //  here someday (when the API and algos have reasonably stabilized)
 

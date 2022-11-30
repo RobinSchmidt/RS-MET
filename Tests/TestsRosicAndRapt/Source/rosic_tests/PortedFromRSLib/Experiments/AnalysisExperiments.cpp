@@ -1287,12 +1287,11 @@ protected:
 template<class T>
 void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
 {
-  //rsPeakTrailer<T> pt;
-  RAPT::rsPeakTrailDragger<T> pt;
-  pt.setDecaySamples(halfTime, T(0.5));
+  RAPT::rsPeakShadower<T> ps;
+  ps.setDecaySamples(halfTime, T(0.5));
   int n;
-  for(n = 0;   n <  N;  n++) w[n] = pt.getSample(x[n]);  pt.reset();   // forward pass
-  for(n = N-1; n >= 0;  n--) y[n] = pt.getSample(x[n]);                // backward pass
+  for(n = 0;   n <  N;  n++) w[n] = ps.getSample(x[n]);  ps.reset();   // forward pass
+  for(n = N-1; n >= 0;  n--) y[n] = ps.getSample(x[n]);                // backward pass
   //rsPlotArrays(N, x, w, y);
 
   for(n = 0;   n <  N;  n++) y[n] = rsMax(w[n], y[n]);               // maximum of both passes - sorta works
