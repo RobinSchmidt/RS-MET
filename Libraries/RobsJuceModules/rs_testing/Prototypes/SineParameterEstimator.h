@@ -217,6 +217,7 @@ public:
 
   static void exactPeakPositionAndHeight(
     const T* x, int N, int n0, int precision, T* pos, T* height);
+  // ALLOCATES HEAP! -> avoid it - i think, it should be easy, see comments in code.
   // move to somewhere else
 
 

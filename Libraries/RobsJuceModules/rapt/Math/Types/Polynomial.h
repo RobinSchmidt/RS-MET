@@ -942,6 +942,7 @@ public:
   Note that N here is the number of datapoints, not the degree (which is one less)...that's a bit 
   quirky....  */
   static void interpolant(T *a, const T *x, const T *y, int numDataPoints);
+  // allocates heap memory
   // maybe move to Interplation
   // the meaning of N here is inconsistent with the rest of the class - it's the number of 
   // datapoints - maybe move interpolant into some interpolator class where its conventional to 

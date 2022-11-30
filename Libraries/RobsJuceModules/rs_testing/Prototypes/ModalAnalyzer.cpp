@@ -300,9 +300,11 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // -For finding the peaks, maybe we can re-use some code already written in rsHarmonicAnalyzer 
   //  and/or rsSinusoidalAnalyzer - but that code may have to be refactored. Maybe we need to 
   //  factor out some "getPeakFrequencies" function that takes a magnitude spectrum as input.
-  //  ...check class rsPeakPicker (iirc) - embed an object of this class here. Look at:
-  //  rsEnvelopeExtractor (MiscUnfinished.h), especially findPeakIndices - maybe trun into free
-  //  function or make static member of some PeakFinder class
+  //  ...check class rsPeakPicker (MiscUnfinished.h) - embed an object of this class here. Look 
+  //   at: rsEnvelopeExtractor (MiscUnfinished.h), especially findPeakIndices - maybe trun into 
+  //  free function or make static member of some rsPeakFinder class. 
+  //  see also: rsSingleSineModeler<T>::exactPeakPositionAndHeight (SineParameterEstimator.h). 
+  //  I have a comment there to move that function to somewhere else.
   // -Looking at the spectrum plot, it appears that the peak-finding could also benefit from
   //  a sort of peak-shadowing algorithm similar to what we use for the amplitude envelopes. Seems
   //  like it could be worthwhile to factor that functionality out into a class rsPeakShadower.

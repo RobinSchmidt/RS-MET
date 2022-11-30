@@ -555,7 +555,9 @@ void rsSingleSineModeler<T>::exactPeakPositionAndHeight(
   rsAssert(n0 >= 0 && n0 < N, "n0 is out of range");
 
   static const int maxPrecision = 4;
-  rsAssert(precision <= maxPrecision); // for higher precisions, we need to allocate a larger a-array below
+  rsAssert(precision <= maxPrecision); 
+  // In principle, the algo should be able to produce higher precisions, but to support it, we 
+  // would need to allocate a larger a-array below.
 
   int p = rsMin(precision, n0, (N-1)-n0);       // todo: verify this formula
   if(p == 0 || n0 == 0 || n0 == N-1) {
@@ -578,10 +580,10 @@ void rsSingleSineModeler<T>::exactPeakPositionAndHeight(
   // its maximum using Newton iteration, using the location of the peak of the parabola as initial
   // guess:
   int degree = 2*p;
-  Poly::interpolant(a, T(-p), T(1), &x[n0-p], degree+1); 
-  // degree+1 because it is number of datapoints, function allocates - maybe avoid this by using ad 
-  // as workspace for the function (then we need to allocate 2*maxPrecision+1 for the ad array also 
-  // (i think) - make a unit test that tests all possible precisions)
+  Poly::interpolant(a, T(-p), T(1), &x[n0-p], degree+1);  // ALLOCATES ON HEAP!!!
+  // degree+1 because it is the number of datapoints, function allocates - maybe avoid this by 
+  // using ad as workspace for the function (then we need to allocate 2*maxPrecision+1 for the ad
+  // array also (i think) - make a unit test that tests all possible precisions)
 
 
   Poly::derivative(a, ad, degree);

@@ -638,9 +638,7 @@ void arrayRMS()
 
 void peakFinder()
 {
-  // ...under construction...
   // Create a sinuosid and find its peaks with subsample precision
-  // ...maybe create one with oversampling so we may see the actual peaks
 
   int N = 50;
   int oversampling = 40;
