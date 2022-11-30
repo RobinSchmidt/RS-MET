@@ -301,7 +301,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //  and/or rsSinusoidalAnalyzer - but that code may have to be refactored. Maybe we need to 
   //  factor out some "getPeakFrequencies" function that takes a magnitude spectrum as input.
   //  ...check class rsPeakPicker (MiscUnfinished.h) - embed an object of this class here. Look 
-  //   at: rsEnvelopeExtractor (MiscUnfinished.h), especially findPeakIndices - maybe trun into 
+  //   at: rsEnvelopeExtractor::findPeakIndices (MiscUnfinished.h), - maybe turn into 
   //  free function or make static member of some rsPeakFinder class. 
   //  see also: rsSingleSineModeler<T>::exactPeakPositionAndHeight (SineParameterEstimator.h). 
   //  I have a comment there to move that function to somewhere else.

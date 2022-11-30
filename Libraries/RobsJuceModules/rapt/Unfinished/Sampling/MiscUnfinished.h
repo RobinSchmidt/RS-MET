@@ -1247,7 +1247,8 @@ public:
   and/or x[N-1] >= x[N-2] respectively.  */
   static std::vector<size_t> findPeakIndices(const T* x, int N, bool includeFirst = false,
     bool includeLast = false);
-  // maybe move to rsArrayTools, maybe return a vector of int, rename to findPeaksAndPlateauIndices or
+  // maybe move to rsArrayTools, maybe return a vector of int, rename to 
+  // findPeaksAndPlateauIndices or maybe move as static function into a new class rsPeakFinder.
   // maybe have another boolean option includePlateaus
 
   /** Given a signal x of length N, this function fills the sampleTime array with the

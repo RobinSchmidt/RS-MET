@@ -1463,7 +1463,7 @@ template<class T>
 void rsSmooth(const T* x, int N, T* y)
 {
   rsAssert(x != y, "algorithm not suitable for in-place processing");
-  // maybe make an even stronger assertio that x and y do not overlap - implement a function
+  // maybe make an even stronger assertion that x and y do not overlap - implement a function
   // int rsArrayTools::getOverlap(T* x, T* y, int N) that returns the number of overlapping elements
   // and/or a function bool rsArrayTools::areOverlapping(T* x, T* y, int N)
 
