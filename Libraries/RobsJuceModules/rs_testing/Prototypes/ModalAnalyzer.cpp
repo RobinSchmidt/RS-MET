@@ -305,6 +305,8 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //  free function or make static member of some rsPeakFinder class. 
   //  see also: rsSingleSineModeler<T>::exactPeakPositionAndHeight (SineParameterEstimator.h). 
   //  I have a comment there to move that function to somewhere else.
+  //  see also rsPeakTrailDragger (EnvelopeFollower.h)
+  //  possibly relevant Experiments: peakFinder, ropewayAlgo, peakPicker
   // -Looking at the spectrum plot, it appears that the peak-finding could also benefit from
   //  a sort of peak-shadowing algorithm similar to what we use for the amplitude envelopes. Seems
   //  like it could be worthwhile to factor that functionality out into a class rsPeakShadower.

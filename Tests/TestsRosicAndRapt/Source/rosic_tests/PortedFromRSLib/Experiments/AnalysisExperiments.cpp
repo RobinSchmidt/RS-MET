@@ -1374,16 +1374,17 @@ std::vector<T> ropeway(const std::vector<T>& x, T halfTime)
 
 void ropewayAlgo()
 {
+  // Simple demo of the ropeway algo on some hand-created artificial data ...tbc...
+
   typedef std::vector<double> Vec;
 
   double halfTime = 5;
 
   Vec x(101);
-  //x[50] = 1;
   x[20] = 0.5;
   x[30] = 1.0;
   x[40] = 0.2; 
-  x[50] = 0.2;
+  x[50] = 0.2;  //x[50] = 1;
   x[60] = 0.6;
   x[70] = 1.0; 
   x[80] = 0.4;
