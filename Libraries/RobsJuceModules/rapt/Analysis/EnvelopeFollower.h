@@ -10,7 +10,7 @@ subsumed/shadowed by the larger peak. This class can be useful for distinguishin
 peaks from the minor, irrelevant ones. */
 
 template<class T>
-class rsPeakTrailDragger  // rename to rsPeakShadower
+class rsPeakTrailDragger  // rename to rsPeakShadower - move to PeakFinding.h/cpp
 {
 
 public:
