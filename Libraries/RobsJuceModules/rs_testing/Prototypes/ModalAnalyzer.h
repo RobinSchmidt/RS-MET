@@ -89,9 +89,7 @@ public:
 protected:
 
   T sampleRate = T(1);
-
-  //
-  //int maxNumModes = 1024;
+  int maxNumModes = 1024;
 
   // ToDo:
   // -Have parameters that control the sensitivity of peak-detection/picking algorithms

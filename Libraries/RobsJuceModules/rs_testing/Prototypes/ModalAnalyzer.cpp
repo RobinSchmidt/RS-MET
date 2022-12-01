@@ -312,25 +312,41 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       if(height >= threshRatio * maxHeight) {
         peakPositions.push_back(pos);
         peakHeights.push_back(height); }}}
+  peakPositions = peakPositions * sampleRate / T(N2);
+  int numModes = (int) peakHeights.size();
 
   // ToDo:
   // -Keep only the maxNumModes modes with the highest heights. Maybe for that, we need to create
   //  a struct that contains height and position 
   // -Maybe use rsvector2D for that and define a < operator that compares based on x first then on
   //  y. Instead of having parallel arrays peakPoisitions/Heights, we'd use one array of 2D vectors
-  //  storing the height in x and the position iny, such that sorting works as intended.
+  //  storing the height in x and the position in y, such that sorting works as intended. Or maybe 
+  //  use rsComplex...but nah, defining < for 2D (and 3D) vectors could be useful in other places
+  //  as well...but we can't use such an array of vectors for plotting anymore...hmmm...
 
+  // Extract the maxNumModes loudest modes. The peakPositions/Heights arrays are parallel arrays 
+  // sorted by ascending frequency. We need a sorting by descending height/amplitude, so we create
+  // a helper array of 2D vectors with tze same data where the x-coordinate stores the height and
+  // y-coordinate the freq (because sorting on 2D vectors using the < operator copares based on x 
+  // first:
+  std::vector<rsVector2D<T>> peaks(numModes); // x: height, y: freq
+  for(int m = 0; m < numModes; m++)
+    peaks[m] = rsVector2D<T>(peakHeights[m], peakPositions[m]);
+  rsHeapSort(&peaks[0], numModes);
+  AT::reverse(&peaks[0], numModes);
+
+  /*
   // Plot results of the pre-analysis (for development):
   GNUPlotter plt;
   Vec freqs(N2);
   ft.binFrequencies(&freqs[0], N2, sampleRate);
-  peakPositions = peakPositions * sampleRate / T(N2);
   plt.addDataArrays(N2, &freqs[0], &mags[0]);
   plt.addDataArrays(N2, &freqs[0], &magsMasked[0]);
   plt.addDataArrays((int)peakHeights.size(), &peakPositions[0], &peakHeights[0]);
   plt.setGraphStyles("lines", "lines", "points");
   plt.setPixelSize(1200, 400);
   plt.plot();
+  */
   // OK - this looks good. Maybe later we could use rsPeakPicker which includes masking plus some
   // more sophisticated ideas. For the time being, the masking works well
 
@@ -340,7 +356,17 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // respective modal frequency and then using an envelope follower on the bandpassed signal
 
   using ModalParams = rsModalFilterParameters<T>;
-  std::vector<ModalParams> mp;
+  numModes = rsMin(numModes, maxNumModes);
+  std::vector<ModalParams> mp(numModes);
+  for(int m = 0; m < numModes; m++)
+  {
+    T f = peaks[m].y;
+    T a = peaks[m].x;
+
+
+    int dummy = 0;
+  }
+
 
   
   // Notes:

@@ -112,6 +112,20 @@ public:
       return false;
   }
 
+  /** Compares two vectors for less-than. This compares based on x first, then on y. */
+  bool operator<(const rsVector2D<T>& p) const
+  {
+    // Compare based on x:
+    if(       x < p.x) return true;
+    else if(p.x <   x) return false;
+
+    // If the x are equal, compare based on y:
+    if(y < p.y) return true;
+    return false;
+  }
+  // needs unit test
+
+
   //-----------------------------------------------------------------------------------------------
 
   /** \name Static Member Functions */
