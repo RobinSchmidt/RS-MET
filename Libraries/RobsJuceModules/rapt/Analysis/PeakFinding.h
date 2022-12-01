@@ -15,6 +15,9 @@ class rsPeakMasker
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
   /** Sets the number of samples it takes, to decay to a specified value after having seen a unit
   impulse. If r is this ratio and d is the number of samples, our multiplier needs to be the
   d-th root of r such that after d successive multiplications, we reach r, if we init with 1. The 
@@ -24,39 +27,23 @@ public:
   { c = pow(targetRatio, T(1)/numSamples); }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
   /** Computes one output sample at a time. */
   T getSample(T x)
   {
     return y = rsMax(y * c, x);
-    /*
-    y *= c;
-    if(x > y)
-      y = x;
-    return y;
-    */
   }
-  // rename x to in, use rsMax instead of if-conditional - maybe it can be done in one line:
-  // return y = rsMax(y*c, x);
-  // maybe have TSig/TPar template parameters and use rsMax instead of the "if" which should take
-  // the element-wise maximum in case of SIMD vector types for the signal
-  // maybe implement a getSample with additional dt parameter for use with non-equidistant input
 
-  // function for non-equidistant data - not yet tested:
+  /** Per-sample computation function for non-equidistant data. */
   T getSample(T x, T dt)
   {
     return y = rsMax(y * rsPow(c, dt), x);
-    /*
-    y *= pow(c, dt);
-    if(x > y)
-      y = x;
-    return y;
-    */
   }
-  // rename x to in, dt to dx, use one-line
-  // return y = rsMax(y*pow(c,dt), x);
 
-
-
+  /** Applies the process running forward through the signal yIn of length N and writes the result 
+  into yOut. Can be used in place: the buffers yIn, yOut may point to the same memory location. */
   void applyForward(const T* yIn, T* yOut, int N)
   {
     reset();
@@ -65,18 +52,8 @@ public:
       yOut[n] = getSample(yIn[n]);
   }
 
-  void applyBackward(const T* yIn, T* yOut, int N)
-  {
-    reset();
-    this->y = yOut[N-1] = yIn[N-1];
-    for(int n = N-2; n >= 0; n--)
-      yOut[n] = getSample(yIn[n]);
-  }
-
-
-  /** Applies the process running forward through the signal yIn of length N with time-stamps 
-  given in x and writes the result into yOut. Can be used in place: the buffers yIn, yOut may point
-  to the same memory location. */
+  /** Like applyForward(const T* yIn, T* yOut, int N) but with an explicitly given x-axis which
+  does not necessarily have to be equidistant. */
   void applyForward(const T* x, const T* yIn, T* yOut, int N)
   {
     reset();
@@ -85,6 +62,16 @@ public:
       yOut[n] = getSample(yIn[n], x[n]-x[n-1]);
   }
 
+  /** Like applyForward but does a backward pass through the data instead. */
+  void applyBackward(const T* yIn, T* yOut, int N)
+  {
+    reset();
+    this->y = yOut[N-1] = yIn[N-1];
+    for(int n = N-2; n >= 0; n--)
+      yOut[n] = getSample(yIn[n]);
+  }
+
+  /** Like applyForward but does a backward pass through the data instead. */
   void applyBackward(const T* x, const T* yIn, T* yOut, int N)
   {
     reset();
