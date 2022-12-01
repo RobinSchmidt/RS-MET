@@ -334,6 +334,9 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     peaks[m] = rsVector2D<T>(peakHeights[m], peakPositions[m]);
   rsHeapSort(&peaks[0], numModes);
   AT::reverse(&peaks[0], numModes);
+  // Maybe we later should use a 3D vector and store as 3rd element the index m because we may need
+  // it later to figure out the adjacent/neighbor modes (for tuning the bi-notch) where the 
+  // adjacency is again defined on the freq-axis
 
   /*
   // Plot results of the pre-analysis (for development):
@@ -362,6 +365,20 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   {
     T f = peaks[m].y;
     T a = peaks[m].x;
+
+    mp[m].freq = f;    // preliminary
+    mp[m].amp  = a;    // preliminary
+
+    // ToDo: 
+    // -set up a bandpass tuned to the (preliminary) mode frequency f
+    // -filter the signal x bidirectionally using the bandpass
+    // -apply envelope-follower
+    // -find out peak-amplitude and position - use these values as estimates for mode-amplitude
+    //  and attack
+    // -refine the frequency estimate by measuring a distance between a given number of 
+    //  zero-crossings (maybe start at the peak and use a number of reliable cycles - maybe until
+    //  the amplitude is down to 0.25 or soemthing - experiemntation necessary
+
 
 
     int dummy = 0;
@@ -393,7 +410,9 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //  maybe we can use error-weigths of zero for the section before? It will result a decay and 
   //  amplitude for the decay. With that in hand, maybe we can compute the remaining parameters
   //  that are responsible for the attack...
-  //  
+  // -Maybe before returning the mp array, it should be sorted by frequency...not sure about that
+  //  though. Sorting by decreasing amplitude can also make sense
+
 
   return mp;
 }
