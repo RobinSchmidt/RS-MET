@@ -32,6 +32,8 @@ public:
       y = x;
     return y;
   }
+  // rename x to in, use rsMax instead of if-conditional - maybe it can be done in one line:
+  // return y = rsMax(y*c, x);
   // maybe have TSig/TPar template parameters and use rsMax instead of the "if" which should take
   // the element-wise maximum in case of SIMD vector types for the signal
   // maybe implement a getSample with additional dt parameter for use with non-equidistant input
@@ -44,30 +46,28 @@ public:
       y = x;
     return y;
   }
+  // rename x to in, dt to dx, use one-line
+  // return y = rsMax(y*pow(c,dt), x);
 
 
-  /** Applies the process running forward through the signal x of length N with time-stamps given 
-  in t and writes the result into y. Can be used in place - the buffers x,y may point to the same 
-  memory location. */
-  void applyForward(const T* t, const T* x, T* y, int N)
+  /** Applies the process running forward through the signal yIn of length N with time-stamps 
+  given in x and writes the result into yOut. Can be used in place: the buffers yIn, yOut may point
+  to the same memory location. */
+  void applyForward(const T* x, const T* yIn, T* yOut, int N)
   {
     reset();
-    this->y = y[0] = x[0]; // first output sample is equal to first input sample
+    this->y = yOut[0] = yIn[0]; // first output sample is equal to first input sample
     for(int n = 1; n < N; n++)
-      y[n] = getSample(x[n], t[n]-t[n-1]);
+      yOut[n] = getSample(yIn[n], x[n]-x[n-1]);
   }
-  // maybe rename t to x, x to yIn, y to yOut
-  // not yet tested
 
-
-  void applyBackward(const T* t, const T* x, T* y, int N)
+  void applyBackward(const T* x, const T* yIn, T* yOut, int N)
   {
     reset();
-    this->y = y[N-1] = x[N-1]; // first output sample is equal to first input sample
+    this->y = yOut[N-1] = yIn[N-1]; // first output sample is equal to first input sample
     for(int n = N-2; n >= 0; n--)
-      y[n] = getSample(x[n], t[n+1]-t[n]);
+      yOut[n] = getSample(yIn[n], x[n+1]-x[n]);
   }
-  // not yet tested
 
   /** Resets the internal state. */
   void reset() { y = T(0); }

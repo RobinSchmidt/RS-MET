@@ -920,19 +920,36 @@ bool peakMaskingUnitTest()
   pm.applyForward(&x[0], &y1[0], &y1[0], N);             // in place
   pm.applyForward(&x[0], &y[0],  &y2[0], N);             // out of place
   Vec yt1 = { 2, 4, 16, 8, 4, 2, 4, 2, 8, 4, 2, 1, 4 };  // target output
+  //rsPlotVectorsXY(x, y, y1, y2);
+  ok &= y1 == y2;
+  ok &= y1 == yt1;
+
+  // Now test backward masking:
+  y1 = y;
+  pm.applyBackward(&x[0], &y1[0], &y1[0], N);
+  pm.applyBackward(&x[0], &y[0],  &y2[0], N);
+  Vec yt2 = { 4, 8, 16, 1, 2, 2, 4, 4, 8, 1, 2, 2, 4 };
+  //rsPlotVectorsXY(x, y, y1, y2);
+  ok &= y1 == y2;
+  ok &= y1 == yt2;
+
+  /*
+  // Now the same two tests with impicit x-axis:
+  y1 = y;       
+  pm.applyForward(&y1[0], &y1[0], N);
+  pm.applyForward(&y[0],  &y2[0], N);
   rsPlotVectorsXY(x, y, y1, y2);
   ok &= y1 == y2;
   ok &= y1 == yt1;
+  */
 
 
 
   // ToDo:
-  // define target output yt and compare to actual output 
-
-
-
-
-
+  // -Test it with:  
+  //  -implicit x-axis 
+  //  -non-equidistant x-axis
+  //  -different time-constant and targetRatio
 
   return ok;
 }
