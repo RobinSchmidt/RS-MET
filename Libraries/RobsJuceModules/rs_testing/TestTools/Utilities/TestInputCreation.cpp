@@ -474,6 +474,7 @@ std::vector<double> createModalBellGloriosa(double sampleRate, int length)
   // Generate the sound and return it:
   int N = length;
   MFB mfb;
+  mfb.setSampleRate(sampleRate);
   mfb.setReferenceFrequency(fundamental);
   mfb.setReferenceAttack(attack);
   mfb.setReferenceDecay(decay);

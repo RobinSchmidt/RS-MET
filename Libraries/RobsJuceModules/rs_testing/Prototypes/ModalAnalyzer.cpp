@@ -288,14 +288,12 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
   // frequencies.
 
-  Vec magsMasked = mags;  
+  // Apply peak-masking:
+  Vec magsMasked = mags;
   rsPeakMasker<T> pm;
-  T freqDelta = 10;     // make user parameter, find better name
-
-  T binDelta  = N2 * freqDelta / sampleRate;   
-  // verify formula! the FFT analysis freq of bin k is given by k * sampleRate / N2
-
-  pm.setDecaySamples(binDelta);
+  T freqDelta = 10;         // make user parameter, find better name
+  T binDecay  = freqDelta * N2 / sampleRate;
+  pm.setDecaySamples(binDecay);
   pm.applyForward( &magsMasked[0], &magsMasked[0], N2);
   pm.applyBackward(&magsMasked[0], &magsMasked[0], N2);
 
@@ -331,7 +329,6 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // ooookay - this works but it extracts *a lot* of spurious peaks. Remedies:
   // -we need a (relative) magnitude threshold - maybe -60 dB is a good default
   // -maybe use rsPeakPicker - it includes masking plus some more sophisticated ideas.
-  // -plot a frequency axis in Hz
 
   // ...
 
