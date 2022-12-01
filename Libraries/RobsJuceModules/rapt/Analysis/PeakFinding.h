@@ -5,11 +5,12 @@
 version of an envelope follower with zero attack time. So, in effect, it responds immediately to 
 any peaks and then drags an exponentially decaying trail from that peak. If additional smaller 
 peaks occur under the umbrella of that trail, they will not be seen separately, they will be 
-subsumed/shadowed by the larger peak. This class can be useful for distinguishing major, relevant
-peaks from the minor, irrelevant ones that often sit on the flanks of the major mountains. */
+subsumed/shadowed/masked by the larger peak. This class can be useful for distinguishing major, 
+relevant peaks from the minor, irrelevant ones that often sit on the flanks of the major 
+mountains. */
 
 template<class T>
-class rsPeakShadower  // maybe rename to rsPeakMasker
+class rsPeakMasker
 {
 
 public:

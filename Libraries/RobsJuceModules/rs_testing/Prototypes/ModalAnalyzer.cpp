@@ -289,10 +289,10 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // frequencies.
 
   Vec  magsSmooth = mags;  
-  rsPeakShadower<T> ps;
+  rsPeakMasker<T> pm;
   T freqDelta = 10;     // make user parameter, find better name
   T binDelta  = N2 * freqDelta / sampleRate;   // verify formula!
-  ps.setDecaySamples(binDelta);
+  pm.setDecaySamples(binDelta);
   //ps.applyForward(...,  &magsSmooth[0], &magsSmooth[0], N2);
   // we need a similar function that doesn't require a "t"-array to be passed, i.e. assumes
   // t = 0,1,2,3,....

@@ -904,23 +904,23 @@ bool peakMaskingUnitTest()
   Vec y1, y2;
   int N = (int) x.size();
 
-  rsPeakShadower<Real> ps;
+  rsPeakMasker<Real> pm;
 
   // Apply forward masking:
-  y1 = y;       ps.applyForward(&x[0], &y1[0], &y1[0], N);  // in place
-  y2.resize(N); ps.applyForward(&x[0], &y[0],  &y2[0], N);  // out of place
+  y1 = y;       pm.applyForward(&x[0], &y1[0], &y1[0], N);  // in place
+  y2.resize(N); pm.applyForward(&x[0], &y[0],  &y2[0], N);  // out of place
   ok &= y1 == y2;
-  ok &= y1 == y;   // settings are still neutral
+  ok &= y1 == y;   // masker's settings are still neutral
 
  
 
 
-  rsPlotVectorsXY(x, y, y1);
+  rsPlotVectorsXY(x, y, y1, y2);
   //rsPlotVectors(y, z);
 
 
 
-  ps.setDecaySamples(1.0);    // should use 0.5 for optional parameter 
+  pm.setDecaySamples(1.0);    // should use 0.5 for optional parameter 
 
 
 

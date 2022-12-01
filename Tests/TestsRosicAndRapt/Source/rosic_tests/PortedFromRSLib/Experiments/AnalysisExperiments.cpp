@@ -1279,17 +1279,18 @@ protected:
 };
 // this is kinda nice - each peak carries an exponentially decaying trail of influence - minor 
 // peaks below this trail will be dismissed as irrelevant
-// moved to class RAPT::rsPeakTrailDragger
+// moved to class RAPT::rsPeakMasker
 */
 
 template<class T>
 void ropeway(const T* x, int N, T halfTime, T* y, T* w) // w is workspace
 {
-  RAPT::rsPeakShadower<T> ps;
-  ps.setDecaySamples(halfTime, T(0.5));
+  RAPT::rsPeakMasker<T> pm;
+  pm.setDecaySamples(halfTime, T(0.5));
   int n;
-  for(n = 0;   n <  N;  n++) w[n] = ps.getSample(x[n]);  ps.reset();   // forward pass
-  for(n = N-1; n >= 0;  n--) y[n] = ps.getSample(x[n]);                // backward pass
+  for(n = 0;   n <  N;  n++) w[n] = pm.getSample(x[n]);  pm.reset();   // forward pass
+  for(n = N-1; n >= 0;  n--) y[n] = pm.getSample(x[n]);                // backward pass
+  // todo: use pm.applyForward(x, N); pm.applyBackward(x, N);
   //rsPlotArrays(N, x, w, y);
 
   for(n = 0;   n <  N;  n++) y[n] = rsMax(w[n], y[n]);               // maximum of both passes - sorta works
