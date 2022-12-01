@@ -42,6 +42,9 @@ public:
     return y = rsMax(y * rsPow(c, dt), x);
   }
 
+  /** Resets the internal state. */
+  void reset() { y = T(0); }
+
   /** Applies the process running forward through the signal yIn of length N and writes the result 
   into yOut. Can be used in place: the buffers yIn, yOut may point to the same memory location. */
   void applyForward(const T* yIn, T* yOut, int N)
@@ -80,8 +83,6 @@ public:
       yOut[n] = getSample(yIn[n], x[n+1]-x[n]);
   }
 
-  /** Resets the internal state. */
-  void reset() { y = T(0); }
 
 protected:
 
