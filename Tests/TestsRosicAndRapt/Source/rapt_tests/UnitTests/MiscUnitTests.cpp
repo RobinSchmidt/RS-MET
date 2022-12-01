@@ -879,10 +879,22 @@ bool singleSineModelerUnitTest()
 
 bool sineModelingUnitTest()
 {
-  bool r = true;
+  bool ok = true;
 
-  r &= harmonicAnalyzerUnitTest();
-  r &= singleSineModelerUnitTest();
+  ok &= harmonicAnalyzerUnitTest();
+  ok &= singleSineModelerUnitTest();
 
-  return r;
+  return ok;
+}
+
+
+//-------------------------------------------------------------------------------------------------
+// Maybe move these tests into their own file AnalysisunitTests.cpp
+
+bool analysisUnitTest()
+{
+  bool ok = true;
+
+
+  return ok;
 }

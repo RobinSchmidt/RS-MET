@@ -9,7 +9,7 @@ subsumed/shadowed by the larger peak. This class can be useful for distinguishin
 peaks from the minor, irrelevant ones that often sit on the flanks of the major mountains. */
 
 template<class T>
-class rsPeakShadower
+class rsPeakShadower  // maybe rename to rsPeakMasker
 {
 
 public:

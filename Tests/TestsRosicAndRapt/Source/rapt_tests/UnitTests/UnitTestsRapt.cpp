@@ -27,7 +27,8 @@ bool runUnitTestsRapt()
   //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
 
   //// these tests should go into UnitTestsRosic.cpp:
-  ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
+  ok &= runUnitTest(&analysisUnitTest,      "Analysis");
+  //ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
   return ok;
 
 
@@ -96,6 +97,7 @@ bool runUnitTestsRapt()
 
   ok &= runUnitTest(&spectrogramUnitTest,   "rsSpectrogramProcessor");
   ok &= runUnitTest(&sineModelingUnitTest,  "SineModeling");
+  ok &= runUnitTest(&analysisUnitTest,      "Analysis");
   // todo: test rsCycleMarkFinder: give it a sine-sweep as input and check, if mark-deltas are 
   // within sane limits ...but maybe that's better for an experiment
   //...

@@ -12,7 +12,6 @@ bool binaryHeapUnitTest();
 bool doubleEndedQueueUnitTest();
 bool simdUnitTest();
 
-
 // Drawing:
 bool triangleRasterization();
 bool triangleRasterization2();  // absorb in function above
@@ -32,9 +31,10 @@ bool rootFinderUnitTest();
 bool polynomialRootsUnitTest(); // the new explicit formulas - move to PolynomialUnitTests
 
 // Misc:
-bool blepUnitTest();  // move to GeneratorTests
+bool blepUnitTest();            // move to GeneratorTests
 bool syncUnitTest();
 bool spectrogramUnitTest();
 bool sineModelingUnitTest();
+bool analysisUnitTest();        // maybe move to AnalysisTests
 
 #endif

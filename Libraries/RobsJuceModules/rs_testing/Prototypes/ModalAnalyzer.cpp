@@ -267,12 +267,14 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //rsPlotArray(x, N);
 
   using ModalParams = rsModalFilterParameters<T>;
+  using Vec = std::vector<T>;
+
   std::vector<ModalParams> mp;
 
   // Step 1: Figure out the mode frequencies using a big FFT on the whole signal and find the 
   // peak freqs:
   int N2 = rsNextPowerOfTwo(N);
-  std::vector<T> x2(N2), mags(N2);
+  Vec x2(N2), mags(N2);
   rsZero(x2);                              // May not be needed
   for(int n = 0; n < N; n++)
     x2[n] = x[n];
@@ -286,14 +288,25 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
   // frequencies.
 
+  Vec  magsSmooth = mags;  
+  rsPeakShadower<T> ps;
+  T freqDelta = 10;     // make user parameter, find better name
+  T binDelta  = N2 * freqDelta / sampleRate;   // verify formula!
+  ps.setDecaySamples(binDelta);
+  //ps.applyForward(...,  &magsSmooth[0], &magsSmooth[0], N2);
+  // we need a similar function that doesn't require a "t"-array to be passed, i.e. assumes
+  // t = 0,1,2,3,....
+
+  // todo: apply smoothing/peak-shadowing/masking
+
   // Find all peaks:
   using PF = rsPeakFinder<T>;
   using AT = rsArrayTools;
-  std::vector<T> peakPositions, peakHeights;
+  Vec peakPositions, peakHeights;
   T pos, height;
   int precision = 1;
   for(int n = 1; n < N2-1; n++) {
-    if( AT::isPeak(&mags[0], n) ) {
+    if( AT::isPeak(&magsSmooth[0], n) ) {
       PF::exactPeakPositionAndHeight(&mags[0], N2, n, precision, &pos, &height);
       peakPositions.push_back(pos);
       peakHeights.push_back(height); }}
