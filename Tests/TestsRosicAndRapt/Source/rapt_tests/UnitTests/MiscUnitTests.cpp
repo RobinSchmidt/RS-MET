@@ -917,11 +917,12 @@ bool peakMaskingUnitTest()
   // targetRatio (decay-amount) parameter:
   pm.setDecaySamples(1.0);
   y1 = y;       
-  pm.applyForward(&x[0], &y1[0], &y1[0], N);  // in place
-  pm.applyForward(&x[0], &y[0],  &y2[0], N);  // out of place
+  pm.applyForward(&x[0], &y1[0], &y1[0], N);             // in place
+  pm.applyForward(&x[0], &y[0],  &y2[0], N);             // out of place
+  Vec yt1 = { 2, 4, 16, 8, 4, 2, 4, 2, 8, 4, 2, 1, 4 };  // target output
   rsPlotVectorsXY(x, y, y1, y2);
   ok &= y1 == y2;
-
+  ok &= y1 == yt1;
 
 
 
