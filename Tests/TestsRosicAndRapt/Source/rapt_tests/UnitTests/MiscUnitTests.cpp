@@ -899,31 +899,34 @@ bool peakMaskingUnitTest()
   using Vec  = std::vector<Real>;
 
 
-  Vec x = { 0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11  };
-  Vec y = { 0.2, 0.3, 1.0, 0.1, 0.2, 0.3, 0.1, 1.0, 0.1, 0.3, 0.1, 0.2 };
+  Vec x = { 0, 1,  2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+  Vec y = { 2, 4, 16, 1, 2, 1, 4, 1, 8, 1,  2,  1,  4 };
   Vec y1, y2;
   int N = (int) x.size();
 
   rsPeakMasker<Real> pm;
 
-  // Apply forward masking:
+  // Apply forward masking with neutral settings - should just be the identity:
   y1 = y;       pm.applyForward(&x[0], &y1[0], &y1[0], N);  // in place
   y2.resize(N); pm.applyForward(&x[0], &y[0],  &y2[0], N);  // out of place
+  //rsPlotVectorsXY(x, y, y1, y2);
   ok &= y1 == y2;
   ok &= y1 == y;   // masker's settings are still neutral
 
- 
-
-
+  // Apply forward masking with a decay-distance of 1. It should use 0.5 for optional 
+  // targetRatio (decay-amount) parameter:
+  pm.setDecaySamples(1.0);
+  y1 = y;       
+  pm.applyForward(&x[0], &y1[0], &y1[0], N);  // in place
+  pm.applyForward(&x[0], &y[0],  &y2[0], N);  // out of place
   rsPlotVectorsXY(x, y, y1, y2);
-  //rsPlotVectors(y, z);
+  ok &= y1 == y2;
 
 
 
-  pm.setDecaySamples(1.0);    // should use 0.5 for optional parameter 
 
-
-
+  // ToDo:
+  // define target output yt and compare to actual output 
 
 
 

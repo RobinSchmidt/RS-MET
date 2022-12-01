@@ -1882,8 +1882,8 @@ std::vector<T> rsPeakPicker<T>::getPreProcessedData(const T* t, const T* x, int 
   if(shadowWidthL > T(0) || shadowWidthR > T(0))
   {
     std::vector<T> tmp2(N);
-    shadowLeft( t, &tmp[0], &tmp2[0], N);
-    shadowRight(t, &tmp[0], &tmp[0],  N);
+    maskLeft( t, &tmp[0], &tmp2[0], N);
+    maskRight(t, &tmp[0], &tmp[0],  N);
     AT::maxElementWise(&tmp[0], &tmp2[0], N, &tmp[0]); 
     // couldn't we just do:
     // shadowLeft( t, &tmp[0], &tmp[0], N);
@@ -1918,7 +1918,7 @@ void rsPeakPicker<T>::postProcessPeaks(std::vector<int>& peaks, const T* x, cons
 }
 
 template<class T>
-void rsPeakPicker<T>::shadowLeft(const T* t, const T* x, T* y, int N)
+void rsPeakPicker<T>::maskLeft(const T* t, const T* x, T* y, int N)
 {
   rsPeakMasker<T> pm;
   pm.setDecaySamples(shadowWidthL);
@@ -1926,7 +1926,7 @@ void rsPeakPicker<T>::shadowLeft(const T* t, const T* x, T* y, int N)
 }
 
 template<class T>
-void rsPeakPicker<T>::shadowRight(const T* t, const T* x, T* y, int N)
+void rsPeakPicker<T>::maskRight(const T* t, const T* x, T* y, int N)
 {
   rsPeakMasker<T> pm;
   pm.setDecaySamples(shadowWidthR);

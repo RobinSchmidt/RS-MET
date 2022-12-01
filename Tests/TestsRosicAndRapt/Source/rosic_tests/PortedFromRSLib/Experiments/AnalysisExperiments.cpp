@@ -1549,7 +1549,7 @@ std::vector<double> testEnvelope1(const std::vector<double>& x)
 //  algorithm invariant with respect to mirroring the data (this invariance seems desirable)
 
 
-
+// rename to peakPickerMasks
 void peakPickerShadows(const std::vector<double>& x, double shadowWidth)
 {
   // Plots the intermediate signals with the shadows
@@ -1565,8 +1565,8 @@ void peakPickerShadows(const std::vector<double>& x, double shadowWidth)
   // Create shadowed data (for plotting):
   std::vector<double> y(N), yL(N), yR(N);
   rsArrayTools::shiftToMakeMinimumZero(&x[0], N, &y[0]);
-  pp.shadowLeft( &t[0], &y[0], &yL[0], N);
-  pp.shadowRight(&t[0], &y[0], &yR[0], N);
+  pp.maskLeft( &t[0], &y[0], &yL[0], N);
+  pp.maskRight(&t[0], &y[0], &yR[0], N);
 
   // Find relevant peaks:
   std::vector<int> peaksR;

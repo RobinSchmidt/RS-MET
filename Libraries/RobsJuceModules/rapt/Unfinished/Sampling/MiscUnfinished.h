@@ -1048,12 +1048,10 @@ public:
 
   /** Applies leftward peak shadowing to the input data x (with time-stamp data in t) and writes 
   the result to y. */
-  void shadowLeft(const T* t, const T* x, T* y, int N);
-  // rename to maskLeft
+  void maskLeft(const T* t, const T* x, T* y, int N);
 
   /** Rightward peak shadowing, @see shadowLeft */
-  void shadowRight(const T* t, const T* x, T* y, int N);
-  // rename to maskRight
+  void maskRight(const T* t, const T* x, T* y, int N);
 
   /** Returns an array of indices where the datapoint x[i] is a candidate for a peak. A value is 
   considered a peak candidate, if it is greater than some number of left and right neighbor 
