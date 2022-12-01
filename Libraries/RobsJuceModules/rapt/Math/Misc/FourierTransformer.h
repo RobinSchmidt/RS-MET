@@ -26,8 +26,28 @@ public:
     NEVER_NORMALIZE             // no normalization at all
   };
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Static Member Functions */
 
-  /** \name Construction/Destruction */
+  /** Returns the physical frequency in Hz that corresponds to the given 'binIndex' for a given
+  'fftSize' and 'sampleRate'. */
+  static T binIndexToFrequency(int binIndex, int fftSize, T sampleRate)
+  {
+    return binIndex*sampleRate/fftSize;
+  }
+
+  static T binIndexToOmega(int binIndex, int fftSize)
+  {
+    return T(2*PI*binIndex)/fftSize;
+  }
+
+  /** Returns the normalization factor to applied after the forward and/or inverse transform, 
+  according to the block-size, direction of the transform and normalization mode. */
+  static T getNormalizationFactor(int blockSize, int direction, int normalizationMode);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
 
   /** Constructor. */
   rsFourierTransformerRadix2();
@@ -36,6 +56,10 @@ public:
   ~rsFourierTransformerRadix2();
 
 
+
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** FFT-size, has to be a power of 2 and >= 2. */
@@ -56,13 +80,24 @@ public:
   void setNormalizationMode(int newNormalizationMode);
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the size of FFT blocks. */
   int getBlockSize() const { return N; }
 
+  /** Fills the given freqs array with the FFT bin frequencies for a given sample rate. numFreqs
+  will be something like the FFT size divided by two, if you want to display all positive
+  frequencies - or less if you are more interested in the lower frequency range. */
+  void binFrequencies(T* freqs, int numFreqs, T sampleRate)
+  {
+    for(int k = 0; k < numFreqs; k++)
+      freqs[k] = binIndexToFrequency(k, getBlockSize(), sampleRate);
+  }
 
-  /** \name Transforms */
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   /** Transforms a buffer of complex numbers into its (forward or inverse) fourier transform.
   The inBuffer will remain intact. Both, inBuffer and outBuffer must be of the size which was
@@ -117,27 +152,14 @@ public:
   void getRealSignalFromMagnitudesAndPhases(const T *magnitudes, const T *phases, T *signal);
 
 
-  /** \name Static Member Functions */
 
-  /** Returns the physical frequency in Hz that corresponds to the given 'binIndex' for a given
-  'fftSize' and 'sampleRate'. */
-  static T binIndexToFrequency(int binIndex, int fftSize, T sampleRate)
-  {
-    return binIndex*sampleRate/fftSize;
-  }
 
-  static T binIndexToOmega(int binIndex, int fftSize)
-  {
-    return T(2*PI*binIndex)/fftSize;
-  }
 
-  /** Returns the normalization factor to applied after the forward and/or inverse transform, 
-  according to the block-size, direction of the transform and normalization mode. */
-  static T getNormalizationFactor(int blockSize, int direction, int normalizationMode);
 
 
 protected:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Internal Functions */
 
   /** Updates the normalizationFactor member variable acording to a new blockSize, direction or
@@ -146,7 +168,7 @@ protected:
 
 
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
   int N;                  /**< blocksize of the FFT. */

@@ -288,17 +288,17 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
   // frequencies.
 
-  Vec  magsSmooth = mags;  
+  Vec magsMasked = mags;  
   rsPeakMasker<T> pm;
   T freqDelta = 10;     // make user parameter, find better name
-  T binDelta  = N2 * freqDelta / sampleRate;   // verify formula!
-  pm.setDecaySamples(binDelta);
-  //ps.applyForward(...,  &magsSmooth[0], &magsSmooth[0], N2);
-  // we need a similar function that doesn't require a "t"-array to be passed, i.e. assumes
-  // t = 0,1,2,3,....
-  // the FFT analysis freq of bin k is given by k * sampleRate / N2
 
-  // todo: apply smoothing/peak-shadowing/masking
+  T binDelta  = N2 * freqDelta / sampleRate;   
+  // verify formula! the FFT analysis freq of bin k is given by k * sampleRate / N2
+
+  pm.setDecaySamples(binDelta);
+  pm.applyForward( &magsMasked[0], &magsMasked[0], N2);
+  pm.applyBackward(&magsMasked[0], &magsMasked[0], N2);
+
 
   // Find all peaks:
   using PF = rsPeakFinder<T>;
@@ -307,7 +307,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   T pos, height;
   int precision = 1;
   for(int n = 1; n < N2-1; n++) {
-    if( AT::isPeak(&magsSmooth[0], n) ) {
+    if( AT::isPeak(&magsMasked[0], n) ) {
       PF::exactPeakPositionAndHeight(&mags[0], N2, n, precision, &pos, &height);
       peakPositions.push_back(pos);
       peakHeights.push_back(height); }}
@@ -316,18 +316,24 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // peaks here, there also for valleys. But it may nonetheless make sense to move this function 
   // into this class
 
-  /*
+  
   // For development:
   GNUPlotter plt;
+
+  //Vec freqs(N2);
+  //ft.binFrequencies(&freqs[0], N2, sampleRate);
+  // peakPositions *= sampleRate / N2
+
   plt.addDataArrays(N2, &mags[0]);
+  plt.addDataArrays(N2, &magsMasked[0]);
   plt.addDataArrays((int)peakHeights.size(), &peakPositions[0], &peakHeights[0]);
-  plt.setGraphStyles("lines", "points");
+  plt.setGraphStyles("lines", "lines", "points");
   plt.setPixelSize(1200, 400);
   plt.plot();
-  */
   // ooookay - this works but it extracts *a lot* of spurious peaks. Remedies:
-  // -smooth the spectrum beofre extracting the peaks (kinda crude but maybe not that bad)
-  // -use rsPeakPicker -> use peak shadowing and other more sophisticated ideas.
+  // -we need a (relative) magnitude threshold - maybe -60 dB is a good default
+  // -maybe use rsPeakPicker - it includes masking plus some more sophisticated ideas.
+  // -plot a frequency axis in Hz
 
   // ...
 
