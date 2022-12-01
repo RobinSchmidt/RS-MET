@@ -1222,7 +1222,7 @@ void modalAnalysisGloriosa()
   int sampleRate = 44100;  // sample rate
 
   double length  = 3.0;    // in seconds
-  length = 0.2;  // for tests with plots
+  length = 0.5;  // for tests with plots
 
 
   int N = (int) ceil(length*sampleRate);

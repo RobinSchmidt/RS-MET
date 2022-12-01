@@ -264,8 +264,6 @@ T rsModalAnalyzer<T>::estimateFrequency(
 template<class T>
 std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N)
 {
-  //rsPlotArray(x, N);
-
   using ModalParams = rsModalFilterParameters<T>;
   using Vec = std::vector<T>;
 
@@ -297,24 +295,22 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   pm.applyForward( &magsMasked[0], &magsMasked[0], N2);
   pm.applyBackward(&magsMasked[0], &magsMasked[0], N2);
 
-
-  // Find all peaks:
+  // Find relevant peaks:
+  T thresh = 0.0005;  // make use parameter (in dB)
   using PF = rsPeakFinder<T>;
   using AT = rsArrayTools;
-  Vec peakPositions, peakHeights;
-  T pos, height;
-  int precision = 1;
+  const int precision = 1;         // 1: use a parabolic fit
+  Vec peakPositions, peakHeights;  // todo: maybe reserve some memory here, maybe maxNumModes
+  T pos, height, maxHeight;
+  int kMax = AT::maxIndex(&mags[0], N2);
+  PF::exactPeakPositionAndHeight(&mags[0], N2, kMax, precision, &pos, &maxHeight); // global max
   for(int n = 1; n < N2-1; n++) {
     if( AT::isPeak(&magsMasked[0], n) ) {
       PF::exactPeakPositionAndHeight(&mags[0], N2, n, precision, &pos, &height);
-      peakPositions.push_back(pos);
-      peakHeights.push_back(height); }}
-  // Code copied from peakFinder in AnalysisExperiments.cpp - maybe factor out into a member of
-  // rsPeakFinder which can be called from both places - ah - no, it's different - we only care for
-  // peaks here, there also for valleys. But it may nonetheless make sense to move this function 
-  // into this class
+      if(height >= thresh * maxHeight) {
+        peakPositions.push_back(pos);
+        peakHeights.push_back(height); }}}
 
-  
   // For development:
   GNUPlotter plt;
   Vec freqs(N2);
@@ -333,7 +329,10 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // ...
 
   // ToDo:
-  // -Of all the peaks, figure out those that correspond to modes (that's the tricky part)
+  // -maybe restrict the maximum FFT lenth - maybe have a freq-resonluation parameter, by deafult 
+  //  1 Hz, and take its reciprocal as max length in seconds for the FFT to avoid excessively 
+  //  large FFTs. 1 second should be enough for the preliminary analysis which is only meant for 
+  //  tuning the filter-bank anyway...or maybe have a max-pre-analysis length
   // -Analyze each mode one at a time by bandpassing the signal with a bandpass tuned to the 
   //  respective modal frequency and then using an envelope follower on the bandpassed signal.
 
