@@ -319,13 +319,11 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   
   // For development:
   GNUPlotter plt;
-
-  //Vec freqs(N2);
-  //ft.binFrequencies(&freqs[0], N2, sampleRate);
-  // peakPositions *= sampleRate / N2
-
-  plt.addDataArrays(N2, &mags[0]);
-  plt.addDataArrays(N2, &magsMasked[0]);
+  Vec freqs(N2);
+  ft.binFrequencies(&freqs[0], N2, sampleRate);
+  peakPositions = peakPositions * sampleRate / T(N2);
+  plt.addDataArrays(N2, &freqs[0], &mags[0]);
+  plt.addDataArrays(N2, &freqs[0], &magsMasked[0]);
   plt.addDataArrays((int)peakHeights.size(), &peakPositions[0], &peakHeights[0]);
   plt.setGraphStyles("lines", "lines", "points");
   plt.setPixelSize(1200, 400);
