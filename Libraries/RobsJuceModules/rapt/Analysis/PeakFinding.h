@@ -27,10 +27,13 @@ public:
   /** Computes one output sample at a time. */
   T getSample(T x)
   {
+    return y = rsMax(y * c, x);
+    /*
     y *= c;
     if(x > y)
       y = x;
     return y;
+    */
   }
   // rename x to in, use rsMax instead of if-conditional - maybe it can be done in one line:
   // return y = rsMax(y*c, x);
@@ -41,10 +44,13 @@ public:
   // function for non-equidistant data - not yet tested:
   T getSample(T x, T dt)
   {
+    return y = rsMax(y * rsPow(c, dt), x);
+    /*
     y *= pow(c, dt);
     if(x > y)
       y = x;
     return y;
+    */
   }
   // rename x to in, dt to dx, use one-line
   // return y = rsMax(y*pow(c,dt), x);
