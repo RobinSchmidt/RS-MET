@@ -41,7 +41,7 @@ public:
   // function for non-equidistant data - not yet tested:
   T getSample(T x, T dt)
   {
-    y *= pow(c, dt);  // is this correct? verify!
+    y *= pow(c, dt);
     if(x > y)
       y = x;
     return y;
@@ -50,13 +50,31 @@ public:
   // return y = rsMax(y*pow(c,dt), x);
 
 
+
+  void applyForward(const T* yIn, T* yOut, int N)
+  {
+    reset();
+    this->y = yOut[0] = yIn[0]; // first output sample is equal to first input sample
+    for(int n = 1; n < N; n++)
+      yOut[n] = getSample(yIn[n]);
+  }
+
+  void applyBackward(const T* yIn, T* yOut, int N)
+  {
+    reset();
+    this->y = yOut[N-1] = yIn[N-1];
+    for(int n = N-2; n >= 0; n--)
+      yOut[n] = getSample(yIn[n]);
+  }
+
+
   /** Applies the process running forward through the signal yIn of length N with time-stamps 
   given in x and writes the result into yOut. Can be used in place: the buffers yIn, yOut may point
   to the same memory location. */
   void applyForward(const T* x, const T* yIn, T* yOut, int N)
   {
     reset();
-    this->y = yOut[0] = yIn[0]; // first output sample is equal to first input sample
+    this->y = yOut[0] = yIn[0];
     for(int n = 1; n < N; n++)
       yOut[n] = getSample(yIn[n], x[n]-x[n-1]);
   }
@@ -64,7 +82,7 @@ public:
   void applyBackward(const T* x, const T* yIn, T* yOut, int N)
   {
     reset();
-    this->y = yOut[N-1] = yIn[N-1]; // first output sample is equal to first input sample
+    this->y = yOut[N-1] = yIn[N-1];
     for(int n = N-2; n >= 0; n--)
       yOut[n] = getSample(yIn[n], x[n+1]-x[n]);
   }

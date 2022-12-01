@@ -933,21 +933,24 @@ bool peakMaskingUnitTest()
   ok &= y1 == y2;
   ok &= y1 == yt2;
 
-  /*
   // Now the same two tests with impicit x-axis:
   y1 = y;       
   pm.applyForward(&y1[0], &y1[0], N);
   pm.applyForward(&y[0],  &y2[0], N);
-  rsPlotVectorsXY(x, y, y1, y2);
+  //rsPlotVectorsXY(x, y, y1, y2);
   ok &= y1 == y2;
   ok &= y1 == yt1;
-  */
+  y1 = y;
+  pm.applyBackward(&y1[0], &y1[0], N);
+  pm.applyBackward(&y[0],  &y2[0], N);
+  //rsPlotVectorsXY(x, y, y1, y2);
+  ok &= y1 == y2;
+  ok &= y1 == yt2;
 
 
 
   // ToDo:
-  // -Test it with:  
-  //  -implicit x-axis 
+  // -Test it with:
   //  -non-equidistant x-axis
   //  -different time-constant and targetRatio
 
