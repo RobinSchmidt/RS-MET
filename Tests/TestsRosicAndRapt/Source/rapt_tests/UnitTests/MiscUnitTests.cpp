@@ -891,10 +891,54 @@ bool sineModelingUnitTest()
 //-------------------------------------------------------------------------------------------------
 // Maybe move these tests into their own file AnalysisunitTests.cpp
 
+bool peakMaskingUnitTest()
+{
+  bool ok = true;
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+
+  Vec x = { 0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11  };
+  Vec y = { 0.2, 0.3, 1.0, 0.1, 0.2, 0.3, 0.1, 1.0, 0.1, 0.3, 0.1, 0.2 };
+  Vec y1, y2;
+  int N = (int) x.size();
+
+  rsPeakShadower<Real> ps;
+
+  // Apply forward masking:
+  y1 = y;       ps.applyForward(&x[0], &y1[0], &y1[0], N);  // in place
+  y2.resize(N); ps.applyForward(&x[0], &y[0],  &y2[0], N);  // out of place
+  ok &= y1 == y2;
+  ok &= y1 == y;   // settings are still neutral
+
+ 
+
+
+  rsPlotVectorsXY(x, y, y1);
+  //rsPlotVectors(y, z);
+
+
+
+  ps.setDecaySamples(1.0);    // should use 0.5 for optional parameter 
+
+
+
+
+
+
+
+
+
+  return ok;
+}
+
+
 bool analysisUnitTest()
 {
   bool ok = true;
 
+  ok &= peakMaskingUnitTest();
 
   return ok;
 }

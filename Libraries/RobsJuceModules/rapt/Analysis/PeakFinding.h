@@ -55,6 +55,7 @@ public:
     for(int n = 1; n < N; n++)
       y[n] = getSample(x[n], t[n]-t[n-1]);
   }
+  // maybe rename t to x, x to yIn, y to yOut
   // not yet tested
 
 
