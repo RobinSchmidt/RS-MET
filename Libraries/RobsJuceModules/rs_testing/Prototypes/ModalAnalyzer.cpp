@@ -400,8 +400,15 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // Some of the extracted modes show an amplitude modulation that's not supposed to be there. 
     // That must be caused by some nearby mode leaking into the signal. We could try to remedy this
     // by using more aggressive filtering - ideas:  
-    // -use a smaller bandwidth and/or multiple passes
-    // -notch out neighboring frequencies
+    // -Use a smaller bandwidth and/or multiple passes
+    // -Notch out neighboring modes
+    // -Maybe the modulation itslef can be detected, modeled and be translated to an influence
+    //  of a nearby mode. Maybe we can model the beating of two modes via:
+    //    x(t)  = (A + (m/A) * sin(wm*t + pm)) * sin(wc*t + pc)
+    //         ?= A1 * sin(w1*t + p1) + A2 * sin(w2 + p2)
+    //  where A is the overall amplitude, m is a modulation amount. Multiply that out to see what
+    //  superposition of sines corresponds to that signal. That should give us the conversion 
+    //  formulas between the measured A, m, wm, pm, wc, pt and the desired A1, w1, p1, A2, w2, p2.
 
 
 
