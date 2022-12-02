@@ -106,6 +106,8 @@ public:
   // breaking it down into a parallel connection of two complex 1st order filters via partial 
   // fraction expansion and then using the 1st order solution - we'll see....
 
+  void extractModeEnvelope(const T* x, T* y, int N);
+
 
 protected:
 

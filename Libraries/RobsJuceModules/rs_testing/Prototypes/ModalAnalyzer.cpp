@@ -394,9 +394,18 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // todo: pass buf2 for the workspace but perhaps use not the full length but rather just enough
     // to let the filter ring out properly.
 
+    // Exctract the envelope of the mode - result goes to buf2:
+    extractModeEnvelope(&buf1[0], &buf2[0], N);
+    // actually, we don't really need to extract the envelope - it's enough to figure out the 
+    // position and value of the max-abs value. To estimate the decay, we can then perhaps just
+    // compare average amplitudes of some section of a length L after the peak and another section
+    // of the same length immediately right to the first section...but yeah - for that, an actual 
+    // envelope might actually be better for computing accurate averages
+
+
 
     //rsPlotArrays(10000, &x[0], &buf1[0]);
-    rsPlotArrays(10000, &buf1[0]);
+    rsPlotArrays(10000, &buf1[0], &buf2[0]);
     // Some of the extracted modes show an amplitude modulation that's not supposed to be there. 
     // That must be caused by some nearby mode leaking into the signal. We could try to remedy this
     // by using more aggressive filtering - ideas:  
@@ -413,6 +422,10 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     //  extracted mode. But maybe, it we see some sinusoidal modulation of a mode, we can conclude
     //  that this should be modeled by two modes and the above idea can be used to figure out the
     //  parameters of these two modes from the "single" (modulated/beating) mode.
+
+
+
+
 
 
 
@@ -497,11 +510,21 @@ void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N, T centerFreqHz, T
   //  for each single pass. But doing that right would also require some sort of pre-padding. But
   //  maybe that can be avoided by just using a single pass with a higher-order filter. Maybe
   //  EngineersFilter with the Gaussian response type could be the most suitable choice.
+}
+
+template<class T>
+void rsModalAnalyzer2<T>::extractModeEnvelope(const T* x, T* y, int N)
+{
+  for(int n = 0; n < N; n++)
+    y[n] = rsAbs(x[n]);
+
+
+  // ToDo:
+  // -Factor out impementation into rsEnvelopeExtractor...or maybe use existing implementation
+  //  from there
 
   int dummy = 0;
 }
-
-
 
 
 
