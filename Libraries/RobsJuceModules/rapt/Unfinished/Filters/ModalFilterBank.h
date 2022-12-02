@@ -8,11 +8,11 @@
 /** Designs (i.e. computes coefficients from user parameters for) a two-pole-one-zero filter in 
 terms of its impulse response which is given as the damped sinusoid:
 
-h[n] = A * exp(-n/d) * sin(w*n + p) * u[n]
+  h[n] = A * exp(-n/d) * sin(w*n + p) * u[n]
 
 where u[n] is the unit step function. The filter can be implemented as:
 
-y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] - a2*y[n-2]
+  y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] - a2*y[n-2]
 
 The parameters are:
 w: normalized radian frequency (= 2*pi*f/fs, f: frequency, fs: samplerate)

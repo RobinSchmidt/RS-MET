@@ -423,16 +423,46 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     mp[m].amp = height;
 
 
+    // Find time instants, where the amp-env goes thorugh two specified reference amplitudes for 
+    // the first time:
+    T refAmp1 = height * 0.5;
+    T refAmp2 = height * 0.25;
+    int n = nMax;
+    while(n < N)
+    {
+      if(buf2[n] <= refAmp1)
+        break;
+      n++;
+    }
+    T refTime1 = n / sampleRate; // todo: be more precise using linear interpolation
+    while(n < N)
+    {
+      if(buf2[n] <= refAmp2)
+        break;
+      n++;
+    }
+    T refTime2 = n / sampleRate; // todo: be more precise using linear interpolation
+    mp[m].dec = (refTime2 - refTime1) / rsLog(refAmp1/refAmp2);  // verify!
+    // optimize: 1 / rsLog(refAmp1/refAmp2) is actually a constant
+
+    // It took refTime2 - refTime1 seconds to decay from refAmp1 to refAmp2. This allows us to 
+    // compute the decay time constant
+    // 
+
 
     // ToDo:
     // -To estimate the decay, we can then perhaps just compare average amplitudes of some section
     //  of a length L after the peak and another section of the same length immediately right to 
     //  the first section...but yeah - for that, an actual envelope might actually be better for 
     //  computing accurate averages
+    //  OR: find instants where env falls below height/2 and height/2 for the first time and use
+    //  the difference as estimate for the time required to decay to 1/2. We don't start scanning
+    //  from the peak because we actually want the asymptotic decay and the rounding around th peak
+    //  may mess with our measurement.
     // -To ge a refined frequency estimate, find the next positive zero-crossing after the peak, 
     //  then find more zero crossings, counting them, going up to a pointwh where the envelope has
     //  decayed to 1/2 or 1/4 or something and then use the distance and count to compute a more 
-    //  exact frequency estimate
+    //  exact frequency estimate. Use rsZeroCrossingFinder
     // -To estimate the start phase, use the time-instant of the left zeor-crossing used above
     //  and extrapolate the phase back to time 0, using the refined frequency estimate.
 
@@ -481,7 +511,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
   // Maybe use:
   // rsExponentialEnvelopeMatcher, rsEnvelopeExtractor, rsPeakFinder::connectPeaks 
-  // (MiscUnfinished.h)
+  // (MiscUnfinished.h), rsCurveFitter::fitExponentialSum (not yet suitable as is)
 
 
   return mp;
