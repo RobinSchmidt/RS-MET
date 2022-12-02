@@ -310,11 +310,12 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   pm.applyBackward(&buf2[0], &buf2[0], N2);
 
   // Find relevant peaks:
+  peakPositions.clear();
+  peakHeights.clear();
   T threshRatio = 0.0005;  // make use parameter (in dB)
   using PF = rsPeakFinder<T>;
   using AT = rsArrayTools;
   const int precision = 1;         // 1: use a parabolic fit
-  std::vector<T> peakPositions, peakHeights;  // todo: maybe reserve some memory here, maybe maxNumModes, use member
   T pos, height, maxHeight;
   int kMax = AT::maxIndex(&buf1[0], N2);
   PF::exactPeakPositionAndHeight(&buf1[0], N2, kMax, precision, &pos, &maxHeight); // global max
@@ -332,7 +333,8 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // a helper array of 2D vectors with tze same data where the x-coordinate stores the height and
   // y-coordinate the freq (because sorting on 2D vectors using the < operator copares based on x 
   // first:
-  std::vector<rsVector2D<T>> peaks(numModes); // x: height, y: freq,  todo: use member
+  //std::vector<rsVector2D<T>> peaks(numModes); // x: height, y: freq,  todo: use member
+  peaks.resize(numModes); // x: height, y: freq
   for(int m = 0; m < numModes; m++)
     peaks[m] = rsVector2D<T>(peakHeights[m], peakPositions[m]);
   rsHeapSort(&peaks[0], numModes);
@@ -362,8 +364,8 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
   using ModalParams = rsModalFilterParameters<T>;
   numModes = rsMin(numModes, maxNumModes);
-  std::vector<ModalParams> mp(numModes);
-  for(int m = 0; m < numModes; m++)
+  std::vector<ModalParams> mp(numModes);  // maybe avoid the alloc - let the use pass a reference
+  for(int m = 0; m < numModes; m++)       // to such a vector and just resize it here, thenn fill it
   {
     T f = peaks[m].y;
     T a = peaks[m].x;

@@ -110,7 +110,11 @@ protected:
 
   // Internal data and objects:
   std::vector<T> buf1, buf2;
+  std::vector<T> peakPositions, peakHeights;
+  std::vector<rsVector2D<T>> peaks;
   rsFourierTransformerRadix2<T> ft;
+
+
 
 
 
