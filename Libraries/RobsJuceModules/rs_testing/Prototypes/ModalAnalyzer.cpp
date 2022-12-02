@@ -269,11 +269,11 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // Figure out the mode frequencies using a big FFT on the whole signal and find the  peak freqs:
   using Vec = std::vector<T>;
   int N2 = rsNextPowerOfTwo(N);
-  Vec x2(N2), mags(N2);
+  Vec x2(N2), mags(N2);                    // use members - maybe get rid of x2
   rsZero(x2);                              // May not be needed
   for(int n = 0; n < N; n++)
     x2[n] = x[n];
-  rsFourierTransformerRadix2<T> ft;
+  rsFourierTransformerRadix2<T> ft;  // use member
   ft.setDirection(ft.FORWARD);
   ft.setBlockSize(N2);
   ft.setNormalizationMode(ft.NORMALIZE_ON_FORWARD_TRAFO);
@@ -289,7 +289,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // frequencies.
 
   // Apply peak-masking:
-  Vec magsMasked = mags;
+  Vec magsMasked = mags;      // use member
   rsPeakMasker<T> pm;
   T freqSeparation = 10;         // make user parameter, find better name
   //T binDecay  = freqSeparation * N2 / sampleRate;
@@ -302,7 +302,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   using PF = rsPeakFinder<T>;
   using AT = rsArrayTools;
   const int precision = 1;         // 1: use a parabolic fit
-  Vec peakPositions, peakHeights;  // todo: maybe reserve some memory here, maybe maxNumModes
+  Vec peakPositions, peakHeights;  // todo: maybe reserve some memory here, maybe maxNumModes, use member
   T pos, height, maxHeight;
   int kMax = AT::maxIndex(&mags[0], N2);
   PF::exactPeakPositionAndHeight(&mags[0], N2, kMax, precision, &pos, &maxHeight); // global max
@@ -329,7 +329,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // a helper array of 2D vectors with tze same data where the x-coordinate stores the height and
   // y-coordinate the freq (because sorting on 2D vectors using the < operator copares based on x 
   // first:
-  std::vector<rsVector2D<T>> peaks(numModes); // x: height, y: freq
+  std::vector<rsVector2D<T>> peaks(numModes); // x: height, y: freq,  todo: use member
   for(int m = 0; m < numModes; m++)
     peaks[m] = rsVector2D<T>(peakHeights[m], peakPositions[m]);
   rsHeapSort(&peaks[0], numModes);
@@ -416,6 +416,16 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
   return mp;
 }
+
+template<class T>
+void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N, T centerFreqHz, T bandwidthHz,
+  T* wrk = nullptr, int N_wrk = 0)
+{
+
+
+  int dummy = 0;
+}
+
 
 
 

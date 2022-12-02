@@ -84,12 +84,34 @@ public:
   std::vector<rsModalFilterParameters<T>> analyze(T* sampleData, int numSamples);
     // has same name, signature and semantics as rsHarmonicAnalyzer::analyze
 
+  /** Given an imput signal x (typically the full, original signal) of length N, this function 
+  extract a single mode and writes the result into y (which may point to tze same aray as x). It 
+  does this by applying a bidirectional bandpass filter with given center frequency and absolute 
+  bandwidth in Hz. The optional wrk array (of length N_wrk) can be used to allow the bidirectional
+  filter have a ringout/warmup phase between forward and backward pass. */
+  void extractMode(const T* x, T* y, int N, T centerFreqHz, T bandwidthHz, 
+    T* wrk = nullptr, int N_wrk = 0);
+  // ToDo: Try to get rid of the ringout/warmup buffer by solving the state initialization problem
+  // analyitically. I've already done something similar for a general first order filter. This here
+  // requires to figure out similar equations for the second order case. Perhaps, it can be done by
+  // breaking it down into a parallel connection of two complex 1st order filters via partial 
+  // fraction expansion and then using the 1st order solution - we'll see....
 
 
 protected:
 
+
+
+
+  // User parameters:
   T sampleRate = T(1);
   int maxNumModes = 1024;
+
+
+  // Internal data and objects:
+
+
+
 
   // ToDo:
   // -Have parameters that control the sensitivity of peak-detection/picking algorithms
