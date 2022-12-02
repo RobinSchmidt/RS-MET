@@ -304,14 +304,13 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
   // Apply peak-masking to FFT magnitudes (result goes into buf2):
   rsPeakMasker<T> pm;
-  pm.setDecaySamples(freqSeparation * N2 / sampleRate); // maybe use a factor of 0.5 because it actually measures only one side of the mask
+  pm.setDecaySamples(maskWidth * N2 / sampleRate);
   pm.applyForward( &buf2[0], &buf2[0], N2);
   pm.applyBackward(&buf2[0], &buf2[0], N2);
 
   // Find relevant peaks:
   peakPositions.clear();
   peakHeights.clear();
-  //T threshRatio = 0.0005;  // make use parameter (in dB)
   T threshRatio = rsDbToAmp(threshDb);
   using PF = rsPeakFinder<T>;
   using AT = rsArrayTools;

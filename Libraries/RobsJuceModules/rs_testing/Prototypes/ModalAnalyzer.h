@@ -68,13 +68,22 @@ class rsModalAnalyzer2
 
 public:
 
-  //---------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets up the sample-rate. This determines the values of the frequencies that will be written
   into the model. */
   void setSampleRate(T newRate) { sampleRate = newRate; }
 
+  /** Sets the frequency bandwidth for the peak-masking...tbc... */
+  void setMaskWidth(T newWidth) { maskWidth = newWidth; }
+  // Intention: If we have a mode at 1000 Hz at amplitude 1 and maskWidth is 100, then modes at 
+  // 900 = 1000-100 or 1100 = 1000+100 Hz must be higher than 0.5 in amplitude in order to be 
+  // also detected, i.e. to have their peaks taken seriously and not be masked by the higher peak
+  // at 1000. -> check if it actually really works that way in a unit-test, then add that to the 
+  // documentation.
+
+  // ToDo: setLevelThreshold, setMaxNumModes
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -100,31 +109,16 @@ public:
 
 protected:
 
-
-
-
   // User parameters:
   T   sampleRate  = T(1);
   int maxNumModes = 1024;
-  T   threshDb    = T(-60);   // Relative threshold for modes to be taken seriously
-
-  T   freqSeparation = T(10); // Bandwidth of the peak-masks in pre-analysis
-  // maybe rename to freqSpacingForMask or peakMaskWidth or maskWidth or maskHalfWidth something
-
+  T   threshDb    = T(-60);  // Relative threshold for modes to be taken seriously
+  T   maskWidth   = T(10);   // Half-bandwidth of the peak-masks in pre-analysis
 
   // Internal data and objects:
   std::vector<T> buf1, buf2;
   std::vector<T> peakPositions, peakHeights;
   std::vector<rsVector2D<T>> peaks;
   rsFourierTransformerRadix2<T> ft;
-
-
-
-
-
-  // ToDo:
-  // -Have parameters that control the sensitivity of peak-detection/picking algorithms
-
-  // T skip
 
 };
