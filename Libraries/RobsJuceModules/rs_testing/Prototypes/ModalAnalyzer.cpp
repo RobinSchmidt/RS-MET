@@ -267,6 +267,9 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //...............................................................................................
   // Step 1: 
   // Figure out the mode frequencies using a big FFT on the whole signal and find the  peak freqs:
+
+
+  // Re/allocate memory for our temoprary processing buffers
   int N2 = rsNextPowerOfTwo(N);
   buf1.resize(N2); rsZero(buf1);
   buf2.resize(N2); rsZero(buf2);
@@ -288,10 +291,12 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   ft.getRealSignalMagnitudes(&buf1[0], &buf2[0]);  // Why can't this be used in place?
   rsCopy(buf2, buf1);
   // ToDo:
-  // -Maybe restrict the maximum FFT lenth: maybe use a freq-resolution parameter, by deafult 
+  // -Maybe restrict the maximum FFT lenth: maybe use a freq-resolution parameter, by default 
   //  1 Hz, and take its reciprocal as max length in seconds for the FFT to avoid excessively 
   //  large FFTs. 1 second should be enough for the preliminary analysis which is only meant for 
   //  tuning the filter-bank anyway...or maybe have a max-pre-analysis length in seconds.
+  // -If we do this, the logic how long the buffers need to be becomes more complex. I think
+  //  we need N2 = max(N, min(rsNextPowerOfTwo(N), maxLengthFFT))  ...but this needs verifciation.
 
   rsPlotSpectrum(buf2, sampleRate, -100.0, false);  // for development
   // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
