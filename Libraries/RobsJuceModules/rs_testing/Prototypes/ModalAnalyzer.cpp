@@ -298,21 +298,21 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // -If we do this, the logic how long the buffers need to be becomes more complex. I think
   //  we need N2 = max(N, min(rsNextPowerOfTwo(N), maxLengthFFT))  ...but this needs verifciation.
 
-  rsPlotSpectrum(buf2, sampleRate, -100.0, false);  // for development
+  //rsPlotSpectrum(buf2, sampleRate, -100.0, false);  // for development
   // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
   // frequencies.
 
   // Apply peak-masking to FFT magnitudes (result goes into buf2):
   rsPeakMasker<T> pm;
-  T freqSeparation = 10;         // make user parameter, find better name
-  pm.setDecaySamples(freqSeparation * N2 / sampleRate);
+  pm.setDecaySamples(freqSeparation * N2 / sampleRate); // maybe use a factor of 0.5 because it actually measures only one side of the mask
   pm.applyForward( &buf2[0], &buf2[0], N2);
   pm.applyBackward(&buf2[0], &buf2[0], N2);
 
   // Find relevant peaks:
   peakPositions.clear();
   peakHeights.clear();
-  T threshRatio = 0.0005;  // make use parameter (in dB)
+  //T threshRatio = 0.0005;  // make use parameter (in dB)
+  T threshRatio = rsDbToAmp(threshDb);
   using PF = rsPeakFinder<T>;
   using AT = rsArrayTools;
   const int precision = 1;         // 1: use a parabolic fit

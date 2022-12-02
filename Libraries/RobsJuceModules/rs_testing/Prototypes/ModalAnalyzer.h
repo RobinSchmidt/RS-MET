@@ -104,8 +104,12 @@ protected:
 
 
   // User parameters:
-  T sampleRate = T(1);
+  T   sampleRate  = T(1);
   int maxNumModes = 1024;
+  T   threshDb    = T(-60);   // Relative threshold for modes to be taken seriously
+
+  T   freqSeparation = T(10); // Bandwidth of the peak-masks in pre-analysis
+  // maybe rename to freqSpacingForMask or peakMaskWidth or maskWidth or maskHalfWidth something
 
 
   // Internal data and objects:
