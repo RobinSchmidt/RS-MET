@@ -267,35 +267,43 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //...............................................................................................
   // Step 1: 
   // Figure out the mode frequencies using a big FFT on the whole signal and find the  peak freqs:
-  using Vec = std::vector<T>;
+
+
+  using Vec = std::vector<T>;   // get rid
   int N2 = rsNextPowerOfTwo(N);
-  Vec x2(N2), mags(N2);                    // use members - maybe get rid of x2
-  rsZero(x2);                              // May not be needed
+  buf1.resize(N2); rsZero(buf1);
+  buf2.resize(N2); rsZero(buf2);
+  // We play a bit of buffer ping pong with out two buffers buf1, buf2 here. St various steps of 
+  // the algot, they contain the following content:
+  //   (1)  buf1: zero-padded input signal
+  //   (2)  buf2: FFT magnitudes
+  //   (3)  buf1: FFT magnitudes (copied from buf2)
+  //   (4)  buf2: masked FFT magnitudes
+
+  // Find magnitude spectrum of zero-padded input x (result goes into buf1):
   for(int n = 0; n < N; n++)
-    x2[n] = x[n];
-  rsFourierTransformerRadix2<T> ft;  // use member
+    buf1[n] = x[n];
   ft.setDirection(ft.FORWARD);
   ft.setBlockSize(N2);
   ft.setNormalizationMode(ft.NORMALIZE_ON_FORWARD_TRAFO);
-  ft.getRealSignalMagnitudes(&x2[0], &mags[0]);
+  ft.getRealSignalMagnitudes(&buf1[0], &buf2[0]);  // Why can't this be used in place?
+  rsCopy(buf2, buf1);
   // ToDo:
   // -Maybe restrict the maximum FFT lenth: maybe use a freq-resolution parameter, by deafult 
   //  1 Hz, and take its reciprocal as max length in seconds for the FFT to avoid excessively 
   //  large FFTs. 1 second should be enough for the preliminary analysis which is only meant for 
   //  tuning the filter-bank anyway...or maybe have a max-pre-analysis length in seconds.
 
-  //rsPlotSpectrum(mags, sampleRate, -100.0, false);  // for development
+  rsPlotSpectrum(buf2, sampleRate, -100.0, false);  // for development
   // When peak-finding is implemented, maybe plot the specttrum with markers at the found peak
   // frequencies.
 
-  // Apply peak-masking:
-  Vec magsMasked = mags;      // use member
+  // Apply peak-masking to FFT magnitudes (result goes into buf2):
   rsPeakMasker<T> pm;
   T freqSeparation = 10;         // make user parameter, find better name
-  //T binDecay  = freqSeparation * N2 / sampleRate;
   pm.setDecaySamples(freqSeparation * N2 / sampleRate);
-  pm.applyForward( &magsMasked[0], &magsMasked[0], N2);
-  pm.applyBackward(&magsMasked[0], &magsMasked[0], N2);
+  pm.applyForward( &buf2[0], &buf2[0], N2);
+  pm.applyBackward(&buf2[0], &buf2[0], N2);
 
   // Find relevant peaks:
   T threshRatio = 0.0005;  // make use parameter (in dB)
@@ -304,11 +312,11 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   const int precision = 1;         // 1: use a parabolic fit
   Vec peakPositions, peakHeights;  // todo: maybe reserve some memory here, maybe maxNumModes, use member
   T pos, height, maxHeight;
-  int kMax = AT::maxIndex(&mags[0], N2);
-  PF::exactPeakPositionAndHeight(&mags[0], N2, kMax, precision, &pos, &maxHeight); // global max
+  int kMax = AT::maxIndex(&buf1[0], N2);
+  PF::exactPeakPositionAndHeight(&buf1[0], N2, kMax, precision, &pos, &maxHeight); // global max
   for(int n = 1; n < N2-1; n++) {
-    if( AT::isPeak(&magsMasked[0], n) ) {
-      PF::exactPeakPositionAndHeight(&mags[0], N2, n, precision, &pos, &height);
+    if( AT::isPeak(&buf2[0], n) ) {
+      PF::exactPeakPositionAndHeight(&buf1[0], N2, n, precision, &pos, &height);
       if(height >= threshRatio * maxHeight) {
         peakPositions.push_back(pos);
         peakHeights.push_back(height); }}}
@@ -338,18 +346,17 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // it later to figure out the adjacent/neighbor modes (for tuning the bi-notch) where the 
   // adjacency is again defined on the freq-axis
 
-  /*
+ 
   // Plot results of the pre-analysis (for development):
   GNUPlotter plt;
   Vec freqs(N2);
   ft.binFrequencies(&freqs[0], N2, sampleRate);
-  plt.addDataArrays(N2, &freqs[0], &mags[0]);
-  plt.addDataArrays(N2, &freqs[0], &magsMasked[0]);
+  plt.addDataArrays(N2, &freqs[0], &buf1[0]);
+  plt.addDataArrays(N2, &freqs[0], &buf2[0]);
   plt.addDataArrays((int)peakHeights.size(), &peakPositions[0], &peakHeights[0]);
   plt.setGraphStyles("lines", "lines", "points");
   plt.setPixelSize(1200, 400);
   plt.plot();
-  */
   // OK - this looks good. Maybe later we could use rsPeakPicker which includes masking plus some
   // more sophisticated ideas. For the time being, the masking works well
 
