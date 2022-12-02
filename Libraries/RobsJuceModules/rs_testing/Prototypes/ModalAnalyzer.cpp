@@ -368,6 +368,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   using ModalParams = rsModalFilterParameters<T>;
   numModes = rsMin(numModes, maxNumModes);
   std::vector<ModalParams> mp(numModes);  // maybe avoid the alloc - let the use pass a reference
+  T decayTimeScale =  T(1) / (sampleRate * rsLog(decayAmp1/decayAmp2));
   for(int m = 0; m < numModes; m++)       // to such a vector and just resize it here, thenn fill it
   {
     T f = peaks[m].y;
@@ -423,26 +424,25 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     mp[m].amp = height;
 
 
-    // Find time instants, where the amp-env goes thorugh two specified reference amplitudes for 
-    // the first time:
+    // Find time instants, where the amp-env goes through two specified reference amplitudes for 
+    // the first time after the peak. From these instants compute the decay parameter:
     int n = nMax;
     while(n < N) {
       if(buf2[n] <= height * decayAmp1)
         break;
-      n++;   }
-    T time1 = n / sampleRate; // todo: be more precise using linear interpolation
+      n++; }
+    T n1 = n;       // todo: be more precise using linear interpolation
     while(n < N) {
       if(buf2[n] <= height * decayAmp2)
         break;
-      n++;  }
-    T time2 = n / sampleRate; // todo: be more precise using linear interpolation
-    mp[m].dec = (time2 - time1) / rsLog(decayAmp1/decayAmp2);  // verify!
-    // optimize: 1 / rsLog(refAmp1/refAmp2) is actually a constant - it's eqal to
-    // 1 / rsLog(decayAmp1/decayAmp2). We can actually bake the sampleRate into that constant 
-    // too. Maybe instead of computing time1, time2, compute n1, n2 (in samples, subsample-precise)
-    // and use dec = (n2 - n1) / (sampleRate * rsLog(decayAmp1/decayAmp2))
-
-
+      n++; }
+    T n2 = n;       // todo: be more precise using linear interpolation
+    mp[m].dec = decayTimeScale * (n2 - n1);  // verify!
+    // ToDo: 
+    // Compute n1, n2 more accurately, i.e. with subsample precision using linear interpolation:
+    // To compute n1, Look at buf2[n-1] and buf2[n]. buf2[n-1] should be > height*decayAmp1 and
+    // buf2[n] <= height*decayAmp1. Somewhere in between n-1 and n is the actual location where
+    // the nev goes through height*decayAmp1 ...
 
 
     // ToDo:

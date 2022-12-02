@@ -83,7 +83,9 @@ public:
   // at 1000. -> check if it actually really works that way in a unit-test, then add that to the 
   // documentation.
 
-  // ToDo: setLevelThreshold, setMaxNumModes
+
+
+  // ToDo: setLevelThreshold, setMaxNumModes, setDecayMeasurementAmplitudes
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
