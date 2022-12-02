@@ -395,10 +395,13 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // to let the filter ring out properly.
 
 
-    rsPlotArrays(5000, &x[0], &buf1[0]);
-    // something is wrong - both arrays look the same
-    // Ah - the SVF expects it bandwidth in octaves - and if we set up a bandpass with 20 octaves,
-    // it does almost nothing
+    //rsPlotArrays(10000, &x[0], &buf1[0]);
+    rsPlotArrays(10000, &buf1[0]);
+    // Some of the extracted modes show an amplitude modulation that's not supposed to be there. 
+    // That must be caused by some nearby mode leaking into the signal. We could try to remedy this
+    // by using more aggressive filtering - ideas:  
+    // -use a smaller bandwidth and/or multiple passes
+    // -notch out neighboring frequencies
 
 
 
@@ -449,42 +452,40 @@ void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N, T centerFreqHz, T
 
   // Set up the filter:
   using SVF = rsStateVariableFilter<T, T>;  // todo: maybe use a simpler direct-form biquad
+  T bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bandwidthHz, centerFreqHz);
   SVF filter;
   filter.setSampleRate(sampleRate);
   filter.setMode(SVF::modes::BANDPASS_PEAK);
   filter.setFrequency(centerFreqHz);
-  filter.setBandwidth(bandwidthHz);
+  filter.setBandwidth(bwOct);
 
   // Forward pass:
   for(int n = 0; n < N; n++)
     y[n] = filter.getSample(x[n]);
 
-
-  /*
-  // Let the filter ring out and warm-up, if the user has passed a buffer for that purpose:
+  // Let the filter ring out and warm up if the user has passed a buffer for that purpose:
   if(wrk != nullptr)
   {
-    rsError("Not yet implemented");
-    // ToDo: ringout/warm-up ...or maybe that is overkill - we don't really need the ends to be
-    // clean just to estimate modal parameters, I think. It just makes the code unnecessarily 
-    // complicated for not much gain...
+    // This code needs to be tested...
+    for(int n = 0; n < N_wrk; n++)
+      wrk[n] = filter.getSample(T(0));
+    for(int n = N_wrk-1; n >= 0; n--)
+      wrk[n] = filter.getSample(wrk[n]);
   }
   else
-    filter.reset();  
+    filter.reset();
     // I'm not so sure, if it's better to reset or not reset in case of no ringout/warm-up. Maybe
     // do some experiments.
 
   // Backward pass:
   for(int n = N-1; n >= 0; n--)
     y[n] = filter.getSample(y[n]);
-    */
-
-
 
   // ToDo:
   // -Maybe allow multiple passes of the filter. But then we need to scale (widen) the bandwidth
-  //  for each single pass.
-
+  //  for each single pass. But doing that right would also require some sort of pre-padding. But
+  //  maybe that can be avoided by just using a single pass with a higher-order filter. Maybe
+  //  EngineersFilter with the Gaussian response type could be the most suitable choice.
 
   int dummy = 0;
 }
