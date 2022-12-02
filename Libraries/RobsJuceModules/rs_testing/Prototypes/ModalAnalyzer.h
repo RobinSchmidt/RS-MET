@@ -112,10 +112,14 @@ public:
 protected:
 
   // User parameters:
-  T   sampleRate  = T(1);
   int maxNumModes = 1024;
-  T   threshDb    = T(-60);  // Relative threshold for modes to be taken seriously
-  T   maskWidth   = T(10);   // Half-bandwidth of the peak-masks in pre-analysis
+  T sampleRate = T(1);
+  T threshDb   = T(-60);   // Relative threshold for modes to be taken seriously
+  T maskWidth  = T(10);    // Half-bandwidth of the peak-masks in pre-analysis
+  T decayAmp1  = T(0.5);
+  T decayAmp2  = T(0.25);
+
+
 
   // Temporary data buffers and embedded objects:
   std::vector<T> buf1, buf2;

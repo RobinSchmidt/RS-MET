@@ -425,29 +425,24 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
     // Find time instants, where the amp-env goes thorugh two specified reference amplitudes for 
     // the first time:
-    T refAmp1 = height * 0.5;
-    T refAmp2 = height * 0.25;
     int n = nMax;
-    while(n < N)
-    {
-      if(buf2[n] <= refAmp1)
+    while(n < N) {
+      if(buf2[n] <= height * decayAmp1)
         break;
-      n++;
-    }
-    T refTime1 = n / sampleRate; // todo: be more precise using linear interpolation
-    while(n < N)
-    {
-      if(buf2[n] <= refAmp2)
+      n++;   }
+    T time1 = n / sampleRate; // todo: be more precise using linear interpolation
+    while(n < N) {
+      if(buf2[n] <= height * decayAmp2)
         break;
-      n++;
-    }
-    T refTime2 = n / sampleRate; // todo: be more precise using linear interpolation
-    mp[m].dec = (refTime2 - refTime1) / rsLog(refAmp1/refAmp2);  // verify!
-    // optimize: 1 / rsLog(refAmp1/refAmp2) is actually a constant
+      n++;  }
+    T time2 = n / sampleRate; // todo: be more precise using linear interpolation
+    mp[m].dec = (time2 - time1) / rsLog(decayAmp1/decayAmp2);  // verify!
+    // optimize: 1 / rsLog(refAmp1/refAmp2) is actually a constant - it's eqal to
+    // 1 / rsLog(decayAmp1/decayAmp2). We can actually bake the sampleRate into that constant 
+    // too. Maybe instead of computing time1, time2, compute n1, n2 (in samples, subsample-precise)
+    // and use dec = (n2 - n1) / (sampleRate * rsLog(decayAmp1/decayAmp2))
 
-    // It took refTime2 - refTime1 seconds to decay from refAmp1 to refAmp2. This allows us to 
-    // compute the decay time constant
-    // 
+
 
 
     // ToDo:
