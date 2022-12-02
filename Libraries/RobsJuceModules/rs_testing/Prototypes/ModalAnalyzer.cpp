@@ -343,6 +343,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   // adjacency is again defined on the freq-axis
 
  
+  /*
   // Plot results of the pre-analysis (for development):
   GNUPlotter plt;
   std::vector<T> freqs(N2);
@@ -353,13 +354,16 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   plt.setGraphStyles("lines", "lines", "points");
   plt.setPixelSize(1200, 400);
   plt.plot();
+  */
   // OK - this looks good. Maybe later we could use rsPeakPicker which includes masking plus some
   // more sophisticated ideas. For the time being, the masking works well
 
   //...............................................................................................
   // Step 2:
   // Analyze each mode one at a time by bandpassing the signal with a bandpass tuned to the 
-  // respective modal frequency and then using an envelope follower on the bandpassed signal
+  // respective modal frequency and then using an envelope follower on the bandpassed signal. We 
+  // re-use buf1 for storing the filtered signal, buf2 as ringout-buffer for the filtering process
+  // and then to store the envelope...tbc...
 
   using ModalParams = rsModalFilterParameters<T>;
   numModes = rsMin(numModes, maxNumModes);
@@ -381,6 +385,20 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // -refine the frequency estimate by measuring a distance between a given number of 
     //  zero-crossings (maybe start at the peak and use a number of reliable cycles - maybe until
     //  the amplitude is down to 0.25 or soemthing - experiemntation necessary
+
+    T bw = 2 * maskWidth;  // bandwidth for bandpass
+    // preliminary - ToDo: use something based on measuring the width of the actual peak in the 
+    // FFT magnitudes
+
+    extractMode(x, &buf1[0], N, f, bw);
+    // todo: pass buf2 for the workspace but perhaps use not the full length but rather just enough
+    // to let the filter ring out properly.
+
+
+    rsPlotArrays(5000, &x[0], &buf1[0]);
+    // something is wrong - both arrays look the same
+
+
 
 
 
@@ -424,6 +442,44 @@ template<class T>
 void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N, T centerFreqHz, T bandwidthHz,
   T* wrk = nullptr, int N_wrk = 0)
 {
+  // This code is a bit ugly - re-work the API for biquad filters to make it more convenient:
+  //using BD = rsBiquadDesigner<T>;
+  //rsBiquadDF1<T> filter;
+
+  // Set up the filter:
+  using SVF = rsStateVariableFilter<T, T>;  // todo: maybe use a simpler direct-form biquad
+  SVF filter;
+  filter.setSampleRate(sampleRate);
+  filter.setMode(SVF::modes::BANDPASS_PEAK);
+  filter.setFrequency(centerFreqHz);
+  filter.setBandwidth(bandwidthHz);
+
+  // Forward pass:
+  for(int n = 0; n < N; n++)
+    y[n] = filter.getSample(x[n]);
+
+  // Let the filter ring out and warm-up, if the user has passed a buffer for that purpose:
+  if(wrk != nullptr)
+  {
+    rsError("Not yet implemented");
+    // ToDo: ringout/warm-up ...or maybe that is overkill - we don't really need the ends to be
+    // clean just to estimate modal parameters, I think. It just makes the code unnecessarily 
+    // complicated for not much gain...
+  }
+  else
+    filter.reset();  
+    // I'm not so sure, if it's better to reset or not reset in case of no ringout/warm-up. Maybe
+    // do some experiments.
+
+  // Backward pass:
+  for(int n = N-1; n >= 0; n--)
+    y[n] = filter.getSample(y[n]);
+
+
+
+  // ToDo:
+  // -Maybe allow multiple passes of the filter. But then we need to scale (widen) the bandwidth
+  //  for each single pass.
 
 
   int dummy = 0;

@@ -16,7 +16,7 @@ added in subclasses because different topolies require different state variables
 part) */
 
 template<class TCof> // coefficient type
-class rsBiquad
+class rsBiquad       // maybe turn into a sctrut and rename to rsBiquadCoeffs
 {
 
 public:
@@ -47,7 +47,8 @@ public:
   void initializeCoefficients();
 
 
-protected:
+//protected: // if we allow the use to call setCoefficients, we may as well make the 
+             // coeffs public
 
   // direct form coefficients:
   TCof b0, b1, b2, a1, a2;

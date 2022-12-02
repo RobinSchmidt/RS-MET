@@ -115,7 +115,7 @@ protected:
   T   threshDb    = T(-60);  // Relative threshold for modes to be taken seriously
   T   maskWidth   = T(10);   // Half-bandwidth of the peak-masks in pre-analysis
 
-  // Internal data and objects:
+  // Temporary data buffers and embedded objects:
   std::vector<T> buf1, buf2;
   std::vector<T> peakPositions, peakHeights;
   std::vector<rsVector2D<T>> peaks;
