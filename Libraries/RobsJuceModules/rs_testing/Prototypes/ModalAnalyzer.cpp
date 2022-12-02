@@ -402,13 +402,17 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // by using more aggressive filtering - ideas:  
     // -Use a smaller bandwidth and/or multiple passes
     // -Notch out neighboring modes
-    // -Maybe the modulation itslef can be detected, modeled and be translated to an influence
+    // -Maybe the modulation itself can be detected, modeled and be translated to an influence
     //  of a nearby mode. Maybe we can model the beating of two modes via:
     //    x(t)  = (A + (m/A) * sin(wm*t + pm)) * sin(wc*t + pc)
     //         ?= A1 * sin(w1*t + p1) + A2 * sin(w2 + p2)
     //  where A is the overall amplitude, m is a modulation amount. Multiply that out to see what
     //  superposition of sines corresponds to that signal. That should give us the conversion 
     //  formulas between the measured A, m, wm, pm, wc, pt and the desired A1, w1, p1, A2, w2, p2.
+    //  This may not be so useful here because we may see more than one mode leaking into out 
+    //  extracted mode. But maybe, it we see some sinusoidal modulation of a mode, we can conclude
+    //  that this should be modeled by two modes and the above idea can be used to figure out the
+    //  parameters of these two modes from the "single" (modulated/beating) mode.
 
 
 
