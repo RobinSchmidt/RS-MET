@@ -109,7 +109,7 @@ protected:
 
 
   // Internal data and objects:
-  std::vector<T> buf1, buf2, buf3; // try to use only 2 buffers
+  std::vector<T> buf1, buf2;
   rsFourierTransformerRadix2<T> ft;
 
 

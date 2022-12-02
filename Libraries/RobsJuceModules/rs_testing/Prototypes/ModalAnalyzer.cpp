@@ -267,18 +267,17 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //...............................................................................................
   // Step 1: 
   // Figure out the mode frequencies using a big FFT on the whole signal and find the  peak freqs:
-
-
-  using Vec = std::vector<T>;   // get rid
   int N2 = rsNextPowerOfTwo(N);
   buf1.resize(N2); rsZero(buf1);
   buf2.resize(N2); rsZero(buf2);
-  // We play a bit of buffer ping pong with out two buffers buf1, buf2 here. St various steps of 
-  // the algot, they contain the following content:
+  // We play a bit of buffer ping pong with our two buffers buf1, buf2 here. St various steps of 
+  // the pre-analysis algo, they contain the following content:
   //   (1)  buf1: zero-padded input signal
   //   (2)  buf2: FFT magnitudes
   //   (3)  buf1: FFT magnitudes (copied from buf2)
   //   (4)  buf2: masked FFT magnitudes
+  // After the pre-analysis has finished, buf1 and buf2 can be re-used for other purposes in the 
+  // main analysis step. See comments there for how they will be used there...
 
   // Find magnitude spectrum of zero-padded input x (result goes into buf1):
   for(int n = 0; n < N; n++)
@@ -310,7 +309,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   using PF = rsPeakFinder<T>;
   using AT = rsArrayTools;
   const int precision = 1;         // 1: use a parabolic fit
-  Vec peakPositions, peakHeights;  // todo: maybe reserve some memory here, maybe maxNumModes, use member
+  std::vector<T> peakPositions, peakHeights;  // todo: maybe reserve some memory here, maybe maxNumModes, use member
   T pos, height, maxHeight;
   int kMax = AT::maxIndex(&buf1[0], N2);
   PF::exactPeakPositionAndHeight(&buf1[0], N2, kMax, precision, &pos, &maxHeight); // global max
@@ -322,15 +321,6 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
         peakHeights.push_back(height); }}}
   peakPositions = peakPositions * sampleRate / T(N2);
   int numModes = (int) peakHeights.size();
-
-  // ToDo:
-  // -Keep only the maxNumModes modes with the highest heights. Maybe for that, we need to create
-  //  a struct that contains height and position 
-  // -Maybe use rsvector2D for that and define a < operator that compares based on x first then on
-  //  y. Instead of having parallel arrays peakPoisitions/Heights, we'd use one array of 2D vectors
-  //  storing the height in x and the position in y, such that sorting works as intended. Or maybe 
-  //  use rsComplex...but nah, defining < for 2D (and 3D) vectors could be useful in other places
-  //  as well...but we can't use such an array of vectors for plotting anymore...hmmm...
 
   // Extract the maxNumModes loudest modes. The peakPositions/Heights arrays are parallel arrays 
   // sorted by ascending frequency. We need a sorting by descending height/amplitude, so we create
@@ -349,7 +339,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
  
   // Plot results of the pre-analysis (for development):
   GNUPlotter plt;
-  Vec freqs(N2);
+  std::vector<T> freqs(N2);
   ft.binFrequencies(&freqs[0], N2, sampleRate);
   plt.addDataArrays(N2, &freqs[0], &buf1[0]);
   plt.addDataArrays(N2, &freqs[0], &buf2[0]);
