@@ -913,7 +913,7 @@ public:
 
   static void connectPeaks(const T* xt, const T* xi, int N, T* env, int precision);
   // under construction - uses a polynomial of order 2*precision to estimate the actual locations 
-  // and heights of the peaks - using a parabolo already improves results, but there are still
+  // and heights of the peaks - using a parabola already improves results, but there are still
   // frequency jaggies, so we may need higher accuracy for the amp-env
   // we need two inputs - one to determine the peak locations and one for using in the 
   // interpolator

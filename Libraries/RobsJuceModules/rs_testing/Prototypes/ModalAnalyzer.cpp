@@ -374,7 +374,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     T a = peaks[m].x;
 
     mp[m].freq = f;    // preliminary
-    mp[m].amp  = a;    // preliminary
+    //mp[m].amp  = a;    // preliminary
 
     // ToDo: 
     // -set up a bandpass tuned to the (preliminary) mode frequency f
@@ -390,22 +390,14 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // preliminary - ToDo: use something based on measuring the width of the actual peak in the 
     // FFT magnitudes
 
-    extractMode(x, &buf1[0], N, f, bw);
-    // todo: pass buf2 for the workspace but perhaps use not the full length but rather just enough
+    extractMode(x, &buf1[0], N, f, bw); 
+    // ToDo: pass buf2 for workspace, perhaps use not the full length but rather just enough
     // to let the filter ring out properly.
 
     // Exctract the envelope of the mode - result goes to buf2:
     extractModeEnvelope(&buf1[0], &buf2[0], N);
-    // actually, we don't really need to extract the envelope - it's enough to figure out the 
-    // position and value of the max-abs value. To estimate the decay, we can then perhaps just
-    // compare average amplitudes of some section of a length L after the peak and another section
-    // of the same length immediately right to the first section...but yeah - for that, an actual 
-    // envelope might actually be better for computing accurate averages
-
-
-
-    //rsPlotArrays(10000, &x[0], &buf1[0]);
-    rsPlotArrays(10000, &buf1[0], &buf2[0]);
+    
+    //rsPlotArrays(10000, &buf1[0], &buf2[0]);
     // Some of the extracted modes show an amplitude modulation that's not supposed to be there. 
     // That must be caused by some nearby mode leaking into the signal. We could try to remedy this
     // by using more aggressive filtering - ideas:  
@@ -422,6 +414,31 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     //  extracted mode. But maybe, it we see some sinusoidal modulation of a mode, we can conclude
     //  that this should be modeled by two modes and the above idea can be used to figure out the
     //  parameters of these two modes from the "single" (modulated/beating) mode.
+
+    // Find position and value of maximum of envelope and compute the estimates for out attack 
+    // time and mode amplitude:
+    int nMax = AT::maxIndex(&buf2[0], N);
+    PF::exactPeakPositionAndHeight(&buf2[0], N, nMax, 1, &pos, &height);
+    mp[m].att = pos / sampleRate;
+    mp[m].amp = height;
+
+
+
+    // ToDo:
+    // -To estimate the decay, we can then perhaps just compare average amplitudes of some section
+    //  of a length L after the peak and another section of the same length immediately right to 
+    //  the first section...but yeah - for that, an actual envelope might actually be better for 
+    //  computing accurate averages
+    // -To ge a refined frequency estimate, find the next positive zero-crossing after the peak, 
+    //  then find more zero crossings, counting them, going up to a pointwh where the envelope has
+    //  decayed to 1/2 or 1/4 or something and then use the distance and count to compute a more 
+    //  exact frequency estimate
+    // -To estimate the start phase, use the time-instant of the left zeor-crossing used above
+    //  and extrapolate the phase back to time 0, using the refined frequency estimate.
+
+
+
+
 
 
 
@@ -461,6 +478,10 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
   //  that are responsible for the attack...
   // -Maybe before returning the mp array, it should be sorted by frequency...not sure about that
   //  though. Sorting by decreasing amplitude can also make sense
+
+  // Maybe use:
+  // rsExponentialEnvelopeMatcher, rsEnvelopeExtractor, rsPeakFinder::connectPeaks 
+  // (MiscUnfinished.h)
 
 
   return mp;
@@ -517,20 +538,5 @@ void rsModalAnalyzer2<T>::extractModeEnvelope(const T* x, T* y, int N)
 {
   for(int n = 0; n < N; n++)
     y[n] = rsAbs(x[n]);
-
-
-  // ToDo:
-  // -Factor out impementation into rsEnvelopeExtractor...or maybe use existing implementation
-  //  from there
-
-  int dummy = 0;
+  rsPeakFinder<T>::connectPeaks(y, N, y, false); // try "true" for "useParabola"
 }
-
-
-
-// instantiations (maybe move elsewhere):
-//template class rsModalAnalyzer<double>;
-
-//template std::vector<rsModalFilterParameters<double>> 
-//  getModalModel(const RAPT::rsSinusoidalModel<double>& model);
-
