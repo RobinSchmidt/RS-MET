@@ -397,7 +397,8 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
     rsPlotArrays(5000, &x[0], &buf1[0]);
     // something is wrong - both arrays look the same
-
+    // Ah - the SVF expects it bandwidth in octaves - and if we set up a bandpass with 20 octaves,
+    // it does almost nothing
 
 
 
@@ -458,6 +459,8 @@ void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N, T centerFreqHz, T
   for(int n = 0; n < N; n++)
     y[n] = filter.getSample(x[n]);
 
+
+  /*
   // Let the filter ring out and warm-up, if the user has passed a buffer for that purpose:
   if(wrk != nullptr)
   {
@@ -474,6 +477,7 @@ void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N, T centerFreqHz, T
   // Backward pass:
   for(int n = N-1; n >= 0; n--)
     y[n] = filter.getSample(y[n]);
+    */
 
 
 
