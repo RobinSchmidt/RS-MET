@@ -481,8 +481,8 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       f  = 1/p;                      // frequency in Hz
       mp[m].freq = f;   
       // OK, we get values in the right ballpark but they may not yet as precise as possible. The
-      // improvement of the accuracy is a little bit disappointing. Or is that because the 
-      // preliminary accuracy is already so good?
+      // improvement of the accuracy is a little bit disappointing. Sometimes, the estimate even 
+      // gets worse. Is that because the preliminary accuracy is already so good?
 
       // ToDo:
       // -Maybe try a higher precision in upwardCrossingFrac - doesn't seem to help
