@@ -449,8 +449,8 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     using ZCF = rsZeroCrossingFinder;
     n = nMax;
     int count =  0;  // number of zero-crossings counted so far
-    int nL    = -1;  // index of leftmost zero-crossing
-    int nR    = -1;  // index of rightmost zero-crossing
+    int nL    = -1;  // index of leftmost zero-crossing - maybe re-use n1
+    int nR    = -1;  // index of rightmost zero-crossing - maybe re-use n2
     while(n < N) {
       if(ZCF::isUpwardCrossing(&buf1[0], n)) {
         count++;
@@ -473,18 +473,22 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       n--;      }
     if(nL != -1 && nR != -1 && nR > nL)
     {
-      T p = T(nR - nL) / T(count-1);  // period in samples
-      p /= sampleRate;                // period in seconds
-      f  = 1/p;                       // frequency in Hz
-      // OK, we get values in the right ballpark but they may not yet as precise as possible...
+      int precision = 2;
+      T tL = nL + ZCF::upwardCrossingFrac(&buf1[0], N, nL, precision);
+      T tR = nR + ZCF::upwardCrossingFrac(&buf1[0], N, nR, precision);
+      T p = (tR - tL) / T(count-1);  // period in samples
+      p /= sampleRate;               // period in seconds
+      f  = 1/p;                      // frequency in Hz
+      mp[m].freq = f;   
+      // OK, we get values in the right ballpark but they may not yet as precise as possible. The
+      // improvement of the accuracy is a little bit disappointing. Or is that because the 
+      // preliminary accuracy is already so good?
 
       // ToDo:
-      // -Figure out fractional positions of zeros and use those instead -> more precision
-      // -Verify if, we must divide by (count-1) or count? The number of cycles is one less than
-      //  the number of zero crossings...right?
-      // -Simplify the formula
-
-      int dummy = 0;
+      // -Maybe try a higher precision in upwardCrossingFrac - doesn't seem to help
+      // -Maybe try to use more or less cycles...more should be better, I think - but try it
+      // -Try to use a more aggressive bandpass to isolate the mode
+      // -Simplify the formula - use one division
     }
     else
     {
@@ -509,7 +513,10 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     //  decayed to 1/2 or 1/4 or something and then use the distance and count to compute a more 
     //  exact frequency estimate. Use rsZeroCrossingFinder
     // -To estimate the start phase, use the time-instant of the left zeor-crossing used above
-    //  and extrapolate the phase back to time 0, using the refined frequency estimate.
+    //  and extrapolate the phase back to time 0, using the refined frequency estimate. Maybe let 
+    //  the user decide if the phase should be matched exactly at the zero-crossing near the peak
+    //  or near the start. Both ways could make sense: match near the peak: better time-domain 
+    //  subtraction results with original, match near start: may model the transient better.
 
 
 
