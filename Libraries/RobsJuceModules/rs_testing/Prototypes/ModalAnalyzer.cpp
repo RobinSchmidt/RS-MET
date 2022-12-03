@@ -444,6 +444,56 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // buf2[n] <= height*decayAmp1. Somewhere in between n-1 and n is the actual location where
     // the nev goes through height*decayAmp1 ...
 
+    // Refine frequency estimate by counting cycles. We again start at the peak of the envelope and
+    // count cycles to the right:
+    using ZCF = rsZeroCrossingFinder;
+    n = nMax;
+    int count =  0;  // number of zero-crossings counted so far
+    int nL    = -1;  // index of leftmost zero-crossing
+    int nR    = -1;  // index of rightmost zero-crossing
+    while(n < N) {
+      if(ZCF::isUpwardCrossing(&buf1[0], n)) {
+        count++;
+        nR = n;
+        if(nL == -1)
+          nL = n;    }
+
+      // We stop counting when the signal amplitude has fallen below the lower decay measurement
+      // threshold - this should be a good place to stop:
+      if(buf2[n] <= height * decayAmp2)
+        break;
+      n++;  }
+    n = nMax-1;
+    while(n >= 0)  {    // We also look for zeros leftward from the peak
+      if(ZCF::isUpwardCrossing(&buf1[0], n)) {
+        count++;
+        nL = n;   }
+      if(buf2[n] <= height * decayAmp2)
+        break;
+      n--;      }
+    if(nL != -1 && nR != -1 && nR > nL)
+    {
+      T p = T(nR - nL) / T(count-1);  // period in samples
+      p /= sampleRate;                // period in seconds
+      f  = 1/p;                       // frequency in Hz
+      // OK, we get values in the right ballpark but they may not yet as precise as possible...
+
+      // ToDo:
+      // -Figure out fractional positions of zeros and use those instead -> more precision
+      // -Verify if, we must divide by (count-1) or count? The number of cycles is one less than
+      //  the number of zero crossings...right?
+      // -Simplify the formula
+
+      int dummy = 0;
+    }
+    else
+    {
+      rsWarning("Frequency estimation refinement failed");
+      // This should really not happen for any halfway sane input signal
+    }
+
+
+
 
     // ToDo:
     // -To estimate the decay, we can then perhaps just compare average amplitudes of some section
