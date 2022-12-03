@@ -476,9 +476,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       int precision = 2;
       T tL = nL + ZCF::upwardCrossingFrac(&buf1[0], N, nL, precision);
       T tR = nR + ZCF::upwardCrossingFrac(&buf1[0], N, nR, precision);
-      T p = (tR - tL) / T(count-1);  // period in samples
-      p /= sampleRate;               // period in seconds
-      f  = 1/p;                      // frequency in Hz
+      f = (sampleRate * T(count-1)) / (tR - tL); // frequency in Hz
       mp[m].freq = f;   
       // OK, we get values in the right ballpark but they may not yet as precise as possible. The
       // improvement of the accuracy is a little bit disappointing. Sometimes, the estimate even 
