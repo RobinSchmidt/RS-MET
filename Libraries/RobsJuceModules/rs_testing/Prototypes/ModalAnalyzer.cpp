@@ -484,9 +484,11 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
       // ToDo:
       // -Maybe try a higher precision in upwardCrossingFrac - doesn't seem to help
-      // -Maybe try to use more or less cycles...more should be better, I think - but try it
+      // -Maybe try to use more or less cycles...more should be better, I think - but try it. Maybe
+      //  we should avoid going too close to the transient, i.e. use only a middle section.
       // -Try to use a more aggressive bandpass to isolate the mode
-      // -Simplify the formula - use one division
+      // -Try it with longer samples
+
     }
     else
     {

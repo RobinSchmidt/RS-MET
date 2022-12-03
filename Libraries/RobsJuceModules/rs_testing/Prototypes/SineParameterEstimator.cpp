@@ -344,7 +344,7 @@ void rsSingleSineModeler<T>::sigToAmpsViaPeaks(const T* x, int N, T* a, int prec
   {
     T* y = a;
     for(int n = 0; n < N; n++)
-      y[n] = rsAbs(x[n]);         // todo: apply shadower here (shadows are casted only rightward)
+      y[n] = rsAbs(x[n]);         // todo: apply masker here (masks are casted only rightward)
     rsPeakFinder<T>::connectPeaks(y, N, a, precision == 1);  
     return;
   }
@@ -719,7 +719,7 @@ void rsSingleSineModeler<T>::unreflectPhase2(const T* w, T* p, int N)
 {
   // not yet tested
   // under construction - uses linear extrapolation from current phase and omega approach as 
-  // oppsoed to using the input signal values to determine the zone
+  // opposed to using the input signal values to determine the zone
 
   for(int n = 1; n < N; n++)
     p[n] = adjustPhase(p[n], p[n-1], 0.5*(w[n-1]+w[n]));
@@ -891,5 +891,32 @@ samples:
 can this be solved for p?
 
 x0 / sin(p) = xR / sin(p+w)
+
+
+Ideas:
+
+Let's try to use this class to estimate the parameters of a sinusoidal signal model of the form:
+
+  x[n] = sum_k A_k[n] * sin(p_k[n])
+
+in the following way: First give the algorithm the full signal, estimate A_1[n], p1_[n], apply a
+bidirectional lowpass to A_1[n], p1[n]. Then reconstruct x[n] from the lowpassed analysis data, 
+obtain a resdiual and repeat the process on the resiudal to obtain A_2[n], p_2[n] and so on.
+
+The idea is that a signal model of the form above, as sum of time-varying sines, is hopelessly 
+overcomplete. Even a single such sine can model any signal, if we just allow the modulation of
+amplitude and/or phase to be erratic enough. The idea is that via the lowpass, we disallow a too 
+erratic modulation of amplitude and phase in each component and make up for it by allowing more
+components. 
+
+In the filtering, p should perhaps first be converted to w by differentiation, then lowpassed, 
+then integrated again. Or maybe use estimation of w[n] instead of p[n] in the first place. The 
+boundary-conditions from the bidirectional filters should perhaps use the "repeat-value" rather 
+than the "zero" condition. Currently, we assume that the amplitude is always a positive value. To 
+model two beating sines correctly, it may be better to allow negative amplitudes, too. Maybe allow
+the user to specify an assumed analysis frequency for each step
+
+
+
 
 */

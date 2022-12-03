@@ -422,4 +422,11 @@ todo:
  the refine them by a time-varying phase vocoder approach...and then use that data to refine 
  further etc. until it converges
 
+See also:
+https://en.wikipedia.org/wiki/Time%E2%80%93frequency_analysis
+https://en.wikipedia.org/wiki/Uncertainty_principle#Signal_processing
+https://en.wikipedia.org/wiki/Reassignment_method
+https://en.wikipedia.org/wiki/Least-squares_spectral_analysis
+
+
 */

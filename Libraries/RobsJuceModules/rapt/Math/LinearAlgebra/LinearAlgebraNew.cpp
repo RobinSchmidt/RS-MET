@@ -429,6 +429,8 @@ matrix "division" is an arithmetic operation - we'll see
  https://nhigham.com/2020/04/03/what-is-a-generalized-inverse/
 
 
+ https://blogs.mathworks.com/cleve/2020/10/23/gil-strang-and-the-cr-matrix-factorization/
+
 
 
 
