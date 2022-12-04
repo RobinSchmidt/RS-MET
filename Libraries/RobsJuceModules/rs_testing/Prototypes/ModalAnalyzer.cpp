@@ -418,7 +418,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
     // Find position and value of maximum of envelope and compute the estimates for out attack 
     // time and mode amplitude:
-    int nMax = AT::maxIndex(&buf2[0], N);
+    int nMax = AT::maxIndex(&buf2[0], N);  // maybe rename to nPeak
     PF::exactPeakPositionAndHeight(&buf2[0], N, nMax, 1, &pos, &height);
     mp[m].att = pos / sampleRate;
     mp[m].amp = height;
@@ -442,7 +442,18 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // Compute n1, n2 more accurately, i.e. with subsample precision using linear interpolation:
     // To compute n1, Look at buf2[n-1] and buf2[n]. buf2[n-1] should be > height*decayAmp1 and
     // buf2[n] <= height*decayAmp1. Somewhere in between n-1 and n is the actual location where
-    // the nev goes through height*decayAmp1 ...
+    // the nev goes through height*decayAmp1. Maybe implement a function 
+    // rsInterpolateInverseLinear(Tx x1, Tx x2, Ty y1, Ty y2, y) similar to 
+    // rsInterpolateLinear(       Tx x1, Tx x2, Ty y1, Ty y2, Tx x);
+    // in Interpolation.h. The idea is similar to:
+    //   https://en.wikipedia.org/wiki/Inverse_quadratic_interpolation
+    // but simpler. Actually, I think, we can use rsInterpolateLinear and don't really need an 
+    // extra function. We just need to call it with the roles of the x and y parameters swapped.
+    // But maybe for clarity and convenience, we should write the function as:
+    // rsInterpolateInverseLinear(Tx x1, Tx x2, Ty y1, Ty y2, Ty y)
+    // {
+    //    return rsInterpolateLinear(y1, y2, x1, x2, y);
+    // }
 
     // Refine frequency estimate by counting cycles. We again start at the peak of the envelope and
     // count cycles to the right:
@@ -473,7 +484,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       n--;      }
     if(nL != -1 && nR != -1 && nR > nL)
     {
-      int precision = 2;
+      int precision = 2;  // ToDo: tweak, find out, what is a reasonable choice
       T tL = nL + ZCF::upwardCrossingFrac(&buf1[0], N, nL, precision);
       T tR = nR + ZCF::upwardCrossingFrac(&buf1[0], N, nR, precision);
       f = (sampleRate * T(count-1)) / (tR - tL); // frequency in Hz
@@ -495,6 +506,12 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       rsWarning("Frequency estimation refinement failed");
       // This should really not happen for any halfway sane input signal
     }
+
+
+    // As last step, we estimate the start-phase by finding a zero crossing near the peak or near
+    // the start (at the user's choice) and extrapolate the phase from the zero crossing to time 
+    // index zero using our (refined) frequency estimate:
+
 
 
 

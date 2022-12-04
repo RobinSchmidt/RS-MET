@@ -84,6 +84,16 @@ public:
   // documentation.
 
 
+  /** Determines at which time instant the phase of the resynthesized mode should match the phase
+  in the extracted mode. If true is passed, we will match the phase at a zero-crossing that is near
+  the peak of the amp-envelope. If false is passed, we'll match it at the very first zero-crossing
+  that is encountered. The former option may be better for reducing the overall maximum error in 
+  the residual where the latter may be better to more accurately model the attack transients. I'm 
+  not yet sure what's the better strategy, so both options are available. Some experimentation is 
+  needed....tbc... */
+  void setPhaseMatchNearPeak(bool shouldMatchNearPeak) { matchPhaseNearPeak=shouldMatchNearPeak; }
+
+
 
   // ToDo: setLevelThreshold, setMaxNumModes, setDecayMeasurementAmplitudes
 
@@ -120,7 +130,13 @@ protected:
   T maskWidth  = T(10);    // Half-bandwidth of the peak-masks in pre-analysis
   T decayAmp1  = T(0.5);
   T decayAmp2  = T(0.25);
+  bool matchPhaseNearPeak = true;
 
+  // ToDo:
+  // -Have parameters to tune the bandpass filters used in the mode-extraction step. Let the user
+  //  select the bandwidth (maybe as a multiplier for the preliminary bandwidth estimate coming from
+  //  the FFT pre-analysis) and the order. We may want to use higher order (Gaussian) filters later.
+  //  That's a job for EngineersFilter - currently, we use a simple biquad SVF.
 
 
   // Temporary data buffers and embedded objects:

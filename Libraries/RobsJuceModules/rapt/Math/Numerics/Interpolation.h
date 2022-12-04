@@ -249,7 +249,8 @@ Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x)
   Ty a = (y2-y1) / (x2-x1);
   Ty b = y1 - a*x1;
   return a*x + b;
-    // factor out computation of a and b
+  // ToDo: 
+  // -factor out computation of a and b into a function rsGetLineParameters
 }
 
 template<class T>
