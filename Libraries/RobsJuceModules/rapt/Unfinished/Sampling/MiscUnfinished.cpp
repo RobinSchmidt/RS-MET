@@ -226,7 +226,13 @@ bool rsZeroCrossingFinder::isUpwardCrossing(T *x, int n)
     return true;
   return false;
 
-  // what about n < 0 or n >= N-2...this is unsafe
+  // We may have some issues here:
+  // -Maybe we should do if(x[n] <= 0.0 && x[n+1] > 0.0)? What are the implications for the edge 
+  //  cases when (1) a zero falls exactly at a sample, (2) there are multiple zero samples before
+  //  it goes up? I think, it would be most natural, when the fractional part of a zero crossing
+  //  as computed by upwardCrossingFrac is in [0,1) rather than (0,1] - but I think, the current
+  //  implementation implies the latter
+  // -What about n < 0 or n >= N-2...this is unsafe
 }
 
 template<class T>
