@@ -514,6 +514,12 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
 
 
+    // This phase estimation is preliminary - ToDo:
+    // -Take upward *and* downward zero crossings into account, i.e. if a downward crossing is 
+    //  closer to the reference position (tme zero or time of the envelope's peak), use that and
+    //  shift the pase estimate by pi or 180°
+    // -If the reference position is the peak, also scan leftward and choose the crossing that is 
+    //  closer to the peak.
 
 
     // ToDo:
@@ -534,17 +540,6 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     //  the user decide if the phase should be matched exactly at the zero-crossing near the peak
     //  or near the start. Both ways could make sense: match near the peak: better time-domain 
     //  subtraction results with original, match near start: may model the transient better.
-
-
-
-
-
-
-
-
-
-
-
 
     int dummy = 0;
   }
