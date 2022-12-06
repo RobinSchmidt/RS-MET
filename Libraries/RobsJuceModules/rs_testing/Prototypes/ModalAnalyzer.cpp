@@ -463,6 +463,10 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     int count =  0;  // number of zero-crossings counted so far
     int nL    = -1;  // index of leftmost zero-crossing - maybe re-use n1
     int nR    = -1;  // index of rightmost zero-crossing - maybe re-use n2
+
+    int zeroCrossPrecision = 2;  // precision of zero-crossing subsample localization 
+    // ToDo: tweak, find out, what is a reasonable choice
+
     while(n < N) {
       if(ZCF::isUpwardCrossing(&buf1[0], n)) {
         count++;
@@ -485,9 +489,8 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       n--;      }
     if(nL != -1 && nR != -1 && nR > nL)
     {
-      int precision = 2;  // ToDo: tweak, find out, what is a reasonable choice
-      T tL = nL + ZCF::upwardCrossingFrac(&buf1[0], N, nL, precision);
-      T tR = nR + ZCF::upwardCrossingFrac(&buf1[0], N, nR, precision);
+      T tL = nL + ZCF::upwardCrossingFrac(&buf1[0], N, nL, zeroCrossPrecision);
+      T tR = nR + ZCF::upwardCrossingFrac(&buf1[0], N, nR, zeroCrossPrecision);
       f = (sampleRate * T(count-1)) / (tR - tL); // frequency in Hz
       mp[m].freq = f;   
       // OK, we get values in the right ballpark but they may not yet as precise as possible. The
@@ -512,10 +515,37 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // As last step, we estimate the start-phase by finding a zero crossing near the peak or near
     // the start (at the user's choice) and extrapolate the phase from the zero crossing to time 
     // index zero using our (refined) frequency estimate:
+    n = nPeak;
+    if(matchPhaseNearPeak) 
+    {
+      while(n < N) {
+        if(ZCF::isUpwardCrossing(&buf1[0], n)) {
+          break; }
+        n++; }
+    }
+    else
+    {
+      rsError("rsModalAnalyzer2::analyze: Not yet implemented");
+    }
+    T t = (n + ZCF::upwardCrossingFrac(&buf1[0], N, n, zeroCrossPrecision)) / sampleRate;
+      // At the given t (in seconds), the sine has zero phase. 
+
+    T c = t * f; 
+      // Number of elapsed cycles between time zero and time t equals the time t divided by the 
+      // cycle length (in seconds) which equals time t multiplied by frequency in Hz
+
+    T p = - T(c * 360); 
+      // Phase in degrees at time zero, unwrapped with respect to the zero crossing near n, i.e.
+      // taking that zero crossing as time reference
+
+    p = rsWrapToInterval(p, T(0), T(360));
+    mp[m].phase = p;
+
 
 
 
     // This phase estimation is preliminary - ToDo:
+    // -Taking the first reference point near the start is not yet implemented.
     // -Take upward *and* downward zero crossings into account, i.e. if a downward crossing is 
     //  closer to the reference position (tme zero or time of the envelope's peak), use that and
     //  shift the pase estimate by pi or 180°

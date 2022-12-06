@@ -8,6 +8,7 @@ struct rsModalFilterParameters
 {
   T freq = 1000, amp = 1, att = 0.01, dec = 0.1, phase = 0;
 };
+// ToDo: document the units of the parameters - especially for the phase. I think, it's in degrees.
 
 std::vector<double> synthesizeModal(
   const rsModalFilterParameters<double>& params, double sampleRate, int length);
