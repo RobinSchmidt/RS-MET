@@ -538,7 +538,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       // Phase in degrees at time zero, unwrapped with respect to the zero crossing near n, i.e.
       // taking that zero crossing as time reference
 
-    p = rsWrapToInterval(p, T(0), T(360));
+    p = rsWrapToInterval(p, T(-180), T(180));
     mp[m].phase = p;
 
 
