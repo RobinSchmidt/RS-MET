@@ -418,15 +418,15 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
     // Find position and value of maximum of envelope and compute the estimates for out attack 
     // time and mode amplitude:
-    int nMax = AT::maxIndex(&buf2[0], N);  // maybe rename to nPeak
-    PF::exactPeakPositionAndHeight(&buf2[0], N, nMax, 1, &pos, &height);
+    int nPeak = AT::maxIndex(&buf2[0], N);
+    PF::exactPeakPositionAndHeight(&buf2[0], N, nPeak, 1, &pos, &height);
     mp[m].att = pos / sampleRate;
     mp[m].amp = height;
 
 
     // Find time instants, where the amp-env goes through two specified reference amplitudes for 
     // the first time after the peak. From these instants compute the decay parameter:
-    int n = nMax;
+    int n = nPeak;
     while(n < N) {
       if(buf2[n] <= height * decayAmp1)
         break;
@@ -456,9 +456,10 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     // }
 
     // Refine frequency estimate by counting cycles. We again start at the peak of the envelope and
-    // count cycles to the right:
+    // count cycles to the right up to the instant where decayAmp2 is reached, i.e. up to the same
+    // point at which we take the right amp-measurement for our decay estimation:
     using ZCF = rsZeroCrossingFinder;
-    n = nMax;
+    n = nPeak;
     int count =  0;  // number of zero-crossings counted so far
     int nL    = -1;  // index of leftmost zero-crossing - maybe re-use n1
     int nR    = -1;  // index of rightmost zero-crossing - maybe re-use n2
@@ -474,7 +475,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
       if(buf2[n] <= height * decayAmp2)
         break;
       n++;  }
-    n = nMax-1;
+    n = nPeak-1;
     while(n >= 0)  {    // We also look for zeros leftward from the peak
       if(ZCF::isUpwardCrossing(&buf1[0], n)) {
         count++;
