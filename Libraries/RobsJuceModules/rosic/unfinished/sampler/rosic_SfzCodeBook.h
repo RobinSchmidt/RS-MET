@@ -623,6 +623,20 @@ private:
 
 //=================================================================================================
 
+/* ...maybe not useful - we'll see
+// https://sfzformat.com/headers/control 
+struct MidiController
+{
+
+  int ccNumber = 0;        // e.g.  74 
+  int initVal  = 0;        // e.g. 127         https://sfzformat.com/opcodes/set_ccN
+  std::string label = "";  // e.g. "Cutoff"    https://sfzformat.com/opcodes/label_ccN
+
+};
+*/
+
+//=================================================================================================
+
 /** A class to translate between the sfz opcodes in their string representation and their enum 
 values and some additional related "translations" such as the mapping of opcodes to the type of
 signal processor to which they apply, etc. Essentially, it does many of the conversions and 
