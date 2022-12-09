@@ -824,8 +824,6 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   };
 
 
-
-  //std::string globalStr = "<global>";
   std::string groupStr  = "<group>";
   std::string regionStr = "<region>";
   size_t Lg = groupStr.length();
@@ -836,17 +834,37 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   size_t i0 = str.find(groupStr, 0);
   size_t i1 = str.find(groupStr, i0+1);
 
-
   // Set up instrument level aka global settings. The global section may begin either immediately 
   // after "<global>" or at the very start of the string (if the global tag is absent) and ends 
   // immediately before the first occurrence of <group>:
-  size_t i = str.find("<global>", 0);
-  if(i == endOfFile)
-    i = 0;
+  size_t ig = str.find("<global>", 0);
+  if(ig == endOfFile)
+    ig = 0;   // if <global> isn't defined, we start at the start of the string 
   else
-    i += 8;  // Length of "<global>" - we want to start after it
-  tmp = str.substr(i, i0);
+    ig += 8;  // 8 == length of "<global>" - we want to start after it
+  tmp = str.substr(ig, i0-ig);
   setupLevel(&global, tmp);
+
+  // Set up the controls, if present:
+  size_t ic = str.find("<control>", 0);
+  if(ic != endOfFile)
+  {
+    ic += 9;  // 9 == length of "<control>"
+    if(ic >= ig)
+    {
+      RAPT::rsError("When <control> is defined, <global> must be defined thereafter");
+      clearInstrument();
+      return rsReturnCode::failed; // maybe return something like rsRetrunCode::malformed
+      // When the <control> section is defined, it is mandatory to also define <global> somewhere 
+      // later because we need it to determine, where the <control> section ends. 
+    }
+    tmp = str.substr(ic, ig-ic-8);
+    //setupControls(tmp);  // ...to do...
+    int dummy = 0;
+  }
+
+
+
 
   // Loop over the the groups within the instrument definition:
   bool allGroupsDone = false;

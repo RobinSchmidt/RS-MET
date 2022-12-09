@@ -4746,7 +4746,7 @@ bool samplerControlsTest()
   // Crashes the engine - tires to parse "<control>" as float. I think, it is because the sfz 
   // define no group at all
 
-  sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20 <group>";
+  //sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20 <group>";
   // ...hmm - adding the dummy group header doesn't really help - we get the same crash
   // -> make the parser extract the control section and set up the controls first, then strip the
   // control off from the string and pass the remaining string to the current parser.
@@ -4755,7 +4755,7 @@ bool samplerControlsTest()
   sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20 <global> <group>";
 
 
-  //se.setFromSFZ(sfz);
+  se.setFromSFZ(sfz);
 
   /*
   ok &= se.getMidiControllerLabel(74) == "Cutoff";
