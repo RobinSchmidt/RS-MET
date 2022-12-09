@@ -825,10 +825,9 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
 
 
-  //std::string global  = "<global>";
-
-  std::string groupStr   = "<group>";
-  std::string regionStr  = "<region>";
+  std::string globalStr = "<global>";
+  std::string groupStr  = "<group>";
+  std::string regionStr = "<region>";
 
 
   size_t Lg = groupStr.length();
@@ -840,12 +839,16 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   size_t i1 = str.find(groupStr, i0+1);
 
 
+  // Set up instrument level aka global settings:
+  size_t i = 0;
 
-
-  // Set up instrument level settings:
-  tmp = str.substr(0, i0);
+  tmp = str.substr(i, i0);
   setupLevel(&global, tmp);
 
+  // ToDo: 
+  // The global section may begin either immediately after "<global>" or at the very start
+  // of the string (if the global tag is absent) and ends immediately before the first occurrence
+  // of <group>
 
 
   // Loop over the the groups within the instrument definition:
