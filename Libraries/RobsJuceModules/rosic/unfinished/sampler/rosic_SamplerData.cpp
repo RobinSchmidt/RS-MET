@@ -749,8 +749,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
   // Extracts the subtring starting at startIndex up to (and excluding) the next separator ' ' 
   // charcater. If there is no ' ', it will return the string from startIndex up to its end:
-  std::string sep(" ");
-  auto getToken = [&](const std::string& str, size_t startIndex)
+  auto getToken = [](const std::string& str, size_t startIndex, const std::string& sep)
   {
     int start  = (int)startIndex;
     int length = -1;  // initial value should not matter
@@ -785,6 +784,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
   // Sets up the given level according to the given string which is supposed to contain opcode 
   // settings separated by single whitepaces in the format "opocde=value ":
+  std::string sep(" ");
   auto setupLevel = [&](HierarchyLevel* lvl, const std::string& str)
   {
     // In a first pass, we tokenize the string into the "opcode=value" tokens and handle one such
@@ -795,7 +795,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     size_t start = 0;
     while(true)
     {
-      std::string token = getToken(str, start); // extract one token at at time
+      std::string token = getToken(str, start, sep); // extract one token at at time
       if(token.length() == 0)
         break;
       setupSetting(lvl, token);                 // set a setting from this token
