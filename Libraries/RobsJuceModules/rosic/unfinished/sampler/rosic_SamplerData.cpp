@@ -734,8 +734,9 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     // We need to left-shift the whole string by one character and shorten it by 1:
     RAPT::rsArrayTools::shift(&str[0], (int) str.size(), -1);
     str.resize(str.size()-1);
-    int dummy = 0;
   }
+  // Maybe generalize into a function removePrePadding that removes the leading n occurences
+  // of some arbitrary character (here ' '), have a similar function removePostPadding
 
   // -Factor out into a function preProcessSfz
   // -prepend a <group> tag if the file doesn't start with one, i.e. starts with a naked region
@@ -845,7 +846,10 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // later because we need it to determine, where the <control> section ends. 
     }
     tmp = str.substr(ic, ig-ic-8); // 8 == length of "<global>" 
-    setupControls(tmp);
+    bool ok = setupControls(tmp);
+    if(!ok) {
+      clearInstrument();
+      return rsReturnCode::malformed; }
   }
 
   // Loop over the the groups within the instrument definition:
@@ -926,6 +930,28 @@ bool SfzInstrument::setupControls(const std::string& str)
 {
 
 
+  auto setupControl = [](const std::string& ctrlToken)
+  {
+  
+  
+
+    return true;
+  };
+
+
+
+  std::string sep(" ");
+  size_t start = 0;
+  while(true)
+  {
+    std::string token = rsGetToken(str, start, sep); // extract one token at at time
+    if(token.length() == 0)
+      break;
+    bool ok = setupControl(token);
+    if(!ok)
+      return false;
+    start += token.length() + 1;
+  }
   return true;
 }
 
