@@ -854,7 +854,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     {
       RAPT::rsError("When <control> is defined, <global> must be defined thereafter");
       clearInstrument();
-      return rsReturnCode::failed; // maybe return something like rsRetrunCode::malformed
+      return rsReturnCode::malformed;
       // When the <control> section is defined, it is mandatory to also define <global> somewhere 
       // later because we need it to determine, where the <control> section ends. 
     }

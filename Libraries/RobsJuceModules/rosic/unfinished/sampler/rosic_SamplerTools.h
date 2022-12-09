@@ -12,15 +12,16 @@ namespace Sampler {
 them also for functions which use positive integers as valid return values. */
 enum rsReturnCode
 {
-  success        = -1,  //< Operation completed successfully. 
-  nothingToDo    = -2,  //< There was nothing to actually do. State was already as desired.
-  memAllocFail   = -3,  //< Memory allocation failure.
-  invalidIndex   = -4,  //< An invalid index was passed.
-  layerOverload  = -5,  //< Not enough free layers available (in e.g. new noteOn).
-  notFound       = -6,  //< A region, group, sample or whatever was not found.
-  fileLoadError  = -7,  //< A file could not be loaded (reasons: not found or failed alloc).
-  notImplemented = -8,  //< Feature not yet implemented (relevant during development).
-  failed         = -9   //< General failure report wihtout further specification
+  success        =  -1,  //< Operation completed successfully. 
+  nothingToDo    =  -2,  //< There was nothing to actually do. State was already as desired.
+  memAllocFail   =  -3,  //< Memory allocation failure.
+  invalidIndex   =  -4,  //< An invalid (i.e. out-of-range) index was passed.
+  overload       =  -5,  //< Not enough resources available to complete action.
+  notFound       =  -6,  //< A region, group, sample or whatever was not found.
+  fileLoadError  =  -7,  //< A file could not be loaded (reasons: not found or failed alloc).
+  notImplemented =  -8,  //< Feature not yet implemented (relevant during development).
+  failed         =  -9,  //< General failure report wihtout further specification
+  malformed      = -10   //< A malformed string or object was encountered.
 };
 // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
 // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which

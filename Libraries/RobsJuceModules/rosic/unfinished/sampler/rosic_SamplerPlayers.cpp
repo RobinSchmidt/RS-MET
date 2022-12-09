@@ -547,7 +547,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, bool busMode)
 
   if(!assembleProcessors(busMode)) {
     releaseResources();
-    return rsReturnCode::layerOverload; }
+    return rsReturnCode::overload; }
 
   resetPlayerSettings();
   setupDspSettingsFor(region, busMode);
