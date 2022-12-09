@@ -933,7 +933,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
 bool SfzInstrument::setupControls(const std::string& str)
 {
-
+  // Helper function to set up one control opcode at a time:
   auto setupControl = [this](const std::string& ctrlToken)
   {
     // Define constants for subsequent comparisions:
@@ -972,6 +972,7 @@ bool SfzInstrument::setupControls(const std::string& str)
     // see https://sfzformat.com/headers/control
   };
 
+  // Loop through the control opcodes:
   std::string sep(" ");
   size_t start = 0;
   while(true)
