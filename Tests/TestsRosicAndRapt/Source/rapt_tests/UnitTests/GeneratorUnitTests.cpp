@@ -4767,6 +4767,8 @@ bool samplerControlsTest()
   // ToDo:
   // -Make sure that some sort of global voice-state object is correctly set up with the controller
   //  values. This raises the question what should be the default value. Maybe zero?
+  // -Test it with controllers with 1-digit, 2-digit and 3-digit index, Use
+  //  label_cc7=Volume, label_cc127=Control127
 
   rsAssert(ok);
   return ok;

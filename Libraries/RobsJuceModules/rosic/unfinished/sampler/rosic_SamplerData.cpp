@@ -944,13 +944,27 @@ bool SfzInstrument::setupControls(const std::string& str)
     std::string lhs = ctrlToken.substr(0, splitIndex);
     std::string rhs = ctrlToken.substr(splitIndex+1, ctrlToken.length() - splitIndex - 1);
 
+
+    std::string numStr;
     if(rsStartsWith(lhs, label_cc))
     {
+      //numStr = lhs.substr(8, splitIndex-8);
+
+      int idx = parseNaturalNumber(lhs, 8, splitIndex-1); // 8 == length("label_cc")
+
+      // ...
 
       int dummy = 0;
     }
     else if(rsStartsWith(lhs, set_cc))
     {
+      //numStr = lhs.substr(6, splitIndex-6);
+
+      int idx = parseNaturalNumber(lhs, 6, splitIndex-1); // 6 == length("set_cc")
+
+
+
+      // ...
 
       int dummy = 0;
     }
