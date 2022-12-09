@@ -961,11 +961,15 @@ bool SfzInstrument::setupControls(const std::string& str)
       int val = parseNaturalNumber(rhs, 0, int(rhs.size())-1);
       setControllerValue(idx, val);
     }
-    // What if parsing the (substring of) lhs as matural number fails? We do not handle that here.
-    // Maybe we should. Maybe make also sure, that the rhs is in 0...127
-
+    // What if parsing the (substring of) lhs as natural number for the idx fails? We do not handle
+    // that here. Maybe we should. Maybe make also sure, that the rhs is in 0...127.
 
     return true;
+
+    // ToDo:
+    // Maybe implement the default_path, note_offset, octave_offset, #define controls. Define might
+    // be more complicated, so maybe leave that for later. 
+    // see https://sfzformat.com/headers/control
   };
 
   std::string sep(" ");
