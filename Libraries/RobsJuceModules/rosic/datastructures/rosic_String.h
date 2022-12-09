@@ -320,6 +320,9 @@ std::vector<std::string> tokenize(const std::string& str, const char splitChar);
 void rsFindToken(const std::string& str, const std::string& seperators, int* start, int* length);
 // maybe move as static function into a class rsStdStringHelpers
 
+
+// Extracts the subtring starting at startIndex up to (and excluding) the next separator sep 
+// charcater. If there is no sep, it will return the string from startIndex up to its end:
 std::string rsGetToken(const std::string& str, size_t startIndex, const std::string& sep);
 
 

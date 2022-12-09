@@ -747,22 +747,6 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   //  characters themselves should also be removed. The slash itself shall be removed but the 
   //  newline should remain intact. Of course, it must be called before rsReplaceCharacter.
 
-  /*
-  // Extracts the subtring starting at startIndex up to (and excluding) the next separator ' ' 
-  // charcater. If there is no ' ', it will return the string from startIndex up to its end:
-  auto getToken = [](const std::string& str, size_t startIndex, const std::string& sep)
-  {
-    int start  = (int)startIndex;
-    int length = -1;  // initial value should not matter
-    rosic::rsFindToken(str, sep, &start, &length);
-    return str.substr(start, length);
-  };
-  // ToDo: maybe use a simpler implementation that uses only one single seperator character and
-  // assumes that it occurs only once - due to our new pre-processing stage for the string, we
-  // can ensure this. Maybe move the function to the library for general use, taking the sep as
-  // parameter.
-  */
-
   // A vector of opcodes that could not be handled in the first pass. Typcially, these are the 
   // modulation rotuing settings:
   std::vector<std::pair<std::string, std::string>> unhandledOpcodes;

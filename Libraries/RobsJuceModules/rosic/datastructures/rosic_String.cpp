@@ -487,7 +487,7 @@ void rosic::rsFindToken(
 std::string rosic::rsGetToken(const std::string& str, size_t startIndex, const std::string& sep)
 {
   int start  = (int)startIndex;
-  int length = -1;  // should not matter - is assigned in rsFindToken
+  int length = -1;  // initialization should not matter - it's assigned in rsFindToken
   rsFindToken(str, sep, &start, &length);
   return str.substr(start, length);
 };
