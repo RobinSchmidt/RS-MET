@@ -944,6 +944,8 @@ bool SfzInstrument::setupControls(const std::string& str)
     std::string lhs = ctrlToken.substr(0, splitIndex);
     std::string rhs = ctrlToken.substr(splitIndex+1, ctrlToken.length() - splitIndex - 1);
 
+    // todo: ensure that rhs is a string representing a number in 0...127
+
 
     std::string numStr;
     if(rsStartsWith(lhs, label_cc))

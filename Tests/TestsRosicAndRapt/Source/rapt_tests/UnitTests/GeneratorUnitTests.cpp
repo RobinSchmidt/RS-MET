@@ -4752,7 +4752,8 @@ bool samplerControlsTest()
   // control off from the string and pass the remaining string to the current parser.
 
 
-  sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20 <global> <group>";
+  sfz = "<control> label_cc7=Volume set_cc7=64 label_cc74=Cutoff set_cc74=127 label_cc71=Resonance\
+ set_cc71=20 label_cc123=Ctrl123 set_cc123=5 <global> <group>";
 
 
   se.setFromSFZ(sfz);
@@ -4769,6 +4770,7 @@ bool samplerControlsTest()
   //  values. This raises the question what should be the default value. Maybe zero?
   // -Test it with controllers with 1-digit, 2-digit and 3-digit index, Use
   //  label_cc7=Volume, label_cc127=Control127
+  // -Test re-assignment of the same controller - the last assignment should count
 
   rsAssert(ok);
   return ok;
