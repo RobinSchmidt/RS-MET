@@ -623,17 +623,14 @@ private:
 
 //=================================================================================================
 
-/* ...maybe not useful - we'll see
+// ...maybe not useful - we'll see
 // https://sfzformat.com/headers/control 
 struct MidiController
 {
-
-  int ccNumber = 0;        // e.g.  74 
-  int initVal  = 0;        // e.g. 127         https://sfzformat.com/opcodes/set_ccN
   std::string label = "";  // e.g. "Cutoff"    https://sfzformat.com/opcodes/label_ccN
-
+  int initVal  = 0;        // e.g. 127         https://sfzformat.com/opcodes/set_ccN
+  int ccNumber = 0;        // e.g.  74 
 };
-*/
 
 //=================================================================================================
 
