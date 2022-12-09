@@ -928,7 +928,6 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
 bool SfzInstrument::setupControls(const std::string& str)
 {
-  // label_cc74=Cutoff set_cc74=50 
 
   auto setupControl = [](const std::string& ctrlToken)
   {
@@ -947,27 +946,17 @@ bool SfzInstrument::setupControls(const std::string& str)
     // todo: ensure that rhs is a string representing a number in 0...127
 
 
-    std::string numStr;
     if(rsStartsWith(lhs, label_cc))
     {
-      //numStr = lhs.substr(8, splitIndex-8);
-
-      int idx = parseNaturalNumber(lhs, 8, splitIndex-1); // 8 == length("label_cc")
-
-      // ...
-
+      int idx = parseNaturalNumber(lhs, 8, splitIndex-1);         // 8 == length("label_cc")
+      //setControllerLabel(idx, rhs);
       int dummy = 0;
     }
     else if(rsStartsWith(lhs, set_cc))
     {
-      //numStr = lhs.substr(6, splitIndex-6);
-
-      int idx = parseNaturalNumber(lhs, 6, splitIndex-1); // 6 == length("set_cc")
-
-
-
-      // ...
-
+      int idx = parseNaturalNumber(lhs, 6, splitIndex-1);         // 6 == length("set_cc")
+      int val = parseNaturalNumber(rhs, 0, int(rhs.size())-1);
+      //setControllerValue(idx, val);
       int dummy = 0;
     }
 
