@@ -299,7 +299,8 @@ public:
     // "speculative generality" antipattern here - we'll see...
     //   https://refactoring.guru/smells/speculative-generality
     // moreover, this part of the code is not the "hot" part anyway so optimizing it for size may
-    // be pointless.
+    // be pointless. Perhaps, it is better to realize the actual sample-playback in an "effect" 
+    // unit and store the path there
 
     const void* custom = nullptr;
     // Try to get rid of that - or at least, make it a typed pointer. It's supposed to hold the 
@@ -347,7 +348,8 @@ public:
     // ModulationConnection is for the objects that are used in sample processing whereas 
     // ModulationRouting/Routing is used in regions/groups/etc
 
-
+    //int locationInCode = -1;
+    // Maybe add later to facilitate access/manipulation of the sfz code via a GUI
 
   };
 

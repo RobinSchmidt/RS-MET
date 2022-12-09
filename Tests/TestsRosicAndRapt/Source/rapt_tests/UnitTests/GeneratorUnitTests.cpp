@@ -4724,6 +4724,24 @@ bool samplerModulationsTest()
   return ok;
 }
 
+bool samplerControlsTest()
+{
+  // Tests the features defined under the <control> header in the sfz file.
+  // See: 
+  //   https://sfzformat.com/headers/control
+  //   https://sfzformat.com/opcodes/label_ccN
+  //   https://sfzformat.com/opcodes/set_ccN
+
+  bool ok = true;
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
+
+
 /*
 bool samplerExamplePatchesTest()
 {
@@ -4737,6 +4755,9 @@ bool samplerExamplePatchesTest()
   return ok;
 }
 */
+
+
+
 
 
 bool samplerEngineUnitTest()
@@ -4762,6 +4783,7 @@ bool samplerEngineUnitTest()
   ok &= samplerKeyVelTrackTest();    // key- and velocity tracking
   ok &= samplerLoopTest();           // loop modes
   ok &= samplerNoteOffTest();        // note off behavior, i.e. envelope release etc.
+  ok &= samplerControlsTest();       // midi controller names, values etc.
 
   //ok &= samplerExamplePatchesTest(); // checks outputs of somewhat more complex patches
   // ...something to do - but maybe this should be done in the RS-MET-Tests repo where we can also

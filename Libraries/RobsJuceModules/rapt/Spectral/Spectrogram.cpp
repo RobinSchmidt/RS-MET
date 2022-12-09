@@ -391,6 +391,7 @@ void rsSpectrogramProcessor<T>::ifft(std::complex<T> *X, int M)
 
 
 /*
+
 Notes:
 -the identity analysis/resynthesis works, but only if the final demodulation step is executed
 -when using H = B/4, it almost works even without the demodulation step, when using the 
@@ -421,6 +422,17 @@ todo:
  ...maybe we can first obtain preliminary (rough) frequency tracks by spectrogram processing and
  the refine them by a time-varying phase vocoder approach...and then use that data to refine 
  further etc. until it converges
+-Implement time-frequency reassignment
+
+Questions/Ideas:
+-Is it meaningful to do some sort of higher-order time-frequency reassignment, maybe using higher
+ derivatives of the window and/or weighting the input by higher powers of the time variable? Maybe
+ that could correspond to figuring out higher order moments? Like, when there's a sine with some 
+ sort of (Gaussian) bell-envelope located somewhere inside the analysis window, the regular 
+ time-reassigment would find the center of the envelope and a t^2 weighted signal could be used to
+ estimate the width of the envelope...but it seems like we should subtract the center of gravity 
+ before squaring (like the way we subtract the mean before computing variance?)
+
 
 See also:
 https://en.wikipedia.org/wiki/Time%E2%80%93frequency_analysis

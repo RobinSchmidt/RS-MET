@@ -525,7 +525,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
     }
     else
     {
-      rsError("rsModalAnalyzer2::analyze: Not yet implemented");
+      rsError("rsModalAnalyzer2::analyze: Not yet fully implemented");
     }
     T t = (n + ZCF::upwardCrossingFrac(&buf1[0], N, n, zeroCrossPrecision)) / sampleRate;
       // At the given t (in seconds), the sine has zero phase. 
@@ -540,17 +540,16 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 
     p = rsWrapToInterval(p, T(-180), T(180));
     mp[m].phase = p;
-
-
-
-
     // This phase estimation is preliminary - ToDo:
-    // -Taking the first reference point near the start is not yet implemented.
+    // -Taking the first reference point near the start is not yet implemented -> implement it!
     // -Take upward *and* downward zero crossings into account, i.e. if a downward crossing is 
-    //  closer to the reference position (tme zero or time of the envelope's peak), use that and
-    //  shift the pase estimate by pi or 180°
+    //  closer to the reference position (time zero or time of the envelope's peak), use that and
+    //  shift the phase estimate by pi or 180°. Maybe ZCF should have a member function 
+    //  findNearestCrossing.
     // -If the reference position is the peak, also scan leftward and choose the crossing that is 
     //  closer to the peak.
+    // -Verify, if the phase is actually supposed to be given in degrees. I think so but am not 
+    //  100% sure. Could also be radians.
 
 
     // ToDo:
@@ -665,3 +664,45 @@ void rsModalAnalyzer2<T>::extractModeEnvelope(const T* x, T* y, int N)
     y[n] = rsAbs(x[n]);
   rsPeakFinder<T>::connectPeaks(y, N, y, false); // try "true" for "useParabola"
 }
+
+
+/*
+
+Ideas:
+
+-Try to refine the estimates by optimizing an error function (maybe via gradient descent):
+   E = sum_n (x[n] - y[n])^2 = sum_n (e[n])^2
+ where x[n] is the input signal and y[n] the output signal:
+   y[n] = sum_m A_m * (exp(-d_m*n) - exp(-a_m*n)) * sin(w_m * n + p_m)
+ Note that the amplitude and attack-parameter in this model equation are not equal to the user 
+ parameters for amplitude and attack.
+ 
+-The idea can be used on a per-mode basis (using a filtered signal and a single mode or the 
+ original signal and a single mode) and/or for the whole signal at once (using the original signal
+ and the whole sum of modes)
+
+-We need to derive expressions the partial derivatives of the error with respect to the A_m, a_m, 
+ d_m, w_m, p_m. Perhaps its easiest to derive the per-sample error - the total error is then just 
+ a sum of the per-sample error over all samples. Also, we perhaps can get rid of the sum over the 
+ modes (index m) because when computing the derivative with respect to the parameters of some mode 
+ m, the terms coming from all other modes are zero anyway. So, let's consider:
+
+   y[n] = A * (exp(-d*n) - exp(-a*n)) * sin(w * n + p)
+        = A * exp(-d*n) * sin(w * n + p)  -  A * exp(-a*n) * sin(w * n + p)
+
+ where the index _m has already beed suppressed. Now we need expressions for the partial 
+ derivatives of (e[n])^2 = (x[n] - y[n])^2 with respect to A,d,a,w,p. Actually, it's easier to 
+ consider the partial derivatives of y[n] itself and then just multiply it by the outer derivative 
+ given by 2*e[n] via the chain rule. Let's denote by y_A[n] the derivative of y with respect to A 
+ at sample n and so on, i.e. y_A[n] = d y[n] / dA. We have (verify!):
+
+   y_A[n] = (exp(-d*n) - exp(-a*n)) * sin(w * n + p)
+   y_d[n] =   A * (-d) * exp(-d*n) * sin(w * n + p)
+   y_a[n] = - A * (-a) * exp(-a*n) * sin(w * n + p)
+   y_w[n] = A * (exp(-d*n) - exp(-a*n)) * n * cos(w * n + p)
+   y_p[n] = A * (exp(-d*n) - exp(-a*n)) *     cos(w * n + p)
+
+
+
+
+*/

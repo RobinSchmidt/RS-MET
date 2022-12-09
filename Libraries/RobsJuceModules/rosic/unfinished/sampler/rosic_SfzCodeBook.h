@@ -504,8 +504,12 @@ private:
   // comment in SfzInstrument::writeSettingToString in the cpp file. For certain things, we need
   // a code for "not applicable".
   
-  // Maybe store, where the opcode appears in the to facilitate highlighting the relevant 
-  // section - but actually that would violate separation of concerns
+  //int locationInCode = -1;
+  // Maybe add later. Should store the character position where the opcode appears in the sfz code
+  // to facilitate highlighting the relevant section and access/manipulation of the sfz code via a
+  // GUI. ...but actually that would violate separation of concerns - but trying to keep this 
+  // concern separated would seem to require a lot of more code to be written overall for the same
+  // effect.
 };
 
 //=================================================================================================

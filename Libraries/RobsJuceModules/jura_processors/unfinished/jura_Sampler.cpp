@@ -1721,7 +1721,7 @@ ToDo:
   We would realize a many-to-many mapping of sliders to opcodes rather than a one-to-one mapping.
   Maybe allow the user to define sliders for the midi-controllers. A slider would have a position
   defined by x,y,w,h, a mode (horz, vert, rot), a mapping (linear, exponential, etc.), an 
-  (optional) image (png, defining stripes or being rotated by code at runtime)
+  (optional) image (png, defining stripes or being rotated by code at runtime).
  -The Opcode-Widgets need to be cleared when a new sfz or xml is loaded
  -we need a TreeView that represents the SFZs structure: the root/top-level node represents the 
   whole instrument, subnodes represnet groups and subsubsnodes represent regions. Each of these 
