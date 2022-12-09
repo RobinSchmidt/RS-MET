@@ -140,6 +140,14 @@ int suffixStart(const std::string& str)
 }
 // maybe rename, needs tests
 
+bool rsIsNaturalNumber(const std::string& str)
+{
+  for(size_t i = 0; i < str.size(); i++) {
+    if(!isDigit(str[i]))
+      return false;  }
+  return true;
+}
+
 int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
 {
   int num    = 0;

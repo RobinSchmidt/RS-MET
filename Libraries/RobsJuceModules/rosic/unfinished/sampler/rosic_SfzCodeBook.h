@@ -623,6 +623,7 @@ private:
 
 //=================================================================================================
 
+/*
 // ...maybe not useful - we'll see
 // https://sfzformat.com/headers/control 
 struct MidiController
@@ -631,6 +632,7 @@ struct MidiController
   int initVal  = 0;        // e.g. 127         https://sfzformat.com/opcodes/set_ccN
   int ccNumber = 0;        // e.g.  74 
 };
+*/
 
 //=================================================================================================
 

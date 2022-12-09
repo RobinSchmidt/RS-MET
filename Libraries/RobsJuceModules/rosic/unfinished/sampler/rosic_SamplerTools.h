@@ -309,6 +309,9 @@ int lastNonDigit(const std::string& str, int startIndex = 0);
 str.length()-1. If the whole string is a suffix, it returns 0. */
 int suffixStart(const std::string& str);
 
+/** Returns true iff the given string represents a natural number */
+bool rsIsNaturalNumber(const std::string& str);
+
 int parseNaturalNumber(const std::string& str, int startIndex, int endIndex);
 
 /** Tries to parse the given string as floating point number and returns the result. If parsing 

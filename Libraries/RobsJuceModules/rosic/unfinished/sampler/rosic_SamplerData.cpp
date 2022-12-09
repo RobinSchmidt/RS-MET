@@ -696,6 +696,11 @@ std::string SfzInstrument::getAsSFZ() const
       writeSettingsToString(getRegion(gi, ri), str); }}
   return str;
 
+  // ToDo: Write the controller labels and values into the sfz, if necessary, i.e. if not at 
+  // defaults. Do this as very first step before writeSettingsToString(&global, str); Maybe make a
+  // function writeControlsToString. this should also take care of adding the then mandatory
+  // <global> header.
+
   // ToDo: write lokey/hikey settings into the string, they are stored directly in the Region 
   // object and not also in the settings. Maybe they should be. That would simplify the 
   // serialization but that may complicate other things due to the introduced redundancy and 
@@ -943,10 +948,6 @@ bool SfzInstrument::setupControls(const std::string& str)
     std::string lhs = ctrlToken.substr(0, splitIndex);
     std::string rhs = ctrlToken.substr(splitIndex+1, ctrlToken.length() - splitIndex - 1);
 
-    // ToDo: ensure that rhs is a string representing a number in 0...127. If it isn't, return 
-    // false
-
-
     if(rsStartsWith(lhs, label_cc))
     {
       int idx = parseNaturalNumber(lhs, 8, splitIndex-1);         // 8 == length("label_cc")
@@ -954,10 +955,15 @@ bool SfzInstrument::setupControls(const std::string& str)
     }
     else if(rsStartsWith(lhs, set_cc))
     {
+      if(!rsIsNaturalNumber(rhs))    // rhs must represent a natural number
+        return false;
       int idx = parseNaturalNumber(lhs, 6, splitIndex-1);         // 6 == length("set_cc")
       int val = parseNaturalNumber(rhs, 0, int(rhs.size())-1);
       setControllerValue(idx, val);
     }
+    // What if parsing the (substring of) lhs as matural number fails? We do not handle that here.
+    // Maybe we should. Maybe make also sure, that the rhs is in 0...127
+
 
     return true;
   };
@@ -977,14 +983,16 @@ bool SfzInstrument::setupControls(const std::string& str)
   return true;
 }
 
-void SfzInstrument::setControllerLabel(int index, const std::string& newLabel)
+void SfzInstrument::setControllerLabel(int i, const std::string& newLabel)
 {
-  int dummy = 0;
+  if(i < 0 || i >= 128) { RAPT::rsError("Invalid MIDI CC index"); return; }
+  midiCC_labels[i] = newLabel;
 }
 
-void SfzInstrument::setControllerValue(int index, int newValue)
+void SfzInstrument::setControllerValue(int i, int newValue)
 {
-  int dummy = 0;
+  if(i < 0 || i >= 128) { RAPT::rsError("Invalid MIDI CC index"); return; }
+  midiCC_values[i] = newValue;
 }
 
 bool SfzInstrument::saveToSFZ(const char* path) const
