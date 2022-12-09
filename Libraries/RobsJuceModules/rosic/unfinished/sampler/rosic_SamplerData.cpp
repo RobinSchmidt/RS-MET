@@ -858,13 +858,9 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // When the <control> section is defined, it is mandatory to also define <global> somewhere 
       // later because we need it to determine, where the <control> section ends. 
     }
-    tmp = str.substr(ic, ig-ic-8);
-    //setupControls(tmp);  // ...to do...
-    int dummy = 0;
+    tmp = str.substr(ic, ig-ic-8); // 8 == length of "<global>" 
+    setupControls(tmp);
   }
-
-
-
 
   // Loop over the the groups within the instrument definition:
   bool allGroupsDone = false;
@@ -938,6 +934,13 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   //  -> try to refactor to get rid of the duplication (maybe it can be implemented recursively)
   // -Maybe use string_view for the extracted substrings to avoid copying the data:
   //  https://en.cppreference.com/w/cpp/header/string_view
+}
+
+bool SfzInstrument::setupControls(const std::string& str)
+{
+
+
+  return true;
 }
 
 bool SfzInstrument::saveToSFZ(const char* path) const

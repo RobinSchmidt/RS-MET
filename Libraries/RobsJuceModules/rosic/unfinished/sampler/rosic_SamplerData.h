@@ -633,6 +633,7 @@ public:
   rsReturnCode setFromSFZ(const std::string& sfzFileContents);
   // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
 
+  bool setupControls(const std::string& str);
 
 
 

@@ -34,7 +34,9 @@ enum rsReturnCode
 // -rename the layerOverload to a general "overload" or ressourcesUsedUp or something - to make the
 //  enum more genrally useful...maybe just overload
 // -maybe move it out of the Sampler sub-namespace - it may be more generally useful
-// -other possibly useful codes: unavailable, denied
+// -other possibly useful codes: unavailable, denied, malformed
+//  maybe invalidIndex should be a more general invalidArgument - it could be an out-of-range index
+//  or a malformed string or whatever
 // -maybe the fileLoadError should be replaced by more specific errors: fileNotFound, 
 //  fileTooLarge, fileCorrupted ...TooLarge is returned when the mem-alloc for the buffer failed,
 //  Corrupted when the sfz parser couldn't parse the content. Then we can display more specific 
