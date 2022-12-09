@@ -4734,10 +4734,47 @@ bool samplerControlsTest()
 
   bool ok = true;
 
+  using Vec = std::vector<float>;
+  using SE  = rosic::Sampler::rsSamplerEngineTest;
 
+  SE se;
+
+  std::string sfz;
+
+
+  //sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20";
+  // Crashes the engine - tires to parse "<control>" as float. I think, it is because the sfz 
+  // define no group at all
+
+  sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20 <group>";
+  // ...hmm - adding the dummy group header doesn't really help - we get the same crash
+  // -> make the parser extract the control section and set up the controls first, then strip the
+  // control off from the string and pass the remaining string to the current parser.
+
+
+  sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20 <global> <group>";
+
+
+  //se.setFromSFZ(sfz);
+
+  /*
+  ok &= se.getMidiControllerLabel(74) == "Cutoff";
+  ok &= se.getMidiControllerValue(74) == 50;
+  ok &= se.getMidiControllerLabel(71) == "Resonance";
+  ok &= se.getMidiControllerValue(71) == 20;
+  */
+
+  // ToDo:
+  // -Make sure that some sort of global voice-state object is correctly set up with the controller
+  //  values. This raises the question what should be the default value. Maybe zero?
 
   rsAssert(ok);
   return ok;
+
+  // ToDo:
+  // -Maybe allow floating point values for the controllers in the range 0.0 ... 127.0, i.e. stick
+  //  to the MIDI convention of using numbers in 0 ... 127 but allow high resolution within that
+  //  range.
 }
 
 
@@ -4765,6 +4802,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
+  ok &= samplerControlsTest(); 
   //ok &= samplerParserTest();
   //ok &= samplerExamplePatchesTest(); 
 

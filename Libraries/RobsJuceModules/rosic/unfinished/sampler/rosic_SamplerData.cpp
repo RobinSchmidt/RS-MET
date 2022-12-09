@@ -757,9 +757,10 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     rosic::rsFindToken(str, sep, &start, &length);
     return str.substr(start, length);
   };
-  // todo: maybe use a simpler implementation that uses only one single seperator character and
+  // ToDo: maybe use a simpler implementation that uses only one single seperator character and
   // assumes that it occurs only once - due to our new pre-processing stage for the string, we
-  // can ensure this
+  // can ensure this. Maybe move the function to the library for general use, taking the sep as
+  // parameter.
 
   // A vector of opcodes that could not be handled in the first pass. Typcially, these are the 
   // modulation rotuing settings:
@@ -824,19 +825,28 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
 
 
-  std::string group  = "<group>";
-  std::string region = "<region>";
-  size_t Lg = group.length();
-  size_t Lr = region.length();
+  //std::string global  = "<global>";
+
+  std::string groupStr   = "<group>";
+  std::string regionStr  = "<region>";
+
+
+  size_t Lg = groupStr.length();
+  size_t Lr = regionStr.length();
   std::string tmp;                    // for extracted substrings (maybe use string_view)
 
   // Find start and end index in the string for the first group:
-  size_t i0 = str.find(group, 0);
-  size_t i1 = str.find(group, i0+1);
+  size_t i0 = str.find(groupStr, 0);
+  size_t i1 = str.find(groupStr, i0+1);
+
+
+
 
   // Set up instrument level settings:
   tmp = str.substr(0, i0);
   setupLevel(&global, tmp);
+
+
 
   // Loop over the the groups within the instrument definition:
   bool allGroupsDone = false;
@@ -853,8 +863,8 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     g->parent = &global;
 
     // Find start and end index in the string for the first region within the current group:
-    size_t j0 = str.find(region, i0);
-    size_t j1 = str.find(region, i0+1);
+    size_t j0 = str.find(regionStr, i0);
+    size_t j1 = str.find(regionStr, i0+1);
 
     // Set up group level settings:
     tmp = str.substr(i0+Lg, j0-i0-Lg);
@@ -865,7 +875,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     while(!allRegionsDone)
     {
       // Find start and end index of next region definition:
-      j0 = groupDef.find(region, j1);
+      j0 = groupDef.find(regionStr, j1);
 
       RAPT::rsAssert(j0 != endOfFile);  
       // For debug - gets triggered when we have empty regions ...but also in other cases, i 
@@ -878,7 +888,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // Maybe as a workaround, we should just remove any initial whitespaces during pre-processing
       // -> do it and after that, re-activate the assert -> done!
 
-      j1 = groupDef.find(region, j0+1);
+      j1 = groupDef.find(regionStr, j0+1);
       if(j1 == endOfFile) {
         allRegionsDone = true;
         j1 = groupDef.length(); }
@@ -895,8 +905,8 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     }
 
     // Find start and end index of next group defintion:
-    i0 = str.find(group, i1);      // start index of the group in the string
-    i1 = str.find(group, i0+1);    // end index of the group in the string
+    i0 = str.find(groupStr, i1);      // start index of the group in the string
+    i1 = str.find(groupStr, i0+1);    // end index of the group in the string
   }
 
   return rsReturnCode::success;
