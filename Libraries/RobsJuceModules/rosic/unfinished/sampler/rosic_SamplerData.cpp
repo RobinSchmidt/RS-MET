@@ -825,11 +825,9 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
 
 
-  std::string globalStr = "<global>";
+  //std::string globalStr = "<global>";
   std::string groupStr  = "<group>";
   std::string regionStr = "<region>";
-
-
   size_t Lg = groupStr.length();
   size_t Lr = regionStr.length();
   std::string tmp;                    // for extracted substrings (maybe use string_view)
@@ -839,17 +837,16 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   size_t i1 = str.find(groupStr, i0+1);
 
 
-  // Set up instrument level aka global settings:
-  size_t i = 0;
-
+  // Set up instrument level aka global settings. The global section may begin either immediately 
+  // after "<global>" or at the very start of the string (if the global tag is absent) and ends 
+  // immediately before the first occurrence of <group>:
+  size_t i = str.find("<global>", 0);
+  if(i == endOfFile)
+    i = 0;
+  else
+    i += 8;  // Length of "<global>" - we want to start after it
   tmp = str.substr(i, i0);
   setupLevel(&global, tmp);
-
-  // ToDo: 
-  // The global section may begin either immediately after "<global>" or at the very start
-  // of the string (if the global tag is absent) and ends immediately before the first occurrence
-  // of <group>
-
 
   // Loop over the the groups within the instrument definition:
   bool allGroupsDone = false;
