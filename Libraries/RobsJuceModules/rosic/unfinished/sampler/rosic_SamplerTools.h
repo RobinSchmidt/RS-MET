@@ -319,6 +319,12 @@ float rsStringToFloat(const std::string& str);
 /** Converts the given floating point number into a string. */
 inline std::string rsFloatToString(float v) { return std::to_string(v); }
 
+/** Returns true, iff the given string str starts with the given possible initial section. For 
+example, rsStartsWith("abcd", "ab") returns true because "ab" is indeed an initial section of 
+"abcd". */
+bool rsStartsWith(const std::string& str, const std::string& possibleInitialSection);
+// needs unit tests
+
 
 //=================================================================================================
 // Container tools:

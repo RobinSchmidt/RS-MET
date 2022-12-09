@@ -187,6 +187,18 @@ float rsStringToFloat(const std::string& str)
   }
 }
 
+bool rsStartsWith(const std::string& str, const std::string& prefix)
+{
+  if(prefix.size() > str.size())                // Ensure prefix.size() <= str.size()
+    return false;
+  for(size_t i = 0; i < prefix.size(); i++) {
+    if(str[i] != prefix[i])
+      return false; }
+  return true;
+}
+
+
+
 
 }
 }

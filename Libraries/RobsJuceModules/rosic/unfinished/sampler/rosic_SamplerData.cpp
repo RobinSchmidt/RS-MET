@@ -713,7 +713,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   clearInstrument();
   if(strIn.empty())
     return rsReturnCode::failed;
-  size_t endOfFile = std::numeric_limits<size_t>::max();
+  size_t endOfFile = std::numeric_limits<size_t>::max(); // maybe rename to notFound
 
   // Pre-process the string to make parsing easier:
   std::string str = strIn;
@@ -928,17 +928,35 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
 bool SfzInstrument::setupControls(const std::string& str)
 {
-
+  // label_cc74=Cutoff set_cc74=50 
 
   auto setupControl = [](const std::string& ctrlToken)
   {
-  
-  
+    // Define constants for subsequent comparisions:
+    const size_t notFound = std::numeric_limits<size_t>::max();
+    const std::string label_cc = "label_cc";
+    const std::string set_cc   = "set_cc";
+
+    // Split the token into left and right hand side (i.e. key and value):
+    size_t splitIndex = ctrlToken.find('=', 0);
+    if(splitIndex == notFound)
+      return false;
+    std::string lhs = ctrlToken.substr(0, splitIndex);
+    std::string rhs = ctrlToken.substr(splitIndex+1, ctrlToken.length() - splitIndex - 1);
+
+    if(rsStartsWith(lhs, label_cc))
+    {
+
+      int dummy = 0;
+    }
+    else if(rsStartsWith(lhs, set_cc))
+    {
+
+      int dummy = 0;
+    }
 
     return true;
   };
-
-
 
   std::string sep(" ");
   size_t start = 0;
