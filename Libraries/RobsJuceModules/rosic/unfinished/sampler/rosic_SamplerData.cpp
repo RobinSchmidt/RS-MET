@@ -747,6 +747,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   //  characters themselves should also be removed. The slash itself shall be removed but the 
   //  newline should remain intact. Of course, it must be called before rsReplaceCharacter.
 
+  /*
   // Extracts the subtring starting at startIndex up to (and excluding) the next separator ' ' 
   // charcater. If there is no ' ', it will return the string from startIndex up to its end:
   auto getToken = [](const std::string& str, size_t startIndex, const std::string& sep)
@@ -760,6 +761,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   // assumes that it occurs only once - due to our new pre-processing stage for the string, we
   // can ensure this. Maybe move the function to the library for general use, taking the sep as
   // parameter.
+  */
 
   // A vector of opcodes that could not be handled in the first pass. Typcially, these are the 
   // modulation rotuing settings:
@@ -795,7 +797,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     size_t start = 0;
     while(true)
     {
-      std::string token = getToken(str, start, sep); // extract one token at at time
+      std::string token = rsGetToken(str, start, sep); // extract one token at at time
       if(token.length() == 0)
         break;
       setupSetting(lvl, token);                 // set a setting from this token

@@ -320,6 +320,9 @@ std::vector<std::string> tokenize(const std::string& str, const char splitChar);
 void rsFindToken(const std::string& str, const std::string& seperators, int* start, int* length);
 // maybe move as static function into a class rsStdStringHelpers
 
+std::string rsGetToken(const std::string& str, size_t startIndex, const std::string& sep);
+
+
 /** Replaces all occurences of oldText with newText within the subject. */
 void rsReplace(std::string& subject, const std::string& oldText, const std::string& newText);
 // needs unit tests

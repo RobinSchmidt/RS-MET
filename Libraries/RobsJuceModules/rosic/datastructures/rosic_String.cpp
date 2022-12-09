@@ -484,6 +484,14 @@ void rosic::rsFindToken(
     *length = 0; }
 }
 
+std::string rosic::rsGetToken(const std::string& str, size_t startIndex, const std::string& sep)
+{
+  int start  = (int)startIndex;
+  int length = -1;  // should not matter - is assigned in rsFindToken
+  rsFindToken(str, sep, &start, &length);
+  return str.substr(start, length);
+};
+
 void rosic::rsReplace(std::string& subject, const std::string& search, const std::string& replace) 
 {
   size_t pos = 0;
