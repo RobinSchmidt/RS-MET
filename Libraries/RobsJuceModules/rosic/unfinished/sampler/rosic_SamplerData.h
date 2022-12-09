@@ -636,6 +636,12 @@ public:
 
   bool setupControls(const std::string& str);
 
+  void setControllerLabel(int index, const std::string& newLabel);
+
+  void setControllerValue(int index, int newValue);
+
+
+
 
 
   /** Writes the data represented by this object into an .sfz file with given path. Warning: This

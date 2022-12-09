@@ -929,7 +929,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 bool SfzInstrument::setupControls(const std::string& str)
 {
 
-  auto setupControl = [](const std::string& ctrlToken)
+  auto setupControl = [this](const std::string& ctrlToken)
   {
     // Define constants for subsequent comparisions:
     const size_t notFound = std::numeric_limits<size_t>::max();
@@ -943,21 +943,20 @@ bool SfzInstrument::setupControls(const std::string& str)
     std::string lhs = ctrlToken.substr(0, splitIndex);
     std::string rhs = ctrlToken.substr(splitIndex+1, ctrlToken.length() - splitIndex - 1);
 
-    // todo: ensure that rhs is a string representing a number in 0...127
+    // ToDo: ensure that rhs is a string representing a number in 0...127. If it isn't, return 
+    // false
 
 
     if(rsStartsWith(lhs, label_cc))
     {
       int idx = parseNaturalNumber(lhs, 8, splitIndex-1);         // 8 == length("label_cc")
-      //setControllerLabel(idx, rhs);
-      int dummy = 0;
+      setControllerLabel(idx, rhs);
     }
     else if(rsStartsWith(lhs, set_cc))
     {
       int idx = parseNaturalNumber(lhs, 6, splitIndex-1);         // 6 == length("set_cc")
       int val = parseNaturalNumber(rhs, 0, int(rhs.size())-1);
-      //setControllerValue(idx, val);
-      int dummy = 0;
+      setControllerValue(idx, val);
     }
 
     return true;
@@ -976,6 +975,16 @@ bool SfzInstrument::setupControls(const std::string& str)
     start += token.length() + 1;
   }
   return true;
+}
+
+void SfzInstrument::setControllerLabel(int index, const std::string& newLabel)
+{
+  int dummy = 0;
+}
+
+void SfzInstrument::setControllerValue(int index, int newValue)
+{
+  int dummy = 0;
 }
 
 bool SfzInstrument::saveToSFZ(const char* path) const
