@@ -4767,6 +4767,10 @@ bool samplerControlsTest()
   ok &= sfz.getMidiControllerLabel(123) == "Ctrl123";
   ok &= sfz.getMidiControllerValue(123) == 5;
 
+  std::string sfzString2;
+
+
+
   // ToDo:
   // -Make sure that some sort of global voice-state object is correctly set up with the controller
   //  values. This raises the question what should be the default value. Maybe zero?

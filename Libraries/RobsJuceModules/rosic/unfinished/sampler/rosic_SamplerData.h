@@ -620,7 +620,10 @@ public:
 //const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 
 //{ return instrument.getGroupSettings(i); }
 
-  bool operator==(const SfzInstrument& rhs) const { return global == rhs.global; }
+  /** Compares this sfz data structure with another one for equality */
+  bool operator==(const SfzInstrument& rhs) const; // { return global == rhs.global; }
+  // ToDo: compare also the midiCC_labels/values arrays. Maybe move this function to .cpp file
+  // before
 
 
   RAPT::rsUint8 getMidiControllerValue(int i) const 

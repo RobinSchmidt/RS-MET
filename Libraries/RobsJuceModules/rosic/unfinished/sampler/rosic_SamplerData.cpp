@@ -664,6 +664,13 @@ void SfzInstrument::clearAllSettings()
 }
 // needs test
 
+
+
+bool SfzInstrument::operator==(const SfzInstrument& rhs) const 
+{ 
+  return global == rhs.global; 
+}
+
 std::string SfzInstrument::getAsSFZ() const
 {
   auto writeSettingsToString = [](const HierarchyLevel* lvl, std::string& str)
@@ -688,6 +695,10 @@ std::string SfzInstrument::getAsSFZ() const
 
   auto writeControlsToString = [this](std::string& str)
   {
+    // Somehow, adding the set_ccN gets falsely triggered in one of the filter unit-tests
+    // -> figure out and fix! when fixed, the commented code below can be uncommented again
+
+    /*
     std::string tmp;
     for(int i = 0; i < 128; i++) {
       if(midiCC_labels[i] != "")
@@ -696,6 +707,7 @@ std::string SfzInstrument::getAsSFZ() const
         tmp += "set_cc" + std::to_string(i) + "=" + std::to_string(midiCC_values[i]) + "\n"; }
     if(!tmp.empty())
       str = "<control>\n" + tmp + "\n\n<global>\n" + str;
+      */
   };
 
   std::string str;
@@ -708,11 +720,6 @@ std::string SfzInstrument::getAsSFZ() const
       str += "<region>\n";
       writeSettingsToString(getRegion(gi, ri), str); }}
   return str;
-
-  // ToDo: Write the controller labels and values into the sfz, if necessary, i.e. if not at 
-  // defaults. Do this as very first step before writeSettingsToString(&global, str); Maybe make a
-  // function writeControlsToString. this should also take care of adding the then mandatory
-  // <global> header.
 
   // ToDo: write lokey/hikey settings into the string, they are stored directly in the Region 
   // object and not also in the settings. Maybe they should be. That would simplify the 
