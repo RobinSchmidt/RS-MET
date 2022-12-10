@@ -896,7 +896,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   while(!allGroupsDone)
   {
     /*
-    if(i_ge == notFound) {     // Maybe superfluous? try removing
+    if(i_ge == notFound) {     // Maybe superfluous? try removing...yea - unit tests still pass
       allGroupsDone = true;
       i_ge = str.length(); }
       */
@@ -909,19 +909,13 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
     // Find start and end index in the string for the first region within the current group:
     size_t i_rs = str.find(regionStr, i_gs); // start index of the region in str
-    //if(i_rs == notFound)
-    //  i_rs = str.length();  // test, new
     //size_t i_rs = groupDef.find(regionStr, 0); // start index of the region in groupDef
-
 
     // Set up group level settings:
     if(i_rs != notFound)
       tmp = str.substr(i_gs+Lg, i_rs-i_gs-Lg);
     else
-    {
       tmp = str.substr(i_gs+Lg, i_ge-i_gs-Lg);
-      int dummy = 0;
-    }
     setupLevel(g, tmp);
 
     // Loop over the the regions within the group definition:
@@ -975,15 +969,11 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
     // Find start and end index of next group defintion:
     i_gs = str.find(groupStr, i_ge);
-    if(i_gs == notFound)
-    {
+    if(i_gs == notFound) {
       allGroupsDone = true;
-      i_ge = str.length();
-    }
-    else
-    {
-      i_ge = str.find(groupStr, i_gs+1);
-    }
+      i_ge = str.length(); }
+    else {
+      i_ge = str.find(groupStr, i_gs+1); }
   }
 
   return rsReturnCode::success;
