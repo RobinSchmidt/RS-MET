@@ -4768,7 +4768,9 @@ bool samplerControlsTest()
   ok &= sfz.getMidiControllerValue(123) == 5;
 
   std::string sfzString2;
-
+  sfzString2 = se.getAsSfz();
+  // Interesting: sfzString2 has 2 regions even though in the original sfzString there's only one
+  // ...might be a hint about what's going wrong in the parser.
 
 
   // ToDo:
