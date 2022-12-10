@@ -1560,10 +1560,10 @@ void SamplerEditor::makePlayWidgetsVisible(bool visible)
   // The sliders for the MIDI controllers:
   if(visible)
   {
-    int x = 4;
-    int y = sfzFileLoader->getBottom() + 8;
-    int w = 180;  // slider width
-    int h = 16;   // slider height
+    int x = 16;
+    int y = sfzFileLoader->getBottom() + 16;
+    int w = 240;  // slider width
+    int h = 20;   // slider height
     for(int i = 0; i < 128; i++)
     {
       juce::String ctrlLabel = samplerModule->getMidiControllerLabel(i);
@@ -1572,7 +1572,7 @@ void SamplerEditor::makePlayWidgetsVisible(bool visible)
       if(ctrlLabel != "")
       {
         ctrlSliders[i]->setBounds(x, y, w, h);
-        y += h;
+        y += h-2;
         ctrlSliders[i]->setSliderName(ctrlLabel + " - CC #" + juce::String(i));
         ctrlSliders[i]->setValue(value);
         ctrlSliders[i]->setVisible(true);
