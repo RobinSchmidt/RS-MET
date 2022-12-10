@@ -128,8 +128,8 @@ private:
 
 
   // under construction - not yet used:
-  char  controllers[128];  // most recently received values of all controllers
-  short pitchWheel;        // most recently received value of pitch wheel
+  RAPT::rsUint8 midi_cc[128];  // most recently received values of all midi controllers
+  short pitchWheel;            // most recently received value of pitch wheel
 
   // todo: aftertouch, etc.
   bool  dirty = false;

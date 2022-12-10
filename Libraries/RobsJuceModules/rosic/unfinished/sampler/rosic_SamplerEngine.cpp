@@ -236,7 +236,11 @@ int rsSamplerEngine::setupFromSFZ(const SfzInstrument& newSfz)
   int rc2 = setupAudioStreams();      // Connect regions in new sfz with appropriate stream objects
   setupRegionsForKey();               // Updates regionsForKey array
   preAllocateDspMemory();             // Allocates memory for the DSP objects, etc.
+
   initConrolsFromSfz();               // Inits midi controllers etc. the playStatus
+  // Maybe this should tke the newSfz as parameter and be called before calling the 
+  // add/removeSamples functions because (later) one of the controls will be the sample path
+
   if(rc1 >= 0 && rc2 == rsReturnCode::success)
     return rsReturnCode::success;
   else
@@ -782,8 +786,11 @@ void rsSamplerEngine::preAllocateDspMemory()
 
 void rsSamplerEngine::initConrolsFromSfz()
 {
+  for(int i = 0; i < 128; i++)
+    playStatus.midi_cc[i] = sfz.getMidiControllerValue(i);
 
-  int dummy = 0;
+  // ToDo:
+  // -Later also take into account other kinds of controls
 }
 
 
