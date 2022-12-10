@@ -914,7 +914,9 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // Find start and end index of next region definition:
       j0 = groupDef.find(regionStr, j1);
 
-      RAPT::rsAssert(j0 != notFound);        // This requires !!! ATTENTION !!!
+
+      // This requires !!! ATTENTION !!!
+      //RAPT::rsAssert(j0 != notFound);        
       // For debug - gets triggered when we have empty regions ...but also in other cases, i 
       // think
       // I think, it also happens, when there's an empty line before the first <group> and/or a 
@@ -928,6 +930,12 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // no more regions and we are done - right? The groupDef.find(regionStr, j0+1) migh be very 
       // problematic when j0 == endOfFile because the +1 would overflow to zero. Something is fishy
       // here!
+      if(j0 == notFound)
+        break;  // ...OK - this *may* fix it, but this requires some verification/tests
+        // It may actually render the while(!allRegionsDone) condition redundant and we may get
+        // away with a while(true) loop. But this also requires thorough checking.
+
+
 
       j1 = groupDef.find(regionStr, j0+1);
       if(j1 == notFound) {

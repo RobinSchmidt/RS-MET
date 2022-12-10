@@ -1643,6 +1643,29 @@ sample=Cos440Hz.wav";
   // having to reload all samples after fixing the typo. But clearInstrument actually *does* wipe 
   // out the sample pool.
 
+
+
+  se.clearInstrument();
+  sfzStr = "<group>";
+  se.setFromSFZ(sfzStr); 
+  ok &= se.getNumGroups()   == 1;
+  ok &= se.getNumRegions(0) == 0;
+
+  se.clearInstrument();
+  sfzStr = "<group> <region>";
+  se.setFromSFZ(sfzStr); 
+  ok &= se.getNumGroups()   == 1;
+  ok &= se.getNumRegions(0) == 1;
+ 
+  se.clearInstrument();
+  sfzStr = "<group> <region> <region>";
+  se.setFromSFZ(sfzStr); 
+  ok &= se.getNumGroups()   == 1;
+  ok &= se.getNumRegions(0) == 2;
+
+
+
+
   rsAssert(ok);
   return ok;
 }
