@@ -181,6 +181,12 @@ public:
   value of a given opcode via a slider in the GUI. */
   int getNumOpcodeParameters() const { return numOpcodeParams; }
 
+  /** Returns the label that assigned to the given MIDI controller in the underlying sfz 
+  instrument, i.e. the label assigned in the sfz file in the <control> section via the label_ccN
+  commands. */
+  juce::String getMidiControllerLabel(int indexOMidiCC) const
+  { return juce::String(sfzPlayer.getInstrumentData().getMidiControllerLabel(indexOMidiCC)); }
+
 
   void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
@@ -821,6 +827,9 @@ protected:
 
 
   SfzOpcodeEditor* opcodeEditor;
+
+  // Sliders for the MIDI controllers:
+  jura::RSlider* ctrlSliders[128];
 
   // The mediator object that coordinates the interactions between the different parts of the GUI:
   SamplerInterfaceMediator guiMediator;

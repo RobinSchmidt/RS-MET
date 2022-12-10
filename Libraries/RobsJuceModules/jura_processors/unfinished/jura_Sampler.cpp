@@ -1446,6 +1446,12 @@ void SamplerEditor::createWidgets()
   addChildEditor(opcodeEditor = new jura::SfzOpcodeEditor);
   opcodeEditor->setDescription("Editor for the currently selected opcode in the tree");
 
+  // The sliders for the MIDI controllers:
+  for(int i = 0; i < 128; i++){
+    jura::RSlider* sld = new jura::RSlider("MIDI CC " + juce::String(i));
+    sld->setRange(0.0, 127.0, 1.0, 0.0);
+    addWidget(sld);
+    ctrlSliders[i] = sld; }
 
 
   // The order in which we call add...() for the widgets determines, which widgets are in the 
@@ -1548,6 +1554,41 @@ void SamplerEditor::updateVisibilities()
 void SamplerEditor::makePlayWidgetsVisible(bool visible)
 {
   layersMeter->setVisible(visible);
+
+
+  // The sliders for the MIDI controllers:
+  if(visible)
+  {
+
+    int x = 4;
+    int y = sfzFileLoader->getBottom() + 8;
+    int w = 100;  // slider width
+    int h = 16;   // slider height
+    for(int i = 0; i < 128; i++)
+    {
+      juce::String ctrlLabel = samplerModule->getMidiControllerLabel(i);
+      if(ctrlLabel != "")
+      {
+        ctrlSliders[i]->setBounds(x, y, w, h);
+        y += h;
+        ctrlSliders[i]->setName(ctrlLabel + " (CC #" + juce::String(i) + ")");
+        ctrlSliders[i]->setVisible(true);
+      }
+      else
+        ctrlSliders[i]->setVisible(false);
+    }
+  }
+  else
+  {
+    for(int i = 0; i < 128; i++)
+      ctrlSliders[i]->setVisible(false);
+  }
+
+
+  
+  // ToDo:
+  // -Maybe make only those MIDI control sliders visible that have a name/label assigned. This will 
+  //  require to call setBounds on these sliders, too
 }
 
 void SamplerEditor::makeEditWidgetsVisible(bool visible)
