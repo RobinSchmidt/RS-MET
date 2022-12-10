@@ -853,6 +853,8 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   // Find start and end index in the string for the first group:
   size_t i_gs = str.find(groupStr, 0);      // start index of the group in the string
   size_t i_ge = str.find(groupStr, i_gs+1); // end index of the group in the string
+  if(i_ge == notFound)
+    i_ge = str.length();
 
   // Set up instrument level aka global settings. The global section may begin either immediately 
   // after "<global>" or at the very start of the string (if the global tag is absent) and ends 
@@ -889,7 +891,8 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   bool allGroupsDone = false;
   while(!allGroupsDone)
   {
-    if(i_ge == notFound) {
+
+    if(i_ge == notFound) {   // maybe superfluous?
       allGroupsDone = true;
       i_ge = str.length(); }
 
@@ -902,8 +905,23 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     // Find start and end index in the string for the first region within the current group:
     size_t i_rs = str.find(regionStr, i_gs); // start index of the region in str
 
+    //if(i_rs == notFound)
+    //  i_rs = str.length();  // test, new
+
+
+
     // Set up group level settings:
-    tmp = str.substr(i_gs+Lg, i_rs-i_gs-Lg);
+    if(i_rs != notFound)
+      tmp = str.substr(i_gs+Lg, i_rs-i_gs-Lg);
+    else
+    {
+      //size_t L = str.length();
+      tmp = str.substr(i_gs+Lg, i_ge-i_gs-Lg);
+
+      int dummy = 0;
+      //RAPT::rsError("under construction");  // new
+    }
+
     setupLevel(g, tmp);
 
     // Loop over the the regions within the group definition:
@@ -956,7 +974,15 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
     // Find start and end index of next group defintion:
     i_gs = str.find(groupStr, i_ge);
-    i_ge = str.find(groupStr, i_gs+1);
+    if(i_gs == notFound)
+    {
+      allGroupsDone = true;
+      i_ge = str.length();
+    }
+    else
+    {
+      i_ge = str.find(groupStr, i_gs+1);
+    }
   }
 
   return rsReturnCode::success;
