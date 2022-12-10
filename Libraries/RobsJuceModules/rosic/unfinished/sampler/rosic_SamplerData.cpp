@@ -850,6 +850,9 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   size_t Lr = regionStr.length();
   std::string tmp;                    // for extracted substrings (maybe use string_view)
 
+
+  // From here, the implementation gets quite messy - try to clean this up!
+
   // Find start and end index in the string for the first group:
   size_t i_gs = str.find(groupStr, 0);      // start index of the group in the string
   size_t i_ge = str.find(groupStr, i_gs+1); // end index of the group in the string
