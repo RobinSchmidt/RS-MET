@@ -236,11 +236,7 @@ int rsSamplerEngine::setupFromSFZ(const SfzInstrument& newSfz)
   int rc2 = setupAudioStreams();      // Connect regions in new sfz with appropriate stream objects
   setupRegionsForKey();               // Updates regionsForKey array
   preAllocateDspMemory();             // Allocates memory for the DSP objects, etc.
-
-  initConrolsFromSfz();               // Inits midi controllers etc. the playStatus
-  // Maybe this should tke the newSfz as parameter and be called before calling the 
-  // add/removeSamples functions because (later) one of the controls will be the sample path
-
+  initConrolsFromSfz();               // Inits midi controllers in playStatus etc.
   if(rc1 >= 0 && rc2 == rsReturnCode::success)
     return rsReturnCode::success;
   else
@@ -369,6 +365,10 @@ std::string rsSamplerEngine::getAbsolutePath(const char* path, bool pathIsAbsolu
   else
     absPath = sfzDir + std::string(path); // or do we need to insert a separator "/" or "\"?
   return absPath;
+
+  // ToDo:
+  // -Get rid of this function. We should not have an sfzDir as member. Instead, we should use
+  //  a (to be added) samplePath member in the sfz data structure
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -532,6 +532,10 @@ bool rsSamplerEngine::isSampleUsedIn(
       if(regionPath == streamPath)
         return true; }}
   return false;
+
+  // ToDo:
+  // -Maybe use regionPath = sfz->getSampleDirectory + r->getSamplePath();
+
 }
 
 rsReturnCode rsSamplerEngine::stopRegionPlayer(int i)

@@ -373,6 +373,8 @@ public:
   converts the given char-array to a std::string as is and pathIsAbsolute is false, it assumes that
   the given path is relative and prepends the sfzDir in the returned string */
   std::string getAbsolutePath(const char* path, bool pathIsAbsolute = false) const;
+  // Try to get rid of this function. the sample-directory should be defined in  a member of the 
+  // SfzInstrument
 
   /** Returns the sample rate at which this engine runs, i.e. produces its output. */
   float getOutputSampleRate() const { return playStatus.sampleRate; }
@@ -574,7 +576,11 @@ protected:
   much to allocate and where because it has a different architecture of the DSP chain. */
   virtual void preAllocateDspMemory();
 
-  void initConrolsFromSfz(); 
+  /** Initializes some engine state (such as the playStatus) from the corresponding data stored in
+  the given sfz instrument. See:
+  https://sfzformat.com/headers/control
+  https://sfzformat.com/opcodes/set_ccN */
+  void initConrolsFromSfz();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -656,7 +662,8 @@ protected:
   // for the unit tests):
   std::string sfzDir;         /**< Root directory for .sfz files */
   //std::string wavDir;         /**< Root directory for .wav files */
-
+  // Try to get rid of these members. The sample-directory should be defined in  a member of the 
+  // SfzInstrument.
 
 
   // Some member variables for features whose implementation is actually deferred to the subclass
