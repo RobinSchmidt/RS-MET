@@ -892,10 +892,11 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   bool allGroupsDone = i_gs == notFound;  // new
   while(!allGroupsDone)
   {
-
+    /*
     if(i_ge == notFound) {     // Maybe superfluous? try removing
       allGroupsDone = true;
       i_ge = str.length(); }
+      */
 
     // Extract substring with group definition and add a new group to the instrument:
     std::string groupDef = str.substr(i_gs, i_ge-i_gs); // group definition (ToDo: use string_view)
