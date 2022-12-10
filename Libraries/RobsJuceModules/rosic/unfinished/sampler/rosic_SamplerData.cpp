@@ -888,11 +888,12 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   }
 
   // Loop over the the groups within the instrument definition:
-  bool allGroupsDone = false;
+  //bool allGroupsDone = false;         // old
+  bool allGroupsDone = i_gs == notFound;  // new
   while(!allGroupsDone)
   {
 
-    if(i_ge == notFound) {   // maybe superfluous?
+    if(i_ge == notFound) {     // Maybe superfluous? try removing
       allGroupsDone = true;
       i_ge = str.length(); }
 
