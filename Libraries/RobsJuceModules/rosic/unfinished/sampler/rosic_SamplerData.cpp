@@ -664,15 +664,18 @@ void SfzInstrument::clearAllSettings()
 }
 // needs test
 
+void SfzInstrument::clearControls()
+{
+  for(int i = 0; i < 128; i++) {
+    midiCC_values[i] = 0;
+    midiCC_labels[i].clear(); }
+}
+
 void SfzInstrument::clearInstrument()
 {
   global.clearGroups();
   global.clearSettings();
-  for(int i = 0; i < 128; i++)  // maybe factor out into clearControls()
-  {
-    midiCC_values[i] = 0;
-    midiCC_labels[i].clear();
-  }
+  clearControls();
   //signalProcessors.clear();
 }
 

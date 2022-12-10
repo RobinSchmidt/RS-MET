@@ -568,7 +568,7 @@ public:
   void clearAllGroupSettings();
   void clearAllInstrumentSettings();
   void clearAllSettings();
-
+  void clearControls();
 
   /** Clears the whole instrument definition. */
   void clearInstrument();
