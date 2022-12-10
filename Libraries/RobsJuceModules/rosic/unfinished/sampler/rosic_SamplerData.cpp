@@ -905,10 +905,9 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
     // Find start and end index in the string for the first region within the current group:
     size_t i_rs = str.find(regionStr, i_gs); // start index of the region in str
-
     //if(i_rs == notFound)
     //  i_rs = str.length();  // test, new
-
+    //size_t i_rs = groupDef.find(regionStr, 0); // start index of the region in groupDef
 
 
     // Set up group level settings:
@@ -916,17 +915,14 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       tmp = str.substr(i_gs+Lg, i_rs-i_gs-Lg);
     else
     {
-      //size_t L = str.length();
       tmp = str.substr(i_gs+Lg, i_ge-i_gs-Lg);
-
       int dummy = 0;
-      //RAPT::rsError("under construction");  // new
     }
-
     setupLevel(g, tmp);
 
     // Loop over the the regions within the group definition:
     size_t i_re = str.find(regionStr, i_gs+1); // end index of the region in str
+    // shouldn't the search start at i_rs+1 ?
 
     bool allRegionsDone = false;
     while(!allRegionsDone)

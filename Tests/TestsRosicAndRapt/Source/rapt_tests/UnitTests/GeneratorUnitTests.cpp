@@ -1672,8 +1672,6 @@ sample=Cos440Hz.wav";
   ok &= se.getNumGroups()   == 2;
   ok &= se.getNumRegions(0) == 0;
   ok &= se.getNumRegions(1) == 0;
-  // Asserts!
-  // ..fixed?
 
   /*
   sfzStr = "<group> <group> <region> <region> <group> <region> <region> <region>"; setup(sfzStr); 
@@ -1681,7 +1679,7 @@ sample=Cos440Hz.wav";
   ok &= se.getNumRegions(0) == 0;
   ok &= se.getNumRegions(1) == 2;
   ok &= se.getNumRegions(2) == 3;
-  // Asserts! Maybe it's the initial empyt group?
+  // Asserts! Maybe it's the initial empty group?
   */
 
 
