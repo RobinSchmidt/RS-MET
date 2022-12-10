@@ -1450,6 +1450,7 @@ void SamplerEditor::createWidgets()
   for(int i = 0; i < 128; i++){
     jura::RSlider* sld = new jura::RSlider("MIDI CC " + juce::String(i));
     sld->setRange(0.0, 127.0, 1.0, 0.0);
+    sld->setStringConversionFunction(&valueToString0);
     addWidget(sld);
     ctrlSliders[i] = sld; }
 
@@ -1559,19 +1560,21 @@ void SamplerEditor::makePlayWidgetsVisible(bool visible)
   // The sliders for the MIDI controllers:
   if(visible)
   {
-
     int x = 4;
     int y = sfzFileLoader->getBottom() + 8;
-    int w = 100;  // slider width
+    int w = 180;  // slider width
     int h = 16;   // slider height
     for(int i = 0; i < 128; i++)
     {
       juce::String ctrlLabel = samplerModule->getMidiControllerLabel(i);
+      int value = samplerModule->getMidiControllerValue(i);
+
       if(ctrlLabel != "")
       {
         ctrlSliders[i]->setBounds(x, y, w, h);
         y += h;
-        ctrlSliders[i]->setName(ctrlLabel + " (CC #" + juce::String(i) + ")");
+        ctrlSliders[i]->setSliderName(ctrlLabel + " - CC #" + juce::String(i));
+        ctrlSliders[i]->setValue(value);
         ctrlSliders[i]->setVisible(true);
       }
       else
@@ -1589,6 +1592,8 @@ void SamplerEditor::makePlayWidgetsVisible(bool visible)
   // ToDo:
   // -Maybe make only those MIDI control sliders visible that have a name/label assigned. This will 
   //  require to call setBounds on these sliders, too
+  // -Maybe setting the value should not depend on what's written in the sfz but what the last
+  //  received MIDI CC value was?
 }
 
 void SamplerEditor::makeEditWidgetsVisible(bool visible)
