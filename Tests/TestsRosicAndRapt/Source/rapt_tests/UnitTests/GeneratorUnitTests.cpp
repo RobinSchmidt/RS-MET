@@ -4828,7 +4828,11 @@ bool samplerControlsTest()
 
   // ToDo:
   // -Make sure that some sort of global voice-state object is correctly set up with the controller
-  //  values. This raises the question what should be the default value. Maybe zero?
+  //  values. This raises the question what should be the default value. Maybe zero? Yes.
+  //  SE has a member
+  //    PlayStatus playStatus;
+  //  this is where the midi controllers should go. We need to call updateMidiControllers or
+  //  initMidiControllersFromSfz or soemthing like that inside setFromSFZ
   // -Fix the assertion that we hit. The test passes so maybe it's a false alert?
   // -Test re-assignment of the same controller - the last assignment should count
   // -Verify that the controllers get written into an sfz string when we use getAsSFZ

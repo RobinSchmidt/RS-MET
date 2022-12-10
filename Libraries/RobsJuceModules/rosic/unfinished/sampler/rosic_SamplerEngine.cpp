@@ -230,12 +230,13 @@ int rsSamplerEngine::setInstrumentSetting(Opcode type, float value, int index)
 */
 int rsSamplerEngine::setupFromSFZ(const SfzInstrument& newSfz)
 {
-  removeSamplesNotUsedIn(newSfz);     // remove samples that are not needed anymore from memory
-  int rc1 = addSamplesUsedIn(newSfz); // load samples that are needed but not yet loaded
-  sfz = newSfz;                       // replace old sfz instrument definition member with new
-  int rc2 = setupAudioStreams();      // connect regions in new sfz with appropriate stream objects
-  setupRegionsForKey();               // updates regionsForKey array
-  preAllocateDspMemory();             // allocates memory for the DSP objects, etc.
+  removeSamplesNotUsedIn(newSfz);     // Remove samples that are not needed anymore from memory
+  int rc1 = addSamplesUsedIn(newSfz); // Load samples that are needed but not yet loaded
+  sfz = newSfz;                       // Replace old sfz instrument definition member with new
+  int rc2 = setupAudioStreams();      // Connect regions in new sfz with appropriate stream objects
+  setupRegionsForKey();               // Updates regionsForKey array
+  preAllocateDspMemory();             // Allocates memory for the DSP objects, etc.
+  initConrolsFromSfz();               // Inits midi controllers etc. the playStatus
   if(rc1 >= 0 && rc2 == rsReturnCode::success)
     return rsReturnCode::success;
   else
@@ -778,6 +779,13 @@ void rsSamplerEngine::preAllocateDspMemory()
   // -Maybe just let the used decide this in the xml file - with sane defaults.
   // -We also need to make sure that the arrays in PlayStatus are large enough
 }
+
+void rsSamplerEngine::initConrolsFromSfz()
+{
+
+  int dummy = 0;
+}
+
 
 //=================================================================================================
 

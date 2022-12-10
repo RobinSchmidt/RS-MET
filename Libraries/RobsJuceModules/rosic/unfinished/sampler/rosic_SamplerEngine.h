@@ -574,6 +574,8 @@ protected:
   much to allocate and where because it has a different architecture of the DSP chain. */
   virtual void preAllocateDspMemory();
 
+  void initConrolsFromSfz(); 
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Data
