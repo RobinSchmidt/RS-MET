@@ -1645,6 +1645,12 @@ sample=Cos440Hz.wav";
 
 
 
+  // Check, if correct numbers of groups and regions are produced:
+  se.clearInstrument();
+  sfzStr = "";
+  se.setFromSFZ(sfzStr); 
+  ok &= se.getNumGroups()   == 0;
+
   se.clearInstrument();
   sfzStr = "<group>";
   se.setFromSFZ(sfzStr); 
@@ -1663,6 +1669,15 @@ sample=Cos440Hz.wav";
   ok &= se.getNumGroups()   == 1;
   ok &= se.getNumRegions(0) == 2;
 
+
+  se.clearInstrument();
+  sfzStr = "<group> <group> <region> <region> <group> <region> <region> <region>";
+  se.setFromSFZ(sfzStr); 
+  ok &= se.getNumGroups()   == 0;
+  ok &= se.getNumRegions(0) == 0;
+  ok &= se.getNumRegions(1) == 2;
+  ok &= se.getNumRegions(2) == 3;
+  // This asserts! Maybe it's the initial empyt group?
 
 
 
