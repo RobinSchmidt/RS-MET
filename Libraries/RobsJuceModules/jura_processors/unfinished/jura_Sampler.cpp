@@ -1305,6 +1305,7 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
   // callback
 
   updateTreeView();
+  updateVisibilities();
 }
 
 void SamplerEditor::handlePatchUpdate(const PatchChangeInfo& info)
