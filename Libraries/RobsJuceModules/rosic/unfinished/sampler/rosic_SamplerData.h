@@ -623,6 +623,18 @@ public:
   bool operator==(const SfzInstrument& rhs) const { return global == rhs.global; }
 
 
+  RAPT::rsUint8 getMidiControllerValue(int i) const 
+  { 
+    if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return 0; }
+    return midiCC_values[i]; 
+  }
+
+  const std::string& getMidiControllerLabel(int i) const 
+  { 
+    if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return ""; }
+    return midiCC_labels[i]; 
+  }
+
 
 
   //-----------------------------------------------------------------------------------------------

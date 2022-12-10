@@ -4734,13 +4734,6 @@ bool samplerControlsTest()
 
   bool ok = true;
 
-  using Vec = std::vector<float>;
-  using SE  = rosic::Sampler::rsSamplerEngineTest;
-
-  SE se;
-
-  std::string sfz;
-
 
   //sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20";
   // Crashes the engine - tires to parse "<control>" as float. I think, it is because the sfz 
@@ -4752,25 +4745,34 @@ bool samplerControlsTest()
   // control off from the string and pass the remaining string to the current parser.
 
 
-  sfz = "<control> label_cc7=Volume set_cc7=64 label_cc74=Cutoff set_cc74=127 label_cc71=Resonance\
- set_cc71=20 label_cc123=Ctrl123 set_cc123=5 <global> <group>";
+  // Create an sfz string that defines some controller labels and values and set up a sampler 
+  // engine accordingly:
+  using Vec = std::vector<float>;
+  using SE  = rosic::Sampler::rsSamplerEngineTest;
+  std::string sfzString;
+  sfzString = "<control> label_cc7=Volume set_cc7=64 label_cc74=Cutoff set_cc74=127\
+ label_cc71=Resonance set_cc71=20 label_cc123=Ctrl123 set_cc123=5 <global> <group> <region>";
+  SE se;
+  se.setFromSFZ(sfzString);
 
-
-  se.setFromSFZ(sfz);
-
-  /*
-  ok &= se.getMidiControllerLabel(74) == "Cutoff";
-  ok &= se.getMidiControllerValue(74) == 50;
-  ok &= se.getMidiControllerLabel(71) == "Resonance";
-  ok &= se.getMidiControllerValue(71) == 20;
-  */
+  // Retrieve the underlying sfz data structure from the engine and check, if it has the correct 
+  // labels and values for the controls:
+  const rosic::Sampler::SfzInstrument& sfz = se.getInstrumentData();
+  ok &= sfz.getMidiControllerLabel(  7) == "Volume";
+  ok &= sfz.getMidiControllerValue(  7) == 64;
+  ok &= sfz.getMidiControllerLabel( 74) == "Cutoff";
+  ok &= sfz.getMidiControllerValue( 74) == 127;
+  ok &= sfz.getMidiControllerLabel( 71) == "Resonance";
+  ok &= sfz.getMidiControllerValue( 71) == 20;
+  ok &= sfz.getMidiControllerLabel(123) == "Ctrl123";
+  ok &= sfz.getMidiControllerValue(123) == 5;
 
   // ToDo:
   // -Make sure that some sort of global voice-state object is correctly set up with the controller
   //  values. This raises the question what should be the default value. Maybe zero?
-  // -Test it with controllers with 1-digit, 2-digit and 3-digit index, Use
-  //  label_cc7=Volume, label_cc127=Control127
+  // -Fix the assertion that we hit. The test passes so maybe it's a false alert?
   // -Test re-assignment of the same controller - the last assignment should count
+  // -Verify that the controllers get written into an sfz string when we use getAsSFZ
 
   rsAssert(ok);
   return ok;
@@ -4780,7 +4782,6 @@ bool samplerControlsTest()
   //  to the MIDI convention of using numbers in 0 ... 127 but allow high resolution within that
   //  range.
 }
-
 
 
 /*
@@ -4796,10 +4797,6 @@ bool samplerExamplePatchesTest()
   return ok;
 }
 */
-
-
-
-
 
 bool samplerEngineUnitTest()
 {

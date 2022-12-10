@@ -886,7 +886,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // Find start and end index of next region definition:
       j0 = groupDef.find(regionStr, j1);
 
-      RAPT::rsAssert(j0 != endOfFile);  
+      RAPT::rsAssert(j0 != endOfFile);        // This requires !!! ATTENTION !!!
       // For debug - gets triggered when we have empty regions ...but also in other cases, i 
       // think
       // I think, it also happens, when there's an empty line before the first <group> and/or a 
@@ -896,6 +896,10 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // ...maybe it's actually OK to *not* assert this condition?
       // Maybe as a workaround, we should just remove any initial whitespaces during pre-processing
       // -> do it and after that, re-activate the assert -> done!
+      // Maybe we can just break out of the loop if j0 == endOfFile. It indicates that there are
+      // no more regions and we are done - right? The groupDef.find(regionStr, j0+1) migh be very 
+      // problematic when j0 == endOfFile because the +1 would overflow to zero. Something is fishy
+      // here!
 
       j1 = groupDef.find(regionStr, j0+1);
       if(j1 == endOfFile) {
@@ -1120,6 +1124,11 @@ ModulationRouting SfzInstrument::getModRoutingFromString(
 void SfzInstrument::copy(const SfzInstrument& src, SfzInstrument& dst)
 {
   dst.clearInstrument();
+
+  for(int i = 0; i < 128; i++) {
+    dst.midiCC_values[i] = src.midiCC_values[i];
+    dst.midiCC_labels[i] = src.midiCC_labels[i]; }
+
   dst.global.copyDataFrom(&src.global);
   for(int i = 0; i < src.getNumGroups(); i++) {
     const Group* srcGroup = src.getGroup(i);
