@@ -686,7 +686,20 @@ std::string SfzInstrument::getAsSFZ() const
       writeModRoutingToString(routings[i], str);
   };
 
+  auto writeControlsToString = [this](std::string& str)
+  {
+    std::string tmp;
+    for(int i = 0; i < 128; i++) {
+      if(midiCC_labels[i] != "")
+        tmp += "label_cc" + std::to_string(i) + "=" + midiCC_labels[i] + "\n";
+      if(midiCC_values[i] != 0)
+        tmp += "set_cc" + std::to_string(i) + "=" + std::to_string(midiCC_values[i]) + "\n"; }
+    if(!tmp.empty())
+      str = "<control>\n" + tmp + "\n\n<global>\n" + str;
+  };
+
   std::string str;
+  writeControlsToString(str);
   writeSettingsToString(&global, str);
   for(int gi = 0; gi < getNumGroups(); gi++) {
     str += "<group>\n";

@@ -692,8 +692,8 @@ protected:
 
 
   // Data members for midi controllers:
-  RAPT::rsUint8 midiCC_values[128];      // initial values
   std::string   midiCC_labels[128];      // labels/names
+  RAPT::rsUint8 midiCC_values[128];      // initial values
   // see: https://sfzformat.com/opcodes/set_ccN  https://sfzformat.com/opcodes/label_ccN
 
 };
