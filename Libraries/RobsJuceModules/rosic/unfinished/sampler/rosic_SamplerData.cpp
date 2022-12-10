@@ -900,19 +900,20 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     g->parent = &global;
 
     // Find start and end index in the string for the first region within the current group:
-    size_t j0 = str.find(regionStr, i_gs);
+    size_t i_rs = str.find(regionStr, i_gs); // start index of the region in str
 
     // Set up group level settings:
-    tmp = str.substr(i_gs+Lg, j0-i_gs-Lg);
+    tmp = str.substr(i_gs+Lg, i_rs-i_gs-Lg);
     setupLevel(g, tmp);
 
     // Loop over the the regions within the group definition:
-    size_t j1 = str.find(regionStr, i_gs+1);
+    size_t i_re = str.find(regionStr, i_gs+1); // end index of the region in str
+
     bool allRegionsDone = false;
     while(!allRegionsDone)
     {
       // Find start and end index of next region definition:
-      j0 = groupDef.find(regionStr, j1);
+      i_rs = groupDef.find(regionStr, i_re);
 
 
       // This requires !!! ATTENTION !!!
@@ -930,17 +931,17 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // no more regions and we are done - right? The groupDef.find(regionStr, j0+1) migh be very 
       // problematic when j0 == endOfFile because the +1 would overflow to zero. Something is fishy
       // here!
-      if(j0 == notFound)
+      if(i_rs == notFound)
         break;  // ...OK - this *may* fix it, but this requires some verification/tests
         // It may actually render the while(!allRegionsDone) condition redundant and we may get
         // away with a while(true) loop. But this also requires thorough checking.
 
 
 
-      j1 = groupDef.find(regionStr, j0+1);
-      if(j1 == notFound) {
+      i_re = groupDef.find(regionStr, i_rs+1);
+      if(i_re == notFound) {
         allRegionsDone = true;
-        j1 = groupDef.length(); }
+        i_re = groupDef.length(); }
 
       // Extract substring with region definition and add a new region to the group:
       //std::string regionDef = groupDef.substr(j0, j1-j0); // for debug?
@@ -949,7 +950,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       r->setParent(g);
 
       // Set up region level settings:
-      tmp = groupDef.substr(j0+Lr, j1-j0-Lr);
+      tmp = groupDef.substr(i_rs+Lr, i_re-i_rs-Lr);
       setupLevel(r, tmp);
     }
 
