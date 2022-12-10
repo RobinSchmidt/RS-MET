@@ -664,7 +664,17 @@ void SfzInstrument::clearAllSettings()
 }
 // needs test
 
-
+void SfzInstrument::clearInstrument()
+{
+  global.clearGroups();
+  global.clearSettings();
+  for(int i = 0; i < 128; i++)  // maybe factor out into clearControls()
+  {
+    midiCC_values[i] = 0;
+    midiCC_labels[i].clear();
+  }
+  //signalProcessors.clear();
+}
 
 bool SfzInstrument::operator==(const SfzInstrument& rhs) const 
 { 
@@ -695,10 +705,6 @@ std::string SfzInstrument::getAsSFZ() const
 
   auto writeControlsToString = [this](std::string& str)
   {
-    // Somehow, adding the set_ccN gets falsely triggered in one of the filter unit-tests
-    // -> figure out and fix! when fixed, the commented code below can be uncommented again
-
-    /*
     std::string tmp;
     for(int i = 0; i < 128; i++) {
       if(midiCC_labels[i] != "")
@@ -707,7 +713,6 @@ std::string SfzInstrument::getAsSFZ() const
         tmp += "set_cc" + std::to_string(i) + "=" + std::to_string(midiCC_values[i]) + "\n"; }
     if(!tmp.empty())
       str = "<control>\n" + tmp + "\n\n<global>\n" + str;
-      */
   };
 
   std::string str;

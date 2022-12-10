@@ -33,7 +33,7 @@ public:
   // \name Lifetime
 
   /** Default constructor. */
-  SfzInstrument() {}
+  SfzInstrument() { clearInstrument(); }
 
   ~SfzInstrument() { clearInstrument(); }
 
@@ -570,21 +570,8 @@ public:
   void clearAllSettings();
 
 
-
   /** Clears the whole instrument definition. */
-  void clearInstrument()
-  {
-    global.clearGroups();
-    global.clearSettings();
-    for(int i = 0; i < 128; i++)
-    {
-      midiCC_values[i] = 0;
-      midiCC_labels[i].clear();
-    }
-    //signalProcessors.clear();
-  }
-  //{ instrument.groups.clear(); }
-  // todo: may wrap into instrument.clear() - don't access the groups array directly
+  void clearInstrument();
 
 
   //-----------------------------------------------------------------------------------------------
