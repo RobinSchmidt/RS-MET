@@ -851,8 +851,8 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   std::string tmp;                    // for extracted substrings (maybe use string_view)
 
   // Find start and end index in the string for the first group:
-  size_t i0 = str.find(groupStr, 0);
-  size_t i1 = str.find(groupStr, i0+1);
+  size_t i_gs = str.find(groupStr, 0);      // start index of the group in the string
+  size_t i_ge = str.find(groupStr, i_gs+1); // end index of the group in the string
 
   // Set up instrument level aka global settings. The global section may begin either immediately 
   // after "<global>" or at the very start of the string (if the global tag is absent) and ends 
@@ -862,7 +862,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     ig = 0;   // if <global> isn't defined, we start at the start of the string 
   else
     ig += 8;  // 8 == length of "<global>" - we want to start after it
-  tmp = str.substr(ig, i0-ig);
+  tmp = str.substr(ig, i_gs-ig);
   setupLevel(&global, tmp);
 
   // Set up the controls, if present:
@@ -889,25 +889,25 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   bool allGroupsDone = false;
   while(!allGroupsDone)
   {
-    if(i1 == notFound) {
+    if(i_ge == notFound) {
       allGroupsDone = true;
-      i1 = str.length(); }
+      i_ge = str.length(); }
 
     // Extract substring with group definition and add a new group to the instrument:
-    std::string groupDef = str.substr(i0, i1-i0); // group definition (ToDo: use string_view)
+    std::string groupDef = str.substr(i_gs, i_ge-i_gs); // group definition (ToDo: use string_view)
     int gi = global.addGroup();
     Group* g = global.getGroup(gi);
     g->parent = &global;
 
     // Find start and end index in the string for the first region within the current group:
-    size_t j0 = str.find(regionStr, i0);
+    size_t j0 = str.find(regionStr, i_gs);
 
     // Set up group level settings:
-    tmp = str.substr(i0+Lg, j0-i0-Lg);
+    tmp = str.substr(i_gs+Lg, j0-i_gs-Lg);
     setupLevel(g, tmp);
 
     // Loop over the the regions within the group definition:
-    size_t j1 = str.find(regionStr, i0+1);
+    size_t j1 = str.find(regionStr, i_gs+1);
     bool allRegionsDone = false;
     while(!allRegionsDone)
     {
@@ -954,8 +954,8 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     }
 
     // Find start and end index of next group defintion:
-    i0 = str.find(groupStr, i1);      // start index of the group in the string
-    i1 = str.find(groupStr, i0+1);    // end index of the group in the string
+    i_gs = str.find(groupStr, i_ge);
+    i_ge = str.find(groupStr, i_gs+1);
   }
 
   return rsReturnCode::success;
