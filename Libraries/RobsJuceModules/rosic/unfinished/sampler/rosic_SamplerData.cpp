@@ -718,7 +718,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   clearInstrument();
   if(strIn.empty())
     return rsReturnCode::failed;
-  size_t endOfFile = std::numeric_limits<size_t>::max(); // maybe rename to notFound
+  size_t notFound = std::numeric_limits<size_t>::max();
 
   // Pre-process the string to make parsing easier:
   std::string str = strIn;
@@ -830,7 +830,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   // after "<global>" or at the very start of the string (if the global tag is absent) and ends 
   // immediately before the first occurrence of <group>:
   size_t ig = str.find("<global>", 0);
-  if(ig == endOfFile)
+  if(ig == notFound)
     ig = 0;   // if <global> isn't defined, we start at the start of the string 
   else
     ig += 8;  // 8 == length of "<global>" - we want to start after it
@@ -839,7 +839,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
   // Set up the controls, if present:
   size_t ic = str.find("<control>", 0);
-  if(ic != endOfFile)
+  if(ic != notFound)
   {
     ic += 9;  // 9 == length of "<control>"
     if(ic >= ig)
@@ -861,7 +861,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
   bool allGroupsDone = false;
   while(!allGroupsDone)
   {
-    if(i1 == endOfFile) {
+    if(i1 == notFound) {
       allGroupsDone = true;
       i1 = str.length(); }
 
@@ -886,7 +886,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // Find start and end index of next region definition:
       j0 = groupDef.find(regionStr, j1);
 
-      RAPT::rsAssert(j0 != endOfFile);        // This requires !!! ATTENTION !!!
+      RAPT::rsAssert(j0 != notFound);        // This requires !!! ATTENTION !!!
       // For debug - gets triggered when we have empty regions ...but also in other cases, i 
       // think
       // I think, it also happens, when there's an empty line before the first <group> and/or a 
@@ -902,7 +902,7 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       // here!
 
       j1 = groupDef.find(regionStr, j0+1);
-      if(j1 == endOfFile) {
+      if(j1 == notFound) {
         allRegionsDone = true;
         j1 = groupDef.length(); }
 
