@@ -998,10 +998,7 @@ bool SfzInstrument::setupControls(const std::string& str)
 
     return true;
 
-    // ToDo:
-    // Maybe implement the default_path, note_offset, octave_offset, #define controls. Define might
-    // be more complicated, so maybe leave that for later. 
-    // see https://sfzformat.com/headers/control
+
   };
 
   // Loop through the control opcodes:
@@ -1018,6 +1015,16 @@ bool SfzInstrument::setupControls(const std::string& str)
     start += token.length() + 1;
   }
   return true;
+
+  // ToDo:
+  // -Maybe implement the default_path, note_offset, octave_offset, #define controls. #define might
+  //  be more complicated, so maybe leave that for later. 
+  //  see https://sfzformat.com/headers/control
+  // -Define a signal_flow or bus_mode control. This should switch between the regular fallback 
+  //  mode and the alternative signal flow where groups are busses, etc.
+  // -The quality settings could also go into the control section (oversampling. interpolation, 
+  //  etc.)
+  // -Maybe the control section could also define gui elements - but I'm not yet sure about that.
 }
 
 void SfzInstrument::setControllerLabel(int i, const std::string& newLabel)

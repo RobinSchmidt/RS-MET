@@ -633,12 +633,12 @@ public:
   /** Produces the string that represents the settings in an sfz-file compliant format, i.e. a
   string that can be written into an .sfz file. */
   std::string getAsSFZ() const;
-
+  // rename to getAsSfzString
 
   /** Sets up this data object according to the given string which is supposed to represent the
   contents of an .sfz file. */
   rsReturnCode setFromSFZ(const std::string& sfzFileContents);
-  // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
+  // todo: document return-codes
 
   bool setupControls(const std::string& str);
 
@@ -654,9 +654,11 @@ public:
   function has no safeguards against overwriting an existing file - it will just do it! */
   bool saveToSFZ(const char* path) const;
   // todo: return a return-code, including fileWriteError
+  // rename to saveToSfzFile
 
   /** Sets up this object according to a given .sfz file.   */
   rsReturnCode loadFromSFZ(const char* path);
+  // rename to loadFromSfzFile
   // todo: document return values - should probably be one of: success, loadError, parseError
 
 
