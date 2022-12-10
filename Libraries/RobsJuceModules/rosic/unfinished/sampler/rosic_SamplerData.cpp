@@ -901,13 +901,13 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
 
     // Find start and end index in the string for the first region within the current group:
     size_t j0 = str.find(regionStr, i0);
-    size_t j1 = str.find(regionStr, i0+1);
 
     // Set up group level settings:
     tmp = str.substr(i0+Lg, j0-i0-Lg);
     setupLevel(g, tmp);
 
     // Loop over the the regions within the group definition:
+    size_t j1 = str.find(regionStr, i0+1);
     bool allRegionsDone = false;
     while(!allRegionsDone)
     {

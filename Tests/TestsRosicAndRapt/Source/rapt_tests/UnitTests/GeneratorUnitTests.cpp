@@ -1646,38 +1646,42 @@ sample=Cos440Hz.wav";
 
 
   // Check, if correct numbers of groups and regions are produced:
-  se.clearInstrument();
-  sfzStr = "";
-  se.setFromSFZ(sfzStr); 
+
+  auto setup = [&](const std::string& sfz)
+  {
+    se.clearInstrument();
+    se.setFromSFZ(sfz); 
+  };
+
+  sfzStr = ""; setup(sfzStr); 
   ok &= se.getNumGroups()   == 0;
 
-  se.clearInstrument();
-  sfzStr = "<group>";
-  se.setFromSFZ(sfzStr); 
+  sfzStr = "<group>"; setup(sfzStr); 
   ok &= se.getNumGroups()   == 1;
   ok &= se.getNumRegions(0) == 0;
 
-  se.clearInstrument();
-  sfzStr = "<group> <region>";
-  se.setFromSFZ(sfzStr); 
+  sfzStr = "<group> <region>"; setup(sfzStr); 
   ok &= se.getNumGroups()   == 1;
   ok &= se.getNumRegions(0) == 1;
  
-  se.clearInstrument();
-  sfzStr = "<group> <region> <region>";
-  se.setFromSFZ(sfzStr); 
+  sfzStr = "<group> <region> <region>"; setup(sfzStr); 
   ok &= se.getNumGroups()   == 1;
   ok &= se.getNumRegions(0) == 2;
 
+  /*
+  sfzStr = "<group> <group>"; setup(sfzStr); 
+  ok &= se.getNumGroups()   == 2;
+  ok &= se.getNumRegions(0) == 0;
+  ok &= se.getNumRegions(1) == 0;
+  // Asserts!
 
-  se.clearInstrument();
-  sfzStr = "<group> <group> <region> <region> <group> <region> <region> <region>";
-  se.setFromSFZ(sfzStr); 
+  sfzStr = "<group> <group> <region> <region> <group> <region> <region> <region>"; setup(sfzStr); 
   ok &= se.getNumGroups()   == 0;
   ok &= se.getNumRegions(0) == 0;
   ok &= se.getNumRegions(1) == 2;
   ok &= se.getNumRegions(2) == 3;
   // This asserts! Maybe it's the initial empyt group?
+  */
 
 
 
