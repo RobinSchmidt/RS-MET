@@ -4754,6 +4754,11 @@ bool samplerControlsTest()
  label_cc71=Resonance set_cc71=20 label_cc123=Ctrl123 set_cc123=5 <global> <group> <region>";
   SE se;
   se.setFromSFZ(sfzString);
+  ok &= se.getNumGroups()   == 1;  // one empty group
+
+  ok &= se.getNumRegions(0) == 1;  // ...with one empty region
+  // FAILS!!!
+
 
   // Retrieve the underlying sfz data structure from the engine and check, if it has the correct 
   // labels and values for the controls:
