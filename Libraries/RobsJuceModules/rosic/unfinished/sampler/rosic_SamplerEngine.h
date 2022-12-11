@@ -553,6 +553,10 @@ protected:
   virtual PlayStatusChange handleNoteOff(uchar key, uchar vel);
 
 
+  virtual void handleControlChange(uchar index, uchar value);
+
+
+
   /** Removes those samples from our sample pool that are not used in the given sfz instrument
   specification. Returns the number of samples that were removed. */
   int removeSamplesNotUsedIn(const SfzInstrument& sfz);

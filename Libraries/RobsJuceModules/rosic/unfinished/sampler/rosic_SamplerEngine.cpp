@@ -405,6 +405,12 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleMusicalEvent(
   {
   case Type::noteOn:  return handleNoteOn( (uchar)val1, (uchar)val2); break;
   case Type::noteOff: return handleNoteOff((uchar)val1, (uchar)val2); break;
+
+  case Type::controlChange: 
+  {
+    handleControlChange((uchar)val1, (uchar)val2); return PlayStatusChange();
+  }
+
   // Maybe we should pass the floats directly to noteOn/Off. This would allow for microtuning. 
   // However, it complicates identifying to which notes a noteOff should apply. Or rather, it's 
   // not really complicated but requires a design decision: should we require an exact match or 
@@ -627,6 +633,21 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, ucha
   // -later: trigger all regions that should play a release sample for the given key/vel combo
   // -check, if looping forward or backward (implying using int or size_t for i) is more
   //  efficient
+}
+
+void rsSamplerEngine::handleControlChange(uchar index, uchar value)
+{
+  playStatus.midi_cc[index] = value;
+  sfz.setControllerValue(index, value);
+  // Should we actually update it in the sfz member, too? Not sure. It may mess with saving an sfz
+  // from the GUI unless we also update the corresponding set_ccN opcodes sfz code, too. Maybe that
+  // should be an action on save. Or maybe it should happen in realtime in the code window? That
+  // would actually be most convenient, I think. ...of course, not on the audio-thread. We need to 
+  // trigger an async GUI update when receiving midi-controllers which takes care of udpating the 
+  // code window.
+  // Maybe we should get rid of holding the controller values redundantly in the PlayStatus? Maybe
+  // the PlayStatus should keep a pointer to the sfz. But that would increase coupling and might be
+  // dangerous because we liberally reassign the sfz member here in the engine. ...so maybe not.
 }
 
 int rsSamplerEngine::removeSamplesNotUsedIn(const SfzInstrument& sfz)
