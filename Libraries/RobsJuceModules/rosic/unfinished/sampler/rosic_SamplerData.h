@@ -564,14 +564,29 @@ public:
 
   rsReturnCode clearRegionSettings(int gi, int ri);
 
+  /** Clears all settings on the <region> level. */
   void clearAllRegionSettings();
+
+  /** Clears all settings on the <group> level not recursing into the <region> sub-levels. */
   void clearAllGroupSettings();
+
+  /** Clears all settings on the <global> level not recursing into the <group> or <region> 
+  sub-levels. This also excludes the <control> settings. */
   void clearAllInstrumentSettings();
-  void clearAllSettings();
+  // maybe rename to clearAllGlobalSettings
+
+  /** Clears all settings in the <control> section. */
   void clearControls();
 
-  /** Clears the whole instrument definition. */
+  /** Calls clearAllRegionSettings, clearAllGroupSettings, clearAllInstrumentSettings, 
+  clearControls. */
+  void clearAllSettings();
+
+  /** Clears the whole instrument definition. 
+  ToDo: Document the difference to clearAllSettings or better: change the API to make it clearer. 
+  Maybe this function is redundant anyway? Try to get rid of it! */
   void clearInstrument();
+
 
 
   //-----------------------------------------------------------------------------------------------

@@ -656,20 +656,21 @@ void SfzInstrument::clearAllInstrumentSettings()
   global.clearSettings();
 }
 
-void SfzInstrument::clearAllSettings()
-{
-  clearAllRegionSettings();
-  clearAllGroupSettings();
-  clearAllInstrumentSettings();
-}
-// needs test
-
 void SfzInstrument::clearControls()
 {
   for(int i = 0; i < 128; i++) {
     midiCC_values[i] = 0;
     midiCC_labels[i].clear(); }
 }
+
+void SfzInstrument::clearAllSettings()
+{
+  clearAllRegionSettings();
+  clearAllGroupSettings();
+  clearAllInstrumentSettings();
+  clearControls();
+}
+// needs test
 
 void SfzInstrument::clearInstrument()
 {

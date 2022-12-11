@@ -4765,6 +4765,9 @@ bool samplerModulationsTest()
   return ok;
 }
 
+
+
+
 bool samplerControlsTest()
 {
   // Tests the features defined under the <control> header in the sfz file.
@@ -4775,6 +4778,8 @@ bool samplerControlsTest()
 
   bool ok = true;
 
+
+  // Test parsing of the <control> section:
 
   //sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20";
   // Crashes the engine - tires to parse "<control>" as float. I think, it is because the sfz 
@@ -4795,10 +4800,8 @@ bool samplerControlsTest()
   sfzString = "<control> label_cc7=Volume set_cc7=64 label_cc74=Cutoff set_cc74=127\
  label_cc71=Resonance set_cc71=20 label_cc123=Ctrl123 set_cc123=5 <global> <group> <region>";
 
-
  // sfzString = "<control> label_cc7=Volume set_cc7=64 label_cc74=Cutoff set_cc74=127\
  //label_cc71=Resonance set_cc71=20 label_cc123=Ctrl123 set_cc123=5 <global> <group>";
-
 
   SE se;
   se.setFromSFZ(sfzString);
@@ -4806,7 +4809,6 @@ bool samplerControlsTest()
 
   //ok &= se.getNumRegions(0) == 1;  // ...with one empty region
   // FAILS!!!
-
 
   // Retrieve the underlying sfz data structure from the engine and check, if it has the correct 
   // labels and values for the controls:
@@ -4824,6 +4826,29 @@ bool samplerControlsTest()
   sfzString2 = se.getAsSfz();
   // Interesting: sfzString2 has 1 region more than the original sfzString
   // ...might be a hint about what's going wrong in the parser.
+  // Update: now there's one region less! The parser is still fishy! As long as it affects only
+  // empty regions, we may get away with it but it should be fixed some ime anyway.
+
+
+
+  // OK - now we set up an actual patch with a looped sawtooth sample, a resonant lowpass filter 
+  // and route the controllers 74,71 to the cutoff and resonance respectively...
+
+  // Check clearing the controllers (not all, just a few - the rest will then probably work, too):
+  se.clearAllSfzSettings();
+  //sfz = se.getInstrumentData();
+  ok &= sfz.getMidiControllerLabel( 7) == "";
+  ok &= sfz.getMidiControllerValue( 7) == 0;
+  ok &= sfz.getMidiControllerLabel(74) == "";
+  ok &= sfz.getMidiControllerValue(74) == 0;
+
+  //se.setMidiControllerValue(74, 80.f);  // Needs to be implemented
+
+
+
+
+
+  // setControllerLabel/Value
 
 
   // ToDo:
@@ -4841,6 +4866,9 @@ bool samplerControlsTest()
   return ok;
 
   // ToDo:
+  // -Implement responses to the midi control-events - they should set up some value in the glabal 
+  //  playStatus and a modulation-source should become avaiable for each. These should be connected
+  //  to modulation targets vai the mod-system
   // -Maybe allow floating point values for the controllers in the range 0.0 ... 127.0, i.e. stick
   //  to the MIDI convention of using numbers in 0 ... 127 but allow high resolution within that
   //  range.
