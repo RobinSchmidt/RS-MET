@@ -187,8 +187,12 @@ public:
   juce::String getMidiControllerLabel(int indexOMidiCC) const
   { return juce::String(sfzPlayer.getInstrumentData().getMidiControllerLabel(indexOMidiCC)); }
 
-  int getMidiControllerInitValue(int indexOMidiCC) const
-  { return int(sfzPlayer.getInstrumentData().getMidiControllerInitValue(indexOMidiCC)); }
+  //int getMidiControllerInitValue(int indexOMidiCC) const
+  //{ return int(sfzPlayer.getInstrumentData().getMidiControllerInitValue(indexOMidiCC)); }
+  // may not be needed
+
+  int getMidiControllerCurrentValue(int indexOMidiCC) const
+  { return int(sfzPlayer.getMidiControllerCurrentValue(indexOMidiCC)); }
 
 
   void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,

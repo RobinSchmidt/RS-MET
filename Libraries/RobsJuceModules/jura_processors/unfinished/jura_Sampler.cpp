@@ -1568,11 +1568,7 @@ void SamplerEditor::makePlayWidgetsVisible(bool visible)
     for(int i = 0; i < 128; i++)
     {
       juce::String ctrlLabel = samplerModule->getMidiControllerLabel(i);
-
-
-      int value = samplerModule->getMidiControllerInitValue(i);
-      // maybe we should get the current value instead?
-
+      int value = samplerModule->getMidiControllerCurrentValue(i);
       if(ctrlLabel != "")
       {
         ctrlSliders[i]->setBounds(x, y, w, h);

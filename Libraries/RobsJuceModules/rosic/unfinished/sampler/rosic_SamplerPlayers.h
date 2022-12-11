@@ -61,6 +61,15 @@ class PlayStatus
 {
 public:
 
+
+  /** Returns the current value of the MIDI controller with given index. */
+  RAPT::rsUint8 getMidiControllerCurrentValue(int i) const 
+  { 
+    if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return 0; }
+    return midi_cc[i]; 
+  }
+
+
   //-----------------------------------------------------------------------------------------------
   // the members used to facilitate accumulation of intermediate calculation results:
 
