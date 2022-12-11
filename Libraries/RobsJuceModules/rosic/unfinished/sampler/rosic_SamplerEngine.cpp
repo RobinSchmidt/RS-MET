@@ -638,13 +638,14 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, ucha
 void rsSamplerEngine::handleControlChange(uchar index, uchar value)
 {
   playStatus.midi_cc[index] = value;
-  sfz.setControllerValue(index, value);
-  // Should we actually update it in the sfz member, too? Not sure. It may mess with saving an sfz
-  // from the GUI unless we also update the corresponding set_ccN opcodes sfz code, too. Maybe that
-  // should be an action on save. Or maybe it should happen in realtime in the code window? That
-  // would actually be most convenient, I think. ...of course, not on the audio-thread. We need to 
-  // trigger an async GUI update when receiving midi-controllers which takes care of udpating the 
-  // code window.
+
+  sfz.setMidiControllerInitValue(index, value);
+  // Should we actually update the init value in the sfz member, too? Not sure. It may mess with 
+  // saving an sfz from the GUI unless we also update the corresponding set_ccN opcodes sfz code, 
+  // too. Maybe that should be an action on save. Or maybe it should happen in realtime in the 
+  // code window? That would actually be most convenient, I think. ...of course, not on the 
+  // audio-thread. We need to trigger an async GUI update when receiving midi-controllers which 
+  // takes care of udpating the code window.
   // Maybe we should get rid of holding the controller values redundantly in the PlayStatus? Maybe
   // the PlayStatus should keep a pointer to the sfz. But that would increase coupling and might be
   // dangerous because we liberally reassign the sfz member here in the engine. ...so maybe not.
@@ -812,7 +813,7 @@ void rsSamplerEngine::preAllocateDspMemory()
 void rsSamplerEngine::initConrolsFromSfz()
 {
   for(int i = 0; i < 128; i++)
-    playStatus.midi_cc[i] = sfz.getMidiControllerValue(i);
+    playStatus.midi_cc[i] = sfz.getMidiControllerInitValue(i);
 
   // ToDo:
   // -Later also take into account other kinds of controls

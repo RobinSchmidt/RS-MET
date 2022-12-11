@@ -1568,7 +1568,10 @@ void SamplerEditor::makePlayWidgetsVisible(bool visible)
     for(int i = 0; i < 128; i++)
     {
       juce::String ctrlLabel = samplerModule->getMidiControllerLabel(i);
-      int value = samplerModule->getMidiControllerValue(i);
+
+
+      int value = samplerModule->getMidiControllerInitValue(i);
+      // maybe we should get the current value instead?
 
       if(ctrlLabel != "")
       {

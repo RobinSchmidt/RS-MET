@@ -628,7 +628,7 @@ public:
   // before
 
 
-  RAPT::rsUint8 getMidiControllerValue(int i) const 
+  RAPT::rsUint8 getMidiControllerInitValue(int i) const 
   { 
     if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return 0; }
     return midiCC_values[i]; 
@@ -657,9 +657,9 @@ public:
 
   bool setupControls(const std::string& str);
 
-  void setControllerLabel(int index, const std::string& newLabel);
+  void setMidiControllerLabel(int index, const std::string& newLabel);
 
-  void setControllerValue(int index, int newValue);
+  void setMidiControllerInitValue(int index, int newValue);
 
 
 

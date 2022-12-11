@@ -1010,7 +1010,7 @@ bool SfzInstrument::setupControls(const std::string& str)
     if(rsStartsWith(lhs, label_cc))
     {
       int idx = parseNaturalNumber(lhs, 8, splitIndex-1);         // 8 == length("label_cc")
-      setControllerLabel(idx, rhs);
+      setMidiControllerLabel(idx, rhs);
     }
     else if(rsStartsWith(lhs, set_cc))
     {
@@ -1018,7 +1018,7 @@ bool SfzInstrument::setupControls(const std::string& str)
         return false;
       int idx = parseNaturalNumber(lhs, 6, splitIndex-1);         // 6 == length("set_cc")
       int val = parseNaturalNumber(rhs, 0, int(rhs.size())-1);
-      setControllerValue(idx, val);
+      setMidiControllerInitValue(idx, val);
     }
     // What if parsing the (substring of) lhs as natural number for the idx fails? We do not handle
     // that here. Maybe we should. Maybe make also sure, that the rhs is in 0...127.
@@ -1054,13 +1054,13 @@ bool SfzInstrument::setupControls(const std::string& str)
   // -Maybe the control section could also define gui elements - but I'm not yet sure about that.
 }
 
-void SfzInstrument::setControllerLabel(int i, const std::string& newLabel)
+void SfzInstrument::setMidiControllerLabel(int i, const std::string& newLabel)
 {
   if(i < 0 || i >= 128) { RAPT::rsError("Invalid MIDI CC index"); return; }
   midiCC_labels[i] = newLabel;
 }
 
-void SfzInstrument::setControllerValue(int i, int newValue)
+void SfzInstrument::setMidiControllerInitValue(int i, int newValue)
 {
   if(i < 0 || i >= 128) { RAPT::rsError("Invalid MIDI CC index"); return; }
   midiCC_values[i] = newValue;

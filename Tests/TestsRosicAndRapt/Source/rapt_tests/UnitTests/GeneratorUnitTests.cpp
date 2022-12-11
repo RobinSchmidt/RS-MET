@@ -4814,14 +4814,14 @@ bool samplerControlsTest()
   // Retrieve the underlying sfz data structure from the engine and check, if it has the correct 
   // labels and values for the controls:
   const rosic::Sampler::SfzInstrument& sfz = se.getInstrumentData();
-  ok &= sfz.getMidiControllerLabel(  7) == "Volume";
-  ok &= sfz.getMidiControllerValue(  7) == 64;
-  ok &= sfz.getMidiControllerLabel( 74) == "Cutoff";
-  ok &= sfz.getMidiControllerValue( 74) == 127;
-  ok &= sfz.getMidiControllerLabel( 71) == "Resonance";
-  ok &= sfz.getMidiControllerValue( 71) == 20;
-  ok &= sfz.getMidiControllerLabel(123) == "Ctrl123";
-  ok &= sfz.getMidiControllerValue(123) == 5;
+  ok &= sfz.getMidiControllerLabel(      7) == "Volume";
+  ok &= sfz.getMidiControllerInitValue(  7) == 64;
+  ok &= sfz.getMidiControllerLabel(     74) == "Cutoff";
+  ok &= sfz.getMidiControllerInitValue( 74) == 127;
+  ok &= sfz.getMidiControllerLabel(     71) == "Resonance";
+  ok &= sfz.getMidiControllerInitValue( 71) == 20;
+  ok &= sfz.getMidiControllerLabel(    123) == "Ctrl123";
+  ok &= sfz.getMidiControllerInitValue(123) == 5;
 
   std::string sfzString2;
   sfzString2 = se.getAsSfz();
@@ -4839,10 +4839,10 @@ bool samplerControlsTest()
   se.clearAllSfzSettings();
   //sfz = se.getInstrumentData();
   ok &= sfz.getMidiControllerLabel( 7) == "";
-  ok &= sfz.getMidiControllerValue( 7) == 0;
+  ok &= sfz.getMidiControllerInitValue( 7) == 0;     // maybe rename to getMidiControllerInitValue
   //ok &= se.getMidiControllerValue(  7) == 0;   // implement this!
   ok &= sfz.getMidiControllerLabel(74) == "";
-  ok &= sfz.getMidiControllerValue(74) == 0;
+  ok &= sfz.getMidiControllerInitValue(74) == 0;
   //ok &= se.getMidiControllerValue( 74) == 0;   // implement this!
   // Note:
   // -We currently hold the control-values in the sfz and in the playStatus and the calls on 
