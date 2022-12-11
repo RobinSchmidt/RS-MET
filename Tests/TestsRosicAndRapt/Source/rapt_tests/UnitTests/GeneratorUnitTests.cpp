@@ -4795,6 +4795,7 @@ bool samplerControlsTest()
   // engine accordingly:
   using Vec = std::vector<float>;
   using SE  = rosic::Sampler::rsSamplerEngineTest;
+  using Ev  = rosic::Sampler::rsMusicalEvent<float>;
   std::string sfzString;
 
   sfzString = "<control> label_cc7=Volume set_cc7=64 label_cc74=Cutoff set_cc74=127\
@@ -4839,16 +4840,28 @@ bool samplerControlsTest()
   //sfz = se.getInstrumentData();
   ok &= sfz.getMidiControllerLabel( 7) == "";
   ok &= sfz.getMidiControllerValue( 7) == 0;
+  //ok &= se.getMidiControllerValue(  7) == 0;   // implement this!
   ok &= sfz.getMidiControllerLabel(74) == "";
   ok &= sfz.getMidiControllerValue(74) == 0;
+  //ok &= se.getMidiControllerValue( 74) == 0;   // implement this!
+  // Note:
+  // -We currently hold the control-values in the sfz and in the playStatus and the calls on 
+  //  sfz.get... and se.get... should return these two respectively. This redundant storage may be 
+  //  confusing. But there's a difference: The sfz is actually supposed to hold the *initial* 
+  //  values and the playStatus should hold the *current* values. But maybe there should not be any
+  //  difference between these two concepts, i.e. when saving an sfz file, the current values shall
+  //  always be used as initial values next time when the patch is loaded? If we do make this 
+  //  distinction, the API should make this distinction clear.
 
-  //se.setMidiControllerValue(74, 80.f);  // Needs to be implemented
+  // Helper function to generate MIDI control-change events:
+  auto makeCC = [](int index, int value)
+  {
+    return Ev(Ev::Type::controlChange, (float) index, (float) value);
+  };
 
-
-
-
-
-  // setControllerLabel/Value
+  // Send a CC74 of value 80 to the engine:
+  SE::PlayStatusChange psc;
+  psc = se.handleMusicalEvent(makeCC(74, 80));
 
 
   // ToDo:
@@ -4858,6 +4871,7 @@ bool samplerControlsTest()
   //    PlayStatus playStatus;
   //  this is where the midi controllers should go. We need to call updateMidiControllers or
   //  initMidiControllersFromSfz or soemthing like that inside setFromSFZ
+
   // -Fix the assertion that we hit. The test passes so maybe it's a false alert?
   // -Test re-assignment of the same controller - the last assignment should count
   // -Verify that the controllers get written into an sfz string when we use getAsSFZ
