@@ -666,13 +666,11 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   addOpcodeChildNodes(global, &rootNode, -1, -1);
   for(int gi = 0; gi < sfz.getNumGroups(); gi++)
   {
-    //Node* groupNode = new Node("<group>");
     Node* groupNode = Node::createGroupNode("<group>", gi);
     const Group* group = sfz.getGroup(gi);
     addOpcodeChildNodes(group, groupNode, gi, -1);
     for(int ri = 0; ri < sfz.getNumRegions(gi); ri++)
     {
-      //Node* regionNode = new Node("<region>");
       Node* regionNode = Node::createRegionNode("<region>", gi, ri);
       const Region* region = sfz.getRegion(gi, ri);
       addOpcodeChildNodes(region, regionNode, gi, ri);
