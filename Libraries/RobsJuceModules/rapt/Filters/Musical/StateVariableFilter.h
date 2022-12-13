@@ -15,6 +15,19 @@ class rsStateVariableFilter
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
+  /** Constructor. */
+  rsStateVariableFilter();
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the sample-rate. */
+  void setSampleRate(TPar newSampleRate);
+
   /** Enumeration of the available filter modes. */
   enum modes
   {
@@ -34,17 +47,6 @@ public:
     NUM_MODES
   };
 
-
-  /** \name Construction/Destruction */
-
-  /** Constructor. */
-  rsStateVariableFilter();
-
-
-  /** \name Setup */
-
-  /** Sets the sample-rate. */
-  void setSampleRate(TPar newSampleRate);
 
   /** Chooses the filter mode. See the enumeration for available modes. */
   void setMode(int newMode);
@@ -68,12 +70,11 @@ public:
   void setMorph(TPar newMorph);
 
   /** Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
-  //void setupFromBiquad(CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2);
-   // not yet tested
+  void setupFromBiquad(CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2);
+  // not yet tested
 
 
-
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** When you use getOutputs() directly to obtain the lowpass, bandpass and highpass signals

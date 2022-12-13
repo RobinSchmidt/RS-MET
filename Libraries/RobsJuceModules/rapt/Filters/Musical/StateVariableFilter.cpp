@@ -57,16 +57,36 @@ void rsStateVariableFilter<TSig, TPar>::setMorph(TPar newMorph)
   calcCoeffs();
 }
 
-/*
 template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2)
 {
-
-  // formulas from:
+  // Compute intermediate values. The square rooths could be imaginary but when we form their 
+  // quotient and product, it will become real:
+  using Complex = std::complex<TPar>;  
+  TPar    u1 = -TPar(1) - a1 - a2;   // could be negative
+  TPar    u2 = -TPar(1) + a1 - a2;   // ...dito
+  Complex s1 = sqrt(Complex(u1));    // could be imaginary
+  Complex s2 = sqrt(Complex(u2));    // ...dito  
+  TPar    p  = real(s1 * s2);        // but their product should be real
+  TPar    s  = TPar(1) / p;          // we actually need the product's reciprocal
+  
+  // Compute coeffs:
+  g  = real(s1 / s2);                         // 16a, the quotient should also be real
+  R2 = s * TPar(2) * (a2 - TPar(1));          // 16b
+  cH = (b0 - b1 + b2) / (TPar(1) - a1 + a2);  // 16c,  == -(b0-b1+b2) / s1   before taking the sqrt?
+  cB = s * TPar(2) * (b0 - b2);               // 16d
+  cL = (b0 + b1 + b2) / (TPar(1) + a1 + a2);  // 16 e
+  
+  int dummy = 0;
+  
+  // formulas from (Eq 16 a-e):
   // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
+  
+  // ToDo:
+  // -Check, if the paper uses the same conventions as we do here
+  // -Write a unit test that compares the outputs of a SVF to a normal biquad.
 }
-*/
 
 // Misc:
 
