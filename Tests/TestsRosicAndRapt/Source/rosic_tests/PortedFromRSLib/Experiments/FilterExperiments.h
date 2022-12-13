@@ -5,6 +5,7 @@ void bandwidthScaling();
 void biquadResoGain();
 void butterworthEnergy();
 void biDirectionalStateInit();
+void biquadDesignVicanek();
 void biquadTail();
 void biquadModulation();
 void stateVariableFilter();

@@ -560,6 +560,60 @@ void biDirectionalStateInit()
                                 // n < 0 and n >= N (they may be different for each side)
 }
 
+void biquadDesignVicanek()
+{
+  // We implement and test the biqad design formulas from this paper:
+  // https://www.vicanek.de/articles/BiquadFits.pdf
+
+  // Design a lowpass:
+  double fs = 44100;
+  double fc =  5000;
+  double Q  =     3;
+
+  double wc = 2 * PI * fc / fs;
+
+  double b0, b1, b2, a1, a2;
+
+  auto makeLowpass = [&](double w0, double Q)
+  {
+    double q = 1 / (2*Q);
+
+    // Factor out:
+    if(q <= 1)
+      a1 = -2*exp(-q*w0) * cos( sqrt(1-q*q)*w0);
+    else
+      a1 = -2*exp(-q*w0) * cosh(sqrt(q*q-1)*w0);
+    a2 = exp(-2*q*w0);
+
+    double A0 =  1 + a1 + a2; A0 *= A0;          // Eq 27
+    double A1 =  1 - a1 + a2; A1 *= A1;          // Eq 27
+    double A2 = -4*a2;                           // Eq 27
+
+    double p1 = sin(w0/2); p1 *= p1;             // Eq 26, phi_1 = sin^2(w0/2)
+    double p0 = 1 - p1;                          // Eq 26, phi_0 = 1 - phi_1
+    double p2 = 4*p0*p1;	                       // Eq 26, phi_2 = 4*phi_0*phi_1
+
+    double B0 = A0;                              // Eq 31
+    double R1 = (A0*p0 + A1*p1 + A2*p2) * Q*Q;   // Eq 31
+    double B1 = (R1 - B0*p0) / p1;               // Eq 32
+
+    b0 = 0.5 * (sqrt(B0) + sqrt(B1));            // Eq 33
+    b1 = sqrt(B0) - b0;                          // Eq 33
+    b2 = 0;                                      // from text
+  };
+
+
+
+  makeLowpass(wc, Q);
+ 
+
+
+
+    
+  
+  int dummy = 0;
+}
+
 void biquadTail()
 {
   // We check the explicit formula for a biquad tail against the tail computed by the actual 
