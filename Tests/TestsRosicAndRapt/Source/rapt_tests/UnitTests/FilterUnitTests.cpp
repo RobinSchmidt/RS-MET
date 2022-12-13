@@ -837,9 +837,9 @@ bool stateVariableFilterUnitTest()
 
   int N = 200;
 
-  Real b0 = 4.0;
-  Real b1 = 0.5;
-  Real b2 = 2.0;
+  Real b0 = 0.0;
+  Real b1 = 4.0;  // 0.5
+  Real b2 = 0.0;  // 2.0
   Real a1 = -0.8;
   Real a2 = 0.9;
 
@@ -864,11 +864,17 @@ bool stateVariableFilterUnitTest()
   for(int n = 0; n < N; n++)
     ySvf[n] = svf.getSample(x[n]);
 
-
-
-
   rsPlotVectors(yBqd, ySvf);
 
+  //rsPlotArrays(N-2, &yBqd[0], &ySvf[2]);
+
+
+  // Observations:
+  // -With (b0,b1,b2, a1,a2) = (4,0,0, -0.8,-0.9), the SVF output looks as if it is exactly delayed
+  //  by 2 samples with respect to the reference output
+  // -With (b0,b1,b2, a1,a2) = (0,0,4, -0.8,-0.9), it seems to be the other way around: the SVF is 
+  //  two samples earlier
+  // -With (b0,b1,b2, a1,a2) = (0,4,0, -0.8,-0.9), the output seem to match exactly
 
 
 
