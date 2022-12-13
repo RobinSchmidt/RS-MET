@@ -567,31 +567,50 @@ void biquadDesignVicanek()
 
   // Design a lowpass:
   double fs = 44100;
-  double fc =  1000;
+  double fc =   200;
   double Q  =     3;
 
   double wc = 2 * PI * fc / fs;
 
   double b0, b1, b2, a1, a2;
 
-  auto makeLowpass = [&](double w0, double Q)
-  {
-    double q = 1 / (2*Q);
 
-    // Factor out:
+
+
+  // Calculates the feedback coeffs and some intermediate variables:
+  double q, A0, A1, A2, p0, p1, p2;
+  auto calcIntermediates = [&](double w0, double Q)
+  {
+    q = 1 / (2*Q);
+
+    // Calculate feedback coeffs:
     if(q <= 1)
       a1 = -2*exp(-q*w0) * cos( sqrt(1-q*q)*w0);
     else
       a1 = -2*exp(-q*w0) * cosh(sqrt(q*q-1)*w0);
     a2 = exp(-2*q*w0);
 
-    double A0 =  1 + a1 + a2; A0 *= A0;          // Eq 27
-    double A1 =  1 - a1 + a2; A1 *= A1;          // Eq 27
-    double A2 = -4*a2;                           // Eq 27
+    // Calculate some values that depend on the feedback coeffs:
+    A0 =  1 + a1 + a2; A0 *= A0;          // Eq 27
+    A1 =  1 - a1 + a2; A1 *= A1;          // Eq 27
+    A2 = -4*a2;                           // Eq 27
 
-    double p1 = sin(w0/2); p1 *= p1;             // Eq 26, phi_1 = sin^2(w0/2)
-    double p0 = 1 - p1;                          // Eq 26, phi_0 = 1 - phi_1
-    double p2 = 4*p0*p1;	                       // Eq 26, phi_2 = 4*phi_0*phi_1
+    // Calculate the phi-variables:
+    p1 = sin(w0/2); p1 *= p1;             // Eq 26, phi_1 = sin^2(w0/2)
+    p0 = 1 - p1;                          // Eq 26, phi_0 = 1 - phi_1
+    p2 = 4*p0*p1;	                        // Eq 26, phi_2 = 4*phi_0*phi_1
+  };
+
+
+  // Approximates the analog lowpass prototype transfer function:
+  //
+  //                 w0^2
+  // H(s) = ---------------------
+  //         w0^2 + s*w0/Q + s^2
+  //
+  auto makeLowpass = [&](double w0, double Q)
+  {
+    calcIntermediates(w0, Q);
 
     double B0 = A0;                              // Eq 31
     double R1 = (A0*p0 + A1*p1 + A2*p2) * Q*Q;   // Eq 31
@@ -599,8 +618,32 @@ void biquadDesignVicanek()
 
     b0 = 0.5 * (sqrt(B0) + sqrt(B1));            // Eq 33
     b1 = sqrt(B0) - b0;                          // Eq 33
-    b2 = 0;                                      // from text
+    b2 = 0;                                      // Text
   };
+
+
+
+  // Approximates the analog bandpass prototype transfer function:
+  //
+  //                s*w0/Q
+  // H(s) = ---------------------
+  //         w0^2 + s*w0/Q + s^2
+  //
+  auto makeBandpass = [&](double w0, double Q)
+  {
+    calcIntermediates(w0, Q);
+
+    double B0 = 0;                          // Text
+    double R1 = A0*p0 + A1*p1 + A2*p2;      // Eq 39
+    double R2 = -A0 + A1 + 4*(p0-p1)*A2;    // Eq 39
+    double B2 = (R1 - R2*p1) / (4*p1*p1);   // Eq 40
+    double B1 = R2 + 4*(p1-p0)*B2;          // Eq 40
+
+    b1 = -0.5*sqrt(B1);                     // Eq 41
+    b0 =  0.5*(sqrt(B2+b1*b1)-b1);          // Eq 41
+    b2 =  -b0 - b1;                         // Eq 41
+  };
+
 
 
 
@@ -614,17 +657,21 @@ void biquadDesignVicanek()
     FilterPlotter<double> plt;
     plt.addFilterSpecificationBA(ba);
     plt.setFrequenciesAreRadian(false);
-    plt.setDecibelFloor(-80);
+    plt.setDecibelFloor(-60);
     plt.setPixelSize(2000, 500);
     plt.plotFrequencyResponses(1000, 20, 20000, true, true, true, false, false);
   };
 
-  makeLowpass(wc, Q);
-  plotFreqResp();
 
 
+  makeLowpass( wc, Q); plotFreqResp();
+  makeBandpass(wc, Q); plotFreqResp();
 
-    
+
+  // ToDo:
+  // -Maybe refine the lowpass design by imposing a magnitude match at the Nyquist freq, too. The 
+  //  current design just sets b2=0 for the lowpass design but we could use that degree of freedom
+  //  for an even better match.
   
   int dummy = 0;
 }
