@@ -835,11 +835,13 @@ bool stateVariableFilterUnitTest()
 
   using Real = double;
 
+  Real tol = 1.e-13;
+
   int N = 200;
 
-  Real b0 =  0.0;
-  Real b1 =  4.0;  // 0.5
-  Real b2 =  0.0;  // 2.0
+  Real b0 =  4.0;
+  Real b1 =  0.5;
+  Real b2 =  2.0;
   Real a1 = -0.8;
   Real a2 = +0.9;
 
@@ -864,9 +866,13 @@ bool stateVariableFilterUnitTest()
   for(int n = 0; n < N; n++)
     ySvf[n] = svf.getSample(x[n]);
 
-  rsPlotVectors(yBqd, ySvf, yBqd-ySvf);
+  std::vector<Real> err = yBqd - ySvf;
+  //rsPlotVectors(err);
+  //rsPlotVectors(yBqd, ySvf, yBqd-ySvf);
 
-  //rsPlotArrays(N-2, &yBqd[0], &ySvf[2]);
+  Real maxErr = rsMaxAbs(err);
+  ok &= maxErr <= tol;
+
 
 
   // Observations:
@@ -876,9 +882,12 @@ bool stateVariableFilterUnitTest()
   //  two samples earlier
   // -With (b0,b1,b2, a1,a2) = (0,4,0, -0.8,+0.9), the output seem to match exactly. This leads to
   //  cB=0 in the SVF, i.e. the bandpass output is zero
+  // -With (b0,b1,b2, a1,a2) = (4,0,4, -0.8,+0.9), we also get a perfect match, cB=0 as well
+  // -Whenever (b0 - b2) = 0, cB becomes zero and in these cases, it looks good
+  // -Multiplying cB by -1 seems to fix it in case 1
 
-
-
+  // ToDo:
+  // -Try more tests with different settings
 
   return ok;
 }

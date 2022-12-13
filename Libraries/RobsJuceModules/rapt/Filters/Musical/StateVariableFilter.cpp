@@ -74,22 +74,23 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   // Compute coeffs:
   g  = real(s1 / s2);                         // 16a, the quotient should also be real
   R2 = s * TPar(2) * (a2 - TPar(1));          // 16b
-  cH = (b0 - b1 + b2) / (TPar(1) - a1 + a2);  // 16c,  == -(b0-b1+b2) / s1   before taking the sqrt?
+  cH = (b0 - b1 + b2) / (TPar(1) - a1 + a2);  // 16c, == -(b0-b1+b2) / s1   before taking the sqrt?
   cB = s * TPar(2) * (b0 - b2);               // 16d
   cL = (b0 + b1 + b2) / (TPar(1) + a1 + a2);  // 16e
 
 
+  cB *= -1.0;  // Test - fudging - yes - this indeed fixes a problem!
+
   h = 1 / (1 + R2*g + g*g);  // factor for feedback precomputation
-  int dummy = 0;
+
+
   
   // formulas from (Eq 16 a-e):
   // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
   
   // ToDo:
-  // -It seems like the computation of g and R2 is correct but something seems wrong about the
-  //  cH,cB,cL coeffs
-  // -Check, if the paper uses the same conventions as we do here
-  // -Write a unit test that compares the outputs of a SVF to a normal biquad.
+  // -Figure out why we need the factor -1 for the cB coeff with respect to the formula in the 
+  //  paper
 }
 
 // Misc:
