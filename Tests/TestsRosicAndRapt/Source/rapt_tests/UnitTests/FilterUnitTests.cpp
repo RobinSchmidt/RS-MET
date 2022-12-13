@@ -833,6 +833,38 @@ bool stateVariableFilterUnitTest()
 {
   bool ok = true;
 
+  using Real = double;
+
+  int N = 200;
+
+  Real b0 = 4.0;
+  Real b1 = 0.5;
+  Real b2 = 2.0;
+  Real a1 = 0.5;
+  Real a2 = 0.9;
+
+  // Helper function to compute biquad response for a signal x
+  auto bqdResp = [&](const Real *x, Real* y, int N )
+  {
+    RAPT::rsAssert(x != y, "Not suitable for in-place computation");
+    y[0] = b0 * x[0];
+    y[1] = b0 * x[1] + b1 * x[0] - a1 * y[0];
+    for(int n = 2; n < N; n++)
+      y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] - a1 * y[n-1] - a2 * y[n-2];
+  };
+
+
+  std::vector<Real> x(N), yBqd(N);
+  x[0] = 1;
+  bqdResp(&x[0], &yBqd[0], N);
+
+
+
+  rsPlotVectors(yBqd);
+
+
+
+
 
   return ok;
 }
