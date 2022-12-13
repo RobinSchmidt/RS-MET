@@ -764,9 +764,9 @@ void biquadDesignVicanek()
   // -For a peaking EQ with G > 1, the bandwidth looks far wider than the corresponding cut, i.e. 
   //  G = 10 looks wider than G = 0.1. -> Figure out what's wrong here or if that kind of behavior 
   //  should be expected (that could be the case)! Find formulas for converting between Q and 
-  //  bandwidth in octaves - maybe in the analog domain. We probably already have them in 
+  //  bandwidth in octaves - maybe do that in the analog domain. We probably already have them in 
   //  rsBandwidthConverter. 
-  // -With fc = 8000, we trigger an assert for the peak-EQ with G = 0, i.e. the notch.
+  // -With fc = 8000, we trigger an assert for the peak-EQ with G = 0, i.e. the notch. Why?
   //
   // Notes:
   // -The simplified designs do not require the computation of the p0,p1,p2 values which saves the
@@ -774,7 +774,7 @@ void biquadDesignVicanek()
   //  sqrt. The first call to sqrt that depends only on q may be avoided if the result can be
   //  precomputed. I think, for the sampler's VCF, we should use these - but may try to derive SVF
   //  versions of them directly rather than computing biquad coeffs and the converting to SVF. 
-  //  Martin also say that they are safer to use with single precision.
+  //  Martin also says that they are safer to use with single precision.
   //
   // ToDo:
   // -Maybe refine the lowpass design by imposing a magnitude match at the Nyquist freq, too. The 
@@ -789,6 +789,10 @@ void biquadDesignVicanek()
   //  adding (or subtracting) to the original?
   // -What's the limit if we let G approach zero in the peak-EQ? ...should be a notch, I think. 
   //  Yes, it indeed looks like a notch.
+  // -Try to directly derive formulas for a notch design. Maybe use a match at DC and fs/2 as 
+  //  constraint. Maybe place the pair of zeros on the unit-circle directly (determining the 
+  //  b-coeffs up to a scale factor), then use pole radius, angle and overall gain as degrees
+  //  of freedom and require: match at DC, fs/2 and ...hmmm... maybe the lower bandedge?
 
   int dummy = 0;
 }
