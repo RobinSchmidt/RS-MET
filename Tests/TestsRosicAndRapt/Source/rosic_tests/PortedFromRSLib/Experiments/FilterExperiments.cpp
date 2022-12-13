@@ -565,16 +565,15 @@ void biquadDesignVicanek()
   // We implement and test the biqad design formulas from this paper:
   // https://www.vicanek.de/articles/BiquadFits.pdf
 
-  // Design a lowpass:
-  double fs = 44100;
-  double fc =  1000;
-  double Q  =     3;
+  // User parameters:
+  double fs = 44100;    // sample rate
+  double fc =  1000;    // center or cutoff frequency
+  double Q  =     3;    // Quality factor
+  double G  =     4;    // gain for peak EQ
 
-  double wc = 2 * PI * fc / fs;
-
-  double b0, b1, b2, a1, a2;
-
-
+  // Algo parameters:
+  double wc = 2 * PI * fc / fs;  // normalized radian center/cutoff frequency
+  double b0, b1, b2, a1, a2;     // biquad coeffs
 
 
   // Calculates the feedback coeffs and some intermediate variables:
@@ -652,9 +651,31 @@ void biquadDesignVicanek()
     double B2 = (R1 - R2*p1) / (4*p1*p1);   // Eq 40
     double B1 = R2 + 4*(p1-p0)*B2;          // Eq 40
 
-    b1 = -0.5*sqrt(B1);                     // Eq 41
-    b0 =  0.5*(sqrt(B2+b1*b1)-b1);          // Eq 41
+    b1 = -0.5 * sqrt(B1);                   // Eq 41
+    b0 =  0.5 * (sqrt(B2+b1*b1)-b1);        // Eq 41
     b2 =  -b0 - b1;                         // Eq 41
+  };
+
+  // Approximates the analog peaking EQ prototype transfer function:
+  //
+  //         w0^2 + s*w0 *  sqrt(G)/Q  + s^2
+  // H(s) = ---------------------------------
+  //         w0^2 + s*w0 / (sqrt(G)*Q) + s^2
+  //
+  auto makePeaking = [&](double w0, double Q, double G)
+  {
+    calcIntermediates(w0, Q);
+
+    double B0 = A0;                             // Text
+    double R1 = (A0*p0 + A1*p1 + A2*p2) * G*G;  // Eq 44
+    double R2 = (-A0 + A1 + 4*(p0-p1))  * G*G;  // Eq 44
+    double B2 = (R1 - R2*p1 - B0) / (4*p1*p1);  // Eq 45
+    double B1 = R2 + B0 + 4*(p1-p0)*B2;         // Eq 45
+
+    double W  = 0.5*(sqrt(B0) + sqrt(B1));      // Eq 29
+    b0 = 0.5 * (W + sqrt(W*W + B2));            // Eq 29
+    b1 = 0.5 * (sqrt(B0) - sqrt(B1));           // Eq 29
+    b2 = -B2 / (4*b0);                          // Eq 29
   };
 
 
@@ -677,15 +698,24 @@ void biquadDesignVicanek()
 
 
 
-  makeLowpass( wc, Q); plotFreqResp();
-  makeHighpass(wc, Q); plotFreqResp();
-  makeBandpass(wc, Q); plotFreqResp();
+  makeLowpass( wc, Q);    plotFreqResp();
+  makeHighpass(wc, Q);    plotFreqResp();
+  makeBandpass(wc, Q);    plotFreqResp();
+  makePeaking( wc, Q, G); plotFreqResp();
 
 
   // ToDo:
   // -Maybe refine the lowpass design by imposing a magnitude match at the Nyquist freq, too. The 
   //  current design just sets b2=0 for the lowpass design but we could use that degree of freedom
   //  for an even better match.
+  // -The bandpass is a constant peak gain bandpass. What about constant skirt gain?
+  // -What about notch/bandstop filters? Maybe they can be obtained by 1 - bandpass?
+  // -What about shelving filters?
+  // -What about allpass filters? I think, it's perhaps impossible to match the phase at Nyquist 
+  //  because of the phase being restricted to a multiple of 180 degrees there (right?). Maybe it's
+  //  sensible to match the magnitude of a bandpass that would be obtained form the allpass by
+  //  adding (or subtracting) to the original?
+  // -What's the limit if we let G approach zero in the peak-EQ? ...should be a notch, I think.
   
   int dummy = 0;
 }
