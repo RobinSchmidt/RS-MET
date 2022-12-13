@@ -27,6 +27,7 @@ bool runUnitTestsRapt()
   //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
 
   //// these tests should go into UnitTestsRosic.cpp:
+  ok &= runUnitTest(&stateVariableFilterUnitTest,"rsStateVariableFilter"); 
   //ok &= runUnitTest(&analysisUnitTest,      "Analysis");
   //ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
   //return ok;

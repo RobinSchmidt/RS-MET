@@ -77,7 +77,16 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   cH = (b0 - b1 + b2) / (TPar(1) - a1 + a2);  // 16c,  == -(b0-b1+b2) / s1   before taking the sqrt?
   cB = s * TPar(2) * (b0 - b2);               // 16d
   cL = (b0 + b1 + b2) / (TPar(1) + a1 + a2);  // 16 e
+
+  // Nope - it doesn't work. Let's try to fudge the coeffs - could be that they are using a factor
+  // 2 somewhere
+  g  *= 1.0;   // samller g -> lower resonant freq
+  R2 *= 1.0;   // smaller R -> longer ringing, higher Q
   
+
+
+  h = 1 / (1 + R2*g + g*g);  // factor for feedback precomputation
+
   int dummy = 0;
   
   // formulas from (Eq 16 a-e):

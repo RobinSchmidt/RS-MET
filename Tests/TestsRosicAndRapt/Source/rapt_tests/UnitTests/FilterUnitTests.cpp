@@ -840,7 +840,7 @@ bool stateVariableFilterUnitTest()
   Real b0 = 4.0;
   Real b1 = 0.5;
   Real b2 = 2.0;
-  Real a1 = 0.5;
+  Real a1 = -0.8;
   Real a2 = 0.9;
 
   // Helper function to compute biquad response for a signal x
@@ -854,13 +854,20 @@ bool stateVariableFilterUnitTest()
   };
 
 
-  std::vector<Real> x(N), yBqd(N);
+  std::vector<Real> x(N), yBqd(N), ySvf(N);
   x[0] = 1;
   bqdResp(&x[0], &yBqd[0], N);
 
+  using SVF = RAPT::rsStateVariableFilter<Real, Real>;
+  SVF svf;
+  svf.setupFromBiquad(b0, b1, b2, a1, a2);
+  for(int n = 0; n < N; n++)
+    ySvf[n] = svf.getSample(x[n]);
 
 
-  rsPlotVectors(yBqd);
+
+
+  rsPlotVectors(yBqd, ySvf);
 
 
 
