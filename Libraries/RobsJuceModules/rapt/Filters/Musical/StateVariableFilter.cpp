@@ -76,23 +76,18 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   R2 = s * TPar(2) * (a2 - TPar(1));          // 16b
   cH = (b0 - b1 + b2) / (TPar(1) - a1 + a2);  // 16c,  == -(b0-b1+b2) / s1   before taking the sqrt?
   cB = s * TPar(2) * (b0 - b2);               // 16d
-  cL = (b0 + b1 + b2) / (TPar(1) + a1 + a2);  // 16 e
-
-  // Nope - it doesn't work. Let's try to fudge the coeffs - could be that they are using a factor
-  // 2 somewhere
-  g  *= 1.0;   // samller g -> lower resonant freq
-  R2 *= 1.0;   // smaller R -> longer ringing, higher Q
-  
+  cL = (b0 + b1 + b2) / (TPar(1) + a1 + a2);  // 16e
 
 
   h = 1 / (1 + R2*g + g*g);  // factor for feedback precomputation
-
   int dummy = 0;
   
   // formulas from (Eq 16 a-e):
   // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
   
   // ToDo:
+  // -It seems like the computation of g and R2 is correct but something seems wrong about the
+  //  cH,cB,cL coeffs
   // -Check, if the paper uses the same conventions as we do here
   // -Write a unit test that compares the outputs of a SVF to a normal biquad.
 }
