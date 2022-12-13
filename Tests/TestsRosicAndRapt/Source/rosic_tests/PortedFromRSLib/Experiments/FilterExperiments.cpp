@@ -677,21 +677,52 @@ void biquadDesignVicanek()
     b2 = -B2 / (4*b0);                            // Eq 29
   };
 
-  // A cheaper approximation, requiring a match at DC and fs/2
+  // A cheaper lowpass approximation, requiring a match at DC and fs/2:
   auto makeLowpassS = [&](double w0, double Q)
   {
     calcIntermediates(w0, Q);
 
-    double f0  = 2 * fc / fs;  // verify!
+    double f0  = 2 * fc / fs;  // verify! ...looks ok
     double f02 = f0*f0;
-
-    double r0 = 1 + a1 + a2;
-    double k  = (1-f02);
-    double r1 = (1 - a1 + a2)*f02 / sqrt(k*k + f02/(Q*Q));
+    double k   = (1-f02);
+    double r0  = 1 + a1 + a2;
+    double r1  = (1 - a1 + a2)*f02 / sqrt(k*k + f02/(Q*Q));
 
     b0 = 0.5 * (r0 + r1);
     b1 = r0 - b0;
     b2 = 0;
+  };
+
+  // A cheaper highpass approximation, requiring a double zero at DC and match at fs/2:
+  auto makeHighpassS = [&](double w0, double Q)
+  {
+    calcIntermediates(w0, Q);
+
+    double f0  = 2 * fc / fs;
+    double f02 = f0*f0;
+    double k   = (1-f02);
+    double r1  = (1 - a1 + a2) / sqrt(k*k + f02/(Q*Q));
+
+    b0 = 0.25*r1;
+    b1 = -2*b0;
+    b2 = b0;
+  };
+
+  // A cheaper bandpass approximation, requiring a single zero at DC, a slope match at DC and a
+  // magnitude match at fs/2:
+  auto makeBandpassS = [&](double w0, double Q)
+  {
+    calcIntermediates(w0, Q);
+
+    double f0  = 2 * fc / fs;
+    double f02 = f0*f0;
+    double k   = (1-f02);
+    double r0  = (1 + a1 + a2) / (PI * f0 * Q);
+    double r1  = ((1 - a1 + a2)*f0/Q) / sqrt(k*k + f02/(Q*Q));
+
+    b0 = -0.5*r1;
+    b1 =  0.5*(r0-b1);
+    b2 = -b0 - b1;
   };
 
 
@@ -712,12 +743,17 @@ void biquadDesignVicanek()
   };
 
 
-
+  /*
   makeLowpass(  wc, 3);      plotFreqResp();
   makeLowpassS( wc, 3);      plotFreqResp();
 
-  //makeHighpass(wc, 3);      plotFreqResp();
-  //makeBandpass(wc, 3);      plotFreqResp();
+  makeHighpass( wc, 3);      plotFreqResp();
+  makeHighpassS(wc, 3);      plotFreqResp();
+  */
+
+  makeBandpass(wc,  3);      plotFreqResp();
+  makeBandpassS(wc, 3);      plotFreqResp();  // that looks wrong!
+
 
   makePeaking( wc, 1,  0.1); plotFreqResp();
   makePeaking( wc, 1, 10.0); plotFreqResp();
@@ -735,7 +771,12 @@ void biquadDesignVicanek()
   //  because of the phase being restricted to a multiple of 180 degrees there (right?). Maybe it's
   //  sensible to match the magnitude of a bandpass that would be obtained form the allpass by
   //  adding (or subtracting) to the original?
-  // -What's the limit if we let G approach zero in the peak-EQ? ...should be a notch, I think.
+  // -What's the limit if we let G approach zero in the peak-EQ? ...should be a notch, I think. 
+  //  Yes, it indeed looks like a notch.
+  // -Somehow, for a peaking EQ with G > 1, the bandwidth looks far wider than the corresponding
+  //  cut, i.e. G = 10 looks wider than G = 0.1. -> Figure out what's wrong here! Find formulas
+  //  for converting between Q and bandwidth in octaves - maybe in the analog domain. We probably
+  //  already have them in rsBandwidthConverter
   
   int dummy = 0;
 }
