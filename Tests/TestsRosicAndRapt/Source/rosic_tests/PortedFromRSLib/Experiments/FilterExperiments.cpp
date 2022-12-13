@@ -768,6 +768,14 @@ void biquadDesignVicanek()
   //  rsBandwidthConverter. 
   // -With fc = 8000, we trigger an assert for the peak-EQ with G = 0, i.e. the notch.
   //
+  // Notes:
+  // -The simplified designs do not require the computation of the p0,p1,p2 values which saves the
+  //  call to sin. They also save a couple of calls to sqrt. What remains is a call to exp, cos,
+  //  sqrt. The first call to sqrt that depends only on q may be avoided if the result can be
+  //  precomputed. I think, for the sampler's VCF, we should use these - but may try to derive SVF
+  //  versions of them directly rather than computing biquad coeffs and the converting to SVF. 
+  //  Martin also say that they are safer to use with single precision.
+  //
   // ToDo:
   // -Maybe refine the lowpass design by imposing a magnitude match at the Nyquist freq, too. The 
   //  current design just sets b2=0 for the lowpass design but we could use that degree of freedom
