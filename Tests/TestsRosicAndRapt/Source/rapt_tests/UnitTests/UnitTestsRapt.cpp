@@ -28,7 +28,7 @@ bool runUnitTestsRapt()
 
   //// these tests should go into UnitTestsRosic.cpp:
   //ok &= runUnitTest(&analysisUnitTest,      "Analysis");
-  ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
+  //ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
   //return ok;
 
 
@@ -74,11 +74,11 @@ bool runUnitTestsRapt()
 
   // Filters:
   //ok &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
-  ok &= runUnitTest(&filterSpecUnitTest,     "rsFilterSpecification (BA/ZPK)");
-  ok &= runUnitTest(&movingMaximumUnitTest,  "moving maximum filter");
-  ok &= runUnitTest(&movingQuantileUnitTest, "moving quantile filter"); // under construction
-  ok &= runUnitTest(&ladderUnitTest,         "rsLadder"); 
-
+  ok &= runUnitTest(&filterSpecUnitTest,         "rsFilterSpecification (BA/ZPK)");
+  ok &= runUnitTest(&movingMaximumUnitTest,      "moving maximum filter");
+  ok &= runUnitTest(&movingQuantileUnitTest,     "moving quantile filter"); // under construction
+  ok &= runUnitTest(&ladderUnitTest,             "rsLadder"); 
+  ok &= runUnitTest(&stateVariableFilterUnitTest,"rsStateVariableFilter"); 
 
   // Visualization:
   ok &= runUnitTest(&imagePainterUnitTest,   "rsImagePainter");

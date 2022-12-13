@@ -803,9 +803,6 @@ bool ladderUnitTest()
     return ok;
   };
 
-
-
-
   //TPar tol = RS_EPS(TPar) * 1.e9;
   // We need a high tolerance for these tests because getTransferFunctionOld is very imprecise 
   // numerically. ToDo: use two separate tolerances for old and new implementation
@@ -824,18 +821,17 @@ bool ladderUnitTest()
   ok &= testTransferFuncs1(Mode::LP_18, 0.2, 1.e-1, 1.e-10);
   ok &= testTransferFuncs1(Mode::LP_24, 0.2, 1.e-1, 1.e-10);
 
-
-
   //ok &= testTransferFuncs1(Mode::LP_24, 0.0, 1.e-6, 1.e-10);
   //ok &= testTransferFuncs1(Mode::LP_24, 0.5, 1.e-1, 1.e-10);
 
-
-
-
   // todo: test for other filter modes and other values of B1: test at least 0.0, 0.5, 0.23
 
+  return ok;
+}
 
-
+bool stateVariableFilterUnitTest()
+{
+  bool ok = true;
 
 
   return ok;
