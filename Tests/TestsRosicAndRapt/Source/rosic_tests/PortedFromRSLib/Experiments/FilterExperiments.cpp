@@ -600,7 +600,6 @@ void biquadDesignVicanek()
     p2 = 4*p0*p1;	                        // Eq 26, phi_2 = 4*phi_0*phi_1
   };
 
-
   // Approximates the analog lowpass prototype transfer function:
   //
   //                 w0^2
@@ -678,6 +677,22 @@ void biquadDesignVicanek()
     b2 = -B2 / (4*b0);                            // Eq 29
   };
 
+  // A cheaper approximation, requiring a match at DC and fs/2
+  auto makeLowpassS = [&](double w0, double Q)
+  {
+    calcIntermediates(w0, Q);
+
+    double f0  = 2 * fc / fs;  // verify!
+    double f02 = f0*f0;
+
+    double r0 = 1 + a1 + a2;
+    double k  = (1-f02);
+    double r1 = (1 - a1 + a2)*f02 / sqrt(k*k + f02/(Q*Q));
+
+    b0 = 0.5 * (r0 + r1);
+    b1 = r0 - b0;
+    b2 = 0;
+  };
 
 
 
@@ -698,7 +713,9 @@ void biquadDesignVicanek()
 
 
 
-  //makeLowpass( wc, 3);      plotFreqResp();
+  makeLowpass(  wc, 3);      plotFreqResp();
+  makeLowpassS( wc, 3);      plotFreqResp();
+
   //makeHighpass(wc, 3);      plotFreqResp();
   //makeBandpass(wc, 3);      plotFreqResp();
 
