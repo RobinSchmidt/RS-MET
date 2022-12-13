@@ -568,8 +568,8 @@ void biquadDesignVicanek()
   // User parameters:
   double fs = 44100;    // sample rate
   double fc =  1000;    // center or cutoff frequency
-  double Q  =     3;    // Quality factor
-  double G  =     4;    // gain for peak EQ
+  //double Q  =     1;    // Quality factor
+  //double G  =     0.1;  // Gain for peak EQ (raw amplitude)
 
   // Algo parameters:
   double wc = 2 * PI * fc / fs;  // normalized radian center/cutoff frequency
@@ -666,16 +666,16 @@ void biquadDesignVicanek()
   {
     calcIntermediates(w0, Q);
 
-    double B0 = A0;                             // Text
-    double R1 = (A0*p0 + A1*p1 + A2*p2) * G*G;  // Eq 44
-    double R2 = (-A0 + A1 + 4*(p0-p1))  * G*G;  // Eq 44
-    double B2 = (R1 - R2*p1 - B0) / (4*p1*p1);  // Eq 45
-    double B1 = R2 + B0 + 4*(p1-p0)*B2;         // Eq 45
+    double B0 = A0;                               // Text
+    double R1 = (A0*p0 + A1*p1 + A2*p2)   * G*G;  // Eq 44
+    double R2 = (-A0 + A1 + 4*(p0-p1)*A2) * G*G;  // Eq 44
+    double B2 = (R1 - R2*p1 - B0) / (4*p1*p1);    // Eq 45
+    double B1 = R2 + B0 + 4*(p1-p0)*B2;           // Eq 45
 
-    double W  = 0.5*(sqrt(B0) + sqrt(B1));      // Eq 29
-    b0 = 0.5 * (W + sqrt(W*W + B2));            // Eq 29
-    b1 = 0.5 * (sqrt(B0) - sqrt(B1));           // Eq 29
-    b2 = -B2 / (4*b0);                          // Eq 29
+    double W  = 0.5*(sqrt(B0) + sqrt(B1));        // Eq 29
+    b0 = 0.5 * (W + sqrt(W*W + B2));              // Eq 29
+    b1 = 0.5 * (sqrt(B0) - sqrt(B1));             // Eq 29
+    b2 = -B2 / (4*b0);                            // Eq 29
   };
 
 
@@ -698,10 +698,12 @@ void biquadDesignVicanek()
 
 
 
-  makeLowpass( wc, Q);    plotFreqResp();
-  makeHighpass(wc, Q);    plotFreqResp();
-  makeBandpass(wc, Q);    plotFreqResp();
-  makePeaking( wc, Q, G); plotFreqResp();
+  //makeLowpass( wc, 3);      plotFreqResp();
+  //makeHighpass(wc, 3);      plotFreqResp();
+  //makeBandpass(wc, 3);      plotFreqResp();
+
+  makePeaking( wc, 1, 0.1); plotFreqResp();
+  // b0 is nan -> sqrt of negative number in sqrt(W*W + B2), I think
 
 
   // ToDo:
