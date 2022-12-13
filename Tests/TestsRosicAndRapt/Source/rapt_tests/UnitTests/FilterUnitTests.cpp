@@ -868,12 +868,10 @@ bool stateVariableFilterUnitTest()
 
   std::vector<Real> err = yBqd - ySvf;
   //rsPlotVectors(err);
-  //rsPlotVectors(yBqd, ySvf, yBqd-ySvf);
+  rsPlotVectors(yBqd, ySvf, yBqd-ySvf);
 
   Real maxErr = rsMaxAbs(err);
   ok &= maxErr <= tol;
-
-
 
   // Observations:
   // -With (b0,b1,b2, a1,a2) = (4,0,0, -0.8,+0.9), the SVF output looks as if it is exactly delayed
@@ -888,6 +886,9 @@ bool stateVariableFilterUnitTest()
 
   // ToDo:
   // -Try more tests with different settings
+  // -Cover cases where u1,u2 in setupFromBiquad are ++, +-, -+, --
+  //  --: -0.8,+0.9; -+: 2.0, -0.25 (unstable), ...todo...maybe write a helper function that takes
+  //  the biquad coeffs and performs the test.
 
   return ok;
 }
