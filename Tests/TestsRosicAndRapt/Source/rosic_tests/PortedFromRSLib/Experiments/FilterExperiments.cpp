@@ -702,8 +702,9 @@ void biquadDesignVicanek()
   //makeHighpass(wc, 3);      plotFreqResp();
   //makeBandpass(wc, 3);      plotFreqResp();
 
-  makePeaking( wc, 1, 0.1); plotFreqResp();
-  // b0 is nan -> sqrt of negative number in sqrt(W*W + B2), I think
+  makePeaking( wc, 1,  0.1); plotFreqResp();
+  makePeaking( wc, 1, 10.0); plotFreqResp();
+  makePeaking( wc, 1,  0.0); plotFreqResp();      // Should be a notch with G=0. Looks OK.
 
 
   // ToDo:
