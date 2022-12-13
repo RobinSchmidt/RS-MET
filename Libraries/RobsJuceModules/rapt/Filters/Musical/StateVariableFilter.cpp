@@ -74,22 +74,15 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   // Compute coeffs:
   g  = real(s1 / s2);                         // 16a, the quotient should also be real
   R2 = s * TPar(2) * (a2 - TPar(1));          // 16b
-  cH = (b0 - b1 + b2) / (TPar(1) - a1 + a2);  // 16c, == -(b0-b1+b2) / s1   before taking the sqrt?
-  cB = s * TPar(2) * (b0 - b2);               // 16d
+  cH = (b0 - b1 + b2) / (TPar(1) - a1 + a2);  // 16c, == -(b0-b1+b2) / s1 before taking the sqrt?
+  cB = s * TPar(2) * (b2 - b0);               // 16d, but with a factor of -1 (why?)
   cL = (b0 + b1 + b2) / (TPar(1) + a1 + a2);  // 16e
-
-
-  cB *= -1.0;  // Test - fudging - yes - this indeed fixes a problem!
-
-  h = 1 / (1 + R2*g + g*g);  // factor for feedback precomputation
-
-
-  
-  // formulas from (Eq 16 a-e):
+  h  = 1 / (1 + R2*g + g*g);                  // factor for feedback precomputation
+  // The formulas are taken from (Eq 16 a-e) here:
   // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
   
   // ToDo:
-  // -Figure out why we need the factor -1 for the cB coeff with respect to the formula in the 
+  // -Figure out why we need the factor -1 for the cB coeff with respect to the formula 16d in the 
   //  paper
 }
 
