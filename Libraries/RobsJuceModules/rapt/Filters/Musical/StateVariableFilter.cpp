@@ -239,6 +239,12 @@ ToDo:
 
 -When done, maybe use these formulas for the biquad design:
  https://www.vicanek.de/articles/BiquadFits.pdf
+ OK - the formulas have been implemented in biquadDesignVicanek in FilterExperiments.cpp. But maybe 
+ actually using those to first compute biquad coeffs and then convert from biquad to svf coeffs is 
+ unnecessarily expensive. Try to replicate Martin's approach using an expression for the SVF 
+ magnitude response directly. I think, the R2 and g variables can be computed from Q and w0 and it 
+ should be quite easy to derive the expressions. It then remains to derive expressions for cH, cB, 
+ cL which may be a bit more involved - we'll see....
 
 -Maybe have a look at this, too:
  https://zrna.org/akso/object/contrib/tiar/filter/ZDF-SVF-1

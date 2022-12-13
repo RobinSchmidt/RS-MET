@@ -566,10 +566,8 @@ void biquadDesignVicanek()
   // https://www.vicanek.de/articles/BiquadFits.pdf
 
   // User parameters:
-  double fs = 44100;    // sample rate
-  double fc =  1000;    // center or cutoff frequency
-  //double Q  =     1;    // Quality factor
-  //double G  =     0.1;  // Gain for peak EQ (raw amplitude)
+  double fs = 44100;    // Sample rate
+  double fc =  1280;    // Center or cutoff frequency
 
   // Algo parameters:
   double wc = 2 * PI * fc / fs;  // normalized radian center/cutoff frequency
@@ -720,13 +718,12 @@ void biquadDesignVicanek()
     double r0  = (1 + a1 + a2) / (PI * f0 * Q);
     double r1  = ((1 - a1 + a2)*f0/Q) / sqrt(k*k + f02/(Q*Q));
 
-    b0 = -0.5*r1;
-    b1 =  0.5*(r0-b1);
+    b1 = -0.5*r1;
+    b0 =  0.5*(r0-b1);
     b2 = -b0 - b1;
   };
 
-
-
+  // Helper function to plot the magnitude response:
   auto plotFreqResp = [&]()
   {
     rsFilterSpecificationBA<double> ba;
@@ -740,26 +737,37 @@ void biquadDesignVicanek()
     plt.setDecibelFloor(-60);
     plt.setPixelSize(2000, 500);
     plt.plotFrequencyResponses(1000, 20, 20000, true, true, true, false, false);
+    // Freq axis looks kinda ugly. Fix this. Maybe factor out a plotBiquadMagResp function into 
+    // the rs_testing module for general use
   };
 
 
-  /*
-  makeLowpass(  wc, 3);      plotFreqResp();
-  makeLowpassS( wc, 3);      plotFreqResp();
+  // Regular and simplified lowpass:
+  makeLowpass(  wc, 3); plotFreqResp();
+  makeLowpassS( wc, 3); plotFreqResp();
 
-  makeHighpass( wc, 3);      plotFreqResp();
-  makeHighpassS(wc, 3);      plotFreqResp();
-  */
+  // Regular and simplified highpass:
+  makeHighpass( wc, 3); plotFreqResp();
+  makeHighpassS(wc, 3); plotFreqResp();
 
-  makeBandpass(wc,  3);      plotFreqResp();
-  makeBandpassS(wc, 3);      plotFreqResp();  // that looks wrong!
+  // Regular and simplified bandpass:
+  makeBandpass( wc, 3); plotFreqResp();
+  makeBandpassS(wc, 3); plotFreqResp();
 
-
+  // Peaking equalizer:
   makePeaking( wc, 1,  0.1); plotFreqResp();
   makePeaking( wc, 1, 10.0); plotFreqResp();
   makePeaking( wc, 1,  0.0); plotFreqResp();      // Should be a notch with G=0. Looks OK.
 
-
+  // Observations:
+  // -The freq-responses look mostly reasonable
+  // -For a peaking EQ with G > 1, the bandwidth looks far wider than the corresponding cut, i.e. 
+  //  G = 10 looks wider than G = 0.1. -> Figure out what's wrong here or if that kind of behavior 
+  //  should be expected (that could be the case)! Find formulas for converting between Q and 
+  //  bandwidth in octaves - maybe in the analog domain. We probably already have them in 
+  //  rsBandwidthConverter. 
+  // -With fc = 8000, we trigger an assert for the peak-EQ with G = 0, i.e. the notch.
+  //
   // ToDo:
   // -Maybe refine the lowpass design by imposing a magnitude match at the Nyquist freq, too. The 
   //  current design just sets b2=0 for the lowpass design but we could use that degree of freedom
@@ -773,11 +781,7 @@ void biquadDesignVicanek()
   //  adding (or subtracting) to the original?
   // -What's the limit if we let G approach zero in the peak-EQ? ...should be a notch, I think. 
   //  Yes, it indeed looks like a notch.
-  // -Somehow, for a peaking EQ with G > 1, the bandwidth looks far wider than the corresponding
-  //  cut, i.e. G = 10 looks wider than G = 0.1. -> Figure out what's wrong here! Find formulas
-  //  for converting between Q and bandwidth in octaves - maybe in the analog domain. We probably
-  //  already have them in rsBandwidthConverter
-  
+
   int dummy = 0;
 }
 
