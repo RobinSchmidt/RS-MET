@@ -38,6 +38,9 @@ public:
   radian frequencies. */
   void setFrequenciesAreRadian(bool areRadian);
 
+  void setDecibelFloor(T newFloor) { dBFloor = newFloor; }
+
+
   /** Adds a filter specification in terms of poles, zeros and gain to our list. You may also pass 
   a sampleRate in which case the poles and zeros will be interpreted as z-plane values. Otherwise
   an analog filter (corresponding to an infinite sample rate) will be assumed and the poles and 

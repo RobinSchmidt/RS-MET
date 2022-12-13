@@ -567,7 +567,7 @@ void biquadDesignVicanek()
 
   // Design a lowpass:
   double fs = 44100;
-  double fc =  5000;
+  double fc =  1000;
   double Q  =     3;
 
   double wc = 2 * PI * fc / fs;
@@ -604,8 +604,23 @@ void biquadDesignVicanek()
 
 
 
+  auto plotFreqResp = [&]()
+  {
+    rsFilterSpecificationBA<double> ba;
+    ba.b = std::vector<std::complex<double>>({b0, b1, b2});
+    ba.a = std::vector<std::complex<double>>({1,  a1, a2});
+    ba.sampleRate = fs;
+
+    FilterPlotter<double> plt;
+    plt.addFilterSpecificationBA(ba);
+    plt.setFrequenciesAreRadian(false);
+    plt.setDecibelFloor(-80);
+    plt.setPixelSize(2000, 500);
+    plt.plotFrequencyResponses(1000, 20, 20000, true, true, true, false, false);
+  };
+
   makeLowpass(wc, Q);
- 
+  plotFreqResp();
 
 
 
