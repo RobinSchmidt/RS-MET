@@ -84,6 +84,9 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   // ToDo:
   // -Figure out why we need the factor -1 for the cB coeff with respect to the formula 16d in the 
   //  paper
+  // -Try to avoid complex numbers: I think, if one of the values und the sqtz gets negative, the
+  //  other one must be negative, too and at the end of the day, this just results in a sign-flip
+  //  in sopme intermediate variable. Maybe keep the original formulas in a comment for reference.
 }
 
 // Misc:
