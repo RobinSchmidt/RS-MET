@@ -251,6 +251,7 @@ ToDo:
 -Drag the RBJ cookbook biquad designs into this class, maybe deprecate the old BiquadDesigner
  class, they should all get the same API as the Vicanek designs: in terms of w0, Q, G and be 
  named rbjLowpass, rbjHighpass, etc.
+ -the old BiquadDesigner class may then be deprecated for good - the API is a mess anyway.
 -Drag also the Orfanidis "prescribed Nyquist frequency gain" peak EQ design in, name it 
  soPeak (for Sophocles Orfanidis)
 -Implement the formulas from the DAFX book - maybe prefix them by uz for Udo Zoelzer
