@@ -2241,7 +2241,9 @@ bool samplerFilterTest()
     float resoAmp = RAPT::rsDbToAmp(resoGain);
     switch(svfMode)
     {
-    case SVF::LOWPASS:        Q = BWC::lowpassResoGainToQ( resoAmp); break;
+    case SVF::LOWPASS:        Q = BWC::lowpassResoGainToQ( resoAmp); break; // new
+    //case SVF::LowpassMVS:     Q = BWC::lowpassResoGainToQ( resoAmp); break;   // old
+
     case SVF::HIGHPASS:       Q = BWC::lowpassResoGainToQ( resoAmp); break;
     case SVF::BANDPASS_SKIRT: Q = BWC::bandpassResoGainToQ(resoAmp); break;
     case SVF::BANDREJECT:     Q = BWC::bandpassResoGainToQ(resoAmp); break;
@@ -2260,7 +2262,9 @@ bool samplerFilterTest()
     // SNR of 100 dB. It's "relative" in the sense that it is measured against the actual signal 
     // level and not against the maximum possible signal level (i think).
   };
-  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);
+  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);  // old
+  //ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, true); // new
+
   ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  cutoff, reso, 1.e-5f, false);
   ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, cutoff, reso, 1.e-5f, false);
   //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, true);
