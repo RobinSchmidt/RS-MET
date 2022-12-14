@@ -7,7 +7,7 @@ unit circle) because otherwise the inverse filter will be unstable. */
 template<class T>
 void invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2);
 // Move to some sort of FilterTransformations class, maybe rename to invertBiquadDigital or 
-// inverBiquadZ
+// inverBiquadZ, take pointers instead of references
 
 /** Given two coefficient sets of 1st order filter stages, this function consolidates them into a
 single biquad stage. b0[0] is the b0 coefficient of the 1st stage, b0[1] the b0 coefficient of
@@ -15,6 +15,7 @@ the 2nd stage, etc. The biquad coefficients are returned in B0, B1, etc. */
 template<class T>
 void twoOnePolesToBiquad(T b0[2], T b1[2], T a1[2], T &B0, T &B1, T &B2, T &A1, T &A2);
 // Move to some sort of FilterStructureConversions class
+// use pointers for output variables
 
 /** Given either the numerator coefficiets b0, b1 or the denominator coefficients a0, a1 of a
 1st order filter (in c0, c1), this function ensures that the root (zero or pole) will be inside
@@ -25,6 +26,7 @@ response may have changed after this reflection (i'm currently not sure, why) - 
 to compensate this. */
 template<class T>
 void ensureOnePoleRootInsideUnitCircle(T &c0, T &c1);
+// use pointers
 
 /** Given 3 pairs of of a normalized radian frequency w[i] (== 2*PI*f/fs) and a desired
 magnitude m[i] at this frequency, this function computes coefficients for a first order filter
@@ -33,6 +35,7 @@ a coefficient set that realizes an identity filter) */
 template<class T>
 void magnitudeMatchedOnePoleCoeffs(T &b0, T &b1, T &a1, T w[3], T m[3]);
 // Move into some rsFilterDesignFormulas class.
+// use pointers
 
 
 
@@ -88,9 +91,10 @@ public:
 
 
 
-  /** Computes feedback coeffs for the vicanek designs. */
+  /** Computes feedback coeffs for the Vicanek designs. Implements the matched-z-trnasform (MZT) 
+  which leads to an invariance of the impulse response when there are no zeros (verify!). */
   template<class T>
-  static inline void mvFeedback(T w0, T Q, T* a1, T* a2);
+  static inline void mvFeedbackCoeffs(T w0, T Q, T* a1, T* a2);
   // Maybe make protected...but maybe it's useful for client code? Maybe it can be used in more
   // general contexts? Maybe for an impulse invariant 2-pole-0-zero resonator filter?
 
@@ -113,6 +117,19 @@ public:
             w0^2 + s*w0/Q + s^2   */
   template<class T>
   static inline void mvHighpassSimple(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2);
+
+
+  /** Bandpass design by Martin Vicanek, simplified (cheaper) version. Uses MZT for the poles and
+  requires a single zero at DC, a slope match at DC and a magnitude match at fs/2. Approximates the
+  analog bandpass prototype transfer function:
+
+                   s*w0/Q
+    H(s) = ---------------------
+            w0^2 + s*w0/Q + s^2    */
+  template<class T>
+  static inline void mvBandpassSimple(T w0, T Q, bool constSkirt, 
+    T* b0, T* b1, T* b2, T* a1, T* a2);
+
 
 
 
@@ -148,7 +165,7 @@ inline void rsFilterDesignFormulas::dampedSine(
 }
 
 template<class T>
-inline void rsFilterDesignFormulas::mvFeedback(T w0, T Q, T* a1, T* a2)
+inline void rsFilterDesignFormulas::mvFeedbackCoeffs(T w0, T Q, T* a1, T* a2)
 {
   T q = T(0.5) / Q;
   if(q <= 1)
@@ -165,7 +182,7 @@ inline void rsFilterDesignFormulas::mvFeedback(T w0, T Q, T* a1, T* a2)
 template<class T>
 inline void rsFilterDesignFormulas::mvLowpassSimple(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2)
 {
-  mvFeedback(w0, Q, a1, a2);
+  mvFeedbackCoeffs(w0, Q, a1, a2);
 
   T f0  = w0 * T(1.0/PI);
   T f02 = f0*f0;
@@ -181,7 +198,7 @@ inline void rsFilterDesignFormulas::mvLowpassSimple(T w0, T Q, T* b0, T* b1, T* 
 template<class T>
 inline void rsFilterDesignFormulas::mvHighpassSimple(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2)
 {
-  mvFeedback(w0, Q, a1, a2);
+  mvFeedbackCoeffs(w0, Q, a1, a2);
 
   T f0  = w0 * T(1.0/PI);
   T f02 = f0*f0;
@@ -192,6 +209,28 @@ inline void rsFilterDesignFormulas::mvHighpassSimple(T w0, T Q, T* b0, T* b1, T*
   *b1 = T(-2)   * *b0;
   *b2 = *b0;
 }
+
+template<class T>
+inline void rsFilterDesignFormulas::mvBandpassSimple(
+  T w0, T Q, bool constSkirt, T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  mvFeedbackCoeffs(w0, Q, a1, a2);
+
+  T f0  = w0 * T(1.0/PI);
+  T f02 = f0*f0;
+  T k   = (1-f02);
+  T r0  = (1 + *a1 + *a2) / (PI * f0 * Q);
+  T r1  = ((1 - *a1 + *a2)*f0/Q) / sqrt(k*k + f02/(Q*Q));
+
+  *b1 = T(-0.5) * r1;
+  *b0 = T( 0.5) * (r0 - *b1);
+  *b2 = -*b0 - *b1;
+
+  if(constSkirt) {
+    *b0 *= Q; *b1 *= Q; *b2 *= Q; } // Formula needs to be verified
+}
+
+
 
 
 
@@ -209,6 +248,7 @@ inline void rsFilterDesignFormulas::mvHighpassSimple(T w0, T Q, T* b0, T* b1, T*
 // -Implement the 5-point matched designs
 // -Implement the slop/tilt filter here
 // -Maybe rename to rsSmallFilterDesigner
+// -Try to get rid of the code duplication in the mv-designs
 
 
 
