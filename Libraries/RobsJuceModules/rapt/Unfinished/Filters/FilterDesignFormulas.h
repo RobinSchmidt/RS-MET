@@ -115,7 +115,8 @@ inline void rsFilterDesignFormulas::dampedSine(
   *b0 = TCof(A*sp);               // = A*sin(p)
   *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
 }
-// needs test
+
+
 
 
 

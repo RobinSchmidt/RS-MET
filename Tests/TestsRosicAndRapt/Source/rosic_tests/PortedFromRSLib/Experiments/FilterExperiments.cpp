@@ -756,6 +756,7 @@ void biquadDesignVicanek()
     // the rs_testing module for general use
   };
 
+  /*
   // Regular and simplified lowpass:
   makeLowpass(  wc, 3); plotFreqResp();
   makeLowpassS( wc, 3); plotFreqResp();
@@ -794,6 +795,7 @@ void biquadDesignVicanek()
   // highpass?:
   makeLowpass( wc, 10); makeDiff(); plotFreqResp();
   makeLowpassS(wc, 10); makeDiff(); plotFreqResp();
+  */
 
 
   // Observations:

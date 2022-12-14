@@ -5,32 +5,12 @@
 // utility functions for damped-sine filter design:
 // maybe move them as static functions into class rsModalFilter or rsModalFilterWithAttack
 
-/** Designs (i.e. computes coefficients from user parameters for) a two-pole-one-zero filter in 
-terms of its impulse response which is given as the damped sinusoid:
-
-  h[n] = A * exp(-n/d) * sin(w*n + p) * u[n]
-
-where u[n] is the unit step function. The filter can be implemented as:
-
-  y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] - a2*y[n-2]
-
-The parameters are:
-w: normalized radian frequency (= 2*pi*f/fs, f: frequency, fs: samplerate)
-A: amplitude
-d: normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
-p: start phase in radians.
-
-You can use different datatypes for the parameters and coefficients (for example, double and float)
-
-move to FilterDesignFormulas, change sign convention for a-coeffs */
+/** DEPRECATED - use rsFilterDesignFormulas::dampedSine instead! */
 template<class TPar, class TCof>
 void rsDampedSineFilterCoeffs(
-  TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2);
-// have inverse function rsDampedSineFilterParams
-// maybe move as static function into class rsDampedSine (currently still a prototype)
-// obsolete now - moved to rsFilterDesignFormulas::dampedSine
-
-
+  TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2)
+{ rsFilterDesignFormulas::dampedSine(w, A, d, p, b0, b1, a1, a2); }
+// ToDo: Move into a deprecated section and use the deprecation macro to trigger compiler warnings
 
 /** Finds the value k such that k*exp(-c*k) - exp(-c) = 0  for the given parameter c in the range
 0 < c < 1. k = 1 is always a solution to this root finding problem - the function will try to

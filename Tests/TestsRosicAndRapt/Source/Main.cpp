@@ -433,7 +433,7 @@ int main(int argc, char* argv[])
   //modalAnalysis1();
   //modalAnalysisPluck();
   //modalPartialResynthesis();
-  modalAnalysisGloriosa();
+  //modalAnalysisGloriosa();
 
   // Misc Audio:
   //centroid();

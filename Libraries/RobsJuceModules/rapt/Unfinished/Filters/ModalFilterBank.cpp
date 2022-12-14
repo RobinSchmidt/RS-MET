@@ -1,24 +1,5 @@
 //=================================================================================================
-// helper functions for damped-sine filter design:
-
-template<class TPar, class TCof>
-void rsDampedSineFilterCoeffs(
-  TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2)
-{
-  TPar cw, sw, cp, sp, P;
-  rsSinCos(w, &sw, &cw);
-  rsSinCos(p, &sp, &cp);
-  P   = exp(TPar(-1)/d);          // = exp(-alpha), pole radius
-  *a1 = TCof(-2*P*cw);            // = -2*P*cos(w)
-  *a2 = TCof(P*P);                // = P^2
-  *b0 = TCof(A*sp);               // = A*sin(p)
-  *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
-}
-// i tried to bake the minus sign into the a-coeffs such that the difference equation can be 
-// implemented with all plusses - but that didn't give any performance advantage, so i changed
-// it back for consistency with DSP literature. But maybe when we later use it with simd, using an
-// all-plusses convention could be advantageous...alhtough, we'll probably use the simd to compute
-// a bunch of filters in parallel, not to optimize a single filter...hmmm
+// helper functions 
 
 template<class T>
 T findDecayScalerLess1(T c)
