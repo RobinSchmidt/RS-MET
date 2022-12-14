@@ -174,7 +174,7 @@ void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
   // new/under construction:
   case LowpassMVS:
   {
-    rsError("Not yet working");
+    //rsError("Not yet working");
     R2 = 2*bandwidthToR(B);       // (R2 == 2*R == 1/Q)
     TPar w0 = TPar(2*PI) * fc/fs;
     TPar b0, b1, b2, a1, a2;
