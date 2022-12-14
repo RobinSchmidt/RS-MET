@@ -638,7 +638,7 @@ void biquadDesignVicanek()
   // H(s) = ---------------------
   //         w0^2 + s*w0/Q + s^2
   //
-  auto makeBandpass = [&](double w0, double Q)
+  auto makeBandpass = [&](double w0, double Q, bool constSkirt = false)
   {
     calcIntermediates(w0, Q);
 
@@ -651,6 +651,9 @@ void biquadDesignVicanek()
     b1 = -0.5 * sqrt(B1);                   // Eq 41
     b0 =  0.5 * (sqrt(B2+b1*b1)-b1);        // Eq 41
     b2 =  -b0 - b1;                         // Eq 41
+
+    if(constSkirt) {
+      b0 *= Q; b1 *= Q; b2 *= Q; } // Formula needs to be verified
   };
 
   // Approximates the analog peaking EQ prototype transfer function:
@@ -708,7 +711,7 @@ void biquadDesignVicanek()
 
   // A cheaper bandpass approximation, requiring a single zero at DC, a slope match at DC and a
   // magnitude match at fs/2:
-  auto makeBandpassS = [&](double w0, double Q)
+  auto makeBandpassS = [&](double w0, double Q, bool constSkirt = false)
   {
     calcIntermediates(w0, Q);
 
@@ -721,7 +724,19 @@ void biquadDesignVicanek()
     b1 = -0.5*r1;
     b0 =  0.5*(r0-b1);
     b2 = -b0 - b1;
+
+    if(constSkirt) {
+      b0 *= Q; b1 *= Q; b2 *= Q; } // Formula needs to be verified
   };
+
+  // Helper function to create the filter that produces: original - filtered
+  auto makeDiff = [&]()
+  {
+    b0 = 1  - b0;
+    b1 = a1 - b1;
+    b2 = a2 - b2;
+  };
+
 
   // Helper function to plot the magnitude response:
   auto plotFreqResp = [&]()
@@ -741,7 +756,6 @@ void biquadDesignVicanek()
     // the rs_testing module for general use
   };
 
-
   // Regular and simplified lowpass:
   makeLowpass(  wc, 3); plotFreqResp();
   makeLowpassS( wc, 3); plotFreqResp();
@@ -751,13 +765,36 @@ void biquadDesignVicanek()
   makeHighpassS(wc, 3); plotFreqResp();
 
   // Regular and simplified bandpass:
-  makeBandpass( wc, 3); plotFreqResp();
-  makeBandpassS(wc, 3); plotFreqResp();
+  makeBandpass( wc,  3, false); plotFreqResp();
+  makeBandpassS(wc,  3, false); plotFreqResp();
 
   // Peaking equalizer:
   makePeaking( wc, 1,  0.1); plotFreqResp();
   makePeaking( wc, 1, 10.0); plotFreqResp();
   makePeaking( wc, 1,  0.0); plotFreqResp();      // Should be a notch with G=0. Looks OK.
+
+  // Some higher Q (simplified) low/high/bandpass, the latter with const-skirt gain:
+  makeLowpassS( wc, 20);       plotFreqResp();
+  makeHighpassS(wc, 20);       plotFreqResp();
+  makeBandpassS(wc, 20, true); plotFreqResp();
+  // todo: plot them all in one plot
+
+  // Some low Q settings:
+  makeLowpassS( wc, 0.25); plotFreqResp();
+  makeHighpassS(wc, 0.25); plotFreqResp();
+  makeBandpassS(wc, 0.50,  true); plotFreqResp();
+  makeBandpassS(wc, 0.25,  true); plotFreqResp();
+  makeBandpassS(wc, 0.125, true); plotFreqResp();
+
+  // Obtain bandreject filter as difference between input and (const peak) bandpass:
+  makeBandpass( wc, 2, false); makeDiff(); plotFreqResp();
+  makeBandpassS(wc, 2, false); makeDiff(); plotFreqResp();
+
+  // A difference between input resonant lowpass is a resonant highpass - shouldn't it be a notched
+  // highpass?:
+  makeLowpass( wc, 10); makeDiff(); plotFreqResp();
+  makeLowpassS(wc, 10); makeDiff(); plotFreqResp();
+
 
   // Observations:
   // -The freq-responses look mostly reasonable
@@ -767,6 +804,11 @@ void biquadDesignVicanek()
   //  bandwidth in octaves - maybe do that in the analog domain. We probably already have them in 
   //  rsBandwidthConverter. 
   // -With fc = 8000, we trigger an assert for the peak-EQ with G = 0, i.e. the notch. Why?
+  // -In the notch-filter obtained by subtracting a bandpass signal from the input, the notch freq
+  //  is slightly off from where it's supposed to be in both the simpler and more complex design.
+  // -For low Q settings, the bandpass peak gain is below 0 dB. Maybe that's natural but maybe
+  //  we could compensate it by some overall gain? The bandwidth seems to widen when reducing the Q
+  //  which seems like the desired behavior
   //
   // Notes:
   // -The simplified designs do not require the computation of the p0,p1,p2 values which saves the
@@ -793,6 +835,7 @@ void biquadDesignVicanek()
   //  constraint. Maybe place the pair of zeros on the unit-circle directly (determining the 
   //  b-coeffs up to a scale factor), then use pole radius, angle and overall gain as degrees
   //  of freedom and require: match at DC, fs/2 and ...hmmm... maybe the lower bandedge?
+  // -Plot the LP/HP/BP/BR responses in one plot. Maybe add also the peak response
 
   int dummy = 0;
 }

@@ -1766,6 +1766,13 @@ ToDo:
   Maybe allow the user to define sliders for the midi-controllers. A slider would have a position
   defined by x,y,w,h, a mode (horz, vert, rot), a mapping (linear, exponential, etc.), an 
   (optional) image (png, defining stripes or being rotated by code at runtime).
+ -Maybe let the opcode editor sho not only a single widget for the selected opcode but also widgets
+  for all "sibling" opcodes/parameters which are defined to be all the other the parameters that 
+  apply to the same DSP effect. The widgets should be visible regardless whether or not the opcode 
+  is specified in the sfz code. If it isn't we may need to take some special care when searching 
+  for it - we won't find it. We should perhaps find the last defined sibling and add the new opcode
+  directly after it in the code (maybe on a new line). Maybe the OpcodeEditor should become an 
+  EffectEditor
  -The Opcode-Widgets need to be cleared when a new sfz or xml is loaded
  -we need a TreeView that represents the SFZs structure: the root/top-level node represents the 
   whole instrument, subnodes represnet groups and subsubsnodes represent regions. Each of these 
