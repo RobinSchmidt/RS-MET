@@ -79,13 +79,33 @@ public:
   d: Normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
   p: Start phase in radians.
 
-  You can use different datatypes for the parameters and coefficients (for example, double and float)
-
-  move to FilterDesignFormulas, change sign convention for a-coeffs */
+  You can use different datatypes for the parameters and coefficients (for example, double and 
+  float). */
   template<class TPar, class TCof>
   static inline void dampedSine(
     TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2);
   // ToDo: implement inverse function that computes the parameters from the coeffs
+
+
+
+  /** Computes feedback coeffs for the vicanek designs. */
+  template<class T>
+  static inline void mvFeedback(T w0, T Q, T* a1, T* a2);
+
+
+  /** Lowpass design by Martin Vicanek, simplified (cheaper) version. Uses MZT for the poles and
+  magnitude matching at DC and fs/2 for the zeros. Approximates the analog lowpass prototype 
+  transfer function:
+
+                   w0^2
+    H(s) = ---------------------
+            w0^2 + s*w0/Q + s^2     */
+  template<class T>
+  static inline void mvLowpassSimple(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2);
+
+
+
+  // todo: implement rbjLowpass etc. in a similar way
 
 
 
@@ -115,6 +135,39 @@ inline void rsFilterDesignFormulas::dampedSine(
   *b0 = TCof(A*sp);               // = A*sin(p)
   *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
 }
+
+template<class T>
+inline void rsFilterDesignFormulas::mvFeedback(T w0, T Q, T* a1, T* a2)
+{
+  T q = T(0.5) / Q;
+
+  if(q <= 1)
+    *a1 = -2*exp(-q*w0) * cos( sqrt(1-q*q)*w0);
+  else
+    *a1 = -2*exp(-q*w0) * cosh(sqrt(q*q-1)*w0);
+  *a2 = exp(-2*q*w0);
+}
+// Maybe try to optimize away one of the exp calls:
+//   t   = exp(-q*w0);
+//   *a1 = -2*t * cos( sqrt(1-q*q)*w0);  etc
+//   *a2 = t*t
+
+template<class T>
+inline void rsFilterDesignFormulas::mvLowpassSimple(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  mvFeedback(w0, Q, a1, a2);
+
+  T f0  = w0 * T(1.0/PI);   // verify!
+  T f02 = f0*f0;
+  T k   = (1-f02);
+  T r0  = 1 + *a1 + *a2;
+  T r1  = (1 - *a1 + *a2)*f02 / sqrt(k*k + f02/(Q*Q));
+
+  *b0 = T(0.5) * (r0 + r1);
+  *b1 = r0 - *b0;
+  *b2 = T(0);
+}
+
 
 
 

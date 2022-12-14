@@ -574,6 +574,9 @@ void biquadDesignVicanek()
   double b0, b1, b2, a1, a2;     // biquad coeffs
 
 
+  using FDF = RAPT::rsFilterDesignFormulas;
+
+
   // Calculates the feedback coeffs and some intermediate variables:
   double q, A0, A1, A2, p0, p1, p2;
   auto calcIntermediates = [&](double w0, double Q)
@@ -756,10 +759,16 @@ void biquadDesignVicanek()
     // the rs_testing module for general use
   };
 
-  /*
+
+
+  
   // Regular and simplified lowpass:
   makeLowpass(  wc, 3); plotFreqResp();
   makeLowpassS( wc, 3); plotFreqResp();
+
+  FDF::mvLowpassSimple(wc, 3.0, &b0, &b1, &b2, &a1, &a2); plotFreqResp();
+
+
 
   // Regular and simplified highpass:
   makeHighpass( wc, 3); plotFreqResp();
@@ -795,7 +804,7 @@ void biquadDesignVicanek()
   // highpass?:
   makeLowpass( wc, 10); makeDiff(); plotFreqResp();
   makeLowpassS(wc, 10); makeDiff(); plotFreqResp();
-  */
+
 
 
   // Observations:
