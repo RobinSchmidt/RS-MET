@@ -91,7 +91,8 @@ public:
   /** Computes feedback coeffs for the vicanek designs. */
   template<class T>
   static inline void mvFeedback(T w0, T Q, T* a1, T* a2);
-
+  // Maybe make protected...but maybe it's useful for client code? Maybe it can be used in more
+  // general contexts? Maybe for an impulse invariant 2-pole-0-zero resonator filter?
 
   /** Lowpass design by Martin Vicanek, simplified (cheaper) version. Uses MZT for the poles and
   magnitude matching at DC and fs/2 for the zeros. Approximates the analog lowpass prototype 
@@ -102,6 +103,16 @@ public:
             w0^2 + s*w0/Q + s^2     */
   template<class T>
   static inline void mvLowpassSimple(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2);
+
+  /** Highpass design by Martin Vicanek, simplified (cheaper) version. Uses MZT for the poles and
+  requires a double zero at DC and magnitude match at fs/2 for the zeros. Approximates the analog 
+  highpass prototype transfer function:
+
+                   s^2
+    H(s) = ---------------------
+            w0^2 + s*w0/Q + s^2   */
+  template<class T>
+  static inline void mvHighpassSimple(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2);
 
 
 
@@ -140,7 +151,6 @@ template<class T>
 inline void rsFilterDesignFormulas::mvFeedback(T w0, T Q, T* a1, T* a2)
 {
   T q = T(0.5) / Q;
-
   if(q <= 1)
     *a1 = -2*exp(-q*w0) * cos( sqrt(1-q*q)*w0);
   else
@@ -157,7 +167,7 @@ inline void rsFilterDesignFormulas::mvLowpassSimple(T w0, T Q, T* b0, T* b1, T* 
 {
   mvFeedback(w0, Q, a1, a2);
 
-  T f0  = w0 * T(1.0/PI);   // verify!
+  T f0  = w0 * T(1.0/PI);
   T f02 = f0*f0;
   T k   = (1-f02);
   T r0  = 1 + *a1 + *a2;
@@ -167,6 +177,22 @@ inline void rsFilterDesignFormulas::mvLowpassSimple(T w0, T Q, T* b0, T* b1, T* 
   *b1 = r0 - *b0;
   *b2 = T(0);
 }
+
+template<class T>
+inline void rsFilterDesignFormulas::mvHighpassSimple(T w0, T Q, T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  mvFeedback(w0, Q, a1, a2);
+
+  T f0  = w0 * T(1.0/PI);
+  T f02 = f0*f0;
+  T k   = (1-f02);
+  T r1  = (1 - *a1 + *a2) / sqrt(k*k + f02/(Q*Q));
+
+  *b0 = T(0.25) * r1;
+  *b1 = T(-2)   * *b0;
+  *b2 = *b0;
+}
+
 
 
 

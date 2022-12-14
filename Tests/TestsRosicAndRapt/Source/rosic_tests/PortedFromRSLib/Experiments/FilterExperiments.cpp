@@ -761,18 +761,17 @@ void biquadDesignVicanek()
 
 
 
-  
+  /*
   // Regular and simplified lowpass:
   makeLowpass(  wc, 3); plotFreqResp();
   makeLowpassS( wc, 3); plotFreqResp();
-
   FDF::mvLowpassSimple(wc, 3.0, &b0, &b1, &b2, &a1, &a2); plotFreqResp();
-
-
+  */
 
   // Regular and simplified highpass:
   makeHighpass( wc, 3); plotFreqResp();
   makeHighpassS(wc, 3); plotFreqResp();
+  FDF::mvHighpassSimple(wc, 3.0, &b0, &b1, &b2, &a1, &a2); plotFreqResp();
 
   // Regular and simplified bandpass:
   makeBandpass( wc,  3, false); plotFreqResp();
