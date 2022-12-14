@@ -313,8 +313,9 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   using namespace RAPT;
 
   this->type = type;
-  using FO = rsOnePoleFilter<float, float>;
-  using BQ = rsBiquadDesigner;  // maybe it should have a template parameter?
+  using FO  = rsOnePoleFilter<float, float>;
+  using BQ  = rsBiquadDesigner;  // maybe it should have a template parameter?
+  using FDF = rsFilterDesignFormulas;
 
   static const float s = float(1/(2*PI));
   // Preliminary to cater for the API of rsBiquadDesigner - ToDo: change API (maybe write a new 
@@ -338,8 +339,17 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
     // This API sucks - fix it! The functions should take w for the frequency (not freq in Hz and 
     // sample-rate), their names should be much shorter (e.g. coeffsLowpassRBJ or just lowpassRBJ),
     // output params should come last and be passed as pointers.
-  case Type::BQ_Lowpass:  BQ::calculateCookbookLowpassCoeffs(
-    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+  case Type::BQ_Lowpass:  
+  {
+
+    BQ::calculateCookbookLowpassCoeffs(
+      i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old RBJ cookbook design
+
+    //FDF::mvLowpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
+
+    return;
+  } 
+
   case Type::BQ_Highpass: BQ::calculateCookbookHighpassCoeffs(
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
   case Type::BQ_Bandpass_Skirt: BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
