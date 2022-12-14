@@ -32,7 +32,52 @@ that matches these contraints (if such a filter is possible - if it is impossibl
 a coefficient set that realizes an identity filter) */
 template<class T>
 void magnitudeMatchedOnePoleCoeffs(T &b0, T &b1, T &a1, T w[3], T m[3]);
-// Move into some FilterDesigner/BiquadDesigner/OnePoleDesigner class.
+// Move into some rsFilterDesignFormulas class.
+
+
+
+//-------------------------------------------------------------------------------------------------
+
+/** This class collects a bunch of filter design formulas and algortihms from various sources into 
+a utility class of static functions. We generally assume a filter of the form:
+
+  y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-1] - a1*y[n-1] - a2*y[n-2]
+
+but for some filters, there may be less coefficients - for example, for a 2-pole-1-zero filter, the 
+b2 coeff would be missing. ...tbc... */
+
+class rsFilterDesignFormulas
+{
+
+public:
+
+  /** Assigns the coefficients so as to realize a neutral filter. */
+  template<class T>
+  static inline void bypassBiquad(T* b0, T* b1, T* b2, T* a1, T* a2);
+
+};
+
+template<class T>
+inline void rsFilterDesignFormulas::bypassBiquad(T* b0, T* b1, T* b2, T* a1, T* a2)
+{
+  *b0 = T(1);
+  *b1 = T(0);
+  *b2 = T(0);
+  *a1 = T(0);
+  *a2 = T(0);
+}
+
+// ToDo:
+// -Drag the RBJ cookbook biquad designs into this class, maybe deprecate the old BiquadDesigner
+//  class, they should all get the same API as the Vicanek designs: in terms of w0, Q, G
+// -Move the first order filter designs that are currently implemented in rsFirstOrderFilterBase
+//  here
+// -Move the modal and time-domain-biquad filter designs here
+// -Implement the 5-point matched designs
+// -Implement the slop/tilt filter here
+// -Maybe rename to rsSmallFilterDesigner
+
+
 
 
 

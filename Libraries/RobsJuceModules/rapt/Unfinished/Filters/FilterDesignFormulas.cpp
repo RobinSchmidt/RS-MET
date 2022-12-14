@@ -161,8 +161,8 @@ ToDo:
  which would both alias into the same freq at fs/2 - df and thereby make the matrix singular?
  -> Test that!
 
-
-
- https://www.kvraudio.com/forum/viewtopic.php?t=569113
+See:
+https://www.kvraudio.com/forum/viewtopic.php?t=569113
+https://www.kvraudio.com/forum/viewtopic.php?t=466312
 
 */
