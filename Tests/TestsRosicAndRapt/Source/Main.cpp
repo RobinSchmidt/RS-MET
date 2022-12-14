@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
   //bandSplittingTreeAlgo();
   //bandSplitFreqResponses();
   //biDirectionalStateInit();
-  biquadDesignVicanek();
+  biquadDesignVicanek();         // maybe rename to biquadMatchVicanek
   //biquadTail();
   //complementaryFiltersIIR();
   //engineersFilterRingResp();   // ringing response (experimental idea)

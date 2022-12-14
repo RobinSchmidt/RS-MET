@@ -6,12 +6,15 @@ inverse filter results. Be careful to use this only with minimum-phase biquads (
 unit circle) because otherwise the inverse filter will be unstable. */
 template<class T>
 void invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2);
+// Move to some sort of FilterTransformations class, maybe rename to invertBiquadDigital or 
+// inverBiquadZ
 
 /** Given two coefficient sets of 1st order filter stages, this function consolidates them into a
 single biquad stage. b0[0] is the b0 coefficient of the 1st stage, b0[1] the b0 coefficient of
 the 2nd stage, etc. The biquad coefficients are returned in B0, B1, etc. */
 template<class T>
 void twoOnePolesToBiquad(T b0[2], T b1[2], T a1[2], T &B0, T &B1, T &B2, T &A1, T &A2);
+// Move to some sort of FilterStructureConversions class
 
 /** Given either the numerator coefficiets b0, b1 or the denominator coefficients a0, a1 of a
 1st order filter (in c0, c1), this function ensures that the root (zero or pole) will be inside
@@ -29,6 +32,8 @@ that matches these contraints (if such a filter is possible - if it is impossibl
 a coefficient set that realizes an identity filter) */
 template<class T>
 void magnitudeMatchedOnePoleCoeffs(T &b0, T &b1, T &a1, T w[3], T m[3]);
+// Move into some FilterDesigner/BiquadDesigner/OnePoleDesigner class.
+
 
 
 #endif

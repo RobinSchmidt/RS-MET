@@ -806,6 +806,10 @@ void biquadDesignVicanek()
   // -With fc = 8000, we trigger an assert for the peak-EQ with G = 0, i.e. the notch. Why?
   // -In the notch-filter obtained by subtracting a bandpass signal from the input, the notch freq
   //  is slightly off from where it's supposed to be in both the simpler and more complex design.
+  //  See also here - mystran hints that notches may not be perfect with this method:
+  //  https://www.kvraudio.com/forum/viewtopic.php?t=574343&start=15
+  //  Maybe the notch should be designed by a different apporahc: place the zeros directly onto the
+  //  unit circle where they belong and use the poles as degrees fo freedom (see ToDo section).
   // -For low Q settings, the bandpass peak gain is below 0 dB. Maybe that's natural but maybe
   //  we could compensate it by some overall gain? The bandwidth seems to widen when reducing the Q
   //  which seems like the desired behavior

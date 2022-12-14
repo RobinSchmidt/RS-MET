@@ -2,7 +2,7 @@ template<class T>
 void invertBiquad(T &b0, T &b1, T &b2, T &a1, T &a2)
 {
   // normalize numerator:
-  T g = b0;
+  T g = b0;    // superfluous -> get rid
   T s = 1/g;
   b0  = 1;
   b1 *= s;
@@ -135,3 +135,34 @@ void magnitudeMatchedOnePoleCoeffs(T &b0, T &b1, T &a1, T w[3], T m[3])
     b1 = -b1;
   }
 }
+
+/*
+
+ToDo:
+
+-Implement a function similar to 
+   magnitudeMatchedOnePoleCoeffs(T &b0, T &b1, T &a1, T w[3], T m[3]); with API
+   magnitudeMatchedBiquadCoeffs(T &b0, T &b1, T b2, T &a1, T &a2, T w[5], T m[5]);
+ maybe list the input parameters w, m first to be more consistent with other parts of the library.
+ http://www.rs-met.com/documents/dsp/DigitalBiquadDesignByMagnitudeRequirements.pdf
+
+-Maybe the 5-point magnitude match biquads should match at the 5 following frequencies:
+   0, w0/8,   w0/4,   w0/2, w0       or
+   0, w0/4,   w0/2, 3*w0/4, w0       or
+   0, w0/2, 3*w0/4,   w0,   5*w0/4
+ in the 1st case, the required cosine factors can be computed by repeated application of the 
+ double-angle formula. In the 2nd and 3rd case, we have an arithmetic progression and can use the
+ cos(a+b) = ... addtion theorem. The 3rd needs to compute cos(w0/4) first and it can be used only 
+ iff 5*w0/4 <= fs/2. If this is not the case, maybe switch to using the 2nd formula. The idea is to
+ optimize the design to save on sin/cos calls.
+
+-Perhaps it's possible to do a 5-point magnitude match even when some of the frequencies are above 
+ fs/2? But we perhaps have to take care that we don't encounter a pair like fs/2 - df, fs/2 + df 
+ which would both alias into the same freq at fs/2 - df and thereby make the matrix singular?
+ -> Test that!
+
+
+
+ https://www.kvraudio.com/forum/viewtopic.php?t=569113
+
+*/

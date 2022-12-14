@@ -41,10 +41,9 @@ void rsLinearAlgebra::rsSolveLinearSystem3x3(const T A[3][3], T x[3], const T y[
 template<class T>
 inline void normalizeLength(T* vx, T* vy)
 {
-  //return;  // preliminary
   T rx = rsAbs(*vx); rx *= rx;
   T ry = rsAbs(*vy); ry *= ry;
-  T s  = T(1) / sqrt(rx+ry);
+  T s  = T(1) / sqrt(rx+ry);    // Maybe use some sort of rsInvSqrt function
   *vx *= s;
   *vy *= s;
   // this is written such it can work for T being a real or complex number class ...but maybe it 
