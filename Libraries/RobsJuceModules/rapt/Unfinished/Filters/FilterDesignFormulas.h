@@ -44,7 +44,15 @@ a utility class of static functions. We generally assume a filter of the form:
   y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-1] - a1*y[n-1] - a2*y[n-2]
 
 but for some filters, there may be less coefficients - for example, for a 2-pole-1-zero filter, the 
-b2 coeff would be missing. ...tbc... */
+b2 coeff would be missing. 
+
+The API of the functions is as follows:
+-There are sometimes two template parameters, one for the user parameters (TPar), one for the 
+ coefficients (TCof). The rationale is that the formulas may use double-precision but the end 
+ result may be assigned to a single precision variable.
+
+
+...tbc... */
 
 class rsFilterDesignFormulas
 {
@@ -54,6 +62,33 @@ public:
   /** Assigns the coefficients so as to realize a neutral filter. */
   template<class T>
   static inline void bypassBiquad(T* b0, T* b1, T* b2, T* a1, T* a2);
+
+
+  /** Designs a two-pole-one-zero filter in terms of its impulse response which is given as the 
+  damped sinusoid:
+
+    h[n] = A * exp(-n/d) * sin(w*n + p) * u[n]
+
+  where u[n] is the unit step function. The filter can be implemented as:
+
+    y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] - a2*y[n-2]
+
+  The parameters are:
+  w: Normalized radian frequency (= 2*pi*f/fs, f: frequency, fs: samplerate)
+  A: Amplitude
+  d: Normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
+  p: Start phase in radians.
+
+  You can use different datatypes for the parameters and coefficients (for example, double and float)
+
+  move to FilterDesignFormulas, change sign convention for a-coeffs */
+  template<class TPar, class TCof>
+  static inline void dampedSine(
+    TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2);
+  // ToDo: implement inverse function that computes the parameters from the coeffs
+
+
+
 
 };
 
@@ -67,12 +102,30 @@ inline void rsFilterDesignFormulas::bypassBiquad(T* b0, T* b1, T* b2, T* a1, T* 
   *a2 = T(0);
 }
 
+template<class TPar, class TCof>
+inline void rsFilterDesignFormulas::dampedSine(
+  TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2)
+{
+  TPar cw, sw, cp, sp, P;
+  rsSinCos(w, &sw, &cw);
+  rsSinCos(p, &sp, &cp);
+  P   = exp(TPar(-1)/d);          // = exp(-alpha), pole radius
+  *a1 = TCof(-2*P*cw);            // = -2*P*cos(w)
+  *a2 = TCof(P*P);                // = P^2
+  *b0 = TCof(A*sp);               // = A*sin(p)
+  *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
+}
+// needs test
+
+
+
 // ToDo:
 // -Drag the RBJ cookbook biquad designs into this class, maybe deprecate the old BiquadDesigner
 //  class, they should all get the same API as the Vicanek designs: in terms of w0, Q, G
 // -Move the first order filter designs that are currently implemented in rsFirstOrderFilterBase
 //  here
-// -Move the modal and time-domain-biquad filter designs here
+// -Move the modal and time-domain-biquad filter designs here, i.e. rsDampedSineFilterCoeffs in 
+//  ModalFilterBank.h/cpp
 // -Implement the 5-point matched designs
 // -Implement the slop/tilt filter here
 // -Maybe rename to rsSmallFilterDesigner
