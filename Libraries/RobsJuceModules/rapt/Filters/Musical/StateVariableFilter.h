@@ -29,10 +29,12 @@ public:
   void setSampleRate(TPar newSampleRate);
 
   /** Enumeration of the available filter modes. */
-  enum modes
+  enum modes         // rename to Mode
   {
     BYPASS = 0,
-    LOWPASS,
+
+    // Rober Bristow-Johnson's Cookbook designs:
+    LOWPASS,         // rename to LOWPASS_RBJ or LowpassRBJ ...and the same also for HPF, BPF, etc.
     HIGHPASS,
     BANDPASS_SKIRT,  // constant skirt gain
     BANDPASS_PEAK,   // constant peak gain
@@ -41,6 +43,13 @@ public:
     LOWSHELF,
     HIGHSHELF,
     ALLPASS,
+
+
+    // UNDER CONSTRUCTION:
+    // Martin Vicanek's hybrid MZT/manitude-matching designs
+    LowpassMVS,      // The S stands for "simple", the cheaper design
+
+
 
     MORPH_LP_BP_HP,  // under construction
 

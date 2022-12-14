@@ -94,115 +94,128 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
 template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
 {
+  g = tan( TPar(PI) * fc/fs);  // embedded integrator gain (Fig 3.11), == tan(wc/2) I think
 
-
-
-  g = tan( TPar(PI) * fc/fs);  // embedded integrator gain (Fig 3.11)
-
-  switch( mode )
+  switch(mode)
   {
   case BYPASS:
-    {
-      R2 = 1 / G;  // can we use an arbitrary value here, for example R2 = 1?
-      cL = 1; 
-      cB = getBandpassScaler(); 
-      cH = 1;
-    }
-    break;
+  {
+    R2 = 1 / G;  // can we use an arbitrary value here, for example R2 = 1?
+    cL = 1;
+    cB = getBandpassScaler();
+    cH = 1;
+  }
+  break;
   case LOWPASS:
-    {
-      R2 = 1 / G;
-      cL = 1; cB = 0; cH = 0;
-    }
-    break;
+  {
+    R2 = 1 / G;
+    cL = 1; cB = 0; cH = 0;
+  }
+  break;
   case HIGHPASS:
-    {
-      R2 = 1 / G;
-      cL = 0; cB = 0; cH = 1;
-    }
-    break;
-  case BANDPASS_SKIRT: 
-    {
-      R2 = 1 / G;
-      cL = 0; cB = 1; cH = 0;
-      // why is the bandwidth-parameter not used here?
-    }
-    break;
-  case BANDPASS_PEAK: 
-    {
-      R2 = 2*bandwidthToR(B);
-      cL = 0; cB = R2; cH = 0;
-    }
-    break;
+  {
+    R2 = 1 / G;
+    cL = 0; cB = 0; cH = 1;
+  }
+  break;
+  case BANDPASS_SKIRT:
+  {
+    R2 = 1 / G;
+    cL = 0; cB = 1; cH = 0;
+    // why is the bandwidth-parameter not used here?
+  }
+  break;
+  case BANDPASS_PEAK:
+  {
+    R2 = 2*bandwidthToR(B);
+    cL = 0; cB = R2; cH = 0;
+  }
+  break;
   case BANDREJECT:
-    {
-      R2 = 2*bandwidthToR(B);
-      cL = 1; cB = 0; cH = 1;
-    }
-    break;
+  {
+    R2 = 2*bandwidthToR(B);
+    cL = 1; cB = 0; cH = 1;
+  }
+  break;
   case BELL:
-    {
-      TPar fl = TPar(fc*pow(2, -B/2)); // lower bandedge frequency (in Hz)
-      TPar wl = TPar(tan(PI*fl/fs));   // warped radian lower bandedge frequency /(2*fs)
-      TPar r  = g/wl; r *= r;          // warped frequency ratio wu/wl == (wc/wl)^2 where wu is the 
-                                       // warped upper bandedge, wc the center
-      R2 = TPar(2*sqrt(((r*r+1)/r-2)/(4*G)));
-      cL = 1; cB = R2*G; cH = 1;
-    }
-    break;
+  {
+    TPar fl = TPar(fc*pow(2, -B/2)); // lower bandedge frequency (in Hz)
+    TPar wl = TPar(tan(PI*fl/fs));   // warped radian lower bandedge frequency /(2*fs)
+    TPar r  = g/wl; r *= r;          // warped frequency ratio wu/wl == (wc/wl)^2 where wu is the 
+                                     // warped upper bandedge, wc the center
+    R2 = TPar(2*sqrt(((r*r+1)/r-2)/(4*G)));
+    cL = 1; cB = R2*G; cH = 1;
+  }
+  break;
   case LOWSHELF:
-    {
-      TPar A = sqrt(G);
-      g /= sqrt(A);                    // scale SVF-cutoff frequency for shelvers
-      R2 = TPar(2*sinh(B*log(2.0)/2));
-      cL = G; cB = R2*A; cH = 1;
-    }
-    break;
+  {
+    TPar A = sqrt(G);
+    g /= sqrt(A);                    // scale SVF-cutoff frequency for shelvers
+    R2 = TPar(2*sinh(B*log(2.0)/2));
+    cL = G; cB = R2*A; cH = 1;
+  }
+  break;
   case HIGHSHELF:
-    {
-      TPar A = sqrt(G);
-      g *= sqrt(A);                    // scale SVF-cutoff frequency for shelvers
-      R2 = TPar(2*sinh(B*log(2.0)/2));
-      cL = 1; cB = R2*A; cH = G;
-    }
-    break;
+  {
+    TPar A = sqrt(G);
+    g *= sqrt(A);                    // scale SVF-cutoff frequency for shelvers
+    R2 = TPar(2*sinh(B*log(2.0)/2));
+    cL = 1; cB = R2*A; cH = G;
+  }
+  break;
   case ALLPASS:
-    {
-      R2 = 2*bandwidthToR(B);
-      cL = 1; cB = -R2; cH = 1;
-    }
-    break;
+  {
+    R2 = 2*bandwidthToR(B);
+    cL = 1; cB = -R2; cH = 1;
+  }
+  break;
 
-    // experimental - maybe we must find better curves for cL, cB, cH:
+
+  // new/under construction:
+  case LowpassMVS:
+  {
+    R2 = 2*bandwidthToR(B);       // (R2 == 2*R == 1/Q)
+    TPar w0 = TPar(2*PI) * fc/fs;
+    TPar b0, b1, b2, a1, a2;
+    rsFilterDesignFormulas::mvLowpassSimple(w0, 1/R2, &b0, &b1, &b2, &a1, &a2);
+    setupFromBiquad(b0, b1, b2, a1, a2);
+  }
+  break;
+
+
+
+
+
+  // experimental - maybe we must find better curves for cL, cB, cH:
   case MORPH_LP_BP_HP:
-    {
-      R2 = 1 / G;
-      TPar x  = 2*m-1;
+  {
+    R2 = 1 / G;
+    TPar x  = 2*m-1;
 
-      //double x2 = x*x;
-      //cL = 0.5*(x2-x); cB = 1-x2; cH = 0.5*(x2+x); // nah - not good
+    //double x2 = x*x;
+    //cL = 0.5*(x2-x); cB = 1-x2; cH = 0.5*(x2+x); // nah - not good
 
-      // better:
-      cL = rsMax(-x, TPar(0)); cH = rsMax(x, TPar(0)); cB = 1-(cL+cH);
-      cB = pow(cB, TPar(0.25));
-        // freq-responses look good (on a linear scale), but we really have to check how it "feels" 
-        // it would also be nice to get rid of the expensive pow-function and to replace it by 
-        // something cheaper - the function should map the range 0...1 monotonically to itself
+    // better:
+    cL = rsMax(-x, TPar(0)); cH = rsMax(x, TPar(0)); cB = 1-(cL+cH);
+    cB = pow(cB, TPar(0.25));
+      // freq-responses look good (on a linear scale), but we really have to check how it "feels" 
+      // it would also be nice to get rid of the expensive pow-function and to replace it by 
+      // something cheaper - the function should map the range 0...1 monotonically to itself
 
-      // another (cheap) possibility:
-      //cL = rsMax(-x, 0.0); /*cL *= cL;*/
-      //cH = rsMax( x, 0.0); /*cH *= cH;*/
-      //cB = 1-x*x;
-      
-        // bottom line: we need to test different versions for how they feel when tweaking the 
-        // morph parameter
+    // another (cheap) possibility:
+    //cL = rsMax(-x, 0.0); /*cL *= cL;*/
+    //cH = rsMax( x, 0.0); /*cH *= cH;*/
+    //cB = 1-x*x;
 
-      // this scaling ensures constant magnitude at the cutoff point (we divide the coefficients by 
-      // the magnitude response value at the cutoff frequency and scale back by the gain):
-      TPar s = G * sqrt((R2*R2) / (cL*cL + cB*cB + cH*cH - 2*cL*cH));
-      cL *= s; cB *= s; cH *= s;
-    }
-    break;
+      // bottom line: we need to test different versions for how they feel when tweaking the 
+      // morph parameter
+
+    // this scaling ensures constant magnitude at the cutoff point (we divide the coefficients by 
+    // the magnitude response value at the cutoff frequency and scale back by the gain):
+    TPar s = G * sqrt((R2*R2) / (cL*cL + cB*cB + cH*cH - 2*cL*cH));
+    cL *= s; cB *= s; cH *= s;
+  }
+  break;
 
   }
 

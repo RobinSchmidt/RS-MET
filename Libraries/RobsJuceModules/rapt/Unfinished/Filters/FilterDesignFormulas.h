@@ -123,17 +123,19 @@ public:
     y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1] - a2*y[n-2]
 
   The parameters are:
-  w: Normalized radian frequency (= 2*pi*f/fs, f: frequency, fs: samplerate)
-  A: Amplitude
-  d: Normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
-  p: Start phase in radians.
+
+    w: Normalized radian frequency (= 2*pi*f/fs, f: frequency, fs: samplerate)
+    A: Amplitude
+    d: Normalized decay time constant (= tau*fs, tau: time (in s) to decay to A/e = A*0.3678...)
+    p: Start phase in radians.
 
   You can use different datatypes for the parameters and coefficients (for example, double and 
   float). */
   template<class TPar, class TCof>
   static inline void dampedSine(
     TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2);
-  // ToDo: implement inverse function that computes the parameters from the coeffs
+  // ToDo: implement inverse function that computes the parameters from the coeffs (but maybe not in 
+  // this class)
 
 
 protected:
@@ -183,8 +185,8 @@ inline void rsFilterDesignFormulas::mvLowpassSimple(T w0, T Q, T* b0, T* b1, T* 
   T f0  = w0 * T(1.0/PI);
   T f02 = f0*f0;
   T k   = (1-f02);
-  T r0  = 1 + *a1 + *a2;
   T r1  = (1 - *a1 + *a2)*f02 / sqrt(k*k + f02/(Q*Q));
+  T r0  = 1 + *a1 + *a2;
 
   *b0 = T(0.5) * (r0 + r1);
   *b1 = r0 - *b0;
@@ -215,8 +217,8 @@ inline void rsFilterDesignFormulas::mvBandpassSimple(
   T f0  = w0 * T(1.0/PI);
   T f02 = f0*f0;
   T k   = (1-f02);
-  T r0  = (1 + *a1 + *a2) / (PI * f0 * Q);
   T r1  = ((1 - *a1 + *a2)*f0/Q) / sqrt(k*k + f02/(Q*Q));
+  T r0  = (1 + *a1 + *a2) / (PI * f0 * Q);
 
   *b1 = T(-0.5) * r1;
   *b0 = T( 0.5) * (r0 - *b1);
