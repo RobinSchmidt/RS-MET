@@ -4284,11 +4284,13 @@ void samplerFilters()
 
     //rsPlotVectors(yL, yH, yB);
 
-    SpectrumPlotter<float> plt;
+    using SP = SpectrumPlotter<float>;
+    SP plt;
     plt.setFftSize(N);
     plt.setSampleRate(sampleRate);
     plt.setLogFreqAxis(true);
-    plt.setNormalizationMode(SpectrumPlotter<float>::NormalizationMode::impulse);
+    plt.setNormalizationMode(SP::NormalizationMode::impulse);
+    plt.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
     plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
   };
 
