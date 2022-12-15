@@ -202,11 +202,20 @@ template<class T>
 void rsBiquadResponse(const T* x, T* y, int N, T b0, T b1, T b2, T a1, T a2)
 {
   RAPT::rsAssert(x != y, "Not suitable for in-place computation");
+
+  if(N < 1) 
+    return;
   y[0] = b0 * x[0];
+
+  if(N < 2) 
+    return;
   y[1] = b0 * x[1] + b1 * x[0] - a1 * y[0];
+
   for(int n = 2; n < N; n++)
     y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] - a1 * y[n-1] - a2 * y[n-2];
 }
+// Maybe move this into RAPT::rsArrayTools, maybe make a variant that allows in-place computation
+// maybe distiguish it from this one by having only a single in/out array
 
 //=================================================================================================
 // Convenience functions for vectors:
