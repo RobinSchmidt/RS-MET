@@ -888,7 +888,12 @@ bool stateVariableFilterUnitTest()
 
   Q = 0.5;
   FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
-  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, true);
+  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, false);
+
+
+  //Q = 0.0; // Q = 0 produces: b0 = b1 = a1 = -NaN; a2 = b2 = 0;
+  //FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
+  //ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, true);
 
 
   // Observations:

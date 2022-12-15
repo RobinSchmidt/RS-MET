@@ -250,6 +250,8 @@ inline void rsFilterDesignFormulas::dampedSine(
 /*
 
 ToDo:
+-Document the expected input range. For example, Q-values must be > 0 or else NaN coeffs are 
+ produced. Maybe add assertions. Do we have a similar restriction for w0?
 -Drag the RBJ cookbook biquad designs into this class, maybe deprecate the old BiquadDesigner
  class, they should all get the same API as the Vicanek designs: in terms of w0, Q, G and be 
  named rbjLowpass, rbjHighpass, etc.
