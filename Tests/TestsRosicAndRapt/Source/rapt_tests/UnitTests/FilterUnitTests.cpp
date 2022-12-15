@@ -829,7 +829,7 @@ bool ladderUnitTest()
   return ok;
 }
 
-bool stateVariableFilterUnitTest()
+bool stateVariableFilterUnitTest1()
 {
   bool ok = true;
 
@@ -889,6 +889,10 @@ bool stateVariableFilterUnitTest()
     return ok;
   };
 
+
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -1.5,  0.0, 1.e-14);  // u1 = 0.5, u2 =-2.5 -> s =inf
+
+
   // Test biquads with hand-picked coefficients:                 // vars in SVF::setupFromBiquad
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, -0.5, 1.e-14);  // u1 =  0, u2 = -1  ->  s = inf
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, +0.5, 1.e-14);  // u1 = -2, u2 = -1  ->  s = -0.707
@@ -940,6 +944,16 @@ bool stateVariableFilterUnitTest()
   //  the biquad coeffs and performs the test.
   // -Try single precision floats
   // -Try unstable filters (use a relative tolerance)
+
+  return ok;
+}
+
+
+bool stateVariableFilterUnitTest()
+{
+  bool ok = true;
+
+  ok &= stateVariableFilterUnitTest1();
 
   return ok;
 }
