@@ -875,7 +875,14 @@ bool stateVariableFilterUnitTest()
       {
         Real wc = 2*PI*fc[i]/fs;
         Real b0, b1, b2, a1, a2;
+
         FDF::mvLowpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, 1.e-14, false);
+
+        FDF::mvHighpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, 1.e-14, false);
+
+        FDF::mvBandpassSimple(wc, Q[j], false, &b0, &b1, &b2, &a1, &a2);
         ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, 1.e-14, false);
       }
     }
@@ -891,7 +898,9 @@ bool stateVariableFilterUnitTest()
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.8, +0.9, 1.e-14);
 
   // Test designed biquads:
-  ok &= testBiquadDesigns(44100.0, Vec({ 1000.0 }), Vec({0.5, sqrt(0.5), 1.0, 10.0 }) );
+  ok &= testBiquadDesigns(44100.0, 
+    Vec({ 100.0, 1000.0 }), 
+    Vec({ 0.5, sqrt(0.5), 1.0, 10.0, 100.0 }) );
 
 
 
