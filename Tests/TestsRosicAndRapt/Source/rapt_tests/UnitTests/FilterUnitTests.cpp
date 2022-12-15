@@ -891,11 +891,13 @@ bool stateVariableFilterUnitTest()
 
   // Test biquads with hand-picked coefficients:                 // vars in SVF::setupFromBiquad
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, -0.5, 1.e-14);  // u1 =  0, u2 = -1  ->  s = inf
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, +0.5, 1.e-14);  // u1 = -2, u2 = -1  -> s = -0.707
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, +0.5, 1.e-14);  // u1 = -2, u2 = -1  ->  s = -0.707
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, +0.5, 1.e-14);  // u1 = -1, u2 = -2  ->  s = -0.707
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, -0.5, 1.e-14);  // u1 = -1, u2 =  0  ->  s = inf
+
+
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.2, +0.5, 1.e-14);  // u1 = -1.7, u2 = -1.3
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.8, +0.9, 1.e-14);  // u1 = -1.1, u2 = -2.7
-
-
 
   ok &= testBiquadCoeffs( 0.0, +4.0,  0.0, -0.8, +0.9, 1.e-14);
   ok &= testBiquadCoeffs( 0.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
