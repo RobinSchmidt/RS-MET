@@ -842,7 +842,7 @@ bool stateVariableFilterUnitTest1(Real tol)
 
   // Helper function to test if an SVF can faithfully emulate a biquad with the given set of 
   // coefficients:
-  auto testBiquadCoeffs = [&](Real b0, Real b1, Real b2, Real a1, Real a2, bool plotWhenFail = true)
+  auto testBiquadCoeffs = [&](Real b0, Real b1, Real b2, Real a1, Real a2)
   {
     int N = 200;
 
@@ -859,11 +859,10 @@ bool stateVariableFilterUnitTest1(Real tol)
     Real maxErr = rsMaxAbs(err);
     bool ok = maxErr <= tol;
 
-    if(!ok && plotWhenFail) {
+    if(!ok) {
       rsError("stateVariableFilterUnitTest1 failed");
-      //rsPlotVectors(yBqd, ySvf, err);
-      rsPlotVectors(err);  
-    }
+      rsPlotVectors(yBqd, ySvf, err);
+      rsPlotVectors(err); }
 
     return ok;
   };
@@ -882,20 +881,20 @@ bool stateVariableFilterUnitTest1(Real tol)
         Real b0, b1, b2, a1, a2;
 
         FDF::mvLowpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, true);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2);
 
         FDF::mvHighpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, true);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2);
 
         FDF::mvBandpassSimple(wc, Q[j], false, &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, true);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2);
       }
     }
     return ok;
   };
 
 
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -1.5,  0.0, 1.e-14);  // u1 = 0.5, u2 =-2.5 -> s =inf
+
 
 
   // Test biquads with hand-picked coefficients:         // vars in SVF::setupFromBiquad
@@ -903,7 +902,7 @@ bool stateVariableFilterUnitTest1(Real tol)
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, +0.5);  // u1 = -2, u2 = -1  ->  s = -0.707
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, +0.5);  // u1 = -1, u2 = -2  ->  s = -0.707
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, -0.5);  // u1 = -1, u2 =  0  ->  s = inf
-
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -1.5,  0.0);  // u1 = 0.5, u2 =-2.5 -> s =inf
 
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.2, +0.5);  // u1 = -1.7, u2 = -1.3
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.8, +0.9);  // u1 = -1.1, u2 = -2.7
@@ -960,7 +959,6 @@ bool stateVariableFilterUnitTest()
 
   ok &= stateVariableFilterUnitTest1<float>( 1.e-5);
   ok &= stateVariableFilterUnitTest1<double>(1.e-13);
-
 
   return ok;
 }
