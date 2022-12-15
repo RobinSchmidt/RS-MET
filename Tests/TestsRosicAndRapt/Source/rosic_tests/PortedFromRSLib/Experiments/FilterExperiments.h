@@ -2,7 +2,7 @@
 #define RS_FILTEREXPERIMENTS_H
 
 void bandwidthScaling();
-void biquadResoGain();
+void biquadResoGainToQ();
 void butterworthEnergy();
 void biDirectionalStateInit();
 void biquadDesignVicanek();
@@ -70,6 +70,7 @@ void resoWave();
 void fakeResonance();
 void fakeResoLowpassResponse();
 void fakeResoDifferentDelays();
+void samplerFilters();
 
 void quantileFilter();
 

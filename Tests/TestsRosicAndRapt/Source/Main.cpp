@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -358,7 +358,7 @@ int main(int argc, char* argv[])
 
   // Filter:
   //bandwidthScaling();
-  //biquadResoGain();
+  //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();
   //stateVariableFilter();
   //stateVariableFilterMorph();
@@ -415,6 +415,7 @@ int main(int argc, char* argv[])
   //fakeResonance();
   //fakeResoLowpassResponse();
   //fakeResoDifferentDelays();
+  samplerFilters();
 
   // Modal Filters/Synthesis:
   //twoPoleFilter();

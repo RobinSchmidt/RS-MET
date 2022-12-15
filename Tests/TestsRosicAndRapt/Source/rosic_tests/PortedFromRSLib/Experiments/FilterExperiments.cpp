@@ -178,7 +178,7 @@ void bandwidthScaling()
   plotData(N, w, p[0], p[1], p[2], p[3], p[4]);
 }
 
-void biquadResoGain()
+void biquadResoGainToQ()
 {
   // We try to find the relationship between the resonance gain in dB and the Q of a biquad filter 
   // because the former is how sfz specifies resonance and the latter is how the RBJ design 
@@ -191,7 +191,7 @@ void biquadResoGain()
   // Setup:
   double sampleRate = 44100;
   double cutoff     = 1000;
-  Vec reso({0, 1,2,3,4, 5, 10, 15, 20, 25, 30, 35, 40});  // desired resonance gains
+  Vec reso({0, 1,2,3,4, 5, 10, 15, 20, 25, 30, 35, 40});  // desired resonance gains in dB
   int numFreqs = 1001;    // number of frequencies to for plotting
   double fMin  = 250;     // lower frequency limit for plot
   double fMax  = 4000;    // upper ...
@@ -246,11 +246,14 @@ void biquadResoGain()
     // Uses the library function from RAPT. This realizes the same function as resoDbToQ5.
   };
 
+
+  // Create plots of biquad magnitude responses for our resonance values (in the reso array) for
+  // inspection. We want to look at the peak gain and see, how well it matches the desired 
+  // resonance fain
   int K = numFreqs;
   Vec f(K), w(K), dB(K);
   rsArrayTools::fillWithRangeExponential(&f[0], K, fMin, fMax);
   rsArrayTools::scale(&f[0], &w[0], K, 2*PI/sampleRate);
-
   GNUPlotter plt;
   using BQD = rsBiquadDesigner;
   double b0, b1, b2, a1, a2;
@@ -4235,4 +4238,42 @@ void fakeResoDifferentDelays()
 
   // With linear interpolation, the signal for the fractional offset of 0.5 is indeed much quieter
   // than with 0.0. Warped allpass interpolation solves this and should indeed be used here.
+}
+
+void samplerFilters()
+{
+  using Flt = rosic::Sampler::FilterCore;
+  using Tp  = Flt::Type;
+  using Vec = std::vector<float>;
+
+  int   N          = 4096;   // number of samples = half the number of frequencies
+  float sampleRate = 44100;
+  float cutoff     = 1000;   // in Hz
+  float reso       = 0;      // in dB
+
+
+  float w0 = float(2*PI) * cutoff / sampleRate;
+  Vec yL(N), yR(N);
+  Flt flt;
+
+  // Records the impulse response of our filter into yL,yR:
+  auto recordImpResp = [&]()
+  {
+    flt.resetState();
+    RAPT::rsFill(yL, 0.f); yL[0] = 1.f;
+    RAPT::rsFill(yR, 0.f); yR[0] = 1.f;
+    for(int n = 0; n < N; n++)
+      flt.processFrame(&yL[n], &yR[n]);
+  };
+
+  flt.setupCutRes(Tp::BQ_Lowpass, w0, reso);
+  recordImpResp();
+
+  rsPlotVectors(yL, yR);
+
+
+
+
+
+  int dummy = 0;
 }
