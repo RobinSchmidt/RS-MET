@@ -838,7 +838,6 @@ bool stateVariableFilterUnitTest()
   using SVF  = RAPT::rsStateVariableFilter<Real, Real>;
   using FDF  = rsFilterDesignFormulas;
 
-
   // Helper function to test if an SVF can faithfully emulate a biquad with the given set of 
   // coefficients:
   auto testBiquadCoeffs = [](Real b0, Real b1, Real b2, Real a1, Real a2, Real tol, bool plot = false)
@@ -890,8 +889,6 @@ bool stateVariableFilterUnitTest()
     return ok;
   };
 
-  // Test implementing arbitrary biquads via the SVF:
-
   // Test biquads with hand-picked coefficients:
   ok &= testBiquadCoeffs( 0.0, +4.0,  0.0, -0.8, +0.9, 1.e-14);
   ok &= testBiquadCoeffs( 0.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
@@ -907,41 +904,6 @@ bool stateVariableFilterUnitTest()
 
 
 
-
-
-
-  /*
-  Real fs = 44100;
-  Real fc =  1000;
-  Real Q  =   1.0;
-  Real wc = 2*PI*fc/fs;       // wc = 0.14247585730565954
-  Real b0, b1, b2, a1, a2;
-
-
-
-  Q = 10.0;
-  FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2); 
-  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-15, true);
-
-  Q = 1.0;
-  FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
-  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, false);
-
-  Q = sqrt(0.5);
-  FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
-  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, false);
-
-  Q = 0.5;
-  FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
-  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, false);
-  */
-
-
-
-
-  //Q = 0.0; // Q = 0 produces: b0 = b1 = a1 = -NaN; a2 = b2 = 0;
-  //FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
-  //ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, true);
 
 
 
@@ -964,6 +926,8 @@ bool stateVariableFilterUnitTest()
   // -Cover cases where u1,u2 in setupFromBiquad are ++, +-, -+, --
   //  --: -0.8,+0.9; -+: 2.0, -0.25 (unstable), ...todo...maybe write a helper function that takes
   //  the biquad coeffs and performs the test.
+  // -Try single precision floats
+  // -Try unstable filters (use a relative tolerance)
 
   return ok;
 }
