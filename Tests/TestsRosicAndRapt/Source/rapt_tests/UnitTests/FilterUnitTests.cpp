@@ -869,6 +869,7 @@ bool stateVariableFilterUnitTest()
   auto testBiquadDesigns = [&](Real fs, const Vec& fc, const Vec& Q)
   {
     bool ok = true;
+    Real tol = 1.e-13;
     for(size_t i = 0; i < fc.size(); i++)
     {
       for(size_t j = 0; j < Q.size(); j++)
@@ -877,13 +878,13 @@ bool stateVariableFilterUnitTest()
         Real b0, b1, b2, a1, a2;
 
         FDF::mvLowpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, 1.e-14, false);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, tol, false);
 
         FDF::mvHighpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, 1.e-14, false);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, tol, false);
 
         FDF::mvBandpassSimple(wc, Q[j], false, &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, 1.e-14, false);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, tol, false);
       }
     }
     return ok;
@@ -899,8 +900,10 @@ bool stateVariableFilterUnitTest()
 
   // Test designed biquads:
   ok &= testBiquadDesigns(44100.0, 
-    Vec({ 100.0, 1000.0 }), 
-    Vec({ 0.5, sqrt(0.5), 1.0, 10.0, 100.0 }) );
+    Vec({ 10.0, 100.0, 1000.0, 10000.0 }), 
+    Vec({ 0.1, 1.0, 10.0, 100.0, sqrt(0.5) }) );
+    // It seems like lower cutoff frequencies require higher tolerances - which is typical for IIR
+    // filters.
 
 
 
@@ -955,8 +958,8 @@ bool stateVariableFilterUnitTest()
   // -Multiplying cB by -1 seems to fix it in case 1
 
   // ToDo:
-  // -Maybe make arrays of fc and Q values and write a loop over both arrays, testing the filter 
-  //  design(s) with all these settings
+  // -Try extreme settings like < 0, 0, fs/2, > fs/2, > fs for the frequency in the designs. But that
+  //  should püerhaps go into a different unit test - one for the rsFilterDesignFormulas class
   // -Try more tests with different settings
   // -Cover cases where u1,u2 in setupFromBiquad are ++, +-, -+, --
   //  --: -0.8,+0.9; -+: 2.0, -0.25 (unstable), ...todo...maybe write a helper function that takes
