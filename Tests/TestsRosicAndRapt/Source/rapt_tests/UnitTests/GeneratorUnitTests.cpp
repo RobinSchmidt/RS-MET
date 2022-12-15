@@ -2247,9 +2247,13 @@ bool samplerFilterTest()
     case SVF::BANDPASS_SKIRT: Q = BWC::bandpassResoGainToQ(resoAmp); break;
     case SVF::BANDREJECT:     Q = BWC::bandpassResoGainToQ(resoAmp); break;
     }
+
     svf.setMode(svfMode);
     svf.setFrequency(cutoff);
-    svf.setGain(Q);
+    svf.setGain(Q);            // the gain
+    // old - the new code should...
+
+
     svf.reset();
     for(int n = 0; n < N; n++)
       tgt[n] = svf.getSample(noise[n]);
@@ -2264,8 +2268,8 @@ bool samplerFilterTest()
 
 
   // in transition:
-  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, true);  // old
-  //ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, true); // new
+  //ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);  // old
+  ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, false); // new
   // In order to check the new implementation, the FDF::mvLowpassSimple(...) call in 
   // FilterCore::setupCutRes (rosic_SamplerEffectCores, line 347) needs to be uncommented. When 
   // doing so, the plots look very similar but one seems to be delayed by one sample. ToDo:

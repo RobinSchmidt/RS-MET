@@ -867,7 +867,7 @@ bool stateVariableFilterUnitTest1(Real tol)
     return ok;
   };
 
-  // Designs biqads according to specifications given by the arrays fc and Q (with given sample 
+  // Designs biquads according to specifications given by the arrays fc and Q (with given sample 
   // rate fs) and checks, if an SVF can emulate such a desiged biquad:
   auto testBiquadDesigns = [&](Real fs, const Vec& fc, const Vec& Q)
   {
@@ -894,9 +894,6 @@ bool stateVariableFilterUnitTest1(Real tol)
   };
 
 
-
-
-
   // Test biquads with hand-picked coefficients:         // vars in SVF::setupFromBiquad
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, -0.5);  // u1 =  0, u2 = -1  ->  s = inf
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, +0.5);  // u1 = -2, u2 = -1  ->  s = -0.707
@@ -911,22 +908,12 @@ bool stateVariableFilterUnitTest1(Real tol)
   ok &= testBiquadCoeffs( 0.0,  0.0, +4.0, -0.8, +0.9);
   ok &= testBiquadCoeffs(+4.0,  0.0, +4.0, -0.8, +0.9);
 
-
-
-
-
   // Test designed biquads:
   ok &= testBiquadDesigns(44100.0, 
     Vec({ 10.0, 100.0, 1000.0, 10000.0 }), 
     Vec({ 0.1, 1.0, 10.0, 100.0, Real(sqrt(0.5)) }) );
     // It seems like lower cutoff frequencies require higher tolerances - which is typical for IIR
     // filters.
-
-
-
-
-
-
 
   // Observations:
   // -With (b0,b1,b2, a1,a2) = (4,0,0, -0.8,+0.9), the SVF output looks as if it is exactly delayed
