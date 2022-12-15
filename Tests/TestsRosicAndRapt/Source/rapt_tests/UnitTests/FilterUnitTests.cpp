@@ -842,7 +842,7 @@ bool stateVariableFilterUnitTest()
 
   // Test implementing arbitrary biquads via the SVF:
 
-  auto testBiquad = [](Real b0, Real b1, Real b2, Real a1, Real a2, Real tol)
+  auto testBiquad = [](Real b0, Real b1, Real b2, Real a1, Real a2, Real tol, bool plot = false)
   {
     int N = 200;
 
@@ -858,28 +858,29 @@ bool stateVariableFilterUnitTest()
     std::vector<Real> err = yBqd - ySvf;
     Real maxErr = rsMaxAbs(err);
 
-    rsPlotVectors(err);
-    //rsPlotVectors(yBqd, ySvf, err);
+    if(plot) {
+      rsPlotVectors(yBqd, ySvf, err);
+      rsPlotVectors(err);  }
 
     return maxErr <= tol;
   };
 
-
-
-
-
-
-
-  Real b0 =  4.0;
-  Real b1 =  0.5;
-  Real b2 =  2.0;
-  Real a1 = -0.8;
-  Real a2 = +0.9;
-
-  //ok &= testBiquad( b0,   b1,   b2,   a1,   a2,  1.e-14);
-
+  ok &= testBiquad(+4.0,  0.0,  0.0, -0.8, +0.9, 1.e-14);
+  ok &= testBiquad( 0.0, +4.0,  0.0, -0.8, +0.9, 1.e-14);
+  ok &= testBiquad( 0.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
+  ok &= testBiquad(+4.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
   ok &= testBiquad(+4.0, +0.5, +2.0, -0.8, +0.9, 1.e-14);
 
+
+  Real fc =  1000;
+  Real fs = 44100;
+  Real Q  =   1.0;
+  Real wc = 2*PI*fc/fs;
+  Real b0, b1, b2, a1, a2;
+  FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
+  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, true);
+
+  //ok &= testBiquad( b0,   b1,   b2,   a1,   a2,  1.e-14);
 
 
   // Observations:
