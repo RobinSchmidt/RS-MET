@@ -829,17 +829,6 @@ bool ladderUnitTest()
   return ok;
 }
 
-template<class T>
-void rsBiquadResponse(const T* x, T* y, int N, T b0, T b1, T b2, T a1, T a2)
-{
-  RAPT::rsAssert(x != y, "Not suitable for in-place computation");
-  y[0] = b0 * x[0];
-  y[1] = b0 * x[1] + b1 * x[0] - a1 * y[0];
-  for(int n = 2; n < N; n++)
-    y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] - a1 * y[n-1] - a2 * y[n-2];
-}
-// move to some place in the test tools or maybe into RAPT::rsArrayTools
-
 bool stateVariableFilterUnitTest()
 {
   bool ok = true;
@@ -857,18 +846,12 @@ bool stateVariableFilterUnitTest()
   Real a2 = +0.9;
 
   // Helper function to compute biquad response for a signal x
-  auto bqdResp = [&](const Real *x, Real* y, int N )
-  {
-    rsBiquadResponse(x, y, N, b0, b1, b2, a1, a2);
-    /*
-    RAPT::rsAssert(x != y, "Not suitable for in-place computation");
-    y[0] = b0 * x[0];
-    y[1] = b0 * x[1] + b1 * x[0] - a1 * y[0];
-    for(int n = 2; n < N; n++)
-      y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] - a1 * y[n-1] - a2 * y[n-2];
-      */
+  auto bqdResp = [&](const Real *x, Real* y, int N ) 
+  { 
+    rsBiquadResponse(x, y, N, b0, b1, b2, a1, a2); 
   };
-  // Maybe move somewhere into the library or rs_testing module, take biquad-coeffs as parameters
+  // maybe get rid
+
 
 
   std::vector<Real> x(N), yBqd(N), ySvf(N);

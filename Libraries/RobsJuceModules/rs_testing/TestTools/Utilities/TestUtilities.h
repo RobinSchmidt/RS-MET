@@ -196,6 +196,19 @@ bool areNumbersEqual(double x, double y, double relativeTolerance);
 RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt);
 
 //=================================================================================================
+// Filtering
+
+template<class T>
+void rsBiquadResponse(const T* x, T* y, int N, T b0, T b1, T b2, T a1, T a2)
+{
+  RAPT::rsAssert(x != y, "Not suitable for in-place computation");
+  y[0] = b0 * x[0];
+  y[1] = b0 * x[1] + b1 * x[0] - a1 * y[0];
+  for(int n = 2; n < N; n++)
+    y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] - a1 * y[n-1] - a2 * y[n-2];
+}
+
+//=================================================================================================
 // Convenience functions for vectors:
 
 template<class T>
