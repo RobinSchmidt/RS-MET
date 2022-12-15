@@ -546,12 +546,12 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
 
   int N = rsMax(signalLength, fftSize);
-  int maxBin = fftSize/2; 
+  int numBins = fftSize/2 + 1; // 8-pt FFT has 5 non-redundant bins, namely k = 0,1,2,3,4
   // Later have a user option for that -> zoom ...or maybe even better: let the use choose minBin and 
   // maxBin
 
   // Factor out into addSpectralData(&inputArrays[0], (int) inputArrays.size()) :
-  std::vector<T> f = getFreqAxis(maxBin);
+  std::vector<T> f = getFreqAxis(numBins);
   std::vector<T> dB(N);
   //std::vector<T> phs(N);
   std::vector<std::complex<T>> tmp(N);
@@ -575,7 +575,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     for(int k = 0; k < N; k++)
       dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(tmp[k]), ampFloor);
 
-    addDataArrays(maxBin, &f[0], &dB[0]);
+    addDataArrays(numBins, &f[0], &dB[0]);
     //addDataArrays(fftSize/2, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2
     int dummy = 0;
   }
@@ -585,20 +585,11 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   plot();
 }
 
-
-
-
-
 template <class T>
-std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
+std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
 {
-  std::vector<T> f(maxBin);
-
-  // todo: check everything for off-by-one errors for even and odd sizes
-
-  //GNUPlotter::rangeLinear(&f[0], maxBin+1, T(0), T(maxBin));  // +1 is wrong?
-  GNUPlotter::rangeLinear(&f[0], maxBin, T(0), T(maxBin));  
-
+  std::vector<T> f(numBins);
+  GNUPlotter::rangeLinear(&f[0], numBins, T(0), T(numBins-1)); // verify the -1
   T scaler = T(1);
   T r = T(1) / T(fftSize);
   typedef FreqAxisUnits FU;
@@ -608,10 +599,11 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
   case FU::omega:      scaler = r*T(2*PI);    break;
   case FU::hertz:      scaler = r*sampleRate; break;
   }
-
-  RAPT::rsArrayTools::scale(&f[0], maxBin, scaler);
-
+  RAPT::rsArrayTools::scale(&f[0], numBins, scaler);
   return f;
+
+
+  // ToDo: check everything for off-by-one errors for even and odd sizes
 }
 
 // template instantiations:

@@ -183,6 +183,12 @@ protected:
 /** Class for plotting FFT spectra. You may pass several input signals as time-domain arrays and it
 will plot the Spectra of these signals.
 
+Under construction - may still have bugs
+
+ToDo:
+-Create example plots using the signals in "Understanding DSP" pg 54, 69. Check if freq-axis is 
+ scaled correctly
+
 */
 
 template <class T>
@@ -254,7 +260,7 @@ protected:
 
 
 
-  std::vector<T> getFreqAxis(int maxBin);
+  std::vector<T> getFreqAxis(int numBins);
 
   FreqAxisUnits freqAxisUnit = FreqAxisUnits::binIndex;
   NormalizationMode normMode = NormalizationMode::cycle;
