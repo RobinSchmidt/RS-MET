@@ -834,40 +834,10 @@ bool stateVariableFilterUnitTest()
   bool ok = true;
 
   using Real = double;
-
-  //Real tol = 1.e-13;
-
-  //int N = 200;
+  using SVF  = RAPT::rsStateVariableFilter<Real, Real>;
+  using FDF  = rsFilterDesignFormulas;
 
 
-  using SVF = RAPT::rsStateVariableFilter<Real, Real>;
-
-
-  /*
-  // Helper function to compute biquad response for a signal x
-  auto bqdResp = [&](const Real *x, Real* y, int N ) 
-  { 
-    rsBiquadResponse(x, y, N, b0, b1, b2, a1, a2); 
-  };
-  // maybe get rid
-
-  std::vector<Real> x(N), yBqd(N), ySvf(N);
-  x[0] = 1;
-  bqdResp(&x[0], &yBqd[0], N);
-
-
-  SVF svf;
-  svf.setupFromBiquad(b0, b1, b2, a1, a2);
-  for(int n = 0; n < N; n++)
-    ySvf[n] = svf.getSample(x[n]);
-
-  std::vector<Real> err = yBqd - ySvf;
-  //rsPlotVectors(err);
-  rsPlotVectors(yBqd, ySvf, yBqd-ySvf);
-
-  Real maxErr = rsMaxAbs(err);
-  ok &= maxErr <= tol;
-  */
 
 
   // Test implementing arbitrary biquads via the SVF:
@@ -895,7 +865,10 @@ bool stateVariableFilterUnitTest()
   };
 
 
-  using FDF = rsFilterDesignFormulas;
+
+
+
+
 
   Real b0 =  4.0;
   Real b1 =  0.5;
@@ -903,7 +876,10 @@ bool stateVariableFilterUnitTest()
   Real a1 = -0.8;
   Real a2 = +0.9;
 
-  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14);
+  //ok &= testBiquad( b0,   b1,   b2,   a1,   a2,  1.e-14);
+
+  ok &= testBiquad(+4.0, +0.5, +2.0, -0.8, +0.9, 1.e-14);
+
 
 
   // Observations:
