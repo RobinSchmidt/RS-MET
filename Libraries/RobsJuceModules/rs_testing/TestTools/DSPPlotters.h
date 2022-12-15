@@ -200,6 +200,15 @@ public:
   };
 
 
+  enum class NormalizationMode
+  {
+    periodic,
+    impulsive, 
+    toZeroDb
+  };
+  // cycle, impulse, toZeroDb
+
+
   /** Given up to 10 signal buffers of length "signalLength", this function performs an FFT on each 
   of them and plots the spectral magnitudes as decibel values. The FFT size is determined by 
   setFftSize and may be different from signalLength - if signalLength is shorter, the FFT buffers
@@ -244,6 +253,7 @@ protected:
   std::vector<T> getFreqAxis(int maxBin);
 
   FreqAxisUnits freqAxisUnit = FreqAxisUnits::binIndex;
+  NormalizationMode normMode = NormalizationMode::periodic;
 
   T sampleRate = T(1);
 
@@ -252,6 +262,8 @@ protected:
   //bool plotPhases = true;
 
   bool logFreqAxis = false;
+
+  //bool normalize   = true;
 
   T dBFloor = T(-120);
 

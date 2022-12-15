@@ -537,7 +537,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
 
   // Maybe factor out into setupTransformer:
   typedef RAPT::rsFourierTransformerRadix2<T> FT;
-  transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+  transformer.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
   transformer.setDirection(        FT::FORWARD);
   transformer.setBlockSize(fftSize);
 
@@ -563,9 +563,18 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
 
     // This may be not quite correct at DC (i think, because we need to incorporate the value
     // at fftSize/2 or something?)
-    T compFactor = T(fftSize) / T(signalLength);
+    T scaler = T(1);
+    using NM = NormalizationMode;
+    switch(normMode)
+    {
+    //case NM::periodic: scaler = T(fftSize) / T(signalLength);  // verify!
+    case NM::periodic:  scaler = T(1) / T(signalLength);     break;  // verify!
+    case NM::impulsive: scaler = T(1);                       break; 
+    case NM::toZeroDb:  scaler = T(1) / real(rsMaxAbs(tmp)); break;
+    }
+
     for(int k = 0; k < N; k++)
-      dB[k] = RAPT::rsAmpToDbWithCheck(compFactor * abs(tmp[k]), ampFloor);
+      dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(tmp[k]), ampFloor);
 
     addDataArrays(maxBin, &f[0], &dB[0]);
     //addDataArrays(fftSize/2, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2

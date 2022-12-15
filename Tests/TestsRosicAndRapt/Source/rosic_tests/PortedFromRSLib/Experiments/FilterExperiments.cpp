@@ -4240,29 +4240,13 @@ void fakeResoDifferentDelays()
   // than with 0.0. Warped allpass interpolation solves this and should indeed be used here.
 }
 
-/** Adds the magnitude spectru of the signal x of length N to the data-file of the given 
-plotter. */
-template<class T>
-void addMagnitudeSpectrumOfSignal(GNUPlotter& plt, const T* x, int N, T sampleRate)
-{
-
-  int fummy = 0;
-}
-
-// Convenience function:
-template<class T>
-void addMagnitudeSpectrumOfSignal(GNUPlotter& plt, const std::vector<T>& x, T sampleRate)
-{
-  addMagnitudeSpectrumOfSignal(plt, &x[0], (int) x.size(), sampleRate);
-}
-
 void samplerFilters()
 {
   using Flt = rosic::Sampler::FilterCore;
   using Tp  = Flt::Type;
   using Vec = std::vector<float>;
 
-  int   N          = 4096;   // number of samples = half the number of frequencies
+  int   N          =  128;   // number of samples = half the number of frequencies
   float sampleRate = 44100;
   float cutoff     = 1000;   // in Hz
   float reso       = 0;      // in dB
@@ -4281,8 +4265,6 @@ void samplerFilters()
   };
 
 
-
-
   float w0 = float(2*PI) * cutoff / sampleRate;
   Flt flt;
   Vec yL(N), yH(N), yB(N), dummy(N);
@@ -4298,16 +4280,24 @@ void samplerFilters()
 
   //rsPlotVectors(yL, yH, yB);
 
+  SpectrumPlotter<float> plt;
+  plt.setFftSize(N);
+  plt.setSampleRate(sampleRate);
+  plt.setLogFreqAxis(true);
 
- 
-  GNUPlotter plt;
-  addMagnitudeSpectrumOfSignal(plt, yL, sampleRate);
-  addMagnitudeSpectrumOfSignal(plt, yH, sampleRate);
-  addMagnitudeSpectrumOfSignal(plt, yB, sampleRate);
+  //plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
+
+  // test:
+  RAPT::rsFill(yL, 0.f); 
+  yL[0] = 1.f;
+  plt.plotDecibelSpectra(N, &yL[0]);
 
 
   // ToDo:
-  // -Plot magnitude responses instead of impulse responses
-
-  //int dummy = 0;
+  // -Fix the scaling of the magnitudes in the plot. It seems to have to do with the length/FFT
+  //  size. Maybe we are missing a normalization factor of N somewhere in the plotter. But maybe 
+  //  that division is. I think, it's the
+  //    transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+  //  setting which is suitable for analyzing a cycle of a periodic signal to extract the harmonic 
+  //  amplitudes but not for an impulse response
 }
