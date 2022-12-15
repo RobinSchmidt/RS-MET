@@ -4246,11 +4246,8 @@ void samplerFilters()
   using Tp  = Flt::Type;
   using Vec = std::vector<float>;
 
-  int   N          =  4096;    // number of samples = half the number of frequencies
+  int   N          =  8192;    // number of samples = half the number of frequencies
   float sampleRate = 44100;
-  //float cutoff     = 1000;   // in Hz
-  //float reso       = 0;      // in dB
-
 
   // Records the impulse response of the given filter into L,R (stereo):
   auto recordImpResp = [](Flt& flt, Vec& L, Vec& R)
@@ -4308,7 +4305,8 @@ void samplerFilters()
 
   // Observations:
   // -The highpass with cutoff = 1000, reso = 40 looks strange. the zero is not at DC but there's
-  //  a notch around 200 Hz
+  //  a notch around 200 Hz - OK - it was because out signal was cut off - use larger N and the 
+  //  effect disappears
 
 
   // ToDo:
