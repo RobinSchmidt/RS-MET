@@ -341,8 +341,8 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
     // output params should come last and be passed as pointers.
   case Type::BQ_Lowpass:  
   {
-    //BQ::calculateCookbookLowpassCoeffs(
-    //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
+    BQ::calculateCookbookLowpassCoeffs(
+      i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
 
     FDF::mvLowpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
     i.bqd.a1 *= -1;
@@ -353,8 +353,8 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
 
   case Type::BQ_Highpass: 
   {
-    //BQ::calculateCookbookHighpassCoeffs(
-    //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
+    BQ::calculateCookbookHighpassCoeffs(
+      i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
     
     FDF::mvHighpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
     i.bqd.a1 *= -1;
@@ -366,8 +366,8 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
 
   case Type::BQ_Bandpass_Skirt: 
   {
-    //BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
-    //i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); 
+    BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
+    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); 
     
     FDF::mvBandpassSimple(w, Q, true, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
     i.bqd.a1 *= -1;

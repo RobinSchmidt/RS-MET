@@ -4292,6 +4292,8 @@ void samplerFilters()
   };
 
 
+  plotResponses(10000.f, 40.f);
+
   plotResponses(1000.f,  0.f);
   plotResponses(1000.f, 20.f);
   plotResponses(1000.f, 40.f);
