@@ -877,10 +877,18 @@ bool stateVariableFilterUnitTest()
   Real Q  =   1.0;
   Real wc = 2*PI*fc/fs;
   Real b0, b1, b2, a1, a2;
+
+  Q = 1.0;
+  FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
+  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, false);
+
+  Q = sqrt(0.5);
+  FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
+  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, false);
+
+  Q = 0.5;
   FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
   ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, true);
-
-  //ok &= testBiquad( b0,   b1,   b2,   a1,   a2,  1.e-14);
 
 
   // Observations:
