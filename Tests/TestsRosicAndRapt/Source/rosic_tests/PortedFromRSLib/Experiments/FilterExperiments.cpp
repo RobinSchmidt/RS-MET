@@ -4252,28 +4252,36 @@ void samplerFilters()
   float reso       = 0;      // in dB
 
 
-  float w0 = float(2*PI) * cutoff / sampleRate;
-  Vec yL(N), yR(N);
-  Flt flt;
-
-  // Records the impulse response of our filter into yL,yR:
-  auto recordImpResp = [&]()
+  // Records the impulse response of the given filter into L,R (stereo):
+  auto recordImpResp = [](Flt& flt, Vec& L, Vec& R)
   {
+    int N = (int) L.size();
+    rsAssert((int)R.size() == N);
     flt.resetState();
-    RAPT::rsFill(yL, 0.f); yL[0] = 1.f;
-    RAPT::rsFill(yR, 0.f); yR[0] = 1.f;
+    RAPT::rsFill(L, 0.f); L[0] = 1.f;
+    RAPT::rsFill(R, 0.f); R[0] = 1.f;
     for(int n = 0; n < N; n++)
-      flt.processFrame(&yL[n], &yR[n]);
+      flt.processFrame(&L[n], &R[n]);
   };
 
+
+  float w0 = float(2*PI) * cutoff / sampleRate;
+  Flt flt;
+  Vec yL(N), yH(N), yB(N), dummy(N);
+
   flt.setupCutRes(Tp::BQ_Lowpass, w0, reso);
-  recordImpResp();
+  recordImpResp(flt, yL, dummy);
 
-  rsPlotVectors(yL, yR);
+  flt.setupCutRes(Tp::BQ_Highpass, w0, reso);
+  recordImpResp(flt, yH, dummy);
 
+  flt.setupCutRes(Tp::BQ_Bandpass_Skirt, w0, reso);
+  recordImpResp(flt, yB, dummy);
 
+  rsPlotVectors(yL, yH, yB);
 
+  // ToDo:
+  // -Plot magnitude responses instead of impulse responses
 
-
-  int dummy = 0;
+  //int dummy = 0;
 }
