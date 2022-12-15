@@ -834,15 +834,14 @@ bool stateVariableFilterUnitTest()
   bool ok = true;
 
   using Real = double;
+  using Vec  = std::vector<Real>;
   using SVF  = RAPT::rsStateVariableFilter<Real, Real>;
   using FDF  = rsFilterDesignFormulas;
 
 
-
-
-  // Test implementing arbitrary biquads via the SVF:
-
-  auto testBiquad = [](Real b0, Real b1, Real b2, Real a1, Real a2, Real tol, bool plot = false)
+  // Helper function to test if an SVF can faithfully emulate a biquad with the given set of 
+  // coefficients:
+  auto testBiquadCoeffs = [](Real b0, Real b1, Real b2, Real a1, Real a2, Real tol, bool plot = false)
   {
     int N = 200;
 
@@ -865,18 +864,52 @@ bool stateVariableFilterUnitTest()
     return maxErr <= tol;
   };
 
-  ok &= testBiquad(+4.0,  0.0,  0.0, -0.8, +0.9, 1.e-14);
-  ok &= testBiquad( 0.0, +4.0,  0.0, -0.8, +0.9, 1.e-14);
-  ok &= testBiquad( 0.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
-  ok &= testBiquad(+4.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
-  ok &= testBiquad(+4.0, +0.5, +2.0, -0.8, +0.9, 1.e-14);
+  // Designs biqads according to specifications given by the arrays fc and Q (with given sample 
+  // rate fs) and checks, if an SVF can emulate such a desiged biquad:
+  auto testBiquadDesigns = [&](Real fs, const Vec& fc, const Vec& Q)
+  {
+    bool ok = true;
+    for(size_t i = 0; i < fc.size(); i++)
+    {
+      for(size_t j = 0; j < Q.size(); j++)
+      {
+        Real wc = 2*PI*fc[i]/fs;
+        Real b0, b1, b2, a1, a2;
+        FDF::mvLowpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, 1.e-14, false);
+      }
+    }
+    return ok;
+  };
+
+  // Test implementing arbitrary biquads via the SVF:
+
+  // Test biquads with hand-picked coefficients:
+  ok &= testBiquadCoeffs( 0.0, +4.0,  0.0, -0.8, +0.9, 1.e-14);
+  ok &= testBiquadCoeffs( 0.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
+  ok &= testBiquadCoeffs(+4.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.8, +0.9, 1.e-14);
+
+  // Test designed biquads:
+  ok &= testBiquadDesigns(44100.0, Vec({ 1000.0 }), Vec({0.5, sqrt(0.5), 1.0, 10.0 }) );
 
 
-  Real fc =  1000;
+
+
+
+
+  /*
   Real fs = 44100;
+  Real fc =  1000;
   Real Q  =   1.0;
-  Real wc = 2*PI*fc/fs;
+  Real wc = 2*PI*fc/fs;       // wc = 0.14247585730565954
   Real b0, b1, b2, a1, a2;
+
+
+
+  Q = 10.0;
+  FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2); 
+  ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-15, true);
 
   Q = 1.0;
   FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
@@ -889,11 +922,16 @@ bool stateVariableFilterUnitTest()
   Q = 0.5;
   FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
   ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, false);
+  */
+
+
 
 
   //Q = 0.0; // Q = 0 produces: b0 = b1 = a1 = -NaN; a2 = b2 = 0;
   //FDF::mvLowpassSimple(wc, Q, &b0, &b1, &b2, &a1, &a2);
   //ok &= testBiquad(b0, b1, b2, a1, a2, 1.e-14, true);
+
+
 
 
   // Observations:
@@ -908,6 +946,8 @@ bool stateVariableFilterUnitTest()
   // -Multiplying cB by -1 seems to fix it in case 1
 
   // ToDo:
+  // -Maybe make arrays of fc and Q values and write a loop over both arrays, testing the filter 
+  //  design(s) with all these settings
   // -Try more tests with different settings
   // -Cover cases where u1,u2 in setupFromBiquad are ++, +-, -+, --
   //  --: -0.8,+0.9; -+: 2.0, -0.25 (unstable), ...todo...maybe write a helper function that takes
