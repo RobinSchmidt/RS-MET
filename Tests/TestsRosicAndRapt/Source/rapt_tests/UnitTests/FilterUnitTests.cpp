@@ -829,18 +829,20 @@ bool ladderUnitTest()
   return ok;
 }
 
-bool stateVariableFilterUnitTest1()
+
+template<class Real>
+bool stateVariableFilterUnitTest1(Real tol)
 {
   bool ok = true;
 
-  using Real = double;
+  //using Real = double;
   using Vec  = std::vector<Real>;
   using SVF  = RAPT::rsStateVariableFilter<Real, Real>;
   using FDF  = rsFilterDesignFormulas;
 
   // Helper function to test if an SVF can faithfully emulate a biquad with the given set of 
   // coefficients:
-  auto testBiquadCoeffs = [](Real b0, Real b1, Real b2, Real a1, Real a2, Real tol, bool plot = false)
+  auto testBiquadCoeffs = [&](Real b0, Real b1, Real b2, Real a1, Real a2, bool plotWhenFail = true)
   {
     int N = 200;
 
@@ -855,12 +857,15 @@ bool stateVariableFilterUnitTest1()
 
     std::vector<Real> err = yBqd - ySvf;
     Real maxErr = rsMaxAbs(err);
+    bool ok = maxErr <= tol;
 
-    if(plot) {
-      rsPlotVectors(yBqd, ySvf, err);
-      rsPlotVectors(err);  }
+    if(!ok && plotWhenFail) {
+      rsError("stateVariableFilterUnitTest1 failed");
+      //rsPlotVectors(yBqd, ySvf, err);
+      rsPlotVectors(err);  
+    }
 
-    return maxErr <= tol;
+    return ok;
   };
 
   // Designs biqads according to specifications given by the arrays fc and Q (with given sample 
@@ -868,7 +873,7 @@ bool stateVariableFilterUnitTest1()
   auto testBiquadDesigns = [&](Real fs, const Vec& fc, const Vec& Q)
   {
     bool ok = true;
-    Real tol = 1.e-13;
+    //Real tol = 1.e-13;
     for(size_t i = 0; i < fc.size(); i++)
     {
       for(size_t j = 0; j < Q.size(); j++)
@@ -877,13 +882,13 @@ bool stateVariableFilterUnitTest1()
         Real b0, b1, b2, a1, a2;
 
         FDF::mvLowpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, tol, false);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, true);
 
         FDF::mvHighpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, tol, false);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, true);
 
         FDF::mvBandpassSimple(wc, Q[j], false, &b0, &b1, &b2, &a1, &a2);
-        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, tol, false);
+        ok &= testBiquadCoeffs(b0, b1, b2, a1, a2, true);
       }
     }
     return ok;
@@ -893,19 +898,19 @@ bool stateVariableFilterUnitTest1()
   ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -1.5,  0.0, 1.e-14);  // u1 = 0.5, u2 =-2.5 -> s =inf
 
 
-  // Test biquads with hand-picked coefficients:                 // vars in SVF::setupFromBiquad
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, -0.5, 1.e-14);  // u1 =  0, u2 = -1  ->  s = inf
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, +0.5, 1.e-14);  // u1 = -2, u2 = -1  ->  s = -0.707
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, +0.5, 1.e-14);  // u1 = -1, u2 = -2  ->  s = -0.707
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, -0.5, 1.e-14);  // u1 = -1, u2 =  0  ->  s = inf
+  // Test biquads with hand-picked coefficients:         // vars in SVF::setupFromBiquad
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, -0.5);  // u1 =  0, u2 = -1  ->  s = inf
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, +0.5);  // u1 = -2, u2 = -1  ->  s = -0.707
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, +0.5);  // u1 = -1, u2 = -2  ->  s = -0.707
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, -0.5);  // u1 = -1, u2 =  0  ->  s = inf
 
 
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.2, +0.5, 1.e-14);  // u1 = -1.7, u2 = -1.3
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.8, +0.9, 1.e-14);  // u1 = -1.1, u2 = -2.7
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.2, +0.5);  // u1 = -1.7, u2 = -1.3
+  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.8, +0.9);  // u1 = -1.1, u2 = -2.7
 
-  ok &= testBiquadCoeffs( 0.0, +4.0,  0.0, -0.8, +0.9, 1.e-14);
-  ok &= testBiquadCoeffs( 0.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
-  ok &= testBiquadCoeffs(+4.0,  0.0, +4.0, -0.8, +0.9, 1.e-14);
+  ok &= testBiquadCoeffs( 0.0, +4.0,  0.0, -0.8, +0.9);
+  ok &= testBiquadCoeffs( 0.0,  0.0, +4.0, -0.8, +0.9);
+  ok &= testBiquadCoeffs(+4.0,  0.0, +4.0, -0.8, +0.9);
 
 
 
@@ -914,7 +919,7 @@ bool stateVariableFilterUnitTest1()
   // Test designed biquads:
   ok &= testBiquadDesigns(44100.0, 
     Vec({ 10.0, 100.0, 1000.0, 10000.0 }), 
-    Vec({ 0.1, 1.0, 10.0, 100.0, sqrt(0.5) }) );
+    Vec({ 0.1, 1.0, 10.0, 100.0, Real(sqrt(0.5)) }) );
     // It seems like lower cutoff frequencies require higher tolerances - which is typical for IIR
     // filters.
 
@@ -953,7 +958,9 @@ bool stateVariableFilterUnitTest()
 {
   bool ok = true;
 
-  ok &= stateVariableFilterUnitTest1();
+  ok &= stateVariableFilterUnitTest1<float>( 1.e-5);
+  ok &= stateVariableFilterUnitTest1<double>(1.e-13);
+
 
   return ok;
 }
