@@ -4306,6 +4306,10 @@ void samplerFilters()
   //yL[0] = 1.f;
  // plt.plotDecibelSpectra(N, &yL[0]);
 
+  // Observations:
+  // -The highpass with cutoff = 1000, reso = 40 looks strange. the zero is not at DC but there's
+  //  a notch around 200 Hz
+
 
   // ToDo:
   // -Fix the scaling of the magnitudes in the plot. It seems to have to do with the length/FFT
