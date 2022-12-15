@@ -4246,10 +4246,10 @@ void samplerFilters()
   using Tp  = Flt::Type;
   using Vec = std::vector<float>;
 
-  int   N          =  1024;  // number of samples = half the number of frequencies
+  int   N          =  4096;    // number of samples = half the number of frequencies
   float sampleRate = 44100;
-  float cutoff     = 1000;   // in Hz
-  float reso       = 0;      // in dB
+  //float cutoff     = 1000;   // in Hz
+  //float reso       = 0;      // in dB
 
 
   // Records the impulse response of the given filter into L,R (stereo):
@@ -4264,29 +4264,40 @@ void samplerFilters()
       flt.processFrame(&L[n], &R[n]);
   };
 
+  // Plots the magnitude responses for all the different filter types for given cutoff resonance
+  // parameter:
+  auto plotResponses = [&](float cutoff, float reso)
+  {
+    float w0 = float(2*PI) * cutoff / sampleRate;
 
-  float w0 = float(2*PI) * cutoff / sampleRate;
-  Flt flt;
-  Vec yL(N), yH(N), yB(N), dummy(N);
+    Flt flt;
+    Vec yL(N), yH(N), yB(N), dummy(N);
 
-  flt.setupCutRes(Tp::BQ_Lowpass, w0, reso);
-  recordImpResp(flt, yL, dummy);
+    flt.setupCutRes(Tp::BQ_Lowpass, w0, reso);
+    recordImpResp(flt, yL, dummy);
 
-  flt.setupCutRes(Tp::BQ_Highpass, w0, reso);
-  recordImpResp(flt, yH, dummy);
+    flt.setupCutRes(Tp::BQ_Highpass, w0, reso);
+    recordImpResp(flt, yH, dummy);
 
-  flt.setupCutRes(Tp::BQ_Bandpass_Skirt, w0, reso);
-  recordImpResp(flt, yB, dummy);
+    flt.setupCutRes(Tp::BQ_Bandpass_Skirt, w0, reso);
+    recordImpResp(flt, yB, dummy);
 
-  //rsPlotVectors(yL, yH, yB);
+    //rsPlotVectors(yL, yH, yB);
 
-  SpectrumPlotter<float> plt;
-  plt.setFftSize(N);
-  plt.setSampleRate(sampleRate);
-  plt.setLogFreqAxis(true);
-  plt.setNormalizationMode(SpectrumPlotter<float>::NormalizationMode::impulse);
+    SpectrumPlotter<float> plt;
+    plt.setFftSize(N);
+    plt.setSampleRate(sampleRate);
+    plt.setLogFreqAxis(true);
+    plt.setNormalizationMode(SpectrumPlotter<float>::NormalizationMode::impulse);
+    plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
+  };
 
-  plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
+
+  plotResponses(1000.f,  0.f);
+  plotResponses(1000.f, 20.f);
+  plotResponses(1000.f, 40.f);
+
+
 
   // test:
   //RAPT::rsFill(yL, 0.f); 
