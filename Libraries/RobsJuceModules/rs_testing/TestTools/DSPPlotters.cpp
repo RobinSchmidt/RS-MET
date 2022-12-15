@@ -538,6 +538,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   // Maybe factor out into setupTransformer:
   typedef RAPT::rsFourierTransformerRadix2<T> FT;
   transformer.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
+  //transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
   transformer.setDirection(        FT::FORWARD);
   transformer.setBlockSize(fftSize);
 
@@ -555,7 +556,6 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   //std::vector<T> phs(N);
   std::vector<std::complex<T>> tmp(N);
   for(int i = 0; i < numSignals; i++) {
-
     RAPT::rsArrayTools::convert(signals[i], &tmp[0], signalLength);
     if(signalLength < N)
       RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
@@ -567,10 +567,9 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     using NM = NormalizationMode;
     switch(normMode)
     {
-    //case NM::periodic: scaler = T(fftSize) / T(signalLength);  // verify!
-    case NM::periodic:  scaler = T(1) / T(signalLength);     break;  // verify!
-    case NM::impulsive: scaler = T(1);                       break; 
-    case NM::toZeroDb:  scaler = T(1) / real(rsMaxAbs(tmp)); break;
+    case NM::cycle:    scaler = T(1) / T(signalLength);     break;  // verify!
+    case NM::impulse:  scaler = T(1);                       break; 
+    case NM::toZeroDb: scaler = T(1) / real(rsMaxAbs(tmp)); break;
     }
 
     for(int k = 0; k < N; k++)
@@ -597,7 +596,9 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int maxBin)
 
   // todo: check everything for off-by-one errors for even and odd sizes
 
-  GNUPlotter::rangeLinear(&f[0], maxBin+1, T(0), T(maxBin));
+  //GNUPlotter::rangeLinear(&f[0], maxBin+1, T(0), T(maxBin));  // +1 is wrong?
+  GNUPlotter::rangeLinear(&f[0], maxBin, T(0), T(maxBin));  
+
   T scaler = T(1);
   T r = T(1) / T(fftSize);
   typedef FreqAxisUnits FU;

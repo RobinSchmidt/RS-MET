@@ -200,13 +200,14 @@ public:
   };
 
 
+  /** The different modes are suitable for different types of input signals.  */
   enum class NormalizationMode
   {
-    periodic,
-    impulsive, 
-    toZeroDb
+    cycle,       // cycle (of a periodic signal)
+    impulse,     // impulse response (of a filter/LTI-system)
+    toZeroDb     // maximum is always forced to 0 dB
   };
-  // cycle, impulse, toZeroDb
+  // what about (auto)correlation functions? how should we normalize the plot for them?
 
 
   /** Given up to 10 signal buffers of length "signalLength", this function performs an FFT on each 
@@ -237,6 +238,9 @@ public:
 
   void setLogFreqAxis(bool freqsAreLogarithmic) { logFreqAxis = freqsAreLogarithmic; };
 
+  /** Sets the normalization mode. */
+  void setNormalizationMode(NormalizationMode newMode) { normMode = newMode; }
+
   /** Sets the floor level for the plot in decibels. */
   void setFloorLevel(T newFloor) { dBFloor = newFloor; }
 
@@ -253,7 +257,7 @@ protected:
   std::vector<T> getFreqAxis(int maxBin);
 
   FreqAxisUnits freqAxisUnit = FreqAxisUnits::binIndex;
-  NormalizationMode normMode = NormalizationMode::periodic;
+  NormalizationMode normMode = NormalizationMode::cycle;
 
   T sampleRate = T(1);
 

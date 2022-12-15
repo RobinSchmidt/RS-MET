@@ -4246,7 +4246,7 @@ void samplerFilters()
   using Tp  = Flt::Type;
   using Vec = std::vector<float>;
 
-  int   N          =  128;   // number of samples = half the number of frequencies
+  int   N          =  1024;  // number of samples = half the number of frequencies
   float sampleRate = 44100;
   float cutoff     = 1000;   // in Hz
   float reso       = 0;      // in dB
@@ -4284,13 +4284,14 @@ void samplerFilters()
   plt.setFftSize(N);
   plt.setSampleRate(sampleRate);
   plt.setLogFreqAxis(true);
+  plt.setNormalizationMode(SpectrumPlotter<float>::NormalizationMode::impulse);
 
-  //plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
+  plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
 
   // test:
-  RAPT::rsFill(yL, 0.f); 
-  yL[0] = 1.f;
-  plt.plotDecibelSpectra(N, &yL[0]);
+  //RAPT::rsFill(yL, 0.f); 
+  //yL[0] = 1.f;
+ // plt.plotDecibelSpectra(N, &yL[0]);
 
 
   // ToDo:
