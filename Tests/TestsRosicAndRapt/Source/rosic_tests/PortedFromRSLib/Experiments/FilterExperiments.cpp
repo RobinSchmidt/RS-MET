@@ -4240,6 +4240,22 @@ void fakeResoDifferentDelays()
   // than with 0.0. Warped allpass interpolation solves this and should indeed be used here.
 }
 
+/** Adds the magnitude spectru of the signal x of length N to the data-file of the given 
+plotter. */
+template<class T>
+void addMagnitudeSpectrumOfSignal(GNUPlotter& plt, const T* x, int N, T sampleRate)
+{
+
+  int fummy = 0;
+}
+
+// Convenience function:
+template<class T>
+void addMagnitudeSpectrumOfSignal(GNUPlotter& plt, const std::vector<T>& x, T sampleRate)
+{
+  addMagnitudeSpectrumOfSignal(plt, &x[0], (int) x.size(), sampleRate);
+}
+
 void samplerFilters()
 {
   using Flt = rosic::Sampler::FilterCore;
@@ -4265,6 +4281,8 @@ void samplerFilters()
   };
 
 
+
+
   float w0 = float(2*PI) * cutoff / sampleRate;
   Flt flt;
   Vec yL(N), yH(N), yB(N), dummy(N);
@@ -4278,7 +4296,15 @@ void samplerFilters()
   flt.setupCutRes(Tp::BQ_Bandpass_Skirt, w0, reso);
   recordImpResp(flt, yB, dummy);
 
-  rsPlotVectors(yL, yH, yB);
+  //rsPlotVectors(yL, yH, yB);
+
+
+ 
+  GNUPlotter plt;
+  addMagnitudeSpectrumOfSignal(plt, yL, sampleRate);
+  addMagnitudeSpectrumOfSignal(plt, yH, sampleRate);
+  addMagnitudeSpectrumOfSignal(plt, yB, sampleRate);
+
 
   // ToDo:
   // -Plot magnitude responses instead of impulse responses
