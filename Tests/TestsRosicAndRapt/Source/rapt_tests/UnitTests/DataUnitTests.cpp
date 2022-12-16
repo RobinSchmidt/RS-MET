@@ -150,13 +150,12 @@ bool testArrayFiltering()
 }
 
 /** Orders the array x by a predicate, i.e. a boolean function that takes a parameter of type T and 
-returns true, if the arguments satisfies a predicate and false if it doesn't satisfy it. The
+returns true, if the argument satisfies a predicate and false if it doesn't satisfy it. The
 elements that do satisfy the predicate will be kept at or moved to the front of the array and those 
 that do not satisfy it will be kept at or moved to the back of the array. It returns the number of 
 elements that satisfy the predicate, i.e. the length of the front section of the resulting array.
 It can be used, for example, to move all positive entries to the front and all negative entries
-to the back.
-*/
+to the back. It's a "bring the good items to the front" function. The complexity is linear in N. */
 template<class T, class Pred>
 int orderByPredicate(T* x, int N, Pred pred)
 {
@@ -171,11 +170,7 @@ int orderByPredicate(T* x, int N, Pred pred)
       i++; }}
   return i;
 }
-// move to rsArrayTools, maybe rename to arrangeByPredicate, classifyByPredicate
-// maybe this can be optimized to avoid swaps where x[i], x[j] get swapped when they both do not
-// satisfy teh predicate? Maybe in the if branch, use another inner while loop:
-//   while(!x[j]) { j--; }
-//   rsSwap(...)
+// move to rsArrayTools
 
 bool testArrayMisc()
 {
@@ -200,6 +195,8 @@ bool testArrayMisc()
   auto positive = [](int x){ return x > 0; };
   int n;
 
+  // Helper function that checks that the first n elements of the given vector are positive and the
+  // remaining ones are not positive (i.e. negative or zero).
   auto checkPredicate = [&](const Vec& x, int n)
   {
     bool ok = true;
@@ -210,8 +207,28 @@ bool testArrayMisc()
     return ok;
   };
 
-  x8 = Vec({1,2,3,4,5,6,7,8});
-  n = orderByPredicate(&x8[0], 8, positive);
+  // Tests ordering of the given array by a predicate (positivity in this case). It takes the 
+  // number of actual positive entries in the array as second parameter which we check the output
+  // of the ordering function against:
+  auto testOrdering = [&](const Vec& x, int numPositives)
+  {
+    Vec y = x;
+    int n = orderByPredicate(&y[0], (int) y.size(), positive); 
+    bool ok = n == numPositives;
+    ok &= checkPredicate(y, n);
+    return ok;
+  };
+
+  ok &= testOrdering({+1,+2,+3,+4,+5,+6,+7,+8}, 8);
+  ok &= testOrdering({-1,-2,-3,-4,-5,-6,-7,-8}, 0);
+  ok &= testOrdering({-1,-2,-3,-4,-5,+6,+7,-8}, 2);
+  ok &= testOrdering({+1,-2,-3,+4,+5,-6,+7,-8}, 4);
+  ok &= testOrdering({+1,+2,+3,+4,+5,-6,-7,-8}, 5);
+  // ToDo: .aybe systematically check all 2^8 possibilities for distributing the +,- signs
+
+  /*
+  x8 = Vec({1,2,3,4,5,6,7,8}); 
+  n = orderByPredicate(&x8[0], 8, positive); 
   ok &= n == 8 && checkPredicate(x8, n);
 
   x8 = Vec({-1,-2,-3,-4,-5,-6,-7,-8});
@@ -222,7 +239,6 @@ bool testArrayMisc()
   n = orderByPredicate(&x8[0], 8, positive);
   ok &= n == 2 && checkPredicate(x8, n);
 
-
   x8 = Vec({1,-2,-3,4,5,-6,7,-8});
   n = orderByPredicate(&x8[0], 8, positive);
   ok &= n == 4 && checkPredicate(x8, n);
@@ -230,6 +246,8 @@ bool testArrayMisc()
   x8 = Vec({1,2,3,4,5,-6,-7,-8});
   n = orderByPredicate(&x8[0], 8, positive);
   ok &= n == 5 && checkPredicate(x8, n);
+  */
+
 
 
   return ok;
