@@ -199,16 +199,38 @@ bool testArrayMisc()
   auto positive = [](int x){ return x > 0; };
   int n;
 
+  auto checkPredicate = [&](const Vec& x, int n)
+  {
+    bool ok = true;
+    for(int i = 0; i < n; i++)
+      ok &= positive(x[i]);
+    for(int i = n; i < (int) x.size(); i++)
+      ok &= !positive(x[i]);
+    return ok;
+  };
+
+  x8 = Vec({1,2,3,4,5,6,7,8});
   n = orderByPredicate(&x8[0], 8, positive);
-  ok &= n == 8;
+  ok &= n == 8 && checkPredicate(x8, n);
+
+  x8 = Vec({-1,-2,-3,-4,-5,-6,-7,-8});
+  n = orderByPredicate(&x8[0], 8, positive);
+  ok &= n == 0 && checkPredicate(x8, n);
+
+  x8 = Vec({-1,-2,-3,-4,-5,6,7,-8});
+  n = orderByPredicate(&x8[0], 8, positive);
+  ok &= n == 2 && checkPredicate(x8, n);
+
 
   x8 = Vec({1,-2,-3,4,5,-6,7,-8});
   n = orderByPredicate(&x8[0], 8, positive);
-  ok &= n == 4;
+  ok &= n == 4 && checkPredicate(x8, n);
 
   x8 = Vec({1,2,3,4,5,-6,-7,-8});
   n = orderByPredicate(&x8[0], 8, positive);
-  ok &= n == 5;
+  ok &= n == 5 && checkPredicate(x8, n);
+
+
 
 
   // write a verifyPredicate(Vec x, pred, numPositives) functions that checks that the numPositives
