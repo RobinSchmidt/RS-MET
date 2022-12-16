@@ -179,7 +179,6 @@ public:
   magnitude-squared function H(s)*H(-s) = (N(s)*N(-s)) / (D(s)*D(-s)). "N" is the order of the 
   filter, so "b", "a" should be of length N+1 and "b2", "a2" of length 2*N+1. */
   static void magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N);
-  // allocates
 
   /** Given the two arrays "b2" and "a2" of polynomial coefficients (both of length 2*N+1) for 
   numerator and denominator of an s-domain Nth order lowpass prototype magnitude-squared function 

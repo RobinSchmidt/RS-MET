@@ -378,7 +378,7 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
   // -It seems to get called only for Bessel shelves - why not for other types?
 
   /*
-  // old:
+  // old - probably obsolete:
   T* am = new T[N+1];
   T* bm = new T[N+1];
   rsPolynomial<T>::negateArgument(b, bm, N);  // coeffs of N(-s)
@@ -391,6 +391,8 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
   // ToDo:
   // -Try to get rid of the allocation. Maybe bm, am are not needed and we can use b2, a2 also for 
   //  the temporary arrays? If this is not possible, implement it using a workspace.
+  //  ...OK - done. It seems to still work. Test it more thoroughly and if all is well, delete this
+  //  old version
   */
 }
 
@@ -446,6 +448,14 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   //rassert(false); // something seems wrong about this - we should write the inverted poles, zeros
   //                // and gain zeros into zNew, pNew, kNew
 
+  using AT = rsArrayTools;
+  AT::copy(z, zNew, N);       // maybe wrap int if(z != zNew)
+  AT::copy(p, pNew, N);       // dito (but with p)
+  AT::swap(zNew, pNew, N);
+  *kNew = T(1) / *k;
+
+  /*
+  // old:
   Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
   rsArrayTools::copy(z,    zTmp, N);
   rsArrayTools::copy(p,    zNew, N);
@@ -456,6 +466,7 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   // ToDo:
   // -Get rid of zTmp. Maybe implement rsArrayTools::swap and use that. It should just iterate 
   //  through the arrays anc call rsSwap for each element
+  */
 }
 
 template<class T>

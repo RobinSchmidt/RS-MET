@@ -804,12 +804,18 @@ public:
   template<class T>
   static T sumOfAbsoluteDifferences(const T *x, const T *y, const int N);
 
+  /** Swaps contents of the x and y array. */
+  template<class T>
+  static inline void swap(T* x, T* y, int N);
+
   /** Swaps the contents of of buffer1 and buffer2 using an auxiliary buffer bufferTmp. All buffers
   are assumed to have a size of sizeInBytes. */
   static void swapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes);
   // rename to swapContent, make a version that operates in place. maybe this function should not
   // be in rsArrayTools - the void-pointers and byte-size do not really follow the general 
   // pattern here
+
+
 
   /** Applies an affine tranform y = a*x + b to the array x, where a and b are chosen such that the
   transformed values span a range from targetMin to targetMax. Note that this works only, if the
@@ -1203,6 +1209,13 @@ inline void rsArrayTools::subtract(const T *buffer1, const T *buffer2, T *result
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] - buffer2[i];
+}
+
+template <class T>
+inline void rsArrayTools::swap(T* x, T* y, int N)
+{
+  for(int i = 0; i < N; i++)
+    rsSwap(x[i], y[i]);
 }
 
 template <class T>
