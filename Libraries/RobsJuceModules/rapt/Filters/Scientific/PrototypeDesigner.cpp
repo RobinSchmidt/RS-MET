@@ -492,11 +492,8 @@ int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
   // ToDo:
   // -Get rid of allocation - allocate on stack or use workspace -> done
   //  ...but maybe we can get rid of the temporary altogther by re-using r. Can rsOnlyLeftHalfPlane
-  //  work in place? Figure out! ...I don't think so - but it can be made so. Maybe implement in 
-  //  rsArrayTools a general function that moves those elements of an array to the front that 
-  //  satisfy a condition and thos to the back that don't satisfy the condition and returns the
-  //  number of elements that satisfy it. maybe call it moveToFrontIf... or moveToBackIf
-  //  orderByPredicate
+  //  work in place? Figure out! ...I don't think so - but it can be made so by using
+  //  rsArrayTools::orderByPredicate
 }
 
 template<class T>

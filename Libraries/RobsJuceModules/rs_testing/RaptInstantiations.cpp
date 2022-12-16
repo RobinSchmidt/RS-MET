@@ -83,10 +83,7 @@ template void rsArrayTools::fillWithRandomValues(int* x, int N, double min, doub
 template void rsArrayTools::allocateSquareArray2D(int**& theArray, int size);
 template void rsArrayTools::deAllocateSquareArray2D(int**& theArray, int size);
 template void rsArrayTools::rightShift(int *buffer, int length, int numPlaces);
-
-template int rsArrayTools::orderByPredicate(int* x, int N, std::function<bool(int)>& pred);
-
-
+template int rsArrayTools::orderByPredicate(int* x, int N, const std::function<bool(int)>& pred);
 
 // rsArrayTools<rsUint32>
 template bool rsArrayTools::contains(const rsUint32 *buffer, int length, rsUint32 elementToFind);

@@ -172,7 +172,7 @@ int orderByPredicate(T* x, int N, Pred pred)
   return i;
 }
 */
-// move to rsArrayTools or to the Prototypes
+// move to rsArrayTools ...done - but is uses std::function instead of a templated predicate.
 // Try to implement a stable version of it, i.e. one that preserves the original order of the 
 // items. Maybe initialize j with the first element that satisfies the predicate and then increment
 // j also instead of decrementing it. Or: init i as the first element that doesn't satisfy the 
@@ -200,7 +200,6 @@ bool testArrayMisc()
   // and move the negative numbers to the back:
   //auto positive = [](int x){ return x > 0; };
   std::function<bool(int)> positive = [](int x){ return x > 0; };
-  //int n;
 
   // Helper function that checks that the first n elements of the given vector are positive and the
   // remaining ones are not positive (i.e. negative or zero).

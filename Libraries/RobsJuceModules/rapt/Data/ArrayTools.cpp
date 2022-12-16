@@ -1228,7 +1228,7 @@ void rsArrayTools::orderBitReversedOutOfPlace(const T *inBuffer, T *outBuffer, i
 }
 
 template<class T>
-int rsArrayTools::orderByPredicate(T* x, int N, std::function<bool(T)>& pred)
+int rsArrayTools::orderByPredicate(T* x, int N, const std::function<bool(T)>& pred)
 {
   int i = 0;
   int j = N-1;

@@ -696,13 +696,20 @@ public:
   elements that satisfy the predicate, i.e. the length of the front section of the resulting array.
   It can be used, for example, to move all positive entries to the front and all negative entries
   to the back like this:
-
-    int numPositives = rsArrayTools::orderByPredicate(a, N, [](T a_i){ return a_i > 0; }); 
+    
+    std::function<bool(int)> positive = [](int x){ return x > 0; };
+    int numPositives = rsArrayTools::orderByPredicate(a, N, positive); 
   
   It's a function to bring the "good" items to the front and move the "bad" items to the back. The 
-  complexity is linear in N. */
+  complexity is linear in N. Unfortunately, it's not stable, i.e. it does not retain the original 
+  order of elements when some are swapped in the re-ordering process. */
   template<class T>
-  static int orderByPredicate(T* x, int N, std::function<bool(T)>& predicate);
+  static int orderByPredicate(T* x, int N, const std::function<bool(T)>& predicate);
+  // needs more unit tests
+  // maybe let the predicate be a template parameter too, such that the user can directly define a
+  // lambda function in the call like so:
+  //   int numPositives = rsArrayTools::orderByPredicate(a, N, [](int x){ return x > 0; }); 
+  // -> move implementation into the header file (otherwise, this will give linker errors)
 
   /** Returns the product of the elements in the buffer for types which define the
   multiplication operator (the *= version thereof) and a constructor which can take an int
