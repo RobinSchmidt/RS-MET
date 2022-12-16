@@ -403,6 +403,9 @@ void rsPrototypeDesigner<T>::shelvingMagSqrNumeratorFromLowpassTransfer(T* b, T*
 
   delete[] a2;
   delete[] b2;
+
+  // ToDo:
+  // -Try to get rid of the allocation. We'll probably need a workspace of size 2*(2*N+1)
 }
 
 template<class T>
@@ -433,6 +436,10 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   rsArrayTools::copy(zTmp, pNew, N);
   *kNew = T(1) / *k;
   delete[] zTmp;
+
+  // ToDo:
+  // -Get rid of zTmp. Maybe implement rsArrayTools::swap and use that. It should just iterate 
+  //  through the arrays anc call rsSwap for each element
 }
 
 template<class T>
@@ -467,7 +474,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
   // temporary arrays for Legendre polynomials:
   T *P1 = new T[N/2+1];
   T *P2 = new T[N/2+1];
-  T *P  = nullptr;  // pointer to the current P array
+  T *P  = nullptr;       // pointer to the current P array
 
   // create integrand:
   int k, r;
@@ -500,6 +507,11 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
   // clean up:
   delete[] P1;
   delete[] P2;
+
+  // Try to get rid of the allocations. Look at the commented "old" papoulisDenominator 
+  // implementation. Maybe thsi works without allocations? Try to reactivate it. But it calls
+  // maximumSlopeMonotonicPolynomial, so maybe the allocs are in there. 
+  // Maybe move this implementation somewhere into the prototypes. 
 }
 
 template<class T>
