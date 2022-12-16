@@ -4292,7 +4292,13 @@ void samplerFilters()
     plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
   };
 
-
+  // Move out into separate experiment. What we are actually interested in (I think), is the 
+  // relation between the R := resoGainDb parameter and the resulting G := cutoffGainDb. It should
+  // be straightforward to create a plot of that function using 
+  // rsBandwidthConverter::lowpassResoGainToQ. Maybe it's better to express it not in dB but rather
+  // as raw amplitude? Try both. Use whichever is easier to approximate cheaply (e.g. by polynomial
+  // or rational function). Maybe also try taking the input in dB and producing the output as raw 
+  // value - that's what we ultimately need.
   /*
                                 // Gain at fc
   plotResponses(1000.f,  1.f);  //  -0.39
