@@ -364,6 +364,21 @@ T rsPrototypeDesigner<T>::butterworthEnergy(int N, int M)
 template<class T>
 void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N)
 {
+  // new:
+  using Poly = rsPolynomial<T>;
+  Poly::negateArgument(b, b2, N);  // b2: coeffs of N(-s)
+  Poly::negateArgument(a, a2, N);  // a2: coeffs of D(-s)
+  Poly::multiply(b, N, b2, N, b2); // b2: coeffs of N(s)*N(-s)
+  Poly::multiply(a, N, a2, N, a2); // a2: coeffs of D(s)*D(-s)
+
+  // ToDo:
+  // -Figure out if this can be optimized. IIRC every odd coeff is zero and every even coeff is 
+  //  simply related to the original coeffs? If true, then implement it as a function 
+  //  Poly::multiplyByFlippedSelf(b, b2, N) or something like that
+  // -It seems to get called only for Bessel shelves - why not for other types?
+
+  /*
+  // old:
   T* am = new T[N+1];
   T* bm = new T[N+1];
   rsPolynomial<T>::negateArgument(b, bm, N);  // coeffs of N(-s)
@@ -376,6 +391,7 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
   // ToDo:
   // -Try to get rid of the allocation. Maybe bm, am are not needed and we can use b2, a2 also for 
   //  the temporary arrays? If this is not possible, implement it using a workspace.
+  */
 }
 
 template<class T>
