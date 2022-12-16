@@ -164,7 +164,8 @@ int orderByPredicate(T* x, int N, Pred pred)
   int j = N-1;
   while(i <= j) {
     if(!pred(x[i])) {
-      rsSwap(x[i], x[j]);
+      if(pred(x[j]))
+        rsSwap(x[i], x[j]);
       j--; }
     else {
       i++; }}
@@ -229,15 +230,6 @@ bool testArrayMisc()
   x8 = Vec({1,2,3,4,5,-6,-7,-8});
   n = orderByPredicate(&x8[0], 8, positive);
   ok &= n == 5 && checkPredicate(x8, n);
-
-
-
-
-  // write a verifyPredicate(Vec x, pred, numPositives) functions that checks that the numPositives
-  // satisfy a given predicate and the remaining items do not satisfy it
-
-
-
 
 
   return ok;
