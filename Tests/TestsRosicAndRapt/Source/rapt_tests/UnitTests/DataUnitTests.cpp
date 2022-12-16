@@ -149,26 +149,32 @@ bool testArrayFiltering()
   return r;
 }
 
+/** Orders the array x by a predicate, i.e. a boolean function that takes a parameter of type T and 
+returns true, if the arguments satisfies a predicate and false if it doesn't satisfy it. The
+elements that do satisfy the predicate will be kept at or moved to the front of the array and those 
+that do not satisfy it will be kept at or moved to the back of the array. It returns the number of 
+elements that satisfy the predicate, i.e. the length of the front section of the resulting array.
+It can be used, for example, to move all positive entries to the front and all negative entries
+to the back.
+*/
 template<class T, class Pred>
 int orderByPredicate(T* x, int N, Pred pred)
 {
   int i = 0;
   int j = N-1;
-  while(i <= j)  // or does it need to be <= ?
-  {
-    if(!pred(x[i]))
-    {
+  while(i <= j) {
+    if(!pred(x[i])) {
       rsSwap(x[i], x[j]);
-      j--;
-    }
-    else
-    {
-      i++;
-    }
-  }
+      j--; }
+    else {
+      i++; }}
   return i;
 }
 // move to rsArrayTools, maybe rename to arrangeByPredicate, classifyByPredicate
+// maybe this can be optimized to avoid swaps where x[i], x[j] get swapped when they both do not
+// satisfy teh predicate? Maybe in the if branch, use another inner while loop:
+//   while(!x[j]) { j--; }
+//   rsSwap(...)
 
 bool testArrayMisc()
 {
@@ -199,6 +205,11 @@ bool testArrayMisc()
   x8 = Vec({1,-2,-3,4,5,-6,7,-8});
   n = orderByPredicate(&x8[0], 8, positive);
   ok &= n == 4;
+
+  x8 = Vec({1,2,3,4,5,-6,-7,-8});
+  n = orderByPredicate(&x8[0], 8, positive);
+  ok &= n == 5;
+
 
   // write a verifyPredicate(Vec x, pred, numPositives) functions that checks that the numPositives
   // satisfy a given predicate and the remaining items do not satisfy it
