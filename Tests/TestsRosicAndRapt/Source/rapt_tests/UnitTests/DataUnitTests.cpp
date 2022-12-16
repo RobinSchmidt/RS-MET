@@ -149,29 +149,65 @@ bool testArrayFiltering()
   return r;
 }
 
+template<class T, class Pred>
+int orderByPredicate(T* x, int N, Pred pred)
+{
+  int i = 0;
+  int j = N-1;
+  while(i <= j)  // or does it need to be <= ?
+  {
+    if(!pred(x[i]))
+    {
+      rsSwap(x[i], x[j]);
+      j--;
+    }
+    else
+    {
+      i++;
+    }
+  }
+  return i;
+}
+// move to rsArrayTools, maybe rename to arrangeByPredicate, classifyByPredicate
+
 bool testArrayMisc()
 {
-  bool r = true;
+  bool ok = true;
   typedef std::vector<int> Vec;
   typedef RAPT::rsArrayTools AT;
   Vec x6, x7, x8, y6, y7, y8;
 
-  // test reversal:
+  // Test reversal:
   x6 = Vec({1,2,3,4,5,6});
   x7 = Vec({1,2,3,4,5,6,7});
   x8 = Vec({1,2,3,4,5,6,7,8});
-  y6 = x6; AT::reverse(&y6[0], 6); r &= y6 == Vec({6,5,4,3,2,1});
-  y7 = x7; AT::reverse(&y7[0], 7); r &= y7 == Vec({7,6,5,4,3,2,1});
+  y6 = x6; AT::reverse(&y6[0], 6); ok &= y6 == Vec({6,5,4,3,2,1});
+  y7 = x7; AT::reverse(&y7[0], 7); ok &= y7 == Vec({7,6,5,4,3,2,1});
 
-  // test circular shift:
-  y7 = x7; rsCircularShift(&y7[0], 7, 3); r &= y7 == Vec({5,6,7,1,2,3,4});
-  y8 = x8; rsCircularShift(&y8[0], 8, 3); r &= y8 == Vec({6,7,8,1,2,3,4,5});
+  // Test circular shift:
+  y7 = x7; rsCircularShift(&y7[0], 7, 3); ok &= y7 == Vec({5,6,7,1,2,3,4});
+  y8 = x8; rsCircularShift(&y8[0], 8, 3); ok &= y8 == Vec({6,7,8,1,2,3,4,5});
+
+  // Test ordering by a predicate. We want to move/keep the non-negative numbers to/at the front 
+  // and move the negative numbers to the back:
+  auto positive = [](int x){ return x > 0; };
+  int n;
+
+  n = orderByPredicate(&x8[0], 8, positive);
+  ok &= n == 8;
+
+  x8 = Vec({1,-2,-3,4,5,-6,7,-8});
+  n = orderByPredicate(&x8[0], 8, positive);
+  ok &= n == 4;
+
+  // write a verifyPredicate(Vec x, pred, numPositives) functions that checks that the numPositives
+  // satisfy a given predicate and the remaining items do not satisfy it
 
 
 
 
 
-  return r;
+  return ok;
 }
 
 bool testTokenize()
