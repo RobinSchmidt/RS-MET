@@ -209,8 +209,8 @@ public:
   static void getInverseFilter(Complex* z, Complex* p, T* k, Complex* zNew, Complex* pNew, 
     T* kNew, int N);
 
-  /** Given an array of "N"+1 cofficients for a polynomial of order "N", this function returns the 
-  left halfplane roots in "r" and returns the number of such roots in the return-value. The rest of
+  /** Given an array of N+1 cofficients for a polynomial of order N, this function returns the 
+  left halfplane roots in r and returns the number of such roots in the return-value. The rest of
   the array "r" is left as is - in most cases, you should assume that it contains garbage.
   \todo maybe move to PolynomialAlgorithms */
   static int getLeftHalfPlaneRoots(T* a, Complex* r, int N);
@@ -221,6 +221,7 @@ public:
   Halpern and Gauss filters, thes are the coefficients of the transfer function itself, not the
   magnitude-squared response coeffs. */
   static void besselDenominator(T* a, int N); 
+  // allocates
 
   /** Computes zeros, poles and gain factor for an analog low-shelving Bessel prototype filter.
   @see getBesselLowpassZerosPolesAndGain */
@@ -230,10 +231,12 @@ public:
   in the denominator of N-th order Papoulis filters. It's the L^2(w) polynomial in Eq. 8.14 in 
   Paarmann: Design and Analysis of Analog Filters.  */
   static void papoulisPolynomial(T *a, int N);
+  // allocates
 
   /** Constructs the denominator polynomial of the magnitude-squared function for Papoulis filters 
   where "N" is the filter order and "a" is of length 2*N+1. */
   static void papoulisDenominator(T* a, int N);
+  // allocates
 
   /** Generates coefficients of a polynomial of order 2*N for the squared polynomial that occurs
   in the denominator of N-th order Halpern filters. It's the T^2(w) polynomial in Eq. 8.18 in 

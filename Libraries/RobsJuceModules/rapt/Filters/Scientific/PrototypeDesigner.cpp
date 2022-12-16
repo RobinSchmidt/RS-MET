@@ -423,7 +423,8 @@ void rsPrototypeDesigner<T>::shelvingMagSqrNumeratorFromLowpassTransfer(T* b, T*
   delete[] b2;
 
   // ToDo:
-  // -Try to get rid of the allocation. We'll probably need a workspace of size 2*(2*N+1)
+  // -Try to get rid of the allocation. We'll probably need a workspace of size 2*(2*N+1). Or use
+  //  T* a2[2*maxOrder+1]; to allocate the temporary memory on the stack
 }
 
 template<class T>
@@ -454,6 +455,10 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   AT::swap(zNew, pNew, N);
   *kNew = T(1) / *k;
 
+  // ToDo:
+  // -Maybe move this into rsPoleZeroMapper. It fits better there. Maybe just call it invert or 
+  //  inverse
+
   /*
   // old:
   Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
@@ -472,18 +477,32 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
 template<class T>
 int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 {
-  std::vector<Complex> rTmp; // maybe we can get rid of that temporary array
-  rTmp.resize(N);
+  // old:
+  //std::vector<Complex> rTmp; // maybe we can get rid of that temporary array
+  //rTmp.resize(N);
+
+  // new:
+  Complex rTmp[maxOrder];   // maybe we can get rid of that temporary array?
+
   rsPolynomial<T>::roots(a, N, &rTmp[0]);
   int numLeftRoots = rsOnlyLeftHalfPlane(&rTmp[0], r, N);
   rsAssert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
   return numLeftRoots;
+
+  // ToDo:
+  // -Get rid of allocation - allocate on stack or use workspace -> done
+  //  ...but maybe we can get rid of the temporary altogther by re-using r. Can rsOnlyLeftHalfPlane
+  //  work in place? Figure out! ...I don't think so - but it can be made so. Maybe implement in 
+  //  rsArrayTools a general function that moves those elements of an array to the front that 
+  //  satisfy a condition and thos to the back that don't satisfy the condition and returns the
+  //  number of elements that satisfy it. maybe call it moveToFrontIf... or moveToBackIf
+  //  orderByPredicate
 }
 
 template<class T>
 void rsPrototypeDesigner<T>::besselDenominator(T* a, int N)
 {
-  rsPolynomial<T>::besselPolynomial(a, N);
+  rsPolynomial<T>::besselPolynomial(a, N);  // allocates
   rsArrayTools::reverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
                              // experiment a bit, response looks good
 }
@@ -587,11 +606,11 @@ template<class T>
 void rsPrototypeDesigner<T>::halpernPolynomial(T *a, int N)
 {  
   a[0] = 0;
-  T *a1 = &a[1];                           // index shift of one for multiplication by x in Eq. 8.19 
-  rsHalpernU(a1, N-1);                     // create U-polynomial
-  rsArrayTools::convolve(a1, N, a1, N, a1);     // square U-polynomial
-  rsArrayTools::scale(a1, 2*N-1, 2*N);          // apply squared scale factor
-  rsPolynomial<T>::integral(a, a, 2*N-1);  // compute integral from 0 to w
+  T *a1 = &a[1];                             // index shift of one for multiplication by x in Eq. 8.19 
+  rsHalpernU(a1, N-1);                       // create U-polynomial
+  rsArrayTools::convolve(a1, N, a1, N, a1);  // square U-polynomial
+  rsArrayTools::scale(a1, 2*N-1, 2*N);       // apply squared scale factor
+  rsPolynomial<T>::integral(a, a, 2*N-1);    // compute integral from 0 to w
 }
 
 template<class T>

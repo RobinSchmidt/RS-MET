@@ -1072,7 +1072,9 @@ public:
   // allocates heap memory
     // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function
     // (move to prototypes)
-  // rename to legendre ("Polynomial" is redundant)
+  // rename to legendre ("Polynomial" is redundant) or maybe legendreP - similarly use besselB,
+  // chebychevT, chebychevU, hermiteH, halpernU (currently a free function in 
+  // PrototypeDesigner.cpp) 
 
   /** Computes the recursion coefficients (as used in rsPolynomialRecursion) for the Jacobi
   polynomial of degree n (n >= 2) with parameters a and b. */
