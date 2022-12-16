@@ -327,6 +327,14 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   if(type == Type::BQ_Lowpass || type == Type::BQ_Highpass) // ..low- and highpass filters need..
     Q = rsBandwidthConverter::lowpassResoGainToQ(A);        // ..a more complicated formula
 
+  //Q = A;  
+  // Test - this is cheaper but has considerable freq-response error at low Q values. Maybe we 
+  // should do a polynomial approximations of the exact lowpassResoGainToQ function. Maybe try also
+  // an approximation in the dB domian, i.e. apply some appropriate function to resoGainDb before
+  // going into rsDbToAmp. Maybe we can somehow fuse the exp-call in rsDbToAmp with the one that 
+  // occurs in the design formulas? 
+
+
   FilterImpl& i = impl;  // as abbreviation
   switch(type)
   {

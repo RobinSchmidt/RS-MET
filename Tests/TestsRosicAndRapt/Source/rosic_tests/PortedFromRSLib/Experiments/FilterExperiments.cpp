@@ -262,7 +262,8 @@ void biquadResoGainToQ()
   {
     double r = reso[i];
 
-    double Q = resoDbToQ6(r);  // exact for lowpass and highpass
+    //double Q = resoDbToQ6(r);  // exact for lowpass and highpass
+    double Q = resoDbToQ4(r);  // 
     BQD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
     //BQD::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
 
@@ -4292,13 +4293,40 @@ void samplerFilters()
   };
 
 
+  /*
+                                // Gain at fc
+  plotResponses(1000.f,  1.f);  //  -0.39
+  plotResponses(1000.f,  2.f);  //  +1.04
+  plotResponses(1000.f,  3.f);  //  +2.30
+  plotResponses(1000.f,  4.f);  //  +3.48
+  plotResponses(1000.f,  5.f);  //  +4.60
+  plotResponses(1000.f,  8.f);
+  plotResponses(1000.f,  9.f);  //  +8.85
+  */
+
+
+  // Filters at 1 kHz, different resonances:
+  plotResponses(1000.f,  0.f);  //  -3.01
+  plotResponses(1000.f, 10.f);  //  +9.88
+  plotResponses(1000.f, 20.f);  //  
+  plotResponses(1000.f, 40.f);  //
+
+  // Filters with 40 dB resonance gain and very high cutoffs:
   plotResponses(10000.f, 40.f);
+  plotResponses(20000.f, 40.f);
+  plotResponses(22050.f, 40.f);  
+  plotResponses(30000.f, 40.f);  // peak aliases back to 14100 = 22050 - (30000 - 22050)
 
-  plotResponses(1000.f,  0.f);
-  plotResponses(1000.f, 20.f);
-  plotResponses(1000.f, 40.f);
 
-
+  // An experiment to figure out the mapping between the dialed in resonance gain and the filter's
+  // actual gain at the cutoff frequency (we take the corssover of lowpass and highpass response 
+  // for locating this):
+  plotResponses(1000.f,  6.f);
+  //  0      1     2     3     4     5     6   7   8   9     10
+  // -3.01  -0.39  1.04  2.30  3.48  4.60              8.85  9.88
+  // It becomes asymptotically (for high resoancnes) the identity but at low resonances, there's a 
+  // considerable error that we may need to compensate by some correction function (polynomial or 
+  // rational)
 
   // test:
   //RAPT::rsFill(yL, 0.f); 
@@ -4306,6 +4334,8 @@ void samplerFilters()
  // plt.plotDecibelSpectra(N, &yL[0]);
 
   // Observations:
+  // -When the cutoff is above fs/2 the peak aliases back -> try to avoid this, allo cutoffs above
+  //  fs/2
   // -The highpass with cutoff = 1000, reso = 40 looks strange. the zero is not at DC but there's
   //  a notch around 200 Hz - OK - it was because out signal was cut off - use larger N and the 
   //  effect disappears
