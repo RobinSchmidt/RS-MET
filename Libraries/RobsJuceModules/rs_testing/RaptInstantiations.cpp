@@ -84,6 +84,10 @@ template void rsArrayTools::allocateSquareArray2D(int**& theArray, int size);
 template void rsArrayTools::deAllocateSquareArray2D(int**& theArray, int size);
 template void rsArrayTools::rightShift(int *buffer, int length, int numPlaces);
 
+template int rsArrayTools::orderByPredicate(int* x, int N, std::function<bool(int)>& pred);
+
+
+
 // rsArrayTools<rsUint32>
 template bool rsArrayTools::contains(const rsUint32 *buffer, int length, rsUint32 elementToFind);
 template void rsArrayTools::copy(const rsUint32 *src, rsUint32 *dst, int N);
@@ -151,6 +155,9 @@ template void rsArrayTools::shift(double *buffer, int length, int numPlaces);
 template double rsArrayTools::sumOfAbsoluteValues(const double *x, const int N);
 template void rsArrayTools::transposeSquareArray(double **in, double **out, int size);
 template void rsArrayTools::unwrap(double* a, int N, double p);
+
+
+
 
 // rsArrayTools<complex<double>>
 template void rsArrayTools::convert(const std::complex<double> *source, std::complex<double> *destination, int length);

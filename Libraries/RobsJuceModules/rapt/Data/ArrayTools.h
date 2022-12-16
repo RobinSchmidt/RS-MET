@@ -689,6 +689,21 @@ public:
   template <class T>
   static void orderBitReversedOutOfPlace(const T *inBuffer, T *outBuffer, int length, int numBits);
 
+  /** Orders the array x by a predicate, i.e. a boolean function that takes a parameter of type T and 
+  returns true, if the argument satisfies a predicate and false if it doesn't satisfy it. The
+  elements that do satisfy the predicate will be kept at or moved to the front of the array and those 
+  that do not satisfy it will be kept at or moved to the back of the array. It returns the number of 
+  elements that satisfy the predicate, i.e. the length of the front section of the resulting array.
+  It can be used, for example, to move all positive entries to the front and all negative entries
+  to the back like this:
+
+    int numPositives = rsArrayTools::orderByPredicate(a, N, [](T a_i){ return a_i > 0; }); 
+  
+  It's a function to bring the "good" items to the front and move the "bad" items to the back. The 
+  complexity is linear in N. */
+  template<class T>
+  static int orderByPredicate(T* x, int N, std::function<bool(T)>& predicate);
+
   /** Returns the product of the elements in the buffer for types which define the
   multiplication operator (the *= version thereof) and a constructor which can take an int
   paramater as argument and initializes to the multiplicative neutral element of that class when 1

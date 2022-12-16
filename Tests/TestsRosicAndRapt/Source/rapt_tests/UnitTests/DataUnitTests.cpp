@@ -156,6 +156,7 @@ that do not satisfy it will be kept at or moved to the back of the array. It ret
 elements that satisfy the predicate, i.e. the length of the front section of the resulting array.
 It can be used, for example, to move all positive entries to the front and all negative entries
 to the back. It's a "bring the good items to the front" function. The complexity is linear in N. */
+/*
 template<class T, class Pred>
 int orderByPredicate(T* x, int N, Pred pred)
 {
@@ -170,6 +171,7 @@ int orderByPredicate(T* x, int N, Pred pred)
       i++; }}
   return i;
 }
+*/
 // move to rsArrayTools or to the Prototypes
 // Try to implement a stable version of it, i.e. one that preserves the original order of the 
 // items. Maybe initialize j with the first element that satisfies the predicate and then increment
@@ -196,8 +198,9 @@ bool testArrayMisc()
 
   // Test ordering by a predicate. We want to move/keep the non-negative numbers to/at the front 
   // and move the negative numbers to the back:
-  auto positive = [](int x){ return x > 0; };
-  int n;
+  //auto positive = [](int x){ return x > 0; };
+  std::function<bool(int)> positive = [](int x){ return x > 0; };
+  //int n;
 
   // Helper function that checks that the first n elements of the given vector are positive and the
   // remaining ones are not positive (i.e. negative or zero).
@@ -217,7 +220,8 @@ bool testArrayMisc()
   auto testOrdering = [&](const Vec& x, int numPositives)
   {
     Vec y = x;
-    int n = orderByPredicate(&y[0], (int) y.size(), positive); 
+    //int n = orderByPredicate(&y[0], (int) y.size(), positive); 
+    int n = AT::orderByPredicate(&y[0], (int) y.size(), positive); 
     bool ok = n == numPositives;
     ok &= checkPredicate(y, n);
     return ok;
