@@ -4348,4 +4348,11 @@ void samplerFilters()
   //    transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
   //  setting which is suitable for analyzing a cycle of a periodic signal to extract the harmonic 
   //  amplitudes but not for an impulse response
+  // -Make it possible to have cutoffs > fs/2 and < 0
+  //  -Maybe in rsFilterDesignFormulas::mvFeedbackCoeffs, we need to clip w0 to 0..pi? And/or use 
+  //   different magnitude constraints in these cases? Desired behavior (i think):
+  //   -fc > fs/2: we see the left part of the analog freq response
+  //   -fc < 0: The gain at the cutoff gets reduced, i.e. the effectve cutoff goes down OR: the 
+  //     overall output gain goes down. Not sure yet.
+
 }

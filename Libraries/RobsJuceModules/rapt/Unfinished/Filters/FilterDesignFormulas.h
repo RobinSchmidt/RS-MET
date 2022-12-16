@@ -138,6 +138,7 @@ public:
   // this class)
 
 
+
 protected:
 
   /** Computes feedback coeffs for the Vicanek designs. Implements the matched-z-trnasform (MZT) 
@@ -243,6 +244,10 @@ inline void rsFilterDesignFormulas::dampedSine(
   *a2 = TCof(P*P);                // = P^2
   *b0 = TCof(A*sp);               // = A*sin(p)
   *b1 = TCof(A*P*(sw*cp-cw*sp));  // = A*P*sin(w-p) via addition theorem
+
+  // See: 
+  // http://www.rs-met.com/documents/dsp/TimeDomainBiquadDesign.pdf
+  // https://www.kvraudio.com/forum/viewtopic.php?t=574343
 }
 
 

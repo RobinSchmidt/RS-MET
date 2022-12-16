@@ -144,7 +144,13 @@ ToDo:
    magnitudeMatchedOnePoleCoeffs(T &b0, T &b1, T &a1, T w[3], T m[3]); with API
    magnitudeMatchedBiquadCoeffs(T &b0, T &b1, T b2, T &a1, T &a2, T w[5], T m[5]);
  maybe list the input parameters w, m first to be more consistent with other parts of the library.
- http://www.rs-met.com/documents/dsp/DigitalBiquadDesignByMagnitudeRequirements.pdf
+
+-See: http://www.rs-met.com/documents/dsp/DigitalBiquadDesignByMagnitudeRequirements.pdf
+ -Try to solve the 5x5 system symbolically using Sage or Mathematica. Maybe a symbolic solution 
+  could be implemented more efficiently than using a general numerical solver. The matrix actually
+  has only 20 variables because the 1st column is all ones. 
+ -In the 5x5 matrix, the v_n can be expressed using the double angle formula for cosines. Dunno, if
+  that helps to simplify the system further. -> Try it
 
 -Maybe the 5-point magnitude match biquads should match at the 5 following frequencies:
    0, w0/8,   w0/4,   w0/2, w0       or
@@ -161,8 +167,12 @@ ToDo:
  which would both alias into the same freq at fs/2 - df and thereby make the matrix singular?
  -> Test that!
 
+
+
+
 See:
-https://www.kvraudio.com/forum/viewtopic.php?t=569113
-https://www.kvraudio.com/forum/viewtopic.php?t=466312
+https://www.kvraudio.com/forum/viewtopic.php?t=569113 EQ filters
+https://www.kvraudio.com/forum/viewtopic.php?t=466312 Biquad coefficients using Magnitude (or Phase) Invariance Mapping Method
+
 
 */

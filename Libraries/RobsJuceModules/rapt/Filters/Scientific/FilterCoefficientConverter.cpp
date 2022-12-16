@@ -259,3 +259,8 @@ void rsFilterCoefficientConverter<T>::normalizeBiquadStages(T *b0, T *b1, T *b2,
   }
 }
 
+/*
+
+Maybe rename to rsFilterStructure/Topology/FormConverter, 
+
+*/

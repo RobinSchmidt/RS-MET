@@ -575,8 +575,8 @@ ToDo:
  see https://soar.wichita.edu/handle/10057/1564
 
 
--Many links for filter design formulas are collected here
- https://www.kvraudio.com/forum/viewtopic.php?f=33&t=569113
+-Maybe wite a similar class that operates on biquads rather than poles and zeros. It could have 
+ functions like bilinearAnalogToDigital(T B0, T B1, T B2, T A0, T A1, T A2, T& b0, ...)
 
 
 */
