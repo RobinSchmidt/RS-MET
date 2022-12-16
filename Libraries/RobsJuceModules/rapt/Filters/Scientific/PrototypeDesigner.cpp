@@ -372,6 +372,10 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
   rsPolynomial<T>::multiply(a, N, am, N, a2); // coeffs of D(s)*D(-s)
   delete[] am;
   delete[] bm;
+
+  // ToDo:
+  // -Try to get rid of the allocation. Maybe bm, am are not needed and we can use b2, a2 also for 
+  //  the temporary arrays? If this is not possible, implement it using a workspace.
 }
 
 template<class T>

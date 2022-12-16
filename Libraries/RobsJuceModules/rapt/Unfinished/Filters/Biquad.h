@@ -139,6 +139,8 @@ RS_INLINE TSig rsBiquadDF1<TSig, TCof>::getSample(TSig in)
   y1 = tmp;
 
   return tmp;
+
+  // Uses 5 mul, 4 add, 5 assign
 }
 
 //===============================================================================================

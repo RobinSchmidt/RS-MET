@@ -148,7 +148,8 @@ template<class TSig, class TPar>
 inline void rsStateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSig &yB, TSig &yH)
 {
   // compute highpass output via Eq. 5.1:
-  yH = (in - R2*s1 - g*s1 - s2) * h;
+  //yH = (in - R2*s1 - g*s1 - s2) * h;  // 3 mul, 3 sub
+  yH = (in - (R2+g) * s1 - s2) * h;     // 2 mul, 2 sub, 1 add
 
   // compute bandpass output by applying 1st integrator to highpass output:
   yB = g*yH + s1;
@@ -158,11 +159,17 @@ inline void rsStateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSi
   yL = g*yB + s2;
   s2 = g*yB + yL; // state update in 2nd integrator
 
-  // Remark: we have used two TDF2 integrators (Fig. 3.11) where one of them would be in code:
-  // y = g*x + s; // output computation
-  // s = g*x + y; // state update
-
-  // as a cheap trick to introduce nonlinear behavior, we apply a nonlinearity to the states of 
+  // Notes:
+  // we have used two TDF2 integrators (Fig. 3.11) where one of them would be in code:
+  //   y = g*x + s; // output computation
+  //   s = g*x + y; // state update
+  // Implementation uses 6 mul, 5 add, 2 sub, 5 assign. A DF1 biquad uses 5 mul, 4 add, 5 assign so 
+  // that's 1 mul less, 2 add/sub less. Also, an SVF needs the additional h coeff to cache a 
+  // division result. So, DF biquads may still have a (small) advantage in terms of operation count 
+  // and memory usage. ToDo: actually do some benchmarks of SVF vs DF1 vs DF2 vs TDF2 vs .... We may
+  // also want to benchmark coefficient calculations then.
+    
+  // As a cheap trick to introduce nonlinear behavior, we apply a nonlinearity to the states of 
   // the integrators (uncomment, if you want that):
   //s1 = tanh(s1);
   //s2 = tanh(s2);

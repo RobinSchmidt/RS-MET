@@ -64,13 +64,14 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   // Compute intermediate values. The square rooths could be imaginary but when we form their 
   // quotient and product, it will become real:
   using Complex = std::complex<TPar>;  
-  TPar    u1 = -TPar(1) - a1 - a2;   // could be negative
-  TPar    u2 = -TPar(1) + a1 - a2;   // ...dito
-  Complex s1 = sqrt(Complex(u1));    // could be imaginary
-  Complex s2 = sqrt(Complex(u2));    // ...dito  
-  TPar    p  = real(s1 * s2);        // but their product should be real
-  TPar    s  = TPar(1) / p;          // we actually need the product's reciprocal
-  
+  TPar    u1 = -TPar(1) - a1 - a2;     // could be negative
+  TPar    u2 = -TPar(1) + a1 - a2;     // ...dito
+  // rsAssert(u1*u2 >= 0);             // triggers in one of the unit tests
+  Complex s1 = sqrt(Complex(u1));      // could be imaginary
+  Complex s2 = sqrt(Complex(u2));      // ...dito  
+  TPar    p  = real(s1 * s2);          // but their product should be real
+  TPar    s  = TPar(1) / p;            // we actually need the product's reciprocal
+
   // Compute coeffs:
   g  = real(s1 / s2);                         // 16a, the quotient should also be real
   R2 = s * TPar(2) * (a2 - TPar(1));          // 16b
@@ -78,15 +79,23 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   cB = s * TPar(2) * (b2 - b0);               // 16d, but with a factor of -1 (why?)
   cL = (b0 + b1 + b2) / (TPar(1) + a1 + a2);  // 16e
   h  = 1 / (1 + R2*g + g*g);                  // factor for feedback precomputation
+
   // The formulas are taken from (Eq 16 a-e) here:
   // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
   
   // ToDo:
   // -Figure out why we need the factor -1 for the cB coeff with respect to the formula 16d in the 
   //  paper
-  // -Try to avoid complex numbers: I think, if one of the values und the sqtz gets negative, the
+  // -Try to avoid complex numbers: I think, if one of the values under the sqrt gets negative, the
   //  other one must be negative, too and at the end of the day, this just results in a sign-flip
-  //  in sopme intermediate variable. Maybe keep the original formulas in a comment for reference.
+  //  in some intermediate variable. Maybe keep the original formulas in a comment for reference.
+  //  But maybe one being positive and the other negative could occur for unstable filters and 
+  //  maybe we ant to be able to match them, too? Sometimes, they are useful. It's rare but it 
+  //  happens so we'd better be prepared for it. ...OK yes - in one of the unit tests, we actually
+  //  have such a case. Adding an rsAssert(u1*u2 >= 0) would trigger in this unit test. ...hmm - 
+  //  but in that case p = 0  ->  s = inf, so that's not really an unstable filter but some even
+  //  more drastic error condition - so maybe we can indeed assume that either u1,u2 are both 
+  //  positive or both negative? Figure that out!
 }
 
 // Misc:

@@ -169,7 +169,7 @@ public:
   /** Computes the total area under magnitude-squared response of a Butterworth filter of given 
   order. You may also specify the number of passes, if the filter is to be applied multiple times
   (for example 2x in bidirectional filtering or in Linkwitz/Riley filters, but you may also run the
-  filter several times to approximate a gaussian filter. In such cases, it may make sense to scale 
+  filter several times to approximate a Gaussian filter. In such cases, it may make sense to scale 
   the cutoff frequency inversely with the factor returned by this function in order to have the 
   filter output energies comparable. */
   static T butterworthEnergy(int order, int numPasses = 1);
@@ -179,6 +179,7 @@ public:
   magnitude-squared function H(s)*H(-s) = (N(s)*N(-s)) / (D(s)*D(-s)). "N" is the order of the 
   filter, so "b", "a" should be of length N+1 and "b2", "a2" of length 2*N+1. */
   static void magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N);
+  // allocates
 
   /** Given the two arrays "b2" and "a2" of polynomial coefficients (both of length 2*N+1) for 
   numerator and denominator of an s-domain Nth order lowpass prototype magnitude-squared function 

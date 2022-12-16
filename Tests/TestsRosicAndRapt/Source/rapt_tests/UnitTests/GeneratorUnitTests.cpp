@@ -2268,8 +2268,8 @@ bool samplerFilterTest()
 
 
   // in transition:
-  //ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);  // old
-  ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, false); // new
+  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);  // old
+  //ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, false); // new
   // In order to check the new implementation, the FDF::mvLowpassSimple(...) call in 
   // FilterCore::setupCutRes (rosic_SamplerEffectCores, line 347) needs to be uncommented. When 
   // doing so, the plots look very similar but one seems to be delayed by one sample. ToDo:
@@ -2293,7 +2293,7 @@ bool samplerFilterTest()
   // frequencies from all the way up to all the way down. For the lower cutoffs, we need higher 
   // tolerances:
   ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 22050.f,   40.f, 1.e-4f, false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 20000.f,   40.f, 1.e-4f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 20000.f,   40.f, 1.e-3f, false);
   ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 10000.f,   40.f, 1.e-4f, false);
   ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,  1000.f,   40.f, 1.e-3f, false);
   ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,   100.f,   40.f, 1.e-2f, false); // why does this case need such a high tolerance?

@@ -178,7 +178,7 @@ void bandwidthScaling()
   plotData(N, w, p[0], p[1], p[2], p[3], p[4]);
 }
 
-void biquadResoGainToQ()
+void biquadResoGainToQ1()
 {
   // We try to find the relationship between the resonance gain in dB and the Q of a biquad filter 
   // because the former is how sfz specifies resonance and the latter is how the RBJ design 
@@ -308,6 +308,12 @@ void biquadResoGainToQ()
   //   (4 Q^4)/(4 Q^2 - 1)  at  x = -1/2 sqrt(4 - 2/Q^2)
 
 }
+
+void biquadResoGainToQ()
+{
+  biquadResoGainToQ1();
+}
+
 
 void butterworthEnergy()
 {
@@ -4240,6 +4246,7 @@ void fakeResoDifferentDelays()
   // With linear interpolation, the signal for the fractional offset of 0.5 is indeed much quieter
   // than with 0.0. Warped allpass interpolation solves this and should indeed be used here.
 }
+
 
 void samplerFilters()
 {
