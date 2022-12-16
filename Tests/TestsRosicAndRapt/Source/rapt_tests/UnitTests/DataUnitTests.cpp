@@ -170,7 +170,11 @@ int orderByPredicate(T* x, int N, Pred pred)
       i++; }}
   return i;
 }
-// move to rsArrayTools
+// move to rsArrayTools or to the Prototypes
+// Try to implement a stable version of it, i.e. one that preserves the original order of the 
+// items. Maybe initialize j with the first element that satisfies the predicate and then increment
+// j also instead of decrementing it. Or: init i as the first element that doesn't satisfy the 
+// constraint, j as the first element after i that does satisfy it and then....
 
 bool testArrayMisc()
 {
@@ -224,31 +228,9 @@ bool testArrayMisc()
   ok &= testOrdering({-1,-2,-3,-4,-5,+6,+7,-8}, 2);
   ok &= testOrdering({+1,-2,-3,+4,+5,-6,+7,-8}, 4);
   ok &= testOrdering({+1,+2,+3,+4,+5,-6,-7,-8}, 5);
-  // ToDo: .aybe systematically check all 2^8 possibilities for distributing the +,- signs
-
-  /*
-  x8 = Vec({1,2,3,4,5,6,7,8}); 
-  n = orderByPredicate(&x8[0], 8, positive); 
-  ok &= n == 8 && checkPredicate(x8, n);
-
-  x8 = Vec({-1,-2,-3,-4,-5,-6,-7,-8});
-  n = orderByPredicate(&x8[0], 8, positive);
-  ok &= n == 0 && checkPredicate(x8, n);
-
-  x8 = Vec({-1,-2,-3,-4,-5,6,7,-8});
-  n = orderByPredicate(&x8[0], 8, positive);
-  ok &= n == 2 && checkPredicate(x8, n);
-
-  x8 = Vec({1,-2,-3,4,5,-6,7,-8});
-  n = orderByPredicate(&x8[0], 8, positive);
-  ok &= n == 4 && checkPredicate(x8, n);
-
-  x8 = Vec({1,2,3,4,5,-6,-7,-8});
-  n = orderByPredicate(&x8[0], 8, positive);
-  ok &= n == 5 && checkPredicate(x8, n);
-  */
-
-
+  ok &= testOrdering({-1,-2,+3,+4,+5,-6,-7,-8}, 3);
+  ok &= testOrdering({-1,-2,-3,-4,+5,+6,+7,+8}, 4);
+  // ToDo: Maybe systematically check all 2^8 possibilities for distributing the +,- signs
 
   return ok;
 }
