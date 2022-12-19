@@ -4296,6 +4296,7 @@ void samplerFilters()
     plt.setLogFreqAxis(true);
     plt.setNormalizationMode(SP::NormalizationMode::impulse);
     plt.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
+    plt.setPixelSize(1200, 400);
     plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
   };
 
@@ -4319,22 +4320,22 @@ void samplerFilters()
 
 
   // Filters at 1 kHz, different resonances:
-  plotResponses(1000.f,  0.f);  //  -3.01
-  plotResponses(1000.f, 10.f);  //  +9.88
+  //plotResponses(1000.f,  0.f);  //  -3.01
+  //plotResponses(1000.f, 10.f);  //  +9.88
   plotResponses(1000.f, 20.f);  //  
-  plotResponses(1000.f, 40.f);  //
+  //plotResponses(1000.f, 40.f);  //
 
   // Filters with 40 dB resonance gain and very high cutoffs:
-  plotResponses(10000.f, 40.f);
-  plotResponses(20000.f, 40.f);
-  plotResponses(22050.f, 40.f);  
-  plotResponses(30000.f, 40.f);  // peak aliases back to 14100 = 22050 - (30000 - 22050)
+  //plotResponses(10000.f, 40.f);
+  //plotResponses(20000.f, 40.f);
+  //plotResponses(22050.f, 40.f);  
+  //plotResponses(30000.f, 40.f);  // peak aliases back to 14100 = 22050 - (30000 - 22050)
 
 
   // An experiment to figure out the mapping between the dialed in resonance gain and the filter's
   // actual gain at the cutoff frequency (we take the corssover of lowpass and highpass response 
   // for locating this):
-  plotResponses(1000.f,  6.f);
+  //plotResponses(1000.f,  6.f);
   //  0      1     2     3     4     5     6   7   8   9     10
   // -3.01  -0.39  1.04  2.30  3.48  4.60              8.85  9.88
   // It becomes asymptotically (for high resoancnes) the identity but at low resonances, there's a 

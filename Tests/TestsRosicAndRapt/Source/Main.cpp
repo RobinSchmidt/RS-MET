@@ -358,7 +358,7 @@ int main(int argc, char* argv[])
 
   // Filter:
   //bandwidthScaling();
-  biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
+  //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();
   //stateVariableFilter();
   //stateVariableFilterMorph();
