@@ -327,6 +327,8 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   if(type == Type::BQ_Lowpass || type == Type::BQ_Highpass) // ..low- and highpass filters need..
     Q = rsBandwidthConverter::lowpassResoGainToQ(A);        // ..a more complicated formula
 
+
+
   //Q = A;  
   // Test - this is cheaper but has considerable freq-response error at low Q values. Maybe we 
   // should do a polynomial approximations of the exact lowpassResoGainToQ function. Maybe try also
@@ -404,6 +406,27 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   //  especially as Q gets larger. At low Q, it would give a little bit of extra resonance.
   // -Figure out, if the Q = A formula should also be used for bandreject filters. At the moment,
   //  we just do it, but i'm not sure, if that's the right thing to do. It seems plausible, though.
+  // -Allow for R := resoGainDb < 0. resoGainDb is supposed to denote the max-gain, i.e. the gain
+  //  at the peak of the freq-response which in case of strong resonant filter occurs near the 
+  //  cutoff w and in case of zero resonance is at DC (in the lowpass case). When R < 0, there 
+  //  could be two possible behaviors that coudl make sense:
+  //  (1) When R = 0, then the gain at the cutoff is -3.01 dB. Maybe when R < 0, that gain at w
+  //      should be reduced to -3.01 + R by lowering the effective cutoff of the filter by an 
+  //      appropriate amount. I think, we may achive this behavior by:
+  //        if(R <= 0) { Q = dB2amp(R) / sqrt(2) = dBb2amp(R - 3.01) } else { Q = as before }
+  //      It's important to use <= and not < such that in the (common) case of R == 0, the simpler
+  //      formula is used (in this case, both branches return the same result anyway so we want to 
+  //      pick the cheaper)
+  //  (2) When R = 0, then the gain at DC is 0 dB. It actually always is 0 dB at DC but in the 
+  //      R = 0 case, 0 dB at DC is also the global maximum of the freq-response. Maybe when R < 0
+  //      we should just decrease the overall output amplitude by R.
+  //  Try both versions under sinusoidal and squarewave modulation of the resonance and investigate
+  //  the effects. What does it both sound like? What sounds better? Are there any other problems 
+  //  with one or the other choice. Base the decision on these experiments. I tend to think that 
+  //  (1) might be the better choice...it somehow feels more "natural" but I really don't know yet.
+  //  Yes - I think just reducing Q further is the right choice.
+  // 
+
 }
 
 void FilterCore::setupGainFreqBw(Type type, float gainDb, float w, float bw)
