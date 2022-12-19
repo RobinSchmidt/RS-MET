@@ -2304,6 +2304,7 @@ bool samplerFilterTest()
   // todo: 
   // -maybe write a helper function taht goes through these checks als for lowpass and highpass
   // -maybe we should allow cutoff up to 30000 as in the EQ
+  // -make the bandpass test pass even when the center-freq is 0. In this case, create a lowpass
 
   /*
   // Test impulse response ...or maybe not:

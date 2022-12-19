@@ -479,15 +479,25 @@ int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 {
   // old:
   std::vector<Complex> rTmp(N); // maybe we can get rid of that temporary array
-  //rTmp.resize(N);
-
-  // new - triggers error in unit tests (something about stack cookie overrun:
-  //Complex rTmp[maxOrder];   // maybe we can get rid of that temporary array?
-
+  //Complex rTmp[maxOrder];   // crashes unit tests in a case where N > maxOrder
   rsPolynomial<T>::roots(a, N, &rTmp[0]);
   int numLeftRoots = rsOnlyLeftHalfPlane(&rTmp[0], r, N);
   rsAssert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
   return numLeftRoots;
+
+  /*
+  // new - not yet working:
+  rsPolynomial<T>::roots(a, N, r);
+  std::function<bool(Complex)> leftHalfPlane = [](Complex z){ return z.real() <= T(0); };
+  int numLeftRoots = rsArrayTools::orderByPredicate(r, N, leftHalfPlane); 
+  rsAssert(numLeftRoots == ceil(0.5*N));
+  return numLeftRoots;
+  // Hangs in rsPolynomial<T>::evaluateFromRoots in the unit tests. Maybe we need to sort the found
+  // left roots (after ordering by predicate bcs that func is unstable)? And/or initialize the 
+  // r-array with all zeros before calling roots (that shouldn't be the case though. If roots needs
+  // such an initialization, it should do it itself)
+  */
+
 
   // ToDo:
   // -Get rid of allocation - allocate on stack or use workspace -> done

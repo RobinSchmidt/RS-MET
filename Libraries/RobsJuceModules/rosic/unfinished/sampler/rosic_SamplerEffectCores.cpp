@@ -425,8 +425,12 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   //  with one or the other choice. Base the decision on these experiments. I tend to think that 
   //  (1) might be the better choice...it somehow feels more "natural" but I really don't know yet.
   //  Yes - I think just reducing Q further is the right choice.
-  // 
-
+  // -Allow the cutoff frequency go below 0. For bandpass, a cutoff of 0 should probably result in 
+  //  a lowpass (check, if that's the correct limiting case). For cutoff w < 0, maybe design a 
+  //  filter just like for abs(w) but negate the output. I think, that's what happens when 
+  //  frequency-modulating an oscillator through zero - so maybe it's natural when a (highly 
+  //  resonant) filter behaves in the same way. Test filter FM through zero it with highly resonant
+  //  filters - compare results to what an FM'ed oscillator does.
 }
 
 void FilterCore::setupGainFreqBw(Type type, float gainDb, float w, float bw)
