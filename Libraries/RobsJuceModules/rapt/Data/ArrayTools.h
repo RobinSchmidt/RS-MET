@@ -689,7 +689,10 @@ public:
   template <class T>
   static void orderBitReversedOutOfPlace(const T *inBuffer, T *outBuffer, int length, int numBits);
 
-  /** Orders the array x by a predicate, i.e. a boolean function that takes a parameter of type T and 
+  /** API still unstable - may later use C-style function pointers or a templated predicate function 
+  instead of std::function.
+  
+  Orders the array x by a predicate, i.e. a boolean function that takes a parameter of type T and 
   returns true, if the argument satisfies a predicate and false if it doesn't satisfy it. The
   elements that do satisfy the predicate will be kept at or moved to the front of the array and those 
   that do not satisfy it will be kept at or moved to the back of the array. It returns the number of 
@@ -709,7 +712,14 @@ public:
   // maybe let the predicate be a template parameter too, such that the user can directly define a
   // lambda function in the call like so:
   //   int numPositives = rsArrayTools::orderByPredicate(a, N, [](int x){ return x > 0; }); 
-  // -> move implementation into the header file (otherwise, this will give linker errors)
+  // I think, that would be most convenient API wise. It may also be more efficient when we do not
+  // wrap the lambda into a std::function. In order to templatize it on the predicate, we need to 
+  // move the implementation into the header file (otherwise, this will give linker errors). But 
+  // doing so may lead to binary code bloat if the ordering function gets always inlined. Not sure,
+  // what's best here. Or maybe let it take the predicate as na old school C-style function 
+  // pointer. ...but that's a bit unflexible...hmmm...we'll seee....
+
+
 
   /** Returns the product of the elements in the buffer for types which define the
   multiplication operator (the *= version thereof) and a constructor which can take an int

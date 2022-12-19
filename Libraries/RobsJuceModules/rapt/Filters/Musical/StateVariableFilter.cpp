@@ -61,7 +61,7 @@ template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2)
 {
-  // Compute intermediate values. The square rooths could be imaginary but when we form their 
+  // Compute intermediate values. The square roots could be imaginary but when we form their 
   // quotient and product, it will become real:
   using Complex = std::complex<TPar>;  
   TPar    u1 = -TPar(1) - a1 - a2;     // could be negative
@@ -82,15 +82,15 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
 
   // The formulas are taken from (Eq 16 a-e) here:
   // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
-  
+  //
   // ToDo:
   // -Figure out why we need the factor -1 for the cB coeff with respect to the formula 16d in the 
-  //  paper
+  //  paper. Different conventions?
   // -Try to avoid complex numbers: I think, if one of the values under the sqrt gets negative, the
   //  other one must be negative, too and at the end of the day, this just results in a sign-flip
   //  in some intermediate variable. Maybe keep the original formulas in a comment for reference.
   //  But maybe one being positive and the other negative could occur for unstable filters and 
-  //  maybe we ant to be able to match them, too? Sometimes, they are useful. It's rare but it 
+  //  maybe we want to be able to match them, too? Sometimes, they are useful. It's rare but it 
   //  happens so we'd better be prepared for it. ...OK yes - in one of the unit tests, we actually
   //  have such a case. Adding an rsAssert(u1*u2 >= 0) would trigger in this unit test. ...hmm - 
   //  but in that case p = 0  ->  s = inf, so that's not really an unstable filter but some even
@@ -103,7 +103,7 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
 template<class TSig, class TPar>
 void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
 {
-  g = tan( TPar(PI) * fc/fs);  // embedded integrator gain (Fig 3.11), == tan(wc/2) I think
+  g = tan(TPar(PI) * fc/fs);  // embedded integrator gain (Fig 3.11), == tan(wc/2) I think
 
   switch(mode)
   {

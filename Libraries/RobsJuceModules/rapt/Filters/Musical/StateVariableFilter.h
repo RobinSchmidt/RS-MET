@@ -5,7 +5,20 @@
 and zero-delay feedback (ZDF) technology. You can either use 3 outputs (lowpass, bandpass, 
 highpass) from the SVF core by calling getOutputs() or let the filter itself form a linear 
 combination of the these 3 to obtain a desired filter mode (in addition to the 3 modes above, there 
-are also shelvers, a bell, etc.). */
+are also shelvers, a bell, etc.). 
+
+References:
+
+  (1) The Art of Virtual Analog Filter Design (Vadim Zavalishin)
+      https://www.native-instruments.com/fileadmin/ni_media/downloads/pdf/VAFilterDesign_2.1.2.pdf
+      https://www.kvraudio.com/forum/viewtopic.php?t=350246
+
+  (2) Time-Varying Filters for Musical Applications (Aaron Wishnick)
+      http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
+
+
+
+*/
 
 template<class TSig, class TPar> // signal, parameter types
 class rsStateVariableFilter
@@ -127,8 +140,8 @@ protected:
 
   // filter coefficients:
   TPar g;          // embedded integrator gain
-  TPar R2;         // twice the damping coefficient (R2 == 2*R == 1/Q)
-  TPar h;          // factor for feedback (== 1/(1+2*R*g+g*g))
+  TPar R2;         // twice the damping coefficient (R2 == 2*R == 1/Q) -> store R2+g instead (call it R2_p_g
+  TPar h;          // factor for feedback (== 1/(1+2*R*g+g*g)) - rename to d
   TPar cL, cB, cH; // coefficients for low-, band-, and highpass signals
 
   // parameters:
@@ -149,7 +162,7 @@ inline void rsStateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSi
 {
   // compute highpass output via Eq. 5.1:
   //yH = (in - R2*s1 - g*s1 - s2) * h;  // 3 mul, 3 sub
-  yH = (in - (R2+g) * s1 - s2) * h;     // 2 mul, 2 sub, 1 add
+  yH = (in - (R2+g) * s1 - s2) * h;     // 2 mul, 2 sub, 1 add - todo: precompute R2+g
 
   // compute bandpass output by applying 1st integrator to highpass output:
   yB = g*yH + s1;
@@ -168,6 +181,10 @@ inline void rsStateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSi
   // division result. So, DF biquads may still have a (small) advantage in terms of operation count 
   // and memory usage. ToDo: actually do some benchmarks of SVF vs DF1 vs DF2 vs TDF2 vs .... We may
   // also want to benchmark coefficient calculations then.
+  //
+  // Vadim says (pg 110) that we should be able to get away with 4 muls, 6 adds/subs:
+  // https://www.native-instruments.com/fileadmin/ni_media/downloads/pdf/VAFilterDesign_2.1.2.pdf
+  // OK - the R2+g can be precomputed.
     
   // As a cheap trick to introduce nonlinear behavior, we apply a nonlinearity to the states of 
   // the integrators (uncomment, if you want that):
@@ -179,8 +196,9 @@ template<class TSig, class TPar>
 inline TSig rsStateVariableFilter<TSig, TPar>::getSample(TSig in)
 {
   TSig yL, yB, yH;
-  getOutputs(in, yL, yB, yH);
-  return cL*yL + cB*yB + cH*yH;
+  getOutputs(in, yL, yB, yH);    // 6 mul, 5 add, 2 sub, 5 assign
+  return cL*yL + cB*yB + cH*yH;  // 3 mul, 2 add,        1 assign
+                                 // 9 mul, 7 add, 2 sub, 6 assign
 }
 
 #endif
