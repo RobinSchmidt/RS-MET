@@ -478,11 +478,11 @@ template<class T>
 int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 {
   // old:
-  //std::vector<Complex> rTmp; // maybe we can get rid of that temporary array
+  std::vector<Complex> rTmp(N); // maybe we can get rid of that temporary array
   //rTmp.resize(N);
 
-  // new:
-  Complex rTmp[maxOrder];   // maybe we can get rid of that temporary array?
+  // new - triggers error in unit tests (something about stack cookie overrun:
+  //Complex rTmp[maxOrder];   // maybe we can get rid of that temporary array?
 
   rsPolynomial<T>::roots(a, N, &rTmp[0]);
   int numLeftRoots = rsOnlyLeftHalfPlane(&rTmp[0], r, N);
