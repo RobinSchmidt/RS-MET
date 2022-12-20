@@ -541,7 +541,8 @@ void WaveOscEditorContextMenu::createWidgets()
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("CombHarmonic") );
   s->setSliderName("Comb Harmonic");
   s->setDescription("Harmonic on which the comb filter acts");
-  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  //s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->setStringConversionFunction(&valueToString2);
   s->addListener(this);
   //s->setVisible(false); // not yet meaningfully implemented
 
@@ -615,7 +616,8 @@ void WaveOscEditorContextMenu::createWidgets()
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseScale") );
   s->setSliderName("Scale:");
   s->setDescription("Scales the phase of each harmonic ");
-  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  //s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->setStringConversionFunction(&valueToString2);
   s->addListener(this);
 
   addWidget( phaseShiftSlider = s = new Sld );
@@ -634,7 +636,8 @@ void WaveOscEditorContextMenu::createWidgets()
 
   addWidget( evenOddStereoPhaseShiftSlider = s = new Sld );
   s->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddStereoPhaseShift") );
-  s->setSliderName("Even/Odd Stereo Shift:");
+  //s->setSliderName("Even/Odd Stereo Shift:");
+  s->setSliderName("Ev/Od Ster Shft:");
   s->setDescription("Phase shift between even/odd harmonics, applied with opposite signs to left/right channels");
   s->setStringConversionFunction(&degreesToStringWithUnit0);
   s->addListener(this);
@@ -1128,3 +1131,16 @@ bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
   }
   return false;
 }
+
+
+/*
+
+ToDo:
+
+-Maybe have a cutoff slider that applies to the slope: below the cutoff, the specrum is left alone,
+ above it, the slope kicks in - or vice versa depending on whether the slope is upward or downward
+-Maybe have a second slope and cutoff slider such that we may generate bandpass spectra
+-Allow steeper slopes - that makes sense in the context of having different oscs generate different
+ bandpass spectra.
+
+*/

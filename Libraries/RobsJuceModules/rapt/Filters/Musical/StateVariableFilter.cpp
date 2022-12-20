@@ -256,7 +256,10 @@ void rsStateVariableFilter<TSig, TPar>::reset()
 
 ToDo:
 
--Implement formulas from at this paper 
+-Implement a getTransferFunctionAt(Complex z) function with the same API as corresponding functions
+ in the Ladder and Biquad filters
+
+-Implement formulas from at this paper (done)
  http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
  -> it has simpler formulas and even formulas that work for biquads with arbitrary coefficients
  -> make a function setupFromBiquad in the same way as in rsStateVectorFilter
@@ -275,8 +278,9 @@ ToDo:
  The coefficient computation seems to start from a UDF design (Chamberlin) and then (Newton?) 
  iterate to refine for the ZDF case? Figure out!
 
--See also:
+-This paper approaches the same filter from a circuit-modeling perspective:
  https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
+
 
 
 

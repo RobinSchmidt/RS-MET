@@ -31,7 +31,10 @@ Sampler:
  
  
 -Straightliner:
- -The ToolChain patch StraightlinerTest3.xml ha Osc2 muted even though whensaving the patch, the osc
+ -Load the InitPatchSawtooth, open the "More" menu, tweak the level slider - when setting it to too 
+  low values, the parameter and also the waveform display freezes.
+ -The forward/backward buttons for the Oscillator sub-presets do not work.
+ -The ToolChain patch StraightlinerTest3.xml ha Osc2 muted even though when saving the patch, the osc
   was not muted. Figure out, how it happens that a wrong value for the Mute attibute gets written 
   into the xml. Try to reproduce the behavior: start with init-patch, activate Osc2, save the patch 
   (in ToolChain and in Straightliner) - inspect it
