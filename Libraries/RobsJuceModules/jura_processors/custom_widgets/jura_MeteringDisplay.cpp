@@ -73,10 +73,15 @@ void MeteringDisplay::paint(Graphics &g)
       // When y1 = y2, we get a purely horizontal gradient.
     }
 
-    ColourGradient gradient = ColourGradient(Colours::green, x1, y1, Colours::magenta, x2, y2, false);
+    Colour colorLow  = Colours::green;    // color for low levels
+    Colour colorMid  = Colours::yellow;   // color for moderate levels
+    Colour colorHigh = Colours::red;
+    Colour colorOver = Colours::magenta;  // color for overload levels (above reference value)
+
+    ColourGradient gradient = ColourGradient(colorLow, x1, y1, colorOver, x2, y2, false);
     float s = (referenceValue-minValue) / (maxValue-minValue);
-    gradient.addColour(     s, Colours::red);
-    gradient.addColour(0.75*s, Colours::yellow);
+    gradient.addColour(     s, colorHigh);
+    gradient.addColour(0.9*s, colorMid);
     FillType fill(gradient);
     g.setFillType(fill);
     g.fillAll();
