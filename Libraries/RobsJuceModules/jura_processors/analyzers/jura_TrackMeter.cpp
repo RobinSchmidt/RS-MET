@@ -335,12 +335,12 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     }
 
     // Draw the scale for the correlation-meter:
-    x1       = (float)correlationMeter->getX();
-    x2       = (float)correlationMeter->getRight()+8;
-    y0       = (float)correlationMeter->getY();
     stepSize = 0.2;
-    dy       = stepSize * correlationMeter->getHeight() / 2.0;
     numSteps = roundToInt(2.0 / stepSize) + 1;
+    x1 = (float)correlationMeter->getX();
+    x2 = (float)correlationMeter->getRight()+8;
+    y0 = (float)correlationMeter->getY();
+    dy = stepSize * correlationMeter->getHeight() / 2.0;
     for(int i = 0; i < numSteps; i++)
     {
       float y = y0 + i*dy;
@@ -368,12 +368,12 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     }
 
     // Draw the scale for the correlation-meter:
-    y1       = (float)correlationMeter->getY();
-    y2       = (float)correlationMeter->getBottom()+8;
-    x0        = (float)correlationMeter->getX();
     stepSize = 0.2;
-    dx       = stepSize * correlationMeter->getWidth() / 2.0;
     numSteps = roundToInt(2.0 / stepSize) + 1;
+    y1 = (float)correlationMeter->getY();
+    y2 = (float)correlationMeter->getBottom()+8;
+    x0 = (float)correlationMeter->getX();
+    dx = stepSize * correlationMeter->getWidth() / 2.0;
     for(int i = 0; i < numSteps; i++)
     {
       float x = x0 + i*dx;
