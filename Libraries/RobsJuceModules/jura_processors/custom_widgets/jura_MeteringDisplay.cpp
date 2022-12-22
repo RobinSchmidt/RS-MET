@@ -59,14 +59,24 @@ void MeteringDisplay::paint(Graphics &g)
   {
     int x1, y1, x2, y2; 
     
-    x1 = getWidth();
-    y1 = getHeight();
-    x2 = 0;
-    y2 = 0;
+    if(vertical)
+    {
+      x1 = 0;  y1 = getHeight();  // left-bottom  -> green
+      //x2 = getWidth();  y2 = 0;            // right-top    -> magenta  ...is this diagonal?
+      x2 = 0;  y2 = 0;            // left-top     -> magenta
+      // I think, when x1 = x2, we get a purely vertical gradient? figure out, if the commented
+      // middle code creates a diagonal gradient using a squarish shape. It may have been an 
+      // undetected bug to draw the gradient diagonally that has been there for a while and go
+      // unnoticed because the slant was so small....
+    }
+    else
+    {
 
-    //ColourGradient gradient = ColourGradient(Colours::green, w, h, Colours::magenta, x, y, false);
+    }
 
     ColourGradient gradient = ColourGradient(Colours::green, x1, y1, Colours::magenta, x2, y2, false);
+
+
     gradient.addColour(     (referenceValue-minValue) / (maxValue-minValue), Colours::red);
     gradient.addColour(0.75*(referenceValue-minValue) / (maxValue-minValue), Colours::yellow);
     FillType fill(gradient);
