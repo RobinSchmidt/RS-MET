@@ -356,7 +356,10 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
   else
   {
     //RAPT::rsError("not yet implemented");
-    g.fillAll(Colours::darkgrey);
+    //g.fillAll(Colours::darkgrey);
+
+
+
     drawBitmapFontText(g, 10, 10, "Horizontal mode not yet implemented", font,
       textColor, -1, Justification::centredLeft);
   }
