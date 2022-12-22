@@ -253,13 +253,13 @@ void TrackMeterModuleEditor::resized()
   {
     y = infoField->getY()-36;  // 36 ?= 2*t+m, 
 
-    vuButton->setBounds( x+m, y,    t*2, t);
-    ppmButton->setBounds(x+m, y+20, t*2, t);
+    vuButton->setBounds(  x+m, y,     t*2,   t);
+    ppmButton->setBounds( x+m, y+t+m, t*2,   t);
 
     x = vuButton->getRight();
     w = getWidth()-x;
-    riseSlider->setBounds(x+m, y,    w-m*2, t);
-    fallSlider->setBounds(x+m, y+20, w-m*2, t);
+    riseSlider->setBounds(x+m, y,     w-m*2, t);
+    fallSlider->setBounds(x+m, y+t+m, w-m*2, t);
 
     x = 40;
     y = getHeadlineBottom();
