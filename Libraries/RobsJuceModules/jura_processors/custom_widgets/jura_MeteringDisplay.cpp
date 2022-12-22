@@ -71,6 +71,8 @@ void MeteringDisplay::paint(Graphics &g)
     }
     else
     {
+      y1 = 0;  x1 = 0;
+      y2 = 0;  x2 = getWidth();
 
     }
 
