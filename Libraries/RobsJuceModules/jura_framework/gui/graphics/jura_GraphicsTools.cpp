@@ -154,7 +154,16 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   // Maybe when we call setColour on the g object in the caller, this also sets the opacity and 
   // when we call g.drawImageAt, the image is also drawn transparently? Maybe we need a low-level
   // drawImageAt() ...Yes! That's it! The juce doc of g.drawImageAt says that images are drawn with
-  // the current opacity setting. That's really bad! It forces us to call setOpacity here!
+  // the current opacity setting. This forces us to call setOpacity here! It would be much better 
+  // if drawBitmapFontText would not alter the state of the juce::Graphics object g because that 
+  // may lead to drawing bugs if the caller is not aware of it. The caller should not expect that
+  // calling this function here messes up the state of the g object. If we can't avoid to call 
+  // setOpacity here, we should restore it before leaving. But Graphics::getOpacity() is not a 
+  // thing - probably for similar reasons as this:
+  //   https://forum.juce.com/t/graphics-getcolour/34433
+  // Sure, we could use g.saveState() on enter and g.restoreSate() on leave. ...but this 
+  // text-drawing is a low-level function taht gets called a lot and I assume that save/restore of
+  // the state is a rather heavyweight operation (ToDo: verify that!).
 
   for(int i = 0; i < textToDraw.length(); ++i)
   {

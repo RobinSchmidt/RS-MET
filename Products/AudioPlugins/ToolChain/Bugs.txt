@@ -1,8 +1,16 @@
 
 General:
--In tracktion, the plots (wvaeforms in osc, scope, analyzer, etc. are often not drawn correctly. 
+-The hue-offset sliders seem to have no effect when using the mouse-wheel. Maybe it's because we 
+ trigger the update of the colors in mouseUp()? But no - that doesn't seem to be the case.
+-Meters such as in TrackMeter tend to be unresponsive when scaling is used on the OS level. For 
+ example, on windows with my 4k screen at 3840x2160, I like to use a scaling of 150%.  That bogs
+ down the graphics rendering. Using 100%, the graphics runs smoothly but then at 3840x2160, 
+ everything is too small. 2560x1440 seems to be a nice setting, too - it fills the screen, fonts 
+ have the right size and meters run smoothly. At that setting, GUI elements have roughly the same 
+ size as at 3840x2160/150%. BUT: the font rendering looks mote blurry, at least in Notepad++.
+-In tracktion, the plots (waveforms in osc, scope, analyzer, etc. are often not drawn correctly. 
  Looks like left part of the drawing area doesn't get updated. That happens only in High-res mode.
- Maybe it's the 150% sclaing that i use there?
+ Maybe it's the 150% scaling that I use there?
 -For some Straightliner factory patches, it doesn't find the waveform files
 -Plug in AcidDevil, load ToolChain preset Acid8.xml, skip one forward - it should load Acid8_2.xml 
  but instead, it loads Acid.xml instead. When skipping formward through the list, we'll eventually 
@@ -37,14 +45,22 @@ Sampler:
  -Load the InitPatchSawtooth, open the "More" menu, tweak the level slider - when setting it to too 
   low values, the parameter and also the waveform display freezes.
  -The forward/backward buttons for the Oscillator sub-presets do not work. (in VST-Host - in 
-  Tracktion, it's OK)
+  Tracktion, it's OK). Check the current path for the loader. in standalone, when using "Load", it 
+  opens the parent directory of the actual subdirectories in which the sub-presets reside. Maybe 
+  that's the reason.
  -The ToolChain patch StraightlinerTest3.xml ha Osc2 muted even though when saving the patch, the osc
   was not muted. Figure out, how it happens that a wrong value for the Mute attibute gets written 
   into the xml. Try to reproduce the behavior: start with init-patch, activate Osc2, save the patch 
   (in ToolChain and in Straightliner) - inspect it
+  ...I think, I reproduced it by pluugin in straighliner fresh, loading an osc-section preset with 
+  triangle waves (i think, i just used the "Next" button), then closing and re-opening ToolChain
+  standalone
  
 MultiAnalyzer
- -Spectral view is unresponsive, laggy, unsmooth
+ -Spectral view is unresponsive, laggy, unsmooth in VSTHost but also in standalone (debug) builds. 
+  In Tracktion Waveform, a release-build seems to run smoothly. OK - standalone/release look kida 
+  smooth except when the sound turns off - it looks like is has a peak-hold or something. Check 
+  that! But maybe it's the note-off that triggers some processing and bogs down the system?
  
  
 Fixed(?):

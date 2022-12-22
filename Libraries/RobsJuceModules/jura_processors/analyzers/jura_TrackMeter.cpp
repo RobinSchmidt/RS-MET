@@ -185,10 +185,10 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   // set up the widgets:
   updateWidgetsAccordingToState();
 
-  startTimer(20);
+  //startTimer(20);  // 20 ms -> 50 FPS
+  startTimerHz(60);  // 60 FPS
 
-  //setSize(180, 400); // ha no effect?
-  setSize(180, 400); // ha no effect?
+  setSize(180, 400); // has no effect?
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -244,34 +244,44 @@ void TrackMeterModuleEditor::resized()
   int w = getWidth();
   int h = getHeight();
 
+  //int t = 16;           // thickness of the meters
+  int m = 4;            // margin
 
-  y = infoField->getY()-36;
+  if(isVertical())
+  {
+    y = infoField->getY()-36;
 
-  vuButton->setBounds(x+4,  y,    32, 16);
-  ppmButton->setBounds(x+4, y+20, 32, 16);
+    vuButton->setBounds(x+m, y, 32, 16);
+    ppmButton->setBounds(x+m, y+20, 32, 16);
 
-  x = vuButton->getRight();
-  w = getWidth()-x;
-  riseSlider->setBounds(x+4, y,    w-8, 16);
-  fallSlider->setBounds(x+4, y+20, w-8, 16);
+    x = vuButton->getRight();
+    w = getWidth()-x;
+    riseSlider->setBounds(x+m, y,    w-m*2, 16);
+    fallSlider->setBounds(x+m, y+20, w-m*2, 16);
 
-  y = getHeadlineBottom();
-  h = riseSlider->getY()-y;
+    y = getHeadlineBottom();
+    h = riseSlider->getY()-y;
 
-  leftLevelLabel->setBounds(40, y+4, 20, 16);
-  leftLevelMeter->setBounds(40, leftLevelLabel->getBottom(), 16, h-32);
-  rightLevelLabel->setBounds(64, y+4, 16, 16);
-  rightLevelMeter->setBounds(64, rightLevelLabel->getBottom(), 16, h-32);
+    // Set up labels:
+    leftLevelLabel->setBounds(   40, y+m,                           20, 16  );
+    leftLevelMeter->setBounds(   40, leftLevelLabel->getBottom(),   16, h-32);
+    rightLevelLabel->setBounds(  64, y+m,                           16, 16  );
+    rightLevelMeter->setBounds(  64, rightLevelLabel->getBottom(),  16, h-32);
 
-  midLevelLabel->setBounds(96, y+4, 16, 16);
-  midLevelMeter->setBounds(96, midLevelLabel->getBottom(), 16, h-32);
-  sideLevelLabel->setBounds(120, y+4, 16, 16);
-  sideLevelMeter->setBounds(120, sideLevelLabel->getBottom(), 16, h-32);
+    midLevelLabel->setBounds(    96, y+m,                           16, 16  );
+    midLevelMeter->setBounds(    96, midLevelLabel->getBottom(),    16, h-32);
+    sideLevelLabel->setBounds(  120, y+m,                           16, 16  );
+    sideLevelMeter->setBounds(  120, sideLevelLabel->getBottom(),   16, h-32);
 
-  correlationLabel->setBounds(152, y+4, 16, 16);
-  correlationMeter->setBounds(152, correlationLabel->getBottom(), 16, h-32);
+    correlationLabel->setBounds(152, y+m,                           16, 16  );
+    correlationMeter->setBounds(152, correlationLabel->getBottom(), 16, h-32);
 
-  y = correlationMeter->getBottom()+16;
+    //y = correlationMeter->getBottom()+16;
+  }
+  else
+  {
+
+  }
 }
 
 void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
