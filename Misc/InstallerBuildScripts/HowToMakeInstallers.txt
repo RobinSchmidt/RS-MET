@@ -60,3 +60,10 @@ System-Requirements:
 see here for installation path suggestions:
 https://github.com/RobinSchmidt/RS-MET/issues/142#issuecomment-353276935
 
+
+
+Notes:
+On windows, there's also the C:\ProgramData folder. It seems to be the place where  programs store 
+their own support files that are not supposed to be edited by the user, right? This could be used
+for factory presets (SurgeXT does that) ...but mayb it's simpler, if we just stick to the scheme of
+putting eveything into the AppData/Roaming/RS-MET folder

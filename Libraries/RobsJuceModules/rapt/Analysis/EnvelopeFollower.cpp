@@ -72,3 +72,34 @@ void rsEnvelopeFollower2<T>::updateSmoothingFilters()
   // todo: make the hard-coded 0.1 and 10.0 factors accessible to client code, also use the hold
   // parameter of slewLimiter and make it accessible from client code
 }
+
+
+/*
+
+Ideas:
+-Detect intersample peaks:
+ -Remember x[n-2] and x[n-1]. At time n, we have also x[n] available. I assume here that x[n] is 
+  already positive, i.e. the absolute value of some input signal
+ -If x[n-1] > x[n-2] and x[n-1] > x[n], we have detected a peak.
+ -The exact location of the peak could be anywhere between n-2 and n. Locate it by fitting a 
+  parabola. xPeak is the value of the peak, frac is the fractional part of its position.
+ -To compute output and update the smoothing filter states, we need to do 2 fractional filter steps 
+  (using non-uniform filtering) and one normal step like (I think):
+ -If the peak is between n-2 and n-1:
+     smoother.setTimeConstant(attack);              //
+     out1 = smoother.getSample(xPeak, fracPos);     // 1st fractional step x[n-2] si currently in the filter's state
+     smoother.setTimeConstant(release);
+     out2 = smoother.getSample(x[n-1], 1-fracPos);  // 2nd fractional step
+     out3 = smoother.getSample(x[n]);               // this is a full-sample step
+ -Else (peak is between n-1 and n): 
+     smoother.setTimeConstant(release);             // may not be needed?
+     out1 = smoother.getSample(x[n-1])              // full sample step
+     smoother.setTimeConstant(attack);
+     out2 = smoother.getSample(xPeak, fracPos);     // 1st fractional step
+     smoother.setTimeConstant(release);
+     out2 = smoother.getSample(x[n], 1-fracPos);    // 2ns fractional step
+ -The scheme introduces a delay of 2 samples, i.e our output at time n applies to the input at n-2
+  I think. Or n-1? 
+
+
+*/

@@ -1441,4 +1441,7 @@ ToDo:
  that the intial breakpoint will be hit exactly. This will help to mitigate the hard corners and 
  will make the env sound "rounder"
 
+-allow cubic Hermite splines for the shapes. The slopes are computed using finite differences. Maybe
+ also allow (cubic) polynomials in the logarithmic domain.
+
 */

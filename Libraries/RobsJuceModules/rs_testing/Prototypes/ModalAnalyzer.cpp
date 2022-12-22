@@ -612,8 +612,8 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer2<T>::analyze(T* x, int N
 }
 
 template<class T>
-void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N, T centerFreqHz, T bandwidthHz,
-  T* wrk = nullptr, int N_wrk = 0)
+void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N, 
+  T centerFreqHz, T bandwidthHz, T* wrk, int N_wrk)
 {
   // This code is a bit ugly - re-work the API for biquad filters to make it more convenient:
   //using BD = rsBiquadDesigner<T>;

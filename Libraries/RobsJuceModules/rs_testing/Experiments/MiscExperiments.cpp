@@ -291,9 +291,62 @@ void testModalResynthesis(const std::string& name, std::vector<double>& x,
   plotModalAmplitudes(modeModel);
   std::vector<double> y = synthesizeModal(modeModel, fs, N);
 
-  rosic::writeToMonoWaveFile("ModalInput.wav",  &x[0],  N, (int)fs);
-  rosic::writeToMonoWaveFile("ModalOutput.wav", &y[0],  N, (int)fs);
+  rosic::writeToMonoWaveFile("rsModalAnalyzer_Input.wav",  &x[0],  N, (int)fs);
+  rosic::writeToMonoWaveFile("rsModalAnalyzer_Output.wav", &y[0],  N, (int)fs);
 }
+
+void testModalResynthesis2(const std::string& name, std::vector<double>& x,
+  double fs, double f0)
+{
+  int N = (int)x.size();
+
+  // Analyze the sound, i.e. estimate the modal parameters from the signal:
+  rsModalAnalyzer2<double> ma;
+  ma.setSampleRate(fs);
+  auto modalParams = ma.analyze(&x[0], (int)x.size());
+
+  // Resynthesize the sound using the stimated parameters:
+
+
+  /*
+  int M = (int) modalParams.size(); // num modes
+  double fundamental = 168;   // is for the Gloriosa sample
+
+  std::vector<double> frq(M), amp(M), att(M), dec(M), phs(M);
+  for(int m = 0; m < M; m++)
+  {
+    frq[m] = modalParams[m].freq / fundamental;
+    amp[m] = modalParams[m].amp;
+    att[m] = modalParams[m].att;
+    dec[m] = modalParams[m].dec;
+    phs[m] = modalParams[m].phase;
+  }
+
+  using MFB = rsModalFilterBank<double, double>;
+  MFB mfb;
+  mfb.setSampleRate(fs);
+  mfb.setReferenceFrequency(fundamental);
+  mfb.setReferenceAttack(1.0);
+  mfb.setReferenceDecay(1.0);
+  mfb.setModalParameters(frq, amp, att, dec, phs);
+  std::vector<double> y(N);  // the main signal
+  y[0] = mfb.getSample(1.0);
+  for(int n = 1; n < N; n++)
+    y[n] = mfb.getSample(0.0);
+
+  // Post-process:
+  rsArrayTools::normalize(&y[0], N);
+  double fadeOutMs = 50;    // 50 milliseconds fade-out
+  int fadeOutSamples = (int) round(fs * fadeOutMs / 1000);
+  RAPT::rsFadeOut(&y[0], N-fadeOutSamples, N-1);
+
+  // Save both:
+  rosic::writeToMonoWaveFile("rsModalAnalyzer2_Input.wav",  &x[0],  N, (int)fs);
+  rosic::writeToMonoWaveFile("rsModalAnalyzer2_Output.wav", &y[0],  N, (int)fs);
+
+  */
+}
+
 
 void testDeBeating(const std::string& name, std::vector<double>& x, double fs, double f0)
 {

@@ -43,6 +43,11 @@ void getPaddedSignals(double* xIn, int Nx,  const RAPT::rsSinusoidalModel<double
 void testModalResynthesis(const std::string& name, std::vector<double>& input, 
   double sampleRate, double fundamental = 0);
 
+/** STUB */
+void testModalResynthesis2(const std::string& name, std::vector<double>& input, 
+  double sampleRate, double fundamental = 0);
+
+
 void testDeBeating(const std::string& name, std::vector<double>& input, 
   double sampleRate, double fundamental = 0);
 
@@ -50,8 +55,10 @@ void testDeBeating(const std::string& name, std::vector<double>& input,
 void testEnvelopeMatching(std::vector<double>& input1, std::vector<double>& input2);
 void testEnvelopeMatching2(std::vector<double>& input1, std::vector<double>& input2);
 
-
 void testTimeWarping1(const std::vector<double>& x, double fs, double f0);
+
+
+
 
 // move to RAPT::rsArrayTools
 template<class T>

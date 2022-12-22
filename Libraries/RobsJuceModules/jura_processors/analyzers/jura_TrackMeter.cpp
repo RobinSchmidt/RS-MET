@@ -350,6 +350,12 @@ void TrackMeterModuleEditor::timerCallback()
 
 /*
 
+Ideas:
+-Let it optionally show the meters horizontally. Maybe it should automatically switch to horizontal
+ mode when width > height. Rational: when recoding videos on a 1920x1080 resolution, we can put 
+ Straightliner with 2 MultiAnalyzers by its (right) side - but an additional TackMeter fits 
+ nowhere. A horizontal one, however, could fit below.
+
 Bugs:
 -when playing notes with the sampler, it hickups on note-off
 -VU and PPM buttons don't flash on click
