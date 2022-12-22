@@ -386,6 +386,8 @@ Ideas:
  mode when width > height. Rational: when recoding videos on a 1920x1080 resolution, we can put 
  Straightliner with 2 MultiAnalyzers by its (right) side - but an additional TackMeter fits 
  nowhere. A horizontal one, however, could fit below.
+-Maybe don't put the ballistics adjustmenst onto the main GUI. Hide them behind a context menu.
+-Maybe get rid of the headline "Slot X - TrackMeter". It's a bit pointless and silly
 
 Bugs:
 -when playing notes with the sampler, it hickups on note-off
