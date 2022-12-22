@@ -70,16 +70,6 @@ void MeteringDisplay::paint(Graphics &g)
   {
   case levelMeterStyle:
     {
-      /*
-      // Create and paint the gradient:
-      ColourGradient gradient = ColourGradient(Colours::green, w,h, Colours::magenta, x,y, false);
-      gradient.addColour(     (referenceValue-minValue) / (maxValue-minValue), Colours::red);
-      gradient.addColour(0.75*(referenceValue-minValue) / (maxValue-minValue), Colours::yellow);
-      FillType fill(gradient);
-      g.setFillType(fill);
-      g.fillAll();
-      */
-
       createGradientFill(isVertical());
 
       // Cover some some part of the gradient with the background color:
