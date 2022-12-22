@@ -106,10 +106,9 @@ void MeteringDisplay::paint(Graphics &g)
 
       if(isVertical())
         g.fillRect(0.f, 0.f, w, h - h * relVal);
-        //g.fillRect(0.f, 0.f, w, jlimit(0.f, h, h - h * relVal));
       else
-        g.fillRect(jlimit(0.f, w, w - w * relVal), 0.f, w, h);
-        //g.fillRect(0.f, 0.f, jlimit(0.f, w, w - w * relVal), h);
+        g.fillRect(relVal*w, 0.f, w - relVal*w, h);
+        //g.fillRect(w - w * relVal, 0.f, w, h);
     }
     break;
   case triangularPointerStyle:
