@@ -280,9 +280,9 @@ void TrackMeterModuleEditor::resized()
   }
   else
   {
-    int x = m;    // start coordinate of the meters to the left
-    int y = 2*t;  // not sure about that value. maybe use a hardcoded number - we'll see
-    int w = getWidth() - x - 48; // 48: width of right section for the ballistics controls
+    int x = 2*m;                         // start coordinate of the meters to the left
+    int y = getHeadlineBottom() + 2*t;
+    int w = getWidth() - x - 40;
 
     leftLevelLabel->setBounds(  x,   y, t, t);
     leftLevelMeter->setBounds(  x+t, y, w, t);
