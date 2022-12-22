@@ -1313,3 +1313,11 @@ void drawAxisY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper
   addTextToSvgDrawing(svg, label, xt-8, ye+12, Justification::centredRight, color); 
     // still wrongly positioned
 }
+
+/*
+
+Ideas:
+-Maybe implement the gradient creation using floats and maybe apply Floyd-Steinberg dither. Maybe
+ that can be done on the fly (maybe using one pixel-row or column as temp-memory).
+
+*/
