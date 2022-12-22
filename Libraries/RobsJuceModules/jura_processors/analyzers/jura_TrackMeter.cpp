@@ -276,51 +276,58 @@ void TrackMeterModuleEditor::resized()
 
 void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
 {
-  juce::String numberString;
-  //g.setColour(Colours::black);
-  int i;
-
-  const BitmapFontRoundedBoldA10D0* font = &BitmapFontRoundedBoldA10D0::instance;
-
-  juce::Colour textColor = getTextColour();
-  g.setColour(textColor);
-  // For the ticks. Maybe darken for bright-on-dark schemes and brighten for dark-on-bright schemes
-  // maybe have a function in widgetColourScheme tonedDown that darkens or brightens and can be used
-
-
-  // Draw the scale for the level-meters:
-  float  x1       = (float) leftLevelMeter->getX()-8;
-  float  x2       = (float) sideLevelMeter->getRight();
-  double y        = (float) leftLevelMeter->getY();
   double stepSize = 6.0;
-  double yStep    = stepSize * leftLevelMeter->getHeight() / (rangeMax - rangeMin);
   int    numSteps = roundToInt( (rangeMax-rangeMin) / stepSize ) + 1;
 
-  for(i = 1; i <= numSteps; i++)
-  {
-    g.drawLine(x1, (float) y, x2, (float) y, 2.f); 
-    numberString = valueToStringWithSign0(rangeMax-(i-1)*stepSize);
-    //g.drawText(numberjuce::String, (int) (x1-24), (int) (y-8), 24, 16, Justification::centredRight, false);
-    drawBitmapFontText(g, (int) x1 - 8, (int) y, numberString, font, 
-      textColor, -1, Justification::centredRight);
-    y += yStep;
-  }
+  const BitmapFontRoundedBoldA10D0* font = &BitmapFontRoundedBoldA10D0::instance;
+  juce::String numberString;
+  juce::Colour textColor = getTextColour();
+  g.setColour(textColor);  // is this needed?
+  // Color for the tick marks. Maybe darken for bright-on-dark schemes and brighten for 
+  // dark-on-bright schemes maybe have a function in widgetColourScheme tonedDown that 
+  // darkens or brightens and can be used.
 
-  // Draw the scale for the correlation-meter:
-  x1       = (float) correlationMeter->getX();
-  x2       = (float) correlationMeter->getRight()+8;
-  y        = (float) correlationMeter->getY();
-  stepSize = 0.2;
-  yStep    = stepSize * correlationMeter->getHeight() / 2.0;
-  numSteps = roundToInt( 2.0 / stepSize ) + 1;
-  for(i = 1; i <= numSteps; i++)
+  if(isVertical())
   {
-    g.drawLine(x1, (float) y, x2, (float) y, 2.f);
-    numberString = valueToStringWithSign1(1.0-(i-1)*stepSize);
-    //g.drawText(numberjuce::String, (int) x2, (int) (y-8), 30, 16, Justification::centredLeft, false);
-    drawBitmapFontText(g, (int) x1 + 28, (int) y, numberString, font, 
+    // Draw the scale for the level-meters:
+    float x1  = (float)leftLevelMeter->getX()-8;
+    float x2  = (float)sideLevelMeter->getRight();
+    double y  = (float)leftLevelMeter->getY();
+    double dy = stepSize * leftLevelMeter->getHeight() / (rangeMax - rangeMin);
+
+    for(int i = 1; i <= numSteps; i++)
+    {
+      g.drawLine(x1, (float)y, x2, (float)y, 2.f);
+      numberString = valueToStringWithSign0(rangeMax-(i-1)*stepSize);
+      //g.drawText(numberjuce::String, (int) (x1-24), (int) (y-8), 24, 16, Justification::centredRight, false);
+      drawBitmapFontText(g, (int)x1 - 8, (int)y, numberString, font,
+        textColor, -1, Justification::centredRight);
+      y += dy;
+    }
+
+    // Draw the scale for the correlation-meter:
+    x1       = (float)correlationMeter->getX();
+    x2       = (float)correlationMeter->getRight()+8;
+    y        = (float)correlationMeter->getY();
+    stepSize = 0.2;
+    dy       = stepSize * correlationMeter->getHeight() / 2.0;
+    numSteps = roundToInt(2.0 / stepSize) + 1;
+    for(int i = 1; i <= numSteps; i++)
+    {
+      g.drawLine(x1, (float)y, x2, (float)y, 2.f);
+      numberString = valueToStringWithSign1(1.0-(i-1)*stepSize);
+      //g.drawText(numberjuce::String, (int) x2, (int) (y-8), 30, 16, Justification::centredLeft, false);
+      drawBitmapFontText(g, (int)x1 + 28, (int)y, numberString, font,
+        textColor, -1, Justification::centredLeft);
+      y += dy;
+    }
+  }
+  else
+  {
+    //RAPT::rsError("not yet implemented");
+    g.fillAll(Colours::black);
+    drawBitmapFontText(g, 10, 10, "Horizontal mode not yet implemented", font,
       textColor, -1, Justification::centredLeft);
-    y += yStep;
   }
 }
 

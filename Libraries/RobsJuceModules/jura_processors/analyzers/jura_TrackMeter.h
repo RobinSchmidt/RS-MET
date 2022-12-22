@@ -62,7 +62,7 @@ public:
 
   /** Returns true, iff the meter is shown in vertical mode. The meter switches automatically 
   between vertical and horizontal display modes based on the apsect ratio of the GUI editor. */
-  bool isVertical() const { return getHeight() < getWidth(); }
+  bool isVertical() const { return getHeight() >= getWidth(); }
 
   // Callbacks:
   virtual void rButtonClicked(RButton* buttonThatWasClicked);
