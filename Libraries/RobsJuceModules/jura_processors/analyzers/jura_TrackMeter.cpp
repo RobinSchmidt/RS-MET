@@ -298,6 +298,15 @@ void TrackMeterModuleEditor::resized()
     y += t*2;
     correlationLabel->setBounds(x,   y, t, t);
     correlationMeter->setBounds(x+t, y, w, t);
+
+    // Preliminary - these widgets should got into a context menu
+    y = correlationMeter->getBottom() + 40;
+    vuButton->setBounds(  x+m, y,     t*2,   t);
+    ppmButton->setBounds( x+m, y+t+m, t*2,   t);
+    x = vuButton->getRight();
+    w = getWidth()/2 - x;
+    riseSlider->setBounds(x+m, y,     w-m*2, t);
+    fallSlider->setBounds(x+m, y+t+m, w-m*2, t);
   }
 
   // ToDo:
