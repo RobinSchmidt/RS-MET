@@ -251,7 +251,8 @@ void TrackMeterModuleEditor::resized()
 
   if(isVertical())
   {
-    y = infoField->getY()-(t*2+m);
+    //y = infoField->getY()-(t*2+m);
+    y = infoField->getY()-2*(t+m);
 
     vuButton->setBounds(  x+m, y,     t*2,   t);
     ppmButton->setBounds( x+m, y+t+m, t*2,   t);
