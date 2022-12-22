@@ -73,7 +73,7 @@ void MeteringDisplay::paint(Graphics &g)
       // When y1 = y2, we get a purely horizontal gradient.
     }
 
-    Colour colorLow   = Colours::darkgreen; // low levels
+    Colour colorLow   = Colour(0, 20, 30);  // low levels
     Colour colorSafe  = Colours::green;     // safe levels
     Colour colorLoud  = Colours::yellow;    // loud/hot levels
     Colour colorLimit = Colours::red;       // level at the limit
