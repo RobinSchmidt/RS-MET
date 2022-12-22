@@ -246,12 +246,12 @@ void TrackMeterModuleEditor::resized()
   int w = getWidth();
   int h = getHeight();
 
-  const int t = 16;           // thickness of the meters
-  const int m = 4;            // margin
+  const int t = 16;       // thickness of the meters
+  const int m = 4;        // margin
 
   if(isVertical())
   {
-    y = infoField->getY()-36;  // 36 ?= 2*t+m, 
+    y = infoField->getY()-(t*2+m);
 
     vuButton->setBounds(  x+m, y,     t*2,   t);
     ppmButton->setBounds( x+m, y+t+m, t*2,   t);
@@ -269,19 +269,17 @@ void TrackMeterModuleEditor::resized()
     leftLevelLabel->setBounds(  x, y+m,                           t+m, t    );
     leftLevelMeter->setBounds(  x, leftLevelLabel->getBottom(),   t,   h-t*2);
     x += t+m;
-    rightLevelLabel->setBounds( x, y+m,                           t,   t    );   // 64 = 40+24
+    rightLevelLabel->setBounds( x, y+m,                           t,   t    );
     rightLevelMeter->setBounds( x, rightLevelLabel->getBottom(),  t,   h-t*2);
     x += t*2;
-    midLevelLabel->setBounds(   x, y+m,                           t,   t    );   // 96 = 64+32
+    midLevelLabel->setBounds(   x, y+m,                           t,   t    );
     midLevelMeter->setBounds(   x, midLevelLabel->getBottom(),    t,   h-t*2);
     x += t+m;
-    sideLevelLabel->setBounds(  x, y+m,                           t,   t    );   // 120 = 96+24
+    sideLevelLabel->setBounds(  x, y+m,                           t,   t    );
     sideLevelMeter->setBounds(  x, sideLevelLabel->getBottom(),   t,   h-t*2);
     x += t*2;
-    correlationLabel->setBounds(x, y+m,                           t,   t    );   // 152 = 120 + 32
+    correlationLabel->setBounds(x, y+m,                           t,   t    );
     correlationMeter->setBounds(x, correlationLabel->getBottom(), t,   h-t*2);
-
-    //y = correlationMeter->getBottom()+16;
   }
   else
   {
