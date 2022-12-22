@@ -330,7 +330,6 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     {
       g.drawLine(x1, (float)y, x2, (float)y, 2.f);
       numberString = valueToStringWithSign0(rangeMax-(i-1)*stepSize);
-      //g.drawText(numberjuce::String, (int) (x1-24), (int) (y-8), 24, 16, Justification::centredRight, false);
       drawBitmapFontText(g, (int)x1 - 8, (int)y, numberString, font,
         textColor, -1, Justification::centredRight);
       y += dy;
@@ -357,11 +356,27 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
   {
     //RAPT::rsError("not yet implemented");
     //g.fillAll(Colours::darkgrey);
+    //drawBitmapFontText(g, 10, 10, "Horizontal mode not yet implemented", font,
+    //  textColor, -1, Justification::centredLeft);
+
+    // Draw the scale for the level-meters:
+    float y1  = (float)leftLevelMeter->getY()-8;
+    float y2  = (float)sideLevelMeter->getBottom();
+    double x  = (float)leftLevelMeter->getX();
+    double dx = stepSize * leftLevelMeter->getWidth() / (rangeMax - rangeMin);
 
 
+    for(int i = 1; i <= numSteps; i++)
+    {
+      g.drawLine((float)x, y1, (float)x, y2, 2.f);
+      //numberString = valueToStringWithSign0(rangeMax-(i-1)*stepSize);
+      numberString = valueToStringWithSign0(rangeMin + (i-1)*stepSize);
+      drawBitmapFontText(g, (int)x, (int)y1 - 12, numberString, font,
+        textColor, -1, Justification::centredRight);
+      x += dx;
 
-    drawBitmapFontText(g, 10, 10, "Horizontal mode not yet implemented", font,
-      textColor, -1, Justification::centredLeft);
+    }
+
   }
 }
 
