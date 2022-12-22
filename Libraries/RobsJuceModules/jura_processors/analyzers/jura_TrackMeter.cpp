@@ -352,11 +352,6 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
   }
   else
   {
-    //RAPT::rsError("not yet implemented");
-    //g.fillAll(Colours::darkgrey);
-    //drawBitmapFontText(g, 10, 10, "Horizontal mode not yet implemented", font,
-    //  textColor, -1, Justification::centredLeft);
-
     // Draw the scale for the level-meters:
     float y1  = (float)leftLevelMeter->getY()-8;
     float y2  = (float)sideLevelMeter->getBottom();
@@ -370,9 +365,16 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
       drawBitmapFontText(g, (int) (x+s), (int)y1 - 12, numberString, font,
         textColor, -1, Justification::centredRight);
       x += dx;
-
     }
 
+    // Draw the scale for the correlation-meter:
+    y1       = (float)correlationMeter->getY();
+    y2       = (float)correlationMeter->getBottom()+8;
+    x        = (float)correlationMeter->getX();
+    stepSize = 0.2;
+    dx       = stepSize * correlationMeter->getWidth() / 2.0;
+    numSteps = roundToInt(2.0 / stepSize) + 1;
+    // ...
 
 
   }
