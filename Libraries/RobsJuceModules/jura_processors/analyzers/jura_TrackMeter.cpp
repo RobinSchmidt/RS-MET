@@ -261,22 +261,25 @@ void TrackMeterModuleEditor::resized()
     riseSlider->setBounds(x+m, y,    w-m*2, t);
     fallSlider->setBounds(x+m, y+20, w-m*2, t);
 
+    x = 40;
     y = getHeadlineBottom();
     h = riseSlider->getY()-y;
 
     // Set up labels:
-    leftLevelLabel->setBounds(   40, y+m,                           t+m, t    );
-    leftLevelMeter->setBounds(   40, leftLevelLabel->getBottom(),   t,   h-t*2);
-    rightLevelLabel->setBounds(  64, y+m,                           t,   t    );   // 64 = 40+24
-    rightLevelMeter->setBounds(  64, rightLevelLabel->getBottom(),  t,   h-t*2);
-
-    midLevelLabel->setBounds(    96, y+m,                           t,   t    );   // 96 = 64+32
-    midLevelMeter->setBounds(    96, midLevelLabel->getBottom(),    t,   h-t*2);
-    sideLevelLabel->setBounds(  120, y+m,                           t,   t    );   // 120 = 96+24
-    sideLevelMeter->setBounds(  120, sideLevelLabel->getBottom(),   t,   h-t*2);
-
-    correlationLabel->setBounds(152, y+m,                           t,   t    );   // 152 = 120 + 32
-    correlationMeter->setBounds(152, correlationLabel->getBottom(), t,   h-t*2);
+    leftLevelLabel->setBounds(  x, y+m,                           t+m, t    );
+    leftLevelMeter->setBounds(  x, leftLevelLabel->getBottom(),   t,   h-t*2);
+    x += t+m;
+    rightLevelLabel->setBounds( x, y+m,                           t,   t    );   // 64 = 40+24
+    rightLevelMeter->setBounds( x, rightLevelLabel->getBottom(),  t,   h-t*2);
+    x += t*2;
+    midLevelLabel->setBounds(   x, y+m,                           t,   t    );   // 96 = 64+32
+    midLevelMeter->setBounds(   x, midLevelLabel->getBottom(),    t,   h-t*2);
+    x += t+m;
+    sideLevelLabel->setBounds(  x, y+m,                           t,   t    );   // 120 = 96+24
+    sideLevelMeter->setBounds(  x, sideLevelLabel->getBottom(),   t,   h-t*2);
+    x += t*2;
+    correlationLabel->setBounds(x, y+m,                           t,   t    );   // 152 = 120 + 32
+    correlationMeter->setBounds(x, correlationLabel->getBottom(), t,   h-t*2);
 
     //y = correlationMeter->getBottom()+16;
   }
