@@ -418,16 +418,12 @@ void TrackMeterModuleEditor::timerCallback()
 /*
 
 Ideas:
--Let it optionally show the meters horizontally. Maybe it should automatically switch to horizontal
- mode when width > height. Rational: when recoding videos on a 1920x1080 resolution, we can put 
- Straightliner with 2 MultiAnalyzers by its (right) side - but an additional TackMeter fits 
- nowhere. A horizontal one, however, could fit below.
+-Maybe use a finer interval for the tick marks, if there is enough space available
 -Maybe don't put the ballistics adjustmenst onto the main GUI. Hide them behind a context menu.
 -Maybe get rid of the headline "Slot X - TrackMeter". It's a bit pointless and silly
 -Maybe measure also:
  -spectral centroid, pitch (time averaged) - maybe only when it is determined that the signal has
   a single pitch, loudness
-
 -Implement an octave-band analyzer - or better: let the user select the number of bands
 
 Bugs:
