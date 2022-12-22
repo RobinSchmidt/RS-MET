@@ -123,9 +123,7 @@ void MeteringDisplay::paint(Graphics &g)
         float pos = w * (1.f - relVal);
         g.setColour(getWeakHighlightColour());
         drawTriangle(g, w-pos-h/2.f, y, w-pos+h/2.f, y, w-pos, h, true);
-
         g.setColour(getStrongHighlightColour());
-        /*g.drawLine(x, h-pos, w, h-pos);*/
         g.drawLine(w-pos, y, w-pos, h);
       }
     }
