@@ -77,7 +77,8 @@ void MeteringDisplay::paint(Graphics &g)
     Colour colorSafe  = Colours::green;     // safe levels
     Colour colorLoud  = Colours::yellow;    // loud/hot levels
     Colour colorLimit = Colours::red;       // level at the limit
-    Colour colorOver  = Colours::magenta;   // overload levels (above reference value)
+    //Colour colorOver  = Colours::magenta;   // overload levels (above reference value)
+    Colour colorOver  = Colour(127, 0, 255);   // overload levels (above reference value)
 
     ColourGradient gradient = ColourGradient(colorLow, x1, y1, colorOver, x2, y2, false);
     float s = (referenceValue-minValue) / (maxValue-minValue);
