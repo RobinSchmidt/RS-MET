@@ -251,7 +251,6 @@ void TrackMeterModuleEditor::resized()
 
   if(isVertical())
   {
-    //y = infoField->getY()-(t*2+m);
     y = infoField->getY()-2*(t+m);
 
     vuButton->setBounds(  x+m, y,     t*2,   t);
@@ -284,6 +283,22 @@ void TrackMeterModuleEditor::resized()
   }
   else
   {
+    x = m;    // start coordinate of the meters to the left
+    y = 2*t;  // not sure about that value. maybe use a hardcoded number - we'll see
+
+    //int rw = 48; // width of right section for the ballistics controls
+
+    w = getWidth() - x - 48; // 48: width of right section for the ballistics controls
+
+    leftLevelLabel->setBounds(x,   y, t, t);
+    leftLevelMeter->setBounds(x+t, y, w, t);
+    y += t+m;
+    rightLevelLabel->setBounds(x,   y, t, t);
+    rightLevelMeter->setBounds(x+t, y, w, t);
+
+
+
+
 
   }
 }
@@ -339,7 +354,7 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
   else
   {
     //RAPT::rsError("not yet implemented");
-    g.fillAll(Colours::black);
+    g.fillAll(Colours::darkgrey);
     drawBitmapFontText(g, 10, 10, "Horizontal mode not yet implemented", font,
       textColor, -1, Justification::centredLeft);
   }
