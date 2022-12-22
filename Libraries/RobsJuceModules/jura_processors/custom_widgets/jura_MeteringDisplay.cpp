@@ -57,7 +57,16 @@ void MeteringDisplay::paint(Graphics &g)
 
   auto createGradientFill = [&](bool vertical)
   {
-    ColourGradient gradient = ColourGradient(Colours::green, w,h, Colours::magenta, x,y, false);
+    int x1, y1, x2, y2; 
+    
+    x1 = getWidth();
+    y1 = getHeight();
+    x2 = 0;
+    y2 = 0;
+
+    //ColourGradient gradient = ColourGradient(Colours::green, w, h, Colours::magenta, x, y, false);
+
+    ColourGradient gradient = ColourGradient(Colours::green, x1, y1, Colours::magenta, x2, y2, false);
     gradient.addColour(     (referenceValue-minValue) / (maxValue-minValue), Colours::red);
     gradient.addColour(0.75*(referenceValue-minValue) / (maxValue-minValue), Colours::yellow);
     FillType fill(gradient);
