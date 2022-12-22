@@ -244,37 +244,37 @@ void TrackMeterModuleEditor::resized()
   int w = getWidth();
   int h = getHeight();
 
-  //int t = 16;           // thickness of the meters
-  int m = 4;            // margin
+  const int t = 16;           // thickness of the meters
+  const int m = 4;            // margin
 
   if(isVertical())
   {
-    y = infoField->getY()-36;
+    y = infoField->getY()-36;  // 36 ?= 2*t+m, 
 
-    vuButton->setBounds(x+m, y, 32, 16);
-    ppmButton->setBounds(x+m, y+20, 32, 16);
+    vuButton->setBounds( x+m, y,    t*2, t);
+    ppmButton->setBounds(x+m, y+20, t*2, t);
 
     x = vuButton->getRight();
     w = getWidth()-x;
-    riseSlider->setBounds(x+m, y,    w-m*2, 16);
-    fallSlider->setBounds(x+m, y+20, w-m*2, 16);
+    riseSlider->setBounds(x+m, y,    w-m*2, t);
+    fallSlider->setBounds(x+m, y+20, w-m*2, t);
 
     y = getHeadlineBottom();
     h = riseSlider->getY()-y;
 
     // Set up labels:
-    leftLevelLabel->setBounds(   40, y+m,                           20, 16  );
-    leftLevelMeter->setBounds(   40, leftLevelLabel->getBottom(),   16, h-32);
-    rightLevelLabel->setBounds(  64, y+m,                           16, 16  );
-    rightLevelMeter->setBounds(  64, rightLevelLabel->getBottom(),  16, h-32);
+    leftLevelLabel->setBounds(   40, y+m,                           20, t    );
+    leftLevelMeter->setBounds(   40, leftLevelLabel->getBottom(),   t,  h-t*2);
+    rightLevelLabel->setBounds(  64, y+m,                           t,  t    );   // 64 = 40+24
+    rightLevelMeter->setBounds(  64, rightLevelLabel->getBottom(),  t,  h-t*2);
 
-    midLevelLabel->setBounds(    96, y+m,                           16, 16  );
-    midLevelMeter->setBounds(    96, midLevelLabel->getBottom(),    16, h-32);
-    sideLevelLabel->setBounds(  120, y+m,                           16, 16  );
-    sideLevelMeter->setBounds(  120, sideLevelLabel->getBottom(),   16, h-32);
+    midLevelLabel->setBounds(    96, y+m,                           t,  t    );   // 96 = 64+32
+    midLevelMeter->setBounds(    96, midLevelLabel->getBottom(),    t,  h-t*2);
+    sideLevelLabel->setBounds(  120, y+m,                           t,  t    );   // 120 = 96+24
+    sideLevelMeter->setBounds(  120, sideLevelLabel->getBottom(),   t,  h-t*2);
 
-    correlationLabel->setBounds(152, y+m,                           16, 16  );
-    correlationMeter->setBounds(152, correlationLabel->getBottom(), 16, h-32);
+    correlationLabel->setBounds(152, y+m,                           t,  t    );   // 152 = 120 + 32
+    correlationMeter->setBounds(152, correlationLabel->getBottom(), t,  h-t*2);
 
     //y = correlationMeter->getBottom()+16;
   }
