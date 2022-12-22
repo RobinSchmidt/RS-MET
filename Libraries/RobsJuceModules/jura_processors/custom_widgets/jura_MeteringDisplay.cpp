@@ -53,6 +53,7 @@ void MeteringDisplay::paint(Graphics &g)
   float w = (float) getWidth();
   float h = (float) getHeight();
   float relVal = (currentValue-minValue) / (maxValue-minValue); // relative value
+  relVal = jlimit(0.f, 1.f, relVal);
 
 
   auto createGradientFill = [&](bool vertical)
@@ -104,7 +105,8 @@ void MeteringDisplay::paint(Graphics &g)
       //g.fillRect(0.f, 0.f, w, jlimit(x, h, h - h * relVal));
 
       if(isVertical())
-        g.fillRect(0.f, 0.f, w, jlimit(0.f, h, h - h * relVal));
+        g.fillRect(0.f, 0.f, w, h - h * relVal);
+        //g.fillRect(0.f, 0.f, w, jlimit(0.f, h, h - h * relVal));
       else
         g.fillRect(jlimit(0.f, w, w - w * relVal), 0.f, w, h);
         //g.fillRect(0.f, 0.f, jlimit(0.f, w, w - w * relVal), h);
