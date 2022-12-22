@@ -91,24 +91,16 @@ void MeteringDisplay::paint(Graphics &g)
   {
   case levelMeterStyle:
     {
+      // Fill the whole meter with the gradient (maybe we should optimize this by caching the 
+      // gradient as image?):
       createGradientFill(isVertical());
 
       // Cover some some part of the gradient with the background color:
-      //float top = h * relVal;
-
       g.setColour(getBackgroundColour());
-
-
-      //g.fillRect(x, y, w, jlimit(x, h, h-top));
-
-
-      //g.fillRect(0.f, 0.f, w, jlimit(x, h, h - h * relVal));
-
       if(isVertical())
-        g.fillRect(0.f, 0.f, w, h - h * relVal);
+        g.fillRect(0.f,        0.f, w, h * (1.f - relVal));
       else
-        g.fillRect(relVal*w, 0.f, w - relVal*w, h);
-        //g.fillRect(w - w * relVal, 0.f, w, h);
+        g.fillRect(w * relVal, 0.f, w * (1.f - relVal), h);
     }
     break;
   case triangularPointerStyle:
@@ -118,11 +110,22 @@ void MeteringDisplay::paint(Graphics &g)
       g.fillRect(x, y, w, h);
 
       // Draw the indicator:
-      float pos = h * relVal;
-      g.setColour(getWeakHighlightColour()); 
-      drawTriangle(g, x, h-pos-w/2.f, x, h-pos+w/2.f, w, h-pos, true);
-      g.setColour(getStrongHighlightColour());
-      g.drawLine(x, h-pos, w, h-pos);
+      if(isVertical())
+      {
+        float pos = h * relVal;
+        g.setColour(getWeakHighlightColour());
+        drawTriangle(g, x, h-pos-w/2.f, x, h-pos+w/2.f, w, h-pos, true);
+        g.setColour(getStrongHighlightColour());
+        g.drawLine(x, h-pos, w, h-pos);
+      }
+      else
+      {
+        float pos = w * (1.f - relVal);
+        g.setColour(getWeakHighlightColour());
+        drawTriangle(g, w-pos-h/2.f, y, w-pos+h/2.f, y, w-pos, h, true);
+
+
+      }
     }
     break;
   case horizontalRatio:
