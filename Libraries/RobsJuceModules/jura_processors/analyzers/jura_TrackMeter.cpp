@@ -188,7 +188,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   //startTimer(20);  // 20 ms -> 50 FPS
   startTimerHz(60);  // 60 FPS
 
-  setSize(180, 400); // has no effect?
+  setSize(180, 400); // changing this seems to have has no effect so it probably doesn't work
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -241,29 +241,26 @@ void TrackMeterModuleEditor::resized()
   presetSectionPosition = INVISIBLE;
   linkPosition          = RIGHT_TO_HEADLINE;
   AudioModuleEditor::resized();
-  int x = 0;
-  int y = 0;
-  int w = getWidth();
-  int h = getHeight();
 
   const int t = 16;       // thickness of the meters
   const int m = 4;        // margin
 
   if(isVertical())
   {
-    y = infoField->getY()-2*(t+m);
+    int x = 0;
+    int y = infoField->getY()-2*(t+m);
 
     vuButton->setBounds(  x+m, y,     t*2,   t);
     ppmButton->setBounds( x+m, y+t+m, t*2,   t);
 
     x = vuButton->getRight();
-    w = getWidth()-x;
+    int w = getWidth()-x;
     riseSlider->setBounds(x+m, y,     w-m*2, t);
     fallSlider->setBounds(x+m, y+t+m, w-m*2, t);
 
     x = 40;
     y = getHeadlineBottom();
-    h = riseSlider->getY()-y;
+    int h = riseSlider->getY()-y;
 
     // Set up labels:
     leftLevelLabel->setBounds(  x, y+m,                           t+m, t    );
@@ -273,7 +270,7 @@ void TrackMeterModuleEditor::resized()
     rightLevelMeter->setBounds( x, rightLevelLabel->getBottom(),  t,   h-t*2);
     x += t*2;
     midLevelLabel->setBounds(   x, y+m,                           t,   t    );
-    midLevelMeter->setBounds(   x, midLevelLabel->getBottom(),    t,   h-t*2);
+    midLevelMeter->setBounds(   x, midLevelLabel->getBottom(),    t,   h-t*2); // maybe use y+t
     x += t+m;
     sideLevelLabel->setBounds(  x, y+m,                           t,   t    );
     sideLevelMeter->setBounds(  x, sideLevelLabel->getBottom(),   t,   h-t*2);
@@ -283,24 +280,29 @@ void TrackMeterModuleEditor::resized()
   }
   else
   {
-    x = m;    // start coordinate of the meters to the left
-    y = 2*t;  // not sure about that value. maybe use a hardcoded number - we'll see
+    int x = m;    // start coordinate of the meters to the left
+    int y = 2*t;  // not sure about that value. maybe use a hardcoded number - we'll see
+    int w = getWidth() - x - 48; // 48: width of right section for the ballistics controls
 
-    //int rw = 48; // width of right section for the ballistics controls
-
-    w = getWidth() - x - 48; // 48: width of right section for the ballistics controls
-
-    leftLevelLabel->setBounds(x,   y, t, t);
-    leftLevelMeter->setBounds(x+t, y, w, t);
+    leftLevelLabel->setBounds(  x,   y, t, t);
+    leftLevelMeter->setBounds(  x+t, y, w, t);
     y += t+m;
-    rightLevelLabel->setBounds(x,   y, t, t);
-    rightLevelMeter->setBounds(x+t, y, w, t);
-
-
-
-
-
+    rightLevelLabel->setBounds( x,   y, t, t);
+    rightLevelMeter->setBounds( x+t, y, w, t);
+    y += t*2;
+    midLevelLabel->setBounds(   x,   y, t, t);
+    midLevelMeter->setBounds(   x+t, y, w, t);
+    y += t+m;
+    sideLevelLabel->setBounds(  x,   y, t, t);
+    sideLevelMeter->setBounds(  x+t, y, w, t);
+    y += t*2;
+    correlationLabel->setBounds(x,   y, t, t);
+    correlationMeter->setBounds(x+t, y, w, t);
   }
+
+  // ToDo:
+  // -Maybe make the thickness variable depending on the available width (in vertical mode) or 
+  //  height (in horizontal mode)
 }
 
 void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
