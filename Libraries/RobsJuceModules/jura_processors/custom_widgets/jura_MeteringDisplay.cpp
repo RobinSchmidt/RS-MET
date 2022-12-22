@@ -54,10 +54,23 @@ void MeteringDisplay::paint(Graphics &g)
   float h = (float) getHeight();
   float relVal = (currentValue-minValue) / (maxValue-minValue); // relative value
 
+
+  auto createGradientFill = [&](bool vertical)
+  {
+    ColourGradient gradient = ColourGradient(Colours::green, w,h, Colours::magenta, x,y, false);
+    gradient.addColour(     (referenceValue-minValue) / (maxValue-minValue), Colours::red);
+    gradient.addColour(0.75*(referenceValue-minValue) / (maxValue-minValue), Colours::yellow);
+    FillType fill(gradient);
+    g.setFillType(fill);
+    g.fillAll();
+  };
+
+
   switch( style )
   {
   case levelMeterStyle:
     {
+      /*
       // Create and paint the gradient:
       ColourGradient gradient = ColourGradient(Colours::green, w,h, Colours::magenta, x,y, false);
       gradient.addColour(     (referenceValue-minValue) / (maxValue-minValue), Colours::red);
@@ -65,6 +78,9 @@ void MeteringDisplay::paint(Graphics &g)
       FillType fill(gradient);
       g.setFillType(fill);
       g.fillAll();
+      */
+
+      createGradientFill(isVertical());
 
       // Cover some some part of the gradient with the background color:
       float top = h * relVal;

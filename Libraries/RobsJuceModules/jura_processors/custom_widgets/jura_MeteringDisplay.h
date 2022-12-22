@@ -64,6 +64,13 @@ public:
   virtual void setCurrentValue(float newValue);
 
   //-----------------------------------------------------------------------------------------------
+  // \name Inquiry:
+
+  /** Returns true, iff the meter is shown in vertical mode. The meter switches automatically 
+  between vertical and horizontal display modes based on the apsect ratio of the GUI editor. */
+  bool isVertical() const { return getHeight() >= getWidth(); }
+
+  //-----------------------------------------------------------------------------------------------
   // \name Callback overrides:
 
   void paint(Graphics &g) override;
