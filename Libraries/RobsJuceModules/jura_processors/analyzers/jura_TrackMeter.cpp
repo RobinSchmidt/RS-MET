@@ -325,7 +325,6 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     float x2  = (float)sideLevelMeter->getRight();
     double y  = (float)leftLevelMeter->getY();
     double dy = stepSize * leftLevelMeter->getHeight() / (rangeMax - rangeMin);
-
     for(int i = 1; i <= numSteps; i++)
     {
       g.drawLine(x1, (float)y, x2, (float)y, 2.f);
@@ -346,7 +345,6 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     {
       g.drawLine(x1, (float)y, x2, (float)y, 2.f);
       numberString = valueToStringWithSign1(1.0-(i-1)*stepSize);
-      //g.drawText(numberjuce::String, (int) x2, (int) (y-8), 30, 16, Justification::centredLeft, false);
       drawBitmapFontText(g, (int)x1 + 28, (int)y, numberString, font,
         textColor, -1, Justification::centredLeft);
       y += dy;
@@ -364,18 +362,18 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     float y2  = (float)sideLevelMeter->getBottom();
     double x  = (float)leftLevelMeter->getX();
     double dx = stepSize * leftLevelMeter->getWidth() / (rangeMax - rangeMin);
-
-
     for(int i = 1; i <= numSteps; i++)
     {
       g.drawLine((float)x, y1, (float)x, y2, 2.f);
-      //numberString = valueToStringWithSign0(rangeMax-(i-1)*stepSize);
       numberString = valueToStringWithSign0(rangeMin + (i-1)*stepSize);
-      drawBitmapFontText(g, (int)x, (int)y1 - 12, numberString, font,
+      float s = 0.5 * (float) font->getTextPixelWidth(numberString);  // shift for text
+      drawBitmapFontText(g, (int) (x+s), (int)y1 - 12, numberString, font,
         textColor, -1, Justification::centredRight);
       x += dx;
 
     }
+
+
 
   }
 }
@@ -406,6 +404,11 @@ Ideas:
  nowhere. A horizontal one, however, could fit below.
 -Maybe don't put the ballistics adjustmenst onto the main GUI. Hide them behind a context menu.
 -Maybe get rid of the headline "Slot X - TrackMeter". It's a bit pointless and silly
+-Maybe measure also:
+ -spectral centroid, pitch (time averaged) - maybe only when it is determined that the signal has
+  a single pitch, loudness
+
+-Implement an octave-band analyzer - or better: let the user select the number of bands
 
 Bugs:
 -when playing notes with the sampler, it hickups on note-off
