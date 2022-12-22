@@ -328,7 +328,7 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     for(int i = 0; i < numSteps; i++)
     {
       float y = y0 + i*dy;
-      g.drawLine(x1, (float)y, x2, (float)y, 2.f);
+      g.drawLine(x1, y, x2, y, 2.f);
       numberString = valueToStringWithSign0(rangeMax-i*stepSize);
       drawBitmapFontText(g, (int)x1 - 8, (int)y, numberString, font,
         textColor, -1, Justification::centredRight);
@@ -344,7 +344,7 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     for(int i = 0; i < numSteps; i++)
     {
       float y = y0 + i*dy;
-      g.drawLine(x1, (float)y, x2, (float)y, 2.f);
+      g.drawLine(x1, y, x2, y, 2.f);
       numberString = valueToStringWithSign1(1.0-i*stepSize);
       drawBitmapFontText(g, (int)x1 + 28, (int)y, numberString, font,
         textColor, -1, Justification::centredLeft);
@@ -360,7 +360,7 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     for(int i = 0; i < numSteps; i++)
     {
       float x = x0 + i*dx;
-      g.drawLine((float)x, y1, (float)x, y2, 2.f);
+      g.drawLine(x, y1, x, y2, 2.f);
       numberString = valueToStringWithSign0(rangeMin + i*stepSize);
       float s = 0.5 * (float) font->getTextPixelWidth(numberString);  // shift for text
       drawBitmapFontText(g, (int) (x+s), (int)y1 - 12, numberString, font,
@@ -377,18 +377,16 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     for(int i = 0; i < numSteps; i++)
     {
       float x = x0 + i*dx;
-      g.drawLine((float)x, y1, (float)x, y2, 2.f);
+      g.drawLine(x, y1, x, y2, 2.f);
       numberString = valueToStringWithSign1(1.0-i*stepSize);
       float s = 0.5 * (float) font->getTextPixelWidth(numberString);
       drawBitmapFontText(g, (int) (x+s), (int)y2 + 12, numberString, font,
         textColor, -1, Justification::centredRight);
     }
-
-
-    // ...
-
-
   }
+
+  // ToDo:
+  // -Try to get rid of the duplication of the for-loops
 }
 
 void TrackMeterModuleEditor::timerCallback()
