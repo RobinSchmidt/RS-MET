@@ -60,7 +60,8 @@ MultiAnalyzer
  -Spectral view is unresponsive, laggy, unsmooth in VSTHost but also in standalone (debug) builds. 
   In Tracktion Waveform, a release-build seems to run smoothly. OK - standalone/release look kida 
   smooth except when the sound turns off - it looks like is has a peak-hold or something. Check 
-  that! But maybe it's the note-off that triggers some processing and bogs down the system?
+  that! But maybe it's the note-off that triggers some processing and bogs down the system? Maybe!
+  It happens also with TrackMeter!
  
  
 Fixed(?):

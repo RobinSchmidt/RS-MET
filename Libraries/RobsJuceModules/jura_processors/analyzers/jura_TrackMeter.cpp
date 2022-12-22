@@ -226,6 +226,8 @@ void TrackMeterModuleEditor::rButtonClicked(RButton* buttonThatWasClicked)
   // set the slider values (which also causes an update in the audio engine):
   riseSlider->setValue(tauRise, true);
   fallSlider->setValue(tauFall, true);
+
+  // Rise = 1 ms, Fall = 100 ms seems to be quite nice for a fast responding meter
 }
 
 void TrackMeterModuleEditor::paint(Graphics &g)
@@ -263,18 +265,18 @@ void TrackMeterModuleEditor::resized()
     h = riseSlider->getY()-y;
 
     // Set up labels:
-    leftLevelLabel->setBounds(   40, y+m,                           20, t    );
-    leftLevelMeter->setBounds(   40, leftLevelLabel->getBottom(),   t,  h-t*2);
-    rightLevelLabel->setBounds(  64, y+m,                           t,  t    );   // 64 = 40+24
-    rightLevelMeter->setBounds(  64, rightLevelLabel->getBottom(),  t,  h-t*2);
+    leftLevelLabel->setBounds(   40, y+m,                           t+m, t    );
+    leftLevelMeter->setBounds(   40, leftLevelLabel->getBottom(),   t,   h-t*2);
+    rightLevelLabel->setBounds(  64, y+m,                           t,   t    );   // 64 = 40+24
+    rightLevelMeter->setBounds(  64, rightLevelLabel->getBottom(),  t,   h-t*2);
 
-    midLevelLabel->setBounds(    96, y+m,                           t,  t    );   // 96 = 64+32
-    midLevelMeter->setBounds(    96, midLevelLabel->getBottom(),    t,  h-t*2);
-    sideLevelLabel->setBounds(  120, y+m,                           t,  t    );   // 120 = 96+24
-    sideLevelMeter->setBounds(  120, sideLevelLabel->getBottom(),   t,  h-t*2);
+    midLevelLabel->setBounds(    96, y+m,                           t,   t    );   // 96 = 64+32
+    midLevelMeter->setBounds(    96, midLevelLabel->getBottom(),    t,   h-t*2);
+    sideLevelLabel->setBounds(  120, y+m,                           t,   t    );   // 120 = 96+24
+    sideLevelMeter->setBounds(  120, sideLevelLabel->getBottom(),   t,   h-t*2);
 
-    correlationLabel->setBounds(152, y+m,                           t,  t    );   // 152 = 120 + 32
-    correlationMeter->setBounds(152, correlationLabel->getBottom(), t,  h-t*2);
+    correlationLabel->setBounds(152, y+m,                           t,   t    );   // 152 = 120 + 32
+    correlationMeter->setBounds(152, correlationLabel->getBottom(), t,   h-t*2);
 
     //y = correlationMeter->getBottom()+16;
   }
