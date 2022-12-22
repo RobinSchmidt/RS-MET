@@ -353,37 +353,35 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
   else
   {
     // Draw the scale for the level-meters:
-    float y1  = (float)leftLevelMeter->getY()-8;
-    float y2  = (float)sideLevelMeter->getBottom();
-    double x  = (float)leftLevelMeter->getX();
-    double dx = stepSize * leftLevelMeter->getWidth() / (rangeMax - rangeMin);
+    float y1 = (float)leftLevelMeter->getY()-8;
+    float y2 = (float)sideLevelMeter->getBottom();
+    float x0 = (float)leftLevelMeter->getX();
+    float dx = stepSize * leftLevelMeter->getWidth() / (rangeMax - rangeMin);
     for(int i = 0; i < numSteps; i++)
     {
+      float x = x0 + i*dx;
       g.drawLine((float)x, y1, (float)x, y2, 2.f);
       numberString = valueToStringWithSign0(rangeMin + i*stepSize);
       float s = 0.5 * (float) font->getTextPixelWidth(numberString);  // shift for text
       drawBitmapFontText(g, (int) (x+s), (int)y1 - 12, numberString, font,
         textColor, -1, Justification::centredRight);
-      x += dx;
     }
 
     // Draw the scale for the correlation-meter:
     y1       = (float)correlationMeter->getY();
     y2       = (float)correlationMeter->getBottom()+8;
-    x        = (float)correlationMeter->getX();
+    x0        = (float)correlationMeter->getX();
     stepSize = 0.2;
     dx       = stepSize * correlationMeter->getWidth() / 2.0;
     numSteps = roundToInt(2.0 / stepSize) + 1;
     for(int i = 0; i < numSteps; i++)
     {
+      float x = x0 + i*dx;
       g.drawLine((float)x, y1, (float)x, y2, 2.f);
       numberString = valueToStringWithSign1(1.0-i*stepSize);
       float s = 0.5 * (float) font->getTextPixelWidth(numberString);
       drawBitmapFontText(g, (int) (x+s), (int)y2 + 12, numberString, font,
         textColor, -1, Justification::centredRight);
-      x += dx;
-
-
     }
 
 
