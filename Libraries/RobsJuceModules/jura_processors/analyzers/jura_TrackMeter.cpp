@@ -374,6 +374,19 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     stepSize = 0.2;
     dx       = stepSize * correlationMeter->getWidth() / 2.0;
     numSteps = roundToInt(2.0 / stepSize) + 1;
+    for(int i = 1; i <= numSteps; i++)
+    {
+      g.drawLine((float)x, y1, (float)x, y2, 2.f);
+      numberString = valueToStringWithSign1(1.0-(i-1)*stepSize);
+      float s = 0.5 * (float) font->getTextPixelWidth(numberString);
+      drawBitmapFontText(g, (int) (x+s), (int)y2 + 12, numberString, font,
+        textColor, -1, Justification::centredRight);
+      x += dx;
+
+
+    }
+
+
     // ...
 
 
