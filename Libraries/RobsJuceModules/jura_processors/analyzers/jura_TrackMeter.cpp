@@ -277,12 +277,18 @@ void TrackMeterModuleEditor::resized()
 void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
 {
   juce::String numberString;
-  g.setColour(Colours::black);
+  //g.setColour(Colours::black);
   int i;
 
   const BitmapFontRoundedBoldA10D0* font = &BitmapFontRoundedBoldA10D0::instance;
 
-  // draw the scale for the level-meters:
+  juce::Colour textColor = getTextColour();
+  g.setColour(textColor);
+  // For the ticks. Maybe darken for bright-on-dark schemes and brighten for dark-on-bright schemes
+  // maybe have a function in widgetColourScheme tonedDown that darkens or brightens and can be used
+
+
+  // Draw the scale for the level-meters:
   float  x1       = (float) leftLevelMeter->getX()-8;
   float  x2       = (float) sideLevelMeter->getRight();
   double y        = (float) leftLevelMeter->getY();
@@ -290,21 +296,7 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
   double yStep    = stepSize * leftLevelMeter->getHeight() / (rangeMax - rangeMin);
   int    numSteps = roundToInt( (rangeMax-rangeMin) / stepSize ) + 1;
 
-  //juce::Colour textColor = Colours::grey;
-
-  //juce::Colour textColor = widgetColourScheme.text; // use getTextColor
-
-
-  juce::Colour textColor = getTextColour();
-  g.setColour(textColor);
-
-
-  // for the ticks - maybe darken for bright-on-dark schemes and brighten for dark-on-bright schemes
-  // maybe have a function in widgetColourScheme tonedDown that darkens or brightens and can be used
-  // 
-
-
-  for(i=1; i<=numSteps; i++)
+  for(i = 1; i <= numSteps; i++)
   {
     g.drawLine(x1, (float) y, x2, (float) y, 2.f); 
     numberString = valueToStringWithSign0(rangeMax-(i-1)*stepSize);
@@ -314,14 +306,14 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     y += yStep;
   }
 
-  // draw the scale for the correlation-meter:
+  // Draw the scale for the correlation-meter:
   x1       = (float) correlationMeter->getX();
   x2       = (float) correlationMeter->getRight()+8;
   y        = (float) correlationMeter->getY();
   stepSize = 0.2;
   yStep    = stepSize * correlationMeter->getHeight() / 2.0;
   numSteps = roundToInt( 2.0 / stepSize ) + 1;
-  for(i=1; i<=numSteps; i++)
+  for(i = 1; i <= numSteps; i++)
   {
     g.drawLine(x1, (float) y, x2, (float) y, 2.f);
     numberString = valueToStringWithSign1(1.0-(i-1)*stepSize);
@@ -334,10 +326,11 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
 
 void TrackMeterModuleEditor::timerCallback()
 {
-  if( trackMeterModuleToEdit == NULL )
+  if( trackMeterModuleToEdit == nullptr )
     return;
-  if( trackMeterModuleToEdit->wrappedTrackMeter == NULL )
+  if( trackMeterModuleToEdit->wrappedTrackMeter == nullptr )
     return;
+  // Maybe wrap into a function isNull or arePointersAssigned()
 
   SignalMeasures measures = trackMeterModuleToEdit->wrappedTrackMeter->getCurrentMeasurement();
 

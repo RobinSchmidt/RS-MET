@@ -58,7 +58,13 @@ public:
   TrackMeterModuleEditor(CriticalSection *newPlugInLock, 
     TrackMeterAudioModule* newTrackMeterAudioModule);
 
-  // callbacks:
+  // Inquiry:
+
+  /** Returns true, iff the meter is shown in vertical mode. The meter switches automatically 
+  between vertical and horizontal display modes based on the apsect ratio of the GUI editor. */
+  bool isVertical() const { return getHeight() < getWidth(); }
+
+  // Callbacks:
   virtual void rButtonClicked(RButton* buttonThatWasClicked);
   virtual void paint(Graphics &g);
   virtual void resized();
