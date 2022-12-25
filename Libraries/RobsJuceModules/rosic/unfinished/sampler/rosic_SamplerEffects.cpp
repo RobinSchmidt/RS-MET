@@ -611,6 +611,17 @@ void DspResourcePool::repositModulator(Processor* p)
 //=================================================================================================
 /*
 
+ToDo:
+
+-Make it possible to let the user adjust a parameter and have the effect to be immediately audible
+ not only on the next noteOn. 
+ -I think, we need to call Processor::updateCoeffs() on any such parameter change on all currently 
+  running effects. We need to loop through the activePlayers and then through their effect-chain 
+  and for each effect, figure out if it is affected by the parameter change and if so, call 
+  updateCoeffs() on it.
+ -This call will set dirty = false;  ...I guess that's OK but we need to make sure that this 
+  doesn't interfere with modulation system - probably not.
+
 Notes:
 
 Modulators should be stereo. Stereo LFOs should have a parameter for the phase offset between 

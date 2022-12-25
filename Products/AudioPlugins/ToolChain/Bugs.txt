@@ -64,6 +64,10 @@ MultiAnalyzer
   It happens also with TrackMeter!
  
  
+TrackMeter:
+-When adjusting the GUI size in Tracktion, the covering of the gradient with the black rectangle is
+ sometimes only partial. Some sort of rainbow-outline sometimes remains
+ 
 Fixed(?):
  
 Wavetable oscillator:

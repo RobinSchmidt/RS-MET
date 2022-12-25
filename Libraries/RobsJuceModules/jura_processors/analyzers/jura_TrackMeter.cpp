@@ -425,10 +425,12 @@ Ideas:
  -spectral centroid, pitch (time averaged) - maybe only when it is determined that the signal has
   a single pitch, loudness
 -Implement an octave-band analyzer - or better: let the user select the number of bands
+-Maybe allow the user to load a ColorMap
 
 Bugs:
 -when playing notes with the sampler, it hickups on note-off
 -VU and PPM buttons don't flash on click
--PPM button too far down
+-when rescaling, in some settings the black rectangle does not fully cover the gradient and we get
+ a sort of rainbow-outline for the meters
 
 */
