@@ -2706,11 +2706,12 @@ bool samplerDspChainTest()
   SVF svf;
   svf.setSampleRate(fs);
   svf.setFrequency(cutoff5);
+  //svf.setMode(SVF::LowpassMVS);
   float G = 1.f / sqrt(2.f);
   svf.setGain(G);
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(tgt[n]);
-  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, true);
 
   // ToDo: 
   // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
