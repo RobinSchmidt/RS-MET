@@ -2711,7 +2711,14 @@ bool samplerDspChainTest()
   svf.setGain(G);
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(tgt[n]);
-  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, true);
+  //ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, true);  // for debugging
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, false);
+
+  // When switching to the new Vicanek designs, this last test here fails. I've compared the biqud 
+  // coeffs during coeff calculation - they do match now. Formerly they didn't match to a 
+  // re-arrangement of the computations which apparently gave different rounding behavior. But this
+  // is fixed now and it still fails. 
+  // ToDo: make a simpler test using a single 2nd order filter with fc = 5000, fs = 44100
 
   // ToDo: 
   // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
@@ -3519,6 +3526,8 @@ bool samplerEffectsTest()
   // later move this into a (yet to be written) benchmark testbed
 
   // -Move this into some performance test function
+
+  ok &= samplerDspChainTest();    // redundant test to make it come first for easier debugging - remove, when done
 
 
   ok &= samplerFilterTest();      // tests the different filter modes

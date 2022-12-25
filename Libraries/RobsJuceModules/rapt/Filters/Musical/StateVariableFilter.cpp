@@ -186,7 +186,8 @@ void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
     //rsError("Not yet working");
     //R2 = 2*bandwidthToR(B);       // (R2 == 2*R == 1/Q) ....wrong?
     R2 = 1/G;
-    TPar w0 = TPar(2*PI) * fc/fs;
+    //TPar w0 = TPar(2*PI) * fc/fs;
+    TPar w0 = TPar(2*PI/fs) * fc;
     TPar b0, b1, b2, a1, a2;
     rsFilterDesignFormulas::mvLowpassSimple(w0, 1/R2, &b0, &b1, &b2, &a1, &a2);
     setupFromBiquad(b0, b1, b2, a1, a2);
