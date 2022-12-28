@@ -2162,6 +2162,9 @@ bool samplerFilterTest()
   noise = createColoredNoise(N, slope);   // maybe use a sawtooth wave instead
   //rsPlotVector(noise);
 
+  // test:
+  //cutoff = 5000;
+
   // Create and set up sampler engine:
   SE se;
 
@@ -2188,7 +2191,7 @@ bool samplerFilterTest()
     for(int n = 0; n < N; n++)
       tgt[n] = flt.getSample(noise[n]);
     se.setRegionSetting(0, 0, PST::filN_type, (float) sfzType, 1);
-    return testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-7f, -1, plot, plot);
+    return testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, plot, plot);
 
   };
   ok &= testAgainstOpf(flt.LOWPASS_IIT,  Type::lp_6, false);
@@ -2268,8 +2271,8 @@ bool samplerFilterTest()
 
 
   // in transition:
-  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);  // old
-  //ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, false); // new
+  //ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);  // old
+  ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, false); // new
   // In order to check the new implementation, the FDF::mvLowpassSimple(...) call in 
   // FilterCore::setupCutRes (rosic_SamplerEffectCores, line 347) needs to be uncommented. When 
   // doing so, the plots look very similar but one seems to be delayed by one sample. ToDo:
@@ -2699,26 +2702,53 @@ bool samplerDspChainTest()
   // default setting which means that it is effectively bypassed. For the added filter at index 5,
   // we don't specify the filter type in which case it should default to lpf_2p.
   float cutoff5 = 5000.f; 
+
   se.setRegionSetting(0, 0, PST::cutoffN, cutoff5, 5);
   ok &= se.getRegion(0, 0)->getNumProcessors() == 6;  // 5 filters + 1 waveshaper
+
+
+  //se.setRegionSetting(0, 0, PST::cutoffN, cutoff5, 4);   // test
+
+
   updateTgt();
   using SVF = RAPT::rsStateVariableFilter<float, float>;
   SVF svf;
   svf.setSampleRate(fs);
   svf.setFrequency(cutoff5);
-  //svf.setMode(SVF::LowpassMVS);
+  svf.setMode(SVF::LowpassMVS);
   float G = 1.f / sqrt(2.f);
   svf.setGain(G);
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(tgt[n]);
-  //ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, true);  // for debugging
-  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, false);
+  ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, true);  // for debugging
+  //ok &= testSamplerNote2(&se, 60.f, 127.f, tgt, tgt, 1.e-6f, -1, false);
 
   // When switching to the new Vicanek designs, this last test here fails. I've compared the biqud 
   // coeffs during coeff calculation - they do match now. Formerly they didn't match to a 
   // re-arrangement of the computations which apparently gave different rounding behavior. But this
   // is fixed now and it still fails. 
   // ToDo: make a simpler test using a single 2nd order filter with fc = 5000, fs = 44100
+  // OK - it seems tio be related to the dummy filter that is supposed to be in bypass mode but
+  // apparently has some tiny effect. If we insert the filter as 4th, it seems to work. The plot 
+  // looks right then (but the se.getRegion(0, 0)->getNumProcessors() == 6 will fail)
+  // -> check if filter is in bypass by default ...but why would it matter whether we use RBJ or
+  // MVS design in this context? Maybe RBJ design produces bipass coeffs when fc = fs/2?
+  // OK - Yes! That seems to be it! Apparently, a 2-pole LPF is the default setting and fc = fs/2
+  // is the default cutoff. And in the case of RBJ, these settings produce bypass coeffs whereas in
+  // MVS designs, there's an attenuation of aounr -3.01 dB at fs/2? So, with MVS design, the 4th 
+  // "dummy" filter which is supposed to be neutral is only almost neutral. 
+  // OK - so how do we sole this? Switch the default mode of the filter from lpf_2pole to bypass?
+  // That may thwart patch compatibility. Live with it an adjust the unit test have no dummy 
+  // filter? Tweak the MVS design to produce a bypass filter when fc = fs/2. But we would actually
+  // like to allow cutoffs above fs/2, so that doesn't seem to be attractive.
+  // OK - yes - as per the sfz 1.0 spec, lpf_2pole is the default mode and "filter disabled" is the
+  // default cutoff frequency (as a special value) and the range is 0...fs/2. I'm really not sure 
+  // how to deal with that - maybe use some special value like inf or NaN for representing 
+  // "disabled". Negative values should also be valid settings, I think. And I also think, we 
+  // should allow cutoffs > fs/2. Ideally -inf...+inf should be handled as valid...soo yeah...maybe
+  // us NaN for representing "filter disabled". It's dirty and hacky but maybe the only way to be
+  // pacth compatible with sfz-patches that don't specify fil_type and/or cutoff and at the same
+  // time allow for our extended range of cutoff frequencies
 
   // ToDo: 
   // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
@@ -3527,7 +3557,7 @@ bool samplerEffectsTest()
 
   // -Move this into some performance test function
 
-  ok &= samplerDspChainTest();    // redundant test to make it come first for easier debugging - remove, when done
+  //ok &= samplerDspChainTest();    // redundant test to make it come first for easier debugging - remove, when done
 
 
   ok &= samplerFilterTest();      // tests the different filter modes
