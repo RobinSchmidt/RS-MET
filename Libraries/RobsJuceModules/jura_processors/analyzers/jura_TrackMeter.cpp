@@ -426,6 +426,8 @@ Ideas:
   a single pitch, loudness
 -Implement an octave-band analyzer - or better: let the user select the number of bands
 -Maybe allow the user to load a ColorMap
+-Maybe rename it to LevelMeter. Fits better. We then need to bump up the patch format of ToolChain
+ and implement a conversion of older patches that contain "TrackMeter"
 
 Bugs:
 -when playing notes with the sampler, it hickups on note-off

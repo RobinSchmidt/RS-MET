@@ -742,9 +742,15 @@ void ToolChain::populateModuleFactory()
 #ifdef _MSC_VER
   f.registerModuleType([](CS cs)->AM { return new LibertyAudioModule(cs);       }, s, "Liberty");
 #endif
+
+  // ToDo:
+  // -Add a category "Repair" or "Correctors/Correction" or "Restoration" which should contain 
+  //  things like NoiseGate, DeEsser, NoiseReduction, DeHum, DeClicker, DeFlutter, DeClipper, 
+  //  AutoTune, ...
+
 }
 
-// The current release version includes:
+// The current release version (of Christmas 2017) includes:
 // Instruments:
 //   AcidDevil
 //   Straightliner
