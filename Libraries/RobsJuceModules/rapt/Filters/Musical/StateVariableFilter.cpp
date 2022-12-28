@@ -188,9 +188,27 @@ void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
     TPar b0, b1, b2, a1, a2;
     rsFilterDesignFormulas::mvLowpassSimple(w0, G, &b0, &b1, &b2, &a1, &a2);
     setupFromBiquad(b0, b1, b2, a1, a2);
+    // Needs tests - seems to lead to unstable filters -  ...fixed?
   }
   break;
-  // Needs tests - seems to lead to unstable filters -  
+  case HighpassMVS:
+  {
+    R2 = 1/G;
+    TPar w0 = TPar(2*PI/fs) * fc;
+    TPar b0, b1, b2, a1, a2;
+    rsFilterDesignFormulas::mvHighpassSimple(w0, G, &b0, &b1, &b2, &a1, &a2);
+    setupFromBiquad(b0, b1, b2, a1, a2);
+  }
+  break;
+  case BandpassSkirtMVS:
+  {
+    R2 = 1/G;
+    TPar w0 = TPar(2*PI/fs) * fc;
+    TPar b0, b1, b2, a1, a2;
+    rsFilterDesignFormulas::mvBandpassSimple(w0, G, true, &b0, &b1, &b2, &a1, &a2);
+    setupFromBiquad(b0, b1, b2, a1, a2);
+  }
+  break;
 
 
 

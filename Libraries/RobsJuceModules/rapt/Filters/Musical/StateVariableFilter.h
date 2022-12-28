@@ -61,7 +61,8 @@ public:
     // UNDER CONSTRUCTION:
     // Martin Vicanek's hybrid MZT/manitude-matching designs
     LowpassMVS,      // The S stands for "simple", the cheaper design
-
+    HighpassMVS, 
+    BandpassSkirtMVS, 
 
 
     MORPH_LP_BP_HP,  // under construction

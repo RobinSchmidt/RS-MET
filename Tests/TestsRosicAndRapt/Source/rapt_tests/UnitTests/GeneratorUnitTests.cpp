@@ -2244,11 +2244,16 @@ bool samplerFilterTest()
     float resoAmp = RAPT::rsDbToAmp(resoGain);
     switch(svfMode)
     {
-    case SVF::LOWPASS:        Q = BWC::lowpassResoGainToQ( resoAmp); break;   // old
-    case SVF::LowpassMVS:     Q = BWC::lowpassResoGainToQ( resoAmp); break;   // new - we can have both
+    // old:
+    case SVF::LOWPASS:        Q = BWC::lowpassResoGainToQ( resoAmp); break;
     case SVF::HIGHPASS:       Q = BWC::lowpassResoGainToQ( resoAmp); break;
     case SVF::BANDPASS_SKIRT: Q = BWC::bandpassResoGainToQ(resoAmp); break;
     case SVF::BANDREJECT:     Q = BWC::bandpassResoGainToQ(resoAmp); break;
+
+    // new - we can have both (old and new) uncommented:
+    case SVF::LowpassMVS:       Q = BWC::lowpassResoGainToQ( resoAmp); break;
+    case SVF::HighpassMVS:      Q = BWC::lowpassResoGainToQ( resoAmp); break; 
+    case SVF::BandpassSkirtMVS: Q = BWC::bandpassResoGainToQ(resoAmp); break;
     }
 
     svf.setMode(svfMode);
@@ -2279,9 +2284,11 @@ bool samplerFilterTest()
   // implement a unit test that tests the biquad -> svf conversion for that setting (fc = 1000, 
   // fs = 44100, Q = sqrt(0.5).
 
+  //ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  cutoff, reso, 1.e-5f, false); // old
+  ok &= testAgainstSvf(svf.HighpassMVS,    Type::hp_12,  cutoff, reso, 1.e-5f, false); 
 
 
-  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  cutoff, reso, 1.e-5f, false);
+
   ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, cutoff, reso, 1.e-5f, false);
   //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, true);
   // BRF fails! they look very similar though. Maybe there are different definitions in place for
