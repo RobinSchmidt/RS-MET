@@ -376,12 +376,12 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
 
   case Type::BQ_Bandpass_Skirt: 
   {
-    BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
-    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); 
+    //BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
+    //i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); 
     
-    //FDF::mvBandpassSimple(w, Q, true, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
-    //i.bqd.a1 *= -1;
-    //i.bqd.a2 *= -1;
+    FDF::mvBandpassSimple(w, Q, true, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
+    i.bqd.a1 *= -1;
+    i.bqd.a2 *= -1;
     
     return;
   }
