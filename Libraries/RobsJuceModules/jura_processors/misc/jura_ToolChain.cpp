@@ -1044,12 +1044,18 @@ void ToolChainEditor::rButtonClicked(RButton* b)
   if(b == screenShotButton)
   {
     juce::Rectangle<int> areaToGrab(0, 0, 200, 100);  // preliminary
+    if(activeEditor != nullptr)
+      areaToGrab = activeEditor->getBounds();
+
     juce::Image shot = createComponentSnapshot(areaToGrab, true);
 
-    // wrap into saveImageToPng(shot)
-    FileOutputStream stream(juce::File("C:/Temp/Test.png"));
-    PNGImageFormat pngWriter;
+    // wrap into saveImageToPng(shot):
+    juce::FileOutputStream stream(juce::File("C:/Temp/Test.png"));
+    juce::PNGImageFormat pngWriter;
     pngWriter.writeImageToStream(shot, stream);
+    // It should also automatically modify the filename, if a file with given name already exists
+    // It doesn't seem to overwrite the existing file - we manually need to delete it before taking
+    // a new screenshot
   
 
 
