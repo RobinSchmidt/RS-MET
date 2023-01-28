@@ -779,6 +779,7 @@ ToolChainEditor::ToolChainEditor(jura::ToolChain *moduleChainToEdit)
   addWidget( screenShotButton = new RClickButton("Shot") );
   screenShotButton->setDescription("Take screenshot of the active module");
   screenShotButton->setDescriptionField(descriptionField);
+  screenShotButton->addRButtonListener(this);
 
   chain = moduleChainToEdit;
   setHeadlinePosition(TOP_LEFT);
@@ -1036,6 +1037,24 @@ void ToolChainEditor::paintOverChildren(Graphics& g)
   juce::Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
   */
+}
+
+void ToolChainEditor::rButtonClicked(RButton* b)
+{
+  if(b == screenShotButton)
+  {
+    juce::Rectangle<int> areaToGrab(0, 0, 200, 100);  // preliminary
+    juce::Image shot = createComponentSnapshot(areaToGrab, true);
+  
+
+
+    // https://docs.juce.com/master/classComponent.html#a275e46e5a8147f89c142c91ba5c793a5
+    // https://forum.juce.com/t/createcomponentsnapshot-of-transparent-desktop-component/9908
+    // https://stackoverflow.com/questions/7292757/how-to-get-screenshot-of-a-window-as-bitmap-object-in-c
+    int dummy = 0;
+  }
+  else
+    AudioModuleEditor::rButtonClicked(b);
 }
 
 void ToolChainEditor::rComboBoxChanged(RComboBox* box)

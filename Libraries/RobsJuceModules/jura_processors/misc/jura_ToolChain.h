@@ -292,17 +292,17 @@ public:
   void updateActiveSelector();
 
   // overrides:
-  virtual void mouseDown(const MouseEvent &e) override;
-  virtual void resized() override;
-  virtual void paintOverChildren(Graphics& g) override;
-  virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
-  virtual void changeListenerCallback(ChangeBroadcaster *source) override;
-  virtual void audioModuleWasAdded(ToolChain *chain, 
+  void mouseDown(const MouseEvent &e) override;
+  void resized() override;
+  void paintOverChildren(Graphics& g) override;
+  void rButtonClicked(RButton *b) override;
+  void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
+  void changeListenerCallback(ChangeBroadcaster *source) override;
+  void audioModuleWasAdded(ToolChain *chain, 
     AudioModule *module, int index) override;
-  virtual void audioModuleWillBeDeleted(ToolChain *chain, 
-    AudioModule *module, int index) override;
-  virtual void audioModuleWasReplaced(ToolChain *chain, 
-    AudioModule *oldModule, AudioModule *newModule, int index) override;
+  void audioModuleWillBeDeleted(ToolChain *chain, AudioModule *module, int index) override;
+  void audioModuleWasReplaced(ToolChain *chain, AudioModule *oldModule, AudioModule *newModule, 
+    int index) override;
 
 
 protected:
@@ -333,7 +333,7 @@ protected:
   int leftColumnWidth = 160; // for the chainer widgets
   int bottomRowHeight =  16; // for infoline, link, etc.
 
-  jura::RClickButton *screenShotButton;
+  jura::RClickButton *screenShotButton = nullptr;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChainEditor)
