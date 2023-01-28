@@ -333,6 +333,9 @@ protected:
   int leftColumnWidth = 160; // for the chainer widgets
   int bottomRowHeight =  16; // for infoline, link, etc.
 
+  jura::RClickButton *screenShotButton;
+
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChainEditor)
 };
 

@@ -773,6 +773,13 @@ ToolChainEditor::ToolChainEditor(jura::ToolChain *moduleChainToEdit)
   : AudioModuleEditor(moduleChainToEdit)
 {
   ScopedLock scopedLock(*lock);
+
+  // Maybe factor out into a createWidgets method, maybe wrap int compile-time conditional like
+  // #ifdef JUCE_DEBUG or RS_DEBUG_WIDGETS ...we'll see... :
+  addWidget( screenShotButton = new RClickButton("Shot") );
+  screenShotButton->setDescription("Take screenshot of the active module");
+  screenShotButton->setDescriptionField(descriptionField);
+
   chain = moduleChainToEdit;
   setHeadlinePosition(TOP_LEFT);
   numHueOffsets = 2;
@@ -963,6 +970,11 @@ void ToolChainEditor::resized()
   // slot when the slots are numbered - especially if there are several slots with the same type
   // of module - in the modualtion setup, we may see Slot7-TriSawModulator, Slot8-TriSawModulator, 
   // etc. and to figure out which is which, we may have to actually count slots
+
+
+  y += dy;
+  screenShotButton->setBounds(margin, y+margin, 32, 16); // preliminary
+
 
   // set up bounds of the editor for the active module:
   if(activeEditor != nullptr){
