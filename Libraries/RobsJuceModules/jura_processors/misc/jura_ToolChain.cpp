@@ -1045,6 +1045,11 @@ void ToolChainEditor::rButtonClicked(RButton* b)
   {
     juce::Rectangle<int> areaToGrab(0, 0, 200, 100);  // preliminary
     juce::Image shot = createComponentSnapshot(areaToGrab, true);
+
+    // wrap into saveImageToPng(shot)
+    FileOutputStream stream(juce::File("C:/Temp/Test.png"));
+    PNGImageFormat pngWriter;
+    pngWriter.writeImageToStream(shot, stream);
   
 
 
