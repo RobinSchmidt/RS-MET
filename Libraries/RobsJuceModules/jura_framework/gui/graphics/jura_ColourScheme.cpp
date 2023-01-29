@@ -194,8 +194,12 @@ void PlotColourScheme::updateColours()
       outlineAHSL.setLuminance(    0.5);
       textAHSL.setLuminance(       0.8125);
       axesAHSL.setLuminance(       0.8125);
-      coarseGridAHSL.setLuminance( 0.3125);
-      fineGridAHSL.setLuminance(   0.1875);
+
+      //coarseGridAHSL.setLuminance( 0.3125);  // too dark
+      //fineGridAHSL.setLuminance(   0.1875);  // too dark
+      coarseGridAHSL.setLuminance( 0.5);
+      fineGridAHSL.setLuminance(   0.3125);
+
       //curvesAHSL.setLuminance(     1.f);
       curvesAHSL.setLuminance(     0.875f);
       curvesAHSL.setAlpha(         0.8125f);

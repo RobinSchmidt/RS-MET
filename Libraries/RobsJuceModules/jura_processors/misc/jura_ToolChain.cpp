@@ -780,6 +780,7 @@ ToolChainEditor::ToolChainEditor(jura::ToolChain *moduleChainToEdit)
   screenShotButton->setDescription("Take screenshot of the active module");
   screenShotButton->setDescriptionField(descriptionField);
   screenShotButton->addRButtonListener(this);
+  screenShotButton->setVisible(false);  // comment for taking screenshots
 
   chain = moduleChainToEdit;
   setHeadlinePosition(TOP_LEFT);
