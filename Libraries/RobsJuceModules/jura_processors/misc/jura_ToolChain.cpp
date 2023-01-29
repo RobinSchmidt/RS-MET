@@ -1175,6 +1175,9 @@ ToDo:
   more info like he current BPM setting (as received from the host or set up by the user). a 
   flashlight for clock/beat (like my JX-305), last received event, number of active notes, a button
   for "panic" (i.e. MIDI reset), etc.
+ -The gridlines are almost invisible in my current favorite color-scheme. They become visible when 
+  reducing the gamma. Try it with the envelope generator. The frequency plots have gridlines at
+  strange frequencies - go back to 250, 500, 1k, 2k, etc. as we had formerly.
 -FuncShaper: have a DryDelay parameter - mostly for compensating the latency of the AA filter but 
  may be an interesting effect as well
 -Let ToolChain host plugins. I'm specifically interested in hosting APE and a modular (sub)host. 
