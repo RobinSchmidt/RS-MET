@@ -980,6 +980,17 @@ void eigenstuff()
   // -a matrix A is invertible, iff 0 is not an eigenvalue (Ahrens, 655)
   // -the dimensionality of an eigenspace to an eigenvalue x_i has a dimensionality of at least
   //  1 and at most the multiplicity (as root of the characteristic polynomial) of x_i
+
+  // ToDo:
+  // -Figure out use cases and implement 
+  //  https://en.wikipedia.org/wiki/Proper_orthogonal_decomposition
+  //  ...Google says, it's the same as PCA (principle component analysis) but for time-series data
+  //  as opposed to random vector data. Figure out relation to SVD (singular value decomposition). 
+  //  See also:
+  //  https://www.youtube.com/watch?v=axfUYYNd-4Y
+  //  https://www.youtube.com/watch?v=OhyksL-1vew
+  // -Maybe apply these techniques to results of simualtions of the 2D wave-equation and/or maybe
+  //  Navier-Stokes
 };
 
 

@@ -2287,6 +2287,30 @@ void hilbertCurve()
   plt.addCommand("set size square");  // set aspect ratio to 1:1
   plt.plot();
 
+  // ToDo:
+  // -Plot x- and y-coordinate seperately as "time-signal".
+  // -Plot numerical derivatives - maybe up to 4th. The 1st will probably look like a sort of 
+  //  fractal delta-function comb, the 2nd a bipolar version of it - and then?
+
+  // Ideas:
+  // -Is it possible to mathematically define a smooth Hilbert curve by using a smooth crossfade
+  //  function between the segments (see research codebase for smooth crossfade). If so, what can
+  //  we do to it with differential geometry? Maybe actually give analytic formulas for 
+  //  derivatives?
+  // -Maybe try to extend the definition of a derivative that can be applied also at corners. 
+  //  Maybe take the average of left and right sided limit. Maybe include the function value in the
+  //  average as well ...wait - does that even make sense? maybe not. Maybe at discontinuities take 
+  //  a secant instead of a tangent - but then we have a finite stepsize. Nah - average between 
+  //  left and right limit seems to make most sense.
+  // -In general for fractal curves: When we try to measure their length, we'll get infinity 
+  //  because in the limiting process as the number of refinement steps goes to infinity, the 
+  //  length of the approximating curves diverges. That can be interpreted as: "length" is not the
+  //  appropriate measure to characterize the "size" of the object. Neither is "area" because that
+  //  would (in many cases) be zero. It's something in between. I think, the Hilbert-curve is 
+  //  actually an exception to this and actually has nonzero area because its an area-filling curve 
+  //  (it has a fractal dimension of 2). ...figure out in more detail how this idea of fractal 
+  //  dimension works...
+
   // see:
   // https://www.reddit.com/r/visualizedmath/comments/7xtxgb/hilbert_curve/
   // http://www4.ncsu.edu/~njrose/pdfFiles/HilbertCurve.pdf
