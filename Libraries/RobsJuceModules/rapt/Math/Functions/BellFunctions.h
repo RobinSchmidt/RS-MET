@@ -27,17 +27,20 @@ public:
   f'''(0) = 0 and f'''(1) = 0. */
   static T heptic(T x);
 
-  /** Implements the one-dimensional bump function which is both smooth (in the sense of having 
-  continuous derivatives of all orders everywhere) and compactly supported. Its defined piecewise 
-  as f(x) = exp(-1/(1-x^2)) for x in (-1,1) and 0 outside this finite interval. see:
+  /** Implements the one-dimensional bump function which is both smooth and compactly supported. 
+  Smooth means that is infinitely often differentiable. Compactly supported meas that it is nonzero
+  only inside a finite interval (here in -1..+1). It's defined piecewise as f(x) = exp(-1/(1-x^2)) 
+  for x in (-1,1) and 0 outside (-1,1). see:
   https://en.wikipedia.org/wiki/Bump_function 
   https://en.wikipedia.org/wiki/Distribution_(mathematics)#Basic_idea  */
   static T bump(T x);
 
-  /** Generalization of the bump function containing a parameter p that replaces
-  f(x) = exp(-1/(1-x^2)) by f(x) = exp(-1/(1-|x|^p)) in the interval (-1,1).
-  ..is this still smooth (i.e. infinitely differentiable) at -1 and +1?  */
+  /** Generalization of the bump function that replaces x^2 by |x|^p containing a parameter p, i.e.
+  f(x) = exp(-1/(1-x^2)) by f(x) = exp(-1/(1-|x|^p)) in the interval (-1,1). */
   static T bump(T x, T p);
+  // ToDo: 
+  // -Document what the parameter p does intuitively. It somehow controls the shape/transition. 
+  // -Figure out and document, for what values of p the function f is still smooth at -1 and +1.
 
 };
 

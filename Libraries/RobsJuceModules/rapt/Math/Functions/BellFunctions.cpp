@@ -53,6 +53,9 @@ T rsPositiveBellFunctions<T>::bump(T x)
   // hmm...only in terms of a series - but maybe that's good enough
   // the derivative is also interesting - maybe for use as a smooth sawtooth wave:
   // http://www.wolframalpha.com/input/?i=derivative+of+exp(-1%2F(1-x%5E2))
+
+  // Derivation of a recursion of for the derivatives of e^(-1/x) 
+  // https://www.youtube.com/watch?v=tvCWi1cCqYM
 }
 
 template<class T>
@@ -105,3 +108,28 @@ void rsParametricBellFunction<T>::setPrototypeBell(T (*newFunction)(T))
 {
   bell = newFunction;
 }
+
+
+/*
+
+
+Ideas for other (roughly) bell-shaped functions:
+
+f = (sech(x))^a       sech is 1/cosh.
+g = exp(-x)           for reference in plot, should approach f for x -> inf when a=1
+h = (f-g)/(f+g)       difference between f and g, renormalized by sum
+  -> approaches 1/3 for a=1, 1 for a < 1, -1 for a > 1
+  https://www.desmos.com/calculator/di1eccbwuk
+  https://www.desmos.com/calculator/kwjphmhlcd (better)
+  https://www.wolframalpha.com/input?i=derivative+of+tanh%28x%29
+  -> f for a=1 is the derivative of tanh and gives a nice, smooth bell shape that falls off like 
+  e^(-x) when a=1, i.e. has fatter tails than a Gaussian. The h function might actually be useful 
+  as well (maybe it should be shifted up by 1). With the parameter a, we can fade between sigmoid 
+  and bell shapes with asymmetric/skewed bells in between. f/g is also interesting. Maybe plot f 
+  against a Gaussian bell to see the difference in tail behavior.
+
+
+
+
+
+*/

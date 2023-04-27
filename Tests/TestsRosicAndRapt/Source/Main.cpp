@@ -546,7 +546,7 @@ int main(int argc, char* argv[])
   //parametricSigmoid2();
   //quinticParametricSigmoid();
   //septicParametricSigmoid();
-  //saturator();
+  saturator();
   //sigmoidScaleAndShift();
   //quarticMonotonic();
   //sigmoidPrototypes();

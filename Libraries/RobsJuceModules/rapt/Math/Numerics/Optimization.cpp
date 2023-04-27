@@ -58,3 +58,23 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w)
   for(i = 0; i < Nv; i++)
     v[i] = x[2*i];
 }
+
+//=================================================================================================
+/*                                          Ideas
+
+Implement this:
+https://www.youtube.com/watch?v=j29rVHCpRUY  Minimax Approximation and the Exchange Algorithm
+-For the initial guess, maybe start with equidistant or - better - Chebychev nodes or somehow use a
+ least-squares solution and find the points of max error of it.
+-Finding the max-error position(s) may itself be a root-finding problem (a case for 
+ Newton-iteration?)
+-Maybe exchanging multiple reference points for actual max-error points per step at once could lead
+ to faster overall convergence? Experiment a bit with that.
+
+
+
+
+
+
+
+*/

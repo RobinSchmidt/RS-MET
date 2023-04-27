@@ -331,6 +331,14 @@ void saturator()
 
   // The sixtic curve looks (and sounds) more similar to the cubic one instead. The additionl
   // smoothness does does really pay off sonically - quartic seems to be the sweet spot.
+
+  // Ideas for other waveshaping functions (not necessarily sigmoid):
+  // -f(x) = x^(2*n+1) / (1 + x^(2*n))
+  //  https://www.desmos.com/calculator/vcij6pvtzq
+  //  n < 0: linear around 0 (with unit slope), squashes down to zero towards +-inf
+  //  n = 0: linear (with slope 1/2 -> fix that!)
+  //  n > 0: squash around zero, asymptotically linear (with unit slope)
+  //  -Try fracctional n, maybe needs to insert abs() in denominator to avoid singularity
 }
 
 void sigmoidScaleAndShift()
