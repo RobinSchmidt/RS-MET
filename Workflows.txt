@@ -62,6 +62,27 @@ Testing ToolChain:
 ---------------------------------------------------------------------------------------------------
 Update to a new JUCE version:
 
+---------------------------------------------------------------------------------------------------
+Managing the repository (plan - not yet realized):
+
+There should be 4 branches with varying levels of maturity vs preliminarity
+
+release:
+-Should contain the version of the code from the latest official release.
+-Should build on all target platforms in Debug and Release mode without compiler warnings.
+-Code should be thoroughly tested. All unit tests must pass. All performance tests must produce 
+ reasonably good results.
+
+master:
+-Should build on all target platforms in Debug and Release mode.
+-Should be reasonably tested and debugged.
+
+develop:
+-Should build on Windows in Visual Studio and XCode in macOS in Debug and Release mode.
+
+work:
+-Should build on Windows in Visual Studio in Debug mode (the primary dev environment).
+
 
 
 ---------------------------------------------------------------------------------------------------
