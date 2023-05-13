@@ -1,4 +1,4 @@
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 Running tests and experiments:
 
 Open: TestsRosicAndRapt.sln
@@ -18,7 +18,7 @@ Note that on the Mac, the created files end up in the user's home folder ("rob" 
 when TestsRosicAndRapt is executed directly (e.g. with double-click from Finder). On the other 
 hand, when executed from Xcode (e.g. via the "Play" button), they end up in the in build/Debug.
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 Running the unit tests for JURA:
 
 Open: TestAppJURA.sln
@@ -27,7 +27,7 @@ in:   RS-MET\Products\Applications\TestAppJURA
 ...tbc...
 
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 Writing APE Scripts:
 
 Open the JUCE PluginHost, for example, using AudioPluginHost.exe from 
@@ -55,14 +55,14 @@ recognize external changes.
 
 
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 Testing ToolChain:
 
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 Update to a new JUCE version:
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 Managing the repository (plan - not yet realized):
 
 There should be 4 branches with varying levels of maturity vs preliminarity
@@ -85,7 +85,7 @@ work:
 
 
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 My Programming Environment prefs:
 
 My primary development environment is Microsoft Visual Studio running on a windows machine. On mac,
@@ -130,7 +130,7 @@ used which can add that behavior to any window. This is useful, for example, for
 reader open above the main IDE (I use pdf xchange viewer for that).
 
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 ToDo: 
 git: branch,merge,push,pull using GitHub DeskTop and TortoiseGit
 github: create discussions,issues,projects,etc.
@@ -151,7 +151,7 @@ https://cppcheck.sourceforge.io/
 set up jupyter notebook for c++:
 https://learnopencv.com/xeus-cling-run-c-code-in-jupyter-notebook/
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 Notes:
 
 Fonts: to find a good font, go here: https://www.programmingfonts.org/, my favorites from there:
