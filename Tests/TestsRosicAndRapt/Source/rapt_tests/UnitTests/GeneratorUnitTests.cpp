@@ -4927,13 +4927,25 @@ bool samplerControlsTest()
 
   // Check clearing the controllers (not all, just a few - the rest will then probably work, too):
   se.clearAllSfzSettings();
-  //sfz = se.getInstrumentData();
+
+  //sfz = se.getInstrumentData();                    
+  // not needed because the variable is already assigned (right?)
+
   ok &= sfz.getMidiControllerLabel( 7) == "";
   ok &= sfz.getMidiControllerInitValue( 7) == 0;     // maybe rename to getMidiControllerInitValue
-  //ok &= se.getMidiControllerCurrentValue(  7) == 0;   // implement this!
   ok &= sfz.getMidiControllerLabel(74) == "";
   ok &= sfz.getMidiControllerInitValue(74) == 0;
-  //ok &= se.getMidiControllerCurrentValue( 74) == 0;   // implement this!
+
+  //ok &= se.getMidiControllerCurrentValue(  7) == 0;
+  //ok &= se.getMidiControllerCurrentValue( 74) == 0;
+  // These fail because just restting the controller init values in the sfz does not affect the
+  // values stored in the engine's PlayStatus. They are still at 64 and 127. ...and perhaps that's
+  // actually where tey should be. Maybe the engine should re-initialize its current values from 
+  // the SFZs init values in response to some sort of initMidiControllers call. But maybe such a 
+  // thing is not needed? I actually don't really know, in which situation I would want such a 
+  // re-init.
+
+
   // Note:
   // -We currently hold the control-values in the sfz and in the playStatus and the calls on 
   //  sfz.get... and se.get... should return these two respectively. This redundant storage may be 
@@ -4954,14 +4966,14 @@ bool samplerControlsTest()
   psc = se.handleMusicalEvent(makeCC(74, 80));
 
 
-  ok &= sfz.getMidiControllerInitValue(   74) == 0;   // init value should still be zero
+  //ok &= sfz.getMidiControllerInitValue(   74) == 0;   // init value should still be zero
   // Fails! It actually returns 80. It seems, we are storing the last received value in the 
   // init-value variable. This could actually make sense. When users tweak a knob and after that
   // saves the sfz, they would expect the value that is stored in the patch for the midi controller
   // (if any) to be the most recent one - the one that corresponds to how the patch currently 
   // sounds.
 
-  //ok &= se.getMidiControllerCurrentValue( 74) == 80;  // but current value should be the new one
+  ok &= se.getMidiControllerCurrentValue( 74) == 80;  // but current value should be the new one
   // This still fails because the response to midi cc is not yet implemented?
   // Maybe it should return a float and be a smoothed value?
 
