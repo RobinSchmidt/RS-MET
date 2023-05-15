@@ -628,18 +628,19 @@ public:
   // before
 
 
-  RAPT::rsUint8 getMidiControllerInitValue(int i) const 
-  { 
-    if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return 0; }
-    return midiCC_values[i]; 
-  }
-
+  /** @see: setMidiControllerLabel */
   const std::string& getMidiControllerLabel(int i) const 
   { 
     if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return ""; }
     return midiCC_labels[i]; 
   }
 
+  /** @see setMidiControllerInitValue */
+  RAPT::rsUint8 getMidiControllerInitValue(int i) const 
+  { 
+    if(i < 0 || i >= 128) { RAPT::rsError("MIDI CC index out of range"); return 0; }
+    return midiCC_values[i]; 
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -657,10 +658,21 @@ public:
 
   bool setupControls(const std::string& str);
 
+
+  /** Sets the label for the MIDI controller with given index. This can be shown by the DAW or on
+  on the "Play" page of the sampler GUI. Corresponds to sfz opcode label_ccN. 
+  See: https://sfzformat.com/opcodes/label_ccN */
   void setMidiControllerLabel(int index, const std::string& newLabel);
 
+  /** Sets the initial value for the MIDI controller with given index. This is the value the 
+  controller will have when the instrument is initially loaded. Corresponds to the sfz opcode 
+  set_ccN. See: https://sfzformat.com/opcodes/set_ccN */
   void setMidiControllerInitValue(int index, int newValue);
-
+  // During performance, the current value of the controllser may change. Should we also keep a 
+  // variable here for this current value? But maybe ths current value does not belong into the 
+  // class SfzInstrument but into class SamplerEngine. There, we actually already have a function
+  // getMidiControllerCurrentValue for that purpose. The idea is that the current value will be 
+  // affected by incoming MIDI CC events while the initial value won't.
 
 
 

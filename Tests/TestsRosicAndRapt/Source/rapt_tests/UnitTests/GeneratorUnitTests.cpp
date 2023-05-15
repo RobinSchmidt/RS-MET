@@ -4930,10 +4930,10 @@ bool samplerControlsTest()
   //sfz = se.getInstrumentData();
   ok &= sfz.getMidiControllerLabel( 7) == "";
   ok &= sfz.getMidiControllerInitValue( 7) == 0;     // maybe rename to getMidiControllerInitValue
-  //ok &= se.getMidiControllerValue(  7) == 0;   // implement this!
+  //ok &= se.getMidiControllerCurrentValue(  7) == 0;   // implement this!
   ok &= sfz.getMidiControllerLabel(74) == "";
   ok &= sfz.getMidiControllerInitValue(74) == 0;
-  //ok &= se.getMidiControllerValue( 74) == 0;   // implement this!
+  //ok &= se.getMidiControllerCurrentValue( 74) == 0;   // implement this!
   // Note:
   // -We currently hold the control-values in the sfz and in the playStatus and the calls on 
   //  sfz.get... and se.get... should return these two respectively. This redundant storage may be 
@@ -4952,6 +4952,19 @@ bool samplerControlsTest()
   // Send a CC74 of value 80 to the engine:
   SE::PlayStatusChange psc;
   psc = se.handleMusicalEvent(makeCC(74, 80));
+
+
+  ok &= sfz.getMidiControllerInitValue(   74) == 0;   // init value should still be zero
+  // Fails! It actually returns 80. It seems, we are storing the last received value in the 
+  // init-value variable. This could actually make sense. When users tweak a knob and after that
+  // saves the sfz, they would expect the value that is stored in the patch for the midi controller
+  // (if any) to be the most recent one - the one that corresponds to how the patch currently 
+  // sounds.
+
+  //ok &= se.getMidiControllerCurrentValue( 74) == 80;  // but current value should be the new one
+  // This still fails because the response to midi cc is not yet implemented?
+  // Maybe it should return a float and be a smoothed value?
+
 
 
   // ToDo:
