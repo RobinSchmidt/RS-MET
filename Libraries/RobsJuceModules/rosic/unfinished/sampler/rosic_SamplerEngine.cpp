@@ -639,7 +639,8 @@ void rsSamplerEngine::handleControlChange(uchar index, uchar value)
 {
   playStatus.midi_cc[index] = value;
 
-  sfz.setMidiControllerInitValue(index, value);
+
+  //sfz.setMidiControllerInitValue(index, value);
   // Should we actually update the init value in the sfz member, too? Not sure. It may mess with 
   // saving an sfz from the GUI unless we also update the corresponding set_ccN opcodes sfz code, 
   // too. Maybe that should be an action on save. Or maybe it should happen in realtime in the 

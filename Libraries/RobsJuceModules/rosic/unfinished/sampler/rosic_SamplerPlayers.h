@@ -139,6 +139,8 @@ private:
   // under construction - not yet used:
   RAPT::rsUint8 midi_cc[128];  // most recently received values of all midi controllers
   short pitchWheel;            // most recently received value of pitch wheel
+  // I'm not yet sure, if it'S a good idea to have members for thee controllers here. They would be
+  // redundant with the data in the SfzInstrument
 
   // todo: aftertouch, etc.
   bool  dirty = false;
