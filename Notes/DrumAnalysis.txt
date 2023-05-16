@@ -1,0 +1,17 @@
+Estimate pitch envelope of drum sample:
+-Smooth the sample suitably
+-Measure zero crossings
+-The smoothing should perhaps not be a regular lowpass. Maybe that would destroy important features.
+ Maybe as alternative, we could use a wavelet transform, zero out higher coeffs (or taper them off) 
+ and then transform back. Maybe Haar Trafo could be suitable.
+-Maybe a time-varying zero-phase lopwass could also be good. The cutoff could be controlled by some 
+ preliminary estimate of the freq envelope. Maybe that could be based on the time-varying spectral 
+ centroid in the STFT. We could use an FIR implementation of a windowed-sinc lowpass with a Gaussian
+ window. Maybe the coeffs could be computed on the fly recursively such that we don't need to 
+ evaluate so many epxonentials. However - a first experimental prototype could just use the regular
+ windowed sinc implementation
+-Or maybe use a bidirectional brickwall somewhere above the max-pitch of the fundamental, then
+-Upward zero crossings give only one datapoint per cycle, but we can increase the density by looking 
+ also at the downward zero crossings and also at the minima and maxima. Maybe we could even use 
+ higher order derivative information: Use zero crossings of derivatives up to some number n. The 
+ derivatives could be obtained by central differences or maybe higher order methods.

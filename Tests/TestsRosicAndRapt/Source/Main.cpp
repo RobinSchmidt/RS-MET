@@ -342,13 +342,13 @@ int main(int argc, char* argv[])
   //maxShortTimeRMS();
   //arrayRMS();
   //peakFinder();                    // find peaks with subsample precision
-  //zeroCrossingFinder();
-  //zeroCrossingFinder2();
-  //zeroCrossingFinder3();
+  zeroCrossingFinder();
+  zeroCrossingFinder2();
+  zeroCrossingFinder3();
   //cycleMarkFinder();
   //cycleMarkErrors();
-  ////zeroCrossingPitchDetector(); // triggers assert
-  //zeroCrossingPitchDetectorTwoTones();
+  zeroCrossingPitchDetector(); // triggers assert
+  zeroCrossingPitchDetectorTwoTones();
   //ropewayAlgo();
   //peakPicker();
   //singleSineModel();
