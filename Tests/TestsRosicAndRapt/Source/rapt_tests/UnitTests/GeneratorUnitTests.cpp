@@ -5115,6 +5115,15 @@ bool samplerEngineUnitTest()
   //   pitch-envelope without needing any messy special casing.
   // Misc:
   // -Add documentaion to all the newly written mod-system code
+  // -Clean up the seemingly redundant functions se.clearAllSfzSettings(), se.clearInstrument(). 
+  //  Make it clear which one of these client code is supposed to call to bring the engine back 
+  //  into its initial state (look up what we do in ToolChain when a new sfz is loaded). If the 
+  //  other one is still needed for some purpose, rename it to make the purpose more clear. It's
+  //  confusing.
+
+
+  se.clearInstrument();
+
 
   // ToDo:
   // -implement cutoff_ccN ..or actually cutoffN_ccX
