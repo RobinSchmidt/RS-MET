@@ -4812,15 +4812,15 @@ bool samplerFixedModulationsTest()
   Vec dc(N);
   rsFill(dc, 1.f);
   addSingleSampleRegion(&se, dc);
-  se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, 1);
-  se.setRegionSetting(0, 0, OC::LoopStart, 0.f,      1);
-  se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N, 1);
+  se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, -1);
+  se.setRegionSetting(0, 0, OC::LoopStart, 0.f,      -1);
+  se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N, -1);
 
   // Set up an amplitude LFO:
   float lfoFreq  =  200.f;    // in Hz (SFZ has range 0..20 Hz, we allow audio-rate modulation)
   float lfoDepth =    6.02f;  // in dB
-  se.setRegionSetting(0, 0, OC::amplfo_freq,  lfoFreq,  1);
-  se.setRegionSetting(0, 0, OC::amplfo_depth, lfoDepth, 1);
+  se.setRegionSetting(0, 0, OC::amplfo_freq,  lfoFreq,  -1);
+  se.setRegionSetting(0, 0, OC::amplfo_depth, lfoDepth, -1);
   se.preAllocateDspMemory();     // GET RID! Should happen automatically, when needed
 
   // Produce target signal:

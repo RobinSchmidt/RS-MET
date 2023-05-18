@@ -146,7 +146,6 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
   using PST  = rosic::Sampler::Opcode;
   const float *pSmp = &sample[0];
   int si = se->addSampleToPool((float**) &pSmp, (int)sample.size(), 1, sampleRate, "Sample");
-  //int si = se->addSampleToPool((float**) &pSmp, (int)sample.size(), 1, sampleRate, "Sample.wav");
   if(se->getNumGroups() == 0)
     se->addGroup();
   int ri = se->addRegion(0);
