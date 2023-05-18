@@ -4744,10 +4744,41 @@ bool samplerMidiModulationsTest()
 
   bool ok = true;
 
+  using Vec = std::vector<float>;
+  using SE  = rosic::Sampler::rsSamplerEngineTest;
+  using OC  = rosic::Sampler::Opcode;
+  using AT  = RAPT::rsArrayTools;
+
+  // Set up a sampler engine with a sample that is just looped DC:
+  float fs = 44100;
+  int N = 1000;
+  SE se;
+  se.setSampleRate(fs);
+  setupForLoopedDC(&se, N, 60, fs);
+
+  // To test modulation by MIDI, we set up a modulation connection from MIDI-CC 7 to volume1, 
+  // trigger a note and during playing the note, we send a control change messages to the engine.
+  // Then we compare the produced output with what we expect.
+
+  // https://sfzformat.com/opcodes/gain_ccN
+  // https://sfzformat.com/opcodes/volume_onccN
+  // https://sfzformat.com/opcodes/amplitude_ccN
+  // https://sfzformat.com/opcodes/amplitude_onccN
+
+
+
 
   // ToDo: use the new function:
   //getSamplerOutput(se, events, &outL[0], &outR[0], N);lsGu
 
+
+
+
+
+  // Test key- and vel-tracking of amp:
+  // https://sfzformat.com/opcodes/amp_keycenter
+  // https://sfzformat.com/opcodes/amp_keytrack
+  // https://sfzformat.com/opcodes/amp_veltrack
 
 
   rsAssert(ok);
