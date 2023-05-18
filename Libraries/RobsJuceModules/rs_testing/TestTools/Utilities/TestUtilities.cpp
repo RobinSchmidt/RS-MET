@@ -270,7 +270,18 @@ void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<rosic::Sampler::rsMusicalEvent<float>>& events,
   float* outL, float* outR, int numFrames)
 {
+  se->reset();
+  int eventIndex =  0;  // index of next event in the events array
+  for(int n = 0; n < numFrames; n++)
+  {
+    // Send events for this sample:
+    while(eventIndex < events.size() && events[eventIndex].getTime() == n) {
+      se->handleMusicalEvent(events[eventIndex]);
+      eventIndex++; }
 
+    // Process audio:
+    se->processFrame(&outL[n], &outR[n]);
+  }
 
   int dummy = 0;
 }

@@ -101,6 +101,8 @@ public:
 
   T getValue2() const { return val2; }
 
+  uint getTime() const { return time; }
+
 protected:
 
   Type type;  // e.g. noteOn/Off, controlChange, pitchWheel
