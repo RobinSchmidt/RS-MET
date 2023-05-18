@@ -4758,7 +4758,17 @@ bool samplerMidiModulationsTest()
 
   // To test modulation by MIDI, we set up a modulation connection from MIDI-CC 7 to volume1, 
   // trigger a note and during playing the note, we send a control change messages to the engine.
-  // Then we compare the produced output with what we expect.
+  // Then we compare the produced output with what we expect. We use the volume_onccN opcode for 
+  // this. It's intended functionality is to not affect the sound when the value is zero and give a
+  // boost of given amount when the value is at 127. So the behavior is:
+  //   gain_cc1=12
+  // "This will play the sample at unchanged volume when CC1 is at 0, and apply a 12 dB boost when 
+  // CC1 is at maximum."
+  // The value range is supposed to be -144 to 48. But we will use CC7 because that's kinda 
+  // standard for volume.
+
+
+
 
   // https://sfzformat.com/opcodes/gain_ccN
   // https://sfzformat.com/opcodes/volume_onccN
