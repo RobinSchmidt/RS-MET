@@ -4794,30 +4794,28 @@ bool samplerMidiModulationsTest()
   std::vector<Ev> events;
   events.push_back(Ev(EvTp::controlChange, 7.f, 127.f, ns));
   Vec outL(N), outR(N);
-  getSamplerOutput(&se, events, &outL[0], &outR[0], N); // this function is still empty
+  getSamplerOutput(&se, events, &outL[0], &outR[0], N);
 
+  // OK - so far, so good - the function:
+  //   rsSamplerEngine::handleControlChange
+  // gets called correctly at sample 300. Now we must make sure that the modulation is correctly 
+  // applied....
 
   rsPlotVectors(tgt, outL, outR);
 
 
 
-  // This is the other way to set this up:
 
+
+  // This is the other way to set this up:
   //se.setRegionSetting(0,0, OC::volumeN_onccM, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
   // we need to expand the signature to allow for a second index
-
-
-
   // https://sfzformat.com/opcodes/gain_ccN
   // https://sfzformat.com/opcodes/volume_onccN
   // https://sfzformat.com/opcodes/amplitude_ccN
   // https://sfzformat.com/opcodes/amplitude_onccN
 
 
-
-
-  // ToDo: use the new function:
-  //getSamplerOutput(se, events, &outL[0], &outR[0], N);lsGu
 
 
 

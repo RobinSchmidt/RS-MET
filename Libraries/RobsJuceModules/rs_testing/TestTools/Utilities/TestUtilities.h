@@ -541,6 +541,7 @@ of musicla events (note-ons, note-offs, control-changes, etc.). */
 void getSamplerOutput(rosic::Sampler::rsSamplerEngine* se, 
   const std::vector<rosic::Sampler::rsMusicalEvent<float>>& events,
   float* outL, float* outR, int numFrames);
+// needs tests
 
 /** Generates the samples that are used in the test patches. */
 void generateTestSamples();
