@@ -504,33 +504,19 @@ class MidiController : public Processor
 {
 public:
 
+  /** On construction of the object, you must pass a pointer the PlayStatus object from the sampler
+  engine such that we can read off the current controller setting from it. This PlayStatus object's
+  lifetime is equal to the lifetime of the whole sampler engine, so it can be passed on creation of
+  the controller objects and stay the same for the whole lifetime of the MidiController. It's also
+  enough to set the controller number once and for all on construction. */
+  MidiController(PlayStatus* playStatus, int controllerNumber);
 
-  void processFrame(float* L, float* R) override 
-  { 
-    /*
-    RAPT::rsAssert(playStatus != nullptr);
-    if(playStatus) 
-    {
-      RAPT::rsUint8 rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
-      *L = *R = (1.f/127.f) * (float) rawVal; 
-      // Maybe we should have some sort of offset or neutral value? Maybe in 0..127 or in 
-      // 0..5, i.e. before or after the conversion to float? And then in do:
-      //   *L = *R = (1.f/127.f) * (float) (rawVal + offset);
-      // or:
-      //   *L = *R = ((1.f/127.f) * (float) rawVal) + offset;
-    }
-    else 
-    {
-      *L = *R = 0.f; 
-      // We are playing safe here with the if-conditional in the sense of defensive programming. 
-      // Later when the code stabilizes, maybe we can just assume that playStatus never is a nullptr
-      // and optimize this branch away.
-    }
-    */
-  }
-  // maybe move implementation to .cpp file
+  /** Outputs the normalized value of the controller in the range 0..1 where a midi value of 0 maps 
+  to 0.f and a midi value of 127 maps to 1.f. */
+  void processFrame(float* L, float* R) override;
 
-
+  //void setControllerNumber(int newNumber) { ctrlIndex = newNumber; }
+  // We may not need to be able to set this after construction. We'll see.
 
 protected:
 

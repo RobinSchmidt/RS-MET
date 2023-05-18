@@ -212,6 +212,40 @@ EnvGenFil::EnvGenFil()
 
 //=================================================================================================
 
+MidiController::MidiController(PlayStatus* _playStatus, int controllerNumber)
+  : playStatus(_playStatus)
+  , ctrlIndex(controllerNumber)
+{
+  // Sanity-check:
+  RAPT::rsAssert(playStatus != nullptr);
+  RAPT::rsAssert(ctrlIndex >= 0 && ctrlIndex <= 127);
+}
+
+void MidiController::processFrame(float* L, float* R)
+{ 
+  RAPT::rsAssert(playStatus != nullptr);
+  if(playStatus)
+  {
+    RAPT::rsUint8 rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
+    *L = *R = (1.f/127.f) * (float)rawVal;
+    // Maybe we should have some sort of offset or neutral value? Maybe in 0..127 or in 
+    // 0..5, i.e. before or after the conversion to float? And then in do:
+    //   *L = *R = (1.f/127.f) * (float) (rawVal + offset);
+    // or:
+    //   *L = *R = ((1.f/127.f) * (float) rawVal) + offset;
+  }
+  else
+  {
+    *L = *R = 0.f;
+    // We are playing safe here with the if-conditional in the sense of defensive programming. 
+    // Later when the code stabilizes, maybe we can just assume that playStatus never is a nullptr
+    // and optimize this branch away.
+  }
+}
+
+
+//=================================================================================================
+
 Amplifier::Amplifier()
 {
   type = OpcodeType::Amplifier;
