@@ -7,6 +7,7 @@ int rsSamplerEngine::instanceCounter = 0;
 // Lifetime:
 
 rsSamplerEngine::rsSamplerEngine(int maxNumLayers)
+  : dspPool(&playStatus)
 {
   setMaxNumLayers(maxNumLayers);
   instanceCounter++;

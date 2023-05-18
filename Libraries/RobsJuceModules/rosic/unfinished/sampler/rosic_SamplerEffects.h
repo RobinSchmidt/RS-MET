@@ -606,7 +606,13 @@ class DspResourcePool
 
 public:
 
-  DspResourcePool();
+  DspResourcePool(PlayStatus* playStatusToUse);
+
+  /**  */
+  //void setPlayStatusToUse(PlayStatus* ps);
+
+  //PlayStatus* playStatus = nullptr;
+
 
   /** Allocates the effects by resizing our vectors (which contain direct objects). */
   void allocateEffects();
@@ -690,6 +696,10 @@ protected:
   rsObjectPool<ModulationConnector> connectorPool;
   // maybe this isn't needed - connections may be held as direct objects in the players - no
   // pointers needed
+
+
+  PlayStatus* playStatus = nullptr;
+
 };
 // maybe turn this class into a sort of facade such that client code doesn't need to rech through
 // into the member - have functions like grab/reposit Effect/Modulator/Connector. Maybe get rid of

@@ -525,7 +525,8 @@ void WaveShaper::updateCoeffs(double sampleRate)
 
 //=================================================================================================
 
-DspResourcePool::DspResourcePool()
+DspResourcePool::DspResourcePool(PlayStatus* playStatusToUse)
+  : playStatus(playStatusToUse)
 {
   allocateEffects();
   allocateModulators();

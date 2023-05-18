@@ -4804,6 +4804,7 @@ bool samplerMidiModulationsTest()
   // for MIDI modulations that has access to the PlayStatus and outputs the midi-controller value,
   // divided by 127 to normalize the range 0..127 to 0..1 and then multiply by the amount...but 
   // that multiplication should actually be done by the ModulationConnection object
+  // In SamplePlayer::handleModulations, there are no sources, targets and connections yet. 
 
   rsPlotVectors(tgt, outL, outR);
 

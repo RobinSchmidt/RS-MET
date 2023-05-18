@@ -620,7 +620,15 @@ protected:
   // some other object that also uses the same sample pool (for example, a DAW that uses the sampler
   // as plugin)
 
-  DspResourcePool dspPool;
+  PlayStatus playStatus;
+  /**< Intermediate variables used for the computation of things like per-sample increment, final 
+  amplitude etc. according to key, vel, keytrack, veltrack, tune, transpose, etc. We need to pass 
+  around such a struct from noteOn to have a place into which we can accumulate all the modifiers
+  such that the RegionPlayer itself needs ot store only the final values. It also holds midi state
+  such the current values of controllers, etc.  */
+
+  // MUST be declared after playStatus because it holds a pointer to it:
+  DspResourcePool dspPool; 
   /**< The pool of DSP processors, modulators and modulation connection. When a region starts 
   playing, the respective RegionPlayer object may grab objects from this pool such as filters, 
   waveshapers, envelopes, etc. - whatever it needs to play the region appropriately. */
@@ -633,7 +641,6 @@ protected:
   //std::vector<Processor*> masterEffects; 
   // not yet used..their oscs etc should probably retriggered only when there's currently no note
   // playing *and* the output is silent
-
 
   std::vector<RegionPlayer*> activePlayers;
   /**< Array of pointers to region players that are currently active, i.e. playing. */
@@ -653,11 +660,6 @@ protected:
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
 
-  PlayStatus playStatus;
-  /**< Intermediate variables used for the computation of things like per-sample increment, final 
-  amplitude etc. according to key, vel, keytrack, veltrack, tune, transpose, etc. We need to pass 
-  around such a struct from noteOn to have a place into which we can accumulate all the modifiers
-  such that the RegionPlayer itself needs ot store only the final values. */
 
   //double sampleRate = 44100.0; // redundant with PlayStatus.sampleRate..obsolete
   /**< Sample rate at which this object runs. */
