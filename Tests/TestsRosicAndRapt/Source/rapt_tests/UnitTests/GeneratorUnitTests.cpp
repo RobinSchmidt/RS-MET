@@ -4819,6 +4819,12 @@ bool samplerFixedModulationsTest()
   // The loop over the groups fails. This can be further traced down to the loop over the regions 
   // in:
   //   SfzInstrument::Group::operator==
+  // Tracing furthe into the call:
+  //   SfzInstrument::Region::operator==
+  // we see that this fails already in the first line:
+  //   equal = settings == rhs.settings;
+  // but comparing the settings and hs.settings arrays in the debugger, they actually do look the 
+  // same.
 
 
   // ToDo:
