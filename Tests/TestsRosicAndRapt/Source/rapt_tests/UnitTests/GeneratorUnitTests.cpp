@@ -4868,11 +4868,11 @@ bool samplerControlsTest()
 
   bool ok = true;
 
-
+  //-----------------------------------------------------------------------------------------------
   // Test parsing of the <control> section:
 
   //sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20";
-  // Crashes the engine - tires to parse "<control>" as float. I think, it is because the sfz 
+  // Crashes the engine - tries to parse "<control>" as float. I think, it is because the sfz 
   // define no group at all
 
   //sfz = "<control> label_cc74=Cutoff set_cc74=50 label_cc71=Resonance set_cc71=20 <group>";
@@ -4946,6 +4946,13 @@ bool samplerControlsTest()
   // re-init. But if we do it, it should probably look something like:
   // se.initMidiControllersFromPatch()  or something
 
+  // ToDo:
+  // -Test the parsing also with strings where the final "<global> <group> <region>" tags are 
+  //  missing. They should be optional. See the commented striongs above. 
+
+
+  //-----------------------------------------------------------------------------------------------
+  // Test handling MIDI control change messages:
 
   // Helper function to generate MIDI control-change events:
   auto makeCC = [](int index, int value)
@@ -4963,8 +4970,6 @@ bool samplerControlsTest()
 
   ok &= sfz.getMidiControllerInitValue(   74) == 0;   // init value should still be zero
   ok &= se.getMidiControllerCurrentValue( 74) == 80;  // but current value should be the new one
-
-
 
   // Note:
   // -We currently hold the control-values in the sfz and in the playStatus and the calls on 
@@ -4987,11 +4992,26 @@ bool samplerControlsTest()
   // -Test re-assignment of the same controller - the last assignment should count
   // -Verify that the controllers get written into an sfz string when we use getAsSFZ
 
+  //-----------------------------------------------------------------------------------------------
+  // Test routing controllers to parameters:
+
+  // We create a patch with a sinewave and route control 7 to volume, play a note and in the middle
+  // of it, send a control 7 event that should reduce the output to 50%. Then, we look at the 
+  // output to check, if it indeed shows the desired volume switch:
+
+  //se.clearAllSfzSettings();
+  // se has still one group after this call (open se.sfz.global to see it)
+
+  se.clearInstrument();
+  // now, se has zero groups
+
+
+
   rsAssert(ok);
   return ok;
 
   // ToDo:
-  // -Implement responses to the midi control-events - they should set up some value in the glabal 
+  // -Implement responses to the midi control-events - they should set up some value in the global 
   //  playStatus and a modulation-source should become avaiable for each. These should be connected
   //  to modulation targets vai the mod-system
   // -Maybe allow floating point values for the controllers in the range 0.0 ... 127.0, i.e. stick

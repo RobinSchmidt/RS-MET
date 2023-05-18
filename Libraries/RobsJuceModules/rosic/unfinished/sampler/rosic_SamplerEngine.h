@@ -83,6 +83,7 @@ public:
   // samplePool? -> document this. maybe try to get rid of one of them - it's a bit confusing to 
   // have both. does it also clear the sample opcode? i don't think so. document this. maybe rename
   // the function to something that conveys this information
+  // sfz.clearAllSettings()
 
 
   /** Adds a new sample to our pool of samples. After the sample has been added, regions can be
