@@ -4772,12 +4772,7 @@ bool samplerFixedModulationsTest()
   int N = 1000;
   SE se;
   se.setSampleRate(fs);
-  Vec dc(N);
-  rsFill(dc, 1.f);
-  addSingleSampleRegion(&se, dc);
-  se.setRegionSetting(0, 0, OC::LoopMode, (float)rosic::Sampler::LoopMode::loop_continuous, -1);
-  se.setRegionSetting(0, 0, OC::LoopStart, 0.f,      -1);
-  se.setRegionSetting(0, 0, OC::LoopEnd,  (float) N, -1);
+  setupForLoopedDC(&se, N, 60, fs);
 
   // Set up an amplitude LFO:
   float lfoFreq  =  200.f;    // in Hz (SFZ has range 0..20 Hz, we allow audio-rate modulation)
