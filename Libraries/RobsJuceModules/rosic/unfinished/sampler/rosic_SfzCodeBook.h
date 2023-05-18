@@ -82,6 +82,7 @@ enum class Opcode
   volumeN, panN, widthN, positionN, 
   ampN_keytrack, ampN_keycenter, ampN_veltrack,
   // ampN_velcurve_X /* ? */, ampN_random,
+  //volumeN_onccX,  // under construction
 
   // Amplifier Envelope:
   ampeg_delay, ampeg_start, ampeg_attack, ampeg_peak, ampeg_hold, ampeg_decay, ampeg_sustain, 
@@ -389,6 +390,8 @@ enum class OpcodeType   // Maybe rename to OpcodeTarget
   _TagFreeModulatorsStart,
   FreeEnv,    // rename to EnvGen or FreeAdsr
   FreeLfo,    // rename to LowFreqOsc
+
+  MidiCtrl,   // new, under construction
 
   // Allow midi-inputs to be modulation sources, too:
   //MidiCtrl, MidiKey, MidiOnVel, MidiOffVel, MidiAftertouch, ...

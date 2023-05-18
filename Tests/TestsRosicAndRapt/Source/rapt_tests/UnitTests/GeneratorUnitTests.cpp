@@ -4744,17 +4744,18 @@ bool samplerMidiModulationsTest()
 
   bool ok = true;
 
-  using Vec = std::vector<float>;
-  using SE  = rosic::Sampler::rsSamplerEngineTest;
-  using OC  = rosic::Sampler::Opcode;
-  using AT  = RAPT::rsArrayTools;
+  using Vec  = std::vector<float>;
+  using SE   = rosic::Sampler::rsSamplerEngineTest;
+  using OC   = rosic::Sampler::Opcode;
+  using OT   = rosic::Sampler::OpcodeType;
+  using AT   = RAPT::rsArrayTools;
+  using Mode = rosic::Sampler::ModMode;
 
   // Set up a sampler engine with a sample that is just looped DC:
   float fs = 44100;
-  int N = 1000;
   SE se;
   se.setSampleRate(fs);
-  setupForLoopedDC(&se, N, 60, fs);
+  setupForLoopedDC(&se, 1000, 60, fs);  // the DC sample is of length 1000
 
   // To test modulation by MIDI, we set up a modulation connection from MIDI-CC 7 to volume1, 
   // trigger a note and during playing the note, we send a control change messages to the engine.
@@ -4765,8 +4766,45 @@ bool samplerMidiModulationsTest()
   // "This will play the sample at unchanged volume when CC1 is at 0, and apply a 12 dB boost when 
   // CC1 is at maximum."
   // The value range is supposed to be -144 to 48. But we will use CC7 because that's kinda 
-  // standard for volume.
+  // standard for volume. There should be two ways to set this up. First, the general way to route
+  // any MIDI CC to any modulatable parameter via setRegionModulation. The other way is via a 
+  // dedicated opcode volumeN_onccM to make it SFZ compatible.
 
+  // First, we try it in the general way:
+  float volByCC = 12;
+  se.setRegionModulation(0,0,    // group 0, region 0
+    OT::MidiCtrl, 7,             // Midi CC 7 gets routed to
+    OC::volumeN,  1,             // volume1
+    volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
+
+  // Produce target signal:
+  int N  = 600;    // number of samples in test signal
+  int ns = N/2;    // index to switch CC value for 0 to 127
+  float gain = rsDbToAmp(12.f);
+  Vec tgt(N);
+  for(int n = 0; n < ns; n++)
+    tgt[n] = 1.f;
+  for(int n = ns; n < N; n++)
+    tgt[n] = gain;
+
+
+  // Produce sampler output signal:
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+  std::vector<Ev> events;
+  events.push_back(Ev(EvTp::controlChange, 7.f, 127.f, ns));
+  Vec outL(N), outR(N);
+  getSamplerOutput(&se, events, &outL[0], &outR[0], N); // this function is still empty
+
+
+  rsPlotVectors(tgt, outL, outR);
+
+
+
+  // This is the other way to set this up:
+
+  //se.setRegionSetting(0,0, OC::volumeN_onccM, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
+  // we need to expand the signature to allow for a second index
 
 
 
