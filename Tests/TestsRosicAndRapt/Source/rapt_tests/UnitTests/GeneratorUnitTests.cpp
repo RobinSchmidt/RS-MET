@@ -4825,9 +4825,23 @@ bool samplerFixedModulationsTest()
   //   equal = settings == rhs.settings;
   // but comparing the settings and hs.settings arrays in the debugger, they actually do look the 
   // same. Ah - no! For all settings except the PitchKeycenter, the index is -1 in settings and
-  // +1 in rhs.settings. Check the assignment operator for the Setting class (not sure, what the 
-  // name of that class is).
+  // +1 in rhs.settings. The assignment operator in PlaybackSetting class is OK - it sets up the 
+  // index member correctly. Maybe check the function:
+  //   SfzCodeBook::stringToOpcode
 
+  // ToDo: try the parser with the following string -  maybe shorten it a bit:
+  /*
+  <group>
+  <region>
+    sample=Sample
+    pitch_keycenter=60.000000
+    loop_mode=loop_continuous
+    loop_start=0.000000
+    loop_end=1000.000000
+    amplfo_freq=200.000000
+    volume=0.000000
+    amplfo_depth=6.020000
+  */
 
   // ToDo:
   // -Verify if, the used formula produces the same behavior as intended by sfz spec. It could be
@@ -4841,11 +4855,12 @@ bool samplerFixedModulationsTest()
 bool samplerModulationsTest()
 {
   bool ok = true;
-  ok &= samplerFreeModulationsTest();   // Test freely routable modulations
 
   ok &= samplerFixedModulationsTest();  // Test hardwired modulations (amplfo, ampeg, ...)
   // FAILS! Why? Figure out and fix!
 
+
+  ok &= samplerFreeModulationsTest();   // Test freely routable modulations
   ok &= samplerMidiModulationsTest();   // Test modulations by midi controllers
 
 
