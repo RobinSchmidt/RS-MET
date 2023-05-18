@@ -447,6 +447,8 @@ public:
 
 
 
+
+
 /** The general extended ADSR envelope generator controlled by the SFZ2 opocodes egN_attack, 
 egN_decay, egN_sustain, egN_release, etc.. */
 class EnvGen : public Processor
@@ -461,6 +463,7 @@ public:
   void processFrame(float* L, float* R) override { core.processFrame(L, R); }
   void updateCoeffs(double sampleRate) override;
   void resetState() override { core.resetState(); }
+
   void noteOff() { core.noteOff(); }
 
 protected:
@@ -490,6 +493,52 @@ public:
   EnvGenPitch();
 };
 */
+
+
+class PlayStatus; 
+// Why do we need this forward declaration here? Try to re-organize the code to make it 
+// unnecessary! maybe it's enough to change the include order of the .h files
+
+/** A class to generate modulation signals from MIDI controllers */ 
+class MidiController : public Processor
+{
+public:
+
+
+  void processFrame(float* L, float* R) override 
+  { 
+    /*
+    RAPT::rsAssert(playStatus != nullptr);
+    if(playStatus) 
+    {
+      RAPT::rsUint8 rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
+      *L = *R = (1.f/127.f) * (float) rawVal; 
+      // Maybe we should have some sort of offset or neutral value? Maybe in 0..127 or in 
+      // 0..5, i.e. before or after the conversion to float? And then in do:
+      //   *L = *R = (1.f/127.f) * (float) (rawVal + offset);
+      // or:
+      //   *L = *R = ((1.f/127.f) * (float) rawVal) + offset;
+    }
+    else 
+    {
+      *L = *R = 0.f; 
+      // We are playing safe here with the if-conditional in the sense of defensive programming. 
+      // Later when the code stabilizes, maybe we can just assume that playStatus never is a nullptr
+      // and optimize this branch away.
+    }
+    */
+  }
+  // maybe move implementation to .cpp file
+
+
+
+protected:
+
+  int ctrlIndex = -1;
+  PlayStatus* playStatus = nullptr;
+};
+
+
 
 
 class Amplifier : public Processor

@@ -4802,7 +4802,8 @@ bool samplerMidiModulationsTest()
   // gets called correctly at sample 300. Now we must make sure that the modulation is correctly 
   // applied. Currently, there are no modulations wired up. I think, we must implement a DSP object
   // for MIDI modulations that has access to the PlayStatus and outputs the midi-controller value,
-  // divided by 127 to normalize the range 0..127 to 0..1 and then multiply by the amount
+  // divided by 127 to normalize the range 0..127 to 0..1 and then multiply by the amount...but 
+  // that multiplication should actually be done by the ModulationConnection object
 
   rsPlotVectors(tgt, outL, outR);
 
