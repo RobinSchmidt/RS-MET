@@ -509,11 +509,18 @@ public:
   lifetime is equal to the lifetime of the whole sampler engine, so it can be passed on creation of
   the controller objects and stay the same for the whole lifetime of the MidiController. It's also
   enough to set the controller number once and for all on construction. */
-  MidiController(PlayStatus* playStatus, int controllerNumber);
+  //MidiController(PlayStatus* playStatus, int controllerNumber);
+
+  MidiController();
 
   /** Outputs the normalized value of the controller in the range 0..1 where a midi value of 0 maps 
   to 0.f and a midi value of 127 maps to 1.f. */
   void processFrame(float* L, float* R) override;
+
+
+  void updateCoeffs(double sampleRate) override;
+
+
 
   //void setControllerNumber(int newNumber) { ctrlIndex = newNumber; }
   // We may not need to be able to set this after construction. We'll see.
@@ -675,6 +682,8 @@ protected:
   rsObjectPool<LowFreqOsc>    freeLowFreqOscs;
   rsObjectPool<LowFreqOscAmp> ampLowFreqOscs;
   rsObjectPool<LowFreqOscFil> filLowFreqOscs;
+
+  rsObjectPool<MidiController> midiControllers;
 
 
   // Connectors:

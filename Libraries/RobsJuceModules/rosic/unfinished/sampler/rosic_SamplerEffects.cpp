@@ -212,6 +212,7 @@ EnvGenFil::EnvGenFil()
 
 //=================================================================================================
 
+/*
 MidiController::MidiController(PlayStatus* _playStatus, int controllerNumber)
   : playStatus(_playStatus)
   , ctrlIndex(controllerNumber)
@@ -219,6 +220,12 @@ MidiController::MidiController(PlayStatus* _playStatus, int controllerNumber)
   // Sanity-check:
   RAPT::rsAssert(playStatus != nullptr);
   RAPT::rsAssert(ctrlIndex >= 0 && ctrlIndex <= 127);
+}
+*/
+
+MidiController::MidiController()
+{
+  type = OpcodeType::MidiCtrl;
 }
 
 void MidiController::processFrame(float* L, float* R)
@@ -242,6 +249,17 @@ void MidiController::processFrame(float* L, float* R)
     // and optimize this branch away.
   }
 }
+
+void MidiController::updateCoeffs(double sampleRate)
+{
+  RAPT::rsWarning("MidiController::updateCoeffs not yet implemented");
+  // We have nothing to do here but need to override it because it's purely virtual. Maybe later 
+  // such Controller objects may indeed have parameters? Maybe an offset? However, at the moment,
+  // there are none, so there's nothing to do here.
+  // ...maybe instead of passing a sampleRate, the caller should pass a pointer to the playStatus
+  // which may include a sampleRate member
+}
+
 
 
 //=================================================================================================
@@ -577,6 +595,8 @@ void DspResourcePool::allocateModulators()
   freeLowFreqOscs.init(N);
   ampLowFreqOscs.init(N);
   filLowFreqOscs.init(N);
+
+  midiControllers.init(N);
 }
 
 Processor* DspResourcePool::grabModulator(OpcodeType type)
@@ -594,6 +614,8 @@ Processor* DspResourcePool::grabModulator(OpcodeType type)
   case OT::AmpLfo:    p = ampLowFreqOscs.grabItem();  break;
   case OT::FilterLfo: p = filLowFreqOscs.grabItem();  break;
   //case OT::PitchLfo:  p = lowFreqOscs.grabItem(); break;
+
+  case OT::MidiCtrl: p = midiControllers.grabItem(); break;
 
   default: { RAPT::rsError("Unknown modulator type"); }
   };
@@ -632,6 +654,9 @@ void DspResourcePool::repositModulator(Processor* p)
   case OT::AmpLfo:    i = ampLowFreqOscs.repositItem(p);  break;
   case OT::FilterLfo: i = filLowFreqOscs.repositItem(p);  break;
   //case OT::PitchLfo:  i = lowFreqOscs.repositItem(p);  break;
+
+  case OT::MidiCtrl: i = midiControllers.repositItem(p); break;
+
   }
   RAPT::rsAssert(i != -1, "Reposited processor was not in pool");
 }
