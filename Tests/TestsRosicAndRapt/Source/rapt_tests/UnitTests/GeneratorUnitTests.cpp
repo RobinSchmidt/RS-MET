@@ -4792,14 +4792,17 @@ bool samplerMidiModulationsTest()
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
   std::vector<Ev> events;
-  events.push_back(Ev(EvTp::controlChange, 7.f, 127.f, ns));
+  events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  // noteOn at sample 0
+  events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
   Vec outL(N), outR(N);
   getSamplerOutput(&se, events, &outL[0], &outR[0], N);
 
   // OK - so far, so good - the function:
   //   rsSamplerEngine::handleControlChange
   // gets called correctly at sample 300. Now we must make sure that the modulation is correctly 
-  // applied....
+  // applied. Currently, there are no modulations wired up. I think, we must implement a DSP object
+  // for MIDI modulations that has access to the PlayStatus and outputs the midi-controller value,
+  // divided by 127 to normalize the range 0..127 to 0..1 and then multiply by the amount
 
   rsPlotVectors(tgt, outL, outR);
 
@@ -4884,9 +4887,10 @@ bool samplerFixedModulationsTest()
 bool samplerModulationsTest()
 {
   bool ok = true;
+  ok &= samplerMidiModulationsTest();   // Test modulations by midi controllers
   ok &= samplerFixedModulationsTest();  // Test hardwired modulations (amplfo, ampeg, ...)
   ok &= samplerFreeModulationsTest();   // Test freely routable modulations
-  ok &= samplerMidiModulationsTest();   // Test modulations by midi controllers
+
 
   /*
   // Remove the hardwired amp-lfo opcodes and add freely routable ones instead:
