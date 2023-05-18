@@ -4816,8 +4816,9 @@ bool samplerFixedModulationsTest()
   //   ok = se2.isInSameStateAs(se);
   // In
   //   SfzInstrument::Global::operator==
-  // the loop over the groups fails
-
+  // The loop over the groups fails. This can be further traced down to the loop over the regions 
+  // in:
+  //   SfzInstrument::Group::operator==
 
 
   // ToDo:
