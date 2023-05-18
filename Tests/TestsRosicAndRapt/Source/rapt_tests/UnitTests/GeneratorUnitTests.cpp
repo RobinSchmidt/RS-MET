@@ -1682,43 +1682,6 @@ sample=Cos440Hz.wav";
   // Asserts! Maybe it's the initial empty group?
   */
 
-
-
-  //-----------------------------------------------------------------
-  // Here, we try to reproduce the situation which makes samplerFixedModulationsTest fail.
-
-  sfzStr = "\
-<group>\n\
-<region>\n\
-sample=Sin440Hz.wav\n\
-pitch_keycenter=60.000000\n\
-loop_mode=loop_continuous\n\
-loop_start=0.000000\n\
-loop_end=1000.000000\n\
-amplfo_freq=200.000000\n\
-volume=0.000000\n\
-amplfo_depth=6.020000";
-
-  setup(sfzStr);
-  ok &= se.getNumGroups()   == 1;
-  ok &= se.getNumRegions(0) == 1;
-  const rosic::Sampler::SfzInstrument::Region* r = se.getRegion(0, 0);
-  // pitch_keycenter, loop_mode, loop_start, loop_end, amplfo_freq have all index = -1 which stands
-  // for "not applicable". volume has index 1. That's also correct. amplfo_depth soes not appear in
-  // the settings because it's a modulation routing
-
-  std::string sfz2 = se.getAsSfz();
-  se2.setFromSFZ(sfz2);
-  ok = se2.isInSameStateAs(se);
-  // OK - this seems to work. However - in a similar situation when doing the se -> sfz-text -> se2 
-  // roundtrip in the test for the fixed modulations, it fails. But there, we don't use a sample 
-  // from the disk but some form memory which is called only "Sample" ....no .wav. Mayb that trips 
-  // up the parser?
-
-
-
-
-
   rsAssert(ok);
   return ok;
 }
@@ -4835,47 +4798,7 @@ bool samplerFixedModulationsTest()
 
   // Produce sampler output signal and check against target:
   float tol = 1.e-5;
-  //ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, tol, -1, true, true);
-
-  // It fails - let's check it more closely:
-
-
-  std::string sfz = se.getAsSfz();
-  rosic::Sampler::rsSamplerEngineTest se2;
-  se2.setSampleRate(se.getOutputSampleRate());
-  se2.copySamplePool(&se);
-  se2.setFromSFZ(sfz);
-  ok = se2.isInSameStateAs(se);
-  // FAILS!
-
-  Vec outL(N), outR(N);
-  getSamplerNote(&se, 69, 100, outL, outR, -1);
-  ok &= rsIsCloseTo(outL, tgt, tol);
-  ok &= rsIsCloseTo(outR, tgt, tol);
-  rsPlotVectors(tgt, outL, outR, outL-tgt);
-  // It actually looks good. With tol = 1.e-5, it should pass. But it doesn't. But the 
-  // testSamplerNote2 checks also the roundtrip to create the sfz-textstring and setting up another
-  // engine with that string. Maybe that part of the test fails? Check that! Yes - indeed! it fails
-  // at the line:
-  //   ok = se2.isInSameStateAs(se);
-  // In
-  //   SfzInstrument::Global::operator==
-  // The loop over the groups fails. This can be further traced down to the loop over the regions 
-  // in:
-  //   SfzInstrument::Group::operator==
-  // Tracing furthe into the call:
-  //   SfzInstrument::Region::operator==
-  // we see that this fails already in the first line:
-  //   equal = settings == rhs.settings;
-  // but comparing the settings and hs.settings arrays in the debugger, they actually do look the 
-  // same. Ah - no! For all settings except the PitchKeycenter, the index is -1 in settings and
-  // +1 in rhs.settings. The assignment operator in PlaybackSetting class is OK - it sets up the 
-  // index member correctly. Maybe check the function:
-  //   SfzCodeBook::stringToOpcode
-
-
-  // I think, it is wrong to set the index of the loop settings to 1. use -1 instead
-
+  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, tol, -1, false, false);
 
   // ToDo:
   // -Verify if, the used formula produces the same behavior as intended by sfz spec. It could be
@@ -4889,16 +4812,9 @@ bool samplerFixedModulationsTest()
 bool samplerModulationsTest()
 {
   bool ok = true;
-
   ok &= samplerFixedModulationsTest();  // Test hardwired modulations (amplfo, ampeg, ...)
-  // FAILS! Why? Figure out and fix!
-
-
   ok &= samplerFreeModulationsTest();   // Test freely routable modulations
   ok &= samplerMidiModulationsTest();   // Test modulations by midi controllers
-
-
-
 
   /*
   // Remove the hardwired amp-lfo opcodes and add freely routable ones instead:
@@ -5113,9 +5029,9 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
+  ok &= samplerParserTest();
   ok &= samplerModulationsTest();
   //ok &= samplerControlsTest(); 
-  //ok &= samplerParserTest();
   //ok &= samplerExamplePatchesTest(); 
 
 
