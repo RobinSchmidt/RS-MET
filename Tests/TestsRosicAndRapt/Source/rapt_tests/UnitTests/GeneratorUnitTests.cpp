@@ -4824,7 +4824,9 @@ bool samplerFixedModulationsTest()
   // we see that this fails already in the first line:
   //   equal = settings == rhs.settings;
   // but comparing the settings and hs.settings arrays in the debugger, they actually do look the 
-  // same.
+  // same. Ah - no! For all settings except the PitchKeycenter, the index is -1 in settings and
+  // +1 in rhs.settings. Check the assignment operator for the Setting class (not sure, what the 
+  // name of that class is).
 
 
   // ToDo:
