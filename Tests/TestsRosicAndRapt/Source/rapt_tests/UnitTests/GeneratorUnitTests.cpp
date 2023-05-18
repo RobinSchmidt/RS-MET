@@ -4805,6 +4805,8 @@ bool samplerMidiModulationsTest()
   // divided by 127 to normalize the range 0..127 to 0..1 and then multiply by the amount...but 
   // that multiplication should actually be done by the ModulationConnection object
   // In SamplePlayer::handleModulations, there are no sources, targets and connections yet. 
+  // Check, what happes when building the DSP chain and modulator array
+  // Check SamplePlayer::assembleRoutableModulations
 
   rsPlotVectors(tgt, outL, outR);
 
