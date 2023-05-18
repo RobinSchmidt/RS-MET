@@ -4860,11 +4860,14 @@ bool samplerModulationsTest()
 
 bool samplerControlsTest()
 {
-  // Tests the features defined under the <control> header in the sfz file.
-  // See: 
+  // Tests the features defined under the <control> header in the sfz file. See: 
   //   https://sfzformat.com/headers/control
   //   https://sfzformat.com/opcodes/label_ccN
   //   https://sfzformat.com/opcodes/set_ccN
+  // Tests only parsing and response to control-messages on the infrastructural level, i.e. if the 
+  // playStatus object is correctly updated in response to midi controllers. Does not test routing 
+  // of controllers to parameters and responses of the DSP part to those messages. For this, we 
+  // have an extra test: samplerMidiModulationsTest.
 
   bool ok = true;
 
@@ -4992,20 +4995,6 @@ bool samplerControlsTest()
   // -Test re-assignment of the same controller - the last assignment should count
   // -Verify that the controllers get written into an sfz string when we use getAsSFZ
 
-  //-----------------------------------------------------------------------------------------------
-  // Test routing controllers to parameters:
-
-  // We create a patch with a sinewave and route control 7 to volume, play a note and in the middle
-  // of it, send a control 7 event that should reduce the output to 50%. Then, we look at the 
-  // output to check, if it indeed shows the desired volume switch:
-
-  //se.clearAllSfzSettings();
-  // se has still one group after this call (open se.sfz.global to see it)
-
-  se.clearInstrument();
-  // now, se has zero groups
-
-
 
   rsAssert(ok);
   return ok;
@@ -5039,7 +5028,8 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerControlsTest(); 
+  ok &= samplerModulationsTest();
+  //ok &= samplerControlsTest(); 
   //ok &= samplerParserTest();
   //ok &= samplerExamplePatchesTest(); 
 
@@ -5120,9 +5110,6 @@ bool samplerEngineUnitTest()
   //  into its initial state (look up what we do in ToolChain when a new sfz is loaded). If the 
   //  other one is still needed for some purpose, rename it to make the purpose more clear. It's
   //  confusing.
-
-
-  se.clearInstrument();
 
 
   // ToDo:
