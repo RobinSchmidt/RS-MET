@@ -4811,8 +4811,12 @@ bool samplerFixedModulationsTest()
   rsPlotVectors(tgt, outL, outR, outL-tgt);
   // It actually looks good. With tol = 1.e-5, it should pass. But it doesn't. But the 
   // testSamplerNote2 checks also the roundtrip to create the sfz-textstring and setting up another
-  // engine with that string. Maybe that part of the test fails? Check that!
-
+  // engine with that string. Maybe that part of the test fails? Check that! Yes - indeed! it fails
+  // at the line:
+  //   ok = se2.isInSameStateAs(se);
+  // In
+  //   SfzInstrument::Global::operator==
+  // the loop over the groups fails
 
 
 
