@@ -1684,6 +1684,41 @@ sample=Cos440Hz.wav";
 
 
 
+  //-----------------------------------------------------------------
+  // Here, we try to reproduce the situation which makes samplerFixedModulationsTest fail.
+
+  sfzStr = "\
+<group>\n\
+<region>\n\
+sample=Sin440Hz.wav\n\
+pitch_keycenter=60.000000\n\
+loop_mode=loop_continuous\n\
+loop_start=0.000000\n\
+loop_end=1000.000000\n\
+amplfo_freq=200.000000\n\
+volume=0.000000\n\
+amplfo_depth=6.020000";
+
+  setup(sfzStr);
+  ok &= se.getNumGroups()   == 1;
+  ok &= se.getNumRegions(0) == 1;
+  const rosic::Sampler::SfzInstrument::Region* r = se.getRegion(0, 0);
+  // pitch_keycenter, loop_mode, loop_start, loop_end, amplfo_freq have all index = -1 which stands
+  // for "not applicable". volume has index 1. That's also correct. amplfo_depth soes not appear in
+  // the settings because it's a modulation routing
+
+  std::string sfz2 = se.getAsSfz();
+  se2.setFromSFZ(sfz2);
+  ok = se2.isInSameStateAs(se);
+  // OK - this seems to work. However - in a similar situation when doing the se -> sfz-text -> se2 
+  // roundtrip in the test for the fixed modulations, it fails. But there, we don't use a sample 
+  // from the disk but some form memory which is called only "Sample" ....no .wav. Mayb that trips 
+  // up the parser?
+
+
+
+
+
   rsAssert(ok);
   return ok;
 }
@@ -4800,9 +4835,18 @@ bool samplerFixedModulationsTest()
 
   // Produce sampler output signal and check against target:
   float tol = 1.e-5;
-  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, tol, -1, true, true);
+  //ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, tol, -1, true, true);
 
   // It fails - let's check it more closely:
+
+
+  std::string sfz = se.getAsSfz();
+  rosic::Sampler::rsSamplerEngineTest se2;
+  se2.setSampleRate(se.getOutputSampleRate());
+  se2.copySamplePool(&se);
+  se2.setFromSFZ(sfz);
+  ok = se2.isInSameStateAs(se);
+  // FAILS!
 
   Vec outL(N), outR(N);
   getSamplerNote(&se, 69, 100, outL, outR, -1);
@@ -4829,19 +4873,9 @@ bool samplerFixedModulationsTest()
   // index member correctly. Maybe check the function:
   //   SfzCodeBook::stringToOpcode
 
-  // ToDo: try the parser with the following string -  maybe shorten it a bit:
-  /*
-  <group>
-  <region>
-    sample=Sample
-    pitch_keycenter=60.000000
-    loop_mode=loop_continuous
-    loop_start=0.000000
-    loop_end=1000.000000
-    amplfo_freq=200.000000
-    volume=0.000000
-    amplfo_depth=6.020000
-  */
+
+  // I think, it is wrong to set the index of the loop settings to 1. use -1 instead
+
 
   // ToDo:
   // -Verify if, the used formula produces the same behavior as intended by sfz spec. It could be
