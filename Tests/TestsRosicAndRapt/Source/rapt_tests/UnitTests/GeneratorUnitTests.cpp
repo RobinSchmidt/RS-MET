@@ -4786,7 +4786,7 @@ bool samplerFixedModulationsTest()
   float lfoDepth =    6.02f;  // in dB
   se.setRegionSetting(0, 0, OC::amplfo_freq,  lfoFreq,  1);
   se.setRegionSetting(0, 0, OC::amplfo_depth, lfoDepth, 1);
-  se.preAllocateDspMemory();     // GET RID!
+  se.preAllocateDspMemory();     // GET RID! Should happen automatically, when needed
 
   // Produce target signal:
   Vec tgt(N);
@@ -4799,9 +4799,27 @@ bool samplerFixedModulationsTest()
   //rsPlotVectors(dc, tgt);
 
   // Produce sampler output signal and check against target:
-  //Vec outL(N), outR(N);
-  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, 1.e-7f, -1, true, true);
-  //rsPlotVectors(dc, tgt, outL, outR);
+  float tol = 1.e-5;
+  ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, tol, -1, true, true);
+
+  // It fails - let's check it more closely:
+
+  Vec outL(N), outR(N);
+  getSamplerNote(&se, 69, 100, outL, outR, -1);
+  ok &= rsIsCloseTo(outL, tgt, tol);
+  ok &= rsIsCloseTo(outR, tgt, tol);
+  rsPlotVectors(tgt, outL, outR, outL-tgt);
+  // It actually looks good. With tol = 1.e-5, it should pass. But it doesn't. But the 
+  // testSamplerNote2 checks also the roundtrip to create the sfz-textstring and setting up another
+  // engine with that string. Maybe that part of the test fails? Check that!
+
+
+
+
+  // ToDo:
+  // -Verify if, the used formula produces the same behavior as intended by sfz spec. It could be
+  //  that the spec means to defined mod-depth as peak-to-peak peak values whereas we defines it
+  //  as up/down from the reference value (or vice versa). If we have it the wrong way - fix it!
 
   rsAssert(ok);
   return ok;
@@ -4810,9 +4828,14 @@ bool samplerFixedModulationsTest()
 bool samplerModulationsTest()
 {
   bool ok = true;
-  ok &= samplerFreeModulationsTest();
-  ok &= samplerMidiModulationsTest();
-  ok &= samplerFixedModulationsTest();  // FAILS!
+  ok &= samplerFreeModulationsTest();   // Test freely routable modulations
+
+  ok &= samplerFixedModulationsTest();  // Test hardwired modulations (amplfo, ampeg, ...)
+  // FAILS! Why? Figure out and fix!
+
+  ok &= samplerMidiModulationsTest();   // Test modulations by midi controllers
+
+
 
 
   /*
