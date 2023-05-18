@@ -517,13 +517,15 @@ public:
   to 0.f and a midi value of 127 maps to 1.f. */
   void processFrame(float* L, float* R) override;
 
-
   void updateCoeffs(double sampleRate) override;
 
+  /** Sets up the PlayStatus object to be used to grab the raw midi controller data from. */
+  void setPlayStatusToUse(PlayStatus* ps) { playStatus = ps; }
 
+  /** Sets up the controller number that shall serve as the source for the output of this 
+  object. */
+  void setControllerNumber(int newNumber) { ctrlIndex = newNumber; }
 
-  //void setControllerNumber(int newNumber) { ctrlIndex = newNumber; }
-  // We may not need to be able to set this after construction. We'll see.
 
 protected:
 

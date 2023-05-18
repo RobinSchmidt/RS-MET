@@ -597,7 +597,14 @@ void DspResourcePool::allocateModulators()
   ampLowFreqOscs.init(N);
   filLowFreqOscs.init(N);
 
+  N = 128;
   midiControllers.init(N);
+  for(int i = 0; i < N; i++)
+  {
+    midiControllers.getItemPointer(i)->setPlayStatusToUse(playStatus);
+    midiControllers.getItemPointer(i)->setControllerNumber(i);
+  }
+
 }
 
 Processor* DspResourcePool::grabModulator(OpcodeType type)

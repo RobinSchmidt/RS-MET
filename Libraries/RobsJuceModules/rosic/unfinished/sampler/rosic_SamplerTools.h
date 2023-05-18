@@ -162,6 +162,13 @@ public:
   bool isInConsistentState();
 
 
+
+  /** Returns a pointer to the index-th item in our stored array. This is meant mainly to call some
+  setup functions on the items for initialization immediately after construction. It's not meant to
+  grab an item for usage. */
+  T* getItemPointer(int index) { return &items[index]; }
+
+
 protected:
 
   std::vector<T> items; 
