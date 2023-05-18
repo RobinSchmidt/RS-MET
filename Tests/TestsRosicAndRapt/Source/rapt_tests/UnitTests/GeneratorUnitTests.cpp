@@ -4812,7 +4812,7 @@ bool samplerModulationsTest()
   bool ok = true;
   ok &= samplerFreeModulationsTest();
   ok &= samplerMidiModulationsTest();
-  //ok &= samplerFixedModulationsTest();  // FAILS!
+  ok &= samplerFixedModulationsTest();  // FAILS!
 
 
   /*
