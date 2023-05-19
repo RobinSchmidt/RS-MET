@@ -4845,31 +4845,6 @@ bool samplerMidiModulationsTest()
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  // noteOn at sample 0
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
   testSamplerOutput2(&se, tgt, tgt, events, tol, false); 
-  // This still fails (actually, it asserts). It is meant to replace the testSamplerOutput call 
-  // above. It does the same test and more - specifically, it additionally tests the generation and
-  // parsing of the sfz string
-
-  // The sring produced by SfzCodeBook::modRoutingToString is "control1_volume=12.000000". Is that
-  // correct? Why has the volume no index? Is it because when N=1, it's not added?
-
-  // asserts in the line se2.setFromSFZ(sfz); in  testSamplerOutput2
-
-  /* The produced sfz string inside testSamplerOutput2 is:
-
-  <group>
-  <region>
-  sample=Sample
-  pitch_keycenter=60.000000
-  loop_mode=loop_continuous
-  loop_start=0.000000
-  loop_end=1000.000000
-  volume=0.000000
-  control1_index=7.000000
-  control1_volume=12.000000
-
-  which actually looks right. */
-
-
 
   // This is the sfz way to set this up:
   //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
