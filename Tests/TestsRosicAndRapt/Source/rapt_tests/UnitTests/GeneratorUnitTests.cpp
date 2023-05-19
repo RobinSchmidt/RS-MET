@@ -4810,26 +4810,35 @@ bool samplerMidiModulationsTest()
   // The value range is supposed to be -144 to 48. But we will use CC7 because that's kinda 
   // standard for volume. There should be two ways to set this up. First, the general way to route
   // any MIDI CC to any modulatable parameter via setRegionModulation. The other way is via a 
-  // dedicated opcode volumeN_onccM to make it SFZ compatible.
-  // https://sfzformat.com/opcodes/gain_ccN
-  // https://sfzformat.com/opcodes/volume_onccN
-  // https://sfzformat.com/opcodes/amplitude_ccN
-  // https://sfzformat.com/opcodes/amplitude_onccN
+  // dedicated opcode volumeN_onccM to make it SFZ compatible. See:
+  //   https://sfzformat.com/opcodes/gain_ccN
+  //   https://sfzformat.com/opcodes/volume_onccN
+  //   https://sfzformat.com/opcodes/amplitude_ccN
+  //   https://sfzformat.com/opcodes/amplitude_onccN
+  // We test the general way first.
 
-  // First, we set up the routing from the controller to the parameter in the general way using the
+  // We set up the routing from the controller to the parameter in the general way using the
   // mod-system and a MidiController:
-  float volByCC = 12;
-  se.setRegionSetting(0, 0, OC::volumeN,        0.f, 1); // create amp unit with volume param
+  float volByCC7 = 12.f;
+
+  // Defining the volume1=0 opcode will create an amp unit with an volume param which serves as the
+  // target for out modulation:
+  se.setRegionSetting(0, 0, OC::volumeN,        0.f, 1);
+
+  // Defining the control1_index=7 opcode will create a midi controller modulator object which will
+  // be the modulation source:
   se.setRegionSetting(0, 0, OC::controlN_index, 7.f, 1); // assign controller object 1 to midi CC 7
+
+  // Establish the modulation connection:
   se.setRegionModulation(0,0,    // group 0, region 0
     OT::MidiCtrl, 1,             // Midi CC 7 gets routed to...
     OC::volumeN,  1,             // volume1
-    volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
+    volByCC7, Mode::absolute);    // with an (absolute) amount of volByCC decibels
 
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
   int ns = N/2;    // index to switch CC value for 0 to 127
-  float gain = rsDbToAmp(12.f);
+  float gain = rsDbToAmp(volByCC7);
   Vec tgt(N);
   for(int n = 0; n < ns; n++)
     tgt[n] = 1.f;
@@ -4841,10 +4850,14 @@ bool samplerMidiModulationsTest()
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
   std::vector<Ev> events;
-  events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));  // midi CC at sample 0
-  events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  // noteOn at sample 0
-  events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
-  testSamplerOutput2(&se, tgt, tgt, events, tol, false); 
+  events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));   // midi CC at sample 0
+  events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));   // noteOn at sample 0
+  events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns));  // midi CC at sample ns
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
+
+
+
 
   // This is the sfz way to set this up:
 
