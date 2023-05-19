@@ -4782,8 +4782,6 @@ bool samplerMidiModulationsTest()
   //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
   // We need to expand the signature to allow for a second index
 
-
-
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
   int ns = N/2;    // index to switch CC value for 0 to 127
@@ -4828,16 +4826,6 @@ bool samplerMidiModulationsTest()
   // tests the free modulators. Soo...how then should we do it? We need to manually add a 
   // mod-source for the controller and the wire it up, I guess
   */
-
-
-
-
-
-
-
-
-
-
 
 
   // Test key- and vel-tracking of amp:
