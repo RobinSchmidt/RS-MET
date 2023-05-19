@@ -4835,15 +4835,28 @@ bool samplerMidiModulationsTest()
     OC::volumeN,  1,             // volume1
     volByCC7, Mode::absolute);    // with an (absolute) amount of volByCC decibels
 
+  // Helper function to produce target signal:
+  auto fillTarget = [](Vec& target, float gain, int ns)
+  {
+    for(int n = 0; n < ns; n++)
+      target[n] = 1.f;
+    for(int n = ns; n < (int) target.size(); n++)
+      target[n] = gain;
+  };
+
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
   int ns = N/2;    // index to switch CC value for 0 to 127
   float gain = rsDbToAmp(volByCC7);
   Vec tgt(N);
+  fillTarget(tgt, gain, ns);
+  /* has been factored out into fillTarget:
   for(int n = 0; n < ns; n++)
     tgt[n] = 1.f;
   for(int n = ns; n < N; n++)
     tgt[n] = gain;
+    */
+
 
   // Produce sampler output signal and compare to target signal:
   float tol  = 0.f;
