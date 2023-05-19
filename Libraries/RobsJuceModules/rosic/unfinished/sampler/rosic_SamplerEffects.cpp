@@ -218,6 +218,17 @@ MidiController::MidiController()
   type = OpcodeType::MidiCtrl;
   params.reserve(1);                 // index
   addParameter(OC::controlN_index);  //   0
+
+  // Maybe add the following parameters:
+  // -controlN_amount or _depth or _scale: scales the normalized output by a factor, maybe unit
+  //  should be percent and default 100
+  // -controlN_shift or _offset: shifts the controller output by a constant, maybe it should also
+  //  be expressed in %, default is zeor, of course
+  // -controlN_neutral: defines the neutral value as integer midi number in 0..127. Is actually 
+  //  also am offset, but applied before normalizing to 0..1 or 0..100%
+  // -controlN_smooth: smoothing time in seconds. We can have a linear smoother in the DSP core
+  //  object. Default is zero.
+  // -controlN_quantize: an optional quantization, defaults to zero
 }
 
 void MidiController::processFrame(float* L, float* R)
@@ -226,23 +237,14 @@ void MidiController::processFrame(float* L, float* R)
   // to 0.f and a midi value of 127 maps to 1.f.
 
   RAPT::rsAssert(playStatus != nullptr);
-  if(playStatus)
-  {
+  if(playStatus) {
     RAPT::rsUint8 rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
-    *L = *R = (1.f/127.f) * (float)rawVal;
-    // Maybe we should have some sort of offset or neutral value? Maybe in 0..127 or in 
-    // 0..5, i.e. before or after the conversion to float? And then in do:
-    //   *L = *R = (1.f/127.f) * (float) (rawVal + offset);
-    // or:
-    //   *L = *R = ((1.f/127.f) * (float) rawVal) + offset;
-  }
-  else
-  {
-    *L = *R = 0.f;
-    // We are playing safe here with the if-conditional in the sense of defensive programming. 
+    *L = *R = (1.f/127.f) * (float)rawVal; }
+  else {
+    *L = *R = 0.f; }
+    // We are playing safe here with the if-conditional in the spirit of defensive programming. 
     // Later when the code stabilizes, maybe we can just assume that playStatus never is a nullptr
     // and optimize this branch away.
-  }
 }
 
 void MidiController::updateCoeffs(double sampleRate)
