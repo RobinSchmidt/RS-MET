@@ -225,7 +225,8 @@ MidiController::MidiController()
   // -controlN_shift or _offset: shifts the controller output by a constant, maybe it should also
   //  be expressed in %, default is zeor, of course
   // -controlN_neutral: defines the neutral value as integer midi number in 0..127. Is actually 
-  //  also am offset, but applied before normalizing to 0..1 or 0..100%
+  //  also am offset, but applied before normalizing to 0..1 or 0..100%. check, if sfz has a 
+  //  similar concept. Maybe controlN_center?
   // -controlN_smooth: smoothing time in seconds. We can have a linear smoother in the DSP core
   //  object. Default is zero.
   // -controlN_quantize: an optional quantization, defaults to zero
@@ -251,6 +252,11 @@ void MidiController::updateCoeffs(double sampleRate)
 {
   ctrlIndex = (int) params[0].mv();
 }
+
+// ARIA has float controller values:
+//   https://sfzformat.com/opcodes/set_hdccN
+//   https://sfzformat.com/opcodes/set_realccN
+// Maybe support them, too. They seem to be normalized to 0..1 instead of 0..127.
 
 //=================================================================================================
 
