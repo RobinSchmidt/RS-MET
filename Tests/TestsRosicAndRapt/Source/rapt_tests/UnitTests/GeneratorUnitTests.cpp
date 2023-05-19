@@ -4844,10 +4844,7 @@ bool samplerMidiModulationsTest()
   events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));  // midi CC at sample 0
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  // noteOn at sample 0
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
-
-  //testSamplerOutput(&se, tgt, tgt, events, tol, false); // Passes
-
-  testSamplerOutput2(&se, tgt, tgt, events, tol, true);  // Asserts
+  testSamplerOutput2(&se, tgt, tgt, events, tol, false); 
   // This still fails (actually, it asserts). It is meant to replace the testSamplerOutput call 
   // above. It does the same test and more - specifically, it additionally tests the generation and
   // parsing of the sfz string
