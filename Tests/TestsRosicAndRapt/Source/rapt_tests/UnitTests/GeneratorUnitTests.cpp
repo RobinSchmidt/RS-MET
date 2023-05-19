@@ -4833,6 +4833,24 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_keytrack
   // https://sfzformat.com/opcodes/amp_veltrack
 
+  // ToDo:
+  // -Maybe a different approach to this is better:
+  //  -Turn the MidiController controller class into a more full fledged DSP object
+  //  -It should have parameters with corresponding opcodes like: 
+  //   -controlN_cc: defines, what controller number the given controller object reads from. The N
+  //    here ist the index of the controller object and has nothing to do with the midi controller
+  //    number. If an instrument defines, for example, the opcode control1_cc=7, it means the the
+  //    first controller object should listen to midi CC7. The modulation wiring would refer to it 
+  //    by index 1, not 7.
+  //   -controlN_amount or _depth or _scale: scales the normalized output by a factor, maybe unit
+  //    should be percent and default 100
+  //   -controlN_shift or _offset: shifts the controller output by a constant, maybe it should also
+  //    be expressed in %, default is zeor, of course
+  //   -controlN_neutral: defines the neutral value as integer midi number in 0..127. Is actually 
+  //    also am offset, but applied before normalizing to 0..1 or 0..100%
+  //   -controlN_smooth: smoothing time in seconds. We can have a linear smoother in the DSP core
+  //    object. Default is zero.
+
 
   rsAssert(ok);
   return ok;
