@@ -641,6 +641,7 @@ OpcodeType SfzCodeBook::stringToModSource(const std::string& str, int* index)
   if(srcStr == "amplfo")   return OT::AmpLfo;
   if(srcStr == "fillfo")   return OT::FilterLfo;
   if(srcStr == "pitchlfo") return OT::PitchLfo;
+  if(srcStr == "control")  return OT::MidiCtrl;   // new, needs tests
 
   RAPT::rsError("Unknown string for modulation source");
   return OpcodeType::Unknown;

@@ -2,15 +2,15 @@
 Add a new type of modulator
 ===========================
 
-- Add an appropriate entry to the OpcodeType enum, probably after FreeEnv, FreeLfo, etc.
+- Opcode enum: Add opcodes corresponding to the modulator's parameters
 
-- Add opcodes corresponding to the modulator's parameters to the Opcode enum
+- OpcodeType enum: Add an appropriate entry, probably after FreeEnv, FreeLfo, etc.
 
-- In the constructor of SfzCodeBook, add the appropriate lines for just created opcodes, i.e.
-  add lines like: add(OC::my_new_opcode, ...
+- SfzCodeBook class: (1) Add the appropriate lines for just created opcodes in contsructor, e.g. a 
+  line like: add(OC::my_new_opcode, ...). (2) Add a line to modSourceToString, stringToModSource.
   
 - Add an appropriate subclass of Processor and implement its constructor, processFrame and
   updateCoeffs member functions.
   
-- Update DspResourcePool: (1) add an array of objects of the new type, (2) add new lines to 
-  allocateModulators, grabModulator, repositModulator
+- DspResourcePool class: (1) add an array of objects of the new type, (2) add new lines to 
+  allocateModulators, grabModulator, repositModulator.

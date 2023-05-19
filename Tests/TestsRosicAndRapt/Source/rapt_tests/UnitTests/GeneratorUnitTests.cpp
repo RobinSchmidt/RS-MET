@@ -4852,6 +4852,26 @@ bool samplerMidiModulationsTest()
   // above. It does the same test and more - specifically, it additionally tests the generation and
   // parsing of the sfz string
 
+  // The sring produced by SfzCodeBook::modRoutingToString is "control1_volume=12.000000". Is that
+  // correct? Why has the volume no index? Is it because when N=1, it's not added?
+
+  // asserts in the line se2.setFromSFZ(sfz); in  testSamplerOutput2
+
+  /* The produced sfz string inside testSamplerOutput2 is:
+
+  <group>
+  <region>
+  sample=Sample
+  pitch_keycenter=60.000000
+  loop_mode=loop_continuous
+  loop_start=0.000000
+  loop_end=1000.000000
+  volume=0.000000
+  control1_index=7.000000
+  control1_volume=12.000000
+
+  which actually looks right. */
+
 
 
   // This is the sfz way to set this up:
