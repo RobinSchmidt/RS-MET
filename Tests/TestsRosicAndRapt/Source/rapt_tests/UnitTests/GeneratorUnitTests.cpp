@@ -4777,21 +4777,15 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amplitude_ccN
   // https://sfzformat.com/opcodes/amplitude_onccN
 
-
-
-
   // First, we set up the routing from the controller to the parameter in the general way using the
-  // mod-system and a MidiController 
+  // mod-system and a MidiController:
   float volByCC = 12;
-
   se.setRegionSetting(0, 0, OC::volumeN,        0.f, 1); // create amp unit with volume param
   se.setRegionSetting(0, 0, OC::controlN_index, 7.f, 1); // assign controller object 1 to midi CC 7
   se.setRegionModulation(0,0,    // group 0, region 0
     OT::MidiCtrl, 1,             // Midi CC 7 gets routed to...
     OC::volumeN,  1,             // volume1
     volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
-
-
 
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
@@ -4803,38 +4797,22 @@ bool samplerMidiModulationsTest()
   for(int n = ns; n < N; n++)
     tgt[n] = gain;
 
-
   // Produce sampler output signal:
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
   std::vector<Ev> events;
+  events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));  // midi CC at sample 0
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  // noteOn at sample 0
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
   Vec outL(N), outR(N);
   getSamplerOutput(&se, events, &outL[0], &outR[0], N);
-  // At the end of RegionPlayer::assembleProcessors, there is a MidiController but no Amplifier 
-  // unit. Maybe add an opcode volume1
-
-
-  // OK - so far, so good - the function:
-  //   rsSamplerEngine::handleControlChange
-  // gets called correctly at sample 300. Now we must make sure that the modulation is correctly 
-  // applied. Currently, there are no modulations wired up. I think, we must implement a DSP object
-  // for MIDI modulations that has access to the PlayStatus and outputs the midi-controller value,
-  // divided by 127 to normalize the range 0..127 to 0..1 and then multiply by the amount...but 
-  // that multiplication should actually be done by the ModulationConnection object
-  // In SamplePlayer::handleModulations, there are no sources, targets and connections yet. 
-  // Check, what happes when building the DSP chain and modulator array
-  // Check SamplePlayer::assembleRoutableModulations - the passed modSettings array is empty
-
-  rsPlotVectors(tgt, outL, outR);
+  ok &= outL == tgt && outR == tgt; // Maybe, we'll need a tolerance later..
+  //rsPlotVectors(tgt, outL, outR); // Looks good!
 
 
   // This is the sfz way to set this up:
   //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
   // We need to expand the signature to allow for a second index
-
-
 
   // Test key- and vel-tracking of amp:
   // https://sfzformat.com/opcodes/amp_keycenter
@@ -4862,6 +4840,11 @@ bool samplerMidiModulationsTest()
   // -Try what happens when we don't explicitly define a volumeN opcode with N=1. I think, we'll do
   //  not get an Amplifier unit in the dspChain at the end of RegionPlayer::assembleProcessors.
   //  Should we?
+  // -Try what happens, if we remove the 1st event that sets the controller to 0 before the noteOn.
+  //  It seems like it's the uninitialized to some random value. Maybe we need a function 
+  //  se.resetMidiControllers() which sets all controllers to some default value - probably 0. 
+  //  Maybe we should also have a function resetMidiState that resets all midi state variables 
+  //  including the controllers.
 
 
   // Steps to do to add a new type of modulator (move this text to some other place):
