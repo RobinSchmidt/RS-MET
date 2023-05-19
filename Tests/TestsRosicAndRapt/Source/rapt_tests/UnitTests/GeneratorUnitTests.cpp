@@ -5171,6 +5171,8 @@ bool samplerEngineUnitTest()
   rsAssert(ok);
 
   // ToDo:
+  // -Create Patch to demo midi controllers. Should respond to 7 with volume, to 74 with cutoff, 
+  //  to 71 with resonance
   // -Finish features of LFO, EG
   // -Implement responses to MIDI controllers, make them available as modulators
   // -Throw total nonsense at the sfz parser and make sure, it handles it gracefully. There are 
