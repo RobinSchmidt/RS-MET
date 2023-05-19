@@ -4822,16 +4822,7 @@ bool samplerMidiModulationsTest()
   events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));  // midi CC at sample 0
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  // noteOn at sample 0
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
-  testSamplerOutput(&se, tgt, tgt, events, tol, true);
-
-  /*
-  // Has been factored out into testSamplerOutput call above:
-  Vec outL(N), outR(N);
-  getSamplerOutput(&se, events, &outL[0], &outR[0], N);
-  ok &= outL == tgt && outR == tgt; // Maybe, we'll need a tolerance later..
-  rsPlotVectors(tgt, outL, outR); // Looks good!
-  */
-
+  testSamplerOutput(&se, tgt, tgt, events, tol, false);
 
   // This is the sfz way to set this up:
   //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
