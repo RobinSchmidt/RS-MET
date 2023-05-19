@@ -4784,14 +4784,14 @@ bool samplerMidiModulationsTest()
   // mod-system and a MidiController 
   float volByCC = 12;
 
-  se.setRegionSetting(0, 0, OC::controlN_index, 7, 1); // assign controller object 1 to midi CC 7
+  se.setRegionSetting(0, 0, OC::volumeN,        0.f, 1); // create amp unit with volume param
+  se.setRegionSetting(0, 0, OC::controlN_index, 7.f, 1); // assign controller object 1 to midi CC 7
   se.setRegionModulation(0,0,    // group 0, region 0
     OT::MidiCtrl, 1,             // Midi CC 7 gets routed to...
     OC::volumeN,  1,             // volume1
     volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
 
 
-    
 
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
@@ -4812,10 +4812,6 @@ bool samplerMidiModulationsTest()
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
   Vec outL(N), outR(N);
   getSamplerOutput(&se, events, &outL[0], &outR[0], N);
-
-  // In SamplePlayer::handleModulations, we get an access violation in the loop over the
-  // modSources
-
   // At the end of RegionPlayer::assembleProcessors, there is a MidiController but no Amplifier 
   // unit. Maybe add an opcode volume1
 
@@ -4863,6 +4859,9 @@ bool samplerMidiModulationsTest()
   //   -controlN_smooth: smoothing time in seconds. We can have a linear smoother in the DSP core
   //    object. Default is zero.
   //   -controlN_quantize: an optional quantization, defaults to zero
+  // -Try what happens when we don't explicitly define a volumeN opcode with N=1. I think, we'll do
+  //  not get an Amplifier unit in the dspChain at the end of RegionPlayer::assembleProcessors.
+  //  Should we?
 
 
   // Steps to do to add a new type of modulator (move this text to some other place):
