@@ -4868,7 +4868,6 @@ bool samplerMidiModulationsTest()
   // Create new target signal:
   gain = rsDbToAmp(volByCC7 + volByCC8);
   fillTarget(tgt, gain, ns);
-  //rsPlotVector(tgt);
 
   // Add new controller object and connect to to volume1:
   se.setRegionSetting(0, 0, OC::controlN_index, 8.f, 2); // assign controller object 2 to midi CC 8
@@ -4879,12 +4878,7 @@ bool samplerMidiModulationsTest()
   events.push_back(       Ev(EvTp::controlChange, 8.f, 127.f, ns));
 
   // Test:
-  se.reset();
-  ok &= testSamplerOutput( &se, tgt, tgt, events, tol, true); 
-  // preliminary, FAILS too - output of the engine is actually zero!
-  // Check implementation of
-
-  //ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, true); // FAILS!!!
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
 
