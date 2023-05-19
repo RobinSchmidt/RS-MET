@@ -2499,7 +2499,7 @@ void splitChannels(const rsImage<rsFloat32x4>& img,
 
 // todo: combineChannels or merge channels
 
-
+// make int w, int h, parameters
 void renderNewtonFractal()
 {
   // User parameters:
@@ -2715,7 +2715,12 @@ void renderNewtonFractal()
     //  as intended -> investigate the method experimentally more thoroughly
 
     // Ideas:
-    // 
+    // -Use infinite tetration: z0 = z, z1 = z^z0, z2 = z^z1, z3 = z^z2, z4 = z^z3, ...
+    // -For a real input x, it converges for e^(-e) < x < e^(1/e) and if it converges, the value it 
+    //  converges to is given by c = W(-log(x)) / (-log(x)) where W(..) is the Lambert-W function.
+    // -See: https://www.youtube.com/watch?v=TNeJyVzDU20, 
+  //         https://www.youtube.com/watch?v=cMZ_blqKKZU
+    // -Figure out if in the complex plane, we must have e^(-e) < Re(z) < e^(1/e).
   
     return;
   };
@@ -2790,10 +2795,10 @@ void renderNewtonFractal()
 
 void fractal()
 {
-  //renderNewtonFractal();
+  renderNewtonFractal();
   //renderMandelbrot(500, 500);
   //renderMandelbrot(2000, 2000);
-  renderMandelbrot(5000, 5000);
+  //renderMandelbrot(5000, 5000);
 }
 
 void parametricCurve2D()
