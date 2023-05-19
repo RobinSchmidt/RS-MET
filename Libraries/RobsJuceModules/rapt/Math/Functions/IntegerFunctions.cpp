@@ -16,6 +16,10 @@ TUInt rsBinomialCoefficient(TUInt n, TUInt k)
     return result;
   }
 }
+// Maybe it could be optimized by accumulating a numertaor and denominator and doing one division
+// at the end. But such an algorithm would be more prone to internal overflow, I think.
+// See also: https://www.youtube.com/watch?v=FpeqDFmBc2A at around 33:44
+
 
 template<class TUInt>
 TUInt rsBinomialCoefficientUpTo20(TUInt n, TUInt k)
