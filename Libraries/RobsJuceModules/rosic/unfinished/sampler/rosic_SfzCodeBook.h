@@ -433,11 +433,13 @@ class PlaybackSetting
 
 public:
 
-  PlaybackSetting(Opcode type = Opcode::Unknown, float value = 0.f, int index = -1) 
+  PlaybackSetting(Opcode type = Opcode::Unknown, float value = 0.f, 
+    int index = -1, int index2 = -1) 
   { 
-    this->type  = type; 
-    this->value = value; 
-    this->index = index;
+    this->type   = type;
+    this->value  = value;
+    this->index  = index;
+    this->index2 = index2;
   }
   // maybe remove the -1 default argument. callers should be explicit...maybe...or: check with an
   // assert that no index applies to the given Opcode when index == -1
@@ -466,6 +468,8 @@ public:
   particular setting/opcode, this will return -1. */
   int getIndex() const { return index; }
 
+  int getIndex2() const { return index2; }
+
   /** Returns the default value for a given type of setting. */
   static float getDefaultValue(Opcode op, int index);
 
@@ -480,32 +484,38 @@ public:
 
   bool operator==(const PlaybackSetting& rhs) const
   {
-    return type == rhs.type && value == rhs.value && index == rhs.index;
+    return type == rhs.type 
+      && value  == rhs.value 
+      && index  == rhs.index 
+      && index2 == rhs.index2;
   }
 
   void setValue(float newValue) { value = newValue; }
 
-  void setup(Opcode newType, float newValue, int newIndex)
+  void setup(Opcode newType, float newValue, int newIndex, int newIndex2)
   {
-    type  = newType;
-    value = newValue;
-    index = newIndex;
+    type   = newType;
+    value  = newValue;
+    index  = newIndex;
+    index2 = newIndex2;
   }
 
   /** Resets the object to default values for the members., i.e. into the same state as immediately
   after default construction. */
-  void reset() { setup(Opcode::Unknown, 0.f, -1);  }
+  void reset() { setup(Opcode::Unknown, 0.f, -1, -1);  }
 
 
 private:
 
   Opcode type  = Opcode::Unknown;  // rename type to opcode
   float  value = 0.f;
-  int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
-  // Maybe use 1 as default. If there's only one such setting anyway, that seems appropriate
-  // index should always be a positive real number. But maybe that's not such a good idea - see
-  // comment in SfzInstrument::writeSettingToString in the cpp file. For certain things, we need
-  // a code for "not applicable".
+  int    index = -1;  // For opcodes with an index such as cutoffN. Is -1, if not applicable.
+  // See comment in SfzInstrument::writeSettingToString in the cpp file for why 1 as default is no 
+  // good idea. For certain things, we need a code for "not applicable".
+  
+
+  int index2 = -1; // For opcodes with 2 indices such as cutoffN_onccX
+  // new, under construction
   
   //int locationInCode = -1;
   // Maybe add later. Should store the character position where the opcode appears in the sfz code
