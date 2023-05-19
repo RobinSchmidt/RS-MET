@@ -4758,6 +4758,7 @@ bool samplerMidiModulationsTest()
   SE se;
   se.setSampleRate(fs);
   setupForLoopedDC(&se, 1000, 60, fs);  // the DC sample is of length 1000
+  se.preAllocateDspMemory();            // GET RID! Should happen automatically
 
   // To test modulation by MIDI, we set up a modulation connection from MIDI-CC 7 to volume1, 
   // trigger a note and during playing the note, we send a control change messages to the engine.
