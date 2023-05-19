@@ -4819,8 +4819,8 @@ bool samplerMidiModulationsTest()
 
   // We set up the routing from the controller to the parameter in the general way using the
   // mod-system and a MidiController:
-  float volByCC7 = 12.f;
-  float volByCC8 =  6.f;
+  float vol1ByCC7 = 12.f;
+  float vol1ByCC8 =  6.f;
 
   // Defining the volume1=0 opcode will create an amp unit with an volume param which serves as the
   // target for out modulation:
@@ -4834,7 +4834,7 @@ bool samplerMidiModulationsTest()
   se.setRegionModulation(0,0,    // group 0, region 0
     OT::MidiCtrl, 1,             // Midi CC 7 gets routed to...
     OC::volumeN,  1,             // volume1
-    volByCC7, Mode::absolute);   // with an (absolute) amount of volByCC decibels
+    vol1ByCC7, Mode::absolute);   // with an (absolute) amount of volByCC decibels
 
   // Helper function to produce target signal:
   auto fillTarget = [](Vec& target, float gain, int ns)
@@ -4848,7 +4848,7 @@ bool samplerMidiModulationsTest()
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
   int ns = N/2;    // index to switch CC value for 0 to 127
-  float gain = rsDbToAmp(volByCC7);
+  float gain = rsDbToAmp(vol1ByCC7);
   Vec tgt(N);
   fillTarget(tgt, gain, ns);
 
@@ -4867,12 +4867,12 @@ bool samplerMidiModulationsTest()
   // Now a second test that routes 2 midi controllers to volume1 (cc7 as before and now also cc8):
 
   // Create new target signal:
-  gain = rsDbToAmp(volByCC7 + volByCC8);
+  gain = rsDbToAmp(vol1ByCC7 + vol1ByCC8);
   fillTarget(tgt, gain, ns);
 
   // Add new controller object by defining the opcode control2_index=8 and connect it to volume1:
   se.setRegionSetting(   0,0, OC::controlN_index, 8.f, 2); // assign controller object 2 to midi CC 8
-  se.setRegionModulation(0,0, OT::MidiCtrl, 2, OC::volumeN, 1, volByCC8, Mode::absolute);  
+  se.setRegionModulation(0,0, OT::MidiCtrl, 2, OC::volumeN, 1, vol1ByCC8, Mode::absolute);  
 
   // Add new midi CC events:
   RAPT::rsPrepend(events, Ev(EvTp::controlChange, 8.f,   0.f,  0));
@@ -4884,13 +4884,28 @@ bool samplerMidiModulationsTest()
 
   // Try changing the value of the mod-amount by cc7 from +12 dB to +5 dB. This should overwrite
   // the +12 setting from before:
-  volByCC7 = 5.f;
-  se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::volumeN,  1, volByCC7, Mode::absolute); 
-  gain = rsDbToAmp(volByCC7 + volByCC8);
+  vol1ByCC7 = 5.f;
+  se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::volumeN,  1, vol1ByCC7, Mode::absolute); 
+  gain = rsDbToAmp(vol1ByCC7 + vol1ByCC8);
   fillTarget(tgt, gain, ns);
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
+  // Add a second amplifier and let its volume parameter also be controlled by cc7 and cc8:
+  vol1ByCC7       = 1.7;
+  vol1ByCC8       = 1.8;
+  float vol2ByCC7 = 2.7f;
+  float vol2ByCC8 = 2.8f;
+  gain = rsDbToAmp(vol1ByCC7 + vol1ByCC8 + vol2ByCC7 + vol2ByCC8);
+  fillTarget(tgt, gain, ns);
+
+  tol = 1.e-6;  // We need some tolerance here
+  se.setRegionSetting(0, 0, OC::volumeN,  0.f, 2);
+  se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::volumeN, 1, vol1ByCC7, Mode::absolute);
+  se.setRegionModulation(0,0, OT::MidiCtrl, 2, OC::volumeN, 1, vol1ByCC8, Mode::absolute);
+  se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::volumeN, 2, vol2ByCC7, Mode::absolute);
+  se.setRegionModulation(0,0, OT::MidiCtrl, 2, OC::volumeN, 2, vol2ByCC8, Mode::absolute);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
 
@@ -4910,13 +4925,9 @@ bool samplerMidiModulationsTest()
   // -Try what happens when we don't explicitly define a volumeN opcode with N=1. I think, we'll do
   //  not get an Amplifier unit in the dspChain at the end of RegionPlayer::assembleProcessors.
   //  Should we?
-  // -Try what happens when we put a second connection from the control1 to volume1. Will they 
-  //  add up? I think, they should not. I think, the expected behavior is that the old setting is 
-  //  overwritten
-  // -Route a second controller also to volume1 - their outputs should add up
   // -Try a modulation amount of 1/2
   // -Make a test that routes one controller to two parameters. Maybe set up a patch with a 
-  //  highpass and a lowpass and route cc74 to both cutoffs.
+  //  highpass and a lowpass and route cc74 to both cutoffs. Or, simpler, add a second Amplifier.
   // -Try what happens, if we remove the 1st event that sets the controller to 0 before the noteOn.
   //  It seems like it's the uninitialized to some random value. Maybe we need a function 
   //  se.resetMidiControllers() which sets all controllers to some default value - probably 0. 
