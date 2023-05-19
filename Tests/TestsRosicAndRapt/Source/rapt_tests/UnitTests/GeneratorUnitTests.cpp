@@ -4847,6 +4847,9 @@ bool samplerMidiModulationsTest()
   testSamplerOutput2(&se, tgt, tgt, events, tol, false); 
 
   // This is the sfz way to set this up:
+
+
+
   //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
   // We need to expand the signature to allow for a second index
 
@@ -4856,11 +4859,14 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
-  // -Replace call to testSamplerOutput with testSamplerOutput2 which tests a couple of more things
-  //  and make that test pass.
   // -Try what happens when we don't explicitly define a volumeN opcode with N=1. I think, we'll do
   //  not get an Amplifier unit in the dspChain at the end of RegionPlayer::assembleProcessors.
   //  Should we?
+  // -Try what happens when we put a second connection from the control1 to volume1. Will they 
+  //  add up?
+  // -Route a second controller also to volume1 - their outputs should add up
+  // -Make a test that routes one controller to two parameters. Maybe set up a patch with a 
+  //  highpass and a lowpass and route cc74 to both cutoffs.
   // -Try what happens, if we remove the 1st event that sets the controller to 0 before the noteOn.
   //  It seems like it's the uninitialized to some random value. Maybe we need a function 
   //  se.resetMidiControllers() which sets all controllers to some default value - probably 0. 
