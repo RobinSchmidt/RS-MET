@@ -273,6 +273,7 @@ bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   return errL <= tol && errR <= tol;
 }
 
+/** Version of the function that takes a list of events. */
 bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<float>& targetL, const std::vector<float>& targetR,
   const std::vector<rosic::Sampler::rsMusicalEvent<float>>& events,
@@ -289,6 +290,27 @@ bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
     rsPlotVectors(targetL, targetR, outL, outR, targetL-outL, targetR-outR);
   return ok;
 }
+
+/** Version with the list of events that also tests generation and parsing of the sfz-string. */
+bool testSamplerOutput2(rosic::Sampler::rsSamplerEngine* se,
+  const std::vector<float>& targetL, const std::vector<float>& targetR,
+  const std::vector<rosic::Sampler::rsMusicalEvent<float>>& events,
+  float tol = 0.f, bool plot = false)
+{
+  bool ok = testSamplerOutput(se, targetL, targetR, events, tol, plot);
+
+  // The next test retrieves the state of the passed engine as sfz-string and sets up a fresh 
+  // engine from this string and checks if this second engine also produces the desired output:
+  std::string sfz = se->getAsSfz();
+  rosic::Sampler::rsSamplerEngineTest se2;
+  se2.setSampleRate(se->getOutputSampleRate());
+  se2.copySamplePool(se);
+  se2.setFromSFZ(sfz);
+  ok = se2.isInSameStateAs(se);
+  ok &= testSamplerOutput(&se2, targetL, targetR, events, tol, plot);
+  return ok;
+}
+
 
 bool testSamplerNote1(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
   const std::vector<float>& targetL, const std::vector<float>& targetR, 
@@ -4822,7 +4844,15 @@ bool samplerMidiModulationsTest()
   events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));  // midi CC at sample 0
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  // noteOn at sample 0
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
-  testSamplerOutput(&se, tgt, tgt, events, tol, false);
+
+  testSamplerOutput(&se, tgt, tgt, events, tol, false); // Passes
+
+  //testSamplerOutput2(&se, tgt, tgt, events, tol, true);
+  // This still fails (actually, it asserts). It is meant to replace the testSamplerOutput call 
+  // above. It does the same test and more - specifically, it additionally tests the generation and
+  // parsing of the sfz string
+
+
 
   // This is the sfz way to set this up:
   //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
@@ -4834,6 +4864,8 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
+  // -Replace call to testSamplerOutput with testSamplerOutput2 which tests a couple of more things
+  //  and make that test pass.
   // -Maybe a different approach to this is better:
   //  -Turn the MidiController controller class into a more full fledged DSP object
   //  -It should have parameters with corresponding opcodes like: 
