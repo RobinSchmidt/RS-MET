@@ -306,6 +306,12 @@ SfzCodeBook::SfzCodeBook()
   // SFZ2 has: lfoN_freq, lfoN_amplitude, lfoN_volume, lfoN_pan, lfoN_cutoff, lfoN_cutoff2
   // we want:  lfoN_amplitudeX, lfoN_volumeX, lfoN_cutoffX, ...
 
+
+  dsp = OpcodeType::MidiCtrl;
+  add(OC::controlN_index, Int, "controlN_index", 0.0f,  127.f, 0.f, dsp, OU::Index, RsMet);
+
+
+
   // Hardwired modulation routings:
   dsp = OpcodeType::HardwiredModRouting;
 

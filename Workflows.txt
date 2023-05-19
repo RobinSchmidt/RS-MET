@@ -63,7 +63,7 @@ Testing ToolChain:
 Update to a new JUCE version:
 
 ----------------------------------------------------------------------------------------------------
-Managing the repository (plan - not yet realized):
+Managing the repository (plan - not yet fully realized):
 
 There should be 4 branches with varying levels of maturity vs preliminarity
 
@@ -75,10 +75,13 @@ release:
 
 master:
 -Should build on all target platforms in Debug and Release mode.
+-Should build after re-generating the IDE project files from Projucer and should do so with a 
+ reasonable amount of warnings without tweaking the warning level in the IDE. What is "reasonable"?
+ I don't know. Try to get rid of as many as possible.
 -Should be reasonably tested and debugged.
 
 develop:
--Should build on Windows in Visual Studio and XCode in macOS in Debug and Release mode.
+-Should build on Windows in Visual Studio and on macOS in XCode in Debug and Release mode.
 
 work:
 -Should build on Windows in Visual Studio in Debug mode (the primary dev environment).

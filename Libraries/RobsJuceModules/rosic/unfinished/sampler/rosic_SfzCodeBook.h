@@ -82,7 +82,7 @@ enum class Opcode
   volumeN, panN, widthN, positionN, 
   ampN_keytrack, ampN_keycenter, ampN_veltrack,
   // ampN_velcurve_X /* ? */, ampN_random,
-  volumeN_onccX,  // under construction
+  //volumeN_onccX,  // under construction
 
   // Amplifier Envelope:
   ampeg_delay, ampeg_start, ampeg_attack, ampeg_peak, ampeg_hold, ampeg_decay, ampeg_sustain, 
@@ -136,6 +136,9 @@ enum class Opcode
   lfoN_amplitudeX, 
   // is this supposed to control the amplitude of the LFO..or the routing of the LFO output to an
   // amplitude parameter? in the former case, we need nee no second index X, in the latter, we do
+
+
+  controlN_index, // maybe add: controlN_smooth, controlN_quantize, etc.
 
 
 
@@ -390,7 +393,6 @@ enum class OpcodeType   // Maybe rename to OpcodeTarget
   _TagFreeModulatorsStart,
   FreeEnv,    // rename to EnvGen or FreeAdsr
   FreeLfo,    // rename to LowFreqOsc
-
   MidiCtrl,   // new, under construction
 
   // Allow midi-inputs to be modulation sources, too:

@@ -4776,11 +4776,23 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amplitude_ccN
   // https://sfzformat.com/opcodes/amplitude_onccN
 
-
-  // This is the sfz way to set this up:
+  // First, we try it in the general way:
   float volByCC = 12;
-  //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
-  // We need to expand the signature to allow for a second index
+  se.setRegionSetting(0, 0, OC::controlN_index, 7, 1); // assign controller object 1 to midi CC 7
+
+  /*
+  se.setRegionModulation(0,0,    // group 0, region 0
+    OT::MidiCtrl, 1,             // Midi CC 7 gets routed to
+    OC::volumeN,  1,             // volume1
+    volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
+    */
+    
+  // Ah - no - I think, it is wrong to pass 7 for the index. The expected index is the index of the
+  // mod-source in the mod-sources array, not the controller number. Check against the code that 
+  // tests the free modulators. Soo...how then should we do it? We need to manually add a 
+  // mod-source for the controller and the wire it up, I guess
+
+
 
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
@@ -4815,17 +4827,11 @@ bool samplerMidiModulationsTest()
 
   rsPlotVectors(tgt, outL, outR);
 
-  /*
-  // Now, we try it in the general way:
-  se.setRegionModulation(0,0,    // group 0, region 0
-    OT::MidiCtrl, 7,             // Midi CC 7 gets routed to
-    OC::volumeN,  1,             // volume1
-    volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
-  // Ah - no - I think, it is wrong to pass 7 for the index. The expected index is the index of the
-  // mod-source in the mod-sources array, not the controller number. Check against the code that 
-  // tests the free modulators. Soo...how then should we do it? We need to manually add a 
-  // mod-source for the controller and the wire it up, I guess
-  */
+
+  // This is the sfz way to set this up:
+  //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
+  // We need to expand the signature to allow for a second index
+
 
 
   // Test key- and vel-tracking of amp:
@@ -4850,6 +4856,7 @@ bool samplerMidiModulationsTest()
   //    also am offset, but applied before normalizing to 0..1 or 0..100%
   //   -controlN_smooth: smoothing time in seconds. We can have a linear smoother in the DSP core
   //    object. Default is zero.
+  //   -controlN_quantize: an optional quantization, defaults to zero
 
 
   rsAssert(ok);
