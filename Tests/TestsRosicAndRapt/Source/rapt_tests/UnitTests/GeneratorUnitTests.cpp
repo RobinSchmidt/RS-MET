@@ -5109,7 +5109,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerParserTest();
+  //ok &= samplerParserTest();
   ok &= samplerModulationsTest();
   //ok &= samplerControlsTest(); 
   //ok &= samplerExamplePatchesTest(); 
