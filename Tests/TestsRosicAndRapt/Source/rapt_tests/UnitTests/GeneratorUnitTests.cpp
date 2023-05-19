@@ -273,6 +273,23 @@ bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   return errL <= tol && errR <= tol;
 }
 
+bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
+  const std::vector<float>& targetL, const std::vector<float>& targetR,
+  const std::vector<rosic::Sampler::rsMusicalEvent<float>>& events,
+  float tol = 0.f, bool plot = false)
+{
+  bool ok = true;
+  int N = (int) targetL.size();
+  rsAssert((int)targetR.size() == N);
+  std::vector<float> outL(N), outR(N);
+  getSamplerOutput(se, events, &outL[0], &outR[0], N);
+  ok &= rsIsCloseTo(outL, targetL, tol);
+  ok &= rsIsCloseTo(outR, targetR, tol);
+  if(plot)
+    rsPlotVectors(targetL, targetR, outL, outR, targetL-outL, targetR-outR);
+  return ok;
+}
+
 bool testSamplerNote1(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
   const std::vector<float>& targetL, const std::vector<float>& targetR, 
   float tol = 0.f, bool plot = false)
@@ -4797,17 +4814,23 @@ bool samplerMidiModulationsTest()
   for(int n = ns; n < N; n++)
     tgt[n] = gain;
 
-  // Produce sampler output signal:
+  // Produce sampler output signal and compare to target signal:
+  float tol  = 0.f;
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
   std::vector<Ev> events;
   events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));  // midi CC at sample 0
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  // noteOn at sample 0
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
+  testSamplerOutput(&se, tgt, tgt, events, tol, true);
+
+  /*
+  // Has been factored out into testSamplerOutput call above:
   Vec outL(N), outR(N);
   getSamplerOutput(&se, events, &outL[0], &outR[0], N);
   ok &= outL == tgt && outR == tgt; // Maybe, we'll need a tolerance later..
-  //rsPlotVectors(tgt, outL, outR); // Looks good!
+  rsPlotVectors(tgt, outL, outR); // Looks good!
+  */
 
 
   // This is the sfz way to set this up:
