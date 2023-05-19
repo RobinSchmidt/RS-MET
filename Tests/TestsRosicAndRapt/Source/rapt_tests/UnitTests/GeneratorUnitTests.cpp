@@ -4784,15 +4784,11 @@ bool samplerMidiModulationsTest()
   float volByCC = 12;
 
   se.setRegionSetting(0, 0, OC::controlN_index, 7, 1); // assign controller object 1 to midi CC 7
-  // Uncommenting this triggers an assert later in this test. This is perhaps to be expected 
-  // because the implementation of the controller stuff is not yet complete. The assert is hit in
-  // Processor::setParameter and it's about not finding a Parameter object with the right opcode
-  // ...which is understandable because we do not yet create that parameter
-
   se.setRegionModulation(0,0,    // group 0, region 0
     OT::MidiCtrl, 1,             // Midi CC 7 gets routed to...
     OC::volumeN,  1,             // volume1
     volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
+
 
     
 
@@ -4815,6 +4811,13 @@ bool samplerMidiModulationsTest()
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); // midi CC at sample ns
   Vec outL(N), outR(N);
   getSamplerOutput(&se, events, &outL[0], &outR[0], N);
+
+  // In SamplePlayer::handleModulations, we get an access violation in the loop over the
+  // modSources
+
+  // At the end of RegionPlayer::assembleProcessors, there is a MidiController but no Amplifier 
+  // unit. Maybe add an opcode volume1
+
 
   // OK - so far, so good - the function:
   //   rsSamplerEngine::handleControlChange
