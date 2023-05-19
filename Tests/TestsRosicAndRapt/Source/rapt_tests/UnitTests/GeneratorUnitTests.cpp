@@ -4776,23 +4776,23 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amplitude_ccN
   // https://sfzformat.com/opcodes/amplitude_onccN
 
-  // First, we try it in the general way:
-  float volByCC = 12;
-  se.setRegionSetting(0, 0, OC::controlN_index, 7, 1); // assign controller object 1 to midi CC 7
 
-  /*
+
+
+  // First, we set up the routing from the controller to the parameter in the general way using the
+  // mod-system and a MidiController 
+  float volByCC = 12;
+
+  //se.setRegionSetting(0, 0, OC::controlN_index, 7, 1); // assign controller object 1 to midi CC 7
+  // Uncommenting this triggers an assert later in this test. This is perhaps to be expected 
+  // because the implementation of the controller stuff is not yet complete.
+
   se.setRegionModulation(0,0,    // group 0, region 0
-    OT::MidiCtrl, 1,             // Midi CC 7 gets routed to
+    OT::MidiCtrl, 1,             // Midi CC 7 gets routed to...
     OC::volumeN,  1,             // volume1
     volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
-    */
+
     
-  // Ah - no - I think, it is wrong to pass 7 for the index. The expected index is the index of the
-  // mod-source in the mod-sources array, not the controller number. Check against the code that 
-  // tests the free modulators. Soo...how then should we do it? We need to manually add a 
-  // mod-source for the controller and the wire it up, I guess
-
-
 
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
@@ -4857,6 +4857,14 @@ bool samplerMidiModulationsTest()
   //   -controlN_smooth: smoothing time in seconds. We can have a linear smoother in the DSP core
   //    object. Default is zero.
   //   -controlN_quantize: an optional quantization, defaults to zero
+
+
+  // Steps to do to add a new type of modulator (move this text to some other place):
+  // -Add an appropriate entry to the OpcodeType enum, probably after FreeEnv, FreeLfo, etc.
+  // -Add opcodes corresponding to the modulator's parameters to the Opcode enum
+  // -In the constructor of SfzCodeBook, add the appropriate lines for just created opcodes, i.e.
+  //  add lines like: add(OC::my_new_opcode, ...
+  // -
 
 
   rsAssert(ok);

@@ -525,12 +525,20 @@ public:
   /** Sets up the controller number that shall serve as the source for the output of this 
   object. */
   void setControllerNumber(int newNumber) { ctrlIndex = newNumber; }
+  // Get rid! Use a Parameter object instead!
 
 
 protected:
 
-  int ctrlIndex = -1;
-  PlayStatus* playStatus = nullptr;
+  PlayStatus* playStatus = nullptr; 
+  // Needs to be assigned shortly after creation. Is used to read out the current value of the midi
+  // controller with the index that is set up by our index-parameter.
+
+  int ctrlIndex = -1; // turn this into a Parameter object
+
+  // ToDo: Maybe write a class MidiControllerCore. Maybe that class should contain the pointer to
+  // the PlayStatus - or maybe not - but if we include smoothing later, the core would be the right
+  // place to implement that.
 };
 
 
