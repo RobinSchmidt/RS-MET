@@ -4783,9 +4783,11 @@ bool samplerMidiModulationsTest()
   // mod-system and a MidiController 
   float volByCC = 12;
 
-  //se.setRegionSetting(0, 0, OC::controlN_index, 7, 1); // assign controller object 1 to midi CC 7
+  se.setRegionSetting(0, 0, OC::controlN_index, 7, 1); // assign controller object 1 to midi CC 7
   // Uncommenting this triggers an assert later in this test. This is perhaps to be expected 
-  // because the implementation of the controller stuff is not yet complete.
+  // because the implementation of the controller stuff is not yet complete. The assert is hit in
+  // Processor::setParameter and it's about not finding a Parameter object with the right opcode
+  // ...which is understandable because we do not yet create that parameter
 
   se.setRegionModulation(0,0,    // group 0, region 0
     OT::MidiCtrl, 1,             // Midi CC 7 gets routed to...
@@ -4864,7 +4866,8 @@ bool samplerMidiModulationsTest()
   // -Add opcodes corresponding to the modulator's parameters to the Opcode enum
   // -In the constructor of SfzCodeBook, add the appropriate lines for just created opcodes, i.e.
   //  add lines like: add(OC::my_new_opcode, ...
-  // -
+  // -Add an appropriate subclass of Processor and implement its constructor, processFrame and
+  //  updateCoeffs member functions.
 
 
   rsAssert(ok);

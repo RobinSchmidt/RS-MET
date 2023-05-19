@@ -504,28 +504,13 @@ class MidiController : public Processor
 {
 public:
 
-  /** On construction of the object, you must pass a pointer the PlayStatus object from the sampler
-  engine such that we can read off the current controller setting from it. This PlayStatus object's
-  lifetime is equal to the lifetime of the whole sampler engine, so it can be passed on creation of
-  the controller objects and stay the same for the whole lifetime of the MidiController. It's also
-  enough to set the controller number once and for all on construction. */
-  //MidiController(PlayStatus* playStatus, int controllerNumber);
-
   MidiController();
-
-  /** Outputs the normalized value of the controller in the range 0..1 where a midi value of 0 maps 
-  to 0.f and a midi value of 127 maps to 1.f. */
   void processFrame(float* L, float* R) override;
-
   void updateCoeffs(double sampleRate) override;
 
-  /** Sets up the PlayStatus object to be used to grab the raw midi controller data from. */
+  /** Sets up the PlayStatus object to be used to grab the raw midi controller data from. Should be
+  called soon after construction. */
   void setPlayStatusToUse(PlayStatus* ps) { playStatus = ps; }
-
-  /** Sets up the controller number that shall serve as the source for the output of this 
-  object. */
-  void setControllerNumber(int newNumber) { ctrlIndex = newNumber; }
-  // Get rid! Use a Parameter object instead!
 
 
 protected:

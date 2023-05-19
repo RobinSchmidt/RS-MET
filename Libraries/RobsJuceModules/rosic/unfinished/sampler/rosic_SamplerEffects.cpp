@@ -212,24 +212,19 @@ EnvGenFil::EnvGenFil()
 
 //=================================================================================================
 
-/*
-MidiController::MidiController(PlayStatus* _playStatus, int controllerNumber)
-  : playStatus(_playStatus)
-  , ctrlIndex(controllerNumber)
-{
-  // Sanity-check:
-  RAPT::rsAssert(playStatus != nullptr);
-  RAPT::rsAssert(ctrlIndex >= 0 && ctrlIndex <= 127);
-}
-*/
-
 MidiController::MidiController()
 {
+  using OC = Opcode;
   type = OpcodeType::MidiCtrl;
+  params.reserve(1);                 // index
+  addParameter(OC::controlN_index);  //   0
 }
 
 void MidiController::processFrame(float* L, float* R)
 { 
+  // Outputs the normalized value of the controller in the range 0..1 where a midi value of 0 maps 
+  // to 0.f and a midi value of 127 maps to 1.f.
+
   RAPT::rsAssert(playStatus != nullptr);
   if(playStatus)
   {
@@ -252,15 +247,8 @@ void MidiController::processFrame(float* L, float* R)
 
 void MidiController::updateCoeffs(double sampleRate)
 {
-  RAPT::rsWarning("MidiController::updateCoeffs not yet implemented");
-  // We have nothing to do here but need to override it because it's purely virtual. Maybe later 
-  // such Controller objects may indeed have parameters? Maybe an offset? However, at the moment,
-  // there are none, so there's nothing to do here.
-  // ...maybe instead of passing a sampleRate, the caller should pass a pointer to the playStatus
-  // which may include a sampleRate member
+  ctrlIndex = (int) params[0].mv();
 }
-
-
 
 //=================================================================================================
 
@@ -597,14 +585,9 @@ void DspResourcePool::allocateModulators()
   ampLowFreqOscs.init(N);
   filLowFreqOscs.init(N);
 
-  N = 128;
   midiControllers.init(N);
   for(int i = 0; i < N; i++)
-  {
     midiControllers.getItemPointer(i)->setPlayStatusToUse(playStatus);
-    midiControllers.getItemPointer(i)->setControllerNumber(i);
-  }
-
 }
 
 Processor* DspResourcePool::grabModulator(OpcodeType type)

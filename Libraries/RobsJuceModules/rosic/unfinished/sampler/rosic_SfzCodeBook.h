@@ -139,7 +139,7 @@ enum class Opcode
 
 
   controlN_index, // maybe add: controlN_smooth, controlN_quantize, etc.
-
+  // maybe abbreviate control by ctrl
 
 
   // ARIA:
