@@ -82,7 +82,7 @@ enum class Opcode
   volumeN, panN, widthN, positionN, 
   ampN_keytrack, ampN_keycenter, ampN_veltrack,
   // ampN_velcurve_X /* ? */, ampN_random,
-  //volumeN_onccX,  // under construction
+  volumeN_onccX,  // under construction
 
   // Amplifier Envelope:
   ampeg_delay, ampeg_start, ampeg_attack, ampeg_peak, ampeg_hold, ampeg_decay, ampeg_sustain, 

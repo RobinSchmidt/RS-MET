@@ -4425,6 +4425,8 @@ bool samplerFreeModulationsTest()
     se->setRegionSetting(0, 0, OC::LoopStart, 0.f,       1);
     se->setRegionSetting(0, 0, OC::LoopEnd,  (float) N,  1);
     se->setRegionSetting(0, 0, OC::distortN_dc, baseDC,  1);
+    // I think, we should pass -1 instead of +1 for the last parameter for the loop-related 
+    // settings. It doesn't really matter for this test but it's wrong anyway - I think.
   };
 
   // Define a helper function that lets us pass in the frequency and modulation depth settings for
@@ -4769,13 +4771,18 @@ bool samplerMidiModulationsTest()
   // standard for volume. There should be two ways to set this up. First, the general way to route
   // any MIDI CC to any modulatable parameter via setRegionModulation. The other way is via a 
   // dedicated opcode volumeN_onccM to make it SFZ compatible.
+  // https://sfzformat.com/opcodes/gain_ccN
+  // https://sfzformat.com/opcodes/volume_onccN
+  // https://sfzformat.com/opcodes/amplitude_ccN
+  // https://sfzformat.com/opcodes/amplitude_onccN
 
-  // First, we try it in the general way:
+
+  // This is the sfz way to set this up:
   float volByCC = 12;
-  se.setRegionModulation(0,0,    // group 0, region 0
-    OT::MidiCtrl, 7,             // Midi CC 7 gets routed to
-    OC::volumeN,  1,             // volume1
-    volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
+  //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
+  // We need to expand the signature to allow for a second index
+
+
 
   // Produce target signal:
   int N  = 600;    // number of samples in test signal
@@ -4806,21 +4813,26 @@ bool samplerMidiModulationsTest()
   // that multiplication should actually be done by the ModulationConnection object
   // In SamplePlayer::handleModulations, there are no sources, targets and connections yet. 
   // Check, what happes when building the DSP chain and modulator array
-  // Check SamplePlayer::assembleRoutableModulations
+  // Check SamplePlayer::assembleRoutableModulations - the passed modSettings array is empty
 
   rsPlotVectors(tgt, outL, outR);
 
+  /*
+  // Now, we try it in the general way:
+  se.setRegionModulation(0,0,    // group 0, region 0
+    OT::MidiCtrl, 7,             // Midi CC 7 gets routed to
+    OC::volumeN,  1,             // volume1
+    volByCC, Mode::absolute);    // with an (absolute) amount of volByCC decibels
+  // Ah - no - I think, it is wrong to pass 7 for the index. The expected index is the index of the
+  // mod-source in the mod-sources array, not the controller number. Check against the code that 
+  // tests the free modulators. Soo...how then should we do it? We need to manually add a 
+  // mod-source for the controller and the wire it up, I guess
+  */
 
 
 
 
-  // This is the other way to set this up:
-  //se.setRegionSetting(0,0, OC::volumeN_onccM, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
-  // we need to expand the signature to allow for a second index
-  // https://sfzformat.com/opcodes/gain_ccN
-  // https://sfzformat.com/opcodes/volume_onccN
-  // https://sfzformat.com/opcodes/amplitude_ccN
-  // https://sfzformat.com/opcodes/amplitude_onccN
+
 
 
 
