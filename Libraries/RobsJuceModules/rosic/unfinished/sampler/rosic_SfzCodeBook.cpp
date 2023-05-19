@@ -574,13 +574,15 @@ std::string SfzCodeBook::modSourceToString(OpcodeType sourceType, int index)
 
   switch(sourceType)
   {
-  case OT::FreeEnv:   tmp = "adsr";   break;
-  case OT::AmpEnv:    tmp = "ampeg";  break;
-  case OT::FilterEnv: tmp = "fileg";  break;
+  case OT::FreeEnv:   tmp = "adsr";    break;
+  case OT::AmpEnv:    tmp = "ampeg";   break;
+  case OT::FilterEnv: tmp = "fileg";   break;
 
-  case OT::FreeLfo:   tmp = "lfo";    break;
-  case OT::AmpLfo:    tmp = "amplfo"; break;
-  case OT::FilterLfo: tmp = "fillfo"; break;
+  case OT::FreeLfo:   tmp = "lfo";     break;
+  case OT::AmpLfo:    tmp = "amplfo";  break;
+  case OT::FilterLfo: tmp = "fillfo";  break;
+
+  case OT::MidiCtrl:  tmp = "control"; break;   // new, needs tests
 
   default:
   {
