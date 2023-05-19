@@ -4820,6 +4820,7 @@ bool samplerMidiModulationsTest()
   // We set up the routing from the controller to the parameter in the general way using the
   // mod-system and a MidiController:
   float volByCC7 = 12.f;
+  float volByCC8 =  6.f;
 
   // Defining the volume1=0 opcode will create an amp unit with an volume param which serves as the
   // target for out modulation:
@@ -4833,7 +4834,7 @@ bool samplerMidiModulationsTest()
   se.setRegionModulation(0,0,    // group 0, region 0
     OT::MidiCtrl, 1,             // Midi CC 7 gets routed to...
     OC::volumeN,  1,             // volume1
-    volByCC7, Mode::absolute);    // with an (absolute) amount of volByCC decibels
+    volByCC7, Mode::absolute);   // with an (absolute) amount of volByCC decibels
 
   // Helper function to produce target signal:
   auto fillTarget = [](Vec& target, float gain, int ns)
@@ -4850,13 +4851,6 @@ bool samplerMidiModulationsTest()
   float gain = rsDbToAmp(volByCC7);
   Vec tgt(N);
   fillTarget(tgt, gain, ns);
-  /* has been factored out into fillTarget:
-  for(int n = 0; n < ns; n++)
-    tgt[n] = 1.f;
-  for(int n = ns; n < N; n++)
-    tgt[n] = gain;
-    */
-
 
   // Produce sampler output signal and compare to target signal:
   float tol  = 0.f;
@@ -4869,8 +4863,25 @@ bool samplerMidiModulationsTest()
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
+  // Now a second test that routes 2 midi controllers to volume1 (cc7 as before and now also cc8):
 
+  // Create new target signal:
+  gain = rsDbToAmp(volByCC7 + volByCC8);
+  fillTarget(tgt, gain, ns);
+  //rsPlotVector(tgt);
 
+  // Add new controller object and connect to to volume1:
+  se.setRegionSetting(0, 0, OC::controlN_index, 8.f, 2); // assign controller object 2 to midi CC 8
+  se.setRegionModulation(0,0, OT::MidiCtrl, 2, OC::volumeN, 1, volByCC8, Mode::absolute);  
+
+  // Add new midi CC events:
+  RAPT::rsPrepend(events, Ev(EvTp::controlChange, 8.f, 0.f, ns));
+  events.push_back(Ev(EvTp::controlChange, 8.f, 127.f, ns));
+
+  // Test:
+  tol = 1.e-5;
+  ok &= testSamplerOutput( &se, tgt, tgt, events, tol, true); // preliminary, FAILS too
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, true); // FAILS!!!
 
 
 
@@ -4893,6 +4904,7 @@ bool samplerMidiModulationsTest()
   // -Try what happens when we put a second connection from the control1 to volume1. Will they 
   //  add up?
   // -Route a second controller also to volume1 - their outputs should add up
+  // -Try a modulation amount of 1/2
   // -Make a test that routes one controller to two parameters. Maybe set up a patch with a 
   //  highpass and a lowpass and route cc74 to both cutoffs.
   // -Try what happens, if we remove the 1st event that sets the controller to 0 before the noteOn.
