@@ -4882,6 +4882,17 @@ bool samplerMidiModulationsTest()
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
+  // Try changing the value of the mod-amount by cc7 from +12 dB to +5 dB. This should overwrite
+  // the +12 setting from before:
+  volByCC7 = 5.f;
+  se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::volumeN,  1, volByCC7, Mode::absolute); 
+  gain = rsDbToAmp(volByCC7 + volByCC8);
+  fillTarget(tgt, gain, ns);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
+
+
+
+
 
   // This is the sfz way to set this up:
 
@@ -4900,7 +4911,8 @@ bool samplerMidiModulationsTest()
   //  not get an Amplifier unit in the dspChain at the end of RegionPlayer::assembleProcessors.
   //  Should we?
   // -Try what happens when we put a second connection from the control1 to volume1. Will they 
-  //  add up?
+  //  add up? I think, they should not. I think, the expected behavior is that the old setting is 
+  //  overwritten
   // -Route a second controller also to volume1 - their outputs should add up
   // -Try a modulation amount of 1/2
   // -Make a test that routes one controller to two parameters. Maybe set up a patch with a 
