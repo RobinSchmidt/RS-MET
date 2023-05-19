@@ -267,7 +267,7 @@ Effects
 
 
 ===================================================================================================
-Fine-grained llist of basic tasks to do next (in order)
+Fine-grained list of basic tasks to do next (in order)
 
 -Presets showcasing all currently implemented features:
  -Modulation of 3 EQ-frequencies (in notch-peak-notch configuration at 500/1000/2000) to simualte 

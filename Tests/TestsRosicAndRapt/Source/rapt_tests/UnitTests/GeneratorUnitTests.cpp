@@ -4846,16 +4846,6 @@ bool samplerMidiModulationsTest()
   //  Maybe we should also have a function resetMidiState that resets all midi state variables 
   //  including the controllers.
 
-
-  // Steps to do to add a new type of modulator (move this text to some other place):
-  // -Add an appropriate entry to the OpcodeType enum, probably after FreeEnv, FreeLfo, etc.
-  // -Add opcodes corresponding to the modulator's parameters to the Opcode enum
-  // -In the constructor of SfzCodeBook, add the appropriate lines for just created opcodes, i.e.
-  //  add lines like: add(OC::my_new_opcode, ...
-  // -Add an appropriate subclass of Processor and implement its constructor, processFrame and
-  //  updateCoeffs member functions.
-
-
   rsAssert(ok);
   return ok;
 }
