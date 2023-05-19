@@ -4863,14 +4863,15 @@ bool samplerMidiModulationsTest()
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
+
   // Now a second test that routes 2 midi controllers to volume1 (cc7 as before and now also cc8):
 
   // Create new target signal:
   gain = rsDbToAmp(volByCC7 + volByCC8);
   fillTarget(tgt, gain, ns);
 
-  // Add new controller object and connect to to volume1:
-  se.setRegionSetting(0, 0, OC::controlN_index, 8.f, 2); // assign controller object 2 to midi CC 8
+  // Add new controller object by defining the opcode control2_index=8 and connect it to volume1:
+  se.setRegionSetting(   0,0, OC::controlN_index, 8.f, 2); // assign controller object 2 to midi CC 8
   se.setRegionModulation(0,0, OT::MidiCtrl, 2, OC::volumeN, 1, volByCC8, Mode::absolute);  
 
   // Add new midi CC events:
