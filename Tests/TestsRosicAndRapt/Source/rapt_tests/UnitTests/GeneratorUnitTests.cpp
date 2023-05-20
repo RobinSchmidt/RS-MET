@@ -1712,14 +1712,21 @@ sample=Cos440Hz.wav";
   ok &= se.getNumRegions(0) == 0;
   ok &= se.getNumRegions(1) == 0;
 
-
-  // This FAILS:
   sfzStr = "<global> <group> <region>"; setup(sfzStr); 
   ok &= se.getNumGroups()   == 1;
-  ok &= se.getNumRegions(0) == 1; // FAILS
-  // ToDo: compare to the version without the <global>
+  ok &= se.getNumRegions(0) == 1;
 
+  sfzStr = "<control> <global> <group> <region>"; setup(sfzStr); 
+  ok &= se.getNumGroups()   == 1;
+  ok &= se.getNumRegions(0) == 1;
 
+  // This asserts:
+  //sfzStr = "<control> <group> <region>"; setup(sfzStr); 
+  //ok &= se.getNumGroups()   == 1;
+  //ok &= se.getNumRegions(0) == 1;
+  // We really need the <global> header (even if it's empty) if we define the <control> header
+  // ToDo: fix that. "<control> <group> <region>" as well as "<control> <region>" should all work
+  // the same
 
   /*
   sfzStr = "<group> <group> <region> <region> <group> <region> <region> <region>"; setup(sfzStr); 
