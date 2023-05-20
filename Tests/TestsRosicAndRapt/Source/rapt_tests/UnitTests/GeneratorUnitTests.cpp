@@ -5012,6 +5012,11 @@ bool samplerMidiModulationsTest()
   //  including the controllers.
   // -Set things up the sfz way to set this up using the volume_ccN opcode
 
+  // See also:
+  // https://sfzformat.com/opcodes/param_offset
+  // https://sfzformat.com/opcodes/set_ccN
+  // https://sfzformat.com/opcodes/set_hdccN / https://sfzformat.com/opcodes/set_realccN
+
 
   rsAssert(ok);
   return ok;
