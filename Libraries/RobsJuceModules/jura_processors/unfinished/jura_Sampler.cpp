@@ -1789,7 +1789,8 @@ ToDo:
 -GUI:
  -The sliders on the "Play" page are shwon in order of theri controller number. Maybe try to show
   them in the order in which they appear in the <control> section or maybe in the order in which 
-  they are assigned to controller DSP objects inside the engine (via the controlN_index opcodes)
+  they are assigned to controller DSP objects inside the engine (via the controlN_index opcodes). 
+  But actually, via the order under <control> makes more sense from a user's point of view.
  -Make a GUI page that shows all available patch parameters at once. Maybe call it the "Tweak"
   page. Or: maybe try to make the TreeView nodes themselves "draggable". Maybe we need to subclass
   TreeView to make TreeViewWithDraggableNodes or TreeViewWithNodeWidgets. Or: when the user holds
