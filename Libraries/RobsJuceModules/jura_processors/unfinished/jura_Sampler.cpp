@@ -982,12 +982,15 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
   // Apply the required change to the code document:
   juce::CodeDocument& doc = CodeEditorComponent::getDocument();
+
+
   juce::String newValueString = juce::String(info.newValue);
   // ToDo: let info have a function getNewValueString() that dispatches between string-values and 
   // numeric values depending on the opcode...or maybe have that dispatcher functionality somewhere
   // else - but currently, we just assume a numeric value which is sometimes not the case...
 
-  doc.replaceSection(startPos, endPos, newValueString);
+  // doc.replaceSection(startPos, endPos, newValueString);  // that was wrong
+  doc.replaceSection(startPos, endPos+1, newValueString);   // fixed 2023/05/21
 
   // Note:
   // The change we make to the code should not trigger a re-parsing, at least not automatically 
@@ -1696,13 +1699,12 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
--[Fixed] Entering values via keyboard for the controller sliders doesn't work. 
- SamplerEditor::rSliderValueChanged gets called from  SamplerEditor::timerCallback. That's strange!
- It should be called from some TextEntryField update callback, I think. Check
- RSlider::mouseDoubleClick - I think, it should pass "true" to the setValue call.
-
--Entering a value also doesn't work for the low-level parameters. There, the slider takes the new 
- value but the code doesn't.
+-[FIXED] Entering a value doesn't work for the low-level parameters. There, the slider takes the 
+ new value but the code doesn't. ...checked again - the code is now updated (after changing
+ RSlider::mouseDoubleClick - see comment there), but: the value in the code has one additional
+ 0 at the end, i.e. the number is multiplied by 10! when entering 1234.25, it becomes 1234.250
+ so that's the correct number but with a redundant trailing zero. Check:
+ SfzCodeEditor::handlePatchUpdate ..it actually has a correct newValueString
 
 
 -For the modulation connections, we don't get any sliders to appear
