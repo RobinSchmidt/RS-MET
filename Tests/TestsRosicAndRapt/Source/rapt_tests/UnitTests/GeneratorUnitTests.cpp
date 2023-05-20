@@ -4988,8 +4988,6 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
-  // -Check, if we can use control2_volume without having control1_ defined. In ToolChain, this 
-  //  didn't seem to work. OK - here it seems to work. Check in ToolChain again...
   // -Check what happens when we assign a midi cc to 2 control modules and then route both of them
   //  to a parameter. Their values should accumulate / add up, I think.
   // -Use cc10 to control Pan
