@@ -250,8 +250,10 @@ void MidiController::processFrame(float* L, float* R)
     //   rsLinToLinIntToFloat(int   in, int   inMin, int   inMax, float outMin, float outMax)
     //   rsLinToLinFloatToInt(float in, float inMin, float inMax, int   outMin, int   outMax);
     // and here, we could call rsLinToLinIntToFloat(x, 0, 127, 0.f, 1.f);
-
-    // look at rsWaveFile memebr function int16ToFloat32, float32ToInt16
+    //
+    // look at rsWaveFile member function int16ToFloat32, float32ToInt16 and unit test
+    // testFloatIntConversions
+    // ...I think, (1.f/127.f) * (float)x;  is actually correct
   };
 
   RAPT::rsAssert(playStatus != nullptr);

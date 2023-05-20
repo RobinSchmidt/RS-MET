@@ -67,11 +67,10 @@ bool testFloatIntConversions()
   ok &= i2f_1(3, 4) == 3.f/3.f;  // == 1.f
 
 
-
-
   // ToDo:
   // -Create more such functions that are more general, for example, allowing an input range
   //  (-numInts/2)...(+numInts/2)-1  like -128...+127 when numInts = 256
+  // -Look at rsWaveFile member functions int16ToFloat32, float32ToInt16 
 
   return ok;
 }
