@@ -4976,6 +4976,19 @@ bool samplerMidiModulationsTest()
   // indeed has 5 modulation sources of type MidiController as expected. Maybe try to check that
   // programattically, too..
 
+  // Add a second DSP module reading the same midi cc and route it to volume as well. The values
+  // should accumulate:
+  gain = (amp1 + 2 * amp1ByCC7) / 100;  // the 2 * is due to the accumulation
+  fillTarget(tgt, gain, ns);
+  dspN += 1;
+  se.setRegionSetting(0,0, OC::controlN_index,  7.f, dspN);
+  se.setRegionModulation(0,0, OT::MidiCtrl, dspN, OC::amplitudeN, 1, amp1ByCC7, Mode::absolute);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
+
+
+
+
+
   rsAssert(ok);
   return ok;
 
