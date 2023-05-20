@@ -4958,7 +4958,7 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
-  // -Use cc7 to control amplitude, cc10 to control Pan
+  // -Use cc10 to control Pan
   // -Set up a patch that routes cc74 to the cutoff of a filter and cc71 to the resonance. For 
   //  this, figure out, how sfz is responding to cutoff_ccN, see
   //  https://sfzformat.com/opcodes/cutoff_ccN
