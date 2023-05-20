@@ -257,6 +257,13 @@ void SamplerModule::setMidiController(int idx, float val)
 {
   Event ev(Event::Type::controlChange, (float)idx, val);
   sfzPlayer.handleMusicalEvent(ev);
+
+  // ToDo:
+  // Maybe have a controllersDirty field in the class and set it to true whenenever a controller is
+  // received. Receiving a controller may bring the state of the engine out of sync with what is 
+  // defined in the sfz code via the set_ccN opcodes. Maybe when we want to save a patch, we don't
+  // want to save it with the old, out-of-sync values. Maybe we should respond to CC changes in a
+  // similar way as to changes of low-level params in the TreeView: update the code
 }
 
 /*
@@ -1290,21 +1297,13 @@ void SamplerEditor::rButtonClicked(RButton* b)
 
 void SamplerEditor::rSliderValueChanged(RSlider* sld)
 {
-  // Update the sliders for the MIDI controllers:
-  for(int i = 0; i < numCtrlSliders; i++)
-  {
-    if(sld == ctrlSliders[i])
-    {
-      double val = sld->getValue();
-      samplerModule->setMidiController(i, (float) val);
-      // What should we do here? Directly send a midi cc event to the engine? I'm not sure, if it's
-      // a good idea to do that on the GUI thread. on the other hand, I can't really see why that
-      // should be problematic. Maybe let's just try it...
-    }
-  }
-
-
-  int dummy = 0;
+  // Update MIDI controller value in the engine for the control sliders. I'm not so sure, if it's
+  // a good idea to directly send a midi cc event to the engine on the GUI thread. Normally, MIDI 
+  // is received in the audio thread. On the other hand, I can't really see why that should be 
+  // problematic. So let's just do it:
+  for(int i = 0; i < numCtrlSliders; i++) {
+    if(sld == ctrlSliders[i]) {
+      samplerModule->setMidiController(i, (float) sld->getValue()); }}
 }
 
 void SamplerEditor::activeFileChanged(FileManager* fileMan)
