@@ -750,7 +750,7 @@ widgets showing the current system load, etc...tbc...  */
 
 class JUCE_API SamplerEditor : public jura::AudioModuleEditor, 
   public juce::Timer, public juce::CodeDocument::Listener, public jura::FileManagerListener,
-  public jura::RTreeViewObserver, public SamplerInterfaceComponent
+  public jura::RTreeViewObserver, public SamplerInterfaceComponent, public RSliderListener
 {
 
 public:
@@ -768,7 +768,10 @@ public:
   void codeDocumentTextInserted(const String &newText, int insertIndex) override; // CodeDocument::Listener 
   void codeDocumentTextDeleted(int startIndex, int endIndex) override;            // CodeDocument::Listener 
 
+
   void rButtonClicked(RButton *buttonThatWasClicked) override;
+  void rSliderValueChanged(RSlider* sld) override;
+
   void activeFileChanged(FileManager *fileMan) override;                    // FileManagerListener
 
   void handlePatchUpdate(const PatchChangeInfo& info) override;

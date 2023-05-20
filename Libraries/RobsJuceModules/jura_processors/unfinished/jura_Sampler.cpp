@@ -1288,6 +1288,11 @@ void SamplerEditor::rButtonClicked(RButton* b)
     AudioModuleEditor::rButtonClicked(b);
 }
 
+void SamplerEditor::rSliderValueChanged(RSlider* sld)
+{
+  int dummy = 0;
+}
+
 void SamplerEditor::activeFileChanged(FileManager* fileMan)
 {
   // BUG:
@@ -1469,6 +1474,7 @@ void SamplerEditor::createWidgets()
     jura::RSlider* sld = new jura::RSlider("MIDI CC " + juce::String(i));
     sld->setRange(0.0, 127.0, 1.0, 0.0);
     sld->setStringConversionFunction(&valueToString0);
+    sld->addListener(this);
     addWidget(sld);
     ctrlSliders[i] = sld; }
 
