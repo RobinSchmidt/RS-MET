@@ -8,18 +8,19 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 
   // Uncomment the relevant line of code for which AudioModule you want to get built as plugin. 
-  // Normally, we want to build ToolChain but by just changing, which line is not commented, we can
-  // choose at compile time any other AudioModule:
+  // Normally, we want to build ToolChain (i.e. the first line) but by just changing, which line is
+  // not commented, we can choose at compile time to build any other AudioModule. This may be 
+  // useful during development and debugging because it allows to debug a single module without 
+  // having it being embedded in ToolChain which adds another layer of complexity.
 
-  //jura::ToolChain *dummy = nullptr; return createPluginWithMidi(dummy, 10);
-
+  jura::ToolChain *dummy = nullptr; return createPluginWithMidi(dummy, 10);
   //jura::PhaseScope *dummy = nullptr; return createPluginWithoutMidi(dummy);
   //jura::PhaseScope2 *dummy = nullptr; return createPluginWithoutMidi(dummy);
   //jura::PhaseScopeMultiColor *dummy = nullptr; return createPluginWithoutMidi(dummy);
   //jura::PhasorFilter *dummy = nullptr; return createPluginWithoutMidi(dummy);
   //jura::Ladder       *dummy = nullptr; return createPluginWithMidi(dummy);
   //jura::Enveloper    *dummy = nullptr; return createPluginWithMidi(dummy);
-  jura::SamplerModule *dummy = nullptr; return createPluginWithMidi(dummy, 10);
+  //jura::SamplerModule *dummy = nullptr; return createPluginWithMidi(dummy, 10);
 
   //// just for testing the resizing constraints:
   //jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(10);
@@ -32,7 +33,6 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 }
 
 /*
-BUGS:
--plug
+
 
 */

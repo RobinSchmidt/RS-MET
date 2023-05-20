@@ -6,14 +6,19 @@ Classes
 =======
 
 AudioModule is the main baseclass for all audio modules that are available in ToolChain, for example
-the LadderFilter, Straightliner, etc. - they are all specific kinds of an AudioModule. ...tbc...
+the LadderFilter, Straightliner, etc. - they are all specific kinds of an AudioModule. By deriving
+a specific effect from AudioModule, the baseclass will provide facilities for handling parameters,
+preset-files, total recall, etc.
+...tbc...
 
 ModulatableAudioModule is a subclass of AudioModule and ModulationParticipant which adds features 
-for freely routable modulations ...tbc...
+for freely routable modulations 
+...tbc...
 
 AudioModuleWithMidiIn is a subclass of ModulatableAudioModule and rsMidiMessageDispatcher which adds
 features to handle incoming midi events in order to respond to them. All instruments are derived 
-from that class but also some effects (well - not sure - but at least that may make sense)...tbc...
+from that class but also some effects (well - not sure - but at least that may make sense)
+...tbc...
 
 
 
@@ -36,3 +41,11 @@ need to receive the midi events. For example, a noteOn would trigger the envelop
 oscillator and set up its frequency. For that to work polyphonically, ToolChain uses an object of
 class rsVoiceManager ...TBC...
 
+
+
+
+
+When ToolChain::handleMidiMessage receives a MIDI CC:
+
+Somehow, the empty baseclass method setMidiController of class rsMidiMessageDispatcher gets called 
+and nothing happens. That is wrong! 

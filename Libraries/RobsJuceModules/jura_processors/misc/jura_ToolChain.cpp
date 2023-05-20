@@ -289,6 +289,12 @@ void ToolChain::handleMidiMessage(MidiMessage message)
   // and we may have to pass this information to the child modules in the llop below - maybe we 
   // need to introduce a new callback handleMidiMessage(const MidiMessage&, int voice)
 
+  // Maybe we should first test, if its a MIDI-CC message and bypass all the voice-dispatching code
+  // below, if that's the case. 
+
+
+
+
   int voice = voiceManager.handleMidiMessageReturnVoice(message);
   if(voice < 0) return;
   // If no voice was allocated or used for the event, we don't pass it on to the child modules to 
@@ -301,6 +307,7 @@ void ToolChain::handleMidiMessage(MidiMessage message)
     if(m != nullptr)
       m->handleMidiMessageForVoice(message, voice); } 
 
+  // is this obsolete?:
   //voiceManager.handleMidiMessage(message);
   //for(int i = 0; i < size(modules); i++){
   //  AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
