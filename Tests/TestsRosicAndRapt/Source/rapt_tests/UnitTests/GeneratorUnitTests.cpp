@@ -4922,6 +4922,9 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
+  // -Verify formula to convert from 0..127 to 0..1. Maybe we should use a formula similar to that
+  //  for converting between float samples and 16-bit integer - but without the offset for moving 
+  //  the range to -1..+1.
   // -Try what happens when we don't explicitly define a volumeN opcode with N=1. I think, we'll do
   //  not get an Amplifier unit in the dspChain at the end of RegionPlayer::assembleProcessors.
   //  Should we?

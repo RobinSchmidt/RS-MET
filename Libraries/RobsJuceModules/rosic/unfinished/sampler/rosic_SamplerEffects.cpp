@@ -233,14 +233,26 @@ MidiController::MidiController()
 }
 
 void MidiController::processFrame(float* L, float* R)
-{ 
+{
   // Outputs the normalized value of the controller in the range 0..1 where a midi value of 0 maps 
   // to 0.f and a midi value of 127 maps to 1.f.
+
+  auto midiToFloat =[](RAPT::rsUint8 x)
+  {
+    return (1.f/127.f) * (float)x;
+    // Verify! I think, maybe we should use a formular similar to that for converting between float
+    // samples and 16-bit integer samples in .wav-files.
+    // Maybe factor our into a library function and have a corresponding floatToMidi function. 
+    // Maybe have generalized functions
+    //   rsLinToLinIntToFloat(int   in, int   inMin, int   inMax, float outMin, float outMax)
+    //   rsLinToLinFloatToInt(float in, float inMin, float inMax, int   outMin, int   outMax);
+    // and here, we could call rsLinToLinIntToFloat(x, 0, 127, 0.f, 1.f);
+  };
 
   RAPT::rsAssert(playStatus != nullptr);
   if(playStatus) {
     RAPT::rsUint8 rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
-    *L = *R = (1.f/127.f) * (float)rawVal; }
+    *L = *R = midiToFloat(rawVal); }
   else {
     *L = *R = 0.f; }
     // We are playing safe here with the if-conditional in the spirit of defensive programming. 
