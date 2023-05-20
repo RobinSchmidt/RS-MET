@@ -330,7 +330,15 @@ public:
 };
 
 /** The mediator class that coordinates the interaction between the various components of the
-sampler-engine's graphical user interface. */
+sampler-engine's graphical user interface. There are currently these GUI components:
+
+  SfzTreeView, SfzCodeEditor, SfzOpcodeEditor, SfzOpcodeWidgetSet, SamplerEditor 
+  (ToDo: check, if this list is complete)
+
+that must be coordinated. For example, when the user selects an opcode from the TreeView, a little
+editor below the TreeView allows the user to set the value for the opcode via a slider. Doing so
+will actually update the corresponding line of code in the CodeEditor. Such interactions are 
+implemented via the Mediator pattern and this class is the mediator class for this purpose. */
 
 class SamplerInterfaceMediator : public jura::Mediator
 {
