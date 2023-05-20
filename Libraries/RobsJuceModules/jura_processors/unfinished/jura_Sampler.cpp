@@ -1916,7 +1916,6 @@ ToDo:
     (k >= 1 to it a reasonable size)...or maybe 512x256 or something
   -maybe show a keyboard that shows the currently held notes (maybe the releasing one should be 
    shown also, but in fainter color - maybe the color could fade with the release time)
--write some more complex .sfz files with multiple samples, regions, groups, etc. 
 -make use of subdirectories for the samples and test, if that works
  -Pluck2.xml loads without errors
 
@@ -1937,9 +1936,9 @@ additional set of load/save widgets for the sfz and maybe an sfz editor.
 
 On the GUI, we could also display the number of samples, regions, groups, masters, curves, etc. 
 like sfizz: https://github.com/sfztools/sfizz/  ...what are masters and curves? we could also 
-display the number of DSP modules...if that makes sense - but i think it doesn't because it depends
+display the number of DSP modules...if that makes sense - but I think it doesn't because it depends
 on the number of played notes...but maybe we can somehow compute the maximum number that could ever 
-be needed? that could also help with allocating the objects...like MaxNumFilters, 
+be needed? That could also help with allocating the objects...like MaxNumFilters, 
 MaxNumWaveShapers, etc. we could also display the number of modulation connections. maybe we could 
 do: Regions 3/128, Filters 5/256, etc., RAM usage, CPU usage, output level meters
 
