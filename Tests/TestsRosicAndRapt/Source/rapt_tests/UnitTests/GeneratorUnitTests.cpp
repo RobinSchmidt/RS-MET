@@ -4993,7 +4993,12 @@ bool samplerMidiModulationsTest()
   se.setRegionModulation(0,0, OT::MidiCtrl, dspN, OC::amplitudeN, 1, amp1ByCC7, Mode::absolute);
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
+  // Test neutral value with volume. Use a neutral value of 100 and amp1ByCC7=12. At cc7=127
+  // (==100+27), it should give a volume of +12 dB. For cc7=100, we want volume=0dB and for 
+  // cc7=73 (== 100-27) we want to see volume = -12 dB
 
+  // Test it with pan and a neutral value of 64. At cc10=127, it should be hard-right, at 
+  // cc10=1, it should be hard left and at cc10=0 ...hmmm...maybe it should still be hard-left
 
 
   rsAssert(ok);
