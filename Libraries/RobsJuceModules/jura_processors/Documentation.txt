@@ -1,0 +1,38 @@
+Documentation for jura_processors
+
+
+
+Classes
+=======
+
+AudioModule is the main baseclass for all audio modules that are available in ToolChain, for example
+the LadderFilter, Straightliner, etc. - they are all specific kinds of an AudioModule. ...tbc...
+
+ModulatableAudioModule is a subclass of AudioModule and ModulationParticipant which adds features 
+for freely routable modulations ...tbc...
+
+AudioModuleWithMidiIn is a subclass of ModulatableAudioModule and rsMidiMessageDispatcher which adds
+features to handle incoming midi events in order to respond to them. All instruments are derived 
+from that class but also some effects (well - not sure - but at least that may make sense)...tbc...
+
+
+
+Call sequences
+==============
+
+
+
+
+
+
+ToolChain::handleMidiMessage(...)
+---------------------------------
+
+ToolChain has a chain of submodules and passes the incoming MIDI messages to these submodules. The 
+submodules may themselves be either monophonic or polyphonic which complicates the matter. For 
+example, in a simple patch, there could be a polyphonic envelope generator and a polyphonic 
+oscillator whose amplitude is controlled by the envelope. That means that envelope and oscillator
+need to receive the midi events. For example, a noteOn would trigger the envelope, reset the 
+oscillator and set up its frequency. For that to work polyphonically, ToolChain uses an object of
+class rsVoiceManager ...TBC...
+

@@ -209,6 +209,7 @@ public:
   // Midi Handling:
   void noteOn(int key, int vel) override;
   void noteOff(int key) override;
+  void setMidiController(int controllerNumber, float controllerValue) override;
   //void handleMidiMessage(MidiMessage message) override;
 
   // Audio Processing:

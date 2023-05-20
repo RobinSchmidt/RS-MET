@@ -2556,6 +2556,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\PeakFinding.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -5376,6 +5379,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Temp\Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\PeakFinding.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiterLinear.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\AudioBasics\AudioBasics.h"/>
@@ -6077,6 +6081,7 @@
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\Notes.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\ToDo.txt"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\Documentation.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt"/>
@@ -6101,6 +6106,7 @@
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\MovedToRAPT\ReadMe.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\minBlep.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\HowToAddFeatures.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt"/>

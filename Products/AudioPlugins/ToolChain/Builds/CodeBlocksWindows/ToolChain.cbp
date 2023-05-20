@@ -13640,6 +13640,13 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_processors/Documentation.txt">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/jura_processors/jura_processors.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -13718,6 +13725,20 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/EnvelopeFollower.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/PeakFinding.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Analysis/PeakFinding.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option target="Shared Code | Debug32"/>
@@ -22713,6 +22734,13 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/transforms/rosic_WaveletTransforms.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/HowToAddFeatures.txt">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option target="Shared Code | Debug32"/>

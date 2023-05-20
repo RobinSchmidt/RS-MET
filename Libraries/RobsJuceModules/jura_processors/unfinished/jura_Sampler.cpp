@@ -253,10 +253,17 @@ void SamplerModule::noteOff(int key)
   sfzPlayer.handleMusicalEvent(ev);
 }
 
-//void SamplerModule::handleMidiMessage(MidiMessage message) 
-//{
-//
-//}
+void SamplerModule::setMidiController(int idx, float val)
+{
+  int dummy = 0;
+}
+
+/*
+void SamplerModule::handleMidiMessage(MidiMessage message) 
+{
+  int dummy = 0;
+}
+*/
 
 void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
@@ -1658,6 +1665,9 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
+-We don't receive MIDI CC messages within ToolChain. When the Sampler is compiled outside of 
+ ToolChain, we do receive them. That can be switched in PluginProcessor.cpp in the ToolChain 
+ folder in the project view (below JUCE Modules)
 -For the modulation connections, we don't get any sliders to appear
  -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
   and fix this bug
