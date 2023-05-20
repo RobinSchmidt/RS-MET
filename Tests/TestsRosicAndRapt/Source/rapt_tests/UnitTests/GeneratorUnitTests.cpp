@@ -4791,6 +4791,8 @@ bool samplerMidiModulationsTest()
   using OT   = rosic::Sampler::OpcodeType;
   using AT   = RAPT::rsArrayTools;
   using Mode = rosic::Sampler::ModMode;
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
 
   // Set up a sampler engine with a sample that is just looped DC:
   float fs = 44100;
@@ -4813,8 +4815,7 @@ bool samplerMidiModulationsTest()
   // dedicated opcode volumeN_onccM to make it SFZ compatible. See:
   //   https://sfzformat.com/opcodes/gain_ccN
   //   https://sfzformat.com/opcodes/volume_onccN
-  //   https://sfzformat.com/opcodes/amplitude_ccN
-  //   https://sfzformat.com/opcodes/amplitude_onccN
+
   // We test the general way first.
 
   // We set up the routing from the controller to the parameter in the general way using the
@@ -4854,8 +4855,6 @@ bool samplerMidiModulationsTest()
 
   // Produce sampler output signal and compare to target signal:
   float tol  = 0.f;
-  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
-  using EvTp = Ev::Type;
   std::vector<Ev> events;
   events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));   // midi CC at sample 0
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));   // noteOn at sample 0
@@ -4907,9 +4906,44 @@ bool samplerMidiModulationsTest()
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
+  // OK - now let's start fresh and route cc7 to amplitude as defined by ARIA:
+  //
+  // https://sfzformat.com/opcodes/amplitude
+  // https://sfzformat.com/opcodes/amplitude_ccN
+  // https://sfzformat.com/opcodes/amplitude_onccN
+  //
+  // where amplitude has range 0..100% and amplitude_onccN has range -100..+100%
 
-  // This is the sfz way to set this up:
+  float amp1ByCC7 = 100.f;  // 100 %
+  se.clearRegionSettings(0,0);
+  se.setRegionSetting(0,0, OC::amplitudeN,    100.f, 1); // unit is percent
+  se.setRegionSetting(0,0, OC::controlN_index,  7.f, 1); // assign controller object 1 to midi CC 7
+  se.setRegionModulation(0,0,    // group 0, region 0
+    OT::MidiCtrl,   1,           // Midi CC 7 gets routed to...
+    OC::amplitudeN, 1,           // amplitude1
+    amp1ByCC7, Mode::absolute);  // with an (absolute) amount of amp1ByCC7 percent 
 
+  // I think we should get the following results (verify!):
+  //
+  //   cc7=127, amp1ByCC7=100:  amplitude = 100% + 100% = 200% = 2.0
+  //   cc7=127, amp1ByCC7=-100: amplitude = 100% - 100% =   0% = 0.0
+  //
+  // Try it with https://www.plogue.com/products/sforzando.html which uses the ARIA engine
+  // as stated here http://ariaengine.com/products/ Make a simple patch with a sinewave and with
+  // amplitude and amplitude_cc7 opcodes defined and try it.
+
+  gain = 2.0;   // 100% + 100% ...I think...
+  fillTarget(tgt, gain, ns);
+  rsPlotVector(tgt);
+
+  events.clear();
+  events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));   // midi CC at sample 0
+  events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));   // noteOn at sample 0
+  events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns));  // midi CC at sample ns
+
+
+
+  int dummy = 0;
 
 
   //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
@@ -4921,8 +4955,10 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
+  // -Use cc7 to control amplitude, cc10 to control Pan
   // -Set up a patch that routes cc74 to the cutoff of a filter and cc71 to the resonance. For 
-  //  this, figure out, how sfz is responding to cutoff_ccN ...
+  //  this, figure out, how sfz is responding to cutoff_ccN, see
+  //  https://sfzformat.com/opcodes/cutoff_ccN
   // -Verify formula to convert from 0..127 to 0..1. Maybe we should use a formula similar to that
   //  for converting between float samples and 16-bit integer - but without the offset for moving 
   //  the range to -1..+1. I think, it's OK
@@ -4936,6 +4972,8 @@ bool samplerMidiModulationsTest()
   //  se.resetMidiControllers() which sets all controllers to some default value - probably 0. 
   //  Maybe we should also have a function resetMidiState that resets all midi state variables 
   //  including the controllers.
+  // -Set things up the sfz way to set this up using the volume_ccN opcode
+
 
   rsAssert(ok);
   return ok;
