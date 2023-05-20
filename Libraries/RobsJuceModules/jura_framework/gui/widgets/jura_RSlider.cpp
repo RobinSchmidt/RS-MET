@@ -427,8 +427,12 @@ void RSlider::mouseDrag(const MouseEvent& e)
 
 void RSlider::mouseDoubleClick(const MouseEvent& e)
 {
-  if( isEnabled() && e.mods.isLeftButtonDown() )
-    setValue(openModalNumberEntryField(getValue()), false);
+  if(isEnabled() && e.mods.isLeftButtonDown())
+  {
+    double newValue = openModalNumberEntryField(getValue());
+    //setValue(newValue, false);  // Why false?
+    setValue(newValue, true);  // New since 2023/05/21. Needs tests
+  }
 }
 
 void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)

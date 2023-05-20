@@ -1696,10 +1696,15 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
--Entering values via keyboard for the controller sliders doesn't work. It would also be nice if the 
- initial value could become the default value available via ctrl-click. Entering a value also 
- doesn't work for the low-level parameters. There, the slider takes the new value but the code 
- doesn't.
+-[Fixed] Entering values via keyboard for the controller sliders doesn't work. 
+ SamplerEditor::rSliderValueChanged gets called from  SamplerEditor::timerCallback. That's strange!
+ It should be called from some TextEntryField update callback, I think. Check
+ RSlider::mouseDoubleClick - I think, it should pass "true" to the setValue call.
+
+-Entering a value also doesn't work for the low-level parameters. There, the slider takes the new 
+ value but the code doesn't.
+
+
 -For the modulation connections, we don't get any sliders to appear
  -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
   and fix this bug
@@ -1792,6 +1797,8 @@ ToDo:
   them in the order in which they appear in the <control> section or maybe in the order in which 
   they are assigned to controller DSP objects inside the engine (via the controlN_index opcodes). 
   But actually, via the order under <control> makes more sense from a user's point of view.
+  It would also be nice if the initial value could become the default value available via 
+  ctrl-click. 
  -Make a GUI page that shows all available patch parameters at once. Maybe call it the "Tweak"
   page. Or: maybe try to make the TreeView nodes themselves "draggable". Maybe we need to subclass
   TreeView to make TreeViewWithDraggableNodes or TreeViewWithNodeWidgets. Or: when the user holds
