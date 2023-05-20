@@ -340,7 +340,7 @@ editor below the TreeView allows the user to set the value for the opcode via a 
 will actually update the corresponding line of code in the CodeEditor. Such interactions are 
 implemented via the Mediator pattern and this class is the mediator class for this purpose. 
 
-See: https://refactoring.guru/design-patterns/mediator   /
+See: https://refactoring.guru/design-patterns/mediator   */
 
 class SamplerInterfaceMediator : public jura::Mediator
 {
