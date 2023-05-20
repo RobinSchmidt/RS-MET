@@ -1696,10 +1696,6 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
-
--[fixed] We don't receive MIDI CC messages within ToolChain. When the Sampler is compiled outside 
- of ToolChain, we do receive them. That can be switched in PluginProcessor.cpp in the ToolChain 
- folder in the project view (below JUCE Modules) 
 -Entering values via keyboard for the controller sliders doesn't work. It would also be nice if the 
  initial value could become the default value available via ctrl-click. Entering a value also 
  doesn't work for the low-level parameters. There, the slider takes the new value but the code 
@@ -1792,7 +1788,7 @@ ToDo:
  TreeView that represents the SFZ and may allows to edit it
 
 -GUI:
- -The sliders on the "Play" page are shwon in order of theri controller number. Maybe try to show
+ -The sliders on the "Play" page are shown in order of their controller number. Maybe try to show
   them in the order in which they appear in the <control> section or maybe in the order in which 
   they are assigned to controller DSP objects inside the engine (via the controlN_index opcodes). 
   But actually, via the order under <control> makes more sense from a user's point of view.
@@ -1816,13 +1812,13 @@ ToDo:
   Maybe allow the user to define sliders for the midi-controllers. A slider would have a position
   defined by x,y,w,h, a mode (horz, vert, rot), a mapping (linear, exponential, etc.), an 
   (optional) image (png, defining stripes or being rotated by code at runtime).
- -Maybe let the opcode editor sho not only a single widget for the selected opcode but also widgets
-  for all "sibling" opcodes/parameters which are defined to be all the other the parameters that 
-  apply to the same DSP effect. The widgets should be visible regardless whether or not the opcode 
-  is specified in the sfz code. If it isn't we may need to take some special care when searching 
-  for it - we won't find it. We should perhaps find the last defined sibling and add the new opcode
-  directly after it in the code (maybe on a new line). Maybe the OpcodeEditor should become an 
-  EffectEditor
+ -Maybe let the opcode editor show not only a single widget for the selected opcode but also 
+  widgets for all "sibling" opcodes/parameters which are defined to be all the other the 
+  parameters that apply to the same DSP effect. The widgets should be visible regardless whether 
+  or not the opcode is specified in the sfz code. If it isn't we may need to take some special 
+  care when searching for it - we won't find it. We should perhaps find the last defined sibling 
+  and add the new opcode directly after it in the code (maybe on a new line). Maybe the 
+  OpcodeEditor should become an EffectEditor
  -The Opcode-Widgets need to be cleared when a new sfz or xml is loaded
  -we need a TreeView that represents the SFZs structure: the root/top-level node represents the 
   whole instrument, subnodes represnet groups and subsubsnodes represent regions. Each of these 
@@ -1862,10 +1858,6 @@ ToDo:
    -Add Opcode... presenting an (organized) list of opcodes that the user can insert
    -Create Slider... Cretaes a parameter slider for the opcode that is currently selected (there's
     no such selection feature yet, though - another thing to do)
- -Show some sliders that are connected to MIDI controllers. Maybe they should go to a separate
-  "Perform" page. The code editor is shown on an "Edit" page. The MIDI controllers are then 
-  connected to parameters of the patch using the modulation system. Perhaps a separate automation
-  system may not be needed then. It would be kinda redundant and confusing anyway.
  -Have some routable XY-Pad controllers
  -show some data about the loaded patch: number of samples, regions, groups, filters, equalizers, 
   waveshapers etc.
