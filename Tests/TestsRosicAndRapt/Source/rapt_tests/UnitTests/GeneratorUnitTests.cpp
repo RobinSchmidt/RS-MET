@@ -4934,12 +4934,17 @@ bool samplerMidiModulationsTest()
 
   gain = 2.0;   // 100% + 100% ...I think...
   fillTarget(tgt, gain, ns);
-  rsPlotVector(tgt);
+  //rsPlotVector(tgt);
 
+
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, true);
+
+  /*
   events.clear();
   events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));   // midi CC at sample 0
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));   // noteOn at sample 0
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns));  // midi CC at sample ns
+  */
 
 
 
