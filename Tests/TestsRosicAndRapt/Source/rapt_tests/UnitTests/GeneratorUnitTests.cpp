@@ -4890,7 +4890,6 @@ bool samplerMidiModulationsTest()
   fillTarget(tgt, gain, ns);
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
-
   // Add a second amplifier and let its volume parameter also be controlled by cc7 and cc8:
   vol1ByCC7       = 1.7;
   vol1ByCC8       = 1.8;
@@ -4922,15 +4921,15 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
+  // -Set up a patch that routes cc74 to the cutoff of a filter and cc71 to the resonance. For 
+  //  this, figure out, how sfz is responding to cutoff_ccN ...
   // -Verify formula to convert from 0..127 to 0..1. Maybe we should use a formula similar to that
   //  for converting between float samples and 16-bit integer - but without the offset for moving 
-  //  the range to -1..+1.
+  //  the range to -1..+1. I think, it's OK
   // -Try what happens when we don't explicitly define a volumeN opcode with N=1. I think, we'll do
   //  not get an Amplifier unit in the dspChain at the end of RegionPlayer::assembleProcessors.
   //  Should we?
   // -Try a modulation amount of 1/2
-  // -Set up a patch that routes cc74 to the cutoff of a filter and cc71 to the resonance. For 
-  //  this, figure out, how sfz is responding to cutoff_ccN ...
   // -Set up a patch with a highpass and a lowpass and route cc74 to both cutoffs.
   // -Try what happens, if we remove the 1st event that sets the controller to 0 before the noteOn.
   //  It seems like it's the uninitialized to some random value. Maybe we need a function 
@@ -4995,9 +4994,9 @@ bool samplerFixedModulationsTest()
 bool samplerModulationsTest()
 {
   bool ok = true;
-  ok &= samplerMidiModulationsTest();   // Test modulations by midi controllers
   ok &= samplerFixedModulationsTest();  // Test hardwired modulations (amplfo, ampeg, ...)
   ok &= samplerFreeModulationsTest();   // Test freely routable modulations
+  ok &= samplerMidiModulationsTest();   // Test modulations by midi controllers
 
 
   /*
