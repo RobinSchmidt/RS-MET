@@ -1696,9 +1696,10 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
--We don't receive MIDI CC messages within ToolChain. When the Sampler is compiled outside of 
- ToolChain, we do receive them. That can be switched in PluginProcessor.cpp in the ToolChain 
- folder in the project view (below JUCE Modules)
+
+-[fixed] We don't receive MIDI CC messages within ToolChain. When the Sampler is compiled outside 
+ of ToolChain, we do receive them. That can be switched in PluginProcessor.cpp in the ToolChain 
+ folder in the project view (below JUCE Modules) 
 -For the modulation connections, we don't get any sliders to appear
  -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
   and fix this bug
@@ -1802,8 +1803,8 @@ ToDo:
     https://sfzformat.com/headers/control
     https://sfzformat.com/opcodes/label_ccN
     https://sfzformat.com/opcodes/set_ccN
-  and use MIDI controllers to allow the user to control the patch. The controllers woul become 
-  available as´modulation sources. Thereby, one controller could control multiple opcodes at once
+  and use MIDI controllers to allow the user to control the patch. The controllers would become 
+  available as modulation sources. Thereby, one controller could control multiple opcodes at once
   (like several cutoff frequencies - for different regions). Also, a single opcode could respond
   to multiple controllers (not sure, if that's useful though - maybe for implementing thinsg like
   reso-by-cutoff - resonance would be controlled by the resonance controller but also by cutoff.
