@@ -432,7 +432,7 @@ void RSlider::mouseDoubleClick(const MouseEvent& e)
     double newValue = openModalNumberEntryField(getValue());
     //setValue(newValue, false);  // Why false?
     setValue(newValue, true);  // New since 2023/05/21. Needs tests
-    // The update of MDI CC# sliders on the Sampler GUI when entering a value from keyboard failed
+    // The update of MIDI CC# sliders on the Sampler GUI when entering a value from keyboard failed
     // when we passed false, i.e. didn't call the value-change callback. Consequently, the sampler
     // GUI was not informed about the change and in the next timer-callback, it pulled out the old
     // value from the midi controller state again. The result was that entering values via keyboard
