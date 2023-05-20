@@ -45,19 +45,18 @@ namespace RSLib
       return (((float)(x+32768)) - 32768.5f) * (1.f/32767.f);
     }
 
-    static inline float int24ToFloat32(rsInt32 x)
-    {
-      //return (((float)(x+8388608)) - 8388608.5f) / 8388607.f;
-      return (((float)(x+8388608)) - 8388608.5f) * (1.f/8388607.f);
-    }
-    // todo: test, if the values obtained from replacing division by multiplication are the same as
-    // those obtained by division
-
     static inline rsInt16 float32ToInt16(float x)
     {
       int tmp = (((int) ((x * 32767) + 32768.5f)) - 32768);
       return (rsInt16) rsLimitToRange(tmp, -32768, 32767);
     }
+
+    static inline float int24ToFloat32(rsInt32 x)
+    {
+      //return (((float)(x+8388608)) - 8388608.5f) / 8388607.f;
+      return (((float)(x+8388608)) - 8388608.5f) * (1.f/8388607.f);
+    }
+
 
     static inline rsInt32 float32ToInt24(float x)
     {
@@ -65,6 +64,14 @@ namespace RSLib
       return (rsInt32) rsLimitToRange(tmp, -8388608, 8388607);
     }
 
+
+    // ToDo: 
+    // -Test, if the values obtained from replacing division by multiplication are the same as
+    //  those obtained by division. I've already tested that the int -> float -> int roundtrip
+    //  works.
+    // -Figure out general formulas for converting between integers and floats. Let's see:
+    //  maybe: intToFloat: (((float)(x - minInt)) + minInt + .5f) * (1.f/maxInt);
+    //  I just replaced 32768 by -minInt and 32767.f by maxInt in int16ToFloat32
 
 
   protected:

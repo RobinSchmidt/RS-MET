@@ -240,6 +240,9 @@ void MidiController::processFrame(float* L, float* R)
   auto midiToFloat =[](RAPT::rsUint8 x)
   {
     return (1.f/127.f) * (float)x;
+    //return (1.f/127.f) * ((float)x - .5f);
+
+
     // Verify! I think, maybe we should use a formular similar to that for converting between float
     // samples and 16-bit integer samples in .wav-files.
     // Maybe factor our into a library function and have a corresponding floatToMidi function. 
@@ -247,6 +250,8 @@ void MidiController::processFrame(float* L, float* R)
     //   rsLinToLinIntToFloat(int   in, int   inMin, int   inMax, float outMin, float outMax)
     //   rsLinToLinFloatToInt(float in, float inMin, float inMax, int   outMin, int   outMax);
     // and here, we could call rsLinToLinIntToFloat(x, 0, 127, 0.f, 1.f);
+
+    // look at rsWaveFile memebr function int16ToFloat32, float32ToInt16
   };
 
   RAPT::rsAssert(playStatus != nullptr);
