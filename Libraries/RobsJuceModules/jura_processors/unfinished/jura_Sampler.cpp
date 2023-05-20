@@ -1112,6 +1112,8 @@ void SamplerEditor::timerCallback()
     {
       int val = samplerModule->getMidiControllerCurrentValue(i);
       ctrlSliders[i]->setValue(val);
+
+      // 
     }
   }
 }
@@ -1134,7 +1136,7 @@ void SamplerEditor::resized()
   // Actually, that's still a bit too wide. But maybe later we'll get more pages such that we need
   // more buttons. Then we can reduce the width further to make more space. Maybe then the 
   // 2*(bw + m) should be replaced by numButtons*(bw + m). We could actually reduce the width 
-  // regardless of whether or not we need more page buttons and maybe just leae some empty space. 
+  // regardless of whether or not we need more page buttons and maybe just leave some empty space. 
   // We'll see....
 
   // Place the sfz load/save widgets to the extreme left of the editor, directly on top of the code 
@@ -1653,9 +1655,27 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
+
 -When a midi controller value changes (either due to incoming midi events or due to moving a slider
  on the play page): update the corresponding set_ccN=... opcode in th sfz code to keep the state in
- sync with the code.
+ sync with the code. Idea to make this work: Instead of pulling out the midi-controller state in
+ timerCallback for all the sliders, let the engine send a notification to the GUI...but that may 
+ not be thread-safe. Maybe instead, set a flag in the module to indicate that the controllers are
+ "dirty". Then, in the timercallback of the GUI, check the flag and update the sliders only if the 
+ flag is true. In this callback, set the flag back to clean. The main GUI updates the sliders and 
+ in case, some controller has changed, triggers some update actions - for example for the 
+ CodeEditor
+ -OR: Let the sfz store the set_ccN opcodes just like all other opcodes, show them also in the 
+  TreeView. That could use the existing code-update infrastructure. We just need to take care of
+  recording also the changes via hardware.
+  <control>
+    set_cc74=80
+    label_cc74=Cutoff
+  <global>
+     ...
+     <group>
+       <region>
+
 -When we click on e.g. volume to make it appear in the opcode editor, the manipulate e.g. 
  pitch_keycenter via the overlay widgets, the volume slider updates itself to show the new
  keycenter value - which makes no sense. Maybe before updating the widget content, we should check,
