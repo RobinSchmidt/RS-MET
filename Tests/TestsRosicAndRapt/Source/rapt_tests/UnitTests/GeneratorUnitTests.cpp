@@ -5004,6 +5004,12 @@ bool samplerMidiModulationsTest()
   se.setRegionSetting(0,0, OC::controlN_index,     7.f, 1);
   se.setRegionSetting(0,0, OC::controlN_neutral, 100.f, 1);
   se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::volumeN, 1, vol1ByCC7, Mode::absolute); 
+
+  events.clear();
+  events.push_back(Ev(EvTp::controlChange,  7.f, 100.f, 0)); 
+  events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  
+  events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); 
+
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, true);
   // FAILS!!! Ah - wait! We must init cc7 with 100 rather than 0. We need a new event-list for
   // this test!
