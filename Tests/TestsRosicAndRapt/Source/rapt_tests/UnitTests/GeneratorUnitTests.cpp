@@ -4972,7 +4972,9 @@ bool samplerMidiModulationsTest()
   se.setRegionSetting(0,0, OC::controlN_index,  7.f, dspN);
   se.setRegionModulation(0,0, OT::MidiCtrl, dspN, OC::amplitudeN, 1, amp1ByCC7, Mode::absolute);
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
-
+  // In rsSamplerEngine::processFrame, when looking into the active RegionPlayer, we see that it
+  // indeed has 5 modulation sources of type MidiController as expected. Maybe try to check that
+  // programattically, too..
 
 
   int dummy = 0;
@@ -4988,7 +4990,7 @@ bool samplerMidiModulationsTest()
 
   // ToDo:
   // -Check, if we can use control2_volume without having control1_ defined. In ToolChain, this 
-  //  didn't seem to work. 
+  //  didn't seem to work. OK - here it seems to work. Check in ToolChain again...
   // -Check what happens when we assign a midi cc to 2 control modules and then route both of them
   //  to a parameter. Their values should accumulate / add up, I think.
   // -Use cc10 to control Pan
