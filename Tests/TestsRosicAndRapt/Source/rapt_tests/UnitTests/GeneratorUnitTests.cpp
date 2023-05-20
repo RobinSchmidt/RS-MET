@@ -5036,6 +5036,7 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
+  // -Optimize the code, see MidiController::processFrame
   // -Use cc10 to control Pan. Define a reasonable desired behavior that generalizes the current 
   //  behavior in the most useful way. Let's set:
   //    volume1=0
