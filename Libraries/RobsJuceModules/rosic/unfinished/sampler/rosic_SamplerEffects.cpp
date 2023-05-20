@@ -284,7 +284,10 @@ void MidiController::processFrame(float* L, float* R)
 void MidiController::updateCoeffs(double sampleRate)
 {
   ctrlIndex  = (int)           params[0].mv();
-  neutralVal = (RAPT::rsUint8) params[1].mv();
+  neutralVal = (RAPT::rsUint8) params[1].mv(); 
+
+  neutralVal = std::min(neutralVal, (RAPT::rsUint8) 126);  
+  // 127 would lead to div-by-zero in processFrame
 }
 
 // ARIA has float controller values:

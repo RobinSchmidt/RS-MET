@@ -5000,6 +5000,9 @@ bool samplerMidiModulationsTest()
   // Test it with pan and a neutral value of 64. At cc10=127, it should be hard-right, at 
   // cc10=1, it should be hard left and at cc10=0 ...hmmm...maybe it should still be hard-left
 
+  // What if neutralValue=127? I think, we get a division by zero! OK - we have clipped it to 
+  // the range 0..126. Not sure, if that's the right way to deal with it, though
+
 
   rsAssert(ok);
   return ok;
