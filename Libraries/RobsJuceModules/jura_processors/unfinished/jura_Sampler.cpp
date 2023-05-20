@@ -1700,6 +1700,10 @@ Bugs:
 -[fixed] We don't receive MIDI CC messages within ToolChain. When the Sampler is compiled outside 
  of ToolChain, we do receive them. That can be switched in PluginProcessor.cpp in the ToolChain 
  folder in the project view (below JUCE Modules) 
+-Entering values via keyboard for the controller sliders doesn't work. It would also be nice if the 
+ initial value could become the default value available via ctrl-click. Entering a value also 
+ doesn't work for the low-level parameters. There, the slider takes the new value but the code 
+ doesn't.
 -For the modulation connections, we don't get any sliders to appear
  -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
   and fix this bug
