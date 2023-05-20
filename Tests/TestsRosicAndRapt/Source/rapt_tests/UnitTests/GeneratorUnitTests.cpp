@@ -5017,7 +5017,7 @@ bool samplerMidiModulationsTest()
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
-  // Test it with pan and a neutral value of 64. At cc10=127, it should be hard-right, at 
+  // Test it with pan and a neutral value of 64. At cc7=127, it should be hard-right, at 
   // cc10=1, it should be hard left and at cc10=0 ...hmmm...maybe it should still be hard-left
 
   // What if neutralValue=127? I think, we get a division by zero! OK - we have clipped it to 
