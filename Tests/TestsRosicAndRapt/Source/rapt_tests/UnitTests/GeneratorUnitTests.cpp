@@ -5019,8 +5019,10 @@ bool samplerMidiModulationsTest()
   //    cc=0:   -(100 * (127-100)/127) * 12  ?
   //    cc=x:   (100-x)
   //  Maybe use linear extrapolation for the range [0, n) and in the range [n,127] use
-  //  x / (127-n). Check what that gives for n=64 and x=0 and x=127 when the amount is 100% such
-  //  as in pan
+  //  (x-n) / (127-n). Check what that gives for n=64 and x=0 and x=127 when the amount is 100% 
+  //  such as in pan. Or maybe consider a phase-parameter for an osc of LFO. We would like to 
+  //  have: ccN=64 -> 0°, ccN=127 -> +180°, ccN=1 -> -180°, ccN=0 -> special value such as "off", 
+  //  "free-running", etc.
   // -Set up a patch that routes cc74 to the cutoff of a filter and cc71 to the resonance. For 
   //  this, figure out, how sfz is responding to cutoff_ccN, see
   //  https://sfzformat.com/opcodes/cutoff_ccN

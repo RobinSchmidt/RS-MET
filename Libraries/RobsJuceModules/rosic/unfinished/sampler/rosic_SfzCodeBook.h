@@ -139,7 +139,8 @@ enum class Opcode
   // amplitude parameter? in the former case, we need nee no second index X, in the latter, we do
 
 
-  controlN_index, // maybe add: controlN_smooth, controlN_quantize, etc.
+  controlN_index, controlN_neutral,
+    // maybe add: controlN_smooth, controlN_quantize, etc.
   // maybe abbreviate control by ctrl
 
 

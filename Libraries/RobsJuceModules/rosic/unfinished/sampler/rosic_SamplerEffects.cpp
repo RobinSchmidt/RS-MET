@@ -216,8 +216,9 @@ MidiController::MidiController()
 {
   using OC = Opcode;
   type = OpcodeType::MidiCtrl;
-  params.reserve(1);                 // index
-  addParameter(OC::controlN_index);  //   0
+  params.reserve(2);                   // index
+  addParameter(OC::controlN_index);    //   0
+  addParameter(OC::controlN_neutral);  //   1
 
   // Maybe add the following parameters:
   // -controlN_amount or _depth or _scale: scales the normalized output by a factor, maybe unit
@@ -237,10 +238,18 @@ void MidiController::processFrame(float* L, float* R)
   // Outputs the normalized value of the controller in the range 0..1 where a midi value of 0 maps 
   // to 0.f and a midi value of 127 maps to 1.f.
 
-  auto midiToFloat =[](RAPT::rsUint8 x)
+  // Then second parameter n is the neutral value, i.e. the value at which we output zero
+  auto midiToFloat =[](RAPT::rsUint8 x, RAPT::rsUint8 n)
   {
-    return (1.f/127.f) * (float)x;
+    if(n != 0)
+      return float(x-n) / float(127-n); // maybe precompute 1/(127-n) and use multiplication
+    else
+      return (1.f/127.f) * (float)x;
+
+
     //return (1.f/127.f) * ((float)x - .5f);
+
+    // if the neutral value n isn't zero, use float(x - n) / float(127 - n)
 
 
     // Verify! I think, maybe we should use a formular similar to that for converting between float
@@ -259,17 +268,23 @@ void MidiController::processFrame(float* L, float* R)
   RAPT::rsAssert(playStatus != nullptr);
   if(playStatus) {
     RAPT::rsUint8 rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
-    *L = *R = midiToFloat(rawVal); }
+    *L = *R = midiToFloat(rawVal, neutralVal); }
   else {
     *L = *R = 0.f; }
     // We are playing safe here with the if-conditional in the spirit of defensive programming. 
     // Later when the code stabilizes, maybe we can just assume that playStatus never is a nullptr
     // and optimize this branch away.
+
+  // Optimize:
+  // we should try to avoid the conversion from rsUint8 to float by letting 
+  // playStatus->getMidiControllerCurrentValue() return a float directly. It should then, of 
+  // course, also store the value as float.
 }
 
 void MidiController::updateCoeffs(double sampleRate)
 {
-  ctrlIndex = (int) params[0].mv();
+  ctrlIndex  = (int)           params[0].mv();
+  neutralVal = (RAPT::rsUint8) params[1].mv();
 }
 
 // ARIA has float controller values:

@@ -519,7 +519,8 @@ protected:
   // Needs to be assigned shortly after creation. Is used to read out the current value of the midi
   // controller with the index that is set up by our index-parameter.
 
-  int ctrlIndex = -1; // turn this into a Parameter object
+  int ctrlIndex = -1;           // midi controller number to listen to, e.g. 74 for cutoff
+  RAPT::rsUint8 neutralVal = 0; // not yet used
 
   // ToDo: Maybe write a class MidiControllerCore. Maybe that class should contain the pointer to
   // the PlayStatus - or maybe not - but if we include smoothing later, the core would be the right
