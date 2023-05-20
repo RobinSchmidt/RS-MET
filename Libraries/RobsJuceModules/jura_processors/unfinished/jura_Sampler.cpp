@@ -255,7 +255,8 @@ void SamplerModule::noteOff(int key)
 
 void SamplerModule::setMidiController(int idx, float val)
 {
-  int dummy = 0;
+  Event ev(Event::Type::controlChange, (float)idx, val);
+  sfzPlayer.handleMusicalEvent(ev);
 }
 
 /*
