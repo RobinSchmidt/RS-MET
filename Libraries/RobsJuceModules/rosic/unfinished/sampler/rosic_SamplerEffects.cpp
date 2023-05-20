@@ -268,7 +268,9 @@ void MidiController::processFrame(float* L, float* R)
   RAPT::rsAssert(playStatus != nullptr);
   if(playStatus) {
     RAPT::rsUint8 rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
-    *L = *R = midiToFloat(rawVal, neutralVal); }
+    *L = *R = midiToFloat(rawVal, neutralVal); 
+    int dummy = 0;
+  }
   else {
     *L = *R = 0.f; }
     // We are playing safe here with the if-conditional in the spirit of defensive programming. 
