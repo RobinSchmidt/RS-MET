@@ -4959,6 +4959,19 @@ bool samplerMidiModulationsTest()
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
+  // Try using control5_volume without having control1_, ... defined:
+
+  int dspN  = 5;      // index of modulator DSP object to use
+  amp1      = 100.f;  // 100 %
+  amp1ByCC7 = 100.f;  // 100 %
+  gain = (amp1 + amp1ByCC7) / 100; 
+  fillTarget(tgt, gain, ns);
+
+  se.clearRegionSettings(0,0);
+  se.setRegionSetting(0,0, OC::amplitudeN,     amp1, 1);
+  se.setRegionSetting(0,0, OC::controlN_index,  7.f, dspN);
+  se.setRegionModulation(0,0, OT::MidiCtrl, dspN, OC::amplitudeN, 1, amp1ByCC7, Mode::absolute);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
 
@@ -4974,6 +4987,10 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
+  // -Check, if we can use control2_volume without having control1_ defined. In ToolChain, this 
+  //  didn't seem to work. 
+  // -Check what happens when we assign a midi cc to 2 control modules and then route both of them
+  //  to a parameter. Their values should accumulate / add up, I think.
   // -Use cc10 to control Pan
   // -Set up a patch that routes cc74 to the cutoff of a filter and cc71 to the resonance. For 
   //  this, figure out, how sfz is responding to cutoff_ccN, see
