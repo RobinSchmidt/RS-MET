@@ -442,6 +442,9 @@ ModMode SfzCodeBook::opcodeDefaultModMode(Opcode op)
   {
   case OC::cutoffN:    return MM::cents;
 
+
+  case OC::resonanceN: return MM::absolute;  // check, if this is right
+
   case OC::volumeN:    return MM::absolute;  
   case OC::amplitudeN: return MM::absolute;  // maybe this hould be subsumed in a default branch
   }
