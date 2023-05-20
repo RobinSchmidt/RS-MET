@@ -930,8 +930,14 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     setupLevel(g, tmp);
 
     // Loop over the the regions within the group definition:
-    size_t i_re = str.find(regionStr, i_gs+1); // end index of the region in str
-    // shouldn't the search start at i_rs+1 ?
+
+    // Old:
+    //size_t i_re = str.find(regionStr, i_gs+1); // end index of the region in str
+    // Shouldn't the search start at i_rs+1? If not, document why we do what we do here. It's not
+    // really obvious
+
+    // New - needs tests:
+    size_t i_re = groupDef.find(regionStr, 0);
 
     bool allRegionsDone = false;
     while(!allRegionsDone)
