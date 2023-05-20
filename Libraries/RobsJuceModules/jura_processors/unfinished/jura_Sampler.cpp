@@ -1081,6 +1081,9 @@ SamplerEditor::~SamplerEditor()
 
 void SamplerEditor::timerCallback()
 {
+  // see: TrackMeterModuleEditor::timerCallback
+
+
   jassert(samplerModule != nullptr);
 
   int num = samplerModule->getNumActiveLayers();
@@ -1088,7 +1091,15 @@ void SamplerEditor::timerCallback()
   layersMeter->setCurrentValue((float)num);
   //numLayersField->setText(juce::String(num));
 
-  // see: TrackMeterModuleEditor::timerCallback
+  // Update the sliders for the MIDI controllers:
+  for(int i = 0; i < numCtrlSliders; i++)
+  {
+    if(ctrlSliders[i]->isVisible())
+    {
+      int val = samplerModule->getMidiControllerCurrentValue(i);
+      ctrlSliders[i]->setValue(val);
+    }
+  }
 }
 
 void SamplerEditor::resized()

@@ -191,8 +191,8 @@ public:
   //{ return int(sfzPlayer.getInstrumentData().getMidiControllerInitValue(indexOMidiCC)); }
   // may not be needed
 
-  int getMidiControllerCurrentValue(int indexOMidiCC) const
-  { return int(sfzPlayer.getMidiControllerCurrentValue(indexOMidiCC)); }
+  int getMidiControllerCurrentValue(int indexOfMidiCC) const
+  { return int(sfzPlayer.getMidiControllerCurrentValue(indexOfMidiCC)); }
 
 
   void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
@@ -837,7 +837,8 @@ protected:
   SfzOpcodeEditor* opcodeEditor;
 
   // Sliders for the MIDI controllers:
-  jura::RSlider* ctrlSliders[128];
+  static const int numCtrlSliders = 128;
+  jura::RSlider* ctrlSliders[numCtrlSliders];
 
   // The mediator object that coordinates the interactions between the different parts of the GUI:
   SamplerInterfaceMediator guiMediator;
