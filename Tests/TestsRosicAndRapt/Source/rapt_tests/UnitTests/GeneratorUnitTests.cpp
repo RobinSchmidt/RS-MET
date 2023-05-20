@@ -5008,9 +5008,19 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amp_veltrack
 
   // ToDo:
-  // -Check what happens when we assign a midi cc to 2 control modules and then route both of them
-  //  to a parameter. Their values should accumulate / add up, I think.
-  // -Use cc10 to control Pan
+  // -Use cc10 to control Pan. Define a reasonable desired behavior that generalizes the current 
+  //  behavior in the most useful way. Let's set:
+  //    volume1=0
+  //    controlN_neutral=100         let's call that neutral value n
+  //    controlN_volume1=12
+  //  Now we want to see the following actual volumes:
+  //    cc=100:  0
+  //    cc=127: 12
+  //    cc=0:   -(100 * (127-100)/127) * 12  ?
+  //    cc=x:   (100-x)
+  //  Maybe use linear extrapolation for the range [0, n) and in the range [n,127] use
+  //  x / (127-n). Check what that gives for n=64 and x=0 and x=127 when the amount is 100% such
+  //  as in pan
   // -Set up a patch that routes cc74 to the cutoff of a filter and cc71 to the resonance. For 
   //  this, figure out, how sfz is responding to cutoff_ccN, see
   //  https://sfzformat.com/opcodes/cutoff_ccN
