@@ -1712,6 +1712,15 @@ sample=Cos440Hz.wav";
   ok &= se.getNumRegions(0) == 0;
   ok &= se.getNumRegions(1) == 0;
 
+
+  // This FAILS:
+  sfzStr = "<global> <group> <region>"; setup(sfzStr); 
+  ok &= se.getNumGroups()   == 1;
+  ok &= se.getNumRegions(0) == 1; // FAILS
+  // ToDo: compare to the version without the <global>
+
+
+
   /*
   sfzStr = "<group> <group> <region> <region> <group> <region> <region> <region>"; setup(sfzStr); 
   ok &= se.getNumGroups()   == 0;
@@ -5253,8 +5262,8 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  //ok &= samplerParserTest();
-  ok &= samplerModulationsTest();
+  ok &= samplerParserTest();
+  //ok &= samplerModulationsTest();
   //ok &= samplerControlsTest(); 
   //ok &= samplerExamplePatchesTest(); 
 
