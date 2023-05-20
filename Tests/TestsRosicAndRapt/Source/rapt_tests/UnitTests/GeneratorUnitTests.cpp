@@ -4976,9 +4976,8 @@ bool samplerMidiModulationsTest()
   // indeed has 5 modulation sources of type MidiController as expected. Maybe try to check that
   // programattically, too..
 
-
-  int dummy = 0;
-
+  rsAssert(ok);
+  return ok;
 
   //se.setRegionSetting(0,0, OC::volumeN_onccX, volByCC, 1, 7); // volume 1 on CC 7 = volByCC dB
   // We need to expand the signature to allow for a second index
@@ -5016,10 +5015,6 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/param_offset
   // https://sfzformat.com/opcodes/set_ccN
   // https://sfzformat.com/opcodes/set_hdccN / https://sfzformat.com/opcodes/set_realccN
-
-
-  rsAssert(ok);
-  return ok;
 }
 
 bool samplerFixedModulationsTest()

@@ -83,6 +83,7 @@ enum class Opcode
   ampN_keytrack, ampN_keycenter, ampN_veltrack,
   // ampN_velcurve_X /* ? */, ampN_random,
   //volumeN_onccX,  // under construction
+  // ToDo: panN_law
 
   // Amplifier Envelope:
   ampeg_delay, ampeg_start, ampeg_attack, ampeg_peak, ampeg_hold, ampeg_decay, ampeg_sustain, 
@@ -143,7 +144,7 @@ enum class Opcode
 
 
   // ARIA:
-  PanLaw,
+  PanLaw,  // should be pan_law
 
 
   //  RS-MET
