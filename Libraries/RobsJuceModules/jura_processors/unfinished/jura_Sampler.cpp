@@ -1862,8 +1862,9 @@ ToDo:
  -show some data about the loaded patch: number of samples, regions, groups, filters, equalizers, 
   waveshapers etc.
  -maybe display also, how many filters, eqs, etc. are allocated and how many are currently in use
- -In the left section, show a tree-view of the instrument with levels <global>, <group>, <region>
-  where <global> may be implicit, i.e. the top-level without an opening "folder" widget
+ -[Done] In the left or right section, show a tree-view of the instrument with levels <global>, 
+  <group>, <region> where <global> may be implicit, i.e. the top-level without an opening "folder"
+  widget
   -The leaves are the individual opcodes for the pamaters. When the user clicks on one, it gets 
    selected an widgets for adjusting it appear in the main view (maybe it the middle)
   -If the selected leaf is a "sample" opcode, show a little waveform view. Maybe it could allow the
@@ -1889,13 +1890,6 @@ ToDo:
   -Maybe some sort of destructive sample editor window ("Sample-Edit") with waveform-view, 
    spectrogram, spectrum, visual representation of sinusoidal model data, etc.
 
- -Maybe we should use a Mediator pattern similar to the Liberty GUI to coordinate TreeView and
-  CodeEditor. See: https://refactoring.guru/design-patterns/mediator  ...yes, that seems like a 
-  good idea. We may introduce even more GUI pages and elements later, so having a centralized
-  facility to coordinate them seems like a good idea. OK ..done
- 
- 
-  
  
 -Allow optional voice retriggering and voice stealing. At the moment, Each note starts a new voice.
 -optimize by using block-wise processing instead of sample-by-sample

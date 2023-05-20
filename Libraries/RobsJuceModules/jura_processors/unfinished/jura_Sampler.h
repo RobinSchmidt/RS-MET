@@ -338,7 +338,9 @@ sampler-engine's graphical user interface. There are currently these GUI compone
 that must be coordinated. For example, when the user selects an opcode from the TreeView, a little
 editor below the TreeView allows the user to set the value for the opcode via a slider. Doing so
 will actually update the corresponding line of code in the CodeEditor. Such interactions are 
-implemented via the Mediator pattern and this class is the mediator class for this purpose. */
+implemented via the Mediator pattern and this class is the mediator class for this purpose. 
+
+See: https://refactoring.guru/design-patterns/mediator   /
 
 class SamplerInterfaceMediator : public jura::Mediator
 {
