@@ -870,6 +870,12 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
     i_glb += 8;  // 8 == length of "<global>" - we want to start after it
   tmp = str.substr(i_glb, i_gs-i_glb);
   setupLevel(&global, tmp);
+  // ToDo: maybe check also for the first occurence of <region> like
+  //   size_t i_rs = str.find(regionStr, 0); 
+  // and then use
+  //   tmp = str.substr(i_glb, min(i_gs, i_rs) - i_glb);
+  // instead of:
+  //   tmp = str.substr(i_glb, i_gs-i_glb);
 
   // Set up the controls, if present:
   size_t i_ctl = str.find("<control>", 0);
@@ -890,6 +896,10 @@ rsReturnCode SfzInstrument::setFromSFZ(const std::string& strIn) // rename to se
       clearInstrument();
       return rsReturnCode::malformed; }
   }
+  // ToDo: 
+  // -make it optional to use <global> or even <group>
+  // -the <control> section ends by the '<' character of the next subsequent <global>, <group>
+  //  or <region>. Search for them in that order.
 
   // Loop over the the groups within the instrument definition:
   //bool allGroupsDone = false;         // old
