@@ -4985,6 +4985,13 @@ bool samplerMidiModulationsTest()
   se.setRegionModulation(0,0, OT::MidiCtrl, dspN, OC::amplitudeN, 1, amp1ByCC7, Mode::absolute);
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
+  // And now add a third one:
+  gain = (amp1 + 3 * amp1ByCC7) / 100;  // the 3 * is due to the accumulation
+  fillTarget(tgt, gain, ns);
+  dspN += 1;
+  se.setRegionSetting(0,0, OC::controlN_index,  7.f, dspN);
+  se.setRegionModulation(0,0, OT::MidiCtrl, dspN, OC::amplitudeN, 1, amp1ByCC7, Mode::absolute);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
 
