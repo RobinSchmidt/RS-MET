@@ -1649,6 +1649,9 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
 /*
 
 ToDo:
+-When a midi controller value changes (either due to incoming midi events or due to moving a slider
+ on the play page): update the corresponding set_ccN=... opcode in th sfz code to keep the state in
+ sync with the code.
 -When we click on e.g. volume to make it appear in the opcode editor, the manipulate e.g. 
  pitch_keycenter via the overlay widgets, the volume slider updates itself to show the new
  keycenter value - which makes no sense. Maybe before updating the widget content, we should check,
@@ -1699,14 +1702,6 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
--[FIXED] Entering a value doesn't work for the low-level parameters. There, the slider takes the 
- new value but the code doesn't. ...checked again - the code is now updated (after changing
- RSlider::mouseDoubleClick - see comment there), but: the value in the code has one additional
- 0 at the end, i.e. the number is multiplied by 10! when entering 1234.25, it becomes 1234.250
- so that's the correct number but with a redundant trailing zero. Check:
- SfzCodeEditor::handlePatchUpdate ..it actually has a correct newValueString
-
-
 -For the modulation connections, we don't get any sliders to appear
  -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
   and fix this bug
