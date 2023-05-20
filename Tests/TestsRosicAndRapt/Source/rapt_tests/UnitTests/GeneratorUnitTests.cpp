@@ -5009,11 +5009,12 @@ bool samplerMidiModulationsTest()
   events.push_back(Ev(EvTp::controlChange,  7.f, 100.f, 0)); 
   events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));  
   events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns)); 
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
-  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, true);
-  // FAILS!!! Ah - wait! We must init cc7 with 100 rather than 0. We need a new event-list for
-  // this test!
-
+  events.push_back(Ev(EvTp::controlChange,  7.f, 73.f, ns));   // 73 = 100-27 = 100-(127-100)
+  gain = rsDbToAmp(-vol1ByCC7);
+  fillTarget(tgt, gain, ns);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
   // Test it with pan and a neutral value of 64. At cc10=127, it should be hard-right, at 
