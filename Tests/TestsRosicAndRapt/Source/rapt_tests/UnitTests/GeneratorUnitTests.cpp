@@ -4912,39 +4912,37 @@ bool samplerMidiModulationsTest()
   // https://sfzformat.com/opcodes/amplitude_ccN
   // https://sfzformat.com/opcodes/amplitude_onccN
   //
-  // where amplitude has range 0..100% and amplitude_onccN has range -100..+100%
+  // where amplitude has range 0..100% and amplitude_onccN has range -100..+100%. We route CC7
+  // to the amplitude1 parameter
 
+  float amp1      = 100.f;  // 100 %
   float amp1ByCC7 = 100.f;  // 100 %
   se.clearRegionSettings(0,0);
-  se.setRegionSetting(0,0, OC::amplitudeN,    100.f, 1); // unit is percent
-  se.setRegionSetting(0,0, OC::controlN_index,  7.f, 1); // assign controller object 1 to midi CC 7
-  se.setRegionModulation(0,0,    // group 0, region 0
-    OT::MidiCtrl,   1,           // Midi CC 7 gets routed to...
-    OC::amplitudeN, 1,           // amplitude1
-    amp1ByCC7, Mode::absolute);  // with an (absolute) amount of amp1ByCC7 percent 
+  se.setRegionSetting(0,0, OC::amplitudeN,     amp1, 1);
+  se.setRegionSetting(0,0, OC::controlN_index,  7.f, 1);
+  se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::amplitudeN, 1, amp1ByCC7, Mode::absolute);
 
   // I think we should get the following results (verify!):
   //
-  //   cc7=127, amp1ByCC7=100:  amplitude = 100% + 100% = 200% = 2.0
-  //   cc7=127, amp1ByCC7=-100: amplitude = 100% - 100% =   0% = 0.0
+  //   cc7=127, amp1=100, amp1ByCC7=100:  amplitude = 100% + 100% = 200% = 2.0
+  //   cc7=127, amp1=100, amp1ByCC7=-100: amplitude = 100% - 100% =   0% = 0.0
   //
   // Try it with https://www.plogue.com/products/sforzando.html which uses the ARIA engine
   // as stated here http://ariaengine.com/products/ Make a simple patch with a sinewave and with
   // amplitude and amplitude_cc7 opcodes defined and try it.
 
-  gain = 2.0;   // 100% + 100% ...I think...
+  //gain = 2.0;   // 100% + 100% ...I think...
+  gain = (amp1 + amp1ByCC7) / 100;  // / 100 because values are in percent
   fillTarget(tgt, gain, ns);
-  //rsPlotVector(tgt);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
+
+  amp1ByCC7 = -100.f;  // -100 %
+  gain = (amp1 + amp1ByCC7) / 100;
+  fillTarget(tgt, gain, ns);
+  se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::amplitudeN, 1, amp1ByCC7, Mode::absolute);
+  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
 
-  ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, true);
-
-  /*
-  events.clear();
-  events.push_back(Ev(EvTp::controlChange,  7.f,   0.f, 0));   // midi CC at sample 0
-  events.push_back(Ev(EvTp::noteOn,        60.f, 100.f, 0));   // noteOn at sample 0
-  events.push_back(Ev(EvTp::controlChange,  7.f, 127.f, ns));  // midi CC at sample ns
-  */
 
 
 
