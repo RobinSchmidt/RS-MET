@@ -292,20 +292,39 @@ void ToolChain::handleMidiMessage(MidiMessage message)
   // Maybe we should first test, if its a MIDI-CC message and bypass all the voice-dispatching code
   // below, if that's the case. 
 
+  auto needsVoiceDispatch = [](const MidiMessage& msg)
+  {
+    return msg.isNoteOnOrOff();
+  };
+
+
+  if(needsVoiceDispatch(message))
+  {
+    // This conditional is new. Formerly, the code inside here was executed uncondtionally. The
+    // new code needs testing.
+
+    int voice = voiceManager.handleMidiMessageReturnVoice(message);
+    if(voice < 0) return;
+    // If no voice was allocated or used for the event, we don't pass it on to the child modules to 
+    // free them from having to handle this condition themselves. So the child modules can expect 
+    // that they always receive a valid voice index in their per voice callbacks. This simplifies 
+    // their implementations of which we will have many, so it's worth it.
+
+    for(int i = 0; i < size(modules); i++){
+      AudioModuleWithMidiIn* m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
+      if(m != nullptr)
+        m->handleMidiMessageForVoice(message, voice); }
+  }
+  else
+  {
+    for(int i = 0; i < size(modules); i++){
+      AudioModuleWithMidiIn* m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
+      if(m != nullptr)
+        m->handleMidiMessage(message); }
+  }
 
 
 
-  int voice = voiceManager.handleMidiMessageReturnVoice(message);
-  if(voice < 0) return;
-  // If no voice was allocated or used for the event, we don't pass it on to the child modules to 
-  // free them from having to handle this condition themselves. So the child modules can expect 
-  // that they always receive a valid voice index in their per voice callbacks. This simplifies 
-  // their implementations of which we will have many, so it's worth it.
-
-  for(int i = 0; i < size(modules); i++){
-    AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
-    if(m != nullptr)
-      m->handleMidiMessageForVoice(message, voice); } 
 
   // is this obsolete?:
   //voiceManager.handleMidiMessage(message);
