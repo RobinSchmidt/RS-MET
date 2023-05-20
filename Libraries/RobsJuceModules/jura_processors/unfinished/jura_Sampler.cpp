@@ -1290,6 +1290,20 @@ void SamplerEditor::rButtonClicked(RButton* b)
 
 void SamplerEditor::rSliderValueChanged(RSlider* sld)
 {
+  // Update the sliders for the MIDI controllers:
+  for(int i = 0; i < numCtrlSliders; i++)
+  {
+    if(sld == ctrlSliders[i])
+    {
+      double val = sld->getValue();
+      samplerModule->setMidiController(i, (float) val);
+      // What should we do here? Directly send a midi cc event to the engine? I'm not sure, if it's
+      // a good idea to do that on the GUI thread. on the other hand, I can't really see why that
+      // should be problematic. Maybe let's just try it...
+    }
+  }
+
+
   int dummy = 0;
 }
 
