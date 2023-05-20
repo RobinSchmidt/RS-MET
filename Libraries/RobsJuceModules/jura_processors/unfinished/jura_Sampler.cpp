@@ -729,6 +729,10 @@ void SfzTreeView::buildTreeFromSfz(const rosic::Sampler::SfzInstrument& sfz)
   //  associated with this "flow"...clikcing it, makes the information "flow" from code editor to 
   //  tree - so maybe place it somewhere at the intersection. Maybe indicate invalidation/
   //  dirtification of the tree after code edits
+
+  // ToDo:
+  // -Maybe show the <global> section explicitly
+  // -Show the <control> section
 }
 // needs test
 
