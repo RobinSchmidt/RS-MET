@@ -266,9 +266,26 @@ protected:
 
   bool midiCtrlDirty;
   /**< A flag that will be set to true, whenever a midi cc message was received. */
-  // Maybe use https://en.cppreference.com/w/cpp/atomic/atomic_flag
-  // but we would need the test() function which is only available since C++20
-
+  //
+  // ToDo: 
+  // Because this flag is set from the audio-thread () in setMidiController and read and cleared
+  // in the GUI thread, we actually want it to be atomic. Maybe use 
+  //   https://en.cppreference.com/w/cpp/atomic/atomic_flag
+  // but we would need the test() function which is only available since C++20 so it seems, we 
+  // can't use it yet when we want to stay compatible with C++ pre 20. Maybe implement a class 
+  // rsAtomicFlag in rosic. An implementation idea could be to just use int or int64 or whatever
+  // primitive datatype happens to allow for atomic assignment and readout. That could perhaps be
+  // figured out by conditional compilation. See:
+  //   https://stackoverflow.com/questions/59601453/how-is-atomic-flag-implemented
+  // where it says (toward the bottom): "So atomic_flag is most probably just a variable that has
+  // the size of the word on a particular processor." which is exactly my idea. Maybe a 
+  // conditionally compiled "typedef" or "using" declaration would be appropriate like:
+  //
+  // #ifdef RS_X64 
+  //   using rsAtomicFlag = rsUint64;
+  // #elif RS_x86
+  //   using rsAtomicFlag = rsUint32;
+  // #endif
 
   friend class SamplerEditor;  // Maybe try to get rid
 
@@ -767,6 +784,22 @@ public:
   the code segment that is responsible for this setting and stores them in the output parameters
   "position" and "length". If no fitting segment is found, it will assign both outputs to -1. */
   void findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos);
+  // maybe rename to findCodeSegmentToUpdate
+
+  /** Under Construction. 
+  Similar to the function with same name that takes a PatchChangeInfo parameter but for midi
+  events. We may need to update the sfz code in response to midi events, too. For example, when the
+  user tweaks a midi controller, we may want to update a corresponding set_ccN opcode definition
+  in the sfz code such that when the patch is saved, the current midi state (controller settings 
+  wise) will be used as initial state after relaoding the patch. Otherwisem it may sound completely
+  different after save/reload. We take a midi event as input rather than just a controller number 
+  and value in anticipation that we might want to trigger similar updates in response to other, 
+  non-controller, events, too. Maybe pitch-wheel events are another candidate for this - we'll 
+  see...  */
+  void findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>& ev, 
+    int* startPos, int* endPos);
+
+
 
 protected:
 
