@@ -1006,6 +1006,11 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
   // doc.replaceSection(startPos, endPos, newValueString);  // that was wrong
   doc.replaceSection(startPos, endPos+1, newValueString);   // fixed 2023/05/21
+  // But: maybe the off-by-one error is not here but inside findCodeSegment (inside one of the 
+  // functions it calls)? Check that! Or maybe it's a different interpretation of what "endPos"
+  // means? findCodeSegment includes the endPos and replaceSection excludes it ot vice versa?
+  // Figure that out! I think my API uses the closed interval [start, end] but juce uses the 
+  // half-open interval [start, end)?
 
   // Note:
   // The change we make to the code should not trigger a re-parsing, at least not automatically 
@@ -1049,6 +1054,11 @@ void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>
   if(startPos == -1 || endPos == -1) {
     //RAPT::rsError("No appropriate code segment found"); 
     return; }
+
+  // Apply the required change to the code document:
+  juce::CodeDocument& doc = CodeEditorComponent::getDocument();
+  juce::String newValueString = juce::String(ev.getValue2());
+  doc.replaceSection(startPos, endPos+1, newValueString);
 
   int dummy = 0;
 
@@ -1102,7 +1112,19 @@ void SfzCodeEditor::findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>&
     float val =       ev.getValue2();
     int   searchStart = 0;
     int   searchEnd   = (int) code.size();
-    cb->findOpcode(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
+    //cb->findOpcode(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
+
+    cb->findOpcodeValueString(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
+
+
+
+    // But this is not quite right - we need to find the position of the value-string, not the 
+    // opcode.
+
+    std::string test = code.substr(*startPos, *endPos - *startPos + 1);
+    int dummy = 0;
+
+
     // ToDo:
     // The searchEnd could actually be somewhere before the end of the string. The control section 
     // goes only up to the first occurrence of <global> or <group> or <region>. We don't have to 

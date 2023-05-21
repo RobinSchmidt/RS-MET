@@ -1294,25 +1294,76 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
   *endPos   = i-1;
 
 
-
-
-
   // ToDo:
   // -Maybe remove some of the assertions and just return -1,-1 in such a cases. I think, we should 
   //  be able to handle this error condition gracefully.
   int dummy = 0;
 }
 
+void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int opIndex,
+  int searchStart, int searchEnd, int* startPos, int* endPos)
+{
+  int opcodeStart, opcodeEnd;
+  findOpcode(code, op, opIndex, searchStart, searchEnd, &opcodeStart, &opcodeEnd);
+  RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
+
+  // Factor out! Has been copied and pasted from the function above - but we have added the '\r'
+  // here because in ToolChain in the debugger, I've seen such an '\r'
+  // To figure out the value's start/end position, scan rightward until we encounter a 
+  // ' ', '\n', '\t', '/'
+  int codeLength = (int) code.length();
+  RAPT::rsAssert(opcodeEnd <= searchEnd);
+  RAPT::rsAssert(opcodeEnd <= codeLength-3); // ex.: "pan=2" has length 5, the 'n' is at 2
+  int i = opcodeEnd+1;
+  RAPT::rsAssert(code[i] == '=');
+  while(i <= searchEnd)
+  {
+    char c = code[i];
+    if(c == ' ' || c == '\n' || c == '\t' || c == '/' || c == '\r')
+      break;
+    ++i;
+  }
+  *startPos = opcodeEnd+2;
+  *endPos   = i-1;
+
+
+  // ToDo:
+  // -Maybe remove some of the assertions and just return -1,-1 in such a cases. I think, we should 
+  //  be able to handle this error condition gracefully.
+  int dummy = 0;
+
+}
+
+// Get rid of this function:
 void SfzCodeBook::findOpcodeAssignment(const std::string& code, Opcode opcode, int opcodeIndex,
   int searchStart, int searchEnd, int* startIndex, int* endIndex)
 {
+  // Old;
   findOpcode(code, opcode, opcodeIndex, searchStart, searchEnd, startIndex, endIndex);
-
   // ToDo:
   // -Adjust endIndex to point to the last digit of the numeric value in case of numeric parameters
   //  or the last letter of a choice or string parameter. On return of findOpcode, it should point
   //  to the character immediately before the '='.
 
+  /*
+  // New 2023/05/22 - does not yet work:
+  int opcodeStart, opcodeEnd;
+  findOpcode(code, opcode, opcodeIndex, searchStart, searchEnd, &opcodeStart, &opcodeEnd);
+  RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
+  int i = opcodeEnd+1;
+  if(i > searchEnd) {
+    *startIndex = *endIndex = -1; }
+  RAPT::rsAssert(code[i] == '=');
+  while(i <= searchEnd)
+  {
+    char c = code[i];
+    if(c == ' ' || c == '\n' || c == '\t' || c == '/')
+      break;
+    ++i;
+  }
+  //*startIndex = opcodeEnd+2;
+  *endIndex   = i-1;
+  */
 
   int dummy = 0;
 }

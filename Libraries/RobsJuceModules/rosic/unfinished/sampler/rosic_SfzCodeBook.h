@@ -889,9 +889,14 @@ public:
   // ToDo: document why we must pass a groupIndex and regionIndex. I think, it's because an opcode
   // may appear multiple times. Each region can define its own cutoff2 opcode, for example.
 
+  // under construction
+  void findOpcodeValueString(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
+    int searchStart, int searchEnd, int* startIndex, int *endIndex);
+
   // ToDo: maybe instead of operating on std::string, let those functions operate on a 
   // const char* pointer (together with an int for the length. That saves us from converting 
   // juce::String to std::string and lets use operate directly on the juce-Strings
+
 
 
 
