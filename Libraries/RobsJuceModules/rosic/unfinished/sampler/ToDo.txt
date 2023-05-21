@@ -76,6 +76,8 @@ Sample playback
   https://sfzformat.com/opcodes/loop_crossfade
   https://sfzformat.com/opcodes/loop_type
   https://sfzformat.com/opcodes/loop_count
+  https://sfzformat.com/opcodes/load_mode         things like DFD vs preload?
+  https://sfzformat.com/opcodes/sample_quality    interpolation: linear, cubic, windowed-sinc, etc.
 
 ----------------------------------------------------------------------------------------------------
 Effect chain
@@ -222,8 +224,13 @@ MIDI behaviors
 - Support the following opcodes:   
   https://sfzformat.com/opcodes/polyphony
   https://sfzformat.com/opcodes/note_selfmask  
-  https://sfzformat.com/opcodes/set_ccN
+  https://sfzformat.com/opcodes/set_ccN         ...done (mostly), also label_ccN
   https://sfzformat.com/opcodes/rt_dead
+  https://sfzformat.com/opcodes/default_path
+  https://sfzformat.com/opcodes/note_offset
+  https://sfzformat.com/opcodes/octave_offset
+
+- See: https://sfzformat.com/headers/control for what else can be done
 
 - See this video for inspiration for how to implement different glide/legato/retrigger modes in
   monophonic operation:
@@ -263,6 +270,18 @@ Effects
   the routing in the the sfz? The parameters of such an autogain device could be: attack, release,
   amount. Maybe also mode (RMS, Peak, loudness, etc.). Maybe it could also use lookahead. That would
   require to pre-render some samples/blocks before they are actually needed.
+
+----------------------------------------------------------------------------------------------------
+User Interface
+==============
+
+- https://sfzformat.com/opcodes/image opcode is meant for an overall background image
+- Maybe introduce a new sfz header <gui> and it can have opcodes like sliderN_control=74, 
+  sliderN_style=knob, sliderN_image=myslider.png, sliderN_posX=100, sliderN_posY=20, 
+  sliderN_width=100, sliderN_height=20, menuN_, buttonN, meterN, plotN_curve=... some curve as 
+  defined under the <curve> header
+
+
 
 
 
