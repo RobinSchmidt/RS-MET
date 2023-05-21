@@ -709,7 +709,7 @@ public:
 protected:
 
   // Control control;
-  // Should contain data-representation of the szuff that is defined under the <control> header in
+  // Should contain data-representation of the stuff that is defined under the <control> header in
   // the sfz file
 
 
