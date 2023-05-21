@@ -224,7 +224,7 @@ MidiController::MidiController()
   // -controlN_amount or _depth or _scale: scales the normalized output by a factor, maybe unit
   //  should be percent and default 100
   // -controlN_shift or _offset: shifts the controller output by a constant, maybe it should also
-  //  be expressed in %, default is zeor, of course
+  //  be expressed in %, default is zero, of course
   // -controlN_smooth: smoothing time in seconds. We can have a linear smoother in the DSP core
   //  object. Default is zero.
   // -controlN_quantize: an optional quantization, defaults to zero
@@ -233,29 +233,11 @@ MidiController::MidiController()
 void MidiController::processFrame(float* L, float* R)
 {
   // Outputs the normalized value of the controller in the range 0..1 where a midi value of 0 maps 
-  // to 0.f and a midi value of 127 maps to 1.f.
-
-  /*
-  // Then second parameter n is the neutral value, i.e. the value at which we output zero
-  // rename to rawMidiCtrlToNormalized
-  auto midiToFloat = [](float x, float n)
-  {
-    //return scale * (x-n);
-
-    if(n != 0.f)
-      return (x-n) / (127.f-n); // maybe precompute 1/(127-n) and use multiplication
-    else
-      return (1.f/127.f) * x;
-  };
-  */
-
+  // to 0.f and a midi value of 127 maps to 1.f, iff neutralVal == 0.f which it is by default.
   RAPT::rsAssert(playStatus != nullptr);
   if(playStatus) {
     float rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
-    *L = *R = scale * (rawVal - neutralVal);
-    //*L = *R = midiToFloat(rawVal, neutralVal);  // old
-    int dummy = 0;
-  }
+    *L = *R = scale * (rawVal - neutralVal); }
   else {
     *L = *R = 0.f; }
     // We are playing safe here with the if-conditional in the spirit of defensive programming. 
