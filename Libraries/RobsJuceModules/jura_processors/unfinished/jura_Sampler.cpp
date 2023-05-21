@@ -1039,6 +1039,16 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
 void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>& ev)
 {
+  return;  // preliminary because the code below triggers an assert in SfzCodeBook::opcodeToString
+  // we may hev to be more liberal and allow the N in the indexed opcodes to be zero too because
+  // set_cc0=40 is actually a valid thing, I think. But we need to make sure that changing the 
+  // condition has no side effects
+
+  int startPos, endPos;
+  findCodeSegment(ev, &startPos, &endPos);
+  if(startPos == -1 || endPos == -1) {
+    //RAPT::rsError("No appropriate code segment found"); 
+    return; }
   //RAPT::rsError("Not yet implemented"); // is just a stub at the moment
 }
 
@@ -1068,8 +1078,30 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, 
 void SfzCodeEditor::findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>& ev, 
   int* startPos, int* endPos)
 {
-  //RAPT::rsError("Not yet implemented"); // is just a stub at the moment
+  // This is the same silly conversion as in the other findCodeSegment function. Try to get rid of
+  // that.
+  juce::CodeDocument& doc = CodeEditorComponent::getDocument();
+  juce::String jStr = doc.getAllContent();
+  std::string  code = jStr.toStdString();
+
+  auto cb = rosic::Sampler::SfzCodeBook::getInstance();
+  using Ev = rosic::Sampler::rsMusicalEvent<float>;
+  using OC = rosic::Sampler::Opcode;
+  if(ev.getType() == Ev::Type::controlChange)
+  {
+    int   idx = (int) ev.getValue1();
+    float val =       ev.getValue2();
+    int   searchStart = 0;
+    int   searchEnd   = (int) code.size();
+    cb->findOpcode(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
+    // ToDo:
+    // The searchEnd could actually be somewhere before the end of the string. The control section 
+    // goes only up to the first occurrence of <global> or <group> or <region>. We don't have to 
+    // search the full sfz code. The set_ccN opcodes must be in an initial section. The searchStart 
+    // could actually also be > 0. Starting immediately after <control> should suffice.
+  }
 }
+// needs tests
 
 
 //=================================================================================================
