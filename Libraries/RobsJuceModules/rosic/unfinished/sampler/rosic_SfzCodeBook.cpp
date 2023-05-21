@@ -468,10 +468,14 @@ std::string SfzCodeBook::opcodeToString(Opcode op, int index, bool withIndex1) c
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {  // todo: use if(!isValidOpcode(op))
     RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToString");
     return dummyString; }
-  RAPT::rsAssert(index > 0 || index == -1, "Invalid index in SfzCodeBook::opcodeToString");
+
+  //RAPT::rsAssert(index > 0 || index == -1, "Invalid index in SfzCodeBook::opcodeToString");
   // Either index is actually a valid index in which case must be a positive natural number or 
   // indexing doesn't apply to the given opcode in which case we use -1 as code to indicate this
   // situation.
+
+  // Update 2023/05/22:
+  RAPT::rsAssert(index >= -1, "Invalid index in SfzCodeBook::opcodeToString");
   // We may actually need to allow N to be 0 as well because the set_ccN opcode may be set_cc0
   // because zero is actually a valid midi controller index
 
