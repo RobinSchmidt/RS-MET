@@ -47,7 +47,7 @@ public:
   also more efficient (maybe, but it will need to access two arrays instead of just one). This is 
   the way, it's done in class rsFourierTransformerRadix2, for example (which uses Ouura FFT). The 
   advantage of this implementation is that it requires no additional storage space for the twiddle
-  factors. */
+  factors and, as said, that it works as is also for NTT. */
   template<class T>
   static void fourierRadix2DIF(T *x, int N, T WN);
 
@@ -56,6 +56,9 @@ public:
   template<class T>
   static void fourierRadix2DIF(std::complex<T> *x, int N)
   { fourierRadix2DIF(x, N, exp(std::complex<T>(T(0), T(-2.0*PI/N)))); }
+  // Maybe it can be optimized by not calling the complex exp function but instead producing the
+  // basic twiddle factor WN by a call to some implementation of sin-and-cosine like 
+  // rsSinCos? -> Try it!
 
   /** Inverse transform of fourierRadix2DIF() for complex types. Invokes fourierRadix2DIF with 
   WN = e^(+2*i*pi/N) and then scales the output by 1/N. */
