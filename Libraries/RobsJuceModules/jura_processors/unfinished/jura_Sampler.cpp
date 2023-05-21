@@ -1098,25 +1098,32 @@ void SamplerEditor::timerCallback()
 {
   // see: TrackMeterModuleEditor::timerCallback
 
-
   jassert(samplerModule != nullptr);
 
   int num = samplerModule->getNumActiveLayers();
-
   layersMeter->setCurrentValue((float)num);
   //numLayersField->setText(juce::String(num));
 
-  // Update the sliders for the MIDI controllers:
-  for(int i = 0; i < numCtrlSliders; i++)
-  {
-    if(ctrlSliders[i]->isVisible())
-    {
-      int val = samplerModule->getMidiControllerCurrentValue(i);
-      ctrlSliders[i]->setValue(val);
-
-      // 
-    }
+  // Update the sliders for the MIDI controllers, if necessary:
+  if(samplerModule->isMidiControlStateDirty()) {
+    for(int i = 0; i < numCtrlSliders; i++) {
+      if(ctrlSliders[i]->isVisible()) {
+        int val = samplerModule->getMidiControllerCurrentValue(i);
+        ctrlSliders[i]->setValue(val); }}
+    samplerModule->setMidiControlStateClean();
+    // ToDo:
+    // Maybe we should trigger some update of the sfz code in the CodeEditor here. The set_ccN
+    // opcodes defined in the code will now be out of sync with the actual current values which
+    // may be bad becasue when saving the sfz and then re-loading it, it will sound totally 
+    // different due to other controller settings. This is not an acceptable behavior from a user 
+    // perspective. Maybe call a function sfzEditor->midiControllersChanged(). The object could 
+    // then either update the code immediately or schedule an update. Doing it immediately may be
+    // a bit costly because we receive our timer callbacks her in this class rather frequently 
+    // (at 50 Hz rate currently). Maybe the code editor should use a less frequent update. Maybe
+    // every second or so. Searching the whole string and doing text replacements is a rather 
+    // costly operation that we don't want to do at 50 Hz rate
   }
+
 }
 
 void SamplerEditor::resized()
