@@ -282,11 +282,15 @@ User Interface
 - Maybe introduce a new sfz header <gui> and it can have opcodes like sliderN_control=74, 
   sliderN_style=knob, sliderN_image=myslider.png, sliderN_posX=100, sliderN_posY=20, 
   sliderN_width=100, sliderN_height=20, sliderN_curve=exponential (or maybe call it mapping, 
-  response), menuN_, buttonN, meterN, plotN_curve=... some curve as defined under the <curve> header
-- 
-
-
-
+  response, scaling), menuN_, buttonN, meterN, plotN_curve=... some curve as defined under the 
+  <curve> header
+- For the sliders presented in the Sampler module in ToolChain, use heuristics to figure out an 
+  appropriate scaling (linear or exponential). Also, have a table (indexed by opcode) by which we 
+  can manually override the default heuristic behavior in cases where it's necessarry. The heuristic
+  for choosing exponential over linear could be: min and max are both positive and their ratio 
+  exceeds a certain threshold (maybe 25 or 50). ...Unfortunatly, sfz specifies a min of 0 for the
+  cutoff opcode...hmm...we'll see...maybe we need to use our own min/max specifications that apply
+  only to GUI elements.
 
 ===================================================================================================
 Fine-grained list of basic tasks to do next (in order)
