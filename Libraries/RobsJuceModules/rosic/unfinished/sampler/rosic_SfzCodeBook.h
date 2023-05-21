@@ -143,6 +143,9 @@ enum class Opcode
     // maybe add: controlN_smooth, controlN_quantize, etc.
   // maybe abbreviate control by ctrl
 
+  set_ccN, label_ccN,
+    // I'm not yet sure, where they fit in best OpcodeType-enum wise
+
 
   // ARIA:
   PanLaw,  // should be pan_law
@@ -398,13 +401,14 @@ enum class OpcodeType   // Maybe rename to OpcodeTarget
   MidiCtrl,   // new, under construction
 
   // Allow midi-inputs to be modulation sources, too:
-  //MidiCtrl, MidiKey, MidiOnVel, MidiOffVel, MidiAftertouch, ...
+  // MidiKey, MidiOnVel, MidiOffVel, MidiAftertouch, ...
 
   _TagFreeModulatorsEnd,
-  // Free modulators need to come immediately after the fixed modulators. Some code relies on that.
+  // Free modulators need to come immediately after the fixed modulators. Some code relies on that,
+  // so don't change that order!
   // ToDo: maybe avoid this dependency by using _TagModulatorsStart, _TagModulatorsEnd and wrap 
   // them all between these tags ...but maybe some code needs to distinguish the cases...we'll see
-  // wehn the mod-system is finished...we coul actually also have both by nesting those tags
+  // when the mod-system is finished...we could actually also have both by nesting those tags
 
   // Routing of modulators:
   _TagModRoutingStart,
