@@ -257,7 +257,7 @@ void SamplerModule::setMidiController(int idx, float val)
 {
   Event ev(Event::Type::controlChange, (float)idx, val);
   sfzPlayer.handleMusicalEvent(ev);
-  midiCtrlDirty.test_and_set();  // in C++20, we can use test()
+  midiCtrlDirty = true;  // ToDo: later in C++20, use std::atomic_flag::test()
 
   // ToDo:
   // Maybe have a controllersDirty field in the class and set it to true whenenever a controller is

@@ -175,7 +175,7 @@ public:
     bool markAsClean) override;
 
   /** Sets the flag for dirty midi controllers back to clean. @see isMidiControlStateDirty. */
-  void setMidiControlStateClean() { midiCtrlDirty.clear(); }
+  void setMidiControlStateClean() { midiCtrlDirty = false; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -207,7 +207,7 @@ public:
   it needs to update some element (such as sliders) according to the new settings of the 
   controllers. After doing so and updating itself, it can set the flag back to clean via calling
   setMidiControlStateClean(). */
-  bool isMidiControlStateDirty() const { midiCtrlDirty; }
+  bool isMidiControlStateDirty() const { return midiCtrlDirty; }
 
 
   XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
@@ -264,9 +264,10 @@ protected:
   static const int numOpcodeParams = 8;  // Preliminary. Maybe have more later
 
 
-  std::atomic_flag midiCtrlDirty;
+  bool midiCtrlDirty;
   /**< A flag that will be set to true, whenever a midi cc message was received. */
-  // https://en.cppreference.com/w/cpp/atomic/atomic_flag
+  // Maybe use https://en.cppreference.com/w/cpp/atomic/atomic_flag
+  // but we would need the test() function which is only available since C++20
 
 
   friend class SamplerEditor;  // Maybe try to get rid
