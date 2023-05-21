@@ -138,9 +138,16 @@ private:
 
   // under construction - not yet used:
   RAPT::rsUint8 midi_cc[128];  // most recently received values of all midi controllers
+  // Change rsUint8 to float. Firstly, we anticipate to implement high-resolution controllers 
+  // later. But it's also a question of optimization because we avoid the type-conversion in the 
+  // realtime code.
+
+
   short pitchWheel;            // most recently received value of pitch wheel
   // I'm not yet sure, if it'S a good idea to have members for thee controllers here. They would be
-  // redundant with the data in the SfzInstrument
+  // redundant with the data in the SfzInstrument...well - we need them here to support the control
+  // of parameters in realtime. Maybe we need facilities to sync the sfz-text to the midi state. 
+  // That may work similar to the code-update via the sliders below the TreeView.
 
   // todo: aftertouch, etc.
   bool  dirty = false;
