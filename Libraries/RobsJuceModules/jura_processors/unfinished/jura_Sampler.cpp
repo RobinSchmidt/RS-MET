@@ -1132,6 +1132,10 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
   // use a limit of 80 in the sfz files. Also, maybe remove the line-numbering from the code editor
   // to get more space for the actual code
 
+  initOldControllersCache(); 
+  // It's perhaps a good idea to do that before starting the timer as the timer callbacks may 
+  // trigger actions look into this cached array of old controller values.
+
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second) for the metering widgets
   // ToDo: maybe stop the timer when in edit mode - only in play mode, the metering widgets are 
@@ -1143,6 +1147,7 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
   samplerModule->sfzPlayer.addFileManagerListener(this); 
   // We want to receive activeFileChanged callbacks when the currently active sfz file changes.
+
 
   //setCodeIsClean();  //
 
@@ -1176,13 +1181,21 @@ void SamplerEditor::timerCallback()
       // below only in this case. To do that, we may need to keep an array of the old controller
       // values around. Maybe declare an array float[128] oldCtrlValues; it should be initialized 
       // after patch load from the current midi controller state in the engine
+      // ...DONE!
 
-      using Event = rosic::Sampler::rsMusicalEvent<float>;
-      Event ev(Event::Type::controlChange, (float) i, val);
-      sfzEditor.handleMidiUpdate(ev);
+      if(val != oldCtrlValues[i])
+      {
+        using Event = rosic::Sampler::rsMusicalEvent<float>;
+        Event ev(Event::Type::controlChange, (float)i, val);
+        sfzEditor.handleMidiUpdate(ev);
 
-      if(ctrlSliders[i]->isVisible())
-        ctrlSliders[i]->setValue(val);
+        if(ctrlSliders[i]->isVisible())
+          ctrlSliders[i]->setValue(val);
+
+        oldCtrlValues[i] = val; 
+        // OK, we have brough everything in sync again and store the new value as old to prepare 
+        // for the next update
+      }
     }
     samplerModule->setMidiControlStateClean();
     // ToDo:
@@ -1422,6 +1435,12 @@ void SamplerEditor::activeFileChanged(FileManager* fileMan)
   // receive a callback from the samplerModule->engine here, then the code shown in the editor
   // actually is actually clean (i.e. parsed and saved).
   // ...verify this...
+
+  // Initialize the old controller values from the engine:
+  initOldControllersCache();
+
+  
+  //oldCtrlValues[numCtrlSliders];
 
 
   //samplerModule->markStateAsDirty();  // Dirtify the xml load/save widget
@@ -1730,6 +1749,12 @@ void SamplerEditor::makeEditWidgetsVisible(bool visible)
   sfzEditor.setVisible(visible);
   structureField->setVisible(visible);
   opcodeEditor->setVisible(visible);
+}
+
+void SamplerEditor::initOldControllersCache()
+{
+  for(int i = 0; i < numCtrlSliders; i++)
+    oldCtrlValues[i] = samplerModule->getMidiControllerCurrentValue(i);
 }
 
 //=================================================================================================

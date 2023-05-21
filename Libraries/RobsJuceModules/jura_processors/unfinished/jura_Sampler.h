@@ -887,6 +887,8 @@ protected:
   void makePlayWidgetsVisible(bool shouldBeVisible);
   void makeEditWidgetsVisible(bool shouldBeVisible);
 
+  void initOldControllersCache();
+
 
   SamplerModule* samplerModule = nullptr;
 
@@ -920,6 +922,11 @@ protected:
   // Sliders for the MIDI controllers:
   static const int numCtrlSliders = 128;
   jura::RSlider* ctrlSliders[numCtrlSliders];
+
+  // Old values of midi controllers. We need to store them in order to know, when we need to 
+  // trigger certain code update action and when we can skip them because nothing has changed.
+  float oldCtrlValues[numCtrlSliders];
+  // under construnction
 
   // The mediator object that coordinates the interactions between the different parts of the GUI:
   SamplerInterfaceMediator guiMediator;
