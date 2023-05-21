@@ -216,18 +216,15 @@ MidiController::MidiController()
 {
   using OC = Opcode;
   type = OpcodeType::MidiCtrl;
-  params.reserve(2);                   // index
-  addParameter(OC::controlN_index);    //   0
-  addParameter(OC::controlN_neutral);  //   1
+  params.reserve(2);                   // index           Meaning
+  addParameter(OC::controlN_index);    //   0     Index of the received midi CC
+  addParameter(OC::controlN_neutral);  //   1     Midi CC value at which we output 0
 
   // Maybe add the following parameters:
   // -controlN_amount or _depth or _scale: scales the normalized output by a factor, maybe unit
   //  should be percent and default 100
   // -controlN_shift or _offset: shifts the controller output by a constant, maybe it should also
   //  be expressed in %, default is zeor, of course
-  // -controlN_neutral: defines the neutral value as integer midi number in 0..127. Is actually 
-  //  also am offset, but applied before normalizing to 0..1 or 0..100%. check, if sfz has a 
-  //  similar concept. Maybe controlN_center?
   // -controlN_smooth: smoothing time in seconds. We can have a linear smoother in the DSP core
   //  object. Default is zero.
   // -controlN_quantize: an optional quantization, defaults to zero
@@ -247,9 +244,7 @@ void MidiController::processFrame(float* L, float* R)
     else
       return (1.f/127.f) * x;
 
-
-    //return (1.f/127.f) * ((float)x - .5f);
-
+    // Move this comment into the unit tests
     // if the neutral value n isn't zero, use float(x - n) / float(127 - n)
     // Verify! I think, maybe we should use a formular similar to that for converting between float
     // samples and 16-bit integer samples in .wav-files.
@@ -275,23 +270,16 @@ void MidiController::processFrame(float* L, float* R)
     // We are playing safe here with the if-conditional in the spirit of defensive programming. 
     // Later when the code stabilizes, maybe we can just assume that playStatus never is a nullptr
     // and optimize this branch away.
-
-  // Optimize (done):
-  // we should try to avoid the conversion from rsUint8 to float by letting 
-  // playStatus->getMidiControllerCurrentValue() return a float directly. It should then, of 
-  // course, also store the value as float.
 }
 
 void MidiController::updateCoeffs(double sampleRate)
 {
-  ctrlIndex  = (int)           params[0].mv();
-  neutralVal = (RAPT::rsUint8) params[1].mv(); 
-
-  neutralVal = std::min(neutralVal, 126.f);  
-  // 127 would lead to div-by-zero in processFrame
+  ctrlIndex  = (int) params[0].mv();
+  neutralVal = params[1].mv(); 
+  neutralVal = std::min(neutralVal, 126.f); // 127 would lead to div-by-zero in processFrame
 }
 
-// ARIA has float controller values:
+// ARIA has float/high-res controller values:
 //   https://sfzformat.com/opcodes/set_hdccN
 //   https://sfzformat.com/opcodes/set_realccN
 // Maybe support them, too. They seem to be normalized to 0..1 instead of 0..127.
