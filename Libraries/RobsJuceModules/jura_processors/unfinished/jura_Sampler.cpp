@@ -1037,6 +1037,11 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   //  in debug situations.
 }
 
+void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>& ev)
+{
+  RAPT::rsError("Not yet implemented"); // is just a stub at the moment
+}
+
 void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos)
 {
   // Maybe streamline these calls into a chain like getDocument().getallContent().toStdString().

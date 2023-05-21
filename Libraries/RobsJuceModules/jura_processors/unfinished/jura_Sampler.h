@@ -778,31 +778,38 @@ public:
 
   using juce::CodeEditorComponent::CodeEditorComponent;
 
+  /** Overriden to make sure that code text stays in sync with the patch data. It finds the 
+  position in code that corresponds to the given patch-change and modifies the code to reflect 
+  that change. For example, if cutoff1 is changed due to the user moving a slider below the 
+  tree-view from 1000 to 500 Hz, this function will replace the corresponding cuttof1=1000 opcode 
+  definition with cutoff1=500 to keep the code in sync with the state of the patch. */
   void handlePatchUpdate(const PatchChangeInfo& info) override;
+
+  /** Under Construction. 
+  Similar to handlePatchUpdate but for midi events instead of patch changes. We may need to update
+  the sfz code in response to midi events, too. For example, when the user tweaks a midi 
+  controller, we may want to update a corresponding set_ccN opcode definition in the sfz code such 
+  that when the patch is saved, the current midi state (controller settings wise) will be used as 
+  initial state after relaoding the patch. Otherwisem it may sound completely different after 
+  save/reload. We take a midi event as input rather than just a controller number and value in 
+  anticipation that we might want to trigger similar updates in response to other, non-controller, 
+  events, too. Maybe pitch-wheel events are another candidate for this - we'll see...  */
+  void handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>& ev);
 
   /** For the given PatchChangeInfo, this function figures out the starting position and length of
   the code segment that is responsible for this setting and stores them in the output parameters
-  "position" and "length". If no fitting segment is found, it will assign both outputs to -1. */
+  "position" and "length". If no fitting segment is found, it will assign both outputs to -1. Used
+  by handlePatchUpdate. */
   void findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos);
   // maybe rename to findCodeSegmentToUpdate
 
-  /** Under Construction. 
-  Similar to the function with same name that takes a PatchChangeInfo parameter but for midi
-  events. We may need to update the sfz code in response to midi events, too. For example, when the
-  user tweaks a midi controller, we may want to update a corresponding set_ccN opcode definition
-  in the sfz code such that when the patch is saved, the current midi state (controller settings 
-  wise) will be used as initial state after relaoding the patch. Otherwisem it may sound completely
-  different after save/reload. We take a midi event as input rather than just a controller number 
-  and value in anticipation that we might want to trigger similar updates in response to other, 
-  non-controller, events, too. Maybe pitch-wheel events are another candidate for this - we'll 
-  see...  */
+  /** Used by handleMidiUpdate in thesame way as handlePatchUpdate uses the function with same 
+  name but taking a PatchChangeInfo parameter. See comments there for what this is needed for. */
   void findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>& ev, 
     int* startPos, int* endPos);
 
 
-
 protected:
-
 
   //juce::CodeTokeniser sfzTokenizer;
   // ToDo: implement this, see:
