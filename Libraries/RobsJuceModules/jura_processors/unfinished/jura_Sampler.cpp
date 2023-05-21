@@ -1039,16 +1039,25 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
 void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>& ev)
 {
-  return;  // preliminary because the code below triggers an assert in SfzCodeBook::opcodeToString
+  //return;  // preliminary because the code below triggers an assert in SfzCodeBook::opcodeToString
   // we may hev to be more liberal and allow the N in the indexed opcodes to be zero too because
   // set_cc0=40 is actually a valid thing, I think. But we need to make sure that changing the 
-  // condition has no side effects
+  // condition has no side effects - OK, the update has been made
 
   int startPos, endPos;
   findCodeSegment(ev, &startPos, &endPos);
   if(startPos == -1 || endPos == -1) {
     //RAPT::rsError("No appropriate code segment found"); 
     return; }
+
+  int dummy = 0;
+
+  // ToDo: 
+  // -Make sure that this function gets called only when a controller really did change. 
+  //  Currently we loop thorugh all controllers to potentially update the code even when it may 
+  //  have the same value as before
+  // -When this is done, implement the actual text replacement.
+
   //RAPT::rsError("Not yet implemented"); // is just a stub at the moment
 }
 
