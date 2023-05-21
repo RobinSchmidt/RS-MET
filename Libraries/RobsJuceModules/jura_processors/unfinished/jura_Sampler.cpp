@@ -1039,7 +1039,7 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
 void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>& ev)
 {
-  RAPT::rsError("Not yet implemented"); // is just a stub at the moment
+  //RAPT::rsError("Not yet implemented"); // is just a stub at the moment
 }
 
 void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos)
@@ -1068,7 +1068,7 @@ void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, 
 void SfzCodeEditor::findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>& ev, 
   int* startPos, int* endPos)
 {
-  RAPT::rsError("Not yet implemented"); // is just a stub at the moment
+  //RAPT::rsError("Not yet implemented"); // is just a stub at the moment
 }
 
 
@@ -1125,11 +1125,24 @@ void SamplerEditor::timerCallback()
   //numLayersField->setText(juce::String(num));
 
   // Update the sliders for the MIDI controllers, if necessary:
-  if(samplerModule->isMidiControlStateDirty()) {
-    for(int i = 0; i < numCtrlSliders; i++) {
-      if(ctrlSliders[i]->isVisible()) {
-        int val = samplerModule->getMidiControllerCurrentValue(i);
-        ctrlSliders[i]->setValue(val); }}
+  if(samplerModule->isMidiControlStateDirty()) 
+  {
+    for(int i = 0; i < numCtrlSliders; i++) 
+    {    
+      float val = samplerModule->getMidiControllerCurrentValue(i);
+
+      // ToDo: check, if the controller with index i has actually changed and triger the updates
+      // below only in this case. To do that, we may need to keep an array of the old controller
+      // values around. Maybe declare an array float[128] oldCtrlValues; it should be initialized 
+      // after patch load from the current midi controller state in the engine
+
+      using Event = rosic::Sampler::rsMusicalEvent<float>;
+      Event ev(Event::Type::controlChange, (float) i, val);
+      sfzEditor.handleMidiUpdate(ev);
+
+      if(ctrlSliders[i]->isVisible())
+        ctrlSliders[i]->setValue(val);
+    }
     samplerModule->setMidiControlStateClean();
     // ToDo:
     // Maybe we should trigger some update of the sfz code in the CodeEditor here. The set_ccN

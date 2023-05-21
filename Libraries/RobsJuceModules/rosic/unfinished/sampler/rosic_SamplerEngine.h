@@ -365,7 +365,7 @@ public:
   // (maybe) rename to getSfzData, add getSfzString
 
   /** Returns the current value of the MIDI controller with given index. */
-  RAPT::rsUint8 getMidiControllerCurrentValue(int i) const 
+  float getMidiControllerCurrentValue(int i) const 
   { return playStatus.getMidiControllerCurrentValue(i); }
 
   /** Returns the settings of the engine as a sfz string. */

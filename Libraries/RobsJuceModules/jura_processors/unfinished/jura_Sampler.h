@@ -199,8 +199,8 @@ public:
   //{ return int(sfzPlayer.getInstrumentData().getMidiControllerInitValue(indexOMidiCC)); }
   // may not be needed
 
-  int getMidiControllerCurrentValue(int indexOfMidiCC) const
-  { return int(sfzPlayer.getMidiControllerCurrentValue(indexOfMidiCC)); }
+  float getMidiControllerCurrentValue(int indexOfMidiCC) const
+  { return sfzPlayer.getMidiControllerCurrentValue(indexOfMidiCC); }
 
   /** We have a flag that will be set to true, whenever a midi cc message was received. The state
   of this flag can be inquired by this function. The intended use is that a GUI can can check, if 
