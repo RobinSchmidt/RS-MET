@@ -142,8 +142,13 @@ public:
 
 
 
+
   // overriden from AudioModule baseclass:
   AudioModuleEditor* createEditor(int type) override;
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   void setSampleRate(double newSampleRate) override;
   void setGain(double newGain);
@@ -163,14 +168,17 @@ public:
   int setInstrumentSetting(Opcode type, float value, int index)
   { return sfzPlayer.setInstrumentSetting(type, value, index); }
 
-
-
-
-
   bool setupFromSfzString(const juce::String& newSfz, bool stringComesFromFile) 
   { return sfzPlayer.setupFromSfzString(newSfz, stringComesFromFile); }
 
+  void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+    bool markAsClean) override;
 
+  /** Sets the flag for dirty midi controllers back to clean. @see isMidiControlStateDirty. */
+  void setMidiControlStateClean() { midiCtrlDirty.clear(); }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   /** Returns the number of layers that are currently playing. Used for displaying that information
   on the GUI.  */
@@ -194,17 +202,31 @@ public:
   int getMidiControllerCurrentValue(int indexOfMidiCC) const
   { return int(sfzPlayer.getMidiControllerCurrentValue(indexOfMidiCC)); }
 
+  /** We have a flag that will be set to true, whenever a midi cc message was received. The state
+  of this flag can be inquired by this function. The intended use is that a GUI can can check, if 
+  it needs to update some element (such as sliders) according to the new settings of the 
+  controllers. After doing so and updating itself, it can set the flag back to clean via calling
+  setMidiControlStateClean(). */
+  bool isMidiControlStateDirty() const { midiCtrlDirty; }
 
-  void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-    bool markAsClean) override;
+
   XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Callbacks
+
   void activeFileChanged(FileManager *fileMan) override; 
+  // may need some attention. Somehow, the left/right buttons for skipping to previous/next file
+  // (xml or sfz) somtimes don't work correctly. I think, the internally stored file-list is 
+  // sometimes not updated correctly, for example, when the user saves a preset to a new file.
+  // Check that!
 
   /** Overriden from AudioModuleWithMidiIn to handle the SfzOpcodeParameters in a different way 
   than usual */
   void parameterChanged(Parameter* param) override;
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
 
   // Midi Handling:
   void noteOn(int key, int vel) override;
@@ -240,6 +262,11 @@ protected:
   jura::SfzPlayer sfzPlayer;
 
   static const int numOpcodeParams = 8;  // Preliminary. Maybe have more later
+
+
+  std::atomic_flag midiCtrlDirty;
+  /**< A flag that will be set to true, whenever a midi cc message was received. */
+  // https://en.cppreference.com/w/cpp/atomic/atomic_flag
 
 
   friend class SamplerEditor;  // Maybe try to get rid
