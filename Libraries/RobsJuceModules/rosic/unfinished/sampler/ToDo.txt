@@ -232,6 +232,9 @@ MIDI behaviors
 
 - See: https://sfzformat.com/headers/control for what else can be done
 
+- Support curves as defined here: https://sfzformat.com/headers/curve The default curves should be
+  linear and exponential (maybe that's what they mean by concave, convex?).
+
 - See this video for inspiration for how to implement different glide/legato/retrigger modes in
   monophonic operation:
   https://www.youtube.com/watch?v=7hjhkPhxQLc&list=PLlczpwSXEOybYYaBCTcjxxKz1QmxytbIf&index=12
@@ -278,9 +281,9 @@ User Interface
 - https://sfzformat.com/opcodes/image opcode is meant for an overall background image
 - Maybe introduce a new sfz header <gui> and it can have opcodes like sliderN_control=74, 
   sliderN_style=knob, sliderN_image=myslider.png, sliderN_posX=100, sliderN_posY=20, 
-  sliderN_width=100, sliderN_height=20, menuN_, buttonN, meterN, plotN_curve=... some curve as 
-  defined under the <curve> header
-
+  sliderN_width=100, sliderN_height=20, sliderN_curve=exponential (or maybe call it mapping, 
+  response), menuN_, buttonN, meterN, plotN_curve=... some curve as defined under the <curve> header
+- 
 
 
 

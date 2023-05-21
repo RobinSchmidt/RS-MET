@@ -5037,17 +5037,7 @@ bool samplerMidiModulationsTest()
 
   // ToDo:
   // -Optimize the code, see MidiController::processFrame
-  // -Use cc10 to control Pan. Define a reasonable desired behavior that generalizes the current 
-  //  behavior in the most useful way. Let's set:
-  //    volume1=0
-  //    controlN_neutral=100         let's call that neutral value n
-  //    controlN_volume1=12
-  //  Now we want to see the following actual volumes:
-  //    cc=100:  0
-  //    cc=127: 12
-  //    cc=0:   -(100 * (127-100)/127) * 12  ?
-  //    cc=x:   (100-x)
-  //  Maybe use linear extrapolation for the range [0, n) and in the range [n,127] use
+  // -[DONE] Use linear extrapolation for the range [0, n) and in the range [n,127] use
   //  (x-n) / (127-n). Check what that gives for n=64 and x=0 and x=127 when the amount is 100% 
   //  such as in pan. Or maybe consider a phase-parameter for an osc of LFO. We would like to 
   //  have: ccN=64 -> 0°, ccN=127 -> +180°, ccN=1 -> -180°, ccN=0 -> special value such as "off", 
