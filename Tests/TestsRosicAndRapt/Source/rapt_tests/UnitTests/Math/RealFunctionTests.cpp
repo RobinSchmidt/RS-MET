@@ -33,12 +33,23 @@ bool testAbsAndSign()
 
 bool testFloatIntConversions()
 {
+  // Test functions for converting between float and int in sucha way as to ensure lossless
+  // int -> float -> int roundtrips. This important, for example, when reading a wavefile that 
+  // stores 16 or 24 bit integers, converting to float for processing, then doing no processing
+  // at all and saving the file back to int fomrat again. We want, of course, get the exact same 
+  // file back. We already have implemented such functions as member functions int16ToFloat32, 
+  // float32ToInt16 in rsWaveFile but here, we want to generalize that to arbitrary integer 
+  // ranges (such as -50...+100, say).
+
+  // The functions we intend to test are currently not in the library but defined here as lambdas.
+  // Whe they work, the implementations can be dragged out ointo the library and made available
+  // and this unit test here can remain mostly unchanged.
+
+
   bool ok = true;
+  //int numInts = 4;             // typically, a power of 2 like 4, 128, 65536, ...
 
-  int numInts = 4;             // typically, a power of 2 like 4, 128, 65536, ...
-
-
-  // First conversion function. Assumes that the input intergers are range 0...numInts-1 and the 
+  // First conversion function. Assumes that the input integers are range 0...numInts-1 and the 
   // ouput floats are in the range [0.0, 1.0] with the desired mappings when numInts=4:
   //
   //   int to float            float to int      ...with extended input range
@@ -49,13 +60,13 @@ bool testFloatIntConversions()
   // 3  ->   3/3 = 1.0       [0.75, 1.0 ]  ->  3       [0.75, +inf]  ->  3
   //
   // Or should the last interval be half-open, too, i.e. [0.75, 1.0)? Actually, it doesn't matter
-  // because values >= 1 should all be clipped to 3 anyway, I guess.
+  // because values >= 1 should all be clipped to 3 anyway, I guess. numInts is typically a power 
+  // of 2 like 4, 128, 65536, ... but the function should work also for other values.
   auto i2f_1 = [](int x, int numInts)
   {
     int maxInt  = numInts-1;
     float s = 1.f / maxInt;      // scaler for int -> float conversion
     return s * x;
-  
   
     // ToDo: Move implementation into library. This - to be created - library function is what this
     // test is suppsoed to test.
@@ -66,11 +77,13 @@ bool testFloatIntConversions()
   ok &= i2f_1(2, 4) == 2.f/3.f;  // == 0.666...
   ok &= i2f_1(3, 4) == 3.f/3.f;  // == 1.f
 
-
   // ToDo:
   // -Create more such functions that are more general, for example, allowing an input range
   //  (-numInts/2)...(+numInts/2)-1  like -128...+127 when numInts = 256
   // -Look at rsWaveFile member functions int16ToFloat32, float32ToInt16 
+  // -When done, move our soultion into general library functions like:
+  //    rsLinToLinIntToFloat(int   in, int   inMin, int   inMax, float outMin, float outMax);
+  //    rsLinToLinFloatToInt(float in, float inMin, float inMax, int   outMin, int   outMax);
 
   return ok;
 }

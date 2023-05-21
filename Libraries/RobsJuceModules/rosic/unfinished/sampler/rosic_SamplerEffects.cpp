@@ -235,6 +235,7 @@ void MidiController::processFrame(float* L, float* R)
   // Outputs the normalized value of the controller in the range 0..1 where a midi value of 0 maps 
   // to 0.f and a midi value of 127 maps to 1.f.
 
+  /*
   // Then second parameter n is the neutral value, i.e. the value at which we output zero
   // rename to rawMidiCtrlToNormalized
   auto midiToFloat = [](float x, float n)
@@ -245,21 +246,8 @@ void MidiController::processFrame(float* L, float* R)
       return (x-n) / (127.f-n); // maybe precompute 1/(127-n) and use multiplication
     else
       return (1.f/127.f) * x;
-
-    // Move this comment into the unit tests
-    // if the neutral value n isn't zero, use float(x - n) / float(127 - n)
-    // Verify! I think, maybe we should use a formular similar to that for converting between float
-    // samples and 16-bit integer samples in .wav-files.
-    // Maybe factor our into a library function and have a corresponding floatToMidi function. 
-    // Maybe have generalized functions
-    //   rsLinToLinIntToFloat(int   in, int   inMin, int   inMax, float outMin, float outMax)
-    //   rsLinToLinFloatToInt(float in, float inMin, float inMax, int   outMin, int   outMax);
-    // and here, we could call rsLinToLinIntToFloat(x, 0, 127, 0.f, 1.f);
-    //
-    // look at rsWaveFile member function int16ToFloat32, float32ToInt16 and unit test
-    // testFloatIntConversions
-    // ...I think, (1.f/127.f) * (float)x;  is actually correct
   };
+  */
 
   RAPT::rsAssert(playStatus != nullptr);
   if(playStatus) {
