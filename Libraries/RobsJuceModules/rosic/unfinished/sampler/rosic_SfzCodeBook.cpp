@@ -42,7 +42,7 @@ SfzCodeBook::SfzCodeBook()
   OS ARIAe = OS::Aria_E;
 
   // Player response constraints (aka "Input Control" in the sfz doc):
-  SP dsp = OpcodeType::SamplePlayer;  // rename to type or tp or ot
+  SP dsp = OpcodeType::SamplePlayer;  // rename to type or tp or ot bcs not all types relate to DSP objects
   add(OC::Key,   Nat, "key",   0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::LoKey, Nat, "lokey", 0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::HiKey, Nat, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
@@ -310,15 +310,11 @@ SfzCodeBook::SfzCodeBook()
   add(OC::controlN_index,   Int, "controlN_index",   0.f, 127.f, 0.f, dsp, OU::Index,    RsMet);
   add(OC::controlN_neutral, Int, "controlN_neutral", 0.f, 127.f, 0.f, dsp, OU::Index,    RsMet);
 
-  // Wait - I'm not sure, if the should be considered opcodes applying to the MidiController DSP 
-  // object. They actually exist independently from these DSP objects - they may fit better into the
-  // PlayStatus. the MidiController object read from that, yes - but they don not really belong into
-  // that DSP ovject: 
-  //add(OC::set_ccN,          Flt, "set_ccN",          0.f, 127.f, 0.f, dsp, OU::RawFloat, Sfz2);  // default, initial value
-  //add(OC::label_ccN,        Txt, "label_ccN",        0.f,   0.f, 0.f, dsp, OU::Text,     Aria);  
-  // Maybe we should define a new OpcodeType of type "PerformanceParams", "Global", "MidiInitState",
-  // "MidiSetup" or something - or more generally "Setup" which may also include things like the
-  // global quality settings (interpolation mode, prelaod vs DFD, etc.)
+
+  dsp = OpcodeType::Setup;
+  add(OC::set_ccN,   Flt, "set_ccN",   0.f, 127.f, 0.f, dsp, OU::RawFloat, Sfz2);  // default, initial value
+  add(OC::label_ccN, Txt, "label_ccN", 0.f,   0.f, 0.f, dsp, OU::Text,     Aria);  
+
 
 
   // Hardwired modulation routings:

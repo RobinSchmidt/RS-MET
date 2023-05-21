@@ -376,8 +376,8 @@ enum class OpcodeType   // Maybe rename to OpcodeTarget
 {
   Unknown,
 
-  // Sound production:
-  SamplePlayer,
+  Setup,            // midi controller labels, init values, playback quality, etc.
+  SamplePlayer,     // Sound production
 
   // Effects:
   _TagEffectsStart,
