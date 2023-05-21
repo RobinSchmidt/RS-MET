@@ -284,7 +284,7 @@ User Interface
   sliderN_width=100, sliderN_height=20, sliderN_curve=exponential (or maybe call it mapping, 
   response, scaling), menuN_, buttonN, meterN, plotN_curve=... some curve as defined under the 
   <curve> header. Maybe meters could be attached to outputs of DSP modules and we could have certain
-  special DSP modules for analysis - for example, a meter that meausres RMS level.
+  special DSP modules for analysis - for example, a meter that measures RMS level.
 - For the sliders presented in the Sampler module in ToolChain, use heuristics to figure out an 
   appropriate scaling (linear or exponential). Also, have a table (indexed by opcode) by which we 
   can manually override the default heuristic behavior in cases where it's necessarry. The heuristic
