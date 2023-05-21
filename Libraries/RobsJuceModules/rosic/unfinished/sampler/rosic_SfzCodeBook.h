@@ -889,7 +889,7 @@ public:
   // ToDo: document why we must pass a groupIndex and regionIndex. I think, it's because an opcode
   // may appear multiple times. Each region can define its own cutoff2 opcode, for example.
 
-  // under construction
+  // under construction -seems ot work - but we need to clean up, document and unit-test
   void findOpcodeValueString(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
 

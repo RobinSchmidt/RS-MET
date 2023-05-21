@@ -1059,16 +1059,6 @@ void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>
   juce::CodeDocument& doc = CodeEditorComponent::getDocument();
   juce::String newValueString = juce::String(ev.getValue2());
   doc.replaceSection(startPos, endPos+1, newValueString);
-
-  int dummy = 0;
-
-  // ToDo: 
-  // -Make sure that this function gets called only when a controller really did change. 
-  //  Currently we loop thorugh all controllers to potentially update the code even when it may 
-  //  have the same value as before
-  // -When this is done, implement the actual text replacement.
-
-  //RAPT::rsError("Not yet implemented"); // is just a stub at the moment
 }
 
 void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos)
@@ -1112,28 +1102,10 @@ void SfzCodeEditor::findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>&
     float val =       ev.getValue2();
     int   searchStart = 0;
     int   searchEnd   = (int) code.size();
-    //cb->findOpcode(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
-
     cb->findOpcodeValueString(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
-
-
-
-    // But this is not quite right - we need to find the position of the value-string, not the 
-    // opcode.
-
-    std::string test = code.substr(*startPos, *endPos - *startPos + 1);
-    int dummy = 0;
-
-
-    // ToDo:
-    // The searchEnd could actually be somewhere before the end of the string. The control section 
-    // goes only up to the first occurrence of <global> or <group> or <region>. We don't have to 
-    // search the full sfz code. The set_ccN opcodes must be in an initial section. The searchStart 
-    // could actually also be > 0. Starting immediately after <control> should suffice.
   }
 }
 // needs tests
-
 
 //=================================================================================================
 
@@ -1785,26 +1757,8 @@ void SamplerEditor::initOldControllersCache()
 
 ToDo:
 
--When a midi controller value changes (either due to incoming midi events or due to moving a slider
- on the play page): update the corresponding set_ccN=... opcode in th sfz code to keep the state in
- sync with the code. Idea to make this work: Instead of pulling out the midi-controller state in
- timerCallback for all the sliders, let the engine send a notification to the GUI...but that may 
- not be thread-safe. Maybe instead, set a flag in the module to indicate that the controllers are
- "dirty". Then, in the timercallback of the GUI, check the flag and update the sliders only if the 
- flag is true. In this callback, set the flag back to clean. The main GUI updates the sliders and 
- in case, some controller has changed, triggers some update actions - for example for the 
- CodeEditor
- -OR: Let the sfz store the set_ccN opcodes just like all other opcodes, show them also in the 
-  TreeView. That could use the existing code-update infrastructure. We just need to take care of
-  recording also the changes via hardware.
-  <control>
-    set_cc74=80
-    label_cc74=Cutoff
-  <global>
-     ...
-     <group>
-       <region>
-
+-When saving, it saves the most recently parsed document rather than the current content of the 
+ editor - that is wrong!
 -When we click on e.g. volume to make it appear in the opcode editor, the manipulate e.g. 
  pitch_keycenter via the overlay widgets, the volume slider updates itself to show the new
  keycenter value - which makes no sense. Maybe before updating the widget content, we should check,
