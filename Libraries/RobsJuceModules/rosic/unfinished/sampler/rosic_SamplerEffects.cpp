@@ -239,19 +239,18 @@ void MidiController::processFrame(float* L, float* R)
   // to 0.f and a midi value of 127 maps to 1.f.
 
   // Then second parameter n is the neutral value, i.e. the value at which we output zero
-  auto midiToFloat =[](RAPT::rsUint8 x, RAPT::rsUint8 n)
+  // rename to rawMidiCtrlToNormalized
+  auto midiToFloat =[](float x, float n)
   {
-    if(n != 0)
-      return float(x-n) / float(127-n); // maybe precompute 1/(127-n) and use multiplication
+    if(n != 0.f)
+      return (x-n) / (127.f-n); // maybe precompute 1/(127-n) and use multiplication
     else
-      return (1.f/127.f) * (float)x;
+      return (1.f/127.f) * x;
 
 
     //return (1.f/127.f) * ((float)x - .5f);
 
     // if the neutral value n isn't zero, use float(x - n) / float(127 - n)
-
-
     // Verify! I think, maybe we should use a formular similar to that for converting between float
     // samples and 16-bit integer samples in .wav-files.
     // Maybe factor our into a library function and have a corresponding floatToMidi function. 
@@ -267,7 +266,7 @@ void MidiController::processFrame(float* L, float* R)
 
   RAPT::rsAssert(playStatus != nullptr);
   if(playStatus) {
-    RAPT::rsUint8 rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
+    float rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
     *L = *R = midiToFloat(rawVal, neutralVal); 
     int dummy = 0;
   }
@@ -277,7 +276,7 @@ void MidiController::processFrame(float* L, float* R)
     // Later when the code stabilizes, maybe we can just assume that playStatus never is a nullptr
     // and optimize this branch away.
 
-  // Optimize:
+  // Optimize (done):
   // we should try to avoid the conversion from rsUint8 to float by letting 
   // playStatus->getMidiControllerCurrentValue() return a float directly. It should then, of 
   // course, also store the value as float.
@@ -288,7 +287,7 @@ void MidiController::updateCoeffs(double sampleRate)
   ctrlIndex  = (int)           params[0].mv();
   neutralVal = (RAPT::rsUint8) params[1].mv(); 
 
-  neutralVal = std::min(neutralVal, (RAPT::rsUint8) 126);  
+  neutralVal = std::min(neutralVal, 126.f);  
   // 127 would lead to div-by-zero in processFrame
 }
 
