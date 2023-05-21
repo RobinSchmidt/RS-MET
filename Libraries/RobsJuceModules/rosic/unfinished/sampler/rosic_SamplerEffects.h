@@ -521,8 +521,9 @@ protected:
   // Needs to be assigned shortly after creation. Is used to read out the current value of the midi
   // controller with the index that is set up by our index-parameter.
 
-  int   ctrlIndex  = -1; // midi CC number to listen to, e.g. 74 for cutoff, -1: none
+  int   ctrlIndex  = -1;          // midi CC number to listen to, e.g. 74 for cutoff, -1: none
   float neutralVal =  0;
+  float scale      =  1.f/127.f;  // precomputed scale factor to avoid division in realtime code
   // ToDo: Maybe write a class MidiControllerCore and move these variables into it. If we implement
   // smoothing later, the core would be the right place to implement that. Maybe the PlayStatus
   // pointer should also go into the core. I'm not sure about that, though. It may require 

@@ -237,8 +237,10 @@ void MidiController::processFrame(float* L, float* R)
 
   // Then second parameter n is the neutral value, i.e. the value at which we output zero
   // rename to rawMidiCtrlToNormalized
-  auto midiToFloat =[](float x, float n)
+  auto midiToFloat = [](float x, float n)
   {
+    //return scale * (x-n);
+
     if(n != 0.f)
       return (x-n) / (127.f-n); // maybe precompute 1/(127-n) and use multiplication
     else
@@ -262,7 +264,8 @@ void MidiController::processFrame(float* L, float* R)
   RAPT::rsAssert(playStatus != nullptr);
   if(playStatus) {
     float rawVal = playStatus->getMidiControllerCurrentValue(ctrlIndex);
-    *L = *R = midiToFloat(rawVal, neutralVal); 
+    *L = *R = scale * (rawVal - neutralVal);
+    //*L = *R = midiToFloat(rawVal, neutralVal);  // old
     int dummy = 0;
   }
   else {
@@ -277,6 +280,7 @@ void MidiController::updateCoeffs(double sampleRate)
   ctrlIndex  = (int) params[0].mv();
   neutralVal = params[1].mv(); 
   neutralVal = std::min(neutralVal, 126.f); // 127 would lead to div-by-zero in processFrame
+  scale      = 1.f / (127.f - neutralVal);  // precomputed scale factor
 }
 
 // ARIA has float/high-res controller values:
