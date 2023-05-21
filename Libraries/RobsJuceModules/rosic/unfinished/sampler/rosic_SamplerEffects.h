@@ -509,7 +509,9 @@ public:
   void updateCoeffs(double sampleRate) override;
 
   /** Sets up the PlayStatus object to be used to grab the raw midi controller data from. Should be
-  called soon after construction. */
+  called soon after construction and will usually remain valid for the whole lifetime. If for some 
+  reason, you need to replace the PlayStatus object (which doesn't happen in rsSamplerEngine), make
+  sure to re-assign the pointer here. */
   void setPlayStatusToUse(PlayStatus* ps) { playStatus = ps; }
 
 
@@ -519,12 +521,15 @@ protected:
   // Needs to be assigned shortly after creation. Is used to read out the current value of the midi
   // controller with the index that is set up by our index-parameter.
 
-  int ctrlIndex = -1;           // midi controller number to listen to, e.g. 74 for cutoff
-  RAPT::rsUint8 neutralVal = 0; // not yet used
-
-  // ToDo: Maybe write a class MidiControllerCore. Maybe that class should contain the pointer to
-  // the PlayStatus - or maybe not - but if we include smoothing later, the core would be the right
-  // place to implement that.
+  int   ctrlIndex  = -1; // midi CC number to listen to, e.g. 74 for cutoff, -1: none
+  float neutralVal =  0;
+  // ToDo: Maybe write a class MidiControllerCore and move these variables into it. If we implement
+  // smoothing later, the core would be the right place to implement that. Maybe the PlayStatus
+  // pointer should also go into the core. I'm not sure about that, though. It may require 
+  // re-organizing the #include dependencies. I think, the effect cores currently are decoupled 
+  // from the sampler's infrastructural stuff (such as the PlayStatus) and maybe that should remain
+  // so. They should focus purely on DSP and it should actually be possible to use them outside the
+  // sampler engine as well without pulling in all the sampler engine code.
 };
 
 
