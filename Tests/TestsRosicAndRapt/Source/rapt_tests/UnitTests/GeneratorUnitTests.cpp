@@ -1443,13 +1443,12 @@ bool samplerParserTest()
   // engine. We deliberately introduce some potential stumbling blocks such as repititions of 
   // seperator characters, etc.
 
+  bool ok = true;
+  ok &= samplerPreProcessorTest();
+
   using SE  = rosic::Sampler::rsSamplerEngineTest;
   using RC  = rosic::Sampler::rsReturnCode;
   using PST = rosic::Sampler::Opcode;
-
-  bool ok = true;
-
-  ok &= samplerPreProcessorTest();
 
   // Create the engine and instruct it to load the just created sample files into its sample 
   // pool. These files are supposed to exist because samplerEngineUnitTestFileIO has created them

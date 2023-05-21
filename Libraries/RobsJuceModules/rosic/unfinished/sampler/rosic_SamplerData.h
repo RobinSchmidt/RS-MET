@@ -60,7 +60,14 @@ public:
   /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their
   commonalities. Subclasses are Region, Group, Global. 
   
-  maybe drag out of the class, name it rsSamplerLevel or HierarchyLevel  */
+  ToDo:
+  -Maybe factor out a baseclass HeaderSection. <global>, <group>, <region> are a special kind of 
+   "header section" but there are others, too. For example <control>, <curve>, etc.
+  -setSetting() and co should go into this baseclass, setParent, setLoKey/HiKey etc. should go 
+   into the subclass. copyDataFrom should also go into baseclass but be overriden in subclass
+  -Maybe drag out of the class, name it rsSamplerLevel or HierarchyLevel..maybe not
+  
+  */
   class HierarchyLevel  
   {
 
@@ -689,11 +696,22 @@ public:
   // todo: document return values - should probably be one of: success, loadError, parseError
 
 
-//protected:  // preliminarily commented - make protected again later
-
-  Global global;
+  Global global;  // todo: move to protected
+  /**< This object contains the data representation of all opcodes defined under the sfz header 
+  <global> which includes all <group> and <region> headers. The data structure is actually a tree
+  with 4 levels: the root node is <global> which has child-nodes of type <group> and groups have 
+  child nodes of type <region> and regions have child-nodes of type "opcode". The opcodes are the 
+  leafs and such opcode-leafs can also occur directly under <group> or <global>. So, this "Global" 
+  object actually holds the main instrument definition. The class could also be called "Instrument"
+  (it actually formerly was) but under sfz, it's called <global> and we want to be consistent with
+  that terminology. */
 
 protected:
+
+  // Control control;
+  // Should contain data-representation of the szuff that is defined under the <control> header in
+  // the sfz file
+
 
   // Maybe get rid of these - they have become one-liners in the refactoring:
   static void writeSettingToString(const PlaybackSetting& setting, std::string& str);
