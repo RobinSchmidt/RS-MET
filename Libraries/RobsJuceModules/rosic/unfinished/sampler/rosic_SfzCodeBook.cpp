@@ -1282,6 +1282,8 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
     return;
   //RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
 
+
+  /*
   // Outdated:
   // This fails for some patches because we use the forward slash as seperator in the file-names, 
   // which is wrong anyway (rgc:sfz doesn't accept it, for example). ToDo: change the 
@@ -1316,6 +1318,7 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
   // -Maybe remove some of the assertions and just return -1,-1 in such a cases. I think, we should 
   //  be able to handle this error condition gracefully.
   int dummy = 0;
+  */
 }
 
 void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int opIndex,
