@@ -653,6 +653,10 @@ protected:
     jura::Parameter::scalings scaling = jura::Parameter::scalings::LINEAR;
   };
 
+  /** Returns true, iff the given opcode refers to a frequency in the audible range such as 
+  cutoffN, eqN_freq, etc. We use this condition to pick a slider range of 20...20000. */
+  bool isOpcodeAudioFreq(rosic::Sampler::Opcode opcode);
+
   /** For a given opcode (possibly with an index such as 2 in eq2_freq) and its current value, this
   function returns the setup data that we want to use to present a GUI widget for that opcode. The 
   min/max/default values in the returned struct may or may not aggree with what the sfz spec 

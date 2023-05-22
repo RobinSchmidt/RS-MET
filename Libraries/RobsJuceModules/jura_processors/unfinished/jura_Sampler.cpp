@@ -415,11 +415,19 @@ bool SfzOpcodeWidgetSet::wantsExponentialSlider(rosic::Sampler::Opcode op) const
     // minimum meaningful value. Or maybe something based on sinh?
 }
 
+bool SfzOpcodeWidgetSet::isOpcodeAudioFreq(rosic::Sampler::Opcode op)
+{
+  using OC = rosic::Sampler::Opcode;
+  return op == OC::cutoffN || op == OC::eqN_freq; 
+  // This is not yet anywhere near complete. Maybe it's a bit silly to do it that way when the 
+  // number of freq parameters grows larger. How else could we do it? Maybe in 
+  // SfzCodeBook::OpcodeEntry we could have another field like "Category" which as entries like 
+  // "AudioFreq", "ModFreq"/"LowFreq", "Phase", "Percentage", etc. We'll see....
+}
+
 SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
   rosic::Sampler::Opcode op, int idx, float val)
 {
-  //return WidgetSetupData(); // preliminary
-
   using namespace rosic::Sampler;
   using OF = OpcodeFormat;
 
@@ -435,10 +443,24 @@ SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
   if(fmt != OF::Float )
     setup.quant = 1.0;
 
-  if(wantsExponentialSlider(op))
+  // It's really a bit messy to do it that way - try to find something more elegant:
+  if(isOpcodeAudioFreq(op) && val >= 20.f && val <= 20000.f)
+  {
+    setup.minVal  = 20.f;
+    setup.maxVal  = 20000.f;
+    setup.defVal  = 1000.f;
     setup.scaling = jura::Parameter::scalings::EXPONENTIAL;
+  }
+
+  //if(wantsExponentialSlider(op))
+  //  setup.scaling = jura::Parameter::scalings::EXPONENTIAL;
 
   return setup;
+
+  // ToDo:
+  // -Maybe do not use the sfz min/max values but define some other ranges here
+  // -Maybe have a different quantization interval depending on the parameter
+  // -Maybe also have linear or exponential scaling depending on parameter
 }
 
 
@@ -459,7 +481,7 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   // setting, etc.
 
   using namespace rosic::Sampler;
-  using OF = OpcodeFormat;  // obsolete?
+  using OF = OpcodeFormat;
   using WM = WidgetMode;
 
 
@@ -484,15 +506,10 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   Opcode op = setting.getOpcode();
   int idx = setting.getIndex();
   std::string opStr = cb->opcodeToString(op, idx);
-  OF fmt = cb->getOpcodeFormat(op);   // obsolete?
+  OF fmt = cb->getOpcodeFormat(op);
 
-  // Retrieve value, range and default value:
-  float val    = setting.getValue();
-
-  //float minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
-  //float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
-  //float defVal = cb->opcodeDefaultValue(op, idx);
-
+  // Retrieve value, and setup data for the widget:
+  float val = setting.getValue();
   WidgetSetupData setup = getWidgetSetupDataFor(op, idx, val);
 
   // Update our info about what we actually edit:
@@ -505,22 +522,15 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   // Display the appropriate widget and set it up:
   if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
   {
-    //double sliderInterval = 0.0;
-    //if(fmt != OF::Float )
-    //  sliderInterval = 1.0;
+    //slider->setRangeAndVa
+    //slider->setRange(setup.minVal, setup.maxVal, setup.quant, setup.defVal, true);
+    //slider->setScaling(setup.scaling);
+    //slider->setValue(val, false);
 
-    slider->setRange(setup.minVal, setup.maxVal, setup.quant, setup.defVal, false);
-    slider->setScaling(setup.scaling);
-    slider->setValue(val, false);
+    slider->setup(setup.minVal, setup.maxVal, setup.quant, setup.defVal, 
+      setup.scaling, val);
     slider->setSliderName(opStr);
     setWidgetMode(WM::slider);
-
-    /*
-    if(wantsExponentialSlider(op))
-      slider->setScaling(jura::Parameter::scalings::EXPONENTIAL);
-    else
-      slider->setScaling(jura::Parameter::scalings::LINEAR);
-      */
   }
   else if(fmt == OF::String)
   {
@@ -531,13 +541,6 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   {
     setWidgetMode(WM::none);
   }
-
-  // ToDo:
-  // -Maybe do not use the sfz min/max values but define some other ranges here
-  // -Maybe have a different quantization interval depending on the parameter
-  // -Maybe also have linear or exponential scaling depending on parameter
-
-  int dummy = 0;
 }
 
 void SfzOpcodeWidgetSet::handlePatchUpdate(const PatchChangeInfo& info)

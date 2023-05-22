@@ -45,6 +45,18 @@ void RSlider::setLayout(int newLayout)
   resized();
 }
 
+void RSlider::setup(double newMin, double newMax, double newInt,
+  double newDef, jura::Parameter::scalings newScl, double newVal)
+{
+  minValue     = newMin;
+  maxValue     = newMax;
+  interval     = newInt;
+  defaultValue = newDef;
+  scaling      = newScl;
+  currentValue = newVal; 
+  valueSanityCheck();
+}
+
 void RSlider::setRange(double newMin, double newMax, double newInt, double newDef, bool initToDefault)
 {
   jassert(newMin <= newMax);

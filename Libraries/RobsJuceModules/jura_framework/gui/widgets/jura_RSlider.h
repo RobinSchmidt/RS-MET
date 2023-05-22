@@ -86,6 +86,15 @@ public:
   /** Switches the slider into vertical mode of operation - the default mode is horizontal. */
   //virtual void setVertical(bool shouldBeVertical);
 
+  /** Sets up all the slider's settings all at once. This is recommended way of setting it up. 
+  Using a sequence of single calls to setRange, setValue etc. is not recommended because within 
+  the sequence of calls, invalid states may occur such as: in setRange, the old/current value may 
+  be outside the new range, in setValue, the old/current range may be to small to accept the new 
+  value etc. Such conditions cause our valueSanityCheck() to raise an assertion. If you can, set 
+  it up all at once. It's also more efficient. */
+  virtual void setup(double newMinimum, double newMaximum, double newInterval,
+    double newDefaultValue, jura::Parameter::scalings newScaling, double newValue);
+
   /** Sets up the range of the slider, a quantization interval for the values, a default value and
   optionally initializes the current value to the default value. */
   virtual void setRange(double newMinimum, double newMaximum, double newInterval,
