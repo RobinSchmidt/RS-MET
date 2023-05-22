@@ -909,8 +909,8 @@ public:
   of cutoff2 within the given search range, it will return the position of the last one. This is 
   because the last one is the one that will actually be used (re-assigning an opcode in sfz code 
   works like re-assigning variables in program code). */
-  void findOpcodeAssignment(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
-    int searchStart, int searchEnd, int* startIndex, int *endIndex);
+  //void findOpcodeAssignment(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
+  //  int searchStart, int searchEnd, int* startIndex, int *endIndex);
   // ToDo: split into findOpcode and findOpcodeAssignment - only the latter whould include the
   // "=765" part, the former only the cutoff2 part. The latter can use the former as subroutine.
 

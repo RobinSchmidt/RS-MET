@@ -1359,6 +1359,8 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int 
 
 }
 
+  /*
+
 // Get rid of this function:
 void SfzCodeBook::findOpcodeAssignment(const std::string& code, Opcode opcode, int opcodeIndex,
   int searchStart, int searchEnd, int* startIndex, int* endIndex)
@@ -1370,7 +1372,7 @@ void SfzCodeBook::findOpcodeAssignment(const std::string& code, Opcode opcode, i
   //  or the last letter of a choice or string parameter. On return of findOpcode, it should point
   //  to the character immediately before the '='.
 
-  /*
+
   // New 2023/05/22 - does not yet work:
   int opcodeStart, opcodeEnd;
   findOpcode(code, opcode, opcodeIndex, searchStart, searchEnd, &opcodeStart, &opcodeEnd);
@@ -1388,10 +1390,12 @@ void SfzCodeBook::findOpcodeAssignment(const std::string& code, Opcode opcode, i
   }
   //*startIndex = opcodeEnd+2;
   *endIndex   = i-1;
-  */
+
 
   int dummy = 0;
 }
+
+  */
 
 
 }}
