@@ -1794,10 +1794,10 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
--On ctrl-click on the slider, the slider itself switches back to the default value but it's not 
- reflected in the code or tree. SfzOpcodeWidgetSet::rSliderValueChanged is not called back on 
- ctrl-click. Check implementation of RSlider::mouseDown ..indeed we call setToDefaultValue(false);
- ...why?
+-[FIXED] On ctrl-click on the slider, the slider itself switches back to the default value but 
+ it's not reflected in the code or tree. SfzOpcodeWidgetSet::rSliderValueChanged is not called back 
+ on ctrl-click. Check implementation of RSlider::mouseDown ..indeed we call 
+ setToDefaultValue(false); ...why?
 -For the modulation connections, we don't get any sliders to appear
  -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
   and fix this bug

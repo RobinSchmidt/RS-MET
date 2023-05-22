@@ -388,7 +388,8 @@ void RSlider::mouseDown(const MouseEvent& e)
   if( isEnabled() )
   {
     if( e.mods.isCommandDown() )
-      setToDefaultValue(false);
+      setToDefaultValue(true);        // new since 2023/05/22
+      //setToDefaultValue(false);     // old
     else if( e.mods.isLeftButtonDown() /*&& ModifierKeys::getCurrentModifiers().isAltDown()*/ )
     {
       if(e.mods.isAltDown())
@@ -398,6 +399,9 @@ void RSlider::mouseDown(const MouseEvent& e)
       dragValue        = 0.0;
     }
   }
+
+  // ToDo:
+  // Document the purpose of the e.mods.isAltDown() stuff
 }
 
 void RSlider::mouseDrag(const MouseEvent& e)
