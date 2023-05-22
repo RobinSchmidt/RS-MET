@@ -873,8 +873,6 @@ public:
   "<region>". This is meant to facilitate jumping over some initial section of the sfz code when 
   searching for some string or alternatively, to search only through the initial section. */
   static int findInstrumentStart(const std::string& sfzCode);
-  // New, needs tests
-
 
   /** Finds the character index within the given sfzCode of the opening angle-bracket '<' of the 
   "<group>" header for the group with given index and assigns it to the output variable "startIndex".
@@ -894,16 +892,31 @@ public:
 
   // make those static, too:
 
+  /** Similar to findGroup and findRegion but finds a single opcode definition. For example, if
+  you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 
+  and "opcodeIndex" parameters and the function would assign "startIndex" to the character position 
+  of the 'c' and "endIndex" to the character position of the '2'. If there are multiple definitions 
+  of cutoff2 within the given search range, it will return the position of the last one. This is 
+  because the last one is the one that will actually be used (re-assigning an opcode in sfz code 
+  works like re-assigning variables in program code). */
   void findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
   // used internally in findOpcodeValueString, maybe move to protected
 
+  /** Finds the start and end of the value string of a given opcode op within some given group and 
+  region. For example, if you want to find the substring "765" of an opcode assignment like 
+  cutoff2=765 in the region with index 8 within the group with index 3, you would call:
+
+    findOpcodeValueString(code, 3, 8, Opcode::cutoff, 2, startPos, endPos);
+
+  The function will assign "startPos" to the character position of the '7' and "endPos" to the 
+  character position of the '5'. This function facilitates text replacements of these value strings
+  in response to user interactions such as when moving a slider that is somehow attached to an
+  opcode definition. We do this in ToolChain. */
   void findOpcodeValueString(const std::string& code, int groupIndex, int regionIndex, Opcode op, 
     int opIndex, int* startPos, int* endPos);
-  // ToDo: document why we must pass a groupIndex and regionIndex. I think, it's because an opcode
-  // may appear multiple times. Each region can define its own cutoff2 opcode, for example.
 
-  // under construction -seems ot work - but we need to clean up, document and unit-test
+  // under construction -seems to work - but we need to clean up, document and unit-test
   void findOpcodeValueString(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
 
@@ -911,28 +924,11 @@ public:
   // findMidiControllerValueString(const std::string& sfzCode, int index, float value, 
   //   int* startPos, int* endPos);
   // and use that directly in ToolChain. Currently we use some lower level search there...
+  // Maybe we should also have a findControlSection
 
   // ToDo: maybe instead of operating on std::string, let those functions operate on a 
   // const char* pointer (together with an int for the length. That saves us from converting 
   // juce::String to std::string and lets use operate directly on the juce-Strings
-
-
-
-
-  /** UNDER CONSTRUCTION - maybe obsolete - use findOpcodeValueString instead...
-  
-  Similar to findGroup and findRegion but finds a single opcode definition. For example, if
-  you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 
-  and "opcodeIndex" parameters and the function would assign "startIndex" to the character position 
-  of the 'c' and "endIndex" to the character position of the '5'. If there are multiple definitions 
-  of cutoff2 within the given search range, it will return the position of the last one. This is 
-  because the last one is the one that will actually be used (re-assigning an opcode in sfz code 
-  works like re-assigning variables in program code). */
-  //void findOpcodeAssignment(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
-  //  int searchStart, int searchEnd, int* startIndex, int *endIndex);
-  // ToDo: split into findOpcode and findOpcodeAssignment - only the latter whould include the
-  // "=765" part, the former only the cutoff2 part. The latter can use the former as subroutine.
-
 
 
 

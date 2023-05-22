@@ -1,0 +1,37 @@
+Currently, we use some simple ad-hoc string processing using searches to parse an sfz string. Maybe
+implement a proper parser based on a state-machine. I think, we would need the following states:
+
+  Start, Comment, Header, Opcode, Space, Done, Error
+
+For convenience, we define the following character sets:
+
+  alnum:      letter or number ("alphanumerical")
+    letter:   lower or upper
+      lower:  lowercase letters a,...,z
+      upper:  uppercase letters A,...,Z
+    number:   numbers 0,...,9
+  space:      ' ', '\n', '\t'
+
+and the following transitions (not yet complete):
+
+Start:
+  space    Start
+  '<'      Header
+  '/'      Comment
+  other    Error
+
+Comment:
+  '\n'     Start
+  other    Comment
+  
+Header:
+  lower    Header
+  '>'      Start 
+  other    Error  
+
+
+See also:
+https://github.com/sfztools/sfizz/tree/develop/src/sfizz/parser
+https://lib.rs/crates/sofiza
+https://www.npmjs.com/package/soundfont-parser
+https://sfzformat.com/software/tools/
