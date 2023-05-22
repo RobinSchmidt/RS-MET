@@ -1251,21 +1251,37 @@ void SfzCodeBook::findOpcode(const std::string& code, Opcode opcode, int opcodeI
 void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex, int regionIndex, 
   Opcode op, int opIndex, int* startPos, int* endPos)
 {
+  *startPos = -1;
+  *endPos   = -1;
+
   // Find locations in the code, where the group definition starts and ends:
   int groupStart, groupEnd;
   findGroup(code, groupIndex, &groupStart, &groupEnd);
-  RAPT::rsAssert(groupStart != -1, "Group not found in code");
+  if(groupStart == -1)
+    return;
+  //RAPT::rsAssert(groupStart != -1, "Group not found in code");
 
   // Find locations in the code, where the region definition starts and ends:
   int regionStart, regionEnd;
   findRegion(code, regionIndex, groupStart, groupEnd, &regionStart, &regionEnd);
-  RAPT::rsAssert(regionStart != -1, "Region not found in code");
+  if(regionStart == -1)
+    return;
+  //RAPT::rsAssert(regionStart != -1, "Region not found in code");
+
+  // ToDo - just call:
+  //findOpcodeValueString(code, op, opIndex, regionStart, regionEnd, startPos, endPos);
+  // here and return - avoid a lot of duplication
+
 
   // Find locations in the code, where the opcode definition starts and ends (this does not include 
   // value):
   int opcodeStart, opcodeEnd;
   findOpcode(code, op, opIndex, regionStart, regionEnd, &opcodeStart, &opcodeEnd);
-  RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
+  if(opcodeStart == -1)
+    return;
+  //RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
+
+  // Outdated:
   // This fails for some patches because we use the forward slash as seperator in the file-names, 
   // which is wrong anyway (rgc:sfz doesn't accept it, for example). ToDo: change the 
   // forward-slashes to backslashes in the patches and see, if this fixes the problem. OK - yes
@@ -1274,7 +1290,7 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
   // we need to modify is actually the value that comes after it. For example for something like 
   // volume=-6.02, opcodeStart returns the position of the 'v' and opcodeEnd the position opf the 
   // 'e'. We now need to figure out the range of the "-6.02" string. ...that should be easy, 
-  // though. Maybe all of that can be wrapped inot a convenience function 
+  // though. Maybe all of that can be wrapped into a convenience function 
 
   // To figure out the value's start/end position, scan rightward until we encounter a 
   // ' ', '\n', '\t', '/'
@@ -1292,6 +1308,7 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
   }
   *startPos = opcodeEnd+2;
   *endPos   = i-1;
+  // factor this out! It's used also in the func below
 
 
   // ToDo:
@@ -1303,9 +1320,13 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
 void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int opIndex,
   int searchStart, int searchEnd, int* startPos, int* endPos)
 {
+  *startPos = -1;
+  *endPos   = -1;
   int opcodeStart, opcodeEnd;
   findOpcode(code, op, opIndex, searchStart, searchEnd, &opcodeStart, &opcodeEnd);
-  RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
+  if(opcodeStart == -1)
+    return;
+  //RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
 
   // Factor out! Has been copied and pasted from the function above - but we have added the '\r'
   // here because in ToolChain in the debugger, I've seen such an '\r'
