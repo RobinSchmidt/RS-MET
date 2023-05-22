@@ -1098,11 +1098,17 @@ void SfzCodeEditor::findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>&
   using OC = rosic::Sampler::Opcode;
   if(ev.getType() == Ev::Type::controlChange)
   {
+    // new:
+    cb->findMidiControllerValueString(code, (int) ev.getValue1(), startPos, endPos);
+    return;
+
+    /*
+    // old:
     int   idx = (int) ev.getValue1();
-    //float val =       ev.getValue2();
     int   searchStart = 0;
     int   searchEnd   = (int) code.size();
     cb->findOpcodeValueString(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
+    */
 
     // ToDo: replace this with a call to cb->findControllerValueString(code, idx);
     // this function shoudl iself figure out where to start. It can optimize the search by 
@@ -1133,7 +1139,9 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
 
   initOldControllersCache(); 
   // It's perhaps a good idea to do that before starting the timer as the timer callbacks may 
-  // trigger actions look into this cached array of old controller values.
+  // trigger actions look into this cached array of old controller values. Maybe we should also
+  // do this in setVisible()? Maybe we should also start the timer when the GUI becomes visible and
+  // stop it when it becomes invisible?
 
   //startTimer(20);  // in ms
   startTimerHz(50);   // in Hz, i.e. fps (frames per second) for the metering widgets

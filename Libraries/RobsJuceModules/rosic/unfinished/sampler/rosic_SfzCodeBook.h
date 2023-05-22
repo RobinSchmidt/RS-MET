@@ -890,7 +890,8 @@ public:
   static void findRegion(const std::string& sfzCode, int regionIndex, int searchStart, int searchEnd,
     int* startIndex, int *endIndex);
 
-  // make those static, too:
+  // ToDo: 
+  // If possible, make the functions below static, too. If not possible, document why.
 
   /** Similar to findGroup and findRegion but finds a single opcode definition. For example, if
   you want to find the substring cutoff2=765, you would pass Opcode::cutoff and 2 for the "opcode" 
@@ -920,9 +921,8 @@ public:
   void findOpcodeValueString(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
 
-  // ToDo: implement:
-  // findMidiControllerValueString(const std::string& sfzCode, int index, float value, 
-  //   int* startPos, int* endPos);
+  void findMidiControllerValueString(const std::string& sfzCode, int index, 
+    int* startPos, int* endPos);
   // and use that directly in ToolChain. Currently we use some lower level search there...
   // Maybe we should also have a findControlSection
 

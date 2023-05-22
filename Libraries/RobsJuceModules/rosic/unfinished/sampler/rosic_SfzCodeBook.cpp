@@ -1316,6 +1316,23 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int 
   //  be able to handle this error condition gracefully.
 }
 
+void SfzCodeBook::findMidiControllerValueString(const std::string& code, int idx,
+  int* startPos, int* endPos)
+{
+  int searchStart = 0;
+  int searchEnd   = (int) code.size();  // Why not size() - 1? Check that in a unit test!
+  findOpcodeValueString(code, Opcode::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
+  // ToDo:
+  // -Optimize: searchStart should be the character immediately after "<control>" and searchEnd
+  //  could be the next character immediately before the next '<' or . We know that set_ccN opcodes 
+  //  must always occur in the <control> section so it's inefficient to search the whole text.
+  //  Currently in ToolChain compiled in debug mode, it takes over 5% to move the cutoff
+  //  controller whereas when doing nothing, it's at 0.5%, so the text-search and replacement is
+  //  actually quite computationally costly and we should optimize it as good as we can.
+}
+
+
+
 }}
 
 /*
