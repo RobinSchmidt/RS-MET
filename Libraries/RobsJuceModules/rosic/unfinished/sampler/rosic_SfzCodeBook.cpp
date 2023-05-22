@@ -1269,7 +1269,8 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
   //RAPT::rsAssert(regionStart != -1, "Region not found in code");
 
   // ToDo - just call:
-  //findOpcodeValueString(code, op, opIndex, regionStart, regionEnd, startPos, endPos);
+  findOpcodeValueString(code, op, opIndex, regionStart, regionEnd, startPos, endPos);
+  return;
   // here and return - avoid a lot of duplication
 
 
