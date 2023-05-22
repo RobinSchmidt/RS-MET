@@ -1099,10 +1099,15 @@ void SfzCodeEditor::findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>&
   if(ev.getType() == Ev::Type::controlChange)
   {
     int   idx = (int) ev.getValue1();
-    float val =       ev.getValue2();
+    //float val =       ev.getValue2();
     int   searchStart = 0;
     int   searchEnd   = (int) code.size();
     cb->findOpcodeValueString(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
+
+    // ToDo: replace this with a call to cb->findControllerValueString(code, idx);
+    // this function shoudl iself figure out where to start. It can optimize the search by 
+    // considering only the stuff under the <control> section. We know that set_ccN opcodes must 
+    // occur there so it's inefficient to search the whole text
   }
 }
 // needs tests

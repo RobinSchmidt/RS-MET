@@ -1,7 +1,7 @@
 Currently, we use some simple ad-hoc string processing using searches to parse an sfz string. Maybe
 implement a proper parser based on a state-machine. I think, we would need the following states:
 
-  Start, Comment, Header, Opcode, Space, Done, Error
+  Start, Comment, Header, Opcode, Value, Space, Done, Error
 
 For convenience, we define the following character sets:
 
@@ -18,6 +18,7 @@ Start:
   space    Start
   '<'      Header
   '/'      Comment
+  lower    Opcode
   other    Error
 
 Comment:
@@ -29,6 +30,22 @@ Header:
   '>'      Start 
   other    Error  
 
+Opcode:
+  alnum    Opcode
+  '_'      Opcode
+  '='      Value
+  other    Error
+  
+Value:
+  alnum    Value
+  '.'      Value
+  space    Start
+
+Space:
+  space    Space
+  other    Start
+
+...to be continued...
 
 See also:
 https://github.com/sfztools/sfizz/tree/develop/src/sfizz/parser
