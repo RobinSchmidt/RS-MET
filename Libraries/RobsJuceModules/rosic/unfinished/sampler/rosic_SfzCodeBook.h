@@ -861,8 +861,20 @@ public:
   //  some of the code that we now have in rsSamplerData (mainly setFromSfz, IIRC maybe getAsSfz 
   //  should go into this class as well - or maybe int an SfzSerializer class)).
 
+
+
+
   static bool hasImplicitFirstGroup(const std::string& code);
   // used internally in findGroup, maybe move to protected
+
+  /** Finds the start of the actual instrument definition in the given sfz code which is defined as
+  the opening '<' character of the first occurence of "<global>". If there is no "<global>" header, 
+  it's the '<' of the first "<group>" and if no group header exists, it's the '<' of the first 
+  "<region>". This is meant to facilitate jumping over some initial section of the sfz code when 
+  searching for some string or alternatively, to search only through the initial section. */
+  static int findInstrumentStart(const std::string& sfzCode);
+  // New, needs tests
+
 
   /** Finds the character index within the given sfzCode of the opening angle-bracket '<' of the 
   "<group>" header for the group with given index and assigns it to the output variable "startIndex".
@@ -880,6 +892,8 @@ public:
   static void findRegion(const std::string& sfzCode, int regionIndex, int searchStart, int searchEnd,
     int* startIndex, int *endIndex);
 
+  // make those static, too:
+
   void findOpcode(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
   // used internally in findOpcodeValueString, maybe move to protected
@@ -892,6 +906,11 @@ public:
   // under construction -seems ot work - but we need to clean up, document and unit-test
   void findOpcodeValueString(const std::string& sfzCode, Opcode opcode, int opcodeIndex, 
     int searchStart, int searchEnd, int* startIndex, int *endIndex);
+
+  // ToDo: implement:
+  // findMidiControllerValueString(const std::string& sfzCode, int index, float value, 
+  //   int* startPos, int* endPos);
+  // and use that directly in ToolChain. Currently we use some lower level search there...
 
   // ToDo: maybe instead of operating on std::string, let those functions operate on a 
   // const char* pointer (together with an int for the length. That saves us from converting 

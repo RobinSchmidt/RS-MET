@@ -1982,20 +1982,34 @@ bool samplerCodeAnalyzerTest()
 
   // Maybe make the same test lacking the <group>, i.e. having an implicit group
 
+  // Test findInstrumentStart:
+  str = "0123<global>";                s = cb->findInstrumentStart(str); ok &= s == 4;
+  str = "0123<global><global>";        s = cb->findInstrumentStart(str); ok &= s == 4;
+  str = "0123<global><group>";         s = cb->findInstrumentStart(str); ok &= s == 4;
+  str = "0123<global><region>";        s = cb->findInstrumentStart(str); ok &= s == 4;
+  str = "0123<global><group><region>"; s = cb->findInstrumentStart(str); ok &= s == 4;
 
   // Try patches that start with a comment:
   str = "/Comment\n\n<group>\n<region>\ncutoff=1000\nresonance=10";
   cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e);  ok &= s == 34 && e == 37;
+  s = cb->findInstrumentStart(str); ok &= s == 10;
 
   str = "/Some comment with spaces\n\n<group>\n<region>\ncutoff=1000\nresonance=10";
   cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e);  ok &= s == 51 && e == 54;
+  s = cb->findInstrumentStart(str); ok &= s == 27;
 
   str = "/Some comment with spaces\n\n<group>\n<region> \ncutoff=1000 \nresonance=10 ";
   cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); ok &= s == 52 && e == 55;
+  s = cb->findInstrumentStart(str); ok &= s == 27;
 
   //str = "\n<group>\n<region>\ncutoff=1000\nresonance=10";
   //cb->findOpcodeValueString(str, 0, 0, Opcode::cutoffN, 1, &s, &e); 
 
+
+  // ToDo: 
+  // -test findInstrumentStart
+  // -add some tests that define a <global> header
+  // -maybe also a <control> header
 
 
   // Test, if opcode defintions that appear in right-hand-side of assignments are

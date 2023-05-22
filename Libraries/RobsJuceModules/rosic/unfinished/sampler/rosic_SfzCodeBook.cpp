@@ -936,6 +936,17 @@ bool SfzCodeBook::hasImplicitFirstGroup(const std::string& code)
   // If the first region header comes befeore the first group header, the first group is implicit.
 }
 
+int SfzCodeBook::findInstrumentStart(const std::string& code)
+{
+  size_t r = code.find("<global>", 0);
+  if(r == -1)
+    r = code.find("<group>", 0);
+  if(r == -1)
+    r = code.find("<region>", 0);
+  return r;
+}
+// needs tests
+
 void SfzCodeBook::findGroup(const std::string& code, int groupIndex, 
   int* startIndex, int* endIndex)
 {
@@ -1268,57 +1279,8 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, int groupIndex,
     return;
   //RAPT::rsAssert(regionStart != -1, "Region not found in code");
 
-  // ToDo - just call:
+  // Find locations in the code, where the value string for the given opcode starts and ends: 
   findOpcodeValueString(code, op, opIndex, regionStart, regionEnd, startPos, endPos);
-  return;
-  // here and return - avoid a lot of duplication
-
-
-  // Find locations in the code, where the opcode definition starts and ends (this does not include 
-  // value):
-  int opcodeStart, opcodeEnd;
-  findOpcode(code, op, opIndex, regionStart, regionEnd, &opcodeStart, &opcodeEnd);
-  if(opcodeStart == -1)
-    return;
-  //RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
-
-
-  /*
-  // Outdated:
-  // This fails for some patches because we use the forward slash as seperator in the file-names, 
-  // which is wrong anyway (rgc:sfz doesn't accept it, for example). ToDo: change the 
-  // forward-slashes to backslashes in the patches and see, if this fixes the problem. OK - yes
-  // it does (done only for the 1st patch - ToDo: fix this for all patches). However, the returned 
-  // range currently only inludes the string for the opcode name itself. The part of the code that 
-  // we need to modify is actually the value that comes after it. For example for something like 
-  // volume=-6.02, opcodeStart returns the position of the 'v' and opcodeEnd the position opf the 
-  // 'e'. We now need to figure out the range of the "-6.02" string. ...that should be easy, 
-  // though. Maybe all of that can be wrapped into a convenience function 
-
-  // To figure out the value's start/end position, scan rightward until we encounter a 
-  // ' ', '\n', '\t', '/'
-  int codeLength = (int) code.length();
-  RAPT::rsAssert(opcodeEnd <= regionEnd);
-  RAPT::rsAssert(opcodeEnd <= codeLength-3); // ex.: "pan=2" has length 5, the 'n' is at 2
-  int i = opcodeEnd+1;
-  RAPT::rsAssert(code[i] == '=');
-  while(i <= regionEnd)
-  {
-    char c = code[i];
-    if(c == ' ' || c == '\n' || c == '\t' || c == '/')
-      break;
-    ++i;
-  }
-  *startPos = opcodeEnd+2;
-  *endPos   = i-1;
-  // factor this out! It's used also in the func below
-
-
-  // ToDo:
-  // -Maybe remove some of the assertions and just return -1,-1 in such a cases. I think, we should 
-  //  be able to handle this error condition gracefully.
-  int dummy = 0;
-  */
 }
 
 void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int opIndex,
@@ -1332,8 +1294,6 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int 
     return;
   //RAPT::rsAssert(opcodeStart != -1, "Opcode not found in code");
 
-  // Factor out! Has been copied and pasted from the function above - but we have added the '\r'
-  // here because in ToolChain in the debugger, I've seen such an '\r'
   // To figure out the value's start/end position, scan rightward until we encounter a 
   // ' ', '\n', '\t', '/'
   int codeLength = (int) code.length();
@@ -1351,12 +1311,9 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int 
   *startPos = opcodeEnd+2;
   *endPos   = i-1;
 
-
   // ToDo:
-  // -Maybe remove some of the assertions and just return -1,-1 in such a cases. I think, we should 
+  // -Maybe remove the assertions and just return -1,-1 in such a cases. I think, we should 
   //  be able to handle this error condition gracefully.
-  int dummy = 0;
-
 }
 
   /*
