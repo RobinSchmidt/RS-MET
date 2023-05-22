@@ -239,7 +239,7 @@ public:
 
     // 1st order filter modes:
     // FO_Start = 1 << 24,
-    FO_Lowpass,
+    lpf_1p,                 // sfz v1
     FO_Highpass,
     FO_LowShelf,
     FO_HighShelf,
@@ -276,6 +276,8 @@ public:
 
     Unknown
   };
+  // 
+  // rename the entries to the sfz strings, see: https://sfzformat.com/opcodes/fil_type
   // hmm...
   // -maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
   // -maybe we can use a bitfield: 2 bits for the topology, 6 bits for the type within the selected

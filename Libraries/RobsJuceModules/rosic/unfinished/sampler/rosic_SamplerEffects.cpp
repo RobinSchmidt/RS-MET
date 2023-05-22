@@ -424,7 +424,7 @@ FilterCore::Type Filter::convertTypeEnum(FilterType sfzType)
   using TO = FilterType;            // enum used in the sfz opcode
   switch(sfzType)
   {
-  case TO::lp_6:   return TC::FO_Lowpass;
+  case TO::lp_6:   return TC::lpf_1p;
   case TO::hp_6:   return TC::FO_Highpass;
 
   case TO::lp_12:  return TC::BQ_Lowpass;        // ToDo: Use SVF as default implementation

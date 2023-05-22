@@ -343,7 +343,7 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   case Type::Bypass: FO::coeffsBypass(&i.fo.b0, &i.fo.b1, &i.fo.a1); return;
     // maybe use this as default branch
 
-  case Type::FO_Lowpass:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+  case Type::lpf_1p:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
   case Type::FO_Highpass: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
 
     // This API sucks - fix it! The functions should take w for the frequency (not freq in Hz and 
@@ -486,7 +486,7 @@ void FilterCore::processFrame(float* L, float* R)
   case Type::Bypass: break;
 
     // 1st order filters:
-  case Type::FO_Lowpass:        io = i.fo.getSample(io); break;
+  case Type::lpf_1p:        io = i.fo.getSample(io); break;
   case Type::FO_Highpass:       io = i.fo.getSample(io); break;
 
     // Biquads:
@@ -516,7 +516,7 @@ void FilterCore::resetState()
   {
   case Type::Bypass: return;
 
-  case Type::FO_Lowpass:  i.fo.resetState();  return;
+  case Type::lpf_1p:  i.fo.resetState();  return;
   case Type::FO_Highpass: i.fo.resetState();  return;
 
   case Type::BQ_Lowpass:        i.bqd.resetState(); return;
