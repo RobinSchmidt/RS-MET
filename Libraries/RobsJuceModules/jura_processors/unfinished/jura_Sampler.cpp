@@ -395,6 +395,7 @@ SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
   createWidgets();
 }
 
+/*
 bool SfzOpcodeWidgetSet::wantsExponentialSlider(rosic::Sampler::Opcode op) const
 {
   return false;
@@ -414,6 +415,7 @@ bool SfzOpcodeWidgetSet::wantsExponentialSlider(rosic::Sampler::Opcode op) const
     // where rangeFactor is 20000/20 = 1000 in the case of frequencies, i.e. the maximum over the 
     // minimum meaningful value. Or maybe something based on sinh?
 }
+*/
 
 bool SfzOpcodeWidgetSet::isOpcodeAudioFreq(rosic::Sampler::Opcode op)
 {
@@ -522,11 +524,6 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   // Display the appropriate widget and set it up:
   if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
   {
-    //slider->setRangeAndVa
-    //slider->setRange(setup.minVal, setup.maxVal, setup.quant, setup.defVal, true);
-    //slider->setScaling(setup.scaling);
-    //slider->setValue(val, false);
-
     slider->setup(setup.minVal, setup.maxVal, setup.quant, setup.defVal, 
       setup.scaling, val);
     slider->setSliderName(opStr);

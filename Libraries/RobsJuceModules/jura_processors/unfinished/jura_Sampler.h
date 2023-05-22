@@ -640,7 +640,7 @@ public:
 
 protected:
 
-  bool wantsExponentialSlider(rosic::Sampler::Opcode op) const;
+  //bool wantsExponentialSlider(rosic::Sampler::Opcode op) const;
   // may be not enough...a more elaborate getWidgetSetupDataFor() function may be needed.
 
   /** A data structure to hold min/max/default values and an appropriate scaling for the slider. */
