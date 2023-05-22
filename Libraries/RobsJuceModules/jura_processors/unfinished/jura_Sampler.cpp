@@ -442,7 +442,8 @@ SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
 
   // ToDo:
   // -Maybe use the current value as default value. That may make sense in this context. Not sure,
-  //  though. OK - done. Maybe use it for a while to see, if that makes sense.
+  //  though. OK - done. Maybe use it for a while to see, if that makes sense. If would also mean
+  //  to write less code here which would be a welcome side-benefit.
 }
 
 void SfzOpcodeWidgetSet::resized()
@@ -1186,7 +1187,8 @@ void SamplerEditor::timerCallback()
         Event ev(Event::Type::controlChange, (float)i, val);
         sfzEditor.handleMidiUpdate(ev);
         if(ctrlSliders[i]->isVisible())
-          ctrlSliders[i]->setValue(val);        // seems costly - see below
+          ctrlSliders[i]->setValue(val, false);   // test
+          //ctrlSliders[i]->setValue(val);        // seems costly - see below
         oldCtrlValues[i] = val;  }}             // prepare for the next cc event
     samplerModule->setMidiControlStateClean(); }// gui was updated, is back in sync with midi state
 
@@ -1195,6 +1197,11 @@ void SamplerEditor::timerCallback()
   // ctrlSliders[i]->setValue updates seem to be quite costly! There's a big difference in CPU load
   // when this update is commented out. Why is that? It's just a basic slider! Check the drawing 
   // code! Maybe it can be optimized. Or maybe there's something else going on in setValue?
+  // maybe try calling setValue(val, false) - maybe we enetr some sort of callback loop/recusrion?
+  // OK - done. Hmmm...it seems to help a little bit, but it's still costly. Returning immediately
+  // from RSlider::paint, i.e. bypassing all the drawing code, doesn't seem to make a big 
+  // difference, so the drawing code does not seem to be the culprit. What else do we do there
+  // that could be so costly? All other actions seem to be cheap ones. It's weird!
 }
 
 void SamplerEditor::resized()
