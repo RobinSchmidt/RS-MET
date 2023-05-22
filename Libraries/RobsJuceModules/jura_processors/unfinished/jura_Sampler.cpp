@@ -1054,6 +1054,15 @@ void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>
   juce::CodeDocument& doc = CodeEditorComponent::getDocument();
   juce::String newValueString = juce::String(ev.getValue2());   // maybe use custom function
   doc.replaceSection(startPos, endPos+1, newValueString);
+
+  // Possible optimization idea:
+  // Maybe we should not immediately update the code but rather schedule an update. Doing it 
+  // immediately may be a bit costly because this function gets called from the timerCallback in
+  // the SamplerEditor class and this timer has a rather high frequency (like 50 Hz). Maybe the 
+  // code editor should use a less frequent update. Maybe every second or half or so. I guess text 
+  // replacements are a rather costly operation that we don't want to do at 50 Hz rate. We could
+  // derive the SfzCodeEditor also from juce::Timer and set a "dirty" flag here and in our own 
+  // timerCallback, we do the update if the flag is dirty and then clear the flag.
 }
 
 void SfzCodeEditor::findCodeSegment(const PatchChangeInfo& info, int* startPos, int* endPos)
@@ -1160,13 +1169,6 @@ void SamplerEditor::timerCallback()
     for(int i = 0; i < numCtrlSliders; i++) 
     {    
       float val = samplerModule->getMidiControllerCurrentValue(i);
-
-      // ToDo: check, if the controller with index i has actually changed and triger the updates
-      // below only in this case. To do that, we may need to keep an array of the old controller
-      // values around. Maybe declare an array float[128] oldCtrlValues; it should be initialized 
-      // after patch load from the current midi controller state in the engine
-      // ...DONE!
-
       if(val != oldCtrlValues[i])
       {
         using Event = rosic::Sampler::rsMusicalEvent<float>;
@@ -1175,24 +1177,18 @@ void SamplerEditor::timerCallback()
 
         if(ctrlSliders[i]->isVisible())
           ctrlSliders[i]->setValue(val);
+          // ToDo:
+          // According to some test with a release build and a system CPU monitor, this update 
+          // seems to be quite costly! There's a big difference in CPU load when this update is 
+          // commented out. Why is that? It's just a basic slider! Check the drawing code! Maybe it
+          // can be optimized. Or maybe there's something else going on in setValue? Check that!
 
         oldCtrlValues[i] = val; 
-        // OK, we have brough everything in sync again and store the new value as old to prepare 
+        // OK, we have brought everything in sync again and store the new value as old to prepare 
         // for the next update
       }
     }
     samplerModule->setMidiControlStateClean();
-    // ToDo:
-    // Maybe we should trigger some update of the sfz code in the CodeEditor here. The set_ccN
-    // opcodes defined in the code will now be out of sync with the actual current values which
-    // may be bad becasue when saving the sfz and then re-loading it, it will sound totally 
-    // different due to other controller settings. This is not an acceptable behavior from a user 
-    // perspective. Maybe call a function sfzEditor->midiControllersChanged(). The object could 
-    // then either update the code immediately or schedule an update. Doing it immediately may be
-    // a bit costly because we receive our timer callbacks her in this class rather frequently 
-    // (at 50 Hz rate currently). Maybe the code editor should use a less frequent update. Maybe
-    // every second or so. Searching the whole string and doing text replacements is a rather 
-    // costly operation that we don't want to do at 50 Hz rate
   }
 
 }
@@ -1827,8 +1823,6 @@ Bugs:
  if we have already a node for a given mod-routing. The problem is that a single mod-routin opcode
  in the sfz can produce two or more mod-connections in the sfz datastructure...
 
-
-
 -When switching sfz-files while playing, access violations occur. I think, I need to acquire locks
  in all the GUI functions ...or at least in parseCodeEditorContent
 -When saving an sfz file, it seems liek the internal file list is not updated: switching through
@@ -1870,7 +1864,13 @@ Bugs:
  triggers multiple layers, the engine plays as many layers/regions as it can for the given voice.
  Maybe we should not play the voice at all in such a case? Maybe on noteOn, we should make sure 
  that all layers are triggered succesfully or not play the note. actually, in 
- rsSamplerEngine::handleNoteOn there's code that should do the rollback already - mayb it'S bugy?
+ rsSamplerEngine::handleNoteOn there's code that should do the rollback already - maybe it's buggy?
+
+Performance issues:
+-When the Play page is open and we move a controller (via hardware), the CPU load goes up to 12%.
+ Strangely, when the Edit page is open, the CPU load does not go up as much - only to ~ 2%. It 
+ seems to be caused by the slider updates in SamplerEditor::timerCallback. See comment there. In 
+ debug mode, the CPU goes up to 25% with the slider updates active
 
 ToDo:
 -On xml-load, update the widgets to reflect the new maximum settings for layers etc.
