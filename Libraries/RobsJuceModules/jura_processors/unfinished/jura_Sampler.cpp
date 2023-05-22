@@ -1171,9 +1171,9 @@ void SamplerEditor::timerCallback()
         Event ev(Event::Type::controlChange, (float)i, val);
         sfzEditor.handleMidiUpdate(ev);
         if(ctrlSliders[i]->isVisible())
-          ctrlSliders[i]->setValue(val);           // seems costly - see below
-        oldCtrlValues[i] = val;  }}                // prepare for the next cc event
-    samplerModule->setMidiControlStateClean(); }
+          ctrlSliders[i]->setValue(val);        // seems costly - see below
+        oldCtrlValues[i] = val;  }}             // prepare for the next cc event
+    samplerModule->setMidiControlStateClean(); }// gui was updated, is back in sync with midi state
 
   // ToDo:
   // According to some test with a release build and a system CPU monitor, the 
