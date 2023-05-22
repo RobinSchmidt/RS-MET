@@ -641,6 +641,24 @@ public:
 protected:
 
   bool wantsExponentialSlider(rosic::Sampler::Opcode op) const;
+  // may be not enough...a more elaborate getWidgetSetupDataFor() function may be needed.
+
+  /** A data structure to hold min/max/default values and an appropriate scaling for the slider. */
+  struct WidgetSetupData
+  {
+    float minVal = 0;  // minimum value
+    float maxVal = 0;  // maximum value
+    float defVal = 0;  // default value
+    jura::Parameter::scalings scaling = jura::Parameter::scalings::IDENTITY;
+  };
+
+  /** For a given opcode and its current value, this function returns the setup data that we want
+  to use to present a GUI widget for that opcode. The min/max/default values in the returned 
+  struct may or may not aggree with what the sfz spec defines for them. Some of these specs in sfz
+  are a bit inconvenient so we may deviate from them on our GUI. */
+  WidgetSetupData getWidgetSetupDataFor(rosic::Sampler::Opcode opcode, float currentValue);
+
+
 
   // Overriden juce callbacks:
   void resized() override;

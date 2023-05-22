@@ -415,6 +415,13 @@ bool SfzOpcodeWidgetSet::wantsExponentialSlider(rosic::Sampler::Opcode op) const
     // minimum meaningful value. Or maybe something based on sinh?
 }
 
+SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
+  rosic::Sampler::Opcode opcode, float currentValue)
+{
+  return WidgetSetupData(); // preliminary
+}
+
+
 void SfzOpcodeWidgetSet::resized()
 {
   int w = getWidth();
@@ -497,7 +504,8 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
     setWidgetMode(WM::none);
   }
 
-  // ToDo: 
+  // ToDo:
+  // -Maybe do not use the sfz min/max values but define some other ranges here
   // -Maybe have a different quantization interval depending on the parameter
   // -Maybe also have linear or exponential scaling depending on parameter
 
