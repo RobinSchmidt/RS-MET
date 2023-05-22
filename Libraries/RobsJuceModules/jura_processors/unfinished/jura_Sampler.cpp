@@ -1194,21 +1194,19 @@ void SamplerEditor::timerCallback()
 
   // ToDo:
   // According to some test with a release build and a system CPU monitor, the 
-  // ctrlSliders[i]->setValue updates seem to be quite costly! There's a big difference in CPU load
-  // when this update is commented out. Why is that? It's just a basic slider! Check the drawing 
-  // code! Maybe it can be optimized. Or maybe there's something else going on in setValue?
-  // maybe try calling setValue(val, false) - maybe we enter some sort of callback loop/recusrion?
-  // OK - done. Hmmm...it seems to help a little bit, but it's still costly. Returning immediately
-  // from RSlider::paint, i.e. bypassing all the drawing code, doesn't seem to make a big 
-  // difference, so the drawing code does not seem to be the culprit. What else do we do there
-  // that could be so costly? All other actions seem to be cheap ones. It's weird!
-  // The call to repaintOnMessageThread(); seems to be the culprit. When commenting it out, the CPU
-  // load is normal. Replacing it with a simple repaint doesn't seem to make a difference either.
-  // ...so it seems that somehow the *scheduling* of the paint call via repaint(OnMessageThread) is
-  // costly but the paint call itself not so much? That doesn't seem to make any sense!
+  // ctrlSliders[i]->setValue updates seem to be quite costly! When rapidly twiddling a controller
+  // back and forth (by hardware, using the midi keyboard), there's a big difference in CPU load
+  // when this update is commented out. Why is that? It's just a basic slider! Returning 
+  // immediately from RSlider::paint, i.e. bypassing all the drawing code, doesn't seem to make a 
+  // big difference, so the drawing code does not seem to be the culprit. All other actions seem to
+  // be cheap ones. Hmm - the call to repaintOnMessageThread(); sin RSlider::setValue seems to be 
+  // the culprit. When commenting it out, the CPU load is normal. Replacing it with a simple 
+  // repaint doesn't seem to make a difference either. So it seems that somehow the *scheduling* 
+  // of the paint call via calling repaint(OnMessageThread) is costly but the paint callback itself
+  // not so much? That doesn't seem to make any sense! Why would that scheduling be so costly?
   // Setting the Timer frequency lower seems to help a bit. Using 20 Hz instead of 50 reduces the 
-  // load from ~22% to ~15%. Using 10 Hz reduces the load to ~ 10%
-
+  // load from ~22% to ~15%. Using 10 Hz reduces the load to ~ 10%. But that's still too high and
+  // not acceptable anyway because the GUI looks very unsmooth then.
 }
 
 void SamplerEditor::resized()
