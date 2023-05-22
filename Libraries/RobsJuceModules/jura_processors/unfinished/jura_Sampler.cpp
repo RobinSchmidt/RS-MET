@@ -1155,42 +1155,31 @@ SamplerEditor::~SamplerEditor()
 
 void SamplerEditor::timerCallback()
 {
-  // see: TrackMeterModuleEditor::timerCallback
-
   jassert(samplerModule != nullptr);
 
+  // Update the metering display for the active layers:
   int num = samplerModule->getNumActiveLayers();
   layersMeter->setCurrentValue((float)num);
-  //numLayersField->setText(juce::String(num));
+  // see also: TrackMeterModuleEditor::timerCallback
 
   // Update the sliders for the MIDI controllers, if necessary:
-  if(samplerModule->isMidiControlStateDirty()) 
-  {
-    for(int i = 0; i < numCtrlSliders; i++) 
-    {    
+  if(samplerModule->isMidiControlStateDirty()) {
+    for(int i = 0; i < numCtrlSliders; i++) {
       float val = samplerModule->getMidiControllerCurrentValue(i);
-      if(val != oldCtrlValues[i])
-      {
+      if(val != oldCtrlValues[i]) {
         using Event = rosic::Sampler::rsMusicalEvent<float>;
         Event ev(Event::Type::controlChange, (float)i, val);
         sfzEditor.handleMidiUpdate(ev);
-
         if(ctrlSliders[i]->isVisible())
-          ctrlSliders[i]->setValue(val);
-          // ToDo:
-          // According to some test with a release build and a system CPU monitor, this update 
-          // seems to be quite costly! There's a big difference in CPU load when this update is 
-          // commented out. Why is that? It's just a basic slider! Check the drawing code! Maybe it
-          // can be optimized. Or maybe there's something else going on in setValue? Check that!
+          ctrlSliders[i]->setValue(val);           // seems costly - see below
+        oldCtrlValues[i] = val;  }}                // prepare for the next cc event
+    samplerModule->setMidiControlStateClean(); }
 
-        oldCtrlValues[i] = val; 
-        // OK, we have brought everything in sync again and store the new value as old to prepare 
-        // for the next update
-      }
-    }
-    samplerModule->setMidiControlStateClean();
-  }
-
+  // ToDo:
+  // According to some test with a release build and a system CPU monitor, the 
+  // ctrlSliders[i]->setValue updates seem to be quite costly! There's a big difference in CPU load
+  // when this update is commented out. Why is that? It's just a basic slider! Check the drawing 
+  // code! Maybe it can be optimized. Or maybe there's something else going on in setValue?
 }
 
 void SamplerEditor::resized()
