@@ -1044,11 +1044,6 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
 
 void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>& ev)
 {
-  //return;  // preliminary because the code below triggers an assert in SfzCodeBook::opcodeToString
-  // we may hev to be more liberal and allow the N in the indexed opcodes to be zero too because
-  // set_cc0=40 is actually a valid thing, I think. But we need to make sure that changing the 
-  // condition has no side effects - OK, the update has been made
-
   int startPos, endPos;
   findCodeSegment(ev, &startPos, &endPos);
   if(startPos == -1 || endPos == -1) {
@@ -1057,7 +1052,7 @@ void SfzCodeEditor::handleMidiUpdate(const rosic::Sampler::rsMusicalEvent<float>
 
   // Apply the required change to the code document:
   juce::CodeDocument& doc = CodeEditorComponent::getDocument();
-  juce::String newValueString = juce::String(ev.getValue2());
+  juce::String newValueString = juce::String(ev.getValue2());   // maybe use custom function
   doc.replaceSection(startPos, endPos+1, newValueString);
 }
 
@@ -1093,30 +1088,12 @@ void SfzCodeEditor::findCodeSegment(const rosic::Sampler::rsMusicalEvent<float>&
   juce::String jStr = doc.getAllContent();
   std::string  code = jStr.toStdString();
 
-  auto cb = rosic::Sampler::SfzCodeBook::getInstance();
+  auto  cb = rosic::Sampler::SfzCodeBook::getInstance();
   using Ev = rosic::Sampler::rsMusicalEvent<float>;
   using OC = rosic::Sampler::Opcode;
   if(ev.getType() == Ev::Type::controlChange)
-  {
-    // new:
     cb->findMidiControllerValueString(code, (int) ev.getValue1(), startPos, endPos);
-    return;
-
-    /*
-    // old:
-    int   idx = (int) ev.getValue1();
-    int   searchStart = 0;
-    int   searchEnd   = (int) code.size();
-    cb->findOpcodeValueString(code, OC::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
-    */
-
-    // ToDo: replace this with a call to cb->findControllerValueString(code, idx);
-    // this function shoudl iself figure out where to start. It can optimize the search by 
-    // considering only the stuff under the <control> section. We know that set_ccN opcodes must 
-    // occur there so it's inefficient to search the whole text
-  }
 }
-// needs tests
 
 //=================================================================================================
 

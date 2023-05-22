@@ -1319,16 +1319,31 @@ void SfzCodeBook::findOpcodeValueString(const std::string& code, Opcode op, int 
 void SfzCodeBook::findMidiControllerValueString(const std::string& code, int idx,
   int* startPos, int* endPos)
 {
+  size_t searchStart = code.find("<control>", 0);
+  size_t searchEnd   = code.find('<', searchStart+9); // 9 = length(<control>)
+  findOpcodeValueString(code, Opcode::set_ccN, idx, (int) searchStart, (int) searchEnd, 
+    startPos, endPos);
+
+  /*
+  // old:
   int searchStart = 0;
-  int searchEnd   = (int) code.size();  // Why not size() - 1? Check that in a unit test!
+  int searchEnd   = (int) code.size() - 1;  // ...or just size()? Check that in a unit test!
   findOpcodeValueString(code, Opcode::set_ccN, idx, searchStart, searchEnd, startPos, endPos);
+  */
   // ToDo:
   // -Optimize: searchStart should be the character immediately after "<control>" and searchEnd
   //  could be the next character immediately before the next '<' or . We know that set_ccN opcodes 
   //  must always occur in the <control> section so it's inefficient to search the whole text.
   //  Currently in ToolChain compiled in debug mode, it takes over 5% to move the cutoff
   //  controller whereas when doing nothing, it's at 0.5%, so the text-search and replacement is
-  //  actually quite computationally costly and we should optimize it as good as we can.
+  //  actually quite computationally costly and we should optimize it as good as we can and 
+  //  implement performance tests for this as well. It may also be a good idea to operate on 
+  //  const char* arrays in order to avoid conversions from juce::String to std::string within
+  //  ToolChain. 
+  //  ...OK...done. Unfortunately, it doesn't really reduce the CPU load very much. It's 
+  //  nevertheless a good idea. It may make a difference of searching through a string with a few
+  //  hundreds of chars vs one with a few thousands or tens of thousands. The control section is 
+  //  often only a small part of the whole sfz.
 }
 
 
