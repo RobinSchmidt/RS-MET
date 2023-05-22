@@ -395,28 +395,6 @@ SfzOpcodeWidgetSet::SfzOpcodeWidgetSet()
   createWidgets();
 }
 
-/*
-bool SfzOpcodeWidgetSet::wantsExponentialSlider(rosic::Sampler::Opcode op) const
-{
-  return false;
-  // Preliminary. ToDo: either apply a heuristic based on the range of the opcode's values or 
-  // decide it in a case-statement based on the opcode. Maybe later we also want scalings other 
-  // than linear or exponential?
-
-  using namespace rosic::Sampler;
-  SfzCodeBook* cb = SfzCodeBook::getInstance();
-  float minVal = cb->opcodeMinValue(op);
-  float maxVal = cb->opcodeMaxValue(op);
-  if(minVal > 0.f && maxVal > 0.f && maxVal >= 50.f*minVal)
-    return true;
-    // This criterion to switch between linear and exponential mode is ad hoc and heuristic. It 
-    // doesn't seem to work though, because for cutoff, the minVal is actually 0. Maybe we need 
-    // some expWithOffset characteristic for that. Maybe the offset should be maxVal / rangeFactor 
-    // where rangeFactor is 20000/20 = 1000 in the case of frequencies, i.e. the maximum over the 
-    // minimum meaningful value. Or maybe something based on sinh?
-}
-*/
-
 bool SfzOpcodeWidgetSet::isOpcodeAudioFreq(rosic::Sampler::Opcode op)
 {
   using OC = rosic::Sampler::Opcode;
@@ -437,6 +415,7 @@ SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
 
   WidgetSetupData setup;
 
+  // By default, we use the min/max/default values as defined in the sfz spec:
   setup.minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
   setup.maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
   setup.defVal = cb->opcodeDefaultValue(op, idx);
@@ -444,6 +423,10 @@ SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
   OF fmt = cb->getOpcodeFormat(op);
   if(fmt != OF::Float )
     setup.quant = 1.0;
+
+  // For some opcodes/parameters, we deviate from the sfz specification with regard to what we use
+  // as min/max/default values for the slider because not in all cases does the sfz spec provide 
+  // convenient ranges for gui sliders. These deviaitions are handled on a case-by-case basis:
 
   // It's really a bit messy to do it that way - try to find something more elegant:
   if(isOpcodeAudioFreq(op) && val >= 20.f && val <= 20000.f)
@@ -454,17 +437,8 @@ SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
     setup.scaling = jura::Parameter::scalings::EXPONENTIAL;
   }
 
-  //if(wantsExponentialSlider(op))
-  //  setup.scaling = jura::Parameter::scalings::EXPONENTIAL;
-
   return setup;
-
-  // ToDo:
-  // -Maybe do not use the sfz min/max values but define some other ranges here
-  // -Maybe have a different quantization interval depending on the parameter
-  // -Maybe also have linear or exponential scaling depending on parameter
 }
-
 
 void SfzOpcodeWidgetSet::resized()
 {
@@ -1820,6 +1794,9 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
+-On ctrl-click on the slider, the slider itself switches back to the default value but it's not 
+ reflected in the code or tree. SfzOpcodeWidgetSet::rSliderValueChanged is not called back on 
+ ctrl-click. Check implementation of RSlider::mouseDown
 -For the modulation connections, we don't get any sliders to appear
  -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
   and fix this bug
