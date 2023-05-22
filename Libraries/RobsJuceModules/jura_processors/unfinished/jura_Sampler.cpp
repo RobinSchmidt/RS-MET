@@ -459,7 +459,7 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   // setting, etc.
 
   using namespace rosic::Sampler;
-  using OF = OpcodeFormat;
+  using OF = OpcodeFormat;  // obsolete?
   using WM = WidgetMode;
 
 
@@ -484,13 +484,14 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   Opcode op = setting.getOpcode();
   int idx = setting.getIndex();
   std::string opStr = cb->opcodeToString(op, idx);
-  OF fmt = cb->getOpcodeFormat(op);
+  OF fmt = cb->getOpcodeFormat(op);   // obsolete?
 
   // Retrieve value, range and default value:
   float val    = setting.getValue();
-  float minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
-  float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
-  float defVal = cb->opcodeDefaultValue(op, idx);
+
+  //float minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
+  //float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
+  //float defVal = cb->opcodeDefaultValue(op, idx);
 
   WidgetSetupData setup = getWidgetSetupDataFor(op, idx, val);
 
@@ -504,17 +505,22 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   // Display the appropriate widget and set it up:
   if(fmt == OF::Float || fmt == OF::Integer || fmt == OF::Natural)
   {
-    double sliderInterval = 0.0;
-    if(fmt != OF::Float )
-      sliderInterval = 1.0;
-    slider->setRange(minVal, maxVal, sliderInterval, defVal, false);
+    //double sliderInterval = 0.0;
+    //if(fmt != OF::Float )
+    //  sliderInterval = 1.0;
+
+    slider->setRange(setup.minVal, setup.maxVal, setup.quant, setup.defVal, false);
+    slider->setScaling(setup.scaling);
     slider->setValue(val, false);
     slider->setSliderName(opStr);
     setWidgetMode(WM::slider);
+
+    /*
     if(wantsExponentialSlider(op))
       slider->setScaling(jura::Parameter::scalings::EXPONENTIAL);
     else
       slider->setScaling(jura::Parameter::scalings::LINEAR);
+      */
   }
   else if(fmt == OF::String)
   {
