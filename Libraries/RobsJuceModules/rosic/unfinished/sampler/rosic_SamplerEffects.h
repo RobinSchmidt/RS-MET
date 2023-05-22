@@ -555,7 +555,7 @@ public:
   void processBlock(float* L, float* R, int N) override;
   void updateCoeffs(double sampleRate) override;
   void resetState() override { core.resetState(); }
-  static FilterCore::Type convertTypeEnum(FilterType sfzType);
+  //static FilterCore::Type convertTypeEnum(FilterType sfzType);  // obsolete
 protected:
   FilterCore core;
 };

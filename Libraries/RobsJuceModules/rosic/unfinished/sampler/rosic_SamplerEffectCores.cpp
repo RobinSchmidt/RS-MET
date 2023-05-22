@@ -302,10 +302,12 @@ void AmplifierCore::setup(float amplitude, float volume, float pan, float width,
 
 //=================================================================================================
 
-void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
+void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
 {
-  if(type == Type::Unknown || w == 0.f)
-    type = Type::Bypass;
+  using FT = FilterType;
+
+  if(type == FT::Unknown || w == 0.f)
+    type = FT::off;
   // When the cutoff is not defined, it defaults to zero. In this case, we switch into bypass
   // mode. We also default to bypass if mode is not set...hmm...maybe we should default to
   // lpf_12 in this case? ...but only if cutoff is nonzero...we'll see...
@@ -324,8 +326,8 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   // Compute the desired filter quality factor Q from the resonance gain in dB:
   float A = rsDbToAmp(resoGainDb);  // Raw resonance amplitude
   float Q = A;                      // This is correct for 2nd order bandpass filters...
-  if(type == Type::BQ_Lowpass || type == Type::BQ_Highpass) // ..low- and highpass filters need..
-    Q = rsBandwidthConverter::lowpassResoGainToQ(A);        // ..a more complicated formula
+  if(type == FT::lp_12 || type == FT::hp_12)           // ..low- and highpass filters need..
+    Q = rsBandwidthConverter::lowpassResoGainToQ(A);   // ..a more complicated formula
 
 
 
@@ -340,16 +342,16 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   FilterImpl& i = impl;  // as abbreviation
   switch(type)
   {
-  case Type::Bypass: FO::coeffsBypass(&i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+  case FT::off: FO::coeffsBypass(&i.fo.b0, &i.fo.b1, &i.fo.a1); return;
     // maybe use this as default branch
 
-  case Type::lpf_1p:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
-  case Type::FO_Highpass: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+  case FT::lp_6: FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+  case FT::hp_6: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
 
     // This API sucks - fix it! The functions should take w for the frequency (not freq in Hz and 
     // sample-rate), their names should be much shorter (e.g. coeffsLowpassRBJ or just lowpassRBJ),
     // output params should come last and be passed as pointers.
-  case Type::BQ_Lowpass:  
+  case FT::lp_12:  
   {
     //BQ::calculateCookbookLowpassCoeffs(
     //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
@@ -361,7 +363,7 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
     return;
   } 
 
-  case Type::BQ_Highpass: 
+  case FT::hp_12: 
   {
     //BQ::calculateCookbookHighpassCoeffs(
     //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
@@ -374,7 +376,7 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   }
 
 
-  case Type::BQ_Bandpass_Skirt: 
+  case FT::bp_6_6: 
   {
     //BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
     //i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); 
@@ -387,7 +389,7 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   }
 
 
-  case Type::BQ_Bandstop: BQ::calculateCookbookBandrejectCoeffsViaQ(
+  case FT::br_6_6: BQ::calculateCookbookBandrejectCoeffsViaQ(
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
 
   }
@@ -433,10 +435,12 @@ void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
   //  filters - compare results to what an FM'ed oscillator does.
 }
 
-void FilterCore::setupGainFreqBw(Type type, float gainDb, float w, float bw)
+void FilterCore::setupGainFreqBw(FilterType type, float gainDb, float w, float bw)
 {
   using namespace RAPT;
-  rsAssert(type == Type::BQ_Bell);
+  using FT = FilterType;
+
+  rsAssert(type == FT::pk_2p);
   rsAssert(bw > 0.f, "Bandwidth must be positive in setupGainFreqBw");
   rsAssert( w > 0.f, "Omega must be positive in setupGainFreqBw");
   // ToDo: allow w=0 later
@@ -481,20 +485,24 @@ void FilterCore::processFrame(float* L, float* R)
 {
   TSig io(*L, *R);
   FilterImpl& i = impl;
+
+  using FT = FilterType;
+
+
   switch(type)
   {
-  case Type::Bypass: break;
+  case FT::off: break;
 
     // 1st order filters:
-  case Type::lpf_1p:        io = i.fo.getSample(io); break;
-  case Type::FO_Highpass:       io = i.fo.getSample(io); break;
+  case FT::lp_6:   io = i.fo.getSample(io); break;
+  case FT::hp_6:   io = i.fo.getSample(io); break;
 
     // Biquads:
-  case Type::BQ_Lowpass:        io = i.bqd.getSample(io); break;
-  case Type::BQ_Highpass:       io = i.bqd.getSample(io); break;
-  case Type::BQ_Bandpass_Skirt: io = i.bqd.getSample(io); break;
-  case Type::BQ_Bandstop:       io = i.bqd.getSample(io); break;
-  case Type::BQ_Bell:           io = i.bqd.getSample(io); break;
+  case FT::lp_12:  io = i.bqd.getSample(io); break;
+  case FT::hp_12:  io = i.bqd.getSample(io); break;
+  case FT::bp_6_6: io = i.bqd.getSample(io); break;
+  case FT::br_6_6: io = i.bqd.getSample(io); break;
+  case FT::pk_2p:  io = i.bqd.getSample(io); break;
 
   };
   *L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
@@ -512,18 +520,18 @@ void FilterCore::processFrame(float* L, float* R)
 void FilterCore::resetState()
 {
   FilterImpl& i = impl;
+  using FT = FilterType;
   switch(type)
   {
-  case Type::Bypass: return;
+  case FT::off: return;
 
-  case Type::lpf_1p:  i.fo.resetState();  return;
-  case Type::FO_Highpass: i.fo.resetState();  return;
-
-  case Type::BQ_Lowpass:        i.bqd.resetState(); return;
-  case Type::BQ_Highpass:       i.bqd.resetState(); return;
-  case Type::BQ_Bandpass_Skirt: i.bqd.resetState(); return;
-  case Type::BQ_Bandstop:       i.bqd.resetState(); return;
-  case Type::BQ_Bell:           i.bqd.resetState(); return;
+  case FT::lp_6:   i.fo.resetState();  return;
+  case FT::hp_6:   i.fo.resetState();  return;
+  case FT::lp_12:  i.bqd.resetState(); return;
+  case FT::hp_12:  i.bqd.resetState(); return;
+  case FT::bp_6_6: i.bqd.resetState(); return;
+  case FT::br_6_6: i.bqd.resetState(); return;
+  case FT::pk_2p:  i.bqd.resetState(); return;
 
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::resetState");

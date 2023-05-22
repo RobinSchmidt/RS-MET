@@ -243,7 +243,7 @@ enum class FilterType // maybe rename to fil_type for consistency with sfz
 
   numTypes
 };
-// see: https://sfzformat.com/opcodes/fil_type
+// rename the entries to the sfz strings, see: https://sfzformat.com/opcodes/fil_type
 
 enum class LoopMode   // maybe rename to loop_mode (as in sfz)
 {

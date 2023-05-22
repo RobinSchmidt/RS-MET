@@ -4251,7 +4251,8 @@ void fakeResoDifferentDelays()
 void samplerFilters()
 {
   using Flt = rosic::Sampler::FilterCore;
-  using Tp  = Flt::Type;
+  //using Tp  = Flt::Type;
+  using Tp  = rosic::Sampler::FilterType;
   using Vec = std::vector<float>;
 
   int   N          =  8192;    // number of samples = half the number of frequencies
@@ -4278,13 +4279,13 @@ void samplerFilters()
     Flt flt;
     Vec yL(N), yH(N), yB(N), dummy(N);
 
-    flt.setupCutRes(Tp::BQ_Lowpass, w0, reso);
+    flt.setupCutRes(Tp::lp_12, w0, reso);
     recordImpResp(flt, yL, dummy);
 
-    flt.setupCutRes(Tp::BQ_Highpass, w0, reso);
+    flt.setupCutRes(Tp::hp_12, w0, reso);
     recordImpResp(flt, yH, dummy);
 
-    flt.setupCutRes(Tp::BQ_Bandpass_Skirt, w0, reso);
+    flt.setupCutRes(Tp::bp_6_6, w0, reso);
     recordImpResp(flt, yB, dummy);
 
     //rsPlotVectors(yL, yH, yB);

@@ -381,8 +381,9 @@ void Filter::processBlock(float* L, float* R, int N)
 void Filter::updateCoeffs(double fs)
 {
   // This is still somewhat ugly:
-  FilterType sfzType = (FilterType)(int)params[0].getValue();
-  FilterCore::Type coreType = convertTypeEnum(sfzType);
+  FilterType type = (FilterType)(int)params[0].getValue();
+
+  //FilterCore::Type coreType = convertTypeEnum(sfzType);
 
   // Extract numeric parameters:
   float cutoff    = params[1].mv();
@@ -398,7 +399,7 @@ void Filter::updateCoeffs(double fs)
   cutoff *= RAPT::rsPitchOffsetToFreqFactor(pitchOffset);
 
   // Set up core:
-  core.setupCutRes(coreType, cutoff*float(2*PI/fs), resonance);
+  core.setupCutRes(type, cutoff*float(2*PI/fs), resonance);
   dirty = false;
 
   // ToDo:
@@ -412,6 +413,8 @@ void Filter::updateCoeffs(double fs)
   // because we would then need modulation connections which we otherwise don't need.
 }
 
+/*
+// obsolete - delete:
 FilterCore::Type Filter::convertTypeEnum(FilterType sfzType)
 {
   // Conversion of filter type enum values used in the sfz data and those used in the dsp core.
@@ -443,6 +446,7 @@ FilterCore::Type Filter::convertTypeEnum(FilterType sfzType)
 
   return TC::BQ_Lowpass;
 }
+*/
 // todo: avoid this conversion - use the same enum in both, the sfz codebook and the 
 // FilterCore just like we do with the waveshaper's distortion shapes
 
@@ -475,7 +479,7 @@ void Equalizer::processBlock(float* L, float* R, int N)
 void Equalizer::updateCoeffs(double fs)
 {
   core.setupGainFreqBw(
-    FilterCore::Type::BQ_Bell,
+    FilterType::pk_2p,
     params[0].mv(),
     params[1].mv() * float(2*PI/fs),
     params[2].mv()

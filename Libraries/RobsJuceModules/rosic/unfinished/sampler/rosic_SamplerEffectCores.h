@@ -233,6 +233,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /*
+  // get rid of that and use the FilterType enum values
   enum class Type // maybe don't use all-caps for the types
   {
     Bypass,
@@ -276,6 +278,7 @@ public:
 
     Unknown
   };
+  */
   // 
   // rename the entries to the sfz strings, see: https://sfzformat.com/opcodes/fil_type
   // hmm...
@@ -290,12 +293,12 @@ public:
   /** Sets the filter up in terms of cutoff (or center) frequency as normalized radian frequency 
   and resonance in decibels. This parametrization is suitable when used to implement the filter
   opcodes in sfz. */
-  void setupCutRes(Type type, float cutoffOmega, float resonance);
+  void setupCutRes(FilterType type, float cutoffOmega, float resonance);
 
   /** Sets the filter up in terms of gain (in decibels), frequency (normalized radian) and 
   bandwidth (in octaves). This parametrization is suitable when used for the equalizer opcodes in 
   sfz. */
-  void setupGainFreqBw(Type type, float gain, float omega, float bw);
+  void setupGainFreqBw(FilterType type, float gain, float omega, float bw);
 
   //void initCoeffs();
   //void updateCoeffs();
@@ -381,7 +384,9 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  Type type = Type::Bypass;
+  //Type type = Type::Bypass;
+
+  FilterType type = FilterType::lp_12;  // maybe use FilterType::off as default
   FilterImpl impl;
 
   // ToDo: maybe include also a state-vector filter (maybe rename to phasor filter to avoid name 

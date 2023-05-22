@@ -212,11 +212,11 @@ std::vector<float> rsApplySamplerFilter(const std::vector<float>& x,
   using FilterDsp  = rosic::Sampler::Filter;
   using FilterCore = rosic::Sampler::FilterCore;
   FilterCore flt; 
-  flt.setupCutRes(FilterDsp::convertTypeEnum(type), 1.f, 0.f);  // dummy call in order to..
-  flt.resetState();                                             // ..make this call do something
+  flt.setupCutRes(type, 1.f, 0.f);     // dummy call in order to..
+  flt.resetState();                    // ..make this call do something
   if(cutoffMod.size() == 0) {          // Static cutoff frequency
     float omega = float(2*PI) * cutoff / sampleRate;
-    flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
+    flt.setupCutRes(type, omega, resonance);
     for(int n = 0; n < N; n++) {
       y[n] = x[n];
       float dummy = 0.f;
@@ -225,7 +225,7 @@ std::vector<float> rsApplySamplerFilter(const std::vector<float>& x,
     for(int n = 0; n < N; n++) {
       float k = rsPitchOffsetToFreqFactor(cutoffMod[n] / 100.f);
       float omega = float(2*PI) * k * cutoff / sampleRate;
-      flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
+      flt.setupCutRes(type, omega, resonance);
       y[n] = x[n];
       float dummy = 0.f;
       flt.processFrame(&y[n], &dummy); }}
