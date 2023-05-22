@@ -418,7 +418,8 @@ SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
   // By default, we use the min/max/default values as defined in the sfz spec:
   setup.minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
   setup.maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
-  setup.defVal = cb->opcodeDefaultValue(op, idx);
+  //setup.defVal = cb->opcodeDefaultValue(op, idx);
+  setup.defVal = val;
 
   OF fmt = cb->getOpcodeFormat(op);
   if(fmt != OF::Float )
@@ -433,11 +434,15 @@ SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
   {
     setup.minVal  = 20.f;
     setup.maxVal  = 20000.f;
-    setup.defVal  = 1000.f;
+    //setup.defVal  = 1000.f;  // commented bcs we use val
     setup.scaling = jura::Parameter::scalings::EXPONENTIAL;
   }
 
   return setup;
+
+  // ToDo:
+  // -Maybe use the current value as default value. That may make sense in this context. Not sure,
+  //  though. OK - done. Maybe use it for a while to see, if that makes sense.
 }
 
 void SfzOpcodeWidgetSet::resized()
@@ -1041,7 +1046,7 @@ void SfzCodeEditor::handlePatchUpdate(const PatchChangeInfo& info)
   //  changing a value via a slider, the value in the tree is not updated. When we then select 
   //  another opcode in the tree and the the previous opcode again, the slider will start out at
   //  the previous value. But that should be done inside the callbacks of the other colleagues, not
-  //  here. (check, if that's still the case)
+  //  here. (check, if that's still the case - nope - seems to be fixed)
   // -Actually, it would be better to find the code-segment (or at least its start), when the user
   //  selects a new node in the tree - not on every slider-movement. The starting position does not
   //  change. The length may, depending on the text-formatting of floating point numbers and also
@@ -1794,16 +1799,12 @@ editor content is not in sync with the lastvalidSfz? That may be good solution
  embedded text takes precedence over the referenced file
 
 Bugs:
--[FIXED] On ctrl-click on the slider, the slider itself switches back to the default value but 
- it's not reflected in the code or tree. SfzOpcodeWidgetSet::rSliderValueChanged is not called back 
- on ctrl-click. Check implementation of RSlider::mouseDown ..indeed we call 
- setToDefaultValue(false); ...why?
 -For the modulation connections, we don't get any sliders to appear
  -write some sort of unit test for GUI interactions in the TestAppJURA and then use that to find 
   and fix this bug
 -[fixed] Saw_1forAllFilterEnv.sfz: change cutoff -> assert! We fail to find the correct code segment in
  sfz document. -> make a unit test with an sfz patch content similar to the content of that patch.
- maybe it's because the patch start witha comment? Or is it because we now use a backslash? Try 
+ maybe it's because the patch start with a comment? Or is it because we now use a backslash? Try 
  some variations of the patch. Yes! I made a copy where I stripped the initial comment and with 
  that patch, it works! In the call to
    findOpcodeValueString(const std::string& code, int groupIndex, int regionIndex, ...

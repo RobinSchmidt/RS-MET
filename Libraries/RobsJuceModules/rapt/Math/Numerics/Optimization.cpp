@@ -72,7 +72,9 @@ https://www.youtube.com/watch?v=j29rVHCpRUY  Minimax Approximation and the Excha
  to faster overall convergence? Experiment a bit with that.
 
 
-
+This:
+https://www.youtube.com/watch?v=cLtN6jAG_3Q  A Review of Top 16 Optimizers for Training Neural Networks
+explains a lot of variations of the gradient descent method.
 
 
 
