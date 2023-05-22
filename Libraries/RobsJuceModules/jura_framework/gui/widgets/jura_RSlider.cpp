@@ -95,9 +95,7 @@ void RSlider::setScaling(int newScaling)
 void RSlider::setValue(double newValue,
   const bool sendUpdateMessage /*, const bool sendMessageSynchronously*/)
 {
-  //newValue = constrainValue(newValue); // why not constrainAndQuantize 
-  newValue = constrainAndQuantizeValue(newValue); // new
-
+  newValue = constrainAndQuantizeValue(newValue);
   //valueSanityCheck();  // what does this do? ...without parameters when we not have updated any member yet?
   if(currentValue != newValue)
   {
