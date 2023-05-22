@@ -416,9 +416,29 @@ bool SfzOpcodeWidgetSet::wantsExponentialSlider(rosic::Sampler::Opcode op) const
 }
 
 SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
-  rosic::Sampler::Opcode opcode, float currentValue)
+  rosic::Sampler::Opcode op, int idx, float val)
 {
-  return WidgetSetupData(); // preliminary
+  //return WidgetSetupData(); // preliminary
+
+  using namespace rosic::Sampler;
+  using OF = OpcodeFormat;
+
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+
+  WidgetSetupData setup;
+
+  setup.minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
+  setup.maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
+  setup.defVal = cb->opcodeDefaultValue(op, idx);
+
+  OF fmt = cb->getOpcodeFormat(op);
+  if(fmt != OF::Float )
+    setup.quant = 1.0;
+
+  if(wantsExponentialSlider(op))
+    setup.scaling = jura::Parameter::scalings::EXPONENTIAL;
+
+  return setup;
 }
 
 
@@ -471,6 +491,8 @@ void SfzOpcodeWidgetSet::setSfzNodeToEdit(const SfzNodeData& nodeData)
   float minVal = jmin(cb->opcodeMinValue(op), val); // jmin/jmax because values in the code may go
   float maxVal = jmax(cb->opcodeMaxValue(op), val); // beyond the nominal range in SFZ spec
   float defVal = cb->opcodeDefaultValue(op, idx);
+
+  WidgetSetupData setup = getWidgetSetupDataFor(op, idx, val);
 
   // Update our info about what we actually edit:
   patchChangeInfo.type = PatchChangeType::opcodeValueChanged;

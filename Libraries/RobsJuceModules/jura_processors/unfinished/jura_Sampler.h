@@ -649,14 +649,17 @@ protected:
     float minVal = 0;  // minimum value
     float maxVal = 0;  // maximum value
     float defVal = 0;  // default value
-    jura::Parameter::scalings scaling = jura::Parameter::scalings::IDENTITY;
+    float quant  = 0;  // quantization interval
+    jura::Parameter::scalings scaling = jura::Parameter::scalings::LINEAR;
   };
 
-  /** For a given opcode and its current value, this function returns the setup data that we want
-  to use to present a GUI widget for that opcode. The min/max/default values in the returned 
-  struct may or may not aggree with what the sfz spec defines for them. Some of these specs in sfz
-  are a bit inconvenient so we may deviate from them on our GUI. */
-  WidgetSetupData getWidgetSetupDataFor(rosic::Sampler::Opcode opcode, float currentValue);
+  /** For a given opcode (possibly with an index such as 2 in eq2_freq) and its current value, this
+  function returns the setup data that we want to use to present a GUI widget for that opcode. The 
+  min/max/default values in the returned struct may or may not aggree with what the sfz spec 
+  defines for them. Some of these specs in sfz are a bit inconvenient so we may deviate from them 
+  on our GUI. */
+  WidgetSetupData getWidgetSetupDataFor(rosic::Sampler::Opcode opcode, 
+    int index, float currentValue);
 
 
 
