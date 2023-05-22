@@ -244,6 +244,14 @@ enum class FilterType // maybe rename to fil_type for consistency with sfz
   numTypes
 };
 // rename the entries to the sfz strings, see: https://sfzformat.com/opcodes/fil_type
+// -maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
+//  this could help making the switches in the FilterCore easier 
+// -maybe we can use a bitfield: 2 bits for the topology, 6 bits for the type within the selected
+//  topology, makes a total of 8 bits to specify the mode in a structured way. This is a 
+//  potential space optimization that may be done later. If done, it should not affect the API.
+//  ...maybe use the 1st 8 bits for topology - retrieve via shift+mask when needed
+// -Maybe get rid and use the same enum as the sfzCodeBook. The conversion may just be verbose 
+//  cruft.
 
 enum class LoopMode   // maybe rename to loop_mode (as in sfz)
 {

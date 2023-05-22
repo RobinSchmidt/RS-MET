@@ -380,12 +380,8 @@ void Filter::processBlock(float* L, float* R, int N)
 
 void Filter::updateCoeffs(double fs)
 {
-  // This is still somewhat ugly:
+  // Extract parameters:
   FilterType type = (FilterType)(int)params[0].getValue();
-
-  //FilterCore::Type coreType = convertTypeEnum(sfzType);
-
-  // Extract numeric parameters:
   float cutoff    = params[1].mv();
   float resonance = params[2].mv();
   float keytrack  = params[3].mv();
@@ -406,49 +402,12 @@ void Filter::updateCoeffs(double fs)
   // Verify the formula used for velocity tracking. It's just a guess based on what I think, the 
   // behavior should be. I think, at vel = 127, the cutoff should be unmodified and at vel=1, the 
   // cutoff should be modified by the given amount of veltrack in cents. This is achieved by the
-  // formula with a percpetually sensible transition in between. But I don't know, if that's what
+  // formula with a perceptually sensible transition in between. But I don't know, if that's what
   // a reference implementation does. 
   // Maybe the implementation of key/vel tracking should be based on using the modulation system by
   // allowing midi key/vel as modulation sources? But that may make key/vel tracking more expensive 
   // because we would then need modulation connections which we otherwise don't need.
 }
-
-/*
-// obsolete - delete:
-FilterCore::Type Filter::convertTypeEnum(FilterType sfzType)
-{
-  // Conversion of filter type enum values used in the sfz data and those used in the dsp core.
-  // Maybe we should try to avoid the translation step between the core-enum and sfz-enum by 
-  // using a single enum for both. I'm not yet sure, if that's practical - we'll see. It could
-  // turn out to be problematic when we want to use bit-twiddling of the enum-values to switch 
-  // between different filter topologies in the core while the sfz-type number must allow for
-  // lossless roundtrip with a float.
-  using TC = FilterCore::Type;      // enum used in the DSP core
-  using TO = FilterType;            // enum used in the sfz opcode
-  switch(sfzType)
-  {
-  case TO::lp_6:   return TC::lpf_1p;
-  case TO::hp_6:   return TC::FO_Highpass;
-
-  case TO::lp_12:  return TC::BQ_Lowpass;        // ToDo: Use SVF as default implementation
-  case TO::hp_12:  return TC::BQ_Highpass;       // for 2nd order filters...maybe...
-  case TO::bp_6_6: return TC::BQ_Bandpass_Skirt;
-  case TO::br_6_6: return TC::BQ_Bandstop;
-
-
-    //case TO::lp_12: return TC::SVF_Lowpass_12;
-    //case TO::hp_12: return TC::SVF_Highpass_12;
-  }
-  //RAPT::rsError("Unknown filter type in convertTypeEnum.");
-  //return TC::Unknown;
-  // This may actually happen when the user only defines cutoff but not fil_type. In this 
-  // case, sfz prescribes that the default mode is lpf_2p.
-
-  return TC::BQ_Lowpass;
-}
-*/
-// todo: avoid this conversion - use the same enum in both, the sfz codebook and the 
-// FilterCore just like we do with the waveshaper's distortion shapes
 
 //=================================================================================================
 

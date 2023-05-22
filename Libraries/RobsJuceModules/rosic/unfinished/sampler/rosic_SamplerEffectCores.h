@@ -233,63 +233,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /*
-  // get rid of that and use the FilterType enum values
-  enum class Type // maybe don't use all-caps for the types
-  {
-    Bypass,
-
-    // 1st order filter modes:
-    // FO_Start = 1 << 24,
-    lpf_1p,                 // sfz v1
-    FO_Highpass,
-    FO_LowShelf,
-    FO_HighShelf,
-    FO_Allpass,
-
-    // Biquad filter modes:
-    // BQ_Start = 2 << 24,
-    BQ_Lowpass,
-    BQ_Highpass,
-    BQ_Bandpass_Skirt,
-    BQ_Bandpass_Peak,
-    BQ_Bandstop,
-    BQ_Bell,
-    BQ_LowShelf,
-    BQ_HighShelf,
-    BQ_Allpass,
-
-    // State variable filter modes:
-    // SVF_Start = 3 << 24,
-    SVF_Lowpass_12,
-    SVF_Lowpass_24,
-    SVF_Highpass_12,
-    SVF_Highpass_24,
-    //...
-
-    // Ladder filter modes:
-    // LDR_Start = 4 << 24,
-    LDR_Lowpass_6,
-    LDR_Lowpass_12,
-    LDR_Lowpass_18,
-    LDR_Lowpass_24,
-    //...
-
-
-    Unknown
-  };
-  */
-  // 
-  // rename the entries to the sfz strings, see: https://sfzformat.com/opcodes/fil_type
-  // hmm...
-  // -maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
-  // -maybe we can use a bitfield: 2 bits for the topology, 6 bits for the type within the selected
-  //  topology, makes a total of 8 bits to specify the mode in a structured way. This is a 
-  //  potential space optimization that may be done later. If done, it should not affect the API.
-  //  ...maybe use the 1st 8 bits for topology - retrieve via shift+mask when needed
-  // -Maybe get rid and use the same enum as the sfzCodeBook. The conversion may just be verbose 
-  //  cruft.
-
   /** Sets the filter up in terms of cutoff (or center) frequency as normalized radian frequency 
   and resonance in decibels. This parametrization is suitable when used to implement the filter
   opcodes in sfz. */
@@ -324,7 +267,6 @@ protected:
   // rsSimdVector<float, 4>...hmm...but that may increase the size of the struct. Maybe keep using
   // rsVector2D but use simd within the computation, if possible - but let's not do premature
   // optimizations...
-
 
   // todo: maybe templatize this class and use float for TPar, and rsfloat32x2 for TSig in the 
   // sampler
@@ -383,8 +325,6 @@ protected:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
-
-  //Type type = Type::Bypass;
 
   FilterType type = FilterType::lp_12;  // maybe use FilterType::off as default
   FilterImpl impl;
