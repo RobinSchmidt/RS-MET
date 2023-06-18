@@ -16,7 +16,7 @@ TUInt rsBinomialCoefficient(TUInt n, TUInt k)
     return result;
   }
 }
-// Maybe it could be optimized by accumulating a numertaor and denominator and doing one division
+// Maybe it could be optimized by accumulating a numerator and denominator and doing one division
 // at the end. But such an algorithm would be more prone to internal overflow, I think.
 // See also: https://www.youtube.com/watch?v=FpeqDFmBc2A at around 33:44
 
@@ -271,9 +271,31 @@ TInt rsWrapAround(TInt numberToWrap, TInt length)
 }
 */
 
+
+
+
 /*
 
 ToDo:
+
+-Document the growth and overflow behavior of the functions to compute binomial coefficients.
+ Mathematically, the asymptotic growth of binomial coeffs as function of n can be computed using
+ the Stirling formula for the factorial. That might be a useful thing to know for an instantiation
+ of the functions for floating point numbers. For integers, we care about the exact overflow limit 
+ but with floats, we may be interested in the asymptotic growth as well. Here is some Sage code for
+ this:
+ # Approximates asymptotic growth of the binomial coefficient n-choose-(n/2) which is the largest
+ # in the n-th line of Pascal's triangle (the one in the center) using Stirling's formula. 
+ # See: http://www.hananayad.com/teaching/syde423/binomialCoefficient.pdf
+ var("n")
+ num = sqrt(2*pi*n)*(n/e)^n                  # approximates n!
+ den = (sqrt(2*pi*(n/2))*((n/2)/e)^(n/2))^2  # approximates ((n/2)!)^2
+ C  = num/den                                # approximates binomial coeff n-choose-(n/2)
+ C2 = 2^n * sqrt(2*pi*n)/(pi*n)              # = C, manually simplified
+ C3 = 2^n * 2 / sqrt(2*pi*n)                 # = C, according to paper
+ plot([C,C2,C3], 0, 8)                       # yep, plots look the same
+ C, C.simplify_full()                        # Sage doesn't really simplify it at all - WTF?
+ 
 
 -Maybe implement a sqrt function for integers with semantics similar to integer division: if the 
  real result is non-integer, just round down. For example sqrt(15) = 3.8729..., so we would return
