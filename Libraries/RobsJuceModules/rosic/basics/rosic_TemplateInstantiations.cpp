@@ -87,6 +87,7 @@ template void RAPT::rsPrimeFactors(RAPT::rsUint32 x, std::vector<RAPT::rsUint32>
 
 template int RAPT::rsPow(const int& base, int exponent);
 
+//template RAPT::rsUint64 RAPT::rsBinomialCoefficient(RAPT::rsUint64, RAPT::rsUint64);
 
 // Interpolation:
 template void RAPT::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,

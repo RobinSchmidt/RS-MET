@@ -51,6 +51,9 @@ namespace rosic
     index has to be <= 10000, otherwise an access violation will occur. */
     static int getPrime(int index) { return primeArray[index]; }
 
+    /** Only for internal experimental use. Might be dangerous to use from client code side. */
+    static int* _getPrimeArray() { return primeArray; }
+
     //=============================================================================================
 
   protected:

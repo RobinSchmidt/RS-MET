@@ -7,6 +7,7 @@
 /** Calculates the binomial coefficient n over k. */
 template<class TUInt>
 TUInt rsBinomialCoefficient(TUInt n, TUInt k);
+// test it with rsUint64 - it doesn't seem to work
 
 /** Similar to binomialCoefficient, but uses a simpler algorithm that works only for n <= 20
 because of internal overflow. The algorithm has O(n) time-complexity and O(1)
