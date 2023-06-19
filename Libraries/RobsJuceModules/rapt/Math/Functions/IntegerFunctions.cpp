@@ -1,10 +1,24 @@
 template<class TUInt>
 TUInt rsBinomialCoefficient(TUInt n, TUInt k)
 {
+  if(k < 0 || k > n)  // This guard is new since 2023/06/19 because I discovered some problem
+    return 0;         // with certain edge cases which this guard is supposed to fix.
+    // We mimic the behavior of binomial(n,k) of SageMath for "invalid" inputs. The k < 0 needs to
+    // be considered because the code shall work correctly also when TUint is actually a signed 
+    // integer type. But what should we do if n < 0? ...check Sage behavior, too and mimic it, if
+    // necesarry.
+
   if(k == 0 || k == n)
     return 1;
+    // ToDo: Check, if this is strictly needed and if not, if it is advantageous to have it. 
+    // Document the findings.
+
   else if(2*k > n)
     return rsBinomialCoefficient(n, n-k);
+    // ToDo: Document this branch. Why does it exist? Does it employ a reflection formula in order
+    // to ensure that we always have k <= n/2 in order to limit the number of loop iterations 
+    // in the i-loop below for avoiding overflow and increase efficiency?
+
   else
   {
     int result = n-k+1;
@@ -15,6 +29,11 @@ TUInt rsBinomialCoefficient(TUInt n, TUInt k)
     }
     return result;
   }
+
+  // ToDo:
+  // Maybe get rid of the "else if" stuff and use "if" only. I think, it should make no difference 
+  // semantically because all the branches contain return statements anyway. But it would look 
+  // cleaner.
 }
 // Maybe it could be optimized by accumulating a numerator and denominator and doing one division
 // at the end. But such an algorithm would be more prone to internal overflow, I think.
