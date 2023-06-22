@@ -260,15 +260,18 @@ void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
 }
 // get rid of that - use function below instead - maybe it should take optional x,y arguments
 
-inline void plotMatrix(rsMatrix<double>& A, bool asHeatMap)  // use const
+template<class T>
+inline void plotMatrix(rsMatrix<T>& A, bool asHeatMap)  // use const
 {
   GNUPlotter plt;
   //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
   plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
   if(asHeatMap) {
-    plt.addCommand("set size square");  // make optional
+    //plt.addCommand("set size square");  // make optional
     plt.addGraph("i 0 nonuniform matrix w image notitle");
-    plt.addCommand("set palette gray");
+    //plt.addCommand("set palette gray");
+    plt.addCommand("set palette rgbformulae 7,5,15");
+    // http://gnuplot.info/demo_5.2/pm3dcolors.html
     //plt.setRange(0, A.getNumRows()-1, 0, A.getNumColumns()-1, -1.0, +1.0); // doesn't work
     plt.plot();
   }
