@@ -2212,8 +2212,8 @@ template<class T>
 int rsSparseMatrix<T>::solveGaussSeidel(
   const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& C, T* x, const T* b, T tol)
 {
-  size_t N = (size_t) D.numRows;
-  rsAssert(D.numCols == N); // the matrices D,C must be square and have the same shape
+  size_t N = (size_t) D.numRows;  // Why size_t and not int?
+  rsAssert(D.numCols == N);       // The matrices D,C must be square and have the same shape
   rsAssert(C.numRows == N);
   rsAssert(C.numCols == N);
   int numIts = 0;
