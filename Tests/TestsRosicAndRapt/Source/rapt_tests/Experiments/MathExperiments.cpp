@@ -2407,14 +2407,42 @@ double biquadraticPrediction(double x0, double x1, double x2, double x3, double 
 // maybe move to RAPT into the Statistics section
 double variance(double *x, int N)
 {
-  double mx  = RAPT::rsArrayTools::mean(x, N); // mean of x
+  double mx  = RAPT::rsArrayTools::mean(x, N); // sample mean of x
   double sum = 0;
   for(int n = 0; n < N; n++) {
     double d = x[n] - mx;
     sum += d*d;
   }
   return sum / (N-1);
-  // todo: make an optimized version that takes the mean as argument
+
+  // ToDo: 
+  // -Make an optimized version that takes the mean as argument. But then we may want to 
+  //  distinguish two cases: (1) the mean is exact, (2) the mean is itself an estimate. The correct
+  //  (unbiased) formula is different for these two cases. If the exact mean is known from theory, 
+  //  we get an unbiased estimator by dividing by N. Usually, the mean is not known exactly but 
+  //  also estimated from the data (as we do here). In such a case, we must divide by N-1 (as we 
+  //  do here) to get an unbiased estimator for the variance. See:
+  //    https://www.statlect.com/fundamentals-of-statistics/variance-estimation
+  //  for an explanation. I don't fully understand it, though. I wonder why they call it
+  //  "degrees of freedom" here:
+  //    "...the number of degrees of freedom is equal to the number of sample points (n) 
+  //    minus the number of other parameters to be estimated."
+  //  By "degrees of freedom", I usually think of a bunch of variables (degrees of freedom) and a 
+  //  bunch of constraints (equations that the variables must satisfy). But I don't see, how this
+  //  relates to this context here. Are the datapoints seen as variables and the estimated values
+  //  somehow seen as "constraints"? Like:
+  //    Variables:   x1, x2, x3, ... 
+  //    constraints: mean(x1,x2,x3,...) = M; var(x1,x2,x3,...) = V
+  //  or something? If so, why? Why do variables map to the data and constraints map to estimates?
+  //  What has estimation to do with constraining? I have never seen that explained. They always 
+  //  just say: "Hey, we call this number "degrees of freedom"" without explaining why. But even 
+  //  without fully understanding it, it seems clear that dividing by N-1 is the apparently the 
+  //  right thing to do, if the mean is itself just an estimate or sample-mean.
+  // -See also: https://mathworld.wolfram.com/SampleVariance.html
+  //  Interesting: Even if we use an unbiased estimator for the variance sigma^2, the estimated 
+  //  standard variation sigma by taking the square-root of sigma^2 is biased again. Statistics is
+  //  complicated and confusing. If this code goes into production code, these issues should be
+  //  carefully documented (and ideally also explained why things are the way they are).
 }
 double standardDeviation(double *x, int N)
 {
