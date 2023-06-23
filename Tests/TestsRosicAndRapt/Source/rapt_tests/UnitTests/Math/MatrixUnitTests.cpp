@@ -1071,55 +1071,102 @@ bool testSparseMatrix()
   // so, in a matrix-vector product y = A*x, it takes an 8-vector x as input and produces a 4-vector 
   // as output y in which each element is the sum of two consecutive elements from the input.
 
-  rsSparseMatrix<Real> A(4, 8);  // still the zero matrix
+  rsSparseMatrix<Real> R(4, 8);  // still the zero matrix
   Vec x({1,2,3,4,5,6,7,8});      // input vector
   Vec y({1,2,3,4});              // output vector
-  A.product(&x[0], &y[0]);  
+  R.product(&x[0], &y[0]);  
   ok &= y == Vec({0,0,0,0});    // A was still zero
   // todo: use * operator: y = A*x (it calls the product function)
 
   // Now build up the actual matrix in a kind of "random" order. The nonzero (i.e. one) elements 
   // are at positions: (0,0),(0,1),(1,2),(1,3),(2,4),(2,5),(3,6),(3,7):
-  A.set(1, 2, 1.f);
-  A.set(2, 5, 1.f);
-  A.set(0, 0, 1.f);
-  A.set(0, 1, 1.f);
-  A.set(3, 6, 1.f);
-  A.set(1, 3, 1.f);
-  A.set(2, 4, 1.f);
-  A.set(3, 7, 1.f);
+  R.set(1, 2, 1.f);
+  R.set(2, 5, 1.f);
+  R.set(0, 0, 1.f);
+  R.set(0, 1, 1.f);
+  R.set(3, 6, 1.f);
+  R.set(1, 3, 1.f);
+  R.set(2, 4, 1.f);
+  R.set(3, 7, 1.f);
 
   // Create the same matrix as dense matrix:
-  Mat T(4, 8, {1, 1, 0, 0, 0, 0, 0, 0,
+
+  Mat A(4, 8, {1, 1, 0, 0, 0, 0, 0, 0,
                0, 0, 1, 1, 0, 0, 0, 0,
                0, 0, 0, 0, 1, 1, 0, 0,
                0, 0, 0, 0, 0, 0, 1, 1});
 
   // Test conversion of A to dense matrix, structure of A and conversion of a dense matrix
   // to a sparse matrix:
-  Mat  dA = MatS::toDense(A);    ok &= dA == T;
-  MatS A2 = MatS::fromDense(dA); ok &= A2 == A;
+  Mat  dR = MatS::toDense(R);    ok &= dR == A;
+  MatS R2 = MatS::fromDense(dR); ok &= R2 == R;
 
   // Test the multiplication with the new matrix again:
-  A.product(&x[0], &y[0]); ok &= y == Vec({3,7,11,15});  // redundant because...
-  y = A*x;                 ok &= y == Vec({3,7,11,15});  // ...A*x invokes A.product
+  R.product(&x[0], &y[0]); ok &= y == Vec({3,7,11,15});  // redundant because...
+  y = R*x;                 ok &= y == Vec({3,7,11,15});  // ...A*x invokes A.product
 
-  //MatS AT = A.getTranspose();
-  //Mat  TT = T.getTranspose();
-  ok &= MatS::toDense(A.getTranspose()) == T.getTranspose();  // test tranposition
+  // Test transposition and matrix multiplication:
+  MatS RT = R.getTranspose();
+  Mat  TT = A.getTranspose();
+  ok &= MatS::toDense(RT) == TT;
+
+  // Now we build some slightly more interesting matrices:
+  A = Mat(3, 5, { 2, 3,  0,  0,  5,
+                  0, 7,  0, 11,  0,
+                 13, 0, 17,  0, 19});
+  Mat B;
+  B = Mat(5, 3, { 23,  0, 29,
+                   0, 31,  0,
+                  37, 41,  0,
+                   0,  0, 53,
+                  59, 61, 67 } );
+
+  Mat C = A*B;
+
+  R.setToZero();
+  R.setShape(3, 5);
+  R.set(0, 0,  2);
+  R.set(0, 1,  3);
+  R.set(0, 4,  5);
+  R.set(1, 1,  7);
+  R.set(1, 3, 11);
+  R.set(2, 0, 13);
+  R.set(2, 2, 17);
+  R.set(2, 4, 19);
+
+  MatS S(5, 3);
+  S.set(0, 0, 23);
+  S.set(0, 2, 29);
+  S.set(1, 1, 31);
+  S.set(2, 0, 37);
+  S.set(2, 1, 41);
+  S.set(3, 2, 53);
+  S.set(4, 0, 59);
+  S.set(4, 1, 61);
+  S.set(4, 2, 67);
+
+  MatS T = R*S;
+
+  Mat D = MatS::toDense(T);
+
+  ok &= C == D;
 
 
-  //dA.t
 
 
   // ToDo: 
   // -Test replacing elements, also with zero (in which case they should get removed)
   // -Make sure that no element is stored twice or multiple times. Each index pair should be 
   //  unique
+  // -test setShape. Verify that elements get removed when they are out of range of the new 
+  //  shape in case of decreasing the size. Test also the special case of setting the shape
+  //  to 0,0. This should lead to all elements being removed
   // -Implement at test transposition
   // -Implement and test sparse matrix multiplication. The tests for that can be based on 
   //  performing the same products with dense matrices, converting the sparse results to dense
   //  and comparing the results.
+
+  // -maybe use A,B,C for dense matrices and R,S,T for sparse matrices
 
   return ok;
 }

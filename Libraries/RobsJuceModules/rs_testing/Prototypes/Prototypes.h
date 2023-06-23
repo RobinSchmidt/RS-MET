@@ -1848,6 +1848,19 @@ public:
   // -add a method isConsistent() which can be used by client code to check object consistency 
   //  after using fast and usafe methods to build a matrix
 
+  void setShape(int newNumRows, int newNumColumns)
+  {
+    numRows = newNumRows;
+    numCols = newNumColumns;
+
+    // Ensure that all elements have i < numRows, j < numCols. Throw away elements that are out of
+    // the new range:
+    for(size_t k = 0; k < elements.size(); k++) {
+      if(elements[k].i >= numRows || elements[k].j >= numRows) {
+        rsRemove(elements, k);
+        k--;  }}
+  }
+
   /** Sets the element at position (i,j) to the given new value. This may lead to insertion of a 
   new element (if there's no element yet at i,j) or removal of existing elements (if val is 
   zero). */
@@ -1872,6 +1885,12 @@ public:
   // -maybe provide an add method that accumulates into an already existing weight instead of
   //  overwriting it
 
+  /** Sets the matrix to an all zeros matrix. This does not change the shape. */
+  void setToZero() { elements.clear(); };
+
+  // ToDo: setToIdentity, setDiagonalValues(T value), setDiagonalValues(T* values)
+  // ...just like in rsMatrix
+
   void sortElements()
   {
     std::sort(elements.begin(), elements.end());
@@ -1884,12 +1903,10 @@ public:
     int tmp = numRows;
     numRows = numCols;
     numCols = tmp;
-    for(size_t k = 0; k < elements.size(); k++)
-    {
+    for(size_t k = 0; k < elements.size(); k++) {
       tmp = elements[k].i;
       elements[k].i = elements[k].j;
-      elements[k].j = tmp;
-    }
+      elements[k].j = tmp;  }
     sortElements();
   }
 
@@ -1977,6 +1994,12 @@ public:
 
   /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
   std::vector<T> operator*(const std::vector<T>& x) const;
+
+
+  /** Multiplies two sparse matrices. */
+  rsSparseMatrix<T> operator*(const rsSparseMatrix<T>& x) const;
+
+
 
   /** Compares two sparse matrices for equality */
   bool operator==(const rsSparseMatrix<T>& A) const
@@ -2109,6 +2132,35 @@ std::vector<T> rsSparseMatrix<T>::operator*(const std::vector<T>& x) const
   product(&x[0], &y[0]);
   return y;
 }
+
+template<class T>
+rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
+{
+  rsSparseMatrix<T> P(numRows, B.numCols);
+  P.reserve(getNumElements() * B.getNumElements());
+  for(size_t n = 0; n < elements.size(); n++)
+  {
+    for(size_t k = 0; k < B.elements.size(); k++)
+    {
+      if(elements[n].j == B.elements[k].i)
+      {
+        Element newElem(elements[n].i,      B.elements[k].j,   
+                        elements[n].value * B.elements[k].value);
+        // Verify! Might be the other way around! 4 possible ways:
+        // [n].i, B.[k].j
+        // [n].j, B.[k].i
+        // B.[n].i, [k].j
+        // B.[n].j, [k].i
+
+
+    
+        P.elements.push_back(newElem);
+      }
+    }
+  }
+  return P;
+}
+// This is still wrong!
 
 template<class T>
 T rsSparseMatrix<T>::iterateProduct(const T* x, T* y) const
