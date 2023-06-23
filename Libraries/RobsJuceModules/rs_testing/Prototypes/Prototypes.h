@@ -1790,6 +1790,14 @@ public:
 
   int getNumColumns() const { return numCols; }
 
+  /** Returns true, iff this matrix has the given shape. */
+  bool hasShape(int numRows, int numCols) const
+  { return this->numRows == numRows && this->numCols == numCols; }
+
+  /** Returns true, iff B has the same shape as this matrix. */
+  bool hasSameShapeAs(const rsSparseMatrix<T>& B) const
+  { return hasShape(B.numRows, B.numCols); }
+
 
 
   bool isValidIndexPair(int i, int j) const 
@@ -1990,6 +1998,8 @@ public:
   /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
   std::vector<T> operator*(const std::vector<T>& x) const;
 
+  /** Adds two sparse matrices. */
+  rsSparseMatrix<T> operator+(const rsSparseMatrix<T>& x) const;
 
   /** Multiplies two sparse matrices. */
   rsSparseMatrix<T> operator*(const rsSparseMatrix<T>& x) const;
@@ -2175,10 +2185,20 @@ std::vector<T> rsSparseMatrix<T>::operator*(const std::vector<T>& x) const
 }
 
 template<class T>
+rsSparseMatrix<T> rsSparseMatrix<T>::operator+(const rsSparseMatrix<T>& B) const
+{
+  rsAssert(B.hasSameShapeAs(*this), "Matrices incompatible for addition");
+  rsSparseMatrix<T> S(*this);                  // Sum matrix, initialize as copy of this
+  for(size_t k = 0; k < B.elements.size(); k++)
+    S.add(B.elements[k].i, B.elements[k].j, B.elements[k].value);
+  return S;
+}
+
+template<class T>
 rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
 {
   rsAssert(numCols == B.numRows, "Matrices incompatible for multiplication");
-  rsSparseMatrix<T> P(numRows, B.numCols);
+  rsSparseMatrix<T> P(numRows, B.numCols);     // Product matrix
   for(size_t n = 0; n < elements.size(); n++)
     for(size_t k = 0; k < B.elements.size(); k++)
       if(elements[n].j == B.elements[k].i)
