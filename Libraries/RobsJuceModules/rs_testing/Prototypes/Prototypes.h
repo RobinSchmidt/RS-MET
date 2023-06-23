@@ -1998,6 +1998,10 @@ public:
   /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
   std::vector<T> operator*(const std::vector<T>& x) const;
 
+
+  /** unary minus. Negates the matrix. */
+  rsSparseMatrix<T> operator-() const;
+
   /** Adds two sparse matrices. */
   rsSparseMatrix<T> operator+(const rsSparseMatrix<T>& x) const;
 
@@ -2186,6 +2190,17 @@ std::vector<T> rsSparseMatrix<T>::operator*(const std::vector<T>& x) const
   product(&x[0], &y[0]);
   return y;
 }
+
+template<class T>
+rsSparseMatrix<T> rsSparseMatrix<T>::operator-() const
+{
+  rsSparseMatrix<T> R(*this);                  // Difference matrix, initialize as copy of this
+  for(size_t k = 0; k < elements.size(); k++)
+    R.elements[k].value = -R.elements[k].value;
+  return R;
+}
+// ToDo: Factor out the loop into a negate() function that negates an existing matrix in 
+// place. See implementation of rsMatrix. It also has such a function. 
 
 template<class T>
 rsSparseMatrix<T> rsSparseMatrix<T>::operator+(const rsSparseMatrix<T>& B) const

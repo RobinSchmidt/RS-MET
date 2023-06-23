@@ -1160,7 +1160,7 @@ bool testSparseMatrix()
   Mat  D = MatS::toDense(T);
   ok &= C == D;
 
-  // Test matrix addition and subtraction:
+  // Test matrix addition, subtraction and negation:
   B.transpose();
   S.transpose();
   C = A + B;
@@ -1172,6 +1172,12 @@ bool testSparseMatrix()
   T = R - S;
   D = MatS::toDense(T);
   ok &= C == D;
+
+  C = -A;
+  T = -R;
+  D = MatS::toDense(T);
+  ok &= C == D;
+
 
   // ...
 
