@@ -1864,7 +1864,8 @@ public:
   /** Sets the element at position (i,j) to the given new value. This may lead to insertion of a 
   new element (if there's no element yet at i,j) or removal of existing elements (if val is 
   zero). */
-  void set(int i, int j, T val) 
+  void set(int i, int j, T val);
+  /*
   { 
     rsAssert(isValidIndexPair(i, j), "Index out of range");
     Element e(i, j, T(val));
@@ -1880,6 +1881,7 @@ public:
       else
         rsRemove(elements, k); }
   }
+  */
   // todo: 
   // -element removal needs tests
   // -maybe provide an add method that accumulates into an already existing weight instead of
@@ -1965,6 +1967,11 @@ public:
     t.transpose();
     return t;
   }
+
+
+
+
+
 
 
 
@@ -2065,7 +2072,12 @@ protected:
     b in our elements array. The actual stored value plays no role in this comparison. This may 
     seem weird but it is just what is needed for the binary search (which uses the operator) that 
     is used in element insertion and random access. 
-    ...todo: try to find a more elegant solution. */
+    ToDo: 
+    Try to find a more elegant solution or at least make that operater inaccessible from client 
+    code. Client code would probably expect a value-based comparison and be totally confused
+    by this definition. Apply the "principle of least astonishment". Maybe use a binary search 
+    routine that takes the comparison function as parameter such that we do not have to rely on the
+    < operator when calling it. */
     bool operator<(const Element& b) const
     {
       if(i   < b.i) return true;
@@ -2125,6 +2137,25 @@ rsMatrix<T> rsSparseMatrix<T>::toDense(const rsSparseMatrix<T>& A)
 }
 
 template<class T>
+void rsSparseMatrix<T>::set(int i, int j, T val) 
+{ 
+  rsAssert(isValidIndexPair(i, j), "Index out of range");
+  Element e(i, j, T(val));
+  if(elements.empty() && val != T(0)) {
+    elements.push_back(e);
+    return;  }
+  size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
+  if((k >= elements.size() || e < elements[k]) && val != T(0))
+    rsInsert(elements, e, k);
+  else {
+    if(val != T(0))
+      elements[k] = e;
+    else
+      rsRemove(elements, k); }
+}
+
+
+template<class T>
 std::vector<T> rsSparseMatrix<T>::operator*(const std::vector<T>& x) const
 {
   rsAssert((int) x.size() == this->numCols, "Vector incompatible for left multiply by matrix");
@@ -2165,7 +2196,7 @@ rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
 
 
     
-        P.elements.push_back(newElem);
+        //P.elements.push_back(newElem);
       }
     }
   }
