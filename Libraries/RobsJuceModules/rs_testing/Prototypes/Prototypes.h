@@ -2144,8 +2144,19 @@ rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
     {
       if(elements[n].j == B.elements[k].i)
       {
-        Element newElem(elements[n].i,      B.elements[k].j,   
-                        elements[n].value * B.elements[k].value);
+        //Element newElem(B.elements[k].j, elements[n].i,        
+        //                elements[n].value * B.elements[k].value);  // wrong
+
+        //Element newElem(B.elements[k].i, elements[n].j,
+        //  elements[n].value * B.elements[k].value);      // out of range
+
+        //Element newElem(elements[n].j, B.elements[k].i, 
+        //  elements[n].value * B.elements[k].value);       // invalid row index
+
+        //Element newElem(elements[n].i, B.elements[k].j, 
+        //  elements[n].value * B.elements[k].value);       // wrong
+
+
         // Verify! Might be the other way around! 4 possible ways:
         // [n].i, B.[k].j
         // [n].j, B.[k].i
@@ -2158,9 +2169,18 @@ rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
       }
     }
   }
+  // This implementation is total nonsense!
+
   return P;
 }
 // This is still wrong!
+// -we need a function addTo(i, j, val) that adds val to the (i,j)th entry of the sparse matrix
+// -Then for each pair of matrix entries of A and B in C=A*B, we get a nonzero product, when j in A
+//  matches i in B. That product needs to be *added* to the coeff in C at i,j or j,i. That's where 
+//  we need to use the addTo function. I think, the loop structure is alreadey right, but instead 
+//  of push_back(newElem) we need to do addTo(n, k, A.elements[n].value * B.elements[k].value)
+// -Maybe we should call our loop counters i,j instead of n,k as well.
+
 
 template<class T>
 T rsSparseMatrix<T>::iterateProduct(const T* x, T* y) const
