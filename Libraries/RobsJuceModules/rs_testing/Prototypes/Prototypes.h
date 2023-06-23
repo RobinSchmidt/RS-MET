@@ -1865,27 +1865,15 @@ public:
   new element (if there's no element yet at i,j) or removal of existing elements (if val is 
   zero). */
   void set(int i, int j, T val);
-  /*
-  { 
-    rsAssert(isValidIndexPair(i, j), "Index out of range");
-    Element e(i, j, T(val));
-    if(elements.empty() && val != T(0)) {
-      elements.push_back(e);
-      return;  }
-    size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
-    if((k >= elements.size() || e < elements[k]) && val != T(0))
-      rsInsert(elements, e, k);
-    else {
-      if(val != T(0))
-        elements[k] = e;
-      else
-        rsRemove(elements, k); }
-  }
-  */
   // todo: 
   // -element removal needs tests
   // -maybe provide an add method that accumulates into an already existing weight instead of
   //  overwriting it
+
+  /** Like set but instead of setting the entry to the new value, it adds the new value to what is 
+  already there. This may also lead to addition or removal. */
+  void add(int i, int j, T val);
+
 
   /** Sets the matrix to an all zeros matrix. This does not change the shape. */
   void setToZero() { elements.clear(); };
@@ -2154,6 +2142,27 @@ void rsSparseMatrix<T>::set(int i, int j, T val)
       rsRemove(elements, k); }
 }
 
+template<class T>
+void rsSparseMatrix<T>::add(int i, int j, T val) 
+{ 
+  rsAssert(isValidIndexPair(i, j), "Index out of range");
+  Element e(i, j, T(val));
+  if(elements.empty() && val != T(0)) {
+    elements.push_back(e);
+    return;  }
+  size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
+  if((k >= elements.size() || e < elements[k]) && val != T(0))
+    rsInsert(elements, e, k);
+  else {
+    if(val != T(0)) {
+      e.val += elements[k].val;
+      elements[k] = e; }
+    else
+      rsRemove(elements, k); }
+  // There's a lot of code duplication from the set() function. Try to get rid of that! The 
+  // difference is only in the "else" branch at the bottom. The only difference is the additional 
+  // e.val += elements[k].val; statement.
+}
 
 template<class T>
 std::vector<T> rsSparseMatrix<T>::operator*(const std::vector<T>& x) const
@@ -2187,16 +2196,17 @@ rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
         //Element newElem(elements[n].i, B.elements[k].j, 
         //  elements[n].value * B.elements[k].value);       // wrong
 
-
         // Verify! Might be the other way around! 4 possible ways:
         // [n].i, B.[k].j
         // [n].j, B.[k].i
         // B.[n].i, [k].j
         // B.[n].j, [k].i
 
-
-    
         //P.elements.push_back(newElem);
+
+        T p = elements[n].value * B.elements[k].value;
+        //add(i, j, p);  // or maybe add(j, i, p)?
+
       }
     }
   }
