@@ -1752,6 +1752,14 @@ public:
     this->numCols = numColumns;
   }
 
+  /** Copy constructor. */
+  rsSparseMatrix(const rsSparseMatrix<T>& A)
+  {
+    numRows  = A.numRows;
+    numCols  = A.numCols;
+    elements = A.elements;
+  }
+
   /** Creates a rsSparseMatrix from a regular (dense) rsMatrix. You can optionally set a relative 
   tolerance for the absolute value below which elements in A will be considered zero and not be 
   stored in th sparse representation. The tolerance is relative to the maximum absolute value in 
@@ -1870,6 +1878,20 @@ public:
     //RAPT::rsHeapSort(&elements[0], getNumElements()); // linker error
   }
 
+  /** Transposes this matrix in place. */
+  void transpose()
+  {
+    int tmp = numRows;
+    numRows = numCols;
+    numCols = tmp;
+    for(size_t k = 0; k < elements.size(); k++)
+    {
+      tmp = elements[k].i;
+      elements[k].i = elements[k].j;
+      elements[k].j = tmp;
+    }
+    sortElements();
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1891,6 +1913,7 @@ public:
   }
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Computations */
 
   /** Computes the matrix-vector product y = A*x where x must be numCols long and y must be numRows 
   long. The complexity is O(N+K) where N is the number of rows and K is the number of nonzero 
@@ -1918,6 +1941,13 @@ public:
   //    y[elements[k].j] += elements[k].value * x[elements[k].i];
 
 
+  /** Returns a transposed version of this matrix. */
+  rsSparseMatrix<T> getTranspose() const
+  {
+    rsSparseMatrix<T> t(*this);
+    t.transpose();
+    return t;
+  }
 
 
 

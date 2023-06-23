@@ -1104,11 +1104,19 @@ bool testSparseMatrix()
   A.product(&x[0], &y[0]); ok &= y == Vec({3,7,11,15});  // redundant because...
   y = A*x;                 ok &= y == Vec({3,7,11,15});  // ...A*x invokes A.product
 
+  //MatS AT = A.getTranspose();
+  //Mat  TT = T.getTranspose();
+  ok &= MatS::toDense(A.getTranspose()) == T.getTranspose();  // test tranposition
+
+
+  //dA.t
+
 
   // ToDo: 
   // -Test replacing elements, also with zero (in which case they should get removed)
   // -Make sure that no element is stored twice or multiple times. Each index pair should be 
   //  unique
+  // -Implement at test transposition
   // -Implement and test sparse matrix multiplication. The tests for that can be based on 
   //  performing the same products with dense matrices, converting the sparse results to dense
   //  and comparing the results.
