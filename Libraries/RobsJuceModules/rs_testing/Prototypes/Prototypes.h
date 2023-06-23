@@ -2180,22 +2180,11 @@ rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
   rsAssert(numCols == B.numRows, "Matrices incompatible for multiplication");
   rsSparseMatrix<T> P(numRows, B.numCols);
   for(size_t n = 0; n < elements.size(); n++)
-  {
     for(size_t k = 0; k < B.elements.size(); k++)
-    {
       if(elements[n].j == B.elements[k].i)
-      {
-        T p = elements[n].value * B.elements[k].value;
-        P.add(elements[n].i, B.elements[k].j, p);
-        //P.add(B.elements[k].j, elements[n].i,  p);  // This would produce P^T
-      }
-    }
-  }
-
+        P.add(elements[n].i, B.elements[k].j, elements[n].value * B.elements[k].value);
   return P;
 }
-// needs more tests
-
 
 template<class T>
 T rsSparseMatrix<T>::iterateProduct(const T* x, T* y) const
