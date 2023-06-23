@@ -1149,7 +1149,7 @@ bool testSparseMatrix()
 
   Mat D = MatS::toDense(T);
 
-  //ok &= C == D;
+  ok &= C == D;
 
 
 

@@ -2136,7 +2136,7 @@ void rsSparseMatrix<T>::set(int i, int j, T val)
   if((k >= elements.size() || e < elements[k]) && val != T(0))
     rsInsert(elements, e, k);
   else {
-    if(val != T(0))
+    if(val != T(0))   // use a tolerance! Should be a member, defaulting to zero
       elements[k] = e;
     else
       rsRemove(elements, k); }
@@ -2153,15 +2153,16 @@ void rsSparseMatrix<T>::add(int i, int j, T val)
   size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
   if((k >= elements.size() || e < elements[k]) && val != T(0))
     rsInsert(elements, e, k);
-  else {
-    if(val != T(0)) {
-      e.val += elements[k].val;
-      elements[k] = e; }
+  else 
+  {
+    e.value += elements[k].value;
+    if(e.value != T(0))  // use a tolerance!
+      elements[k] = e;
     else
-      rsRemove(elements, k); }
+      rsRemove(elements, k);
+  }
   // There's a lot of code duplication from the set() function. Try to get rid of that! The 
-  // difference is only in the "else" branch at the bottom. The only difference is the additional 
-  // e.val += elements[k].val; statement.
+  // difference is only in the "else" branch at the bottom. 
 }
 
 template<class T>
@@ -2176,8 +2177,9 @@ std::vector<T> rsSparseMatrix<T>::operator*(const std::vector<T>& x) const
 template<class T>
 rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
 {
+  rsAssert(numCols == B.numRows, "Matrices incompatible for multiplication");
   rsSparseMatrix<T> P(numRows, B.numCols);
-  P.reserve(getNumElements() * B.getNumElements());
+  //P.reserve(getNumElements() * B.getNumElements());
   for(size_t n = 0; n < elements.size(); n++)
   {
     for(size_t k = 0; k < B.elements.size(); k++)
@@ -2205,7 +2207,16 @@ rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
         //P.elements.push_back(newElem);
 
         T p = elements[n].value * B.elements[k].value;
-        //add(i, j, p);  // or maybe add(j, i, p)?
+        P.add(elements[n].i, B.elements[k].j, p);  // 
+        //P.add(elements[n].j, B.elements[k].i, p);  //
+        //P.add(B.elements[k].j, elements[n].i,  p);  //
+        //P.add(B.elements[k].i, elements[n].j,  p);    //
+
+        //P.add(elements[n].i, B.elements[k].i, p); 
+
+
+        // verify indices! might also use [n].i, [k].j and/or swap the n and k elems 
+
 
       }
     }
