@@ -1053,6 +1053,15 @@ bool testKroneckerProduct()
 
 bool testSparseMatrix()
 {
+  // We test the class rsSparseMatrix. We first check that the function .toDense() to convert from 
+  // sparse to dense format works correctly and then perform many of the subsequent tests for 
+  // matrix operations (like matrix addition, multplication, etc.) by doing the same operation in 
+  // parallel on dense matrices and after every operation, convert the (converted) result of the 
+  // sparse computation to that of the dense computation. Thus, these tests assume that the class 
+  // rsMatrix that implements dense matrices is already reliable enough to serve as a reference to 
+  // check the sparse computations against. We use letters A,B,C for dense matrices and R,S,T for 
+  // sparse matrices.
+
   bool ok = true;
 
   using Real = float;
@@ -1070,6 +1079,7 @@ bool testSparseMatrix()
   //
   // so, in a matrix-vector product y = A*x, it takes an 8-vector x as input and produces a 4-vector 
   // as output y in which each element is the sum of two consecutive elements from the input.
+
 
   rsSparseMatrix<Real> R(4, 8);  // still the zero matrix
   Vec x({1,2,3,4,5,6,7,8});      // input vector
@@ -1121,6 +1131,7 @@ bool testSparseMatrix()
                    0,  0, 53,
                   59, 61, 67 } );
 
+  // Test matrix multiplication:
   Mat C = A*B;
 
   R.setToZero();
@@ -1146,15 +1157,18 @@ bool testSparseMatrix()
   S.set(4, 2, 67);
 
   MatS T = R*S;
-
-  Mat D = MatS::toDense(T);
-
+  Mat  D = MatS::toDense(T);
   ok &= C == D;
 
+  // Test matrix addition and subtraction:
+  // ...
 
 
 
   // ToDo: 
+  // -Implement and test matrix addition via + operator. This should be based on the "add" 
+  //  function. See implementation of *
+  // -Implement matrix negation (unary minus). 
   // -Test replacing elements, also with zero (in which case they should get removed)
   // -Make sure that no element is stored twice or multiple times. Each index pair should be 
   //  unique
@@ -1165,8 +1179,6 @@ bool testSparseMatrix()
   // -Implement and test sparse matrix multiplication. The tests for that can be based on 
   //  performing the same products with dense matrices, converting the sparse results to dense
   //  and comparing the results.
-
-  // -maybe use A,B,C for dense matrices and R,S,T for sparse matrices
 
   return ok;
 }
@@ -1180,7 +1192,7 @@ bool testSparseMatrixSolvers()
   using Mat = rsSparseMatrix<float>;
 
   //      |7 1 2|
-  //  A = |3 8 4|  ...must be strictly diagoally dominant for Gauss-Seidel to converge
+  //  A = |3 8 4|  ...must be strictly diagonally dominant for Gauss-Seidel to converge
   //      |5 2 9|
 
   int N = 3;
