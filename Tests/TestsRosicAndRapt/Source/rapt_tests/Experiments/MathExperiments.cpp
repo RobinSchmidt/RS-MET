@@ -2612,7 +2612,7 @@ double productLog(const double z)
       -8.401032217523977370984161688514*q3*q;  // error approx 1e-16
   }
 
-  // initial approximation for Halley iteration:
+  // Initial approximation for Halley iteration:
   if(z < 1.0)     // series near 0
   { 
     p = sqrt(2.0*(2.7182818284590452353602874713526625*z+1.0));                 // euler-number
