@@ -2179,59 +2179,22 @@ rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
 {
   rsAssert(numCols == B.numRows, "Matrices incompatible for multiplication");
   rsSparseMatrix<T> P(numRows, B.numCols);
-  //P.reserve(getNumElements() * B.getNumElements());
   for(size_t n = 0; n < elements.size(); n++)
   {
     for(size_t k = 0; k < B.elements.size(); k++)
     {
       if(elements[n].j == B.elements[k].i)
       {
-        //Element newElem(B.elements[k].j, elements[n].i,        
-        //                elements[n].value * B.elements[k].value);  // wrong
-
-        //Element newElem(B.elements[k].i, elements[n].j,
-        //  elements[n].value * B.elements[k].value);      // out of range
-
-        //Element newElem(elements[n].j, B.elements[k].i, 
-        //  elements[n].value * B.elements[k].value);       // invalid row index
-
-        //Element newElem(elements[n].i, B.elements[k].j, 
-        //  elements[n].value * B.elements[k].value);       // wrong
-
-        // Verify! Might be the other way around! 4 possible ways:
-        // [n].i, B.[k].j
-        // [n].j, B.[k].i
-        // B.[n].i, [k].j
-        // B.[n].j, [k].i
-
-        //P.elements.push_back(newElem);
-
         T p = elements[n].value * B.elements[k].value;
-        P.add(elements[n].i, B.elements[k].j, p);  // 
-        //P.add(elements[n].j, B.elements[k].i, p);  //
-        //P.add(B.elements[k].j, elements[n].i,  p);  //
-        //P.add(B.elements[k].i, elements[n].j,  p);    //
-
-        //P.add(elements[n].i, B.elements[k].i, p); 
-
-
-        // verify indices! might also use [n].i, [k].j and/or swap the n and k elems 
-
-
+        P.add(elements[n].i, B.elements[k].j, p);
+        //P.add(B.elements[k].j, elements[n].i,  p);  // This would produce P^T
       }
     }
   }
-  // This implementation is total nonsense!
 
   return P;
 }
-// This is still wrong!
-// -we need a function addTo(i, j, val) that adds val to the (i,j)th entry of the sparse matrix
-// -Then for each pair of matrix entries of A and B in C=A*B, we get a nonzero product, when j in A
-//  matches i in B. That product needs to be *added* to the coeff in C at i,j or j,i. That's where 
-//  we need to use the addTo function. I think, the loop structure is alreadey right, but instead 
-//  of push_back(newElem) we need to do addTo(n, k, A.elements[n].value * B.elements[k].value)
-// -Maybe we should call our loop counters i,j instead of n,k as well.
+// needs more tests
 
 
 template<class T>
