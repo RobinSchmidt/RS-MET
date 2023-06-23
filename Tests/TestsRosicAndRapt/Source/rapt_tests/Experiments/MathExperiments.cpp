@@ -1161,13 +1161,18 @@ void iterativeLinearSolvers()
   Vec t = P*x2; // test - should equal q - seems ok
   // ...yes, that seems to work indeed. I think, if the problem has no solution, the algo will 
   // produce a least squares approximation to a solution and if it has multiple solutions, it will
-  // produce the minimum norm solution. For sparse matrices A, it does not make sense to explicitly
-  // create the matrix A^T*A because it may not be sparse. Instead, we need an adapted CG algorithm
-  // computes the product (A^T * A) * x by first computing y = A*x and then computing z = A^T*y 
-  // where in both products, the sparsity can be exploited. So the algo will need to compute twice 
-  // as many matrix-vector products as the original CG algo. More specifically, it will have to 
-  // compute 2 matrix-vector products per iteration. But that is more than compensated for by the 
-  // fast convergence. The vector q = A^T * b on the other hand can be precomputed. See:
+  // produce the minimum norm solution (ToDo: verify and document). For sparse matrices A, it does 
+  // not make sense to explicitly create the matrix A^T*A because it may not be so sparse anymore. 
+  // Its number of nonzero elements can in worst case be the product of the numbers of nonzero 
+  // elements of the two factor matrices (I think - verify that!).
+  
+  
+  // Instead, we need an adapted CG algorithm
+  // that computes the product (A^T * A) * x by first computing y = A*x and then computing 
+  // z = A^T*y where in both products, the sparsity can be exploited. So the algo will need to 
+  // compute twice as many matrix-vector products as the original CG algo. More specifically, it 
+  // will have to compute 2 matrix-vector products per iteration. But that is more than compensated 
+  // for by the fast convergence. The vector q = A^T * b on the other hand can be precomputed. See:
   // https://en.wikipedia.org/wiki/Gramian_matrix
   // https://math.stackexchange.com/questions/158219/is-a-matrix-multiplied-with-its-transpose-something-special
   // https://www.quora.com/Whats-the-meaning-of-matrixs-transpose-multiplied-by-the-matrix-itself

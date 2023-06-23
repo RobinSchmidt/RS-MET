@@ -1075,7 +1075,7 @@ bool testSparseMatrix()
   Vec x({1,2,3,4,5,6,7,8});      // input vector
   Vec y({1,2,3,4});              // output vector
   A.product(&x[0], &y[0]);  
-  ok &= y == Vec({0,0,0,0});    // A was till zero
+  ok &= y == Vec({0,0,0,0});    // A was still zero
   // todo: use * operator: y = A*x (it calls the product function)
 
   // Now build up the actual matrix in a kind of "random" order. The nonzero (i.e. one) elements 
@@ -1089,26 +1089,29 @@ bool testSparseMatrix()
   A.set(2, 4, 1.f);
   A.set(3, 7, 1.f);
 
+  // Create the same matrix as dense matrix:
+  Mat T(4, 8, {1, 1, 0, 0, 0, 0, 0, 0,
+               0, 0, 1, 1, 0, 0, 0, 0,
+               0, 0, 0, 0, 1, 1, 0, 0,
+               0, 0, 0, 0, 0, 0, 1, 1});
+
+  // Test conversion of A to dense matrix, structure of A and conversion of a dense matrix
+  // to a sparse matrix:
+  Mat  dA = MatS::toDense(A);    ok &= dA == T;
+  MatS A2 = MatS::fromDense(dA); ok &= A2 == A;
+
   // Test the multiplication with the new matrix again:
-  A.product(&x[0], &y[0]);  ok &= y == Vec({3,7,11,15});  // redundant now
-  y = A*x;
-  ok &= y == Vec({3,7,11,15});
+  A.product(&x[0], &y[0]); ok &= y == Vec({3,7,11,15});  // redundant because...
+  y = A*x;                 ok &= y == Vec({3,7,11,15});  // ...A*x invokes A.product
 
 
-  ok &= A(0, 0) == 1.f;
-  ok &= A(0, 1) == 1.f;
-  ok &= A(0, 2) == 0.f;
-  ok &= A(0, 3) == 0.f;
-  // ...
-
-
-  // Test conversion from/to dense matrices:
-  Mat  dA = MatS::toDense(A);
-  MatS A2 = MatS::fromDense(dA);
-  ok &= A2 == A;
-
-
-  // todo: test replacing elements, also with zero (in which case they should get removed)
+  // ToDo: 
+  // -Test replacing elements, also with zero (in which case they should get removed)
+  // -Make sure that no element is stored twice or multiple times. Each index pair should be 
+  //  unique
+  // -Implement and test sparse matrix multiplication. The tests for that can be based on 
+  //  performing the same products with dense matrices, converting the sparse results to dense
+  //  and comparing the results.
 
   return ok;
 }

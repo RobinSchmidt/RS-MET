@@ -1718,9 +1718,14 @@ The class is meant to be used mostly in situations where computing matrix-vector
 and random access of matrix elements is uncommon. In a regular (dense) matrix implementation of 
 shape MxN, the matrix-vector product is an O(M*N) operation and element access is O(1). Here, 
 computing the matrix-vector product is an O(K) operation (where K is the number of nonzero entries) 
-and element random access is O(log(K)). This is because the elements are stored as sorted array and
-random access requires binary search. In the product, we can just iterate over all the stored 
-elements. */
+and element random access is O(log(K)) for reading an element. This is because the elements are 
+stored as sorted array and random access requires binary search. In the product, we can just 
+iterate over all the stored elements. 
+
+ToDo:
+-Document complexity of element write access. I think, it should also be O(log(K)) when we 
+ overwrite an existing element and O(K) when we insert a new element (or remove one - removal 
+ should be triggered on write when the caller writes a zero). */
 
 template<class T>
 class rsSparseMatrix
@@ -1755,12 +1760,23 @@ public:
 
   /** Creates a regular (dense) rsMatrix from a rsSparseMatrix. */
   static rsMatrix<T> toDense(const rsSparseMatrix<T>& A);
+  // ToDo: explain rationale for making this a static function taking A as argument rather than
+  // a member that can be called like "rsMatrix<T> D = A.toDense();". I think, it's for making
+  // the call consistent with "fromDense()" which cannot be called like that unless we move it 
+  // into rsMatrix which would couple rsMatrix to rsSparseMatrix which is undesirable. rsMatrix
+  // should not depend on rsSparseMatrix. Having rsSparseMatrix dependent on rsMatrix is 
+  // acceptable, though. I think of rsMatrix as the more fundamental class and rsSparseMatrix as
+  // something on top of it.
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
   /** Returns the number of nonzero elements in this matrix. */
   int getNumElements() const { return (int) elements.size(); }
+  // Maybe rename to getSize() to match rsMatrix ...but maybe it's intentional to not match it 
+  // because for a sparse matrix, the notion of "size" is a bit ambiguous because the number of 
+  // stored elements is not predetermined?.
 
   int getNumRows() const { return numRows; }
 
@@ -2040,8 +2056,8 @@ rsSparseMatrix<T> rsSparseMatrix<T>::fromDense(const rsMatrix<T>& A, T tolRel)
     tol = tolRel / maxA;
   for(int i = 0; i < M; i++)
     for(int j = 0; j < N; j++)
-      if(rsAbs(A(i, j)) > tol)
-        B.set(i, j, A(i, j));
+      if(rsAbs(A(i, j)) > tol)   // Must use "> tol", not ">= tol" to handle tol = 0
+        B.set(i, j, A(i, j));    // correctly 
   return B;
 }
 
