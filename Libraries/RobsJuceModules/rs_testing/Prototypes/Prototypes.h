@@ -2001,6 +2001,9 @@ public:
   /** Adds two sparse matrices. */
   rsSparseMatrix<T> operator+(const rsSparseMatrix<T>& x) const;
 
+  /** Subtracts two sparse matrices. */
+  rsSparseMatrix<T> operator-(const rsSparseMatrix<T>& x) const;
+
   /** Multiplies two sparse matrices. */
   rsSparseMatrix<T> operator*(const rsSparseMatrix<T>& x) const;
 
@@ -2195,10 +2198,20 @@ rsSparseMatrix<T> rsSparseMatrix<T>::operator+(const rsSparseMatrix<T>& B) const
 }
 
 template<class T>
+rsSparseMatrix<T> rsSparseMatrix<T>::operator-(const rsSparseMatrix<T>& B) const
+{
+  rsAssert(B.hasSameShapeAs(*this), "Matrices incompatible for subtraction");
+  rsSparseMatrix<T> D(*this);                  // Difference matrix, initialize as copy of this
+  for(size_t k = 0; k < B.elements.size(); k++)
+    D.add(B.elements[k].i, B.elements[k].j, -B.elements[k].value);
+  return D;
+}
+
+template<class T>
 rsSparseMatrix<T> rsSparseMatrix<T>::operator*(const rsSparseMatrix<T>& B) const
 {
   rsAssert(numCols == B.numRows, "Matrices incompatible for multiplication");
-  rsSparseMatrix<T> P(numRows, B.numCols);     // Product matrix
+  rsSparseMatrix<T> P(numRows, B.numCols);     // Product matrix, initialize to zero matrix
   for(size_t n = 0; n < elements.size(); n++)
     for(size_t k = 0; k < B.elements.size(); k++)
       if(elements[n].j == B.elements[k].i)

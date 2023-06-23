@@ -1168,13 +1168,17 @@ bool testSparseMatrix()
   D = MatS::toDense(T);
   ok &= C == D;
 
+  C = A - B;
+  T = R - S;
+  D = MatS::toDense(T);
+  ok &= C == D;
+
   // ...
 
 
 
   // ToDo: 
-  // -Implement and test matrix addition via + operator. This should be based on the "add" 
-  //  function. See implementation of *
+  // -Implement and test matrix subtraction
   // -Implement matrix negation (unary minus). 
   // -Test replacing elements, also with zero (in which case they should get removed)
   // -Make sure that no element is stored twice or multiple times. Each index pair should be 
