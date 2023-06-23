@@ -1161,6 +1161,13 @@ bool testSparseMatrix()
   ok &= C == D;
 
   // Test matrix addition and subtraction:
+  B.transpose();
+  S.transpose();
+  C = A + B;
+  T = R + S;
+  D = MatS::toDense(T);
+  ok &= C == D;
+
   // ...
 
 
