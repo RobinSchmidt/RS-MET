@@ -211,7 +211,10 @@ public:
   inline void convertPixelDataFrom(const rsImage<TPix2>& source) 
   { 
     rsAssert(source.getWidth() == width && source.getHeight() == height);
-    rsArrayTools::convert(source.getPixelPointer(0,0), this->data, getNumPixels());
+    TPix2* srcData = source.getPixelPointer(0, 0);
+    for(int k = 0; k < getNumPixels(); k++)
+      data[k] = (TPix) srcData[k];  // Type conversion
+    //rsArrayTools::convert(source.getPixelPointer(0,0), this->data, getNumPixels());
   }
 
 
