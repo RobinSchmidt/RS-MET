@@ -42,8 +42,9 @@ public:
   rsImage(int initialWidth, int initialHeight, const TPix *initialData)
     : width(initialWidth), height(initialHeight)
   {
-    allocateMemory();
-    memcpy(data, initialData, getByteSize());
+    data = toVector(initialData, width*height);
+    //allocateMemory();
+    //memcpy(data, initialData, getByteSize());
   }
 
   /** Copy constructor. Creates a deep copy of the pixel data in this image. */
@@ -51,8 +52,12 @@ public:
   {
     width  = other.width;
     height = other.height;
-    allocateMemory();
-    memcpy(data, other.data, getByteSize());
+    data   = other.data;
+    // this is actually what the compiler would generate anyway, so maybe get rid
+
+
+    //allocateMemory();
+    //memcpy(data, other.data, getByteSize());
   }
 
   /** Destructor. Frees dynamically allocated memory. */
@@ -60,6 +65,7 @@ public:
   {
     freeMemory();
   }
+  // can be deleted now becuase we use std::vector now
 
 
   //-----------------------------------------------------------------------------------------------
@@ -99,7 +105,13 @@ public:
   inline int getLineStrideInBytes() const { return width*sizeof(TPix); }
 
   /** Returns a pointer to the pixel at the specified location. */
-  inline TPix* getPixelPointer(int x, int y) const { return &data[y*width+x]; }
+  inline TPix* getPixelPointer(int x, int y) const 
+  { 
+    //return &data[y*width+x]; 
+    const TPix* d = data.data();
+    return (TPix*) (d + y*width+x);  // Dirty! Casting away const! 
+  }
+  // Make function non-const. We allow caller to write the pixels. That's the intention
   // maybe use operator (x, y) instead of function..., but the operator should return a reference
 
   /** Returns the color of the pixel at (x,y). */
@@ -131,7 +143,8 @@ public:
   {
     rsAssert(width  == otherImage->width);
     rsAssert(height == otherImage->height);
-    return rsArrayTools::almostEqual(data, otherImage->data, width*height, tolerance);
+    return rsArrayTools::almostEqual(data.data(), otherImage->data.data(), width*height, tolerance);
+    //return rsArrayTools::almostEqual(&data[0], otherImage->data[0], width*height, tolerance);
 
     /*
     // old:
@@ -149,7 +162,8 @@ public:
 
 
   /** Converts the image to a flat array of type std::vector. */
-  std::vector<TPix> toStdVector() { return toVector(data, width*height); }
+  //std::vector<TPix> toStdVector() { return toVector(data, width*height); }
+  std::vector<TPix> toStdVector() { return data; }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulations */
@@ -181,7 +195,8 @@ public:
   inline void copyPixelDataFrom(const rsImage<TPix>& source) 
   { 
     rsAssert(this->hasSameShapeAs(source));
-    rsArrayTools::copy(source.data, this->data, getNumPixels());
+    rsCopy(source.data, data);
+    //rsArrayTools::copy(&source.data[0], this->data[0], getNumPixels());
   }
   // todo: maybe if the source has a different shape, change the shape of this image
 
@@ -238,20 +253,28 @@ protected:
   /** Allocates the memory for the picture. */
   inline void allocateMemory()
   {
-    data = new TPix[width*height];
+    //data = new TPix[width*height];
+    data.resize(width*height);
     fillAll(TPix(0));
   }
 
   /** Frees the allocated memory for the picture. */
   inline void freeMemory()
   {
-    delete[] data;
+    data.clear();
+    //delete[] data;
   }
 
   // data members:
 
+
   int width, height;
-  TPix *data;         // contiguous block of memory for the whole image
+  std::vector<TPix> data;
+
+
+  //TPix *data;         // contiguous block of memory for the whole image
+  // ToDo: use std::vector<TPix>;
+
 
 };
 
