@@ -261,7 +261,7 @@ void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
 // get rid of that - use function below instead - maybe it should take optional x,y arguments
 
 template<class T>
-inline void plotMatrix(rsMatrix<T>& A, bool asHeatMap)  // use const
+inline void plotMatrix(rsMatrix<T>& A, bool asHeatMap = true)  // use const
 {
   GNUPlotter plt;
   //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
