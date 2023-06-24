@@ -86,7 +86,9 @@ develop:
 work:
 -Should build on Windows in Visual Studio in Debug mode (the primary dev environment).
 
-
+The other repos (RS-MET-Research, RS-MET-Tests, ...) should use the same branch structure and we 
+should avoid that, say, a master branch of the Research repo depends on code in the develop or work
+work branch of the main repo.
 
 ----------------------------------------------------------------------------------------------------
 My Programming Environment prefs:
