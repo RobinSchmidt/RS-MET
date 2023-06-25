@@ -3135,14 +3135,15 @@ void imageScaling()
       img(i, j) = (pow(-1.f, i+j) + 1.f) * 0.5f;
 
   // Scale factors:
-  int kx = 2;
-  int ky = 3;
+  int kx = 1;
+  int ky = 1;
 
   Real kxI = Real(1) / kx;
   Real kyI = Real(1) / ky; 
 
   // Create scaled image by bilinear interpolation:
-  Image imgS(kx*w, ky*h);
+  //Image imgS(kx*w, ky*h);              // old
+  Image imgS(kx*(w-1)+1, ky*(h-1)+1);  // new, verify!
   for(int y = 0; y < h-1; y++)
   {
     for(int x = 0; x < w-1; x++)
