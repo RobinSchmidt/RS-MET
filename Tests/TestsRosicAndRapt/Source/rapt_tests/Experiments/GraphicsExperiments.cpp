@@ -3147,11 +3147,11 @@ void imageScaling()
   {
     for(int x = 0; x < w-1; x++)
     {
-      for(int j = 0; j < ky; j++)
+      for(int j = 0; j <= ky; j++)       // was formerly <
       {
         Real cy1 = j * kyI;
         Real cy0 = 1 - cy1;
-        for(int i = 0; i < kx; i++)
+        for(int i = 0; i <= kx; i++)
         {
           Real cx1 = i * kxI;
           Real cx0 = 1 - cx1;
@@ -3162,7 +3162,11 @@ void imageScaling()
     }
   }
   // kx columns and ky rows are missing. This is because the loops run only to h-1, w-1 respectivley.
-  // Maybe We need to handle rightmost column and bottommost line separately.
+  // Maybe We need to handle rightmost column and bottommost line separately. We could also let the
+  // inner i,j loops run to <= ky, kx (ends inclusive). But that woul still miss some columns and
+  // rows and write the inner rows/cols that coincide with the original data all twice.
+  // Maybe the rsul image should indeed have size kx*(w-1), ky*(h-1) such that we only fill in inner 
+  // points *between* the original datapoints?
 
 
 
@@ -3179,8 +3183,10 @@ void imageScaling()
 
 
 
-  imgS(kx*w-1, ky*h-1) = img(w-1, h-1);  // bottom-left corner
+  //imgS(kx*w-1, ky*h-1) = img(w-1, h-1);  // bottom-left corner
+  // is this correct, though? I don't think so.
  
+  imgS(kx*(w-1), ky*(h-1)) = img(w-1, h-1); // maybe this is correct?
 
 
 
