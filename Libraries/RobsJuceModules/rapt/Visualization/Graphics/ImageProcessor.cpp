@@ -91,14 +91,16 @@ rsImage<T> rsImageProcessor<T>::interpolateBilinear(const rsImage<T>& img, int k
   for(int y = 0; y < h-1; y++) {
     for(int x = 0; x < w-1; x++) {
       for(int j = 0; j <= ky; j++) {
-        T cy1 = j * kyI;
-        T cy0 = 1 - cy1;
+        T cy1 = j * kyI;                         // coeff for pixel below
+        T cy0 = 1 - cy1;                         // coeff for pixel above
         for(int i = 0; i <= kx; i++) {
-          T cx1 = i * kxI;
-          T cx0 = 1 - cx1;
+          T cx1 = i * kxI;                       // coeff for pixel to the right
+          T cx0 = 1 - cx1;                       // coeff for pixel to the left
           result(kx*x+i, ky*y+j) =
-            cx0*cy0*img(x, y) + cx0*cy1*img(x, y+1) + cx1*cy0*img(x+1, y) + cx1*cy1*img(x+1, y+1); 
-        }}}}
+            cx0*cy0 * img(x,   y  ) + 
+            cx0*cy1 * img(x,   y+1) + 
+            cx1*cy0 * img(x+1, y  ) + 
+            cx1*cy1 * img(x+1, y+1);  }}}}
   return result;
 }
 // Notes:

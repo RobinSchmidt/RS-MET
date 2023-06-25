@@ -3121,21 +3121,23 @@ void differentialGeometry()
 
 void imageScaling()
 {
-  // We test the image rescaling algorithms from rsImageProcessor
+  // We test the image rescaling algorithms from rsImageProcessor by creating a chessboard pattern 
+  // image as input and scaling this image up by the various interpolation algorithms implemented 
+  // there (currently only bilinear is available, but that is expected to grow). Then we write the 
+  // results to .ppm files for inspection in an image viewer.
 
-  // Scale factors:
-  int kx = 2;
-  int ky = 3;
+  // Setup:
+  using TPix = float;   // Pixel format. Should be a real-number format like float, double, simd.
+  int w  = 7;           // Width of input image
+  int h  = 5;           // Height of input image
+  int kx = 2;           // Scale factor for x
+  int ky = 3;           // Scale factor for y
 
-
-  using Real  = float;
-  using Image = rsImage<Real>;
-  using Proc  = rsImageProcessor<Real>;
-
+  // For convenience:
+  using Image = rsImage<TPix>;
+  using Proc  = rsImageProcessor<TPix>;
 
   // Create a chessboard pattern as input image:
-  int w = 7;
-  int h = 5;
   Image img(w, h);
   for(int j = 0; j < h; j++)
     for(int i = 0; i < w; i++)
@@ -3144,75 +3146,21 @@ void imageScaling()
   // Scale it up using bilinear interpolation:
   Image imgS = Proc::interpolateBilinear(img, kx, ky);
 
-  /*
-  Real kxI = Real(1) / kx;
-  Real kyI = Real(1) / ky; 
-
-  // Create scaled image by bilinear interpolation:
-  //Image imgS(kx*w, ky*h);              // old
-  Image imgS(kx*(w-1)+1, ky*(h-1)+1);  // new, verify!
-  for(int y = 0; y < h-1; y++)
-  {
-    for(int x = 0; x < w-1; x++)
-    {
-      for(int j = 0; j <= ky; j++)       // was formerly <
-      {
-        Real cy1 = j * kyI;
-        Real cy0 = 1 - cy1;
-        for(int i = 0; i <= kx; i++)
-        {
-          Real cx1 = i * kxI;
-          Real cx0 = 1 - cx1;
-          imgS(kx*x+i, ky*y+j) = 
-            cx0*cy0*img(x, y) + cx0*cy1*img(x,y+1) + cx1*cy0*img(x+1,y) + cx1*cy1*img(x+1,y+1);
-        }
-      }
-    }
-  }
-  */
-  // kx columns and ky rows are missing. This is because the loops run only to h-1, w-1 respectivley.
-  // Maybe We need to handle rightmost column and bottommost line separately. We could also let the
-  // inner i,j loops run to <= ky, kx (ends inclusive). But that woul still miss some columns and
-  // rows and write the inner rows/cols that coincide with the original data all twice.
-  // Maybe the rsul image should indeed have size kx*(w-1), ky*(h-1) such that we only fill in inner 
-  // points *between* the original datapoints?
-  // OK - done. Move into rsImageProcessor::interpolateBilinear. Document behavior with respect to 
-  // size.
-
-
-
-  // handle bottom row:
-
-
-  // ...
-
-  // handle right column where x = w-1:
-  //for(int y = 0; y < h-1; y++)
-
-
-  //...
-
-
-
-  //imgS(kx*w-1, ky*h-1) = img(w-1, h-1);  // bottom-left corner
-  // is this correct, though? I don't think so.
- 
-  //imgS(kx*(w-1), ky*(h-1)) = img(w-1, h-1); // maybe this is correct?
-
-
-
-
+  // Write original and interpolated images to files for inspection:
   writeImageToFilePPM(img,  "RescaleInput.ppm");
-  writeImageToFilePPM(imgS, "RescaleOutput.ppm");
-
+  writeImageToFilePPM(imgS, "RescaleOutputBilinear.ppm");
 
   // ToDo: 
-  // -Check that scaling by factors kx1,ky1 rist and then by kx2,ky2 (or the other way around) gives
-  //  the same result as scaling one by kx1*kx2,ky1*ky2.
+  // -Check that scaling by factors kx1,ky1 first and then by kx2,ky2 (or the other way around) 
+  //  gives the same results as scaling one by kx1*kx2,ky1*ky2.
   // -Implement the "magic kernel" and its sharp version, see: https://johncostella.com/magic/
-
-
-  int dummy = 0;
+  // -Check what happens when TPix is something like rsPixelRGB. It probably won't compile. Try to 
+  //  fix that.
+  // -Maybe factor out the chessboard pattern creation into a library function in a suitable image 
+  //  generator class. Let the user select whether top-left pixel should be black or white. In the 
+  //  implementation, this would mean using either i+j or i+j+1 as exponent for the pow call. Maybe
+  //  production code should use a more efficient method to generate it, though. Using pow for this 
+  //  is actually totally crazy from an efficiency point of view.
 }
 
 
