@@ -3197,6 +3197,8 @@ void imageScaling()
 
 
   // ToDo: 
+  // -Check that scaling by factors kx1,ky1 rist and then by kx2,ky2 (or the other way around) gives
+  //  the same result as scaling one by kx1*kx2,ky1*ky2.
   // -Implement the "magic kernel" and its sharp version, see: https://johncostella.com/magic/
 
 
