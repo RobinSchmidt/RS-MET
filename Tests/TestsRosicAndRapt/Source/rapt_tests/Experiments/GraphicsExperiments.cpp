@@ -3123,7 +3123,8 @@ void imageScaling()
 {
   // We test the image rescaling algorithms from rsImageProcessor
 
-  using Image = rsImage<float>;
+  using Real  = float;
+  using Image = rsImage<Real>;
 
   // Create a chessboard pattern as input image:
   int w = 7;
@@ -3131,11 +3132,48 @@ void imageScaling()
   Image img(w, h);
   for(int j = 0; j < h; j++)
     for(int i = 0; i < w; i++)
-      img(i, j) = (pow(-1.f, i+j) + 1.f) * 0.5f;
+      img(i, j) = (pow(-1.f, i+j+1) + 1.f) * 0.5f;
+
+  // Scale factors:
+  int kx = 2;
+  int ky = 3;
+
+  Real kxI = Real(1) / kx;
+  Real kyI = Real(1) / ky; 
+
+  // Create scaled image by bilinear interpolation:
+  Image imgS(kx*w, ky*h);
+  for(int y = 0; y < h-1; y++)
+  {
+    for(int x = 0; x < w-1; x++)
+    {
+      for(int j = 0; j < ky; j++)
+      {
+        Real cy1 = j * kyI;
+        Real cy0 = 1 - cy1;
+        for(int i = 0; i < kx; i++)
+        {
+          Real cx1 = i * kxI;
+          Real cx0 = 1 - cx1;
+          imgS(kx*x+i, ky*y+j) = 
+            cx0*cy0*img(x, y) + cx0*cy1*img(x,y+1) + cx1*cy0*img(x+1,y) + cx1*cy1*img(x+1,y+1);
+        }
+      }
+    }
+  }
+  // 2 columns and 3 rows are missing. This is because the loops run only to h-1, w-1 respectivley.
+  // Maybe We need to handle rightmost column and bottommost line separately.
+ 
 
 
-  writeImageToFilePPM(img, "RescaleInput.ppm");
 
+
+  writeImageToFilePPM(img,  "RescaleInput.ppm");
+  writeImageToFilePPM(imgS, "RescaleOutput.ppm");
+
+
+  // ToDo: 
+  // -Implement the "magic kernel" and its sharp version, see: https://johncostella.com/magic/
 
 
   int dummy = 0;
