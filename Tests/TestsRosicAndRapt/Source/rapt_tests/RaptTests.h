@@ -92,6 +92,7 @@ void parametricCurve();
 void spirals();   // move elsewhere Demos/Examples/Art/...
 void fractal();
 void differentialGeometry();
+void imageScaling();
 
 // Math Experiments:
 // wait - what about the file MathExperiments.h - shouldn't they be declared there?

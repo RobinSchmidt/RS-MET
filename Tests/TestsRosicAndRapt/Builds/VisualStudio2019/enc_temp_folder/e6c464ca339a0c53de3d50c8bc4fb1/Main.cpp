@@ -247,7 +247,7 @@ int main(int argc, char* argv[])
   //phaseScopeLissajous();
   //splineArc();
   //triangles();
-  //pixelCoverage();
+  pixelCoverage();
 
   // Plotting:
   //gradientify();

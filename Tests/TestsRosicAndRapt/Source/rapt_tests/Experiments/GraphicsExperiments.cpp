@@ -610,7 +610,8 @@ void pixelCoverage()
 /*
 // these were other ideas for implementing rsImageContourPlotter::contourSubPixelPosition - they 
 // have been discarded - but maybe it's worth to keep the code, so we may later continue to 
-// experiment with these ideas:
+// experiment with these ideas. Maybe move them somwhere into the Prototypes files or into some 
+// sort of "code attic"
 
 void getContourSubPixelPosition1(float z00, float z01, float z10, float z11, float c,
   float* x, float* y)
@@ -3117,6 +3118,28 @@ void differentialGeometry()
   plotCurve3D();
 }
 
+
+void imageScaling()
+{
+  // We test the image rescaling algorithms from rsImageProcessor
+
+  using Image = rsImage<float>;
+
+  // Create a chessboard pattern as input image:
+  int w = 7;
+  int h = 5;
+  Image img(w, h);
+  for(int j = 0; j < h; j++)
+    for(int i = 0; i < w; i++)
+      img(i, j) = (pow(-1.f, i+j) + 1.f) * 0.5f;
+
+
+  writeImageToFilePPM(img, "RescaleInput.ppm");
+
+
+
+  int dummy = 0;
+}
 
 
 
