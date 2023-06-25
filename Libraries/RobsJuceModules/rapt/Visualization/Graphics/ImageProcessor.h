@@ -33,7 +33,17 @@ public:
   static void normalizeJointly(rsImage<T>& img1, rsImage<T>& img2);
 
   /** Scales the image up by the given factor by simply repeating pixel values. */
-  static rsImage<T> scaleUp(const rsImage<T>& img, int scl);
+  static rsImage<T> scaleUp(const rsImage<T>& img, int scale);
+  // ToDo: 
+  // -Let user select scaling factors for x and y separately, then have a convenience function with 
+  //  one scaling parameter that just calls the two-parameter version with same argument for both.
+
+  /** Scales the image up by factors scaleX and scaleY in the x- and y- directions respectively 
+  using bilinear interpolation for computing the new pixels in between the old ones. If the input 
+  image has dimensions width times height, then the output image will have dimensions 
+  scaleX*(width-1)+1 times scaleY*(height-1)+1. It's not simply scaleX*width times scaleY*height 
+  because we only create new pixels in between the original ones. */
+  static rsImage<T> interpolateBilinear(const rsImage<T>& img, int scaleX, int scaleY);
 
   /** Shapes a ramp for 0 to 1 into a smooth sine curve. */
   static void sineShape(rsImage<T>& img);

@@ -3123,8 +3123,15 @@ void imageScaling()
 {
   // We test the image rescaling algorithms from rsImageProcessor
 
+  // Scale factors:
+  int kx = 2;
+  int ky = 3;
+
+
   using Real  = float;
   using Image = rsImage<Real>;
+  using Proc  = rsImageProcessor<Real>;
+
 
   // Create a chessboard pattern as input image:
   int w = 7;
@@ -3134,10 +3141,10 @@ void imageScaling()
     for(int i = 0; i < w; i++)
       img(i, j) = (pow(-1.f, i+j) + 1.f) * 0.5f;
 
-  // Scale factors:
-  int kx = 1;
-  int ky = 1;
+  // Scale it up using bilinear interpolation:
+  Image imgS = Proc::interpolateBilinear(img, kx, ky);
 
+  /*
   Real kxI = Real(1) / kx;
   Real kyI = Real(1) / ky; 
 
@@ -3162,12 +3169,15 @@ void imageScaling()
       }
     }
   }
+  */
   // kx columns and ky rows are missing. This is because the loops run only to h-1, w-1 respectivley.
   // Maybe We need to handle rightmost column and bottommost line separately. We could also let the
   // inner i,j loops run to <= ky, kx (ends inclusive). But that woul still miss some columns and
   // rows and write the inner rows/cols that coincide with the original data all twice.
   // Maybe the rsul image should indeed have size kx*(w-1), ky*(h-1) such that we only fill in inner 
   // points *between* the original datapoints?
+  // OK - done. Move into rsImageProcessor::interpolateBilinear. Document behavior with respect to 
+  // size.
 
 
 
@@ -3187,7 +3197,7 @@ void imageScaling()
   //imgS(kx*w-1, ky*h-1) = img(w-1, h-1);  // bottom-left corner
   // is this correct, though? I don't think so.
  
-  imgS(kx*(w-1), ky*(h-1)) = img(w-1, h-1); // maybe this is correct?
+  //imgS(kx*(w-1), ky*(h-1)) = img(w-1, h-1); // maybe this is correct?
 
 
 

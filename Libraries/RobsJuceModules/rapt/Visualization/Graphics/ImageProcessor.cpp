@@ -76,9 +76,37 @@ rsImage<T> rsImageProcessor<T>::scaleUp(const rsImage<T>& img, int scl)
           result(scl*x+i, scl*y+j) = img(x, y); }}}}
   return result;
 }
-// todo:
-// -allow different scaling factors for x and y
-// -let the outer loop run over y and the inner over x
+// ToDo:
+// -Allow different scaling factors for x and y
+// -Let the outer loop run over y and the inner over x (supposedly better memory access pattern)
+
+template<class T>
+rsImage<T> rsImageProcessor<T>::interpolateBilinear(const rsImage<T>& img, int kx, int ky)
+{
+  int w = img.getWidth();
+  int h = img.getHeight();
+  rsImage<T> result(kx*(w-1)+1, ky*(h-1)+1);
+  T kxI = T(1) / kx;
+  T kyI = T(1) / ky; 
+  for(int y = 0; y < h-1; y++) {
+    for(int x = 0; x < w-1; x++) {
+      for(int j = 0; j <= ky; j++) {
+        T cy1 = j * kyI;
+        T cy0 = 1 - cy1;
+        for(int i = 0; i <= kx; i++) {
+          T cx1 = i * kxI;
+          T cx0 = 1 - cx1;
+          result(kx*x+i, ky*y+j) =
+            cx0*cy0*img(x, y) + cx0*cy1*img(x, y+1) + cx1*cy0*img(x+1, y) + cx1*cy1*img(x+1, y+1); 
+        }}}}
+  return result;
+}
+// Notes:
+// -The implementation is suboptimal. Some pixels are written twice (those that directly 
+//  correspond to pixels in the orginal image except for top-row and left column). But avoiding 
+//  this would complicate the code considerably, so I think, it's OK like that.
+// -What if the the type T is something like an RGB color made from 3 char variables? This 
+//  implementation assumes T so be some sort of floating point format (float, double, simd, ...)
 
 template<class T>
 void rsImageProcessor<T>::sineShape(rsImage<T>& img)
