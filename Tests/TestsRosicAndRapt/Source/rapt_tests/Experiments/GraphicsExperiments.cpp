@@ -3132,7 +3132,7 @@ void imageScaling()
   Image img(w, h);
   for(int j = 0; j < h; j++)
     for(int i = 0; i < w; i++)
-      img(i, j) = (pow(-1.f, i+j+1) + 1.f) * 0.5f;
+      img(i, j) = (pow(-1.f, i+j) + 1.f) * 0.5f;
 
   // Scale factors:
   int kx = 2;
@@ -3163,6 +3163,16 @@ void imageScaling()
   }
   // 2 columns and 3 rows are missing. This is because the loops run only to h-1, w-1 respectivley.
   // Maybe We need to handle rightmost column and bottommost line separately.
+
+  // handle top row:
+  // ...
+
+  // handle right column:
+  //...
+
+
+
+  imgS(kx*w-1, ky*h-1) = img(w-1, h-1);  // bottom-left corner
  
 
 
