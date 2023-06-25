@@ -276,7 +276,11 @@ inline void plotMatrix(rsMatrix<T>& A, bool asHeatMap = true)  // use const
     plt.plot();
   }
   else
+  {
+    plt.addCommand("set xlabel \"X\" textcolor rgb \"black\"");
+    plt.addCommand("set ylabel \"Y\" textcolor rgb \"black\"");
     plt.plot3D();
+  }
 }
 // un-inline
 

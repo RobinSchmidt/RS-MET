@@ -17,6 +17,8 @@ public:
   static void gammaCorrection(rsImage<T>& img, T gamma);
   // todo: check conventions used in image processing (i think, IrfanView's gamma correction uses
   // the reciprocal - check what is the most widely used convention). maybe rename to just gamma
+  // The wikipedia article: https://en.wikipedia.org/wiki/Gamma_correction says that factors < 1
+  // are called gamma-compression and > 1 gamma expansion. 
 
   /** Inverts the brightness values of all pixels in the given image */
   static void invert(rsImage<T>& img);
@@ -42,11 +44,14 @@ public:
 
 
 
-  // todo:
-  // move more code from GraphicsExperiments to here
-  // static void filter(const rsImage<T>& input, const rsImage<T>& kernel);
-  // todo: have options for left/right/top/bottom border handling - maybe make an enum
-  // borderHandling with values: zero, repeat, mirror, periodic
+  // ToDo:
+  // -Move more code from GraphicsExperiments to here
+  //  static void filter(const rsImage<T>& input, const rsImage<T>& kernel);
+  //  -have options for left/right/top/bottom border handling - maybe make an enum
+  //   borderHandling with values: zero, repeat, mirror, periodic
+  // -Implement contrast. Maybe use a sigmoid function with adjustable center point, see
+  //  https://en.wikipedia.org/wiki/Generalised_logistic_function
+  //  https://en.wikipedia.org/wiki/Gompertz_function
 
 };
 
