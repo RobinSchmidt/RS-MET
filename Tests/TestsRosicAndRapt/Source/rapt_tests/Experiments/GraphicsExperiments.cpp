@@ -3161,13 +3161,20 @@ void imageScaling()
       }
     }
   }
-  // 2 columns and 3 rows are missing. This is because the loops run only to h-1, w-1 respectivley.
+  // kx columns and ky rows are missing. This is because the loops run only to h-1, w-1 respectivley.
   // Maybe We need to handle rightmost column and bottommost line separately.
 
-  // handle top row:
+
+
+  // handle bottom row:
+
+
   // ...
 
-  // handle right column:
+  // handle right column where x = w-1:
+  //for(int y = 0; y < h-1; y++)
+
+
   //...
 
 
