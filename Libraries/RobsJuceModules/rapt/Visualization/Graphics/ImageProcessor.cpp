@@ -158,7 +158,8 @@ void rsImageContourPlotter<TPix, TVal>::drawContour(
 {
   painter.setImageToPaintOn(&target);
   for(int i = 0; i < z.getWidth()-1; i++) {
-    for(int j = 0; j < z.getWidth()-1; j++) {
+    //for(int j = 0; j < z.getWidth()-1; j++) {  // BUG! getHeight!!!
+    for(int j = 0; j < z.getHeight()-1; j++) {   // new since 2023/26/06
       TVal z00 = z(i,   j  );
       TVal z01 = z(i,   j+1);
       TVal z10 = z(i+1, j  );
@@ -182,7 +183,8 @@ void rsImageContourPlotter<TPix, TVal>::fillBetweenContours(const rsImage<TVal>&
 {
   painter.setImageToPaintOn(&target);
   for(int i = 0; i < z.getWidth()-1; i++) {
-    for(int j = 0; j < z.getWidth()-1; j++) {
+    //for(int j = 0; j < z.getWidth()-1; j++) {   // old
+    for(int j = 0; j < z.getHeight()-1; j++) {    // new since 2023/26/06
       TVal z00 = z(i,   j  );
       TVal z01 = z(i,   j+1);
       TVal z10 = z(i+1, j  );
@@ -197,7 +199,7 @@ void rsImageContourPlotter<TPix, TVal>::fillBetweenContours(const rsImage<TVal>&
         {
           // What are we doing here? I think, the same as in the branch below but using a fixed
           // interpolation weight of 0.5 for blending between 0 (black) and the desired fillColor
-          // instead of using weight baed on pixel coverage.
+          // instead of using weight based on pixel coverage.
           /*
           if(min < lo && max >= lo)                      // on low contour
             painter.plot(i, j, fillColor * TPix(0.5));
@@ -231,14 +233,14 @@ void rsImageContourPlotter<TPix, TVal>::fillBetweenContours(const rsImage<TVal>&
             c = contourPixelCoverage(z00, z01, z10, z11, hi);
             painter.plot(i, j, TPix(c)*fillColor);  }}}}}
 }
-// if instead of using:
+// If instead of using:
 //   if(min >= lo && max <  hi)
 // we would use
 //   if(min >  lo && max <  hi) -> leaves extra pixels blank (test with circle)
 //   if(min >= lo && max <= hi) -> colors extra pixels in
-//   if(min >  lo && max <= hi) -> no etra blank or colored pixels but ugly jaggies
-// so the chosen variant seems best. this can be tested using the circles (and maybe commenting
-// out the code that handles the contour lines - i think it was set to somewhere around 11 or 12
+//   if(min >  lo && max <= hi) -> no extra blank or colored pixels but ugly jaggies
+// so the chosen variant seems best. This can be tested using the circles. (And maybe commenting
+// out the code that handles the contour lines. I think it was set to somewhere around 11 or 12
 // levels...not sure anymore)
 
 // can we refactor these two functions to avoid the duplicaztion?
