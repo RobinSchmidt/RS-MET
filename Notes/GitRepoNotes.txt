@@ -14,3 +14,12 @@ https://rtyley.github.io/bfg-repo-cleaner/
 https://www.theguardian.com/info/developer-blog/2013/apr/29/rewrite-git-history-with-the-bfg
 http://git-scm.com/book/en/v2/Git-Tools-Rewriting-History
 https://stackoverflow.com/questions/307828/how-do-you-fix-a-bad-merge-and-replay-your-good-commits-onto-a-fixed-merge/15729420#15729420
+
+
+
+
+
+Resources:
+
+https://www.youtube.com/watch?v=yzeVMecydCE  Complete Guide to Open Source - How to Contribute
+5:20: create a GitHub profile by creating a repo with same name as username

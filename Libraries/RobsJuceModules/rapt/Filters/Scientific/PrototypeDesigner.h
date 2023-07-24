@@ -4,9 +4,9 @@
 /** This class determines the locations of poles and zeros in the s-plane for a continuous time, 
 unit cutoff lowpass or low-shelving prototype filter. It supports Butterworth, Chebychev, inverse 
 Chebychev, elliptic, Bessel and Papoulis designs. The low-shelving design is a generalization of a 
-unit cutoff lowpass filter and and its magnitude response can be seen as the lowpass-response 
-raised to a pedestal. The height of this pedestal is called the reference gain (which is zero in 
-the lowpass-case). The gain the 'passband' (represented by the member variable G) is either a 
+unit cutoff lowpass filter and its magnitude response can be seen as the lowpass-response raised to 
+a pedestal. The height of this pedestal is called the reference gain (which is zero in the 
+lowpass-case). The gain the 'passband' (represented by the member variable G) is either a 
 boost (when G > 1) or an attenuation/cut (when G < 1) - for standard lowpass designs, this gain 
 would be unity.
 
@@ -16,9 +16,9 @@ References:
   (3) Larry D. Paarmann: Design and Analysis of Analog Filters
 
 \todo
- -test the gaussian design (compare poles with reference design, like Paarmann's GAUSSDE.m)
+ -test the Gaussian design (compare poles with reference design, like Paarmann's GAUSSDE.m)
  -check the gain calculation, include gain factor
- -solve the degree quation for other values than the filter order
+ -solve the degree equation for other values than the filter order
  -check getFilterResponseAt() - seems to be buggy - obsolete?
  -get rid of needsSpecialHighShelvTransform() - rewrite the prototype design code in such a way 
   that all approximations can be treated uniformly later on
@@ -65,7 +65,9 @@ public:
 
   // ideas: try other polynomials, for example non-reversed Bessel, Laguerre, etc. - if roots occur 
   // in the right half-plane, reflect them, maybe try Power-Series expansions of various 
-  // interesting functions as it is done with the Gaussian filter
+  // interesting functions as it is done with the Gaussian filter. maybe use transfer functions 
+  // based on Pade approximations. Maybe try 1 / (1 + cosh(w)) as target function for the 
+  // magnitude-squared response
 
   // in (3), page 16, it says: "Scanlan introduced filters with poles that fall on an ellipse with 
   // equal frequency spacing and noted the tradeoff between magnitude response characteristics and 
@@ -144,12 +146,15 @@ public:
 
   /** Solves the elliptic degree equation (k from N, k1). */
   static T ellipdeg(int N, T k_1);
+  // move to protected
 
   /** Solves the elliptic degree equation (k_1 from N, k1). */
   static T ellipdeg1(int N, T k);
+  // move to protected
 
   /** Solves the elliptic degree equation (k_1 from N, k) using nomes. */
   static T ellipdeg2(T N, T k);
+  // move to protected
 
   /** Calculates the order required for a Butterworth filter to fullfill given design 
   specifications. The actual order should be chosen to be the next integer. */
