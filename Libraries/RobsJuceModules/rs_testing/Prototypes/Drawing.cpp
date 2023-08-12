@@ -155,6 +155,11 @@ void drawLineBresenham(rsImageF& img, int x0, int y0, int x1, int y1, float colo
 // https://en.wikipedia.org/wiki/Bresenham's_line_algorithm
 // http://graphics.idav.ucdavis.edu/education/GraphicsNotes/Bresenhams-Algorithm.pdf
 
+// This video:
+// https://www.youtube.com/watch?v=_fO9W301Z1k
+// explains how maybe pixels are crossed by drawing a diagonal line over an n x m pixel grid. The
+// formula is: m + n - gcd(m,n)
+
 //-------------------------------------------------------------------------------------------------
 // Thick Lines
 

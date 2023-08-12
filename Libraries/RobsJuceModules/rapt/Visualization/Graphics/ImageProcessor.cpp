@@ -425,5 +425,12 @@ Should perhaps go into some rsImageAnalyzer class:
  hand, the caller could actually do pre- and post-procesing themselves. Maybe for common exponents
  such as 1 or 2, we can use a cheaper implementation. 
 
+-Maybe implement image resizing using the "Magic Kernel", see:
+   https://johncostella.com/magic/
+ there's also an edge-detector based on that:
+   https://johncostella.com/edgedetect/
+ and some more interesting stuff. There's also a reference implementation in C available.
+
+
 
 */

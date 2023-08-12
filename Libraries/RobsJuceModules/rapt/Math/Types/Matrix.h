@@ -607,15 +607,31 @@ public:
   }
   // needs test
 
-  void setRow(int i, T* values) { rsArrayTools::copy(values, getRowPointer(i), numCols); }
+  void setRow(int i, const T* values) 
+  { 
+    rsAssert(i >= 0 && i < numRows);
+    rsArrayTools::copy(values, getRowPointer(i), numCols); 
+  }
   // needs test
 
-  void setColumn(int j, T* values)
+  void setRow(int i, const std::vector<T>& values)
   {
+    rsAssert((int)values.size() == numCols);
+    setRow(i, &values[0]);
+  }
+  // convenience function
+
+  void setColumn(int j, const T* values)
+  {
+    rsAssert(j >= 0 && j < numCols);
     for(int i = 0; i < numRows; i++)
       (*this)(i, j) = values[i];
   }
   // needs test..maybe rsArrayTools::copy should have a version with srcStride, dstStride
+  // make convenience function fo std::vector like we have for setRow
+
+
+
 
 
   /** Scales all elements in the matrix by a given factor. */
