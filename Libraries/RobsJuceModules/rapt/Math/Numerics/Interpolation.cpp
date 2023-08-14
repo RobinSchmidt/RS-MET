@@ -585,7 +585,7 @@ Ideas:
 -The idea is to invent an interpolation scheme that has the same feature of representing 
  y = f(x) and x = f^-1(y) simultaneously while also being 1st order smooth, i.e. have matching 
  derivatives at the nodes. I think, the class of functions to look at should be their own inverse.
- An example of such a function is the identity, which is fndamentally the reason why linear 
+ An example of such a function is the identity, which is fundamentally the reason why linear 
  interpolation is self-inverse in our sense. It involves a scaled identity function. Maybe we can
  devise an interpolation scheme based solely on linear combinations of self-inverse functions (on 
  the interval [0..1]). Another example of a self-inverse function is y = 1/x. But it's not really 
@@ -596,12 +596,13 @@ Ideas:
  (I think) and therefore, inverse interpolation should yield the same curve. Maybe it's more 
  convenient to express it as: y = y0 + (y1-y0) * (a*x + b*sqrt(1 - (x-x0)/(x1-x0))) which for
  x0 = y0 = 0, x1 = y1 = 1 simplifies to: a*x + b * (1 - x^2) leaving only a,b to be computed from
- the 2 desired slopes s0,s1. I think, the general condition ofr a function to be self-inverse is 
+ the 2 desired slopes s0,s1. I think, the general condition for a function to be self-inverse is 
  that it must be symmetric around the axis y = x. That idea may give rise to more self-inverse
- interpolation schemes of the general form a*x + b*g(x) where g(x) is some self-inverse function.
- Self inverse interpolation schemes are relevant for the class rsTimeWarper when we want to 
- time-warp something, do some processing on the time-wapred signal and then unwarp it again. For 
- the warp-unwarp roundtrip to be an identity operation, we need a self-inverse interpolation 
+ interpolation schemes of the general form a*x + b*g(x) where g(x) is some self-inverse function 
+ and a,b are the coeffs to be determined by the desired (normalized) slopes at the endpoints of the 
+ interval. Self inverse interpolation schemes are relevant for the class rsTimeWarper when we want 
+ to time-warp some signal, do some processing on the time-wapred signal and then unwarp the result. 
+ For the warp-unwarp roundtrip to be an identity operation, we need a self-inverse interpolation 
  scheme. Currently, we use linear interpolation of the warping map there but it would be nice to 
  have a smoother interpolation scheme that is still self-inverse. Cubic is not suitable. That's
  why this stuff could be relevant. ...verify all of this - it's just an idea at the moment!
