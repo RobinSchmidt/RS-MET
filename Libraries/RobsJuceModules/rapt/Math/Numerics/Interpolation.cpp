@@ -143,6 +143,9 @@ void fitCubicWithDerivative(T x1, T x2, T y1, T y2, T yd1,
   //  [a0,a1,a2,a3] directly, solve for a[0], then manually substitute the result, then solve for 
   //  a1, etc. ...Oh - but that will result in equations that first find a3 and a0 last. Maybe try 
   //  also to first solve for a3, then for a2 using a3, etc. Use whatever gives a simpler result.
+  // -Or: use the formula for the normalized case and then apply some shift-and-scale algorithm
+  //  that converts polynomial coeffs from the unit intervals for inputs and outputs to arbitrary
+  //  intervals
 }
 
 template<class T>
@@ -600,10 +603,10 @@ Ideas:
  y = a + b*x + c * sqrt(d - x^2). It has 4 parameters, so we can prescribe the 2 functions values
  at the endpoints as well as their slopes. The inverse function should be of the same general form
  (I think) and therefore, inverse interpolation should yield the same curve. Maybe it's more 
- convenient to express it as: y = y0 + (y1-y0) * (a*x + b*sqrt(1 - (x-x0)/(x1-x0))) which for
- x0 = y0 = 0, x1 = y1 = 1 simplifies to: a*x + b * (1 - x^2) leaving only a,b to be computed from
- the 2 desired slopes s0,s1. I think, the general condition for a function to be self-inverse is 
- that it must be symmetric around the axis y = x. That idea may give rise to more self-inverse
+ convenient to express it as: y = y0 + (y1-y0) * (a*x + b*sqrt(1 - (x-x0)^2/(x1-x0)^2)) which for
+ x0 = y0 = 0, x1 = y1 = 1 simplifies to: a*x + b * sqrt(1 - x^2) leaving only a,b to be computed 
+ from the 2 desired slopes s0,s1. I think, the general condition for a function to be self-inverse 
+ is that it must be symmetric around the axis y = x. That idea may give rise to more self-inverse
  interpolation schemes of the general form a*x + b*g(x) where g(x) is some self-inverse function 
  and a,b are the coeffs to be determined by the desired (normalized) slopes at the endpoints of the 
  interval. We see that y = g(x) = sqrt(1 - x^2) is indeed self-inverse on [0,1] because solving
@@ -644,8 +647,29 @@ Ideas:
 -How about interpolating using y = f(x) = a*x + b/x for the unit interval. ...but this cannot be 
  made to satify a constraint of the form y0 = 0 or y0 = 1 except when b = 0. The function 
  y = 1/(1-x) has the same problem at y1
+-But actually, if we care about exact intertibility of the interpolating function, we could also 
+ just do cubic interpolation for y = f(x) and inverse cubic interpolation for x = f^-1(x). For
+ the inverse interpolation, we would need to solve y = a0 + a1*x + a2*x^2 + a3*x^3 for our given 
+ coeffs. We could do this either by the cubic formula or by Newton iteration. There may be some 
+ pitfalls with regard to behavior when there are multiple solutions x. We are only interested in 
+ the one between x0 and x1. But if the polynomial wiggles, there may even be mutliple solutions 
+ within that interval. But perhaps such cases don't happen when the data of the underlying 
+ function is strictly monotonic? -> Figure that out. Monotonicity implies that f'(x) >= 0. Maybe 
+ take x0 = y0 = 0, x1 = y1 = 1, fix f'(x0) = s0 = 0 and increase s1 from 0 to (almost) infinity.
+ The formulas for the coeffs are in the normalized case:
+ a0 = y0, a1 = s0, k1 = y1 - a1 - a0, k2 = s1 - a1, a2 = 3*k0 - k1, a3 = k1 - 2*k0
+ Using y0 = 0, s0 = 0, y1 = 1, this becomes:
+ a0 = 0, a1 = 0, k0 = 1, k1 = s1, a2 = 3 - s1, a3 = s1 - 2, so
+ f(x) = (3-s1)*x^2 + (s1-2)*x^3. See https://www.desmos.com/calculator/yytow2q3pv 
+ When the slope is > 3, the interpolant becomes non-monotonic, so maybe we need to restrict the
+ slopes in the forward interpolation to avoid such cases.
+-Oh - I think, by the way, the self-inverse interpolation schemes are monotonic by design which 
+ may be another desirable feature in certain situations. 
 
-
+ToDo:
+-Implement the self-inverse interpolation scheme using 
+ g(x) = y = y0 + (y1-y0) * (a*x + b*sqrt(1 - (x-x0)^2/(x1-x0)^2))
+ and apply it to some datagiven by x[n] = x[n-1] + rand(0, 1), y[n] = y[n-2] + rand(0, 1)
 
 
 */
