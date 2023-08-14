@@ -621,7 +621,29 @@ Ideas:
  special relativity. Maybe use g(x) = qqrt(1 - x^4) where qqrt stands for quart-root, i.e. the 4th
  root. We can generally use g(x) = (1 - x^n)^(1/n) when n is even, I think. These functions arise
  from shapes given by implicit curve equations of the form x^n + y^n = 1. See:
- https://www.desmos.com/calculator/qaicnu4zbb
+ https://www.desmos.com/calculator/qaicnu4zbb https://www.desmos.com/calculator/91f4ngtkk5
+ To create interpolation schemes with higher order smoothness, include factors up to order 6, i.e.
+ use the ansatz f(x) = a * x + b * (1-x^2)^(1/2) + c * (1-x^4)^(1/4) + d * (1-x^6)^(1/6). Or maybe
+ use f(x) = a * x + b * (1-x^2)^(1/2) + c * (1-x^3)^(1/3) + d * (1-x^4)^(1/4). Or maybe use an 
+ ansatz like f(x) = a * (1-x) + b * (1-x^2)^(1/2) + c * (1-x^3)^(1/3) + d * (1-x^4)^(1/4) to make 
+ the first term match the same pattern. Then we need to use y0 = 1, y1 = 0 in the normalization 
+ instead of y0 = 0, y1 = 1. Maybe call it superelliptic interpolation because it's based on
+ superellipses: https://en.wikipedia.org/wiki/Superellipse When only the order 2 term is used, call
+ it elliptic interpolation or maybe circular. Actually, we deal with (super)circles so maybe
+ (super)circular interpolation may be a better term. Maybe also allow powers less than 1 like 1/2, 
+ i.e. a term (1-x^(1/2))^2. It may look similar to a reflected (1-x^2)^(1/2) but I think, looks are
+ deceiving in this case. Wikipedia says, the superellipse for n = 1/2 is a segment of a parabola
+ whereas for n = 2, it's a circular arc. More general self-inverse functions can be found by 
+ considering the curve g(x) + g(y) = g(1), for example sin(x) + sin(y) = sin(1) or
+ exp(x) + exp(y) = 1 + e, exp(x^n) + exp(y^n) = 1 + e, tan(x) + tan(y) = tan(1), tan(x) * tan(y) = tan(1), log(x) + log(y) = 0,
+ atan(x) * atan(y) = atan(1). Maybe generally we can use any function of the form f(g(x), g(y)) = c 
+ where g is an arbitrary univariate function and f is a symmetric bivariate function (symmetric in 
+ the sense that swapping the arguments makes no difference). Addition and multiplication are two 
+ examples of such symmetric bivariate functions, (elementary) symmetric polynomials are another, 
+ 1/(1+x+y) is also symmetric, etc.
+-How about interpolating using y = f(x) = a*x + b/x for the unit interval. ...but this cannot be 
+ made to satify a constraint of the form y0 = 0 or y0 = 1 except when b = 0. The function 
+ y = 1/(1-x) has the same problem at y1
 
 
 
