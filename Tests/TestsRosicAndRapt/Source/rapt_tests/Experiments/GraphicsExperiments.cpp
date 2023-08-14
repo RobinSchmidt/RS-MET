@@ -3150,6 +3150,14 @@ void imageScaling()
   writeImageToFilePPM(img,  "RescaleInput.ppm");
   writeImageToFilePPM(imgS, "RescaleOutputBilinear.ppm");
 
+  // Observations:
+  // -with (w,h,kx,ky) = (7,5,2,3), we get an output image of size 13x13. In general, the output
+  //  size is given by (W,H) = (kx*(w-1)+1, ky*(h-1)+1) = (2*6+1, 3*4+1) = (13, 13). It may be a 
+  //  bit surpirsing - one might expect the output size to be just kx*w, ky*h, but that's not how
+  //  it's implemented. It is implemented in such a way that the corner pixels of the original
+  //  image also becom the corner pixels of the interpolated image and only the gaps between all 
+  //  the original pixels are filled in by new data.
+
   // ToDo: 
   // -Check that scaling by factors kx1,ky1 first and then by kx2,ky2 (or the other way around) 
   //  gives the same results as scaling one by kx1*kx2,ky1*ky2.
