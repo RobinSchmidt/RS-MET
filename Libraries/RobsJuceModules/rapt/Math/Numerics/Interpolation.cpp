@@ -669,7 +669,7 @@ Ideas:
 ToDo:
 -Implement the self-inverse interpolation scheme using 
  g(x) = y = y0 + (y1-y0) * (a*x + b*sqrt(1 - (x-x0)^2/(x1-x0)^2))
- and apply it to some datagiven by x[n] = x[n-1] + rand(0, 1), y[n] = y[n-2] + rand(0, 1)
+ and apply it to some data given by x[n] = x[n-1] + rand(0, 1), y[n] = y[n-2] + rand(0, 1)
 
 
 */

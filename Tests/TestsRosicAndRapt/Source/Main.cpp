@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
   //expBipolar();
   //expGaussBell();
   //iteratedNumDiff();
-  selfInverseInterpolation();
+  selfInverseInterpolation();  // stub
   interpolatingFunction();
 
   //linearRegression();

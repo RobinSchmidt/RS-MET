@@ -1497,13 +1497,71 @@ double getMax2ndDerivativeErrorSin(double h1, double h2,
 
 void selfInverseInterpolation()
 {
-  // We experiment with some ideas for self-inverse interpolation. See comments in Interpolation.h
-  // to see what this is about. ...TBC...
+  // Under construction...not sure yet, if this leads to anywhere
 
+  // We experiment with some ideas for self-inverse interpolation. See comments in
+  // Interpolation.cpp to see what this is about. ...TBC...
+
+  // On the unit interval [0,1], we form linear combinations of certain sets of functions. But 
+  // rather than using powers of x as we would in polynomial interpolation, we use pairs of a 
+  // function and its inverse such that exactly the same set of functions can be expressed either
+  // as y = f(x) or x = f(y), For rexample, we can use:
+  //
+  //   x, x^2, sqrt(x)
+  //   https://www.desmos.com/calculator/coklu2u8ad
+  //
+  // or:
+  //
+  //   x, 1-sqrt(1-x^2), sqrt(1-(1-x)^2)
+  //   https://www.desmos.com/calculator/kir09i5hfj
+  //
+  
+  // Other idea:
+  // -Prescribe two tangents to a to-be-constructed circle at (0,0) and (1,1)
+  // -Construct the circle, i.e. figure out its center and radius
+  // -Use the circular arc as function y = f(x)
+  // -The center can be found by constructing the two lines perpendicular to the given tangent 
+  //  lines and finding their intersection.
+  // -Once the center is known, the radius can easily be found by computing the distance of the
+  //  center to (0,0) or (1,1). 
+  // -Maybe the computation can be done by geomtric algebra (2D, projective)
+  //  -The lines are defined by the join of two points: 
+  //     line1 = join( (0,0), (0+1, 0+s0) )   // s0 is the desired slope at 0,0
+  //     line2 = join( (1,1), (1+1, 1+s1) )   // s1 is the desired slope at 1,1
+  //   The rationals behind the 2nd points is to go one unit into the x direction and slope units
+  //   in the y-dorection from the respective starting point
+  //  -Then we must find the orthogonal lines. I think, this may be done by swapping soem coeffs
+  //   maybe negating and/or inverting...not sure
+  //  -Then the center can be found as the meet of the two orthogonal lines
+
+
+
+  // We form a linear combination of the two self-inverse functions 
+  //   f1(x) = 1-x         = (1-x^1)^(1/1)
+  //   f2(x) = sqrt(1-x^2) = (1-x^2)^(1/2)
+  //
+  // These functions satisfy the boundary conditions f1(0) = f2(0) = 1, f1(1) = f2(1) = 0 at the
+  // ends of the unit interval. See https://www.desmos.com/calculator/pnkouuumcq
+  // Maybe it's more convenient to have the boundary conditions the other way around. To achieve
+  // This, we need to reflect
+  // Or maybe use f1(0) = f2(0) = 0, f1(1) = f2(1) = 1
+  //   f1(x) = x
+  //   f2(x) = sqrt(1-(1-x)^2)
+  // See also:
+  // https://www.desmos.com/calculator/kir09i5hfj
+
+
+  //
 
 
   GNUPlotter plt;
   // ...
+
+
+  // Other ideas:
+  // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
+  //  around zero but away from zero, it is the identity.
+  //
 }
 
 void interpolatingFunction()
