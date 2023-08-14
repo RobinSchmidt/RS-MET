@@ -598,13 +598,13 @@ Ideas:
  x0 = y0 = 0, x1 = y1 = 1 simplifies to: a*x + b * (1 - x^2) leaving only a,b to be computed from
  the 2 desired slopes s0,s1. I think, the general condition ofr a function to be self-inverse is 
  that it must be symmetric around the axis y = x. That idea may give rise to more self-inverse
- interpolation schemes. Self inverse interpolation schemes are relevant for the class rsTimeWarper 
- when we want to time-warp something, do some processing on the time-wapred signal and then unwarp
- it again. For the warp-unwarp roundtrip to be an identity operation, we need a self-inverse 
- interpolation scheme. Currently, we use linear interpolation of the warping map there but it would
- be nice to have a smoother interpolation scheme that is still self-inverse.
- 
- ...verify all of this!
+ interpolation schemes of the general form a*x + b*g(x) where g(x) is some self-inverse function.
+ Self inverse interpolation schemes are relevant for the class rsTimeWarper when we want to 
+ time-warp something, do some processing on the time-wapred signal and then unwarp it again. For 
+ the warp-unwarp roundtrip to be an identity operation, we need a self-inverse interpolation 
+ scheme. Currently, we use linear interpolation of the warping map there but it would be nice to 
+ have a smoother interpolation scheme that is still self-inverse. Cubic is not suitable. That's
+ why this stuff could be relevant. ...verify all of this - it's just an idea at the moment!
 
 
 
