@@ -1533,6 +1533,15 @@ void selfInverseInterpolation()
   //  -Then we must find the orthogonal lines. I think, this may be done by swapping soem coeffs
   //   maybe negating and/or inverting...not sure
   //  -Then the center can be found as the meet of the two orthogonal lines
+  // -Maybe if that doesn't work out, try elliptic arcs or more general conics. Maybe see here:
+  //  https://www.youtube.com/watch?v=X83vac2uTUs
+  //  A combination of 5 things, each of which can be a point or tangent line, uniquely define a 
+  //  conic. We have two points and two tangents, so that means, we would get a 1-parametric 
+  //  family of solutions. Maybe the remaining degree of freedom can be determined by some other 
+  //  constraint that we need to come up with. Some ideas:
+  //  -somehow minimize the total curvature within the interval of interest
+  // -Q: Is this duality that he talks about at 3:47 the same duality that appears in geometric 
+  //  algebra? Maybe the problem can be solved with geometric algebra?
 
 
 
