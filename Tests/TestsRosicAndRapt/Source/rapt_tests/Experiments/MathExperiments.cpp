@@ -1495,7 +1495,16 @@ double getMax2ndDerivativeErrorSin(double h1, double h2,
 }
 */
 
+void selfInverseInterpolation()
+{
+  // We experiment with some ideas for self-inverse interpolation. See comments in Interpolation.h
+  // to see what this is about. ...TBC...
 
+
+
+  GNUPlotter plt;
+  // ...
+}
 
 void interpolatingFunction()
 {

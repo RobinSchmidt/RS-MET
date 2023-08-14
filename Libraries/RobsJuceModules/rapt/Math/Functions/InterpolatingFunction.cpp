@@ -20,6 +20,8 @@ void rsInterpolatingFunction<Tx, Ty>::interpolate(
     rsInterpolateSpline(x, t, N, xi, yi, Ni, 0); // handle error gracefully in release build
   };
   }
+  // rsInterpolateSpline produces a general spline (linear, cubic, quintic, ...) where the last
+  // parameter controls the smoothness order.
 
   // apply post-mapping to yi: 
   if(postMap != nullptr) {
