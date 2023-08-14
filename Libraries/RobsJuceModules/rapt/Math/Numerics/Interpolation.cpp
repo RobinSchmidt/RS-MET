@@ -2,7 +2,7 @@ template<class Tx, class Ty>
 void resampleNonUniformLinear(const Tx* xIn, const Ty* yIn, int inLength, 
   const Tx* xOut, Ty* yOut, int outLength)
 {
-  // code copied and adapted from from rsTimeWarper::invertMonotonousWarpMap
+  // Code copied and adapted from from rsTimeWarper::invertMonotonousWarpMap
   int i = 0;
   for(int n = 0; n < outLength; n++) {
     Tx x = xOut[n];
@@ -11,7 +11,7 @@ void resampleNonUniformLinear(const Tx* xIn, const Ty* yIn, int inLength,
     yOut[n] = rsInterpolateLinear(xIn[i], xIn[i+1], yIn[i], yIn[i+1], x);
   }
 }
-// optimize: recompute line-equation coeffs only when necessarry - avoid 
+// Optimize: recompute line-equation coeffs only when necessarry - avoid 
 // repeated recomputation of still valid line-coeffs in case of upsampling
 
 template<class Tx, class Ty>
@@ -26,66 +26,76 @@ void rsNaturalCubicSpline(const Tx *xIn, const Ty *yIn, int N, const Tx *xOut, T
   }
 
 
-  // Equations from Taschenbuch der Mathematik, (Bronstein u.a., 5.Auflage, Verlag Harri Deutsch), 
-  // pages 955/956
+  // The formulas were taken from: Taschenbuch der Mathematik, (Bronstein u.a., 5.Auflage, Verlag 
+  // Harri Deutsch), pages 955/956
 
   // polynomial coeffs per segment, there are N-1 segments but for a and c, we need one dummy 
   // coeff for the formulas:
   std::vector<Ty> a(N), b(N-1), c(N), d(N-1); 
 
-  // establish array of a-coefficients - a[i] is actually the same as y[i] ...get rid
+  // Establish array of a-coefficients - a[i] is actually the same as y[i] ...get rid
   for(int i = 0; i < N; i++) 
     a[i] = yIn[i];
 
-  // establish the differences between the x-values:
+  // Establish the differences between the x-values:
   std::vector<Tx> h(N-1);
   for(size_t i = 0; i < h.size(); i++) 
     h[i] = xIn[i+1] - xIn[i];
 
-  c[0] = c[N-1] = 0; // from the "natural" boundary conditions f''(0) = f''(N-1) = 0
+  // Apply the "natural" boundary conditions f''(0) = f''(N-1) = 0:
+  c[0] = c[N-1] = 0; 
 
-  // establish the (N-2)x(N-2) tridiagonal matrix for computing the remaining c-coefficients 
+  // Establish the (N-2)x(N-2) tridiagonal matrix for computing the remaining c-coefficients 
   // (Eq. 19.240):
-  std::vector<Ty> md(N-2), uld(N-3);    // arrays for main diagonal and upper/lower diagonal
+  std::vector<Ty> md(N-2), uld(N-3);    // Arrays for main diagonal and upper/lower diagonal
   for(size_t i = 0; i < md.size(); i++)
     md[i] = 2*(h[i]+h[i+1]);
   for(size_t i = 0; i < uld.size(); i++)
     uld[i] = h[i+1];
 
-  // establish the right-hand side for the tridiagonal system (Eq. 19.239):
+  // Establish the right-hand side for the tridiagonal system (Eq. 19.239):
   std::vector<Ty> rhs(N-2);
   Ty scl = scaleRhs * Ty(3);
   for(size_t i = 0; i < rhs.size(); i++)
     rhs[i] = scl * ((a[i+2]-a[i+1])/h[i+1] - (a[i+1]-a[i])/h[i]);
   // maybe introduce a scale factor - i think, when the rhs is 0, we get a linear interpolant
 
-  // solve the tridiagonal system:
+  // Solve the tridiagonal system:
   rsLinearAlgebra::rsSolveTridiagonalSystem(&uld[0], &md[0], &uld[0], &rhs[0], &c[1], N-2);
 
-  // compute b-coefficients by Eq. 19.238:
+  // Compute b-coefficients by Eq. 19.238:
   for(size_t i = 0; i < b.size(); i++)
     b[i] = (a[i+1]-a[i])/h[i] - (2*c[i]+c[i+1])*h[i]/Ty(3);
 
-  // compute d-coefficients by Eq. 19.237:
+  // Compute d-coefficients by Eq. 19.237:
   for(size_t i = 0; i < d.size(); i++)
     d[i] = (c[i+1]-c[i])/(Ty(3)*h[i]);
 
-
-  // OK, we have our polynomial coeffs for the segments - now do the actual interpolation:
-  int i = 0;  // index into input data arrays (and polynomial coeffs)
-  //int j = 0;  // index into output data arrays
-  for(int j = 0; j < Ni; j++) {
+  // OK, we have our polynomial coeffs for the segments. Now do the actual interpolation:
+  int i = 0;                     // i: index into input data arrays (and polynomial coeffs)
+  for(int j = 0; j < Ni; j++) {  // j: index into output data arrays
     Tx x = xOut[j];
     while(xIn[i+1] < x && i < N-2)
       i++;
     yOut[j] = rsPolynomial<Ty>::evaluateCubic(x-xIn[i], a[i], b[i], c[i], d[i]); // Eq. 19.235
   }
 
-  // todo: maybe refactor to separate the coefficient computation from the actual interpolation
-  // the polynomial coefficients themselves could be very useful as basis for numerical 
-  // integration - just add up the definite integrals over the spline segments between the
-  // integration limits - maybe numeric differentiation could also be improved by using the 
-  // spline - we could just evaluate the spline's derivative at the datapoints
+  // ToDo:
+  // -Maybe refactor to separate the coefficient computation from the actual interpolation.
+  //  The polynomial coefficients themselves could be very useful as basis for numerical 
+  //  integration. we would just add up the definite integrals over the spline segments between 
+  //  the integration limits. Maybe numeric differentiation could also be improved by using the 
+  //  spline - we could just evaluate the spline's derivative at the datapoints.
+  // -Maybe reformulate the algorithm in such a way that explicitly computes the slopes at the
+  //  nodes first and then uses cubic Hermite interpolation using these slopes. Could it be that
+  //  our c vector does in fact represent these slopes? Check that!
+  // -Avoid the internal allocations by letting the caller pass a workspace pointer.
+  // -When we have a formulation based on explicitly computed slopes, use this algorithm:
+  //  https://www.youtube.com/watch?v=YsK3lXDF1Cc to reduce overshoots. Maybe instead of 
+  //  hard-clipping the slopes to the interval [0..3], use a linear interpolation between original
+  //  and clipped slopes. The user passes a value for overshoot-reduction where 0 means no 
+  //  reduction, 1 means full reduction. The full algorithm is on display at 22:35 as the 1-5 
+  //  steps.
 }
 
 template<class T>
@@ -117,8 +127,16 @@ void fitCubicWithDerivative(T x1, T x2, T y1, T y2, T yd1,
   *a0 *= scaler;
 
   // ToDo: 
-  // -precompute x1*x1*x1, x2*x2*x2 for optimization, also x1*x1, x2*x2
-  // -change API to let the user pass a pointer to an a-array instead of 4 seperate pointers
+  // -Precompute x1*x1*x1, x2*x2*x2 for optimization, also x1*x1, x2*x2
+  // -Change API to let the user pass a pointer to an a-array instead of 4 seperate pointers, i.e.
+  //  fitCubicWithDerivative(T x1, T x2, T y1, T y2, T yd1, T yd2, T a[4])
+  //  where a = [a0 a1 a2 a3]
+  // -Maybe rename yd1, yd2 to s1, s2 where s stands for slope.
+  // -Try to simplify the computations in a way that first computes a0, then a1 using a0, then a2 
+  //  using a0,a2, then a3 using a0,a1,a2. To find the formulas, use sage but don't solve for
+  //  [a0,a1,a2,a3] directly, solve for a[0], then manually substitute the result, then solve for 
+  //  a1, etc. ...Oh - but that will result in equations that first find a3 and a0 last. Maybe try 
+  //  also to first solve for a3, then for a2 using a3, etc. Use whatever gives a simpler result.
 }
 
 template<class T>
@@ -483,7 +501,7 @@ bool quadraticSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T y1, T d
   return true;
 }
 /*
-// optimized computation for s0,s1 cae in function above:
+// optimized computation for s0,s1 case in function above:
 TCor dx, dy, ss, k, s1dx;
 dx   = x1-x0;
 dy   = y1-y0;
@@ -550,3 +568,46 @@ void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
 // coefficients, the coefficients could be vectors (2D, 3D, nD)...hmmm...but at the end, we need 
 // the c-array to be an array of scalars - i think the scalar coeff is just the sum of the 
 // "vector-coeff" elements...figure out, if that can be made to work...
+
+
+/*
+
+Ideas:
+-Linear interpolation has the nice feature that is doesn't matter whether we interpret the input 
+ data as representing y as function of x or representing x as function of y as long as the function
+ is strictly monotonically increasing. That means: the linear interpolating function represents 
+ both y = f(x) and x = f^-1(y). That is not true for cubic interpolation. Interpolating y as 
+ function of x gives a different curve than when interpolating x as function of y. A simpler case
+ would be quadratic interpolation: y = f(x) = a0 + a1*x + a2*x^2. If instead we would interpolate
+ x = f^-1(y) = b0 + b1*y + b2*y^2, we'd get a different curve and re-expressing this interpolant 
+ as y = f(x) would involve square-roots in the formula. That is: inverse quadratic interpolation
+ gives rise to a sort of square-root interpolation which gives a different set of functions.
+-The idea is to invent an interpolation scheme that has the same feature of representing 
+ y = f(x) and x = f^-1(y) simultaneously while also being 1st order smooth, i.e. have matching 
+ derivatives at the nodes. I think, the class of functions to look at should be their own inverse.
+ An example of such a function is the identity, which is fndamentally the reason why linear 
+ interpolation is self-inverse in our sense. It involves a scaled identity function. Maybe we can
+ devise an interpolation scheme based solely on linear combinations of self-inverse functions (on 
+ the interval [0..1]). Another example of a self-inverse function is y = 1/x. But it's not really 
+ suitable for our purpose due to its pole. y = -x is also self-inverse but gives nothing new 
+ because it's just the scaled identity which we already have in the set. Consider
+ y = a + b*x + c * sqrt(d - x^2). It has 4 parameters, so we can prescribe the 2 functions values
+ at the endpoints as well as their slopes. The inverse function should be of the same general form
+ (I think) and therefore, inverse interpolation should yield the same curve. Maybe it's more 
+ convenient to express it as: y = y0 + (y1-y0) * (a*x + b*sqrt(1 - (x-x0)/(x1-x0))) which for
+ x0 = y0 = 0, x1 = y1 = 1 simplifies to: a*x + b * (1 - x^2) leaving only a,b to be computed from
+ the 2 desired slopes s0,s1. I think, the general condition ofr a function to be self-inverse is 
+ that it must be symmetric around the axis y = x. That idea may give rise to more self-inverse
+ interpolation schemes. Self inverse interpolation schemes are relevant for the class rsTimeWarper 
+ when we want to time-warp something, do some processing on the time-wapred signal and then unwarp
+ it again. For the warp-unwarp roundtrip to be an identity operation, we need a self-inverse 
+ interpolation scheme. Currently, we use linear interpolation of the warping map there but it would
+ be nice to have a smoother interpolation scheme that is still self-inverse.
+ 
+ ...verify all of this!
+
+
+
+
+
+*/
