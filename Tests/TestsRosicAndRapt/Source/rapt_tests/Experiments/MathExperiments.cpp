@@ -1539,9 +1539,27 @@ void selfInverseInterpolation()
   //  conic. We have two points and two tangents, so that means, we would get a 1-parametric 
   //  family of solutions. Maybe the remaining degree of freedom can be determined by some other 
   //  constraint that we need to come up with. Some ideas:
-  //  -somehow minimize the total curvature within the interval of interest
+  //  -Somehow minimize the total curvature within the interval of interest. Maybe integrate the 
+  //   curvature squared over the interval and minimize the result. Or just take the sum of the
+  //   two curvature values at the endpoints and minimize that.
   // -Q: Is this duality that he talks about at 3:47 the same duality that appears in geometric 
   //  algebra? Maybe the problem can be solved with geometric algebra?
+  // -Try f(x) = x^p as class of interpolating functions. The boundary conditions for the values at
+  //  0 and 1 are satisfied by design. We have one free parameter p to tweak. The nice thing about 
+  //  this class of functions is that it forms a group when we use function composition as the
+  //  group operation. x^1 is the identiry and x^(1/p) is the inverse to x^p (we may have to 
+  //  require p > 0). To control two derivatives, it would be nice to have a second parameter.
+  //  Is it possible to find a group of functions that has 2 tweakable parameters? a*x^p could work
+  //  but it doesn't satisfy the right boudary condition.
+  // -But maybe we don't need opur set of functions to be a group with respect to composition. It
+  //  may be enough, if we have the same building blocks for the forward and revers case. That 
+  //  means when we have a function and its inverse available, we may also for linear combinations.
+  //  So let's consider the set a1*x^p1 + a2*x^p2. The right boundary condition gives us one 
+  //  equation: a1 + a2 = 1. The left boundary condition is satisfied by design. Now we can use the
+  //  2 desired slopes to find 2 more equations that should fix p1,p2
+  //  ...but I'm actually not sure, if this is valid, i.e. if we can really form linear 
+  //  combinations and assume that all inverses still exist...nope...it doesn't make any sense.
+
 
 
 
