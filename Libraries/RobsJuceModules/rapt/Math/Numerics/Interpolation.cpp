@@ -95,7 +95,13 @@ void rsNaturalCubicSpline(const Tx *xIn, const Ty *yIn, int N, const Tx *xOut, T
   //  hard-clipping the slopes to the interval [0..3], use a linear interpolation between original
   //  and clipped slopes. The user passes a value for overshoot-reduction where 0 means no 
   //  reduction, 1 means full reduction. The full algorithm is on display at 22:35 as the 1-5 
-  //  steps.
+  //  steps. But maybe try to allow the green and blue regions, i.e. if one of the slopes is > 3,
+  //  restrict the pair s1,s2 to the blue elliptic region in the video. I think, this region 
+  //  corresponds to all monotonic interpolants. When leaving the blue ellipe into the yellow 
+  //  region, we get a wiggle but that wiggle doesn't overshoot the desired bounding box.
+  //  see 19:08. Maybe also allow these wiggles. We may have 3 regimes: anything goes (including 
+  //  overshoots), wiggles are allowed within the box but no overshoot is allowed, no wiggles are 
+  //  allowed. 
 }
 
 template<class T>
@@ -600,13 +606,22 @@ Ideas:
  that it must be symmetric around the axis y = x. That idea may give rise to more self-inverse
  interpolation schemes of the general form a*x + b*g(x) where g(x) is some self-inverse function 
  and a,b are the coeffs to be determined by the desired (normalized) slopes at the endpoints of the 
- interval. Self inverse interpolation schemes are relevant for the class rsTimeWarper when we want 
- to time-warp some signal, do some processing on the time-wapred signal and then unwarp the result. 
- For the warp-unwarp roundtrip to be an identity operation, we need a self-inverse interpolation 
- scheme. Currently, we use linear interpolation of the warping map there but it would be nice to 
- have a smoother interpolation scheme that is still self-inverse. Cubic is not suitable. That's
- why this stuff could be relevant. ...verify all of this - it's just an idea at the moment!
-
+ interval. We see that y = g(x) = sqrt(1 - x^2) is indeed self-inverse on [0,1] because solving
+ it for x gives x = sqrt(1 - y^2) which is exactly the same function just with the roles of x and y
+ interchanged. Self-inverse interpolation schemes are relevant for the class rsTimeWarper when we 
+ want to time-warp some signal, do some processing on the time-wapred signal and then unwarp the 
+ result. For the warp-unwarp roundtrip to be an identity operation, we need a self-inverse 
+ interpolation scheme. Currently, we use linear interpolation of the warping map there but it would 
+ be nice to have a smoother interpolation scheme that is still self-inverse. Cubic is not suitable. 
+ That's why this stuff could be relevant. ...verify all of this - it's just an idea at the moment!
+-To find other kinds of self-inverse functions, we note that composing two self-inverse functions
+ gives another self-inverse function. So we may compose the sqrt-based function with the reciprocal:
+ to give g(x) = 1/sqrt(1-x^2) ...or is that actually true? It doesn't look like it:
+ https://www.desmos.com/calculator/3emho2c1vb  This function looks like the gamma factor from
+ special relativity. Maybe use g(x) = qqrt(1 - x^4) where qqrt stands for quart-root, i.e. the 4th
+ root. We can generally use g(x) = (1 - x^n)^(1/n) when n is even, I think. These functions arise
+ from shapes given by implicit curve equations of the form x^n + y^n = 1. See:
+ https://www.desmos.com/calculator/qaicnu4zbb
 
 
 
