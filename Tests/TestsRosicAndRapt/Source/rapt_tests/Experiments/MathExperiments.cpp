@@ -1547,18 +1547,35 @@ void selfInverseInterpolation()
   // -Try f(x) = x^p as class of interpolating functions. The boundary conditions for the values at
   //  0 and 1 are satisfied by design. We have one free parameter p to tweak. The nice thing about 
   //  this class of functions is that it forms a group when we use function composition as the
-  //  group operation. x^1 is the identiry and x^(1/p) is the inverse to x^p (we may have to 
+  //  group operation. x^1 is the identity and x^(1/p) is the inverse to x^p (we may have to 
   //  require p > 0). To control two derivatives, it would be nice to have a second parameter.
   //  Is it possible to find a group of functions that has 2 tweakable parameters? a*x^p could work
   //  but it doesn't satisfy the right boudary condition.
-  // -But maybe we don't need opur set of functions to be a group with respect to composition. It
+  // -But maybe we don't need our set of functions to be a group with respect to composition. It
   //  may be enough, if we have the same building blocks for the forward and revers case. That 
   //  means when we have a function and its inverse available, we may also for linear combinations.
   //  So let's consider the set a1*x^p1 + a2*x^p2. The right boundary condition gives us one 
   //  equation: a1 + a2 = 1. The left boundary condition is satisfied by design. Now we can use the
-  //  2 desired slopes to find 2 more equations that should fix p1,p2
+  //  2 desired slopes to find 2 more equations that should fix p1,p2. The derivative is:
+  //  f'(x) = p1*a1*x^(p1-1) + p2*a2*x^(p2-1). Setting f'(0) = s0 leads to 0 = 0 ...right? we can 
+  //  assume that 0^(p1-1) = 0^(p2-1) = 0, right? Or does that depend on p? What, if the exponent 
+  //  is <= 0? This is weird!
   //  ...but I'm actually not sure, if this is valid, i.e. if we can really form linear 
-  //  combinations and assume that all inverses still exist...nope...it doesn't make any sense.
+  //  combinations and assume that all inverses still exist. but it seems to make sense: to build 
+  //  the function y = f(x), we have exactly the same building blocks at our disposal as for 
+  //  building x = f^-1(y). Ah - no - that doesn't work because linear combinations means different
+  //  things in both direction. In the forward direction, we stack the functions vertically on top
+  //  of each other whereas in the reverse direction, we stack them horizontally to the right of 
+  //  each other. So it seems, we indeed need something like a group of functions.
+  // -Maybe try something based on sinh: https://www.desmos.com/calculator/nb72be5m4k
+  //  Define the class of functions as follows: use a as is when a is positive. when a is negative,
+  //  use the inverse function with the absolute value of a.
+  // -Try something based on y = rat(x,a) where rat(x,a) = ((1+a)*x) / (2*a*x + (1-a)). The 
+  //  derivatives at 0 and 1 are (1-a^2) / (1-a)^2 and (1-a^2) / (1+a)^2. Try a linear combination 
+  //  of two such rational functions with different a, i.e. f(x) = c1*rat(x,a1) + c2*rat(x,a2).
+  //  I actually think, the Moebius transforms do also form a group of functions and this "rat"
+  //  (for rational) function is one of them. See also code int rsNodeBasedFunction
+  //  https://www.desmos.com/calculator/rqdymhmwps
 
 
 

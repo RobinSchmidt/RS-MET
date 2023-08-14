@@ -318,7 +318,9 @@ protected:
   {
     T ax = a*x;
     return (ax+x) / (2*ax - a + 1);
-    // for a plot, see: https://www.desmos.com/calculator/ql1hh1byy5
+    // For a plot, see: https://www.desmos.com/calculator/ql1hh1byy5
+    // Maybe a nicer way to write this would be ((1+a)*x) / (2*a*x + (1-a)) because we can now
+    // dirctly read off the Moebius transform coeffs: 1+a, 0, 2*a, 1-a.
   }
   T getValueRational(T x, size_t i) const
   {
