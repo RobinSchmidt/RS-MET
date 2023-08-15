@@ -278,7 +278,10 @@ For a plot, see: https://www.desmos.com/calculator/jkxafs0vp9  */
 template<class T>
 T rsRationalMap_01(T x, T a);
 // ToDo: 
-// -Give formula for the resulting coeff c when combining two such functions with coeffs a,b
+// -Give formula for the resulting coeff c when combining two such functions with coeffs a,b.
+//  I think, because of the chain rule, the derivative of the combined function at x = 0 must be
+//  given by ((1+a)/(1-a)) * ((1+b)/(1-b)) which must be equal to (1+c)/(1-c). Solving this 
+//  equation for c gives c = (a + b)/(a b + 1) 
 
 /** Returns the nearest integer (as double, without typecast). */
 RS_INLINE double rsRound(double x);

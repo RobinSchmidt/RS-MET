@@ -1669,6 +1669,18 @@ void selfInverseInterpolation()
     z[n] = rsTetraRationalMap_01(y[n], -c, -b, -a);  // Should give back x
   }
 
+  // Test combining two rational functions into a single one:
+  c = (a + b) / (a*b + 1); // Parameter of the resulting function
+  for(int n = 0; n < N; n++)
+  {
+    // Compute y by applying two rational maps in sequence:
+    y[n] = rsRationalMap_01(x[n], a);
+    y[n] = rsRationalMap_01(y[n], b);
+
+    // Compute z by applying a single rational map:
+    z[n] = rsRationalMap_01(x[n], c);  // should be equal to y[n]
+  }
+  // This same combination works also for the birational maps
 
 
   GNUPlotter plt;
@@ -1683,6 +1695,7 @@ void selfInverseInterpolation()
   // -The inversion seems to work well.
 
   // ToDo:
+  // -Maybe compute errors err = z - y and verify programmatically that it is zero.
   // -Figure out formulas for the derivatives at the ennpoints for rational, birational and 
   //  tetrarational maps.
   // -Use the tetrarational map for 1st order smooth monotonic and invertible interpolation.
