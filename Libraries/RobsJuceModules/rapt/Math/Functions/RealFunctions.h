@@ -283,6 +283,10 @@ template<class T>
 T rsRationalMap_01(T x, T a);
 // ToDo: 
 // -Give formulas for the coefficient a given the slope
+// -Maybe wrap this into a class that does a bit more stuff like computing derivatives finds coeffs
+//  for inverse and composed functions etc, i.e. class that actually implements the formulas given
+//  in the comment. Maybe make a class rsTetraRationalMap that also includes the symmetrized 
+//  function around 0.5,0.5
 
 /** Returns the nearest integer (as double, without typecast). */
 RS_INLINE double rsRound(double x);

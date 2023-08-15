@@ -1505,15 +1505,17 @@ T rsBiRationalMap_01(T x, T a)
   T y;
   if(x < 0.5)
   {
-    x = rsLinToLin(x, T(0), T(0.5), T(0), T(1));  // 0..0.5  ->  0..1
+    //x = rsLinToLin(x, T(0), T(0.5), T(0), T(1));  // 0..0.5  ->  0..1, x *= 2
+    x *= 2;                                       // 0..0.5  ->  0..1
     y = rsRationalMap_01(x, a);                   // Apply map
-    y = rsLinToLin(y, T(0), T(1), T(0), T(0.5));  // 0..1  -> 0..0.5
+    y *= 0.5;                                     // 0..1  ->  0..0.5
+    //y = rsLinToLin(y, T(0), T(1), T(0), T(0.5));  // 0..1  -> 0..0.5,  x *= 0.5
   }
   else
   {
-    x = rsLinToLin(x, T(0.5), T(1), T(0), T(1));  // 0.5..1  ->  0..1
+    x = rsLinToLin(x, T(0.5), T(1), T(0), T(1));  // 0.5..1  ->  0..1, x = (x-0.5)*2
     y = rsRationalMap_01(x, -a);                  // Apply map
-    y = rsLinToLin(y, T(0), T(1), T(0.5), T(1));  // 0..1  -> 0..0.5
+    y = rsLinToLin(y, T(0), T(1), T(0.5), T(1));  // 0..1  -> 0.5..1, x = x*0.5 + 0.5
   }
   return y;
 }
@@ -1667,9 +1669,8 @@ void selfInverseInterpolation()
   // Coefficients:
   Real a = 0.5, b = -0.6, c = -0.3;
 
-  a = 0.5, b = 0.75, c = -0.25; // very steep at 0, moderately steep at 1
-
-  a = 0.75, b = 0.75, c = -0.5;
+  a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
+  a = 0.75; b = 0.75; c = -0.5;  
 
   // Check inversion of the rational map via negating the paraneter:
   for(int n = 0; n < N; n++)
@@ -1690,7 +1691,8 @@ void selfInverseInterpolation()
   //rsPlotVectorsXY(x, y, z);
 
   // Check inversion of the tetrarational map via negating the paraneters and reversing their 
-  // order:
+  // order. The tetrarational map is what we want to use for the invertible interpolation scheme,
+  // so if that works, we are good.
   for(int n = 0; n < N; n++)
   {
     y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
@@ -1699,7 +1701,8 @@ void selfInverseInterpolation()
   err = z-x; ok &= rsIsAllZeros(err, tol);
   rsPlotVectorsXY(x, y, z);
 
-  // Test combining two rational functions into a single one:
+  // Test combining two rational functions into a single one. This is just to verify the formula
+  // for c.
   c = (a + b) / (a*b + 1); // Parameter of the resulting function
   for(int n = 0; n < N; n++)
   {
