@@ -1869,7 +1869,7 @@ void selfInverseInterpolation()
   {
     GNUPlotter plt;
 
-    Real s0 = 1.0;
+    Real s0 = 2.0;
     Real s1 = 1.0/16;
     Real a, b, c;
     while(s1 <= 16)
