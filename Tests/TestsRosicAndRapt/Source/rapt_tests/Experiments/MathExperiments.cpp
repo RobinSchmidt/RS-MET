@@ -1520,6 +1520,16 @@ T rsBiRationalMap_01(T x, T a)
 // Calls a different function rsRationalMap defined in OscillatorExperiments.h. we have a 
 // name-clash here. Maybe call one of them ...Map01 and the other ...MapSym (for symmetric)
 
+/** Map composed of a rational map, a birational map and another rational map. ...TBC.. */
+template<class T>
+T rsTetraRationalMap_01(T x, T a, T b, T c)
+{
+  x = rsRationalMap_01(  x, a);
+  x = rsBiRationalMap_01(x, b);
+  x = rsRationalMap_01(  x, c);
+  return x;
+}
+
 void selfInverseInterpolation()
 {
   // Under construction...not sure yet, if this leads to anywhere
@@ -1609,9 +1619,6 @@ void selfInverseInterpolation()
   // -If that works out, i.e. we indeed have a set of functions that have all their inverses also 
   //  in the set, use them for a self-inverse interpolation schem
 
-
-
-
   // We form a linear combination of the two self-inverse functions 
   //   f1(x) = 1-x         = (1-x^1)^(1/1)
   //   f2(x) = sqrt(1-x^2) = (1-x^2)^(1/2)
@@ -1627,17 +1634,16 @@ void selfInverseInterpolation()
   // https://www.desmos.com/calculator/kir09i5hfj
 
 
-  //
-
   using Real = double;
   using Vec = std::vector<Real>;
 
-  int N = 11;
+  int N = 129;
 
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec y(N), z(N);
 
-  Real a = 0.5;
+  // Coefficients:
+  Real a = 0.5, b = -0.6, c = -0.3;
 
   // Check inversion of the rational map via negating the paraneter:
   for(int n = 0; n < N; n++)
@@ -1653,6 +1659,14 @@ void selfInverseInterpolation()
     z[n] = rsBiRationalMap_01(y[n], -a);  // Should give back x
   }
 
+  // Check inversion of the tetrarational map via negating the paraneters and reversing their 
+  // order:
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
+    z[n] = rsTetraRationalMap_01(y[n], -c, -b, -a);  // Should give back x
+  }
+
 
 
   GNUPlotter plt;
@@ -1661,7 +1675,15 @@ void selfInverseInterpolation()
   plt.addDataArrays(N, &z[0]);
   plt.plot();
   int dummy = 0;
-  // ...
+
+
+  // Observations:
+  // -The inversion seems to work well.
+
+  // ToDo:
+  // -Figure out formulas for the derivatives at the ennpoints for rational, birational and 
+  //  tetrarational maps.
+  // -Use the tetrarational map for 1st order smooth monotonic and invertible interpolation.
 
 
   // Other ideas:
