@@ -1810,9 +1810,14 @@ void selfInverseInterpolation()
     Vec s0(N), s1(N), p(N), q(N);
     for(int n = 0; n < N; n++)
     {
-      B[n]  =  (1+b[n]) / (1-b[n]);                             // use slopeAt0(b[0])
-      s0[n] = ((1+a)*(1+b[n])*(1+c)) / ((1-a)*(1-b[n])*(1-c));  // use slopeAt0(a, b[n], c);
-      s1[n] = ((1-a)*(1+b[n])*(1-c)) / ((1+a)*(1-b[n])*(1+c));  // use slopeAt1(a, b[n], c);
+      //B[n]  =  (1+b[n]) / (1-b[n]);                             // use slopeAt0(b[0])
+      //s0[n] = ((1+a)*(1+b[n])*(1+c)) / ((1-a)*(1-b[n])*(1-c));  // use slopeAt0(a, b[n], c);
+      //s1[n] = ((1-a)*(1+b[n])*(1-c)) / ((1+a)*(1-b[n])*(1+c));  // use slopeAt1(a, b[n], c);
+
+      B[n]  = slopeAt0(b[n]);
+      s0[n] = fullSlopeAt0(a, b[n], c);
+      s1[n] = fullSlopeAt1(a, b[n], c);
+
       p[n]  =  s0[n] * s1[n];
       q[n]  =  s0[n] / s1[n];
     }
