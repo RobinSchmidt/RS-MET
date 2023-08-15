@@ -1785,14 +1785,17 @@ void selfInverseInterpolation()
       B[n]  =  (1+b[n]) / (1-b[n]);                             // use slopeAt0(b[0])
       s0[n] = ((1+a)*(1+b[n])*(1+c)) / ((1-a)*(1-b[n])*(1-c));  // use slopeAt0(a, b[n], c);
       s1[n] = ((1-a)*(1+b[n])*(1-c)) / ((1+a)*(1-b[n])*(1+c));  // use slopeAt1(a, b[n], c);
+      p[n]  =  s0[n] * s1[n];
+      q[n]  =  s0[n] / s1[n];
     }
-
-
 
     rsPlotVectorsXY(b, B, s0, s1);
     // They look all the same and how they look does not seem to depend on a. That means, when a,b
     // are set up to invert each other, the total slope is equal to the inner slope. Yes - that 
     // makes a lot of sense when thinking about it. ..it actually seems kinda obvious
+
+    rsPlotVectorsXY(b, B, p, q);  
+    rsPlotVectorsXY(B, p, q);    // p and q as functions of B
 
     int dummy = 0;
 
