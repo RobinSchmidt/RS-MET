@@ -1713,9 +1713,10 @@ void selfInverseInterpolation()
   s1 = rsTetraRationalMap_01(1.0, a, b, c) - rsTetraRationalMap_01(1-h, a, b, c);
   s1 /= h;
 
-  // Use the analytic formulas
+  // Use the analytic formulas:
   Real s0_ = ((1+a)*(1+b)*(1+c)) / ((1-a)*(1-b)*(1-c));
-
+  Real s1_ = ((1-a)*(1+b)*(1-c)) / ((1+a)*(1-b)*(1+c));
+  // OK - they seem to be correct.
 
   // Compare rational and birational map for the same a:
   a = -0.5;
