@@ -1851,6 +1851,11 @@ void selfInverseInterpolation()
   auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c)
   {
     Real B = sqrt(s1*s0);     //  (or s0/s1 or s1/s0 or sqrt(s1*s0) )  
+
+    //Real B = s0/s1;         // nope
+    //Real B = s1/s0;         // also nope
+    // maybe try to square the quotient or take its square-root
+
     Real C = s0*s1 / (B*B);
     Real A = s0    / (B*C);
     *a = (A-1) / (A+1);
@@ -1871,19 +1876,19 @@ void selfInverseInterpolation()
     {
       ratCoeffs(s0, s1, &a, &b, &c);
 
-
       // Check, if the produced coeffs do indeed produce the desired slopes:
       Real s0r = fullSlopeAt0(a, b, c);
       Real s1r = fullSlopeAt1(a, b, c);
+      // ...OK - looks good when we use B = sqrt(s1*s0); in ratCoeffs
 
-
-
+      for(int n = 0; n < N; n++)
+        y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
+      plt.addDataArrays(N, &x[0], &y[0]);
 
       s1 *= 2;
     }
 
-
-
+    plt.plot();
   }
 
   //s0 = 0.5;
