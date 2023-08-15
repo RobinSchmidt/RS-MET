@@ -1655,10 +1655,10 @@ void selfInverseInterpolation()
   Vec err;
 
   // Coefficients:
-  Real a = 0.5, b = -0.6, c = -0.3;
+  Real a = 0.5, b = -0.6, c = -0.3; // moderately flat at0, very flat at 1
 
-  a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
-  a = 0.75; b = 0.75; c = -0.5;  
+  //a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
+  //a = 0.75; b = 0.75; c = -0.5;  
 
   // Check inversion of the rational map via negating the paraneter:
   for(int n = 0; n < N; n++)
@@ -1705,6 +1705,15 @@ void selfInverseInterpolation()
   //rsPlotVectorsXY(x, y, z);
   // This same combination works also for the birational maps
 
+  // Compute numeric derivatives at 0 and 1 using a forward and a backward difference respectively:
+  Real h, s0, s1;
+  h = 0.0001;
+  s0 = rsTetraRationalMap_01(0+h, a, b, c) - rsTetraRationalMap_01(0.0, a, b, c);
+  s0 /= h;
+  s1 = rsTetraRationalMap_01(1.0, a, b, c) - rsTetraRationalMap_01(1-h, a, b, c);
+  s1 /= h;
+
+
   // Compare rational and birational map for the same a:
   a = -0.5;
   for(int n = 0; n < N; n++)
@@ -1731,7 +1740,9 @@ void selfInverseInterpolation()
   //
   // That's a nonlinear system of 2 equations in 3 variables. Let's solve the 2nd for B:
   // B = s1*A*C and plug that into the 1st: s0 = A*s1*A*C*C giving us s0/s1 = A^2 * C^2
-  // 
+
+
+
 
   rsAssert(ok);
   int dummy = 0;
@@ -1746,7 +1757,9 @@ void selfInverseInterpolation()
   //  tetrarational maps as functions of a,b,c. Then try to find formulas for a,b,c from those
   //  slopes. Let's call them s0, s1 for slope at 0 and 1. It seems, we have not enough 
   //  constraints. we have two slopes but 3 degrees of freedom. Maybe impose another constraint.
-  //  Maybe a^2 + b^2 + c^2 = min. Maybe apply a weight to b^2
+  //  Maybe a^2 + b^2 + c^2 = min. Maybe apply a weight to b^2. Maybe use 
+  //  w1 * (a^2 + c^2) + w2 * b^2 = min (maybe with  with w1 + w2 = 1). If w1 is big, we try to 
+  //  avoid pre/post skewing, if w2 is big, we try to avoid formation of saddles or sigmoids.
   // -Write function to compute the slopes at 0 and 1 from a,b,c and verify their correctness 
   //  numerically. Maybe compare the computed slope to numerical derivatives. Maybe also write 
   //  a function to compute the slope at any x.
@@ -1764,6 +1777,10 @@ void selfInverseInterpolation()
   // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
   //  around zero but away from zero, it is the identity.
   //
+
+  // Notes:
+  // -Check literature about rational splines. We are doing something similar here, I think.
+  //  https://www.alglib.net/interpolation/rational.php
 }
 
 void interpolatingFunction()
