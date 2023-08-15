@@ -1706,6 +1706,30 @@ void selfInverseInterpolation()
   //rsPlotVectorsXY(x, y, z);
   // This same combination works also for the birational maps
 
+  // Helper function to return the slope of a single rational map at x = 0. The slope at 0 is the
+  // same for the rational and the birational map. The slope at 1 for the rational map is the 
+  // reciprocal of the slope at 0 for the rational map and the same as the slope at 0 for the 
+  // birational map.
+  auto slopeAt0 = [](Real a)
+  {
+    return (1+a) / (1-a);
+  };
+
+  // Returns the slope at 0 for the full tetrarational function:
+  auto fullSlopeAt0 = [&](Real a, Real b, Real c)
+  {
+    return slopeAt0(a) * slopeAt0(b) * slopeAt0(c);
+    // The slopes just multiply according to the chain law
+  };
+
+  // Returns the slope at 1 for the full tetrarational function:
+  auto fullSlopeAt1 = [&](Real a, Real b, Real c)
+  {
+    return (1/slopeAt0(a)) * slopeAt0(b) * (1/slopeAt0(c));
+    // The outer slopes are reciprocated at 1, the inner slope remains the same (all with respect 
+    // to the slope at 0)
+  };
+
 
   // Compute numeric derivatives at 0 and 1 using a forward and a backward difference respectively:
   {
@@ -1717,10 +1741,13 @@ void selfInverseInterpolation()
     s1 /= h;
 
     // Use the analytic formulas:
-    Real s0_ = ((1+a)*(1+b)*(1+c)) / ((1-a)*(1-b)*(1-c));
-    Real s1_ = ((1-a)*(1+b)*(1-c)) / ((1+a)*(1-b)*(1+c));
+    //Real s0_ = ((1+a)*(1+b)*(1+c)) / ((1-a)*(1-b)*(1-c));
+    //Real s1_ = ((1-a)*(1+b)*(1-c)) / ((1+a)*(1-b)*(1+c));
     // OK - they seem to be correct.
     // maybe factor out into small helper functions slopeAt0(a, b, c), slopeAt1(a,b,c)
+
+    Real s0_ = fullSlopeAt0(a, b, c);
+    Real s1_ = fullSlopeAt1(a, b, c);
 
     Real p = s0_ * s1_;
     Real q = s0_ / s1_;
@@ -1796,7 +1823,9 @@ void selfInverseInterpolation()
     // makes a lot of sense when thinking about it. ..it actually seems kinda obvious
 
     rsPlotVectorsXY(b, B, p, q); // p looks like B^2 and q is constant 1
-    rsPlotVectorsXY(B, p, q);    // p and q as functions of B
+    rsPlotVectorsXY(B, p, q);    // p and q as functions of B, p is a parabola like B^2, q = 1
+    // Because p(B) looks like B^2, it suggests to use B(p) = sqrt(p). That fixes our B and we can
+    // use the remaining two equations to compute A,B.
 
     int dummy = 0;
 
