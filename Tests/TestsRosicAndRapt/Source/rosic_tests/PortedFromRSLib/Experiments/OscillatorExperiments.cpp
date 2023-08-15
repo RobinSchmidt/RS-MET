@@ -126,11 +126,19 @@ void phaseShapingCurvePoly4()
   // maybe find a formula for s as function of x,y such that f(x,y) = s = f(1-x, 1-y)
 }
 
+// Maps the interval x = [-1,+1] to itself monotonically where the curve is determined by the
+// parameter a
 double rsRationalMap(double x, double a)
 {
   // "a" is a parameter from -1..+1 (ends excluded)
   return (x-a)/(1-a*x);
 }
+// https://www.desmos.com/calculator/imnmitfegz
+// Maybe rename! Maybe interpret the a coeff as negative such that the curve gets concave for 
+// positive a. This is more intuitive. Or maybe not? Currently the weight of the graph moves to 
+// the left with negative values which is intuitive when using a horizontal slider for a. On the 
+// other, it also moves up for negative values which is counterintuitive for a vertical slider.
+
 double phaseShapeRational(double p, double a)
 {
   double y;

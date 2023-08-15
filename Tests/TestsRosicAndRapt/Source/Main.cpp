@@ -261,7 +261,7 @@ int main(int argc, char* argv[])
   //differentialGeometry();
 
   // Image processing:
-  imageScaling();
+  //imageScaling();
 
 
 
@@ -469,9 +469,9 @@ int main(int argc, char* argv[])
   // Oscillator:
   //triSaw();
   //phaseShapingCurvePoly4();
-  //phaseShapingCurvesRational();
-  //phaseShaping();
-  //phaseShapingSkew();
+  phaseShapingCurvesRational();
+  phaseShaping();
+  phaseShapingSkew();
   //zeroDelayFeedbackPhaseMod();
 
   // Partial Extraction:

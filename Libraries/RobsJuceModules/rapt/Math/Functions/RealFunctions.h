@@ -273,7 +273,7 @@ given a is obtained by negating a.
 
 For a plot, see: https://www.desmos.com/calculator/jkxafs0vp9  */
 template<class T>
-T rsRationalMap(T x, T a);
+T rsRationalMap_01(T x, T a);
 // ToDo: 
 // -Give formulas for the slopes at 0 and 1 and explain that they are reciprocal to one another 
 //  (I think)
@@ -665,7 +665,7 @@ RS_INLINE double rsRound(double x)
 }
 
 template<class T>
-T rsRationalMap(T x, T a)
+T rsRationalMap_01(T x, T a)
 {
   T ax = a*x;
   return (ax+x) / (2*ax - a + 1); // 2 mul, 2 add, 1 sub, 1 div

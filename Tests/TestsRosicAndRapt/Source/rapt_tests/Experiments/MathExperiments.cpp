@@ -1517,6 +1517,8 @@ T rsBiRationalMap(T x, T a)
   }
   return y;
 }
+// Calls a different function rsRationalMap defined in OscillatorExperiments.h. we have a 
+// name-clash here. Maybe call one of them ...Map01 and the other ...MapSym (for symmetric)
 
 void selfInverseInterpolation()
 {
@@ -1636,13 +1638,20 @@ void selfInverseInterpolation()
   Vec y(N), z(N);
 
   Real a = 0.5;
+
+  // Check inversion of the rational map via negating the paraneter:
   for(int n = 0; n < N; n++)
   {
     y[n] = rsRationalMap(x[n],  a);
     z[n] = rsRationalMap(y[n], -a);  // Should give back x
   }
 
-
+  // Check inversion of the birational map via negating the paraneter:
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsBiRationalMap(x[n],  a);
+    z[n] = rsBiRationalMap(y[n], -a);  // Should give back x
+  }
 
 
 
