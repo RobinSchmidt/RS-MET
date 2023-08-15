@@ -1500,20 +1500,20 @@ double getMax2ndDerivativeErrorSin(double h1, double h2,
 between sigmoidal (s-shaped) and a saddle-ish, i.e. shape similar to a cubic like x^3, i.e. flatter
 in te middle. */
 template<class T>
-T rsBiRationalMap(T x, T a)
+T rsBiRationalMap_01(T x, T a)
 {
   T y;
   if(x < 0.5)
   {
     x = rsLinToLin(x, T(0), T(0.5), T(0), T(1));  // 0..0.5  ->  0..1
-    T y = rsRationalMap(x, a);                    // Apply map
-    y = rsLinToLin(x, T(0), T(1), T(0), T(0.5));  // 0..1  -> 0..0.5
+    y = rsRationalMap_01(x, a);                   // Apply map
+    y = rsLinToLin(y, T(0), T(1), T(0), T(0.5));  // 0..1  -> 0..0.5
   }
   else
   {
     x = rsLinToLin(x, T(0.5), T(1), T(0), T(1));  // 0.5..1  ->  0..1
-    T y = rsRationalMap(x, -a);                   // Apply map
-    y = rsLinToLin(x, T(0), T(1), T(0.5), T(1));  // 0..1  -> 0..0.5
+    y = rsRationalMap_01(x, -a);                  // Apply map
+    y = rsLinToLin(y, T(0), T(1), T(0.5), T(1));  // 0..1  -> 0..0.5
   }
   return y;
 }
@@ -1642,15 +1642,15 @@ void selfInverseInterpolation()
   // Check inversion of the rational map via negating the paraneter:
   for(int n = 0; n < N; n++)
   {
-    y[n] = rsRationalMap(x[n],  a);
-    z[n] = rsRationalMap(y[n], -a);  // Should give back x
+    y[n] = rsRationalMap_01(x[n],  a);
+    z[n] = rsRationalMap_01(y[n], -a);  // Should give back x
   }
 
   // Check inversion of the birational map via negating the paraneter:
   for(int n = 0; n < N; n++)
   {
-    y[n] = rsBiRationalMap(x[n],  a);
-    z[n] = rsBiRationalMap(y[n], -a);  // Should give back x
+    y[n] = rsBiRationalMap_01(x[n],  a);
+    z[n] = rsBiRationalMap_01(y[n], -a);  // Should give back x
   }
 
 
@@ -1660,6 +1660,7 @@ void selfInverseInterpolation()
   plt.addDataArrays(N, &y[0]);
   plt.addDataArrays(N, &z[0]);
   plt.plot();
+  int dummy = 0;
   // ...
 
 
