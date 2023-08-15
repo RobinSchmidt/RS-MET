@@ -269,14 +269,15 @@ upward (i.e. f becomes concave, lies above the identity), for negative values, i
 of Moebius transforms, namely those with coefficients 1+a, 0, 2*a, 1-a. The fact that this set of 
 functions forms a group implies that compositions of such functions are themselves functions of the 
 same type and that the inverses are also of the same type. In particular, the inverse of f for a 
-given a is obtained by negating a.
+given a is obtained by negating a. The general formula for the derivative is given by
+f'(x) = (1 - a^2) / (1 + a (2 x - 1))^2 which evaluates to (1+a)/(1-a) at x = 0 and to (1-a)/(1+a)
+at x = 1. So the slopes at the endpoints are reciprocal to one another. That makes the function 
+nicely symmetric with respect to an axis going through (0.5,0.5) at an angle of -45°.
 
 For a plot, see: https://www.desmos.com/calculator/jkxafs0vp9  */
 template<class T>
 T rsRationalMap_01(T x, T a);
 // ToDo: 
-// -Give formulas for the slopes at 0 and 1 and explain that they are reciprocal to one another 
-//  (I think)
 // -Give formula for the resulting coeff c when combining two such functions with coeffs a,b
 
 /** Returns the nearest integer (as double, without typecast). */

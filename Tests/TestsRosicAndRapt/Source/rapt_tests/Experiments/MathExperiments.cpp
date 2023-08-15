@@ -1617,7 +1617,9 @@ void selfInverseInterpolation()
   //  be given by R_{-c} ° B_{-b} ° R_{-a}, i.e. by applying them in reverse order with paremeters
   //  negated. Try that!
   // -If that works out, i.e. we indeed have a set of functions that have all their inverses also 
-  //  in the set, use them for a self-inverse interpolation schem
+  //  in the set, use them for a self-inverse interpolation scheme
+  // -The derivative of R(x,a) is: R_a'(x) = (1 - a^2) / (1 + a (2 x - 1))^2 which evaluated at 
+  //  0 and 1 gives R_a'(0) = (1+a)/(1-a), R_a'(1) = (1-a)/(1+a)
 
   // We form a linear combination of the two self-inverse functions 
   //   f1(x) = 1-x         = (1-x^1)^(1/1)
