@@ -1534,8 +1534,10 @@ T rsTetraRationalSlope_01(T x, T a, T b, T c)
 
 
 
-void selfInverseInterpolation()
+void selfInverseInterpolation()  // Maybe rename
 {
+  // ToDo: clean up the comments.
+
   // Under construction...not sure yet, if this leads to anywhere
 
   // We experiment with some ideas for self-inverse interpolation. See comments in
@@ -1741,12 +1743,6 @@ void selfInverseInterpolation()
     s1 = rsTetraRationalMap_01(1.0, a, b, c) - rsTetraRationalMap_01(1-h, a, b, c);
     s1 /= h;
 
-    // Use the analytic formulas:
-    //Real s0_ = ((1+a)*(1+b)*(1+c)) / ((1-a)*(1-b)*(1-c));
-    //Real s1_ = ((1-a)*(1+b)*(1-c)) / ((1+a)*(1-b)*(1+c));
-    // OK - they seem to be correct.
-    // maybe factor out into small helper functions slopeAt0(a, b, c), slopeAt1(a,b,c)
-
     Real s0_ = fullSlopeAt0(a, b, c);
     Real s1_ = fullSlopeAt1(a, b, c);
 
@@ -1787,24 +1783,10 @@ void selfInverseInterpolation()
   // Maybe let's call s0/s1 = q and s0*s1 = p. q is a measure for how different the slopes are from 
   // one another (1, if they are equal) and p a measure for how high the slopes are in a combined 
   // way. Maybe B should be a 1D function of p or q. Maybe plot p as function of B (using a=b=0) to 
-  // figure out what that function is (the found function needs to be inverted). OK this is done
-  // below. It suggests to use B = sqrt(P) or B = q (or 1/q, not sure). Anyway - we can now compute 
-  // B. Noq Solving the 1st equation for A gives A = s0/(B*c). Plugging that into the 2nd equation 
-  // and solving for C gives C = s1*s0 / B^2. So, finally, the algorithm to compute a, b, c from 
-  // s0, s1 is:
-  //
-  //   B = s0/s1;              //  (or s1/s0 or sqrt(s1*s0))
-  //   C = s0*s1 / (B*B);
-  //   A = s0    / (B*C);
-  //   a = (A+1) / (A-1);
-  //   b = (B+1) / (B-1);
-  //   c = (C+1) / (C-1);
-  // 
-  // 
-  // When s0 = s1, we expect a,b to be zero, i.e. only the inner, birational, sigmoid part should
-  // be active. When s1 = 1/s0, we expect b to be zero, i.e. the simoid part should be neutral. 
-  // Maybe the concave/convex part should then be distributed equally of both outer functions, 
-  // i.e. a == c.
+  // figure out what that function is (the found function needs to be inverted). OK - this is done
+  // below. It suggests to use B = sqrt(p). Now we can solve for A*C = s0/B = B/s1. To distribute
+  // the concavity/convexity equally to A and C, we may choose A = C = sqrt(A*C).
+
 
   // Plot p = s0*s1 and q = s0*s1 as function of b and as function of B = (1+b) / (1-b) for a fixed
   // value of a and using c = -a. The rationale behind this choice is that the outer mappings 
@@ -1846,31 +1828,32 @@ void selfInverseInterpolation()
     // function of the slope of the inner function
   }
 
-
-
+  // Helper function to compute the coeffs from the desired slopes:
   auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c)
   {
-    Real B = sqrt(s1*s0); 
+    // Compute slopes for sigmoidity and combined convexity/concavity:
+    Real B  = sqrt(s1*s0);
+    Real AC = s0 / B;        // == B / s1
 
-    //Real B = sqrt(s1/s0);
-    // Produces wrong slopes for bottom curves. How can this be? I thought, the end slopes can be
-    // controlled regardless of B?
+    // Distribute the concavity equally between A and C:
+    Real A = sqrt(AC);
+    Real C = A;
 
-    Real C = s0*s1 / (B*B);
-    Real A = s0    / (B*C);
+    // Convert from slopes to coeffs:
     *a = (A-1) / (A+1);
     *b = (B-1) / (B+1);
     *c = (C-1) / (C+1);
   };
+  // This should go into the library. It is what is needed for an actualy implementation of the
+  // interpolation scheme.
 
 
   // OK, let's try the algorithm from above. Pick a fixed s0 = 1 and let s1 range through
   // 1/16, 1/8, 1/4, 1/2, 1, 2, 4, 8, 16. Generate the graphs and plot them.
   {
     GNUPlotter plt;
-
-    Real s0 = 2.0/1.0;  // fixed
-    Real s1 = 1.0/16.0;  // goes up in the loop
+    Real s0 = 1.0/1.0;   // Fixed slope at x,y = 0,0. Interesting plots occur for 1/4, 1, 4
+    Real s1 = 1.0/16.0;  // Variable slope at x,y, = 1,1. Goes up in the loop
     Real a, b, c;
     while(s1 <= 16)
     {
@@ -1888,11 +1871,12 @@ void selfInverseInterpolation()
       s1 *= 2;
     }
 
+    plt.addCommand("set size square");
     plt.plot();
   }
-
-
-
+  // For a pdf documentation, it would make sense to produce 3 plots with s0 = 1/4, s0 = 1, s0 = 4.
+  // Such plots show nicely what's going on. The plot for s0 = 4 contains graphs which inverted 
+  // versions of those in the plot for s0 = 1/4.
 
   rsAssert(ok);
   int dummy = 0;
@@ -1910,29 +1894,14 @@ void selfInverseInterpolation()
   //  Try to distribute it!
 
   // ToDo:
-  // -Maybe compute errors err = z - y and verify programmatically that it is zero.
-  // -Figure out formulas for the derivatives at the endpoints for rational, birational and 
-  //  tetrarational maps as functions of a,b,c. Then try to find formulas for a,b,c from those
-  //  slopes. Let's call them s0, s1 for slope at 0 and 1. It seems, we have not enough 
-  //  constraints. we have two slopes but 3 degrees of freedom. Maybe impose another constraint.
-  //  Maybe a^2 + b^2 + c^2 = min. Maybe apply a weight to b^2. Maybe use 
-  //  w1 * (a^2 + c^2) + w2 * b^2 = min (maybe with  with w1 + w2 = 1). If w1 is big, we try to 
-  //  avoid pre/post skewing, if w2 is big, we try to avoid formation of saddles or sigmoids.
-  // -Write function to compute the slopes at 0 and 1 from a,b,c and verify their correctness 
-  //  numerically. Maybe compare the computed slope to numerical derivatives. Maybe also write 
-  //  a function to compute the slope at any x.
-  // -Try to tweak a,b,c manually to achieve slopes of 4 and 2
+  // -Plot the cubic Hermite interpolant for comparison.
   // -Use the tetrarational map for 1st order smooth monotonic and invertible interpolation.
   // -Maybe target values for the slopes can be obtained from the data by numerical dervatives or
   //  maybe we can apply a constraint that the curvatures should match at the nodes similar to
   //  what is done in cubic spline interpolation
-  // -If the problem of finding a,b,c from desired s0,s1 turns out to be too hard to solve 
-  //  analytically, we may try to obtain the 3 bivariate function a(s0,s1), b(s0,s1), c(s0,s1)
-  //  via numeric optimization. I think, it will be a contrained optimization problem
   // -What if we consider our rational f as function of a (in (-1,+1)) and treat x as parameter 
   //  (in [0,1] ...or maybe beyond?). Then our equation relating the coeff of a composed function
   //  to those of the partial functions becomes an interesting functional equation
-
 
   // Other ideas:
   // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange

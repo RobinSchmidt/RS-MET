@@ -22,6 +22,7 @@
 *.tlog
 *.user
 *.wav
+*.pdf
 *.pk
 Misc/UnusedCode/RSLibAndTests/RSLibTests/GeneratedFiles
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/Debug/
