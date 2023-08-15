@@ -1646,7 +1646,8 @@ void selfInverseInterpolation()
   using Vec = std::vector<Real>;
 
   //int N = 129;
-  int N = 1025;
+  //int N = 1025;
+  int N = 257;
 
   bool ok  = true;
   Real tol = 1.e-13;
@@ -1785,9 +1786,20 @@ void selfInverseInterpolation()
   // B = s1*A*C and plug that into the 1st: s0 = A*s1*A*C*C giving us s0/s1 = A^2 * C^2.
   // Maybe let's call s0/s1 = q and s0*s1 = p. q is a measure for how different the slopes are from 
   // one another (1, if they are equal) and p a measure for how high the slopes are in a combined 
-  // way. Maybe B should be a 1D function of p. Maybe plot p as function of B (using a=b=0) to 
-  // figure out what that function is (the found function needs to be inverted)
+  // way. Maybe B should be a 1D function of p or q. Maybe plot p as function of B (using a=b=0) to 
+  // figure out what that function is (the found function needs to be inverted). OK this is done
+  // below. It suggests to use B = sqrt(P) or B = q (or 1/q, not sure). Anyway - we can now compute 
+  // B. Noq Solving the 1st equation for A gives A = s0/(B*c). Plugging that into the 2nd equation 
+  // and solving for C gives C = s1*s0 / B^2. So, finally, the algorithm to compute a, b, c from 
+  // s0, s1 is:
   //
+  //   B = s0/s1;              //  (or s1/s0 or sqrt(s1*s0))
+  //   C = s0*s1 / (B*B);
+  //   A = s0    / (B*C);
+  //   a = (A+1) / (A-1);
+  //   b = (B+1) / (B-1);
+  //   c = (C+1) / (C-1);
+  // 
   // 
   // When s0 = s1, we expect a,b to be zero, i.e. only the inner, birational, sigmoid part should
   // be active. When s1 = 1/s0, we expect b to be zero, i.e. the simoid part should be neutral. 
@@ -1810,10 +1822,6 @@ void selfInverseInterpolation()
     Vec s0(N), s1(N), p(N), q(N);
     for(int n = 0; n < N; n++)
     {
-      //B[n]  =  (1+b[n]) / (1-b[n]);                             // use slopeAt0(b[0])
-      //s0[n] = ((1+a)*(1+b[n])*(1+c)) / ((1-a)*(1-b[n])*(1-c));  // use slopeAt0(a, b[n], c);
-      //s1[n] = ((1-a)*(1+b[n])*(1-c)) / ((1+a)*(1-b[n])*(1+c));  // use slopeAt1(a, b[n], c);
-
       B[n]  = slopeAt0(b[n]);
       s0[n] = fullSlopeAt0(a, b[n], c);
       s1[n] = fullSlopeAt1(a, b[n], c);
@@ -1830,13 +1838,52 @@ void selfInverseInterpolation()
     rsPlotVectorsXY(b, B, p, q); // p looks like B^2 and q is constant 1
     rsPlotVectorsXY(B, p, q);    // p and q as functions of B, p is a parabola like B^2, q = 1
     // Because p(B) looks like B^2, it suggests to use B(p) = sqrt(p). That fixes our B and we can
-    // use the remaining two equations to compute A,B.
+    // use the remaining two equations to compute A,B. Or, even simpler, use B = q (or maybe 1/q).
 
     int dummy = 0;
 
     // Maybe plot s0, s1 as functions of B. That is that total slope of the full function as 
     // function of the slope of the inner function
   }
+
+
+
+  auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c)
+  {
+    Real B = sqrt(s1*s0);     //  (or s0/s1 or s1/s0 or sqrt(s1*s0) )  
+    Real C = s0*s1 / (B*B);
+    Real A = s0    / (B*C);
+    *a = (A+1) / (A-1);
+    *b = (B+1) / (B-1);
+    *c = (C+1) / (C-1); 
+  };
+
+
+  // OK, let's try the algorithm from above. Pick a fixed s0 = 1 and let s1 range through
+  // 1/16, 1/8, 1/4, 1/2, 1, 2, 4, 8, 16. Generate the graphs and plot them.
+  {
+    GNUPlotter plt;
+
+    Real s0 = 1.0;
+    Real s1 = 1.0/16;
+    Real a, b, c;
+    while(s1 <= 16)
+    {
+      ratCoeffs(s0, s1, &a, &b, &c);
+      // Nope - returns inf values. Verify formulas!
+
+
+
+
+      s1 *= 2;
+    }
+
+
+
+  }
+
+  //s0 = 0.5;
+  //s1 = 2.0;
 
 
 
