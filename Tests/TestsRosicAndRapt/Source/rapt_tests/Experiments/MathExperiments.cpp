@@ -1713,6 +1713,9 @@ void selfInverseInterpolation()
   s1 = rsTetraRationalMap_01(1.0, a, b, c) - rsTetraRationalMap_01(1-h, a, b, c);
   s1 /= h;
 
+  // Use the analytic formulas
+  Real s0_ = ((1+a)*(1+b)*(1+c)) / ((1-a)*(1-b)*(1-c));
+
 
   // Compare rational and birational map for the same a:
   a = -0.5;
@@ -1739,9 +1742,16 @@ void selfInverseInterpolation()
   //   s0 = A*B*C,   s1 = B/(A*C)
   //
   // That's a nonlinear system of 2 equations in 3 variables. Let's solve the 2nd for B:
-  // B = s1*A*C and plug that into the 1st: s0 = A*s1*A*C*C giving us s0/s1 = A^2 * C^2
-
-
+  // B = s1*A*C and plug that into the 1st: s0 = A*s1*A*C*C giving us s0/s1 = A^2 * C^2.
+  // Maybe let's call s0/s1 = q and s0*s1 = p. q is a meausre for how different the slopes are from 
+  // one another (1, if they are equal) and p a measure for how high the slopes are in a combined 
+  // way
+  //
+  // 
+  // When s0 = s1, we expect a,b to be zero, i.e. only the inner, birational, sigmoid part should
+  // be active. When s1 = 1/s0, we expect b to be zero, i.e. the simoid part should be neutral. 
+  // Maybe the concave/convex part should then be distributed equally of both outer functions, 
+  // i.e. a == c.
 
 
   rsAssert(ok);
@@ -1771,6 +1781,9 @@ void selfInverseInterpolation()
   // -If the problem of finding a,b,c from desired s0,s1 turns out to be too hard to solve 
   //  analytically, we may try to obtain the 3 bivariate function a(s0,s1), b(s0,s1), c(s0,s1)
   //  via numeric optimization. I think, it will be a contrained optimization problem
+  // -What if we consider our rational f as function of a (in (-1,+1)) and treat x as parameter 
+  //  (in [0,1] ...or maybe beyond?). Then our equation relating the coeff of a composed function
+  //  to those of the partial functions becomes an interesting functional equation
 
 
   // Other ideas:
