@@ -1850,25 +1850,11 @@ void selfInverseInterpolation()
 
   auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c)
   {
-    Real B = sqrt(s1*s0);     //  (or s0/s1 or s1/s0 or sqrt(s1*s0) )  
-    //Real B = sqrt(s1/s0);      
-    // Bottom curves have large linear region, for s0 = 1, the different s1 curves look exactly 
-    // like when using B = sqrt(s1*s0).
-    // OK, it seems to be either B = sqrt(s1/s0); or B = sqrt(s1*s0); It makes no difference when
-    // s0 = 1. Try it for other s0!
+    Real B = sqrt(s1*s0); 
 
-    // Other trials - these produce bad results:
-    //Real B = s0/s1;         // nope
-    //Real B = sqrt(s0/s1); 
-    //Real B = s0/s1; B *= B;
-    //Real B = s1/s0;          
-    // The extreme curves have large plateaus -> not good!
-
-    //Real B = s1/s0; B *= B;  // Nope!
-    //Real B = s1/s0;         // also nope
-    // maybe try to square the quotient or take its square-root
-
-
+    //Real B = sqrt(s1/s0);
+    // Produces wrong slopes for bottom curves. How can this be? I thought, the end slopes can be
+    // controlled regardless of B?
 
     Real C = s0*s1 / (B*B);
     Real A = s0    / (B*C);
@@ -1883,8 +1869,8 @@ void selfInverseInterpolation()
   {
     GNUPlotter plt;
 
-    Real s0 = 1.0;
-    Real s1 = 1.0/16;
+    Real s0 = 2.0/1.0;  // fixed
+    Real s1 = 1.0/16.0;  // goes up in the loop
     Real a, b, c;
     while(s1 <= 16)
     {
@@ -1905,8 +1891,6 @@ void selfInverseInterpolation()
     plt.plot();
   }
 
-  //s0 = 0.5;
-  //s1 = 2.0;
 
 
 
@@ -1915,7 +1899,15 @@ void selfInverseInterpolation()
 
   // Observations:
   // -The inversion seems to work well.
-
+  // -For s0, s1 = 16, 1/16, we get b = 0 as expected (no sigmoidity). The concavity is provided
+  //  solely by a = 0.882... and c = 0. It might be nicer if we could distribute the concavity
+  //  equally between a and c. Maybe we could even give the user a sort of shape parameter that
+  //  allows to manually control, how much concavity its provided by the pre- and how much by the
+  //  post warp.
+  // -Maybe solve the 2 equations for A*C and for A/C and from there, compute A and C
+  // -For s0 = s1 = 1/16, we get a = c = 0, b = -0.882. This seems to make sense.
+  // -It actually seems that c is always zero. So, the concavity is always only provided by a.
+  //  Try to distribute it!
 
   // ToDo:
   // -Maybe compute errors err = z - y and verify programmatically that it is zero.
