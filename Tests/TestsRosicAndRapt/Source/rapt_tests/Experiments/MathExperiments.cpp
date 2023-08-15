@@ -1530,6 +1530,20 @@ T rsTetraRationalMap_01(T x, T a, T b, T c)
   return x;
 }
 
+//  (1 - a^2) / (1 + a (2 x - 1))^2 
+
+
+/*
+template<class T>
+T rsTetraRationalSlope_01(T x, T a, T b, T c)
+{
+
+
+}
+*/
+
+
+
 void selfInverseInterpolation()
 {
   // Under construction...not sure yet, if this leads to anywhere
@@ -1620,6 +1634,8 @@ void selfInverseInterpolation()
   //  in the set, use them for a self-inverse interpolation scheme
   // -The derivative of R(x,a) is: R_a'(x) = (1 - a^2) / (1 + a (2 x - 1))^2 which evaluated at 
   //  0 and 1 gives R_a'(0) = (1+a)/(1-a), R_a'(1) = (1-a)/(1+a)
+  // -The second derivative is (4 a (-1 + a^2))/(1 + a (-1 + 2 x))^3 which evaluated at 0 gives
+  //  (-4 a (1 + a))/(-1 + a)^2 and evaluated at 1 gives (4 (-1 + a) a)/(1 + a)^2
 
   // We form a linear combination of the two self-inverse functions 
   //   f1(x) = 1-x         = (1-x^1)^(1/1)
@@ -1641,11 +1657,19 @@ void selfInverseInterpolation()
 
   int N = 129;
 
+  bool ok  = true;
+  Real tol = 1.e-13;
+
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec y(N), z(N);
+  Vec err;
 
   // Coefficients:
   Real a = 0.5, b = -0.6, c = -0.3;
+
+  a = 0.5, b = 0.75, c = -0.25; // very steep at 0, moderately steep at 1
+
+  a = 0.75, b = 0.75, c = -0.5;
 
   // Check inversion of the rational map via negating the paraneter:
   for(int n = 0; n < N; n++)
@@ -1653,6 +1677,8 @@ void selfInverseInterpolation()
     y[n] = rsRationalMap_01(x[n],  a);
     z[n] = rsRationalMap_01(y[n], -a);  // Should give back x
   }
+  err = z-x; ok &= rsIsAllZeros(err, tol);
+  //rsPlotVectorsXY(x, y, z);
 
   // Check inversion of the birational map via negating the paraneter:
   for(int n = 0; n < N; n++)
@@ -1660,6 +1686,8 @@ void selfInverseInterpolation()
     y[n] = rsBiRationalMap_01(x[n],  a);
     z[n] = rsBiRationalMap_01(y[n], -a);  // Should give back x
   }
+  err = z-x; ok &= rsIsAllZeros(err, tol);
+  //rsPlotVectorsXY(x, y, z);
 
   // Check inversion of the tetrarational map via negating the paraneters and reversing their 
   // order:
@@ -1668,6 +1696,8 @@ void selfInverseInterpolation()
     y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
     z[n] = rsTetraRationalMap_01(y[n], -c, -b, -a);  // Should give back x
   }
+  err = z-x; ok &= rsIsAllZeros(err, tol);
+  rsPlotVectorsXY(x, y, z);
 
   // Test combining two rational functions into a single one:
   c = (a + b) / (a*b + 1); // Parameter of the resulting function
@@ -1680,25 +1710,31 @@ void selfInverseInterpolation()
     // Compute z by applying a single rational map:
     z[n] = rsRationalMap_01(x[n], c);  // should be equal to y[n]
   }
+  err = z-y; ok &= rsIsAllZeros(err, tol);
+  //rsPlotVectorsXY(x, y, z);
   // This same combination works also for the birational maps
 
 
-  GNUPlotter plt;
-  plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays(N, &y[0]);
-  plt.addDataArrays(N, &z[0]);
-  plt.plot();
+  rsAssert(ok);
   int dummy = 0;
-
 
   // Observations:
   // -The inversion seems to work well.
 
   // ToDo:
   // -Maybe compute errors err = z - y and verify programmatically that it is zero.
-  // -Figure out formulas for the derivatives at the ennpoints for rational, birational and 
-  //  tetrarational maps.
+  // -Figure out formulas for the derivatives at the endpoints for rational, birational and 
+  //  tetrarational maps as functions of a,b,c. Then try to find formulas for a,b,c from those
+  //  slopes. Let's call them s0, s1 for slope at 0 and 1. It seems, we have not enough 
+  //  constraints. we have two slopes but 3 degrees of freedom.
+  // -Write function to compute the slopes at 0 and 1 from a,b,c and verify their correctness 
+  //  numerically. Maybe compare the computed slope to numerical derivatives. Maybe also write 
+  //  a function to compute the slope at any x.
+  // -Try to tweak a,b,c manually to achive slopes of 4 and 2
   // -Use the tetrarational map for 1st order smooth monotonic and invertible interpolation.
+  // -Maybe target values for the slopes can be obtained from the data by numerical dervatives or
+  //  maybe we can apply a constraint that the curvatures should match at the nodes similar to
+  //  what is done in cubic spline interpolation
 
 
   // Other ideas:

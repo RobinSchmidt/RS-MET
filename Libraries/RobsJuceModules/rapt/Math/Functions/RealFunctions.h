@@ -268,20 +268,21 @@ upward (i.e. f becomes concave, lies above the identity), for negative values, i
 (i.e. f becomes convex, lies below the identity). The set of functions form a subgroup of the group 
 of Moebius transforms, namely those with coefficients 1+a, 0, 2*a, 1-a. The fact that this set of 
 functions forms a group implies that compositions of such functions are themselves functions of the 
-same type and that the inverses are also of the same type. In particular, the inverse of f for a 
-given a is obtained by negating a. The general formula for the derivative is given by
-f'(x) = (1 - a^2) / (1 + a (2 x - 1))^2 which evaluates to (1+a)/(1-a) at x = 0 and to (1-a)/(1+a)
-at x = 1. So the slopes at the endpoints are reciprocal to one another. That makes the function 
-nicely symmetric with respect to an axis going through (0.5,0.5) at an angle of -45°.
+same type and that the inverses are also of the same type. If you compose two such functions with
+parameters a and b, then the resulting function will have a parameter c = (a + b) / (a*b + 1).
+The inverse of f for a given a is obtained by negating a. The general formula for the derivative is
+given by f'(x) = (1 - a^2) / (1 + a (2 x - 1))^2 which evaluates to (1+a)/(1-a) at x = 0 and to 
+(1-a)/(1+a) at x = 1. So, the slopes at the endpoints are reciprocal to one another. That makes the 
+function nicely symmetric with respect to an axis going through (0.5,0.5) at an angle of -45°. The 
+coefficient in terms of the slope s at 0 is given by a = (s-1)/(s+1). If you combine several such functions in sequence, the resulting slopes will be given by the product 
+of the individual slopes (this is just the chain-rule and not specific to this kind function). All 
+these features make this set (actually "group") of functions a convenient choice for...TBC...
 
 For a plot, see: https://www.desmos.com/calculator/jkxafs0vp9  */
 template<class T>
 T rsRationalMap_01(T x, T a);
 // ToDo: 
-// -Give formula for the resulting coeff c when combining two such functions with coeffs a,b.
-//  I think, because of the chain rule, the derivative of the combined function at x = 0 must be
-//  given by ((1+a)/(1-a)) * ((1+b)/(1-b)) which must be equal to (1+c)/(1-c). Solving this 
-//  equation for c gives c = (a + b)/(a b + 1) 
+// -Give formulas for the coefficient a given the slope
 
 /** Returns the nearest integer (as double, without typecast). */
 RS_INLINE double rsRound(double x);
