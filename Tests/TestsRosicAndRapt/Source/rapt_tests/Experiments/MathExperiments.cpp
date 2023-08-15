@@ -1645,7 +1645,8 @@ void selfInverseInterpolation()
   using Real = double;
   using Vec = std::vector<Real>;
 
-  int N = 129;
+  //int N = 129;
+  int N = 1025;
 
   bool ok  = true;
   Real tol = 1.e-13;
@@ -1794,7 +1795,7 @@ void selfInverseInterpolation()
     // are set up to invert each other, the total slope is equal to the inner slope. Yes - that 
     // makes a lot of sense when thinking about it. ..it actually seems kinda obvious
 
-    rsPlotVectorsXY(b, B, p, q);  
+    rsPlotVectorsXY(b, B, p, q); // p looks like B^2 and q is constant 1
     rsPlotVectorsXY(B, p, q);    // p and q as functions of B
 
     int dummy = 0;
