@@ -1496,23 +1496,29 @@ double getMax2ndDerivativeErrorSin(double h1, double h2,
 */
 
 /** Map composed of two maps of the form given by rsRationalMap, one applied to the domain 
-0..0.5 and the other to 0.5..1. The maps are combined in such a way to give a range of shapes 
-between sigmoidal (s-shaped) and a saddle-ish, i.e. shape similar to a cubic like x^3, i.e. flatter
-in te middle. */
+0..0.5 and the other to 0.5..1 where inputs and outputs are appropriately scaled and shifted. The 
+maps are combined in such a way to give a range of shapes between sigmoidal (s-shaped) and a 
+saddle-ish, i.e. shape similar to a cubic like x^3, i.e. flatter in te middle. */
 template<class T>
 T rsBiRationalMap_01(T x, T a)
 {
   T y;
   if(x < 0.5)
   {
+    /*
     //x = rsLinToLin(x, T(0), T(0.5), T(0), T(1));  // 0..0.5  ->  0..1, x *= 2
     x *= 2;                                       // 0..0.5  ->  0..1
     y = rsRationalMap_01(x, a);                   // Apply map
     y *= 0.5;                                     // 0..1  ->  0..0.5
     //y = rsLinToLin(y, T(0), T(1), T(0), T(0.5));  // 0..1  -> 0..0.5,  x *= 0.5
+    */
+    return T(0.5) * rsRationalMap_01(T(2)*x, a);
   }
   else
   {
+    return T(0.5) * rsRationalMap_01((x-T(0.5))*T(2), -a) + T(0.5);
+
+    /*
     //x = rsLinToLin(x, T(0.5), T(1), T(0), T(1));  // 0.5..1  ->  0..1, x = (x-0.5)*2
 
     x = (x-0.5)*2;                                // 0.5..1  ->  0..1
@@ -1520,6 +1526,7 @@ T rsBiRationalMap_01(T x, T a)
     y = y*0.5 + 0.5;                              // 0..1  -> 0.5..1
 
     //y = rsLinToLin(y, T(0), T(1), T(0.5), T(1));  // 0..1  -> 0.5..1, x = x*0.5 + 0.5
+    */
   }
   return y;
 }
