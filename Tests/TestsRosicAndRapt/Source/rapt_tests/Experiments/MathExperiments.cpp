@@ -1687,7 +1687,7 @@ void selfInverseInterpolation()
     z[n] = rsTetraRationalMap_01(y[n], -c, -b, -a);  // Should give back x
   }
   err = z-x; ok &= rsIsAllZeros(err, tol);
-  rsPlotVectorsXY(x, y, z);
+  //rsPlotVectorsXY(x, y, z);
 
   // Test combining two rational functions into a single one. This is just to verify the formula
   // for c.
@@ -1705,18 +1705,29 @@ void selfInverseInterpolation()
   //rsPlotVectorsXY(x, y, z);
   // This same combination works also for the birational maps
 
-  // Compute numeric derivatives at 0 and 1 using a forward and a backward difference respectively:
-  Real h, s0, s1;
-  h = 0.0001;
-  s0 = rsTetraRationalMap_01(0+h, a, b, c) - rsTetraRationalMap_01(0.0, a, b, c);
-  s0 /= h;
-  s1 = rsTetraRationalMap_01(1.0, a, b, c) - rsTetraRationalMap_01(1-h, a, b, c);
-  s1 /= h;
 
-  // Use the analytic formulas:
-  Real s0_ = ((1+a)*(1+b)*(1+c)) / ((1-a)*(1-b)*(1-c));
-  Real s1_ = ((1-a)*(1+b)*(1-c)) / ((1+a)*(1-b)*(1+c));
-  // OK - they seem to be correct.
+  // Compute numeric derivatives at 0 and 1 using a forward and a backward difference respectively:
+  {
+    Real h, s0, s1;
+    h = 0.0001;
+    s0 = rsTetraRationalMap_01(0+h, a, b, c) - rsTetraRationalMap_01(0.0, a, b, c);
+    s0 /= h;
+    s1 = rsTetraRationalMap_01(1.0, a, b, c) - rsTetraRationalMap_01(1-h, a, b, c);
+    s1 /= h;
+
+    // Use the analytic formulas:
+    Real s0_ = ((1+a)*(1+b)*(1+c)) / ((1-a)*(1-b)*(1-c));
+    Real s1_ = ((1-a)*(1+b)*(1-c)) / ((1+a)*(1-b)*(1+c));
+    // OK - they seem to be correct.
+    // maybe factor out into small helper functions slopeAt0(a, b, c), slopeAt1(a,b,c)
+
+    Real p = s0_ * s1_;
+    Real q = s0_ / s1_;
+    Real A = (1+a) / (1-a);
+    Real B = (1+b) / (1-b);
+    Real C = (1+c) / (1-c);  // maybe factor out into helper func slopeAt0(a)
+    int dummy = 0;
+  }
 
   // Compare rational and birational map for the same a:
   a = -0.5;
@@ -1725,7 +1736,7 @@ void selfInverseInterpolation()
     y[n] = rsRationalMap_01(  x[n], a);
     z[n] = rsBiRationalMap_01(x[n], a);
   }
-  rsPlotVectorsXY(x, y, z);
+  //rsPlotVectorsXY(x, y, z);
   // It seems, the slopes are the same at x = 0 and reciprocal at x = 1. That means, for the 
   // composed function (the TetraRationalMap) we should have
   //
@@ -1744,15 +1755,51 @@ void selfInverseInterpolation()
   //
   // That's a nonlinear system of 2 equations in 3 variables. Let's solve the 2nd for B:
   // B = s1*A*C and plug that into the 1st: s0 = A*s1*A*C*C giving us s0/s1 = A^2 * C^2.
-  // Maybe let's call s0/s1 = q and s0*s1 = p. q is a meausre for how different the slopes are from 
+  // Maybe let's call s0/s1 = q and s0*s1 = p. q is a measure for how different the slopes are from 
   // one another (1, if they are equal) and p a measure for how high the slopes are in a combined 
-  // way
+  // way. Maybe B should be a 1D function of p. Maybe plot p as function of B (using a=b=0) to 
+  // figure out what that function is (the found function needs to be inverted)
   //
   // 
   // When s0 = s1, we expect a,b to be zero, i.e. only the inner, birational, sigmoid part should
   // be active. When s1 = 1/s0, we expect b to be zero, i.e. the simoid part should be neutral. 
   // Maybe the concave/convex part should then be distributed equally of both outer functions, 
   // i.e. a == c.
+
+  // Plot p = s0*s1 and q = s0*s1 as function of b and as function of B = (1+b) / (1-b) for a fixed
+  // value of a and using c = -a. The rationale behind this choice is that the outer mappings 
+  // combined give the identity. If a = 0, both will be the identity themselves. We want to 
+  // investigate how p behaves when the sigmoid part of the function is tweaked in order to get a 
+  // feeling for how a reasonable function B(p) or b(p) could look like.
+  {
+    a = 0.0;
+    c = -a;
+    Real A = (1+a) / (1-a);
+    Real C = (1+c) / (1-c);
+
+    Vec b = rsLinearRangeVector(N, -1, 1);
+    Vec B(N);
+    Vec s0(N), s1(N), p(N), q(N);
+    for(int n = 0; n < N; n++)
+    {
+      B[n]  =  (1+b[n]) / (1-b[n]);                             // use slopeAt0(b[0])
+      s0[n] = ((1+a)*(1+b[n])*(1+c)) / ((1-a)*(1-b[n])*(1-c));  // use slopeAt0(a, b[n], c);
+      s1[n] = ((1-a)*(1+b[n])*(1-c)) / ((1+a)*(1-b[n])*(1+c));  // use slopeAt1(a, b[n], c);
+    }
+
+
+
+    rsPlotVectorsXY(b, B, s0, s1);
+    // They look all the same and how they look does not seem to depend on a. That means, when a,b
+    // are set up to invert each other, the total slope is equal to the inner slope. Yes - that 
+    // makes a lot of sense when thinking about it. ..it actually seems kinda obvious
+
+    int dummy = 0;
+
+    // Maybe plot s0, s1 as functions of B. That is that total slope of the full function as 
+    // function of the slope of the inner function
+  }
+
 
 
   rsAssert(ok);
