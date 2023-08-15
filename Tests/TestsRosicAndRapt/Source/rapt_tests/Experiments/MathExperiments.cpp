@@ -1830,13 +1830,13 @@ void selfInverseInterpolation()
       q[n]  =  s0[n] / s1[n];
     }
 
-    rsPlotVectorsXY(b, B, s0, s1);
+    //rsPlotVectorsXY(b, B, s0, s1);
     // They look all the same and how they look does not seem to depend on a. That means, when a,b
     // are set up to invert each other, the total slope is equal to the inner slope. Yes - that 
     // makes a lot of sense when thinking about it. ..it actually seems kinda obvious
 
-    rsPlotVectorsXY(b, B, p, q); // p looks like B^2 and q is constant 1
-    rsPlotVectorsXY(B, p, q);    // p and q as functions of B, p is a parabola like B^2, q = 1
+    //rsPlotVectorsXY(b, B, p, q); // p looks like B^2 and q is constant 1
+    //rsPlotVectorsXY(B, p, q);    // p and q as functions of B, p is a parabola like B^2, q = 1
     // Because p(B) looks like B^2, it suggests to use B(p) = sqrt(p). That fixes our B and we can
     // use the remaining two equations to compute A,B. Or, even simpler, use B = q (or maybe 1/q).
 
@@ -1853,9 +1853,9 @@ void selfInverseInterpolation()
     Real B = sqrt(s1*s0);     //  (or s0/s1 or s1/s0 or sqrt(s1*s0) )  
     Real C = s0*s1 / (B*B);
     Real A = s0    / (B*C);
-    *a = (A+1) / (A-1);
-    *b = (B+1) / (B-1);
-    *c = (C+1) / (C-1); 
+    *a = (A-1) / (A+1);
+    *b = (B-1) / (B+1);
+    *c = (C-1) / (C+1);
   };
 
 
@@ -1870,7 +1870,11 @@ void selfInverseInterpolation()
     while(s1 <= 16)
     {
       ratCoeffs(s0, s1, &a, &b, &c);
-      // Nope - returns inf values. Verify formulas!
+
+
+      // Check, if the produced coeffs do indeed produce the desired slopes:
+      Real s0r = fullSlopeAt0(a, b, c);
+      Real s1r = fullSlopeAt1(a, b, c);
 
 
 
