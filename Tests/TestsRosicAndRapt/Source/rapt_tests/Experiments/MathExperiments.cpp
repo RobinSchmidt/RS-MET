@@ -1851,10 +1851,24 @@ void selfInverseInterpolation()
   auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c)
   {
     Real B = sqrt(s1*s0);     //  (or s0/s1 or s1/s0 or sqrt(s1*s0) )  
+    //Real B = sqrt(s1/s0);      
+    // Bottom curves have large linear region, for s0 = 1, the different s1 curves look exactly 
+    // like when using B = sqrt(s1*s0).
+    // OK, it seems to be either B = sqrt(s1/s0); or B = sqrt(s1*s0); It makes no difference when
+    // s0 = 1. Try it for other s0!
 
+    // Other trials - these produce bad results:
     //Real B = s0/s1;         // nope
+    //Real B = sqrt(s0/s1); 
+    //Real B = s0/s1; B *= B;
+    //Real B = s1/s0;          
+    // The extreme curves have large plateaus -> not good!
+
+    //Real B = s1/s0; B *= B;  // Nope!
     //Real B = s1/s0;         // also nope
     // maybe try to square the quotient or take its square-root
+
+
 
     Real C = s0*s1 / (B*B);
     Real A = s0    / (B*C);
@@ -1869,7 +1883,7 @@ void selfInverseInterpolation()
   {
     GNUPlotter plt;
 
-    Real s0 = 2.0;
+    Real s0 = 1.0;
     Real s1 = 1.0/16;
     Real a, b, c;
     while(s1 <= 16)
