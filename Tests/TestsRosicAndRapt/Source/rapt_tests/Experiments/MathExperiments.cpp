@@ -1713,8 +1713,25 @@ void selfInverseInterpolation()
     z[n] = rsBiRationalMap_01(x[n], a);
   }
   rsPlotVectorsXY(x, y, z);
-  // It seems, the slopes are the same at x = 0 and reciprocal at x = 1.
-
+  // It seems, the slopes are the same at x = 0 and reciprocal at x = 1. That means, for the 
+  // composed function (the TetraRationalMap) we should have
+  //
+  //         1+a     1+b     1+c             1-a     1+b     1-c
+  //   s0 = ----- * ----- * -----,     s1 = ----- * ----- * -----
+  //         1-a     1-b     1-c             1+a     1-b     1+c
+  //
+  // Note how in s1, the middle factor is not reciprocated with respect to s0 because going from s0
+  // to s1 yields a reciprocation but in the birational map, we have another reciprocation at s1. 
+  // ...I think. ...verify these formulas numerically! When they are indeed correct, we may proceed 
+  // to try to find a,b,c from desired slopes s0, s1 via these formulas.
+  //
+  // Let's define A = (1+a)/(1-a), B = (1+b)/(1-b), C = (1+c)/(1-c) so we may write more simply:
+  //
+  //   s0 = A*B*C,   s1 = B/(A*C)
+  //
+  // That's a nonlinear system of 2 equations in 3 variables. Let's solve the 2nd for B:
+  // B = s1*A*C and plug that into the 1st: s0 = A*s1*A*C*C giving us s0/s1 = A^2 * C^2
+  // 
 
   rsAssert(ok);
   int dummy = 0;
@@ -1728,15 +1745,19 @@ void selfInverseInterpolation()
   // -Figure out formulas for the derivatives at the endpoints for rational, birational and 
   //  tetrarational maps as functions of a,b,c. Then try to find formulas for a,b,c from those
   //  slopes. Let's call them s0, s1 for slope at 0 and 1. It seems, we have not enough 
-  //  constraints. we have two slopes but 3 degrees of freedom.
+  //  constraints. we have two slopes but 3 degrees of freedom. Maybe impose another constraint.
+  //  Maybe a^2 + b^2 + c^2 = min. Maybe apply a weight to b^2
   // -Write function to compute the slopes at 0 and 1 from a,b,c and verify their correctness 
   //  numerically. Maybe compare the computed slope to numerical derivatives. Maybe also write 
   //  a function to compute the slope at any x.
-  // -Try to tweak a,b,c manually to achive slopes of 4 and 2
+  // -Try to tweak a,b,c manually to achieve slopes of 4 and 2
   // -Use the tetrarational map for 1st order smooth monotonic and invertible interpolation.
   // -Maybe target values for the slopes can be obtained from the data by numerical dervatives or
   //  maybe we can apply a constraint that the curvatures should match at the nodes similar to
   //  what is done in cubic spline interpolation
+  // -If the problem of finding a,b,c from desired s0,s1 turns out to be too hard to solve 
+  //  analytically, we may try to obtain the 3 bivariate function a(s0,s1), b(s0,s1), c(s0,s1)
+  //  via numeric optimization. I think, it will be a contrained optimization problem
 
 
   // Other ideas:
