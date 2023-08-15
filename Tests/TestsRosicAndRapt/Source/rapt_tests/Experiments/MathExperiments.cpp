@@ -1576,6 +1576,7 @@ void selfInverseInterpolation()
   //  I actually think, the Moebius transforms do also form a group of functions and this "rat"
   //  (for rational) function is one of them. See also code int rsNodeBasedFunction
   //  https://www.desmos.com/calculator/rqdymhmwps
+  //  
 
 
 

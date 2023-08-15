@@ -322,6 +322,10 @@ protected:
     // Maybe a nicer way to write this would be ((1+a)*x) / (2*a*x + (1-a)) because we can now
     // dirctly read off the Moebius transform coeffs: 1+a, 0, 2*a, 1-a.
   }
+  // Maybe move to somewhere else. It is useful in many contexts. Maybe rename to rsRationalMap and
+  // put it into RealFunctions ...done. ToDo: call it here
+
+
   T getValueRational(T x, size_t i) const
   {
     T thresh = RS_EPS(T);

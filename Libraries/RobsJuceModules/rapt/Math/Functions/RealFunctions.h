@@ -261,6 +261,24 @@ RS_INLINE double rsQuantToBits(double x, double nBits);
 /** Converts an angle in radiant into degrees. */
 RS_INLINE double rsRadiantToDegree(double radiant);
 
+/** A rational function that maps the unit interval [0,1] to itself using the strictly monotonic 
+function f(x) = ((1+a)*x) / (2*a*x + (1-a)) where a is some parameter in (-1,+1) that controls the 
+amount of curving. For a = 0, we get the identity f(x) = x. For positive values of a, f curves 
+upward (i.e. f becomes concave, lies above the identity), for negative values, it curves downward 
+(i.e. f becomes convex, lies below the identity). The set of functions form a subgroup of the group 
+of Moebius transforms, namely those with coefficients 1+a, 0, 2*a, 1-a. The fact that this set of 
+functions forms a group implies that compositions of such functions are themselves functions of the 
+same type and that the inverses are also of the same type. In particular, the inverse of f for a 
+given a is obtained by negating a.
+
+For a plot, see: https://www.desmos.com/calculator/jkxafs0vp9  */
+template<class T>
+T rsRationalMap(T x, T a);
+// ToDo: 
+// -Give formulas for the slopes at 0 and 1 and explain that they are reciprocal to one another 
+//  (I think)
+// -Give formula for the resulting coeff c when combining two such functions with coeffs a,b
+
 /** Returns the nearest integer (as double, without typecast). */
 RS_INLINE double rsRound(double x);
 
@@ -645,6 +663,19 @@ RS_INLINE double rsRound(double x)
   else
     return floor(x);
 }
+
+template<class T>
+T rsRationalMap(T x, T a)
+{
+  T ax = a*x;
+  return (ax+x) / (2*ax - a + 1); // 2 mul, 2 add, 1 sub, 1 div
+
+  // The function can also be written more aestetically as:
+  //   f(x) = ((1+a)*x) / (2*a*x + (1-a))  // 3 mul, 2 add, 1 sub, 1 div
+  // from which we can also read off the Moebius transform coeffs more directly as
+  // 1+a, 0, 2*a, 1-a.
+}
+
 
 /*
 RS_INLINE int rosic::rsRoundToInt(double const x)
