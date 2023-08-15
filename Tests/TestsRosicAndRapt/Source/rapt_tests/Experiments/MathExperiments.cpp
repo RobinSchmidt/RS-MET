@@ -1705,12 +1705,23 @@ void selfInverseInterpolation()
   //rsPlotVectorsXY(x, y, z);
   // This same combination works also for the birational maps
 
+  // Compare rational and birational map for the same a:
+  a = -0.5;
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsRationalMap_01(  x[n], a);
+    z[n] = rsBiRationalMap_01(x[n], a);
+  }
+  rsPlotVectorsXY(x, y, z);
+  // It seems, the slopes are the same at x = 0 and reciprocal at x = 1.
+
 
   rsAssert(ok);
   int dummy = 0;
 
   // Observations:
   // -The inversion seems to work well.
+
 
   // ToDo:
   // -Maybe compute errors err = z - y and verify programmatically that it is zero.
