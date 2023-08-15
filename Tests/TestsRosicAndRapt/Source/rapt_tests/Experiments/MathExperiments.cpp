@@ -1495,6 +1495,29 @@ double getMax2ndDerivativeErrorSin(double h1, double h2,
 }
 */
 
+/** Map composed of two maps of the form given by rsRationalMap, one applied to the domain 
+0..0.5 and the other to 0.5..1. The maps are combined in such a way to give a range of shapes 
+between sigmoidal (s-shaped) and a saddle-ish, i.e. shape similar to a cubic like x^3, i.e. flatter
+in te middle. */
+template<class T>
+T rsBiRationalMap(T x, T a)
+{
+  T y;
+  if(x < 0.5)
+  {
+    x = rsLinToLin(x, T(0), T(0.5), T(0), T(1));  // 0..0.5  ->  0..1
+    T y = rsRationalMap(x, a);                    // Apply map
+    y = rsLinToLin(x, T(0), T(1), T(0), T(0.5));  // 0..1  -> 0..0.5
+  }
+  else
+  {
+    x = rsLinToLin(x, T(0.5), T(1), T(0), T(1));  // 0.5..1  ->  0..1
+    T y = rsRationalMap(x, -a);                   // Apply map
+    y = rsLinToLin(x, T(0), T(1), T(0.5), T(1));  // 0..1  -> 0..0.5
+  }
+  return y;
+}
+
 void selfInverseInterpolation()
 {
   // Under construction...not sure yet, if this leads to anywhere
@@ -1576,7 +1599,12 @@ void selfInverseInterpolation()
   //  I actually think, the Moebius transforms do also form a group of functions and this "rat"
   //  (for rational) function is one of them. See also code int rsNodeBasedFunction
   //  https://www.desmos.com/calculator/rqdymhmwps
-  //  
+  // -Let's call R(x,a) the rational map and B(x,a) the birational map with coeffs a. Consider the 
+  //  set of functions formed from R°B°R. I think, it doesn't from a group but has inverses. Let's
+  //  also use subscript notation R_a(x) for R(x,a). Consider R_a ° B_b ° R_c. Its inverse should 
+  //  be given by R_{-c} ° B_{-b} ° R_{-a}, i.e. by applying them in reverse order with paremeters
+  //  negated. Try that!
+  //
 
 
 
