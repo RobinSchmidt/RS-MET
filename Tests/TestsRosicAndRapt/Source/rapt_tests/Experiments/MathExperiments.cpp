@@ -1513,9 +1513,13 @@ T rsBiRationalMap_01(T x, T a)
   }
   else
   {
-    x = rsLinToLin(x, T(0.5), T(1), T(0), T(1));  // 0.5..1  ->  0..1, x = (x-0.5)*2
+    //x = rsLinToLin(x, T(0.5), T(1), T(0), T(1));  // 0.5..1  ->  0..1, x = (x-0.5)*2
+
+    x = (x-0.5)*2;                                // 0.5..1  ->  0..1
     y = rsRationalMap_01(x, -a);                  // Apply map
-    y = rsLinToLin(y, T(0), T(1), T(0.5), T(1));  // 0..1  -> 0.5..1, x = x*0.5 + 0.5
+    y = y*0.5 + 0.5;                              // 0..1  -> 0.5..1
+
+    //y = rsLinToLin(y, T(0), T(1), T(0.5), T(1));  // 0..1  -> 0.5..1, x = x*0.5 + 0.5
   }
   return y;
 }
