@@ -1604,7 +1604,8 @@ void selfInverseInterpolation()
   //  also use subscript notation R_a(x) for R(x,a). Consider R_a ° B_b ° R_c. Its inverse should 
   //  be given by R_{-c} ° B_{-b} ° R_{-a}, i.e. by applying them in reverse order with paremeters
   //  negated. Try that!
-  //
+  // -If that works out, i.e. we indeed have a set of functions that have all their inverses also 
+  //  in the set, use them for a self-inverse interpolation schem
 
 
 
@@ -1626,8 +1627,30 @@ void selfInverseInterpolation()
 
   //
 
+  using Real = double;
+  using Vec = std::vector<Real>;
+
+  int N = 11;
+
+  Vec x = rsLinearRangeVector(N, 0, 1);
+  Vec y(N), z(N);
+
+  Real a = 0.5;
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsRationalMap(x[n],  a);
+    z[n] = rsRationalMap(y[n], -a);  // Should give back x
+  }
+
+
+
+
 
   GNUPlotter plt;
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays(N, &y[0]);
+  plt.addDataArrays(N, &z[0]);
+  plt.plot();
   // ...
 
 
