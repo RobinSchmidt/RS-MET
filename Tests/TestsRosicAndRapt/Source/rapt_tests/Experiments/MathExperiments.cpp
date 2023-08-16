@@ -1550,7 +1550,7 @@ void selfInverseInterpolation()
   //int N = 1025;
   int N = 257;
 
-  Real shape = 0.5;  // 0.5: symmetric, nominal range: 0..1 (but may go beyond)
+  Real shape = 0.6;  // 0.5: symmetric, nominal range: 0..1 (but may go beyond)
 
   bool ok  = true;
   Real tol = 1.e-13;
@@ -1649,17 +1649,26 @@ void selfInverseInterpolation()
   // Helper function to compute the coeffs from the desired slopes:
   auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c, Real shape)
   {
-    // Compute slopes for sigmoidity and combined convexity/concavity:
+    // Compute slope at zero for middle map B (controlling sigmoidity) and combined outer maps 
+    // AC = A*C (controlling convexity/concavity):
     Real B  = sqrt(s1*s0);
     Real AC = s0 / B;        // == B / s1
+
+    // Compute slopes at zero for first and last map according to our shape parameter:
+    Real A, C;
+    if(shape == 0.5)
+      C = A = sqrt(AC);        // Optimized special case for symmetric shape
+    else {
+      A = pow(AC, shape);      // General case
+      C = AC/A; }
 
     // Distribute the concavity equally between A and C:
     //Real A = sqrt(AC);
     //Real C = A;
 
     // Distribute the concavity between A and C according to shape parameter:
-    Real A = pow(AC, shape);
-    Real C = AC/A;
+    //A = pow(AC, shape);
+    //C = AC/A;
 
     // Convert from slopes to coeffs:
     *a = (A-1) / (A+1);
