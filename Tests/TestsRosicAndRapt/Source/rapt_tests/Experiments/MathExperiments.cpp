@@ -1546,11 +1546,18 @@ void selfInverseInterpolation()
   using Real = double;
   using Vec = std::vector<Real>;
 
+  // User parameters:
   //int N = 129;
   //int N = 1025;
-  int N = 257;
+  int  N     = 257;      // Number of samples
+  Real shape = 0.5;      // 0.5: symmetric (default), nominal range: 0..1 (but may go beyond)
+  Real s0    = 1.0/1.0;  // Slope at zero - maybe rename to slopeAt0
+    // Fixed slope at x,y = 0,0. Interesting plots occur for 1/4, 1, 4. Maybe move that to the top
+    // of the function to the user parameters
 
-  Real shape = 0.5;  // 0.5: symmetric (default), nominal range: 0..1 (but may go beyond)
+  Real minSlopeAt1 = 1.0/128.0;
+  Real maxSlopeAt1 = 128.0;
+
 
   bool ok  = true;
   Real tol = 1.e-13;
@@ -1707,31 +1714,33 @@ void selfInverseInterpolation()
   // 1/128, ..., 1/8, 1/4, 1/2, 1, 2, 4, 8, ..., 128. Generate the graphs and plot them.
   {
     GNUPlotter plt;
-    Real s0 = 1.0/1.0;    
-    // Fixed slope at x,y = 0,0. Interesting plots occur for 1/4, 1, 4. Maybe move that to the top
-    // of the function to the user parameters
-
     Real s1 = 1.0/128.0;  // Variable slope at x,y, = 1,1. Goes up in the loop
-    Real a, b, c;
     while(s1 <= 128)
     {
+      // Compute coeffs from desired slopes s0, s1:
+      Real a, b, c;
       ratCoeffs(s0, s1, &a, &b, &c, shape);
 
       // Check, if the produced coeffs do indeed produce the desired slopes:
       Real s0r = fullSlopeAt0(a, b, c);
       Real s1r = fullSlopeAt1(a, b, c);
-      // ...OK - looks good when we use B = sqrt(s1*s0); in ratCoeffs
+      ok &= rsIsCloseTo(s0, s0r, tol);
+      ok &= rsIsCloseTo(s1, s1r, tol);
 
+      // Create map data and add it to the plot:
       for(int n = 0; n < N; n++)
         y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
       plt.addDataArrays(N, &x[0], &y[0]);
 
-      s1 *= 2;
+      // double the slope for the next graph:
+      s1 *= 2;  // maybe let the factor be a user parameter
     }
 
     plt.addCommand("set size square");
     plt.plot();
   }
+  // Maybe make s1Min and s1Max user parameters
+
   // For a pdf documentation, it would make sense to produce 3 plots with s0 = 1/4, s0 = 1, s0 = 4.
   // Such plots show nicely what's going on. The plot for s0 = 4 contains graphs which inverted 
   // versions of those in the plot for s0 = 1/4.
