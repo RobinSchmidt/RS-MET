@@ -98,7 +98,7 @@ void imageScaling();
 // wait - what about the file MathExperiments.h - shouldn't they be declared there?
 
 void ellipseLineIntersections();
-void selfInverseInterpolation();
+void linearFractionalInterpolation();
 void interpolatingFunction();
 void linearRegression();
 void multipleRegression();

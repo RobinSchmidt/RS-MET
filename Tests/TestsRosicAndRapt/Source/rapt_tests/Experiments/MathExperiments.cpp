@@ -1709,8 +1709,41 @@ actually just like combining 2x2 matrices. Just for the scaling steps, we must s
 express it also as Moebius trafo and use the same algorithm. */
 
 
-void selfInverseInterpolation()
+void linearFractionalInterpolation()
 {
+  // Linear fractional interpolation is an interpolation method based on the linear fractional 
+  // transformation that I have invented myself. It is suitable only for strictly monotonic data.
+  // The interpolant that interpolates a segment between two data points will also monotonic. 
+  // Moreover, the interpolant will be easily invertible and the inverse interpolating function 
+  // will be of the same kind and can easily be obtained from the forward interpolating function.
+  // The motivation for such a scheme lies in the desire to have an interpolation method that is
+  // both invertible and first order smooth, i.e. has matching derivatives at the nodes. Linear
+  // interpolation is easily invertible but it's not first order smooth. Polynomial interpolation
+  // schemes can be made even smoother than first order but are in general not invertible - at 
+  // least not easily - and even if it is invertible (because one has somehow restricted the 
+  // interpolant to be monotonic), the inverse interpolating function will be of a completely 
+  // different kind, i.e. come from a different class of functions and has to be computed with a 
+  // different (more complicated) algorithm. For example, if you interpolate data given in arrays 
+  // x[n], y[n] using piecewise cubic polynomials to produce a continuous function y = f(x), the 
+  // (exact) inversion of the produced interpolant y = f(x), will not be a piecewise cubic but 
+  // instead be defined by using a root-finder applied to the piecewise cubic y = f(x), so the 
+  // inverse interpolant will be something like a piecewise "cube-rooty" function (well, it's 
+  // actually even more complicated than that but you get the point).
+  //
+  // Linear fractional interpolation solves this problem by using as interpolant between the 
+  // segments functions of form general form y = f(x) = (a*x + b) / (c*x + d). These functions
+  // are also known as "linear fractional transformations" because they consist of a fraction or
+  // quotient of two linear functions. One nice feature of the linear fractional transformations
+  // (which we will abbreviate as "linfrac" maps or just "linfracs" in the following) is that they
+  // form a group, meaning that (1) the set contains a neutral element (the identity function with 
+  // a=1, b=c=d=0), (2) the inverses are also in the set and (3) compositions of such functions 
+  // yield another element from the set. For us, the composition and existence of inverses are the
+  // relevant features. In order to control the derivatives at the segment endpoints...TBC...
+  //
+  // 
+
+
+
   // Maybe rename to invertibleInterpolation or moebiusInterpolation or biMoebiusInterpolation
   // birational, biFractional, see
   // https://en.wikipedia.org/wiki/Linear_fractional_transformation
@@ -1721,6 +1754,8 @@ void selfInverseInterpolation()
   // https://en.wikipedia.org/wiki/Laguerre_transformations
   // Maybe call it linFractional interpolation
 
+
+  // Old:
   // Some experiments with Moebius maps that can be used for an invertible interpolation scheme 
   // that has first order smoothness, i.e. matching derivatives at the nodes, just like cubic 
   // Hermite interpolation does. We consider the unit interval [0,1] and map it monotonically and
@@ -1865,7 +1900,12 @@ void selfInverseInterpolation()
     plt.plot();
   }
 
+
   rsAssert(ok);
+
+
+
+
 
   // Observations:
   // -The shapes look indeed nicely symmetric with respect to the line y = x as we would expect 
@@ -1934,6 +1974,8 @@ void selfInverseInterpolation()
   // -What if we consider our rational f as function of a (in (-1,+1)) and treat x as parameter 
   //  (in [0,1] ...or maybe beyond?)?
 
+
+
   // Notes:
   // -Check literature about rational splines. We are doing something similar here, I think.
   //  https://www.alglib.net/interpolation/rational.php
@@ -1959,6 +2001,32 @@ void selfInverseInterpolation()
   //  use numeric derivatives that are at least 3rd order accurate in cubic Hermite interpolation. 
   //  That accuracy seems to be a good fit. When the input data actually *is* a cubic polynomial, 
   //  the Hermite interpolant should be able to reconstruct it exactly
+  //
+  // I tried to use one general linfrac f(x) = (a x + b) / (c x + d) for the whole interval. The 
+  // general derivative is given by f'(x) = (a d - b c) / (c x + d)^2
+  //   f(0)  = 0  = b/d = 0  ->  b = 0
+  //   f(1)  = 1  = (a+b)/(c+d) = a / (c+d)
+  //   f'(0) = s0 = (a d - b c) / d^2  = (a d) / d^2 = a/d
+  //   f'(1) = s1 = (a d - b c) / (c + d)^2 =  (a d) / (c + d)^2
+  // But I guess, it may produce poles in between the datapoints for certain settings of s0,s1.
+  // Let's see....
+  // Rewrite eq 4 as s1 = (a/(c+d)) * (d/(c+d)) and note from eq 2 that a/(c+d) = 1. So we have:
+  //   s1 = d/(c+d)
+  // We can also substitute a = c+d (known from eq 2) into eq 3 to get:
+  //   s0 = (c+d)/d
+  // Multiplying both equations gives:
+  //   s1*s0 = (d/(c+d))*((c+d)/d) = 1
+  // which seems to suggest that the system has only a solution when s1 = 1/s0. Using wolfram
+  // Alpha with this:
+  //   solve 1  == a / (c+d), s0 == a / d,  s1 == d / (c+d) for a,c,d
+  // seems to confirm this. This is actually in line with what we found before. The linfrac with
+  // a single parameter produces reciprocal slopes at the endpoints of the unit interval.
+
+
+
+
+  // See also:
+  // https://math.stackexchange.com/questions/4162828/interpolation-with-exact-inverse
 
   // Other ideas (spin offs - move to some experiment involving waveshaping):
   // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange

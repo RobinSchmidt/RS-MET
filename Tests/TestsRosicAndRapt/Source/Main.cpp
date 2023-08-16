@@ -117,8 +117,8 @@ int main(int argc, char* argv[])
   //expBipolar();
   //expGaussBell();
   //iteratedNumDiff();
-  selfInverseInterpolation();  // stub
-  interpolatingFunction();
+  linearFractionalInterpolation();
+  //interpolatingFunction();
 
   //linearRegression();
   //multipleRegression();
@@ -469,9 +469,9 @@ int main(int argc, char* argv[])
   // Oscillator:
   //triSaw();
   //phaseShapingCurvePoly4();
-  phaseShapingCurvesRational();
-  phaseShaping();
-  phaseShapingSkew();
+  //phaseShapingCurvesRational();
+  //phaseShaping();
+  //phaseShapingSkew();
   //zeroDelayFeedbackPhaseMod();
 
   // Partial Extraction:
