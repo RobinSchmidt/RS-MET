@@ -1616,16 +1616,18 @@ bool moebiusMapTest()
 
 
   // Now amalgamate the whole compose map into a single piecewise Moebius map:
+  Real ab  = a*b, ac = a*c, bc = b*c;
+  Real abc = ab*c;
 
-  Real A1 = -(a*b*c + a*b + a*c + b*c + a + b + c + 1);
+  Real A1 = -(abc + ab + ac + bc + a + b + c + 1);
   Real B1 = 0;
-  Real C1 = -2*(a*b - b*c + a + 2*b + c);
-  Real D1 = a*b*c - a*b - a*c - b*c + a + b + c - 1;
+  Real C1 = -2*(ab - b*c + a + 2*b + c);
+  Real D1 = abc - ab - ac - bc + a + b + c - 1;
 
-  Real A2 = - 2*(a*b*c + a*b + a*c - 3*b*c + a - 3*b + c + 1);
-  Real B2 = 4*a*b*c + 4*a*b - 4*b*c - 4*b;
-  Real C2 = - 4*(a*b - b*c + a - 2*b + c);
-  Real D2 = 2*a*b*c + 6*a*b - 2*a*c - 2*b*c + 2*a - 6*b + 2*c - 2;
+  Real A2 = - 2*(abc + ab + ac - 3*bc + a - 3*b + c + 1);
+  Real B2 = 4*abc + 4*ab - 4*bc - 4*b;
+  Real C2 = - 4*(ab - bc + a - 2*b + c);
+  Real D2 = 2*abc + 6*ab - 2*ac - 2*bc + 2*a - 6*b + 2*c - 2;
 
 
   Real splitX = rsRationalMap_01(0.5, -a);
