@@ -1619,10 +1619,10 @@ bool moebiusMapTest()
   Real p1 = a;  // get rid of these! use a,b,c directly
   Real p2 = b;
   Real p3 = c;
-  Real A = -(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1);
-  Real B = 0;
-  Real C = -2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3);
-  Real D = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1;
+  Real A1 = -(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1);
+  Real B1 = 0;
+  Real C1 = -2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3);
+  Real D1 = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1;
 
 
   Real splitX = rsRationalMap_01(0.5, -a);
@@ -1632,7 +1632,7 @@ bool moebiusMapTest()
     y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
     if(x[n] <= splitX)
     {
-      z[n] = (A*x[n] + B) / (C*x[n] + D);
+      z[n] = (A1*x[n] + B1) / (C1*x[n] + D1);
     }
     else
     {
@@ -1646,7 +1646,11 @@ bool moebiusMapTest()
   rsPlotVectorsXY(x, y, z);
 
 
-
+  // ToDo:
+  // -Maybe instead of implementing these big formulas for A1, B1, ...etc., write a general 
+  //  function to compute coeffs of a composed Moebius trafo and call that. This might be simpler
+  //  and more efficient. I even have code for that somewhere already. It's in
+  //  rsMoebiusTransform<T>::followedBy. Maybe implement that as a static function
 
 
   return ok;
@@ -1691,7 +1695,20 @@ D = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1
 
 
 Here, p1,p2,p3 are the parameters of the 3 component maps. For the second segment, the lines
-y2 = 2*y1, y4 = y3/2 have to be replaced by....
+y2 = 2*y1, y4 = y3/2 have to be replaced by y2 = 2*y1-1, y4 = (y3+1)/2. Doing so produces the
+result:
+
+(4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 
+ - 2*(p1*p2*p3 + p1*p2 - p1*p3 - 3*p2*p3 - p1 - 3*p2 - p3 - 1)*x - 4*p2,
+ 2*p1*p2*p3 + 6*p1*p2 + 2*p1*p3 - 2*p2*p3 
+ - 4*(p1*p2 - p2*p3 - p1 - 2*p2 - p3)*x - 2*p1 - 6*p2 - 2*p3 + 2)
+
+from which we read off:
+A = - 2*(p1*p2*p3 + p1*p2 - p1*p3 - 3*p2*p3 - p1 - 3*p2 - p3 - 1)
+B = 4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 - 4*p2
+C = - 4*(p1*p2 - p2*p3 - p1 - 2*p2 - p3)
+D = 2*p1*p2*p3 + 6*p1*p2 + 2*p1*p3 - 2*p2*p3 - 2*p1 - 6*p2 - 2*p3 + 2
+
 
 Instead of num.expand().collect(x), den.expand().collect(x) I also tried to use:
 
