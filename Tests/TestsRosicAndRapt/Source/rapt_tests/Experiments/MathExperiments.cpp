@@ -1752,22 +1752,7 @@ void linearFractionalInterpolation()
   // It may make sense to produce them by numerical differentiation of the actual data, but that's 
   // a different topic. Here, we just assume them to be given.
   // ...TBC...
-  //
-  // 
-
-
-
-  // Maybe rename to invertibleInterpolation or moebiusInterpolation or biMoebiusInterpolation
-  // birational, biFractional, see
-  // https://en.wikipedia.org/wiki/Linear_fractional_transformation
-  // https://en.wikipedia.org/wiki/M%C3%B6bius_transformation
-  // Maybe calling it Moebius transformation is not appropriate because normally, one uses this
-  // term when talking about maps in the complex plane. When using this type of map over the dual
-  // numbers, they are called Laguerre Ttransformations
-  // https://en.wikipedia.org/wiki/Laguerre_transformations
-  // Maybe call it linFractional interpolation
-
-
+  
   // Old:
   // Some experiments with Moebius maps that can be used for an invertible interpolation scheme 
   // that has first order smoothness, i.e. matching derivatives at the nodes, just like cubic 
@@ -1804,11 +1789,11 @@ void linearFractionalInterpolation()
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
   Real tol         = 1.e-13;    // Tolerance for some sanity checks that we do along the way
 
-  bool ok = moebiusMapTest();
+  // Before plotting anything, we do some unit tests for the functions that we intend to use:
+  bool ok = moebiusMapTest(); 
+  // In this test function, there's also code to produce the composed map as a single linfrac and
+  // some other potentially useful formulas
 
-  Vec x = rsLinearRangeVector(N, 0, 1);
-  Vec y(N), z(N);
-  //Vec err;
 
   // Helper function to return the slope of a single rational map with parameter a at x = 0. The 
   // slope at 0 is the same for the rational and the birational map and given by (1+a)/(1-a). 
@@ -1882,10 +1867,11 @@ void linearFractionalInterpolation()
   // interpolation scheme would still be invertible, but for the inverse interpolation we may have
   // to use the converse algorithm, i.e. with a somehow inverted shape.
 
-
   // Create the plots:
   {
     GNUPlotter plt;
+    Vec x = rsLinearRangeVector(N, 0, 1);
+    Vec y(N);
     //Real s0 = slopeAt0;     // Fixed slope at x,y = 0,0. Is the same for all graphs
     Real s1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
     while(s1 <= maxSlopeAt1)
@@ -1912,7 +1898,6 @@ void linearFractionalInterpolation()
     plt.addCommand("set size square");
     plt.plot();
   }
-
 
   rsAssert(ok);
 
@@ -2014,6 +1999,9 @@ void linearFractionalInterpolation()
   //  use numeric derivatives that are at least 3rd order accurate in cubic Hermite interpolation. 
   //  That accuracy seems to be a good fit. When the input data actually *is* a cubic polynomial, 
   //  the Hermite interpolant should be able to reconstruct it exactly
+  // -Maybe calling it Moebius transformation is not appropriate because normally, one uses this
+  //  term when talking about maps in the complex plane. When using this type of map over the dual
+  //  numbers, they are called Laguerre Ttransformations
   //
   // I tried to use one general linfrac f(x) = (a x + b) / (c x + d) for the whole interval. The 
   // general derivative is given by f'(x) = (a d - b c) / (c x + d)^2
@@ -2035,11 +2023,11 @@ void linearFractionalInterpolation()
   // seems to confirm this. This is actually in line with what we found before. The linfrac with
   // a single parameter produces reciprocal slopes at the endpoints of the unit interval.
 
-
-
-
   // See also:
   // https://math.stackexchange.com/questions/4162828/interpolation-with-exact-inverse
+  // https://en.wikipedia.org/wiki/Linear_fractional_transformation
+  // https://en.wikipedia.org/wiki/M%C3%B6bius_transformation
+  // https://en.wikipedia.org/wiki/Laguerre_transformations
 
   // Other ideas (spin offs - move to some experiment involving waveshaping):
   // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
