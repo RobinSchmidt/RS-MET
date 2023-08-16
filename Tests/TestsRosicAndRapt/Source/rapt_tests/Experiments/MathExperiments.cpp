@@ -1647,20 +1647,11 @@ bool moebiusMapTest()
     else
     {
       z[n] = (A2*x[n] + B2) / (C2*x[n] + D2);
-      // Nope! that is wrong! Ah! We need to take into account that in this case, the coeff
-      // b gets negated
-
-
-      //z[n] = 0.5;  // preliminary
-
       //z[n] = (A1*x[n] + B1) / (C1*x[n] + D1);  // same as above to see how it continues
       // has a pole at 0.37
     }
-
-
-    //z[n] = rsTetraRationalMap_01(y[n], -c, -b, -a);  // Should give back x
   }
-  //err = z-y; ok &= rsIsAllZeros(err, tol);
+  err = z-y; ok &= rsIsAllZeros(err, tol);
   rsPlotVectorsXY(x, y, z);
 
 
@@ -1698,37 +1689,30 @@ den = denominator(y5)
 num.expand().collect(x), den.expand().collect(x)
 
 
+This produces a result from which we read off the coeffs A,B,C,D for the combined map:
 
-This produces:
-
-(-(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1)*x,
- p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 - 2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3)*x + p1 + p2 + p3 - 1)
-
-from which we read off the coeffs A,B,C,D for the combined map:
-A = -(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1)
-B = 0
-C = - 2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3)
-D = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1
+ A = -(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1)
+ B = 0
+ C = - 2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3)
+ D = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1
 
 Here, p1,p2,p3 are the parameters of the 3 component maps. For the second segment, the lines
 y2 = 2*y1, y4 = y3/2 have to be replaced by y2 = 2*y1-1, y4 = (y3+1)/2 and replace the
 a2 = 1+p2; c2 = 2*p2; d2 = 1-p2 line by a2 = 1-p2; c2 = -2*p2; d2 = 1+p2. Doing so produces the
 result:
 
-(4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 
- - 2*(p1*p2*p3 + p1*p2 + p1*p3 - 3*p2*p3 + p1 - 3*p2 + p3 + 1)*x - 4*p2,
- 2*p1*p2*p3 + 6*p1*p2 - 2*p1*p3 - 2*p2*p3 
- - 4*(p1*p2 - p2*p3 + p1 - 2*p2 + p3)*x + 2*p1 - 6*p2 + 2*p3 - 2)
-
-from which we read off:
-
  A = - 2*(p1*p2*p3 + p1*p2 + p1*p3 - 3*p2*p3 + p1 - 3*p2 + p3 + 1)
  B = 4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 - 4*p2
  C = - 4*(p1*p2 - p2*p3 + p1 - 2*p2 + p3)
  D = 2*p1*p2*p3 + 6*p1*p2 - 2*p1*p3 - 2*p2*p3 + 2*p1 - 6*p2 + 2*p3 - 2
 
+These formulas are implemented above. They work but they are rather messy. I think, It would be 
+much better to implement the computation using the formulas rsMoebiusTransform<T>::followedBy(). 
+This is actually just the formula for 2x2 matrix multiplication. Combining Moebius transforms is 
+actually just like combining 2x2 matrices. Just for the scaling steps, we must scale the 1st row.
+...Wait - no - there's more: How dow we implement the affine trafo step for the 2nd piece? Maybe
+express it also as Moebius trafo and use the same algorithm. */
 
-*/
 
 void selfInverseInterpolation()
 {
