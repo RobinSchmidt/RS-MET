@@ -1550,6 +1550,8 @@ void selfInverseInterpolation()
   //int N = 1025;
   int N = 257;
 
+  Real shape = 0.5;  // 0.5: symmetric, nominal range: 0..1 (but may go beyond)
+
   bool ok  = true;
   Real tol = 1.e-13;
 
@@ -1645,15 +1647,19 @@ void selfInverseInterpolation()
   //rsPlotVectorsXY(x, y, z);
 
   // Helper function to compute the coeffs from the desired slopes:
-  auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c)
+  auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c, Real shape)
   {
     // Compute slopes for sigmoidity and combined convexity/concavity:
     Real B  = sqrt(s1*s0);
     Real AC = s0 / B;        // == B / s1
 
     // Distribute the concavity equally between A and C:
-    Real A = sqrt(AC);
-    Real C = A;
+    //Real A = sqrt(AC);
+    //Real C = A;
+
+    // Distribute the concavity between A and C according to shape parameter:
+    Real A = pow(AC, shape);
+    Real C = AC/A;
 
     // Convert from slopes to coeffs:
     *a = (A-1) / (A+1);
@@ -1680,6 +1686,14 @@ void selfInverseInterpolation()
   // when doing it any other way, we would lose the self-inverse interpolation property. The 
   // interpolation scheme would still be invertible, but for the inverse interpolation we may have
   // to use the converse algorithm ...I guess -> ToDo: figure this out!
+  // Try A = pow(AC, shape); C = AC/A. OK - Done. Trying this with shape = 0.25 and 0.75 suggests
+  // that for the inverse interpolation, we need to use invShape = 1 - shape. The shape controls,
+  // how the graphs "fan out" at 0,0. With lower values, the fan is denser at the top-left and 
+  // with higher values, it's denser at the bottom-right. It seems like the shape parameter can 
+  // even go beyond the range 0..1. 2 or -1 produce rather extreme results but they still seem to
+  // satisfy the slope conditions at the endpoints. Maybe if we provide this parameter to the user,
+  // we shopuld rescale it from 0..1 to -1..+1 such that the user gets a symmetric shape when the 
+  // parameter is 0. 
 
 
   // OK, let's try the algorithm from above. Pick a fixed s0 = 1 and let s1 range through
@@ -1691,7 +1705,7 @@ void selfInverseInterpolation()
     Real a, b, c;
     while(s1 <= 128)
     {
-      ratCoeffs(s0, s1, &a, &b, &c);
+      ratCoeffs(s0, s1, &a, &b, &c, shape);
 
       // Check, if the produced coeffs do indeed produce the desired slopes:
       Real s0r = fullSlopeAt0(a, b, c);
