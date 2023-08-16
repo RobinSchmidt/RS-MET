@@ -1716,23 +1716,27 @@ void selfInverseInterpolation()  // Maybe rename
   //rsPlotVectorsXY(x, y, z);
   // This same combination works also for the birational maps
 
-  // Helper function to return the slope of a single rational map at x = 0. The slope at 0 is the
-  // same for the rational and the birational map. The slope at 1 for the rational map is the 
-  // reciprocal of the slope at 0 for the rational map and the same as the slope at 0 for the 
-  // birational map.
+  // Helper function to return the slope of a single rational map with parameter a at x = 0. The 
+  // slope at 0 is the same for the rational and the birational map and given by (1+a)/(1-a). 
+  // The slope at 1 for the rational map is the reciprocal of the slope at 0 for the rational map 
+  // and the same as the slope at 0 for the birational map.
   auto slopeAt0 = [](Real a)
   {
     return (1+a) / (1-a);
   };
 
-  // Returns the slope at 0 for the full tetrarational function:
+  // Returns the slope at 0 for the full tetrarational function consisting of a composition of a 
+  // rational map with parameter a, a birational map with parameter b and another rational map with 
+  // parameter c. The slopes just multiply according to the chain law, so we get:
+  // ((1+a)/(1-a)) * ((1+b)/(1-b)) * ((1+c)/(1-c))
   auto fullSlopeAt0 = [&](Real a, Real b, Real c)
   {
     return slopeAt0(a) * slopeAt0(b) * slopeAt0(c);
-    // The slopes just multiply according to the chain law
   };
 
-  // Returns the slope at 1 for the full tetrarational function:
+  // Returns the slope at 1 for the full tetrarational function. The slopes of the outer rational 
+  // maps functions are reciprocated, the slope of the inner birational map stays the same. So we 
+  // get: ((1+a)/(1-a)) * ((1-b)/(1+b)) * ((1+c)/(1-c))
   auto fullSlopeAt1 = [&](Real a, Real b, Real c)
   {
     return (1/slopeAt0(a)) * slopeAt0(b) * (1/slopeAt0(c));
@@ -1741,6 +1745,7 @@ void selfInverseInterpolation()  // Maybe rename
   };
 
 
+  /*
   // Compute numeric derivatives at 0 and 1 using a forward and a backward difference respectively:
   {
     Real h, s0, s1;
@@ -1760,6 +1765,8 @@ void selfInverseInterpolation()  // Maybe rename
     Real C = (1+c) / (1-c);  // maybe factor out into helper func slopeAt0(a)
     int dummy = 0;
   }
+  */
+  // Obsolete.
 
   // Compare rational and birational map for the same a:
   a = -0.5;
