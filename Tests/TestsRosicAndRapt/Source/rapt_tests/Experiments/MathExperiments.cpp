@@ -1616,18 +1616,37 @@ bool moebiusMapTest()
 
 
   // Now amalgamate the whole compose map into a single piecewise Moebius map:
-
-
-  //Real a1 = -(p1^3 + 3*p1^2 + 3*p1 + 1)
-
-
-
-  // -(p1^3 + 3*p1^2 + 3*p1 + 1)*x / (p1^3 - 3*p1^2 - 8*p1*x + 3*p1 - 1)
+  Real p1 = a;  // get rid of these! use a,b,c directly
+  Real p2 = b;
+  Real p3 = c;
+  Real A = -(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1);
+  Real B = 0;
+  Real C = -2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3);
+  Real D = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1;
 
 
   Real splitX = rsRationalMap_01(0.5, -a);
+  Real test   = rsRationalMap_01(splitX, a);  // should be 0.5
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
+    if(x[n] <= splitX)
+    {
+      z[n] = (A*x[n] + B) / (C*x[n] + D);
+    }
+    else
+    {
+      z[n] = 0.5;  // preliminary
+    }
 
-  Real test = rsRationalMap_01(splitX, a);  // should be 0.5
+
+    //z[n] = rsTetraRationalMap_01(y[n], -c, -b, -a);  // Should give back x
+  }
+  //err = z-y; ok &= rsIsAllZeros(err, tol);
+  rsPlotVectorsXY(x, y, z);
+
+
+
 
 
   return ok;
