@@ -1616,23 +1616,16 @@ bool moebiusMapTest()
 
 
   // Now amalgamate the whole compose map into a single piecewise Moebius map:
-  Real p1 = a;  // get rid of these! use a,b,c directly
-  Real p2 = b;
-  Real p3 = c;
-  Real A1 = -(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1);
+
+  Real A1 = -(a*b*c + a*b + a*c + b*c + a + b + c + 1);
   Real B1 = 0;
-  Real C1 = -2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3);
-  Real D1 = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1;
+  Real C1 = -2*(a*b - b*c + a + 2*b + c);
+  Real D1 = a*b*c - a*b - a*c - b*c + a + b + c - 1;
 
-  //Real A2 = - 2*(p1*p2*p3 + p1*p2 - p1*p3 - 3*p2*p3 - p1 - 3*p2 - p3 - 1);
-  //Real B2 = 4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 - 4*p2;
-  //Real C2 = - 4*(p1*p2 - p2*p3 - p1 - 2*p2 - p3);
-  //Real D2 = 2*p1*p2*p3 + 6*p1*p2 + 2*p1*p3 - 2*p2*p3 - 2*p1 - 6*p2 - 2*p3 + 2;
-
-  Real A2 = - 2*(p1*p2*p3 + p1*p2 + p1*p3 - 3*p2*p3 + p1 - 3*p2 + p3 + 1);
-  Real B2 = 4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 - 4*p2;
-  Real C2 = - 4*(p1*p2 - p2*p3 + p1 - 2*p2 + p3);
-  Real D2 = 2*p1*p2*p3 + 6*p1*p2 - 2*p1*p3 - 2*p2*p3 + 2*p1 - 6*p2 + 2*p3 - 2;
+  Real A2 = - 2*(a*b*c + a*b + a*c - 3*b*c + a - 3*b + c + 1);
+  Real B2 = 4*a*b*c + 4*a*b - 4*b*c - 4*b;
+  Real C2 = - 4*(a*b - b*c + a - 2*b + c);
+  Real D2 = 2*a*b*c + 6*a*b - 2*a*c - 2*b*c + 2*a - 6*b + 2*c - 2;
 
 
   Real splitX = rsRationalMap_01(0.5, -a);
