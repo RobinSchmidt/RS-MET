@@ -1527,12 +1527,15 @@ void selfInverseInterpolation()
 {
   // Maybe rename to invertibleInterpolation or MoebiusInterpolation
 
-  // Some experiments with Moebius maps that can be used for an invertible interpolation scheme.
-  // We consider the unit interval [0,1] and map it monotonically and invertibly to itself using
-  // a nesting of a Moebius map, a split-Moebius map and another Moebius map. Each of the 3 maps 
-  // has a parameter that controls the slopes at the endpoints 0,1. So, all in all, we have 3 
-  // adjustable parameters that we can use to match the desired slopes at the endpoints 0,1. In 
-  // this experiment, we explore, how this can be done.
+  // Some experiments with Moebius maps that can be used for an invertible interpolation scheme 
+  // that has first order smoothness, i.e. matching derivatives at the nodes, just like cubic 
+  // Hermite interpolation does. We consider the unit interval [0,1] and map it monotonically and
+  // invertibly to itself using a nesting of a Moebius map, a split-Moebius map and another Moebius
+  // map. Each of the 3 maps has a parameter that controls the slopes at the endpoints 0,1. So, all
+  // in all, we have 3 adjustable parameters that we can use to match the desired slopes at the 
+  // endpoints 0,1. In this experiment, we have devised an algorithm to compute the 3 adjustable 
+  // parameters from the 2 slope requirements. We use it to plot a family of graphs of various such
+  // mapping functions for a fixed slope at x,y = 0,0 and multiple different slopes at x,y = 1,1.
   //
   // From this mapping of the unit interval to itself, a data interpolation scheme can be 
   // constructed that works entirely similar to cubic Hermite interpolation. We will give the 
@@ -1542,22 +1545,21 @@ void selfInverseInterpolation()
   // possibly with an reciprocated s array). That interpolation scheme is not yet implemented. 
   // Currently, we only have the mapping of the unit interval done. ...but the rest should be 
   // just boring grunt work entirely paralleling the cubic Hermite scheme.
+  //
+  // Before producing the plots, we make a couple of tests that can later be moved into a unit test
+  // or perhaps be thrown away entirely. At this point, they are mostly just are remnants from the 
+  // development process. But they might be useful for looking at some plots of the individual maps
+  // by uncommenting some rsPlotVectorsXY() commands.
 
   using Real = double;
   using Vec = std::vector<Real>;
 
-  // User parameters:
-  //int N = 129;
-  //int N = 1025;
-  int  N     = 257;      // Number of samples
-  Real shape = 0.5;      // 0.5: symmetric (default), nominal range: 0..1 (but may go beyond)
-  Real s0    = 1.0/1.0;  // Slope at zero - maybe rename to slopeAt0
-    // Fixed slope at x,y = 0,0. Interesting plots occur for 1/4, 1, 4. Maybe move that to the top
-    // of the function to the user parameters
-
-  Real minSlopeAt1 = 1.0/128.0;
-  Real maxSlopeAt1 = 128.0;
-
+  // User parameters for the plots:
+  int  N           = 257;       // Number of samples
+  Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
+  Real s0          = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
+  Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
+  Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
 
   bool ok  = true;
   Real tol = 1.e-13;
@@ -1714,8 +1716,9 @@ void selfInverseInterpolation()
   // 1/128, ..., 1/8, 1/4, 1/2, 1, 2, 4, 8, ..., 128. Generate the graphs and plot them.
   {
     GNUPlotter plt;
-    Real s1 = 1.0/128.0;  // Variable slope at x,y, = 1,1. Goes up in the loop
-    while(s1 <= 128)
+    //Real s0 = slopeAt0;     // Fixed slope at x,y = 0,0. Is the same for all graphs
+    Real s1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
+    while(s1 <= maxSlopeAt1)
     {
       // Compute coeffs from desired slopes s0, s1:
       Real a, b, c;
@@ -1739,11 +1742,8 @@ void selfInverseInterpolation()
     plt.addCommand("set size square");
     plt.plot();
   }
-  // Maybe make s1Min and s1Max user parameters
 
-  // For a pdf documentation, it would make sense to produce 3 plots with s0 = 1/4, s0 = 1, s0 = 4.
-  // Such plots show nicely what's going on. The plot for s0 = 4 contains graphs which inverted 
-  // versions of those in the plot for s0 = 1/4.
+
 
   rsAssert(ok);
   int dummy = 0;
@@ -1751,11 +1751,30 @@ void selfInverseInterpolation()
   // Observations:
   // -The shapes look indeed nicely symmetric with respect to the line y = x as we would expect 
   //  from our construction of the set of function as containing also the inverses of all members.
+  // -For a pdf documentation, it would make sense to produce 3 plots with s0 = 1/4, 1, 4. The plot
+  //  for s0 = 4 contains graphs which inverted versions of those in the plot for s0 = 1/4.
 
   // ToDo:
+  // -Maybe rename s0 to slopeAt0. But that currently gives a name clash with a small internal 
+  //  helper function. Maybe get rid of these helpers entirely or move them out of the function
+  //  to make them avaialble as potential library functions.
+  // -Maybe for a given set of coeffs a,b,c, plot the 3 individual maps together with the combined 
+  //  map to develop intuitions about what happens in the nesting process. Or maybe make a diagram 
+  //  with 7 plots and arrows between them like this:
+  //
+  //            A          B              C
+  //            |          |              |
+  //            v          v              v
+  //    x ---> A(x) ---> B(A(x)) ---> C(B(A(x)))
+  //
+  //  where x plots the identity function, A and A(x) plot the first map (controlled by a), B plots
+  //  second map applied to x, B(A(x)) plots the second map applied to A(x), C plots the third map
+  //  applied to x, C(B(A(x))) plot the third map applied to B(A(x)) which is the final output.
+  //  Maybe scrap x and A because A is redundant with A(x) and x is just the identity. But maybe it
+  //  is clearer when the are included in the diagram nonetheless.
   // -Plot the cubic Hermite interpolant for comparison.
   // -Figure out the actual expression for the interpolation. In the range 0..0.5 It's a nesting 
-//    of 5 things: Moebius trafo -> upscaling -> Moebius trafo -> downscaling -> Moebius trafo. In 
+  //  of 5 things: Moebius trafo -> upscaling -> Moebius trafo -> downscaling -> Moebius trafo. In 
   //  the range 0.5...1, it's Moebius -> affine -> Moebius -> affine -> Moebius.
   //  Maybe call the interpolation-scheme Moebius-interpolation or BiMoebius interpolation.
   // -Use this Meobius map for 1st order smooth monotonic and invertible interpolation for 
