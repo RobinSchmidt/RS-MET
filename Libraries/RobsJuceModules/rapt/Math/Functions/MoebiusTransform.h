@@ -199,6 +199,13 @@ public:
     r.d = t.c*b + t.d*d;
     return r;
   }
+  // ToDo: 
+  // -Verify, if this formula is still correct when the multiplications t.a*a, ..etc. are
+  //  non-commutative. If not, maybe some of the arguments should be swapped. Then try this with a 
+  //  type T that has a non-commutative multiplication such as rsMatrix2D. I have no idea, if 
+  //  Moebius transformations with non-commutative underlying types are a thing, though - but 
+  //  better be safe than sorry. But I think, it's actually the correct order, if "t" is the left
+  //  operand and "this" is the right operand which is the case in function composition.
 
   /** Returns the inverse transform of this transform. */
   rsMoebiusTransform<T> getInverse()

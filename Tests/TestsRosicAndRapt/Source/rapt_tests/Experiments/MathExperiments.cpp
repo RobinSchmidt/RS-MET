@@ -1624,6 +1624,16 @@ bool moebiusMapTest()
   Real C1 = -2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3);
   Real D1 = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1;
 
+  //Real A2 = - 2*(p1*p2*p3 + p1*p2 - p1*p3 - 3*p2*p3 - p1 - 3*p2 - p3 - 1);
+  //Real B2 = 4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 - 4*p2;
+  //Real C2 = - 4*(p1*p2 - p2*p3 - p1 - 2*p2 - p3);
+  //Real D2 = 2*p1*p2*p3 + 6*p1*p2 + 2*p1*p3 - 2*p2*p3 - 2*p1 - 6*p2 - 2*p3 + 2;
+
+  Real A2 = - 2*(p1*p2*p3 + p1*p2 + p1*p3 - 3*p2*p3 + p1 - 3*p2 + p3 + 1);
+  Real B2 = 4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 - 4*p2;
+  Real C2 = - 4*(p1*p2 - p2*p3 + p1 - 2*p2 + p3);
+  Real D2 = 2*p1*p2*p3 + 6*p1*p2 - 2*p1*p3 - 2*p2*p3 + 2*p1 - 6*p2 + 2*p3 - 2;
+
 
   Real splitX = rsRationalMap_01(0.5, -a);
   Real test   = rsRationalMap_01(splitX, a);  // should be 0.5
@@ -1636,7 +1646,15 @@ bool moebiusMapTest()
     }
     else
     {
-      z[n] = 0.5;  // preliminary
+      z[n] = (A2*x[n] + B2) / (C2*x[n] + D2);
+      // Nope! that is wrong! Ah! We need to take into account that in this case, the coeff
+      // b gets negated
+
+
+      //z[n] = 0.5;  // preliminary
+
+      //z[n] = (A1*x[n] + B1) / (C1*x[n] + D1);  // same as above to see how it continues
+      // has a pole at 0.37
     }
 
 
@@ -1692,31 +1710,23 @@ B = 0
 C = - 2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3)
 D = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1
 
-
-
 Here, p1,p2,p3 are the parameters of the 3 component maps. For the second segment, the lines
-y2 = 2*y1, y4 = y3/2 have to be replaced by y2 = 2*y1-1, y4 = (y3+1)/2. Doing so produces the
+y2 = 2*y1, y4 = y3/2 have to be replaced by y2 = 2*y1-1, y4 = (y3+1)/2 and replace the
+a2 = 1+p2; c2 = 2*p2; d2 = 1-p2 line by a2 = 1-p2; c2 = -2*p2; d2 = 1+p2. Doing so produces the
 result:
 
 (4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 
- - 2*(p1*p2*p3 + p1*p2 - p1*p3 - 3*p2*p3 - p1 - 3*p2 - p3 - 1)*x - 4*p2,
- 2*p1*p2*p3 + 6*p1*p2 + 2*p1*p3 - 2*p2*p3 
- - 4*(p1*p2 - p2*p3 - p1 - 2*p2 - p3)*x - 2*p1 - 6*p2 - 2*p3 + 2)
+ - 2*(p1*p2*p3 + p1*p2 + p1*p3 - 3*p2*p3 + p1 - 3*p2 + p3 + 1)*x - 4*p2,
+ 2*p1*p2*p3 + 6*p1*p2 - 2*p1*p3 - 2*p2*p3 
+ - 4*(p1*p2 - p2*p3 + p1 - 2*p2 + p3)*x + 2*p1 - 6*p2 + 2*p3 - 2)
 
 from which we read off:
-A = - 2*(p1*p2*p3 + p1*p2 - p1*p3 - 3*p2*p3 - p1 - 3*p2 - p3 - 1)
-B = 4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 - 4*p2
-C = - 4*(p1*p2 - p2*p3 - p1 - 2*p2 - p3)
-D = 2*p1*p2*p3 + 6*p1*p2 + 2*p1*p3 - 2*p2*p3 - 2*p1 - 6*p2 - 2*p3 + 2
 
+ A = - 2*(p1*p2*p3 + p1*p2 + p1*p3 - 3*p2*p3 + p1 - 3*p2 + p3 + 1)
+ B = 4*p1*p2*p3 + 4*p1*p2 - 4*p2*p3 - 4*p2
+ C = - 4*(p1*p2 - p2*p3 + p1 - 2*p2 + p3)
+ D = 2*p1*p2*p3 + 6*p1*p2 - 2*p1*p3 - 2*p2*p3 + 2*p1 - 6*p2 + 2*p3 - 2
 
-Instead of num.expand().collect(x), den.expand().collect(x) I also tried to use:
-
-A = num.coefficient(x), B = num.coefficient(1), C = den.coefficient(x), D = den.coefficient(1)
-A, B, C, D
-
-but this produces a zero coefficient for D which is not plausible. Maybe the den.coefficient(1) 
-does not extract the constant term as I woudl expect?
 
 */
 
