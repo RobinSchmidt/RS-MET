@@ -1667,7 +1667,6 @@ void selfInverseInterpolation()  // Maybe rename
 
   // Coefficients:
   Real a = 0.5, b = -0.6, c = -0.3; // moderately flat at0, very flat at 1
-
   //a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
   //a = 0.75; b = 0.75; c = -0.5;  
 
@@ -1744,30 +1743,6 @@ void selfInverseInterpolation()  // Maybe rename
     // to the slope at 0)
   };
 
-
-  /*
-  // Compute numeric derivatives at 0 and 1 using a forward and a backward difference respectively:
-  {
-    Real h, s0, s1;
-    h = 0.0001;
-    s0 = rsTetraRationalMap_01(0+h, a, b, c) - rsTetraRationalMap_01(0.0, a, b, c);
-    s0 /= h;
-    s1 = rsTetraRationalMap_01(1.0, a, b, c) - rsTetraRationalMap_01(1-h, a, b, c);
-    s1 /= h;
-
-    Real s0_ = fullSlopeAt0(a, b, c);
-    Real s1_ = fullSlopeAt1(a, b, c);
-
-    Real p = s0_ * s1_;
-    Real q = s0_ / s1_;
-    Real A = (1+a) / (1-a);
-    Real B = (1+b) / (1-b);
-    Real C = (1+c) / (1-c);  // maybe factor out into helper func slopeAt0(a)
-    int dummy = 0;
-  }
-  */
-  // Obsolete.
-
   // Compare rational and birational map for the same a:
   a = -0.5;
   for(int n = 0; n < N; n++)
@@ -1776,23 +1751,11 @@ void selfInverseInterpolation()  // Maybe rename
     z[n] = rsBiRationalMap_01(x[n], a);
   }
   //rsPlotVectorsXY(x, y, z);
-  // It seems, the slopes are the same at x = 0 and reciprocal at x = 1. That means, for the 
-  // composed function (the TetraRationalMap) we should have
-  //
-  //         1+a     1+b     1+c             1-a     1+b     1-c
-  //   s0 = ----- * ----- * -----,     s1 = ----- * ----- * -----
-  //         1-a     1-b     1-c             1+a     1-b     1+c
-  //
-  // Note how in s1, the middle factor is not reciprocated with respect to s0 because going from s0
-  // to s1 yields a reciprocation but in the birational map, we have another reciprocation at s1. 
-  // ...I think. ...verify these formulas numerically! When they are indeed correct, we may proceed 
-  // to try to find a,b,c from desired slopes s0, s1 via these formulas.
-  //
-  // Let's define A = (1+a)/(1-a), B = (1+b)/(1-b), C = (1+c)/(1-c) so we may write more simply:
-  //
-  //   s0 = A*B*C,   s1 = B/(A*C)
-  //
-  // That's a nonlinear system of 2 equations in 3 variables. Let's solve the 2nd for B:
+
+
+
+  /*
+  // Let's solve the 2nd for B:
   // B = s1*A*C and plug that into the 1st: s0 = A*s1*A*C*C giving us s0/s1 = A^2 * C^2.
   // Maybe let's call s0/s1 = q and s0*s1 = p. q is a measure for how different the slopes are from 
   // one another (1, if they are equal) and p a measure for how high the slopes are in a combined 
@@ -1800,7 +1763,6 @@ void selfInverseInterpolation()  // Maybe rename
   // figure out what that function is (the found function needs to be inverted). OK - this is done
   // below. It suggests to use B = sqrt(p). Now we can solve for A*C = s0/B = B/s1. To distribute
   // the concavity/convexity equally to A and C, we may choose A = C = sqrt(A*C).
-
 
   // Plot p = s0*s1 and q = s0*s1 as function of b and as function of B = (1+b) / (1-b) for a fixed
   // value of a and using c = -a. The rationale behind this choice is that the outer mappings 
@@ -1841,6 +1803,8 @@ void selfInverseInterpolation()  // Maybe rename
     // Maybe plot s0, s1 as functions of B. That is that total slope of the full function as 
     // function of the slope of the inner function
   }
+  // obsolete
+  */
 
   // Helper function to compute the coeffs from the desired slopes:
   auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c)
@@ -1858,8 +1822,26 @@ void selfInverseInterpolation()  // Maybe rename
     *b = (B-1) / (B+1);
     *c = (C-1) / (C+1);
   };
-  // This should go into the library. It is what is needed for an actualy implementation of the
+  // This should go into the library. It is what is needed for an actual implementation of the
   // interpolation scheme.
+
+  // Algorithm:
+  // To obtain the desired slopes at 0 and 1, we'll have to pick an appropriate set of parameters
+  // a, b, c. Let's define A = (1+a)/(1-a), B = (1+b)/(1-b), C = (1+c)/(1-c) so we may write more 
+  //  simply:
+  //
+  //   s0 = A*B*C,   s1 = B/(A*C)
+  //
+  // That's a nonlinear system of 2 equations in 3 variables. We solve it by treating the slopes
+  // introduced by A and C as one thing, i.e. we take the product AC = A*C as one of the variables.
+  // Solve the 2nd equation for AC: AC = B/s1. Plug that into the 1st: s0 = B^2/s1. Solve for B:
+  // B = sqrt(s0*s1). After having computed B, we may compute AC = B/s1. Now we say that the 
+  // contributions of A and C to the product AC should be equal, so we get A = C = sqrt(AC). It 
+  // seems like we could pick any A and then compute C = AC/A or pick any C and compute A = AC/C.
+  // This way, we would get different shapes. But it seems most natural this way. Also, I guess
+  // when doing it any other way, we would lose the self-inverse interpolation property. The 
+  // interpolation scheme would still be invertible, but for the inverse interpolation we may have
+  // to use the converse algorithm ...I guess -> ToDo: figure this out!
 
 
   // OK, let's try the algorithm from above. Pick a fixed s0 = 1 and let s1 range through
@@ -1896,10 +1878,18 @@ void selfInverseInterpolation()  // Maybe rename
   int dummy = 0;
 
   // Observations:
+  // -The shapes look indeed nicely symmetric with respect to the line y = x as we would expect 
+  //  from our construction of the set of function as containing also the inverses of all members.
 
   // ToDo:
   // -Plot the cubic Hermite interpolant for comparison.
+  // -Figure out the actual expression for the interpolation. In the range 0..0.5 It's a nesting 
+//    of 5 things: Moebius trafo -> upscaling -> Moebius trafo -> downscaling -> Moebius trafo. In 
+  //  the range 0.5...1, it's Moebius -> affine -> Moebius -> affine -> Moebius.
+  //  Maybe call the interpolation-scheme Moebius-interpolation or BiMoebius interpolation.
   // -Use the tetrarational map for 1st order smooth monotonic and invertible interpolation.
+  // -Use that interpolation scheme in rsTimeWarper (let the user switch between linear and 
+  //  rational)
   // -Maybe target values for the slopes can be obtained from the data by numerical dervatives or
   //  maybe we can apply a constraint that the curvatures should match at the nodes similar to
   //  what is done in cubic spline interpolation
@@ -1913,11 +1903,26 @@ void selfInverseInterpolation()  // Maybe rename
   // Other ideas:
   // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
   //  around zero but away from zero, it is the identity.
-  //
+  // -Implement a smoothQuantize function based on the birational map:
+  //    i = floor(x);
+  //    f = x - i;
+  //    f = rsBiRationalMap(f, a);
+  //    y = i + f;
+  //  This scheme quantizes to integers for a = -1 or a = +1, is neutral for a = 0. We could 
+  //  quantize to other intervals q, by pre-scaling x by 1/q and post-scaling y by q (or the other
+  //  way around). But this scheme quatizes to floor or ceil (depending on whether a = -1 or +1). 
+  //  To quantize to the nearest integer, we may shift f by 0.5 before applying the map and shift y
+  //  back by -0.5 (or something like that).
 
   // Notes:
   // -Check literature about rational splines. We are doing something similar here, I think.
   //  https://www.alglib.net/interpolation/rational.php
+  // -My initial idea was to use a linear combination of self-inverse functions for interpolation.
+  //  However, the linear combination of self-inverse functions does not lead to a function that is
+  //  of the same type. The forward combination stacks the function on top of each other along the
+  //  y-axis and the backward combination would stack them to the right of each other along the
+  //  x-axis. this is not the same thing, so the approach was a dead end road. What we actually 
+  //  need is a set of functions, all of whose inverses are also members of the set.
 }
 
 void interpolatingFunction()
