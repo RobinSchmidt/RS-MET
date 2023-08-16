@@ -1615,7 +1615,7 @@ void selfInverseInterpolation()  // Maybe rename
   //  derivatives at 0 and 1 are (1-a^2) / (1-a)^2 and (1-a^2) / (1+a)^2. Try a linear combination 
   //  of two such rational functions with different a, i.e. f(x) = c1*rat(x,a1) + c2*rat(x,a2).
   //  I actually think, the Moebius transforms do also form a group of functions and this "rat"
-  //  (for rational) function is one of them. See also code int rsNodeBasedFunction
+  //  (for rational) function is one of them. See also code in rsNodeBasedFunction
   //  https://www.desmos.com/calculator/rqdymhmwps
   // -Let's call R(x,a) the rational map and B(x,a) the birational map with coeffs a. Consider the 
   //  set of functions formed from R°B°R. I think, it doesn't from a group but has inverses. Let's
@@ -1627,7 +1627,14 @@ void selfInverseInterpolation()  // Maybe rename
   // -The derivative of R(x,a) is: R_a'(x) = (1 - a^2) / (1 + a (2 x - 1))^2 which evaluated at 
   //  0 and 1 gives R_a'(0) = (1+a)/(1-a), R_a'(1) = (1-a)/(1+a)
   // -The second derivative is (4 a (-1 + a^2))/(1 + a (-1 + 2 x))^3 which evaluated at 0 gives
-  //  (-4 a (1 + a))/(-1 + a)^2 and evaluated at 1 gives (4 (-1 + a) a)/(1 + a)^2
+  //  (-4 a (1 + a))/(-1 + a)^2 and evaluated at 1 gives (4 (-1 + a) a)/(1 + a)^2. Maybe try to
+  //  find a formula in terms of A = (1+a)/(1-a). Maybe that's simpler? (A-1) / (A+1). Yes - 
+  //  Wolfram Alpha produces for "substitute a = (A-1) / (A+1) into  (-4 a (1 + a))/(-1 + a)^2" the
+  //  result: -2 (-1 + A) A = 2 A (1-A). Maybe this can be used to create a 2nd order smooth 
+  //  interpolant. But maybe that's pointless because tthe inner (sigmoid) function is itself only
+  //  1st order smooth ...or is it in fact smoother? It is 2nd order smooth by construction but 
+  //  maybe it's actually smoother than that? Figure out! The two partial functions use the same 
+  //  coeff a but with negation. Maybe that leads to ahigher order match?
 
   // We form a linear combination of the two self-inverse functions 
   //   f1(x) = 1-x         = (1-x^1)^(1/1)
@@ -1849,13 +1856,13 @@ void selfInverseInterpolation()  // Maybe rename
 
 
   // OK, let's try the algorithm from above. Pick a fixed s0 = 1 and let s1 range through
-  // 1/16, 1/8, 1/4, 1/2, 1, 2, 4, 8, 16. Generate the graphs and plot them.
+  // 1/128, ..., 1/8, 1/4, 1/2, 1, 2, 4, 8, ..., 128. Generate the graphs and plot them.
   {
     GNUPlotter plt;
-    Real s0 = 1.0/1.0;   // Fixed slope at x,y = 0,0. Interesting plots occur for 1/4, 1, 4
-    Real s1 = 1.0/16.0;  // Variable slope at x,y, = 1,1. Goes up in the loop
+    Real s0 = 1.0/1.0;    // Fixed slope at x,y = 0,0. Interesting plots occur for 1/4, 1, 4
+    Real s1 = 1.0/128.0;  // Variable slope at x,y, = 1,1. Goes up in the loop
     Real a, b, c;
-    while(s1 <= 16)
+    while(s1 <= 128)
     {
       ratCoeffs(s0, s1, &a, &b, &c);
 
@@ -1882,16 +1889,6 @@ void selfInverseInterpolation()  // Maybe rename
   int dummy = 0;
 
   // Observations:
-  // -The inversion seems to work well.
-  // -For s0, s1 = 16, 1/16, we get b = 0 as expected (no sigmoidity). The concavity is provided
-  //  solely by a = 0.882... and c = 0. It might be nicer if we could distribute the concavity
-  //  equally between a and c. Maybe we could even give the user a sort of shape parameter that
-  //  allows to manually control, how much concavity its provided by the pre- and how much by the
-  //  post warp.
-  // -Maybe solve the 2 equations for A*C and for A/C and from there, compute A and C
-  // -For s0 = s1 = 1/16, we get a = c = 0, b = -0.882. This seems to make sense.
-  // -It actually seems that c is always zero. So, the concavity is always only provided by a.
-  //  Try to distribute it!
 
   // ToDo:
   // -Plot the cubic Hermite interpolant for comparison.
@@ -1899,6 +1896,9 @@ void selfInverseInterpolation()  // Maybe rename
   // -Maybe target values for the slopes can be obtained from the data by numerical dervatives or
   //  maybe we can apply a constraint that the curvatures should match at the nodes similar to
   //  what is done in cubic spline interpolation
+  // -Try to use two birational maps as output functions and one rational as inner instead fo the
+  //  other way around. a lot of the math should translate easily. Maybe the shapes obtained are 
+  //  different but also useful.
   // -What if we consider our rational f as function of a (in (-1,+1)) and treat x as parameter 
   //  (in [0,1] ...or maybe beyond?). Then our equation relating the coeff of a composed function
   //  to those of the partial functions becomes an interesting functional equation
