@@ -1659,7 +1659,11 @@ bool moebiusMapTest()
   // -Maybe for this purpose here, it is inconvenient to parameterize the linfrac map via the
   //  parameter a. Maybe we should parametrize it directly via its slope parameter. Maybe that can 
   //  get rid of all the complicated equations for A1, B1, ... and replace them by simpler 
-  //  formulas.
+  //  formulas. On the other hand, it's convenient that the inverse map just requires negation
+  //  of the parameter. But: when using the slope, inversion would just reuqire to take the 
+  //  reciprocal which would be equally convenient and intuitive. Maybe the conversion between 
+  //  slope and parameter is generally useful for conveting parameter ranges back and forth between
+  //  (-1,0,+1) <--> (0,1,inf) where in the middle, we have the neutral value.
 
   return ok;
 }
@@ -1742,10 +1746,16 @@ void linearFractionalInterpolation()
   // form a group, implying that the inverses are also in the set and compositions of such 
   // functions yield another element from the set. One might hope that with the 4 tweakable 
   // parameters, one could satisfy 4 constraints to let the values and derivatives match some 
-  // prescribed value at the ends of the intervals. However, unfortunately, that's not so simple. 
-  // To make it work, we actually need two linfracs per segment that join together at an internal 
-  // node somewhere within the segment. At this internal node, the two sub-segments will also join
-  // smoothly to first order such that the overall smoothness of the interpolant is unchanged.
+  // prescribed value at the ends of the intervals. However, unfortunately, that's not so simple.
+  // When trying to solve the resulting system of equations, it turns out that it can only be 
+  // solved, if the two slopes at the ends of the interval are reciprocals of one another so we
+  // can't prescribe them independently. I think, it is because the linfrac has actually only 3 
+  // degrees of freedom rather than 4 because scaling all coeffs by the same number gives the same
+  // transformation. Maybe that's why fixing the endpoints and one derivative already locks 
+  // everything in place. To allow ourselves more control, we will use two linfracs per segment 
+  // that join together at an internal node somewhere within the segment. At this internal node, 
+  // the two sub-segments will also join smoothly to first order such that the overall smoothness
+  // of the interpolant is unchanged.
   //
   // The construction of the interpolant for a segment works as follows. We will assume that we
   // want to find a function f(x) that maps the unit interval monotonically and invertibly to 
@@ -1756,6 +1766,7 @@ void linearFractionalInterpolation()
   // It may make sense to produce them by numerical differentiation of the actual data, but that's 
   // a different topic. Here, we just assume them to be given.
   // ...TBC...
+
   
   // Old:
   // Some experiments with Moebius maps that can be used for an invertible interpolation scheme 
@@ -2024,9 +2035,22 @@ void linearFractionalInterpolation()
   // which seems to suggest that the system has only a solution when s1 = 1/s0. Using wolfram
   // Alpha with this:
   //   solve 1  == a / (c+d), s0 == a / d,  s1 == d / (c+d) for a,c,d
-  // seems to confirm this. This is actually in line with what we found before. The linfrac with
-  // a single parameter produces reciprocal slopes at the endpoints of the unit interval. It seems
-  // like we can prescribe only one value s0 or s1. The rest falls then into place.
+  // seems to confirm this:
+  //   c == a - a s1 && d == a s1 && a != 0 && s1 != 0 && s0 == s1^(-1)
+  // This is actually in line with what we found before. The linfrac with a single parameter 
+  // produces reciprocal slopes at the endpoints of the unit interval. It seems like we can 
+  // prescribe only one value s0 or s1. The rest falls then into place. Let's pick s0 and assume 
+  // s1 = 1/s0. It seems that eq3: s0 = a/d let's us now freely pick a. Let's pick a = s0. Then
+  // d = 1 follows. Then c = s0 - d follows. All in all:
+  //   a = s0, b = 0, c = s0 - 1, d = 1
+  // that means
+  //   f(x) = (s0*x) / ((s0-1)*x + 1)
+  // Yes! That works: https://www.desmos.com/calculator/lmbes9yqtu
+  // So: use a parameter s (and t,u for the following 2nd and 3rd trafos). To convert from s to our
+  // old parameter in [-1,+1] which we shall call p her, we have p = (s-1)/(s+1) and
+  // s = (1+p)/(1-p). See: https://www.desmos.com/calculator/ntfxpcrelp
+  // btw: using f(x) = (s*x) / ((1-s)*x + 1) is also interesting when we use the same formula for
+  // s(p) and tweak p
 
   // See also:
   // https://math.stackexchange.com/questions/4162828/interpolation-with-exact-inverse
