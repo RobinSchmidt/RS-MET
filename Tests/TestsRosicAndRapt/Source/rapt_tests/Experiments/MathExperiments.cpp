@@ -1619,34 +1619,22 @@ bool moebiusMapTest()
   Real splitX = rsRationalMap_01(0.5, -a);    // point at which to switch between lower and upper piece
   Real test   = rsRationalMap_01(splitX, a);  // should be 0.5
   ok &= rsIsCloseTo(test, 0.5, tol);
-
   Real ab  = a*b, ac = a*c, bc = b*c;
   Real abc = ab*c;
-
-  Real A1 = -(abc + ab + ac + bc + a + b + c + 1);
-  Real B1 = 0;
-  Real C1 = -2*(ab - bc + a + 2*b + c);
-  Real D1 = abc - ab - ac - bc + a + b + c - 1;
-
-  Real A2 = -2*(abc + ab + ac - 3*(bc + b) + a + c + 1);
-  Real B2 = 4*(abc + ab - bc - b);
-  Real C2 = - 4*(ab - bc + a - 2*b + c);
-  Real D2 = 2*(abc + 3*(ab - b) - ac - bc + a + c - 1);
-
-  for(int n = 0; n < N; n++)
-  {
+  Real A1  = -(abc + ab + ac + bc + a + b + c + 1);
+  Real B1  = 0;
+  Real C1  = -2*(ab - bc + a + 2*b + c);
+  Real D1  = abc - ab - ac - bc + a + b + c - 1;
+  Real A2  = -2*(abc + ab + ac - 3*(bc + b) + a + c + 1);
+  Real B2  = 4*(abc + ab - bc - b);
+  Real C2  = - 4*(ab - bc + a - 2*b + c);
+  Real D2  = 2*(abc + 3*(ab - b) - ac - bc + a + c - 1);
+  for(int n = 0; n < N; n++) {
     y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
     if(x[n] <= splitX)
-    {
       z[n] = (A1*x[n] + B1) / (C1*x[n] + D1);
-    }
     else
-    {
-      z[n] = (A2*x[n] + B2) / (C2*x[n] + D2);
-      //z[n] = (A1*x[n] + B1) / (C1*x[n] + D1);  // same as above to see how it continues
-      // has a pole at 0.37
-    }
-  }
+      z[n] = (A2*x[n] + B2) / (C2*x[n] + D2);   }
   err = z-y; ok &= rsIsAllZeros(err, tol);
   rsPlotVectorsXY(x, y, z);
 
@@ -1664,6 +1652,10 @@ bool moebiusMapTest()
   //  same for the upper piece (given yet another 16 muls). In between we would have to do a few 
   //  more muls to take care of the affine trafos pre and post the inner map. So, even though it 
   //  looks ugly, maybe the code above is actually not so bad.
+  // -Wrap the amalgamation/composition code into a function that can be used as library function
+  //  and test it for some more cases, i.e. more choices for a,b,c. Maybe let a,b,c each run 
+  //  through -0.9...+0.9 in 0.1 steps. That should give 19^3 = 6859 test cases. Maybe use steps 
+  //  of 0.3 givin 7^3 = 343 test cases.
 
   return ok;
 }
