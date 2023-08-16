@@ -1508,21 +1508,31 @@ T rsBiRationalMap_01(T x, T a)
     return T(0.5) * rsRationalMap_01((x-T(0.5))*T(2), -a) + T(0.5);
 }
 // Maybe rename this to rsBiMoebiusMap_01 and rsRationalMap_01 to rsMoebiusMap_01
-// Or rsSplitMoebiusMap
+// Or rsSplitMoebiusMap or rsSymmetrizedMoebiusMap, rsMirroredMoebiusMap, rsReflectedMoebiusMap,
+// rsSigmoidizedMoebiusMap
 
 /** Map composed of a rational map, a birational map and another rational map. ...TBC.. */
 template<class T>
 T rsTetraRationalMap_01(T x, T a, T b, T c)
 {
-  x = rsRationalMap_01(  x, a);
-  x = rsBiRationalMap_01(x, b);
-  x = rsRationalMap_01(  x, c);
+  x = rsRationalMap_01(  x, a);  // pre convexity or concavity
+  x = rsBiRationalMap_01(x, b);  // sigmoidity or saddleness
+  x = rsRationalMap_01(  x, c);  // post convexity or concavity
   return x;
 }
 // Maybe rename this to rsComposedMoebiusMap_01. Maybe implement a variant that uses the birational
 // map as outer functions and the normal rational map as inner function.
 // Maybe intead of tetra use tri. The split-moebius map should perhaps not count as two because it
 // just switches between two maps rather than applying two maps in sequence.
+// The full transformation is a sequence of:
+//   Moebius -> affine -> Moebius -> affine -> Moebius
+// where in the x <= 0.5 case, the affine map is actually even linear (i.e. no offset is involved). 
+// But wait, the switch between the cases happens not on the original x but on the intermediate 
+// value after the first map has been applied. But be that as it may, I think, in both cases, the
+// full transformation is again Moebius map because they form a closed set (and affine maps are 
+// also in the set - they are very simple Moebius maps). So it seems, it would be OK to call the 
+// full map also just a Moebius map. But, it's actually a segmented map built from two Moebius 
+// maps stitched together. Maybe call it rsBiMoebiusMap
 
 
 void selfInverseInterpolation()
