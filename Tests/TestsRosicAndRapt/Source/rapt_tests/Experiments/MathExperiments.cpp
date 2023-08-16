@@ -1656,6 +1656,10 @@ bool moebiusMapTest()
   //  and test it for some more cases, i.e. more choices for a,b,c. Maybe let a,b,c each run 
   //  through -0.9...+0.9 in 0.1 steps. That should give 19^3 = 6859 test cases. Maybe use steps 
   //  of 0.3 giving 7^3 = 343 test cases.
+  // -Maybe for this purpose here, it is inconvenient to parameterize the linfrac map via the
+  //  parameter a. Maybe we should parametrize it directly via its slope parameter. Maybe that can 
+  //  get rid of all the complicated equations for A1, B1, ... and replace them by simpler 
+  //  formulas.
 
   return ok;
 }
@@ -2021,7 +2025,8 @@ void linearFractionalInterpolation()
   // Alpha with this:
   //   solve 1  == a / (c+d), s0 == a / d,  s1 == d / (c+d) for a,c,d
   // seems to confirm this. This is actually in line with what we found before. The linfrac with
-  // a single parameter produces reciprocal slopes at the endpoints of the unit interval.
+  // a single parameter produces reciprocal slopes at the endpoints of the unit interval. It seems
+  // like we can prescribe only one value s0 or s1. The rest falls then into place.
 
   // See also:
   // https://math.stackexchange.com/questions/4162828/interpolation-with-exact-inverse
