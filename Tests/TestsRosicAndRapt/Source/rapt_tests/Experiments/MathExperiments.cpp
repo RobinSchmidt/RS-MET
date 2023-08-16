@@ -1621,10 +1621,10 @@ bool moebiusMapTest()
 
   Real A1 = -(abc + ab + ac + bc + a + b + c + 1);
   Real B1 = 0;
-  Real C1 = -2*(ab - b*c + a + 2*b + c);
+  Real C1 = -2*(ab - bc + a + 2*b + c);
   Real D1 = abc - ab - ac - bc + a + b + c - 1;
 
-  Real A2 = - 2*(abc + ab + ac - 3*bc + a - 3*b + c + 1);
+  Real A2 = - 2*(abc + ab + ac - 3*(bc + b) + a + c + 1);
   Real B2 = 4*abc + 4*ab - 4*bc - 4*b;
   Real C2 = - 4*(ab - bc + a - 2*b + c);
   Real D2 = 2*abc + 6*ab - 2*ac - 2*bc + 2*a - 6*b + 2*c - 2;
