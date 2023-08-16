@@ -2071,6 +2071,23 @@ void linearFractionalInterpolation()
   //  way around). But this scheme quatizes to floor or ceil (depending on whether a = -1 or +1). 
   //  To quantize to the nearest integer, we may shift f by 0.5 before applying the map and shift y
   //  back by -0.5 (or something like that).
+  // -Self-inverse functions: https://en.wikipedia.org/wiki/Involution_(mathematics)
+  //  log((e^x + 1) / (e^x - 1)) is an involution. Actually, when tweaking it a little, we get shapes 
+  //  that look a lot like percussive envelopes. Take log((e^x + a) / (e^x - b)). with a = 25, 
+  //  b = 0.98, we get an initial fast decay like at a pole, followed by a linear section, followed 
+  //  by an exponential decay. https://www.desmos.com/calculator/hu0vgjoyxq
+  // -Our group seems to have finite subgroups:
+  //  https://math.stackexchange.com/questions/381066/showing-that-this-set-of-functions-is-a-group
+  //  https://math.stackexchange.com/questions/2758562/what-causes-a-set-of-functions-to-form-a-group-under-composition
+  //  Actually, the 1-parametric family is also an infinite subgroup of the group of all linfracs.
+  //  I think, it is a Lie-group...and the mainfold is parametrized by the parameter and maybe we 
+  //  have to pick a fixed x to actually evaluate points on the manifold?
+  //  Countable subgroups:
+  //  https://mathworld.wolfram.com/ModularGroupGamma.html
+  //  https://mathworld.wolfram.com/ModularGroupLambda.html
+  //  https://en.wikipedia.org/wiki/Modular_group
+  //  https://mathworld.wolfram.com/ModularForm.html
+  //  https://en.wikipedia.org/wiki/Modular_form
 }
 
 void interpolatingFunction()

@@ -288,12 +288,17 @@ T rsRationalMap_01(T x, T a);
 //  for inverse and composed functions etc, i.e. class that actually implements the formulas given
 //  in the comment. Maybe make a class rsTetraRationalMap that also includes the symmetrized 
 //  function around 0.5,0.5
-// -Some more formulas are given selfInverseInterpolation() in MathExperiments.h. list them here, 
-//  too.
+// -Some more formulas are given linearFractionalInterpolation() in MathExperiments.h. list them 
+//  here, too.
 // -Maybe rename the parameter to p such that we can use a,b,c,d for explaining things in terms
 //  of Moebius transformations using the usual naming conventions, i.e. M(z) = (a*z+b)/(c*z+d).
 //  Then we would have: a = 1+p, b = 0, c = 2*p, d = 1-a. Mobius trafos have two fixed points.
 //  Here, we have chosen them to be 0 and 1.
+// -In the comments in linearFractionalInterpolation at the bottom, there is a description of a 
+//  different parametrization in terms of the slope at the origin. This parametrization also
+//  leads to a simpler formula to evaluate. Maybe move these functions into a file 
+//  MappingFunctions.h similar to BellFunctions.h and Sigmoids.h (which may be renamed to 
+//  SigmoidFunctions.h)
 
 /** Returns the nearest integer (as double, without typecast). */
 RS_INLINE double rsRound(double x);
