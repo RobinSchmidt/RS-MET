@@ -1627,7 +1627,7 @@ bool moebiusMapTest()
   Real A2 = -2*(abc + ab + ac - 3*(bc + b) + a + c + 1);
   Real B2 = 4*(abc + ab - bc - b);
   Real C2 = - 4*(ab - bc + a - 2*b + c);
-  Real D2 = 2*abc + 6*ab - 2*ac - 2*bc + 2*a - 6*b + 2*c - 2;
+  Real D2 = 2*(abc + 3*(ab - b) - ac - bc + a + c - 1);
 
 
   Real splitX = rsRationalMap_01(0.5, -a);
