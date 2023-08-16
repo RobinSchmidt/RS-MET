@@ -1713,7 +1713,7 @@ void linearFractionalInterpolation()
 {
   // Linear fractional interpolation is an interpolation method based on the linear fractional 
   // transformation that I have invented myself. It is suitable only for strictly monotonic data.
-  // The interpolant that interpolates a segment between two data points will also monotonic. 
+  // The interpolant that interpolates a segment between two data points will also be monotonic. 
   // Moreover, the interpolant will be easily invertible and the inverse interpolating function 
   // will be of the same kind and can easily be obtained from the forward interpolating function.
   // The motivation for such a scheme lies in the desire to have an interpolation method that is
@@ -1730,15 +1730,28 @@ void linearFractionalInterpolation()
   // inverse interpolant will be something like a piecewise "cube-rooty" function (well, it's 
   // actually even more complicated than that but you get the point).
   //
-  // Linear fractional interpolation solves this problem by using as interpolant between the 
-  // segments functions of form general form y = f(x) = (a*x + b) / (c*x + d). These functions
+  // Linear fractional interpolation solves this problem by using as interpolants between the 
+  // segments functions of the general form y = f(x) = (a*x + b) / (c*x + d). These functions
   // are also known as "linear fractional transformations" because they consist of a fraction or
   // quotient of two linear functions. One nice feature of the linear fractional transformations
-  // (which we will abbreviate as "linfrac" maps or just "linfracs" in the following) is that they
-  // form a group, meaning that (1) the set contains a neutral element (the identity function with 
-  // a=1, b=c=d=0), (2) the inverses are also in the set and (3) compositions of such functions 
-  // yield another element from the set. For us, the composition and existence of inverses are the
-  // relevant features. In order to control the derivatives at the segment endpoints...TBC...
+  // (which we will abbreviate as "linfrac maps" or just "linfracs" in the following) is that they
+  // form a group, implying that the inverses are also in the set and compositions of such 
+  // functions yield another element from the set. One might hope that with the 4 tweakable 
+  // parameters, one could satisfy 4 constraints to let the values and derivatives match some 
+  // prescribed value at the ends of the intervals. However, unfortunately, that's not so simple. 
+  // To make it work, we actually need two linfracs per segment that join together at an internal 
+  // node somewhere within the segment. At this internal node, the two sub-segments will also join
+  // smoothly to first order such that the overall smoothness of the interpolant is unchanged.
+  //
+  // The construction of the interpolant for a segment works as follows. We will assume that we
+  // want to find a function f(x) that maps the unit interval monotonically and invertibly to 
+  // itself. That means the function should produce f(0) = 0 and f(1) = 1. Additionally, it should
+  // produce f'(0) = s0 and f'(1) = s0 for some pair of prescribed slope values at the interval 
+  // boundaries. These slope values will ensure that the overall interpolant will have matching 
+  // slopes at the segment boundaries. Where we get these s0, s1 values from doesn't matter here. 
+  // It may make sense to produce them by numerical differentiation of the actual data, but that's 
+  // a different topic. Here, we just assume them to be given.
+  // ...TBC...
   //
   // 
 
