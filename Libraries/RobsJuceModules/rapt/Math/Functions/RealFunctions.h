@@ -290,6 +290,10 @@ T rsRationalMap_01(T x, T a);
 //  function around 0.5,0.5
 // -Some more formulas are given selfInverseInterpolation() in MathExperiments.h. list them here, 
 //  too.
+// -Maybe rename the parameter to p such that we can use a,b,c,d for explaining things in terms
+//  of Moebius transformations using the usual naming conventions, i.e. M(z) = (a*z+b)/(c*z+d).
+//  Then we would have: a = 1+p, b = 0, c = 2*p, d = 1-a. Mobius trafos have two fixed points.
+//  Here, we have chosen them to be 0 and 1.
 
 /** Returns the nearest integer (as double, without typecast). */
 RS_INLINE double rsRound(double x);

@@ -1533,6 +1533,51 @@ T rsTetraRationalMap_01(T x, T a, T b, T c)
 // also in the set - they are very simple Moebius maps). So it seems, it would be OK to call the 
 // full map also just a Moebius map. But, it's actually a segmented map built from two Moebius 
 // maps stitched together. Maybe call it rsBiMoebiusMap
+// https://en.wikipedia.org/wiki/M%C3%B6bius_transformation
+// https://de.wikipedia.org/wiki/M%C3%B6biustransformation
+
+
+bool moebiusMapTest()
+{
+  bool ok  = true;
+
+  using Real = double;
+  using Vec = std::vector<Real>;
+
+  int  N   = 257;
+  Real tol = 1.e-13;
+
+
+  Vec x = rsLinearRangeVector(N, 0, 1);
+  Vec y(N), z(N);
+  Vec err;
+
+  // Coefficients:
+  Real a = 0.5, b = -0.6, c = -0.3; // moderately flat at0, very flat at 1
+  //a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
+  //a = 0.75; b = 0.75; c = -0.5;  
+
+  // Check inversion of the rational map via negating the paraneter:
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsRationalMap_01(x[n],  a);
+    z[n] = rsRationalMap_01(y[n], -a);  // Should give back x
+  }
+  err = z-x; ok &= rsIsAllZeros(err, tol);
+  //rsPlotVectorsXY(x, y, z);
+
+  // Check inversion of the birational map via negating the paraneter:
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsBiRationalMap_01(x[n],  a);
+    z[n] = rsBiRationalMap_01(y[n], -a);  // Should give back x
+  }
+  err = z-x; ok &= rsIsAllZeros(err, tol);
+  //rsPlotVectorsXY(x, y, z);
+
+
+  return ok;
+}
 
 
 void selfInverseInterpolation()
@@ -1573,7 +1618,11 @@ void selfInverseInterpolation()
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
 
-  bool ok  = true;
+
+  bool ok = moebiusMapTest();
+
+
+  //bool ok  = true;
   Real tol = 1.e-13;
 
   Vec x = rsLinearRangeVector(N, 0, 1);
@@ -1585,23 +1634,7 @@ void selfInverseInterpolation()
   //a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
   //a = 0.75; b = 0.75; c = -0.5;  
 
-  // Check inversion of the rational map via negating the paraneter:
-  for(int n = 0; n < N; n++)
-  {
-    y[n] = rsRationalMap_01(x[n],  a);
-    z[n] = rsRationalMap_01(y[n], -a);  // Should give back x
-  }
-  err = z-x; ok &= rsIsAllZeros(err, tol);
-  //rsPlotVectorsXY(x, y, z);
 
-  // Check inversion of the birational map via negating the paraneter:
-  for(int n = 0; n < N; n++)
-  {
-    y[n] = rsBiRationalMap_01(x[n],  a);
-    z[n] = rsBiRationalMap_01(y[n], -a);  // Should give back x
-  }
-  err = z-x; ok &= rsIsAllZeros(err, tol);
-  //rsPlotVectorsXY(x, y, z);
 
   // Check inversion of the tetrarational map via negating the paraneters and reversing their 
   // order. The tetrarational map is what we want to use for the invertible interpolation scheme,
@@ -1763,6 +1796,8 @@ void selfInverseInterpolation()
   //  is not a good idea. We'll see...
 
   // ToDo:
+  // -Combine the 3 Moebius trafos into a single split-trafo. The splitting point can be computed 
+  //  as the inverse trafo of the A map. This can be used for optimization.
   // -Maybe rename s0 to slopeAt0. But that currently gives a name clash with a small internal 
   //  helper function. Maybe get rid of these helpers entirely or move them out of the function
   //  to make them avaialble as potential library functions.
@@ -1824,6 +1859,15 @@ void selfInverseInterpolation()
   //  used to create a 2nd order smooth interpolant. But maybe that's pointless because the inner 
   //  (sigmoid) function is itself only 1st order smooth, I think. It's composed of two chunks 
   //  which meet each other in a 1st order smooth node at x,y = 0.5,0.5.
+  // -When thinking about cubic splines vs cubic Hermite interpolation, we actually note that 
+  //  Hermite with numerical derivatives may make more sense than spline with respect to how well
+  //  the data is modeled because we also model the *measured* derivative whereas in spline 
+  //  interpolation, we *adjust* the derivatives to make the spline smooth to 2nd order. But if the
+  //  underlying data does not happen to be described by a cubic polynomial, this smoothness 
+  //  constraint may be meaningless with respect to data modeling. Maybe try what happens when we 
+  //  use numeric derivatives that are at least 3rd order accurate in cubic Hermite interpolation. 
+  //  That accuracy seems to be a good fit. When the input data actually *is* a cubic polynomial, 
+  //  the Hermite interpolant should be able to reconstruct it exactly
 
   // Other ideas (spin offs - move to some experiment involving waveshaping):
   // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
