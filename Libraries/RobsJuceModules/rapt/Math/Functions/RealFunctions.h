@@ -281,12 +281,15 @@ these features make this set (actually "group") of functions a convenient choice
 For a plot, see: https://www.desmos.com/calculator/jkxafs0vp9  */
 template<class T>
 T rsRationalMap_01(T x, T a);
-// ToDo: 
+// ToDo:
+// -Maybe rename to rsMoebiusMap_01
 // -Give formulas for the coefficient a given the slope
 // -Maybe wrap this into a class that does a bit more stuff like computing derivatives finds coeffs
 //  for inverse and composed functions etc, i.e. class that actually implements the formulas given
 //  in the comment. Maybe make a class rsTetraRationalMap that also includes the symmetrized 
 //  function around 0.5,0.5
+// -Some more formulas are given selfInverseInterpolation() in MathExperiments.h. list them here, 
+//  too.
 
 /** Returns the nearest integer (as double, without typecast). */
 RS_INLINE double rsRound(double x);

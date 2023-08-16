@@ -1507,8 +1507,8 @@ T rsBiRationalMap_01(T x, T a)
   else
     return T(0.5) * rsRationalMap_01((x-T(0.5))*T(2), -a) + T(0.5);
 }
-// Calls a different function rsRationalMap defined in OscillatorExperiments.h. we have a 
-// name-clash here. Maybe call one of them ...Map01 and the other ...MapSym (for symmetric)
+// Maybe rename this to rsBiMoebiusMap_01 and rsRationalMap_01 to rsMoebiusMap_01
+// Or rsSplitMoebiusMap
 
 /** Map composed of a rational map, a birational map and another rational map. ...TBC.. */
 template<class T>
@@ -1519,137 +1519,29 @@ T rsTetraRationalMap_01(T x, T a, T b, T c)
   x = rsRationalMap_01(  x, c);
   return x;
 }
+// Maybe rename this to rsComposedMoebiusMap_01. Maybe implement a variant that uses the birational
+// map as outer functions and the normal rational map as inner function
 
-//  (1 - a^2) / (1 + a (2 x - 1))^2 
 
-
-/*
-template<class T>
-T rsTetraRationalSlope_01(T x, T a, T b, T c)
+void selfInverseInterpolation()
 {
+  // Maybe rename to invertibleInterpolation or MoebiusInterpolation
 
-
-}
-*/
-
-
-
-void selfInverseInterpolation()  // Maybe rename
-{
-  // ToDo: clean up the comments.
-
-  // Under construction...not sure yet, if this leads to anywhere
-
-  // We experiment with some ideas for self-inverse interpolation. See comments in
-  // Interpolation.cpp to see what this is about. ...TBC...
-
-  // On the unit interval [0,1], we form linear combinations of certain sets of functions. But 
-  // rather than using powers of x as we would in polynomial interpolation, we use pairs of a 
-  // function and its inverse such that exactly the same set of functions can be expressed either
-  // as y = f(x) or x = f(y), For rexample, we can use:
+  // Some experiments with Moebius maps that can be used for an invertible interpolation scheme.
+  // We consider the unit interval [0,1] and map it monotonically and invertibly to itself using
+  // a nesting of a Moebius map, a split-Moebius map and another Moebius map. Each of the 3 maps 
+  // has a parameter that controls the slopes at the endpoints 0,1. So, all in all, we have 3 
+  // adjustable parameters that we can use to match the desired slopes at the endpoints 0,1. In 
+  // this experiment, we explore, how this can be done.
   //
-  //   x, x^2, sqrt(x)
-  //   https://www.desmos.com/calculator/coklu2u8ad
-  //
-  // or:
-  //
-  //   x, 1-sqrt(1-x^2), sqrt(1-(1-x)^2)
-  //   https://www.desmos.com/calculator/kir09i5hfj
-  //
-  
-  // Other idea:
-  // -Prescribe two tangents to a to-be-constructed circle at (0,0) and (1,1)
-  // -Construct the circle, i.e. figure out its center and radius
-  // -Use the circular arc as function y = f(x)
-  // -The center can be found by constructing the two lines perpendicular to the given tangent 
-  //  lines and finding their intersection.
-  // -Once the center is known, the radius can easily be found by computing the distance of the
-  //  center to (0,0) or (1,1). 
-  // -Maybe the computation can be done by geomtric algebra (2D, projective)
-  //  -The lines are defined by the join of two points: 
-  //     line1 = join( (0,0), (0+1, 0+s0) )   // s0 is the desired slope at 0,0
-  //     line2 = join( (1,1), (1+1, 1+s1) )   // s1 is the desired slope at 1,1
-  //   The rationals behind the 2nd points is to go one unit into the x direction and slope units
-  //   in the y-dorection from the respective starting point
-  //  -Then we must find the orthogonal lines. I think, this may be done by swapping soem coeffs
-  //   maybe negating and/or inverting...not sure
-  //  -Then the center can be found as the meet of the two orthogonal lines
-  // -Maybe if that doesn't work out, try elliptic arcs or more general conics. Maybe see here:
-  //  https://www.youtube.com/watch?v=X83vac2uTUs
-  //  A combination of 5 things, each of which can be a point or tangent line, uniquely define a 
-  //  conic. We have two points and two tangents, so that means, we would get a 1-parametric 
-  //  family of solutions. Maybe the remaining degree of freedom can be determined by some other 
-  //  constraint that we need to come up with. Some ideas:
-  //  -Somehow minimize the total curvature within the interval of interest. Maybe integrate the 
-  //   curvature squared over the interval and minimize the result. Or just take the sum of the
-  //   two curvature values at the endpoints and minimize that.
-  // -Q: Is this duality that he talks about at 3:47 the same duality that appears in geometric 
-  //  algebra? Maybe the problem can be solved with geometric algebra?
-  // -Try f(x) = x^p as class of interpolating functions. The boundary conditions for the values at
-  //  0 and 1 are satisfied by design. We have one free parameter p to tweak. The nice thing about 
-  //  this class of functions is that it forms a group when we use function composition as the
-  //  group operation. x^1 is the identity and x^(1/p) is the inverse to x^p (we may have to 
-  //  require p > 0). To control two derivatives, it would be nice to have a second parameter.
-  //  Is it possible to find a group of functions that has 2 tweakable parameters? a*x^p could work
-  //  but it doesn't satisfy the right boudary condition.
-  // -But maybe we don't need our set of functions to be a group with respect to composition. It
-  //  may be enough, if we have the same building blocks for the forward and revers case. That 
-  //  means when we have a function and its inverse available, we may also for linear combinations.
-  //  So let's consider the set a1*x^p1 + a2*x^p2. The right boundary condition gives us one 
-  //  equation: a1 + a2 = 1. The left boundary condition is satisfied by design. Now we can use the
-  //  2 desired slopes to find 2 more equations that should fix p1,p2. The derivative is:
-  //  f'(x) = p1*a1*x^(p1-1) + p2*a2*x^(p2-1). Setting f'(0) = s0 leads to 0 = 0 ...right? we can 
-  //  assume that 0^(p1-1) = 0^(p2-1) = 0, right? Or does that depend on p? What, if the exponent 
-  //  is <= 0? This is weird!
-  //  ...but I'm actually not sure, if this is valid, i.e. if we can really form linear 
-  //  combinations and assume that all inverses still exist. but it seems to make sense: to build 
-  //  the function y = f(x), we have exactly the same building blocks at our disposal as for 
-  //  building x = f^-1(y). Ah - no - that doesn't work because linear combinations means different
-  //  things in both direction. In the forward direction, we stack the functions vertically on top
-  //  of each other whereas in the reverse direction, we stack them horizontally to the right of 
-  //  each other. So it seems, we indeed need something like a group of functions.
-  // -Maybe try something based on sinh: https://www.desmos.com/calculator/nb72be5m4k
-  //  Define the class of functions as follows: use a as is when a is positive. when a is negative,
-  //  use the inverse function with the absolute value of a.
-  // -Try something based on y = rat(x,a) where rat(x,a) = ((1+a)*x) / (2*a*x + (1-a)). The 
-  //  derivatives at 0 and 1 are (1-a^2) / (1-a)^2 and (1-a^2) / (1+a)^2. Try a linear combination 
-  //  of two such rational functions with different a, i.e. f(x) = c1*rat(x,a1) + c2*rat(x,a2).
-  //  I actually think, the Moebius transforms do also form a group of functions and this "rat"
-  //  (for rational) function is one of them. See also code in rsNodeBasedFunction
-  //  https://www.desmos.com/calculator/rqdymhmwps
-  // -Let's call R(x,a) the rational map and B(x,a) the birational map with coeffs a. Consider the 
-  //  set of functions formed from R°B°R. I think, it doesn't from a group but has inverses. Let's
-  //  also use subscript notation R_a(x) for R(x,a). Consider R_a ° B_b ° R_c. Its inverse should 
-  //  be given by R_{-c} ° B_{-b} ° R_{-a}, i.e. by applying them in reverse order with paremeters
-  //  negated. Try that!
-  // -If that works out, i.e. we indeed have a set of functions that have all their inverses also 
-  //  in the set, use them for a self-inverse interpolation scheme
-  // -The derivative of R(x,a) is: R_a'(x) = (1 - a^2) / (1 + a (2 x - 1))^2 which evaluated at 
-  //  0 and 1 gives R_a'(0) = (1+a)/(1-a), R_a'(1) = (1-a)/(1+a)
-  // -The second derivative is (4 a (-1 + a^2))/(1 + a (-1 + 2 x))^3 which evaluated at 0 gives
-  //  (-4 a (1 + a))/(-1 + a)^2 and evaluated at 1 gives (4 (-1 + a) a)/(1 + a)^2. Maybe try to
-  //  find a formula in terms of A = (1+a)/(1-a). Maybe that's simpler? (A-1) / (A+1). Yes - 
-  //  Wolfram Alpha produces for "substitute a = (A-1) / (A+1) into  (-4 a (1 + a))/(-1 + a)^2" the
-  //  result: -2 (-1 + A) A = 2 A (1-A). Maybe this can be used to create a 2nd order smooth 
-  //  interpolant. But maybe that's pointless because tthe inner (sigmoid) function is itself only
-  //  1st order smooth ...or is it in fact smoother? It is 2nd order smooth by construction but 
-  //  maybe it's actually smoother than that? Figure out! The two partial functions use the same 
-  //  coeff a but with negation. Maybe that leads to ahigher order match?
-
-  // We form a linear combination of the two self-inverse functions 
-  //   f1(x) = 1-x         = (1-x^1)^(1/1)
-  //   f2(x) = sqrt(1-x^2) = (1-x^2)^(1/2)
-  //
-  // These functions satisfy the boundary conditions f1(0) = f2(0) = 1, f1(1) = f2(1) = 0 at the
-  // ends of the unit interval. See https://www.desmos.com/calculator/pnkouuumcq
-  // Maybe it's more convenient to have the boundary conditions the other way around. To achieve
-  // This, we need to reflect
-  // Or maybe use f1(0) = f2(0) = 0, f1(1) = f2(1) = 1
-  //   f1(x) = x
-  //   f2(x) = sqrt(1-(1-x)^2)
-  // See also:
-  // https://www.desmos.com/calculator/kir09i5hfj
-
+  // From this mapping of the unit interval to itself, a data interpolation scheme can be 
+  // constructed that works entirely similar to cubic Hermite interpolation. We will give the 
+  // algorithm the datapoints in x[n], y[n] arrays and also specify desired slopes in an s[n] 
+  // array. From that data, by appropriately scaling and shifting the unit interval mappings, we
+  // can produce an interpolating function that is also invertible by the same technique (but 
+  // possibly with an reciprocated s array). That interpolation scheme is not yet implemented. 
+  // Currently, we only have the mapping of the unit interval done. ...but the rest should be 
+  // just boring grunt work entirely paralleling the cubic Hermite scheme.
 
   using Real = double;
   using Vec = std::vector<Real>;
@@ -1752,60 +1644,6 @@ void selfInverseInterpolation()  // Maybe rename
   }
   //rsPlotVectorsXY(x, y, z);
 
-
-
-  /*
-  // Let's solve the 2nd for B:
-  // B = s1*A*C and plug that into the 1st: s0 = A*s1*A*C*C giving us s0/s1 = A^2 * C^2.
-  // Maybe let's call s0/s1 = q and s0*s1 = p. q is a measure for how different the slopes are from 
-  // one another (1, if they are equal) and p a measure for how high the slopes are in a combined 
-  // way. Maybe B should be a 1D function of p or q. Maybe plot p as function of B (using a=b=0) to 
-  // figure out what that function is (the found function needs to be inverted). OK - this is done
-  // below. It suggests to use B = sqrt(p). Now we can solve for A*C = s0/B = B/s1. To distribute
-  // the concavity/convexity equally to A and C, we may choose A = C = sqrt(A*C).
-
-  // Plot p = s0*s1 and q = s0*s1 as function of b and as function of B = (1+b) / (1-b) for a fixed
-  // value of a and using c = -a. The rationale behind this choice is that the outer mappings 
-  // combined give the identity. If a = 0, both will be the identity themselves. We want to 
-  // investigate how p behaves when the sigmoid part of the function is tweaked in order to get a 
-  // feeling for how a reasonable function B(p) or b(p) could look like.
-  {
-    a = 0.0;
-    c = -a;
-    Real A = (1+a) / (1-a);
-    Real C = (1+c) / (1-c);
-
-    Vec b = rsLinearRangeVector(N, -1, 1);
-    Vec B(N);
-    Vec s0(N), s1(N), p(N), q(N);
-    for(int n = 0; n < N; n++)
-    {
-      B[n]  = slopeAt0(b[n]);
-      s0[n] = fullSlopeAt0(a, b[n], c);
-      s1[n] = fullSlopeAt1(a, b[n], c);
-
-      p[n]  =  s0[n] * s1[n];
-      q[n]  =  s0[n] / s1[n];
-    }
-
-    //rsPlotVectorsXY(b, B, s0, s1);
-    // They look all the same and how they look does not seem to depend on a. That means, when a,b
-    // are set up to invert each other, the total slope is equal to the inner slope. Yes - that 
-    // makes a lot of sense when thinking about it. ..it actually seems kinda obvious
-
-    //rsPlotVectorsXY(b, B, p, q); // p looks like B^2 and q is constant 1
-    //rsPlotVectorsXY(B, p, q);    // p and q as functions of B, p is a parabola like B^2, q = 1
-    // Because p(B) looks like B^2, it suggests to use B(p) = sqrt(p). That fixes our B and we can
-    // use the remaining two equations to compute A,B. Or, even simpler, use B = q (or maybe 1/q).
-
-    int dummy = 0;
-
-    // Maybe plot s0, s1 as functions of B. That is that total slope of the full function as 
-    // function of the slope of the inner function
-  }
-  // obsolete
-  */
-
   // Helper function to compute the coeffs from the desired slopes:
   auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c)
   {
@@ -1887,20 +1725,47 @@ void selfInverseInterpolation()  // Maybe rename
 //    of 5 things: Moebius trafo -> upscaling -> Moebius trafo -> downscaling -> Moebius trafo. In 
   //  the range 0.5...1, it's Moebius -> affine -> Moebius -> affine -> Moebius.
   //  Maybe call the interpolation-scheme Moebius-interpolation or BiMoebius interpolation.
-  // -Use the tetrarational map for 1st order smooth monotonic and invertible interpolation.
+  // -Use this Meobius map for 1st order smooth monotonic and invertible interpolation for 
+  //  data arrays x[n], y[n], s[n] containing the x,y values and desired slopes. The API should
+  //  be like: interpolateMoebius(const T* x, const T* y, const T* s, N, x0). It should take the 
+  //  data arrays of length N and a desired interpolation point x0 and return the interpolated y0 
+  //  value at x0. Make the API consistent with other interpolation functions. Note that for the 
+  //  inverse interpolation, the s array should be reciprocated because of the inverse function 
+  //  rule (I think). See https://en.wikipedia.org/wiki/Inverse_function_rule. Doing:
+  //    y0   = interpolateMoebius(x, y, s,  N, x0);
+  //    x0_r = interpolateMoebius(y, x, sr, N, y0);
+  //  should be an identity operation, i.e. we should have x0_r == x0 up to roundoff error. Here, 
+  //  sr are the reciprocals of s and_x0_r is the reconstructed x0.
   // -Use that interpolation scheme in rsTimeWarper (let the user switch between linear and 
-  //  rational)
+  //  rational/Moebius)
   // -Maybe target values for the slopes can be obtained from the data by numerical dervatives or
   //  maybe we can apply a constraint that the curvatures should match at the nodes similar to
-  //  what is done in cubic spline interpolation
+  //  what is done in cubic spline interpolation. But maybe matching to 2nd order is impossible?
+  //  Dunno - figure out!
   // -Try to use two birational maps as output functions and one rational as inner instead fo the
   //  other way around. a lot of the math should translate easily. Maybe the shapes obtained are 
   //  different but also useful.
   // -What if we consider our rational f as function of a (in (-1,+1)) and treat x as parameter 
-  //  (in [0,1] ...or maybe beyond?). Then our equation relating the coeff of a composed function
-  //  to those of the partial functions becomes an interesting functional equation
+  //  (in [0,1] ...or maybe beyond?)?
 
-  // Other ideas:
+  // Notes:
+  // -Check literature about rational splines. We are doing something similar here, I think.
+  //  https://www.alglib.net/interpolation/rational.php
+  // -My initial idea was to use a linear combination of self-inverse functions for interpolation.
+  //  However, the linear combination of self-inverse functions does not lead to a function that is
+  //  of the same type. The forward combination stacks the functions on top of each other along the
+  //  y-axis and the backward combination would stack them to the right of each other along the
+  //  x-axis. This is not the same thing, so the approach was a dead end road. What we actually 
+  //  need is a set of functions, all of whose inverses are also members of the set.
+  // -The second derivative is (4 a (-1 + a^2))/(1 + a (-1 + 2 x))^3 which evaluated at 0 gives
+  //  (-4 a (1 + a))/(-1 + a)^2 and evaluated at 1 gives (4 (-1 + a) a)/(1 + a)^2. In terms of 
+  //  A = (1+a)/(1-a), the expression  is simpler: 2 A (1-A). It can easily be found by Wolfram 
+  //  Alpha using "substitute a = (A-1) / (A+1) into  (-4 a (1 + a))/(-1 + a)^2". Maybe this can be
+  //  used to create a 2nd order smooth interpolant. But maybe that's pointless because the inner 
+  //  (sigmoid) function is itself only 1st order smooth, I think. It's composed of two chunks 
+  //  which meet each other in a 1st order smooth node at x,y = 0.5,0.5.
+
+  // Other ideas (spin offs - move to some experiment involving waveshaping):
   // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
   //  around zero but away from zero, it is the identity.
   // -Implement a smoothQuantize function based on the birational map:
@@ -1913,16 +1778,6 @@ void selfInverseInterpolation()  // Maybe rename
   //  way around). But this scheme quatizes to floor or ceil (depending on whether a = -1 or +1). 
   //  To quantize to the nearest integer, we may shift f by 0.5 before applying the map and shift y
   //  back by -0.5 (or something like that).
-
-  // Notes:
-  // -Check literature about rational splines. We are doing something similar here, I think.
-  //  https://www.alglib.net/interpolation/rational.php
-  // -My initial idea was to use a linear combination of self-inverse functions for interpolation.
-  //  However, the linear combination of self-inverse functions does not lead to a function that is
-  //  of the same type. The forward combination stacks the function on top of each other along the
-  //  y-axis and the backward combination would stack them to the right of each other along the
-  //  x-axis. this is not the same thing, so the approach was a dead end road. What we actually 
-  //  need is a set of functions, all of whose inverses are also members of the set.
 }
 
 void interpolatingFunction()
