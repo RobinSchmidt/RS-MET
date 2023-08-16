@@ -1636,7 +1636,7 @@ bool moebiusMapTest()
     else
       z[n] = (A2*x[n] + B2) / (C2*x[n] + D2);   }
   err = z-y; ok &= rsIsAllZeros(err, tol);
-  rsPlotVectorsXY(x, y, z);
+  //rsPlotVectorsXY(x, y, z);
 
 
   // ToDo:
@@ -1655,7 +1655,7 @@ bool moebiusMapTest()
   // -Wrap the amalgamation/composition code into a function that can be used as library function
   //  and test it for some more cases, i.e. more choices for a,b,c. Maybe let a,b,c each run 
   //  through -0.9...+0.9 in 0.1 steps. That should give 19^3 = 6859 test cases. Maybe use steps 
-  //  of 0.3 givin 7^3 = 343 test cases.
+  //  of 0.3 giving 7^3 = 343 test cases.
 
   return ok;
 }
@@ -1711,7 +1711,15 @@ express it also as Moebius trafo and use the same algorithm. */
 
 void selfInverseInterpolation()
 {
-  // Maybe rename to invertibleInterpolation or moebiusInterpolation
+  // Maybe rename to invertibleInterpolation or moebiusInterpolation or biMoebiusInterpolation
+  // birational, biFractional, see
+  // https://en.wikipedia.org/wiki/Linear_fractional_transformation
+  // https://en.wikipedia.org/wiki/M%C3%B6bius_transformation
+  // Maybe calling it Moebius transformation is not appropriate because normally, one uses this
+  // term when talking about maps in the complex plane. When using this type of map over the dual
+  // numbers, they are called Laguerre Ttransformations
+  // https://en.wikipedia.org/wiki/Laguerre_transformations
+  // Maybe call it linFractional interpolation
 
   // Some experiments with Moebius maps that can be used for an invertible interpolation scheme 
   // that has first order smoothness, i.e. matching derivatives at the nodes, just like cubic 
