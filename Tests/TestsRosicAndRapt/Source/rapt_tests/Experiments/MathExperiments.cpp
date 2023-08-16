@@ -1575,6 +1575,44 @@ bool moebiusMapTest()
   err = z-x; ok &= rsIsAllZeros(err, tol);
   //rsPlotVectorsXY(x, y, z);
 
+  // Check inversion of the tetrarational map via negating the paraneters and reversing their 
+  // order. The tetrarational map is what we want to use for the invertible interpolation scheme,
+  // so if that works, we are good.
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
+    z[n] = rsTetraRationalMap_01(y[n], -c, -b, -a);  // Should give back x
+  }
+  err = z-x; ok &= rsIsAllZeros(err, tol);
+  //rsPlotVectorsXY(x, y, z);
+
+  // Test combining two rational functions into a single one. This is just to verify the formula
+  // for c.
+  c = (a + b) / (a*b + 1); // Parameter of the resulting function
+  for(int n = 0; n < N; n++)
+  {
+    // Compute y by applying two rational maps in sequence:
+    y[n] = rsRationalMap_01(x[n], a);
+    y[n] = rsRationalMap_01(y[n], b);
+
+    // Compute z by applying a single rational map:
+    z[n] = rsRationalMap_01(x[n], c);  // should be equal to y[n]
+  }
+  err = z-y; ok &= rsIsAllZeros(err, tol);
+  //rsPlotVectorsXY(x, y, z);
+  // This same way of combination works also for the birational maps. 
+  // ToDo: write code that verifies this!
+
+  // Compare rational and birational map for the same a:
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = rsRationalMap_01(  x[n], a);
+    z[n] = rsBiRationalMap_01(x[n], a);
+  }
+  //rsPlotVectorsXY(x, y, z); // have same slope at x = 0 and reciprocal slopes at x = 1
+  // This is just a plot for inspection. No programmatic unit test to be made here.
+
+
 
   return ok;
 }
@@ -1627,41 +1665,16 @@ void selfInverseInterpolation()
 
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec y(N), z(N);
-  Vec err;
+  //Vec err;
 
   // Coefficients:
-  Real a = 0.5, b = -0.6, c = -0.3; // moderately flat at0, very flat at 1
+  //Real a = 0.5, b = -0.6, c = -0.3; // moderately flat at0, very flat at 1
   //a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
   //a = 0.75; b = 0.75; c = -0.5;  
 
 
 
-  // Check inversion of the tetrarational map via negating the paraneters and reversing their 
-  // order. The tetrarational map is what we want to use for the invertible interpolation scheme,
-  // so if that works, we are good.
-  for(int n = 0; n < N; n++)
-  {
-    y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
-    z[n] = rsTetraRationalMap_01(y[n], -c, -b, -a);  // Should give back x
-  }
-  err = z-x; ok &= rsIsAllZeros(err, tol);
-  //rsPlotVectorsXY(x, y, z);
 
-  // Test combining two rational functions into a single one. This is just to verify the formula
-  // for c.
-  c = (a + b) / (a*b + 1); // Parameter of the resulting function
-  for(int n = 0; n < N; n++)
-  {
-    // Compute y by applying two rational maps in sequence:
-    y[n] = rsRationalMap_01(x[n], a);
-    y[n] = rsRationalMap_01(y[n], b);
-
-    // Compute z by applying a single rational map:
-    z[n] = rsRationalMap_01(x[n], c);  // should be equal to y[n]
-  }
-  err = z-y; ok &= rsIsAllZeros(err, tol);
-  //rsPlotVectorsXY(x, y, z);
-  // This same combination works also for the birational maps
 
   // Helper function to return the slope of a single rational map with parameter a at x = 0. The 
   // slope at 0 is the same for the rational and the birational map and given by (1+a)/(1-a). 
@@ -1691,14 +1704,7 @@ void selfInverseInterpolation()
     // to the slope at 0)
   };
 
-  // Compare rational and birational map for the same a:
-  a = -0.5;
-  for(int n = 0; n < N; n++)
-  {
-    y[n] = rsRationalMap_01(  x[n], a);
-    z[n] = rsBiRationalMap_01(x[n], a);
-  }
-  //rsPlotVectorsXY(x, y, z);
+
 
   // Helper function to compute the coeffs from the desired slopes. This should eventually go into
   // the library. It is what is needed for an actual implementation of the interpolation scheme. 
