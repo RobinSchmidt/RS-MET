@@ -1542,20 +1542,21 @@ bool moebiusMapTest()
   bool ok  = true;
 
   using Real = double;
-  using Vec = std::vector<Real>;
+  using Vec  = std::vector<Real>;
 
-  int  N   = 257;
-  Real tol = 1.e-13;
-
-
-  Vec x = rsLinearRangeVector(N, 0, 1);
-  Vec y(N), z(N);
-  Vec err;
+  // Setup for the tests:
+  int  N   = 257;     // Number of samples to generate between 0 and 1
+  Real tol = 1.e-13;  // Tolerance for floating point rounding errors
 
   // Coefficients:
   Real a = 0.5, b = -0.6, c = -0.3; // moderately flat at0, very flat at 1
   //a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
   //a = 0.75; b = 0.75; c = -0.5;  
+
+  // Allcoate some arrays to write the functions into:
+  Vec x = rsLinearRangeVector(N, 0, 1);
+  Vec y(N), z(N);
+  Vec err;                          // Error between expected and actual
 
   // Check inversion of the rational map via negating the paraneter:
   for(int n = 0; n < N; n++)
@@ -1601,7 +1602,8 @@ bool moebiusMapTest()
   err = z-y; ok &= rsIsAllZeros(err, tol);
   //rsPlotVectorsXY(x, y, z);
   // This same way of combination works also for the birational maps. 
-  // ToDo: write code that verifies this!
+  // ToDo: write code that verifies this! Extract the formula for c into a function or at least
+  // document the formula in some easier to find place.
 
   // Compare rational and birational map for the same a:
   for(int n = 0; n < N; n++)
@@ -1613,10 +1615,74 @@ bool moebiusMapTest()
   // This is just a plot for inspection. No programmatic unit test to be made here.
 
 
+  // Now amalgamate the whole compose map into a single piecewise Moebius map:
+
+
+  //Real a1 = -(p1^3 + 3*p1^2 + 3*p1 + 1)
+
+
+
+  // -(p1^3 + 3*p1^2 + 3*p1 + 1)*x / (p1^3 - 3*p1^2 - 8*p1*x + 3*p1 - 1)
+
+
+  Real splitX = rsRationalMap_01(0.5, -a);
+
+  Real test = rsRationalMap_01(splitX, a);  // should be 0.5
+
 
   return ok;
 }
+/*
+The Moebius transform coeffs A,B,C,D for the composed map for the first segment can be found with 
+the Sage code:
 
+var("p1 p2 p3")
+
+# 1st map:
+a1 = 1+p1; c1 = 2*p1; d1 = 1-p1
+y1 = a1*x / (c1*x + d1)
+
+# scale, 2nd map, scale:
+a2 = 1+p2; c2 = 2*p2; d2 = 1-p2
+y2 = 2*y1
+y3 = a2*y2 / (c2*y2 + d2)
+y4 = y3/2
+
+# 3rd map:
+a3 = 1+p3; c3 = 2*p3; d3 = 1-p3
+y5 = a3*y4 / (c3*y4 + d3)
+
+num = numerator(y5)
+den = denominator(y5)
+num.expand().collect(x), den.expand().collect(x)
+
+
+
+This produces:
+
+(-(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1)*x,
+ p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 - 2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3)*x + p1 + p2 + p3 - 1)
+
+from which we read off the coeffs A,B,C,D for the combined map:
+A = -(p1*p2*p3 + p1*p2 + p1*p3 + p2*p3 + p1 + p2 + p3 + 1)
+B = 0
+C = - 2*(p1*p2 - p2*p3 + p1 + 2*p2 + p3)
+D = p1*p2*p3 - p1*p2 - p1*p3 - p2*p3 + p1 + p2 + p3 - 1
+
+
+
+Here, p1,p2,p3 are the parameters of the 3 component maps. For the second segment, the lines
+y2 = 2*y1, y4 = y3/2 have to be replaced by....
+
+Instead of num.expand().collect(x), den.expand().collect(x) I also tried to use:
+
+A = num.coefficient(x), B = num.coefficient(1), C = den.coefficient(x), D = den.coefficient(1)
+A, B, C, D
+
+but this produces a zero coefficient for D which is not plausible. Maybe the den.coefficient(1) 
+does not extract the constant term as I woudl expect?
+
+*/
 
 void selfInverseInterpolation()
 {
@@ -1655,26 +1721,13 @@ void selfInverseInterpolation()
   Real s0          = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
-
+  Real tol         = 1.e-13;    // Tolerance for some sanity checks that we do along the way
 
   bool ok = moebiusMapTest();
-
-
-  //bool ok  = true;
-  Real tol = 1.e-13;
 
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec y(N), z(N);
   //Vec err;
-
-  // Coefficients:
-  //Real a = 0.5, b = -0.6, c = -0.3; // moderately flat at0, very flat at 1
-  //a = 0.5;  b = 0.75; c = -0.25; // very steep at 0, moderately steep at 1
-  //a = 0.75; b = 0.75; c = -0.5;  
-
-
-
-
 
   // Helper function to return the slope of a single rational map with parameter a at x = 0. The 
   // slope at 0 is the same for the rational and the birational map and given by (1+a)/(1-a). 
@@ -1703,7 +1756,6 @@ void selfInverseInterpolation()
     // The outer slopes are reciprocated at 1, the inner slope remains the same (all with respect 
     // to the slope at 0)
   };
-
 
 
   // Helper function to compute the coeffs from the desired slopes. This should eventually go into
