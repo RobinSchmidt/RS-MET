@@ -1550,7 +1550,7 @@ void selfInverseInterpolation()
   //int N = 1025;
   int N = 257;
 
-  Real shape = 0.6;  // 0.5: symmetric, nominal range: 0..1 (but may go beyond)
+  Real shape = 0.5;  // 0.5: symmetric (default), nominal range: 0..1 (but may go beyond)
 
   bool ok  = true;
   Real tol = 1.e-13;
@@ -1649,8 +1649,8 @@ void selfInverseInterpolation()
   // Helper function to compute the coeffs from the desired slopes:
   auto ratCoeffs = [](Real s0, Real s1, Real* a, Real* b, Real *c, Real shape)
   {
-    // Compute slope at zero for middle map B (controlling sigmoidity) and combined outer maps 
-    // AC = A*C (controlling convexity/concavity):
+    // Compute slope at zero for middle map B (controlling sigmoidity vs saddleness) and slope at 
+    // zero for combined outer maps AC = A*C (controlling convexity vs concavity):
     Real B  = sqrt(s1*s0);
     Real AC = s0 / B;        // == B / s1
 
@@ -1659,16 +1659,8 @@ void selfInverseInterpolation()
     if(shape == 0.5)
       C = A = sqrt(AC);        // Optimized special case for symmetric shape
     else {
-      A = pow(AC, shape);      // General case
+      A = pow(AC, shape);      // General case for user controlled shape
       C = AC/A; }
-
-    // Distribute the concavity equally between A and C:
-    //Real A = sqrt(AC);
-    //Real C = A;
-
-    // Distribute the concavity between A and C according to shape parameter:
-    //A = pow(AC, shape);
-    //C = AC/A;
 
     // Convert from slopes to coeffs:
     *a = (A-1) / (A+1);
@@ -1676,12 +1668,14 @@ void selfInverseInterpolation()
     *c = (C-1) / (C+1);
   };
   // This should go into the library. It is what is needed for an actual implementation of the
-  // interpolation scheme.
+  // interpolation scheme. 
+  // ToDo: Check, if high B means high saddleness and high AC means high concativity. I think so, 
+  // but it may also be ther other way around in one or both cases. Check that and document it.
 
   // Algorithm:
   // To obtain the desired slopes at 0 and 1, we'll have to pick an appropriate set of parameters
   // a, b, c. Let's define A = (1+a)/(1-a), B = (1+b)/(1-b), C = (1+c)/(1-c) so we may write more 
-  //  simply:
+  // simply:
   //
   //   s0 = A*B*C,   s1 = B/(A*C)
   //
@@ -1698,18 +1692,25 @@ void selfInverseInterpolation()
   // Try A = pow(AC, shape); C = AC/A. OK - Done. Trying this with shape = 0.25 and 0.75 suggests
   // that for the inverse interpolation, we need to use invShape = 1 - shape. The shape controls,
   // how the graphs "fan out" at 0,0. With lower values, the fan is denser at the top-left and 
-  // with higher values, it's denser at the bottom-right. It seems like the shape parameter can 
-  // even go beyond the range 0..1. 2 or -1 produce rather extreme results but they still seem to
-  // satisfy the slope conditions at the endpoints. Maybe if we provide this parameter to the user,
-  // we shopuld rescale it from 0..1 to -1..+1 such that the user gets a symmetric shape when the 
-  // parameter is 0. 
+  // with higher values, it's denser at the bottom-right. With 0.5, the graphs fan out 
+  // symmetrically and evenly. Well...at least, that holds for s0 = 1. If we set s0 = 4, then 
+  // shape = 0.75 leads to a more evenly spaced fan out.
+  // It seems like the shape parameter can even go beyond the range 0..1.
+  // 2 or -1 produce rather extreme results but they still seem to satisfy the slope conditions at
+  // the endpoints. Maybe if we provide this parameter to the user, we shopuld rescale it from 0..1
+  // to -1..+1 such that the user gets a symmetric shape when the parameter is 0. ...but then 
+  // check, if inverse interpolation can use the negative shape. If not, then maybe this rescaling 
+  // is not a good idea. We'll see...
 
 
   // OK, let's try the algorithm from above. Pick a fixed s0 = 1 and let s1 range through
   // 1/128, ..., 1/8, 1/4, 1/2, 1, 2, 4, 8, ..., 128. Generate the graphs and plot them.
   {
     GNUPlotter plt;
-    Real s0 = 1.0/1.0;    // Fixed slope at x,y = 0,0. Interesting plots occur for 1/4, 1, 4
+    Real s0 = 1.0/1.0;    
+    // Fixed slope at x,y = 0,0. Interesting plots occur for 1/4, 1, 4. Maybe move that to the top
+    // of the function to the user parameters
+
     Real s1 = 1.0/128.0;  // Variable slope at x,y, = 1,1. Goes up in the loop
     Real a, b, c;
     while(s1 <= 128)
