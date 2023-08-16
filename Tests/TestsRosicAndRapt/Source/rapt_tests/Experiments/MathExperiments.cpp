@@ -1616,6 +1616,10 @@ bool moebiusMapTest()
 
 
   // Now amalgamate the whole compose map into a single piecewise Moebius map:
+  Real splitX = rsRationalMap_01(0.5, -a);    // point at which to switch between lower and upper piece
+  Real test   = rsRationalMap_01(splitX, a);  // should be 0.5
+  ok &= rsIsCloseTo(test, 0.5, tol);
+
   Real ab  = a*b, ac = a*c, bc = b*c;
   Real abc = ab*c;
 
@@ -1629,9 +1633,6 @@ bool moebiusMapTest()
   Real C2 = - 4*(ab - bc + a - 2*b + c);
   Real D2 = 2*(abc + 3*(ab - b) - ac - bc + a + c - 1);
 
-
-  Real splitX = rsRationalMap_01(0.5, -a);
-  Real test   = rsRationalMap_01(splitX, a);  // should be 0.5
   for(int n = 0; n < N; n++)
   {
     y[n] = rsTetraRationalMap_01(x[n],  a,  b,  c);
@@ -1654,8 +1655,15 @@ bool moebiusMapTest()
   // -Maybe instead of implementing these big formulas for A1, B1, ...etc., write a general 
   //  function to compute coeffs of a composed Moebius trafo and call that. This might be simpler
   //  and more efficient. I even have code for that somewhere already. It's in
-  //  rsMoebiusTransform<T>::followedBy. Maybe implement that as a static function
-
+  //  rsMoebiusTransform<T>::followedBy. Maybe implement that as a static function. But maybe the 
+  //  way we do it here is actually not so inefficient. The code above does 13 multiplications 
+  //  (and a whole lot of additions). Usingthe code from rsMoebiusTransform<T>::followedBy, we 
+  //  would require 8 multiplications for each composition of 2 Moebius transforms. The code for
+  //  that is actually the same as for 2x2 matrix multiplication. For the lower piece of the map,
+  //  we would have to call that twice (giving 16 muls already) and then we would have to do the 
+  //  same for the upper piece (given yet another 16 muls). In between we would have to do a few 
+  //  more muls to take care of the affine trafos pre and post the inner map. So, even though it 
+  //  looks ugly, maybe the code above is actually not so bad.
 
   return ok;
 }
