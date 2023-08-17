@@ -2226,14 +2226,20 @@ void linearFractionalInterpolation()
           b = 0;
           c = s1*s2*s3 + s1*s2 - s1 - 1;
           d = 1;
-          rsAssert(rsIsFiniteNumber(y[n]));
           y[n] = (a*x[n] + b) / (c*x[n] + d); // We could scrap the b bcs it's 0
-          // doesn't work! maybe formula is wrong?
+          rsAssert(rsIsFiniteNumber(y[n]));
         }
         else
         {
-          // ...
-          y[n] = 0.5;
+          a = 2*s2*s3 + 2*(s1*s3 - s2*s3 + s3);
+          b = -2*s3;
+          c = 2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3);
+          d = 2*s2 - 2*s3;
+          y[n] = (a*x[n] + b) / (c*x[n] + d);
+          rsAssert(rsIsFiniteNumber(y[n]));
+
+
+          //y[n] = 0.5;
         }
         plt.addDataArrays(N, &x[0], &y[0]);
 
@@ -2276,6 +2282,26 @@ a = s1*s2*s3
 b = 0
 c = s1*s2*s3 + s1*s2 - s1 - 1
 d = 1
+
+
+2nd part:
+
+var("s1 s2 s3")
+y1 = s1*x / ((s1-1)*x + 1)             # 1st map
+y2 = 2*y1-1                            # scale 
+y3 = (1/s2)*y2 / (((1/s2)-1)*y2 + 1)   # 2nd map 
+y4 = (y3+1)/2                          # scale
+y5 = s3*y4 / ((s3-1)*y4 + 1)           # 3rd map
+num = numerator(y5)
+den = denominator(y5)
+num.expand().collect(x), den.expand().collect(x)
+
+Result: (2*s2*s3 + 2*(s1*s3 - s2*s3 + s3)*x - 2*s3,
+         2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3)*x + 2*s2 - 2*s3)
+a = 2*s2*s3 + 2*(s1*s3 - s2*s3 + s3)
+b = -2*s3
+c = 2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3)
+d = 2*s2 - 2*s3
 
 
 
