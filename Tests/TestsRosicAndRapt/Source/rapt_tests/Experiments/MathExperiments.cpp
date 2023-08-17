@@ -2196,40 +2196,11 @@ void linearFractionalInterpolation()
     Vec y(N);
     GNUPlotter plt;
     Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
-    while(slopeAt1 <= maxSlopeAt1)
-    {
-      // Compute coeffs a, b, c from desired slopes s0, s1:
-      Real s1, s2, s3;
-      LFI::computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
-
-      // Figure out the split point where we need to switch between the two linFrac maps by 
-      // applying the first map's inverse to 0.5. We want to figure out at which input x the first
-      // map produces the output 0.5. The inverse map is obtained by using the reciprocal slope. We
-      // need 0.5 because that's the value at which the 2nd map switches between it two halves:
-      Real xs = LFI::simpleMap(0.5, 1/s1);  
-
-      // Create map data and add it to the plot:
-      Real a, b, c, d;
-      Real err;
-      rsFill(y, 0.0);  // remove later
-
+    while(slopeAt1 <= maxSlopeAt1) {
       for(int n = 0; n < N; n++)
-      {
-
-
-
-        LFI::composeTripleMapIntoOne(x[n], s1, s2, s3, &a, &b, &c, &d);
-        y[n] = (a*x[n] + b) / (c*x[n] + d); 
-        err = y[n] - LFI::tripleMap(x[n], s1, s2, s3);  // Compare to reference computation
-        ok &= rsAbs(err) <= tol; 
-
         y[n] = LFI::interpolateNormalized(x[n], slopeAt0, slopeAt1, shape);
-      }
-
       plt.addDataArrays(N, &x[0], &y[0]);
-      slopeAt1 *= 2;                                // Double the slope for the next graph
-    }
-
+      slopeAt1 *= 2; }                       // Double the slope for the next graph
     plt.addCommand("set size square");
     plt.plot();
 
