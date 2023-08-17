@@ -2217,6 +2217,9 @@ void linearFractionalInterpolation()
 
       // Create map data and add it to the plot:
       Real xs = linFrac(0.5, 1/s1);  // figure out split point
+      // Verify ...seems like this is wrong
+
+
       Real a, b, c, d;
       for(int n = 0; n < N; n++)
       {
