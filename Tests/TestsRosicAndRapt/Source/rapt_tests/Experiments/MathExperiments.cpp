@@ -2296,6 +2296,9 @@ void linearFractionalInterpolation()
 
   rsAssert(ok);
   int dummy = 0;
+
+  // Observations
+  // -The shapes look beautifully onion shaped or like christmas tree decoration
 }
 /*
 
