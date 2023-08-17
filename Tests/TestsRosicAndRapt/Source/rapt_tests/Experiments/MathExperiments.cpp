@@ -2174,44 +2174,22 @@ void linearFractionalInterpolation()
       *s3 = s12 / *s1; }
   };
 
-  // Create the plots by literally applying the 3 maps in sequence:
-  Vec x = rsLinearRangeVector(N, 0, 1);
-  Vec y(N);
-  /*
-  { 
-    // A sub-block to not spoil the outer block with variables used only here
-
-    GNUPlotter plt;
-    Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
-    while(slopeAt1 <= maxSlopeAt1)
-    {
-      // Compute coeffs a, b, c from desired slopes s0, s1:
-      Real s1, s2, s3;
-      computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
-
-      // Create map data and add it to the plot:
-      for(int n = 0; n < N; n++)
-        y[n] = linFrac3(x[n], s1, s2, s3);
-      plt.addDataArrays(N, &x[0], &y[0]);
-
-      // double the slope for the next graph:
-      slopeAt1 *= 2;  // maybe let the factor be a user parameter
-    }
-
-    plt.addCommand("set size square");
-    plt.plot();
-  }
-  */
-
-  // Create the plots again but this time we do not literally apply the 3 maps in sequence but 
-  // instead, we first combine them into two partial maps of a slightly more flexible kind of the
-  // more general form f(x) = (a*x + b) / (c*x + d) where the first is used until some splitting 
-  // value is reached and then the second takes over. This is possible because of the fact that 
-  // the composition of linear fractional transformations gives yet another linear fractional 
-  // transformation. The affine transforms before and after the middle map do not destroy this 
-  // because they are also special cases of the linFrac maps. That means, we can compose the whole
-  // composition of the 3 maps into a switch between two single maps ...tbc...
+  // Create the plots. We do not literally apply the 3 maps in sequence but instead, we first 
+  // combine them into two partial maps of a slightly more flexible kind of the more general form 
+  // f(x) = (a*x + b) / (c*x + d) where the first is used until some splitting value is reached 
+  // and then the second takes over. This is possible because of the fact that the composition of
+  // linear fractional transformations gives yet another linear fractional transformation. The 
+  // affine transforms before and after the middle map do not destroy this because they are also 
+  // special cases of the linFrac maps. That means, we can compose the whole composition of the 3 
+  // maps into a switch between two single maps. Along the way when we generate the data for the 
+  // plots, we actually verify that our so produced combined map produces the same result as when
+  // literally applying the 3 maps one after another. This is done in the 
+  //   err = y[n] - linFrac3(x[n], s1, s2, s3);
+  // where linFrac3(...) computes the literal application of the 3 maps.
   {
+    // we use a sub-block to not litter the outer block with variables used only here
+    Vec x = rsLinearRangeVector(N, 0, 1);
+    Vec y(N);
     GNUPlotter plt;
     Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
     while(slopeAt1 <= maxSlopeAt1)
@@ -2220,41 +2198,35 @@ void linearFractionalInterpolation()
       Real s1, s2, s3;
       computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
 
+      // Figure out the split point where we need to switch between the two linFrac maps by 
+      // applying the first map's inverse to 0.5. We want to figure out at which input x the first
+      // map produces the output 0.5. The inverse map is obtained by using the reciprocal slope. We
+      // need 0.5 because that's the value at which the 2nd map switches between it two halves:
+      Real xs = linFrac(0.5, 1/s1);  
 
       // Create map data and add it to the plot:
-      Real xs = linFrac(0.5, 1/s1);  // figure out split point
       Real a, b, c, d;
       Real err;
       rsFill(y, 0.0);  // remove later
-      for(int n = 0; n < N; n++)
-      {
-        if(x[n] <= xs)
-        {
+      for(int n = 0; n < N; n++) {
+        if(x[n] <= xs) {
           a = s1*s2*s3;
           b = 0;
           c = s1*s2*s3 + s1*s2 - s1 - 1;
           d = 1;
-          y[n] = (a*x[n] + b) / (c*x[n] + d);      // We could scrap the b bcs it's 0
-          err = y[n] - linFrac3(x[n], s1, s2, s3); // Compare to reference computation
-          ok &= rsAbs(err) <= tol;
-        }
-        else
-        {
+          y[n] = (a*x[n] + b) / (c*x[n] + d);       // We could scrap the b bcs it's 0
+          err = y[n] - linFrac3(x[n], s1, s2, s3);  // Compare to reference computation
+          ok &= rsAbs(err) <= tol; }
+        else {
           a = s1*s3 - s2*s3 + s3;
           b = s2*s3 - s3;
           c = (s1*s3 - s2*s3 - s2 + s3);
           d = s2*s3 + s2 - s3;
           y[n] = (a*x[n] + b) / (c*x[n] + d);
           err = y[n] - linFrac3(x[n], s1, s2, s3);
-          ok &= rsAbs(err) <= tol;
-        }
-      }
-
-
+          ok &= rsAbs(err) <= tol; }}
       plt.addDataArrays(N, &x[0], &y[0]);
-
-      // double the slope for the next graph:
-      slopeAt1 *= 2;  // maybe let the factor be a user parameter
+      slopeAt1 *= 2;                                // Double the slope for the next graph
     }
 
     plt.addCommand("set size square");
@@ -2262,13 +2234,13 @@ void linearFractionalInterpolation()
 
   }
 
-
-
-
   rsAssert(ok);
   int dummy = 0;
 }
 /*
+
+The formulas for the coeffs for the combined maps (two because we need to switch between them)
+
 1st part:
 
 var("s1 s2 s3")
@@ -2280,12 +2252,6 @@ y5 = s3*y4 / ((s3-1)*y4 + 1)   # 3rd map
 num = numerator(y5)
 den = denominator(y5)
 num.expand().collect(x), den.expand().collect(x)
-
-Result: (s1*s2*s3*x, (s1*s2*s3 + s1*s2 - s1 - 1)*x + 1)
-a = s1*s2*s3
-b = 0
-c = s1*s2*s3 + s1*s2 - s1 - 1
-d = 1
 
 
 2nd part:
@@ -2300,12 +2266,6 @@ num = numerator(y5)
 den = denominator(y5)
 num.expand().collect(x), den.expand().collect(x)
 
-Result: (s2*s3 + (s1*s3 - s2*s3 + s3)*x - s3,
-         s2*s3 + (s1*s3 - s2*s3 - s2 + s3)*x + s2 - s3)
-a = s1*s3 - s2*s3 + s3
-b = s2*s3 - s3
-c = (s1*s3 - s2*s3 - s2 + s3)
-d = s2*s3 + s2 - s3
 
 
 
