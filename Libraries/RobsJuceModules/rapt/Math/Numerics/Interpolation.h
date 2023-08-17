@@ -290,9 +290,25 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
   s3 = ((y3-y2)*d3 + (y4-y3)/d3) / (d3+T(1));
   fitCubicWithDerivativeFixedX(y2, y3, s2, s3, &a[3], &a[2], &a[1], &a[0]);
   return rsPolynomial<T>::evaluate(s*(x-x2), a, 3);
-  // maybe factor out a function that returns the polynomial coefficients (and s) because the
-  // same set of coefficients may get used to interpolate at multiple values of x between the
-  // same x2 and x3 and it is wasteful to recompute the coefficients each time
+
+  // ToDo:
+  // -Document the formulas/algorithm. I guess, it first obtains numerical derivatives and then 
+  //  somehow normalizes them such that we can interpolate on the unit interval. But how exactly
+  //  that works, I have no idea anymore. Apparently y2,y3 are the two middle y-values and s2,s3
+  //  the desired slopes at these points assuming the x-coordinates to be 0,1. This s1,s2 
+  //  computation must be some sort of numeric derivative estimation. I guess, it's a weighted 
+  //  average of forward and backward difference, probably weighted inversely by actual distance.
+  //  d1 is the distance between x2,x1 and d3 is the distance between x4,x2 - but these distances
+  //  are normalized(?) by the distances between x3,x2. But what is the -1 in d3 doing?
+  // -Maybe factor out a function that returns the polynomial coefficients (and s) because the
+  //  same set of coefficients may get used to interpolate at multiple values of x between the
+  //  same x2 and x3 and it is wasteful to recompute the coefficients each time.
+  // -Maybe rename the function to rsInterpolateCubicHermite4Points to reflect the fact that it 
+  //  takes 4 points as input rather than 2 points with their associated derivatives. The function 
+  //  names grow pretty large, so maybe wrap the functions into a class and just name them
+  //  cubicHermite4Points, cubicHermite2Points2Slopes or shorter cubicHermite_2p2s. Also make the
+  //  name of fitCubic consistent with that - maybe fitCubic_2p2s_01 where 01 means the unit 
+  //  interval [0,1] ..or use fitCubic_2p2s_0to1
 }
 
 template<class Tx, class Ty>

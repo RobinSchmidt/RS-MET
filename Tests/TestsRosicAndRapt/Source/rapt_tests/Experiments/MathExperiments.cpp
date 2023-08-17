@@ -2300,6 +2300,13 @@ void linearFractionalInterpolation()
   // Observations
   // -The shapes look beautifully onion shaped or maybe like christmas tree decoration. Maybe they
   //  could be useful for graphics applications.
+
+  // -ToDo:
+  //  -Wrap the relevant computations into callable functions that can be put into a library. Maybe 
+  //   the API should parallel the one for cubic Hermite interpolation between two points, see
+  //   rsInterpolateCubicHermite in Interpolation.h. But it uses 4 points rather than 2 points and
+  //   2 derivatives
+  //  -Maybe do it in a class rsLinearFractionalInterpolator and put that into the prototypes
 }
 /*
 

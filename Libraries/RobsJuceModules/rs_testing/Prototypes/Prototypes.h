@@ -335,6 +335,47 @@ void cheby_win(double *out, int N, double atten);
 void rsCircularShift(int* a, int N, int k);
 // circular shift without additional memory (using 3 reversals) - needs test
 
+//=================================================================================================
+
+template<class T>
+class rsLinearFractionalInterpolator
+{
+
+public:
+
+  static T simpleMap(T value, T slopeAt0);
+
+  static T symmetricMap(T value, T slopeAt0);
+
+  static T tripleMap(T value, T slope1, T slope2, T slope3);
+
+};
+
+template<class T>
+T rsLinearFractionalInterpolator<T>::simpleMap(T x, T s)
+{
+  return s*x / ((s-1)*x + 1);
+}
+
+template<class T>
+T rsLinearFractionalInterpolator<T>::symmetricMap(T x, T s)
+{
+  if(x < T(0.5))
+    return T(0.5) * simpleMap(T(2)*x, s);
+  else
+    return T(0.5) * (simpleMap((T(2)*x-T(1)), T(1)/s) + T(1));
+}
+
+template<class T>
+T rsLinearFractionalInterpolator<T>::tripleMap(T x, T s1, T s2, T s3)
+{
+  x = simpleMap(   x, s1);  // pre convexity or concavity
+  x = symmetricMap(x, s2);  // sigmoidity or saddleness
+  x = simpleMap(   x, s3);  // post convexity or concavity
+  return x;
+}
+
+
 
 //=================================================================================================
 
