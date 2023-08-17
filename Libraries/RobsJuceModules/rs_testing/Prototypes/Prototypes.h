@@ -429,6 +429,17 @@ void rsLinearFractionalInterpolator<T>::composeTripleMapIntoOne(T x, T s1, T s2,
 
 }
 
+/*
+Notes:
+
+-I think, maps of the special form of simpleMap constitute a subgroup of the group of the more 
+ general maps with all 4 coeffs. Their composition is given by just multiplying their slopes 
+ together. This is also implied by the chain rule of differentiation. The special form results 
+ the constraints f(0) = 0, f(1) = 1 leading to b = 0, c = a-1. With a given slope s, we use 
+ s = a/d to fix/normalize d = 1 and use s for a directly leading to the especially simple form. 
+
+*/
+
 
 //=================================================================================================
 
