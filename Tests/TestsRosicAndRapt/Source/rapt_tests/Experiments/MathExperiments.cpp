@@ -2105,7 +2105,7 @@ void linearFractionalInterpolation()
   // User parameters for the plots:
   int  N           = 257;       // Number of samples
   Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
-  Real s0          = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
+  Real slopeAt0    = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
 
@@ -2156,10 +2156,32 @@ void linearFractionalInterpolation()
       *s2 = s12 / *s1; }
   };
 
- 
 
 
+  // Create the plots:
+  {
+    GNUPlotter plt;
+    Vec x = rsLinearRangeVector(N, 0, 1);
+    Vec y(N);
+    Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
+    while(slopeAt1 <= maxSlopeAt1)
+    {
+      // Compute coeffs a, b, c from desired slopes s0, s1:
+      Real s1, s2, s3;
+      computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
 
+      // Create map data and add it to the plot:
+      for(int n = 0; n < N; n++)
+        y[n] = linFrac3(x[n], s1, s2, s3);
+      plt.addDataArrays(N, &x[0], &y[0]);
+
+      // double the slope for the next graph:
+      slopeAt1 *= 2;  // maybe let the factor be a user parameter
+    }
+
+    plt.addCommand("set size square");
+    plt.plot();
+  }
 
 
 
