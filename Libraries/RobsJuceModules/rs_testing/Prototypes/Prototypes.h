@@ -483,6 +483,38 @@ Notes:
  cases of the linfrac maps. That means, we can compose the whole composition of the 3 maps into 
  a switch between two single maps. 
 
+
+
+
+
+-The formulas for the coeffs for the combined maps were found with the following Sage code. We
+ have two version because we need to switch between them:
+
+ 1st part:
+
+ var("s1 s2 s3")
+ y1 = s1*x / ((s1-1)*x + 1)     # 1st map
+ y2 = 2*y1                      # scale 
+ y3 = s2*y2 / ((s2-1)*y2 + 1)   # 2nd map 
+ y4 = y3/2                      # scale
+ y5 = s3*y4 / ((s3-1)*y4 + 1)   # 3rd map
+ num = numerator(y5)
+ den = denominator(y5)
+ num.expand().collect(x), den.expand().collect(x)
+
+
+ 2nd part:
+
+ var("s1 s2 s3")
+ y1 = s1*x / ((s1-1)*x + 1)              # 1st map
+ y2 = 2*y1-1                             # scale 
+ y3 = ((1/s2)*y2) / (((1/s2)-1)*y2 + 1)  # 2nd map, parentheses around ((1/s2)*y2) important!  
+ y4 = (y3+1)/2                           # scale
+ y5 = s3*y4 / ((s3-1)*y4 + 1)            # 3rd map
+ num = numerator(y5)
+ den = denominator(y5)
+ num.expand().collect(x), den.expand().collect(x)
+
 */
 
 
