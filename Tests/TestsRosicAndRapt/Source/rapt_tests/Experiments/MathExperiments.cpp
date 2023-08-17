@@ -1872,46 +1872,6 @@ void linearFractionalInterpolationOld()
 
   rsAssert(ok);
 
-  // Observations:
-  // -The shapes look indeed nicely symmetric with respect to the line y = x as we would expect 
-  //  from our construction of the set of function as containing also the inverses of all members.
-
-  // -We currently use A = pow(AC, shape); C = AC/A for some shape parameter. This formula reduces
-  //  to the sqrt-formula when shape == 0.5. Trying this with shape = 0.25 and 0.75 suggests
-  //  that for the inverse interpolation, we need to use invShape = 1 - shape. The shape controls,
-  //  how the graphs "fan out" at 0,0. With lower values, the fan is denser at the top-left and 
-  //  with higher values, it's denser at the bottom-right. With 0.5, the graphs fan out 
-  //  symmetrically and evenly. Well...at least, that holds for s0 = 1. If we set s0 = 4, then 
-  //  shape = 0.75 leads to a more evenly spaced fan out.
-  //  It seems like the shape parameter can even go beyond the range 0..1.
-  //  2 or -1 produce rather extreme results but they still seem to satisfy the slope conditions at
-  //  the endpoints. Maybe if we provide this parameter to the user, we shopuld rescale it from 
-  //  0..1 to -1..+1 such that the user gets a symmetric shape when the parameter is 0. ...but then 
-  //  check, if inverse interpolation can use the negative shape. If not, then maybe this rescaling 
-  //  is not a good idea. We'll see...
-
-  // ToDo:
-  // -Combine the 3 Moebius trafos into a single split-trafo. The splitting point can be computed 
-  //  as the inverse trafo of the A map. This can be used for optimization.
-  // -Maybe rename s0 to slopeAt0. But that currently gives a name clash with a small internal 
-  //  helper function. Maybe get rid of these helpers entirely or move them out of the function
-  //  to make them avaialble as potential library functions.
-  // -Maybe for a given set of coeffs a,b,c, plot the 3 individual maps together with the combined 
-  //  map to develop intuitions about what happens in the nesting process. Or maybe make a diagram 
-  //  with 7 plots and arrows between them like this:
-  //
-  //            A          B              C
-  //            |          |              |
-  //            v          v              v
-  //    x ---> A(x) ---> B(A(x)) ---> C(B(A(x)))
-  //
-  //  where x plots the identity function, A and A(x) plot the first map (controlled by a), B plots
-  //  second map applied to x, B(A(x)) plots the second map applied to A(x), C plots the third map
-  //  applied to x, C(B(A(x))) plot the third map applied to B(A(x)) which is the final output.
-  //  Maybe scrap x and A because A is redundant with A(x) and x is just the identity. But maybe it
-  //  is clearer when the are included in the diagram nonetheless.
-  // -Plot the cubic Hermite interpolant for comparison.
-
 
 
   // Notes:
@@ -2023,6 +1983,32 @@ void linearFractionalInterpolation()
   //  the Hermite interpolant should be able to reconstruct it exactly
   // -For a pdf documentation, it would make sense to produce 3 plots with slopeAt0 = 1/4, 1, 4. 
   //  The plot for 4 contains graphs which inverted versions of those in the plot for 1/4.
+  // -Maybe for a given set of coeffs a,b,c, plot the 3 individual maps together with the combined 
+  //  map to develop intuitions about what happens in the nesting process. Or maybe make a diagram 
+  //  with 7 plots and arrows between them like this:
+  //
+  //            A          B              C
+  //            |          |              |
+  //            v          v              v
+  //    x ---> A(x) ---> B(A(x)) ---> C(B(A(x)))
+  //
+  //  where x plots the identity function, A and A(x) plot the first map (controlled by a), B plots
+  //  second map applied to x, B(A(x)) plots the second map applied to A(x), C plots the third map
+  //  applied to x, C(B(A(x))) plot the third map applied to B(A(x)) which is the final output.
+  //  Maybe scrap x and A because A is redundant with A(x) and x is just the identity. But maybe it
+  //  is clearer when the are included in the diagram nonetheless.
+  // -Plot the cubic Hermite interpolant for comparison.
+  // -The shape controls, how the graphs "fan out" at 0,0. With lower values, the fan is denser at
+  //  the top-left and with higher values, it's denser at the bottom-right. With 0.5, the graphs 
+  //  fan out 
+  //  symmetrically and evenly. Well...at least, that holds for s0 = 1. If we set s0 = 4, then 
+  //  shape = 0.75 leads to a more evenly spaced fan out.
+  //  It seems like the shape parameter can even go beyond the range 0..1.
+  //  2 or -1 produce rather extreme results but they still seem to satisfy the slope conditions at
+  //  the endpoints. Maybe if we provide this parameter to the user, we shopuld rescale it from 
+  //  0..1 to -1..+1 such that the user gets a symmetric shape when the parameter is 0. ...but then 
+  //  check, if inverse interpolation can use the negative shape. If not, then maybe this rescaling 
+  //  is not a good idea. We'll see...
 
   // -ToDo:
   // -Explain, how this can be used for invertible interpolation - how to obtain the inverse
