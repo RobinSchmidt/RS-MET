@@ -2214,6 +2214,17 @@ void linearFractionalInterpolation()
       Real a, b, c, d;
       Real err;
       rsFill(y, 0.0);  // remove later
+
+      for(int n = 0; n < N; n++)
+      {
+        LFI::composeTripleMapIntoOne(x[n], s1, s2, s3, &a, &b, &c, &d);
+        y[n] = (a*x[n] + b) / (c*x[n] + d); 
+        err = y[n] - LFI::tripleMap(x[n], s1, s2, s3);  // Compare to reference computation
+        ok &= rsAbs(err) <= tol; 
+      }
+
+
+      /*
       for(int n = 0; n < N; n++) {
         if(x[n] <= xs) {
           a = s1*s2*s3;
@@ -2231,6 +2242,9 @@ void linearFractionalInterpolation()
           y[n] = (a*x[n] + b) / (c*x[n] + d);
           err = y[n] - LFI::tripleMap(x[n], s1, s2, s3);
           ok &= rsAbs(err) <= tol; }}
+          */
+
+
       plt.addDataArrays(N, &x[0], &y[0]);
       slopeAt1 *= 2;                                // Double the slope for the next graph
     }

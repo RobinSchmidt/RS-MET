@@ -430,7 +430,7 @@ void rsLinearFractionalInterpolator<T>::composeTripleMapIntoOne(T x, T s1, T s2,
   // we need to apply the first map's inverse to 0.5. We want to figure out at which input x the
   // first map produces the output 0.5. The inverse map is obtained by using the reciprocal slope.
   // We need 0.5 because that's the value at which the 2nd map switches between it two halves:
-  xs = simpleMap(0.5, 1/s1);
+  T xs = simpleMap(0.5, 1/s1);
 
   // Compute coeffs for the composed map depending on whether the input value x is before or after
   // the split point:
