@@ -2166,7 +2166,8 @@ void linearFractionalInterpolation()
 
 
   using Real = double;
-  using Vec = std::vector<Real>;
+  using Vec  = std::vector<Real>;
+  using LFI  = rsLinearFractionalInterpolator<Real>;
 
   // User parameters for the plots:
   int  N           = 257;       // Number of samples
@@ -2182,7 +2183,7 @@ void linearFractionalInterpolation()
   // produces a concave shape (like a saturation curve) for s > 1 and a convex shape (like a bowl
   // or parabola) for s < 1. For s = 1, it produces the identity function. The slope at x,y = 1,1 
   // will be given by 1/s. The slope s must be in the interval (0,inf) excluding the boundaries.
-  auto linFrac = [](Real x, Real s) { return s*x / ((s-1)*x + 1); };
+  //auto linFrac = [](Real x, Real s) { return s*x / ((s-1)*x + 1); };
   // Maybe rename to linFrac01 to indicate that this is the specialized variant which maps the unit
   // interval to itself. The more general form is (a*x + b) / (c*x + d). Here we have the 
   // constraints f(0) = 0, f(1) = 1 leading to b = 0, c = a-1. With given s, we use s = a/d to fix
@@ -2191,7 +2192,7 @@ void linearFractionalInterpolation()
   // by just multiplying their slopes together. This is also implied by the chain rule of 
   // differentiaion.
 
-
+  /*
   // Implements a symmetrized version of the linear fractional map that uses two appropriately 
   // scaled and shifted versions of the original map in the interval 0..5 and 0.5..1 to produce a
   // shape that is symmetric around x,y = 0.5,0.5. The shape looks like a sigmoid (s-shaped) for 
@@ -2204,7 +2205,9 @@ void linearFractionalInterpolation()
       return 0.5 * (linFrac((2*x-1), 1/s) + 1);
       //return 0.5 * linFrac((x-0.5)*2, 1/s) + 0.5;
   };
+  */
 
+  /*
   // Implements a function composed of three linFrac maps with slopes s1,s2,s3 where the middle 
   // one is the symmetrized variant. Th end result is a function that sadwiches a sigmoid/saddle 
   // shape between two convex/concave shapes. This is the final shape that we want.
@@ -2216,7 +2219,9 @@ void linearFractionalInterpolation()
     return x;
   };
   // Maybe rename to threeLinFracs01
+  */
 
+  /*
   // Compute the slopes for the three maps such that the composed/sandwiched map produces the 
   // desired slopes at the origin x,y = 0,0 and end point x,y = 1,1.
   auto computeSlopes = [&](Real slopeAt0, Real slopeAt1, Real* s1, Real* s2, Real* s3, Real shape)
@@ -2233,6 +2238,7 @@ void linearFractionalInterpolation()
       *s1 = pow(s13, shape);           // General case for user controlled shape
       *s3 = s13 / *s1; }
   };
+  */
 
   // Create the plots. We do not literally apply the 3 maps in sequence but instead, we first 
   // combine them into two partial maps of a slightly more flexible kind of the more general form 
@@ -2256,13 +2262,15 @@ void linearFractionalInterpolation()
     {
       // Compute coeffs a, b, c from desired slopes s0, s1:
       Real s1, s2, s3;
-      computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
+      //computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
+      LFI::computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
 
       // Figure out the split point where we need to switch between the two linFrac maps by 
       // applying the first map's inverse to 0.5. We want to figure out at which input x the first
       // map produces the output 0.5. The inverse map is obtained by using the reciprocal slope. We
       // need 0.5 because that's the value at which the 2nd map switches between it two halves:
-      Real xs = linFrac(0.5, 1/s1);  
+      //Real xs = linFrac(0.5, 1/s1);  
+      Real xs = LFI::simpleMap(0.5, 1/s1);  
 
       // Create map data and add it to the plot:
       Real a, b, c, d;
@@ -2275,7 +2283,8 @@ void linearFractionalInterpolation()
           c = s1*s2*s3 + s1*s2 - s1 - 1;
           d = 1;
           y[n] = (a*x[n] + b) / (c*x[n] + d);       // We could scrap the b bcs it's 0
-          err = y[n] - linFrac3(x[n], s1, s2, s3);  // Compare to reference computation
+          //err = y[n] - linFrac3(x[n], s1, s2, s3);  // Compare to reference computation
+          err = y[n] - LFI::tripleMap(x[n], s1, s2, s3);  // Compare to reference computation
           ok &= rsAbs(err) <= tol; }
         else {
           a = s1*s3 - s2*s3 + s3;
@@ -2283,7 +2292,8 @@ void linearFractionalInterpolation()
           c = (s1*s3 - s2*s3 - s2 + s3);
           d = s2*s3 + s2 - s3;
           y[n] = (a*x[n] + b) / (c*x[n] + d);
-          err = y[n] - linFrac3(x[n], s1, s2, s3);
+          //err = y[n] - linFrac3(x[n], s1, s2, s3);
+          err = y[n] - LFI::tripleMap(x[n], s1, s2, s3);
           ok &= rsAbs(err) <= tol; }}
       plt.addDataArrays(N, &x[0], &y[0]);
       slopeAt1 *= 2;                                // Double the slope for the next graph

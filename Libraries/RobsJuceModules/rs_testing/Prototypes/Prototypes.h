@@ -412,7 +412,7 @@ void rsLinearFractionalInterpolator<T>::computeSlopes(
   // Compute slope at zero for middle map (controlling sigmoidity vs saddleness) and slope at 
   // zero for combined outer maps s12 = s1*s2 (controlling convexity vs concavity):
   *s2 = sqrt(slopeAt0 * slopeAt1);
-  Real s13 = slopeAt0 / *s2;         // == *s2 / slopeAt1
+  T s13 = slopeAt0 / *s2;            // == *s2 / slopeAt1
 
   // Compute slopes at zero for first and last map according to our shape parameter:
   if(shape == 0.5)
