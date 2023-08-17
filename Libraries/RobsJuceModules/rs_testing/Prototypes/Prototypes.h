@@ -355,6 +355,12 @@ public:
   identity function. The slope at x,y = 1,1 will be given by 1/s. The slope s must be in the 
   interval (0,inf) excluding the boundaries. */
   static T simpleMap(T value, T slopeAt0);
+  // It's actually the same function as implemented in rsBiRationalMap_01 in RealFunctions.h just 
+  // parametrized differently. There, we use a parameter p in the range (-1,+1) and here we use the
+  // slope at the origin in the range (0,inf) as patameter. The conversion formulas are:
+  //   s = (1+p)/(1-p), p = (s-1)/(s+1)
+  // Maybe rename that function there to rsLinFracMap
+
 
   /** Implements a symmetrized version of the (simple, basic, prototypical) linear fractional map. 
   It uses two appropriately scaled and shifted versions of the original map in the interval 0..0.5
