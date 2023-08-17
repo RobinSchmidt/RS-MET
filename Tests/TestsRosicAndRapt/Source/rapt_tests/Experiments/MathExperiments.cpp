@@ -1495,6 +1495,12 @@ double getMax2ndDerivativeErrorSin(double h1, double h2,
 }
 */
 
+//-------------------------------------------------------------------------------------------------
+
+
+
+
+
 /** Map composed of two maps of the form given by rsRationalMap, one applied to the domain 
 0..0.5 and the other to 0.5..1 where inputs and outputs are appropriately scaled and shifted. The 
 maps are combined in such a way to give a range of shapes between sigmoidal (s-shaped) and a 
@@ -1509,7 +1515,7 @@ T rsBiRationalMap_01(T x, T a)
 }
 // Maybe rename this to rsBiMoebiusMap_01 and rsRationalMap_01 to rsMoebiusMap_01
 // Or rsSplitMoebiusMap or rsSymmetrizedMoebiusMap, rsMirroredMoebiusMap, rsReflectedMoebiusMap,
-// rsSigmoidizedMoebiusMap
+// rsSigmoidizedMoebiusMap, rsSplitLinFracMap
 
 /** Map composed of a rational map, a birational map and another rational map. ...TBC.. */
 template<class T>
@@ -1537,7 +1543,7 @@ T rsTetraRationalMap_01(T x, T a, T b, T c)
 // https://de.wikipedia.org/wiki/M%C3%B6biustransformation
 
 
-bool moebiusMapTest()
+bool moebiusMapTest()  // rename to linFracTest
 {
   bool ok  = true;
 
@@ -1716,58 +1722,8 @@ actually just like combining 2x2 matrices. Just for the scaling steps, we must s
 ...Wait - no - there's more: How dow we implement the affine trafo step for the 2nd piece? Maybe
 express it also as Moebius trafo and use the same algorithm. */
 
-
-void linearFractionalInterpolation()
+void linearFractionalInterpolationOld()
 {
-  // Linear fractional interpolation is an interpolation method based on the linear fractional 
-  // transformation that I have invented myself. It is suitable only for strictly monotonic data.
-  // The interpolant that interpolates a segment between two data points will also be monotonic. 
-  // Moreover, the interpolant will be easily invertible and the inverse interpolating function 
-  // will be of the same kind and can easily be obtained from the forward interpolating function.
-  // The motivation for such a scheme lies in the desire to have an interpolation method that is
-  // both invertible and first order smooth, i.e. has matching derivatives at the nodes. Linear
-  // interpolation is easily invertible but it's not first order smooth. Polynomial interpolation
-  // schemes can be made even smoother than first order but are in general not invertible - at 
-  // least not easily - and even if it is invertible (because one has somehow restricted the 
-  // interpolant to be monotonic), the inverse interpolating function will be of a completely 
-  // different kind, i.e. come from a different class of functions and has to be computed with a 
-  // different (more complicated) algorithm. For example, if you interpolate data given in arrays 
-  // x[n], y[n] using piecewise cubic polynomials to produce a continuous function y = f(x), the 
-  // (exact) inversion of the produced interpolant y = f(x), will not be a piecewise cubic but 
-  // instead be defined by using a root-finder applied to the piecewise cubic y = f(x), so the 
-  // inverse interpolant will be something like a piecewise "cube-rooty" function (well, it's 
-  // actually even more complicated than that but you get the point).
-  //
-  // Linear fractional interpolation solves this problem by using as interpolants between the 
-  // segments functions of the general form y = f(x) = (a*x + b) / (c*x + d). These functions
-  // are also known as "linear fractional transformations" because they consist of a fraction or
-  // quotient of two linear functions. One nice feature of the linear fractional transformations
-  // (which we will abbreviate as "linfrac maps" or just "linfracs" in the following) is that they
-  // form a group, implying that the inverses are also in the set and compositions of such 
-  // functions yield another element from the set. One might hope that with the 4 tweakable 
-  // parameters, one could satisfy 4 constraints to let the values and derivatives match some 
-  // prescribed value at the ends of the intervals. However, unfortunately, that's not so simple.
-  // When trying to solve the resulting system of equations, it turns out that it can only be 
-  // solved, if the two slopes at the ends of the interval are reciprocals of one another so we
-  // can't prescribe them independently. I think, it is because the linfrac has actually only 3 
-  // degrees of freedom rather than 4 because scaling all coeffs by the same number gives the same
-  // transformation. Maybe that's why fixing the endpoints and one derivative already locks 
-  // everything in place. To allow ourselves more control, we will use two linfracs per segment 
-  // that join together at an internal node somewhere within the segment. At this internal node, 
-  // the two sub-segments will also join smoothly to first order such that the overall smoothness
-  // of the interpolant is unchanged.
-  //
-  // The construction of the interpolant for a segment works as follows. We will assume that we
-  // want to find a function f(x) that maps the unit interval monotonically and invertibly to 
-  // itself. That means the function should produce f(0) = 0 and f(1) = 1. Additionally, it should
-  // produce f'(0) = s0 and f'(1) = s0 for some pair of prescribed slope values at the interval 
-  // boundaries. These slope values will ensure that the overall interpolant will have matching 
-  // slopes at the segment boundaries. Where we get these s0, s1 values from doesn't matter here. 
-  // It may make sense to produce them by numerical differentiation of the actual data, but that's 
-  // a different topic. Here, we just assume them to be given.
-  // ...TBC...
-
-  
   // Old:
   // Some experiments with Moebius maps that can be used for an invertible interpolation scheme 
   // that has first order smoothness, i.e. matching derivatives at the nodes, just like cubic 
@@ -1915,10 +1871,6 @@ void linearFractionalInterpolation()
   }
 
   rsAssert(ok);
-
-
-
-
 
   // Observations:
   // -The shapes look indeed nicely symmetric with respect to the line y = x as we would expect 
@@ -2084,6 +2036,76 @@ void linearFractionalInterpolation()
   //  https://mathworld.wolfram.com/ModularForm.html
   //  https://en.wikipedia.org/wiki/Modular_form
 }
+
+
+void linearFractionalInterpolation()
+{
+  // Linear fractional interpolation is an interpolation method based on the linear fractional 
+  // transformation that I have invented myself. It is suitable only for strictly monotonic data.
+  // The interpolant that interpolates a segment between two data points will also be monotonic. 
+  // Moreover, the interpolant will be easily invertible and the inverse interpolating function 
+  // will be of the same kind and can easily be obtained from the forward interpolating function.
+  // The motivation for such a scheme lies in the desire to have an interpolation method that is
+  // both invertible and first order smooth, i.e. has matching derivatives at the nodes. Linear
+  // interpolation is easily invertible but it's not first order smooth. Polynomial interpolation
+  // schemes can be made even smoother than first order but are in general not invertible - at 
+  // least not easily - and even if it is invertible (because one has somehow restricted the 
+  // interpolant to be monotonic), the inverse interpolating function will be of a completely 
+  // different kind, i.e. come from a different class of functions and has to be computed with a 
+  // different (more complicated) algorithm. For example, if you interpolate data given in arrays 
+  // x[n], y[n] using piecewise cubic polynomials to produce a continuous function y = f(x), the 
+  // (exact) inversion of the produced interpolant y = f(x), will not be a piecewise cubic but 
+  // instead be defined by using a root-finder applied to the piecewise cubic y = f(x), so the 
+  // inverse interpolant will be something like a piecewise "cube-rooty" function (well, it's 
+  // actually even more complicated than that but you get the point).
+  //
+  // Linear fractional interpolation solves this problem by using as interpolants between the 
+  // segments functions of the general form y = f(x) = (a*x + b) / (c*x + d). These functions
+  // are also known as "linear fractional transformations" because they consist of a fraction or
+  // quotient of two linear functions. One nice feature of the linear fractional transformations
+  // (which we will abbreviate as "linfrac maps" or just "linfracs" in the following) is that they
+  // form a group, implying that the inverses are also in the set and compositions of such 
+  // functions yield another element from the set. One might hope that with the 4 tweakable 
+  // parameters, one could satisfy 4 constraints to let the values and derivatives match some 
+  // prescribed value at the ends of the intervals. However, unfortunately, that's not so simple.
+  // When trying to solve the resulting system of equations, it turns out that it can only be 
+  // solved, if the two slopes at the ends of the interval are reciprocals of one another so we
+  // can't prescribe them independently. I think, it is because the linfrac has actually only 3 
+  // degrees of freedom rather than 4 because scaling all coeffs by the same number gives the same
+  // transformation. Maybe that's why fixing the endpoints and one derivative already locks 
+  // everything in place. To allow ourselves more control, we will use two linfracs per segment 
+  // that join together at an internal node somewhere within the segment. At this internal node, 
+  // the two sub-segments will also join smoothly to first order such that the overall smoothness
+  // of the interpolant is unchanged.
+  //
+  // The construction of the interpolant for a segment works as follows. We will assume that we
+  // want to find a function f(x) that maps the unit interval monotonically and invertibly to 
+  // itself. That means the function should produce f(0) = 0 and f(1) = 1. Additionally, it should
+  // produce f'(0) = s0 and f'(1) = s0 for some pair of prescribed slope values at the interval 
+  // boundaries. These slope values will ensure that the overall interpolant will have matching 
+  // slopes at the segment boundaries. Where we get these s0, s1 values from doesn't matter here. 
+  // It may make sense to produce them by numerical differentiation of the actual data, but that's 
+  // a different topic. Here, we just assume them to be given.
+
+
+  // This is function here is under construction. Until it's done, we fall back to a previous 
+  // older version of the idea implemented here:
+  linearFractionalInterpolationOld(); return;
+  // The line can be commented or uncommented depending on whether we work on the new 
+  // implementation or want to fall back to the working old implementation. Since then, I realized
+  // that the whole scheme can be implemented in much simpler ways just by parametrizing the linear
+  // fraction transform by its slope at the origin in (0,inf) rather than by the old parameter in 
+  // (-1,+1). This is going to be developed below. When it's finished and works, the old, 
+  // complicated way becomes obsolete and can be deleted or moved into the attic.
+
+
+
+  int dummy = 0;
+}
+
+
+
+//-------------------------------------------------------------------------------------------------
 
 void interpolatingFunction()
 {
