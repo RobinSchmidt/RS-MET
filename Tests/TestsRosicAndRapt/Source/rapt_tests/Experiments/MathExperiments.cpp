@@ -2103,7 +2103,8 @@ void linearFractionalInterpolation()
   using Vec = std::vector<Real>;
 
   // User parameters for the plots:
-  int  N           = 257;       // Number of samples
+  int  N           = 33;       // Number of samples
+  //int  N           = 257;       // Number of samples
   Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
   Real slopeAt0    = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
@@ -2182,7 +2183,7 @@ void linearFractionalInterpolation()
     plt.addCommand("set size square");
     plt.plot();
   }
-
+  // Nope this is garbage! Only for the identity, th y-array looks good
 
 
 
