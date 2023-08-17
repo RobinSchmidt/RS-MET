@@ -1,5 +1,6 @@
 
 Autonomous Modulator ("AutoMod"?):
+
 Often, it is desirable to not create a modulation signal from scratch
 (using oscillators, envelope generators, etc.) but rather derive it from the 
 input signal itself. If we are running oscillators, etc., we always have a 
@@ -13,7 +14,26 @@ filter to that to get a kind of signal-derived pseudo-sinusoidal modulation
 signal. Maybe somehow, we could also use a level detector in this setup to
 make sure that the modulation signal has always about the same level.
 
-maybe try something based on:
+
+Some potentially interesting functional forms for modulation signals:
+
+Maybe try something based on:
   y = f(x) = (a*exp(x) + b*exp(-x)) / (c*exp(x) + d*exp(-x))
 this can be solved for x, giving:
   x = 0.5*log((y*d-b) / (a-y*c))
+I think, this should include tanh as special case?
+
+Take log((e^x + a) / (e^x - b)). with a = 25, b = 0.98. We get an initial fast decay like at a 
+pole, followed by a linear section, followed by an exponential decay. 
+https://www.desmos.com/calculator/hu0vgjoyxq
+By the way: for a = b = 1, the function becomes self-inverse (an involution), see
+https://en.wikipedia.org/wiki/Involution_(mathematics)
+That's where I have this function from and then tweaked it a little, just for fun
+
+f(x) = sqrt(a) * tanh(x) * exp(-a * x^2)   or 
+f(x) = sqrt(a) *      x  * exp(-a * x^2)
+The first has a linear attack and Gaussian decay (2 second: gauss * linear).
+https://www.desmos.com/calculator/awxtld22ju
+Needs to be somehow reparametrized in terms of attack and decay and normalized to amplitude 1.
+Can be efficiently generated from an exponential decay by squaring it for the Gauss-bell and 
+applying a rational function for the tanh.
