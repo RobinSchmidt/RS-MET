@@ -2238,21 +2238,10 @@ void linearFractionalInterpolation()
         }
         else
         {
-          a = 2*s2*s3 + 2*(s1*s3 - s2*s3 + s3);
-          b = -2*s3;
-          c = 2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3);
-          d = 2*s2 - 2*s3;
-          // Verify ...seems like this is wrong. For smaller slopes at 1 like 1/16, the plot looks
-          // better. It does seem to have the correct slope at 1, though but the way it cuves off
-          // to the left is too steep
-
-          // Test:
-          a /= 2; b /= 2; c /= 2; d /= 2; 
-          // makes no difference - this is expected because scaling all coeffs gives same map
-          // We get d = 0 for when we desired the identity. This is wrong. It should be 1. And a
-          // should be 1, too
-
-
+          a = s1*s3 - s2*s3 + s3;
+          b = s2*s3 - s3;
+          c = (s1*s3 - s2*s3 - s2 + s3);
+          d = s2*s3 + s2 - s3;
           y[n] = (a*x[n] + b) / (c*x[n] + d);
 
           //y[n] = linFrac3(x[n], s1, s2, s3); 
@@ -2314,25 +2303,10 @@ num = numerator(y5)
 den = denominator(y5)
 num.expand().collect(x), den.expand().collect(x)
 
-Result: (2*s2*s3 + 2*(s1*s3 - s2*s3 + s3)*x - 2*s3,
-         2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3)*x + 2*s2 - 2*s3)
-a = 2*s2*s3 + 2*(s1*s3 - s2*s3 + s3)
-b = -2*s3
-c = 2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3)
-d = 2*s2 - 2*s3
-
-(2*s2*s3 + 2*(s1*s3 - s2*s3 + s3)*x - 2*s3,
-2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3)*x + 2*s2 - 2*s3)
-
-
-// Not sure, if it's correct to invert s2 -> verify!
-// but it seems wrong even if we set slopeAt1 = 1
-
-
-(s2*s3 + (s1*s3 - s2*s3 + s3)*x - s3,
-s2*s3 + (s1*s3 - s2*s3 - s2 + s3)*x + s2 - s3)
-a = s2*s3 + (s1*s3 - s2*s3 + s3)
-b = - s3
+Result: (s2*s3 + (s1*s3 - s2*s3 + s3)*x - s3,
+         s2*s3 + (s1*s3 - s2*s3 - s2 + s3)*x + s2 - s3)
+a = s1*s3 - s2*s3 + s3
+b = s2*s3 - s3
 c = (s1*s3 - s2*s3 - s2 + s3)
 d = s2*s3 + s2 - s3
 
