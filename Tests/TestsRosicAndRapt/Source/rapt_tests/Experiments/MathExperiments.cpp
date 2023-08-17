@@ -2040,8 +2040,8 @@ void linearFractionalInterpolationOld()
 
 void linearFractionalInterpolation()
 {
-  // Linear fractional interpolation is an interpolation method based on the linear fractional 
-  // transformation that I have invented myself. It is suitable only for strictly monotonic data.
+  // Linear fractional interpolation is an interpolation method that I have constructed around the
+  // so called linear fractional transformations. It is suitable only for strictly monotonic data.
   // The interpolant that interpolates a segment between two data points will also be monotonic. 
   // Moreover, the interpolant will be easily invertible and the inverse interpolating function 
   // will be of the same kind and can easily be obtained from the forward interpolating function.
@@ -2081,8 +2081,8 @@ void linearFractionalInterpolation()
   // The construction of the interpolant for a segment works as follows. We will assume that we
   // want to find a function f(x) that maps the unit interval monotonically and invertibly to 
   // itself. That means the function should produce f(0) = 0 and f(1) = 1. Additionally, it should
-  // produce f'(0) = d0 and f'(1) = d0 for some pair of prescribed slope values at the interval 
-  // boundaries. We use d0, d1 for "derivative" rather that s0, s1 for "slope" because we will use
+  // produce f'(0) = d0 and f'(1) = d1 for some pair of prescribed slope values at the interval 
+  // boundaries. We use d0, d1 for "derivative" rather than s0, s1 for "slope" because we will use
   // s1 later for something else These slope values will ensure that the overall interpolant will 
   // have matching slopes at the segment boundaries. Where we get these d0, d1 values from doesn't 
   // matter here. It may make sense to produce them by numerical differentiation of the actual 
@@ -2100,7 +2100,11 @@ void linearFractionalInterpolation()
   // requirements for the derivatives at 0 and 1 at the expense of having to introduce a switch.
   // Because at the end of the day, all 3 will combine into one single linFrac due to the 
   // composition rule - but it will have to be a different one for the first and last section of 
-  // the interval 0..1. 
+  // the interval 0..1. It's the fact that middle one is the symmetrized variant that gives us this
+  // additional amount of control. The symmetrized variant lies not in our group of linFracs so it
+  // gives us indeed soemthing new - namely, the ability to introduce inflection points. The end
+  // result of this construction will be a piecewise linfrac made from two pieces. In a way, the 
+  // symmetrized linfrac serves as a prototype for the more general piecewise linfracs.
   //
   // OK - so we start from the assumption that we first use a regular linFrac in sequence with a
   // symmetrized one and another regular one. A symmetrized linFrac will have the same derivative 
@@ -2141,7 +2145,11 @@ void linearFractionalInterpolation()
   // have to apply them in succession algebraically to a variable x and then read off the coeffs
   // of the result. This is best done with a computer algebra system and some details about that 
   // are given in the comments below.
-
+  //
+  // ToDo: explain, how this can be used for invertible interpolation - how to obtain the inverse
+  // interpolant etc. I think, it will just use the exact same algorithm just with slope data 
+  // reciprocated (due to inverse function rule of differentiation). If the shape parameter is 
+  // used (i.e. != 0.5), I think for the inverse, we need to use 1 - shape
 
   // This is function here is under construction. Until it's done (it actually pretty much is), we
   // fall back to a previous older version of the idea implemented here:
