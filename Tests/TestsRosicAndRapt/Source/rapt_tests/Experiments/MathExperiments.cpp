@@ -2090,13 +2090,56 @@ void linearFractionalInterpolation()
 
   // This is function here is under construction. Until it's done, we fall back to a previous 
   // older version of the idea implemented here:
-  linearFractionalInterpolationOld(); return;
+  //linearFractionalInterpolationOld(); return;
   // The line can be commented or uncommented depending on whether we work on the new 
   // implementation or want to fall back to the working old implementation. Since then, I realized
   // that the whole scheme can be implemented in much simpler ways just by parametrizing the linear
   // fraction transform by its slope at the origin in (0,inf) rather than by the old parameter in 
   // (-1,+1). This is going to be developed below. When it's finished and works, the old, 
   // complicated way becomes obsolete and can be deleted or moved into the attic.
+
+
+  using Real = double;
+  using Vec = std::vector<Real>;
+
+  // User parameters for the plots:
+  int  N           = 257;       // Number of samples
+  Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
+  Real s0          = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
+  Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
+  Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
+
+
+  // Implements the linear fractional transformation with given slope s at the origin. It produces
+  // a concave shape (like a saturation curve) for s > 1 and a convex shape (like a bowl or 
+  // parabola) for s < 1. The slope at x,y = 1,1 will be given by 1/s. The slope s must be in
+  // the interval (0,inf) excluding the boundaries. A slope of 1 will produce the identity map.
+  auto linFrac = [](Real x, Real s) {  return s*x / ((1-s)*x + 1); };
+
+  // Implements a symmetrized version of the linear fractional map that uses two appropriately 
+  // scaled and shifted versions of the original map in the interval 0..5 and 0.5..1 to produce a
+  // shape that is symmetric around x,y = 0.5,0.5. The shape looks like a sigmoid (s-shaped) for 
+  // s > 1 and like a saddle (like x^3) for x < 1.
+  auto linFracSym = [&](Real x, Real s)
+  {
+    if(x < 0.5)
+      return 0.5 * linFrac(2*x, s);
+    else
+      return 0.5 * linFrac((x-0.5)*2, 1/s) + 0.5;
+  };
+
+  // Implements a function composed of three linFrac maps with slopes s1,s2,s3 where the middle 
+  // one is the symmetrized variant. Th end result is a function that sadwiches a sigmoid/saddle 
+  // shape between two convex/concave shapes. This is the final shape that we want.
+  auto linFrac3 = [&](Real x, Real s1, Real s2, Real s3)
+  {
+    x = linFrac(   x, s1);  // pre convexity or concavity
+    x = linFracSym(x, s2);  // sigmoidity or saddleness
+    x = linFrac(   x, s3);  // post convexity or concavity
+    return x;
+  };
+
+ 
 
 
 
