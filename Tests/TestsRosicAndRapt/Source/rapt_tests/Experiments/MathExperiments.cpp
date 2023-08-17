@@ -2200,14 +2200,12 @@ void linearFractionalInterpolation()
     {
       // Compute coeffs a, b, c from desired slopes s0, s1:
       Real s1, s2, s3;
-      //computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
       LFI::computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
 
       // Figure out the split point where we need to switch between the two linFrac maps by 
       // applying the first map's inverse to 0.5. We want to figure out at which input x the first
       // map produces the output 0.5. The inverse map is obtained by using the reciprocal slope. We
       // need 0.5 because that's the value at which the 2nd map switches between it two halves:
-      //Real xs = linFrac(0.5, 1/s1);  
       Real xs = LFI::simpleMap(0.5, 1/s1);  
 
       // Create map data and add it to the plot:
@@ -2217,33 +2215,16 @@ void linearFractionalInterpolation()
 
       for(int n = 0; n < N; n++)
       {
+
+
+
         LFI::composeTripleMapIntoOne(x[n], s1, s2, s3, &a, &b, &c, &d);
         y[n] = (a*x[n] + b) / (c*x[n] + d); 
         err = y[n] - LFI::tripleMap(x[n], s1, s2, s3);  // Compare to reference computation
         ok &= rsAbs(err) <= tol; 
+
+        y[n] = LFI::interpolateNormalized(x[n], slopeAt0, slopeAt1, shape);
       }
-
-
-      /*
-      for(int n = 0; n < N; n++) {
-        if(x[n] <= xs) {
-          a = s1*s2*s3;
-          b = 0;
-          c = s1*s2*s3 + s1*s2 - s1 - 1;
-          d = 1;
-          y[n] = (a*x[n] + b) / (c*x[n] + d);       // We could scrap the b bcs it's 0
-          err = y[n] - LFI::tripleMap(x[n], s1, s2, s3);  // Compare to reference computation
-          ok &= rsAbs(err) <= tol; }
-        else {
-          a = s1*s3 - s2*s3 + s3;
-          b = s2*s3 - s3;
-          c = (s1*s3 - s2*s3 - s2 + s3);
-          d = s2*s3 + s2 - s3;
-          y[n] = (a*x[n] + b) / (c*x[n] + d);
-          err = y[n] - LFI::tripleMap(x[n], s1, s2, s3);
-          ok &= rsAbs(err) <= tol; }}
-          */
-
 
       plt.addDataArrays(N, &x[0], &y[0]);
       slopeAt1 *= 2;                                // Double the slope for the next graph

@@ -377,6 +377,9 @@ public:
   static void composeTripleMapIntoOne(T value, T slope1, T slope2, T slope3, 
     T* a, T* b, T* c, T* d);
 
+  static T interpolateNormalized(T inputValueX, T slopeAt0, T slopeAt1, T shape);
+
+  //T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x);
 
 
 };
@@ -444,6 +447,24 @@ void rsLinearFractionalInterpolator<T>::composeTripleMapIntoOne(T x, T s1, T s2,
     *b = s2*s3 - s3;
     *c = (s1*s3 - s2*s3 - s2 + s3);
     *d = s2*s3 + s2 - s3;  }
+}
+
+template<class T>
+T rsLinearFractionalInterpolator<T>::interpolateNormalized(T x, T slopeAt0, T slopeAt1, T shape)
+{
+  // Compute the slopes for the 3 individual maps that compose to the final overall map:
+  T s1, s2, s3;
+  computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
+
+  // Compute the coefficients for the combined map which is of the more general form
+  // f(x) = (a*x + b) / (c*x + d)
+  T a, b, c, d;
+  composeTripleMapIntoOne(x, s1, s2, s3, &a, &b, &c, &d);
+
+  // Compute the output of the composed map:
+  T y = (a*x + b) / (c*x + d); 
+  T err = y - tripleMap(x, s1, s2, s3);  // Compare to reference computation for debug
+  return y;
 }
 
 
