@@ -426,8 +426,26 @@ template<class T>
 void rsLinearFractionalInterpolator<T>::composeTripleMapIntoOne(T x, T s1, T s2, T s3,
   T* a, T* b, T* c, T* d)
 {
+  // Figure out the split point where we need to switch between the two maps. To find the value,
+  // we need to apply the first map's inverse to 0.5. We want to figure out at which input x the
+  // first map produces the output 0.5. The inverse map is obtained by using the reciprocal slope.
+  // We need 0.5 because that's the value at which the 2nd map switches between it two halves:
+  xs = simpleMap(0.5, 1/s1);
 
+  // Compute coeffs for the composed map depending on whether the input value x is before or after
+  // the split point:
+  if(x <= xs) {
+    *a = s1*s2*s3;
+    *b = 0;
+    *c = s1*s2*s3 + s1*s2 - s1 - 1;
+    *d = 1; }
+  else {
+    *a = s1*s3 - s2*s3 + s3;
+    *b = s2*s3 - s3;
+    *c = (s1*s3 - s2*s3 - s2 + s3);
+    *d = s2*s3 + s2 - s3;  }
 }
+
 
 /*
 Notes:
