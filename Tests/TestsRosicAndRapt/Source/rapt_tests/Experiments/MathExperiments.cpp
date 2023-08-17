@@ -2104,15 +2104,15 @@ void linearFractionalInterpolation()
   using Vec = std::vector<Real>;
 
   // User parameters for the plots:
-  int  N           = 125;       // Number of samples
+  int  N           = 257;       // Number of samples
   Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
   Real slopeAt0    = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
+  Real tol         = 1.e-13;    // Tolerance for some tests that we do along the way
 
 
-
-
+  bool ok = true;
 
   // Implements the linear fractional transformation f(x) that maps the unit interval [0,1] to 
   // itself with f(0) = 0 and f(1) = 1 and with given slope s at the origin such that f'(0) = s. It 
@@ -2211,7 +2211,6 @@ void linearFractionalInterpolation()
   // transformation. The affine transforms before and after the middle map do not destroy this 
   // because they are also special cases of the linFrac maps. That means, we can compose the whole
   // composition of the 3 maps into a switch between two single maps ...tbc...
-  //minSlopeAt1 = 1.0/4.0; maxSlopeAt1 = minSlopeAt1;  // Test - just one plot
   {
     GNUPlotter plt;
     Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
@@ -2225,6 +2224,7 @@ void linearFractionalInterpolation()
       // Create map data and add it to the plot:
       Real xs = linFrac(0.5, 1/s1);  // figure out split point
       Real a, b, c, d;
+      Real err;
       rsFill(y, 0.0);  // remove later
       for(int n = 0; n < N; n++)
       {
@@ -2234,7 +2234,9 @@ void linearFractionalInterpolation()
           b = 0;
           c = s1*s2*s3 + s1*s2 - s1 - 1;
           d = 1;
-          y[n] = (a*x[n] + b) / (c*x[n] + d); // We could scrap the b bcs it's 0
+          y[n] = (a*x[n] + b) / (c*x[n] + d);      // We could scrap the b bcs it's 0
+          err = y[n] - linFrac3(x[n], s1, s2, s3); // Compare to reference computation
+          ok &= rsAbs(err) <= tol;
         }
         else
         {
@@ -2243,12 +2245,8 @@ void linearFractionalInterpolation()
           c = (s1*s3 - s2*s3 - s2 + s3);
           d = s2*s3 + s2 - s3;
           y[n] = (a*x[n] + b) / (c*x[n] + d);
-
-          //y[n] = linFrac3(x[n], s1, s2, s3); 
-          // This gives the correct value and it is what we try to achieve with a single linear
-          // fractional map. Try to start freshly deriving the total map. Compute the a,b,c,d 
-          // manually for the case slopeAt0 = slopeAt1 = 1 and from that compute the a,b,c,d coeffs
-          // for 1st and 2nd segment
+          err = y[n] - linFrac3(x[n], s1, s2, s3);
+          ok &= rsAbs(err) <= tol;
         }
       }
 
@@ -2267,8 +2265,7 @@ void linearFractionalInterpolation()
 
 
 
-
-
+  rsAssert(ok);
   int dummy = 0;
 }
 /*
