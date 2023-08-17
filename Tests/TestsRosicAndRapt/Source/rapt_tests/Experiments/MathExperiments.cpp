@@ -2104,14 +2104,13 @@ void linearFractionalInterpolation()
   using Vec = std::vector<Real>;
 
   // User parameters for the plots:
-  int  N           = 25;       // Number of samples
+  int  N           = 125;       // Number of samples
   Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
   Real slopeAt0    = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
 
-  // Test - just one plot:
-  minSlopeAt1 = 1.0/4.0; maxSlopeAt1 = minSlopeAt1;
+
 
 
 
@@ -2211,6 +2210,7 @@ void linearFractionalInterpolation()
   // transformation. The affine transforms before and after the middle map do not destroy this 
   // because they are also special cases of the linFrac maps. That means, we can compose the whole
   // composition of the 3 maps into a switch between two single maps ...tbc...
+  minSlopeAt1 = 1.0/1.0; maxSlopeAt1 = minSlopeAt1;  // Test - just one plot
   {
     GNUPlotter plt;
     Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
@@ -2223,9 +2223,6 @@ void linearFractionalInterpolation()
 
       // Create map data and add it to the plot:
       Real xs = linFrac(0.5, 1/s1);  // figure out split point
-      // Verify ...seems like this is wrong
-
-
       Real a, b, c, d;
       rsFill(y, 0.0);  // remove later
       for(int n = 0; n < N; n++)
@@ -2246,12 +2243,16 @@ void linearFractionalInterpolation()
           b = -2*s3;
           c = 2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3);
           d = 2*s2 - 2*s3;
+          // Verify ...seems like this is wrong. For smaller slopes at 1 like 1/16, the plot looks
+          // better. It does seem to have the correct slope at 1, though but the way it cuves off
+          // to the left is too steep
+
           y[n] = (a*x[n] + b) / (c*x[n] + d);
           rsAssert(rsIsFiniteNumber(y[n]));
           //y[n] = 0.0;
         }
       }
-       
+
 
       plt.addDataArrays(N, &x[0], &y[0]);
 
@@ -2313,6 +2314,8 @@ a = 2*s2*s3 + 2*(s1*s3 - s2*s3 + s3)
 b = -2*s3
 c = 2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3)
 d = 2*s2 - 2*s3
+
+// Not sure, if it's correct to invert s2 -> verify!
 
 
 
