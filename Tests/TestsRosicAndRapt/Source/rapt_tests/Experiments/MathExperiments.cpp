@@ -1875,8 +1875,7 @@ void linearFractionalInterpolationOld()
   // Observations:
   // -The shapes look indeed nicely symmetric with respect to the line y = x as we would expect 
   //  from our construction of the set of function as containing also the inverses of all members.
-  // -For a pdf documentation, it would make sense to produce 3 plots with s0 = 1/4, 1, 4. The plot
-  //  for s0 = 4 contains graphs which inverted versions of those in the plot for s0 = 1/4.
+
   // -We currently use A = pow(AC, shape); C = AC/A for some shape parameter. This formula reduces
   //  to the sqrt-formula when shape == 0.5. Trying this with shape = 0.25 and 0.75 suggests
   //  that for the inverse interpolation, we need to use invShape = 1 - shape. The shape controls,
@@ -1912,63 +1911,10 @@ void linearFractionalInterpolationOld()
   //  Maybe scrap x and A because A is redundant with A(x) and x is just the identity. But maybe it
   //  is clearer when the are included in the diagram nonetheless.
   // -Plot the cubic Hermite interpolant for comparison.
-  // -Figure out the actual expression for the interpolation. In the range 0..0.5 It's a nesting 
-  //  of 5 things: Moebius trafo -> upscaling -> Moebius trafo -> downscaling -> Moebius trafo. In 
-  //  the range 0.5...1, it's Moebius -> affine -> Moebius -> affine -> Moebius.
-  //  Maybe call the interpolation-scheme Moebius-interpolation or BiMoebius interpolation.
-  // -Use this Meobius map for 1st order smooth monotonic and invertible interpolation for 
-  //  data arrays x[n], y[n], s[n] containing the x,y values and desired slopes. The API should
-  //  be like: interpolateMoebius(const T* x, const T* y, const T* s, N, x0). It should take the 
-  //  data arrays of length N and a desired interpolation point x0 and return the interpolated y0 
-  //  value at x0. Make the API consistent with other interpolation functions. Note that for the 
-  //  inverse interpolation, the s array should be reciprocated because of the inverse function 
-  //  rule (I think). See https://en.wikipedia.org/wiki/Inverse_function_rule. Doing:
-  //    y0   = interpolateMoebius(x, y, s,  N, x0);
-  //    x0_r = interpolateMoebius(y, x, sr, N, y0);
-  //  should be an identity operation, i.e. we should have x0_r == x0 up to roundoff error. Here, 
-  //  sr are the reciprocals of s and_x0_r is the reconstructed x0.
-  // -Use that interpolation scheme in rsTimeWarper (let the user switch between linear and 
-  //  rational/Moebius)
-  // -Maybe target values for the slopes can be obtained from the data by numerical dervatives or
-  //  maybe we can apply a constraint that the curvatures should match at the nodes similar to
-  //  what is done in cubic spline interpolation. But maybe matching to 2nd order is impossible?
-  //  Dunno - figure out!
-  // -Try to use two birational maps as output functions and one rational as inner instead fo the
-  //  other way around. a lot of the math should translate easily. Maybe the shapes obtained are 
-  //  different but also useful.
-  // -What if we consider our rational f as function of a (in (-1,+1)) and treat x as parameter 
-  //  (in [0,1] ...or maybe beyond?)?
 
 
 
   // Notes:
-  // -Check literature about rational splines. We are doing something similar here, I think.
-  //  https://www.alglib.net/interpolation/rational.php
-  // -My initial idea was to use a linear combination of self-inverse functions for interpolation.
-  //  However, the linear combination of self-inverse functions does not lead to a function that is
-  //  of the same type. The forward combination stacks the functions on top of each other along the
-  //  y-axis and the backward combination would stack them to the right of each other along the
-  //  x-axis. This is not the same thing, so the approach was a dead end road. What we actually 
-  //  need is a set of functions, all of whose inverses are also members of the set.
-  // -The second derivative is (4 a (-1 + a^2))/(1 + a (-1 + 2 x))^3 which evaluated at 0 gives
-  //  (-4 a (1 + a))/(-1 + a)^2 and evaluated at 1 gives (4 (-1 + a) a)/(1 + a)^2. In terms of 
-  //  A = (1+a)/(1-a), the expression  is simpler: 2 A (1-A). It can easily be found by Wolfram 
-  //  Alpha using "substitute a = (A-1) / (A+1) into  (-4 a (1 + a))/(-1 + a)^2". Maybe this can be
-  //  used to create a 2nd order smooth interpolant. But maybe that's pointless because the inner 
-  //  (sigmoid) function is itself only 1st order smooth, I think. It's composed of two chunks 
-  //  which meet each other in a 1st order smooth node at x,y = 0.5,0.5.
-  // -When thinking about cubic splines vs cubic Hermite interpolation, we actually note that 
-  //  Hermite with numerical derivatives may make more sense than spline with respect to how well
-  //  the data is modeled because we also model the *measured* derivative whereas in spline 
-  //  interpolation, we *adjust* the derivatives to make the spline smooth to 2nd order. But if the
-  //  underlying data does not happen to be described by a cubic polynomial, this smoothness 
-  //  constraint may be meaningless with respect to data modeling. Maybe try what happens when we 
-  //  use numeric derivatives that are at least 3rd order accurate in cubic Hermite interpolation. 
-  //  That accuracy seems to be a good fit. When the input data actually *is* a cubic polynomial, 
-  //  the Hermite interpolant should be able to reconstruct it exactly
-  // -Maybe calling it Moebius transformation is not appropriate because normally, one uses this
-  //  term when talking about maps in the complex plane. When using this type of map over the dual
-  //  numbers, they are called Laguerre Ttransformations
   //
   // I tried to use one general linfrac f(x) = (a x + b) / (c x + d) for the whole interval. The 
   // general derivative is given by f'(x) = (a d - b c) / (c x + d)^2
@@ -1998,43 +1944,11 @@ void linearFractionalInterpolationOld()
   // that means
   //   f(x) = (s0*x) / ((s0-1)*x + 1)
   // Yes! That works: https://www.desmos.com/calculator/lmbes9yqtu
-  // So: use a parameter s (and t,u for the following 2nd and 3rd trafos). To convert from s to our
-  // old parameter in [-1,+1] which we shall call p her, we have p = (s-1)/(s+1) and
-  // s = (1+p)/(1-p). See: https://www.desmos.com/calculator/ntfxpcrelp
+  // So: use a parameter s (and t,u for the following 2nd and 3rd trafos). 
+  // To convert from s to our old parameter in [-1,+1] which we shall call p her, we have 
+  // p = (s-1)/(s+1) and s = (1+p)/(1-p). See: https://www.desmos.com/calculator/ntfxpcrelp
   // btw: using f(x) = (s*x) / ((1-s)*x + 1) is also interesting when we use the same formula for
   // s(p) and tweak p
-
-  // See also:
-  // https://math.stackexchange.com/questions/4162828/interpolation-with-exact-inverse
-  // https://en.wikipedia.org/wiki/Linear_fractional_transformation
-  // https://en.wikipedia.org/wiki/M%C3%B6bius_transformation
-  // https://en.wikipedia.org/wiki/Laguerre_transformations
-
-  // Other ideas (spin offs - move to some experiment involving waveshaping):
-  // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
-  //  around zero but away from zero, it is the identity.
-  // -Implement a smoothQuantize function based on the birational map:
-  //    i = floor(x);
-  //    f = x - i;
-  //    f = rsBiRationalMap(f, a);
-  //    y = i + f;
-  //  This scheme quantizes to integers for a = -1 or a = +1, is neutral for a = 0. We could 
-  //  quantize to other intervals q, by pre-scaling x by 1/q and post-scaling y by q (or the other
-  //  way around). But this scheme quatizes to floor or ceil (depending on whether a = -1 or +1). 
-  //  To quantize to the nearest integer, we may shift f by 0.5 before applying the map and shift y
-  //  back by -0.5 (or something like that).
-  // -Our group seems to have finite subgroups:
-  //  https://math.stackexchange.com/questions/381066/showing-that-this-set-of-functions-is-a-group
-  //  https://math.stackexchange.com/questions/2758562/what-causes-a-set-of-functions-to-form-a-group-under-composition
-  //  Actually, the 1-parametric family is also an infinite subgroup of the group of all linfracs.
-  //  I think, it is a Lie-group...and the mainfold is parametrized by the parameter and maybe we 
-  //  have to pick a fixed x to actually evaluate points on the manifold?
-  //  Countable subgroups:
-  //  https://mathworld.wolfram.com/ModularGroupGamma.html
-  //  https://mathworld.wolfram.com/ModularGroupLambda.html
-  //  https://en.wikipedia.org/wiki/Modular_group
-  //  https://mathworld.wolfram.com/ModularForm.html
-  //  https://en.wikipedia.org/wiki/Modular_form
 }
 
 
@@ -2089,17 +2003,81 @@ void linearFractionalInterpolation()
   // -The shapes look beautifully onion shaped or maybe like christmas tree decoration. Maybe they
   //  could be useful for graphics applications.
 
+  // Notes:
+  // -Check literature about rational splines. We are doing something similar here, I think.
+  //  https://www.alglib.net/interpolation/rational.php
+  // -My initial idea was to use a linear combination of self-inverse functions for interpolation.
+  //  However, the linear combination of self-inverse functions does not lead to a function that is
+  //  of the same type. The forward combination stacks the functions on top of each other along the
+  //  y-axis and the backward combination would stack them to the right of each other along the
+  //  x-axis. This is not the same thing, so the approach was a dead end road. What we actually 
+  //  need is a set of functions, all of whose inverses are also members of the set.
+  // -When thinking about cubic splines vs cubic Hermite interpolation, we actually note that 
+  //  Hermite with numerical derivatives may make more sense than spline with respect to how well
+  //  the data is modeled because we also model the *measured* derivative whereas in spline 
+  //  interpolation, we *adjust* the derivatives to make the spline smooth to 2nd order. But if the
+  //  underlying data does not happen to be described by a cubic polynomial, this smoothness 
+  //  constraint may be meaningless with respect to data modeling. Maybe try what happens when we 
+  //  use numeric derivatives that are at least 3rd order accurate in cubic Hermite interpolation. 
+  //  That accuracy seems to be a good fit. When the input data actually *is* a cubic polynomial, 
+  //  the Hermite interpolant should be able to reconstruct it exactly
+  // -For a pdf documentation, it would make sense to produce 3 plots with slopeAt0 = 1/4, 1, 4. 
+  //  The plot for 4 contains graphs which inverted versions of those in the plot for 1/4.
+
   // -ToDo:
-  //  -Wrap the relevant computations into callable functions that can be put into a library. Maybe 
-  //   the API should parallel the one for cubic Hermite interpolation between two points, see
-  //   rsInterpolateCubicHermite in Interpolation.h. But it uses 4 points rather than 2 points and
-  //   2 derivatives
-  //  -Maybe do it in a class rsLinearFractionalInterpolator and put that into the prototypes
-  // -explain, how this can be used for invertible interpolation - how to obtain the inverse
+  // -Explain, how this can be used for invertible interpolation - how to obtain the inverse
   //  interpolant etc. I think, it will just use the exact same algorithm just with slope data 
   //  reciprocated (due to inverse function rule of differentiation). If the shape parameter is 
   //  used (i.e. != 0.5), I think for the inverse, we need to use 1 - shape
+  // -Use this map for 1st order smooth monotonic and invertible interpolation for 
+  //  data arrays x[n], y[n], s[n] containing the x,y values and desired slopes. The API should
+  //  be like: interpolateMoebius(const T* x, const T* y, const T* s, N, x0). It should take the 
+  //  data arrays of length N and a desired interpolation point x0 and return the interpolated y0 
+  //  value at x0. Make the API consistent with other interpolation functions. Note that for the 
+  //  inverse interpolation, the s array should be reciprocated because of the inverse function 
+  //  rule (I think). See https://en.wikipedia.org/wiki/Inverse_function_rule. Doing:
+  //    y0   = interpolateMoebius(x, y, s,  N, x0);
+  //    x0_r = interpolateMoebius(y, x, sr, N, y0);
+  //  should be an identity operation, i.e. we should have x0_r == x0 up to roundoff error. Here, 
+  //  sr are the reciprocals of s and_x0_r is the reconstructed x0.
+  // -Use that interpolation scheme in rsTimeWarper (let the user switch between linear and 
+  //  rational/Moebius)
+  // -Maybe target values for the slopes can be obtained from the data by numerical dervatives or
+  //  maybe we can apply a constraint that the curvatures should match at the nodes similar to
+  //  what is done in cubic spline interpolation. But maybe matching to 2nd order is impossible?
+  //  Dunno - figure out!
 
+  // See also:
+  // https://math.stackexchange.com/questions/4162828/interpolation-with-exact-inverse
+  // https://en.wikipedia.org/wiki/Linear_fractional_transformation
+  // https://en.wikipedia.org/wiki/M%C3%B6bius_transformation
+  // https://en.wikipedia.org/wiki/Laguerre_transformations
+
+  // Other ideas (spin offs - move to some experiment involving waveshaping):
+  // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
+  //  around zero but away from zero, it is the identity.
+  // -Implement a smoothQuantize function based on the birational map:
+  //    i = floor(x);
+  //    f = x - i;
+  //    f = rsBiRationalMap(f, a);
+  //    y = i + f;
+  //  This scheme quantizes to integers for a = -1 or a = +1, is neutral for a = 0. We could 
+  //  quantize to other intervals q, by pre-scaling x by 1/q and post-scaling y by q (or the other
+  //  way around). But this scheme quatizes to floor or ceil (depending on whether a = -1 or +1). 
+  //  To quantize to the nearest integer, we may shift f by 0.5 before applying the map and shift y
+  //  back by -0.5 (or something like that).
+  // -Our group seems to have finite subgroups:
+  //  https://math.stackexchange.com/questions/381066/showing-that-this-set-of-functions-is-a-group
+  //  https://math.stackexchange.com/questions/2758562/what-causes-a-set-of-functions-to-form-a-group-under-composition
+  //  Actually, the 1-parametric family is also an infinite subgroup of the group of all linfracs.
+  //  I think, it is a Lie-group...and the mainfold is parametrized by the parameter and maybe we 
+  //  have to pick a fixed x to actually evaluate points on the manifold?
+  //  Countable subgroups:
+  //  https://mathworld.wolfram.com/ModularGroupGamma.html
+  //  https://mathworld.wolfram.com/ModularGroupLambda.html
+  //  https://en.wikipedia.org/wiki/Modular_group
+  //  https://mathworld.wolfram.com/ModularForm.html
+  //  https://en.wikipedia.org/wiki/Modular_form
 }
 
 //-------------------------------------------------------------------------------------------------
