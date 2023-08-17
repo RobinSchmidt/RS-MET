@@ -337,6 +337,11 @@ void rsCircularShift(int* a, int N, int k);
 
 //=================================================================================================
 
+/** 
+
+
+*/
+
 template<class T>
 class rsLinearFractionalInterpolator
 {
@@ -377,7 +382,12 @@ public:
   static void composeTripleMapIntoOne(T value, T slope1, T slope2, T slope3, 
     T* a, T* b, T* c, T* d);
 
-  static T interpolateNormalized(T inputValueX, T slopeAt0, T slopeAt1, T shape);
+  /** Takes a normalized input value from the unit interval [0..1] and produces the cooresponding 
+  normalized output value also in [0..1]. You need to specify the dsired normalized slopes at the
+  origin xy = 0,0 and the end point x,y = 1,1.
+  */
+  static T getNormalizedY(T normalizedX, T slopeAt0, T slopeAt1, T shape);
+  // rename to normalizedOutput, getValueNormalized, getNormalizedOutput, getNormalizedY
 
 
 };
@@ -453,7 +463,7 @@ void rsLinearFractionalInterpolator<T>::composeTripleMapIntoOne(T x, T s1, T s2,
 }
 
 template<class T>
-T rsLinearFractionalInterpolator<T>::interpolateNormalized(T x, T slopeAt0, T slopeAt1, T shape)
+T rsLinearFractionalInterpolator<T>::getNormalizedY(T x, T slopeAt0, T slopeAt1, T shape)
 {
   // Compute the slopes for the 3 individual maps that compose to the final overall map:
   T s1, s2, s3;
@@ -476,22 +486,46 @@ T rsLinearFractionalInterpolator<T>::interpolateNormalized(T x, T slopeAt0, T sl
   // twice (once for the sub-segment below the split-point and once for the sub-segment above it).
 }
 
-
 /*
 Notes:
 
--I think, maps of the special form of simpleMap constitute a subgroup of the group of the more 
- general maps with all 4 coeffs. Their composition is given by just multiplying their slopes 
- together. This is also implied by the chain rule of differentiation. The special form results 
- the constraints f(0) = 0, f(1) = 1 leading to b = 0, c = a-1. With a given slope s, we use 
- s = a/d to fix/normalize d = 1 and use s for a directly leading to the especially simple form. 
+Linear fractional interpolation is an interpolation method that I have constructed around the
+so called linear fractional transformations. It is suitable only for strictly monotonic data.
+The interpolant that interpolates a segment between two data points will also be monotonic. 
+Moreover, the interpolant will be easily invertible and the inverse interpolating function 
+will be of the same kind and can easily be obtained from the forward interpolating function.
+The motivation for such a scheme lies in the desire to have an interpolation method that is
+both invertible and first order smooth, i.e. has matching derivatives at the nodes. Linear
+interpolation is easily invertible but it's not first order smooth. Polynomial interpolation
+schemes can be made even smoother than first order but are in general not invertible - at 
+least not easily - and even if it is invertible (because one has somehow restricted the 
+interpolant to be monotonic), the inverse interpolating function will be of a completely 
+different kind, i.e. come from a different class of functions and has to be computed with a 
+different (more complicated) algorithm. For example, if you interpolate data given in arrays 
+x[n], y[n] using piecewise cubic polynomials to produce a continuous function y = f(x), the 
+(exact) inversion of the produced interpolant y = f(x), will not be a piecewise cubic but 
+instead be defined by using a root-finder applied to the piecewise cubic y = f(x), so the 
+inverse interpolant will be something like a piecewise "cube-rooty" function (well, it's 
+actually even more complicated than that but you get the point).
 
--Combining the 3 maps into one possible because of the fact that the composition of linear 
- fractional transformations gives yet another linear fractional transformation. The affine 
- transforms before and after the middle map do not destroy this because they are also special 
- cases of the linfrac maps. That means, we can compose the whole composition of the 3 maps into 
- a switch between two single maps. 
-
+Linear fractional interpolation solves this problem by using as interpolants between the 
+segments functions of the general form y = f(x) = (a*x + b) / (c*x + d). These functions
+are also known as "linear fractional transformations" because they consist of a fraction or
+quotient of two linear functions. One nice feature of the linear fractional transformations
+(which we will abbreviate as "linfrac maps" or just "linfracs" in the following) is that they
+form a group, implying that the inverses are also in the set and compositions of such 
+functions yield another element from the set. One might hope that with the 4 tweakable 
+parameters, one could satisfy 4 constraints to let the values and derivatives match some 
+prescribed value at the ends of the intervals. However, unfortunately, that's not so simple.
+When trying to solve the resulting system of equations, it turns out that it can only be 
+solved, if the two slopes at the ends of the interval are reciprocals of one another so we
+can't prescribe them independently. I think, it is because the linfrac has actually only 3 
+degrees of freedom rather than 4 because scaling all coeffs by the same number gives the same
+transformation. Maybe that's why fixing the endpoints and one derivative already locks 
+everything in place. To allow ourselves more control, we will use two linfracs per segment 
+that join together at an internal node somewhere within the segment. At this internal node, 
+the two sub-segments will also join smoothly to first order such that the overall smoothness
+of the interpolant is unchanged.  
 
 The construction of the interpolant for a segment works as follows. We will assume that we
 want to find a function f(x) that maps the unit interval monotonically and invertibly to 
@@ -586,6 +620,19 @@ need to switch between them:
  num = numerator(y5)
  den = denominator(y5)
  num.expand().collect(x), den.expand().collect(x)
+
+
+-I think, maps of the special form of simpleMap constitute a subgroup of the group of the more 
+ general maps with all 4 coeffs. Their composition is given by just multiplying their slopes 
+ together. This is also implied by the chain rule of differentiation. The special form results 
+ the constraints f(0) = 0, f(1) = 1 leading to b = 0, c = a-1. With a given slope s, we use 
+ s = a/d to fix/normalize d = 1 and use s for a directly leading to the especially simple form. 
+
+-Combining the 3 maps into one possible because of the fact that the composition of linear 
+ fractional transformations gives yet another linear fractional transformation. The affine 
+ transforms before and after the middle map do not destroy this because they are also special 
+ cases of the linfrac maps. That means, we can compose the whole composition of the 3 maps into 
+ a switch between two single maps. 
 
 */
 

@@ -2040,45 +2040,6 @@ void linearFractionalInterpolationOld()
 
 void linearFractionalInterpolation()
 {
-  // Linear fractional interpolation is an interpolation method that I have constructed around the
-  // so called linear fractional transformations. It is suitable only for strictly monotonic data.
-  // The interpolant that interpolates a segment between two data points will also be monotonic. 
-  // Moreover, the interpolant will be easily invertible and the inverse interpolating function 
-  // will be of the same kind and can easily be obtained from the forward interpolating function.
-  // The motivation for such a scheme lies in the desire to have an interpolation method that is
-  // both invertible and first order smooth, i.e. has matching derivatives at the nodes. Linear
-  // interpolation is easily invertible but it's not first order smooth. Polynomial interpolation
-  // schemes can be made even smoother than first order but are in general not invertible - at 
-  // least not easily - and even if it is invertible (because one has somehow restricted the 
-  // interpolant to be monotonic), the inverse interpolating function will be of a completely 
-  // different kind, i.e. come from a different class of functions and has to be computed with a 
-  // different (more complicated) algorithm. For example, if you interpolate data given in arrays 
-  // x[n], y[n] using piecewise cubic polynomials to produce a continuous function y = f(x), the 
-  // (exact) inversion of the produced interpolant y = f(x), will not be a piecewise cubic but 
-  // instead be defined by using a root-finder applied to the piecewise cubic y = f(x), so the 
-  // inverse interpolant will be something like a piecewise "cube-rooty" function (well, it's 
-  // actually even more complicated than that but you get the point).
-  //
-  // Linear fractional interpolation solves this problem by using as interpolants between the 
-  // segments functions of the general form y = f(x) = (a*x + b) / (c*x + d). These functions
-  // are also known as "linear fractional transformations" because they consist of a fraction or
-  // quotient of two linear functions. One nice feature of the linear fractional transformations
-  // (which we will abbreviate as "linfrac maps" or just "linfracs" in the following) is that they
-  // form a group, implying that the inverses are also in the set and compositions of such 
-  // functions yield another element from the set. One might hope that with the 4 tweakable 
-  // parameters, one could satisfy 4 constraints to let the values and derivatives match some 
-  // prescribed value at the ends of the intervals. However, unfortunately, that's not so simple.
-  // When trying to solve the resulting system of equations, it turns out that it can only be 
-  // solved, if the two slopes at the ends of the interval are reciprocals of one another so we
-  // can't prescribe them independently. I think, it is because the linfrac has actually only 3 
-  // degrees of freedom rather than 4 because scaling all coeffs by the same number gives the same
-  // transformation. Maybe that's why fixing the endpoints and one derivative already locks 
-  // everything in place. To allow ourselves more control, we will use two linfracs per segment 
-  // that join together at an internal node somewhere within the segment. At this internal node, 
-  // the two sub-segments will also join smoothly to first order such that the overall smoothness
-  // of the interpolant is unchanged.
-  //
-
   // This is function here is under construction. Until it's done (it actually pretty much is), we
   // fall back to a previous older version of the idea implemented here:
   //linearFractionalInterpolationOld(); return;
@@ -2091,7 +2052,6 @@ void linearFractionalInterpolation()
   // comments there remain relevant and should first be moved over to here. Especially the 
   // explanations for how I came to the algorithm to compute the slopes of the indivual partial maps
   // implemented in computeSlopes.
-
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -2114,7 +2074,7 @@ void linearFractionalInterpolation()
   Real slopeAt1 = minSlopeAt1;           // Variable slope at x,y = 1,1. Goes up in the loop
   while(slopeAt1 <= maxSlopeAt1) {
     for(int n = 0; n < N; n++)
-      y[n] = LFI::interpolateNormalized(x[n], slopeAt0, slopeAt1, shape);
+      y[n] = LFI::getNormalizedY(x[n], slopeAt0, slopeAt1, shape);
     plt.addDataArrays(N, &x[0], &y[0]);
     slopeAt1 *= 2;  }                    // Double the slope for the next graph
   plt.addCommand("set size square");
