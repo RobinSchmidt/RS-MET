@@ -337,10 +337,19 @@ void rsCircularShift(int* a, int N, int k);
 
 //=================================================================================================
 
-/** 
+/** Linear fractional interpolation is an interpolation method that I have constructed around the
+so called linear fractional transformations. These are functions of the form:
 
+          a*x + b
+  f(x) = ---------
+          c*x + d
 
-*/
+It is suitable only for strictly monotonic data. The interpolant that interpolates a segment 
+between two data points will also be monotonic. Moreover, the interpolant will be easily 
+invertible and the inverse interpolating function will be of the same kind and can easily be 
+obtained from the forward interpolating function. The motivation for such a scheme lies in the 
+desire to have an interpolation method that is both invertible and first order smooth, i.e. has 
+matching derivatives at the nodes. ...TBC...  */
 
 template<class T>
 class rsLinearFractionalInterpolator
@@ -383,17 +392,15 @@ public:
   /** Computes the a,b,c,d parameters for the combined triple map, i.e. the map which results from
   applying the 3 maps one after another. That composed map is not the same for all input values. 
   That's why you need to provide the input value in the first parameter, too. This is because the
-  inner, symmetrized map contains a switch between two maps at 0.5. This switch trnaslates to a 
+  inner, symmetrized map contains a switch between two maps at 0.5. This switch translates to a 
   switch somewhere in the composed map (whereever the first map maps to 0.5). */
   static void composeTripleMapIntoOne(T value, T slope1, T slope2, T slope3, 
     T* a, T* b, T* c, T* d);
 
   /** Takes a normalized input value from the unit interval [0..1] and produces the cooresponding 
   normalized output value also in [0..1]. You need to specify the dsired normalized slopes at the
-  origin xy = 0,0 and the end point x,y = 1,1.
-  */
+  origin xy = 0,0 and the end point x,y = 1,1. */
   static T getNormalizedY(T normalizedX, T slopeAt0, T slopeAt1, T shape);
-  // rename to normalizedOutput, getValueNormalized, getNormalizedOutput, getNormalizedY
 
 
 };
@@ -495,21 +502,16 @@ T rsLinearFractionalInterpolator<T>::getNormalizedY(T x, T slopeAt0, T slopeAt1,
 /*
 Notes:
 
-Linear fractional interpolation is an interpolation method that I have constructed around the
-so called linear fractional transformations. It is suitable only for strictly monotonic data.
-The interpolant that interpolates a segment between two data points will also be monotonic. 
-Moreover, the interpolant will be easily invertible and the inverse interpolating function 
-will be of the same kind and can easily be obtained from the forward interpolating function.
-The motivation for such a scheme lies in the desire to have an interpolation method that is
-both invertible and first order smooth, i.e. has matching derivatives at the nodes. Linear
-interpolation is easily invertible but it's not first order smooth. Polynomial interpolation
-schemes can be made even smoother than first order but are in general not invertible - at 
-least not easily - and even if it is invertible (because one has somehow restricted the 
-interpolant to be monotonic), the inverse interpolating function will be of a completely 
-different kind, i.e. come from a different class of functions and has to be computed with a 
-different (more complicated) algorithm. For example, if you interpolate data given in arrays 
-x[n], y[n] using piecewise cubic polynomials to produce a continuous function y = f(x), the 
-(exact) inversion of the produced interpolant y = f(x), will not be a piecewise cubic but 
+
+
+Linear interpolation is easily invertible but it's not first order smooth. Polynomial 
+interpolation schemes can be made even smoother than first order but are in general not 
+invertible - at least not easily - and even if it is invertible (because one has somehow 
+restricted the interpolant to be monotonic), the inverse interpolating function will be of a 
+completely different kind, i.e. come from a different class of functions and has to be computed 
+with a different (more complicated) algorithm. For example, if you interpolate data given in 
+arrays x[n], y[n] using piecewise cubic polynomials to produce a continuous function y = f(x), 
+the (exact) inversion of the produced interpolant y = f(x), will not be a piecewise cubic but 
 instead be defined by using a root-finder applied to the piecewise cubic y = f(x), so the 
 inverse interpolant will be something like a piecewise "cube-rooty" function (well, it's 
 actually even more complicated than that but you get the point).

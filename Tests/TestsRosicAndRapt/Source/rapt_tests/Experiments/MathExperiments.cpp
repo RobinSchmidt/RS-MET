@@ -1669,7 +1669,7 @@ bool moebiusMapTest()  // rename to linFracTest
   //  of the parameter. But: when using the slope, inversion would just reuqire to take the 
   //  reciprocal which would be equally convenient and intuitive. Maybe the conversion between 
   //  slope and parameter is generally useful for conveting parameter ranges back and forth between
-  //  (-1,0,+1) <--> (0,1,inf) where in the middle, we have the neutral value.
+  //  (-1,0,+1) <--> (0,1,inf) where in the middle, we have the neutral value. ...DONE!!...
 
   return ok;
 }
@@ -1716,7 +1716,16 @@ void linearFractionalInterpolation()
   plt.addCommand("set size square");
   plt.plot();
 
-  //rsAssert(ok);
+  bool ok = moebiusMapTest();  // Remnant from the development process
+  // A function that performs some unit tests on some stuff used in the old implementation. The 
+  // whole function may be deleted someday. But it contains some code implementing some rather 
+  // complicated formulas that allow to combine 3 maps into 1 when they are parametrized via the 
+  // old p in [-1,+1]. ...But should we even need such a thing, it's perhaps better to 
+  // reparametrize -> combine -> reparametrize back. But this will require two divisions, so I'm 
+  // not sure yet. That's why the code is still there.
+
+
+  rsAssert(ok);
   int dummy = 0;
 
   // Observations:
