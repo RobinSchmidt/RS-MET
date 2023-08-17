@@ -2139,7 +2139,28 @@ void linearFractionalInterpolation()
     return x;
   };
 
+  // Compute the slopes for the three maps such that the composed/sandwiched map produces the 
+  // desired slopes at the origin x,y = 0,0 and end point x,y = 1,1.
+  auto computeSlopes = [&](Real slopeAt0, Real slopeAt1, Real* s1, Real* s2, Real* s3, Real shape)
+  {
+    // Compute slope at zero for middle map (controlling sigmoidity vs saddleness) and slope at 
+    // zero for combined outer maps s12 = s1*s2 (controlling convexity vs concavity):
+    *s2 = sqrt(slopeAt0 * slopeAt1);
+    Real s12 = slopeAt0 / *s2;         // == *s2 / slopeAt1
+
+    // Compute slopes at zero for first and last map according to our shape parameter:
+    if(shape == 0.5)
+      *s1 = *s3 = sqrt(s12);           // Optimized special case for symmetric shape
+    else {
+      *s1 = pow(s12, shape);           // General case for user controlled shape
+      *s2 = s12 / *s1; }
+  };
+
  
+
+
+
+
 
 
 
