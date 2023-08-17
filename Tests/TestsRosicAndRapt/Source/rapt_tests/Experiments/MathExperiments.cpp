@@ -2081,15 +2081,55 @@ void linearFractionalInterpolation()
   // The construction of the interpolant for a segment works as follows. We will assume that we
   // want to find a function f(x) that maps the unit interval monotonically and invertibly to 
   // itself. That means the function should produce f(0) = 0 and f(1) = 1. Additionally, it should
-  // produce f'(0) = s0 and f'(1) = s0 for some pair of prescribed slope values at the interval 
-  // boundaries. These slope values will ensure that the overall interpolant will have matching 
-  // slopes at the segment boundaries. Where we get these s0, s1 values from doesn't matter here. 
-  // It may make sense to produce them by numerical differentiation of the actual data, but that's 
-  // a different topic. Here, we just assume them to be given.
+  // produce f'(0) = d0 and f'(1) = d0 for some pair of prescribed slope values at the interval 
+  // boundaries. We use d0, d1 for "derivative" rather that s0, s1 for "slope" because we will use
+  // s1 later for something else These slope values will ensure that the overall interpolant will 
+  // have matching slopes at the segment boundaries. Where we get these d0, d1 values from doesn't 
+  // matter here. It may make sense to produce them by numerical differentiation of the actual 
+  // data, but that's a different topic. Here, we just assume them to be given. 
+  //
+  // In addition to the regular linFrac, we will also make use of a symmetrized variant that 
+  // consists of two appropriately scaled and shifted versions of the orginal map, one for the
+  // domain 0..0.5 and another for the domain 0.5..1. They join smoothly at 0.5,0.5 and implement 
+  // an inflection point there. The overall shape in 0..1 will be that of a sigmoid or a saddle.
+  // The idea is now to combine a regular concave or convex linFrac with such a sigmoid/saddle and 
+  // then with another convex/concave one. So all in all we use 3 linFracs applied in sequence:
+  // to obtain a neesting of 3 maps:
+  //   concave/convex  ->  sigmoid/saddle  ->  concave/convex
+  // These 3 linFracs in succession will give use (more than) enough freedom to meet our 
+  // requirements for the derivatives at 0 and 1 at the expense of having to introduce a switch.
+  // Because at the end of the day, all 3 will combine into one single linFrac due to the 
+  // composition rule - but it will have to be a different one for the first and last section of 
+  // the interval 0..1. 
+  //
+  // OK - so we start from the assumption that we first use a regular linFrac in sequence with a
+  // symmetrized one and another regular one. A symmetrized linFrac will have the same derivative 
+  // as a regular one at the origin. the regular ones will have a reciprocated derivative at 1,1 
+  // while the symmetrized one has the same derivative at 1,1 (after all, it's symmetric around 
+  // 0.5,0.5). So all in all, at the origin, the overall slope will be given by the product of 
+  // the slopes of the 3 individual linFracs, which we will denote by s1,s2,s3. At 1,1 the overall 
+  // slope will be given by s2/(s1*s3). The goal is now to produce the 3 slope parameters for our
+  // 3 linFracs from the 2 slope requirements d0, d1 that are given. So we have to solve the 
+  // following system of equations
+  //   d0 = s1*s2*s3
+  //   d1 = s2/(s1*s3)
+  // Let's define s13 = s1*s3 to get a system in 2 variables:
+  //   d0 = s13*s2
+  //   d1 = s2/(s13)
+  // If we multiply both equations, we get
+  //   d0*d1 = s2^2
+  // so we should use 
+  //   s2 = sqrt(d0*d1)
+  // Now, we can use either of the equations to compute s13 as:
+  //   s13 = d0/s2 = s2/d1
+  // What's left is to distribute the combined slope s13 to s1 and s3 (remember that s13 = s1*s3). 
+  // The most natural way to do this is to just set s1 = s3 = sqrt(s13).
+  // ...TBC...
+  //
 
 
-  // This is function here is under construction. Until it's done, we fall back to a previous 
-  // older version of the idea implemented here:
+  // This is function here is under construction. Until it's done (it actually pretty much is), we
+  // fall back to a previous older version of the idea implemented here:
   //linearFractionalInterpolationOld(); return;
   // The line can be commented or uncommented depending on whether we work on the new 
   // implementation or want to fall back to the working old implementation. Since then, I realized
@@ -2097,7 +2137,9 @@ void linearFractionalInterpolation()
   // fraction transform by its slope at the origin in (0,inf) rather than by the old parameter in 
   // (-1,+1). This is going to be developed below. When it's finished and works, the old, 
   // complicated way becomes obsolete and can be deleted or moved into the attic. But some of the 
-  // comments there remain relevant and should first be moved over to here.
+  // comments there remain relevant and should first be moved over to here. Especially the 
+  // explanations for how I came to the algorithm to compute the slopes of the indivual partial maps
+  // implemented in computeSlopes.
 
 
   using Real = double;
@@ -2110,19 +2152,14 @@ void linearFractionalInterpolation()
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
   Real tol         = 1.e-13;    // Tolerance for some tests that we do along the way
-
-
-  bool ok = true;
+  bool ok          = true;      // Flag to indicate a failed test
 
   // Implements the linear fractional transformation f(x) that maps the unit interval [0,1] to 
   // itself with f(0) = 0 and f(1) = 1 and with given slope s at the origin such that f'(0) = s. It 
   // produces a concave shape (like a saturation curve) for s > 1 and a convex shape (like a bowl
   // or parabola) for s < 1. For s = 1, it produces the identity function. The slope at x,y = 1,1 
   // will be given by 1/s. The slope s must be in the interval (0,inf) excluding the boundaries.
-  auto linFrac = [](Real x, Real s) 
-  {  
-    return s*x / ((s-1)*x + 1);
-  };
+  auto linFrac = [](Real x, Real s) { return s*x / ((s-1)*x + 1); };
   // Maybe rename to linFrac01 to indicate that this is the specialized variant which maps the unit
   // interval to itself. The more general form is (a*x + b) / (c*x + d). Here we have the 
   // constraints f(0) = 0, f(1) = 1 leading to b = 0, c = a-1. With given s, we use s = a/d to fix
@@ -2164,7 +2201,7 @@ void linearFractionalInterpolation()
     // Compute slope at zero for middle map (controlling sigmoidity vs saddleness) and slope at 
     // zero for combined outer maps s12 = s1*s2 (controlling convexity vs concavity):
     *s2 = sqrt(slopeAt0 * slopeAt1);
-    Real s12 = slopeAt0 / *s2;         // == *s2 / slopeAt1  (verify!)
+    Real s12 = slopeAt0 / *s2;         // == *s2 / slopeAt1
 
     // Compute slopes at zero for first and last map according to our shape parameter:
     if(shape == 0.5)
@@ -2265,9 +2302,6 @@ y5 = s3*y4 / ((s3-1)*y4 + 1)            # 3rd map
 num = numerator(y5)
 den = denominator(y5)
 num.expand().collect(x), den.expand().collect(x)
-
-
-
 
 */
 
