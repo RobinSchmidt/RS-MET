@@ -2104,7 +2104,7 @@ void linearFractionalInterpolation()
   using Vec = std::vector<Real>;
 
   // User parameters for the plots:
-  int  N           = 257;       // Number of samples
+  int  N           = 25;       // Number of samples
   Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
   Real slopeAt0    = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
@@ -2216,6 +2216,29 @@ void linearFractionalInterpolation()
 
 
       // Create map data and add it to the plot:
+      Real xs = linFrac(0.5, 1/s1);  // figure out split point
+      Real a, b, c, d;
+      for(int n = 0; n < N; n++)
+      {
+        if(x[n] <= xs)
+        {
+          a = s1*s2*s3;
+          b = 0;
+          c = s1*s2*s3 + s1*s2 - s1 - 1;
+          d = 1;
+          rsAssert(rsIsFiniteNumber(y[n]));
+          y[n] = (a*x[n] + b) / (c*x[n] + d); // We could scrap the b bcs it's 0
+          // doesn't work! maybe formula is wrong?
+        }
+        else
+        {
+          // ...
+          y[n] = 0.5;
+        }
+        plt.addDataArrays(N, &x[0], &y[0]);
+
+      }
+
       // ...Here is where the new code should go...
 
 
@@ -2223,8 +2246,8 @@ void linearFractionalInterpolation()
       slopeAt1 *= 2;  // maybe let the factor be a user parameter
     }
 
-    //plt.addCommand("set size square");
-    //plt.plot();
+    plt.addCommand("set size square");
+    plt.plot();
 
   }
 
@@ -2235,6 +2258,28 @@ void linearFractionalInterpolation()
 
   int dummy = 0;
 }
+/*
+1st part:
+
+var("s1 s2 s3")
+y1 = s1*x / ((s1-1)*x + 1)     # 1st map
+y2 = 2*y1                      # scale 
+y3 = s2*y2 / ((s2-1)*y2 + 1)   # 2nd map 
+y4 = y3/2                      # scale
+y5 = s3*y4 / ((s3-1)*y4 + 1)   # 3rd map
+num = numerator(y5)
+den = denominator(y5)
+num.expand().collect(x), den.expand().collect(x)
+
+Result: (s1*s2*s3*x, (s1*s2*s3 + s1*s2 - s1 - 1)*x + 1)
+a = s1*s2*s3
+b = 0
+c = s1*s2*s3 + s1*s2 - s1 - 1
+d = 1
+
+
+
+*/
 
 
 
