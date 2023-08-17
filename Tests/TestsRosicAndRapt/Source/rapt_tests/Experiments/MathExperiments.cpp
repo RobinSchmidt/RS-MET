@@ -2141,7 +2141,8 @@ void linearFractionalInterpolation()
     if(x < 0.5)
       return 0.5 * linFrac(2*x, s);
     else
-      return 0.5 * linFrac((x-0.5)*2, 1/s) + 0.5;
+      return 0.5 * (linFrac((2*x-1), 1/s) + 1);
+      //return 0.5 * linFrac((x-0.5)*2, 1/s) + 0.5;
   };
 
   // Implements a function composed of three linFrac maps with slopes s1,s2,s3 where the middle 
@@ -2210,7 +2211,7 @@ void linearFractionalInterpolation()
   // transformation. The affine transforms before and after the middle map do not destroy this 
   // because they are also special cases of the linFrac maps. That means, we can compose the whole
   // composition of the 3 maps into a switch between two single maps ...tbc...
-  minSlopeAt1 = 1.0/1.0; maxSlopeAt1 = minSlopeAt1;  // Test - just one plot
+  //minSlopeAt1 = 1.0/4.0; maxSlopeAt1 = minSlopeAt1;  // Test - just one plot
   {
     GNUPlotter plt;
     Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
@@ -2234,8 +2235,6 @@ void linearFractionalInterpolation()
           c = s1*s2*s3 + s1*s2 - s1 - 1;
           d = 1;
           y[n] = (a*x[n] + b) / (c*x[n] + d); // We could scrap the b bcs it's 0
-          rsAssert(rsIsFiniteNumber(y[n]));
-          //y[n] = 0.0;  // test
         }
         else
         {
@@ -2247,18 +2246,25 @@ void linearFractionalInterpolation()
           // better. It does seem to have the correct slope at 1, though but the way it cuves off
           // to the left is too steep
 
+          // Test:
+          a /= 2; b /= 2; c /= 2; d /= 2; 
+          // makes no difference - this is expected because scaling all coeffs gives same map
+          // We get d = 0 for when we desired the identity. This is wrong. It should be 1. And a
+          // should be 1, too
+
+
           y[n] = (a*x[n] + b) / (c*x[n] + d);
-          rsAssert(rsIsFiniteNumber(y[n]));
-          //y[n] = 0.0;
+
+          //y[n] = linFrac3(x[n], s1, s2, s3); 
+          // This gives the correct value and it is what we try to achieve with a single linear
+          // fractional map. Try to start freshly deriving the total map. Compute the a,b,c,d 
+          // manually for the case slopeAt0 = slopeAt1 = 1 and from that compute the a,b,c,d coeffs
+          // for 1st and 2nd segment
         }
       }
 
 
       plt.addDataArrays(N, &x[0], &y[0]);
-
-
-      // ...Here is where the new code should go...
-
 
       // double the slope for the next graph:
       slopeAt1 *= 2;  // maybe let the factor be a user parameter
@@ -2299,11 +2305,11 @@ d = 1
 2nd part:
 
 var("s1 s2 s3")
-y1 = s1*x / ((s1-1)*x + 1)             # 1st map
-y2 = 2*y1-1                            # scale 
-y3 = (1/s2)*y2 / (((1/s2)-1)*y2 + 1)   # 2nd map 
-y4 = (y3+1)/2                          # scale
-y5 = s3*y4 / ((s3-1)*y4 + 1)           # 3rd map
+y1 = s1*x / ((s1-1)*x + 1)              # 1st map
+y2 = 2*y1-1                             # scale 
+y3 = ((1/s2)*y2) / (((1/s2)-1)*y2 + 1)  # 2nd map, parentheses around ((1/s2)*y2) important!  
+y4 = (y3+1)/2                           # scale
+y5 = s3*y4 / ((s3-1)*y4 + 1)            # 3rd map
 num = numerator(y5)
 den = denominator(y5)
 num.expand().collect(x), den.expand().collect(x)
@@ -2315,7 +2321,20 @@ b = -2*s3
 c = 2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3)
 d = 2*s2 - 2*s3
 
+(2*s2*s3 + 2*(s1*s3 - s2*s3 + s3)*x - 2*s3,
+2*s2*s3 + 2*(s1*s3 - s2*s3 - s2 + s3)*x + 2*s2 - 2*s3)
+
+
 // Not sure, if it's correct to invert s2 -> verify!
+// but it seems wrong even if we set slopeAt1 = 1
+
+
+(s2*s3 + (s1*s3 - s2*s3 + s3)*x - s3,
+s2*s3 + (s1*s3 - s2*s3 - s2 + s3)*x + s2 - s3)
+a = s2*s3 + (s1*s3 - s2*s3 + s3)
+b = - s3
+c = (s1*s3 - s2*s3 - s2 + s3)
+d = s2*s3 + s2 - s3
 
 
 
