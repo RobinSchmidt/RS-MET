@@ -343,11 +343,41 @@ class rsLinearFractionalInterpolator
 
 public:
 
+  /** Implements the basic linear fractional transformation f(x) on which everything else is based.
+  The function maps the unit interval [0,1] to itself with f(0) = 0 and f(1) = 1 and with given 
+  slope s at the origin such that f'(0) = s. It produces a concave shape (like a saturation curve)
+  for s > 1 and a convex shape (like a bowl or parabola) for s < 1. For s = 1, it produces the 
+  identity function. The slope at x,y = 1,1 will be given by 1/s. The slope s must be in the 
+  interval (0,inf) excluding the boundaries. */
   static T simpleMap(T value, T slopeAt0);
 
+  /** Implements a symmetrized version of the (simple, basic prototypical) linear fractional map. 
+  It uses two appropriately scaled and shifted versions of the original map in the interval 0..0.5
+  and 0.5..1 to produce a shape that is symmetric around x,y = 0.5,0.5. The shape looks like a 
+  sigmoid (s-shaped) for s > 1 and like a saddle (like x^3) for x < 1. */
   static T symmetricMap(T value, T slopeAt0);
 
+  /** Implements a function composed of three maps with slopes s1,s2,s3 where the middle one is the
+  symmetrized variant. Th end result is a function that sadwiches a sigmoid/saddle shape between 
+  two convex/concave shapes. This is the final shape that we want. */
   static T tripleMap(T value, T slope1, T slope2, T slope3);
+
+  /** Computes the partial slopes s1,s2,s3 for the three individual maps in tripleMap such that the
+  composed/sandwiched map produces the desired slope targetSlopeAt0 at the origin x,y = 0,0 and the 
+  desired slope targetSlopeAt1 at the end point x,y = 1,1 of the unit interval. */
+  static void computeSlopes(T targetSlopeAt0, T targetSlopeAt1, 
+    T* mapSlope1, T* mapSlope2, T* mapSlope3, T shape = T(0.5));
+  // ToDo: document the shape parameter
+
+  /** Computes the a,b,c,d parameters for the combined triple map, i.e. the map which results from
+  applying the 3 maps one after another. That composed map is not the same for all input values 
+  that's why you need to provide the input value in the first parameter, too. This is because the
+  inner, symmetrized map contains a switch between two maps at 0.5. This switch trnaslates to a 
+  switch somehwere in the composed map. */
+  static void composeTripleMapIntoOne(T value, T slope1, T slope2, T slope3, 
+    T* a, T* b, T* c, T* d);
+
+
 
 };
 
@@ -375,6 +405,29 @@ T rsLinearFractionalInterpolator<T>::tripleMap(T x, T s1, T s2, T s3)
   return x;
 }
 
+template<class T>
+void rsLinearFractionalInterpolator<T>::computeSlopes(
+  T slopeAt0, T slopeAt1, T* s1, T* s2, T* s3, T shape = T(0.5))
+{
+  // Compute slope at zero for middle map (controlling sigmoidity vs saddleness) and slope at 
+  // zero for combined outer maps s12 = s1*s2 (controlling convexity vs concavity):
+  *s2 = sqrt(slopeAt0 * slopeAt1);
+  Real s13 = slopeAt0 / *s2;         // == *s2 / slopeAt1
+
+  // Compute slopes at zero for first and last map according to our shape parameter:
+  if(shape == 0.5)
+    *s1 = *s3 = sqrt(s13);           // Optimized special case for symmetric shape
+  else {
+    *s1 = pow(s13, shape);           // General case for user controlled shape
+    *s3 = s13 / *s1; }
+}
+
+template<class T>
+void rsLinearFractionalInterpolator<T>::composeTripleMapIntoOne(T x, T s1, T s2, T s3,
+  T* a, T* b, T* c, T* d)
+{
+
+}
 
 
 //=================================================================================================
