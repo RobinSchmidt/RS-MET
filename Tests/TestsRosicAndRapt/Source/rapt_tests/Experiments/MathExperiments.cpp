@@ -2120,12 +2120,27 @@ void linearFractionalInterpolation()
   //   d0*d1 = s2^2
   // so we should use 
   //   s2 = sqrt(d0*d1)
-  // Now, we can use either of the equations to compute s13 as:
+  // Now, we can use either of the two equations to compute s13 as:
   //   s13 = d0/s2 = s2/d1
   // What's left is to distribute the combined slope s13 to s1 and s3 (remember that s13 = s1*s3). 
-  // The most natural way to do this is to just set s1 = s3 = sqrt(s13).
-  // ...TBC...
+  // The most natural way to do this is to just set s1 = s3 = sqrt(s13) but we could also introduce
+  // a shape parameter in 0..1 and set s1 = s13^shape, s3 = s13/s1. For shape = 0.5, this reduces
+  // to the sqrt formula. Im not sure, if such a shape parameter is useful, though. The shapes 
+  // obtained from the sqrt formula look most symmetric and seem to make most sense. I think, for 
+  // later inversion, the shape needs either to be 0.5 or we need to use 1 - shape for the inverse 
+  // interpolation (I've not yet figured out the details of that).
   //
+  // Now that we have our 3 slopes s1,s2,s3, we can combine the three linFracs into one for each
+  // section of the unit interval. Because the second, middle, symmetrized linFrac splits at 0.5, 
+  // we need to figure out where the first map produces 0.5. This is easily done by evaluating
+  // an inverse linFrac, i.e. one with slope 1/s1, at 0.5. This gives us our split point xs. The 
+  // first combined map will be used for x = 0..xs and the second combined map will be used for
+  // x = xs..1. Now we need to produce the coefficients for the two maps. The first map will also
+  // be of the restriced kind with b = 0 and d = 1, but for the second, we'll need the fully 
+  // flexible variant with all 4 coeffs a,b,c,d. To figure out the coeffs of the maps, we'll just
+  // have to apply them in succession algebraically to a variable x and then read off the coeffs
+  // of the result. This is best done with a computer algebra system and some details about that 
+  // are given in the comments below.
 
 
   // This is function here is under construction. Until it's done (it actually pretty much is), we
@@ -2201,14 +2216,14 @@ void linearFractionalInterpolation()
     // Compute slope at zero for middle map (controlling sigmoidity vs saddleness) and slope at 
     // zero for combined outer maps s12 = s1*s2 (controlling convexity vs concavity):
     *s2 = sqrt(slopeAt0 * slopeAt1);
-    Real s12 = slopeAt0 / *s2;         // == *s2 / slopeAt1
+    Real s13 = slopeAt0 / *s2;         // == *s2 / slopeAt1
 
     // Compute slopes at zero for first and last map according to our shape parameter:
     if(shape == 0.5)
-      *s1 = *s3 = sqrt(s12);           // Optimized special case for symmetric shape
+      *s1 = *s3 = sqrt(s13);           // Optimized special case for symmetric shape
     else {
-      *s1 = pow(s12, shape);           // General case for user controlled shape
-      *s3 = s12 / *s1; }
+      *s1 = pow(s13, shape);           // General case for user controlled shape
+      *s3 = s13 / *s1; }
   };
 
   // Create the plots. We do not literally apply the 3 maps in sequence but instead, we first 
