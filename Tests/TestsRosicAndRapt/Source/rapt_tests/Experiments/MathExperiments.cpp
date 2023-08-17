@@ -2175,41 +2175,29 @@ void linearFractionalInterpolation()
   Real slopeAt0    = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
-  Real tol         = 1.e-13;    // Tolerance for some tests that we do along the way
-  bool ok          = true;      // Flag to indicate a failed test
+  //Real tol         = 1.e-13;    // Tolerance for some tests that we do along the way
+  //bool ok          = true;      // Flag to indicate a failed test
 
-  // Create the plots. We do not literally apply the 3 maps in sequence but instead, we first 
-  // combine them into two partial maps of a slightly more flexible kind of the more general form 
-  // f(x) = (a*x + b) / (c*x + d) where the first is used until some splitting value is reached 
-  // and then the second takes over. This is possible because of the fact that the composition of
-  // linear fractional transformations gives yet another linear fractional transformation. The 
-  // affine transforms before and after the middle map do not destroy this because they are also 
-  // special cases of the linFrac maps. That means, we can compose the whole composition of the 3 
-  // maps into a switch between two single maps. Along the way when we generate the data for the 
-  // plots, we actually verify that our so produced combined map produces the same result as when
-  // literally applying the 3 maps one after another. This is done in the 
-  //   err = y[n] - linFrac3(x[n], s1, s2, s3);
-  // where linFrac3(...) computes the literal application of the 3 maps.
-  {
-    // we use a sub-block to not litter the outer block with variables used only here
-    Vec x = rsLinearRangeVector(N, 0, 1);
-    Vec y(N);
-    GNUPlotter plt;
-    Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
-    while(slopeAt1 <= maxSlopeAt1) {
-      for(int n = 0; n < N; n++)
-        y[n] = LFI::interpolateNormalized(x[n], slopeAt0, slopeAt1, shape);
-      plt.addDataArrays(N, &x[0], &y[0]);
-      slopeAt1 *= 2; }                       // Double the slope for the next graph
-    plt.addCommand("set size square");
-    plt.plot();
+  // We create a plot with several graphs showing the normalized interpolants for a fixed choice
+  // of the slope at the origin an a bunch of exponentially spaced slopes at 1,1.
+  Vec x = rsLinearRangeVector(N, 0, 1);
+  Vec y(N);
+  GNUPlotter plt;
+  Real slopeAt1 = minSlopeAt1;           // Variable slope at x,y = 1,1. Goes up in the loop
+  while(slopeAt1 <= maxSlopeAt1) {
+    for(int n = 0; n < N; n++)
+      y[n] = LFI::interpolateNormalized(x[n], slopeAt0, slopeAt1, shape);
+    plt.addDataArrays(N, &x[0], &y[0]);
+    slopeAt1 *= 2;  }                    // Double the slope for the next graph
+  plt.addCommand("set size square");
+  plt.plot();
 
-  }
-
-  rsAssert(ok);
+  //rsAssert(ok);
   int dummy = 0;
 
-  // Observations
+  // Observations:
+  // -When shape = 0.5, the interpolants of some slopes K and 1/K at 1 have corresponding 
+  //  interpolants that are symmetric to the y = x line, i.e. are inverses of each other.
   // -The shapes look beautifully onion shaped or maybe like christmas tree decoration. Maybe they
   //  could be useful for graphics applications.
 

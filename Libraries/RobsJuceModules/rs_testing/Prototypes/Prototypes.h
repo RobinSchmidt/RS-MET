@@ -477,6 +477,12 @@ Notes:
  the constraints f(0) = 0, f(1) = 1 leading to b = 0, c = a-1. With a given slope s, we use 
  s = a/d to fix/normalize d = 1 and use s for a directly leading to the especially simple form. 
 
+-Combining the 3 maps into one possible because of the fact that the composition of linear 
+ fractional transformations gives yet another linear fractional transformation. The affine 
+ transforms before and after the middle map do not destroy this because they are also special 
+ cases of the linfrac maps. That means, we can compose the whole composition of the 3 maps into 
+ a switch between two single maps. 
+
 */
 
 
