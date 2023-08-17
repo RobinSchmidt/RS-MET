@@ -1676,18 +1676,16 @@ bool moebiusMapTest()  // rename to linFracTest
 
 void linearFractionalInterpolation()
 {
-  // This is function here is under construction. Until it's done (it actually pretty much is), we
-  // fall back to a previous older version of the idea implemented here:
-  //linearFractionalInterpolationOld(); return;
-  // The line can be commented or uncommented depending on whether we work on the new 
-  // implementation or want to fall back to the working old implementation. Since then, I realized
-  // that the whole scheme can be implemented in much simpler ways just by parametrizing the linear
-  // fraction transform by its slope at the origin in (0,inf) rather than by the old parameter in 
-  // (-1,+1). This is going to be developed below. When it's finished and works, the old, 
-  // complicated way becomes obsolete and can be deleted or moved into the attic. But some of the 
-  // comments there remain relevant and should first be moved over to here. Especially the 
-  // explanations for how I came to the algorithm to compute the slopes of the indivual partial maps
-  // implemented in computeSlopes.
+  // Experiments with linear fractional interpolation - an interpolation method that I have 
+  // constructed around the so called linear fractional transformations. It is, as far as I know,
+  // new. If not, then I have yet again re-invented the wheel. We create a plot with several graphs 
+  // showing the normalized interpolants for a fixed choice of the slope at the origin an a bunch 
+  // of exponentially spaced slopes at 1,1. These normalized interpolants with adjustable slopes
+  // at the endpoints can later be combined with a numerical differentiation algo (to produce
+  // target values for such slopes) and a bit of back-and-forth de/normalization to construct an
+  // interpolation scheme. That is still to be done - but that's supposedly grunt work because
+  // it will work exactly analogous to the cubic Hermite interpolation scheme. The hard math work 
+  // is done and the results are presented here.
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -1702,8 +1700,6 @@ void linearFractionalInterpolation()
   //Real tol         = 1.e-13;    // Tolerance for some tests that we do along the way
   //bool ok          = true;      // Flag to indicate a failed test
 
-  // We create a plot with several graphs showing the normalized interpolants for a fixed choice
-  // of the slope at the origin an a bunch of exponentially spaced slopes at 1,1.
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec y(N);
   GNUPlotter plt;
@@ -1736,13 +1732,14 @@ void linearFractionalInterpolation()
 
   // Notes:
   // -Check literature about rational splines. We are doing something similar here, I think.
-  //  https://www.alglib.net/interpolation/rational.php
+  //  https://www.alglib.net/interpolation/rational.php  ...but it's not quite the same thing.
   // -My initial idea was to use a linear combination of self-inverse functions for interpolation.
   //  However, the linear combination of self-inverse functions does not lead to a function that is
   //  of the same type. The forward combination stacks the functions on top of each other along the
   //  y-axis and the backward combination would stack them to the right of each other along the
   //  x-axis. This is not the same thing, so the approach was a dead end road. What we actually 
-  //  need is a set of functions, all of whose inverses are also members of the set.
+  //  need is a set of functions, all of whose inverses are also members of the set. Our set of
+  //  functions should have the structure of a group in the sense of abstract algebra.
   // -When thinking about cubic splines vs cubic Hermite interpolation, we actually note that 
   //  Hermite with numerical derivatives may make more sense than spline with respect to how well
   //  the data is modeled because we also model the *measured* derivative whereas in spline 

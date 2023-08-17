@@ -337,8 +337,8 @@ void rsCircularShift(int* a, int N, int k);
 
 //=================================================================================================
 
-/** Linear fractional interpolation is an interpolation method that I have constructed around the
-so called linear fractional transformations. These are functions of the form:
+/** Linear fractional interpolation is an interpolation method constructed around the so called 
+linear fractional transformations. These are functions of the form:
 
           a*x + b
   f(x) = ---------
@@ -349,7 +349,12 @@ between two data points will also be monotonic. Moreover, the interpolant will b
 invertible and the inverse interpolating function will be of the same kind and can easily be 
 obtained from the forward interpolating function. The motivation for such a scheme lies in the 
 desire to have an interpolation method that is both invertible and first order smooth, i.e. has 
-matching derivatives at the nodes. ...TBC...  */
+matching derivatives at the nodes. Linear interpolation is easily invertible but not smooth. with
+polynomial interpolation, it's the other way around.
+
+...TBC...  
+
+*/
 
 template<class T>
 class rsLinearFractionalInterpolator
