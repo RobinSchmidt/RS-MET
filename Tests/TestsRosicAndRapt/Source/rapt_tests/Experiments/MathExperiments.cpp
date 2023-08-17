@@ -2078,78 +2078,6 @@ void linearFractionalInterpolation()
   // the two sub-segments will also join smoothly to first order such that the overall smoothness
   // of the interpolant is unchanged.
   //
-  // The construction of the interpolant for a segment works as follows. We will assume that we
-  // want to find a function f(x) that maps the unit interval monotonically and invertibly to 
-  // itself. That means the function should produce f(0) = 0 and f(1) = 1. Additionally, it should
-  // produce f'(0) = d0 and f'(1) = d1 for some pair of prescribed slope values at the interval 
-  // boundaries. We use d0, d1 for "derivative" rather than s0, s1 for "slope" because we will use
-  // s1 later for something else These slope values will ensure that the overall interpolant will 
-  // have matching slopes at the segment boundaries. Where we get these d0, d1 values from doesn't 
-  // matter here. It may make sense to produce them by numerical differentiation of the actual 
-  // data, but that's a different topic. Here, we just assume them to be given. 
-  //
-  // In addition to the regular linFrac, we will also make use of a symmetrized variant that 
-  // consists of two appropriately scaled and shifted versions of the orginal map, one for the
-  // domain 0..0.5 and another for the domain 0.5..1. They join smoothly at 0.5,0.5 and implement 
-  // an inflection point there. The overall shape in 0..1 will be that of a sigmoid or a saddle.
-  // The idea is now to combine a regular concave or convex linFrac with such a sigmoid/saddle and 
-  // then with another convex/concave one. So all in all we use 3 linFracs applied in sequence:
-  // to obtain a neesting of 3 maps:
-  //   concave/convex  ->  sigmoid/saddle  ->  concave/convex
-  // These 3 linFracs in succession will give use (more than) enough freedom to meet our 
-  // requirements for the derivatives at 0 and 1 at the expense of having to introduce a switch.
-  // Because at the end of the day, all 3 will combine into one single linFrac due to the 
-  // composition rule - but it will have to be a different one for the first and last section of 
-  // the interval 0..1. It's the fact that middle one is the symmetrized variant that gives us this
-  // additional amount of control. The symmetrized variant lies not in our group of linFracs so it
-  // gives us indeed soemthing new - namely, the ability to introduce inflection points. The end
-  // result of this construction will be a piecewise linfrac made from two pieces. In a way, the 
-  // symmetrized linfrac serves as a prototype for the more general piecewise linfracs.
-  //
-  // OK - so we start from the assumption that we first use a regular linFrac in sequence with a
-  // symmetrized one and another regular one. A symmetrized linFrac will have the same derivative 
-  // as a regular one at the origin. the regular ones will have a reciprocated derivative at 1,1 
-  // while the symmetrized one has the same derivative at 1,1 (after all, it's symmetric around 
-  // 0.5,0.5). So all in all, at the origin, the overall slope will be given by the product of 
-  // the slopes of the 3 individual linFracs, which we will denote by s1,s2,s3. At 1,1 the overall 
-  // slope will be given by s2/(s1*s3). The goal is now to produce the 3 slope parameters for our
-  // 3 linFracs from the 2 slope requirements d0, d1 that are given. So we have to solve the 
-  // following system of equations
-  //   d0 = s1*s2*s3
-  //   d1 = s2/(s1*s3)
-  // Let's define s13 = s1*s3 to get a system in 2 variables:
-  //   d0 = s13*s2
-  //   d1 = s2/(s13)
-  // If we multiply both equations, we get
-  //   d0*d1 = s2^2
-  // so we should use 
-  //   s2 = sqrt(d0*d1)
-  // Now, we can use either of the two equations to compute s13 as:
-  //   s13 = d0/s2 = s2/d1
-  // What's left is to distribute the combined slope s13 to s1 and s3 (remember that s13 = s1*s3). 
-  // The most natural way to do this is to just set s1 = s3 = sqrt(s13) but we could also introduce
-  // a shape parameter in 0..1 and set s1 = s13^shape, s3 = s13/s1. For shape = 0.5, this reduces
-  // to the sqrt formula. Im not sure, if such a shape parameter is useful, though. The shapes 
-  // obtained from the sqrt formula look most symmetric and seem to make most sense. I think, for 
-  // later inversion, the shape needs either to be 0.5 or we need to use 1 - shape for the inverse 
-  // interpolation (I've not yet figured out the details of that).
-  //
-  // Now that we have our 3 slopes s1,s2,s3, we can combine the three linFracs into one for each
-  // section of the unit interval. Because the second, middle, symmetrized linFrac splits at 0.5, 
-  // we need to figure out where the first map produces 0.5. This is easily done by evaluating
-  // an inverse linFrac, i.e. one with slope 1/s1, at 0.5. This gives us our split point xs. The 
-  // first combined map will be used for x = 0..xs and the second combined map will be used for
-  // x = xs..1. Now we need to produce the coefficients for the two maps. The first map will also
-  // be of the restriced kind with b = 0 and d = 1, but for the second, we'll need the fully 
-  // flexible variant with all 4 coeffs a,b,c,d. To figure out the coeffs of the maps, we'll just
-  // have to apply them in succession algebraically to a variable x and then read off the coeffs
-  // of the result. This is best done with a computer algebra system and some details about that 
-  // are given in the comments below.
-  //
-  // ToDo: explain, how this can be used for invertible interpolation - how to obtain the inverse
-  // interpolant etc. I think, it will just use the exact same algorithm just with slope data 
-  // reciprocated (due to inverse function rule of differentiation). If the shape parameter is 
-  // used (i.e. != 0.5), I think for the inverse, we need to use 1 - shape
 
   // This is function here is under construction. Until it's done (it actually pretty much is), we
   // fall back to a previous older version of the idea implemented here:
@@ -2207,6 +2135,11 @@ void linearFractionalInterpolation()
   //   rsInterpolateCubicHermite in Interpolation.h. But it uses 4 points rather than 2 points and
   //   2 derivatives
   //  -Maybe do it in a class rsLinearFractionalInterpolator and put that into the prototypes
+  // -explain, how this can be used for invertible interpolation - how to obtain the inverse
+  //  interpolant etc. I think, it will just use the exact same algorithm just with slope data 
+  //  reciprocated (due to inverse function rule of differentiation). If the shape parameter is 
+  //  used (i.e. != 0.5), I think for the inverse, we need to use 1 - shape
+
 }
 
 //-------------------------------------------------------------------------------------------------
