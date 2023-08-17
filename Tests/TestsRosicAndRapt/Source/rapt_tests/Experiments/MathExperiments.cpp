@@ -2096,7 +2096,8 @@ void linearFractionalInterpolation()
   // that the whole scheme can be implemented in much simpler ways just by parametrizing the linear
   // fraction transform by its slope at the origin in (0,inf) rather than by the old parameter in 
   // (-1,+1). This is going to be developed below. When it's finished and works, the old, 
-  // complicated way becomes obsolete and can be deleted or moved into the attic.
+  // complicated way becomes obsolete and can be deleted or moved into the attic. But some of the 
+  // comments there remain relevant and should first be moved over to here.
 
 
   using Real = double;
@@ -2110,14 +2111,23 @@ void linearFractionalInterpolation()
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
 
 
-  // Implements the linear fractional transformation with given slope s at the origin. It produces
-  // a concave shape (like a saturation curve) for s > 1 and a convex shape (like a bowl or 
-  // parabola) for s < 1. The slope at x,y = 1,1 will be given by 1/s. The slope s must be in
-  // the interval (0,inf) excluding the boundaries. A slope of 1 will produce the identity map.
+  // Implements the linear fractional transformation f(x) that maps the unit interval [0,1] to 
+  // itself with f(0) = 0 and f(1) = 1 and with given slope s at the origin such that f'(0) = s. It 
+  // produces a concave shape (like a saturation curve) for s > 1 and a convex shape (like a bowl
+  // or parabola) for s < 1. For s = 1, it produces the identity function. The slope at x,y = 1,1 
+  // will be given by 1/s. The slope s must be in the interval (0,inf) excluding the boundaries.
   auto linFrac = [](Real x, Real s) 
   {  
     return s*x / ((s-1)*x + 1);
   };
+  // Maybe rename to linFrac01 to indicate that this is the specialized variant which maps the unit
+  // interval to itself. The more general form is (a*x + b) / (c*x + d). Here we have the 
+  // constraints f(0) = 0, f(1) = 1 leading to b = 0, c = a-1. With given s, we use s = a/d to fix
+  // d = 1 and use s for a directly leading to the form above. I think, maps of this special form 
+  // constitute a subgroup of the group of the more general linFracs. Their composition is given
+  // by just multiplying their slopes together. This is also implied by the chain rule of 
+  // differentiaion.
+
 
   // Implements a symmetrized version of the linear fractional map that uses two appropriately 
   // scaled and shifted versions of the original map in the interval 0..5 and 0.5..1 to produce a
@@ -2141,6 +2151,7 @@ void linearFractionalInterpolation()
     x = linFrac(   x, s3);  // post convexity or concavity
     return x;
   };
+  // Maybe rename to threeLinFracs01
 
   // Compute the slopes for the three maps such that the composed/sandwiched map produces the 
   // desired slopes at the origin x,y = 0,0 and end point x,y = 1,1.
@@ -2149,21 +2160,23 @@ void linearFractionalInterpolation()
     // Compute slope at zero for middle map (controlling sigmoidity vs saddleness) and slope at 
     // zero for combined outer maps s12 = s1*s2 (controlling convexity vs concavity):
     *s2 = sqrt(slopeAt0 * slopeAt1);
-    Real s12 = slopeAt0 / *s2;         // == *s2 / slopeAt1
+    Real s12 = slopeAt0 / *s2;         // == *s2 / slopeAt1  (verify!)
 
     // Compute slopes at zero for first and last map according to our shape parameter:
     if(shape == 0.5)
       *s1 = *s3 = sqrt(s12);           // Optimized special case for symmetric shape
     else {
       *s1 = pow(s12, shape);           // General case for user controlled shape
-      *s2 = s12 / *s1; }
+      *s3 = s12 / *s1; }
   };
 
-  // Create the plots:
-  {
+  // Create the plots by literally applying the 3 maps in sequence:
+  Vec x = rsLinearRangeVector(N, 0, 1);
+  Vec y(N);
+  { 
+    // A sub-block to not spoil the outer block with variables used only here
+
     GNUPlotter plt;
-    Vec x = rsLinearRangeVector(N, 0, 1);
-    Vec y(N);
     Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
     while(slopeAt1 <= maxSlopeAt1)
     {
@@ -2183,7 +2196,40 @@ void linearFractionalInterpolation()
     plt.addCommand("set size square");
     plt.plot();
   }
-  // Nope this is garbage! Only for the identity, th y-array looks good
+
+  // Create the plots again but this time we do not literally apply the 3 maps in sequence but 
+  // instead, we first combine them into two partial maps of a slightly more flexible kind of the
+  // more general form f(x) = (a*x + b) / (c*x + d) where the first is used until some splitting 
+  // value is reached and then the second takes over. This is possible because of the fact that 
+  // the composition of linear fractional transformations gives yet another linear fractional 
+  // transformation. The affine transforms before and after the middle map do not destroy this 
+  // because they are also special cases of the linFrac maps. That means, we can compose the whole
+  // composition of the 3 maps into a switch between two single maps ...tbc...
+  {
+    GNUPlotter plt;
+    Real slopeAt1 = minSlopeAt1;  // Variable slope at x,y = 1,1. Goes up in the loop
+    while(slopeAt1 <= maxSlopeAt1)
+    {
+      // Compute coeffs a, b, c from desired slopes s0, s1:
+      Real s1, s2, s3;
+      computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
+
+
+      // Create map data and add it to the plot:
+      // ...Here is where the new code should go...
+
+
+      // double the slope for the next graph:
+      slopeAt1 *= 2;  // maybe let the factor be a user parameter
+    }
+
+    //plt.addCommand("set size square");
+    //plt.plot();
+
+  }
+
+
+
 
 
 
