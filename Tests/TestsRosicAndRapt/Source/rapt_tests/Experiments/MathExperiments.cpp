@@ -2298,7 +2298,8 @@ void linearFractionalInterpolation()
   int dummy = 0;
 
   // Observations
-  // -The shapes look beautifully onion shaped or like christmas tree decoration
+  // -The shapes look beautifully onion shaped or maybe like christmas tree decoration. Maybe they
+  //  could be useful for graphics applications.
 }
 /*
 
