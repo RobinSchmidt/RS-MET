@@ -2103,8 +2103,7 @@ void linearFractionalInterpolation()
   using Vec = std::vector<Real>;
 
   // User parameters for the plots:
-  int  N           = 33;       // Number of samples
-  //int  N           = 257;       // Number of samples
+  int  N           = 257;       // Number of samples
   Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
   Real slopeAt0    = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
@@ -2115,7 +2114,10 @@ void linearFractionalInterpolation()
   // a concave shape (like a saturation curve) for s > 1 and a convex shape (like a bowl or 
   // parabola) for s < 1. The slope at x,y = 1,1 will be given by 1/s. The slope s must be in
   // the interval (0,inf) excluding the boundaries. A slope of 1 will produce the identity map.
-  auto linFrac = [](Real x, Real s) {  return s*x / ((1-s)*x + 1); };
+  auto linFrac = [](Real x, Real s) 
+  {  
+    return s*x / ((s-1)*x + 1);
+  };
 
   // Implements a symmetrized version of the linear fractional map that uses two appropriately 
   // scaled and shifted versions of the original map in the interval 0..5 and 0.5..1 to produce a
@@ -2156,8 +2158,6 @@ void linearFractionalInterpolation()
       *s1 = pow(s12, shape);           // General case for user controlled shape
       *s2 = s12 / *s1; }
   };
-
-
 
   // Create the plots:
   {
