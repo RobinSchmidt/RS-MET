@@ -2110,6 +2110,10 @@ void linearFractionalInterpolation()
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
 
+  // Test - just one plot:
+  minSlopeAt1 = 1.0/4.0; maxSlopeAt1 = minSlopeAt1;
+
+
 
   // Implements the linear fractional transformation f(x) that maps the unit interval [0,1] to 
   // itself with f(0) = 0 and f(1) = 1 and with given slope s at the origin such that f'(0) = s. It 
@@ -2173,6 +2177,7 @@ void linearFractionalInterpolation()
   // Create the plots by literally applying the 3 maps in sequence:
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec y(N);
+  /*
   { 
     // A sub-block to not spoil the outer block with variables used only here
 
@@ -2196,6 +2201,7 @@ void linearFractionalInterpolation()
     plt.addCommand("set size square");
     plt.plot();
   }
+  */
 
   // Create the plots again but this time we do not literally apply the 3 maps in sequence but 
   // instead, we first combine them into two partial maps of a slightly more flexible kind of the
@@ -2221,6 +2227,7 @@ void linearFractionalInterpolation()
 
 
       Real a, b, c, d;
+      rsFill(y, 0.0);  // remove later
       for(int n = 0; n < N; n++)
       {
         if(x[n] <= xs)
@@ -2231,6 +2238,7 @@ void linearFractionalInterpolation()
           d = 1;
           y[n] = (a*x[n] + b) / (c*x[n] + d); // We could scrap the b bcs it's 0
           rsAssert(rsIsFiniteNumber(y[n]));
+          //y[n] = 0.0;  // test
         }
         else
         {
@@ -2240,13 +2248,13 @@ void linearFractionalInterpolation()
           d = 2*s2 - 2*s3;
           y[n] = (a*x[n] + b) / (c*x[n] + d);
           rsAssert(rsIsFiniteNumber(y[n]));
-
-
-          //y[n] = 0.5;
+          //y[n] = 0.0;
         }
-        plt.addDataArrays(N, &x[0], &y[0]);
-
       }
+       
+
+      plt.addDataArrays(N, &x[0], &y[0]);
+
 
       // ...Here is where the new code should go...
 
