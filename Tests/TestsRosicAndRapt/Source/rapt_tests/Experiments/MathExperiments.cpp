@@ -1864,8 +1864,8 @@ void monotonicInterpolation()
 
   // Define datapoints:
   static const int N = 5;
-  Real x[N] = { 0, 2, 7, 8, 9 };  // x-values always increase monotonicallly anyway
-  Real y[N] = { 0, 4, 5, 8, 9 };  // y-values also increase monotonically here
+  Real x[N] = { 0, 2, 7, 8,  9 };  // x-values always increase monotonicallly anyway
+  Real y[N] = { 0, 5, 6, 9, 10 };  // y-values also increase monotonically here
 
   // Convert to monotonically decreasing data, if desired:
   if(decrease) {
@@ -1900,25 +1900,58 @@ void monotonicInterpolation()
   }
 
   // Do linear fractional interpolation:
+  using LFI = rsLinearFractionalInterpolator<Real>;
   Real yF[Ni];                  // The F stands for fractional
-  rsLinearFractionalInterpolator<Real>::interpolate(x, y, s, N, xi, yF, Ni, linExtra);
+  LFI::interpolate(x, y, s, N, xi, yF, Ni, linExtra);
+
+  // Now let's attempt an inverse interpolation:
+  Real yi[Ni];
+  Real xF[Ni];
+  RAPT::rsArrayTools::fillWithRangeLinear(yi, Ni, -4.0, 12.0);
+  for(int n = 0; n < N; n++)
+    s[n] = 1/s[n];
+  LFI::interpolate(y, x, s, N, yi, xF, Ni, linExtra);
+
 
   // Set up the plotter an plot the data along with the interpolants:
-  GNUPlotter plt;
-  setToDarkMode(&plt);
-  plt.setPixelSize(800, 800);
-  plt.addCommand("set key top left");  // Legend appears top-left
-  plt.addCommand("set xtics 1.0");     // x-gridlines at integers
-  plt.addCommand("set ytics 1.0");     // y-gridlines at integers
+  {
+    GNUPlotter plt;
+    setToDarkMode(&plt);
+    plt.setRange(-2, 12, -2, 12);
+    plt.setPixelSize(600, 600);
+    plt.addCommand("set size square");
+    plt.addCommand("set size ratio -1");
+    plt.addCommand("set key top left");  // Legend appears top-left
+    plt.addCommand("set xtics 1.0");     // x-gridlines at integers
+    plt.addCommand("set ytics 1.0");     // y-gridlines at integers
+    plt.addDataArrays(N, x, y);
+    plt.addDataArrays(Ni, xi, yL, yH, yF);
+    plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
+    //plt.addGraph("index 1 using 1:2 with lines lw 1 lc rgb \"#50A0A0\" title \"Linear\"");
+    plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#9060A0\" title \"Cubic Hermite\"");
+    plt.addGraph("index 1 using 1:4 with lines lw 2 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
 
-  plt.addDataArrays(N,  x,  y);
-  plt.addDataArrays(Ni, xi, yL, yH, yF);
-  plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
-  //plt.addGraph("index 1 using 1:2 with lines lw 1 lc rgb \"#50A0A0\" title \"Linear\"");
-  plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#9060A0\" title \"Cubic Hermite\"");
-  plt.addGraph("index 1 using 1:4 with lines lw 2 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
 
-  plt.plot();
+    plt.addDataArrays(Ni, yi, xF); 
+    plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#666666\" title \"LinFrac Inverse\"");
+
+    // For orientation, draw in the identity:
+    plt.addDataArrays(Ni, yi, yi); 
+    plt.addGraph("index 3 using 1:2 with lines lw 1 lc rgb \"#444444\" notitle ");
+
+
+    plt.plot();
+  }
+
+
+
+
+  //rsPlotArraysXY(Ni, xi, yF);
+  //rsPlotArraysXY(Ni, yi, xF);
+
+
+
+
 
   // Observations:
   // -The linfrac interpolant nicely interpolates our data monotonically.
