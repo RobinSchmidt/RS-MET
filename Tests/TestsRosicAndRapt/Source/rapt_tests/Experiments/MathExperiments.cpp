@@ -1849,6 +1849,7 @@ void linearFractionalInterpolation()
 
 //-------------------------------------------------------------------------------------------------
 
+// Move as static member into class rsLinearFractionalInterpolator
 
 template<class T>
 void rsLinearFractionalInterpolation(
@@ -1857,7 +1858,10 @@ void rsLinearFractionalInterpolation(
   // The code below follows closely rsInterpolateLinear.
 
   using LFI = rsLinearFractionalInterpolator<T>;
+  LFI::interpolate(x, y, s, N, xi, yi, Ni);
 
+
+  /*
   int n = 0;        // index into input data
   int i = 0;        // index into interpolated data
 
@@ -1932,6 +1936,7 @@ void rsLinearFractionalInterpolation(
 
     i++;
   }
+  */
 }
 
 
@@ -1986,16 +1991,10 @@ void monotonicInterpolation()
     rsInterpolateSpline(x, y, pps, N, 1, xi, yH, Ni);
   }
 
-
-
-  // ...Under construction...
   // Do linear fractional interpolation:
   Real yF[Ni];                  // The F stands for fractional
-  rsArrayTools::fillWithValue(yF, Ni, 0.0);  // may be deleted when code below is finished
+  //rsArrayTools::fillWithValue(yF, Ni, 0.0);  // may be deleted when code below is finished
   rsLinearFractionalInterpolation(x, y, s, N, xi, yF, Ni);
-
-
-
 
   // Set up the plotter an plot the data along with the interpolants:
   GNUPlotter plt;
@@ -2011,7 +2010,8 @@ void monotonicInterpolation()
   plt.plot();
 
   // Observations:
-  // -Using xMax = 12 produces garbage. 11 works
+  // -Using xMax = 12 produces garbage when trying to extrapolate using the last computed a,b,c,d
+  //  coeffs rather than linear
   // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
   // ToDo:
   // -Add natural spline interpolation
