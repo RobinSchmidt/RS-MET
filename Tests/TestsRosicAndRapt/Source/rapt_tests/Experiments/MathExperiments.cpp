@@ -1949,13 +1949,12 @@ void monotonicInterpolation()
     Real d1, d2, d3;
     LFI::computeSlopes(s0, s1, &d1, &d2, &d3);
 
-    // Compute split point and a,b,c,d coeffs for the left sub-segment:
+    // Compute split point:
     Real xSplit = LFI::getSplitPoint(d1);
     xSplit = xSplit * dx + x[n];
-    LFI::calcComposedCoeffsLeft(d1, d2, d3, &a, &b, &c, &d);
 
-    // Interpolate the left sub-segment:
-    //Real xs = xi[i];  //   == x[n]?
+    // Calculate the a,b,c,d coeffs for the left sub-segment and interpolate it:
+    LFI::calcComposedCoeffsLeft(d1, d2, d3, &a, &b, &c, &d);
     while(xi[i] <= xSplit && i < Ni)
     {
       Real xn = dxr * (xi[i] - x[n]);     // Normalized x in [0,1]
@@ -1964,14 +1963,15 @@ void monotonicInterpolation()
       i++;
     }
 
-    // Interpolate the righ sub-segment:
+    // Calculate the a,b,c,d coeffs for the right sub-segment and interpolate it:
+    LFI::calcComposedCoeffsRight(d1, d2, d3, &a, &b, &c, &d);
     while(xi[i] < x[n+1] && i < Ni)
     {
-      // ....
-
+      Real xn = dxr * (xi[i] - x[n]);
+      Real yn = (a*xn + b) / (c*xn + d);
+      yF[i]   = y[n] + dy*yn; 
       i++;
     }
-
 
     n++;
   }
