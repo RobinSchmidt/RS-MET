@@ -1951,6 +1951,7 @@ void monotonicInterpolation()
 
     // Compute split point and a,b,c,d coeffs for the left sub-segment:
     Real xSplit = LFI::getSplitPoint(d1);
+    xSplit = xSplit * dx + x[n];
     LFI::calcComposedCoeffsLeft(d1, d2, d3, &a, &b, &c, &d);
 
     // Interpolate the left sub-segment:
