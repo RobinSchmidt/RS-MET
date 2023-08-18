@@ -1860,7 +1860,8 @@ void monotonicInterpolation()
   using Vec  = std::vector<Real>;
 
   // Setup:
-  bool decrease = false;  // switch between monotonically increasing and decreasing
+  bool decrease = false;  // Switch between monotonically increasing and decreasing
+  bool linExtra = false;  // Switch linear extrapolation on (on is the default)
 
 
   // Define datapoints:
@@ -1878,7 +1879,7 @@ void monotonicInterpolation()
   Real xi[Ni];  
   Real yL[Ni];                  // The L stands for linear
   Real xiMin = -2;              // If < 0, we'll get front-extrapolation
-  Real xiMax = 11;              // If > 9, we'll get tail-extrapolation
+  Real xiMax =  11.0;           // If > 9, we'll get tail-extrapolation
   RAPT::rsArrayTools::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
 
   // Do linear inter-/extrapolation:
@@ -1902,25 +1903,47 @@ void monotonicInterpolation()
 
   // Do linear fractional interpolation:
   Real yF[Ni];                  // The F stands for fractional
-  rsLinearFractionalInterpolator<Real>::interpolate(x, y, s, N, xi, yF, Ni);
+  rsLinearFractionalInterpolator<Real>::interpolate(x, y, s, N, xi, yF, Ni, linExtra);
 
   // Set up the plotter an plot the data along with the interpolants:
   GNUPlotter plt;
   plt.addDataArrays(N,  x,  y);
   plt.addDataArrays(Ni, xi, yL, yH, yF);
-  plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#000000\" title \"Samples\"");
-  //plt.addGraph("index 1 using 1:2 with lines lw 2 lc rgb \"#0000E0\" title \"Linear\"");
-  //plt.addGraph("index 1 using 1:3 with lines lw 2 lc rgb \"#006000\" title \"Cubic Hermite\"");
-  plt.addGraph("index 1 using 1:4 with lines lw 2 lc rgb \"#700000\" title \"Linear Fractional\"");
+
+  // Set up dark mode (factor out):
+  plt.addCommand("set term wxt background rgb \"black\"");
+  plt.addCommand("set border lw 1 lc rgb \"white\"");
+  plt.addCommand("set grid ls 1 lw 1 lc rgb \"#404040\"");
+  plt.addCommand("set xtics textcolor rgb \"white\"");
+  plt.addCommand("set ytics textcolor rgb \"white\"");
+  plt.addCommand("set xlabel \"X\" textcolor rgb \"white\"");
+  plt.addCommand("set ylabel \"Y\" textcolor rgb \"white\"");
+  plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
+  //plt.addGraph("index 1 using 1:2 with lines lw 1 lc rgb \"#50A0A0\" title \"Linear\"");
+  plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#9060A0\" title \"Cubic Hermite\"");
+  plt.addGraph("index 1 using 1:4 with lines lw 2 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
   plt.addCommand("set key top left");  // Legend appears top-left
+  plt.addCommand("set key textcolor \"white\""); 
   plt.addCommand("set xtics 1.0");     // x-gridlines at integers
   plt.addCommand("set ytics 1.0");     // y-gridlines at integers
+  plt.setPixelSize(800, 800);
+
   plt.plot();
 
   // Observations:
-  // -Using xMax = 12 produces garbage when trying to extrapolate using the last computed a,b,c,d
-  //  coeffs rather than linear
+  // -The linfrac interpolant nicely interpolates out data monotonically.
   // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
+  // -Using xMax = 12 produces garbage when trying to extrapolate using the last computed a,b,c,d
+  //  coeffs rather than linear. 11.5..1..7 shows the shooting off behavior. At around 11.6, the
+  //  linfrac passes the cubic. For the lower boundary, no  such shooting off is observed. I guess,
+  //  at the right side, the pole of the final segment happens to be in the extrapolated zone 
+  //  whereas at the left side, this is not the case. we could perhaps let the code detect such 
+  //  situations (we can easiyl calculate the location of the pole) and automatically switch to 
+  //  linear extrapolation, if the pole happens to be in the extrapolated zone and otherwise use
+  //  linear fractional extrapolation.
+  //  
+
+  //
   // ToDo:
   // -Add natural spline interpolation
   // -Maybe use different types for x and y (like float and double) to make it more interesting.
