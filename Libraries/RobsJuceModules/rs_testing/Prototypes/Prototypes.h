@@ -394,7 +394,22 @@ public:
   desired slope targetSlopeAt1 at the end point x,y = 1,1 of the unit interval. */
   static void computeSlopes(T targetSlopeAt0, T targetSlopeAt1, 
     T* mapSlope1, T* mapSlope2, T* mapSlope3, T shape = T(0.5));
-  // ToDo: document the shape parameter
+  // ToDo: 
+  // -Document the shape parameter. And/or maybe get rid of it by commenting it out, so we can 
+  //  easily add it back later
+
+  /** Given the slope s1 of the first map at zero, this function computes the split point at which
+  we should switch between the two partial (composed) maps. */
+  static T getSplitPoint(T s1) { simpleMap(T(0.5), T(1)/s1); }
+  // We need to apply the first map's inverse to 0.5. We want to figure out at which input x the
+  // first map produces the output 0.5. The inverse map is obtained by using the reciprocal slope.
+  // We need 0.5 because that's the value at which the 2nd map switches between its two halves.
+
+
+  static void calcComposedCoeffsLeft(T s1, T s2, T s3, T* a, T* b, T* c, T* d);
+
+  static void calcComposedCoeffsRight(T s1, T s2, T s3, T* a, T* b, T* c, T* d);
+
 
   /** Computes the a,b,c,d parameters for the combined triple map, i.e. the map which results from
   applying the 3 maps one after another. That composed map is not the same for all input values. 
@@ -409,6 +424,11 @@ public:
   origin xy = 0,0 and the end point x,y = 1,1. */
   static T getNormalizedY(T normalizedX, T slopeAt0, T slopeAt1, T shape);
 
+  // ToDo:
+  // -Order the functions here in a more top-down rather than bottom-up fashion because the 
+  //  higher-level functions are more likely to be important for the user. For example,
+  //  getNormalizedY is currently the most high level function - it should appear at or near the
+  //  top. They are ordered bottom-up because that's the order in which they have been written.
 
 };
 
@@ -459,32 +479,38 @@ void rsLinearFractionalInterpolator<T>::computeSlopes(
 }
 
 template<class T>
+void rsLinearFractionalInterpolator<T>::calcComposedCoeffsLeft(
+  T s1, T s2, T s3, T* a, T* b, T* c, T* d)
+{
+  *a = s1*s2*s3;
+  *b = 0;
+  *c = s1*s2*s3 + s1*s2 - s1 - 1;
+  *d = 1; 
+}
+
+template<class T>
+void rsLinearFractionalInterpolator<T>::calcComposedCoeffsRight(
+  T s1, T s2, T s3, T* a, T* b, T* c, T* d)
+{
+  *a = s1*s3 - s2*s3 + s3;
+  *b = s2*s3 - s3;
+  *c = (s1*s3 - s2*s3 - s2 + s3);
+  *d = s2*s3 + s2 - s3; 
+}
+
+template<class T>
 void rsLinearFractionalInterpolator<T>::composeTripleMapIntoOne(T x, T s1, T s2, T s3,
   T* a, T* b, T* c, T* d)
 {
-  // Figure out the split point where we need to switch between the two maps. To find the value,
-  // we need to apply the first map's inverse to 0.5. We want to figure out at which input x the
-  // first map produces the output 0.5. The inverse map is obtained by using the reciprocal slope.
-  // We need 0.5 because that's the value at which the 2nd map switches between its two halves:
-  T xs = simpleMap(0.5, 1/s1);
+  // Figure out the split point where we need to switch between the two maps. 
+  T xs = getSplitPoint(s1);
 
   // Compute coeffs for the composed map depending on whether the input value x is before or after
   // the split point:
-  if(x <= xs) {
-    *a = s1*s2*s3;
-    *b = 0;
-    *c = s1*s2*s3 + s1*s2 - s1 - 1;
-    *d = 1; }
-  else {
-    *a = s1*s3 - s2*s3 + s3;
-    *b = s2*s3 - s3;
-    *c = (s1*s3 - s2*s3 - s2 + s3);
-    *d = s2*s3 + s2 - s3;  }
-
-  // ToDo:
-  // -Factor out the code for both branches into two functions:
-  //  composedCoeffsLeft(s1, s2, s3, a, b, c, d), composedCoeffsRight(...)
-  // -Also factor out a splitPoint(s1) function
+  if(x <= xs)
+    calcComposedCoeffsLeft(s1, s2, s3, a, b, c, d);
+  else
+    calcComposedCoeffsRight(s1, s2, s3, a, b, c, d);
 }
 
 template<class T>
