@@ -1925,26 +1925,16 @@ void monotonicInterpolation()
 
   while(n < N-1)                        // Loop over the input datapoints
   {
-    //a = (y[n+1]-y[n]) / (x[n+1]-x[n]);  // Compute slope via forward difference
-    //b = y[n] - a*x[n];                  // Compute offset
-
     dx  = x[n+1] - x[n];
     dy  = y[n+1] - y[n];
     dxr = 1 / dx;           // Reciprocal of dx
 
+    // Retrieve and normalize the slopes:
     Real s0  = s[n];
     Real s1  = s[n+1];
     Real slopeScale = dx/dy;  // ...I think -> verify!
     s0 *= slopeScale;
     s1 *= slopeScale;
-
-    // Normalize the slopes:
-    //s0 *= dx;                // Or should it be /=? ...nah - I don't think so
-    //s1 *= dx;
-    //s0 *= dxr;
-    //s1 *= dxr;
-    //s0 *= rsSign(dy);
-    //s1 *= rsSign(dy);
 
     // Compute values for the initial derivatives (at x,0 = 0,0) for the 3 normalized linear 
     // fractional maps:
@@ -1982,28 +1972,9 @@ void monotonicInterpolation()
   while(i < Ni)
   {
     yF[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);
-    // Verify this!
-
-    //Real xn = dxr * (xi[i] - x[n]);
-
-
-
-    /*
-    Real xn = dxr * (xi[i] - x[N-1]);
-    Real yn = (a*xn + b) / (c*xn + d);
-
-    //yF[i]   = y[N-1] + dy*yn;   
-
-    yF[i]   = y[N-1] + dy*yn - 0.25833; // Test - trying to fudge it to get a match
-    */
-
     i++;
   }
-  // Ah - no - just suing the last computed a,b,c,d coeffs is too simplistic! We actually need to
-  // compute coeffs for two segments again just using the last calculated slope for s1 also for 
-  // s0. ...but that will just give us a linear segment. Maybe just extrapolate linearly using
-  // the final slope
-  // ...
+
 
 
 
