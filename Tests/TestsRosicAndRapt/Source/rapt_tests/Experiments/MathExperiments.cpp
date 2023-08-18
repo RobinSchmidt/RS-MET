@@ -1886,11 +1886,8 @@ void monotonicInterpolation()
   static const int Ni = 501;    // Number of interpolated values
   Real xi[Ni];  
   Real yL[Ni];                  // The L stands for linear
-  Real xiMin = 0;
-
-  xiMin = -2; // test
-
-  Real xiMax = 10;              // If > 9, we'll get tail-extrapolation
+  Real xiMin = -3;              // If < 0, we'll get front-extrapolation
+  Real xiMax = 11;              // If > 9, we'll get tail-extrapolation
   RAPT::rsArrayTools::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
 
   // Do linear inter-/extrapolation:
@@ -1923,11 +1920,15 @@ void monotonicInterpolation()
   // The code below follows closely rsInterpolateLinear:
   int n = 0;        // index into input data
   int i = 0;        // index into interpolated data
+
+  Real dx, dy, dxr;
+  Real a, b, c, d;
+
   while(n < N-1)                        // Loop over the input datapoints
   {
-    Real dx  = x[n+1] - x[n];
-    Real dy  = y[n+1] - y[n];
-    Real dxr = 1 / dx;           // Reciprocal of dx
+    dx  = x[n+1] - x[n];
+    dy  = y[n+1] - y[n];
+    dxr = 1 / dx;           // Reciprocal of dx
 
     // Retrieve and normalize the slopes:
     Real s0  = s[n];
@@ -1947,7 +1948,7 @@ void monotonicInterpolation()
 
     // Calculate the a, b, c, d coeffs for the linear fractional map y = (a*x + b) / (c*x + d)
     // for the left sub-segment and interpolate it:
-    Real a, b, c, d;
+    //Real a, b, c, d;
     LFI::calcComposedCoeffsLeft(d1, d2, d3, &a, &b, &c, &d);
     while(xi[i] <= xSplit && i < Ni)
     {
@@ -1970,10 +1971,16 @@ void monotonicInterpolation()
     n++;
   }
 
-  // Possibly extrapolate a tail section linearly:
+  // Possibly extrapolate a tail section with the last computed a,b,c,d coeffs:
   while(i < Ni)
   {
-    yF[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);
+    //yF[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);  // extrapolate linearly
+    // ...this might actually be more useful when extrapolating further away from the last 
+    // datapoint because the linear fraction map will eventually shoot off to a pole.
+
+    Real xn = dxr * (xi[i] - x[N-2]);
+    Real yn = (a*xn + b) / (c*xn + d);
+    yF[i]   = y[N-2] + dy*yn; 
     i++;
   }
   // Maybe prepend a section to linearly extrapolate leftward if xi[0] < x[0]
@@ -1995,7 +2002,7 @@ void monotonicInterpolation()
   plt.plot();
 
   // Observations:
-  // -The extrapolated tail of the lifrac interpoant is offset by a little bit
+  // -Using xMax = 12 produces garbage. 11 works
   // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
   // ToDo:
   // -Add natural spline interpolation
