@@ -1883,6 +1883,11 @@ void monotonicInterpolation()
 
 
   GNUPlotter plt;
+  plt.addDataArrays(N,  x,  y);
+  plt.addDataArrays(Ni, xi, yi);
+  plt.plot();
+
+
 
   // ToDo:
   // -Maybe use different types for x and y (like float and double) to make it more interesting.
