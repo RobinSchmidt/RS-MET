@@ -1978,20 +1978,24 @@ void monotonicInterpolation()
     n++;
   }
 
-  // Possibly extrapolate a tail section using the last computed a,b,c,d coeffs:
+  // Possibly extrapolate a tail section linearly:
   while(i < Ni)
   {
+    yF[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);
+    // Verify this!
+
     //Real xn = dxr * (xi[i] - x[n]);
 
 
 
+    /*
     Real xn = dxr * (xi[i] - x[N-1]);
     Real yn = (a*xn + b) / (c*xn + d);
 
-    /*yF[i]   = y[n] + dy*yn; */
     //yF[i]   = y[N-1] + dy*yn;   
 
     yF[i]   = y[N-1] + dy*yn - 0.25833; // Test - trying to fudge it to get a match
+    */
 
     i++;
   }
