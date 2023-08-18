@@ -395,12 +395,13 @@ public:
   static void computeSlopes(T targetSlopeAt0, T targetSlopeAt1, 
     T* mapSlope1, T* mapSlope2, T* mapSlope3, T shape = T(0.5));
   // ToDo: 
+  // -Rename to calcSlopes for consistency
   // -Document the shape parameter. And/or maybe get rid of it by commenting it out, so we can 
   //  easily add it back later
 
   /** Given the slope s1 of the first map at zero, this function computes the split point at which
   we should switch between the two partial (composed) maps. */
-  static T getSplitPoint(T s1) { simpleMap(T(0.5), T(1)/s1); }
+  static T getSplitPoint(T s1) { return simpleMap(T(0.5), T(1)/s1); }
   // We need to apply the first map's inverse to 0.5. We want to figure out at which input x the
   // first map produces the output 0.5. The inverse map is obtained by using the reciprocal slope.
   // We need 0.5 because that's the value at which the 2nd map switches between its two halves.
@@ -409,6 +410,10 @@ public:
   static void calcComposedCoeffsLeft(T s1, T s2, T s3, T* a, T* b, T* c, T* d);
 
   static void calcComposedCoeffsRight(T s1, T s2, T s3, T* a, T* b, T* c, T* d);
+
+  // Make a function 
+  //static void calcSplitPointAndCoeffs(T targetSlopeAt0, T targetSlopeAt1, 
+  //  T* splitPoint, T* aL, T* bL, T* cL, T* dL, T* aR, T* bR, T* cR, T* dR);
 
 
   /** Computes the a,b,c,d parameters for the combined triple map, i.e. the map which results from

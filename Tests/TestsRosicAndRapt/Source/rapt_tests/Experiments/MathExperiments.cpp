@@ -1938,14 +1938,14 @@ void monotonicInterpolation()
     while(xi[i] < x[n+1] && i < Ni)     // Loop over the interpolated output segment
     {
       //yH[i] = (a*xi[i] + b) / (c*xi[i] + d);
-      yH[i] = 0;
+      yF[i] = 0;
       i++;
     }
     n++;
   }
   while(i < Ni)
   {
-    yH[i] = 0;
+    yF[i] = 0;
     //yi[i] = a*xi[i] + b;
     i++;
   }
