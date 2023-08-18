@@ -2004,9 +2004,7 @@ void monotonicInterpolation()
   plt.plot();
 
   // Observations:
-  // -The linear fractional and cubic Hermite seem to have different slopes! That is wrong! They
-  //  should have the same slopes because the slopes are prescribed!
-  // -We only see one half of the first segment of the linear frcational interpolant!
+  // -The extrapolated tail of the lifrac interpoant is offset by a little bit
   // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
   // ToDo:
   // -Add natural spline interpolation
