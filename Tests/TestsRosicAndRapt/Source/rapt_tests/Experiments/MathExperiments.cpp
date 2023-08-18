@@ -1854,7 +1854,7 @@ void monotonicInterpolation()
   // Under construction
 
   // We compare different interpolation methods applied to monotonic data. Among them: linear,
-  // linear fraction, cubic Hermite, cubic spline, ...tbc...
+  // linear fractional, cubic Hermite, cubic spline, ...TBC...
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -1885,11 +1885,17 @@ void monotonicInterpolation()
   GNUPlotter plt;
   plt.addDataArrays(N,  x,  y);
   plt.addDataArrays(Ni, xi, yi);
+  plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#000000\" title \"Samples\"");
+  plt.addGraph("index 1 using 1:2 with lines lw 2 lc rgb \"#0000E0\" title \"Linear\"");
+  plt.addCommand("set key top left");  // Legend appears top-left
+  plt.addCommand("set xtics 1.0");     // x-gridlines at integers
+  plt.addCommand("set ytics 1.0");     // y-gridlines at integers
   plt.plot();
 
 
 
   // ToDo:
+  // -Move legent of the plot to top-left
   // -Maybe use different types for x and y (like float and double) to make it more interesting.
   //  For this, the templates need to be adapted to accept two different template parameters for
   //  x and y. It will make the library code more general.
