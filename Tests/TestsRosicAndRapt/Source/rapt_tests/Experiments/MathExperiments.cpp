@@ -1981,11 +1981,24 @@ void monotonicInterpolation()
   // Possibly extrapolate a tail section using the last computed a,b,c,d coeffs:
   while(i < Ni)
   {
-    Real xn = dxr * (xi[i] - x[n]);
+    //Real xn = dxr * (xi[i] - x[n]);
+
+
+
+    Real xn = dxr * (xi[i] - x[N-1]);
     Real yn = (a*xn + b) / (c*xn + d);
-    yF[i]   = y[n] + dy*yn; 
+
+    /*yF[i]   = y[n] + dy*yn; */
+    //yF[i]   = y[N-1] + dy*yn;   
+
+    yF[i]   = y[N-1] + dy*yn - 0.25833; // Test - trying to fudge it to get a match
+
     i++;
   }
+  // Ah - no - just suing the last computed a,b,c,d coeffs is too simplistic! We actually need to
+  // compute coeffs for two segments again just using the last calculated slope for s1 also for 
+  // s0. ...but that will just give us a linear segment. Maybe just extrapolate linearly using
+  // the final slope
   // ...
 
 
