@@ -1887,6 +1887,9 @@ void monotonicInterpolation()
   Real xi[Ni];  
   Real yL[Ni];                  // The L stands for linear
   Real xiMin = 0;
+
+  xiMin = -2; // test
+
   Real xiMax = 10;              // If > 9, we'll get tail-extrapolation
   RAPT::rsArrayTools::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
 
@@ -1920,9 +1923,6 @@ void monotonicInterpolation()
   // The code below follows closely rsInterpolateLinear:
   int n = 0;        // index into input data
   int i = 0;        // index into interpolated data
-  //Real a, b, c, d;  // parameters of the linear fractional map y = (a*x + b) / (c*x + d)
-  //Real dx, dy, dxr;
-
   while(n < N-1)                        // Loop over the input datapoints
   {
     Real dx  = x[n+1] - x[n];
