@@ -1849,14 +1849,16 @@ void linearFractionalInterpolation()
 
 //-------------------------------------------------------------------------------------------------
 
-/*
+
 template<class T>
 void rsLinearFractionalInterpolation(
   const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni)
 {
 
+
+
 }
-*/
+
 
 void monotonicInterpolation()
 {
