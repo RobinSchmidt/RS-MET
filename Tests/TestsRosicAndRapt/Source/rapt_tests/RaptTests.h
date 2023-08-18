@@ -99,6 +99,7 @@ void imageScaling();
 
 void ellipseLineIntersections();
 void linearFractionalInterpolation();
+void monotonicInterpolation();
 void interpolatingFunction();
 void linearRegression();
 void multipleRegression();

@@ -365,9 +365,9 @@ public:
   /** Implements the basic linear fractional transformation f(x) on which everything else is based.
   The function maps the unit interval [0,1] to itself with f(0) = 0 and f(1) = 1 and with given 
   slope s at the origin such that f'(0) = s. It produces a concave shape (like a saturation curve)
-  for s > 1 and a convex shape (like a bowl or parabola) for s < 1. For s = 1, it produces the 
-  identity function. The slope at x,y = 1,1 will be given by 1/s. The slope s must be in the 
-  interval (0,inf) excluding the boundaries. */
+  for s > 1 and a convex shape (like one side of a bowl or parabola) for s < 1. For s = 1, it 
+  produces the identity function. The slope at x,y = 1,1 will be given by 1/s. The slope s must be 
+  in the interval (0,inf) excluding the boundaries. */
   static T simpleMap(T value, T slopeAt0);
   // It's actually the same function as implemented in rsBiRationalMap_01 in RealFunctions.h just 
   // parametrized differently. There, we use a parameter p in the range (-1,+1) and here we use the
@@ -488,13 +488,16 @@ T rsLinearFractionalInterpolator<T>::getNormalizedY(T x, T slopeAt0, T slopeAt1,
   computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
 
   // Compute the coefficients for the combined map which is of the more general form
-  // f(x) = (a*x + b) / (c*x + d)
+  // f(x) = (a*x + b) / (c*x + d). 
   T a, b, c, d;
   composeTripleMapIntoOne(x, s1, s2, s3, &a, &b, &c, &d);
+  // This step is where the switch between the two linear fractional maps happens. It is the 
+  // switch between two maps that allows us to prescribe 2 derivatives and have actually even a 
+  // degree of freedom left to control the shape.
 
   // Compute the output of the composed map:
   T y = (a*x + b) / (c*x + d); 
-  //T err = y - tripleMap(x, s1, s2, s3);  // Compare to reference computation for debug
+  //T error = y - tripleMap(x, s1, s2, s3);  // Compare to reference computation for debug
   return y;
 
   // I'm not sure, if it's worth it for interpolating a single data point to produce the coeffs 
@@ -506,8 +509,6 @@ T rsLinearFractionalInterpolator<T>::getNormalizedY(T x, T slopeAt0, T slopeAt1,
 
 /*
 Notes:
-
-
 
 Linear interpolation is easily invertible but it's not first order smooth. Polynomial 
 interpolation schemes can be made even smoother than first order but are in general not 

@@ -1716,7 +1716,7 @@ void linearFractionalInterpolation()
   // A function that performs some unit tests on some stuff used in the old implementation. The 
   // whole function may be deleted someday. But it contains some code implementing some rather 
   // complicated formulas that allow to combine 3 maps into 1 when they are parametrized via the 
-  // old p in [-1,+1]. ...But should we even need such a thing, it's perhaps better to 
+  // old p in [-1,+1]. ...But should we ever need such a thing, it's perhaps better to 
   // reparametrize -> combine -> reparametrize back. But this will require two divisions, so I'm 
   // not sure yet. That's why the code is still there.
 
@@ -1808,6 +1808,18 @@ void linearFractionalInterpolation()
   // https://en.wikipedia.org/wiki/Laguerre_transformations
   // https://de.wikipedia.org/wiki/M%C3%B6biustransformation
 
+  // Questions:
+  // Is there a 2D and nD generalization of that group? Like, a function R^2 -> R^2 given by
+  //   (z,w) = f(x,y) = ( (a*x+b*y+c)/(d*x+e*y+f), (g*x+h*y+i)/(j*x+k*y+l) )
+  // I think, for a fixed y, each of these 2 functions just boil down to a 1D linfrac - the 
+  // y-dependent terms just become constants. How does this relate to linfracs C -> C? Is it the 
+  // same thing? Could 2D linfracs be useful for 2D interpolation? In general, for R^n -> R^n:
+  //   f(x) = ( (a_1*x + b_1)/(c_1*x + d_1), ..., (a_n*x + b_n)/(c_n*x + d_n)
+  // where a_i,c_i are vectors, x is a vector, b_i,d_i are scalars and * is the dot product. 
+  // Is this a group? I think, the neutral element should have a_i = 1 in the i-th component 
+  // function and all other coeffs zero. But what about inverses? Try to find them with Sage in 
+  // the 2D. Solve both equations for x and for y in terms of z,w
+
   // Other ideas (spin offs - move to some experiment involving waveshaping):
   // -The function -cbrt(1-x^3) might be interesting for waveshaping. It does something strange
   //  around zero but away from zero, it is the identity.
@@ -1837,14 +1849,58 @@ void linearFractionalInterpolation()
 
 //-------------------------------------------------------------------------------------------------
 
+void monotonicInterpolation()
+{
+  // Under construction
+
+  // We compare different interpolation methods applied to monotonic data. Among them: linear,
+  // linear fraction, cubic Hermite, cubic spline, ...tbc...
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+
+  // Define datapoints:
+  static const int N = 5;
+  Real x[N] = { 0, 2, 5, 8, 9 };  // x-values always increase monotonicallly anyway
+  Real y[N] = { 0, 4, 5, 7, 9 };  // y-values also increase monotonically here
+
+
+  // Allocate arrays for the interpolated data:
+  static const int Ni = 501;      // Number of interpolated values
+  Real xi[Ni];  
+  Real yi[Ni];
+  Real xiMin = 0;
+  Real xiMax = 10;              // if > 9, we'll get tail-extrapolation
+  RAPT::rsArrayTools::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
+
+  // Do linear inter-/extrapolation:
+  rsInterpolateLinear(x, y, N, xi, yi, Ni);
+
+
+  // Compute slopes via numeric differentiation:
+  Real s[N];
+
+
+  GNUPlotter plt;
+
+  // ToDo:
+  // -Maybe use different types for x and y (like float and double) to make it more interesting.
+  //  For this, the templates need to be adapted to accept two different template parameters for
+  //  x and y. It will make the library code more general.
+}
+
 void interpolatingFunction()
 {
   typedef RAPT::rsInterpolatingFunction<float, double> IF;
 
   // create data to interpolate:
-  int N = 5;
-  float  x[5] = { 2, 4, 5, 7, 8 };
-  double y[5] = { 1, 3, 1, 2, 3 };
+  int N = 5;                          // why not static const?
+  float  x[5] = { 2, 4, 5, 7, 8 };    // use x[N] instead of x[5]
+  double y[5] = { 1, 3, 1, 2, 3 };    // dito
+  // ToDo: 
+  // -Explain why x and y are of different type. Probably to make the template instantiations
+  //  more "interesting", i.e. to cover a more general case.
 
   // create and set up interpolating function object:
   IF intFunc;
@@ -1857,7 +1913,7 @@ void interpolatingFunction()
 
 
   // do extra/interpolation:
-  static const int M = 500; // number of interpolated values
+  static const int M = 500; // number of interpolated values, rename to Ni
   float  xi[M];  
   double yi[M];
   float  xiMin = 0;

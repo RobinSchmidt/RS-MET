@@ -13,7 +13,8 @@ two initila and/or final points. */
 template<class Tx, class Ty>
 void resampleNonUniformLinear(const Tx* xIn, const Ty* yIn, int inLength, 
   const Tx* xOut, Ty* yOut, int outLength);
-// rename
+// -Rename or maybe deprecate. It seems to be a less efficient version of rsInterpolateLinear. See 
+//  comment there.
 
 /** Computes coefficients for a cubic polynomial that goes through the 4 points (-1,y[-1]),
 (0,y[0]), (1,y[1]), (2,y[2]) that will have matched 1st derivatives when used on successive
@@ -129,6 +130,12 @@ function fills the array yi with values corresponding to the xi by linear interp
 (or extrapolation, if necessary) of the input data. The xi and yi arrays are of length Ni. */
 template<class T>
 void rsInterpolateLinear(const T *x, const T *y, int N, const T *xi, T *yi, int Ni);
+// What's the difference to resampleNonUniformLinear? It seems to have the same purpose and be 
+// redundant. Looking at the code, resampleNonUniformLinear recomputes the line parameters for
+// each output point by calling rsInterpolateLinear for two points. That's nice to read but 
+// inefficient when oversampling. Maybe get rid of resampleNonUniformLinear. The name is 
+// awkwardly long anyway and tat we deal with non-uniformly sampled data is clear from the
+// function signature anyway.
 
 /** Given four x-axis values x1, x2, x3, x4 and the corresponding y-axis values y1, y2, y3, y4,
 this function returns the y-value corresponding to x by cubic hermite interpolation. It is
@@ -239,7 +246,7 @@ void cubicSplineArcLength2D(T* a, T* b, T* t, T* s, int N);
 
 
 //===============================================================================================
-// implementation of template-functions (move to cpp file):
+// implementation of template-functions (ToDo: move to cpp file):
 
 template<class Tx, class Ty>
 Ty rsInterpolateLinear(Tx x1, Tx x2, Ty y1, Ty y2, Tx x)
@@ -260,11 +267,11 @@ void rsInterpolateLinear(const T *x, const T *y, int N, const T *xi, T *yi, int 
   int i = 0;  // index into interpolated data
   T a, b;     // parameters of the line y = a*x + b
 
-  while(n < N-1)
+  while(n < N-1)                        // Loop over the input datapoints
   {
-    a = (y[n+1]-y[n]) / (x[n+1]-x[n]);
-    b = y[n] - a*x[n];
-    while(xi[i] < x[n+1] && i < Ni)
+    a = (y[n+1]-y[n]) / (x[n+1]-x[n]);  // Compute slope via forward difference
+    b = y[n] - a*x[n];                  // Compute offset
+    while(xi[i] < x[n+1] && i < Ni)     // Loop over the interpolated output segment
     {
       yi[i] = a*xi[i] + b;
       i++;
@@ -272,12 +279,17 @@ void rsInterpolateLinear(const T *x, const T *y, int N, const T *xi, T *yi, int 
     n++;
   }
 
+  // A possible tail section uses the last computed slope and offset for linear extrapolation:
   while(i < Ni)
   {
     yi[i] = a*xi[i] + b;
     i++;
   }
 }
+// ToDo:
+// -Check, if proper unit tests for the cases with and without tail extrapolation exist. If not,
+//  write them. Extrapolation should occur if and only if the last value in xi is greater than the 
+//  last value in x, I think.
 
 template<class T>
 T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
