@@ -368,7 +368,7 @@ public:
 
   ...TBC...  */
   static void interpolate(const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni, 
-    bool extrapolateLinearly = true);
+    bool extrapolateLinearly = true, T shape = 0.5);
   // Linear extrapolation might actually be more useful when extrapolating further away from the
   // last datapoint because the linear fraction map will eventually shoot off to a pole.
 
@@ -556,7 +556,8 @@ T rsLinearFractionalInterpolator<T>::getNormalizedY(T x, T slopeAt0, T slopeAt1,
 
 template<class T>
 void rsLinearFractionalInterpolator<T>::interpolate(
-  const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni, bool extrapolateLinearly)
+  const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni, 
+  bool extrapolateLinearly, T shape)
 {  
   // The code below follows closely rsInterpolateLinear.
 
@@ -591,7 +592,7 @@ void rsLinearFractionalInterpolator<T>::interpolate(
     // Compute values for the initial slopes (at x,y = 0,0) for the 3 normalized linear 
     // fractional maps:
     T s1, s2, s3;
-    computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3);
+    computeSlopes(slopeAt0, slopeAt1, &s1, &s2, &s3, shape);
 
     // Compute the split point, i.e. the point at which we have to switch between the two maps
     // for the two sub-segments:

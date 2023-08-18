@@ -18,6 +18,15 @@ void setToDarkMode(GNUPlotter* plt)
   plt->addCommand("set ylabel \"Y\" textcolor rgb \"white\"");
   plt->addCommand("set key textcolor \"white\""); 
 
+  // ToDo: set up the graph colors
+
+  const char c[7] = "FFFFFF";
+  plt->setGraphColors(c, c, c, c, c, c, c, c, c, c);
+
+  //plt->addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#F0F0F0\""); 
+
+  //set style line 1 lt 1 lw 3 pt 3 linecolor rgb "red"
+
 }
 
 void createTimeAxis(int numSamples, float *timeAxis, float sampleRate)

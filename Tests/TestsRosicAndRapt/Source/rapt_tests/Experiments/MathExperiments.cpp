@@ -1703,6 +1703,7 @@ void linearFractionalInterpolation()
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec y(N);
   GNUPlotter plt;
+  setToDarkMode(&plt);
   Real slopeAt1 = minSlopeAt1;           // Variable slope at x,y = 1,1. Goes up in the loop
   while(slopeAt1 <= maxSlopeAt1) {
     for(int n = 0; n < N; n++)
@@ -1710,6 +1711,7 @@ void linearFractionalInterpolation()
     plt.addDataArrays(N, &x[0], &y[0]);
     slopeAt1 *= 2;  }                    // Double the slope for the next graph
   plt.addCommand("set size square");
+  plt.setPixelSize(600, 600);
   plt.plot();
 
   bool ok = moebiusMapTest();  // Remnant from the development process
@@ -1860,7 +1862,7 @@ void monotonicInterpolation()
   // Setup:
   bool decrease = false;  // Switch between monotonically increasing and decreasing
   bool linExtra = false;  // Switch linear extrapolation on (on is the default)
-
+  Real shape    = +0.5;
 
   // Define datapoints:
   static const int N = 5;
@@ -1902,15 +1904,16 @@ void monotonicInterpolation()
   // Do linear fractional interpolation:
   using LFI = rsLinearFractionalInterpolator<Real>;
   Real yF[Ni];                  // The F stands for fractional
-  LFI::interpolate(x, y, s, N, xi, yF, Ni, linExtra);
+  LFI::interpolate(x, y, s, N, xi, yF, Ni, linExtra, shape);
 
-  // Now let's attempt an inverse interpolation:
+  // Now let's attempt an inverse interpolation using reversed roles of x- and y-values. According
+  // to the inverse function theorem for differentiation, we need the inverse slopes.
   Real yi[Ni];
   Real xF[Ni];
   RAPT::rsArrayTools::fillWithRangeLinear(yi, Ni, -4.0, 12.0);
   for(int n = 0; n < N; n++)
     s[n] = 1/s[n];
-  LFI::interpolate(y, x, s, N, yi, xF, Ni, linExtra);
+  LFI::interpolate(y, x, s, N, yi, xF, Ni, linExtra, 1-shape);
 
 
   // Set up the plotter an plot the data along with the interpolants:
@@ -1927,40 +1930,27 @@ void monotonicInterpolation()
     plt.addDataArrays(N, x, y);            // index 0: samples
     plt.addDataArrays(Ni, xi, yL, yH, yF); // index 1: linear, cubic, linfrac
     plt.addDataArrays(Ni, yi, xF);         // index 2: inverse lin frac
-    plt.addDataArrays(Ni, yi, yi);         // index 3: identity
-
-    // For orientation, draw in the identity:
-
+    plt.addDataArrays(Ni, yi, yi);         // index 3: identity for orientation
     plt.addGraph("index 3 using 1:2 with lines lw 1 lc rgb \"#444444\" notitle ");  // identity
-
     plt.addGraph("index 1 using 1:2 with lines lw 1.5 lc rgb \"#409090\" title \"Linear\"");
     plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#9060A0\" title \"Cubic Hermite\"");
-
     plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#666666\" title \"LinFrac Inverse\"");
     plt.addGraph("index 1 using 1:4 with lines lw 2.5 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
     plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
-
-
-
-
-
-
     plt.plot();
   }
 
-
-
-
-  //rsPlotArraysXY(Ni, xi, yF);
-  //rsPlotArraysXY(Ni, yi, xF);
-
-
-
-
-
   // Observations:
-  // -The linfrac interpolant nicely interpolates our data monotonically.
   // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
+  // -The linfrac interpolant nicely interpolates our data monotonically.
+  // -The inverse interpolant is symmetric to the forward interpolant with respect to the y = x 
+  //  line, as would be expected for an inverse function.
+  // -Highly negative values (like -8) of shape drag the plateaus toward the left node, letting 
+  //  more of the curve lie convexely below the linear connection, highly positive values 
+  //  (like +8) will drag the plateaus toward the right node, making a greater portion of the 
+  //  curve concavely lying above the linear connection.
+  // -With shape = -8, we get a pole in the right extrapolation zone
+
   // -Using xMax = 12 produces garbage when trying to extrapolate using the last computed a,b,c,d
   //  coeffs rather than linear. 11.5..1..7 shows the shooting off behavior. At around 11.6, the
   //  linfrac passes the cubic. For the lower boundary, no  such shooting off is observed. I guess,
@@ -1973,6 +1963,10 @@ void monotonicInterpolation()
 
   //
   // ToDo:
+  // -Maybe make the shape parameter have zero as neutral value
+  // -Maybe obtain and plot numerical derivatives of the interpolants. We want to see the 
+  //  smoothness. We expect that the 1st derivative is continuous but has corners at the nodes and
+  //  somewhere in between the nodes where the two linfracs are switched over.
   // -Try to do a reverse interpolation via the linfrac method - yi shoudl go form -4 to 16
   // -Add natural spline interpolation
   // -Maybe use different types for x and y (like float and double) to make it more interesting.
