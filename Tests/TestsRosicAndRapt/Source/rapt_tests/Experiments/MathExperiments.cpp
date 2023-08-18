@@ -1886,7 +1886,7 @@ void monotonicInterpolation()
   static const int Ni = 501;    // Number of interpolated values
   Real xi[Ni];  
   Real yL[Ni];                  // The L stands for linear
-  Real xiMin = -3;              // If < 0, we'll get front-extrapolation
+  Real xiMin = -5;              // If < 0, we'll get front-extrapolation
   Real xiMax = 11;              // If > 9, we'll get tail-extrapolation
   RAPT::rsArrayTools::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
 
@@ -1981,6 +1981,7 @@ void monotonicInterpolation()
     Real xn = dxr * (xi[i] - x[N-2]);
     Real yn = (a*xn + b) / (c*xn + d);
     yF[i]   = y[N-2] + dy*yn; 
+
     i++;
   }
   // Maybe prepend a section to linearly extrapolate leftward if xi[0] < x[0]
@@ -1993,8 +1994,8 @@ void monotonicInterpolation()
   plt.addDataArrays(N,  x,  y);
   plt.addDataArrays(Ni, xi, yL, yH, yF);
   plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#000000\" title \"Samples\"");
-  plt.addGraph("index 1 using 1:2 with lines lw 2 lc rgb \"#0000E0\" title \"Linear\"");
-  plt.addGraph("index 1 using 1:3 with lines lw 2 lc rgb \"#006000\" title \"Cubic Hermite\"");
+  //plt.addGraph("index 1 using 1:2 with lines lw 2 lc rgb \"#0000E0\" title \"Linear\"");
+  //plt.addGraph("index 1 using 1:3 with lines lw 2 lc rgb \"#006000\" title \"Cubic Hermite\"");
   plt.addGraph("index 1 using 1:4 with lines lw 2 lc rgb \"#700000\" title \"Linear Fractional\"");
   plt.addCommand("set key top left");  // Legend appears top-left
   plt.addCommand("set xtics 1.0");     // x-gridlines at integers
