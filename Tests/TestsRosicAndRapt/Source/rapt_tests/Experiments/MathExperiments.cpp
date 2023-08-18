@@ -1867,19 +1867,32 @@ void monotonicInterpolation()
 
 
   // Allocate arrays for the interpolated data:
-  static const int Ni = 501;      // Number of interpolated values
+  static const int Ni = 501;    // Number of interpolated values
   Real xi[Ni];  
-  Real yi[Ni];
+  Real yi[Ni];                  // rename to yL or yLin
   Real xiMin = 0;
   Real xiMax = 10;              // if > 9, we'll get tail-extrapolation
   RAPT::rsArrayTools::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
 
   // Do linear inter-/extrapolation:
   rsInterpolateLinear(x, y, N, xi, yi, Ni);
-
+  // This is our simplemost interpolation scheme and serves as baseline reference. It is actually
+  // monotonic by nature, i.e. monotonic data will give rise to monotonic interpolating functions.
 
   // Compute slopes via numeric differentiation:
   Real s[N];
+  rsNumericDifferentiator<Real>::derivative(x, y, s, N, true);
+  // These slopes will be used for cubic Hermite and linear fractional interpolation.
+
+  // Do cubic Hermite interpolation:
+  Real yH[Ni];
+  {
+    // Code in subblock to not litter outer scope with ps, pps.
+    Real* ps = s; Real** pps = &ps; // Needed for technical reasons
+    rsInterpolateSpline(x, y, pps, N, 1, xi, yH, Ni);
+  }
+
+
 
 
   GNUPlotter plt;

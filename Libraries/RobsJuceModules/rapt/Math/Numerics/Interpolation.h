@@ -160,8 +160,10 @@ do some copying
 template<class Tx, class Ty>
 void rsInterpolateSpline(const Tx *x, const Ty *y, Ty **yd, int N, int M, 
   const Tx *xi, Ty *yi, int Ni);
-// todo: rename to rsInterpolateHermite - a spline is different - it doesn't prescribe derivatives
-// and instead makes higher order deriavtives match at the nodes
+// ToDo: 
+// -Rename to rsInterpolateHermite - a spline is different - it doesn't prescribe derivatives
+//  and instead makes higher order deriavtives match at the nodes
+// -Rename M to something clearer like "smoothness". 
 
 /** Given two length N arrays x, y with x-axis values and corresponding y-axis values, this
 function fills the array yi with values corresponding to the xi by spline interpolation
