@@ -1849,6 +1849,13 @@ void linearFractionalInterpolation()
 
 //-------------------------------------------------------------------------------------------------
 
+template<class T>
+void rsLinearFractionalInterpolation(
+  const T* x, const T* y, T* yd, int N, const T* xi, T* yi, int Ni)
+{
+
+}
+
 void monotonicInterpolation()
 {
   // Under construction
@@ -1859,12 +1866,19 @@ void monotonicInterpolation()
   using Real = double;
   using Vec  = std::vector<Real>;
 
+  // Setup:
+  bool decrease = false;  // switch between monotonically increasing and decreasing
+
 
   // Define datapoints:
   static const int N = 5;
   Real x[N] = { 0, 2, 7, 8, 9 };  // x-values always increase monotonicallly anyway
   Real y[N] = { 0, 4, 5, 8, 9 };  // y-values also increase monotonically here
 
+  // Convert to monotonically decreasing data, if desired:
+  if(decrease) {
+    for(int n = 0; n < N; n++)
+      y[n] = -y[n]; }
 
   // Allocate arrays for the interpolated data:
   static const int Ni = 501;    // Number of interpolated values

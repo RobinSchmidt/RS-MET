@@ -359,6 +359,8 @@ polynomial interpolation, it's the other way around.
 template<class T>
 class rsLinearFractionalInterpolator
 {
+  // Maybe have two template parameters for x and y. But maybe that would count as speculative
+  // generality code smell?
 
 public:
 
