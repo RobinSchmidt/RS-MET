@@ -1920,14 +1920,14 @@ void monotonicInterpolation()
   // The code below follows closely rsInterpolateLinear:
   int n = 0;        // index into input data
   int i = 0;        // index into interpolated data
-  Real a, b, c, d;  // parameters of the linear fractional map y = (a*x + b) / (c*x + d)
-  Real dx, dy, dxr;
+  //Real a, b, c, d;  // parameters of the linear fractional map y = (a*x + b) / (c*x + d)
+  //Real dx, dy, dxr;
 
   while(n < N-1)                        // Loop over the input datapoints
   {
-    dx  = x[n+1] - x[n];
-    dy  = y[n+1] - y[n];
-    dxr = 1 / dx;           // Reciprocal of dx
+    Real dx  = x[n+1] - x[n];
+    Real dy  = y[n+1] - y[n];
+    Real dxr = 1 / dx;           // Reciprocal of dx
 
     // Retrieve and normalize the slopes:
     Real s0  = s[n];
@@ -1945,7 +1945,9 @@ void monotonicInterpolation()
     Real xSplit = LFI::getSplitPoint(d1);
     xSplit = xSplit * dx + x[n];
 
-    // Calculate the a,b,c,d coeffs for the left sub-segment and interpolate it:
+    // Calculate the a, b, c, d coeffs for the linear fractional map y = (a*x + b) / (c*x + d)
+    // for the left sub-segment and interpolate it:
+    Real a, b, c, d;
     LFI::calcComposedCoeffsLeft(d1, d2, d3, &a, &b, &c, &d);
     while(xi[i] <= xSplit && i < Ni)
     {
@@ -1955,7 +1957,7 @@ void monotonicInterpolation()
       i++;
     }
 
-    // Calculate the a,b,c,d coeffs for the right sub-segment and interpolate it:
+    // Calculate the coeffs for the right sub-segment and interpolate it:
     LFI::calcComposedCoeffsRight(d1, d2, d3, &a, &b, &c, &d);
     while(xi[i] < x[n+1] && i < Ni)
     {
@@ -1974,6 +1976,7 @@ void monotonicInterpolation()
     yF[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);
     i++;
   }
+  // Maybe prepend a section to linearly extrapolate leftward if xi[0] < x[0]
 
 
 
