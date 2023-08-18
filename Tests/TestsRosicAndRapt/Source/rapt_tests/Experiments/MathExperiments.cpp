@@ -1921,6 +1921,14 @@ void monotonicInterpolation()
   int n = 0;        // index into input data
   int i = 0;        // index into interpolated data
 
+
+  // Possibly extrapolate a front section linearly:
+  while(xi[i] < x[0])
+  {
+    yF[i] = y[0] + s[0] * (xi[i] - x[0]);
+    i++;
+  }
+
   Real dx, dy, dxr;
   Real a, b, c, d;
 
@@ -1974,13 +1982,13 @@ void monotonicInterpolation()
   // Possibly extrapolate a tail section with the last computed a,b,c,d coeffs:
   while(i < Ni)
   {
-    //yF[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);  // extrapolate linearly
+    yF[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);  // extrapolate linearly
     // ...this might actually be more useful when extrapolating further away from the last 
     // datapoint because the linear fraction map will eventually shoot off to a pole.
 
-    Real xn = dxr * (xi[i] - x[N-2]);
-    Real yn = (a*xn + b) / (c*xn + d);
-    yF[i]   = y[N-2] + dy*yn; 
+    //Real xn = dxr * (xi[i] - x[N-2]);
+    //Real yn = (a*xn + b) / (c*xn + d);
+    //yF[i]   = y[N-2] + dy*yn; 
 
     i++;
   }
