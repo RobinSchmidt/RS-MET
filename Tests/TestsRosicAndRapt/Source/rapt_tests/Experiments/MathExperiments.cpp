@@ -1849,97 +1849,6 @@ void linearFractionalInterpolation()
 
 //-------------------------------------------------------------------------------------------------
 
-// Move as static member into class rsLinearFractionalInterpolator
-
-template<class T>
-void rsLinearFractionalInterpolation(
-  const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni)
-{
-  // The code below follows closely rsInterpolateLinear.
-
-  using LFI = rsLinearFractionalInterpolator<T>;
-  LFI::interpolate(x, y, s, N, xi, yi, Ni);
-
-
-  /*
-  int n = 0;        // index into input data
-  int i = 0;        // index into interpolated data
-
-
-  // Possibly extrapolate a front section linearly:
-  while(xi[i] < x[0])
-  {
-    yi[i] = y[0] + s[0] * (xi[i] - x[0]);
-    i++;
-  }
-
-  T dx, dy, dxr;
-  T a, b, c, d;
-
-  while(n < N-1)                        // Loop over the input datapoints
-  {
-    dx  = x[n+1] - x[n];
-    dy  = y[n+1] - y[n];
-    dxr = 1 / dx;           // Reciprocal of dx
-
-    // Retrieve and normalize the slopes:
-    T s0  = s[n];
-    T s1  = s[n+1];
-    T slopeScale = dx/dy;  // ...I think -> verify!
-    s0 *= slopeScale;
-    s1 *= slopeScale;
-
-    // Compute values for the initial derivatives (at x,0 = 0,0) for the 3 normalized linear 
-    // fractional maps:
-    T d1, d2, d3;
-    LFI::computeSlopes(s0, s1, &d1, &d2, &d3);
-
-    // Compute split point:
-    T xSplit = LFI::getSplitPoint(d1);
-    xSplit = xSplit * dx + x[n];
-
-    // Calculate the a, b, c, d coeffs for the linear fractional map y = (a*x + b) / (c*x + d)
-    // for the left sub-segment and interpolate it:
-    //Real a, b, c, d;
-    LFI::calcComposedCoeffsLeft(d1, d2, d3, &a, &b, &c, &d);
-    while(xi[i] <= xSplit && i < Ni)
-    {
-      T xn = dxr * (xi[i] - x[n]);     // Normalized x in [0,1]
-      T yn = (a*xn + b) / (c*xn + d);  // Normalized y in [0,1]
-      yi[i]   = y[n] + dy*yn;             // Denormalize y and write to output
-      i++;
-    }
-
-    // Calculate the coeffs for the right sub-segment and interpolate it:
-    LFI::calcComposedCoeffsRight(d1, d2, d3, &a, &b, &c, &d);
-    while(xi[i] < x[n+1] && i < Ni)
-    {
-      T xn = dxr * (xi[i] - x[n]);
-      T yn = (a*xn + b) / (c*xn + d);
-      yi[i]   = y[n] + dy*yn; 
-      i++;
-    }
-
-    n++;
-  }
-
-  // Possibly extrapolate a tail section with the last computed a,b,c,d coeffs:
-  while(i < Ni)
-  {
-    yi[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);  // extrapolate linearly
-    // ...this might actually be more useful when extrapolating further away from the last 
-    // datapoint because the linear fraction map will eventually shoot off to a pole.
-
-    //Real xn = dxr * (xi[i] - x[N-2]);
-    //Real yn = (a*xn + b) / (c*xn + d);
-    //yF[i]   = y[N-2] + dy*yn; 
-
-    i++;
-  }
-  */
-}
-
-
 void monotonicInterpolation()
 {
   // Under construction
@@ -1993,8 +1902,7 @@ void monotonicInterpolation()
 
   // Do linear fractional interpolation:
   Real yF[Ni];                  // The F stands for fractional
-  //rsArrayTools::fillWithValue(yF, Ni, 0.0);  // may be deleted when code below is finished
-  rsLinearFractionalInterpolation(x, y, s, N, xi, yF, Ni);
+  rsLinearFractionalInterpolator<Real>::interpolate(x, y, s, N, xi, yF, Ni);
 
   // Set up the plotter an plot the data along with the interpolants:
   GNUPlotter plt;

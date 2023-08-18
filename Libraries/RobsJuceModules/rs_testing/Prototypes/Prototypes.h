@@ -367,8 +367,10 @@ public:
   /** High level function to interpolate a whole array of data at once.
 
   ...TBC...  */
-  static void interpolate(const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni);
-
+  static void interpolate(const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni, 
+    bool extrapolateLinearly = true);
+  // Linear extrapolation might actually be more useful when extrapolating further away from the
+  // last datapoint because the linear fraction map will eventually shoot off to a pole.
 
 
   /** Implements the basic linear fractional transformation f(x) on which everything else is based.
@@ -554,36 +556,42 @@ T rsLinearFractionalInterpolator<T>::getNormalizedY(T x, T slopeAt0, T slopeAt1,
 
 template<class T>
 void rsLinearFractionalInterpolator<T>::interpolate(
-  const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni)
+  const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni, bool extrapolateLinearly)
 {  
   // The code below follows closely rsInterpolateLinear.
 
   int n = 0;        // index into input data
   int i = 0;        // index into interpolated data
-
-  // Possibly extrapolate a front section linearly:
-  while(xi[i] < x[0]) {
-    yi[i] = y[0] + s[0] * (xi[i] - x[0]);
-    i++; }
-
   T dx, dy, dxr;
   T a, b, c, d;
-  while(n < N-1)                        // Loop over the input datapoints
+
+  // Front extrapolation, if necessarry:
+  if(extrapolateLinearly) {
+    while(xi[i] < x[0]) {
+      yi[i] = y[0] + s[0] * (xi[i] - x[0]);
+      i++; }}
+  // Unlike for the tail extrapolation below, we need no else-branch here because if we don't 
+  // want extrapolate linearly, a linear fractional extrapolation for the front will naturally 
+  // occur in the main loop.
+
+  // Main Loop over the input datapoints:
+  while(n < N-1)
   {
-    dx  = x[n+1] - x[n];
-    dy  = y[n+1] - y[n];
-    dxr = 1 / dx;           // Reciprocal of dx
+    dx  = x[n+1] - x[n];               // Length of current segment
+    dy  = y[n+1] - y[n];               // Height of current segment
+    dxr = 1 / dx;                      // Reciprocal of the length dx
 
     // Retrieve and normalize the slopes:
     T s0  = s[n];
     T s1  = s[n+1];
-    T slopeScale = dx/dy;  // ...I think -> verify!
+    T slopeScale = dx/dy;              // ...I think -> verify!
     s0 *= slopeScale;
     s1 *= slopeScale;
+    // todo: rename to slopeAt0, slopeAt1 to make consistent with rest of the code
 
     // Compute values for the initial derivatives (at x,0 = 0,0) for the 3 normalized linear 
     // fractional maps:
-    T d1, d2, d3;
+    T d1, d2, d3;  // rename to s1, s2, s3 for consistency
     computeSlopes(s0, s1, &d1, &d2, &d3);
 
     // Compute split point:
@@ -615,6 +623,19 @@ void rsLinearFractionalInterpolator<T>::interpolate(
     n++;
   }
 
+  // Tail extrapolation, if necessarry:
+  if(extrapolateLinearly) {
+    while(i < Ni) {
+      yi[i] = y[N-1] + s[N-1] * (xi[i] - x[N-1]);
+      i++; }}
+  else {
+    while(i < Ni) {
+      T xn = dxr * (xi[i] - x[N-2]);
+      T yn = (a*xn + b) / (c*xn + d);  // Use the last computed a,b,c,d coeffs
+      yi[i]   = y[N-2] + dy*yn;
+      i++; }}
+
+  /*
   // Possibly extrapolate a tail section with the last computed a,b,c,d coeffs:
   while(i < Ni)
   {
@@ -628,6 +649,7 @@ void rsLinearFractionalInterpolator<T>::interpolate(
 
     i++;
   }
+  */
 }
 
 
