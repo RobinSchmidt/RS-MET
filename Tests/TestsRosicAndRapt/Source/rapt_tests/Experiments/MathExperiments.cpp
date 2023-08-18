@@ -1921,23 +1921,28 @@ void monotonicInterpolation()
     plt.setPixelSize(600, 600);
     plt.addCommand("set size square");
     plt.addCommand("set size ratio -1");
-    plt.addCommand("set key top left");  // Legend appears top-left
-    plt.addCommand("set xtics 1.0");     // x-gridlines at integers
-    plt.addCommand("set ytics 1.0");     // y-gridlines at integers
-    plt.addDataArrays(N, x, y);
-    plt.addDataArrays(Ni, xi, yL, yH, yF);
-    plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
-    //plt.addGraph("index 1 using 1:2 with lines lw 1 lc rgb \"#50A0A0\" title \"Linear\"");
-    plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#9060A0\" title \"Cubic Hermite\"");
-    plt.addGraph("index 1 using 1:4 with lines lw 2 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
-
-
-    plt.addDataArrays(Ni, yi, xF); 
-    plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#666666\" title \"LinFrac Inverse\"");
+    plt.addCommand("set key top left");    // Legend appears top-left
+    plt.addCommand("set xtics 1.0");       // x-gridlines at integers
+    plt.addCommand("set ytics 1.0");       // y-gridlines at integers
+    plt.addDataArrays(N, x, y);            // index 0: samples
+    plt.addDataArrays(Ni, xi, yL, yH, yF); // index 1: linear, cubic, linfrac
+    plt.addDataArrays(Ni, yi, xF);         // index 2: inverse lin frac
+    plt.addDataArrays(Ni, yi, yi);         // index 3: identity
 
     // For orientation, draw in the identity:
-    plt.addDataArrays(Ni, yi, yi); 
-    plt.addGraph("index 3 using 1:2 with lines lw 1 lc rgb \"#444444\" notitle ");
+
+    plt.addGraph("index 3 using 1:2 with lines lw 1 lc rgb \"#444444\" notitle ");  // identity
+
+    plt.addGraph("index 1 using 1:2 with lines lw 1.5 lc rgb \"#409090\" title \"Linear\"");
+    plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#9060A0\" title \"Cubic Hermite\"");
+
+    plt.addGraph("index 2 using 1:2 with lines lw 2 lc rgb \"#666666\" title \"LinFrac Inverse\"");
+    plt.addGraph("index 1 using 1:4 with lines lw 2.5 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
+    plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
+
+
+
+
 
 
     plt.plot();
