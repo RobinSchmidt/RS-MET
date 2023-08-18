@@ -1862,20 +1862,20 @@ void monotonicInterpolation()
 
   // Define datapoints:
   static const int N = 5;
-  Real x[N] = { 0, 2, 5, 8, 9 };  // x-values always increase monotonicallly anyway
-  Real y[N] = { 0, 4, 5, 7, 9 };  // y-values also increase monotonically here
+  Real x[N] = { 0, 2, 7, 8, 9 };  // x-values always increase monotonicallly anyway
+  Real y[N] = { 0, 4, 5, 8, 9 };  // y-values also increase monotonically here
 
 
   // Allocate arrays for the interpolated data:
   static const int Ni = 501;    // Number of interpolated values
   Real xi[Ni];  
-  Real yi[Ni];                  // rename to yL or yLin
+  Real yL[Ni];                  // The L stands for linear
   Real xiMin = 0;
-  Real xiMax = 10;              // if > 9, we'll get tail-extrapolation
+  Real xiMax = 10;              // If > 9, we'll get tail-extrapolation
   RAPT::rsArrayTools::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
 
   // Do linear inter-/extrapolation:
-  rsInterpolateLinear(x, y, N, xi, yi, Ni);
+  rsInterpolateLinear(x, y, N, xi, yL, Ni);
   // This is our simplemost interpolation scheme and serves as baseline reference. It is actually
   // monotonic by nature, i.e. monotonic data will give rise to monotonic interpolating functions.
 
@@ -1885,33 +1885,49 @@ void monotonicInterpolation()
   // These slopes will be used for cubic Hermite and linear fractional interpolation.
 
   // Do cubic Hermite interpolation:
-  Real yH[Ni];
+  Real yH[Ni];                  // The H stands for Hermite
   {
-    // Code in subblock to not litter outer scope with ps, pps.
+    // Sub block to not litter outer scope with ps, pps.
     Real* ps = s; Real** pps = &ps; // Needed for technical reasons
     rsInterpolateSpline(x, y, pps, N, 1, xi, yH, Ni);
   }
 
 
+  // Do linear fractional interpolation:
+  // ...
 
 
+  // Set up the plotter an plot the data along with the interpolants:
   GNUPlotter plt;
   plt.addDataArrays(N,  x,  y);
-  plt.addDataArrays(Ni, xi, yi);
+  plt.addDataArrays(Ni, xi, yL, yH);
   plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#000000\" title \"Samples\"");
   plt.addGraph("index 1 using 1:2 with lines lw 2 lc rgb \"#0000E0\" title \"Linear\"");
+  plt.addGraph("index 1 using 1:3 with lines lw 2 lc rgb \"#005000\" title \"Cubic Hermite\"");
   plt.addCommand("set key top left");  // Legend appears top-left
   plt.addCommand("set xtics 1.0");     // x-gridlines at integers
   plt.addCommand("set ytics 1.0");     // y-gridlines at integers
   plt.plot();
 
-
+  // Observations:
+  // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
 
   // ToDo:
-  // -Move legent of the plot to top-left
+  // -Add natural spline interpolation
   // -Maybe use different types for x and y (like float and double) to make it more interesting.
   //  For this, the templates need to be adapted to accept two different template parameters for
   //  x and y. It will make the library code more general.
+  // -Test what happens, if xiMin < 0 - we should get extrapolation to the left.
+  // -Maybe try different interpolation schemes on some monotonic mathematical functions, for 
+  //  example 1/(1+x^n), pow(exp(x), 1/n), log(x), asinh(x), exp(-x^2), tanh(x^3), ...
+  //  Some of them are monotonic only when we restrict the domain to the nonegative reals which is
+  //  what we should do.
+  // -Figure out what happens, if a derivative/slope value of zero occurs. In linear fractional
+  //  interpolations, all slopes are expected to be either strictly positive or stricly negative, 
+  //  i.e. it expects a *strictly* monotonic function. If that's not the case, it will fail. But I 
+  //  guess, when the data is strictly monotonic, so will be the numeric estimates for the desired
+  //  slopes. But if we use analytically computed slopes, some of the example functions will have
+  //  a zero slope at zero, for example 1/(1+x^2).
 }
 
 void interpolatingFunction()
