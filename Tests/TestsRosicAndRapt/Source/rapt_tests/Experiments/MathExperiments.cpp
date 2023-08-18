@@ -1913,6 +1913,7 @@ void monotonicInterpolation()
   // ...Under construction...
   // Do linear fractional interpolation:
   Real yF[Ni];                  // The F stands for fractional
+  rsArrayTools::fillWithValue(yF, Ni, 0.0);  // may be deleted when code below is finished
   using LFI = rsLinearFractionalInterpolator<Real>;
 
   // The code below follows closely rsInterpolateLinear:
@@ -1924,10 +1925,11 @@ void monotonicInterpolation()
     //a = (y[n+1]-y[n]) / (x[n+1]-x[n]);  // Compute slope via forward difference
     //b = y[n] - a*x[n];                  // Compute offset
 
-    Real s0 = s[n];
-    Real s1 = s[n+1];
-    Real dx = x[n+1] - x[n];
-    Real dy = y[n+1] - y[n];
+    Real s0  = s[n];
+    Real s1  = s[n+1];
+    Real dx  = x[n+1] - x[n];
+    Real dy  = y[n+1] - y[n];
+    Real dxr = 1 / dx;           // Reciprocal of dx
 
     // Normalize the slopes:
     s0 *= dx;                // Or should it be /=? ...nah - I don't think so
@@ -1935,17 +1937,39 @@ void monotonicInterpolation()
     s0 *= rsSign(dy);
     s1 *= rsSign(dy);
 
-    while(xi[i] < x[n+1] && i < Ni)     // Loop over the interpolated output segment
+    // Compute values for the initial derivatives (at x,0 = 0,0) for the 3 normalized linear 
+    // fractional maps:
+    Real d1, d2, d3;
+    LFI::computeSlopes(s0, s1, &d1, &d2, &d3);
+
+    // Compute split point and a,b,c,d coeffs for the left sub-segment:
+    Real xSplit = LFI::getSplitPoint(d1);
+    LFI::calcComposedCoeffsLeft(d1, d2, d3, &a, &b, &c, &d);
+
+    // Interpolate the left sub-segment:
+    //Real xs = xi[i];  //   == x[n]?
+    while(xi[i] <= xSplit && i < Ni)
     {
-      //yH[i] = (a*xi[i] + b) / (c*xi[i] + d);
-      yF[i] = 0;
+      Real xn = dxr * (xi[i] - x[n]);     // Normalized x in [0,1]
+      Real yn = (a*xn + b) / (c*xn + d);  // Normalized y in [0,1]
+      yF[i]   = y[n] + dy*yn;             // Denormalize y and write to output
       i++;
     }
+
+    // Interpolate the righ sub-segment:
+    while(xi[i] < x[n+1] && i < Ni)
+    {
+      // ....
+
+      i++;
+    }
+
+
     n++;
   }
   while(i < Ni)
   {
-    yF[i] = 0;
+    //yF[i] = 0;
     //yi[i] = a*xi[i] + b;
     i++;
   }
