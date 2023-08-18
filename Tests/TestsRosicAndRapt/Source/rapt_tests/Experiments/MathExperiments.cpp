@@ -1921,17 +1921,19 @@ void monotonicInterpolation()
   int n = 0;        // index into input data
   int i = 0;        // index into interpolated data
   Real a, b, c, d;  // parameters of the linear fractional map y = (a*x + b) / (c*x + d)
+  Real dx, dy, dxr;
+
   while(n < N-1)                        // Loop over the input datapoints
   {
     //a = (y[n+1]-y[n]) / (x[n+1]-x[n]);  // Compute slope via forward difference
     //b = y[n] - a*x[n];                  // Compute offset
 
+    dx  = x[n+1] - x[n];
+    dy  = y[n+1] - y[n];
+    dxr = 1 / dx;           // Reciprocal of dx
+
     Real s0  = s[n];
     Real s1  = s[n+1];
-    Real dx  = x[n+1] - x[n];
-    Real dy  = y[n+1] - y[n];
-    Real dxr = 1 / dx;           // Reciprocal of dx
-
     Real slopeScale = dx/dy;  // ...I think -> verify!
     s0 *= slopeScale;
     s1 *= slopeScale;
@@ -1975,10 +1977,13 @@ void monotonicInterpolation()
 
     n++;
   }
+
+  // Possibly extrapolate a tail section using the last computed a,b,c,d coeffs:
   while(i < Ni)
   {
-    //yF[i] = 0;
-    //yi[i] = a*xi[i] + b;
+    Real xn = dxr * (xi[i] - x[n]);
+    Real yn = (a*xn + b) / (c*xn + d);
+    yF[i]   = y[n] + dy*yn; 
     i++;
   }
   // ...
