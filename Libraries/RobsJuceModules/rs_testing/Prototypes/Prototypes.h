@@ -480,6 +480,11 @@ void rsLinearFractionalInterpolator<T>::composeTripleMapIntoOne(T x, T s1, T s2,
     *b = s2*s3 - s3;
     *c = (s1*s3 - s2*s3 - s2 + s3);
     *d = s2*s3 + s2 - s3;  }
+
+  // ToDo:
+  // -Factor out the code for both branches into two functions:
+  //  composedCoeffsLeft(s1, s2, s3, a, b, c, d), composedCoeffsRight(...)
+  // -Also factor out a splitPoint(s1) function
 }
 
 template<class T>

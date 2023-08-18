@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
   //expBipolar();
   //expGaussBell();
   //iteratedNumDiff();
-  //linearFractionalInterpolation();
+  linearFractionalInterpolation();
   monotonicInterpolation();
   //interpolatingFunction();
 
@@ -696,9 +696,12 @@ int main(int argc, char* argv[])
 
   //DEBUG_HOOK;
   //int* test = new int;  // uncomment to see, if memleak test fires correctly
-  if( detectMemoryLeaks() )
+  if(detectMemoryLeaks())
+  {
     std::cout << "\n\n!!! Memory leaks detected (pre exit of main()) !!! \n";
     //std::cout << "\n\n!!! Memory leaks detected !!! \n";
+    getchar();
+  }
   // If memory leaks occur even though no objects are actually created on the heap, it could mean
   // that some class in a library module has a static data member that does a dynamic memory
   // allocation or some global object is created somewhere that dynamically allocates memory.
@@ -726,7 +729,7 @@ int main(int argc, char* argv[])
   // maybe class ProcessingStatus can be extended for that - it would fit well there, too
 
 
-  getchar();
+  //getchar();
   return(EXIT_SUCCESS);
 }
 

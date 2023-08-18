@@ -1849,12 +1849,14 @@ void linearFractionalInterpolation()
 
 //-------------------------------------------------------------------------------------------------
 
+/*
 template<class T>
 void rsLinearFractionalInterpolation(
-  const T* x, const T* y, T* yd, int N, const T* xi, T* yi, int Ni)
+  const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni)
 {
 
 }
+*/
 
 void monotonicInterpolation()
 {
@@ -1907,8 +1909,48 @@ void monotonicInterpolation()
   }
 
 
+
+  // ...Under construction...
   // Do linear fractional interpolation:
+  Real yF[Ni];                  // The F stands for fractional
+  using LFI = rsLinearFractionalInterpolator<Real>;
+
+  // The code below follows closely rsInterpolateLinear:
+  int n = 0;        // index into input data
+  int i = 0;        // index into interpolated data
+  Real a, b, c, d;  // parameters of the linear fractional map y = (a*x + b) / (c*x + d)
+  while(n < N-1)                        // Loop over the input datapoints
+  {
+    //a = (y[n+1]-y[n]) / (x[n+1]-x[n]);  // Compute slope via forward difference
+    //b = y[n] - a*x[n];                  // Compute offset
+
+    Real s0 = s[n];
+    Real s1 = s[n+1];
+    Real dx = x[n+1] - x[n];
+    Real dy = y[n+1] - y[n];
+
+    // Normalize the slopes:
+    s0 *= dx;                // Or should it be /=? ...nah - I don't think so
+    s1 *= dx;
+    s0 *= rsSign(dy);
+    s1 *= rsSign(dy);
+
+    while(xi[i] < x[n+1] && i < Ni)     // Loop over the interpolated output segment
+    {
+      //yH[i] = (a*xi[i] + b) / (c*xi[i] + d);
+      yH[i] = 0;
+      i++;
+    }
+    n++;
+  }
+  while(i < Ni)
+  {
+    yH[i] = 0;
+    //yi[i] = a*xi[i] + b;
+    i++;
+  }
   // ...
+
 
 
   // Set up the plotter an plot the data along with the interpolants:
