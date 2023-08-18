@@ -1897,7 +1897,8 @@ void monotonicInterpolation()
 
   // Compute slopes via numeric differentiation:
   Real s[N];
-  rsNumericDifferentiator<Real>::derivative(x, y, s, N, true);
+  //rsNumericDifferentiator<Real>::derivative(x, y, s, N, true);
+  rsNumericDifferentiator<Real>::derivative(x, y, s, N, false);
   // These slopes will be used for cubic Hermite and linear fractional interpolation.
 
   // Do cubic Hermite interpolation:
@@ -1931,11 +1932,17 @@ void monotonicInterpolation()
     Real dy  = y[n+1] - y[n];
     Real dxr = 1 / dx;           // Reciprocal of dx
 
+    Real slopeScale = dx/dy;  // ...I think -> verify!
+    s0 *= slopeScale;
+    s1 *= slopeScale;
+
     // Normalize the slopes:
-    s0 *= dx;                // Or should it be /=? ...nah - I don't think so
-    s1 *= dx;
-    s0 *= rsSign(dy);
-    s1 *= rsSign(dy);
+    //s0 *= dx;                // Or should it be /=? ...nah - I don't think so
+    //s1 *= dx;
+    //s0 *= dxr;
+    //s1 *= dxr;
+    //s0 *= rsSign(dy);
+    //s1 *= rsSign(dy);
 
     // Compute values for the initial derivatives (at x,0 = 0,0) for the 3 normalized linear 
     // fractional maps:
@@ -1980,18 +1987,21 @@ void monotonicInterpolation()
   // Set up the plotter an plot the data along with the interpolants:
   GNUPlotter plt;
   plt.addDataArrays(N,  x,  y);
-  plt.addDataArrays(Ni, xi, yL, yH);
+  plt.addDataArrays(Ni, xi, yL, yH, yF);
   plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#000000\" title \"Samples\"");
   plt.addGraph("index 1 using 1:2 with lines lw 2 lc rgb \"#0000E0\" title \"Linear\"");
-  plt.addGraph("index 1 using 1:3 with lines lw 2 lc rgb \"#005000\" title \"Cubic Hermite\"");
+  plt.addGraph("index 1 using 1:3 with lines lw 2 lc rgb \"#006000\" title \"Cubic Hermite\"");
+  plt.addGraph("index 1 using 1:4 with lines lw 2 lc rgb \"#700000\" title \"Linear Fractional\"");
   plt.addCommand("set key top left");  // Legend appears top-left
   plt.addCommand("set xtics 1.0");     // x-gridlines at integers
   plt.addCommand("set ytics 1.0");     // y-gridlines at integers
   plt.plot();
 
   // Observations:
+  // -The linear fractional and cubic Hermite seem to have different slopes! That is wrong! They
+  //  should have the same slopes because the slopes are prescribed!
+  // -We only see one half of the first segment of the linear frcational interpolant!
   // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
-
   // ToDo:
   // -Add natural spline interpolation
   // -Maybe use different types for x and y (like float and double) to make it more interesting.
