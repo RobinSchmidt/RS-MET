@@ -15,6 +15,8 @@
 //  float *y4 = nullptr, float *y5 = nullptr);
 
 
+void setToDarkMode(GNUPlotter* plt);
+
 
 /** Creates a time-axis (in seconds) given the sample-rate. */
 void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);

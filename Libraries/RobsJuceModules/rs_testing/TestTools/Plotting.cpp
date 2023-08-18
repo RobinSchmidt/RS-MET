@@ -7,6 +7,19 @@
 
 using namespace RAPT;
 
+void setToDarkMode(GNUPlotter* plt)
+{
+  plt->addCommand("set term wxt background rgb \"black\"");
+  plt->addCommand("set border lw 1 lc rgb \"white\"");
+  plt->addCommand("set grid ls 1 lw 1 lc rgb \"#404040\"");
+  plt->addCommand("set xtics textcolor rgb \"white\"");
+  plt->addCommand("set ytics textcolor rgb \"white\"");
+  plt->addCommand("set xlabel \"X\" textcolor rgb \"white\"");
+  plt->addCommand("set ylabel \"Y\" textcolor rgb \"white\"");
+  plt->addCommand("set key textcolor \"white\""); 
+
+}
+
 void createTimeAxis(int numSamples, float *timeAxis, float sampleRate)
 {
   for(int n = 0; n < numSamples; n++)

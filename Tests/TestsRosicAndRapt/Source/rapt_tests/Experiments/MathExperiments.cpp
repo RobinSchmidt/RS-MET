@@ -1851,10 +1851,8 @@ void linearFractionalInterpolation()
 
 void monotonicInterpolation()
 {
-  // Under construction
-
   // We compare different interpolation methods applied to monotonic data. Among them: linear,
-  // linear fractional, cubic Hermite, cubic spline, ...TBC...
+  // linear fractional, cubic Hermite, ...[maybe add more later]
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -1907,31 +1905,23 @@ void monotonicInterpolation()
 
   // Set up the plotter an plot the data along with the interpolants:
   GNUPlotter plt;
+  setToDarkMode(&plt);
+  plt.setPixelSize(800, 800);
+  plt.addCommand("set key top left");  // Legend appears top-left
+  plt.addCommand("set xtics 1.0");     // x-gridlines at integers
+  plt.addCommand("set ytics 1.0");     // y-gridlines at integers
+
   plt.addDataArrays(N,  x,  y);
   plt.addDataArrays(Ni, xi, yL, yH, yF);
-
-  // Set up dark mode (factor out):
-  plt.addCommand("set term wxt background rgb \"black\"");
-  plt.addCommand("set border lw 1 lc rgb \"white\"");
-  plt.addCommand("set grid ls 1 lw 1 lc rgb \"#404040\"");
-  plt.addCommand("set xtics textcolor rgb \"white\"");
-  plt.addCommand("set ytics textcolor rgb \"white\"");
-  plt.addCommand("set xlabel \"X\" textcolor rgb \"white\"");
-  plt.addCommand("set ylabel \"Y\" textcolor rgb \"white\"");
   plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
   //plt.addGraph("index 1 using 1:2 with lines lw 1 lc rgb \"#50A0A0\" title \"Linear\"");
   plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#9060A0\" title \"Cubic Hermite\"");
   plt.addGraph("index 1 using 1:4 with lines lw 2 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
-  plt.addCommand("set key top left");  // Legend appears top-left
-  plt.addCommand("set key textcolor \"white\""); 
-  plt.addCommand("set xtics 1.0");     // x-gridlines at integers
-  plt.addCommand("set ytics 1.0");     // y-gridlines at integers
-  plt.setPixelSize(800, 800);
 
   plt.plot();
 
   // Observations:
-  // -The linfrac interpolant nicely interpolates out data monotonically.
+  // -The linfrac interpolant nicely interpolates our data monotonically.
   // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
   // -Using xMax = 12 produces garbage when trying to extrapolate using the last computed a,b,c,d
   //  coeffs rather than linear. 11.5..1..7 shows the shooting off behavior. At around 11.6, the
@@ -1945,6 +1935,7 @@ void monotonicInterpolation()
 
   //
   // ToDo:
+  // -Try to do a reverse interpolation via the linfrac method - yi shoudl go form -4 to 16
   // -Add natural spline interpolation
   // -Maybe use different types for x and y (like float and double) to make it more interesting.
   //  For this, the templates need to be adapted to accept two different template parameters for
