@@ -2029,13 +2029,24 @@ void monotonicInterpolation2()
     *s = k*exp(k*x);
   };
 
+  // The hyperbolic tangent is one of the most famous sigmoid shapes:
+  auto hyptan = [](Real x, Real* y, Real* s)
+  {
+    Real a = 0.3;
+    *y = tanh(a*x);
+    Real c = cosh(a*x);
+    *s = a / (c*c);               // (tanh(x))' = 1 / (cosh(x))^2
+    //*s = a * (1 - (a * *y * *y));  // (tanh(x))' = 1 - (tanh(x))^2, then use chain rule ...seems to be wrong!
+  };
+
   // Try also: 1 / (1+x) - this should actually be perfectly interpolated, right? Try it!
 
 
   // Select the function to be interpolated:
   //auto func = runge;
-  auto func = arcsinh;
+  //auto func = arcsinh;
   //auto func = expon;
+  auto func = hyptan;
 
 
   // Generate input data:
@@ -2124,11 +2135,22 @@ void monotonicInterpolation2()
   //  to slightly better than cubic in terms of maximum error. May it have to do with concave vs 
   //  convex? May cubic be better for convex functions and linfrac (very slightly) better for
   //  concave functions?
+  // -For tanh with a = 0.3, we also see a corner in the numeric derviative. That corner does 
+  //  indeed occur at the splitting point between the two half-segments. that can be verified in 
+  //  the debugger by looking at xSplit after the line:
+  //    T xSplit = getSplitPoint(s1); 
+  //  rsLinearFractionalInterpolator<T>::interpolate()
 
   // Conclusion:
   // -For data for which the derivative tends to zero at one of the end point, linfrac 
   //  interpolation does not seem to give good results.
-  // -
+  // -The additional discontinuities in the 2nd derivative in the interpolant at the split points
+  //  between the half segments can be quite visible when looking at the numeric derivative of
+  //  the interpolated data. It's not the end of the world, but they seem to be bigger than
+  //  the ones at the nodes themselves. 
+  // -In terms of smoothness and error, cubic seems to be better than linfrac. Maybe that's the 
+  //  price we have to pay for the easy invertibility - a somewhat less smooth interpolant with 
+  //  larger maximum error.
 
   // ToDo:
   // -Maybe it could be useful to let the user specify the shape parameter per segment. Maybe
