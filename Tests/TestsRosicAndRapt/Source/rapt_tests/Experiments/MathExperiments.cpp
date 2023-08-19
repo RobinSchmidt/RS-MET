@@ -1994,11 +1994,11 @@ void monotonicInterpolation2()
   using Vec  = std::vector<Real>;
   using LFI = rsLinearFractionalInterpolator<Real>;
 
-  int  N    = 11;     // Number of input data points
-  int  Ni   = 1001;   // Number of output data points
-  Real xMin =  0.0; 
-  Real xMax = 10.0;
-
+  int  N     = 11;     // Number of input data points
+  int  Ni    = 1001;   // Number of output data points
+  Real xMin  =  0.0; 
+  Real xMax  = 10.0;
+  Real shape = -0.5;
 
   // Some functions that compute function value and derivative of some example functions
   auto runge = [](Real x, Real* y, Real* s) 
@@ -2030,12 +2030,9 @@ void monotonicInterpolation2()
   }
 
   // Generate interpolated data:
-  s[0] = -0.01; // fudge to make it nonzero
+  //s[0] = -0.01; // fudge to make it nonzero for Runge Function
   Vec yF(Ni);
-  LFI::interpolate(&x[0], &y[0], &s[0], N, &xi[0], &yF[0], Ni);
-
-
-
+  LFI::interpolate(&x[0], &y[0], &s[0], N, &xi[0], &yF[0], Ni, true, shape);
 
   // Plot:
   GNUPlotter plt;
@@ -2049,17 +2046,22 @@ void monotonicInterpolation2()
 
 
   // Observations:
-  // -We ned to manually fudge the derivative to ensure strict monotonicity, i.e. the derivative 
-  //  must be nonzero at all data points
+  // -For the Runge function, which has a derivative of zero at zero, we need to manually fudge 
+  //  the derivative tosome small negative value to ensure strict monotonicity, i.e. the derivative 
+  //  must be nonzero at all data points. If we don't, we hit an assertion and the first segment 
+  //  will contain NaNs and therefore not be plotted by the plotter.
   // -For the Runge function, the first segment of the linfrac interpolant looks really weird! The
   //  other segments are indistinguishible from the Hermite interpolant.
+  // -By tweaking the shape parameter into the negtaive like -1, we can make the first segment look 
+  //  almost linear until shortly before it reaches the point 0,1 - we can kinf od squeeze the 
+  //  weird shape into a smaller region
 
   // Conclusion:
   // -For data for which the derivative tends to zero at one of the end point, linfrac 
   //  interpolation does not seem to give good results
 
   // ToDo:
-  // -Maybe try to make it look better with the shape parameter
+  // -Maybe it could be useful to let the user specify the shape parameter per segment
   // -Check if the numerical differentiation routine that is used to produce the target values for
   //  the derivatives is guaranteed to produce values > 0 for increasing and < 0 for decreasing 
   //  data at all datapoints. ...I think it should. It doesn't use any negative coeffs...or does 

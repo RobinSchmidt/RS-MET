@@ -364,14 +364,20 @@ class rsLinearFractionalInterpolator
 
 public:
 
-  /** High level function to interpolate a whole array of data at once.
-
-  ...TBC...  */
+  /** Given two length N arrays x, y with x-axis values and corresponding y-axis values, this
+  function fills the array yi with values corresponding to the xi by linear fractional ("linfrac")
+  interpolation (or extrapolation, if necessary) of the input data. The xi and yi arrays are of 
+  length Ni. With the extrapolateLinearly switch, you can choose whether or not the linfrac 
+  method should also be used for extrapolation or if for extrapolation, we should 
+  switch to linear. Extrapolating linearly is the default because it is the safe way. Linfrac
+  extrapolation may shoot off to infinity due to a potentially present pole of the linfrac function
+  in the extrapolated region so it should be used with great caution, if ever.  */
   static void interpolate(const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni, 
     bool extrapolateLinearly = true, T shape = 0.5);
-  // Linear extrapolation might actually be more useful when extrapolating further away from the
-  // last datapoint because the linear fraction map will eventually shoot off to a pole.
-
+  // ToDo: 
+  // -Document the shape parameter or maybe remove it or allow the user to pass a whole array
+  //  of shape parameters to set it separately for each segment
+  // -Rescale the shape parameter such that the neutral value is 0 instead of 0.5
 
   /** Implements the basic linear fractional transformation f(x) on which everything else is based.
   The function maps the unit interval [0,1] to itself with f(0) = 0 and f(1) = 1 and with given 
@@ -588,6 +594,18 @@ void rsLinearFractionalInterpolator<T>::interpolate(
     T slopeScale = dx/dy;
     T slopeAt0   = slopeScale * s[n];
     T slopeAt1   = slopeScale * s[n+1];
+
+    // Do a sanity check:
+    rsAssert(slopeAt0 > 0 && slopeAt1 > 0, "Data is not strictly monotonic");
+    // If this happens, it means that you have passed in data that is not strictly monotonically
+    // increasing or decreasing and/or one of the dervative values is not consistent with the
+    // data. In such a case, this interpolation scheme will fail badly to the point of producing
+    // NaNs.
+    // ToDo: 
+    // -Figure out, if the > 0 test is actually strict enough. Maybe extremely small nonzero values
+    //  are also already problematic and it should be > eps or something? Maybe then do something 
+    //  like slopeAt0 = max(slopAt0, eps); slopeAt1 = max(slopeAt1, eps); to avoid producing NaNs. 
+    //  ...but the "eps" is just an ad hoc guess. Figure out, what value is suitable.
 
     // Compute values for the initial slopes (at x,y = 0,0) for the 3 normalized linear 
     // fractional maps:
