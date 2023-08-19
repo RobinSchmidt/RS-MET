@@ -379,6 +379,24 @@ public:
   //  of shape parameters to set it separately for each segment
   // -Rescale the shape parameter such that the neutral value is 0 instead of 0.5
 
+
+
+  /** Takes a normalized input value from the unit interval [0..1] and produces the cooresponding 
+  normalized output value also in [0..1]. You need to specify the desired normalized slopes at the
+  origin xy = 0,0 and the end point x,y = 1,1. This function is useful to analyze the properties
+  of the normalized interpolation functions - for plotting them, etc. It's main use lies in 
+  analyzing the properties of the interpolation scheme in a research and development context. */
+  static T getNormalizedY(T normalizedX, T slopeAt0, T slopeAt1, T shape);
+  // -Maybe write a function for non-normalized inputs. It could look like so:
+  //    interpolate(x0, x1, y0, y1, s0, s1, x)
+  //  taking in the boundaries of the interval x0,x1, the corresponding function values y0,y1 and
+  //  the desired slopes s0,s1 and the interpolation position x which is some value in the 
+  //  interval [x0,x1]. Such a function could be convenient for interpolating data more 
+  //  sporadically than when producing a whole array of interpolated data, i.e. when just one or 
+  //  two interpolated values are needed at a time.
+
+
+
   /** Implements the basic linear fractional transformation f(x) on which everything else is based.
   The function maps the unit interval [0,1] to itself with f(0) = 0 and f(1) = 1 and with given 
   slope s at the origin such that f'(0) = s. It produces a concave shape (like a saturation curve)
@@ -421,15 +439,13 @@ public:
   // first map produces the output 0.5. The inverse map is obtained by using the reciprocal slope.
   // We need 0.5 because that's the value at which the 2nd map switches between its two halves.
 
-
+  /** Given the 3 seperate slopes at x = 0 for the triple linfrac map, this function computes the 
+  coefficients for the combined linfrac for the left section of the segment. */
   static void calcComposedCoeffsLeft(T s1, T s2, T s3, T* a, T* b, T* c, T* d);
 
+  /** Given the 3 seperate slopes at x = 0 for the triple linfrac map, this function computes the 
+  coefficients for the combined linfrac for the right section of the segment. */
   static void calcComposedCoeffsRight(T s1, T s2, T s3, T* a, T* b, T* c, T* d);
-
-  // Make a function 
-  //static void calcSplitPointAndCoeffs(T targetSlopeAt0, T targetSlopeAt1, 
-  //  T* splitPoint, T* aL, T* bL, T* cL, T* dL, T* aR, T* bR, T* cR, T* dR);
-
 
   /** Computes the a,b,c,d parameters for the combined triple map, i.e. the map which results from
   applying the 3 maps one after another. That composed map is not the same for all input values. 
@@ -439,16 +455,14 @@ public:
   static void composeTripleMapIntoOne(T value, T slope1, T slope2, T slope3, 
     T* a, T* b, T* c, T* d);
 
-  /** Takes a normalized input value from the unit interval [0..1] and produces the cooresponding 
-  normalized output value also in [0..1]. You need to specify the dsired normalized slopes at the
-  origin xy = 0,0 and the end point x,y = 1,1. */
-  static T getNormalizedY(T normalizedX, T slopeAt0, T slopeAt1, T shape);
+
 
   // ToDo:
   // -Order the functions here in a more top-down rather than bottom-up fashion because the 
   //  higher-level functions are more likely to be important for the user. For example,
   //  getNormalizedY is currently the most high level function - it should appear at or near the
   //  top. They are ordered bottom-up because that's the order in which they have been written.
+  //  ...partially done
 
 };
 
@@ -661,6 +675,14 @@ void rsLinearFractionalInterpolator<T>::interpolate(
 //  trigger an assert.
 // -Maybe write some unit tests that cover extreme situations, like N = 0,1,2,3, nonomonotonic
 //  data, target slopes of zero, etc.
+// -Maybe make the class instantiable. The idea of using it could be like
+//    rsLinearFractionalInterpolator<float> lfi;
+//    lfi.setup(x0, x1, y0, y1, s0, s1);  //Computes a,b,c,d coeffs and (normalized) split point
+//    lfi.getValue(x);                    // Computes one output value at a time
+//  The idea is that for each segment to be interpolated, setup is just called once and then 
+//  getValue() can be called as often as needed without having to recompute the coeffs for each
+//  interpolated value that is to be produced. We may need to store some de/normalization
+//  scale- and shift values, too. We'll see....
 
 
 

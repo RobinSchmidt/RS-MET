@@ -1998,9 +1998,14 @@ void monotonicInterpolation2()
   int  Ni    = 1001;   // Number of output data points
   Real xMin  =  0.0; 
   Real xMax  = 10.0;
-  Real shape = -0.5;
+  Real shape =  0.5;
 
   // Some functions that compute function value and derivative of some example functions
+
+  // The Runge function f(x) = 1 / (1 + x^2) is often used to demonstrate the shortcomings of high
+  // order polynomial interpolation. Let's see, how linfrac deals with it. It is not monotonic 
+  // though, but if we only take the positive wing, it is - but not strictly so, which is also 
+  // already problematic for linfrac interpolation:
   auto runge = [](Real x, Real* y, Real* s) 
   { 
     Real d = 1 + x*x;
@@ -2008,20 +2013,48 @@ void monotonicInterpolation2()
     *s = -2*x / (d*d);
   };
 
-  //auto gauss = [](Real x) { return 1 / (1 + x*x); };
+  // Arc sinh looks a lot like the logarithm but without the pesky pole at zero:
+  auto arcsinh = [](Real x, Real* y, Real* s)
+  {
+    *y = asinh(x);
+    *s = 1 / sqrt(1 + x*x);
+  };
 
-  
-  auto func = runge;
+  // Exponential functions are of course also very important, so we want to see, how our linfrac
+  // handles theses as well:
+  auto expon = [](Real x, Real* y, Real* s)
+  {
+    Real k = -0.3;
+    *y = exp(k*x);
+    *s = k*exp(k*x);
+  };
+
+  // Try also: 1 / (1+x) - this should actually be perfectly interpolated, right? Try it!
+
+
+  // Select the function to be interpolated:
+  //auto func = runge;
+  auto func = arcsinh;
+  //auto func = expon;
+
 
   // Generate input data:
   Vec x = rsLinearRangeVector(N, xMin, xMax);
   Vec y(N), s(N);
   for(int n = 0; n < N; n++)
+  {
     func(x[n], &y[n], &s[n]);
+    //s[n] *= 0.25;  // Test: Intentionally mess up the slope values
+  }
   //rsPlotVectorsXY(x, y, s);
 
-  // Do cubic Hermite interpolation:
+  // Compute the correct reference data for y(x) and its slope:
   Vec xi = rsLinearRangeVector(Ni, xMin, xMax);
+  Vec yR(Ni), sR(Ni);
+  for(int n = 0; n < Ni; n++)
+    func(xi[n], &yR[n], &sR[n]);
+
+  // Do cubic Hermite interpolation:
   Vec yH(Ni);                  // The H stands for Hermite
   {
     // Sub block to not litter outer scope with ps, pps.
@@ -2034,38 +2067,84 @@ void monotonicInterpolation2()
   Vec yF(Ni);
   LFI::interpolate(&x[0], &y[0], &s[0], N, &xi[0], &yF[0], Ni, true, shape);
 
-  // Plot:
-  GNUPlotter plt;
-  setToDarkMode(&plt);
-  plt.addDataArrays(N,  &x[0],  &y[0]);  // index 0: samples
-  plt.addDataArrays(Ni, &xi[0], &yF[0], &yH[0]); // index 1: dense, pseudo-continuous
-  plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#BB77BB\" title \"Cubic Hermite\"");
-  plt.addGraph("index 1 using 1:2 with lines lw 1.5 lc rgb \"#55BBBB\" title \"Linear Fractional\"");
-  plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
-  plt.plot();
+  { // Plot:
+    GNUPlotter plt;
+    setToDarkMode(&plt);
+    plt.addDataArrays(N, &x[0], &y[0]);  // index 0: samples
+    plt.addDataArrays(Ni, &xi[0], &yF[0], &yH[0], &yR[0]); // index 1: dense, pseudo-continuous
+    plt.addGraph("index 1 using 1:4 with lines lw 1.5 lc rgb \"#BBBB33\" title \"Reference\"");
+    plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#BB77BB\" title \"Cubic Hermite\"");
+    plt.addGraph("index 1 using 1:2 with lines lw 1.5 lc rgb \"#55BBBB\" title \"Linear Fractional\"");
+    plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
+    plt.plot();
+  }
 
+  // Plot errors:
+  rsPlotVectorsXY(xi, yR - yH, yR - yF);
+
+
+  // Numerically differentiate the interpolants and plot these estimates together with the correct
+  // derivative:
+  using ND = rsNumericDifferentiator<Real>;
+  Vec sH(Ni), sF(Ni);
+  ND::derivative(&xi[0], &yH[0], &sH[0], Ni, true);
+  ND::derivative(&xi[0], &yF[0], &sF[0], Ni, true);
+  rsPlotVectorsXY(xi, sR, sH, sF);
+
+
+
+  int dummy = 0;
 
   // Observations:
   // -For the Runge function, which has a derivative of zero at zero, we need to manually fudge 
-  //  the derivative tosome small negative value to ensure strict monotonicity, i.e. the derivative 
-  //  must be nonzero at all data points. If we don't, we hit an assertion and the first segment 
-  //  will contain NaNs and therefore not be plotted by the plotter.
-  // -For the Runge function, the first segment of the linfrac interpolant looks really weird! The
-  //  other segments are indistinguishible from the Hermite interpolant.
+  //  the derivative to some small negative value to ensure strict monotonicity, i.e. the 
+  //  derivative must be nonzero at all data points. If we don't, we hit an assertion and the 
+  //  first segment will contain NaNs and therefore not be plotted by the plotter.
+  // -If we do this kind of fudging for the Runge function, the first segment of the linfrac 
+  //  interpolant looks really weird! It tries to create a plateau around the peak. The other 
+  //  segments look good and are visually indistinguishible from the Hermite interpolant.
+  // -Numerically differentiating the interpolants shows a sharp spike of the numerical derivative
+  //  of the linfrac interpolant at around x = 0.73. That's within the first, i.e. within the 
+  //  problematic segment and is likely the point at which the linfrac interpolator switches 
+  //  between the two partial maps.
   // -By tweaking the shape parameter into the negtaive like -1, we can make the first segment look 
-  //  almost linear until shortly before it reaches the point 0,1 - we can kinf od squeeze the 
+  //  almost linear until shortly before it reaches the point 0,1 - we can kind of squeeze the 
   //  weird shape into a smaller region
+  // -The numerical derivative of the linfrac interpolant of arcsinh has some corner at 0.48 and is
+  //  a bit off compared to the cubic and reference. Also, the sections left and right to the 
+  //  corner look suspiciously linear. 
+  // -When we intentionally mess up the slope values by scaling them down by 0.25, the linfrac
+  //  interpolant tends to become a smoothed stairstep function, i.e. with sigmoidish segments 
+  //  between the nodes. The cubic interpolant shows this behavior as well but to a much lesser
+  //  extent - it stays closer to the correct function. Might this indicate that linfrac 
+  //  interpolation is more sensitive to errors in the target slope values?
+  // -The error between reference and interpolated functions for the exponential with k = -0.3 is 
+  //  around 4 * 10^-5 for linfrac and around 2 * 10^-5 for cubic - so cubic is twice as good 
+  //  (actually even a bit better). For k = +0.3, the situation is similar. For sinh, linfrac seem
+  //  to slightly better than cubic in terms of maximum error. May it have to do with concave vs 
+  //  convex? May cubic be better for convex functions and linfrac (very slightly) better for
+  //  concave functions?
 
   // Conclusion:
   // -For data for which the derivative tends to zero at one of the end point, linfrac 
-  //  interpolation does not seem to give good results
+  //  interpolation does not seem to give good results.
+  // -
 
   // ToDo:
-  // -Maybe it could be useful to let the user specify the shape parameter per segment
+  // -Maybe it could be useful to let the user specify the shape parameter per segment. Maybe
+  //  it could even be possible to devise some algorithm that produces somehow "optimal" shape
+  //  values? What would that even mean? Maybe, if we have the true function available, they 
+  //  should minimize some error criterion - like minimax error.
+  // -Maybe try finding optimal shape values for some common functions like x^2, sqrt, exp, log,
+  //  etc. Maybe the optimal value depends of concave vs convex, increasing vs decreasing (nah! 
+  //  implausible) or some other features of the function.
   // -Check if the numerical differentiation routine that is used to produce the target values for
   //  the derivatives is guaranteed to produce values > 0 for increasing and < 0 for decreasing 
   //  data at all datapoints. ...I think it should. It doesn't use any negative coeffs...or does 
   //  it?
+  // -Plot error between reference and interpolants
+  // -Try what happens when we use numerical derivatives instead of analytic ones for the target
+  //  values of the slopes. Could these perhaps be better in terms of the resulting overall shape?
 }
 
 void monotonicInterpolation()
