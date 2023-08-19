@@ -597,14 +597,14 @@ void rsLinearFractionalInterpolator<T>::interpolate(
     // Compute the split point, i.e. the point at which we have to switch between the two maps
     // for the two sub-segments:
     T xSplit = getSplitPoint(s1);       // Normalized split point in [0,1]
-    xSplit = xSplit * dx + x[n];        // Denormalize it for comparisons with the actual xi[i]
+    xSplit = xSplit * dx + x[n];        // Denormalize for comparisons with the actual xi[i]
 
     // Calculate the a, b, c, d coeffs for the linear fractional map y = (a*x + b) / (c*x + d)
     // for the left sub-segment and interpolate it:
     calcComposedCoeffsLeft(s1, s2, s3, &a, &b, &c, &d);
     while(xi[i] <= xSplit && i < Ni) {
       T xn  = dxr * (xi[i] - x[n]);     // Normalized x in [0,1]
-      T yn  = (a*xn + b) / (c*xn + d);  // Normalized y in [0,1]
+      T yn  = a*xn / (c*xn + d);        // Normalized y in [0,1], b == 0  -> was optimized out
       yi[i] = y[n] + dy*yn;             // Denormalize y and write to output
       i++; }
 
@@ -612,7 +612,7 @@ void rsLinearFractionalInterpolator<T>::interpolate(
     calcComposedCoeffsRight(s1, s2, s3, &a, &b, &c, &d);
     while(xi[i] < x[n+1] && i < Ni) {
       T xn = dxr * (xi[i] - x[n]);
-      T yn = (a*xn + b) / (c*xn + d);
+      T yn = (a*xn + b) / (c*xn + d);   // Here, b != 0  -> use the full formula
       yi[i]   = y[n] + dy*yn; 
       i++; }
 
@@ -632,7 +632,17 @@ void rsLinearFractionalInterpolator<T>::interpolate(
       yi[i]   = y[N-2] + dy*yn;
       i++; }}
 }
-
+// ToDo:
+// -Maybe include some sanity checks for the assumed montonicity of the data. We should have
+//  either (y[n+1] > y[n] and s[n] > 0) or (y[n+1] < y[n] and s[n] < 0)  for all n. Otherwise,
+//  the method will fail. Maybe in such a case, fall back to linear interpolation or just output 
+//  all zeros. The rationale to not fall back to linear is that when giving a clearly invalid 
+//  result in a production environment, the bug in the higher level code that gave rise to the
+//  invalid input data will be detected rather than just potentially go unnoticed and cause a 
+//  quality degradation of some higher level algorithm. In a test/debug environment, we may 
+//  trigger an assert.
+// -Maybe write some unit tests that cover extreme situations, like N = 0,1,2,3, nonomonotonic
+//  data, target slopes of zero, etc.
 
 
 

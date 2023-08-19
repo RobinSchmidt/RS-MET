@@ -1851,10 +1851,13 @@ void linearFractionalInterpolation()
 
 //-------------------------------------------------------------------------------------------------
 
-void monotonicInterpolation()
+void monotonicInterpolation1()
 {
-  // We compare different interpolation methods applied to monotonic data. Among them: linear,
-  // linear fractional, cubic Hermite, ...[maybe add more later]
+  // We compare linear, cubic and linear fractional ("linfrac") interpolation methods applied to 
+  // monotonic data. We create a small set of 5 data points and interpolate that up to a couple
+  // of hundreds to see the continuous function that our interpolation schemes create from our
+  // data set. For the linfrac method, we will also plot the inverese interpolation function, i.e.
+  // the function that results when swapping the roles of y and y.
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -1984,6 +1987,74 @@ void monotonicInterpolation()
   //  slopes. But if we use analytically computed slopes, some of the example functions will have
   //  a zero slope at zero, for example 1/(1+x^2).
 }
+
+void monotonicInterpolation2()
+{
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using LFI = rsLinearFractionalInterpolator<Real>;
+
+  int  N    = 11;     // Number of input data points
+  int  Ni   = 1001;   // Number of output data points
+  Real xMin =  0.0; 
+  Real xMax = 10.0;
+
+
+  // Some functions that compute function value and derivative of some example functions
+  auto runge = [](Real x, Real* y, Real* s) 
+  { 
+    Real d = 1 + x*x;
+    *y = 1 / d;
+    *s = -2*x / (d*d);
+  };
+
+  //auto gauss = [](Real x) { return 1 / (1 + x*x); };
+
+  
+  auto func = runge;
+
+  // Generate input data:
+  Vec x = rsLinearRangeVector(N, xMin, xMax);
+  Vec y(N), s(N);
+  for(int n = 0; n < N; n++)
+    func(x[n], &y[n], &s[n]);
+  //rsPlotVectorsXY(x, y, s);
+  s[0] = -0.01; // fudge to make it nonzero
+
+  // Generate interpolated data:
+  Vec xi = rsLinearRangeVector(Ni, xMin, xMax);
+  Vec yi(Ni);
+  LFI::interpolate(&x[0], &y[0], &s[0], N, &xi[0], &yi[0], Ni);
+
+
+
+  // Plot:
+  GNUPlotter plt;
+  setToDarkMode(&plt);
+  plt.addDataArrays(N,  &x[0],  &y[0]);  // index 0: samples
+  plt.addDataArrays(Ni, &xi[0], &yi[0]); // index 1: interpolated
+  plt.addGraph("index 1 using 1:2 with lines lw 2.5 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
+  plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
+  plt.plot();
+
+
+  // Observations:
+  // -For the Runge function, the first segment of the linfrac interpolant looks really weird!
+
+  // ToDo:
+  // -Plot also a cubic interpolant for reference. Maybe plot also the actual correct function
+  // -Check if the numerical differentiation routine that is used to produce the target values for
+  //  the derivatives is guaranteed to produce values > 0 for increasing and < 0 for decreasing 
+  //  data at all datapoints. ...I think it should. It doesn't use any negative coeffs...or does 
+  //  it?
+}
+
+void monotonicInterpolation()
+{
+  //monotonicInterpolation1(); // 5 datapoints, interpolated via Hermite and linfrac
+  monotonicInterpolation2(); // Some interesting functions
+}
+
 
 void interpolatingFunction()
 {
