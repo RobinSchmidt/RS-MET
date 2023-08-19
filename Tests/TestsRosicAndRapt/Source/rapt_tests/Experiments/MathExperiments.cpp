@@ -2039,14 +2039,33 @@ void monotonicInterpolation2()
     //*s = a * (1 - (a * *y * *y));  // (tanh(x))' = 1 - (tanh(x))^2, then use chain rule ...seems to be wrong!
   };
 
-  // Try also: 1 / (1+x) - this should actually be perfectly interpolated, right? Try it!
+  // The shifted reciprocal  1 / (c + x). We nee to shift the pole outside our range. This should 
+  // be be perfectly interpolated via a linfrac:
+  auto shiftRec = [](Real x, Real* y, Real* s)
+  {
+    Real c = 1;
+    Real d = c + x;  // denominator
+    *y =  1 / d;
+    *s = -1 / (d*d);
+  };
+
+  // A cubic polynomial should be perfectly interpolated by the cubic Hermite scheme:
+  auto cubic = [](Real x, Real* y, Real* s)
+  {
+    Real a0 = 0, a1 = 3, a2 = 2, a3 = 1;  // coeffs
+    Real x2 = x*x, x3 = x2*x;
+    *y =  a0 + a1*x + a2*x2 + a3*x3;
+    *s =  a1 + 2*a2*x + 3*a3*x2;
+  };
 
 
   // Select the function to be interpolated:
   //auto func = runge;
   //auto func = arcsinh;
   //auto func = expon;
-  auto func = hyptan;
+  //auto func = hyptan;
+  //auto func = shiftRec;
+  auto func = cubic;
 
 
   // Generate input data:
@@ -2140,6 +2159,9 @@ void monotonicInterpolation2()
   //  the debugger by looking at xSplit after the line:
   //    T xSplit = getSplitPoint(s1); 
   //  rsLinearFractionalInterpolator<T>::interpolate()
+  // -The function f(x) = 1 / (x + c) is perfectly interpolated by the linfrac because the 
+  //  function is of the functional form that the linfrac uses. It's the same thing like the 
+  //  cubic interpolant applied to the cubic polynomial.
 
   // Conclusion:
   // -For data for which the derivative tends to zero at one of the end point, linfrac 
