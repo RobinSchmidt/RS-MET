@@ -2008,6 +2008,9 @@ void monotonicInterpolation2()
   // already problematic for linfrac interpolation:
   auto runge = [](Real x, Real* y, Real* s) 
   { 
+    Real shift = 1.0;
+    x += shift;
+
     Real d = 1 + x*x;
     *y = 1 / d;
     *s = -2*x / (d*d);
@@ -2063,10 +2066,10 @@ void monotonicInterpolation2()
 
 
   // Select the function to be interpolated:
-  //auto func = runge;
+  auto func = runge;
   //auto func = arcsinh;
   //auto func = expon;
-  auto func = hyptan;
+  //auto func = hyptan;
   //auto func = linFrac;
   //auto func = cubic;
 
@@ -2129,10 +2132,10 @@ void monotonicInterpolation2()
   int dummy = 0;
 
   // Observations:
-  // -For the Runge function, which has a derivative of zero at zero, we need to manually fudge 
-  //  the derivative to some small negative value to ensure strict monotonicity, i.e. the 
-  //  derivative must be nonzero at all data points. If we don't, we hit an assertion and the 
-  //  first segment will contain NaNs and therefore not be plotted by the plotter.
+  // -For the Runge function with shift = 0, which has a derivative of zero at zero, we need to 
+  //  manually fudge the derivative to some small negative value to ensure strict monotonicity, 
+  //  i.e. the derivative must be nonzero at all data points. If we don't, we hit an assertion 
+  //  and the first segment will contain NaNs and therefore not be plotted by the plotter.
   // -If we do this kind of fudging for the Runge function, the first segment of the linfrac 
   //  interpolant looks really weird! It tries to create a plateau around the peak. The other 
   //  segments look good and are visually indistinguishible from the Hermite interpolant.

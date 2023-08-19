@@ -379,6 +379,10 @@ public:
   //  of shape parameters to set it separately for each segment
   // -Rescale the shape parameter such that the neutral value is 0 instead of 0.5
 
+  static T interpolate(T x0, T x1, T y0, T y1, T s0, T s1, T x);
+  // not yet tested
+
+
 
 
   /** Takes a normalized input value from the unit interval [0..1] and produces the cooresponding 
@@ -394,6 +398,10 @@ public:
   //  interval [x0,x1]. Such a function could be convenient for interpolating data more 
   //  sporadically than when producing a whole array of interpolated data, i.e. when just one or 
   //  two interpolated values are needed at a time.
+  // -Make also a function interpolateInverse(x0, x1, y0, y1, s0, s1, x). It should take the exact 
+  //  same arguments as interpolat - the user is not supposed to manually swap the roles and invert
+  //  the slopes. We will take care of that. That's more convenient for a user's perspective.
+
 
 
 
@@ -572,6 +580,22 @@ T rsLinearFractionalInterpolator<T>::getNormalizedY(T x, T slopeAt0, T slopeAt1,
   // composed map makes more sense when the map is used on many points within a segment such as 
   // in upsampling an array of data. Then, we would for each segment compute the coeffs just 
   // twice (once for the sub-segment below the split-point and once for the sub-segment above it).
+}
+
+template<class T>
+T rsLinearFractionalInterpolator<T>::interpolate(T x0, T x1, T y0, T y1, T s0, T s1, T x)
+{
+  T dx = x1 - x0;                                 // Length of segment
+  T dy = y1 - y0;                                 // Height of segment
+  T ss = dx / dy;                                 // Slope scaler
+  T xn = (x - x0) / dx;                           // Normalized x in [0,1]
+  T yn = getNormalizedY(xn, ss*s0, ss*s1, T(0));  // Normalized y in [0,1]
+  T y  = y0 + dy*yn;                              // Denormalized y in [y0,y1]
+  return y;
+
+
+  // ToDo:
+  // -Give it a shape parameter and pass it to getNormalizedY
 }
 
 template<class T>
