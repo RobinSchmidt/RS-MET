@@ -1693,7 +1693,7 @@ void linearFractionalInterpolation()
 
   // User parameters for the plots:
   int  N           = 257;       // Number of samples
-  Real shape       = 0.5;       // 0.5: symmetric (default), nominal range: 0..1 (may go beyond)
+  Real shape       = 0.0;       // 0.0: symmetric (default)
   Real slopeAt0    = 1.0/1.0;   // Slope of all graphs at x,y = 0,0
   Real minSlopeAt1 = 1.0/128.0; // Minimum slope at x,y = 1,1
   Real maxSlopeAt1 = 128.0;     // Maximum slope at x,y = 1,1
@@ -1865,7 +1865,7 @@ void monotonicInterpolation1()
   // Setup:
   bool decrease = false;  // Switch between monotonically increasing and decreasing
   bool linExtra = false;  // Switch linear extrapolation on (on is the default)
-  Real shape    = +0.5;
+  Real shape    = 0.0;
 
   // Define datapoints:
   static const int N = 5;
@@ -1916,7 +1916,7 @@ void monotonicInterpolation1()
   RAPT::rsArrayTools::fillWithRangeLinear(yi, Ni, -4.0, 12.0);
   for(int n = 0; n < N; n++)
     s[n] = 1/s[n];
-  LFI::interpolate(y, x, s, N, yi, xF, Ni, linExtra, 1-shape);
+  LFI::interpolate(y, x, s, N, yi, xF, Ni, linExtra, -shape);
 
 
   // Set up the plotter an plot the data along with the interpolants:
@@ -1998,7 +1998,7 @@ void monotonicInterpolation2()
   int  Ni    = 1001;   // Number of output data points
   Real xMin  =  0.0; 
   Real xMax  = 10.0;
-  Real shape =  0.5;
+  Real shape =  0.0;
 
   // Some functions that compute function value and derivative of some example functions
 
@@ -2039,15 +2039,18 @@ void monotonicInterpolation2()
     //*s = a * (1 - (a * *y * *y));  // (tanh(x))' = 1 - (tanh(x))^2, then use chain rule ...seems to be wrong!
   };
 
-  // The shifted reciprocal  1 / (c + x). We nee to shift the pole outside our range. This should 
+  // The linear fractional (a x + b) / (c x + d) should be perfectly interpolated by the linfrac 
+  // scheme. We nee to shift the pole outside our range. 
   // be be perfectly interpolated via a linfrac:
-  auto shiftRec = [](Real x, Real* y, Real* s)
+  auto linFrac = [](Real x, Real* y, Real* s)
   {
-    Real c = 1;
-    Real d = c + x;  // denominator
-    *y =  1 / d;
-    *s = -1 / (d*d);
+    Real a = 0, b = 1, c = 1, d = 1;  // d must be > 0 to shift the pole out to the left
+    Real D = c*x + d;
+    *y = (a*x + b) / D;
+    *s = (a*d - b*c) / (D*D);
   };
+  // (-(b c) + a d)/(d + c x)^2
+  // Maybe make it more general: (a*x + b) / (c * x + d)
 
   // A cubic polynomial should be perfectly interpolated by the cubic Hermite scheme:
   auto cubic = [](Real x, Real* y, Real* s)
@@ -2063,9 +2066,9 @@ void monotonicInterpolation2()
   //auto func = runge;
   //auto func = arcsinh;
   //auto func = expon;
-  //auto func = hyptan;
-  //auto func = shiftRec;
-  auto func = cubic;
+  auto func = hyptan;
+  //auto func = linFrac;
+  //auto func = cubic;
 
 
   // Generate input data:
@@ -2159,9 +2162,9 @@ void monotonicInterpolation2()
   //  the debugger by looking at xSplit after the line:
   //    T xSplit = getSplitPoint(s1); 
   //  rsLinearFractionalInterpolator<T>::interpolate()
-  // -The function f(x) = 1 / (x + c) is perfectly interpolated by the linfrac because the 
-  //  function is of the functional form that the linfrac uses. It's the same thing like the 
-  //  cubic interpolant applied to the cubic polynomial.
+  // -The linfrac function (a x + b) / (c x + d) is perfectly interpolated by the linfrac scheme 
+  //  as expected. It's the same thing like the cubic interpolant applied to the cubic polynomial. 
+  //  Maybe this could make for a nice unit test.
 
   // Conclusion:
   // -For data for which the derivative tends to zero at one of the end point, linfrac 
@@ -2193,7 +2196,7 @@ void monotonicInterpolation2()
 
 void monotonicInterpolation()
 {
-  //monotonicInterpolation1(); // 5 datapoints, interpolated via Hermite and linfrac
+  monotonicInterpolation1(); // 5 datapoints, interpolated via Hermite and linfrac
   monotonicInterpolation2(); // Some interesting functions
 }
 

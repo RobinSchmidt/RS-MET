@@ -373,7 +373,7 @@ public:
   extrapolation may shoot off to infinity due to a potentially present pole of the linfrac function
   in the extrapolated region so it should be used with great caution, if ever.  */
   static void interpolate(const T* x, const T* y, T* s, int N, const T* xi, T* yi, int Ni, 
-    bool extrapolateLinearly = true, T shape = 0.5);
+    bool extrapolateLinearly = true, T shape = 0.0);
   // ToDo: 
   // -Document the shape parameter or maybe remove it or allow the user to pass a whole array
   //  of shape parameters to set it separately for each segment
@@ -500,10 +500,10 @@ void rsLinearFractionalInterpolator<T>::computeSlopes(
   T s13 = slopeAt0 / *s2;            // == *s2 / slopeAt1
 
   // Compute slopes at zero for first and last map according to our shape parameter:
-  if(shape == 0.5)
+  if(shape == 0.0)
     *s1 = *s3 = sqrt(s13);           // Optimized special case for symmetric shape
   else {
-    *s1 = pow(s13, shape);           // General case for user controlled shape
+    *s1 = pow(s13, shape+0.5);       // General case for user controlled shape
     *s3 = s13 / *s1; }
 
   // Question:
