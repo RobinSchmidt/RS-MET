@@ -2019,12 +2019,21 @@ void monotonicInterpolation2()
   for(int n = 0; n < N; n++)
     func(x[n], &y[n], &s[n]);
   //rsPlotVectorsXY(x, y, s);
-  s[0] = -0.01; // fudge to make it nonzero
+
+  // Do cubic Hermite interpolation:
+  Vec xi = rsLinearRangeVector(Ni, xMin, xMax);
+  Vec yH(Ni);                  // The H stands for Hermite
+  {
+    // Sub block to not litter outer scope with ps, pps.
+    Real* ps = &s[0]; Real** pps = &ps; // Needed for technical reasons
+    rsInterpolateSpline(&x[0], &y[0], pps, N, 1, &xi[0], &yH[0], Ni);
+  }
 
   // Generate interpolated data:
-  Vec xi = rsLinearRangeVector(Ni, xMin, xMax);
-  Vec yi(Ni);
-  LFI::interpolate(&x[0], &y[0], &s[0], N, &xi[0], &yi[0], Ni);
+  s[0] = -0.01; // fudge to make it nonzero
+  Vec yF(Ni);
+  LFI::interpolate(&x[0], &y[0], &s[0], N, &xi[0], &yF[0], Ni);
+
 
 
 
@@ -2032,17 +2041,25 @@ void monotonicInterpolation2()
   GNUPlotter plt;
   setToDarkMode(&plt);
   plt.addDataArrays(N,  &x[0],  &y[0]);  // index 0: samples
-  plt.addDataArrays(Ni, &xi[0], &yi[0]); // index 1: interpolated
-  plt.addGraph("index 1 using 1:2 with lines lw 2.5 lc rgb \"#BBBBBB\" title \"Linear Fractional\"");
+  plt.addDataArrays(Ni, &xi[0], &yF[0], &yH[0]); // index 1: dense, pseudo-continuous
+  plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#BB77BB\" title \"Cubic Hermite\"");
+  plt.addGraph("index 1 using 1:2 with lines lw 1.5 lc rgb \"#55BBBB\" title \"Linear Fractional\"");
   plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
   plt.plot();
 
 
   // Observations:
-  // -For the Runge function, the first segment of the linfrac interpolant looks really weird!
+  // -We ned to manually fudge the derivative to ensure strict monotonicity, i.e. the derivative 
+  //  must be nonzero at all data points
+  // -For the Runge function, the first segment of the linfrac interpolant looks really weird! The
+  //  other segments are indistinguishible from the Hermite interpolant.
+
+  // Conclusion:
+  // -For data for which the derivative tends to zero at one of the end point, linfrac 
+  //  interpolation does not seem to give good results
 
   // ToDo:
-  // -Plot also a cubic interpolant for reference. Maybe plot also the actual correct function
+  // -Maybe try to make it look better with the shape parameter
   // -Check if the numerical differentiation routine that is used to produce the target values for
   //  the derivatives is guaranteed to produce values > 0 for increasing and < 0 for decreasing 
   //  data at all datapoints. ...I think it should. It doesn't use any negative coeffs...or does 
