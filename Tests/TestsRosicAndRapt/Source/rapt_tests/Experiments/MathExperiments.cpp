@@ -1861,6 +1861,7 @@ void monotonicInterpolation1()
 
   using Real = double;
   using Vec  = std::vector<Real>;
+  using AT   = RAPT::rsArrayTools;
 
   // Setup:
   bool decrease = false;  // Switch between monotonically increasing and decreasing
@@ -1883,7 +1884,7 @@ void monotonicInterpolation1()
   Real yL[Ni];                  // The L stands for linear
   Real xiMin = -2;              // If < 0, we'll get front-extrapolation
   Real xiMax =  11.0;           // If > 9, we'll get tail-extrapolation
-  RAPT::rsArrayTools::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
+  AT::fillWithRangeLinear(xi, Ni, xiMin, xiMax);
 
   // Do linear inter-/extrapolation:
   rsInterpolateLinear(x, y, N, xi, yL, Ni);
@@ -1913,7 +1914,7 @@ void monotonicInterpolation1()
   // to the inverse function theorem for differentiation, we need the inverse slopes.
   Real yi[Ni];
   Real xF[Ni];
-  RAPT::rsArrayTools::fillWithRangeLinear(yi, Ni, -4.0, 12.0);
+  AT::fillWithRangeLinear(yi, Ni, -4.0, 12.0);
   for(int n = 0; n < N; n++)
     s[n] = 1/s[n];
   LFI::interpolate(y, x, s, N, yi, xF, Ni, linExtra, -shape);
@@ -1943,6 +1944,40 @@ void monotonicInterpolation1()
     plt.plot();
   }
 
+  // Now try different shapes. We repurpose the array yL, yH (linear and Hermite). Now the L,H will
+  // mean low and high values for the shape:
+  shape = 8.0;
+  linExtra = true;
+  for(int n = 0; n < N; n++)
+    s[n] = 1/s[n];  // Invert it yet again to get it back to original
+  AT::fillWithRangeLinear(xi, Ni, xiMin, xiMax);  // is this needed?
+  LFI::interpolate(x, y, s, N, xi, yL, Ni, linExtra, -shape);
+  LFI::interpolate(x, y, s, N, xi, yH, Ni, linExtra, +shape);
+  {
+    GNUPlotter plt;
+    setToDarkMode(&plt);
+    plt.setRange(-2, 12, -2, 12);
+    plt.setPixelSize(600, 600);
+    plt.addCommand("set size square");
+    plt.addCommand("set size ratio -1");
+    plt.addCommand("set key top left");    // Legend appears top-left
+    plt.addCommand("set xtics 1.0");       // x-gridlines at integers
+    plt.addCommand("set ytics 1.0");       // y-gridlines at integers
+    plt.addDataArrays(N, x, y);            // index 0: samples
+    plt.addDataArrays(Ni, xi, yF, yL, yH); // index 1: interpolants with different shapes
+    plt.addGraph("index 1 using 1:2 with lines lw 2.5 lc rgb \"#BBBBBB\" title \"Shape = 0\"");
+    plt.addGraph("index 1 using 1:3 with lines lw 1.5 lc rgb \"#409090\" title \"Shape = -8\"");
+    plt.addGraph("index 1 using 1:4 with lines lw 1.5 lc rgb \"#9060A0\" title \"Shape = +8\"");
+    plt.addGraph("index 0 using 1:2 with points pt 7 ps 1.25 lc rgb \"#FFFFFF\" title \"Samples\"");
+    plt.plot();
+  }
+
+
+
+
+
+
+
   // Observations:
   // -The cubic interpolant clearly wiggles and produces a nonmontonic function.
   // -The linfrac interpolant nicely interpolates our data monotonically.
@@ -1959,14 +1994,15 @@ void monotonicInterpolation1()
   //  linfrac passes the cubic. For the lower boundary, no  such shooting off is observed. I guess,
   //  at the right side, the pole of the final segment happens to be in the extrapolated zone 
   //  whereas at the left side, this is not the case. we could perhaps let the code detect such 
-  //  situations (we can easiyl calculate the location of the pole) and automatically switch to 
+  //  situations (we can easily calculate the location of the pole) and automatically switch to 
   //  linear extrapolation, if the pole happens to be in the extrapolated zone and otherwise use
   //  linear fractional extrapolation.
   //  
 
   //
   // ToDo:
-  // -Maybe make the shape parameter have zero as neutral value
+  // -Maybe make a plot comparing different values for the shape parameter
+  // -[Done] Maybe make the shape parameter have zero as neutral value
   // -Maybe obtain and plot numerical derivatives of the interpolants. We want to see the 
   //  smoothness. We expect that the 1st derivative is continuous but has corners at the nodes and
   //  somewhere in between the nodes where the two linfracs are switched over.
@@ -2005,7 +2041,8 @@ void monotonicInterpolation2()
   // The Runge function f(x) = 1 / (1 + x^2) is often used to demonstrate the shortcomings of high
   // order polynomial interpolation. Let's see, how linfrac deals with it. It is not monotonic 
   // though, but if we only take the positive wing, it is - but not strictly so, which is also 
-  // already problematic for linfrac interpolation:
+  // already problematic for linfrac interpolation. That's why we shift it to enter a strictly 
+  // montonic section:
   auto runge = [](Real x, Real* y, Real* s) 
   { 
     Real shift = 1.0;
@@ -2035,16 +2072,18 @@ void monotonicInterpolation2()
   // The hyperbolic tangent is one of the most famous sigmoid shapes:
   auto hyptan = [](Real x, Real* y, Real* s)
   {
-    Real a = 0.3;
+    Real shift = +5; 
+    x -= shift;
+    Real a = 0.5;
     *y = tanh(a*x);
     Real c = cosh(a*x);
     *s = a / (c*c);               // (tanh(x))' = 1 / (cosh(x))^2
     //*s = a * (1 - (a * *y * *y));  // (tanh(x))' = 1 - (tanh(x))^2, then use chain rule ...seems to be wrong!
   };
+  // ToDo: shift it to see the sigmoid behavior
 
   // The linear fractional (a x + b) / (c x + d) should be perfectly interpolated by the linfrac 
-  // scheme. We nee to shift the pole outside our range. 
-  // be be perfectly interpolated via a linfrac:
+  // scheme. We need to shift the pole outside our range. 
   auto linFrac = [](Real x, Real* y, Real* s)
   {
     Real a = 0, b = 1, c = 1, d = 1;  // d must be > 0 to shift the pole out to the left
@@ -2052,8 +2091,6 @@ void monotonicInterpolation2()
     *y = (a*x + b) / D;
     *s = (a*d - b*c) / (D*D);
   };
-  // (-(b c) + a d)/(d + c x)^2
-  // Maybe make it more general: (a*x + b) / (c * x + d)
 
   // A cubic polynomial should be perfectly interpolated by the cubic Hermite scheme:
   auto cubic = [](Real x, Real* y, Real* s)
@@ -2168,6 +2205,8 @@ void monotonicInterpolation2()
   // -The linfrac function (a x + b) / (c x + d) is perfectly interpolated by the linfrac scheme 
   //  as expected. It's the same thing like the cubic interpolant applied to the cubic polynomial. 
   //  Maybe this could make for a nice unit test.
+  // -The error in the derivative seems to be greatest at the split point? That would make seem to
+  //  be plausible.
 
   // Conclusion:
   // -For data for which the derivative tends to zero at one of the end point, linfrac 

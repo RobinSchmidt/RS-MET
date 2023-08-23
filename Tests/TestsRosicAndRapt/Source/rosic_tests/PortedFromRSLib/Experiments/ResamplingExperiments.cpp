@@ -410,13 +410,11 @@ void timeWarp()
     // make this function take an output buffer as second argument (which may or may not be equal
     // to the input buffer), write a function that does the inverse (first difference)
    
-  /*
   // plot warping map:
-  double *t = new double[yN];
-  createTimeAxis(yN, t, 1.0);
-  plotData(yN, t, w);
-  delete[] t;
-  */
+  //double *t = new double[yN];
+  //createTimeAxis(yN, t, 1.0);
+  //plotData(yN, t, w);
+  //delete[] t;
 
   // without anti-aliasing, using a fixed sinc length of 64:
   rsTimeWarperDD::timeWarpSinc(x, xN, y, w, yN, 64, 1.0, false);

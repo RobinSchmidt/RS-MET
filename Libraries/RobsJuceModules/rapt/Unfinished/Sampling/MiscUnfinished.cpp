@@ -1119,11 +1119,11 @@ void rsTimeWarper<TSig, TPos>::invertMonotonousWarpMap(TPos *w, int N, TPos *wi)
 {
   //bool cubic = true; // make this a parameter for the function
 
-  int M = (int) ceil(w[N-1]); // length of inverse map
+  int M = (int) ceil(w[N-1]); // Length of inverse map
   int n, i, iOld = 0;
   for(n = 0; n < M; n++)
   {
-    // find index i, such that ty[i] <= n and ty[i+1] >= n:
+    // Find index i, such that w[i] <= n and w[i+1] >= n:
     for(i = iOld; i < N-1; i++)
     {
       if( w[i] <= n && w[i+1] >= n )
@@ -1144,15 +1144,16 @@ void rsTimeWarper<TSig, TPos>::invertMonotonousWarpMap(TPos *w, int N, TPos *wi)
     //wi[n] = rsInterpolateLinear(w[i], (TPos)i, w[i+1], (TPos)(i+1), (TPos)n);
       // Can be optimized: (i+1)-i == 1 - always, the function computes the value, but maybe it's
       // not worth it. On the other hand, maybe the quality could be improved by using cubic
-      // hermite instead of linear interpolation.
+      // Hermite instead of linear interpolation.
 
     iOld = i;
   }
-  // Remark: I have tried to use cubic hermite interpolation instead of linear, but it doesn't make
-  // a difference quality wise (the spectral artifacts do not decrease measurably), so linear seems
-  // to be appropriate. Moreover, with linear interpolation a forward/backward mapping roundtrip of
-  // any time-value should be an indentity operation (up to roundoff error) whcih seems a desirable
-  // property.
+  // Remark: 
+  // -I have tried to use cubic hermite interpolation instead of linear, but it doesn't make
+  //  a difference quality wise (the spectral artifacts do not decrease measurably), so linear 
+  //  seems to be appropriate. Moreover, with linear interpolation a forward/backward mapping 
+  //  roundtrip of any time-value should be an indentity operation (up to roundoff error) which 
+  //  seems a desirable property.
 }
 
 template<class TSig, class TPos>

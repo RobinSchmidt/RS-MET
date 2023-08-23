@@ -377,7 +377,8 @@ public:
   // ToDo: 
   // -Document the shape parameter or maybe remove it or allow the user to pass a whole array
   //  of shape parameters to set it separately for each segment
-  // -Rescale the shape parameter such that the neutral value is 0 instead of 0.5
+  // -Rescale the shape parameter such that the neutral value is 0 instead of 0.5 - done
+  // -Make *s const.
 
   static T interpolate(T x0, T x1, T y0, T y1, T s0, T s1, T x);
   // not yet tested
@@ -387,7 +388,7 @@ public:
 
   /** Takes a normalized input value from the unit interval [0..1] and produces the cooresponding 
   normalized output value also in [0..1]. You need to specify the desired normalized slopes at the
-  origin xy = 0,0 and the end point x,y = 1,1. This function is useful to analyze the properties
+  origin x,y = 0,0 and the end point x,y = 1,1. This function is useful to analyze the properties
   of the normalized interpolation functions - for plotting them, etc. It's main use lies in 
   analyzing the properties of the interpolation scheme in a research and development context. */
   static T getNormalizedY(T normalizedX, T slopeAt0, T slopeAt1, T shape);
@@ -414,9 +415,8 @@ public:
   static T simpleMap(T value, T slopeAt0);
   // It's actually the same function as implemented in rsBiRationalMap_01 in RealFunctions.h just 
   // parametrized differently. There, we use a parameter p in the range (-1,+1) and here we use the
-  // slope at the origin in the range (0,inf) as patameter. The conversion formulas are:
+  // slope at the origin in the range (0,inf) as parameter. The conversion formulas are:
   //   s = (1+p)/(1-p), p = (s-1)/(s+1)
-  // Maybe rename that function there to rsLinFracMap
 
 
   /** Implements a symmetrized version of the (simple, basic, prototypical) linear fractional map. 
@@ -426,7 +426,7 @@ public:
   static T symmetricMap(T value, T slopeAt0);
 
   /** Implements a function composed of three maps with slopes s1,s2,s3 where the middle one is the
-  symmetrized variant. The end result is a function that sadwiches a sigmoid/saddle shape between 
+  symmetrized variant. The end result is a function that sandwiches a sigmoid/saddle shape between 
   two convex/concave shapes. This is the final shape that we want. */
   static T tripleMap(T value, T slope1, T slope2, T slope3);
 
@@ -434,7 +434,7 @@ public:
   composed/sandwiched map produces the desired slope targetSlopeAt0 at the origin x,y = 0,0 and the 
   desired slope targetSlopeAt1 at the end point x,y = 1,1 of the unit interval. */
   static void computeSlopes(T targetSlopeAt0, T targetSlopeAt1, 
-    T* mapSlope1, T* mapSlope2, T* mapSlope3, T shape = T(0.5));
+    T* mapSlope1, T* mapSlope2, T* mapSlope3, T shape = T(0.0));
   // ToDo: 
   // -Rename to calcSlopes for consistency
   // -Document the shape parameter. And/or maybe get rid of it by commenting it out, so we can 
@@ -500,7 +500,7 @@ T rsLinearFractionalInterpolator<T>::tripleMap(T x, T s1, T s2, T s3)
 
 template<class T>
 void rsLinearFractionalInterpolator<T>::computeSlopes(
-  T slopeAt0, T slopeAt1, T* s1, T* s2, T* s3, T shape = T(0.5))
+  T slopeAt0, T slopeAt1, T* s1, T* s2, T* s3, T shape)
 {
   // Compute slope at zero for middle map (controlling sigmoidity vs saddleness) and slope at 
   // zero for combined outer maps s13 = s1*s3 (controlling convexity vs concavity):
@@ -636,7 +636,7 @@ void rsLinearFractionalInterpolator<T>::interpolate(
     // Do a sanity check:
     rsAssert(slopeAt0 > 0 && slopeAt1 > 0, "Data is not strictly monotonic");
     // If this happens, it means that you have passed in data that is not strictly monotonically
-    // increasing or decreasing and/or one of the dervative values is not consistent with the
+    // increasing or decreasing and/or one of the derivative values is not consistent with the
     // data. In such a case, this interpolation scheme will fail badly to the point of producing
     // NaNs.
     // ToDo: 
