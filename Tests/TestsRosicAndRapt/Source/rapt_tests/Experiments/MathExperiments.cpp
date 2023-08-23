@@ -1988,6 +1988,8 @@ void monotonicInterpolation1()
   //  (like +8) will drag the plateaus toward the right node, making a greater portion of the 
   //  curve concavely lying above the linear connection.
   // -With shape = -8, we get a pole in the right extrapolation zone
+  // -Positive shape values ten to make the spline "stiffer" at the left data point and negative
+  //  values make it stiffer at the right data point
 
   // -Using xMax = 12 produces garbage when trying to extrapolate using the last computed a,b,c,d
   //  coeffs rather than linear. 11.5..1..7 shows the shooting off behavior. At around 11.6, the
