@@ -1546,6 +1546,10 @@ void numericIntegration()
   I = integrateSimpson(    f, a, b);
 
 
+  // ToDo:
+  // -Move the functions integrateTrapezoidal, integrateSimpson closer to here - or maybe integrate 
+  //  them into the library, if they are deemed ready. If not, maybe put them into Prototypes.h
+
   //int dummy = 0;
 }
 
@@ -1692,11 +1696,13 @@ void intervalIntegral()
 
 void nonUniformArrayDiffAndInt()
 {
-  intervalIntegral();
+  intervalIntegral();  // what does this do? Why do we call it here
 
   // Test numerical differentiation and integration routines. We sample a sinewave at 
   // nonequidistant sample points and find the numeric derivative and  integral at these sample
   // points and compare them to the true derivative/integral values.
+
+  using ND = rsNumericDifferentiator<double>;
 
   static const int N = 100;   // number of sample points
   double p = 1.0;             // start-phase
@@ -1722,12 +1728,42 @@ void nonUniformArrayDiffAndInt()
   }
 
   // compute the numeric derivative and integral:
-  rsNumericDifferentiator<double>::derivative(x, y, ydn, N, true);
+  ND::derivative(x, y, ydn, N, true);
   rsNumericIntegral(  x, y, yin, N, yi[0]);
 
   // plot function, true derivative and numeric derivative:
   //plotData(N, x, y, yd, ydn);
   plotData(N, x, y, yd, ydn, yi, yin);
+
+  // Test, if the numerical differentiation produces the reciprocal slopes, when w swap the roles 
+  // of  x- and y. We need some monotonic function for that to make sense
+  double ydnr[N], ydns[N];  // r: reciprocal, s: swapped (x- and y)
+  double err[N];
+  for(n = 0; n < N; n++)
+    y[n] = x[n] + 0.2 * x[n]*x[n] - sin(x[n]);
+  plotData(N, x, y);                                // To check monotonicity visually
+  ND::derivative(x, y, ydn, N, false);              // Compute numeric derivatve of y = f(x)
+  ND::derivative(y, x, ydns, N, false);             // Compute numeric derivatve of x = f(y)
+  for(n = 0; n < N; n++) {   
+    ydnr[n] = 1 / ydn[n];                           // Reciprocate num. der. of y = f(x)
+    err[n]  = ydnr[n] - ydns[n];   }                // compute difference/error
+  plotData(N, x, ydnr, ydns, err);
+
+  // Observations:
+  // -Swapping x- and y for the numerical differentiation routine does unfortunately not produce
+  //  the reciprocal values for the numeric derivative. It's close but not quite right. Using 
+  //  extrapolation makes things worse at the boundaries. At the first few values, the mismatch is
+  //  especially high - except the very first, where it is zero. At the very last, it's also zero.
+  //  This is because we use only one-sided differences there.
+  // -I think, maybe the high errors in the first few datapoints are cause by the fact that our f 
+  //  has very shallow slope there. It's almost a minimum around zero. (Almost) flat points seem to
+  //  be especially problematic.
+
+
+
+  // ToDo:
+  // -Wrap rsNumericIntegral into a class similar to rsNumericDifferentiator
+
 }
 // Goal: write a numerical integration algorithm that has O(1) memory usage (no arrays are 
 // allocated internally), can be used in place (yi may overwrite y) and computes the integral over 

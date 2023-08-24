@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
   //expGaussBell();
   //iteratedNumDiff();
   //linearFractionalInterpolation();
-  monotonicInterpolation();
+  //monotonicInterpolation();
   //interpolatingFunction();
 
   //linearRegression();
@@ -294,9 +294,9 @@ int main(int argc, char* argv[])
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
 
-  //numericDifferentiation();
+  //numericDifferentiation();                // num. dif. on a function object
   //numericIntegration();                   // a.k.a. numeric "quadrature"
-  //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
+  nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
   //uniformArrayDiffAndInt();               // under construction
 
   //derivativeFormulas();                   // still empty
