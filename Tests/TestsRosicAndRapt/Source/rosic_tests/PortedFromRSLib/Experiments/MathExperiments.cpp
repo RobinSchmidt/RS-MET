@@ -1758,6 +1758,11 @@ void nonUniformArrayDiffAndInt()
   // -I think, maybe the high errors in the first few datapoints are cause by the fact that our f 
   //  has very shallow slope there. It's almost a minimum around zero. (Almost) flat points seem to
   //  be especially problematic.
+  // -To fix this, we need to change the formulas for the weights in the weighted average between 
+  //  forward and backward difference (I think). Either use constant weights of 0.5 for both 
+  //  (crude) or let dyL, dyR enter the weight computation on equal footing with dxL, dxR. I have 
+  //  no idea what that does to the accuracy, though. It may ruin it unless f(x) happens to be 
+  //  close to linear.
 
 
 
