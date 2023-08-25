@@ -1731,10 +1731,27 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
     wR    = 0.5;
     // ToDo: compute weights based on dxL, dxR, dyL, dyR
 
-    //yd[n] = wL*sL + wR*sR;
 
+    //yd[n] = wL*sL + wR*sR;
+    // This is not invertible, even when wL = wR = 0.5, i.e. the weights are constant and 
+    // independent from the input data
+
+    // Test:
     //yd[n] = sL;  // test
-    yd[n] = sR;
+    //yd[n] = sR;
+    // OK - using either the forward or the backward difference alone, without any averaging, does
+    // indeed produce an invertible numerical differentiation scheme.
+
+    // Try to use the geometric mean instead of the arithmeti one:
+    yd[n] = sqrt(sL*sR);
+    // Aha! Yes! This works! It produces an invertible scheme. But now we also want to introduce 
+    // some weights to get a weighted mean....
+
+
+
+
+
+
 
 
 
