@@ -1731,7 +1731,6 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
     wR    = 0.5;
     // ToDo: compute weights based on dxL, dxR, dyL, dyR
 
-
     //yd[n] = wL*sL + wR*sR;
     // This is not invertible, even when wL = wR = 0.5, i.e. the weights are constant and 
     // independent from the input data
@@ -1742,22 +1741,24 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
     // OK - using either the forward or the backward difference alone, without any averaging, does
     // indeed produce an invertible numerical differentiation scheme.
 
-    // Try to use the geometric mean instead of the arithmeti one:
-    yd[n] = sqrt(sL*sR);
+    // Try to use the geometric mean instead of the arithmetic one:
+    //yd[n] = sqrt(sL*sR);
     // Aha! Yes! This works! It produces an invertible scheme. But now we also want to introduce 
     // some weights to get a weighted mean....
 
+    // ToDo: Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
+    // on equal footing and we should have wL + wR = 1.
+    T sum = dyL + dyR + T(dxL + dxR);
+    wL = (dxR + dyR) / sum;
+    wR = (dxL + dyL) / sum;
 
-
-
-
-
-
-
-
-
-
-
+    // Now with weights:
+    rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13));
+    yd[n] = pow(sL, wL) * pow(sR, wR);
+    // OK - first tests look good. This seems to work. But more tests are needed. Maybe the formula
+    // for the weights is not yet optimal. Measure the accuracy of the scheme for some important 
+    // monotonic functions like sqrt(x), x^2, log(x), exp(x), x^p (p real), etc. Maybe try 
+    // different formulas for the weights and investigate, how this affects the accuracy.
 
     //yd[n] = dxR * (y[n]-y[n-1])/(dxL*dx) + dxL * (y[n+1]-y[n])/(dxR*dx);
     // Old formula - uses only the distances on the x-axis for the weights.
@@ -1774,7 +1775,6 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
   // maybe the first branch can be simplified by using rsInterpolateLinear, like
   //   yd[0]   = lerp(x[0],   x[1],   yd[1],   x[2],   yd[2]  );
   //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
-
 
   // Notes:
   // -An invertible scheme results only when do either yd[n] = sL;  or  yd[n] = sR;. As soon as we 
@@ -1858,6 +1858,12 @@ void nonUniformArrayDiffAndInt()
   plotData(N, x, ydnr, ydns, err);
 
   // Observations:
+  // -The new scheme invertibleNumDiff() seems to indeed produce reciprocal slopes when swapping
+  //  the x and y arrays. But for the endpoints, the extrapolation does not work. We need to pass
+  //  false for the last parameter. ...TBC...
+  //
+  // Old observations when we were using ND::derivative instead of invertibleNumDiff for trying to
+  // produce the reciprocal slopes by swapping x and y:
   // -Swapping x- and y for the numerical differentiation routine does unfortunately not produce
   //  the reciprocal values for the numeric derivative. It's close but not quite right. Using 
   //  extrapolation makes things worse at the boundaries. At the first few values, the mismatch is
