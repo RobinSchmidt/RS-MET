@@ -1735,14 +1735,16 @@ void nonUniformArrayDiffAndInt()
   //plotData(N, x, y, yd, ydn);
   plotData(N, x, y, yd, ydn, yi, yin);
 
-  // Test, if the numerical differentiation produces the reciprocal slopes, when w swap the roles 
-  // of  x- and y. We need some monotonic function for that to make sense
+  // Test, if the numerical differentiation produces the reciprocal slopes, when we swap the roles 
+  // of x and y. We need some monotonic function for that to make sense, so we compute a new f(x)
+  // first:
   double ydnr[N], ydns[N];  // r: reciprocal, s: swapped (x- and y)
   double err[N];
   for(n = 0; n < N; n++)
-    y[n] = x[n] + 0.2 * x[n]*x[n] - sin(x[n]);
-  plotData(N, x, y);                                // To check monotonicity visually
-  ND::derivative(x, y, ydn, N, false);              // Compute numeric derivatve of y = f(x)
+    //y[n] = sqrt(x[n]);
+    y[n] = x[n] + 0.0*x[n]*x[n] - 0.4*sin(2*x[n]);    // The new f(x)
+  plotData(N, x, y);                                // To check monotonicity visually - looks ok.
+  ND::derivative(x, y, ydn,  N, false);             // Compute numeric derivatve of y = f(x)
   ND::derivative(y, x, ydns, N, false);             // Compute numeric derivatve of x = f(y)
   for(n = 0; n < N; n++) {   
     ydnr[n] = 1 / ydn[n];                           // Reciprocate num. der. of y = f(x)
@@ -1754,10 +1756,11 @@ void nonUniformArrayDiffAndInt()
   //  the reciprocal values for the numeric derivative. It's close but not quite right. Using 
   //  extrapolation makes things worse at the boundaries. At the first few values, the mismatch is
   //  especially high - except the very first, where it is zero. At the very last, it's also zero.
-  //  This is because we use only one-sided differences there.
-  // -I think, maybe the high errors in the first few datapoints are cause by the fact that our f 
+  //  This is because we use only one-sided differences thereand there are no weights involved.
+  // -I think, maybe the high errors in the first few datapoints are caused by the fact that our f 
   //  has very shallow slope there. It's almost a minimum around zero. (Almost) flat points seem to
-  //  be especially problematic.
+  //  be especially problematic. Yes - this is confirmed using a non-monotonic function. The 
+  //  extrema have the largest error.
   // -To fix this, we need to change the formulas for the weights in the weighted average between 
   //  forward and backward difference (I think). Either use constant weights of 0.5 for both 
   //  (crude) or let dyL, dyR enter the weight computation on equal footing with dxL, dxR. I have 

@@ -5,11 +5,13 @@
 
 /** A class for computing numerical approximations to derivatives of functions. In some cases, the
 functions are assumed to be given as a function object (aka functor), in other cases as an array of 
-datapoints. The meaning of the 3 template parameters is:
+data points. The meaning of the 3 template parameters is:
+
   T:  general type for all values or, if input/output types of the function to be differentiated 
       are different, type of the output (ordinate type)
   Tx: type of the input to the function, if different from T (abscissa type)
   F:  type of the function object (if applicable)
+
 T has to be given when the class template is instantiated, Tx and F may be given or inferred by 
 the compiler later, when a particular member function is instantiated. This is because T can not 
 be always inferred from the function call because T may only appear as output type in the function 
@@ -355,7 +357,7 @@ public:
   // -maybe rename to weightedCentralDifference
   // -provide a simplified version that assumes a regular spacing interval
   // -provide a function to compute the second derivative - maybe by fitting a parabola - this 
-  // -paraobala could also be used for an alternative computation of the first derivative
+  //  parabola could also be used for an alternative computation of the first derivative
 
   // todo: drag over the code that computes the laplacian for a 2D and 3D function from the 
   // wave-equation simulation in the prototypes folder - maybe provide a 1D version, too - the 
