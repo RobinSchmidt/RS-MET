@@ -1694,6 +1694,51 @@ void intervalIntegral()
 }
 
 
+
+
+// Experimental - under construction
+// Similar to rsNumericDifferentiator<T>::derivative but uses a different formula to compute the 
+// weights taking into account both (dxL,dxR) and (dyL,dyR) on equal footing
+template<class T, class Tx>
+//template<class Tx>
+void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEnds)
+{
+  rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
+  rsAssert(N >= 3, "Arrays need to be at least of length 3");
+  // hmm - that's for the extrapolation - if it's not used, length = 2 would also work, i think
+
+  Tx dxL, dxR, dx;
+  T  dyL, dyR, dy;
+  T  wL, wR;          // Weights for backward (left) and forward (right) difference
+  T  a, b; 
+
+  for(int n = 1; n < N-1; n++) 
+  {
+    dxL   = x[n] - x[n-1];
+    dxR   = x[n+1] - x[n];
+    dx    = dxL + dxR;
+
+
+
+
+    yd[n] = dxR * (y[n]-y[n-1])/(dxL*dx) + dxL * (y[n+1]-y[n])/(dxR*dx);
+    // Old formula - uses only the distances on the x-axis for the wieghts.
+  }
+  // todo: save the left weight and use it as right weight in the next iteration (save one division
+  // per iteration)
+
+  if( extrapolateEnds == true ) { 
+    a = (yd[2]   - yd[1]  ) / (x[2]   - x[1]  ); b = yd[1]   - a*x[1];   yd[0]   = a*x[0]   + b;
+    a = (yd[N-2] - yd[N-3]) / (x[N-2] - x[N-3]); b = yd[N-3] - a*x[N-3]; yd[N-1] = a*x[N-1] + b;
+  } else {
+    yd[0]   = (y[1]   - y[0])   / (x[1]   - x[0]  );
+    yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]); }
+  // maybe the first branch can be simplified by using rsInterpolateLinear, like
+  //   yd[0]   = lerp(x[0],   x[1],   yd[1],   x[2],   yd[2]  );
+  //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
+
+}
+
 void nonUniformArrayDiffAndInt()
 {
   intervalIntegral();  // what does this do? Why do we call it here
@@ -1745,7 +1790,12 @@ void nonUniformArrayDiffAndInt()
     y[n] = x[n] + 0.0*x[n]*x[n] - 0.4*sin(2*x[n]);    // The new f(x)
   plotData(N, x, y);                                // To check monotonicity visually - looks ok.
   ND::derivative(x, y, ydn,  N, false);             // Compute numeric derivatve of y = f(x)
-  ND::derivative(y, x, ydns, N, false);             // Compute numeric derivatve of x = f(y)
+
+
+  //ND::derivative(y, x, ydns, N, false);             // Compute numeric derivatve of x = f(y)
+  invertibleNumDiff(y, x, ydns, N, false);          // new version - under construction
+
+
   for(n = 0; n < N; n++) {   
     ydnr[n] = 1 / ydn[n];                           // Reciprocate num. der. of y = f(x)
     err[n]  = ydnr[n] - ydns[n];   }                // compute difference/error
