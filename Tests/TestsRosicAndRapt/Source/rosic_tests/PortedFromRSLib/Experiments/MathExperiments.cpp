@@ -1718,12 +1718,15 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
   {
     dxL   = x[n] - x[n-1];
     dxR   = x[n+1] - x[n];
+    //rsAssert(dxL*dxR >= 0, "x is not monotonic");
     dx    = dxL + dxR;
 
     dyL   = y[n] - y[n-1];
     dyR   = y[n+1] - y[n];
+    //rsAssert(dyL*dyR >= 0, "y is not monotonic");
     dy    = dyL + dyR;
 
+    // Compute forward and backward differences:
     T  sL = dyL / dxL;          // slope via backward difference (L for left)
     T  sR = dyR / dxR;          // slope via forward difference (R for right)
 
@@ -1758,7 +1761,11 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
     // OK - first tests look good. This seems to work. But more tests are needed. Maybe the formula
     // for the weights is not yet optimal. Measure the accuracy of the scheme for some important 
     // monotonic functions like sqrt(x), x^2, log(x), exp(x), x^p (p real), etc. Maybe try 
-    // different formulas for the weights and investigate, how this affects the accuracy.
+    // different formulas for the weights and investigate, how this affects the accuracy. Also make 
+    // sure that it also works for monotonically decreasing data. We probably need to take the 
+    // absolute values somewhere and re-apply the orginal sign later. Maybe this need to be done
+    // to dxL, dxR, dyL, dyR. Don't assume that x is ascending! When swapping x and y somewhere in 
+    // a caller, we may also get a descending x array. 
 
     //yd[n] = dxR * (y[n]-y[n-1])/(dxL*dx) + dxL * (y[n+1]-y[n])/(dxR*dx);
     // Old formula - uses only the distances on the x-axis for the weights.
