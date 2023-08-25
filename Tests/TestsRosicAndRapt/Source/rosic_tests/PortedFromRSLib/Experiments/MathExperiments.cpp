@@ -1698,8 +1698,10 @@ void intervalIntegral()
 
 // Experimental - under construction
 // Similar to rsNumericDifferentiator<T>::derivative but uses a different formula to compute the 
-// weights taking into account both (dxL,dxR) and (dyL,dyR) on equal footing
-template<class T, class Tx>
+// weights taking into account both (dxL,dxR) and (dyL,dyR) on equal footing. The goal is to 
+// produce a numerical differentiation scheme that produces the reciprocal slopes when the roles of
+// x and y are swapped.
+template<class T, class Tx>  // ToDo: use Ty instead of T
 //template<class Tx>
 void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEnds)
 {
@@ -1718,11 +1720,30 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
     dxR   = x[n+1] - x[n];
     dx    = dxL + dxR;
 
+    dyL   = y[n] - y[n-1];
+    dyR   = y[n+1] - y[n];
+    dy    = dyL + dyR;
+
+    T  sL = dyL / dxL;          // slope via backward difference (L for left)
+    T  sR = dyR / dxR;          // slope via forward difference (R for right)
+
+    wL    = 0.5;                // preliminary
+    wR    = 0.5;
+    // ToDo: compute weights based on dxL, dxR, dyL, dyR
+
+    //yd[n] = wL*sL + wR*sR;
+
+    //yd[n] = sL;  // test
+    yd[n] = sR;
 
 
 
-    yd[n] = dxR * (y[n]-y[n-1])/(dxL*dx) + dxL * (y[n+1]-y[n])/(dxR*dx);
-    // Old formula - uses only the distances on the x-axis for the wieghts.
+
+
+
+
+    //yd[n] = dxR * (y[n]-y[n-1])/(dxL*dx) + dxL * (y[n+1]-y[n])/(dxR*dx);
+    // Old formula - uses only the distances on the x-axis for the weights.
   }
   // todo: save the left weight and use it as right weight in the next iteration (save one division
   // per iteration)
@@ -1737,11 +1758,24 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
   //   yd[0]   = lerp(x[0],   x[1],   yd[1],   x[2],   yd[2]  );
   //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
 
+
+  // Notes:
+  // -An invertible scheme results only when do either yd[n] = sL;  or  yd[n] = sR;. As soon as we 
+  //  introduce the averagring, the scheme becomes non-invertible
+  // -Even with wL = wR = 0.5, it doesn't produce an invertible numerical differentiation scheme. I
+  //  guess it's because a mean of reciprocals is not the the same as the reciprocal of means. This
+  //  is even true for an unweighted mean but of course also for the weighted mean that we actually 
+  //  want. 
+  // -I guess maybe it's in the forward case the arithmetic mean and in the inverse case the 
+  //  (reciprocal of) the harmonic mean. Or soemthing? Is there another kind of mean that works 
+  //  better for this purpose? Maybe the geometric mean? ...Try it!
 }
 
 void nonUniformArrayDiffAndInt()
 {
-  intervalIntegral();  // what does this do? Why do we call it here
+  //intervalIntegral();  
+  // What does this do? Why do we call it here. Maybe it should be moved to some experiment about
+  // integrals?
 
   // Test numerical differentiation and integration routines. We sample a sinewave at 
   // nonequidistant sample points and find the numeric derivative and  integral at these sample
@@ -1780,6 +1814,8 @@ void nonUniformArrayDiffAndInt()
   //plotData(N, x, y, yd, ydn);
   plotData(N, x, y, yd, ydn, yi, yin);
 
+  //---------------------------------------------------
+  // Maybe mobe this into a separate function - or at least clean it up:
   // Test, if the numerical differentiation produces the reciprocal slopes, when we swap the roles 
   // of x and y. We need some monotonic function for that to make sense, so we compute a new f(x)
   // first:
@@ -1788,13 +1824,16 @@ void nonUniformArrayDiffAndInt()
   for(n = 0; n < N; n++)
     //y[n] = sqrt(x[n]);
     y[n] = x[n] + 0.0*x[n]*x[n] - 0.4*sin(2*x[n]);    // The new f(x)
-  plotData(N, x, y);                                // To check monotonicity visually - looks ok.
-  ND::derivative(x, y, ydn,  N, false);             // Compute numeric derivatve of y = f(x)
+  //plotData(N, x, y);                                // To check monotonicity visually - looks ok.
 
-
+  // Old version - does not produce reciprocal slopes when swapping x and y:
+  //ND::derivative(x, y, ydn,  N, false);             // Compute numeric derivatve of y = f(x)
   //ND::derivative(y, x, ydns, N, false);             // Compute numeric derivatve of x = f(y)
-  invertibleNumDiff(y, x, ydns, N, false);          // new version - under construction
 
+  // New version - under construction - we try to mae it produce reciprocal slopes when x and y are
+  // swapped:
+  invertibleNumDiff(x, y, ydn,  N, false); 
+  invertibleNumDiff(y, x, ydns, N, false);
 
   for(n = 0; n < N; n++) {   
     ydnr[n] = 1 / ydn[n];                           // Reciprocate num. der. of y = f(x)
