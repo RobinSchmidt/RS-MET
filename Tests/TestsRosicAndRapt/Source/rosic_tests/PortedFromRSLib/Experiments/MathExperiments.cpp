@@ -1792,7 +1792,28 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
   //  want. 
   // -I guess maybe it's in the forward case the arithmetic mean and in the inverse case the 
   //  (reciprocal of) the harmonic mean. Or soemthing? Is there another kind of mean that works 
-  //  better for this purpose? Maybe the geometric mean? ...Try it!
+  //  better for this purpose? Maybe the geometric mean? ...Try it!...yes - looks promising!
+  // -Another idea: maybe we could somehow treat both x and y as being functions of some imagined
+  //  third variable t, like in a curve in the plane in differential geometry? Maybe just assume
+  //  t = [01,2,3,4,....]. Then compute dx/dt and dy/dt? Then y' = (dy/dt) / (dx/dt)? ...but I 
+  //  guess, that will amount to equal weighting, i.e. no distance dependent weighting. Might be
+  //  good or bad thing. Dunno.
+
+  // ToDo:
+  // -Try to come up with more ideas for invertible numerical differentiation schemes, where by 
+  //  "invertible", I mean that the scheme should respect the inverse function law for 
+  //  differentiation.
+  // -Try to also come up with schemes that also respect the product- and quotient rule. The 
+  //  inverse rule is actually a special case of the quotient rule. Maybe try to also find schemes
+  //  that respect the chain rule. Ideally, a scheme should respect all of them. I don't know, if 
+  //  that's even possible. ...sounds like an interesting research challenge.
+  // -Maybe try to develop schemes based on the alternative definition of the derivative discussed
+  //  here: https://www.youtube.com/watch?v=XfWgfZ5V2qI  lim_{t -> 1} (f(t*x) - f(x)) / (t*x - x)
+  //  Maybe this would suggest schemes that instead of using (y[n+1] - y[n]) / (x[n+1] - x[n]), 
+  //  would use quotients like (y[n+1] / y[n]) / (x[n+1] / x[n]) which translates to
+  //  (f(t*x) - f(x)) / (t*x - x)......or does it? Figure out!
+  
+
 }
 
 void nonUniformArrayDiffAndInt()
