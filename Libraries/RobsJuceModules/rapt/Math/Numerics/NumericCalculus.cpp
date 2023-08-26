@@ -89,27 +89,25 @@ void rsNumericDifferentiator<T>::derivative(
   //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
 
 }
-// todo:
-// -make it possible to use the function in-place, i.e. y and yd point to the same memory
+// ToDo:
+// -Make it possible to use the function in-place, i.e. y and yd point to the same memory
 //  ->avoid using y[n-1] on the right hand side
-// -before making those optimization, move the non-optimized version to prototypes and write a unit
+// -Before making those optimizations, move the non-optimized version to prototypes and write a unit
 //  test to compare optimized to non-optimized
-// -make a simplified version, assuming equidistant abscissa values (maybe assume unit distance, 
-//  derivatives for any other h can then be found by scaling
-// -maybe allow different template types for x, y, yd so it can be used for complex or multivariate 
-//  data as well. in the latter case, x,y would be vectors (of possibly different dimensionality) 
-//  and the derivative yd would be the Jacobian matrix at each datapoint
-// -maybe write a function that computes the numeric derivative at one particular datapoint and
-//  ideally also higher order derivatives at that point - that's more convenient to use because
-//  client code does not need to have buffers for all derivatives
-// -try another approach: fit a polynomial of arbitrary order to a number of datapoints around
-//  the n and return the derivative of the poynomial at that point (may this be equivalent to the
-//  approach above when using 3 points for a quadratic polynomial?)
-// -yet another approach: "invert" the trapezoidal integration algorithm, i.e. run it backwards in
+// -Make a simplified version, assuming equidistant abscissa values. Maybe assume unit distance, 
+//  derivatives for any other h can then be found by scaling.
+// -Maybe write a function that computes the numeric derivative at one particular datapoint and
+//  ideally also higher order derivatives at that point. That may be more convenient and efficient 
+//  to use in situations where client code needs only one or a few derivative values because client 
+//  code does not need to have buffers for all derivatives.
+// -Try another approach: fit a polynomial of arbitrary order to a number of datapoints around
+//  the n and return the derivative of the poynomial at that point. May this be equivalent to the
+//  approach above when using 3 points for a quadratic polynomial? I guess so.
+// -Yet another approach: "invert" the trapezoidal integration algorithm, i.e. run it backwards in
 //  order to get a numerical integration routine that is the inverse operation to trapezoidal 
 //  integration
-//  -it may return a value: the integration constant to be used, to get the original data back
-// -make a numeric derivative routine that is the inverse of the trapezoidal integrator
+//  -Tt may return a value: the integration constant to be used, to get the original data back
+// -Make a numeric derivative routine that is the inverse of the trapezoidal integrator
 //  rsDifferentiateTrapezoidal
 
 
@@ -178,7 +176,7 @@ void rsNumericDifferentiator<T>::gradient2D(
     b.x += w * dv.x * du;
     b.y += w * dv.y * du;
   }
-  A.c = A.b;  // A.c is still zero - make A symmetric
+  A.c = A.b;  // A.c was still zero. Now we made A symmetric
 
   // Compute gradient that best explains the measured directional derivatives in the least 
   // squares sense and store it in outputs:
@@ -186,16 +184,16 @@ void rsNumericDifferentiator<T>::gradient2D(
   *u_x = g.x; 
   *u_y = g.y;
 }
-// todo:
-// -the "solveSave" call could be optimized - maybe we don't even need an explicit matrix and/or 
-//  may make use of the symmetry of A (maybe a special solveSymmetric function could be used)
-// -perhaps, solveSave should detect a zero determinant and switch between computing
+// ToDo:
+// -The "solveSave" call could be optimized - maybe we don't even need an explicit matrix and/or 
+//  may make use of the symmetry of A (maybe a special solveSymmetric function could be used).
+// -Perhaps, solveSave should detect a zero determinant and switch between computing
 //  a least-squares solution in case of an inconsistent RHS and a minimum norm solution in case
-//  of a consistent RHS
-// -do we need special treatment for 2 neighbours? I don't think so - the solution of the least 
+//  of a consistent RHS.
+// -Do we need special treatment for 2 neighbours? I don't think so - the solution of the least 
 //  squares problem should reduce to the exact solution if the number of equations equals the
-//  number of unknowns
-// -the matrix A can actually be precomputed (and perhaps stored as vertex data), likewise the
+//  number of unknowns. But this reasoning doesn't take into account numeric considerations.
+// -The matrix A can actually be precomputed (and perhaps stored as vertex data), likewise the
 //  w*dv.x, w*dv.y coeffs used to establish the right-hand-side vector b - maybe the matrix 
 //  elements a,b,c (or better: the elements of the inverse matrix) and the coeffs can be stored in
 //  a data-structure rsMeshStencil2D at the nodes. Ultimately, we may just arrive at a scheme that
@@ -217,9 +215,9 @@ void rsNumericDifferentiator<T>::gradient2D(
 
 // Oh - the method is actually very similar to this:
 // The finite difference method at arbitrary irregular grids and its application in applied 
-// mechanics
+// mechanics:
 // https://www.sciencedirect.com/science/article/abs/pii/0045794980901492
-// the only difference is the use of directional derivatives in the derivation instead of an 
+// The only difference is the use of directional derivatives in the derivation instead of an 
 // interpolation polynomial
 
 template<class T>
