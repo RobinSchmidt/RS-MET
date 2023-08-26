@@ -1701,18 +1701,17 @@ void intervalIntegral()
 // weights taking into account both (dxL,dxR) and (dyL,dyR) on equal footing. The goal is to 
 // produce a numerical differentiation scheme that produces the reciprocal slopes when the roles of
 // x and y are swapped.
-template<class T, class Tx>  // ToDo: use Ty instead of T
-//template<class Tx>
-void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEnds)
+template<class Tx, class Ty>
+void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
   rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
   rsAssert(N >= 3, "Arrays need to be at least of length 3");
   // hmm - that's for the extrapolation - if it's not used, length = 2 would also work, i think
 
   Tx dxL, dxR, dx;
-  T  dyL, dyR, dy;
-  T  wL, wR;          // Weights for backward (left) and forward (right) difference
-  T  a, b; 
+  Ty dyL, dyR, dy;
+  Ty wL, wR;          // Weights for backward (left) and forward (right) difference
+  Ty a, b; 
 
   for(int n = 1; n < N-1; n++) 
   {
@@ -1727,11 +1726,11 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
     dy    = dyL + dyR;
 
     // Compute forward and backward differences:
-    T  sL = dyL / dxL;          // slope via backward difference (L for left)
-    T  sR = dyR / dxR;          // slope via forward difference (R for right)
+    Ty sL = dyL / dxL;          // slope via backward difference (L for left)
+    Ty sR = dyR / dxR;          // slope via forward difference (R for right)
 
-    wL    = 0.5;                // preliminary
-    wR    = 0.5;
+    //wL    = 0.5;                // preliminary
+    //wR    = 0.5;
     // ToDo: compute weights based on dxL, dxR, dyL, dyR
 
     //yd[n] = wL*sL + wR*sR;
@@ -1751,13 +1750,13 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
 
     // ToDo: Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
     // on equal footing and we should have wL + wR = 1.
-    T sum = dyL + dyR + T(dxL + dxR);
-    wL = (dxR + dyR) / sum;
-    wR = (dxL + dyL) / sum;
+    Ty sum = (dyL + dyR) + Ty(dxL + dxR);  // Ad hoc idea for a weight formula that treats...
+    wL = (dxR + dyR) / sum;                // ...dx and dy on equal footing. I'm not sure, if it...
+    wR = (dxL + dyL) / sum;                // ...makes a whole lot of sense, though.
 
     // Now with weights:
     rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13));
-    yd[n] = pow(sL, wL) * pow(sR, wR);
+    yd[n] = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
     // OK - first tests look good. This seems to work. But more tests are needed. Maybe the formula
     // for the weights is not yet optimal. Measure the accuracy of the scheme for some important 
     // monotonic functions like sqrt(x), x^2, log(x), exp(x), x^p (p real), etc. Maybe try 
@@ -1812,13 +1811,13 @@ void invertibleNumDiff(const Tx *x, const T *y, T *yd, int N, bool extrapolateEn
   //  Maybe this would suggest schemes that instead of using (y[n+1] - y[n]) / (x[n+1] - x[n]), 
   //  would use quotients like (y[n+1] / y[n]) / (x[n+1] / x[n]) which translates to
   //  (f(t*x) - f(x)) / (t*x - x)......or does it? Figure out!
-  
-
+  // -Maybe check these conditions for the simple forward and backward difference. The inversion
+  //  rule is respected. But what about quotient and product rule?
 }
 
 void nonUniformArrayDiffAndInt()
 {
-  //intervalIntegral();  
+  intervalIntegral();
   // What does this do? Why do we call it here. Maybe it should be moved to some experiment about
   // integrals?
 
@@ -1860,7 +1859,7 @@ void nonUniformArrayDiffAndInt()
   plotData(N, x, y, yd, ydn, yi, yin);
 
   //---------------------------------------------------
-  // Maybe mobe this into a separate function - or at least clean it up:
+  // Maybe move this into a separate function - or at least clean it up:
   // Test, if the numerical differentiation produces the reciprocal slopes, when we swap the roles 
   // of x and y. We need some monotonic function for that to make sense, so we compute a new f(x)
   // first:
@@ -1877,8 +1876,8 @@ void nonUniformArrayDiffAndInt()
 
   // New version - under construction - we try to mae it produce reciprocal slopes when x and y are
   // swapped:
-  invertibleNumDiff(x, y, ydn,  N, false); 
-  invertibleNumDiff(y, x, ydns, N, false);
+  invertibleNumDiff1(x, y, ydn,  N, false); 
+  invertibleNumDiff1(y, x, ydns, N, false);
 
   for(n = 0; n < N; n++) {   
     ydnr[n] = 1 / ydn[n];                           // Reciprocate num. der. of y = f(x)
