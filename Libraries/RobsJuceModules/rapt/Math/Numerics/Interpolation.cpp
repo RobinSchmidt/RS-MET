@@ -596,4 +596,14 @@ Ideas:
  derivatives at the nodes. An idea for such a scheme base on Moebius transformations is implemented
  in selfInverseInterpolation() in MathExperiments.h. 
 
+-Implement spherical linear interpolation ("slerp") for interpolating rotations. The formula is:
+ -p0, p1: points on the unit sphere to be interpolated (can be n-dimensional for any n, I think)
+ -t: intetpolation parameter in 0...1
+ -w = acos(dot(p0, p1)): angle between p0, p1
+ -slerp(p0,p1,t) = (sin((1-t)*w) * p0  +  sin(t*w) * p1)  /  sin(w)
+-A simplified version is called normalized linear interpolation ("nlerp") that just linearly 
+ interpolates between p0 and p1 and renormalizes the result. The path is the same but the speed is
+ not constant anymore. It's slower at the endpoints and maximum in the middle. That might actually 
+ be desirable in the context of animations.
+
 */

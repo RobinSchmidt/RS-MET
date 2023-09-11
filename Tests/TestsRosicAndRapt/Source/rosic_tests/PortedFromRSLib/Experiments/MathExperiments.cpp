@@ -1813,6 +1813,16 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolat
   //  (f(t*x) - f(x)) / (t*x - x)......or does it? Figure out!
   // -Maybe check these conditions for the simple forward and backward difference. The inversion
   //  rule is respected. But what about quotient and product rule?
+  // -Other idea: express x and y as functions of a parameter t: x = x(t), y = y(t) with t in 0..1.
+  //  At t = 0, the curve should hit (x[n-1],y[n-1]), at t = 1 the curve should hit (x[n+1],y[n+1])
+  //  and at some intermediate value of t_c (c for center), the curve should hit (x[n],y[n]). Maybe
+  //  use t_c = dsL / (dsL + dsR) where (maybe) dsL = sqrt(dxL^2 + dyL^2), 
+  //  dsR = sqrt(dxR^2 + dyR^2). For x(t), y(t), we could use parabolas through (0,x[n-1]), 
+  //  (t_c,x[n]), (1,x[n+1]) and (0,y[n-1]), (t_c,y[n]), (1,y[n+1]). Then, we can evaluate
+  //  the derivatives ofr x(t), y(t) at t_c to get out slope. This scheme would not use the 
+  //  (weighted) geometric mean at all. For t_c, we need to sqrts because we use Euclidean 
+  //  distances for computing t_c - but maybe we could also use the Manhattan distance. This would
+  //  be cheaper...but maybe less accurate? -> Measure!
 }
 
 void nonUniformArrayDiffAndInt()
