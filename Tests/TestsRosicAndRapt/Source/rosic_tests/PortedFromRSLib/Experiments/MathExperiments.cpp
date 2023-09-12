@@ -1835,8 +1835,18 @@ T invertibleNumDiff2(
 
   // Now pass a parabola x(t) through (tL,xL), (tC,xC), (tH,xH) and likewise a parabola y(t) 
   // through (tL,yL), (tC,yC), (tH,yH)
+  using Poly = rsPolynomial<T>;
+  T t[3] = { tL, tC, tH };
+  T x[3] = { xL, xC, xH };
+  T y[3] = { yL, yC, yH };
+  T a[3], b[3];                  // coeffs for x(t), y(t)
+  Poly::fitQuadratic(a, t, x);
+  Poly::fitQuadratic(b, t, y);
+
   //...
 
+
+  //void fitQuadratic(T* a, const T* x, const T* y)
 
   // Compute dx/dt and dy/dt at tC:
   // ...
@@ -1861,6 +1871,12 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1
   {
     for(int n = 1; n < N-1; n++)
       yd[n] = invertibleNumDiff1(x[n-1], y[n-1], x[n], y[n], x[n+1], y[n+1]);
+  }
+  break;
+  case 2:
+  {
+    for(int n = 1; n < N-1; n++)
+      yd[n] = invertibleNumDiff2(x[n-1], y[n-1], x[n], y[n], x[n+1], y[n+1]);
   }
   break;
   }
@@ -1905,7 +1921,7 @@ bool testNonUniformInvertibleDiff()
   static const int N = 100;   // number of sample points
   Real xMax = 10.0;           // maximum x-axis value
   Real x[N], y[N];            // x- and y-axis values
-  int formula = 1;            // 1: uses Manhattan distance as weights (I think)
+  int formula = 2;            // 1: uses Manhattan distance as weights (I think)
 
   // Generate input data, i.e. fill x[] and y[] arrays:
   AT::fillWithRandomValues(x, N, 0.1, 1.5, 0);
