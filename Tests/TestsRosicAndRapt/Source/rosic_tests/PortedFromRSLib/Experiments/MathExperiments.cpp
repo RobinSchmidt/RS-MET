@@ -1824,7 +1824,27 @@ T invertibleNumDiff2(
   // Compute distances:
   T dL = sqrt(dxL*dxL + dyL*dyL); // 
   T dR = sqrt(dxR*dxR + dyR*dyR);
-  T d  = dL + dR;
+  //T d  = dL + dR;
+
+  // Figure out start and endpoints for the independent parameter t:
+  T tL = 0 - dL;
+  T tC = 0;
+  T tH = 0 + dR;
+
+  //T tC = dL / d;
+
+  // Now pass a parabola x(t) through (tL,xL), (tC,xC), (tH,xH) and likewise a parabola y(t) 
+  // through (tL,yL), (tC,yC), (tH,yH)
+  //...
+
+
+  // Compute dx/dt and dy/dt at tC:
+  // ...
+  
+
+  // Return dydt / dxdt
+
+  return 0;
 }
 
 template<class Tx, class Ty>
