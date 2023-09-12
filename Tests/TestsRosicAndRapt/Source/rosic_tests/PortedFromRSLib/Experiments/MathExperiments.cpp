@@ -1799,78 +1799,43 @@ Ty invertibleNumDiff1(
   // Compute weighted geometric mean of left and right difference and return it as result:
   Ty yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
   return yd;
-}
-// API should resemble fitCubicThroughFourPoints in Interpolation.h
-
-template<class Tx, class Ty>
-void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N)
-{
-  rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
-  rsAssert(N >= 2, "Arrays need to be at least of length 2");
-
-  //Tx dxL, dxR, dx;
-  //Ty dyL, dyR, dy;
-  //Ty wL, wR;          // Weights for backward (left) and forward (right) difference
-
-  for(int n = 1; n < N-1; n++) 
-  {
-    yd[n] = invertibleNumDiff1(x[n-1], y[n-1], x[n], y[n], x[n+1], y[n+1]);
-
-    /*
-    dxL   = x[n] - x[n-1];
-    dxR   = x[n+1] - x[n];
-    //rsAssert(dxL*dxR >= 0, "x is not monotonic");
-
-    dyL   = y[n] - y[n-1];
-    dyR   = y[n+1] - y[n];
-    //rsAssert(dyL*dyR >= 0, "y is not monotonic");
-
-    // Compute forward and backward differences:
-    Ty sL = dyL / dxL;          // slope via backward difference (L for left)
-    Ty sR = dyR / dxR;          // slope via forward difference (R for right)
-
-    // Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
-    // on equal footing and we should have wL + wR = 1.
-    Ty sum = (dyL + dyR) + Ty(dxL + dxR);  // Ad hoc idea for a weight formula that treats...
-    wL = (dxR + dyR) / sum;                // ...dx and dy on equal footing. I'm not sure, if it...
-    wR = (dxL + dyL) / sum;                // ...makes a whole lot of sense, though.
-
-    // Now with weights:
-    rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13));
-    yd[n] = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
-    // OK - first tests look good. This seems to work. But more tests are needed. Maybe the formula
-    // for the weights is not yet optimal. Measure the accuracy of the scheme for some important 
-    // monotonic functions like sqrt(x), x^2, log(x), exp(x), x^p (p real), etc. Maybe try 
-    // different formulas for the weights and investigate, how this affects the accuracy. Also make 
-    // sure that it also works for monotonically decreasing data. We probably need to take the 
-    // absolute values somewhere and re-apply the orginal sign later. Maybe this need to be done
-    // to dxL, dxR, dyL, dyR. Don't assume that x is ascending! When swapping x and y somewhere in 
-    // a caller, we may also get a descending x array. 
-    */
-  }
-
-
-  handleEndsForNumDiff(x, y, yd, N, false);
 
   // Notes:
-  // -An invertible scheme results only when do either yd[n] = sL;  or  yd[n] = sR;. As soon as we 
-  //  introduce the averagring, the scheme becomes non-invertible
-  // -Even with wL = wR = 0.5, it doesn't produce an invertible numerical differentiation scheme. I
-  //  guess it's because a mean of reciprocals is not the the same as the reciprocal of means. This
-  //  is even true for an unweighted mean but of course also for the weighted mean that we actually 
-  //  want. 
-  // -I guess maybe it's in the forward case the arithmetic mean and in the inverse case the 
-  //  (reciprocal of) the harmonic mean. Or soemthing? Is there another kind of mean that works 
-  //  better for this purpose? Maybe the geometric mean? ...Try it!...yes - looks promising!
   // -Another idea: maybe we could somehow treat both x and y as being functions of some imagined
   //  third variable t, like in a curve in the plane in differential geometry? Maybe just assume
   //  t = [01,2,3,4,....]. Then compute dx/dt and dy/dt? Then y' = (dy/dt) / (dx/dt)? ...but I 
   //  guess, that will amount to equal weighting, i.e. no distance dependent weighting. Might be
   //  good or bad thing. Dunno.
+}
+// API should resemble fitCubicThroughFourPoints in Interpolation.h
+
+
+
+
+template<class Tx, class Ty>
+void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1)
+{
+  rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
+  rsAssert(N >= 2, "Arrays need to be at least of length 2");
+
+  //int formula = 1;  // make user parameter
+
+  switch(formula)
+  {
+  case 1:
+  {
+    for(int n = 1; n < N-1; n++)
+      yd[n] = invertibleNumDiff1(x[n-1], y[n-1], x[n], y[n], x[n+1], y[n+1]);
+  }
+  break;
+  }
+
+  handleEndsForNumDiff(x, y, yd, N, false);
+
 
   // ToDo:
-  // -Save the left weight and use it as right weight in the next iteration (save one division
-  //  per iteration)
+  // -Try to make it usable in place. Keep temporaries for xL, yL, xC, yC that are updated in the
+  //  loop.
   // -Try to come up with more ideas for invertible numerical differentiation schemes, where by 
   //  "invertible", I mean that the scheme should respect the inverse function law for 
   //  differentiation.
