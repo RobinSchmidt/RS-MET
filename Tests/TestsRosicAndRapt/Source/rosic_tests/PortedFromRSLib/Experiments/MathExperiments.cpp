@@ -1870,6 +1870,7 @@ bool testNonUniformInvertibleDiff()
   static const int N = 100;   // number of sample points
   Real xMax = 10.0;           // maximum x-axis value
   Real x[N], y[N];            // x- and y-axis values
+  int formula = 1;            // 1: uses Manhattan distance as weights (I think)
 
   // Generate input data, i.e. fill x[] and y[] arrays:
   AT::fillWithRandomValues(x, N, 0.1, 1.5, 0);
@@ -1891,8 +1892,8 @@ bool testNonUniformInvertibleDiff()
 
   // Compute numerical derivatives of y with respect to x and also numerical derivatives of x with 
   // with resepct to y. The intention is that they should be reciprocals of one another:
-  invertibleNumDiff1(x, y, yd,   N); 
-  invertibleNumDiff1(y, x, yd_s, N);
+  invertibleNumDiff1(x, y, yd,   N, formula); 
+  invertibleNumDiff1(y, x, yd_s, N, formula);
 
   // Compute reciprocals of yd and compare to yd_s. The intention is that they should be the same:
   for(int n = 0; n < N; n++) {   
