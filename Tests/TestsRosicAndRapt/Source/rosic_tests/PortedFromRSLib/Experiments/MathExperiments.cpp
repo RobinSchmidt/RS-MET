@@ -1868,8 +1868,10 @@ void nonUniformArrayDiffAndInt()
   //plotData(N, x, y, yd, ydn);
   plotData(N, x, y, yd, ydn, yi, yin);
 
+
+  /*
   //---------------------------------------------------
-  // Maybe move this into a separate function - or at least clean it up:
+  // [DONE] Maybe move this into a separate function - or at least clean it up:
   // Test, if the numerical differentiation produces the reciprocal slopes, when we swap the roles 
   // of x and y. We need some monotonic function for that to make sense, so we compute a new f(x)
   // first:
@@ -1893,6 +1895,7 @@ void nonUniformArrayDiffAndInt()
     ydnr[n] = 1 / ydn[n];                           // Reciprocate num. der. of y = f(x)
     err[n]  = ydnr[n] - ydns[n];   }                // compute difference/error
   plotData(N, x, ydnr, ydns, err);
+  */
 
   // Observations:
   // -The new scheme invertibleNumDiff() seems to indeed produce reciprocal slopes when swapping
@@ -1931,11 +1934,52 @@ void nonUniformArrayDiffAndInt()
 // specified. Implement a variant based on a Hermite interpolant first - because that is simpler
 
 bool testNonUniformInvertibleDiff()
-{
+{ 
+  using Real = double;
+  using AT   = RAPT::rsArrayTools;
+
+  static const int N = 100;   // number of sample points
+  Real xMax = 10.0;           // maximum x-axis value
+  Real x[N], y[N];            // x- and y-axis values
+
+  // Generate input data, i.e. fill x[] and y[] arrays:
+  AT::fillWithRandomValues(x, N, 0.1, 1.5, 0);
+  AT::cumulativeSum(x, x, N);
+  double scaler = xMax/x[N-1];
+  AT::scale(x, N, scaler);
+  for(int n = 0; n < N; n++)
+    //y[n] = sqrt(x[n]);
+    y[n] = x[n] + 0.0*x[n]*x[n] - 0.4*sin(2*x[n]);    // The new f(x)
+  plotData(N, x, y);
+
+  // Compute numeric derivatives:
+  Real yd[N];                 // numeric y'
+  Real yd_r[N];               // _r: reciprocal (of yd)
+  Real yd_s[N];               // _s: numerci y' with swapped (x- and y)
+  Real err[N];
+
+
+  // New version - under construction - we try to make it produce reciprocal slopes when x and y 
+  // are swapped:
+
+  // Compute numerical derivatives of y with respect to x and also numerical derivatives of x with 
+  // with resepct to y. The intention is that they should be reciprocals of one another:
+  invertibleNumDiff1(x, y, yd,   N, false); 
+  invertibleNumDiff1(y, x, yd_s, N, false);
+
+  // Compute reciprocals of yd and compare to yd_s. The intention is that they should be the same:
+  for(int n = 0; n < N; n++) {   
+    yd_r[n] = 1 / yd[n];                   // Reciprocate num. der. of y = f(x)
+    err[n]  = yd_r[n] - yd_s[n];   }       // compute difference/error
+  plotData(N, x, yd_r, yd_s, err);
+
+
+
   bool ok = true;
+  Real tol = 1.e-13;
+  ok &= AT::almostEqual(yd_r, yd_s, N, tol);
 
-
-
+  rsAssert(ok);
   return ok;
 }
 
