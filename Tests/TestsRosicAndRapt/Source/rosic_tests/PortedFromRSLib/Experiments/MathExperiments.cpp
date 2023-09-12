@@ -1971,6 +1971,9 @@ bool testNonUniformInvertibleDiff()
   //  the x and y arrays. But for the endpoints, the extrapolation does not work. We need to pass
   //  false for the last parameter. ...OK - I removed the parameter. We now always use 1st order
   //  differences at the boudaries and don't bother with extrapolation anymore.
+  // -Both formulas (1 and 2) seem to have the desired porperty of giving reciprocal derivative 
+  //  values when x and y are swapped. It actually even looks like they produce the saem results.
+  //  Test that!
   //
   // Old observations when we were using ND::derivative instead of invertibleNumDiff for trying to
   // produce the reciprocal slopes by swapping x and y:
