@@ -1924,7 +1924,7 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1
 }
 
 bool testNonUniformInvertibleDiff()
-{ 
+{
   using Real = double;
   using AT   = RAPT::rsArrayTools;
 
@@ -1953,18 +1953,27 @@ bool testNonUniformInvertibleDiff()
 
   // Compute numerical derivatives of y with respect to x and also numerical derivatives of x with 
   // with resepct to y. The intention is that they should be reciprocals of one another:
-  invertibleNumDiff1(x, y, yd,   N, formula); 
+  invertibleNumDiff1(x, y, yd, N, formula);
   invertibleNumDiff1(y, x, yd_s, N, formula);
 
   // Compute reciprocals of yd and compare to yd_s. The intention is that they should be the same:
-  for(int n = 0; n < N; n++) {   
+  for(int n = 0; n < N; n++) {
     yd_r[n] = 1 / yd[n];                   // Reciprocate num. der. of y = f(x)
-    err[n]  = yd_r[n] - yd_s[n];   }       // compute difference/error
+    err[n]  = yd_r[n] - yd_s[n];
+  }       // compute difference/error
   plotData(N, x, yd_r, yd_s, err);
 
   bool ok = true;
   Real tol = 1.e-13;
   ok &= AT::almostEqual(yd_r, yd_s, N, tol);
+
+  // Compare the derivatives obtained by the two different formulas:
+  Real yd1[N], yd2[N];
+  invertibleNumDiff1(x, y, yd1, N, 1);
+  invertibleNumDiff1(x, y, yd2, N, 2);
+  plotData(N, x, yd1, yd2);
+
+
 
   // Observations:
   // -The new scheme invertibleNumDiff1() seems to indeed produce reciprocal slopes when swapping
@@ -1973,7 +1982,7 @@ bool testNonUniformInvertibleDiff()
   //  differences at the boudaries and don't bother with extrapolation anymore.
   // -Both formulas (1 and 2) seem to have the desired porperty of giving reciprocal derivative 
   //  values when x and y are swapped. It actually even looks like they produce the saem results.
-  //  Test that!
+  //  Test that! ...Nope - not exactly - but very close!
   //
   // Old observations when we were using ND::derivative instead of invertibleNumDiff for trying to
   // produce the reciprocal slopes by swapping x and y:
