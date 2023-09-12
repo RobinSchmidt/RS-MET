@@ -148,6 +148,13 @@ https://en.wikipedia.org/wiki/Ordinary_differential_equation
 
 
 
+Resources:
+
+https://www.youtube.com/watch?v=s_t6dIKjUUc
+The Special Math of Translating Theory to Software in Differential Eqs | Chris Rackauckas | ASE60
+-Interesting talk that mentions some not so standard RK methods with optimized coefficients that
+ could potentially be better than standard methods.
+
 
 
 */

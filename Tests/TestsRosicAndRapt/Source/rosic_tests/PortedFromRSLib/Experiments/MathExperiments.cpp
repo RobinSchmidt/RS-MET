@@ -1799,13 +1799,6 @@ T invertibleNumDiff1(
   // Compute weighted geometric mean of left and right difference and return it as result:
   T yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
   return yd;
-
-  // Notes:
-  // -Another idea: maybe we could somehow treat both x and y as being functions of some imagined
-  //  third variable t, like in a curve in the plane in differential geometry? Maybe just assume
-  //  t = [01,2,3,4,....]. Then compute dx/dt and dy/dt? Then y' = (dy/dt) / (dx/dt)? ...but I 
-  //  guess, that will amount to equal weighting, i.e. no distance dependent weighting. Might be
-  //  good or bad thing. Dunno.
 }
 // API should resemble fitCubicThroughFourPoints in Interpolation.h
 
@@ -1847,6 +1840,45 @@ T invertibleNumDiff2(
   return dydt / dxdt;
 }
 
+template<class T>
+T invertibleNumDiff3(
+  const T& xL, const T& yL, const T& xC, const T& yC, const T& xH, const T& yH)
+{
+  T dxL = xC - xL;   // dx on the left
+  T dxR = xH - xC;   // dx on the right
+                     //rsAssert(dxL*dxR >= 0, "x is not monotonic");
+
+  T dyL = yC - yL;
+  T dyR = yH - yC;
+  //rsAssert(dyL*dyR >= 0, "y is not monotonic");
+
+  // Compute forward and backward differences:
+  T sL = dyL / dxL;          // slope via backward difference (L for left)
+  T sR = dyR / dxR;          // slope via forward difference (R for right
+  
+  /*
+  // Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
+  // on equal footing and we should have wL + wR = 1.
+  T sum = (dyL + dyR) + (dxL + dxR);    // Ad hoc idea for a weight formula that treats...
+  T wL = (dxR + dyR) / sum;             // ...dx and dy on equal footing. I'm not sure, if it...
+  T wR = (dxL + dyL) / sum;             // ...makes a whole lot of sense, though.
+  rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13)); // Sanity check
+  */
+
+  // Compute distances:
+  T dL  = sqrt(dxL*dxL + dyL*dyL);
+  T dR  = sqrt(dxR*dxR + dyR*dyR);
+  T sum = dL + dR;
+  T wL = dR / sum;
+  T wR = dL / sum;
+  rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13)); // Sanity check
+
+
+  // Compute weighted geometric mean of left and right difference and return it as result:
+  T yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
+  return yd;
+}
+
 template<class Tx, class Ty>
 void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1)
 {
@@ -1867,6 +1899,12 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1
   {
     for(int n = 1; n < N-1; n++)
       yd[n] = invertibleNumDiff2(x[n-1], y[n-1], x[n], y[n], x[n+1], y[n+1]);
+  }
+  break;
+  case 3:
+  {
+    for(int n = 1; n < N-1; n++)
+      yd[n] = invertibleNumDiff3(x[n-1], y[n-1], x[n], y[n], x[n+1], y[n+1]);
   }
   break;
   }
@@ -1929,7 +1967,7 @@ bool testNonUniformInvertibleDiff()
   Real yd[N];                 // numeric y'
   Real yd_r[N];               // _r: reciprocal (of yd)
   Real yd_s[N];               // _s: numerci y' with swapped (x- and y)
-  Real err[N];
+  Real err1[N];
 
   // Compute numerical derivatives of y with respect to x and also numerical derivatives of x with 
   // with resepct to y. The intention is that they should be reciprocals of one another:
@@ -1939,39 +1977,43 @@ bool testNonUniformInvertibleDiff()
   // Compute reciprocals of yd and compare to yd_s. The intention is that they should be the same:
   for(int n = 0; n < N; n++) {
     yd_r[n] = 1 / yd[n];                   // Reciprocate num. der. of y = f(x)
-    err[n]  = yd_r[n] - yd_s[n];
+    err1[n] = yd_r[n] - yd_s[n];
   }       // compute difference/error
-  plotData(N, x, yd_r, yd_s, err);
+  plotData(N, x, yd_r, yd_s, err1);
 
   bool ok = true;
   Real tol = 1.e-13;
   ok &= AT::almostEqual(yd_r, yd_s, N, tol);
 
-  // Compare the derivatives obtained by the two different formulas:
-  Real yd1[N], yd2[N];
+  // Compare the derivatives obtained by the 3 different formulas:
+  Real yd1[N], yd2[N], yd3[N];
   invertibleNumDiff1(x, y, yd1, N, 1);
   invertibleNumDiff1(x, y, yd2, N, 2);
-  plotData(N, x, yd1, yd2);
+  invertibleNumDiff1(x, y, yd3, N, 3);
+  plotData(N, x, yd1, yd2, yd3);
 
   // Now try f(x) = sqrt(x). We'll plot the analytical derivative and the two numeric derivatives
   // according to our two formulas:
   for(int n = 0; n < N; n++)
   {
-    //y[n]  = sqrt(x[n]);
-    //yd[n] = 0.5 / y[n];    // analytic derivative
+    y[n]  = sqrt(x[n]);
+    yd[n] = 0.5 / y[n];    // analytic derivative
 
-    y[n]  = x[n]*x[n];
-    yd[n] = 2*x[n];
+    //y[n]  = x[n]*x[n];
+    //yd[n] = 2*x[n];
   }
   invertibleNumDiff1(x, y, yd1, N, 1);
   invertibleNumDiff1(x, y, yd2, N, 2);
-  Real err2[N];
+  invertibleNumDiff1(x, y, yd3, N, 3);
+  Real err2[N], err3[N];
   for(int n = 0; n < N; n++)
   {
-    err[n]  = yd[n] - yd1[n];
+    err1[n] = yd[n] - yd1[n];
     err2[n] = yd[n] - yd2[n];
+    err3[n] = yd[n] - yd3[n];
   }
-  plotData(N, x, yd, yd1, yd2, err, err2);
+  plotData(N, x, yd, yd1, yd2, yd3);
+  plotData(N, x, err1, err2, err3);
 
 
 
@@ -1988,6 +2030,9 @@ bool testNonUniformInvertibleDiff()
   //  Test that! ...Nope - not exactly - but very close! Formula 1 seems to be slightly better but
   //  maybe that depends on the function (maybe on concave vs convex). ToDo: Try combining aspects 
   //  of both forumals: use Euclidean distances for the weights. Maybe that is even more accurate?
+  //  Formula 1 (geom. mean, Manhattan weights) seems to be slightly better than 3 (geom. mean, 
+  //  Euclidean weights). Generally: black seems best, blue seems worst. But blue is cheapest to 
+  //  compute, so we may want to have it in production code
 
   //
   //
