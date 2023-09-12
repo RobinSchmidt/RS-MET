@@ -1693,14 +1693,67 @@ void intervalIntegral()
   int dummy = 0;
 }
 
+void nonUniformArrayDiffAndInt()
+{
+  intervalIntegral();
+  // What does this do? Why do we call it here. Maybe it should be moved to some experiment about
+  // integrals?
 
+  // Test numerical differentiation and integration routines. We sample a sinewave at 
+  // nonequidistant sample points and find the numeric derivative and  integral at these sample
+  // points and compare them to the true derivative/integral values.
 
+  using ND = rsNumericDifferentiator<double>;
 
+  static const int N = 100;   // number of sample points
+  double p = 1.0;             // start-phase
+  double w = 2.0;             // radian frequency 
+  double xMax = 10.0;         // maximum x-axis value
+  double x[N];                // x-axis values
+  double y[N], yd[N], ydn[N]; // y, y' and numeric y'
+  double       yi[N], yin[N]; // true and numeric integral
+
+  // create x-axis:
+  RAPT::rsArrayTools::fillWithRandomValues(x, N, 0.1, 1.5, 0);
+  RAPT::rsArrayTools::cumulativeSum(x, x, N);
+  double scaler = xMax/x[N-1];
+  RAPT::rsArrayTools::scale(x, N, scaler);
+
+  // compute sine and its derivative and integral analytically at the samples:
+  int n;
+  for(n = 0; n < N; n++)
+  {
+    y[n]  =        sin(w*x[n] + p);
+    yd[n] =      w*cos(w*x[n] + p);
+    yi[n] = -(1/w)*cos(w*x[n] + p);
+  }
+
+  // compute the numeric derivative and integral:
+  ND::derivative(x, y, ydn, N, true);
+  rsNumericIntegral(  x, y, yin, N, yi[0]);
+
+  // plot function, true derivative and numeric derivative:
+  //plotData(N, x, y, yd, ydn);
+  plotData(N, x, y, yd, ydn, yi, yin);
+
+  // ToDo:
+  // -Wrap rsNumericIntegral into a class similar to rsNumericDifferentiator
+}
+// Goal: write a numerical integration algorithm that has O(1) memory usage (no arrays are 
+// allocated internally), can be used in place (yi may overwrite y) and computes the integral over 
+// a natural cubic spline interpolant. First, we need a variant of the Thomas algorithm that 
+// doesn't need to get arrays of the diagonal elements - instead it should take 9 values: 
+// a11,a12,a21, a22,a23,a32, aNN,aMN,aNM, where M=N-1 - it is assumed that a22,a23,a32 are repeated
+// along the diagonal and only the 3 top-left, 3 repeated diagonal and 3 bottom-right elements are
+// specified. Implement a variant based on a Hermite interpolant first - because that is simpler
+
+//-------------------------------------------------------------------------------------------------
 // Experimental - under construction
 // Similar to rsNumericDifferentiator<T>::derivative but uses a different formula to compute the 
 // weights taking into account both (dxL,dxR) and (dyL,dyR) on equal footing. The goal is to 
 // produce a numerical differentiation scheme that produces the reciprocal slopes when the roles of
 // x and y are swapped.
+
 template<class Tx, class Ty>
 void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
@@ -1825,80 +1878,50 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolat
   //  be cheaper...but maybe less accurate? -> Measure!
 }
 
-void nonUniformArrayDiffAndInt()
-{
-  intervalIntegral();
-  // What does this do? Why do we call it here. Maybe it should be moved to some experiment about
-  // integrals?
-
-  // Test numerical differentiation and integration routines. We sample a sinewave at 
-  // nonequidistant sample points and find the numeric derivative and  integral at these sample
-  // points and compare them to the true derivative/integral values.
-
-  using ND = rsNumericDifferentiator<double>;
+bool testNonUniformInvertibleDiff()
+{ 
+  using Real = double;
+  using AT   = RAPT::rsArrayTools;
 
   static const int N = 100;   // number of sample points
-  double p = 1.0;             // start-phase
-  double w = 2.0;             // radian frequency 
-  double xMax = 10.0;         // maximum x-axis value
-  double x[N];                // x-axis values
-  double y[N], yd[N], ydn[N]; // y, y' and numeric y'
-  double       yi[N], yin[N]; // true and numeric integral
+  Real xMax = 10.0;           // maximum x-axis value
+  Real x[N], y[N];            // x- and y-axis values
 
-  // create x-axis:
-  RAPT::rsArrayTools::fillWithRandomValues(x, N, 0.1, 1.5, 0);
-  RAPT::rsArrayTools::cumulativeSum(x, x, N);
+  // Generate input data, i.e. fill x[] and y[] arrays:
+  AT::fillWithRandomValues(x, N, 0.1, 1.5, 0);
+  AT::cumulativeSum(x, x, N);
   double scaler = xMax/x[N-1];
-  RAPT::rsArrayTools::scale(x, N, scaler);
-
-  // compute sine and its derivative and integral analytically at the samples:
-  int n;
-  for(n = 0; n < N; n++)
+  AT::scale(x, N, scaler);
+  for(int n = 0; n < N; n++)
   {
-    y[n]  =        sin(w*x[n] + p);
-    yd[n] =      w*cos(w*x[n] + p);
-    yi[n] = -(1/w)*cos(w*x[n] + p);
-  }
-
-  // compute the numeric derivative and integral:
-  ND::derivative(x, y, ydn, N, true);
-  rsNumericIntegral(  x, y, yin, N, yi[0]);
-
-  // plot function, true derivative and numeric derivative:
-  //plotData(N, x, y, yd, ydn);
-  plotData(N, x, y, yd, ydn, yi, yin);
-
-
-  /*
-  //---------------------------------------------------
-  // [DONE] Maybe move this into a separate function - or at least clean it up:
-  // Test, if the numerical differentiation produces the reciprocal slopes, when we swap the roles 
-  // of x and y. We need some monotonic function for that to make sense, so we compute a new f(x)
-  // first:
-  double ydnr[N], ydns[N];  // r: reciprocal, s: swapped (x- and y)
-  double err[N];
-  for(n = 0; n < N; n++)
     //y[n] = sqrt(x[n]);
     y[n] = x[n] + 0.0*x[n]*x[n] - 0.4*sin(2*x[n]);    // The new f(x)
-  //plotData(N, x, y);                                // To check monotonicity visually - looks ok.
+  }
+  plotData(N, x, y);
 
-  // Old version - does not produce reciprocal slopes when swapping x and y:
-  //ND::derivative(x, y, ydn,  N, false);             // Compute numeric derivatve of y = f(x)
-  //ND::derivative(y, x, ydns, N, false);             // Compute numeric derivatve of x = f(y)
+  // Compute numeric derivatives:
+  Real yd[N];                 // numeric y'
+  Real yd_r[N];               // _r: reciprocal (of yd)
+  Real yd_s[N];               // _s: numerci y' with swapped (x- and y)
+  Real err[N];
 
-  // New version - under construction - we try to make it produce reciprocal slopes when x and y 
-  // are swapped:
-  invertibleNumDiff1(x, y, ydn,  N, false); 
-  invertibleNumDiff1(y, x, ydns, N, false);
+  // Compute numerical derivatives of y with respect to x and also numerical derivatives of x with 
+  // with resepct to y. The intention is that they should be reciprocals of one another:
+  invertibleNumDiff1(x, y, yd,   N, false); 
+  invertibleNumDiff1(y, x, yd_s, N, false);
 
-  for(n = 0; n < N; n++) {   
-    ydnr[n] = 1 / ydn[n];                           // Reciprocate num. der. of y = f(x)
-    err[n]  = ydnr[n] - ydns[n];   }                // compute difference/error
-  plotData(N, x, ydnr, ydns, err);
-  */
+  // Compute reciprocals of yd and compare to yd_s. The intention is that they should be the same:
+  for(int n = 0; n < N; n++) {   
+    yd_r[n] = 1 / yd[n];                   // Reciprocate num. der. of y = f(x)
+    err[n]  = yd_r[n] - yd_s[n];   }       // compute difference/error
+  plotData(N, x, yd_r, yd_s, err);
+
+  bool ok = true;
+  Real tol = 1.e-13;
+  ok &= AT::almostEqual(yd_r, yd_s, N, tol);
 
   // Observations:
-  // -The new scheme invertibleNumDiff() seems to indeed produce reciprocal slopes when swapping
+  // -The new scheme invertibleNumDiff1() seems to indeed produce reciprocal slopes when swapping
   //  the x and y arrays. But for the endpoints, the extrapolation does not work. We need to pass
   //  false for the last parameter. ...TBC...
   //
@@ -1918,66 +1941,6 @@ void nonUniformArrayDiffAndInt()
   //  (crude) or let dyL, dyR enter the weight computation on equal footing with dxL, dxR. I have 
   //  no idea what that does to the accuracy, though. It may ruin it unless f(x) happens to be 
   //  close to linear.
-
-
-
-  // ToDo:
-  // -Wrap rsNumericIntegral into a class similar to rsNumericDifferentiator
-
-}
-// Goal: write a numerical integration algorithm that has O(1) memory usage (no arrays are 
-// allocated internally), can be used in place (yi may overwrite y) and computes the integral over 
-// a natural cubic spline interpolant. First, we need a variant of the Thomas algorithm that 
-// doesn't need to get arrays of the diagonal elements - instead it should take 9 values: 
-// a11,a12,a21, a22,a23,a32, aNN,aMN,aNM, where M=N-1 - it is assumed that a22,a23,a32 are repeated
-// along the diagonal and only the 3 top-left, 3 repeated diagonal and 3 bottom-right elements are
-// specified. Implement a variant based on a Hermite interpolant first - because that is simpler
-
-bool testNonUniformInvertibleDiff()
-{ 
-  using Real = double;
-  using AT   = RAPT::rsArrayTools;
-
-  static const int N = 100;   // number of sample points
-  Real xMax = 10.0;           // maximum x-axis value
-  Real x[N], y[N];            // x- and y-axis values
-
-  // Generate input data, i.e. fill x[] and y[] arrays:
-  AT::fillWithRandomValues(x, N, 0.1, 1.5, 0);
-  AT::cumulativeSum(x, x, N);
-  double scaler = xMax/x[N-1];
-  AT::scale(x, N, scaler);
-  for(int n = 0; n < N; n++)
-    //y[n] = sqrt(x[n]);
-    y[n] = x[n] + 0.0*x[n]*x[n] - 0.4*sin(2*x[n]);    // The new f(x)
-  plotData(N, x, y);
-
-  // Compute numeric derivatives:
-  Real yd[N];                 // numeric y'
-  Real yd_r[N];               // _r: reciprocal (of yd)
-  Real yd_s[N];               // _s: numerci y' with swapped (x- and y)
-  Real err[N];
-
-
-  // New version - under construction - we try to make it produce reciprocal slopes when x and y 
-  // are swapped:
-
-  // Compute numerical derivatives of y with respect to x and also numerical derivatives of x with 
-  // with resepct to y. The intention is that they should be reciprocals of one another:
-  invertibleNumDiff1(x, y, yd,   N, false); 
-  invertibleNumDiff1(y, x, yd_s, N, false);
-
-  // Compute reciprocals of yd and compare to yd_s. The intention is that they should be the same:
-  for(int n = 0; n < N; n++) {   
-    yd_r[n] = 1 / yd[n];                   // Reciprocate num. der. of y = f(x)
-    err[n]  = yd_r[n] - yd_s[n];   }       // compute difference/error
-  plotData(N, x, yd_r, yd_s, err);
-
-
-
-  bool ok = true;
-  Real tol = 1.e-13;
-  ok &= AT::almostEqual(yd_r, yd_s, N, tol);
 
   rsAssert(ok);
   return ok;
