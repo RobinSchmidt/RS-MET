@@ -1809,26 +1809,23 @@ T invertibleNumDiff1(
 }
 // API should resemble fitCubicThroughFourPoints in Interpolation.h
 
-
-/*
-template<class Tx, class Ty>
-Ty invertibleNumDiff2(
-  const Tx& xL, const Ty& yL, const Tx& xC, const Ty& yC, const Tx& xH, const Ty& yH)
+template<class T>
+T invertibleNumDiff2(
+  const T& xL, const T& yL, const T& xC, const T& yC, const T& xH, const T& yH)
 {
-  Tx dxL = xC - xL;   // dx on the left
-  Tx dxR = xH - xC;   // dx on the right
+  T dxL = xC - xL;   // dx on the left
+  T dxR = xH - xC;   // dx on the right
   //rsAssert(dxL*dxR >= 0, "x is not monotonic");
 
-  Ty dyL = yC - yL;
-  Ty dyR = yH - yC;
+  T dyL = yC - yL;
+  T dyR = yH - yC;
   //rsAssert(dyL*dyR >= 0, "y is not monotonic");
 
   // Compute distances:
-  Ty dL = sqrt(dxL*dxL + dyL*dyL); // 
-  Ty dR = sqrt(dxR*dxR + dyR*dyR);
-  Ty d  = dL + dR;
+  T dL = sqrt(dxL*dxL + dyL*dyL); // 
+  T dR = sqrt(dxR*dxR + dyR*dyR);
+  T d  = dL + dR;
 }
-*/
 
 template<class Tx, class Ty>
 void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1)
