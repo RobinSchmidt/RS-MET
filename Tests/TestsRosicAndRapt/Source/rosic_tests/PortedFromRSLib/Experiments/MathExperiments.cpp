@@ -1773,31 +1773,31 @@ void handleEndsForNumDiff(const Tx* x, const Ty* y, Ty* yd, int N, bool extrapol
 // from rsNumericDifferentiator::derivative(x, y, ydn, N, true);
 
 // L,C,H: low, center, high
-template<class Tx, class Ty>
-Ty invertibleNumDiff1(
-  const Tx& xL, const Ty& yL, const Tx& xC, const Ty& yC, const Tx& xH, const Ty& yH)
+template<class T>
+T invertibleNumDiff1(
+  const T& xL, const T& yL, const T& xC, const T& yC, const T& xH, const T& yH)
 {
-  Tx dxL = xC - xL;   // dx on the left
-  Tx dxR = xH - xC;   // dx on the right
+  T dxL = xC - xL;   // dx on the left
+  T dxR = xH - xC;   // dx on the right
   //rsAssert(dxL*dxR >= 0, "x is not monotonic");
 
-  Ty dyL = yC - yL;
-  Ty dyR = yH - yC;
+  T dyL = yC - yL;
+  T dyR = yH - yC;
   //rsAssert(dyL*dyR >= 0, "y is not monotonic");
 
   // Compute forward and backward differences:
-  Ty sL = dyL / dxL;          // slope via backward difference (L for left)
-  Ty sR = dyR / dxR;          // slope via forward difference (R for right)
+  T sL = dyL / dxL;          // slope via backward difference (L for left)
+  T sR = dyR / dxR;          // slope via forward difference (R for right)
 
   // Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
   // on equal footing and we should have wL + wR = 1.
-  Ty sum = (dyL + dyR) + Ty(dxL + dxR);  // Ad hoc idea for a weight formula that treats...
-  Ty wL = (dxR + dyR) / sum;             // ...dx and dy on equal footing. I'm not sure, if it...
-  Ty wR = (dxL + dyL) / sum;             // ...makes a whole lot of sense, though.
+  T sum = (dyL + dyR) + (dxL + dxR);    // Ad hoc idea for a weight formula that treats...
+  T wL = (dxR + dyR) / sum;             // ...dx and dy on equal footing. I'm not sure, if it...
+  T wR = (dxL + dyL) / sum;             // ...makes a whole lot of sense, though.
   rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13)); // Sanity check
 
   // Compute weighted geometric mean of left and right difference and return it as result:
-  Ty yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
+  T yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
   return yd;
 
   // Notes:
@@ -1810,7 +1810,25 @@ Ty invertibleNumDiff1(
 // API should resemble fitCubicThroughFourPoints in Interpolation.h
 
 
+/*
+template<class Tx, class Ty>
+Ty invertibleNumDiff2(
+  const Tx& xL, const Ty& yL, const Tx& xC, const Ty& yC, const Tx& xH, const Ty& yH)
+{
+  Tx dxL = xC - xL;   // dx on the left
+  Tx dxR = xH - xC;   // dx on the right
+  //rsAssert(dxL*dxR >= 0, "x is not monotonic");
 
+  Ty dyL = yC - yL;
+  Ty dyR = yH - yC;
+  //rsAssert(dyL*dyR >= 0, "y is not monotonic");
+
+  // Compute distances:
+  Ty dL = sqrt(dxL*dxL + dyL*dyL); // 
+  Ty dR = sqrt(dxR*dxR + dyR*dyR);
+  Ty d  = dL + dR;
+}
+*/
 
 template<class Tx, class Ty>
 void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1)
