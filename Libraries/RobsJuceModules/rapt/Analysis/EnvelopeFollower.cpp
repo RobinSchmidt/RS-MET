@@ -77,17 +77,19 @@ void rsEnvelopeFollower2<T>::updateSmoothingFilters()
 /*
 
 Ideas:
+
 -Detect intersample peaks:
  -Remember x[n-2] and x[n-1]. At time n, we have also x[n] available. I assume here that x[n] is 
   already positive, i.e. the absolute value of some input signal
- -If x[n-1] > x[n-2] and x[n-1] > x[n], we have detected a peak.
+ -If x[n-1] >= x[n-2] and x[n-1] >= x[n], we have detected a peak. It's located somewhere near 
+  x[n-1].
  -The exact location of the peak could be anywhere between n-2 and n. Locate it by fitting a 
   parabola. xPeak is the value of the peak, frac is the fractional part of its position.
  -To compute output and update the smoothing filter states, we need to do 2 fractional filter steps 
   (using non-uniform filtering) and one normal step like (I think):
  -If the peak is between n-2 and n-1:
      smoother.setTimeConstant(attack);              //
-     out1 = smoother.getSample(xPeak, fracPos);     // 1st fractional step x[n-2] si currently in the filter's state
+     out1 = smoother.getSample(xPeak, fracPos);     // 1st fractional step x[n-2] is currently in the filter's state
      smoother.setTimeConstant(release);
      out2 = smoother.getSample(x[n-1], 1-fracPos);  // 2nd fractional step
      out3 = smoother.getSample(x[n]);               // this is a full-sample step
@@ -97,9 +99,24 @@ Ideas:
      smoother.setTimeConstant(attack);
      out2 = smoother.getSample(xPeak, fracPos);     // 1st fractional step
      smoother.setTimeConstant(release);
-     out2 = smoother.getSample(x[n], 1-fracPos);    // 2ns fractional step
+     out2 = smoother.getSample(x[n], 1-fracPos);    // 2nd fractional step
  -The scheme introduces a delay of 2 samples, i.e our output at time n applies to the input at n-2
-  I think. Or n-1? 
+  I think. Or is it n-1? 
+
+-Try to produce release shapes other than the 1-pole exponential decay. For example, provide a 
+ linear decay, maybe by using rsSlewRateLimiterLinear instead of rsSlewRateLimiter. But maybe 
+ implement a class rsSlewRateLimiterFlexible that has a flexible shape. It could have members:
+   user params: attackSamples, releaseSamples, shape
+   algo params: coeffAttack, coeffRelease
+ where the coeffs may mean different things depending on shape. Behaviors:
+   exponential:  y = y * c
+   linear:       y = max(0, y - c)
+   gauss:        y = c * y * min(y, 1)
+ where "gauss" behaves like exp(-x^2), I think. We multiply the output by the coeff c < 1 but also
+ by the output y itself whenever y is less than 1 (this is needed to prevent it from blowing up).
+ All of them can be combined with additional smoothing - maybe up to 4th order or something. This 
+ might be especially nice for the linear shape. The cutoff of the smoothing filter should be high 
+ enough to not become the factor that determines the release time.
 
 
 */

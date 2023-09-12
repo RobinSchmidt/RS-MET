@@ -1884,8 +1884,8 @@ void nonUniformArrayDiffAndInt()
   //ND::derivative(x, y, ydn,  N, false);             // Compute numeric derivatve of y = f(x)
   //ND::derivative(y, x, ydns, N, false);             // Compute numeric derivatve of x = f(y)
 
-  // New version - under construction - we try to mae it produce reciprocal slopes when x and y are
-  // swapped:
+  // New version - under construction - we try to make it produce reciprocal slopes when x and y 
+  // are swapped:
   invertibleNumDiff1(x, y, ydn,  N, false); 
   invertibleNumDiff1(y, x, ydns, N, false);
 
