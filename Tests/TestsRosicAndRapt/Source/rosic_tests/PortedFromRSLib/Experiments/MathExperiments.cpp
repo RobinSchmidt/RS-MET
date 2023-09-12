@@ -1773,53 +1773,34 @@ void handleEndsForNumDiff(const Tx* x, const Ty* y, Ty* yd, int N, bool extrapol
 // from rsNumericDifferentiator::derivative(x, y, ydn, N, true);
 
 template<class Tx, class Ty>
-void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
+void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N)
 {
   rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
-  rsAssert(N >= 3, "Arrays need to be at least of length 3");
-  // hmm - that's for the extrapolation - if it's not used, length = 2 would also work, i think
+  rsAssert(N >= 2, "Arrays need to be at least of length 2");
 
   Tx dxL, dxR, dx;
   Ty dyL, dyR, dy;
   Ty wL, wR;          // Weights for backward (left) and forward (right) difference
-  Ty a, b; 
 
   for(int n = 1; n < N-1; n++) 
   {
     dxL   = x[n] - x[n-1];
     dxR   = x[n+1] - x[n];
     //rsAssert(dxL*dxR >= 0, "x is not monotonic");
-    dx    = dxL + dxR;
+
+    //dx    = dxL + dxR;
 
     dyL   = y[n] - y[n-1];
     dyR   = y[n+1] - y[n];
     //rsAssert(dyL*dyR >= 0, "y is not monotonic");
-    dy    = dyL + dyR;
+
+    //dy    = dyL + dyR;
 
     // Compute forward and backward differences:
     Ty sL = dyL / dxL;          // slope via backward difference (L for left)
     Ty sR = dyR / dxR;          // slope via forward difference (R for right)
 
-    //wL    = 0.5;                // preliminary
-    //wR    = 0.5;
-    // ToDo: compute weights based on dxL, dxR, dyL, dyR
-
-    //yd[n] = wL*sL + wR*sR;
-    // This is not invertible, even when wL = wR = 0.5, i.e. the weights are constant and 
-    // independent from the input data
-
-    // Test:
-    //yd[n] = sL;  // test
-    //yd[n] = sR;
-    // OK - using either the forward or the backward difference alone, without any averaging, does
-    // indeed produce an invertible numerical differentiation scheme.
-
-    // Try to use the geometric mean instead of the arithmetic one:
-    //yd[n] = sqrt(sL*sR);
-    // Aha! Yes! This works! It produces an invertible scheme. But now we also want to introduce 
-    // some weights to get a weighted mean....
-
-    // ToDo: Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
+    // Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
     // on equal footing and we should have wL + wR = 1.
     Ty sum = (dyL + dyR) + Ty(dxL + dxR);  // Ad hoc idea for a weight formula that treats...
     wL = (dxR + dyR) / sum;                // ...dx and dy on equal footing. I'm not sure, if it...
@@ -1836,26 +1817,10 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolat
     // absolute values somewhere and re-apply the orginal sign later. Maybe this need to be done
     // to dxL, dxR, dyL, dyR. Don't assume that x is ascending! When swapping x and y somewhere in 
     // a caller, we may also get a descending x array. 
-
-    //yd[n] = dxR * (y[n]-y[n-1])/(dxL*dx) + dxL * (y[n+1]-y[n])/(dxR*dx);
-    // Old formula - uses only the distances on the x-axis for the weights.
   }
-  // todo: save the left weight and use it as right weight in the next iteration (save one division
-  // per iteration)
 
-  handleEndsForNumDiff(x, y, yd, N, extrapolateEnds);
 
-  /*
-  if( extrapolateEnds == true ) { 
-    a = (yd[2]   - yd[1]  ) / (x[2]   - x[1]  ); b = yd[1]   - a*x[1];   yd[0]   = a*x[0]   + b;
-    a = (yd[N-2] - yd[N-3]) / (x[N-2] - x[N-3]); b = yd[N-3] - a*x[N-3]; yd[N-1] = a*x[N-1] + b;
-  } else {
-    yd[0]   = (y[1]   - y[0])   / (x[1]   - x[0]  );
-    yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]); }
-  // maybe the first branch can be simplified by using rsInterpolateLinear, like
-  //   yd[0]   = lerp(x[0],   x[1],   yd[1],   x[2],   yd[2]  );
-  //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
-  */
+  handleEndsForNumDiff(x, y, yd, N, false);
 
   // Notes:
   // -An invertible scheme results only when do either yd[n] = sL;  or  yd[n] = sR;. As soon as we 
@@ -1874,6 +1839,8 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolat
   //  good or bad thing. Dunno.
 
   // ToDo:
+  // -Save the left weight and use it as right weight in the next iteration (save one division
+  //  per iteration)
   // -Try to come up with more ideas for invertible numerical differentiation schemes, where by 
   //  "invertible", I mean that the scheme should respect the inverse function law for 
   //  differentiation.
@@ -1919,7 +1886,7 @@ bool testNonUniformInvertibleDiff()
     //y[n] = sqrt(x[n]);
     y[n] = x[n] + 0.0*x[n]*x[n] - 0.4*sin(2*x[n]);    // The new f(x)
   }
-  plotData(N, x, y);
+  //plotData(N, x, y);
 
   // Compute numeric derivatives:
   Real yd[N];                 // numeric y'
@@ -1929,8 +1896,8 @@ bool testNonUniformInvertibleDiff()
 
   // Compute numerical derivatives of y with respect to x and also numerical derivatives of x with 
   // with resepct to y. The intention is that they should be reciprocals of one another:
-  invertibleNumDiff1(x, y, yd,   N, false); 
-  invertibleNumDiff1(y, x, yd_s, N, false);
+  invertibleNumDiff1(x, y, yd,   N); 
+  invertibleNumDiff1(y, x, yd_s, N);
 
   // Compute reciprocals of yd and compare to yd_s. The intention is that they should be the same:
   for(int n = 0; n < N; n++) {   
@@ -1945,7 +1912,8 @@ bool testNonUniformInvertibleDiff()
   // Observations:
   // -The new scheme invertibleNumDiff1() seems to indeed produce reciprocal slopes when swapping
   //  the x and y arrays. But for the endpoints, the extrapolation does not work. We need to pass
-  //  false for the last parameter. ...TBC...
+  //  false for the last parameter. ...OK - I removed the parameter. We now always use 1st order
+  //  differences at the boudaries and don't bother with extrapolation anymore.
   //
   // Old observations when we were using ND::derivative instead of invertibleNumDiff for trying to
   // produce the reciprocal slopes by swapping x and y:
