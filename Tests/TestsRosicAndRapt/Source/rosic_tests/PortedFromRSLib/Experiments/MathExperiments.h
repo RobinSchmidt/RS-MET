@@ -32,6 +32,7 @@ void splineInterpolationAreaNormalized();
 void numericDifferentiation();
 void numericIntegration();
 void nonUniformArrayDiffAndInt();
+bool testNonUniformInvertibleDiff();
 void uniformArrayDiffAndInt();
 void iteratedNumDiff();
 //void vertexMeshGradient();

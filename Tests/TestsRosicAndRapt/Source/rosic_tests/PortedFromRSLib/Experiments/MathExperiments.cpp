@@ -1930,6 +1930,15 @@ void nonUniformArrayDiffAndInt()
 // along the diagonal and only the 3 top-left, 3 repeated diagonal and 3 bottom-right elements are
 // specified. Implement a variant based on a Hermite interpolant first - because that is simpler
 
+bool testNonUniformInvertibleDiff()
+{
+  bool ok = true;
+
+
+
+  return ok;
+}
+
 /*
 template<class T>
 void integrateTrapezoidal(T* x, T* y, int N, T y0 = T(0))
@@ -1963,9 +1972,6 @@ void differentiateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
   for(int n = 1; n < N; n++)
     y[n] = T(2) * (x[n] - x[n-1]) - y[n-1];
 }
-
-
-
 
 // plots the signal x together with the responses of the cumulative-sum and trapezoidal 
 // integrators:
