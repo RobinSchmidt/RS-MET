@@ -1840,31 +1840,11 @@ T invertibleNumDiff2(
   Poly::fitQuadratic(a, t, x);
   Poly::fitQuadratic(b, t, y);
 
-  /*
-  // Tests for debug:
-  T _xL = Poly::evaluate(tL, a, 2);  // should reconstruct xL
-  T _yL = Poly::evaluate(tL, b, 2);  // should reconstruct yL
-  T _xC = Poly::evaluate(tC, a, 2);  // should reconstruct xC
-  T _yC = Poly::evaluate(tC, b, 2);  // should reconstruct yC
-  T _xH = Poly::evaluate(tH, a, 2);  // should reconstruct xH
-  T _yH = Poly::evaluate(tH, b, 2);  // should reconstruct yH
-  // OK - that looks good
-  */
-
-  //T dxdt = Poly::evaluateDerivative(tC, a, 2);
-  //T dydt = Poly::evaluateDerivative(tC, b, 2);
-  // Can be done simpler because tC = 0!
-
-  // Compute dx/dt and dy/dt:
+  // Compute dx/dt and dy/dt. The derivative of the curve is then given by 
+  // (dy/dt) / (dx/dt):
   T dxdt = a[1];  // == Poly::evaluateDerivative(tC, a, 2), works because tC == 0
   T dydt = b[1];  // == Poly::evaluateDerivative(tC, b, 2), ditto
-
-  // The derivative of the curve is given by dydt / dxdt
   return dydt / dxdt;
-  // Verify!
-
-  // Return dydt / dxdt
-  //return 0;
 }
 
 template<class Tx, class Ty>
@@ -1973,6 +1953,29 @@ bool testNonUniformInvertibleDiff()
   invertibleNumDiff1(x, y, yd2, N, 2);
   plotData(N, x, yd1, yd2);
 
+  // Now try f(x) = sqrt(x). We'll plot the analytical derivative and the two numeric derivatives
+  // according to our two formulas:
+  for(int n = 0; n < N; n++)
+  {
+    //y[n]  = sqrt(x[n]);
+    //yd[n] = 0.5 / y[n];    // analytic derivative
+
+    y[n]  = x[n]*x[n];
+    yd[n] = 2*x[n];
+  }
+  invertibleNumDiff1(x, y, yd1, N, 1);
+  invertibleNumDiff1(x, y, yd2, N, 2);
+  Real err2[N];
+  for(int n = 0; n < N; n++)
+  {
+    err[n]  = yd[n] - yd1[n];
+    err2[n] = yd[n] - yd2[n];
+  }
+  plotData(N, x, yd, yd1, yd2, err, err2);
+
+
+
+
 
 
   // Observations:
@@ -1982,7 +1985,11 @@ bool testNonUniformInvertibleDiff()
   //  differences at the boudaries and don't bother with extrapolation anymore.
   // -Both formulas (1 and 2) seem to have the desired porperty of giving reciprocal derivative 
   //  values when x and y are swapped. It actually even looks like they produce the saem results.
-  //  Test that! ...Nope - not exactly - but very close!
+  //  Test that! ...Nope - not exactly - but very close! Formula 1 seems to be slightly better but
+  //  maybe that depends on the function (maybe on concave vs convex). ToDo: Try combining aspects 
+  //  of both forumals: use Euclidean distances for the weights. Maybe that is even more accurate?
+
+  //
   //
   // Old observations when we were using ND::derivative instead of invertibleNumDiff for trying to
   // produce the reciprocal slopes by swapping x and y:
