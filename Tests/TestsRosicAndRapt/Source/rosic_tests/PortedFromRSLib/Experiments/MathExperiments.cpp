@@ -1824,14 +1824,11 @@ T invertibleNumDiff2(
   // Compute distances:
   T dL = sqrt(dxL*dxL + dyL*dyL); // 
   T dR = sqrt(dxR*dxR + dyR*dyR);
-  //T d  = dL + dR;
 
   // Figure out start and endpoints for the independent parameter t:
   T tL = 0 - dL;
   T tC = 0;
   T tH = 0 + dR;
-
-  //T tC = dL / d;
 
   // Now pass a parabola x(t) through (tL,xL), (tC,xC), (tH,xH) and likewise a parabola y(t) 
   // through (tL,yL), (tC,yC), (tH,yH)
@@ -1843,18 +1840,31 @@ T invertibleNumDiff2(
   Poly::fitQuadratic(a, t, x);
   Poly::fitQuadratic(b, t, y);
 
-  //...
+  /*
+  // Tests for debug:
+  T _xL = Poly::evaluate(tL, a, 2);  // should reconstruct xL
+  T _yL = Poly::evaluate(tL, b, 2);  // should reconstruct yL
+  T _xC = Poly::evaluate(tC, a, 2);  // should reconstruct xC
+  T _yC = Poly::evaluate(tC, b, 2);  // should reconstruct yC
+  T _xH = Poly::evaluate(tH, a, 2);  // should reconstruct xH
+  T _yH = Poly::evaluate(tH, b, 2);  // should reconstruct yH
+  // OK - that looks good
+  */
 
+  //T dxdt = Poly::evaluateDerivative(tC, a, 2);
+  //T dydt = Poly::evaluateDerivative(tC, b, 2);
+  // Can be done simpler because tC = 0!
 
-  //void fitQuadratic(T* a, const T* x, const T* y)
+  // Compute dx/dt and dy/dt:
+  T dxdt = a[1];  // == Poly::evaluateDerivative(tC, a, 2), works because tC == 0
+  T dydt = b[1];  // == Poly::evaluateDerivative(tC, b, 2), ditto
 
-  // Compute dx/dt and dy/dt at tC:
-  // ...
-  
+  // The derivative of the curve is given by dydt / dxdt
+  return dydt / dxdt;
+  // Verify!
 
   // Return dydt / dxdt
-
-  return 0;
+  //return 0;
 }
 
 template<class Tx, class Ty>
