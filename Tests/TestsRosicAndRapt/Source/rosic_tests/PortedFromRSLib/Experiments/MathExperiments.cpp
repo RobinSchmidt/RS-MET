@@ -1755,6 +1755,24 @@ void nonUniformArrayDiffAndInt()
 // x and y are swapped.
 
 template<class Tx, class Ty>
+void handleEndsForNumDiff(const Tx* x, const Ty* y, Ty* yd, int N, bool extrapolate)
+{
+  if( extrapolate == true ) { 
+    Ty a, b;
+    a = (yd[2]   - yd[1]  ) / (x[2]   - x[1]  ); b = yd[1]   - a*x[1];   yd[0]   = a*x[0]   + b;
+    a = (yd[N-2] - yd[N-3]) / (x[N-2] - x[N-3]); b = yd[N-3] - a*x[N-3]; yd[N-1] = a*x[N-1] + b;
+  } else {
+    yd[0]   = (y[1]   - y[0])   / (x[1]   - x[0]  );
+    yd[N-1] = (y[N-1] - y[N-2]) / (x[N-1] - x[N-2]); }
+  // maybe the first branch can be simplified by using rsInterpolateLinear, like
+  //   yd[0]   = lerp(x[0],   x[1],   yd[1],   x[2],   yd[2]  );
+  //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
+}
+// The code for handling the endpoint (i.e. boundary points) has been factored out to avoid 
+// duplication. Eventually, this can be integrated into rsNumericDifferentiator and also be called 
+// from rsNumericDifferentiator::derivative(x, y, ydn, N, true);
+
+template<class Tx, class Ty>
 void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolateEnds)
 {
   rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
@@ -1825,6 +1843,9 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolat
   // todo: save the left weight and use it as right weight in the next iteration (save one division
   // per iteration)
 
+  handleEndsForNumDiff(x, y, yd, N, extrapolateEnds);
+
+  /*
   if( extrapolateEnds == true ) { 
     a = (yd[2]   - yd[1]  ) / (x[2]   - x[1]  ); b = yd[1]   - a*x[1];   yd[0]   = a*x[0]   + b;
     a = (yd[N-2] - yd[N-3]) / (x[N-2] - x[N-3]); b = yd[N-3] - a*x[N-3]; yd[N-1] = a*x[N-1] + b;
@@ -1834,6 +1855,7 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, bool extrapolat
   // maybe the first branch can be simplified by using rsInterpolateLinear, like
   //   yd[0]   = lerp(x[0],   x[1],   yd[1],   x[2],   yd[2]  );
   //   yd[N-1] = lerp(x[N-1], x[N-2], yd[N-2], x[N-3], yd[N-3]);
+  */
 
   // Notes:
   // -An invertible scheme results only when do either yd[n] = sL;  or  yd[n] = sR;. As soon as we 
