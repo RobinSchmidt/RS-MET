@@ -1772,29 +1772,58 @@ void handleEndsForNumDiff(const Tx* x, const Ty* y, Ty* yd, int N, bool extrapol
 // duplication. Eventually, this can be integrated into rsNumericDifferentiator and also be called 
 // from rsNumericDifferentiator::derivative(x, y, ydn, N, true);
 
+// L,C,H: low, center, high
+template<class Tx, class Ty>
+Ty invertibleNumDiff1(
+  const Tx& xL, const Ty& yL, const Tx& xC, const Ty& yC, const Tx& xH, const Ty& yH)
+{
+  Tx dxL = xC - xL;   // dx on the left
+  Tx dxR = xH - xC;   // dx on the right
+  //rsAssert(dxL*dxR >= 0, "x is not monotonic");
+
+  Ty dyL = yC - yL;
+  Ty dyR = yH - yC;
+  //rsAssert(dyL*dyR >= 0, "y is not monotonic");
+
+  // Compute forward and backward differences:
+  Ty sL = dyL / dxL;          // slope via backward difference (L for left)
+  Ty sR = dyR / dxR;          // slope via forward difference (R for right)
+
+  // Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
+  // on equal footing and we should have wL + wR = 1.
+  Ty sum = (dyL + dyR) + Ty(dxL + dxR);  // Ad hoc idea for a weight formula that treats...
+  Ty wL = (dxR + dyR) / sum;             // ...dx and dy on equal footing. I'm not sure, if it...
+  Ty wR = (dxL + dyL) / sum;             // ...makes a whole lot of sense, though.
+  rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13)); // Sanity check
+
+  // Compute weighted geometric mean of left and right difference and return it as result:
+  Ty yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
+  return yd;
+}
+// API should resemble fitCubicThroughFourPoints in Interpolation.h
+
 template<class Tx, class Ty>
 void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N)
 {
   rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
   rsAssert(N >= 2, "Arrays need to be at least of length 2");
 
-  Tx dxL, dxR, dx;
-  Ty dyL, dyR, dy;
-  Ty wL, wR;          // Weights for backward (left) and forward (right) difference
+  //Tx dxL, dxR, dx;
+  //Ty dyL, dyR, dy;
+  //Ty wL, wR;          // Weights for backward (left) and forward (right) difference
 
   for(int n = 1; n < N-1; n++) 
   {
+    yd[n] = invertibleNumDiff1(x[n-1], y[n-1], x[n], y[n], x[n+1], y[n+1]);
+
+    /*
     dxL   = x[n] - x[n-1];
     dxR   = x[n+1] - x[n];
     //rsAssert(dxL*dxR >= 0, "x is not monotonic");
 
-    //dx    = dxL + dxR;
-
     dyL   = y[n] - y[n-1];
     dyR   = y[n+1] - y[n];
     //rsAssert(dyL*dyR >= 0, "y is not monotonic");
-
-    //dy    = dyL + dyR;
 
     // Compute forward and backward differences:
     Ty sL = dyL / dxL;          // slope via backward difference (L for left)
@@ -1817,6 +1846,7 @@ void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N)
     // absolute values somewhere and re-apply the orginal sign later. Maybe this need to be done
     // to dxL, dxR, dyL, dyR. Don't assume that x is ascending! When swapping x and y somewhere in 
     // a caller, we may also get a descending x array. 
+    */
   }
 
 
