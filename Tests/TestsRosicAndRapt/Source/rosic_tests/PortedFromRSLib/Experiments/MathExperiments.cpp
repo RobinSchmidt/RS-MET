@@ -1772,38 +1772,12 @@ void handleEndsForNumDiff(const Tx* x, const Ty* y, Ty* yd, int N, bool extrapol
 // duplication. Eventually, this can be integrated into rsNumericDifferentiator and also be called 
 // from rsNumericDifferentiator::derivative(x, y, ydn, N, true);
 
-// L,C,H: low, center, high
+
+// L,C,H: low, center, high. API resembles fitCubicThroughFourPoints in Interpolation.h.
+// This formula passes a parabolic spline arc through the 3 points, i.e. it constructs parabolic
+// functions x(t), y(t) that depend on some third parameter t. ...TBC...
 template<class T>
 T invertibleNumDiff1(
-  const T& xL, const T& yL, const T& xC, const T& yC, const T& xH, const T& yH)
-{
-  T dxL = xC - xL;   // dx on the left
-  T dxR = xH - xC;   // dx on the right
-  //rsAssert(dxL*dxR >= 0, "x is not monotonic");
-
-  T dyL = yC - yL;
-  T dyR = yH - yC;
-  //rsAssert(dyL*dyR >= 0, "y is not monotonic");
-
-  // Compute forward and backward differences:
-  T sL = dyL / dxL;          // slope via backward difference (L for left)
-  T sR = dyR / dxR;          // slope via forward difference (R for right)
-
-  // Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
-  // on equal footing and we should have wL + wR = 1.
-  T sum = (dyL + dyR) + (dxL + dxR);    // Ad hoc idea for a weight formula that treats...
-  T wL = (dxR + dyR) / sum;             // ...dx and dy on equal footing. I'm not sure, if it...
-  T wR = (dxL + dyL) / sum;             // ...makes a whole lot of sense, though.
-  rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13)); // Sanity check
-
-  // Compute weighted geometric mean of left and right difference and return it as result:
-  T yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
-  return yd;
-}
-// API should resemble fitCubicThroughFourPoints in Interpolation.h
-
-template<class T>
-T invertibleNumDiff2(
   const T& xL, const T& yL, const T& xC, const T& yC, const T& xH, const T& yH)
 {
   T dxL = xC - xL;   // dx on the left
@@ -1840,13 +1814,45 @@ T invertibleNumDiff2(
   return dydt / dxdt;
 }
 
+// This formula uses weighted geometric mean of backward and forward difference where the weights 
+// are determined via the Manhattan distance:
+template<class T>
+T invertibleNumDiff2(
+  const T& xL, const T& yL, const T& xC, const T& yC, const T& xH, const T& yH)
+{
+  T dxL = xC - xL;   // dx on the left
+  T dxR = xH - xC;   // dx on the right
+  //rsAssert(dxL*dxR >= 0, "x is not monotonic");
+
+  T dyL = yC - yL;
+  T dyR = yH - yC;
+  //rsAssert(dyL*dyR >= 0, "y is not monotonic");
+
+  // Compute forward and backward differences:
+  T sL = dyL / dxL;          // slope via backward difference (L for left)
+  T sR = dyR / dxR;          // slope via forward difference (R for right)
+
+  // Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
+  // on equal footing and we should have wL + wR = 1.
+  T sum = (dyL + dyR) + (dxL + dxR);    // Ad hoc idea for a weight formula that treats...
+  T wL = (dxR + dyR) / sum;             // ...dx and dy on equal footing. I'm not sure, if it...
+  T wR = (dxL + dyL) / sum;             // ...makes a whole lot of sense, though.
+  rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13)); // Sanity check
+
+  // Compute weighted geometric mean of left and right difference and return it as result:
+  T yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
+  return yd;
+}
+
+// This formula uses weighted geometric mean of backward and forward difference where the weights 
+// are determined via the Euclidean distance:
 template<class T>
 T invertibleNumDiff3(
   const T& xL, const T& yL, const T& xC, const T& yC, const T& xH, const T& yH)
 {
   T dxL = xC - xL;   // dx on the left
   T dxR = xH - xC;   // dx on the right
-                     //rsAssert(dxL*dxR >= 0, "x is not monotonic");
+  //rsAssert(dxL*dxR >= 0, "x is not monotonic");
 
   T dyL = yC - yL;
   T dyR = yH - yC;
@@ -1855,15 +1861,6 @@ T invertibleNumDiff3(
   // Compute forward and backward differences:
   T sL = dyL / dxL;          // slope via backward difference (L for left)
   T sR = dyR / dxR;          // slope via forward difference (R for right
-  
-  /*
-  // Compute suitable weights wL, wR. The computation should treat (dxL,dxR) and (dyL,dyR)
-  // on equal footing and we should have wL + wR = 1.
-  T sum = (dyL + dyR) + (dxL + dxR);    // Ad hoc idea for a weight formula that treats...
-  T wL = (dxR + dyR) / sum;             // ...dx and dy on equal footing. I'm not sure, if it...
-  T wR = (dxL + dyL) / sum;             // ...makes a whole lot of sense, though.
-  rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13)); // Sanity check
-  */
 
   // Compute distances:
   T dL  = sqrt(dxL*dxL + dyL*dyL);
@@ -1873,14 +1870,13 @@ T invertibleNumDiff3(
   T wR = dL / sum;
   rsAssert(rsIsCloseTo(wL+wR, 1.0, 1.e-13)); // Sanity check
 
-
   // Compute weighted geometric mean of left and right difference and return it as result:
   T yd = pow(sL, wL) * pow(sR, wR);     // Weighted geometric mean
   return yd;
 }
 
 template<class Tx, class Ty>
-void invertibleNumDiff1(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1)
+void invertibleNumDiff(const Tx *x, const Ty *y, Ty *yd, int N, int formula = 1)
 {
   rsAssert(y != yd, "Cannot be used in place yet, y and yd have to be distinct");
   rsAssert(N >= 2, "Arrays need to be at least of length 2");
@@ -1971,8 +1967,8 @@ bool testNonUniformInvertibleDiff()
 
   // Compute numerical derivatives of y with respect to x and also numerical derivatives of x with 
   // with resepct to y. The intention is that they should be reciprocals of one another:
-  invertibleNumDiff1(x, y, yd, N, formula);
-  invertibleNumDiff1(y, x, yd_s, N, formula);
+  invertibleNumDiff(x, y, yd,   N, formula);
+  invertibleNumDiff(y, x, yd_s, N, formula);
 
   // Compute reciprocals of yd and compare to yd_s. The intention is that they should be the same:
   for(int n = 0; n < N; n++) {
@@ -1987,9 +1983,9 @@ bool testNonUniformInvertibleDiff()
 
   // Compare the derivatives obtained by the 3 different formulas:
   Real yd1[N], yd2[N], yd3[N];
-  invertibleNumDiff1(x, y, yd1, N, 1);
-  invertibleNumDiff1(x, y, yd2, N, 2);
-  invertibleNumDiff1(x, y, yd3, N, 3);
+  invertibleNumDiff(x, y, yd1, N, 1);
+  invertibleNumDiff(x, y, yd2, N, 2);
+  invertibleNumDiff(x, y, yd3, N, 3);
   plotData(N, x, yd1, yd2, yd3);
 
   // Now try f(x) = sqrt(x). We'll plot the analytical derivative and the two numeric derivatives
@@ -2002,9 +1998,9 @@ bool testNonUniformInvertibleDiff()
     //y[n]  = x[n]*x[n];
     //yd[n] = 2*x[n];
   }
-  invertibleNumDiff1(x, y, yd1, N, 1);
-  invertibleNumDiff1(x, y, yd2, N, 2);
-  invertibleNumDiff1(x, y, yd3, N, 3);
+  invertibleNumDiff(x, y, yd1, N, 1);
+  invertibleNumDiff(x, y, yd2, N, 2);
+  invertibleNumDiff(x, y, yd3, N, 3);
   Real err2[N], err3[N];
   for(int n = 0; n < N; n++)
   {
