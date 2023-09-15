@@ -632,7 +632,7 @@ public:
   /** Named color palettes. ...TBC... */
   enum class ColorPalette  
   {
-    // Unipolar maps:
+    // Linear:
     magma,
     printable,          // black-blue-pink-orange-yellow-white. Translates well to grayscale.
     plasma,
@@ -640,7 +640,7 @@ public:
     viridis,            // From dark blue via green to yellow.
     viridisBrt,         // Similar to viridis but brighter and with some orange near the top.
 
-    // Bipolar maps:
+    // Diverging:
     BrBG,               // brown-white-bluegreen
     moreland,           // blue-lightgray-red
     PRGn,               // purple-white-green
@@ -652,7 +652,19 @@ public:
     numColorPalettes
   };
   // We use suffixes Brt for Bright, Drk for dark
-  // ToDo: document sources, see comments at the bottom of GNUPlotter.cpp 
+  // ToDo: 
+  // -Document sources, see comments at the bottom of GNUPlotter.cpp 
+  // -Maybe prefix the maps by initials of author like AS_BrBG (Anna Schneider), KM_ (Kenneth 
+  //  Moreland), ML_ (MatLab), etc.
+
+  //  
+  //
+  // http://www.kennethmoreland.com/color-advice/
+  // https://colorcet.com/gallery.html
+  // https://colorcet.com/userguide/index.html  
+  //  -> use classification for there: linear, diverging, rainbow, cyclic, low contrast, etc.
+  // https://www.fabiocrameri.ch/colourmaps/
+  // https://bids.github.io/colormap/
 
   //  traditional pm3d (black-blue-red-yellow)
 
