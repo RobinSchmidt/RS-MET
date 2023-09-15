@@ -665,6 +665,7 @@ public:
   //  -> use classification for there: linear, diverging, rainbow, cyclic, low contrast, etc.
   // https://www.fabiocrameri.ch/colourmaps/
   // https://bids.github.io/colormap/
+  // http://www.gnuplotting.org/tag/palette/
 
   //  traditional pm3d (black-blue-red-yellow)
 
