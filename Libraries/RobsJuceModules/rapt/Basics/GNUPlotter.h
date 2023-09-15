@@ -448,7 +448,9 @@ public:
 
 
 
-
+  /** Given a bivariate function f = f(x,y), ranges for x and y and numbers of samples along x 
+  and y, this function generates the data matrix of the heights produced by f and adds the data as 
+  matrix data to the plotter object. */
   template <class T>
   void addDataBivariateFunction(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax, 
     const std::function<T(T, T)>& f);
@@ -634,16 +636,24 @@ public:
     magma,
     printable,          // black-blue-pink-orange-yellow-white. Translates well to grayscale.
     plasma,
+    tradPm3d,           // traditional pm3d, black-blue-red-yellow
     viridis,            // From dark blue via green to yellow.
     viridisBrt,         // Similar to viridis but brighter and with some orange near the top.
 
     // Bipolar maps:
-    prpGrnRed,
+    BrBG,               // brown low, white middle, and blue-green high
+    moreland,           // blue-lightgray-red
+    prpGrnRed,          // rainbow (purple-blue-green-yellow-red), middle is bright
+
+
+    _test, 
 
     numColorPalettes
   };
   // We use suffixes Brt for Bright, Drk for dark
   // ToDo: document sources, see comments at the bottom of GNUPlotter.cpp 
+
+  //  traditional pm3d (black-blue-red-yellow)
 
 
   //-----------------------------------------------------------------------------------------------

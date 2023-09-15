@@ -296,18 +296,41 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   using CP = ColorPalette;
   switch(palette)
   {
+  case CP::BrBG:       c = "set palette defined (0 '#8C510A', 1 '#BF812D', 2 '#DFC27D', 3 '#F6E8C3', 4 '#C7EAE5', 5 '#80CDC1', 6 '#35978F', 7 '#01665E')"; break;
   case CP::viridisBrt: c = "set palette defined (0 '#352a87', 1 '#0363e1', 2 '#1485d4', 3 '#06a7c6', 4 '#38b99e', 5 '#92bf73', 6 '#d9ba56', 7 '#fcce2e', 8 '#f9fb0e')"; break;
   case CP::viridis:    c = "set palette defined (0 '#440154', 1 '#472c7a', 2 '#3b518b', 3 '#2c718e', 4 '#21908d', 5 '#27ad81', 6 '#5cc863', 7 '#aadc32', 8 '#fde725')"; break;
   case CP::plasma:     c = "set palette defined (0 '#0c0887', 1 '#4b03a1', 2 '#7d03a8', 3 '#a82296', 4 '#cb4679', 5 '#e56b5d', 6 '#f89441', 7 '#fdc328', 8 '#f0f921')"; break;
   case CP::magma:      c = "set palette defined (0 '#000004', 1 '#1c1044', 2 '#4f127b', 3 '#812581', 4 '#b5367a', 5 '#e55964', 6 '#fb8761', 7 '#fec287', 8 '#fbfdbf')"; break;
+  case CP::moreland:   c = "set palette defined (0 '#3b4cc0', 1 '#688aef', 2 '#99baff', 3 '#c9d8ef', 4 '#edd1c2', 5 '#f7a789', 6 '#e36a53', 7 '#b40426')"; break;  
   case CP::prpGrnRed:  c = "set palette rgbformulae 33,13,10"; break;
   case CP::printable:  c = "set palette rgbformulae 30,31,32"; break;
+  case CP::tradPm3d:   c = "set palette rgbformulae  7, 5,15"; break;
+
+
+
+
+  case CP::_test:   c = "set palette rgbformulae 3,23,21"; break;
+
+    // 7,5,15:  traditional pm3d (black-blue-red-yellow) - done
+    // 33,13,10 ... rainbow (purple-blue-green-yellow-red) - done
+
+    // 3,11,6   ... green-red-violet   not so good
+    // 23,28,3  ... ocean (green-blue-white); try also all other permutations - not good
+    // 21,23,3 (no!) or 
+
+
+    // 21,22,23 ... hot (black-red-yellow-white) -  good!
+    // 34,35,36 ... AFM hot (black-red-yellow-white) - good!
+    // 3,23,21 (good, unipolar)
+
+    // 8,9,7: burgund-white
+
 
   // ...more to come
   }
 
   if(inverted)
-    c += " negative";  // needs test
+    c += " negative";
 
   addCommand(c);
 }
@@ -1234,6 +1257,9 @@ ToDo:
  I like:  traditional pm3d, AFM hot, black-blue-violet-yellow-white (printable in grayscale), 
  rainbow
  set palette rgbformulae 7,5,15
+ About the rgbformulae:  https://gnuplot.sourceforge.net/docs_4.2/node216.html
+
+-Make a bipolar map from dark-red via light-green to dark-blue
 
 -maybe move the explicit template instantiations to another file...that would reduce clutter in 
  this implementation file - but would make the library harder to use - the user would have to deal
