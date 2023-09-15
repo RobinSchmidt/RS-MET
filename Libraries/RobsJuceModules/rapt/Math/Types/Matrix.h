@@ -15,15 +15,16 @@ class rsMatrix2x2
 public:
 
   T a, b, c, d;
-  // matrix coefficients |a b|
-  //                     |c d|
+  // matrix coefficients [a b]
+  //                     [c d]
 
 
   /** Stadard constructor. You can pass the matrix elements. If you pass nothing, an identity
   matrix will be created. */
   //rsMatrix2x2(T a = T(1), T b = T(0), T c = T(0), T d = T(1)) { setValues(a, b, c, d); }
-  // todo: maybe require arguments to be passed - or initialze teh matrix to the zero matrix
-  // by default
+  // ToDo: Maybe require arguments to be passed or initialize the matrix to the zero matrix
+  // by default. The zero matrix seems to make more sense than the identity for default 
+  // construction
 
   /** Constructor. Initializes elements with  given values. */
   rsMatrix2x2(T a, T b, T c, T d) { setValues(a, b, c, d); }
@@ -88,7 +89,7 @@ public:
   }
   // doesn't work with complex matrices
 
-  /** Computes n-th power of the matrix using closed form formula from:
+  /** Computes n-th power of the matrix using the closed form formula from:
   https://people.math.carleton.ca/~williams/papers/pdf/175.pdf , Eq. 2
   https://distill.pub/2017/momentum/ (section "Dynamics of momentum")
   ...it has been tested with real matrices with real eigenvalues (distinct and equal) - but what
@@ -163,21 +164,22 @@ public:
 
   static rsMatrix2x2<T> identity() { return rsMatrix2x2<T>(T(1), T(0), T(0), T(1)); }
 
-  /** Returns the commutator of the two matrices A and B: C = A*B - B*A. In general, matrix
+  /** Returns the commutator C of the two matrices A and B: C = A*B - B*A. In general, matrix
   multiplication is non-commutative, but for some special cases, it may be commutative nonetheless.
   The commutator captures, how non-commutative two matrices behave when being multiplied. If the
   two matrices commute (i.e. behave commutatively), their commutator is the zero matrix. */
   static rsMatrix2x2<T> commutator(const rsMatrix2x2<T>& A, const rsMatrix2x2<T>& B)
   { return A*B - B*A; }
   // see: https://en.wikipedia.org/wiki/Commutator#Ring_theory
-  // -Maybe implement also the anticommutatior defined there as: {A,B} = A*B + B*A
+  // -Maybe implement also the anticommutator defined there as: {A,B} = A*B + B*A
   // -Maybe implement it as a free function rsCommutator for arbitrary types. The notion of a 
   //  commutator may make sense for other things as well (for example, multivectors)
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
-  /** Solves A*x = b for x. */
+  /** Solves A*x = b for x. The matrix A is assumed to be regular. If it's singular, we'll 
+  encounter a division by zero and produce garbage. */
   static void solve(const rsMatrix2x2<T>& A, rsVector2D<T>& x, const rsVector2D<T>& b)
   {
     //T tol = 1000 * RS_EPS(T);
@@ -218,7 +220,7 @@ public:
   // ToDo: 
   // -Maybe use an absolute threshold that defaults to zero, like: if(abs(D) <= thresh) { ... } 
   // -Maybe don't return zero but instead a least-squares or minimum-norm solution. But maybe both
-  //  variants should be available under different names. Mayby call the function above solveOrZero
+  //  variants should be available under different names. Maybe call the function above solveOrZero
   //  and the variant using least-squares/min-norm solveOrApprox or just solveApprox or 
   //  solveLeastSquares or solveBest
 
@@ -480,9 +482,10 @@ public:
   }
   // needs test, todo: implement test for antisymmetry - the structure is the same, just that we 
   // need to use at(i,j) + at(j,i) instead of at(i,j) - at(j,i)
-  // shouldn't the inner j-loop start at j+1? A(i,j) is always equal to A(j,i) when i==j, so it 
-  // seems, we are checking one value too many...but that will not translate to the check for 
-  // antisymmetry because A(i,i) is only equal to -A(i,i) when it's zero
+  // Shouldn't the inner j-loop start at i+1? A(i,j) is always equal to A(j,i) when i==j, so it 
+  // seems, we are checking one value too many. It doesn't make the result wrong - we are just 
+  // doing (slightly) more work than strictly necessary. But that will not translate to the check
+  // for antisymmetry because A(i,i) is only equal to -A(i,i) when it's zero.
 
 
   /** Returns a const pointer to the data for read access as a flat array. */
@@ -522,6 +525,12 @@ public:
   // actually, we should move this to rsArrayTools::getOverlap(T* x, size_t Nx, T*y, size_t Ny)
   // needs unit test
 
+  /** Returns the minimum value of all elements in the matrix. */
+  T getMinimum() const { return rsArrayTools::minValue(dataPointer, getSize()); }
+
+  /** Returns the maximum value of all elements in the matrix. */
+  T getMaximum() const { return rsArrayTools::maxValue(dataPointer, getSize()); }
+
   /** Returns the maximum absolute value of all elements in the matrix. */
   T getAbsoluteMaximum() const { return rsArrayTools::maxAbs(dataPointer, getSize()); }
 
@@ -552,7 +561,6 @@ public:
   }
   // todo: use *= - (needs implementation of that operator in rsRationalFunction)
 
-  // todo: getTrace(), getDiagonalProduct()
 
   /** Copies data of i-th row into given array arr which should be of length numCols. */
   void copyRow(int i, T* arr) const
