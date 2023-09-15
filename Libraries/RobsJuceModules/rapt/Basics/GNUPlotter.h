@@ -641,8 +641,9 @@ public:
     viridisBrt,         // Similar to viridis but brighter and with some orange near the top.
 
     // Bipolar maps:
-    BrBG,               // brown low, white middle, and blue-green high
+    BrBG,               // brown-white-bluegreen
     moreland,           // blue-lightgray-red
+    PRGn,               // purple-white-green
     prpGrnRed,          // rainbow (purple-blue-green-yellow-red), middle is bright
 
 
