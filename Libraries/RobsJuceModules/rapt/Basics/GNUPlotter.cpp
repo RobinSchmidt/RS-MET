@@ -101,7 +101,10 @@ void GNUPlotter::plotVectorField2D(
 {
   GNUPlotter p;
   p.addVectorField2D(fx, fy, Nx, xMin, xMax, Ny, yMin, yMax);
-  p.addCommand("set palette rgbformulae 30,31,32 negative");
+
+  p.addCommand("set palette rgbformulae 30,31,32 negative");  
+  // use setColorPalette or get rid entirely!
+
   p.plot();
   // maybe try a black background (and invert the colormap)
 }
@@ -257,6 +260,17 @@ void GNUPlotter::addDefaultCommands()
   addCommand("\n# Custom Settings:"); // subsequent commands appear in "Custom Settings" section
 }
 
+void GNUPlotter::setToDarkMode()
+{
+  addCommand("set term wxt background rgb \"black\"");
+  addCommand("set border lw 1 lc rgb \"white\"");
+  addCommand("set grid lw 1 lc rgb \"white\"");
+  addCommand("set xtics textcolor rgb \"white\"");
+  addCommand("set ytics textcolor rgb \"white\"");
+  addCommand("set xlabel \"X\" textcolor rgb \"white\"");
+  addCommand("set ylabel \"Y\" textcolor rgb \"white\"");
+}
+
 void GNUPlotter::setAxisLabels(std::string x, std::string y, std::string z)
 {
   if( !x.empty() ) addCommand("set xlabel \"" + x + "\"\n");
@@ -274,6 +288,28 @@ void GNUPlotter::setLegends(CSR l0, CSR l1, CSR l2, CSR l3, CSR l4, CSR l5, CSR 
 void GNUPlotter::setLegends(CVR<std::string> legends)
 {
   graphTitles = legends;
+}
+
+void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
+{
+  std::string c;            // The command to be passed to plt
+  using CP = ColorPalette;
+  switch(palette)
+  {
+  case CP::viridisBrt: c = "set palette defined (0 '#352a87', 1 '#0363e1', 2 '#1485d4', 3 '#06a7c6', 4 '#38b99e', 5 '#92bf73', 6 '#d9ba56', 7 '#fcce2e', 8 '#f9fb0e')"; break;
+  case CP::viridis:    c = "set palette defined (0 '#440154', 1 '#472c7a', 2 '#3b518b', 3 '#2c718e', 4 '#21908d', 5 '#27ad81', 6 '#5cc863', 7 '#aadc32', 8 '#fde725')"; break;
+  case CP::plasma:     c = "set palette defined (0 '#0c0887', 1 '#4b03a1', 2 '#7d03a8', 3 '#a82296', 4 '#cb4679', 5 '#e56b5d', 6 '#f89441', 7 '#fdc328', 8 '#f0f921')"; break;
+  case CP::magma:      c = "set palette defined (0 '#000004', 1 '#1c1044', 2 '#4f127b', 3 '#812581', 4 '#b5367a', 5 '#e55964', 6 '#fb8761', 7 '#fec287', 8 '#fbfdbf')"; break;
+  case CP::prpGrnRed:  c = "set palette rgbformulae 33,13,10"; break;
+  case CP::printable:  c = "set palette rgbformulae 30,31,32"; break;
+
+  // ...more to come
+  }
+
+  if(inverted)
+    c += " negative";  // needs test
+
+  addCommand(c);
 }
 
 void GNUPlotter::setGraphColors(CSR c0, CSR c1, CSR c2, CSR c3, CSR c4, CSR c5, CSR c6, CSR c7,
@@ -1171,8 +1207,34 @@ void GNUPlotter::setStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CS
   addToStringVector(v, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9);
 }
 
-/*
+/*=================================================================================================
+
 ToDo:
+
+-Find more beautiful colormaps - unipolar and bipolar
+ See:
+ http://www.gnuplotting.org/tag/palette/
+ http://www.gnuplotting.org/tag/colormap/
+
+ Sources of some of the color maps:
+ viridisBrt: https://stackoverflow.com/questions/35818875/gnuplot-pm3d-with-contour-lines
+ prpGrnRed:  https://stackoverflow.com/questions/20977368/filled-contour-plot-with-constant-color-between-contour-lines
+
+ magma, plasma, viridis:
+ https://github.com/Gnuplotting/gnuplot-palettes
+
+ This git repo has many more. Of these, I also like:
+   unipolar: bupu, greys, inferno, parula. pubu, purples, sand,
+   bipolar:  bentcoolwarm, brbg, gnbu, gnpu, jet, moreland, piyg, prgn, puor, rdbu, rdylbu, rdylgn,
+             spectral, turbo, ylgn, ylorbr
+   alternating: paired
+ Those which I like but are also integrated here (magma, viridis, etc.) are not listed anymore. 
+ Here are yet more colormaps:
+ http://gnuplot.info/demo/pm3dcolors.html
+ I like:  traditional pm3d, AFM hot, black-blue-violet-yellow-white (printable in grayscale), 
+ rainbow
+ set palette rgbformulae 7,5,15
+
 -maybe move the explicit template instantiations to another file...that would reduce clutter in 
  this implementation file - but would make the library harder to use - the user would have to deal
  with more files...so it's probably not such a good idea...simple use is more important than
