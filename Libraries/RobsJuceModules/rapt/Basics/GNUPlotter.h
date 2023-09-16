@@ -649,6 +649,7 @@ public:
     AS_RdBu,            // red-white-blue
     AS_RdYlBu,          // red-paleyellow-blue
     AS_RdYlGn,          // red-paleyellow-green
+    AS_Spectral,        // rainbow with red-paleyellow-blue
 
 
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
