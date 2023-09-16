@@ -155,6 +155,8 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
 
   //drawNyquistLines(); // not yet implemented
 
+  setToDarkMode();
+
   // Factor out:
   std::vector<std::string> hexColors = getGraphColors(numFilters);
   if(plotMagnitude && plotPhase) {
@@ -479,7 +481,8 @@ std::vector<std::string> FilterPlotter<T>::getGraphColors(int numGraphs) const
   using Col = rsColor<T>;
   char hex[7];
   std::vector<Str> hexColors;
-  T L  = T(0.3);   // lightness
+  //T L  = T(0.3);   // lightness
+  T L  = T(0.5);   // lightness, 0.3 is good for light mode, 
   T S  = T(0.75);  // saturation
   T H0 = T(0.0);   // start hue (0.0: red)
   for(int i = 0; i < numGraphs; i++)
@@ -495,6 +498,8 @@ std::vector<std::string> FilterPlotter<T>::getGraphColors(int numGraphs) const
 // maybe move this into rsColor - something like: 
 // getRainbowColorsHex(int numColors, T L, T S, bool withSharp, bool WithNull, T startHue = T(0))
 // ...this may be useful in other contexts, too (for example, for plot colors on GUIs)
+// Rename to getRainbowColors, give it parameters for lightness and saturation defaulting to 0.5, 
+// 0.75
 
 // template instantiations:
 template class FilterPlotter<float>;

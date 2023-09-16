@@ -597,6 +597,8 @@ T rsNumericIntegrator<T>::trapezoidal(const F& f, const Tx& a, const Tx& b, int 
 // -maybe try to use xR += dx for optimization - but that might give more roundoff error 
 //  accumulation
 // -implement midpoint formula
+// -In MathExperiments.cpp, there is some code rsTrapezoidalStage, integrateTrapezoidal, 
+//  integrateSimpson. Check what that does and mybe integrate it here.
 
 template<class T>
 template<class Tx>
@@ -611,6 +613,7 @@ void rsNumericIntegrator<T>::trapezoidal(const Tx* x, const T* y, T* yi, int N, 
     yi[n] = tmp;                               // write integral to output array
     //rsAssert(rsIsFiniteNumber(tmp));
   }
+  //rsPlotArraysXY(N, x, y, yi);               // uncomment for debug
 }
 
 

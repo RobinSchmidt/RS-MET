@@ -1056,9 +1056,9 @@ void splineInterpolationNonEquidistant()
   plotData(M, xi, yiSp0, yiSp1, yiSp2, yiSp3);
 
   // Observations:
-  // Higher order splines are smoother at the data-points where successive splines join (this is
-  // by construction and desirable), but they tend to oscillate more between the data points which 
-  // might be undesirable.
+  // -Higher order splines are smoother at the data-points where successive splines join (this is
+  //  by construction and desirable), but they tend to oscillate more between the data points which 
+  //  might be undesirable.
 
   // Ideas: try to use a transformed input variable z = x^c (or z = sign(x) + |x|^c)
 }

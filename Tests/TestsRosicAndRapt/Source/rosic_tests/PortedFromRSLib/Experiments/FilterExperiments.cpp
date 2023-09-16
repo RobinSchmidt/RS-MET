@@ -2283,15 +2283,17 @@ void ladderResonanceGain()
 
   // Observations:
   // -Effect of the B1 parameter:
-  //  -at 0.5 (bilinear) all curves meet at the Nyquist freq. The higher order curves bend upward.
-  //  -at 0.0 the higher order curves bend downward, indicating a loss of resonance gain towards 
+  //  -At 0.5 (bilinear) all curves meet at the Nyquist freq. The higher order curves bend upward.
+  //  -At 0.0 the higher order curves bend downward, indicating a loss of resonance gain towards 
   //   higher frequencies
-  //  -at 0.23, there seems to be the sweet spot where they all are at their flattest, with lower 
+  //  -At 0.23, there seems to be the sweet spot where they all are at their flattest, with lower 
   //   values like 0.22, the curve is nonmonotonic
-  //  -with > 0.5, they actually cross each other at the Nyquist freq - what does that mean? does
+  //  -With > 0.5, they actually cross each other at the Nyquist freq - what does that mean? does
   //   it mean, the gain depends on phase?
-  //  -with -0.5, the curves seem to drop to zero at fs/2
-  //  -conclusion: use 0.0 for efficiency or 0.23 for quality and/or make it a user parameter
+  //  -With -0.5, the curves seem to drop to zero at fs/2
+  //
+  // Conclusion: 
+  //  -Use 0.0 for efficiency or 0.23 for quality and/or make it a user parameter
 
 
   // old:
@@ -3364,15 +3366,15 @@ void ladderZDF()
   plt.plot();
 
   // Observations: 
-  // It seems to work - but we need to figure out formulas for the filter coefficients and the 
-  // feedback gain. The formulas will probably be simpler than in the UDF case.
+  // -It seems to work - but we need to figure out formulas for the filter coefficients and the 
+  //  feedback gain. The formulas will probably be simpler than in the UDF case.
 }
 // may be deleted when ZDF vs UDF experiemnt is complete
 
 void ladderZDFvsUDF()
 {
   // We compare the behaviors of a zero-delay-feedback (ZDF) and unit-delay-feedback (UDF) 
-  // implementation of a ladder filter fo special interest is the response to audio-rate
+  // implementation of a ladder filter. Of special interest is the response to audio-rate
   // modulation of the cutoff frequency.
 
   int    N     = 50000;          // number of samples
@@ -3429,7 +3431,7 @@ void ladderZDFvsUDF()
   ////plt.addDataArrays(N, &m[0]);
   plt.addDataArrays(N, &yu[0]);
   plt.addDataArrays(N, &yz[0]);
-  //plt.plot();
+  plt.plot();
 
   // Observations:
   // -Whenever the cutoff frequency switches, there is a little discontinuity in the output sinal.

@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
   //biquadTail();
   //complementaryFiltersIIR();
   //engineersFilterRingResp();   // ringing response (experimental idea)
-  //engineersFilterFreqResps();
+  engineersFilterFreqResps();
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
@@ -296,7 +296,7 @@ int main(int argc, char* argv[])
 
   //numericDifferentiation();                // num. dif. on a function object
   //numericIntegration();                   // a.k.a. numeric "quadrature"
-  nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
+  //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
   //testNonUniformInvertibleDiff();         // algo that produces reciprocals when swapping x and y
   //uniformArrayDiffAndInt();               // under construction
 
@@ -426,9 +426,9 @@ int main(int argc, char* argv[])
   //samplerFilters();
 
   // Modal Filters/Synthesis:
-  //twoPoleFilter();
-  //modalFilter();        // impulse response of decaying-sine filter
-  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  twoPoleFilter();
+  modalFilter();        // impulse response of decaying-sine filter
+  modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant
   //modalTwoModes();
   //dampedSineFilterDesign();

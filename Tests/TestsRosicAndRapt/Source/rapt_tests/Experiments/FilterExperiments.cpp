@@ -1160,7 +1160,7 @@ void engineersFilterFreqResps()
   // to demonstrate how the plotting works..
 
   int minOrder  = 1;      // minimum filter order
-  int numOrders = 5;      // number of orders
+  int numOrders = 6;      // number of orders
   int orderInc  = 1;      // spacing between the orders
   int numFreqs  = 501;    // number of frequency samples
   double fc     = 1000;   // cutoff frequency
