@@ -633,18 +633,18 @@ public:
   enum class ColorPalette  
   {
     // Linear:
-    magma,
-    printable,          // black-blue-pink-orange-yellow-white. Translates well to grayscale.
-    plasma,
-    tradPm3d,           // traditional pm3d, black-blue-red-yellow
-    viridis,            // From dark blue via green to yellow.
-    viridisBrt,         // Similar to viridis but brighter and with some orange near the top.
+    SW_magma,
+    F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
+    SW_plasma,
+    F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
+    EF_viridis,         // From dark blue via green to yellow.
+    UA_viridisBrt,      // Similar to viridis but brighter and with some orange near the top.
 
     // Diverging:
-    BrBG,               // brown-white-bluegreen
-    moreland,           // blue-lightgray-red
-    PRGn,               // purple-white-green
-    prpGrnRed,          // rainbow (purple-blue-green-yellow-red), middle is bright
+    AS_BrBG,            // brown-white-bluegreen
+    KM_moreland,        // blue-lightgray-red
+    AS_PRGn,            // purple-white-green
+    F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
 
 
     _test, 
@@ -656,6 +656,13 @@ public:
   // -Document sources, see comments at the bottom of GNUPlotter.cpp 
   // -Maybe prefix the maps by initials of author like AS_BrBG (Anna Schneider), KM_ (Kenneth 
   //  Moreland), ML_ (MatLab), etc.
+  // -AS: Anna Schneider
+  // -KM: Kenneth Moreland
+  // -SW: Nathaniel J. Smith and Stefan van der Walt
+  // -EF: Eric Firing
+  // -UA: Unknown Author
+  // -DP: Default Palette
+  // -F:  Gnuplot RGB formula
 
   //  
   //
@@ -666,6 +673,7 @@ public:
   // https://www.fabiocrameri.ch/colourmaps/
   // https://bids.github.io/colormap/
   // http://www.gnuplotting.org/tag/palette/
+  // https://github.com/Gnuplotting/gnuplot-palettes
 
   //  traditional pm3d (black-blue-red-yellow)
 
