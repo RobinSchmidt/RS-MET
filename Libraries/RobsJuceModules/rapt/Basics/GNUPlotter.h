@@ -654,6 +654,11 @@ public:
 
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
 
+    // Alternating:
+    AS_Paired,          // 8 colors in 4 (light/dark) pairs (blue, green, red, orange)
+
+    // Categorical:
+
 
     _test, 
 
@@ -671,6 +676,7 @@ public:
   // -UA: Unknown Author
   // -DP: Default Palette
   // -F:  Gnuplot RGB formula
+  //  AS_Paired should be used with "set palette maxcolors 8"
 
   //  
   //

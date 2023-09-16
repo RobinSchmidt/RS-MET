@@ -321,7 +321,9 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::F_tradPm3d:   c = "set palette rgbformulae  7, 5,15"; break;
   
   
-  // AS_PiYG
+  case CP::AS_Paired:    c = "set palette defined (0 '#A6CEE3', 1 '#1F78B4', 2 '#B2DF8A', 3 '#33A02C', 4 '#FB9A99', 5 '#E31A1C', 6 '#FDBF6F', 7 '#FF7F00')"; break;    
+  
+  
 
   case CP::_test:   c = "set palette rgbformulae 3,23,21"; break;
 
