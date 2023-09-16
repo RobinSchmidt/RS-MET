@@ -645,6 +645,8 @@ public:
     KM_moreland,        // blue-lightgray-red
     AS_PiYG,            // pink-white-yellowgreen
     AS_PRGn,            // purple-white-green
+    AS_PuOr,            // orange-white-purple
+
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
 
 

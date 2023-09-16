@@ -308,6 +308,7 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::SW_plasma:     c = "set palette defined (0 '#0c0887', 1 '#4b03a1', 2 '#7d03a8', 3 '#a82296', 4 '#cb4679', 5 '#e56b5d', 6 '#f89441', 7 '#fdc328', 8 '#f0f921')"; break;  
   case CP::AS_PiYG:       c = "set palette defined (0 '#C51B7D', 1 '#DE77AE', 2 '#F1B6DA', 3 '#FDE0EF', 4 '#E6F5D0', 5 '#B8E186', 6 '#7FBC41', 7 '#4D9221')"; break;
   case CP::AS_PRGn:       c = "set palette defined (0 '#762A83', 1 '#9970AB', 2 '#C2A5CF', 3 '#E7D4E8', 4 '#D9F0D3', 5 '#A6DBA0', 6 '#5AAE61', 7 '#1B7837')"; break;
+  case CP::AS_PuOr:       c = "set palette defined (0 '#B35806', 1 '#E08214', 2 '#FDB863', 3 '#FEE0B6', 4 '#D8DAEB', 5 '#B2ABD2', 6 '#8073AC', 7 '#542788')"; break;  
   case CP::SW_magma:      c = "set palette defined (0 '#000004', 1 '#1c1044', 2 '#4f127b', 3 '#812581', 4 '#b5367a', 5 '#e55964', 6 '#fb8761', 7 '#fec287', 8 '#fbfdbf')"; break;
   case CP::KM_moreland:   c = "set palette defined (0 '#3b4cc0', 1 '#688aef', 2 '#99baff', 3 '#c9d8ef', 4 '#edd1c2', 5 '#f7a789', 6 '#e36a53', 7 '#b40426')"; break;  
 
