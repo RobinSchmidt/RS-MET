@@ -9,6 +9,10 @@ using namespace RAPT;
 
 void setToDarkMode(GNUPlotter* plt)
 {
+  plt->setToDarkMode();
+
+  // obsolete - maybe delete the whole function:
+  /*
   plt->addCommand("set term wxt background rgb \"black\"");
   plt->addCommand("set border lw 1 lc rgb \"white\"");
   plt->addCommand("set grid ls 1 lw 1 lc rgb \"#404040\"");
@@ -26,7 +30,7 @@ void setToDarkMode(GNUPlotter* plt)
   //plt->addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#F0F0F0\""); 
 
   //set style line 1 lt 1 lw 3 pt 3 linecolor rgb "red"
-
+  */
 }
 
 void createTimeAxis(int numSamples, float *timeAxis, float sampleRate)

@@ -1676,6 +1676,15 @@ bool moebiusMapTest()  // rename to linFracTest
 
 void linearFractionalInterpolation()
 {
+  bool ok = moebiusMapTest();  // Remnant from the development process
+  rsAssert(ok);
+  // A function that performs some unit tests on some stuff used in the old implementation. The 
+  // whole function may be deleted someday. But it contains some code implementing some rather 
+  // complicated formulas that allow to combine 3 maps into 1 when they are parametrized via the 
+  // old p in [-1,+1]. ...But should we ever need such a thing, it's perhaps better to 
+  // reparametrize -> combine -> reparametrize back. But this will require two divisions, so I'm 
+  // not sure yet. That's why the code is still there.
+
   // Experiments with linear fractional interpolation - an interpolation method that I have 
   // constructed around the so called linear fractional transformations. It is, as far as I know,
   // new. If not, then I have yet again re-invented the wheel. We create a plot with several graphs 
@@ -1703,7 +1712,8 @@ void linearFractionalInterpolation()
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec y(N);
   GNUPlotter plt;
-  setToDarkMode(&plt);
+  //setToDarkMode(&plt);
+  plt.setToDarkMode();
   Real slopeAt1 = minSlopeAt1;           // Variable slope at x,y = 1,1. Goes up in the loop
   while(slopeAt1 <= maxSlopeAt1) {
     for(int n = 0; n < N; n++)
@@ -1713,18 +1723,6 @@ void linearFractionalInterpolation()
   plt.addCommand("set size square");
   plt.setPixelSize(600, 600);
   plt.plot();
-
-  bool ok = moebiusMapTest();  // Remnant from the development process
-  // A function that performs some unit tests on some stuff used in the old implementation. The 
-  // whole function may be deleted someday. But it contains some code implementing some rather 
-  // complicated formulas that allow to combine 3 maps into 1 when they are parametrized via the 
-  // old p in [-1,+1]. ...But should we ever need such a thing, it's perhaps better to 
-  // reparametrize -> combine -> reparametrize back. But this will require two divisions, so I'm 
-  // not sure yet. That's why the code is still there.
-
-
-  rsAssert(ok);
-  int dummy = 0;
 
   // Observations:
   // -When shape = 0.5, the interpolants of some slopes K and 1/K at 1 have corresponding 

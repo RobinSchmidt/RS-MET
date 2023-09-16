@@ -547,10 +547,26 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Integration
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Functor integrals
+
   /** Computes the definite integral of f in the interval from a to b using the trapezoidal rule 
   with the given number N of intervals. */
   template<class Tx, class F>
   static T trapezoidal(const F& f, const Tx& a, const Tx& b, int N);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Data integrals
+
+
+  /** Computes the numerical integral of a function defined by data points, i.e. the function:
+  \f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
+  into the function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
+  integration constant and determines yi[0] that shifts the overall resulting function up or down 
+  along the y-axis. The algorithm uses the trapezoidal rule, i.e. it sums up the areas under the 
+  trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
+  template<class Tx>
+  static void trapezoidal(const Tx *x, const T *y, T *yi, int N, T c = T(0));
 
 
 protected:
@@ -575,12 +591,29 @@ T rsNumericIntegrator<T>::trapezoidal(const F& f, const Tx& a, const Tx& b, int 
   }
   return A;
 }
-// maybe move to cpp file
-
-// todo: 
-// -implement midpoint formula
-// -maybe try to use xR += dx for otimization - but that might give more roundoff error 
+// ToDo: 
+// -move to cpp file
+// -maybe try to use xR += dx for optimization - but that might give more roundoff error 
 //  accumulation
+// -implement midpoint formula
+
+template<class T>
+template<class Tx>
+void rsNumericIntegrator<T>::trapezoidal(const Tx* x, const T* y, T* yi, int N, T c)
+{
+  Tx xo; 
+  T  yo, zo, tmp;
+  xo = x[0]; yo = y[0]; zo = c; yi[0] = zo;    // "old" values (at index n-1)
+  for(int n = 1; n < N; n++) {
+    tmp = zo + (x[n]-xo)*(y[n]+yo)*T(0.5);     // compute integral by trapezoidal rule
+    xo = x[n]; yo = y[n]; zo = tmp;            // update integrator state variables
+    yi[n] = tmp;                               // write integral to output array
+    //rsAssert(rsIsFiniteNumber(tmp));
+  }
+}
+
+
+
 
 
 #endif

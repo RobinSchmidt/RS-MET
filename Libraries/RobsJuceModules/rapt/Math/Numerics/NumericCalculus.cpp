@@ -373,9 +373,13 @@ Gibbs phenomenon when the data is not smooth enough. And what about noisy data?
 //-------------------------------------------------------------------------------------------------
 // Integration:
 
+
+
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
 {
+  rsNumericIntegrator<Ty>::trapezoidal(x, y, yi, N, c);  
+  /*
   Tx xo; 
   Ty yo, zo, tmp;
   xo = x[0]; yo = y[0]; zo = c; yi[0] = zo;    // "old" values (at index n-1)
@@ -385,6 +389,7 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
     yi[n] = tmp;                               // write integral to output array
     //rsAssert(rsIsFiniteNumber(tmp));
   }
+  */
 }
 // todo:
 // -implement a higher order method by making use of (numeric) derivative information to 
