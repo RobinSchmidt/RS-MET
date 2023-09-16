@@ -647,6 +647,8 @@ public:
     AS_PRGn,            // purple-white-green
     AS_PuOr,            // orange-white-purple
     AS_RdBu,            // red-white-blue
+    AS_RdYlBu,          // red-paleyellow-blue
+
 
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
 
