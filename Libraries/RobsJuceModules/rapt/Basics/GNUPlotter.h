@@ -633,16 +633,15 @@ public:
   enum class ColorPalette  
   {
     // Linear:
-    SW_magma,
-    F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
-    SW_plasma,
-    F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
     EF_viridis,         // From dark blue via green to yellow.
+    F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
+    F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
+    SW_magma,
+    SW_plasma,
     UA_viridisBrt,      // Similar to viridis but brighter and with some orange near the top.
 
     // Diverging:
     AS_BrBG,            // brown-white-bluegreen
-    KM_moreland,        // blue-lightgray-red
     AS_PiYG,            // pink-white-yellowgreen
     AS_PRGn,            // purple-white-green
     AS_PuOr,            // orange-white-purple
@@ -650,12 +649,11 @@ public:
     AS_RdYlBu,          // red-paleyellow-blue
     AS_RdYlGn,          // red-paleyellow-green
     AS_Spectral,        // rainbow with red-paleyellow-blue
-
-
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
+    KM_moreland,        // blue-lightgray-red
 
     // Alternating:
-    AS_Paired,          // 8 colors in 4 (light/dark) pairs (blue, green, red, orange)
+    AS_Paired,          // 8 colors in 4 light/dark pairs: blue, green, red, orange
 
     // Categorical:
 
