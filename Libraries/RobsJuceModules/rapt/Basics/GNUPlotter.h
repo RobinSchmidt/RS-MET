@@ -643,6 +643,7 @@ public:
     // Diverging:
     AS_BrBG,            // brown-white-bluegreen
     KM_moreland,        // blue-lightgray-red
+    AS_PiYG,            // pink-white-yellowgreen
     AS_PRGn,            // purple-white-green
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
 
