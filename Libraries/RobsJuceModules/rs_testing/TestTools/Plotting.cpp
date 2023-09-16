@@ -153,6 +153,7 @@ template void  plotArrays(int N, double *y1, double *y2, double *y3, double *y4,
 void plotData(int N, double *x, double *y1, double *y2, double *y3, double *y4, double *y5)
 {
   GNUPlotter plt;
+  plt.setToDarkMode();
   plt.plotFunctionTables(N, x, y1, y2, y3, y4, y5);
 }
 

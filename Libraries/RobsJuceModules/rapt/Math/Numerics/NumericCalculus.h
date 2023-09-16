@@ -526,7 +526,8 @@ along the y-axis. The algorithm uses the trapezoidal rule, i.e. it sums up the a
 trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
-// move to class rsNumericIntegrator and rename to trapezoidal,
+// move to class rsNumericIntegrator and rename to trapezoidal
+// ...done - function is now obsolete
 
 
 /** just a stub, at the moment */
@@ -561,10 +562,10 @@ public:
 
   /** Computes the numerical integral of a function defined by data points, i.e. the function:
   \f[ F(x) = \int_c^x f(t) dt \f] where the lower integration limit c can be passed as a parameter 
-  into the function. Usage is similar to rsNumericDerivative. The parameter c can also be seen as an 
-  integration constant and determines yi[0] that shifts the overall resulting function up or down 
-  along the y-axis. The algorithm uses the trapezoidal rule, i.e. it sums up the areas under the 
-  trapezoids defined by a piecewise linear interpolant that passes through the datapoints. */
+  into the function. The parameter c can also be seen as an integration constant and determines 
+  yi[0] that shifts the overall resulting function up or down along the y-axis. The algorithm uses
+  the trapezoidal rule, i.e. it sums up the areas under the trapezoids defined by a piecewise 
+  linear interpolant that passes through the datapoints. */
   template<class Tx>
   static void trapezoidal(const Tx *x, const T *y, T *yi, int N, T c = T(0));
 

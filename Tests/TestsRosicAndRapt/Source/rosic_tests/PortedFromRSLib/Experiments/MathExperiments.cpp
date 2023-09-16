@@ -1699,45 +1699,45 @@ void nonUniformArrayDiffAndInt()
   // What does this do? Why do we call it here. Maybe it should be moved to some experiment about
   // integrals?
 
-  // Test numerical differentiation and integration routines. We sample a sinewave at 
-  // nonequidistant sample points and find the numeric derivative and  integral at these sample
+  // Tests numerical differentiation and integration routines. We sample a sinewave at 
+  // nonequidistant sample points and find the numeric derivative and integral at these sample
   // points and compare them to the true derivative/integral values.
 
-  using ND = rsNumericDifferentiator<double>;
+  using Real = double;
+  using AT = rsArrayTools;
+  using ND = rsNumericDifferentiator<Real>;
+  using NI = rsNumericIntegrator<Real>;
 
-  static const int N = 100;   // number of sample points
-  double p = 1.0;             // start-phase
-  double w = 2.0;             // radian frequency 
-  double xMax = 10.0;         // maximum x-axis value
-  double x[N];                // x-axis values
-  double y[N], yd[N], ydn[N]; // y, y' and numeric y'
-  double       yi[N], yin[N]; // true and numeric integral
+  static const int N = 100;   // Number of sample points
+  Real p = 1.0;               // Start-phase
+  Real w = 2.0;               // Radian frequency 
+  Real xMax = 10.0;           // Maximum x-axis value
+  Real x[N], y[N];            // x- and y-axis values
+  Real yd[N], ydn[N];         // True and numeric derivative
+  Real yi[N], yin[N];         // True and numeric integral
 
-  // create x-axis:
-  RAPT::rsArrayTools::fillWithRandomValues(x, N, 0.1, 1.5, 0);
-  RAPT::rsArrayTools::cumulativeSum(x, x, N);
-  double scaler = xMax/x[N-1];
-  RAPT::rsArrayTools::scale(x, N, scaler);
+  // Create x-axis:
+  AT::fillWithRandomValues(x, N, 0.1, 1.5, 0);
+  AT::cumulativeSum(x, x, N);
+  Real scaler = xMax/x[N-1];
+  AT::scale(x, N, scaler);
 
-  // compute sine and its derivative and integral analytically at the samples:
+  // Compute sine and its derivative and integral analytically at the samples:
   int n;
-  for(n = 0; n < N; n++)
-  {
+  for(n = 0; n < N; n++) {
     y[n]  =        sin(w*x[n] + p);
     yd[n] =      w*cos(w*x[n] + p);
-    yi[n] = -(1/w)*cos(w*x[n] + p);
-  }
+    yi[n] = -(1/w)*cos(w*x[n] + p); }
 
-  // compute the numeric derivative and integral:
-  ND::derivative(x, y, ydn, N, true);
-  rsNumericIntegral(  x, y, yin, N, yi[0]);
+  // Compute the numeric derivative and integral:
+  ND::derivative( x, y, ydn, N, true);
+  NI::trapezoidal(x, y, yin, N, yi[0]);
 
-  // plot function, true derivative and numeric derivative:
-  //plotData(N, x, y, yd, ydn);
-  plotData(N, x, y, yd, ydn, yi, yin);
-
-  // ToDo:
-  // -Wrap rsNumericIntegral into a class similar to rsNumericDifferentiator
+  // Plot function along with true and numeric derivatives and integrals:
+  GNUPlotter plt;
+  plt.setToDarkMode();
+  plt.setGraphColors("BBBBBB", "444499", "8888ff", "883333", "ff8888");
+  plt.plotFunctionTables(N, x, y, yd, ydn, yi, yin);
 }
 // Goal: write a numerical integration algorithm that has O(1) memory usage (no arrays are 
 // allocated internally), can be used in place (yi may overwrite y) and computes the integral over 

@@ -374,7 +374,7 @@ Gibbs phenomenon when the data is not smooth enough. And what about noisy data?
 // Integration:
 
 
-
+// get rid:
 template<class Tx, class Ty>
 void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c)
 {

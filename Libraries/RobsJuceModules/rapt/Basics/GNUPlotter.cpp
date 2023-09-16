@@ -271,6 +271,8 @@ void GNUPlotter::setToDarkMode()
   addCommand("set ylabel \"Y\" textcolor rgb \"white\"");
   addCommand("set key textcolor \"white\""); 
   addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#F0F0F0\""); // What does this do?
+
+  // Drawing All line white may be not so good:
   const char c[7] = "FFFFFF";
   setGraphColors(c, c, c, c, c, c, c, c, c, c);
 }
