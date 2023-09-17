@@ -680,6 +680,7 @@ public:
     KM_BentCoolWarm,    // blue-lightgray-red
     KM_Moreland,        // blue-lightgray-red
     ML_Jet,             // darkblue-lightgreenishyellow-darkred, old MatLab default
+    UA_GnPu,            // green-purple
 
     // parula is new matlab default
 
