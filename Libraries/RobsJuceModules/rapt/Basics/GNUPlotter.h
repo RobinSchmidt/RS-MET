@@ -656,6 +656,7 @@ public:
     EF_viridis,         // From dark blue via green to yellow.
     F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
     F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
+
     SW_magma,
     SW_plasma,
     UA_viridisBrt,      // Similar to viridis but brighter and with some orange near the top.
@@ -670,7 +671,8 @@ public:
     AS_RdYlGn,          // red-paleyellow-green
     AS_Spectral,        // rainbow with red-paleyellow-blue
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
-    KM_moreland,        // blue-lightgray-red
+    KM_BentCoolWarm,    //
+    KM_Moreland,        // blue-lightgray-red
 
     // Alternating:
     AS_Paired,          // 8 colors in 4 light/dark pairs: blue, green, red, orange
@@ -714,7 +716,7 @@ public:
   // https://www.fabiocrameri.ch/colourmaps/
   // https://bids.github.io/colormap/
   // http://www.gnuplotting.org/tag/palette/
-  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to YlOrBr
+  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to KM_BentCoolWarm
 
   //  traditional pm3d (black-blue-red-yellow)
 
