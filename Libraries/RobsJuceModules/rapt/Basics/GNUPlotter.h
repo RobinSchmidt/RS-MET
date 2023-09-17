@@ -642,6 +642,7 @@ public:
     AS_Purples,         // 8 purple colors of increasing saturation
 
     CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
+    CB_YlOrBr,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrBr&n=9
 
     EF_viridis,         // From dark blue via green to yellow.
     F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
