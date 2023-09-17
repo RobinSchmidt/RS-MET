@@ -662,6 +662,7 @@ public:
     SW_Inferno,
     SW_magma,
     SW_plasma,
+    UA_YlRd,            // yellow-red
     UA_ChromaJS,        //
     UA_viridisBrt,      // Similar to viridis but brighter and with some orange near the top.
 
