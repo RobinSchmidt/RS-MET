@@ -645,6 +645,7 @@ public:
     AS_Reds,            // 8 red colors of increasing saturation
     AS_YlGn,            // 8 yellow-green colors of increasing saturation
     AS_YlGnBu,          // 8 yellow-green-blue colors of increasing saturation
+    AS_YlOrBr,          // 8 yellow-orange-brown colors of increasing saturation
 
 
     CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
@@ -712,7 +713,7 @@ public:
   // https://www.fabiocrameri.ch/colourmaps/
   // https://bids.github.io/colormap/
   // http://www.gnuplotting.org/tag/palette/
-  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to Reds
+  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to YlOrBr
 
   //  traditional pm3d (black-blue-red-yellow)
 
