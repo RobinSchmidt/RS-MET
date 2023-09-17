@@ -315,7 +315,8 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::AS_YlGn:       c = "set palette defined (0 '#FFFFE5', 1 '#F7FCB9', 2 '#D9F0A3', 3 '#ADDD8E', 4 '#78C679', 5 '#41AB5D', 6 '#238443', 7 '#005A32')"; break;   
   case CP::AS_YlGnBu:     c = "set palette defined (0 '#FFFFD9', 1 '#EDF8B1', 2 '#C7E9B4', 3 '#7FCDBB', 4 '#41B6C4', 5 '#1D91C0', 6 '#225EA8', 7 '#0C2C84')"; break;   
   case CP::AS_YlOrBr:     c = "set palette defined (0 '#FFFFE5', 1 '#FFF7BC', 2 '#FEE391', 3 '#FEC44F', 4 '#FE9929', 5 '#EC7014', 6 '#CC4C02', 7 '#8C2D04')"; break;    
-  
+  case CP::AS_YlOrRd:     c = "set palette defined (0 '#FFFFCC', 1 '#FFEDA0', 2 '#FED976', 3 '#FEB24C', 4 '#FD8D3C', 5 '#FC4E2A', 6 '#E31A1C', 7 '#B10026')"; break;  
+ 
  
   case CP::CB_YlGnBu:     c = "set palette defined (0 '#ffffd9', 1 '#edf8b1', 2 '#c7e9b4', 3 '#7fcdbb', 4 '#41b6c4', 5 '#1d91c0', 6 '#225ea8', 7 '#253494', 8 '#081d58')"; break;  
   case CP::CB_YlOrBr:     c = "set palette defined (0 '#ffffe5', 1 '#fff7bc', 2 '#fee391', 3 '#fec44f', 4 '#fe9929', 5 '#ec7014', 6 '#cc4c02', 7 '#993404', 8 '#662506')"; break;   
