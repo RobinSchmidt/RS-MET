@@ -640,6 +640,9 @@ public:
     AS_Greens,          // 8 green colors of increasing saturation
     AS_Oranges,         // 8 orange colors of increasing saturation
     AS_Purples,         // 8 purple colors of increasing saturation
+
+    CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
+
     EF_viridis,         // From dark blue via green to yellow.
     F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
     F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
@@ -682,6 +685,9 @@ public:
   // -DP: Default Palette
   // -F:  Gnuplot RGB formula
   //  AS_Paired should be used with "set palette maxcolors 8"
+  // -CB: Color Brewer
+
+  //  https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
 
   //  
   //
