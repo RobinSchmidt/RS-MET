@@ -633,7 +633,8 @@ public:
   enum class ColorPalette  
   {
     // Linear:
-    AS_Blues,           // 8 blue colors of increasing saturation
+    AS_Blues,           // 8 blue colors of increasing saturation, looks like ice
+    AS_BuGn,            // 8 blue-green colors of increasing saturation
     EF_viridis,         // From dark blue via green to yellow.
     F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
     F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
