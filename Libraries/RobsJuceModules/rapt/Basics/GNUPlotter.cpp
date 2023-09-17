@@ -323,6 +323,7 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::EF_viridis:      c = "set palette defined (0 '#440154', 1 '#472c7a', 2 '#3b518b', 3 '#2c718e', 4 '#21908d', 5 '#27ad81', 6 '#5cc863', 7 '#aadc32', 8 '#fde725')"; break;
   case CP::F_printable:     c = "set palette rgbformulae 30,31,32"; break;
   case CP::F_tradPm3d:      c = "set palette rgbformulae  7, 5,15"; break;
+  case CP::GP_Sand:         c = "set palette defined (0 '#604860', 1 '#784860', 2 '#a86060', 3 '#c07860', 4 '#f0a848', 5 '#f8ca8c', 6 '#feecae', 7 '#fff4c2', 8 '#fff7db', 9 '#fffcf6')"; break;
   case CP::ML_Parula:       c = "set palette defined (0 '#352a87', 1 '#0363e1', 2 '#1485d4', 3 '#06a7c6', 4 '#38b99e', 5 '#92bf73', 6 '#d9ba56', 7 '#fcce2e', 8 '#f9fb0e')"; break;
   case CP::SW_Inferno:      c = "set palette defined (0 '#000004', 1 '#1f0c48', 2 '#550f6d', 3 '#88226a', 4 '#a83655', 5 '#e35933', 6 '#f9950a', 7 '#f8c932', 8 '#fcffa4')"; break;  
   case CP::SW_magma:        c = "set palette defined (0 '#000004', 1 '#1c1044', 2 '#4f127b', 3 '#812581', 4 '#b5367a', 5 '#e55964', 6 '#fb8761', 7 '#fec287', 8 '#fbfdbf')"; break;

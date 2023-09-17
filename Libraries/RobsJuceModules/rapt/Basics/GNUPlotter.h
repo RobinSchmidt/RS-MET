@@ -656,7 +656,7 @@ public:
     EF_viridis,         // From dark blue via green to yellow. MatPlotLib default.
     F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
     F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
-
+    GP_Sand,            // sand colors
     ML_Parula,          // 
 
     SW_Inferno,
@@ -701,6 +701,7 @@ public:
   //  Moreland), ML_ (MatLab), etc.
   // -AS: Anna Schneider
   // -AM: Anton Mikhailov
+  // -GP: Gretchen N. Peterson
   // -KM: Kenneth Moreland
   // -ML: MatLab
   // -SW: Nathaniel J. Smith and Stefan van der Walt
@@ -745,6 +746,8 @@ public:
   // https://blogs.mathworks.com/steve/2014/12/10/a-new-colormap-for-matlab-part-4-the-name/
   // https://blogs.mathworks.com/steve/2017/07/24/colormap-test-image/
   // https://blogs.mathworks.com/headlines/2018/10/10/a-dangerous-rainbow-why-colormaps-matter/
+
+  // https://www.amazon.com/Cartographers-Toolkit-Colors-Typography-Patterns/dp/0615467946
 
   // https://static.aminer.org/pdf/PDF/000/240/853/designing_for_users_with_color_vision_deficiency_effective_color_combinations.pdf
 
