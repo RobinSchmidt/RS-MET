@@ -643,6 +643,7 @@ public:
 
     CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
     CB_YlOrBr,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrBr&n=9
+    CB_YlOrRd,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrRd&n=9
 
     EF_viridis,         // From dark blue via green to yellow.
     F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
@@ -688,7 +689,13 @@ public:
   //  AS_Paired should be used with "set palette maxcolors 8"
   // -CB: Color Brewer
 
-  //  https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
+  // -To add:
+  //  https://colorbrewer2.org/#type=qualitative&scheme=Paired&n=10
+  //  https://colorbrewer2.org/#type=diverging&scheme=Spectral&n=11
+  //  https://colorbrewer2.org/#type=diverging&scheme=RdYlGn&n=11
+  //  https://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=11
+  //  https://colorbrewer2.org/#type=diverging&scheme=RdBu&n=11
+  //  https://colorbrewer2.org/#type=diverging&scheme=PRGn&n=11
 
   //  
   //
