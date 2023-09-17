@@ -639,6 +639,7 @@ public:
     AS_GnBu,            // 8 green-blue colors of increasing saturation
     AS_Greens,          // 8 green colors of increasing saturation
     AS_Oranges,         // 8 orange colors of increasing saturation
+    AS_PuBu,            // 8 purple-blue colors of increasing saturation
     AS_Purples,         // 8 purple colors of increasing saturation
 
     CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
@@ -706,7 +707,7 @@ public:
   // https://www.fabiocrameri.ch/colourmaps/
   // https://bids.github.io/colormap/
   // http://www.gnuplotting.org/tag/palette/
-  // https://github.com/Gnuplotting/gnuplot-palettes
+  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to Purples
 
   //  traditional pm3d (black-blue-red-yellow)
 
