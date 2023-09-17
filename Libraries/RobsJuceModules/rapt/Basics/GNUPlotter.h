@@ -653,7 +653,7 @@ public:
     CB_YlOrBr,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrBr&n=9
     CB_YlOrRd,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrRd&n=9
 
-    EF_viridis,         // From dark blue via green to yellow.
+    EF_viridis,         // From dark blue via green to yellow. MatPlotLib default.
     F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
     F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
 
@@ -662,6 +662,7 @@ public:
     UA_viridisBrt,      // Similar to viridis but brighter and with some orange near the top.
 
     // Diverging:
+    AM_Turbo,           // similar to ML_Jet but with less saturation
     AS_BrBG,            // brown-white-bluegreen
     AS_PiYG,            // pink-white-yellowgreen
     AS_PRGn,            // purple-white-green
@@ -673,8 +674,9 @@ public:
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
     KM_BentCoolWarm,    // blue-lightgray-red
     KM_Moreland,        // blue-lightgray-red
-    ML_Jet,             // darkblue-lightgreenishyellow-darkred
+    ML_Jet,             // darkblue-lightgreenishyellow-darkred, old MatLab default
 
+    // parula is new matlab default
 
     // Alternating:
     AS_Paired,          // 8 colors in 4 light/dark pairs: blue, green, red, orange
@@ -692,6 +694,7 @@ public:
   // -Maybe prefix the maps by initials of author like AS_BrBG (Anna Schneider), KM_ (Kenneth 
   //  Moreland), ML_ (MatLab), etc.
   // -AS: Anna Schneider
+  // -AM: Anton Mikhailov
   // -KM: Kenneth Moreland
   // -ML: MatLab
   // -SW: Nathaniel J. Smith and Stefan van der Walt
@@ -720,6 +723,19 @@ public:
   // https://bids.github.io/colormap/
   // http://www.gnuplotting.org/tag/palette/
   // https://github.com/Gnuplotting/gnuplot-palettes ...done up to KM_BentCoolWarm
+
+  // about jet and turbo:
+  // https://blog.research.google/2019/08/turbo-improved-rainbow-colormap-for.html
+  // https://de.mathworks.com/matlabcentral/answers/304765-how-do-you-set-a-new-default-colormap-for-matlab
+
+  // https://blogs.mathworks.com/steve/2014/10/13/a-new-colormap-for-matlab-part-1-introduction/
+  // https://blogs.mathworks.com/steve/2014/10/20/a-new-colormap-for-matlab-part-2-troubles-with-rainbows/
+  // https://blogs.mathworks.com/steve/2014/11/12/a-new-colormap-for-matlab-part-3-some-reactions/
+  // https://blogs.mathworks.com/steve/2014/12/10/a-new-colormap-for-matlab-part-4-the-name/
+  // https://blogs.mathworks.com/steve/2017/07/24/colormap-test-image/
+  // https://blogs.mathworks.com/headlines/2018/10/10/a-dangerous-rainbow-why-colormaps-matter/
+
+  // https://static.aminer.org/pdf/PDF/000/240/853/designing_for_users_with_color_vision_deficiency_effective_color_combinations.pdf
 
   //  traditional pm3d (black-blue-red-yellow)
 
