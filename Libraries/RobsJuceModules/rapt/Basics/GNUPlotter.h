@@ -657,6 +657,8 @@ public:
     F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
     F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
 
+    ML_Parula,          // 
+
     SW_magma,
     SW_plasma,
     UA_viridisBrt,      // Similar to viridis but brighter and with some orange near the top.
@@ -722,7 +724,7 @@ public:
   // https://www.fabiocrameri.ch/colourmaps/
   // https://bids.github.io/colormap/
   // http://www.gnuplotting.org/tag/palette/
-  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to KM_BentCoolWarm
+  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to parula
 
   // about jet and turbo:
   // https://blog.research.google/2019/08/turbo-improved-rainbow-colormap-for.html
