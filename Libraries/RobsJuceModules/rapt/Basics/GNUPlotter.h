@@ -643,6 +643,8 @@ public:
     AS_Purples,         // 8 purple colors of increasing saturation
     AS_RdPu,            // 8 red-purple colors of increasing saturation
     AS_Reds,            // 8 red colors of increasing saturation
+    AS_YlGn,            // 8 yellow-green colors of increasing saturation
+
 
     CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
     CB_YlOrBr,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrBr&n=9
