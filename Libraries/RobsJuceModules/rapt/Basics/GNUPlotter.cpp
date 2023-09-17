@@ -308,6 +308,7 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::AS_GnBu:       c = "set palette defined (0 '#F7FCF0', 1 '#E0F3DB', 2 '#CCEBC5', 3 '#A8DDB5', 4 '#7BCCC4', 5 '#4EB3D3', 6 '#2B8CBE', 7 '#08589E')"; break;
   case CP::AS_Greens:     c = "set palette defined (0 '#F7FCF5', 1 '#E5F5E0', 2 '#C7E9C0', 3 '#A1D99B', 4 '#74C476', 5 '#41AB5D', 6 '#238B45', 7 '#005A32')"; break;  
   case CP::AS_Oranges:    c = "set palette defined (0 '#FFF5EB', 1 '#FEE6CE', 2 '#FDD0A2', 3 '#FDAE6B', 4 '#FD8D3C', 5 '#F16913', 6 '#D94801', 7 '#8C2D04')"; break;  
+  case CP::AS_Purples:    c = "set palette defined (0 '#FCFBFD', 1 '#EFEDF5', 2 '#DADAEB', 3 '#BCBDDC', 4 '#9E9AC8', 5 '#807DBA', 6 '#6A51A3', 7 '#4A1486')"; break;  
   case CP::EF_viridis:    c = "set palette defined (0 '#440154', 1 '#472c7a', 2 '#3b518b', 3 '#2c718e', 4 '#21908d', 5 '#27ad81', 6 '#5cc863', 7 '#aadc32', 8 '#fde725')"; break;	  
   case CP::F_printable:   c = "set palette rgbformulae 30,31,32"; break;
   case CP::F_tradPm3d:    c = "set palette rgbformulae  7, 5,15"; break;	  
