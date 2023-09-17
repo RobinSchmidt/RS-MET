@@ -641,6 +641,7 @@ public:
     AS_Oranges,         // 8 orange colors of increasing saturation
     AS_PuBu,            // 8 purple-blue colors of increasing saturation
     AS_Purples,         // 8 purple colors of increasing saturation
+    AS_RdPu,            // 8 red-purple colors of increasing saturation
 
     CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
     CB_YlOrBr,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrBr&n=9
