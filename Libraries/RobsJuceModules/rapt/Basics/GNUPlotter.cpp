@@ -302,6 +302,7 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   using CP = ColorPalette;
   switch(palette)
   {
+  case CP::AS_Blues:      c = "set palette defined (0 '#F7FBFF', 1 '#DEEBF7', 2 '#C6DBEF', 3 '#9ECAE1', 4 '#6BAED6', 5 '#4292C6', 6 '#2171B5', 7 '#084594')"; break;	  
   case CP::EF_viridis:    c = "set palette defined (0 '#440154', 1 '#472c7a', 2 '#3b518b', 3 '#2c718e', 4 '#21908d', 5 '#27ad81', 6 '#5cc863', 7 '#aadc32', 8 '#fde725')"; break;	  
   case CP::F_printable:   c = "set palette rgbformulae 30,31,32"; break;
   case CP::F_tradPm3d:    c = "set palette rgbformulae  7, 5,15"; break;	  
