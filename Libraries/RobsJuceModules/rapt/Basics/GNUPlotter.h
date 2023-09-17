@@ -661,6 +661,7 @@ public:
 
     SW_magma,
     SW_plasma,
+    UA_ChromaJS,        //
     UA_viridisBrt,      // Similar to viridis but brighter and with some orange near the top.
 
     // Diverging:
@@ -714,6 +715,11 @@ public:
   //  https://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=11
   //  https://colorbrewer2.org/#type=diverging&scheme=RdBu&n=11
   //  https://colorbrewer2.org/#type=diverging&scheme=PRGn&n=11
+
+  // -Another tool:
+  //  https://gka.github.io/palettes/#/11|d|00429d,96ffea,ffffe0|ffffe0,ff005e,93003a|1|1
+  //  https://www.vis4.net/blog/2013/09/mastering-multi-hued-color-scales/  explanation
+  //  https://gka.github.io/chroma.js/
 
   //  
   //
