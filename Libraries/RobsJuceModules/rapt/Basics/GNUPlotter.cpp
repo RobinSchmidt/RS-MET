@@ -309,8 +309,11 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::AS_Greens:     c = "set palette defined (0 '#F7FCF5', 1 '#E5F5E0', 2 '#C7E9C0', 3 '#A1D99B', 4 '#74C476', 5 '#41AB5D', 6 '#238B45', 7 '#005A32')"; break;  
   case CP::AS_Oranges:    c = "set palette defined (0 '#FFF5EB', 1 '#FEE6CE', 2 '#FDD0A2', 3 '#FDAE6B', 4 '#FD8D3C', 5 '#F16913', 6 '#D94801', 7 '#8C2D04')"; break;  
   case CP::AS_PuBu:       c = "set palette defined (0 '#FFF7FB', 1 '#ECE7F2', 2 '#D0D1E6', 3 '#A6BDDB', 4 '#74A9CF', 5 '#3690C0', 6 '#0570B0', 7 '#034E7B')"; break;  
+  case CP::AS_Purples:    c = "set palette defined (0 '#FCFBFD', 1 '#EFEDF5', 2 '#DADAEB', 3 '#BCBDDC', 4 '#9E9AC8', 5 '#807DBA', 6 '#6A51A3', 7 '#4A1486')"; break;   
   case CP::AS_RdPu:       c = "set palette defined (0 '#FFF7F3', 1 '#FDE0DD', 2 '#FCC5C0', 3 '#FA9FB5', 4 '#F768A1', 5 '#DD3497', 6 '#AE017E', 7 '#7A0177')"; break;  
-  case CP::AS_Purples:    c = "set palette defined (0 '#FCFBFD', 1 '#EFEDF5', 2 '#DADAEB', 3 '#BCBDDC', 4 '#9E9AC8', 5 '#807DBA', 6 '#6A51A3', 7 '#4A1486')"; break;  
+  case CP::AS_Reds:       c = "set palette defined (0 '#FFF5F0', 1 '#FEE0D2', 2 '#FCBBA1', 3 '#FC9272', 4 '#FB6A4A', 5 '#EF3B2C', 6 '#CB181D', 7 '#99000D')"; break;   
+ 
+ 
   case CP::CB_YlGnBu:     c = "set palette defined (0 '#ffffd9', 1 '#edf8b1', 2 '#c7e9b4', 3 '#7fcdbb', 4 '#41b6c4', 5 '#1d91c0', 6 '#225ea8', 7 '#253494', 8 '#081d58')"; break;  
   case CP::CB_YlOrBr:     c = "set palette defined (0 '#ffffe5', 1 '#fff7bc', 2 '#fee391', 3 '#fec44f', 4 '#fe9929', 5 '#ec7014', 6 '#cc4c02', 7 '#993404', 8 '#662506')"; break;   
   case CP::CB_YlOrRd:     c = "set palette defined (0 '#ffffcc', 1 '#ffeda0', 2 '#fed976', 3 '#feb24c', 4 '#fd8d3c', 5 '#fc4e2a', 6 '#e31a1c', 7 '#bd0026', 8 '#800026')"; break;   

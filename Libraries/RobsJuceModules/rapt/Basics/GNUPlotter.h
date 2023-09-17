@@ -642,6 +642,7 @@ public:
     AS_PuBu,            // 8 purple-blue colors of increasing saturation
     AS_Purples,         // 8 purple colors of increasing saturation
     AS_RdPu,            // 8 red-purple colors of increasing saturation
+    AS_Reds,            // 8 red colors of increasing saturation
 
     CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
     CB_YlOrBr,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrBr&n=9
@@ -708,7 +709,7 @@ public:
   // https://www.fabiocrameri.ch/colourmaps/
   // https://bids.github.io/colormap/
   // http://www.gnuplotting.org/tag/palette/
-  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to Purples
+  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to Reds
 
   //  traditional pm3d (black-blue-red-yellow)
 
