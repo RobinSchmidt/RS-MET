@@ -338,6 +338,10 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::F_prpGrnRed:     c = "set palette rgbformulae 33,13,10"; break;
   case CP::KM_Moreland:     c = "set palette defined (0 '#3b4cc0', 1 '#688aef', 2 '#99baff', 3 '#c9d8ef', 4 '#edd1c2', 5 '#f7a789', 6 '#e36a53', 7 '#b40426')"; break;  
   case CP::KM_BentCoolWarm: c = "set palette defined (0 '#5548c1', 1 '#7982d7', 2 '#abb8e7', 3 '#dde3ef', 4 '#ead3c6', 5 '#dba188', 6 '#ca6b55', 7 '#b10027')"; break; 
+  case CP::ML_Jet:          c = "set palette defined (0 '#000080', 1 '#0000ff', 2 '#0080ff', 3 '#00ffff', 4 '#80ff80', 5 '#ffff00', 6 '#ff8000', 7 '#ff0000', 8 '#800000')"; break; 
+  
+
+
 
   case CP::AS_Paired:    c = "set palette defined (0 '#A6CEE3', 1 '#1F78B4', 2 '#B2DF8A', 3 '#33A02C', 4 '#FB9A99', 5 '#E31A1C', 6 '#FDBF6F', 7 '#FF7F00')"; break;    
   

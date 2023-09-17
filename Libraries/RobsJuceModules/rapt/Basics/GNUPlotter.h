@@ -671,8 +671,10 @@ public:
     AS_RdYlGn,          // red-paleyellow-green
     AS_Spectral,        // rainbow with red-paleyellow-blue
     F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
-    KM_BentCoolWarm,    //
+    KM_BentCoolWarm,    // blue-lightgray-red
     KM_Moreland,        // blue-lightgray-red
+    ML_Jet,             // darkblue-lightgreenishyellow-darkred
+
 
     // Alternating:
     AS_Paired,          // 8 colors in 4 light/dark pairs: blue, green, red, orange
@@ -691,6 +693,7 @@ public:
   //  Moreland), ML_ (MatLab), etc.
   // -AS: Anna Schneider
   // -KM: Kenneth Moreland
+  // -ML: MatLab
   // -SW: Nathaniel J. Smith and Stefan van der Walt
   // -EF: Eric Firing
   // -UA: Unknown Author
