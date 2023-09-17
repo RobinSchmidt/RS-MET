@@ -659,6 +659,7 @@ public:
 
     ML_Parula,          // 
 
+    SW_Inferno,
     SW_magma,
     SW_plasma,
     UA_ChromaJS,        //

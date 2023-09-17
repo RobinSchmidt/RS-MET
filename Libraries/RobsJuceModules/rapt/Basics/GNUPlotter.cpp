@@ -324,6 +324,7 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::F_printable:     c = "set palette rgbformulae 30,31,32"; break;
   case CP::F_tradPm3d:      c = "set palette rgbformulae  7, 5,15"; break;
   case CP::ML_Parula:       c = "set palette defined (0 '#352a87', 1 '#0363e1', 2 '#1485d4', 3 '#06a7c6', 4 '#38b99e', 5 '#92bf73', 6 '#d9ba56', 7 '#fcce2e', 8 '#f9fb0e')"; break;
+  case CP::SW_Inferno:      c = "set palette defined (0 '#000004', 1 '#1f0c48', 2 '#550f6d', 3 '#88226a', 4 '#a83655', 5 '#e35933', 6 '#f9950a', 7 '#f8c932', 8 '#fcffa4')"; break;  
   case CP::SW_magma:        c = "set palette defined (0 '#000004', 1 '#1c1044', 2 '#4f127b', 3 '#812581', 4 '#b5367a', 5 '#e55964', 6 '#fb8761', 7 '#fec287', 8 '#fbfdbf')"; break;
   case CP::SW_plasma:       c = "set palette defined (0 '#0c0887', 1 '#4b03a1', 2 '#7d03a8', 3 '#a82296', 4 '#cb4679', 5 '#e56b5d', 6 '#f89441', 7 '#fdc328', 8 '#f0f921')"; break;
   case CP::UA_ChromaJS:     c = "set palette defined (0 '#ffffe0', 1 '#ffdfb8', 2 '#ffbc94', 3 '#ff9777', 4 '#ff6962', 5 '#ee4256', 6 '#d21f47', 7 '#b0062c', 8 '#8b0000')"; break;  
