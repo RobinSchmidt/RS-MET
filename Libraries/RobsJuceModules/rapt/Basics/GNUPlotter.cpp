@@ -330,7 +330,7 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::SW_plasma:       c = "set palette defined (0 '#0c0887', 1 '#4b03a1', 2 '#7d03a8', 3 '#a82296', 4 '#cb4679', 5 '#e56b5d', 6 '#f89441', 7 '#fdc328', 8 '#f0f921')"; break;
   case CP::UA_YlRd:         c = "set palette defined (0 '#ffee00', 1 '#ff7000', 2 '#ee0000', 3 '#7f0000')"; break;
   case CP::UA_ChromaJS:     c = "set palette defined (0 '#ffffe0', 1 '#ffdfb8', 2 '#ffbc94', 3 '#ff9777', 4 '#ff6962', 5 '#ee4256', 6 '#d21f47', 7 '#b0062c', 8 '#8b0000')"; break;  
-  case CP::UA_viridisBrt:   c = "set palette defined (0 '#352a87', 1 '#0363e1', 2 '#1485d4', 3 '#06a7c6', 4 '#38b99e', 5 '#92bf73', 6 '#d9ba56', 7 '#fcce2e', 8 '#f9fb0e')"; break;
+
 
     // Diverging:
   case CP::AM_Turbo:        c = "set palette defined (0 '#30123b', 1 '#466be3', 2 '#28bceb', 3 '#32f298', 4 '#a4fc3c', 5 '#eecf3a', 6 '#fb7e21', 7 '#d02f05', 8 '#7a0403')"; break;
@@ -349,7 +349,10 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   case CP::UA_GnPu:         c = "set palette defined (1 '#396353', 2 '#0db14b', 3 '#6dc067', 4 '#abd69b', 5 '#daeac1', 6 '#dfcce4', 7 '#c7b2d6', 8 '#9474b4', 9 '#754098', 10 '#504971')"; break;
   
     // Alternating:
-  case CP::AS_Paired:    c = "set palette defined (0 '#A6CEE3', 1 '#1F78B4', 2 '#B2DF8A', 3 '#33A02C', 4 '#FB9A99', 5 '#E31A1C', 6 '#FDBF6F', 7 '#FF7F00')"; break;    
+  case CP::AS_Paired8:    c = "set palette defined (0 '#A6CEE3', 1 '#1F78B4', 2 '#B2DF8A', 3 '#33A02C', 4 '#FB9A99', 5 '#E31A1C', 6 '#FDBF6F', 7 '#FF7F00')"; break;
+  case CP::CB_Paired10:   c = "set palette defined (0 '#a6cee3', 1 '#1f78b4', 2 '#b2df8a', 3 '#33a02c', 4 '#fb9a99', 5 '#e31a1c', 6 '#fdbf6f', 7 '#ff7f00', 8 '#cab2d6', 9 '#6a3d9a')"; break;
+  // The ones with smaller count can actually be obtained by truncating the longer ones
+  
   
     // Misc:
   case CP::_test:   c = "set palette rgbformulae 3,23,21"; break;
