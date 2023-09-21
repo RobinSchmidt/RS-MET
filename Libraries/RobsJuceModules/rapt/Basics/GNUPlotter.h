@@ -173,6 +173,17 @@ public:
   void plotBivariateFunction(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax, 
     const std::function<T(T, T)>& f);
 
+
+  template<class T>
+  void plotContourMap(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax,
+    const std::function<T(T, T)>& f, int numContours, T zMin, T zMax);
+  // ToDo: 
+  // -Make zMin, zMax optional, infer appropriate range from data if not given
+  // -add a function plotContourMap similar to plotSurface(int Nx, int Ny, T *x, T *y, T **z);
+    
+
+
+
   // ToDo: 
   // -for those functions which receive a function pointer, use std::function instead - this 
   //   will allow use with lambda-functions, functors *and* function-pointers -> more flexible
@@ -283,6 +294,13 @@ public:
   a string of formatting options, for example "center" for centered text (see the set label 
   documentation in the GNUPlot manual). */
   void addAnnotation(double x, double y, CSR text, CSR options = "");
+
+
+  template<class T>
+  void setContourLevels(const std::vector<T>& levels);
+  // ToDo:
+  // -Add documentation
+  // -Maybe move to protected
 
 
   //-----------------------------------------------------------------------------------------------
@@ -629,130 +647,111 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** Enumerations */
 
-  /** Named color palettes. ...TBC... */
+  /** Named color palettes. They are meant to be used mainly as color maps in heatmap and filled 
+  contour plots. The 2-letter prefix indicates the author or source of the palette. They mean
+  AS: Anna Schneider, AM: Anton Mikhailov, CJ: Chroma JS, GP: Gretchen N. Peterson, KM: Kenneth 
+  Moreland, ML: MatLab, SW: Nathaniel J. Smith and Stefan van der Walt, EF: Eric Firing, RS: Robin 
+  Schmidt, UA: Unknown Author, GF: Gnuplot RGB formula. */
   enum class ColorPalette  
   {
     // Linear:
-    AS_Blues,           // 8 blue colors of increasing saturation, looks like ice
-    AS_BuGn,            // 8 blue-green colors of increasing saturation
-    AS_BuPu,            // 8 blue-purple colors of increasing saturation
-    AS_GnBu,            // 8 green-blue colors of increasing saturation
-    AS_Greens,          // 8 green colors of increasing saturation
-    AS_Oranges,         // 8 orange colors of increasing saturation
-    AS_PuBu,            // 8 purple-blue colors of increasing saturation
-    AS_Purples,         // 8 purple colors of increasing saturation
-    AS_RdPu,            // 8 red-purple colors of increasing saturation
-    AS_Reds,            // 8 red colors of increasing saturation
-    AS_YlGn,            // 8 yellow-green colors of increasing saturation
-    AS_YlGnBu,          // 8 yellow-green-blue colors of increasing saturation
-    AS_YlOrBr,          // 8 yellow-orange-brown colors of increasing saturation
-    AS_YlOrRd,          // 8 yellow-orange-red colors of increasing saturation
+    CB_Blues8,          // icy, Blues&n=8
+    //CB_BuGn8,           // BuGn&n=8  bad ..maybe try to take out the 2nd white
+    //CB_BuGn8m,          // ...modified - better in the whites
+    CB_BuPu8,           // white-paleblue-purple, BuPu&n=8
+    CB_GnBu8,           // paleyellow-palegreen-blue, GnBu&n=8
+    //CB_Greens8,         // Greens&n=8
+    //CB_Oranges8,        // Oranges&n=8
+    CB_PuBu8,           // icy, similar to CB_Blues8 but more greenish,    PuBu&n=8
+    //CB_Purples8,        // white-purple, Purples&n=8
+    CB_RdPu8,           // yellow-pink-darkmagenta RdPu&n=8
+    //CB_Reds8,           // Reds&n=8
+    CB_YlGn8,           // grassland, paleyellow-green,                    YlGn&n=8
+    CB_YlGnBu8,         // paleyellow-green-blue,                          YlGnBu&n=8
+    CB_YlGnBu9,         // paleyellow-green-blue, darker at top,           YlGnBu&n=9
+    CB_YlGnBu9m,        // modified, taken out the 2nd yellow, looks better in the yellows
+    CB_YlOrBr8,         // paleyellow-orange-brown,                        YlOrBr&n=8
+    CB_YlOrBr9,         // paleyellow-orange-brown, darker at top,         YlOrBr&n=9
+    CB_YlOrRd8,         // paleyellow-orange-red,                          YlOrRd&n=8
+    CB_YlOrRd9,         // yellow-green-blue, darker at top,               YlOrRd&n=9
+    // maybe remove some of the ugly ones. Maybe add more variations with 9 colors
 
-
-    CB_YlGnBu,          // https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=9
-    CB_YlOrBr,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrBr&n=9
-    CB_YlOrRd,          // https://colorbrewer2.org/#type=sequential&scheme=YlOrRd&n=9
-
-    EF_viridis,         // From dark blue via green to yellow. MatPlotLib default.
-    F_printable,        // black-blue-pink-orange-yellow-white. Translates well to grayscale.
-    F_tradPm3d,         // traditional pm3d, black-blue-red-yellow
+    EF_Viridis,         // From dark blue via green to yellow. MatPlotLib default.
+    GF_AfmHot,          // like GF_Hot but more brownish, less reddish, less saturated
+    GF_BkPuWt,          // goth, black-purple-white
+    GF_Hot,             // black-red-yellow-white
+    GF_Printable,       // black-blue-pink-orange-yellow-white. Translates well to grayscale.
+    GF_TradPm3d,        // traditional pm3d, black-blue-red-yellow
     GP_Sand,            // sand colors
-    ML_Parula,          // 
-
-    SW_Inferno,
-    SW_magma,
-    SW_plasma,
-    UA_YlRd,            // yellow-red
-    UA_ChromaJS,        //
-    UA_viridisBrt,      // Similar to viridis but brighter and with some orange near the top.
+    ML_Parula,          // like viridis, brighter, more orange, new MatLab default
+    RS_BkWt,            // black-gray-white
+    SW_Inferno,         // black-purple-orange-paleyellow
+    SW_Magma,           // black-purple-pink-paleyellow
+    SW_Plasma,          // darkpurple-red-yellow
+    //UA_YlRd,            // yellow-red...not so good
+    CJ_YlRd9,           // paleyellow-red
 
     // Diverging:
-    AM_Turbo,           // similar to ML_Jet but with less saturation
-    AS_BrBG,            // brown-white-bluegreen
-    AS_PiYG,            // pink-white-yellowgreen
-    AS_PRGn,            // purple-white-green
-    AS_PuOr,            // orange-white-purple
-    AS_RdBu,            // red-white-blue
-    AS_RdYlBu,          // red-paleyellow-blue
-    AS_RdYlGn,          // red-paleyellow-green
-    AS_Spectral,        // rainbow with red-paleyellow-blue
-    F_prpGrnRed,        // rainbow (purple-blue-green-yellow-red), middle is bright
+    AM_Turbo,           // similar to ML_Jet but less saturated
+    CB_BrBG8,           // brown-white-bluegreen,                          BrBG&n=8   
+    CB_BrBG9,           // brown-white-bluegreen, paler around the center, BrBG&n=9
+    CB_PiYG8,           // grapefruit, pink-white-yellowgreen,             PiYG&n=8
+    CB_PRGn8,           // purple-white-green,                             PRGn&n=8
+    CB_PRGn11,          // purple-white-green, darker at the ends,         PRGn&n=11
+    CB_PuOr8,           // orangebrown-pale-purple,                        PuOr&n=8
+    CB_RdBu8,           // red-pale-blue,                                  RdBu&n=8
+    CB_RdBu11,          // red-pale-blue, darker at the ends,              RdBu&n=11
+    CB_RdYlBu8,         // red-paleyellow-blue,                            RdYlBu&n=8
+    CB_RdYlBu11,        // red-paleyellow-blue, darker at the ends,        RdYlBu&n=11
+    CB_RdYlGn8,         // red-paleyellow-green,                           RdYlGn&n=8
+    CB_RdYlGn11,        // red-paleyellow-green, darker at the ends,       RdYlGn&n=8
+    CB_Spectral8,       // red-paleyellow-blue,                            Spectral&n=8
+    CB_Spectral11,      // purple-green-palyyellow-orange-burgundy,        Spectral&n=11
+    CJ_BuYlRd11,        // blue-paleyellow-red, very good
+    GF_PuGnRd,          // rainbow (purple-blue-green-yellow-red), middle is bright, more saturated
+                        // than CB_Spectral, middle more green (instead of yellow)
     KM_BentCoolWarm,    // blue-lightgray-red
     KM_Moreland,        // blue-lightgray-red
     ML_Jet,             // darkblue-lightgreenishyellow-darkred, old MatLab default
+    RS_RdGnBu,          // darkred-palegreen-darkblue, has a sort of vintage, "sepia" look
     UA_GnPu,            // green-purple
 
-    // parula is new matlab default
-
     // Alternating:
-    AS_Paired,          // 8 colors in 4 light/dark pairs: blue, green, red, orange
+    CB_Paired8,         //  8 colors in 4 light/dark pairs: blue, green, red, orange
+    CB_Paired10,        // 10 colors in 5 light/dark pairs: blue, green, red, orange, purple
+    // should be used with "set palette maxcolors N" where N is the number of colors
+    
+    // Cyclic:
 
     // Categorical:
 
-
-    _test, 
+    //_test, 
 
     numColorPalettes
   };
-  // We use suffixes Brt for Bright, Drk for dark
-  // ToDo: 
-  // -Document sources, see comments at the bottom of GNUPlotter.cpp 
-  // -Maybe prefix the maps by initials of author like AS_BrBG (Anna Schneider), KM_ (Kenneth 
-  //  Moreland), ML_ (MatLab), etc.
-  // -AS: Anna Schneider
-  // -AM: Anton Mikhailov
-  // -GP: Gretchen N. Peterson
-  // -KM: Kenneth Moreland
-  // -ML: MatLab
-  // -SW: Nathaniel J. Smith and Stefan van der Walt
-  // -EF: Eric Firing
-  // -UA: Unknown Author
-  // -DP: Default Palette
-  // -F:  Gnuplot RGB formula
-  //  AS_Paired should be used with "set palette maxcolors 8"
-  // -CB: Color Brewer
+  // Note: The AS (Anna Schneider) color palettes apparently originate from colorbrewer.org. For 
+  // example, AS_YlGnBu can be recreated via:
+  //   https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=8
+  // Maybe rename them to names like CB_YlGnBu8 to make them consistent with CB_YlGnBu9. In 
+  // these 2 settings (YlGnBu with 8 or 9 colors), the first 7 colors match, but the 8th doesn't 
+  // and, obvioulsy one has a 9th while the other doesn't.
 
-  // -To add:
-  //  https://colorbrewer2.org/#type=qualitative&scheme=Paired&n=10
-  //  https://colorbrewer2.org/#type=diverging&scheme=Spectral&n=11
-  //  https://colorbrewer2.org/#type=diverging&scheme=RdYlGn&n=11
-  //  https://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=11
-  //  https://colorbrewer2.org/#type=diverging&scheme=RdBu&n=11
-  //  https://colorbrewer2.org/#type=diverging&scheme=PRGn&n=11
+  // The CB_ colors can be re-created using the colorbrewer. For example, CB_YlGnBu8 via:
+  //   https://colorbrewer2.org/#type=sequential&scheme=YlGnBu&n=8  
+  // This is what the comment "YlGnBu&n=8" stands for. It's the last part of the URL that has to be
+  // pasted of the "scheme=&" to make the website recreate the colormap. Some of them can also be 
+  // found here:
+  //   https://github.com/Gnuplotting/gnuplot-palettes
+  // These are the ones by Anna Schneider
 
-  // -Another tool:
-  //  https://gka.github.io/palettes/#/11|d|00429d,96ffea,ffffe0|ffffe0,ff005e,93003a|1|1
-  //  https://www.vis4.net/blog/2013/09/mastering-multi-hued-color-scales/  explanation
-  //  https://gka.github.io/chroma.js/
+  // ToDo: add CB_Spectral9. It has this middle paleyellow (like 11, unlike 8) but doesn't go all 
+  // the way to purple (like 11), so it should look different than these two. Spectral10 might also
+  // look different. Spectral is one of the most beautiful diverging maps, so it may make sense to 
+  // have all variations 8,9,10,11 available
 
-  //  
-  //
-  // http://www.kennethmoreland.com/color-advice/
-  // https://colorcet.com/gallery.html
-  // https://colorcet.com/userguide/index.html  
-  //  -> use classification for there: linear, diverging, rainbow, cyclic, low contrast, etc.
-  // https://www.fabiocrameri.ch/colourmaps/
-  // https://bids.github.io/colormap/
-  // http://www.gnuplotting.org/tag/palette/
-  // https://github.com/Gnuplotting/gnuplot-palettes ...done up to parula
 
-  // about jet and turbo:
-  // https://blog.research.google/2019/08/turbo-improved-rainbow-colormap-for.html
-  // https://de.mathworks.com/matlabcentral/answers/304765-how-do-you-set-a-new-default-colormap-for-matlab
-
-  // https://blogs.mathworks.com/steve/2014/10/13/a-new-colormap-for-matlab-part-1-introduction/
-  // https://blogs.mathworks.com/steve/2014/10/20/a-new-colormap-for-matlab-part-2-troubles-with-rainbows/
-  // https://blogs.mathworks.com/steve/2014/11/12/a-new-colormap-for-matlab-part-3-some-reactions/
-  // https://blogs.mathworks.com/steve/2014/12/10/a-new-colormap-for-matlab-part-4-the-name/
-  // https://blogs.mathworks.com/steve/2017/07/24/colormap-test-image/
-  // https://blogs.mathworks.com/headlines/2018/10/10/a-dangerous-rainbow-why-colormaps-matter/
-
-  // https://www.amazon.com/Cartographers-Toolkit-Colors-Typography-Patterns/dp/0615467946
-
-  // https://static.aminer.org/pdf/PDF/000/240/853/designing_for_users_with_color_vision_deficiency_effective_color_combinations.pdf
-
-  //  traditional pm3d (black-blue-red-yellow)
-
+  // ToDo: remove some of the ugiler colormaps. Move the code for them into a textfile, so we can
+  // easily re-add them later, if needed
 
   //-----------------------------------------------------------------------------------------------
   /** \name Handling variable argument lists */

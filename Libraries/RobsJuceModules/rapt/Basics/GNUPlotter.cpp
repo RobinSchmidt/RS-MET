@@ -232,6 +232,47 @@ template void GNUPlotter::plotBivariateFunction(int Nx, float xMin, float xMax, 
 template void GNUPlotter::plotBivariateFunction(int Nx, int xMin, int xMax, int Ny,
   int yMin, int yMax, const std::function<int(int, int)>& f);
 
+template<class T>
+void GNUPlotter::plotContourMap(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax,
+  const std::function<T(T, T)>& f, int numContours, T zMin, T zMax)
+{
+  addDataBivariateFunction(Nx, xMin, xMax, Ny, yMin, yMax, f);
+  std::vector<T> levels(numContours); 
+  rangeLinear(&levels[0], numContours, zMin, zMax);
+  setContourLevels(levels);
+
+  // Use constant color fills between the contour lines if desired:
+  bool useConstColors = true;  // make user parameter
+  if(useConstColors)
+  {
+    std::string cmd = "set palette maxcolors " + std::to_string(levels.size() - 1);
+    addCommand(cmd);
+    size_t L = levels.size() - 1;        // last valid index
+    std::string range = "[" + std::to_string(levels[0]) + ":" + std::to_string(levels[L]) + "]";
+    addCommand("set zrange " + range);   // range for z values
+    addCommand("set cbrange " + range);  // color bar range
+  }
+
+  // Plot:
+  addCommand("set pm3d map impl");
+  addCommand("set contour");
+  addCommand("splot '" + dataPath + "' i 0 nonuniform matrix w pm3d notitle");
+  //addCommand("set autoscale fix");
+  invokeGNUPlot();
+
+  // ToDo:
+  // -When clicking on "Apply autoscale" on the GUI, the colors get messed up. I'm trying to fix
+  //  this problem via "set autoscale fix" but that doesn't seem to help.
+}
+template void GNUPlotter::plotContourMap(
+  int Nx, double xMin, double xMax, int Ny, double yMin, double yMax,
+  const std::function<double(double, double)>& f, int numContours, double zMin, double zMax);
+template void GNUPlotter::plotContourMap(
+  int Nx, float xMin, float xMax, int Ny, float yMin, float yMax,
+  const std::function<float(float, float)>& f, int numContours, float zMin, float zMax);
+template void GNUPlotter::plotContourMap(
+  int Nx, int xMin, int xMax, int Ny, int yMin, int yMax,
+  const std::function<int(int, int)>& f, int numContours, int zMin, int zMax);
 
 //-------------------------------------------------------------------------------------------------
 // style setup:
@@ -303,77 +344,86 @@ void GNUPlotter::setColorPalette(ColorPalette palette, bool inverted)
   switch(palette)
   {
     // Linear:
-  case CP::AS_Blues:        c = "set palette defined (0 '#F7FBFF', 1 '#DEEBF7', 2 '#C6DBEF', 3 '#9ECAE1', 4 '#6BAED6', 5 '#4292C6', 6 '#2171B5', 7 '#084594')"; break;
-  case CP::AS_BuGn:         c = "set palette defined (0 '#F7FCFD', 1 '#E5F5F9', 2 '#CCECE6', 3 '#99D8C9', 4 '#66C2A4', 5 '#41AE76', 6 '#238B45', 7 '#005824')"; break;
-  case CP::AS_BuPu:         c = "set palette defined (0 '#F7FCFD', 1 '#E0ECF4', 2 '#BFD3E6', 3 '#9EBCDA', 4 '#8C96C6', 5 '#8C6BB1', 6 '#88419D', 7 '#6E016B')"; break;
-  case CP::AS_GnBu:         c = "set palette defined (0 '#F7FCF0', 1 '#E0F3DB', 2 '#CCEBC5', 3 '#A8DDB5', 4 '#7BCCC4', 5 '#4EB3D3', 6 '#2B8CBE', 7 '#08589E')"; break;
-  case CP::AS_Greens:       c = "set palette defined (0 '#F7FCF5', 1 '#E5F5E0', 2 '#C7E9C0', 3 '#A1D99B', 4 '#74C476', 5 '#41AB5D', 6 '#238B45', 7 '#005A32')"; break;
-  case CP::AS_Oranges:      c = "set palette defined (0 '#FFF5EB', 1 '#FEE6CE', 2 '#FDD0A2', 3 '#FDAE6B', 4 '#FD8D3C', 5 '#F16913', 6 '#D94801', 7 '#8C2D04')"; break;
-  case CP::AS_PuBu:         c = "set palette defined (0 '#FFF7FB', 1 '#ECE7F2', 2 '#D0D1E6', 3 '#A6BDDB', 4 '#74A9CF', 5 '#3690C0', 6 '#0570B0', 7 '#034E7B')"; break;
-  case CP::AS_Purples:      c = "set palette defined (0 '#FCFBFD', 1 '#EFEDF5', 2 '#DADAEB', 3 '#BCBDDC', 4 '#9E9AC8', 5 '#807DBA', 6 '#6A51A3', 7 '#4A1486')"; break;
-  case CP::AS_RdPu:         c = "set palette defined (0 '#FFF7F3', 1 '#FDE0DD', 2 '#FCC5C0', 3 '#FA9FB5', 4 '#F768A1', 5 '#DD3497', 6 '#AE017E', 7 '#7A0177')"; break;
-  case CP::AS_Reds:         c = "set palette defined (0 '#FFF5F0', 1 '#FEE0D2', 2 '#FCBBA1', 3 '#FC9272', 4 '#FB6A4A', 5 '#EF3B2C', 6 '#CB181D', 7 '#99000D')"; break;
-  case CP::AS_YlGn:         c = "set palette defined (0 '#FFFFE5', 1 '#F7FCB9', 2 '#D9F0A3', 3 '#ADDD8E', 4 '#78C679', 5 '#41AB5D', 6 '#238443', 7 '#005A32')"; break;
-  case CP::AS_YlGnBu:       c = "set palette defined (0 '#FFFFD9', 1 '#EDF8B1', 2 '#C7E9B4', 3 '#7FCDBB', 4 '#41B6C4', 5 '#1D91C0', 6 '#225EA8', 7 '#0C2C84')"; break;
-  case CP::AS_YlOrBr:       c = "set palette defined (0 '#FFFFE5', 1 '#FFF7BC', 2 '#FEE391', 3 '#FEC44F', 4 '#FE9929', 5 '#EC7014', 6 '#CC4C02', 7 '#8C2D04')"; break;
-  case CP::AS_YlOrRd:       c = "set palette defined (0 '#FFFFCC', 1 '#FFEDA0', 2 '#FED976', 3 '#FEB24C', 4 '#FD8D3C', 5 '#FC4E2A', 6 '#E31A1C', 7 '#B10026')"; break;
-  case CP::CB_YlGnBu:       c = "set palette defined (0 '#ffffd9', 1 '#edf8b1', 2 '#c7e9b4', 3 '#7fcdbb', 4 '#41b6c4', 5 '#1d91c0', 6 '#225ea8', 7 '#253494', 8 '#081d58')"; break;
-  case CP::CB_YlOrBr:       c = "set palette defined (0 '#ffffe5', 1 '#fff7bc', 2 '#fee391', 3 '#fec44f', 4 '#fe9929', 5 '#ec7014', 6 '#cc4c02', 7 '#993404', 8 '#662506')"; break;
-  case CP::CB_YlOrRd:       c = "set palette defined (0 '#ffffcc', 1 '#ffeda0', 2 '#fed976', 3 '#feb24c', 4 '#fd8d3c', 5 '#fc4e2a', 6 '#e31a1c', 7 '#bd0026', 8 '#800026')"; break;
-  case CP::EF_viridis:      c = "set palette defined (0 '#440154', 1 '#472c7a', 2 '#3b518b', 3 '#2c718e', 4 '#21908d', 5 '#27ad81', 6 '#5cc863', 7 '#aadc32', 8 '#fde725')"; break;
-  case CP::F_printable:     c = "set palette rgbformulae 30,31,32"; break;
-  case CP::F_tradPm3d:      c = "set palette rgbformulae  7, 5,15"; break;
+  case CP::CB_Blues8:       c = "set palette defined (0 '#F7FBFF', 1 '#DEEBF7', 2 '#C6DBEF', 3 '#9ECAE1', 4 '#6BAED6', 5 '#4292C6', 6 '#2171B5', 7 '#084594')"; break;
+  //case CP::CB_BuGn8:        c = "set palette defined (0 '#F7FCFD', 1 '#E5F5F9', 2 '#CCECE6', 3 '#99D8C9', 4 '#66C2A4', 5 '#41AE76', 6 '#238B45', 7 '#005824')"; break;
+  //case CP::CB_BuGn8m:       c = "set palette defined (0 '#F7FCFD', 1 '#CCECE6', 2 '#99D8C9', 3 '#66C2A4', 4 '#41AE76', 5 '#238B45', 6 '#005824')"; break;
+  case CP::CB_BuPu8:        c = "set palette defined (0 '#F7FCFD', 1 '#E0ECF4', 2 '#BFD3E6', 3 '#9EBCDA', 4 '#8C96C6', 5 '#8C6BB1', 6 '#88419D', 7 '#6E016B')"; break;
+  case CP::CB_GnBu8:        c = "set palette defined (0 '#F7FCF0', 1 '#E0F3DB', 2 '#CCEBC5', 3 '#A8DDB5', 4 '#7BCCC4', 5 '#4EB3D3', 6 '#2B8CBE', 7 '#08589E')"; break;
+  //case CP::CB_Greens8:      c = "set palette defined (0 '#F7FCF5', 1 '#E5F5E0', 2 '#C7E9C0', 3 '#A1D99B', 4 '#74C476', 5 '#41AB5D', 6 '#238B45', 7 '#005A32')"; break;
+  //case CP::CB_Oranges8:     c = "set palette defined (0 '#FFF5EB', 1 '#FEE6CE', 2 '#FDD0A2', 3 '#FDAE6B', 4 '#FD8D3C', 5 '#F16913', 6 '#D94801', 7 '#8C2D04')"; break;
+  case CP::CB_PuBu8:        c = "set palette defined (0 '#FFF7FB', 1 '#ECE7F2', 2 '#D0D1E6', 3 '#A6BDDB', 4 '#74A9CF', 5 '#3690C0', 6 '#0570B0', 7 '#034E7B')"; break;
+  //case CP::CB_Purples8:     c = "set palette defined (0 '#FCFBFD', 1 '#EFEDF5', 2 '#DADAEB', 3 '#BCBDDC', 4 '#9E9AC8', 5 '#807DBA', 6 '#6A51A3', 7 '#4A1486')"; break;
+  case CP::CB_RdPu8:        c = "set palette defined (0 '#FFF7F3', 1 '#FDE0DD', 2 '#FCC5C0', 3 '#FA9FB5', 4 '#F768A1', 5 '#DD3497', 6 '#AE017E', 7 '#7A0177')"; break;
+  //case CP::CB_Reds8:        c = "set palette defined (0 '#FFF5F0', 1 '#FEE0D2', 2 '#FCBBA1', 3 '#FC9272', 4 '#FB6A4A', 5 '#EF3B2C', 6 '#CB181D', 7 '#99000D')"; break;
+  case CP::CB_YlGn8:        c = "set palette defined (0 '#FFFFE5', 1 '#F7FCB9', 2 '#D9F0A3', 3 '#ADDD8E', 4 '#78C679', 5 '#41AB5D', 6 '#238443', 7 '#005A32')"; break;
+  case CP::CB_YlGnBu8:      c = "set palette defined (0 '#FFFFD9', 1 '#EDF8B1', 2 '#C7E9B4', 3 '#7FCDBB', 4 '#41B6C4', 5 '#1D91C0', 6 '#225EA8', 7 '#0C2C84')"; break;
+  case CP::CB_YlOrBr8:      c = "set palette defined (0 '#FFFFE5', 1 '#FFF7BC', 2 '#FEE391', 3 '#FEC44F', 4 '#FE9929', 5 '#EC7014', 6 '#CC4C02', 7 '#8C2D04')"; break;
+  case CP::CB_YlOrRd8:      c = "set palette defined (0 '#FFFFCC', 1 '#FFEDA0', 2 '#FED976', 3 '#FEB24C', 4 '#FD8D3C', 5 '#FC4E2A', 6 '#E31A1C', 7 '#B10026')"; break;
+  case CP::CB_YlGnBu9:      c = "set palette defined (0 '#ffffd9', 1 '#edf8b1', 2 '#c7e9b4', 3 '#7fcdbb', 4 '#41b6c4', 5 '#1d91c0', 6 '#225ea8', 7 '#253494', 8 '#081d58')"; break;
+  case CP::CB_YlGnBu9m:     c = "set palette defined (0 '#ffffd9', 1 '#c7e9b4', 2 '#7fcdbb', 3 '#41b6c4', 4 '#1d91c0', 5 '#225ea8', 6 '#253494', 7 '#081d58')"; break;
+
+  case CP::CB_YlOrBr9:      c = "set palette defined (0 '#ffffe5', 1 '#fff7bc', 2 '#fee391', 3 '#fec44f', 4 '#fe9929', 5 '#ec7014', 6 '#cc4c02', 7 '#993404', 8 '#662506')"; break;
+  case CP::CB_YlOrRd9:      c = "set palette defined (0 '#ffffcc', 1 '#ffeda0', 2 '#fed976', 3 '#feb24c', 4 '#fd8d3c', 5 '#fc4e2a', 6 '#e31a1c', 7 '#bd0026', 8 '#800026')"; break;
+  case CP::EF_Viridis:      c = "set palette defined (0 '#440154', 1 '#472c7a', 2 '#3b518b', 3 '#2c718e', 4 '#21908d', 5 '#27ad81', 6 '#5cc863', 7 '#aadc32', 8 '#fde725')"; break;
+  case CP::GF_AfmHot:       c = "set palette rgbformulae 34,35,36"; break;
+  case CP::GF_BkPuWt:       c = "set palette rgbformulae 3,23,21"; break;
+  case CP::GF_Hot:          c = "set palette rgbformulae 21,22,23"; break;
+  case CP::GF_Printable:    c = "set palette rgbformulae 30,31,32"; break;
+  case CP::GF_TradPm3d:     c = "set palette rgbformulae  7, 5,15"; break;
   case CP::GP_Sand:         c = "set palette defined (0 '#604860', 1 '#784860', 2 '#a86060', 3 '#c07860', 4 '#f0a848', 5 '#f8ca8c', 6 '#feecae', 7 '#fff4c2', 8 '#fff7db', 9 '#fffcf6')"; break;
   case CP::ML_Parula:       c = "set palette defined (0 '#352a87', 1 '#0363e1', 2 '#1485d4', 3 '#06a7c6', 4 '#38b99e', 5 '#92bf73', 6 '#d9ba56', 7 '#fcce2e', 8 '#f9fb0e')"; break;
+  case CP::RS_BkWt:         c = "set palette defined (0 '#000000', 1 '#ffffff')"; break;
   case CP::SW_Inferno:      c = "set palette defined (0 '#000004', 1 '#1f0c48', 2 '#550f6d', 3 '#88226a', 4 '#a83655', 5 '#e35933', 6 '#f9950a', 7 '#f8c932', 8 '#fcffa4')"; break;  
-  case CP::SW_magma:        c = "set palette defined (0 '#000004', 1 '#1c1044', 2 '#4f127b', 3 '#812581', 4 '#b5367a', 5 '#e55964', 6 '#fb8761', 7 '#fec287', 8 '#fbfdbf')"; break;
-  case CP::SW_plasma:       c = "set palette defined (0 '#0c0887', 1 '#4b03a1', 2 '#7d03a8', 3 '#a82296', 4 '#cb4679', 5 '#e56b5d', 6 '#f89441', 7 '#fdc328', 8 '#f0f921')"; break;
-  case CP::UA_YlRd:         c = "set palette defined (0 '#ffee00', 1 '#ff7000', 2 '#ee0000', 3 '#7f0000')"; break;
-  case CP::UA_ChromaJS:     c = "set palette defined (0 '#ffffe0', 1 '#ffdfb8', 2 '#ffbc94', 3 '#ff9777', 4 '#ff6962', 5 '#ee4256', 6 '#d21f47', 7 '#b0062c', 8 '#8b0000')"; break;  
-
+  case CP::SW_Magma:        c = "set palette defined (0 '#000004', 1 '#1c1044', 2 '#4f127b', 3 '#812581', 4 '#b5367a', 5 '#e55964', 6 '#fb8761', 7 '#fec287', 8 '#fbfdbf')"; break;
+  case CP::SW_Plasma:       c = "set palette defined (0 '#0c0887', 1 '#4b03a1', 2 '#7d03a8', 3 '#a82296', 4 '#cb4679', 5 '#e56b5d', 6 '#f89441', 7 '#fdc328', 8 '#f0f921')"; break;
+  //case CP::UA_YlRd:         c = "set palette defined (0 '#ffee00', 1 '#ff7000', 2 '#ee0000', 3 '#7f0000')"; break;
+  case CP::CJ_YlRd9:        c = "set palette defined (0 '#ffffe0', 1 '#ffdfb8', 2 '#ffbc94', 3 '#ff9777', 4 '#ff6962', 5 '#ee4256', 6 '#d21f47', 7 '#b0062c', 8 '#8b0000')"; break;  
 
     // Diverging:
   case CP::AM_Turbo:        c = "set palette defined (0 '#30123b', 1 '#466be3', 2 '#28bceb', 3 '#32f298', 4 '#a4fc3c', 5 '#eecf3a', 6 '#fb7e21', 7 '#d02f05', 8 '#7a0403')"; break;
-  case CP::AS_BrBG:         c = "set palette defined (0 '#8C510A', 1 '#BF812D', 2 '#DFC27D', 3 '#F6E8C3', 4 '#C7EAE5', 5 '#80CDC1', 6 '#35978F', 7 '#01665E')"; break;
-  case CP::AS_PiYG:         c = "set palette defined (0 '#C51B7D', 1 '#DE77AE', 2 '#F1B6DA', 3 '#FDE0EF', 4 '#E6F5D0', 5 '#B8E186', 6 '#7FBC41', 7 '#4D9221')"; break;
-  case CP::AS_PRGn:         c = "set palette defined (0 '#762A83', 1 '#9970AB', 2 '#C2A5CF', 3 '#E7D4E8', 4 '#D9F0D3', 5 '#A6DBA0', 6 '#5AAE61', 7 '#1B7837')"; break;
-  case CP::AS_PuOr:         c = "set palette defined (0 '#B35806', 1 '#E08214', 2 '#FDB863', 3 '#FEE0B6', 4 '#D8DAEB', 5 '#B2ABD2', 6 '#8073AC', 7 '#542788')"; break;
-  case CP::AS_RdBu:         c = "set palette defined (0 '#B2182B', 1 '#D6604D', 2 '#F4A582', 3 '#FDDBC7', 4 '#D1E5F0', 5 '#92C5DE', 6 '#4393C3', 7 '#2166AC')"; break;
-  case CP::AS_RdYlBu:       c = "set palette defined (0 '#D73027', 1 '#F46D43', 2 '#FDAE61', 3 '#FEE090', 4 '#E0F3F8', 5 '#ABD9E9', 6 '#74ADD1', 7 '#4575B4')"; break;
-  case CP::AS_RdYlGn:       c = "set palette defined (0 '#D73027', 1 '#F46D43', 2 '#FDAE61', 3 '#FEE08B', 4 '#D9EF8B', 5 '#A6D96A', 6 '#66BD63', 7 '#1A9850')"; break;
-  case CP::AS_Spectral:     c = "set palette defined (0 '#D53E4F', 1 '#F46D43', 2 '#FDAE61', 3 '#FEE08B', 4 '#E6F598', 5 '#ABDDA4', 6 '#66C2A5', 7 '#3288BD')"; break;
-  case CP::F_prpGrnRed:     c = "set palette rgbformulae 33,13,10"; break;
+  
+  case CP::CB_BrBG8:        c = "set palette defined (0 '#8C510A', 1 '#BF812D', 2 '#DFC27D', 3 '#F6E8C3', 4 '#C7EAE5', 5 '#80CDC1', 6 '#35978F', 7 '#01665E')"; break;
+  case CP::CB_BrBG9:        c = "set palette defined (0 '#8c510a', 1 '#bf812d', 2 '#dfc27d', 3 '#f6e8c3', 4 '#f5f5f5', 5 '#c7eae5', 6 '#80cdc1', 7 '#35978f', 8 '#01665e')"; break;
+  
+  case CP::CB_PiYG8:        c = "set palette defined (0 '#C51B7D', 1 '#DE77AE', 2 '#F1B6DA', 3 '#FDE0EF', 4 '#E6F5D0', 5 '#B8E186', 6 '#7FBC41', 7 '#4D9221')"; break;
+  case CP::CB_PRGn8:        c = "set palette defined (0 '#762A83', 1 '#9970AB', 2 '#C2A5CF', 3 '#E7D4E8', 4 '#D9F0D3', 5 '#A6DBA0', 6 '#5AAE61', 7 '#1B7837')"; break;
+  case CP::CB_PuOr8:        c = "set palette defined (0 '#B35806', 1 '#E08214', 2 '#FDB863', 3 '#FEE0B6', 4 '#D8DAEB', 5 '#B2ABD2', 6 '#8073AC', 7 '#542788')"; break;
+  case CP::CB_RdBu8:        c = "set palette defined (0 '#B2182B', 1 '#D6604D', 2 '#F4A582', 3 '#FDDBC7', 4 '#D1E5F0', 5 '#92C5DE', 6 '#4393C3', 7 '#2166AC')"; break;
+  case CP::CB_RdYlBu8:      c = "set palette defined (0 '#D73027', 1 '#F46D43', 2 '#FDAE61', 3 '#FEE090', 4 '#E0F3F8', 5 '#ABD9E9', 6 '#74ADD1', 7 '#4575B4')"; break;
+  case CP::CB_RdYlGn8:      c = "set palette defined (0 '#D73027', 1 '#F46D43', 2 '#FDAE61', 3 '#FEE08B', 4 '#D9EF8B', 5 '#A6D96A', 6 '#66BD63', 7 '#1A9850')"; break;
+  case CP::CB_Spectral8:    c = "set palette defined (0 '#D53E4F', 1 '#F46D43', 2 '#FDAE61', 3 '#FEE08B', 4 '#E6F598', 5 '#ABDDA4', 6 '#66C2A5', 7 '#3288BD')"; break;
+
+  case CP::CB_RdBu11:       c = "set palette defined (0 '#67001f', 1 '#b2182b', 2 '#d6604d', 3 '#f4a582', 4 '#fddbc7', 5 '#f7f7f7', 6 '#d1e5f0', 7 '#92c5de', 8 '#4393c3', 9 '#2166ac', 10 '#053061')"; break;  
+  case CP::CB_RdYlBu11:     c = "set palette defined (0 '#a50026', 1 '#d73027', 2 '#f46d43', 3 '#fdae61', 4 '#fee090', 5 '#ffffbf', 6 '#e0f3f8', 7 '#abd9e9', 8 '#74add1', 9 '#4575b4', 10 '#313695')"; break;
+  case CP::CB_RdYlGn11:     c = "set palette defined (0 '#a50026', 1 '#d73027', 2 '#f46d43', 3 '#fdae61', 4 '#fee08b', 5 '#ffffbf', 6 '#d9ef8b', 7 '#a6d96a', 8 '#66bd63', 9 '#1a9850', 10 '#006837')"; break;
+  case CP::CB_PRGn11:       c = "set palette defined (0 '#40004b', 1 '#762a83', 2 '#9970ab', 3 '#c2a5cf', 4 '#e7d4e8', 5 '#f7f7f7', 6 '#d9f0d3', 7 '#a6dba0', 8 '#5aae61', 9 '#1b7837', 10 '#00441b')"; break;
+  case CP::CB_Spectral11:   c = "set palette defined (0 '#9e0142', 1 '#d53e4f', 2 '#f46d43', 3 '#fdae61', 4 '#fee08b', 5 '#ffffbf', 6 '#e6f598', 7 '#abdda4', 8 '#66c2a5', 9 '#3288bd', 10 '#5e4fa2')"; break;
+  case CP::CJ_BuYlRd11:     c = "set palette defined (0 '#00429d', 1 '#3d68aa', 2 '#6190b7', 3 '#86b8c4', 4 '#b6ded1', 5 '#ffffe0', 6 '#ffcab9', 7 '#fd9291', 8 '#e75d6f', 9 '#c52a52', 10 '#93003a')"; break;
+
+  case CP::GF_PuGnRd:       c = "set palette rgbformulae 33,13,10"; break;
   case CP::KM_Moreland:     c = "set palette defined (0 '#3b4cc0', 1 '#688aef', 2 '#99baff', 3 '#c9d8ef', 4 '#edd1c2', 5 '#f7a789', 6 '#e36a53', 7 '#b40426')"; break;
   case CP::KM_BentCoolWarm: c = "set palette defined (0 '#5548c1', 1 '#7982d7', 2 '#abb8e7', 3 '#dde3ef', 4 '#ead3c6', 5 '#dba188', 6 '#ca6b55', 7 '#b10027')"; break;
   case CP::ML_Jet:          c = "set palette defined (0 '#000080', 1 '#0000ff', 2 '#0080ff', 3 '#00ffff', 4 '#80ff80', 5 '#ffff00', 6 '#ff8000', 7 '#ff0000', 8 '#800000')"; break;
+  case CP::RS_RdGnBu:       c = "set palette defined (0 '#200000', 1 '#e0fff0', 2 '#000030')"; break;
   case CP::UA_GnPu:         c = "set palette defined (1 '#396353', 2 '#0db14b', 3 '#6dc067', 4 '#abd69b', 5 '#daeac1', 6 '#dfcce4', 7 '#c7b2d6', 8 '#9474b4', 9 '#754098', 10 '#504971')"; break;
   
     // Alternating:
-  case CP::AS_Paired8:    c = "set palette defined (0 '#A6CEE3', 1 '#1F78B4', 2 '#B2DF8A', 3 '#33A02C', 4 '#FB9A99', 5 '#E31A1C', 6 '#FDBF6F', 7 '#FF7F00')"; break;
+  case CP::CB_Paired8:      c = "set palette defined (0 '#A6CEE3', 1 '#1F78B4', 2 '#B2DF8A', 3 '#33A02C', 4 '#FB9A99', 5 '#E31A1C', 6 '#FDBF6F', 7 '#FF7F00')"; break;
   case CP::CB_Paired10:   c = "set palette defined (0 '#a6cee3', 1 '#1f78b4', 2 '#b2df8a', 3 '#33a02c', 4 '#fb9a99', 5 '#e31a1c', 6 '#fdbf6f', 7 '#ff7f00', 8 '#cab2d6', 9 '#6a3d9a')"; break;
-  // The ones with smaller count can actually be obtained by truncating the longer ones
+  // The ones with smaller count can actually be obtained by truncating the longer ones ...well...
+  // not always, I think.
   
-  
+    // Cyclic:
+
     // Misc:
-  case CP::_test:   c = "set palette rgbformulae 3,23,21"; break;
-
-    // 7,5,15:  traditional pm3d (black-blue-red-yellow) - done
-    // 33,13,10 ... rainbow (purple-blue-green-yellow-red) - done
-
-    // 3,11,6   ... green-red-violet   not so good
-    // 23,28,3  ... ocean (green-blue-white); try also all other permutations - not good
-    // 21,23,3 (no!) or 
-
-
-    // 21,22,23 ... hot (black-red-yellow-white) -  good!
-    // 34,35,36 ... AFM hot (black-red-yellow-white) - good!
-    // 3,23,21 (good, unipolar)
-
-    // 8,9,7: burgund-white
-
+  //case CP::_test:   c = "set palette rgbformulae 8,9,7"; break;
 
   // ...more to come
   }
+  
+  // ToDo:
+  // remove the common "set palette " from the cases and add it to the string like this:
+  // c = "set palette " + c;
 
   if(inverted)
     c += " negative";
@@ -459,6 +509,22 @@ void GNUPlotter::addAnnotation(double x, double y, CSR text, CSR options)
 {
   addCommand("set label at " + s(x) + "," + s(y) + " \"" + text + "\" " + options + "\n");
 }
+
+template<class T>
+void GNUPlotter::setContourLevels(const std::vector<T>& levels)
+{
+  std::string str = "set cntrparam levels discrete ";
+  str += std::to_string(levels[0]);
+  for(size_t i = 1; i < levels.size(); i++)
+    str += "," + std::to_string(levels[i]);
+  addCommand(str);
+}
+template void GNUPlotter::setContourLevels(const std::vector<double>& levels);
+template void GNUPlotter::setContourLevels(const std::vector<float>& levels);
+template void GNUPlotter::setContourLevels(const std::vector<int>& levels);
+// ToDo: 
+// -Check, if we really need these instantiations. They could be generated automatically from
+//  plotContourMap().
 
 // data setup:
 
@@ -1279,33 +1345,6 @@ void GNUPlotter::setStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CS
 /*=================================================================================================
 
 ToDo:
-
--Find more beautiful colormaps - unipolar and bipolar
- See:
- http://www.gnuplotting.org/tag/palette/
- http://www.gnuplotting.org/tag/colormap/
-
- Sources of some of the color maps:
- viridisBrt: https://stackoverflow.com/questions/35818875/gnuplot-pm3d-with-contour-lines
- prpGrnRed:  https://stackoverflow.com/questions/20977368/filled-contour-plot-with-constant-color-between-contour-lines
-
- magma, plasma, viridis:
- https://github.com/Gnuplotting/gnuplot-palettes
-
- This git repo has many more. Of these, I also like:
-   unipolar: bupu, greys, inferno, parula. pubu, purples, sand,
-   bipolar:  bentcoolwarm, brbg, gnbu, gnpu, jet, moreland, piyg, prgn, puor, rdbu, rdylbu, rdylgn,
-             spectral, turbo, ylgn, ylorbr
-   alternating: paired
- Those which I like but are also integrated here (magma, viridis, etc.) are not listed anymore. 
- Here are yet more colormaps:
- http://gnuplot.info/demo/pm3dcolors.html
- I like:  traditional pm3d, AFM hot, black-blue-violet-yellow-white (printable in grayscale), 
- rainbow
- set palette rgbformulae 7,5,15
- About the rgbformulae:  https://gnuplot.sourceforge.net/docs_4.2/node216.html
-
--Make a bipolar map from dark-red via light-green to dark-blue
 
 -maybe move the explicit template instantiations to another file...that would reduce clutter in 
  this implementation file - but would make the library harder to use - the user would have to deal
