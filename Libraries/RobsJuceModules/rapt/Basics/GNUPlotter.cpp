@@ -936,7 +936,7 @@ void GNUPlotter::addVectorField2D(const std::function<T(T, T)>& fx,
 {
   addDataVectorField2D(fx, fy, Nx, xMin, xMax, Ny, yMin, yMax);
   addGraph(std::string("index ") + std::to_string(dataInfo.size()-1) + 
-    std::string(" using 1:2:3:4:5 with vectors head filled size 0.08,15 ls 2 lc palette notitle"));
+    std::string(" using 1:2:3:4:5 with vectors head filled size 0.08,15 ls 2 lw 2.5 lc palette notitle"));
 }
 
 template<class T>
