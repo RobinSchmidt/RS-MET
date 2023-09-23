@@ -321,3 +321,23 @@ void rsReverb::reset()
       delayLines[d][n] = 0.0;
   }
 }
+
+
+/*
+
+Ideas:
+-Use allpass diffusors on left and right output. 
+-Each diffusor is a chain of multi-sample delay allpass filters. That means, instead of z^-1, we 
+ have z^-M delays.
+-Each such allpass filter should have the same decay time, i.e. the feedback coeff should be scaled
+ according to the number of delay samples M.
+-The sum of all delays should be the same for the left and right chain. This may be achieved by 
+ using twin primes like so:
+   L: 5, 13, 17, 31, 41, 61 
+   R: 7, 11, 19, 29, 43, 59
+ The sum of bot rows is the same, namely 168. We alternatingly put the larger of the twin to the L 
+ or R row. The number of primes in each row must be even (here it is 6). We may also prepend 
+ 1,2,3 to each row to make the impulse response even denser.
+
+
+*/

@@ -606,4 +606,8 @@ Ideas:
  not constant anymore. It's slower at the endpoints and maximum in the middle. That might actually 
  be desirable in the context of animations.
 
+-Implement a method to "naturally" interpolate between matrices:
+ -Do a singular value decomposition of A = U * D * V
+ -Interpolate D via regular lerp and U,V via column-wise slerp
+
 */
