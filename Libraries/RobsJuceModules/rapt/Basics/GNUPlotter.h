@@ -211,6 +211,8 @@ public:
   void setToDarkMode();
   // ToDo: add function setToLightMode.
 
+  void setToLightMode();
+
   /** Sets the labels for the x-, y- and z-axis. */
   void setAxisLabels(std::string x, std::string y, std::string z = "");
 

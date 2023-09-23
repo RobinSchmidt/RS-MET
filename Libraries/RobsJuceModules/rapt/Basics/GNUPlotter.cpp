@@ -313,8 +313,29 @@ void GNUPlotter::setToDarkMode()
   addCommand("set key textcolor \"white\""); 
   addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#F0F0F0\""); // What does this do?
 
-  // Drawing All line white may be not so good:
+  // Preliminary - drawing all graphs white may be not so good:
   const char c[7] = "FFFFFF";
+  setGraphColors(c, c, c, c, c, c, c, c, c, c);
+
+  // ToDo:
+  // -Maybe try "set grid ls 1 lw 1 lc rgb \"#DDFFFFFF\"", i.e. a rather transparent white instead
+  //  of an opaque gray.
+}
+
+void GNUPlotter::setToLightMode()
+{
+  addCommand("set term wxt background rgb \"white\"");
+  addCommand("set border lw 1 lc rgb \"black\"");
+  addCommand("set grid ls 1 lw 1 lc rgb \"#DD000000\""); // 1st hex-pair is transparency
+  addCommand("set xtics textcolor rgb \"black\"");
+  addCommand("set ytics textcolor rgb \"black\"");
+  addCommand("set xlabel \"X\" textcolor rgb \"black\"");
+  addCommand("set ylabel \"Y\" textcolor rgb \"black\"");
+  addCommand("set key textcolor \"black\""); 
+  addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#101010\""); // What does this do?
+
+  // Preliminary - drawing all graphs black may be not so good:
+  const char c[7] = "000000";
   setGraphColors(c, c, c, c, c, c, c, c, c, c);
 }
 
