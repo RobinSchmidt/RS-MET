@@ -672,6 +672,8 @@ public:
     CB_YlGnBu8,         // paleyellow-green-blue,                          YlGnBu&n=8
     CB_YlGnBu9,         // paleyellow-green-blue, darker at top,           YlGnBu&n=9
     CB_YlGnBu9m,        // modified, taken out the 2nd yellow, looks better in the yellows
+    CB_YlGnBu9mt,       // truncated, taken out the 1st yellow, too, starts a bit darker
+    CB_YlGnBu9t,        // truncated, taken out the 1st yellow -> starts a bit darker
     CB_YlOrBr8,         // paleyellow-orange-brown,                        YlOrBr&n=8
     CB_YlOrBr9,         // paleyellow-orange-brown, darker at top,         YlOrBr&n=9
     CB_YlOrRd8,         // paleyellow-orange-red,                          YlOrRd&n=8
