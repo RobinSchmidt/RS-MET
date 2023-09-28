@@ -261,8 +261,18 @@ void GNUPlotter::plotContourMap(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax,
   invokeGNUPlot();
 
   // ToDo:
-  // -When clicking on "Apply autoscale" on the GUI, the colors get messed up. I'm trying to fix
-  //  this problem via "set autoscale fix" but that doesn't seem to help.
+  // -Have an optional parameter clipOutputRange. It needs to be passed to addDataBivariateFunction
+  //  and that function should the optionally clip the generated matrix data to zMin..zMax. But 
+  //  then, it needs zMin, zMax parameters, too
+  // -Maybe try to allow for non-equidistant levels passed in as std::vector by the caller. 
+  //  But I guess, in this case, the alignment between constant color region boundaries and 
+  //  contour lines will get messed up because it crucially depends on having the levels aligned 
+  //  with the quantization of the colormap. That color map quantization is done by Gnuplot itself
+  //  via "set palette maxcolors". I found that it works when we use levels.size() - 1. Basically
+  //  we would need a way to let Gnuplot quantize the colormap in the same non-equidistant way as
+  //  we do with the levels. I don't know, if that's even possible. 
+  // -When clicking on "Apply autoscale" on the GUI, the colors get messed up. Try to fix that! 
+  //  I have tried tried to use "set autoscale fix" but that doesn't seem to help.
 }
 template void GNUPlotter::plotContourMap(
   int Nx, double xMin, double xMax, int Ny, double yMin, double yMax,
