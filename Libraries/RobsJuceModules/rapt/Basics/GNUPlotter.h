@@ -464,10 +464,6 @@ public:
   template <class T>
   void addDataBivariateFunction(int Nx, int Ny, T *x, T *y, T (*f)(T,T));
 
-
-
-
-
   /** Given a bivariate function f = f(x,y), ranges for x and y and numbers of samples along x 
   and y, this function generates the data matrix of the heights produced by f and adds the data as 
   matrix data to the plotter object. */

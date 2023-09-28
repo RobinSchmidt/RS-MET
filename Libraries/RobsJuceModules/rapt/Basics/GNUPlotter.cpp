@@ -869,6 +869,10 @@ void GNUPlotter::addDataBivariateFunction(int Nx, int Ny, T *x, T *y,
   for(i = 0; i < Nx; i++)
     delete[] z[i];
   delete[] z;
+  // ToDo:
+  // -Maybe add optional zMin, zMax parameters (defaulting to an invalid range like 0,0) and if a
+  //  valid range is passed, clip the z data to that range. Add these parameters then also to all 
+  //  the other addDataBivariateFunction functions and pass them on into this function.
 }
 
 template <class T>
