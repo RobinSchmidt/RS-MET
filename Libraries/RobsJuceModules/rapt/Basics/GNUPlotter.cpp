@@ -1143,6 +1143,65 @@ void GNUPlotter::clearCommandFile()
   initFile(commandPath);
 }
 
+void GNUPlotter::setupOutputTerminal()
+{
+  // Possibly redirect output into a file. This will happen if the outputFilePath member is 
+  // non-empty and has a valid, known file extension. Otherwise we'll use the default wxt terminal:
+  std::string term = "wxt";
+  size_t len = outputFilePath.size();                   // Length of string
+  if(len >= 4) 
+  {
+    // Figure out what sort of file we should produce based on the file extension part of th path:
+    std::string ext = outputFilePath.substr(len-4, 4);  // File extension
+    if(ext == ".png")
+      term = "pngcairo";
+    else if(ext == ".svg")
+      term = "svg";
+    else if(ext == ".pdf")
+      term = "pdfcairo";
+
+    // Only if the above code has actually modified the default "wxt" setting for the terminal, we 
+    // redirect the output into a file:
+    if(term != "wxt")
+      addCommand("set output '" + outputFilePath + "'");
+  }
+
+  // Add the actual "set terminal ..." commands to the command file:
+  addCommand("set terminal " + term + " size " 
+    + std::to_string(pixelWidth) + "," + std::to_string(pixelHeight));
+  addCommand("set terminal " + term + " background rgb \"" + backgroundColor + "\"");
+
+  // Notes:
+  // -For producing .png files we use the "pngcairo" terminal and not the "png" terminal because
+  //  the latter produces ugly outputs with function graphs looking like being drawn by the 
+  //  Bresenham algorithm. We are not living in the 1980s anymore!
+  // -The produced .pdf plots via pdfcairo have no margins around the plot at all. That may 
+  //  actually be a good thing for inclusion in LaTeX documents. But they are very big when viewed
+  //  with a pdf viewer. Maybe in pdf mode, the output size is interpreted in points rather than
+  //  pixels and that's what makes the plots so big? The file size is nicely small though - at 
+  //  least for simple plots. Maybe try using cairolatex instead. But no - the doc says: "The 
+  //  cairolatex terminal prints a plot like terminal epscairo or terminal pdfcairo but transfers 
+  //  the texts to LaTeX instead of including them in the graph". I want a self-contained output 
+  //  file. Oh - and the axis tics are also missing in the pdf output.
+  // -I tried using the "dumb" terminal for a .txt extension. I think, it is supposed to produce
+  //  ASCII art but in my test, it just produced an empty .txt file.
+  //
+  // ToDo:
+  // -Add more else-if branches for supporting other terminals and file formats. Maybe we should 
+  //  also support canvas (.js embeddable in html 5), .tex (maybe texdraw, context, epslatex, 
+  //  pslatex, pstricks or tikz are suitable terminals for producing latex output?), .txt (the 
+  //  dumb terminal produces ascii art), .eps (epscairo), .gif (could be useful for animations), 
+  //  .jpeg (maybe not), webp (can also do animations). 
+  // -Test, if the wave-equation animated gif-rendering still works
+  //
+  // See:
+  // http://www.gnuplotting.org/output-terminals/
+  // http://gnuplot.info/docs_5.5/Terminals.html
+  // http://www.gnuplot.info/docs_4.2/node268.html
+  // http://www.gnuplot.info/docs/latex_demo.pdf
+}
+
+
 void GNUPlotter::invokeGNUPlot()
 {
   // create the callstring and invoke GNUPlot:
@@ -1291,64 +1350,6 @@ void GNUPlotter::addPlotCommand(bool splot)
   cmd += "'" + dataPath + "' " + graphDescriptors[i];
 
   addCommand(cmd);
-}
-
-void GNUPlotter::setupOutputTerminal()
-{
-  // Possibly redirect output into a file. This will happen if the outputFilePath member is 
-  // non-empty and has a valid, known file extension. Otherwise we'll use the default wxt terminal:
-  std::string term = "wxt";
-  size_t len = outputFilePath.size();                   // Length of string
-  if(len >= 4) 
-  {
-    // Figure out what sort of file we should produce based on the file extension part of th path:
-    std::string ext = outputFilePath.substr(len-4, 4);  // File extension
-    if(ext == ".png")
-      term = "pngcairo";
-    else if(ext == ".svg")
-      term = "svg";
-    else if(ext == ".pdf")
-      term = "pdfcairo";
-
-    // Only if the above code has actually modified the default "wxt" setting for the terminal, we 
-    // redirect the output into a file:
-    if(term != "wxt")
-      addCommand("set output '" + outputFilePath + "'");
-  }
-
-  // Add the actual "set terminal ..." commands to the command file:
-  addCommand("set terminal " + term + " size " 
-              + std::to_string(pixelWidth) + "," + std::to_string(pixelHeight));
-  addCommand("set terminal " + term + " background rgb \"" + backgroundColor + "\"");
-
-  // Notes:
-  // -For producing .png files we use the "pngcairo" terminal and not the "png" terminal because
-  //  the latter produces ugly outputs with function graphs looking like being drawn by the 
-  //  Bresenham algorithm. We are not living in the 1980s anymore!
-  // -The produced .pdf plots via pdfcairo have no margins around the plot at all. That may 
-  //  actually be a good thing for inclusion in LaTeX documents. But they are very big when viewed
-  //  with a pdf viewer. Maybe in pdf mode, the output size is interpreted in points rather than
-  //  pixels and that's what makes the plots so big? The file size is nicely small though - at 
-  //  least for simple plots. Maybe try using cairolatex instead. But no - the doc says: "The 
-  //  cairolatex terminal prints a plot like terminal epscairo or terminal pdfcairo but transfers 
-  //  the texts to LaTeX instead of including them in the graph". I want a self-contained output 
-  //  file. Oh - and the axis tics are also missing in the pdf output.
-  // -I tried using the "dumb" terminal for a .txt extension. I think, it is supposed to produce
-  //  ASCII art but in my test, it just produced an empty .txt file.
-  //
-  // ToDo:
-  // -Add more else-if branches for supporting other terminals and file formats. Maybe we should 
-  //  also support canvas (.js embeddable in html 5), .tex (maybe texdraw, context, epslatex, 
-  //  pslatex, pstricks or tikz are suitable terminals for producing latex output?), .txt (the 
-  //  dumb terminal produces ascii art), .eps (epscairo), .gif (could be useful for animations), 
-  //  .jpeg (maybe not), webp (can also do animations). 
-  // -Test, if the wave-equation animated gif-rendering still works
-  //
-  // See:
-  // http://www.gnuplotting.org/output-terminals/
-  // http://gnuplot.info/docs_5.5/Terminals.html
-  // http://www.gnuplot.info/docs_4.2/node268.html
-  // http://www.gnuplot.info/docs/latex_demo.pdf
 }
 
 void GNUPlotter::generateGraphDescriptors(bool splot)

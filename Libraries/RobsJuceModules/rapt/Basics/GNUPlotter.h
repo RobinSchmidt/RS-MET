@@ -214,7 +214,8 @@ public:
   last 4 characters in the path string. Being able to produce files instead of opening a window is 
   especially important if one wants to batch produce a number of plots and write them into files 
   because the user doesn't need to manually export each and every file via the GUI application 
-  anymore. */
+  anymore. The folder where the file should be written into must already exist. If it doesn't,
+  Gnuplot will produce an error message on the command line and no file will be created. */
   void setOutputFilePath(const std::string& newPath) { outputFilePath = newPath; }
 
   /** Sets the plotter into dark mode, i.e. using a black background, white text and axes etc. This
@@ -650,6 +651,13 @@ public:
   empty command file, i.e. a file that doesn't contain the default commands. */
   void clearCommandFile();
 
+  /** Adds the "set terminal" command with options according to our members outputFilePath,
+  backgroundColor, pixelWidth, pixelHeight. This command will appear immediately before the
+  actula "plot" or "splot" command in the command file. It controls, whether the produced output
+  will be displayed in a window or directed into a file and it determines the oupt resolution
+  and background color. */
+  void setupOutputTerminal();
+
   /** Executes GNUPlot with the appropriate commandline parameter to read the command file. */
   void invokeGNUPlot();
 
@@ -791,16 +799,14 @@ public:
   static void setStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, 
     CSR s5, CSR s6, CSR s7, CSR s8, CSR s9);
 
-
-
-
-
   // Conversion of numbers to strings:
   std::string s(unsigned int x);   // conversion of unsigned integers for command file
   std::string s(double x);         // conversion of doubles for command file
   std::string sd(double x);        // conversion of doubles for data file
   std::string sd(int x);           // conversion of integers for data file
   // ToDo: Get rid. If an abbreviation for std::to_string is needed, define it locally.
+
+
 
 protected:
 
@@ -824,7 +830,6 @@ protected:
   //template<class T>
   //void writeDataSet(const vector<vector<vector<T>>>& data, ostream& out);
 
-
   /** Calls the operating system to execute the command given by callString. */
   void systemCall(const std::string &callString);
 
@@ -836,13 +841,6 @@ protected:
   or the "splot" command depending on whether we produce a 2D or 3D plot. Before the actual 
   plotting command, some commands to set up the output terminal are produced. */
   void addPlotCommand(bool splot = false);
-
-  /** Adds the "set terminal" command with options according to our members outputFilePath,
-  backgroundColor, pixelWidth, pixelHeight. This command will appear immediately before the
-  actula "plot" or "splot" command in the command file. It controls, whether the produced output
-  will be displayed in a window or directed into a file and it determines the oupt resolution
-  and background color. */
-  void setupOutputTerminal();
 
   /** Automaitcally creates the graph descriptors, in case the user didn't set them up manually. You 
   should tell it if GNUPlot is to be invoked with the regular 2D "plot" command or the 3D "splot" 
