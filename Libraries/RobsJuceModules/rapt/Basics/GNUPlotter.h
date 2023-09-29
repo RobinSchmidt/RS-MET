@@ -831,6 +831,13 @@ protected:
   /** Adds the command for actually plotting the data to the commandfile. */
   void addPlotCommand(bool splot = false);
 
+  /** Adds the "set terminal" command with options according to our members outputFilePath,
+  backgroundColor, pixelWidth, pixelHeight. This command will appear immediately before the
+  actula "plot" or "splot" command in the command file. It controls, whether the produced output
+  will be displayed in a window or directed into a file and it determines the oupt resolution
+  and background color. */
+  void setupOutputTerminal();
+
   /** Automaitcally creates the graph descriptors, in case the user didn't set them up manually. You 
   should tell it if GNUPlot is to be invoked with the regular 2D "plot" command or the 3D "splot" 
   command because the data will be interpreted differently in both cases. */

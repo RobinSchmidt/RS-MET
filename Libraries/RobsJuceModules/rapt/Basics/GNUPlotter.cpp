@@ -1277,22 +1277,7 @@ void GNUPlotter::addPlotCommand(bool splot)
 
   addCommand("\n# Plotting:");
 
-  // Set up the output:
-  if(!outputFilePath.empty())
-  {
-    addCommand("set terminal pngcairo size 800,400");
-    addCommand("set output '" + outputFilePath + "'");
-
-    // This does not yet work right. We do get a file produced and opening of the GUI application
-    // is suppressed as desired. But the file looks like garbage. It just shows some grid lines and
-    // even these are broken. aaah...wait! They are not broken! That's the sine and cosine wave 
-    // drawn in white!
-    //
-    // See:
-    // http://www.gnuplotting.org/output-terminals/
-    // http://gnuplot.info/docs_5.5/Terminals.html
-    // http://www.gnuplot.info/docs_4.2/node268.html
-  }
+  setupOutputTerminal();
   // Maybe we should not do this in a function called addPlotCommand. The name suggests that *only*
   // the plot command is added, so adding yet another command before the actual plot command 
   // betrays that expectation. Maybe we should do that in the caller. But if there are multiple
@@ -1303,19 +1288,62 @@ void GNUPlotter::addPlotCommand(bool splot)
     generateGraphDescriptors(splot);
 
   // Initialize the plot command:
-  std::string pc;   // rename to cmd
+  std::string cmd;   // rename to cmd
   if( splot == true )
-    pc = "splot \\\n";  // 3D plots
+    cmd = "splot \\\n";  // 3D plots
   else
-    pc = "plot \\\n";   // 2D plots
+    cmd = "plot \\\n";   // 2D plots
 
   // Add the graph-descriptors to the plot command:
   int i;
   for(i = 0; i < (int)graphDescriptors.size()-1; i++)
-    pc += "'" + dataPath + "' " + graphDescriptors[i] + ",\\\n";
-  pc += "'" + dataPath + "' " + graphDescriptors[i];
+    cmd += "'" + dataPath + "' " + graphDescriptors[i] + ",\\\n";
+  cmd += "'" + dataPath + "' " + graphDescriptors[i];
 
-  addCommand(pc);
+  addCommand(cmd);
+}
+
+void GNUPlotter::setupOutputTerminal()
+{
+  // under construction
+
+  /*
+  if(!outputFilePath.empty())
+  {
+    addCommand("set output '" + outputFilePath + "'");
+    addCommand("set terminal pngcairo size 800,400");
+  }
+  */
+
+
+  std::string term;
+  if(!outputFilePath.empty())
+  {
+    addCommand("set output '" + outputFilePath + "'");
+    term = "pngcairo";  // preliminary, todo: switch based on file-extension
+
+    //addCommand("set terminal pngcairo size 800,400");
+  }
+  else
+  {
+    term = "wxt";
+  }
+
+  std::string cmd;
+  cmd = "set terminal " + term + " size " 
+        + std::to_string(pixelWidth) + "," + std::to_string(pixelHeight);
+  addCommand(cmd);
+  cmd = "set terminal " + term + " background rgb \"" + backgroundColor + "\"";
+  addCommand(cmd);
+
+  int dummy = 0;
+
+  // addCommand("set term wxt background rgb \"white\"");
+
+  // See:
+  // http://www.gnuplotting.org/output-terminals/
+  // http://gnuplot.info/docs_5.5/Terminals.html
+  // http://www.gnuplot.info/docs_4.2/node268.html
 }
 
 void GNUPlotter::generateGraphDescriptors(bool splot)
