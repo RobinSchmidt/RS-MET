@@ -828,7 +828,9 @@ protected:
   // it's like assert, but we can't all it assert because this breaks compilation on mac, i guess 
   // because of a name clash with the C-macro
 
-  /** Adds the command for actually plotting the data to the commandfile. */
+  /** Adds the command for actually plotting the data to the commandfile. This is either the "plot"
+  or the "splot" command depending on whether we produce a 2D or 3D plot. Before the actual 
+  plotting command, some commands to set up the output terminal are produced. */
   void addPlotCommand(bool splot = false);
 
   /** Adds the "set terminal" command with options according to our members outputFilePath,

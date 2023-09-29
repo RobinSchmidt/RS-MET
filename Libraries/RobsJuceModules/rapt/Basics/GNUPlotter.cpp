@@ -1273,15 +1273,9 @@ void GNUPlotter::addPlotCommand(bool splot)
   // hmm - maybe in case of an empty dataset, we should just call replot?:
   // http://soc.if.usp.br/manual/gnuplot-doc/htmldocs/set_002dshow.html#set_002dshow
 
-
-
+  // Set up where the output should go. It may be shwon on the screen or go into a file:
   addCommand("\n# Plotting:");
-
   setupOutputTerminal();
-  // Maybe we should not do this in a function called addPlotCommand. The name suggests that *only*
-  // the plot command is added, so adding yet another command before the actual plot command 
-  // betrays that expectation. Maybe we should do that in the caller. But if there are multiple
-  // possible callers, this will lead to code repetition which is also bad. We'll see...
 
   // Auto-generate graph-descriptors, if user has not set them up manually:
   if(graphDescriptors.empty())
@@ -1305,33 +1299,48 @@ void GNUPlotter::addPlotCommand(bool splot)
 
 void GNUPlotter::setupOutputTerminal()
 {
-  // under construction
-
   // Possibly redirect output into a file. This will happen if the outputFilePath member is 
   // non-empty and has a valid, known file extension. Otherwise we'll use the default wxt terminal:
   std::string term = "wxt";
   size_t len = outputFilePath.size();                   // Length of string
-  if(len >= 4) {
+  if(len >= 4) 
+  {
+    // Figure out what sort of file we should produce based on the file extension part of th path:
     std::string ext = outputFilePath.substr(len-4, 4);  // File extension
     if(ext == ".png")
-      term = "pngcairo";  // Could it also be just "png"?
+      term = "pngcairo";
     else if(ext == ".svg")
       term = "svg"; 
-    // ToDo: add more else-if branches for other file formats
 
+    // Only if the above code has actually modified the default "wxt" setting for the terminal, we 
+    // redirect the output into a file:
     if(term != "wxt")
       addCommand("set output '" + outputFilePath + "'");
   }
 
+  // Add the actual "set terminal ..." commands to the command file:
   addCommand("set terminal " + term + " size " 
               + std::to_string(pixelWidth) + "," + std::to_string(pixelHeight));
   addCommand("set terminal " + term + " background rgb \"" + backgroundColor + "\"");
 
-
+  // Notes:
+  // -For producing .png files we use the "pngcairo" terminal and not the "png" terminal because
+  //  the latter produces ugly outputs with function graphs looking like being drawn by the 
+  //  Bresenham algorithm. We are not living in the 1980s anymore!
+  //
+  // ToDo:
+  // -Add more else-if branches for supporting other terminals and file formats. We should support
+  //  .ppm, .pdf (maybe via pdfcairo or cairolatex?), canvas (.js embeddable in html 5), 
+  //  .tex (maybe texdraw, context, epslatex, pslatex, pstricks or tikz are suitable terminals for 
+  //  producing latex output?), .txt (the dumb terminal produces ascii art), .eps (epscairo), .gif 
+  //  (could be useful for animations), .jpeg (maybe not), webp (can also do animations), 
+  // -Test, if the wave-equation animated gif-rendering still works
+  //
   // See:
   // http://www.gnuplotting.org/output-terminals/
   // http://gnuplot.info/docs_5.5/Terminals.html
   // http://www.gnuplot.info/docs_4.2/node268.html
+  // http://www.gnuplot.info/docs/latex_demo.pdf
 }
 
 void GNUPlotter::generateGraphDescriptors(bool splot)
