@@ -1310,7 +1310,9 @@ void GNUPlotter::setupOutputTerminal()
     if(ext == ".png")
       term = "pngcairo";
     else if(ext == ".svg")
-      term = "svg"; 
+      term = "svg";
+    else if(ext == ".pdf")
+      term = "pdfcairo";
 
     // Only if the above code has actually modified the default "wxt" setting for the terminal, we 
     // redirect the output into a file:
@@ -1327,6 +1329,11 @@ void GNUPlotter::setupOutputTerminal()
   // -For producing .png files we use the "pngcairo" terminal and not the "png" terminal because
   //  the latter produces ugly outputs with function graphs looking like being drawn by the 
   //  Bresenham algorithm. We are not living in the 1980s anymore!
+  // -The produced .pdf plots via pdfcairo have no margins around the plot at all. That may 
+  //  actually be a good thing for inclusion in LaTeX documents. But they are very big when viewed
+  //  with a pdf viewer. Maybe in pdf mode, the output size is interpreted in points rather than
+  //  pixels and that's what makes the plots so big? The file size is nicely small though - at 
+  //  least for simple plots.
   //
   // ToDo:
   // -Add more else-if branches for supporting other terminals and file formats. We should support
