@@ -318,14 +318,13 @@ void GNUPlotter::addDefaultCommands()
 
 void GNUPlotter::setToDarkMode()
 {
-  //addCommand("set term wxt background rgb \"black\"");
   backgroundColor = "black";
   addCommand("set border lw 1 lc rgb \"white\"");
   addCommand("set grid ls 1 lw 1 lc rgb \"#404040\""); // old: "set grid lw 1 lc rgb \"white\""
   addCommand("set xtics textcolor rgb \"white\"");
   addCommand("set ytics textcolor rgb \"white\"");
-  addCommand("set xlabel \"X\" textcolor rgb \"white\"");
-  addCommand("set ylabel \"Y\" textcolor rgb \"white\"");
+  addCommand("set xlabel textcolor rgb \"white\"");
+  addCommand("set ylabel textcolor rgb \"white\"");
   addCommand("set key textcolor \"white\""); 
   addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#F0F0F0\""); // What does this do?
 
@@ -343,14 +342,13 @@ void GNUPlotter::setToDarkMode()
 
 void GNUPlotter::setToLightMode()
 {
-  //addCommand("set term wxt background rgb \"white\"");
   backgroundColor = "white";
   addCommand("set border lw 1 lc rgb \"black\"");
   addCommand("set grid ls 1 lw 1 lc rgb \"#DD000000\""); // 1st hex-pair is transparency
   addCommand("set xtics textcolor rgb \"black\"");
   addCommand("set ytics textcolor rgb \"black\"");
-  addCommand("set xlabel \"X\" textcolor rgb \"black\"");
-  addCommand("set ylabel \"Y\" textcolor rgb \"black\"");
+  addCommand("set xlabel textcolor rgb \"black\"");
+  addCommand("set ylabel textcolor rgb \"black\"");
   addCommand("set key textcolor \"black\""); 
   addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#101010\""); // What does this do?
 
