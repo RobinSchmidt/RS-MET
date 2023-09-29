@@ -1333,14 +1333,17 @@ void GNUPlotter::setupOutputTerminal()
   //  actually be a good thing for inclusion in LaTeX documents. But they are very big when viewed
   //  with a pdf viewer. Maybe in pdf mode, the output size is interpreted in points rather than
   //  pixels and that's what makes the plots so big? The file size is nicely small though - at 
-  //  least for simple plots.
+  //  least for simple plots. Maybe try using cairolatex instead. But no - the doc says: "The 
+  //  cairolatex terminal prints a plot like terminal epscairo or terminal pdfcairo but transfers 
+  //  the texts to LaTeX instead of including them in the graph". I want a self-contained output 
+  //  file.
   //
   // ToDo:
-  // -Add more else-if branches for supporting other terminals and file formats. We should support
-  //  .ppm, .pdf (maybe via pdfcairo or cairolatex?), canvas (.js embeddable in html 5), 
-  //  .tex (maybe texdraw, context, epslatex, pslatex, pstricks or tikz are suitable terminals for 
-  //  producing latex output?), .txt (the dumb terminal produces ascii art), .eps (epscairo), .gif 
-  //  (could be useful for animations), .jpeg (maybe not), webp (can also do animations), 
+  // -Add more else-if branches for supporting other terminals and file formats. Maybe we should 
+  //  also support canvas (.js embeddable in html 5), .tex (maybe texdraw, context, epslatex, 
+  //  pslatex, pstricks or tikz are suitable terminals for producing latex output?), .txt (the 
+  //  dumb terminal produces ascii art), .eps (epscairo), .gif (could be useful for animations), 
+  //  .jpeg (maybe not), webp (can also do animations), 
   // -Test, if the wave-equation animated gif-rendering still works
   //
   // See:
