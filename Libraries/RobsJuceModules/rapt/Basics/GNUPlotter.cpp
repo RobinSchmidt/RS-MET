@@ -1336,14 +1336,16 @@ void GNUPlotter::setupOutputTerminal()
   //  least for simple plots. Maybe try using cairolatex instead. But no - the doc says: "The 
   //  cairolatex terminal prints a plot like terminal epscairo or terminal pdfcairo but transfers 
   //  the texts to LaTeX instead of including them in the graph". I want a self-contained output 
-  //  file.
+  //  file. Oh - and the axis tics are also missing in the pdf output.
+  // -I tried using the "dumb" terminal for a .txt extension. I think, it is supposed to produce
+  //  ASCII art but in my test, it just produced an empty .txt file.
   //
   // ToDo:
   // -Add more else-if branches for supporting other terminals and file formats. Maybe we should 
   //  also support canvas (.js embeddable in html 5), .tex (maybe texdraw, context, epslatex, 
   //  pslatex, pstricks or tikz are suitable terminals for producing latex output?), .txt (the 
   //  dumb terminal produces ascii art), .eps (epscairo), .gif (could be useful for animations), 
-  //  .jpeg (maybe not), webp (can also do animations), 
+  //  .jpeg (maybe not), webp (can also do animations). 
   // -Test, if the wave-equation animated gif-rendering still works
   //
   // See:
