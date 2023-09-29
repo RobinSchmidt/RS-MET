@@ -1280,15 +1280,18 @@ void GNUPlotter::addPlotCommand(bool splot)
   // Set up the output:
   if(!outputFilePath.empty())
   {
-    addCommand("set terminal pngcairo size 600,300");
+    addCommand("set terminal pngcairo size 800,400");
     addCommand("set output '" + outputFilePath + "'");
 
     // This does not yet work right. We do get a file produced and opening of the GUI application
     // is suppressed as desired. But the file looks like garbage. It just shows some grid lines and
-    // even these are broken.
+    // even these are broken. aaah...wait! They are not broken! That's the sine and cosine wave 
+    // drawn in white!
     //
     // See:
     // http://www.gnuplotting.org/output-terminals/
+    // http://gnuplot.info/docs_5.5/Terminals.html
+    // http://www.gnuplot.info/docs_4.2/node268.html
   }
   // Maybe we should not do this in a function called addPlotCommand. The name suggests that *only*
   // the plot command is added, so adding yet another command before the actual plot command 
@@ -1416,7 +1419,15 @@ void GNUPlotter::setStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CS
 
 ToDo:
 
--maybe move the explicit template instantiations to another file...that would reduce clutter in 
+-For the convenience functions to add specific commands like setRange(), setTitle, etc., add 
+ comments with links to the appropriate documentation of the produced commands, i.e. links to the 
+ appropriate pages here:
+   http://www.gnuplot.info/docs_4.2/gnuplot.html
+   http://www.gnuplot.info/documentation.html
+   http://www.gnuplotting.org/
+ or elsewhere - wherever we found the appropiate command.
+
+-Maybe move the explicit template instantiations to another file...that would reduce clutter in 
  this implementation file - but would make the library harder to use - the user would have to deal
  with more files...so it's probably not such a good idea...simple use is more important than
  nice looking code
