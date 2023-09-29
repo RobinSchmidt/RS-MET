@@ -206,15 +206,16 @@ public:
   void addDefaultCommands();
   // Maybe move into protected area. This is not supposed to be called by the instantiator.
 
-  
-  /** Under Construction. Does not yet work.
-  Sets up the path where the output file should go to, if any. Normally we assume that the user 
-  wants to open a window to show the plot and interact with it. This is the default behavior and
-  it will happen when the output file path is empty. But in some situations, it may be convenient 
-  to batch produce a number of plots and write them into files ...TBC...  */
+  /** Sets up the path where the output file should go to, if any. Normally we assume that the user
+  wants to open a window to show the plot on the screen and interact with it. This is the default 
+  behavior and it will happen when the output file path is empty. But in some situations, it may be 
+  convenient to let the GNUPlotter produce a file instead. The currently supported file formats are
+  .png, .svg and .pdf. What kind of file you want is determined by the file extension, i.e. the 
+  last 4 characters in the path string. Being able to produce files instead of opening a window is 
+  especially important if one wants to batch produce a number of plots and write them into files 
+  because the user doesn't need to manually export each and every file via the GUI application 
+  anymore. */
   void setOutputFilePath(const std::string& newPath) { outputFilePath = newPath; }
-  // ToDo:
-  // -Document how we infer the desired file format from the extenrsion.etc
 
   /** Sets the plotter into dark mode, i.e. using a black background, white text and axes etc. This
   is suitable for showing plots on a computer screen when you like to work in dark mode. */
