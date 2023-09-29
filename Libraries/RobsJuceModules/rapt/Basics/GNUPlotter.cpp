@@ -318,7 +318,8 @@ void GNUPlotter::addDefaultCommands()
 
 void GNUPlotter::setToDarkMode()
 {
-  addCommand("set term wxt background rgb \"black\"");
+  //addCommand("set term wxt background rgb \"black\"");
+  backgroundColor = "black";
   addCommand("set border lw 1 lc rgb \"white\"");
   addCommand("set grid ls 1 lw 1 lc rgb \"#404040\""); // old: "set grid lw 1 lc rgb \"white\""
   addCommand("set xtics textcolor rgb \"white\"");
@@ -342,7 +343,8 @@ void GNUPlotter::setToDarkMode()
 
 void GNUPlotter::setToLightMode()
 {
-  addCommand("set term wxt background rgb \"white\"");
+  //addCommand("set term wxt background rgb \"white\"");
+  backgroundColor = "white";
   addCommand("set border lw 1 lc rgb \"black\"");
   addCommand("set grid ls 1 lw 1 lc rgb \"#DD000000\""); // 1st hex-pair is transparency
   addCommand("set xtics textcolor rgb \"black\"");
@@ -538,12 +540,8 @@ void GNUPlotter::setRange(double xMin, double xMax, double yMin, double yMax, do
 
 void GNUPlotter::setPixelSize(unsigned int width, unsigned int height)
 {
-  addCommand("set terminal wxt size " + s(width) +  "," + s(height) + "\n");
-
-  // ToDo:
-  // -We should not directly add "set terminal" commands to the command file. Instead, store the
-  //  pixel width and height in members and defer the call to "set terminal" into the  
-  //  addPlotCommand() function
+  pixelWidth  = width;
+  pixelHeight = height;
 }
 
 void GNUPlotter::setTitle(std::string title)
