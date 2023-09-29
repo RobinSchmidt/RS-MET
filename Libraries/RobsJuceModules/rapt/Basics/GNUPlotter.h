@@ -871,7 +871,10 @@ protected:
   int pixelWidth  = 640;
   int pixelHeight = 384;
   // When this outputFilePath non-empty, the output shall be redirected into a file rather than
-  // opening a window showing the plot.
+  // opening a window showing the plot. Maybe the pixelWidth/Height should be renamed to
+  // plotWidth/Height and the unit depends on which output teminal we use. For the defalt wxt 
+  // terminal, it would be interpreted as pixels but there are other terminals that use vector
+  // graphics and expect the size to be gine in points or inches or centimeters or whatever.
 
 
 
