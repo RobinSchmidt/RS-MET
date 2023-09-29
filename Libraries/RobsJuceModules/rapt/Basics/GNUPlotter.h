@@ -204,13 +204,24 @@ public:
   /** Adds the default commands to the command file. This function controls the default appearance
   of plots in cases, when the user doesn't add their own commands. */
   void addDefaultCommands();
+  // Maybe move into protected area. This is not supposed to be called by the instantiator.
 
-  /** Sets the plotter into dark mode, i.e. using a black background, white text and axes etc. This 
-  is suitable for showing plots on a computer screen. For inclusion in pdf documents for printing, 
-  light mode (the default) is probably better */
+  
+  /** Under Construction. Does not yet work.
+  Sets up the path where the output file should go to, if any. Normally we assume that the user 
+  wants to open a window to show the plot and interact with it. This is the default behavior and
+  it will happen when the output file path is empty. But in some situations, it may be convenient 
+  to batch produce a number of plots and write them into files ...TBC...  */
+  void setOutputFilePath(const std::string& newPath) { outputFilePath = newPath; }
+  // ToDo:
+  // -Document how we infer the desired file format from the extenrsion.etc
+
+  /** Sets the plotter into dark mode, i.e. using a black background, white text and axes etc. This
+  is suitable for showing plots on a computer screen when you like to work in dark mode. */
   void setToDarkMode();
-  // ToDo: add function setToLightMode.
 
+  /** Sets the plotter into light mode, i.e. using a light background, black text and axes etc. 
+  This is suitable for including the produced plots into documents for printing. */
   void setToLightMode();
 
   /** Sets the labels for the x-, y- and z-axis. */
@@ -846,7 +857,13 @@ protected:
   std::string gnuplotPath;  // path, where gnuPlot is installed
   std::string dataPath;
   std::string commandPath;
-  // make static
+
+  // New, experimental:
+  std::string outputFilePath;
+  // When this string is non-empty, the output shall be redirected into a file rather than opening
+  // a window showing the plot.
+
+
 
   // string arrays for styles and titles:
   std::vector<std::string> graphStyles;

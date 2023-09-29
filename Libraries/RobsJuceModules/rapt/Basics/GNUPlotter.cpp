@@ -2,24 +2,29 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
-//using namespace std; // bad idea when including it in rapt.cpp
 
 GNUPlotter::GNUPlotter()
 {
   setDataPrecision(8);
 
   graphStyles.resize(1);
-  graphStyles[0] = std::string("lines");    // standard lines, width 1 - maybe change to 1.5 or 2
+  graphStyles[0] = std::string("lines");    // Standard lines, width 1 - maybe change to 1.5 or 2
 
-  // installation path of the GNUPlot executable:
-  gnuplotPath = "C:/Program Files/gnuplot/bin/gnuplot.exe";
+  // Installation path of the gnuplot executable:
+  gnuplotPath = "C:/Program Files/gnuplot/bin/gnuplot.exe"; 
   //gnuplotPath = "C:/Program Files/gnuplot/bin/wgnuplot.exe";
+  // This is currently set to the default installation path on windows.
 
-  // paths for data file and command batchfile:
+  // Paths for data file and command batchfile:
   dataPath    = "C:/Temp/gnuplotData.dat";
-  commandPath = "C:/Temp/gnuplotCommands.txt";   // this path may not contain whitepaces
+  commandPath = "C:/Temp/gnuplotCommands.txt";   // This path may not contain whitepaces
 
-  initialize();                                  // initializes data- and commandfile
+  initialize();                                  // Initializes data- and commandfile
+
+  // ToDo:
+  // -Provide setters for the paths
+  // -Document what happens when we use wgnuplot.exe instead of gnuplot.exe for the gnuplotPath
+  //  member. Does it work at all? If so, what are the differences?
 }
 
 GNUPlotter::~GNUPlotter()
@@ -330,6 +335,9 @@ void GNUPlotter::setToDarkMode()
   // ToDo:
   // -Maybe try "set grid ls 1 lw 1 lc rgb \"#DDFFFFFF\"", i.e. a rather transparent white instead
   //  of an opaque gray.
+  // -Do not change the labels of the x-and y-axes here - just their color. Is it possible to do
+  //  just "set xlabel textcolor rgb \"white\""? Would that set the color but leave the text as is?
+  //  Try it!
 }
 
 void GNUPlotter::setToLightMode()
@@ -531,6 +539,11 @@ void GNUPlotter::setRange(double xMin, double xMax, double yMin, double yMax, do
 void GNUPlotter::setPixelSize(unsigned int width, unsigned int height)
 {
   addCommand("set terminal wxt size " + s(width) +  "," + s(height) + "\n");
+
+  // ToDo:
+  // -We should not directly add "set terminal" commands to the command file. Instead, store the
+  //  pixel width and height in members and defer the call to "set terminal" into the  
+  //  addPlotCommand() function
 }
 
 void GNUPlotter::setTitle(std::string title)
@@ -1262,23 +1275,43 @@ void GNUPlotter::addPlotCommand(bool splot)
 
 
 
+  addCommand("\n# Plotting:");
+
+  // Set up the output:
+  if(!outputFilePath.empty())
+  {
+    addCommand("set terminal pngcairo size 600,300");
+    addCommand("set output '" + outputFilePath + "'");
+
+    // This does not yet work right. We do get a file produced and opening of the GUI application
+    // is suppressed as desired. But the file looks like garbage. It just shows some grid lines and
+    // even these are broken.
+    //
+    // See:
+    // http://www.gnuplotting.org/output-terminals/
+  }
+  // Maybe we should not do this in a function called addPlotCommand. The name suggests that *only*
+  // the plot command is added, so adding yet another command before the actual plot command 
+  // betrays that expectation. Maybe we should do that in the caller. But if there are multiple
+  // possible callers, this will lead to code repetition which is also bad. We'll see...
+
   // Auto-generate graph-descriptors, if user has not set them up manually:
   if(graphDescriptors.empty())
     generateGraphDescriptors(splot);
 
   // Initialize the plot command:
-  int i;
-  std::string pc;
-  addCommand("\n# Plotting:");
+  std::string pc;   // rename to cmd
   if( splot == true )
     pc = "splot \\\n";  // 3D plots
   else
     pc = "plot \\\n";   // 2D plots
 
   // Add the graph-descriptors to the plot command:
+  int i;
   for(i = 0; i < (int)graphDescriptors.size()-1; i++)
     pc += "'" + dataPath + "' " + graphDescriptors[i] + ",\\\n";
   pc += "'" + dataPath + "' " + graphDescriptors[i];
+
   addCommand(pc);
 }
 
