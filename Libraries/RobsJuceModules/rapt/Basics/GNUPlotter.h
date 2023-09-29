@@ -860,8 +860,14 @@ protected:
 
   // New, experimental:
   std::string outputFilePath;
-  // When this string is non-empty, the output shall be redirected into a file rather than opening
-  // a window showing the plot.
+  std::string backgroundColor = "#FFFFFF";
+  int pixelWidth  = 640;
+  int pixelHeight = 384;
+  // When this outputFilePath non-empty, the output shall be redirected into a file rather than
+  // opening a window showing the plot.
+
+
+
 
 
 
@@ -886,6 +892,10 @@ protected:
 
   //char *formatString = "% 016.16le";
   char *formatString = nullptr;
+  // Needs documentation! What is this and why is it not a std::string?
+
+
+
 
   // for keeping track how much datasets we write and how many blocks and columns each dataset has:
   struct DataInfo
