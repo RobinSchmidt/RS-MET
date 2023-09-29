@@ -794,14 +794,17 @@ public:
 
 
 
-  // conversion of numbers to strings:
+  // Conversion of numbers to strings:
   std::string s(unsigned int x);   // conversion of unsigned integers for command file
   std::string s(double x);         // conversion of doubles for command file
   std::string sd(double x);        // conversion of doubles for data file
   std::string sd(int x);           // conversion of integers for data file
-  // todo: add one for floats, rename these...mabye toDataStr, toCmdStr
+  // ToDo: Get rid. If an abbreviation for std::to_string is needed, define it locally.
 
 protected:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Internal Functions */
 
   /** Creates an initial empty file with the given path. */
   void initFile(const std::string &path);
@@ -854,62 +857,45 @@ protected:
   std::string getGraphLegend(unsigned int graphIndex);
 
 
-
-
-
-
-
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  // location for gnuplot and the directory for the temporary files:  
-  std::string gnuplotPath;  // path, where gnuPlot is installed
-  std::string dataPath;
-  std::string commandPath;
+  // Location for gnuplot executable and the directory for the temporary files:
+  std::string gnuplotPath;  // Path where Gnuplot is (supposed to be) installed.
+  std::string dataPath;     // The data to be plotted will be written into this file.
+  std::string commandPath;  // Path for the batch file with the commands for Gnuplot.
 
-  // New, experimental:
+  // Settings for the output terminal:
   std::string outputFilePath;
   std::string backgroundColor = "#FFFFFF";
   int pixelWidth  = 640;
   int pixelHeight = 384;
-  // When this outputFilePath non-empty, the output shall be redirected into a file rather than
+  // When outputFilePath non-empty, the output shall be redirected into a file rather than
   // opening a window showing the plot. Maybe the pixelWidth/Height should be renamed to
-  // plotWidth/Height and the unit depends on which output teminal we use. For the defalt wxt 
+  // plotWidth/Height and the unit depends on which output teminal we use. For the default wxt 
   // terminal, it would be interpreted as pixels but there are other terminals that use vector
   // graphics and expect the size to be gine in points or inches or centimeters or whatever.
 
-
-
-
-
-
-  // string arrays for styles and titles:
+  // String arrays for styles and titles:
   std::vector<std::string> graphStyles;
   std::vector<std::string> graphTitles;
 
 
   std::vector<std::string> graphDescriptors;
-    // an array of strings to be used in the plot command, like:
-    // index 0 using 1:2 with lines lc rgb "#000000" title "sin(x)"
-    // index 0 using 1:3 with lines lc rgb "#000000" title "cos(x)"
-    // this vector can be set up from the user or - if left empty - will be created automatically 
-    // by making some reasonable guess about how the user wants to plot the written data based on
-    // out stored dataInfo array
-    // maybe do: index 0 using 1:2, index 0 using 1:3, index 0 using 1:4, ...
-    // then      index 1 using 1:2, index 1 using 1:3, index 1 using 1:4, ...
-    //           index 2 ...
-    // and so on, all with lines using colors and from our graphColors, graphStlyes arrays
-    // hmm - but what if the style is one that uses several columns, have to think about it...
-    //
+  // An array of strings to be used in the plot command, like:
+  // index 0 using 1:2 with lines lc rgb "#000000" title "sin(x)"
+  // index 0 using 1:3 with lines lc rgb "#000000" title "cos(x)"
+  // This vector can be set up from the user or - if left empty - will be created automatically 
+  // by making some reasonable guess about how the user wants to plot the written data based on
+  // out stored dataInfo array.
+
 
   //char *formatString = "% 016.16le";
   char *formatString = nullptr;
   // Needs documentation! What is this and why is it not a std::string?
 
 
-
-
-  // for keeping track how much datasets we write and how many blocks and columns each dataset has:
+  // For keeping track how much datasets we write and how many blocks and columns each dataset has:
   struct DataInfo
   {
     DataInfo(size_t numBlocks, size_t numColumns, std::string type = "")
