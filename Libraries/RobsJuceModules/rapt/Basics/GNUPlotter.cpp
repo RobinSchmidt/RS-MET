@@ -1307,27 +1307,26 @@ void GNUPlotter::setupOutputTerminal()
 {
   // under construction
 
-  /*
-  if(!outputFilePath.empty())
+  // Possibly redirect output into a file. This will happen if the outputFilePath member is 
+  // non-empty and has a valid, known file extension. Otherwise we'll use the default wxt terminal:
+  std::string term = "wxt";
+  if(!outputFilePath.empty())  // this test is actually redundant!
   {
-    addCommand("set output '" + outputFilePath + "'");
-    addCommand("set terminal pngcairo size 800,400");
-  }
-  */
+    size_t len = outputFilePath.size();                   // Length of string
+    if(len >= 4)
+    {
+      std::string ext = outputFilePath.substr(len-4, 4);  // File extension
+      if(ext == ".png")
+        term = "pngcairo";
+      // ToDo: add else-if brahcnes for other file formats
 
-
-  std::string term;
-  if(!outputFilePath.empty())
-  {
-    addCommand("set output '" + outputFilePath + "'");
-    term = "pngcairo";  // preliminary, todo: switch based on file-extension
-
-    //addCommand("set terminal pngcairo size 800,400");
+      if(term != "wxt")
+        addCommand("set output '" + outputFilePath + "'");
+    }
   }
-  else
-  {
-    term = "wxt";
-  }
+  // If the extension is not one of the known ones, we'll just not redirect the plot to a file and
+  // use the default wxt terminal
+
 
   std::string cmd;
   cmd = "set terminal " + term + " size " 
@@ -1335,10 +1334,8 @@ void GNUPlotter::setupOutputTerminal()
   addCommand(cmd);
   cmd = "set terminal " + term + " background rgb \"" + backgroundColor + "\"";
   addCommand(cmd);
-
   int dummy = 0;
 
-  // addCommand("set term wxt background rgb \"white\"");
 
   // See:
   // http://www.gnuplotting.org/output-terminals/
