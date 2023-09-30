@@ -1167,7 +1167,7 @@ void GNUPlotter::setupOutputTerminal()
   }
 
   // Add the actual "set terminal ..." commands to the command file:
-  addCommand("set terminal " + term + " size " 
+  addCommand("set terminal " + term + " font 'Verdana,11' size " 
     + std::to_string(pixelWidth) + "," + std::to_string(pixelHeight));
   addCommand("set terminal " + term + " background rgb \"" + backgroundColor + "\"");
 
@@ -1175,6 +1175,13 @@ void GNUPlotter::setupOutputTerminal()
   // -For producing .png files we use the "pngcairo" terminal and not the "png" terminal because
   //  the latter produces ugly outputs with function graphs looking like being drawn by the 
   //  Bresenham algorithm. We are not living in the 1980s anymore!
+  // -We explicitly set the font because relying on default settings will produce different fonts
+  //  on different terminals. With the wxt terminal, the default font looks very similar to 
+  //  'Verdana,10' but the default font looks actually narrower. Verdana 9 and 8 also don't exactly 
+  //  match the default. On the pngcairo terminal, the default font looks almost like 'Verdana,11'
+  //  but a little bit taller. I don't really know, what exactly the defaults are. However, when 
+  //  specifying the font explicitly with 'Verdana,10', we get an exact match between wxt and 
+  //  pngcairo outputs, so we use that. It actually looks good, too.
   // -The produced .pdf plots via pdfcairo have no margins around the plot at all. That may 
   //  actually be a good thing for inclusion in LaTeX documents. But they are very big when viewed
   //  with a pdf viewer. Maybe in pdf mode, the output size is interpreted in points rather than
@@ -1187,6 +1194,10 @@ void GNUPlotter::setupOutputTerminal()
   //  ASCII art but in my test, it just produced an empty .txt file.
   //
   // ToDo:
+  // -The pngcairo terminal produces a larger font size than the wxt terminal. Fix this! We want 
+  //  the peroduced files to look *exactly* the same as the results presented on screen because we
+  //  want to able to tweak the plot settings using a wxt terminal until everything looks right and
+  //  then, of course, the rendered files should also look right.
   // -Add more else-if branches for supporting other terminals and file formats. Maybe we should 
   //  also support canvas (.js embeddable in html 5), .tex (maybe texdraw, context, epslatex, 
   //  pslatex, pstricks or tikz are suitable terminals for producing latex output?), .txt (the 
@@ -1194,11 +1205,15 @@ void GNUPlotter::setupOutputTerminal()
   //  .jpeg (maybe not), webp (can also do animations). 
   // -Test, if the wave-equation animated gif-rendering still works
   //
-  // See:
+  // Info on Terminals:
   // http://www.gnuplotting.org/output-terminals/
   // http://gnuplot.info/docs_5.5/Terminals.html
   // http://www.gnuplot.info/docs_4.2/node268.html
   // http://www.gnuplot.info/docs/latex_demo.pdf
+  // 
+  // Info on Fonts:
+  // http://www.bersch.net/gnuplot-doc/fonts.html
+  // https://stackoverflow.com/questions/11618873/how-do-i-find-out-which-font-is-chosen-by-gnuplot-when-only-specifying-family
 }
 
 
