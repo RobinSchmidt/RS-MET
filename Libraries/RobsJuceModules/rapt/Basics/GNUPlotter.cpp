@@ -325,12 +325,14 @@ void GNUPlotter::setToDarkMode()
   addCommand("set ytics textcolor rgb \"white\"");
   addCommand("set xlabel textcolor rgb \"white\"");
   addCommand("set ylabel textcolor rgb \"white\"");
-  addCommand("set key textcolor \"white\""); 
-  addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#F0F0F0\""); // What does this do?
+  addCommand("set key textcolor \"white\"");
+
+  //addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#F0F0F0\""); // What does this do?
 
   // Preliminary - drawing all graphs white may be not so good:
   const char c[7] = "FFFFFF";
   setGraphColors(c, c, c, c, c, c, c, c, c, c);
+  // factor out into a function setAllGraphColors
 
   // ToDo:
   // -Maybe try "set grid ls 1 lw 1 lc rgb \"#DDFFFFFF\"", i.e. a rather transparent white instead
@@ -349,8 +351,9 @@ void GNUPlotter::setToLightMode()
   addCommand("set ytics textcolor rgb \"black\"");
   addCommand("set xlabel textcolor rgb \"black\"");
   addCommand("set ylabel textcolor rgb \"black\"");
-  addCommand("set key textcolor \"black\""); 
-  addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#101010\""); // What does this do?
+  addCommand("set key textcolor \"black\"");
+
+  //addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#101010\""); // What does this do?
 
   // Preliminary - drawing all graphs black may be not so good:
   const char c[7] = "000000";
@@ -1154,7 +1157,7 @@ void GNUPlotter::setupOutputTerminal()
     // Figure out what sort of file we should produce based on the file extension part of th path:
     std::string ext = outputFilePath.substr(len-4, 4);  // File extension
     if(ext == ".png")
-      term = "pngcairo";
+      term = "pngcairo";               // png and pngcairo work
     else if(ext == ".svg")
       term = "svg";
     else if(ext == ".pdf")
@@ -1167,21 +1170,37 @@ void GNUPlotter::setupOutputTerminal()
   }
 
   // Add the actual "set terminal ..." commands to the command file:
-  addCommand("set terminal " + term + " font 'Verdana,11' size " 
+  addCommand("set terminal " + term + " font 'Verdana,10' size " 
     + std::to_string(pixelWidth) + "," + std::to_string(pixelHeight));
   addCommand("set terminal " + term + " background rgb \"" + backgroundColor + "\"");
 
   // Notes:
   // -For producing .png files we use the "pngcairo" terminal and not the "png" terminal because
   //  the latter produces ugly outputs with function graphs looking like being drawn by the 
-  //  Bresenham algorithm. We are not living in the 1980s anymore!
+  //  Bresenham algorithm. We are not living in the 1980s anymore! Unfortunately, pngcairo seems
+  //  to have a bug that causes all contour lines in a (filled) contour to be rendered in gray 
+  //  instead of the specified linecolor setting. So, we have the choice between Bresenham lines 
+  //  in the correct color or nicely antialiased lines in gray. :-/ Hmm.. It's actually weirder:
+  //  Apparently, the color channel settings are ignored by the wxt terminal too, but both seem
+  //  to use the tranparency channel - but pngcairo always seems to use some extra transparency
+  //  on top of the setting. Using "pngcairo notransparent" instead of "pngcairo" doesn't seem to
+  //  help either. The manual says on page 238:
+  //  http://www.gnuplot.info/docs_5.2/Gnuplot_5.2.pdf
+  //  that this is meant for making the background transparent, so it has nothing to do with our 
+  //  issue. I have tried using the normal png terminal with some extra options like "truecolor"
+  //  or "linewidth 1.5". The linewidth definitely has an effect but the lines look always ugly.
+  //  On closer inspection, they doesn't seem to be bona fide Bresenham lines but they have the 
+  //  same pixelated appearance.
   // -We explicitly set the font because relying on default settings will produce different fonts
   //  on different terminals. With the wxt terminal, the default font looks very similar to 
   //  'Verdana,10' but the default font looks actually narrower. Verdana 9 and 8 also don't exactly 
   //  match the default. On the pngcairo terminal, the default font looks almost like 'Verdana,11'
   //  but a little bit taller. I don't really know, what exactly the defaults are. However, when 
   //  specifying the font explicitly with 'Verdana,10', we get an exact match between wxt and 
-  //  pngcairo outputs, so we use that. It actually looks good, too.
+  //  pngcairo outputs, so we use that. It actually looks good, too. Maybe we could use also
+  //  fontscale, see:
+  //  http://www.bersch.net/gnuplot-doc/complete-list-of-terminals.html#pngcairo
+  //  
   // -The produced .pdf plots via pdfcairo have no margins around the plot at all. That may 
   //  actually be a good thing for inclusion in LaTeX documents. But they are very big when viewed
   //  with a pdf viewer. Maybe in pdf mode, the output size is interpreted in points rather than
