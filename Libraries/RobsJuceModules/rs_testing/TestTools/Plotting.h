@@ -336,6 +336,14 @@ void plot(const rsPiecewisePolynomial<T>& p, int numSamples = 501)
 }
 
 template<class T>
+void plotBivariateFunction(const std::function<T(T, T)>& f,
+  T minX, T maxX, int numX, T minY, T maxY, int numY)
+{
+  GNUPlotter plt;
+  plt.plotBivariateFunction(numX, minX, maxX, numY, minY, maxY, f);
+}
+
+template<class T>
 void plotBivariatePolynomial(const rsBivariatePolynomial<T> p,
   T minX, T maxX, int numX, T minY, T maxY, int numY)
 {
