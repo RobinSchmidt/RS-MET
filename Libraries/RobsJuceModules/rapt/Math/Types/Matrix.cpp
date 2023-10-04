@@ -19,5 +19,13 @@ https://en.wikipedia.org/wiki/Category:Triangles_of_numbers
 
 
 
+Resources:
+
+This video:
+https://www.youtube.com/watch?v=PdxWhTX8aKo  Eigenvectors before Eigenvalues | solve(x)
+shows a method for computing the eigenvectors of a 2x2 matrix without computing the eigenvalues 
+first. May that could be useful when we are only interested in the eigenvectors but not in the 
+eigenvalues.
+
 
 */
