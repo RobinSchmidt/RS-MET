@@ -1200,7 +1200,11 @@ void GNUPlotter::setupOutputTerminal()
   //  pngcairo outputs, so we use that. It actually looks good, too. Maybe we could use also
   //  fontscale, see:
   //  http://www.bersch.net/gnuplot-doc/complete-list-of-terminals.html#pngcairo
-  //  
+  // -Sometimes, there are ugly artifacts in the contour lines that show up as dots of more heavy
+  //  drawing. I guess, it happens when line segments have overlapping line caps. The pngcairo 
+  //  terminal offers options to tweak this behavior, namely "butt", "square", "rounded". 
+  //  Apparently, "butt" is the default. unfortunately, trying to use "square" or "rounded" makes
+  //  the artifacts even worse where square is even worse than rounded. :-(
   // -The produced .pdf plots via pdfcairo have no margins around the plot at all. That may 
   //  actually be a good thing for inclusion in LaTeX documents. But they are very big when viewed
   //  with a pdf viewer. Maybe in pdf mode, the output size is interpreted in points rather than
