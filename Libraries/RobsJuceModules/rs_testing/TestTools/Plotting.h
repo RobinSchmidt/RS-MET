@@ -1,6 +1,10 @@
 #ifndef RAPT_PLOTTING_H
 #define RAPT_PLOTTING_H
 
+// This file contains convenience functions to create certain types of plots.
+
+
+
 // why do we need these includes here?
 #include "rapt/rapt.h"
 #include "rosic/rosic.h"

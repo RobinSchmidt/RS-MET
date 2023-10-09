@@ -6,7 +6,7 @@
 #include "../../../Libraries/RobsJuceModules/rosic/rosic.h"
 
 // rename file to Plotters.h - we have also other plotters that are not necessarily related to 
-// DSP
+// DSP, for example for vector fields. Maybe SpecializedPlotters
 
 /* Subclasses of GNUPlotter that specialize in making plots related to digital signal processing 
 (DSP). */
