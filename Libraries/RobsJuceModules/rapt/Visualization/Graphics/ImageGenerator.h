@@ -28,18 +28,19 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Plotting
 
+  /** Generates an image from a function by looping through the pixels, computing the pixel 
+  coordinates by transforming pixel index pairs (i,j) to the ranges xMin..xMax, yMin..yMax and 
+  evaluating the function f at the resulting (x,y) location. TPix is a separate type for the 
+  pixels, so you may use functions operating on double and having float for the pixels, for 
+  example. */
+  void generateFunctionImage(const std::function<TVal(TVal, TVal)>& f, rsImage<TPix>& img);
+
   /** Draws the curve defined by f(x,y) = c onto the image. It needs one solution x0,y0 for which
   f(x0,y0) = c holds as starting point. */
   void plotImplicitCurve(const std::function<TVal(TVal, TVal)>& f, TVal c, TVal x0, TVal y0,
     rsImage<TPix>& img, TPix color)
   { _drawImplicitCurve(f, c, x0, y0, img, color, false); }
   // maybe have the color and img as members
-
-
-
-
-  // todo: drawFunction (variants: y = f(x), z = f(x,y)), drawParametricCurve, drawCoordinateGrid
-
 
   /** Given an array of N points (x,y) in pixel coordinates (for example, representing a curve in the
   x,y-plane), this function fills the image img with the minimum values of the distances between the 
@@ -92,6 +93,28 @@ protected:
 
 
 };
+
+
+template<class TPix, class TVal> 
+void rsImagePlotter<TPix, TVal>::generateFunctionImage(
+  const std::function<TVal(TVal, TVal)>& f, rsImage<TPix>& img)
+{
+  for(int i = 0; i < img.getWidth(); i++) {
+    for(int j = 0; j < img.getHeight(); j++) {
+      TVal x = xMin + i * (xMax-xMin) / (img.getWidth()  - 1);
+      TVal y = yMax - j * (yMax-yMin) / (img.getHeight() - 1);
+      TVal z = f(x, y);
+      img.setPixelColor(i, j, TPix(z)); }}
+}
+// ToDo:
+// -Move to cpp file. I currently get unresolved symbol linker errors when trying to do this.
+//  Figure out why and fix!
+// -Maybe take two optional coordinate transformation functions c1(x,y), c2(x,y) where by default,
+//  c1(x,y) = x and c2(x,y) = y - for polar coordinates, we would use c1(x,y) = sqrt(x*x + y*y), 
+//  c2(x,y) = atan2(y,x)
+
+
+
 
 
 #endif

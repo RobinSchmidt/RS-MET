@@ -736,27 +736,15 @@ bool testContourSubPixelStuff()
 }
 // move to unit tests
 
-/** Generates an image from a function by looping through the pixels, computing the pixel 
-coordinates by transforming pixel index pairs (i,j) to the ranges xMin..xMax, yMin..yMax and 
-evaluating the function f at the resulting (x,y) location. TPix is a separate type for the pixels, 
-so you may use functions operating on double and having float for the pixels, for example. */
+// convenience function:
 template<class T, class TPix> 
 void generateFunctionImage(const function<T(T, T)>& f, T xMin, T xMax, T yMin, T yMax,
   rsImage<TPix>& img)
 {
-  for(int i = 0; i < img.getWidth(); i++) {
-    for(int j = 0; j < img.getHeight(); j++) {
-      T x = xMin + i * (xMax-xMin) / (img.getWidth()  - 1);
-      //T y = yMin + j * (yMax-yMin) / (img.getHeight() - 1);  // wrong! we need to flip vertically
-      T y = yMax - j * (yMax-yMin) / (img.getHeight() - 1);
-      T z = f(x, y);
-      img.setPixelColor(i, j, TPix(z)); }}
+  rsImagePlotter<TPix, T> plt;
+  plt.setRange(xMin, xMax, yMin, yMax);
+  plt.generateFunctionImage(f, img);
 }
-// move to rsImageGenerator
-// todo:
-// -maybe take two optional coordinate transformation functions c1(x,y), c2(x,y) where by default,
-//  c1(x,y) = x and c2(x,y) = y - for polar coordinates, we would use c1(x,y) = sqrt(x*x + y*y), 
-//  c2(x,y) = atan2(y,x)
 
 template<class T, class TPix> 
 void generateFunctionImageReIm(const function<complex<T>(complex<T>)>& f, 

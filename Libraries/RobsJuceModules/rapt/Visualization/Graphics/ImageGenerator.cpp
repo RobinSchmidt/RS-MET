@@ -1,4 +1,3 @@
-
 template<class TPix, class TVal> 
 void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVal, TVal)>& f, 
   TVal c, TVal x0, TVal y0, rsImage<TPix>& img, TPix color, bool clockwise) 
@@ -157,6 +156,8 @@ void rsImagePlotter<TPix, TVal>::_drawImplicitCurve(const std::function<TVal(TVa
 
 
 
+
+
 template<class T>
 T squaredDistance(T x1, T y1, T x2, T y2)
 {
@@ -190,8 +191,6 @@ T minDistance(T x0, T y0, T* x, T* y, int N)
 {
   return sqrt(minSquaredDistance(x0, y0, x, y, N));
 }
-
-
 
 template<class TPix, class TVal>
 void rsImagePlotter<TPix, TVal>::plotDistanceMap(rsImage<TPix>& img, TVal* x, TVal* y, int N)
