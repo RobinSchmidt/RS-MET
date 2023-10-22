@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
   //biquadTail();
   //complementaryFiltersIIR();
   //engineersFilterRingResp();   // ringing response (experimental idea)
-  engineersFilterFreqResps();
+  //engineersFilterFreqResps();
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
@@ -253,7 +253,7 @@ int main(int argc, char* argv[])
 
   // Plotting:
   //gradientify();
-  //contours();
+  contours();
   //complexContours();
   //implicitCurves();
   //parametricCurve();

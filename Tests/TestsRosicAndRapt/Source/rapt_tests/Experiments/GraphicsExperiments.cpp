@@ -1125,7 +1125,7 @@ void contours()
 
   float r = 18;              // range for x and y: x = -r..+r, y = -r..+r
   int numLevels = 20;
-  bool antiAlias = false;
+  bool antiAlias = true;
 
 
   std::function<float(float, float)> f;
@@ -1614,6 +1614,7 @@ void implicitCurves()
   implicitCurvesElliptic();
 }
 
+// Move to rsImagePlotter:
 template<class TPix, class TVal>
 void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::function<TVal(TVal)>& fy,
   const std::vector<TVal>& t, rsImage<TPix>& img, TPix color, 
@@ -1630,7 +1631,6 @@ void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::functio
     y = rsLinToLin(y, yMin, yMax, TVal(img.getHeight()-1), TVal(0));
     painter.paintDot(x, y, color); }
 }
-
 
 /** For parametric curve given by x(t) = fx(t), y(t) = fy(t) and a given set of (strictly 
 increasing) sample-points t, this function computes the arc-length function and stores the values
@@ -2694,7 +2694,14 @@ void renderNewtonFractal()
     // -To avoid the stairstep like nature of the lightness, try to find a continuous function that
     //  is similar to the number of iterations. Maybe the sum of distances to the approached root, 
     //  maybe divided by the initial distance and/or with initial distance subtracted off. We want 
-    //  smooth color gradients!
+    //  smooth color gradients! Maybe it is somehow possible to interpolate between the steps. 
+    //  Maybe look at the position in the last step and the position in the step immediately before 
+    //  divergence is detected via the distance threshold and then determine where the line that 
+    //  connects these positions intersects with a circle with radius given by the threshold.
+    //  -Maybe don't use the iteration number of divergence detection for coloring but some other 
+    //   value that is computed from the trajectory. Maybe its center of gravity could be 
+    //   interesting. Or maybe some measure of erraticity (maybe highpass the trajectory and look 
+    //   at the RMS level)
     // -could it make sense to use a smooth hue function, too? how could that look like?
     // -or maybe we should desaturate the colors near the boundaries, rationale: no hard steps
     //  at boudaries...but maybe we want hard steps

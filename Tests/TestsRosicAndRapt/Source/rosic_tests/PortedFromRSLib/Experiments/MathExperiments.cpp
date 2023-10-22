@@ -4117,6 +4117,9 @@ void bernoulliNumbers()
 // maybe try to avoid using fractions as much as possible - try to multiply everything through by
 // a suitable number to get rid of denominators - the result must be an integer, so it's somehow
 // dissatisfying to have to turn to fractions within the computation
+//
+// See: "Faulhaber's Fabulous Formula (and Bernoulli Numbers) - Numberphile"
+// https://www.youtube.com/watch?v=83NFR7JDlww
 
 
 void bernoulliPolynomials() // rename to bernoulliIntegration ...maybe
