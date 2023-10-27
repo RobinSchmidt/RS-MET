@@ -1831,6 +1831,11 @@ ToDo:
  https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
  https://en.wikipedia.org/wiki/Jenkins%E2%80%93Traub_algorithm (very popular, i think)
 
+ Resources:
+ -https://cp-algorithms.com/algebra/polynomial.html
+  https://github.com/cp-algorithms/cp-algorithms-aux/blob/master/src/polynomial.cpp
+  -> has also algorithms for polynomial exp and log (1st n coeffs)
+
 
 */
 

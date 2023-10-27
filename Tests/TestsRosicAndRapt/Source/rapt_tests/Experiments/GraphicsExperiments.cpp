@@ -2139,9 +2139,8 @@ void spirals()
   //testDistanceMap(); return;
   //testColrBHS(); return;
 
-  //int size = 1000;
-  int w = 1200;
-  int h = 800;
+  int w = 1920;
+  int h = 1080;
 
   double range    = 1.5;
 
@@ -2254,7 +2253,7 @@ void spirals()
 
 
 
-  writeImageToFilePPM(red,  green, blue, "Spirals.ppm");
+  writeImageToFilePPM(red, green, blue, "Spirals.ppm");
 
 
   rosic::writeToMonoWaveFile("Spirals.wav", red.getPixelPointer(0,0), red.getNumPixels(), 44100);
@@ -2500,8 +2499,8 @@ void renderNewtonFractal()
   double xMax   = -0.8;
   double yMin   = +0.8;
   double yMax   = +1.9;
-  int    w      = 1600;      // image width in pixels
-  int    h      = 1600;      // image height
+  int    w      = 1080;      // image width in pixels
+  int    h      = 1080;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
   int    smooth =  25;       // number of smoothing passes via gradientify
@@ -2517,7 +2516,7 @@ void renderNewtonFractal()
   //w = 960; h = 540; // FHD/2
   // Uncomment for high-quality rendering (takes long - use release build!)
   //w = 1920; h = 1080;   // FHD
-  w = 3840; h = 2160; // UHD = 2 * FHD, 4K
+  //w = 3840; h = 2160; // UHD = 2 * FHD, 4K
   //w = 7860; h = 4320;   // 2 * UHD = 4 * FHD, 8K
   //w *= 3;    h *= 3;    // ..with 3x oversampling
 

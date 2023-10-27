@@ -253,11 +253,11 @@ int main(int argc, char* argv[])
 
   // Plotting:
   //gradientify();
-  contours();
+  //contours();
   //complexContours();
   //implicitCurves();
   //parametricCurve();
-  //spirals();   // move to somewhere else...
+  spirals();                 // move to Rendering.cpp in research codebase
   //fractal();
   //differentialGeometry();
 

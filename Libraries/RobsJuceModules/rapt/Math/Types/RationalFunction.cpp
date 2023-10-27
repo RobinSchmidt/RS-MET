@@ -167,6 +167,9 @@ std::vector<T> rsRationalFunction<T>::polyGCD(
     makeMonic(a);
   return a;
 }
+// See: https://cp-algorithms.com/algebra/polynomial.html. It has an algorithm that is potentially
+// faster - the "half-GCD-Algorithm"
+
 
 template<class T>
 std::vector<T> rsRationalFunction<T>::polyNest(const std::vector<T>& a, const std::vector<T>& b)

@@ -163,7 +163,8 @@ ToDo:
  iteration. That could create a nonzero imaginary part. That may be a good or bad thing, depending 
  on whether a complex root may be expected or not. The Brent method should perhaps be the go-to 
  method for root-finding without derivatives
--
+-Implement ternary search ("trisection"?) for finding minima or maxima. See:
+ https://cp-algorithms.com/num_methods/ternary_search.html
 
 
 */

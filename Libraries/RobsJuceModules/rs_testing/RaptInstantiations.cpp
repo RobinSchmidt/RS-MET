@@ -441,6 +441,7 @@ template void RAPT::rsBinomialDistribution(double*, int, double);
 
 
 template class RAPT::rsConicSection<float>;
+template class RAPT::rsRotationXY<float>;
 template class RAPT::rsRotationXY<double>;
 template class RAPT::rsGeometricTransforms<double>;
 

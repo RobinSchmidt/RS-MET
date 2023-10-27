@@ -42,6 +42,10 @@ public:
   { _drawImplicitCurve(f, c, x0, y0, img, color, false); }
   // maybe have the color and img as members
 
+
+
+
+
   /** Given an array of N points (x,y) in pixel coordinates (for example, representing a curve in the
   x,y-plane), this function fills the image img with the minimum values of the distances between the 
   point at the pixel-coordinates and the points on the curve. This is expensive: scales like 

@@ -231,9 +231,13 @@ T rsModularInverse(const T& x, const T& m)
     return T(0);
 
   // See:
-  // Edmund Weitz - Konkrete Mathematik (nicht nur) für Informatiker, pg. 65
-  // https://www.youtube.com/watch?v=op_mD9n1qLA , https://www.youtube.com/watch?v=J0zCSAExkK0
-  // https://www.youtube.com/watch?v=hYYmWI_oqjI , https://www.youtube.com/watch?v=-WlpjAbWjws
+  // Edmund Weitz - Konkrete Mathematik (nicht nur) für Informatiker, pg. 65 and YouTube:
+  // https://www.youtube.com/watch?v=op_mD9n1qLA , J0zCSAExkK0, hYYmWI_oqjI , -WlpjAbWjws
+  // and:
+  // https://cp-algorithms.com/algebra/module-inverse.html
+  // which has an alternative algorithm for computing it using exponentiation and the Euler totient
+  // function: x^totient(m) = 1. But this works only for prime moduli and require the totient 
+  // of m to be known so it's perhaps not so algorithmically attractive.
 }
 
 template <class T>

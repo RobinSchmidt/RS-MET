@@ -136,6 +136,10 @@ rsImage<TPix> rsImageContourPlotter<TPix, TVal>::getContourLines(const rsImage<T
     drawContour(z, levels[i], img, colors[i % colors.size()], antiAlias);
   return img;
 }
+// ToDo: Let the input image "z" be of a potentially different datatype than the output image 
+// "img". The input image represents the function values whereas the ouput image is an actual
+// image where pixels represent colors. So, for the input image the pixels could be floats whereas
+// for the output image, they could be RGB triples or ARGB quadruples
 
 template<class TPix, class TVal>
 rsImage<TPix> rsImageContourPlotter<TPix, TVal>::getContourFills(const rsImage<TPix>& z,
