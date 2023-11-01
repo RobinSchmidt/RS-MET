@@ -830,7 +830,7 @@ void makewt(int nw, int *ip, T *w)
   ip[1] = 1;
   if(nw > 2) {
     nwh = nw >> 1;
-    delta = T(atan(1.0)) / nwh;
+    delta = T(atan(1.0)) / nwh;                  // ToDo: use constant for atan(1)
     w[0] = 1;
     w[1] = 0;
     w[nwh] = cos(delta * nwh);
@@ -858,7 +858,7 @@ void makect(int nc, int *ip, T *c)
   ip[1] = nc;
   if(nc > 1) {
     nch = nc >> 1;
-    delta = T(atan(1.0)) / nch;
+    delta = T(atan(1.0)) / nch;                  // ToDo: use constant for atan(1)
     c[0] = cos(delta * nch);
     c[nch] = T(0.5) * c[0];
     for(j = 1; j < nch; j++) {
