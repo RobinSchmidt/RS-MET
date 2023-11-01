@@ -1,4 +1,7 @@
-// an adapted version of the file fft4g.c from Oouras FFT package to make it work with templates
+// An adapted version of the file fft4g.c from Oouras FFT package to make it work with templates
+// ToDo: Move the documentations to the functions
+
+
 #include <math.h> // check, if necesarry..
 
 /*
@@ -822,7 +825,6 @@ void dstsub(int n, T *a, int nc, T *c)
 template<class T>
 void makewt(int nw, int *ip, T *w)
 {
-  //void bitrv2(int n, int *ip, T *a);
   int j, nwh;
   T delta, x, y;
 
@@ -873,8 +875,6 @@ void makect(int nc, int *ip, T *c)
 template<class T>
 void cftfsub(int n, T *a, T *w)
 {
-  //void cft1st(int n, T *a, T *w);
-  //void cftmdl(int n, int l, T *a, T *w);
   int j, j1, j2, j3, l;
   T x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
@@ -926,8 +926,6 @@ void cftfsub(int n, T *a, T *w)
 template<class T>
 void cftbsub(int n, T *a, T *w)
 {
-  //void cft1st(int n, T *a, T *w);
-  //void cftmdl(int n, int l, T *a, T *w);
   int j, j1, j2, j3, l;
   T x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
@@ -981,12 +979,6 @@ void cftbsub(int n, T *a, T *w)
 template<class T>
 void cdft(int n, int isgn, T *a, int *ip, T *w)
 {
-  //void makewt(int nw, int *ip, T *w);
-  //void bitrv2(int n, int *ip, T *a);
-  //void bitrv2conj(int n, int *ip, T *a);
-  //void cftfsub(int n, T *a, T *w);
-  //void cftbsub(int n, T *a, T *w);
-
   if(n > (ip[0] << 2)) {
     makewt(n >> 2, ip, w);
   }
@@ -1008,13 +1000,6 @@ void cdft(int n, int isgn, T *a, int *ip, T *w)
 template<class T>
 void rdft(int n, int isgn, T *a, int *ip, T *w)
 {
-  //void makewt(int nw, int *ip, T *w);
-  //void makect(int nc, int *ip, T *c);
-  //void bitrv2(int n, int *ip, T *a);
-  //void cftfsub(int n, T *a, T *w);
-  //void cftbsub(int n, T *a, T *w);
-  //void rftfsub(int n, T *a, int nc, T *c);
-  //void rftbsub(int n, T *a, int nc, T *c);
   int nw, nc;
   T xi;
 
@@ -1058,14 +1043,6 @@ void rdft(int n, int isgn, T *a, int *ip, T *w)
 template<class T>
 void ddct(int n, int isgn, T *a, int *ip, T *w)
 {
-  //void makewt(int nw, int *ip, T *w);
-  //void makect(int nc, int *ip, T *c);
-  //void bitrv2(int n, int *ip, T *a);
-  //void cftfsub(int n, T *a, T *w);
-  //void cftbsub(int n, T *a, T *w);
-  //void rftfsub(int n, T *a, int nc, T *c);
-  //void rftbsub(int n, T *a, int nc, T *c);
-  //void dctsub(int n, T *a, int nc, T *c);
   int j, nw, nc;
   T xr;
 
@@ -1119,14 +1096,6 @@ void ddct(int n, int isgn, T *a, int *ip, T *w)
 template<class T>
 void ddst(int n, int isgn, T *a, int *ip, T *w)
 {
-  //void makewt(int nw, int *ip, T *w);
-  //void makect(int nc, int *ip, T *c);
-  //void bitrv2(int n, int *ip, T *a);
-  //void cftfsub(int n, T *a, T *w);
-  //void cftbsub(int n, T *a, T *w);
-  //void rftfsub(int n, T *a, int nc, T *c);
-  //void rftbsub(int n, T *a, int nc, T *c);
-  //void dstsub(int n, T *a, int nc, T *c);
   int j, nw, nc;
   T xr;
 
@@ -1180,12 +1149,6 @@ void ddst(int n, int isgn, T *a, int *ip, T *w)
 template<class T>
 void dfct(int n, T *a, T *t, int *ip, T *w)
 {
-  //void makewt(int nw, int *ip, T *w);
-  //void makect(int nc, int *ip, T *c);
-  //void bitrv2(int n, int *ip, T *a);
-  //void cftfsub(int n, T *a, T *w);
-  //void rftfsub(int n, T *a, int nc, T *c);
-  //void dctsub(int n, T *a, int nc, T *c);
   int j, k, l, m, mh, nw, nc;
   T xr, xi, yr, yi;
 
@@ -1279,12 +1242,6 @@ void dfct(int n, T *a, T *t, int *ip, T *w)
 template<class T>
 void dfst(int n, T *a, T *t, int *ip, T *w)
 {
-  //void makewt(int nw, int *ip, T *w);
-  //void makect(int nc, int *ip, T *c);
-  //void bitrv2(int n, int *ip, T *a);
-  //void cftfsub(int n, T *a, T *w);
-  //void rftfsub(int n, T *a, int nc, T *c);
-  //void dstsub(int n, T *a, int nc, T *c);
   int j, k, l, m, mh, nw, nc;
   T xr, xi, yr, yi;
 
