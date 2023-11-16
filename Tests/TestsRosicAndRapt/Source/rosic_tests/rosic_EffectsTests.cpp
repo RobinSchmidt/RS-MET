@@ -700,9 +700,9 @@ void rotes::spectralFilter()
 
 void rotes::formantShifter()
 {
-  // Tests the class rosic::FormantShifter. We create as test input a swatooth wave that has some 
-  // formants imposed on it which are created by rosic::VowelFilter. Then we pass that 
-  // sawtooth-with-formants into the formant shifter. Thne we write input and output signals into 
+  // Tests the class rosic::FormantShifter. We create as test input a sawtooth wave that has some 
+  // formants imposed on it which are created via rosic::VowelFilter. Then we pass that 
+  // sawtooth-with-formants into the formant shifter. Then we write input and output signals into 
   // wavefiles for inspection and audition.
 
 
