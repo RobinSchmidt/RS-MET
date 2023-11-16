@@ -366,4 +366,18 @@ ToDo:
  the end, a formula should result that can be implemented as static member function just like
  resonanceDecayToFeedbackGain, maybe resonanceLevelToFeedbackGain
 
+-Maybe provide a softReset(T amount) function. This should not reset the internal states to zero
+ completely but rather to a linear combination of zero and the current state, i.e. basically just 
+ multply the state variables by the amount. Maybe there could be different amounts for the 1-pole 
+ stage states and the feedback state. I think that this could be useful for modeling motor noises. 
+ It's just an ad hoc idea: We could feed the filter with an impulse train and use the impulse as 
+ input signal and at the same time a (soft)-reset trigger. With full resets, this should give a 
+ machine-gun sample-playback like effect using the filter's impulse response in place of the 
+ sample. Such a feature could perhaps be useful for other filter types too (Butterworth, etc.).
+ If the impulse train is anti-aliased (i.e. uses linear de-interpolation or something), the resets
+ may be incomplete when an impulse is made up of two successive samples of value 0.5 instead of
+ a single sample of 1.0. Maybe think about a way to fix this. Maybe use a non-anti-aliased 
+ impulse train for the resets. Maybe it should have one sample advance or delay with respect to
+ anti-aliased one. Maybe it could be fun to give it its own, independent frequency.
+
 */
