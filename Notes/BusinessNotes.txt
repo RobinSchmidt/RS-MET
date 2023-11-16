@@ -7,11 +7,14 @@ Pricing:
 -80 €/h for work in the client's codebase (assisting with integration into the client's system,  
  testing and debugging, etc.)
  
--Milestone-based charging. Work for one week is scheduled, an appropriate milestone is defined, 
- then I'll do the work and when the milestone is reached done I charge the 1600€ = 40 h * 40 €/h.
+-Milestone-based charging. Work for one week is scheduled and an appropriate milestone is defined, 
+ then I'll do the work and when the milestone is reached I charge the 1600€ = 40 h * 40 €/h. If
+ necessary, the granularity can be reduced within reason - say down to days - but no 
+ micro-accounting anymore (like keeping a tab of worktimes to 5 min precision as I previuosly did). 
+ That's really a drag on productivity.
  
 -Licensing for existing DSP code (RAPT/rosic): 1500 € for 1 product, 2500 for 2, 3500 for 3, 
- 4500 for 4, 5000 for 5, 7500 for 10
+ 4500 for 4, 5000 for 5, 7500 for 10.
  
 -These license prices go down when also work hours are purchased. If two weeks of work (= 3200€) 
  are purchased, the single product license cost goes down to 1000 -> just divide everything by 1.5.
@@ -21,9 +24,9 @@ Pricing:
  
 -The license is valid for the version of the code at the time of purchase. License updates for 
  newer versions of the code are 1/10 of the original license price - without the for-work discounts
- but with the quantity discounts. If multiple licenses were bought one at a time (i.e. at the higher 
- per license prices), the update cost will nevertheless get the quantity discount for whatever 
- number of licenses were purchased.
+ but with the for-quantity discounts. If multiple licenses were bought one at a time (i.e. at the 
+ higher per license prices), the update cost will nevertheless get the quantity discount for 
+ whatever number of licenses were purchased.
  
 ----------------------------------------------------------------------------------------------------
 Project Ideas and Proposals:
