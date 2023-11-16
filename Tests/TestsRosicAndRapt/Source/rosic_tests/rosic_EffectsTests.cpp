@@ -709,12 +709,12 @@ void rotes::formantShifter()
   int    numSamples    = 2*sampleRate;
 
   // Input signal parameters:
-  double sawFreq       = 100;
+  double sawFreq       = 80;
   double vowel         = 0.5;
   double formantAmount = 1;        // 0: none, 1: normal, >1: overpronounced
 
   // Formant shifter parameters:
-  double formantScale  = 2.0;
+  double formantScale  = 1.5;
 
 
   // Create raw sawtooth signal:
