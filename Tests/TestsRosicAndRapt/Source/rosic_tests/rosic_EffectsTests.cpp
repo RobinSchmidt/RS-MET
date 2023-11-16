@@ -708,19 +708,19 @@ void rotes::formantShifter()
 
   // Setup:
 
-  // Technical parameters:
+  // Output file parameters:
   double sampleRate    = 44100;         // Sample rate for the signals in Hz
-  int    maxBlockSize  = 4096;          // Maximum block size - must be passed to constructor
-  int    blockSize     = 2048;          // Block size, must be <= maxBlockSize
   int    numSamples    = 2*sampleRate;  // We create a 2 seconds long signal.
 
   // Input signal parameters:
   double sawFreq       = 80;            // Fundamental frequency of the sawtooth
-  double vowel         = 0.5;           // The vowels ar on a scale form 0..1. The middle is "ah".
+  double vowel         = 0.5;           // The vowels are on a scale form 0..1. The middle is "ah".
   double formantAmount = 1;             // 0: none, 1: normal, >1: overpronounced
 
   // Formant shifter parameters:
   double formantScale  = 1.5;           // Scaling factor for the formant frequencies
+  int    maxBlockSize  = 4096;          // Maximum block size - must be passed to constructor
+  int    blockSize     = 512;           // Block size, must be <= maxBlockSize
 
 
   // Create raw sawtooth signal:
@@ -763,4 +763,5 @@ void rotes::formantShifter()
   // -Experiment with different window functions. This stuff is implemented in the baseclass
   //  functions setInputBlockSize, setOverlapFactor, setPaddingFactor in 
   //  rosic::OverlapAddProcessor
+  // -Implement a performance test and test how these parameters affect the CPU load.
 }
