@@ -607,7 +607,8 @@ int main(int argc, char* argv[])
   // Effects:
   //testFeedbackDelayNetwork();     // writes wave file
   //algoVerb();
-  spectralFilter();                 // Maybe move into a file for spectral processors
+  //spectralFilter();                 // Maybe move into a file for spectral processors
+  formantShifter();
 
 
   // File:

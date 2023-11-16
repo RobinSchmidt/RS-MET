@@ -669,12 +669,12 @@ void rotes::spectralFilter()
 
 
   // Create and set up filter object:
-  Flt flt(maxBlockSize);
-  flt.setSampleRate(sampleRate);
-  flt.setInputBlockSize(blockSize);
-  flt.setMode(mode);
-  flt.setLowerCutoff(lowerCutoff);
-  flt.setUpperCutoff(upperCutoff);
+  Flt filter(maxBlockSize);
+  filter.setSampleRate(sampleRate);
+  filter.setInputBlockSize(blockSize);
+  filter.setMode(mode);
+  filter.setLowerCutoff(lowerCutoff);
+  filter.setUpperCutoff(upperCutoff);
 
   // Create test input signal:
   int N = numSamples;
@@ -685,15 +685,68 @@ void rotes::spectralFilter()
   // Create output by applying the filter to the input:
   Vec y(N);
   for(int n = 0; n < N; n++)
-    y[n] = flt.getSample(x[n]);
+    y[n] = filter.getSample(x[n]);
 
   // Write input and output into wave files:
   rosic::writeToMonoWaveFile("SpectralFilterInput.wav",  &x[0], N, sampleRate, 16);
   rosic::writeToMonoWaveFile("SpectralFilterOutput.wav", &y[0], N, sampleRate, 16);
-  int dummy = 0;
+
 
   // ToDo:
   // -Use also white noise as test input
   // -Experiment with overlap and paddingFactor parameters
   // -Make a similar test for rosic::FormantShifter
+}
+
+void rotes::formantShifter()
+{
+  // Setup:
+
+  // Technical parameters:
+  double sampleRate    = 44100;
+  int    maxBlockSize  = 4096;
+  int    blockSize     = 1024;
+  int    numSamples    = 2*sampleRate;
+
+  // Input signal parameters:
+  double sawFreq       = 100;
+  double vowel         = 0.5;
+  double formantAmount = 1;        // 0: none, 1: normal, >1: overpronounced
+
+  // Formant shifter parameters:
+  double formantShift  = 2.0;
+
+
+  // Create raw sawtooth signal:
+  using Vec = std::vector<double>;
+  int N = numSamples;
+  Vec x(N);
+  createWaveform(&x[0], N, 1, sawFreq, sampleRate, 0.0, true);
+  x = 0.1 * x; // Reduce volume to avoid clipping when the filter overshoots
+
+  // Apply formants:
+  rosic::VowelFilterStereo vowelFilter;
+  vowelFilter.setSampleRate(sampleRate);
+  vowelFilter.setVowel(vowel);
+  vowelFilter.setAmount(formantAmount);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    vowelFilter.getSampleFrameStereo(&x[n], &x[n], &y[n], &y[n]);
+
+  // Shift formants:
+  rosic::FormantShifter    formantShifter(maxBlockSize);
+  // ...
+
+
+
+
+  // Write input and output into wave files:
+  rosic::writeToMonoWaveFile("FormantShifterInput.wav",  &y[0], N, sampleRate, 16);
+
+
+
+  int dummy = 0;
+
+  // ToDo:
+  // -formantAmount seems to have no effect. Must be a bug in VowelFilterStereo. Fix it!
 }

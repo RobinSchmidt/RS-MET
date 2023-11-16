@@ -30,6 +30,7 @@ bool testFastGeneralizedHadamardTransform();
 bool testFeedbackDelayNetwork();
 bool testMultiComp();
 void spectralFilter();
+void formantShifter();
 
 
 // filters:
