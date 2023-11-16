@@ -668,6 +668,12 @@ void rotes::spectralFilter()
 
 
 
+  // Create sawtooth test input signal:
+  int N = numSamples;
+  Vec x(N);
+  createWaveform(&x[0], N, 1, sawFreq, sampleRate, 0.0, true);
+  x = 0.5 * x; // Reduce volume to avoid clipping when the filter overshoots
+
   // Create and set up filter object:
   Flt filter(maxBlockSize);
   filter.setSampleRate(sampleRate);
@@ -675,12 +681,6 @@ void rotes::spectralFilter()
   filter.setMode(mode);
   filter.setLowerCutoff(lowerCutoff);
   filter.setUpperCutoff(upperCutoff);
-
-  // Create test input signal:
-  int N = numSamples;
-  Vec x(N);
-  createWaveform(&x[0], N, 1, sawFreq, sampleRate, 0.0, true);
-  x = 0.5 * x; // Reduce volume to avoid clipping when the filter overshoots
 
   // Create output by applying the filter to the input:
   Vec y(N);
@@ -737,16 +737,13 @@ void rotes::formantShifter()
   rosic::FormantShifter formantShifter(maxBlockSize);
   formantShifter.setSampleRate(sampleRate);
   formantShifter.setFormantScale(formantScale);
-  // ...
-
-
-
+  Vec z(N);
+  for(int n = 0; n < N; n++)
+    z[n] = formantShifter.getSample(y[n]);
 
   // Write input and output into wave files:
   rosic::writeToMonoWaveFile("FormantShifterInput.wav",  &y[0], N, sampleRate, 16);
-
-
-
+  rosic::writeToMonoWaveFile("FormantShifterOutput.wav", &z[0], N, sampleRate, 16);
   int dummy = 0;
 
   // ToDo:
@@ -754,5 +751,7 @@ void rotes::formantShifter()
   // -Add setFormantEmphasis to FormantShifter. Should make it possible to de/emphasize the 
   //  formants.
   // -Test setting up different block sizes, overlap factors, etc.
-  // -Experiment with different window functions
+  // -Experiment with different window functions. This stuff is implemented in the baseclass
+  //  functions setInputBlockSize, setOverlapFactor, setPaddingFactor in 
+  //  rosic::OverlapAddProcessor
 }
