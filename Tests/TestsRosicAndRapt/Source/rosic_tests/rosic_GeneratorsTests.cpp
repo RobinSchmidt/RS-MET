@@ -188,7 +188,7 @@ void rotes::testCombustionEngine()
   int sampleRate = 44100;
   int numSamples = 3*sampleRate;
 
-  int  period    = 50;      // periodicity of the impulses
+  int  period    = 2000;    // periodicity of the impulses in samples
   Real cutoff    = 200;     // Cutoff freq of the filter
   Real gain      = 10.0;
 
@@ -207,12 +207,14 @@ void rotes::testCombustionEngine()
     {
       //filter.reset();
       y[n] = gain * filter.getSample(1);
+      //y[n] = gain * 1;
       // Try switching the order
 
     }
     else
     {
       y[n] = gain * filter.getSample(0);
+      //y[n] = gain * 0;
     }
   }
 
