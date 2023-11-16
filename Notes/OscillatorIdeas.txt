@@ -1,0 +1,6 @@
+-For an exactly reproducible pseudo-random start phase of the oscillator, we could use the midi 
+ state. For example, some hash-function of the most recently received note values, maybe also taking 
+ the velocities into account. Maybe we coul also use a function that maps velocities like
+ (vel % k) * 360 for some k around 10 - maybe 11 or 13 or something. Rationale: the player cannot
+ control the velocity that finely, so it is a random value with a variance +-5. 
+ 
