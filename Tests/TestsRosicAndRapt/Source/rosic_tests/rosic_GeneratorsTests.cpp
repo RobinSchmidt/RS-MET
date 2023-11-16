@@ -183,9 +183,44 @@ void rotes::testCombustionEngine()
   // result should be something like a machine-gun sample playback effect with the filter's impulse
   // response as sample.
 
+  using Real = double;
+
+  int sampleRate = 44100;
+  int numSamples = 3*sampleRate;
+
+  int  period    = 50;      // periodicity of the impulses
+  Real cutoff    = 200;     // Cutoff freq of the filter
+  Real gain      = 10.0;
 
 
+  RAPT::rsLadderFilter<Real, Real> filter;
+  filter.setSampleRate(sampleRate);
+  filter.setCutoff(cutoff);
+
+  using Vec = std::vector<Real>;
+  int N = numSamples;
+  Vec y(N);
+
+  for(int n = 0; n < N; n++)
+  {
+    if(n % period == 0)
+    {
+      //filter.reset();
+      y[n] = gain * filter.getSample(1);
+      // Try switching the order
+
+    }
+    else
+    {
+      y[n] = gain * filter.getSample(0);
+    }
+  }
+
+
+  rosic::writeToMonoWaveFile("CombustionEngine.wav", &y[0], N, sampleRate, 16);
   int dummy = 0;
+
+  // -There is some bug - the signal is just a smooth ramp to a small DC value
 }
 
 
