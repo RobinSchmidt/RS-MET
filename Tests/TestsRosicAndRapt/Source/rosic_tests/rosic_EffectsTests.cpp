@@ -644,6 +644,9 @@ bool rotes::testMultiComp()
 
 void rotes::spectralFilter()
 {
+  // Demonstrates usage of rosic::SpectralFilter by creating a sawtooth wave as test input signal
+  // and passing it through the filter. The results will be written to wavefiles.
+
   using Flt = rosic::SpectralFilter;
   using Vec = std::vector<double>;
 
@@ -662,6 +665,7 @@ void rotes::spectralFilter()
   double lowerCutoff   = 500;
   double upperCutoff   = 5000;
   Flt::modes mode      = Flt::modes::BANDPASS;
+
 
 
   // Create and set up filter object:
