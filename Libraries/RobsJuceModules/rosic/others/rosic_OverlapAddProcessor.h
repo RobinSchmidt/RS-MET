@@ -10,14 +10,16 @@ namespace rosic
   //===============================================================================================
   // class OverlapAddProcessor:
 
-  /**
+  /** This class serves a baseclass for all effects that need overlap-add processing. It 
+  encapsulates all the necesarry buffering, and provides the usual per-sample input/output 
+  function. Subclasses just need to override processBlock to do their actual processing. 
+  Furthermore, this baseclass may also apply a window function to the input and/or the output 
+  buffers.
 
-  This class serves a baseclass for all effects that need overlap-add processing. It encapsulates
-  all the necesarry buffering, and provides the usual per-sample input/output function. Subclasses
-  just need to override processBlock to do their actual processing. Furthermore, this baseclass may
-  also apply a window function to the input and/or the output buffers.
 
-  \todo: perhaps we need a mutex-lock to ensure consistency of the internal state
+
+
+
 
   */
 
@@ -89,17 +91,21 @@ namespace rosic
   protected:
 
     /** This function is the one, you should override in your subclass to do the actual processing.
-    The baseclass implementation does nothing. \todo: make it purely virtual */
+    The baseclass implementation here does nothing. It is a template method in the sense of the 
+    "template method" design pattern. */
     virtual void processBlock(double* /*block*/, int /*blockSize*/) {}
+    // ToDo: maybe make purely virtual
 
     /** Prepares the 'tmp' member variable such that is contains the (possibly windowed and padded)
     block to be processed. */
     void prepareBlockForProcessing();
 
-    /** Post-processes a block stored in'tmp' that is assumed to have just been undergone the actual
-    processing - this post-processing will consist of copying the data into the appropriate
-    y-buffer and possibly applying the output window. */
+    /** Post-processes a block stored in 'tmp' that is assumed to have just been undergone the 
+    actual processing that was done by the subclass'es overriden implementation of processBlock().
+    This post-processing will consist of copying the data into the appropriate y-buffer and 
+    possibly applying the output window. */
     void postProcessBlock();
+    // ToDo: rename to finishBlockProcessing or addProcessedBlockToOutput
 
     /** Initializes the internal state (clears buffer, resets read/write pointers, generates
     window, etc.) - all the stuff that is necessary when the blockSize, overlap or zero-padding
@@ -154,7 +160,7 @@ namespace rosic
     if( writePosition % hopSize == 0 )
     {
       prepareBlockForProcessing();
-      processBlock(tmp, blockSize*paddingFactor);
+      processBlock(tmp, blockSize*paddingFactor);  // Calls to overriden function of subclass.
       postProcessBlock();
     }
 
@@ -181,11 +187,10 @@ namespace rosic
   }
 
 
-  //===============================================================================================
-  // class OverlapAddProcessorMultiChannel:
 
-
-
+// ToDo: 
+// -Perhaps we need a mutex-lock to ensure consistency of the internal state...but no, this should
+//  be done on a higher level
 
 
 

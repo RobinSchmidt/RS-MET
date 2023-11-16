@@ -743,6 +743,7 @@ void rotes::formantShifter()
   rosic::FormantShifter formantShifter(maxBlockSize);
   formantShifter.setSampleRate(sampleRate);
   formantShifter.setFormantScale(formantScale);
+  formantShifter.setInputBlockSize(blockSize);
   Vec z(N);
   for(int n = 0; n < N; n++)
     z[n] = formantShifter.getSample(y[n]);
