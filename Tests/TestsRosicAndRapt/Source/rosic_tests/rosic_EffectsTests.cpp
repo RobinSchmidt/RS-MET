@@ -700,21 +700,27 @@ void rotes::spectralFilter()
 
 void rotes::formantShifter()
 {
+  // Tests the class rosic::FormantShifter. We create as test input a swatooth wave that has some 
+  // formants imposed on it which are created by rosic::VowelFilter. Then we pass that 
+  // sawtooth-with-formants into the formant shifter. Thne we write input and output signals into 
+  // wavefiles for inspection and audition.
+
+
   // Setup:
 
   // Technical parameters:
-  double sampleRate    = 44100;
-  int    maxBlockSize  = 4096;
-  int    blockSize     = 1024;
-  int    numSamples    = 2*sampleRate;
+  double sampleRate    = 44100;         // Sample for the signals rate in Hz
+  int    blockSize     = 1024;          // Block size of the spectral processor
+  int    maxBlockSize  = 4096;          // Maximum block size - must be passed to constructor.
+  int    numSamples    = 2*sampleRate;  // We create a 2 seconds long signal.
 
   // Input signal parameters:
-  double sawFreq       = 80;
-  double vowel         = 0.5;
-  double formantAmount = 1;        // 0: none, 1: normal, >1: overpronounced
+  double sawFreq       = 80;            // Fundamental frequency of the sawtooth
+  double vowel         = 0.5;           // The vowels ar on a scale form 0..1. The middle is "ah".
+  double formantAmount = 1;             // 0: none, 1: normal, >1: overpronounced
 
   // Formant shifter parameters:
-  double formantScale  = 1.5;
+  double formantScale  = 1.5;           // Scaling factor for the formant frequencies
 
 
   // Create raw sawtooth signal:
@@ -722,7 +728,7 @@ void rotes::formantShifter()
   int N = numSamples;
   Vec x(N);
   createWaveform(&x[0], N, 1, sawFreq, sampleRate, 0.0, true);
-  x = 0.1 * x; // Reduce volume to avoid clipping when the filter overshoots
+  x = 0.1 * x;  // To reduce the volume to avoid clipping when the filter overshoots.
 
   // Apply formants:
   rosic::VowelFilterStereo vowelFilter;
@@ -750,6 +756,9 @@ void rotes::formantShifter()
   // -Add setFormantEmphasis to FormantShifter. Should make it possible to de/emphasize the 
   //  formants.
   // -Test setting up different block sizes, overlap factors, etc.
+  // -Change the formants in the input dynamically over time.
+  // -Maybe change the formant-shift also dynamically over time.
+  // -Test, how different block sizes affect the sound when the formants are moving around.
   // -Experiment with different window functions. This stuff is implemented in the baseclass
   //  functions setInputBlockSize, setOverlapFactor, setPaddingFactor in 
   //  rosic::OverlapAddProcessor
