@@ -744,7 +744,6 @@ void rotes::formantShifter()
   // Write input and output into wave files:
   rosic::writeToMonoWaveFile("FormantShifterInput.wav",  &y[0], N, sampleRate, 16);
   rosic::writeToMonoWaveFile("FormantShifterOutput.wav", &z[0], N, sampleRate, 16);
-  int dummy = 0;
 
   // ToDo:
   // -formantAmount seems to have no effect. Must be a bug in VowelFilterStereo. Fix it!
