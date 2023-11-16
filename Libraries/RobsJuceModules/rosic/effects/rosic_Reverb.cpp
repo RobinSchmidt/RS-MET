@@ -338,6 +338,8 @@ Ideas:
  The sum of bot rows is the same, namely 168. We alternatingly put the larger of the twin to the L 
  or R row. The number of primes in each row must be even (here it is 6). We may also prepend 
  1,2,3 to each row to make the impulse response even denser.
+-Maybe make the FDN diffusion parameter signal dependent. Maybe use low diffusion at transients and
+ high diffusion in steady state sections (or vice versa)
 
 
 */

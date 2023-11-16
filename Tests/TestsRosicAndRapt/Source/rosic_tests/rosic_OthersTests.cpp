@@ -43,3 +43,4 @@ void rotes::testSlewRateLimiterLinear()
   // -The output reaches 1 at sample 120 (t = 12s) and reaches 0 at sample 230 (t = 23s) as it
   //  should be with attack = 2000ms = 2s and release = 3000ms = 3s
 }
+

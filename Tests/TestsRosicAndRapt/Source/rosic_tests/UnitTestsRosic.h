@@ -29,6 +29,8 @@ bool testFileWave();
 bool testFastGeneralizedHadamardTransform();
 bool testFeedbackDelayNetwork();
 bool testMultiComp();
+void spectralFilter();
+
 
 // filters:
 void testLadderFilter();                   // is experiment

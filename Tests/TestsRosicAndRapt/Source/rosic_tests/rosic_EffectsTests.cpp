@@ -642,3 +642,53 @@ bool rotes::testMultiComp()
   return result;
 }
 
+void rotes::spectralFilter()
+{
+  using Flt = rosic::SpectralFilter;
+  using Vec = std::vector<double>;
+
+  // Setup:
+
+  // Technical parameters:
+  double sampleRate    = 44100;
+  int    maxBlockSize  = 4096;
+  int    blockSize     = 1024;
+  int    numSamples    = 2*sampleRate;
+
+  // Input signal parameters:
+  double sawFreq       = 100;
+
+  // Filter parameters:
+  double lowerCutoff   = 5000;
+  double upperCutoff   = 500;
+  Flt::modes mode      = Flt::modes::BANDPASS;
+
+
+  // Create and set up filter object:
+  Flt flt(maxBlockSize);
+  flt.setSampleRate(sampleRate);
+  flt.setInputBlockSize(blockSize);
+  flt.setMode(mode);
+  flt.setLowerCutoff(lowerCutoff);
+  flt.setUpperCutoff(upperCutoff);
+
+  // Create test input signal:
+  int N = numSamples;
+  Vec x(N);
+  createWaveform(&x[0], N, 1, sawFreq, sampleRate, 0.0, true);
+
+  // Create output by applying the filter to the input:
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = flt.getSample(x[n]);
+
+  // Write input and output into wave files:
+  rosic::writeToMonoWaveFile("SpectralFilterInput.wav",  &x[0], N, sampleRate, 16);
+  rosic::writeToMonoWaveFile("SpectralFilterOutput.wav", &y[0], N, sampleRate, 16);
+  int dummy = 0;
+
+  // ToDo:
+  // -Use also white noise as test input
+  // -Experiment with overlap and paddingFactor parameters
+  // -Make a similar test for rosic::FormantShifter
+}

@@ -276,11 +276,11 @@ protected:
   normalizationMode. */
   void updateNormalizationFactor();
 
-  std::complex<T> *h;        /**< The spectrum of the of the h-values. */
-  std::complex<T> *c;        /**< The modulating chirp-signal. */
-  std::complex<T> *y;        /**< Internal buffer of size M. */
+  std::complex<T> *h;     /**< The spectrum of the of the h-values. */
+  std::complex<T> *c;     /**< The modulating chirp-signal. */
+  std::complex<T> *y;     /**< Internal buffer of size M. */
 
-  int N;                  /**< The blocksize of the Bluestein-FFT. */
+  int N;                  /**< The blocksize of the Bluestein-FFT. Can be any number >= 1. */
   int M;                  /**< The enlarged blocksize for the embedded radix-2 FFT. M ist the
                           smallest power of two, such that M >= 2*N-1. */
 
@@ -298,5 +298,19 @@ protected:
   which occur as part of the Bluestein algorithm. */
 
 };
+
+// ToDo: 
+// -Verify, if we have unit tests for edge cases (sizes 0,1,2) for Bluestein and Radix2
+// -Maybe switch to rsComplex instead of std::complex to enable other datatypes than float/double,
+//  e.g. SIMD types.
+// -Maybe move the file into a folder for general linear transforms. Maybe it would fit into the
+//  broader category of linear algebra.
+// -Maybe factor out a purely abstract baseclass defininig only the API. The rationale is that 
+//  different subclasses could utilize different FFT implementations. This one here uses Ouura FFT
+//  because it's liberally licensed but commercial plugins of clients may want to use something 
+//  else, e.g. FFTW, IPP, etc.
+// -But maybe it would be much nicer if we could somehow solve this "select FFT implementation" 
+//  problem with templates such that only the FFT routine that is actually used gets compiled into
+//  the final binary
 
 #endif

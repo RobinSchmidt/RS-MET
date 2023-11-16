@@ -257,7 +257,7 @@ int main(int argc, char* argv[])
   //complexContours();
   //implicitCurves();
   //parametricCurve();
-  spirals();                 // move to Rendering.cpp in research codebase
+  //spirals();                 // move to Rendering.cpp in research codebase
   //fractal();
   //differentialGeometry();
 
@@ -426,9 +426,9 @@ int main(int argc, char* argv[])
   //samplerFilters();
 
   // Modal Filters/Synthesis:
-  twoPoleFilter();
-  modalFilter();        // impulse response of decaying-sine filter
-  modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  //twoPoleFilter();
+  //modalFilter();        // impulse response of decaying-sine filter
+  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant
   //modalTwoModes();
   //dampedSineFilterDesign();
@@ -605,8 +605,10 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  //testFeedbackDelayNetwork(); // writes wave file
+  //testFeedbackDelayNetwork();     // writes wave file
   //algoVerb();
+  spectralFilter();                 // Maybe move into a file for spectral processors
+
 
   // File:
 
@@ -648,6 +650,10 @@ int main(int argc, char* argv[])
 
   // Others:
   //testSlewRateLimiterLinear();
+
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
