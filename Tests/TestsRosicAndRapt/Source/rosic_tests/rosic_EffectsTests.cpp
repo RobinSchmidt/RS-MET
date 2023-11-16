@@ -659,8 +659,8 @@ void rotes::spectralFilter()
   double sawFreq       = 100;
 
   // Filter parameters:
-  double lowerCutoff   = 5000;
-  double upperCutoff   = 500;
+  double lowerCutoff   = 500;
+  double upperCutoff   = 5000;
   Flt::modes mode      = Flt::modes::BANDPASS;
 
 
@@ -676,6 +676,7 @@ void rotes::spectralFilter()
   int N = numSamples;
   Vec x(N);
   createWaveform(&x[0], N, 1, sawFreq, sampleRate, 0.0, true);
+  x = 0.5 * x; // Reduce volume to avoid clipping when the filter overshoots
 
   // Create output by applying the filter to the input:
   Vec y(N);

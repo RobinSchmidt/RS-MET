@@ -51,5 +51,16 @@ void SpectralFilter::processSpectrum(Complex *spectrum, int spectrumSize)
   }
 }
 
+/*
+
+ToDo:
+-Let the user select lower and upper transition widths
+-For these transition bands, let the user select a transition shape (linear, cosine, cubic, 
+ quartic, quintic, etc.). Maybe the shape can be selected independently for the region near the
+ top and near the bottom, i.e. an asymmetric shape.
+-Maybe let the user select a "bleed through" amount. This would give rise to shelving filters.
+
+*/
+
 
 
