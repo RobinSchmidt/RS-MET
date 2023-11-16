@@ -608,7 +608,7 @@ int main(int argc, char* argv[])
   //testFeedbackDelayNetwork();     // writes wave file
   //algoVerb();
   //spectralFilter();                 // Maybe move into a file for spectral processors
-  formantShifter();
+  //formantShifter();
 
 
   // File:
@@ -639,7 +639,8 @@ int main(int argc, char* argv[])
 
   // Genrators:
   //testOscillatorStereo();
-  //testLorentzSystem();  // it's written Lorenz - without the t
+  //testLorentzSystem();     // it's written Lorenz - without the t
+  testCombustionEngine();  // stub
   //testSnowflake();
   //testResetter();
   //testTurtleReverse();

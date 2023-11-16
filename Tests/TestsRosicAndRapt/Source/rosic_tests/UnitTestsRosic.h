@@ -58,6 +58,7 @@ void highOrderFilterPolesAndZeros();
 // generators:
 void testOscillatorStereo();
 void testLorentzSystem();
+void testCombustionEngine();
 bool testSnowflake();
 bool testResetter();
 void testTurtleReverse();

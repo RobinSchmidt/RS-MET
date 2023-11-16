@@ -174,6 +174,21 @@ bool rotes::testSnowflake()
   return testResult;
 }
 
+void rotes::testCombustionEngine()
+{
+  // Under Construction
+  //
+  // Idea: Try to emulate the sound of a combustion engine by feeding a filter with an impulse 
+  // train and at the same time using the impulse train to trigger resets of the filter state. The
+  // result should be something like a machine-gun sample playback effect with the filter's impulse
+  // response as sample.
+
+
+
+  int dummy = 0;
+}
+
+
 void fillResetInstantArray(rosic::ResetCounter& rc, int* r, int N)
 {
   int i = 0;      // counts iterations/ticks

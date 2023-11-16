@@ -36,6 +36,9 @@ void rsTriSawOscillator<T>::updateTriSawCoeffs()
 
 
 
+
+// ToDo: move this text into an extra textfile like OscillatorIdeas.txt or something
+
 // maybe try something based on:
 // (a*exp(x) + b*exp(-x) + p) / (c*exp(x) + d*exp(-x) + q)
 // tanh: a=1,b=-1,p=0,c=1,d=0,q=0
