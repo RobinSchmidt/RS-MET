@@ -189,8 +189,8 @@ void rotes::testCombustionEngine()
   int numSamples = 3*sampleRate;
 
   int  period    = 2000;    // periodicity of the impulses in samples
-  Real cutoff    = 200;     // Cutoff freq of the filter
-  Real gain      = 10.0;
+  Real cutoff    = 100;     // Cutoff freq of the filter
+  Real gain      = 100.0;
 
 
   RAPT::rsLadderFilter<Real, Real> filter;
@@ -205,7 +205,7 @@ void rotes::testCombustionEngine()
   {
     if(n % period == 0)
     {
-      //filter.reset();
+      filter.reset();
       y[n] = gain * filter.getSample(1);
       //y[n] = gain * 1;
       // Try switching the order
@@ -222,7 +222,19 @@ void rotes::testCombustionEngine()
   rosic::writeToMonoWaveFile("CombustionEngine.wav", &y[0], N, sampleRate, 16);
   int dummy = 0;
 
-  // -There is some bug - the signal is just a smooth ramp to a small DC value
+
+  // Observations:
+  // -We need a very high gain. 
+  // -For a püeriod of 2000 samples, it makes no difference whether or not we reset the filter at
+  //  the impulses because at that sparse impulse rate, the impulse response has decayed away 
+  //  anyway when the next impulse arrives.
+  // -For a very first try, it's not too bad as a starting point. Of course, a lot more work needs
+  //  to be put into it.
+  //
+  // ToDo:
+  // -Figure out a formula for the gain. Perhaps it should be proportional to the period to achieve
+  //  the same energy for the input impulse-train independently from the period
+  // -Apply DC blocker to output
 }
 
 
