@@ -714,7 +714,7 @@ void rotes::formantShifter()
   double formantAmount = 1;        // 0: none, 1: normal, >1: overpronounced
 
   // Formant shifter parameters:
-  double formantShift  = 2.0;
+  double formantScale  = 2.0;
 
 
   // Create raw sawtooth signal:
@@ -734,7 +734,9 @@ void rotes::formantShifter()
     vowelFilter.getSampleFrameStereo(&x[n], &x[n], &y[n], &y[n]);
 
   // Shift formants:
-  rosic::FormantShifter    formantShifter(maxBlockSize);
+  rosic::FormantShifter formantShifter(maxBlockSize);
+  formantShifter.setSampleRate(sampleRate);
+  formantShifter.setFormantScale(formantScale);
   // ...
 
 
@@ -749,4 +751,8 @@ void rotes::formantShifter()
 
   // ToDo:
   // -formantAmount seems to have no effect. Must be a bug in VowelFilterStereo. Fix it!
+  // -Add setFormantEmphasis to FormantShifter. Should make it possible to de/emphasize the 
+  //  formants.
+  // -Test setting up different block sizes, overlap factors, etc.
+  // -Experiment with different window functions
 }
