@@ -44,14 +44,14 @@ Project Ideas and Proposals:
  -Important concepts are Signal and Parameter. Maybe call them TSig, TPar. Signals and Parameters 
   are supposed to be numeric types that define the usual arithmetic operators. Parameters must be 
   able to be (implicitly) converted to Signals. Moreover, the operators must be able to take a 
-  Signal and a Parameter to produce a Signal. I think, the conversion requirement may already takes 
+  Signal and a Parameter to produce a Signal. I think, the conversion requirement may already take 
   care of that but it may be advantageous for optimization purposes to have special operators with 
   heterogenous inputs. For example, TSig could be a SIMD vector type and TPar the corresponding 
   scalar type. In such a case, we may want to have special operators that can take a scalar and a 
   vector operand such that we don't need to conevert the scalar to a vector first. It could also be 
   that both, Signal and Parameter are the same (scalar or vector) type. Signals could also be 
   complex while Parameters are still real. ...etc.
- -Name: RASP (Rob's Audio Signal Processors), RAP (...Audio Processors), RAT (...Audio Toolkit),
-  RAW (...Audio Workhorses), RAK (...Audio Kore), RAM (...Audio Modules), RAX (...Audio Extensions)
+ -Maybe it should get a new name - ideas: RASP (Rob's Audio Signal Processors), 
+  RAP (...Audio Processors), RAT (...Audio Toolkit)
  -Make a Python module as front end such that the library can be used from a jupyter notebook in 
   Python 
