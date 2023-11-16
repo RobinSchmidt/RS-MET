@@ -709,9 +709,9 @@ void rotes::formantShifter()
   // Setup:
 
   // Technical parameters:
-  double sampleRate    = 44100;         // Sample for the signals rate in Hz
-  int    blockSize     = 1024;          // Block size of the spectral processor
-  int    maxBlockSize  = 4096;          // Maximum block size - must be passed to constructor.
+  double sampleRate    = 44100;         // Sample rate for the signals in Hz
+  int    maxBlockSize  = 4096;          // Maximum block size - must be passed to constructor
+  int    blockSize     = 2048;          // Block size, must be <= maxBlockSize
   int    numSamples    = 2*sampleRate;  // We create a 2 seconds long signal.
 
   // Input signal parameters:
