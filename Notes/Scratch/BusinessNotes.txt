@@ -28,6 +28,30 @@ Pricing:
  higher per license prices), the update cost will nevertheless get the quantity discount for 
  whatever number of licenses were purchased.
  
+
 ----------------------------------------------------------------------------------------------------
 Project Ideas and Proposals:
 
+-A sample editor specifically taylored to musical instrument samples. It should make use of the 
+ sinusoidal modeling framework to modify the sample. A bit like AudioSculpt. But also like 
+ Izotope RX. But also like Adobe Audition. It may also give access to various audio rendering 
+ algorithms that are too expensive to run in realtime (think PDE-solver based stuff) and rendering
+ (multi) samples from these algos together with sfz files. Maybe it could also have simple DAW-like
+ features for layering. 
+ 
+-Major overhaul of the API of RAPT and rosic. Use the C++20 module feature for providing 
+ the functionality to client code. Use C++20 concepts for constraining the template parameters.
+ -Important concepts are Signal and Parameter. Maybe call them TSig, TPar. Signals and Parameters 
+  are supposed to be numeric types that define the usual arithmetic operators. Parameters must be 
+  able to be (implicitly) converted to Signals. Moreover, the operators must be able to take a 
+  Signal and a Parameter to produce a Signal. I think, the conversion requirement may already takes 
+  care of that but it may be advantageous for optimization purposes to have special operators with 
+  heterogenous inputs. For example, TSig could be a SIMD vector type and TPar the corresponding 
+  scalar type. In such a case, we may want to have special operators that can take a scalar and a 
+  vector operand such that we don't need to conevert the scalar to a vector first. It could also be 
+  that both, Signal and Parameter are the same (scalar or vector) type. Signals could also be 
+  complex while Parameters are still real. ...etc.
+ -Name: RASP (Rob's Audio Signal Processors), RAP (...Audio Processors), RAT (...Audio Toolkit),
+  RAW (...Audio Workhorses), RAK (...Audio Kore), RAM (...Audio Modules), RAX (...Audio Extensions)
+ -Make a Python module as front end such that the library can be used from a jupyter notebook in 
+  Python 
