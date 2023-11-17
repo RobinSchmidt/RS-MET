@@ -75,6 +75,11 @@ private:
 
 };
 
+// ToDo: 
+// -Factor out a class that doesn't store the sampleRate. It should keep attack and release in 
+//  samples
+// -Avoid the unary negation in getSample by storing -downwardLimit instead of downwardLimit
+
 //-----------------------------------------------------------------------------------------------
 // inlined functions:
 

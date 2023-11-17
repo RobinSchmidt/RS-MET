@@ -10,6 +10,7 @@ void recursiveSineSweep();
 void recursiveSineWithCubicPhase();
 void ringModNoise();
 void slewRateLimiterLinear();
+void slewRateLimiterPolynomial();
 void stretchedCorrelation();
 void taperedFourierSeries();
 void transientModeling();

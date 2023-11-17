@@ -518,6 +518,37 @@ void slewRateLimiterLinear()
     y[n] = slewRateLimiter.getSample(x[n]);
 
   plotData(N, t, x, y);
+
+
+  // ToDo:
+  // -Implement various different shapes to achieve such a smoothing effect
+}
+
+void slewRateLimiterPolynomial()
+{
+  // Very very preliminary idea.
+  //
+  // We take the idea from the linear slew rate limiter and try to generalize it to polynomial 
+  // shapes. Instead of just limiting the rate of change of the output, we try to also limit the
+  // rate of change of the rate of change to get a second order effect. The linear limiter is based
+  // on an algorithm like:
+  //
+  //   dy  = x - y;      // 1st order delta between previous output and current input
+  //   y  += clip(dy);   // Update y with limited rate of change
+  //
+  // To lift that idea to second order, we want to limit how fast dy changes. Maybe
+  // 
+  //   tmp  = x - y;
+  //   dy  += clip(tmp - dy);
+  //   y   += clip(dy);
+  //
+  // I don't know, if any of these formulas make sense - but the idea is to use something like a 
+  // recursive polynomial evaluation algorithm just with clipped deltas. Look up the algorithm
+  // for iterative polynomial evaluation in the computer graphics book
+
+
+
+  int dummy = 0;
 }
 
 void stretchedCorrelation()
