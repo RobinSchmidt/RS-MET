@@ -561,6 +561,7 @@ void slewRateLimiterPolynomial()
   Real x[N];  // input signal
   Real y[N];  // output signal 1 - with 1st order limiter
   Real z[N];  // output signal 2 - with 2nd order limiter
+  Real w[N];  // output signal 3
 
 
   AT::fillWithIndex(t, N);
@@ -584,7 +585,6 @@ void slewRateLimiterPolynomial()
   Real state2 = 0;
   for(int n = 0; n < N; n++)
   {
-
     Real tmp = x[n] - state;
     state2 += rsClip(tmp - state2, -curveLimit, curveLimit);
     state  += rsClip(state2,       -slopeLimit, slopeLimit);
@@ -592,7 +592,39 @@ void slewRateLimiterPolynomial()
   }
 
 
-  plotData(N, t, x, y, z);
+  // Try the 1st order smoother with pre/post emphasis:
+  state  = 0;
+  state2 = 0;
+  Real state3 = 0;
+  Real c = 0.0;       // pre/post emphasis filter coeff
+  for(int n = 0; n < N; n++)
+  {
+    Real tmp = x[n];
+
+    Real dy = tmp - state;
+    state += rsClip(dy, -slopeLimit, slopeLimit);
+
+
+    w[n] = state;
+  }
+
+
+
+
+
+
+  plotData(N, t, x, y, z, w);
+
+  // Observations:
+  // -The second order smoothed signal does overshoot and then oscillate multiple times until it
+  //  settles. The behavior is actually quite crazy - not at all what I wanted to achieve - BUT: 
+  //  this looks loke it could be used for building a crazy nonlinear oscillating filter. Maybe 
+  //  this was a happy accident that should be explored further.
+
+  // Ideas:
+  // -Maybe try the regular 1st order smoothing with pre and post filtering: lowpass the input,
+  //  smooth lowpassed signal, highpass...but no - we can't use highpass because we want to allow
+  //  DC to pass. But maybe low- and high boost/cut filters?
 
   int dummy = 0;
 }
