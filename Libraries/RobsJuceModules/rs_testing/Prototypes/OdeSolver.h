@@ -79,7 +79,7 @@ public:
 protected:
 
   T*   y = nullptr; // current state vector, i.e. position in phase-space y = y(t)
-  T*   v = nullptr; // current derivative, i.e. velocity in phase space, v = y' = dy/dt
+  T*   v = nullptr; // current derivative, i.e. velocity in phase-space, v = y' = dy/dt
   T    h = 1;       // step size
   int  N = 0;       // dimensionality of the system, length of y and v
   Func f;           // function to compute y' = f(y)
@@ -104,6 +104,7 @@ protected:
 
 //=================================================================================================
 // Another idea with a different API
+// ...hmm...well...thinking about it, the API above seems to be better
 
 /** Baseclass for all ODE solvers. Defines a common interface and implements the simplemost 
 forward Euler method for reference. Subclasses are supposed to extend that very basic functionality 
@@ -123,6 +124,11 @@ class rsOdeSolverBase   // rename to rsInitialValueSolver, we may also want an r
 public:
 
   using Func = std::function<void(Tx x, const Ty& y, Ty& yd)>;
+  // Maybe don't let it take the independent variable y. If the system is non-autonomous, this can
+  // always be modeled as autonomous by just prepending the identity function f_0(y) = y[0] with 
+  // constant derivative 1. But if x is computed this way, it may accumulate errors...so maybe it's
+  // indeed better to treat it as extra input? Check what sort of API ODE solvers in matlab and 
+  // python have and maybe mimic that.
 
 
   /** Sets the function F to be used to compute y' = F(x,y). It takes the y' as output parameter 
@@ -250,4 +256,12 @@ protected:
   */
 
 };
+
+// -Should use a single step method of (at least) the same order for computing the initial section
+//  and then switch over to the multistep method as soon as enough steps are accumulated. The 
+//  rationale behind possibly using a higher order for the initial section is that the initial 
+//  section may be computed (much more) accurately than the lions share of the solution so as to 
+//  not have a negative impact on the accuracy of the overall solution. The idea is to init the
+//  solver with almost analytic accuracy and allowing numerical errors to creep in only from the 
+//  chosen multistep method but not from the initial section method.
 

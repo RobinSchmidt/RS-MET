@@ -1,14 +1,12 @@
 ----------------------------------------------------------------------------------------------------
 Pricing:  
 
--40 €/h for work in my codebase (algorithm research and development, feature implementation,
- optimization, etc.)
+-40 €/h for work on code that is re-usable for me within my library. Examples: algorithm research 
+ and development, feature additions to existing algos, optimizations, improvements for the API and
+ its documentation.
  
--80 €/h for work in the client's codebase (assisting with integration into the client's system,  
- testing and debugging, etc.)
- 
--Rationale for the two rates: a cheaper rate is appropriate when the to-be-written code will then
- also become a re-usable part of my library.
+-80 €/h for non-reusable work. Examples: Assisting with integration into the client's system,  
+ testing and debugging within the client's codebase.
  
 -Milestone-based charging. Work for one week is scheduled and an appropriate milestone is defined, 
  then I'll do the work and when the milestone is reached I charge the 1600€ = 40 h * 40 €/h. If
@@ -28,7 +26,7 @@ Pricing:
  3. In general, they go down by log2(numWeeks).  
  
 -The license is valid for the version of the code at the time of purchase. License updates for 
- newer versions of the code are 1/10 of the original license price - without the for-work discounts
+ newer versions of the code cost 1/10 of the original license price - without the for-work discounts
  but with the for-quantity discounts. If multiple licenses were bought one at a time (i.e. at the 
  higher per license prices), the update cost will nevertheless get the quantity discount for 
  whatever number of licenses were purchased.
@@ -53,10 +51,10 @@ Project Ideas and Proposals:
   care of that but it may be advantageous for optimization purposes to have special operators with 
   heterogenous inputs. For example, TSig could be a SIMD vector type and TPar the corresponding 
   scalar type. In such a case, we may want to have special operators that can take a scalar and a 
-  vector operand such that we don't need to conevert the scalar to a vector first. It could also be 
+  vector operand such that we don't need to convert the scalar to a vector first. It could also be 
   that both, Signal and Parameter are the same (scalar or vector) type. Signals could also be 
   complex while Parameters are still real. ...etc.
  -Maybe it should get a new name - ideas: RASP (Rob's Audio Signal Processors), 
-  RAP (...Audio Processors), RAT (...Audio Toolkit)
+  RAP (...Audio Processors), RAT (...Audio Toolkit). I like RASP - sounds catchy.
  -Make a Python module as front end such that the library can be used from a jupyter notebook in 
-  Python 
+  Python and be combined with numpy, scipy, etc.

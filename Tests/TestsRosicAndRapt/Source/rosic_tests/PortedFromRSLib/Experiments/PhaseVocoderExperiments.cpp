@@ -71,6 +71,11 @@ void rsHanningWindowZN(double *w, int N)
 
 void grainRoundTrip()
 {
+  // Under construction - not yet complete
+  // ToDo:
+  // -Check, if this code is obsolete and redundant. I think, we something similar in the unit 
+  //  tests. If this is the case, delete this.
+
   // Check, if doing an STFT and an inverse STFT of a grain leads to an ouput grain that euqals
   // the input grain times the product of the analysis- and synthesis window (later, this may be
   // moved into a unit test)
@@ -84,28 +89,23 @@ void grainRoundTrip()
 
   rsSpectrogramD pv;             // for conveniently calling the static functions
                                        
-  // create analysis and synthesis windows:
+  // Create analysis and synthesis windows:
   double wa[B], ws[B];
   rsWindowFunction::hanningZN(wa, B);
   rsWindowFunction::hanningZN(ws, B);
-    // try other windows - actually, the roundtrip work even with random sequences
+  // Try other windows - actually, the roundtrip should work even with random sequences
 
-  // create the test signal:
+  // Create the test signal:
   double x[N];
   RAPT::rsArrayTools::fillWithValue(x, N, 1.0);
 
-  // obtain short-time spectrum:
+  // Obtain short-time spectrum:
   rsComplexDbl X[M];
   pv.setBlockSize(B);
   pv.setTrafoSize(B);
   pv.setAnalysisWindowType(RAPT::rsWindowFunction::WindowType::hanningZN);
   //pv.setZeroPaddingFactor(1);
   pv.shortTimeSpectrum(x, N, n0, X);
-
-
-
-
-  // under construction - not yet complete
 
   int dummy = 0;
 }

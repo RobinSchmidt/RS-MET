@@ -144,11 +144,18 @@ ToDo:
  https://en.wikipedia.org/wiki/Backward_differentiation_formula
 
 
-https://en.wikipedia.org/wiki/Ordinary_differential_equation
+
+-To test the methods on a "stiff" problem maybe try something that as a solution of the form
+   y(t) = e^(-t) - e^-(a*t)   
+ where a > 1 and possibly much larger than 1 like 1000. It's an attack-decay shape. I think, the 
+ ODE is: y' = y + ... err...yeah...what is it actually? Figure out!
+
 
 
 
 Resources:
+
+https://en.wikipedia.org/wiki/Ordinary_differential_equation
 
 https://www.youtube.com/watch?v=s_t6dIKjUUc
 The Special Math of Translating Theory to Software in Differential Eqs | Chris Rackauckas | ASE60

@@ -415,7 +415,7 @@ public:
   static T simpleMap(T value, T slopeAt0);
   // It's actually the same function as implemented in rsBiRationalMap_01 in RealFunctions.h just 
   // parametrized differently. There, we use a parameter p in the range (-1,+1) and here we use the
-  // slope at the origin in the range (0,inf) as parameter. The conversion formulas are:
+  // slope s at the origin in the range (0,inf) as parameter. The conversion formulas are:
   //   s = (1+p)/(1-p), p = (s-1)/(s+1)
 
 
@@ -701,18 +701,18 @@ void rsLinearFractionalInterpolator<T>::interpolate(
 //  data, target slopes of zero, etc.
 // -Maybe make the class instantiable. The idea of using it could be like
 //    rsLinearFractionalInterpolator<float> lfi;
-//    lfi.setup(x0, x1, y0, y1, s0, s1);  //Computes a,b,c,d coeffs and (normalized) split point
+//    lfi.setup(x0, x1, y0, y1, s0, s1);  // Computes a,b,c,d coeffs and (normalized) split point
 //    lfi.getValue(x);                    // Computes one output value at a time
-//  The idea is that for each segment to be interpolated, setup is just called once and then 
-//  getValue() can be called as often as needed without having to recompute the coeffs for each
-//  interpolated value that is to be produced. We may need to store some de/normalization
-//  scale- and shift values, too. We'll see....
+//  The idea is that for each segment to be interpolated, the expensive setup() is just called once
+//  and then the cheap getValue() can be called as often as needed without having to recompute the 
+//  coeffs for each interpolated value that is to be produced. We may need to store some 
+//  de/normalization scale- and shift values, too. We'll see....
 
 
 
 
 /*
-Notes:
+Move into a LinFracInterpolation.txt file:
 
 Linear interpolation is easily invertible but it's not first order smooth. Polynomial 
 interpolation schemes can be made even smoother than first order but are in general not 
