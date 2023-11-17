@@ -553,10 +553,10 @@ void slewRateLimiterPolynomial()
 
 
   Real slopeLimit = 1.0/50;   // limit for the slope (i.e. change of value) per sample
-  Real curveLimit = 100.0;      // limit for the curvature (change of slope) per sample
+  Real curveLimit = 1.0/1000; // limit for the curvature (change of slope) per sample
   // 1/20 for the slopeLimit means thatis takes 50 samples to reach the target value
 
-  static const int N = 300;
+  static const int N = 2000;
   Real t[N];  // time axis
   Real x[N];  // input signal
   Real y[N];  // output signal 1 - with 1st order limiter
@@ -564,9 +564,10 @@ void slewRateLimiterPolynomial()
 
 
   AT::fillWithIndex(t, N);
+  AT::fillWithZeros(x, N);
 
   // Create input signal. It s on (i.e 1.0) for some section in the middle)
-  for(int n = N/6; n < 2*N/3; n++)
+  for(int n = N/20; n < 7*N/10; n++)
     x[n] = 1.0;
 
   // Create 1st order smoothed switch, i.e. with limited rate of change of value:
@@ -584,7 +585,7 @@ void slewRateLimiterPolynomial()
   for(int n = 0; n < N; n++)
   {
 
-    Real tmp     = x[n] - state;
+    Real tmp = x[n] - state;
     state2 += rsClip(tmp - state2, -curveLimit, curveLimit);
     state  += rsClip(state2,       -slopeLimit, slopeLimit);
     z[n] = state;
