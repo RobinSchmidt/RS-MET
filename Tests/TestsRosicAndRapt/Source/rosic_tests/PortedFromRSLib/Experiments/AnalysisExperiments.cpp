@@ -476,6 +476,17 @@ void envelopeFollower()
   // -OK, the factor 1.23 works also for signals that don't show Gibbs ripples - good!
   // -but: it doesn't work for other waveforms - for the sine, we get too large envelope values
   //  -presumable, because the sine-wave is not really affected by the pre-filter
+  //
+  // ToDo:
+  // -For the basic envelope follower, try to achieve different curve shapes. Currently, we have 
+  //  the typical exponential shape of the 1-pole filter based on a update equation like
+  //  y[n] = c1 * y[n-1]. Maybe try y[n] = max(0, y[n-1] - c0) for linear decay down to zero or
+  //  y[n] = max(0, c0 + c1*y[n-1] + c2*y[n-1]*y[n-1])  where c1 is the exponential decay, c0 is a
+  //  negative number that is responsible for linear decay and c2 is for changing the shape to make
+  //  it hopefully smoother. Or maybe c1 should somehow depend on y[n-1]: when y[n-1] is big, c1 
+  //  should be small, I think. This should smooth the upper section such that it doesn't drop off
+  //  with a corner. Or what about y[n] = max(0, c0 + c1*y[n-1] + c2*sqrt(y[n-1]))? 
+
 }
 
 

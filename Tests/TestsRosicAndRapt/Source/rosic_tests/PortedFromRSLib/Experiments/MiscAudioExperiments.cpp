@@ -547,6 +547,38 @@ void slewRateLimiterPolynomial()
   // for iterative polynomial evaluation in the computer graphics book
 
 
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using AT   = rsArrayTools;
+
+
+  Real slopeLimit = 1.0/50;   // limit for the slope (i.e. change of value) per sample
+  Real curveLimit = 1.0;      // limit for the curvature (change of slope) per sample
+  // 1/20 for the slopeLimit means thatis takes 50 samples to reach the target value
+
+  static const int N = 300;
+  Real t[N];  // time axis
+  Real x[N];  // input signal
+  Real y[N];  // output signal 1 - with 1st order limiter
+  Real z[N];  // output signal 2 - with 2nd order limiter
+
+
+  AT::fillWithIndex(t, N);
+
+  for(int n = N/6; n < 2*N/3; n++)
+    x[n] = 1.0;
+
+  Real state = 0;
+  for(int n = 0; n < N; n++)
+  {
+    Real dy = x[n] - state;
+    state += rsClip(dy, -slopeLimit, slopeLimit);
+    y[n] = state;
+  }
+
+  
+
+  plotData(N, t, x, y, z);
 
   int dummy = 0;
 }
