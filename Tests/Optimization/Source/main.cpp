@@ -1,4 +1,16 @@
+/** This project is for experimenting a bit with various optimization techniques and tricks. */
+
+
 #include <vector>
+
+
+// Various variations of a function with 2 parameters and a return value of the same type. We want 
+// to figure out, if it makes any difference for the compiled code if we pass the arguments by 
+// value, pointer or reference, if constness makes a difference, if using output parameters makes a
+// difference etc. We want to inspect the generated assembly code. It ends up in x64/Release when
+// compiled in Release mode (which is the relevant mode here)
+//
+// ToDo: maybe move them into an extra file to prevent the compiler from inlining the bodies
 
 double add1(double x, double y)
 {
@@ -41,9 +53,9 @@ void add2(const int& N, const double* in1, const double* in2, double* out)
 
 
 // 3 variations of a class has 4 arrays of double as data members. They have wildy different memory
-// footprints. The naive implementation SomeArrays1 has hust 4 members of type std::vector. This 
-// has a memory footprint of 128 byte. The variant SomeAttays2 stores the length just once and no
-// capacity and thereby saves quite a lot of memory. It uses 40 bytes. Finally SomeArrays3 has just
+// footprints. The naive implementation FourArrays1 has hust 4 members of type std::vector. This 
+// has a memory footprint of 128 byte. The variant FourAttays2 stores the length just once and no
+// capacity and thereby saves quite a lot of memory. It uses 40 bytes. Finally FourArrays3 has just
 // one pointer and implements the 4 arrays as parts of that allocated memory block. It has the 
 // additonal potential advantage that the 4 arrays are guaranteed to be in successive memory
 // blocks. And the best: the size would not grow further, if we would need more than 4 arrays.
@@ -53,12 +65,12 @@ void add2(const int& N, const double* in1, const double* in2, double* out)
 // cascades are very important and can be used in all sorts of places, so optimizing their memory
 // footprint might be a good idea.
 
-class SomeArrays1
+class FourArrays1
 {
 
 public:
 
-  SomeArrays1(size_t N) : a(N), b(N), c(N), d(N) {}
+  FourArrays1(size_t N) : a(N), b(N), c(N), d(N) {}
 
   size_t getLength() const { return a.size(); }
 
@@ -75,12 +87,12 @@ protected:
 
 };
 
-class SomeArrays2
+class FourArrays2
 {
 
 public:
 
-  SomeArrays2(size_t initialLength)
+  FourArrays2(size_t initialLength)
   {
     length = initialLength;
     a = new double[length];
@@ -89,7 +101,7 @@ public:
     d = new double[length];
   }
 
-  ~SomeArrays2()
+  ~FourArrays2()
   {
     delete[] a;
     delete[] b;
@@ -113,17 +125,17 @@ protected:
 
 };
 
-class SomeArrays3
+class FourArrays3
 {
 public:
 
-  SomeArrays3(size_t initialLength)
+  FourArrays3(size_t initialLength)
   {
     length = initialLength;
     data = new double[4*length];
   }
 
-  ~SomeArrays3()
+  ~FourArrays3()
   {
     delete[] data;
   }
@@ -148,10 +160,12 @@ protected:
 
 int main(int argc, char* argv[])
 {
-  // The compiler spits out a main.asm file into the folder x64/Debug or x64/Release
-
-  // try to figure out, what difference it makes (if any) to declare function parameters const vs
-  // not doing so
+  // The compiler spits out a main.asm file into the folder x64/Debug or x64/Release for 
+  // inspection.
+  //
+  // ToDo:
+  // -Try to figure out, what difference it makes (if any) to declare function parameters const vs
+  //  not doing so
 
   static const int N = 10;
   double a[N], b[N], c[N], d[N];
@@ -164,9 +178,9 @@ int main(int argc, char* argv[])
   // Check the memory footprints of the different implementations of a class that has 4 arrays of
   // double as members:
   int sizeV = sizeof(std::vector<double>);  // 32
-  int size1 = sizeof(SomeArrays1);          // 128 = 4*32
-  int size2 = sizeof(SomeArrays2);          // 40  = 4*8  + 8
-  int size3 = sizeof(SomeArrays3);          // 16  = 1*8  + 8, will not grow with number of arrays
+  int size1 = sizeof(FourArrays1);          // 128 = 4*32
+  int size2 = sizeof(FourArrays2);          // 40  = 4*8  + 8
+  int size3 = sizeof(FourArrays3);          // 16  = 1*8  + 8, will not grow with number of arrays
   // Clearly, std::vector loses by a big margin. On the plus side, the implmentation will be easier
   // to read and debug. Generally, a vector/array needs to store: pointer,size,capacity or 
   // start,end,capacity. But that would be 3 bytes, but it apparently has 4 so it must store a 
