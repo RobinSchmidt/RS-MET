@@ -490,11 +490,11 @@ int main(int argc, char* argv[])
 
   // Phase Vocoder (split into Spectrogram and SineModel):
   //phaseRepresentation();
-  grainRoundTrip();        // under construction
+  //grainRoundTrip();        // under construction
   spectrogramSine();
   spectrogramFilter();
   //sineParameterEstimation();
-  //plotOverlappingWindowSum();
+  plotOverlappingWindowSum();
   //phaseInterpolation();
   //sinusoidalSynthesisDC();
   //sinusoidalSynthesis1();

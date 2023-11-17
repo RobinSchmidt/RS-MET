@@ -1,3 +1,5 @@
+#include <vector>
+
 double add1(double x, double y)
 {
   return x+y;
@@ -24,8 +26,6 @@ void add5(const double& x, const double& y, double& r)
   r = x+y;
 }
 
-
-
 void add1(int N, double* in1, double* in2, double* out)
 {
   for(int n = 0; n < N; n++)
@@ -38,9 +38,47 @@ void add2(const int& N, const double* in1, const double* in2, double* out)
     out[n] = in1[n] + in2[n];
 }
 
+class SomeArrays1
+{
+public:
+
+
+
+protected:
+
+  std::vector<double> a, b, c, d;
+
+};
+
+class SomeArrays2
+{
+public:
+
+
+protected:
+
+  double* a, b, c, d;
+  size_t  length;
+
+};
+
+class SomeArrays3
+{
+public:
+
+protected:
+
+  double* data;
+  size_t  length;
+
+};
+
+
 
 int main(int argc, char* argv[])
 {
+  // The compiler spits out a main.asm file into the folder x64/Debug or x64/Release
+
   // try to figure out, what difference it makes (if any) to declare function parameters const vs
   // not doing so
 
@@ -51,6 +89,11 @@ int main(int argc, char* argv[])
 
   add1(N, a, b, c);
   add2(N, a, b, d);
+
+  int size1 = sizeof(SomeArrays1);  // 128
+  int size2 = sizeof(SomeArrays2);  // 40
+  int size3 = sizeof(SomeArrays3);  // 16
+
 
   return 0;
   //return(EXIT_SUCCESS);

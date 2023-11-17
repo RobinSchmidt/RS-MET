@@ -77,3 +77,5 @@ Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Release/ConsoleApp/TestsRosi
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Release/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Release/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/enc_temp_folder/
+Tests/Optimization/VS2019/x64/Debug/
+Tests/Optimization/VS2019/x64/Release/
