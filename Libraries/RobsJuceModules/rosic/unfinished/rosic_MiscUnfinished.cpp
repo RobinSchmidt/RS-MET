@@ -58,7 +58,7 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
 
 
   AT::copy(Om, OmTmp, N);
-  //AT::fillWithZeros(Om, N);     // Check, if this is really the right thing to do
+  AT::fillWithZeros(Om, N);     // Check, if this is really the right thing to do
 
   double k = shift;
   for(int a = 1; a < N; a++)  // we start at 1 because we leave DC as is
@@ -71,6 +71,8 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
     Complex w = expC(-i * ((double(b-a)*p)/O) * (2*PI/N)); // Phase factor in Eq. 2
 
     Om[b] = OmTmp[a] * w;
+
+
     // Does this make sense? I think, we should read (or write) at index a?
   }
 
@@ -78,6 +80,7 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   int dummy = 0;
 
   // ToDo:
+  // -Plot the spectra for each frame for inspection
   // -Maybe use double for a and b to avoid the conversions inside the loop
   // -Use interpolation instead of rounding
   // -Try using Om[b] += OmTmp[b] * w. Rationale: if we write into the same bin multiple times, the
