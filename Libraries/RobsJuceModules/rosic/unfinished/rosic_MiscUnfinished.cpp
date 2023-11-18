@@ -76,7 +76,7 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
       Complex w = expC(-i * ((double(b-a)*p)/O) * (2*PI/N)); // Phase factor in Eq. 2
       //Complex w = 0.5 * i;  // test
 
-      //Om[b] *= w;                    // Eq. 2, phase adaption for new frequency
+      Om[b] *= w;                    // Eq. 2, phase adaption for new frequency
     }
 
 

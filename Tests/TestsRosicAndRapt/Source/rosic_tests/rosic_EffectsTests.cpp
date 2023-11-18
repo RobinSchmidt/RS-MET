@@ -809,11 +809,11 @@ void testSpectralShiftViaJH()
   int    numSamples  = sampleRate/10; // We create a 1/10 seconds long signal.
 
   // Input signal parameters:
-  double inputPeriod = 32;           // Length of one cycle in samples
+  double inputPeriod = 128;           // Length of one cycle in samples
   double inputPhase  = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale   = 1.75;           // Scaling factor for the frequencies
+  double freqScale   = 1.2;           // Scaling factor for the frequencies
   int    blockSize   = 1024;          // Block size. Must be power of 2
   int    overlap     = 2;             // Overlap factor. Must be power of 2
   int    zeroPad     = 1;             // Zero padding factor. Must be power of 2
@@ -836,13 +836,21 @@ void testSpectralShiftViaJH()
   pitchShifter.setOverlapFactor(overlap);
   pitchShifter.setPaddingFactor(zeroPad);
   pitchShifter.setPhaseFormula(SS::PhaseFormula::useMultiplier);
-  //pitchShifter.setPhaseFormula(SS::PhaseFormula::keepOriginal);
-  Vec y(numSamples);
+  Vec y1(numSamples);
   for(int n = 0; n < numSamples; n++)
-    y[n] = pitchShifter.getSample(x[n]);
+    y1[n] = pitchShifter.getSample(x[n]);
+
+  // For reference, generate output without without the phase formula:
+  pitchShifter.setPhaseFormula(SS::PhaseFormula::keepOriginal);
+  pitchShifter.reset();
+  Vec y2(numSamples);
+  for(int n = 0; n < numSamples; n++)
+    y2[n] = pitchShifter.getSample(x[n]);
+
 
   // Plot input and output signals:
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y1, y2, y2-y1);
+  rsPlotVectors(x, y1, y2);
 
   // Observations:
   // -With freqScale = 1.2, The first few buffers look like a mess but then it settles and the only
