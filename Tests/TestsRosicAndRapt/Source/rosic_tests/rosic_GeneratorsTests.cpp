@@ -225,7 +225,7 @@ void rotes::testCombustionEngine()
 
   // Observations:
   // -We need a very high gain. 
-  // -For a püeriod of 2000 samples, it makes no difference whether or not we reset the filter at
+  // -For a period of 2000 samples, it makes no difference whether or not we reset the filter at
   //  the impulses because at that sparse impulse rate, the impulse response has decayed away 
   //  anyway when the next impulse arrives.
   // -For a very first try, it's not too bad as a starting point. Of course, a lot more work needs

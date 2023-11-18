@@ -553,7 +553,7 @@ void slewRateLimiterPolynomial()
 
 
   Real slopeLimit = 1.0/50;   // limit for the slope (i.e. change of value) per sample
-  Real curveLimit = 1.0/1000; // limit for the curvature (change of slope) per sample
+  Real curveLimit = 1.0/800; // limit for the curvature (change of slope) per sample
   // 1/20 for the slopeLimit means thatis takes 50 samples to reach the target value
 
   static const int N = 2000;
@@ -562,6 +562,7 @@ void slewRateLimiterPolynomial()
   Real y[N];  // output signal 1 - with 1st order limiter
   Real z[N];  // output signal 2 - with 2nd order limiter
   Real w[N];  // output signal 3
+  Real v[N];  // output signal 4
 
 
   AT::fillWithIndex(t, N);
@@ -592,6 +593,28 @@ void slewRateLimiterPolynomial()
   }
 
 
+  // Just some ad-hoc random stuff to play around with the happy accidental behavior of the system
+  // above:
+  state = 0;
+  state2 = 0;
+  for(int n = 0; n < N; n++)
+  {
+    Real tmp = x[n] - state;
+
+    Real k =  1.0 / (1.0 + rsAbs(state));
+    //k = sqrt(k);
+    //Real k =  1.0 / (1.0 + rsAbs(state*state2 + 10*state2));
+    //Real k =  1.0 / (1.0 + rsAbs(0.5*state + 10*state2));
+    state2 += rsClip(tmp - state2, -k*curveLimit, k*curveLimit);
+    state  += rsClip(state2,       -k*slopeLimit, k*slopeLimit);
+    v[n] = state;
+  }
+  // I think, state is the velocity. Maybe when it has a high abs value, increase the slopeLimit.
+  // The k value can be used as multiplier for the curve limits and/or the slope limits. It has 
+  // different effects - changes the waveform, the decay, the frequency etc. Maybe experiment with
+  // that in APE
+
+
   // Try the 1st order smoother with pre/post emphasis:
   state  = 0;
   state2 = 0;
@@ -613,14 +636,8 @@ void slewRateLimiterPolynomial()
     state3 = tmp;  // or should it be tmp2? But no - the inverse is an FIR
     w[n] = tmp2;
   }
-  // The initial section looks good but the end section is approaching the target value too 
-  // slowly. Maybe try to apply the 1st filter at a different point. Maybe filter dy instead of x.
 
-
-
-
-
-  plotData(N, t, x, y, z, w);
+  plotData(N, t, x, y, z, w, v);
 
   // Observations:
   // -The second order smoothed signal does overshoot and then oscillate multiple times until it
@@ -628,11 +645,21 @@ void slewRateLimiterPolynomial()
   //  this looks loke it could be used for building a crazy nonlinear oscillating filter. Maybe 
   //  this was a happy accident that should be explored further. I think, the slopeLimit controls
   //  the resonance frequency and the curveLimit the decay of the resonance.
+  // -It looks like the effect of limiting the acceleration (curvature) has the desired effec when
+  //  the speed (slope) is zero. But when we have some speed, the limited acceleration leads to the
+  //  overshooting effect. Maybe when we are on speed, we should reduce the curve limit
 
   // Ideas:
   // -Maybe try the regular 1st order smoothing with pre and post filtering: lowpass the input,
   //  smooth lowpassed signal, highpass...but no - we can't use highpass because we want to allow
   //  DC to pass. But maybe low- and high boost/cut filters?
+  // -How about the following algo:
+  //  -differentiate input:          dx   = x[n] - x[n-1]
+  //  -limit the derivative:         dy   = clip(dx)
+  //  -integrate limited derivative: y[n] = y[n-1] + dy
+  // -But: how do we recognize that we are done? We somehow need to work with the difference 
+  //  between previous output y[n-1] and current input x[n]. When that becomes zero, we are done.
+  // -Maybe apply the differentiate -> limit -> integrate to that difference?
 
   int dummy = 0;
 }

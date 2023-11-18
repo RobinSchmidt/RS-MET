@@ -453,7 +453,7 @@ int main(int argc, char* argv[])
   //recursiveSineWithCubicPhase();
   //ringModNoise();
   //slewRateLimiterLinear();
-  slewRateLimiterPolynomial();   // experimental, does not yet work
+  slewRateLimiterPolynomial();   // experimental, does not yet work as intended
   //stretchedCorrelation();
   //taperedFourierSeries();
   //transientModeling();
@@ -492,10 +492,10 @@ int main(int argc, char* argv[])
   // Phase Vocoder (split into Spectrogram and SineModel):
   //phaseRepresentation();
   //grainRoundTrip();        // under construction
-  spectrogramSine();
-  spectrogramFilter();
+  //spectrogramSine();
+  //spectrogramFilter();
   //sineParameterEstimation();
-  plotOverlappingWindowSum();
+  //plotOverlappingWindowSum();
   //phaseInterpolation();
   //sinusoidalSynthesisDC();
   //sinusoidalSynthesis1();
@@ -610,6 +610,7 @@ int main(int argc, char* argv[])
   //algoVerb();
   //spectralFilter();                 // Maybe move into a file for spectral processors
   //formantShifter();
+  spectralShifter();
 
 
   // File:
@@ -641,7 +642,7 @@ int main(int argc, char* argv[])
   // Genrators:
   //testOscillatorStereo();
   //testLorentzSystem();     // it's written Lorenz - without the t
-  testCombustionEngine();  // stub
+  //testCombustionEngine();  // stub
   //testSnowflake();
   //testResetter();
   //testTurtleReverse();

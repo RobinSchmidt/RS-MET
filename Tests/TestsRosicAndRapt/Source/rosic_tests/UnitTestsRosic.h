@@ -31,6 +31,7 @@ bool testFeedbackDelayNetwork();
 bool testMultiComp();
 void spectralFilter();
 void formantShifter();
+void spectralShifter();
 
 
 // filters:

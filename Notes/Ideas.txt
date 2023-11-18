@@ -377,7 +377,6 @@ Phase-Randomization:
 
 
 -------------------------------------------------------------------------------
-
 Signal Decompositions and Models
 
 -It's common to decompose and audio signal into sinusoidal components, but what
@@ -406,3 +405,19 @@ PWM via PM
  and below zero in the 2nd half?
 -Or maybe it needs to be true frequency modulation (FM) to work as intended? 
  That may be even more convenient in the context of the sampler engine.
+ 
+-------------------------------------------------------------------------------
+Spectral Pitch Shifter
+
+-To implement the basic spectral pitch-shifting effect, we need to resample the FFT spectrum.
+ We can experiment with resampling the complex spectral values or we could also try to 
+ resample the magnitude only and leave the phase as is. For a special effect, we might also 
+ try it the other way around. Besides resampling the frequencies, we may also try to adjust 
+ the phase in a way to match the phase predicted from the previous frame.
+-One way to implement transient preservation could be to just split the transients off in the time
+ domain using differential envelopes. Maybe this could be done using a transparent 3-way crossover.
+-Another way could be to make certain parts of the FFT spectrum as transient and leave them alone
+ in the pitch-shifting step. We would decompose the spectrum into two parts: transient and 
+ nontransient and apply the shifting only to the transient parts. The mark-as-transient step could 
+ be done using the spectral flux based algorithm from the OnsetDetector.
+ 

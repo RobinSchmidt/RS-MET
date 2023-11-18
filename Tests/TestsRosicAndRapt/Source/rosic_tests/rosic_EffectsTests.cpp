@@ -765,3 +765,14 @@ void rotes::formantShifter()
   //  rosic::OverlapAddProcessor
   // -Implement a performance test and test how these parameters affect the CPU load.
 }
+
+void rotes::spectralShifter()
+{
+  // Under construction - we want to build a pitch shifter based on spectral processing. It should
+  // have a transient preservation feature.
+
+
+  // Ideas:
+
+
+}
