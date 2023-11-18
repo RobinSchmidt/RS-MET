@@ -596,7 +596,7 @@ void slewRateLimiterPolynomial()
   state  = 0;
   state2 = 0;
   Real state3 = 0;
-  Real c = 0.0;       // pre/post emphasis filter coeff
+  Real c = -0.98;       // pre/post emphasis filter coeff
   for(int n = 0; n < N; n++)
   {
     // Pre-Emphasis:
@@ -608,20 +608,13 @@ void slewRateLimiterPolynomial()
     state += rsClip(dy, -slopeLimit, slopeLimit);
     tmp = state;
 
-
     // Post-emphasis:
-    //Real tmp2 = tmp;
-
     Real tmp2 = (tmp - c*state3) / (1-c);
     state3 = tmp;  // or should it be tmp2? But no - the inverse is an FIR
-
-
-    //w[n] = (w[n] - c*state3) / ()
-
-
     w[n] = tmp2;
   }
-
+  // The initial section looks good but the end section is approaching the target value too 
+  // slowly. Maybe try to apply the 1st filter at a different point. Maybe filter dy instead of x.
 
 
 
@@ -633,7 +626,8 @@ void slewRateLimiterPolynomial()
   // -The second order smoothed signal does overshoot and then oscillate multiple times until it
   //  settles. The behavior is actually quite crazy - not at all what I wanted to achieve - BUT: 
   //  this looks loke it could be used for building a crazy nonlinear oscillating filter. Maybe 
-  //  this was a happy accident that should be explored further.
+  //  this was a happy accident that should be explored further. I think, the slopeLimit controls
+  //  the resonance frequency and the curveLimit the decay of the resonance.
 
   // Ideas:
   // -Maybe try the regular 1st order smoothing with pre and post filtering: lowpass the input,
