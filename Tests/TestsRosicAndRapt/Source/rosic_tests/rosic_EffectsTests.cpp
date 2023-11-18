@@ -777,15 +777,19 @@ void rotes::spectralShifter()
 
   // Output file parameters:
   double sampleRate   = 44100;         // Sample rate for the signals in Hz
-  int    numSamples   = 2*sampleRate;  // We create a 2 seconds long signal.
+  int    numSamples   = sampleRate/10; // We create a 1/10 seconds long signal.
 
   // Input signal parameters:
   double inputPeriod  = 128;           // length of one cycle in samples
 
   // Spectral shifter parameters:
   double freqScale    = 2.0;           // Scaling factor for the frequencies
-  int    maxBlockSize = 4096;          // Maximum block size - must be passed to constructor
+  int    maxBlockSize = 4096;          // Maximum block size. Must be passed to constructor.
+  int    maxOverlap   = 4;             // Maximum overlap factor. Can be passed to constructor.
+  int    maxZeroPad   = 4;             // Max. zero padding factor. Can be passed to constructor.
   int    blockSize    = 1024;          // Block size, must be <= maxBlockSize
+  int    overlap      = 2;             // Overlap factor. Must be power of 2 and <= maxOverlap.
+  int    zeroPad      = 2;             // Zero padding factor. Must be power of 2 and <= maxZeroPad
 
 
   // Create raw sawtooth signal:
@@ -797,7 +801,7 @@ void rotes::spectralShifter()
   x = 0.5 * x;  
 
 
-  rosic::SpectralShifter pitchShifter(maxBlockSize);
+  rosic::SpectralShifter pitchShifter(maxBlockSize, maxOverlap, maxZeroPad);
   //pitchShifter.setSampleRate(sampleRate);
   pitchShifter.setInputBlockSize(blockSize);
   pitchShifter.setFrequencyScale(freqScale);
@@ -805,6 +809,9 @@ void rotes::spectralShifter()
   for(int n = 0; n < N; n++)
     y[n] = pitchShifter.getSample(x[n]);
 
+
+  // Plot input and output signals:
+  rsPlotVectors(x, y);
 
   // Write input and output into wave files:
   rosic::writeToMonoWaveFile("SpectralShifterInput.wav",  &x[0], N, sampleRate, 16);
