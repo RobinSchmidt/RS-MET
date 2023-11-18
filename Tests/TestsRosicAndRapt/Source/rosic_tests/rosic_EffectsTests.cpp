@@ -837,6 +837,13 @@ void testSpectralShiftViaJH()
 
   // Plot input and output signals:
   rsPlotVectors(x, y);
+
+  // Notes:
+  // -We are not yet applying an output window. Try using one! But maybe this requires to use an
+  //  overlap of 4 instead ot 2. I think a Hann window squared overlpas to one only with hopSize
+  //  = blockSize / 4. The hann window itself overslap to one already with hopSize = blockSize / 2.
+  //  Another option could be to use a sqrt(Hann) window. That should overlap perfectly when 
+  //  squared at O = 2. Maybe try other windows. Maybe try also a demodulation approach.
 }
 
 void rotes::spectralShifter()
