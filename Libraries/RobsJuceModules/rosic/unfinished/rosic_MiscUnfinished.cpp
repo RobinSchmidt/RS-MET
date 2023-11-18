@@ -60,7 +60,8 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
   int dummy = 0;
 
 
-  // ToDo: 
+  // ToDo:
+  // -Multiply spectrum[w] by an appropriate root-of-unity factor as explained in (JH)
   // -When shifting upward, zero out Nyquist freq in tmpSpectrum (imag part of bin 0) before 
   //  reading from it. Maybe we need to zero it out in spectrum even before copying it over into
   //  tmpSpectrum

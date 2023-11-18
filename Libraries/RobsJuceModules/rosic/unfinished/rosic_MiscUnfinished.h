@@ -141,14 +141,14 @@ from the previous FFT frame to obtain a refined frequency estimate for the sinus
 
 References:
 
-(1) NEW PHASE-VOCODER TECHNIQUES FOR PITCH-SHIFTING, HARMONIZING AND OTHER EXOTIC EFFECTS
-    Jean Laroche, Mark Dolson (DAFX 1999)
-    https://www.ee.columbia.edu/~dpwe/papers/LaroD99-pvoc.pdf
+(LD) NEW PHASE-VOCODER TECHNIQUES FOR PITCH-SHIFTING, HARMONIZING AND OTHER EXOTIC EFFECTS
+     Jean Laroche, Mark Dolson (DAFX 1999)
+     https://www.ee.columbia.edu/~dpwe/papers/LaroD99-pvoc.pdf
 
-(2) LOW LATENCY AUDIO PITCH SHIFTING IN THE FREQUENCY DOMAIN
-    Nicolas Juillerat, Beat Hirsbrunner
-    https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
-    https://pitchtech.ch/
+(JH) LOW LATENCY AUDIO PITCH SHIFTING IN THE FREQUENCY DOMAIN
+     Nicolas Juillerat, Beat Hirsbrunner
+     https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
+     https://pitchtech.ch/
 
 
 */
@@ -179,14 +179,15 @@ protected:
   void processSpectrum(Complex* spectrum, int spectrumSize) override;
 
 
+
   void shiftViaLD(Complex* spectrum, int spectrumSize);
-  // Implementation of the algorithm of Laroche/Dolson
+  // stub - Implementation of the algorithm of Laroche/Dolson
 
   void shiftViaJH(Complex* spectrum, int spectrumSize);
-  // Implementation of the algorithm of Juillerat/Hirsbrunner
+  // stub - Implementation of the algorithm of Juillerat/Hirsbrunner
 
   void shiftViaRS(Complex* spectrum, int spectrumSize);
-  // Custom algorithm by Robin Schmidt
+  // stub - Custom algorithm by Robin Schmidt
 
 
 

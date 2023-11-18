@@ -882,6 +882,9 @@ void rotes::spectralShifter()
   // -at 14:55 says that at transients, phases in the resynthesized signal should not be modified with 
   //  respect to the input STFT at that bin
   // -at 15:30: mentions librosa -  a python library that implements PV based pitch-shift
-
+  //
+  // Phase Vocoder (Flanagan/Golden):
+  // https://archive.org/details/bstj45-9-1493/mode/2up
+  // The classic paper on the topic, I think.
 
 }
