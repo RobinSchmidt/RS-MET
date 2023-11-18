@@ -780,7 +780,7 @@ void rotes::spectralShifter()
   int    numSamples   = 2*sampleRate;  // We create a 2 seconds long signal.
 
   // Input signal parameters:
-  double inputPeriod  = 100;           // length of one cycle in samples
+  double inputPeriod  = 128;           // length of one cycle in samples
 
   // Spectral shifter parameters:
   double freqScale    = 2.0;           // Scaling factor for the frequencies
@@ -816,12 +816,13 @@ void rotes::spectralShifter()
   // -This does not yet work. But it's not really supposed to. I'm currently interpolating the 
   //  complex spectrum. What we need to do is convert to magnitude/phase, interpolate the 
   //  magnitudes and adjust the phases according to a prediction from the previous frame.
-  // -With a sine wave, it actually seems to work - but it scales the pitch down instead of up.
-  //  ...OK - I fixed it by inverting the scale factor
-  // -When shifting up by factor 2.0, we see a very strong amplitude modulation with a frequency
-  //  given by the half the block size. I guess, it's the hop size. -> Try it with a hop size
-  //  of blockSize / 4 to figure out if that's indeed the case.
-
+  // -With blockSize = 1024, freqScale = 2, inputPeriod = 100, the output shows strong amplitude
+  //  modulation. This remains to be the case with inputPeriod = 128 so the misalignment of the 
+  //  cycles with the window is not the reason for this amp-mod. The modulation period is given by
+  //  512 samples. This aligns with the hopSizes as well as with blockSize/2. ToDo: figure out,
+  //  if it remains the same, if we decrease the hopSize to 256 or if it remains as is. From that
+  //   we can conclude if it is indeed related to the hopSize or always blockSize/2.
+  //
   // ToDo:
   // -Add the phase multiplication step. 
   // -Try it on a sinusoid that aligns with an FFT bin. Then try it on a  sinusoid that is in 
