@@ -60,7 +60,7 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   // Prepare input and output buffers:
   AT::copy(Om, OmTmp, N);          // Prepare temp buffer to read from
   AT::fillWithZeros(Om, N);        // Clear buffer to write into.
-  // Check, if zeroing Om is really the right thing to do
+
 
   // Main loop over the bins of the current spectrum:
   double k = shift;
@@ -68,36 +68,29 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   {
     int b = (int) (k*a + 0.5);     // Eq. 1
     if(b >= N) break;              // Avoid reading beyond the end
-
     Om[b] = OmTmp[a];              // Copy value as explained in section 3.2
-    //Om[a] = OmTmp[b];            // Nah - I think, this is wrong
 
+    // Optionally apply phase correction according to Eq. 2:
     if(phaseFormula == PhaseFormula::useMultiplier)
-    {
-      Complex w = expC(-i * ((double(b-a)*p)/O) * (2*PI/N)); // Phase factor in Eq. 2
-      //Complex w = 0.5 * i;  // test
-
-      Om[b] *= w;                    // Eq. 2, phase adaption for new frequency
-    }
-
-
-    // ToDo:
-    // -Check what happens, if we do  Om[a] = OmTmp[b];  instead of  Om[b] = OmTmp[a];  I'm not so
-    //  sure, which way around they mean it. Hmm - when doing it that way, it seems to apply the 
-    //  reciprocal freq scaling, which makes sense. But interestingly, when k < 1 then 
-    //  Om[a] = OmTmp[b] does the upward shift by 1/k without amp-modulation artifacts while
-    //  Om[b] = OmTmp[a] does the downward 
-    //  shift without amp-modulation. Maybe it has to do with overwriting?
-    // -Verify formula for w.
-    // -Test what happens if we remove this phasor multiplication. OK done. We get different 
-    //  phases. But it's not really clear what the "right" phases are.
+      Om[b] *= expC(-i * ((double(b-a)*p)/O) * (2*PI/N));
   }
 
   // For debugging - plot (partial) spectrum of 8th STFT frame:
   //if(p == 8) rsPlotComplexArray(N/2, (double*)Om);
-  int dummy = 0;
+  //int dummy = 0;
+
 
   // ToDo:
+  // -Check if skipping the DC bin is the right thing to do in general. Maybe zero out the 
+  //  Nyquist freq in case of upshifting (imag part of bin zero).
+  // -Check, if zeroing Om in the preparation step is really the right thing to do. What happens
+  //  if we just don't do it?
+  // -Check what happens, if we do  Om[a] = OmTmp[b];  instead of  Om[b] = OmTmp[a];  I'm not so
+  //  sure, which way around they mean it. Hmm - when doing it that way, it seems to apply the 
+  //  reciprocal freq scaling, which makes sense. But interestingly, when k < 1 then 
+  //  Om[a] = OmTmp[b] does the upward shift by 1/k without amp-modulation artifacts while
+  //  Om[b] = OmTmp[a] does the downward 
+  //  shift without amp-modulation. Maybe it has to do with overwriting?
   // -Verify the formula for the phase-twiddle factor. Try to rederive it to learn where it's 
   //  coming from. I think, we assume a zero phase at sample zero or at the center of the frame 
   //  with index zero. This is supposed to be a phase difference that results after p frames when 
@@ -107,6 +100,9 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   // -Use interpolation instead of rounding
   // -Try using Om[b] += OmTmp[b] * w. Rationale: if we write into the same bin multiple times, the
   //  values accumulate rather than letting the last value overwrite whatever was there before.
+  // -Precompute the phase twiddle factors to save the call to expC
+  // -Maybe get rid of the conditional for the phaseFormula. Maybe always use the twiddle. But 
+  //  maybe if we keep the conditional, drag it out of the loop. Will that make a difference
 }
 
 
