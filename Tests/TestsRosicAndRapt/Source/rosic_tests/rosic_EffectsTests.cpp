@@ -778,13 +778,30 @@ void rotes::spectralShifter()
   int    numSamples   = 2*sampleRate;  // We create a 2 seconds long signal.
 
   // Input signal parameters:
-  double sawFreq      = 80;            // Fundamental frequency of the sawtooth
+  double sawFreq      = 440;           // Fundamental frequency of the sawtooth
 
   // Spectral shifter parameters:
   double pitchScale   = 1.5;           // Scaling factor for the pitch
   int    maxBlockSize = 4096;          // Maximum block size - must be passed to constructor
   int    blockSize    = 512;           // Block size, must be <= maxBlockSize
 
+
+  // Create raw sawtooth signal:
+  using Vec = std::vector<double>;
+  int N = numSamples;
+  Vec x(N);
+  createWaveform(&x[0], N, 1, sawFreq, sampleRate, 0.0, true);
+  x = 0.5 * x;  
+
+
+  rosic::SpectralShifter pitchShifter(maxBlockSize);
+  //pitchShifter.setSampleRate(sampleRate);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = pitchShifter.getSample(x[n]);
+
+
+  int dummy = 0;
 
 
 

@@ -6,7 +6,7 @@ SpectralProcessor::SpectralProcessor(int maxBlockSize, int maxOverlapFactor, int
 {
   transformer.setBlockSize(paddingFactor*blockSize);
   transformer.setNormalizationMode(FourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO);
-  maxSpectrumSize = maxBlockSize * maxPaddingFactor / 2;
+  maxSpectrumSize = maxBlockSize * maxPaddingFactor / 2;  // /2 because only positive frequencies
   spectrum = new Complex[maxSpectrumSize];
 }
 
@@ -20,7 +20,7 @@ SpectralProcessor::~SpectralProcessor()
 
 void SpectralProcessor::processBlock(double *block, int blockSize)
 {
-  int spectrumSize = blockSize/2;                    // /2 because we only get positive frequencies
+  int spectrumSize = blockSize/2;                    
   transformer.setBlockSize(blockSize);
   //Complex *spectrum = new Complex[spectrumSize];
   transformer.transformRealSignal(block, spectrum);
@@ -30,7 +30,8 @@ void SpectralProcessor::processBlock(double *block, int blockSize)
 
   // ToDo: 
   // -Get rid of the allocation for spectrum by keeping the buffer as member variable which should
-  //  be allocated in the constructor.
+  //  be allocated in the constructor. ...done - but we need to do this also in 
+  //  SpectralEnvelopeProcessor and maybe in FormantShifter
 }
 
 
