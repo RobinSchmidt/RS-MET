@@ -809,7 +809,7 @@ void testSpectralShiftViaJH()
   int    numSamples  = sampleRate/10; // We create a 1/10 seconds long signal.
 
   // Input signal parameters:
-  double inputPeriod = 128;           // Length of one cycle in samples
+  double inputPeriod = 32;           // Length of one cycle in samples
   double inputPhase  = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
@@ -858,6 +858,9 @@ void testSpectralShiftViaJH()
   // -For input period = 128 and k = 1.25 and k = 0.8, we do not see amp-mod. For k = 1.2, there's
   //  string amp mod. For k = 1.6, there's little amp mod but the amp is too low overall. Looks 
   //  like it's half of what it should be.
+  // -The difference between using and not using the phase-multiplier becomes apparent with
+  //  inputPeriod = 32 - at least in the FFT spectrum. ToDo: generate output with and without the
+  //  phase multiplier and plot both - and their difference.
 
   // Notes:
   // -We are not yet applying an output window. Try using one! But maybe this requires to use an
