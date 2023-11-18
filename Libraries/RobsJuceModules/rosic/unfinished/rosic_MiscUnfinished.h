@@ -168,6 +168,14 @@ public:
 
   void setFrequencyScale(double scaleFactor) { shift = scaleFactor; }
 
+  enum class Algorithm
+  {
+    RobSchmt,   // Robin Schmidt
+    LaroDols,   // Laroche, Dolson
+    JuilHirs    // Juillerat, Hirsbrunner
+
+  };
+
   //void setAlgorithm();
   // should switch between Laroche/Dolson, Juillerat/Hirsbrunner, ...etc. algorithms. Maybe
   // call them LD, JH, etc.
@@ -179,6 +187,7 @@ protected:
   void processSpectrum(Complex* spectrum, int spectrumSize) override;
 
 
+  // rename these: maybe doAlgoLaroDols or algoLaroDols
 
   void shiftViaLD(Complex* spectrum, int spectrumSize);
   // stub - Implementation of the algorithm of Laroche/Dolson
@@ -194,6 +203,8 @@ protected:
   Complex *tmpSpectrum;
 
   double shift = 1.0;  // rename to scale or freqScale
+
+  Algorithm algo = Algorithm::JuilHirs;
 
 };
 

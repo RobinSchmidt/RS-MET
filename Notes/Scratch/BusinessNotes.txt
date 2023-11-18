@@ -6,15 +6,19 @@ Pricing:
  its documentation.
  
 -80 €/h for non-reusable work. Examples: Assisting with integration into the client's system,  
- testing and debugging within the client's codebase.
+ testing and debugging within the client's codebase. This kind of work is expected to only account
+ for a small portion of the overall work.
  
 -Milestone-based charging. Work for one week is scheduled and an appropriate milestone is defined, 
  then I'll do the work and when the milestone is reached I charge the 1600€ = 40 h * 40 €/h. If
  necessary, the granularity can be reduced within reason - say down to days - but no 
  micro-accounting anymore (like keeping a tab of worktimes to 5 min precision as I previuosly did). 
- That's really a drag on productivity. For long term collaborations, there might be some discount on
- the hourly rates - not sure yet. Maybe by just doing some more work hours for the same payment.
- Usually, it's more work than predicted anyway.
+ That's really a drag on productivity. 
+ 
+-For reliable long term collaborations, there might be some discount on the hourly rates - not sure 
+ yet about that. But maybe such a discount should be implement by just doing some extra work hours 
+ than what is being billed rather than by lowering the hourly rate. Usually, the work often takes 
+ longer than predicted anyway.
  
 -Licensing for existing DSP code (RAPT/rosic): 1500 € for 1 product, 2500 for 2, 3500 for 3, 
  4500 for 4, 5000 for 5, 7500 for 10.

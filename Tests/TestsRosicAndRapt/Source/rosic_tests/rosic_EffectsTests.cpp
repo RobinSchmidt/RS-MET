@@ -766,12 +766,70 @@ void rotes::formantShifter()
   // -Implement a performance test and test how these parameters affect the CPU load.
 }
 
+
+void testSpectralShiftViaJH()
+{
+  // Tests our implementation of the spectral pitch shifting algorithm of  Nicolas Juillerat and 
+  // Beat Hirsbrunner described in this paper:
+  // https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
+  //
+  // Notation used in the paper and in this implementation:
+  //   a        : Source bin index
+  //   b        : Destination bin index
+  //   Om_x     : Complex STFT value "Omega_x" at bin with index x, x is placeholder for a or b
+  //   O        : Overlap factor (typically 2,4,8)
+  //   N        : FFT size (typically 512..2048)
+  //   k        : Frequency scaling factor (typically 0.5..2.0)
+  //   m        : Multiplier for synthesis FFT size (typically 2 or 4)
+  //
+  // Other notation from paper not used or needed here:
+  //   f_s      : Sample rate (typically 44100)
+  //   f_a      : Frequency of input sine
+  //   B        : Bandwidth of an FFT bin in Hz (== f_s / N)
+  //   phi      : Phase of input sine in first STFT frame
+  //   p        : STFT frame index
+  //   E:       : Error ratio between actually synthesized freq and desired freq of output sine
+  //   s1,s2,s3 : 3 input sinusoids
+  //   eps      : freq difference between the 3 test input sines
+  //
+  // My spectral processing framework actually has not (yet?) any concept of using a multiplier for 
+  // the synthesis FFT size with respect to the analysis FFT size. But I think we can achieve a 
+  // similar effect using the zero padding feature. This is actually supposed to give even higher 
+  // quality results because it increases the FFT size at the analysis *and* synthesis side. Maybe 
+  // later we can introduce this additional multiplier for an optimization of the algorithm.
+
+
+  // Setup:
+
+  // Output file parameters:
+  double sampleRate  = 44100;         // Sample rate for the signals in Hz
+  int    numSamples  = sampleRate/10; // We create a 1/10 seconds long signal.
+
+  // Input signal parameters:
+  double inputPeriod = 128;           // Length of one cycle in samples
+  double inputPhase  = 90;            // Phase in degrees
+
+  // Spectral shifter parameters:
+  double freqScale   = 1.2;           // Scaling factor for the frequencies
+  int    blockSize   = 1024;          // Block size. Must be power of 2
+  int    overlap     = 2;             // Overlap factor. Must be power of 2
+  int    zeroPad     = 2;             // Zero padding factor. Must be power of 2
+
+
+
+
+
+}
+
 void rotes::spectralShifter()
 {
   // Under construction - does not yet work.
   //
   // We want to build a pitch shifter based on spectral processing. It should have a transient 
   // preservation feature.
+
+  testSpectralShiftViaJH();
+
 
   // Setup:
 
@@ -781,7 +839,7 @@ void rotes::spectralShifter()
 
   // Input signal parameters:
   double inputPeriod  = 128;           // Length of one cycle in samples
-  double inputPhase   = 90;            // Phase in degegrees
+  double inputPhase   = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
   double freqScale    = 2.0;           // Scaling factor for the frequencies
