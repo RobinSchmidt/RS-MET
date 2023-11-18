@@ -599,13 +599,27 @@ void slewRateLimiterPolynomial()
   Real c = 0.0;       // pre/post emphasis filter coeff
   for(int n = 0; n < N; n++)
   {
-    Real tmp = x[n];
+    // Pre-Emphasis:
+    Real tmp = (1-c)*x[n] + c*state2;
+    state2 = tmp;
 
+    // Linear smoothing:
     Real dy = tmp - state;
     state += rsClip(dy, -slopeLimit, slopeLimit);
+    tmp = state;
 
 
-    w[n] = state;
+    // Post-emphasis:
+    //Real tmp2 = tmp;
+
+    Real tmp2 = (tmp - c*state3) / (1-c);
+    state3 = tmp;  // or should it be tmp2? But no - the inverse is an FIR
+
+
+    //w[n] = (w[n] - c*state3) / ()
+
+
+    w[n] = tmp2;
   }
 
 
