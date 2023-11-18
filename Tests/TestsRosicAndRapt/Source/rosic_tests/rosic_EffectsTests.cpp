@@ -852,6 +852,12 @@ void rotes::spectralShifter()
   // https://www.ee.columbia.edu/~dpwe/papers/LaroD99-pvoc.pdf
   //
   // https://blogs.zynaptiq.com/bernsee/pitch-shifting-using-the-ft/
+  //
+  // https://github.com/BelaPlatform/bela-online-course/tree/master/lectures/lecture-18
+  // https://www.youtube.com/watch?v=xGmRaTaBNZA
+  //
+  // https://www.youtube.com/watch?v=fJUmmcGKZMI  Four Ways To Write A Pitch-Shifter - Geraint Luff - ADC22
+  // https://www.youtube.com/watch?v=PjKlMXhxtTM  Making a Pitch Shifter
 
 
 }
