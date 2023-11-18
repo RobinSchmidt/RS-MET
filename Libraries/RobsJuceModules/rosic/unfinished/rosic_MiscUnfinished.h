@@ -226,7 +226,9 @@ protected:
   // Try to get rid of this. The JuilHirs algo needs this for its formula but maybe the formula can
   // be expressed without it. Try to figure this out! If it turns out to be so important that it
   // can't be removed, we may need to take care of letting it wrap around back to zero at 
-  // appropriate instants
+  // appropriate instants. The paper says in 3.3 that vertical phase coherence is achieved every
+  // O frames where O is the overlap factor. So maybe that means we can wrap around frameIndex at 
+  // every multiple of O?
 
 };
 
