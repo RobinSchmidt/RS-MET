@@ -813,12 +813,30 @@ void testSpectralShiftViaJH()
   double freqScale   = 1.2;           // Scaling factor for the frequencies
   int    blockSize   = 1024;          // Block size. Must be power of 2
   int    overlap     = 2;             // Overlap factor. Must be power of 2
-  int    zeroPad     = 2;             // Zero padding factor. Must be power of 2
+  int    zeroPad     = 1;             // Zero padding factor. Must be power of 2
 
 
+  // Create sinusoidal test signal:
+  using Vec = std::vector<double>;
+  double inputFreq = sampleRate / inputPeriod;
+  //int N = numSamples;
+  Vec x(numSamples);
+  createWaveform(&x[0], numSamples, 0, inputFreq, sampleRate, 
+    RAPT::rsDegreeToRadiant(inputPhase), true);
+  x = 0.5 * x;
 
+  // Apply pitch shifting:
+  rosic::SpectralShifter pitchShifter(blockSize, overlap, zeroPad);
+  pitchShifter.setFrequencyScale(freqScale);
+  pitchShifter.setInputBlockSize(blockSize);
+  pitchShifter.setOverlapFactor(overlap);
+  pitchShifter.setPaddingFactor(zeroPad);
+  Vec y(numSamples);
+  for(int n = 0; n < numSamples; n++)
+    y[n] = pitchShifter.getSample(x[n]);
 
-
+  // Plot input and output signals:
+  rsPlotVectors(x, y);
 }
 
 void rotes::spectralShifter()
@@ -851,7 +869,7 @@ void rotes::spectralShifter()
   int    zeroPad      = 2;             // Zero padding factor. Must be power of 2 and <= maxZeroPad
 
 
-  // Create raw sawtooth signal:
+  // Create sinusoidal test signal:
   using Vec = std::vector<double>;
   double inputFreq = sampleRate / inputPeriod;
   int N = numSamples;
