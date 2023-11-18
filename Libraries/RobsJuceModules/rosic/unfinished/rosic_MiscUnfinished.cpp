@@ -14,6 +14,27 @@ SpectralShifter::~SpectralShifter()
 
 void SpectralShifter::processSpectrum(Complex* spectrum, int spectrumSize)
 {
+  shiftViaRS(spectrum, spectrumSize);
+
+  // ToDo: use switch(algorithm) to switch between the different algorithms
+}
+
+
+
+
+void SpectralShifter::shiftViaLD(Complex* spectrum, int spectrumSize)
+{
+
+}
+
+void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
+{
+
+}
+
+
+void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
+{
   using AT = RAPT::rsArrayTools;
 
   AT::copy(spectrum, tmpSpectrum, spectrumSize);
@@ -36,8 +57,8 @@ void SpectralShifter::processSpectrum(Complex* spectrum, int spectrumSize)
     // Maybe AT::valueAt?
   }
 
-
   int dummy = 0;
+
 
   // ToDo: 
   // -When shifting upward, zero out Nyquist freq in tmpSpectrum (imag part of bin 0) before 
@@ -46,6 +67,8 @@ void SpectralShifter::processSpectrum(Complex* spectrum, int spectrumSize)
   // -When shifting downward, maybe the DC bin should be zeroed ou in tmpSpectrum before reading 
   //  from it.
 }
+
+
 
 /*
 
