@@ -92,7 +92,7 @@ Misc
 ### Acknowledgments
 
 I'm especially grateful to Niall McCallum (www.modeaudio.com) for funding the initial development 
-of this engine. It will be used in one of their upcoming products...
+of this engine. 
 
 
 ### SFZ Resources
