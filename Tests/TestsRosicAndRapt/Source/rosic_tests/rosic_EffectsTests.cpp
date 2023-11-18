@@ -771,6 +771,23 @@ void rotes::spectralShifter()
   // Under construction - we want to build a pitch shifter based on spectral processing. It should
   // have a transient preservation feature.
 
+  // Setup:
+
+  // Output file parameters:
+  double sampleRate   = 44100;         // Sample rate for the signals in Hz
+  int    numSamples   = 2*sampleRate;  // We create a 2 seconds long signal.
+
+  // Input signal parameters:
+  double sawFreq      = 80;            // Fundamental frequency of the sawtooth
+
+  // Spectral shifter parameters:
+  double pitchScale   = 1.5;           // Scaling factor for the pitch
+  int    maxBlockSize = 4096;          // Maximum block size - must be passed to constructor
+  int    blockSize    = 512;           // Block size, must be <= maxBlockSize
+
+
+
+
 
   // Ideas:
 

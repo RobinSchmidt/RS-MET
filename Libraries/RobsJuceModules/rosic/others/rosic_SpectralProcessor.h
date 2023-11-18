@@ -50,6 +50,9 @@ protected:
 
   FourierTransformerRadix2 transformer; // Embedded object to take care of the FFT and IFFT
 
+  int     maxSpectrumSize;
+  Complex *spectrum = nullptr;
+
 };
 
 } // end namespace rosic

@@ -127,7 +127,25 @@ protected:
 
 };
 
+//=================================================================================================
 
+/** A spectral porcessing based pitch- and frequency shifter. */
+
+class SpectralShifter : public SpectralProcessor
+{
+
+public:
+
+
+  using SpectralProcessor::SpectralProcessor;  // inherit constructors
+
+
+protected:
+
+  
+  void processSpectrum(Complex* spectrum, int spectrumSize) override;
+
+};
 
 
 

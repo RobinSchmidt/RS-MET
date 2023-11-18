@@ -10,7 +10,8 @@ namespace rosic
 
   /**
 
-  This class ...
+  This class serves as basclass for all sorts of spectral processors that need to work with the 
+  spectral envelope. ...TBC...
 
   */
 

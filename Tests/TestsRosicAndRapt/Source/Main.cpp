@@ -453,7 +453,7 @@ int main(int argc, char* argv[])
   //recursiveSineWithCubicPhase();
   //ringModNoise();
   //slewRateLimiterLinear();
-  slewRateLimiterPolynomial();   // experimental, does not yet work as intended
+  //slewRateLimiterPolynomial();   // experimental, does not yet work as intended
   //stretchedCorrelation();
   //taperedFourierSeries();
   //transientModeling();
@@ -609,7 +609,7 @@ int main(int argc, char* argv[])
   //testFeedbackDelayNetwork();     // writes wave file
   //algoVerb();
   //spectralFilter();                 // Maybe move into a file for spectral processors
-  //formantShifter();
+  formantShifter();
   spectralShifter();
 
 

@@ -15,6 +15,10 @@ namespace rosic
   This class implements a spectrum based formant shifter. It can scale the spectral envelope by
   a factor and shift the spectral envelope by some constant offset in Hz.
 
+  ToDo:
+  -Make this class realtime ready by not allocating in processSpectrum.
+
+
   */
 
   class FormantShifter : public SpectralEnvelopeProcessor

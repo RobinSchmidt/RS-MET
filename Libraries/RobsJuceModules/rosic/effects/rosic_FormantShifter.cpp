@@ -89,6 +89,9 @@ void FormantShifter::processSpectrum(Complex *spectrum, int spectrumSize)
   delete[] mag;
   delete[] env;
   delete[] tmp;
+
+  // ToDo:
+  // -Get rid of the memory allocation to make the implementation realtime ready.
 }
 
 
@@ -104,8 +107,8 @@ FormantShifterStereo::FormantShifterStereo(int maxBlockSize, int maxOverlapFacto
 : shifterL(maxBlockSize, maxOverlapFactor, maxPaddingFactor),
   shifterR(maxBlockSize, maxOverlapFactor, maxPaddingFactor)
 {
-  dry                 = 0.0;
-  wet                 = 1.0;
+  dry = 0.0;
+  wet = 1.0;
 }
 
 FormantShifterStereo::~FormantShifterStereo()
