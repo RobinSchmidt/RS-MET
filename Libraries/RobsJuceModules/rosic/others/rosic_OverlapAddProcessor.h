@@ -80,6 +80,11 @@ namespace rosic
     /** Accepts and returns one sample at a time. */
     INLINE double getSample(double in);
 
+    /** Resets the object into initial state with respect to the received signal. It doesn't reset
+    the parameters. */
+    void reset() { clearBuffers(); }
+    // Maybe rename to resetState. But that would be bad for consistency of the library.
+
     //---------------------------------------------------------------------------------------------
     // others:
 

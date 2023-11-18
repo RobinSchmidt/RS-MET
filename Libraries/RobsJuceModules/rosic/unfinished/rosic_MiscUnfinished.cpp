@@ -22,6 +22,7 @@ void SpectralShifter::processSpectrum(Complex* spec, int size)
   case     Algo::JuilHirs: shiftViaJH(spec, size); break;
   default: RAPT::rsError("Unknown algorithm in SpectralShifter::processSpectrum");
   }
+  frameIndex++;
 }
 
 void SpectralShifter::shiftViaLD(Complex* spectrum, int spectrumSize)

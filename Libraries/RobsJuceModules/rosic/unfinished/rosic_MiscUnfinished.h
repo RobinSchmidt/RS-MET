@@ -159,11 +159,15 @@ class SpectralShifter : public SpectralProcessor
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \Lifetime
+
   SpectralShifter(int maxBlockSize, int maxOverlapFactor = 4, int maxPaddingFactor = 4);
 
   virtual ~SpectralShifter();
 
 
+  //-----------------------------------------------------------------------------------------------
   // \Setup
 
   void setFrequencyScale(double scaleFactor) { shift = scaleFactor; }
@@ -181,7 +185,19 @@ public:
   // call them LD, JH, etc.
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \Processing
+
+  void reset()
+  {
+    SpectralProcessor::reset();
+    frameIndex = 0;
+  }
+
+
 protected:
+
+
 
   
   void processSpectrum(Complex* spectrum, int spectrumSize) override;
@@ -205,6 +221,12 @@ protected:
   double shift = 1.0;  // rename to scale or freqScale
 
   Algorithm algo = Algorithm::JuilHirs;
+
+  int frameIndex = 0;
+  // Try to get rid of this. The JuilHirs algo needs this for its formula but maybe the formula can
+  // be expressed without it. Try to figure this out! If it turns out to be so important that it
+  // can't be removed, we may need to take care of letting it wrap around back to zero at 
+  // appropriate instants
 
 };
 
