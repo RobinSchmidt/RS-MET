@@ -768,8 +768,10 @@ void rotes::formantShifter()
 
 void rotes::spectralShifter()
 {
-  // Under construction - we want to build a pitch shifter based on spectral processing. It should
-  // have a transient preservation feature.
+  // Under construction - does not yet work.
+  //
+  // We want to build a pitch shifter based on spectral processing. It should have a transient 
+  // preservation feature.
 
   // Setup:
 
@@ -778,24 +780,25 @@ void rotes::spectralShifter()
   int    numSamples   = 2*sampleRate;  // We create a 2 seconds long signal.
 
   // Input signal parameters:
-  double sawFreq      = 440;           // Fundamental frequency of the sawtooth
+  double sawFreq      = 1000;          // Fundamental frequency of the sawtooth
 
   // Spectral shifter parameters:
-  double freqScale    = 1.5;           // Scaling factor for the frequencies
+  double freqScale    = 2.0;           // Scaling factor for the frequencies
   int    maxBlockSize = 4096;          // Maximum block size - must be passed to constructor
-  int    blockSize    = 512;           // Block size, must be <= maxBlockSize
+  int    blockSize    = 1024;          // Block size, must be <= maxBlockSize
 
 
   // Create raw sawtooth signal:
   using Vec = std::vector<double>;
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 1, sawFreq, sampleRate, 0.0, true);
+  createWaveform(&x[0], N, 0, sawFreq, sampleRate, 0.0, true);
   x = 0.5 * x;  
 
 
   rosic::SpectralShifter pitchShifter(maxBlockSize);
   //pitchShifter.setSampleRate(sampleRate);
+  pitchShifter.setInputBlockSize(blockSize);
   pitchShifter.setFrequencyScale(freqScale);
   Vec y(N);
   for(int n = 0; n < N; n++)
@@ -808,9 +811,32 @@ void rotes::spectralShifter()
   int dummy = 0;
 
 
+  // Observations:
+  // -This does not yet work. But it's not really supposed to. I'm currently interpolating the 
+  //  complex spectrum. What we need to do is convert to magnitude/phase, interpolate the 
+  //  magnitudes and adjust the phases according to a prediction from the previous frame.
+  // -With a sine wave, it actually seems to work - but it scales the pitch down instead of up.
+  //  ...OK - I fixed it by inverting the scale factor
+  // -When shifting up by factor 2.0, we see a very strong amplitude modulation with a frequency
+  //  given by the half the block size. I guess, it's the hop size. -> Try it with a hop size
+  //  of blockSize / 4 to figure out if that's indeed the case.
 
+  // ToDo:
+  // -Try it first on a sinusoid
 
   // Ideas:
 
+
+  // Resources:
+  // https://www.reddit.com/r/DSP/comments/k6t24c/pitch_shifting_algorithm_in_frequency_domain/
+  //
+  // https://www.guitarpitchshifter.com/algorithm.html
+  // https://www.guitarpitchshifter.com/software.html
+  // -> uses blockSize 1024, hopSize 256
+  // https://www.guitarpitchshifter.com/matlab.html
+  //
+  // https://lcav.gitbook.io/dsp-labs/dft/implementation  has python implementation
+  //
+  // https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
 
 }
