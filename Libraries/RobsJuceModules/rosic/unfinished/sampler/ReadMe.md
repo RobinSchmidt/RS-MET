@@ -97,8 +97,8 @@ of this engine.
 
 ### SFZ Resources
 
-https://sfzformat.com/                    A website dedicated to the sfz format  
-https://sfzformat.com/legacy/             Original reference for the sfz v1 specification  
+https://sfzformat.com/                    A website dedicated to the sfz format
+https://sfzformat.com/legacy/             Original reference for the sfz v1 specification
 https://sfzformat.com/opcodes/            Comprehensive opcode reference (including extensions)
 http://www.drealm.info/sfz/plj-sfz.xhtml  Another description of the sfz format
 https://sfzformat.com/software/tools/     List of sfz authoring tools  
