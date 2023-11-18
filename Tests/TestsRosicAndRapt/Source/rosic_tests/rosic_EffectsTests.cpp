@@ -780,7 +780,7 @@ void rotes::spectralShifter()
   int    numSamples   = 2*sampleRate;  // We create a 2 seconds long signal.
 
   // Input signal parameters:
-  double sawFreq      = 1000;          // Fundamental frequency of the sawtooth
+  double inputPeriod  = 100;           // length of one cycle in samples
 
   // Spectral shifter parameters:
   double freqScale    = 2.0;           // Scaling factor for the frequencies
@@ -790,9 +790,10 @@ void rotes::spectralShifter()
 
   // Create raw sawtooth signal:
   using Vec = std::vector<double>;
+  double inputFreq = sampleRate / inputPeriod;
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 0, sawFreq, sampleRate, 0.0, true);
+  createWaveform(&x[0], N, 0, inputFreq, sampleRate, 0.0, true);
   x = 0.5 * x;  
 
 
@@ -822,8 +823,10 @@ void rotes::spectralShifter()
   //  of blockSize / 4 to figure out if that's indeed the case.
 
   // ToDo:
-  // -Try it first on a sinusoid
-
+  // -Add the phase multiplication step. 
+  // -Try it on a sinusoid that aligns with an FFT bin. Then try it on a  sinusoid that is in 
+  //  between two bins.
+  //
   // Ideas:
 
 
@@ -857,7 +860,13 @@ void rotes::spectralShifter()
   // https://www.youtube.com/watch?v=xGmRaTaBNZA
   //
   // https://www.youtube.com/watch?v=fJUmmcGKZMI  Four Ways To Write A Pitch-Shifter - Geraint Luff - ADC22
+  //
   // https://www.youtube.com/watch?v=PjKlMXhxtTM  Making a Pitch Shifter
+  // -says at 1:30 that a time-stretch - then resample algo for pitch shift is easier than direct 
+  //  pitch shift
+  // -at 14:55 says that at transients, phases in the resynthesized signal should not be modified with 
+  //  respect to the input STFT at that bin
+  // -at 15:30: mentions librosa -  a python library that implements PV based pitch-shift
 
 
 }
