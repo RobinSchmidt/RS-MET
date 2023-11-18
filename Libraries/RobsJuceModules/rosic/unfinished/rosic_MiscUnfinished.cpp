@@ -29,6 +29,29 @@ void SpectralShifter::shiftViaLD(Complex* spectrum, int spectrumSize)
 
 void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
 {
+  // Implements the algorithm explained here:
+  // https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
+  //
+  // Notation used in the paper and in this implementation:
+  //   a        : Source bin index
+  //   b        : Destination bin index
+  //   Om_x     : Complex STFT value "Omega_x" at bin with index x, x is placeholder for a or b
+  //   O        : Overlap factor (typically 2,4,8)
+  //   N        : FFT size (typically 512..2048)
+  //   k        : Frequency scaling factor (typically 0.5..2.0)
+  //
+  // Other notation from paper not used or needed here:
+  //   f_s      : Sample rate (typically 44100)
+  //   f_a      : Frequency of input sine
+  //   B        : Bandwidth of an FFT bin in Hz (== f_s / N)
+  //   phi      : Phase of input sine in first STFT frame
+  //   m        : Multiplier for synthesis FFT size (typically 2 or 4)
+  //   p        : STFT frame index
+  //   E:       : Error ratio between actually synthesized freq and desired freq of output sine
+  //   s1,s2,s3 : 3 input sinusoids
+  //   eps      : freq difference between the 3 test input sines
+
+
 
 }
 
