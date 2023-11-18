@@ -129,7 +129,29 @@ protected:
 
 //=================================================================================================
 
-/** A spectral porcessing based pitch- and frequency shifter. */
+/** A spectral processing based pitch- and frequency shifter. Uses the so called phase-vocoder 
+approach to achieve the pitch-shifting effect. This is a (somewhat ambiguous) umbrella term for 
+certain manipulations of the short-time Fourier transform (STFT) of the signal. These techniques
+approach the problem by shifting the magnitudes of the spectral peaks that correspond to sinusoidal 
+parts of the signal and typically involve some phase prediction step for the detected sinusoids 
+from the previous FFT frame to obtain a refined frequency estimate for the sinusoid.
+
+...TBC...
+
+
+References:
+
+(1) NEW PHASE-VOCODER TECHNIQUES FOR PITCH-SHIFTING, HARMONIZING AND OTHER EXOTIC EFFECTS
+    Jean Laroche, Mark Dolson (DAFX 1999)
+    https://www.ee.columbia.edu/~dpwe/papers/LaroD99-pvoc.pdf
+
+(2) LOW LATENCY AUDIO PITCH SHIFTING IN THE FREQUENCY DOMAIN
+    Nicolas Juillerat, Beat Hirsbrunner
+    https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
+    https://pitchtech.ch/
+
+
+*/
 
 class SpectralShifter : public SpectralProcessor
 {
@@ -146,11 +168,25 @@ public:
 
   void setFrequencyScale(double scaleFactor) { shift = scaleFactor; }
 
+  //void setAlgorithm();
+  // should switch between Laroche/Dolson, Juillerat/Hirsbrunner, ...etc. algorithms. Maybe
+  // call them LD, JH, etc.
+
 
 protected:
 
   
   void processSpectrum(Complex* spectrum, int spectrumSize) override;
+
+
+  void shiftViaLD(Complex* spectrum, int spectrumSize);
+  // Implementation of the algorithm of Laroche/Dolson
+
+  void shiftViaJH(Complex* spectrum, int spectrumSize);
+  // Implementation of the algorithm of Juillerat/Hirsbrunner
+
+  void shiftViaRS(Complex* spectrum, int spectrumSize);
+  // Custom algorithm by Robin Schmidt
 
 
 

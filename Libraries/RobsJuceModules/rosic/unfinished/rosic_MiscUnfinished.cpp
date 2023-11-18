@@ -37,9 +37,6 @@ void SpectralShifter::processSpectrum(Complex* spectrum, int spectrumSize)
   }
 
 
-
-
-
   int dummy = 0;
 
   // ToDo: 
@@ -50,3 +47,10 @@ void SpectralShifter::processSpectrum(Complex* spectrum, int spectrumSize)
   //  from it.
 }
 
+/*
+
+Resources:
+
+
+
+*/
