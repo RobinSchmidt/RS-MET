@@ -810,7 +810,7 @@ void testSpectralShiftViaJH()
   double inputPhase  = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale   = 1.2;           // Scaling factor for the frequencies
+  double freqScale   = 2.0;           // Scaling factor for the frequencies
   int    blockSize   = 1024;          // Block size. Must be power of 2
   int    overlap     = 2;             // Overlap factor. Must be power of 2
   int    zeroPad     = 1;             // Zero padding factor. Must be power of 2
@@ -839,8 +839,13 @@ void testSpectralShiftViaJH()
   rsPlotVectors(x, y);
 
   // Observations:
-  // -The first few buffers look like a mess but then it settles and the only remaining artifact
-  //  is a (strong) amplitude modulation.
+  // -With freqScale = 1.2, The first few buffers look like a mess but then it settles and the only
+  //  remaining artifact is a (strong) amplitude modulation. It looks less messy when we use a 
+  //  start-phase of zero instead of 90, i.e. sine instead of cosine. In this case, there are only 
+  //  corners in the signal whereas with cosine, there are jumps.
+  // -With freqScale = 2, the discontinuities in the first frames disappear but the amp modulation 
+  //  gets worse. There is also some amount of negative DC between 512 and 768 when the phase is 
+  //  zero. With 90, this is not the case. The amp-modulation period is 512 samples.
 
   // Notes:
   // -We are not yet applying an output window. Try using one! But maybe this requires to use an
