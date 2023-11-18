@@ -838,5 +838,20 @@ void rotes::spectralShifter()
   // https://lcav.gitbook.io/dsp-labs/dft/implementation  has python implementation
   //
   // https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
+  // https://quod.lib.umich.edu/cgi/p/pod/dod-idx/real-time-low-latency-audio-processing-in-java.pdf
+  // ...there is supposed to be a java implementation of that approach but googling Decklight 4
+  // as they have called the framework in the paper reveals nothing. But the paper is from 2007, so
+  // that framework may not exist anymore or maybe go by another name now
+  // https://pitchtech.ch/
+
+  // https://github.com/JorenSix/TarsosDSP/tree/master/core/src/main/java/be/tarsos/dsp
+  // ...doesn't seem to have pitch-shift but some other interesting stuff
+  //
+  // https://wiki.linuxaudio.org/apps/categories/pitch_effect
+  //
+  // https://www.ee.columbia.edu/~dpwe/papers/LaroD99-pvoc.pdf
+  //
+  // https://blogs.zynaptiq.com/bernsee/pitch-shifting-using-the-ft/
+
 
 }
