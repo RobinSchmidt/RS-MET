@@ -780,7 +780,8 @@ void rotes::spectralShifter()
   int    numSamples   = sampleRate/10; // We create a 1/10 seconds long signal.
 
   // Input signal parameters:
-  double inputPeriod  = 128;           // length of one cycle in samples
+  double inputPeriod  = 128;           // Length of one cycle in samples
+  double inputPhase   = 90;            // Phase in degegrees
 
   // Spectral shifter parameters:
   double freqScale    = 2.0;           // Scaling factor for the frequencies
@@ -797,7 +798,7 @@ void rotes::spectralShifter()
   double inputFreq = sampleRate / inputPeriod;
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 0, inputFreq, sampleRate, 0.0, true);
+  createWaveform(&x[0], N, 0, inputFreq, sampleRate, RAPT::rsDegreeToRadiant(inputPhase), true);
   x = 0.5 * x;  
 
 
@@ -828,7 +829,12 @@ void rotes::spectralShifter()
   //  cycles with the window is not the reason for this amp-mod. The modulation period is given by
   //  512 samples. This aligns with the hopSizes as well as with blockSize/2. ToDo: figure out,
   //  if it remains the same, if we decrease the hopSize to 256 or if it remains as is. From that
-  //   we can conclude if it is indeed related to the hopSize or always blockSize/2.
+  //  we can conclude if it is indeed related to the hopSize or always blockSize/2.
+  // -With these settings, the output signal starts at sample 768. How does that number come about?
+  //  Try to use a different start phase for the input sine and see, if this changes this. OK - 
+  //  yes - it shows that the first nonzero output block starts at 512 but there's only some small
+  //  scale rippling going on for the first half of the first nonzero output buffer and the real
+  //  signal starts at 768.
   //
   // ToDo:
   // -Add the phase multiplication step. 
