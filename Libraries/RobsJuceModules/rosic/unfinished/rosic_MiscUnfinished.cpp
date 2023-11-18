@@ -30,7 +30,7 @@ void SpectralShifter::processSpectrum(Complex* spectrum, int spectrumSize)
     double rFrac  = r - rFloor;
     int    rInt   = (int) rFloor;
     if(rInt >= spectrumSize - 1)
-      break;                           // We are done - quite the loop
+      break;                           // We are done - quit the loop
     spectrum[w] = (1-rFrac) * tmpSpectrum[rInt] + rFrac * tmpSpectrum[rInt+1];
     // ToDo: factor out, try cubic and maybe quintic interpolation
     // Maybe AT::valueAt?

@@ -781,7 +781,7 @@ void rotes::spectralShifter()
   double sawFreq      = 440;           // Fundamental frequency of the sawtooth
 
   // Spectral shifter parameters:
-  double pitchScale   = 1.5;           // Scaling factor for the pitch
+  double freqScale    = 1.5;           // Scaling factor for the frequencies
   int    maxBlockSize = 4096;          // Maximum block size - must be passed to constructor
   int    blockSize    = 512;           // Block size, must be <= maxBlockSize
 
@@ -796,11 +796,15 @@ void rotes::spectralShifter()
 
   rosic::SpectralShifter pitchShifter(maxBlockSize);
   //pitchShifter.setSampleRate(sampleRate);
+  pitchShifter.setFrequencyScale(freqScale);
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = pitchShifter.getSample(x[n]);
 
 
+  // Write input and output into wave files:
+  rosic::writeToMonoWaveFile("SpectralShifterInput.wav",  &x[0], N, sampleRate, 16);
+  rosic::writeToMonoWaveFile("SpectralShifterOutput.wav", &y[0], N, sampleRate, 16);
   int dummy = 0;
 
 
