@@ -813,7 +813,7 @@ void testSpectralShiftViaJH()
   double inputPhase  = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale   = 1.2;           // Scaling factor for the frequencies
+  double freqScale   = 1.25;          // Scaling factor for the frequencies
   int    blockSize   = 1024;          // Block size. Must be power of 2
   int    overlap     = 2;             // Overlap factor. Must be power of 2
   int    zeroPad     = 1;             // Zero padding factor. Must be power of 2
@@ -849,8 +849,8 @@ void testSpectralShiftViaJH()
 
 
   // Plot input and output signals:
-  //rsPlotVectors(x, y1, y2, y2-y1);
-  rsPlotVectors(x, y1, y2);
+  rsPlotVectors(x, y1);
+  //rsPlotVectors(x, y2);
 
   // Observations:
   // -With freqScale = 1.2, The first few buffers look like a mess but then it settles and the only
@@ -864,11 +864,15 @@ void testSpectralShiftViaJH()
   //  there doesn't seem to be any difference between multiplying by w or not. Maybe that's a 
   //  special case?
   // -For input period = 128 and k = 1.25 and k = 0.8, we do not see amp-mod. For k = 1.2, there's
-  //  string amp mod. For k = 1.6, there's little amp mod but the amp is too low overall. Looks 
+  //  strong amp mod. For k = 1.6, there's little amp mod but the amp is too low overall. Looks 
   //  like it's half of what it should be.
   // -The difference between using and not using the phase-multiplier becomes apparent with
   //  inputPeriod = 32 - at least in the FFT spectrum. ToDo: generate output with and without the
   //  phase multiplier and plot both - and their difference.
+  // -For k = 1.25 the phases of input and output are aligned at sample indices n*512 when n >= 3.
+  //  Before that, we are still in the messy transient phase. That is a strong indicator, that the
+  //  formula for computing the twiddle factor is actually correct. Without the twiddle formula,
+  //  we never get a perfect phase alignment between input and output.
 
   // Notes:
   // -We are not yet applying an output window. Try using one! But maybe this requires to use an

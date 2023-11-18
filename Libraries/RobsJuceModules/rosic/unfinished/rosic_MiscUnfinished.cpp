@@ -49,27 +49,28 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
 
   using AT = RAPT::rsArrayTools;
 
-  Complex* Om    = spectrum;       // Omega
-  Complex* OmTmp = tmpSpectrum;
+  // Define algorithm variables using the notation from the paper:
+  Complex* Om    = spectrum;       // Omega array, the array of the "phasors"
+  Complex* OmTmp = tmpSpectrum;    // Temporary storage for the Omega array
   int      N     = spectrumSize;   // Maybe it should be multiplied by zeroPaddingFactor?
-  int      O     = overlapFactor;
+  int      O     = overlapFactor;  
   int      p     = frameIndex;
-  Complex  i(0, 1);                // Imaginary unit
+  Complex  i     = Complex(0, 1);  // Imaginary unit
 
-  AT::copy(Om, OmTmp, N);
-  AT::fillWithZeros(Om, N);        // Check, if this is really the right thing to do
+  // Prepare input and output buffers:
+  AT::copy(Om, OmTmp, N);          // Prepare temp buffer to read from
+  AT::fillWithZeros(Om, N);        // Clear buffer to write into.
+  // Check, if zeroing Om is really the right thing to do
 
+  // Main loop over the bins of the current spectrum:
   double k = shift;
   for(int a = 1; a < N; a++)       // we start at 1 because we leave DC as is
   {
     int b = (int) (k*a + 0.5);     // Eq. 1
     if(b >= N) break;              // Avoid reading beyond the end
 
-
     Om[b] = OmTmp[a];              // Copy value as explained in section 3.2
-
-    //Om[a] = OmTmp[b];                // Nah - I think, this is wrong
-
+    //Om[a] = OmTmp[b];            // Nah - I think, this is wrong
 
     if(phaseFormula == PhaseFormula::useMultiplier)
     {
@@ -88,7 +89,8 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
     //  Om[b] = OmTmp[a] does the downward 
     //  shift without amp-modulation. Maybe it has to do with overwriting?
     // -Verify formula for w.
-    // -Test what happens if we remove this phasor multiplication
+    // -Test what happens if we remove this phasor multiplication. OK done. We get different 
+    //  phases. But it's not really clear what the "right" phases are.
   }
 
   // For debugging - plot (partial) spectrum of 8th STFT frame:
@@ -96,7 +98,10 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   int dummy = 0;
 
   // ToDo:
-  // -Maybe do copy over and phase-adjustment in two separate loops?
+  // -Verify the formula for the phase-twiddle factor. Try to rederive it to learn where it's 
+  //  coming from. I think, we assume a zero phase at sample zero or at the center of the frame 
+  //  with index zero. This is supposed to be a phase difference that results after p frames when 
+  //  the two frequencies are W_a and W_b respectively, I think.
   // -Plot the spectra for each frame for inspection
   // -Maybe use double for a and b to avoid the conversions inside the loop
   // -Use interpolation instead of rounding
