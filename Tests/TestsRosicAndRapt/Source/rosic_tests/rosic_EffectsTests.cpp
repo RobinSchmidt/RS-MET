@@ -838,6 +838,10 @@ void testSpectralShiftViaJH()
   // Plot input and output signals:
   rsPlotVectors(x, y);
 
+  // Observations:
+  // -The first few buffers look like a mess but then it settles and the only remaining artifact
+  //  is a (strong) amplitude modulation.
+
   // Notes:
   // -We are not yet applying an output window. Try using one! But maybe this requires to use an
   //  overlap of 4 instead ot 2. I think a Hann window squared overlpas to one only with hopSize

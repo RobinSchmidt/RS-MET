@@ -58,22 +58,26 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
 
 
   AT::copy(Om, OmTmp, N);
-  AT::fillWithZeros(Om, N);     // Check, if this is really the right thing to do
+  AT::fillWithZeros(Om, N);        // Check, if this is really the right thing to do
 
   double k = shift;
-  for(int a = 1; a < N; a++)  // we start at 1 because we leave DC as is
+  for(int a = 1; a < N; a++)       // we start at 1 because we leave DC as is
   {
-    int b = (int) (k*a + 0.5);           // Eq. 1
+    int b = (int) (k*a + 0.5);     // Eq. 1
+    if(b >= N) break;              // Avoid reading beyond the end
 
-    if(b >= N) break;  // avoid reading beyond the end
 
+    Om[b] = OmTmp[a];              // Copy value as explained in section 3.2
 
     Complex w = expC(-i * ((double(b-a)*p)/O) * (2*PI/N)); // Phase factor in Eq. 2
+    Om[b] *= w;                    // Eq. 2, phase adation for new frequency
 
-    Om[b] = OmTmp[a] * w;
 
-
-    // Does this make sense? I think, we should read (or write) at index a?
+    // ToDo:
+    // -Check what happens, if we do  Om[a] = OmTmp[b];  instead of  Om[b] = OmTmp[a];  I'm not so
+    //  sure, which way around they mean it.
+    // -Verify formula for w.
+    // -Test what happens if we remove this phasor multiplication
   }
 
 
