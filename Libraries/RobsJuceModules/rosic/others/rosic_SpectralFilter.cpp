@@ -11,7 +11,7 @@ SpectralFilter::SpectralFilter(int maxBlockSize, int maxOverlapFactor, int maxPa
   upperCutoff = 4000.0;
   sampleRate  = 44100.0;
   mode        = BANDPASS;
-  transformer.setBlockSize(paddingFactor*blockSize);
+  transformer.setBlockSize(paddingFactor*blockSize);  // Isn't the baseclass supposed to do this?
 }
 
 //-------------------------------------------------------------------------------------------------

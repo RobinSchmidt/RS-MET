@@ -25,7 +25,24 @@ public:
   /** Destructor. */
   ~SpectralProcessor();
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \Inquiry
+
+  /** Returns the maximum size of the spectrum */
+  int getMaxSpectrumSize() const { return maxBlockSize * maxPaddingFactor / 2; }
+   // we divide by two because we use only the positive frequencies
+
+  // write function getSpectrumSize. it should return blockSize * paddingFactor / 2;
+
+
+
+
+  //maxBlockSize * maxPaddingFactor / 2;  
+
   //===============================================================================================
+
+
 
 protected:
 

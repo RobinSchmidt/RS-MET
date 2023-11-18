@@ -4,10 +4,10 @@
 SpectralProcessor::SpectralProcessor(int maxBlockSize, int maxOverlapFactor, int maxPaddingFactor)                                                   
 : OverlapAddProcessor(maxBlockSize, maxOverlapFactor, maxPaddingFactor)
 {
-  transformer.setBlockSize(paddingFactor*blockSize);
+  transformer.setBlockSize(maxPaddingFactor*maxBlockSize); // Allocate enough memory for worst case
+  transformer.setBlockSize(paddingFactor*blockSize);       // Set up actual blocks size
   transformer.setNormalizationMode(FourierTransformerRadix2::NORMALIZE_ON_FORWARD_TRAFO);
-  maxSpectrumSize = maxBlockSize * maxPaddingFactor / 2;  // /2 because only positive frequencies
-  spectrum = new Complex[maxSpectrumSize];
+  spectrum = new Complex[getMaxSpectrumSize()];
 }
 
 SpectralProcessor::~SpectralProcessor()
@@ -20,7 +20,7 @@ SpectralProcessor::~SpectralProcessor()
 
 void SpectralProcessor::processBlock(double *block, int blockSize)
 {
-  int spectrumSize = blockSize/2;                    
+  int spectrumSize = blockSize/2;
   transformer.setBlockSize(blockSize);
   //Complex *spectrum = new Complex[spectrumSize];
   transformer.transformRealSignal(block, spectrum);

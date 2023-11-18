@@ -137,13 +137,26 @@ class SpectralShifter : public SpectralProcessor
 public:
 
 
-  using SpectralProcessor::SpectralProcessor;  // inherit constructors
+  SpectralShifter(int maxBlockSize, int maxOverlapFactor = 4, int maxPaddingFactor = 4);
+
+  virtual ~SpectralShifter();
+
+
+  // \Setup
+
+  void setFrequencyScale(double scaleFactor) { shift = scaleFactor; }
 
 
 protected:
 
   
   void processSpectrum(Complex* spectrum, int spectrumSize) override;
+
+
+
+  Complex *tmpSpectrum;
+
+  double shift = 1.0;  // rename to scale or freqScale
 
 };
 
