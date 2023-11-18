@@ -799,6 +799,9 @@ void testSpectralShiftViaJH()
   // later we can introduce this additional multiplier for an optimization of the algorithm.
 
 
+
+
+
   // Setup:
 
   // Output file parameters:
@@ -810,7 +813,7 @@ void testSpectralShiftViaJH()
   double inputPhase  = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale   = 2.0;           // Scaling factor for the frequencies
+  double freqScale   = 1.75;           // Scaling factor for the frequencies
   int    blockSize   = 1024;          // Block size. Must be power of 2
   int    overlap     = 2;             // Overlap factor. Must be power of 2
   int    zeroPad     = 1;             // Zero padding factor. Must be power of 2
@@ -826,11 +829,14 @@ void testSpectralShiftViaJH()
   x = 0.5 * x;
 
   // Apply pitch shifting:
+  using SS = rosic::SpectralShifter;
   rosic::SpectralShifter pitchShifter(blockSize, overlap, zeroPad);
   pitchShifter.setFrequencyScale(freqScale);
   pitchShifter.setInputBlockSize(blockSize);
   pitchShifter.setOverlapFactor(overlap);
   pitchShifter.setPaddingFactor(zeroPad);
+  pitchShifter.setPhaseFormula(SS::PhaseFormula::useMultiplier);
+  //pitchShifter.setPhaseFormula(SS::PhaseFormula::keepOriginal);
   Vec y(numSamples);
   for(int n = 0; n < numSamples; n++)
     y[n] = pitchShifter.getSample(x[n]);
@@ -846,6 +852,12 @@ void testSpectralShiftViaJH()
   // -With freqScale = 2, the discontinuities in the first frames disappear but the amp modulation 
   //  gets worse. There is also some amount of negative DC between 512 and 768 when the phase is 
   //  zero. With 90, this is not the case. The amp-modulation period is 512 samples.
+  // -For a downward shift with freqScale = 0.5, there is no such amplitude modulation. Strangely, 
+  //  there doesn't seem to be any difference between multiplying by w or not. Maybe that's a 
+  //  special case?
+  // -For input period = 128 and k = 1.25 and k = 0.8, we do not see amp-mod. For k = 1.2, there's
+  //  string amp mod. For k = 1.6, there's little amp mod but the amp is too low overall. Looks 
+  //  like it's half of what it should be.
 
   // Notes:
   // -We are not yet applying an output window. Try using one! But maybe this requires to use an

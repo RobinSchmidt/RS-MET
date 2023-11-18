@@ -184,6 +184,14 @@ public:
   // should switch between Laroche/Dolson, Juillerat/Hirsbrunner, ...etc. algorithms. Maybe
   // call them LD, JH, etc.
 
+  enum class PhaseFormula
+  {
+    keepOriginal,
+    useMultiplier  // rename to useTwiddleFactor
+  };
+
+  void setPhaseFormula(PhaseFormula newFormula) { phaseFormula = newFormula; }
+
 
   //-----------------------------------------------------------------------------------------------
   // \Processing
@@ -229,6 +237,8 @@ protected:
   // appropriate instants. The paper says in 3.3 that vertical phase coherence is achieved every
   // O frames where O is the overlap factor. So maybe that means we can wrap around frameIndex at 
   // every multiple of O?
+
+  PhaseFormula phaseFormula = PhaseFormula::useMultiplier;
 
 };
 

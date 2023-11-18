@@ -173,6 +173,25 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0),
   plt.addDataArrays(N, &f[0], &db[0]);
   plt.plot();
 }
+// Try to move to .cpp file
+
+/** Plot the real and imaginray part of the given reImArray which is supposed to represent complex
+numbers and must be of length 2*numComplexValues. */
+template<class T>
+inline void rsPlotComplexArray(int numComplexValues, T* reImArray)
+{
+  int N = numComplexValues;
+  std::vector<T> re(N/2), im(N/2);
+  for(int i = 0; i < N/2; i++) {
+    re[i] = reImArray[2*i];
+    im[i] = reImArray[2*i+1];  }
+  GNUPlotter plt;
+  //plt.addDataArrays(N, &re[0], &im[0]);
+  plt.addDataArrays(N/2, &re[0]);
+  plt.addDataArrays(N/2, &im[0]);
+  plt.plot();
+}
+
 
 /** Plots the given function for the given range of x-values using N equally spaced samples. */
 template<class T>
