@@ -828,6 +828,7 @@ void testSpectralShiftViaJH()
   // Apply pitch shifting:
   using SS = rosic::SpectralShifter;
   rosic::SpectralShifter pitchShifter(blockSize, overlap, zeroPad);
+  pitchShifter.setAlgorithm(SS::Algorithm::JuilHirs);
   pitchShifter.setFrequencyScale(freqScale);
   pitchShifter.setInputBlockSize(blockSize);
   pitchShifter.setOverlapFactor(overlap);
@@ -897,24 +898,9 @@ void testSpectralShiftViaJH()
   //  squared at O = 2. Maybe try other windows. Maybe try also a demodulation approach.
 }
 
-
 void testSpectralShiftViaRS()
 {
-
-}
-
-
-
-void rotes::spectralShifter()
-{
-  // Under construction - does not yet work.
-  //
-  // We want to build a pitch shifter based on spectral processing. It should have a transient 
-  // preservation feature.
-
-  testSpectralShiftViaJH();
-  testSpectralShiftViaRS();
-
+  // Tests an algorithm that was my own idea. ...TBC...
 
   // Setup:
 
@@ -946,9 +932,13 @@ void rotes::spectralShifter()
 
 
   rosic::SpectralShifter pitchShifter(maxBlockSize, maxOverlap, maxZeroPad);
+  using SS = rosic::SpectralShifter;
   //pitchShifter.setSampleRate(sampleRate);
   pitchShifter.setInputBlockSize(blockSize);
   pitchShifter.setFrequencyScale(freqScale);
+  pitchShifter.setAlgorithm(SS::Algorithm::RobSchmt);
+  pitchShifter.setPhaseFormula(SS::PhaseFormula::keepOriginal);
+  //pitchShifter.setPhaseFormula(SS::PhaseFormula::useMultiplier);
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = pitchShifter.getSample(x[n]);
@@ -958,8 +948,8 @@ void rotes::spectralShifter()
   rsPlotVectors(x, y);
 
   // Write input and output into wave files:
-  rosic::writeToMonoWaveFile("SpectralShifterInput.wav",  &x[0], N, sampleRate, 16);
-  rosic::writeToMonoWaveFile("SpectralShifterOutput.wav", &y[0], N, sampleRate, 16);
+  //rosic::writeToMonoWaveFile("SpectralShifterInput.wav",  &x[0], N, sampleRate, 16);
+  //rosic::writeToMonoWaveFile("SpectralShifterOutput.wav", &y[0], N, sampleRate, 16);
   int dummy = 0;
 
 
@@ -985,6 +975,23 @@ void rotes::spectralShifter()
   //  between two bins.
   //
   // Ideas:
+}
+
+
+
+void rotes::spectralShifter()
+{
+  // Under construction - does not yet work.
+  //
+  // We want to build a pitch shifter based on spectral processing. It should have a transient 
+  // preservation feature.
+
+  testSpectralShiftViaRS();
+  testSpectralShiftViaJH();
+
+
+
+
 
 
   // Resources:

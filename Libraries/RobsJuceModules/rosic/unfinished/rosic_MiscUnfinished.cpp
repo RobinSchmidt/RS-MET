@@ -128,6 +128,20 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
     spectrum[w] = (1-rFrac) * tmpSpectrum[rInt] + rFrac * tmpSpectrum[rInt+1];
     // ToDo: factor out, try cubic and maybe quintic interpolation
     // Maybe AT::valueAt?
+
+
+    // Test: try to use the phase formula from the JH algo:
+    if(phaseFormula == PhaseFormula::useMultiplier)
+    {
+      double a = r;
+      int    b = w;
+      double p = frameIndex;
+      double O = overlapFactor;
+      int    N = spectrumSize;
+      Complex i(0,1);
+      spectrum[b] *= expC(-i * ((double(b-a)*p)/O) * (2*PI/N));
+    }
+
   }
 
   int dummy = 0;

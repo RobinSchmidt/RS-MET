@@ -180,7 +180,7 @@ public:
 
   };
 
-  //void setAlgorithm();
+  void setAlgorithm(Algorithm newAlgorithm) { algo = newAlgorithm; }
   // should switch between Laroche/Dolson, Juillerat/Hirsbrunner, ...etc. algorithms. Maybe
   // call them LD, JH, etc.
 
