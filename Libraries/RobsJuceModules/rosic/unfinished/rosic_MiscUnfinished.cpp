@@ -55,6 +55,7 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   int      N     = spectrumSize;   // Maybe it should be multiplied by zeroPaddingFactor?
   int      O     = overlapFactor;  
   int      p     = frameIndex;
+  int      m     = paddingFactor;
   Complex  i     = Complex(0, 1);  // Imaginary unit
 
   // Prepare input and output buffers:
@@ -70,9 +71,9 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
     if(b >= N) break;              // Avoid reading beyond the end
     Om[b] = OmTmp[a];              // Copy value as explained in section 3.2
 
-    // Optionally apply phase correction according to Eq. 2:
+    // Optionally apply phase correction according to modified Eq. 2 on top-right on page 3:
     if(phaseFormula == PhaseFormula::useMultiplier)
-      Om[b] *= expC(-i * ((double(b-a)*p)/O) * (2*PI/N));
+      Om[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
   }
 
   // For debugging - plot (partial) spectrum of 8th STFT frame:
@@ -137,9 +138,10 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
       int    b = w;
       double p = frameIndex;
       double O = overlapFactor;
+      int    m = paddingFactor;
       int    N = spectrumSize;
       Complex i(0,1);
-      spectrum[b] *= expC(-i * ((double(b-a)*p)/O) * (2*PI/N));
+      spectrum[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
     }
 
   }

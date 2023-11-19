@@ -813,7 +813,10 @@ void testSpectralShiftViaJH()
   double freqScale   = 0.81;          // Scaling factor for the frequencies
   int    blockSize   = 1024;          // Block size. Must be power of 2
   int    overlap     = 2;             // Overlap factor. Must be power of 2
-  int    zeroPad     = 1;             // Zero padding factor. Must be power of 2
+  int    zeroPad     = 4;             // Zero padding factor. Must be power of 2
+  bool   anaWindow   = true;          // Use analysis window or not
+  bool   synWindow   = false;          // Use synthesis window or not
+
 
 
   // Create sinusoidal test signal:
@@ -827,23 +830,25 @@ void testSpectralShiftViaJH()
 
   // Apply pitch shifting:
   using SS = rosic::SpectralShifter;
-  rosic::SpectralShifter pitchShifter(blockSize, overlap, zeroPad);
-  pitchShifter.setAlgorithm(SS::Algorithm::JuilHirs);
-  pitchShifter.setFrequencyScale(freqScale);
-  pitchShifter.setInputBlockSize(blockSize);
-  pitchShifter.setOverlapFactor(overlap);
-  pitchShifter.setPaddingFactor(zeroPad);
-  pitchShifter.setPhaseFormula(SS::PhaseFormula::useMultiplier);
+  rosic::SpectralShifter ps(blockSize, overlap, zeroPad);
+  ps.setAlgorithm(SS::Algorithm::JuilHirs);
+  ps.setFrequencyScale(freqScale);
+  ps.setInputBlockSize(blockSize);
+  ps.setOverlapFactor(overlap);
+  ps.setPaddingFactor(zeroPad);
+  ps.setUseInputWindow(anaWindow);
+  ps.setUseOutputWindow(synWindow);
+  ps.setPhaseFormula(SS::PhaseFormula::useMultiplier);
   Vec y1(numSamples);
   for(int n = 0; n < numSamples; n++)
-    y1[n] = pitchShifter.getSample(x[n]);
+    y1[n] = ps.getSample(x[n]);
 
   // For reference, generate output without without the phase formula:
-  pitchShifter.setPhaseFormula(SS::PhaseFormula::keepOriginal);
-  pitchShifter.reset();
+  ps.setPhaseFormula(SS::PhaseFormula::keepOriginal);
+  ps.reset();
   Vec y2(numSamples);
   for(int n = 0; n < numSamples; n++)
-    y2[n] = pitchShifter.getSample(x[n]);
+    y2[n] = ps.getSample(x[n]);
 
 
   // Plot input and output signals:
@@ -913,13 +918,15 @@ void testSpectralShiftViaRS()
   double inputPhase   = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale    = 0.8;           // Scaling factor for the frequencies
-  int    maxBlockSize = 4096;          // Maximum block size. Must be passed to constructor.
-  int    maxOverlap   = 8;             // Maximum overlap factor. Can be passed to constructor.
-  int    maxZeroPad   = 8;             // Max. zero padding factor. Can be passed to constructor.
-  int    blockSize    = 1024;          // Block size, must be <= maxBlockSize
-  int    overlap      = 2;             // Overlap factor. Must be power of 2 and <= maxOverlap.
-  int    zeroPad      = 1;             // Zero padding factor. Must be power of 2 and <= maxZeroPad
+  double freqScale    = 0.80;          // Scaling factor for the frequencies
+  //int    maxBlockSize = 4096;          // Maximum block size. Must be passed to constructor.
+  //int    maxOverlap   = 8;             // Maximum overlap factor. Can be passed to constructor.
+  //int    maxZeroPad   = 8;             // Max. zero padding factor. Can be passed to constructor.
+  int    blockSize    = 1024;          // Block size. Must be power of 2
+  int    overlap      = 2;             // Overlap factor. Must be power of 2
+  int    zeroPad      = 2;             // Zero padding factor. Must be power of 2
+  bool   anaWindow    = true;          // Use analysis window or not
+  bool   synWindow    = false;         // Use synthesis window or not
 
 
   // Create sinusoidal test signal:
@@ -928,16 +935,18 @@ void testSpectralShiftViaRS()
   int N = numSamples;
   Vec x(N);
   createWaveform(&x[0], N, 0, inputFreq, sampleRate, RAPT::rsDegreeToRadiant(inputPhase), true);
-  x = 0.5 * x;  
+  x = 0.5 * x;
 
 
   using PS = rosic::SpectralShifter;
-  PS ps(maxBlockSize, maxOverlap, maxZeroPad);
+  PS ps(blockSize, overlap, zeroPad);
   ps.setAlgorithm(PS::Algorithm::RobSchmt);
   ps.setFrequencyScale(freqScale);
   ps.setInputBlockSize(blockSize);
   ps.setOverlapFactor(overlap);
   ps.setPaddingFactor(zeroPad);
+  ps.setUseInputWindow(anaWindow);
+  ps.setUseOutputWindow(synWindow);
   ps.setPhaseFormula(PS::PhaseFormula::useMultiplier);
   Vec y1(N);
   for(int n = 0; n < N; n++)
@@ -952,9 +961,9 @@ void testSpectralShiftViaRS()
 
 
   // Plot input and output signals:
-  //rsPlotVectors(x, y1);
+  rsPlotVectors(x, y1);
   //rsPlotVectors(x, y2);
-  rsPlotVectors(y1, y2);
+  //rsPlotVectors(x, y1, y2);
 
 
   // Write input and output into wave files:
@@ -967,6 +976,7 @@ void testSpectralShiftViaRS()
   // -This does not yet work. But it's not really supposed to. I'm currently interpolating the 
   //  complex spectrum. What we need to do is convert to magnitude/phase, interpolate the 
   //  magnitudes and adjust the phases according to a prediction from the previous frame.
+  // -When using the synthesis window, the output is too quiet.
   // -With blockSize = 1024, freqScale = 2, inputPeriod = 100, the output shows strong amplitude
   //  modulation. This remains to be the case with inputPeriod = 128 so the misalignment of the 
   //  cycles with the window is not the reason for this amp-mod. The modulation period is given by
@@ -980,9 +990,13 @@ void testSpectralShiftViaRS()
   //  signal starts at 768.
   // -With zeroPad = 1, the output is too quite. I guess we need at least padding of tow because
   //  the output my become longer than the input due to these time aliasing effects
+  // -When the input period is 500 with blockSize = 1024 and freqScale = 1.1, it looks like the 
+  //  freq has not really been changed at all
+  // -Without analysis window, it doesn'T seem to work at all
   //
   // ToDo:
-  // -Add the phase multiplication step. 
+  // -[Done] Add the phase multiplication step. 
+  // -[Done] Use output window
   // -Try it on a sinusoid that aligns with an FFT bin. Then try it on a  sinusoid that is in 
   //  between two bins.
   //
@@ -998,8 +1012,11 @@ void rotes::spectralShifter()
   // We want to build a pitch shifter based on spectral processing. It should have a transient 
   // preservation feature.
 
+
   testSpectralShiftViaRS();
   testSpectralShiftViaJH();
+
+
 
 
 
