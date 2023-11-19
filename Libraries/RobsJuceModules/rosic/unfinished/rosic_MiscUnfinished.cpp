@@ -115,8 +115,9 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
 {
   using AT = RAPT::rsArrayTools;
 
+  // Prepare:
   AT::copy(spectrum, tmpSpectrum, spectrumSize);
-
+  double inEnergy = AT::sumOfSquares((double*) spectrum, 2*spectrumSize);
 
 
   int w;    // write index    ( maybe use double to avoid type conversion in loop)
@@ -147,8 +148,17 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
       Complex i(0,1);
       spectrum[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
     }
-
   }
+
+
+  // A trick to keep the overall spectral energy the same:
+  double outEnergy = AT::sumOfSquares((double*) spectrum, 2*spectrumSize);
+  double gain = 1.0;
+  double eps  = std::numeric_limits<double>::epsilon();
+  if(inEnergy > eps && outEnergy > eps)
+    gain = sqrt(inEnergy / outEnergy);
+
+  AT::scale((double*) spectrum, 2*spectrumSize, 3.0);
 
 
   // For debug:

@@ -96,7 +96,7 @@ void OverlapAddProcessor::clearBuffers()
 }
 
 //-------------------------------------------------------------------------------------------------
-// internal fucntions:
+// internal functions:
 
 void OverlapAddProcessor::prepareBlockForProcessing()
 {
@@ -116,12 +116,12 @@ void OverlapAddProcessor::prepareBlockForProcessing()
   // apply window function, if desired:
   if( useInputWindow == true )
   {
-    for(wp=0; wp<blockSize; wp++)   
+    for(wp=0; wp<blockSize; wp++)
       tmp[wp] *= w[wp];
   }
 
   // zero-pad tmp-buffer, if desired:
-  for(wp=blockSize; wp<paddingFactor*blockSize; wp++)   
+  for(wp=blockSize; wp<paddingFactor*blockSize; wp++)
     tmp[wp] = 0.0;
 }
 
@@ -137,7 +137,7 @@ void OverlapAddProcessor::postProcessBlock()
   {
     for(n=0; n<blockSize; n++)   
       y[nextOutBuffer][n] *= w[n];
-    for(n=blockSize; n<paddingFactor*blockSize; n++)   
+    for(n=blockSize; n<paddingFactor*blockSize; n++)
       y[nextOutBuffer][n] = 0.0;
   }
 
@@ -193,4 +193,8 @@ void OverlapAddProcessor::calculateCompensationGain()
     }
     gain = 1.0 / accu;
   }
+
+  // ToDo:
+  // -Document this calculation! I don't understand it anymore. I would suppose that the factor
+  //  would be something like this pseudocode (sum(window) / windowLength) / overlapFactor
 }

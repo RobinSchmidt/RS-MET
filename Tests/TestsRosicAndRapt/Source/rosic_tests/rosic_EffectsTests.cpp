@@ -1030,6 +1030,9 @@ void testSpectralShiftViaRS()
   //  settings none, peak, energy, rms (I think, energy and rms will give the same results). Maybe
   //  the setting can be set up continuously from none to full (by raising the resulting 
   //  normalization factor to a power)
+  // -experiment with setWindowPower. The default is 2 which is the right choice when overlap=2
+  //  and only an analysis window is used. When both analysis and synthesis windows are used,
+  //  we could use 1 for the window power or 4 for the overlap.
 }
 
 
