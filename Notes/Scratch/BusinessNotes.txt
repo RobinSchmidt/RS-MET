@@ -1,64 +1,89 @@
 ----------------------------------------------------------------------------------------------------
-Pricing:  
+Hiring:
+=======
 
--40 €/h for work on code that is re-usable for me within my library. Examples: algorithm research 
- and development, feature additions to existing algos, optimizations, improvements for the API and
- its documentation.
+I'm generally available for freelance work on audio signal processing algorithms. My special focus 
+is on musical DSP algorithms such as those realtime algorithms that you will find in typical audio 
+plugins (filters, dynamics, chorus, reverb, pitch-shift, etc.) or offline/non-realtime algorithms 
+that you find sample editors (time-stretch, spectral modeling, etc.). I have also some side 
+interests in adjacent fields such as image processing, computer graphics and numerical simulation. 
+I'm not an expert in these other fields, though. I just have a general fascination for any kind of 
+mathematical algorithm that can (at least potentially) be used for creative, artistic purposes. If 
+you think you have a challenge for me in one of those fields and have some money to spare to get the 
+problem solved once and for all, feel free to contact me via robin@rs-met.com.
+
+----------------------------------------------------------------------------------------------------
+Pricing:  
+========
+
+- 40 €/h for work on code that is reusable for me within my libraries. Typical examples are: 
+  algorithm research and development, feature additions to existing algorithms, optimizations, 
+  improvements for the API and its documentation.
  
--80 €/h for non-reusable work. Examples: Assisting with integration into the client's system,  
- testing and debugging within the client's codebase. This kind of work is expected to only account
- for a small portion of the overall work.
+- 80 €/h for non-reusable work. Typical examples are: assisting with integration into the client's 
+  system, testing and debugging within the client's codebase. This kind of work is expected to only 
+  account for a small portion of the overall work.
  
--Milestone-based charging. Work for one week is scheduled and an appropriate milestone is defined, 
- then I'll do the work and when the milestone is reached I charge the 1600€ = 40 h * 40 €/h. If
- necessary, the granularity can be reduced within reason - say down to days - but no 
- micro-accounting anymore (like keeping a tab of worktimes to 5 min precision as I previuosly did). 
- That's really a drag on productivity. 
+- Milestone-based charging. Work for one week is scheduled and an appropriate milestone is defined, 
+  then I'll do the work and when the milestone is reached I charge the 1600€ = 40 h * 40 €/h. If
+  really necessary, the granularity can be reduced within reason - say down to days - but no 
+  micro-accounting anymore (like keeping a tab of worktimes to 5 min precision as I previuosly did). 
+  That's really a drag on productivity. The minimum amount of work to purchase is one week. 
  
--For reliable long term collaborations, there might be some discount on the hourly rates - not sure 
- yet about that. But maybe such a discount should be implement by just doing some extra work hours 
- than what is being billed rather than by lowering the hourly rate. Usually, the work often takes 
- longer than predicted anyway.
+- For reliable long term collaborations, there might be some discount on the hourly rates. This is 
+  usually implemented by just doing more work hours than what is being billed rather than by 
+  lowering the hourly rate. Usually, the work often takes longer than predicted anyway.
  
--Licensing for existing DSP code (RAPT/rosic): 1500 € for 1 product, 2500 for 2, 3500 for 3, 
- 4500 for 4, 5000 for 5, 7500 for 10.
+- For a specific functionality of the library whose development a client has commissioned, the 
+  client will get a license to use that functionality in any number of products. That license does 
+  not extend to the rest of the library. It will typically apply to a specific class or set of 
+  classes that will be pinpointed in the negotiations. 
  
--These license prices go down when also work hours are purchased. If two weeks of work (= 3200€) 
- are purchased, the single product license cost goes down to 1000 -> just divide everything by 1.5.
- When 4 weeks of work are purchased (6400€), the license prices go down by a factor of 2 
- (750, 1250, 1750, 2250, 2500) and when 8 weeks of work are purchased, they go down by a factor of 
- 3. In general, they go down by log2(numWeeks).  
+- License prices for existing DSP code (RAPT/rosic): 1500 € for 1 product, 2500 for 2, 3500 for 3, 
+  4500 for 4, 5000 for 5, 7500 for 10. Existing licenses can be upgraded to cover more products by
+  paying the respective price difference. In combination with a JUCE license, such a license will 
+  allow to also use my JUCE-based plugin framework "jura", although that's perhaps not worth using
+  anyway (it has some issues). 
  
--The license is valid for the version of the code at the time of purchase. License updates for 
- newer versions of the code cost 1/10 of the original license price - without the for-work discounts
- but with the for-quantity discounts. If multiple licenses were bought one at a time (i.e. at the 
- higher per license prices), the update cost will nevertheless get the quantity discount for 
- whatever number of licenses were purchased.
+- These license prices go down when also work hours are purchased. If two weeks of work (= 3200€) 
+  are purchased, the single product license cost goes down to 1000 -> just divide everything by 1.5.
+  When 4 weeks of work are purchased (6400€), the license prices go down by a factor of 2 
+  (750, 1250, 1750, 2250, 2500) and when 8 weeks of work are purchased, they go down by a factor of 
+  3. In general, they go down by log2(numWeeks).  
  
+- The license is valid for the version of the code at the time of purchase. License updates for 
+  newer versions of the code cost 1/10 of the original license price - without the for-work 
+  discounts but with the for-quantity discounts. If upgrades were purchased, the most recently 
+  purchased upgrade counts, i.e. upgrading has also an updating side effect. 
 
 ----------------------------------------------------------------------------------------------------
 Project Ideas and Proposals:
+============================
 
--A sample editor specifically taylored to musical instrument samples. It should make use of the 
- sinusoidal modeling framework to modify the sample. A bit like AudioSculpt. But also like 
- Izotope RX. But also like Adobe Audition. It may also give access to various audio rendering 
- algorithms that are too expensive to run in realtime (think PDE-solver based stuff) and rendering
- (multi) samples from these algos together with sfz files. Maybe it could also have simple DAW-like
- features for layering. 
+- A sample editor specifically taylored to musical instrument samples. It should make use of my 
+  sinusoidal modeling framework to modify the sample. A bit like AudioSculpt. But also like 
+  Izotope RX. But also like Adobe Audition. It may also give access to various audio rendering 
+  algorithms that are too expensive to run in realtime (think PDE-solver based stuff) and rendering
+  (multi) samples from these algos together with sfz files. Maybe it could also have simple DAW-like
+  features for layering. 
  
--Major overhaul of the API of RAPT and rosic. Use the C++20 module feature for providing 
- the functionality to client code. Use C++20 concepts for constraining the template parameters.
- -Important concepts are Signal and Parameter. Maybe call them TSig, TPar. Signals and Parameters 
-  are supposed to be numeric types that define the usual arithmetic operators. Parameters must be 
-  able to be (implicitly) converted to Signals. Moreover, the operators must be able to take a 
-  Signal and a Parameter to produce a Signal. I think, the conversion requirement may already take 
-  care of that but it may be advantageous for optimization purposes to have special operators with 
-  heterogenous inputs. For example, TSig could be a SIMD vector type and TPar the corresponding 
-  scalar type. In such a case, we may want to have special operators that can take a scalar and a 
-  vector operand such that we don't need to convert the scalar to a vector first. It could also be 
-  that both, Signal and Parameter are the same (scalar or vector) type. Signals could also be 
-  complex while Parameters are still real. ...etc.
- -Maybe it should get a new name - ideas: RASP (Rob's Audio Signal Processors), 
-  RAP (...Audio Processors), RAT (...Audio Toolkit). I like RASP - sounds catchy.
- -Make a Python module as front end such that the library can be used from a jupyter notebook in 
-  Python and be combined with numpy, scipy, etc.
+ 
+- Major overhaul of the API of RAPT and rosic. Use the C++20 module feature for providing 
+  the functionality to client code. Use C++20 concepts for constraining the template parameters.
+  
+  - Important concepts are Signal and Parameter. Maybe call them TSig, TPar. Signals and Parameters 
+    are supposed to be numeric types that define the usual arithmetic operators. Parameters must be 
+    able to be (implicitly) converted to Signals. Moreover, the operators must be able to take a 
+    Signal and a Parameter to produce a Signal. I think, the conversion requirement may already take 
+    care of that but it may be advantageous for optimization purposes to have special operators with 
+    heterogenous inputs. For example, TSig could be a SIMD vector type and TPar the corresponding 
+    scalar type. In such a case, we may want to have special operators that can take a scalar and a 
+    vector operand such that we don't need to convert the scalar to a vector first. It could also be 
+    that both, Signal and Parameter are the same (scalar or vector) type. Signals could also be 
+    complex while Parameters are still real. ...etc.
+	
+  - Maybe it should get a new name - ideas: RASP (Rob's Audio Signal Processors), 
+    RAP (...Audio Processors), RAT (...Audio Toolkit). I like RASP - sounds catchy.
+	
+  - Make a Python module as front end such that the library can be used from a jupyter notebook in 
+   Python and be combined with numpy, scipy, etc.

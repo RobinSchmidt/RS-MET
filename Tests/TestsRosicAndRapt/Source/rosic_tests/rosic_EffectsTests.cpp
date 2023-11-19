@@ -901,6 +901,9 @@ void testSpectralShiftViaJH()
   //  = blockSize / 4. The hann window itself overslap to one already with hopSize = blockSize / 2.
   //  Another option could be to use a sqrt(Hann) window. That should overlap perfectly when 
   //  squared at O = 2. Maybe try other windows. Maybe try also a demodulation approach.
+
+  // This is supposed to be an implementaion of the algo - test it:
+  // https://gist.github.com/jconst/dfded80e037490d0d27fe821f18a8dee
 }
 
 void testSpectralShiftViaRS()
@@ -1094,6 +1097,8 @@ void rotes::spectralShifter()
   // https://www.youtube.com/watch?v=xGmRaTaBNZA
   //
   // https://www.youtube.com/watch?v=fJUmmcGKZMI  Four Ways To Write A Pitch-Shifter - Geraint Luff - ADC22
+  // https://github.com/Signalsmith-Audio/pitch-time-example-code
+  // https://signalsmith-audio.co.uk/writing/2023/stretch-design/
   //
   // https://www.youtube.com/watch?v=PjKlMXhxtTM  Making a Pitch Shifter
   // -says at 1:30 that a time-stretch - then resample algo for pitch shift is easier than direct 
@@ -1105,5 +1110,11 @@ void rotes::spectralShifter()
   // Phase Vocoder (Flanagan/Golden):
   // https://archive.org/details/bstj45-9-1493/mode/2up
   // The classic paper on the topic, I think.
+
+
+  // Paper: Low latency audio pitch shifting in the time domain
+  // https://ieeexplore.ieee.org/document/4590019
+
+  
 
 }
