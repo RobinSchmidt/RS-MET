@@ -919,12 +919,9 @@ void testSpectralShiftViaRS()
 
   // Spectral shifter parameters:
   double freqScale    = 0.80;          // Scaling factor for the frequencies
-  //int    maxBlockSize = 4096;          // Maximum block size. Must be passed to constructor.
-  //int    maxOverlap   = 8;             // Maximum overlap factor. Can be passed to constructor.
-  //int    maxZeroPad   = 8;             // Max. zero padding factor. Can be passed to constructor.
   int    blockSize    = 1024;          // Block size. Must be power of 2
   int    overlap      = 2;             // Overlap factor. Must be power of 2
-  int    zeroPad      = 2;             // Zero padding factor. Must be power of 2
+  int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
   bool   anaWindow    = true;          // Use analysis window or not
   bool   synWindow    = false;         // Use synthesis window or not
 
@@ -963,7 +960,7 @@ void testSpectralShiftViaRS()
   // Plot input and output signals:
   rsPlotVectors(x, y1);
   //rsPlotVectors(x, y2);
-  //rsPlotVectors(x, y1, y2);
+  rsPlotVectors(x, y1, y2);
 
 
   // Write input and output into wave files:
@@ -971,11 +968,23 @@ void testSpectralShiftViaRS()
   //rosic::writeToMonoWaveFile("SpectralShifterOutput.wav", &y[0], N, sampleRate, 16);
   int dummy = 0;
 
+  // We use the following abbrevations:
+  // inCyc: inputPeriod (cycle), inPhs: inputPhase
+  // frqScl: freqScale, blkSz: blockSize, ovrLp: overlap, zrPd: zeroPad,  
+  // anaWn: anaWindow, synWn: synWindow, 
 
   // Observations:
   // -This does not yet work. But it's not really supposed to. I'm currently interpolating the 
   //  complex spectrum. What we need to do is convert to magnitude/phase, interpolate the 
   //  magnitudes and adjust the phases according to a prediction from the previous frame.
+
+  // -inCyc=128, inPhs=90, frqScale=0.8, blkSz=1024, ovrLp=2, zrPd=4, anaWn=yes, synWn=no:
+  //  -Using the phase formula causes the phase of the output periodically align with the phase
+  //   of the input (at peak) at samples: 1152, 1664, 2176, ... in general at: 1152 + n*512
+  //   The difference between these alignment instants is 512 = 4*inCyc. Without the formula, no
+  //   alignment occurs but the non-aligned pitch-shifted signal looks actually good, too. Has also
+  //   the right frequency and amplitude. It's just a bit phase-shifted.
+
   // -When using the synthesis window, the output is too quiet.
   // -With blockSize = 1024, freqScale = 2, inputPeriod = 100, the output shows strong amplitude
   //  modulation. This remains to be the case with inputPeriod = 128 so the misalignment of the 
@@ -992,7 +1001,11 @@ void testSpectralShiftViaRS()
   //  the output my become longer than the input due to these time aliasing effects
   // -When the input period is 500 with blockSize = 1024 and freqScale = 1.1, it looks like the 
   //  freq has not really been changed at all
-  // -Without analysis window, it doesn'T seem to work at all
+  // -Without analysis window, it doesn't seem to work at all
+  //
+  // Conclusions:
+  // -zeroPad needs to be at least 2. 4 seems to work well enough for a nice signal and shift 
+  //  factor
   //
   // ToDo:
   // -[Done] Add the phase multiplication step. 
