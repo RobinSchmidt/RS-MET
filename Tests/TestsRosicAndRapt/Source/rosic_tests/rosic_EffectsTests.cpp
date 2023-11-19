@@ -810,7 +810,7 @@ void testSpectralShiftViaJH()
   double inputPhase  = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale   = 0.81;          // Scaling factor for the frequencies
+  double freqScale   = 0.80;          // Scaling factor for the frequencies
   int    blockSize   = 1024;          // Block size. Must be power of 2
   int    overlap     = 2;             // Overlap factor. Must be power of 2
   int    zeroPad     = 4;             // Zero padding factor. Must be power of 2
@@ -918,12 +918,13 @@ void testSpectralShiftViaRS()
   double inputPhase   = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale    = 0.8;           // Scaling factor for the frequencies
+  double freqScale    = 0.8;          // Scaling factor for the frequencies
   int    blockSize    = 1024;          // Block size. Must be power of 2
   int    overlap      = 2;             // Overlap factor. Must be power of 2
   int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
   bool   anaWindow    = true;          // Use analysis window or not
-  bool   synWindow    = false;         // Use synthesis window or not
+  bool   synWindow    = true;          // Use synthesis window or not
+  int    winPower     = 2;             // power/exponent for the cos^n window
 
 
   // Create sinusoidal test signal:
@@ -943,6 +944,7 @@ void testSpectralShiftViaRS()
   ps.setPaddingFactor(zeroPad);
   ps.setUseInputWindow(anaWindow);
   ps.setUseOutputWindow(synWindow);
+  ps.setWindowPower(winPower);
   ps.setPhaseFormula(PS::PhaseFormula::useMultiplier);
   Vec y1(N);
   for(int n = 0; n < N; n++)
@@ -971,11 +973,11 @@ void testSpectralShiftViaRS()
   // We use the following abbrevations:
   // inCyc: inputPeriod (cycle), inPhs: inputPhase
   // frqScl: freqScale, blkSz: blockSize, ovrLp: overlap, zrPd: zeroPad,  
-  // anaWn: anaWindow, synWn: synWindow, 
+  // anaWn: anaWindow, synWn: synWindow, WnPw: window power
 
   // Observations:
   //
-  // -inCyc=128, inPhs=90, frqScale=0.8, blkSz=1024, ovrLp=2, zrPd=4, anaWn=yes, synWn=no:
+  // -inCyc=128, inPhs=90, frqScale=0.8, blkSz=1024, ovrLp=2, zrPd=4, anaWn=yes, synWn=no, WnPw=2:
   //  -Using the phase formula causes the phase of the output periodically align with the phase
   //   of the input (at peak) at samples: 1152, 1664, 2176, ... in general at: 1152 + n*512
   //   The difference between these alignment instants is 512 = 4*inCyc. Without the formula, no
@@ -992,6 +994,12 @@ void testSpectralShiftViaRS()
   //   doesn't seem to have the right freq. There is no real single freq anyway
   //  -setting frqScl=1.2 works better again. The output does have the right freq. But there's some
   //   amp-mod going on.
+  //
+  // -inCyc=128, inPhs=90, frqScale=1.0, blkSz=1024, ovrLp=2, zrPd=2, anaWn=yes, synWn=yes, WnPw=1:
+  //  -perfect reconstruction as expected. when using both windows with a power of 1, the combined
+  //   ana/syn windows will give cos^2 which is suitable for overlap of 2
+  //  -frqScl=0.5 is too quiet and has amp-mod
+  //  -frqScl=0.8 is okayish, 0.75 produces roughly the same frequency
 
   // -When using the synthesis window, the output is too quiet.
   // -With blockSize = 1024, freqScale = 2, inputPeriod = 100, the output shows strong amplitude

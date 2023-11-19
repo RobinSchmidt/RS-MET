@@ -77,9 +77,8 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   }
 
   // For debugging - plot (partial) spectrum of 8th STFT frame:
-  // For debug:
-  if(frameIndex == 8) 
-    rsPlotComplexArrays(spectrumSize/2, (double*)tmpSpectrum, (double*)spectrum);
+  //if(frameIndex == 8) 
+  //  rsPlotComplexArrays(spectrumSize/2, (double*)tmpSpectrum, (double*)spectrum);
 
   //if(p == 8) rsPlotComplexArrays(N/2, (double*)Om);
   //int dummy = 0;
@@ -175,11 +174,9 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
   // in this case, the normalization makes the signal too loud. It was just an ad hoc idea anyway.
   // But maybe a similar apporach in the time domain could be more successful
 
-
-
-  // For debug:
-  if(frameIndex == 8) 
-    rsPlotComplexArrays(spectrumSize/2, (double*)tmpSpectrum, (double*)spectrum);
+  //// For debug:
+  //if(frameIndex == 8) 
+  //  rsPlotComplexArrays(spectrumSize/2, (double*)tmpSpectrum, (double*)spectrum);
 
   int dummy = 0;
 
