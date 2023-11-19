@@ -918,7 +918,7 @@ void testSpectralShiftViaRS()
   double inputPhase   = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale    = 0.8;           // Scaling factor for the frequencies
+  double freqScale    = 0.6;           // Scaling factor for the frequencies
   int    blockSize    = 1024;          // Block size. Must be power of 2
   int    overlap      = 2;             // Overlap factor. Must be power of 2
   int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
@@ -1027,7 +1027,9 @@ void testSpectralShiftViaRS()
   //  accordingly. But maybe it's better to do that in the time domain because then it will also
   //  take all the windows into account. Maybe that can be done in class OverlapAddProcessor. It 
   //  could have a member normalizeEnergy. Or it could have a member normalizationMode with 
-  //  settings none, peak, energy, rms (I think, energy and rms will give the same results)
+  //  settings none, peak, energy, rms (I think, energy and rms will give the same results). Maybe
+  //  the setting can be set up continuously from none to full (by raising the resulting 
+  //  normalization factor to a power)
 }
 
 
