@@ -974,16 +974,14 @@ void testSpectralShiftViaRS()
   // anaWn: anaWindow, synWn: synWindow, 
 
   // Observations:
-  // -This does not yet work. But it's not really supposed to. I'm currently interpolating the 
-  //  complex spectrum. What we need to do is convert to magnitude/phase, interpolate the 
-  //  magnitudes and adjust the phases according to a prediction from the previous frame.
-
+  //
   // -inCyc=128, inPhs=90, frqScale=0.8, blkSz=1024, ovrLp=2, zrPd=4, anaWn=yes, synWn=no:
   //  -Using the phase formula causes the phase of the output periodically align with the phase
   //   of the input (at peak) at samples: 1152, 1664, 2176, ... in general at: 1152 + n*512
   //   The difference between these alignment instants is 512 = 4*inCyc. Without the formula, no
   //   alignment occurs but the non-aligned pitch-shifted signal looks actually good, too. Has also
   //   the right frequency and amplitude. It's just a bit phase-shifted.
+  //  -The output is a little bit too quiet, though
 
   // -When using the synthesis window, the output is too quiet.
   // -With blockSize = 1024, freqScale = 2, inputPeriod = 100, the output shows strong amplitude
