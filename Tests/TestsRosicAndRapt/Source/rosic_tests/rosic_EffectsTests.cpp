@@ -913,7 +913,7 @@ void testSpectralShiftViaRS()
   double inputPhase   = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale    = 2.0;           // Scaling factor for the frequencies
+  double freqScale    = 0.8;           // Scaling factor for the frequencies
   int    maxBlockSize = 4096;          // Maximum block size. Must be passed to constructor.
   int    maxOverlap   = 4;             // Maximum overlap factor. Can be passed to constructor.
   int    maxZeroPad   = 4;             // Max. zero padding factor. Can be passed to constructor.
@@ -931,21 +931,31 @@ void testSpectralShiftViaRS()
   x = 0.5 * x;  
 
 
-  rosic::SpectralShifter pitchShifter(maxBlockSize, maxOverlap, maxZeroPad);
-  using SS = rosic::SpectralShifter;
-  //pitchShifter.setSampleRate(sampleRate);
-  pitchShifter.setInputBlockSize(blockSize);
+  using PS = rosic::SpectralShifter;
+  PS pitchShifter(maxBlockSize, maxOverlap, maxZeroPad);
+  pitchShifter.setAlgorithm(PS::Algorithm::RobSchmt);
   pitchShifter.setFrequencyScale(freqScale);
-  pitchShifter.setAlgorithm(SS::Algorithm::RobSchmt);
-  pitchShifter.setPhaseFormula(SS::PhaseFormula::keepOriginal);
-  //pitchShifter.setPhaseFormula(SS::PhaseFormula::useMultiplier);
-  Vec y(N);
+  pitchShifter.setInputBlockSize(blockSize);
+  pitchShifter.setOverlapFactor(overlap);
+  pitchShifter.setPaddingFactor(zeroPad);
+  pitchShifter.setPhaseFormula(PS::PhaseFormula::useMultiplier);
+  Vec y1(N);
   for(int n = 0; n < N; n++)
-    y[n] = pitchShifter.getSample(x[n]);
+    y1[n] = pitchShifter.getSample(x[n]);
+
+  // For reference, generate output without without the phase formula:
+  pitchShifter.setPhaseFormula(PS::PhaseFormula::keepOriginal);
+  pitchShifter.reset();
+  Vec y2(numSamples);
+  for(int n = 0; n < numSamples; n++)
+    y2[n] = pitchShifter.getSample(x[n]);
 
 
   // Plot input and output signals:
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y1);
+  //rsPlotVectors(x, y2);
+  rsPlotVectors(y1, y2);
+
 
   // Write input and output into wave files:
   //rosic::writeToMonoWaveFile("SpectralShifterInput.wav",  &x[0], N, sampleRate, 16);
