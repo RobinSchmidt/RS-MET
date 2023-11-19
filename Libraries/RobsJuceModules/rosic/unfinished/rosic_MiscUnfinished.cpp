@@ -117,7 +117,10 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
 
   // Prepare:
   AT::copy(spectrum, tmpSpectrum, spectrumSize);
+
+  // Experimental - for energy normalization:
   double inEnergy = AT::sumOfSquares((double*) spectrum, 2*spectrumSize);
+  double inSumAbs = AT::sumOfAbsoluteValues((double*) spectrum, 2*spectrumSize);
 
 
   int w;    // write index    ( maybe use double to avoid type conversion in loop)
@@ -151,14 +154,27 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
   }
 
 
+  // Experimental:
   // A trick to keep the overall spectral energy the same:
-  double outEnergy = AT::sumOfSquares((double*) spectrum, 2*spectrumSize);
   double gain = 1.0;
   double eps  = std::numeric_limits<double>::epsilon();
-  if(inEnergy > eps && outEnergy > eps)
-    gain = sqrt(inEnergy / outEnergy);
 
-  AT::scale((double*) spectrum, 2*spectrumSize, 3.0);
+  //double outSumAbs = AT::sumOfAbsoluteValues((double*) spectrum, 2*spectrumSize);
+  //if(inSumAbs > eps && outSumAbs > eps)
+  //  gain = inSumAbs / outSumAbs;
+
+  //double outEnergy = AT::sumOfSquares((double*) spectrum, 2*spectrumSize);
+  //if(inEnergy > eps && outEnergy > eps)
+  //  gain = sqrt(inEnergy / outEnergy);
+
+  //AT::scale((double*) spectrum, 2*spectrumSize, gain);
+
+  // Normalizing the spectrum either with respect to RMS or with respect to sum-of-abs values
+  // does not seem to be the solution to the problem that somtimes the amplitude is too low.
+  // When shifting an octave down, the signal is actually perfect without this normalization and
+  // in this case, the normalization makes the signal too loud. It was just an ad hoc idea anyway.
+  // But maybe a similar apporach in the time domain could be more successful
+
 
 
   // For debug:

@@ -918,7 +918,7 @@ void testSpectralShiftViaRS()
   double inputPhase   = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale    = 0.6;           // Scaling factor for the frequencies
+  double freqScale    = 0.8;           // Scaling factor for the frequencies
   int    blockSize    = 1024;          // Block size. Must be power of 2
   int    overlap      = 2;             // Overlap factor. Must be power of 2
   int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
