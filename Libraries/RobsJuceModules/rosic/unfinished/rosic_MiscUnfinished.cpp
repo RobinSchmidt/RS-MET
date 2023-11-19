@@ -77,7 +77,11 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   }
 
   // For debugging - plot (partial) spectrum of 8th STFT frame:
-  //if(p == 8) rsPlotComplexArray(N/2, (double*)Om);
+  // For debug:
+  if(frameIndex == 8) 
+    rsPlotComplexArrays(spectrumSize/2, (double*)tmpSpectrum, (double*)spectrum);
+
+  //if(p == 8) rsPlotComplexArrays(N/2, (double*)Om);
   //int dummy = 0;
 
 
@@ -145,6 +149,11 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
     }
 
   }
+
+
+  // For debug:
+  if(frameIndex == 8) 
+    rsPlotComplexArrays(spectrumSize/2, (double*)tmpSpectrum, (double*)spectrum);
 
   int dummy = 0;
 

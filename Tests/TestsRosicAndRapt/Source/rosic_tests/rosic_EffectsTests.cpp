@@ -918,7 +918,7 @@ void testSpectralShiftViaRS()
   double inputPhase   = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale    = 0.80;          // Scaling factor for the frequencies
+  double freqScale    = 0.8;           // Scaling factor for the frequencies
   int    blockSize    = 1024;          // Block size. Must be power of 2
   int    overlap      = 2;             // Overlap factor. Must be power of 2
   int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
@@ -934,7 +934,6 @@ void testSpectralShiftViaRS()
   createWaveform(&x[0], N, 0, inputFreq, sampleRate, RAPT::rsDegreeToRadiant(inputPhase), true);
   x = 0.5 * x;
 
-
   using PS = rosic::SpectralShifter;
   PS ps(blockSize, overlap, zeroPad);
   ps.setAlgorithm(PS::Algorithm::RobSchmt);
@@ -949,8 +948,9 @@ void testSpectralShiftViaRS()
   for(int n = 0; n < N; n++)
     y1[n] = ps.getSample(x[n]);
 
-  // For reference, generate output without without the phase formula:
-  ps.setPhaseFormula(PS::PhaseFormula::keepOriginal);
+  // For reference, generate output with different settings: 
+  //ps.setPhaseFormula(PS::PhaseFormula::keepOriginal); // without the phase formula
+  ps.setAlgorithm(PS::Algorithm::JuilHirs);             // with other algo
   ps.reset();
   Vec y2(numSamples);
   for(int n = 0; n < numSamples; n++)
@@ -982,6 +982,16 @@ void testSpectralShiftViaRS()
   //   alignment occurs but the non-aligned pitch-shifted signal looks actually good, too. Has also
   //   the right frequency and amplitude. It's just a bit phase-shifted.
   //  -The output is a little bit too quiet, though
+  //  -Trying to lower the frqScl to 0.75 or 2./3 does not really seem to lower the pitch of the
+  //   output sine. WTF? It's always 5 input peaks and 4 output peaks between the insteants of
+  //   alignments. It's as if the freqScale factor has locked in to a quantized value of 0.8=4/5
+  //  -Lowering it further to 0.6=3/5 seems to produce the right frequency - but the amplitude is 
+  //   too low and there are no instants of phase alignment. Increasing the zrPd does not help.
+  //  -Setting frqScl=1/3 produces garbage - just one blip
+  //  -Setting frqScl=1.1 produces strong amp-mod plus some sort of phase-mod and the output 
+  //   doesn't seem to have the right freq. There is no real single freq anyway
+  //  -setting frqScl=1.2 works better again. The output does have the right freq. But there's some
+  //   amp-mod going on.
 
   // -When using the synthesis window, the output is too quiet.
   // -With blockSize = 1024, freqScale = 2, inputPeriod = 100, the output shows strong amplitude
@@ -1012,6 +1022,12 @@ void testSpectralShiftViaRS()
   //  between two bins.
   //
   // Ideas:
+  // -Try to preserve energy of spectrum. That could perhaps fix the problem of the wrong 
+  //  amplitudes. Compute energy of input and output spectrum and scale output spectrum 
+  //  accordingly. But maybe it's better to do that in the time domain because then it will also
+  //  take all the windows into account. Maybe that can be done in class OverlapAddProcessor. It 
+  //  could have a member normalizeEnergy. Or it could have a member normalizationMode with 
+  //  settings none, peak, energy, rms (I think, energy and rms will give the same results)
 }
 
 
