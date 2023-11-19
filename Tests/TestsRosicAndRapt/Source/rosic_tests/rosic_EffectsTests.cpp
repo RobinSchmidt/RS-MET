@@ -799,9 +799,6 @@ void testSpectralShiftViaJH()
   // later we can introduce this additional multiplier for an optimization of the algorithm.
 
 
-
-
-
   // Setup:
 
   // Output file parameters:
@@ -813,7 +810,7 @@ void testSpectralShiftViaJH()
   double inputPhase  = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale   = 1.25;          // Scaling factor for the frequencies
+  double freqScale   = 0.81;          // Scaling factor for the frequencies
   int    blockSize   = 1024;          // Block size. Must be power of 2
   int    overlap     = 2;             // Overlap factor. Must be power of 2
   int    zeroPad     = 1;             // Zero padding factor. Must be power of 2
@@ -873,6 +870,24 @@ void testSpectralShiftViaJH()
   //  Before that, we are still in the messy transient phase. That is a strong indicator, that the
   //  formula for computing the twiddle factor is actually correct. Without the twiddle formula,
   //  we never get a perfect phase alignment between input and output.
+  // -freqScale = 0.9; blockSize 1024; overlap = 2; zeroPad = 1;
+  //  inputFreq = 128; inputPhase = 90;
+  //  -> very strong amplitude modulation
+  //  -> at 2048 samples, the shifted signal has the opposite phase to the input. This was one of 
+  //     the instants where where k = 0.8 and k = 1.25 gave a perfect phase match.
+  //  -> it happens also for k = 0.85. 
+  //  -> at k = 0.825, there's no modulation, opposite alignment at 2048, perfect alignment at 1792
+  //     and the signal is too quiet by a factor of 2.
+  // -freqScale = 0.8; blockSize 1024; overlap = 2; zeroPad = 1;
+  //  inputFreq = 150; inputPhase = 90;
+  //  -> gives really bad artifacts. I think these may be mitigated by a synthesis window.
+  //
+  // Explanations:
+  // -I think, that we sometimes get perfect alignment and sometimes total misalignment at 2048 but
+  //  nothing really in between can be explained as effect of the rounding. Sometimes it seems to 
+  //  be rounded to the right bin and sometimes to the wrong one. The target bin for the source bin
+  //  where the sinusoid is gets always quantized to the same bin, no matter whether 
+  //  k = 0.79, 0.8 or 0.81 - so all these settings lead to *exactly* the same results
 
   // Notes:
   // -We are not yet applying an output window. Try using one! But maybe this requires to use an
@@ -882,6 +897,14 @@ void testSpectralShiftViaJH()
   //  squared at O = 2. Maybe try other windows. Maybe try also a demodulation approach.
 }
 
+
+void testSpectralShiftViaRS()
+{
+
+}
+
+
+
 void rotes::spectralShifter()
 {
   // Under construction - does not yet work.
@@ -890,6 +913,7 @@ void rotes::spectralShifter()
   // preservation feature.
 
   testSpectralShiftViaJH();
+  testSpectralShiftViaRS();
 
 
   // Setup:
