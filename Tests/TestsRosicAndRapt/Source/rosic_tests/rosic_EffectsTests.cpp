@@ -932,23 +932,23 @@ void testSpectralShiftViaRS()
 
 
   using PS = rosic::SpectralShifter;
-  PS pitchShifter(maxBlockSize, maxOverlap, maxZeroPad);
-  pitchShifter.setAlgorithm(PS::Algorithm::RobSchmt);
-  pitchShifter.setFrequencyScale(freqScale);
-  pitchShifter.setInputBlockSize(blockSize);
-  pitchShifter.setOverlapFactor(overlap);
-  pitchShifter.setPaddingFactor(zeroPad);
-  pitchShifter.setPhaseFormula(PS::PhaseFormula::useMultiplier);
+  PS ps(maxBlockSize, maxOverlap, maxZeroPad);
+  ps.setAlgorithm(PS::Algorithm::RobSchmt);
+  ps.setFrequencyScale(freqScale);
+  ps.setInputBlockSize(blockSize);
+  ps.setOverlapFactor(overlap);
+  ps.setPaddingFactor(zeroPad);
+  ps.setPhaseFormula(PS::PhaseFormula::useMultiplier);
   Vec y1(N);
   for(int n = 0; n < N; n++)
-    y1[n] = pitchShifter.getSample(x[n]);
+    y1[n] = ps.getSample(x[n]);
 
   // For reference, generate output without without the phase formula:
-  pitchShifter.setPhaseFormula(PS::PhaseFormula::keepOriginal);
-  pitchShifter.reset();
+  ps.setPhaseFormula(PS::PhaseFormula::keepOriginal);
+  ps.reset();
   Vec y2(numSamples);
   for(int n = 0; n < numSamples; n++)
-    y2[n] = pitchShifter.getSample(x[n]);
+    y2[n] = ps.getSample(x[n]);
 
 
   // Plot input and output signals:
