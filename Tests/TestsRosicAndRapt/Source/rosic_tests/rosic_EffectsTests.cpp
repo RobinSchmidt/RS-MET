@@ -915,11 +915,11 @@ void testSpectralShiftViaRS()
   // Spectral shifter parameters:
   double freqScale    = 0.8;           // Scaling factor for the frequencies
   int    maxBlockSize = 4096;          // Maximum block size. Must be passed to constructor.
-  int    maxOverlap   = 4;             // Maximum overlap factor. Can be passed to constructor.
-  int    maxZeroPad   = 4;             // Max. zero padding factor. Can be passed to constructor.
+  int    maxOverlap   = 8;             // Maximum overlap factor. Can be passed to constructor.
+  int    maxZeroPad   = 8;             // Max. zero padding factor. Can be passed to constructor.
   int    blockSize    = 1024;          // Block size, must be <= maxBlockSize
   int    overlap      = 2;             // Overlap factor. Must be power of 2 and <= maxOverlap.
-  int    zeroPad      = 2;             // Zero padding factor. Must be power of 2 and <= maxZeroPad
+  int    zeroPad      = 1;             // Zero padding factor. Must be power of 2 and <= maxZeroPad
 
 
   // Create sinusoidal test signal:
@@ -978,6 +978,8 @@ void testSpectralShiftViaRS()
   //  yes - it shows that the first nonzero output block starts at 512 but there's only some small
   //  scale rippling going on for the first half of the first nonzero output buffer and the real
   //  signal starts at 768.
+  // -With zeroPad = 1, the output is too quite. I guess we need at least padding of tow because
+  //  the output my become longer than the input due to these time aliasing effects
   //
   // ToDo:
   // -Add the phase multiplication step. 
