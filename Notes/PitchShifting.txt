@@ -20,11 +20,16 @@ My Ideas
 - The method of LD could perhpas be modified by not translating the peaks along the frequency axis
   but rather by zeroing them out (with a smooth notchy gain function ceneterd at the peak), then 
   resynthesizing the block without the peaks and then adding the missing sinuosidal peaks using an 
-  oscillator bank (all before applying the synthesis window). The rationale is that this peak 
-  translation business may introduce artifacts due to the fact that we only translate the main lobe
-  and not the whole freq response of the peak. The osc bank would synthesize a perfect sinusoid at 
-  the new desired frequency.
-
+  oscillator bank (all before applying the synthesis window). 
+  - The rationale is that this peak translation business may introduce artifacts due to the fact 
+    that we only translate the main lobe and not the whole freq response of the peak. The osc bank 
+	would synthesize a perfect sinusoid at the new desired frequency. 
+  - It could also solve the problem of modulation artifacts when the new frequency ends up halfway
+    between bins and will therefore be spread over two new bins (assuming linear interpolation).
+  - To obtain more exact peak locations, we could run a second FFT using a 
+    Gaussian window. This second FFT is used only for analysis. The modifications and resynthesis 
+	will be done with a perfect overlap window such as Hann.
+  
 - The method presented in JH could potentially be improved by not using rounding but rather by 
   interpolating the complex spectrum. Maybe linear or polynomial interpolation could be suitable.
   

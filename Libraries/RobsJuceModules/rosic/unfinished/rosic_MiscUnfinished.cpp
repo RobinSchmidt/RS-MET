@@ -28,6 +28,44 @@ void SpectralShifter::processSpectrum(Complex* spec, int size)
 void SpectralShifter::shiftViaLD(Complex* spectrum, int spectrumSize)
 {
   RAPT::rsError("Not yet implemented");
+
+  // Implements the algorithm explained here:
+  //  https://www.ee.columbia.edu/~dpwe/papers/LaroD99-pvoc.pdf
+  //
+  // Notation used in the paper and in this implementation:
+  //   N    : FFT size
+  //   R    : hop size
+  //   K    : overlap factor (= N/R)
+  //   j    : imaginary unit
+  //   w    : "omega": normalized radian frequency of input sine (= 2*pi*frequency/sampleRate)
+  //   beta : desired frequency scale factor such that         wNew = w * beta
+  //   dw   : "Delta omega": desired frequency shift such that wNew = w + dw
+  //   Z_u  : twiddle factor Z_u = e^(j*dw*R). Should accumulate: Z_{u+1} = Z_u * dw_{u+1} * R
+  //          ...that's a bit unclear. These two formulas seem to conflict.
+  //
+  // Notation used in the paper that we don't need here:
+  //   n           : sample index
+  //   u           : frame index (I think)
+  //   a           : Not explained but isn't used in the formulas anyway
+  //   A           : input sinusoid's ampltiude
+  //   phi         : input sinusoid's start phase at n = 0
+  //   t_ua        : physical time corresponding to frame index u (I think)
+  //   h(n)        : analysis window (typically Hann)
+  //   x(n)        : input sine x(n) = A * e^(j(w*n + phi))
+  //   H(Om)       : Fourier trafo of h(n)
+  //   X(Om, t_ua) : STFT of x(n) at time t_ua
+
+
+
+
+  // Notes:
+  // -The two formulas to compute the phase twiddle factors:
+  //    Z_u = e^(j*dw*R)  and  Z_{u+1} = Z_u * dw_{u+1} * R
+  //  seem to be conflicting and the second doesn't seem to make a whole lot of sense anyway. The
+  //  dw_{u+1} * R factor isn't even of unit magnitude. Perhaps they mean something like:
+  //    Z_0 = 1, Z_{u+1} = Z_u * e^(j*dw*R)
+  //  That looks kinda more plausible for an accumulating phase twiddler. I think, it is this phase
+  //  twiddle factor that can be (soft) resetted to 1 on transients.
 }
 
 void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
@@ -85,6 +123,13 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
 
 
   // ToDo:
+  // -Gibe the variable b-a a name: dk (for "delta k"). It's the difference between the new bin b 
+  //  and the old bin a, i.e. a frequency difference measured in "number of bins". That's the 
+  //  value that LaroDols calls Delta-omega.
+  // -The LD paper says in section 3.5: "the phase rotations hosuld be cumulated from one frame to
+  //  the next". Maybe such a consideration applies to this algo also? If so, then the phase 
+  //  formula needs to be modifeid accordingly. Maybe introduce another field in the enum that 
+  //  switches to such an accumulating formula and try it.
   // -Check if skipping the DC bin is the right thing to do in general. Maybe zero out the 
   //  Nyquist freq in case of upshifting (imag part of bin zero).
   // -Check, if zeroing Om in the preparation step is really the right thing to do. What happens
