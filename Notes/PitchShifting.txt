@@ -1,14 +1,45 @@
+----------------------------------------------------------------------------------------------------
+Known Approaches
 
+Time Domain Methods:
+...
 
+Phase Vocoder:
+...
 
+Sinusoidal Modeling:
+...
 
-
-
-
+Filter Bank:
+...
 
 
 ----------------------------------------------------------------------------------------------------
-References:
+My Ideas
+
+- The method of LD could perhpas be modified by not translating the peaks along the frequency axis
+  but rather by zeroing them out (with a smooth notchy gain function ceneterd at the peak), then 
+  resynthesizing the block without the peaks and then adding the missing sinuosidal peaks using an 
+  oscillator bank (all before applying the synthesis window). The rationale is that this peak 
+  translation business may introduce artifacts due to the fact that we only translate the main lobe
+  and not the whole freq response of the peak. The osc bank would synthesize a perfect sinusoid at 
+  the new desired frequency.
+
+- The method presented in JH could potentially be improved by not using rounding but rather by 
+  interpolating the complex spectrum. Maybe linear or polynomial interpolation could be suitable.
+  
+- The method in LSM could perhaps be improved by using elliptic filters (the paper actually mentions 
+  this).
+
+- We could use complex ellpitic bandpasses and use their output to make estimations of instantaneous
+  amplitude and phase of the current band. We could use this information to do a modified 
+  resynthesis with an oscillator bank. We could integrate the instantaneous phase to obtain 
+  instantaneous frequency, modify that, differentiate and use the resulting new instantaneous phase.
+  We could perhaps also use the class SingleSineModeler. Maybe we could also use a perfect 
+  reconstruction FIR filter bank.
+
+----------------------------------------------------------------------------------------------------
+References
 
 FG:  Phase Vocoder
 	 J.L. Flanagan, R.M. Golden
