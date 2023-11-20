@@ -1,0 +1,34 @@
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------
+References:
+
+FG:  Phase Vocoder
+	 J.L. Flanagan, R.M. Golden
+     https://archive.org/details/bstj45-9-1493/mode/2up
+	 -The classic original paper about the topic
+	 -Uses time-scale and resample approach so it's not suitable for realtime pitch-shift
+
+LD:  NEW PHASE-VOCODER TECHNIQUES FOR PITCH-SHIFTING, HARMONIZING AND OTHER EXOTIC EFFECTS
+     Jean Laroche, Mark Dolson
+	 https://www.ee.columbia.edu/~dpwe/papers/LaroD99-pvoc.pdf
+	 -Operates purely in the frequency domain so it's suitable for realtime pitch-shift.
+
+JH:  Low latency audio pitch shifting in the frequency domain
+	 Nicolas Juillerat, Béat Hirsbrunner
+	 https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
+	 -Addresses latency issue by using an algorithm that is more robust to small FFT blocksizes 
+	  because it doesn't realy on an analysis step. It shifts "blindly".
+	 -Doesn't *translate* individual peaks but *scales* the whole spectrum - kind of
+
+LSM: Low latency audio pitch shifting in the time domain
+     Nicolas Juillerat, Simon Schubiger-Banz, Stefan Muller Arisona
+     https://ieeexplore.ieee.org/document/4590019
+	 -Uses filter a bank and frequency shifting approach
