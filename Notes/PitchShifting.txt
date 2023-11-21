@@ -17,8 +17,18 @@ Filter Bank:
 ----------------------------------------------------------------------------------------------------
 My Ideas
 
+- The method presented in JH could potentially be improved by not using rounding but rather by 
+  interpolating the complex spectrum. Maybe linear or polynomial interpolation could be suitable.
+  I have implemented this (with linear interpolation) along with the original method. Both 
+  implementations give mixed results.
+
+- I think, the problems with the JH method are due to the fact that the peaks in the spectrum are 
+  not merely translated (as they should be) but also have their bandwidths stretched out (in
+  upshifting) our squished (in downshifting). This results in a peak that does nor represent a pure
+  sinusoid anymore.
+
 - The method of LD could perhpas be modified by not translating the peaks along the frequency axis
-  but rather by zeroing them out (with a smooth notchy gain function ceneterd at the peak), then 
+  but rather by zeroing them out (with a smooth notchy gain function centered at the peak), then 
   resynthesizing the block without the peaks and then adding the missing sinuosidal peaks using an 
   oscillator bank (all before applying the synthesis window). 
   - The rationale is that this peak translation business may introduce artifacts due to the fact 
@@ -26,15 +36,23 @@ My Ideas
 	would synthesize a perfect sinusoid at the new desired frequency. 
   - It could also solve the problem of modulation artifacts when the new frequency ends up halfway
     between bins and will therefore be spread over two new bins (assuming linear interpolation).
-  - To obtain more exact peak locations, we could run a second FFT using a 
-    Gaussian window. This second FFT is used only for analysis. The modifications and resynthesis 
-	will be done with a perfect overlap window such as Hann.
-  
-- The method presented in JH could potentially be improved by not using rounding but rather by 
-  interpolating the complex spectrum. Maybe linear or polynomial interpolation could be suitable.
+  - To obtain more exact peak locations, we could run a second FFT using a Gaussian window. This
+    second FFT is used only for analysis. The modifications and resynthesis will be done with a
+	perfect overlap window such as Hann.
+  - The "smooth nochty gain function" should perhaps be 1 - mainlobe of analysis window. Maybe try 
+    to figure out what it *really* should look like to *perfectly* remove a single sinuosid. It will
+	probably also have to affect all other frequencies via the sidelobes. Maybe it should be a 
+	complex valued gain function. From there, derive a reasonable approximation.
   
 - The method in LSM could perhaps be improved by using elliptic filters (the paper actually mentions 
-  this).
+  this). Maybe the elliptic filters could be adaptive and track the incoming frequency. This could 
+  be realized as follows: run 3 filters in parallel where the center filter is responsible for our
+  actual output. We anaylze the output energy in each filter and if and the upper has higher energy
+  than the center, all centr frequencies get increassed a little. Likewise, if the lower filter has
+  highes energy, all freqs get lowered. We alway try to maintain the highest energy in the center
+  filter. ...such a strategy might be complicated by the fact that there are other filter bands, 
+  too. We'll see. Maybe the idea is not so good, after all. For this, state-variable filters or 
+  state-vector filters should be used because normal biquads do not respond well to modulation.
 
 - We could use complex ellpitic bandpasses and use their output to make estimations of instantaneous
   amplitude and phase of the current band. We could use this information to do a modified 
@@ -42,6 +60,11 @@ My Ideas
   instantaneous frequency, modify that, differentiate and use the resulting new instantaneous phase.
   We could perhaps also use the class SingleSineModeler. Maybe we could also use a perfect 
   reconstruction FIR filter bank.
+
+- The JH paper mentions in section 3.7 that processing two stereo channels independently can mess up
+  the stereo field. This is no problem for the JH algorithm but might be for the LD algo. To fix it,
+  we should perhaps apply the same processing to both channels based on an analysis performed on the
+  stereo sum.
 
 ----------------------------------------------------------------------------------------------------
 References
@@ -52,19 +75,20 @@ FG:  Phase Vocoder
 	 -The classic original paper about the topic
 	 -Uses time-scale and resample approach so it's not suitable for realtime pitch-shift
 
-LD:  NEW PHASE-VOCODER TECHNIQUES FOR PITCH-SHIFTING, HARMONIZING AND OTHER EXOTIC EFFECTS
+LD:  New Phase-Vocoder Techniques for Pitch-Shifting, Harmonizing and other Exotic Effects
      Jean Laroche, Mark Dolson
 	 https://www.ee.columbia.edu/~dpwe/papers/LaroD99-pvoc.pdf
 	 -Operates purely in the frequency domain so it's suitable for realtime pitch-shift.
 
 JH:  Low latency audio pitch shifting in the frequency domain
-	 Nicolas Juillerat, Béat Hirsbrunner
+	 Nicolas Juillerat, Béat Hirsbrunner 
 	 https://www.researchgate.net/publication/261078164_Low_latency_audio_pitch_shifting_in_the_frequency_domain
 	 -Addresses latency issue by using an algorithm that is more robust to small FFT blocksizes 
-	  because it doesn't realy on an analysis step. It shifts "blindly".
-	 -Doesn't *translate* individual peaks but *scales* the whole spectrum - kind of
+	  because it doesn't realy on an analysis step. It shifts the whole spectrum "blindly".
+	 -Doesn't *translate* individual peaks but *scales* the whole spectrum (kind of).
 
 LSM: Low latency audio pitch shifting in the time domain
      Nicolas Juillerat, Simon Schubiger-Banz, Stefan Muller Arisona
      https://ieeexplore.ieee.org/document/4590019
 	 -Uses filter a bank and frequency shifting approach
+	 -Has low latency but no perfect reconstruction at neutral setting.
