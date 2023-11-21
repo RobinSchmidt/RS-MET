@@ -7,10 +7,11 @@ is on musical DSP algorithms such as those realtime algorithms that you will fin
 plugins (filters, dynamics, chorus, reverb, pitch-shift, etc.) or offline/non-realtime algorithms 
 that you find sample editors (time-stretch, spectral modeling, etc.). I have also some side 
 interests in adjacent fields such as image processing, computer graphics and numerical simulation. 
-I'm not an expert in these other fields, though. I just have a general fascination for any kind of 
-mathematical algorithm that can (at least potentially) be used for creative, artistic purposes. If 
-you think you have a challenge for me in one of those fields and have some money to spare to get the 
-problem solved once and for all, feel free to contact me via robin@rs-met.com.
+I'm not an expert in these other fields, though. I'm primarily an audio DSP guy with a more general 
+fascination for any kind of mathematical algorithm that can (at least potentially) be used for 
+creative, artistic purposes. If you think you have a challenge for me in one of those fields and 
+have some money to spare to get you DSP or otherwise algorithmic problem solved once and for all, 
+feel free to contact me via robin@rs-met.com.
 
 ----------------------------------------------------------------------------------------------------
 Pricing:  
@@ -27,8 +28,7 @@ Pricing:
 - Milestone-based charging. Work for one week is scheduled and an appropriate milestone is defined, 
   then I'll do the work and when the milestone is reached I charge the 1600€ = 40 h * 40 €/h. If
   really necessary, the granularity can be reduced within reason - say down to days - but no 
-  micro-accounting anymore (like keeping a tab of worktimes to 5 min precision as I previuosly did). 
-  That's really a drag on productivity. The minimum amount of work to purchase is one week. 
+  micro-accounting* anymore. The minimum amount of work to purchase is one week. 
  
 - For reliable long term collaborations, there might be some discount on the hourly rates. This is 
   usually implemented by just doing more work hours than what is being billed rather than by 
@@ -55,6 +55,12 @@ Pricing:
   newer versions of the code cost 1/10 of the original license price - without the for-work 
   discounts but with the for-quantity discounts. If upgrades were purchased, the most recently 
   purchased upgrade counts, i.e. upgrading has also an updating side effect. 
+
+
+(*) By "micro-accounting" I mean a practice that I previously did: I was keeping a tab of work 
+times (to 5 min accuracy) and whenever the accumulated work time exceeded some threshold (it was set 
+to 1000€), I invoiced those 1000€ and started a new tab. But I found that to be a real drag on 
+productivity. I think, milestones make more sense.
 
 ----------------------------------------------------------------------------------------------------
 Project Ideas and Proposals:
