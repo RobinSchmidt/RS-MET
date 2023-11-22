@@ -829,26 +829,6 @@ void testSpectralShift()
   // Experiments with the Juillerat/Hirsbrunner (JH) algorithm:
 
 
-  testSpectralShifter(0.55, JH, 1024, 2, 8, true, false,  2, Mul,  0, 128, 90.0);
-
-  testSpectralShifter(0.55, JH, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
-  // -Produces a freq shift of 1/2
-  // -Amplitude is too low
-  // -Phase is not aligned - shifted by a quarter of a cycle.
-
-  testSpectralShifter(0.55, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
-  // -3 input peaks align with 2 output peaks at around 1536 and 1795. That's a ratio of 2/3, not
-  //  the requested 3/5
-  // -The amplitude looks good.
-
-
-  testSpectralShifter(0.55, JH, 1024, 2, 2, true, false,  2, Mul,  0, 128, 90.0);
-  // -Produces a freq shift of 1/2
-  // -Amplitude is too low
-  // -Phase is not aligned - shifted by half a cycle.
-
-
-
 
 
 
@@ -863,10 +843,33 @@ void testSpectralShift()
   //  with phase resets.
 
   testSpectralShifter(0.50, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
-  // -Looks good from sample 1535 onwards, i.e. after the transients/warm-up phase.
+  // -Looks good from sample 1535 onwards, i.e. after the transient/warm-up phase.
 
 
+  testSpectralShifter(0.55, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -3 input peaks align with 2 output peaks at around 1536 and 1795. That's a ratio of 2/3, not
+  //  the requested 3/5
+  // -The amplitude looks good.
 
+  // OK - now we try the same scale factor 0.55 with some amount of zero padding:
+  testSpectralShifter(0.55, JH, 1024, 2, 2, true, false,  2, Mul,  0, 128, 90.0);
+  // -Produces a freq shift of 1/2
+  // -Amplitude is too low
+  // -Phase is not aligned - shifted by half a cycle.
+
+  // ...let's try even more zero padding:
+  testSpectralShifter(0.55, JH, 1024, 2,  4, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(0.55, JH, 1024, 2,  8, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(0.55, JH, 1024, 2, 16, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(0.55, JH, 1024, 2, 32, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(0.55, JH, 1024, 2, 64, true, false,  2, Mul,  0, 128, 90.0);
+  // -Produces a freq shift of 1/2
+  // -Amplitude is too low
+  // -Phase is not aligned - shifted by a quarter of a cycle.
+  // -Modifying the phase multiplier formula to remove the zero-padding factor "m" from it does
+  //  not make a big difference - the difference is just in some tiny details
+  // -Increasing the zero padding up to 16 gives quality improvements (flatter amplitude, less 
+  //  transient artifacts). Goig even higher than 16 has diminishing returns.
 
 
   testSpectralShifter(0.60, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
@@ -880,13 +883,38 @@ void testSpectralShift()
   //  desired 0.65
   // -Also, the output amplitude is too low. Roughly half of what it should be
 
+  testSpectralShifter(0.75, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -Produces a rate of 4/5=0.7 instead of 3/4=0.75
+  // -Has weird initial transient
+
+
   testSpectralShifter(0.80, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Looks pretty good!
+
+  // Use cosine window (not-squared) window for analysis and synthesis:
+  testSpectralShifter(0.80, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
+  // -Freq ratio looks right
+  // -Has some amplitude modulation
+
+  // OK - back to cosine-squared but with higher overlap factor of 4 to compensate for the
+  // synthesis window:
+  testSpectralShifter(0.80, JH, 1024, 4, 1, true, true,   2, Mul,  0, 128, 90.0);
+  // -output has same freq as input and amplitude is far too low
+
+  // ..and now also with a bit of zero-padding:
+  testSpectralShifter(0.80, JH, 1024, 4, 2, true, true,   2, Mul,  0, 128, 90.0);
+  // -Does no freq scale at all
+  // -Amplitude is far too low and modulated
+
 
   testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Looks pretty good!
   testSpectralShifter(1.5,  JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
 
+  // Observations
+  // -For some settings, it seems to work well, for other it doesn't work at all. It may produce
+  //  -wrong frequency rations and the amplitude may also be wrong. 
+  // -It seems like it wants to "lock in" to certain freq ratios, for example 4/5. 
 
 
   //-----------------------------------------------------------------------------------------------

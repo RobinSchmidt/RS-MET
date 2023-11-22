@@ -111,7 +111,12 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
 
     // Optionally apply phase correction according to modified Eq. 2 on top-right on page 3:
     if(phaseFormula == PhaseFormula::useMultiplier)
-      Om[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
+    {
+
+      Om[b] *= expC(-i * ((double(b-a)*p)/(O)) * (2*PI/N));  // for test
+
+      //Om[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
+    }
   }
 
   // For debugging - plot (partial) spectrum of 8th STFT frame:
@@ -193,7 +198,10 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
       int    m = paddingFactor;
       int    N = spectrumSize;
       Complex i(0,1);
-      spectrum[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
+
+      //spectrum[b] *= expC(-i * ((double(b-a)*p)/(O)) * (2*PI/N));  // for test
+
+      spectrum[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));  // normal
     }
   }
 
