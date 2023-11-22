@@ -825,18 +825,27 @@ void testSpectralShift()
   SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
 
+  //-----------------------------------------------------------------------------------------------
+  // Experiments with the Juillerat/Hirsbrunner (JH) algorithm:
 
+  testSpectralShifter(0.55, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -3 input peaks align with 2 output peaks at around 1536 and 1795. That's a ratio of 2/3, not
+  //  the requested 3/5
+  // -The amplitude looks good.
+
+  testSpectralShifter(0.60, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -3 input peaks align with 2 output peaks at around 1666 and 2180. That's a ratio of 2/3, not
+  //  the requested 3/5
+  // -Output amplitude is half of what is should be.
 
   testSpectralShifter(0.65, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -After 5 peaks of input and 4 peaks of output, we get phase aslignment again. This happens
   //  for example at samples around 1800 and 2300. But that's a freq-ration of 4/5 = 0.8 not the
   //  desired 0.65
   // -Also, the output amplitude is too low. Roughly half of what it should be
-  
 
   testSpectralShifter(0.50, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Looks good from sample 1535 onwards, i.e. after the transients/warm-up phase.
-
 
   testSpectralShifter(0.80, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Looks pretty good!
@@ -847,9 +856,8 @@ void testSpectralShift()
 
 
 
-
-
-
+  //-----------------------------------------------------------------------------------------------
+  // Experiments with my first attempt for an algorithm:
 
   testSpectralShifter(0.80, RS, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
   // -The phase of the output periodically aligns with the phase of the input (at peak) at samples: 
@@ -865,8 +873,6 @@ void testSpectralShift()
   //  phase-shifted. ..right amplitude?...nope that's not true. that must ahve been a different
   //  setting! But I remember having seen really good outputs with correct amp and phase. Check
   //  older versions of the code for the settings that have achieved this!
-
-
 
   // -We use the Juillerat/Hirsbrunner algorithm with blockSize of 1024 and a sinusoidal input with
   //  a cycle length of 128 samples ...TBC..
