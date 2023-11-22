@@ -816,7 +816,29 @@ void testSpectralShifter(double freqScale,
   int dummy = 0;
 }
 
+void testSpectralShift()
+{
+  using SS = rosic::SpectralShifter;
+  SS::Algorithm    JH  = SS::Algorithm::JuilHirs;
+  SS::PhaseFormula Mul = SS::PhaseFormula::useMultiplier;
 
+  // Experiment 1:
+  // -We use the Juillerat/Hirsbrunner algorithm with blockSize of 1024 and a sinusoidal input with
+  //  a cycle length of 128 samples ...TBC..
+  testSpectralShifter(0.8, JH, 1024, 2, 4, true, true, 2, Mul, 0, 128, 90.0);
+
+
+  int dummy = 0;
+
+  // This function should eventually replace testSpectralShiftViaJH/RS. We need to go through the 
+  // comments there and for each setting make a correspoding function call here and the copy the 
+  // observations´directly under the call to the experiment. That makes it much cleaner and more
+  // orderly to conduct the experiments and document the results.
+}
+
+
+
+// Soon to be obsolete:
 void testSpectralShiftViaJH()
 {
   // Tests our implementation of the spectral pitch shifting algorithm of  Nicolas Juillerat and 
@@ -847,6 +869,9 @@ void testSpectralShiftViaJH()
   // similar effect using the zero padding feature. This is actually supposed to give even higher 
   // quality results because it increases the FFT size at the analysis *and* synthesis side. Maybe 
   // later we can introduce this additional multiplier for an optimization of the algorithm.
+
+
+
 
 
   // Setup:
@@ -956,6 +981,7 @@ void testSpectralShiftViaJH()
   // https://gist.github.com/jconst/dfded80e037490d0d27fe821f18a8dee
 }
 
+// Soon to be obsolete:
 void testSpectralShiftViaRS()
 {
   // Tests an algorithm that was my own idea. ...TBC...
@@ -1105,14 +1131,9 @@ void rotes::spectralShifter()
   // We want to build a pitch shifter based on spectral processing. It should have a transient 
   // preservation feature.
 
+  testSpectralShift();
   testSpectralShiftViaJH();
   testSpectralShiftViaRS();
-
-
-
-
-
-
 
 
 
