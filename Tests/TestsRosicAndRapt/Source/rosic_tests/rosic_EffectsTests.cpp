@@ -836,7 +836,16 @@ void testSpectralShift()
   //int    winPower     = 2;             // power/exponent for the cos^n window
 
 
+  testSpectralShifter(0.50, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+
   testSpectralShifter(0.80, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -Looks pretty good!
+
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -Looks pretty good!
+
+
+
 
 
   testSpectralShifter(0.80, RS, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
@@ -1170,13 +1179,9 @@ void rotes::spectralShifter()
   // We want to build a pitch shifter based on spectral processing. It should have a transient 
   // preservation feature.
 
-
-  testSpectralShiftViaRS();
   testSpectralShift();
+  testSpectralShiftViaRS();
   testSpectralShiftViaJH();
-
-
-
 
   // Resources:
   // https://www.reddit.com/r/DSP/comments/k6t24c/pitch_shifting_algorithm_in_frequency_domain/
