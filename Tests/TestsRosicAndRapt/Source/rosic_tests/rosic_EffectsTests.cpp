@@ -767,6 +767,52 @@ void rotes::formantShifter()
 }
 
 
+// The function parameters form 3 groups: (1) creative parameters (currently only 1: freqScale),
+// (2) technical parameters (algo, blocksize, ...), (3) input signal parameters.
+// inputWaveform: 0: sine, 1: saw, 2: square, 3: triangle
+
+void testSpectralShifter(double freqScale, 
+  rosic::SpectralShifter::Algorithm algo, int blockSize, int overlap, int zeroPad, 
+  bool useAnalysisWindow, bool useSynthesisWindow, int windowPower, 
+  rosic::SpectralShifter::PhaseFormula phaseFormula,
+  int inputWaveform, int inputPeriod, double inputPhase)
+{
+  int numSamples = 8 * blockSize;  // We should produce enough blocks to pass the transient phase
+  int sampleRate = 44100;          // Needed for output file
+
+  // Create inpput signal:
+  using Vec = std::vector<double>;
+  double inputFreq = sampleRate / inputPeriod;
+  Vec x(numSamples);
+  createWaveform(&x[0], numSamples, inputWaveform, inputFreq, (double)sampleRate, 
+    RAPT::rsDegreeToRadiant(inputPhase), true);
+  x = 0.5 * x;
+
+  // Apply pitch shifting:
+  using SS = rosic::SpectralShifter;
+  rosic::SpectralShifter ps(blockSize, overlap, zeroPad);
+  ps.setAlgorithm(algo);
+  ps.setFrequencyScale(freqScale);
+  ps.setInputBlockSize(blockSize);
+  ps.setOverlapFactor(overlap);
+  ps.setPaddingFactor(zeroPad);
+  ps.setUseInputWindow(useAnalysisWindow);
+  ps.setUseOutputWindow(useSynthesisWindow);
+  ps.setPhaseFormula(phaseFormula);
+  Vec y(numSamples);
+  for(int n = 0; n < numSamples; n++)
+    y[n] = ps.getSample(x[n]);
+
+  // Plot input and output signals:
+  rsPlotVectors(x, y);
+
+  // Maybe write wavefile:
+  // ...
+
+  int dummy = 0;
+}
+
+
 void testSpectralShiftViaJH()
 {
   // Tests our implementation of the spectral pitch shifting algorithm of  Nicolas Juillerat and 
@@ -921,7 +967,7 @@ void testSpectralShiftViaRS()
   double inputPhase   = 90;            // Phase in degrees
 
   // Spectral shifter parameters:
-  double freqScale    = 0.8;          // Scaling factor for the frequencies
+  double freqScale    = 0.8;           // Scaling factor for the frequencies
   int    blockSize    = 1024;          // Block size. Must be power of 2
   int    overlap      = 2;             // Overlap factor. Must be power of 2
   int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
@@ -1055,9 +1101,9 @@ void rotes::spectralShifter()
   // We want to build a pitch shifter based on spectral processing. It should have a transient 
   // preservation feature.
 
-
-  testSpectralShiftViaRS();
   testSpectralShiftViaJH();
+  testSpectralShiftViaRS();
+
 
 
 
