@@ -775,7 +775,7 @@ void testSpectralShifter(double freqScale,
   rosic::SpectralShifter::Algorithm algo, int blockSize, int overlap, int zeroPad, 
   bool useAnalysisWindow, bool useSynthesisWindow, int windowPower, 
   rosic::SpectralShifter::PhaseFormula phaseFormula,
-  int inputWaveform, int inputPeriod, double inputPhase)
+  int inputWaveform, double inputPeriod, double inputPhase)
 {
   int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
   int sampleRate = 44100;          // Needed for output file
@@ -814,6 +814,9 @@ void testSpectralShifter(double freqScale,
   //  inputs signal...or maybe write input into left channel and output into right. Thenwe can drop
   //  the _Output part.
 
+  // ToDo: factor out a pure signal generation function to enable gettign signals for two settings
+  //  and plot them together
+
   int dummy = 0;
 }
 
@@ -825,12 +828,32 @@ void testSpectralShift()
   SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
 
+
   //-----------------------------------------------------------------------------------------------
   // Experiments with the Juillerat/Hirsbrunner (JH) algorithm:
 
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Keep, 0, 128, 90.0);
+  // -After the transient has passed, i.e. from sample 1536 onwards, this result looks really good!
+  //  I'd say perfect!
+  // -Freq ratio is correct, amplitude is corrrect, no amp-mod and phases align periodically.
 
+  // Now with the phase multiplier formula
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -This looks almost perfect but the cosine peaks seem  to be shifted by one sample to the 
+  //  right. This is weird!
 
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   1, Keep, 0, 128, 90.0);
+  // -Looks quite good
+  // -The phases of input and output are aligned at sample indices n*512 when n >= 3. That is: the 
+  //  first such alignment occurs at sample 1536, the next at 2048. Before that, we are still in 
+  //  the messy transient phase. That is a strong indicator, that the formula for computing the 
+  //  twiddle factor is actually correct. Without the twiddle formula, we never get a perfect phase 
+  //  alignment between input and output.
+  // -Has some amp-mod but not too bad.
 
+  // Now with synthesis window, using cosine window for analysis and synthesis:
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
+  // -some amp-mod but not too much. freq-ratio is as expected and phases align periodcially
 
 
 
@@ -925,7 +948,14 @@ void testSpectralShift()
   // -For some settings, it seems to work well, for other it doesn't work at all. It may produce
   //  -wrong frequency rations and the amplitude may also be wrong. 
   // -It seems like it wants to "lock in" to certain freq ratios, for example 4/5. 
-
+  //
+  // Explanations:
+  // -I think, that we sometimes get perfect alignment and sometimes total misalignment at 2048 but
+  //  nothing really in between can be explained as effect of the rounding. Sometimes it seems to 
+  //  be rounded to the right bin and sometimes to the wrong one. The target bin for the source bin
+  //  where the sinusoid is gets always quantized to the same bin, no matter whether 
+  //  k = 0.79, 0.8 or 0.81 - so all these settings lead to *exactly* the same results
+  //
   // Conclusion:
   // -The JH algorithm doesn't really look too promising but maybe I'm doing something wrong. 
   //  this here is supposed to be an implementaion of the algo:
@@ -957,7 +987,6 @@ void testSpectralShift()
   testSpectralShifter(0.80, JH, 1024, 2, 2, true, false, 2, Mul,  0, 128, 90.0);
   testSpectralShifter(0.80, JH, 1024, 2, 2, true, false, 2, Keep, 0, 128, 90.0);
   testSpectralShifter(1.25, JH, 1024, 2, 2, true, false, 2, Mul,  0, 128, 90.0);
-
 
 
   int dummy = 0;
@@ -1001,8 +1030,6 @@ void testSpectralShiftViaJH()
   // similar effect using the zero padding feature. This is actually supposed to give even higher 
   // quality results because it increases the FFT size at the analysis *and* synthesis side. Maybe 
   // later we can introduce this additional multiplier for an optimization of the algorithm.
-
-
 
 
 
@@ -1070,19 +1097,8 @@ void testSpectralShiftViaJH()
   // -With freqScale = 2, the discontinuities in the first frames disappear but the amp modulation 
   //  gets worse. There is also some amount of negative DC between 512 and 768 when the phase is 
   //  zero. With 90, this is not the case. The amp-modulation period is 512 samples.
-  // -For a downward shift with freqScale = 0.5, there is no such amplitude modulation. Strangely, 
-  //  there doesn't seem to be any difference between multiplying by w or not. Maybe that's a 
-  //  special case?
-  // -For input period = 128 and k = 1.25 and k = 0.8, we do not see amp-mod. For k = 1.2, there's
-  //  strong amp mod. For k = 1.6, there's little amp mod but the amp is too low overall. Looks 
-  //  like it's half of what it should be.
-  // -The difference between using and not using the phase-multiplier becomes apparent with
-  //  inputPeriod = 32 - at least in the FFT spectrum. ToDo: generate output with and without the
-  //  phase multiplier and plot both - and their difference.
-  // -For k = 1.25 the phases of input and output are aligned at sample indices n*512 when n >= 3.
-  //  Before that, we are still in the messy transient phase. That is a strong indicator, that the
-  //  formula for computing the twiddle factor is actually correct. Without the twiddle formula,
-  //  we never get a perfect phase alignment between input and output.
+
+
   // -freqScale = 0.9; blockSize 1024; overlap = 2; zeroPad = 1;
   //  inputFreq = 128; inputPhase = 90;
   //  -> very strong amplitude modulation
@@ -1091,25 +1107,6 @@ void testSpectralShiftViaJH()
   //  -> it happens also for k = 0.85. 
   //  -> at k = 0.825, there's no modulation, opposite alignment at 2048, perfect alignment at 1792
   //     and the signal is too quiet by a factor of 2.
-
-
-
-  //
-  // Explanations:
-  // -I think, that we sometimes get perfect alignment and sometimes total misalignment at 2048 but
-  //  nothing really in between can be explained as effect of the rounding. Sometimes it seems to 
-  //  be rounded to the right bin and sometimes to the wrong one. The target bin for the source bin
-  //  where the sinusoid is gets always quantized to the same bin, no matter whether 
-  //  k = 0.79, 0.8 or 0.81 - so all these settings lead to *exactly* the same results
-
-  // Notes:
-  // -We are not yet applying an output window. Try using one! But maybe this requires to use an
-  //  overlap of 4 instead ot 2. I think a Hann window squared overlpas to one only with hopSize
-  //  = blockSize / 4. The hann window itself overslap to one already with hopSize = blockSize / 2.
-  //  Another option could be to use a sqrt(Hann) window. That should overlap perfectly when 
-  //  squared at O = 2. Maybe try other windows. Maybe try also a demodulation approach.
-
-
 }
 
 // Soon to be obsolete:
@@ -1264,8 +1261,9 @@ void rotes::spectralShifter()
   // preservation feature.
 
   testSpectralShift();
-  testSpectralShiftViaRS();
   testSpectralShiftViaJH();
+  testSpectralShiftViaRS();
+
 
   // Resources:
   // https://www.reddit.com/r/DSP/comments/k6t24c/pitch_shifting_algorithm_in_frequency_domain/
