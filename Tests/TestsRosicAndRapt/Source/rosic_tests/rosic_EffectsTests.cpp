@@ -835,11 +835,17 @@ void testSpectralShift()
   //bool   synWindow    = false;         // Use synthesis window or not
   //int    winPower     = 2;             // power/exponent for the cos^n window
 
+
+  testSpectralShifter(0.80, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+
+
   testSpectralShifter(0.80, RS, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
   // -The phase of the output periodically aligns with the phase of the input (at peak) at samples: 
   //  1152, 1664, 2176, ... in general at: 1152 + n*512. The difference between these alignment 
   //  instants is 512 = 4*inCyc. 
   // -The output is a little bit too quiet, though  
+
+  testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
   
   testSpectralShifter(0.80, RS, 1024, 2, 2, true, false,  2, Keep,  0, 128, 90.0);
   // -Without the phase formula, no phase alignment occurs but the non-aligned pitch-shifted signal 
