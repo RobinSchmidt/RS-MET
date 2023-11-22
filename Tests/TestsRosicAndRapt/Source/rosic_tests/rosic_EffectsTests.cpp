@@ -777,8 +777,7 @@ void testSpectralShifter(double freqScale,
   rosic::SpectralShifter::PhaseFormula phaseFormula,
   int inputWaveform, int inputPeriod, double inputPhase)
 {
-  //int numSamples = 8 * blockSize;  // We should produce enough blocks to pass the transient phase
-  int numSamples = 4410;
+  int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
   int sampleRate = 44100;          // Needed for output file
 
   // Create inpput signal:
@@ -826,23 +825,27 @@ void testSpectralShift()
   SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
 
-  // Spectral shifter parameters:
-  //double freqScale    = 0.8;           // Scaling factor for the frequencies
-  //int    blockSize    = 1024;          // Block size. Must be power of 2
-  //int    overlap      = 2;             // Overlap factor. Must be power of 2
-  //int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
-  //bool   anaWindow    = true;          // Use analysis window or not
-  //bool   synWindow    = false;         // Use synthesis window or not
-  //int    winPower     = 2;             // power/exponent for the cos^n window
 
+
+  testSpectralShifter(0.65, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -After 5 peaks of input and 4 peaks of output, we get phase aslignment again. This happens
+  //  for example at samples around 1800 and 2300. But that's a freq-ration of 4/5 = 0.8 not the
+  //  desired 0.65
+  // -Also, the output amplitude is too low. Roughly half of what it should be
+  
 
   testSpectralShifter(0.50, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -Looks good from sample 1535 onwards, i.e. after the transients/warm-up phase.
+
 
   testSpectralShifter(0.80, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Looks pretty good!
 
   testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Looks pretty good!
+  testSpectralShifter(1.5,  JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+
+
 
 
 
