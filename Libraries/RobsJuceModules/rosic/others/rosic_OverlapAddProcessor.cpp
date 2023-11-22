@@ -100,51 +100,61 @@ void OverlapAddProcessor::clearBuffers()
 
 void OverlapAddProcessor::prepareBlockForProcessing()
 {
-  // copy (a part of) the circular input buffer into the temporary processing buffer:
+  // Copy (a part of) the circular input buffer into the temporary processing buffer:
   int rp = writePosition - blockSize;  // read-position in circular buffer
   int wp = 0;                          // write-position in tmp-buffer
-  if( rp < 0 )
+  if(rp < 0)
     rp += maxBlockSize;
-  for(wp=0; wp<blockSize; wp++)   
+  for(wp = 0; wp < blockSize; wp++)
   {
     tmp[wp] = x[rp];
     rp++;
-    if( rp >= maxBlockSize ) 
+    if(rp >= maxBlockSize)
       rp = 0;
   }
 
-  // apply window function, if desired:
-  if( useInputWindow == true )
+  rsPlotArray(tmp, blockSize, "Raw input block");  // for debug
+
+  // Apply window function, if desired:
+  if(useInputWindow == true)
   {
-    for(wp=0; wp<blockSize; wp++)
+    for(wp = 0; wp < blockSize; wp++)
       tmp[wp] *= w[wp];
   }
 
-  // zero-pad tmp-buffer, if desired:
-  for(wp=blockSize; wp<paddingFactor*blockSize; wp++)
+  rsPlotArray(tmp, blockSize, "Windowed input block");  // for debug
+
+  // Zero-pad tmp-buffer, if desired:
+  for(wp = blockSize; wp < paddingFactor*blockSize; wp++)
     tmp[wp] = 0.0;
+
+  rsPlotArray(tmp, paddingFactor*blockSize, "Padded input block");  // for debug
 }
 
 void OverlapAddProcessor::postProcessBlock()
 {
-  // copy content of the temporary buffer into the appropriate output buffer:
+  // Copy content of the temporary buffer into the appropriate output buffer:
   int n;
-  for(n=0; n<paddingFactor*blockSize; n++)
+  for(n = 0; n < paddingFactor*blockSize; n++)
     y[nextOutBuffer][n] = tmp[n];
 
-  // apply output window, if desired:
+  rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Raw output block");  // for debug
+
+  // Apply output window, if desired:
   if( useOutputWindow == true )
   {
-    for(n=0; n<blockSize; n++)   
+    for(n = 0; n < blockSize; n++)   
       y[nextOutBuffer][n] *= w[n];
-    for(n=blockSize; n<paddingFactor*blockSize; n++)
+    for(n = blockSize; n < paddingFactor*blockSize; n++)
       y[nextOutBuffer][n] = 0.0;
   }
 
-  // reset the read-potsition in the output-buffer:
+  rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Windowed output block ");  // for debug
+
+  // Reset the read-potsition in the output-buffer:
   readPositions[nextOutBuffer] = 0;
 
-  // update the variable for the next output-buffer to write into:
+  // Update the variable for the next output-buffer to write into:
   nextOutBuffer++;
   if( nextOutBuffer >= overlapFactor*paddingFactor )
     nextOutBuffer = 0;

@@ -25,9 +25,11 @@ plotting functions wil actually invoke the plotter in this project. */
 #include "GNUPlotter.h"
 
 template<class T>
-inline void rsPlotArray(const T* x, int N)
+inline void rsPlotArray(const T* x, int N, const char* title = nullptr)
 {
   GNUPlotter plt;
+  plt.setToDarkMode(); 
+  plt.setTitle(title);
   plt.plotArrays(N, x);
 }
 

@@ -142,7 +142,7 @@ protected:
   double* x;                    // circular input buffer
   double* tmp;                  // temporary buffer for processing
   double* w;                    // window function
-  int* readPositions;        // read positions in the y-buffers
+  int* readPositions;           // read positions in the y-buffers
   double** y;                   // output buffers
   double gain;
   int    blockSize, overlapFactor, paddingFactor, hopSize;

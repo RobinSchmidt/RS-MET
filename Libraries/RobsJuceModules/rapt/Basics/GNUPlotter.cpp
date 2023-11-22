@@ -326,6 +326,7 @@ void GNUPlotter::setToDarkMode()
   addCommand("set xlabel textcolor rgb \"white\"");
   addCommand("set ylabel textcolor rgb \"white\"");
   addCommand("set key textcolor \"white\"");
+  addCommand("set title textcolor \"white\"");
 
   //addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#F0F0F0\""); // What does this do?
 
@@ -352,6 +353,7 @@ void GNUPlotter::setToLightMode()
   addCommand("set xlabel textcolor rgb \"black\"");
   addCommand("set ylabel textcolor rgb \"black\"");
   addCommand("set key textcolor \"black\"");
+  addCommand("set title textcolor \"black\"");
 
   //addCommand("set style line 1 lt 1 lw 3 pt 3 linecolor rgb \"#101010\""); // What does this do?
 
