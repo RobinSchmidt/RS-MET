@@ -833,6 +833,7 @@ void testSpectralShift()
 
 
 
+
   testSpectralShifter(0.30, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Produces a good 2/5=0.4 shift from sample 1536 onwards. 
   // -Amplitude looks good.
@@ -907,6 +908,15 @@ void testSpectralShift()
   // -Amplitude is far too low and modulated
 
 
+  // Now with an input freq that doesn't fit so well into the block:
+  testSpectralShifter(0.80, JH, 1024, 2, 1, true, false,  2, Mul,  0, 150, 90.0);
+  // -Gives really bad artifacts (discontinuities). I think these may be mitigated by a synthesis 
+  //  window.
+
+  // ...OK - so now with synthesis window:
+  testSpectralShifter(0.80, JH, 1024, 2, 1, true, true,  2, Mul,  0, 150, 90.0);
+  // -Produces a freq-ratio of about 8/11 and heavy amplitude and shape modulations.
+
   testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Looks pretty good!
   testSpectralShifter(1.5,  JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
@@ -916,6 +926,11 @@ void testSpectralShift()
   //  -wrong frequency rations and the amplitude may also be wrong. 
   // -It seems like it wants to "lock in" to certain freq ratios, for example 4/5. 
 
+  // Conclusion:
+  // -The JH algorithm doesn't really look too promising but maybe I'm doing something wrong. 
+  //  this here is supposed to be an implementaion of the algo:
+  //  https://gist.github.com/jconst/dfded80e037490d0d27fe821f18a8dee
+  //  Compare the out puts of this to my implementation!
 
   //-----------------------------------------------------------------------------------------------
   // Experiments with my first attempt for an algorithm:
@@ -1076,9 +1091,9 @@ void testSpectralShiftViaJH()
   //  -> it happens also for k = 0.85. 
   //  -> at k = 0.825, there's no modulation, opposite alignment at 2048, perfect alignment at 1792
   //     and the signal is too quiet by a factor of 2.
-  // -freqScale = 0.8; blockSize 1024; overlap = 2; zeroPad = 1;
-  //  inputFreq = 150; inputPhase = 90;
-  //  -> gives really bad artifacts. I think these may be mitigated by a synthesis window.
+
+
+
   //
   // Explanations:
   // -I think, that we sometimes get perfect alignment and sometimes total misalignment at 2048 but
@@ -1094,8 +1109,7 @@ void testSpectralShiftViaJH()
   //  Another option could be to use a sqrt(Hann) window. That should overlap perfectly when 
   //  squared at O = 2. Maybe try other windows. Maybe try also a demodulation approach.
 
-  // This is supposed to be an implementaion of the algo - test it:
-  // https://gist.github.com/jconst/dfded80e037490d0d27fe821f18a8dee
+
 }
 
 // Soon to be obsolete:
