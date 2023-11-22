@@ -177,12 +177,20 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0),
 }
 // Try to move to .cpp file
 
-/** Plot the real and imaginray part of the given reImArray which is supposed to represent complex
-numbers and must be of length 2*numComplexValues. */
+/** Plot the real and imaginary parts of two given reImArrays each of which which is supposed to 
+represent complex numbers and must be of length 2*numComplexValues. That means reImArray1 contains 
+complex values but the datatype of the array in nonetheless the underlying real datatype. The 
+purpose of this is to make it possibele to use it with std::complex as well as rsComplex and any
+other implementation of complex that just has re, im parts in that order. And the reason why we 
+have two arrays is because we want to plot two complex datasets here. */
 template<class T>
-inline void rsPlotComplexArrays(int numComplexValues, T* reImArray1, T* reImArray2 = nullptr)
+inline void rsPlotComplexArrays(int numComplexValues, T* reImArray1, T* reImArray2 = nullptr, 
+  const char* title = nullptr)
 {
   GNUPlotter plt;
+  plt.setToDarkMode();
+  plt.setTitle(title);
+
   int N = numComplexValues;
   std::vector<T> re(N/2), im(N/2);
 
@@ -202,6 +210,8 @@ inline void rsPlotComplexArrays(int numComplexValues, T* reImArray1, T* reImArra
   }
 
   plt.plot();
+
+  // Maybe plot the magnitudes, too - maybe optionally
 }
 
 

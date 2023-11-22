@@ -22,11 +22,16 @@ void SpectralProcessor::processBlock(double *block, int blockSize)
 {
   int spectrumSize = blockSize/2;
   transformer.setBlockSize(blockSize);
-  //Complex *spectrum = new Complex[spectrumSize];
   transformer.transformRealSignal(block, spectrum);
+
+  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum);
+  // gives access violation
+
   processSpectrum(spectrum, spectrumSize);
   transformer.transformSymmetricSpectrum(spectrum, block);
-  //delete[] spectrum;
+
+  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum);
+
 
   // ToDo: 
   // -Get rid of the allocation for spectrum by keeping the buffer as member variable which should
