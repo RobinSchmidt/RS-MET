@@ -113,9 +113,9 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
     if(phaseFormula == PhaseFormula::useMultiplier)
     {
 
-      Om[b] *= expC(-i * ((double(b-a)*p)/(O)) * (2*PI/N));  // for test
+      //Om[b] *= expC(-i * ((double(b-a)*p)/(O)) * (2*PI/N));  // for test
 
-      //Om[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
+      Om[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
     }
   }
 

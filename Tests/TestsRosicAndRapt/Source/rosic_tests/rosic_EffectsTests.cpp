@@ -782,12 +782,10 @@ std::vector<double> getSpectralShifterInput(int numSamples,
   x = 0.5 * x;
   return x;
 }
-
 std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double freqScale,
   rosic::SpectralShifter::Algorithm algo, int blockSize, int overlap, int zeroPad,
   bool useAnalysisWindow, bool useSynthesisWindow, int windowPower,
-  rosic::SpectralShifter::PhaseFormula phaseFormula,
-  int inputWaveform, double inputPeriod, double inputPhase)
+  rosic::SpectralShifter::PhaseFormula phaseFormula)
 {
   int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
   //int sampleRate = 44100;          // Needed for output file
@@ -810,12 +808,9 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
 
   return y;
 }
-
-
 // The function parameters form 3 groups: (1) creative parameters (currently only 1: freqScale),
 // (2) technical parameters (algo, blocksize, ...), (3) input signal parameters.
 // inputWaveform: 0: sine, 1: saw, 2: square, 3: triangle
-
 void testSpectralShifter(double freqScale, 
   rosic::SpectralShifter::Algorithm algo, int blockSize, int overlap, int zeroPad, 
   bool useAnalysisWindow, bool useSynthesisWindow, int windowPower, 
@@ -823,43 +818,10 @@ void testSpectralShifter(double freqScale,
   int inputWaveform, double inputPeriod, double inputPhase)
 {
   int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
-  //int sampleRate = 44100;          // Needed for output file
   using Vec = std::vector<double>;
   Vec x = getSpectralShifterInput(numSamples, inputWaveform, inputPeriod, inputPhase);
   Vec y = getSpectralShifterOutput(x, freqScale, algo, blockSize, overlap, zeroPad,
-    useAnalysisWindow, useSynthesisWindow, windowPower, phaseFormula, inputWaveform, inputPeriod, 
-    inputPhase);
-
-  /*
-  // Create inpput signal:
-  using Vec = std::vector<double>;
-  double inputFreq = sampleRate / inputPeriod;
-  Vec x(numSamples);
-  createWaveform(&x[0], numSamples, inputWaveform, inputFreq, (double)sampleRate, 
-    RAPT::rsDegreeToRadiant(inputPhase), true);
-  x = 0.5 * x;
-  */
-
-  /*
-  // Apply pitch shifting:
-  using SS = rosic::SpectralShifter;
-  rosic::SpectralShifter ps(blockSize, overlap, zeroPad);
-  ps.setAlgorithm(algo);
-  ps.setFrequencyScale(freqScale);
-  ps.setInputBlockSize(blockSize);
-  ps.setOverlapFactor(overlap);
-  ps.setPaddingFactor(zeroPad);
-  ps.setUseInputWindow(useAnalysisWindow);
-  ps.setUseOutputWindow(useSynthesisWindow);
-  ps.setWindowPower(windowPower);
-  ps.setPhaseFormula(phaseFormula);
-  Vec y(numSamples);
-  for(int n = 0; n < numSamples; n++)
-    y[n] = ps.getSample(x[n]);
-    */
-
-
-  // Plot input and output signals:
+    useAnalysisWindow, useSynthesisWindow, windowPower, phaseFormula);
   rsPlotVectors(x, y);
 
   // Maybe write wavefile:
@@ -868,11 +830,6 @@ void testSpectralShifter(double freqScale,
   //  and write an output file with that name to disk, maybe optionally also write in corresponding
   //  inputs signal...or maybe write input into left channel and output into right. Thenwe can drop
   //  the _Output part.
-
-  // ToDo: factor out a pure signal generation function to enable gettign signals for two settings
-  //  and plot them together
-
-  int dummy = 0;
 }
 
 void testSpectralShift()
@@ -882,11 +839,10 @@ void testSpectralShift()
   SS::Algorithm    RS   = SS::Algorithm::RobSchmt;
   SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
-
+  std::vector<double> x, y1, y2;
 
   //-----------------------------------------------------------------------------------------------
   // Experiments with the Juillerat/Hirsbrunner (JH) algorithm:
-
 
   testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Keep, 0, 128, 90.0);
   // -After the transient has passed, i.e. from sample 1536 onwards, this result looks really good!
@@ -910,6 +866,15 @@ void testSpectralShift()
   // Now with synthesis window, using cosine window for analysis and synthesis:
   testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
   // -some amp-mod but not too much. freq-ratio is as expected and phases align periodcially
+
+  // To investigate the effect of the phase formula, directly compare the outputs with and without
+  // using the formula:
+  x  = getSpectralShifterInput(5000, 0, 128, 90);
+  y1 = getSpectralShifterOutput(x, 1.25, JH, 1024, 2, 1, true, true, 1, Keep);
+  y2 = getSpectralShifterOutput(x, 1.25, JH, 1024, 2, 1, true, true, 1, Mul);
+  rsPlotVectors(y1, y2);
+  // -They look almost the same - just slightly phase shifted - by just one sample.
+
 
   testSpectralShifter(0.30, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Produces a good 2/5=0.4 shift from sample 1536 onwards. 
