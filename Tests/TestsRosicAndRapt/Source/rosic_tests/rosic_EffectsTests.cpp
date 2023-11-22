@@ -844,37 +844,9 @@ void testSpectralShift()
   //-----------------------------------------------------------------------------------------------
   // Experiments with the Juillerat/Hirsbrunner (JH) algorithm:
 
-  testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Keep, 0, 128, 90.0);
-  // -After the transient has passed, i.e. from sample 1536 onwards, this result looks really good!
-  //  I'd say perfect!
-  // -Freq ratio is correct, amplitude is corrrect, no amp-mod and phases align periodically.
-
-  // Now with the phase multiplier formula
-  testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
-  // -This looks almost perfect but the cosine peaks seem  to be shifted by one sample to the 
-  //  right. This is weird!
-
-  testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   1, Keep, 0, 128, 90.0);
-  // -Looks quite good
-  // -The phases of input and output are aligned at sample indices n*512 when n >= 3. That is: the 
-  //  first such alignment occurs at sample 1536, the next at 2048. Before that, we are still in 
-  //  the messy transient phase. That is a strong indicator, that the formula for computing the 
-  //  twiddle factor is actually correct. Without the twiddle formula, we never get a perfect phase 
-  //  alignment between input and output.
-  // -Has some amp-mod but not too bad.
-
-  // Now with synthesis window, using cosine window for analysis and synthesis:
-  testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
-  // -some amp-mod but not too much. freq-ratio is as expected and phases align periodcially
-
-  // To investigate the effect of the phase formula, directly compare the outputs with and without
-  // using the formula:
-  x  = getSpectralShifterInput(5000, 0, 128, 90);
-  y1 = getSpectralShifterOutput(x, 1.25, JH, 1024, 2, 1, true, true, 1, Keep);
-  y2 = getSpectralShifterOutput(x, 1.25, JH, 1024, 2, 1, true, true, 1, Mul);
-  rsPlotVectors(y1, y2);
-  // -They look almost the same - just slightly phase shifted - by just one sample.
-
+  //-------------------
+  //| JH Downshifting |
+  //-------------------
 
   testSpectralShifter(0.30, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Produces a good 2/5=0.4 shift from sample 1536 onwards. 
@@ -974,12 +946,76 @@ void testSpectralShift()
   //  be rounded to the right bin and sometimes to the wrong one. The target bin for the source bin
   //  where the sinusoid is gets always quantized to the same bin, no matter whether 
   //  k = 0.79, 0.8 or 0.81 - so all these settings lead to *exactly* the same results
+  // -Whe zero padding is used, the resulting time-domain signal after IFFT may not be in the 
+  //  correct part of the buffer. Maybe the fact that we get weird gains has to do with the energy
+  //  of the buffer concentrated at another point that what we cut out. Maybe we should use a 
+  //  shifted input and output buffer, i.e. zero-ohase windows.
+  //
+  // ToDo:
+  // -We should really inject some polt calls to take a look at all the buffers: input, windowed
+  //  input, zero-padded windowed input, spectrum, modified spectrum, IFFT result, windowed IFFT
+  //  result.
   //
   // Conclusion:
   // -The JH algorithm doesn't really look too promising but maybe I'm doing something wrong. 
   //  this here is supposed to be an implementaion of the algo:
   //  https://gist.github.com/jconst/dfded80e037490d0d27fe821f18a8dee
   //  Compare the out puts of this to my implementation!
+
+
+  //-----------------
+  //| JH Upshifting |
+  //-----------------
+
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Keep, 0, 128, 90.0);
+  // -After the transient has passed, i.e. from sample 1536 onwards, this result looks really good!
+  //  I'd say perfect!
+  // -Freq ratio is correct, amplitude is corrrect, no amp-mod and phases align periodically.
+  //  ..but wait ...NOooo! the freq ration is 6/5 but it is supposed to be 5/4!
+
+  // Now with the phase multiplier formula
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -This looks almost perfect but the cosine peaks seem  to be shifted by one sample to the 
+  //  right. This is weird!
+
+  // Now without phase formula but with synthesis window, using cosine window for analysis and 
+  // synthesis:
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   1, Keep, 0, 128, 90.0);
+  // -Looks quite good
+  // -The phases of input and output are aligned at sample indices n*512 when n >= 3. That is: the 
+  //  first such alignment occurs at sample 1536, the next at 2048. Before that, we are still in 
+  //  the messy transient phase. That is a strong indicator, that the formula for computing the 
+  //  twiddle factor is actually correct. Without the twiddle formula, we never get a perfect phase 
+  //  alignment between input and output.
+  // -Has some amp-mod but not too bad.
+
+  // Now with phase formula and synthesis window:
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
+  // -some amp-mod but not too much. freq-ratio is as expected and phases align periodcially
+
+  // To investigate the effect of the phase formula, directly compare the outputs with and without
+  // using the formula:
+  x  = getSpectralShifterInput(5000, 0, 128, 90);
+  y1 = getSpectralShifterOutput(x, 1.25, JH, 1024, 2, 1, true, true, 1, Keep);
+  y2 = getSpectralShifterOutput(x, 1.25, JH, 1024, 2, 1, true, true, 1, Mul);
+  rsPlotVectors(x, y1, y2);
+  // -They look almost the same - just slightly phase shifted - by just one sample.
+  // -They both end abruptly at 4095 - why don't we see a smooth fade out via the synthesis window?
+
+  testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   2, Mul,  0, 128, 90.0);
+  // -Has amp-mod
+
+  // Try to fix it with more overlap:
+  testSpectralShifter(1.25, JH, 1024, 4, 1, true, true,   2, Mul,  0, 128, 90.0);
+  // -This is really weird! It makes it actually much worse!
+
+  x  = getSpectralShifterInput(5000, 0, 128, 90);
+  y1 = getSpectralShifterOutput(x, 1.25, JH, 1024, 2, 1, true, false, 2, Keep);
+  y2 = getSpectralShifterOutput(x, 1.25, JH, 1024, 2, 1, true, false, 2, Mul);
+  rsPlotVectors(x, y1, y2);
+  // -Has freq ratio of 6/5 rather than 5/4
+
+
 
   //-----------------------------------------------------------------------------------------------
   // Experiments with my first attempt for an algorithm:
@@ -1049,6 +1085,8 @@ void testSpectralShiftViaJH()
   // similar effect using the zero padding feature. This is actually supposed to give even higher 
   // quality results because it increases the FFT size at the analysis *and* synthesis side. Maybe 
   // later we can introduce this additional multiplier for an optimization of the algorithm.
+  // BUT: figure out if this should have an effect on the phase formula! Is it really correct to 
+  // use the padding factor in the phase-shift?
 
 
 

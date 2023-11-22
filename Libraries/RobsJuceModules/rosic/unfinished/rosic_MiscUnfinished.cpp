@@ -112,10 +112,12 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
     // Optionally apply phase correction according to modified Eq. 2 on top-right on page 3:
     if(phaseFormula == PhaseFormula::useMultiplier)
     {
-
       //Om[b] *= expC(-i * ((double(b-a)*p)/(O)) * (2*PI/N));  // for test
-
       Om[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));
+      // In the paper in section 3.4, the factor m is introduced because the synthesis FFT size is 
+      // chosen to be m times the analysis FFT size. But this factor also affects b like so:
+      // b = (int) (m*k*a + 0.5). Yes - in our implementation here, the "m" is already absorbed 
+      // into the FFT-size N, so I think, we should not use m in the denominator
     }
   }
 
