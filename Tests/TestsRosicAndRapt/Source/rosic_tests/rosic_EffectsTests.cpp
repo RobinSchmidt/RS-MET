@@ -849,7 +849,7 @@ void testSpectralShift()
   //-------------------
 
   // Copied from below - for debug plotting purposes:
-  testSpectralShifter(0.80, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
+  //testSpectralShifter(0.80, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
 
 
 

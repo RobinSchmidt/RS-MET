@@ -24,13 +24,16 @@ void SpectralProcessor::processBlock(double *block, int blockSize)
   transformer.setBlockSize(blockSize);
   transformer.transformRealSignal(block, spectrum);
 
-  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum);
-  // gives access violation
+  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum);  // for debug
+  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum, "Input spectrum");  // for debug
 
   processSpectrum(spectrum, spectrumSize);
   transformer.transformSymmetricSpectrum(spectrum, block);
 
-  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum);
+  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum);  // for debug
+  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum, "Output spectrum");  // for debug
+  // ToDo: add titles - needs some API adaption for the plot function. We may need two separate 
+  // functions for pltting one and two complex arrays
 
 
   // ToDo: 
