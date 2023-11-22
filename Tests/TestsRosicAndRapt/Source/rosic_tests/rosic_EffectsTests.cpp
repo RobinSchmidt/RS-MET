@@ -819,13 +819,24 @@ void testSpectralShifter(double freqScale,
 void testSpectralShift()
 {
   using SS = rosic::SpectralShifter;
-  SS::Algorithm    JH  = SS::Algorithm::JuilHirs;
-  SS::PhaseFormula Mul = SS::PhaseFormula::useMultiplier;
+  SS::Algorithm    JH   = SS::Algorithm::JuilHirs;
+  SS::Algorithm    RS   = SS::Algorithm::RobSchmt;
+  SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
+  SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
 
-  // Experiment 1:
+  // -inCyc=128, inPhs=90, frqScale=0.8, blkSz=1024, ovrLp=2, zrPd=4, anaWn=yes, synWn=no, WnPw=2:
+  testSpectralShifter(0.80, RS, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
+
+
+
   // -We use the Juillerat/Hirsbrunner algorithm with blockSize of 1024 and a sinusoidal input with
   //  a cycle length of 128 samples ...TBC..
-  testSpectralShifter(0.8, JH, 1024, 2, 4, true, true, 2, Mul, 0, 128, 90.0);
+  testSpectralShifter(0.80, JH, 1024, 2, 4, true, true,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(0.80, JH, 1024, 2, 4, true, false, 2, Mul,  0, 128, 90.0);
+  testSpectralShifter(0.80, JH, 1024, 2, 2, true, false, 2, Mul,  0, 128, 90.0);
+  testSpectralShifter(0.80, JH, 1024, 2, 2, true, false, 2, Keep, 0, 128, 90.0);
+  testSpectralShifter(1.25, JH, 1024, 2, 2, true, false, 2, Mul,  0, 128, 90.0);
+
 
 
   int dummy = 0;
