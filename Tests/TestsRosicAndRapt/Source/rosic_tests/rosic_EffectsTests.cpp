@@ -767,6 +767,51 @@ void rotes::formantShifter()
 }
 
 
+
+
+
+std::vector<double> getSpectralShifterInput(int numSamples, 
+  int inputWaveform, double inputPeriod, double inputPhase)
+{
+  int sampleRate = 44100;            // Doesn't really matter
+  using Vec = std::vector<double>;
+  double inputFreq = sampleRate / inputPeriod;
+  Vec x(numSamples);
+  createWaveform(&x[0], numSamples, inputWaveform, inputFreq, (double)sampleRate, 
+    RAPT::rsDegreeToRadiant(inputPhase), true);
+  x = 0.5 * x;
+  return x;
+}
+
+std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double freqScale,
+  rosic::SpectralShifter::Algorithm algo, int blockSize, int overlap, int zeroPad,
+  bool useAnalysisWindow, bool useSynthesisWindow, int windowPower,
+  rosic::SpectralShifter::PhaseFormula phaseFormula,
+  int inputWaveform, double inputPeriod, double inputPhase)
+{
+  int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
+  //int sampleRate = 44100;          // Needed for output file
+
+  // Apply pitch shifting:
+  using SS = rosic::SpectralShifter;
+  rosic::SpectralShifter ps(blockSize, overlap, zeroPad);
+  ps.setAlgorithm(algo);
+  ps.setFrequencyScale(freqScale);
+  ps.setInputBlockSize(blockSize);
+  ps.setOverlapFactor(overlap);
+  ps.setPaddingFactor(zeroPad);
+  ps.setUseInputWindow(useAnalysisWindow);
+  ps.setUseOutputWindow(useSynthesisWindow);
+  ps.setWindowPower(windowPower);
+  ps.setPhaseFormula(phaseFormula);
+  std::vector<double> y(numSamples);
+  for(int n = 0; n < numSamples; n++)
+    y[n] = ps.getSample(x[n]);
+
+  return y;
+}
+
+
 // The function parameters form 3 groups: (1) creative parameters (currently only 1: freqScale),
 // (2) technical parameters (algo, blocksize, ...), (3) input signal parameters.
 // inputWaveform: 0: sine, 1: saw, 2: square, 3: triangle
@@ -778,8 +823,14 @@ void testSpectralShifter(double freqScale,
   int inputWaveform, double inputPeriod, double inputPhase)
 {
   int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
-  int sampleRate = 44100;          // Needed for output file
+  //int sampleRate = 44100;          // Needed for output file
+  using Vec = std::vector<double>;
+  Vec x = getSpectralShifterInput(numSamples, inputWaveform, inputPeriod, inputPhase);
+  Vec y = getSpectralShifterOutput(x, freqScale, algo, blockSize, overlap, zeroPad,
+    useAnalysisWindow, useSynthesisWindow, windowPower, phaseFormula, inputWaveform, inputPeriod, 
+    inputPhase);
 
+  /*
   // Create inpput signal:
   using Vec = std::vector<double>;
   double inputFreq = sampleRate / inputPeriod;
@@ -787,7 +838,9 @@ void testSpectralShifter(double freqScale,
   createWaveform(&x[0], numSamples, inputWaveform, inputFreq, (double)sampleRate, 
     RAPT::rsDegreeToRadiant(inputPhase), true);
   x = 0.5 * x;
+  */
 
+  /*
   // Apply pitch shifting:
   using SS = rosic::SpectralShifter;
   rosic::SpectralShifter ps(blockSize, overlap, zeroPad);
@@ -803,6 +856,8 @@ void testSpectralShifter(double freqScale,
   Vec y(numSamples);
   for(int n = 0; n < numSamples; n++)
     y[n] = ps.getSample(x[n]);
+    */
+
 
   // Plot input and output signals:
   rsPlotVectors(x, y);
@@ -832,6 +887,7 @@ void testSpectralShift()
   //-----------------------------------------------------------------------------------------------
   // Experiments with the Juillerat/Hirsbrunner (JH) algorithm:
 
+
   testSpectralShifter(1.25, JH, 1024, 2, 1, true, false,  2, Keep, 0, 128, 90.0);
   // -After the transient has passed, i.e. from sample 1536 onwards, this result looks really good!
   //  I'd say perfect!
@@ -854,8 +910,6 @@ void testSpectralShift()
   // Now with synthesis window, using cosine window for analysis and synthesis:
   testSpectralShifter(1.25, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
   // -some amp-mod but not too much. freq-ratio is as expected and phases align periodcially
-
-
 
   testSpectralShifter(0.30, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Produces a good 2/5=0.4 shift from sample 1536 onwards. 
