@@ -807,7 +807,11 @@ void testSpectralShifter(double freqScale,
   rsPlotVectors(x, y);
 
   // Maybe write wavefile:
-  // ...
+  // -generate a filename from the parameters like 
+  //  SpectralShift_FrqScl=0.8_Alg=LD_BlkSz=1024_OvLp=2_ZrPd=2_Phs=Mul__Wv=Sin_Cyc=128__Output.wav
+  //  and write an output file with that name to disk, maybe optionally also write in corresponding
+  //  inputs signal...or maybe write input into left channel and output into right. Thenwe can drop
+  //  the _Output part.
 
   int dummy = 0;
 }
