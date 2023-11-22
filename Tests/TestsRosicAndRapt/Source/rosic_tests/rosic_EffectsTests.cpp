@@ -777,7 +777,8 @@ void testSpectralShifter(double freqScale,
   rosic::SpectralShifter::PhaseFormula phaseFormula,
   int inputWaveform, int inputPeriod, double inputPhase)
 {
-  int numSamples = 8 * blockSize;  // We should produce enough blocks to pass the transient phase
+  //int numSamples = 8 * blockSize;  // We should produce enough blocks to pass the transient phase
+  int numSamples = 4410;
   int sampleRate = 44100;          // Needed for output file
 
   // Create inpput signal:
@@ -798,6 +799,7 @@ void testSpectralShifter(double freqScale,
   ps.setPaddingFactor(zeroPad);
   ps.setUseInputWindow(useAnalysisWindow);
   ps.setUseOutputWindow(useSynthesisWindow);
+  ps.setWindowPower(windowPower);
   ps.setPhaseFormula(phaseFormula);
   Vec y(numSamples);
   for(int n = 0; n < numSamples; n++)
@@ -824,8 +826,27 @@ void testSpectralShift()
   SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
 
-  // -inCyc=128, inPhs=90, frqScale=0.8, blkSz=1024, ovrLp=2, zrPd=4, anaWn=yes, synWn=no, WnPw=2:
+  // Spectral shifter parameters:
+  //double freqScale    = 0.8;           // Scaling factor for the frequencies
+  //int    blockSize    = 1024;          // Block size. Must be power of 2
+  //int    overlap      = 2;             // Overlap factor. Must be power of 2
+  //int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
+  //bool   anaWindow    = true;          // Use analysis window or not
+  //bool   synWindow    = false;         // Use synthesis window or not
+  //int    winPower     = 2;             // power/exponent for the cos^n window
+
   testSpectralShifter(0.80, RS, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
+  // -The phase of the output periodically aligns with the phase of the input (at peak) at samples: 
+  //  1152, 1664, 2176, ... in general at: 1152 + n*512. The difference between these alignment 
+  //  instants is 512 = 4*inCyc. 
+  // -The output is a little bit too quiet, though  
+  
+  testSpectralShifter(0.80, RS, 1024, 2, 2, true, false,  2, Keep,  0, 128, 90.0);
+  // -Without the phase formula, no phase alignment occurs but the non-aligned pitch-shifted signal 
+  //  looks actually similar, too. Has also the right frequency and amplitude (??). It's just a bit 
+  //  phase-shifted. ..right amplitude?...nope that's not true. that must ahve been a different
+  //  setting! But I remember having seen really good outputs with correct amp and phase. Check
+  //  older versions of the code for the settings that have achieved this!
 
 
 
@@ -1013,7 +1034,7 @@ void testSpectralShiftViaRS()
   int    overlap      = 2;             // Overlap factor. Must be power of 2
   int    zeroPad      = 4;             // Zero padding factor. Must be power of 2
   bool   anaWindow    = true;          // Use analysis window or not
-  bool   synWindow    = true;          // Use synthesis window or not
+  bool   synWindow    = false;         // Use synthesis window or not
   int    winPower     = 2;             // power/exponent for the cos^n window
 
 
@@ -1052,7 +1073,7 @@ void testSpectralShiftViaRS()
   // Plot input and output signals:
   rsPlotVectors(x, y1);
   //rsPlotVectors(x, y2);
-  rsPlotVectors(x, y1, y2);
+  //rsPlotVectors(x, y1, y2);
 
 
   // Write input and output into wave files:
@@ -1067,13 +1088,14 @@ void testSpectralShiftViaRS()
 
   // Observations:
   //
-  // -inCyc=128, inPhs=90, frqScale=0.8, blkSz=1024, ovrLp=2, zrPd=4, anaWn=yes, synWn=no, WnPw=2:
-  //  -Using the phase formula causes the phase of the output periodically align with the phase
-  //   of the input (at peak) at samples: 1152, 1664, 2176, ... in general at: 1152 + n*512
-  //   The difference between these alignment instants is 512 = 4*inCyc. Without the formula, no
-  //   alignment occurs but the non-aligned pitch-shifted signal looks actually good, too. Has also
-  //   the right frequency and amplitude. It's just a bit phase-shifted.
-  //  -The output is a little bit too quiet, though
+  /// -inCyc=128, inPhs=90, frqScale=0.8, blkSz=1024, ovrLp=2, zrPd=4, anaWn=yes, synWn=no, WnPw=2:
+  ///  -Using the phase formula causes the phase of the output periodically align with the phase
+  ///   of the input (at peak) at samples: 1152, 1664, 2176, ... in general at: 1152 + n*512
+  ///   The difference between these alignment instants is 512 = 4*inCyc. Without the formula, no
+  ///   alignment occurs but the non-aligned pitch-shifted signal looks actually good, too. Has also
+  ///   the right frequency and amplitude. It's just a bit phase-shifted.
+  ///  -The output is a little bit too quiet, though
+
   //  -Trying to lower the frqScl to 0.75 or 2./3 does not really seem to lower the pitch of the
   //   output sine. WTF? It's always 5 input peaks and 4 output peaks between the insteants of
   //   alignments. It's as if the freqScale factor has locked in to a quantized value of 0.8=4/5
@@ -1142,9 +1164,11 @@ void rotes::spectralShifter()
   // We want to build a pitch shifter based on spectral processing. It should have a transient 
   // preservation feature.
 
+
+  testSpectralShiftViaRS();
   testSpectralShift();
   testSpectralShiftViaJH();
-  testSpectralShiftViaRS();
+
 
 
 
