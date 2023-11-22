@@ -828,6 +828,19 @@ void testSpectralShift()
   //-----------------------------------------------------------------------------------------------
   // Experiments with the Juillerat/Hirsbrunner (JH) algorithm:
 
+
+  testSpectralShifter(0.30, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -Produces a good 2/5=0.4 shift from sample 1536 onwards. 
+  // -Amplitude looks good.
+
+  testSpectralShifter(0.40, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -Produces a short transient and the almost silence. Its actually a very low amplitude signal 
+  //  at amplitude of around 0.0027 that looks like a sine segment repeated over and over, i.e. 
+  //  with phase resets.
+
+  testSpectralShifter(0.50, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -Looks good from sample 1535 onwards, i.e. after the transients/warm-up phase.
+
   testSpectralShifter(0.55, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -3 input peaks align with 2 output peaks at around 1536 and 1795. That's a ratio of 2/3, not
   //  the requested 3/5
@@ -844,8 +857,7 @@ void testSpectralShift()
   //  desired 0.65
   // -Also, the output amplitude is too low. Roughly half of what it should be
 
-  testSpectralShifter(0.50, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
-  // -Looks good from sample 1535 onwards, i.e. after the transients/warm-up phase.
+
 
   testSpectralShifter(0.80, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Looks pretty good!
