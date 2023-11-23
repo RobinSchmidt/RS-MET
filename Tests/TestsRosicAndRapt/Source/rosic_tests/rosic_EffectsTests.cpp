@@ -790,7 +790,8 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
   //int sampleRate = 44100;          // Needed for output file
 
-  // Apply pitch shifting:
+
+  // Set up pitch shifter:
   using SS = rosic::SpectralShifter;
   rosic::SpectralShifter ps(blockSize, overlap, zeroPad);
   ps.setAlgorithm(algo);
@@ -804,7 +805,7 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   ps.setPhaseFormula(phaseFormula);
 
   // Set up plotting:
-  ps.blocksToPlot = { 2 };            //
+  ps.blocksToPlot = { 2 };            // The frames for which plots are to be produced
   ps.plotRawInputBlock       = true;
   ps.plotWindowedInputBlock  = true;
   ps.plotPaddedInputBlock    = true;
@@ -812,11 +813,12 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   ps.plotWindowedOutputBlock = true;
   ps.plotInputSpectrum       = true;
   ps.plotOutputSpectrum      = true;
+  // ToDo: Maybe let the plotter plot to files
 
+  // Apply the pitch shifting:
   std::vector<double> y(numSamples);
   for(int n = 0; n < numSamples; n++)
     y[n] = ps.getSample(x[n]);
-
   return y;
 }
 // The function parameters form 3 groups: (1) creative parameters (currently only 1: freqScale),
