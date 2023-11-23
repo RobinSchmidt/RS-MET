@@ -1038,6 +1038,10 @@ void testSpectralShift()
   // Experiments with my first attempt for an algorithm:
 
   testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
+  // -The input spectrum is cneterd at FFT bin 8, the output spectrum is centered at bin 6.
+  //  Shouldn't it be at 0.8*8 = 6.4? But the output signal actually does have the right frequency.
+  //  This is strange.
+  // -Out has too low amplitude.
 
 
   testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
