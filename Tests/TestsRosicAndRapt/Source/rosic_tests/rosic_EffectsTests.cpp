@@ -841,6 +841,7 @@ void testSpectralShift()
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
   std::vector<double> x, y1, y2;
 
+  /*
   //-----------------------------------------------------------------------------------------------
   // Experiments with the Juillerat/Hirsbrunner (JH) algorithm:
 
@@ -850,8 +851,6 @@ void testSpectralShift()
 
   // Copied from below - for debug plotting purposes:
   //testSpectralShifter(0.80, JH, 1024, 2, 1, true, true,   1, Mul,  0, 128, 90.0);
-
-
 
   testSpectralShifter(0.30, JH, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
   // -Produces a good 2/5=0.4 shift from sample 1536 onwards. 
@@ -1020,7 +1019,7 @@ void testSpectralShift()
   rsPlotVectors(x, y1, y2);
   // -Has freq ratio of 6/5 rather than 5/4
 
-
+  */
 
   //-----------------------------------------------------------------------------------------------
   // Experiments with my first attempt for an algorithm:
@@ -1040,6 +1039,9 @@ void testSpectralShift()
   //  setting! But I remember having seen really good outputs with correct amp and phase. Check
   //  older versions of the code for the settings that have achieved this!
 
+
+
+  // Older:
   // -We use the Juillerat/Hirsbrunner algorithm with blockSize of 1024 and a sinusoidal input with
   //  a cycle length of 128 samples ...TBC..
   testSpectralShifter(0.80, JH, 1024, 2, 4, true, true,  2, Mul,  0, 128, 90.0);
