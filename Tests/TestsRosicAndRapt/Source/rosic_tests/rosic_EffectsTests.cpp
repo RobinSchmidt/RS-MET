@@ -1037,10 +1037,13 @@ void testSpectralShift()
   //-----------------------------------------------------------------------------------------------
   // Experiments with my first attempt for an algorithm:
 
+  testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
+
+
   testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
   // -The amplitude is too low.
 
-  testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
+
 
 
 
