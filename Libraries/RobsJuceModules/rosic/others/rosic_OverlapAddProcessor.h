@@ -152,6 +152,25 @@ protected:
   int    windowPower;
 
 
+#if defined (RS_DEBUG)
+
+  // Some instrumentation code for debug builds by which we can let the processor produce plots for
+  // inspection:
+
+public:
+
+  //int numBlocksProcessed = 0;
+  int currentBlockIndex = 0;
+  std::vector<int> blocksToPlot;
+  bool plotRawInputBlock       = false;
+  bool plotWindowedInputBlock  = false;
+  bool plotPaddedInputBlock    = false;
+  bool plotRawOutputBlock      = false;
+  bool plotWindowedOutputBlock = false;
+
+#endif
+
+
 };
 
 //-----------------------------------------------------------------------------------------------

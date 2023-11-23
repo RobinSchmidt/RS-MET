@@ -25,13 +25,24 @@ void SpectralProcessor::processBlock(double *block, int blockSize)
   transformer.transformRealSignal(block, spectrum);
 
   //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum);  // for debug
-  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum, "Input spectrum");  // for debug
+  //rsPlotComplexArray(spectrumSize/2, (double*) spectrum, "Input spectrum");  // for debug
+
+#if defined(RS_DEBUG)
+  int zoom = 8;  // 1 shows full spectrum, > 1 shows only lower freqs
+  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+    rsPlotComplexArray(spectrumSize/(2*zoom), (double*) spectrum, "Input spectrum");
+#endif
 
   processSpectrum(spectrum, spectrumSize);
   transformer.transformSymmetricSpectrum(spectrum, block);
 
+#if defined(RS_DEBUG)
+  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+    rsPlotComplexArray(spectrumSize/(2*zoom), (double*) spectrum, "Output spectrum");
+#endif
+
   //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum);  // for debug
-  //rsPlotComplexArrays(spectrumSize/2, (double*) spectrum, "Output spectrum");  // for debug
+  //rsPlotComplexArray(spectrumSize/2, (double*) spectrum, "Output spectrum");  // for debug
   // ToDo: add titles - needs some API adaption for the plot function. We may need two separate 
   // functions for pltting one and two complex arrays
 

@@ -113,7 +113,10 @@ void OverlapAddProcessor::prepareBlockForProcessing()
       rp = 0;
   }
 
-  //rsPlotArray(tmp, blockSize, "Raw input block");  // for debug
+#if defined(RS_DEBUG)
+  if(plotRawInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+    rsPlotArray(tmp, blockSize, "Raw input block");
+#endif
 
   // Apply window function, if desired:
   if(useInputWindow == true)
@@ -122,13 +125,19 @@ void OverlapAddProcessor::prepareBlockForProcessing()
       tmp[wp] *= w[wp];
   }
 
-  //rsPlotArray(tmp, blockSize, "Windowed input block");  // for debug
+#if defined(RS_DEBUG)
+  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+    rsPlotArray(tmp, blockSize, "Windowed input block");
+#endif
 
   // Zero-pad tmp-buffer, if desired:
   for(wp = blockSize; wp < paddingFactor*blockSize; wp++)
     tmp[wp] = 0.0;
 
-  //rsPlotArray(tmp, paddingFactor*blockSize, "Padded input block");  // for debug
+#if defined(RS_DEBUG)
+  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+    rsPlotArray(tmp, paddingFactor*blockSize, "Padded input block");
+#endif
 }
 
 void OverlapAddProcessor::postProcessBlock()
@@ -138,7 +147,10 @@ void OverlapAddProcessor::postProcessBlock()
   for(n = 0; n < paddingFactor*blockSize; n++)
     y[nextOutBuffer][n] = tmp[n];
 
-  //rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Raw output block");  // for debug
+#if defined(RS_DEBUG)
+  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+    rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Raw output block");
+#endif
 
   // Apply output window, if desired:
   if( useOutputWindow == true )
@@ -149,7 +161,10 @@ void OverlapAddProcessor::postProcessBlock()
       y[nextOutBuffer][n] = 0.0;
   }
 
-  //rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Windowed output block ");  // for debug
+#if defined(RS_DEBUG)
+  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+    rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Windowed output block ");
+#endif
 
   // Reset the read-potsition in the output-buffer:
   readPositions[nextOutBuffer] = 0;
@@ -158,6 +173,10 @@ void OverlapAddProcessor::postProcessBlock()
   nextOutBuffer++;
   if( nextOutBuffer >= overlapFactor*paddingFactor )
     nextOutBuffer = 0;
+
+#if defined(RS_DEBUG)
+  currentBlockIndex++;
+#endif
 }
 
 void OverlapAddProcessor::initInternalState()

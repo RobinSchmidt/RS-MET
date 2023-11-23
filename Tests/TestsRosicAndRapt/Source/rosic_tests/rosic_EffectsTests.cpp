@@ -802,6 +802,17 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   ps.setUseOutputWindow(useSynthesisWindow);
   ps.setWindowPower(windowPower);
   ps.setPhaseFormula(phaseFormula);
+
+  // Set up plotting:
+  ps.blocksToPlot = { 2 };            //
+  ps.plotRawInputBlock       = true;
+  ps.plotWindowedInputBlock  = true;
+  ps.plotPaddedInputBlock    = true;
+  ps.plotRawOutputBlock      = true;
+  ps.plotWindowedOutputBlock = true;
+  ps.plotInputSpectrum       = true;
+  ps.plotOutputSpectrum      = true;
+
   std::vector<double> y(numSamples);
   for(int n = 0; n < numSamples; n++)
     y[n] = ps.getSample(x[n]);
@@ -1024,13 +1035,17 @@ void testSpectralShift()
   //-----------------------------------------------------------------------------------------------
   // Experiments with my first attempt for an algorithm:
 
+  testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
+  // -There's no shift at all - just a phase shift and too low amplitude
+
+
+
   testSpectralShifter(0.80, RS, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
   // -The phase of the output periodically aligns with the phase of the input (at peak) at samples: 
   //  1152, 1664, 2176, ... in general at: 1152 + n*512. The difference between these alignment 
   //  instants is 512 = 4*inCyc. 
   // -The output is a little bit too quiet, though  
 
-  testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
   
   testSpectralShifter(0.80, RS, 1024, 2, 2, true, false,  2, Keep,  0, 128, 90.0);
   // -Without the phase formula, no phase alignment occurs but the non-aligned pitch-shifted signal 

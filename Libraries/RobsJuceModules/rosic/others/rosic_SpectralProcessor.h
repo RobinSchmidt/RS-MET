@@ -70,6 +70,20 @@ protected:
   int     maxSpectrumSize;
   Complex *spectrum = nullptr;
 
+
+#if defined (RS_DEBUG)
+
+  // Some instrumentation code for debug builds by which we can let the processor produce plots for
+  // inspection:
+
+public:
+
+  bool plotInputSpectrum  = false;
+  bool plotOutputSpectrum = false;
+
+#endif
+
+
 };
 
 } // end namespace rosic

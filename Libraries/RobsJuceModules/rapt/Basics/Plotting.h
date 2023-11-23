@@ -181,6 +181,25 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0),
 
 
 
+template<class T>
+inline void rsPlotComplexArray(int numComplexValues, T* reImArray1, std::string title = std::string())
+{
+  GNUPlotter plt;
+  plt.setToDarkMode();
+  plt.setTitle(title);
+
+  int N = numComplexValues;
+  std::vector<T> re(N/2), im(N/2);
+
+  for(int i = 0; i < N/2; i++) {
+    re[i] = reImArray1[2*i];
+    im[i] = reImArray1[2*i+1];  }
+  plt.addDataArrays(N/2, &re[0]);
+  plt.addDataArrays(N/2, &im[0]);
+
+  plt.plot();
+}
+
 /** Plot the real and imaginary parts of two given reImArrays each of which which is supposed to 
 represent complex numbers and must be of length 2*numComplexValues. That means reImArray1 contains 
 complex values but the datatype of the array in nonetheless the underlying real datatype. The 
