@@ -1038,7 +1038,10 @@ void testSpectralShift()
   // Experiments with my first attempt for an algorithm:
 
   testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
-  // -There's no shift at all - just a phase shift and too low amplitude
+  // -The amplitude is too low.
+
+  testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
+
 
 
 
@@ -1069,6 +1072,8 @@ void testSpectralShift()
 
 
   int dummy = 0;
+
+  // Shouldn't we accumulate the phase shifts/twiddles?
 
   // This function should eventually replace testSpectralShiftViaJH/RS. We need to go through the 
   // comments there and for each setting make a correspoding function call here and the copy the 
