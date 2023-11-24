@@ -805,7 +805,7 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   ps.setPhaseFormula(phaseFormula);
 
   // Set up plotting:
-  ps.blocksToPlot = { 2 };            // The frames for which plots are to be produced
+  ps.blocksToPlot = { 4 };            // The blocks for which plots are to be produced
   ps.plotRawInputBlock       = true;
   ps.plotWindowedInputBlock  = true;
   ps.plotPaddedInputBlock    = true;
@@ -1045,9 +1045,28 @@ void testSpectralShift()
   //  reflected around zero.
 
 
-  testSpectralShifter(0.80, RS1, 1024, 2, 16, true, false,  2, Mul,   0, 128, 90.0);
+
+
+  //testSpectralShifter(0.80, RS1, 1024, 4, 8, true, true,  2, Mul,   0, 128, 90.0);
+  // -Has no pitch shift at all. Output has same freq as input but smaller amplitude.
+  // -Why does increasing the overlap have such an effect?
+  //  -> Inspect the blocks!
+  // -Maybe the pahse is wrong such that we get (soft) phase resets or some sort of osc-sync?
+
+  // Let's ty it Without the output window:
+  testSpectralShifter(0.80, RS1, 1024, 4, 8, true, false,  2, Mul,   0, 128, 90.0);
+  // -Now the output is almost silent. The blocks look good, though. The output length is 1280 
+  //  samples and the input 1024. 1024 * 1.25 = 1024 / 0.8 = 1250. That checks out exactly
+  // -Must be a phase-cancellation between the blocks or something? This test clearly exposes this 
+  //  behavior - so let's keep it.
+
 
   testSpectralShifter(0.80, RS1, 1024, 2, 8, true, false,  2, Mul,   0, 128, 90.0);
+
+
+  testSpectralShifter(0.80, RS1, 1024, 2, 16, true, false,  2, Mul,   0, 128, 90.0);
+
+
 
   //testSpectralShifter(0.80, RS1, 1024, 2, 1, false, false,  2, Mul,  0, 128, 90.0);
 
@@ -1060,7 +1079,8 @@ void testSpectralShift()
   //  and phase instead. But we must think about how to unwrap the phase...or do we? Will that be a 
   //  problem? Hmm. I think, maybe taking the center bin's phase as reference and the left and 
   //  right neighbours should somehow be "unwrapped" with respect to that. Maybe zero-padding will 
-  //  help to ensure some coherence of phases of neighboring bins?
+  //  help to ensure some coherence of phases of neighboring bins? Yrs - that seems to be the case 
+  //  indeed. The actual spectrum looks like a kind of sinusoidal blip
 
 
   testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
