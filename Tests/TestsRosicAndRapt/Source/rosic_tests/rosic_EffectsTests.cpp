@@ -854,6 +854,7 @@ void testSpectralShift()
   using SS = rosic::SpectralShifter;
   SS::Algorithm    JH   = SS::Algorithm::JuilHirs;
   SS::Algorithm    RS1  = SS::Algorithm::RobSchm1;
+  SS::Algorithm    RS2  = SS::Algorithm::RobSchm2;
   SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
   std::vector<double> x, y1, y2;
@@ -1041,12 +1042,16 @@ void testSpectralShift()
   //-----------------------------------------------------------------------------------------------
   // Experiments with my first attempt for an algorithm:
 
-  // Now let's be brave and don'T use an input window:
+  //testSpectralShifter(0.6, RS1, 1024, 2, 8, true, false,  2, Mul,   0, 128, 90.0);
+
+
+  // Now let's be brave and don't use an input window:
   //testSpectralShifter(0.80, RS1, 1024, 2, 16, false, false,  2, Mul,   0, 128, 90.0);
   // -Output has discontinuities but has the right frequency
   // -Amplitude is too low
   // -Parasitic oscillation at Nyquist freq. I guess, it comes from a sidelobe hat is not correctly
-  //  reflected around zero.
+  //  reflected around zero...maybe...or maybe not. Should we actually do the reflection? Isn't 
+  //  that a kind of aliasing that we should better try to avoid?
 
 
 
@@ -1102,7 +1107,7 @@ void testSpectralShift()
 
 
   // Experiment to figure out a formula for the mainlobe width empirically:
-  testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  7, Mul,   0, 128, 90.0);
+  //testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  7, Mul,   0, 128, 90.0);
   // - ZP: zero-padding, WP: window power, W: mainlobe width in bins
 
   // - ZP = 1, WP = 1  ->  W =  4  ...roughly (there are no sidelobes)
@@ -1143,14 +1148,14 @@ void testSpectralShift()
 
 
 
-  testSpectralShifter(0.80, RS1, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(0.80, RS1, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
   // -The phase of the output periodically aligns with the phase of the input (at peak) at samples: 
   //  1152, 1664, 2176, ... in general at: 1152 + n*512. The difference between these alignment 
   //  instants is 512 = 4*inCyc. 
   // -The output is a little bit too quiet, though  
 
   
-  testSpectralShifter(0.80, RS1, 1024, 2, 2, true, false,  2, Keep,  0, 128, 90.0);
+  //testSpectralShifter(0.80, RS1, 1024, 2, 2, true, false,  2, Keep,  0, 128, 90.0);
   // -Without the phase formula, no phase alignment occurs but the non-aligned pitch-shifted signal 
   //  looks actually similar, too. Has also the right frequency and amplitude (??). It's just a bit 
   //  phase-shifted. ..right amplitude?...nope that's not true. that must ahve been a different
@@ -1158,7 +1163,17 @@ void testSpectralShift()
   //  older versions of the code for the settings that have achieved this!
 
 
+  //-----------------------------------------------------------------------------------------------
+  // Experiments with my second attempt for an algorithm:
 
+
+  testSpectralShifter(0.80, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 90.0);
+
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
   // Older:
   // -We use the Juillerat/Hirsbrunner algorithm with blockSize of 1024 and a sinusoidal input with
   //  a cycle length of 128 samples ...TBC..

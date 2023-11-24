@@ -243,6 +243,16 @@ protected:
 
   PhaseFormula phaseFormula = PhaseFormula::useMultiplier;
 
+
+  std::vector<double> mag, phs, phsOld; // Buffers for magnitude and phase
+  // ToDo: 
+  // -Maybe use raw array like with tmpSpectrum. Actually, We could repurpose the tmpSpectrum
+  //  array to save memory. Maybe we should have a member Void* workspace; that gets casted into
+  //  the appropriate buffer pointer type in shiftVia... Different algorithms need different types
+  //  of buffers - but they could use the same memory space nonetheless. But that's an 
+  //  optimization thing for later. But these 3 buffers need space for 3*maxSpectrumSize whereas 
+  //  the single complex buffer for tmpSpectrum needs only 2*maxSpectrumSize
+
 };
 
 

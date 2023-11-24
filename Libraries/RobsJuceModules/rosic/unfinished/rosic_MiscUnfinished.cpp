@@ -3,7 +3,11 @@
 SpectralShifter::SpectralShifter(int maxBlockSize, int maxOverlapFactor, int maxPaddingFactor)
   : SpectralProcessor(maxBlockSize, maxOverlapFactor, maxPaddingFactor)
 {
-  tmpSpectrum = new Complex[getMaxSpectrumSize()];
+  int N = getMaxSpectrumSize();
+  tmpSpectrum = new Complex[N];
+  mag.resize(N);
+  phs.resize(N);
+  phsOld.resize(N);
 }
 
 SpectralShifter::~SpectralShifter()
@@ -18,6 +22,7 @@ void SpectralShifter::processSpectrum(Complex* spec, int size)
   switch(algo)
   {
   case     Algo::RobSchm1: shiftViaRS1(spec, size); break;
+  case     Algo::RobSchm2: shiftViaRS2(spec, size); break;
   case     Algo::LaroDols: shiftViaLD( spec, size); break;
   case     Algo::JuilHirs: shiftViaJH( spec, size); break;
   default: RAPT::rsError("Unknown algorithm in SpectralShifter::processSpectrum");
@@ -271,6 +276,20 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   // Try a magnitude interpolation with a free-running phase that (soft) resets on transients.
   // Maybe use magnitude squared or maybe even dB values (log-magnitude). Let's see what works 
   // best. ....
+
+  // Compute magnitudes and phases of current input spectrum:
+  for(int k = 1; k < spectrumSize; k++)
+  {
+    mag[k] = spectrum[k].getRadius();
+    phs[k] = spectrum[k].getAngle();
+  }
+
+
+
+  // Update phase buffer:
+  AT::copy(&phs[0], &phsOld[0], spectrumSize);
+
+
 
 
   int dummy = 0;
