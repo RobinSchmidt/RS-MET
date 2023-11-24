@@ -849,7 +849,7 @@ void testSpectralShift()
 {
   using SS = rosic::SpectralShifter;
   SS::Algorithm    JH   = SS::Algorithm::JuilHirs;
-  SS::Algorithm    RS   = SS::Algorithm::RobSchmt;
+  SS::Algorithm    RS1  = SS::Algorithm::RobSchm1;
   SS::PhaseFormula Mul  = SS::PhaseFormula::useMultiplier;
   SS::PhaseFormula Keep = SS::PhaseFormula::keepOriginal;
   std::vector<double> x, y1, y2;
@@ -1037,14 +1037,19 @@ void testSpectralShift()
   //-----------------------------------------------------------------------------------------------
   // Experiments with my first attempt for an algorithm:
 
-  testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
+  testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
   // -The input spectrum is cneterd at FFT bin 8, the output spectrum is centered at bin 6.
   //  Shouldn't it be at 0.8*8 = 6.4? But the output signal actually does have the right frequency.
   //  This is strange.
-  // -Out has too low amplitude.
+  // -Out has too low amplitude. Apparently, the problem is the linear interpolations of the 
+  //  complex values. Adjacent bins have negative values. Maybe we should interpolate magnitude
+  //  and phase instead. But we must think about how to unwrap the phase...or do we? Will that be a 
+  //  problem? Hmm. I think, maybe taking the center bin's phase as reference and the left and 
+  //  right neighbours should somehow be "unwrapped" with respect to that. Maybe zero-padding will 
+  //  help to ensure some coherence of phases of neighboring bins?
 
 
-  testSpectralShifter(0.80, RS, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
+  testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
   // -The amplitude is too low.
 
 
@@ -1052,14 +1057,14 @@ void testSpectralShift()
 
 
 
-  testSpectralShifter(0.80, RS, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(0.80, RS1, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
   // -The phase of the output periodically aligns with the phase of the input (at peak) at samples: 
   //  1152, 1664, 2176, ... in general at: 1152 + n*512. The difference between these alignment 
   //  instants is 512 = 4*inCyc. 
   // -The output is a little bit too quiet, though  
 
   
-  testSpectralShifter(0.80, RS, 1024, 2, 2, true, false,  2, Keep,  0, 128, 90.0);
+  testSpectralShifter(0.80, RS1, 1024, 2, 2, true, false,  2, Keep,  0, 128, 90.0);
   // -Without the phase formula, no phase alignment occurs but the non-aligned pitch-shifted signal 
   //  looks actually similar, too. Has also the right frequency and amplitude (??). It's just a bit 
   //  phase-shifted. ..right amplitude?...nope that's not true. that must ahve been a different
@@ -1237,7 +1242,7 @@ void testSpectralShiftViaRS()
 
   using PS = rosic::SpectralShifter;
   PS ps(blockSize, overlap, zeroPad);
-  ps.setAlgorithm(PS::Algorithm::RobSchmt);
+  ps.setAlgorithm(PS::Algorithm::RobSchm1);
   ps.setFrequencyScale(freqScale);
   ps.setInputBlockSize(blockSize);
   ps.setOverlapFactor(overlap);

@@ -174,7 +174,8 @@ public:
 
   enum class Algorithm
   {
-    RobSchmt,   // Robin Schmidt
+    RobSchm1,   // Robin Schmidt's 1st algo
+    RobSchm2,   // ...2nd
     LaroDols,   // Laroche, Dolson
     JuilHirs    // Juillerat, Hirsbrunner
 
@@ -219,9 +220,11 @@ protected:
   void shiftViaJH(Complex* spectrum, int spectrumSize);
   // stub - Implementation of the algorithm of Juillerat/Hirsbrunner
 
-  void shiftViaRS(Complex* spectrum, int spectrumSize);
+  void shiftViaRS1(Complex* spectrum, int spectrumSize);
   // stub - Custom algorithm by Robin Schmidt
 
+
+  void shiftViaRS2(Complex* spectrum, int spectrumSize);
 
 
   Complex *tmpSpectrum;

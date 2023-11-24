@@ -17,9 +17,9 @@ void SpectralShifter::processSpectrum(Complex* spec, int size)
   using Algo = Algorithm;
   switch(algo)
   {
-  case     Algo::RobSchmt: shiftViaRS(spec, size); break;
-  case     Algo::LaroDols: shiftViaLD(spec, size); break;
-  case     Algo::JuilHirs: shiftViaJH(spec, size); break;
+  case     Algo::RobSchm1: shiftViaRS1(spec, size); break;
+  case     Algo::LaroDols: shiftViaLD( spec, size); break;
+  case     Algo::JuilHirs: shiftViaJH( spec, size); break;
   default: RAPT::rsError("Unknown algorithm in SpectralShifter::processSpectrum");
   }
   frameIndex++;
@@ -161,8 +161,7 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
   //  maybe if we keep the conditional, drag it out of the loop. Will that make a difference
 }
 
-
-void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
+void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
 {
   using AT = RAPT::rsArrayTools;
 
@@ -204,6 +203,9 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
       //spectrum[b] *= expC(-i * ((double(b-a)*p)/(O)) * (2*PI/N));  // for test
 
       spectrum[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));  // normal
+
+
+      //spectrum[b] *= expC(-i * PI/4);  // test
 
       // I think, we should not include the m in the denominator.
       // But shouldn't the phase-shifts accumulate?
@@ -249,6 +251,15 @@ void SpectralShifter::shiftViaRS(Complex* spectrum, int spectrumSize)
   //  from it.
 }
 
+
+void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
+{
+  using AT = RAPT::rsArrayTools;
+
+
+
+  int dummy = 0;
+}
 
 
 /*
