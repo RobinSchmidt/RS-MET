@@ -1168,7 +1168,7 @@ void testSpectralShift()
 
 
   testSpectralShifter(0.80, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 90.0);
-
+  // -Freq is too high - actually higher than input - should be lower
 
 
 

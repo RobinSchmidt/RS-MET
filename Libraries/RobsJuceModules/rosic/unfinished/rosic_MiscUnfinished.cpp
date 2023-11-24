@@ -271,25 +271,56 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
 
 void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 {
+  // UNDER CONSTRUCTION - is still wrong
+
   using AT = RAPT::rsArrayTools;
 
   // Try a magnitude interpolation with a free-running phase that (soft) resets on transients.
   // Maybe use magnitude squared or maybe even dB values (log-magnitude). Let's see what works 
   // best. ....
 
+  int N = spectrumSize;
+  int H = getHopSize();
+  int P = getZeroPaddingFactor();
+  Complex i(0, 1); 
+
   // Compute magnitudes and phases of current input spectrum:
-  for(int k = 1; k < spectrumSize; k++)
+  for(int k = 1; k < N; k++)
   {
     mag[k] = spectrum[k].getRadius();
     phs[k] = spectrum[k].getAngle();
   }
 
 
+  // Do a linear interpolation of the magnitudes and use a free-running phase:
+  for(int kw = 1; kw < N; kw++)
+  {
+    double kr = kw / shift;              // read position - todo: precompute 1/shift
+
+    // Linear interpolation:
+    double krFloor = floor(kr);
+    double krFrac  = kr - krFloor;
+    int    krInt   = (int) krFloor;
+    if(krInt >= N - 1)
+      break;                           // We are done - quit the loop
+    double kMag = (1-krFrac) * mag[krInt] + krFrac * mag[krInt+1];
+
+    // Compute free-running phase:
+    double kPhs = phsOld[kw] + (2*PI*kw*H) / (N);
+    // VERIFY the formula! I'm not sure about it.
+    // Hmm - if we do it like this, we actually do not need the phsOld buffer. The phs buffer would
+    // be enough - we could update the value directly there like:
+    // phs += (2*PI*H) / (N);
+    // ToDo: include some sort of reset strategy here based on (per bin) transients 
+
+    // Write the new complex value into the complex output:
+    spectrum[kw] = kMag * expC(-i * kPhs);  // Verify the minus!
+
+    int dummy = 0;
+  }
 
   // Update phase buffer:
   AT::copy(&phs[0], &phsOld[0], spectrumSize);
-
-
 
 
   int dummy = 0;

@@ -71,6 +71,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \Inquiry
 
+  int getHopSize() const { return hopSize; }
+
+  int getZeroPaddingFactor() const { return paddingFactor; }
+
+
   //-----------------------------------------------------------------------------------------------
   // \Processing
 
