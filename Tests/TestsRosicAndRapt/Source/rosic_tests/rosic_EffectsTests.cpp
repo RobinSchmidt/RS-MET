@@ -805,15 +805,19 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   ps.setPhaseFormula(phaseFormula);
 
   // Set up plotting:
-  ps.blocksToPlot = { 4 };            // The blocks for which plots are to be produced
-  ps.plotRawInputBlock       = true;
-  ps.plotWindowedInputBlock  = true;
-  ps.plotPaddedInputBlock    = true;
-  ps.plotRawOutputBlock      = true;
-  ps.plotWindowedOutputBlock = true;
-  ps.plotInputSpectrum       = true;
-  ps.plotOutputSpectrum      = true;
-  // ToDo: Maybe let the plotter plot to files
+  bool plot = false;  // maybe make it a function parameter
+  if(plot)
+  {
+    ps.blocksToPlot ={ 5 };            // The blocks for which plots are to be produced
+    ps.plotRawInputBlock       = true;
+    ps.plotWindowedInputBlock  = true;
+    ps.plotPaddedInputBlock    = true;
+    ps.plotRawOutputBlock      = true;
+    ps.plotWindowedOutputBlock = true;
+    ps.plotInputSpectrum       = true;
+    ps.plotOutputSpectrum      = true;
+    // ToDo: Maybe let the plotter plot to files
+  }
 
   // Apply the pitch shifting:
   std::vector<double> y(numSamples);
@@ -1056,9 +1060,20 @@ void testSpectralShift()
   // Let's ty it Without the output window:
   testSpectralShifter(0.80, RS1, 1024, 4, 16, true, false,  2, Mul,   0, 128, 90.0);
   // -Now the output is almost silent. The blocks look good, though. The output length is 1280 
-  //  samples and the input 1024. 1024 * 1.25 = 1024 / 0.8 = 1250. That checks out exactly
+  //  samples and the input 1024. 1024 * 1.25 = 1024 / 0.8 = 1250. That checks out exactly.
   // -Must be a phase-cancellation between the blocks or something? This test clearly exposes this 
   //  behavior - so let's keep it.
+
+  // Let's see what happens without the phase formula:
+  //testSpectralShifter(0.80, RS1, 1024, 4, 16, true, false,  2, Keep,   0, 128, 90.0);
+  // -Looks similar as with the formula.
+  // -Using overlap of 8 makes it even more quiet
+  // -With a freqScale of 0.9 we seem to get half-cancellation?
+  // -Multplying the phase by and ad-hoc twiddle of expC(-i * 1.0 * p); does indeed increase the
+  //  output - so: yes - it has indeed to do with phase cancellation.
+  // -Try to mess with the phase and see if this can improve the situation
+  // 
+
 
 
   testSpectralShifter(0.80, RS1, 1024, 2, 8, true, false,  2, Mul,   0, 128, 90.0);

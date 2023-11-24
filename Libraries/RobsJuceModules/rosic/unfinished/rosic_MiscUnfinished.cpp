@@ -170,7 +170,10 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
 
   // Experimental - for energy normalization:
   double inEnergy = AT::sumOfSquares((double*) spectrum, 2*spectrumSize);
+
   double inSumAbs = AT::sumOfAbsoluteValues((double*) spectrum, 2*spectrumSize);
+  // But wait - this is |re| + |im|. Maybe we should sum the magnitudes of the complex values
+  // instead!
 
 
   int w;    // write index    ( maybe use double to avoid type conversion in loop)
@@ -206,6 +209,7 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
 
 
       //spectrum[b] *= expC(-i * PI/4);  // test
+      //spectrum[b] *= expC(-i * 1.0 * p);  // test
 
       // I think, we should not include the m in the denominator.
       // But shouldn't the phase-shifts accumulate?
@@ -238,7 +242,10 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
   // But maybe a similar apporach in the time domain could be more successful
 
   // The sum-of-abs normalization makes it a bit too loud, the energy-based is too quite. Maybe
-  // something in between can be used?
+  // something in between can be used? OK  - done - I'm using a weighted average that works well 
+  // for the sine with period 128. We need to figure out, if this generalizes or is just working
+  // well for thsi particular signal
+  // See also comments under double inSumAbs = ...
 
   //// For debug:
   //if(frameIndex == 8) 
