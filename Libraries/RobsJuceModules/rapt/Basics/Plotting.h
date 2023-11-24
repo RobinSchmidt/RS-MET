@@ -192,8 +192,8 @@ inline void rsPlotComplexArray(int numComplexValues, T* reImArray1, std::string 
   std::vector<T> re(N/2), im(N/2), mag(N/2);
 
   for(int i = 0; i < N/2; i++) {
-    re[i] = reImArray1[2*i];
-    im[i] = reImArray1[2*i+1];
+    re[i]  = reImArray1[2*i];
+    im[i]  = reImArray1[2*i+1];
     mag[i] = sqrt(re[i]*re[i] + im[i]*im[i]); }
 
   plt.addDataArrays(N/2, &re[0]);

@@ -209,7 +209,7 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
 
 
       //spectrum[b] *= expC(-i * PI/4);  // test
-      spectrum[b] *= expC(-i * 2.0 * p);  // test
+      //spectrum[b] *= expC(-i * 2.0 * p);  // test
 
       // I think, we should not include the m in the denominator.
       // But shouldn't the phase-shifts accumulate?

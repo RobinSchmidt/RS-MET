@@ -1058,7 +1058,7 @@ void testSpectralShift()
   // -Maybe the pahse is wrong such that we get (soft) phase resets or some sort of osc-sync?
 
   // Let's ty it Without the output window:
-  testSpectralShifter(0.80, RS1, 1024, 4, 16, true, false,  2, Mul,   0, 128, 90.0);
+  //testSpectralShifter(0.80, RS1, 1024, 4, 16, true, false,  2, Mul,   0, 128, 90.0);
   // -Now the output is almost silent. The blocks look good, though. The output length is 1280 
   //  samples and the input 1024. 1024 * 1.25 = 1024 / 0.8 = 1250. That checks out exactly.
   // -Must be a phase-cancellation between the blocks or something? This test clearly exposes this 
@@ -1078,17 +1078,16 @@ void testSpectralShift()
 
 
 
-  testSpectralShifter(0.80, RS1, 1024, 2, 8, true, false,  2, Mul,   0, 128, 90.0);
+  //testSpectralShifter(0.80, RS1, 1024, 2, 8, true, false,  2, Mul,   0, 128, 90.0);
 
-
-  testSpectralShifter(0.80, RS1, 1024, 2, 16, true, false,  2, Mul,   0, 128, 90.0);
-
-
+  //testSpectralShifter(0.80, RS1, 1024, 2, 16, true, false,  2, Mul,   0, 128, 90.0);
 
   //testSpectralShifter(0.80, RS1, 1024, 2, 1, false, false,  2, Mul,  0, 128, 90.0);
 
-  testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
-  // -The input spectrum is cneterd at FFT bin 8, the output spectrum is centered at bin 6.
+
+
+  //testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
+  // -The input spectrum is centerd at FFT bin 8, the output spectrum is centered at bin 6.
   //  Shouldn't it be at 0.8*8 = 6.4? But the output signal actually does have the right frequency.
   //  This is strange.
   // -Out has too low amplitude. Apparently, the problem is the linear interpolations of the 
@@ -1099,9 +1098,40 @@ void testSpectralShift()
   //  help to ensure some coherence of phases of neighboring bins? Yrs - that seems to be the case 
   //  indeed. The actual spectrum looks like a kind of sinusoidal blip. Interpolating magnitudes
   //  should indeed work better because the peaks are much wider than the re and im parts.
+  // -Maybe let's plot the phase, too
 
 
-  testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
+  // Experiment to figure out a formula for the mainlobe width empirically:
+  testSpectralShifter(0.80, RS1, 1024, 2, 8, true, false,  4, Mul,   0, 128, 90.0);
+  // - ZP: zero-padding, WP: window power, W: mainlobe width in bins
+
+  // - ZP = 1, WP = 1  ->  W =  4  ...roughly (there are no sidelobes)
+  // - ZP = 1, WP = 2  ->  W =  4
+  // - ZP = 1, WP = 3  ->  W = 10
+  // - ZP = 1, WP = 4  ->  W = 16    D = 6
+
+  // - ZP = 2, WP = 1  ->  W =  6
+  // - ZP = 2, WP = 2  ->  W =  8
+  // - ZP = 2, WP = 3  ->  W = 10
+  // - ZP = 2, WP = 4  ->  W = 12    D = 2
+
+  // - ZP = 4, WP = 1  ->  W = 12
+  // - ZP = 4, WP = 2  ->  W = 16
+  // - ZP = 4, WP = 3  ->  W = 20
+  // - ZP = 4, WP = 4  ->  W = 24    D = 4
+
+  // - ZP = 8, WP = 1  ->  W = 24
+  // - ZP = 8, WP = 2  ->  W = 32
+  // - ZP = 8, WP = 3  ->  W = 40
+  // - ZP = 8, WP = 4  ->  W = 48    D = 8
+
+  // -Generally: W = 2*ZP + ZP*WP = ZP * (WP + 2)  ...formula found empirically. But it seems to 
+  //  fail for ZP = 1
+
+
+
+
+  //testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
   // -The amplitude is too low.
 
 
