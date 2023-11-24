@@ -1102,13 +1102,17 @@ void testSpectralShift()
 
 
   // Experiment to figure out a formula for the mainlobe width empirically:
-  testSpectralShifter(0.80, RS1, 1024, 2, 8, true, false,  4, Mul,   0, 128, 90.0);
+  testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  7, Mul,   0, 128, 90.0);
   // - ZP: zero-padding, WP: window power, W: mainlobe width in bins
 
   // - ZP = 1, WP = 1  ->  W =  4  ...roughly (there are no sidelobes)
   // - ZP = 1, WP = 2  ->  W =  4
-  // - ZP = 1, WP = 3  ->  W = 10
-  // - ZP = 1, WP = 4  ->  W = 16    D = 6
+  // - ZP = 1, WP = 3  ->  W =  6
+  // - ZP = 1, WP = 4  ->  W =  6 
+  // - ZP = 1, WP = 5  ->  W =  8
+  // - ZP = 1, WP = 6  ->  W =  8
+  // - ZP = 1, WP = 7  ->  W =  8
+  // - ZP = 1, WP = 8  ->  W = 10
 
   // - ZP = 2, WP = 1  ->  W =  6
   // - ZP = 2, WP = 2  ->  W =  8
