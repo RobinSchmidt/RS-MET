@@ -1169,6 +1169,8 @@ void testSpectralShift()
 
   testSpectralShifter(0.80, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 90.0);
   // -The whole output buffer needs a circular shift. The freq looks about right
+  // -...OK - with a constant phase-shift, we get closer. But the output has amp-mod and some 
+  //  discontinuities
 
 
 

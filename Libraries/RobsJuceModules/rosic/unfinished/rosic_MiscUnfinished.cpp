@@ -309,7 +309,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     double kPhs = phsOld[kw] + (2*PI*kw*H) / (N);
     //double kPhs = phsOld[kw] + (2*PI*kw*H) / (P*N);
 
-    kPhs += PI/4;  // just for development - should work for our cosine test input
+    //  kPhs += PI/4; / // just for development - should work for our cosine test input
+    //kPhs += (kw * PI/4) / N; 
+    kPhs += (kw * PI/4); 
+
+
 
     phs[kw] = kPhs;
     // VERIFY the formula! I'm not sure about it.
