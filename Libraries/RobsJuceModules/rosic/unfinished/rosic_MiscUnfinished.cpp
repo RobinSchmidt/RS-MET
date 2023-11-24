@@ -268,6 +268,9 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 {
   using AT = RAPT::rsArrayTools;
 
+  // Try a magnitude interpolation with a free-running phase that (soft) resets on transients.
+  // Maybe use magnitude squared or maybe even dB values (log-magnitude). Let's see what works 
+  // best. ....
 
 
   int dummy = 0;
