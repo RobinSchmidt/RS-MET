@@ -312,6 +312,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     //  kPhs += PI/4; / // just for development - should work for our cosine test input
     //kPhs += (kw * PI/4) / N; 
     kPhs += (kw * PI/4); 
+    // But wait! this addditional shift should *not* accumulate!
 
 
 
