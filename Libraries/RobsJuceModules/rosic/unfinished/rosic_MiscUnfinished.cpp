@@ -307,14 +307,23 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
     // Compute free-running phase:
     double kPhs = phsOld[kw] + (2*PI*kw*H) / (N);
+    //double kPhs = phsOld[kw] + (2*PI*kw*H) / (P*N);
+
+    kPhs += PI/4;  // just for development - should work for our cosine test input
+
+    phs[kw] = kPhs;
     // VERIFY the formula! I'm not sure about it.
     // Hmm - if we do it like this, we actually do not need the phsOld buffer. The phs buffer would
     // be enough - we could update the value directly there like:
     // phs += (2*PI*H) / (N);
+
+
+
     // ToDo: include some sort of reset strategy here based on (per bin) transients 
 
     // Write the new complex value into the complex output:
-    spectrum[kw] = kMag * expC(-i * kPhs);  // Verify the minus!
+    //spectrum[kw] = kMag * expC(-i * kPhs);  // Verify the minus!
+    spectrum[kw] = kMag * expC(i * kPhs); 
 
     int dummy = 0;
   }
