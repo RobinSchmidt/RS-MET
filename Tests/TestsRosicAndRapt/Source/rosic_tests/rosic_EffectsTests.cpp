@@ -805,7 +805,7 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   ps.setPhaseFormula(phaseFormula);
 
   // Set up plotting:
-  bool plot = false;  // maybe make it a function parameter
+  bool plot = true;  // maybe make it a function parameter
   if(plot)
   {
     ps.blocksToPlot ={ 5 };            // The blocks for which plots are to be produced
@@ -1063,16 +1063,18 @@ void testSpectralShift()
   //  samples and the input 1024. 1024 * 1.25 = 1024 / 0.8 = 1250. That checks out exactly.
   // -Must be a phase-cancellation between the blocks or something? This test clearly exposes this 
   //  behavior - so let's keep it.
+  // -Multplying the phase by and ad-hoc twiddle of expC(-i * 1.0 * p); does indeed increase the
+  //  output - so: yes - it has indeed to do with phase cancellation. using expC(-i * 2.0 * p);
+  //  the amplitude looks (almost) good but the freq-ratio is around 6/7
+  // -
+  // 
 
   // Let's see what happens without the phase formula:
   //testSpectralShifter(0.80, RS1, 1024, 4, 16, true, false,  2, Keep,   0, 128, 90.0);
   // -Looks similar as with the formula.
   // -Using overlap of 8 makes it even more quiet
   // -With a freqScale of 0.9 we seem to get half-cancellation?
-  // -Multplying the phase by and ad-hoc twiddle of expC(-i * 1.0 * p); does indeed increase the
-  //  output - so: yes - it has indeed to do with phase cancellation.
-  // -Try to mess with the phase and see if this can improve the situation
-  // 
+
 
 
 
@@ -1095,7 +1097,8 @@ void testSpectralShift()
   //  problem? Hmm. I think, maybe taking the center bin's phase as reference and the left and 
   //  right neighbours should somehow be "unwrapped" with respect to that. Maybe zero-padding will 
   //  help to ensure some coherence of phases of neighboring bins? Yrs - that seems to be the case 
-  //  indeed. The actual spectrum looks like a kind of sinusoidal blip
+  //  indeed. The actual spectrum looks like a kind of sinusoidal blip. Interpolating magnitudes
+  //  should indeed work better because the peaks are much wider than the re and im parts.
 
 
   testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Keep,  0, 128, 90.0);
@@ -1136,7 +1139,8 @@ void testSpectralShift()
 
   // -Shouldn't we accumulate the phase shifts/twiddles?
   // -We need to reflect frequencies below zero. Maybe with complex conjugation or something.
-  // -Try to interpolate magnitude (squared?) and phase instead
+  // -Try to interpolate magnitude (squared?) and phase instead. Or maybe let the phases run freely
+  //  and onle reset it on transients to the input phase
   // -Try energy normalization - or RMS try it in time and freq-domain to see what works better
 
   // This function should eventually replace testSpectralShiftViaJH/RS. We need to go through the 
