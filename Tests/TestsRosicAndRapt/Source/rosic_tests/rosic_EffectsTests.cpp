@@ -1054,7 +1054,7 @@ void testSpectralShift()
   // -Maybe the pahse is wrong such that we get (soft) phase resets or some sort of osc-sync?
 
   // Let's ty it Without the output window:
-  testSpectralShifter(0.80, RS1, 1024, 4, 8, true, false,  2, Mul,   0, 128, 90.0);
+  testSpectralShifter(0.80, RS1, 1024, 4, 16, true, false,  2, Mul,   0, 128, 90.0);
   // -Now the output is almost silent. The blocks look good, though. The output length is 1280 
   //  samples and the input 1024. 1024 * 1.25 = 1024 / 0.8 = 1250. That checks out exactly
   // -Must be a phase-cancellation between the blocks or something? This test clearly exposes this 
