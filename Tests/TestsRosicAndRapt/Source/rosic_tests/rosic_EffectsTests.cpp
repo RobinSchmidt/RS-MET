@@ -1037,6 +1037,20 @@ void testSpectralShift()
   //-----------------------------------------------------------------------------------------------
   // Experiments with my first attempt for an algorithm:
 
+  // Now let's be brave and don'T use an input window:
+  //testSpectralShifter(0.80, RS1, 1024, 2, 16, false, false,  2, Mul,   0, 128, 90.0);
+  // -Output has discontinuities but has the right frequency
+  // -Amplitude is too low
+  // -Parasitic oscillation at Nyquist freq. I guess, it comes from a sidelobe hat is not correctly
+  //  reflected around zero.
+
+
+  testSpectralShifter(0.80, RS1, 1024, 2, 16, true, false,  2, Mul,   0, 128, 90.0);
+
+  testSpectralShifter(0.80, RS1, 1024, 2, 8, true, false,  2, Mul,   0, 128, 90.0);
+
+  //testSpectralShifter(0.80, RS1, 1024, 2, 1, false, false,  2, Mul,  0, 128, 90.0);
+
   testSpectralShifter(0.80, RS1, 1024, 2, 1, true, false,  2, Mul,   0, 128, 90.0);
   // -The input spectrum is cneterd at FFT bin 8, the output spectrum is centered at bin 6.
   //  Shouldn't it be at 0.8*8 = 6.4? But the output signal actually does have the right frequency.
@@ -1085,7 +1099,10 @@ void testSpectralShift()
 
   int dummy = 0;
 
-  // Shouldn't we accumulate the phase shifts/twiddles?
+  // -Shouldn't we accumulate the phase shifts/twiddles?
+  // -We need to reflect frequencies below zero. Maybe with complex conjugation or something.
+  // -Try to interpolate magnitude (squared?) and phase instead
+  // -Try energy normalization - or RMS try it in time and freq-domain to see what works better
 
   // This function should eventually replace testSpectralShiftViaJH/RS. We need to go through the 
   // comments there and for each setting make a correspoding function call here and the copy the 

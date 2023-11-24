@@ -200,9 +200,9 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
       int    N = spectrumSize;
       Complex i(0,1);
 
-      //spectrum[b] *= expC(-i * ((double(b-a)*p)/(O)) * (2*PI/N));  // for test
+      spectrum[b] *= expC(-i * ((double(b-a)*p)/(O)) * (2*PI/N));  // for test
 
-      spectrum[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));  // normal
+      //spectrum[b] *= expC(-i * ((double(b-a)*p)/(m*O)) * (2*PI/N));  // normal
 
 
       //spectrum[b] *= expC(-i * PI/4);  // test
@@ -216,24 +216,29 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
 
   // Experimental:
   // A trick to keep the overall spectral energy the same:
-  double gain = 1.0;
-  double eps  = std::numeric_limits<double>::epsilon();
+  double gain1 = 1.0;
+  double gain2 = 1.0;
+  double eps   = std::numeric_limits<double>::epsilon();
 
-  //double outSumAbs = AT::sumOfAbsoluteValues((double*) spectrum, 2*spectrumSize);
-  //if(inSumAbs > eps && outSumAbs > eps)
-  //  gain = inSumAbs / outSumAbs;
+  double outSumAbs = AT::sumOfAbsoluteValues((double*) spectrum, 2*spectrumSize);
+  if(inSumAbs > eps && outSumAbs > eps)
+    gain1 = inSumAbs / outSumAbs;
 
-  //double outEnergy = AT::sumOfSquares((double*) spectrum, 2*spectrumSize);
-  //if(inEnergy > eps && outEnergy > eps)
-  //  gain = sqrt(inEnergy / outEnergy);
+  double outEnergy = AT::sumOfSquares((double*) spectrum, 2*spectrumSize);
+  if(inEnergy > eps && outEnergy > eps)
+    gain2 = sqrt(inEnergy / outEnergy);
 
-  //AT::scale((double*) spectrum, 2*spectrumSize, gain);
+
+  AT::scale((double*) spectrum, 2*spectrumSize, 0.47*gain1 + 0.53*gain2);
 
   // Normalizing the spectrum either with respect to RMS or with respect to sum-of-abs values
   // does not seem to be the solution to the problem that somtimes the amplitude is too low.
   // When shifting an octave down, the signal is actually perfect without this normalization and
   // in this case, the normalization makes the signal too loud. It was just an ad hoc idea anyway.
   // But maybe a similar apporach in the time domain could be more successful
+
+  // The sum-of-abs normalization makes it a bit too loud, the energy-based is too quite. Maybe
+  // something in between can be used?
 
   //// For debug:
   //if(frameIndex == 8) 
