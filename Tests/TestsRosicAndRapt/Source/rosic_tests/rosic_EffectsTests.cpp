@@ -1167,7 +1167,7 @@ void testSpectralShift()
   // Experiments with my second attempt for an algorithm:
 
 
-
+  //testSpectralShifter(0.75, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
 
   testSpectralShifter(0.80, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 0.0);
   // -The whole output buffer needs a circular shift. The freq looks about right
@@ -1202,6 +1202,9 @@ void testSpectralShift()
   // -Try to interpolate magnitude (squared?) and phase instead. Or maybe let the phases run freely
   //  and onle reset it on transients to the input phase
   // -Try energy normalization - or RMS try it in time and freq-domain to see what works better
+  // -I think, the amount of zero padding also limits by hwo much we can down-shift because it 
+  //  limits by how much a block can be lengenthed. Zero-padding of 2 should allow a downshift by
+  //  1 octave, zero-padding by 4 a downshift of two octaves. ...Or maybe not? 
 
   // This function should eventually replace testSpectralShiftViaJH/RS. We need to go through the 
   // comments there and for each setting make a correspoding function call here and the copy the 

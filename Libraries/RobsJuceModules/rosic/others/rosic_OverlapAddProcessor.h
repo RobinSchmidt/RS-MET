@@ -71,6 +71,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \Inquiry
 
+
+  int getBlockSize() const { return blockSize; }
+
   int getHopSize() const { return hopSize; }
 
   int getZeroPaddingFactor() const { return paddingFactor; }

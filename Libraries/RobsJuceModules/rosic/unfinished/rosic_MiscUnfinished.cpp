@@ -281,6 +281,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
   int N = spectrumSize;
   int H = getHopSize();
+  int B = getBlockSize();
   int P = getZeroPaddingFactor();
   Complex i(0, 1); 
 
@@ -306,7 +307,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     double kMag = (1-krFrac) * mag[krInt] + krFrac * mag[krInt+1];
 
     // Compute free-running phase:
-    double kPhs = phsOld[kw] + (2*PI*kw*H) / (N);
+    double kPhs = phsOld[kw] + (2*PI*kw*H) / N;
     //double kPhs = phsOld[kw] + (2*PI*kw*H) / (P*N);
 
     //  kPhs += PI/4; / // just for development - should work for our cosine test input
@@ -322,13 +323,29 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // be enough - we could update the value directly there like:
     // phs += (2*PI*H) / (N);
 
+     
+    //double shift = 0;                  // circularly shifted by half of unpadded buffer length
+    //double shift = (kw * 3.0) / N;  // peak at
+    //double shift = (kw * PI/8) / N;  // peak at
+    //double shift = (kw * PI/4) / N;  // peak at 2048
+
+    double shift = -(blockSize * kw * PI/2) / (N);  // looks good for ZP=2
+
+    //double shift = -(blockSize * kw * PI/4) / (N);  // maybe divide by (P*N)?
+    // https://dsp.stackexchange.com/questions/70909/is-there-a-fft-algorithm-with-the-circular-buffering
+    // Or maybe the phase-shift should be applied before the freq-scale? But if this would be the
+    // case, the error in the shift should depend on the freq-scale setting and go to zero when
+    // freq-scale is 1 - but that doesn't seem to be the case.
+    // See also:
+    // https://de.mathworks.com/help/matlab/ref/fftshift.html
+    // https://numpy.org/doc/stable/reference/generated/numpy.fft.fftshift.html
 
 
     // ToDo: include some sort of reset strategy here based on (per bin) transients 
 
     // Write the new complex value into the complex output:
     //spectrum[kw] = kMag * expC(-i * kPhs);  // Verify the minus!
-    spectrum[kw] = kMag * expC(i * kPhs); 
+    spectrum[kw] = kMag * expC(i * (kPhs + shift)); 
 
     int dummy = 0;
   }

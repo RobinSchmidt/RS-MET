@@ -1498,11 +1498,29 @@ https://github.com/stlab/adobe_source_libraries
  remove_if returns an iterator to the new end and merge takes an iterator to the output maybe a bit
  like AT::convolve. -> figure out
 
-For inspiration to actually implement an array data-strcuture for cases where std::vector is not 
+For inspiration to actually implement an array data-structure for cases where std::vector is not 
 suitable for some reason:
 https://github.com/foonathan/array
-...long ago, I sued my own dynamic array class, but at some point switched to using mostly 
+...long ago, I used my own dynamic array class, but at some point switched to using mostly 
 std::vector mainly because it's much easier to debug code with that: the debugger can show the
 contents of the vector without any additional mumbo jumbo
+
+
+Maybe a more modern implementation should use std::span instead of the pairs (int N, T *buffer). 
+Bjarne Strosustrup brings this example here at 27:00 min:
+https://www.youtube.com/watch?v=I8UvQKvOSSw   ...see also:
+https://stackoverflow.com/questions/34832090/whats-the-difference-between-span-and-array-view-in-the-gsl-library
+But what if there are multiple buffers? What if an input buffer and output buffer shall always 
+have equal length - then passing 2 spans to the function would pass that length twice, i.e. we'd 
+have an effectively extra function parameter potentially making parameter passing less efficient 
+(like, not all args are in registers or something like that). What if there are 2 inputs and 1 
+output (like in convolution) and the output length shall be inferred from the input length? Also, 
+when we want to operate on partial buffers, we'd have to wrap them into a span first - which may 
+require some extra variables, extra function parameters and would make the code on the call site 
+quite messy. Maybe we should have both variants. The usage with std::span shall be the standard and
+the usage with (int N, T* buffer)  or (size_t N, T* buffer) shall be reserved for very low level
+code.
+
+
 
 */

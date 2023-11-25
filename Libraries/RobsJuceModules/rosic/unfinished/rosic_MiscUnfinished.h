@@ -227,7 +227,7 @@ protected:
   void shiftViaRS2(Complex* spectrum, int spectrumSize);
 
 
-  Complex *tmpSpectrum;
+  Complex *tmpSpectrum = nullptr;
 
   double shift = 1.0;  // rename to scale or freqScale
 
