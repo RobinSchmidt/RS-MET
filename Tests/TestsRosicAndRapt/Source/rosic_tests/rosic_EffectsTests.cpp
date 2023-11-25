@@ -1197,12 +1197,17 @@ void testSpectralShift()
   //  0: ?, 1: ?, 2: -2560, 3: -3584, 4: -4608, 5: -5632, 6: -6656,
 
 
+  //testSpectralShifter(0.50, RS2, 1024, 8, 4, true, true,  2, Mul,  0, 128, 0.0);
+  // -Very quiet output
+
   testSpectralShifter(0.50, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
   // -Doesn't work- I think, the formual for sampleShift is valid only for overlap = 2. Here we
   //  use overlap = 4 and that makes it fail
 
 
   //testSpectralShifter(0.50, RS2, 1024, 2, 4, true, true,  1, Mul,  0, 128, 0.0);
+
+  testSpectralShifter(0.80, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
 
   //testSpectralShifter(0.80, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
 

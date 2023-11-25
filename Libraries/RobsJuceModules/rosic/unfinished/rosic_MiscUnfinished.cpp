@@ -340,7 +340,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
     // Write the new complex value into the complex output:
     spectrum[kw] = kMag * expC(-i * (kPhs + phaseShift));  // Verify the minus!
-    //spectrum[kw] = kMag * expC(i * (kPhs + phaseShift)); 
+    //spectrum[kw] = -kMag * expC(-i * (kPhs + phaseShift));
+    //spectrum[kw] = kMag * expC(i * (kPhs + phaseShift));
+    //spectrum[kw] = kMag * expC(i * (kPhs - phaseShift));
+
+
 
     int dummy = 0;
   }
