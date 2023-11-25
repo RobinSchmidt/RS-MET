@@ -309,12 +309,6 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // Compute free-running phase:
     double kPhs = phsOld[kw] + (2*PI*kw*H) / N;
     //double kPhs = phsOld[kw] + (2*PI*kw*H) / (P*N);
-
-    //  kPhs += PI/4; / // just for development - should work for our cosine test input
-    //kPhs += (kw * PI/4) / N; 
-    //kPhs += (kw * PI/4); 
-    // But wait! this addditional shift should *not* accumulate!
-
     phs[kw] = kPhs;
     // VERIFY the formula! I'm not sure about it.
     // Hmm - if we do it like this, we actually do not need the phsOld buffer. The phs buffer would
@@ -322,35 +316,22 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // phs += (2*PI*H) / (N);
 
 
+    // Compute an additional desired phase-shift that has the effect of circularly shifting the
+    // output buffer in such a way that the energy blip gets concentrated in the inital segement of
+    // the zero-padded buffer:
 
-    int sampleShift = (frameIndex * blockSize + blockSize/2) % (paddingFactor * blockSize);
-    // Verify!
+    //int    sampleShift = (frameIndex * blockSize + blockSize/2) % (paddingFactor * blockSize);
+    // Works only for overlap = 2
 
-    double phaseShift = (-PI * kw * sampleShift) / N; 
-    //double phaseShift = 0;                  // circularly shifted by half of unpadded buffer length
+    //int    sampleShift = (frameIndex * blockSize + hopSize) % (paddingFactor * blockSize);
 
-
-    //double shift = (kw * 3.0) / N;  // peak at
-    //double shift = (kw * PI/8) / N;  // peak at
-    //double shift = (kw * PI/4) / N;  // peak at 2048
-
-    //double shift = -(blockSize * kw * PI/2) / (N);  // Looks good for P = 2 but completely wrong for ZP = 4
-    //double shift = +(0.6 * kw * PI/2);  // good for P
-
-    //double shift = -(       kw * PI/2);  // good for P=2 (we have N=B=1024)
-    //double shift = -(2.5  * kw * PI/2);  // good for P=4
-    //double shift = +(0.75 * kw * PI/2);  // good for P=8
+    int    sampleShift = (2*frameIndex * hopSize + hopSize) % (paddingFactor * blockSize);
 
 
-
-
-    //double shift = -(blockSize * kw * PI/P) / (N);
-    //double shift = -(blockSize * kw * PI/4) / (N);  // maybe divide by (P*N)?
+    double phaseShift  = (-PI * kw * sampleShift) / N; 
+    // ToDo: explain this better - it's a bit messy. It has to do with the phase-reference point of 
+    // the (padded) buffer. See:
     // https://dsp.stackexchange.com/questions/70909/is-there-a-fft-algorithm-with-the-circular-buffering
-    // Or maybe the phase-shift should be applied before the freq-scale? But if this would be the
-    // case, the error in the shift should depend on the freq-scale setting and go to zero when
-    // freq-scale is 1 - but that doesn't seem to be the case.
-    // See also:
     // https://de.mathworks.com/help/matlab/ref/fftshift.html
     // https://numpy.org/doc/stable/reference/generated/numpy.fft.fftshift.html
 

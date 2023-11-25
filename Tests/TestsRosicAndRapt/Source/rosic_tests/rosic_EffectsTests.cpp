@@ -1191,12 +1191,18 @@ void testSpectralShift()
   //  samples between the blocks and wraps around at the padded buffer length. For the formula with
   //  the minus, it decreases instead of increasing..or wait...is that true?
 
-  testSpectralShifter(1.0, RS2, 1024, 2, 8, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024, 2, 8, true, false,  2, Mul,  0, 128, 90.0);
   // -Padded buffer is 8192 samples long
   // -Required shifts with minus in the formula:
   //  0: ?, 1: ?, 2: -2560, 3: -3584, 4: -4608, 5: -5632, 6: -6656,
 
 
+  testSpectralShifter(0.50, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
+  // -Doesn't work- I think, the formual for sampleShift is valid only for overlap = 2. Here we
+  //  use overlap = 4 and that makes it fail
+
+
+  //testSpectralShifter(0.50, RS2, 1024, 2, 4, true, true,  1, Mul,  0, 128, 0.0);
 
   //testSpectralShifter(0.80, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
 
