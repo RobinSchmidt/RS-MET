@@ -351,7 +351,8 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // ToDo: include some sort of reset strategy here based on (per bin) transients 
 
     // Write the new complex value into the complex output:
-    //spectrum[kw] = kMag * expC(-i * kPhs);  // Verify the minus!
+    //spectrum[kw] = kMag * expC(-i * (kPhs + shift));  // Verify the minus!
+
     spectrum[kw] = kMag * expC(i * (kPhs + shift)); 
 
     int dummy = 0;

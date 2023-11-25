@@ -1171,9 +1171,22 @@ void testSpectralShift()
   // -All buffers are circularly shifted by half the buffer length. It doesn't seem to matter
   //  if we use the phase formula with the plus or minus in the epxonent
 
-  testSpectralShifter(1.0, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 90.0);
   // -Padded buffer is 2048 samples long
-  // -Required shifts: 0: ?, 1: +256, 2: -512, 3: +512, 4: -512, 5: +512, 6: -512
+  // -Required shifts: 0: ?, 1: +256, 2: -512, 3: +512, 4: -512, 5: +512, 6: -512 (with the 
+  //  positive or negative sign in the exponent)
+
+
+  testSpectralShifter(1.0, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
+  // -Padded buffer is 4096 samples long
+  // -Required shifts with minus in the formula:
+  //  0: ?, 1: ?, 2: -2560, 3: +512, 4: -512,5: +1536, 6: -2560
+  // -Required shifts with plus in the formula:
+  //  0: ?, 1: ?, 2: -512, 3: +512, 4: -2560, 5: -1536
+  // -Maybe it's easier to just shift the input and output buffers instead of trying to achieve
+  //  this effect via pahse twiddling. Maybe to this pre- and post-shifting before calling 
+  //  processSpectrum. ProcessSpectrum should receive a spectrum whose phase reference time instant
+  //  is in the middle...maybe 
 
 
   //testSpectralShifter(0.80, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
