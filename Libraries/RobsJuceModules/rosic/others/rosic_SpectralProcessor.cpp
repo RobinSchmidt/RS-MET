@@ -26,7 +26,7 @@ void SpectralProcessor::processBlock(double *block, int blockSize)
 
 #if defined(RS_DEBUG)
   int zoom = 8;  // zoom = 1 shows full spectrum, zoom > 1 zooms in to lower freqs
-  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+  if(plotInputSpectrum && RAPT::rsContains(blocksToPlot, currentBlockIndex))
     rsPlotComplexArray(spectrumSize/(2*zoom), (double*) spectrum, "Input spectrum");
 #endif
 
@@ -34,7 +34,7 @@ void SpectralProcessor::processBlock(double *block, int blockSize)
   transformer.transformSymmetricSpectrum(spectrum, block);
 
 #if defined(RS_DEBUG)
-  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+  if(plotOutputSpectrum && RAPT::rsContains(blocksToPlot, currentBlockIndex))
     rsPlotComplexArray(spectrumSize/(2*zoom), (double*) spectrum, "Output spectrum");
 #endif
 

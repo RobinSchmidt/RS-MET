@@ -135,7 +135,7 @@ void OverlapAddProcessor::prepareBlockForProcessing()
     tmp[wp] = 0.0;
 
 #if defined(RS_DEBUG)
-  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+  if(plotPaddedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
     rsPlotArray(tmp, paddingFactor*blockSize, "Padded input block");
 #endif
 }
@@ -148,7 +148,7 @@ void OverlapAddProcessor::postProcessBlock()
     y[nextOutBuffer][n] = tmp[n];
 
 #if defined(RS_DEBUG)
-  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+  if(plotRawOutputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
     rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Raw output block");
 #endif
 
@@ -162,7 +162,7 @@ void OverlapAddProcessor::postProcessBlock()
   }
 
 #if defined(RS_DEBUG)
-  if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
+  if(plotWindowedOutputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
     rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Windowed output block ");
 #endif
 

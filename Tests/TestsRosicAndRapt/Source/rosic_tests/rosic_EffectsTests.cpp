@@ -808,14 +808,14 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   bool plot = true;  // maybe make it a function parameter
   if(plot)
   {
-    ps.blocksToPlot ={ 5 };            // The blocks for which plots are to be produced
-    ps.plotRawInputBlock       = true;
-    ps.plotWindowedInputBlock  = true;
-    ps.plotPaddedInputBlock    = true;
+    ps.blocksToPlot ={ 0,1,2,3,4,5,6,7 };            // The blocks for which plots are to be produced
+    //ps.plotRawInputBlock       = true;
+    //ps.plotWindowedInputBlock  = true;
+    //ps.plotPaddedInputBlock    = true;
     ps.plotRawOutputBlock      = true;
-    ps.plotWindowedOutputBlock = true;
-    ps.plotInputSpectrum       = true;
-    ps.plotOutputSpectrum      = true;
+    //ps.plotWindowedOutputBlock = true;
+    //ps.plotInputSpectrum       = true;
+    //ps.plotOutputSpectrum      = true;
     // ToDo: Maybe let the plotter plot to files
   }
 
@@ -1167,10 +1167,20 @@ void testSpectralShift()
   // Experiments with my second attempt for an algorithm:
 
 
-  //testSpectralShifter(0.75, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
+  //testSpectralShifter(1.0, RS2, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // -All buffers are circularly shifted by half the buffer length. It doesn't seem to matter
+  //  if we use the phase formula with the plus or minus in the epxonent
 
-  testSpectralShifter(0.80, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 0.0);
-  // -The whole output buffer needs a circular shift. The freq looks about right
+  testSpectralShifter(1.0, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 90.0);
+  // -Padded buffer is 2048 samples long
+  // -Required shifts: 0: ?, 1: +256, 2: -512, 3: +512, 4: -512, 5: +512, 6: -512
+
+
+  //testSpectralShifter(0.80, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
+
+  //testSpectralShifter(0.80, RS2, 1024, 2, 2, true, false,  2, Mul,  0, 128, 0.0);
+  // -The whole output buffer needs a circular shift. The freq looks about right.
+  // -It seems liek the amount of circular shift is not the same in each buffer.
   // -...OK - with a constant phase-shift, we get closer. But the output has amp-mod and some 
   //  discontinuities
 
