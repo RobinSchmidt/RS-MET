@@ -321,8 +321,15 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // be enough - we could update the value directly there like:
     // phs += (2*PI*H) / (N);
 
-     
-    double shift = 0;                  // circularly shifted by half of unpadded buffer length
+
+
+    int sampleShift = (frameIndex * blockSize + blockSize/2) % (paddingFactor * blockSize);
+    // Verify!
+
+    double phaseShift = (-PI * kw * sampleShift) / N; 
+    //double phaseShift = 0;                  // circularly shifted by half of unpadded buffer length
+
+
     //double shift = (kw * 3.0) / N;  // peak at
     //double shift = (kw * PI/8) / N;  // peak at
     //double shift = (kw * PI/4) / N;  // peak at 2048
@@ -351,9 +358,8 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // ToDo: include some sort of reset strategy here based on (per bin) transients 
 
     // Write the new complex value into the complex output:
-    //spectrum[kw] = kMag * expC(-i * (kPhs + shift));  // Verify the minus!
-
-    spectrum[kw] = kMag * expC(i * (kPhs + shift)); 
+    spectrum[kw] = kMag * expC(-i * (kPhs + phaseShift));  // Verify the minus!
+    //spectrum[kw] = kMag * expC(i * (kPhs + phaseShift)); 
 
     int dummy = 0;
   }
