@@ -291,14 +291,24 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     mag[k] = spectrum[k].getRadius();
     phs[k] = spectrum[k].getAngle();
   }
+  // What about bin index 0? It has this special meaning: the real part encodes DC, the imag part 
+  // encodes the Nyquist freq. How should we deal with that? Maybe we should just leave it 
+  // untouched? Maybe set the Nyquist bin to zero in upshifting?
 
 
-  /*
-  // Test - when uncommented, it should give identity resynthesis:
-  for(int kw = 0; kw < N; kw++) {
-    spectrum[kw] = mag[kw] * expC(i * phs[kw]); }
-  return;
-  */
+  // Test - when uncommented, it should give us identity resynthesis:
+  //for(int kw = 0; kw < N; kw++)
+  //  spectrum[kw] = mag[kw] * expC(i * phs[kw]);
+  //return;
+  // -The identity resynthesis still works (at least visually from looking at plots) when kw starts
+  //  at 1. It seems to still work even for starting at e.g. kw = 10 - as long as all freq 
+  //  components are above that index, I guess. But this happens only exactly when an integer 
+  //  number of cycles fits into the block. If this isn't the case, we may have leakage into the
+  //  DC bin and may need to include it for identity resynthesis.
+  // -Replacing the formula by spectrum[kw] = mag[kw] * expC(-i * phs[kw]); has the effect to 
+  //  shifting the padded block for resynthesis to the end of the padded buffer. That means, the 
+  //  minus would be wrong. The exponent should *not* use the minus.
+
 
 
   // Do a linear interpolation of the magnitudes and use a free-running phase:
