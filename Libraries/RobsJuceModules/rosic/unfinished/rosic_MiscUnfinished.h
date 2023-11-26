@@ -170,7 +170,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \Setup
 
-  void setFrequencyScale(double scaleFactor) { shift = scaleFactor; }
+  void setFrequencyScale(double scaleFactor) { freqScale = scaleFactor; }
 
   enum class Algorithm
   {
@@ -229,7 +229,7 @@ protected:
 
   Complex *tmpSpectrum = nullptr;
 
-  double shift = 1.0;  // rename to scale or freqScale
+  double freqScale = 1.0;  // rename to scale or freqScale
 
   Algorithm algo = Algorithm::JuilHirs;
 

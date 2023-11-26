@@ -107,7 +107,7 @@ void SpectralShifter::shiftViaJH(Complex* spectrum, int spectrumSize)
 
 
   // Main loop over the bins of the current spectrum:
-  double k = shift;
+  double k = freqScale;
   for(int a = 1; a < N; a++)       // we start at 1 because we leave DC as is
   {
     int b = (int) (k*a + 0.5);     // Eq. 1
@@ -184,7 +184,7 @@ void SpectralShifter::shiftViaRS1(Complex* spectrum, int spectrumSize)
   int w;    // write index    ( maybe use double to avoid type conversion in loop)
   for(w = 1; w < spectrumSize; w++)    // we start at 1 because we leave DC as is
   {
-    double r = w / shift;              // read position - todo: precompute k = 1/shift
+    double r = w / freqScale;              // read position - todo: precompute k = 1/shift
 
     // Linear interpolation:
     double rFloor = floor(r);
@@ -296,7 +296,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   // Do a linear interpolation of the magnitudes and use a free-running phase:
   for(int kw = 1; kw < N; kw++)
   {
-    double kr = kw / shift;              // read position - todo: precompute 1/shift
+    double kr = kw / freqScale;              // read position - todo: precompute 1/freqScale
 
     // Linear interpolation:
     double krFloor = floor(kr);
