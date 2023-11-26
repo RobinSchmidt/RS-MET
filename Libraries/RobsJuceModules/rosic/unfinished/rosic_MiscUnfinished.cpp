@@ -294,9 +294,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
 
   // Do a linear interpolation of the magnitudes and use a free-running phase:
+  double readScale = 1.0 / freqScale;        // Scaler for read-position wrt write-position 
+
   for(int kw = 1; kw < N; kw++)
   {
-    double kr = kw / freqScale;              // read position - todo: precompute 1/freqScale
+    double kr = kw * readScale;              // Read position
 
     // Linear interpolation:
     double krFloor = floor(kr);
@@ -345,6 +347,17 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     //spectrum[kw] = kMag * expC(i * (kPhs - phaseShift));
 
 
+    // Compensate for bandwidth compression/expansion:
+    spectrum[kw] *= readScale;
+    // The rationale is that spectral peaks have some bandwidth and if we scale the peaks in 
+    // frequency, their bandwidths (and therfore their energy content) will get scaled as well.
+    // If a spectral peak it only half as wide after scaling, we should make it twice as tall.
+    // Maybe we should raise readScale to some power, like 1/2, to make it an energy-preserving 
+    // factor? Maybe experiment with that - maybe give the user a parameter like 
+    // setBandwidthCompensation or something like that.
+    // Abother idea would be to compute the total spectral input and output energies and compute
+    // an appropriate scale factor from this ratio. That strategy would be more adaptive to the 
+    // signal. Maybe try both or let the user decide.
 
 
     int dummy = 0;

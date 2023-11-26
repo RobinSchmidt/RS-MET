@@ -1200,14 +1200,16 @@ void testSpectralShift()
   //testSpectralShifter(0.50, RS2, 1024, 8, 4, true, true,  2, Mul,  0, 128, 0.0);
   // -Very quiet output
 
-  testSpectralShifter(0.50, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
-  // -Doesn't work- I think, the formual for sampleShift is valid only for overlap = 2. Here we
-  //  use overlap = 4 and that makes it fail
 
+  testSpectralShifter(0.50, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
+  // -Is a little bit too loud but looks pretty good otherwise.
+  // -Maybe try a spectral energy normalization
 
   //testSpectralShifter(0.50, RS2, 1024, 2, 4, true, true,  1, Mul,  0, 128, 0.0);
+  // -Has amplitude modulation artifact and is a bit too loud
 
-  testSpectralShifter(0.80, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
+  //testSpectralShifter(0.80, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
+  // -Totally wrong: output freq equlas input freq, amplitude is too low
 
   //testSpectralShifter(0.80, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
 
