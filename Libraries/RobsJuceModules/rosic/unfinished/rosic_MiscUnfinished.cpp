@@ -293,8 +293,17 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   }
 
 
+  /*
+  // Test - when uncommented, it should give identity resynthesis:
+  for(int kw = 0; kw < N; kw++) {
+    spectrum[kw] = mag[kw] * expC(i * phs[kw]); }
+  return;
+  */
+
+
   // Do a linear interpolation of the magnitudes and use a free-running phase:
   double readScale = 1.0 / freqScale;        // Scaler for read-position wrt write-position 
+
 
   for(int kw = 1; kw < N; kw++)
   {
@@ -322,13 +331,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // output buffer in such a way that the energy blip gets concentrated in the inital segement of
     // the zero-padded buffer:
 
-    //int    sampleShift = (frameIndex * blockSize + blockSize/2) % (paddingFactor * blockSize);
-    // Works only for overlap = 2
 
-    //int    sampleShift = (frameIndex * blockSize + hopSize) % (paddingFactor * blockSize);
+    //int    sampleShift = (2*frameIndex * hopSize + hopSize) % (paddingFactor * blockSize);
 
-    int    sampleShift = (2*frameIndex * hopSize + hopSize) % (paddingFactor * blockSize);
-
+    int    sampleShift = (2*frameIndex * H + H) % (P*B); // Works with B=1024, H=512, P=4
+    //int    sampleShift = (2*frameIndex * H    ) % (P*B); // Works with B=1024, H=256, P=4
 
     double phaseShift  = (-PI * kw * sampleShift) / N; 
     // ToDo: explain this better - it's a bit messy. It has to do with the phase-reference point of 
@@ -346,6 +353,8 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     //spectrum[kw] = kMag * expC(i * (kPhs + phaseShift));
     //spectrum[kw] = kMag * expC(i * (kPhs - phaseShift));
 
+    // The minus is wrong - see the commented test with the identity resynthesis
+
 
     // Compensate for bandwidth compression/expansion:
     spectrum[kw] *= readScale;
@@ -359,9 +368,10 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // an appropriate scale factor from this ratio. That strategy would be more adaptive to the 
     // signal. Maybe try both or let the user decide.
 
-
     int dummy = 0;
   }
+
+
 
   // Update phase buffer:
   AT::copy(&phs[0], &phsOld[0], spectrumSize);

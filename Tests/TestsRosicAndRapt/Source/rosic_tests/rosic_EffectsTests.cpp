@@ -811,11 +811,11 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
     ps.blocksToPlot ={ 0,1,2,3,4,5,6,7 };            // The blocks for which plots are to be produced
     //ps.plotRawInputBlock       = true;
     //ps.plotWindowedInputBlock  = true;
-    //ps.plotPaddedInputBlock    = true;
+    ps.plotPaddedInputBlock    = true;
     ps.plotRawOutputBlock      = true;
     //ps.plotWindowedOutputBlock = true;
-    //ps.plotInputSpectrum       = true;
-    //ps.plotOutputSpectrum      = true;
+    ps.plotInputSpectrum       = true;
+    ps.plotOutputSpectrum      = true;
     // ToDo: Maybe let the plotter plot to files
   }
 
@@ -1199,6 +1199,25 @@ void testSpectralShift()
 
   //testSpectralShifter(0.50, RS2, 1024, 8, 4, true, true,  2, Mul,  0, 128, 0.0);
   // -Very quiet output
+
+
+
+  testSpectralShifter(1.0, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
+
+  //testSpectralShifter(1.0, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
+
+
+  testSpectralShifter(0.5, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
+  // -When tweakking the freq-scale between 0.5 and 1.0 it seems, it want to "lock in" only to 
+  //  ratios of 0.5, 0.8 and 1.0. Anything in between looks like one of these ratios but with 
+  //  artifacts.
+
+
+
+
+
+  testSpectralShifter(0.75, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
+  // -Looks totally wrong!
 
 
   testSpectralShifter(0.50, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
