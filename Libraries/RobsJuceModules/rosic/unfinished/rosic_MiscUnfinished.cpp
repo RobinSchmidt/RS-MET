@@ -309,33 +309,43 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   //  shifting the padded block for resynthesis to the end of the padded buffer. That means, the 
   //  minus would be wrong. The exponent should *not* use the minus.
 
+  //rsPlotVectors(phs, phsOld);
+
   // OK - now let's try to use only the magnitude from the input spectrum and generate a phase from
   // the previous phase and a phase increment per hop and per bin:
   for(int k = 0; k < N; k++)
   {
     spectrum[k] = mag[k] * expC(i * phsOld[k]);
 
-   
+
+    // Update the free running phases:
+    double wk       = (PI * k) / N;
+    double phsDelta = H  * wk;
+    phsDelta *= 2;
+    //phsDelta *= 0.25;  // test
+    phsOld[k] += phsDelta;
+    while(phsOld[k] >= PI)   // keep the phase in -pi...+pi
+      phsOld[k] -= 2*PI;
+    // Verify fromula for wk! It should compute the normalized radian frequency of bin k. k = N 
+    // should be the Nyquist freq and that whould correspond to wk = pi
+
     // Shift the center energy of the padded block into its first section:
-    int sampleShift = 0;
-    //int sampleShift = rsMod(frameIndex * H + H, P*B);  // Why  + H?
+    //int sampleShift = 0;
+    int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
     //int sampleShift = rsMod(frameIndex * H - H, P*B); 
     //int    sampleShift = rsMod(frameIndex * H, P*B); 
     //int    sampleShift = rsMod(2*frameIndex * H, P*B); 
     double phaseShift  = (PI * k * sampleShift) / N;
-    spectrum[k] *= expC(i * phaseShift);
+    Complex twiddle = expC(i * phaseShift);
     // Needs to be verified!
 
 
 
-    // Update the free running phases:
-    double wk       = PI * k / N;
-    double phsDelta = H  * wk;
-    phsOld[k] += phsDelta;
-    // Verify fromula for wk! It should compute the normalized radian frequency of bin k. k = N 
-    // should be the Nyqusit freq and that whould correspond to wk = pi
+    spectrum[k] *= twiddle;
 
+    //spectrum[k] = mag[k] * twiddle * expC(i * phsOld[k]);
   }
+
   return;
 
 

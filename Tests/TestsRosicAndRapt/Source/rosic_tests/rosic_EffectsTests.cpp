@@ -807,7 +807,7 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   bool plot = true;  // maybe make it a function parameter
   if(plot)
   {
-    ps.blocksToPlot ={ 3,4,5,6,7,8 };            // The blocks for which plots are to be produced
+    ps.blocksToPlot ={ 1,2,3,4,5,6,7,8 };            // The blocks for which plots are to be produced
     //ps.plotRawInputBlock       = true;
     //ps.plotWindowedInputBlock  = true;
     //ps.plotPaddedInputBlock    = true;
@@ -1200,7 +1200,10 @@ void testSpectralShift()
   // -Very quiet output
 
 
-  testSpectralShifter(1.0, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
+  testSpectralShifter(1.0, RS2, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+
+
+  //testSpectralShifter(1.0, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
   // -Input spectrum's real and imag part wiggle with an oscillation period of 2*ZP bins under 
   //  the magnitude envelope
 
