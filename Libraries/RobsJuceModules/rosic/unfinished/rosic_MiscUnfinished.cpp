@@ -328,6 +328,15 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
       phsOld[k] -= 2*PI;
     // Verify fromula for wk! It should compute the normalized radian frequency of bin k. k = N 
     // should be the Nyquist freq and that whould correspond to wk = pi
+    // The physical frequency fk of bin k in Hz is given by fk = k * sampleRate / fftSize 
+    // (see UDSP, Lyons, pg 67). With wk = 2*pi*fk/sampleRate 
+    //  = 2*pi* (k * sampleRate / fftSize ) /sampleRate = 2*pi*k / fftSize
+    // Our variable N here, however, is not the fftSize but rather fftSize/2, I think. The 
+    // spectrumSize is the number of nonnegative frequencies or frequencies <= fs/2. The actual FFT
+    // spectrum goes us to fs. So, we should have 
+    // wk = 2*pi*k / (2*spectrumSize) = pi*k/spectrumSize. ...but we seem to need an additional 
+    // factor of 2 for the phsDelta to make it work. Why? Maybe it has to do with the twiddle 
+    // computation also being wrong in a way that compensates for the factor 2 here?
 
     // Shift the center energy of the padded block into its first section:
     //int sampleShift = 0;
