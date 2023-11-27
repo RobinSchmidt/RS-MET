@@ -787,9 +787,8 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   bool useAnalysisWindow, bool useSynthesisWindow, int windowPower,
   rosic::SpectralShifter::PhaseFormula phaseFormula)
 {
-  int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
+  int numSamples = (int) x.size();
   //int sampleRate = 44100;          // Needed for output file
-
 
   // Set up pitch shifter:
   using SS = rosic::SpectralShifter;
@@ -808,14 +807,14 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   bool plot = true;  // maybe make it a function parameter
   if(plot)
   {
-    ps.blocksToPlot ={ 0,1,2,3,4,5,6,7 };            // The blocks for which plots are to be produced
+    ps.blocksToPlot ={ 3,4,5,6,7,8 };            // The blocks for which plots are to be produced
     //ps.plotRawInputBlock       = true;
     //ps.plotWindowedInputBlock  = true;
-    ps.plotPaddedInputBlock    = true;
-    ps.plotRawOutputBlock      = true;
-    //ps.plotWindowedOutputBlock = true;
+    //ps.plotPaddedInputBlock    = true;
     ps.plotInputSpectrum       = true;
     ps.plotOutputSpectrum      = true;
+    ps.plotRawOutputBlock      = true;
+    //ps.plotWindowedOutputBlock = true;
     // ToDo: Maybe let the plotter plot to files
   }
 
@@ -834,7 +833,7 @@ void testSpectralShifter(double freqScale,
   rosic::SpectralShifter::PhaseFormula phaseFormula,
   int inputWaveform, double inputPeriod, double inputPhase)
 {
-  int numSamples = 4 * blockSize;  // We should produce enough blocks to pass the transient phase
+  int numSamples = 6 * blockSize;  // We should produce enough blocks to pass the transient phase
   using Vec = std::vector<double>;
   Vec x = getSpectralShifterInput(numSamples, inputWaveform, inputPeriod, inputPhase);
   Vec y = getSpectralShifterOutput(x, freqScale, algo, blockSize, overlap, zeroPad,
@@ -1201,8 +1200,10 @@ void testSpectralShift()
   // -Very quiet output
 
 
-
   testSpectralShifter(1.0, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 0.0);
+  // -Input spectrum's real and imag part wiggle with an oscillation period of 2*ZP bins under 
+  //  the magnitude envelope
+
 
   //testSpectralShifter(1.0, RS2, 1024, 4, 4, true, true,  2, Mul,  0, 128, 0.0);
 

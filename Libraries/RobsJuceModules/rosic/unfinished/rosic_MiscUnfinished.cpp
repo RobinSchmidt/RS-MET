@@ -309,6 +309,36 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   //  shifting the padded block for resynthesis to the end of the padded buffer. That means, the 
   //  minus would be wrong. The exponent should *not* use the minus.
 
+  // OK - now let's try to use only the magnitude from the input spectrum and generate a phase from
+  // the previous phase and a phase increment per hop and per bin:
+  for(int k = 0; k < N; k++)
+  {
+    spectrum[k] = mag[k] * expC(i * phsOld[k]);
+
+   
+    // Shift the center energy of the padded block into its first section:
+    int sampleShift = 0;
+    //int sampleShift = rsMod(frameIndex * H + H, P*B);  // Why  + H?
+    //int sampleShift = rsMod(frameIndex * H - H, P*B); 
+    //int    sampleShift = rsMod(frameIndex * H, P*B); 
+    //int    sampleShift = rsMod(2*frameIndex * H, P*B); 
+    double phaseShift  = (PI * k * sampleShift) / N;
+    spectrum[k] *= expC(i * phaseShift);
+    // Needs to be verified!
+
+
+
+    // Update the free running phases:
+    double wk       = PI * k / N;
+    double phsDelta = H  * wk;
+    phsOld[k] += phsDelta;
+    // Verify fromula for wk! It should compute the normalized radian frequency of bin k. k = N 
+    // should be the Nyqusit freq and that whould correspond to wk = pi
+
+  }
+  return;
+
+
 
 
   // Do a linear interpolation of the magnitudes and use a free-running phase:
@@ -328,13 +358,16 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     double kMag = (1-krFrac) * mag[krInt] + krFrac * mag[krInt+1];
 
     // Compute free-running phase:
-    double kPhs = phsOld[kw] + (2*PI*kw*H) / N;
-    //double kPhs = phsOld[kw] + (2*PI*kw*H) / (P*N);
+    //double kPhs = phsOld[kw] + (2*PI*kw*H) / N;
+    double kPhs = phsOld[kw] + (0.5*PI*kw*H) / N;      // test
     phs[kw] = kPhs;
     // VERIFY the formula! I'm not sure about it.
     // Hmm - if we do it like this, we actually do not need the phsOld buffer. The phs buffer would
     // be enough - we could update the value directly there like:
     // phs += (2*PI*H) / (N);
+    // -I think, the factor 2 might be 2 much because our n here already is blocSize/2
+    // -Looking at the output spectral plot, the phase looks like it's moving too fast between the
+    //  bins
 
 
     // Compute an additional desired phase-shift that has the effect of circularly shifting the
@@ -342,12 +375,20 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // the zero-padded buffer:
 
 
+    int sampleShift = 0;
+
     //int    sampleShift = (2*frameIndex * hopSize + hopSize) % (paddingFactor * blockSize);
 
-    int    sampleShift = (2*frameIndex * H + H) % (P*B); // Works with B=1024, H=512, P=4
-    //int    sampleShift = (2*frameIndex * H    ) % (P*B); // Works with B=1024, H=256, P=4
+    //int    sampleShift = (2*frameIndex * H + H) % (P*B); // Worked with B=1024, H=512, P=4
+    //int    sampleShift = (2*frameIndex * H    ) % (P*B); // Worked with B=1024, H=256, P=4
 
-    double phaseShift  = (-PI * kw * sampleShift) / N; 
+    //int    sampleShift = (2*frameIndex * H - H) % (P*B); 
+
+    //double phaseShift  = (-PI * kw * sampleShift) / N;
+    double phaseShift  = (PI * kw * sampleShift) / N;
+
+
+
     // ToDo: explain this better - it's a bit messy. It has to do with the phase-reference point of 
     // the (padded) buffer. See:
     // https://dsp.stackexchange.com/questions/70909/is-there-a-fft-algorithm-with-the-circular-buffering
@@ -358,10 +399,14 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // ToDo: include some sort of reset strategy here based on (per bin) transients 
 
     // Write the new complex value into the complex output:
-    spectrum[kw] = kMag * expC(-i * (kPhs + phaseShift));  // Verify the minus!
+    //spectrum[kw] = kMag * expC(-i * (kPhs + phaseShift));  // Verify the minus!
     //spectrum[kw] = -kMag * expC(-i * (kPhs + phaseShift));
     //spectrum[kw] = kMag * expC(i * (kPhs + phaseShift));
     //spectrum[kw] = kMag * expC(i * (kPhs - phaseShift));
+
+    spectrum[kw] = kMag * expC(i * (kPhs + phaseShift));
+
+
 
     // The minus is wrong - see the commented test with the identity resynthesis
 

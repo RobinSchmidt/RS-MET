@@ -115,7 +115,7 @@ void OverlapAddProcessor::prepareBlockForProcessing()
 
 #if defined(RS_DEBUG)
   if(plotRawInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
-    rsPlotArray(tmp, blockSize, "Raw input block");
+    rsPlotArray(tmp, blockSize, "Raw input block " + std::to_string(currentBlockIndex));
 #endif
 
   // Apply window function, if desired:
@@ -127,7 +127,7 @@ void OverlapAddProcessor::prepareBlockForProcessing()
 
 #if defined(RS_DEBUG)
   if(plotWindowedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
-    rsPlotArray(tmp, blockSize, "Windowed input block");
+    rsPlotArray(tmp, blockSize, "Windowed input block " + std::to_string(currentBlockIndex));
 #endif
 
   // Zero-pad tmp-buffer, if desired:
@@ -136,7 +136,8 @@ void OverlapAddProcessor::prepareBlockForProcessing()
 
 #if defined(RS_DEBUG)
   if(plotPaddedInputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
-    rsPlotArray(tmp, paddingFactor*blockSize, "Padded input block");
+    rsPlotArray(tmp, paddingFactor*blockSize, 
+      "Padded input block " + std::to_string(currentBlockIndex));
 #endif
 }
 
@@ -149,7 +150,8 @@ void OverlapAddProcessor::postProcessBlock()
 
 #if defined(RS_DEBUG)
   if(plotRawOutputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
-    rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Raw output block");
+    rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, 
+      "Raw output block " + std::to_string(currentBlockIndex));
 #endif
 
   // Apply output window, if desired:
@@ -163,7 +165,8 @@ void OverlapAddProcessor::postProcessBlock()
 
 #if defined(RS_DEBUG)
   if(plotWindowedOutputBlock && RAPT::rsContains(blocksToPlot, currentBlockIndex))
-    rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, "Windowed output block ");
+    rsPlotArray(y[nextOutBuffer], paddingFactor*blockSize, 
+      "Windowed output block " + std::to_string(currentBlockIndex));
 #endif
 
   // Reset the read-potsition in the output-buffer:

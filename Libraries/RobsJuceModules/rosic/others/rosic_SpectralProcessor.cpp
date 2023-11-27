@@ -27,7 +27,8 @@ void SpectralProcessor::processBlock(double *block, int blockSize)
 #if defined(RS_DEBUG)
   int zoom = 8;  // zoom = 1 shows full spectrum, zoom > 1 zooms in to lower freqs
   if(plotInputSpectrum && RAPT::rsContains(blocksToPlot, currentBlockIndex))
-    rsPlotComplexArray(spectrumSize/(2*zoom), (double*) spectrum, "Input spectrum");
+    rsPlotComplexArray(spectrumSize/(2*zoom), (double*) spectrum, 
+      "Input spectrum " + std::to_string(currentBlockIndex));
 #endif
 
   processSpectrum(spectrum, spectrumSize);
@@ -35,7 +36,8 @@ void SpectralProcessor::processBlock(double *block, int blockSize)
 
 #if defined(RS_DEBUG)
   if(plotOutputSpectrum && RAPT::rsContains(blocksToPlot, currentBlockIndex))
-    rsPlotComplexArray(spectrumSize/(2*zoom), (double*) spectrum, "Output spectrum");
+    rsPlotComplexArray(spectrumSize/(2*zoom), (double*) spectrum, 
+      "Output spectrum " + std::to_string(currentBlockIndex));
 #endif
 
   // ToDo: 
