@@ -321,7 +321,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // Update the free running phases:
     double wk       = (PI * k) / N;
     double phsDelta = H  * wk;
-    phsDelta *= 2;
+    //phsDelta *= 2;
     //phsDelta *= 0.25;  // test
     phsOld[k] += phsDelta;
     while(phsOld[k] >= PI)   // keep the phase in -pi...+pi
@@ -337,13 +337,15 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // wk = 2*pi*k / (2*spectrumSize) = pi*k/spectrumSize. ...but we seem to need an additional 
     // factor of 2 for the phsDelta to make it work. Why? Maybe it has to do with the twiddle 
     // computation also being wrong in a way that compensates for the factor 2 here?
+    // ...oookay - that combo seems to work for B=1024, H=512, P = 1:
+    //
+    //   wk = (PI * k) / N; phsDelta = H  * wk;
+    //   sampleShift = rsMod(frameIndex * H + H, P*B);
 
     // Shift the center energy of the padded block into its first section:
     //int sampleShift = 0;
-    int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
-    //int sampleShift = rsMod(frameIndex * H - H, P*B); 
-    //int    sampleShift = rsMod(frameIndex * H, P*B); 
-    //int    sampleShift = rsMod(2*frameIndex * H, P*B); 
+    //int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
+    int sampleShift = rsMod(frameIndex * H + H, P*B);
     double phaseShift  = (PI * k * sampleShift) / N;
     Complex twiddle = expC(i * phaseShift);
     // Needs to be verified!
