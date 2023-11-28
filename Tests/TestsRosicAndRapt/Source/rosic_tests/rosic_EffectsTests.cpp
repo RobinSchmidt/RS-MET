@@ -1221,6 +1221,21 @@ void testSpectralShift()
   // -With higher overlap (4,8,16,...) the overall amplitude is too low. I guess, it's non-matched
   //  phase issue? Try to tweak the phase-twiddle formula! I think, the phase-delta formula is now
   //  correct.
+  // -But maybe it has to to with the double-application of the window quieting down the signal
+  //  energy?
+
+  // Does not yet work:
+  // Overlap = 4, cos^2 window for input and output, different zero-paddings
+  testSpectralShifter(1.0, RS2, 1024,  4,  1, true, true,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  4,  2, true, true,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  4,  4, true, true,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  4, 16, true, true,  2, Mul,  0, 128, 90.0);
+  // -Only with zero-padding of 1 it does work. With higher padding, we get more and more silenced
+  //  portions.
+
+
+
 
 
 

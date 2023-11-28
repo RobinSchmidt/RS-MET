@@ -317,15 +317,13 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   {
     spectrum[k] = mag[k] * expC(i * phsOld[k]);
 
-
     // Update the free running phases:
-    double wk       = (PI * k) / N;
-    double phsDelta = H  * wk;
-    //phsDelta *= 2;
-    //phsDelta *= 0.25;  // test
-    phsOld[k] += phsDelta;
-    while(phsOld[k] >= PI)   // keep the phase in -pi...+pi
+    double wk = (PI * k) / N;           // Normalized radian frequency of bin k, N = fftSize/2
+    double phsDelta = H * wk;           // Phase change per hop at bin k
+    phsOld[k] += phsDelta;              // Update the phase
+    while(phsOld[k] >= PI)              // Keep the phase in -pi...+pi
       phsOld[k] -= 2*PI;
+    // Done:
     // Verify fromula for wk! It should compute the normalized radian frequency of bin k. k = N 
     // should be the Nyquist freq and that whould correspond to wk = pi
     // The physical frequency fk of bin k in Hz is given by fk = k * sampleRate / fftSize 
@@ -342,21 +340,24 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     //   wk = (PI * k) / N; phsDelta = H  * wk;
     //   sampleShift = rsMod(frameIndex * H + H, P*B);
 
+
+
     // Shift the center energy of the padded block into its first section:
     //int sampleShift = 0;
-    //int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
 
+    // Old:
+    //int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
     //int sampleShift = rsMod(frameIndex * B/2 - B/2, P*B);
+
+    // Looks good for P = 1:
     //int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
     int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
 
-    double phaseShift  = (PI * k * sampleShift) / N;
-    Complex twiddle = expC(i * phaseShift);
-    // Needs to be verified!
 
-
-
-    spectrum[k] *= twiddle;
+    // Apply phase twiddle factor:
+    double  phaseShift = (PI * k * sampleShift) / N;    // Verify!
+    Complex twiddle    = expC( i * phaseShift);
+    spectrum[k]       *= twiddle;
 
     //spectrum[k] = mag[k] * twiddle * expC(i * phsOld[k]);
   }
