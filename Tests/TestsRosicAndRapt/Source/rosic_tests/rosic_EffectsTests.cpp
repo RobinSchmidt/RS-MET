@@ -1201,12 +1201,12 @@ void testSpectralShift()
 
 
   // Different overlaps, no zero padding, cos^2 input window, no output window:
-  //testSpectralShifter(1.0, RS2, 1024,  2, 1, true, false,  2, Mul,  0, 128, 90.0);
-  //testSpectralShifter(1.0, RS2, 1024,  4, 1, true, false,  2, Mul,  0, 128, 90.0);
-  //testSpectralShifter(1.0, RS2, 1024,  8, 1, true, false,  2, Mul,  0, 128, 90.0);
-  //testSpectralShifter(1.0, RS2, 1024, 16, 1, true, false,  2, Mul,  0, 128, 90.0);
-  //testSpectralShifter(1.0, RS2, 1024, 32, 1, true, false,  2, Mul,  0, 128, 90.0);
-  //testSpectralShifter(1.0, RS2, 1024, 64, 1, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  4, 1, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  8, 1, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024, 16, 1, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024, 32, 1, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024, 64, 1, true, false,  2, Mul,  0, 128, 90.0);
   // OK - that looks good. There are some transient artifacts but after that, we get a good match
   // between input and output
 

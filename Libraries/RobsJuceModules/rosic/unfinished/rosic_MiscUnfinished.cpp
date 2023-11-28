@@ -346,9 +346,9 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     //int sampleShift = 0;
     //int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
 
-    //int sampleShift = rsMod(frameIndex * H + H, P*B);
-
-    int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);
+    //int sampleShift = rsMod(frameIndex * B/2 - B/2, P*B);
+    //int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
+    int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
 
     double phaseShift  = (PI * k * sampleShift) / N;
     Complex twiddle = expC(i * phaseShift);
