@@ -345,7 +345,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // Shift the center energy of the padded block into its first section:
     //int sampleShift = 0;
     //int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
-    int sampleShift = rsMod(frameIndex * H + H, P*B);
+
+    //int sampleShift = rsMod(frameIndex * H + H, P*B);
+
+    int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);
+
     double phaseShift  = (PI * k * sampleShift) / N;
     Complex twiddle = expC(i * phaseShift);
     // Needs to be verified!

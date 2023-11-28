@@ -811,9 +811,9 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
     //ps.plotRawInputBlock       = true;
     //ps.plotWindowedInputBlock  = true;
     //ps.plotPaddedInputBlock    = true;
-    ps.plotInputSpectrum       = true;
-    ps.plotOutputSpectrum      = true;
-    ps.plotRawOutputBlock      = true;
+    //ps.plotInputSpectrum       = true;
+    //ps.plotOutputSpectrum      = true;
+    //ps.plotRawOutputBlock      = true;
     //ps.plotWindowedOutputBlock = true;
     // ToDo: Maybe let the plotter plot to files
   }
@@ -1200,7 +1200,28 @@ void testSpectralShift()
   // -Very quiet output
 
 
-  testSpectralShifter(1.0, RS2, 1024, 2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // Different overlaps, no zero padding, cos^2 input window, no output window:
+  //testSpectralShifter(1.0, RS2, 1024,  2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  4, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  8, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024, 16, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024, 32, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024, 64, 1, true, false,  2, Mul,  0, 128, 90.0);
+  // OK - that looks good. There are some transient artifacts but after that, we get a good match
+  // between input and output
+
+  // Different overlaps, no zero padding, cos^2 input window, cos^2 output window:
+  testSpectralShifter(1.0, RS2, 1024,  2, 1, true, true,  2, Mul,  0, 128, 90.0); // amp-mod
+  testSpectralShifter(1.0, RS2, 1024,  4, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  testSpectralShifter(1.0, RS2, 1024,  8, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  testSpectralShifter(1.0, RS2, 1024, 16, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  testSpectralShifter(1.0, RS2, 1024, 32, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  testSpectralShifter(1.0, RS2, 1024, 64, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  // -With overlap = 2, we see ampltude modulation - but that is exactly as expected
+  // -With higher overlap (4,8,16,...) the overall amplitude is too low. I guess, it's non-matched
+  //  phase issue? Try to tweak the phase-twiddle formula! I think, the phase-delta formula is now
+  //  correct.
+
 
 
   //testSpectralShifter(1.0, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
