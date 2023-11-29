@@ -331,17 +331,9 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // block into its first section:
     double phaseShift = (PI * k * sampleShift) / N;
     spectrum[k] = mag[k] * expC(i * (pk + phaseShift));
-    // I thin, this may sometimes lead to phase-cancellations between blocks. We adjust the 
+    // I think, this may sometimes lead to phase-cancellations between blocks. We adjust the 
     // envelope nicely - but what about the phase of the sine itself?
-
-    //Complex twiddle    = expC( i * phaseShift);
-    //spectrum[k] = mag[k] * expC(i * pk);
-    //spectrum[k]       *= twiddle;
-    // ToDo (done): 
-    // -Optimize this such that we need only one call to expC.
-
   }
-
   return;
 
 
