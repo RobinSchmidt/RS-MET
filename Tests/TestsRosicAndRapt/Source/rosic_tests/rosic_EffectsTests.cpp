@@ -1226,34 +1226,32 @@ void testSpectralShift()
   //  regard to the phase of the sine within the envelope.
 
   // Different overlaps, no zero padding, cos^2 input window, cos^2 output window:
-  testSpectralShifter(1.0, RS2, 1024,  2, 1, true, true,  2, Mul,  0, 128, 90.0); // amp-mod
-  testSpectralShifter(1.0, RS2, 1024,  4, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024,  8, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024, 16, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024, 32, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024, 64, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  //testSpectralShifter(1.0, RS2, 1024,  2, 1, true, true,  2, Mul,  0, 128, 90.0); // amp-mod
+  //testSpectralShifter(1.0, RS2, 1024,  4, 1, true, true,  2, Mul,  0, 128, 90.0); // good
+  //testSpectralShifter(1.0, RS2, 1024,  8, 1, true, true,  2, Mul,  0, 128, 90.0); // good
+  //testSpectralShifter(1.0, RS2, 1024, 16, 1, true, true,  2, Mul,  0, 128, 90.0); // zero
+  //testSpectralShifter(1.0, RS2, 1024, 32, 1, true, true,  2, Mul,  0, 128, 90.0); // zero
+  //testSpectralShifter(1.0, RS2, 1024, 64, 1, true, true,  2, Mul,  0, 128, 90.0); // zero
   // -With overlap = 2, we see ampltude modulation - but that is exactly as expected
   // -Overlap = 4,8 work fine
   // -Overlap >= 16 show the phase cancellation issue again - output is close to zero.
 
-
-
-
-
-  // Does not yet work:
   // Overlap = 4, cos^2 window for input and output, different zero-paddings
   //testSpectralShifter(1.0, RS2, 1024,  4,  1, true, true,  2, Mul,  0, 128, 90.0);
   //testSpectralShifter(1.0, RS2, 1024,  4,  2, true, true,  2, Mul,  0, 128, 90.0);
   //testSpectralShifter(1.0, RS2, 1024,  4,  4, true, true,  2, Mul,  0, 128, 90.0);
   //testSpectralShifter(1.0, RS2, 1024,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
   //testSpectralShifter(1.0, RS2, 1024,  4, 16, true, true,  2, Mul,  0, 128, 90.0);
-  // -Only with zero-padding of 1 it does work. With higher padding, we get more and more silenced
-  //  portions.
+  // -They look all fine.
 
-
-
-
-
+  // Test a cos^4 window. We expect to need more overlap than for cos^2. we use a fixed 
+  // zero-padding factor of 4::
+  testSpectralShifter(1.0, RS2, 1024,  4,  4, true, true,  4, Mul,  0, 128, 90.0); // too quiet
+  testSpectralShifter(1.0, RS2, 1024,  8,  4, true, true,  4, Mul,  0, 128, 90.0); // too quiet
+  testSpectralShifter(1.0, RS2, 1024, 16,  4, true, true,  4, Mul,  0, 128, 90.0); // zero
+  // -I expected to see amp-mod for overlap = 4 which should go away when increasing overlap to 8.
+  //  But instead, both 4 and 8 give a non-modulated signal which is a bit too quiet. Going up to
+  //  16, we get the zero signal again.
 
 
 
