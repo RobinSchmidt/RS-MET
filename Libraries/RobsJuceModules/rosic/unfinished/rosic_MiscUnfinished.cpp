@@ -314,14 +314,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
   // OK - now let's try to use only the magnitude from the input spectrum and generate a phase from
   // the previous phase and a phase increment per hop and per bin:
-
-
-  //int sampleShift = rsMod(frameIndex * H + B/2, P*B); // New!
-  //int sampleShift = rsMod(-frameIndex * H + B/2, P*B); // Test
-  int sampleShift = rsMod(-frameIndex * H - B/2, P*B); // Test
-
-  //sampleShift = 0;  // Test
-
+  int sampleShift = rsMod(-frameIndex * H - B/2, P*B);
   for(int k = 0; k < N; k++)
   {
     spectrum[k] = mag[k] * expC(i * phsOld[k]);
@@ -333,26 +326,14 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     while(phsOld[k] >= PI)              // Keep the phase in -pi...+pi
       phsOld[k] -= 2*PI;
 
-
-    // Shift the center energy of the padded block into its first section:
-
-    // Looks good for B = 1024, O = 2, P = 1:
-    //int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
-    //int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
-
-    // Apply phase twiddle factor:
-    //double  phaseShift = (PI * k * sampleShift) / N;  // Verify!
-    double  phaseShift = (PI * k * sampleShift) / N;  // Verify!
-
-    //double  phaseShift = (PI * k * sampleShift) / N; 
-    // Should this formula also involve O and/or P? It seems like the computed sampleShift is 
-    // actually correct numerically - but the actual amount of sampleShift corresponds to the 
-    // computed sampleShift only when O=2,P=1.
-
+    // Compute and apply a phase-twiddle factor that shifts the center of energy of the padded 
+    // block into its first section:
+    double  phaseShift = (PI * k * sampleShift) / N;
     Complex twiddle    = expC( i * phaseShift);
     spectrum[k]       *= twiddle;
+    // ToDo: 
+    // -Optimize this such that we need only one call to expC.
 
-    //spectrum[k] = mag[k] * twiddle * expC(i * phsOld[k]);
   }
 
   return;
