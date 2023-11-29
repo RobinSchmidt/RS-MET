@@ -1253,6 +1253,9 @@ void testSpectralShift()
   //  But instead, both 4 and 8 give a non-modulated signal which is a bit too quiet. Going up to
   //  16, we get the zero signal again.
 
+  // I think, using overlap = 4, cos^2 for input and output should be the best choice. Zero-padding
+  // can be adjusted to taste. Maybe 1,2,4 are reasonable.
+
 
 
 
