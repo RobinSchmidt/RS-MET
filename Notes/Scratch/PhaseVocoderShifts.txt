@@ -1,0 +1,35 @@
+We set: 
+
+int sampleShift = 0;
+
+and record the desired shifts for each block in samples to center the blob at sample index n=512. 
+The goal is to find a formula for the deried shifts in terms of B,O,P.
+
+B=1024, O=2,          B=1024, O=2
+H= 512, P=1:          H= 512, P=2:
+3:    0               3:     0
+4: +512               4:  +512
+5:    0               5: -1024  or  +1024
+6: +512               6:  -512  or  +1536
+7:    0               7:     0
+8: +512               8:  +512
+
+B=1024, O=4,          B=1024, O=4, 
+H= 256, P=1:          H= 256, P=2:
+3: +256               3: -768  or  +1280
+4: +512               4: -512  or  +1536
+5: -256  or  +768     5: -256  or  +1792
+6:    0               6:    0
+7: +256               7: +256
+8: +512               8: +512
+
+B=1024, O=8,          B=1024, O=8, 
+H= 128, P=1:          H= 128, P=2:
+ 3: -128               3: -1152  or   +896
+ 4:    0               4: -1024  or   +1024
+ 5: +128               5:
+ 6: +256               6:
+ 7: +384               7:
+ 8: +512               8:
+ 9: +640  or  -384     9:
+10: +768  or  -256    10:

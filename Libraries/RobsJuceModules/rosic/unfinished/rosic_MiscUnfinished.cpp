@@ -283,6 +283,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   int H = getHopSize();
   int B = getBlockSize();
   int P = getZeroPaddingFactor();
+  int O = overlapFactor;
   Complex i(0, 1); 
 
   // Compute magnitudes and phases of current input spectrum:
@@ -343,15 +344,40 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
 
     // Shift the center energy of the padded block into its first section:
-    //int sampleShift = 0;
+    int sampleShift = 0;
 
     // Old:
     //int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
     //int sampleShift = rsMod(frameIndex * B/2 - B/2, P*B);
 
-    // Looks good for P = 1:
+    // Looks good for B = 1024, O = 2, P = 1:
     //int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
-    int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
+    //int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
+
+    //int sampleShift = rsMod(frameIndex * B/O, P*B);
+    //int sampleShift = rsMod(frameIndex * B/O + B/O, P*B);
+
+    //int sampleShift = rsMod(frameIndex * H, P*B);  // Why  + H?
+
+
+    // Some guesses to make it work with P > 1. Should reduce to formula above for P=1:
+    //int sampleShift = rsMod(P*frameIndex * B/2, P*B);  // wrong!
+    //int sampleShift = rsMod(frameIndex * B/2, B);      // wrong!
+    //int sampleShift = rsMod(P*frameIndex * B/2, B);      // wrong!
+    //int sampleShift = rsMod(P*frameIndex * B/2 + B/2, P*B);  // wrong!
+    //int sampleShift = rsMod(P*frameIndex * B/2 + P*B/2, P*B);  // wrong!
+    //int sampleShift = rsMod((frameIndex * B/2)/P, P*B);  // wrong!
+    //int sampleShift = rsMod((frameIndex * B)/P, P*B);  // wrong
+    //int sampleShift = rsMod(frameIndex * B/2 + P*B/2, P*B);  // wrong
+
+    //int sampleShift = rsMod(-frameIndex * 256 - 512, P*B); // Looks good for B=1024, O=4, P=2
+
+    //int sampleShift = rsMod(-frameIndex * (B/(2*P)) - B/2, P*B);
+
+
+    // 256 = (B/2)/P?
+
+    // ToDo: check also for overflow 
 
 
     // Apply phase twiddle factor:

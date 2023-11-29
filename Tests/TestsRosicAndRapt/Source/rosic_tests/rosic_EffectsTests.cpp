@@ -807,13 +807,13 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   bool plot = true;  // maybe make it a function parameter
   if(plot)
   {
-    ps.blocksToPlot ={ 1,2,3,4,5,6,7,8 };            // The blocks for which plots are to be produced
+    ps.blocksToPlot ={ 3,4,5,6,7,8,9,10 };            // The blocks for which plots are to be produced
     //ps.plotRawInputBlock       = true;
     //ps.plotWindowedInputBlock  = true;
     //ps.plotPaddedInputBlock    = true;
     //ps.plotInputSpectrum       = true;
     //ps.plotOutputSpectrum      = true;
-    //ps.plotRawOutputBlock      = true;
+    ps.plotRawOutputBlock      = true;
     //ps.plotWindowedOutputBlock = true;
     // ToDo: Maybe let the plotter plot to files
   }
@@ -1200,23 +1200,27 @@ void testSpectralShift()
   // -Very quiet output
 
 
+  // For figuring out the sampleShift formula:
+  testSpectralShifter(1.0, RS2, 1024,  8, 2, true, false,  2, Mul,  0, 128, 90.0);
+
+
   // Different overlaps, no zero padding, cos^2 input window, no output window:
-  testSpectralShifter(1.0, RS2, 1024,  2, 1, true, false,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024,  4, 1, true, false,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024,  8, 1, true, false,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024, 16, 1, true, false,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024, 32, 1, true, false,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024, 64, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  4, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  8, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024, 16, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024, 32, 1, true, false,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024, 64, 1, true, false,  2, Mul,  0, 128, 90.0);
   // OK - that looks good. There are some transient artifacts but after that, we get a good match
   // between input and output
 
   // Different overlaps, no zero padding, cos^2 input window, cos^2 output window:
-  testSpectralShifter(1.0, RS2, 1024,  2, 1, true, true,  2, Mul,  0, 128, 90.0); // amp-mod
-  testSpectralShifter(1.0, RS2, 1024,  4, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024,  8, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024, 16, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024, 32, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024, 64, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  //testSpectralShifter(1.0, RS2, 1024,  2, 1, true, true,  2, Mul,  0, 128, 90.0); // amp-mod
+  //testSpectralShifter(1.0, RS2, 1024,  4, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  //testSpectralShifter(1.0, RS2, 1024,  8, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  //testSpectralShifter(1.0, RS2, 1024, 16, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  //testSpectralShifter(1.0, RS2, 1024, 32, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
+  //testSpectralShifter(1.0, RS2, 1024, 64, 1, true, true,  2, Mul,  0, 128, 90.0); // too quiet
   // -With overlap = 2, we see ampltude modulation - but that is exactly as expected
   // -With higher overlap (4,8,16,...) the overall amplitude is too low. I guess, it's non-matched
   //  phase issue? Try to tweak the phase-twiddle formula! I think, the phase-delta formula is now
@@ -1226,13 +1230,16 @@ void testSpectralShift()
 
   // Does not yet work:
   // Overlap = 4, cos^2 window for input and output, different zero-paddings
-  testSpectralShifter(1.0, RS2, 1024,  4,  1, true, true,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024,  4,  2, true, true,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024,  4,  4, true, true,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
-  testSpectralShifter(1.0, RS2, 1024,  4, 16, true, true,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  4,  1, true, true,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  4,  2, true, true,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  4,  4, true, true,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  4, 16, true, true,  2, Mul,  0, 128, 90.0);
   // -Only with zero-padding of 1 it does work. With higher padding, we get more and more silenced
   //  portions.
+
+
+
 
 
 
@@ -1301,7 +1308,10 @@ void testSpectralShift()
 
   int dummy = 0;
 
-  // -Shouldn't we accumulate the phase shifts/twiddles?
+  // -Shouldn't we accumulate the phase shifts/twiddles? Maybe if we do, we can get rid of that 
+  //  weird formula with the modulo operation? It seems to be unnatural to have the frameIndex
+  //  explicitly entering the computations.
+  // -Maybe test it with an impulse-like input signal.
   // -We need to reflect frequencies below zero. Maybe with complex conjugation or something.
   // -Try to interpolate magnitude (squared?) and phase instead. Or maybe let the phases run freely
   //  and onle reset it on transients to the input phase
