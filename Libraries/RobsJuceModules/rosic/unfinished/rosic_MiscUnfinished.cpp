@@ -315,6 +315,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   // OK - now let's try to use only the magnitude from the input spectrum and generate a phase from
   // the previous phase and a phase increment per hop and per bin:
   int sampleShift = rsMod(-frameIndex * H - B/2, P*B);
+  // Try to use only positive values: 
+  // sampleShift = -rsMod(frameIndex * H + B/2, P*B);
+  // sampleShift = -(frameIndex*H + B/2) % (P*B);
+
+
   for(int k = 0; k < N; k++)
   {
     // Grab phase of current bin k:
