@@ -334,7 +334,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // Shift the center energy of the padded block into its first section:
 
     // Looks good for B = 1024, O = 2, P = 1:
-    int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
+    //int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
     //int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
 
     // Apply phase twiddle factor:
