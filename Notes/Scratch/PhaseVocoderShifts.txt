@@ -7,25 +7,34 @@ The goal is to find a formula for the deried shifts in terms of B,O,P.
 
 B=1024, O=2,          B=1024, O=2
 H= 512, P=1:          H= 512, P=2:
+0: +512               0:  +512
+1:    0               1: +1024
+2: +512               2: +1536
 3:    0               3:     0
 4: +512               4:  +512
-5:    0               5: -1024  or  +1024
-6: +512               6:  -512  or  +1536
+5:    0               5: +1024  or  -1024
+6: +512               6: +1536  or   -512
 7:    0               7:     0
 8: +512               8:  +512
 
 B=1024, O=4,          B=1024, O=4, 
 H= 256, P=1:          H= 256, P=2:
-3: +256               3: -768  or  +1280
-4: +512               4: -512  or  +1536
-5: -256  or  +768     5: -256  or  +1792
-6:    0               6:    0
-7: +256               7: +256
-8: +512               8: +512
+0: +512               0:  +512
+1: +768               1:  +768
+2:    0               2: +1024
+3: +256               3: +1280  or  -768 
+4: +512               4: +1536  or  -512
+5: +768  or  -256     5: +1792  or  -256  
+6:    0               6:     0
+7: +256               7:  +256
+8: +512               8:  +512
 
 B=1024, O=8,          B=1024, O=8, 
 H= 128, P=1:          H= 128, P=2:
- 3: +1920  or  -128    3:   +896  or  -1152
+ 0:  +512              0:   +512
+ 1:  +640              1:   +640
+ 2:  +768              2:   +768
+ 3:  +896  or  -128    3:   +896  or  -1152
  4:     0  or  2048    4:  +1024  or  -1024
  5:  +128              5:  +1152  or   -896  
  6:  +256              6:  +1280
@@ -33,3 +42,21 @@ H= 128, P=1:          H= 128, P=2:
  8:  +512              8:  +1536
  9:  +640  or  -384    9:  +1664
 10:  +768  or  -256   10:  +1792
+
+
+The sought formula clearly must be of the form:
+
+  shift = (frameIndex * hopSize + something)  mod  (padding * blockSize)
+  
+The question is: what exactly is that "something"? It must also be something that can be computed 
+from our 3 variables B,O,P, or alternatively B,H,P (we have H = B/O). Let's assume that we always 
+have B=1024. We don't have data for frameIndex = 0,1,2 but we can extrapolate it easily from the 
+existing data. Let's extrapolate to frameIndex = 0 because thne, the frameIdex * hopSize si zero and
+we directly see what that something is numerically. I think, the something might be blockSize/2?
+Perhaps is should be spectrumSize...ah...no - that would contain the padding factor
+
+
+
+H=512, P=1:  512
+
+

@@ -807,7 +807,7 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   bool plot = true;  // maybe make it a function parameter
   if(plot)
   {
-    ps.blocksToPlot ={ 3,4,5,6,7,8,9,10 };            // The blocks for which plots are to be produced
+    ps.blocksToPlot ={ 0,1,2,3,4,5,6,7,8,9,10 };            // The blocks for which plots are to be produced
     //ps.plotRawInputBlock       = true;
     //ps.plotWindowedInputBlock  = true;
     //ps.plotPaddedInputBlock    = true;
