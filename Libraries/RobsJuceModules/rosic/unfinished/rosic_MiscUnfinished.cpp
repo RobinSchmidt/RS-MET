@@ -316,7 +316,10 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   // the previous phase and a phase increment per hop and per bin:
 
 
-  int sampleShift = rsMod(frameIndex * H + B/2, P*B); // New!
+  //int sampleShift = rsMod(frameIndex * H + B/2, P*B); // New!
+  //int sampleShift = rsMod(-frameIndex * H + B/2, P*B); // Test
+  int sampleShift = rsMod(-frameIndex * H - B/2, P*B); // Test
+
   //sampleShift = 0;  // Test
 
   for(int k = 0; k < N; k++)
@@ -338,8 +341,9 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     //int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
 
     // Apply phase twiddle factor:
-    //double  phaseShift = (2*PI * k * sampleShift) / N;  // Verify!
+    //double  phaseShift = (PI * k * sampleShift) / N;  // Verify!
     double  phaseShift = (PI * k * sampleShift) / N;  // Verify!
+
     //double  phaseShift = (PI * k * sampleShift) / N; 
     // Should this formula also involve O and/or P? It seems like the computed sampleShift is 
     // actually correct numerically - but the actual amount of sampleShift corresponds to the 

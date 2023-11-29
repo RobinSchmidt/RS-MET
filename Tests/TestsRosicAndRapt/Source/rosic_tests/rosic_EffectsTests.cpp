@@ -1201,7 +1201,17 @@ void testSpectralShift()
 
 
   // For figuring out the sampleShift formula:
-  testSpectralShifter(1.0, RS2, 1024,  2, 1, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  2, 2, true, false,  2, Mul,  0, 128, 90.0);
+  // -Let M = frameIndex
+  //
+  // -With O=2, P=1, every block is correct
+  // -With O=2, P=2, odd blocks are correct, even block shifted by half a padded block
+  // -With O=2, P=4, blocks where M % 4 = 3 are correct
+  // -With O=2, P=8, blocks where M % 8 = 7 are correct
+  //  -> generally, with O=2 and any P, blocks with M % P = P-1 will be correct?
+  //
+  // -With O=4, P=1, 
+
 
 
   // Different overlaps, no zero padding, cos^2 input window, no output window:
