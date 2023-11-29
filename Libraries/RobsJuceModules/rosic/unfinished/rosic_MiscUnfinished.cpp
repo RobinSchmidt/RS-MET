@@ -316,28 +316,48 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   // the previous phase and a phase increment per hop and per bin:
   int sampleShift = rsMod(-frameIndex * H - B/2, P*B);
   // Try to use only positive values: 
-  // sampleShift = -rsMod(frameIndex * H + B/2, P*B);
-  // sampleShift = -(frameIndex*H + B/2) % (P*B);
+  //   sampleShift = -rsMod(frameIndex * H + B/2, P*B);
+  //   sampleShift = -(frameIndex*H + B/2) % (P*B);
+  //   sampleShift = -((frameIndex % O) * H + B/2) % (P*B);  // avoid overflow
 
 
   for(int k = 0; k < N; k++)
   {
-    // Grab phase of current bin k:
+    // Grab phase and magnitude of current bin k:
     double pk = phsOld[k];
+    double mk = mag[k];      
+    // Maybe we should either use magOld[k] or grab the phase after the phase update. Otherwise it 
+    // would seem that we use magnitudes of frame M together with phases of frame M-1, right? I'm 
+    // not totally sure. Maybe if we do a conditional phase-reset here like:
+    //
+    //  if( isTransient(k) )
+    //    phsOld[k] = phs[k];
+    //
+    // then it would be appropriate to do it like that?
+    //
+    // ToDo:
+    // -replace the "grab magnitude" code by implementing linear interpolation of mag array
+
 
     // Update the free running phases:
     double wk = (PI * k) / N;           // Normalized radian frequency of bin k, N = fftSize/2
     double phsDelta = H * wk;           // Phase change per hop at bin k
     phsOld[k] += phsDelta;              // Update the phase
     while(phsOld[k] >= PI)              // Keep the phase in -pi...+pi
-      phsOld[k] -= 2*PI;
+      phsOld[k] -= 2*PI; 
+    // ToDo: 
+    // -Maybe use fmod for the phase wrapping. Maybe set up a benchmark and then meausre which one
+    //  is better.
 
     // Compute and apply a phase-twiddle factor that shifts the center of energy of the padded 
     // block into its first section:
     double phaseShift = (PI * k * sampleShift) / N;
-    spectrum[k] = mag[k] * expC(i * (pk + phaseShift));
+    spectrum[k] = mk * expC(i * (pk + phaseShift));
     // I think, this may sometimes lead to phase-cancellations between blocks. We adjust the 
     // envelope nicely - but what about the phase of the sine itself?
+    //
+    // ToDo:
+    // -Explain the phaseShift. That was tricky to figure out!
   }
   return;
 

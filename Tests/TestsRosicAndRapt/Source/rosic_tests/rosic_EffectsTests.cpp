@@ -1246,9 +1246,9 @@ void testSpectralShift()
 
   // Test a cos^4 window. We expect to need more overlap than for cos^2. we use a fixed 
   // zero-padding factor of 4::
-  testSpectralShifter(1.0, RS2, 1024,  4,  4, true, true,  4, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024,  8,  4, true, true,  4, Mul,  0, 128, 90.0); // too quiet
-  testSpectralShifter(1.0, RS2, 1024, 16,  4, true, true,  4, Mul,  0, 128, 90.0); // zero
+  //testSpectralShifter(1.0, RS2, 1024,  4,  4, true, true,  4, Mul,  0, 128, 90.0); // too quiet
+  //testSpectralShifter(1.0, RS2, 1024,  8,  4, true, true,  4, Mul,  0, 128, 90.0); // too quiet
+  //testSpectralShifter(1.0, RS2, 1024, 16,  4, true, true,  4, Mul,  0, 128, 90.0); // zero
   // -I expected to see amp-mod for overlap = 4 which should go away when increasing overlap to 8.
   //  But instead, both 4 and 8 give a non-modulated signal which is a bit too quiet. Going up to
   //  16, we get the zero signal again.
@@ -1256,7 +1256,22 @@ void testSpectralShift()
   // I think, using overlap = 4, cos^2 for input and output should be the best choice. Zero-padding
   // can be adjusted to taste. Maybe 1,2,4 are reasonable.
 
+  // Try some other blockSizes
+  //testSpectralShifter(1.0, RS2, 2048,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2, 1024,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
+  //testSpectralShifter(1.0, RS2,  512,  4,  8, true, true,  2, Mul,  0, 128, 90.0);  // OK
+  testSpectralShifter(1.0, RS2,  256,  4,  8, true, true,  2, Mul,  0, 128, 90.0);  // Nope!
+  testSpectralShifter(1.0, RS2,  256,  2,  8, true, true,  2, Mul,  0, 128, 90.0);  // fast amp-mod?
 
+  // Test some other input cycle lengths (64, 256, ...):
+  // ...
+  // Check, if this phase-cancellation phenomenon happens later or earlier with lower or higher
+  // input freqs
+
+
+  // Now let's try some actual shift:
+  //testSpectralShifter(1.0, RS2, 1024,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
+  // ...aah - it's not yet implemented in the experimental RS2 algo
 
 
   //testSpectralShifter(1.0, RS2, 1024, 2, 4, true, false,  2, Mul,  0, 128, 90.0);
