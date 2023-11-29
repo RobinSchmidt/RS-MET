@@ -329,59 +329,18 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     phsOld[k] += phsDelta;              // Update the phase
     while(phsOld[k] >= PI)              // Keep the phase in -pi...+pi
       phsOld[k] -= 2*PI;
-    // Done:
-    // Verify fromula for wk! It should compute the normalized radian frequency of bin k. k = N 
-    // should be the Nyquist freq and that whould correspond to wk = pi
-    // The physical frequency fk of bin k in Hz is given by fk = k * sampleRate / fftSize 
-    // (see UDSP, Lyons, pg 67). With wk = 2*pi*fk/sampleRate 
-    //  = 2*pi* (k * sampleRate / fftSize ) /sampleRate = 2*pi*k / fftSize
-    // Our variable N here, however, is not the fftSize but rather fftSize/2, I think. The 
-    // spectrumSize is the number of nonnegative frequencies or frequencies <= fs/2. The actual FFT
-    // spectrum goes us to fs. So, we should have 
-    // wk = 2*pi*k / (2*spectrumSize) = pi*k/spectrumSize. ...but we seem to need an additional 
-    // factor of 2 for the phsDelta to make it work. Why? Maybe it has to do with the twiddle 
-    // computation also being wrong in a way that compensates for the factor 2 here?
-    // ...oookay - that combo seems to work for B=1024, H=512, P = 1:
-    //
-    //   wk = (PI * k) / N; phsDelta = H  * wk;
-    //   sampleShift = rsMod(frameIndex * H + H, P*B);
-
 
 
     // Shift the center energy of the padded block into its first section:
-    //int sampleShift = 0;
-
-    // Old:
-    //int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
-    //int sampleShift = rsMod(frameIndex * B/2 - B/2, P*B);
 
     // Looks good for B = 1024, O = 2, P = 1:
-    //int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
+    int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
     //int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
-    //int sampleShift = rsMod(frameIndex * B/O, P*B);
-    //int sampleShift = rsMod(frameIndex * B/O + B/O, P*B);
-    //int sampleShift = rsMod(frameIndex * H, P*B);  // Why  + H?
-
-    // Some guesses to make it work with P > 1. Should reduce to formula above for P=1:
-    //int sampleShift = rsMod(P*frameIndex * B/2, P*B);  // wrong!
-    //int sampleShift = rsMod(frameIndex * B/2, B);      // wrong!
-    //int sampleShift = rsMod(P*frameIndex * B/2, B);      // wrong!
-    //int sampleShift = rsMod(P*frameIndex * B/2 + B/2, P*B);  // wrong!
-    //int sampleShift = rsMod(P*frameIndex * B/2 + P*B/2, P*B);  // wrong!
-    //int sampleShift = rsMod((frameIndex * B/2)/P, P*B);  // wrong!
-    //int sampleShift = rsMod((frameIndex * B)/P, P*B);  // wrong
-    //int sampleShift = rsMod(frameIndex * B/2 + P*B/2, P*B);  // wrong
-    //int sampleShift = rsMod(-frameIndex * 256 - 512, P*B); // Looks good for B=1024, O=4, P=2
-    //int sampleShift = rsMod(-frameIndex * (B/(2*P)) - B/2, P*B);
-
-    //int sampleShift = rsMod(frameIndex * H + B/2, P*B); // New!
-    // ToDo: check also for overflow 
-
 
     // Apply phase twiddle factor:
-    double  phaseShift = (PI * k * sampleShift) / N;    // Verify!
-    //double  phaseShift = (2*PI * k * sampleShift) / N;    // Verify!
-    //double  phaseShift = (PI * k * sampleShift) / (2*N); 
+    //double  phaseShift = (2*PI * k * sampleShift) / N;  // Verify!
+    double  phaseShift = (PI * k * sampleShift) / N;  // Verify!
+    //double  phaseShift = (PI * k * sampleShift) / N; 
     // Should this formula also involve O and/or P? It seems like the computed sampleShift is 
     // actually correct numerically - but the actual amount of sampleShift corresponds to the 
     // computed sampleShift only when O=2,P=1.
