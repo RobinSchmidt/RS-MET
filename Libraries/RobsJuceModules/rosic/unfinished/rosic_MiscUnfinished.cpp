@@ -317,7 +317,8 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   int sampleShift = rsMod(-frameIndex * H - B/2, P*B);
   for(int k = 0; k < N; k++)
   {
-    spectrum[k] = mag[k] * expC(i * phsOld[k]);
+    // Grab phase of current bin k:
+    double pk = phsOld[k];
 
     // Update the free running phases:
     double wk = (PI * k) / N;           // Normalized radian frequency of bin k, N = fftSize/2
@@ -329,8 +330,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // Compute and apply a phase-twiddle factor that shifts the center of energy of the padded 
     // block into its first section:
     double  phaseShift = (PI * k * sampleShift) / N;
-    Complex twiddle    = expC( i * phaseShift);
-    spectrum[k]       *= twiddle;
+    spectrum[k] = mag[k] * expC(i * (pk + phaseShift));
+
+    //Complex twiddle    = expC( i * phaseShift);
+    //spectrum[k] = mag[k] * expC(i * pk);
+    //spectrum[k]       *= twiddle;
     // ToDo: 
     // -Optimize this such that we need only one call to expC.
 

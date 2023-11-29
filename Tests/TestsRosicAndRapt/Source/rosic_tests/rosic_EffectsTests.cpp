@@ -1201,7 +1201,7 @@ void testSpectralShift()
 
 
   // For figuring out the sampleShift formula:
-  testSpectralShifter(1.0, RS2, 1024,  8, 8, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  4, 2, true, false,  2, Mul,  0, 128, 90.0);
   // -Let M = frameIndex
   //
   // -With O=2, P=1, every block is correct
