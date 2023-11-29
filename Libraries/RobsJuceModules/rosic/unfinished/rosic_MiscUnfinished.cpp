@@ -314,6 +314,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
   // OK - now let's try to use only the magnitude from the input spectrum and generate a phase from
   // the previous phase and a phase increment per hop and per bin:
+
+
+  int sampleShift = rsMod(frameIndex * H + B/2, P*B); // New!
+  //sampleShift = 0;  // Test
+
   for(int k = 0; k < N; k++)
   {
     spectrum[k] = mag[k] * expC(i * phsOld[k]);
@@ -344,7 +349,7 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 
 
     // Shift the center energy of the padded block into its first section:
-    int sampleShift = 0;
+    //int sampleShift = 0;
 
     // Old:
     //int sampleShift = rsMod(frameIndex * 2*H + H, P*B);  // Why  + H?
@@ -353,12 +358,9 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // Looks good for B = 1024, O = 2, P = 1:
     //int sampleShift = rsMod(frameIndex * B/2 + B/2, P*B);  // good
     //int sampleShift = rsMod(frameIndex * B/2, P*B);          // transient duplication looks plausible
-
     //int sampleShift = rsMod(frameIndex * B/O, P*B);
     //int sampleShift = rsMod(frameIndex * B/O + B/O, P*B);
-
     //int sampleShift = rsMod(frameIndex * H, P*B);  // Why  + H?
-
 
     // Some guesses to make it work with P > 1. Should reduce to formula above for P=1:
     //int sampleShift = rsMod(P*frameIndex * B/2, P*B);  // wrong!
@@ -369,19 +371,21 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     //int sampleShift = rsMod((frameIndex * B/2)/P, P*B);  // wrong!
     //int sampleShift = rsMod((frameIndex * B)/P, P*B);  // wrong
     //int sampleShift = rsMod(frameIndex * B/2 + P*B/2, P*B);  // wrong
-
     //int sampleShift = rsMod(-frameIndex * 256 - 512, P*B); // Looks good for B=1024, O=4, P=2
-
     //int sampleShift = rsMod(-frameIndex * (B/(2*P)) - B/2, P*B);
 
-
-    // 256 = (B/2)/P?
-
+    //int sampleShift = rsMod(frameIndex * H + B/2, P*B); // New!
     // ToDo: check also for overflow 
 
 
     // Apply phase twiddle factor:
     double  phaseShift = (PI * k * sampleShift) / N;    // Verify!
+    //double  phaseShift = (2*PI * k * sampleShift) / N;    // Verify!
+    //double  phaseShift = (PI * k * sampleShift) / (2*N); 
+    // Should this formula also involve O and/or P? It seems like the computed sampleShift is 
+    // actually correct numerically - but the actual amount of sampleShift corresponds to the 
+    // computed sampleShift only when O=2,P=1.
+
     Complex twiddle    = expC( i * phaseShift);
     spectrum[k]       *= twiddle;
 

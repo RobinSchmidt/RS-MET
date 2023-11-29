@@ -807,7 +807,7 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   bool plot = true;  // maybe make it a function parameter
   if(plot)
   {
-    ps.blocksToPlot ={ 0,1,2,3,4,5,6,7,8,9,10 };            // The blocks for which plots are to be produced
+    ps.blocksToPlot ={ 1,2,3,4,5,6,7,8,9,10 };            // The blocks for which plots are to be produced
     //ps.plotRawInputBlock       = true;
     //ps.plotWindowedInputBlock  = true;
     //ps.plotPaddedInputBlock    = true;
@@ -1201,7 +1201,7 @@ void testSpectralShift()
 
 
   // For figuring out the sampleShift formula:
-  testSpectralShifter(1.0, RS2, 1024,  8, 2, true, false,  2, Mul,  0, 128, 90.0);
+  testSpectralShifter(1.0, RS2, 1024,  2, 1, true, false,  2, Mul,  0, 128, 90.0);
 
 
   // Different overlaps, no zero padding, cos^2 input window, no output window:
