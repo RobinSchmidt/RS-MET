@@ -279,11 +279,11 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
   // Maybe use magnitude squared or maybe even dB values (log-magnitude). Let's see what works 
   // best. ....
 
-  int N = spectrumSize;
-  int H = getHopSize();
   int B = getBlockSize();
   int P = getZeroPaddingFactor();
-  int O = overlapFactor;
+  int O = getOverlapFactor();
+  int N = spectrumSize;              // == P*B/2
+  int H = getHopSize();              // == B/O
   Complex i(0, 1); 
 
   // Compute magnitudes and phases of current input spectrum:
@@ -357,7 +357,10 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
     // envelope nicely - but what about the phase of the sine itself?
     //
     // ToDo:
-    // -Explain the phaseShift. That was tricky to figure out!
+    // -Explain the phaseShift. That was tricky to figure out! It shifts the enveloped wave-packet 
+    //  into the right place (namely to the front) of the padded output buffer. Without it, it will
+    //  be centered in different places in the output buffer (and therefore be ignored) at 
+    //  different frames/blocks
   }
   return;
 

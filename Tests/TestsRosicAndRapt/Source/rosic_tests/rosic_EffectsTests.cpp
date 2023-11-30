@@ -1260,11 +1260,29 @@ void testSpectralShift()
   //testSpectralShifter(1.0, RS2, 2048,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
   //testSpectralShifter(1.0, RS2, 1024,  4,  8, true, true,  2, Mul,  0, 128, 90.0);
   //testSpectralShifter(1.0, RS2,  512,  4,  8, true, true,  2, Mul,  0, 128, 90.0);  // OK
-  testSpectralShifter(1.0, RS2,  256,  4,  8, true, true,  2, Mul,  0, 128, 90.0);  // Nope!
-  testSpectralShifter(1.0, RS2,  256,  2,  8, true, true,  2, Mul,  0, 128, 90.0);  // fast amp-mod?
+  //testSpectralShifter(1.0, RS2,  256,  4,  8, true, true,  2, Mul,  0, 128, 90.0);  // Nope!
+  //testSpectralShifter(1.0, RS2,  256,  2,  8, true, true,  2, Mul,  0, 128, 90.0);  // fast amp-mod?
+  // 
 
-  // Test some other input cycle lengths (64, 256, ...):
+  // With B=512, O=4, P=2, W=cos^2 (I/O), try different input periods:
+  //testSpectralShifter(1.0, RS2,  512, 4, 2, true, true,  2, Mul,  0,  64, 90.0);  // OK
+  //testSpectralShifter(1.0, RS2,  512, 4, 2, true, true,  2, Mul,  0, 128, 90.0);  // OK
+  //testSpectralShifter(1.0, RS2,  512, 4, 2, true, true,  2, Mul,  0, 256, 90.0);  // Nope!
+  // -I think, we get problems as soon as the input period is as long as 2*H?
+
+
+  // Let's try to confirm this by trying a cycle length of 256 and different ways of achievinh 
+  // H=256 (as 512/2 and 1024/4):
+  //testSpectralShifter(1.0, RS2,  512, 2, 2, true, false, 2, Mul,  0, 256, 90.0);  // H=256 - OK
+  //testSpectralShifter(1.0, RS2, 1024, 4, 2, true, true,  2, Mul,  0, 256, 90.0);  // H=256 - OK
+  //testSpectralShifter(1.0, RS2,  512, 2, 2, true, true,  2, Mul,  0, 256, 90.0);  // H=256 - AmpMod
+  //testSpectralShifter(1.0, RS2,  512, 2, 2, true, true,  1, Mul,  0, 256, 90.0);  // H=256 - mmhh
+
+
+
+
   // ...
+
   // Check, if this phase-cancellation phenomenon happens later or earlier with lower or higher
   // input freqs
 
@@ -1347,6 +1365,19 @@ void testSpectralShift()
   // -I think, the amount of zero padding also limits by hwo much we can down-shift because it 
   //  limits by how much a block can be lengenthed. Zero-padding of 2 should allow a downshift by
   //  1 octave, zero-padding by 4 a downshift of two octaves. ...Or maybe not? 
+  // -Implement unit tests and/or experiments with the following test signals: 
+  //  -sines whose period fits nicely in the window
+  //  -sine whose freq fits badly (half a cycle overhang or something)
+  //  -mix of sines
+  //  -DC
+  //  -Nyquist freq
+  //  -Impulses
+  // -On these signals: 
+  //  -try identity resynthesis (with delay)
+  //  -shift octave down
+  //  -shift ovtave up
+  //  -shifts by 0.5, 0.75, 0.8, 1.0, 1.2, 1.25, 1.5, 2.0  ...maybe also try something very 
+  //   irrational such as the golden ratio and its reciprocal
 
   // This function should eventually replace testSpectralShiftViaJH/RS. We need to go through the 
   // comments there and for each setting make a correspoding function call here and the copy the 

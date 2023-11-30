@@ -78,6 +78,8 @@ public:
 
   int getZeroPaddingFactor() const { return paddingFactor; }
 
+  int getOverlapFactor() const { return overlapFactor; }
+
 
   //-----------------------------------------------------------------------------------------------
   // \Processing
