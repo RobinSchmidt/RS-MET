@@ -1269,6 +1269,7 @@ void testSpectralShift()
   //testSpectralShifter(1.0, RS2,  512, 4, 2, true, true,  2, Mul,  0, 128, 90.0);  // OK
   //testSpectralShifter(1.0, RS2,  512, 4, 2, true, true,  2, Mul,  0, 256, 90.0);  // Nope!
   // -I think, we get problems as soon as the input period is as long as 2*H?
+  //  -> check the phase
 
 
   // Let's try to confirm this by trying a cycle length of 256 and different ways of achievinh 
