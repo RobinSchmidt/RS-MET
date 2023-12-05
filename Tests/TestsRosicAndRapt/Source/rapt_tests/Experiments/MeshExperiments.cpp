@@ -311,7 +311,14 @@ void meshGradientErrorVsDistance()
     {
       // Create mesh for a particular setting for numSides and stepsize h:
       createPolygonMesh(mesh, numSides, h[j], x0, angle);
+
+      // Uncomment for producing the stencil plots for the paper:
       //if(numSides >= 3 && j == 0) meshPlotter.plotGraph2D(mesh, {0});  // plot stencil for paper
+      // They should be saved as ThreePointStencil.pdf, FourPointStencil.pdf, FivePointStencil.pdf
+      // SixPointStencil.pdf respectively. ToDo: Find a better solution. Maybe include the 
+      // plot-generation in the RS-MET-Research codebase where the plots for the newer papers are
+      // generated. This stuff here should go to the research codebase anyway.
+      // Maybe we should prepend some prefix that indicates the paper
 
       // Compute and the record the estimation error at vertex 0:
       Real e = gradientError(mesh, 0, f, f_x, f_y);
@@ -323,6 +330,7 @@ void meshGradientErrorVsDistance()
   // and the y-axis is the (negative) power of 10 that gives the order of magnitude of the error:
   Vec hLog = RAPT::rsApplyFunction(h, &rsLog2);  // does not compile
   plotMatrixRows(err, &hLog[0]);
+  // Save as Error.pdf for paper
 
   // Numerically estimate order of the errors from two successive errors (for two successive 
   // h-values) via the formula B.36 in "Finite Difference Computing with PDEs":
@@ -339,6 +347,7 @@ void meshGradientErrorVsDistance()
     for(int j = 0; j < (int)h.size()-1; j++)
       errorOrder(i,j) = (err(i,j) - err(i,j+1)) / log10(h[j]/h[j+1]);
   plotMatrixRows(errorOrder, &hLog[0]);
+  // Save as ErrorOrder.pdf for paper
 
   // Observations:
   // -We indeed see that the slope of error increases when the number of points is increased, so 

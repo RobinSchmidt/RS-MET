@@ -301,9 +301,9 @@ int main(int argc, char* argv[])
   //uniformArrayDiffAndInt();               // under construction
 
   //derivativeFormulas();                   // still empty
-  //vertexMeshGradient();                   // implementations are in MeshExperiments.cpp
-  //vertexMeshHessian();
-  //vertexMeshLaplacian();
+  vertexMeshGradient();                   // implementations are in MeshExperiments.cpp
+  vertexMeshHessian();
+  vertexMeshLaplacian();
 
   //convolvePolynomials();                  // obsolete
   //convolvePiecewise();
