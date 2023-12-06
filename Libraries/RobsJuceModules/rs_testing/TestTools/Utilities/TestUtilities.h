@@ -496,6 +496,29 @@ bool checkEigensystem(
 }
 
 //=================================================================================================
+// Convenience functions for polynomials:
+
+/** Randomizes the values of the coefficients of the polynomial p. Leaves the degree as is. */
+template<class T>
+void randomizeCoeffs(rsPolynomial<T>* p, T min, T max, int seed, bool roundToInt = false)
+{
+  rsNoiseGenerator<T> prng;
+  prng.setRange(min, max);
+  prng.setSeed(seed);
+  for(int i = 0; i <= p->getDegree(); i++)  // <= is not a bug, numCoeffs is degree + 1
+  {
+    T c = prng.getSample(); 
+    if(roundToInt)
+      c = rsRound(c);
+    p->setCoeff(i, c);
+  }
+}
+// ToDo:
+// -Check what happens when T is a complex type. It probably won't compile. Maybe make a version
+//  that can handle complex polynomials as well. Maybe an explicit specialization for complex 
+//  polynomials is needed?
+
+//=================================================================================================
 // Stuff for facilitating tests for the sampler engine
 
 /** Helper function to add a single region for the given sample to the engine. The region is added
