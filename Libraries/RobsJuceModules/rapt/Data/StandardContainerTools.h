@@ -201,7 +201,7 @@ inline void rsAppend(std::vector<T>& v, const std::vector<T>& w)
 
 
 template<class T>
-inline std::vector<T> rsConcatenate(std::vector<T>& v, const std::vector<T>& w)
+inline std::vector<T> rsConcatenate(const std::vector<T>& v, const std::vector<T>& w)
 {
   std::vector<T> r(v.size() + w.size());
   for(size_t i = 0; i < v.size(); i++) r[i]            = v[i];

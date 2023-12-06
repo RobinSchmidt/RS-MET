@@ -1677,6 +1677,14 @@ these functions out of the class and turn them into free functions. We may also 
 polynomials for integers anyway - sooo...it seems like requiring the type T to support an sqrt
 operation is perhaps a bit much to ask for for a general purpose polynomial class.
 
+Q: what happens on default construction? Is there an allocation (for a std::vector of size 1)? Or 
+is our vector uninitialized, i.e. empty (which would be an invalid state). Maybe we should have a 
+polynomial class should act like a view, i.e. be non-owning? But no - for such purposes, we have 
+the low-level functions that operate on the raw arrays. Maybe we should use std::span in a new 
+implementation.
+
+Currently, the default construction is to leave
+
 
 ToDo:
 -Try to avoid explicit usage of std::complex. The user should decide, if they want to use 

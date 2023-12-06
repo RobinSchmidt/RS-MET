@@ -62,6 +62,13 @@ public:
   void setCoeffs(const std::vector<T>& newCoeffs)
   { setCoeffs(newCoeffs.data(), (int)newCoeffs.size()-1); }
 
+  /** Sets the i-th coefficient of this polynomial to the given new value. */
+  void setCoeff(int i, T newCoeff)
+  {
+    rsAssert(isValidCoeffIndex(i), "Invalid coefficient index in rsPolynomial::setCoeff");
+    coeffs[i] = newCoeff;
+  }
+
   void setRoots(const T* newRoots, int numRoots, T scaler = T(1));
 
   void setRoots(const std::vector<T>& newRoots, T scaler = T(1))
@@ -91,7 +98,9 @@ public:
     std::vector<T> tmp = coeffs;
     shiftArgument(&tmp[0], &coeffs[0], getDegree(), dx);
   }
-  // needs tests
+  // Needs tests and documentation. Is supposed to turn the polynomial p(x) into the polynomial
+  // p(x + dx) - or is it p(x - dx)? The latter would mean that a positive value for dx is a 
+  // rightward shift (counterintuitively - but such is the math - right-shifts need a minus).
 
   /** Shifts the polynomial up and down in the y direction by the given dy. */
   void shiftY(T dy) { coeffs[0] += dy; }
@@ -191,8 +200,9 @@ public:
   }
   // what if we have trailing zeros in the coeff array? should we have a tolerance?
 
-
-
+  /** Returns true, iff the given i is a valid index for a coefficient of this polynomial. The 
+  range of valid indices is from zero up to the degree of the polynomial, both ends inclusive. */
+  bool isValidCoeffIndex(int i) const { return i >= 0 && i <= getDegree(); }
 
 
 
