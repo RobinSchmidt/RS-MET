@@ -128,7 +128,11 @@ h = (f-g)/(f+g)       difference between f and g, renormalized by sum
   and bell shapes with asymmetric/skewed bells in between. f/g is also interesting. Maybe plot f 
   against a Gaussian bell to see the difference in tail behavior.
 
-
+Maybe use f(x) = 1 / (cosh(a*x)) and adjust a such that f(x) meets exp(-x^2) exactly at x=1. Or 
+normalize f to unit area (maybe that gives the same a-value? Figure out!). That way, we would have
+a nice smooth function that can be interpreted as probability density function but with fatter 
+tails than the Gaussian. See:  https://www.desmos.com/calculator/er2azb0rkz
+The meet at x=1 happens for a = acosh(e) = 1.657...
 
 
 
