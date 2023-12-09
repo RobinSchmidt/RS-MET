@@ -134,6 +134,13 @@ a nice smooth function that can be interpreted as probability density function b
 tails than the Gaussian. See:  https://www.desmos.com/calculator/er2azb0rkz
 The meet at x=1 happens for a = acosh(e) = 1.657...
 
+How can we generalize this sort of functions to exp(-x^n) shapes but to both sides? A simple 
+exp(-|x|^n) is possible and is called the Minkowski distribution but it's not necessarily smooth at 
+the origin. Maybe (exp(-(+x)^n) + exp(-(-x)^n)) / 2  could work, i.e. just take an arbitrary 
+natural exponent for the sinde of the positive x-axis and then take the symmetric part of the 
+resulting function. That's how cosh is created from exp. ..oh - but maybe then take the reciprocal 
+or something -> figure out!
+
 
 
 */
