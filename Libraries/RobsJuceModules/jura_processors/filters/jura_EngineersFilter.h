@@ -32,19 +32,24 @@ public:
 
   AudioModuleEditor* createEditor(int type) override;
 
-  virtual void setSampleRate(double newSampleRate) override
+  void setSampleRate(double newSampleRate) override
   {
     wrappedEngineersFilter->setSampleRate(newSampleRate);
   }
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
       wrappedEngineersFilter->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
       //wrappedEngineersFilter->getSampleFrameDirect1(&inOutBuffer[0][n], &inOutBuffer[1][n]);
   }
 
-  virtual void reset() override
+  void processStereoFrame(double* left, double* right) override
+  {
+    wrappedEngineersFilter->getSampleFrameStereo(left, right);
+  }
+
+  void reset() override
   {
     wrappedEngineersFilter->reset();
   }
