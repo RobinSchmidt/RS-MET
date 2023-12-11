@@ -116,6 +116,9 @@ Ladder:
 -use the new ladder in LadderFilterAudioModule in VariousModules (this is the one used in 
  quadrifex)
 
+EngineersFilter:
+-Elliptic filters seem to become unstable when tweaking settings in realtime. Choose max order, 
+ bandpass, max ripple, max rejection - tweak freq
 
 
 BUGS:
