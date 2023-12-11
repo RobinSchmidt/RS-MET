@@ -139,8 +139,8 @@ exp(-|x|^n) is possible and is called the Minkowski distribution but it's not ne
 the origin. Maybe (exp(-(+x)^n) + exp(-(-x)^n)) / 2  could work, i.e. just take an arbitrary 
 natural exponent for the sinde of the positive x-axis and then take the symmetric part of the 
 resulting function. That's how cosh is created from exp. ..oh - but maybe then take the reciprocal 
-or something -> figure out!
-
+or something -> figure out! See: https://www.desmos.com/calculator/kthmhd4r5x
+Interestingly, the even and odd functions
 
 
 */

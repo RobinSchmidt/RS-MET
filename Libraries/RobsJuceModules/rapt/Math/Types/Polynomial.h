@@ -166,22 +166,36 @@ public:
 
   /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of 
   x. */
-  T getLeadingCoeff() const { return rsLast(coeffs); }
-  // what if we have trailing zeros in the coeff array?
+  T getLeadingCoeff() const 
+  { 
+    return coeffs[coeffs.size()-1];
+    //return rsLast(coeffs);
+  }
+  // What if we have trailing zeros in the coeff array? The mathematical definition of "leading 
+  // coefficient" is that it is the highest *nonzero* coefficient but the polynomial class does 
+  // not ensure that the last element of the coeff array is nonzero. Maybe we should introduce a 
+  // function scrapTrailingZeros or something like that. And maybe that function should detect
+  // zeros with a tolerance for rounding errors when T is a floating point type.
 
   /** Returns the i-th coefficient, i.e. the coefficient for x^i. */
   T getCoeff(int i) const { rsAssert(i >= 0 && i <= getDegree()); return coeffs[i]; }
+  // Maybe rename that to getCoeffUnsafe to indicate that no bounds checking is performed on the 
+  // index i
 
-  /** Returns the i-th coefficient, i.e. the coefficient for x^i or zero if i is greater than the 
-  degree of this polynomial. */
+  /** Returns the i-th coefficient, i.e. the coefficient for x^i, or zero if i is greater than the
+  degree of this polynomial or less than zero. The idea is that coefficients which are "not there" 
+  are implicitly zero. Sometimes it's more convenient when looping over the coefficients to use 
+  that convention instead of carefully adjusting the loop limits to ensure that this situation (of 
+  trying to read a coeff which isn't there) does not occur. But it's probably advisable to optimize
+  such "convenient" code later in performance critical situations. */
   T getCoeffPadded(int i) const 
   { 
-    rsAssert(i >= 0); 
-    if(i > getDegree())
-      return rsZeroValue(coeffs[0]); // new
-      //return T(0);  // old
-    return coeffs[i]; 
+    //rsAssert(i >= 0);
+    if(i < 0 || i > getDegree())
+      return rsZeroValue(coeffs[0]);
+    return coeffs[i];
   }
+  // Maybe rename to getCoeffSafe.
 
   /** Returns a pointer to our coefficient array - breaks encapsulation - use with care! */
   T* getCoeffPointer() { return &coeffs[0]; }
@@ -193,12 +207,9 @@ public:
   /** Returns true, iff this polynomial is monic, i.e. the coefficient for the highest power (the
   leading coefficient) is unity. Monic polynomials are important because they arise when 
   multiplying out the product form. */
-  bool isMonic() const 
-  { 
-    return getLeadingCoeff() == rsUnityValue(coeffs[0]); // new
-    //return getLeadingCoeff() == T(1);  // old
-  }
-  // what if we have trailing zeros in the coeff array? should we have a tolerance?
+  bool isMonic() const { return getLeadingCoeff() == rsUnityValue(coeffs[0]); }
+  // What if we have trailing zeros in the coeff array? should we have a tolerance? See comment
+  // under getLeadingCoeff
 
   /** Returns true, iff the given i is a valid index for a coefficient of this polynomial. The 
   range of valid indices is from zero up to the degree of the polynomial, both ends inclusive. */
