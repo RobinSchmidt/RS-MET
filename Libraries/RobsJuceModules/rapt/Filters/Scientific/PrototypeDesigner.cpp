@@ -44,6 +44,12 @@ void rsHalpernU(T *a, int K)
         a[2*(k-m)+1] *= -1;
     }
   }
+
+  // ToDo:
+  // -Try to optimze the calls to rsFactorial. We may have a Shlemiel the painter algorithm here.
+  //  But keep the current implementation in the prototypes for reference and unit tests. In the 
+  //  else-branch, we could keep two multiplicative accumulators - one for fac(m) and one for 
+  //  fac(k-m)...or maybe not. Maybe we could temporarile pre-fill the a-array  with the factorials
 }
 
 
@@ -660,6 +666,15 @@ void rsPrototypeDesigner<T>::gaussianDenominator(T *a, int N)
 // a transfer function (sum_{i=0}^M b_i s^i) / (sum_{j=0}^N a_i s^i) is given by 
 // (b_M * w^M)^2 / (a_N * w^N)^2, so maybe we should scale poles by sqrt(a_N) for any allpole 
 // filter -> figure out!
+
+// Idea:
+// -Use a higher order (i.e. 2*N) allpole approximation and then convert it into am N-pole, N-zero 
+//  pole-zero approximation via the rsTaylorToPade function in Prototypes.h/cpp in the rs_testing 
+//  module.
+// -Maybe a similar idea can be applied to all allpole designs - e.g. Bessel, Papoulis, etc. to get
+//  even better approximations. When designing allpole filters, we are basically not using the 
+//  zeros at all which is a waste unless we provide a special TwoPoleChain that is less general 
+//  than our BiquadChain
 
 // end new
 //-----------------------------------------------

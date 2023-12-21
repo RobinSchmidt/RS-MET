@@ -96,6 +96,7 @@ The degrees of the polynomials p and q must add up to the degree of t: deg(p) + 
 The degree of a polynomial represented by its coefficient array is always size() - 1. */
 template<class T>
 void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& q);
+// This could be moved into class rsRationalFunction
 
 /** Under construction.
 Solves the linear system A*x = b in an "optimal" way regardless of the question whether the system 
@@ -2853,6 +2854,13 @@ int rsSparseMatrix<T>::solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix
 
   return numIts;
 }
+
+// Resources for sparse matrix formats:
+// https://en.wikipedia.org/wiki/Sparse_matrix#Storage
+// https://phys.libretexts.org/Bookshelves/Mathematical_Physics_and_Pedagogy/Computational_Physics_(Chong)/08%3A_Sparse_Matrices/8.02%3A_Sparse_Matrix_Formats
+// https://docs.scipy.org/doc/scipy/reference/sparse.html
+// https://eigen.tuxfamily.org/dox/group__TutorialSparse.html
+
 
 //=================================================================================================
 
