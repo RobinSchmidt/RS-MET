@@ -10,7 +10,7 @@ interests in adjacent fields such as image processing, computer graphics and num
 I'm not an expert in these other fields, though. I'm primarily an audio DSP guy with a more general 
 fascination for any kind of mathematical algorithm that can (at least potentially) be used for 
 creative, artistic purposes. If you think you have a challenge for me in one of those fields and 
-have some money to spare to get you DSP or otherwise algorithmic problem solved once and for all, 
+have some money to spare to get your DSP or otherwise algorithmic problem solved once and for all, 
 feel free to contact me via robin@rs-met.com.
 
 ----------------------------------------------------------------------------------------------------
@@ -77,7 +77,8 @@ Project Ideas and Proposals:
 - Major overhaul of the API of RAPT and rosic. Use the C++20 module feature for providing 
   the functionality to client code. Use C++20 concepts for constraining the template parameters.
   
-  - Important concepts are Signal and Parameter. Maybe call them TSig, TPar. Signals and Parameters 
+  - Important concepts (in the C++20 sense) are Signal and Parameter. I currently call the template 
+    parameters TSig and TPar in the implementations. Signals and Parameters 
     are supposed to be numeric types that define the usual arithmetic operators. Parameters must be 
     able to be (implicitly) converted to Signals. Moreover, the operators must be able to take a 
     Signal and a Parameter to produce a Signal. I think, the conversion requirement may already take 
@@ -92,4 +93,4 @@ Project Ideas and Proposals:
     RAP (...Audio Processors), RAT (...Audio Toolkit). I like RASP - sounds catchy.
 	
   - Make a Python module as front end such that the library can be used from a jupyter notebook in 
-   Python and be combined with numpy, scipy, etc.
+    Python and be combined with numpy, scipy, etc.
