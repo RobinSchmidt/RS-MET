@@ -22,48 +22,4 @@ Mac:
 
 Linux:
 
--------------------------------------------------------------------------------
 
-Manual Installation:
-
-Windows:
--copy "ToolChain_VST2_x64.dll" into your 64-bit VST plugin folder, for example:
- C:\Program Files\VstPlugins
--copy the "RS-MET" folder into:
- C:\Users\[UserName]\AppData\Roaming 
--The VST3 installation folder on windows is (a subfolder of):
-   C:\Program Files\Common Files\VST3
- see: 
-   https://helpcenter.steinberg.de/hc/en-us/articles/115000177084-VST-plug-in-locations-on-Windows
- 
-
-Mac OSX:
--copy "ToolChain.component" into:
- Users/[UserName]/Library/Audio/Plug-Ins/Components
--copy "RS-MET" folder into:
- Users/[UserName]/Library
--If you can't find these folders in "Finder" (they are hidden), click on your main harddisk, choose 
- "Go" from the menu and enter the path directly. Or  better: Use Shift + Cmd + . to make hidden 
- files visible. But this doesn't work with all Windows keyboards - one of mine initiates the same 
- action as Shift + Alt + . when using the "Windows" button for Cmd. It behaves as if the Windows 
- button is just an alias for Alt (WTF!!!)
-
-
--------------------------------------------------------------------------------
-
-System-Requirements:
-
--Windows 7, x64 or higher
--OSX 10.5 or higher
--Linux:
-
-see here for installation path suggestions:
-https://github.com/RobinSchmidt/RS-MET/issues/142#issuecomment-353276935
-
-
-
-Notes:
-On windows, there's also the C:\ProgramData folder. It seems to be the place where  programs store 
-their own support files that are not supposed to be edited by the user, right? This could be used
-for factory presets (SurgeXT does that) ...but mayb it's simpler, if we just stick to the scheme of
-putting eveything into the AppData/Roaming/RS-MET folder
