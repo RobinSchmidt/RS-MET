@@ -5,14 +5,19 @@ All platforms:
 Get the RS-MET support files folder from here: https://github.com/RobinSchmidt/RS-MET-Data
 and rename it to just RS-MET, i.e. remove the -Data. This folder has presets, samples, etc.
 
+
 Windows:
--For VST, build the ToolChain_VST version of ToolChain in "Release" mode for "x64". To do that, 
+
+-For VST 2, build the ToolChain_VST version of ToolChain in "Release" mode for "x64". To do that, 
  right-click on ToolChain_VST in the Solution Explorer in Visual Studio and choose 
  "Set as StartUp project" and then hit the "Play" button. 
 -It will produce a file Release/VST/ToolChain.dll
--Rename the produced .dll to ToolChain_VST2_x64.dll (do we need this?)
--For Standalone, build the ToolChain_StandalonePlugin version. 
+-Rename the produced .dll to ToolChain_VST2_x64.dll (Why do we need this? To distinguish it from 
+ other variants that may end up in the same installation folder later? I think so.)
+
+-For Standalone, build the ToolChain_StandalonePlugin version in a similar way. 
 -The produced Release/Standalone Plugin/ToolChain.exe should run from any folder.
+
 
 Mac OSX:
 ...
@@ -21,9 +26,9 @@ Mac OSX:
 Manual Installation:
 
 Windows:
--copy "ToolChain_VST2_x64.dll" into your 64-bit VST plugin folder, for example:
+-Copy "ToolChain_VST2_x64.dll" into your 64-bit VST plugin folder, for example:
  C:\Program Files\VstPlugins
--copy the "RS-MET" folder into:
+-Copy the "RS-MET" folder into:
  C:\Users\[UserName]\AppData\Roaming 
 -The VST3 installation folder on windows is (a subfolder of):
    C:\Program Files\Common Files\VST3
@@ -32,9 +37,9 @@ Windows:
  
 
 Mac OSX:
--copy "ToolChain.component" into:
+-Copy "ToolChain.component" into:
  Users/[UserName]/Library/Audio/Plug-Ins/Components
--copy "RS-MET" folder into:
+-Copy "RS-MET" folder into:
  Users/[UserName]/Library
 -If you can't find these folders in "Finder" (they are hidden), click on your main harddisk, choose 
  "Go" from the menu and enter the path directly. Or  better: Use Shift + Cmd + . to make hidden 
