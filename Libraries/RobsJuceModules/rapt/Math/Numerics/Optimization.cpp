@@ -76,7 +76,8 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   T fL  = f(xL);
   T fR  = f(xR);
   T eps = std::numeric_limits<T>::epsilon();
-  while(b - a > eps) 
+  int its = 0;
+  while(b - a > eps && its < maxIts)
   {
     if(fL < fR) {
       b  = xR;
@@ -90,6 +91,7 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
       fL = fR;
       xR = a + k * (b - a);
       fR = f(xR); }
+    its++;
   }
   return (a + b) / 2.;
 
