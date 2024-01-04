@@ -60,30 +60,74 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w)
 }
 
 
-/*
 template<class T>
 T rsMinimizer1D<T>::bisection(const std::function<T(T)>& f, T xL, T xR)
 {
   rsError("Not yet implemented correctly!");
   // This algorithm is still under construction and does not yet work properly!
 
-  static const int maxNumIterations = 100;
+  // Idea:
+  // -search the root of the numeric derivative, i.e. apply the bisection algorithm just as for
+  //  
 
-  T xM = 0.5 * (xL + xR);
+  static const int maxIts = 100;
+
+  T xM = 0.5 * (xL + xR); // Midpoint
+  T dx = xR - xL;         // Interval length
+  T fL = f(xL);           // left function value
+  T fM = f(xM);           // middle function value
+  T fR = f(xR);           // right function value
+
+
+  T s  = std::numeric_limits<T>::epsilon();  // scaler for the midpoint
+  // ToDo: verify, if that is a good value. It's just a first quick and dirty guess
+
+  // As convergence criterion, we use the relative interval length:
+  int its = 0;
+  while(rsAbs(dx) > s * rsAbs(xM) && its < maxIts)
+  {
+    if(fL < fM && fM < fR) return xL; // minimum found at left boundary
+    if(fL > fM && fM > fR) return xR; // minimum found at right boundary
+
+    // At this point, we know that the minimum is somewhere between xL and xR. We figure out on 
+    // which side of xM it is and update xL or xR accordingly along with the corresponding function
+    // values fL, fR:
+    if(fL < fM)
+    {
+      // Minimum is left to xM:
+      xR = xM;
+      fR = fM;
+    }
+    else
+    {
+      // Minimum is right to xM:
+      xL = xM;
+      fL = fM;
+    }
+
+    xM = 0.5 * (xL + xR);   // New midpoint
+    dx = xR - xL;           // New interval length
+    fM = f(xM);             // New function value at midpoint
+    its++;
+  }
+
+  return xM;
 
 
 
-  //if( (xR-xL) <= s*
+   
+  //return rsMin(bisection(xL, xM), bisection(xM, xR));
+    // This recursive implementation illustrates the idea and should produce the right result but 
+    // has exponential complexity so it's untenable. The actual code should implement the same idea
+
 
   //return rsMin(bisection(xL, xM), bisection(xM, xR));
-  // This recursive implementation illustrates the idea and should produce the right result but 
-  // has exponential complexity so it's untenable. The actual code should implement the same idea
+
   // 
 
 
-  return rsMin(xL, xM, xR);
+  //return rsMin(xL, xM, xR);
 }
-*/
 
 
 //=================================================================================================
