@@ -601,11 +601,17 @@ bool polynomialRootsUnitTest()
   return r;
 }
 
+
+double minusSquare(double x)
+{
+  return -x*x;
+}
+
 bool minimizerUnitTest()
 {
   bool  ok   = true;
 
-  using Real = float;
+  using Real = double;
   using MM   = RAPT::rsMinimizer1D<Real>;
 
   Real x, y;                      // function in/out values
@@ -617,11 +623,16 @@ bool minimizerUnitTest()
 
   Real xMin;
 
-  //xMin = MM::bisection(f, -1.0, +1.0);
+  xMin = goldenRatioMethodMax(&minusSquare, -1.0, +1.0);
+  xMin = goldenRatioMethodMax(&minusSquare, -1.0, +2.0);
+
+
+  //xMin = MM::goldenSection(f, -1.0, +1.0);
   //ok &= xMin == 0.0;  // maybe we need a tolerance
 
-  xMin = MM::bisection(f, -2.0, +3.0);
+  xMin = MM::goldenSectionMin(f, -2.0, +3.0);
   ok &= xMin == 0.0;  
+
 
 
 

@@ -35,7 +35,7 @@ public:
   method. If the function has several local minima within the given interval, the method will 
   converge to one of them. Usually the assumption is that there is only one minimum inside the 
   interval.  See: https://en.wikipedia.org/wiki/Golden-section_search  */
-  static T goldenSection(const std::function<T(T)>& func, T xLeft, T xRight);
+  static T goldenSectionMin(const std::function<T(T)>& func, T xLeft, T xRight);
 
 
 

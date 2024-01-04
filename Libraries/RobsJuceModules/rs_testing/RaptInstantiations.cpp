@@ -459,6 +459,7 @@ template class RAPT::rsPositiveBellFunctions<float>;
 template class RAPT::rsParametricBellFunction<float>;
 template class RAPT::rsRootFinder<float>;
 template class RAPT::rsMinimizer1D<float>;
+template class RAPT::rsMinimizer1D<double>;
 template class RAPT::rsInterpolatingFunction<float, double>;
 template class RAPT::rsInterpolatingFunction<double, double>;
 template class RAPT::rsNodeBasedFunction<float>;

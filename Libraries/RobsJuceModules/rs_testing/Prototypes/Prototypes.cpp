@@ -29,6 +29,35 @@
 using namespace RAPT;
 
 
+double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b)
+{
+  double k   = (sqrt(5.) - 1.) / 2.;
+  double xL  = b - k * (b - a);
+  double xR  = a + k * (b - a);
+  double eps = std::numeric_limits<double>::epsilon();
+  while(b - a > eps)
+  {
+    if(p_pFunction(xL) > p_pFunction(xR))
+    {
+      b  = xR;
+      xR = xL;
+      xL = b - k * (b - a);
+    }
+    else
+    {
+      a  = xL;
+      xL = xR;
+      xR = a + k * (b - a);
+    }
+  }
+  return (a + b) / 2.;
+
+  // Code from here:
+  // https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio
+}
+
+
+
 template<class T>
 void complexMovingAverage(const T* x, T* y, int n, int len)
 {

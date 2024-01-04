@@ -61,17 +61,35 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w)
 
 
 template<class T>
-T rsMinimizer1D<T>::goldenSection(const std::function<T(T)>& f, T xL, T xR)
+T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
 {
-  rsError("Not yet implemented correctly!");
+  //rsError("Not yet implemented correctly!");
   return T(0);
   // This algorithm is still under construction and does not yet work properly!
 
   // https://en.wikipedia.org/wiki/Golden-section_search
 
-
-  static const int maxIts = 100;
-
+  static const int maxIts = 1000;
+  T k   = (sqrt(5.) - 1.) / 2.;
+  T xL  = b - k * (b - a);
+  T xR  = a + k * (b - a);
+  T eps = std::numeric_limits<T>::epsilon();
+  while(b - a > eps) 
+  {
+    if(f(xL) < f(xR)) 
+    {
+      b  = xR;
+      xR = xL;
+      xL = b - k * (b - a); 
+    }
+    else 
+    {
+      a  = xL;
+      xL = xR;
+      xR = a + k * (b - a); 
+    }
+  }
+  return (a + b) / 2.;
 
 
   // Here is a nice implementation:
