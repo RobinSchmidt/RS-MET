@@ -64,7 +64,7 @@ template<class T>
 T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
 {
   //rsError("Not yet implemented correctly!");
-  return T(0);
+  //return T(0);
   // This algorithm is still under construction and does not yet work properly!
 
   // https://en.wikipedia.org/wiki/Golden-section_search
@@ -73,21 +73,23 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   T k   = (sqrt(5.) - 1.) / 2.;
   T xL  = b - k * (b - a);
   T xR  = a + k * (b - a);
+  T fL  = f(xL);
+  T fR  = f(xR);
   T eps = std::numeric_limits<T>::epsilon();
   while(b - a > eps) 
   {
-    if(f(xL) < f(xR)) 
-    {
+    if(fL < fR) {
       b  = xR;
       xR = xL;
+      fR = fL;
       xL = b - k * (b - a);
-    }
-    else 
-    {
+      fL = f(xL); }
+    else {
       a  = xL;
       xL = xR;
+      fL = fR;
       xR = a + k * (b - a);
-    }
+      fR = f(xR); }
   }
   return (a + b) / 2.;
 

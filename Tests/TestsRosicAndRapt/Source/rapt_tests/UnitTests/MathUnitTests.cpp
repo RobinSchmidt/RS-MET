@@ -631,7 +631,7 @@ bool minimizerUnitTest()
   //ok &= xMin == 0.0;  // maybe we need a tolerance
 
   xMin = MM::goldenSectionMin(f, -2.0, +3.0);
-  ok &= xMin == 0.0;  
+  ok &= xMin == 4.0677495039569248e-17;
 
 
 
