@@ -30,7 +30,7 @@ class rsMinimizer1D
 public:
 
 
-  /** UNDER CONSTRUCTION
+  /** NEEDS UNIT TESTS
   Finds the minimum of a univariate function f(x) with a given interval using the golden section
   method. If the function has several local minima within the given interval, the method will 
   converge to one of them. Usually the assumption is that there is only one minimum inside the 

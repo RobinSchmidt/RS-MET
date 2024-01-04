@@ -626,12 +626,13 @@ bool minimizerUnitTest()
   xMin = goldenRatioMethodMax(&minusSquare, -1.0, +1.0);
   xMin = goldenRatioMethodMax(&minusSquare, -1.0, +2.0);
 
+  Real tol = 1.e-16;
 
-  //xMin = MM::goldenSection(f, -1.0, +1.0);
-  //ok &= xMin == 0.0;  // maybe we need a tolerance
+  xMin = MM::goldenSectionMin(f, -3.0, +3.0); ok &= rsIsCloseTo(xMin, 0.0, tol);
+  xMin = MM::goldenSectionMin(f, -2.0, +3.0); ok &= rsIsCloseTo(xMin, 0.0, tol);
+  xMin = MM::goldenSectionMin(f, -3.0, +2.0); ok &= rsIsCloseTo(xMin, 0.0, tol);
 
-  xMin = MM::goldenSectionMin(f, -2.0, +3.0);
-  ok &= xMin == 4.0677495039569248e-17;
+
 
 
 

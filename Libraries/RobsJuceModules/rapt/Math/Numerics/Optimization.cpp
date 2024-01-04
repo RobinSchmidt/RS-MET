@@ -70,7 +70,7 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   // https://en.wikipedia.org/wiki/Golden-section_search
 
   static const int maxIts = 1000;
-  T k   = (sqrt(5.) - 1.) / 2.;
+  T k   = (sqrt(5.) - 1.) * 0.5;;
   T xL  = b - k * (b - a);
   T xR  = a + k * (b - a);
   T fL  = f(xL);
