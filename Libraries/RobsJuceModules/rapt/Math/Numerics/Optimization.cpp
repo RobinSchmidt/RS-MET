@@ -80,13 +80,13 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
     {
       b  = xR;
       xR = xL;
-      xL = b - k * (b - a); 
+      xL = b - k * (b - a);
     }
     else 
     {
       a  = xL;
       xL = xR;
-      xR = a + k * (b - a); 
+      xR = a + k * (b - a);
     }
   }
   return (a + b) / 2.;
