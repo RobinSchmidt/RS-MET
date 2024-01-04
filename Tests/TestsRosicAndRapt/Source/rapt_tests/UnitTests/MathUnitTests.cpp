@@ -615,8 +615,14 @@ bool minimizerUnitTest()
   f = [](Real x){ return x*x; };  // f(x) = x^2 with minimum at x = 0
 
 
-  Real xMin = MM::bisection(f, -2.0, +3.0);
+  Real xMin;
+  xMin = MM::bisection(f, -1.0, +1.0);
   ok &= xMin == 0.0;  // maybe we need a tolerance
+
+  xMin = MM::bisection(f, -2.0, +3.0);
+
+
+
 
 
 

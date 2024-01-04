@@ -67,8 +67,15 @@ T rsMinimizer1D<T>::bisection(const std::function<T(T)>& f, T xL, T xR)
   // This algorithm is still under construction and does not yet work properly!
 
   // Idea:
-  // -search the root of the numeric derivative, i.e. apply the bisection algorithm just as for
-  //  
+  // -At any stage of the algorithm we have 3 points xL, xM, xR which are the left, middle and 
+  //  right point of the current interval inside which we wnat to find a local minimum.
+  // -If f(xL) < f(xM) and f(xM) < f(xR) we assume the function is monotonically increasing and 
+  //  therefore the minimum is at the left boundary. Likewise, if f(xL) > f(xM) && f(xM) > f(xR) 
+  //  then f is monotonically decreasing and therefore the minimum is at the right boundary.
+  // -If none of the above two cases occur, then the minimum is either in the left half interval
+  //  xL..xM or the right half interval xM..xR.
+  // -At any stage we select either the left half interval xL..xM or the right half interval xM..xR 
+  //  for further search refinement
 
   static const int maxIts = 100;
 
