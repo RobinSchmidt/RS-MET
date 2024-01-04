@@ -61,79 +61,24 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w)
 
 
 template<class T>
-T rsMinimizer1D<T>::bisection(const std::function<T(T)>& f, T xL, T xR)
+T rsMinimizer1D<T>::goldenSection(const std::function<T(T)>& f, T xL, T xR)
 {
   rsError("Not yet implemented correctly!");
+  return T(0);
   // This algorithm is still under construction and does not yet work properly!
 
-  // Idea:
-  // -At any stage of the algorithm we have 3 points xL, xM, xR which are the left, middle and 
-  //  right point of the current interval inside which we wnat to find a local minimum.
-  // -If f(xL) < f(xM) and f(xM) < f(xR) we assume the function is monotonically increasing and 
-  //  therefore the minimum is at the left boundary. Likewise, if f(xL) > f(xM) && f(xM) > f(xR) 
-  //  then f is monotonically decreasing and therefore the minimum is at the right boundary.
-  // -If none of the above two cases occur, then the minimum is either in the left half interval
-  //  xL..xM or the right half interval xM..xR.
-  // -At any stage we select either the left half interval xL..xM or the right half interval xM..xR 
-  //  for further search refinement
+  // https://en.wikipedia.org/wiki/Golden-section_search
+
 
   static const int maxIts = 100;
 
-  T xM = 0.5 * (xL + xR); // Midpoint
-  T dx = xR - xL;         // Interval length
-  T fL = f(xL);           // left function value
-  T fM = f(xM);           // middle function value
-  T fR = f(xR);           // right function value
 
 
-  T s  = std::numeric_limits<T>::epsilon();  // scaler for the midpoint
-  // ToDo: verify, if that is a good value. It's just a first quick and dirty guess
+  // Here is a nice implementation:
+  // https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio
+  // I think, it can easily be tweaked to return the minimum and optimized to only one evaluation
+  // of f per iteration
 
-  // As convergence criterion, we use the relative interval length:
-  int its = 0;
-  while(rsAbs(dx) > s * rsAbs(xM) && its < maxIts)
-  {
-    if(fL < fM && fM < fR) return xL; // minimum found at left boundary
-    if(fL > fM && fM > fR) return xR; // minimum found at right boundary
-
-    // At this point, we know that the minimum is somewhere between xL and xR. We figure out on 
-    // which side of xM it is and update xL or xR accordingly along with the corresponding function
-    // values fL, fR:
-    if(fL < fM)
-    {
-      // Minimum is left to xM:
-      xR = xM;
-      fR = fM;
-    }
-    else
-    {
-      // Minimum is right to xM:
-      xL = xM;
-      fL = fM;
-    }
-
-    xM = 0.5 * (xL + xR);   // New midpoint
-    dx = xR - xL;           // New interval length
-    fM = f(xM);             // New function value at midpoint
-    its++;
-  }
-
-  return xM;
-
-
-
-   
-  //return rsMin(bisection(xL, xM), bisection(xM, xR));
-    // This recursive implementation illustrates the idea and should produce the right result but 
-    // has exponential complexity so it's untenable. The actual code should implement the same idea
-
-
-  //return rsMin(bisection(xL, xM), bisection(xM, xR));
-
-  // 
-
-
-  //return rsMin(xL, xM, xR);
 }
 
 

@@ -31,11 +31,11 @@ public:
 
 
   /** UNDER CONSTRUCTION
-  A minimization method that works analoguous to the bisection method of root-finding. You need to 
-  pass the left and right limits of the interval between which the minimum shall be found. 
-  ...TBC...
-  See comments in implementation for algorithmic details. */
-  static T bisection(const std::function<T(T)>& func, T xLeft, T xRight);
+  Finds the minimum of a univariate function f(x) with a given interval using the golden section
+  method. If the function has several local minima within the given interval, the method will 
+  converge to one of them. Usually the assumption is that there is only one minimum inside the 
+  interval.  See: https://en.wikipedia.org/wiki/Golden-section_search  */
+  static T goldenSection(const std::function<T(T)>& func, T xLeft, T xRight);
 
 
 

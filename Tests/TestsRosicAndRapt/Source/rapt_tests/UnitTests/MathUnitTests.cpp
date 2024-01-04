@@ -616,11 +616,12 @@ bool minimizerUnitTest()
 
 
   Real xMin;
-  xMin = MM::bisection(f, -1.0, +1.0);
-  ok &= xMin == 0.0;  // maybe we need a tolerance
+
+  //xMin = MM::bisection(f, -1.0, +1.0);
+  //ok &= xMin == 0.0;  // maybe we need a tolerance
 
   xMin = MM::bisection(f, -2.0, +3.0);
-
+  ok &= xMin == 0.0;  
 
 
 
