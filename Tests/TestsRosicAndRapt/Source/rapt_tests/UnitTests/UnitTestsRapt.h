@@ -29,6 +29,8 @@ bool correlationUnitTest();
 bool interpolationUnitTest();
 bool rootFinderUnitTest();
 bool polynomialRootsUnitTest(); // the new explicit formulas - move to PolynomialUnitTests
+bool minimizerUnitTest();       // 1D function minimization
+
 
 // Misc:
 bool blepUnitTest();            // move to GeneratorTests

@@ -51,6 +51,7 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");
   ok &= runUnitTest(&interpolationUnitTest,          "Interpolation and curve fitting");
   ok &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
+  ok &= runUnitTest(&minimizerUnitTest,              "rsMinimizer1D");
   ok &= runUnitTest(&correlationUnitTest,            "correlation");
   ok &= runUnitTest(&testVector,                     "rsVector");
   ok &= runUnitTest(&testMatrix,                     "rsMatrix");

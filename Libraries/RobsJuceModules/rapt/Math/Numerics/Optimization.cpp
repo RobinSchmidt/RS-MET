@@ -59,6 +59,33 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w)
     v[i] = x[2*i];
 }
 
+
+/*
+template<class T>
+T rsMinimizer1D<T>::bisection(const std::function<T(T)>& f, T xL, T xR)
+{
+  rsError("Not yet implemented correctly!");
+  // This algorithm is still under construction and does not yet work properly!
+
+  static const int maxNumIterations = 100;
+
+  T xM = 0.5 * (xL + xR);
+
+
+
+  //if( (xR-xL) <= s*
+
+  //return rsMin(bisection(xL, xM), bisection(xM, xR));
+  // This recursive implementation illustrates the idea and should produce the right result but 
+  // has exponential complexity so it's untenable. The actual code should implement the same idea
+  // 
+
+
+  return rsMin(xL, xM, xR);
+}
+*/
+
+
 //=================================================================================================
 /*                                          Ideas
 

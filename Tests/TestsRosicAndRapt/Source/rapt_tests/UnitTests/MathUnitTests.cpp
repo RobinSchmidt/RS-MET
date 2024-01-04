@@ -600,3 +600,27 @@ bool polynomialRootsUnitTest()
 
   return r;
 }
+
+bool minimizerUnitTest()
+{
+  bool  ok   = true;
+
+  using Real = float;
+  using MM   = RAPT::rsMinimizer1D<Real>;
+
+  Real x, y;                      // function in/out values
+  std::function<Real(Real)> f;    // the function to find the minimum of
+
+
+  f = [](Real x){ return x*x; };  // f(x) = x^2 with minimum at x = 0
+
+
+  Real xMin = MM::bisection(f, -2.0, +3.0);
+
+
+
+
+
+  return ok;
+}
+
