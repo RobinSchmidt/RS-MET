@@ -3047,12 +3047,19 @@ void numericRootFinding1D()
   numCalls = 0; x = RF::bisection(f,  1.7f,  2.2f); ok &= x ==  2.f; // numCalls = 22
 
 
+  // Observations:
+  // -In some cases, bisection gets away with less calls than Brent. -> Check if in the 
+  //  implementation of Brent's method, there are extra calls that can be optimized away by
+  //  caching function values. ...nope - doesn't seem to be the case. The only evaluation of f in 
+  //  the loop is:  fs = f(s);
+  //
   // Notes:
   // -When using epsilon as tolerance, the root at -1 in not found exactly. The last 2 decimal 
   //  digits are wrong. When using 0.5*epsilon, we find the root at -1 exactly.
-
+  //
   // ToDo:
   // -Compare the number of calls to other methods like bisection, falsePosition
+  // -Try brent with some shifte sqrt function. I think, it should converge in 1 step?
 
 
   rsAssert(ok);

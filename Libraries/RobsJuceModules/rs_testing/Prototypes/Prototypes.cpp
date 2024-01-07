@@ -95,7 +95,7 @@ double brents_fun(std::function<double (double)> f, double lower_bound, double u
       //return;
     } // end if
 
-    if (fa != fc && fb != fc)
+    if(fa != fc && fb != fc)
     {
       // Use inverse quadratic interopolation:
       s =   ( a * fb * fc / ((fa - fb) * (fa - fc)) )
