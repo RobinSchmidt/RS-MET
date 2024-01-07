@@ -36,11 +36,13 @@ public:
   converge to one of them. Usually the assumption is that there is only one minimum inside the 
   interval.  See: https://en.wikipedia.org/wiki/Golden-section_search  */
   static T goldenSectionMin(const std::function<T(T)>& func, T xLeft, T xRight);
-  // ToDo: add parameters for tolerance and maxNumIterations
+  // ToDo: Add parameters for tolerance and maxNumIterations. Maybe raise an assertion when the 
+  // method did not converge within the given number of iterations.
 
   /** UNDER CONSTRUCTION - NOT YET WORKING. 
   Like goldenSectionMin but using Brent's method instead. This method has faster convergence. */
-  static T brentMin(const std::function<T(T)>& func, T xLeft, T xRight);
+  //static T brentMin(const std::function<T(T)>& func, T xLeft, T xRight);
+
 
 
 
@@ -50,6 +52,8 @@ public:
   // -Maybe implement maximizers by defining another std::function object that returns -f(x) and 
   //  then calls the corresponding minimizer with that. When doing so, rename the class to 
   //  rsOptimizer1D
+  // -Maybe implement also Dekker's method as dekkerMin, see: 
+  //  https://en.wikipedia.org/wiki/Brent%27s_method#Dekker's_method
 
 };
 

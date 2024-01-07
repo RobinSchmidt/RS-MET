@@ -128,7 +128,8 @@ int main(int argc, char* argv[])
   //butterworthViaGaussians();
 
   //numericOptimization();
-  numericMinimization1D();
+  //numericMinimization1D();
+  numericRootFinding1D();
 
   //polynomialSinc();
   //polynomialPrediction();  // not yet implemented

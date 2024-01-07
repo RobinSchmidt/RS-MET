@@ -56,6 +56,13 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio   */
 double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b);
 
+/** Slightly modified version of the code here:
+https://codereview.stackexchange.com/questions/103762/implementation-of-brents-algorithm-to-find-roots-of-a-polynomial
+The modification is to return the result rather than printing it to cout. */
+double brents_fun(std::function<double (double)> f, double lower_bound, double upper_bound, 
+                  double tolerance, int maxNumIterations);
+
+
 /** 
 From pg 125 here: https://www.cs.otago.ac.nz/graphics/Geoff/tartini/papers/Philip_McLeod_PhD.pdf
 @param x Input

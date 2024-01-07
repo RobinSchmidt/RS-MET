@@ -3018,6 +3018,42 @@ void numericMinimization1D()
   // -Maybe define an alternative error function based on the sum of squares or on max(err1, err2)
 }
 
+void numericRootFinding1D()
+{
+  bool ok = true;
+
+  using Real = double;
+  std::function<Real(Real)> f;
+
+  int numCalls;
+  f = [&](Real x)
+  { 
+    numCalls++;
+    return (x+1)*(x-1)*(x-2); 
+  }; // Polynomial with 3 roots at -1,+1,+2
+
+  Real x;
+  Real tol = std::numeric_limits<Real>::epsilon();
+  tol *= 0.5;
+
+  int maxIts = 1000;
+  numCalls = 0;
+  x = brents_fun(f, -1.3f, -0.8f, tol, maxIts);
+  ok &= x == -1;
+  // numCalls = 45
+
+  // Notes:
+  // -When using epsilon as tolerance, the root at -1 in not found exactly. The last 2 decimal 
+  //  digits are wrong. When using 0.5*epsilon, we find the root at -1 exactly.
+
+  // ToDo:
+  // -Compare the number of calls to other methods like bisection, falsePosition
+
+
+  rsAssert(ok);
+}
+
+
 void polynomialSinc()
 {
   // We want to find a polynomial that resembles a windowed sinc to be used for high order 

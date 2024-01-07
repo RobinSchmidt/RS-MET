@@ -89,7 +89,7 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
       fR = f(xR); }
     its++;
   }
-  return (a + b) / 2.;
+  return (a + b) * 0.5;
 
   // The implementation is based on the code posted here:
   // https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio
@@ -100,13 +100,15 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   // (4) Find the minimum instead of maximum by replacing ">" by "<" in "if(fL < fR)"
 
   // ToDo:
-  // -Let the user pass the tolerance and the maxIts parameter (maybe with sensible defaults)
+  // -Let the user pass the tol(erance) and the maxIts parameter (maybe with sensible defaults)
   // -Maybe the tolerance should be a relative one? Maybe we should use something like
-  //  while( b-a > tol * max(abs(a), abs(b)) && ...)
+  //  while( b-a > tol * max(abs(a), abs(b)) && ...)?
   // -The API and semantics (absolute vs relative) for passing tol and maxIts should be consistent
   //  with the one of rsRootFinder.
+  // -Use const where possible (for k and tol)
 }
 
+/*
 template<class T>
 T rsMinimizer1D<T>::brentMin(const std::function<T(T)>& func, T xLeft, T xRight)
 {
@@ -117,8 +119,19 @@ T rsMinimizer1D<T>::brentMin(const std::function<T(T)>& func, T xLeft, T xRight)
 
 
   // References:
+  // This:
+  // https://codereview.stackexchange.com/questions/103762/implementation-of-brents-algorithm-to-find-roots-of-a-polynomial
+  // seems to be an implementation of the pseudocode given here:
+  // https://en.wikipedia.org/wiki/Brent%27s_method#Algorithm
+  // Tne implementation here is based on that code.
+  //
+  // Here are some other implementations:
   // https://github.com/fditraglia/RcppBrent
+  // https://people.math.sc.edu/Burkardt/c_src/brent/brent.c
 }
+// ...wait - no - this is not a minimization but a root-finding algorithm! Move it over into 
+// rsRootFinder!
+*/
 
 
 //=================================================================================================

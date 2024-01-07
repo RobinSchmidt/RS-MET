@@ -400,15 +400,18 @@ bool testRootFinding(std::function<float(float)>& func, float xL, float xR, floa
 
 bool rootFinderUnitTest()
 {
-  bool r = true;                 // test result
-  float x, y;                    // function in/out values
-  std::function<float(float)> f; // the function to find the roots of
+  bool r = true;                 // Test result
+  float x, y;                    // Function in/out values
+  std::function<float(float)> f; // The function to find the roots of
+
+  using RF = rsRootFinder<float>;
+
   //float root;
 
 
 
-  // moved temporarily up for debugging:
-  // that's the evil function from here https://github.com/RobinSchmidt/RS-MET/issues/249
+  // Moved temporarily up for debugging:
+  // That's the evil function from here https://github.com/RobinSchmidt/RS-MET/issues/249
   float b = 5;
   float a = 1.f/tanh(b);
   f = [=] (float x)->float { return ((atanh(x/a)/b)+1.f)*0.5f; };
@@ -428,34 +431,38 @@ bool rootFinderUnitTest()
 
 
 
-  // create example (lambda) function with roots at -1,+1,+2 and verify positions of roots:
+  // Create example (lambda) function with roots at -1,+1,+2 and verify positions of roots:
   f = [] (float x)->float { return (x+1)*(x-1)*(x-2); };
   y = f(-1.f); r &= y == 0.f;
   y = f( 1.f); r &= y == 0.f;
   y = f( 2.f); r &= y == 0.f;
 
-  // find the roots via bisection:
-  x = rsRootFinder<float>::bisection(f, -1.3f, -0.8f); r &= x == -1.f;
-  x = rsRootFinder<float>::bisection(f,  0.8f,  1.3f); r &= x ==  1.f;
-  x = rsRootFinder<float>::bisection(f,  1.7f,  2.2f); r &= x ==  2.f;
+  // Find the roots via bisection:
+  x = RF::bisection(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = RF::bisection(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = RF::bisection(f,  1.7f,  2.2f); r &= x ==  2.f;
 
-  // find the roots via false position:
-  x = rsRootFinder<float>::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
-  x = rsRootFinder<float>::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
-  x = rsRootFinder<float>::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+  // Find the roots via false position:
+  x = RF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = RF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = RF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
 
-  // use a function pointer:
+  // Find the roots via Brent's method:
+  // ...
+
+
+  // Use a function pointer:
   f = &testFunction;
-  x = rsRootFinder<float>::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
-  x = rsRootFinder<float>::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
-  x = rsRootFinder<float>::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+  x = RF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = RF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = RF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
 
-  // use a function object (functor):
+  // Use a function object (functor):
   //TestFunctor functor; f = functor;
   f = TestFunctor();  // shorter syntax
-  x = rsRootFinder<float>::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
-  x = rsRootFinder<float>::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
-  x = rsRootFinder<float>::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+  x = RF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = RF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = RF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
 
   // OK - this was to test that it works calling it with different types of paremeters for the
   // function (funtion-pointer, lambda function, functor). Now we want to test the robustness if
