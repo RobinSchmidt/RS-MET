@@ -3024,6 +3024,7 @@ void numericRootFinding1D()
 
   using Real = double;
   std::function<Real(Real)> f;
+  using RF = rsRootFinder<Real>;
 
   int numCalls;
   f = [&](Real x)
@@ -3037,10 +3038,14 @@ void numericRootFinding1D()
   tol *= 0.5;
 
   int maxIts = 1000;
-  numCalls = 0;
-  x = brents_fun(f, -1.3f, -0.8f, tol, maxIts);
-  ok &= x == -1;
-  // numCalls = 45
+  numCalls = 0; x = brents_fun(f, -1.3f, -0.8f, tol, maxIts); ok &= x == -1; // numCalls = 45
+  numCalls = 0; x = brents_fun(f,  0.8f,  1.3f, tol, maxIts); ok &= x == +1; // numCalls = 35
+  numCalls = 0; x = brents_fun(f,  1.7f,  2.2f, tol, maxIts); ok &= x == +2; // numCalls = 51
+
+  numCalls = 0; x = RF::bisection(f, -1.3f, -0.8f); ok &= x == -1.f; // numCalls = 52
+  numCalls = 0; x = RF::bisection(f,  0.8f,  1.3f); ok &= x ==  1.f; // numCalls = 52
+  numCalls = 0; x = RF::bisection(f,  1.7f,  2.2f); ok &= x ==  2.f; // numCalls = 22
+
 
   // Notes:
   // -When using epsilon as tolerance, the root at -1 in not found exactly. The last 2 decimal 
