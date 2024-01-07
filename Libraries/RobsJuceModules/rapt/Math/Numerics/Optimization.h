@@ -30,14 +30,16 @@ class rsMinimizer1D
 public:
 
 
-  /** NEEDS UNIT TESTS
-  Finds the minimum of a univariate function f(x) with a given interval using the golden section
+  /** NEEDS UNIT TESTS - I think, it works but it's not yet properly tested [Robin].
+  Finds the minimum of a univariate function f(x) within a given interval using the golden section
   method. If the function has several local minima within the given interval, the method will 
   converge to one of them. Usually the assumption is that there is only one minimum inside the 
   interval.  See: https://en.wikipedia.org/wiki/Golden-section_search  */
   static T goldenSectionMin(const std::function<T(T)>& func, T xLeft, T xRight);
 
-
+  // ToDo:
+  // -Implement Brent's method as brentMin with the same API as goldenSectionMin. It has faster 
+  //  convergence than golden section.
 
 };
 

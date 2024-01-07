@@ -108,6 +108,7 @@ void gaussianRegression();
 void butterworthViaGaussians();
 
 void numericOptimization();
+void numericMinimization1D();
 
 void polynomialSinc();
 void polynomialPrediction();

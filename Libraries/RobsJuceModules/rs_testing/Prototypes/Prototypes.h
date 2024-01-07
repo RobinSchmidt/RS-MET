@@ -52,14 +52,9 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
-
 /** Implements the code from here for the golden ratio algorithm:
-
-https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio
-
-*/
+https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio   */
 double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b);
-
 
 /** 
 From pg 125 here: https://www.cs.otago.ac.nz/graphics/Geoff/tartini/papers/Philip_McLeod_PhD.pdf

@@ -69,13 +69,13 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
 
   // https://en.wikipedia.org/wiki/Golden-section_search
 
-  static const int maxIts = 1000;
-  T k   = (sqrt(5.) - 1.) * 0.5;;
-  T xL  = b - k * (b - a);
-  T xR  = a + k * (b - a);
-  T fL  = f(xL);
-  T fR  = f(xR);
-  T eps = std::numeric_limits<T>::epsilon();
+  static const int maxIts = 1000;             // Maximum number of iterations.
+  T k   = (sqrt(5.) - 1.) * 0.5;              // The golden ratio - maybe rename k to phi.
+  T xL  = b - k * (b - a);                    // Left inner evaluation point (I think - verify!)
+  T xR  = a + k * (b - a);                    // Right inner evaluattion point (I think - verify!)
+  T fL  = f(xL);                              // Function value at xL
+  T fR  = f(xR);                              // Function value at xR
+  T eps = std::numeric_limits<T>::epsilon();  // Not sure, if that value is always appropriate.
   int its = 0;
   while(b - a > eps && its < maxIts)
   {
@@ -95,12 +95,13 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   }
   return (a + b) / 2.;
 
-
-  // Here is a nice implementation:
+  // The implementation here is based on the code posted here
   // https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio
-  // I think, it can easily be tweaked to return the minimum and optimized to only one evaluation
-  // of f per iteration
-
+  // but modified to:
+  // (1) Accept a std::function (by const-ref) instead of a function pointer
+  // (2) Limit the number of iterations by having the 2nd condition "its < maxIts"
+  // (3) Using only one evaluation of f per iteration by caching fL and fR
+  // (4) Find the minimum instead of maximum by replacing ">" by "<" in "if(fL < fR)"
 }
 
 
