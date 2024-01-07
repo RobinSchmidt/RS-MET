@@ -95,13 +95,17 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   }
   return (a + b) / 2.;
 
-  // The implementation here is based on the code posted here
+  // The implementation here is based on the code posted here:
   // https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio
   // but modified to:
   // (1) Accept a std::function (by const-ref) instead of a function pointer
   // (2) Limit the number of iterations by having the 2nd condition "its < maxIts"
   // (3) Using only one evaluation of f per iteration by caching fL and fR
   // (4) Find the minimum instead of maximum by replacing ">" by "<" in "if(fL < fR)"
+
+  // ToDo:
+  // -Let the user pass the tolerance and the maxIts parameter (with sensible defaults)
+  // -Maybe the tolerance should be a relative one?
 }
 
 

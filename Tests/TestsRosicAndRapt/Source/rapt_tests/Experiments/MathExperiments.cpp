@@ -2928,22 +2928,25 @@ void numericOptimization()
 
 void numericMinimization1D()
 {
-  // We test the numeric minimzation routines on the following problem: find the parameter value a
-  // which minimzes the following error function: E(a) = |f(0.25,a)-0.5| + |f(0.75,a)-2| where 
+  // We test the numeric minimization routines on the following problem: find the parameter value a
+  // which minimizes the following error function: E(a) = |f(0.25,a)-0.5| + |f(0.75,a)-2| where 
   // f(x,a) = (x / (1-x))^a. This is a real world problem that occured in the discord chat on
   // "The Audio Programmer" channel. The problem was to find a function f(x) that goes through the 
   // following points: (0,0), (0.25,0.5), (0.5,1), (0.75,2), (1,inf). It was solved by using
   // (x/(1-x))^a  where  a = log_3(2)  does the job exactly, i.e. the function matches all the 
   // desired points exactly. It matches (0,0), (0.5,1), (1,inf) by construction for any value of a
   // but to get a match also at (0.25,0.5) and (0.75,2), we need to pick the specific value of 
-  // a = log_3(2). The value can be found analyitically but here we do it numerically. The function
+  // a = log_3(2). The value can be found analytically but here we do it numerically. The function
   // is meant to map a normalized parameter in the range 0..1 to the range 0..inf in some "natural"
-  // way. One potential disadvantage of that functions is that it has an inifnite derivative at x=0 
+  // way. One potential disadvantage of that function is that it has an infinite derivative at x=0 
   // which is kinda bad for dialing in values near zero. 
 
   using Real = double;
-  std::function<Real(Real, Real)> f; // Parametric mapping function f(x,a) = (x / (1-x))^a
-  std::function<Real(Real)>       E; // Error function of a: E(a) = |f(0.25,a)-0.5| + |f(0.75,a)-2|
+  std::function<Real(Real, Real)> f;  // Parametric mapping function f(x,a) = (x/(1-x))^a
+  std::function<Real(Real)>           // Error functions of a
+    E1,                               // E1(a) = |f(0.25,a)-0.5| + |f(0.75,a)-2|
+    E2,                               // E2(a) = max(|f(0.25,a)-0.5|, |f(0.75,a)-2|)
+    E3;                               // E3(a) = (f(0.25,a)-0.5)^2 + (f(0.75,a)-2)^2
 
   // The mapping function with input x and parameter a is defined as  f(x,a) = (x/(1-x))^a
   f = [](Real x, Real a)
@@ -2952,20 +2955,67 @@ void numericMinimization1D()
     return pow(y, a);
   };
 
+  int numCalls = 0;              // We keep track of the number of calls in the optimization
+  Real aTgt = rsLogB(2.0, 3.0);  // Target value a = log_3(2) - the analytical solution
+
   // The error function is a function of the parameter a:
-  E = [&](Real a)
+  E1 = [&](Real a)
   {
+    numCalls++;
     Real err1 = fabs(f(0.25,a) - 0.5);
     Real err2 = fabs(f(0.75,a) - 2.0);
     return err1 + err2;
   };
 
+  E2 = [&](Real a)
+  {
+    numCalls++;
+    Real err1 = fabs(f(0.25,a) - 0.5);
+    Real err2 = fabs(f(0.75,a) - 2.0);
+    return max(err1, err2);
+  };
+
+  E3 = [&](Real a)
+  {
+    numCalls++;
+    Real err1 = f(0.25,a) - 0.5;
+    Real err2 = f(0.75,a) - 2.0;
+    return err1*err1 + err2*err2;
+  };
+
+
   // The minimum of the error function E(a) should occur at a = log3(2) at which point the error is
   // actually zero. Let's verify this fact using a numeric minimization:
-  Real aOpt = rsMinimizer1D<Real>::goldenSectionMin(E, 0.0, 1.0);
-  Real aTgt = rsLogB(2.0, 3.0);    // Target value a = log_3(2)
-  bool ok   = aOpt == aTgt;
+  numCalls  = 0;
+  Real aOpt = rsMinimizer1D<Real>::goldenSectionMin(E1, 0.0, 1.0);
+  bool ok   = aOpt == aTgt;  // They are indeed exactly equal - there's no roundoff error.
+  // numCalls is now 77, so the golden section algo needed to eavluate E1(a) 77 times.
+
+  // Test it with the alternative error function basd on maximum deviation:
+  numCalls = 0;
+  aOpt = rsMinimizer1D<Real>::goldenSectionMin(E2, 0.0, 1.0);
+  ok   = aOpt == aTgt;
+  // numCalls is again 77
+
+  // Test it with the error function based on the sum of squares:
+  numCalls = 0;
+  aOpt = rsMinimizer1D<Real>::goldenSectionMin(E3, 0.0, 1.0);
+  ok   = aOpt == aTgt;
+  // numCalls is again 77
+
   rsAssert(ok);
+
+  // Observations:
+  // -The number of iterations of the golden section algo is the same for all the different 
+  //  variants of the error function. It doesn't matter if we take the sum-of-squares, sum-of-abs 
+  //  or max-abs error. We always get 77 iterations. The algorithm is insensitive to the exact 
+  //  shape of the function as long as the minimum stays in place - which is actually quite 
+  //  plausible when thinking about it. That may actually be a nice feature in certain contexts.
+
+  // ToDo:
+  // -Implement Brent's method and compare the number of evaluations. I guess, for Brent's method, 
+  //  the number will depend on the exact shape of the function.
+  // -Maybe define an alternative error function based on the sum of squares or on max(err1, err2)
 }
 
 void polynomialSinc()
