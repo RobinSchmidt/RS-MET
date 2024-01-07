@@ -19,7 +19,7 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w = nullptr);
 
 
 
-/** Stub.
+/** Under Construction.
 
 A class with functions for general 1D function minimization. */
 
@@ -36,10 +36,20 @@ public:
   converge to one of them. Usually the assumption is that there is only one minimum inside the 
   interval.  See: https://en.wikipedia.org/wiki/Golden-section_search  */
   static T goldenSectionMin(const std::function<T(T)>& func, T xLeft, T xRight);
+  // ToDo: add parameters for tolerance and maxNumIterations
+
+  /** UNDER CONSTRUCTION - NOT YET WORKING. 
+  Like goldenSectionMin but using Brent's method instead. This method has faster convergence. */
+  static T brentMin(const std::function<T(T)>& func, T xLeft, T xRight);
+
+
 
   // ToDo:
   // -Implement Brent's method as brentMin with the same API as goldenSectionMin. It has faster 
   //  convergence than golden section.
+  // -Maybe implement maximizers by defining another std::function object that returns -f(x) and 
+  //  then calls the corresponding minimizer with that. When doing so, rename the class to 
+  //  rsOptimizer1D
 
 };
 

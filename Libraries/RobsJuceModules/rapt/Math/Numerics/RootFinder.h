@@ -4,11 +4,11 @@
 /** This class implements various (one-dimensional) root finding algorithms, i.e. it finds 
 solutions to the equation f(x) = 0 for an arbitrary given function f(x). For more generality, the
 right hand side does not actually need to be equal to zero but can be any target value, so it 
-actually finds solutions to f(x) = y for given f(x) and given y. This little addition to standard 
-textbook root-finding algorithms doesn't change much algorithmically (we just need to subtract the 
-target value in each function evaluation), yet adds a lot to the flexibility. Some algorithms 
-require the user to pass an initial interval that is assumed to bracket the root, others require an
-initial estimate of the root.
+actually finds solutions to f(x) = y for given f(x) and given y (which defaults to zero). This 
+little addition to standard textbook root-finding algorithms doesn't change much algorithmically 
+(we just need to subtract the target value in each function evaluation), yet adds a lot to the 
+flexibility. Some algorithms require the user to pass an initial interval that is assumed to 
+bracket the root, others require an initial estimate of the root.
 
 References
 (1) Numerical Recipies in C (2nd Edition), Chapter 9
@@ -25,13 +25,16 @@ public:
   becomes either the new left or the new right border of the bracketing interval. So, in each 
   iteration, the size of the interval is halved. The order of convergence is linear (in each 
   iteration, we get one more correct binary digit in the root estimate) and convergence is 
-  guaranteed. */
+  guaranteed. That means: the method is slow but safe. */
   static T bisection(const std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
-  // -maybe instead of std::function use a second template parameter F
-  // -maybe declare the template parameters in fornt of the functions, not the class (like in 
+  // -Maybe instead of std::function use a second template parameter F
+  // -Maybe declare the template parameters in front of the functions, not the class (like in 
   //  rsArrayTools)
-  // -let the function take a tolerance parameter (maybe defaulting 
+  // -Let the function take a tolerance parameter (maybe defaulting 
   //  std::numeric_limits<T>::epsilon)
+  // -Let the function take a maxNumIterations paremeter.
+  // -When adding these additional parameters, make sure that their API and semantics matches that
+  //  in rsMinimizer1D (in Optimization.h/cpp). 
 
   /** Similar to bisection but doesn't use the midpoint of the current bracketing interval, but the
   point where a line between (xLeft,yLeft), (xRight,yRight) crosses the x-axis. Convergence is
@@ -53,6 +56,8 @@ public:
   //  return xL;
   //}
   //// hmm - but this function works only for increasing functions
+  //// maybe the growth multiplier for d should be an optional user parameter defaulting to 2. 
+  //// When doing so, we should assert that it is >= 1.
 
   //static inline T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
   //{

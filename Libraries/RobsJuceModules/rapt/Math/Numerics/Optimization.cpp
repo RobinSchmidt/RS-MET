@@ -59,15 +59,11 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w)
     v[i] = x[2*i];
 }
 
-
 template<class T>
 T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
 {
-  //rsError("Not yet implemented correctly!");
-  //return T(0);
-  // This algorithm is still under construction and does not yet work properly!
-
-  // https://en.wikipedia.org/wiki/Golden-section_search
+  rsWarning("Not yet tested thoroughly!");
+  // This function seems to work but has no proper unit tests yet.
 
   static const int maxIts = 1000;             // Maximum number of iterations.
   T k   = (sqrt(5.) - 1.) * 0.5;              // The golden ratio - maybe rename k to phi.
@@ -75,9 +71,9 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   T xR  = a + k * (b - a);                    // Right inner evaluattion point (I think - verify!)
   T fL  = f(xL);                              // Function value at xL
   T fR  = f(xR);                              // Function value at xR
-  T eps = std::numeric_limits<T>::epsilon();  // Not sure, if that value is always appropriate.
+  T tol = std::numeric_limits<T>::epsilon();  // Not sure, if that value is always appropriate.
   int its = 0;
-  while(b - a > eps && its < maxIts)
+  while(b - a > tol && its < maxIts)
   {
     if(fL < fR) {
       b  = xR;
@@ -95,7 +91,7 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   }
   return (a + b) / 2.;
 
-  // The implementation here is based on the code posted here:
+  // The implementation is based on the code posted here:
   // https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio
   // but modified to:
   // (1) Accept a std::function (by const-ref) instead of a function pointer
@@ -104,8 +100,24 @@ T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
   // (4) Find the minimum instead of maximum by replacing ">" by "<" in "if(fL < fR)"
 
   // ToDo:
-  // -Let the user pass the tolerance and the maxIts parameter (with sensible defaults)
-  // -Maybe the tolerance should be a relative one?
+  // -Let the user pass the tolerance and the maxIts parameter (maybe with sensible defaults)
+  // -Maybe the tolerance should be a relative one? Maybe we should use something like
+  //  while( b-a > tol * max(abs(a), abs(b)) && ...)
+  // -The API and semantics (absolute vs relative) for passing tol and maxIts should be consistent
+  //  with the one of rsRootFinder.
+}
+
+template<class T>
+T rsMinimizer1D<T>::brentMin(const std::function<T(T)>& func, T xLeft, T xRight)
+{
+  rsError("Not yet implemented correctly!");
+  return T(0);
+  // This algorithm is still under construction and does not yet work properly!
+
+
+
+  // References:
+  // https://github.com/fditraglia/RcppBrent
 }
 
 

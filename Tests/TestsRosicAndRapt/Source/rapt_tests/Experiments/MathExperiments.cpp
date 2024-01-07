@@ -2931,15 +2931,15 @@ void numericMinimization1D()
   // We test the numeric minimization routines on the following problem: find the parameter value a
   // which minimizes the following error function: E(a) = |f(0.25,a)-0.5| + |f(0.75,a)-2| where 
   // f(x,a) = (x / (1-x))^a. This is a real world problem that occured in the discord chat on
-  // "The Audio Programmer" channel. The problem was to find a function f(x) that goes through the 
+  // "The Audio Programmer" server. The problem was to find a function f(x) that goes through the 
   // following points: (0,0), (0.25,0.5), (0.5,1), (0.75,2), (1,inf). It was solved by using
   // (x/(1-x))^a  where  a = log_3(2)  does the job exactly, i.e. the function matches all the 
   // desired points exactly. It matches (0,0), (0.5,1), (1,inf) by construction for any value of a
   // but to get a match also at (0.25,0.5) and (0.75,2), we need to pick the specific value of 
   // a = log_3(2). The value can be found analytically but here we do it numerically. The function
   // is meant to map a normalized parameter in the range 0..1 to the range 0..inf in some "natural"
-  // way. One potential disadvantage of that function is that it has an infinite derivative at x=0 
-  // which is kinda bad for dialing in values near zero. 
+  // way. One potential disadvantage of that mapping function is that it has an infinite derivative
+  // at x=0 which is kinda bad for dialing in values near zero. 
 
   using Real = double;
   std::function<Real(Real, Real)> f;  // Parametric mapping function f(x,a) = (x/(1-x))^a
