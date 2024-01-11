@@ -15,10 +15,65 @@ ModulatableAudioModule is a subclass of AudioModule and ModulationParticipant wh
 for freely routable modulations 
 ...tbc...
 
-AudioModuleWithMidiIn is a subclass of ModulatableAudioModule and rsMidiMessageDispatcher which adds
-features to handle incoming midi events in order to respond to them. All instruments are derived 
-from that class but also some effects (well - not sure - but at least that may make sense)
+AudioModuleWithMidiIn is a subclass of ModulatableAudioModule and rsMidiMessageDispatcher which 
+adds features to handle incoming midi events in order to respond to them. All instruments are 
+derived from that class but also some effects (well - not sure - but at least that may make sense)
 ...tbc...
+
+
+
+Handling the actual DSP
+-----------------------
+
+Any given subclass of AudioModule/ModulatableAudioModule/AudioModuleWithMidiIn/... that actually 
+does some DSP task (and is not just some framework baseclass to be derived from) will typically 
+have some sort of DSP core object embedded to which the DSP task is delegated. This core object 
+will typically be of a class type from rapt or rosic. The way this is done is currently a bit 
+inconsistent. Sometimes, the DSP-core is directly embedded as member (by value) and sometimes only
+a pointer to the DSP core is stored. The reason for this by-pointer storage is that some of the DSP
+objects may also occur as sub-objects in higher level DSP objects - for example, a filter, let's 
+for demonstration purposes say rosic::Filter (such a class doens't actually exist), may be 
+used as a DSP module in its own right but it might also occur as submodule within a synth, say. In
+the former case, it would be ok to have the filter core as direct member inside some hypothetical 
+jura::FilterAudioModule class and thereby implicitly own it and manage the lifetime of the embedded
+rosic::Filter object. But in the latter case, the filter object will typically be owned by the 
+synthesizer and so the jura::FilterAudioModule should be non-owning and just wrap itself around the
+already existing object to connect it to the outside world and endow it with all the parameter 
+management, total-recall, audio I/O, etc. stuff that jura::AudioModule provides. Due to historical
+reasons, it is even a bit more messy than that: some of those AudioModules which hold a pointer 
+actually do own the DSP core object in the sense that they create it with "new" in their 
+constructor and "delete" it in their destructor. Some AudioModules allow the caller of the 
+constructor to pass a pointer to an object for the DSP-core. If the pointer passed to the 
+constructor is non-null, the AudioModule just wraps itself around the existing object and doesn't 
+own it. If, on the other hand, the passed pointer is a "nullptr" then the DSP core will be created 
+with "new" and some sort of "dspCoreIsOwned" (it may have a different name) flag will be set. This 
+flag will then checked in the destructor and if it is set, the AudioModule subclass should delete 
+the DSP core object in the destructor. It is a bit messy and inconsistent because I applied that 
+strategy only where it was/is actually currently needed. Basically there are 3 possible ways to do 
+it:
+
+(1) The AudioModule *always* owns its DSP core and keeps it as direct member (i.e. not as pointer).
+    That strategy is the simplest and safest but makes it impossible to "wrap" the AudioModule 
+    around an existing DSP core that is owned elsewhere. But sometimes that capability is needed, 
+    so that strategy is not viable in general. A variation would be that it keeps a pointer and
+    always creates the object with "new" in the constructor and "delete"s it in the destructor. One
+    could use a smart pointer for that, too. But all of that isn't really needed - a direct 
+    (non-pointer) member would actually be more straightforward in this case.
+
+(2) The AudioModule *never* owns its DSP core and just keeps a pointer to it. That requires the 
+    creator (i.e. the one who calls the constructor) to always first create a DSP core and pass it
+    in and it requires the creator to manage the lifetime of the DSP core. That would be consistent
+    but often inconvenient for the consumer/user of a given AudioModule subclass.
+
+(3) The AudioModule *switches* between owning and non-owning mode depending on whether the 
+    constructor receives a valid object pointer (in which case the AudioModule is non-owning) or
+    receives a nullptr (in which case it creates the DSP object itself via "new" and is owning). 
+    That's the most flexible way but requires some care in the implementation of the AudioModule 
+    subclass. That is to say - it is safe to use from the consumer's side but kinda unsafe from the 
+    implementor's side. It requires some extra code and care from the implementor of the given
+    subclass of AudioModule. This is the strategy, I'm currently going for - where needed. Where
+    possible, I may sometimes go with strategy (1).
+
 
 
 
@@ -49,3 +104,7 @@ When ToolChain::handleMidiMessage receives a MIDI CC:
 
 Somehow, the empty baseclass method setMidiController of class rsMidiMessageDispatcher gets called 
 and nothing happens. That is wrong! 
+
+
+ToDo:
+-Turn this file into an .md (markdown) file and format it properly

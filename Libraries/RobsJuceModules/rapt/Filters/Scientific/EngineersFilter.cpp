@@ -105,3 +105,13 @@ void rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState)
   if(resetState)
     rsBiquadCascade<TSig, TPar>::reset();
 }
+
+
+/*=================================================================================================
+
+Projects that do similar filter designs:
+
+https://github.com/vinniefalco/DSPFilters
+https://github.com/MikeCurrington/mkfilter
+
+*/

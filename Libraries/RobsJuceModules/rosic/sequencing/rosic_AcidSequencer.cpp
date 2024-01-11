@@ -131,3 +131,27 @@ void AcidSequencer::stop()
 
 //-------------------------------------------------------------------------------------------------
 // others:
+
+/*=================================================================================================
+
+Ideas:
+-Pattern export: Have an "Export" button on the Sequencer GUI that allows to export the current 
+ pattern to midi file. User can re-import it in the DAW, turn off the sequencer and then edit the 
+ midi data in finer detail than possible in the internal sequencer. It becomes possible to edit 
+ the step-lengths individually and to apply partial accents to notes via the velocity (the internal
+ DSP allows continuous accent values between 0..1 rather than just "off" or "on"
+-Undo: Any modifcation of the current pattern should be undoable, perhaps with a user adjustbale 
+ depth (maybe defaulting to 8 or 10) 
+-Circular shift of all aspects at once.
+-Mouse-select of to-be-transformed (aspects of) events instead of whole rows. Could also apply a 
+ cirular Shift of parts of the pattern, e.g. only steps 4-12 are affected, steps 1-3 and 13-16 stay
+ in place
+-Adjustable number of steps - rather than the hardcoded 16 steps, the user selects, how many steps
+ a pattern has. For example, 24 steps could be useful for triolic patterns.
+-Perhaps it could make sense to store a bunch different patterns and let the user switch between 
+ them by clicks on a button. Maybe there should be copy/paste functionality such that the current
+ pattern can be copied into a temporary "clipboard" and then pasted into another pattern. There is
+ some infrastructure for that in place already.
+
+
+*/

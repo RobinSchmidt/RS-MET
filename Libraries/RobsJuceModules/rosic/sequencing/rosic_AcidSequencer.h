@@ -209,7 +209,7 @@ public:
 
 protected:
 
-  static const int numPatterns = 16; // maybe use 128 and let use selct midi controller
+  static const int numPatterns = 16; // maybe use 128 and let user select via midi controller
   AcidPattern patterns[numPatterns];
   AcidPattern clipboard;
   int clipboardLength = 0;
@@ -224,6 +224,19 @@ protected:
   int    sequencerMode;      // the selected mode for the sequencer
   double driftError;         // to keep track and compensate for accumulating timing error
   bool   keyPermissible[13]; // array of flags to indicate if a particular key is permissible
+
+  // Under construction - stuff to implement undo-functionality:
+  //static const int undoDepth = 8;
+  //AcidPattern undoBuffers[numPatterns][undoDepth];
+  //int numUndosPossible[numPatterns];
+  //int undoBufPointers[numPatterns];
+  // The idea is that for any function call that modifies the current pattern, we first store the
+  // current pattern in a (circular) buffer and when the user calls a (to be written) undo() 
+  // function, we replace pattern[activePattern] with the last stored pattern which is to be found
+  // in undoBuffers[activePattern][undoBufPointers[activePattern]] and update 
+  // undoBufPoints[activePattern] by a circular decrement (wrapping around) and decrement 
+  // numUndosPossible[activePattern]. When numUndosPossible[activePattern], we gray out the undo 
+  // button on the GUI. ...that's the general idea, at least.
 
 };
 
