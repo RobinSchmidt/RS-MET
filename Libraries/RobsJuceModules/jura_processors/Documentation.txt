@@ -32,7 +32,7 @@ will typically be of a class type from rapt or rosic. The way this is done is cu
 inconsistent. Sometimes, the DSP-core is directly embedded as member (by value) and sometimes only
 a pointer to the DSP core is stored. The reason for this by-pointer storage is that some of the DSP
 objects may also occur as sub-objects in higher level DSP objects - for example, a filter, let's 
-for demonstration purposes say rosic::Filter (such a class doens't actually exist), may be 
+for demonstration purposes say rosic::Filter (such a class doesn't actually exist), may be 
 used as a DSP module in its own right but it might also occur as submodule within a synth, say. In
 the former case, it would be ok to have the filter core as direct member inside some hypothetical 
 jura::FilterAudioModule class and thereby implicitly own it and manage the lifetime of the embedded
@@ -70,9 +70,9 @@ it:
     receives a nullptr (in which case it creates the DSP object itself via "new" and is owning). 
     That's the most flexible way but requires some care in the implementation of the AudioModule 
     subclass. That is to say - it is safe to use from the consumer's side but kinda unsafe from the 
-    implementor's side. It requires some extra code and care from the implementor of the given
-    subclass of AudioModule. This is the strategy, I'm currently going for - where needed. Where
-    possible, I may sometimes go with strategy (1).
+    implementor's side. It requires some extra (boilerplate) code and care from the implementor of 
+    the given subclass of AudioModule. This is the strategy, I'm currently going for - where 
+    needed. Where possible, I may sometimes go with strategy (1).
 
 
 
