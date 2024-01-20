@@ -393,14 +393,14 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
     double timeInSeconds = 0.0;  // Used for periodic retriggering of LFOs and similar stuff.
 
     // Now try to retrieve the actual position info from host:
-    bool positionInfoRetrieved = false;
+    //bool positionInfoRetrieved = false;
     juce::AudioPlayHead* playHead = getPlayHead();
     if(playHead != nullptr)
     {
       AudioPlayHead::CurrentPositionInfo positionInfo;
       if(playHead->getCurrentPosition(positionInfo))
       {
-        positionInfoRetrieved = true;  // This seems to be not used anywhere - maybe get rid
+        //positionInfoRetrieved = true;  // This seems to be not used anywhere - maybe get rid
         bpm = positionInfo.bpm;
         timeInSeconds = positionInfo.timeInSeconds;
       }
