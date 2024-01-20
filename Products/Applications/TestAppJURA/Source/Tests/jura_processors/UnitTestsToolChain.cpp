@@ -6,6 +6,7 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   runTestVoiceManager();
+  runTestQuadrifex();
 }
 
 
@@ -212,14 +213,16 @@ void UnitTestToolChain::runTestVoiceManager()
   // numReleasingVoices variable
 
 
-
-
-
-
   // ToDo: test voice stealing in the various modes, voice retriggering, etc.
-
-
 
 }
 // actually, that test belongs into the framework tests - maybe make files UnitTestsAudio/Midi
 // and put this test there
+
+
+void UnitTestToolChain::runTestQuadrifex()
+{
+
+
+  int dummy = 0;
+}
