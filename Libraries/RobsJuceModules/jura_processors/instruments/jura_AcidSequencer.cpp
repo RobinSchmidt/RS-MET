@@ -1,8 +1,5 @@
-//#include "rosof_AcidSequencerAudioModule.h"
-//using namespace rosof;
-
 //-------------------------------------------------------------------------------------------------
-// construction/destruction:
+// Lifetime:
 
 AcidSequencerAudioModule::AcidSequencerAudioModule(CriticalSection *newPlugInLock,
   rosic::AcidSequencer *acidSequencerToWrap) : AudioModule(newPlugInLock)
@@ -14,7 +11,20 @@ AcidSequencerAudioModule::AcidSequencerAudioModule(CriticalSection *newPlugInLoc
 }
 
 //-------------------------------------------------------------------------------------------------
-// automation:
+// Inquiry:
+
+juce::MidiMessageSequence AcidSequencerAudioModule::getPatternAsMidiSequence()
+{
+  juce::MidiMessageSequence midiSeq;
+
+  RAPT::rsError("Not yet implemented");
+  // ...there is something to do here...
+
+  return midiSeq;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Automation:
 
 void AcidSequencerAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
@@ -697,9 +707,22 @@ void AcidSequencerModuleEditor::timerCallback()
 
 void AcidSequencerModuleEditor::openPatternExportDialog()
 {
+  jura::showWarningBox("Warning", "Pattern export not yet implemented");
+  if( seqModule == nullptr )
+    return;
 
+  // ToDo:
+  // (1) Open a file saving dialog. The file format/extension should be .mid
+  // (2) Retrieve from the dialog the file path where the user wants to save the current pattern.
+  // (3) Retrieve the current pattern and convert it into a juce::MidiMessageSequence 
+  // (4) Save the midi sequence to the desired file using juce::MidiFile.
 
-  int dummy = 0;
+  // (3)
+  juce::MidiMessageSequence midiSeq = seqModule->getPatternAsMidiSequence();
+
+  // See:
+  // https://docs.juce.com/master/classMidiFile.html
+  // https://docs.juce.com/master/classMidiMessageSequence.html
 }
 
 void AcidSequencerModuleEditor::rSliderValueChanged(RSlider *rSliderThatHasChanged)
@@ -729,6 +752,8 @@ void AcidSequencerModuleEditor::resized()
   x = patternEditor->getRight()-2;
   y = patternEditor->getY();
   setRightKeepLeft(stateWidgetSet, x);
+
+  // Pattern pseudo-randomization buttons:
   int h = patternEditor->getTopLaneHeight();
   //w = 28; 
   w = 16;
@@ -758,13 +783,21 @@ void AcidSequencerModuleEditor::resized()
   shiftNotesRightButton->setBounds(  x+  w-2, y, w,  h);
   reverseNotesButton->setBounds(     x2,      y, w2, h);
 
-  x = patternEditor->getRight();
+  // Export button:
+  x = stateWidgetSet->getRight();
   y = stateWidgetSet->getY();
+  w = 48;
+  exportButton->setBounds(x-6, y, w, 16); // Why do we need x-6? I'd expect x-2.
+
+  // Mode menu (options: "Off", "Key")
+  //x = patternEditor->getRight();
+  x = exportButton->getRight() + 4;
   modeLabel->setBounds(x, y, 40, 16);
   x = modeLabel->getRight();
   w = getWidth() - x;
   modeBox->setBounds(x, y, w-4, 16);
 
+  //
   y = shiftNotesRightButton->getBottom() + 8;
   x = patternEditor->getRight();
   w = 32;
@@ -776,10 +809,14 @@ void AcidSequencerModuleEditor::resized()
   w  = getWidth() - x;
   stepLengthSlider->setBounds(x+4, y+4, w-8, 16);
 
+
+
+  /*
   // Preliminary:
   y += 24;
   w  = 56;
   exportButton->setBounds(x+4, y+4, w-8, 16);
+  */
   // Maybe move it next to the "Save" button (we need to make some space there). But there's the
   // mode selector already. Maybe that could go somewhere else, though.
 }
