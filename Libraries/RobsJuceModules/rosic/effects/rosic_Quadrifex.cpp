@@ -109,7 +109,7 @@ void Quadrifex::setEffectAlgorithm(int slotIndex, int newAlgorithmIndex)
   case PHASE_STEREOIZER:     newModule = new PhaseStereoizerModule;           break;
   case PINGPONG_ECHO:        newModule = new PingPongEchoModule;              break;
   case PITCH_SHIFTER:        newModule = new PitchShifterModule;              break;
-  case REVERB:               newModule = new rsReverbModule;                    break;
+  case REVERB:               newModule = new rsReverbModule;                  break;
   case RINGMODULATOR:        newModule = new RingModulatorModule;             break;
   case SIMPLE_DELAY:         newModule = new SimpleDelayModule;               break;
   case SINE_OSCILLATOR:      newModule = new SineOscillatorModule;            break;

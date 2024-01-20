@@ -236,6 +236,8 @@ public:
   /** A static string member used to locate the company-specific support file folder. By default,
   it's set to "RS-MET", but since it's public, you can change that from any convenient place.  */
   static juce::String companyName;
+  // Maybe rename to something more appropriate like supportFileFolder. Why do we need this at all
+  // when we also have the rootDirectory member?
 
 protected:
 
@@ -255,6 +257,8 @@ protected:
   int activeFileIndex;                                // index of the currently active file in the array
   FileComparator fileComparator;                      // this object is needed to sort the file-array
   juce::Array<FileManagerListener*, CriticalSection> listeners;  // our listeners
+
+  // Try to switch from juce::Array to std::vector for the fileList and listeners
 
   juce_UseDebuggingNewOperator;
 };

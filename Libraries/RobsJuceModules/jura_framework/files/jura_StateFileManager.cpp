@@ -22,7 +22,7 @@ bool StateFileManager::loadFile(const File& fileToLoad)
 { 
   bool result = loadStateFromXmlFile(fileToLoad);
   if( result == true ) 
-    markFileAsClean(true);    
+    markFileAsClean(true);
   notifyListeners();
   return result;
 }
@@ -31,7 +31,7 @@ bool StateFileManager::saveToFile(const File& fileToSaveTo)
 {
   bool result = saveStateToXmlFile(fileToSaveTo);
   if( result == true ) 
-    markFileAsClean(true);    
+    markFileAsClean(true);
   notifyListeners();
   return result;
 }

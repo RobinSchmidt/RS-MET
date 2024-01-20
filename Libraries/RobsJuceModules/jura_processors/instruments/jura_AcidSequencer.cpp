@@ -4,7 +4,7 @@
 AcidSequencerAudioModule::AcidSequencerAudioModule(CriticalSection *newPlugInLock,
   rosic::AcidSequencer *acidSequencerToWrap) : AudioModule(newPlugInLock)
 {
-  jassert(acidSequencerToWrap != NULL); // you must pass a valid rosic-object to the constructor
+  jassert(acidSequencerToWrap != nullptr); // you must pass a valid rosic-object to the constructor
   wrappedAcidSequencer = acidSequencerToWrap;
   setModuleTypeName("AcidSequencer");
   createParameters();
@@ -28,7 +28,7 @@ juce::MidiMessageSequence AcidSequencerAudioModule::getPatternAsMidiSequence()
 
 void AcidSequencerAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  if( wrappedAcidSequencer == NULL )
+  if( wrappedAcidSequencer == nullptr )
     return;
 
   int    index = getIndexOfParameter(parameterThatHasChanged);
@@ -48,7 +48,7 @@ void AcidSequencerAudioModule::parameterChanged(Parameter* parameterThatHasChang
 void AcidSequencerAudioModule::setStateFromXml(const XmlElement &xmlState,
                                                const juce::String &stateName, bool markAsClean)
 {
-  if( wrappedAcidSequencer != NULL )
+  if( wrappedAcidSequencer != nullptr )
   {
     // set permissibilities...
 
@@ -57,14 +57,14 @@ void AcidSequencerAudioModule::setStateFromXml(const XmlElement &xmlState,
       AcidPattern *pattern = wrappedAcidSequencer->getPattern(p);
       pattern->clear();
       XmlElement *xmlPattern = xmlState.getChildByName(juce::String("Pattern") + juce::String(p));
-      if( xmlPattern != NULL )
+      if( xmlPattern != nullptr )
       {
         pattern->setStepLength(xmlPattern->getDoubleAttribute("StepLength", 0.5));
         for(int s=0; s<pattern->getMaxNumSteps(); s++)
         {
           AcidNote   *note    = pattern->getNote(s);
           XmlElement *xmlStep = xmlPattern->getChildByName(juce::String("Step") + juce::String(s));
-          if( xmlStep != NULL )
+          if( xmlStep != nullptr )
           {
             note->gate   = xmlStep->getBoolAttribute("Gate",   false);
             note->accent = xmlStep->getBoolAttribute("Accent", false);
@@ -84,7 +84,7 @@ XmlElement* AcidSequencerAudioModule::getStateAsXml(const juce::String &stateNam
 {
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
 
-  if( wrappedAcidSequencer != NULL )
+  if( wrappedAcidSequencer != nullptr )
   {
     // retrieve permissibilities...
 
@@ -247,7 +247,7 @@ bool AcidPatternEditor::isInKeyboardColumn(float x)
 
 void AcidPatternEditor::mouseDown(const MouseEvent &e)
 {
-  if( patternToEdit == NULL )
+  if( patternToEdit == nullptr )
     return;
 
   int step = getStepAt((float) e.x);
@@ -293,7 +293,7 @@ void AcidPatternEditor::mouseDown(const MouseEvent &e)
   }
   else if( key != -1 && isInKeyboardColumn((float) e.x) )
   {
-    if( sequencerToEdit != NULL )
+    if( sequencerToEdit != nullptr )
       sequencerToEdit->toggleKeyPermissibility(key);
   }
 
@@ -512,7 +512,7 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   setLinkPosition(INVISIBLE);
 
   // assign the pointer to the rosic::AcidSequencer object to be used as aduio engine:
-  jassert(newAcidSequencerAudioModule != NULL ); // you must pass a valid module here
+  jassert(newAcidSequencerAudioModule != nullptr ); // you must pass a valid module here
   seqModule = newAcidSequencerAudioModule;
 
   isTopLevelEditor = false;
