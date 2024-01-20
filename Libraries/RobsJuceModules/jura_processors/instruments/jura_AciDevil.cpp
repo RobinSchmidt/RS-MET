@@ -561,6 +561,14 @@ Ideas:
 -Maybe make a smaller headline not at the top but at the top-left - move preset section some 20 
  pixels down and say Slot1-AcidDevil - similar to FuncShaper's GUI and all the other, "smaller"
  plugins, see AudioModuleEditor::setHeadlineStyle
+-The sequencer should have a pair of Undo/Redo buttons They should be labeled like 
+ "Undo (3)" "Redo (5)" indicating that currently there are 3 possible undo steps available and
+  5 possible redo steps.
+-The equencer should have an "Export" button that let's the user write a .mid file with the current
+ pattern. Accented and non-accented notes should use two well defined Velocity levels. Maybe 64
+ and 127. Or maybe 50 and 100 to have some headroom. Or maybe 40 and 80. Maybe AcidDevil should 
+ have a switch for midi interpeting accents binary (on off based on velocity threshold) or 
+ continuously. see: https://docs.juce.com/master/classMidiFile.html
 
 -Maybe make important sliders bigger (20 or 24 pixel high): Level (maybe), Saw/Pulse, Cutoff, 
  Drive, EnvMod, Resonance ...those that the user is likely to automate. Accent is actually also a
