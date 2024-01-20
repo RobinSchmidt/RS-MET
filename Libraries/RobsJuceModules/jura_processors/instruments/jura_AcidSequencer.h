@@ -3,7 +3,7 @@
 
 
 
-/**  */
+/** Wraps a rosic::AcidSequencer object into a jura::AudioModule. */
 
 class AcidSequencerAudioModule : public AudioModule
 {
@@ -12,14 +12,15 @@ class AcidSequencerAudioModule : public AudioModule
 
 public:
 
-  //---------------------------------------------------------------------------------------------
-  // construction/destruction:
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
 
   /** Constructor. */
-  AcidSequencerAudioModule(CriticalSection *newPlugInLock, rosic::AcidSequencer *acidSequencerToWrap);
+  AcidSequencerAudioModule(CriticalSection *newPlugInLock, 
+    rosic::AcidSequencer *acidSequencerToWrap);
 
-  //---------------------------------------------------------------------------------------------
-  // parameter settings:
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   /*
   virtual void setSampleRate(double newSampleRate)
@@ -29,26 +30,24 @@ public:
   }
   */
 
-  //---------------------------------------------------------------------------------------------
-  // automation and state management:
+  //-----------------------------------------------------------------------------------------------
+  // \name Automation and state management
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
+  void parameterChanged(Parameter* parameterThatHasChanged) override;
 
-  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
 
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
+  XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
+  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  // Empty - exists only to satisfy compiler
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
-  {
-    // empty, only to satisfy compiler
-  }
-
-  //---------------------------------------------------------------------------------------------
-  // others:
 
 protected:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
 
   void createParameters();
 
@@ -179,7 +178,7 @@ public:
   // widgetColourScheme.outline
 
 
-  //---------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // \name Callback overrides :
 
   virtual void mouseDown(const MouseEvent &e) override;
@@ -202,7 +201,7 @@ protected:
 };
 
 
-//===============================================================================================
+//=================================================================================================
 // class AcidSequencerModuleEditor:
 
 class AcidSequencerModuleEditor : public jura::AudioModuleEditor, public jura::RSliderListener, 
@@ -212,21 +211,19 @@ class AcidSequencerModuleEditor : public jura::AudioModuleEditor, public jura::R
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Lifetime
 
   /** Constructor. */
   AcidSequencerModuleEditor(CriticalSection *newPlugInLock, 
     AcidSequencerAudioModule* newAcidSequencerAudioModule);
 
-  //---------------------------------------------------------------------------------------------
-  // setup:
 
-  //---------------------------------------------------------------------------------------------
-  // callbacks:
+  //-----------------------------------------------------------------------------------------------
+  // \name Callbacks
 
   /** Overrides rButtonClicked() for triggering various actions and update the display 
   accordingly. */
-  void rButtonClicked(RButton *buttonThatWasClicked) override; 
+  void rButtonClicked(RButton *buttonThatWasClicked) override;
 
   /** Overrides rSliderValueChanged to update the sequencer display when the steLength slider 
   changes. */  
@@ -244,7 +241,17 @@ public:
   /** Overrides the method inherited from juce::Timer. */
   void timerCallback() override; 
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc:
+
+  /** UNDER CONSTRUCTION.
+  Opens a dialog box to let the user export the current pattern to a .mid file. */
+  void openPatternExportDialog();
+
+
 protected:
+
 
   AcidSequencerAudioModule *seqModule;
   AcidPatternEditor        *patternEditor;
@@ -263,6 +270,9 @@ protected:
     *reverseSlidesButton, *reverseNotesButton, *reverseOctavesButton, *swapAccentsSlidesButton,
     *xorAccentsSlidesButton, *xorSlidesAccentsButton, *invertAccentsButton, *invertSlidesButton, 
     *invertOctavesButton;
+
+  RClickButton *exportButton;  // Maybe integrate export functionality in Save button
+  //RClickButton *undoButton, *redoButton;  // to do later
 
   // The vertical line that moves horizontally in the sequencer:
   RectangleComponent* timeCursor;

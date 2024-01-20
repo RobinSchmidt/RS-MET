@@ -569,6 +569,9 @@ Ideas:
  and 127. Or maybe 50 and 100 to have some headroom. Or maybe 40 and 80. Maybe AcidDevil should 
  have a switch for midi interpeting accents binary (on off based on velocity threshold) or 
  continuously. see: https://docs.juce.com/master/classMidiFile.html
+ Maybe the Export function can be integrated into the the "Save" button. If the user chooses to
+ save to a .mid file, it will be exported.
+
 
 -Maybe make important sliders bigger (20 or 24 pixel high): Level (maybe), Saw/Pulse, Cutoff, 
  Drive, EnvMod, Resonance ...those that the user is likely to automate. Accent is actually also a

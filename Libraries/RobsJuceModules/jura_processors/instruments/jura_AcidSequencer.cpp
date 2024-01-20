@@ -572,12 +572,15 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   addButton(&invertSlidesButton,  "Inv", "Inverts the slides (logical not)");
   addButton(&invertOctavesButton, "Inv", "Inverts the octaves (flips signs)");
 
-
   addButton(&swapAccentsSlidesButton, "A2S", "Swaps accents with slides");
   addButton(&xorAccentsSlidesButton,  "AXS", "Xors accents with slides");
   addButton(&xorSlidesAccentsButton,  "SXA", "Xors slides with accents");
 
   // maybe let new accents be old accents xor'ed with slides, smae for slides
+
+
+  addButton(&exportButton,    "Export", "Export pattern as .mid file");
+
 
 
   // Set up the widgets:
@@ -629,6 +632,10 @@ void AcidSequencerModuleEditor::rButtonClicked(RButton *b)
   else if( b == swapAccentsSlidesButton ) seq->swapAccentsWithSlides();
   else if( b == xorAccentsSlidesButton  ) seq->xorAccentsWithSlides();
   else if( b == xorSlidesAccentsButton  ) seq->xorSlidesWithAccents();
+
+  else if( b == exportButton ) openPatternExportDialog();
+
+
 
 
 
@@ -686,8 +693,13 @@ void AcidSequencerModuleEditor::timerCallback()
   }
   else
     timeCursor->setVisible(false);
+}
+
+void AcidSequencerModuleEditor::openPatternExportDialog()
+{
 
 
+  int dummy = 0;
 }
 
 void AcidSequencerModuleEditor::rSliderValueChanged(RSlider *rSliderThatHasChanged)
@@ -763,6 +775,13 @@ void AcidSequencerModuleEditor::resized()
   y += 24;
   w  = getWidth() - x;
   stepLengthSlider->setBounds(x+4, y+4, w-8, 16);
+
+  // Preliminary:
+  y += 24;
+  w  = 56;
+  exportButton->setBounds(x+4, y+4, w-8, 16);
+  // Maybe move it next to the "Save" button (we need to make some space there). But there's the
+  // mode selector already. Maybe that could go somewhere else, though.
 }
 
 
