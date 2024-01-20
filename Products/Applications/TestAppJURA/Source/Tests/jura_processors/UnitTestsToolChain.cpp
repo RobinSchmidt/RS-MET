@@ -222,7 +222,21 @@ void UnitTestToolChain::runTestVoiceManager()
 
 void UnitTestToolChain::runTestQuadrifex()
 {
+  int numMetaParams = 10;  // Number of exposed automatable (meta) parameters
+  jura::ToolChain*      dummy = nullptr;
+  juce::AudioProcessor* proc  = createPluginWithMidi(dummy, numMetaParams);
+  jura::AudioPlugin*    plug  = dynamic_cast<jura::AudioPlugin*>(proc);
+  jassert(plug != nullptr);
+  jura::AudioModule*    mod   = plug->wrappedAudioModule;  // Maybe use a getter
 
 
-  int dummy = 0;
+
+
+
+
+  jura::QuadrifexAudioModule* qfx = nullptr;
+  //qfx = new jura::QuadrifexAudioModule();
+  //delete qfx;
+
+  //int dummy = 0;
 }
