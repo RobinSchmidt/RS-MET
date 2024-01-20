@@ -30,21 +30,29 @@ public:
   //---------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate) override
+  void setSampleRate(double newSampleRate) override
   {
     wrappedAciDevil->setSampleRate(newSampleRate);
   }
 
+  void setBeatsPerMinute(double newBpm) override
+  {
+    wrappedAciDevil->sequencer.setTempo(newBpm);  
+    // Maybe rename to setBeatsPerMinute for consistency (it's also called like this in 
+    // Straightliner)
+  }
+  // Needs test
+
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
       inOutBuffer[0][n] = inOutBuffer[1][n] = wrappedAciDevil->getSample();
   }
 
-  virtual void processStereoFrame(double *left, double *right) override
+  void processStereoFrame(double *left, double *right) override
   {
     *left = *right = wrappedAciDevil->getSample();
   }
@@ -52,17 +60,17 @@ public:
   //---------------------------------------------------------------------------------------------
   // others:
 
-  virtual void noteOn(int noteNumber, int velocity) override
+  void noteOn(int noteNumber, int velocity) override
   {
     wrappedAciDevil->noteOn(noteNumber, velocity, 0.0);
   }
 
-  virtual void noteOff(int noteNumber) override
+  void noteOff(int noteNumber) override
   {
     wrappedAciDevil->noteOn(noteNumber, 0, 0.0);
   }
 
-  virtual void setPitchBend(int pitchBendValue) override
+  void setPitchBend(int pitchBendValue) override
   {
     double wheelValueMapped = (double) (pitchBendValue-8192) / 8192.0; // check this
     wrappedAciDevil->setPitchBend(wheelValueMapped);

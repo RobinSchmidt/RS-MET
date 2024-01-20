@@ -344,6 +344,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 
 
 
+
   // Request time-info from host and update the bpm-values for the modulators accordingly, if they
   // are in sync mode (maybe this should be moved up into the baseclass AudioModule):
   int timeToNextTriggerInSamples = -1;
@@ -361,6 +362,8 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
     {
       double timeInBeats = RAPT::rsSecondsToBeats(info.timeInSeconds, info.bpm);
       // kludge - will probably not work when tempo changes - use ppqPosition here later....
+      // Also: "info" may contain garbage data in the case when the above conditional statement
+      // failed and getPlayHead()->getCurrentPosition(info) didn't do anything
 
       double timeToNextTriggerInBeats = wrappedAudioModule->getTriggerInterval()
         - fmod(timeInBeats, wrappedAudioModule->getTriggerInterval());
@@ -372,6 +375,13 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
         timeToNextTriggerInSamples = -1; // indicates that we don't need to trigger in this block
     }
   }
+  // ...soo - this whole time-info retrieval code is very quenstionable and should probably be 
+  // rewritten entirely. Maybe declare a local variable double bpm = 120; and assign it from the
+  // info, if available. Then use that inside the two conditionals. In particular, don't access
+  // info.bpm inside the 2nd inner conditional block. Maybe enter 2nd block only, if data was 
+  // retrieved
+
+
 
   if(midiMessages.isEmpty() && timeToNextTriggerInSamples == -1)
   {

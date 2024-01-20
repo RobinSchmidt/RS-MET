@@ -21,9 +21,9 @@ public:
   // not needed anymore - for full blown isntruments, we don't need facilities to wrap around an
   // existing rosic object. that is relavant onyl for modules that are supposed to be submodules
   // like a filter in a synth
-   
+
   /** Constructor. */
-  StraightlinerAudioModule(CriticalSection *newPlugInLock);
+  StraightlinerAudioModule(CriticalSection* newPlugInLock);
 
 
   virtual ~StraightlinerAudioModule();
@@ -33,18 +33,29 @@ public:
   //---------------------------------------------------------------------------------------------
   // parameter settings:
   /*
-  virtual juce::String getDefaultPresetLocation() override 
-  { 
-    return getApplicationDirectory() 
+  virtual juce::String getDefaultPresetLocation() override
+  {
+    return getApplicationDirectory()
       + juce::String("/StraightlinerPresets/000-InitPatchSawtooth.xml");
   }
   */
 
-  virtual void setSampleRate(double newSampleRate) override
+  void setSampleRate(double newSampleRate) override
   {
-    if(wrappedStraightliner != NULL)
+    if(wrappedStraightliner != nullptr)
       wrappedStraightliner->setSampleRate(newSampleRate);
+    // ToDo: check, if the pointer can possibly be a nullptr. I think, this should never happen. 
+    // Make sure that it indeed doesn't happen and then get rid of the check (maybe add an assert
+    // instead)
   }
+
+  void setBeatsPerMinute(double newBpm) override
+  {
+    if(wrappedStraightliner != nullptr)
+      wrappedStraightliner->setBeatsPerMinute(newBpm);
+    // See comment in setSampleRate
+  }
+
 
   /** Loads the user's custom preferences such as the sample-content path. */
   //virtual void loadPreferences();
@@ -52,7 +63,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     if(wrappedStraightliner->isSilent())
     {
@@ -66,7 +77,7 @@ public:
     }
   }
 
-  virtual void processStereoFrame(double *left, double *right) override
+  void processStereoFrame(double *left, double *right) override
   {
     wrappedStraightliner->getSampleFrameStereo(left, right);
   }
@@ -74,16 +85,16 @@ public:
   //---------------------------------------------------------------------------------------------
   // others:
 
-  virtual void reset() override
+  void reset() override
   {
-    if(wrappedStraightliner != NULL)
+    if(wrappedStraightliner != nullptr)
       wrappedStraightliner->resetAllVoices();
   }
 
   /** We must override this here because we have - for historical reasons - not the FourOscScion
   as child-module but each osc separately, so we must manually tak care of updating the preset
   field of the FourOscSectionEditor here. */
-  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
 
 protected:

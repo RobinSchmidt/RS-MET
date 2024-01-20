@@ -32,5 +32,9 @@ Bugs:
   - OK - I added an implementation of ToolChain::setBeatsPerMinute ...that should perhaps solve it 
     when ToolChain is used as plugin. We still need some solution when it is used as Standalone.
 
+- Look at the comments in AudioPluginWithMidiIn::processBlock in the block
+    "if( wrappedAudioModule->wantsTempoSyncInfo ) {....}  "
+  This block should probably be rewritten entirely.
+
 - Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
    that shouldn't
