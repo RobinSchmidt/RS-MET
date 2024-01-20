@@ -222,6 +222,7 @@ bool AudioPlugin::isBusesLayoutSupported(const BusesLayout& layout) const
   return r;
 }
 
+// Obsolete - maybe delet or move ot attic:
 inline void AudioPlugin::enableFitzdazzing()
 {
 #if defined(RS_ARCHITECTURE_X64)
@@ -249,12 +250,15 @@ inline void AudioPlugin::enableFitzdazzing()
 
 void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
 {
-  ScopedLock scopedLock(plugInLock);
+  juce::ScopedLock scopedLock(plugInLock);  // Acquire mutex lock
+  juce::ScopedNoDenormals scopedDenormals;  // Temoprarily disable denormals.
 
+  // Obsolete:
   // ToDo: int ftzDazState = getFtzDazState();
-  enableFitzdazzing();  
+  //enableFitzdazzing();
   // ToDo: maybe call only once in prepareToPlay() - but no, other plugins in the chain may 
   // potentially modify this between calls
+  // Use juce::ScopedDenormals (or something like that) instead
 
   if(wrappedAudioModule != nullptr)
   {
@@ -264,7 +268,7 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
     wrappedAudioModule->processBlock(inOutBuffer, numChannels, numSamples);
   }
   else
-    buffer.clear();
+    buffer.clear();  // Or maybe we should juts leave it as is?
 
 
   // setFtzDazState(ftzDazState);
@@ -319,7 +323,8 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
   //AudioPlugin::processBlock(buffer, midiMessages);
   //// preliminary - later we need to handle the midiMessages here....
 
-  ScopedLock sl(plugInLock);
+  juce::ScopedLock scopedLock(plugInLock);  // Acquire mutex lock
+  juce::ScopedNoDenormals scopedDenormals;  // Temoprarily disable denormals.
 
 //#ifdef DEBUG
 //  static int callCount = 1;
@@ -337,7 +342,9 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 //#endif
 // this crashes reaper
 
-  // request time-info from host and update the bpm-values for the modulators accordingly, if they
+
+
+  // Request time-info from host and update the bpm-values for the modulators accordingly, if they
   // are in sync mode (maybe this should be moved up into the baseclass AudioModule):
   int timeToNextTriggerInSamples = -1;
   if( wrappedAudioModule->wantsTempoSyncInfo )
@@ -346,7 +353,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
     if( getPlayHead() != 0  &&  getPlayHead()->getCurrentPosition(info) )
     {
       if( info.bpm <= 0.0 )
-        info.bpm = 120.0;  // fallback value when nothing meaningful is passed
+        info.bpm = 120.0;  // Fallback value when nothing meaningful is passed
       wrappedAudioModule->setBeatsPerMinute(info.bpm);
     }
 

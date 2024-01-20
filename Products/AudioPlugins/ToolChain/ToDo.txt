@@ -22,6 +22,11 @@ Bugs:
      trade-off to be made: either always do that additinal loop thorugh all modules per block which 
      often may be unnecessary or tolerate some additional complication.
    -See: AudioProcessor::getPlayHead(), AudioPlayHead, AudioPlayHead::CurrentPositionInfo
+   -There is some code in AudioPluginWithMidiIn::processBlock. We need to make sure that 
+    ToolChainAudioModule::wantsTempoSyncInfo is true and implement 
+    ToolChainAudioModule::setBeatsPerMinute
+    ...soo - after all - there is actually already some infrastructure/mechanisam in place. It just
+    needs to be used correctly.
 
 - Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
    that shouldn't
