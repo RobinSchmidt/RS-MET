@@ -132,6 +132,7 @@ public:
   AudioModuleEditor *createEditor(int type) override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
+  virtual void setBeatsPerMinute(double newBpm) override;
 
   virtual void handleMidiMessage(MidiMessage message) override;
   /*
@@ -222,6 +223,8 @@ protected:
 
   double sampleRate = 44100;
   std::vector<ToolChainObserver*> observers;
+  // ToDo: document why the sampleRate is stored as member. Probably to set it up in the 
+  // sub-modules when they are created.
 
 
   rsVoiceManager voiceManager;

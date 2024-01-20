@@ -269,6 +269,13 @@ void ToolChain::setSampleRate(double newSampleRate)
     modules[i]->setSampleRate(sampleRate);
 }
 
+void ToolChain::setBeatsPerMinute(double newBpm)
+{
+  ScopedLock scopedLock(*lock);
+  for(int i = 0; i < size(modules); i++)
+    modules[i]->setBeatsPerMinute(newBpm);
+}
+
 void ToolChain::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);

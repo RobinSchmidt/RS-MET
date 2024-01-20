@@ -8,25 +8,29 @@ https://github.com/DISTRHO/JUCE
 
 Bugs:
 
-- Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
-   https://www.kvraudio.com/forum/viewtopic.php?p=7257577#p7257577
-   https://www.kvraudio.com/forum/viewtopic.php?t=606099
-   - This is not surprising because ToolChain itself currently has no mechanism in place to 
-     retrieve the time-info from the host and pass it on to its sub-modules in the slots. 
-   - Solution: Implement such a mechanism. Maybe by adding a virtual method setMidiTimeInfo to
-     jura::AudioModule and in ToolChain::processBlock, retrieve the time-info from the host and
-     loop over the slots to call that method to set it up. A refinement/optimization could be to do
-     that only when at least one of the slots has a module that actually needs the time info (not 
-     all do). That would require to keep track of that in the add/remove/replaceModule functions, 
-     so it would be more code with more potential errors for later maintenance, so there's a 
-     trade-off to be made: either always do that additinal loop thorugh all modules per block which 
-     often may be unnecessary or tolerate some additional complication.
-   -See: AudioProcessor::getPlayHead(), AudioPlayHead, AudioPlayHead::CurrentPositionInfo
-   -There is some code in AudioPluginWithMidiIn::processBlock. We need to make sure that 
+
+- [Might be fixed - needs tests]
+  Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
+  https://www.kvraudio.com/forum/viewtopic.php?p=7257577#p7257577
+  https://www.kvraudio.com/forum/viewtopic.php?t=606099
+  - This is not surprising because ToolChain itself currently has no mechanism in place to 
+    retrieve the time-info from the host and pass it on to its sub-modules in the slots. 
+  - Solution: Implement such a mechanism. Maybe by adding a virtual method setMidiTimeInfo to
+    jura::AudioModule and in ToolChain::processBlock, retrieve the time-info from the host and
+    loop over the slots to call that method to set it up. A refinement/optimization could be to do
+    that only when at least one of the slots has a module that actually needs the time info (not 
+    all do). That would require to keep track of that in the add/remove/replaceModule functions, 
+    so it would be more code with more potential errors for later maintenance, so there's a 
+    trade-off to be made: either always do that additinal loop thorugh all modules per block which 
+    often may be unnecessary or tolerate some additional complication.
+  - See: AudioProcessor::getPlayHead(), AudioPlayHead, AudioPlayHead::CurrentPositionInfo
+  - There is some code in AudioPluginWithMidiIn::processBlock. We need to make sure that 
     ToolChainAudioModule::wantsTempoSyncInfo is true and implement 
     ToolChainAudioModule::setBeatsPerMinute
     ...soo - after all - there is actually already some infrastructure/mechanisam in place. It just
     needs to be used correctly.
+  - OK - I added an implementation of ToolChain::setBeatsPerMinute ...that should perhaps solve it 
+    when ToolChain is used as plugin. We still need some solution when it is used as Standalone.
 
 - Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
    that shouldn't
