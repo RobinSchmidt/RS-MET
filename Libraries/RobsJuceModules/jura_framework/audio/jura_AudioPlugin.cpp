@@ -320,9 +320,6 @@ void AudioPlugin::createHostAutomatableParameters(int numParameters)
 
 void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
 {
-  //AudioPlugin::processBlock(buffer, midiMessages);
-  //// preliminary - later we need to handle the midiMessages here....
-
   juce::ScopedLock scopedLock(plugInLock);  // Acquire mutex lock
   juce::ScopedNoDenormals scopedDenormals;  // Temoprarily disable denormals.
 
@@ -340,7 +337,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 //  cw &= ~(EM_OVERFLOW | EM_ZERODIVIDE | EM_DENORMAL | EM_INVALID); // unmask all exceptions
 //  unsigned int cw0 = _controlfp(cw, _MCW_EM);
 //#endif
-// this crashes reaper
+// This crashes reaper. What was this supposed to do anyway? Maybe delete.
 
 
 
@@ -381,18 +378,21 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
   // info, if available. Then use that inside the two conditionals. In particular, don't access
   // info.bpm inside the 2nd inner conditional block. Maybe enter 2nd block only, if data was 
   // retrieved
+  // ...OK - done - see below. When enough tests were made, this old code may be deleted. We'll
+  // just keep it around for a while for reference, if something goes wrong with the new code.
   */
 
-  // NEW - needs tests:
+  // NEW - needs more tests - it seems to work fine in standalone, i.e. with the fallback values:
   int timeToNextTriggerInSamples = -1;
   if(wrappedAudioModule->wantsTempoSyncInfo)
   {
-    // Initialize the relevant position info variables which we are interested in to their 
-    // fallback values:
-    double bpm = 120.0;
-    double timeInSeconds = 0.0;
+    // Initialize the relevant position info variables which we are interested in to their default
+    // values which are used as fallback values. For example, they will be used in a standalone 
+    // version or when a plugin host for some reason doesn't provide this kind of information:
+    double bpm = 140.0;          // Current tempo in beats per minute.
+    double timeInSeconds = 0.0;  // Used for periodic retriggering of LFOs and similar stuff.
 
-    // Try to retrieve actual position info from host:
+    // Now try to retrieve the actual position info from host:
     bool positionInfoRetrieved = false;
     juce::AudioPlayHead* playHead = getPlayHead();
     if(playHead != nullptr)
@@ -400,7 +400,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
       AudioPlayHead::CurrentPositionInfo positionInfo;
       if(playHead->getCurrentPosition(positionInfo))
       {
-        positionInfoRetrieved = true;
+        positionInfoRetrieved = true;  // This seems to be not used anywhere - maybe get rid
         bpm = positionInfo.bpm;
         timeInSeconds = positionInfo.timeInSeconds;
       }
@@ -429,11 +429,11 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
         timeToNextTriggerInSamples = -1; // indicates that we don't need to trigger in this block    
     }
     // ToDo: check, if ToolChainAudioModule handles these retriggering calls correctly and passes 
-    // the triggers on to its sub-modules.
-
-    int dummy = 0;
+    // the triggers on to its sub-modules. Well - maybe it doesn't even need to. Not sure. The 
+    // modules might obtain their relevant triggers from midi notes. May depend on the module.
   }
-
+  // Maybe wrap into a function updatePositionInfo(). Maybe it should return the 
+  // timeToNextTriggerInSamples
 
 
 
@@ -441,7 +441,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
   {
     //underlyingAudioModule->processBlock(buffer, 0, buffer.getNumSamples()); // old
     AudioPlugin::processBlock(buffer, midiMessages);
-    // no messages to process - baseclass method can handle this
+    // No messages or trigger events to process - the baseclass method can handle this.
   }
   else
   {
@@ -472,14 +472,14 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
       {
         wrappedAudioModule->trigger();
 
-        // update the time to the next trigger:
+        // Update the time to the next trigger:
         timeToNextTriggerInSamples = -1;
-        // preliminary - assumes that the next trigger is not inside this buffer (which is assured
+        // Preliminary - assumes that the next trigger is not inside this buffer (which is assured
         // only when buffersize is much smaller than the retrigger interval - which is probably
         // true in realtime situations but maybe not in rendering)
       }
 
-      // all messages at this time instant have been processed - now determine the time-offset to
+      // All messages at this time instant have been processed - now determine the time-offset to
       // the next event and compute the number of samples that can be processed without
       // interrupting events (subLength):
       if( aMidiMessageWasRetrieved )
@@ -521,10 +521,21 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 
 void AudioPluginWithMidiIn::handleMidiMessage(MidiMessage message)
 {
-  ScopedLock sl(plugInLock);
+  ScopedLock sl(plugInLock); 
+  // Is this really needed? I think, it's called only from processBlock which supposedly already 
+  // holds the lock. Figure this out and try to get rid of it.
+
+  // We ingore midi clock messages on the highest level (i.e. here) because they are spammy:
   if( message.isMidiClock() )
     return;
-  if( wrappedModuleWithMidiIn != NULL )
+  // ToDo: Figure out if we can tell the host that we don't want to receive midi clock messages.
+  // The standalone version tends to get bombarded with them (at least, when the JX-305 is 
+  // connected via the midi interface. And/or maybe we can pre-filter the midi event buffer in
+  // processBlock. But maybe just ignoring the clock events is more efficient than such a 
+  // filtering pass.
+
+  // Pass the midi message on to the underlying AudioModule:
+  if( wrappedModuleWithMidiIn != nullptr )
     wrappedModuleWithMidiIn->handleMidiMessage(message);
 }
 
