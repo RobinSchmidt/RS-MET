@@ -342,7 +342,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 
 
   /*
-  // OLD:
+  // OLD - may be deleted when the new code has been tested enough:
   // Request time-info from host and update the bpm-values for the modulators accordingly, if they
   // are in sync mode (maybe this should be moved up into the baseclass AudioModule):
   int timeToNextTriggerInSamples = -1;
@@ -373,7 +373,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
         timeToNextTriggerInSamples = -1; // indicates that we don't need to trigger in this block
     }
   }
-  // ...soo - this whole time-info retrieval code is very quenstionable and should probably be 
+  // ...soo - this whole time-info retrieval code is very questionable and should probably be 
   // rewritten entirely. Maybe declare a local variable double bpm = 120; and assign it from the
   // info, if available. Then use that inside the two conditionals. In particular, don't access
   // info.bpm inside the 2nd inner conditional block. Maybe enter 2nd block only, if data was 
@@ -393,14 +393,14 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
     double timeInSeconds = 0.0;  // Used for periodic retriggering of LFOs and similar stuff.
 
     // Now try to retrieve the actual position info from host:
-    //bool positionInfoRetrieved = false;
     juce::AudioPlayHead* playHead = getPlayHead();
-    if(playHead != nullptr)
+    if(playHead != nullptr)                              // Host may not provide such a thing.
     {
-      AudioPlayHead::CurrentPositionInfo positionInfo;
-      if(playHead->getCurrentPosition(positionInfo))
+      AudioPlayHead::CurrentPositionInfo positionInfo;   // Will initially contain garbage!
+      if(playHead->getCurrentPosition(positionInfo)) 
       {
-        //positionInfoRetrieved = true;  // This seems to be not used anywhere - maybe get rid
+        // Now, positionInfo should have been properly filled out by the host so we can read some
+        // values from it:
         bpm = positionInfo.bpm;
         timeInSeconds = positionInfo.timeInSeconds;
       }
@@ -418,7 +418,6 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
       // variable here later (which also needs to be initialized to a fallback value and possibly 
       // re-assigned from positionInfo, if available)
 
-
       double timeToNextTriggerInBeats = wrappedAudioModule->getTriggerInterval()
         - fmod(timeInBeats, wrappedAudioModule->getTriggerInterval());
 
@@ -430,7 +429,8 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
     }
     // ToDo: check, if ToolChainAudioModule handles these retriggering calls correctly and passes 
     // the triggers on to its sub-modules. Well - maybe it doesn't even need to. Not sure. The 
-    // modules might obtain their relevant triggers from midi notes. May depend on the module.
+    // modules might obtain their relevant triggers from midi notes. But that may depend on the 
+    // particular module.
   }
   // Maybe wrap into a function updatePositionInfo(). Maybe it should return the 
   // timeToNextTriggerInSamples
