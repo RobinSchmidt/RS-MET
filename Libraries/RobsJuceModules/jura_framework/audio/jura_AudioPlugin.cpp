@@ -344,7 +344,8 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 
 
 
-
+  /*
+  // OLD:
   // Request time-info from host and update the bpm-values for the modulators accordingly, if they
   // are in sync mode (maybe this should be moved up into the baseclass AudioModule):
   int timeToNextTriggerInSamples = -1;
@@ -380,6 +381,59 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
   // info, if available. Then use that inside the two conditionals. In particular, don't access
   // info.bpm inside the 2nd inner conditional block. Maybe enter 2nd block only, if data was 
   // retrieved
+  */
+
+  // NEW - needs tests:
+  int timeToNextTriggerInSamples = -1;
+  if(wrappedAudioModule->wantsTempoSyncInfo)
+  {
+    // Initialize the relevant position info variables which we are interested in to their 
+    // fallback values:
+    double bpm = 120.0;
+    double timeInSeconds = 0.0;
+
+    // Try to retrieve actual position info from host:
+    bool positionInfoRetrieved = false;
+    juce::AudioPlayHead* playHead = getPlayHead();
+    if(playHead != nullptr)
+    {
+      AudioPlayHead::CurrentPositionInfo positionInfo;
+      if(playHead->getCurrentPosition(positionInfo))
+      {
+        positionInfoRetrieved = true;
+        bpm = positionInfo.bpm;
+        timeInSeconds = positionInfo.timeInSeconds;
+      }
+    }
+
+    // Pass tempo info (either fallback or retrieved value) to wrapped AudioModule:
+    wrappedAudioModule->setBeatsPerMinute(bpm);
+
+    // Do the periodic triggering, if desired. This is for syncing internal LFOs and similar stuff 
+    // to the host (if I remember correctly - ToDo: check this and document it properly!):
+    if( wrappedAudioModule->getTriggerInterval() != 0.0 )
+    {
+      double timeInBeats = RAPT::rsSecondsToBeats(timeInSeconds, bpm);
+      // Kludge! Will probably not work when the tempo changes over time. Maybe use a ppqPosition 
+      // variable here later (which also needs to be initialized to a fallback value and possibly 
+      // re-assigned from positionInfo, if available)
+
+
+      double timeToNextTriggerInBeats = wrappedAudioModule->getTriggerInterval()
+        - fmod(timeInBeats, wrappedAudioModule->getTriggerInterval());
+
+      timeToNextTriggerInSamples =
+        roundToInt(getSampleRate() * RAPT::rsBeatsToSeconds(timeToNextTriggerInBeats, bpm));
+
+      if( timeToNextTriggerInSamples >= buffer.getNumSamples() )
+        timeToNextTriggerInSamples = -1; // indicates that we don't need to trigger in this block    
+    }
+    // ToDo: check, if ToolChainAudioModule handles these retriggering calls correctly and passes 
+    // the triggers on to its sub-modules.
+
+    int dummy = 0;
+  }
+
 
 
 
