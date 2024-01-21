@@ -958,16 +958,15 @@ bool engineersFilterUnitTest()
   using AM   = RAPT::rsPrototypeDesigner<Real>::approximationMethods;
 
 
-  // We test the access violation bug that affects FrequencyShifter. Apparently, in certain 
-  // situations, EngineersFilter may write into memory beyond where it is allowed to...
-  int order = 24;
-
+  // We test the access violation bug that formerly affected FrequencyShifter. In certain 
+  // situations, EngineersFilter wrote into memory beyond where it is allowed to:
+  int order = 24;  // 24 is the highest possible value that still works
 
   // Create two filter objects. That will also allocate some heap memory. The behavior we want to
   // trigger is that some function calls on ef1 will mess up the heap-allocated memory of the ef2
   // object:
   EF ef1, ef2;
-  // ...Hmm...or well, I think, it doesn't necessarily directly corrupt the heap memory of ef2 but
+  // Hmm...or well, I think, it doesn't necessarily directly corrupt the heap memory of ef2 but
   // rather the a1-member of ef2 which *points* to heap memory but lives itself on the stack.
 
   // Retrieve the address of a1 in ef2. This seems to be some thing that gets messed up - under 
@@ -975,41 +974,20 @@ bool engineersFilterUnitTest()
   Real* addressPre = ef2.getAddressA1();
 
   // Call the problematic setup method of ef1. The hope is that if it does write beyond its owned 
-  // memory, we may see this in the buffer. ...TBC...
+  // memory, we may see this in the buffer. These calls formerly messeed with the a1 member in ef2.
   ef1.setPrototypeOrder(order);
   ef1.setApproximationMethod(AM::ELLIPTIC);
   ef1.setApproximationMethod(AM::BUTTERWORTH);
-  // These calls messes with the a1 member in ef2 - but only if we have no call to 
-  // ef2.getAddressA1(); after it ...super strange! ...update: Hmmm...after having inserted some 
-  // more calls and shuffled them around, it now actually does corrupt the a1 address also when we 
-  // retrieve it again after the calls
 
+  // Check that the a1 member in ef2 is still at the same value:
   Real* addressPost = ef2.getAddressA1();
   ok &= addressPre == addressPost;
   rsAssert(ok);
-  // OK - this triggers. Actually, all 3 calls on ef1 mess up the a1 variable in ef2. It's 
+  // [OLD:] OK - this triggers. Actually, all 3 calls on ef1 mess up the a1 variable in ef2. It's 
   // different after each call.
 
   return ok;
 
   // Notes:
-  // -This is super strange: When we just have the code
-  //    addressPre = ef2.getAddressA1();
-  //    ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::ELLIPTIC);
-  //    ef1.setPrototypeOrder(24);
-  //  and then inspect the address of a1 in ef2 in the debugger, then it will indeed be messed up
-  //  after the call to ef1.setPrototypeOrder(24);. But when we put some code after it to 
-  //  programmatically check that, then the call to ef1.setPrototypeOrder(24); seem to leave the
-  //  address of a1 in ef2 alone. Looks like just calling ef2.getAddressA1(); after 
-  //  ef1.setPrototypeOrder(24); lets the bug disappear. ...although, we actually to get an error
-  //  corruption at program end in this case. It says: "Unhandled exception at 0x00007FF679FFCC7C 
-  //  in TestsRosicAndRapt.exe: Stack cookie instrumentation code detected a stack-based buffer 
-  //  overrun."
-
-  // ToDo:
-  // -Try using a higher rsPrototypeDesigner::maxBiquads. ...DONE: Aha! This does indeed help! Now
-  //  we are getting somewhere! Looks like increasing it by 1 from 10 to 11 is already enough. 
-  //  That's strange because 24/2 = 12, so I would expect 12 to be the minimum at which is works 
-  //  for a 24th order design. 
-  // -Insert assertion into rsPrototypeDesigner that L <= maxBiquads always.
+  // -OK - it seems to work now. The bug was fixed.
 }
