@@ -467,20 +467,28 @@ protected:
   // Maybe rename L to numBiquads and r to numOnePoles/numSinglePoles/numFirstOrderSections/
   // numBilins/numBilinears
 
-  static const int maxBiquads = 10;               // maximum number of biquad sections
-  //static const int maxBiquads = 11;               // for test
+  //static const int maxBiquads = 10;               // maximum number of biquad sections
+  //static const int maxBiquads = 11;               // maximum number of biquad sections
+  static const int maxBiquads = 12;               // maximum number of biquad sections
   static const int maxOrder   = 2 * maxBiquads;   // maximum filter order
   static const int maxCoeffs  = 2 * maxOrder + 1; // maximum number of polynomial coeffs, * 2 
                                                   // because we need mag-squared polynomials
                                                   // todo: maybe use member for temporary coeff arrays
                                                   // -> functions will need less stack memory
+  // The maxBiquads value was formerly 10 (until 2024/01/21) but then I discovered that this is not 
+  // enough and in certain cases led to writing into memory locations beyond the allowed ones. 
+  // Increasing it to 11 seems to fix everything. I have now also added assertions that ensure that 
+  // sanityCheckOrderVariables always returns true after some setting has changed that affects the
+  // L,r,numFinitePoles/Zeros members. To be honest, I actually think that it should be 12 rather 
+  // than 11 for 24th order filters (which we do use in the FrequencyShifter). ToDo: figure out why
+  // 11 is enough. ..Well - turns out that we actually do need 12 to get rid of all the assertions.
 
   // arrays for nonredundant poles and zeros:
   Complex z[maxBiquads];   // zeros
   Complex p[maxBiquads];   // poles
   T k = 1;                 // overall gain factor - not yet used
-  // ToDo: document why the array sizes are not maxBiquads/2 or (maxBiquads+1)/2. Maybe it's for
-  // some temp memory that is used during the calculations?
+  // ToDo: document why the array sizes are not 2*maxBiquads. Maybe it's because we only store the
+  // non-redundant poles and zeros and not their complex conjugates?
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation 
