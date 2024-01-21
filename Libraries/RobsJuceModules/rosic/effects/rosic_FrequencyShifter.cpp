@@ -106,7 +106,9 @@ FrequencyShifter::FrequencyShifter()
 
   // ToDo:
   // -Figure out and dix the bug in rsEngineersFilterMono that we run into here. When that's done,
-  //  clean up the code here, i.e. remove the stuff that we have inserted for debugging
+  //  clean up the code here, i.e. remove the stuff that we have inserted for debugging.
+  //  There is now a function engineersFilterUnitTest() in the TestsRosicAndRapt project which
+  //  successfully triggers this behavior in a simpler context.
   // -Define constants also for the other halfband filter design parameters to avoid using 
   //  magic numbers in the setters.
 }

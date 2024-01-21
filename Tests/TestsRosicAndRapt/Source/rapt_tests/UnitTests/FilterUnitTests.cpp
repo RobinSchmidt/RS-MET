@@ -955,10 +955,11 @@ bool engineersFilterUnitTest()
 
   using Real = double;
   using EF   = RAPT::rsEngineersFilter<Real, Real>;
+  using AM   = RAPT::rsPrototypeDesigner<Real>::approximationMethods;
 
 
   // We test the access violation bug that affects FrequencyShifter. Apparently, in certain 
-  // sitautions, EngineersFilter may write into memory beyond where it is allowed to...
+  // situations, EngineersFilter may write into memory beyond where it is allowed to...
 
   // Create two filter objects. That will also allocate some heap memory. The behavior we want to
   // trigger is that some function calls on ef1 will mess up the heap-allocated memory of the ef2
@@ -974,26 +975,15 @@ bool engineersFilterUnitTest()
   // Call the problematic setup method of ef1. The hope is that if it does write beyond its owned 
   // memory, we may see this in the buffer. ...TBC...
   ef1.setPrototypeOrder(24);
-  ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::ELLIPTIC);
-  ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::BUTTERWORTH);
+  ef1.setApproximationMethod(AM::ELLIPTIC);
+  ef1.setApproximationMethod(AM::BUTTERWORTH);
   // These calls messes with the a1 member in ef2 - but only if we have no call to 
-  // ef2.getAddressA1(); after it ...super strange!
-  // Hmmm...after having inserted some more calles and shuffled them around, it now actually does
-  // corrupt the a1 address also when we retrieve it again after the calles
-
-
-  //ef2.getAddressA1();
-  // [OLD] Dummy call for test - this changes the behavior! When uncommenting this line, it 
-  // actually appears as if the a1 member of ef2 remains intact. But: we get some error message at
-  // the program end instead! 
-
+  // ef2.getAddressA1(); after it ...super strange! ...update: Hmmm...after having inserted some 
+  // more calls and shuffled them around, it now actually does corrupt the a1 address also when we 
+  // retrieve it again after the calls
 
   Real* addressPost = ef2.getAddressA1();
   ok &= addressPre == addressPost;
-
-
-
-
 
   rsAssert(ok);
   return ok;
