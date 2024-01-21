@@ -1007,6 +1007,9 @@ bool engineersFilterUnitTest()
   //  overrun."
 
   // ToDo:
-  // -Try using a higher rsPrototypeDesigner::maxBiquads. Insert assertion into rsPrototypeDesigner
-  //  that L <= maxBiquads always.
+  // -Try using a higher rsPrototypeDesigner::maxBiquads. ...DONE: Aha! This does indeed help! Now
+  //  we are getting somewhere! Looks like increasing it by 1 from 10 to 11 is already enough. 
+  //  That's strange because 24/2 = 12, so I would expect 12 to be the minimum at which is works 
+  //  for a 24th order design. 
+  // -Insert assertion into rsPrototypeDesigner that L <= maxBiquads always.
 }

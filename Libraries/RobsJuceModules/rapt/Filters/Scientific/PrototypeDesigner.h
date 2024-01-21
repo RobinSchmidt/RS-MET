@@ -450,7 +450,10 @@ protected:
   int numFinitePoles;      // number of poles (excluding those at infinity)
   int numFiniteZeros;      // number of zeros (excluding those at infinity). 
 
+
   static const int maxBiquads = 10;               // maximum number of biquad sections
+  //static const int maxBiquads = 11;               // for test
+
   static const int maxOrder   = 2 * maxBiquads;   // maximum filter order
   static const int maxCoeffs  = 2 * maxOrder + 1; // maximum number of polynomial coeffs, * 2 
                                                   // because we need mag-squared polynomials
