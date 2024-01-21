@@ -383,6 +383,17 @@ public:
   uniformly. */
   bool needsSpecialHighShelvTransform();
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Introspection */
+
+  /** Checks, if the order variables (numBiquads, numPoles, numZeros) are within their sane 
+  range. Used mainly for assertions. */
+  bool sanityCheckOrderVariables();
+
+  // ToDo: make similar functions for sanityCheckRippleVariables etc.
+
+
   //===============================================================================================
 
 protected:
@@ -443,17 +454,21 @@ protected:
                            // shelvers (elliptic and chebychev)
   T Rs;                    // ripple outside the boosted/cutted band as fraction of dB-peak-gain 
                            // for shelvers (elliptic and inverse chebychev)
+  // Maybe rename Ap to passRippleDb, As to stopRippleDb, A to shelfGainDb, A0 to refGainDb, Rp to
+  // shelfInnerRipplePercent, Rs to shelfOuterRipplePercent. But these variables are used a lot
+  // in complex formulas, so maybe it's better to use shorter names which also aggree with the 
+  // math notation used in the papers, so maybe it's fine as it is. Not sure.
 
   // internal variables:
   int L;                   // number of second order sections (biquads)
   int r;                   // number of first order sections (either zero or one)
   int numFinitePoles;      // number of poles (excluding those at infinity)
   int numFiniteZeros;      // number of zeros (excluding those at infinity). 
-
+  // Maybe rename L to numBiquads and r to numOnePoles/numSinglePoles/numFirstOrderSections/
+  // numBilins/numBilinears
 
   static const int maxBiquads = 10;               // maximum number of biquad sections
   //static const int maxBiquads = 11;               // for test
-
   static const int maxOrder   = 2 * maxBiquads;   // maximum filter order
   static const int maxCoeffs  = 2 * maxOrder + 1; // maximum number of polynomial coeffs, * 2 
                                                   // because we need mag-squared polynomials
@@ -464,6 +479,8 @@ protected:
   Complex z[maxBiquads];   // zeros
   Complex p[maxBiquads];   // poles
   T k = 1;                 // overall gain factor - not yet used
+  // ToDo: document why the array sizes are not maxBiquads/2 or (maxBiquads+1)/2. Maybe it's for
+  // some temp memory that is used during the calculations?
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation 

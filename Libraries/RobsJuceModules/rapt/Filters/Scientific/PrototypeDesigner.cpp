@@ -105,6 +105,10 @@ void rsPrototypeDesigner<T>::setOrder(int newOrder)
     }
     stateIsDirty = true;
   }
+
+  rsAssert(sanityCheckOrderVariables());
+  // Call this function also in setApproximationMethod, setPrototypeMode, etc. - in any setter that
+  // potentially changes one of these variables.
 }
 
 template<class T>
@@ -1058,6 +1062,17 @@ bool rsPrototypeDesigner<T>::needsSpecialHighShelvTransform()
     ||   (approximationMethod == CHEBYCHEV)
     ||   (approximationMethod == INVERSE_CHEBYCHEV)
     ||   (approximationMethod == ELLIPTIC);
+}
+
+template<class T>
+bool rsPrototypeDesigner<T>::sanityCheckOrderVariables()
+{
+  return L <= maxBiquads && numFinitePoles <= maxBiquads/2 && numFiniteZeros <= maxBiquads/2;
+  // Maybe include a check for r, too. It should be zero when numFinitePoles is even and one when
+  // numFinitePoles is odd, I think. But in general, I think, it should also take the 
+  // numFiniteZeros into account. I think, this currently doesn't really make a difference for the 
+  // currently available designs but maybe someday we will also add stranger filter designs like 
+  // 4-pole/5-zero or 5-pole/4-zero or whatever. 
 }
 
 // pole/zero calculation:
