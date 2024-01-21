@@ -108,6 +108,9 @@ protected:
   static const int maxNumBiquads = 25;
   // 25 should be enough for all the purposes that it is currently used for. Actually, already for
   // for 20, we sometimes get into territory where it detoriates numerically in double precision.
+  // Actually, I think, 24 should be enough. That fits well with 
+  // rsPrototypeDesigner::maxBiquads = 12. Maybe we should actually use 
+  // 2*rsPrototypeDesigner::maxBiquads here instead of a magic number
 
   // make copy-constructor and assignment operator unavailable (move this idiom into a macro an 
   // use the macro everywhere, where an object is not trivially copyable):
