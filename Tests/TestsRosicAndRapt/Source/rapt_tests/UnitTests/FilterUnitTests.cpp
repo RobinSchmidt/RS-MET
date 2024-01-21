@@ -960,31 +960,42 @@ bool engineersFilterUnitTest()
   // We test the access violation bug that affects FrequencyShifter. Apparently, in certain 
   // sitautions, EngineersFilter may write into memory beyond where it is allowed to...
 
-  // Create two filter objects. That will also allocate some heap memory. The behavior we want to 
-  // trigger is that some function calls on ef1 will mess up the heap-allocated memory of the ef2 
+  // Create two filter objects. That will also allocate some heap memory. The behavior we want to
+  // trigger is that some function calls on ef1 will mess up the heap-allocated memory of the ef2
   // object:
   EF ef1, ef2;
-  // ...Hmm...or well, I think, it doesn't necessarly directly corrupt the heap memory of ef2 but 
+  // ...Hmm...or well, I think, it doesn't necessarily directly corrupt the heap memory of ef2 but
   // rather the a1-member of ef2 which *points* to heap memory but lives itself on the stack.
 
-  // Retrieve the address of a1 in ef2. This seems to be some thing that gest messed up - under 
+  // Retrieve the address of a1 in ef2. This seems to be some thing that gets messed up - under 
   // certain conditions:
   Real* addressPre = ef2.getAddressA1();
 
   // Call the problematic setup method of ef1. The hope is that if it does write beyond its owned 
   // memory, we may see this in the buffer. ...TBC...
+  ef1.setPrototypeOrder(24);
   ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::ELLIPTIC);
-  ef1.setPrototypeOrder(24);  
-  // This call messes with the a1 member in ef2 - but only if we have no call to 
+  ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::BUTTERWORTH);
+  // These calls messes with the a1 member in ef2 - but only if we have no call to 
   // ef2.getAddressA1(); after it ...super strange!
-
-  //ef2.getAddressA1();  
-  // Dummy call for test - this changes the behavior! When uncommenting this line, it actually 
-  // appears as if the a1 member of ef2 remains intact. But: we get some error message at the 
-  // program end instead!
+  // Hmmm...after having inserted some more calles and shuffled them around, it now actually does
+  // corrupt the a1 address also when we retrieve it again after the calles
 
 
+  //ef2.getAddressA1();
+  // [OLD] Dummy call for test - this changes the behavior! When uncommenting this line, it 
+  // actually appears as if the a1 member of ef2 remains intact. But: we get some error message at
+  // the program end instead! 
 
+
+  Real* addressPost = ef2.getAddressA1();
+  ok &= addressPre == addressPost;
+
+
+
+
+
+  rsAssert(ok);
   return ok;
 
   // Notes:
