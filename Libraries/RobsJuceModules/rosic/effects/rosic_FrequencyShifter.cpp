@@ -48,7 +48,7 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 
 FrequencyShifter::FrequencyShifter()
 {
-  //halfbandFilter2.initBiquadCoeffs();  // For debug - works fine.
+  // There is some debugging code inserted here. See comments below.
 
 
   setSampleRate(44100.0);
@@ -57,14 +57,13 @@ FrequencyShifter::FrequencyShifter()
   yOld           = 0.0;
 
 
-  //halfbandFilter2.initBiquadCoeffs();  // For debug - works fine.
-
-  static const int protoFilterOrder = 22;
+  // Design parameters for the elliptic halfband filters:
+  static const int protoFilterOrder = 24;
   // 24 was originally desired but causes access violations. 23 still causes access violations but
   // the address is different. With 22, we seem to be on the safe side.
+  // Increasing rsEngineersFilter::maxNumBiquads to e.g. 30 does *not* seem to have an effect on 
+  // how high we can go here. That makes it even more strange.
 
-  // ToDo: define constants also for the other halfband filter design parameters to avoid using 
-  // magic numbers in the setters.
 
 
   halfbandFilter1.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
@@ -72,21 +71,21 @@ FrequencyShifter::FrequencyShifter()
   halfbandFilter1.setFrequency(11025);
   halfbandFilter1.setRipple(0.1);
   halfbandFilter1.setStopbandRejection(95.0);
-  halfbandFilter1.setPrototypeOrder(protoFilterOrder);
+  halfbandFilter1.setPrototypeOrder(protoFilterOrder);  // This call sets us up for desaster later
+
 
 
   halfbandFilter2.initBiquadCoeffs();  // For debug - triggers the same access violation as below.
-  // When jumping into this call  rsBiquadCascade<TSig, TCoef>::initBiquadCoeffs(), the address of
-  // the a1 array is strange. When inspecting it in the debugger inside the function (by opening 
-  // the "this" pointer), it's not where it is supposed to be. When inspecting it here, it points 
-  // to a different address. It appears like setting up the other filter before, things get messed
-  // up.
-  // Aha! It seems like the call  halfbandFilter1.setPrototypeOrder(24);  immediately before the 
-  // call halfbandFilter2.initBiquadCoeffs();  messes up the address of a1 in halfbandFilter1.
-  // ToDo: try to use lower prototype orders (23,22,...). 24 is close to 
-  // rsBiquadCascade::maxNumStages. Apparently, we overwrite memory that isn't ours in 
-  // rsEngineersFilter when we try to create a filter that is close to the maximum order. Maybe
-  // try to increase the default maxNumStages in rsBiquadCascade
+  // It seems like the call  halfbandFilter1.setPrototypeOrder(24);  immediately before the 
+  // call halfbandFilter2.initBiquadCoeffs();  messes up the address of a1 in halfbandFilter1. When
+  // we then try to access a1 inside halfbandFilter2.initBiquadCoeffs(), we get the access 
+  // violation. Apparently, we overwrite memory that isn't ours in rsEngineersFilterMono when we 
+  // try to create a filter that is close to the maximum order. Trying to increase the default 
+  // maxNumStages in rsBiquadCascade by setting rsEngineersFilter::maxNumBiquads to something 
+  // higher (e.g. 32 instead of 25), doesn't actually seem to help in any way. On  the other hand,
+  // using  protoFilterOrder = 22;  here seems to fix it (or rather work around it). 23 will still 
+  // cause problems, but the messed address of a1 will be different.
+
 
 
   halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC); // Access violation!!!
@@ -104,6 +103,12 @@ FrequencyShifter::FrequencyShifter()
   cosOsc2.setStartPhase(0.5*PI);
 
   setupOscillators();
+
+  // ToDo:
+  // -Figure out and dix the bug in rsEngineersFilterMono that we run into here. When that's done,
+  //  clean up the code here, i.e. remove the stuff that we have inserted for debugging
+  // -Define constants also for the other halfband filter design parameters to avoid using 
+  //  magic numbers in the setters.
 }
 
 FrequencyShifter::~FrequencyShifter()

@@ -611,6 +611,25 @@ bool rotes::testFreqShifter()
 
   // ToDo:
   // -Try using std::vector instead of raw arrays in rsBiquadCascade
+  // -Add a test to the unit tests of rsEngineersFilterMono that creates two filters (e.g. filter1, 
+  //  filter2) in memory, one after another, and sets the first to an elliptic bandpass of 
+  //  protoOrder=24. Calling the function  filter1.setPrototypeOrder(24);  should 
+  //  mess up the address of a1 in the second. This should happen even with  
+  //  filter1.setPrototypeOrder(23);  but in this case, the address will be a different one (namely
+  //  zero). Or use just one filter and declare some other kinds of variables after it. Maybe just
+  //  a buffer of characters like:
+  //    static const int bufSize = 32;    // in bytes
+  //    rsEngineersFilterMono filter;
+  //    char[bufSize] buf;
+  //  then initialize the buffer to some recognizable values (maybe not to all zeros), then call
+  //    filter.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
+  //    filter.halfbandFilter1.setPrototypeOrder(protoFilterOrder);
+  //  and the inspect the buffer to make sure that it hasn't been messed with. Hmm...but maybe we 
+  //  should create the buffer on the heap rather than on the stack. Such a test may erroneously 
+  //  pass though - namely, when the heap memory used by the filter and the buffer happens to be
+  //  non-consecutive. We nave no influence on this unless we use our own allocators. Hmmm....but I
+  //  think, mostly the allocated memory will be consecutive. We could actually test this by 
+  //  inspecting the addresses. The test could then return "passed", "failed" or "unknown"
 
   return ok;
 }

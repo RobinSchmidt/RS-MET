@@ -105,6 +105,10 @@ protected:
   rsInfiniteImpulseResponseDesigner<TPar> designer;
   TPar sampleRate;
 
+  static const int maxNumBiquads = 25;
+  // 25 should be enough for all the purposes that it is currently used for. Actually, already for
+  // for 20, we sometimes get into territory where it detoriates numerically in double precision.
+
   // make copy-constructor and assignment operator unavailable (move this idiom into a macro an 
   // use the macro everywhere, where an object is not trivially copyable):
   rsEngineersFilter(const rsEngineersFilter&) = delete;

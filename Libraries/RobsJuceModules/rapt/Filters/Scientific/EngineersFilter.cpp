@@ -1,7 +1,8 @@
 // construction/destruction:
 
 template<class TSig, class TPar>
-rsEngineersFilter<TSig, TPar>::rsEngineersFilter() : rsBiquadCascade<TSig, TPar>(25)
+rsEngineersFilter<TSig, TPar>::rsEngineersFilter() 
+  : rsBiquadCascade<TSig, TPar>(rsEngineersFilter<TSig, TPar>::maxNumBiquads)
 {
   this->numStages  = 1;
   sampleRate = 44100.0;
