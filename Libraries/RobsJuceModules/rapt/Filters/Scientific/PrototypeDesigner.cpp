@@ -107,8 +107,6 @@ void rsPrototypeDesigner<T>::setOrder(int newOrder)
   }
 
   rsAssert(sanityCheckOrderVariables());
-  // Call this function also in setApproximationMethod, setPrototypeMode, etc. - in any setter that
-  // potentially changes one of these variables.
 }
 
 template<class T>
@@ -122,6 +120,8 @@ void rsPrototypeDesigner<T>::setApproximationMethod(int newApproximationMethod)
     approximationMethod = newApproximationMethod;
     stateIsDirty        = true;
   }
+
+  rsAssert(sanityCheckOrderVariables());
 }
 
 template<class T>
@@ -134,6 +134,8 @@ void rsPrototypeDesigner<T>::setPrototypeMode(int newPrototypeMode)
   }
   else
     RS_DEBUG_BREAK; // this is not one of the enumerated modes
+
+  rsAssert(sanityCheckOrderVariables());
 }
 
 template<class T>
@@ -385,7 +387,9 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
   // -Figure out if this can be optimized. IIRC every odd coeff is zero and every even coeff is 
   //  simply related to the original coeffs? If true, then implement it as a function 
   //  Poly::multiplyByFlippedSelf(b, b2, N) or something like that
-  // -It seems to get called only for Bessel shelves - why not for other types?
+  // -It seems to get called only for Bessel shelves - why not for other types? For 
+  //  Butter/Cheby/ellip, it's plausible because for these, we use closed form formulas for poles
+  //  and zeros. But what about Papoulis/Halpern/Gauss?
 
   /*
   // old - probably obsolete:
