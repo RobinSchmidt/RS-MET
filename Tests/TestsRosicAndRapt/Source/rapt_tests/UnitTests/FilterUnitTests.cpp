@@ -970,10 +970,17 @@ bool engineersFilterUnitTest()
   //for(int i = 0; i < bufSize; i++)
   //  buffer[i] = bufVal;
 
+  Real* addressPre = ef2.getAddressA1();
+
   // Set up the EnginnersFillter. The hope is that if it does write beyond its owned memory, we may
   // see this in the buffer. ...TBC...
   ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::ELLIPTIC);
   ef1.setPrototypeOrder(24);
+
+  //Real* addressPost = ef2.getAddressA1();
+
+  //ok &= addressPre == addressPost;
+
 
 
 
