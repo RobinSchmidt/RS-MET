@@ -2,6 +2,33 @@
 #define jura_ToolChain_h
   
 //=================================================================================================
+// Maybe move somewhere else:
+
+/** A dummy module that does nothing. ToolChain will use this type of module as placeholder for
+empty slots because we need some module to be there for technical reasons. */
+
+class JUCE_API DummyModule : public jura::AudioModule
+{
+public:
+  DummyModule(CriticalSection *lockToUse) : AudioModule(lockToUse) 
+  {
+    setModuleTypeName("None");
+  }
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
+  {
+    //// for debug:
+    //std::vector<double> left(numSamples), right(numSamples);
+    //for(int n = 0; n < numSamples; n++)
+    //{
+    //  left[n]  = inOutBuffer[0][n];
+    //  right[n] = inOutBuffer[1][n];
+    //}
+    //int dummy = 0;
+  }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyModule)
+};
+
+//=================================================================================================
 
 class JUCE_API ToolChain; // forward declaration
 
@@ -11,7 +38,6 @@ kinds of state changes.
 \todo: maybe it's sufficient to pass the index in the callbacks - we may not really need to pass 
 the pointers along as well
 */
-
 
 class JUCE_API ToolChainObserver
 {
@@ -88,11 +114,18 @@ public:
   todo: maybe it should return true, if the module was actually replaced, false otherwise */
   void replaceModule(int index, const juce::String& type);
 
+  /** Ensures that at the end of the module chain, there is exactly one empty slot that can be used
+  to insert another module into the chain. If the last slot is not empty, an empty slot will be 
+  added, if there are more than one empty slots at the end, the superfluous ones will be 
+  deleted. */
+  void ensureOneEmptySlotAtEnd();
+
   // todo:
   //void moveModule(int oldIndex, int newIndex);
 
 
   //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   /** Returns true if the module at the given index matches the type specified by the type 
   string. */
@@ -102,14 +135,12 @@ public:
   return a nullptr. */
   AudioModule* getModuleAt(int index);
 
+  /** Returns the number of modules that is currently plugged in into the slots. */
+  int getNumModules() const { return (int) modules.size(); }
 
-  /** Ensures that at the end of the module chain, there is exactly one empty slot that can be used
-  to insert another module into the chain. If the last slot is not empty, an empty slot will be 
-  added, if there are more than one empty slots at the end, the superfluous ones will be 
-  deleted. */
-  void ensureOneEmptySlotAtEnd();
 
-  // observer stuff:
+  //-----------------------------------------------------------------------------------------------
+  // \name Observer stuff:
 
    /** Adds an observer that will get notified about changes to the state of the chain. */
   void addToolChainObserver(ToolChainObserver *observerToAdd);
@@ -128,7 +159,9 @@ public:
     int index);
 
 
+  //-----------------------------------------------------------------------------------------------
   // overriden from AudioModule baseclass:
+
   AudioModuleEditor *createEditor(int type) override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
@@ -341,5 +374,7 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChainEditor)
 };
+
+
 
 #endif 

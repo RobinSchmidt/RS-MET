@@ -231,16 +231,34 @@ void UnitTestToolChain::runTestQuadrifex()
   // Try to cast it into a jura::AudioPlugIn. This class is the glue between juce::AudioProcessor
   // and jura::AudioModule:
   jura::AudioPlugin* plug  = dynamic_cast<jura::AudioPlugin*>(proc);
-  jassert(plug != nullptr);
+  expect(plug != nullptr);
 
   // Extract the wrapped jura::AudioModule that is wrapped into the jura::AudioPlugin and cast it
   // into a pointer to jura::ToolChain:
   jura::AudioModule* mod   = plug->wrappedAudioModule;  // Maybe use a getter
   jura::ToolChain*   tlChn = dynamic_cast<jura::ToolChain*>(mod);
-  jassert(tlChn != nullptr);
+  expect(tlChn != nullptr);
+
+  // Check that initially, there is one module of type "None" in the slot with index 0:
+  expect(tlChn->getNumModules() == 1);
+  mod = tlChn->getModuleAt(0);
+  expect(mod != nullptr);
+  jura::DummyModule* dum = dynamic_cast<jura::DummyModule*>(mod);
+  expect(dum != nullptr);
+
+  // Let the ToolChain module insert a Quadrifex into Slot 2:
+  bool ok = tlChn->addModule("Quadrifex");
+  expect(ok);
+  mod = tlChn->getModuleAt(1);
+  expect(mod != nullptr);
+  jura::QuadrifexAudioModule* qfx = dynamic_cast<jura::QuadrifexAudioModule*>(mod);
+  expect(qfx != nullptr);
+  // No - this adds the quadrifex into slot with index 1. in index 0, the "None" module remains
 
 
 
+
+  //jura::QuadrifexAudioModule* qfx = tlChn->getModuleAt(0);
 
 
 

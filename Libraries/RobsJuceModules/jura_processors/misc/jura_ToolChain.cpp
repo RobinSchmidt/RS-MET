@@ -1,23 +1,3 @@
-class JUCE_API DummyModule : public jura::AudioModule
-{
-public:
-  DummyModule(CriticalSection *lockToUse) : AudioModule(lockToUse) 
-  {
-    setModuleTypeName("None");
-  }
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
-  {
-    //// for debug:
-    //std::vector<double> left(numSamples), right(numSamples);
-    //for(int n = 0; n < numSamples; n++)
-    //{
-    //  left[n]  = inOutBuffer[0][n];
-    //  right[n] = inOutBuffer[1][n];
-    //}
-    //int dummy = 0;
-  }
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyModule)
-};
 
 //=================================================================================================
 
@@ -149,20 +129,6 @@ void ToolChain::replaceModule(int index, const juce::String& type)
   }
 }
 
-bool ToolChain::isModuleOfType(int index, const juce::String& type)
-{
-  ScopedLock scopedLock(*lock);
-  jassert(index >= 0 && index < size(modules)); // index out of range
-  return type == modules[index]->getModuleTypeName();
-}
-
-AudioModule* ToolChain::getModuleAt(int index)
-{
-  if(index < 0 || index >= size(modules))  // no assert, this is supposed to happen
-    return nullptr;
-  return modules[index];
-}
-
 void ToolChain::ensureOneEmptySlotAtEnd()
 {
   ScopedLock scopedLock(*lock);
@@ -178,6 +144,22 @@ void ToolChain::ensureOneEmptySlotAtEnd()
     deleteLastModule();
   }
 }
+
+
+bool ToolChain::isModuleOfType(int index, const juce::String& type)
+{
+  ScopedLock scopedLock(*lock);
+  jassert(index >= 0 && index < size(modules)); // index out of range
+  return type == modules[index]->getModuleTypeName();
+}
+
+AudioModule* ToolChain::getModuleAt(int index)
+{
+  if(index < 0 || index >= size(modules))  // no assert, this is supposed to happen
+    return nullptr;
+  return modules[index];
+}
+
 
 void ToolChain::addToolChainObserver(ToolChainObserver *observerToAdd)
 {
