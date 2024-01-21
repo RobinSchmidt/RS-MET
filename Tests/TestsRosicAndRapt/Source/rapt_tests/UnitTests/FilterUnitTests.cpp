@@ -939,13 +939,44 @@ bool stateVariableFilterUnitTest1(Real tol)
   return ok;
 }
 
-
 bool stateVariableFilterUnitTest()
 {
   bool ok = true;
 
   ok &= stateVariableFilterUnitTest1<float>( 1.e-5);
   ok &= stateVariableFilterUnitTest1<double>(1.e-13);
+
+  return ok;
+}
+
+bool engineersFilterUnitTest()
+{
+  bool ok = true;
+
+  using Real = double;
+  using EF   = RAPT::rsEngineersFilter<Real, Real>;
+
+
+  // We test the access violation bug that affects FrequencyShifter. Apparently, in certain 
+  // sitautions, EngineersFilter may write into memory beyond where it is allowed to...
+
+  // Create the filter object. That will also allocate some heap memory.
+  EF ef1, ef2;
+
+  //// Create a buffer on the heap and init it with some sort of recognizable value that is not zero:
+  //static const int bufSize = 32; // in bytes
+  //std::vector<char> buffer(bufSize);
+  //char bufVal = 'X';
+  //for(int i = 0; i < bufSize; i++)
+  //  buffer[i] = bufVal;
+
+  // Set up the EnginnersFillter. The hope is that if it does write beyond its owned memory, we may
+  // see this in the buffer. ...TBC...
+  ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::ELLIPTIC);
+  ef1.setPrototypeOrder(24);
+
+
+
 
   return ok;
 }

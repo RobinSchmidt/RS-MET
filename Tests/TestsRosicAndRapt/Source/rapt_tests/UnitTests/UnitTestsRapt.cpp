@@ -76,11 +76,12 @@ bool runUnitTestsRapt()
 
   // Filters:
   //ok &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
-  ok &= runUnitTest(&filterSpecUnitTest,         "rsFilterSpecification (BA/ZPK)");
-  ok &= runUnitTest(&movingMaximumUnitTest,      "moving maximum filter");
-  ok &= runUnitTest(&movingQuantileUnitTest,     "moving quantile filter"); // under construction
-  ok &= runUnitTest(&ladderUnitTest,             "rsLadder"); 
-  ok &= runUnitTest(&stateVariableFilterUnitTest,"rsStateVariableFilter"); 
+  ok &= runUnitTest(&filterSpecUnitTest,          "rsFilterSpecification (BA/ZPK)");
+  ok &= runUnitTest(&movingMaximumUnitTest,       "moving maximum filter");
+  ok &= runUnitTest(&movingQuantileUnitTest,      "moving quantile filter"); // under construction
+  ok &= runUnitTest(&ladderUnitTest,              "rsLadder"); 
+  ok &= runUnitTest(&stateVariableFilterUnitTest, "rsStateVariableFilter");
+  ok &= runUnitTest(&engineersFilterUnitTest,     "rsEngineersFilter");
 
   // Visualization:
   ok &= runUnitTest(&imagePainterUnitTest,   "rsImagePainter");
