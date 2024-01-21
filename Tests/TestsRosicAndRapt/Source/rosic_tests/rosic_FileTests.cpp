@@ -96,6 +96,8 @@ bool testFileWave()
   // -test actually writing and reading files in various formats (different bit-depths, 
   //  sample-rates, numbers of channels, etc.)
   // -maybe use constants min16 = -32768, max16 = +32767, etc.
+  // -Test the roundtrip in parentheses in: int -> (float -> int -> float) to check if the final
+  //  float matches the first.
 }
 
 }

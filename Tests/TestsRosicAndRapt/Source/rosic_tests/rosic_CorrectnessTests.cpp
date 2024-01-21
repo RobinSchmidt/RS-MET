@@ -28,6 +28,7 @@ bool rotes::testRosicEffects()
 {
   bool ok = true;
   ok &= testFastGeneralizedHadamardTransform();
+  ok &= testFreqShifter();
   ok &= testMultiComp();
   return ok;
 }

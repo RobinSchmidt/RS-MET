@@ -580,6 +580,22 @@ bool testInOutEqual(Effect& eff, int numSamples, double tolerance)
   return result;
 }
 
+bool rotes::testFreqShifter()
+{
+  bool ok = true;
+
+
+  // Try to create a rosic::FrequencyShifter object. We have an access violation in its
+  // constructor, specifically in the line 
+  //   halfbandFilter2.setApproximationMethod(...)
+  rosic::FrequencyShifter freqShifter;
+  // It happens in  rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState) in the line 
+  // rsBiquadCascade<TSig, TPar>::initBiquadCoeffs(); and I think TSig=rsfloat64x2, TPar=double.
+
+
+  return ok;
+}
+
 bool rotes::testMultiComp()
 {  
   // We check the multiband band compressor with neutral compressor settings for each band and 

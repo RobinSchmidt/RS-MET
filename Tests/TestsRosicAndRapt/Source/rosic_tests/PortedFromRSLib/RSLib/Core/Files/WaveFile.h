@@ -179,7 +179,9 @@ namespace RSLib
     /** \name Internal Functions */
 
     /** Converts a buffer of 16 bit integer samples in the range [-32768, 32767] to floating point 
-    numbers in the range [-1..+1[. */
+    numbers in the nominal range -1..+1. The actual range produced by our conversion formula is
+    -1.00004578...+0.999984741. The formula provides a lossless rsInt16 -> float -> rsInt16 
+    roundtrip. See the testFileWave() unit test. */
     virtual void convert16BitToFloat(rsInt16 *inBuffer, float *outBuffer, int length);
 
     /** Returns true when we can read the given file format, false otherwise (assumes that we 

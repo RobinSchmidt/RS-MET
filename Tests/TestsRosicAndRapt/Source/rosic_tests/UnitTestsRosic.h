@@ -28,6 +28,7 @@ bool testFileWave();
 // effects:
 bool testFastGeneralizedHadamardTransform();
 bool testFeedbackDelayNetwork();
+bool testFreqShifter();
 bool testMultiComp();
 void spectralFilter();
 void formantShifter();
