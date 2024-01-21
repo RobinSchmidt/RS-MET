@@ -256,25 +256,12 @@ void UnitTestToolChain::runTestQuadrifex()
 
   // Let the Quadrifex load FrequencyShifterStereoModule - this is where we have an access 
   // violation:
-  qfx->setEffectAlgorithm(0, rosic::Quadrifex::FREQUENCY_SHIFTER);
-  // YES! We successfully trigger it here!
+  using QFX = rosic::Quadrifex;
+  qfx->setEffectAlgorithm(0, QFX::FREQUENCY_SHIFTER);
+  // YES! We successfully trigger it here! Now we can figure out what is going wrong....
 
-
-
-
-  //jura::QuadrifexAudioModule* qfx = tlChn->getModuleAt(0);
-
-
-
-
-
-  //jura::QuadrifexAudioModule* qfx = nullptr;
-  //qfx = new jura::QuadrifexAudioModule();
-  //delete qfx;
 
 
   // Clean up memory:
   delete proc;
-
-  //int dummy = 0;
 }
