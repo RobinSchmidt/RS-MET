@@ -48,7 +48,7 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 
 FrequencyShifter::FrequencyShifter()
 {
-  halfbandFilter2.initBiquadCoeffs();  // For debug - works fine.
+  //halfbandFilter2.initBiquadCoeffs();  // For debug - works fine.
 
 
   setSampleRate(44100.0);
@@ -57,7 +57,14 @@ FrequencyShifter::FrequencyShifter()
   yOld           = 0.0;
 
 
-  halfbandFilter2.initBiquadCoeffs();  // For debug - works fine.
+  //halfbandFilter2.initBiquadCoeffs();  // For debug - works fine.
+
+  static const int protoFilterOrder = 22;
+  // 24 was originally desired but causes access violations. 23 still causes access violations but
+  // the address is different. With 22, we seem to be on the safe side.
+
+  // ToDo: define constants also for the other halfband filter design parameters to avoid using 
+  // magic numbers in the setters.
 
 
   halfbandFilter1.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
@@ -65,7 +72,7 @@ FrequencyShifter::FrequencyShifter()
   halfbandFilter1.setFrequency(11025);
   halfbandFilter1.setRipple(0.1);
   halfbandFilter1.setStopbandRejection(95.0);
-  halfbandFilter1.setPrototypeOrder(24);
+  halfbandFilter1.setPrototypeOrder(protoFilterOrder);
 
 
   halfbandFilter2.initBiquadCoeffs();  // For debug - triggers the same access violation as below.
@@ -76,6 +83,10 @@ FrequencyShifter::FrequencyShifter()
   // up.
   // Aha! It seems like the call  halfbandFilter1.setPrototypeOrder(24);  immediately before the 
   // call halfbandFilter2.initBiquadCoeffs();  messes up the address of a1 in halfbandFilter1.
+  // ToDo: try to use lower prototype orders (23,22,...). 24 is close to 
+  // rsBiquadCascade::maxNumStages. Apparently, we overwrite memory that isn't ours in 
+  // rsEngineersFilter when we try to create a filter that is close to the maximum order. Maybe
+  // try to increase the default maxNumStages in rsBiquadCascade
 
 
   halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC); // Access violation!!!
@@ -83,7 +94,7 @@ FrequencyShifter::FrequencyShifter()
   halfbandFilter2.setFrequency(11025);
   halfbandFilter2.setRipple(0.1);
   halfbandFilter2.setStopbandRejection(95.0);
-  halfbandFilter2.setPrototypeOrder(24);
+  halfbandFilter2.setPrototypeOrder(protoFilterOrder);
   // will result in a stopband frequency <= 11040
 
 
