@@ -960,8 +960,12 @@ bool engineersFilterUnitTest()
   // We test the access violation bug that affects FrequencyShifter. Apparently, in certain 
   // sitautions, EngineersFilter may write into memory beyond where it is allowed to...
 
-  // Create the filter object. That will also allocate some heap memory.
+  // Create two filter objects. That will also allocate some heap memory. The behavior we want to 
+  // trigger is that some function calls on ef1 will mess up the heap-allocated memory of the ef2 
+  // object:
   EF ef1, ef2;
+  // ...hmm...or well, I think, it doesn't necessarly directly corrupt the heap memory of ef2 but 
+  // rather the a1-member of ef2 which *points* to heap memory but lives itself on the stack.
 
   //// Create a buffer on the heap and init it with some sort of recognizable value that is not zero:
   //static const int bufSize = 32; // in bytes
@@ -975,15 +979,33 @@ bool engineersFilterUnitTest()
   // Set up the EnginnersFillter. The hope is that if it does write beyond its owned memory, we may
   // see this in the buffer. ...TBC...
   ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::ELLIPTIC);
-  ef1.setPrototypeOrder(24);
+
+  ef1.setPrototypeOrder(24);  
+  // This call messes with the a1 member in ef2 - but only if we have no call to 
+  // ef2.getAddressA1(); after it ...super strange!
 
   //Real* addressPost = ef2.getAddressA1();
-
   //ok &= addressPre == addressPost;
 
 
+  //ef2.getAddressA1();  // dummy call for test - this changes the behavior!
 
+  //ok &= addressPre == ef2.getAddressA1();
 
 
   return ok;
+
+  // Notes:
+  // -This is super strange: When we just have the code
+  //    addressPre = ef2.getAddressA1();
+  //    ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::ELLIPTIC);
+  //    ef1.setPrototypeOrder(24);
+  //  and then inspect the address of a1 in ef2 in the debugger, then it will indeed be messed up
+  //  after the call to ef1.setPrototypeOrder(24);. But when we put some code after it to 
+  //  programmatically check that, then the call to ef1.setPrototypeOrder(24); seem to leave the
+  //  address of a1 in ef2 alone. Looks like just calling ef2.getAddressA1(); after 
+  //  ef1.setPrototypeOrder(24); lets the bug disappear. ...although, we actually to get an error
+  //  corruption at program end in this case. It says: "Unhandled exception at 0x00007FF679FFCC7C 
+  //  in TestsRosicAndRapt.exe: Stack cookie instrumentation code detected a stack-based buffer 
+  //  overrun."
 }
