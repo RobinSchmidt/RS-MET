@@ -239,21 +239,25 @@ void UnitTestToolChain::runTestQuadrifex()
   jura::ToolChain*   tlChn = dynamic_cast<jura::ToolChain*>(mod);
   expect(tlChn != nullptr);
 
-  // Check that initially, there is one module of type "None" in the slot with index 0:
+  // Check that initially, there is one module of type "None" in the slot 1 with index 0:
   expect(tlChn->getNumModules() == 1);
   mod = tlChn->getModuleAt(0);
   expect(mod != nullptr);
   jura::DummyModule* dum = dynamic_cast<jura::DummyModule*>(mod);
   expect(dum != nullptr);
 
-  // Let the ToolChain module insert a Quadrifex into Slot 2:
+  // Let the ToolChain module insert a Quadrifex into slot 2 with index 1:
   bool ok = tlChn->addModule("Quadrifex");
   expect(ok);
   mod = tlChn->getModuleAt(1);
   expect(mod != nullptr);
   jura::QuadrifexAudioModule* qfx = dynamic_cast<jura::QuadrifexAudioModule*>(mod);
   expect(qfx != nullptr);
-  // No - this adds the quadrifex into slot with index 1. in index 0, the "None" module remains
+
+  // Let the Quadrifex load FrequencyShifterStereoModule - this is where we have an access 
+  // violation:
+  qfx->setEffectAlgorithm(0, rosic::Quadrifex::FREQUENCY_SHIFTER);
+  // YES! We successfully trigger it here!
 
 
 
