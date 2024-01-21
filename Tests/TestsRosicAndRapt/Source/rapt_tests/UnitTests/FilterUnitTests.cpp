@@ -960,6 +960,8 @@ bool engineersFilterUnitTest()
 
   // We test the access violation bug that affects FrequencyShifter. Apparently, in certain 
   // situations, EngineersFilter may write into memory beyond where it is allowed to...
+  int order = 24;
+
 
   // Create two filter objects. That will also allocate some heap memory. The behavior we want to
   // trigger is that some function calls on ef1 will mess up the heap-allocated memory of the ef2
@@ -974,7 +976,7 @@ bool engineersFilterUnitTest()
 
   // Call the problematic setup method of ef1. The hope is that if it does write beyond its owned 
   // memory, we may see this in the buffer. ...TBC...
-  ef1.setPrototypeOrder(24);
+  ef1.setPrototypeOrder(order);
   ef1.setApproximationMethod(AM::ELLIPTIC);
   ef1.setApproximationMethod(AM::BUTTERWORTH);
   // These calls messes with the a1 member in ef2 - but only if we have no call to 
@@ -984,8 +986,10 @@ bool engineersFilterUnitTest()
 
   Real* addressPost = ef2.getAddressA1();
   ok &= addressPre == addressPost;
-
   rsAssert(ok);
+  // OK - this triggers. Actually, all 3 calls on ef1 mess up the a1 variable in ef2. It's 
+  // different after each call.
+
   return ok;
 
   // Notes:
@@ -1001,4 +1005,8 @@ bool engineersFilterUnitTest()
   //  corruption at program end in this case. It says: "Unhandled exception at 0x00007FF679FFCC7C 
   //  in TestsRosicAndRapt.exe: Stack cookie instrumentation code detected a stack-based buffer 
   //  overrun."
+
+  // ToDo:
+  // -Try using a higher rsPrototypeDesigner::maxBiquads. Insert assertion into rsPrototypeDesigner
+  //  that L <= maxBiquads always.
 }
