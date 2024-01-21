@@ -222,21 +222,37 @@ void UnitTestToolChain::runTestVoiceManager()
 
 void UnitTestToolChain::runTestQuadrifex()
 {
+  // This code parallels what is done in createPluginFilter() in the ToolChain project. This is the
+  // factory function that creates the juce::AudioProcessor object in the juce framework:
   int numMetaParams = 10;  // Number of exposed automatable (meta) parameters
   jura::ToolChain*      dummy = nullptr;
   juce::AudioProcessor* proc  = createPluginWithMidi(dummy, numMetaParams);
-  jura::AudioPlugin*    plug  = dynamic_cast<jura::AudioPlugin*>(proc);
+
+  // Try to cast it into a jura::AudioPlugIn. This class is the glue between juce::AudioProcessor
+  // and jura::AudioModule:
+  jura::AudioPlugin* plug  = dynamic_cast<jura::AudioPlugin*>(proc);
   jassert(plug != nullptr);
-  jura::AudioModule*    mod   = plug->wrappedAudioModule;  // Maybe use a getter
+
+  // Extract the wrapped jura::AudioModule that is wrapped into the jura::AudioPlugin and cast it
+  // into a pointer to jura::ToolChain:
+  jura::AudioModule* mod   = plug->wrappedAudioModule;  // Maybe use a getter
+  jura::ToolChain*   tlChn = dynamic_cast<jura::ToolChain*>(mod);
+  jassert(tlChn != nullptr);
 
 
 
 
 
 
-  jura::QuadrifexAudioModule* qfx = nullptr;
+
+
+  //jura::QuadrifexAudioModule* qfx = nullptr;
   //qfx = new jura::QuadrifexAudioModule();
   //delete qfx;
+
+
+  // Clean up memory:
+  delete proc;
 
   //int dummy = 0;
 }
