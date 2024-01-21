@@ -254,11 +254,24 @@ void UnitTestToolChain::runTestQuadrifex()
   jura::QuadrifexAudioModule* qfx = dynamic_cast<jura::QuadrifexAudioModule*>(mod);
   expect(qfx != nullptr);
 
+
+  // Try to create a rosic::FrequencyShifter object. We seem to have an access violation in its
+  // constructor, specifically in the line 
+  //   halfbandFilter2.setApproximationMethod(...)
+  // ToDo: maybe move that to the rosic unit tests:
+  rosic::FrequencyShifter freqShifter;
+  // it happens in  rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState) in the line
+  // rsBiquadCascade<TSig, TPar>::initBiquadCoeffs(); and I think TSig=rsfloat64x2, TPar=double.
+
+
+
   // Let the Quadrifex load FrequencyShifterStereoModule - this is where we have an access 
   // violation:
-  using QFX = rosic::Quadrifex;
-  qfx->setEffectAlgorithm(0, QFX::FREQUENCY_SHIFTER);
+  //using QFX = rosic::Quadrifex;
+  //qfx->setEffectAlgorithm(0, QFX::FREQUENCY_SHIFTER);
   // YES! We successfully trigger it here! Now we can figure out what is going wrong....
+  // It seems to happen in the constructor of rosic::FrequencyShifter, so above, we just create one
+  // outside of the Quadrifex setting.
 
 
 
