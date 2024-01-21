@@ -964,33 +964,25 @@ bool engineersFilterUnitTest()
   // trigger is that some function calls on ef1 will mess up the heap-allocated memory of the ef2 
   // object:
   EF ef1, ef2;
-  // ...hmm...or well, I think, it doesn't necessarly directly corrupt the heap memory of ef2 but 
+  // ...Hmm...or well, I think, it doesn't necessarly directly corrupt the heap memory of ef2 but 
   // rather the a1-member of ef2 which *points* to heap memory but lives itself on the stack.
 
-  //// Create a buffer on the heap and init it with some sort of recognizable value that is not zero:
-  //static const int bufSize = 32; // in bytes
-  //std::vector<char> buffer(bufSize);
-  //char bufVal = 'X';
-  //for(int i = 0; i < bufSize; i++)
-  //  buffer[i] = bufVal;
-
+  // Retrieve the address of a1 in ef2. This seems to be some thing that gest messed up - under 
+  // certain conditions:
   Real* addressPre = ef2.getAddressA1();
 
-  // Set up the EnginnersFillter. The hope is that if it does write beyond its owned memory, we may
-  // see this in the buffer. ...TBC...
+  // Call the problematic setup method of ef1. The hope is that if it does write beyond its owned 
+  // memory, we may see this in the buffer. ...TBC...
   ef1.setApproximationMethod(RAPT::rsPrototypeDesigner<Real>::ELLIPTIC);
-
   ef1.setPrototypeOrder(24);  
   // This call messes with the a1 member in ef2 - but only if we have no call to 
   // ef2.getAddressA1(); after it ...super strange!
 
-  //Real* addressPost = ef2.getAddressA1();
-  //ok &= addressPre == addressPost;
+  //ef2.getAddressA1();  
+  // Dummy call for test - this changes the behavior! When uncommenting this line, it actually 
+  // appears as if the a1 member of ef2 remains intact. But: we get some error message at the 
+  // program end instead!
 
-
-  //ef2.getAddressA1();  // dummy call for test - this changes the behavior!
-
-  //ok &= addressPre == ef2.getAddressA1();
 
 
   return ok;
