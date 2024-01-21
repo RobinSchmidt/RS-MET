@@ -493,6 +493,12 @@ protected:
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation 
                        // (todo: use atomic_bool)
+
+
+
+  //template<class TSig, class TPar>
+  //friend class rsEngineersFilter<TSig, TPar>;
+
 };
 
 #endif

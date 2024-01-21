@@ -105,7 +105,13 @@ protected:
   rsInfiniteImpulseResponseDesigner<TPar> designer;
   TPar sampleRate;
 
-  static const int maxNumBiquads = 25;
+
+  //template class rsProtoypeDesigner<TPar>;  // forward declaration
+  //static const int maxNumBiquads = 2 * rsProtoypeDesigner<TPar>::maxBiquads;
+
+
+  //static const int maxNumBiquads = 25;
+  static const int maxNumBiquads = 24;
   // 25 should be enough for all the purposes that it is currently used for. Actually, already for
   // for 20, we sometimes get into territory where it detoriates numerically in double precision.
   // Actually, I think, 24 should be enough. That fits well with 
