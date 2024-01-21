@@ -105,18 +105,18 @@ protected:
   rsInfiniteImpulseResponseDesigner<TPar> designer;
   TPar sampleRate;
 
-
   //template class rsProtoypeDesigner<TPar>;  // forward declaration
-  //static const int maxNumBiquads = 2 * rsProtoypeDesigner<TPar>::maxBiquads;
+  static const int maxNumBiquads = 2 * RAPT::rsPrototypeDesigner<TPar>::maxBiquads;
 
-
-  //static const int maxNumBiquads = 25;
-  static const int maxNumBiquads = 24;
-  // 25 should be enough for all the purposes that it is currently used for. Actually, already for
+  //static const int maxNumBiquads = 25; // old
+  //static const int maxNumBiquads = 24;
+  // 24 should be enough for all the purposes that it is currently used for. Actually, already for
   // for 20, we sometimes get into territory where it detoriates numerically in double precision.
-  // Actually, I think, 24 should be enough. That fits well with 
-  // rsPrototypeDesigner::maxBiquads = 12. Maybe we should actually use 
-  // 2*rsPrototypeDesigner::maxBiquads here instead of a magic number
+  // It is 24 because that fits well with rsPrototypeDesigner::maxBiquads = 12. Maybe we should 
+  // actually use 2*rsPrototypeDesigner::maxBiquads here instead of the magic number 24. But to 
+  // access this protected member, we either need som friend declarations or make it public, both 
+  // of which is ugly. I think, the friend declaration would be the beste way - I just need to 
+  // figure out the right syntax for this in this context of templates.
 
   // make copy-constructor and assignment operator unavailable (move this idiom into a macro an 
   // use the macro everywhere, where an object is not trivially copyable):

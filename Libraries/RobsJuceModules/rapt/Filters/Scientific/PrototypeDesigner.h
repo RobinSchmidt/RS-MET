@@ -496,8 +496,9 @@ protected:
 
 
 
-  //template<class TSig, class TPar>
-  //friend class rsEngineersFilter<TSig, TPar>;
+
+  template<class TSig, class TPar> friend class rsEngineersFilter;
+  // We want rsEngineersFilter to be able to access our protected maxBiquads member.
 
 };
 
