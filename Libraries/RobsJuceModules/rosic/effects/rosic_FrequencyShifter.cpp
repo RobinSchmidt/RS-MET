@@ -74,6 +74,8 @@ FrequencyShifter::FrequencyShifter()
   // the "this" pointer), it's not where it is supposed to be. When inspecting it here, it points 
   // to a different address. It appears like setting up the other filter before, things get messed
   // up.
+  // Aha! It seems like the call  halfbandFilter1.setPrototypeOrder(24);  immediately before the 
+  // call halfbandFilter2.initBiquadCoeffs();  messes up the address of a1 in halfbandFilter1.
 
 
   halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC); // Access violation!!!
