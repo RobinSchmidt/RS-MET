@@ -133,14 +133,18 @@ namespace rosic
     double shiftInHz, sampleRate, feedbackFactor;
 
     rsEngineersFilterMono halfbandFilter1, halfbandFilter2;
-    //rsEngineersFilterOld halfbandFilter1, halfbandFilter2;
-    //FreqShifterHalfbandFilter halfbandFilter1, halfbandFilter2;
+    // Usong these gives an access violation in our constructor. WTF!
+
+    //FreqShifterHalfbandFilter halfbandFilter1, halfbandFilter2; 
+    // Using these instead fixes the access violation but it may be problematic numerically 
+    // and/or performance wise?
 
     SineOscillator   cosOsc1, sinOsc1, cosOsc2, sinOsc2;
 
     NyquistBlocker   nyquistBlocker;
 
-    MutexLock mutex;
+    MutexLock mutex; 
+    // Try to get rid! This kind of stuff should not be done on the DSP code level.
   };
 
   //-----------------------------------------------------------------------------------------------

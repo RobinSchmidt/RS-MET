@@ -586,12 +586,31 @@ bool rotes::testFreqShifter()
 
 
   // Try to create a rosic::FrequencyShifter object. We have an access violation in its
-  // constructor, specifically in the line 
-  //   halfbandFilter2.setApproximationMethod(...)
+  // constructor, specifically in the line 63:
+  //   halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC)
   rosic::FrequencyShifter freqShifter;
   // It happens in  rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState) in the line 
-  // rsBiquadCascade<TSig, TPar>::initBiquadCoeffs(); and I think TSig=rsfloat64x2, TPar=double.
+  // rsBiquadCascade<TSig, TPar>::initBiquadCoeffs(); and I think TSig=TPar=double. Apparently, 
+  // when trying to write a1[i] = 0.0;  where i=0  is the violation. WTF?!
+  //
+  // When we comment out the line 
+  //   rsEngineersFilterMono halfbandFilter1, halfbandFilter2;
+  // in class FrequencyShifter and instead uncomment the (older) version:
+  //   FreqShifterHalfbandFilter halfbandFilter1, halfbandFilter2;
+  // and comment out the setup code for halfbandFilter1/2 in the constructor of FrequencyShifter, 
+  // then the problem disappears. I don't know anymore why I switched to using 
+  // rsEngineersFilterMono instead of FreqShifterHalfbandFilter - perhaps numerical issues or maybe
+  // performance?
+  // When doing the initializations of the halfbandFilter2 first (before those of halfbandFilter1),
+  // the access violation will not be reported straight away but delayed until the program quits.
+  //
+  // When commenting out the code for setting up halfbandFilter1 that gets called before, the 
+  // violation can also be avoided. It seems like the code above somehow messes up the object that
+  // is declared after it?
 
+
+  // ToDo:
+  // -Try using std::vector instead of raw arrays in rsBiquadCascade
 
   return ok;
 }

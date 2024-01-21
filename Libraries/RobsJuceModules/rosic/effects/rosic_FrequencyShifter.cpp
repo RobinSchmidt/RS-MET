@@ -48,10 +48,17 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 
 FrequencyShifter::FrequencyShifter()
 {
+  halfbandFilter2.initBiquadCoeffs();  // For debug - works fine.
+
+
   setSampleRate(44100.0);
   shiftInHz      = 0.0;
   feedbackFactor = 0.0;
   yOld           = 0.0;
+
+
+  halfbandFilter2.initBiquadCoeffs();  // For debug - works fine.
+
 
   halfbandFilter1.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
   halfbandFilter1.setSampleRate(44100.0);
@@ -60,14 +67,24 @@ FrequencyShifter::FrequencyShifter()
   halfbandFilter1.setStopbandRejection(95.0);
   halfbandFilter1.setPrototypeOrder(24);
 
-  halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
+
+  halfbandFilter2.initBiquadCoeffs();  // For debug - triggers the same access violation as below.
+  // When jumping into this call  rsBiquadCascade<TSig, TCoef>::initBiquadCoeffs(), the address of
+  // the a1 array is strange. When inspecting it in the debugger inside the function (by opening 
+  // the "this" pointer), it's not where it is supposed to be. When inspecting it here, it points 
+  // to a different address. It appears like setting up the other filter before, things get messed
+  // up.
+
+
+  halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC); // Access violation!!!
   halfbandFilter2.setSampleRate(44100.0);
   halfbandFilter2.setFrequency(11025);
   halfbandFilter2.setRipple(0.1);
   halfbandFilter2.setStopbandRejection(95.0);
   halfbandFilter2.setPrototypeOrder(24);
   // will result in a stopband frequency <= 11040
-  
+
+
   sinOsc1.setStartPhase(0.0);
   sinOsc2.setStartPhase(0.0);
   cosOsc1.setStartPhase(0.5*PI);

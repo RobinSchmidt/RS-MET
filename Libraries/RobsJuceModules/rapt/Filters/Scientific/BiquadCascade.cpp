@@ -68,6 +68,12 @@ void rsBiquadCascade<TSig, TCoef>::setOrder(int newOrder)
     setNumStages(newOrder/2);
   else
     setNumStages( (newOrder+1)/2 );
+
+  // Is this conditional even needed or can we just always use (newOrder+1)/2? When newOrder is 
+  // even, then (newOrder+1)/2 should be equal to newOrder/2 due to floor division behavior. But 
+  // before changing the code, check edge cases like newOrder = 0. ...but that should not be a
+  // problem either. But maybe the compiler can optimize this? Then it might be good to keep the
+  // code as is for documentation purposes. Maybe check with Godbolt's compiler explorer.
 }
 
 template<class TSig, class TCoef>
