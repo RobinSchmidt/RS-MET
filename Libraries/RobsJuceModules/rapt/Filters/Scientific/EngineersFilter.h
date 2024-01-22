@@ -68,6 +68,12 @@ public:
   For other filter-modes, this is irrelevant. */
   //void setUpperFrequency(TPar newUpperFrequency);
 
+
+  /** Copies the settings (user parameters and biquad coefficients) from another instance of this 
+  class. */
+  //void copySettingsFrom(rsEngineersFilter *other) override;
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 

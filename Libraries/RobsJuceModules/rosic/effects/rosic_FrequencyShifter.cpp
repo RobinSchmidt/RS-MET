@@ -5,7 +5,7 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 {
   static const int order = 24;
 
-  // design the filter as biquad cascade:
+  // Design the filter as biquad cascade:
   rsEngineersFilterMono halfbandFilterBiquad;
   halfbandFilterBiquad.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
   halfbandFilterBiquad.setSampleRate(44100.0);
@@ -14,7 +14,7 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
   halfbandFilterBiquad.setStopbandRejection(95.0);
   halfbandFilterBiquad.setPrototypeOrder(order);   // stopband edge will be <= 11040
 
-  // convert the biquad cascade filter into 3 8th order sections:
+  // Convert the biquad cascade filter into 3 8th order sections:
   double b1[order/3+1];
   double a1[order/3+1];
   double b2[order/3+1];
@@ -48,54 +48,55 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 
 FrequencyShifter::FrequencyShifter()
 {
-  // There is some debugging code inserted here. See comments below.
-
-
   setSampleRate(44100.0);
   shiftInHz      = 0.0;
   feedbackFactor = 0.0;
   yOld           = 0.0;
 
-
-  // Design parameters for the elliptic halfband filters:
-  static const int protoFilterOrder = 24;
-  // 24 was originally desired but causes access violations. 23 still causes access violations but
-  // the address is different. With 22, we seem to be on the safe side.
-  // Increasing rsEngineersFilter::maxNumBiquads to e.g. 30 does *not* seem to have an effect on 
-  // how high we can go here. That makes it even more strange.
-
-
+  // Design parameters for the two elliptic halfband filters:
+  static const int    protoFilterOrder = 24;
+  static const double sampleRate       = 44100;  // in Hz
+  static const double cutoff           = 11025;  // in Hz
+  static const double ripple           = 0.1;    // in dB
+  static const double rejection        = 95.0;   // in dB
+  // These will result in a stopband frequency <= 11040.
 
   halfbandFilter1.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
-  halfbandFilter1.setSampleRate(44100.0);
-  halfbandFilter1.setFrequency(11025);
-  halfbandFilter1.setRipple(0.1);
-  halfbandFilter1.setStopbandRejection(95.0);
-  halfbandFilter1.setPrototypeOrder(protoFilterOrder);  // This call sets us up for desaster later
+  halfbandFilter1.setSampleRate(sampleRate);
+  halfbandFilter1.setFrequency(cutoff);
+  halfbandFilter1.setRipple(ripple);
+  halfbandFilter1.setStopbandRejection(rejection);
+  halfbandFilter1.setPrototypeOrder(protoFilterOrder);
 
-
-
-  halfbandFilter2.initBiquadCoeffs();  // For debug - triggers the same access violation as below.
-  // It seems like the call  halfbandFilter1.setPrototypeOrder(24);  immediately before the 
-  // call halfbandFilter2.initBiquadCoeffs();  messes up the address of a1 in halfbandFilter1. When
-  // we then try to access a1 inside halfbandFilter2.initBiquadCoeffs(), we get the access 
-  // violation. Apparently, we overwrite memory that isn't ours in rsEngineersFilterMono when we 
-  // try to create a filter that is close to the maximum order. Trying to increase the default 
-  // maxNumStages in rsBiquadCascade by setting rsEngineersFilter::maxNumBiquads to something 
-  // higher (e.g. 32 instead of 25), doesn't actually seem to help in any way. On  the other hand,
-  // using  protoFilterOrder = 22;  here seems to fix it (or rather work around it). 23 will still 
-  // cause problems, but the messed address of a1 will be different.
-
-
-
-  halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC); // Access violation!!!
-  halfbandFilter2.setSampleRate(44100.0);
-  halfbandFilter2.setFrequency(11025);
-  halfbandFilter2.setRipple(0.1);
-  halfbandFilter2.setStopbandRejection(95.0);
+  halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
+  halfbandFilter2.setSampleRate(sampleRate);
+  halfbandFilter2.setFrequency(cutoff);
+  halfbandFilter2.setRipple(ripple);
+  halfbandFilter2.setStopbandRejection(rejection);
   halfbandFilter2.setPrototypeOrder(protoFilterOrder);
-  // will result in a stopband frequency <= 11040
-
+  // Setting up the order last is actually a good idea because all the other calculation-triggering
+  // setter calls will only calculate coeffs for a low order filter. The default order is 2. Of 
+  // course, it would be even better, if we would not trigger intermediate calculations at all. 
+  // Maybe provide a setup() method to set all the parameters at once and therefore also only 
+  // triggers the calculation once. Also, the 2nd filter is identical to the 1st so it would be 
+  // nice, if we could just copy the settings and coeffs. Maybe make a method 
+  // halfbandFilter2.copySettingsFrom(halfbandFilter1). When we do it like this, we could actually
+  // get rid of the variables again. We should replace the whole filter setup stuff with 2 lines 
+  // like:
+  //
+  // halfbandFilter1.setup(LOWPASS, 24, ELLIPTIC, 44100, 11025, 0.1, 95.0);
+  // halfbandFilter2.copySettingsFrom(halfbandFilter1);
+  //
+  // Actually, the halfbandFilter2 doesn't even need to be of class rsEngineersFilter. It can be of
+  // type rsBiquadCascade which already has a copySettingsFrom() method. That would reduce the 
+  // memory footprint of the freq-shifter, too. But before implementing all these optimizations, 
+  // create a unit test. Maybe shift a 1 kHz sinewave by 200 Hz and check the result - maybe by 
+  // comparing it to to a 1.2 kHz sinewave. But we don't really know, what the phase of that should
+  // be - but we could find it out experimentally. Or we could just look at the magnitude spectrum.
+  // It might also be nice to be able avoid the design procedure in the standard constructor when 
+  // we at some point want to create arrays of freq-shifters. It would be wasteful if each shifter 
+  // in the array designs the filter from scratch. Maybe we should just design the filter somewhere
+  // at compile time and hardcode the coeffs.
 
   sinOsc1.setStartPhase(0.0);
   sinOsc2.setStartPhase(0.0);
@@ -103,14 +104,6 @@ FrequencyShifter::FrequencyShifter()
   cosOsc2.setStartPhase(0.5*PI);
 
   setupOscillators();
-
-  // ToDo:
-  // -Figure out and dix the bug in rsEngineersFilterMono that we run into here. When that's done,
-  //  clean up the code here, i.e. remove the stuff that we have inserted for debugging.
-  //  There is now a function engineersFilterUnitTest() in the TestsRosicAndRapt project which
-  //  successfully triggers this behavior in a simpler context.
-  // -Define constants also for the other halfband filter design parameters to avoid using 
-  //  magic numbers in the setters.
 }
 
 FrequencyShifter::~FrequencyShifter()

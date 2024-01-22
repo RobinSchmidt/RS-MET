@@ -1,13 +1,6 @@
 #ifndef rosic_FrequencyShifter_h
 #define rosic_FrequencyShifter_h
 
-//// rosic-indcludes:
-//#include "../filters/rosic_EngineersFilter.h"
-//#include "../filters/rosic_DirectFormFilter.h"
-//#include "../filters/rosic_NyquistBlocker.h"
-//#include "../generators/rosic_SineOscillator.h"
-//#include "../infrastructure/rosic_MutexLock.h"
-
 namespace rosic
 {
 
@@ -73,13 +66,14 @@ namespace rosic
   This is a frequency shifter based on the article 'An Efficient Precise Frequency Shifter' by 
   Jens Groh in the CSound magazine.
 
-  todo:
-  -sometimes there is some kind of sizzle after tweaking the shift (maybe we need a mutex to ensure 
-  that all oscillators are triggered at the exact same sample instant?)
-  -use an optimized elliptic halfband filter (convert biquad-cascade structure to 24th order direct 
-  form or series of two 12th order direct forms, if the former will be unstable)
-  -maybe introduce feedback
-  -obtain lower sideband (subtract instead of add?)
+  ToDo:
+  -Sometimes there is some kind of sizzle after tweaking the shift. Maybe we need a mutex to ensure 
+   that all oscillators are triggered at the exact same sample instant?
+  -Use an optimized elliptic halfband filter (convert biquad-cascade structure to 24th order direct 
+   form or series of two 12th order direct forms, if the former will be unstable)
+  -Maybe introduce feedback
+  -Obtain lower sideband (subtract instead of add?). Maybe make a function 
+   processFrame(double in, double* outLowerSide, double* outUpperSide).
 
   */
 
@@ -133,18 +127,11 @@ namespace rosic
     double shiftInHz, sampleRate, feedbackFactor;
 
     rsEngineersFilterMono halfbandFilter1, halfbandFilter2;
-    // Usong these gives an access violation in our constructor. WTF!
-
-    //FreqShifterHalfbandFilter halfbandFilter1, halfbandFilter2; 
-    // Using these instead fixes the access violation but it may be problematic numerically 
-    // and/or performance wise?
-
+    //FreqShifterHalfbandFilter halfbandFilter1, halfbandFilter2;  // Old - but ma be used again
     SineOscillator   cosOsc1, sinOsc1, cosOsc2, sinOsc2;
-
     NyquistBlocker   nyquistBlocker;
 
-    MutexLock mutex; 
-    // Try to get rid! This kind of stuff should not be done on the DSP code level.
+    MutexLock mutex; // Try to get rid! Thread stuff should not be done on the DSP code level.
   };
 
   //-----------------------------------------------------------------------------------------------
