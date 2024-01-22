@@ -585,51 +585,18 @@ bool rotes::testFreqShifter()
   bool ok = true;
 
 
-  // Try to create a rosic::FrequencyShifter object. We have an access violation in its
-  // constructor, specifically in the line 63:
+  // Try to create a rosic::FrequencyShifter object. We had an access violation in its
+  // constructor, specifically in the line:
   //   halfbandFilter2.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC)
   rosic::FrequencyShifter freqShifter;
-  // It happens in  rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState) in the line 
+  // It happened in  rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState) in the line
   // rsBiquadCascade<TSig, TPar>::initBiquadCoeffs(); and I think TSig=TPar=double. Apparently, 
-  // when trying to write a1[i] = 0.0;  where i=0  is the violation. WTF?!
+  // when trying to write a1[i] = 0.0;  where i=0  is the violation. 
   //
-  // When we comment out the line 
-  //   rsEngineersFilterMono halfbandFilter1, halfbandFilter2;
-  // in class FrequencyShifter and instead uncomment the (older) version:
-  //   FreqShifterHalfbandFilter halfbandFilter1, halfbandFilter2;
-  // and comment out the setup code for halfbandFilter1/2 in the constructor of FrequencyShifter, 
-  // then the problem disappears. I don't know anymore why I switched to using 
-  // rsEngineersFilterMono instead of FreqShifterHalfbandFilter - perhaps numerical issues or maybe
-  // performance?
-  // When doing the initializations of the halfbandFilter2 first (before those of halfbandFilter1),
-  // the access violation will not be reported straight away but delayed until the program quits.
-  //
-  // When commenting out the code for setting up halfbandFilter1 that gets called before, the 
-  // violation can also be avoided. It seems like the code above somehow messes up the object that
-  // is declared after it?
+  // OK - but this bug was fixed. Now we can repurpose this test here to actually produce some 
+  // output of the freq-shifter and check if it looks as we expect it. Maybe produce a combination 
+  // of sine-waves, shift it and programmatically check the magnitude spectrum of the output signal.
 
-
-  // ToDo:
-  // -Try using std::vector instead of raw arrays in rsBiquadCascade
-  // -Add a test to the unit tests of rsEngineersFilterMono that creates two filters (e.g. filter1, 
-  //  filter2) in memory, one after another, and sets the first to an elliptic bandpass of 
-  //  protoOrder=24. Calling the function  filter1.setPrototypeOrder(24);  should 
-  //  mess up the address of a1 in the second. This should happen even with  
-  //  filter1.setPrototypeOrder(23);  but in this case, the address will be a different one (namely
-  //  zero). Or use just one filter and declare some other kinds of variables after it. Maybe just
-  //  a buffer of characters like:
-  //    static const int bufSize = 32;    // in bytes
-  //    rsEngineersFilterMono filter;
-  //    char[bufSize] buf;
-  //  then initialize the buffer to some recognizable values (maybe not to all zeros), then call
-  //    filter.setApproximationMethod(rsPrototypeDesignerD::ELLIPTIC);
-  //    filter.halfbandFilter1.setPrototypeOrder(protoFilterOrder);
-  //  and the inspect the buffer to make sure that it hasn't been messed with. Hmm...but maybe we 
-  //  should create the buffer on the heap rather than on the stack. Such a test may erroneously 
-  //  pass though - namely, when the heap memory used by the filter and the buffer happens to be
-  //  non-consecutive. We nave no influence on this unless we use our own allocators. Hmmm....but I
-  //  think, mostly the allocated memory will be consecutive. We could actually test this by 
-  //  inspecting the addresses. The test could then return "passed", "failed" or "unknown"
 
   return ok;
 }
