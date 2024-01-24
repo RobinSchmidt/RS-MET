@@ -8,6 +8,8 @@ https://github.com/DISTRHO/JUCE
 
 Bugs:
 
+- When loading the Straighliner InitPatchSawtooth, there might be some StereoDetune present in it.
+  
 
 - [Might be fixed - needs tests]
   Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
@@ -44,6 +46,7 @@ Bugs:
   rsBiquadCascade<TSig, TCoef>::initBiquadCoeffs(). This seems to be reproducible. Write a unit test 
   that exposes this! It seems to happen in the constructor of FrequencyShifterStereoModule, so let's 
   write a unit test that constructs it (and maybe more)
+  OK - the access violation is gone but we hit a jassert
 
 - Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
   loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the

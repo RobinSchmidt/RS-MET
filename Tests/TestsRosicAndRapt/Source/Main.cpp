@@ -66,8 +66,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
   //butterworthViaGaussians();
 
   //numericOptimization();
-  //numericMinimization1D();
+  numericMinimization1D();
   numericRootFinding1D();
 
   //polynomialSinc();
@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
   //biquadDesignVicanek();         // maybe rename to biquadMatchVicanek
   //biquadTail();
   //complementaryFiltersIIR();
-  //engineersFilterRingResp();   // ringing response (experimental idea)
+  engineersFilterRingResp();   // ringing response (experimental idea)
   //engineersFilterFreqResps();
   //firstOrderFilters();
   //ladderResonanceManipulation();

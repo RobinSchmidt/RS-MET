@@ -1101,6 +1101,9 @@ void engineersFilterRingResp2()
   flt.chainWith(flt1);
   flt.chainWith(flt2);
 
+
+
+
   // Plot ringing responses:
   //plotMagAndRingResponse(flt1, 5000, 10.0, 1000.0, fs, true);
   //plotMagAndRingResponse(flt2, 5000, 10.0, 1000.0, fs, true);
@@ -1133,6 +1136,10 @@ void engineersFilterRingResp2()
   //  -the impulse response looks initially more like chirping than ringing (i.e. a frequency 
   //   sweepdown) and the later section looks rather irregular
   //
+  // ToDo:
+  // -Plot the ringing responses of each of the two filters alone together with the combined 
+  //  ringing response
+  //
   // Conclusions:
   // -Due to the potential issues with division by zero, it does not seem to be a good idea to 
   //  divide by the magnitude response - at least not, when the filters features zeros. For allpole
@@ -1148,10 +1155,19 @@ void engineersFilterRingResp2()
   //  out if these plots can reveal anything useful
 }
 
+
+
 void engineersFilterRingResp()
 {
-  engineersFilterRingResp1();
-  engineersFilterRingResp2();
+  engineersFilterRingResp1(); 
+  engineersFilterRingResp2();  // maybe rename to BiShelfRingResp
+
+  // ToDo:
+  // -Figure out, if we can reduce the ringing time of a steep (e.g. elliptic) lowpass filter by
+  //  placing a notch filter at the ringing frequency. Or maybe two notches around the ringing 
+  //  frequency. The notch will itself ring at the notch frequency but maybe we can somehow adjust 
+  //  it in such a way as to cancel the ringing of the lowpass? If so, that could be useful for
+  //  anti-aliasing filters in downsampling.
 }
 
 void engineersFilterFreqResps()
