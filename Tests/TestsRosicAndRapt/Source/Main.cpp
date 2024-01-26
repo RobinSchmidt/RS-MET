@@ -128,8 +128,8 @@ int main(int argc, char* argv[])
   //butterworthViaGaussians();
 
   //numericOptimization();
-  numericMinimization1D();
-  numericRootFinding1D();
+  //numericMinimization1D();
+  //numericRootFinding1D();
 
   //polynomialSinc();
   //polynomialPrediction();  // not yet implemented
@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
   //biquadDesignVicanek();         // maybe rename to biquadMatchVicanek
   //biquadTail();
   //complementaryFiltersIIR();
-  engineersFilterRingResp();   // ringing response (experimental idea)
+  //engineersFilterRingResp();   // ringing response (experimental idea)
   //engineersFilterFreqResps();
   //firstOrderFilters();
   //ladderResonanceManipulation();
@@ -612,7 +612,7 @@ int main(int argc, char* argv[])
   //algoVerb();
   //spectralFilter();                 // Maybe move into a file for spectral processors
   //formantShifter();
-  spectralShifter();
+  //spectralShifter();
 
 
   // File:
