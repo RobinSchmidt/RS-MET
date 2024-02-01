@@ -1509,22 +1509,36 @@ void squareToSaw()
 
 
   // Obtain lowpass, highpass and final outputs:
-  Vec y_lp(N), y_hp(N), y1(N);
+  Vec yL(N), yH(N), y1(N), y2(N);
   for(int n = 0; n < N; n++)
   {
-    y_lp[n] = lpf.getSample(x[n]);
-    y_hp[n] = x[n] - y_lp[n];
+    // Create the intermediate lowpass and highpass signals:
+    yL[n] = lpf.getSample(x[n]);
+    yH[n] = x[n] - yL[n];
+
+    // Create the 1st output:
+    if(x[n] >= thresh)
+      y1[n] =  gain * yL[n];
+    else
+      y1[n] = -gain * yL[n];
+
 
     if(x[n] >= thresh)
-      y1[n] =  gain * y_lp[n];
+      y2[n] = gain * yL[n];
     else
-      y1[n] = -gain * y_lp[n];
+    {
+      //y2[n] = gain * (yH[n] - x[n]); // That's the same thing as y1.
+      y2[n] = gain * yL[n];            // That creates a triangle wave.
+    }
+
   }
 
 
   // Plot input and output:
-  rsPlotVectors(x, y1);
-  //rsPlotVectors(x, y_lp, y_hp);
+  //rsPlotVectors(x, y1);
+  rsPlotVectors(x, y2);
+  //rsPlotVectors(x, y1, y2);
+  //rsPlotVectors(x, yL, yH);
 
 
   // Observations:
