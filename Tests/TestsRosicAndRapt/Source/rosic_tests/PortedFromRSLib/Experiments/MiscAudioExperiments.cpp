@@ -1485,6 +1485,7 @@ void squareToSaw()
   Real squareFreq =   100;
   Real cutoff     =    25;           // Should be lower than squarefreq, I think.
   int  N          =  2000;           // Number of samples to generate
+  Real thresh     =     0.0;
 
   // Create the input square wave:
   Vec x = createWaveform(N, 2, squareFreq, Real(sampleRate), 0.0, false);
@@ -1495,17 +1496,33 @@ void squareToSaw()
   lpf.setCutoff(cutoff);
   lpf.setSampleRate(sampleRate);
 
-  // Obtain lowpass and highpass outputs:
-  Vec y_lp(N), y_hp(N);
+  // Obtain lowpass, highpass outputs:
+  Vec y_lp(N), y_hp(N), y(N);
   for(int n = 0; n < N; n++)
   {
     y_lp[n] = lpf.getSample(x[n]);
     y_hp[n] = x[n] - y_lp[n];
+
+    if(x[n] >= thresh)
+      y[n] = y_lp[n];
+    else
+      y[n] = -y_lp[n];
+
   }
 
 
   // Plot input and output:
-  rsPlotVectors(x, y_lp, y_hp);
+  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y_lp, y_hp);
+
+
+  // Observations:
+  // -It is wrong to use the highpass signal when x < t. Instead, we should use the negated lowpass 
+  //  signal
+  // -Maybe we need a gain boost by squareFreq/cutoff. Try that.
+
+  // ToDo:
+  // -Maybe do a similar thing with bandpass and notch
 
 
   int dummy = 0;
