@@ -1509,34 +1509,47 @@ void squareToSaw()
 
 
   // Obtain lowpass, highpass and final outputs:
-  Vec yL(N), yH(N), y1(N), y2(N);
+  Vec yL(N), yH(N), y1(N), y2(N), y3(N), y4(N);
   for(int n = 0; n < N; n++)
   {
     // Create the intermediate lowpass and highpass signals:
     yL[n] = lpf.getSample(x[n]);
     yH[n] = x[n] - yL[n];
 
-    // Create the 1st output:
+    // Create the sawtooth output:
     if(x[n] >= thresh)
       y1[n] =  gain * yL[n];
     else
-      y1[n] = -gain * yL[n];
+      y1[n] = -gain * yL[n];  // == gain * (yH[n] - x[n])
 
-
+    // Create the triangle output:
     if(x[n] >= thresh)
       y2[n] = gain * yL[n];
     else
-    {
-      //y2[n] = gain * (yH[n] - x[n]); // That's the same thing as y1.
-      y2[n] = gain * yL[n];            // That creates a triangle wave.
-    }
+      y2[n] = gain * yL[n];
 
+    // Create the upper half-sawtooth:
+    if(x[n] >= thresh)
+      y3[n] =  gain * yL[n];
+    else
+      y3[n] =  thresh;
+
+    // Create the lower half-sawtooth:
+    if(x[n] >= thresh)
+      y4[n] =  thresh;
+    else
+      y4[n] = -gain * yL[n]; 
   }
 
 
+
+
   // Plot input and output:
-  //rsPlotVectors(x, y1);
+  rsPlotVectors(x, y1);
   rsPlotVectors(x, y2);
+  rsPlotVectors(x, y3);
+  rsPlotVectors(x, y4);
+
   //rsPlotVectors(x, y1, y2);
   //rsPlotVectors(x, yL, yH);
 
@@ -1562,6 +1575,7 @@ void squareToSaw()
   // -Try what happens when we replace the x[n] >= thresh condition with x[n] > thresh. It perhaps 
   //  only makes a difference after the input signal has turned off (and when t = 0)
   // -Try this algorithm on more complex input signals liek filtered supersaws.
+  // -Maybe give the user a parameters to adjust the level of the upper and lower half-sawtooth.
 
 
   int dummy = 0;

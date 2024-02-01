@@ -1,0 +1,15 @@
+Links to interesting open source audio software projects:
+
+
+https://github.com/Ardour/ardour
+-A fully featured DAW.
+
+https://github.com/surge-synthesizer/surge
+-A hybrid synthesizer (mostly VA but with some more exotic oscillator types). Very poppular with 
+ active community.
+
+https://github.com/mtytel/vital
+-A spectral warping wavetable synthesizer with very visual GUI
+
+https://github.com/BespokeSynth/BespokeSynth
+-A Reaktor-style modular synthesizer
