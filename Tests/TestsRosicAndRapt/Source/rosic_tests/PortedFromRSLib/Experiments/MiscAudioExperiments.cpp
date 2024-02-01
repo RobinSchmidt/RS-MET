@@ -1483,8 +1483,8 @@ void squareToSaw()
 
   int  sampleRate = 44100;
   Real squareFreq =   100;
-  Real cutoff     =    25;           // Should be lower than squarefreq, I think.
-  int  N          =  2000;           // Number of samples to generate
+  Real cutoff     =    30;           // Should be lower than squarefreq, I think.
+  int  N          =  5000;           // Number of samples to generate
   Real thresh     =     0.0;
 
   // Create the input square wave:
@@ -1496,33 +1496,52 @@ void squareToSaw()
   lpf.setCutoff(cutoff);
   lpf.setSampleRate(sampleRate);
 
-  // Obtain lowpass, highpass outputs:
-  Vec y_lp(N), y_hp(N), y(N);
+  // Compute the desired gain:
+  //Real gain = squareFreq / cutoff;
+
+  Real ratio = cutoff / squareFreq;
+  Real fudge = 1 / 1.5;              // Empirical fudge factor to give saw same peak amp as sqr
+  Real gain  = fudge / ratio;
+
+
+
+  // Obtain lowpass, highpass and final outputs:
+  Vec y_lp(N), y_hp(N), y1(N);
   for(int n = 0; n < N; n++)
   {
     y_lp[n] = lpf.getSample(x[n]);
     y_hp[n] = x[n] - y_lp[n];
 
     if(x[n] >= thresh)
-      y[n] = y_lp[n];
+      y1[n] =  gain * y_lp[n];
     else
-      y[n] = -y_lp[n];
-
+      y1[n] = -gain * y_lp[n];
   }
 
 
   // Plot input and output:
-  rsPlotVectors(x, y);
+  rsPlotVectors(x, y1);
   //rsPlotVectors(x, y_lp, y_hp);
 
 
   // Observations:
-  // -It is wrong to use the highpass signal when x < t. Instead, we should use the negated lowpass 
-  //  signal
-  // -Maybe we need a gain boost by squareFreq/cutoff. Try that.
+  // -It takes while for the signal to settle in and tha while takes longer when the cutoff is 
+  //  lower.
+  // -It is wrong to use the highpass signal when x < t (where t = thresh). Instead, we should use 
+  //  the negated lowpass signal. But then we get a saw wave at twice the frequence as the original
+  //  square wave. That's actually not what I wanted - but good to know anyway.
+  // -Maybe we need a gain boost by squareFreq/cutoff. Try that. This is a rule of thumb. Maybe it 
+  //  can be refined by taking the magintude of a correspoding highpass at the squareFreq?
+  // 
+
 
   // ToDo:
-  // -Maybe do a similar thing with bandpass and notch
+  // -Maybe do a similar thing with bandpass and notch.
+  // -Try a similar thing with a linear slew reate limiter. This should produce a more 
+  //  mathematically perfect saw rather than the RC-loading curve like bent one.
+  // -Try what happens when we replace the x[n] >= thresh condition with x[n] > thresh. It perhaps 
+  //  only makes a difference after the input signal has turned off (and when t = 0)
+  // -Try this algorithm on more complex input signals liek filtered supersaws.
 
 
   int dummy = 0;
