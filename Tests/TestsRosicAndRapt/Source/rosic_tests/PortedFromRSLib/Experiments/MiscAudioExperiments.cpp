@@ -1589,6 +1589,12 @@ void squareToSaw()
   // -Try this algorithm on more complex input signals liek filtered supersaws.
   // -Maybe give the user a parameters to adjust the level of the upper and lower half-sawtooth.
 
+  // Ideas:
+  // -Maybe use a dynamic threshold derived form the input signal. A local mean could make sense. 
+  //  That means use: t = meanLowpass(x). That lowpass should be tuned to some subsonic frequency 
+  //  and be adjusted independently from the cutoff. Or maybe we could use a user-adjustable mix 
+  //  between a constant and the measured mean.
+
 
   int dummy = 0;
 }
