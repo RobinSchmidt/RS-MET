@@ -1530,6 +1530,8 @@ void squareToSaw()
   // Observations:
   // -It takes while for the signal to settle in and tha while takes longer when the cutoff is 
   //  lower.
+  // -Changing the threshold (in between -1..+1, ends exclusive) doesn't make a difference when the
+  //  input is a square wave - which makes sense.
   // -It is wrong to use the highpass signal when x < t (where t = thresh). Instead, we should use 
   //  the negated lowpass signal. But then we get a saw wave at twice the frequence as the original
   //  square wave. That's actually not what I wanted - but good to know anyway. Does that mean that
