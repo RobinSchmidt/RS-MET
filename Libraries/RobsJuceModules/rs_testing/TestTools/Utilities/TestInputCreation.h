@@ -35,7 +35,15 @@ template<class T>
 void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase = 0.0, 
   bool antiAlias = false);
 
-
+/** Convenience fucction. */
+template<class T>
+inline std::vector<T> createWaveform(int N, int shape, T frequency, T sampleRate,
+  T phase = 0.0, bool antiAlias = false)
+{
+  std::vector<T> x(N);
+  createWaveform(&x[0], N, shape, frequency, sampleRate, phase, antiAlias);
+  return x;
+}
 
 
 void createPulseWave(double *x, int N, double frequency, double dutyCycle, double sampleRate, 

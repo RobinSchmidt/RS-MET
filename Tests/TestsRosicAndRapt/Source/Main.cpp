@@ -463,6 +463,7 @@ int main(int argc, char* argv[])
   //windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
   //windowedSinc();
   //waveMorph();  // under construction
+  squareToSaw();
 
 
 

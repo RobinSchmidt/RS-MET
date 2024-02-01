@@ -1399,7 +1399,6 @@ void waveMorph()
 
 }
 
-
 void waveMorph2()
 {
   // At the moment, this is just a vague idea - not yet implemented
@@ -1468,4 +1467,46 @@ void waveMorph2()
  
   delete[] ut;
   RAPT::rsMatrixTools::deallocateMatrix(u, m, n);
+}
+
+void squareToSaw()
+{
+  // A weird idea for a process that turns a square-wave into a (sort of) sawtooth wave. It works 
+  // as follows: (1) pass the input signal into a one-pole lowpass filter y_lp = lowpass(x) tuned 
+  // well below the fundamental of the square. (2) if the input is greater than zero (or, more 
+  // generally, above some threshold), output the lowpass signal, otherwise output a derived
+  // higphass signal: y_hp = x - y_lp.
+ 
+
+  using Real = double;
+  using Vec = std::vector<Real>;
+
+  int  sampleRate = 44100;
+  Real squareFreq =   100;
+  Real cutoff     =    25;           // Should be lower than squarefreq, I think.
+  int  N          =  2000;           // Number of samples to generate
+
+  // Create the input square wave:
+  Vec x = createWaveform(N, 2, squareFreq, Real(sampleRate), 0.0, false);
+
+  // Create the one pole lowpass:
+  RAPT::rsOnePoleFilter<Real, Real> lpf;
+  lpf.setMode(lpf.LOWPASS_IIT);
+  lpf.setCutoff(cutoff);
+  lpf.setSampleRate(sampleRate);
+
+  // Obtain lowpass and highpass outputs:
+  Vec y_lp(N), y_hp(N);
+  for(int n = 0; n < N; n++)
+  {
+    y_lp[n] = lpf.getSample(x[n]);
+    y_hp[n] = x[n] - y_lp[n];
+  }
+
+
+  // Plot input and output:
+  rsPlotVectors(x, y_lp, y_hp);
+
+
+  int dummy = 0;
 }

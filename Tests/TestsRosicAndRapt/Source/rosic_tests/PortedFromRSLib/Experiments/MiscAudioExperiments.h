@@ -21,5 +21,6 @@ void windowFunctionSpectra();
 void windowedSinc();
 
 void waveMorph();
+void squareToSaw();
 
 #endif

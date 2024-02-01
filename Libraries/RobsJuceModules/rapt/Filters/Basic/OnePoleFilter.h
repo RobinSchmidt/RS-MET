@@ -308,8 +308,11 @@ public:
 /** This is an implementation of a simple one-pole filter unit.
 
 \todo 
--rename to FirstOrderFilter (it does not only have a pole but also a zero).
- or to rsFilter1p1z
+-rename to rsFirstOrderFilter (it does not only have a pole but also a zero).
+ or to rsFilter1p1z or maybe rsFilter_1p1zDF1 and write a rsOnePoleFilter class without a zero. It 
+ needs less coeffs and state variables - only y1 as state and only a1 as coeff (b0 = 1-a1 or 1+a1, 
+ IIRC). That may be an important memory optimization when (largish) arrays of such filters are 
+ used. I currently don't do that but it's not implausible that I may at some point.
 -make it possible to set up time constants in terms of dB/sec 
 */
 
