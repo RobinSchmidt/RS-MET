@@ -1472,10 +1472,11 @@ void waveMorph2()
 void squareToSaw()
 {
   // A weird idea for a process that turns a square-wave into a (sort of) sawtooth wave. It works 
-  // as follows: (1) pass the input signal into a one-pole lowpass filter y_lp = lowpass(x) tuned 
+  // as follows: (1) pass the input signal into a one-pole lowpass filter yL = lowpass(x) tuned 
   // well below the fundamental of the square. (2) if the input is greater than zero (or, more 
-  // generally, above some threshold), output the lowpass signal, otherwise output a derived
-  // higphass signal: y_hp = x - y_lp.
+  // generally, above some threshold), output the lowpass signal, otherwise output the negated
+  // lowpass signal. There are some more details (like a compensation gain factor) that can be 
+  // seen from the code.
  
 
   using Real = double;
@@ -1483,7 +1484,7 @@ void squareToSaw()
 
   int  sampleRate = 44100;
   Real squareFreq =   100;
-  Real cutoff     =    20;           // Should be lower than squarefreq, I think.
+  Real cutoff     =    15;           // Should be lower than squarefreq, I think.
   int  N          =  5000;           // Number of samples to generate
   Real thresh     =     0.0;
 
@@ -1497,14 +1498,18 @@ void squareToSaw()
   lpf.setSampleRate(sampleRate);
 
   // Compute the desired gain:
-  //Real gain = squareFreq / cutoff;
-
   Real ratio = cutoff / squareFreq;
   Real fudge = 1 / 1.5;              // Empirical fudge factor to give saw same peak amp as sqr
-  Real gain  = fudge / ratio;
+
+  //Real gain  = fudge / ratio;
   // Hmm - that gain becomes less good when ratio approaches 1 or goes even above. It seems to work 
   // well for  ratio < 1/3  or so. Maybe try a formula based on the magnitude of the lowpass at
-  // squareFreq.
+  // squareFreq:
+
+  Real gain = fudge / lpf.getMagnitudeAt(squareFreq);
+  // Hmm...I think that's better. But maybe we should use an approximation based on the magnitude 
+  // (squared?) response of the analog prototype one-pole lowpass filter. I think, that should be a 
+  // lot cheaper to compute and good enough.
 
 
 
@@ -1545,18 +1550,25 @@ void squareToSaw()
 
 
   // Plot input and output:
+  //rsPlotVectors(x, yL, yH);
   rsPlotVectors(x, y1);
   rsPlotVectors(x, y2);
   rsPlotVectors(x, y3);
   rsPlotVectors(x, y4);
 
+  //rsPlotVectors(x, y3, y4);  
+  // We could give the user gain sliders for y3 and y4 and maybe also for x. They could range from
+  // -1...+1. That would be very flexible indeed.
+
   //rsPlotVectors(x, y1, y2);
-  //rsPlotVectors(x, yL, yH);
+  //rsPlotVectors(x, yL, yH, yH-x, yH-yL);
 
 
   // Observations:
   // -It takes while for the signal to settle in and tha while takes longer when the cutoff is 
-  //  lower.
+  //  lower. Lowering the cutoff makes the saw also look less bent, i.e. more mathematically perfec
+  //  with straighter segments. I think a resonable user range might be 1 Hz - 1 kHz. Or maybe
+  //  2 Hz - 200 Hz with 20 Hz as default in the middle (geometric mean). Or 0.2 Hz - 2000 Hz
   // -Changing the threshold (in between -1..+1, ends exclusive) doesn't make a difference when the
   //  input is a square wave - which makes sense.
   // -It is wrong to use the highpass signal when x < t (where t = thresh). Instead, we should use 
@@ -1565,7 +1577,7 @@ void squareToSaw()
   //  this process could potentially be used to create *only* even harmonics?
   // -Maybe we need a gain boost by squareFreq/cutoff. Try that. This is a rule of thumb. Maybe it 
   //  can be refined by taking the magintude of a correspoding highpass at the squareFreq?
-  // 
+  // -The signal (yH - x) is apparently equal to -yL, (yH - yL) looks like a highpassed square.
 
 
   // ToDo:

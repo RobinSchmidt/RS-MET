@@ -9,7 +9,8 @@ https://github.com/surge-synthesizer/surge
  active community.
 
 https://github.com/mtytel/vital
--A spectral warping wavetable synthesizer with very visual GUI
+-A spectral warping wavetable synthesizer with very visual GUI.
+-Source code seems to be not get updated anymore since a while.
 
 https://github.com/BespokeSynth/BespokeSynth
 -A Reaktor-style modular synthesizer
