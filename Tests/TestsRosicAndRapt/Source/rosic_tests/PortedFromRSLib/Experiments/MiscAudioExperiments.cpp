@@ -1483,7 +1483,7 @@ void squareToSaw()
 
   int  sampleRate = 44100;
   Real squareFreq =   100;
-  Real cutoff     =    30;           // Should be lower than squarefreq, I think.
+  Real cutoff     =    20;           // Should be lower than squarefreq, I think.
   int  N          =  5000;           // Number of samples to generate
   Real thresh     =     0.0;
 
@@ -1502,6 +1502,9 @@ void squareToSaw()
   Real ratio = cutoff / squareFreq;
   Real fudge = 1 / 1.5;              // Empirical fudge factor to give saw same peak amp as sqr
   Real gain  = fudge / ratio;
+  // Hmm - that gain becomes less good when ratio approaches 1 or goes even above. It seems to work 
+  // well for  ratio < 1/3  or so. Maybe try a formula based on the magnitude of the lowpass at
+  // squareFreq.
 
 
 
@@ -1529,7 +1532,8 @@ void squareToSaw()
   //  lower.
   // -It is wrong to use the highpass signal when x < t (where t = thresh). Instead, we should use 
   //  the negated lowpass signal. But then we get a saw wave at twice the frequence as the original
-  //  square wave. That's actually not what I wanted - but good to know anyway.
+  //  square wave. That's actually not what I wanted - but good to know anyway. Does that mean that
+  //  this process could potentially be used to create *only* even harmonics?
   // -Maybe we need a gain boost by squareFreq/cutoff. Try that. This is a rule of thumb. Maybe it 
   //  can be refined by taking the magintude of a correspoding highpass at the squareFreq?
   // 
