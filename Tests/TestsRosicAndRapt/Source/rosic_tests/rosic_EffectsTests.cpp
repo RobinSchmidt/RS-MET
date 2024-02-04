@@ -2,8 +2,6 @@ using namespace rotes;
 using namespace rosic;
 using namespace RAPT;
 
-
-
 void rotes::testAllpassDisperser()
 {
   // We plot some impulse responses of allpass filters. The goal is to build some intuition for
@@ -39,9 +37,6 @@ void rotes::testAllpassDisperser()
   // Plot the impulse response:
   rsPlotVector(y);
 
-
-  int dummy = 0;
-
   // Observations:
   // -For a single 1st order allpass stage, we get an initial negative spike followed by a 
   //  positive value which then turns into an exponential decay. Adding stages seems to directly
@@ -64,7 +59,12 @@ void rotes::testAllpassDisperser()
   //  tonal
 }
 
+void rotes::testAllpassDelay()
+{
 
+
+  int dummy = 0;
+}
 
 
 // Move to prototypes or RAPT:

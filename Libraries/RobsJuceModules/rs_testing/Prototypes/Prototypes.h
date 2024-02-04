@@ -348,10 +348,7 @@ void rsCircularShift(int* a, int N, int k);
 // circular shift without additional memory (using 3 reversals) - needs test
 
 
-
-
-
-
+//=================================================================================================
 
 /** An allpass delay that realizes the transfer function and difference equation:
 
@@ -423,11 +420,19 @@ void rsAllpassDelay<T>::setDelayInSamples(int newDelay)
 }
 
 template<class T>
-T rsAllpassDelay<T>::getSample(T in)
+T rsAllpassDelay<T>::getSample(T x)
 {
-
-
-  // We realize:
+  T xM = inputDelayLine.getSample(x);                            // x[n-M]
+  T yM = outputDelayLine.getSampleSuppressTapIncrements(T(0));   // y[n-M]
+  T y  = allpassCoeff * x + xM - allpassCoeff * yM;              // y[n], our current output
+  outputDelayLine.addToInput(y);
+  outputDelayLine.incrementTapPointers();
+  return y;
+  // ToDo: verify that this does the right thing with respect to the order of reading, writing and
+  // incrementing the taps of the outputDelayLine. Maybe write a unit test that uses a delay of 
+  // M = 1 and compare output to a regular first order allpass filter.
+  //
+  // We want to realize:
   //
   //          a +     z^(-M)
   //  H(z) = ----------------,    y[n] = a * x[n] + x[n-M] - a * y[n-M]
@@ -441,7 +446,8 @@ void rsAllpassDelay<T>::reset()
   outputDelayLine.reset()
 }
 
-
+// ToDo:
+// -Build a nested allpass in which the z^(-M) term has been replaced by another allpass filter.
 
 
 //=================================================================================================

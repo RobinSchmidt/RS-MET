@@ -105,7 +105,8 @@ namespace rosic
     double tmpX = in;
     for(int i=0; i<numStages; i++)
     {
-      tmpY   = (b0*tmpX+TINY) + (b1*x1[i] + b2*x2[i]) + (a1*y1[i] + a2*y2[i]);
+      //tmpY   = (b0*tmpX+TINY) + (b1*x1[i] + b2*x2[i]) + (a1*y1[i] + a2*y2[i]); // old
+      tmpY   = (b0*tmpX) + (b1*x1[i] + b2*x2[i]) + (a1*y1[i] + a2*y2[i]);  // new
       x2[i]  = x1[i];
       x1[i]  = tmpX;
       y2[i]  = y1[i];
