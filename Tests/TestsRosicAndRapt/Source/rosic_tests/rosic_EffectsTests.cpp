@@ -12,9 +12,8 @@ void rotes::testAllpassDisperser()
   int    numStages  = 4;
   bool   biquads    = false;     // Switches between 1st and 2nd order stages
   double freq       = 3900;
-  double quality    = 2.0;      // Quality factor "Q" for 2nd order stages
-  int    N          = 100;      // Number of samples for the plot
-
+  double quality    = 2.0;       // Quality factor "Q" for 2nd order stages
+  int    N          = 4000;      // Number of samples for the plot
 
   // Create and set up the allpass chain:
   rosic::AllpassChain apf1;
@@ -37,7 +36,46 @@ void rotes::testAllpassDisperser()
   // Plot the impulse response:
   rsPlotVector(y);
 
-  // Observations:
+
+
+  // Now apply the allpass delay chain diffusor:
+  std::vector<int> delays = { 13, 17, 23, 29 };
+  double coeff  = +0.9;
+  double sclAmt = 0.0;
+
+  // Compute the coeffs for the stages:
+  numStages = (int) delays.size();   // we repurpose this variable here (that's kinda a ugly!)
+  Vec coeffs(numStages);
+  for(int i = 0; i < numStages; i++)
+  {
+    double scale = double(delays[0]) / double(delays[i]);
+    scale = pow(scale, sclAmt);
+    coeffs[i] = scale * coeff;
+  }
+
+  // Create and set up the allpass chain:
+  rsAllpassDelayChain<double> apdc;
+  apdc.setMaxNumStages(numStages);
+  apdc.setNumStages(numStages);
+  for(int i = 0; i < numStages; i++)
+  {
+    apdc.setMaxDelayInSamples(i, delays[i]);
+    apdc.setDelayInSamples(   i, delays[i]);
+    apdc.setAllpassCoeff(     i, coeffs[i]);
+  }
+
+  // Apply it to y
+  Vec z(N);
+  for(int n = 0; n < N; n++)
+    z[n] = apdc.getSample(y[n]);
+
+  // Plot the signal:
+  rsPlotVector(z);
+
+
+
+
+  // Observations for y:
   // -For a single 1st order allpass stage, we get an initial negative spike followed by a 
   //  positive value which then turns into an exponential decay. Adding stages seems to directly
   //  translate to adding additional local maxima to teb impulse response.
@@ -46,6 +84,9 @@ void rotes::testAllpassDisperser()
   //  will make the initial transient look more chaotic.
   // -With sampleRate = 44100, numStages = 1, freq = 3900, quality = 2.0, we see a nice first 
   //  sinusoidal peak at n = 5.
+  //
+  // Observations for z:
+  // -
 
   // ToDo:
   // -Combine such an inital 2nd order allpass with a chain of allpasses of the form:
@@ -137,7 +178,7 @@ void rotes::testAllpassDelayChain()
   }
 
 
-  // Now do the smae thing with the class rsAllpassDelayChain
+  // Now do the same thing with the class rsAllpassDelayChain
   rsAllpassDelayChain<double> apdc;
   apdc.setMaxNumStages(numStages);
   apdc.setNumStages(numStages);
