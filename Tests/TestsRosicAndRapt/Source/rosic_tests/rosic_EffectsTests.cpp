@@ -6,15 +6,16 @@ using namespace RAPT;
 
 void rotes::testAllpassDisperser()
 {
-  // We plot some impulse responses of allpass filters ...TBC...
+  // We plot some impulse responses of allpass filters. The goal is to build some intuition for
+  // designing a disperser/diffusor stage for an algorithmic reverb.
 
   // User parameters:
   double sampleRate = 44100;
   int    numStages  = 1;
-  bool   biquads    = false;   // switches between 1st and 2nd order stages
-  double freq       = 1000;
+  bool   biquads    = true;    // Switches between 1st and 2nd order stages
+  double freq       = 3900;
   double quality    = 2.0;     // Quality factor "Q" for 2nd order stages
-  int    N          = 100;     // Number of samples for the plot
+  int    N          = 50;      // Number of samples for the plot
 
   // Create and set up the allpass chain:
   rosic::AllpassChain apf1;
