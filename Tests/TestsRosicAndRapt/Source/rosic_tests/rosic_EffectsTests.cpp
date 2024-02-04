@@ -45,8 +45,8 @@ void rotes::testAllpassDisperser()
   //std::vector<int> delays = { 5, 7, 13, 17, 23 };
   //std::vector<int> delays = { 17, 23, 29, 37 };
   std::vector<int> delays = { 3, 5, 7, 13, 17, 23 };
-  double coeff  = +0.92;
-  double sclAmt = 0.0;
+  double coeff  = +0.75;
+  double sclAmt =  0.24;
 
   // Compute the coeffs for the stages:
   numStages = (int) delays.size();   // we repurpose this variable here (that's kinda a ugly!)
@@ -69,13 +69,13 @@ void rotes::testAllpassDisperser()
     apdc.setAllpassCoeff(     i, coeffs[i]);
   }
 
-  // Apply it to y
+  // Apply it to y:
   Vec z(N);
   for(int n = 0; n < N; n++)
     z[n] = apdc.getSample(y[n]);
 
   // Write the impulse response to a wave file for listening:
-  RAPT::rsArrayTools::normalize(&y[0], N);
+  RAPT::rsArrayTools::normalize(&z[0], N);
   rosic::writeToMonoWaveFile("Diffusor.wav", &z[0], N, 44100, 16);
 
   // Plot the signal:
@@ -95,7 +95,11 @@ void rotes::testAllpassDisperser()
   //  sinusoidal peak at n = 5.
   //
   // Observations for z:
-  // -
+  // -With the allpass coeff of around 0.9, we can here ha clear toanlity in the output. With 
+  //  coeff = 0.7 that tonality is less pronounced - but the impulse response is shorter. I think,
+  //  the sweet spot is perhaps around 0.75.
+  // -delays = 3,5,7,13,17,23, coeff = +0.75, sclAmt = 0.5 gives a nice zap. ..oH - maybe my audio 
+  //  interface was distorting. However - using sclAmt = 0.2..0.25 seems a good compromise.
 
   // ToDo:
   // -Combine such an inital 2nd order allpass with a chain of allpasses of the form:
