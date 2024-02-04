@@ -11,11 +11,12 @@ void rotes::testAllpassDisperser()
 
   // User parameters:
   double sampleRate = 44100;
-  int    numStages  = 2;
+  int    numStages  = 4;
   bool   biquads    = false;    // Switches between 1st and 2nd order stages
   double freq       = 3900;
-  double quality    = 2.0;     // Quality factor "Q" for 2nd order stages
+  double quality    = 2.0;      // Quality factor "Q" for 2nd order stages
   int    N          = 100;      // Number of samples for the plot
+
 
   // Create and set up the allpass chain:
   rosic::AllpassChain apf1;
@@ -42,8 +43,9 @@ void rotes::testAllpassDisperser()
   int dummy = 0;
 
   // Observations:
-  // -For a 1st order allpass, we get an initial negative spike followed by a positive value which
-  //  then turns into an exponential decay.
+  // -For a single 1st order allpass stage, we get an initial negative spike followed by a 
+  //  positive value which then turns into an exponential decay. Adding stages seems to directly
+  //  translate to adding additional local maxima to teb impulse response.
   // -For 2nd order allpass chains with 1 stage, we observe an impuse response that looks like
   //  and initial positive/negative spike pair that then turns into a a damped sine. More stages
   //  will make the initial transient look more chaotic.
@@ -55,6 +57,7 @@ void rotes::testAllpassDisperser()
   //  A(z) = (a + z^-M) / (1 + a*z^-M)  where M is different for each stage. Maybe use prime 
   //  numbers with a minimum of 11. Maybe 13,17,23,29.
   //  For ref: 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97
+  // -Alternatively to the single 2nd order stage, use a 4-stage 1st order chain
   // -The goal is to get a dense noisy impulse response with (short) exponential envelope of a few
   //  hundreds of samples length.
   // -Write the impulse response to a wave file and listen to it. Make sure that it doesn't sound 
