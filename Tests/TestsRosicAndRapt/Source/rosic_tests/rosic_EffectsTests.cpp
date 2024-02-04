@@ -34,13 +34,18 @@ void rotes::testAllpassDisperser()
     y[n] = apf1.getSample(0);
 
   // Plot the impulse response:
-  rsPlotVector(y);
+  //rsPlotVector(y);
 
 
 
   // Now apply the allpass delay chain diffusor:
-  std::vector<int> delays = { 13, 17, 23, 29 };
-  double coeff  = +0.9;
+  //std::vector<int> delays = { 13, 17, 23, 29 };
+  //std::vector<int> delays = { 7, 13, 17, 23, 29 };
+  //std::vector<int> delays = { 7, 13, 17, 23 };
+  //std::vector<int> delays = { 5, 7, 13, 17, 23 };
+  //std::vector<int> delays = { 17, 23, 29, 37 };
+  std::vector<int> delays = { 3, 5, 7, 13, 17, 23 };
+  double coeff  = +0.92;
   double sclAmt = 0.0;
 
   // Compute the coeffs for the stages:
@@ -68,6 +73,10 @@ void rotes::testAllpassDisperser()
   Vec z(N);
   for(int n = 0; n < N; n++)
     z[n] = apdc.getSample(y[n]);
+
+  // Write the impulse response to a wave file for listening:
+  RAPT::rsArrayTools::normalize(&y[0], N);
+  rosic::writeToMonoWaveFile("Diffusor.wav", &z[0], N, 44100, 16);
 
   // Plot the signal:
   rsPlotVector(z);
@@ -98,6 +107,7 @@ void rotes::testAllpassDisperser()
   //  hundreds of samples length.
   // -Write the impulse response to a wave file and listen to it. Make sure that it doesn't sound 
   //  tonal
+  // -Maybe notch out the Nyquist freq to get rid of the oscillation there
 }
 
 void rotes::testAllpassDelay()
