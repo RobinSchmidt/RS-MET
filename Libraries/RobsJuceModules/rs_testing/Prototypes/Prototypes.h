@@ -383,6 +383,8 @@ public:
 
   void setDelayInSamples(int newDelay);
 
+  void setAllpassCoeff(T newCoeff) { allpassCoeff = newCoeff; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -448,6 +450,9 @@ void rsAllpassDelay<T>::reset()
 
 // ToDo:
 // -Build a nested allpass in which the z^(-M) term has been replaced by another allpass filter.
+// -When building a series connection of those, as is done for a diffuser stage for a reverb, the 
+//  output delay line of one stage becomes the input delayline for the next stage, so we can share
+//  some delaylines compared toa naive implementation.
 
 
 //=================================================================================================

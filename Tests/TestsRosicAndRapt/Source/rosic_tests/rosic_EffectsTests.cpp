@@ -61,7 +61,26 @@ void rotes::testAllpassDisperser()
 
 void rotes::testAllpassDelay()
 {
+  // User parameters:
+  double coeff = -0.9;
+  int    delay = 1;
+  int    N     = 50;     // Number of samples to plot
 
+  // Create and set up the allpass delay:
+  rsAllpassDelay<double> apd;
+  apd.setMaximumDelayInSamples(delay);
+  apd.setDelayInSamples(delay);
+  apd.setAllpassCoeff(coeff);
+
+  // Record the impulse response of the allpass delay:
+  using Vec = std::vector<double>;
+  Vec y(N);
+  y[0] = apd.getSample(1);
+  for(int n = 1; n < N; n++)
+    y[n] = apd.getSample(0);
+
+  // Plot the impulse response:
+  rsPlotVector(y);
 
   int dummy = 0;
 }
