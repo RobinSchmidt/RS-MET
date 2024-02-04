@@ -733,13 +733,14 @@ bool rotes::testFeedbackDelayNetwork()
   //FeedbackDelayNetwork16 *fdn16 = new FeedbackDelayNetwork16;
 
   double amplitude = 0.5;       // amplitude of the input impulse
-  double diffusion = 120.0;     // diffusion parameter in percent
+  double diffusion = 100.0;     // diffusion parameter in percent
 
 
   using AT = RAPT::rsArrayTools;
 
   FeedbackDelayNetwork fdn;
   fdn.setDiffusion(diffusion);
+  //fdn.setReverbTime(5.0); // Should be scaled in seconds
 
   static const int N = 100000;
   //double hL[N], hR[N];

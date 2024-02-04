@@ -46,6 +46,11 @@ void algoVerb()
 
   delete fdn;
 
+  // Observations:
+  // -With the current settings, it sounds rather metallic. I guess this is due to the settings of 
+  //  the delayline lengths. In the testFeedbackDelayNetwork, we get a far better result also with
+  //  16 delaylines. -> Figure that out!
+
   // ToDo: 
   // -set up an APE project, where we can manually enter the relative delay times
   // -start with 2 delaylines and tweak the 2nd delay-time until it sounds least tonal
