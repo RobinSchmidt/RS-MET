@@ -155,14 +155,12 @@ void rotes::testAllpassDelayChain()
   rsAssert(ok);
 
 
-
   // Write the impulse response to a wave file for listening:
   RAPT::rsArrayTools::normalize(&y[0], N);
   rosic::writeToMonoWaveFile("AllpassDelayChain.wav", &y[0], N, 44100, 16);
 
   // Plot the impulse response:
   rsPlotVector(y);
-
 
   // Observations:
   // -Towards the end, it looks like there is an oscillation at the Nyquist freq when we don't 
@@ -184,6 +182,7 @@ void rotes::testAllpassDelayChain()
   // -Combine the allpass delay chain with the disperser from testAllpassDisperser. That should 
   //  give a nice "random noise" kind of signal.
 }
+
 
 
 
