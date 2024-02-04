@@ -50,6 +50,8 @@ void algoVerb()
   // -With the current settings, it sounds rather metallic. I guess this is due to the settings of 
   //  the delayline lengths. In the testFeedbackDelayNetwork, we get a far better result also with
   //  16 delaylines. -> Figure that out!
+  // -After some nice delayline setting has been figured out, implement a diffusor and put it in 
+  //  front. Maybe that diffusor should be optional so save CPU.
 
   // ToDo: 
   // -set up an APE project, where we can manually enter the relative delay times
