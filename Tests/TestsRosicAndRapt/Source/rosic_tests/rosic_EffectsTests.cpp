@@ -62,9 +62,9 @@ void rotes::testAllpassDisperser()
 void rotes::testAllpassDelay()
 {
   // User parameters:
-  double coeff = -0.9;
-  int    delay = 1;
-  int    N     = 50;     // Number of samples to plot
+  double coeff = +0.9;
+  int    delay = 10;
+  int    N     = 50*delay;     // Number of samples to plot
 
   // Create and set up the allpass delay:
   rsAllpassDelay<double> apd;
@@ -82,7 +82,13 @@ void rotes::testAllpassDelay()
   // Plot the impulse response:
   rsPlotVector(y);
 
-  int dummy = 0;
+  // Observations:
+  // -A positive coeff leads to alternating spikes. A negative coeff leads to postive spikes only.
+  //
+  // Conclusions:
+  // -I think, for a diffuser in a reverb, a positive coeff should be used. The alternation seems 
+  //  desirable. ...but that's just a hunch and needs to be verified by listening tests.
+
 }
 
 
