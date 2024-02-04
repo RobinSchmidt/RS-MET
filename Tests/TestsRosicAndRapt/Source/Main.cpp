@@ -609,8 +609,8 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  testAllpassDisperser();
-  testAllpassDelay();
+  //testAllpassDisperser();
+  //testAllpassDelay();
   testAllpassDelayChain();
   //testFeedbackDelayNetwork();         // writes wave file
   //algoVerb();                         // writes wave file

@@ -512,13 +512,12 @@ protected:
 
 };
 
-/*
+
 template<class T>
-void rsAllpassDelayChain<T>:setMaxNumStages(int newMaxNumStages)
+void rsAllpassDelayChain<T>::setMaxNumStages(int newMaxNumStages)
 {
   allpassDelays.resize(newNumStages);
 }
-*/
 
 template<class T>
 void rsAllpassDelayChain<T>::setNumStages(int newNumStages)
@@ -530,11 +529,23 @@ void rsAllpassDelayChain<T>::setNumStages(int newNumStages)
 template<class T>
 void rsAllpassDelayChain<T>::setMaxDelayInSamples(int stageIndex, int newMaxDelay)
 {
-  RAPT::rsAssert(stageIndex < (int) allpassDelays.size());
+  RAPT::rsAssert(stageIndex < getMaxNumStages());
+  allpassDelays[stageIndex].setMaxDelayInSamples(newMaxDelay);
 }
 
+template<class T>
+void rsAllpassDelayChain<T>::setDelayInSamples(int stageIndex, int newDelay)
+{
+  RAPT::rsAssert(stageIndex < getMaxNumStages());
+  allpassDelays[stageIndex].setDelayInSamples(newDelay);
+}
 
-
+template<class T>
+void rsAllpassDelayChain<T>::setAllpassCoeff(int stageIndex, T newCoeff)
+{
+  RAPT::rsAssert(stageIndex < getMaxNumStages());
+  allpassDelays[stageIndex].setAllpassCoeff(newCoeff);
+}
 
 
 template<class T>
@@ -552,8 +563,6 @@ void rsAllpassDelayChain<T>::reset()
   for(size_t i = 0; i < allpassDelays.size(); i++)
     allpassDelays[i].reset();
 }
-
-
 
 
 //=================================================================================================
