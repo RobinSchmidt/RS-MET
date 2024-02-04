@@ -347,6 +347,103 @@ void cheby_win(double *out, int N, double atten);
 void rsCircularShift(int* a, int N, int k);
 // circular shift without additional memory (using 3 reversals) - needs test
 
+
+
+
+
+
+
+/** An allpass delay that realizes the transfer function and difference equation:
+
+          a +     z^(-M)
+  H(z) = ----------------,    y[n] = a * x[n] + x[n-M] - a * y[n-M]
+          1 + a * z^(-M)
+
+so it's like a first order allpass filter with coefficient a in which the unit delay was replaced
+by a delay line of length M. Such allpass delays can be used as building blocks for reverbs, for 
+example.
+
+...TBC...  */
+
+
+template<class T>
+class rsAllpassDelay
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
+  rsAllpassDelay() {}
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+
+  void setMaximumDelayInSamples(int newMaxDelay);
+
+  void setDelayInSamples(int newDelay);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  inline T getSample(T in);
+
+
+  void reset();
+
+
+
+protected:
+
+  T allpassCoeff = 0.0;
+
+  RAPT::rsBasicDelayLine<T> inputDelayLine, outputDelayLine;
+
+};
+
+
+
+template<class T>
+void rsAllpassDelay<T>::setMaximumDelayInSamples(int newMaxDelay)
+{
+  inputDelayLine.setMaximumDelayInSamples(newMaxDelay);
+  outputDelayLine.setMaximumDelayInSamples(newMaxDelay);
+}
+
+template<class T>
+void rsAllpassDelay<T>::setDelayInSamples(int newDelay)
+{
+  inputDelayLine.setDelayInSamples(newDelay);
+  outputDelayLine.setDelayInSamples(newDelay);
+}
+
+template<class T>
+T rsAllpassDelay<T>::getSample(T in)
+{
+
+
+  // We realize:
+  //
+  //          a +     z^(-M)
+  //  H(z) = ----------------,    y[n] = a * x[n] + x[n-M] - a * y[n-M]
+  //          1 + a * z^(-M)
+}
+
+template<class T>
+void rsAllpassDelay<T>::reset()
+{
+  inputDelayLine.reset()
+  outputDelayLine.reset()
+}
+
+
+
+
 //=================================================================================================
 
 /** Linear fractional interpolation is an interpolation method constructed around the so called 
