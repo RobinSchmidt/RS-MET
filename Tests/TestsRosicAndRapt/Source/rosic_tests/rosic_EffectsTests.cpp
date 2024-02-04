@@ -91,6 +91,56 @@ void rotes::testAllpassDelay()
 
 }
 
+void rotes::testAllpassDelayChain()
+{
+  // User parameters:
+  std::vector<int> delays = { 13, 17, 23, 29 };
+  double coeff = +0.9;
+  int    N     = 1000;
+
+
+  // Create and set up the allpass delays:
+  int numStages = (int) delays.size();
+  std::vector<rsAllpassDelay<double>> apds(numStages);
+  for(int i = 0; i < numStages; i++)
+  {
+    apds[i].setMaximumDelayInSamples(delays[i]);
+    apds[i].setDelayInSamples(delays[i]);
+    apds[i].setAllpassCoeff(coeff);
+  }
+
+  // Record the impulse response of the allpass delay chain:
+  using Vec = std::vector<double>;
+  Vec y(N);
+
+  double tmp = apds[0].getSample(1);
+  for(int i = 1; i < numStages; i++)
+    tmp = apds[i].getSample(tmp);
+  y[0] = tmp;
+
+  for(int n = 1; n < N; n++)
+  {
+    tmp = apds[0].getSample(0);
+    for(int i = 1; i < numStages; i++)
+      tmp = apds[i].getSample(tmp);
+    y[n] = tmp;
+  }
+
+
+
+  // Plot the impulse response:
+  rsPlotVector(y);
+
+  
+  // ToDo:
+  // -Maybe try to use a different coeff for each stage. Maybe stages with longer delay should have 
+  //  smaller coeffs such that the overall decay time is the same for each stage.
+ 
+
+
+}
+
+
 
 // Move to prototypes or RAPT:
 
