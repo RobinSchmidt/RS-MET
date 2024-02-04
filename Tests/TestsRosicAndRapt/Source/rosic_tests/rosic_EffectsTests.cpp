@@ -6,6 +6,36 @@ using namespace RAPT;
 
 void rotes::testAllpassDisperser()
 {
+  // We plot some impulse responses of allpass filters ...TBC...
+
+  // User parameters:
+  double sampleRate = 44100;
+  int    numStages  = 1;
+  bool   biquads    = false;   // switches between 1st and 2nd order stages
+  double freq       = 1000;
+  double quality    = 2.0;     // Quality factor "Q" for 2nd order stages
+  int    N          = 100;     // Number of samples for the plot
+
+  // Create and set up the allpass chain:
+  rosic::AllpassChain apf1;
+  apf1.setSampleRate(sampleRate);
+  apf1.setFrequency(freq);
+  apf1.setNumStages(numStages);
+  apf1.setQ(quality);
+  if(biquads)
+    apf1.setMode(apf1.SECOND_ORDER_ALLPASS);
+  else
+    apf1.setMode(apf1.FIRST_ORDER_ALLPASS);
+
+  // Record the impulse response of the allpass:
+  using Vec = std::vector<double>;
+  Vec y(N);
+  y[0] = apf1.getSample(1);
+  for(int n = 1; n < N; n++)
+    y[n] = apf1.getSample(0);
+
+  // Plot the impulse response:
+  rsPlotVector(y);
 
 
   int dummy = 0;
