@@ -39,12 +39,12 @@ void rotes::testAllpassDisperser()
 
 
   // Now apply the allpass delay chain diffusor:
-  //std::vector<int> delays = { 13, 17, 23, 29 };
+  std::vector<int> delays = { 13, 17, 23, 29 };
   //std::vector<int> delays = { 7, 13, 17, 23, 29 };
   //std::vector<int> delays = { 7, 13, 17, 23 };
   //std::vector<int> delays = { 5, 7, 13, 17, 23 };
   //std::vector<int> delays = { 17, 23, 29, 37 };
-  std::vector<int> delays = { 3, 5, 7, 13, 17, 23 };
+  //std::vector<int> delays = { 3, 5, 7, 13, 17, 23 };
   double coeff  = +0.75;
   double sclAmt =  0.24;
 
@@ -100,6 +100,8 @@ void rotes::testAllpassDisperser()
   //  the sweet spot is perhaps around 0.75.
   // -delays = 3,5,7,13,17,23, coeff = +0.75, sclAmt = 0.5 gives a nice zap. ..oH - maybe my audio 
   //  interface was distorting. However - using sclAmt = 0.2..0.25 seems a good compromise.
+  // -Using these vaules with only 4 delays of 13,17,23,29 seems to work also well. Experimenting 
+  //  with more stages for the initial AllpassChain also helps to shape the sound.
 
   // ToDo:
   // -Combine such an inital 2nd order allpass with a chain of allpasses of the form:
