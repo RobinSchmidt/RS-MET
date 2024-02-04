@@ -100,21 +100,35 @@ void rotes::testAllpassDelayChain()
   int    N      = 4000;
   double sclAmt = 0.2;   // Amount of scaling of the coeff as function of delay
 
-  // Create and set up the allpass delays:
+  // Compute the coeffs for the stages:
   int numStages = (int) delays.size();
+  using Vec = std::vector<double>;
+  Vec coeffs(numStages);
+  for(int i = 0; i < numStages; i++)
+  {
+    double scale = double(delays[0]) / double(delays[i]);
+    scale = pow(scale, sclAmt);
+    coeffs[i] = scale * coeff;
+  }
+
+
+
+  // Create and set up the allpass delays:
   std::vector<rsAllpassDelay<double>> apds(numStages);
   for(int i = 0; i < numStages; i++)
   {
     apds[i].setMaximumDelayInSamples(delays[i]);
     apds[i].setDelayInSamples(delays[i]);
-    //double scale = 1.0;
-    double scale = double(delays[0]) / double(delays[i]);
-    scale = pow(scale, sclAmt);
-    apds[i].setAllpassCoeff(scale * coeff);
+
+    //double scale = double(delays[0]) / double(delays[i]);
+    //scale = pow(scale, sclAmt);
+    //apds[i].setAllpassCoeff(scale * coeff);
+
+    apds[i].setAllpassCoeff(coeffs[i]);
   }
 
   // Record the impulse response of the allpass delay chain:
-  using Vec = std::vector<double>;
+
   Vec y(N);
 
   double tmp = apds[0].getSample(1);
@@ -129,6 +143,15 @@ void rotes::testAllpassDelayChain()
       tmp = apds[i].getSample(tmp);
     y[n] = tmp;
   }
+
+
+  // Now do the smae thing with the class rsAllpassDelayChain
+  rsAllpassDelayChain<double> apdc;
+  apdc.setMaxNumStages(numStages);
+  apdc.setNumStages(numStages);
+
+
+
 
   // Write the impulse response to a wave file for listening:
   RAPT::rsArrayTools::normalize(&y[0], N);

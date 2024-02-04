@@ -516,7 +516,7 @@ protected:
 template<class T>
 void rsAllpassDelayChain<T>::setMaxNumStages(int newMaxNumStages)
 {
-  allpassDelays.resize(newNumStages);
+  allpassDelays.resize(newMaxNumStages);
 }
 
 template<class T>
@@ -552,7 +552,7 @@ template<class T>
 T rsAllpassDelayChain<T>::getSample(T in)
 {
   T tmp = in;
-  for(size_t i = 0; i < allpassDelays.size(); i++)
+  for(int i = 0; i < numStages; i++)
     tmp = allpassDelays[i].getSample(tmp);
   return tmp;
 }
@@ -560,7 +560,7 @@ T rsAllpassDelayChain<T>::getSample(T in)
 template<class T>
 void rsAllpassDelayChain<T>::reset()
 {
-  for(size_t i = 0; i < allpassDelays.size(); i++)
+  for(int i = 0; i < getMaxNumStages(); i++)
     allpassDelays[i].reset();
 }
 
