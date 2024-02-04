@@ -97,9 +97,8 @@ void rotes::testAllpassDelayChain()
   //std::vector<int> delays = { 13, 17, 23, 29, 37 };
   std::vector<int> delays = { 13, 17, 23, 29 };
   double coeff  = +0.9;
-  int    N      = 2000;
-  double sclAmt = 0.05;   // Amount of scaling of the coeff as function of delay
-
+  int    N      = 4000;
+  double sclAmt = 0.2;   // Amount of scaling of the coeff as function of delay
 
   // Create and set up the allpass delays:
   int numStages = (int) delays.size();
@@ -131,27 +130,37 @@ void rotes::testAllpassDelayChain()
     y[n] = tmp;
   }
 
-
+  // Write the impulse response to a wave file for listening:
+  RAPT::rsArrayTools::normalize(&y[0], N);
+  rosic::writeToMonoWaveFile("AllpassDelayChain.wav", &y[0], N, 44100, 16);
 
   // Plot the impulse response:
   rsPlotVector(y);
+
 
   // Observations:
   // -Towards the end, it looks like there is an oscillation at the Nyquist freq when we don't 
   //  scale the coeff at all, i.e. choose sclAmt = 0, For sclAmt = 1, we see a repetitive pattern
   //  at the end.
   // -Higher values of sclAmt tend to concentrate the energy more at the start.
-
-  
+  // -It sounds like a kind of breath noise (like in a flute) but with percussive envelope. With 
+  //  higher values of sclAmt, it begins to sound more like a mallet-on-glass sound. Negative 
+  //  values (like -0.1) elongate it - it begins to sound like bowed glass or something. I think,
+  //  sclAmt in the range 0.0...0.2 should be OK for a diffusor
+  //
   // ToDo:
   // -Maybe try to use a different coeff for each stage. Maybe stages with longer delay should have 
   //  smaller coeffs such that the overall decay time is the same for each stage. I think, the 
   //  coeff for stage i should be multiplied by double(delays[0]) / double(delays[i]).
   //  ...hmm...doing so leads to a clear repetitive pattern at the end
- 
-
-
+  // -Write a class rsAllpasDelayChain that encapsulates the chaining of several allpass delays. 
+  //  Then transform this test here into a unit test for that class
+  // -Combine the allpass delay chain with the disperser from testAllpassDisperser. That should 
+  //  give a nice "random noise" kind of signal.
 }
+
+
+
 
 
 
