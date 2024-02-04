@@ -530,7 +530,7 @@ template<class T>
 void rsAllpassDelayChain<T>::setMaxDelayInSamples(int stageIndex, int newMaxDelay)
 {
   RAPT::rsAssert(stageIndex < getMaxNumStages());
-  allpassDelays[stageIndex].setMaxDelayInSamples(newMaxDelay);
+  allpassDelays[stageIndex].setMaximumDelayInSamples(newMaxDelay);
 }
 
 template<class T>

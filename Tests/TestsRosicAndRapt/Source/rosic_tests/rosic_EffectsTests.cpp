@@ -112,25 +112,17 @@ void rotes::testAllpassDelayChain()
   }
 
 
-
   // Create and set up the allpass delays:
   std::vector<rsAllpassDelay<double>> apds(numStages);
   for(int i = 0; i < numStages; i++)
   {
     apds[i].setMaximumDelayInSamples(delays[i]);
     apds[i].setDelayInSamples(delays[i]);
-
-    //double scale = double(delays[0]) / double(delays[i]);
-    //scale = pow(scale, sclAmt);
-    //apds[i].setAllpassCoeff(scale * coeff);
-
     apds[i].setAllpassCoeff(coeffs[i]);
   }
 
   // Record the impulse response of the allpass delay chain:
-
   Vec y(N);
-
   double tmp = apds[0].getSample(1);
   for(int i = 1; i < numStages; i++)
     tmp = apds[i].getSample(tmp);
@@ -149,7 +141,18 @@ void rotes::testAllpassDelayChain()
   rsAllpassDelayChain<double> apdc;
   apdc.setMaxNumStages(numStages);
   apdc.setNumStages(numStages);
-
+  for(int i = 0; i < numStages; i++)
+  {
+    apdc.setMaxDelayInSamples(i, delays[i]);
+    apdc.setDelayInSamples(   i, delays[i]);
+    apdc.setAllpassCoeff(     i, coeffs[i]);
+  }
+  Vec z(N);
+  z[0] = apdc.getSample(1);
+  for(int n = 1; n < N; n++)
+    z[n] = apdc.getSample(0);
+  bool ok = y == z;
+  rsAssert(ok);
 
 
 

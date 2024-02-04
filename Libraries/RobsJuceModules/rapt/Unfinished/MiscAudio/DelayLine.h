@@ -30,6 +30,7 @@ public:
   length of the delayline can be the respective power-of-two itself) - if it isn't, the next
   power-of-two-minus-one will be used. */
   void setMaximumDelayInSamples(int newMaxDelay);
+  // rename to setMaxDelayInSamples 
 
   /** Sets the delay-time in samples. If the passed value exceeds the length of the delayline,
   new memory will be allocated which is large enough to support the desired delay. You probably
