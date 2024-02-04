@@ -10,7 +10,7 @@ void rotes::testAllpassDisperser()
   // User parameters:
   double sampleRate = 44100;
   int    numStages  = 4;
-  bool   biquads    = false;    // Switches between 1st and 2nd order stages
+  bool   biquads    = false;     // Switches between 1st and 2nd order stages
   double freq       = 3900;
   double quality    = 2.0;      // Quality factor "Q" for 2nd order stages
   int    N          = 100;      // Number of samples for the plot

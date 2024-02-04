@@ -455,6 +455,48 @@ void rsAllpassDelay<T>::reset()
 //  some delaylines compared toa naive implementation.
 
 
+
+//=================================================================================================
+
+/** Under construction....TBC...
+
+This is supposed to be a naive prototype implementation. We just use a std::vector of 
+rsAllpassDelay. This is suboptimal because in such a chain, the output delayline of stage i can at 
+the same time serve as input delayline for stage i+1 such that we can get rid of almost half of the
+delaylines in an optimized implementation. But we don't do that here.
+
+*/
+
+
+template<class T>
+class rsAllpassDelayChain  // maybe rename to rsAllpassDelayChainNaive
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+
+  void setNumStages(int newNumStages);
+
+  void setMaxDelayInSamples(int stageIndex, int newMaxDelay);
+
+  void setDelayInSamples(int stageIndex, int newDelay);
+
+  void setAllpassCoeff(int stageIndex, T newCoeff);
+
+
+
+protected:
+
+  std::vector<rsAllpassDelay<T>> allpassDelays;
+
+};
+
+
+
 //=================================================================================================
 
 /** Linear fractional interpolation is an interpolation method constructed around the so called 
