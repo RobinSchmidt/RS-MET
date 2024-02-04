@@ -26,6 +26,7 @@ bool testFileWave();
 
 
 // effects:
+void testAllpassDisperser();
 bool testFastGeneralizedHadamardTransform();
 bool testFeedbackDelayNetwork();
 bool testFreqShifter();

@@ -463,7 +463,7 @@ int main(int argc, char* argv[])
   //windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
   //windowedSinc();
   //waveMorph();  // under construction
-  squareToSaw();
+  //squareToSaw();    // shapes square-wave into saw-wave
 
 
 
@@ -609,8 +609,9 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  //testFeedbackDelayNetwork();     // writes wave file
-  //algoVerb();
+  testAllpassDisperser();
+  //testFeedbackDelayNetwork();         // writes wave file
+  //algoVerb();                         // writes wave file
   //spectralFilter();                 // Maybe move into a file for spectral processors
   //formantShifter();
   //spectralShifter();

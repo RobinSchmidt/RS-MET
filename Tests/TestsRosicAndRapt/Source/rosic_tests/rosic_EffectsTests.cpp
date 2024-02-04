@@ -2,6 +2,18 @@ using namespace rotes;
 using namespace rosic;
 using namespace RAPT;
 
+
+
+void rotes::testAllpassDisperser()
+{
+
+
+  int dummy = 0;
+}
+
+
+
+
 // Move to prototypes or RAPT:
 
 template<class T>
@@ -562,6 +574,10 @@ bool rotes::testFeedbackDelayNetwork()
   //  heatmaps
 }
 
+
+
+
+// Move to rs_testing:
 template<class Effect>
 bool testInOutEqual(Effect& eff, int numSamples, double tolerance)
 {

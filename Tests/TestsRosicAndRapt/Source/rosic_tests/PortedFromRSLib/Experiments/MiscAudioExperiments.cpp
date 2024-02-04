@@ -1594,6 +1594,7 @@ void squareToSaw()
   //  That means use: t = meanLowpass(x). That lowpass should be tuned to some subsonic frequency 
   //  and be adjusted independently from the cutoff. Or maybe we could use a user-adjustable mix 
   //  between a constant and the measured mean.
+  // -Build a weird distortion algorithm from that idea.
 
 
   int dummy = 0;
