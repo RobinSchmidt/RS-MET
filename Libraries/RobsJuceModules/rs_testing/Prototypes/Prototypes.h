@@ -444,8 +444,8 @@ T rsAllpassDelay<T>::getSample(T x)
 template<class T>
 void rsAllpassDelay<T>::reset()
 {
-  inputDelayLine.reset()
-  outputDelayLine.reset()
+  inputDelayLine.reset();
+  outputDelayLine.reset();
 }
 
 // ToDo:
@@ -478,6 +478,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  void setMaxNumStages(int newMaxNumStages);
 
   void setNumStages(int newNumStages);
 
@@ -488,12 +489,70 @@ public:
   void setAllpassCoeff(int stageIndex, T newCoeff);
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getMaxNumStages() const { return (int) allpassDelays.size(); }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  inline T getSample(T in);
+
+  void reset();
+
+
 
 protected:
 
   std::vector<rsAllpassDelay<T>> allpassDelays;
+  int numStages = 0;
 
 };
+
+/*
+template<class T>
+void rsAllpassDelayChain<T>:setMaxNumStages(int newMaxNumStages)
+{
+  allpassDelays.resize(newNumStages);
+}
+*/
+
+template<class T>
+void rsAllpassDelayChain<T>::setNumStages(int newNumStages)
+{
+  RAPT::rsAssert(newNumStages <= getMaxNumStages());
+  numStages = newNumStages;
+}
+
+template<class T>
+void rsAllpassDelayChain<T>::setMaxDelayInSamples(int stageIndex, int newMaxDelay)
+{
+  RAPT::rsAssert(stageIndex < (int) allpassDelays.size());
+}
+
+
+
+
+
+template<class T>
+T rsAllpassDelayChain<T>::getSample(T in)
+{
+  T tmp = in;
+  for(size_t i = 0; i < allpassDelays.size(); i++)
+    tmp = allpassDelays[i].getSample(tmp);
+  return tmp;
+}
+
+template<class T>
+void rsAllpassDelayChain<T>::reset()
+{
+  for(size_t i = 0; i < allpassDelays.size(); i++)
+    allpassDelays[i].reset();
+}
+
 
 
 
