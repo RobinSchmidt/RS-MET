@@ -140,7 +140,7 @@ https://www.dsprelated.com/freebooks/pasp/Schroeder_Allpass_Sections.html
 */
 
 
-template<class T>
+template<class TSig, class TPar>
 class rsAllpassDelayChain  // maybe rename to rsAllpassDelayChainNaive
 {
 
@@ -158,7 +158,7 @@ public:
 
   void setDelayInSamples(int stageIndex, int newDelay);
 
-  void setAllpassCoeff(int stageIndex, T newCoeff);
+  void setAllpassCoeff(int stageIndex, TPar newCoeff);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  inline T getSample(T in);
+  inline TSig getSample(TSig in);
 
   void reset();
 
@@ -179,49 +179,49 @@ public:
 
 protected:
 
-  std::vector<rsAllpassDelay<T, T>> allpassDelays;
+  std::vector<rsAllpassDelay<TSig, TPar>> allpassDelays;
   int numStages = 0;
 
 };
 
 
-template<class T>
-void rsAllpassDelayChain<T>::setMaxNumStages(int newMaxNumStages)
+template<class TSig, class TPar>
+void rsAllpassDelayChain<TSig, TPar>::setMaxNumStages(int newMaxNumStages)
 {
   allpassDelays.resize(newMaxNumStages);
 }
 
-template<class T>
-void rsAllpassDelayChain<T>::setNumStages(int newNumStages)
+template<class TSig, class TPar>
+void rsAllpassDelayChain<TSig, TPar>::setNumStages(int newNumStages)
 {
   RAPT::rsAssert(newNumStages <= getMaxNumStages());
   numStages = newNumStages;
 }
 
-template<class T>
-void rsAllpassDelayChain<T>::setMaxDelayInSamples(int stageIndex, int newMaxDelay)
+template<class TSig, class TPar>
+void rsAllpassDelayChain<TSig, TPar>::setMaxDelayInSamples(int stageIndex, int newMaxDelay)
 {
   RAPT::rsAssert(stageIndex < getMaxNumStages());
   allpassDelays[stageIndex].setMaximumDelayInSamples(newMaxDelay);
 }
 
-template<class T>
-void rsAllpassDelayChain<T>::setDelayInSamples(int stageIndex, int newDelay)
+template<class TSig, class TPar>
+void rsAllpassDelayChain<TSig, TPar>::setDelayInSamples(int stageIndex, int newDelay)
 {
   RAPT::rsAssert(stageIndex < getMaxNumStages());
   allpassDelays[stageIndex].setDelayInSamples(newDelay);
 }
 
-template<class T>
-void rsAllpassDelayChain<T>::setAllpassCoeff(int stageIndex, T newCoeff)
+template<class TSig, class TPar>
+void rsAllpassDelayChain<TSig, TPar>::setAllpassCoeff(int stageIndex, TPar newCoeff)
 {
   RAPT::rsAssert(stageIndex < getMaxNumStages());
   allpassDelays[stageIndex].setAllpassCoeff(newCoeff);
 }
 
 
-template<class T>
-T rsAllpassDelayChain<T>::getSample(T in)
+template<class TSig, class TPar>
+TSig rsAllpassDelayChain<TSig, TPar>::getSample(TSig in)
 {
   T tmp = in;
   for(int i = 0; i < numStages; i++)
@@ -229,8 +229,8 @@ T rsAllpassDelayChain<T>::getSample(T in)
   return tmp;
 }
 
-template<class T>
-void rsAllpassDelayChain<T>::reset()
+template<class TSig, class TPar>
+void rsAllpassDelayChain<TSig, TPar>::reset()
 {
   for(int i = 0; i < getMaxNumStages(); i++)
     allpassDelays[i].reset();
