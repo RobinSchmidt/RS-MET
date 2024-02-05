@@ -58,3 +58,15 @@ void rsEllipse<T>::updateCoeffs()
   // https://stackoverflow.com/questions/4643074/why-do-i-have-to-access-template-base-class-members-through-the-this-pointer
   // this really sucks!
 }
+
+
+
+
+
+/*
+
+Maybe get inspirations from existing 2D geometry libraries such as:
+
+https://github.com/OneLoneCoder/olcUTIL_Geometry2D
+
+*/
