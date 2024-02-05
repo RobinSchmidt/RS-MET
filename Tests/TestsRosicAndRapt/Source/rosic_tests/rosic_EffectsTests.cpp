@@ -81,9 +81,6 @@ void rotes::allpassDisperser()
   // Plot the signal:
   rsPlotVector(z);
 
-
-
-
   // Observations for y:
   // -For a single 1st order allpass stage, we get an initial negative spike followed by a 
   //  positive value which then turns into an exponential decay. Adding stages seems to directly
@@ -104,15 +101,10 @@ void rotes::allpassDisperser()
   //  with more stages for the initial AllpassChain also helps to shape the sound.
 
   // ToDo:
-  // -Combine such an inital 2nd order allpass with a chain of allpasses of the form:
-  //  A(z) = (a + z^-M) / (1 + a*z^-M)  where M is different for each stage. Maybe use prime 
-  //  numbers with a minimum of 11. Maybe 13,17,23,29.
-  //  For ref: 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97
-  // -Alternatively to the single 2nd order stage, use a 4-stage 1st order chain
+  // -Alternatively to the single 2nd order stage, use a 4-stage 1st order chain - yeah - that's 
+  //  what we currently do.
   // -The goal is to get a dense noisy impulse response with (short) exponential envelope of a few
   //  hundreds of samples length.
-  // -Write the impulse response to a wave file and listen to it. Make sure that it doesn't sound 
-  //  tonal
   // -Maybe notch out the Nyquist freq to get rid of the oscillation there
 }
 
@@ -234,26 +226,11 @@ void rotes::allpassDelayChain()
   //  smaller coeffs such that the overall decay time is the same for each stage. I think, the 
   //  coeff for stage i should be multiplied by double(delays[0]) / double(delays[i]).
   //  ...hmm...doing so leads to a clear repetitive pattern at the end
-  // -Write a class rsAllpasDelayChain that encapsulates the chaining of several allpass delays. 
-  //  Then transform this test here into a unit test for that class
-  // -Combine the allpass delay chain with the disperser from testAllpassDisperser. That should 
+  // -Write a class rsAllpasDelayChain that encapsulates the chaining of several allpass delays 
+  //  (done). Then transform this test here into a unit test for that class
+  // -Combine the allpass delay chain with the disperser from allpassDisperser. That should 
   //  give a nice "random noise" kind of signal.
-  // -Maybe try to implement another kind of diffuser based on an allpass FDN, see:
-  //  https://arxiv.org/pdf/2007.07337.pdf  Allpass Feedback Delay Networks (Sebastian J. Schlecht)
-  //  it has accompanying MatLab code: https://github.com/SebastianJiroSchlecht/fdnToolbox
-  // -Maybe try a nested allpass structure (a la Gardner) instead of a series (a la Schroeder). 
-  //  see: http://gdsp.hf.ntnu.no/lessons/6/33/  ..has a nice block diagram for an implementation 
-  //  structure of the nested allpasses. Ah - no - it's three allpass filters in series nested in 
-  //  one outer allpass.
-  // -A nested allpass design fetaures an increasing eacho density over time whereas a series 
-  //  conncetion featues a constant echo density. 
-//    see: https://valhalladsp.wordpress.com/tag/nested-allpass/ 
 }
-
-
-
-
-
 
 
 // Move to prototypes or RAPT:
