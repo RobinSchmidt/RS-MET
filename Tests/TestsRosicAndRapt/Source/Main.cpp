@@ -612,8 +612,8 @@ int main(int argc, char* argv[])
   allpassDisperser();
   allpassDelay();
   allpassDelayChain();
-  testFeedbackDelayNetwork();         // writes wave file - rename - get rid of the "test"
-  //algoVerb();                         // writes wave file
+  feedbackDelayNetwork();             // writes wave file
+  //algoVerb();                       // writes wave file
   //spectralFilter();                 // Maybe move into a file for spectral processors
   //formantShifter();
   //spectralShifter();

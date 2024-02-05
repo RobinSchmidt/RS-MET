@@ -22,7 +22,7 @@ https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
 ...TBC...  */
 
 
-template<class T>
+template<class TSig, class TPar>
 class rsAllpassDelay
 {
 
@@ -42,14 +42,14 @@ public:
 
   void setDelayInSamples(int newDelay);
 
-  void setAllpassCoeff(T newCoeff) { allpassCoeff = newCoeff; }
+  void setAllpassCoeff(TPar newCoeff) { allpassCoeff = newCoeff; }
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
 
-  inline T getSample(T in);
+  inline TSig getSample(TSig in);
 
 
   void reset();
@@ -58,9 +58,9 @@ public:
 
 protected:
 
-  T allpassCoeff = 0.0;  // TPar
+  TPar allpassCoeff = 0.0;
 
-  RAPT::rsBasicDelayLine<T> inputDelayLine, outputDelayLine;  // TSig
+  RAPT::rsBasicDelayLine<TSig> inputDelayLine, outputDelayLine;
 
 };
 
@@ -71,26 +71,26 @@ protected:
 // -use TSig and TPar
 
 
-template<class T>
-void rsAllpassDelay<T>::setMaximumDelayInSamples(int newMaxDelay)
+template<class TSig, class TPar>
+void rsAllpassDelay<TSig, TPar>::setMaximumDelayInSamples(int newMaxDelay)
 {
   inputDelayLine.setMaximumDelayInSamples(newMaxDelay);
   outputDelayLine.setMaximumDelayInSamples(newMaxDelay);
 }
 
-template<class T>
-void rsAllpassDelay<T>::setDelayInSamples(int newDelay)
+template<class TSig, class TPar>
+void rsAllpassDelay<TSig, TPar>::setDelayInSamples(int newDelay)
 {
   inputDelayLine.setDelayInSamples(newDelay);
   outputDelayLine.setDelayInSamples(newDelay);
 }
 
-template<class T>
-T rsAllpassDelay<T>::getSample(T x)
+template<class TSig, class TPar>
+TSig rsAllpassDelay<TSig, TPar>::getSample(TSig x)
 {
-  T xM = inputDelayLine.getSample(x);                            // x[n-M]
-  T yM = outputDelayLine.getSampleSuppressTapIncrements(T(0));   // y[n-M]
-  T y  = allpassCoeff * x + xM - allpassCoeff * yM;              // y[n], our current output
+  TSig xM = inputDelayLine.getSample(x);                             // x[n-M]
+  TSig yM = outputDelayLine.getSampleSuppressTapIncrements(TSig(0)); // y[n-M]
+  TSig y  = allpassCoeff * x + xM - allpassCoeff * yM;               // y[n], our current output
   outputDelayLine.addToInput(y);
   outputDelayLine.incrementTapPointers();
   return y;
@@ -105,8 +105,8 @@ T rsAllpassDelay<T>::getSample(T x)
   //          1 + a * z^(-M)
 }
 
-template<class T>
-void rsAllpassDelay<T>::reset()
+template<class TSig, class TPar>
+void rsAllpassDelay<TSig, TPar>::reset()
 {
   inputDelayLine.reset();
   outputDelayLine.reset();
@@ -116,7 +116,7 @@ void rsAllpassDelay<T>::reset()
 // -Build a nested allpass in which the z^(-M) term has been replaced by another allpass filter.
 // -When building a series connection of those, as is done for a diffuser stage for a reverb, the 
 //  output delay line of one stage becomes the input delayline for the next stage, so we can share
-//  some delaylines compared toa naive implementation.
+//  some delaylines compared to a naive implementation.
 
 
 
@@ -179,7 +179,7 @@ public:
 
 protected:
 
-  std::vector<rsAllpassDelay<T>> allpassDelays;
+  std::vector<rsAllpassDelay<T, T>> allpassDelays;
   int numStages = 0;
 
 };

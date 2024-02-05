@@ -124,7 +124,7 @@ void rotes::allpassDelay()
   int    N     = 50*delay;     // Number of samples to plot
 
   // Create and set up the allpass delay:
-  rsAllpassDelay<double> apd;
+  rsAllpassDelay<double, double> apd;
   apd.setMaximumDelayInSamples(delay);
   apd.setDelayInSamples(delay);
   apd.setAllpassCoeff(coeff);
@@ -170,7 +170,7 @@ void rotes::allpassDelayChain()
 
 
   // Create and set up the allpass delays:
-  std::vector<rsAllpassDelay<double>> apds(numStages);
+  std::vector<rsAllpassDelay<double, double>> apds(numStages);
   for(int i = 0; i < numStages; i++)
   {
     apds[i].setMaximumDelayInSamples(delays[i]);
@@ -736,7 +736,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   // -make a performance comparison betweenold and new implementation
 }
 
-bool rotes::testFeedbackDelayNetwork()
+bool rotes::feedbackDelayNetwork()
 {
   bool result = true;  // get rid! this is not a unit test!
 
@@ -831,7 +831,7 @@ bool rotes::testAllpassDelay()
   apf1.setCoefficients(coeff, 1.0, -coeff);
 
   // Create and set up M-th order allpass filter with M=1:
-  rsAllpassDelay<Real> apd;
+  rsAllpassDelay<Real, Real> apd;
   apd.setMaximumDelayInSamples(1);
   apd.setDelayInSamples(1);
   apd.setAllpassCoeff(coeff);
