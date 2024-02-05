@@ -238,6 +238,10 @@ void rotes::testAllpassDelayChain()
   //  Then transform this test here into a unit test for that class
   // -Combine the allpass delay chain with the disperser from testAllpassDisperser. That should 
   //  give a nice "random noise" kind of signal.
+
+  // -Maybe try to implement another kind of diffuser based on an allpass FDN, see:
+  //  https://arxiv.org/pdf/2007.07337.pdf 
+  //  Allpass Feedback Delay Networks (Sebastian J. Schlecht)
 }
 
 

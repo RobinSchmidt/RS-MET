@@ -697,6 +697,8 @@ INLINE void FeedbackDelayNetwork16::applyTheFeedbackMatrix()
 
   case MINUS_HADAMARD:
   {
+    // Comment seems obsolete - ...and is it really worth to have an extra branch for that or could we 
+    // just use positive Hadamard branch and then negate afterwards?
     // apply an 8x8 negated Hadamard-matrix: 
     //  - - - - - - - -
     //  - + - + - + - +

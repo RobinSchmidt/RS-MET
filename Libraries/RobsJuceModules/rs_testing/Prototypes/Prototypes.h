@@ -357,8 +357,13 @@ void rsCircularShift(int* a, int N, int k);
           1 + a * z^(-M)
 
 so it's like a first order allpass filter with coefficient a in which the unit delay was replaced
-by a delay line of length M. Such allpass delays can be used as building blocks for reverbs, for 
-example.
+by a delay line of length M. This is also known as a Schroeder allpass section. Such allpass delays 
+can be used as building blocks for reverbs, for example. 
+
+
+See:
+https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
+
 
 ...TBC...  */
 
@@ -404,6 +409,11 @@ protected:
   RAPT::rsBasicDelayLine<T> inputDelayLine, outputDelayLine;
 
 };
+
+// ToDo:
+// -Optimize this to use only a single delayline by swicthing from a DF1-like implementation to a 
+//  DF2-like implementation. But keep this implementation as prototype for unit tests of the 
+//  optimized one.
 
 
 
@@ -464,6 +474,11 @@ This is supposed to be a naive prototype implementation. We just use a std::vect
 rsAllpassDelay. This is suboptimal because in such a chain, the output delayline of stage i can at 
 the same time serve as input delayline for stage i+1 such that we can get rid of almost half of the
 delaylines in an optimized implementation. But we don't do that here.
+
+
+See:
+https://ccrma.stanford.edu/~jos/pasp/Schroeder_Allpass_Sections.html
+https://www.dsprelated.com/freebooks/pasp/Schroeder_Allpass_Sections.html
 
 */
 

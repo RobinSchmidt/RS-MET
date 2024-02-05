@@ -611,7 +611,7 @@ int main(int argc, char* argv[])
   // Effects:
   //testAllpassDisperser();
   //testAllpassDelay();
-  //testAllpassDelayChain();
+  testAllpassDelayChain();
   testFeedbackDelayNetwork();         // writes wave file
   algoVerb();                         // writes wave file
   //spectralFilter();                 // Maybe move into a file for spectral processors

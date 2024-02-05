@@ -60,7 +60,7 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
   //  can be defined
   // -maybe try to use not one N=64 network but a parallel connection of 4 N=16 networks with
   //  different delay-sttings - maybe that creates more density and also avoids the pitch-sweepdown
-  // -try different formulas for the relative delay times, currently, apower rule is used
+  // -try different formulas for the relative delay times, currently, a power rule is used
 
   sampleRate         = 44100.0;
   referenceDelayTime = 20.0/1000.0;  // 20 ms
@@ -150,8 +150,9 @@ void FeedbackDelayNetwork::reset()
 }
 
 // code is obsolete - we have better code in rapt Transforms now - move to prototypes for reference
-// ...but before doing so, do performance tests - it may be more efficient, even though it doesn't
-// work in place
+// But before doing so, do performance tests - it may be more efficient, even though it doesn't
+// work in place. Maybe let the number of delaylines be a compile-time parameter, i.e. a template
+// parameter. Then, the compiler might be able to unroll the loop.
 void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
   double *x, int N, int log2N, double *y, double a, double b, double c, double d)
 {
