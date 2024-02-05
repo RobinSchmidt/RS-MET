@@ -2,7 +2,7 @@ using namespace rotes;
 using namespace rosic;
 using namespace RAPT;
 
-void rotes::testAllpassDisperser()
+void rotes::allpassDisperser()
 {
   // We plot some impulse responses of allpass filters. The goal is to build some intuition for
   // designing a disperser/diffusor stage for an algorithmic reverb.
@@ -116,7 +116,7 @@ void rotes::testAllpassDisperser()
   // -Maybe notch out the Nyquist freq to get rid of the oscillation there
 }
 
-void rotes::testAllpassDelay()
+void rotes::allpassDelay()
 {
   // User parameters:
   double coeff = +0.9;
@@ -148,7 +148,7 @@ void rotes::testAllpassDelay()
 
 }
 
-void rotes::testAllpassDelayChain()
+void rotes::allpassDelayChain()
 {
   // User parameters:
   //std::vector<int> delays = { 13, 17, 23, 29, 37 };
@@ -817,6 +817,69 @@ bool rotes::testFeedbackDelayNetwork()
   //  heatmaps
 }
 
+bool rotes::testAllpassDelay()
+{
+  bool  ok    = true;
+  using Real  = double;
+  using Vec   = std::vector<Real>;
+
+  Real  coeff = 0.9;  // The allpass coefficient
+  int   N     = 100;  // Number of samples to render
+
+  // Create first order allpass filter:
+  RAPT::rsOnePoleFilter<Real, Real> apf1;
+  apf1.setCoefficients(coeff, 1.0, -coeff);
+
+  // Create and set up M-th order allpass filter with M=1:
+  rsAllpassDelay<Real> apd;
+  apd.setMaximumDelayInSamples(1);
+  apd.setDelayInSamples(1);
+  apd.setAllpassCoeff(coeff);
+
+  // Create input and target output:
+  Vec x(N), t(N);
+  x[0] = 1;
+  for(int n = 0; n < N; n++)
+    t[n] = apf1.getSample(x[n]);
+
+  // Create output of our M-th order allpass:
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = apd.getSample(x[n]);
+
+  // Compare both outputs - they should be equal:
+  ok &= y == t;
+  //rsPlotVectors(x, y, t);
+
+  // Now use a higher delay:
+  int M = 5;
+  apd.setMaximumDelayInSamples(M);
+  apd.setDelayInSamples(M);
+  for(int n = 0; n < N; n++)
+    y[n] = apd.getSample(x[n]);
+
+  // The expected result is that y equals t with M-1 zeros inserted between adjacent samples of t, 
+  // i.e. y[M*n] = t[n]  or  y[n] = t[n/M]  when n is divisible by M and zero otherwise.
+  for(int n = 0; n < n/M; n++) {
+    if( n % M == 0 )
+      ok &= y[n] == t[n/M];
+    else
+      ok &= y[n] == 0; }
+  //rsPlotVectors(x, y, t);
+
+
+  return ok;
+
+
+
+  // ToDo:
+  // -Write an optimized version of the class rsAllpassDelay (using DF2 or TDF2) and compare it to
+  //  the current DF1 implementation.
+  // -Maybe write a function rsIsWhite and feed it the impulse response of our supposed allpass
+  //  filter. It should take an FFT and check if the spectrum is white up to some tolerance which
+  //  we need because we work with a truncated impulse response. That function can then be used
+  //  in statements like ok &= rsIsWhite(y, tol); etc.
+}
 
 
 

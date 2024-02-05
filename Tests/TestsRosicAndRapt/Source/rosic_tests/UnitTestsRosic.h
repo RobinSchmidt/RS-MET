@@ -24,19 +24,18 @@ bool testRosicString(); // all tests for rosic::String
 bool testFileText();
 bool testFileWave();  
 
-
 // effects:
-void testAllpassDisperser();
-void testAllpassDelay();
-void testAllpassDelayChain();
+void allpassDisperser();           // is experiment
+void allpassDelay();               // is experiment
+void allpassDelayChain();          // is experiment
+bool testFeedbackDelayNetwork();   // is experiment
 bool testFastGeneralizedHadamardTransform();
-bool testFeedbackDelayNetwork();
+bool testAllpassDelay();
 bool testFreqShifter();
 bool testMultiComp();
 void spectralFilter();
 void formantShifter();
 void spectralShifter();
-
 
 // filters:
 void testLadderFilter();                   // is experiment

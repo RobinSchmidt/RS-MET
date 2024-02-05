@@ -24,10 +24,16 @@ bool rotes::testRosicFile()
   return ok;
 }
 
+
+
+
+
 bool rotes::testRosicEffects()
 {
   bool ok = true;
   ok &= testFastGeneralizedHadamardTransform();
+  //ok &= testFeedbackDelayNetwork();  // This is not an actual unit test! ToDo: move/rename/etc.
+  ok &= testAllpassDelay();
   ok &= testFreqShifter();
   ok &= testMultiComp();
   return ok;
