@@ -59,7 +59,7 @@ void rotes::allpassDisperser()
   }
 
   // Create and set up the allpass chain:
-  rsAllpassDelayChain<double> apdc;
+  rsAllpassDelayChain<double, double> apdc;
   apdc.setMaxNumStages(numStages);
   apdc.setNumStages(numStages);
   for(int i = 0; i < numStages; i++)
@@ -124,7 +124,7 @@ void rotes::allpassDelay()
   int    N     = 50*delay;     // Number of samples to plot
 
   // Create and set up the allpass delay:
-  rsAllpassDelay<double, double> apd;
+  rsAllpassDelayNaive<double, double> apd;
   apd.setMaximumDelayInSamples(delay);
   apd.setDelayInSamples(delay);
   apd.setAllpassCoeff(coeff);
@@ -170,7 +170,7 @@ void rotes::allpassDelayChain()
 
 
   // Create and set up the allpass delays:
-  std::vector<rsAllpassDelay<double, double>> apds(numStages);
+  std::vector<rsAllpassDelayNaive<double, double>> apds(numStages);
   for(int i = 0; i < numStages; i++)
   {
     apds[i].setMaximumDelayInSamples(delays[i]);
@@ -195,7 +195,7 @@ void rotes::allpassDelayChain()
 
 
   // Now do the same thing with the class rsAllpassDelayChain
-  rsAllpassDelayChain<double> apdc;
+  rsAllpassDelayChain<double, double> apdc;
   apdc.setMaxNumStages(numStages);
   apdc.setNumStages(numStages);
   for(int i = 0; i < numStages; i++)
@@ -831,7 +831,7 @@ bool rotes::testAllpassDelay()
   apf1.setCoefficients(coeff, 1.0, -coeff);
 
   // Create and set up M-th order allpass filter with M=1:
-  rsAllpassDelay<Real, Real> apd;
+  rsAllpassDelayNaive<Real, Real> apd;
   apd.setMaximumDelayInSamples(1);
   apd.setDelayInSamples(1);
   apd.setAllpassCoeff(coeff);

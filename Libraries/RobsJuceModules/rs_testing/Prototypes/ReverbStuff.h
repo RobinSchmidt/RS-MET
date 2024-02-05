@@ -23,7 +23,7 @@ https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
 
 
 template<class TSig, class TPar>
-class rsAllpassDelay
+class rsAllpassDelayNaive
 {
 
 public:
@@ -31,7 +31,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-  rsAllpassDelay() {}
+  rsAllpassDelayNaive() {}
 
 
   //-----------------------------------------------------------------------------------------------
@@ -72,21 +72,21 @@ protected:
 
 
 template<class TSig, class TPar>
-void rsAllpassDelay<TSig, TPar>::setMaximumDelayInSamples(int newMaxDelay)
+void rsAllpassDelayNaive<TSig, TPar>::setMaximumDelayInSamples(int newMaxDelay)
 {
   inputDelayLine.setMaximumDelayInSamples(newMaxDelay);
   outputDelayLine.setMaximumDelayInSamples(newMaxDelay);
 }
 
 template<class TSig, class TPar>
-void rsAllpassDelay<TSig, TPar>::setDelayInSamples(int newDelay)
+void rsAllpassDelayNaive<TSig, TPar>::setDelayInSamples(int newDelay)
 {
   inputDelayLine.setDelayInSamples(newDelay);
   outputDelayLine.setDelayInSamples(newDelay);
 }
 
 template<class TSig, class TPar>
-TSig rsAllpassDelay<TSig, TPar>::getSample(TSig x)
+TSig rsAllpassDelayNaive<TSig, TPar>::getSample(TSig x)
 {
   TSig xM = inputDelayLine.getSample(x);                             // x[n-M]
   TSig yM = outputDelayLine.getSampleSuppressTapIncrements(TSig(0)); // y[n-M]
@@ -106,7 +106,7 @@ TSig rsAllpassDelay<TSig, TPar>::getSample(TSig x)
 }
 
 template<class TSig, class TPar>
-void rsAllpassDelay<TSig, TPar>::reset()
+void rsAllpassDelayNaive<TSig, TPar>::reset()
 {
   inputDelayLine.reset();
   outputDelayLine.reset();
@@ -179,7 +179,7 @@ public:
 
 protected:
 
-  std::vector<rsAllpassDelay<TSig, TPar>> allpassDelays;
+  std::vector<rsAllpassDelayNaive<TSig, TPar>> allpassDelays;
   int numStages = 0;
 
 };
@@ -223,7 +223,7 @@ void rsAllpassDelayChain<TSig, TPar>::setAllpassCoeff(int stageIndex, TPar newCo
 template<class TSig, class TPar>
 TSig rsAllpassDelayChain<TSig, TPar>::getSample(TSig in)
 {
-  T tmp = in;
+  TSig tmp = in;
   for(int i = 0; i < numStages; i++)
     tmp = allpassDelays[i].getSample(tmp);
   return tmp;
