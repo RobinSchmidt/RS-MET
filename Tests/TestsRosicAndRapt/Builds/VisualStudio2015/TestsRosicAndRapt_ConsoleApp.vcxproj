@@ -2425,6 +2425,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\RenderScriptTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ReverbStuff.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SafeArray.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3253,6 +3256,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\RenderScriptTools.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ReverbStuff.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SafeArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SimdVector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SineParameterEstimator.h"/>
@@ -3294,8 +3298,9 @@
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\MovedToRAPT\ReadMe.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\minBlep.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt"/>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\HowToAddFeatures.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md"/>
-    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md"/>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\SfzNotes.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\PolyphonyInRosic.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.txt"/>

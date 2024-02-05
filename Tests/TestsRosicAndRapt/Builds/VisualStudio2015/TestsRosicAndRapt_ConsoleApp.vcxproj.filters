@@ -2674,6 +2674,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\RenderScriptTools.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ReverbStuff.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SafeArray.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
@@ -5082,6 +5085,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\RenderScriptTools.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ReverbStuff.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SafeArray.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
@@ -5201,10 +5207,13 @@
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt">
       <Filter>JUCE Modules\rosic\math</Filter>
     </None>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\HowToAddFeatures.txt">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </None>
-    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md">
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\SfzNotes.txt">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt">

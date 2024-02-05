@@ -33,6 +33,8 @@ using namespace RAPT;
 #include "MultiplicativeSynth.h"
 #include "RenderScriptTools.h"
 #include "FractalRenderer.h"
+#include "ReverbStuff.h"
+
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant
 to be used for production code but are useful for a more readable proof-of-concept (because of lack

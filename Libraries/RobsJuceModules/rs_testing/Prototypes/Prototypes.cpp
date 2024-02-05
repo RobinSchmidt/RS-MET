@@ -23,6 +23,7 @@
 #include "MultiplicativeSynth.cpp"
 #include "RenderScriptTools.cpp"
 #include "FractalRenderer.cpp"
+#include "ReverbStuff.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
 
