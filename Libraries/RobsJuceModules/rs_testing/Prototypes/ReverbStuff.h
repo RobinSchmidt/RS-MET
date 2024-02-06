@@ -238,17 +238,17 @@ public:
 
   inline TSig getSample(TSig x)
   {
-    // These steps are copied from the non-nested case:
     const TPar c = allpassCoeff;
-    TSig vM = delayLine.readOutput();
-
-    // This is the additional nesting step:
-    vM = nestedAllpass.getSample(vM);
-
-    // These steps are also copied from the non-nested case:
+    TSig vM = nestedAllpass.getSample(delayLine.readOutput());  // Read vM = innerAllpass(v[n-M])
     TSig v  = x - c * vM;
     delayLine.writeInputAndUpdate(v);
     return c * v + vM;
+
+    // The only difference to the implementation of the non-nested case in rsAllpassDelay is that 
+    // here we do:
+    //   vM = nestedAllpass.getSample(delayLine.readOutput());
+    // instead of:
+    //   vM = delayLine.readOutput();
   }
 
 
