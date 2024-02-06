@@ -107,6 +107,8 @@ void rotes::allpassDisperser()
   // -The goal is to get a dense noisy impulse response with (short) exponential envelope of a few
   //  hundreds of samples length.
   // -Maybe notch out the Nyquist freq to get rid of the oscillation there
+  // -Try a nested allpass structure. Try to have the delays increasing or decreasing with 
+  //  the nesting level and the coeffs should probably decrease with the delay.
 }
 
 void rotes::allpassDelay()
@@ -148,7 +150,7 @@ void rotes::allpassDelayChain()
   //std::vector<int> delays = { 13, 17, 23, 29, 37 };
   std::vector<int> delays = { 13, 17, 23, 29 };
   double coeff  = +0.9;
-  int    N      = 4000;
+  int    N      = 4096;
   double sclAmt = 0.2;   // Amount of scaling of the coeff as function of delay
 
   // Compute the coeffs for the stages:
@@ -233,6 +235,10 @@ void rotes::allpassDelayChain()
   //  (done). Then transform this test here into a unit test for that class
   // -Combine the allpass delay chain with the disperser from allpassDisperser. That should 
   //  give a nice "random noise" kind of signal.
+  // -Maybe try having only one of the coeffs positive and the others all negative. Rationale:
+  //  A negative coeff gives a "smoother" response because it's not alternating. But we want the 
+  //  overall impulse repsone to alternate - but it should be enough when one of the alpasses 
+  //  creates alternations to have the overall respone alternate.
 }
 
 bool rotes::testAllpassDelayNested()

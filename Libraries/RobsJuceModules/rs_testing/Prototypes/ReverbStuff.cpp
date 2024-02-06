@@ -21,6 +21,11 @@ Ideas:
     I think, when A is a Hadamard matrix times a diagonal matrix, then A * A^T simplifies to a 
     diagonal matrix: Therefore, B * B^T = I - A * A^T also becomes diagonal
     Maybe we can prescribe D. I think, it should be non-singular (not sure, though)
+  - Maybe work out an example with 2 inputs, 3 outputs and 4 delaylines, such that it is nicely
+    general. JOS-Filters, pg. 301 says there should be at least as many outputs as inputs (why?).
+    And the numbers aren't too artifical either: 2 inputs occurs with stereo signals, 3 outputs 
+    could mean a stereo + center setup and 4 delaylines seems to be a nice choice, too. A 4x4
+    Hadamard matrix is also pretty nice.
 
 - Maybe try a nested allpass structure (a la Gardner) instead of a series (a la Schroeder). 
   see: http://gdsp.hf.ntnu.no/lessons/6/33/  ..has a nice block diagram for an implementation 
