@@ -439,7 +439,9 @@ void rotes::allpassDelaysNested()
 
   // ToDo:
   // -Make a lattice-based implementation for an arbitrary amount of nesting and compare the 
-  // results to the explicit implementations of the various nesting levels up to 3
+  //  results to the explicit implementations of the various nesting levels up to 3 (done)
+  // -Implement an rsIsWhite method and use it on the impulse responses to test, if they are white.
+  //  It should take a tolerance in dB.
 }
 
 
