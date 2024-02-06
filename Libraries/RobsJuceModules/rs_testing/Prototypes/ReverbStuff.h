@@ -170,8 +170,10 @@ public:
     TSig v  = x - c * vM;              // v[n] = x[n] - c * v[n-M]
     TSig y  = c * v + vM;              // y[n] = c * v[n] + v[n-M]
 
-    delayLine.writeInputNoIncrement(v);
-    delayLine.incrementTapPointers();
+    //delayLine.writeInputNoUpdate(v);
+    //delayLine.incrementTapPointers();
+
+    delayLine.writeInputAndUpdate(v);
 
     return y;
 

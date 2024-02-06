@@ -84,12 +84,11 @@ public:
 
   inline T readOutput() const { return delayLine[tapOut]; }
 
-  inline void writeInputNoIncrement(T in) { delayLine[tapIn] = in; }
-  // rename to writeInputNoUpdate
+  inline void writeInputNoUpdate(T in) { delayLine[tapIn] = in; }
 
-  inline void writeInput(T in)
+  inline void writeInputAndUpdate(T in)
   {
-    writeInputNoIncrement(in);
+    writeInputNoUpdate(in);
     incrementTapPointers();
   }
   // rename to writeInputAndUpdate
