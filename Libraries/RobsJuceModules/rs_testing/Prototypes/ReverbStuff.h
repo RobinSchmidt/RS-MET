@@ -443,9 +443,7 @@ public:
   {
     delayLines.resize(newMaxNumStages);
     allpassCoeffs.resize(newMaxNumStages);
-    t1.resize(newMaxNumStages);
-    t2.resize(newMaxNumStages);
-    t3.resize(newMaxNumStages);
+    tmp.resize(2*newMaxNumStages + 1);
   }
 
   void setNumStages(int newNumStages)
@@ -485,8 +483,10 @@ public:
   /** Needs more tests */
   inline TSig getSample(TSig x)
   {
+    // For convenience:
     int N = numStages;
-    std::vector<TSig> y(2*N+1);  // Use a member!
+    TSig* y = &tmp[0];
+
 
     y[0] = x;
 
@@ -587,13 +587,8 @@ public:
   void reset()
   {
     for(size_t i = 0; i < delayLines.size(); i++)
-    {
       delayLines[i].reset();
-      t1[i] = TSig(0);        // May not be needed for the DSP but is cleaner
-      t2[i] = TSig(0);        // Dito
-      t3[i] = TSig(0);        // Dito
-    }
-    // Maybe call rsSetToZero(delayLines); rsSetToZero(t1); ...
+    rsSetZero(tmp);            // Not needed for the DSP to be correct but is cleaner
   }
 
 
@@ -601,13 +596,8 @@ protected:
 
   std::vector<RAPT::rsBasicDelayLine<TSig>> delayLines;
   std::vector<TPar> allpassCoeffs;
-  //std::vector<TSig> tmp;
-  std::vector<TSig> t1, t2, t3;  // temp buffers - maybe rename to vM, v, y
+  std::vector<TSig> tmp;
   int numStages = 0;
-
-
-  //TPar allpassCoeff = TPar(0);
-  //RAPT::rsBasicDelayLine<TSig> delayLine;
 
 };
 
