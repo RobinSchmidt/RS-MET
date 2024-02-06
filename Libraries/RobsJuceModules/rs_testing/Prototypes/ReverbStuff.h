@@ -562,6 +562,16 @@ public:
   // https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
   inline TSig getSample2(TSig x)
   {
+    TSig y0 = x;                                                    // y0 = x = input
+    TSig y1 = y0 - allpassCoeffs[0] * delayLines[0].readOutput();   // y1 = a
+    TSig y2 = y1 - allpassCoeffs[1] * delayLines[1].readOutput();   // y2 = b
+    TSig y3 = delayLines[1].readOutput() + allpassCoeffs[1] * y2;   // y3 = c
+    TSig y4 = delayLines[0].readOutput() + allpassCoeffs[0] * y1;   // y4 = y = output
+    delayLines[0].writeInputAndUpdate(y3);
+    delayLines[1].writeInputAndUpdate(y2);
+    return y4;
+
+    /*
     TSig a = x - allpassCoeffs[0] * delayLines[0].readOutput();
     TSig b = a - allpassCoeffs[1] * delayLines[1].readOutput();
     TSig c = delayLines[1].readOutput() + allpassCoeffs[1] * b;
@@ -569,8 +579,31 @@ public:
     delayLines[0].writeInputAndUpdate(c);
     delayLines[1].writeInputAndUpdate(b);
     return y;
-  }
+    */
 
+  }
+  // OK - this seems to work
+
+
+  inline TSig getSample3(TSig x)
+  {
+    /*
+    TSig a = x - allpassCoeffs[0] * delayLines[0].readOutput();
+    TSig b = a - allpassCoeffs[1] * delayLines[1].readOutput();
+    TSig c = a - allpassCoeffs[1] * delayLines[1].readOutput();
+    */
+
+
+
+
+    /*
+    TSig c = delayLines[1].readOutput() + allpassCoeffs[1] * b;
+    TSig y = delayLines[0].readOutput() + allpassCoeffs[0] * a;
+    delayLines[0].writeInputAndUpdate(c);
+    delayLines[1].writeInputAndUpdate(b);
+    return y;
+    */
+  }
 
 
   void reset()
