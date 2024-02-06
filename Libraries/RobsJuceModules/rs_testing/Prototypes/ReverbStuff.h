@@ -628,7 +628,7 @@ public:
   }
 
 
-  /** STILL WRONG!!! */
+  /** Needs more tests */
   inline TSig getSampleN(TSig x)
   {
     int N = numStages;
@@ -647,7 +647,7 @@ public:
     }
 
     for(int i = 0; i < N; i++)
-      delayLines[i].writeInputAndUpdate(2*N-i);
+      delayLines[i].writeInputAndUpdate(y[2*N-i-1]);
 
     return y[2*N];
   }
