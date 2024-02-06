@@ -293,15 +293,37 @@ void rotes::allpassDelaysNested()
   rsPlotVector(y2);
 
 
+  // Now test a 3-level nesting:
+  delays = {   7,  11,  17,  23 };
+  coeffs = { 0.6, 0.5, 0.4, 0.3 };
+  rsAllpassDelayNested_3Lvls<Real, Real> apdn3;
+  apdn3.setMaxDelayInSamples(0, delays[0]);
+  apdn3.setMaxDelayInSamples(1, delays[1]);
+  apdn3.setMaxDelayInSamples(2, delays[2]);
+  apdn3.setMaxDelayInSamples(3, delays[3]);
+  apdn3.setDelayInSamples(   0, delays[0]);
+  apdn3.setDelayInSamples(   1, delays[1]);
+  apdn3.setDelayInSamples(   2, delays[2]);
+  apdn3.setDelayInSamples(   3, delays[3]);
+  apdn3.setAllpassCoeff(     0, coeffs[0]);
+  apdn3.setAllpassCoeff(     1, coeffs[1]);
+  apdn3.setAllpassCoeff(     2, coeffs[2]);
+  apdn3.setAllpassCoeff(     3, coeffs[3]);
 
+  Vec y3(N);
+  for(int n = 0; n < N; n++)
+    y3[n] = apdn3.getSample(x[n]);
 
-  //int numLevels = (int) delays.size();
-  //for(int i = 0; i < numLevels; i++
-
+  rosic::writeToMonoWaveFile("AllpassDelaysNested3.wav", &y3[0], N, 44100, 16);
+  rsPlotVector(y3);
 
 
 
   int dummy = 0;
+
+  // ToDo:
+  // -Make a lattice-based implementation for an arbitrary amount of nesting and compare the 
+  // results to the explicit implementations of the various nesting levels up to 3
 }
 
 

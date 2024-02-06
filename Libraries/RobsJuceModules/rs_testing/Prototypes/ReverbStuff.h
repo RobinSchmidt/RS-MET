@@ -327,7 +327,9 @@ public:
 
     // The only difference to the implementation of the one-level-nested case is that the 
     // nestedAllpass object is now of a different kind - namely itself a 1-level nested allpass
-    // delay rather than a regular allpass delay.
+    // delay rather than a regular allpass delay. So, the code here is actually identical to
+    // the one-level nesting code - it just means something different because the nestedAllpass
+    // member is a different kind of object here.
   }
 
 
@@ -340,12 +342,72 @@ protected:
   // The only difference to the 1-level nesting case is that this member is now not the simple
   // rsAllpassDelay but itself the 1-level nested allpass delay
 
-
 };
 
 
+//=================================================================================================
+
+template<class TSig, class TPar>
+class rsAllpassDelayNested_3Lvls
+{
+
+public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setMaxDelayInSamples(int nestLevel, int newMaxDelay) 
+  { 
+    if(nestLevel == 0)
+      delayLine.setMaximumDelayInSamples(newMaxDelay);
+    else
+      nestedAllpass.setMaxDelayInSamples(nestLevel-1, newMaxDelay);
+  }
+
+  void setDelayInSamples(int nestLevel, int newDelay) 
+  { 
+    if(nestLevel == 0)
+      delayLine.setDelayInSamples(newDelay);
+    else
+      nestedAllpass.setDelayInSamples(nestLevel-1, newDelay);
+  }
+
+  void setAllpassCoeff(int nestLevel, TPar newCoeff) 
+  { 
+    if(nestLevel == 0)
+      allpassCoeff = newCoeff;
+    else
+      nestedAllpass.setAllpassCoeff(nestLevel-1, newCoeff);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  inline TSig getSample(TSig x)
+  {
+    const TPar c = allpassCoeff;
+    TSig vM = nestedAllpass.getSample(delayLine.readOutput());  
+    TSig v  = x - c * vM;
+    delayLine.writeInputAndUpdate(v);
+    return c * v + vM;
+  }
+
+
+protected:
+
+  TPar allpassCoeff = TPar(0);
+  RAPT::rsBasicDelayLine<TSig> delayLine;
+
+  rsAllpassDelayNested_2Lvls<TSig, TPar> nestedAllpass;
+  // The only difference to the 1-level nesting case is that this member is now not the 1-level
+  // nested allpass delay but the 2-level nested allpass delay. The code of the setters as well as 
+  // the code for getSample is literally just copied and pasted from the 2-level implementation.
+  // For implementing even more levels of nesting, we can just copy-and-paste the code for one 
+  // level of nesting less an replace the nestedAllpass member with an object of the class with 
+  // nesting level one less.
+};
 
 
 
