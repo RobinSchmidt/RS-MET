@@ -368,7 +368,16 @@ void rotes::allpassDelaysNested()
     z2[n] = apdn.getSample3(x[n]);
   ok &= z2 == y2;
   RAPT::rsAssert(ok);
-  rsPlotVectors(y2, z2); 
+  //rsPlotVectors(y2, z2);
+
+
+  for(int n = 0; n < N; n++)
+    z2[n] = apdn.getSampleN(x[n]);
+  ok &= z2 == y2;
+  RAPT::rsAssert(ok);
+  rsPlotVectors(y2, z2);
+
+
 
   rosic::writeToMonoWaveFile("AllpassDelaysNested2.wav", &y2[0], N, 44100, 16);
   //rsPlotVector(y2);

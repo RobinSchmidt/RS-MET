@@ -628,6 +628,32 @@ public:
   }
 
 
+  /** STILL WRONG!!! */
+  inline TSig getSampleN(TSig x)
+  {
+    int N = numStages;
+    std::vector<TSig> y(2*N+1);
+
+    y[0] = x;
+
+    for(int i = 0; i < N; i++)
+      y[i+1] = y[i] - allpassCoeffs[i] * delayLines[i].readOutput();
+
+    for(int i = 0; i < N; i++)
+    {
+      int j = N+i+1;
+      int k = N-i-1;
+      y[j] = delayLines[k].readOutput() + allpassCoeffs[k] * y[k+1];
+    }
+
+    for(int i = 0; i < N; i++)
+      delayLines[i].writeInputAndUpdate(2*N-i);
+
+    return y[2*N];
+  }
+
+
+
 
   void reset()
   {
