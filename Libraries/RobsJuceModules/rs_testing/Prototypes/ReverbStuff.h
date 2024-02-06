@@ -6,20 +6,16 @@
 
 /** An allpass delay that realizes the transfer function and difference equation:
 
-          a +     z^(-M)
-  H(z) = ----------------,    y[n] = a * x[n] + x[n-M] - a * y[n-M]
-          1 + a * z^(-M)
+          c +     z^(-M)
+  H(z) = ----------------,    y[n] = c * x[n] + x[n-M] - c * y[n-M]
+          1 + c * z^(-M)
 
-so it's like a first order allpass filter with coefficient a in which the unit delay was replaced
+so it's like a first order allpass filter with coefficient c in which the unit delay was replaced
 by a delay line of length M. This is also known as a Schroeder allpass section. Such allpass delays 
 can be used as building blocks for reverbs, for example. 
 
-
 See:
-https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
-
-
-...TBC...  */
+https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html  */
 
 
 template<class TSig, class TPar>
@@ -64,12 +60,6 @@ protected:
 
 };
 
-// ToDo:
-// -Optimize this to use only a single delayline by switching from a DF1-like implementation to a 
-//  DF2-like implementation. But keep this implementation as prototype for unit tests of the 
-//  optimized one.
-// -use TSig and TPar
-
 
 template<class TSig, class TPar>
 void rsAllpassDelayNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
@@ -100,9 +90,9 @@ TSig rsAllpassDelayNaive<TSig, TPar>::getSample(TSig x)
   //
   // We want to realize:
   //
-  //          a +     z^(-M)
-  //  H(z) = ----------------,    y[n] = a * x[n] + x[n-M] - a * y[n-M]
-  //          1 + a * z^(-M)
+  //          c +     z^(-M)
+  //  H(z) = ----------------,    y[n] = c * x[n] + x[n-M] - c * y[n-M]
+  //          1 + c * z^(-M)
 }
 
 template<class TSig, class TPar>
@@ -114,15 +104,28 @@ void rsAllpassDelayNaive<TSig, TPar>::reset()
 
 // ToDo:
 // -Build a nested allpass in which the z^(-M) term has been replaced by another allpass filter.
-// -When building a series connection of those, as is done for a diffuser stage for a reverb, the 
-//  output delay line of one stage becomes the input delayline for the next stage, so we can share
-//  some delaylines compared to a naive implementation.
 
 
 //=================================================================================================
 
-/**
+/** An allpass delay that realizes the transfer function and difference equation:
 
+          c +     z^(-M)
+  H(z) = ----------------,    y[n] = c * x[n] + x[n-M] - c * y[n-M]
+          1 + c * z^(-M)
+
+so it's like a first order allpass filter with coefficient c in which the unit delay was replaced
+by a delay line of length M. This is also known as a Schroeder allpass section. Such allpass delays 
+can be used as building blocks for reverbs, for example. The implementation of the difference 
+equation is not done directly as written down which corresponds to a 1st order direct form 1 
+structure with the unit delay replaced by an M sample delay. Instead, we use the equivalent 
+difference equation:
+
+  v[n] = x[n] - c * v[n-M]
+  y[n] = c * v[n] + v[n-M]
+
+which needs only one delayline and corresponds to a (delay canonical) direct form 2 implementation 
+structure.
 
 See:
 https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
@@ -167,7 +170,7 @@ public:
     TSig v  = x - c * vM;              // v[n] = x[n] - c * v[n-M]
     TSig y  = c * v + vM;              // y[n] = c * v[n] + v[n-M]
 
-    delayLine.writeInput(v);
+    delayLine.writeInputNoIncrement(v);
     delayLine.incrementTapPointers();
 
     return y;
@@ -182,8 +185,7 @@ public:
 
 protected:
 
-  TPar allpassCoeff = 0.0;
-
+  TPar allpassCoeff = TPar(0);
   RAPT::rsBasicDelayLine<TSig> delayLine;
 
 };

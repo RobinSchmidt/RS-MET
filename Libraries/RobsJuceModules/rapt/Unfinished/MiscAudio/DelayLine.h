@@ -66,6 +66,7 @@ public:
   calling getSample() - for example, when the delayline is part of a feedback loop. The adding
   itself can the be done via addToInput(). */
   RS_INLINE T getSampleSuppressTapIncrements(T in);
+  // rename to getSampleNoTapIncrement or getSampleNoUpdate
 
   /** Adds some signal value to the current tapIn-position in the delayLine - useful for
   feedback and crossfeedback stuff. */
@@ -74,13 +75,40 @@ public:
   /** Does the increment for the tap pointers and wraps them around if necesarray - should be
   used in conjunction with getSampleSuppressTapIncrements(). */
   RS_INLINE void incrementTapPointers();
+  // rename to updateTaps
+
+
 
 
   // New functions - more convenient in certain situations:
 
   inline T readOutput() const { return delayLine[tapOut]; }
 
-  inline void writeInput(T in) { delayLine[tapIn] = in; }
+  inline void writeInputNoIncrement(T in) { delayLine[tapIn] = in; }
+  // rename to writeInputNoUpdate
+
+  inline void writeInput(T in)
+  {
+    writeInputNoIncrement(in);
+    incrementTapPointers();
+  }
+  // rename to writeInputAndUpdate
+
+  // Verify this and add it to the documentation:
+  //
+  // The caller should either use:
+  //   y = dl.getSample(x);
+  // or
+  //   y = dl.readOutput();
+  //   dl.writeInput(x);
+  // or 
+  //   y = dl.getSampleSuppressTapIncrements(0); 
+  //   dl.addToInput(x); 
+  //   dl.incrementTapPointers();
+  // or
+  //   y = dl.readOutput();
+  //   dl.writeInputNoIncrement(x);
+  //   dl.incrementTapPointers();
 
 
 
