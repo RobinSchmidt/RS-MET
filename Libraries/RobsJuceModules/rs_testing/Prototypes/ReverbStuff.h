@@ -594,6 +594,23 @@ public:
 
   inline TSig getSample3(TSig x)
   {
+    TSig y0 = x;
+
+    TSig y1 = y0 - allpassCoeffs[0] * delayLines[0].readOutput();
+    TSig y2 = y1 - allpassCoeffs[1] * delayLines[1].readOutput();
+    TSig y3 = y2 - allpassCoeffs[2] * delayLines[2].readOutput();
+
+    TSig y4 = delayLines[2].readOutput() + allpassCoeffs[2] * y3;
+    TSig y5 = delayLines[1].readOutput() + allpassCoeffs[1] * y2;
+    TSig y6 = delayLines[0].readOutput() + allpassCoeffs[0] * y1;
+
+    delayLines[0].writeInputAndUpdate(y5);
+    delayLines[1].writeInputAndUpdate(y4);
+    delayLines[2].writeInputAndUpdate(y3);
+
+    return y6;
+
+    /*
     TSig a = x - allpassCoeffs[0] * delayLines[0].readOutput();
     TSig b = a - allpassCoeffs[1] * delayLines[1].readOutput();
     TSig c = b - allpassCoeffs[2] * delayLines[2].readOutput();
@@ -607,28 +624,6 @@ public:
     delayLines[2].writeInputAndUpdate(c);
 
     return y;
-
-    /*
-    TSig y0 = x;
-
-    TSig y1 = y0 - allpassCoeffs[0] * delayLines[0].readOutput();
-    TSig y2 = y1 - allpassCoeffs[1] * delayLines[1].readOutput();
-    TSig y3 = y2 - allpassCoeffs[2] * delayLines[2].readOutput();
-
-    TSig y4 = delayLines[2].readOutput() + allpassCoeffs[2] * y3;
-    TSig y5 = delayLines[1].readOutput() + allpassCoeffs[1] * y2;
-    TSig y6 = delayLines[0].readOutput() + allpassCoeffs[0] * y1;
-
-    // Check these - nope - both versions don't work:
-    delayLines[0].writeInputAndUpdate(y4);
-    delayLines[1].writeInputAndUpdate(y3);
-    delayLines[2].writeInputAndUpdate(y2);
-
-    //delayLines[0].writeInputAndUpdate(y5);
-    //delayLines[1].writeInputAndUpdate(y4);
-    //delayLines[2].writeInputAndUpdate(y3);
-
-    return y6;
     */
   }
 

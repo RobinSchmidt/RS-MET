@@ -322,7 +322,7 @@ void rotes::allpassDelaysNested()
   RAPT::rsAssert(ok);
 
   //rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
-  rsPlotVectors(y1, z1); 
+  //rsPlotVectors(y1, z1); 
   // When looking at a spectrum in Audacity, we need to ensure to use the right settings for the 
   // spectrum analysis: window should be rectangular and FFT size should be N
 
