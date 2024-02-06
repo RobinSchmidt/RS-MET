@@ -20,8 +20,8 @@ bool rsIsUnitMagnitudeWhite(const T* x, int N, T decibelTolerance)
   for(int n = 0; n < M; n++)
     dB[n] = rsAmp2dB(std::abs(y[n]));
 
-  //rsPlotArray(x, N);
-  //rsPlotVector(dB);
+  rsPlotArray(x, N);
+  rsPlotVector(dB);
 
   // Check if the maximum deviation from the expected 0 dB flat line is within the given 
   // tolerance:
@@ -333,10 +333,11 @@ bool rotes::testAllpassDelayNested()
   apdn1.setAllpassCoeff(     0, coeffs[0]);
   apdn1.setAllpassCoeff(     1, coeffs[1]);
 
-  // Create impulse response:
+  // Create impulse response and check its whiteness:
   Vec y1(N);
   for(int n = 0; n < N; n++)
     y1[n] = apdn1.getSample(x[n]);
+  ok &= rsIsUnitMagnitudeWhite(y1, 1.e-4); // deviation is less than a 1/10000 of a dB
 
   // Set up the multi-level nested allpass delay structure and set it up to one level of
   // nesting such that its output should match y1.
