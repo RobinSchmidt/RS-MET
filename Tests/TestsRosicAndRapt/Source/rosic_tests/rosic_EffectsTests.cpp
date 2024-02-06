@@ -234,6 +234,50 @@ void rotes::allpassDelayChain()
   //  give a nice "random noise" kind of signal.
 }
 
+void rotes::allpassDelaysNested()
+{
+  using Real = double;
+
+  std::vector<int>  delays = {   7,  11 };
+  std::vector<Real> coeffs = { 0.9, 0.8 };
+  int N = 4096;
+
+  // Create and set up the nested allpass delay structure:
+  rsAllpassDelayNested<Real, Real> apdn;
+  apdn.setMaxDelayInSamples(0, delays[0]);
+  apdn.setMaxDelayInSamples(1, delays[1]);
+  apdn.setDelayInSamples(   0, delays[0]);
+  apdn.setDelayInSamples(   1, delays[1]);
+  apdn.setAllpassCoeff(     0, coeffs[0]);
+  apdn.setAllpassCoeff(     1, coeffs[1]);
+
+  // Create impulse response:
+  using Vec = std::vector<Real>;
+  Vec x(N), y(N);
+  x[0] = 1;
+  for(int n = 0; n < N; n++)
+    y[n] = apdn.getSample(x[n]);
+
+  rsPlotVector(y);
+
+
+  //bool ok = rsIsWhite(y, tol);  // Check that the filter is allpass
+  // maybe make sure that it has decayed sufficiently such that truncating the impulse response 
+  // does not lead to a large deviation from whiteness
+
+
+
+
+
+  //int numLevels = (int) delays.size();
+  //for(int i = 0; i < numLevels; i++
+
+
+
+
+  int dummy = 0;
+}
+
 
 // Move to prototypes or RAPT:
 

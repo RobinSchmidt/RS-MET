@@ -28,6 +28,7 @@ bool testFileWave();
 void allpassDisperser();           // is experiment
 void allpassDelay();               // is experiment
 void allpassDelayChain();          // is experiment
+void allpassDelaysNested();        // is experiment
 bool feedbackDelayNetwork();       // is experiment
 bool testFastGeneralizedHadamardTransform();
 bool testAllpassDelay();

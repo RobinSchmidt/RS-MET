@@ -199,6 +199,12 @@ class rsAllpassDelayNested
 public:
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
+  rsAllpassDelayNested() {}
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   void setMaxDelayInSamples(int nestLevel, int newMaxDelay) 
