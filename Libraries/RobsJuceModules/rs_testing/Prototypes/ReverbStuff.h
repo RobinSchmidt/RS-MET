@@ -201,7 +201,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-  rsAllpassDelayNested() {}
+  //rsAllpassDelayNested() {}
 
 
   //-----------------------------------------------------------------------------------------------
@@ -267,6 +267,85 @@ protected:
 //  https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
 // -Implement unit tests for the arbitrary nesting implementation that compares it to the direct 
 //  implementations of 1,2,3 level nesting
+
+
+
+//=================================================================================================
+
+
+template<class TSig, class TPar>
+class rsAllpassDelayNested_2Lvls
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setMaxDelayInSamples(int nestLevel, int newMaxDelay) 
+  { 
+    if(nestLevel == 0)
+      delayLine.setMaximumDelayInSamples(newMaxDelay);
+    else
+      nestedAllpass.setMaxDelayInSamples(nestLevel-1, newMaxDelay);
+  }
+
+  void setDelayInSamples(int nestLevel, int newDelay) 
+  { 
+    if(nestLevel == 0)
+      delayLine.setDelayInSamples(newDelay);
+    else
+      nestedAllpass.setDelayInSamples(nestLevel-1, newDelay);
+  }
+
+  void setAllpassCoeff(int nestLevel, TPar newCoeff) 
+  { 
+    if(nestLevel == 0)
+      allpassCoeff = newCoeff;
+    else
+      nestedAllpass.setAllpassCoeff(nestLevel-1, newCoeff);
+  }
+
+  // The only difference to the 1-level nesting case is that the else-branches of the setters now 
+  // call the 2-parameter setters of rsAllpassDelayNested instead of the 1-parameter setters of
+  // rsAllpassDelay with the nestLevel parameter reduced by one compared to our function argument.
+  // This pattern would continue for higher level nesting.
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  inline TSig getSample(TSig x)
+  {
+    const TPar c = allpassCoeff;
+    TSig vM = nestedAllpass.getSample(delayLine.readOutput());  
+    TSig v  = x - c * vM;
+    delayLine.writeInputAndUpdate(v);
+    return c * v + vM;
+
+    // The only difference to the implementation of the one-level-nested case is that the 
+    // nestedAllpass object is now of a different kind - namely itself a 1-level nested allpass
+    // delay rather than a regular allpass delay.
+  }
+
+
+protected:
+
+  TPar allpassCoeff = TPar(0);
+  RAPT::rsBasicDelayLine<TSig> delayLine;
+
+  rsAllpassDelayNested<TSig, TPar> nestedAllpass;
+  // The only difference to the 1-level nesting case is that this member is now not the simple
+  // rsAllpassDelay but itself the 1-level nested allpass delay
+
+
+};
+
+
+
+
 
 
 

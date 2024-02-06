@@ -255,20 +255,15 @@ void rotes::allpassDelaysNested()
 
   // Create impulse response:
   using Vec = std::vector<Real>;
-  Vec x(N), y(N);
+  Vec x(N), y1(N);
   x[0] = 1;
   for(int n = 0; n < N; n++)
-    y[n] = apdn.getSample(x[n]);
+    y1[n] = apdn.getSample(x[n]);
 
-
-
-  rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y[0], N, 44100, 16);
-  rsPlotVector(y);
-  // listening to it and looking at a spectrum in Audacity, we see that it's very much not white so
-  // we don't have an overall allpass. The implementation is apparently still very wrong. Oh - But 
-  // we need to ensure to use the right settings for the spectrum analysis: window should be 
-  // rectangular and FFT size should be N
-
+  rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
+  //rsPlotVector(y1);
+  // When looking at a spectrum in Audacity, we need to ensure to use the right settings for the 
+  // spectrum analysis: window should be rectangular and FFT size should be N
 
   //bool ok = rsIsWhite(y, tol);  // Check that the filter is allpass
   // maybe make sure that it has decayed sufficiently such that truncating the impulse response 
@@ -276,6 +271,26 @@ void rotes::allpassDelaysNested()
 
 
 
+  // Now test a 2-level nesting:
+  delays = {   7,  11,  17 };
+  coeffs = { 0.7, 0.6, 0.5 };
+  rsAllpassDelayNested_2Lvls<Real, Real> apdn2;
+  apdn2.setMaxDelayInSamples(0, delays[0]);
+  apdn2.setMaxDelayInSamples(1, delays[1]);
+  apdn2.setMaxDelayInSamples(2, delays[2]);
+  apdn2.setDelayInSamples(   0, delays[0]);
+  apdn2.setDelayInSamples(   1, delays[1]);
+  apdn2.setDelayInSamples(   2, delays[2]);
+  apdn2.setAllpassCoeff(     0, coeffs[0]);
+  apdn2.setAllpassCoeff(     1, coeffs[1]);
+  apdn2.setAllpassCoeff(     2, coeffs[2]);
+
+  Vec y2(N);
+  for(int n = 0; n < N; n++)
+    y2[n] = apdn2.getSample(x[n]);
+
+  rosic::writeToMonoWaveFile("AllpassDelaysNested2.wav", &y2[0], N, 44100, 16);
+  rsPlotVector(y2);
 
 
 
