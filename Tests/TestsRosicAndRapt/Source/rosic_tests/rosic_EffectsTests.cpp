@@ -245,8 +245,32 @@ void rotes::allpassDelaysNested()
   std::vector<Real> coeffs = { 0.8, 0.7 };
   int N = 4096;
 
-  // Create and set up the nested allpass delay structure:
-  rsAllpassDelayNestedL1<Real, Real> apdn;
+
+
+
+
+
+  // Create and set up the 1-level nested allpass delay structure:
+  rsAllpassDelayNestedL1<Real, Real> apdn1;
+  apdn1.setMaxDelayInSamples(0, delays[0]);
+  apdn1.setMaxDelayInSamples(1, delays[1]);
+  apdn1.setDelayInSamples(   0, delays[0]);
+  apdn1.setDelayInSamples(   1, delays[1]);
+  apdn1.setAllpassCoeff(     0, coeffs[0]);
+  apdn1.setAllpassCoeff(     1, coeffs[1]);
+
+  // Create impulse response:
+  using Vec = std::vector<Real>;
+  Vec x(N), y1(N);
+  x[0] = 1;
+  for(int n = 0; n < N; n++)
+    y1[n] = apdn1.getSample(x[n]);
+
+  // Create and set up the multi-level nested allpass delay structure and set it up to one level of
+  // nesting such that its output should match y1.
+  rsAllpassDelayNested<Real, Real> apdn;
+  apdn.setMaxNumStages(4);
+  apdn.setNumStages(2);                      // 2 stages means 1 level of nesting
   apdn.setMaxDelayInSamples(0, delays[0]);
   apdn.setMaxDelayInSamples(1, delays[1]);
   apdn.setDelayInSamples(   0, delays[0]);
@@ -254,21 +278,22 @@ void rotes::allpassDelaysNested()
   apdn.setAllpassCoeff(     0, coeffs[0]);
   apdn.setAllpassCoeff(     1, coeffs[1]);
 
-  // Create impulse response:
-  using Vec = std::vector<Real>;
-  Vec x(N), y1(N);
-  x[0] = 1;
+  //  Create impulse response of multi-level nested allpass:
+  Vec z1(N);
   for(int n = 0; n < N; n++)
-    y1[n] = apdn.getSample(x[n]);
+    z1[n] = apdn.getSample(x[n]);
+  // Nope z1 is wrong - it seems to be just a unit impulse
 
-  rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
-  rsPlotVector(y1);
+  //rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
+  rsPlotVectors(y1, z1); 
   // When looking at a spectrum in Audacity, we need to ensure to use the right settings for the 
   // spectrum analysis: window should be rectangular and FFT size should be N
 
-  //bool ok = rsIsWhite(y, tol);  // Check that the filter is allpass
+  //bool ok = rsIsWhite(y1, tol);  // Check that the filter is allpass
   // maybe make sure that it has decayed sufficiently such that truncating the impulse response 
   // does not lead to a large deviation from whiteness
+
+
 
 
 

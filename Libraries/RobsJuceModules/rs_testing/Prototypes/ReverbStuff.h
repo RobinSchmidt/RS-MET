@@ -455,13 +455,13 @@ public:
   void setMaxDelayInSamples(int stageIndex, int newMaxDelay)
   {
     RAPT::rsAssert(stageIndex < getMaxNumStages());
-    delayLines[stageIndex].setMaxDelayInSamples(newMaxDelay);
+    delayLines[stageIndex].setMaximumDelayInSamples(newMaxDelay);
   }
 
   void setDelayInSamples(int stageIndex, int newDelay)
   {
     RAPT::rsAssert(stageIndex < getMaxNumStages());
-    delayLines[stageIndex].setDelayInSamples(newMaxDelay);
+    delayLines[stageIndex].setDelayInSamples(newDelay);
   }
 
   void setAllpassCoeff(int stageIndex, TPar newCoeff)
@@ -480,22 +480,23 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  /** !!!NOT YET TESTED!!! ...and in very early stages of construction */
   inline TSig getSample(TSig x)
   {
     t3[0] = x;
 
     for(int i = 0; i < numStages; i++)
     {
-      const TPar c = allpassCoeffs[i];         // For convenience.
-      t1[i] == delayLines[i].readOutput();     // Read vM = v[n-M] from the delayline
-      t2[i] =  t3[i] - c * t1[i];              // Compute v[n] = x[n] - c * v[n-M].
+      const TPar c = allpassCoeffs[i];           // For convenience.
+      t1[i] == delayLines[i].readOutput();       // Read vM = v[n-M] from the delayline
+      t2[i] =  t3[i] - c * t1[i];                // Compute v[n] = x[n] - c * v[n-M].
     }
 
     for(int i = numStages-1; i >= 0; i--)
     {
-      const TPar c = allpassCoeffs[i];         // For convenience.
-      t3[i] = c * t2[i] + t1[i];               // Compute y[n] = c * v[n] + v[n-M].
-      delayLine[i].writeInputAndUpdate(t2[i]); // Write v[n] into the delayline.
+      const TPar c = allpassCoeffs[i];           // For convenience.
+      t3[i] = c * t2[i] + t1[i];                 // Compute y[n] = c * v[n] + v[n-M].
+      delayLines[i].writeInputAndUpdate(t2[i]);  // Write v[n] into the delayline.
     }
 
     return t3[0];
