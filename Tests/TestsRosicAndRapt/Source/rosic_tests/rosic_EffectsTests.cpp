@@ -117,7 +117,7 @@ void rotes::allpassDelay()
 
   // Create and set up the allpass delay:
   rsAllpassDelayNaive<double, double> apd;
-  apd.setMaximumDelayInSamples(delay);
+  apd.setMaxDelayInSamples(delay);
   apd.setDelayInSamples(delay);
   apd.setAllpassCoeff(coeff);
 
@@ -165,7 +165,7 @@ void rotes::allpassDelayChain()
   std::vector<rsAllpassDelayNaive<double, double>> apds(numStages);
   for(int i = 0; i < numStages; i++)
   {
-    apds[i].setMaximumDelayInSamples(delays[i]);
+    apds[i].setMaxDelayInSamples(delays[i]);
     apds[i].setDelayInSamples(delays[i]);
     apds[i].setAllpassCoeff(coeffs[i]);
   }
@@ -809,7 +809,7 @@ bool rotes::testAllpassDelay()
 
   // Create and set up M-th order allpass filter with M=1:
   rsAllpassDelayNaive<Real, Real> apd1;
-  apd1.setMaximumDelayInSamples(1);
+  apd1.setMaxDelayInSamples(1);
   apd1.setDelayInSamples(1);
   apd1.setAllpassCoeff(coeff);
 
@@ -830,7 +830,7 @@ bool rotes::testAllpassDelay()
 
   // Now use a higher delay:
   int M = 5;
-  apd1.setMaximumDelayInSamples(M);
+  apd1.setMaxDelayInSamples(M);
   apd1.setDelayInSamples(M);
   for(int n = 0; n < N; n++)
     y[n] = apd1.getSample(x[n]);

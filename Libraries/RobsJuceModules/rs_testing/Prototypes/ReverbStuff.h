@@ -38,7 +38,7 @@ public:
   /** \name Setup */
 
 
-  void setMaximumDelayInSamples(int newMaxDelay);
+  void setMaxDelayInSamples(int newMaxDelay);
 
   void setDelayInSamples(int newDelay);
 
@@ -72,7 +72,7 @@ protected:
 
 
 template<class TSig, class TPar>
-void rsAllpassDelayNaive<TSig, TPar>::setMaximumDelayInSamples(int newMaxDelay)
+void rsAllpassDelayNaive<TSig, TPar>::setMaxDelayInSamples(int newMaxDelay)
 {
   inputDelayLine.setMaximumDelayInSamples(newMaxDelay);
   outputDelayLine.setMaximumDelayInSamples(newMaxDelay);
@@ -215,7 +215,7 @@ https://www.dsprelated.com/freebooks/pasp/Schroeder_Allpass_Sections.html
 
 
 template<class TSig, class TPar>
-class rsAllpassDelayChain  // maybe rename to rsAllpassDelayChainNaive
+class rsAllpassDelayChain
 {
 
 public:
@@ -253,7 +253,8 @@ public:
 
 protected:
 
-  std::vector<rsAllpassDelayNaive<TSig, TPar>> allpassDelays;
+  //std::vector<rsAllpassDelayNaive<TSig, TPar>> allpassDelays;
+  std::vector<rsAllpassDelay<TSig, TPar>> allpassDelays;
   int numStages = 0;
 
 };
@@ -276,7 +277,7 @@ template<class TSig, class TPar>
 void rsAllpassDelayChain<TSig, TPar>::setMaxDelayInSamples(int stageIndex, int newMaxDelay)
 {
   RAPT::rsAssert(stageIndex < getMaxNumStages());
-  allpassDelays[stageIndex].setMaximumDelayInSamples(newMaxDelay);
+  allpassDelays[stageIndex].setMaxDelayInSamples(newMaxDelay);
 }
 
 template<class TSig, class TPar>
