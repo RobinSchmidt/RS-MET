@@ -236,10 +236,12 @@ void rotes::allpassDelayChain()
 
 void rotes::allpassDelaysNested()
 {
+  // This still doesn't work
+
   using Real = double;
 
   std::vector<int>  delays = {   7,  11 };
-  std::vector<Real> coeffs = { 0.9, 0.8 };
+  std::vector<Real> coeffs = { 0.8, 0.7 };
   int N = 4096;
 
   // Create and set up the nested allpass delay structure:
@@ -258,12 +260,21 @@ void rotes::allpassDelaysNested()
   for(int n = 0; n < N; n++)
     y[n] = apdn.getSample(x[n]);
 
+
+
+  rosic::writeToMonoWaveFile("AllpassDelaysNested.wav", &y[0], N, 44100, 16);
   rsPlotVector(y);
+  // listening to it and looking at a spectrum in Audacity, we see that it's very much not white so
+  // we don't have an overall allpass. The implementation is apparently still very wrong. Oh - But 
+  // we need to ensure to use the right settings for the spectrum analysis: window should be 
+  // rectangular and FFT size should be N
 
 
   //bool ok = rsIsWhite(y, tol);  // Check that the filter is allpass
   // maybe make sure that it has decayed sufficiently such that truncating the impulse response 
   // does not lead to a large deviation from whiteness
+
+
 
 
 
