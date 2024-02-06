@@ -428,7 +428,7 @@ protected:
 
 //=================================================================================================
 
-/** This still doesn't work */
+/** This needs clean up and unit tests */
 
 template<class TSig, class TPar>
 class rsAllpassDelayNested
@@ -482,78 +482,29 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  /** !!!NOT YET TESTED!!! ...and in very early stages of construction */
+  /** Needs more tests */
   inline TSig getSample(TSig x)
   {
-    t3[0] = x;
+    int N = numStages;
+    std::vector<TSig> y(2*N+1);  // Use a member!
 
-    for(int i = 0; i < numStages; i++)
+    y[0] = x;
+
+    for(int i = 0; i < N; i++)
+      y[i+1] = y[i] - allpassCoeffs[i] * delayLines[i].readOutput();
+
+    for(int i = 0; i < N; i++)
     {
-      const TPar c = allpassCoeffs[i];           // For convenience.
-      t1[i] = delayLines[i].readOutput();        // Read vM = v[n-M] from the delayline
-      t2[i] = t3[i] - c * t1[i];                 // Compute v[n] = x[n] - c * v[n-M].
-      //t3[i] = c * t2[i] + t1[i];                 // Compute y[n] = c * v[n] + v[n-M].
+      int j = N+i+1;
+      int k = N-i-1;
+      y[j] = delayLines[k].readOutput() + allpassCoeffs[k] * y[k+1];
     }
 
-    for(int i = numStages-1; i >= 0; i--)
-    {
-      const TPar c = allpassCoeffs[i];           // For convenience.
-      //t2[i] = t3[i] - c * t1[i];                 // Compute v[n] = x[n] - c * v[n-M].
-      t3[i] = c * t2[i] + t1[i];                 // Compute y[n] = c * v[n] + v[n-M].
-      delayLines[i].writeInputAndUpdate(t2[i]);  // Write v[n] into the delayline.
-    }
+    for(int i = 0; i < N; i++)
+      delayLines[i].writeInputAndUpdate(y[2*N-i-1]);
 
-    //return t3[numStages];
-    return t3[0];
-    // Try to get rid of at least one of the temp arrays, i.e. t3. delayLines[i].readOutput can 
-    // also be called in the 2nd loop (in t3[i] = ...) and should return the exact same output 
-    // there (I think) so we don't need to store it in t1[i]
-
-    /*
-    // original allpass delay:    
-    const TPar c = allpassCoeff;         // For convenience.
-    TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
-    TSig v  = x - c * vM;                // Compute v[n] = x[n] - c * v[n-M].
-    delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
-    return c * v + vM;                   // Return y[n] = c * v[n] + v[n-M].
-
-    // 1 Level nested:
-    const TPar c = allpassCoeff;
-    TSig vM = nestedAllpass.getSample(delayLine.readOutput());  // Read vM = innerAllpass(v[n-M])
-    TSig v  = x - c * vM;
-    delayLine.writeInputAndUpdate(v);
-    return c * v + vM;
-    */
+    return y[2*N];
   }
-
-
-  /*
-  // Throw-awy code for testing - implement 2 stages directly
-  inline TSig getSample2(TSig x)
-  {
-    TSig vM[2], v[2], y[3];
-    TPar* c = &allpassCoeffs[0];
-
-    y[ 0] = x;
-
-    vM[0] = delayLines[0].readOutput();    // Read vM = v[n-M] from the delayline.
-    v[ 0] = y[0] - c[0] * vM[0];           // Compute v[n] = x[n] - c * v[n-M].
-    y[ 1] = c[0] * v[0] + vM[0];           // y1[n] = c * v[n] + v[n-M].
-
-
-    vM[1] = delayLines[1].readOutput();
-    v[ 1] = y[1] - c[1] * vM[1];
-    y[ 2] = c[1] * v[1] + vM[1]; 
-
-
-
-    delayLine.writeInputAndUpdate(v[0]);   // Write v[n] into the delayline.
-
-
-
-    return y[0];
-  }
-  */
 
 
 
@@ -589,7 +540,8 @@ public:
     */
 
   }
-  // OK - this seems to work
+  // OK - this seems to work - rename to getSample2Stages. This mwas initially intended for 
+  // devloping the algo but maybe it should be kept for optimization purposes
 
 
   inline TSig getSample3(TSig x)
@@ -626,31 +578,8 @@ public:
     return y;
     */
   }
+  // rename to getSample3Stages
 
-
-  /** Needs more tests */
-  inline TSig getSampleN(TSig x)
-  {
-    int N = numStages;
-    std::vector<TSig> y(2*N+1);
-
-    y[0] = x;
-
-    for(int i = 0; i < N; i++)
-      y[i+1] = y[i] - allpassCoeffs[i] * delayLines[i].readOutput();
-
-    for(int i = 0; i < N; i++)
-    {
-      int j = N+i+1;
-      int k = N-i-1;
-      y[j] = delayLines[k].readOutput() + allpassCoeffs[k] * y[k+1];
-    }
-
-    for(int i = 0; i < N; i++)
-      delayLines[i].writeInputAndUpdate(y[2*N-i-1]);
-
-    return y[2*N];
-  }
 
 
 
