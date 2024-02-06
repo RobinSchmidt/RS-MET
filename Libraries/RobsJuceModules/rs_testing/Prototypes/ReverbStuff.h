@@ -428,7 +428,10 @@ protected:
 
 //=================================================================================================
 
-/** This needs clean up and unit tests */
+/** Implements a filter structure of nested allpass delays using a lattice ...TBC...
+
+
+This needs clean up and unit tests */
 
 template<class TSig, class TPar>
 class rsAllpassDelayNested
@@ -485,7 +488,7 @@ public:
   {
     // Shorthands for convenience:
     int N = numStages;
-    TSig* t = &tmp[0];   // maybe use t instead
+    TSig* t = &tmp[0];
 
     // Compute the signals in the upper row of the lattice:
     t[0] = x;
@@ -528,9 +531,6 @@ public:
 
     return t4;
   }
-  // OK - this seems to work - rename to getSample2Stages. This mwas initially intended for 
-  // devloping the algo but maybe it should be kept for optimization purposes
-
 
   inline TSig getSample3Stages(TSig x)
   {
@@ -552,7 +552,10 @@ public:
 
     return t6;
   }
-  // rename to getSample3Stages, write a getSample4Stages (and a unit test for it)
+  // write a getSample4Stages (and a unit test for it). Write performance test and check, if it's
+  // better to use our tmp array or stack-allocated variables for the temporary signals.
+  // Check, if it's possible to get a way with less temporary variables by overwriting them when
+  // they are not needed anymore.
 
 
 

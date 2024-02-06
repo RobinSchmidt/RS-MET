@@ -33,6 +33,7 @@ bool rotes::testRosicEffects()
   bool ok = true;
   ok &= testFastGeneralizedHadamardTransform();
   ok &= testAllpassDelay();
+  ok &= testAllpassDelayNested();
   ok &= testFreqShifter();
   ok &= testMultiComp();
   return ok;

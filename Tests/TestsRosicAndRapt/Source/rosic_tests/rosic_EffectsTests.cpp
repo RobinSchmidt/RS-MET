@@ -235,7 +235,7 @@ void rotes::allpassDelayChain()
   //  give a nice "random noise" kind of signal.
 }
 
-void rotes::allpassDelaysNested()
+bool rotes::testAllpassDelayNested()
 {
   // Turn this into a unit test!
 
@@ -434,7 +434,8 @@ void rotes::allpassDelaysNested()
   //rsPlotVector(y3);
 
 
-  RAPT::rsAssert(ok);
+  return ok;
+  //RAPT::rsAssert(ok);
   //int dummy = 0;
 
   // ToDo:
@@ -1070,8 +1071,6 @@ bool rotes::testAllpassDelay()
   //rsPlotVectors(y2 - y);
 
   return ok;
-
-
 
   // ToDo:
   // -Write an optimized version of the class rsAllpassDelay (using DF2 or TDF2) and compare it to
