@@ -282,7 +282,7 @@ void rotes::allpassDelaysNested()
   Vec z1(N);
   for(int n = 0; n < N; n++)
     z1[n] = apdn.getSample(x[n]);
-  // Nope z1 is wrong - it seems to be just a unit impulse
+  // Nope z1 is wrong - it seems to be just a unit impulse scalled by coeffs[0]
 
   //rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
   rsPlotVectors(y1, z1); 

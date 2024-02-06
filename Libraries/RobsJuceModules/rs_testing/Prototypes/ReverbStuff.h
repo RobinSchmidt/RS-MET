@@ -488,8 +488,8 @@ public:
     for(int i = 0; i < numStages; i++)
     {
       const TPar c = allpassCoeffs[i];           // For convenience.
-      t1[i] == delayLines[i].readOutput();       // Read vM = v[n-M] from the delayline
-      t2[i] =  t3[i] - c * t1[i];                // Compute v[n] = x[n] - c * v[n-M].
+      t1[i] = delayLines[i].readOutput();        // Read vM = v[n-M] from the delayline
+      t2[i] = t3[i] - c * t1[i];                 // Compute v[n] = x[n] - c * v[n-M].
     }
 
     for(int i = numStages-1; i >= 0; i--)
