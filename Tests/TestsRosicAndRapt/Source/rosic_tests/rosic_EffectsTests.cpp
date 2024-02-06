@@ -2,6 +2,7 @@ using namespace rotes;
 using namespace rosic;
 using namespace RAPT;
 
+// rename to allpassDiffusor
 void rotes::allpassDisperser()
 {
   // We plot some impulse responses of allpass filters. The goal is to build some intuition for
@@ -13,7 +14,7 @@ void rotes::allpassDisperser()
   bool   biquads    = false;     // Switches between 1st and 2nd order stages
   double freq       = 3900;
   double quality    = 2.0;       // Quality factor "Q" for 2nd order stages
-  int    N          = 4000;      // Number of samples for the plot
+  int    N          = 4096;      // Number of samples for the plot
 
   // Create and set up the allpass chain:
   rosic::AllpassChain apf1;

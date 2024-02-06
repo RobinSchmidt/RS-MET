@@ -251,6 +251,12 @@ public:
     //   vM = delayLine.readOutput();
   }
 
+  void reset()
+  {
+    delayLine.reset();
+    nestedAllpass.reset();
+  }
+
 
 protected:
 
@@ -332,6 +338,11 @@ public:
     // member is a different kind of object here.
   }
 
+  void reset()
+  {
+    delayLine.reset();
+    nestedAllpass.reset();
+  }
 
 protected:
 
@@ -394,6 +405,11 @@ public:
     return c * v + vM;
   }
 
+  void reset()
+  {
+    delayLine.reset();
+    nestedAllpass.reset();
+  }
 
 protected:
 
