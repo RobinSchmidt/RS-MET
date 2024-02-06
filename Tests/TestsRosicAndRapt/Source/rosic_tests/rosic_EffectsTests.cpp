@@ -237,19 +237,14 @@ void rotes::allpassDelayChain()
 
 bool rotes::testAllpassDelayNested()
 {
-  // Turn this into a unit test!
-
   using Real = double;
 
   int N = 4096;
-
 
   std::vector<int>  delays;
   std::vector<Real> coeffs;
   using Vec = std::vector<Real>;
   bool ok = true;
-
-
 
   // Create and set up the 0-level nested allpass delay structure:
   delays = {   7 };
@@ -321,17 +316,9 @@ bool rotes::testAllpassDelayNested()
     z1[n] = apdn.getSample(x[n]);    // general case
   ok &= z1 == y1;
 
-  //RAPT::rsAssert(ok);
-
-  //rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
-  //rsPlotVectors(y1, z1); 
-  // When looking at a spectrum in Audacity, we need to ensure to use the right settings for the 
-  // spectrum analysis: window should be rectangular and FFT size should be N
-
   //bool ok = rsIsWhite(y1, tol);  // Check that the filter is allpass
   // maybe make sure that it has decayed sufficiently such that truncating the impulse response 
   // does not lead to a large deviation from whiteness
-
 
   // Now test a 2-level nesting:
   delays = {   7,  11,  17 };
@@ -376,12 +363,8 @@ bool rotes::testAllpassDelayNested()
   for(int n = 0; n < N; n++)
     z2[n] = apdn.getSample(x[n]);
   ok &= z2 == y2;
-
   //RAPT::rsAssert(ok);
   //rsPlotVectors(y2, z2);
-  //rosic::writeToMonoWaveFile("AllpassDelaysNested2.wav", &y2[0], N, 44100, 16);
-  //rsPlotVector(y2);
-
 
   // Now test a 3-level nesting:
   delays = {   7,  11,  17,  23 };
@@ -425,18 +408,8 @@ bool rotes::testAllpassDelayNested()
   ok &= z3 == y3;
   //rsPlotVectors(y3, z3);
 
-
-
-
-
-
-  //rosic::writeToMonoWaveFile("AllpassDelaysNested3.wav", &y3[0], N, 44100, 16);
-  //rsPlotVector(y3);
-
-
   return ok;
   //RAPT::rsAssert(ok);
-  //int dummy = 0;
 
   // ToDo:
   // -Make a lattice-based implementation for an arbitrary amount of nesting and compare the 
