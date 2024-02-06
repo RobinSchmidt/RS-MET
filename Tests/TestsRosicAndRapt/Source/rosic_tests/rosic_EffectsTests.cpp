@@ -399,10 +399,33 @@ void rotes::allpassDelaysNested()
   apdn3.setAllpassCoeff(     1, coeffs[1]);
   apdn3.setAllpassCoeff(     2, coeffs[2]);
   apdn3.setAllpassCoeff(     3, coeffs[3]);
-
   Vec y3(N);
   for(int n = 0; n < N; n++)
     y3[n] = apdn3.getSample(x[n]);
+
+  apdn.reset();
+  apdn.setNumStages(4);                      // 4 stages means 3 levels of nesting
+  apdn.setMaxDelayInSamples(0, delays[0]);
+  apdn.setMaxDelayInSamples(1, delays[1]);
+  apdn.setMaxDelayInSamples(2, delays[2]);
+  apdn.setMaxDelayInSamples(3, delays[3]);
+  apdn.setDelayInSamples(   0, delays[0]);
+  apdn.setDelayInSamples(   1, delays[1]);
+  apdn.setDelayInSamples(   2, delays[2]);
+  apdn.setDelayInSamples(   3, delays[3]);
+  apdn.setAllpassCoeff(     0, coeffs[0]);
+  apdn.setAllpassCoeff(     1, coeffs[1]);
+  apdn.setAllpassCoeff(     2, coeffs[2]);
+  apdn.setAllpassCoeff(     3, coeffs[3]);
+
+  Vec z3(N);
+  for(int n = 0; n < N; n++)
+    z3[n] = apdn.getSample(x[n]);
+
+  ok &= z3 == y3;
+  rsPlotVectors(y3, z3);
+
+
 
 
 
