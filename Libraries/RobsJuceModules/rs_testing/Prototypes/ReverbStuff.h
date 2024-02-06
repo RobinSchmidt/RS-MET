@@ -504,39 +504,29 @@ public:
     return t[2*N];
   }
 
-
-
-  // Try to implement the lattice form here:
-  // https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
-  // https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
+  /** An unrolled (and therefore potentially optimized) getSample function that can be used 
+  alternatively to the general getSample() when there are two allpass stages.  */
   inline TSig getSample2(TSig x)
   {
-    TSig t0 = x;                                                    // t0 = x = input
+    // We directly implement the lattice form here:
+    // https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
+    // https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
+    // but with the unit delays replaced by our delaylines
 
-    TSig t1 = t0 - allpassCoeffs[0] * delayLines[0].readOutput();   // t1 = a
-    TSig t2 = t1 - allpassCoeffs[1] * delayLines[1].readOutput();   // t2 = b
+    RAPT::rsAssert(numStages == 2, "Function supposed a 2-stage configuration");
 
-    TSig t3 = delayLines[1].readOutput() + allpassCoeffs[1] * t2;   // t3 = c
-    TSig t4 = delayLines[0].readOutput() + allpassCoeffs[0] * t1;   // t4 = y = output
+    TSig t0 = x;
+
+    TSig t1 = t0 - allpassCoeffs[0] * delayLines[0].readOutput();
+    TSig t2 = t1 - allpassCoeffs[1] * delayLines[1].readOutput();
+
+    TSig t3 = delayLines[1].readOutput() + allpassCoeffs[1] * t2;
+    TSig t4 = delayLines[0].readOutput() + allpassCoeffs[0] * t1;
 
     delayLines[0].writeInputAndUpdate(t3);
     delayLines[1].writeInputAndUpdate(t2);
 
     return t4;
-
-    /*
-    TSig a = x - allpassCoeffs[0] * delayLines[0].readOutput();
-    TSig b = a - allpassCoeffs[1] * delayLines[1].readOutput();
-
-    TSig c = delayLines[1].readOutput() + allpassCoeffs[1] * b;
-    TSig y = delayLines[0].readOutput() + allpassCoeffs[0] * a;
-
-    delayLines[0].writeInputAndUpdate(c);
-    delayLines[1].writeInputAndUpdate(b);
-
-    return y;
-    */
-
   }
   // OK - this seems to work - rename to getSample2Stages. This mwas initially intended for 
   // devloping the algo but maybe it should be kept for optimization purposes
@@ -559,22 +549,6 @@ public:
     delayLines[2].writeInputAndUpdate(t3);
 
     return t6;
-
-    /*
-    TSig a = x - allpassCoeffs[0] * delayLines[0].readOutput();
-    TSig b = a - allpassCoeffs[1] * delayLines[1].readOutput();
-    TSig c = b - allpassCoeffs[2] * delayLines[2].readOutput();
-
-    TSig d = delayLines[2].readOutput() + allpassCoeffs[2] * c;
-    TSig e = delayLines[1].readOutput() + allpassCoeffs[1] * b;
-    TSig y = delayLines[0].readOutput() + allpassCoeffs[0] * a;
-
-    delayLines[0].writeInputAndUpdate(e);
-    delayLines[1].writeInputAndUpdate(d);
-    delayLines[2].writeInputAndUpdate(c);
-
-    return y;
-    */
   }
   // rename to getSample3Stages
 
