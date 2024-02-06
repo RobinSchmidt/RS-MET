@@ -246,7 +246,7 @@ void rotes::allpassDelaysNested()
   int N = 4096;
 
   // Create and set up the nested allpass delay structure:
-  rsAllpassDelayNested<Real, Real> apdn;
+  rsAllpassDelayNestedL1<Real, Real> apdn;
   apdn.setMaxDelayInSamples(0, delays[0]);
   apdn.setMaxDelayInSamples(1, delays[1]);
   apdn.setDelayInSamples(   0, delays[0]);

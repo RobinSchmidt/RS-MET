@@ -193,7 +193,7 @@ protected:
 //=================================================================================================
 
 template<class TSig, class TPar>
-class rsAllpassDelayNested
+class rsAllpassDelayNestedL1  // L1 mean 1 level of nesting
 {
 
 public:
@@ -349,7 +349,7 @@ protected:
   TPar allpassCoeff = TPar(0);
   RAPT::rsBasicDelayLine<TSig> delayLine;
 
-  rsAllpassDelayNested<TSig, TPar> nestedAllpass;
+  rsAllpassDelayNestedL1<TSig, TPar> nestedAllpass;
   // The only difference to the 1-level nesting case is that this member is now not the simple
   // rsAllpassDelay but itself the 1-level nested allpass delay
 
@@ -426,6 +426,28 @@ protected:
 };
 
 
+//=================================================================================================
+
+/*
+template<class TSig, class TPar>
+class rsAllpassDelayNested
+{
+
+public:
+
+  void setMaxDelayInSamples(int nestLevel, int newMaxDelay)
+  {
+
+  }
+
+
+protected:
+
+  //std::vector<>
+
+
+};
+*/
 
 //=================================================================================================
 
