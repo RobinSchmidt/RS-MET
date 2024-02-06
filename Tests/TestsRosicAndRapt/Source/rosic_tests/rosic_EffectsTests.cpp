@@ -300,7 +300,7 @@ void rotes::allpassDelaysNested()
   for(int n = 0; n < N; n++)
     y1[n] = apdn1.getSample(x[n]);
 
-  //Set up the multi-level nested allpass delay structure and set it up to one level of
+  // Set up the multi-level nested allpass delay structure and set it up to one level of
   // nesting such that its output should match y1.
   apdn.reset();
   apdn.setNumStages(2);                      // 2 stages means 1 level of nesting
@@ -349,11 +349,29 @@ void rotes::allpassDelaysNested()
   for(int n = 0; n < N; n++)
     y2[n] = apdn2.getSample(x[n]);
 
+  // Set up the multi-level nested allpass delay structure and set it up to two levels of
+  // nesting such that its output should match y2.
+  apdn.reset();
+  apdn.setNumStages(3);                      // 3 stages means 2 levels of nesting
+  apdn.setMaxDelayInSamples(0, delays[0]);
+  apdn.setMaxDelayInSamples(1, delays[1]);
+  apdn.setMaxDelayInSamples(2, delays[2]);
+  apdn.setDelayInSamples(   0, delays[0]);
+  apdn.setDelayInSamples(   1, delays[1]);
+  apdn.setDelayInSamples(   2, delays[2]);
+  apdn.setAllpassCoeff(     0, coeffs[0]);
+  apdn.setAllpassCoeff(     1, coeffs[1]);
+  apdn.setAllpassCoeff(     2, coeffs[2]);
 
-
+  Vec z2(N);
+  for(int n = 0; n < N; n++)
+    z2[n] = apdn.getSample3(x[n]);
+  ok &= z2 == y2;
+  RAPT::rsAssert(ok);
+  rsPlotVectors(y2, z2); 
 
   rosic::writeToMonoWaveFile("AllpassDelaysNested2.wav", &y2[0], N, 44100, 16);
-  rsPlotVector(y2);
+  //rsPlotVector(y2);
 
 
   // Now test a 3-level nesting:
