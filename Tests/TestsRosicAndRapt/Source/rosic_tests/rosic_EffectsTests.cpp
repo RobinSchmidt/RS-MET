@@ -241,16 +241,54 @@ void rotes::allpassDelaysNested()
 
   using Real = double;
 
-  std::vector<int>  delays = {   7,  11 };
-  std::vector<Real> coeffs = { 0.8, 0.7 };
   int N = 4096;
 
+
+  std::vector<int>  delays;
+  std::vector<Real> coeffs;
+  using Vec = std::vector<Real>;
+  bool ok = true;
+
+
+
+  // Create and set up the 0-level nested allpass delay structure:
+  delays = {   7 };
+  coeffs = { 0.8 };
+  rsAllpassDelay<Real, Real> apdn0;
+  apdn0.setMaxDelayInSamples(delays[0]);
+  apdn0.setDelayInSamples(   delays[0]);
+  apdn0.setAllpassCoeff(     coeffs[0]);
+
+  Vec x(N), y0(N);
+  x[0] = 1;  
+  for(int n = 0; n < N; n++)
+    y0[n] = apdn0.getSample(x[n]);
+
+  // Create and set up the multi-level nested allpass delay structure and set it up to zero levels of
+  // nesting such that its output should match y0.
+  rsAllpassDelayNested<Real, Real> apdn;
+  apdn.setMaxNumStages(4);
+  apdn.setNumStages(1);                      // 1 stage means 0 levels of nesting
+  apdn.setMaxDelayInSamples(0, delays[0]);
+  apdn.setDelayInSamples(   0, delays[0]);
+  apdn.setAllpassCoeff(     0, coeffs[0]);
+
+  //  Create impulse response of multi-level nested allpass:
+  Vec z0(N);
+  for(int n = 0; n < N; n++)
+    z0[n] = apdn.getSample(x[n]);
+  ok &= z0 == y0;
+
+  rsPlotVectors(y0, z0);
+  // OK - nice - we have a match!
 
 
 
 
 
   // Create and set up the 1-level nested allpass delay structure:
+  delays = {   7,  11 };
+  coeffs = { 0.8, 0.7 };
   rsAllpassDelayNestedL1<Real, Real> apdn1;
   apdn1.setMaxDelayInSamples(0, delays[0]);
   apdn1.setMaxDelayInSamples(1, delays[1]);
@@ -260,16 +298,13 @@ void rotes::allpassDelaysNested()
   apdn1.setAllpassCoeff(     1, coeffs[1]);
 
   // Create impulse response:
-  using Vec = std::vector<Real>;
-  Vec x(N), y1(N);
-  x[0] = 1;
+  Vec y1(N);
   for(int n = 0; n < N; n++)
     y1[n] = apdn1.getSample(x[n]);
 
-  // Create and set up the multi-level nested allpass delay structure and set it up to one level of
+  //Set up the multi-level nested allpass delay structure and set it up to one level of
   // nesting such that its output should match y1.
-  rsAllpassDelayNested<Real, Real> apdn;
-  apdn.setMaxNumStages(4);
+  apdn.reset();
   apdn.setNumStages(2);                      // 2 stages means 1 level of nesting
   apdn.setMaxDelayInSamples(0, delays[0]);
   apdn.setMaxDelayInSamples(1, delays[1]);
