@@ -185,9 +185,84 @@ protected:
 
 };
 
+// This class actually seems to be production ready when the documentation is completed
 
 
 
+
+//=================================================================================================
+
+template<class TSig, class TPar>
+class rsAllpassDelayNested
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setMaxDelayInSamples(int nestLevel, int newMaxDelay) 
+  { 
+    if(nestLevel == 0)
+      delayLine.setMaximumDelayInSamples(newMaxDelay);
+    else
+      nestedAllpass.setMaxDelayInSamples(newMaxDelay);
+  }
+
+  void setDelayInSamples(int nestLevel, int newDelay) 
+  { 
+    if(nestLevel == 0)
+      delayLine.setDelayInSamples(newDelay);
+    else
+      nestedAllpass.setDelayInSamples(newDelay);
+  }
+
+  void setAllpassCoeff(int nestLevel, TPar newCoeff) 
+  { 
+    if(nestLevel == 0)
+      allpassCoeff = newCoeff;
+    else
+      nestedAllpass.setAllpassCoeff(newCoeff);
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  inline TSig getSample(TSig x)
+  {
+    // I'm not yet sure, if the algorithm ist correct....
+
+    // These steps are copied from the non-nested case:
+    const TPar c = allpassCoeff;
+    TSig vM = delayLine.readOutput();
+    TSig v  = x - c * vM;
+
+    // This is the additional nesting step:
+    v = nestedAllpass.getSample(v);
+
+    // These steps are also copied from the non-nested case:
+    delayLine.writeInputAndUpdate(v);
+    return c * v + vM;
+  }
+
+
+protected:
+
+  TPar allpassCoeff = TPar(0);
+  RAPT::rsBasicDelayLine<TSig> delayLine;
+  rsAllpassDelay<TSig, TPar> nestedAllpass;
+
+};
+
+// ToDo:
+// -Implement a twice-nested allpass and thrice nested allpass to establish the pattern for how to
+//  to it with direct from filters. Then implement a general sturcture for arbitrary many nested 
+//  allpasses using a lattice structure - see here:
+//  https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
+// -Implement unit tests for the arbitrary nesting implementation that compares it to the direct 
+//  implementations of 1,2,3 level nesting
 
 
 
