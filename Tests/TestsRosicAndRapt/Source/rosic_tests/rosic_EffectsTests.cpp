@@ -371,15 +371,13 @@ void rotes::allpassDelaysNested()
   //rsPlotVectors(y2, z2);
 
 
+  apdn.reset();
   for(int n = 0; n < N; n++)
     z2[n] = apdn.getSampleN(x[n]);
   ok &= z2 == y2;
   RAPT::rsAssert(ok);
   rsPlotVectors(y2, z2);
-  rsPlotVectors(z2-y2);
-  // There is a small error signal of the order of 10^-5 - but actually, it should exactly match 
-  // the output of getSample3. The algo is supposed to be the same, so the roundoff error should 
-  // also be matched.
+
 
 
 
