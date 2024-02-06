@@ -33,4 +33,12 @@ Ideas:
 
 
 
+
+See also:
+https://ccrma.stanford.edu/~jos/fp/Allpass_Filters.html
+https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
+https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters_I.html
+
+
+
 */

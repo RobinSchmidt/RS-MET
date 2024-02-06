@@ -808,10 +808,10 @@ bool rotes::testAllpassDelay()
   apf1.setCoefficients(coeff, 1.0, -coeff);
 
   // Create and set up M-th order allpass filter with M=1:
-  rsAllpassDelayNaive<Real, Real> apd;
-  apd.setMaximumDelayInSamples(1);
-  apd.setDelayInSamples(1);
-  apd.setAllpassCoeff(coeff);
+  rsAllpassDelayNaive<Real, Real> apd1;
+  apd1.setMaximumDelayInSamples(1);
+  apd1.setDelayInSamples(1);
+  apd1.setAllpassCoeff(coeff);
 
   // Create input and target output:
   Vec x(N), t(N);
@@ -822,7 +822,7 @@ bool rotes::testAllpassDelay()
   // Create output of our M-th order allpass:
   Vec y(N);
   for(int n = 0; n < N; n++)
-    y[n] = apd.getSample(x[n]);
+    y[n] = apd1.getSample(x[n]);
 
   // Compare both outputs - they should be equal:
   ok &= y == t;
@@ -830,10 +830,10 @@ bool rotes::testAllpassDelay()
 
   // Now use a higher delay:
   int M = 5;
-  apd.setMaximumDelayInSamples(M);
-  apd.setDelayInSamples(M);
+  apd1.setMaximumDelayInSamples(M);
+  apd1.setDelayInSamples(M);
   for(int n = 0; n < N; n++)
-    y[n] = apd.getSample(x[n]);
+    y[n] = apd1.getSample(x[n]);
 
   // The expected result is that y equals t with M-1 zeros inserted between adjacent samples of t, 
   // i.e. y[M*n] = t[n]  or  y[n] = t[n/M]  when n is divisible by M and zero otherwise.
@@ -844,6 +844,18 @@ bool rotes::testAllpassDelay()
       ok &= y[n] == 0; }
   //rsPlotVectors(x, y, t);
 
+  // At this point, the naive implementaion of the allpass delay seems to work. Now test if the 
+  // optimized variant produces the same result:
+  rsAllpassDelay<Real, Real> apd2;
+  apd2.setMaxDelayInSamples(M);
+  apd2.setDelayInSamples(M);
+  apd2.setAllpassCoeff(coeff);
+  Vec y2(N);
+  for(int n = 0; n < N; n++)
+    y2[n] = apd2.getSample(x[n]);
+  Real tol = 1.e-16;
+  ok &= rsIsCloseTo(y2, y, tol);
+  //rsPlotVectors(y2 - y);
 
   return ok;
 

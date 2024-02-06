@@ -14,7 +14,8 @@ class rsBasicDelayLine
 
 public:
 
-  /** \name Construction/Destruction */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
 
   /** Constructor. */
   rsBasicDelayLine();
@@ -23,6 +24,7 @@ public:
   ~rsBasicDelayLine();
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the maximum delay in samples that can be uesed - i.e. the length of the internal
@@ -40,6 +42,7 @@ public:
   void setDelayInSamples(int newDelay);
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   int getDelayInSamples() const
@@ -51,7 +54,8 @@ public:
   };
 
 
-  /** \name Audio Processing */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   /** Calculates one output-sample at a time and handles all the tap-pointer increments. */
   RS_INLINE T getSample(T in);
@@ -72,6 +76,15 @@ public:
   RS_INLINE void incrementTapPointers();
 
 
+  // New functions - more convenient in certain situations:
+
+  inline T readOutput() const { return delayLine[tapOut]; }
+
+  inline void writeInput(T in) { delayLine[tapIn] = in; }
+
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
   /** Resets the content of the delayline contents to all zeros. */
@@ -79,6 +92,8 @@ public:
 
 protected:
 
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
   T* delayLine;  // maybe use std::vector
@@ -86,7 +101,7 @@ protected:
 
 };
 
-//-----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inlined functions:
 
 template<class T>
@@ -122,7 +137,7 @@ RS_INLINE void rsBasicDelayLine<T>::incrementTapPointers()
     // reading/writing one sample behind the allocated memory
 }
 
-//===============================================================================================
+//=================================================================================================
 
 /**
 
@@ -182,7 +197,7 @@ protected:
 
 };
 
-//===============================================================================================
+//=================================================================================================
 
 /**
 
@@ -298,7 +313,7 @@ private:
 
 };
 
-//-----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inlined functions:
 
 template<class TSig, class TPar>

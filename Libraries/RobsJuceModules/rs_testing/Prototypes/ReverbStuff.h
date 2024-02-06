@@ -23,7 +23,7 @@ https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
 
 
 template<class TSig, class TPar>
-class rsAllpassDelayNaive
+class rsAllpassDelayNaive         // Maybe rename to rsAllpassDelayDF1
 {
 
 public:
@@ -117,6 +117,80 @@ void rsAllpassDelayNaive<TSig, TPar>::reset()
 // -When building a series connection of those, as is done for a diffuser stage for a reverb, the 
 //  output delay line of one stage becomes the input delayline for the next stage, so we can share
 //  some delaylines compared to a naive implementation.
+
+
+//=================================================================================================
+
+/**
+
+
+See:
+https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
+https://valhalladsp.com/2011/01/21/reverbs-diffusion-allpass-delays-and-metallic-artifacts/
+
+
+*/
+
+
+template<class TSig, class TPar>
+class rsAllpassDelay
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
+  rsAllpassDelay() {}
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+
+  void setMaxDelayInSamples(int newMaxDelay) { delayLine.setMaximumDelayInSamples(newMaxDelay); }
+
+  void setDelayInSamples(int newDelay) { delayLine.setDelayInSamples(newDelay); }
+
+  void setAllpassCoeff(TPar newCoeff) { allpassCoeff = newCoeff; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+
+  inline TSig getSample(TSig x)
+  {
+    const TPar c = allpassCoeff;       // for convenience
+
+    TSig vM = delayLine.readOutput();  // v[n-M]
+    TSig v  = x - c * vM;              // v[n] = x[n] - c * v[n-M]
+    TSig y  = c * v + vM;              // y[n] = c * v[n] + v[n-M]
+
+    delayLine.writeInput(v);
+    delayLine.incrementTapPointers();
+
+    return y;
+
+    // see: https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
+  }
+
+
+  void reset() { delayLine.reset(); }
+
+
+
+protected:
+
+  TPar allpassCoeff = 0.0;
+
+  RAPT::rsBasicDelayLine<TSig> delayLine;
+
+};
+
+
+
+
 
 
 
