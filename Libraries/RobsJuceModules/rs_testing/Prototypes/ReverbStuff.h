@@ -428,26 +428,64 @@ protected:
 
 //=================================================================================================
 
-/*
 template<class TSig, class TPar>
 class rsAllpassDelayNested
 {
 
 public:
 
-  void setMaxDelayInSamples(int nestLevel, int newMaxDelay)
-  {
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
+  void setMaxNumStages(int newMaxNumStages)
+  {
+    allpassCoeffs.resize(newMaxNumStages);
+    delayLines.resize(newMaxNumStages);
   }
+
+  void setNumStages(int newNumStages)
+  {
+    RAPT::rsAssert(newNumStages <= getMaxNumStages());
+    numStages = newNumStages;
+  }
+
+  void setMaxDelayInSamples(int stageIndex, int newMaxDelay)
+  {
+    RAPT::rsAssert(stageIndex < getMaxNumStages());
+    delayLines[stageIndex].setMaxDelayInSamples(newMaxDelay);
+  }
+
+  void setDelayInSamples(int stageIndex, int newDelay)
+  {
+    RAPT::rsAssert(stageIndex < getMaxNumStages());
+    delayLines[stageIndex].setDelayInSamples(newMaxDelay);
+  }
+
+  void setAllpassCoeff(int stageIndex, TPar newCoeff)
+  {
+    RAPT::rsAssert(stageIndex < getMaxNumStages());
+    allpassCoeffs[stageIndex] = newCoeff;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getMaxNumStages() const { return (int) allpassCoeffs.size(); }
 
 
 protected:
 
-  //std::vector<>
+  std::vector<TPar> allpassCoeffs;
+  std::vector<RAPT::rsBasicDelayLine<TSig>> delayLines;
+  int numStages = 0;
 
+
+  //TPar allpassCoeff = TPar(0);
+  //RAPT::rsBasicDelayLine<TSig> delayLine;
 
 };
-*/
+
 
 //=================================================================================================
 
