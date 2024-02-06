@@ -237,7 +237,7 @@ void rotes::allpassDelayChain()
 
 void rotes::allpassDelaysNested()
 {
-  // This still doesn't work
+  // Turn this into a unit test!
 
   using Real = double;
 
@@ -282,8 +282,6 @@ void rotes::allpassDelaysNested()
   //rsPlotVectors(y0, z0);
   // OK - nice - we have a match!
 
-
-
   // Create and set up the 1-level nested allpass delay structure:
   delays = {   7,  11 };
   coeffs = { 0.8, 0.7 };
@@ -311,15 +309,19 @@ void rotes::allpassDelaysNested()
   apdn.setAllpassCoeff(     0, coeffs[0]);
   apdn.setAllpassCoeff(     1, coeffs[1]);
 
-  //  Create impulse response of multi-level nested allpass:
+  // Create impulse response of multi-level nested allpass with the general and the unrolled
+  // special case getSample-function:
   Vec z1(N);
   for(int n = 0; n < N; n++)
-  {
-    //z1[n] = apdn.getSample(x[n]);  // Nope z1 is wrong - it seems to be just a 1-stage output
-    z1[n] = apdn.getSample2(x[n]);
-  }
+    z1[n] = apdn.getSample2(x[n]);   // unrolled special case for numStages = 2
   ok &= z1 == y1;
-  RAPT::rsAssert(ok);
+
+  apdn.reset();
+  for(int n = 0; n < N; n++)
+    z1[n] = apdn.getSample(x[n]);    // general case
+  ok &= z1 == y1;
+
+  //RAPT::rsAssert(ok);
 
   //rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
   //rsPlotVectors(y1, z1); 
@@ -367,21 +369,17 @@ void rotes::allpassDelaysNested()
   for(int n = 0; n < N; n++)
     z2[n] = apdn.getSample3(x[n]);
   ok &= z2 == y2;
-  RAPT::rsAssert(ok);
+  //RAPT::rsAssert(ok);
   //rsPlotVectors(y2, z2);
-
 
   apdn.reset();
   for(int n = 0; n < N; n++)
     z2[n] = apdn.getSample(x[n]);
   ok &= z2 == y2;
-  RAPT::rsAssert(ok);
-  rsPlotVectors(y2, z2);
 
-
-
-
-  rosic::writeToMonoWaveFile("AllpassDelaysNested2.wav", &y2[0], N, 44100, 16);
+  //RAPT::rsAssert(ok);
+  //rsPlotVectors(y2, z2);
+  //rosic::writeToMonoWaveFile("AllpassDelaysNested2.wav", &y2[0], N, 44100, 16);
   //rsPlotVector(y2);
 
 
@@ -406,12 +404,15 @@ void rotes::allpassDelaysNested()
   for(int n = 0; n < N; n++)
     y3[n] = apdn3.getSample(x[n]);
 
-  rosic::writeToMonoWaveFile("AllpassDelaysNested3.wav", &y3[0], N, 44100, 16);
-  rsPlotVector(y3);
 
 
 
-  int dummy = 0;
+  //rosic::writeToMonoWaveFile("AllpassDelaysNested3.wav", &y3[0], N, 44100, 16);
+  //rsPlotVector(y3);
+
+
+  RAPT::rsAssert(ok);
+  //int dummy = 0;
 
   // ToDo:
   // -Make a lattice-based implementation for an arbitrary amount of nesting and compare the 
