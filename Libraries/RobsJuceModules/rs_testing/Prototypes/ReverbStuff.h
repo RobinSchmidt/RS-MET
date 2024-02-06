@@ -513,7 +513,7 @@ public:
     // https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
     // but with the unit delays replaced by our delaylines
 
-    RAPT::rsAssert(numStages == 2, "Function supposed a 2-stage configuration");
+    RAPT::rsAssert(numStages == 2, "Function supposed a 2 stage configuration");
 
     TSig t0 = x;
 
@@ -534,6 +534,8 @@ public:
 
   inline TSig getSample3(TSig x)
   {
+    RAPT::rsAssert(numStages == 3, "Function supposed a 3 stage configuration");
+
     TSig t0 = x;
 
     TSig t1 = t0 - allpassCoeffs[0] * delayLines[0].readOutput();
@@ -550,7 +552,7 @@ public:
 
     return t6;
   }
-  // rename to getSample3Stages
+  // rename to getSample3Stages, write a getSample4Stages (and a unit test for it)
 
 
 

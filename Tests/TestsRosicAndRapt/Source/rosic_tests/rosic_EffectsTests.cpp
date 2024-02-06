@@ -423,7 +423,7 @@ void rotes::allpassDelaysNested()
     z3[n] = apdn.getSample(x[n]);
 
   ok &= z3 == y3;
-  rsPlotVectors(y3, z3);
+  //rsPlotVectors(y3, z3);
 
 
 
