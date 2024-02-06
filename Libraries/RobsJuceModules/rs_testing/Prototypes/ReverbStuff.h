@@ -490,17 +490,20 @@ public:
       const TPar c = allpassCoeffs[i];           // For convenience.
       t1[i] = delayLines[i].readOutput();        // Read vM = v[n-M] from the delayline
       t2[i] = t3[i] - c * t1[i];                 // Compute v[n] = x[n] - c * v[n-M].
+      //t3[i] = c * t2[i] + t1[i];                 // Compute y[n] = c * v[n] + v[n-M].
     }
 
     for(int i = numStages-1; i >= 0; i--)
     {
       const TPar c = allpassCoeffs[i];           // For convenience.
+      //t2[i] = t3[i] - c * t1[i];                 // Compute v[n] = x[n] - c * v[n-M].
       t3[i] = c * t2[i] + t1[i];                 // Compute y[n] = c * v[n] + v[n-M].
       delayLines[i].writeInputAndUpdate(t2[i]);  // Write v[n] into the delayline.
     }
 
+    //return t3[numStages];
     return t3[0];
-    // Try to get rid of at leats one of the temp arrays, i.e. t3. delayLines[i].readOutput can 
+    // Try to get rid of at least one of the temp arrays, i.e. t3. delayLines[i].readOutput can 
     // also be called in the 2nd loop (in t3[i] = ...) and should return the exact same output 
     // there (I think) so we don't need to store it in t1[i]
 
