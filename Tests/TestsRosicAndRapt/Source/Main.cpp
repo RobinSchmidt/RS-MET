@@ -609,9 +609,9 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  //allpassDisperser();
-  //allpassDelay();
-  //allpassDelayChain();
+  allpassDisperser();
+  allpassDelay();
+  allpassDelayChain();
   //feedbackDelayNetwork();             // writes wave file
   //algoVerb();                       // writes wave file
   //spectralFilter();                 // Maybe move into a file for spectral processors
