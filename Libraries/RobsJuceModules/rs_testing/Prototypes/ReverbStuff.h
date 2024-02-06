@@ -485,23 +485,23 @@ public:
   {
     // Shorthands for convenience:
     int N = numStages;
-    TSig* y = &tmp[0];   // maybe use t instead
+    TSig* t = &tmp[0];   // maybe use t instead
 
     // Compute the signals in the upper row of the lattice:
-    y[0] = x;
+    t[0] = x;
     for(int i = 0; i < N; i++)
-      y[i+1] = y[i] - allpassCoeffs[i] * delayLines[i].readOutput();
+      t[i+1] = t[i] - allpassCoeffs[i] * delayLines[i].readOutput();
 
     // Compute the signals in the lower row of the lattice:
     for(int i = 0; i < N; i++)
-      y[N+i+1] = delayLines[N-i-1].readOutput() + allpassCoeffs[N-i-1] * y[N-i];
+      t[N+i+1] = delayLines[N-i-1].readOutput() + allpassCoeffs[N-i-1] * t[N-i];
 
     // Update the content of the delaylines:
     for(int i = 0; i < N; i++)
-      delayLines[i].writeInputAndUpdate(y[2*N-i-1]);
+      delayLines[i].writeInputAndUpdate(t[2*N-i-1]);
 
     // The final output is in the 2N-th slot of the temp-buffer:
-    return y[2*N];
+    return t[2*N];
   }
 
 
@@ -511,18 +511,18 @@ public:
   // https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
   inline TSig getSample2(TSig x)
   {
-    TSig y0 = x;                                                    // y0 = x = input
+    TSig t0 = x;                                                    // t0 = x = input
 
-    TSig y1 = y0 - allpassCoeffs[0] * delayLines[0].readOutput();   // y1 = a
-    TSig y2 = y1 - allpassCoeffs[1] * delayLines[1].readOutput();   // y2 = b
+    TSig t1 = t0 - allpassCoeffs[0] * delayLines[0].readOutput();   // t1 = a
+    TSig t2 = t1 - allpassCoeffs[1] * delayLines[1].readOutput();   // t2 = b
 
-    TSig y3 = delayLines[1].readOutput() + allpassCoeffs[1] * y2;   // y3 = c
-    TSig y4 = delayLines[0].readOutput() + allpassCoeffs[0] * y1;   // y4 = y = output
+    TSig t3 = delayLines[1].readOutput() + allpassCoeffs[1] * t2;   // t3 = c
+    TSig t4 = delayLines[0].readOutput() + allpassCoeffs[0] * t1;   // t4 = y = output
 
-    delayLines[0].writeInputAndUpdate(y3);
-    delayLines[1].writeInputAndUpdate(y2);
+    delayLines[0].writeInputAndUpdate(t3);
+    delayLines[1].writeInputAndUpdate(t2);
 
-    return y4;
+    return t4;
 
     /*
     TSig a = x - allpassCoeffs[0] * delayLines[0].readOutput();
@@ -544,21 +544,21 @@ public:
 
   inline TSig getSample3(TSig x)
   {
-    TSig y0 = x;
+    TSig t0 = x;
 
-    TSig y1 = y0 - allpassCoeffs[0] * delayLines[0].readOutput();
-    TSig y2 = y1 - allpassCoeffs[1] * delayLines[1].readOutput();
-    TSig y3 = y2 - allpassCoeffs[2] * delayLines[2].readOutput();
+    TSig t1 = t0 - allpassCoeffs[0] * delayLines[0].readOutput();
+    TSig t2 = t1 - allpassCoeffs[1] * delayLines[1].readOutput();
+    TSig t3 = t2 - allpassCoeffs[2] * delayLines[2].readOutput();
 
-    TSig y4 = delayLines[2].readOutput() + allpassCoeffs[2] * y3;
-    TSig y5 = delayLines[1].readOutput() + allpassCoeffs[1] * y2;
-    TSig y6 = delayLines[0].readOutput() + allpassCoeffs[0] * y1;
+    TSig t4 = delayLines[2].readOutput() + allpassCoeffs[2] * t3;
+    TSig t5 = delayLines[1].readOutput() + allpassCoeffs[1] * t2;
+    TSig t6 = delayLines[0].readOutput() + allpassCoeffs[0] * t1;
 
-    delayLines[0].writeInputAndUpdate(y5);
-    delayLines[1].writeInputAndUpdate(y4);
-    delayLines[2].writeInputAndUpdate(y3);
+    delayLines[0].writeInputAndUpdate(t5);
+    delayLines[1].writeInputAndUpdate(t4);
+    delayLines[2].writeInputAndUpdate(t3);
 
-    return y6;
+    return t6;
 
     /*
     TSig a = x - allpassCoeffs[0] * delayLines[0].readOutput();
@@ -586,7 +586,7 @@ public:
   {
     for(size_t i = 0; i < delayLines.size(); i++)
       delayLines[i].reset();
-    rsSetZero(tmp);            // Not needed for the DSP to be correct but is cleaner
+    rsSetZero(tmp);            // Not needed for the DSP to work correctly but is cleaner
   }
 
 
