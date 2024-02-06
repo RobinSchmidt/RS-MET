@@ -506,7 +506,7 @@ public:
 
   /** An unrolled (and therefore potentially optimized) getSample function that can be used 
   alternatively to the general getSample() when there are two allpass stages.  */
-  inline TSig getSample2(TSig x)
+  inline TSig getSample2Stages(TSig x)
   {
     // We directly implement the lattice form here:
     // https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
@@ -532,7 +532,7 @@ public:
   // devloping the algo but maybe it should be kept for optimization purposes
 
 
-  inline TSig getSample3(TSig x)
+  inline TSig getSample3Stages(TSig x)
   {
     RAPT::rsAssert(numStages == 3, "Function supposed a 3 stage configuration");
 

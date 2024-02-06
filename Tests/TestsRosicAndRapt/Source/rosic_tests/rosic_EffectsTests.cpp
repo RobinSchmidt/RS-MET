@@ -313,7 +313,7 @@ void rotes::allpassDelaysNested()
   // special case getSample-function:
   Vec z1(N);
   for(int n = 0; n < N; n++)
-    z1[n] = apdn.getSample2(x[n]);   // unrolled special case for numStages = 2
+    z1[n] = apdn.getSample2Stages(x[n]);   // unrolled special case for numStages = 2
   ok &= z1 == y1;
 
   apdn.reset();
@@ -367,7 +367,7 @@ void rotes::allpassDelaysNested()
 
   Vec z2(N);
   for(int n = 0; n < N; n++)
-    z2[n] = apdn.getSample3(x[n]);
+    z2[n] = apdn.getSample3Stages(x[n]);
   ok &= z2 == y2;
   //RAPT::rsAssert(ok);
   //rsPlotVectors(y2, z2);
