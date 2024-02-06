@@ -164,20 +164,13 @@ public:
 
   inline TSig getSample(TSig x)
   {
-    const TPar c = allpassCoeff;       // for convenience
+    const TPar c = allpassCoeff;         // For convenience.
+    TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
+    TSig v  = x - c * vM;                // Compute v[n] = x[n] - c * v[n-M].
+    delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
+    return c * v + vM;                   // Return y[n] = c * v[n] + v[n-M].
 
-    TSig vM = delayLine.readOutput();  // v[n-M]
-    TSig v  = x - c * vM;              // v[n] = x[n] - c * v[n-M]
-    TSig y  = c * v + vM;              // y[n] = c * v[n] + v[n-M]
-
-    //delayLine.writeInputNoUpdate(v);
-    //delayLine.incrementTapPointers();
-
-    delayLine.writeInputAndUpdate(v);
-
-    return y;
-
-    // see: https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
+    // See: https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
   }
 
 
