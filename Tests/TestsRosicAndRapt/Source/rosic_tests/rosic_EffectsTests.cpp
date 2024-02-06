@@ -315,10 +315,11 @@ void rotes::allpassDelaysNested()
   Vec z1(N);
   for(int n = 0; n < N; n++)
   {
-    //z1[n] = apdn.getSample(x[n]);
+    //z1[n] = apdn.getSample(x[n]);  // Nope z1 is wrong - it seems to be just a 1-stage output
     z1[n] = apdn.getSample2(x[n]);
   }
-  // Nope z1 is wrong - it seems to be just a 1-stage output
+  ok &= z1 == y1;
+  RAPT::rsAssert(ok);
 
   //rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
   rsPlotVectors(y1, z1); 
@@ -328,9 +329,6 @@ void rotes::allpassDelaysNested()
   //bool ok = rsIsWhite(y1, tol);  // Check that the filter is allpass
   // maybe make sure that it has decayed sufficiently such that truncating the impulse response 
   // does not lead to a large deviation from whiteness
-
-
-
 
 
   // Now test a 2-level nesting:
@@ -350,6 +348,9 @@ void rotes::allpassDelaysNested()
   Vec y2(N);
   for(int n = 0; n < N; n++)
     y2[n] = apdn2.getSample(x[n]);
+
+
+
 
   rosic::writeToMonoWaveFile("AllpassDelaysNested2.wav", &y2[0], N, 44100, 16);
   rsPlotVector(y2);
