@@ -439,8 +439,11 @@ public:
 
   void setMaxNumStages(int newMaxNumStages)
   {
-    allpassCoeffs.resize(newMaxNumStages);
     delayLines.resize(newMaxNumStages);
+    allpassCoeffs.resize(newMaxNumStages);
+    t1.resize(newMaxNumStages);
+    t2.resize(newMaxNumStages);
+    t3.resize(newMaxNumStages);
   }
 
   void setNumStages(int newNumStages)
@@ -474,10 +477,74 @@ public:
   int getMaxNumStages() const { return (int) allpassCoeffs.size(); }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  inline TSig getSample(TSig x)
+  {
+    t3[0] = x;
+
+    for(int i = 0; i < numStages; i++)
+    {
+      const TPar c = allpassCoeffs[i];         // For convenience.
+      t1[i] == delayLines[i].readOutput();     // Read vM = v[n-M] from the delayline
+      t2[i] =  t3[i] - c * t1[i];              // Compute v[n] = x[n] - c * v[n-M].
+    }
+
+    for(int i = numStages-1; i >= 0; i--)
+    {
+      const TPar c = allpassCoeffs[i];         // For convenience.
+      t3[i] = c * t2[i] + t1[i];               // Compute y[n] = c * v[n] + v[n-M].
+      delayLine[i].writeInputAndUpdate(t2[i]); // Write v[n] into the delayline.
+    }
+
+    return t3[0];
+    // Try to get rid of at leats one of the temp arrays, i.e. t3. delayLines[i].readOutput can 
+    // also be called in the 2nd loop (in t3[i] = ...) and should return the exact same output 
+    // there (I think) so we don't need to store it in t1[i]
+
+
+
+    /*
+    // original allpass delay:    
+    const TPar c = allpassCoeff;         // For convenience.
+    TSig vM = delayLine.readOutput();    // Read vM = v[n-M] from the delayline.
+    TSig v  = x - c * vM;                // Compute v[n] = x[n] - c * v[n-M].
+    delayLine.writeInputAndUpdate(v);    // Write v[n] into the delayline.
+    return c * v + vM;                   // Return y[n] = c * v[n] + v[n-M].
+
+    // 1 Level nested:
+    const TPar c = allpassCoeff;
+    TSig vM = nestedAllpass.getSample(delayLine.readOutput());  // Read vM = innerAllpass(v[n-M])
+    TSig v  = x - c * vM;
+    delayLine.writeInputAndUpdate(v);
+    return c * v + vM;
+    */
+  }
+  
+
+
+
+
+  void reset()
+  {
+    for(size_t i = 0; i < delayLines.size(); i++)
+    {
+      delayLines[i].reset();
+      t1[i] = TSig(0);        // May not be needed for the DSP but is cleaner
+      t2[i] = TSig(0);        // Dito
+      t3[i] = TSig(0);        // Dito
+    }
+    // Maybe call rsSetToZero(delayLines); rsSetToZero(t1); ...
+  }
+
+
 protected:
 
-  std::vector<TPar> allpassCoeffs;
   std::vector<RAPT::rsBasicDelayLine<TSig>> delayLines;
+  std::vector<TPar> allpassCoeffs;
+  //std::vector<TSig> tmp;
+  std::vector<TSig> t1, t2, t3;  // temp buffers - maybe rename to vM, v, y
   int numStages = 0;
 
 
