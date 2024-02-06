@@ -428,6 +428,8 @@ protected:
 
 //=================================================================================================
 
+/** This still doesn't work */
+
 template<class TSig, class TPar>
 class rsAllpassDelayNested
 {
@@ -507,8 +509,6 @@ public:
     // also be called in the 2nd loop (in t3[i] = ...) and should return the exact same output 
     // there (I think) so we don't need to store it in t1[i]
 
-
-
     /*
     // original allpass delay:    
     const TPar c = allpassCoeff;         // For convenience.
@@ -525,8 +525,51 @@ public:
     return c * v + vM;
     */
   }
-  
 
+
+  /*
+  // Throw-awy code for testing - implement 2 stages directly
+  inline TSig getSample2(TSig x)
+  {
+    TSig vM[2], v[2], y[3];
+    TPar* c = &allpassCoeffs[0];
+
+    y[ 0] = x;
+
+    vM[0] = delayLines[0].readOutput();    // Read vM = v[n-M] from the delayline.
+    v[ 0] = y[0] - c[0] * vM[0];           // Compute v[n] = x[n] - c * v[n-M].
+    y[ 1] = c[0] * v[0] + vM[0];           // y1[n] = c * v[n] + v[n-M].
+
+
+    vM[1] = delayLines[1].readOutput();
+    v[ 1] = y[1] - c[1] * vM[1];
+    y[ 2] = c[1] * v[1] + vM[1]; 
+
+
+
+    delayLine.writeInputAndUpdate(v[0]);   // Write v[n] into the delayline.
+
+
+
+    return y[0];
+  }
+  */
+
+
+
+  // Try to implement the lattice form here:
+  // https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
+  // https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
+  inline TSig getSample2(TSig x)
+  {
+    TSig a = x - allpassCoeffs[0] * delayLines[0].readOutput();
+    TSig b = a - allpassCoeffs[1] * delayLines[1].readOutput();
+    TSig c = delayLines[1].readOutput() + allpassCoeffs[1] * b;
+    TSig y = delayLines[0].readOutput() + allpassCoeffs[0] * a;
+    delayLines[0].writeInputAndUpdate(c);
+    delayLines[1].writeInputAndUpdate(b);
+    return y;
+  }
 
 
 

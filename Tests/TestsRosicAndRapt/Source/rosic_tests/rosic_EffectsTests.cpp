@@ -278,11 +278,9 @@ void rotes::allpassDelaysNested()
   for(int n = 0; n < N; n++)
     z0[n] = apdn.getSample(x[n]);
   ok &= z0 == y0;
-
-  rsPlotVectors(y0, z0);
+  RAPT::rsAssert(ok);
+  //rsPlotVectors(y0, z0);
   // OK - nice - we have a match!
-
-
 
 
 
@@ -316,7 +314,10 @@ void rotes::allpassDelaysNested()
   //  Create impulse response of multi-level nested allpass:
   Vec z1(N);
   for(int n = 0; n < N; n++)
-    z1[n] = apdn.getSample(x[n]);
+  {
+    //z1[n] = apdn.getSample(x[n]);
+    z1[n] = apdn.getSample2(x[n]);
+  }
   // Nope z1 is wrong - it seems to be just a 1-stage output
 
   //rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
