@@ -116,7 +116,8 @@ void rotes::allpassDelay()
   int    N     = 50*delay;     // Number of samples to plot
 
   // Create and set up the allpass delay:
-  rsAllpassDelayNaive<double, double> apd;
+  //rsAllpassDelayNaive<double, double> apd;
+  rsAllpassDelay<double, double> apd;
   apd.setMaxDelayInSamples(delay);
   apd.setDelayInSamples(delay);
   apd.setAllpassCoeff(coeff);
@@ -132,7 +133,7 @@ void rotes::allpassDelay()
   rsPlotVector(y);
 
   // Observations:
-  // -A positive coeff leads to alternating spikes. A negative coeff leads to postive spikes only.
+  // -A positive coeff leads to alternating spikes. A negative coeff leads to positive spikes only.
   //
   // Conclusions:
   // -I think, for a diffuser in a reverb, a positive coeff should be used. The alternation seems 
@@ -200,7 +201,8 @@ void rotes::allpassDelayChain()
   z[0] = apdc.getSample(1);
   for(int n = 1; n < N; n++)
     z[n] = apdc.getSample(0);
-  bool ok = y == z;
+  //bool ok = y == z;
+  bool ok = rsIsCloseTo(y, z, 1.e-16);
   rsAssert(ok);
 
 
