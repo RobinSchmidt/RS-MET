@@ -609,7 +609,7 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  allpassDisperser();
+  //allpassDisperser();
   //allpassDelay();
   //allpassDelayChain();
   allpassDelaysNested();

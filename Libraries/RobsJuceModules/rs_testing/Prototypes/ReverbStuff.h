@@ -280,7 +280,7 @@ protected:
 
 
 template<class TSig, class TPar>
-class rsAllpassDelayNested_2Lvls
+class rsAllpassDelayNestedL2 // L2 means 2 levels of nesting
 {
 
 public:
@@ -359,7 +359,7 @@ protected:
 //=================================================================================================
 
 template<class TSig, class TPar>
-class rsAllpassDelayNested_3Lvls
+class rsAllpassDelayNestedL3
 {
 
 public:
@@ -416,7 +416,7 @@ protected:
   TPar allpassCoeff = TPar(0);
   RAPT::rsBasicDelayLine<TSig> delayLine;
 
-  rsAllpassDelayNested_2Lvls<TSig, TPar> nestedAllpass;
+  rsAllpassDelayNestedL2<TSig, TPar> nestedAllpass;
   // The only difference to the 1-level nesting case is that this member is now not the 1-level
   // nested allpass delay but the 2-level nested allpass delay. The code of the setters as well as 
   // the code for getSample is literally just copied and pasted from the 2-level implementation.

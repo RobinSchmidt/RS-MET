@@ -262,7 +262,7 @@ void rotes::allpassDelaysNested()
     y1[n] = apdn.getSample(x[n]);
 
   rosic::writeToMonoWaveFile("AllpassDelaysNested1.wav", &y1[0], N, 44100, 16);
-  //rsPlotVector(y1);
+  rsPlotVector(y1);
   // When looking at a spectrum in Audacity, we need to ensure to use the right settings for the 
   // spectrum analysis: window should be rectangular and FFT size should be N
 
@@ -275,7 +275,7 @@ void rotes::allpassDelaysNested()
   // Now test a 2-level nesting:
   delays = {   7,  11,  17 };
   coeffs = { 0.7, 0.6, 0.5 };
-  rsAllpassDelayNested_2Lvls<Real, Real> apdn2;
+  rsAllpassDelayNestedL2<Real, Real> apdn2;
   apdn2.setMaxDelayInSamples(0, delays[0]);
   apdn2.setMaxDelayInSamples(1, delays[1]);
   apdn2.setMaxDelayInSamples(2, delays[2]);
@@ -297,7 +297,7 @@ void rotes::allpassDelaysNested()
   // Now test a 3-level nesting:
   delays = {   7,  11,  17,  23 };
   coeffs = { 0.6, 0.5, 0.4, 0.3 };
-  rsAllpassDelayNested_3Lvls<Real, Real> apdn3;
+  rsAllpassDelayNestedL3<Real, Real> apdn3;
   apdn3.setMaxDelayInSamples(0, delays[0]);
   apdn3.setMaxDelayInSamples(1, delays[1]);
   apdn3.setMaxDelayInSamples(2, delays[2]);
