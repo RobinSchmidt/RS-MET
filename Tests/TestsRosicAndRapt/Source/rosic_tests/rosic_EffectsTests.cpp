@@ -430,6 +430,7 @@ bool rotes::testAllpassDelayNested()
   Vec y3(N);
   for(int n = 0; n < N; n++)
     y3[n] = apdn3.getSample(x[n]);
+  ok &= rsIsUnitMagnitudeWhite(y3, 0.1); // deviation is less than 0.1 dB
 
   apdn.reset();
   apdn.setNumStages(4);                      // 4 stages means 3 levels of nesting
