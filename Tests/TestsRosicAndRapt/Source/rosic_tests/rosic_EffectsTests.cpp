@@ -2,6 +2,42 @@ using namespace rotes;
 using namespace rosic;
 using namespace RAPT;
 
+// Maybe move to rs_testing:
+template<class T>
+bool rsIsUnitMagnitudeWhite(const T* x, int N, T decibelTolerance)
+{
+  // Copy input x into appropriately padded complex buffer:
+  int M = rsNextPowerOfTwo(N);
+  std::vector<std::complex<T>> y(M);
+  for(int n = 0; n < N; n++)
+    y[n] = x[n];
+
+  // Obtain complex spectrum:
+  rsFFT(&y[0], M);
+
+  // Compute decibels:
+  std::vector<T> dB(M);
+  for(int n = 0; n < M; n++)
+    dB[n] = rsAmp2dB(std::abs(y[n]));
+
+  //rsPlotArray(x, N);
+  //rsPlotVector(dB);
+
+  // Check if the maximum deviation from the expected 0 dB flat line is within the given 
+  // tolerance:
+  T maxDeviation = T(0);
+  for(int n = 0; n < M; n++)
+    maxDeviation = std::max(maxDeviation, std::abs(dB[n]));
+  return maxDeviation <= decibelTolerance;
+}
+template<class T>
+bool rsIsUnitMagnitudeWhite(const std::vector<T>& x, T decibelTolerance)
+{
+  return rsIsUnitMagnitudeWhite(&x[0], (int) x.size(), decibelTolerance);
+}
+
+
+
 // rename to allpassDiffusor
 void rotes::allpassDisperser()
 {
@@ -265,6 +301,10 @@ bool rotes::testAllpassDelayNested()
   for(int n = 0; n < N; n++)
     y0[n] = apdn0.getSample(x[n]);
 
+  // Check, if the obtained impulse response is unit magnitude white, i.e. allpass in nature.
+  // We can use a low tolerance because y0 has decayed away almost completely:
+  ok &= rsIsUnitMagnitudeWhite(y0, 1.e-11);
+
   // Create and set up the multi-level nested allpass delay structure and set it up to zero levels of
   // nesting such that its output should match y0.
   rsAllpassDelayNested<Real, Real> apdn;
@@ -281,7 +321,6 @@ bool rotes::testAllpassDelayNested()
   ok &= z0 == y0;
   RAPT::rsAssert(ok);
   //rsPlotVectors(y0, z0);
-  // OK - nice - we have a match!
 
   // Create and set up the 1-level nested allpass delay structure:
   delays = {   7,  11 };
