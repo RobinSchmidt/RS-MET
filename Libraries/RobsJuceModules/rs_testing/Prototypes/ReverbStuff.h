@@ -483,26 +483,24 @@ public:
   /** Needs more tests */
   inline TSig getSample(TSig x)
   {
-    // For convenience:
+    // Shorthands for convenience:
     int N = numStages;
-    TSig* y = &tmp[0];
+    TSig* y = &tmp[0];   // maybe use t instead
 
-
+    // Compute the signals in the upper row of the lattice:
     y[0] = x;
-
     for(int i = 0; i < N; i++)
       y[i+1] = y[i] - allpassCoeffs[i] * delayLines[i].readOutput();
 
+    // Compute the signals in the lower row of the lattice:
     for(int i = 0; i < N; i++)
-    {
-      int j = N+i+1;
-      int k = N-i-1;
-      y[j] = delayLines[k].readOutput() + allpassCoeffs[k] * y[k+1];
-    }
+      y[N+i+1] = delayLines[N-i-1].readOutput() + allpassCoeffs[N-i-1] * y[N-i];
 
+    // Update the content of the delaylines:
     for(int i = 0; i < N; i++)
       delayLines[i].writeInputAndUpdate(y[2*N-i-1]);
 
+    // The final output is in the 2N-th slot of the temp-buffer:
     return y[2*N];
   }
 
