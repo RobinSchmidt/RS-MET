@@ -514,7 +514,29 @@ public:
     // We directly implement the lattice form here:
     // https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
     // https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
-    // but with the unit delays replaced by our delaylines
+    // but with the unit delays replaced by our delaylines, i.e. the left z^(-1) of the outer 
+    // filter becomes z^(-M1) and´the right z^(-1) of the inner filter becomes z^(-M2). To 
+    // translate the block diagram into formulas, I assigned names to the signals after every 
+    // adder starting at the top-left and going around the loop. Doing this, we get the 
+    // difference equations:
+    //
+    //   // Init:
+    //   t0[n] = x[n] 
+    //
+    //   Upper part:
+    //   t1[n] = t0[n] - k1 * t3[n-M1]
+    //   t2[n] = t1[n] - k2 * t2[n-M2]
+    //
+    //   Lower part:
+    //   t3[n] = t2[n-M2] + k2 * t2[n]
+    //   t4[n] = t3[n-M1] + k1 * t1[n]
+    //
+    //   Output:
+    //   y[n] = t4[n]
+    //
+    // The equations have been written down in a way that anticipates a generaliazation to an 
+    // arbitrary number of stages where the computations of the upper and lower part can be done in
+    // loops. As we see, the first delayline contains t3 and the second contains t2.
 
     RAPT::rsAssert(numStages == 2, "Function supposes a 2 stage configuration");
 
@@ -531,6 +553,7 @@ public:
 
     return t4;
   }
+
 
   inline TSig getSample3Stages(TSig x)
   {
