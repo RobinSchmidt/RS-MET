@@ -145,6 +145,14 @@ void rotes::allpassDisperser()
   // -Maybe notch out the Nyquist freq to get rid of the oscillation there
   // -Try a nested allpass structure. Try to have the delays increasing or decreasing with 
   //  the nesting level and the coeffs should probably decrease with the delay.
+  // -Plot spectrograms of the impulse responses. The window size should be something short like
+  //  128..256..512 - it should match the integration time of human hearing. Ideally, we want to 
+  //  see no horizontal lines in these spectrograms because that would indicate discernable
+  //  sinusoids. We can use this "absence of horizontal lines" as a quality measure. Maybe we can
+  //  use a vertical edge detection image filter and compute the energy of its output or something 
+  //  like that.
+  // -Make plots of a chain and nesting of 2 allpass filters with the same settings to compare the
+  //  different structures. Maybe use just two allpasses with delays of 11 and 17
 }
 
 void rotes::allpassDelay()
@@ -276,6 +284,57 @@ void rotes::allpassDelayChain()
   //  overall impulse repsone to alternate - but it should be enough when one of the alpasses 
   //  creates alternations to have the overall respone alternate.
 }
+
+void rotes::allpassDelayChainVsNest()
+{
+  using Real = double;
+
+  int N = 1000;
+  int maxStages = 4;
+
+  std::vector<int>  delays = { 11,  17  };
+  std::vector<Real> coeffs = { 0.9, 0.8 };
+
+  // Set up the series allpass structure:
+  rsAllpassDelayChain<Real, Real> apdc;
+  apdc.setMaxNumStages(maxStages);
+  apdc.setNumStages(2);
+  apdc.setMaxDelayInSamples(0, delays[0]);
+  apdc.setMaxDelayInSamples(1, delays[1]);
+  apdc.setDelayInSamples(   0, delays[0]);
+  apdc.setDelayInSamples(   1, delays[1]);
+  apdc.setAllpassCoeff(     0, coeffs[0]);
+  apdc.setAllpassCoeff(     1, coeffs[1]);
+
+  // Set up the nested allpass structure with the longer delay in the inner filter 
+  // (I think - verify):
+  rsAllpassDelayNested<Real, Real> apdn;
+  apdn.setMaxNumStages(maxStages);
+  apdn.setNumStages(2);                      // 2 stages means 1 levels of nesting
+  apdn.setMaxDelayInSamples(0, delays[0]);
+  apdn.setMaxDelayInSamples(1, delays[1]);
+  apdn.setDelayInSamples(   0, delays[0]);
+  apdn.setDelayInSamples(   1, delays[1]);
+  apdn.setAllpassCoeff(     0, coeffs[0]);
+  apdn.setAllpassCoeff(     1, coeffs[1]);
+
+  // Create the impulse responses:
+  using Vec = std::vector<Real>;
+  Vec x(N), yc(N), yn(N);
+  x[0] = 1;
+  for(int n = 0; n < N; n++)
+  {
+    yc[n] = apdc.getSample(x[n]);
+    yn[n] = apdn.getSample(x[n]);
+  }
+
+  rsPlotVectors(yc, yn);
+
+  // ToDo:
+  // -There are actually two way of nesting. It should make a difference which of the two allpasses
+  //  is the inner and which is the outer. For a series, this should not matter.
+}
+
 
 bool rotes::testAllpassDelayNested()
 {
@@ -455,13 +514,7 @@ bool rotes::testAllpassDelayNested()
   //rsPlotVectors(y3, z3);
 
   return ok;
-  //RAPT::rsAssert(ok);
-
-  // ToDo:
-  // -Make a lattice-based implementation for an arbitrary amount of nesting and compare the 
-  //  results to the explicit implementations of the various nesting levels up to 3 (done)
-  // -Implement an rsIsWhite method and use it on the impulse responses to test, if they are white.
-  //  It should take a tolerance in dB.
+  RAPT::rsAssert(ok);
 }
 
 

@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
   // Unit tests:
   bool ok = true;
   //ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -611,7 +611,8 @@ int main(int argc, char* argv[])
   // Effects:
   //allpassDisperser();                  // Maybe rename to allpassDiffusor
   //allpassDelay();
-  allpassDelayChain();
+  //allpassDelayChain();
+  allpassDelayChainVsNest();
   //feedbackDelayNetwork();            // writes wave file
   //algoVerb();                        // writes wave file
   //spectralFilter();                  // Maybe move into a file for spectral processors
