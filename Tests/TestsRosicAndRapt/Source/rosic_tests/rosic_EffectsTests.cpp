@@ -98,6 +98,14 @@ void rotes::allpassDisperser()
     coeffs[i] = scale * coeff;
   }
 
+  // Plot the delays:
+  //GNUPlotter plt;
+  //plt.plotArrays((int) delays.size(), &delays[0]);
+  // Maybe plot the normalized delays along with the normalized coeffs - normalized with respect
+  // to the first delay/coeff - which should be 1.
+
+
+
   // Create and set up the allpass chain:
   rsAllpassDelayChain<double, double> apdc;
   apdc.setMaxNumStages(numStages);
@@ -189,16 +197,10 @@ void rotes::allpassDisperser()
     u4[n] = apdn.getSample(y[n]);
 
 
-
-
-
   // Plot the signal:
   //rsPlotVector(u);
   rsPlotVectors(z, u4);      // to compare both - allpass chain and nested allpass
   rsPlotVectors(u1, u2, u3, u4);   // to compare the different variants of the nested filter
-
-
-
 
 
   // Observations for y:
@@ -223,6 +225,13 @@ void rotes::allpassDisperser()
   //  interface was distorting. However - using sclAmt = 0.2..0.25 seems a good compromise.
   // -Using these vaules with only 4 delays of 13,17,23,29 seems to work also well. Experimenting 
   //  with more stages for the initial AllpassChain also helps to shape the sound.
+  // -With delays = { 13, 17, 23, 29, 37, 47 }; coeff = +0.75; sclAmt =  0.24; we get a nice 
+  //  attack/decay shaped noise burst of around 400 samples length. Maybe use that as starting 
+  //  point and tweak delays and coeffs further. Maybe write some sort of optimization algorithm.
+  //  Maybe a genetic one? The fitness function should be in terms of energy concentration around
+  //  the middle of the desired burst and maybe in terms "discernible sinusoids" defined by 
+  //  measuring the energy of a spectrogram after passing it through horizontal edge detection 
+  //  filter.
   //
   // Observations for u:
   // -It has a much longe decay time than z and even when scaling all coeffs by a factor < 1, like
