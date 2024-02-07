@@ -80,8 +80,10 @@ void rotes::allpassDisperser()
   //std::vector<int> delays = { 5, 7, 13, 17, 23 };
   //std::vector<int> delays = { 17, 23, 29, 37 };
   //std::vector<int> delays = { 3, 5, 7, 13, 17, 23 };
-  double coeff  = +0.75;
-  double sclAmt =  0.24;
+  double coeff     = +0.75;
+  double sclAmt    =  0.24;
+  double nestScale =  0.25;   // scale factor for the coeffs for nested structure
+
 
   // Compute the coeffs for the stages:
   numStages = (int) delays.size();   // we repurpose this variable here (that's kinda a ugly!)
@@ -120,7 +122,7 @@ void rotes::allpassDisperser()
   rsAllpassDelayNested<double, double> apdn;
   apdn.setMaxNumStages(numStages);
   apdn.setNumStages(numStages);
-  double nestScale = 1.0;   // scale factor for the coeffs for nested structure
+
   for(int i = 0; i < numStages; i++)
   {
     apdn.setMaxDelayInSamples(i, nestScale*delays[i]);
@@ -156,13 +158,26 @@ void rotes::allpassDisperser()
   for(int n = 0; n < N; n++)
     u2[n] = apdn.getSample(y[n]);
 
+  // A variant with coeffs reversed:
+  apdn.reset();
+  for(int i = 0; i < numStages; i++)
+  {
+    int j = numStages - i - 1;
+    apdn.setMaxDelayInSamples(i, nestScale*delays[i]);
+    apdn.setDelayInSamples(   i, nestScale*delays[i]);
+    apdn.setAllpassCoeff(     i, coeffs[j]);
+  }
+  Vec u3(N);
+  for(int n = 0; n < N; n++)
+    u3[n] = apdn.getSample(y[n]);
 
 
 
 
   // Plot the signal:
   //rsPlotVector(u);
-  rsPlotVectors(y, z, u1, u2);  // to compare both - allpass chain and nested allpass
+  //rsPlotVectors(z, u1);      // to compare both - allpass chain and nested allpass
+  rsPlotVectors(u1, u2, u3);   // to compare the different variants of the nested filter
 
 
 
