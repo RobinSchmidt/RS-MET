@@ -266,7 +266,12 @@ void rotes::allpassDisperser()
   //  different structures. Maybe use just two allpasses with delays of 11 and 17
   // -Maybe try a mix of nesting and chaining - a chain of 2 combined with a nested allpass with 2 
   //  stages
-  // -Maybe try a chain of 5 or 8 alpasses
+  // -Maybe try a chain of 5 or 8 alpasses - 6 seems to work well
+  // -Convolve the diffusor impulse reponse with a sawtooth wave and look at and listen to the 
+  //  result. Maybe such a diffusor could be a nice effect in its own right to shape oscillator 
+  //  waveforms. It could be some sort of "phase randomization" effec that can be applied as 
+  //  post-processing. Adjustable phase randomization is a feature that I want for the wavetable
+  //  oscillator.
 }
 
 void rotes::allpassDelay()
