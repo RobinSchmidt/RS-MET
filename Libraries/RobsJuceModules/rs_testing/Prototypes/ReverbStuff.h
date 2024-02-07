@@ -1,6 +1,14 @@
 #ifndef RS_REVERBSTUFF_H
 #define RS_REVERBSTUFF_H
 
+// ToDo: 
+// -Maybe move those classes that eventually go into the RAPT library to the top and those that are
+//  really only prototypes (naive implementations that serve as reference for unit tests) to the 
+//  bottom
+
+
+
+
 
 //=================================================================================================
 
