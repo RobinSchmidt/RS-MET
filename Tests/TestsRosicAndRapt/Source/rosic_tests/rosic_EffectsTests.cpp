@@ -81,8 +81,9 @@ void rotes::allpassDisperser()
   //std::vector<int> delays = { 17, 23, 29, 37 };
   //std::vector<int> delays = { 3, 5, 7, 13, 17, 23 };
   double coeff     = +0.75;
-  double sclAmt    =  0.24;
-  double nestScale =  0.25;   // scale factor for the coeffs for nested structure
+  double sclAmt    =  0.24;   // works well for the chain
+  //double sclAmt    =  1.0;
+  double nestScale =  1.0;   // scale factor for the coeffs for nested structure
 
 
   // Compute the coeffs for the stages:
@@ -172,12 +173,27 @@ void rotes::allpassDisperser()
     u3[n] = apdn.getSample(y[n]);
 
 
+  // A variant with delays and coeffs reversed:
+  apdn.reset();
+  for(int i = 0; i < numStages; i++)
+  {
+    int j = numStages - i - 1;
+    apdn.setMaxDelayInSamples(i, nestScale*delays[j]);
+    apdn.setDelayInSamples(   i, nestScale*delays[j]);
+    apdn.setAllpassCoeff(     i, coeffs[j]);
+  }
+  Vec u4(N);
+  for(int n = 0; n < N; n++)
+    u4[n] = apdn.getSample(y[n]);
+
+
+
 
 
   // Plot the signal:
   //rsPlotVector(u);
-  //rsPlotVectors(z, u1);      // to compare both - allpass chain and nested allpass
-  rsPlotVectors(u1, u2, u3);   // to compare the different variants of the nested filter
+  rsPlotVectors(z, u4);      // to compare both - allpass chain and nested allpass
+  rsPlotVectors(u1, u2, u3, u4);   // to compare the different variants of the nested filter
 
 
 
@@ -211,6 +227,14 @@ void rotes::allpassDisperser()
   //  nestScale = 0.25, that feature remains. It also doesn't shwon the attack/decay shape that z
   //  has. It seems, the attack/decay shape is easier to achieve with the series allpass. But maybe
   //  that can be achieved by further tweaking the coeffs and delays. Try that!
+  // -u3 and u4 look useful when sclAmt = nestScale =  1.0;
+  // -The nested filters seem to have longer tails whereas the chain puts more energy into the 
+  //  initial section. I think, the latter is more desirable for a diffuser because having a long 
+  //  tail may actually lengthen the tail of the overall reverb too much when such a diffusor is
+  //  used for reverbs with short RT60, i.e. for small damped rooms. I think, in general, we want
+  //  somthing like an attack/decay-envelope noise-burst of a length similar to teh distance 
+  //  between the echos of the main FDN - perhaps something like 150 samples. - or maybe around 
+  //  3-5 ms.
 
 
   // ToDo:
@@ -229,6 +253,9 @@ void rotes::allpassDisperser()
   //  like that.
   // -Make plots of a chain and nesting of 2 allpass filters with the same settings to compare the
   //  different structures. Maybe use just two allpasses with delays of 11 and 17
+  // -Maybe try a mix of nesting and chaining - a chain of 2 combined with a nested allpass with 2 
+  //  stages
+  // -Maybe try a chain of 5 or 8 alpasses
 }
 
 void rotes::allpassDelay()
