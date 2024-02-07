@@ -308,31 +308,48 @@ void rotes::allpassDelayChainVsNest()
 
   // Set up the nested allpass structure with the longer delay in the inner filter 
   // (I think - verify):
-  rsAllpassDelayNested<Real, Real> apdn;
-  apdn.setMaxNumStages(maxStages);
-  apdn.setNumStages(2);                      // 2 stages means 1 levels of nesting
-  apdn.setMaxDelayInSamples(0, delays[0]);
-  apdn.setMaxDelayInSamples(1, delays[1]);
-  apdn.setDelayInSamples(   0, delays[0]);
-  apdn.setDelayInSamples(   1, delays[1]);
-  apdn.setAllpassCoeff(     0, coeffs[0]);
-  apdn.setAllpassCoeff(     1, coeffs[1]);
+  rsAllpassDelayNested<Real, Real> apdn1;
+  apdn1.setMaxNumStages(maxStages);
+  apdn1.setNumStages(2);                      // 2 stages means 1 levels of nesting
+  apdn1.setMaxDelayInSamples(0, delays[0]);
+  apdn1.setMaxDelayInSamples(1, delays[1]);
+  apdn1.setDelayInSamples(   0, delays[0]);
+  apdn1.setDelayInSamples(   1, delays[1]);
+  apdn1.setAllpassCoeff(     0, coeffs[0]);
+  apdn1.setAllpassCoeff(     1, coeffs[1]);
+
+  // Set up the nested allpass structure with the longer delay in the outer filter 
+  // (I think - verify):
+  rsAllpassDelayNested<Real, Real> apdn2;
+  apdn2.setMaxNumStages(maxStages);
+  apdn2.setNumStages(2);
+  apdn2.setMaxDelayInSamples(1, delays[0]);
+  apdn2.setMaxDelayInSamples(0, delays[1]);
+  apdn2.setDelayInSamples(   1, delays[0]);
+  apdn2.setDelayInSamples(   0, delays[1]);
+  apdn2.setAllpassCoeff(     1, coeffs[0]);
+  apdn2.setAllpassCoeff(     0, coeffs[1]);
 
   // Create the impulse responses:
   using Vec = std::vector<Real>;
-  Vec x(N), yc(N), yn(N);
+  Vec x(N), yc(N), yn1(N), yn2(N);
   x[0] = 1;
   for(int n = 0; n < N; n++)
   {
-    yc[n] = apdc.getSample(x[n]);
-    yn[n] = apdn.getSample(x[n]);
+    yc[n]  = apdc.getSample(x[n]);
+    yn1[n] = apdn1.getSample(x[n]);
+    yn2[n] = apdn2.getSample(x[n]);
   }
 
-  rsPlotVectors(yc, yn);
+  rsPlotVectors(yc, yn1, yn2);
 
   // ToDo:
   // -There are actually two way of nesting. It should make a difference which of the two allpasses
   //  is the inner and which is the outer. For a series, this should not matter.
+  // -Maybe try to make a fairer comparison by adjusting the coeffs for the different structures
+  //  in some way that achieves a similar overall length of the response. That means, for the 
+  //  nested structure, we may use smaller coeffs that for the series. Smaller coeffs may actually 
+  //  help to reduce the tonal ringing
 }
 
 
