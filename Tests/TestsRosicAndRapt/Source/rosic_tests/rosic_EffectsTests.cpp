@@ -330,7 +330,9 @@ void rotes::allpassDelayChainVsNest()
   apdn2.setAllpassCoeff(     1, coeffs[0]);
   apdn2.setAllpassCoeff(     0, coeffs[1]);
 
-  // Create the impulse responses:
+
+
+  // Create and plot the impulse responses:
   using Vec = std::vector<Real>;
   Vec x(N), yc(N), yn1(N), yn2(N);
   x[0] = 1;
@@ -340,17 +342,29 @@ void rotes::allpassDelayChainVsNest()
     yn1[n] = apdn1.getSample(x[n]);
     yn2[n] = apdn2.getSample(x[n]);
   }
-
   rsPlotVectors(yc, yn1, yn2);
 
   // Observations:
-  // -
-
+  // -Having the longer delay 17 in the outer filter has the effect that the first spike after 
+  //  n = 0 occurs at sample 17. Generally, it seems the first nonzero spike after n = 0 occurs at
+  //  the delay of the outermost allpass, I think. 
+  // -At n = 28 (== 11 + 17), the outputs of yn1 and yn2 show both a spike with the same value.
+  //
+  // Conclusions:
+  // -For the nested allpasses, having the shortest delay in the outermost allpass seems desirable
+  //  because this way, we get the earliest possible spike after n = 0. (I guess - verify if this
+  //  observation generalizes to higher order nested allpasses)
+  //
   // ToDo:
+  // -Maybe make yet two other nested variants that are like the current two but swap which 
+  //  delayline gets the smaller coeff. Currently, we give the smaller coeff to the longer 
+  //  delayline in both cases.
   // -Maybe try to make a fairer comparison by adjusting the coeffs for the different structures
   //  in some way that achieves a similar overall length of the response. That means, for the 
   //  nested structure, we may use smaller coeffs that for the series. Smaller coeffs may actually 
-  //  help to reduce the tonal ringing
+  //  help to reduce the tonal ringing. We could do such a variant for the series, too. Giving the 
+  //  shorter delayline the smaller coeff seems weird, though because short delay and small coeff
+  //  both contribute to a short length of the impulse response.
 }
 
 
