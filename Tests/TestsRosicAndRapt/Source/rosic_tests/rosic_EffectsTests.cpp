@@ -143,13 +143,26 @@ void rotes::allpassDisperser()
   for(int n = 0; n < N; n++)
     u1[n] = apdn.getSample(y[n]);
 
+  // A variant with the delays reversed:
+  apdn.reset();
+  for(int i = 0; i < numStages; i++)
+  {
+    int j = numStages - i - 1;
+    apdn.setMaxDelayInSamples(i, nestScale*delays[j]);
+    apdn.setDelayInSamples(   i, nestScale*delays[j]);
+    apdn.setAllpassCoeff(     i, coeffs[i]);
+  }
+  Vec u2(N);
+  for(int n = 0; n < N; n++)
+    u2[n] = apdn.getSample(y[n]);
+
 
 
 
 
   // Plot the signal:
   //rsPlotVector(u);
-  rsPlotVectors(y, z, u1);  // to compare both - allpass chain and nested allpass
+  rsPlotVectors(y, z, u1, u2);  // to compare both - allpass chain and nested allpass
 
 
 
