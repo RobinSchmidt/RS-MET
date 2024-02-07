@@ -330,25 +330,52 @@ void rotes::allpassDelayChainVsNest()
   apdn2.setAllpassCoeff(     1, coeffs[0]);
   apdn2.setAllpassCoeff(     0, coeffs[1]);
 
+  // Like apdn1 but with the smaller coeff for the shorter delay:
+  rsAllpassDelayNested<Real, Real> apdn3;
+  apdn3.setMaxNumStages(maxStages);
+  apdn3.setNumStages(2);
+  apdn3.setMaxDelayInSamples(0, delays[0]);
+  apdn3.setMaxDelayInSamples(1, delays[1]);
+  apdn3.setDelayInSamples(   0, delays[0]);
+  apdn3.setDelayInSamples(   1, delays[1]);
+  apdn3.setAllpassCoeff(     1, coeffs[0]);
+  apdn3.setAllpassCoeff(     0, coeffs[1]);
+
+  // Like apdn2 but with the smaller coeff for the shorter delay:
+  rsAllpassDelayNested<Real, Real> apdn4;
+  apdn4.setMaxNumStages(maxStages);
+  apdn4.setNumStages(2);
+  apdn4.setMaxDelayInSamples(1, delays[0]);
+  apdn4.setMaxDelayInSamples(0, delays[1]);
+  apdn4.setDelayInSamples(   1, delays[0]);
+  apdn4.setDelayInSamples(   0, delays[1]);
+  apdn4.setAllpassCoeff(     0, coeffs[0]);
+  apdn4.setAllpassCoeff(     1, coeffs[1]);
+
 
 
   // Create and plot the impulse responses:
   using Vec = std::vector<Real>;
-  Vec x(N), yc(N), yn1(N), yn2(N);
+  Vec x(N), yc(N), yn1(N), yn2(N), yn3(N), yn4(N);
   x[0] = 1;
   for(int n = 0; n < N; n++)
   {
     yc[n]  = apdc.getSample(x[n]);
     yn1[n] = apdn1.getSample(x[n]);
     yn2[n] = apdn2.getSample(x[n]);
+    yn3[n] = apdn3.getSample(x[n]);
+    yn4[n] = apdn4.getSample(x[n]);
   }
-  rsPlotVectors(yc, yn1, yn2);
+  rsPlotVectors(yc, yn1, yn2, yn3, yn4);
 
   // Observations:
   // -Having the longer delay 17 in the outer filter has the effect that the first spike after 
   //  n = 0 occurs at sample 17. Generally, it seems the first nonzero spike after n = 0 occurs at
   //  the delay of the outermost allpass, I think. 
   // -At n = 28 (== 11 + 17), the outputs of yn1 and yn2 show both a spike with the same value.
+  // -yn4 (purple) becomes rather similar to yn1 (blue) at times around 200...400.
+  // -yn3 (red) looks actually most useful - it has the earlies and strongest initial spike after
+  //  n = 0.
   //
   // Conclusions:
   // -For the nested allpasses, having the shortest delay in the outermost allpass seems desirable
