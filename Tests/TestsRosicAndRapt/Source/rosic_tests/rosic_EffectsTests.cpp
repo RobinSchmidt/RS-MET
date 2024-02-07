@@ -293,7 +293,7 @@ void rotes::allpassDelayChainVsNest()
   int maxStages = 4;
 
   std::vector<int>  delays = { 11,  17  };
-  std::vector<Real> coeffs = { 0.9, 0.8 };
+  std::vector<Real> coeffs = { 0.9, 0.7 };
 
   // Set up the series allpass structure:
   rsAllpassDelayChain<Real, Real> apdc;
@@ -343,9 +343,10 @@ void rotes::allpassDelayChainVsNest()
 
   rsPlotVectors(yc, yn1, yn2);
 
+  // Observations:
+  // -
+
   // ToDo:
-  // -There are actually two way of nesting. It should make a difference which of the two allpasses
-  //  is the inner and which is the outer. For a series, this should not matter.
   // -Maybe try to make a fairer comparison by adjusting the coeffs for the different structures
   //  in some way that achieves a similar overall length of the response. That means, for the 
   //  nested structure, we may use smaller coeffs that for the series. Smaller coeffs may actually 
