@@ -296,15 +296,29 @@ void rotes::allpassDelayChainVsNest()
   std::vector<Real> coeffs = { 0.9, 0.7 };
 
   // Set up the series allpass structure:
-  rsAllpassDelayChain<Real, Real> apdc;
-  apdc.setMaxNumStages(maxStages);
-  apdc.setNumStages(2);
-  apdc.setMaxDelayInSamples(0, delays[0]);
-  apdc.setMaxDelayInSamples(1, delays[1]);
-  apdc.setDelayInSamples(   0, delays[0]);
-  apdc.setDelayInSamples(   1, delays[1]);
-  apdc.setAllpassCoeff(     0, coeffs[0]);
-  apdc.setAllpassCoeff(     1, coeffs[1]);
+  rsAllpassDelayChain<Real, Real> apdc1;
+  apdc1.setMaxNumStages(maxStages);
+  apdc1.setNumStages(2);
+  apdc1.setMaxDelayInSamples(0, delays[0]);
+  apdc1.setMaxDelayInSamples(1, delays[1]);
+  apdc1.setDelayInSamples(   0, delays[0]);
+  apdc1.setDelayInSamples(   1, delays[1]);
+  apdc1.setAllpassCoeff(     0, coeffs[0]);
+  apdc1.setAllpassCoeff(     1, coeffs[1]);
+
+  // Set up a 2nd series allpass structure with somehwat larger coeffs in an attempt to match
+  // the length of the impulse repsone of the nested structure:
+  rsAllpassDelayChain<Real, Real> apdc2;
+  apdc2.setMaxNumStages(maxStages);
+  apdc2.setNumStages(2);
+  apdc2.setMaxDelayInSamples(0, delays[0]);
+  apdc2.setMaxDelayInSamples(1, delays[1]);
+  apdc2.setDelayInSamples(   0, delays[0]);
+  apdc2.setDelayInSamples(   1, delays[1]);
+  apdc2.setAllpassCoeff(     0, sqrt(coeffs[0]));  // not sure if sqrt makes sense - just a  try
+  apdc2.setAllpassCoeff(     1, sqrt(coeffs[1]));
+  // Hmm....well...that doesn't seem to work so well....
+
 
   // Set up the nested allpass structure with the longer delay in the inner filter 
   // (I think - verify):
@@ -356,17 +370,19 @@ void rotes::allpassDelayChainVsNest()
 
   // Create and plot the impulse responses:
   using Vec = std::vector<Real>;
-  Vec x(N), yc(N), yn1(N), yn2(N), yn3(N), yn4(N);
+  Vec x(N), yc1(N), yc2(N), yn1(N), yn2(N), yn3(N), yn4(N);
   x[0] = 1;
   for(int n = 0; n < N; n++)
   {
-    yc[n]  = apdc.getSample(x[n]);
+    yc1[n] = apdc1.getSample(x[n]);
+    yc2[n] = apdc2.getSample(x[n]);
     yn1[n] = apdn1.getSample(x[n]);
     yn2[n] = apdn2.getSample(x[n]);
     yn3[n] = apdn3.getSample(x[n]);
     yn4[n] = apdn4.getSample(x[n]);
   }
-  rsPlotVectors(yc, yn1, yn2, yn3, yn4);
+  rsPlotVectors(yc1, yn1, yn2, yn3, yn4);
+  //rsPlotVectors(yc1, yc2, yn3);
 
   // Observations:
   // -Having the longer delay 17 in the outer filter has the effect that the first spike after 
@@ -378,9 +394,15 @@ void rotes::allpassDelayChainVsNest()
   //  n = 0.
   //
   // Conclusions:
+  // -Investigating the series structure any further seems not worthwhile. I think, the nested 
+  //  structure outclasses the series structure while (supposedly) having a similar computaional 
+  //  cost.
   // -For the nested allpasses, having the shortest delay in the outermost allpass seems desirable
   //  because this way, we get the earliest possible spike after n = 0. (I guess - verify if this
-  //  observation generalizes to higher order nested allpasses)
+  //  observation generalizes to higher order nested allpasses). This corresponds to y1 and yn3.
+  // -Counterintuitively, using the smaller coeff for the shorter delay (as in y3) seems to produce
+  //  a more desirable impulse response than the other way around (as in y1). That spreads the 
+  //  early energy better among the intial spikes, i.e. it's less concentrated at n = 0.
   //
   // ToDo:
   // -Maybe make yet two other nested variants that are like the current two but swap which 
