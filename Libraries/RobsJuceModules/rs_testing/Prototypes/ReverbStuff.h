@@ -508,71 +508,90 @@ public:
   }
 
   /** An unrolled (and therefore potentially optimized) getSample function that can be used 
-  alternatively to the general getSample() when there are two allpass stages.  */
+  alternatively to the general getSample() when there are two allpass stages. It was initially 
+  intended to figure out the general algorithm for getSample but I think, it may be worth to keep
+  for documentation and optimization reasons. */
   inline TSig getSample2Stages(TSig x)
   {
-    // We directly implement the lattice form here:
-    // https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
-    // https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
+    // We directly implement the lattice form shown here (in Fig 2.32b "Second-order allpass 
+    // filter: (a) Nested direct-form II. (b) Consecutive two-multiply lattice sections"):
+    //   https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
+    //   https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
     // but with the unit delays replaced by our delaylines, i.e. the left z^(-1) of the outer 
-    // filter becomes z^(-M1) and´the right z^(-1) of the inner filter becomes z^(-M2). To 
+    // filter becomes z^(-M1) and the right z^(-1) of the inner filter becomes z^(-M2). To 
     // translate the block diagram into formulas, I assigned names to the signals after every 
     // adder starting at the top-left and going around the loop. Doing this, we get the 
     // difference equations:
     //
-    //   // Init:
-    //   t0[n] = x[n] 
+    //   Init:
+    //   t0[n] = x[n]
     //
-    //   Upper part:
+    //   Upper row of lattice:
     //   t1[n] = t0[n] - k1 * t3[n-M1]
     //   t2[n] = t1[n] - k2 * t2[n-M2]
     //
-    //   Lower part:
+    //   Lower row of lattice:
     //   t3[n] = t2[n-M2] + k2 * t2[n]
     //   t4[n] = t3[n-M1] + k1 * t1[n]
     //
     //   Output:
     //   y[n] = t4[n]
     //
-    // The equations have been written down in a way that anticipates a generaliazation to an 
+    // The equations have been written down in a way that anticipates a generalization to an 
     // arbitrary number of stages where the computations of the upper and lower part can be done in
     // loops. As we see, the first delayline contains t3 and the second contains t2.
 
     RAPT::rsAssert(numStages == 2, "Function supposes a 2 stage configuration");
 
-    TSig t0 = x;
+    // Init:
+    TSig t0 = x;                                                   // t0[n] = x[n]
 
-    TSig t1 = t0 - allpassCoeffs[0] * delayLines[0].readOutput();
-    TSig t2 = t1 - allpassCoeffs[1] * delayLines[1].readOutput();
+    // Upper row of lattice:
+    TSig t1 = t0 - allpassCoeffs[0] * delayLines[0].readOutput();  // t1[n] = t0[n] - k1 * t3[n-M1]
+    TSig t2 = t1 - allpassCoeffs[1] * delayLines[1].readOutput();  // t2[n] = t1[n] - k2 * t2[n-M2]
 
-    TSig t3 = delayLines[1].readOutput() + allpassCoeffs[1] * t2;
-    TSig t4 = delayLines[0].readOutput() + allpassCoeffs[0] * t1;
+    // Lower row of lattice:
+    TSig t3 = delayLines[1].readOutput() + allpassCoeffs[1] * t2;  // t3[n] = t2[n-M2] + k2 * t2[n]
+    TSig t4 = delayLines[0].readOutput() + allpassCoeffs[0] * t1;  // t4[n] = t3[n-M1] + k1 * t1[n]
 
-    delayLines[0].writeInputAndUpdate(t3);
-    delayLines[1].writeInputAndUpdate(t2);
+    // Delayline updates:
+    delayLines[0].writeInputAndUpdate(t3);                         // t3 goes into 1st delayline
+    delayLines[1].writeInputAndUpdate(t2);                         // t2 goes into 2nd delayline
 
-    return t4;
+    // Output:
+    return t4;                                                     // y[n] = t4[n]
   }
 
 
   inline TSig getSample3Stages(TSig x)
   {
+    // This uses the same strategy as getSample2Stages. I just extended the block diagram of the 
+    // 2-stage lattice to a 3rd stage and did the same thing - assigning names t0,t1,t2,... to the 
+    // variables after the adders (except t0 which is the input x itself) and then reading off the
+    // difference equations from the diagram. The 3-stage case already shows the genral pattern 
+    // that is implemented in getSample() using the loops.
+
     RAPT::rsAssert(numStages == 3, "Function supposes a 3 stage configuration");
 
+    // Init:
     TSig t0 = x;
 
+    // Upper row of lattice:
     TSig t1 = t0 - allpassCoeffs[0] * delayLines[0].readOutput();
     TSig t2 = t1 - allpassCoeffs[1] * delayLines[1].readOutput();
     TSig t3 = t2 - allpassCoeffs[2] * delayLines[2].readOutput();
 
+    // Lower row of lattice:
     TSig t4 = delayLines[2].readOutput() + allpassCoeffs[2] * t3;
     TSig t5 = delayLines[1].readOutput() + allpassCoeffs[1] * t2;
     TSig t6 = delayLines[0].readOutput() + allpassCoeffs[0] * t1;
 
+    // Delayline updates:
     delayLines[0].writeInputAndUpdate(t5);
     delayLines[1].writeInputAndUpdate(t4);
     delayLines[2].writeInputAndUpdate(t3);
 
+    // Output:
     return t6;
   }
   // write a getSample4Stages (and a unit test for it). Write performance test and check, if it's
