@@ -93,6 +93,7 @@ protected:
 
 /** Under construction....TBC...
 
+obsolete:
 This is supposed to be a naive prototype implementation. We just use a std::vector of 
 rsAllpassDelay. This is suboptimal because in such a chain, the output delayline of stage i can at 
 the same time serve as input delayline for stage i+1 such that we can get rid of almost half of the
@@ -145,10 +146,8 @@ public:
   void reset();
 
 
-
 protected:
 
-  //std::vector<rsAllpassDelayNaive<TSig, TPar>> allpassDelays;
   std::vector<rsAllpassDelay<TSig, TPar>> allpassDelays;
   int numStages = 0;
 
@@ -412,8 +411,11 @@ protected:
 
 
 //#################################################################################################
-// From here are implementations that are really only for prototyping and as reference for unit
-// testing because they are very suboptimal
+// From here, we have implementations that are really only for prototyping and as reference for 
+// unit testing because they are very suboptimal and/or awkwardly/naively implemented. The 
+// implementations here show more clearly, what is going on though, so their value is mostly 
+// educational.
+
 
 
 //=================================================================================================
