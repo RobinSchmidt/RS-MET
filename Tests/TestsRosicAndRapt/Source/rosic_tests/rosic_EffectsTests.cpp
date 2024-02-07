@@ -392,6 +392,9 @@ void rotes::allpassDelayChainVsNest()
   // -yn4 (purple) becomes rather similar to yn1 (blue) at times around 200...400.
   // -yn3 (red) looks actually most useful - it has the earlies and strongest initial spike after
   //  n = 0.
+  // -Towards the end yn1 and yn3 look very similar and they look both more spikey than yn2 and 
+  //  yn4. yn2 looks the least spikey and yn4 seems to be somewhere in the middle between yn1/3 and
+  //  yn2 in terms of spikiness.
   //
   // Conclusions:
   // -Investigating the series structure any further seems not worthwhile. I think, the nested 
@@ -402,7 +405,9 @@ void rotes::allpassDelayChainVsNest()
   //  observation generalizes to higher order nested allpasses). This corresponds to y1 and yn3.
   // -Counterintuitively, using the smaller coeff for the shorter delay (as in y3) seems to produce
   //  a more desirable impulse response than the other way around (as in y1). That spreads the 
-  //  early energy better among the intial spikes, i.e. it's less concentrated at n = 0.
+  //  early energy better among the intial spikes, i.e. it's less concentrated at n = 0. Using
+  //  coeffs = { 0.6, 0.4 }; makes the first spike at n = 0 actualy smaller than the second one at
+  //  n = 11. The tallest is actually the fourth at n = 28.
   //
   // ToDo:
   // -Maybe make yet two other nested variants that are like the current two but swap which 
