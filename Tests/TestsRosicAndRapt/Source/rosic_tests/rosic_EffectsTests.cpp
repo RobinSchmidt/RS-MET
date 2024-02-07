@@ -289,11 +289,12 @@ void rotes::allpassDelayChainVsNest()
 {
   using Real = double;
 
-  int N = 1000;
+  int k = 1;          // some sort of oversampling factor, default: k = 1
+  int N = k*1000;
   int maxStages = 2;
 
-  std::vector<int>  delays = { 11,  17  };
-  std::vector<Real> coeffs = { 0.9, 0.7 };
+  std::vector<int>  delays = { k*11, k*17 };
+  std::vector<Real> coeffs = {  0.9,  0.7 };
 
   // Set up the series allpass structure:
   rsAllpassDelayChain<Real, Real> apdc1;
@@ -395,6 +396,7 @@ void rotes::allpassDelayChainVsNest()
   // -Towards the end yn1 and yn3 look very similar and they look both more spikey than yn2 and 
   //  yn4. yn2 looks the least spikey and yn4 seems to be somewhere in the middle between yn1/3 and
   //  yn2 in terms of spikiness.
+  // -When k != 1, only those sample numbers that are divisible by k have a nonzero signal.
   //
   // Conclusions:
   // -Investigating the series structure any further seems not worthwhile. I think, the nested 
