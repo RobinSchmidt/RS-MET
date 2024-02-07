@@ -32,11 +32,19 @@ Ideas:
   structure of the nested allpasses. Ah - no - it's three allpass filters in series nested in 
   one outer allpass.
 
-- A nested allpass design fetaures an increasing eacho density over time whereas a series 
+- A nested allpass design fetaures an increasing echo density over time whereas a series 
   conncetion featues a constant echo density. 
   see: https://valhalladsp.wordpress.com/tag/nested-allpass/ 
 
 
+- Maybe to make the sound of a reverb algo independent from the sample rate, we should use the
+  same physical delay-times (in seconds) at all sample rates. That requires interpolating the 
+  delaylines. Looks like a perfect task for allpass interpolation. Maybe do this for the 
+  pre-diffuser. For the FDN (with the longer delay times), rounding to integer should work well
+  enough. The coeffs of the pre-diffuser should the also be computed from desired decay times.
+  but we need to take care: we cannot call delayLines[i].readOutput() twice per sample when we want
+  to do allpass interpolation on the delayline. We must read it once and store it in another temp
+  variable.
 
 
 See also:
