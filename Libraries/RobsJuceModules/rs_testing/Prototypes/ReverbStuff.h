@@ -521,9 +521,11 @@ public:
     //   https://www.dsprelated.com/freebooks/pasp/Allpass_Filters.html
     //   https://ccrma.stanford.edu/~jos/pasp/Nested_Allpass_Filters.html
     // but with the unit delays replaced by our delaylines, i.e. the left z^(-1) of the outer 
-    // filter becomes z^(-M1) and the right z^(-1) of the inner filter becomes z^(-M2). To 
-    // translate the block diagram into formulas, I assigned names to the signals after every 
-    // adder starting at the top-left and going around the loop. Doing this, we get the 
+    // filter becomes z^(-M1) and the right z^(-1) of the inner filter becomes z^(-M2) where
+    // M1, M2 are the lengths of our delaylines and the k1, k2 there mapa to our allpass 
+    // coefficients. To translate the block diagram into formulas, I assigned names like 
+    // t0, t1, t2, ... (t for temporary) to the signals after every adder starting at the top-left 
+    // and going around the U-shaped loop (or horseshoe or whatever). Doing this, we get the 
     // difference equations:
     //
     //   Init:
@@ -574,7 +576,7 @@ public:
     // This uses the same strategy as getSample2Stages. I just extended the block diagram of the 
     // 2-stage lattice to a 3rd stage and did the same thing - assigning names t0,t1,t2,... to the 
     // variables after the adders (except t0 which is the input x itself) and then reading off the
-    // difference equations from the diagram. The 3-stage case already shows the genral pattern 
+    // difference equations from the diagram. The 3-stage case already shows the general pattern 
     // that is implemented in getSample() using the loops.
 
     RAPT::rsAssert(numStages == 3, "Function supposes a 3 stage configuration");
@@ -600,10 +602,11 @@ public:
     // Output:
     return t6;
   }
-  // write a getSample4Stages (and a unit test for it). Write performance test and check, if it's
-  // better to use our tmp array or stack-allocated variables for the temporary signals.
-  // Check, if it's possible to get a way with less temporary variables by overwriting them when
-  // they are not needed anymore.
+  // ToDo:
+  // -Write a getSample4Stages (and a unit test for it). Write performance test and check, if it's
+  //  better to use our tmp array or stack-allocated variables for the temporary signals.
+  //  Check, if it's possible to get a way with less temporary variables by overwriting them when
+  //  they are not needed anymore.
 
 
 
@@ -619,8 +622,8 @@ public:
 
 protected:
 
-  std::vector<RAPT::rsBasicDelayLine<TSig>> delayLines;
-  std::vector<TPar> allpassCoeffs;
+  std::vector<RAPT::rsBasicDelayLine<TSig>> delayLines;  // Maybe rename to delays
+  std::vector<TPar> allpassCoeffs;                       // Maybe rename to coeffs
   std::vector<TSig> tmp;
   int numStages = 0;
 
