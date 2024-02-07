@@ -139,13 +139,17 @@ void rotes::allpassDisperser()
   //  individual decay times? Not sure -> figure out!
 
   // Apply the nested allpass to y:
-  Vec u(N);
+  Vec u1(N);
   for(int n = 0; n < N; n++)
-    u[n] = apdn.getSample(y[n]);
+    u1[n] = apdn.getSample(y[n]);
+
+
+
+
 
   // Plot the signal:
   //rsPlotVector(u);
-  rsPlotVectors(y, z, u);  // to compare both - allpass chain and nested allpass
+  rsPlotVectors(y, z, u1);  // to compare both - allpass chain and nested allpass
 
 
 
