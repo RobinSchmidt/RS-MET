@@ -290,7 +290,7 @@ void rotes::allpassDelayChainVsNest()
   using Real = double;
 
   int N = 1000;
-  int maxStages = 4;
+  int maxStages = 2;
 
   std::vector<int>  delays = { 11,  17  };
   std::vector<Real> coeffs = { 0.9, 0.7 };
