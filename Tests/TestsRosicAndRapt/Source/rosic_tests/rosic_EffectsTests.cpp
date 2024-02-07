@@ -110,11 +110,11 @@ void rotes::allpassDisperser()
     z[n] = apdc.getSample(y[n]);
 
   // Write the impulse response to a wave file for listening:
-  RAPT::rsArrayTools::normalize(&z[0], N);
-  rosic::writeToMonoWaveFile("Diffusor.wav", &z[0], N, 44100, 16);
+  //RAPT::rsArrayTools::normalize(&z[0], N);
+  //rosic::writeToMonoWaveFile("Diffusor.wav", &z[0], N, 44100, 16);
 
   // Plot the signal:
-  rsPlotVector(z);
+  //rsPlotVector(z);
 
   // OK - now let's try a 4-stage nested allpass structure:
   rsAllpassDelayNested<double, double> apdn;
@@ -137,6 +137,15 @@ void rotes::allpassDisperser()
   //  decay. I think, in a nested structure, it might indeed be more appropriate to add up all the
   //  individual decay times? Not sure -> figure out!
 
+  // Apply the nested allpass to y:
+  Vec u(N);
+  for(int n = 0; n < N; n++)
+    u[n] = apdn.getSample(y[n]);
+
+  // Plot the signal:
+  //rsPlotVector(u);
+  rsPlotVectors(z, u);  // to compare both - allpass chain and nested allpass
+
 
 
 
@@ -144,8 +153,12 @@ void rotes::allpassDisperser()
   // Observations for y:
   // -For a single 1st order allpass stage, we get an initial negative spike followed by a 
   //  positive value which then turns into an exponential decay. Adding stages seems to directly
-  //  translate to adding additional local maxima to teb impulse response.
-  // -For 2nd order allpass chains with 1 stage, we observe an impuse response that looks like
+  //  translate to adding additional local maxima to the impulse response. With more stages, it 
+  //  begins to look more and more like a zap (fast sine sweepdown). When we then lower the 
+  //  frequency, the transient gets emphasized. Maybe that can be utilized to create electronic
+  //  drum and percussion sounds. Allpass filters in general seem to be an interesting canditate 
+  //  for that. Maybe create a sample-pack "Allpass Drums".
+  // -For 2nd order allpass chains with 1 stage, we observe an impulse response that looks like
   //  and initial positive/negative spike pair that then turns into a a damped sine. More stages
   //  will make the initial transient look more chaotic.
   // -With sampleRate = 44100, numStages = 1, freq = 3900, quality = 2.0, we see a nice first 
