@@ -483,6 +483,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  // Maybe move the implementations out of the class like in rsAllpassDelayChain. They have grown 
+  // quite big. Maybe do it for the setters, too.
+
   /** Needs more tests */
   inline TSig getSample(TSig x)
   {
@@ -542,6 +545,9 @@ public:
     // loops. As we see, the first delayline contains t3 and the second contains t2.
 
     RAPT::rsAssert(numStages == 2, "Function supposes a 2 stage configuration");
+    // The function is meant to be called as an unrolled/optimized alternative to the general 
+    // getSample() function which works for any number of stages. But, of course, it is a valid 
+    // alternative only when the user actually has selected a two stage configuration.
 
     // Init:
     TSig t0 = x;                                                   // t0[n] = x[n]
