@@ -74,7 +74,9 @@ void rotes::allpassDisperser()
   //rsPlotVector(y);
 
   // Now apply the allpass delay chain diffusor:
-  std::vector<int> delays = { 13, 17, 23, 29 };
+  //std::vector<int> delays = { 13, 17, 23, 29 };
+  //std::vector<int> delays = { 13, 17, 23, 29, 37 };
+  std::vector<int> delays = { 13, 17, 23, 29, 37, 47 };
   //std::vector<int> delays = { 7, 13, 17, 23, 29 };
   //std::vector<int> delays = { 7, 13, 17, 23 };
   //std::vector<int> delays = { 5, 7, 13, 17, 23 };
@@ -113,11 +115,11 @@ void rotes::allpassDisperser()
     z[n] = apdc.getSample(y[n]);
 
   // Write the impulse response to a wave file for listening:
-  //RAPT::rsArrayTools::normalize(&z[0], N);
-  //rosic::writeToMonoWaveFile("Diffusor.wav", &z[0], N, 44100, 16);
+  RAPT::rsArrayTools::normalize(&z[0], N);
+  rosic::writeToMonoWaveFile("DiffusorAllpassChain.wav", &z[0], N, 44100, 16);
 
   // Plot the signal:
-  //rsPlotVector(z);
+  rsPlotVector(z);
 
   // OK - now let's try a 4-stage nested allpass structure:
   rsAllpassDelayNested<double, double> apdn;
