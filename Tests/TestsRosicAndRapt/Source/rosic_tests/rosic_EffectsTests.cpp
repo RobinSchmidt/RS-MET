@@ -49,7 +49,7 @@ void rotes::allpassDisperser()
   int    numStages  = 4;
   bool   biquads    = false;     // Switches between 1st and 2nd order stages
   double freq       = 3900;
-  double quality    = 2.0;       // Quality factor "Q" for 2nd order stages
+  double quality    = 3.0;       // Quality factor "Q" for 2nd order stages
   int    N          = 4096;      // Number of samples for the plot
 
   // Create and set up the allpass chain:
@@ -70,13 +70,15 @@ void rotes::allpassDisperser()
   for(int n = 1; n < N; n++)
     y[n] = apf1.getSample(0);
 
-  // Plot the impulse response:
+  // Plot the impulse response of the phaser-like allpass chain (i.e. based on 1st or 2nd order 
+  // allpasses):
   //rsPlotVector(y);
 
   // Now apply the allpass delay chain diffusor:
   //std::vector<int> delays = { 13, 17, 23, 29 };
   //std::vector<int> delays = { 13, 17, 23, 29, 37 };
-  std::vector<int> delays = { 13, 17, 23, 29, 37, 47 };
+  std::vector<int> delays = { 13, 17, 23, 29, 37, 47 };      // nice!
+  //std::vector<int> delays = { 17, 23, 29, 37, 47, 53 };    // also pretty nice!
   //std::vector<int> delays = { 7, 13, 17, 23, 29 };
   //std::vector<int> delays = { 7, 13, 17, 23 };
   //std::vector<int> delays = { 5, 7, 13, 17, 23 };
