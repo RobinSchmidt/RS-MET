@@ -609,10 +609,10 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  //allpassDisperser();                  // Maybe rename to allpassDiffusor
+  allpassDisperser();                  // Maybe rename to allpassDiffusor
   //allpassDelay();
   //allpassDelayChain();
-  allpassDelayChainVsNest();
+  //allpassDelayChainVsNest();
   //feedbackDelayNetwork();            // writes wave file
   //algoVerb();                        // writes wave file
   //spectralFilter();                  // Maybe move into a file for spectral processors

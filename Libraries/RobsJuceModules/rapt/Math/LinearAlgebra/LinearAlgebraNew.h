@@ -11,9 +11,10 @@ or garbage when the function returns. If you need to keep the inputs, pass a cop
 
 
 ToDo:
--Maybe have independent types for the matrix elements and the vector elements. In some computer 
- graphics algorithms, the solution- and right-hand-side vectors are themselves composed of vectors 
- as their elements (whereas the matrix elements are still just scalars).
+-Maybe have independent types for the matrix elements and the vector elements, i.e. use TMat and 
+ TVec as template parameters instead of a common type T for both. In some computer graphics 
+ algorithms, the solution- and right-hand-side vectors are themselves composed of vectors as their 
+ elements (whereas the matrix elements are still just scalars).
 
 */
 
@@ -24,6 +25,7 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Convenience functions 
+
   These functions are convenient to use but not recommendable for production code - especially, 
   when that code should be run in realtime (they allocate memory). But for prototyping, they are 
   fine. */
@@ -58,10 +60,10 @@ public:
   works also for matrices X,B - this means, the system A * x = b is solved simultaneously for a 
   bunch of right-hand-side vectors b collected into a matrix whose columns are the desired solution
   vectors. A and B are the inputs, X is the output. X and B must have the same shape and both must 
-  have a number of rows equal to the size A, which assumed to be square. The function works in 
+  have a number of rows equal to the size A, which is assumed to be square. The function works in 
   place, i.e. it does not allocate any extra memory. The process destroys the contents of A and B. 
   In general, X and B must be distinct but in certain cases, one may use it in place, i.e. X == B. 
-  I'm not sure yet, but i think, it works, iff B is diagonal ...or maybe triangular is enough? 
+  I'm not sure yet, but I think, it works, iff B is diagonal ...or maybe triangular is enough? 
   and/or if X and B are vectors?  ->  figure out and document.  */
   template<class T>
   static bool solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
@@ -69,7 +71,10 @@ public:
   // -maybe pass arguments as A,B,X - outputs should come last - check, how the old versions does 
   //  it
   // -document return value: it returns true, iff the linear system has a unique solution - it will
-  //  fail whenever there are no solutions or a continuum of solutions
+  //  fail whenever there are no solutions or a continuum of solutions, i.e. when the matrix A is 
+  //  singular. ToDo: maybe in a case where there is a continumum of solutions, return the minimum
+  //  norm solution - but I guess that computation needs to allocate extra matrices, so maybe it's 
+  //  not a good idea.
   // -maybe it should also return the rank?
   // -maybe rename to solveGaussPartialPivot or ..RowPivot, implement also solveGaussFullPivot, 
   //  maybe keep the unqualified "solve" as alias for convenience..or maybe the unqualified solve 
@@ -133,8 +138,8 @@ public:
   static void solveWrappedTridiagonal(int N, const T* lowerDiag, T* mainDiag, const T* upperDiag, 
     T* solution, T* rightHandSide);
 
-  /** Like solveTridiagonal but solves the system for multiple right hand sides at ones, collected 
-  as the columns of B. The solutions vectors are the corresponding columns of X. The size N of the
+  /** Like solveTridiagonal but solves the system for multiple right hand sides at once, collected 
+  as the columns of B. The solution vectors are the corresponding columns of X. The size N of the
   system is inferred from the number of rows in B and X (which must match). */
   template<class T>
   static void solveTridiagonal(const T* lowerDiag, T* mainDiag, const T* upperDiag, 

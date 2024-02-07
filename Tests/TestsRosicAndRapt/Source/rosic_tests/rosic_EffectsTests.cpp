@@ -71,9 +71,7 @@ void rotes::allpassDisperser()
     y[n] = apf1.getSample(0);
 
   // Plot the impulse response:
-  //rsPlotVector(y);
-
-
+  rsPlotVector(y);
 
   // Now apply the allpass delay chain diffusor:
   std::vector<int> delays = { 13, 17, 23, 29 };
@@ -117,6 +115,31 @@ void rotes::allpassDisperser()
 
   // Plot the signal:
   rsPlotVector(z);
+
+  // OK - now let's try a 4-stage nested allpass structure:
+  rsAllpassDelayNested<double, double> apdn;
+  apdn.setMaxNumStages(numStages);
+  apdn.setNumStages(numStages);
+  for(int i = 0; i < numStages; i++)
+  {
+    apdn.setMaxDelayInSamples(i, delays[i]);
+    apdn.setDelayInSamples(   i, delays[i]);
+    apdn.setAllpassCoeff(     i, coeffs[i]);
+  }
+  // ToDo:
+  // -Maybe tweak the coeffs - a nested structure will likely need a different set of coeffs to 
+  //  achieve a similar overall decay time. I think, we can use smaller coeffs - which may be good
+  //  because we may get less discernable resonance frequencies. I think, in a general series 
+  //  connection of filters, the ultimate decay time is determined by the maximum of all individual
+  //  decay times. I think, this is the way I have implemented it to estimate the decay time of a 
+  //  biquad chain - the rationale is that the chain could be re-expressed as a parallel connection
+  //  (by partial fraction expansion) and then the slowest decaying term determines the overall 
+  //  decay. I think, in a nested structure, it might indeed be more appropriate to add up all the
+  //  individual decay times? Not sure -> figure out!
+
+
+
+
 
   // Observations for y:
   // -For a single 1st order allpass stage, we get an initial negative spike followed by a 
