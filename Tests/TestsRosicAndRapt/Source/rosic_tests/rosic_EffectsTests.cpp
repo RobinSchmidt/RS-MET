@@ -396,7 +396,11 @@ void rotes::allpassDelayChainVsNest()
   // -Towards the end yn1 and yn3 look very similar and they look both more spikey than yn2 and 
   //  yn4. yn2 looks the least spikey and yn4 seems to be somewhere in the middle between yn1/3 and
   //  yn2 in terms of spikiness.
-  // -When k != 1, only those sample numbers that are divisible by k have a nonzero signal.
+  // -When k != 1, only those sample numbers n that are divisible by k have a nonzero signal value 
+  //  y[n]. I think, this is the time-domain manifestation of the spectral duplication - we insert 
+  //  zeros. So - yeah - our "oversampling" here inserts k-1 zeros in between every pair of 
+  //  adjacent samples in the original signal. That should perhaps be no suprise because that's
+  //  how oversampling works in general - at least before the anti-imaging filter is applied.
   //
   // Conclusions:
   // -Investigating the series structure any further seems not worthwhile. I think, the nested 
