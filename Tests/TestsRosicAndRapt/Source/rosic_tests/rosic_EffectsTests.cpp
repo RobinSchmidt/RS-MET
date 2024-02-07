@@ -294,7 +294,8 @@ void rotes::allpassDelayChainVsNest()
   int maxStages = 2;
 
   std::vector<int>  delays = { k*11, k*17 };
-  std::vector<Real> coeffs = {  0.9,  0.7 };
+  //std::vector<Real> coeffs = {  0.9,  0.7 };
+  std::vector<Real> coeffs = {  0.6,  0.4 };
 
   // Set up the series allpass structure:
   rsAllpassDelayChain<Real, Real> apdc1;
@@ -308,7 +309,7 @@ void rotes::allpassDelayChainVsNest()
   apdc1.setAllpassCoeff(     1, coeffs[1]);
 
   // Set up a 2nd series allpass structure with somehwat larger coeffs in an attempt to match
-  // the length of the impulse repsone of the nested structure:
+  // the length of the impulse response of the nested structure:
   rsAllpassDelayChain<Real, Real> apdc2;
   apdc2.setMaxNumStages(maxStages);
   apdc2.setNumStages(2);
@@ -404,27 +405,28 @@ void rotes::allpassDelayChainVsNest()
   //
   // Conclusions:
   // -Investigating the series structure any further seems not worthwhile. I think, the nested 
-  //  structure outclasses the series structure while (supposedly) having a similar computaional 
+  //  structure outclasses the series structure while (supposedly) having a similar computational 
   //  cost.
   // -For the nested allpasses, having the shortest delay in the outermost allpass seems desirable
   //  because this way, we get the earliest possible spike after n = 0. (I guess - verify if this
   //  observation generalizes to higher order nested allpasses). This corresponds to y1 and yn3.
   // -Counterintuitively, using the smaller coeff for the shorter delay (as in y3) seems to produce
   //  a more desirable impulse response than the other way around (as in y1). That spreads the 
-  //  early energy better among the intial spikes, i.e. it's less concentrated at n = 0. Using
-  //  coeffs = { 0.6, 0.4 }; makes the first spike at n = 0 actualy smaller than the second one at
-  //  n = 11. The tallest is actually the fourth at n = 28.
+  //  early energy better among the intial spikes, i.e. it's less concentrated at n = 0. And that's
+  //  what we want to achieve with the diffusor: smear the input impulse to turn it into some sort 
+  //  of nice attack/decay-shaped noise burst. Using coeffs = { 0.6, 0.4 }; makes the first spike 
+  //  at n = 0 actualy smaller than the second one at n = 11. The tallest is actually the fourth at 
+  //  n = 28.
   //
   // ToDo:
-  // -Maybe make yet two other nested variants that are like the current two but swap which 
-  //  delayline gets the smaller coeff. Currently, we give the smaller coeff to the longer 
-  //  delayline in both cases.
   // -Maybe try to make a fairer comparison by adjusting the coeffs for the different structures
   //  in some way that achieves a similar overall length of the response. That means, for the 
   //  nested structure, we may use smaller coeffs that for the series. Smaller coeffs may actually 
   //  help to reduce the tonal ringing. We could do such a variant for the series, too. Giving the 
   //  shorter delayline the smaller coeff seems weird, though because short delay and small coeff
   //  both contribute to a short length of the impulse response.
+  // -Try it with a 4-level nested allpass. That should be the current best candidate algo for the 
+  //  diffusor.
 }
 
 
