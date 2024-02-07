@@ -71,7 +71,7 @@ void rotes::allpassDisperser()
     y[n] = apf1.getSample(0);
 
   // Plot the impulse response:
-  rsPlotVector(y);
+  //rsPlotVector(y);
 
   // Now apply the allpass delay chain diffusor:
   std::vector<int> delays = { 13, 17, 23, 29 };
@@ -120,10 +120,11 @@ void rotes::allpassDisperser()
   rsAllpassDelayNested<double, double> apdn;
   apdn.setMaxNumStages(numStages);
   apdn.setNumStages(numStages);
+  double nestScale = 1.0;   // scale factor for the coeffs for nested structure
   for(int i = 0; i < numStages; i++)
   {
-    apdn.setMaxDelayInSamples(i, delays[i]);
-    apdn.setDelayInSamples(   i, delays[i]);
+    apdn.setMaxDelayInSamples(i, nestScale*delays[i]);
+    apdn.setDelayInSamples(   i, nestScale*delays[i]);
     apdn.setAllpassCoeff(     i, coeffs[i]);
   }
   // ToDo:
@@ -144,7 +145,7 @@ void rotes::allpassDisperser()
 
   // Plot the signal:
   //rsPlotVector(u);
-  rsPlotVectors(z, u);  // to compare both - allpass chain and nested allpass
+  rsPlotVectors(y, z, u);  // to compare both - allpass chain and nested allpass
 
 
 
@@ -172,6 +173,13 @@ void rotes::allpassDisperser()
   //  interface was distorting. However - using sclAmt = 0.2..0.25 seems a good compromise.
   // -Using these vaules with only 4 delays of 13,17,23,29 seems to work also well. Experimenting 
   //  with more stages for the initial AllpassChain also helps to shape the sound.
+  //
+  // Observations for u:
+  // -It has a much longe decay time than z and even when scaling all coeffs by a factor < 1, like
+  //  nestScale = 0.25, that feature remains. It also doesn't shwon the attack/decay shape that z
+  //  has. It seems, the attack/decay shape is easier to achieve with the series allpass. But maybe
+  //  that can be achieved by further tweaking the coeffs and delays. Try that!
+
 
   // ToDo:
   // -Alternatively to the single 2nd order stage, use a 4-stage 1st order chain - yeah - that's 
