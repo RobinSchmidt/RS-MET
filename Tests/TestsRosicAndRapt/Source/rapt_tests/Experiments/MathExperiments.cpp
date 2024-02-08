@@ -418,10 +418,10 @@ bool testSigularValueDecomp()
 
 
   
+  /*
   // this does not yet work:
   Matrix A, U, S, V;  // the original matrices
   Matrix a, u, s, v;  // the computed matrices
-
   int M = 7;
   int N = 5;
   V = getRandomOrthogonalMatrix(N, 2);
@@ -439,14 +439,12 @@ bool testSigularValueDecomp()
   // but ratReduce is called - with tol == 0 - the operators of RatFunc use ratMul, ratAdd, etc. - 
   // they do not pass anything for the tolerance, so it defaults to zero - maybe RatFunc should
   // have a member reductionTolerance
+  */
   
   // ..maybe try to use matrices with integer elements - but how to we produce
   // orthogonal matrices with integer elements - if we use random values and Gram-Schmidt, the 
   // elements will often be irrational due to the sqrt in the normalization
   
-
-
-
 
 
   auto checkSVD = [&](int M, int N, Vec vecA)->bool
@@ -458,7 +456,7 @@ bool testSigularValueDecomp()
     bool result = (A-T).isZero(tol);
     result &= isOrthogonal(U, tol);
     result &= isOrthogonal(V, tol);
-    //result &= isDiagonal(  S, tol);
+    result &= isDiagonal(  S, tol);
     return result;
   };
 

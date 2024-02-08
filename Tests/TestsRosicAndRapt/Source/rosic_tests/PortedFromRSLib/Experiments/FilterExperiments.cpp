@@ -52,12 +52,13 @@ void allpassFDN()
   Real s      = 0.8;                               // Decay coeff
 
   // Construct the feedback matrix A:
-  Mat H  = s * (1./sqrt(2)) * Mat(2, 2, {1,1, 1,-1});   // Scaled 2x2 Hadamard matrix
+  Mat H  = s * (1./sqrt(2)) * Mat(2,2, {1,1, 1,-1});    // Scaled 2x2 Hadamard matrix
   Mat I2 = Mat(2, 2, {1,0, 0,1});                       // 2x2 identity matrix
   Mat A  = H;                                           // Feedback matrix
   // Preliminary - needs delay based scaling (of the rows?) later to achive uniform mode decay
 
 
+  //rsSV
 
 
   int dummy = 0;

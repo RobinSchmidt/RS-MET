@@ -1133,6 +1133,15 @@ bool isOrthogonal(rsMatrix<T>& A, T tol)
 // doesn't change the scalar product, i.e <x, y> = <A*x, A*y> which implies A^T * A = I
 // if a matrix A is orthogonal, det(A) = +-1 (what if A is complex?)
 
+template<class T>
+bool isDiagonal(rsMatrix<T>& A, T tol)
+{
+  for(int i = 0; i < A.getNumRows(); i++) {
+    for(int j = 0; j < A.getNumColumns(); j++) {
+      if(i != j && rsAbs(A(i, j)) > tol)
+        return false;  }}
+  return true;
+}
 
 template<class T>
 rsMatrix<T> getHouseholderReflection(rsMatrix<T>& a)

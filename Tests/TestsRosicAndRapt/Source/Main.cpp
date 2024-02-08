@@ -106,8 +106,8 @@ int main(int argc, char* argv[])
   // Math:
   //determinant();
   //characteristicPolynomial();
-  //testSubSpaces();        // todo: move to unit tests
-  //testSigularValueDecomp();   // dito
+  //testSubSpaces();               // todo: move to unit tests
+  testSigularValueDecomp();      // dito
   //linearIndependence();
   //eigenstuff();
   //iterativeLinearSolvers();
