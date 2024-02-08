@@ -14,3 +14,7 @@ https://github.com/mtytel/vital
 
 https://github.com/BespokeSynth/BespokeSynth
 -A Reaktor-style modular synthesizer
+
+https://geonkick.org/
+https://github.com/Geonkick-Synthesizer/geonkick
+-Drum Synthesizer
