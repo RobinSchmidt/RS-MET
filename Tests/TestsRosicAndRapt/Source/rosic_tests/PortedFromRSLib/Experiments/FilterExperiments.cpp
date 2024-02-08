@@ -44,27 +44,69 @@ void allpassFDN()
 {
   // Under construction
 
+  // See:
+  // (1) Allpass Feedback Delay Networks (Sebastian J. Schlecht)  
+  //     https://arxiv.org/pdf/2007.07337.pdf , https://github.com/SebastianJiroSchlecht/fdnToolbox
+
   using Real = double;
   using Vec  = std::vector<Real>;
   using Mat  = rsMatrix<Real>;
 
-  //Vec  delays = { 7, 11 };                       // Shall be used later to modify A
-  Real s      = 0.8;                               // Decay coeff
+  Vec  delays = { 7, 11 };                       // Shall be used later to modify A
+  //Real s      = 0.8;                               // Decay coeff
 
   // Construct the feedback matrix A:
-  Mat H  = s * (1./sqrt(2)) * Mat(2,2, {1,1, 1,-1});    // Scaled 2x2 Hadamard matrix
+  Mat H  = (1./sqrt(2)) * Mat(2,2, {1,1, 1,-1});        // 2x2 Hadamard matrix
   Mat I2 = Mat(2, 2, {1,0, 0,1});                       // 2x2 identity matrix
-  Mat A  = H;                                           // Feedback matrix
-  // Preliminary - needs delay based scaling (of the rows?) later to achive uniform mode decay
+
+  //Mat A  = H;                                           // Feedback matrix
+  // Preliminary - needs delay based scaling (of the rows?) later to achive uniform mode decay.
+  // In 2, it says that a unilossless matrix is multiplied from the right by a diagonal matrix G:
+  // A = U*G. that actually amounts to scale the colums of A by the respective diagonal elements of
+  // G? Dos that make sense? I think, uniform decay would be achieved by scaling the elements of 
+  // the output vector after the matrix-vector multiplication - but that would actually be 
+  // equivalent to scaling the rows of the matrix. Maybe I'm doing that wrong in my FDN 
+  // implementation or mybe it doesn't matter? I think, scaling the columns amounts to scaling the 
+  // input vector elements - so maybe in the context of recirculation, it indeed doesn't matter - 
+  // at least not with respect to the late behavior but may matter for the transient? Figure out!
+  // Maybe try both ways here.
+
+  // Create diagonal loss matrix Gamma:
+  Real g   = 0.8;
+  Real g11 = pow(g, delays[0] / delays[0]); // == g, but just to emphasize the pattern
+  Real g22 = pow(g, delays[1] / delays[0]);
+  Mat  G   = Mat(2,2,  {g11,0, 0,g22} );
+  Mat  A   = H*G;
 
   // Do a SVD of A:
   Real tol = 1.e-13;
   Mat  U, S, V;
   decomposeRealUSV(A, U, S, V, tol);  // rename that function - it's hard to find under that name!
+  // The singular values are actually precisely our g11, g22 values. Interesting observation. We
+  // actually don't need the SVD of A for the algorithm, though
 
   // Sanity check the SVD result:
   Mat T = U * S * V.getTranspose();
   bool ok = (A-T).isZero(tol);
+
+  // Now figure out the input vector B by the condition that it should be the rank-1 approximation
+  // of I - A*A^T.
+  Mat AT = A.getTranspose();
+  Mat R  = I2 - A*AT;          // right hand side
+
+  // Do a SVD of R:
+  decomposeRealUSV(A, U, S, V, tol);
+
+  // Sanity check the SVD result:
+  T   = U * S * V.getTranspose();
+  ok &= (A-T).isZero(tol);
+
+  // Now obtain a rank-1 approximation of R - that should be our input matrix/vector B, if I 
+  // understand the paper correctly:
+  S(1,1) = 0; // Setting the smaller singular value to zero.
+  Mat B = U * S * V.getTranspose();
+  // OK - B has only the first column nonzero. Both values are the same, equal to 0.56... The value
+  // is the same as in the first column of A.
 
 
 
