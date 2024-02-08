@@ -1,6 +1,7 @@
 #ifndef RS_FILTEREXPERIMENTS_H
 #define RS_FILTEREXPERIMENTS_H
 
+void allpassFDN();
 void bandwidthScaling();
 void biquadResoGainToQ();
 void butterworthEnergy();

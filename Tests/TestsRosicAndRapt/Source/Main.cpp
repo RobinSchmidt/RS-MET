@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
   // Unit tests:
   bool ok = true;
   //ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -367,6 +367,7 @@ int main(int argc, char* argv[])
   //basicIntegerDelayLine();
 
   // Filter:
+  allpassFDN();                    // Under construction
   //bandwidthScaling();
   //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();

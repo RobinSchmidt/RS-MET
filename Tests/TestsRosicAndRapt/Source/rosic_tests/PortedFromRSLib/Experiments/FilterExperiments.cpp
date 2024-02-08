@@ -40,6 +40,31 @@ implement a biquad based on a rotating complex phasor - this should produce the 
 */
 
 
+void allpassFDN()
+{
+  // Under construction
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using Mat  = rsMatrix<Real>;
+
+  //Vec  delays = { 7, 11 };                       // Shall be used later to modify A
+  Real s      = 0.8;                               // Decay coeff
+
+  // Construct the feedback matrix A:
+  Mat H  = s * (1./sqrt(2)) * Mat(2, 2, {1,1, 1,-1});   // Scaled 2x2 Hadamard matrix
+  Mat I2 = Mat(2, 2, {1,0, 0,1});                       // 2x2 identity matrix
+  Mat A  = H;                                           // Feedback matrix
+  // Preliminary - needs delay based scaling (of the rows?) later to achive uniform mode decay
+
+
+
+
+  int dummy = 0;
+}
+
+// Move to prototypes - maybe rename to rsSVF:
+
 // Example code for a TPT/ZDF-SVF (obviously, this could be optimized for production code),
 // written by Robin Schmidt, licensing/copyright: none (public domain)
 // Parameters:

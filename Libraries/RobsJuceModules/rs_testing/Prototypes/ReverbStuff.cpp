@@ -25,7 +25,10 @@ Ideas:
     general. JOS-Filters, pg. 301 says there should be at least as many outputs as inputs (why?).
     And the numbers aren't too artifical either: 2 inputs occurs with stereo signals, 3 outputs 
     could mean a stereo + center setup and 4 delaylines seems to be a nice choice, too. A 4x4
-    Hadamard matrix is also pretty nice.
+    Hadamard matrix is also pretty nice. Or maybe make a simpler example first: 1 in, 1 out, 2x2
+    feedback matrix - overall matrix should be 3x3. If we pick B in soem way that makes the two 
+    upper 3D rows orthogomal, we may generate the bottom row by taking the 3D cross-product of the 
+    two top rows to make the whoel matrix orthogonal
 
 - Maybe try a nested allpass structure (a la Gardner) instead of a series (a la Schroeder). 
   see: http://gdsp.hf.ntnu.no/lessons/6/33/  ..has a nice block diagram for an implementation 
