@@ -57,8 +57,16 @@ void allpassFDN()
   Mat A  = H;                                           // Feedback matrix
   // Preliminary - needs delay based scaling (of the rows?) later to achive uniform mode decay
 
+  // Do a SVD of A:
+  Real tol = 1.e-13;
+  Mat  U, S, V;
+  decomposeRealUSV(A, U, S, V, tol);  // rename that function - it's hard to find under that name!
 
-  //rsSV
+  // Sanity check the SVD result:
+  Mat T = U * S * V.getTranspose();
+  bool ok = (A-T).isZero(tol);
+
+
 
 
   int dummy = 0;
