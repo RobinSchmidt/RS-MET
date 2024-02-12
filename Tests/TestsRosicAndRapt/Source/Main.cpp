@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
   //determinant();
   //characteristicPolynomial();
   //testSubSpaces();               // todo: move to unit tests
-  testSigularValueDecomp();      // dito
+  //testSigularValueDecomp();      // dito
   //linearIndependence();
   //eigenstuff();
   //iterativeLinearSolvers();
@@ -610,7 +610,7 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  allpassDisperser();                  // Maybe rename to allpassDiffusor
+  //allpassDisperser();                  // Maybe rename to allpassDiffusor
   //allpassDelay();
   //allpassDelayChain();
   //allpassDelayChainVsNest();
@@ -655,7 +655,7 @@ int main(int argc, char* argv[])
   //testResetter();
   //testTurtleReverse();
   //testTurtleSource();
-  testSamplerEngine();
+  //testSamplerEngine();
 
   // Modulators:
   //testConsecutiveExponentialDecay();

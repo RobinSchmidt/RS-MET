@@ -255,7 +255,9 @@ protected:
 
 };
 
-
+// ToDo:
+// -Maybe the keyword PhaseVocoder should appear somewhere in this file to make this class easier 
+//  to find. Hey - now it does! :-)
 
 
 

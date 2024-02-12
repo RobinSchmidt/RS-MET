@@ -298,3 +298,21 @@ T rsChineseRemainderTheorem(T* r, T* m, rsUint32 count)
   delete[] w;
   return R;
 }
+
+
+/*
+
+Ideas:
+
+Maybe implement Dijstras algorithm for finding prime numbers explained here:
+
+Dijkstra's Hidden Prime Finding Algorithm:
+https://www.youtube.com/watch?v=fwxjMKBMR7s
+
+it strikes a balance between the time-efficiency of the sieve of Erathostenes and the 
+space-efficiency of trial division. Q: What actually is the time- and space-complexity of the 3 
+algorithms in terms of Big-O?
+
+
+
+*/

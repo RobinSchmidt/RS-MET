@@ -6,7 +6,7 @@
 /** This class implements a basic delay-line which allows only for integer delays. No interpolation
 algorithm is involved - that makes it especially efficient.
 
- Maybe rename to rsIntegerDelayLine and the interpolating one rsFracctionalDelayLine
+ Maybe rename to rsIntegerDelayLine and the interpolating one rsFractionalDelayLine
 
 \todo: use only one pointer for tapIn and tapOut (see Julius Smith's pasp-book) */
 
