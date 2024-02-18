@@ -1,20 +1,43 @@
 Links to interesting open source audio software projects:
 
-
+Ardour:
 https://github.com/Ardour/ardour
 -A fully featured DAW.
 
+Surge:
 https://github.com/surge-synthesizer/surge
 -A hybrid synthesizer (mostly VA but with some more exotic oscillator types). Very poppular with 
  active community.
 
+Vital:
 https://github.com/mtytel/vital
 -A spectral warping wavetable synthesizer with very visual GUI.
 -Source code seems to be not get updated anymore since a while.
+-Check out also Vitalium: ...
 
+Distrho:
+https://github.com/DISTRHO/DISTRHO-Ports
+-open source project with the goal of making cross-platform audio plugins and GNU/Linux + LV2 ports.
+-Includes Vitalium: https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium
+
+BespokeSynth:
 https://github.com/BespokeSynth/BespokeSynth
 -A Reaktor-style modular synthesizer
 
+Cardinal:
+https://github.com/DISTRHO/Cardinal
+-A VCV-Rack-style modular synthesizer
+
+Geonkick:
 https://geonkick.org/
 https://github.com/Geonkick-Synthesizer/geonkick
--Drum Synthesizer
+-A drum synthesizer with focus on bassdrums
+
+Giada:
+https://www.giadamusic.com/
+-Not sure...seems to be some sort of tracker like music software with focus on live performance?
+
+Carla:
+https://kx.studio/Applications:Carla
+-A modular audio plugin host
+
