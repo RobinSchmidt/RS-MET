@@ -61,7 +61,8 @@ Bugs:
 
 - Straightliner: whenl loading a ToolChain preset that uses Straighliner, some of the Osc-settings
   seem to be not recalled. Try GoaBassdrumSaturated.xml. It should have a Stereo-Shift of 90° but is 
-  recalled with 0°.
+  recalled with 0°. There is no issue when directly loading Straightliner presets within the synth
+  itself. But to debug this conveniently, we should first fix the next bug:
 
 - Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
   loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the
