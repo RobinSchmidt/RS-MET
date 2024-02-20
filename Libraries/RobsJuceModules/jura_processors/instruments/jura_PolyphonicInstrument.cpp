@@ -108,53 +108,55 @@ void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement &xmlState
 
 void PolyphonicInstrumentAudioModule::createParameters()
 {
-  // create the automatable parameters and add them to the list - note that the order of the adds
+  // Create the automatable parameters and add them to the list - note that the order of the adds
   // is important because in parameterChanged(), the index (position in the array) will be used to
   // identify which particular parameter has changed.
+  // Hmm - that comment is old - does the order still matter? I think, it shouldn't. I think, it 
+  // mattered back in the day when they were mapped directly to host-automatable parameters. 
+  // -> Figure out and update the comment!
 
-  // this pointer will be used to temporarily store the addresses of the created
-  // Parameter-objects:
-  AutomatableParameter* p;
 
-  // #000:
-  p = new AutomatableParameter(lock, "MasterLevel", -36.0, 12.0, 0.1, 0.0, Parameter::LINEAR, 7);
+  using Param = AutomatableParameter;
+  Param* p;
+
+  p = new Param(lock, "MasterLevel", -36.0, 12.0, 0.1, 0.0, Parameter::LINEAR, 7);
   addObservedParameter(p);
 
-  // #001:
-  p = new AutomatableParameter(lock, "VoiceLevelByKey", -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param(lock, "VoiceLevelByKey", -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
 
-  // #002:
-  p = new AutomatableParameter(lock, "VoiceLevelByVel", 0.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param(lock, "VoiceLevelByVel", 0.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
 
-  // #003:
-  p = new AutomatableParameter(lock, "MasterLevelByVoices", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param(lock, "MasterLevelByVoices", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
 
-  // #004:
-  p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p);
 
-  // #005:
-  p = new AutomatableParameter(lock, "GlideSwitch", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
+  p = new Param(lock, "GlideSwitch", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
-  // #006:
-  p = new AutomatableParameter(lock, "GlideTime", 5.0, 2000.0, 0.0, 50.0, Parameter::EXPONENTIAL);
+  p = new Param(lock, "GlideTime", 5.0, 2000.0, 0.0, 50.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
 
-  // #007:
-  p = new AutomatableParameter(lock, "MasterTuneA4", 220.0, 880.0, 0.01, 440.0, Parameter::EXPONENTIAL);
+  p = new Param(lock, "MasterTuneA4", 220.0, 880.0, 0.01, 440.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
 
-  // #008:
-  p = new AutomatableParameter(lock, "PitchWheelRange", 0.0, 24.0, 0.1, 12.0, Parameter::LINEAR);
+  p = new Param(lock, "PitchWheelRange", 0.0, 24.0, 0.1, 12.0, Parameter::LINEAR);
   addObservedParameter(p);
 
-  // make a call to setValue for each parameter in order to set up all the slave voices:
+  // Make a call to setValue for each parameter in order to set up all the slave voices:
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
+  // ToDo: Verify, if this is still needed. It might also be a remnant from older days. Ah - I see:
+  // we have a method  parameterChanged() change here which then calls the actual setter in the
+  // embedded DSP-object. I think, we should instead do things like:
+  // using Instrum = rosic::PolyphonicInstrument;
+  // p->setValueChangeCallback<Instrum>(instrum, &Instrum::setMasterLevel);
+  // ...etc.
+  // such that the value change callbacks are called directly. See the AcidDevil code for how it's
+  // now supposed to be done.
 }
 
 //=================================================================================================
@@ -165,15 +167,18 @@ PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugI
 {
   ScopedLock scopedLock(*lock);
 
-  // assign the pointer members:
-  jassert( newInstrumentToEdit != NULL );
-  jassert( newInstrumentToEdit->underlyingRosicInstrument != NULL );
+  // Assign the pointer members:
+  jassert( newInstrumentToEdit != nullptr );
+  jassert( newInstrumentToEdit->underlyingRosicInstrument != nullptr );
   instrumentEngine = newInstrumentToEdit->underlyingRosicInstrument;
 
-  // assign the instruments tuning table to the inherited TuningFileManager:
+  // Assign the instruments tuning table to the inherited TuningFileManager:
   TuningFileManager::assignTuningTable(&(instrumentEngine->tuningTable));
 
-  // create and setup the widgets:
+
+  // Factor out into createWidgets:
+
+  // Create and setup the widgets:
   addWidget( levelSlider = new RSlider("VolumeSlider") );
   levelSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevel") );
   levelSlider->setSliderName(juce::String("Level"));
@@ -279,6 +284,7 @@ PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugI
   glideTimeSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   updateWidgetsAccordingToState();
+
 }
 
 //-------------------------------------------------------------------------------------------------
