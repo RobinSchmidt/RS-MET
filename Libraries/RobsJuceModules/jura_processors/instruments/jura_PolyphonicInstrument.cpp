@@ -4,11 +4,9 @@
 PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock,
   rosic::PolyphonicInstrument *instrumentToWrap) : AudioModuleWithMidiIn(newPlugInLock)
 {
-  jassert(instrumentToWrap != NULL); // you must pass a valid rosic-object to the constructor
+  jassert(instrumentToWrap != nullptr); // you must pass a valid rosic-object to the constructor
   underlyingRosicInstrument = instrumentToWrap;
-
-  // create and initialize the automatable parameters:
-  initializeAutomatableParameters();
+  createParameters();
 }
 
 PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock)
@@ -20,7 +18,7 @@ PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection
 void PolyphonicInstrumentAudioModule::setInstrumentToWrap(rosic::PolyphonicInstrument *instrumentToWrap)
 {
   underlyingRosicInstrument = instrumentToWrap;
-  initializeAutomatableParameters();
+  createParameters();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -108,7 +106,7 @@ void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement &xmlState
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void PolyphonicInstrumentAudioModule::initializeAutomatableParameters()
+void PolyphonicInstrumentAudioModule::createParameters()
 {
   // create the automatable parameters and add them to the list - note that the order of the adds
   // is important because in parameterChanged(), the index (position in the array) will be used to

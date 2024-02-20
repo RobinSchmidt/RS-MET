@@ -97,15 +97,13 @@ public:
 protected:
 
   /** Fills the array of automatable parameters. */
-  void initializeAutomatableParameters();
-  // rename to createParameters
+  void createParameters();
 
   rosic::PolyphonicInstrument *underlyingRosicInstrument = nullptr;
 
   friend class PolyphonicInstrumentEditor;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolyphonicInstrumentAudioModule)
-  //juce_UseDebuggingNewOperator;
 };
 
 //=================================================================================================
@@ -173,7 +171,6 @@ protected:
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolyphonicInstrumentEditor)
-  //juce_UseDebuggingNewOperator;
 };
 
 
