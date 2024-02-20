@@ -2080,6 +2080,16 @@ protected:
 
 };
 
+// ToDo:
+// -Make the 3 means and variances adjustable as user parameters.
+// -Maybe use filters other than lowpass - especially bandpass could be interesting.
+// -Maybe have filters for the 3 different noise-outputs, too.
+// -It's actually wasteful to have 3 separate noise generators ng1,ng2,ng3. We could use a single 
+//  one and then just adjust the variance (by using a multiplier) and shift the mean (by adding an 
+//  offset) accrording to the output of the selector. But I guess it's fine for a prototype. 
+
+
+
 //=================================================================================================
 // continued fraction stuff:
 

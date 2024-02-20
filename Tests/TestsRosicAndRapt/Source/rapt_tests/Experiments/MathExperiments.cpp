@@ -3058,6 +3058,11 @@ void numericRootFinding1D()
   // ToDo:
   // -Compare the number of calls to other methods like bisection, falsePosition
   // -Try brent with some shifte sqrt function. I think, it should converge in 1 step?
+  // -Maybe implement root-finding  f(x) = 0  by gradient descent on  (f(x))^2 = min. See:
+  //  https://www.youtube.com/watch?v=0kFydRfswU8
+  // -Maybe we could also use gradient descent on the indefinite integral F of f rather than f^2, 
+  //  if we can easily compute that. For polynomials, we can - for example.
+
 
 
   rsAssert(ok);

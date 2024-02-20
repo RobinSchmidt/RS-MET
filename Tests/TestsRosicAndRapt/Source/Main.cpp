@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
   //waveformFractalization();
   //noise();
   //noiseReverseMode();
-  //noiseTriModal();
+  noiseTriModal();
   //noiseWaveShaped();
   //blit();
   //blep();

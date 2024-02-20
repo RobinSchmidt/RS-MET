@@ -41,3 +41,12 @@ Carla:
 https://kx.studio/Applications:Carla
 -A modular audio plugin host
 
+Wavetable:
+https://github.com/FigBug/Wavetable
+-A 2 oscillator wavetable synth with flexible modulation options.
+
+Plugins:
+https://github.com/FigBug/SocaLabs
+-Audio Plugins by FigBug - includes the "Wavetable" synth above. Other plugins are an organ, a 
+ piano, Voc (vocal synth), mverb (Dattorro figure-8 reverb), emulations of: Commodore SID, Nintendo 
+ RP2A03, Gameboy PAPU, Sega SN76489
