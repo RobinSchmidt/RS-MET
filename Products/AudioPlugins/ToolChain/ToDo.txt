@@ -59,6 +59,10 @@ Bugs:
   write a unit test that constructs it (and maybe more)
   OK - the access violation is gone but we hit a jassert
 
+- Straightliner: whenl loading a ToolChain preset that uses Straighliner, some of the Osc-settings
+  seem to be not recalled. Try GoaBassdrumSaturated.xml. It should have a Stereo-Shift of 90° but is 
+  recalled with 0°.
+
 - Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
   loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the
   currentStateFile or something. Check FileManager::updateFileList() when it's called from
@@ -66,4 +70,5 @@ Bugs:
   Check if this bug also affects sample waveform loading in e.g. Straightliner -> Nope. Waveform 
   loading works almost fine. The only thing is that after initially when not yet any file was 
   loaded manually, the first click on the "Next" button loads the first file in the directory 
-  instead of the next one according to the currently loaded one
+  instead of the next one according to the currently loaded one.
+  It seems like after saving a preset, the skip buttons work right
