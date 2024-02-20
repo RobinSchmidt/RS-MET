@@ -5,7 +5,11 @@ Re-occurring bugs and their fixes:
   strange behavior with regard to switching the processing on and off, check if the AudioModule 
   subclass overrides both processBlock *and* procesStereoFrame. ToolChain may switch between 
   calling these two and if the sample-based is not overriden, it may do bypass stuff on
-  blocks with events.
+  blocks with events. Maybe enforce overriding both by making them purely virtual. Or maybe enforce
+  the sample-based one to be overriden and the block-based basclass implementation calls that in a 
+  loop over the samples in a templat-method fashion. Subclasses can override it as optional 
+  optimization...but maybe that should really be mandatory to avoid the per-sample overhead of 
+  calling a virtual function.
 
 
 

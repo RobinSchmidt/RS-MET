@@ -1,4 +1,15 @@
 
+-Instruments should add their own output to what's already there to enable layering
+-Maybe instruments should also be able to use their input signal as source like an oscillator that 
+ can be shaped by the filters and effects
+-But how could we implement both? I think, maybe I should give instruments two additional sliders:
+ -A pass-through volume slider
+ -A slider fro mixing the input with the other oscillators
+-Maybe don't mix instruments/effects with modulators in the same slot-chain - have a separate 
+ slot-chain for the modulators instead.
+
+
+
 Try to support LV2, see:
 https://jatinchowdhury18.medium.com/building-lv2-plugins-with-juce-and-cmake-d1f8937dbac3
 https://github.com/lv2-porting-project/JUCE

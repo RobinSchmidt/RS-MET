@@ -98,12 +98,14 @@ protected:
 
   /** Fills the array of automatable parameters. */
   void initializeAutomatableParameters();
+  // rename to createParameters
 
   rosic::PolyphonicInstrument *underlyingRosicInstrument = nullptr;
 
   friend class PolyphonicInstrumentEditor;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolyphonicInstrumentAudioModule)
+  //juce_UseDebuggingNewOperator;
 };
 
 //=================================================================================================
@@ -114,15 +116,15 @@ class PolyphonicInstrumentEditor : public AudioModuleEditor, public ChangeBroadc
 
 public:
 
-  //---------------------------------------------------------------------------------------------
-  // construction/destruction:
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
 
   /** Constructor. */
   PolyphonicInstrumentEditor(CriticalSection *newPlugInLock,   // get rid of the lock parameter
     PolyphonicInstrumentAudioModule* newInstrumentToEdit);
 
-  //---------------------------------------------------------------------------------------------
-  // setup:
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   /** Sets the colours for the preset section widgets. */
   virtual void setPresetSectionColourScheme(const WidgetColourScheme& newColourScheme);
@@ -136,8 +138,8 @@ public:
   /** Attaches this editor to the actual plugin which is to be edited. */
   virtual void setInstrumentToEdit(rosic::PolyphonicInstrument* newInstrumentToEdit);
 
-  //---------------------------------------------------------------------------------------------
-  // callbacks:
+  //-----------------------------------------------------------------------------------------------
+  // \name Callbacks
 
   virtual void rButtonClicked(RButton *buttonThatWasClicked);
   //virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
@@ -148,19 +150,30 @@ public:
 
 protected:
 
-  rosic::PolyphonicInstrument* instrumentEngine; // the underlying rosic::PolyphonicInstrument object, we acquire the plugInLock whenever
-                                                 
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
+
+
+
+
+
+  rosic::PolyphonicInstrument* instrumentEngine; 
+  // The underlying rosic::PolyphonicInstrument object. We acquire the plugInLock whenever
   // this object or the inherited moduleToEdit is accessed
 
-  // the widgets for the global instrument parameters:
+  // The widgets for the global instrument parameters:
   RSlider *levelSlider, *levelByKeySlider, *levelByVelSlider, *midSideRatioSlider, 
     *numVoicesSlider, *compSlider, *masterTuneSlider, *wheelRangeSlider, *glideTimeSlider;
   RButton *tuningMinusButton, *tuningPlusButton, *tuningLoadButton, *glideButton;
+  RTextField  *tuningLabel, *tuningFileNameLabel;  // ToDo: use a FileSelectionBox instead
 
-  // use a FileSelectionBox instead of these:
-  RTextField  *tuningLabel, *tuningFileNameLabel;
+  // ToDo:
+  // -Add a slider for the pass-through level. Maybe it should be scaled on percent and go from
+  //  -100...+100 or -200...+200. Maybe it should use a sinh-function for scaling
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PolyphonicInstrumentEditor)
+  //juce_UseDebuggingNewOperator;
 };
 
 
