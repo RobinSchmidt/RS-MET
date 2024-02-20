@@ -151,8 +151,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
-
-
+  virtual void createWidgets();
 
 
   rosic::PolyphonicInstrument* instrumentEngine; 

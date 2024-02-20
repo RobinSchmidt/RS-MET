@@ -175,116 +175,8 @@ PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugI
   // Assign the instruments tuning table to the inherited TuningFileManager:
   TuningFileManager::assignTuningTable(&(instrumentEngine->tuningTable));
 
-
-  // Factor out into createWidgets:
-
-  // Create and setup the widgets:
-  addWidget( levelSlider = new RSlider("VolumeSlider") );
-  levelSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevel") );
-  levelSlider->setSliderName(juce::String("Level"));
-  levelSlider->setDescription(juce::String("Master output level"));
-  levelSlider->setDescriptionField(infoField);
-  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
-
-  addWidget( levelByKeySlider = new RSlider("LevelByKeySlider") );
-  levelByKeySlider->assignParameter(moduleToEdit->getParameterByName("VoiceLevelByKey") );
-  levelByKeySlider->setSliderName(juce::String("Key"));
-  levelByKeySlider->setDescription(juce::String("Key dependence of level (per voice)"));
-  levelByKeySlider->setDescriptionField(infoField);
-  levelByKeySlider->setStringConversionFunction(&decibelsToStringWithUnit1);
-
-  addWidget( levelByVelSlider = new RSlider("LevelByVelSlider") );
-  levelByVelSlider->assignParameter(moduleToEdit->getParameterByName("VoiceLevelByVel") );
-  levelByVelSlider->setSliderName(juce::String("Vel"));
-  levelByVelSlider->setDescription(juce::String("Velocity dependence of level (per voice)"));
-  levelByVelSlider->setDescriptionField(infoField);
-  levelByVelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
-
-  addWidget( midSideRatioSlider = new RSlider("MidSideSlider") );
-  midSideRatioSlider->assignParameter(moduleToEdit->getParameterByName("MidSideRatio") );
-  midSideRatioSlider->setSliderName(juce::String("M/S"));
-  midSideRatioSlider->setDescription("Mid/side adjustment");
-  midSideRatioSlider->setDescriptionField(infoField);
-  midSideRatioSlider->setStringConversionFunction(&ratioToString0);
-
-  addWidget( numVoicesSlider = new RSlider("NumVoicesSlider") );
-  numVoicesSlider->setSliderName(juce::String("Voices"));
-  numVoicesSlider->setDescription(juce::String("Maximum number of playing voices"));
-  numVoicesSlider->addListener(this);
-  numVoicesSlider->setDescriptionField(infoField);
-  numVoicesSlider->setStringConversionFunction(&valueToString0);
-  numVoicesSlider->setRange(0.0, 16.0, 1.0, 8.0);
-
-  addWidget( compSlider = new RSlider("CompSlider") );
-  compSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevelByVoices") );
-  compSlider->setSliderName(juce::String("Comp"));
-  compSlider->setDescription(juce::String("Compensation for cumulative loudness of playing voices"));
-  compSlider->setDescriptionField(infoField);
-  compSlider->setStringConversionFunction(&percentToStringWithUnit1);
-
-  addWidget( tuningLabel = new RTextField( juce::String("Tuning")) );
-  tuningLabel->setDescription(juce::String("Name of current tuning file (if any)"));
-  tuningLabel->setDescriptionField(infoField);
-  tuningLabel->setNoBackgroundAndOutline(true);
-
-  addWidget( tuningFileNameLabel = new RTextField() );
-  tuningFileNameLabel->setDescription(juce::String("Name of current tuning file (if any)"));
-  tuningFileNameLabel->setNoBackgroundAndOutline(false);
-  tuningFileNameLabel->setDescriptionField(infoField);
-
-  addWidget( tuningLoadButton = new RButton(juce::String("Load")) );
-  tuningLoadButton->addRButtonListener(this);
-  tuningLoadButton->setDescription(juce::String("Load tuning from a file"));
-  tuningLoadButton->setDescriptionField(infoField);
-  tuningLoadButton->setClickingTogglesState(false);
-  tuningLoadButton->setToggleState(false, false);
-
-  //addWidget( tuningMinusButton = new RButton(RButton::MINUS) );
-  addWidget( tuningMinusButton = new RButton(RButton::ARROW_LEFT) );
-  tuningMinusButton->addRButtonListener(this);
-  tuningMinusButton->setDescription(juce::String("Skip to previous tuning-file in current directory"));
-  tuningMinusButton->setDescriptionField(infoField);
-  tuningMinusButton->setClickingTogglesState(false);
-  tuningMinusButton->setToggleState(false, true);
-
-  //addWidget( tuningPlusButton = new RButton(RButton::PLUS) );
-  addWidget( tuningPlusButton = new RButton(RButton::ARROW_RIGHT) );
-  tuningPlusButton->addRButtonListener(this);
-  tuningPlusButton->setDescription(juce::String("Skip to next tuning-file in current directory"));
-  tuningPlusButton->setDescriptionField(infoField);
-  tuningPlusButton->setClickingTogglesState(false);
-  tuningPlusButton->setToggleState(false, true);
-
-  addWidget( masterTuneSlider = new RSlider("MasterTuneSlider") );
-  masterTuneSlider->assignParameter(moduleToEdit->getParameterByName("MasterTuneA4") );
-  masterTuneSlider->setSliderName(juce::String("A4"));
-  masterTuneSlider->setDescription(juce::String("Master tuning frequency for note A4"));
-  masterTuneSlider->setDescriptionField(infoField);
-  masterTuneSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
-
-  addWidget( wheelRangeSlider = new RSlider("WheelRangeSlider") );
-  wheelRangeSlider->assignParameter(moduleToEdit->getParameterByName("PitchWheelRange") );
-  wheelRangeSlider->setSliderName(juce::String("Wheel"));
-  wheelRangeSlider->setDescription(juce::String("Range for pitch wheel"));
-  wheelRangeSlider->setDescriptionField(infoField);
-  wheelRangeSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
-
-  addWidget( glideButton = new RButton(juce::String("Glide")) );
-  glideButton->addRButtonListener(this);
-  glideButton->setDescription(juce::String("Switch glide on/off"));
-  glideButton->setDescriptionField(infoField);
-  glideButton->setClickingTogglesState(true);
-  glideButton->setToggleState(false, false);
-
-  addWidget( glideTimeSlider = new RSlider("GlideTimeSlider") );
-  glideTimeSlider->assignParameter(moduleToEdit->getParameterByName("GlideTime") );
-  glideTimeSlider->setSliderName(juce::String("Glide Time"));
-  glideTimeSlider->setDescription(juce::String("Adjust the glide time"));
-  glideTimeSlider->setDescriptionField(infoField);
-  glideTimeSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
-
-  updateWidgetsAccordingToState();
-
+  // Create the GUI widgets (sliders, buttons, etc.):
+  createWidgets();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -460,4 +352,113 @@ void PolyphonicInstrumentEditor::resized()
   masterTuneSlider->setBounds(x+4, y+4, w-8, 20);
   x += w;
   wheelRangeSlider->setBounds(x+4, y+4, w-8, 20);
+}
+
+void PolyphonicInstrumentEditor::createWidgets()
+{
+  addWidget( levelSlider = new RSlider("VolumeSlider") );
+  levelSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevel") );
+  levelSlider->setSliderName("Level");
+  levelSlider->setDescription("Master output level");
+  levelSlider->setDescriptionField(infoField);
+  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
+
+  addWidget( levelByKeySlider = new RSlider("LevelByKeySlider") );
+  levelByKeySlider->assignParameter(moduleToEdit->getParameterByName("VoiceLevelByKey") );
+  levelByKeySlider->setSliderName("Key");
+  levelByKeySlider->setDescription("Key dependence of level (per voice)");
+  levelByKeySlider->setDescriptionField(infoField);
+  levelByKeySlider->setStringConversionFunction(&decibelsToStringWithUnit1);
+
+  addWidget( levelByVelSlider = new RSlider("LevelByVelSlider") );
+  levelByVelSlider->assignParameter(moduleToEdit->getParameterByName("VoiceLevelByVel") );
+  levelByVelSlider->setSliderName("Vel");
+  levelByVelSlider->setDescription("Velocity dependence of level (per voice)");
+  levelByVelSlider->setDescriptionField(infoField);
+  levelByVelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
+
+  addWidget( midSideRatioSlider = new RSlider("MidSideSlider") );
+  midSideRatioSlider->assignParameter(moduleToEdit->getParameterByName("MidSideRatio") );
+  midSideRatioSlider->setSliderName("M/S");
+  midSideRatioSlider->setDescription("Mid/side adjustment");
+  midSideRatioSlider->setDescriptionField(infoField);
+  midSideRatioSlider->setStringConversionFunction(&ratioToString0);
+
+  addWidget( numVoicesSlider = new RSlider("NumVoicesSlider") );
+  numVoicesSlider->setSliderName("Voices");
+  numVoicesSlider->setDescription("Maximum number of playing voices");
+  numVoicesSlider->addListener(this);
+  numVoicesSlider->setDescriptionField(infoField);
+  numVoicesSlider->setStringConversionFunction(&valueToString0);
+  numVoicesSlider->setRange(0.0, 16.0, 1.0, 8.0);
+
+  addWidget( compSlider = new RSlider("CompSlider") );
+  compSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevelByVoices") );
+  compSlider->setSliderName("Comp");
+  compSlider->setDescription("Compensation for cumulative loudness of playing voices");
+  compSlider->setDescriptionField(infoField);
+  compSlider->setStringConversionFunction(&percentToStringWithUnit1);
+
+  addWidget( tuningLabel = new RTextField( "Tuning") );
+  tuningLabel->setDescription("Name of current tuning file (if any)");
+  tuningLabel->setDescriptionField(infoField);
+  tuningLabel->setNoBackgroundAndOutline(true);
+
+  addWidget( tuningFileNameLabel = new RTextField() );
+  tuningFileNameLabel->setDescription("Name of current tuning file (if any)");
+  tuningFileNameLabel->setNoBackgroundAndOutline(false);
+  tuningFileNameLabel->setDescriptionField(infoField);
+
+  addWidget( tuningLoadButton = new RButton("Load") );
+  tuningLoadButton->addRButtonListener(this);
+  tuningLoadButton->setDescription("Load tuning from a file");
+  tuningLoadButton->setDescriptionField(infoField);
+  tuningLoadButton->setClickingTogglesState(false);
+  tuningLoadButton->setToggleState(false, false);
+
+  addWidget( tuningMinusButton = new RButton(RButton::ARROW_LEFT) );
+  tuningMinusButton->addRButtonListener(this);
+  tuningMinusButton->setDescription("Skip to previous tuning-file in current directory");
+  tuningMinusButton->setDescriptionField(infoField);
+  tuningMinusButton->setClickingTogglesState(false);
+  tuningMinusButton->setToggleState(false, true);
+
+  addWidget( tuningPlusButton = new RButton(RButton::ARROW_RIGHT) );
+  tuningPlusButton->addRButtonListener(this);
+  tuningPlusButton->setDescription("Skip to next tuning-file in current directory");
+  tuningPlusButton->setDescriptionField(infoField);
+  tuningPlusButton->setClickingTogglesState(false);
+  tuningPlusButton->setToggleState(false, true);
+
+  addWidget( masterTuneSlider = new RSlider("MasterTuneSlider") );
+  masterTuneSlider->assignParameter(moduleToEdit->getParameterByName("MasterTuneA4") );
+  masterTuneSlider->setSliderName("A4");
+  masterTuneSlider->setDescription("Master tuning frequency for note A4");
+  masterTuneSlider->setDescriptionField(infoField);
+  masterTuneSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+
+  addWidget( wheelRangeSlider = new RSlider("WheelRangeSlider") );
+  wheelRangeSlider->assignParameter(moduleToEdit->getParameterByName("PitchWheelRange") );
+  wheelRangeSlider->setSliderName("Wheel");
+  wheelRangeSlider->setDescription("Range for pitch wheel");
+  wheelRangeSlider->setDescriptionField(infoField);
+  wheelRangeSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
+
+  addWidget( glideButton = new RButton("Glide") );
+  glideButton->addRButtonListener(this);
+  glideButton->setDescription("Switch glide on/off");
+  glideButton->setDescriptionField(infoField);
+  glideButton->setClickingTogglesState(true);
+  glideButton->setToggleState(false, false);
+
+  addWidget( glideTimeSlider = new RSlider("GlideTimeSlider") );
+  glideTimeSlider->assignParameter(moduleToEdit->getParameterByName("GlideTime") );
+  glideTimeSlider->setSliderName("Glide Time");
+  glideTimeSlider->setDescription("Adjust the glide time");
+  glideTimeSlider->setDescriptionField(infoField);
+  glideTimeSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
+
+  updateWidgetsAccordingToState(); // ToDo: Check, if this is needed and if so, document why
+
+  // ToDo: maybe clean this up - see AciDevilModuleEditor::createWidgets()
 }
