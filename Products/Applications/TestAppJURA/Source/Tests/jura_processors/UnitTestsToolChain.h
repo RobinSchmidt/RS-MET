@@ -16,6 +16,11 @@ public:
 
 protected:
 
+  // Helper functions:
+  bool isInDefaultState(const jura::AudioModule* m);
+
+
+
   // called from runTest:
   void runTestVoiceManager();
   void runTestEqualizer();

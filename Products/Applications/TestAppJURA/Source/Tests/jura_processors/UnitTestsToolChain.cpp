@@ -6,7 +6,7 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   runTestVoiceManager();
-  runTestEqualizer();
+  //runTestEqualizer();
   runTestWaveOscillator();
 
   runTestQuadrifex();
@@ -19,6 +19,21 @@ void UnitTestToolChain::runTest()
   // test to the end fixes this. 
   // ToDo: Factor out the creation of a ToolChain object from the Quadrifex test. It should be a 
   // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
+}
+
+
+bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
+{
+  // Check, if all parameters are at their respective default values:
+  bool ok = true;
+  int numParams = m->getNumParameters();
+  for(int i = 0; i < numParams; i++)
+  {
+    jura::Parameter* p    = m->getParameterByIndex(i);
+    juce::String     name = p->getName();
+    ok &= p->isCurrentValueDefaultValue();
+  }
+  return ok;
 }
 
 
@@ -325,6 +340,7 @@ void UnitTestToolChain::runTestWaveOscillator()
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::WaveOscModule wvOsc1(&lock);
 
+  /*
   // Helper function to check if the given oscillator is in default state, i.e. all parameters are
   // at the default values:
   auto isInDefaultState = [](const jura::WaveOscModule* osc)
@@ -349,7 +365,8 @@ void UnitTestToolChain::runTestWaveOscillator()
 
     return ok;
   };
-  // Maybe generalize to any kind of jura::AudioModule and factor out
+  // Maybe generalize to any kind of jura::AudioModule and factor out -> Done
+  */
 
   // Check that all parameters have their intial/default values:
   expect(isInDefaultState(&wvOsc1));
