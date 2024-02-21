@@ -6,8 +6,16 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   runTestVoiceManager();
-  runTestQuadrifex();
   runTestWaveOscillator();
+
+  runTestQuadrifex();
+  // This test is currently called last because it creates an actual jura::ToolChain object which 
+  // in turn instantiates all modules once in populateModuleFactory - which is annyoing during 
+  // debugging because certain initialization functions for ToolChain's built in AudioModules will
+  // get called more often than one would expect in the tests, i.e. the breakpoints will trigger
+  // more often than the actual running test justifies. Putting this test to the end fixes this.
+  // ToDo: Factor out the creation of a ToolChain object from the Quadrifex test. It should be a 
+  // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
 }
 
 
@@ -318,6 +326,12 @@ void UnitTestToolChain::runTestWaveOscillator()
   expect(isInDefaultState(&wvOsc1));
   // THIS TRIGGERS! That was the goal of writing this unit test. Now the debugging can begin...
   // Creating an editor for an AudioModule should never alter the state of that module!
+  // To debug this, we need a breakpoint in:
+  //   rosic::MipMappedWaveTableStereo::setStereoPhaseShift
+  // Creating the editor calls it with  newPhaseShift == 1. Why? This should not happen. Also, it 
+  // seems to get called excessively often during startup - why? One call would be expected but 
+  // there are many more. Ah - I think, the additional calls are coming from creating a ToolChain
+  // object in another test -> change order of the tests -> yep! that fixes it!
 
 
 
