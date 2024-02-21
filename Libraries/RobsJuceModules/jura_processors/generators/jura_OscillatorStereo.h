@@ -48,6 +48,11 @@ public:
   //virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
   virtual AudioModuleEditor* createEditor(int type) override;
+  // The type parameter is a provision to later enable different types of editors, i.e. more or
+  // less compact or detailed ones, with different layouts, etc. It's not yet used - and should
+  // probably not be an int but some sort of enum class anyway - Hmm - but different kinds of 
+  // AudioModules may have different sets of editor-types - som maybe a regular enum that can 
+  // decay to an integer is better here.
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean);

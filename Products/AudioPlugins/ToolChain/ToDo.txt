@@ -57,6 +57,7 @@ Bugs:
   that exposes this! It seems to happen in the constructor of FrequencyShifterStereoModule, so let's 
   write a unit test that constructs it (and maybe more)
   OK - the access violation is gone but we hit a jassert
+  ToDo: use an enum class for listing the different effect algos in rosic::Quadrifex::effectAlgorithms
 
 - When plugging in Straightliner fresh, it loads the init patch with the sawttoth wave - but the
   Osc-phase settings at the bottom are wrong: they are all set to 1° instead of 0°. In standlaone,

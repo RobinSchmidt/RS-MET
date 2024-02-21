@@ -19,7 +19,7 @@ protected:
   // called from runTest:
   void runTestVoiceManager();
   void runTestQuadrifex();
-
+  void runTestWaveOscillator();
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestToolChain)

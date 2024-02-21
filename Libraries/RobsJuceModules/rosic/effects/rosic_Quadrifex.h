@@ -68,6 +68,7 @@ namespace rosic
 
       NUM_EFFECT_ALGORITHMS
     };
+    // ToDo: use an enum class
 
     enum slotRoutings
     {
@@ -86,6 +87,7 @@ namespace rosic
 
       NUM_SLOT_ROUTINGS
     };
+    // ToDo: use an enum class
 
     //---------------------------------------------------------------------------------------------
     // construction/destruction:

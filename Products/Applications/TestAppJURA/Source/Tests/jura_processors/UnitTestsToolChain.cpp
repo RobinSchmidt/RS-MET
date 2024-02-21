@@ -7,6 +7,7 @@ void UnitTestToolChain::runTest()
 {
   runTestVoiceManager();
   runTestQuadrifex();
+  runTestWaveOscillator();
 }
 
 
@@ -246,6 +247,13 @@ void UnitTestToolChain::runTestQuadrifex()
   jura::DummyModule* dum = dynamic_cast<jura::DummyModule*>(mod);
   expect(dum != nullptr);
 
+  // The tests up to here could perhaps be factored out into a function runTestToolChainCreation.
+  // They are not specific to Quadrifex. Maybe we could also use soem sort of factory function that
+  // we can call in a one-line like:
+  //   jura::ToolChain* tlChn = createToolChain(numMetaParams);
+  // because that could be useful for other ToolChain tests.
+
+
   // Let the ToolChain module insert a Quadrifex into slot 2 with index 1:
   bool ok = tlChn->addModule("Quadrifex");
   expect(ok);
@@ -255,15 +263,17 @@ void UnitTestToolChain::runTestQuadrifex()
   expect(qfx != nullptr);
 
 
+  // This old test code previously triggered access violations - this has been fixed. It occurred
+  // in the constructor of rosic:: FrequencyShifter. There is now unit test in TestsRosicAndRapt in
+  // place that makes sure that this doesn't happen again:
+
   // Try to create a rosic::FrequencyShifter object. We seem to have an access violation in its
   // constructor, specifically in the line 
   //   halfbandFilter2.setApproximationMethod(...)
   // ToDo: maybe move that to the rosic unit tests:
-  rosic::FrequencyShifter freqShifter;
+  //rosic::FrequencyShifter freqShifter;
   // it happens in  rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState) in the line
   // rsBiquadCascade<TSig, TPar>::initBiquadCoeffs(); and I think TSig=rsfloat64x2, TPar=double.
-
-
 
   // Let the Quadrifex load FrequencyShifterStereoModule - this is where we have an access 
   // violation:
@@ -274,7 +284,28 @@ void UnitTestToolChain::runTestQuadrifex()
   // outside of the Quadrifex setting.
 
 
-
   // Clean up memory:
   delete proc;
+}
+
+void UnitTestToolChain::runTestWaveOscillator()
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::WaveOscModule wvOsc1(&lock);
+
+
+  //jura::WaveOscEditor* ed1 = wvOsc1.createEditor(0);
+
+  jura::AudioModuleEditor* ed1 = wvOsc1.createEditor(0);
+
+  // ToDo: check, if all the parameters have their correct values (at the moment, they don't after
+  // creating the editor)
+
+
+  int dummy = 0;
+
+
+  // ToDo: 
+  // -Test creating a jura::WaveOscModule that creates the underlying DSP core of the oscillator 
+  //  itself and one that wraps an existing oscillator.
 }
