@@ -102,7 +102,13 @@ bool FileManager::setRootDirectory(const File& newRootDirectory, bool gotoRootDi
     if( gotoRootDirectory == true )
       return setActiveDirectory(rootDirectory);
     else
-      return false;
+    {
+      return true;    // new
+      //return false; // old
+      // I think, the intention of the return value is to report if the root directory could be set
+      // to the desired new directory, so we shoul return true, if we have successfuly set it. But
+      // maybe verify this - and then document this! 
+    }
   }
   else
     return false;

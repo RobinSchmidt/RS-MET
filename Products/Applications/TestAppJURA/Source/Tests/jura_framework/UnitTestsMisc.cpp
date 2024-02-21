@@ -122,7 +122,15 @@ void UnitTestMisc::runTestStateFileManager()
 
   // Now it should be ensured that in tmpDir there are numFiles empty .xml files. These will now be
   // managed by a (dummy-subclass of) jura::StateFileManager:
-  TestStateFileManager stateFileManager;
+  TestStateFileManager mngr;
+
+  bool ok = true;
+  ok &= mngr.setRootDirectory(exeDir, false);
+  ok &= mngr.setActiveDirectory(tmpDir);
+
+  expect(ok);
+
+
 
 
 
