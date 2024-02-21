@@ -376,7 +376,8 @@ void UnitTestToolChain::runTestEqualizer()
   // It seems to be the stereo mode parameter 0-Linked: ok, 1-L/R: crash, 2-M/S: crash, 3: ok
   // ..soo it seems like those stereo modes that have two graphs cause problems.
   // This also happes when actually runnign toolChain. plugging in an Equalizer and swicthing
-  // the steroe mode from the GUI
+  // the stereo mode from the GUI
+  // OK - this crash might be fixed.
 }
 
 void UnitTestToolChain::runTestWaveOscillator()

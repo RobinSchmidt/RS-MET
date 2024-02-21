@@ -84,28 +84,30 @@ protected:
   //OwnedArray<Colour> curveColours;	  // array which holds the colurs for the graphs
   //Colour  graphColour;
 
-  int numCurves;        // number of curves in memory
-  int numValues;        // number of values per curve
-  int numCurvesToDraw;  // the number of curves which should be drawn (should be <= numCurves)
+  int numCurves = 0;        // number of curves in memory
+  int numValues = 0;        // number of values per curve
+  int numCurvesToDraw = 0;  // the number of curves which should be drawn (should be <= numCurves)
 
-  double** familyValuesX;
-  double** familyValuesY;
+  double** familyValuesX = nullptr;
+  double** familyValuesY = nullptr;
   // pointer to a two-dimensional array. first index indicates the curve, second index indicates 
   // the particular y-value
+  // ToDo: use float instead of double
 
-  double*  valuesX1;        // pointer to the first array of x-values
-  double*  valuesY1;        // pointer to the first array of y-values
-   // Why do we need these? Maybe try to get rid!
+  double*  valuesX1 = nullptr;        // pointer to the first array of x-values
+  double*  valuesY1 = nullptr;        // pointer to the first array of y-values
+   // Why do we need these? Maybe try to get rid! I think, they may be for convenience - but I
+  // think, we could do without them
 
   //double**  decimatedValuesX;
   //double*** decimatedFamilyValuesY;
   // similar to the arrays above but with recursively decimated peak-data - 
   // the first index represents the decimation level - maybe to this in subclass
 
-  bool fillAreaUnderFunction;   // good for spectra
-  bool isFunctionFamily;
-  int  highlightedCurve;
-  juce::Image*  plotImage;
+  bool fillAreaUnderFunction = false;   // good for spectra
+  bool isFunctionFamily = false;        // indicates that x-axis is shared - I think - maybe rename
+  int  highlightedCurve = -1;           // -1 means: non
+  juce::Image*  plotImage = nullptr;
 
   juce_UseDebuggingNewOperator;
 };

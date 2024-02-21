@@ -1,18 +1,18 @@
 rsDataPlot::rsDataPlot(const String& name)
 : rsPlot(name)
 {
-  numCurves		    = 0;
-  numCurvesToDraw	= 0;
-  numValues		    = 0;
-  familyValuesX 	= NULL;
-  familyValuesY 	= NULL;
-  valuesX1		= NULL;
-  valuesY1		= NULL;
-  fillAreaUnderFunction = false; // ...or perhaps we should fill it? ...maybe with a gradient even?
-  isFunctionFamily	    = false;
-  plotImage		          = NULL;
+  //numCurves		    = 0;
+  //numCurvesToDraw	= 0;
+  //numValues		    = 0;
+  //familyValuesX 	= NULL;
+  //familyValuesY 	= NULL;
+  //valuesX1		= NULL;
+  //valuesY1		= NULL;
+  //fillAreaUnderFunction = false; // ...or perhaps we should fill it? ...maybe with a gradient even?
+  //isFunctionFamily	    = false;
+  //plotImage		          = NULL;
   plotImage          		= new Image(Image::RGB, 1, 1, true);
-  highlightedCurve      = -1;
+  //highlightedCurve      = -1;
 
   /*
   colourScheme.plotColours.clear();
@@ -33,7 +33,7 @@ rsDataPlot::rsDataPlot(const String& name)
 rsDataPlot::~rsDataPlot()
 {
   deleteAllChildren();
-  if( plotImage != NULL )
+  if( plotImage != nullptr )   // superfluous
     delete plotImage;
 }
 
@@ -197,8 +197,19 @@ void rsDataPlot::plotCurveFamily(Graphics &g, Image* targetImage, XmlElement *ta
     if( k != highlightedCurve && highlightedCurve != -1 )
       graphColour = graphColour.withMultipliedAlpha(0.5f);  // maybe highlight by filling area?
     g.setColour(graphColour); 
+
+    // New:
+    double* px = valuesX1;
+    double* py = familyValuesY[k];
+    if(!isFunctionFamily)
+      px = familyValuesX[k];
+    drawer.drawWithLines(g, numValues, px, py);
+    // ToDo: have a member variable "style" that switches between lines, fill, dots, etc.
+
+
+    // Old - gives crashes for function families:
     //drawer.fillFunction( g, numValues, familyValuesX[k], familyValuesY[k]); // test
-    drawer.drawWithLines(g, numValues, familyValuesX[k], familyValuesY[k]);
+    //drawer.drawWithLines(g, numValues, familyValuesX[k], familyValuesY[k]);
     //drawer.drawAsDots(   g, numValues, familyValuesX[k], familyValuesY[k], 5.f, true, false);
   }
 
@@ -223,8 +234,8 @@ void rsDataPlot::resized()
 void rsDataPlot::invalidatePointers()
 {
   numCurves	= 0;
-  familyValuesX = NULL;
-  familyValuesY = NULL;
-  valuesX1	= NULL;
-  valuesY1	= NULL;
+  familyValuesX = nullptr;
+  familyValuesY = nullptr;
+  valuesX1	= nullptr;
+  valuesY1	= nullptr;
 }
