@@ -9,11 +9,13 @@ void UnitTestToolChain::runTest()
   runTestWaveOscillator();
 
   runTestQuadrifex();
-  // This test is currently called last because it creates an actual jura::ToolChain object which 
-  // in turn instantiates all modules once in populateModuleFactory - which is annyoing during 
-  // debugging because certain initialization functions for ToolChain's built in AudioModules will
-  // get called more often than one would expect in the tests, i.e. the breakpoints will trigger
-  // more often than the actual running test justifies. Putting this test to the end fixes this.
+  runTestEditorCreation();
+  // These tests are currently called last because they creates an actual jura::ToolChain object 
+  // which in turn instantiates all modules once in populateModuleFactory - which is annyoing 
+  // during debugging because certain initialization functions for ToolChain's built in 
+  // AudioModules will get called more often than one would expect in the tests, i.e. the 
+  // breakpoints will trigger more often than the actual running test justifies. Putting this 
+  // test to the end fixes this. 
   // ToDo: Factor out the creation of a ToolChain object from the Quadrifex test. It should be a 
   // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
 }
@@ -357,4 +359,30 @@ void UnitTestToolChain::runTestWaveOscillator()
   // ToDo: 
   // -Test creating a jura::WaveOscModule that creates the underlying DSP core of the oscillator 
   //  itself and one that wraps an existing oscillator.
+}
+
+void UnitTestToolChain::runTestEditorCreation()
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::ToolChain tlChn(&lock);
+
+  // Let the ToolChain object create a module of each of the available types and plug it into the
+  // first slot, then randomize its parameters, retrieve the state, open the editor, retrieve the
+  // state again and then compare both states:
+  std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
+  for(size_t i = 0; i < moduleTypes.size(); i++)
+  {
+    juce::String type = moduleTypes[i];
+    tlChn.replaceModule(0, type);
+
+
+
+    int dummy = 0;
+  }
+
+
+
+
+
+  int dummy = 0;
 }

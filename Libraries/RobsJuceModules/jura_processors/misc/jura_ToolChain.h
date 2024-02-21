@@ -138,6 +138,10 @@ public:
   /** Returns the number of modules that is currently plugged in into the slots. */
   int getNumModules() const { return (int) modules.size(); }
 
+  /** Returns an array of strings of the names of the available module types. */
+  std::vector<juce::String> getAvailableModuleTypes() const
+  { return moduleFactory.getRegisteredModuleTypes(); }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Observer stuff:
@@ -193,7 +197,7 @@ public:
   // todo: provide getter - editor subclasses need access to getRegisteredModuleInfos etc.
 
   int activeSlot = 0;            // slot for which the editor is currently shown 
-  // for Elan's subclass
+  // for Elan's subclass (?)
 
 
 

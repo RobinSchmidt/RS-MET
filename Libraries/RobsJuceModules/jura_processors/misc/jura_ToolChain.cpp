@@ -160,7 +160,6 @@ AudioModule* ToolChain::getModuleAt(int index)
   return modules[index];
 }
 
-
 void ToolChain::addToolChainObserver(ToolChainObserver *observerToAdd)
 {
   ScopedLock scopedLock(*lock);
