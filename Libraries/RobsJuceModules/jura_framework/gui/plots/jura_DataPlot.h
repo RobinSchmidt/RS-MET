@@ -97,15 +97,15 @@ protected:
   double*  valuesX1 = nullptr;        // pointer to the first array of x-values
   double*  valuesY1 = nullptr;        // pointer to the first array of y-values
    // Why do we need these? Maybe try to get rid! I think, they may be for convenience - but I
-  // think, we could do without them
+  // think, we could do without them - or at least get rid of valuesY1
 
   //double**  decimatedValuesX;
   //double*** decimatedFamilyValuesY;
   // similar to the arrays above but with recursively decimated peak-data - 
   // the first index represents the decimation level - maybe to this in subclass
 
-  bool fillAreaUnderFunction = false;   // good for spectra
-  bool isFunctionFamily = false;        // indicates that x-axis is shared - I think - maybe rename
+  bool fillAreaUnderFunction = false;   // good for spectra - not yet used
+  bool isFunctionFamily = false;        // indicates that x-axis is shared - rename to xAxisShared
   int  highlightedCurve = -1;           // -1 means: non
   juce::Image*  plotImage = nullptr;
 

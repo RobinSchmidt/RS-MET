@@ -1,18 +1,7 @@
 rsDataPlot::rsDataPlot(const String& name)
 : rsPlot(name)
 {
-  //numCurves		    = 0;
-  //numCurvesToDraw	= 0;
-  //numValues		    = 0;
-  //familyValuesX 	= NULL;
-  //familyValuesY 	= NULL;
-  //valuesX1		= NULL;
-  //valuesY1		= NULL;
-  //fillAreaUnderFunction = false; // ...or perhaps we should fill it? ...maybe with a gradient even?
-  //isFunctionFamily	    = false;
-  //plotImage		          = NULL;
-  plotImage          		= new Image(Image::RGB, 1, 1, true);
-  //highlightedCurve      = -1;
+  plotImage = new Image(Image::RGB, 1, 1, true);
 
   /*
   colourScheme.plotColours.clear();
@@ -33,7 +22,7 @@ rsDataPlot::rsDataPlot(const String& name)
 rsDataPlot::~rsDataPlot()
 {
   deleteAllChildren();
-  if( plotImage != nullptr )   // superfluous
+  //if( plotImage != nullptr )   // superfluous
     delete plotImage;
 }
 
@@ -204,6 +193,8 @@ void rsDataPlot::plotCurveFamily(Graphics &g, Image* targetImage, XmlElement *ta
     if(!isFunctionFamily)
       px = familyValuesX[k];
     drawer.drawWithLines(g, numValues, px, py);
+    //drawer.fillFunction( g, numValues, px, py); // test - does not yet work
+    //drawer.drawAsDots(   g, numValues, px, py, 5.f, true, false);
     // ToDo: have a member variable "style" that switches between lines, fill, dots, etc.
 
 

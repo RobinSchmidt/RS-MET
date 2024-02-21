@@ -446,4 +446,6 @@ void UnitTestToolChain::runTestEditorCreation()
     delete editor;
     delete postXml;
   }
+
+  // Fails at MultiAnalyzer
 }
