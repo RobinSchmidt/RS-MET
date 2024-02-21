@@ -307,11 +307,7 @@ void UnitTestToolChain::runTestWaveOscillator()
   {
     bool ok = true;
 
-    //ok &= osc->getParameterByName("Level")->getValue()      == 0.0;
-    //ok &= osc->getParameterByName("LevelByVel")->getValue() == 0.0;
-    //ok &= osc->getParameterByName("LevelByKey")->getValue() == 0.0;
-    //ok &= osc->getParameterByName("StereoPhaseShift")->getValue() == 0.0;
-
+    // Check, if all parameters are at their respective default values:
     int numParams = osc->getNumParameters();
     for(int i = 0; i < numParams; i++)
     {
@@ -319,16 +315,13 @@ void UnitTestToolChain::runTestWaveOscillator()
       juce::String     name = p->getName();
       ok &= p->isCurrentValueDefaultValue();
     }
+    // The parameters are: Mute, Level, LevelByKey, LevelByVel, MidSide, Pan, Tune, DetuneHz,
+    // StereoDetune, StereoDetuneHz, PitchModulationDepth, StartPhase, FullWaveWarp, HalfWaveWarp, 
+    // TimeReverse, PolarityInvert, CombHarmonic, CombAmount, SpectralContrast, SpectralSlope, 
+    // HighestHarmonic, LowestHarmonic, PhaseScale, PhaseShift, EvenOddRatio, EvenOddPhaseShift,
+    // StereoPhaseShift, EvenOddStereoPhaseShift
 
-    // Maybe check also if the loaded waveform is at its default
-
-    // Parameters are: Mute, Level,LevelByKey,LevelByVel,MidSide,Pan,Tune,DetuneHz,StereoDetune,
-    // StereoDetuneHz,StartPhase,FullWaveWarp,HalfWaveWarp,CombHarmonic,CombAmount,TimeReverse,
-    // PolarityInvert,SpectralContrast,SpectralSlope,HighestHarmonic,LowestHarmonic,EvenOddRatio,
-    // EvenOddPhaseShift,PhaseScale,PhaseShift,StereoPhaseShift,EvenOddStereoPhaseShift,,
-
-    // Maybe make a loop over all parameters and check if the current value is the default value
-
+    // ToDo: Maybe check also if the loaded waveform is at its default.
 
     return ok;
   };
@@ -344,21 +337,7 @@ void UnitTestToolChain::runTestWaveOscillator()
 
   // Check that creating the editor didn't mess with the state, i.e. didn't change any parameters:
   expect(isInDefaultState(&wvOsc1));
-  // THIS TRIGGERS! That was the goal of writing this unit test. Now the debugging can begin...
-  // Creating an editor for an AudioModule should never alter the state of that module!
-  // To debug this, we need a breakpoint in:
-  //   rosic::MipMappedWaveTableStereo::setStereoPhaseShift
-  // Creating the editor calls it with  newPhaseShift == 1. Why? This should not happen. The call
-  // happens in:
-  //   WaveOscEditorContextMenu::createWidgets()
-  // when it calls:
-  //   s->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoPhaseShift") );
-  // in line 631. The bug seems to be in:
-  //   RSlider::updateWidgetFromAssignedParameter
-  //
 
-
-  int dummy = 0;
 
 
   // ToDo: 
