@@ -340,6 +340,7 @@ void UnitTestToolChain::runTestWaveOscillator()
 
     return ok;
   };
+  // Maybe generalize to any kind of jura::AudioModule and factor out
 
   // Check that all parameters have their intial/default values:
   expect(isInDefaultState(&wvOsc1));
@@ -366,6 +367,36 @@ void UnitTestToolChain::runTestEditorCreation()
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::ToolChain tlChn(&lock);
 
+  // Helper function to randomize the parameters of a jura::AudioModule
+  auto randomizeParams = [](jura::AudioModule* m, int seed = 0)
+  {
+    // Create a pseudo random number generator:
+    RAPT::rsNoiseGenerator<double> prng;
+    prng.setRange(0.0, 1.0);
+    prng.setSeed(seed);
+
+    // Randomize the parameters:
+    int numParams = m->getNumParameters();
+    for(int i = 0; i < numParams; i++)
+    {
+      // Retrieve i-th parameter and its name:
+      jura::Parameter* p    = m->getParameterByIndex(i);
+      juce::String     name = p->getName();
+
+      // Randomize its value:
+      double min    = p->getMinValue();
+      double max    = p->getMaxValue();
+      double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
+      p->setValue(newVal, true, true);
+      int dummy = 0;
+    }
+
+
+
+    int dummy = 0;
+  };
+
+
   // Let the ToolChain object create a module of each of the available types and plug it into the
   // first slot, then randomize its parameters, retrieve the state, open the editor, retrieve the
   // state again and then compare both states:
@@ -374,6 +405,12 @@ void UnitTestToolChain::runTestEditorCreation()
   {
     juce::String type = moduleTypes[i];
     tlChn.replaceModule(0, type);
+
+    AudioModule* m = tlChn.getModuleAt(0);
+    expect(m->getModuleTypeName() == type);  // Check module type in slot 1
+
+    randomizeParams(m);
+
 
 
 
