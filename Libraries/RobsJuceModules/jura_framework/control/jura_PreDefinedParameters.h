@@ -44,12 +44,12 @@ class ParameterTwoPoleFilterMode : public ModulatableParameter
 {
 public:
   ParameterTwoPoleFilterMode(CriticalSection *criticalSectionToUse,
-    const juce::String& newName  = juce::String("Mode"),
-    double newLowerLimit         = 0.0,
-    double newUpperLimit         = 9.0,
-    double newInterval           = 1.0,
-    double newDefaultValue       = 0.0,
-    int newScaling               = STRING,
+    const juce::String& newName    = juce::String("Mode"),
+    double newLowerLimit           = 0.0,
+    double newUpperLimit           = 9.0,
+    double newInterval             = 1.0,
+    double newDefaultValue         = 0.0,
+    Parameter::scalings newScaling = Parameter::scalings::STRING,
     int /*newDefaultMidiController*/ = -1,
     bool /*newSaveAndRecall*/        = true) // change parameter order, remove CriticalSection
     : ModulatableParameter(newName, newLowerLimit, newUpperLimit, newDefaultValue, 
@@ -79,12 +79,12 @@ class ParameterFourPoleFilterMode : public ModulatableParameter
 {
 public:
   ParameterFourPoleFilterMode(CriticalSection *criticalSectionToUse,
-    const juce::String& newName  = juce::String("Mode"),
-    double newLowerLimit         = 0.0,
-    double newUpperLimit         = 9.0,
-    double newInterval           = 1.0,
-    double newDefaultValue       = 0.0,
-    int newScaling               = STRING,
+    const juce::String& newName    = juce::String("Mode"),
+    double newLowerLimit           = 0.0,
+    double newUpperLimit           = 9.0,
+    double newInterval             = 1.0,
+    double newDefaultValue         = 0.0,
+    Parameter::scalings newScaling = Parameter::scalings::STRING,
     int /*newDefaultMidiController*/ = -1,
     bool /*newSaveAndRecall*/        = true)
     : ModulatableParameter(newName, newLowerLimit, newUpperLimit, newDefaultValue, newScaling, 
@@ -168,7 +168,8 @@ class ParameterWithKeyVelScaling : public Parameter
 public:
 
   ParameterWithKeyVelScaling(const juce::String& name, double min = 0.0, double max = 1.0,
-    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
+    double defaultValue = 0.5, Parameter::scalings scaling = Parameter::scalings::LINEAR, 
+    double interval = 0.0);
 
   void setKeyScaleRange(double minValue, double maxValue, double defaultValue);
   void setVelScaleRange(double minValue, double maxValue, double defaultValue);

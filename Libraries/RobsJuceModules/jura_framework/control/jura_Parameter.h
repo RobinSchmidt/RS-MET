@@ -178,6 +178,7 @@ public:
 
     NUM_SCALINGS
   };
+  // Rename to Scaling - it's a datatype
 
   //-----------------------------------------------------------------------------------------------
   // \name Construction/Destruction
@@ -185,12 +186,12 @@ public:
   /** Constructor. You need to pass a name and optionally min/max/deafult values, a type of
   scaling @see secalings and a quantization interval. */
   Parameter(const juce::String& name, double min = 0.0, double max = 1.0,
-    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
+    double defaultValue = 0.5, scalings scaling = scalings::LINEAR, double interval = 0.0);
 
   /** DEPRECATED constructor. Use the other constructor. */
   Parameter(CriticalSection *criticalSectionToUse, const juce::String& newName,
     double newMinValue = 0.0, double newMaxValue = 1.0, double newInterval = 0.0,
-    double newDefaultValue = 0.0, int newScaling = LINEAR);
+    double newDefaultValue = 0.0, scalings newScaling = scalings::LINEAR);
 
   /** Destructor. */
   virtual ~Parameter();
@@ -242,7 +243,7 @@ public:
   }
 
   /** Chooses one of the scaling methods for this parameter. @see: scalings */
-  virtual void setScaling(int newScaling);
+  virtual void setScaling(scalings newScaling);
 
   /** Chooses one of the scaling methods for this parameter from a string. @see: scalings */
   virtual void setScalingFromString(juce::String newScalingString);
@@ -382,7 +383,10 @@ public:
   }
 
   /** Returns the scaling methods for this parameter. @see: scalings */
-  virtual int getScaling() const { ScopedPointerLock spl(mutex); return scaling; }
+  //virtual int getScaling() const { ScopedPointerLock spl(mutex); return scaling; }
+  virtual scalings getScaling() const { ScopedPointerLock spl(mutex); return scaling; }
+
+
 
   /** Returns the scaling methods for this parameter as a String. @see: scalings */
   virtual juce::String getScalingString() const;
@@ -560,7 +564,7 @@ protected:
   double value;                  // actual value of the parameter
   double interval;               // interval for adjustments ...rename to stepSize
   double defaultValue;           // default value of this parameter ...maybe rename to resetValue
-  int    scaling;                // index to the scaling/mapping to be used - maybe get rid - superseded by the mapper now
+  scalings scaling;                // index to the scaling/mapping to be used - maybe get rid - superseded by the mapper now
   bool   saveAndRecall = true;   // used for locking params on preset switch?
   juce::String name;             // string for the parameter name
   juce::String displayName = ""; // a possibly different name for gui/display purposes (if empty

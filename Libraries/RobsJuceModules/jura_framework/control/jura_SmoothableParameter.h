@@ -260,7 +260,8 @@ public:
 
   /** Constructor */
   rsSmoothableParameter(const juce::String& name, double min = 0.0, double max = 1.0,
-    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
+    double defaultValue = 0.5, Parameter::scalings scaling = Parameter::scalings::LINEAR, 
+    double interval = 0.0);
 
   /** Destructor */
   //virtual ~rsSmoothableParameter() = default;

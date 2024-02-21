@@ -864,7 +864,8 @@ public:
 
   /** Constructor */
   ModulatableParameter(const juce::String& name, double min = 0.0, double max = 1.0,
-    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
+    double defaultValue = 0.5, Parameter::scalings scaling = Parameter::scalings::LINEAR, 
+    double interval = 0.0)
     : MetaControlledParameter(name, min, max, defaultValue, scaling, interval) 
   {
     modulatedValue = unmodulatedValue = value;
@@ -1110,7 +1111,8 @@ public:
 
   /** Constructor */
   ModulatableParameterPoly(const juce::String& name, double min = 0.0, double max = 1.0,
-    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
+    double defaultValue = 0.5, Parameter::scalings scaling = Parameter::scalings::LINEAR, 
+    double interval = 0.0)
     : ModulatableParameter(name, min, max, defaultValue, scaling, interval) {}
 
 

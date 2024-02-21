@@ -31,7 +31,7 @@ bool Parameter::storeDefaultValues = false;
 // construction/destruction:
 
 Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
-  double newDefault, int newScaling, double newInterval)
+  double newDefault, scalings newScaling, double newInterval)
 {
   jassert(!(newMin >= newMax));                           // invalid range
   jassert(!(newMin <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
@@ -55,7 +55,7 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
 
 Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newName,
   double newMinValue, double newMaxValue, double newInterval, double newDefaultValue,
-  int newScaling)
+  scalings newScaling)
 {
   jassert(!(newMinValue >= newMaxValue));                      // that would result in a zero or negative range
   jassert(!(newMinValue <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
@@ -189,7 +189,7 @@ void Parameter::setDefaultValue(double newDefaultValue, bool setToDefault)
     setValue(defaultValue, true, true);
 }
 
-void Parameter::setScaling(int newScaling)
+void Parameter::setScaling(scalings newScaling)
 {
   ScopedPointerLock spl(mutex);
   if( newScaling < IDENTITY || newScaling >= NUM_SCALINGS )
@@ -238,22 +238,22 @@ void Parameter::setScalingFromString(String newScalingString)
 {
   ScopedPointerLock spl(mutex);
   if( newScalingString == String("Boolean") )
-    setScaling(BOOLEAN);
+    setScaling(scalings::BOOLEAN);
   else if( newScalingString == String("Integer") )
-    setScaling(INTEGER);
+    setScaling(scalings::INTEGER);
   else if( newScalingString == String("Linear") )
-    setScaling(LINEAR);
+    setScaling(scalings::LINEAR);
   else if( newScalingString == String("Exponential") )
-    setScaling(EXPONENTIAL);
+    setScaling(scalings::EXPONENTIAL);
   else if( newScalingString == String("LinearBipolar") )
-    setScaling(LINEAR_BIPOLAR);
+    setScaling(scalings::LINEAR_BIPOLAR);
   else
-    setScaling(LINEAR);
+    setScaling(scalings::LINEAR);
 }
 
 void Parameter::setMapper(rsParameterMapper* newMapper)
 {
-  scaling = CUSTOM;
+  scaling = scalings::CUSTOM;
   if(mapper != newMapper) {
     delete mapper;
     mapper = newMapper;

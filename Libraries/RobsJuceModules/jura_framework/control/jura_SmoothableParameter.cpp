@@ -104,7 +104,7 @@ void rsSmoothingManager::flushTargetValues()
 //=================================================================================================
 
 rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double min, double max, 
-  double defaultValue, int scaling, double interval)
+  double defaultValue, Parameter::scalings scaling, double interval)
   : Parameter(name, min, max, defaultValue, scaling, interval)
 {
 

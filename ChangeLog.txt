@@ -4,6 +4,9 @@ that break client code.
 
 Client-Code-Breaking Changes:
 
+2024/02/21: jura::Parameter's member "scaling" has now datatype Parameter::scalings instead of int. 
+            This affects all its setters and the constructors that formerly took an int for the 
+            scaling.
 2022/08/02: jura::MediatedColleague::mediatorHasSentNotification has been renamed to 
             handleMediatorNotification and got an additional parameter
 2020/12/17: rsMatrix: setSize renamed to setShape

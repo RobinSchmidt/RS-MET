@@ -225,6 +225,7 @@ void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
 {
   if( assignedParameter != nullptr )
   {
+    /*
     setRange(assignedParameter->getMinValue(), assignedParameter->getMaxValue(), 
              assignedParameter->getInterval(), assignedParameter->getDefaultValue(), false);
     // Maybe we should call setup(...)  instead
@@ -235,8 +236,14 @@ void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
     // new:
     currentValue = constrainValue(assignedParameter->getValue());
     repaintOnMessageThread();
+    */
 
 
+    // New:
+    Parameter* p = assignedParameter;  // Shorthand
+    setup(p->getMinValue(), p->getMaxValue(), p->getInterval(), p->getDefaultValue(), 
+      p->getScaling(), p->getValue());
+    repaintOnMessageThread();
 
 
 

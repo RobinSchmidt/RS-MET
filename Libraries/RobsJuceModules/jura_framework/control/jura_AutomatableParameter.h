@@ -24,7 +24,8 @@ public:
   /** Constructor. */
   AutomatableParameter(CriticalSection *criticalSectionToUse, const juce::String& newName, 
     double newMinValue = 0.0, double newMaxValue = 1.0, double newInterval = 0.0,
-    double newDefaultValue = 0.0, int newScaling = LINEAR, int newDefaultMidiController = -1);
+    double newDefaultValue = 0.0, Parameter::scalings newScaling = Parameter::scalings::LINEAR, 
+    int newDefaultMidiController = -1);
 
   /** Destructor. */
   virtual ~AutomatableParameter();
@@ -72,7 +73,7 @@ public:
   }
 
   /** Chooses one of the scaling methods for this parameter. @see: scalings */
-  virtual void setScaling(int newScaling)
+  virtual void setScaling(Parameter::scalings newScaling)
   {
     ScopedPointerLock spl(mutex);
     Parameter::setScaling(newScaling);

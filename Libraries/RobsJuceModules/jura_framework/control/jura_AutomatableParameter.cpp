@@ -2,7 +2,7 @@
 
 AutomatableParameter::AutomatableParameter(CriticalSection *criticalSectionToUse, 
   const String& newName, double newMinValue, double newMaxValue, double newInterval, 
-  double newDefaultValue, int newScaling, int newDefaultMidiController)                     
+  double newDefaultValue, Parameter::scalings newScaling, int newDefaultMidiController)
 : Parameter(criticalSectionToUse, newName, newMinValue, newMaxValue, newInterval, 
   newDefaultValue, newScaling) 
 {
