@@ -328,11 +328,14 @@ void UnitTestToolChain::runTestWaveOscillator()
   // Creating an editor for an AudioModule should never alter the state of that module!
   // To debug this, we need a breakpoint in:
   //   rosic::MipMappedWaveTableStereo::setStereoPhaseShift
-  // Creating the editor calls it with  newPhaseShift == 1. Why? This should not happen. Also, it 
-  // seems to get called excessively often during startup - why? One call would be expected but 
-  // there are many more. Ah - I think, the additional calls are coming from creating a ToolChain
-  // object in another test -> change order of the tests -> yep! that fixes it!
-
+  // Creating the editor calls it with  newPhaseShift == 1. Why? This should not happen. The call
+  // happens in:
+  //   WaveOscEditorContextMenu::createWidgets()
+  // when it calls:
+  //   s->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoPhaseShift") );
+  // in line 631. The bug seems to be in:
+  //   RSlider::updateWidgetFromAssignedParameter
+  //
 
 
   int dummy = 0;

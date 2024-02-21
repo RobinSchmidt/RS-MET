@@ -223,10 +223,11 @@ void RSlider::copySettingsFrom(const RSlider* otherSlider)
 
 void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
 {
-  if( assignedParameter != NULL )
+  if( assignedParameter != nullptr )
   {
     setRange(assignedParameter->getMinValue(), assignedParameter->getMaxValue(), 
              assignedParameter->getInterval(), assignedParameter->getDefaultValue(), false);
+    // Maybe we should call setup(...)  instead
 
     // old - not good because it calls setValue on the parameter:
     //setValue(assignedParameter->getValue(), sendChangeMessage, false);
@@ -236,10 +237,14 @@ void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
     repaintOnMessageThread();
 
 
-    //repaint();
 
+
+
+
+
+    // Why is this commented out?
     //if(sendChangeMessage)
-    //  triggerChangeMessage(false);
+    //  triggerChangeMessage(false);  
   }
 }
 
