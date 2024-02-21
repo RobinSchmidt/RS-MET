@@ -79,3 +79,5 @@ Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Release/ConsoleApp/TestsRosi
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/enc_temp_folder/
 Tests/Optimization/VS2019/x64/Debug/
 Tests/Optimization/VS2019/x64/Release/
+
+Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Debug/App/FileManagerTest/

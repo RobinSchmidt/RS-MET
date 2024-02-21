@@ -79,14 +79,25 @@ void UnitTestMisc::runTestFileManager()
   juce::File   exeDir  = exeFile.getParentDirectory();
   juce::String str     = exeDir.getFullPathName();
   str += "/FileManagerTest";
-
   juce::File tmpDir(str);
-
   if(!tmpDir.exists())
   {
     bool ok = tmpDir.createDirectory();
     if(!ok)
       showWarningBox("Warning", "Temporary directory for tests of class jura::FileManager could not be created");
+  }
+
+  int numTestFiles = 5;
+  for(int i = 1; i <= numTestFiles; i++)
+  {
+    juce::String fileName = str + "/TestFile" + juce::String(i) + ".txt";
+    juce::File   tmpFile  = juce::File(fileName);
+    if(!tmpFile.exists())
+    {
+      bool ok = tmpFile.create();
+      if(!ok)
+        showWarningBox("Warning", "Temporary file for tests of class jura::FileManager could not be created");
+    }
   }
 
 
