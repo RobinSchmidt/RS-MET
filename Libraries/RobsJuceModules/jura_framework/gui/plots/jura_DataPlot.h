@@ -90,15 +90,15 @@ protected:
 
   double** familyValuesX = nullptr;
   double** familyValuesY = nullptr;
-  // pointer to a two-dimensional array. first index indicates the curve, second index indicates 
-  // the particular y-value
+  // Pointers to two-dimensional arrays. The first index indicates the curve, second index 
+  // indicates the particular x- or y-value.
   // ToDo: use float instead of double
 
-  double*  valuesX1 = nullptr;        // pointer to the first array of x-values
-  double*  valuesY1 = nullptr;        // pointer to the first array of y-values
-   // Why do we need these? Maybe try to get rid! I think, they may be for convenience - but I
-  // think, we could do without them - or at least get rid of valuesY1
-
+  double* valuesX1 = nullptr;        // pointer to the first array of x-values
+  double* valuesY1 = nullptr;        // pointer to the first array of y-values
+  // Why do we need these? I think, they may be there for convenience for the common case to draw
+  // only one curve or multiple curves with shared x-values for a function family.
+  
   //double**  decimatedValuesX;
   //double*** decimatedFamilyValuesY;
   // similar to the arrays above but with recursively decimated peak-data - 

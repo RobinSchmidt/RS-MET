@@ -22,8 +22,7 @@ rsDataPlot::rsDataPlot(const String& name)
 rsDataPlot::~rsDataPlot()
 {
   deleteAllChildren();
-  //if( plotImage != nullptr )   // superfluous
-    delete plotImage;
+  delete plotImage;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -33,10 +32,10 @@ void rsDataPlot::setCurveFamilyValues(int newNumValues, int newNumCurves,
 					   double** newFamilyValuesX, double** newFamilyValuesY)
 {
   if( newNumValues != 0 && newNumCurves != 0 
-    && newFamilyValuesX != NULL && newFamilyValuesY != NULL )
+    && newFamilyValuesX != nullptr && newFamilyValuesY != nullptr )
   {
-    numValues	     = newNumValues;
-    numCurves	     = newNumCurves;
+    numValues        = newNumValues;
+    numCurves        = newNumCurves;
     familyValuesX    = newFamilyValuesX;
     familyValuesY    = newFamilyValuesY;
     isFunctionFamily = false;
@@ -44,23 +43,23 @@ void rsDataPlot::setCurveFamilyValues(int newNumValues, int newNumCurves,
   }
   else
   {
-    numValues	  = 0;
-    numCurves	  = 0;
-    valuesX1	  = NULL;
-    valuesY1	  = NULL;
-    familyValuesX = NULL;
-    familyValuesY = NULL;
+    numValues     = 0;
+    numCurves     = 0;
+    valuesX1      = nullptr;
+    valuesY1      = nullptr;
+    familyValuesX = nullptr;
+    familyValuesY = nullptr;
   }
 }
 
 void rsDataPlot::setCurveValues(int newNumValues, double* newValuesX, double* newValuesY)
 {
-  if( newNumValues != 0 && newValuesX != NULL && newValuesY != NULL )
+  if( newNumValues != 0 && newValuesX != nullptr && newValuesY != nullptr )
   {
-    numValues	     = newNumValues;
-    numCurves	     = 1;
-    valuesX1	     = newValuesX;
-    valuesY1	     = newValuesY;
+    numValues        = newNumValues;
+    numCurves        = 1;
+    valuesX1         = newValuesX;
+    valuesY1         = newValuesY;
     familyValuesX    = &valuesX1;
     familyValuesY    = &valuesY1;
     isFunctionFamily = false;
@@ -68,12 +67,12 @@ void rsDataPlot::setCurveValues(int newNumValues, double* newValuesX, double* ne
   }
   else
   {
-    numValues	  = 0;
-    numCurves	  = 0;
-    valuesX1	  = NULL;
-    valuesY1	  = NULL;
-    familyValuesX = NULL;
-    familyValuesY = NULL;
+    numValues     = 0;
+    numCurves     = 0;
+    valuesX1      = nullptr;
+    valuesY1      = nullptr;
+    familyValuesX = nullptr;
+    familyValuesY = nullptr;
   }
 }
 
@@ -81,7 +80,7 @@ void rsDataPlot::setFunctionFamilyValues(int newNumValues, int newNumCurves,
   double* newValuesX, double** newFamilyValuesY)
 {
   if( newNumValues != 0 && newNumCurves != 0 
-    && newValuesX != NULL && newFamilyValuesY != NULL )
+    && newValuesX != nullptr && newFamilyValuesY != nullptr )
   {
 
     numValues        = newNumValues;
@@ -94,12 +93,12 @@ void rsDataPlot::setFunctionFamilyValues(int newNumValues, int newNumCurves,
   }
   else
   {
-    numValues	  = 0;
-    numCurves	  = 0;
-    valuesX1	  = NULL;
-    valuesY1	  = NULL;
-    familyValuesX = NULL;
-    familyValuesY = NULL;
+    numValues     = 0;
+    numCurves     = 0;
+    valuesX1      = nullptr;
+    valuesY1      = nullptr;
+    familyValuesX = nullptr;
+    familyValuesY = nullptr;
   }
 }
 
@@ -114,7 +113,7 @@ void rsDataPlot::setHighlightedCurve(int newHighlightedCurve)
 
 void rsDataPlot::paint(juce::Graphics &g)
 {
-  if( plotImage != NULL )
+  if( plotImage != nullptr )
     g.drawImage(*plotImage, 0, 0, plotImage->getWidth(), plotImage->getHeight(), 
                             0, 0, plotImage->getWidth(), plotImage->getHeight(), false);
   else
@@ -224,9 +223,9 @@ void rsDataPlot::resized()
 
 void rsDataPlot::invalidatePointers()
 {
-  numCurves	= 0;
+  numCurves     = 0;
   familyValuesX = nullptr;
   familyValuesY = nullptr;
-  valuesX1	= nullptr;
-  valuesY1	= nullptr;
+  valuesX1      = nullptr;
+  valuesY1      = nullptr;
 }
