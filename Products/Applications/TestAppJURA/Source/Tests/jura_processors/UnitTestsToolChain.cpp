@@ -10,7 +10,7 @@ void UnitTestToolChain::runTest()
   runTestWaveOscillator();
 
   runTestQuadrifex();
-  runTestEditorCreation();
+  runTestEditorCreation();    // triggers access violation
   // These tests are currently called last because they creates an actual jura::ToolChain object 
   // which in turn instantiates all modules once in populateModuleFactory - which is annyoing 
   // during debugging because certain initialization functions for ToolChain's built in 
@@ -363,9 +363,11 @@ void UnitTestToolChain::runTestEqualizer()
 {
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::EqualizerAudioModule eq(&lock);
+  //randomizeParameters(&eq);
   jura::AudioModuleEditor* editor = eq.createEditor(0);
-
   delete editor;
+  // The call to eq.createEditor(0); triggers an access violation in rsPlotDrawer::drawWithLines 
+  // but only if we call randomizeParameters before.
 }
 
 void UnitTestToolChain::runTestWaveOscillator()
@@ -409,43 +411,8 @@ void UnitTestToolChain::runTestEditorCreation()
 {
   // This test triggers a couple of assertions -> try to fix!
 
-
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::ToolChain tlChn(&lock);
-
-  /*
-  // Helper function to randomize the parameters of a jura::AudioModule
-  auto randomizeParams = [](jura::AudioModule* m, int seed = 0)
-  {
-    // Create a pseudo random number generator:
-    RAPT::rsNoiseGenerator<double> prng;
-    prng.setRange(0.0, 1.0);
-    prng.setSeed(seed);
-
-    // Randomize the parameters:
-    int numParams = m->getNumParameters();
-    for(int i = 0; i < numParams; i++)
-    {
-      // Retrieve i-th parameter and its name:
-      jura::Parameter* p    = m->getParameterByIndex(i);
-      juce::String     name = p->getName();
-
-      // Randomize its value:
-
-      double min    = p->getMinValue();
-      double max    = p->getMaxValue();
-
-      double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
-      p->setValue(newVal, true, true);
-      int dummy = 0;
-    }
-
-
-
-    int dummy = 0;
-  };
-  */
-
 
   // Let the ToolChain object create a module of each of the available types and plug it into the
   // first slot, then randomize its parameters, retrieve the state, open the editor, retrieve the
