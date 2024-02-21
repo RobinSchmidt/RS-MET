@@ -89,15 +89,15 @@ void rsDataPlot::setCurveValues(int newNumValues, double* newValuesX, double* ne
 }
 
 void rsDataPlot::setFunctionFamilyValues(int newNumValues, int newNumCurves, 
-					      double* newValuesX, double** newFamilyValuesY)
+  double* newValuesX, double** newFamilyValuesY)
 {
   if( newNumValues != 0 && newNumCurves != 0 
     && newValuesX != NULL && newFamilyValuesY != NULL )
   {
 
-    numValues	     = newNumValues;
-    numCurves	     = newNumCurves;
-    valuesX1	     = newValuesX;
+    numValues        = newNumValues;
+    numCurves        = newNumCurves;
+    valuesX1         = newValuesX;
     familyValuesX    = &valuesX1;
     familyValuesY    = newFamilyValuesY;
     isFunctionFamily = true;

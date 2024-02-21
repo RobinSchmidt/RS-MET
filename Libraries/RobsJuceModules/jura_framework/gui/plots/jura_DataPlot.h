@@ -1,7 +1,10 @@
 #ifndef jura_DataPlot_h
 #define jura_DataPlot_h
 
-/** A subclass for plots that are based on data, i.e. arrays of x,y values. */
+/** A subclass for plots that are based on data, i.e. arrays of x,y values. The data will NOT be 
+copied into internal buffers, an object of class "rsDataPlot" will only hold pointers to the data. 
+If the outlying class for some reason deletes the array in which the data is stored, it should call
+invalidatePointers() such that the "rsDataPlot" object does not try to aceess the array anymore. */
 
 class JUCE_API rsDataPlot : virtual public rsPlot
 {
@@ -17,11 +20,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Data setup:
 
-  /** Accepts the new function or curve values to be drawn. The data will NOT be copied into
-  internal buffers, an object of class "rsDataPlot" will only hold pointers to the data. If
-  the outlying class for some reason deletes the array in which the data is stored, it should call
-  invalidatePointers() - such that the "rsDataPlot"-object does not try to aceess the
-  array anymore. */
+  /** Accepts the new function or curve values to be drawn.  */
   virtual void setCurveFamilyValues(int newNumValues, int newNumCurves,
     double**  newFamilyValuesX, double** newFamilyValuesY);
 
@@ -30,9 +29,11 @@ public:
   you would have called curveFamilyValues with a number of curves of one. */
   virtual void setCurveValues(int newNumValues, double* newValuesX, double* newValuesY);
 
-  /** Accepts values for a fucntion family.  */
+  /** Accepts values for a function family.  */
   virtual void setFunctionFamilyValues(int newNumValues, int newNumFunctions,
     double* newValuesX, double** newFamilyValuesY);
+  // I think, the difference between a function family and a curve family is that the former uses
+  // shared x-axis values for all the graphs - document this better!
 
   /** Sets the number of curves to be drawn. Can be used to draw not all but only the first few
   curves from the familyValuesY-array. But the number passed here should never be larger than
@@ -83,8 +84,8 @@ protected:
   //OwnedArray<Colour> curveColours;	  // array which holds the colurs for the graphs
   //Colour  graphColour;
 
-  int numCurves;	      // number of curves in memory
-  int numValues;       	// number of values per curve
+  int numCurves;        // number of curves in memory
+  int numValues;        // number of values per curve
   int numCurvesToDraw;  // the number of curves which should be drawn (should be <= numCurves)
 
   double** familyValuesX;
@@ -92,18 +93,18 @@ protected:
   // pointer to a two-dimensional array. first index indicates the curve, second index indicates 
   // the particular y-value
 
-  double*  valuesX1;	      // pointer to the first array of x-values
-  double*  valuesY1;	      // pointer to the first array of x-values
-   // why do we need these? maybe get rid...
+  double*  valuesX1;        // pointer to the first array of x-values
+  double*  valuesY1;        // pointer to the first array of y-values
+   // Why do we need these? Maybe try to get rid!
 
   //double**  decimatedValuesX;
   //double*** decimatedFamilyValuesY;
   // similar to the arrays above but with recursively decimated peak-data - 
   // the first index represents the decimation level - maybe to this in subclass
 
-  bool	  fillAreaUnderFunction;   // good for spectra
-  bool    isFunctionFamily;
-  int     highlightedCurve;
+  bool fillAreaUnderFunction;   // good for spectra
+  bool isFunctionFamily;
+  int  highlightedCurve;
   juce::Image*  plotImage;
 
   juce_UseDebuggingNewOperator;
