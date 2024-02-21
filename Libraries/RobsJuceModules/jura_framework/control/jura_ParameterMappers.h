@@ -69,7 +69,7 @@ public:
   double unmap(double y) const override 
   { 
     if(max == min)
-      return 0.5;
+      return 0.5;    // When max == min, the normalized param is always in the middle
     else
       return (y-min) / (max-min); 
   }

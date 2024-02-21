@@ -6,6 +6,7 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   runTestVoiceManager();
+  runTestEqualizer();
   runTestWaveOscillator();
 
   runTestQuadrifex();
@@ -298,6 +299,14 @@ void UnitTestToolChain::runTestQuadrifex()
   delete proc;
 }
 
+void UnitTestToolChain::runTestEqualizer()
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::EqualizerAudioModule eq(&lock);
+  jura::AudioModuleEditor* ed = eq.createEditor(0);
+
+}
+
 void UnitTestToolChain::runTestWaveOscillator()
 {
   // This test was motivated by a bug which caused the creation of an editor for a Wave-oscillator
@@ -393,16 +402,19 @@ void UnitTestToolChain::runTestEditorCreation()
 
       // Limit the min and max (some parameters us infinite values for min and max to allow for 
       // an infinite range:
+      /*
       double huge   = 1.e20;
       if(min == -std::numeric_limits<double>::infinity() )
         min = -huge;
       if(max == std::numeric_limits<double>::infinity() )
         max = +huge;
+      */
       // ...but maybe that should not be the case in the first place. Maybe add an assertion that 
       // it doesn't happen. But it currently does in FuncShaper for the a,b,c,d parameters. They 
       // seem to have unlimited range by default. But maybe that's a bug -> figure out! Oh - No!
       // It's not the a,b,c,d parameters themselves that have unlimited range but their Min/Max
       // settings - and that seems to make sense.
+      // ...OK - seems not to be needed anymore.
 
       double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
       p->setValue(newVal, true, true);
@@ -426,11 +438,9 @@ void UnitTestToolChain::runTestEditorCreation()
 
     AudioModule* m = tlChn.getModuleAt(0);
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
-
     randomizeParams(m);
 
-    /*
-    // This also triggers some asserts:
+    // This triggers an access violation when the editor for the Equalizer is created:
     juce::XmlElement* preXml  = m->getStateAsXml("State", true);
     jura::AudioModuleEditor* editor = m->createEditor(0);
     juce::XmlElement* postXml = m->getStateAsXml("State", true);
@@ -438,12 +448,5 @@ void UnitTestToolChain::runTestEditorCreation()
     delete preXml;
     delete editor;
     delete postXml;
-    */
   }
-
-
-
-
-
-  int dummy = 0;
 }
