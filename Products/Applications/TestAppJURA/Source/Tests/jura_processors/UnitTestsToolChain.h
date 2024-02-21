@@ -32,7 +32,7 @@ protected:
   void runTestMultiAnalyzer();
   void runTestWaveOscillator();
   void runTestQuadrifex();
-  void runTestEditorCreation();
+  void runTestEditorCreation(int seed);
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestToolChain)

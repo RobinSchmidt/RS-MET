@@ -11,7 +11,7 @@ void UnitTestToolChain::runTest()
   runTestWaveOscillator();
 
   runTestQuadrifex();
-  runTestEditorCreation();    // triggers access violation
+  runTestEditorCreation(0);
   // These tests are currently called last because they creates an actual jura::ToolChain object 
   // which in turn instantiates all modules once in populateModuleFactory - which is annyoing 
   // during debugging because certain initialization functions for ToolChain's built in 
@@ -20,6 +20,8 @@ void UnitTestToolChain::runTest()
   // test to the end fixes this. 
   // ToDo: Factor out the creation of a ToolChain object from the Quadrifex test. It should be a 
   // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
+
+  // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? Figure out!
 }
 
 
@@ -52,34 +54,11 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
     juce::String     name = p->getName();
 
     // Randomize its value:
-
     double min    = p->getMinValue();
     double max    = p->getMaxValue();
-
-    // Limit the min and max (some parameters us infinite values for min and max to allow for 
-    // an infinite range:
-    /*
-    double huge   = 1.e20;
-    if(min == -std::numeric_limits<double>::infinity() )
-    min = -huge;
-    if(max == std::numeric_limits<double>::infinity() )
-    max = +huge;
-    */
-    // ...but maybe that should not be the case in the first place. Maybe add an assertion that 
-    // it doesn't happen. But it currently does in FuncShaper for the a,b,c,d parameters. They 
-    // seem to have unlimited range by default. But maybe that's a bug -> figure out! Oh - No!
-    // It's not the a,b,c,d parameters themselves that have unlimited range but their Min/Max
-    // settings - and that seems to make sense.
-    // ...OK - seems not to be needed anymore.
-
     double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
     p->setValue(newVal, true, true);
-    int dummy = 0;
   }
-
-
-
-  int dummy = 0;
 }
 
 
@@ -444,7 +423,7 @@ void UnitTestToolChain::runTestWaveOscillator()
   //  itself and one that wraps an existing oscillator.
 }
 
-void UnitTestToolChain::runTestEditorCreation()
+void UnitTestToolChain::runTestEditorCreation(int seed)
 {
   // This test triggers a couple of assertions -> try to fix!
 
@@ -469,7 +448,7 @@ void UnitTestToolChain::runTestEditorCreation()
 
     AudioModule* m = tlChn.getModuleAt(0);
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
-    randomizeParameters(m);
+    randomizeParameters(m, seed);
 
     // Get the state, create the editor, get the state again and compare both states:
     juce::XmlElement* preXml  = m->getStateAsXml("State", true);
