@@ -307,14 +307,27 @@ void UnitTestToolChain::runTestWaveOscillator()
   {
     bool ok = true;
 
-    ok &= osc->getParameterByName("StereoPhaseShift")->getValue() == 0.0;
-    // ...more checks to come....
+    //ok &= osc->getParameterByName("Level")->getValue()      == 0.0;
+    //ok &= osc->getParameterByName("LevelByVel")->getValue() == 0.0;
+    //ok &= osc->getParameterByName("LevelByKey")->getValue() == 0.0;
+    //ok &= osc->getParameterByName("StereoPhaseShift")->getValue() == 0.0;
 
-    // Parameters are: Level,LevelByKey,LevelByVel,MidSide,Pan,Tune,DetuneHz,StereoDetune,
+    int numParams = osc->getNumParameters();
+    for(int i = 0; i < numParams; i++)
+    {
+      jura::Parameter* p    = osc->getParameterByIndex(i);
+      juce::String     name = p->getName();
+      ok &= p->isCurrentValueDefaultValue();
+    }
+
+    // Maybe check also if the loaded waveform is at its default
+
+    // Parameters are: Mute, Level,LevelByKey,LevelByVel,MidSide,Pan,Tune,DetuneHz,StereoDetune,
     // StereoDetuneHz,StartPhase,FullWaveWarp,HalfWaveWarp,CombHarmonic,CombAmount,TimeReverse,
     // PolarityInvert,SpectralContrast,SpectralSlope,HighestHarmonic,LowestHarmonic,EvenOddRatio,
     // EvenOddPhaseShift,PhaseScale,PhaseShift,StereoPhaseShift,EvenOddStereoPhaseShift,,
 
+    // Maybe make a loop over all parameters and check if the current value is the default value
 
 
     return ok;
