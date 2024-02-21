@@ -225,10 +225,11 @@ void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
 {
   if( assignedParameter != nullptr )
   {
+    // This is the old code. It can perhaps be deleted soon:
     /*
     setRange(assignedParameter->getMinValue(), assignedParameter->getMaxValue(), 
              assignedParameter->getInterval(), assignedParameter->getDefaultValue(), false);
-    // Maybe we should call setup(...)  instead
+    // Maybe we should call setup(...)  instead - OK - done.
 
     // old - not good because it calls setValue on the parameter:
     //setValue(assignedParameter->getValue(), sendChangeMessage, false);
@@ -246,12 +247,9 @@ void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
     repaintOnMessageThread();
 
 
-
-
-
-    // Why is this commented out?
     //if(sendChangeMessage)
-    //  triggerChangeMessage(false);  
+    //  triggerChangeMessage(false);
+    // Why is this commented out? Try to re-activate it
   }
 }
 

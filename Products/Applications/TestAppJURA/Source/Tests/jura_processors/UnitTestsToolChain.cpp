@@ -309,7 +309,14 @@ void UnitTestToolChain::runTestWaveOscillator()
 
     ok &= osc->getParameterByName("StereoPhaseShift")->getValue() == 0.0;
     // ...more checks to come....
-  
+
+    // Parameters are: Level,LevelByKey,LevelByVel,MidSide,Pan,Tune,DetuneHz,StereoDetune,
+    // StereoDetuneHz,StartPhase,FullWaveWarp,HalfWaveWarp,CombHarmonic,CombAmount,TimeReverse,
+    // PolarityInvert,SpectralContrast,SpectralSlope,HighestHarmonic,LowestHarmonic,EvenOddRatio,
+    // EvenOddPhaseShift,PhaseScale,PhaseShift,StereoPhaseShift,EvenOddStereoPhaseShift,,
+
+
+
     return ok;
   };
 
