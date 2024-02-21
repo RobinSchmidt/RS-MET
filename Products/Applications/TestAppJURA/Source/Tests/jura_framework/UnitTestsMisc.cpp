@@ -107,8 +107,8 @@ void UnitTestMisc::runTestStateFileManager()
     if(!ok)
       showWarningBox("Warning", "Temporary directory for tests of class jura::StateFileManager could not be created");
   }
-  int numTestFiles = 5;
-  for(int i = 1; i <= numTestFiles; i++)
+  int numFiles = 5;
+  for(int i = 1; i <= numFiles; i++)
   {
     juce::String fileName = str + "/TestFile" + juce::String(i) + ".xml";
     juce::File   tmpFile  = juce::File(fileName);
@@ -125,12 +125,14 @@ void UnitTestMisc::runTestStateFileManager()
   TestStateFileManager mngr;
   bool ok = true;
   ok &= mngr.setRootDirectory(exeDir, false);
-  ok &= mngr.setActiveDirectory(tmpDir);
+  ok &= mngr.setActiveDirectory(tmpDir); 
+  ok &= mngr.getNumFilesInList() == numFiles;
+
 
   // Get a list of all files in the tmpDir:
   juce::Array<File> fileList;
   juce::File(mngr.getActiveDirectory()).findChildFiles(fileList, File::findFiles, false);
-  ok &= fileList.size() == numTestFiles;
+  ok &= fileList.size() == numFiles;
   // The files in this list should be only the .xml files that were created above.
 
   expect(ok);
