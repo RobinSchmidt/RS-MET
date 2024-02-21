@@ -298,6 +298,19 @@ void UnitTestToolChain::runTestQuadrifex()
 
 void UnitTestToolChain::runTestWaveOscillator()
 {
+  // This test was motivated by a bug which caused the creation of an editor for a Wave-oscillator
+  // to potnetially change some of its settings. This was caused by some erroneous function call 
+  // sequence when connecting widgets (e.g. sliders) to the parameters. The sliders should take 
+  // over the value from the parameter (and its range, etc.) but for some reason, it also did set
+  // the value. Of course, opening an editor should never change the state of an AudioModule.
+  //
+  // ToDo: maybe write a more general test that checks for every AudioModule included in ToolChain
+  // that opening the editor does not affect the state. Loop through all availablbe modules, 
+  // intantiate one, randomize the state, retrieve the state-xml, open the editor, retrieve the 
+  // state-xml again and check that both state xmls match.
+
+
+
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::WaveOscModule wvOsc1(&lock);
 
