@@ -363,11 +363,18 @@ void UnitTestToolChain::runTestEqualizer()
 {
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::EqualizerAudioModule eq(&lock);
+
   //randomizeParameters(&eq);
+
+  eq.getParameterByName("StereoMode")->setValue( 1.0, true, true);
+
   jura::AudioModuleEditor* editor = eq.createEditor(0);
   delete editor;
   // The call to eq.createEditor(0); triggers an access violation in rsPlotDrawer::drawWithLines 
-  // but only if we call randomizeParameters before.
+  // but only if we call randomizeParameters before. Or 
+  // eq.getParameterByName("StereoMode")->setValue( 0.83, true, true);
+  // It seems to be the stereo mode parameter 0-Linked: ok, 1-L/R: crash, 2-M/S: crash, 3: ok
+  // ..soo it seems like those stereo modes that have two graphs cause problems.
 }
 
 void UnitTestToolChain::runTestWaveOscillator()
