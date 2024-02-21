@@ -20,7 +20,6 @@ https://github.com/DISTRHO/JUCE
 Bugs:
 
 - When loading the Straighliner InitPatchSawtooth, there might be some StereoDetune present in it.
-  
 
 - [Might be fixed - needs tests]
   Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
@@ -53,7 +52,7 @@ Bugs:
 - Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
    that shouldn't
 
-- Quadrifex: load preset NonLinearRever002. Gives access violation in 
+- Quadrifex: load preset NonLinearReverb002. Gives access violation in 
   rsBiquadCascade<TSig, TCoef>::initBiquadCoeffs(). This seems to be reproducible. Write a unit test 
   that exposes this! It seems to happen in the constructor of FrequencyShifterStereoModule, so let's 
   write a unit test that constructs it (and maybe more)
@@ -61,14 +60,26 @@ Bugs:
 
 - When plugging in Straightliner fresh, it loads the init patch with the sawttoth wave - but the
   Osc-phase settings at the bottom are wrong: they are all set to 1° instead of 0°. In standlaone,
-  setting them manually to zero, clsing and re-opening, they will be back to 1. Also, when 
-  activating the 2n osc an closing/re-opening, the 2nd osc will be de-actiavted again.
+  setting them manually to zero, closing and re-opening, they will be back to 1. Also, when 
+  activating the 2n osc an closing/re-opening, the 2nd osc will be de-actiavted again. Set 
+  breakpoint in:  
+    MipMappedWaveTableStereo::setStereoPhaseShift
+  Setting it to 1 happens in  StraightlinerAudioModule::createEditor - creating an editor should 
+  *never* change a parameter in the underlying AudioModule!. More specifically, it happens in 
+    WaveOscEditorContextMenu::createWidgets()  when it calls  
+    addWidget( stereoPhaseShiftSlider = s = new Sld );  when it calls
+    RSlider::assignParameter();
+  hmm - it appears that the passed new Parameter object indeed has the value 1 in this call.
+  This happes also when plugging in a fresh WaveOscillator (from under construction)
+  -> write a unit test that triggers this behavior!
 
 - Straightliner: when loading a ToolChain preset that uses Straighliner, some of the Osc-settings
   seem to be not recalled. Try GoaBassdrumSaturated.xml. It should have a Stereo-Shift of 90° but is 
   recalled with 0°. There is no issue when directly loading Straightliner presets within the synth
   itself. The .xml has the correct data stored - so the problem occurs in "Load", not in "Save". 
   But to debug this conveniently, we should first fix the next bug:
+
+- WaveOscillator: "Level" and "Tune" slider sometimes freeze
 
 - Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
   loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the

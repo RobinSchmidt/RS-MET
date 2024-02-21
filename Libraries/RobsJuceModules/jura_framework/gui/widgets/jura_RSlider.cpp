@@ -198,7 +198,7 @@ void RSlider::parameterRangeChanged(Parameter* parameterThatHasChangedRange)
   {
     currentValue  = assignedParameter->getValue();
     defaultValue  = assignedParameter->getDefaultValue();
-    defaultValues = assignedParameter->getDefaultValues();  
+    defaultValues = assignedParameter->getDefaultValues();
     minValue      = assignedParameter->getMinValue();
     maxValue      = assignedParameter->getMaxValue();
     scaling       = assignedParameter->getScaling();

@@ -108,6 +108,8 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // parameter settings:
+  // ToDo: sort the setters by whether they apply to the per-sample synthesis or modify the 
+  // wavetable
 
   /** Sets the sample-rate. */
   void setSampleRate(double newSampleRate);
