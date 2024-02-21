@@ -77,13 +77,13 @@ juce::String FileManager::companyName = "RS-MET";
 
 FileManager::FileManager()
 {
-  fileIsDirty           = false;
-  recurseSubDirectories = false;
+  //fileIsDirty           = false;
+  //recurseSubDirectories = false;
   rootDirectory         = getApplicationDirectory();
   activeDirectory       = rootDirectory;
-  defaultExtension      = String();
+  defaultExtension      = String();       // superfluous, I think
   wildcardPatterns      = String("*");
-  activeFileIndex       = -1;
+  //activeFileIndex       = -1;
 }
 
 FileManager::~FileManager()
@@ -105,9 +105,9 @@ bool FileManager::setRootDirectory(const File& newRootDirectory, bool gotoRootDi
     {
       return true;    // new
       //return false; // old
-      // I think, the intention of the return value is to report if the root directory could be set
-      // to the desired new directory, so we shoul return true, if we have successfuly set it. But
-      // maybe verify this - and then document this! 
+      // I think, the intention of the return value is to report if the root directory could
+      // successfully be set to the desired new directory, so we should return true, if we have 
+      // successfuly set it. But verify this - and then document this! 
     }
   }
   else
@@ -399,6 +399,9 @@ void FileManager::updateFileList()
     }
   }
   fileList.getLock().exit();
+
+  // ToDo:
+  // -Figure out, if we really need the locks. If not, get rid of them, If yes, document why.
 }
 
 void FileManager::notifyListeners()

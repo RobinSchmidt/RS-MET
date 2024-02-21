@@ -247,15 +247,16 @@ protected:
   // rename to sendActiveFileChangeNotification and add sendActiveFileBecameDirtyNotification
 
 
-  bool         fileIsDirty;
-  bool         recurseSubDirectories;
+
   juce::File   rootDirectory;                   // a root directory for relative paths
   juce::File   activeDirectory;                 // directory where we currently are
   juce::String defaultExtension;
   juce::String wildcardPatterns;
   juce::Array<juce::File, CriticalSection> fileList;  // holds all relevant files in a flat array
-  int activeFileIndex;                                // index of the currently active file in the array
-  FileComparator fileComparator;                      // this object is needed to sort the file-array
+  int  activeFileIndex       = -1;     // array index of currently active file, -1: none
+  bool fileIsDirty           = false;
+  bool recurseSubDirectories = false;
+  FileComparator fileComparator;       // this object is needed to sort the file-array
   juce::Array<FileManagerListener*, CriticalSection> listeners;  // our listeners
 
   // Try to switch from juce::Array to std::vector for the fileList and listeners
