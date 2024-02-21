@@ -66,7 +66,13 @@ class JUCE_API rsParameterMapperLinear : public rsParameterMapper
 public:
   rsParameterMapperLinear() {}
   double   map(double x) const override { return min + (max-min) * x; }
-  double unmap(double y) const override { return (y-min) / (max-min); }
+  double unmap(double y) const override 
+  { 
+    if(max == min)
+      return 0.5;
+    else
+      return (y-min) / (max-min); 
+  }
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperLinear)
 };
 
