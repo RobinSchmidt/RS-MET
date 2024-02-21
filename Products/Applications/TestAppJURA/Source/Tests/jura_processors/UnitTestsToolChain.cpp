@@ -293,13 +293,32 @@ void UnitTestToolChain::runTestWaveOscillator()
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::WaveOscModule wvOsc1(&lock);
 
+  // Helper function to check if the given oscillator is in default state, i.e. all parameters are
+  // at the default values:
+  auto isInDefaultState = [](const jura::WaveOscModule* osc)
+  {
+    bool ok = true;
 
-  //jura::WaveOscEditor* ed1 = wvOsc1.createEditor(0);
+    ok &= osc->getParameterByName("StereoPhaseShift")->getValue() == 0.0;
+    // ...more checks to come....
+  
+    return ok;
+  };
 
+  // Check that all parameters have their intial/default values:
+  expect(isInDefaultState(&wvOsc1));
+
+  // Create an editor object for the osc:
   jura::AudioModuleEditor* ed1 = wvOsc1.createEditor(0);
 
-  // ToDo: check, if all the parameters have their correct values (at the moment, they don't after
-  // creating the editor)
+  // Check that the right kind of editor was created:
+  expect( dynamic_cast<jura::WaveOscEditor*>(ed1) );
+
+  // Check that creating the editor didn't mess with the state, i.e. didn't change any parameters:
+  expect(isInDefaultState(&wvOsc1));
+  // THIS TRIGGERS! That was the goal of writing this unit test. Now the debugging can begin...
+  // Creating an editor for an AudioModule should never alter the state of that module!
+
 
 
   int dummy = 0;
