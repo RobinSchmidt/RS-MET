@@ -72,6 +72,28 @@ void UnitTestMisc::runTestColor()
 
 }
 
+
+// A class for testing jura::StateFileManager. We cannot instantiate the class directly because it
+// is abstract, so we need this dummy subclass:
+class JUCE_API TestStateFileManager : public jura::StateFileManager
+{
+  
+public:
+
+  void setStateFromXml(const juce::XmlElement& xmlState, const juce::String& stateName,
+    bool markAsClean) override
+  {
+    // Do nothing
+  }
+
+  juce::XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override
+  {
+    return nullptr;
+  }
+
+};
+
+
 void UnitTestMisc::runTestFileManager()
 {
   // Create a couple of example files, if they don't exist already:
@@ -86,7 +108,6 @@ void UnitTestMisc::runTestFileManager()
     if(!ok)
       showWarningBox("Warning", "Temporary directory for tests of class jura::FileManager could not be created");
   }
-
   int numTestFiles = 5;
   for(int i = 1; i <= numTestFiles; i++)
   {
@@ -100,7 +121,18 @@ void UnitTestMisc::runTestFileManager()
     }
   }
 
+  // Now it should be ensured that in tmpDir there are numFiles empty .txt files. these will now be
+  // managed by a jura::FileManager...
+
+  //jura::FileManager fileManager;  // It's abstract!
+
+  TestStateFileManager stateFileManager;
+
 
 
   int dummy = 0;
+
+  // ToDo: 
+  // -Create also a special kind of FileManagerListener that logs the callbacks and check that they
+  //  are called correctly.
 }
