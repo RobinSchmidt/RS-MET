@@ -83,7 +83,7 @@ Bugs:
   itself. The .xml has the correct data stored - so the problem occurs in "Load", not in "Save". 
   But to debug this conveniently, we should first fix the next bug:
 
-- WaveOscillator: "Level" and "Tune" slider sometimes freeze
+- [FIXED?] WaveOscillator: "Level" and "Tune" slider sometimes freeze
 
 - Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
   loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the
