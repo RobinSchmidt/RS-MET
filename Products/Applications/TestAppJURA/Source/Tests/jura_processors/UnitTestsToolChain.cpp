@@ -6,7 +6,7 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   runTestVoiceManager();
-  //runTestEqualizer();
+  runTestEqualizer();
   runTestWaveOscillator();
 
   runTestQuadrifex();
@@ -24,7 +24,6 @@ void UnitTestToolChain::runTest()
 
 bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
 {
-  // Check, if all parameters are at their respective default values:
   bool ok = true;
   int numParams = m->getNumParameters();
   for(int i = 0; i < numParams; i++)
@@ -34,6 +33,52 @@ bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
     ok &= p->isCurrentValueDefaultValue();
   }
   return ok;
+}
+
+void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
+{
+  // Create a pseudo random number generator:
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setRange(0.0, 1.0);
+  prng.setSeed(seed);
+
+  // Randomize the parameters:
+  int numParams = m->getNumParameters();
+  for(int i = 0; i < numParams; i++)
+  {
+    // Retrieve i-th parameter and its name:
+    jura::Parameter* p    = m->getParameterByIndex(i);
+    juce::String     name = p->getName();
+
+    // Randomize its value:
+
+    double min    = p->getMinValue();
+    double max    = p->getMaxValue();
+
+    // Limit the min and max (some parameters us infinite values for min and max to allow for 
+    // an infinite range:
+    /*
+    double huge   = 1.e20;
+    if(min == -std::numeric_limits<double>::infinity() )
+    min = -huge;
+    if(max == std::numeric_limits<double>::infinity() )
+    max = +huge;
+    */
+    // ...but maybe that should not be the case in the first place. Maybe add an assertion that 
+    // it doesn't happen. But it currently does in FuncShaper for the a,b,c,d parameters. They 
+    // seem to have unlimited range by default. But maybe that's a bug -> figure out! Oh - No!
+    // It's not the a,b,c,d parameters themselves that have unlimited range but their Min/Max
+    // settings - and that seems to make sense.
+    // ...OK - seems not to be needed anymore.
+
+    double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
+    p->setValue(newVal, true, true);
+    int dummy = 0;
+  }
+
+
+
+  int dummy = 0;
 }
 
 
@@ -318,8 +363,9 @@ void UnitTestToolChain::runTestEqualizer()
 {
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::EqualizerAudioModule eq(&lock);
-  jura::AudioModuleEditor* ed = eq.createEditor(0);
+  jura::AudioModuleEditor* editor = eq.createEditor(0);
 
+  delete editor;
 }
 
 void UnitTestToolChain::runTestWaveOscillator()
@@ -333,40 +379,11 @@ void UnitTestToolChain::runTestWaveOscillator()
   // ToDo: maybe write a more general test that checks for every AudioModule included in ToolChain
   // that opening the editor does not affect the state. Loop through all availablbe modules, 
   // intantiate one, randomize the state, retrieve the state-xml, open the editor, retrieve the 
-  // state-xml again and check that both state xmls match.
-
+  // state-xml again and check that both state xmls match. ..is under construction
 
 
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::WaveOscModule wvOsc1(&lock);
-
-  /*
-  // Helper function to check if the given oscillator is in default state, i.e. all parameters are
-  // at the default values:
-  auto isInDefaultState = [](const jura::WaveOscModule* osc)
-  {
-    bool ok = true;
-
-    // Check, if all parameters are at their respective default values:
-    int numParams = osc->getNumParameters();
-    for(int i = 0; i < numParams; i++)
-    {
-      jura::Parameter* p    = osc->getParameterByIndex(i);
-      juce::String     name = p->getName();
-      ok &= p->isCurrentValueDefaultValue();
-    }
-    // The parameters are: Mute, Level, LevelByKey, LevelByVel, MidSide, Pan, Tune, DetuneHz,
-    // StereoDetune, StereoDetuneHz, PitchModulationDepth, StartPhase, FullWaveWarp, HalfWaveWarp, 
-    // TimeReverse, PolarityInvert, CombHarmonic, CombAmount, SpectralContrast, SpectralSlope, 
-    // HighestHarmonic, LowestHarmonic, PhaseScale, PhaseShift, EvenOddRatio, EvenOddPhaseShift,
-    // StereoPhaseShift, EvenOddStereoPhaseShift
-
-    // ToDo: Maybe check also if the loaded waveform is at its default.
-
-    return ok;
-  };
-  // Maybe generalize to any kind of jura::AudioModule and factor out -> Done
-  */
 
   // Check that all parameters have their intial/default values:
   expect(isInDefaultState(&wvOsc1));
@@ -396,6 +413,7 @@ void UnitTestToolChain::runTestEditorCreation()
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::ToolChain tlChn(&lock);
 
+  /*
   // Helper function to randomize the parameters of a jura::AudioModule
   auto randomizeParams = [](jura::AudioModule* m, int seed = 0)
   {
@@ -417,22 +435,6 @@ void UnitTestToolChain::runTestEditorCreation()
       double min    = p->getMinValue();
       double max    = p->getMaxValue();
 
-      // Limit the min and max (some parameters us infinite values for min and max to allow for 
-      // an infinite range:
-      /*
-      double huge   = 1.e20;
-      if(min == -std::numeric_limits<double>::infinity() )
-        min = -huge;
-      if(max == std::numeric_limits<double>::infinity() )
-        max = +huge;
-      */
-      // ...but maybe that should not be the case in the first place. Maybe add an assertion that 
-      // it doesn't happen. But it currently does in FuncShaper for the a,b,c,d parameters. They 
-      // seem to have unlimited range by default. But maybe that's a bug -> figure out! Oh - No!
-      // It's not the a,b,c,d parameters themselves that have unlimited range but their Min/Max
-      // settings - and that seems to make sense.
-      // ...OK - seems not to be needed anymore.
-
       double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
       p->setValue(newVal, true, true);
       int dummy = 0;
@@ -442,6 +444,7 @@ void UnitTestToolChain::runTestEditorCreation()
 
     int dummy = 0;
   };
+  */
 
 
   // Let the ToolChain object create a module of each of the available types and plug it into the
@@ -455,7 +458,7 @@ void UnitTestToolChain::runTestEditorCreation()
 
     AudioModule* m = tlChn.getModuleAt(0);
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
-    randomizeParams(m);
+    randomizeParameters(m);
 
     // This triggers an access violation when the editor for the Equalizer is created:
     juce::XmlElement* preXml  = m->getStateAsXml("State", true);

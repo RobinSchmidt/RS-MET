@@ -17,7 +17,12 @@ public:
 protected:
 
   // Helper functions:
+
+  /** Checks if all parameters of the module have their default values. */
   bool isInDefaultState(const jura::AudioModule* m);
+
+  /** Randomizes all the parameters of the given jura::AudioModule. */
+  void randomizeParameters(jura::AudioModule* m, int seed = 0);
 
 
 
