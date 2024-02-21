@@ -7,6 +7,7 @@ void UnitTestToolChain::runTest()
 {
   runTestVoiceManager();
   runTestEqualizer();
+  runTestMultiAnalyzer();
   runTestWaveOscillator();
 
   runTestQuadrifex();
@@ -380,6 +381,36 @@ void UnitTestToolChain::runTestEqualizer()
   // OK - this crash might be fixed.
 }
 
+void UnitTestToolChain::runTestMultiAnalyzer()
+{
+  CriticalSection lock;
+  jura::MultiAnalyzerAudioModule ana(&lock);
+
+
+  // Get the state, create the editor, get the state again and compare both states:
+  juce::XmlElement* preXml  = ana.getStateAsXml("State", true);
+  jura::AudioModuleEditor* editor = ana.createEditor(0);
+  juce::XmlElement* postXml = ana.getStateAsXml("State", true);
+
+  juce::XmlDocument preDoc  = preXml ->toString();
+  juce::XmlDocument postDoc = postXml->toString();
+
+  expect(postXml->isEquivalentTo(preXml, false));
+  // This fails!
+  // Creating the editor apparently sets the TimeWindowLength parameter of the oscilloscope to 1.5
+
+
+  delete preXml;
+  delete editor;
+  delete postXml;
+
+
+  //jura::AudioModuleEditor* editor = ana.createEditor(0);
+
+
+  //delete editor;
+}
+
 void UnitTestToolChain::runTestWaveOscillator()
 {
   // This test was motivated by a bug which caused the creation of an editor for a Wave-oscillator
@@ -437,7 +468,7 @@ void UnitTestToolChain::runTestEditorCreation()
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
     randomizeParameters(m);
 
-    // This triggers an access violation when the editor for the Equalizer is created:
+    // Get the state, create the editor, get the state again and compare both states:
     juce::XmlElement* preXml  = m->getStateAsXml("State", true);
     jura::AudioModuleEditor* editor = m->createEditor(0);
     juce::XmlElement* postXml = m->getStateAsXml("State", true);
@@ -448,4 +479,8 @@ void UnitTestToolChain::runTestEditorCreation()
   }
 
   // Fails at MultiAnalyzer
+
+  // ToDo:
+  // -Try the test with different seeds for the randomization of the parameters. Some bugs are exposed 
+  //  only with certain parameter values.
 }

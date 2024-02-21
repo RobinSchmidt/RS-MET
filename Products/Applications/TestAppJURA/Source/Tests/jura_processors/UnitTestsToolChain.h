@@ -29,6 +29,7 @@ protected:
   // called from runTest:
   void runTestVoiceManager();
   void runTestEqualizer();
+  void runTestMultiAnalyzer();
   void runTestWaveOscillator();
   void runTestQuadrifex();
   void runTestEditorCreation();
