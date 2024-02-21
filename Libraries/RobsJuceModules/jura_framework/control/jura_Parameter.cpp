@@ -170,7 +170,7 @@ void Parameter::setMinValue(double newMinValue)
   if( newMinValue <= getMaxValue() )
     setRange(newMinValue, getMaxValue());
   else
-    setRange(getMaxValue(), getMaxValue());
+    setRange(getMaxValue(), getMaxValue());    // triggers jassert
 }
 
 void Parameter::setMaxValue(double newMaxValue)
@@ -178,7 +178,7 @@ void Parameter::setMaxValue(double newMaxValue)
   if( newMaxValue >= getMinValue() )
     setRange(getMinValue(), newMaxValue);
   else
-    setRange(getMinValue(), getMinValue());
+    setRange(getMinValue(), getMinValue());    // triggers jassert
 }
 
 void Parameter::setDefaultValue(double newDefaultValue, bool setToDefault)

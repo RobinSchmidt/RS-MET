@@ -428,12 +428,17 @@ void UnitTestToolChain::runTestEditorCreation()
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
 
     randomizeParams(m);
-    juce::XmlElement* preXml = m->getStateAsXml("PreState", true);
 
-
-
-
+    /*
+    // This also triggers some asserts:
+    juce::XmlElement* preXml  = m->getStateAsXml("State", true);
+    jura::AudioModuleEditor* editor = m->createEditor(0);
+    juce::XmlElement* postXml = m->getStateAsXml("State", true);
+    expect(postXml->isEquivalentTo(preXml, false));
     delete preXml;
+    delete editor;
+    delete postXml;
+    */
   }
 
 

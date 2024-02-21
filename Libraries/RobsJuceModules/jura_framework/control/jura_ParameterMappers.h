@@ -30,7 +30,14 @@ public:
   /** Sets up the range for the (mapped, actual) parameter value. */
   virtual void setRange(double newMin, double newMax)
   {
-    jassert(newMin < newMax);  // Must be strictly less for division by (max-min) in unmap
+    //jassert(newMin < newMax);
+    // Must be strictly less for division by (max-min) in rsParameterMapperLinear::unmap - but for
+    // other mappers, such a problem does not necessarily arise so maybe we should be more liberal
+    // and allow max == min. Then maybe adapt the unmap function(s) where this condition would 
+    // cause problems. Or maybe just accept that linear mappings with max == min may produce inf or
+    // nan and consider that a bug in the client code, i.e. misuse of the mapper.
+    jassert(newMin <= newMax); // ...OK - done.
+
     min = newMin;
     max = newMax;
   }
