@@ -127,13 +127,15 @@ void UnitTestMisc::runTestStateFileManager()
   ok &= mngr.setRootDirectory(exeDir, false);
   ok &= mngr.setActiveDirectory(tmpDir); 
   ok &= mngr.getNumFilesInList() == numFiles;
-
+  ok &= mngr.getActiveFile() == File();        // No active file yet.
 
   // Get a list of all files in the tmpDir:
   juce::Array<File> fileList;
   juce::File(mngr.getActiveDirectory()).findChildFiles(fileList, File::findFiles, false);
   ok &= fileList.size() == numFiles;
   // The files in this list should be only the .xml files that were created above.
+
+
 
   expect(ok);
 

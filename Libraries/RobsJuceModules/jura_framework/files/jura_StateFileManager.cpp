@@ -25,6 +25,9 @@ bool StateFileManager::loadFile(const File& fileToLoad)
     markFileAsClean(true);
   notifyListeners();
   return result;
+  // I think, we need to update the activeFileIndex...but loadStateFromXmlFile calls updateFileList
+  // which should take care of this update - but no - updateFileList does not get any info which 
+  // file was loaded. I think we need to call setActiveFileIfInList or setActiveFile
 }
 
 bool StateFileManager::saveToFile(const File& fileToSaveTo)
