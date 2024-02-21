@@ -435,7 +435,7 @@ SfzOpcodeWidgetSet::WidgetSetupData SfzOpcodeWidgetSet::getWidgetSetupDataFor(
     setup.minVal  = 20.f;
     setup.maxVal  = 20000.f;
     //setup.defVal  = 1000.f;  // commented bcs we use val
-    setup.scaling = jura::Parameter::scalings::EXPONENTIAL;
+    setup.scaling = jura::Parameter::Scaling::EXPONENTIAL;
   }
 
   return setup;

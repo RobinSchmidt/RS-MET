@@ -93,7 +93,7 @@ public:
   value etc. Such conditions cause our valueSanityCheck() to raise an assertion. If you can, set 
   it up all at once. It's also more efficient. */
   virtual void setup(double newMinimum, double newMaximum, double newInterval,
-    double newDefaultValue, jura::Parameter::scalings newScaling, double newValue);
+    double newDefaultValue, jura::Parameter::Scaling newScaling, double newValue);
 
   /** Sets up the range of the slider, a quantization interval for the values, a default value and
   optionally initializes the current value to the default value. */

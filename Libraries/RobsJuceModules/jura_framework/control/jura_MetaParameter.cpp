@@ -141,7 +141,7 @@ int rsMetaParameterMapper::stringToShapeIndex(const String& s)
 //=================================================================================================
 
 MetaControlledParameter::MetaControlledParameter(const juce::String& name, double min, double max,
-  double defaultValue, Parameter::scalings scaling, double interval)
+  double defaultValue, Parameter::Scaling scaling, double interval)
   : rsSmoothableParameter(name, min, max, defaultValue, scaling, interval)
 {
   // todo: initialize the metaParaManager and mapper member to Null Objects

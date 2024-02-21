@@ -46,7 +46,7 @@ void RSlider::setLayout(int newLayout)
 }
 
 void RSlider::setup(double newMin, double newMax, double newInt,
-  double newDef, jura::Parameter::scalings newScl, double newVal)
+  double newDef, jura::Parameter::Scaling newScl, double newVal)
 {
   minValue     = newMin;
   maxValue     = newMax;

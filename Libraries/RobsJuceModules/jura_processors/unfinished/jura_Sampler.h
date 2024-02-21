@@ -647,7 +647,7 @@ protected:
     float maxVal = 0;  // maximum value
     float defVal = 0;  // default value
     float quant  = 0;  // quantization interval
-    jura::Parameter::scalings scaling = jura::Parameter::scalings::LINEAR;
+    jura::Parameter::Scaling scaling = jura::Parameter::Scaling::LINEAR;
   };
 
   /** Returns true, iff the given opcode refers to a frequency in the audible range such as 

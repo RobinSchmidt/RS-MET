@@ -165,20 +165,19 @@ public:
   without rounding and EXPONENTIAL will provide exponential mapping. LINEAR_BIPOLAR is mapping 
   function wise the same as LINEAR, it is just distinguished to serve as a hint for sliders to 
   draw themselves differently for bipolar parameters */
-  enum scalings
+  enum Scaling
   {
     IDENTITY = 0,
     BOOLEAN,
-    STRING,         // rename to CHOICE
-    INTEGER,        // maybe remove, linear should be just as good
+    STRING,         // Maybe rename to CHOICE or NAMED_CHOICE
+    INTEGER,        // Maybe remove, linear should work for this, too
     LINEAR,
     EXPONENTIAL,
     LINEAR_BIPOLAR,
-    CUSTOM,         // requires a rsParameterMapper object to be passed
+    CUSTOM,         // Requires a rsParameterMapper object to be passed
 
     NUM_SCALINGS
   };
-  // Rename to Scaling - it's a datatype
 
   //-----------------------------------------------------------------------------------------------
   // \name Construction/Destruction
@@ -186,12 +185,12 @@ public:
   /** Constructor. You need to pass a name and optionally min/max/deafult values, a type of
   scaling @see secalings and a quantization interval. */
   Parameter(const juce::String& name, double min = 0.0, double max = 1.0,
-    double defaultValue = 0.5, scalings scaling = scalings::LINEAR, double interval = 0.0);
+    double defaultValue = 0.5, Scaling scaling = Scaling::LINEAR, double interval = 0.0);
 
   /** DEPRECATED constructor. Use the other constructor. */
   Parameter(CriticalSection *criticalSectionToUse, const juce::String& newName,
     double newMinValue = 0.0, double newMaxValue = 1.0, double newInterval = 0.0,
-    double newDefaultValue = 0.0, scalings newScaling = scalings::LINEAR);
+    double newDefaultValue = 0.0, Scaling newScaling = Scaling::LINEAR);
 
   /** Destructor. */
   virtual ~Parameter();
@@ -243,7 +242,7 @@ public:
   }
 
   /** Chooses one of the scaling methods for this parameter. @see: scalings */
-  virtual void setScaling(scalings newScaling);
+  virtual void setScaling(Scaling newScaling);
 
   /** Chooses one of the scaling methods for this parameter from a string. @see: scalings */
   virtual void setScalingFromString(juce::String newScalingString);
@@ -384,7 +383,7 @@ public:
 
   /** Returns the scaling methods for this parameter. @see: scalings */
   //virtual int getScaling() const { ScopedPointerLock spl(mutex); return scaling; }
-  virtual scalings getScaling() const { ScopedPointerLock spl(mutex); return scaling; }
+  virtual Scaling getScaling() const { ScopedPointerLock spl(mutex); return scaling; }
 
 
 
@@ -560,12 +559,12 @@ protected:
   values > 0 for exponential scaling, etc.. */
   virtual void valueSanityCheck();
 
-  double normalizedValue;        // normalized value in the range 0..1
-  double value;                  // actual value of the parameter
-  double interval;               // interval for adjustments ...rename to stepSize
-  double defaultValue;           // default value of this parameter ...maybe rename to resetValue
-  scalings scaling;                // index to the scaling/mapping to be used - maybe get rid - superseded by the mapper now
-  bool   saveAndRecall = true;   // used for locking params on preset switch?
+  double  normalizedValue;       // normalized value in the range 0..1
+  double  value;                 // actual value of the parameter
+  double  interval;              // interval for adjustments ...rename to stepSize
+  double  defaultValue;          // default value of this parameter ...maybe rename to resetValue
+  Scaling scaling;               // index to the scaling/mapping to be used - maybe get rid - superseded by the mapper now
+  bool    saveAndRecall = true;  // used for locking params on preset switch?
   juce::String name;             // string for the parameter name
   juce::String displayName = ""; // a possibly different name for gui/display purposes (if empty
                                  // the regular name will be used)

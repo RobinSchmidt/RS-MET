@@ -31,7 +31,7 @@ bool Parameter::storeDefaultValues = false;
 // construction/destruction:
 
 Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
-  double newDefault, scalings newScaling, double newInterval)
+  double newDefault, Scaling newScaling, double newInterval)
 {
   jassert(!(newMin >= newMax));                           // invalid range
   jassert(!(newMin <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
@@ -40,7 +40,7 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
     newInterval = 1.0;      // multiple choice are parameters represented by integers
 
   mapper   = new rsParameterMapperLinear();
-  scaling  = newScaling;   // delete soon
+  scaling  = newScaling;    // delete soon - hmm...or maybe not? Not sure. Maybe we should keep it
   setRange(newMin, newMax);
   setScaling(newScaling);
 
@@ -55,7 +55,7 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
 
 Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newName,
   double newMinValue, double newMaxValue, double newInterval, double newDefaultValue,
-  scalings newScaling)
+  Scaling newScaling)
 {
   jassert(!(newMinValue >= newMaxValue));                      // that would result in a zero or negative range
   jassert(!(newMinValue <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
@@ -189,7 +189,7 @@ void Parameter::setDefaultValue(double newDefaultValue, bool setToDefault)
     setValue(defaultValue, true, true);
 }
 
-void Parameter::setScaling(scalings newScaling)
+void Parameter::setScaling(Scaling newScaling)
 {
   ScopedPointerLock spl(mutex);
   if( newScaling < IDENTITY || newScaling >= NUM_SCALINGS )
@@ -238,22 +238,22 @@ void Parameter::setScalingFromString(String newScalingString)
 {
   ScopedPointerLock spl(mutex);
   if( newScalingString == String("Boolean") )
-    setScaling(scalings::BOOLEAN);
+    setScaling(Scaling::BOOLEAN);
   else if( newScalingString == String("Integer") )
-    setScaling(scalings::INTEGER);
+    setScaling(Scaling::INTEGER);
   else if( newScalingString == String("Linear") )
-    setScaling(scalings::LINEAR);
+    setScaling(Scaling::LINEAR);
   else if( newScalingString == String("Exponential") )
-    setScaling(scalings::EXPONENTIAL);
+    setScaling(Scaling::EXPONENTIAL);
   else if( newScalingString == String("LinearBipolar") )
-    setScaling(scalings::LINEAR_BIPOLAR);
+    setScaling(Scaling::LINEAR_BIPOLAR);
   else
-    setScaling(scalings::LINEAR);
+    setScaling(Scaling::LINEAR);
 }
 
 void Parameter::setMapper(rsParameterMapper* newMapper)
 {
-  scaling = scalings::CUSTOM;
+  scaling = Scaling::CUSTOM;
   if(mapper != newMapper) {
     delete mapper;
     mapper = newMapper;
