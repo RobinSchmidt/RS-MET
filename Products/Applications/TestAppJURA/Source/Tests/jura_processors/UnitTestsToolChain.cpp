@@ -338,7 +338,8 @@ void UnitTestToolChain::runTestWaveOscillator()
   // Check that creating the editor didn't mess with the state, i.e. didn't change any parameters:
   expect(isInDefaultState(&wvOsc1));
 
-
+  // Clean up memory:
+  delete ed1;
 
   // ToDo: 
   // -Test creating a jura::WaveOscModule that creates the underlying DSP core of the oscillator 
