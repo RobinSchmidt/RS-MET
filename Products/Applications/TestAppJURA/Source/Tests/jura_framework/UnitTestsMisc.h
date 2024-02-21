@@ -19,7 +19,7 @@ protected:
 
   // called from runTest:
   void runTestColor();
-  void runTestFileManager();
+  void runTestStateFileManager();
 
 
 

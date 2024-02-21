@@ -11,7 +11,7 @@ UnitTestMisc::UnitTestMisc()
 void UnitTestMisc::runTest()
 {
   runTestColor();
-  runTestFileManager();
+  runTestStateFileManager();
 }
 
 void UnitTestMisc::runTestColor()
@@ -92,40 +92,36 @@ public:
   }
 
 };
-
-
-void UnitTestMisc::runTestFileManager()
+void UnitTestMisc::runTestStateFileManager()
 {
-  // Create a couple of example files, if they don't exist already:
+  // Create a couple of example .xml files in some special subdirectory of the executable's 
+  // directory, if they don't exist already:
   juce::File   exeFile = juce::File::getSpecialLocation(File::currentApplicationFile);
   juce::File   exeDir  = exeFile.getParentDirectory();
   juce::String str     = exeDir.getFullPathName();
-  str += "/FileManagerTest";
+  str += "/StateFileManagerTest";
   juce::File tmpDir(str);
   if(!tmpDir.exists())
   {
     bool ok = tmpDir.createDirectory();
     if(!ok)
-      showWarningBox("Warning", "Temporary directory for tests of class jura::FileManager could not be created");
+      showWarningBox("Warning", "Temporary directory for tests of class jura::StateFileManager could not be created");
   }
   int numTestFiles = 5;
   for(int i = 1; i <= numTestFiles; i++)
   {
-    juce::String fileName = str + "/TestFile" + juce::String(i) + ".txt";
+    juce::String fileName = str + "/TestFile" + juce::String(i) + ".xml";
     juce::File   tmpFile  = juce::File(fileName);
     if(!tmpFile.exists())
     {
       bool ok = tmpFile.create();
       if(!ok)
-        showWarningBox("Warning", "Temporary file for tests of class jura::FileManager could not be created");
+        showWarningBox("Warning", "Temporary file for tests of class jura::StateFileManager could not be created");
     }
   }
 
-  // Now it should be ensured that in tmpDir there are numFiles empty .txt files. these will now be
-  // managed by a jura::FileManager...
-
-  //jura::FileManager fileManager;  // It's abstract!
-
+  // Now it should be ensured that in tmpDir there are numFiles empty .xml files. These will now be
+  // managed by a (dummy-subclass of) jura::StateFileManager:
   TestStateFileManager stateFileManager;
 
 
@@ -134,5 +130,5 @@ void UnitTestMisc::runTestFileManager()
 
   // ToDo: 
   // -Create also a special kind of FileManagerListener that logs the callbacks and check that they
-  //  are called correctly.
+  //  are called correctly. Mayb do the same for StateWatcher
 }
