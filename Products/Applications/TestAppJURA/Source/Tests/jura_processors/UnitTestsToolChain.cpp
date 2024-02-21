@@ -361,13 +361,13 @@ void UnitTestToolChain::runTestQuadrifex()
 
 void UnitTestToolChain::runTestEqualizer()
 {
+  // This test was motivated by an access violation in the frequency response plot of the equalizer
+  // in both of the modes that need to plot two graphs instead of just one. there was somet bug in
+  // jura::rsDataPlot
+
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::EqualizerAudioModule eq(&lock);
-
-  //randomizeParameters(&eq);
-
-  eq.getParameterByName("StereoMode")->setValue( 1.0, true, true);
-
+  eq.getParameterByName("StereoMode")->setValue( 1.0, true, true);  // 1 is Stereo L/R
   jura::AudioModuleEditor* editor = eq.createEditor(0);
   delete editor;
   // The call to eq.createEditor(0); triggers an access violation in rsPlotDrawer::drawWithLines 
