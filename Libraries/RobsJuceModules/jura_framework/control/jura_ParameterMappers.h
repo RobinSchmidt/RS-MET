@@ -30,7 +30,7 @@ public:
   /** Sets up the range for the (mapped, actual) parameter value. */
   virtual void setRange(double newMin, double newMax)
   {
-    jassert(newMin < newMax);
+    jassert(newMin < newMax);  // Must be strictly less for division by (max-min) in unmap
     min = newMin;
     max = newMax;
   }

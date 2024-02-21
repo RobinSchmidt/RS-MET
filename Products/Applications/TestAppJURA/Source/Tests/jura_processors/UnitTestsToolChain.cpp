@@ -364,6 +364,9 @@ void UnitTestToolChain::runTestWaveOscillator()
 
 void UnitTestToolChain::runTestEditorCreation()
 {
+  // This test triggers a couple of assertions -> try to fix!
+
+
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::ToolChain tlChn(&lock);
 
@@ -384,8 +387,23 @@ void UnitTestToolChain::runTestEditorCreation()
       juce::String     name = p->getName();
 
       // Randomize its value:
+
       double min    = p->getMinValue();
       double max    = p->getMaxValue();
+
+      // Limit the min and max (some parameters us infinite values for min and max to allow for 
+      // an infinite range:
+      double huge   = 1.e20;
+      if(min == -std::numeric_limits<double>::infinity() )
+        min = -huge;
+      if(max == std::numeric_limits<double>::infinity() )
+        max = +huge;
+      // ...but maybe that should not be the case in the first place. Maybe add an assertion that 
+      // it doesn't happen. But it currently does in FuncShaper for the a,b,c,d parameters. They 
+      // seem to have unlimited range by default. But maybe that's a bug -> figure out! Oh - No!
+      // It's not the a,b,c,d parameters themselves that have unlimited range but their Min/Max
+      // settings - and that seems to make sense.
+
       double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
       p->setValue(newVal, true, true);
       int dummy = 0;
@@ -410,11 +428,12 @@ void UnitTestToolChain::runTestEditorCreation()
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
 
     randomizeParams(m);
+    juce::XmlElement* preXml = m->getStateAsXml("PreState", true);
 
 
 
 
-    int dummy = 0;
+    delete preXml;
   }
 
 
