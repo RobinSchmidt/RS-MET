@@ -19,10 +19,19 @@ https://github.com/DISTRHO/JUCE
 
 Bugs:
 
-- [FIXED]
-  When loading the Straighliner InitPatchSawtooth, there might be some StereoDetune present in it.
+- Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
+  loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the
+  currentStateFile or something. Check FileManager::updateFileList() when it's called from
+  StateFileManager::loadStateFromXmlFile and StateFileManager::saveStateToXmlFile
+  Check if this bug also affects sample waveform loading in e.g. Straightliner -> Nope. Waveform 
+  loading works almost fine. The only thing is that after initially when not yet any file was 
+  loaded manually, the first click on the "Next" button loads the first file in the directory 
+  instead of the next one according to the currently loaded one.
+  It seems like after saving a preset, the skip buttons work right
+  Make a unit test (State)FileManager::loadNextFile/loadPreviousFile
 
-- [Might be fixed - needs tests]
+
+- [Might be fixed - needs tests inside some host]
   Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
   https://www.kvraudio.com/forum/viewtopic.php?p=7257577#p7257577
   https://www.kvraudio.com/forum/viewtopic.php?t=606099
@@ -43,7 +52,9 @@ Bugs:
     ...soo - after all - there is actually already some infrastructure/mechanisam in place. It just
     needs to be used correctly.
   - OK - I added an implementation of ToolChain::setBeatsPerMinute ...that should perhaps solve it 
-    when ToolChain is used as plugin. We still need some solution when it is used as Standalone.
+    when ToolChain is used as plugin. We still need some solution when it is used as Standalone. 
+    Maybe liek in Surge: have an optional keyboard at the bottom and next to it some midi settings
+    like tempo
 
 - [DONE - Needs some more tests though]
   Look at the comments in AudioPluginWithMidiIn::processBlock in the block
@@ -60,37 +71,6 @@ Bugs:
   OK - the access violation is gone but we hit a jassert
   ToDo: use an enum class for listing the different effect algos in rosic::Quadrifex::effectAlgorithms
 
-- [FIXED]
-  When plugging in Straightliner fresh, it loads the init patch with the sawttoth wave - but the
-  Osc-phase settings at the bottom are wrong: they are all set to 1° instead of 0°. In standlaone,
-  setting them manually to zero, closing and re-opening, they will be back to 1. Also, when 
-  activating the 2n osc an closing/re-opening, the 2nd osc will be de-actiavted again. Set 
-  breakpoint in:  
-    MipMappedWaveTableStereo::setStereoPhaseShift
-  Setting it to 1 happens in  StraightlinerAudioModule::createEditor - creating an editor should 
-  *never* change a parameter in the underlying AudioModule!. More specifically, it happens in 
-    WaveOscEditorContextMenu::createWidgets()  when it calls  
-    addWidget( stereoPhaseShiftSlider = s = new Sld );  when it calls
-    RSlider::assignParameter();
-  hmm - it appears that the passed new Parameter object indeed has the value 1 in this call.
-  This happes also when plugging in a fresh WaveOscillator (from under construction)
-  -> write a unit test that triggers this behavior!
 
-- [FIXED]
-  Straightliner: when loading a ToolChain preset that uses Straighliner, some of the Osc-settings
-  seem to be not recalled. Try GoaBassdrumSaturated.xml. It should have a Stereo-Shift of 90° but is 
-  recalled with 0°. There is no issue when directly loading Straightliner presets within the synth
-  itself. The .xml has the correct data stored - so the problem occurs in "Load", not in "Save". 
-  But to debug this conveniently, we should first fix the next bug:
 
-- [FIXED?] WaveOscillator: "Level" and "Tune" slider sometimes freeze
 
-- Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
-  loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the
-  currentStateFile or something. Check FileManager::updateFileList() when it's called from
-  StateFileManager::loadStateFromXmlFile and StateFileManager::saveStateToXmlFile
-  Check if this bug also affects sample waveform loading in e.g. Straightliner -> Nope. Waveform 
-  loading works almost fine. The only thing is that after initially when not yet any file was 
-  loaded manually, the first click on the "Next" button loads the first file in the directory 
-  instead of the next one according to the currently loaded one.
-  It seems like after saving a preset, the skip buttons work right

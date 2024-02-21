@@ -11,6 +11,7 @@ UnitTestMisc::UnitTestMisc()
 void UnitTestMisc::runTest()
 {
   runTestColor();
+  runTestFileManager();
 }
 
 void UnitTestMisc::runTestColor()
@@ -67,6 +68,28 @@ void UnitTestMisc::runTestColor()
 
   // test setPixelRGB in jura_GraphicsTools.h
   // see PixelARGB::getInARGBMemoryOrder
+
+
+}
+
+void UnitTestMisc::runTestFileManager()
+{
+  // Create a couple of example files, if they don't exist already:
+  juce::File   exeFile = juce::File::getSpecialLocation(File::currentApplicationFile);
+  juce::File   exeDir  = exeFile.getParentDirectory();
+  juce::String str     = exeDir.getFullPathName();
+  str += "/FileManagerTest";
+
+  juce::File tmpDir(str);
+
+  if(!tmpDir.exists())
+  {
+    bool ok = tmpDir.createDirectory();
+    if(!ok)
+      showWarningBox("Warning", "Temporary directory for tests of class jura::FileManager could not be created");
+  }
+
+
 
   int dummy = 0;
 }

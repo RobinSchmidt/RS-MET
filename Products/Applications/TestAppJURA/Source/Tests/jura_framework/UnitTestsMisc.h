@@ -19,6 +19,8 @@ protected:
 
   // called from runTest:
   void runTestColor();
+  void runTestFileManager();
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestMisc)
