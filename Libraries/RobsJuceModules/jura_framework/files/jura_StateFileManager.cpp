@@ -55,7 +55,12 @@ bool StateFileManager::loadStateFromXmlFile(const File& fileToLoadFrom)
       updateFileList();
       delete xmlState;
       setStateName(fileToLoadFrom.getFileNameWithoutExtension(), true);
-      //markStateAsClean();
+
+      //markStateAsClean();  
+      // Why is this commented out? I think, it's because loadStateFromXmlFile is called only from
+      // loadFile which calls markStateAsClean - but the method is public so client code could 
+      // potentially call it...hmm...maybe we can make it private? ...OK...done
+
       return true;
     }
     else
@@ -70,7 +75,7 @@ bool StateFileManager::saveStateToXmlFile(const File& fileToSaveTo)
   // maybe we can use rojue::saveXmlToFile here?
 
   XmlElement* xmlState = getStateAsXml(fileToSaveTo.getFileNameWithoutExtension(), true);
-  if( xmlState == NULL )
+  if( xmlState == nullptr )
     return false;
   String myXmlDoc = xmlState->toString();
   if( fileToSaveTo.existsAsFile() )
@@ -92,7 +97,7 @@ bool StateFileManager::saveStateToXmlFile(const File& fileToSaveTo)
   updateFileList();
   delete xmlState;
   setStateName(fileToSaveTo.getFileNameWithoutExtension(), true);
-  //markStateAsClean();
+  //markStateAsClean();  // Why is this commented out?
   return true;
 }
 

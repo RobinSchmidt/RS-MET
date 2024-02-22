@@ -36,6 +36,9 @@ public:
   successful.  */
   bool saveToFile(const juce::File& fileToSaveTo) override;
 
+
+private:
+
   //-----------------------------------------------------------------------------------------------
   // \name Xml load/save:
 
@@ -47,8 +50,6 @@ public:
   xml-file as specified by the argument. */
   virtual bool saveStateToXmlFile(const juce::File& fileToSaveTo);
 
-
-protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StateFileManager)
 };
