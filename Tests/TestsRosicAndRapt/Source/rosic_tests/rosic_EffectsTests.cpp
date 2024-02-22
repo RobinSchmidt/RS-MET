@@ -1633,6 +1633,8 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
   ps.setWindowPower(windowPower);
   ps.setPhaseFormula(phaseFormula);
 
+
+#ifdef RS_DEBUG  // Needed because ps.blockToPlot etc. exists only for debug builds
   // Set up plotting:
   bool plot = true;  // maybe make it a function parameter
   if(plot)
@@ -1647,6 +1649,7 @@ std::vector<double> getSpectralShifterOutput(const std::vector<double> x, double
     //ps.plotWindowedOutputBlock = true;
     // ToDo: Maybe let the plotter plot to files
   }
+#endif
 
   // Apply the pitch shifting:
   std::vector<double> y(numSamples);

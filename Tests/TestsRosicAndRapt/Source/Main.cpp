@@ -66,8 +66,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  //ok &= runUnitTestsRapt();
-  //ok &= runUnitTestsRosic();
+  ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
   //waveformFractalization();
   //noise();
   //noiseReverseMode();
-  noiseTriModal();
+  //noiseTriModal();
   //noiseWaveShaped();
   //blit();
   //blep();
@@ -367,7 +367,7 @@ int main(int argc, char* argv[])
   //basicIntegerDelayLine();
 
   // Filter:
-  allpassFDN();                    // Under construction
+  //allpassFDN();                    // Under construction
   //bandwidthScaling();
   //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();
@@ -714,25 +714,47 @@ int main(int argc, char* argv[])
 
 
   //DEBUG_HOOK;
-  //int* test = new int;  // uncomment to see, if memleak test fires correctly
+  //int* leakTest = new int;  // Uncomment to see, if the memleak test fires correctly to rule out
+                              // false negatives.
   if(detectMemoryLeaks())
   {
     std::cout << "\n\n!!! Memory leaks detected (pre exit of main()) !!! \n";
-    //std::cout << "\n\n!!! Memory leaks detected !!! \n";
-    getchar();
+    //getchar();
   }
   // If memory leaks occur even though no objects are actually created on the heap, it could mean
   // that some class in a library module has a static data member that does a dynamic memory
   // allocation or some global object is created somewhere that dynamically allocates memory.
 
-  // todo: fix the memory leak - i guess it's in rosic - test it by building the project with
-  // rapt only - doesn't work - try to figure out, where heap memory is allocated..
+  // ToDo:
+  //
+  // -Maybe #define _CRTDBG_MAP_ALLOC in debug on in in Viusla Studio. This should give more
+  //  detailed leak information. See:
+  //  https://github.com/surge-synthesizer/surge/issues/7478
+  //  https://forum.juce.com/t/conflict-with--crtdbg-map-alloc-visual-studio/6040/10
+  //  https://forum.juce.com/t/need-memory-leak-detection-with-filename/10399
+  //  https://forum.juce.com/t/memory-leak-tips/1109/9
+  //  https://forum.juce.com/t/leak-detector/6516/6
+  //  https://forum.juce.com/t/memory-leak-tool/13330/13
+  //
+  // -Check out these tools and maybe start using them:
+  //  -Microsoft Application Verifier (AppVerifier)
+  //   https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/application-verifier
+  //  -Valgrind:
+  //   https://valgrind.org/docs/manual/quick-start.html
+  //  -Visual Leak Detector:
+  //   https://marketplace.visualstudio.com/items?itemName=ArkadyShapkin.VisualLeakDetectorforVisualC
+  //  -Address Sanitizer:
+  //   https://learn.microsoft.com/de-de/cpp/sanitizers/asan?view=msvc-170
 
+  // [Done?]:
+  // ToDo: fix the memory leak - i guess it's in rosic - test it by building the project 
+  // with rapt only - doesn't work - try to figure out, where heap memory is allocated.
+  //
   // set a debug-breakpoint _malloc_dbg in debug_heap.cpp and run the program - it gets called a
   // bunch of times from the startup code - skipping through these, later there will be a call
   // from the offending memory allocating code from our codebase
   // ..it seems to come from romos - compiling with rapt and rosic only doesn't produce memleaks
-
+  //
   // ok - its in:
   // void BlitIntegratorInitialStates::createStateValueTables()
   // deleteStateValueTables(); is called after the memleaks were detected hmmm..
@@ -748,7 +770,11 @@ int main(int argc, char* argv[])
   // maybe class ProcessingStatus can be extended for that - it would fit well there, too
 
 
-  //getchar();
+  getchar();
+  // Having the getchar here is more convenient for running the unit tests. Having it wrapped in
+  // the "if(detectMemoryLeaks())" conditional makes more sense for experiments.
+
+
   return(EXIT_SUCCESS);
 }
 

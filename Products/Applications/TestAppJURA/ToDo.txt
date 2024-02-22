@@ -1,2 +1,11 @@
 - The unit tests for ToolChain currently report one unit test that fails - but only when compiled
   in release mode. Figure out which one that is and why it fails - and then fix it to make it pass!
+
+- Maybe someday include also the unit and performance tests for rapt and rosic. But for this, their
+  code need to be moved around (maybe into the rs_testing juce module) and it will probably involve
+  a lot of grunt work. The idea is to be able to ship a compiled testing application to users when
+  they encounter a bug that i can't reproduce on my machine. Maybe they can run all the unit the 
+  tests on their machine and I can get a more detailed bug report from that. For that, it would be 
+  convenient, if *all* tests could be included into *one* GUI application. For the time being, I 
+  could give the user the compiled TestAppJURA and the commandline application for the rapt/rosic
+  tests separately. Certainly doable but a bit more inconvenient.
