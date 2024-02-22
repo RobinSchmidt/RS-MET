@@ -25,7 +25,7 @@ QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection* lockToUse,
   setModuleTypeName("Quadrifex");
 
   matrixModule = new RoutingMatrixAudioModule(lock, &wrappedQuadrifex->mixMatrix);
-  matrixModule->setModuleName(juce::String(("RoutingMatrix5x5")));
+  matrixModule->setModuleName("RoutingMatrix5x5");
   addChildAudioModule(matrixModule);
 
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
@@ -39,43 +39,43 @@ QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection* lockToUse,
     addChildAudioModule(effectModules[i]);
 
     // allocate memory to store the states internally:
-    bitCrusherStates[i]              = new XmlElement(juce::String(("BitCrusher")));
-    chorusStates[i]                  = new XmlElement(juce::String(("Chorus")));
-    combBankStates[i]                = new XmlElement(juce::String(("CombBank")));
-    combResonatorStates[i]           = new XmlElement(juce::String(("CombResonator")));
-    combStereoizerStates[i]          = new XmlElement(juce::String(("CombStereoizer")));
-    compressorStates[i]              = new XmlElement(juce::String(("Compressor")));
-    dualTwoPoleFilterStates[i]       = new XmlElement(juce::String(("DualTwoPoleFilter")));
-    equalizerStates[i]               = new XmlElement(juce::String(("Equalizer")));
-    expanderStates[i]                = new XmlElement(juce::String(("Expander")));
-    flangerStates[i]                 = new XmlElement(juce::String(("Flanger")));
-    formantShifterStates[i]          = new XmlElement(juce::String(("FormantShifter")));
-    fourPoleFilterStates[i]          = new XmlElement(juce::String(("FourPoleFilter")));
-    frequencyShifterStates[i]        = new XmlElement(juce::String(("FrequencyShifter")));
-    harmonicsStates[i]               = new XmlElement(juce::String(("Harmonics")));
-    ladderFilterStates[i]            = new XmlElement(juce::String(("LadderFilter")));
-    limiterStates[i]                 = new XmlElement(juce::String(("Limiter")));
-    modulatedAllpassStates[i]        = new XmlElement(juce::String(("ModulatedAllpass")));
-    noiseGateStates[i]               = new XmlElement(juce::String(("NoiseGate")));
-    noisifierStates[i]               = new XmlElement(juce::String(("Noisifier")));
-    phaserStates[i]                  = new XmlElement(juce::String(("Phaser")));
-    phaseStereoizerStates[i]         = new XmlElement(juce::String(("PhaseStereoizer")));
-    pingPongEchoStates[i]            = new XmlElement(juce::String(("PingPongEcho")));
-    pitchShifterStates[i]            = new XmlElement(juce::String(("PitchShifter")));
-    reverbStates[i]                  = new XmlElement(juce::String(("Reverb")));
-    ringModulatorStates[i]           = new XmlElement(juce::String(("RingModulator")));
-    simpleDelayStates[i]             = new XmlElement(juce::String(("SimpleDelay")));
-    sineOscillatorStates[i]          = new XmlElement(juce::String(("SineOscillator")));
-    singleSidebandModulatorStates[i] = new XmlElement(juce::String(("SingleSidebandModulator")));
-    slewRateLimiterStates[i]         = new XmlElement(juce::String(("SlewRateLimiter")));
-    slopeFilterStates[i]             = new XmlElement(juce::String(("SlopeFilter")));
-    stereoPanStates[i]               = new XmlElement(juce::String(("StereoPan")));
-    stereoWidthStates[i]             = new XmlElement(juce::String(("StereoWidth")));
-    tremoloStates[i]                 = new XmlElement(juce::String(("Tremolo")));
-    twoPoleFilterStates[i]           = new XmlElement(juce::String(("TwoPoleFilter")));
-    vibratoStates[i]                 = new XmlElement(juce::String(("Vibrato")));
-    wahWahStates[i]                  = new XmlElement(juce::String(("WahWah")));
-    waveShaperStates[i]              = new XmlElement(juce::String(("WaveShaper")));
+    bitCrusherStates[i]              = new XmlElement("BitCrusher");
+    chorusStates[i]                  = new XmlElement("Chorus");
+    combBankStates[i]                = new XmlElement("CombBank");
+    combResonatorStates[i]           = new XmlElement("CombResonator");
+    combStereoizerStates[i]          = new XmlElement("CombStereoizer");
+    compressorStates[i]              = new XmlElement("Compressor");
+    dualTwoPoleFilterStates[i]       = new XmlElement("DualTwoPoleFilter");
+    equalizerStates[i]               = new XmlElement("Equalizer");
+    expanderStates[i]                = new XmlElement("Expander");
+    flangerStates[i]                 = new XmlElement("Flanger");
+    formantShifterStates[i]          = new XmlElement("FormantShifter");
+    fourPoleFilterStates[i]          = new XmlElement("FourPoleFilter");
+    frequencyShifterStates[i]        = new XmlElement("FrequencyShifter");
+    harmonicsStates[i]               = new XmlElement("Harmonics");
+    ladderFilterStates[i]            = new XmlElement("LadderFilter");
+    limiterStates[i]                 = new XmlElement("Limiter");
+    modulatedAllpassStates[i]        = new XmlElement("ModulatedAllpass");
+    noiseGateStates[i]               = new XmlElement("NoiseGate");
+    noisifierStates[i]               = new XmlElement("Noisifier");
+    phaserStates[i]                  = new XmlElement("Phaser");
+    phaseStereoizerStates[i]         = new XmlElement("PhaseStereoizer");
+    pingPongEchoStates[i]            = new XmlElement("PingPongEcho");
+    pitchShifterStates[i]            = new XmlElement("PitchShifter");
+    reverbStates[i]                  = new XmlElement("Reverb");
+    ringModulatorStates[i]           = new XmlElement("RingModulator");
+    simpleDelayStates[i]             = new XmlElement("SimpleDelay");
+    sineOscillatorStates[i]          = new XmlElement("SineOscillator");
+    singleSidebandModulatorStates[i] = new XmlElement("SingleSidebandModulator");
+    slewRateLimiterStates[i]         = new XmlElement("SlewRateLimiter");
+    slopeFilterStates[i]             = new XmlElement("SlopeFilter");
+    stereoPanStates[i]               = new XmlElement("StereoPan");
+    stereoWidthStates[i]             = new XmlElement("StereoWidth");
+    tremoloStates[i]                 = new XmlElement("Tremolo");
+    twoPoleFilterStates[i]           = new XmlElement("TwoPoleFilter");
+    vibratoStates[i]                 = new XmlElement("Vibrato");
+    wahWahStates[i]                  = new XmlElement("WahWah");
+    waveShaperStates[i]              = new XmlElement("WaveShaper");
   }
 
   initializeAutomatableParameters();
