@@ -19,7 +19,8 @@ https://github.com/DISTRHO/JUCE
 
 Bugs:
 
-- Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
+- [FIXED]
+  Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
   loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the
   currentStateFile or something. Check FileManager::updateFileList() when it's called from
   StateFileManager::loadStateFromXmlFile and StateFileManager::saveStateToXmlFile

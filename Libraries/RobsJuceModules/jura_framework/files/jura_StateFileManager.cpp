@@ -21,21 +21,26 @@ StateFileManager::~StateFileManager()
 bool StateFileManager::loadFile(const File& fileToLoad)
 { 
   bool result = loadStateFromXmlFile(fileToLoad);
-  if( result == true ) 
+  if(result == true)
+  {
     markFileAsClean(true);
-  notifyListeners();
+    FileManager::setActiveFile(fileToLoad);   // new
+  }
+  notifyListeners();        // Why is this not inside the "if(result == true)" ?
   return result;
-  // I think, we need to update the activeFileIndex...but loadStateFromXmlFile calls updateFileList
-  // which should take care of this update - but no - updateFileList does not get any info which 
-  // file was loaded. I think we need to call setActiveFileIfInList or setActiveFile
+  // I think, we need to update the activeFileIndex. I think we need to call 
+  // setActiveFileIfInList or setActiveFile
 }
 
 bool StateFileManager::saveToFile(const File& fileToSaveTo)
 {
   bool result = saveStateToXmlFile(fileToSaveTo);
-  if( result == true ) 
+  if(result == true)
+  {
     markFileAsClean(true);
-  notifyListeners();
+    FileManager::setActiveFile(fileToSaveTo);   // new
+  }
+  notifyListeners();       // Why is this not inside the "if(result == true)" ?
   return result;
 }
 
@@ -52,7 +57,13 @@ bool StateFileManager::loadStateFromXmlFile(const File& fileToLoadFrom)
     if( xmlState != nullptr )
     {
       setStateFromXml(*xmlState, fileToLoadFrom.getFileNameWithoutExtension(), true);
+
       updateFileList();
+      // I think, updating the file list is only necessarry when the new fileToLoadFrom resides in
+      // a different directory than the filed that was previously loaded. Maybe put the update into
+      // a conditional and then test, test, test
+
+
       delete xmlState;
       setStateName(fileToLoadFrom.getFileNameWithoutExtension(), true);
 
@@ -97,7 +108,7 @@ bool StateFileManager::saveStateToXmlFile(const File& fileToSaveTo)
   updateFileList();
   delete xmlState;
   setStateName(fileToSaveTo.getFileNameWithoutExtension(), true);
-  //markStateAsClean();  // Why is this commented out?
+  //markStateAsClean();  // Why is this commented out? See comment in load...
   return true;
 }
 

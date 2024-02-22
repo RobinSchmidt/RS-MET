@@ -136,7 +136,7 @@ bool FileManager::setActiveFile(const File& newActiveFile)
     int oldIndex = activeFileIndex;
     if( setActiveDirectory(newActiveFile.getParentDirectory()) == false )
     {
-      activeFileIndex = oldIndex;
+      activeFileIndex = oldIndex;  // Maybe we should set it to -1?
       fileList.getLock().exit();
       return false;
     }

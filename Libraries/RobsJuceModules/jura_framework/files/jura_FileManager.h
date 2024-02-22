@@ -140,6 +140,8 @@ public:
 
   /** Sets the currently active file, but only if the file is present in the fileList. */
   virtual bool setActiveFileIfInList(const juce::File& newActiveFile);
+  // Do we really need this? Isn't setActiveFile enough? Figure out and document why we need this
+  // or get rid of it.
 
   /** Marks the current file as 'saved', indicating that the file on the disk is in sync with
   the currently visible state. When the user performs some action that makes the current state
