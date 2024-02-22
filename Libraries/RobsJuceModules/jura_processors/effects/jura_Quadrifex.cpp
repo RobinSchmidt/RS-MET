@@ -168,7 +168,7 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       jura::BitCrusherAudioModule *audioModule =
         static_cast<jura::BitCrusherAudioModule*> (effectModules[slotIndex]);
       delete bitCrusherStates[slotIndex];
-      bitCrusherStates[slotIndex] = audioModule->getStateAsXml(juce::String(), false);
+      bitCrusherStates[slotIndex] = audioModule->getStateAsXml("", false);
     } break;
   case rosic::Quadrifex::CHORUS:
     {

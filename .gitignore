@@ -81,3 +81,4 @@ Tests/Optimization/VS2019/x64/Debug/
 Tests/Optimization/VS2019/x64/Release/
 
 Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Debug/App/StateFileManagerTest/
+Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Release/App/StateFileManagerTest/
