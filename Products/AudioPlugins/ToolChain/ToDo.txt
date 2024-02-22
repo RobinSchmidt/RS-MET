@@ -19,17 +19,31 @@ https://github.com/DISTRHO/JUCE
 
 Bugs:
 
+- Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
+  Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
+  ToDo: 
+  -Use an enum class for listing the different effect algos in rosic::Quadrifex::effectAlgorithms
+
+- Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
+  that shouldn't. Also: the routing menu is partially obscured by the routing graphics
+
+- Quadrifex: the patches always contain for each slot a patch for every possible effect that 
+  *could be* in the slot, regardless whether ot not it actually *is* in the slot. That's wasteful.
+  Most of the time, the patch is in default state anyway, i.e. conatins no settings. Maybe make a 
+  compromise: save the patch for the effect only if it contains (non-default) settings. Maybe write
+  a containsPatchSettings() function that receives an xml patch. It should scan it (recursively) 
+  for attributes and ignore the PatchFormat attribute. Save it only, if that function returns true.
+
 - [almost FIXED]
   Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
   loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the
   currentStateFile or something. Check FileManager::updateFileList() when it's called from
   StateFileManager::loadStateFromXmlFile and StateFileManager::saveStateToXmlFile
-  Check if this bug also affects sample waveform loading in e.g. Straightliner -> Nope. Waveform 
-  loading works almost fine. The only thing is that after initially when not yet any file was 
-  loaded manually, the first click on the "Next" button loads the first file in the directory 
-  instead of the next one according to the currently loaded one.
-  It seems like after saving a preset, the skip buttons work right
-  Make a unit test (State)FileManager::loadNextFile/loadPreviousFile
+  Check if this bug also affects sample waveform loading in e.g. Straightliner -> Nope. 
+  This is the thing that still remains (I think): Waveform loading works almost fine. The only 
+  thing is that after initially when not yet any file was loaded manually, the first click on the 
+  "Next" button loads the first file in the directory instead of the next one according to the 
+  currently loaded one. 
 
 - [Might be fixed - needs tests inside some host]
   Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
@@ -61,15 +75,13 @@ Bugs:
     "if( wrappedAudioModule->wantsTempoSyncInfo ) {....}  "
   This block should probably be rewritten entirely.
 
-- Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
-   that shouldn't
 
-- Quadrifex: load preset NonLinearReverb002. Gives access violation in 
-  rsBiquadCascade<TSig, TCoef>::initBiquadCoeffs(). This seems to be reproducible. Write a unit test 
-  that exposes this! It seems to happen in the constructor of FrequencyShifterStereoModule, so let's 
-  write a unit test that constructs it (and maybe more)
-  OK - the access violation is gone but we hit a jassert
-  ToDo: use an enum class for listing the different effect algos in rosic::Quadrifex::effectAlgorithms
+GUI issues (layout, appearance, etc.):
+-Frequency displays have ticks at powers of two rather than (sub)multiples of 1 kHz
+-In the Equalizer, there is some issue with the right border, I think. Also, the Range label is 
+ cramped with the L/R or M/S buttons in stereo L/R and M/S mode
+-Breakpoint modulator: the loop indicators are in an obtrusive yellow.
+
 
 
 

@@ -2148,7 +2148,15 @@ void QuadrifexModuleEditor::createEditorForSlot(int slotIndex, int algorithmInde
     return;
 
   jassert( moduleEditors[slotIndex] == NULL );
-  // you should delete the old editor and null the pointer before creating a new one
+  // You should delete the old editor and null the pointer before creating a new one
+
+  // The code is a very tedious way of doing it written at a time at which my coding skills were,
+  // ...well...let's say immature. Maybe a better way to do it would be to just do:
+  //
+  //   return quadrifexModuleToEdit->getEffectAudioModule(slotIndex)->createEditor();
+  //
+  // Maybe giving createEditor a parameter FOR_QUADRIFEX from an enum - or maybe call it
+  // EDITOR_SMALL
 
   switch( algorithmIndex )
   {
