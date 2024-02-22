@@ -94,6 +94,12 @@ public:
 };
 void UnitTestMisc::runTestStateFileManager()
 {
+  // This test was motivated by a bug hwich had the effect that after loading a new preset and then
+  // trying so skip to the next, a wrong "next" preset was loaded because we didn't properly update
+  // the active file in StateFileManager after loading a new file.
+  // This test is still very incomplete and should be extended with more test cases. It's actually
+  // just a stub at the moment.
+
   // Create a couple of example .xml files in some special subdirectory of the executable's 
   // directory, if they don't exist already:
   juce::File   exeFile = juce::File::getSpecialLocation(File::currentApplicationFile);
@@ -145,7 +151,11 @@ void UnitTestMisc::runTestStateFileManager()
 
   int dummy = 0;
 
-  // ToDo: 
+  // ToDo:
+  // -Add tests that call functions like loadFile, loadNextFile etc. and make sure that the 
+  //  fileList and activeFile are always as expected.
+  // -Maybe also create a second folder with xml files and load a file from this. We also want to
+  //  test the folder change
   // -Create also a special kind of FileManagerListener that logs the callbacks and check that they
   //  are called correctly. Mayb do the same for StateWatcher
 }
