@@ -1,35 +1,8 @@
-
--Instruments should add their own output to what's already there to enable layering
--Maybe instruments should also be able to use their input signal as source like an oscillator that 
- can be shaped by the filters and effects
--But how could we implement both? I think, maybe I should give instruments two additional sliders:
- -A pass-through volume slider
- -A slider fro mixing the input with the other oscillators
--Maybe don't mix instruments/effects with modulators in the same slot-chain - have a separate 
- slot-chain for the modulators instead.
-
-
-
-Try to support LV2, see:
-https://jatinchowdhury18.medium.com/building-lv2-plugins-with-juce-and-cmake-d1f8937dbac3
-https://github.com/lv2-porting-project/JUCE
-https://github.com/lvtk/jlv2
-https://github.com/DISTRHO/JUCE
-
-
-Bugs:
+---------------------------------------------------------------------------------------------------
+Bugs
 
 - Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
-  ToDo: 
-  -Use an enum class for listing the different effect algos in rosic::Quadrifex::effectAlgorithms
-
-- Quadrifex: the patches always contain for each slot a patch for every possible effect that 
-  *could be* in the slot, regardless whether ot not it actually *is* in the slot. That's wasteful.
-  Most of the time, the patch is in default state anyway, i.e. conatins no settings. Maybe make a 
-  compromise: save the patch for the effect only if it contains (non-default) settings. Maybe write
-  a containsPatchSettings() function that receives an xml patch. It should scan it (recursively) 
-  for attributes and ignore the PatchFormat attribute. Save it only, if that function returns true.
 
 - WaveOscillator: Initially when not yet any file was loaded manually, the first click on the 
   "Next" button loads the first file in the current directory instead of the next one according to 
@@ -57,16 +30,63 @@ Bugs:
     needs to be used correctly.
   - OK - I added an implementation of ToolChain::setBeatsPerMinute ...that should perhaps solve it 
     when ToolChain is used as plugin. We still need some solution when it is used as Standalone. 
-    Maybe liek in Surge: have an optional keyboard at the bottom and next to it some midi settings
+    Maybe like in Surge: have an optional keyboard at the bottom and next to it some midi settings
     like tempo
 
+- In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
+  ToolChain. -> Move this list to here.
 
-GUI issues (layout, appearance, etc.):
--Frequency displays have ticks at powers of two rather than (sub)multiples of 1 kHz
--In the Equalizer, there is some issue with the right border, I think. Also, the Range label is 
- cramped with the L/R or M/S buttons in stereo L/R and M/S mode
--Breakpoint modulator: the loop indicators are in an obtrusive yellow.
--Quadrifex: the routing menu is partially obscured by the routing graphics
+---------------------------------------------------------------------------------------------------
+Features
+
+- Instruments should add their own output to what's already there to enable layering
+
+- Maybe instruments should also be able to use their input signal as source like an oscillator that 
+  can be shaped by the filters and effects. But how could we implement both? I think, maybe I 
+  should give instruments two additional sliders:
+  -A pass-through volume slider
+  -A slider fro mixing the input with the other oscillators
+
+- Maybe don't mix instruments/effects with modulators in the same slot-chain - have a separate 
+  slot-chain for the modulators instead.
+
+- Try to support LV2, see:
+  https://jatinchowdhury18.medium.com/building-lv2-plugins-with-juce-and-cmake-d1f8937dbac3
+  https://github.com/lv2-porting-project/JUCE
+  https://github.com/lvtk/jlv2
+  https://github.com/DISTRHO/JUCE
+
+
+---------------------------------------------------------------------------------------------------
+Improvements
+
+- Quadrifex: the patches always contain for each slot a patch for every possible effect that 
+  *could be* in the slot, regardless whether ot not it actually *is* in the slot. That's wasteful.
+  Most of the time, the patch is in default state anyway, i.e. conatins no settings. Maybe make a 
+  compromise: save the patch for the effect only if it contains (non-default) settings. Maybe write
+  a containsPatchSettings() function that receives an xml patch. It should scan it (recursively) 
+  for attributes and ignore the PatchFormat attribute. Save it only, if that function returns true.
+
+
+---------------------------------------------------------------------------------------------------
+Code Quality
+
+- Use an enum class for listing the different effect algos in rosic::Quadrifex::effectAlgorithms.
+  We should generally use enum classes for such options.
+
+
+---------------------------------------------------------------------------------------------------
+Cosmetic GUI issues (layout, appearance, etc.):
+
+- Frequency displays have ticks at powers of two rather than (sub)multiples of 1 kHz
+
+- In the Equalizer, there is some issue with the right border, I think. Also, the Range label is 
+  cramped with the L/R or M/S buttons in stereo L/R and M/S mode
+
+- Breakpoint modulator: the loop indicators are in an obtrusive yellow. This only affects the 
+  "standalone" enve-gen editor - not the one used in Straightliner.
+
+- Quadrifex: the routing menu is partially obscured by the routing graphics
 
 
 
