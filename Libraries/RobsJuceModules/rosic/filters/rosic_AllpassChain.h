@@ -82,6 +82,10 @@ namespace rosic
   protected:
 
     static const int maxNumStages = 24;
+    // ToDo: Maybe make that a user-adjustable parameter, too. The user could pass the maxNumStages
+    // as constructor argument (defaulting to 24). But then we need to allocate the x1, x2, y1, y2 
+    // buffers on the heap. Maybe write a performance test and check if doing so has an impact on
+    // the performance. If it slows things down, then maybe we should not do it.
 
     // filter coefficients:
     double b0, b1, b2, a1, a2;

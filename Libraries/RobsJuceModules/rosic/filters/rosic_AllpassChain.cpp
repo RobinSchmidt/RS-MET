@@ -61,6 +61,7 @@ void AllpassChain::setQ(double newQ, bool updateCoefficients)
 
 void AllpassChain::setNumStages(int newNumStages)
 {
+  RAPT::rsAssert(newNumStages <= maxNumStages, "We currently have a limit of 24 stages");
   if( newNumStages >= 0 && newNumStages <= maxNumStages )
     numStages = newNumStages;
 }

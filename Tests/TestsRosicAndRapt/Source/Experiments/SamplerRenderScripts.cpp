@@ -538,10 +538,60 @@ void createMiscSamples()
   int dummy = 0;
 }
 
+void applyAllpassChain(const double* x, int N, double* y, double freq, double quality, 
+  int numStages, double sampleRate)
+{
+  // As a convention, we switch to a first order allpass chain when the quality fcator Q is zero:
+  bool useBiquad = quality != 0.0;
+
+  // Create and set up the allpass chain filter:
+  rosic::AllpassChain apc;
+  apc.setSampleRate(sampleRate);
+  apc.setFrequency(freq);
+  apc.setNumStages(numStages);
+  apc.setQ(quality);
+  if(useBiquad)
+    apc.setMode(apc.SECOND_ORDER_ALLPASS);
+  else
+    apc.setMode(apc.FIRST_ORDER_ALLPASS);
+
+  // Apply the allpass to x and write the result into y:
+  for(int n = 0; n < N; n++)
+    y[n] = apc.getSample(x[n]);
+
+
+  // ToDo: 
+  // -Allow for arbitrary number of stages. Currently rosic::AllpassChain has a limit of 24.
+}
+
+// Convenience function:
+void applyAllpassChain(std::vector<double>& inOut, double freq, double quality, int numStages,
+  double sampleRate)
+{
+  applyAllpassChain(&inOut[0], (int) inOut.size(), &inOut[0], freq, quality, numStages, sampleRate);
+}
+
 void createAllpassBassdrum1()
 {
+  // User parameters:
+  int    sampleRate = 48000;  // Sample rate in Hz
+  double length     = 0.5;    // Length in seconds
 
-  int dummy = 0;
+  //double freq1      = 1000;
+  //double Q1         = 2.0;    // Using Q=0 will switch to a 1st order filter
+  //double numStages1 = 5;
+
+
+  int N = ceil(length * sampleRate);  // Number of samples to render
+  using Vec = std::vector<double>;
+
+  Vec x(N);
+  x[0] = 1;
+
+
+  applyAllpassChain(x, 10000.0, 2.0, 5, sampleRate);
+
+  rsPlotVector(x);
 }
 
 void createAllpassDrums()
