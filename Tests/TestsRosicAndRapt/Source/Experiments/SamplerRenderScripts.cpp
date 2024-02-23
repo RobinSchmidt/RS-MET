@@ -573,43 +573,47 @@ void applyAllpassChain(std::vector<double>& inOut, double freq, double quality, 
 
 void createAllpassBassdrum1()
 {
+  // This is the first attempt to render a sine-sweepdown based bassdrum sample.
+
   // User parameters:
   int    sampleRate = 48000;  // Sample rate in Hz
   double length     = 0.5;    // Length in seconds
+  double Q          = 1.0;    // Using 0 will switch to 1st order allpass
+  double S          = 5;      // Number of stages per allpass chain
 
-  //double freq1      = 1000;
-  //double Q1         = 2.0;    // Using Q=0 will switch to a 1st order filter
-  //double numStages1 = 5;
-
-
+  // Render sample:
   int N = ceil(length * sampleRate);  // Number of samples to render
   using Vec = std::vector<double>;
-
   Vec x(N);
   x[0] = 1;
+  applyAllpassChain(x, 16000.0,  Q, S, sampleRate);
+  applyAllpassChain(x,  8000.0,  Q, S, sampleRate);
+  applyAllpassChain(x,  4000.0,  Q, S, sampleRate);
+  applyAllpassChain(x,  2000.0,  Q, S, sampleRate);
+  applyAllpassChain(x,  1000.0,  Q, S, sampleRate);
+  applyAllpassChain(x,   500.0,  Q, S, sampleRate);
+  applyAllpassChain(x,   250.0,  Q, S, sampleRate);
+  applyAllpassChain(x,   125.0,  Q, S, sampleRate);
+  applyAllpassChain(x,    62.5,  Q, S, sampleRate);
+  applyAllpassChain(x,    31.25, Q, S, sampleRate);
 
-
-
-  double Q = 1.0;
-  double S = 5;      // number of stages
-
-  applyAllpassChain(x, 8000.0, Q, S, sampleRate);
-  applyAllpassChain(x, 4000.0, Q, S, sampleRate);
-  applyAllpassChain(x, 2000.0, Q, S, sampleRate);
-  applyAllpassChain(x, 1000.0, Q, S, sampleRate);
-  applyAllpassChain(x,  500.0, Q, S, sampleRate);
-  applyAllpassChain(x,  250.0, Q, S, sampleRate);
-  applyAllpassChain(x,  125.0, Q, S, sampleRate);
-
-
+  // Normalize and write it to a wavefile:
   RAPT::rsArrayTools::normalize(&x[0], N);
   rosic::writeToMonoWaveFile("AllpassBassdrum1.wav", &x[0], N, sampleRate, 16);
-
-  rsPlotVector(x);
+  //rsPlotVector(x);
 
   // Observations:
   // -Smaller values of Q seem to give faster sweepdowns
   // -Smaller values of S seem to give faster sweepdowns as well
+  // -The highest frequency used affects how much the transient is smeared over time. When using 
+  //  1kHz as highes allpass freq, we get a strong impulse at the start. When usiing 16 kHz as 
+  //  highest freq, the initial impulse is more smeared out over time. I think, The higher we go,
+  //  the more smeared out the higher frequencies will be. That means, we can use that parameter to
+  //  determine the initial sweep speed? Going higher makes the sweep initially slower or 
+  //  something? Or to put it the other was: when the highest freq is rather low, then the high 
+  //  frequencies are more crammed into the initial section.
+  //  -I think, the sweet spot is around 8000. Going up to 16 doesn't seem to make much of an 
+  //   audible difference - but maybe that's just my ears
 
   // ToDo:
   // -Plot a spectrogram
@@ -617,7 +621,13 @@ void createAllpassBassdrum1()
   // -Plot a ringing response
   // -Maybe write a class that encapsulates the DSP process and write an APE script for 
   //  experimenting with the algo
+  // -Use an EQ to boost the bass frequencies
+  // -Define some meaningful macro parameters:
+  //  fLow, fHigh, qLow, qHigh, numChains
+  // -Try 1st order allpasses
 }
+
+
 
 void createAllpassDrums()
 {
