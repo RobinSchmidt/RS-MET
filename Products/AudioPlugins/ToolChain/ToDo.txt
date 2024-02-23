@@ -19,13 +19,14 @@ https://github.com/DISTRHO/JUCE
 
 Bugs:
 
+- [FIXED]
+  Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
+  that shouldn't.
+
 - Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
   ToDo: 
   -Use an enum class for listing the different effect algos in rosic::Quadrifex::effectAlgorithms
-
-- Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
-  that shouldn't. Also: the routing menu is partially obscured by the routing graphics
 
 - Quadrifex: the patches always contain for each slot a patch for every possible effect that 
   *could be* in the slot, regardless whether ot not it actually *is* in the slot. That's wasteful.
@@ -81,6 +82,7 @@ GUI issues (layout, appearance, etc.):
 -In the Equalizer, there is some issue with the right border, I think. Also, the Range label is 
  cramped with the L/R or M/S buttons in stereo L/R and M/S mode
 -Breakpoint modulator: the loop indicators are in an obtrusive yellow.
+-Quadrifex: the routing menu is partially obscured by the routing graphics
 
 
 

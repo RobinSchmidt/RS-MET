@@ -1250,7 +1250,7 @@ void QuadrifexRoutingDiagram::drawRoutingDiagram(Graphics &g)
   float cy = 0;
   float d  = sqrt((float)s2);  // diagonal distance of arrowhead from circle for adders with arrows at 45°
 
-                               //Colour colour = Colours::black;
+  //Colour colour = Colours::black;
 
   if( slotRouting == rosic::Quadrifex::R_1TO2TO3TO4 )
   {
@@ -1348,6 +1348,8 @@ void QuadrifexRoutingDiagram::drawRoutingDiagram(Graphics &g)
   }
   else if( slotRouting == rosic::Quadrifex::R_1PLUS2PLUS3PLUS4 )
   {
+    //juce::Colour yellow(255,255,0);  // for dbugging
+
     x = w2 - (3*s);
 
     g.drawLine(x, y, x+s, y, 2.f);
@@ -1648,13 +1650,8 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
 {
   ScopedLock scopedLock(*plugInLock);
 
-  //Colour oldColour = g.getCurrentColour();
-
   const BitmapFontRoundedBoldA10D0* font = &BitmapFontRoundedBoldA10D0::instance;
-
   slotBoxes[slotIndex].setBounds((int)x, (int)y, (int)w, (int)h);
-
-  //Colour diagramColour = Colours::black;
   Colour diagramColour = plotColourScheme.getCurveColour(0);
 
   if( algoIndex == rosic::Quadrifex::MUTE )
@@ -1665,10 +1662,13 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
     g.setColour(Colours::red.darker(0.5f));
     g.drawLine(x,   y, x+w, y+h, 2.f);
     g.drawLine(x+w, y, x,   y+h, 2.f);
+    g.setColour(diagramColour);
+    // Yes - we need to set the color back here. If we don't, we may get parts of the diagram get 
+    // drawn in red that shouldn't be red. This happens when routing is set to 1+2+3+4 and the 4th 
+    // slot is muted.
 
     drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1),
-      font, diagramColour, -1,
-      Justification::centred);
+      font, diagramColour, -1, Justification::centred);
   }
   else if( algoIndex == rosic::Quadrifex::BYPASS )
   {
@@ -1690,8 +1690,6 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
     drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1),
       font, diagramColour, -1, Justification::centred);
   }
-
-  //g.setColour(oldColour);
 }
 
 //=================================================================================================
