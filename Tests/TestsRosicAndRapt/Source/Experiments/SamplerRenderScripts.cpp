@@ -589,9 +589,34 @@ void createAllpassBassdrum1()
   x[0] = 1;
 
 
-  applyAllpassChain(x, 10000.0, 2.0, 5, sampleRate);
+
+  double Q = 1.0;
+  double S = 5;      // number of stages
+
+  applyAllpassChain(x, 8000.0, Q, S, sampleRate);
+  applyAllpassChain(x, 4000.0, Q, S, sampleRate);
+  applyAllpassChain(x, 2000.0, Q, S, sampleRate);
+  applyAllpassChain(x, 1000.0, Q, S, sampleRate);
+  applyAllpassChain(x,  500.0, Q, S, sampleRate);
+  applyAllpassChain(x,  250.0, Q, S, sampleRate);
+  applyAllpassChain(x,  125.0, Q, S, sampleRate);
+
+
+  RAPT::rsArrayTools::normalize(&x[0], N);
+  rosic::writeToMonoWaveFile("AllpassBassdrum1.wav", &x[0], N, sampleRate, 16);
 
   rsPlotVector(x);
+
+  // Observations:
+  // -Smaller values of Q seem to give faster sweepdowns
+  // -Smaller values of S seem to give faster sweepdowns as well
+
+  // ToDo:
+  // -Plot a spectrogram
+  // -Plot a group-delay response
+  // -Plot a ringing response
+  // -Maybe write a class that encapsulates the DSP process and write an APE script for 
+  //  experimenting with the algo
 }
 
 void createAllpassDrums()
