@@ -34,7 +34,7 @@ Bugs
     like tempo
 
 - In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
-  ToolChain. -> Move this list to here.
+  ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 
 ---------------------------------------------------------------------------------------------------
 Features
@@ -55,6 +55,16 @@ Features
   https://github.com/lv2-porting-project/JUCE
   https://github.com/lvtk/jlv2
   https://github.com/DISTRHO/JUCE
+
+
+---------------------------------------------------------------------------------------------------
+Modules
+
+- PhasyQ: Like EasyQ but with allpass filters. We could have different kinds of allpasses:
+  1st order, 2nd order (biquad), allpass-delay, nested allpass-delay. How would a 2nd order 
+  allpass delay work? Maybe it would be like the biquad but use x[n-M], x[n-M-1] instead of 
+  x[n-1], x[n-2] and likewise for the delayed output y? Or maybe we need x[n-M], x[n-2*M]?
+  Maybe each band/node could have itself a numStages parameter.
 
 
 ---------------------------------------------------------------------------------------------------

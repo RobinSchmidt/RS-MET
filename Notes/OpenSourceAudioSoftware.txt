@@ -9,6 +9,10 @@ https://github.com/surge-synthesizer/surge
 -A hybrid synthesizer (mostly VA but with some more exotic oscillator types). Very poppular with 
  active community.
 
+Element:
+https://github.com/kushview/element
+-A modular AU/LV2/VST/VST3 audio plugin host. Works standalone or as plugin. 
+
 Vital:
 https://github.com/mtytel/vital
 -A spectral warping wavetable synthesizer with very visual GUI.
@@ -39,7 +43,7 @@ https://www.giadamusic.com/
 
 Carla:
 https://kx.studio/Applications:Carla
--A modular audio plugin host
+-A modular audio plugin host. Works standalone only, I think (verify!).
 
 Wavetable:
 https://github.com/FigBug/Wavetable
@@ -50,3 +54,10 @@ https://github.com/FigBug/SocaLabs
 -Audio Plugins by FigBug - includes the "Wavetable" synth above. Other plugins are an organ, a 
  piano, Voc (vocal synth), mverb (Dattorro figure-8 reverb), emulations of: Commodore SID, Nintendo 
  RP2A03, Gameboy PAPU, Sega SN76489
+
+Audio Programming Environment:
+https://www.jthorborg.com/ape.html
+https://bitbucket.org/Mayae/ape/src/master/
+-An audio plugin, that allows to directly program C++ DSP in real time.
+-https://www.kvraudio.com/forum/viewtopic.php?t=402054
+ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622

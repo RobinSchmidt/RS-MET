@@ -538,6 +538,21 @@ void createMiscSamples()
   int dummy = 0;
 }
 
+void createAllpassBassdrum1()
+{
+
+  int dummy = 0;
+}
+
+void createAllpassDrums()
+{
+  // The idea is to use the impulse responses of allpass filters to create percussive sounds. These 
+  // sounds will occupy the full spectrum, i.e. they will be white. That's a good starting point 
+  // for a drum sound. Later, it may be further shaped by using lopwass/highpass/bandpass/peak/etc.
+  // filters.
+
+  createAllpassBassdrum1();
+}
 
 void createSamplerWaveforms()
 {
@@ -556,8 +571,8 @@ void createSamplerWaveforms()
   // -Create various filtered versions moving average filters...the goal is to preserve the 
   //  time domain waveform as closely as possible ...maybe use a 
   //  filter -> decimate -> interpolate procedure for the higher tables
-  //  ...maybe to avoid boudary artifacts from the MA filters, we should use 3 cycles for the
-  //  filtering and then etract the middle one
+  //  ...maybe to avoid boundary artifacts from the MA filters, we should use 3 cycles for the
+  //  filtering and then extract the middle one
 
   using Vec = std::vector<double>;
   using SWR = rosic::StandardWaveformRenderer;
@@ -615,8 +630,8 @@ void createSamplerWaveforms()
   //  -Commenting out the "Truncate the spectrum for the next iteration" part doesn't fix it.
   //  -Maybe it has to do with the weird encoding of DC and Nyquist gain in the 0th spectral bin?
   // -Looks like we could have one more level...but it will consume more memory
-  // -Write the different rendered levels to wavefiles with a meaningfully formatted way, such as
-  //  Saw_K21 for the w2048 wave.
+  // -[Done?] Write the different rendered levels to wavefiles with a meaningfully formatted way, 
+  //  such as Saw_K21 for the w2048 wave.
 
   int dummy = 0;
 }
