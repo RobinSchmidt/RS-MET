@@ -627,6 +627,42 @@ void createAllpassBassdrum1()
   // -Try 1st order allpasses
 }
 
+void createAllpassBassdrum2()
+{
+  // User parameters:
+  int    sampleRate = 48000;  // Sample rate in Hz
+  double length     = 0.5;    // Length in seconds
+  double loQ        = 1.0;
+  double hiQ        = 1.0;
+  //double loF        = 55;
+  double loF        = 27.5;
+  double hiF        = 14080;
+  int    numStages  = 5;      // Number of stages per allpass chain
+  int    numChains  = 10;      // With 10, we get exact octaves
+
+
+  // Render sample:
+  int N = ceil(length * sampleRate);  // Number of samples to render
+  using Vec = std::vector<double>;
+  Vec x(N);
+  x[0] = 1;
+  for(int i = 1; i <= numChains; i++)
+  {
+    double f = rsLinToExp(double(i), 1.0, double(numChains), loF, hiF);
+    double q = rsLinToExp(double(i), 1.0, double(numChains), loQ, hiQ);
+    applyAllpassChain(x, f, q, numStages, sampleRate);
+  }
+
+  // Normalize and write it to a wavefile:
+  RAPT::rsArrayTools::normalize(&x[0], N);
+  rosic::writeToMonoWaveFile("AllpassBassdrum2.wav", &x[0], N, sampleRate, 16);
+
+
+  // ToDo:
+  // -Maybe use numStages = 1 and increase numChains accordingly such that numStages*numChains
+  //  remains constant. This is the total number of allpass filters. I think, around 50 allpasses
+  //  are good. 
+}
 
 
 void createAllpassDrums()
@@ -636,7 +672,8 @@ void createAllpassDrums()
   // for a drum sound. Later, it may be further shaped by using lopwass/highpass/bandpass/peak/etc.
   // filters.
 
-  createAllpassBassdrum1();
+  //createAllpassBassdrum1();
+  createAllpassBassdrum2();
 }
 
 void createSamplerWaveforms()
