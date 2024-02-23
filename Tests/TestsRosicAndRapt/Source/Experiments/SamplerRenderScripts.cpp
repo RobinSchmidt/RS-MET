@@ -632,13 +632,12 @@ void createAllpassBassdrum2()
   // User parameters:
   int    sampleRate = 48000;  // Sample rate in Hz
   double length     = 0.5;    // Length in seconds
-  double loQ        = 1.0;
+  double loQ        = 0.5;
   double hiQ        = 1.0;
-  //double loF        = 55;
   double loF        = 27.5;
   double hiF        = 14080;
-  int    numStages  = 5;      // Number of stages per allpass chain
-  int    numChains  = 10;      // With 10, we get exact octaves
+  int    numStages  = 1;       // Number of stages per allpass chain
+  int    numChains  = 50;      // With 10, we get exact octaves
 
 
   // Render sample:
@@ -657,6 +656,13 @@ void createAllpassBassdrum2()
   RAPT::rsArrayTools::normalize(&x[0], N);
   rosic::writeToMonoWaveFile("AllpassBassdrum2.wav", &x[0], N, sampleRate, 16);
 
+
+  // Observations:
+  // -When loQ=4 and hiQ=1, then the sound becomes kinda warbly. It's also warbly when hving it the 
+  //  other way around
+  // -Using more stages per chain (and reducing the number of chains to keep the product constant),
+  //  the amp-envelope seems to become more steppy. There seem to be plateaus. With just 1 stage 
+  //  per chain, the amp-env does not feature such plateaus
 
   // ToDo:
   // -Maybe use numStages = 1 and increase numChains accordingly such that numStages*numChains
