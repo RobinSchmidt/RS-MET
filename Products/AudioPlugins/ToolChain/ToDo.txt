@@ -19,10 +19,6 @@ https://github.com/DISTRHO/JUCE
 
 Bugs:
 
-- [FIXED]
-  Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
-  that shouldn't.
-
 - Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
   ToDo: 
@@ -35,16 +31,9 @@ Bugs:
   a containsPatchSettings() function that receives an xml patch. It should scan it (recursively) 
   for attributes and ignore the PatchFormat attribute. Save it only, if that function returns true.
 
-- [almost FIXED]
-  Preset loading doesn't seem to work right. Load preset in any module, then switch to next. It 
-  loads the wrong preset. It seems like loading a preset via the "Load" button does not affect the
-  currentStateFile or something. Check FileManager::updateFileList() when it's called from
-  StateFileManager::loadStateFromXmlFile and StateFileManager::saveStateToXmlFile
-  Check if this bug also affects sample waveform loading in e.g. Straightliner -> Nope. 
-  This is the thing that still remains (I think): Waveform loading works almost fine. The only 
-  thing is that after initially when not yet any file was loaded manually, the first click on the 
-  "Next" button loads the first file in the directory instead of the next one according to the 
-  currently loaded one. 
+- WaveOscillator: Initially when not yet any file was loaded manually, the first click on the 
+  "Next" button loads the first file in the current directory instead of the next one according to 
+  the currently loaded one. 
 
 - [Might be fixed - needs tests inside some host]
   Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
@@ -70,11 +59,6 @@ Bugs:
     when ToolChain is used as plugin. We still need some solution when it is used as Standalone. 
     Maybe liek in Surge: have an optional keyboard at the bottom and next to it some midi settings
     like tempo
-
-- [DONE - Needs some more tests though]
-  Look at the comments in AudioPluginWithMidiIn::processBlock in the block
-    "if( wrappedAudioModule->wantsTempoSyncInfo ) {....}  "
-  This block should probably be rewritten entirely.
 
 
 GUI issues (layout, appearance, etc.):
