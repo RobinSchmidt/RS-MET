@@ -725,8 +725,6 @@ void createWhiteZap()
   double shQ        = 0.0;    // Shape parameter for Q
   int    numStages  = 50;     // Number of allpass filter stages
 
-  double slope      = 0.0;   // Spectral tilt in post-processing
-
   // Create and set up the zapper object:
   rosic::rsWhiteZapper wz;
   wz.setSampleRate(sampleRate);
@@ -747,17 +745,13 @@ void createWhiteZap()
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
 
-  /*
-  // Post-process with slope (aka tilt) filter:
-  rosic::SlopeFilter sf;
-  sf.setSampleRate(sampleRate);
-  sf.setSlope(slope);
-  for(int n = 0; n < N; n++)
-    x[n] = sf.getSample(x[n]);
-    */
 
 
-  // Try a lowpass instead of tilt:
+  // Factor out - maybe into a function whiteToBrownAndBlockDC
+
+  // Post-process with a lowpass tuned below the lower freq (previosly, I had an adjustable tilt
+  // filter but it turned out that a tilt of 6 dB/oct is optimal in the sense that the amplitude
+  // stays constant during the sweep - so I replaced it with a lowpass):
   RAPT::rsOnePoleFilter<double, double> flt;
   flt.setSampleRate(sampleRate);
   flt.setMode(flt.LOWPASS_IIT);
@@ -765,7 +759,8 @@ void createWhiteZap()
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
 
-  // Also apply a 2nd order DC-blocker highpass to get rid of some subsonic bump artifacts:
+  // Also apply a 3rd order DC-blocker highpass to get rid of some subsonic bump artifacts that the
+  // lowpass introduces. The settings have been found by trial and error:
   flt.setMode(flt.HIGHPASS_MZT);
   flt.setCutoff(1.0*loF);
   flt.reset();
@@ -789,10 +784,10 @@ void createWhiteZap()
   name += "_QL=" + rosic::rsToString(loQ);
   name += "_QH=" + rosic::rsToString(hiQ);
   name += "_QS=" + rosic::rsToString(shQ);
-  if(slope != 0.0)
-    name += "_S=" + rosic::rsToString(slope);
   // ToDo: add mode
   name += ".wav";
+
+
 
   // Normalize and write it to a wavefile:
   RAPT::rsArrayTools::normalize(&x[0], N);
@@ -833,12 +828,14 @@ void createWhiteZap()
   //  i.e. lowpass with 6dB/oct tuned to somewhere below loF
   // -When increasing loF, it does not sweep down as much and the whole sweep happens faster. I 
   //  think cranking up loF by an octave makes the zap happen in half of the time
-  // -Using a tile-filter or lowpass for post-processing mayb create a big subsonic bump
-  // -Playing the generated sample back at different speeds does not change the sonig impression 
+  // -Playing the generated sample back at different speeds does not change the sonic impression 
   //  very much
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to loF
+  // -It makes sense to let it sweep down to around 15 Hz. If a sweep is desired that sweeps faster
+  //  and only down to 30 Hz, we can just play the sample back at twice the speed. This will give a
+  //  similar sound.
 
   // ToDo:
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
@@ -850,6 +847,7 @@ void createWhiteZap()
   // -Other interesting post-processing effects could be a peak-eq tuned to the desired bassdrum
   //  fundamental frequency.
   // -Let the function take the parameters as function arguments
+  // -Try a first order allpass chain
 }
 
 
