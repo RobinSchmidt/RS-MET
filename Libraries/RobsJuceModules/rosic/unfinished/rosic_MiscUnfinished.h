@@ -277,13 +277,35 @@ public:
   rsWhiteZapper();
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \Setup
+
+  void setLowFreq(double newFreq) { freqLo = newFreq; setDirty(); }
+
 
 
 protected:
 
+  void setDirty() { dirty = true; }
+
+
+
+  void updateCoeffs();
+
   static const int maxNumAllpasses = 256;
 
   RAPT::rsBiquadCascade<double, double> allpassChain;
+
+  // User parameters:
+  double freqLo     = 20.0;
+  double freqHi     = 20000.0;
+  double freqShape  = 0.0;
+  double qLo        = 1.0;
+  double qHi        = 1.0;
+  double qShape     = 0.0;
+  double sampleRate = 44100.0;
+
+  bool dirty        = true;
 
 };
 

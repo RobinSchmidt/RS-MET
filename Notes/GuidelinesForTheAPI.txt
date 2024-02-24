@@ -2,6 +2,7 @@ ToDo:
 -make the API consistent with regard to 
  -naming conventions  
  -parameter ordering (for functions with similar parameter lists)
+ -coefficient updating strategy (see below)
 -maybe use nested namespaces like RAPT::Data, RAPT::Math, RAPT::Filters, etc. 
  to get the functionality more ordered and also to render a better doxygen 
  documentation
@@ -29,8 +30,6 @@ ToDo:
  they are one-liners - we can still put them in the header file after the class
  declaration to allow (or even demand) inlining)
  
-
-
 Make the following things consistent:
 
 Interface:
@@ -129,3 +128,28 @@ specific things to pay attention to
 -edge cases:
  -sometimes they are handled automatically correct -> implement the general case first and test
   (and reason about) what that implementation will do in the edge case
+
+---------------------------------------------------------------------------------------------------
+Updating strategies:
+
+When a DSP algorithm has many parameters with corresponding setters, the question arises how to 
+trigger the recalculation of the internal coefficients. Take, for example, a filter that has 
+setters like setFrequency(double newFreq), setResonance(double newReso). The simplest strategy would 
+be that both functions immediately trigger the coefficient recomputation. This would have the 
+advantage that the coefficients would always be correct in the sense that they always reflect the 
+desired user settings. The disadvantage is that in the event of calling setFrequency and 
+setResonance in succession (a situation, that occurs often), they would be computed twice and only
+the last computation is actually relevant - so it would be wasteful. With more than two setters, it
+will get even worse. Another strategy is to have a single setup(double newFreq, double newReso)
+function that takes both parameters at once and then triggers only one coefficient recomputation.
+This solves the efficiency issue - but it may get unwieldy for classes with lots of setters. It will
+also not play well with the callback system in jura::Parameter - such parameters expect to be wired
+to a single argument setter. Yet another strategy is to go back to have single parameter setters but
+do not let them trigger a recomputation right away. Instead, they just set a "dirty" flag. I assume 
+this to be an atomic operation (verify!). In getSample(), this dirty-flag is checked and if it is 
+true, the recomputation is triggered there. Advantages: It solves the efficiency issue and could 
+additionally make the setters thread-safe because the recomputation is deferred to the audio-thread 
+whenever the setters are called from a different thread (such as a GUI thread). The disadvantage is 
+that after calling a setter, the coeffs do not reflect the user settings and we have one thing more 
+to do in getSample. This overhead may not matter for complex algorithms - but for very simple ones, 
+it may.
