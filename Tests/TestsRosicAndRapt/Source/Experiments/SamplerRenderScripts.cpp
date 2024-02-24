@@ -838,6 +838,18 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  frequencies are more crammed into the initial section.
   //  -I think, the sweet spot is around 8000. Going up to 16 doesn't seem to make much of an 
   //   audible difference - but maybe that's just my ears
+  // -Previously, I was using rosic::AllpasChain which implements a chain of up to 24 allpass 
+  //  filters that all use the same set of coefficients. With this setup, using more stages per 
+  //  chain (and reducing the number of chains to keep the product constant), the amp-envelope 
+  //  seems to become more steppy. There seem to be plateaus. With just 1 stage per chain, the 
+  //  amp-env did not feature such plateaus. We could simulate this old setup by letting
+  //  rsWhiteZapper use groups of allpasses that have the same settings. For example, for a total
+  //  number of 50 allpasses, we could use 10 groups of 5 or 5 groups of 10 or 2 groups of 25. I 
+  //  don't think, that's desirable, though.
+  //
+  // Conclusions:
+  // -We may scrap the numStages parameter and just always use 1 stage
+
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -860,7 +872,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -Plot a group-delay response
   // -Plot a ringing response
   // -Use an EQ to boost the bass frequencies
-  // -Try 1st order allpasses
+  // -Try to make a phaser from that
 }
 
 
