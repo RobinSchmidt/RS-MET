@@ -776,8 +776,8 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // Create filename from the parameters (maybe factor out):
   std::string name = "ZappyKick";
   name += "_NS=" + std::to_string(numStages);
-  name += "_FL=" + rosic::rsToString(lowFreq);
-  name += "_FH=" + rosic::rsToString(highFreq);
+  if(lowFreq  != 15)   name += "_FL=" + rosic::rsToString(lowFreq);
+  if(highFreq != 8000) name += "_FH=" + rosic::rsToString(highFreq);
   name += "_FS=" + rosic::rsToString(freqShape);
   if(lowQ   != 1.0)  name += "_QL=" + rosic::rsToString(lowQ);
   if(highQ  != 1.0)  name += "_QH=" + rosic::rsToString(highQ);
