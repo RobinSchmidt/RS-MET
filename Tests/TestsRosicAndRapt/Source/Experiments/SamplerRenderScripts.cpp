@@ -719,7 +719,7 @@ void createWhiteZap()
 
   double loF        = 15;
   double hiF        = 8000;
-  double shF        = 0.0;    // Shape parameter for frequency
+  double shF        = -0.5;    // Shape parameter for frequency
   double loQ        = 1.0;
   double hiQ        = 1.0;
   double shQ        = 0.0;    // Shape parameter for Q
