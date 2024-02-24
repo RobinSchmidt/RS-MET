@@ -538,6 +538,11 @@ void createMiscSamples()
   int dummy = 0;
 }
 
+
+
+
+// This function and its callers may be obsolete now. But the callers still contain some comments 
+// that should be preserved:
 void applyAllpassChain(const double* x, int N, double* y, double freq, double quality, 
   int numStages, double sampleRate)
 {
@@ -559,18 +564,14 @@ void applyAllpassChain(const double* x, int N, double* y, double freq, double qu
   for(int n = 0; n < N; n++)
     y[n] = apc.getSample(x[n]);
 
-
   // ToDo: 
   // -Allow for arbitrary number of stages. Currently rosic::AllpassChain has a limit of 24.
 }
-
-// Convenience function:
 void applyAllpassChain(std::vector<double>& inOut, double freq, double quality, int numStages,
   double sampleRate)
 {
   applyAllpassChain(&inOut[0], (int) inOut.size(), &inOut[0], freq, quality, numStages, sampleRate);
 }
-
 void createAllpassBassdrum1()
 {
   // This is the first attempt to render a sine-sweepdown based bassdrum sample.
@@ -603,7 +604,8 @@ void createAllpassBassdrum1()
   //rsPlotVector(x);
 
   // Observations:
-  // -Smaller values of Q seem to give faster sweepdowns
+  // -Smaller values of Q seem to give faster sweepdowns (verify! some other experiment suggests 
+  //  otherwise)
   // -Smaller values of S seem to give faster sweepdowns as well
   // -The highest frequency used affects how much the transient is smeared over time. When using 
   //  1kHz as highes allpass freq, we get a strong impulse at the start. When usiing 16 kHz as 
@@ -626,7 +628,6 @@ void createAllpassBassdrum1()
   //  fLow, fHigh, qLow, qHigh, numChains
   // -Try 1st order allpasses
 }
-
 void createAllpassBassdrum2()
 {
   // User parameters:
@@ -669,7 +670,6 @@ void createAllpassBassdrum2()
   // -Maybe let the frequencies and Q-values pass through a nonlinear function - maybe the linfrac
   //  warping map should be applied to the normalized values
 }
-
 void createAllpassBassdrum3()
 {
   // User parameters:
@@ -707,25 +707,7 @@ void createAllpassBassdrum3()
 }
 
 
-
-std::string rsToString(double x)
-{
-  std::string str = std::to_string(x);
-  str.erase ( str.find_last_not_of('0') + 1, std::string::npos );
-  str.erase ( str.find_last_not_of('.') + 1, std::string::npos );
-  if(str[str.length()-1] == '.')
-    str.erase(str.length()-1 , std::string::npos );
-  return str;
-
-  // Code taken from here:
-  // https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
-}
-
-// move to rosic_String.h/cpp
-
-
-
-void createWhiteZapBassdrum()
+void createWhiteZap()
 {
   // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
   // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
@@ -735,15 +717,15 @@ void createWhiteZapBassdrum()
   int    sampleRate = 48000;  // Sample rate in Hz
   double length     = 0.5;    // Length in seconds
 
-  double loF        = 20;
-  double hiF        = 20000;
-  double shF        = -0.9;    // Shape parameter for frequency
+  double loF        = 15;
+  double hiF        = 8000;
+  double shF        = 0.0;    // Shape parameter for frequency
   double loQ        = 1.0;
   double hiQ        = 1.0;
   double shQ        = 0.0;    // Shape parameter for Q
-  int    numStages  = 100;     // Number of allpass filter stages
+  int    numStages  = 50;     // Number of allpass filter stages
 
-  double slope      = -4.0;   // Spectral tilt in post-processing
+  double slope      = 0.0;   // Spectral tilt in post-processing
 
   // Create and set up the zapper object:
   rosic::rsWhiteZapper wz;
@@ -765,46 +747,71 @@ void createWhiteZapBassdrum()
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
 
+  /*
   // Post-process with slope (aka tilt) filter:
   rosic::SlopeFilter sf;
   sf.setSampleRate(sampleRate);
   sf.setSlope(slope);
   for(int n = 0; n < N; n++)
     x[n] = sf.getSample(x[n]);
+    */
 
-  //// Move this code to a unit test
-  //std::string s;
-  //bool ok = true;
-  //s = rsToString(14.3060); ok &= s == "14.306";
-  //s = rsToString(14.0);    ok &= s == "14";
 
+  // Try a lowpass instead of tilt:
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setSampleRate(sampleRate);
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setCutoff(0.5*loF);
+  for(int n = 0; n < N; n++)
+    x[n] = flt.getSample(x[n]);
+
+  // Also apply a 2nd order DC-blocker highpass to get rid of some subsonic bump artifacts:
+  flt.setMode(flt.HIGHPASS_MZT);
+  flt.setCutoff(1.0*loF);
+  flt.reset();
+  for(int n = 0; n < N; n++)
+    x[n] = flt.getSample(x[n]);
+  flt.reset();
+  for(int n = 0; n < N; n++)
+    x[n] = flt.getSample(x[n]);
+  flt.reset();
+  for(int n = 0; n < N; n++)
+    x[n] = flt.getSample(x[n]);
+
+
+
+  // Create filename from the parameters (maybe factor out):
+  std::string name = "AllpassZap";
+  name += "_NS=" + std::to_string(numStages);
+  name += "_FL=" + rosic::rsToString(loF);
+  name += "_FH=" + rosic::rsToString(hiF);
+  name += "_FS=" + rosic::rsToString(shF);
+  name += "_QL=" + rosic::rsToString(loQ);
+  name += "_QH=" + rosic::rsToString(hiQ);
+  name += "_QS=" + rosic::rsToString(shQ);
+  if(slope != 0.0)
+    name += "_S=" + rosic::rsToString(slope);
+  // ToDo: add mode
+  name += ".wav";
 
   // Normalize and write it to a wavefile:
   RAPT::rsArrayTools::normalize(&x[0], N);
-
-  // Create filename from the parameters:
-  std::string name = "AllpassZap";
-  name += "_NS=" + std::to_string(numStages);
-  name += "_FL=" + rsToString(loF);
-  name += "_FH=" + rsToString(hiF);
-  name += "_FS=" + rsToString(shF);
-  name += "_QL=" + rsToString(loQ);
-  name += "_QH=" + rsToString(hiQ);
-  name += "_QS=" + rsToString(shQ);
-  // ToDo: add mode
-  name += ".wav";
   rosic::writeToMonoWaveFile(name, &x[0], N, sampleRate, 16);
- 
-  /*
-  // Apply the zapper again:
-  Vec y(N);
-  wz.reset();
-  for(int n = 0; n < N; n++)
-    y[n] = wz.getSample(x[n]);
-  RAPT::rsArrayTools::normalize(&y[0], N);
-  //rosic::writeToMonoWaveFile("WhiteZapY.wav", &y[0], N, sampleRate, 16);
-  // ...well - that's not very interesting - see below...
-  */
+
+
+  // ToDo: factor this out:
+  // Create a spectrogram:
+  rsSpectrogramProcessor<double> specProc;
+  specProc.setBlockAndTrafoSize(256, 2048);
+  specProc.setHopSize(64);
+  //specProc.setAnalysisWindowType(...);
+
+
+  // Plot a spectrogam:
+  //SpectrumPlotter<double> sp;
+  //GNUPlotter plt;
+  // I think, the way the SpectrumPlotter class works is to call appropriate setup functions on an
+  // existing GNUPlotter object.
 
 
   // Observations:
@@ -820,6 +827,18 @@ void createWhiteZapBassdrum()
   //  together. But the attack also gets longer - it gets crammed around some center that is not at
   //  the start of the sample. Negative values like -0.8 seem to lengthen the thump/body portion of
   //  the zap and shorten the transient.
+  // -Lowering hiF makes the transient more clicky. Raising hiF makes the transient more 
+  //  sweepy/zappy.
+  // -With a slope of -6, we seem to get a constant amplitude. Maybe try using a leaky integrator,
+  //  i.e. lowpass with 6dB/oct tuned to somewhere below loF
+  // -When increasing loF, it does not sweep down as much and the whole sweep happens faster. I 
+  //  think cranking up loF by an octave makes the zap happen in half of the time
+  // -Using a tile-filter or lowpass for post-processing mayb create a big subsonic bump
+  // -Playing the generated sample back at different speeds does not change the sonig impression 
+  //  very much
+  //
+  // Conclusions:
+  // -Overall length is proportional to numStages and inversely proportional to loF
 
   // ToDo:
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
@@ -828,6 +847,9 @@ void createWhiteZapBassdrum()
   // -Test it with extreme settings like having the highest freq at fs/2. What if the lowest freq 
   //  is 0? Does the allpass design admit this? However, the exponential scaling will not admit it
   //  anyway.
+  // -Other interesting post-processing effects could be a peak-eq tuned to the desired bassdrum
+  //  fundamental frequency.
+  // -Let the function take the parameters as function arguments
 }
 
 
@@ -838,10 +860,12 @@ void createAllpassDrums()
   // for a drum sound. Later, it may be further shaped by using lopwass/highpass/bandpass/peak/etc.
   // filters.
 
+  // Obsolete:
   //createAllpassBassdrum1();
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
-  createWhiteZapBassdrum();
+
+  createWhiteZap();
 
   // ToDo:
   // -Make a function createNoiseBurstDrums
