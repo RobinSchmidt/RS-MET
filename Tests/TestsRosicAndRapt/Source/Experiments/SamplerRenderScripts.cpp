@@ -707,24 +707,12 @@ void createAllpassBassdrum3()
 }
 
 // rename length to maxLength. The generated sample may be shorter
-void createBrownZap(int numStages, double lowFreq, double highFreq, double freqShape, double lowQ, 
-  double highQ, double qShape, double length = 1.0, int sampleRate = 48000)
+void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, double freqShape = 0.0, 
+  double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, double length = 1.0, int sampleRate = 48000)
 {
   // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
   // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
   // implement manually.
-
-  // User parameters:
-  //int    sampleRate = 48000;  // Sample rate in Hz
-  //double length     = 0.5;    // Length in seconds - todo: adapt to required length
-
-  //double loF        = 15;
-  //double hiF        = 8000;
-  //double shF        = -0.5;    // Shape parameter for frequency
-  //double loQ        = 1.0;
-  //double hiQ        = 1.0;
-  //double shQ        = 0.0;    // Shape parameter for Q
-  //int    numStages  = 50;     // Number of allpass filter stages
 
   // Create and set up the zapper object:
   rosic::rsWhiteZapper wz;
@@ -745,7 +733,6 @@ void createBrownZap(int numStages, double lowFreq, double highFreq, double freqS
   for(int n = 0; n < N; n++)
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
-
 
 
   // Factor out - maybe into a function whiteToBrownAndBlockDC
@@ -774,8 +761,6 @@ void createBrownZap(int numStages, double lowFreq, double highFreq, double freqS
   flt.reset();
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
-
-
 
   // Factor out into findCutoffSample(const T* x, int N, double releaseTimeInSamples, 
   // double threshold) function:
@@ -819,9 +804,10 @@ void createBrownZap(int numStages, double lowFreq, double highFreq, double freqS
   name += "_FL=" + rosic::rsToString(lowFreq);
   name += "_FH=" + rosic::rsToString(highFreq);
   name += "_FS=" + rosic::rsToString(freqShape);
-  name += "_QL=" + rosic::rsToString(lowQ);
-  name += "_QH=" + rosic::rsToString(highQ);
-  name += "_QS=" + rosic::rsToString(qShape);
+  if(lowQ   != 1.0)  name += "_QL=" + rosic::rsToString(lowQ);
+  if(highQ  != 1.0)  name += "_QH=" + rosic::rsToString(highQ);
+  if(qShape != 0.0)  name += "_QS=" + rosic::rsToString(qShape);
+
   // ToDo: add mode
   name += ".wav";
 
@@ -901,40 +887,26 @@ void createAllpassDrums()
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
-  // For testing the auto-shortening:
-  //createBrownZap(50,   15, 8000,  0.0,   1.0, 1.0, 0.0,   0.8);
+  int numStages = 40;
 
 
-  //             N    fLo   fHi    fSh    qLo  qHi  qSh 
-  createBrownZap(50,   15,  8000, -0.98,  1.0, 1.0, 0.0);
-  createBrownZap(50,   15,  8000, -0.95,  1.0, 1.0, 0.0);
+  //                         fLo   fHi    fSh    qLo  qHi  qSh 
+  createBrownZap(numStages,   15,  8000, -0.98,  1.0, 1.0, 0.0);
+  createBrownZap(numStages,   15,  8000, -0.95,  1.0, 1.0, 0.0);
   for(int k = -9; k <= +9; k++)
   {
     double freqShape = 0.1 * k;
-    createBrownZap(50,   15,  8000, freqShape,   1.0, 1.0, 0.0);
+    createBrownZap(numStages,   15,  8000, freqShape,   1.0, 1.0, 0.0);
   }
-
-  /*
-  createBrownZap(50,   15,  8000, -0.9,   1.0, 1.0, 0.0);
-  createBrownZap(50,   15,  8000, -0.8,   1.0, 1.0, 0.0);
-  createBrownZap(50,   15,  8000, -0.7,   1.0, 1.0, 0.0);
-  createBrownZap(50,   15,  8000, -0.6,   1.0, 1.0, 0.0);
-  createBrownZap(50,   15,  8000, -0.5,   1.0, 1.0, 0.0);
-  createBrownZap(50,   15,  8000,  0.0,   1.0, 1.0, 0.0);
-  createBrownZap(50,   15,  8000, +0.5,   1.0, 1.0, 0.0);
-  */
-
-
-
 
 
   // ToDo:
-  // -Let createBrownZap figure out the length itself by invoking an envelope follower and cutting
-  //  it off when the envelope falls below some threshold. Or maybe use the group delay lowFreq
   // -Make a function createNoiseBurstDrums
   // -Generally, to synthesize drums, we may use layers of such allpass-based "zap" sounds and 
   //  noise-burst based sounds. The noise bursts may also pass through a time-varying filter and
   //  waveshaper(s). The overall mix, too.
+  // -It would be nice to have two user parameters: length, snap which would adjust the freqShape 
+  //  and numStages
 }
 
 void createSamplerWaveforms()
