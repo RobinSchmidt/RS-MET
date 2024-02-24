@@ -295,7 +295,7 @@ public:
 
   void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; setDirty(); }
 
-  void setNumStages(int newNumStages) { numStages = newNumStages; setDirty(); }
+  void setNumStages(int newNumStages) { allpassChain.setNumStages(newNumStages); setDirty(); }
 
 
   void setLowFreq(double newFreq) { freqLo = newFreq; setDirty(); }
@@ -303,6 +303,8 @@ public:
   void setHighFreq(double newFreq) { freqHi = newFreq; setDirty(); }
 
   void setFreqShape(double newShape) { freqShape = newShape; setDirty(); }
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -326,12 +328,10 @@ protected:
 
   void setDirty() { dirty = true; }
 
-
-
   void updateCoeffs();
 
   // Embedded objects:
-  static const int maxNumAllpasses = 256;
+  static const int maxNumStages = 256;
   RAPT::rsBiquadCascade<double, double> allpassChain;
 
   // User parameters:
@@ -342,7 +342,6 @@ protected:
   double qHi        = 1.0;
   double qShape     = 0.0;
   double sampleRate = 44100.0;
-  int    numStages  = 50;            // Number of allpass stages - actually redundant with allpassChain.numStages
   Mode   mode       = Mode::biquad;
 
   // Internals:

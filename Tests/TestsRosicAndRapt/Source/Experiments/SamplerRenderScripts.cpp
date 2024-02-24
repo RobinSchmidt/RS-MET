@@ -712,24 +712,25 @@ void createWhiteZapBassdrum()
   // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
   // implement manually.
 
-
   // User parameters:
   int    sampleRate = 48000;  // Sample rate in Hz
   double length     = 0.5;    // Length in seconds
+  double loF        = 20;
+  double hiF        = 20000;
+  double shF        = 0.0;    // Shape parameter for frequency
   double loQ        = 1.0;
   double hiQ        = 1.0;
   double shQ        = 0.0;    // Shape parameter for Q
-  double loF        = 27.5;
-  double hiF        = 14080;
-  double shF        = 0.0;    // Shape parameter for frequency
-  int    numFilters = 50;     // Number of allpass filters
+  int    numStages  = 50;     // Number of allpass filter stages
 
+  // Create and set up the zapper object:
   rosic::rsWhiteZapper wz;
   wz.setSampleRate(sampleRate);
-  wz.setNumStages(numFilters);
+  wz.setNumStages(numStages);
   wz.setLowFreq(loF);
   wz.setHighFreq(hiF);
   wz.setFreqShape(shF);
+  // ToDo: set up Q settings
 
   // Render sample:
   int N = ceil(length * sampleRate);  // Number of samples to render
@@ -753,6 +754,9 @@ void createWhiteZapBassdrum()
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
   //  getWhiteZapBassdrum function
   // -We currently need numStages >= 2. For 0 and 1, it produces garbage (inf, nan). Fix this!
+  // -Test it with extreme settings like having the highest freq at fs/2. What if the lowest freq 
+  //  is 0? Does the allpass design admit this? However, the exponential scaling will not admit it
+  //  anyway.
 }
 
 
