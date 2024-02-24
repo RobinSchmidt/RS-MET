@@ -714,7 +714,8 @@ void createWhiteZapBassdrum()
 
   // User parameters:
   int    sampleRate = 48000;  // Sample rate in Hz
-  double length     = 1.0;    // Length in seconds
+  double length     = 0.5;    // Length in seconds
+
   double loF        = 20;
   double hiF        = 20000;
   double shF        = 0.0;    // Shape parameter for frequency
@@ -722,6 +723,8 @@ void createWhiteZapBassdrum()
   double hiQ        = 1.0;
   double shQ        = 0.0;    // Shape parameter for Q
   int    numStages  = 50;     // Number of allpass filter stages
+
+  double slope      = -2.0;
 
   // Create and set up the zapper object:
   rosic::rsWhiteZapper wz;
@@ -743,6 +746,14 @@ void createWhiteZapBassdrum()
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
 
+  // Post-process:
+  rosic::SlopeFilter sf;
+  sf.setSampleRate(sampleRate);
+  sf.setSlope(slope);
+  for(int n = 0; n < N; n++)
+    x[n] = sf.getSample(x[n]);
+
+
   // Normalize and write it to a wavefile:
   RAPT::rsArrayTools::normalize(&x[0], N);
   rosic::writeToMonoWaveFile("WhiteZap.wav", &x[0], N, sampleRate, 16);
@@ -752,9 +763,9 @@ void createWhiteZapBassdrum()
   wz.reset();
   for(int n = 0; n < N; n++)
     y[n] = wz.getSample(x[n]);
-
   RAPT::rsArrayTools::normalize(&y[0], N);
-  rosic::writeToMonoWaveFile("WhiteZapY.wav", &y[0], N, sampleRate, 16);
+  //rosic::writeToMonoWaveFile("WhiteZapY.wav", &y[0], N, sampleRate, 16);
+
 
 
   //int dummy = 0;
@@ -763,6 +774,11 @@ void createWhiteZapBassdrum()
   // -When applying the zapper twice, the result is similar to using a single zapper with twice the
   //  number of stages, I think. So, we don't really get anything interesting new by chaining 
   //  multiple zappers.
+  // -The Q factor does not seem to affect the sweep-speed but the waveshape. For low Q, it's 
+  //  sinusoidal. For high Q, it looks like harmonics appear. Higher Q-values should be used only
+  //  at high frequencies, i.e. hiQ can be somewhat higher, but loQ should always be low-ish. I
+  //  think, with lower Q, we get a cleaner time-separation of the different frequencies. With 
+  //  higher Q, they get mixed up more - or something.
 
   // ToDo:
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
