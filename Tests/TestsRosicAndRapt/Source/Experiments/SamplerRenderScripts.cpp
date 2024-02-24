@@ -895,6 +895,7 @@ void createAllpassDrums()
     //                        fLo   fHi    fSh 
     createBrownZap(numStages,  15, 8000, -0.98);
     createBrownZap(numStages,  15, 8000, -0.95);
+    createBrownZap(numStages,  15, 8000, -0.85);
     for(int k = -9; k <= +9; k++)
     {
       double freqShape = 0.1 * k;
@@ -902,6 +903,20 @@ void createAllpassDrums()
     }
   }
 
+
+  // Nice ones:
+  // 20  -0.4     Acoustic, hard
+  // 20  -0.6     Acoustic, med
+  // 20  -0.8     Acoustic, soft
+  // 20  +0.4     Zap
+  // 30  -0.7     
+  // 30  +0.6
+  // 40  -0.8
+  // 40  -0.85
+  // 50  -0.85
+  // 50  -0.8
+  // 50  -0.7
+  // 60  -0.3     Goa
 
   // ToDo:
   // -Make a function createNoiseBurstDrums
