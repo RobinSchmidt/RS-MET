@@ -675,15 +675,15 @@ void createAllpassBassdrum3()
   // User parameters:
   int    sampleRate = 48000;  // Sample rate in Hz
   double length     = 0.5;    // Length in seconds
-  double loQ        = 0.5;
+  double loQ        = 1.0;
   double hiQ        = 1.0;
   double shQ        = 0.0;    // Shape parameter for Q
   double loF        = 27.5;
   double hiF        = 14080;
-  double shF        = -0.8;    // Shape parameter for frequency
-  int    numFilters = 64;     // Number of allpass filters
+  double shF        = 0.0;    // Shape parameter for frequency
+  int    numFilters = 50;     // Number of allpass filters
 
-                              // Render sample:
+  // Render sample:
   int N = ceil(length * sampleRate);  // Number of samples to render
   using Vec = std::vector<double>;
   Vec x(N);
@@ -703,6 +703,7 @@ void createAllpassBassdrum3()
 
   // Observations:
   // -Positive values of shF make the sweep initially faster, I think. It sounds more snappy.
+  // -For Q=0, we get a DC output. That's wrong!
 }
 
 void createAllpassDrums()
