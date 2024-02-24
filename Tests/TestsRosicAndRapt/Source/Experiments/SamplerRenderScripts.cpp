@@ -846,6 +846,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  rsWhiteZapper use groups of allpasses that have the same settings. For example, for a total
   //  number of 50 allpasses, we could use 10 groups of 5 or 5 groups of 10 or 2 groups of 25. I 
   //  don't think, that's desirable, though.
+  // -With lower Q, its seems to sweep further down at the end.
   //
   // Conclusions:
   // -We may scrap the numStages parameter and just always use 1 stage
@@ -888,8 +889,10 @@ void createAllpassDrums()
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
-  //int numStages = 50;
 
+
+  //createBrownZap(50,   15, 8000, -0.85,   0.5, 0.5, 0.0);
+  //createBrownZap(50,   15, 8000, -0.85,   4.0, 4.0, 0.0);
   for(int numStages = 20; numStages <= 80; numStages += 10)
   {
     //                        fLo   fHi    fSh 
@@ -902,7 +905,6 @@ void createAllpassDrums()
       createBrownZap(numStages, 15, 8000, freqShape);
     }
   }
-
 
   // Nice ones:
   // 20  -0.4     Acoustic, hard
