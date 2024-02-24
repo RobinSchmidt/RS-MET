@@ -602,31 +602,6 @@ void createAllpassBassdrum1()
   RAPT::rsArrayTools::normalize(&x[0], N);
   rosic::writeToMonoWaveFile("AllpassBassdrum1.wav", &x[0], N, sampleRate, 16);
   //rsPlotVector(x);
-
-  // Observations:
-  // -Smaller values of Q seem to give faster sweepdowns (verify! some other experiment suggests 
-  //  otherwise)
-  // -Smaller values of S seem to give faster sweepdowns as well
-  // -The highest frequency used affects how much the transient is smeared over time. When using 
-  //  1kHz as highes allpass freq, we get a strong impulse at the start. When usiing 16 kHz as 
-  //  highest freq, the initial impulse is more smeared out over time. I think, The higher we go,
-  //  the more smeared out the higher frequencies will be. That means, we can use that parameter to
-  //  determine the initial sweep speed? Going higher makes the sweep initially slower or 
-  //  something? Or to put it the other was: when the highest freq is rather low, then the high 
-  //  frequencies are more crammed into the initial section.
-  //  -I think, the sweet spot is around 8000. Going up to 16 doesn't seem to make much of an 
-  //   audible difference - but maybe that's just my ears
-
-  // ToDo:
-  // -Plot a spectrogram
-  // -Plot a group-delay response
-  // -Plot a ringing response
-  // -Maybe write a class that encapsulates the DSP process and write an APE script for 
-  //  experimenting with the algo
-  // -Use an EQ to boost the bass frequencies
-  // -Define some meaningful macro parameters:
-  //  fLow, fHigh, qLow, qHigh, numChains
-  // -Try 1st order allpasses
 }
 void createAllpassBassdrum2()
 {
@@ -657,7 +632,7 @@ void createAllpassBassdrum2()
   rosic::writeToMonoWaveFile("AllpassBassdrum2.wav", &x[0], N, sampleRate, 16);
 
   // Observations:
-  // -When loQ=4 and hiQ=1, then the sound becomes kinda warbly. It's also warbly when hving it the 
+  // -When loQ=4 and hiQ=1, then the sound becomes kinda warbly. It's also warbly when having it the 
   //  other way around
   // -Using more stages per chain (and reducing the number of chains to keep the product constant),
   //  the amp-envelope seems to become more steppy. There seem to be plateaus. With just 1 stage 
@@ -854,6 +829,15 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  think cranking up lowFreq by an octave makes the zap happen in half of the time
   // -Playing the generated sample back at different speeds does not change the sonic impression 
   //  very much
+  // -The highest frequency used affects how much the transient is smeared over time. When using 
+  //  1kHz as highes allpass freq, we get a strong impulse at the start. When usiing 16 kHz as 
+  //  highest freq, the initial impulse is more smeared out over time. I think, The higher we go,
+  //  the more smeared out the higher frequencies will be. That means, we can use that parameter to
+  //  determine the initial sweep speed? Going higher makes the sweep initially slower or 
+  //  something? Or to put it the other was: when the highest freq is rather low, then the high 
+  //  frequencies are more crammed into the initial section.
+  //  -I think, the sweet spot is around 8000. Going up to 16 doesn't seem to make much of an 
+  //   audible difference - but maybe that's just my ears
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -872,6 +856,11 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  fundamental frequency.
   // -Let the function take the parameters as function arguments
   // -Try a first order allpass chain
+  // -Plot a spectrogram
+  // -Plot a group-delay response
+  // -Plot a ringing response
+  // -Use an EQ to boost the bass frequencies
+  // -Try 1st order allpasses
 }
 
 
