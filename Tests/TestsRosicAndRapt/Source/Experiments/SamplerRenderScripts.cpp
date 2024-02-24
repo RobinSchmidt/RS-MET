@@ -772,11 +772,11 @@ void createWhiteZapBassdrum()
   for(int n = 0; n < N; n++)
     x[n] = sf.getSample(x[n]);
 
-  // Move this code to a unit test
-  std::string s;
-  bool ok = true;
-  s = rsToString(14.3060); ok &= s == "14.306";
-  s = rsToString(14.0);    ok &= s == "14";
+  //// Move this code to a unit test
+  //std::string s;
+  //bool ok = true;
+  //s = rsToString(14.3060); ok &= s == "14.306";
+  //s = rsToString(14.0);    ok &= s == "14";
 
 
   // Normalize and write it to a wavefile:

@@ -330,6 +330,9 @@ std::string rsGetToken(const std::string& str, size_t startIndex, const std::str
 void rsReplace(std::string& subject, const std::string& oldText, const std::string& newText);
 // needs unit tests
 
+/** Converts a double precision floating point number into a std::string. It calls std::to_string 
+and then removes any trailing zeros.  */
+std::string rsToString(double x);
 
 
 } // end namespace rosic

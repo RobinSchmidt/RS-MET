@@ -193,6 +193,16 @@ bool testStringDoubleConversions()
   return ok;
 }
 
+bool testStringDoubleConversions2()
+{
+  bool ok = true;
+  std::string s;
+  s = rsToString(14.3060); ok &= s == "14.306";
+  s = rsToString(14.0);    ok &= s == "14";
+  s = rsToString(0.3060);  ok &= s == "0.306";
+  return ok;
+}
+
 bool testRosicString()
 {
   bool ok = true;
@@ -201,6 +211,7 @@ bool testRosicString()
   ok &= testSubstringReplace();
   ok &= testStringIntConversions(10000);
   ok &= testStringDoubleConversions();  // fails!
+  ok &= testStringDoubleConversions2();
   // ToDo: testStringConcatenation(), testStringComparison()
   return ok;
 }

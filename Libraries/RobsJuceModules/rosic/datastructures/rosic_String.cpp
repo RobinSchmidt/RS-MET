@@ -509,3 +509,17 @@ void rosic::rsReplace(std::string& subject, const std::string& search, const std
   // https://www.delftstack.com/howto/cpp/string-replace-cpp/
 }
 // maybe rename to rsReplaceAll, write also rsReplaceFirst, rsReplaceLast
+
+
+std::string rosic::rsToString(double x)
+{
+  std::string str = std::to_string(x);
+  str.erase ( str.find_last_not_of('0') + 1, std::string::npos );
+  str.erase ( str.find_last_not_of('.') + 1, std::string::npos );
+  if(str[str.length()-1] == '.')
+    str.erase(str.length()-1 , std::string::npos );
+  return str;
+
+  // Code taken from here:
+  // https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+}
