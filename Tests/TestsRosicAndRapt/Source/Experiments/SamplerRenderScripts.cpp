@@ -708,7 +708,7 @@ void createAllpassBassdrum3()
 
 // rename length to maxLength. The generated sample may be shorter
 void createBrownZap(int numStages, double lowFreq, double highFreq, double freqShape, double lowQ, 
-  double highQ, double qShape, double length = 0.5, int sampleRate = 48000)
+  double highQ, double qShape, double length = 1.0, int sampleRate = 48000)
 {
   // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
   // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
@@ -905,14 +905,24 @@ void createAllpassDrums()
   //createBrownZap(50,   15, 8000,  0.0,   1.0, 1.0, 0.0,   0.8);
 
 
-  //             N    fLo  fHi    fSh    qLo  qHi  qSh    len
-  createBrownZap(50,   15, 8000, -0.9,   1.0, 1.0, 0.0,   1.0);
-  createBrownZap(50,   15, 8000, -0.8,   1.0, 1.0, 0.0,   1.0);
-  createBrownZap(50,   15, 8000, -0.7,   1.0, 1.0, 0.0,   1.0);
-  createBrownZap(50,   15, 8000, -0.6,   1.0, 1.0, 0.0,   1.0);
-  createBrownZap(50,   15, 8000, -0.5,   1.0, 1.0, 0.0,   1.0);
-  createBrownZap(50,   15, 8000,  0.0,   1.0, 1.0, 0.0,   1.0);
-  createBrownZap(50,   15, 8000, +0.5,   1.0, 1.0, 0.0,   1.0);
+  //             N    fLo   fHi    fSh    qLo  qHi  qSh 
+  createBrownZap(50,   15,  8000, -0.98,  1.0, 1.0, 0.0);
+  createBrownZap(50,   15,  8000, -0.95,  1.0, 1.0, 0.0);
+  for(int k = -9; k <= +9; k++)
+  {
+    double freqShape = 0.1 * k;
+    createBrownZap(50,   15,  8000, freqShape,   1.0, 1.0, 0.0);
+  }
+
+  /*
+  createBrownZap(50,   15,  8000, -0.9,   1.0, 1.0, 0.0);
+  createBrownZap(50,   15,  8000, -0.8,   1.0, 1.0, 0.0);
+  createBrownZap(50,   15,  8000, -0.7,   1.0, 1.0, 0.0);
+  createBrownZap(50,   15,  8000, -0.6,   1.0, 1.0, 0.0);
+  createBrownZap(50,   15,  8000, -0.5,   1.0, 1.0, 0.0);
+  createBrownZap(50,   15,  8000,  0.0,   1.0, 1.0, 0.0);
+  createBrownZap(50,   15,  8000, +0.5,   1.0, 1.0, 0.0);
+  */
 
 
 
