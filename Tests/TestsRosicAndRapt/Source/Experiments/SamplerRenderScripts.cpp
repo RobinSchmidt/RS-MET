@@ -706,35 +706,36 @@ void createAllpassBassdrum3()
   // -For Q=0, we get a DC output. That's wrong!
 }
 
-
-void createWhiteZap()
+// rename length to maxLength. The generated sample may be shorter
+void createBrownZap(int numStages, double lowFreq, double highFreq, double freqShape, double lowQ, 
+  double highQ, double qShape, double length = 0.5, int sampleRate = 48000)
 {
   // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
   // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
   // implement manually.
 
   // User parameters:
-  int    sampleRate = 48000;  // Sample rate in Hz
-  double length     = 0.5;    // Length in seconds
+  //int    sampleRate = 48000;  // Sample rate in Hz
+  //double length     = 0.5;    // Length in seconds - todo: adapt to required length
 
-  double loF        = 15;
-  double hiF        = 8000;
-  double shF        = -0.5;    // Shape parameter for frequency
-  double loQ        = 1.0;
-  double hiQ        = 1.0;
-  double shQ        = 0.0;    // Shape parameter for Q
-  int    numStages  = 50;     // Number of allpass filter stages
+  //double loF        = 15;
+  //double hiF        = 8000;
+  //double shF        = -0.5;    // Shape parameter for frequency
+  //double loQ        = 1.0;
+  //double hiQ        = 1.0;
+  //double shQ        = 0.0;    // Shape parameter for Q
+  //int    numStages  = 50;     // Number of allpass filter stages
 
   // Create and set up the zapper object:
   rosic::rsWhiteZapper wz;
   wz.setSampleRate(sampleRate);
   wz.setNumStages(numStages);
-  wz.setLowFreq(loF);
-  wz.setHighFreq(hiF);
-  wz.setFreqShape(shF);
-  wz.setLowQ(loQ);
-  wz.setHighQ(hiQ);
-  wz.setQShape(shQ);
+  wz.setLowFreq(lowFreq);
+  wz.setHighFreq(highFreq);
+  wz.setFreqShape(freqShape);
+  wz.setLowQ(lowQ);
+  wz.setHighQ(highQ);
+  wz.setQShape(qShape);
 
   // Render sample:
   int N = ceil(length * sampleRate);  // Number of samples to render
@@ -749,20 +750,21 @@ void createWhiteZap()
 
   // Factor out - maybe into a function whiteToBrownAndBlockDC
 
-  // Post-process with a lowpass tuned below the lower freq (previosly, I had an adjustable tilt
+  // Post-process with a lowpass tuned below the lower freq. Previously, I had an adjustable tilt
   // filter but it turned out that a tilt of 6 dB/oct is optimal in the sense that the amplitude
-  // stays constant during the sweep - so I replaced it with a lowpass):
+  // stays constant during the sweep - so I replaced it with a lowpass. This may also be called a 
+  // browning filter (it turns the white spectrum into a brown one).
   RAPT::rsOnePoleFilter<double, double> flt;
   flt.setSampleRate(sampleRate);
   flt.setMode(flt.LOWPASS_IIT);
-  flt.setCutoff(0.5*loF);
+  flt.setCutoff(0.5*lowFreq);
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
 
   // Also apply a 3rd order DC-blocker highpass to get rid of some subsonic bump artifacts that the
   // lowpass introduces. The settings have been found by trial and error:
   flt.setMode(flt.HIGHPASS_MZT);
-  flt.setCutoff(1.0*loF);
+  flt.setCutoff(1.0*lowFreq);
   flt.reset();
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
@@ -773,17 +775,53 @@ void createWhiteZap()
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
 
+
+
+  // Factor out into findCutoffSample(const T* x, int N, double releaseTimeInSamples, 
+  // double threshold) function:
+  RAPT::rsEnvelopeFollower<double, double> ef;
+  ef.setSampleRate(sampleRate);
+  ef.setAttackTime(0.0);
+  ef.setReleaseTime(1000 * 0.25 * 1.0/lowFreq);
+  Vec env(N);
+  for(int n = 0; n < N; n++)
+    env[n] = ef.getSample(x[n]);
+  //rsPlotVectors(x, env);
+  // I tried to use the more advanced rsEnvelopeFollower2 but this produced total garbage results
+  // for this sort of signal. The simpler works much better.
+
+  // Find last sample that exceeds the threshold:
+  double envMax   = RAPT::rsArrayTools::maxValue(&env[0], N);
+  double threshDb = -60;
+  double thresh   = RAPT::rsDbToAmp(threshDb);
+  thresh *= envMax;  // threshold should be relative
+  int nCut = N-1;
+  while(nCut > 0)
+  {
+    if(env[nCut] >= thresh)
+      break;
+    nCut--;
+  }
+
+  // Shorten the signal:
+  N = nCut+1;
+  x.resize(N);
+
+  // Apply a smooth fade out:
+  int fadeSamples = 1000;
+  rsFadeOut(&x[0], N-fadeSamples-1, N-1);
+  //rsPlotVectors(x, env);
 
 
   // Create filename from the parameters (maybe factor out):
   std::string name = "AllpassZap";
   name += "_NS=" + std::to_string(numStages);
-  name += "_FL=" + rosic::rsToString(loF);
-  name += "_FH=" + rosic::rsToString(hiF);
-  name += "_FS=" + rosic::rsToString(shF);
-  name += "_QL=" + rosic::rsToString(loQ);
-  name += "_QH=" + rosic::rsToString(hiQ);
-  name += "_QS=" + rosic::rsToString(shQ);
+  name += "_FL=" + rosic::rsToString(lowFreq);
+  name += "_FH=" + rosic::rsToString(highFreq);
+  name += "_FS=" + rosic::rsToString(freqShape);
+  name += "_QL=" + rosic::rsToString(lowQ);
+  name += "_QH=" + rosic::rsToString(highQ);
+  name += "_QS=" + rosic::rsToString(qShape);
   // ToDo: add mode
   name += ".wav";
 
@@ -815,24 +853,24 @@ void createWhiteZap()
   //  multiple zappers.
   // -The Q factor does not seem to affect the sweep-speed but the waveshape. For low Q, it's 
   //  sinusoidal. For high Q, it looks like harmonics appear. Higher Q-values should be used only
-  //  at high frequencies, i.e. hiQ can be somewhat higher, but loQ should always be low-ish. I
+  //  at high frequencies, i.e. highQ can be somewhat higher, but lowQ should always be low-ish. I
   //  think, with lower Q, we get a cleaner time-separation of the different frequencies. With 
   //  higher Q, they get mixed up more - or something.
-  // -Positive values of shF (freqShape) like +0.8 have the effect of cramming the signal more 
+  // -Positive values of freqShape (freqShape) like +0.8 have the effect of cramming the signal more 
   //  together. But the attack also gets longer - it gets crammed around some center that is not at
   //  the start of the sample. Negative values like -0.8 seem to lengthen the thump/body portion of
   //  the zap and shorten the transient.
-  // -Lowering hiF makes the transient more clicky. Raising hiF makes the transient more 
+  // -Lowering highFreq makes the transient more clicky. Raising highFreq makes the transient more 
   //  sweepy/zappy.
   // -With a slope of -6, we seem to get a constant amplitude. Maybe try using a leaky integrator,
-  //  i.e. lowpass with 6dB/oct tuned to somewhere below loF
-  // -When increasing loF, it does not sweep down as much and the whole sweep happens faster. I 
-  //  think cranking up loF by an octave makes the zap happen in half of the time
+  //  i.e. lowpass with 6dB/oct tuned to somewhere below lowFreq
+  // -When increasing lowFreq, it does not sweep down as much and the whole sweep happens faster. I 
+  //  think cranking up lowFreq by an octave makes the zap happen in half of the time
   // -Playing the generated sample back at different speeds does not change the sonic impression 
   //  very much
   //
   // Conclusions:
-  // -Overall length is proportional to numStages and inversely proportional to loF
+  // -Overall length is proportional to numStages and inversely proportional to lowFreq
   // -It makes sense to let it sweep down to around 15 Hz. If a sweep is desired that sweeps faster
   //  and only down to 30 Hz, we can just play the sample back at twice the speed. This will give a
   //  similar sound.
@@ -863,9 +901,26 @@ void createAllpassDrums()
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
-  createWhiteZap();
+  // For testing the auto-shortening:
+  //createBrownZap(50,   15, 8000,  0.0,   1.0, 1.0, 0.0,   0.8);
+
+
+  //             N    fLo  fHi    fSh    qLo  qHi  qSh    len
+  createBrownZap(50,   15, 8000, -0.9,   1.0, 1.0, 0.0,   1.0);
+  createBrownZap(50,   15, 8000, -0.8,   1.0, 1.0, 0.0,   1.0);
+  createBrownZap(50,   15, 8000, -0.7,   1.0, 1.0, 0.0,   1.0);
+  createBrownZap(50,   15, 8000, -0.6,   1.0, 1.0, 0.0,   1.0);
+  createBrownZap(50,   15, 8000, -0.5,   1.0, 1.0, 0.0,   1.0);
+  createBrownZap(50,   15, 8000,  0.0,   1.0, 1.0, 0.0,   1.0);
+  createBrownZap(50,   15, 8000, +0.5,   1.0, 1.0, 0.0,   1.0);
+
+
+
+
 
   // ToDo:
+  // -Let createBrownZap figure out the length itself by invoking an envelope follower and cutting
+  //  it off when the envelope falls below some threshold. Or maybe use the group delay lowFreq
   // -Make a function createNoiseBurstDrums
   // -Generally, to synthesize drums, we may use layers of such allpass-based "zap" sounds and 
   //  noise-burst based sounds. The noise bursts may also pass through a time-varying filter and
