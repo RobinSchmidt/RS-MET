@@ -56,7 +56,7 @@ public:
   void chainWith(const rsBiquadCascade<TSig, TCoef>& other);
 
   /** Turns this biquad-cascade into an allpass filter that has the same poles as the original 
-  filter. The zeros are moevd to positions that are reflections of the poles in the unit circle. */
+  filter. The zeros are moved to positions that are reflections of the poles in the unit circle. */
   void turnIntoAllpass();
 
   /** Multiplies all feedforward ('b') coefficients by some factor. */
@@ -67,6 +67,9 @@ public:
   \f[ y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2] \f] */
   inline void setCoeffs(TCoef* newB0, TCoef* newB1, TCoef* newB2, TCoef* newA1, TCoef* newA2); 
   //, double newGain = 1.0);
+
+  /** Sets all coefficients to bypass mode. */
+  void resetAllCoeffs();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */

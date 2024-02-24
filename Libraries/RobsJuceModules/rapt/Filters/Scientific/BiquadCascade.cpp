@@ -152,6 +152,19 @@ void rsBiquadCascade<TSig, TCoef>::turnIntoAllpass()
   }
 }
 
+template<class TSig, class TCoef>
+void rsBiquadCascade<TSig, TCoef>::resetAllCoeffs()
+{
+  for(int i = 0; i < maxNumStages; i++)
+  {
+    b0[i] = TCoef(1);
+    b1[i] = TCoef(0);
+    b2[i] = TCoef(0);
+    a1[i] = TCoef(0);
+    a2[i] = TCoef(0);
+  }
+}
+
 // inquiry:
 
 template<class TSig, class TCoef>

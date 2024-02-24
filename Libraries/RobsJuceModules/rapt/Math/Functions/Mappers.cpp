@@ -85,6 +85,7 @@ Ideas:
  was  f(x) = (x / (1-x))^a  where  a = log_3(2) ~= 0.63. I don't know, how the value log_3(2) 
  arises and personally think a value close to a = 0.65 could be better in terms of error at the two
  non-exact points. This exponent can perhaps be numerically optimized to minimize
- (f(0.25) - 0.5)^2 + (f(0.75) - 2.0)^2
+ (f(0.25) - 0.5)^2 + (f(0.75) - 2.0)^2. There is some experiment in the TestRosicAndRapt project or
+ maybe in the research codebase?
 
 */

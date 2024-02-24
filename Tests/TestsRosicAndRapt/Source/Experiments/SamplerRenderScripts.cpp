@@ -713,14 +713,46 @@ void createWhiteZapBassdrum()
   // implement manually.
 
 
+  // User parameters:
+  int    sampleRate = 48000;  // Sample rate in Hz
+  double length     = 0.5;    // Length in seconds
+  double loQ        = 1.0;
+  double hiQ        = 1.0;
+  double shQ        = 0.0;    // Shape parameter for Q
+  double loF        = 27.5;
+  double hiF        = 14080;
+  double shF        = 0.0;    // Shape parameter for frequency
+  int    numFilters = 50;     // Number of allpass filters
+
   rosic::rsWhiteZapper wz;
+  wz.setSampleRate(sampleRate);
+  wz.setNumStages(numFilters);
+  wz.setLowFreq(loF);
+  wz.setHighFreq(hiF);
+  wz.setFreqShape(shF);
+
+  // Render sample:
+  int N = ceil(length * sampleRate);  // Number of samples to render
+  using Vec = std::vector<double>;
+  Vec x(N);
+  x[0] = 1;
+  for(int n = 0; n < N; n++)
+    x[n] = wz.getSample(x[n]);
+  //rsPlotVector(x);
+
+  // Normalize and write it to a wavefile:
+  RAPT::rsArrayTools::normalize(&x[0], N);
+  rosic::writeToMonoWaveFile("WhiteZapBassdrum1.wav", &x[0], N, sampleRate, 16);
 
 
-  int dummy = 0;
+
+
+  //int dummy = 0;
 
   // ToDo:
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
   //  getWhiteZapBassdrum function
+  // -We currently need numStages >= 2. For 0 and 1, it produces garbage (inf, nan). Fix this!
 }
 
 

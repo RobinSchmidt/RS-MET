@@ -263,7 +263,9 @@ protected:
 
 /** A chain of allpass filters that has "zap" like sound as its impulse response, i.e. a fast 
 sinusoidal downward sweep. Due to its allpass nature, the overall output has a white spectrum. It's
-meant to be used to create (raw material for) synthesized drum and percussion sounds. */
+meant to be used to create (raw material for) synthesized drum and percussion sounds. Eventually, 
+it can be driven by sources other than an impulse generator - maybe noise-bursts could be 
+interesting. */
 
 class rsWhiteZapper
 {
@@ -280,7 +282,43 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \Setup
 
+  /** Enumeration of the available filter modes. */
+  enum class Mode
+  {
+    bypass = 0,
+    firstOrder,  // maybe rename to allFirstOrder
+    biquad,      // maybe rename to allBiquad
+
+    numModes
+  };
+  // Maybe have modes that alternate between first order and second order filters
+
+  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; setDirty(); }
+
+  void setNumStages(int newNumStages) { numStages = newNumStages; setDirty(); }
+
+
   void setLowFreq(double newFreq) { freqLo = newFreq; setDirty(); }
+
+  void setHighFreq(double newFreq) { freqHi = newFreq; setDirty(); }
+
+  void setFreqShape(double newShape) { freqShape = newShape; setDirty(); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Processing
+
+  inline double getSample(double in)
+  {
+    if(dirty)
+      updateCoeffs();
+    return allpassChain.getSample(in);
+  }
+
+  void reset()
+  {
+    allpassChain.reset();
+  }
 
 
 
@@ -292,8 +330,8 @@ protected:
 
   void updateCoeffs();
 
+  // Embedded objects:
   static const int maxNumAllpasses = 256;
-
   RAPT::rsBiquadCascade<double, double> allpassChain;
 
   // User parameters:
@@ -304,8 +342,11 @@ protected:
   double qHi        = 1.0;
   double qShape     = 0.0;
   double sampleRate = 44100.0;
+  int    numStages  = 50;            // Number of allpass stages - actually redundant with allpassChain.numStages
+  Mode   mode       = Mode::biquad;
 
-  bool dirty        = true;
+  // Internals:
+  bool dirty = true;
 
 };
 

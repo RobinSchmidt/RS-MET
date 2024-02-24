@@ -477,3 +477,57 @@ rsWhiteZapper::rsWhiteZapper() : allpassChain(maxNumAllpasses)
 {
 
 }
+
+void rsWhiteZapper::updateCoeffs()
+{
+  //RAPT::rsError("Not yet implemented");
+
+
+  using BQD = BiquadDesigner;
+
+  double fsR = 1.0 / sampleRate;
+  double *b0 = allpassChain.getAddressB0();
+  double *b1 = allpassChain.getAddressB1();
+  double *b2 = allpassChain.getAddressB2();
+  double *a1 = allpassChain.getAddressA1();
+  double *a2 = allpassChain.getAddressA2();
+
+  auto shape = [](double x, double s) { return RAPT::rsRationalMap_01(x, s); }; // For convenience
+
+  allpassChain.setNumStages(numStages);
+
+  switch(mode)
+  {
+  case Mode::biquad:
+  {
+    for(int i = 0; i < numStages; i++)
+    {
+      double p = double(i) / double(numStages-1);  // Goes from 0 to 1
+      double f = RAPT::rsLinToExp(shape(p, freqShape), 0.0, 1.0, freqLo, freqHi);
+      double q = RAPT::rsLinToExp(shape(p, qShape),    0.0, 1.0, qLo,    qHi);
+      BQD::calculateCookbookAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f, q);
+      a1[i] = -a1[i];  // The design routine uses a different convention for the sign of the
+      a2[i] = -a2[i];  // a-coeffs than the class rsBiquadCascade
+    }
+  } break;
+
+  default:
+  {
+    RAPT::rsError("Unknown mode in rsWhiteZapper::updateCoeffs");
+    allpassChain.resetAllCoeffs();
+  }
+
+  }
+
+
+  dirty = false;
+
+  // ToDo:
+  // -Implement first order mode
+  // -Optimize the calls to rsLinToExp. There are certain things can be precomputed which are
+  //  recomputed there multiple times, I think. Maybe create a class rsLinToExpMapper that has
+  //  a setup(T inMin, T inMax, T outMin, T outMax) function and a map(T x) function. See 
+  //  rsMapper in RAPT (Math/Functions/Mappers.h/cpp)
+  // -precompute 1 / (numStages-1)
+  // -avoid the typecast to double per iteration - maybe use a double as loop counter
+}
