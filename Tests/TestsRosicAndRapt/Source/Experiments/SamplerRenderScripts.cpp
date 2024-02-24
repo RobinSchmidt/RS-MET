@@ -788,10 +788,14 @@ void createWhiteZapBassdrum()
   name += "_FL=" + rsToString(loF);
   name += "_FH=" + rsToString(hiF);
   name += "_FS=" + rsToString(shF);
+  name += "_QL=" + rsToString(loQ);
+  name += "_QH=" + rsToString(hiQ);
+  name += "_QS=" + rsToString(shQ);
+  // ToDo: add mode
   name += ".wav";
   rosic::writeToMonoWaveFile(name, &x[0], N, sampleRate, 16);
-  // std::to_string for double generates too many trailing zeros.
-
+ 
+  /*
   // Apply the zapper again:
   Vec y(N);
   wz.reset();
@@ -799,10 +803,9 @@ void createWhiteZapBassdrum()
     y[n] = wz.getSample(x[n]);
   RAPT::rsArrayTools::normalize(&y[0], N);
   //rosic::writeToMonoWaveFile("WhiteZapY.wav", &y[0], N, sampleRate, 16);
+  // ...well - that's not very interesting - see below...
+  */
 
-
-
-  //int dummy = 0;
 
   // Observations:
   // -When applying the zapper twice, the result is similar to using a single zapper with twice the
