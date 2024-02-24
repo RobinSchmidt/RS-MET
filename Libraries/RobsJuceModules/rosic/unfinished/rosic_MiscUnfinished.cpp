@@ -500,7 +500,6 @@ void rsWhiteZapper::updateCoeffs()
   {
     for(int i = 0; i < numStages; i++)
     {
-      //double p = double(i) / double(numStages-1);  // Goes from 0 to 1
       double p = scaler * i;   // Goes from 0 to 1
       double f = RAPT::rsLinToExp(shape(p, freqShape), 0.0, 1.0, freqLo, freqHi);
       double q = RAPT::rsLinToExp(shape(p, qShape),    0.0, 1.0, qLo,    qHi);

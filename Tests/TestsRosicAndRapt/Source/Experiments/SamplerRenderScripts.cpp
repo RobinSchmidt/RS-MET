@@ -714,7 +714,7 @@ void createWhiteZapBassdrum()
 
   // User parameters:
   int    sampleRate = 48000;  // Sample rate in Hz
-  double length     = 0.5;    // Length in seconds
+  double length     = 1.0;    // Length in seconds
   double loF        = 20;
   double hiF        = 20000;
   double shF        = 0.0;    // Shape parameter for frequency
@@ -730,7 +730,9 @@ void createWhiteZapBassdrum()
   wz.setLowFreq(loF);
   wz.setHighFreq(hiF);
   wz.setFreqShape(shF);
-  // ToDo: set up Q settings
+  wz.setLowQ(loQ);
+  wz.setHighQ(hiQ);
+  wz.setQShape(shQ);
 
   // Render sample:
   int N = ceil(length * sampleRate);  // Number of samples to render
@@ -743,12 +745,24 @@ void createWhiteZapBassdrum()
 
   // Normalize and write it to a wavefile:
   RAPT::rsArrayTools::normalize(&x[0], N);
-  rosic::writeToMonoWaveFile("WhiteZapBassdrum1.wav", &x[0], N, sampleRate, 16);
+  rosic::writeToMonoWaveFile("WhiteZap.wav", &x[0], N, sampleRate, 16);
 
+  // Apply the zapper again:
+  Vec y(N);
+  wz.reset();
+  for(int n = 0; n < N; n++)
+    y[n] = wz.getSample(x[n]);
 
+  RAPT::rsArrayTools::normalize(&y[0], N);
+  rosic::writeToMonoWaveFile("WhiteZapY.wav", &y[0], N, sampleRate, 16);
 
 
   //int dummy = 0;
+
+  // Observations:
+  // -When applying the zapper twice, the result is similar to using a single zapper with twice the
+  //  number of stages, I think. So, we don't really get anything interesting new by chaining 
+  //  multiple zappers.
 
   // ToDo:
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
