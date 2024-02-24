@@ -706,6 +706,25 @@ void createAllpassBassdrum3()
   // -For Q=0, we get a DC output. That's wrong!
 }
 
+
+
+std::string rsToString(double x)
+{
+  std::string str = std::to_string(x);
+  str.erase ( str.find_last_not_of('0') + 1, std::string::npos );
+  str.erase ( str.find_last_not_of('.') + 1, std::string::npos );
+  if(str[str.length()-1] == '.')
+    str.erase(str.length()-1 , std::string::npos );
+  return str;
+
+  // Code taken from here:
+  // https://stackoverflow.com/questions/13686482/c11-stdto-stringdouble-no-trailing-zeros
+}
+
+// move to rosic_String.h/cpp
+
+
+
 void createWhiteZapBassdrum()
 {
   // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
@@ -753,10 +772,25 @@ void createWhiteZapBassdrum()
   for(int n = 0; n < N; n++)
     x[n] = sf.getSample(x[n]);
 
+  // Move this code to a unit test
+  std::string s;
+  bool ok = true;
+  s = rsToString(14.3060); ok &= s == "14.306";
+  s = rsToString(14.0);    ok &= s == "14";
+
 
   // Normalize and write it to a wavefile:
   RAPT::rsArrayTools::normalize(&x[0], N);
-  rosic::writeToMonoWaveFile("WhiteZap.wav", &x[0], N, sampleRate, 16);
+
+  // Create filename from the parameters:
+  std::string name = "AllpassZap";
+  name += "_NS=" + std::to_string(numStages);
+  name += "_FL=" + rsToString(loF);
+  name += "_FH=" + rsToString(hiF);
+  name += "_FS=" + rsToString(shF);
+  name += ".wav";
+  rosic::writeToMonoWaveFile(name, &x[0], N, sampleRate, 16);
+  // std::to_string for double generates too many trailing zeros.
 
   // Apply the zapper again:
   Vec y(N);
