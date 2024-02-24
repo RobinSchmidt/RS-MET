@@ -888,16 +888,18 @@ void createAllpassDrums()
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
-  int numStages = 40;
+  //int numStages = 50;
 
-
-  //                         fLo   fHi    fSh    qLo  qHi  qSh 
-  createBrownZap(numStages,   15,  8000, -0.98,  1.0, 1.0, 0.0);
-  createBrownZap(numStages,   15,  8000, -0.95,  1.0, 1.0, 0.0);
-  for(int k = -9; k <= +9; k++)
+  for(int numStages = 20; numStages <= 80; numStages += 10)
   {
-    double freqShape = 0.1 * k;
-    createBrownZap(numStages,   15,  8000, freqShape,   1.0, 1.0, 0.0);
+    //                        fLo   fHi    fSh 
+    createBrownZap(numStages,  15, 8000, -0.98);
+    createBrownZap(numStages,  15, 8000, -0.95);
+    for(int k = -9; k <= +9; k++)
+    {
+      double freqShape = 0.1 * k;
+      createBrownZap(numStages, 15, 8000, freqShape);
+    }
   }
 
 
