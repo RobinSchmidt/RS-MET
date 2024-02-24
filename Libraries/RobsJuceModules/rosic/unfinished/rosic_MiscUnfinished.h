@@ -259,6 +259,36 @@ protected:
 // -Maybe the keyword PhaseVocoder should appear somewhere in this file to make this class easier 
 //  to find. Hey - now it does! :-)
 
+//=================================================================================================
 
+/** A chain of allpass filters that has "zap" like sound as its impulse response, i.e. a fast 
+sinusoidal downward sweep. Due to its allpass nature, the overall output has a white spectrum. It's
+meant to be used to create (raw material for) synthesized drum and percussion sounds. */
+
+class rsWhiteZapper
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Lifetime
+
+  rsWhiteZapper();
+
+
+
+
+protected:
+
+  static const int maxNumAllpasses = 256;
+
+  RAPT::rsBiquadCascade<double, double> allpassChain;
+
+};
+
+// ToDo:
+// -Find a better name. Ideas: WhiteSweeper (because the spectrum is white and the impulse response
+//  is a (downward) sweep). WhiteZapper, AllpassZapper
 
 }

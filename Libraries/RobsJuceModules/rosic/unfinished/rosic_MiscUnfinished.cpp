@@ -465,12 +465,15 @@ void SpectralShifter::shiftViaRS2(Complex* spectrum, int spectrumSize)
 /*
 
 Resources:
-
-
-
-
 https://github.com/kupix/bungee  Phase vocoder based pitch-shifter/time-stretcher
 
 
 
 */
+
+//-------------------------------------------------------------------------------------------------
+
+rsWhiteZapper::rsWhiteZapper() : allpassChain(maxNumAllpasses)
+{
+
+}

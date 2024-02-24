@@ -4,6 +4,11 @@ Ardour:
 https://github.com/Ardour/ardour
 -A fully featured DAW.
 
+LMMS:
+https://lmms.io/
+https://github.com/LMMS/lmms
+-Another DAW similar to FL
+
 Surge:
 https://github.com/surge-synthesizer/surge
 -A hybrid synthesizer (mostly VA but with some more exotic oscillator types). Very poppular with 
@@ -61,3 +66,8 @@ https://bitbucket.org/Mayae/ape/src/master/
 -An audio plugin, that allows to directly program C++ DSP in real time.
 -https://www.kvraudio.com/forum/viewtopic.php?t=402054
  https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622
+
+Sfizz:
+https://github.com/sfztools/sfizz
+https://github.com/sfztools/sfizz-ui
+-SFZ player

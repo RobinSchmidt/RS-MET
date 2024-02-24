@@ -706,6 +706,24 @@ void createAllpassBassdrum3()
   // -For Q=0, we get a DC output. That's wrong!
 }
 
+void createWhiteZapBassdrum()
+{
+  // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
+  // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
+  // implement manually.
+
+
+  rosic::rsWhiteZapper wz;
+
+
+  int dummy = 0;
+
+  // ToDo:
+  // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
+  //  getWhiteZapBassdrum function
+}
+
+
 void createAllpassDrums()
 {
   // The idea is to use the impulse responses of allpass filters to create percussive sounds. These 
@@ -715,7 +733,14 @@ void createAllpassDrums()
 
   //createAllpassBassdrum1();
   //createAllpassBassdrum2();
-  createAllpassBassdrum3();
+  //createAllpassBassdrum3();
+  createWhiteZapBassdrum();
+
+  // ToDo:
+  // -Make a function createNoiseBurstDrums
+  // -Generally, to synthesize drums, we may use layers of such allpass-based "zap" sounds and 
+  //  noise-burst based sounds. The noise bursts may also pass through a time-varying filter and
+  //  waveshaper(s). The overall mix, too.
 }
 
 void createSamplerWaveforms()
