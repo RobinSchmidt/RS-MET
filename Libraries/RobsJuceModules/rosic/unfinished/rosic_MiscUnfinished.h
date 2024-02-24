@@ -305,7 +305,11 @@ public:
   void setFreqShape(double newShape) { freqShape = newShape; setDirty(); }
 
 
+  void setLowQ(double newQ) { qLo = newQ; setDirty(); }
 
+  void setHighQ(double newQ) { qHi = newQ; setDirty(); }
+
+  void setQShape(double newShape) { qShape = newShape; setDirty(); }
 
   //-----------------------------------------------------------------------------------------------
   // \Processing
@@ -352,5 +356,7 @@ protected:
 // ToDo:
 // -Find a better name. Ideas: WhiteSweeper (because the spectrum is white and the impulse response
 //  is a (downward) sweep). WhiteZapper, AllpassZapper
+// -Maybe introduce global feedback - but the the output will not be white anymore. But maybe we 
+//  can use the allpass nesting technique to achieve a white output with feedback?
 
 }

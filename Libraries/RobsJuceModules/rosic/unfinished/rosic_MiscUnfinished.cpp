@@ -491,13 +491,17 @@ void rsWhiteZapper::updateCoeffs()
 
   int numStages = allpassChain.getNumStages();
   using BQD = BiquadDesigner;
+
+  double scaler = 1.0 / double(numStages-1); 
+
   switch(mode)
   {
   case Mode::biquad:
   {
     for(int i = 0; i < numStages; i++)
     {
-      double p = double(i) / double(numStages-1);  // Goes from 0 to 1
+      //double p = double(i) / double(numStages-1);  // Goes from 0 to 1
+      double p = scaler * i;   // Goes from 0 to 1
       double f = RAPT::rsLinToExp(shape(p, freqShape), 0.0, 1.0, freqLo, freqHi);
       double q = RAPT::rsLinToExp(shape(p, qShape),    0.0, 1.0, qLo,    qHi);
       BQD::calculateCookbookAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f, q);
@@ -523,5 +527,6 @@ void rsWhiteZapper::updateCoeffs()
   //  a setup(T inMin, T inMax, T outMin, T outMax) function and a map(T x) function. See 
   //  rsMapper in RAPT (Math/Functions/Mappers.h/cpp)
   // -precompute 1 / (numStages-1)
-  // -avoid the typecast to double per iteration - maybe use a double as loop counter
+  // -avoid the typecast to double per iteration - maybe use a double as second loop counter
+  // -Use simd
 }
