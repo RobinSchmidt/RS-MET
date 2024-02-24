@@ -639,7 +639,6 @@ void createAllpassBassdrum2()
   int    numStages  = 1;       // Number of stages per allpass chain
   int    numChains  = 50;      // With 10, we get exact octaves
 
-
   // Render sample:
   int N = ceil(length * sampleRate);  // Number of samples to render
   using Vec = std::vector<double>;
@@ -656,20 +655,55 @@ void createAllpassBassdrum2()
   RAPT::rsArrayTools::normalize(&x[0], N);
   rosic::writeToMonoWaveFile("AllpassBassdrum2.wav", &x[0], N, sampleRate, 16);
 
-
   // Observations:
   // -When loQ=4 and hiQ=1, then the sound becomes kinda warbly. It's also warbly when hving it the 
   //  other way around
   // -Using more stages per chain (and reducing the number of chains to keep the product constant),
   //  the amp-envelope seems to become more steppy. There seem to be plateaus. With just 1 stage 
   //  per chain, the amp-env does not feature such plateaus
-
+  //
+  // Conclusions:
+  // -We may scrap the numStages parameter and just always use 1 stage
+  //
   // ToDo:
-  // -Maybe use numStages = 1 and increase numChains accordingly such that numStages*numChains
-  //  remains constant. This is the total number of allpass filters. I think, around 50 allpasses
-  //  are good. 
+  // -Maybe let the frequencies and Q-values pass through a nonlinear function - maybe the linfrac
+  //  warping map should be applied to the normalized values
 }
 
+void createAllpassBassdrum3()
+{
+  // User parameters:
+  int    sampleRate = 48000;  // Sample rate in Hz
+  double length     = 0.5;    // Length in seconds
+  double loQ        = 0.5;
+  double hiQ        = 1.0;
+  double shQ        = 0.0;    // Shape parameter for Q
+  double loF        = 27.5;
+  double hiF        = 14080;
+  double shF        = -0.8;    // Shape parameter for frequency
+  int    numFilters = 64;     // Number of allpass filters
+
+                              // Render sample:
+  int N = ceil(length * sampleRate);  // Number of samples to render
+  using Vec = std::vector<double>;
+  Vec x(N);
+  x[0] = 1;
+  auto shape = [](double x, double s) { return RAPT::rsRationalMap_01(x, s); };
+  for(int i = 0; i < numFilters; i++)
+  {
+    double p = double(i) / double(numFilters-1);               // Goes from 0 to 1
+    double f = rsLinToExp(shape(p, shF), 0.0, 1.0, loF, hiF);
+    double q = rsLinToExp(shape(p, shQ), 0.0, 1.0, loQ, hiQ);
+    applyAllpassChain(x, f, q, 1, sampleRate);
+  }
+
+  // Normalize and write it to a wavefile:
+  RAPT::rsArrayTools::normalize(&x[0], N);
+  rosic::writeToMonoWaveFile("AllpassBassdrum3.wav", &x[0], N, sampleRate, 16);
+
+  // Observations:
+  // -Positive values of shF make the sweep initially faster, I think. It sounds more snappy.
+}
 
 void createAllpassDrums()
 {
@@ -679,7 +713,8 @@ void createAllpassDrums()
   // filters.
 
   //createAllpassBassdrum1();
-  createAllpassBassdrum2();
+  //createAllpassBassdrum2();
+  createAllpassBassdrum3();
 }
 
 void createSamplerWaveforms()
