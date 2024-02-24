@@ -718,13 +718,13 @@ void createWhiteZapBassdrum()
 
   double loF        = 20;
   double hiF        = 20000;
-  double shF        = 0.0;    // Shape parameter for frequency
+  double shF        = -0.9;    // Shape parameter for frequency
   double loQ        = 1.0;
   double hiQ        = 1.0;
   double shQ        = 0.0;    // Shape parameter for Q
-  int    numStages  = 50;     // Number of allpass filter stages
+  int    numStages  = 100;     // Number of allpass filter stages
 
-  double slope      = -2.0;
+  double slope      = -4.0;   // Spectral tilt in post-processing
 
   // Create and set up the zapper object:
   rosic::rsWhiteZapper wz;
@@ -746,7 +746,7 @@ void createWhiteZapBassdrum()
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
 
-  // Post-process:
+  // Post-process with slope (aka tilt) filter:
   rosic::SlopeFilter sf;
   sf.setSampleRate(sampleRate);
   sf.setSlope(slope);
@@ -779,6 +779,10 @@ void createWhiteZapBassdrum()
   //  at high frequencies, i.e. hiQ can be somewhat higher, but loQ should always be low-ish. I
   //  think, with lower Q, we get a cleaner time-separation of the different frequencies. With 
   //  higher Q, they get mixed up more - or something.
+  // -Positive values of shF (freqShape) like +0.8 have the effect of cramming the signal more 
+  //  together. But the attack also gets longer - it gets crammed around some center that is not at
+  //  the start of the sample. Negative values like -0.8 seem to lengthen the thump/body portion of
+  //  the zap and shorten the transient.
 
   // ToDo:
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
