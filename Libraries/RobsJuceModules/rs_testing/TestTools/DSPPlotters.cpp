@@ -542,20 +542,10 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   RAPT::rsAssert(signalLength <= fftSize);
   setupTransformer();
   int N = rsMax(signalLength, fftSize);
-
-  // Make members:
-  int numBins = fftSize/2 + 1; // 8-pt FFT has 5 non-redundant bins, namely k = 0,1,2,3,4
-  // Later have a user option for that -> zoom ...or maybe even better: let the use choose minBin and 
-  // maxBin
-
-  int minBin = 0;
-  int maxBin = numBins - 1;
-
-
   std::vector<T> f = getFreqAxis(numBins);
   std::vector<T> dB(N);
   //std::vector<T> phs(N);
-  std::vector<std::complex<T>> spec(N);  // rename to spec
+  std::vector<std::complex<T>> spec(N);
 
   // Use this for y-axis minimum - let the user set it up:
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
@@ -579,15 +569,13 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     for(int k = 0; k < N; k++)
       dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(spec[k]), ampFloor);
     addDataArrays(maxBin-minBin+1, &f[minBin], &dB[minBin]);
-    //addDataArrays(numBins, &f[0], &dB[0]);
+    //addDataArrays(numBins, &f[0], &dB[0]);  // old
   }
 
+  // Factor out into setupPlotterAndPlot()
   if(logFreqAxis)
     setLogScale("x"); // uses decadic ticks -> use octaves instead
   plot();
-
-  // ToDo:
-  // -Left the user choose a minBin and a maxBin for zoom
 }
 
 
@@ -620,7 +608,6 @@ void SpectrumPlotter<T>::setupTransformer()
   transformer.setBlockSize(fftSize);
 }
 
-
 template <class T>
 void SpectrumPlotter<T>::computeComplexSpectrum(
   const T* x, int Nx, std::vector<std::complex<T>>& spectrum)
@@ -633,6 +620,8 @@ void SpectrumPlotter<T>::computeComplexSpectrum(
     RAPT::rsArrayTools::fillWithZeros(&spectrum[Nx], fftSize-Nx);
   transformer.transformComplexBufferInPlace(&spectrum[0]);
 }
+
+
 
 template <class T>
 std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)

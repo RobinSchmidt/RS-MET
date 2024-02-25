@@ -219,9 +219,19 @@ public:
   // what about (auto)correlation functions? how should we normalize the plot for them?
 
 
-  /** Sets the FFT size. Does not have to be a power of 2 - we use Bluestein FFT here. */
-  void setFftSize(int newSize) { fftSize = newSize; }
+  /** Sets the FFT size. Does not have to be a power of 2 - we use Bluestein FFT here. Resets the
+  minBin/maxBin settings, i.e. the frequency range for plotting. */
+  void setFftSize(int newSize) 
+  { 
+    fftSize = newSize;
+    numBins = fftSize/2 + 1;
+    minBin  = 0;
+    maxBin  = numBins-1;
+  }
   // maybe rename to setTrafoSize
+
+  // ToDo:
+  //void setBinRangeToPlot(int newMinBin, int newMaxBin) {  }
 
   void setFreqAxisUnit(FreqAxisUnits newUnit) { freqAxisUnit = newUnit; }
 
@@ -288,6 +298,9 @@ protected:
   T sampleRate = T(1);
 
   int fftSize = 2048;
+  int numBins = 1025;        // == fftSize/2 + 1
+  int minBin  = 0;
+  int maxBin  = numBins-1;
 
   //bool plotPhases = true;
 
