@@ -230,8 +230,14 @@ public:
   }
   // maybe rename to setTrafoSize
 
-  // ToDo:
-  //void setBinRangeToPlot(int newMinBin, int newMaxBin) {  }
+
+  void setBinRangeToPlot(int newMinBin, int newMaxBin) 
+  {  
+    RAPT::rsAssert(newMaxBin > newMinBin);     // Maybe allow >=
+    minBin = rsClip(newMinBin, 0, numBins-1);
+    maxBin = rsClip(newMaxBin, 0, numBins-1);
+  }
+  // needs tests
 
   void setFreqAxisUnit(FreqAxisUnits newUnit) { freqAxisUnit = newUnit; }
 

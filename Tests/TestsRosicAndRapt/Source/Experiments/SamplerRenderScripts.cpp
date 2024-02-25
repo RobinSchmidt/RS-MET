@@ -874,6 +874,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
   N = x.size();
   RAPT::rsArrayTools::normalize(&x[0], N);  // use sp.normalize(x);
+  //sp.setBinRangeToPlot(20, 20000);  // test
   sp.plotDecibelSpectra(N, &x[0]);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
   // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq
