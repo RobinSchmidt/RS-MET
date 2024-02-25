@@ -850,14 +850,21 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
 
-  // Plot a phase-response, phase-delay and group-delay spectrum of the signal x:
-  // Plot a spectrum:
-  SpectrumPlotter<double> sp;
-  sp.setFftSize(65536);
-  sp.setLogFreqAxis(true);
-  sp.setSampleRate(sampleRate);
-  sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-  sp.plotPhaseSpectra(N, &x[0]);  // Not yet implemented
+
+  // Optionally plot a phase-spectrum of the allpass impulse response:
+  bool plotPhase = true;  // Maybe make this a function parameter
+  if(plotPhase)
+  {
+    SpectrumPlotter<double> sp;
+    sp.setFftSize(65536);
+    sp.setLogFreqAxis(true);
+    sp.setSampleRate(sampleRate);
+    sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
+    //sp.plotDecibelSpectra(N, &x[0]);  // Should be flat. Yep - it is.
+    sp.plotPhaseSpectra(N, &x[0]);
+    // ToDo: Maybe alternatively plot phase-delay or group-delay
+  }
+
 
   // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
   // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
@@ -874,9 +881,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
   N = x.size();
-  RAPT::rsArrayTools::normalize(&x[0], N);  // use sp.normalize(x);
-  //sp.setBinRangeToPlot(20, 20000);  // test
-  //sp.plotDecibelSpectra(N, &x[0]);
+  RAPT::rsArrayTools::normalize(&x[0], N);  // implement and use sp.normalize(x);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
   // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq
 
@@ -964,12 +969,31 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  don't think, that's desirable, though.
   // -With lower Q, its seems to sweep further down at the end.
   // -Using a sawtooth burst as input is not so interesting (maybe try an impulse-train burst?)
+  // -The phase response always goes down from 0° to -(numStages*360°) in a sigmoid shape.
+  // -The almost linear portion of the sigmoid is confined between lowFreq and highFreq.
+  // -Higher values for Q make the sigmoid sharper (i.e. more resembling a hard-clipper) at the 
+  //  expense of making the linear section wiggly (try Q = 16 with numStages = 10). The number of
+  //  wiggles seem to equal numStages. At around Q = 4, the wiggles become barely visible in the 
+  //  plot, with Q = 2 completely invisible, with Q = 1 we may actually already be in the 
+  //  oversmoothed range - although, it's still fine. (ToDo: check for other values of numStages).
+  //  Try createBrownZap(50, 100, 1000, 0.0, Q, Q, 0.0); and tweak Q
+  // -By the way, the allpass chain *closely* approximates a linear phase response.
+  // -Shape parameters other than 0 skew the sigmoid and make it asymmetric - maybe a bit like
+  //  the Gompertz function.
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
   // -It makes sense to let it sweep down to around 15 Hz. If a sweep is desired that sweeps faster
   //  and only down to 30 Hz, we can just play the sample back at twice the speed. This will give a
   //  similar sound.
+  // -Giving the user control over how Q changes with frequency seems overkill. Maybe a single Q
+  //  parameter is good enough. ...but maybe experiment a bit more...
+  // -I think, the most important sound-shaping feature to be added is to give more flexibility to
+  //  the curve that distributes the allpass tuning frequencies. Using a fixed Q fo all allpasses
+  //  that migght even be hardcoded seems good enough. But maybe when we have more flexibility for
+  //  the freqs, more flexibility for the Qs may become more desirable? We'll see. However, the
+  //  current implementation of the Q-shape should be kept - but it doesn't need to be a user 
+  //  parameter on a GUI, when I make a module for ToolChain from it.
   //
   // ToDo:
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
@@ -1019,20 +1043,8 @@ void createAllpassDrums()
   //createAllpassBassdrum3();
 
   // Experimental:
-  //createBrownZap(50, 15, 8000, 0.0);
-  // Phase response is approximately linear between 15 and 8000 on log-frequency plot. Beyond the
-  // limits, it goes into a smooth sigmoid shape. It goes from 0 to -18000°.
-
-  //double Q = 1.0;
-  //double shape = 0.0;
-  //createBrownZap(50, 100, 1000, shape, Q, Q, 0.0);
-
-
-
   //createBrownZap(30,  100,  500, 0.0);   // Tom?
-  // Phase goes down to -10800° in nice sigmoid
-
-  //createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
+  createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
 
   // Create the ZappyKickXXX.wav bassdrums:
   int numStagesLo  = 20;
@@ -1051,29 +1063,6 @@ void createAllpassDrums()
   // My favorites: 20/-2, 20/0, 30/-3, 40/-3, 40/1..2, 50/-3, 50/1..2, 60/-4, 60/2, 70/-4, 70/2..3,
   // 80/-4, 80/3 where 2..3 means the perfect setting might be in between 2 and 3 etc..
 
-
-  // Observations:
-  // -The phase response always goes down from 0° to -(numStages*360°) in a sigmoid shape.
-  // -The almost linear portion of the sigmoid is confined between lowFreq and highFreq.
-  // -Higher values for Q make the sigmoid sharper (i.e. more resembling a hard-clipper) at the 
-  //  expense of making the linear section wiggly (try Q = 16 with numStages = 10). The number of
-  //  wiggles seem to equal numStages. At around Q = 4, the wiggles become barely visible in the 
-  //  plot, with Q = 2 completely invisible, with Q = 1 we may actually already be in the 
-  //  oversmoothed range - although, it's still fine. (ToDo: check for other values of numStages).
-  // -By the way, the allpass chain *closely* approximates a linear phase response.
-  // -Shape parameters other than 0 skew the sigmoid and make it asymmetric - maybe a bit like
-  //  the Gompertz function.
-  //
-  // Conclusions:
-  // -Giving the user control over how Q changes with frequency seems overkill. Maybe a single Q
-  //  parameter is good enough. ...but maybe experiment a bit more...
-  // -I think, the most important sound-shaping feature to be added is to give more flexibility to
-  //  the curve that distributes the allpass tuning frequencies. Using a fixed Q fo all allpasses
-  //  that migght even be hardcoded seems good enough. But maybe when we have more flexibility for
-  //  the freqs, more flexibility for the Qs may become more desirable? We'll see. However, the
-  //  current implementation of the Q-shape should be kept - but it doesn't need to be a user 
-  //  parameter on a GUI, when I make a module for ToolChain from it.
-  //
   // ToDo:
   // -Allow for more flexible shaping like in the linear fractional interpolation scheme. We want 
   //  to determine the slope at 0 as s0 = log2(param1), s1 = pow(s0, param2-1), shape = param3.
