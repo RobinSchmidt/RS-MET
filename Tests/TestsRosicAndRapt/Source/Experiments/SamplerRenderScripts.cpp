@@ -796,12 +796,23 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // filter but it turned out that a tilt of 6 dB/oct is optimal in the sense that the amplitude
   // stays constant during the sweep - so I replaced it with a lowpass. This may also be called a 
   // browning filter (it turns the white spectrum into a brown one).
+
   RAPT::rsOnePoleFilter<double, double> flt;
   flt.setSampleRate(sampleRate);
+
+  /*
   flt.setMode(flt.LOWPASS_IIT);
   flt.setCutoff(0.5*lowFreq);
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
+    */
+
+
+  rsSamplePostProcessor pp;
+  pp.setSampleRate(sampleRate);
+  pp.applyOnePoleLowpass(x, 0.5*lowFreq);
+
+
 
   // Also apply a 3rd order DC-blocker highpass to get rid of some subsonic bump artifacts that the
   // lowpass introduces. The settings have been found by trial and error:
@@ -858,7 +869,8 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
 
 
   // Create filename from the parameters (maybe factor out):
-  std::string name = "ZappyKick";
+  std::string name = "ZappyKick"; // Nah - not all possible settings lead to bassdrums
+  //std::string name = "AllpassZap";
   name += "_NS=" + std::to_string(numStages);
   if(lowFreq  != 15)   name += "_FL=" + rosic::rsToString(lowFreq);
   if(highFreq != 8000) name += "_FH=" + rosic::rsToString(highFreq);
@@ -866,10 +878,10 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   if(lowQ   != 1.0)  name += "_QL=" + rosic::rsToString(lowQ);
   if(highQ  != 1.0)  name += "_QH=" + rosic::rsToString(highQ);
   if(qShape != 0.0)  name += "_QS=" + rosic::rsToString(qShape);
-
   // ToDo: add mode
   name += ".wav";
-
+  // Maybe let the caller pass a basic name - don't hardcode the "ZappyKick" name here. It may
+  // default to AllpassZap.
 
 
   // Normalize and write it to a wavefile:
@@ -975,14 +987,22 @@ void createAllpassDrums()
   //createAllpassBassdrum3();
 
 
+  createBrownZap(50,   15, 8000, -0.85);
+
+
   createBrownZap(30,  100,  500, 0.0);   // Tom?
   createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
 
-  createBrownZap(50,   15, 8000, -0.85);
+
 
   //createBrownZap(50,   15, 8000, -0.85,   0.5, 0.5, 0.0);
   //createBrownZap(50,   15, 8000, -0.85,   4.0, 4.0, 0.0);
-  for(int numStages = 20; numStages <= 80; numStages += 10)
+
+  // Create Bassdrums:
+  int numStagesLo  = 20;
+  int numStagesHi  = 80;
+  int numStagesInc = 10;
+  for(int numStages = numStagesLo; numStages <= numStagesHi; numStages += numStagesInc)
   {
     //                        fLo   fHi    fSh 
     createBrownZap(numStages,  15, 8000, -0.98);
