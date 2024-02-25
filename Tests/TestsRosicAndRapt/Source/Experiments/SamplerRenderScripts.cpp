@@ -906,6 +906,10 @@ void createAllpassDrums()
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
+
+  createBrownZap(30,  100,  500, 0.0);   // Tom?
+  createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
+
   createBrownZap(50,   15, 8000, -0.85);
 
   //createBrownZap(50,   15, 8000, -0.85,   0.5, 0.5, 0.0);
@@ -938,12 +942,21 @@ void createAllpassDrums()
   // 60  -0.3     Goa
 
   // ToDo:
+  // -Re-parameterize the shaping: use the base-2 logarithm of the slope at 0 as parameter
+  //  -allow for more flexible shaping like in the linear fractional interpolation scheme. We want 
+  //   to determine the slope at 0 as s0 = log2(param1), s1 = pow(s0, param2-1), shape = param3.
+  //   param2 is some sort of SigmoidVsSpikey parameter and param3 is a shift up/down parameter, 
+  //   I think
   // -Make a function createNoiseBurstDrums
   // -Generally, to synthesize drums, we may use layers of such allpass-based "zap" sounds and 
   //  noise-burst based sounds. The noise bursts may also pass through a time-varying filter and
   //  waveshaper(s). The overall mix, too.
   // -It would be nice to have two user parameters: length, snap which would adjust the freqShape 
   //  and numStages
+  // -Maybe provide 16/44.1 versions for free and sell 24/96 versions through one of these stores:
+  //  https://toneisland.com/sites-to-sell-sample-packs/
+  //  Loopmasters seems interesting
+  //  ...or maybe use Patreon
 }
 
 void createSamplerWaveforms()

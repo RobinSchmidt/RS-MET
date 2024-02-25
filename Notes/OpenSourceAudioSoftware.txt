@@ -33,6 +33,13 @@ BespokeSynth:
 https://github.com/BespokeSynth/BespokeSynth
 -A Reaktor-style modular synthesizer
 
+ZynAddSubFX / Zyn-Fusion:
+https://zynaddsubfx.sourceforge.io/
+https://zynaddsubfx.sourceforge.io/zyn-fusion.html
+https://github.com/zynaddsubfx
+-Hybrid additive/subtractive/pad-synth synthesizer
+-Zyn-Fusion has an interesting business model: It's open source but you can buy a built version.
+
 Cardinal:
 https://github.com/DISTRHO/Cardinal
 -A VCV-Rack-style modular synthesizer
@@ -71,3 +78,8 @@ Sfizz:
 https://github.com/sfztools/sfizz
 https://github.com/sfztools/sfizz-ui
 -SFZ player
+
+Brickworks:
+https://www.orastron.com/brickworks
+https://www.kvraudio.com/forum/viewtopic.php?t=589519
+-Audio DSP library available for licensing under GPL or commercially
