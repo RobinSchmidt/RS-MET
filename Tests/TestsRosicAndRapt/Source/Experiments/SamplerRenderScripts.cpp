@@ -843,7 +843,8 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //rsPlotVector(x);
   // Using a noise-burst makes it sound more acoustic and natural, less electronic. But maybe this
   // doesn't count as raw-material anymore because it can be recreated from the impulse responses 
-  // using convolution
+  // using convolution. Actually, the user could just play the kick sample through a convolution
+  // reverb that uses a noise-burst as impulse-response
 
   for(int n = 0; n < N; n++)
     x[n] = wz.getSample(x[n]);
@@ -856,7 +857,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   sp.setLogFreqAxis(true);
   sp.setSampleRate(sampleRate);
   sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-  //sp.plotPhaseSpectra(N, &x[0]);  // Not yet implemented
+  sp.plotPhaseSpectra(N, &x[0]);  // Not yet implemented
 
   // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
   // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
@@ -875,7 +876,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   N = x.size();
   RAPT::rsArrayTools::normalize(&x[0], N);  // use sp.normalize(x);
   //sp.setBinRangeToPlot(20, 20000);  // test
-  sp.plotDecibelSpectra(N, &x[0]);
+  //sp.plotDecibelSpectra(N, &x[0]);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
   // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq
 
@@ -993,7 +994,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -Try applying some of the allpasses in forward mode and some in backward mode. Maybe use lower
   //  Q for backward mode. When using the exact same allpass-chain for forward and backward pass,
   //  the phase-responses shuld cancel and the original impulse should be reconstructed
-  // -Figure out the shape of the pitch env by using the zero-crossing based pitch detector.
+  // -Figure out the shape of the pitch env by using the zero-crossing based pitch detector. Or:
+  //  use class rsSingleSineModeler. This may give better time resolution. or maybe try both 
+  //  approaches
   //
   // Ideas:
   // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 

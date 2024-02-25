@@ -540,17 +540,15 @@ template <class T>
 void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int signalLength)
 {
   RAPT::rsAssert(signalLength <= fftSize);
+
+  // Create temp buffers for the data:
+  std::vector<std::complex<T>> spec(fftSize);  // Complex spectrum
+  std::vector<T> f = getFreqAxis(numBins);     // Frequency axis
+  std::vector<T> dB(fftSize);                  // dB-spectrum - use numBins
+
+  // Produce the data, add it to the datafile and invoke the plotter:
   setupTransformer();
-  int N = rsMax(signalLength, fftSize);
-  std::vector<T> f = getFreqAxis(numBins);
-  std::vector<T> dB(N);
-  //std::vector<T> phs(N);
-  std::vector<std::complex<T>> spec(N);
-
-  // Use this for y-axis minimum - let the user set it up:
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
-
-  // Factor out into addSpectralData(&inputArrays[0], (int) inputArrays.size()):
   for(int i = 0; i < numSignals; i++) 
   {
     computeComplexSpectrum(signals[i], signalLength, spec);
@@ -564,16 +562,13 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     case NM::impulse:  scaler = T(1);                        break; 
     case NM::toZeroDb: scaler = T(1) / real(rsMaxAbs(spec)); break;
     }
-    for(int k = 0; k < N; k++)
+    for(int k = 0; k < fftSize; k++)
       dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(spec[k]), ampFloor);
     // The computation of the scaler may be not quite correct at DC (I think, because 
     // we need to incorporate the value at fftSize/2 or something?). Verify this!
 
-
     addDataArrays(maxBin-minBin+1, &f[minBin], &dB[minBin]);
-    //addDataArrays(numBins, &f[0], &dB[0]);  // old
   }
-
   setupPlotterAndPlot();
 }
 
@@ -589,21 +584,35 @@ void SpectrumPlotter<T>::plotPhaseSpectra(int signalLength, const T* x0, const T
 template <class T>
 void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int signalLength)
 {
-  RAPT::rsError("Not yet implemented");
+  RAPT::rsAssert(signalLength <= fftSize);
 
+  // Create temp buffers for the data:
+  std::vector<std::complex<T>> spec(fftSize);  // Complex spectrum
+  std::vector<T> f = getFreqAxis(numBins);     // Frequency axis
+  std::vector<T> phs(fftSize);                 // phase-spectrum
+
+  // Produce the data, add it to the datafile and invoke the plotter:
+  setupTransformer();
+
+  for(int i = 0; i < numSignals; i++) 
+  {
+    computeComplexSpectrum(signals[i], signalLength, spec);
+
+    // Compute phase:
+    for(int k = 0; k < fftSize; k++)
+      phs[k] = arg(spec[k]);
+    RAPT::rsArrayTools::unwrap(&phs[0], fftSize, T(2*PI));
+    // Actually, using numBins as upper limit would be enough
+    
+
+
+    addDataArrays(maxBin-minBin+1, &f[minBin], &phs[minBin]);
+  }
+  setupPlotterAndPlot();
+  //RAPT::rsError("Not yet implemented");
   int dummy = 0;
 }
 
-
-template <class T>
-void SpectrumPlotter<T>::setupTransformer()
-{
-  typedef RAPT::rsFourierTransformerRadix2<T> FT;
-  transformer.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
-  //transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
-  transformer.setDirection(        FT::FORWARD);
-  transformer.setBlockSize(fftSize);
-}
 
 template <class T>
 std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
@@ -623,6 +632,16 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
   return f;
 
   // ToDo: check everything for off-by-one errors for even and odd sizes
+}
+
+template <class T>
+void SpectrumPlotter<T>::setupTransformer()
+{
+  typedef RAPT::rsFourierTransformerRadix2<T> FT;
+  transformer.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
+  //transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+  transformer.setDirection(        FT::FORWARD);
+  transformer.setBlockSize(fftSize);
 }
 
 template <class T>

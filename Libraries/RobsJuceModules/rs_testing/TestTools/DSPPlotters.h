@@ -288,11 +288,9 @@ public:
 
 protected:
 
-
+  std::vector<T> getFreqAxis(int numBins);
 
   void setupTransformer();
-
-  std::vector<T> getFreqAxis(int numBins);
 
   void computeComplexSpectrum(const T* x, int N, std::vector<std::complex<T>>& spectrum);
 

@@ -385,6 +385,7 @@ protected:
 // -Maybe introduce global feedback - but the the output will not be white anymore. But maybe we 
 //  can use the allpass nesting technique to achieve a white output with feedback?
 // -Maybe we can build a phaser from it
+// -Maybe rename to rsFlatZapper - sounds cooler
 // -Maybe create a class rsBrownZapper that also includes the browning filter and the cleanup 
 //  highpass.It max also include a slope/tilt filter for further shaping.
 
