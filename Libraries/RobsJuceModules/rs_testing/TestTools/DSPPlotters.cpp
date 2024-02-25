@@ -542,13 +542,20 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   RAPT::rsAssert(signalLength <= fftSize);
   setupTransformer();
   int N = rsMax(signalLength, fftSize);
+
+  // Make members:
   int numBins = fftSize/2 + 1; // 8-pt FFT has 5 non-redundant bins, namely k = 0,1,2,3,4
   // Later have a user option for that -> zoom ...or maybe even better: let the use choose minBin and 
   // maxBin
+
+  int minBin = 0;
+  int maxBin = numBins - 1;
+
+
   std::vector<T> f = getFreqAxis(numBins);
   std::vector<T> dB(N);
   //std::vector<T> phs(N);
-  std::vector<std::complex<T>> tmp(N);  // rename to spec
+  std::vector<std::complex<T>> spec(N);  // rename to spec
 
   // Use this for y-axis minimum - let the user set it up:
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
@@ -556,17 +563,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   // Factor out into addSpectralData(&inputArrays[0], (int) inputArrays.size()):
   for(int i = 0; i < numSignals; i++) 
   {
-    // Factor out into: transformBuffer(signals[i], signalLength, tmp) or
-    // computeComplexSpectrum(signals[i], signalLength, tmp)
-    /*
-    RAPT::rsArrayTools::convert(signals[i], &tmp[0], signalLength);
-    if(signalLength < N)
-      RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
-    transformer.transformComplexBufferInPlace(&tmp[0]);
-    */
-
-
-    computeComplexSpectrum(signals[i], signalLength, tmp);
+    computeComplexSpectrum(signals[i], signalLength, spec);
 
     // This may be not quite correct at DC (I think, because we need to incorporate the value
     // at fftSize/2 or something?)
@@ -574,19 +571,23 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     using NM = NormalizationMode;
     switch(normMode)
     {
-    case NM::cycle:    scaler = T(1) / T(signalLength);     break;  // verify!
-    case NM::impulse:  scaler = T(1);                       break; 
-    case NM::toZeroDb: scaler = T(1) / real(rsMaxAbs(tmp)); break;
+    case NM::cycle:    scaler = T(1) / T(signalLength);      break;  // verify!
+    case NM::impulse:  scaler = T(1);                        break; 
+    case NM::toZeroDb: scaler = T(1) / real(rsMaxAbs(spec)); break;
     }
 
     for(int k = 0; k < N; k++)
-      dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(tmp[k]), ampFloor);
-    addDataArrays(numBins, &f[0], &dB[0]);
+      dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(spec[k]), ampFloor);
+    addDataArrays(maxBin-minBin+1, &f[minBin], &dB[minBin]);
+    //addDataArrays(numBins, &f[0], &dB[0]);
   }
 
   if(logFreqAxis)
     setLogScale("x"); // uses decadic ticks -> use octaves instead
   plot();
+
+  // ToDo:
+  // -Left the user choose a minBin and a maxBin for zoom
 }
 
 
