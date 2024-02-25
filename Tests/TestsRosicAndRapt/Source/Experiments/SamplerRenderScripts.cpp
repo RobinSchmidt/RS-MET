@@ -1019,8 +1019,14 @@ void createAllpassDrums()
   //createAllpassBassdrum3();
 
   // Experimental:
-  createBrownZap(30,  100,  500, 0.0);   // Tom?
-  createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
+  createBrownZap(50, 15, 8000, 0.0);
+  // Phase response is approximately linear between 15 and 8000 on log-frequency plot. Beyond the
+  // limits, it goes into a smooth sigmoid shape. It goes from 0 to -18000°.
+
+  //createBrownZap(30,  100,  500, 0.0);   // Tom?
+  // Phase goes down to -10800° in nice sigmoid
+
+  //createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
 
   // Create the ZappyKickXXX.wav bassdrums:
   int numStagesLo  = 20;

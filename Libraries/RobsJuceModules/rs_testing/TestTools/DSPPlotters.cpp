@@ -544,7 +544,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   // Create temp buffers for the data:
   std::vector<std::complex<T>> spec(fftSize);  // Complex spectrum
   std::vector<T> f = getFreqAxis(numBins);     // Frequency axis
-  std::vector<T> dB(fftSize);                  // dB-spectrum - use numBins
+  std::vector<T> dB(numBins);                  // dB-spectrum
 
   // Produce the data, add it to the datafile and invoke the plotter:
   setupTransformer();
@@ -562,7 +562,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     case NM::impulse:  scaler = T(1);                        break; 
     case NM::toZeroDb: scaler = T(1) / real(rsMaxAbs(spec)); break;
     }
-    for(int k = 0; k < fftSize; k++)
+    for(int k = 0; k < numBins; k++)
       dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(spec[k]), ampFloor);
     // The computation of the scaler may be not quite correct at DC (I think, because 
     // we need to incorporate the value at fftSize/2 or something?). Verify this!
@@ -589,7 +589,7 @@ void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int
   // Create temp buffers for the data:
   std::vector<std::complex<T>> spec(fftSize);  // Complex spectrum
   std::vector<T> f = getFreqAxis(numBins);     // Frequency axis
-  std::vector<T> phs(numBins);                 // phase-spectrum
+  std::vector<T> phs(numBins);                 // Phase-spectrum
 
   // Produce the data, add it to the datafile and invoke the plotter:
   setupTransformer();
@@ -598,19 +598,15 @@ void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int
   {
     computeComplexSpectrum(signals[i], signalLength, spec);
 
-    // Compute phase:
+    // Compute phase (factor out so it can be re-used in plotting phase-delay and group-delay):
     for(int k = 0; k < numBins; k++)
       phs[k] = arg(spec[k]);
-    RAPT::rsArrayTools::unwrap(&phs[0], numBins, T(2*PI));
-    // Actually, using numBins as upper limit would be enough
-    
-
+    RAPT::rsArrayTools::unwrap(&phs[0], numBins, T(2*PI));    // Maybe make unwrapping optional
+    RAPT::rsArrayTools::scale( &phs[0], numBins, T(180/PI));  // Convert to degrees
 
     addDataArrays(maxBin-minBin+1, &f[minBin], &phs[minBin]);
   }
   setupPlotterAndPlot();
-  //RAPT::rsError("Not yet implemented");
-  int dummy = 0;
 }
 
 
