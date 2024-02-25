@@ -508,15 +508,6 @@ template class FilterPlotter<double>;
 //=================================================================================================
 
 template <class T>
-void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1,
-  const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8,
-  const T *x9)
-{
-  const vector<const T*> signals = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
-  plotSpectra((const T**) &signals[0], (int) signals.size(), signalLength);
-}
-
-template <class T>
 const vector<const T*> getMatrixRowPointers(const rsMatrix<T>& A)
 {
   int numRows = A.getNumRows();
@@ -527,6 +518,16 @@ const vector<const T*> getMatrixRowPointers(const rsMatrix<T>& A)
 }
 // Helper function - maybe move into rsMatrix as member function getRowPointers. Maybe it 
 // shouldn't be const
+
+
+template <class T>
+void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1,
+  const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8,
+  const T *x9)
+{
+  const vector<const T*> signals = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+  plotSpectra((const T**) &signals[0], (int) signals.size(), signalLength);
+}
 
 template <class T>
 void SpectrumPlotter<T>::plotDecibelSpectraOfRows(const rsMatrix<T>& X)
@@ -589,6 +590,26 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     setLogScale("x"); // uses decadic ticks -> use octaves instead
   plot();
 }
+
+
+
+template <class T>
+void SpectrumPlotter<T>::plotPhaseSpectra(int signalLength, const T* x0, const T* x1 = nullptr,
+  const T* x2 = nullptr, const T* x3 = nullptr, const T* x4 = nullptr, const T* x5 = nullptr,
+  const T* x6 = nullptr, const T* x7 = nullptr, const T* x8 = nullptr, const T* x9 = nullptr)
+{
+  const vector<const T*> signals = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
+  plotPhaseSpectra((const T**) &signals[0], (int) signals.size(), signalLength);
+}
+
+template <class T>
+void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int signalLength)
+{
+  RAPT::rsError("Not yet implemented");
+
+  int dummy = 0;
+}
+
 
 template <class T>
 std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)

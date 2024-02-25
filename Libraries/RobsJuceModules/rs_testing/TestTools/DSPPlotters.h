@@ -197,6 +197,9 @@ class SpectrumPlotter : public GNUPlotter
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \Setup
+
   enum class FreqAxisUnits  // maybe rename to FreqAxisUnit
   {
     binIndex = 0,    // 0...N/2     (verify!)
@@ -215,6 +218,28 @@ public:
   };
   // what about (auto)correlation functions? how should we normalize the plot for them?
 
+
+  /** Sets the FFT size. Does not have to be a power of 2 - we use Bluestein FFT here. */
+  void setFftSize(int newSize) { fftSize = newSize; }
+  // maybe rename to setTrafoSize
+
+  void setFreqAxisUnit(FreqAxisUnits newUnit) { freqAxisUnit = newUnit; }
+
+  void setLogFreqAxis(bool freqsAreLogarithmic) { logFreqAxis = freqsAreLogarithmic; };
+
+  /** Sets the normalization mode. */
+  void setNormalizationMode(NormalizationMode newMode) { normMode = newMode; }
+
+  /** Sets the floor level for the plot in decibels. */
+  void setFloorLevel(T newFloor) { dBFloor = newFloor; }
+
+  /** Sets the sample rate - this affects the scaling of the frequency axis, if it's scaled in 
+  Hz. */
+  void setSampleRate(T newRate) { sampleRate = newRate; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Plotting
 
   /** Given up to 10 signal buffers of length "signalLength", this function performs an FFT on each 
   of them and plots the spectral magnitudes as decibel values. The FFT size is determined by 
@@ -236,23 +261,14 @@ public:
 
 
 
-  /** Sets the FFT size. Does not have to be a power of 2 - we use Bluestein FFT here. */
-  void setFftSize(int newSize) { fftSize = newSize; }
-  // maybe rename to setTrafoSize
+  // Under construction:
+  void plotPhaseSpectra(int signalLength, const T *x0, const T *x1 = nullptr, 
+    const T *x2 = nullptr, const T *x3 = nullptr, const T *x4 = nullptr, const T *x5 = nullptr, 
+    const T *x6 = nullptr, const T *x7 = nullptr, const T *x8 = nullptr, const T *x9 = nullptr);
 
-  void setFreqAxisUnit(FreqAxisUnits newUnit) { freqAxisUnit = newUnit; }
 
-  void setLogFreqAxis(bool freqsAreLogarithmic) { logFreqAxis = freqsAreLogarithmic; };
+  void plotPhaseSpectra(const T** signals, int numSignals, int signalLength);
 
-  /** Sets the normalization mode. */
-  void setNormalizationMode(NormalizationMode newMode) { normMode = newMode; }
-
-  /** Sets the floor level for the plot in decibels. */
-  void setFloorLevel(T newFloor) { dBFloor = newFloor; }
-
-  /** Sets the sample rate - this affects the scaling of the frequency axis, if it's scaled in 
-  Hz. */
-  void setSampleRate(T newRate) { sampleRate = newRate; }
 
 protected:
 

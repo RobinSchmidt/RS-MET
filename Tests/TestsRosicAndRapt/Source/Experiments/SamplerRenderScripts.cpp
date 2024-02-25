@@ -849,6 +849,14 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
 
+  // Plot a phase-response, phase-delay and group-delay spectrum of the signal x:
+  // Plot a spectrum:
+  SpectrumPlotter<double> sp;
+  sp.setFftSize(65536);
+  sp.setLogFreqAxis(true);
+  sp.setSampleRate(sampleRate);
+  sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
+  //sp.plotPhaseSpectra(N, &x[0]);  // Not yet implemented
 
   // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
   // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
@@ -866,19 +874,14 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
   N = x.size();
   RAPT::rsArrayTools::normalize(&x[0], N);  // use sp.normalize(x);
+  //sp.plotDecibelSpectra(N, &x[0]);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
   // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq
 
 
-  // Plot a phase-response, phase-delay and group-delay spectrum of the signal x:
-  // Plot a spectrum:
-  SpectrumPlotter<double> sp;
-  sp.setFftSize(65536);
-  sp.setLogFreqAxis(true);
-  sp.setSampleRate(sampleRate);
-  sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-  sp.plotDecibelSpectra(N, &x[0]);
-  // ...
+
+
+
 
   // Create filename from the parameters (maybe factor out):
   std::string name = "ZappyKick"; // Nah - not all possible settings lead to bassdrums
@@ -986,6 +989,12 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  left and right (or for mid and side)
   // -In a synth based on that, allow to mix noise-burst and impulse inputs - and maybe other types
   //  of inputs as well
+  //
+  // Ideas:
+  // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 
+  //  lengthening the event at which that frequency-band occurs by simulatneously lowering its
+  //  amplitude to keep the energy constant. It would be nice to be able to set up an allpass in 
+  //  terms of its "lengthening" response. Maybe that's what group delay is, after all?
 }
 
 
