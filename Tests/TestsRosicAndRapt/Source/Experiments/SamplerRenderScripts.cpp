@@ -705,6 +705,10 @@ public:
   void applyOnePoleLowpass(double* x, int N, double cutoff);
   // Maybe add optional parameters: bool bidirectional = false, int numPasses = 1
 
+
+  void applyOnePoleHighpass(double* x, int N, double cutoff);
+
+
   // ToDo: applyTilt, applyOnePoleHighpass, applyButterworthHighpass, applyEllipticHighpass, 
   // shortenTail(cutThresholdDb, fadeTime) etc.
 
@@ -714,6 +718,9 @@ public:
 
   void applyOnePoleLowpass(std::vector<double>& x, double cutoff)
   { applyOnePoleLowpass(&x[0], (int) x.size(), cutoff); }
+
+  void applyOnePoleHighpass(std::vector<double>& x, double cutoff)
+  { applyOnePoleHighpass(&x[0], (int) x.size(), cutoff); }
 
 
 protected:
@@ -728,6 +735,16 @@ void rsSamplePostProcessor::applyOnePoleLowpass(double* x, int N, double cutoff)
   RAPT::rsOnePoleFilter<double, double> flt;
   flt.setSampleRate(sampleRate);
   flt.setMode(flt.LOWPASS_IIT);
+  flt.setCutoff(cutoff);
+  for(int n = 0; n < N; n++)
+    x[n] = flt.getSample(x[n]);
+}
+
+void rsSamplePostProcessor::applyOnePoleHighpass(double* x, int N, double cutoff)
+{
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setSampleRate(sampleRate);
+  flt.setMode(flt.HIGHPASS_MZT);
   flt.setCutoff(cutoff);
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
@@ -797,25 +814,19 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // stays constant during the sweep - so I replaced it with a lowpass. This may also be called a 
   // browning filter (it turns the white spectrum into a brown one).
 
-  RAPT::rsOnePoleFilter<double, double> flt;
-  flt.setSampleRate(sampleRate);
-
-  /*
-  flt.setMode(flt.LOWPASS_IIT);
-  flt.setCutoff(0.5*lowFreq);
-  for(int n = 0; n < N; n++)
-    x[n] = flt.getSample(x[n]);
-    */
-
-
   rsSamplePostProcessor pp;
   pp.setSampleRate(sampleRate);
-  pp.applyOnePoleLowpass(x, 0.5*lowFreq);
+  pp.applyOnePoleLowpass( x, 0.5*lowFreq);
+  pp.applyOnePoleHighpass(x, 1.0*lowFreq);
+  pp.applyOnePoleHighpass(x, 1.0*lowFreq);
+  pp.applyOnePoleHighpass(x, 1.0*lowFreq);
 
 
-
+  /*
   // Also apply a 3rd order DC-blocker highpass to get rid of some subsonic bump artifacts that the
   // lowpass introduces. The settings have been found by trial and error:
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setSampleRate(sampleRate);
   flt.setMode(flt.HIGHPASS_MZT);
   flt.setCutoff(1.0*lowFreq);
   flt.reset();
@@ -827,7 +838,10 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   flt.reset();
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
+    */
   // Maybe a 3rd order Butterworth highpass would be better?
+
+
 
   // Factor out into findCutoffSample(const T* x, int N, double releaseTimeInSamples, 
   // double threshold) function:
