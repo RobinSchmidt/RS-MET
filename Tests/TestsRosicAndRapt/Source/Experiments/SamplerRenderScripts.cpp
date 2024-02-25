@@ -849,7 +849,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
 
- 
+
   // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
   // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
   // magnitude response is ideal in the sense that the amplitude stays constant during the sweep. 
@@ -865,10 +865,20 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
   N = x.size();
+  RAPT::rsArrayTools::normalize(&x[0], N);  // use sp.normalize(x);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
   // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq
 
 
+  // Plot a phase-response, phase-delay and group-delay spectrum of the signal x:
+  // Plot a spectrum:
+  SpectrumPlotter<double> sp;
+  sp.setFftSize(65536);
+  sp.setLogFreqAxis(true);
+  sp.setSampleRate(sampleRate);
+  sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
+  sp.plotDecibelSpectra(N, &x[0]);
+  // ...
 
   // Create filename from the parameters (maybe factor out):
   std::string name = "ZappyKick"; // Nah - not all possible settings lead to bassdrums
@@ -883,24 +893,27 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // ToDo: add mode
   name += ".wav";
   // Maybe let the caller pass a basic name - don't hardcode the "ZappyKick" name here. It may
-  // default to AllpassZap.
+  // default to AllpassZap. The function may be eventually used to render other allpass based 
+  // sounds such as toms and snares.
 
 
-  // Normalize and write it to a wavefile:
-  RAPT::rsArrayTools::normalize(&x[0], N);
+  // Write it to a wavefile:
   rosic::writeToMonoWaveFile(name, &x[0], N, sampleRate, 16);
+
+
+
 
 
   // ToDo: factor this out:
   // Create a spectrogram:
-  rsSpectrogramProcessor<double> specProc;
-  specProc.setBlockAndTrafoSize(256, 2048);
-  specProc.setHopSize(64);
+  //rsSpectrogramProcessor<double> specProc;
+  //specProc.setBlockAndTrafoSize(256, 2048);
+  //specProc.setHopSize(64);
   //specProc.setAnalysisWindowType(...);
 
 
   // Plot a spectrogam:
-  //SpectrumPlotter<double> sp;
+  //SpectrogramPlotter<double> sp;
   //GNUPlotter plt;
   // I think, the way the SpectrumPlotter class works is to call appropriate setup functions on an
   // existing GNUPlotter object.
@@ -988,9 +1001,11 @@ void createAllpassDrums()
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
+  // Experimental:
+  createBrownZap(30,  100,  500, 0.0);   // Tom?
+  createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
 
-  // New:
-  // Create Bassdrums:
+  // Create the ZappyKickXXX.wav bassdrums:
   int numStagesLo  = 20;
   int numStagesHi  = 80;
   int numStagesInc = 10;
@@ -1004,60 +1019,16 @@ void createAllpassDrums()
       createBrownZap(numStages, 15, 8000, freqShape);
     }
   }
-  // Favorites:
-  // 20/-2, 20/0, 30/-3, 40/-3, 40/1..2, 50/-3, 50/1..2, 60/-4, 60/2, 70/-4, 70/2..3, 80/-4, 80/3
-  // where 2..3 means the prefect setting might be in between 2 and 3.
+  // My favorites: 20/-2, 20/0, 30/-3, 40/-3, 40/1..2, 50/-3, 50/1..2, 60/-4, 60/2, 70/-4, 70/2..3,
+  // 80/-4, 80/3 where 2..3 means the prefect setting might be in between 2 and 3.
 
 
-  // old:
-
-  //createBrownZap(50,   15, 8000, -0.85);
-
-
-  /*
-  createBrownZap(30,  100,  500, 0.0);   // Tom?
-  createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
-
-  //createBrownZap(50,   15, 8000, -0.85,   0.5, 0.5, 0.0);
-  //createBrownZap(50,   15, 8000, -0.85,   4.0, 4.0, 0.0);
-
-  // Create Bassdrums:
-  int numStagesLo  = 20;
-  int numStagesHi  = 80;
-  int numStagesInc = 10;
-  for(int numStages = numStagesLo; numStages <= numStagesHi; numStages += numStagesInc)
-  {
-    //                        fLo   fHi    fSh 
-    createBrownZap(numStages,  15, 8000, -0.98);
-    createBrownZap(numStages,  15, 8000, -0.95);
-    createBrownZap(numStages,  15, 8000, -0.85);
-    for(int k = -9; k <= +9; k++)
-    {
-      double freqShape = 0.1 * k;
-      createBrownZap(numStages, 15, 8000, freqShape);
-    }
-  }
-  */
-  // Nice ones:
-  // 20  -0.4     Acoustic, hard
-  // 20  -0.6     Acoustic, med
-  // 20  -0.8     Acoustic, soft
-  // 20  +0.4     Zap
-  // 30  -0.7     
-  // 30  +0.6
-  // 40  -0.8
-  // 40  -0.85
-  // 50  -0.85
-  // 50  -0.8
-  // 50  -0.7
-  // 60  -0.3     Goa
 
   // ToDo:
-  // -Re-parameterize the shaping: use the base-2 logarithm of the slope at 0 as parameter
-  //  -allow for more flexible shaping like in the linear fractional interpolation scheme. We want 
-  //   to determine the slope at 0 as s0 = log2(param1), s1 = pow(s0, param2-1), shape = param3.
-  //   param2 is some sort of SigmoidVsSpikey parameter and param3 is a shift up/down parameter, 
-  //   I think
+  // -Allow for more flexible shaping like in the linear fractional interpolation scheme. We want 
+  //  to determine the slope at 0 as s0 = log2(param1), s1 = pow(s0, param2-1), shape = param3.
+  //  param2 is some sort of SigmoidVsSpikey parameter and param3 is a shift up/down parameter, 
+  //  I think
   // -Make a function createNoiseBurstDrums
   // -Instead of using noise-bursts as excitatition, try using impulse responses of allpass-delay
   //  series. Maybe these clicks can actually be used for another sample pack.
