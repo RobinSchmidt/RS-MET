@@ -572,13 +572,8 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     //addDataArrays(numBins, &f[0], &dB[0]);  // old
   }
 
-  // Factor out into setupPlotterAndPlot()
-  if(logFreqAxis)
-    setLogScale("x"); // uses decadic ticks -> use octaves instead
-  plot();
+  setupPlotterAndPlot();
 }
-
-
 
 template <class T>
 void SpectrumPlotter<T>::plotPhaseSpectra(int signalLength, const T* x0, const T* x1 = nullptr,
@@ -609,21 +604,6 @@ void SpectrumPlotter<T>::setupTransformer()
 }
 
 template <class T>
-void SpectrumPlotter<T>::computeComplexSpectrum(
-  const T* x, int Nx, std::vector<std::complex<T>>& spectrum)
-{
-  RAPT::rsAssert(Nx <= fftSize);
-  RAPT::rsAssert(spectrum.size() == fftSize);
-
-  RAPT::rsArrayTools::convert(x, &spectrum[0], Nx);
-  if(Nx < fftSize)
-    RAPT::rsArrayTools::fillWithZeros(&spectrum[Nx], fftSize-Nx);
-  transformer.transformComplexBufferInPlace(&spectrum[0]);
-}
-
-
-
-template <class T>
 std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
 {
   std::vector<T> f(numBins);
@@ -640,8 +620,28 @@ std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
   RAPT::rsArrayTools::scale(&f[0], numBins, scaler);
   return f;
 
-
   // ToDo: check everything for off-by-one errors for even and odd sizes
+}
+
+template <class T>
+void SpectrumPlotter<T>::computeComplexSpectrum(
+  const T* x, int Nx, std::vector<std::complex<T>>& spectrum)
+{
+  RAPT::rsAssert(Nx <= fftSize);
+  RAPT::rsAssert(spectrum.size() == fftSize);
+
+  RAPT::rsArrayTools::convert(x, &spectrum[0], Nx);
+  if(Nx < fftSize)
+    RAPT::rsArrayTools::fillWithZeros(&spectrum[Nx], fftSize-Nx);
+  transformer.transformComplexBufferInPlace(&spectrum[0]);
+}
+
+template <class T>
+void SpectrumPlotter<T>::setupPlotterAndPlot()
+{
+  if(logFreqAxis)
+    setLogScale("x"); // uses decadic ticks -> use octaves instead
+  plot();
 }
 
 // template instantiations:

@@ -286,11 +286,12 @@ protected:
 
   void setupTransformer();
 
+  std::vector<T> getFreqAxis(int numBins);
+
   void computeComplexSpectrum(const T* x, int N, std::vector<std::complex<T>>& spectrum);
 
+  void setupPlotterAndPlot();
 
-
-  std::vector<T> getFreqAxis(int numBins);
 
   FreqAxisUnits freqAxisUnit = FreqAxisUnits::binIndex;
   NormalizationMode normMode = NormalizationMode::cycle;
