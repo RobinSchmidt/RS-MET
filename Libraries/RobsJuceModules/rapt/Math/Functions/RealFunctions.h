@@ -274,9 +274,10 @@ The inverse of f for a given a is obtained by negating a. The general formula fo
 given by f'(x) = (1 - a^2) / (1 + a (2 x - 1))^2 which evaluates to (1+a)/(1-a) at x = 0 and to 
 (1-a)/(1+a) at x = 1. So, the slopes at the endpoints are reciprocal to one another. That makes the 
 function nicely symmetric with respect to an axis going through (0.5,0.5) at an angle of -45°. The 
-coefficient in terms of the slope s at 0 is given by a = (s-1)/(s+1). If you combine several such functions in sequence, the resulting slopes will be given by the product 
-of the individual slopes (this is just the chain-rule and not specific to this kind function). All 
-these features make this set (actually "group") of functions a convenient choice for...TBC...
+coefficient in terms of the slope s at 0 is given by a = (s-1)/(s+1). If you combine several such 
+functions in sequence, the resulting slopes will be given by the product of the individual slopes 
+(this is just the chain-rule and not specific to this kind function). All these features make this 
+set (actually "group") of functions a convenient choice for...TBC...
 
 For a plot, see: https://www.desmos.com/calculator/jkxafs0vp9  */
 template<class T>

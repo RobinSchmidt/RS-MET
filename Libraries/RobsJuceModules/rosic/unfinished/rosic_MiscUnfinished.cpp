@@ -505,7 +505,20 @@ void rsWhiteZapper::updateCoeffs()
   double *a1 = allpassChain.getAddressA1();
   double *a2 = allpassChain.getAddressA2();
 
-  auto shape = [](double x, double s) { return RAPT::rsRationalMap_01(x, s); }; // For convenience
+  auto shape = [](double x, double shapeParam) 
+  { 
+    // Old parameter mapping from -1...+1:
+    //double a = shapeParam; // preliminary
+    //return RAPT::rsRationalMap_01(x, a);
+
+    // New parameter mapping from -inf...+inf where the good range is somewhere between -5...+5:
+    //double s = RAPT::rsLog2(shapeParam);  // Slope at x = 0
+
+    double s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
+    double a = (s-1)/(s+1);                   // Function parameter for rational map in -1..+1
+    return RAPT::rsRationalMap_01(x, a);
+  }; // For convenience
+  // ToDo: Avoid conversion from s to a. Using s directly leads ot a simpler formula.
 
   int numStages = allpassChain.getNumStages();
   using BQD = BiquadDesigner;

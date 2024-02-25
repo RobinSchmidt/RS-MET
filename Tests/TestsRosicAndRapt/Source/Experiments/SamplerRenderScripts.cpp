@@ -989,13 +989,32 @@ void createAllpassDrums()
   //createAllpassBassdrum3();
 
 
-  createBrownZap(50,   15, 8000, -0.85);
+  // New:
+  // Create Bassdrums:
+  int numStagesLo  = 20;
+  int numStagesHi  = 80;
+  int numStagesInc = 10;
+  double shapeLo   = -5;
+  double shapeHi   = +5;
+  for(int numStages = numStagesLo; numStages <= numStagesHi; numStages += numStagesInc)
+  {
+    for(int k = shapeLo; k <= shapeHi; k++)
+    {
+      double freqShape = k;  // maybe scale it?
+      createBrownZap(numStages, 15, 8000, freqShape);
+    }
+  }
 
 
+
+  // old:
+
+  //createBrownZap(50,   15, 8000, -0.85);
+
+
+  /*
   createBrownZap(30,  100,  500, 0.0);   // Tom?
   createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
-
-
 
   //createBrownZap(50,   15, 8000, -0.85,   0.5, 0.5, 0.0);
   //createBrownZap(50,   15, 8000, -0.85,   4.0, 4.0, 0.0);
@@ -1016,7 +1035,7 @@ void createAllpassDrums()
       createBrownZap(numStages, 15, 8000, freqShape);
     }
   }
-
+  */
   // Nice ones:
   // 20  -0.4     Acoustic, hard
   // 20  -0.6     Acoustic, med
