@@ -589,7 +589,7 @@ void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int
   // Create temp buffers for the data:
   std::vector<std::complex<T>> spec(fftSize);  // Complex spectrum
   std::vector<T> f = getFreqAxis(numBins);     // Frequency axis
-  std::vector<T> phs(fftSize);                 // phase-spectrum
+  std::vector<T> phs(numBins);                 // phase-spectrum
 
   // Produce the data, add it to the datafile and invoke the plotter:
   setupTransformer();
@@ -599,9 +599,9 @@ void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int
     computeComplexSpectrum(signals[i], signalLength, spec);
 
     // Compute phase:
-    for(int k = 0; k < fftSize; k++)
+    for(int k = 0; k < numBins; k++)
       phs[k] = arg(spec[k]);
-    RAPT::rsArrayTools::unwrap(&phs[0], fftSize, T(2*PI));
+    RAPT::rsArrayTools::unwrap(&phs[0], numBins, T(2*PI));
     // Actually, using numBins as upper limit would be enough
     
 
