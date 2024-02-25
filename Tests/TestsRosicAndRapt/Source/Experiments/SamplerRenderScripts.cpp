@@ -705,9 +705,21 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   using Vec = std::vector<double>;
   Vec x(N);
   x[0] = 1;
+
+  // Test - with noise-burst:
+  //x = createNoise(N, -1.0, +1.0, 0);
+  //Vec e = attackDecayEnvelope(N, 1, 150);  // 100-200 seems nice
+  //x = x*e;
+  // Using a noise-burst makes it sound more acoustic and natural, less electronic. But maybe this
+  // doesn't count as raw-material anymore because it can be recreated from the impulse responses 
+  // using convolution
+
   for(int n = 0; n < N; n++)
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
+
+ 
+
 
 
   // Factor out - maybe into a function whiteToBrownAndBlockDC
@@ -889,7 +901,7 @@ void createAllpassDrums()
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
-
+  createBrownZap(50,   15, 8000, -0.85);
 
   //createBrownZap(50,   15, 8000, -0.85,   0.5, 0.5, 0.0);
   //createBrownZap(50,   15, 8000, -0.85,   4.0, 4.0, 0.0);
