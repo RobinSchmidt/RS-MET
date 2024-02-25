@@ -708,8 +708,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
 
   // Test - with noise-burst:
   //x = createNoise(N, -1.0, +1.0, 0);
-  //Vec e = attackDecayEnvelope(N, 1, 150);  // 100-200 seems nice
+  //Vec e = attackDecayEnvelope(N, 50, 150);  // Decay = 100-200 seems nice
   //x = x*e;
+  //rsPlotVector(x);
   // Using a noise-burst makes it sound more acoustic and natural, less electronic. But maybe this
   // doesn't count as raw-material anymore because it can be recreated from the impulse responses 
   // using convolution
@@ -783,6 +784,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   int fadeSamples = 1000;
   rsFadeOut(&x[0], N-fadeSamples-1, N-1);
   //rsPlotVectors(x, env);
+
+
+
 
 
   // Create filename from the parameters (maybe factor out):
@@ -859,17 +863,14 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  number of 50 allpasses, we could use 10 groups of 5 or 5 groups of 10 or 2 groups of 25. I 
   //  don't think, that's desirable, though.
   // -With lower Q, its seems to sweep further down at the end.
-  //
-  // Conclusions:
-  // -We may scrap the numStages parameter and just always use 1 stage
-
+  // -Using a sawtooth burst as input is not so interesting (maybe try an impulse-train burst?)
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
   // -It makes sense to let it sweep down to around 15 Hz. If a sweep is desired that sweeps faster
   //  and only down to 30 Hz, we can just play the sample back at twice the speed. This will give a
   //  similar sound.
-
+  //
   // ToDo:
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
   //  getWhiteZapBassdrum function
@@ -886,6 +887,10 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -Plot a ringing response
   // -Use an EQ to boost the bass frequencies
   // -Try to make a phaser from that
+  // -Check out, if we can get a nice stereor signal by using noise-bursts with different seeds for
+  //  left and right (or for mid and side)
+  // -In a synth based on that, allow to mix noise-burst and impulse inputs - and maybe other types
+  //  of inputs as well
 }
 
 
