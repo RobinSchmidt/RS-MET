@@ -1023,7 +1023,8 @@ void createAllpassDrums()
   // Phase response is approximately linear between 15 and 8000 on log-frequency plot. Beyond the
   // limits, it goes into a smooth sigmoid shape. It goes from 0 to -18000°.
 
-  createBrownZap(10, 100, 1000, 0.0);
+  double Q = 1.0;
+  createBrownZap(10, 100, 1000, 0.0, Q, Q, 0.0);
 
   //createBrownZap(30,  100,  500, 0.0);   // Tom?
   // Phase goes down to -10800° in nice sigmoid
@@ -1051,8 +1052,17 @@ void createAllpassDrums()
   // Observations:
   // -The phase response always goes down from 0° to -(numStages*360°) in a sigmoid shape.
   // -The almost linear portion of the sigmoid is confined between lowFreq and highFreq.
-
-
+  // -Higher values for Q make the sigmoid sharper (i.e. more resembling a hard-clipper) at the 
+  //  expense of making the linear section wiggly (try Q = 16 with numStages = 10). The number of
+  //  wiggles seem to equal numStages. At around Q = 4, the wiggles become barely visible in the 
+  //  plot, with Q = 2 completely invisible, with Q = 1 we may actually already be in the 
+  //  oversmoothed range - although, it's still fine. (ToDo: check for other values of numStages).
+  // -By the way, the allpass chain *closely* approximates a linear phase response.
+  //
+  // Conclusions:
+  // -Giving the user control over how Q changes with frequency seems overkill. Maybe a single Q
+  //  parameter is good enough. ...but maybe experiment a bit more...
+  //
   // ToDo:
   // -Allow for more flexible shaping like in the linear fractional interpolation scheme. We want 
   //  to determine the slope at 0 as s0 = log2(param1), s1 = pow(s0, param2-1), shape = param3.
