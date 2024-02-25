@@ -681,6 +681,74 @@ void createAllpassBassdrum3()
   // -For Q=0, we get a DC output. That's wrong!
 }
 
+//=================================================================================================
+
+/** This is a class a for post-processing the rendered samples. It includes functions for common
+post-filtering operations for spectral shaping (for example white-to-pink) or clean-up (for example 
+highpass below desired fundamental) or boosting/cutting certain frequencies with peaking filters to
+impose a tonality. It also has functionality to shorten samples, apply fade-out, etc. ...TBC... */
+
+class rsSamplePostProcessor
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \Setup
+
+  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Processing
+
+  void applyOnePoleLowpass(double* x, int N, double cutoff);
+  // Maybe add optional parameters: bool bidirectional = false, int numPasses = 1
+
+  // ToDo: applyTilt, applyOnePoleHighpass, applyButterworthHighpass, applyEllipticHighpass, 
+  // shortenTail(cutThresholdDb, fadeTime) etc.
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Convenience
+
+  void applyOnePoleLowpass(std::vector<double>& x, double cutoff)
+  { applyOnePoleLowpass(&x[0], (int) x.size(), cutoff); }
+
+
+protected:
+
+  double sampleRate = 1.0;
+
+};
+// Maybe move to somewhere else - maybe rosic/rendering
+
+void rsSamplePostProcessor::applyOnePoleLowpass(double* x, int N, double cutoff)
+{
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setSampleRate(sampleRate);
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setCutoff(cutoff);
+  for(int n = 0; n < N; n++)
+    x[n] = flt.getSample(x[n]);
+}
+
+
+
+
+// Refactor this into:
+// -Generation of exciter signal x
+//  -Maybe make a class rsWhiteExciter with various options:
+//   -impulse, impulse-train, allpass-delay-chain, chirpUp, chirpDown, noise, allpass-FDN, 
+//    noise-burst
+// -Application of the allpass zapper
+// -Post-processing
+//  -Browning lowpass
+//  -Cleanup highpass
+//  -Shortening
+//  -Normalization
+// -Filename generation
+// -File writing
 void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, double freqShape = 0.0, 
   double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, double maxLength = 1.0, int sampleRate = 48000)
 {
@@ -748,6 +816,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   flt.reset();
   for(int n = 0; n < N; n++)
     x[n] = flt.getSample(x[n]);
+  // Maybe a 3rd order Butterworth highpass would be better?
 
   // Factor out into findCutoffSample(const T* x, int N, double releaseTimeInSamples, 
   // double threshold) function:
