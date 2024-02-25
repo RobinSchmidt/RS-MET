@@ -681,9 +681,8 @@ void createAllpassBassdrum3()
   // -For Q=0, we get a DC output. That's wrong!
 }
 
-// rename length to maxLength. The generated sample may be shorter
 void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, double freqShape = 0.0, 
-  double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, double length = 1.0, int sampleRate = 48000)
+  double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, double maxLength = 1.0, int sampleRate = 48000)
 {
   // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
   // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
@@ -701,7 +700,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   wz.setQShape(qShape);
 
   // Render sample:
-  int N = ceil(length * sampleRate);  // Number of samples to render
+  int N = ceil(maxLength * sampleRate);  // Number of samples to render
   using Vec = std::vector<double>;
   Vec x(N);
   x[0] = 1;
@@ -948,6 +947,8 @@ void createAllpassDrums()
   //   param2 is some sort of SigmoidVsSpikey parameter and param3 is a shift up/down parameter, 
   //   I think
   // -Make a function createNoiseBurstDrums
+  // -Instead of using noise-bursts as excitatition, try using impulse responses of allpass-delay
+  //  series. Maybe these clicks can actually be used for another sample pack.
   // -Generally, to synthesize drums, we may use layers of such allpass-based "zap" sounds and 
   //  noise-burst based sounds. The noise bursts may also pass through a time-varying filter and
   //  waveshaper(s). The overall mix, too.
@@ -955,8 +956,14 @@ void createAllpassDrums()
   //  and numStages
   // -Maybe provide 16/44.1 versions for free and sell 24/96 versions through one of these stores:
   //  https://toneisland.com/sites-to-sell-sample-packs/
-  //  Loopmasters seems interesting
-  //  ...or maybe use Patreon
+  //  Loopmasters seems interesting...or maybe use Patreon
+  //  Maybe let the big, commercial pack also have more samples, i.e. sample the parameters more 
+  //  densely. From the higher quality alone, the commercial pack would be larger by a factor of
+  //  3.2653 = (96/44.1) * (24/16). If we sample the parameters with a density that higher by a 
+  //  factor of k, we'd get an additional factor of k^numParameters. But maybe sample only the 
+  //  one or two most important parameters more densely.
+  // -For normalized sample packs, we may need to store the applied gain factor somewhere. Maybe in
+  //  metadata? When sfz files are generated, the gain can be stored there.
 }
 
 void createSamplerWaveforms()
