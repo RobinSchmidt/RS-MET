@@ -1000,11 +1000,13 @@ void createAllpassDrums()
   {
     for(int k = shapeLo; k <= shapeHi; k++)
     {
-      double freqShape = k;  // maybe scale it?
+      double freqShape = k;
       createBrownZap(numStages, 15, 8000, freqShape);
     }
   }
-
+  // Favorites:
+  // 20/-2, 20/0, 30/-3, 40/-3, 40/1..2, 50/-3, 50/1..2, 60/-4, 60/2, 70/-4, 70/2..3, 80/-4, 80/3
+  // where 2..3 means the prefect setting might be in between 2 and 3.
 
 
   // old:
