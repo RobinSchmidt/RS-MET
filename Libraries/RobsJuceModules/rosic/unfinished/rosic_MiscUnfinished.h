@@ -330,6 +330,10 @@ public:
   setFreqShape. */
   void setQShape(double newShape) { qShape = newShape; setDirty(); }
 
+  /** Initializes all parameter values to their initial/default values. The sample rate may or may
+  not be re-initialized also. */
+  void initSettings(bool initAlsoSampleRate = false);
+
   //-----------------------------------------------------------------------------------------------
   // \Processing
 
@@ -363,17 +367,17 @@ protected:
   RAPT::rsBiquadCascade<double, double> allpassChain;
 
   // User parameters:
-  double freqLo     = 20.0;
-  double freqHi     = 20000.0;
-  double freqShape  = 0.0;
-  double qLo        = 1.0;
-  double qHi        = 1.0;
-  double qShape     = 0.0;
-  double sampleRate = 44100.0;
-  Mode   mode       = Mode::biquad;
+  double freqLo;
+  double freqHi;
+  double freqShape;
+  double qLo;
+  double qHi;
+  double qShape;
+  double sampleRate;
+  Mode   mode;
 
   // Internals:
-  bool dirty = true;
+  bool dirty;
 
 };
 

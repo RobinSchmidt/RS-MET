@@ -870,49 +870,6 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
 
 
 
-
-  /*
-  // Factor out into findCutoffSample(const T* x, int N, double releaseTimeInSamples, 
-  // double threshold) function:
-  RAPT::rsEnvelopeFollower<double, double> ef;
-  ef.setSampleRate(sampleRate);
-  ef.setAttackTime(0.0);
-  ef.setReleaseTime(1000 * 0.25 * 1.0/lowFreq);
-  Vec env(N);
-  for(int n = 0; n < N; n++)
-    env[n] = ef.getSample(x[n]);
-  //rsPlotVectors(x, env);
-  // I tried to use the more advanced rsEnvelopeFollower2 but this produced total garbage results
-  // for this sort of signal. The simpler works much better.
-
-  // Find last sample that exceeds the threshold:
-  double envMax   = RAPT::rsArrayTools::maxValue(&env[0], N);
-  double threshDb = -60;
-  double thresh   = RAPT::rsDbToAmp(threshDb);
-  thresh *= envMax;  // threshold should be relative
-  int nCut = N-1;
-  while(nCut > 0)
-  {
-    if(env[nCut] >= thresh)
-      break;
-    nCut--;
-  }
-
-  // Shorten the signal:
-  N = nCut+1;
-  x.resize(N);
-
-  // Apply a smooth fade out:
-  int fadeSamples = 1000;
-  rsFadeOut(&x[0], N-fadeSamples-1, N-1);
-  //rsPlotVectors(x, env);
-  */
-
-
-
-
-
-
   // Create filename from the parameters (maybe factor out):
   std::string name = "ZappyKick"; // Nah - not all possible settings lead to bassdrums
   //std::string name = "AllpassZap";
