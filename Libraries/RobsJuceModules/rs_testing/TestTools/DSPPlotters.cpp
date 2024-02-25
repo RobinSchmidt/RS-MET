@@ -555,8 +555,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   {
     computeComplexSpectrum(signals[i], signalLength, spec);
 
-    // This may be not quite correct at DC (I think, because we need to incorporate the value
-    // at fftSize/2 or something?)
+    // Compute normalized dB-spectrum:
     T scaler = T(1);
     using NM = NormalizationMode;
     switch(normMode)
@@ -565,9 +564,12 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     case NM::impulse:  scaler = T(1);                        break; 
     case NM::toZeroDb: scaler = T(1) / real(rsMaxAbs(spec)); break;
     }
-
     for(int k = 0; k < N; k++)
       dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(spec[k]), ampFloor);
+    // The computation of the scaler may be not quite correct at DC (I think, because 
+    // we need to incorporate the value at fftSize/2 or something?). Verify this!
+
+
     addDataArrays(maxBin-minBin+1, &f[minBin], &dB[minBin]);
     //addDataArrays(numBins, &f[0], &dB[0]);  // old
   }
