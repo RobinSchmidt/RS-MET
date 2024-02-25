@@ -1023,8 +1023,11 @@ void createAllpassDrums()
   // Phase response is approximately linear between 15 and 8000 on log-frequency plot. Beyond the
   // limits, it goes into a smooth sigmoid shape. It goes from 0 to -18000°.
 
-  double Q = 1.0;
-  createBrownZap(10, 100, 1000, 0.0, Q, Q, 0.0);
+  //double Q = 1.0;
+  //double shape = 0.0;
+  //createBrownZap(50, 100, 1000, shape, Q, Q, 0.0);
+
+
 
   //createBrownZap(30,  100,  500, 0.0);   // Tom?
   // Phase goes down to -10800° in nice sigmoid
@@ -1058,10 +1061,18 @@ void createAllpassDrums()
   //  plot, with Q = 2 completely invisible, with Q = 1 we may actually already be in the 
   //  oversmoothed range - although, it's still fine. (ToDo: check for other values of numStages).
   // -By the way, the allpass chain *closely* approximates a linear phase response.
+  // -Shape parameters other than 0 skew the sigmoid and make it asymmetric - maybe a bit like
+  //  the Gompertz function.
   //
   // Conclusions:
   // -Giving the user control over how Q changes with frequency seems overkill. Maybe a single Q
   //  parameter is good enough. ...but maybe experiment a bit more...
+  // -I think, the most important sound-shaping feature to be added is to give more flexibility to
+  //  the curve that distributes the allpass tuning frequencies. Using a fixed Q fo all allpasses
+  //  that migght even be hardcoded seems good enough. But maybe when we have more flexibility for
+  //  the freqs, more flexibility for the Qs may become more desirable? We'll see. However, the
+  //  current implementation of the Q-shape should be kept - but it doesn't need to be a user 
+  //  parameter on a GUI, when I make a module for ToolChain from it.
   //
   // ToDo:
   // -Allow for more flexible shaping like in the linear fractional interpolation scheme. We want 
