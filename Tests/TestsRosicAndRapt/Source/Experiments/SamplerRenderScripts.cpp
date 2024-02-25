@@ -725,8 +725,8 @@ public:
   /** Shortens the tail of the signal x. Cuts off everything from the end that falls below a given 
   threshold in dB. The threshold is interpreted as being relative to the maximum sample value. 
   After shortening the length, it then applies a smooth fade-out envelope to the new end of given 
-  length in seconds. A good value for the threshold is -60 dB and for the fade out time 0.01 
-  seconds, i.e. 10 milliseconds. */
+  length in seconds. A good value for the threshold is -60 dB and for the fade out time 0.02 
+  seconds, i.e. 20 milliseconds. */
   void shortenTail(std::vector<double>& x, double thresholdDb, double fadeOutTime, 
     double releaseTime);
 
@@ -850,27 +850,24 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //rsPlotVector(x);
 
  
-
-
-
-  // Factor out - maybe into a function whiteToBrownAndBlockDC
-
-  // Post-process with a lowpass tuned below the lower freq. Previously, I had an adjustable tilt
-  // filter but it turned out that a tilt of 6 dB/oct is optimal in the sense that the amplitude
-  // stays constant during the sweep - so I replaced it with a lowpass. This may also be called a 
-  // browning filter (it turns the white spectrum into a brown one).
-
+  // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
+  // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
+  // magnitude response is ideal in the sense that the amplitude stays constant during the sweep. 
+  // Then we do a bit of cleanup by applying a highpass. This removes some bumpiness that is 
+  // introduced by the lowpass (it looks like we get some sort of undulating DC towards the end in
+  // the lowpass - we want to remove that). Finally, the sample is shortened to remove the silence
+  //  in the tail:
   rsSamplePostProcessor pp;
   pp.setSampleRate(sampleRate);
   pp.applyOnePoleLowpass( x, 0.5*lowFreq);
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
-  // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
-  // times? Try it!
-
-  pp.shortenTail(x, -60, 1000.0/sampleRate, 0.25/lowFreq); 
+  pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
   N = x.size();
+  // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
+  // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq
+
 
 
 
