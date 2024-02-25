@@ -1019,9 +1019,11 @@ void createAllpassDrums()
   //createAllpassBassdrum3();
 
   // Experimental:
-  createBrownZap(50, 15, 8000, 0.0);
+  //createBrownZap(50, 15, 8000, 0.0);
   // Phase response is approximately linear between 15 and 8000 on log-frequency plot. Beyond the
   // limits, it goes into a smooth sigmoid shape. It goes from 0 to -18000°.
+
+  createBrownZap(10, 100, 1000, 0.0);
 
   //createBrownZap(30,  100,  500, 0.0);   // Tom?
   // Phase goes down to -10800° in nice sigmoid
@@ -1045,6 +1047,10 @@ void createAllpassDrums()
   // My favorites: 20/-2, 20/0, 30/-3, 40/-3, 40/1..2, 50/-3, 50/1..2, 60/-4, 60/2, 70/-4, 70/2..3,
   // 80/-4, 80/3 where 2..3 means the perfect setting might be in between 2 and 3 etc..
 
+
+  // Observations:
+  // -The phase response always goes down from 0° to -(numStages*360°) in a sigmoid shape.
+  // -The almost linear portion of the sigmoid is confined between lowFreq and highFreq.
 
 
   // ToDo:
