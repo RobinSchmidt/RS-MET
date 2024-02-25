@@ -274,6 +274,7 @@ protected:
 
 
 
+  void setupTransformer();
 
 
   std::vector<T> getFreqAxis(int numBins);

@@ -856,7 +856,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   sp.setLogFreqAxis(true);
   sp.setSampleRate(sampleRate);
   sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-  //sp.plotPhaseSpectra(N, &x[0]);  // Not yet implemented
+  sp.plotPhaseSpectra(N, &x[0]);  // Not yet implemented
 
   // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
   // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
@@ -989,6 +989,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  left and right (or for mid and side)
   // -In a synth based on that, allow to mix noise-burst and impulse inputs - and maybe other types
   //  of inputs as well
+  // -Try applying some of the allpasses in forward mode and some in backward mode. Maybe use lower
+  //  Q for backward mode. When using the exact same allpass-chain for forward and backward pass,
+  //  the phase-responses shuld cancel and the original impulse should be reconstructed
   //
   // Ideas:
   // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 

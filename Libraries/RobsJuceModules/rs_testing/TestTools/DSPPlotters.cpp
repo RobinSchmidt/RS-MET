@@ -541,12 +541,9 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
 {
   RAPT::rsAssert(signalLength <= fftSize);
 
-  // Maybe factor out into setupTransformer:
-  typedef RAPT::rsFourierTransformerRadix2<T> FT;
-  transformer.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
-  //transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
-  transformer.setDirection(        FT::FORWARD);
-  transformer.setBlockSize(fftSize);
+
+
+  setupTransformer();
 
   // Use this for y-axis minimum - let the user set it up:
   T ampFloor = RAPT::rsDbToAmp(dBFloor);
@@ -610,6 +607,16 @@ void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int
   int dummy = 0;
 }
 
+
+template <class T>
+void SpectrumPlotter<T>::setupTransformer()
+{
+  typedef RAPT::rsFourierTransformerRadix2<T> FT;
+  transformer.setNormalizationMode(FT::NORMALIZE_ON_INVERSE_TRAFO);
+  //transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
+  transformer.setDirection(        FT::FORWARD);
+  transformer.setBlockSize(fftSize);
+}
 
 template <class T>
 std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
