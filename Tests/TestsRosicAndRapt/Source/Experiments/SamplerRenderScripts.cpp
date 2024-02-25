@@ -971,6 +971,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -Using a sawtooth burst as input is not so interesting (maybe try an impulse-train burst?)
   // -The phase response always goes down from 0° to -(numStages*360°) in a sigmoid shape.
   // -The almost linear portion of the sigmoid is confined between lowFreq and highFreq.
+  // -The midpoint of the sigmoid occurs at the geometric mean of lowfreq and highFreq (when 
+  //  freqShape = 0) - tested with loFreq = 500, hiFreq = 2000 and loFreq = 250, hiFreq = 4000. in
+  //  both cases, the phase response's symmetry center goes through f = 1000.
   // -Higher values for Q make the sigmoid sharper (i.e. more resembling a hard-clipper) at the 
   //  expense of making the linear section wiggly (try Q = 16 with numStages = 10). The number of
   //  wiggles seem to equal numStages. At around Q = 4, the wiggles become barely visible in the 
@@ -1044,7 +1047,10 @@ void createAllpassDrums()
 
   // Experimental:
   //createBrownZap(30,  100,  500, 0.0);   // Tom?
-  createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
+  //createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
+  createBrownZap(50,  250, 4000, 0.0);
+
+
 
   // Create the ZappyKickXXX.wav bassdrums:
   int numStagesLo  = 20;
