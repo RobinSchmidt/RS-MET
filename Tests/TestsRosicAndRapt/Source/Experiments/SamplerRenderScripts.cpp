@@ -856,7 +856,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   sp.setLogFreqAxis(true);
   sp.setSampleRate(sampleRate);
   sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-  sp.plotPhaseSpectra(N, &x[0]);  // Not yet implemented
+  //sp.plotPhaseSpectra(N, &x[0]);  // Not yet implemented
 
   // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
   // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
@@ -874,7 +874,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
   N = x.size();
   RAPT::rsArrayTools::normalize(&x[0], N);  // use sp.normalize(x);
-  //sp.plotDecibelSpectra(N, &x[0]);
+  sp.plotDecibelSpectra(N, &x[0]);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
   // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq
 
@@ -992,6 +992,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -Try applying some of the allpasses in forward mode and some in backward mode. Maybe use lower
   //  Q for backward mode. When using the exact same allpass-chain for forward and backward pass,
   //  the phase-responses shuld cancel and the original impulse should be reconstructed
+  // -Figure out the shape of the pitch env by using the zero-crossing based pitch detector.
   //
   // Ideas:
   // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 
@@ -1032,7 +1033,7 @@ void createAllpassDrums()
     }
   }
   // My favorites: 20/-2, 20/0, 30/-3, 40/-3, 40/1..2, 50/-3, 50/1..2, 60/-4, 60/2, 70/-4, 70/2..3,
-  // 80/-4, 80/3 where 2..3 means the prefect setting might be in between 2 and 3.
+  // 80/-4, 80/3 where 2..3 means the perfect setting might be in between 2 and 3 etc..
 
 
 

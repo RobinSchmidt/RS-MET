@@ -276,6 +276,9 @@ protected:
 
   void setupTransformer();
 
+  void computeComplexSpectrum(const T* x, int N, std::vector<std::complex<T>>& spectrum);
+
+
 
   std::vector<T> getFreqAxis(int numBins);
 

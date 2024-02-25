@@ -540,31 +540,35 @@ template <class T>
 void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int signalLength)
 {
   RAPT::rsAssert(signalLength <= fftSize);
-
-
-
   setupTransformer();
-
-  // Use this for y-axis minimum - let the user set it up:
-  T ampFloor = RAPT::rsDbToAmp(dBFloor);
-
   int N = rsMax(signalLength, fftSize);
   int numBins = fftSize/2 + 1; // 8-pt FFT has 5 non-redundant bins, namely k = 0,1,2,3,4
   // Later have a user option for that -> zoom ...or maybe even better: let the use choose minBin and 
   // maxBin
-
-  // Factor out into addSpectralData(&inputArrays[0], (int) inputArrays.size()) :
   std::vector<T> f = getFreqAxis(numBins);
   std::vector<T> dB(N);
   //std::vector<T> phs(N);
-  std::vector<std::complex<T>> tmp(N);
-  for(int i = 0; i < numSignals; i++) {
+  std::vector<std::complex<T>> tmp(N);  // rename to spec
+
+  // Use this for y-axis minimum - let the user set it up:
+  T ampFloor = RAPT::rsDbToAmp(dBFloor);
+
+  // Factor out into addSpectralData(&inputArrays[0], (int) inputArrays.size()):
+  for(int i = 0; i < numSignals; i++) 
+  {
+    // Factor out into: transformBuffer(signals[i], signalLength, tmp) or
+    // computeComplexSpectrum(signals[i], signalLength, tmp)
+    /*
     RAPT::rsArrayTools::convert(signals[i], &tmp[0], signalLength);
     if(signalLength < N)
       RAPT::rsArrayTools::fillWithZeros(&tmp[signalLength], N-signalLength);
     transformer.transformComplexBufferInPlace(&tmp[0]);
+    */
 
-    // This may be not quite correct at DC (i think, because we need to incorporate the value
+
+    computeComplexSpectrum(signals[i], signalLength, tmp);
+
+    // This may be not quite correct at DC (I think, because we need to incorporate the value
     // at fftSize/2 or something?)
     T scaler = T(1);
     using NM = NormalizationMode;
@@ -577,10 +581,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
 
     for(int k = 0; k < N; k++)
       dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(tmp[k]), ampFloor);
-
     addDataArrays(numBins, &f[0], &dB[0]);
-    //addDataArrays(fftSize/2, &dB[0]); // maybe fftSize/2 or (fftSize+1)/2
-    int dummy = 0;
   }
 
   if(logFreqAxis)
@@ -616,6 +617,20 @@ void SpectrumPlotter<T>::setupTransformer()
   //transformer.setNormalizationMode(FT::NORMALIZE_ON_FORWARD_TRAFO);
   transformer.setDirection(        FT::FORWARD);
   transformer.setBlockSize(fftSize);
+}
+
+
+template <class T>
+void SpectrumPlotter<T>::computeComplexSpectrum(
+  const T* x, int Nx, std::vector<std::complex<T>>& spectrum)
+{
+  RAPT::rsAssert(Nx <= fftSize);
+  RAPT::rsAssert(spectrum.size() == fftSize);
+
+  RAPT::rsArrayTools::convert(x, &spectrum[0], Nx);
+  if(Nx < fftSize)
+    RAPT::rsArrayTools::fillWithZeros(&spectrum[Nx], fftSize-Nx);
+  transformer.transformComplexBufferInPlace(&spectrum[0]);
 }
 
 template <class T>
