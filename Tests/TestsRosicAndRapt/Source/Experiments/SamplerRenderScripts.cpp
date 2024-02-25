@@ -722,6 +722,14 @@ public:
   void applyOnePoleHighpass(std::vector<double>& x, double cutoff)
   { applyOnePoleHighpass(&x[0], (int) x.size(), cutoff); }
 
+  /** Shortens the tail of the signal x. Cuts off everything from the end that falls below a given 
+  threshold in dB. The threshold is interpreted as being relative to the maximum sample value. 
+  After shortening the length, it then applies a smooth fade-out envelope to the new end of given 
+  length in seconds. A good value for the threshold is -60 dB and for the fade out time 0.01 
+  seconds, i.e. 10 milliseconds. */
+  void shortenTail(std::vector<double>& x, double thresholdDb, double fadeOutTime, 
+    double releaseTime);
+
 
 protected:
 
@@ -729,6 +737,8 @@ protected:
 
 };
 // Maybe move to somewhere else - maybe rosic/rendering
+// See also rsBiDirectionalFilter in MiscUnfinished.h in rapt/Unfininished/Sampling. It has similar
+// functionality - maybe merge.
 
 void rsSamplePostProcessor::applyOnePoleLowpass(double* x, int N, double cutoff)
 {
@@ -750,7 +760,43 @@ void rsSamplePostProcessor::applyOnePoleHighpass(double* x, int N, double cutoff
     x[n] = flt.getSample(x[n]);
 }
 
+void rsSamplePostProcessor::shortenTail(std::vector<double>& x, double thresholdDb, 
+  double fadeOutTime, double releaseTime)
+{
+  RAPT::rsEnvelopeFollower<double, double> ef;
+  ef.setSampleRate(sampleRate);
+  ef.setAttackTime(0.0);
+  //ef.setReleaseTime(1000 * 0.25 * 1.0/lowFreq);
+  ef.setReleaseTime(1000 * releaseTime);
+  int N = (int) x.size();
+  std::vector<double> env(N);
+  for(int n = 0; n < N; n++)
+    env[n] = ef.getSample(x[n]);
+  //rsPlotVectors(x, env);
+  // I tried to use the more advanced rsEnvelopeFollower2 but this produced total garbage results
+  // for this sort of signal. The simpler works much better.
 
+  // Find last sample that exceeds the threshold:
+  double envMax   = RAPT::rsArrayTools::maxValue(&env[0], N);
+  double thresh   = RAPT::rsDbToAmp(thresholdDb);
+  thresh *= envMax;  // threshold should be relative
+  int nCut = N-1;
+  while(nCut > 0)
+  {
+    if(env[nCut] >= thresh)
+      break;
+    nCut--;
+  }
+
+  // Shorten the signal:
+  N = nCut+1;
+  x.resize(N);
+
+  // Apply a smooth fade out:
+  int fadeSamples = sampleRate * fadeOutTime;
+  rsFadeOut(&x[0], N-fadeSamples-1, N-1);
+  //rsPlotVectors(x, env);
+}
 
 
 // Refactor this into:
@@ -820,29 +866,15 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
+  // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
+  // times? Try it!
+
+  pp.shortenTail(x, -60, 1000.0/sampleRate, 0.25/lowFreq); 
+  N = x.size();
+
 
 
   /*
-  // Also apply a 3rd order DC-blocker highpass to get rid of some subsonic bump artifacts that the
-  // lowpass introduces. The settings have been found by trial and error:
-  RAPT::rsOnePoleFilter<double, double> flt;
-  flt.setSampleRate(sampleRate);
-  flt.setMode(flt.HIGHPASS_MZT);
-  flt.setCutoff(1.0*lowFreq);
-  flt.reset();
-  for(int n = 0; n < N; n++)
-    x[n] = flt.getSample(x[n]);
-  flt.reset();
-  for(int n = 0; n < N; n++)
-    x[n] = flt.getSample(x[n]);
-  flt.reset();
-  for(int n = 0; n < N; n++)
-    x[n] = flt.getSample(x[n]);
-    */
-  // Maybe a 3rd order Butterworth highpass would be better?
-
-
-
   // Factor out into findCutoffSample(const T* x, int N, double releaseTimeInSamples, 
   // double threshold) function:
   RAPT::rsEnvelopeFollower<double, double> ef;
@@ -877,6 +909,8 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   int fadeSamples = 1000;
   rsFadeOut(&x[0], N-fadeSamples-1, N-1);
   //rsPlotVectors(x, env);
+  */
+
 
 
 
