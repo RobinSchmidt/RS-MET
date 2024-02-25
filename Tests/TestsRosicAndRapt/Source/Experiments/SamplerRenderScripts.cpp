@@ -852,7 +852,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
 
 
   // Optionally plot a phase-spectrum of the allpass impulse response:
-  bool plotPhase = true;  // Maybe make this a function parameter
+  bool plotPhase = false;  // Maybe make this a function parameter
   if(plotPhase)
   {
     SpectrumPlotter<double> sp;
@@ -1048,7 +1048,20 @@ void createAllpassDrums()
   // Experimental:
   //createBrownZap(30,  100,  500, 0.0);   // Tom?
   //createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
-  createBrownZap(50,  250, 4000, 0.0);
+  //createBrownZap(50,  250, 4000, 0.0);   // 4 octaves
+  //createBrownZap(50,  250, 500, 0.0);      // 1 octave
+
+  createBrownZap(45,  100, 200, -3.0);
+
+  //createBrownZap(50,  100, 200, -4.0);
+  //createBrownZap(50,  100, 200, -2.0);      // 1 octave - nice tom
+  //createBrownZap(50,  100, 200,  0.0);
+  //createBrownZap(50,  100, 200, +2.0);
+
+
+  //createBrownZap(40,  100, 200, +2.0); 
+  //createBrownZap(40,  100, 200, 0.0);      // 1 octave - nice tom
+
 
 
 
