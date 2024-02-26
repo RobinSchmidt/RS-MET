@@ -445,7 +445,7 @@ void FlatZapperModule::createParameters()
 
 
   // Filter mode settings:
-  p = new Param("NumStages", 2.0, 256, 128.0, Parameter::LINEAR, 1.0); // try using 0 a slower limit
+  p = new Param("NumStages", 0.0, 256, 128.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setNumStages);
   // Maybe use exp-scaling...or maybe not

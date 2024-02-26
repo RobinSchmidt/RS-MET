@@ -43,6 +43,8 @@ Bugs
   only on the note that was last played with the previous patch. Something about the voice 
   manager? Maybe it's a bug in Liberty? It seems to affect only liberty
 
+- MultiAnalyzer, waveform view: when zooming in, the horizontal scrollbar does not appear
+
 ---------------------------------------------------------------------------------------------------
 Features
 
@@ -77,6 +79,8 @@ Modules
   x[n-1], x[n-2] and likewise for the delayed output y? Or maybe we need x[n-M], x[n-2*M]?
   Maybe each band/node could have itself a numStages parameter.
 
+- StereoTool: Gain, Pan, Pos, M/S, Mono-Switch - show 2x2 gain matrix and make it editable, 
+  too - i.e. link the parameters  Gain, Pan, Pos M/S  to  L2L, L2R, R2L, R2R
 
 ---------------------------------------------------------------------------------------------------
 Improvements
