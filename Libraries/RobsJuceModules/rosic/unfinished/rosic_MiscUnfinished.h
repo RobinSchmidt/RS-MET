@@ -388,5 +388,6 @@ protected:
 // -Maybe rename to rsFlatZapper - sounds cooler
 // -Maybe create a class rsBrownZapper that also includes the browning filter and the cleanup 
 //  highpass.It max also include a slope/tilt filter for further shaping.
+// -Make a subclass that also has some post-processing
 
 }

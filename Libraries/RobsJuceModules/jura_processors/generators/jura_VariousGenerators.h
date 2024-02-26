@@ -234,17 +234,27 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override;
 
   // parameter callback targets:
-  void setLevel(double newLevel) { amplitude = RAPT::rsDbToAmp(newLevel); }
+  void setLevel(         double newLevel)   { masterAmp  = RAPT::rsDbToAmp(newLevel); }
+  void setExciterPercent(double newPercent) { exciterAmp = 0.01 * newPercent; }
+  void setInputPercent(  double newPercent) { inputAmp   = 0.01 * newPercent; }
+
 
 protected:
 
   rosic::rsFlatZapper zapperCore;
 
 
-  double amplitude = 1;
+
 
   int receivedKey = -1;
   int receivedVel = -1;
+
+  //double dryGain = 0.0;
+  double inputAmp   = 0.0;
+  double exciterAmp = 1.0;
+  double masterAmp  = 1.0;
+
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FlatZapperModule)
 };

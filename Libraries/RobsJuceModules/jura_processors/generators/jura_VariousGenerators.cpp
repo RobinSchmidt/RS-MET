@@ -429,17 +429,28 @@ void FlatZapperModule::createParameters()
   typedef Parameter Param;
   Param* p;
 
+  // Input/output settings
   p = new Param("Level", -48, +96, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<FlatZapperModule>(this, &FlatZapperModule::setLevel);
   // Maybe rename to outputLevel or OutVolume, OutGain
 
+  p = new Param("Exciter", -100, +100, 100.0, Parameter::LINEAR, 0.01); // %
+  addObservedParameter(p);
+  p->setValueChangeCallback<FlatZapperModule>(this, &FlatZapperModule::setExciterPercent);
+
+  p = new Param("Input", -100, +100, 0.0, Parameter::LINEAR, 0.01); // %
+  addObservedParameter(p);
+  p->setValueChangeCallback<FlatZapperModule>(this, &FlatZapperModule::setInputPercent);
+
+
+  // Filter mode settings:
   p = new Param("NumStages", 2.0, 256, 128.0, Parameter::LINEAR, 1.0); // try using 0 a slower limit
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setNumStages);
   // Maybe use exp-scaling...or maybe not
 
-
+  // Freq settings:
   p = new Param("FreqLow", 10.0, 20000.0, 15.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setLowFreq);
@@ -453,6 +464,7 @@ void FlatZapperModule::createParameters()
   p->setValueChangeCallback<FZ>(fz, &FZ::setFreqShape);
 
 
+  // Q settings:
   p = new Param("QLow", 0.125, 8.0, 1.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setLowQ);
@@ -473,14 +485,14 @@ void FlatZapperModule::createParameters()
 void FlatZapperModule::processStereoFrame(double *left, double *right)
 {
   // Produce the exitation signal. We use the input and add unit impulses at note events:
-  double inL = *left;
-  double inR = *right;
+  double inL = inputAmp * (*left);
+  double inR = inputAmp * (*right);
   if(receivedKey != -1)
   {
     if(receivedVel != 0)
     {
-      inL += 1.0;
-      inR += 1.0;
+      inL += exciterAmp;
+      inR += exciterAmp;
     }
     else
     {
@@ -491,7 +503,7 @@ void FlatZapperModule::processStereoFrame(double *left, double *right)
 
   //*left = *right = inL;   // for test
   
-  *left = *right = amplitude * zapperCore.getSample(inL); 
+  *left = *right = masterAmp * zapperCore.getSample(inL); 
   // Preliminary - todo: implement stereo processing by moving the DSP core class to RAPT, 
   // templatizing it and using an instance for <double, rsFloat64x2> here. See implementation of
   // EngineersFilter for how that works.
@@ -531,6 +543,8 @@ void FlatZapperModule::noteOn(int noteNumber, int velocity)
 // ToDo:
 // -Maybe have a 1-pole lowpass, a DC-blocker (Butterworth, adjustable order) and a tilt-filter 
 //  built in. Especially the 1-pole lowpass is important because without it, all presets will rely
-//  on a post-processing Equalizer which is not good.
+//  on a post-processing Equalizer which is not good. But the internal filters should all be 
+//  optional
 // -Add a parameters for scaling the input (i.e. external exciter) amplitude and the internal 
 //  (impulse) exciter amplitude. Have also a DryAmplitude slider
+// -Add parameter for the allpass mode (biquad, 1-pole)
