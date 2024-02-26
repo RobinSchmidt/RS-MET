@@ -233,9 +233,18 @@ public:
   virtual void reset() override;
   virtual void noteOn(int noteNumber, int velocity) override;
 
+  // parameter callback targets:
+  void setLevel(double newLevel) { amplitude = RAPT::rsDbToAmp(newLevel); }
+
 protected:
 
   rosic::rsWhiteZapper zapperCore;
+
+
+  double amplitude = 1;
+
+  int receivedKey = -1;
+  int receivedVel = -1;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FlatZapperModule)
 };
