@@ -1154,6 +1154,7 @@ void createAllpassDrums()
   }
   // My favorites: 20/-2, 20/0, 30/-3, 40/-3, 40/1..2, 50/-3, 50/1..2, 60/-4, 60/2, 70/-4, 70/2..3,
   // 80/-4, 80/3 where 2..3 means the perfect setting might be in between 2 and 3 etc..
+  // Maybe upload some favorites to freesound.org and give a link to the pack in the description.
 
   // ToDo:
   // -Allow for more flexible shaping like in the linear fractional interpolation scheme. We want 
