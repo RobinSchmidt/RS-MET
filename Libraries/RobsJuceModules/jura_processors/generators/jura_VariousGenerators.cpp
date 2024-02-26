@@ -569,6 +569,9 @@ void FlatZapperModule::setAllpassMode(double newMode)
 //  -putting a saturator after it is also nice - the saturation sound different for every note due 
 //   to the different waveshape. A stronger fuzz is also cool
 //  -sounds all goa-esque
+//  -When the saw-freq is low enough with respct to the length of the zap, one zap per cycle 
+//   happens - but when the zap bleeds into the next cycle, things get crazy and the waveform 
+//   becomes pseudo-random
 // -It can also serve a simple impulse generator when setting numStages to 0.
 //
 //
