@@ -804,7 +804,6 @@ std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highF
   double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
   double maxLength = 1.0, int sampleRate = 48000)
 {
-
   // Create and set up the zapper object:
   rosic::rsFlatZapper wz;
   wz.setSampleRate(sampleRate);
@@ -840,77 +839,6 @@ std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highF
   for(int n = 0; n < N; n++)
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
-
-  return x;
-}
-
-
-// Refactor this into:
-// -Generation of exciter signal x
-//  -Maybe make a class rsWhiteExciter with various options:
-//   -impulse, impulse-train, allpass-delay-chain, chirpUp, chirpDown, noise, allpass-FDN, 
-//    noise-burst
-// -Application of the allpass zapper
-// -Post-processing
-//  -Browning lowpass
-//  -Cleanup highpass
-//  -Shortening
-//  -Normalization
-// -Filename generation
-// -File writing
-void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, double freqShape = 0.0, 
-  double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, double maxLength = 1.0, int sampleRate = 48000)
-{
-  // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
-  // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
-  // implement manually.
-
-  //lowQ = 0.25;  // test to remove rumble. Yes! Lowering the lowQ helps to remove rumble!!!
-
-  // new:
-  std::vector<double> x = getBrownZap(numStages, lowFreq, highFreq, freqShape, lowQ, 
-    highQ, qShape, maxLength, sampleRate);
-  int N = x.size();
-
-  // old:
-  /*
-  // Create and set up the zapper object:
-  rosic::rsFlatZapper wz;
-  wz.setSampleRate(sampleRate);
-  wz.setNumStages(numStages);
-  wz.setLowFreq(lowFreq);
-  wz.setHighFreq(highFreq);
-  wz.setFreqShape(freqShape);
-  wz.setLowQ(lowQ);
-  wz.setHighQ(highQ);
-  wz.setQShape(qShape);
-
-  // Render sample:
-  int N = ceil(maxLength * sampleRate);  // Number of samples to render
-  using Vec = std::vector<double>;
-  Vec x(N);
-  x[0] = 1;
-
-  // Test - with noise-burst:
-  //x = createNoise(N, -1.0, +1.0, 0);
-  //Vec e1 = attackDecayEnvelope(N, 50,     150);  // Decay = 100-200 seems nice
-  //Vec e2 = attackDecayEnvelope(N, 5000, 10000);
-  //Vec e  = e1;
-  //Vec e  = e1 + 0.001*e2;   // Trying to give it that snare effect - does not work well
-  //rsPlotVector(e);
-  //rsPlotVectors(e1, e2);
-  //x = x*e;
-  //rsPlotVector(x);
-  // Using a noise-burst makes it sound more acoustic and natural, less electronic. But maybe this
-  // doesn't count as raw-material anymore because it can be recreated from the impulse responses 
-  // using convolution. Actually, the user could just play the kick sample through a convolution
-  // reverb that uses a noise-burst as impulse-response
-
-  for(int n = 0; n < N; n++)
-    x[n] = wz.getSample(x[n]);
-  //rsPlotVector(x);
-  */
-
 
   // Optionally plot a phase-spectrum of the allpass impulse response:
   bool plotPhase = true;  // Maybe make this a function parameter
@@ -948,9 +876,34 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // Actually, it turns out that there's a better way top reduce the subsonic flutter/rumble:
   // Reduce the lowQ parameter.
 
+  return x;
+}
 
 
+// Refactor this into:
+// -Generation of exciter signal x
+//  -Maybe make a class rsWhiteExciter with various options:
+//   -impulse, impulse-train, allpass-delay-chain, chirpUp, chirpDown, noise, allpass-FDN, 
+//    noise-burst
+// -Application of the allpass zapper
+// -Post-processing
+//  -Browning lowpass
+//  -Cleanup highpass
+//  -Shortening
+//  -Normalization
+// -Filename generation
+// -File writing
+void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, double freqShape = 0.0, 
+  double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, double maxLength = 1.0, int sampleRate = 48000)
+{
+  // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
+  // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
+  // implement manually.
 
+
+  std::vector<double> x = getBrownZap(numStages, lowFreq, highFreq, freqShape, lowQ, 
+    highQ, qShape, maxLength, sampleRate);
+  int N = x.size();
 
 
   // Create filename from the parameters (maybe factor out):
@@ -1070,6 +1023,8 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -If low-frequency rumble occurs toward the end, it helps to reduce the lowQ parameter. 
   //  Currently, we use a highpass to counteract this rumble - but this is a kludge. Reducing
   //  lowQ seems to be the more appropriate way to go.
+  // -I think, the samples are self-similar in the sense that when one zooms in, it looks the 
+  //  same. Try it!
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -1158,6 +1113,9 @@ void createAllpassDrums()
   //createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
   //createBrownZap(50,  250, 4000, 0.0);   // 4 octaves
   //createBrownZap(50,  250, 500, 0.0);      // 1 octave
+
+  std::vector<double> zap = getBrownZap(50, 15, 8000, 0.0);
+  rsPlotVector(zap);
 
   // For plotting tests:
   //double Q = 4.0;
