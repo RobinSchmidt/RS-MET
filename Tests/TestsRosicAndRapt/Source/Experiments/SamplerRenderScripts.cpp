@@ -794,6 +794,7 @@ void rsSamplePostProcessor::shortenTail(std::vector<double>& x, double threshold
 
   // Apply a smooth fade out:
   int fadeSamples = sampleRate * fadeOutTime;
+  fadeSamples = rsMin(fadeSamples, N/4);
   rsFadeOut(&x[0], N-fadeSamples-1, N-1);
   //rsPlotVectors(x, env);
 }
@@ -838,7 +839,12 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
 
   // Test - with noise-burst:
   //x = createNoise(N, -1.0, +1.0, 0);
-  //Vec e = attackDecayEnvelope(N, 50, 150);  // Decay = 100-200 seems nice
+  //Vec e1 = attackDecayEnvelope(N, 50,     150);  // Decay = 100-200 seems nice
+  //Vec e2 = attackDecayEnvelope(N, 5000, 10000);
+  //Vec e  = e1;
+  //Vec e  = e1 + 0.001*e2;   // Trying to give it that snare effect - does not work well
+  //rsPlotVector(e);
+  //rsPlotVectors(e1, e2);
   //x = x*e;
   //rsPlotVector(x);
   // Using a noise-burst makes it sound more acoustic and natural, less electronic. But maybe this
@@ -1001,6 +1007,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  -When increasing freqShape, the curve is also lowered and the right tail is less steep. The
   //   peak gets also wider.
   //  -Higher Q make the left section steeper - it moves the "action" more to the right.
+  // -With negative freqShape and using a noise burst as input, the noisy part gets more confined 
+  //  to the start of the sample. numStages = 30, freqShape = -3 with a noise-burst gives a nice
+  //  acoustic sounding kick. freqSgape = -2 gives it more body/thump
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -1046,6 +1055,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -Figure out the shape of the pitch env by using the zero-crossing based pitch detector. Or:
   //  use class rsSingleSineModeler. This may give better time resolution. or maybe try both 
   //  approaches
+  // -Try combining (i.e. convolving) a strongly resonant "exciter" with a body for a tom or kick
   //
   // Ideas:
   // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 
@@ -1081,6 +1091,13 @@ void createAllpassDrums()
   //createBrownZap(50, 1000,  100, 0.0);   // swapping low and hi freq has no effect
   //createBrownZap(50, 100, 10000, 0.0, Q, Q);
   //createBrownZap(10, 10,  1000, 0.0);
+
+
+  // Exciters:
+  createBrownZap(10,  200,  200, 0.0);
+  createBrownZap(10,  400,  400, 0.0);
+  createBrownZap(10,  800,  800, 0.0); // also good for percussion - like claves or something?
+  createBrownZap(10, 1600, 1600, 0.0); 
 
 
   // Nice soft bassdrum or low tom:
