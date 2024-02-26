@@ -527,3 +527,8 @@ void FlatZapperModule::noteOn(int noteNumber, int velocity)
 //  behave differently for different filter implementations (DF1 vs DF2 vs SVF vs ...). That may be
 //  a good thing, if we let the user also choose the filter structure explicitly but a bad thing
 //  if we just hardcode it and want to change it later.
+//
+// ToDo:
+// -Maybe have a 1-pole lowpass, a DC-blocker (Butterworth, adjustable order) and a tilt-filter 
+//  built in. Especially the 1-pole lowpass is important because without it, all presets will rely
+//  on a post-processing Equalizer which is not good.
