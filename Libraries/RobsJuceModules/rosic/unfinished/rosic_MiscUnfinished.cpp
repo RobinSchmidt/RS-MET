@@ -518,7 +518,15 @@ void rsWhiteZapper::updateCoeffs()
     double a = (s-1)/(s+1);                   // Function parameter for rational map in -1..+1
     return RAPT::rsRationalMap_01(x, a);
   }; // For convenience
-  // ToDo: Avoid conversion from s to a. Using s directly leads ot a simpler formula.
+  // ToDo: 
+  // -Avoid conversion from s to a. Using s directly leads ot a simpler formula.
+  // -Use the more felxible 3-parametric shape from rsLinearFractionalInterpolator. Have 3 
+  //  parameters 
+  //  -slope: -inf...+inf - this is the current one
+  //  -sigmoidVsSpikey: -inf...+inf - controls the center portion of the shape
+  //  -asymmetry: compute s2 = s1^(asymmetry-1) - rationale: when asymmetry == 0, the top-right 
+  //   slope should be the reciprocal of the left slope. s1 is the "s" in the function above, i.e. 
+  //   the slope of the curve at bottom-left.
 
   int numStages = allpassChain.getNumStages();
   using BQD = BiquadDesigner;

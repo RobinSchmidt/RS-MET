@@ -1029,6 +1029,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  parameter on a GUI, when I make a module for ToolChain from it.
   //
   // ToDo:
+  // -Try a first order allpass chain
   // -Plot a couple of curve families for thegroup delay for varying different parameters.
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
   //  getWhiteZapBassdrum function
@@ -1039,12 +1040,17 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -Other interesting post-processing effects could be a peak-eq tuned to the desired bassdrum
   //  fundamental frequency.
   // -Let the function take the parameters as function arguments
-  // -Try a first order allpass chain
   // -Plot a spectrogram
   // -Plot a group-delay response
   // -Plot a ringing response
+  // -An alternative way to compute a delay-response could be to compute correlations with windowed
+  //  (complex) sinewaves and find the lag where this correlation has a maximum.
+  // -Can we create a stereo signal by using rsStateVectorFilter and using the two states to
+  //  generate two signals. ...if not, maybe try using the phase-stereoizer.
+  // -what about time-reversing some of the allpasses?
   // -Use an EQ to boost the bass frequencies
   // -Try to make a phaser from that
+  // -Try using oversampling. Does it improve the high-freq response do to less cramping?
   // -Check out, if we can get a nice stereor signal by using noise-bursts with different seeds for
   //  left and right (or for mid and side)
   // -In a synth based on that, allow to mix noise-burst and impulse inputs - and maybe other types
@@ -1052,10 +1058,19 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -Try applying some of the allpasses in forward mode and some in backward mode. Maybe use lower
   //  Q for backward mode. When using the exact same allpass-chain for forward and backward pass,
   //  the phase-responses shuld cancel and the original impulse should be reconstructed
-  // -Figure out the shape of the pitch env by using the zero-crossing based pitch detector. Or:
-  //  use class rsSingleSineModeler. This may give better time resolution. or maybe try both 
-  //  approaches
+  // -Figure out the shape of the pitch env by using the zero-crossing based pitch detector. 
+  // -Try using use class rsSingleSineModeler. This may give better time resolution. Or maybe try 
+  //  both approaches
   // -Try combining (i.e. convolving) a strongly resonant "exciter" with a body for a tom or kick
+  // -Try to use a lower Q (or lower qLow) to avoid the low-freq flutter/rumble towrads the end 
+  //  that sometimes happens. Check if there's high-freq flutter at the start, too - and if that 
+  //  can be remedied by lower qHigh.
+  // -Split the freq range lo..hi into two: lo..mid, mid..hi and to use 2 zappers - 1 for the high 
+  //  freq range and one for the low freq range. Use lower numStages for the high part. Goal: We 
+  //  want to somehow introduce a (smooth) corner in the linear part of the phase-response on a 
+  //  log-freq plot. Maybe the sum of both numstages params should equal the original single 
+  //  numStages parameter because the total phase-shift at Nyquist-freq is always determined by the
+  //  total number of stages. Although - the total shift at 24k may be irrelevant.
   //
   // Ideas:
   // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 
