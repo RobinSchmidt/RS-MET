@@ -60,7 +60,8 @@ Features
   https://github.com/DISTRHO/JUCE
 
 - Scope: let the envelope trigger the reset - good for viewing one-shots that should always start 
-  left
+  left. Maybe auto-freeze when the scanning has reached the end and auto-unfreeze when a new 
+  trigger is received.
 
 
 ---------------------------------------------------------------------------------------------------
