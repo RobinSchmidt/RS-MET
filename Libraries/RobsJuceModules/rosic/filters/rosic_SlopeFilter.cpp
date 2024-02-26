@@ -98,5 +98,7 @@ ToDo:
   only one M-th of the desired slope. Rationale: For higher slopes, the approximation to a straight
   line gets worse using only 4 poles. Realizing them via a cascade works better. Maybe the slope of
   a single stage should only realize up to 10 or 12 dB/oct
+-Try to make a class rsBiSlopeFilter with adjustable center freq and bandwidth (like a bandpass)
+ and two slope parameters (for the lowpass and the highpass)
 
 */

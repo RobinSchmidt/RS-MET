@@ -39,6 +39,10 @@ Bugs
 - In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
   ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 
+- Load ToolChain preset BrassyOsc, play a couple of notes, load preset ButterSnap. It will click 
+  only on the note that was last played with the previous patch. Something about the voice 
+  manager? Maybe it's a bug in Liberty? It seems to affect only liberty
+
 ---------------------------------------------------------------------------------------------------
 Features
 

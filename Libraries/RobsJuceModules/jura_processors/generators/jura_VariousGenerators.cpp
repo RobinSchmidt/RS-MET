@@ -539,12 +539,20 @@ void FlatZapperModule::noteOn(int noteNumber, int velocity)
 //  behave differently for different filter implementations (DF1 vs DF2 vs SVF vs ...). That may be
 //  a good thing, if we let the user also choose the filter structure explicitly but a bad thing
 //  if we just hardcode it and want to change it later.
+// -Using it as effect on a sawtooth output of a synth is also interesting
+//  -the waveform looks different for every pitch
+//  -we get a transient before the waveform settles to steady state
+//  -putting a saturator after it is also nice - the saturation sound different for every note due 
+//   to the different waveshape. A stronger fuzz is also cool
+//  -sounds all goa-esque
+// -It can also serve a simple impulse generator when setting numStages to 0.
+//
 //
 // ToDo:
 // -Maybe have a 1-pole lowpass, a DC-blocker (Butterworth, adjustable order) and a tilt-filter 
 //  built in. Especially the 1-pole lowpass is important because without it, all presets will rely
 //  on a post-processing Equalizer which is not good. But the internal filters should all be 
 //  optional
-// -Add a parameters for scaling the input (i.e. external exciter) amplitude and the internal 
-//  (impulse) exciter amplitude. Have also a DryAmplitude slider
 // -Add parameter for the allpass mode (biquad, 1-pole)
+// -Make a custom GUI that shows a preview of the output and later maybe also the phase-response,
+//  phase-delay and group delay response

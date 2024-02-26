@@ -505,15 +505,11 @@ void rsFlatZapper::updateCoeffs()
   double *a1 = allpassChain.getAddressA1();
   double *a2 = allpassChain.getAddressA2();
 
+  // Helper function to map the unit interval 0..1 to istelf via a curve determined by our shape
+  // parameter. This is used in the computation of the stage-index dependent tunign frequency and
+  // Q for the allpass stage at the given index:
   auto shape = [](double x, double shapeParam) 
   { 
-    // Old parameter mapping from -1...+1:
-    //double a = shapeParam; // preliminary
-    //return RAPT::rsRationalMap_01(x, a);
-
-    // New parameter mapping from -inf...+inf where the good range is somewhere between -5...+5:
-    //double s = RAPT::rsLog2(shapeParam);  // Slope at x = 0
-
     double s = RAPT::rsPow(2.0, shapeParam);  // Slope at x = 0
     double a = (s-1)/(s+1);                   // Function parameter for rational map in -1..+1
     return RAPT::rsRationalMap_01(x, a);
@@ -532,7 +528,6 @@ void rsFlatZapper::updateCoeffs()
   using  BQD = BiquadDesigner;
   auto setupBiquadAllpassStage = [&](int i, double f, double q)
   {
-  
     BQD::calculateCookbookAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f, q);
     a1[i] = -a1[i];  // The design routine uses a different convention for the sign of the
     a2[i] = -a2[i];  // a-coeffs than the class rsBiquadCascade
@@ -572,25 +567,13 @@ void rsFlatZapper::updateCoeffs()
       double p = scaler * i;   // Goes from 0 to 1
       double f = RAPT::rsLinToExp(shape(p, freqShape), 0.0, 1.0, freqLo, freqHi);
       double q = RAPT::rsLinToExp(shape(p, qShape),    0.0, 1.0, qLo,    qHi);
-
-      // New:
       setupBiquadAllpassStage(i, f, q);
-
-      // Old:
-      //BQD::calculateCookbookAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f, q);
-      //a1[i] = -a1[i];  // The design routine uses a different convention for the sign of the
-      //a2[i] = -a2[i];  // a-coeffs than the class rsBiquadCascade
     }
   } break;
 
   default:
   {
-    // New:
     handleUnknownMode();
-
-    // Old:
-    //RAPT::rsError("Unknown mode in rsWhiteZapper::updateCoeffs");
-    //allpassChain.resetAllCoeffs();
   }
 
   }
