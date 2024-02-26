@@ -852,7 +852,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
 
 
   // Optionally plot a phase-spectrum of the allpass impulse response:
-  bool plotPhase = false;  // Maybe make this a function parameter
+  bool plotPhase = true;  // Maybe make this a function parameter
   if(plotPhase)
   {
     SpectrumPlotter<double> sp;
@@ -983,6 +983,12 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -By the way, the allpass chain *closely* approximates a linear phase response.
   // -Shape parameters other than 0 skew the sigmoid and make it asymmetric - maybe a bit like
   //  the Gompertz function.
+  // -One octave sweeps from around 200 to 100 Hz make for nice electric toms:
+  //  createBrownZap(45, 100, 200, -3.0); Pulling the lowfreq and highFreq even closer together
+  //  does not change the sound very much. Even using 149 and 151, it sounds still rather similar.
+  // -It actually seems to work to have lowFreq == highFreq
+  // -for createBrownZap(45, 25, 200, -3.0); the phase plot looks wrong. Maybe try increasing 
+  //  maxLength - maybe it's because of truncation
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -990,7 +996,10 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  and only down to 30 Hz, we can just play the sample back at twice the speed. This will give a
   //  similar sound.
   // -Giving the user control over how Q changes with frequency seems overkill. Maybe a single Q
-  //  parameter is good enough. ...but maybe experiment a bit more...
+  //  parameter is good enough. ...but maybe experiment a bit more... Or maybe I have just not set 
+  //  used it in the right range - I tried 1..16 - but maybe we should stay the smooth-oversmooth 
+  //  range like 0.125..4 or something. Maybe it makes sense to have a sharper transition at one 
+  //  end of the sigmoid.
   // -I think, the most important sound-shaping feature to be added is to give more flexibility to
   //  the curve that distributes the allpass tuning frequencies. Using a fixed Q fo all allpasses
   //  that migght even be hardcoded seems good enough. But maybe when we have more flexibility for
@@ -1051,16 +1060,22 @@ void createAllpassDrums()
   //createBrownZap(50,  250, 4000, 0.0);   // 4 octaves
   //createBrownZap(50,  250, 500, 0.0);      // 1 octave
 
-  createBrownZap(45,  100, 200, -3.0);
-
-  //createBrownZap(50,  100, 200, -4.0);
-  //createBrownZap(50,  100, 200, -2.0);      // 1 octave - nice tom
-  //createBrownZap(50,  100, 200,  0.0);
-  //createBrownZap(50,  100, 200, +2.0);
+  // For plotting tests:
+  createBrownZap(50, 10, 1000, 0.0);
 
 
-  //createBrownZap(40,  100, 200, +2.0); 
-  //createBrownZap(40,  100, 200, 0.0);      // 1 octave - nice tom
+  // Nice soft bassdrum or low tom:
+  createBrownZap(45, 25, 200, -3.0);  // phase-plot looks wrong - I think this is a bug in the plotter
+  createBrownZap(45, 25, 200,  0.0);
+  createBrownZap(45, 25, 200, +3.0);
+
+  // One octave sweeps from around 200 to 100 Hz make for nice electrnic toms:
+  createBrownZap(45, 100, 200, -3.0);
+  createBrownZap(45, 120, 180, -3.0);
+  createBrownZap(45, 140, 160, -3.0);
+  createBrownZap(45, 149, 151, -3.0);
+  // They sound all quite similar.
+
 
 
 
