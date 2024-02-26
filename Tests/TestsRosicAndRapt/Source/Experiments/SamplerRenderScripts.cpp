@@ -852,7 +852,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
 
 
   // Optionally plot a phase-spectrum of the allpass impulse response:
-  bool plotPhase = true;  // Maybe make this a function parameter
+  bool plotPhase = false;  // Maybe make this a function parameter
   if(plotPhase)
   {
     SpectrumPlotter<double> sp;
@@ -998,6 +998,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  interesting to figure out, what the perceptual correlate to the peak at lowFreq is, if any.
   //  lowFreq certainly affects the the perception of the overall "height" of the sound in the freq
   //  domain (in the sense of how high up is it), even though there is no discernable pitch.
+  //  -When increasing freqShape, the curve is also lowered and the right tail is less steep. The
+  //   peak gets also wider.
+  //  -Higher Q make the left section steeper - it moves the "action" more to the right.
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -1017,6 +1020,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  parameter on a GUI, when I make a module for ToolChain from it.
   //
   // ToDo:
+  // -Plot a couple of curve families for thegroup delay for varying different parameters.
   // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
   //  getWhiteZapBassdrum function
   // -We currently need numStages >= 2. For 0 and 1, it produces garbage (inf, nan). Fix this!
@@ -1070,11 +1074,12 @@ void createAllpassDrums()
   //createBrownZap(50,  250, 500, 0.0);      // 1 octave
 
   // For plotting tests:
+  //double Q = 4.0;
   //createBrownZap(50, 10,  1000, 0.0);
   //createBrownZap(50, 100,   100, 0.0);
-  createBrownZap(50,  100, 1000, 0.0);
-  createBrownZap(50, 1000,  100, 0.0);   // swapping low and hi freq has no effect
-  //createBrownZap(50, 100, 10000, 0.0);
+  //createBrownZap(50,  100, 1000, 0.0);
+  //createBrownZap(50, 1000,  100, 0.0);   // swapping low and hi freq has no effect
+  //createBrownZap(50, 100, 10000, 0.0, Q, Q);
   //createBrownZap(10, 10,  1000, 0.0);
 
 
@@ -1090,7 +1095,14 @@ void createAllpassDrums()
   createBrownZap(45, 149, 151, -3.0);
   // They sound all quite similar.
 
-
+  //double freq = 100;
+  createBrownZap(45,  60,  60, 0.0);
+  createBrownZap(45,  80,  80, 0.0);
+  createBrownZap(45, 100, 100, 0.0);
+  createBrownZap(45, 120, 120, 0.0);
+  createBrownZap(45, 140, 140, 0.0);
+  createBrownZap(45, 160, 160, 0.0);
+  // Maybe call them SweepyTomXXX - maybe for the higher freqs, the numStages should go down.
 
 
 
