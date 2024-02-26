@@ -371,10 +371,6 @@ void TriSawOscModule::updateBending()
   // why does this work? is really every possible combination of attack-bend and decay-bend 
   // reachable? ...plot attack-bending as funtion of bend and bendAsym
 
-
-
-
-
   // ...under construction - 
   // idea: 
   // -collect data for perceptually equidistant values for attackBend
@@ -410,4 +406,34 @@ void TriSawOscModule::updateBending()
   //  -how to acquire the data?
   //  -how to impose constraints such as that the raw attack-bend and decay-bend (as network 
   //   outputs) should behave symmetric (in some sense)?
+}
+
+//=================================================================================================
+
+FlatZapperModule::FlatZapperModule(CriticalSection *lockToUse, 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("FlatZapper");
+  createParameters();
+}
+
+void FlatZapperModule::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  typedef rosic::rsWhiteZapper FZ;
+  FZ* fz = &zapperCore;
+
+  typedef Parameter Param;
+  Param* p;
+
+  p = new Param("NumStages", 2.0, 256, 1.0, Parameter::LINEAR); // try using 0 a slower limit
+  addObservedParameter(p);
+  p->setValueChangeCallback<FZ>(fz, &FZ::setNumStages);
+
+
+  int dummy = 0;
+
 }

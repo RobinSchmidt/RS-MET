@@ -820,6 +820,8 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
   // implement manually.
 
+  //lowQ = 0.25;  // test to remove rumble. Yes! Lowering the lowQ helps to remove rumble!!!
+
   // Create and set up the zapper object:
   rosic::rsWhiteZapper wz;
   wz.setSampleRate(sampleRate);
@@ -858,7 +860,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
 
 
   // Optionally plot a phase-spectrum of the allpass impulse response:
-  bool plotPhase = false;  // Maybe make this a function parameter
+  bool plotPhase = true;  // Maybe make this a function parameter
   if(plotPhase)
   {
     SpectrumPlotter<double> sp;
@@ -889,7 +891,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   N = x.size();
   RAPT::rsArrayTools::normalize(&x[0], N);  // implement and use sp.normalize(x);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
-  // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq
+  // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq.
+  // Actually, it turns out that there's a better way top reduce the subsonic flutter/rumble:
+  // Reduce the lowQ parameter.
 
 
 
@@ -1010,6 +1014,9 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -With negative freqShape and using a noise burst as input, the noisy part gets more confined 
   //  to the start of the sample. numStages = 30, freqShape = -3 with a noise-burst gives a nice
   //  acoustic sounding kick. freqSgape = -2 gives it more body/thump
+  // -If low-frequency rumble occurs toward the end, it helps to reduce the lowQ parameter. 
+  //  Currently, we use a highpass to counteract this rumble - but this is a kludge. Reducing
+  //  lowQ seems to be the more appropriate way to go.
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -1021,6 +1028,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  used it in the right range - I tried 1..16 - but maybe we should stay the smooth-oversmooth 
   //  range like 0.125..4 or something. Maybe it makes sense to have a sharper transition at one 
   //  end of the sigmoid.
+  //  Update: it may be needed to reduce rumble.
   // -I think, the most important sound-shaping feature to be added is to give more flexibility to
   //  the curve that distributes the allpass tuning frequencies. Using a fixed Q fo all allpasses
   //  that migght even be hardcoded seems good enough. But maybe when we have more flexibility for
@@ -1100,6 +1108,7 @@ void createAllpassDrums()
 
   // For plotting tests:
   //double Q = 4.0;
+  //createBrownZap(50, 15,  8000, 0.0, 0.5, 2.0, 0.0);
   //createBrownZap(50, 10,  1000, 0.0);
   //createBrownZap(50, 100,   100, 0.0);
   //createBrownZap(50,  100, 1000, 0.0);
