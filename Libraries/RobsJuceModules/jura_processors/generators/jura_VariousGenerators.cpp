@@ -439,6 +439,7 @@ void FlatZapperModule::createParameters()
   p->setValueChangeCallback<FZ>(fz, &FZ::setNumStages);
   // Maybe use exp-scaling...or maybe not
 
+
   p = new Param("FreqLow", 10.0, 20000.0, 15.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setLowFreq);
@@ -447,6 +448,22 @@ void FlatZapperModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setHighFreq);
 
+  p = new Param("FreqShape", -5, +5, 0.0, Parameter::LINEAR, 0.01);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FZ>(fz, &FZ::setFreqShape);
+
+
+  p = new Param("QLow", 0.125, 8.0, 1.0, Parameter::EXPONENTIAL, 0.0);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FZ>(fz, &FZ::setLowQ);
+
+  p = new Param("QHigh", 0.125, 8.0, 1.0, Parameter::EXPONENTIAL, 0.0);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FZ>(fz, &FZ::setHighQ);
+
+  p = new Param("QShape", -5, +5, 0.0, Parameter::LINEAR, 0.01);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FZ>(fz, &FZ::setQShape);
 
 
 
@@ -502,7 +519,11 @@ void FlatZapperModule::noteOn(int noteNumber, int velocity)
 }
 
 // Observations:
+// -This algorithm is good for zap, kick and tom sounds
 // -When retriggering in fast succession like in a machine gun effect, it behaves nicely natural. 
 //  Hmm...or well - the signal seem to add up which makes sense. maybe optionally reset the filter
 //  states on note on - maybe using a soft-reset parameter ranging from 0 to 1. Hmm - may it's not 
-//  so nice after all - try hitting 2 or 3 keys simultaneously - sounds bad.
+//  so nice after all - try hitting 2 or 3 keys simultaneously - sounds bad. But a soft-reset will
+//  behave differently for different filter implementations (DF1 vs DF2 vs SVF vs ...). That may be
+//  a good thing, if we let the user also choose the filter structure explicitly but a bad thing
+//  if we just hardcode it and want to change it later.
