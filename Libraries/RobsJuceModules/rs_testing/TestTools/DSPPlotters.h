@@ -210,7 +210,7 @@ public:
 
 
   /** The different modes are suitable for different types of input signals.  */
-  enum class NormalizationMode
+  enum class NormalizationMode  // rename to NormalizeMode
   {
     cycle,       // cycle (of a periodic signal)
     impulse,     // impulse response (of a filter/LTI-system)
@@ -284,6 +284,9 @@ public:
 
 
   void plotPhaseSpectra(const T** signals, int numSignals, int signalLength);
+
+  // Maybe to avoid code duplication, have just one plotSpectra method and a plotMode member that
+  // can be: decibels, phase, phaseDelay, groupDelay, etc
 
 
 protected:

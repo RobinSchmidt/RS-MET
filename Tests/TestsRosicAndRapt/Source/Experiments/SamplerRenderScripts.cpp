@@ -989,6 +989,8 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -It actually seems to work to have lowFreq == highFreq
   // -for createBrownZap(45, 25, 200, -3.0); the phase plot looks wrong. Maybe try increasing 
   //  maxLength - maybe it's because of truncation
+  // -The group delay starts flat then rises to a peak close to the lowFreq and then falls down to
+  //  zero. But why? Shouldn't it look like a flat-top bell function?
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -1061,7 +1063,9 @@ void createAllpassDrums()
   //createBrownZap(50,  250, 500, 0.0);      // 1 octave
 
   // For plotting tests:
-  createBrownZap(50, 10, 1000, 0.0);
+  //createBrownZap(50, 10,  1000, 0.0);
+  createBrownZap(50, 100, 1000, 0.0);
+  //createBrownZap(10, 10,  1000, 0.0);
 
 
   // Nice soft bassdrum or low tom:
