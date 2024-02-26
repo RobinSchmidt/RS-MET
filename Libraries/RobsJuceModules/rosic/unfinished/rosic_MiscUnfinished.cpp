@@ -528,11 +528,41 @@ void rsFlatZapper::updateCoeffs()
   //   slope should be the reciprocal of the left slope. s1 is the "s" in the function above, i.e. 
   //   the slope of the curve at bottom-left.
 
+  // Another helper function:
+  using  BQD = BiquadDesigner;
+  auto setupBiquadAllpassStage = [&](int i, double f, double q)
+  {
+  
+    BQD::calculateCookbookAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f, q);
+    a1[i] = -a1[i];  // The design routine uses a different convention for the sign of the
+    a2[i] = -a2[i];  // a-coeffs than the class rsBiquadCascade
+  };
+
+  // Error handler:
+  auto handleUnknownMode = [&]()
+  {
+    RAPT::rsError("Unknown mode in rsWhiteZapper::updateCoeffs");
+    allpassChain.resetAllCoeffs();
+  };
+
+
+  // The case for one allpass stage must be handled separately to avoid a division by zero. In the
+  // case of one stage, we just use the settings for the lowest stage:
   int numStages = allpassChain.getNumStages();
-  using BQD = BiquadDesigner;
+  if(numStages == 1)
+  {
+    switch(mode)
+    {
+    case Mode::biquad: setupBiquadAllpassStage(0, freqLo, qLo);  break;
+    default:           handleUnknownMode();
+    }
+    dirty = false;
+    return;
+  }
 
+  // All other cases (i.e. numStages != 1), can be handled by the code below. This includes the
+  // numStages == 0 case in which case the loops are just not entered at all:
   double scaler = 1.0 / double(numStages-1); 
-
   switch(mode)
   {
   case Mode::biquad:
@@ -542,16 +572,25 @@ void rsFlatZapper::updateCoeffs()
       double p = scaler * i;   // Goes from 0 to 1
       double f = RAPT::rsLinToExp(shape(p, freqShape), 0.0, 1.0, freqLo, freqHi);
       double q = RAPT::rsLinToExp(shape(p, qShape),    0.0, 1.0, qLo,    qHi);
-      BQD::calculateCookbookAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f, q);
-      a1[i] = -a1[i];  // The design routine uses a different convention for the sign of the
-      a2[i] = -a2[i];  // a-coeffs than the class rsBiquadCascade
+
+      // New:
+      setupBiquadAllpassStage(i, f, q);
+
+      // Old:
+      //BQD::calculateCookbookAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f, q);
+      //a1[i] = -a1[i];  // The design routine uses a different convention for the sign of the
+      //a2[i] = -a2[i];  // a-coeffs than the class rsBiquadCascade
     }
   } break;
 
   default:
   {
-    RAPT::rsError("Unknown mode in rsWhiteZapper::updateCoeffs");
-    allpassChain.resetAllCoeffs();
+    // New:
+    handleUnknownMode();
+
+    // Old:
+    //RAPT::rsError("Unknown mode in rsWhiteZapper::updateCoeffs");
+    //allpassChain.resetAllCoeffs();
   }
 
   }
