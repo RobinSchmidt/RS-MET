@@ -524,13 +524,18 @@ void rsFlatZapper::updateCoeffs()
   //   slope should be the reciprocal of the left slope. s1 is the "s" in the function above, i.e. 
   //   the slope of the curve at bottom-left.
 
-  // Another helper function:
+  // More helper functions:
   using  BQD = BiquadDesigner;
   auto setupBiquadAllpassStage = [&](int i, double f, double q)
   {
     BQD::calculateCookbookAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f, q);
     a1[i] = -a1[i];  // The design routine uses a different convention for the sign of the
     a2[i] = -a2[i];  // a-coeffs than the class rsBiquadCascade
+  };
+  auto setupOnePoleAllpassStage = [&](int i, double f)
+  {
+    BQD::calculateFirstOrderAllpassCoeffs(b0[i], b1[i], b2[i], a1[i], a2[i], fsR, f);
+    a1[i] = -a1[i];
   };
 
   // Error handler:
@@ -548,8 +553,9 @@ void rsFlatZapper::updateCoeffs()
   {
     switch(mode)
     {
-    case Mode::biquad: setupBiquadAllpassStage(0, freqLo, qLo);  break;
-    default:           handleUnknownMode();
+    case Mode::firstOrder: setupOnePoleAllpassStage(0, freqLo);       break;
+    case Mode::biquad:     setupBiquadAllpassStage( 0, freqLo, qLo);  break;
+    default:               handleUnknownMode();
     }
     dirty = false;
     return;
@@ -560,6 +566,17 @@ void rsFlatZapper::updateCoeffs()
   double scaler = 1.0 / double(numStages-1); 
   switch(mode)
   {
+
+  case Mode::firstOrder:
+  {
+    for(int i = 0; i < numStages; i++)
+    {
+      double p = scaler * i;   // Goes from 0 to 1
+      double f = RAPT::rsLinToExp(shape(p, freqShape), 0.0, 1.0, freqLo, freqHi);
+      setupOnePoleAllpassStage(i, f);
+    }
+  } break;
+
   case Mode::biquad:
   {
     for(int i = 0; i < numStages; i++)

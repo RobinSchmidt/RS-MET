@@ -238,6 +238,22 @@ public:
   void setExciterPercent(double newPercent) { exciterAmp = 0.01 * newPercent; }
   void setInputPercent(  double newPercent) { inputAmp   = 0.01 * newPercent; }
 
+  void setAllpassMode(double newMode)
+  {
+    using MD = rosic::rsFlatZapper::Mode;
+    int mode = round(newMode);
+    switch(mode)
+    {
+    case 0: zapperCore.setMode(MD::firstOrder); break;
+    case 1: zapperCore.setMode(MD::biquad);     break;
+    }
+  }
+  // This is a new way of handling choice parameters. It allows using enum classes in the 
+  // underlying DSP code and it uses the callback function for double in jura::Parameter. When do 
+  // it everywhere like this (an similarly for bool parameters), we may also get rid of the awkward
+  // 3 different callbacks in jura::Parameter (for double bool and int) - that's an optimization 
+  // that may be good for the modulation system.
+
 
 protected:
 
