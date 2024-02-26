@@ -286,21 +286,33 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \Setup
 
+
+  /** Sets the sample rate at which this object should operate. */
+  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; setDirty(); }
+
   /** Enumeration of the available filter modes. */
   enum class Mode
   {
     bypass = 0,
-    firstOrder,  // maybe rename to allFirstOrder
-    biquad,      // maybe rename to allBiquad
+    onePole,       // maybe rename to allOnePole
+    biquad,        // maybe rename to allBiquad
+
+    // ToDo:
+    // lowFirst,   // use 1st order filters for lower k filters (and biquads for the rest)
+    // lowBiquad,  // use 2nd order filters for lower k filters (and one-poles for the rest)
 
     numModes
   };
   // Maybe have modes that alternate between first order and second order filters - but no, a 
   // similar effect can be achieved by using two rsWhiteZappers in series - one with biquads and
-  // one with first order filters, so it's not worthwhile to do internally
+  // one with first order filters, so it's not worthwhile to do internally.
+  // But maybe it coul be worthwhile to have the first k filters firstorder and the remaining N-k
+  // filters second order (or the other way around) for some user given k. That could perhaps 
+  // introduce a knee in the phase response in the log freq domain
 
-  /** Sets the sample rate at which this object should operate. */
-  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; setDirty(); }
+  /** Sets the mode of the filter chain, i.e. the type of allpass filter that will be used per 
+  stage. @see Mode. */
+  void setMode(Mode newMode) { mode = newMode; setDirty(); }
 
   /** Sets the number of allpass filter stages to be used. Using more stages generally leads to a 
   more elongated sweep/zap. The sweet spot seem to be around 50. */

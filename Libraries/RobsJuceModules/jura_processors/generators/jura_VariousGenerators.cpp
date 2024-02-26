@@ -450,6 +450,16 @@ void FlatZapperModule::createParameters()
   p->setValueChangeCallback<FZ>(fz, &FZ::setNumStages);
   // Maybe use exp-scaling...or maybe not
 
+
+  p = new Param("AllpassMode", 0.0, 1.0, 1.0, Parameter::STRING);
+  p->addStringValue("OnePole");
+  p->addStringValue("Biquad");
+  addObservedParameter(p);
+  p->setValueChangeCallback<FlatZapperModule>(this, &FlatZapperModule::setAllpassMode);
+  // The order in which we add the string-values for the modes must match the order in the switch
+  // statement in setAllpassMode()
+
+
   // Freq settings:
   p = new Param("FreqLow", 10.0, 20000.0, 15.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
@@ -529,6 +539,20 @@ void FlatZapperModule::noteOn(int noteNumber, int velocity)
   receivedKey = noteNumber;
   receivedVel = velocity;
 }
+
+void FlatZapperModule::setAllpassMode(double newMode)
+{
+  using MD = rosic::rsFlatZapper::Mode;
+  int mode = round(newMode);
+  switch(mode)
+  {
+  case 0: zapperCore.setMode(MD::onePole); break;
+  case 1: zapperCore.setMode(MD::biquad);  break;
+  }
+  // The order in which the cases occur here must match the order in which we add the corresponding
+  // string values to the "AllpassMode" parameter in createParameters()
+}
+
 
 // Observations:
 // -This algorithm is good for zap, kick and tom sounds
