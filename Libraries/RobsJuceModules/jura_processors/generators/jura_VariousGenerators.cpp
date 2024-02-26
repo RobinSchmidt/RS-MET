@@ -439,6 +439,16 @@ void FlatZapperModule::createParameters()
   p->setValueChangeCallback<FZ>(fz, &FZ::setNumStages);
   // Maybe use exp-scaling...or maybe not
 
+  p = new Param("FreqLow", 10.0, 20000.0, 15.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FZ>(fz, &FZ::setLowFreq);
+
+  p = new Param("FreqHigh", 10.0, 20000.0, 8000.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FZ>(fz, &FZ::setHighFreq);
+
+
+
 
   int dummy = 0;
 }
