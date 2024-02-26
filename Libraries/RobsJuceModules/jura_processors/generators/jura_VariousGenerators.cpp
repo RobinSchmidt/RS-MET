@@ -429,12 +429,12 @@ void FlatZapperModule::createParameters()
   typedef Parameter Param;
   Param* p;
 
-  p = new Param("Level", -48, +96, 0.0, Parameter::LINEAR); 
+  p = new Param("Level", -48, +96, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<FlatZapperModule>(this, &FlatZapperModule::setLevel);
   // Maybe rename to outputLevel or OutVolume, OutGain
 
-  p = new Param("NumStages", 2.0, 256, 50.0, Parameter::LINEAR); // try using 0 a slower limit
+  p = new Param("NumStages", 2.0, 256, 50.0, Parameter::LINEAR, 1.0); // try using 0 a slower limit
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setNumStages);
   // Maybe use exp-scaling
@@ -450,12 +450,21 @@ void FlatZapperModule::processStereoFrame(double *left, double *right)
   double inR = *right;
   if(receivedKey != -1)
   {
-    inL += 1.0;
-    inR += 1.0;
+    if(receivedVel != 0)
+    {
+      inL += 1.0;
+      inR += 1.0;
+    }
+    else
+    {
+      // todo: maybe trigger a release excitation
+    }
   }
   
+
+  *left = *right = inL;   // for test
   
-  *left = *right = amplitude * zapperCore.getSample(inL); 
+  //*left = *right = amplitude * zapperCore.getSample(inL); 
   // Preliminary - todo: implement stereo processing by moving the DSP core class to RAPT, 
   // templatizing it and using an instance for <double, rsFloat64x2> here. See implementation of
   // EngineersFilter for how that works.
