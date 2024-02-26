@@ -238,7 +238,7 @@ public:
 
 protected:
 
-  rosic::rsWhiteZapper zapperCore;
+  rosic::rsFlatZapper zapperCore;
 
 
   double amplitude = 1;

@@ -262,16 +262,16 @@ protected:
 //=================================================================================================
 
 /** A chain of allpass filters that has "zap" like sound as its impulse response, i.e. a fast 
-sinusoidal downward sweep. Due to its allpass nature, the overall output has a white spectrum. It's
-meant to be used to create (raw material for) synthesized drum and percussion sounds. It turned out
-to be useful to apply a first order lowpass afterwards to convert the white spectrum into a brown 
-one, i.e. one with -6 dB/oct falloff. The browning filter should probably be tuned somewhere below
-the lowest allpass tuning frequency as set by setLowFreq().
+sinusoidal downward sweep. Due to its allpass nature, the overall output has a white (i.e. white) 
+spectrum. It's meant to be used to create (raw material for) synthesized drum and percussion 
+sounds. It turned out to be useful to apply a first order lowpass afterwards to convert the white 
+spectrum into a brown one, i.e. one with -6 dB/oct falloff. The browning filter should probably be 
+tuned somewhere below the lowest allpass tuning frequency as set by setLowFreq().
 
 Eventually, it can be driven by sources other than an impulse generator - maybe noise-bursts could 
 be interesting. */
 
-class rsWhiteZapper
+class rsFlatZapper
 {
 
 public:
@@ -280,7 +280,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \Lifetime
 
-  rsWhiteZapper();
+  rsFlatZapper();
 
 
   //-----------------------------------------------------------------------------------------------

@@ -423,7 +423,7 @@ void FlatZapperModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  typedef rosic::rsWhiteZapper FZ;
+  typedef rosic::rsFlatZapper FZ;
   FZ* fz = &zapperCore;
 
   typedef Parameter Param;

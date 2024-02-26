@@ -823,7 +823,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //lowQ = 0.25;  // test to remove rumble. Yes! Lowering the lowQ helps to remove rumble!!!
 
   // Create and set up the zapper object:
-  rosic::rsWhiteZapper wz;
+  rosic::rsFlatZapper wz;
   wz.setSampleRate(sampleRate);
   wz.setNumStages(numStages);
   wz.setLowFreq(lowFreq);

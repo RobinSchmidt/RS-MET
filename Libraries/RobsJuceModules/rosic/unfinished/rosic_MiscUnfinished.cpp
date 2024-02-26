@@ -473,12 +473,12 @@ https://github.com/kupix/bungee  Phase vocoder based pitch-shifter/time-stretche
 
 //-------------------------------------------------------------------------------------------------
 
-rsWhiteZapper::rsWhiteZapper() : allpassChain(maxNumStages)
+rsFlatZapper::rsFlatZapper() : allpassChain(maxNumStages)
 {
   initSettings();
 }
 
-void rsWhiteZapper::initSettings(bool initAlsoSampleRate)
+void rsFlatZapper::initSettings(bool initAlsoSampleRate)
 {
   allpassChain.setNumStages(50);
 
@@ -496,7 +496,7 @@ void rsWhiteZapper::initSettings(bool initAlsoSampleRate)
   setDirty();
 }
 
-void rsWhiteZapper::updateCoeffs()
+void rsFlatZapper::updateCoeffs()
 {
   double fsR = 1.0 / sampleRate;
   double *b0 = allpassChain.getAddressB0();
