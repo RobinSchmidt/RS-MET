@@ -45,6 +45,10 @@ Bugs
 
 - MultiAnalyzer, waveform view: when zooming in, the horizontal scrollbar does not appear
 
+- Straightliner: when loading a ToolChain preset with straightliner, the NumVoices parameter is not
+  recalled. Try loading FuzzedZappedSaw. It was saved with NumVoices = 1 but is recalled with 
+  NumVoices = 16. It seems like the setting wasn't saved to the xml file. Figure out why!
+
 ---------------------------------------------------------------------------------------------------
 Features
 

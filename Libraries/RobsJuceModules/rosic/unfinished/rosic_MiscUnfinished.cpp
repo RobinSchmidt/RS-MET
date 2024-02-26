@@ -553,9 +553,9 @@ void rsFlatZapper::updateCoeffs()
   {
     switch(mode)
     {
-    case Mode::firstOrder: setupOnePoleAllpassStage(0, freqLo);       break;
-    case Mode::biquad:     setupBiquadAllpassStage( 0, freqLo, qLo);  break;
-    default:               handleUnknownMode();
+    case Mode::onePole: setupOnePoleAllpassStage(0, freqLo);       break;
+    case Mode::biquad:  setupBiquadAllpassStage( 0, freqLo, qLo);  break;
+    default:            handleUnknownMode();
     }
     dirty = false;
     return;
@@ -567,7 +567,7 @@ void rsFlatZapper::updateCoeffs()
   switch(mode)
   {
 
-  case Mode::firstOrder:
+  case Mode::onePole:
   {
     for(int i = 0; i < numStages; i++)
     {
