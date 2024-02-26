@@ -465,3 +465,19 @@ void FlatZapperModule::processStereoFrame(double *left, double *right)
   receivedKey = -1;
   receivedVel = -1;
 }
+
+void FlatZapperModule::setSampleRate(double newSampleRate)
+{
+  zapperCore.setSampleRate(newSampleRate);
+}
+
+void FlatZapperModule::reset()
+{
+  zapperCore.reset();
+}
+
+void FlatZapperModule::noteOn(int noteNumber, int velocity)
+{
+  receivedKey = noteNumber;
+  receivedVel = velocity;
+}
