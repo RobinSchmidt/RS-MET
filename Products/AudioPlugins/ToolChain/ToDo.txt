@@ -33,6 +33,9 @@ Bugs
     Maybe like in Surge: have an optional keyboard at the bottom and next to it some midi settings
     like tempo
 
+- Scope: Swicthing to sync and then back does not seem to update the saciing frequency to the old 
+  value. When moving the ScanFreq slicer, we egt back to the old setting.
+
 - In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
   ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 
@@ -55,6 +58,9 @@ Features
   https://github.com/lv2-porting-project/JUCE
   https://github.com/lvtk/jlv2
   https://github.com/DISTRHO/JUCE
+
+- Scope: let the envelope trigger the reset - good for viewing one-shots that should always start 
+  left
 
 
 ---------------------------------------------------------------------------------------------------

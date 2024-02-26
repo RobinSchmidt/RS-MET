@@ -532,3 +532,5 @@ void FlatZapperModule::noteOn(int noteNumber, int velocity)
 // -Maybe have a 1-pole lowpass, a DC-blocker (Butterworth, adjustable order) and a tilt-filter 
 //  built in. Especially the 1-pole lowpass is important because without it, all presets will rely
 //  on a post-processing Equalizer which is not good.
+// -Add a parameters for scaling the input (i.e. external exciter) amplitude and the internal 
+//  (impulse) exciter amplitude. Have also a DryAmplitude slider
