@@ -434,10 +434,10 @@ void FlatZapperModule::createParameters()
   p->setValueChangeCallback<FlatZapperModule>(this, &FlatZapperModule::setLevel);
   // Maybe rename to outputLevel or OutVolume, OutGain
 
-  p = new Param("NumStages", 2.0, 256, 50.0, Parameter::LINEAR, 1.0); // try using 0 a slower limit
+  p = new Param("NumStages", 2.0, 256, 128.0, Parameter::LINEAR, 1.0); // try using 0 a slower limit
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setNumStages);
-  // Maybe use exp-scaling
+  // Maybe use exp-scaling...or maybe not
 
 
   int dummy = 0;
@@ -462,9 +462,9 @@ void FlatZapperModule::processStereoFrame(double *left, double *right)
   }
   
 
-  *left = *right = inL;   // for test
+  //*left = *right = inL;   // for test
   
-  //*left = *right = amplitude * zapperCore.getSample(inL); 
+  *left = *right = amplitude * zapperCore.getSample(inL); 
   // Preliminary - todo: implement stereo processing by moving the DSP core class to RAPT, 
   // templatizing it and using an instance for <double, rsFloat64x2> here. See implementation of
   // EngineersFilter for how that works.
@@ -490,3 +490,9 @@ void FlatZapperModule::noteOn(int noteNumber, int velocity)
   receivedKey = noteNumber;
   receivedVel = velocity;
 }
+
+// Observations:
+// -When retriggering in fast succession like in a machine gun effect, it behaves nicely natural. 
+//  Hmm...or well - the signal seem to add up which makes sense. maybe optionally reset the filter
+//  states on note on - maybe using a soft-reset parameter ranging from 0 to 1. Hmm - may it's not 
+//  so nice after all - try hitting 2 or 3 keys simultaneously - sounds bad.
