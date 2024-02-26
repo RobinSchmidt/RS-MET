@@ -986,11 +986,18 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -One octave sweeps from around 200 to 100 Hz make for nice electric toms:
   //  createBrownZap(45, 100, 200, -3.0); Pulling the lowfreq and highFreq even closer together
   //  does not change the sound very much. Even using 149 and 151, it sounds still rather similar.
-  // -It actually seems to work to have lowFreq == highFreq
+  // -It actually seems to work to have lowFreq == highFreq. We can even swap lowFreq and highFreq
+  //  and get the same result as when they are in correct order (I think)
   // -for createBrownZap(45, 25, 200, -3.0); the phase plot looks wrong. Maybe try increasing 
   //  maxLength - maybe it's because of truncation
   // -The group delay starts flat then rises to a peak close to the lowFreq and then falls down to
-  //  zero. But why? Shouldn't it look like a flat-top bell function?
+  //  zero. But why? Shouldn't it look like a flat-top bell function? Or has it to do with the 
+  //  log-scaled freq-axis? Yeah - I think, this is probably the explanation. The peak may occur
+  //  before or after lowFreq depending on numStages an highFreq. When highFreq is increased, the 
+  //  whole curve is also scaled down and the tail to the right rolls of less sharply. It might be
+  //  interesting to figure out, what the perceptual correlate to the peak at lowFreq is, if any.
+  //  lowFreq certainly affects the the perception of the overall "height" of the sound in the freq
+  //  domain (in the sense of how high up is it), even though there is no discernable pitch.
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -1064,7 +1071,10 @@ void createAllpassDrums()
 
   // For plotting tests:
   //createBrownZap(50, 10,  1000, 0.0);
-  createBrownZap(50, 100, 1000, 0.0);
+  //createBrownZap(50, 100,   100, 0.0);
+  createBrownZap(50,  100, 1000, 0.0);
+  createBrownZap(50, 1000,  100, 0.0);   // swapping low and hi freq has no effect
+  //createBrownZap(50, 100, 10000, 0.0);
   //createBrownZap(10, 10,  1000, 0.0);
 
 
