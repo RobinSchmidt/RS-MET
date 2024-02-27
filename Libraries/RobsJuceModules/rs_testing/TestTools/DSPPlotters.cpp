@@ -555,8 +555,16 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
 
     // Factor out to getDecibels(spec, dB)
 
+    using PT = PlotType;
+    switch(plotType)
+    {
+    case PT::magnitudeDb:    toDecibels(spec, dB, signalLength); break;
+    case PT::phaseWrapped:   toPhase(   spec, dB, false);        break;
+    case PT::phaseUnwrapped: toPhase(   spec, dB, true);         break;
+    }
 
-    toDecibels(spec, dB, signalLength);
+
+    //toDecibels(spec, dB, signalLength);
 
 
     /*
