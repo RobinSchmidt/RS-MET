@@ -1127,14 +1127,10 @@ void createAllpassDrums()
   // For plotting tests:
   //double Q = 4.0;
 
-  // Let's try to modify the phase by tweaking the highFreq:
-  createBrownZap(50, 15,  7500, 0.0);
+  // Let's try to modify the phase by tweaking the numStages:
+  createBrownZap(49, 15,  8000, 0.0);
   createBrownZap(50, 15,  8000, 0.0);
-  createBrownZap(50, 15,  8500, 0.0);
-  // OK - tweking the high freq affects the phases in the initial section
-  createBrownZap(50, 13,  8000, 0.0);
-  createBrownZap(50, 15,  8000, 0.0);
-  createBrownZap(50, 17,  8000, 0.0);
+  createBrownZap(51, 15,  8000, 0.0);
 
 
   //createBrownZap(50, 10,  1000, 0.0);
