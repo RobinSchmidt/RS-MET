@@ -117,6 +117,8 @@ Cosmetic GUI issues (layout, appearance, etc.):
 
 - Quadrifex: the routing menu is partially obscured by the routing graphics
 
+- PitchShifter: should show the detected pitch on the GUI
+
 
 
 
