@@ -3600,10 +3600,10 @@ void showFlatZapPlots()
   double sampleRate = 48000;
 
   // Here it can be selected which types of plot should be generated:
-  bool plotSignal         = false;
+  bool plotSignal         = true;
   bool plotPhaseSpectrum  = true;
   bool plotGroupDelay     = true;
-  bool plotInstFreq       = false;  // Instantaneous frequency measurement
+  bool plotInstFreq       = true;  // Instantaneous frequency measurement
 
   // Create the signal to analyze:
   using Vec = std::vector<double>;
@@ -3618,9 +3618,10 @@ void showFlatZapPlots()
   //x = getBrownZap(100, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for numStages (100 instead of 50). 
 
-  x = getBrownZap(50,  10, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
-  x = getBrownZap(50, 100, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
-  // for nice plots
+  x = getFlatZap(50,  10, 10000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  //x = getFlatZap(50,  10, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  //x = getFlatZap(50, 100, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // for nice group delay plots
 
   //x = getBrownZap(45, 25, 200, -3.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // The phase-plot looks wrong with these settings. I think this is a bug in the plotter. Figure
@@ -3671,9 +3672,9 @@ void showFlatZapPlots()
     using Algo = rsSingleSineModeler<double>::Algorithm;
 
     rsSingleSineModeler<double> ssm;
-    //ssm.setAnalysisAlgorithm(Algo::ampViaPeaks);    // This is the default
+    ssm.setAnalysisAlgorithm(Algo::ampViaPeaks);    // This is the default
     //ssm.setAnalysisAlgorithm(Algo::freqViaFormula);
-    ssm.setAnalysisAlgorithm(Algo::freqViaZeros);     // This gives cleanest result
+    //ssm.setAnalysisAlgorithm(Algo::freqViaZeros);     // This gives cleanest result
 
     Vec a(N), w(N);
     ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);

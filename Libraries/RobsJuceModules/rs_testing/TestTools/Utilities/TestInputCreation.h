@@ -148,8 +148,14 @@ std::vector<double> attackDecaySine(int N, double frequency, double amplitude, d
   double decay, double startPhase, double sampleRate);
 
 
+
+
 // Maybe wrap this into a class. It has too many parameters already and will probably get some 
 // more:
+std::vector<double> getFlatZap(int numStages, double lowFreq = 15, double highFreq = 8000,
+  double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
+  double maxLength = 1.0, int sampleRate = 48000);
+
 std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
   double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
   double maxLength = 1.0, int sampleRate = 48000);

@@ -583,7 +583,7 @@ std::vector<double> attackDecaySine(int N, double frequency, double amplitude, d
   return y;
 }
 
-std::vector<double> getBrownZap(int numStages, double lowFreq, double highFreq, double freqShape, 
+std::vector<double> getFlatZap(int numStages, double lowFreq, double highFreq, double freqShape, 
   double lowQ, double highQ, double qShape, double maxLength, int sampleRate)
 {
   // Create and set up the zapper object:
@@ -606,6 +606,15 @@ std::vector<double> getBrownZap(int numStages, double lowFreq, double highFreq, 
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
 
+  return x;
+}
+
+std::vector<double> getBrownZap(int numStages, double lowFreq, double highFreq, double freqShape, 
+  double lowQ, double highQ, double qShape, double maxLength, int sampleRate)
+{
+  std::vector<double> x = getFlatZap(numStages, lowFreq, highFreq, freqShape, lowQ, highQ, qShape, 
+    maxLength, sampleRate);
+
   // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
   // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
   // magnitude response is ideal in the sense that the amplitude stays constant during the sweep. 
@@ -620,7 +629,7 @@ std::vector<double> getBrownZap(int numStages, double lowFreq, double highFreq, 
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.applyOnePoleHighpass(x, 1.0*lowFreq);
   pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
-  N = x.size();
+  int N = x.size();
   RAPT::rsArrayTools::normalize(&x[0], N);  // implement and use sp.normalize(x);
   // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
   // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq.
