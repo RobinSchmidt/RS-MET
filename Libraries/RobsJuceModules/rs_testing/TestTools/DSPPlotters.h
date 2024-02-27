@@ -269,10 +269,10 @@ public:
   // \Plotting
 
   /** Given up to 10 signal buffers of length "signalLength", this function performs an FFT on each 
-  of them and plots the spectral magnitudes as decibel values. The FFT size is determined by 
-  setFftSize and may be different from signalLength - if signalLength is shorter, the FFT buffers
-  will be padded with zeros and if it's longer, only the leading sections of buffers will be 
-  used. */
+  of them and plots the desired spectral values (decibels or phases or whatever is selected by 
+  setPlotType). The FFT size is determined by setFftSize and may be different from signalLength. If
+  signalLength is shorter, the FFT buffers will be padded with zeros and if it's longer, only the 
+  leading sections of buffers will be used. */
   void plotSpectra(int signalLength, const T *x0, const T *x1 = nullptr, 
     const T *x2 = nullptr, const T *x3 = nullptr, const T *x4 = nullptr, const T *x5 = nullptr, 
     const T *x6 = nullptr, const T *x7 = nullptr, const T *x8 = nullptr, const T *x9 = nullptr);
@@ -284,21 +284,7 @@ public:
   /** Plots the spectra of the given signals. The first index is the signal, the second the sample
   index. All signals are assumed to have the same length. */
   void plotSpectra(const T** signals, int numSignals, int signalLength);
-  // rename to plotDecibelSpectra ..nope..we want to switch depending on plotType
 
-
-  /*
-  // Under construction:
-  void plotPhaseSpectra(int signalLength, const T *x0, const T *x1 = nullptr, 
-    const T *x2 = nullptr, const T *x3 = nullptr, const T *x4 = nullptr, const T *x5 = nullptr, 
-    const T *x6 = nullptr, const T *x7 = nullptr, const T *x8 = nullptr, const T *x9 = nullptr);
-
-
-  void plotPhaseSpectra(const T** signals, int numSignals, int signalLength);
-
-  // Maybe to avoid code duplication, have just one plotSpectra method and a plotMode member that
-  // can be: decibels, phase, phaseDelay, groupDelay, etc
-  */
 
 
 protected:

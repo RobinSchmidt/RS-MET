@@ -602,40 +602,9 @@ std::vector<double> getBrownZap(int numStages, double lowFreq, double highFreq, 
   using Vec = std::vector<double>;
   Vec x(N);
   x[0] = 1;
-
-  // Test - with noise-burst:
-  //x = createNoise(N, -1.0, +1.0, 0);
-  //Vec e1 = attackDecayEnvelope(N, 50,     150);  // Decay = 100-200 seems nice
-  //Vec e2 = attackDecayEnvelope(N, 5000, 10000);
-  //Vec e  = e1;
-  //Vec e  = e1 + 0.001*e2;   // Trying to give it that snare effect - does not work well
-  //rsPlotVector(e);
-  //rsPlotVectors(e1, e2);
-  //x = x*e;
-  //rsPlotVector(x);
-  // Using a noise-burst makes it sound more acoustic and natural, less electronic. But maybe this
-  // doesn't count as raw-material anymore because it can be recreated from the impulse responses 
-  // using convolution. Actually, the user could just play the kick sample through a convolution
-  // reverb that uses a noise-burst as impulse-response
-
   for(int n = 0; n < N; n++)
     x[n] = wz.getSample(x[n]);
   //rsPlotVector(x);
-
-  // Optionally plot a phase-spectrum of the allpass impulse response:
-  bool plotPhase = false;  // Maybe make this a function parameter
-  if(plotPhase)
-  {
-    SpectrumPlotter<double> sp;
-    sp.setFftSize(65536);
-    sp.setLogFreqAxis(true);
-    sp.setSampleRate(sampleRate);
-    sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-    sp.setPlotType(SpectrumPlotter<double>::PlotType::phaseUnwrapped); 
-    sp.plotSpectra(N, &x[0]);
-    // ToDo: Maybe alternatively plot phase-delay or group-delay
-  }
-
 
   // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
   // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 

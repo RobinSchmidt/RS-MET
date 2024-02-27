@@ -567,40 +567,6 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   setupPlotterAndPlot();
 }
 
-/*
-template <class T>
-void SpectrumPlotter<T>::plotPhaseSpectra(int signalLength, const T* x0, const T* x1 = nullptr,
-  const T* x2 = nullptr, const T* x3 = nullptr, const T* x4 = nullptr, const T* x5 = nullptr,
-  const T* x6 = nullptr, const T* x7 = nullptr, const T* x8 = nullptr, const T* x9 = nullptr)
-{
-  const vector<const T*> signals = collectLeadingNonNullArguments(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9);
-  plotPhaseSpectra((const T**) &signals[0], (int) signals.size(), signalLength);
-}
-
-template <class T>
-void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int signalLength)
-{
-  RAPT::rsAssert(signalLength <= fftSize);
-
-  // Create temp buffers for the data:
-  std::vector<std::complex<T>> spec(fftSize);  // Complex spectrum
-  std::vector<T> f = getFreqAxis(numBins);     // Frequency axis
-  std::vector<T> phs(numBins);                 // Phase-spectrum
-
-  // Produce the data, add it to the datafile and invoke the plotter:
-  setupTransformer();
-
-  for(int i = 0; i < numSignals; i++) 
-  {
-    computeComplexSpectrum(signals[i], signalLength, spec);
-    toPhase(spec, phs, true);
-    addDataArrays(maxBin-minBin+1, &f[minBin], &phs[minBin]);
-  }
-  setupPlotterAndPlot();
-}
-*/
-
-
 template <class T>
 std::vector<T> SpectrumPlotter<T>::getFreqAxis(int numBins)
 {
