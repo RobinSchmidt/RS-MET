@@ -572,8 +572,12 @@ void applyAllpassChain(std::vector<double>& inOut, double freq, double quality, 
 {
   applyAllpassChain(&inOut[0], (int) inOut.size(), &inOut[0], freq, quality, numStages, sampleRate);
 }
+
+/*
 void createAllpassBassdrum1()
 {
+  // This is now obsolete and my be deleted
+
   // This is the first attempt to render a sine-sweepdown based bassdrum sample.
 
   // User parameters:
@@ -603,8 +607,13 @@ void createAllpassBassdrum1()
   rosic::writeToMonoWaveFile("AllpassBassdrum1.wav", &x[0], N, sampleRate, 16);
   //rsPlotVector(x);
 }
+*/
+
 void createAllpassBassdrum2()
 {
+  // This function may be preserved and moved into an experiment to deonstrate the steppy
+  // amp-env artifact when tuning several allpasses to the same frequency
+
   // User parameters:
   int    sampleRate = 48000;  // Sample rate in Hz
   double length     = 0.5;    // Length in seconds
@@ -612,8 +621,8 @@ void createAllpassBassdrum2()
   double hiQ        = 1.0;
   double loF        = 27.5;
   double hiF        = 14080;
-  int    numStages  = 1;       // Number of stages per allpass chain
-  int    numChains  = 50;      // With 10, we get exact octaves
+  int    numStages  = 10;       // Number of stages per allpass chain
+  int    numChains  = 5;      // With 10, we get exact octaves
 
   // Render sample:
   int N = ceil(length * sampleRate);  // Number of samples to render
@@ -632,21 +641,24 @@ void createAllpassBassdrum2()
   rosic::writeToMonoWaveFile("AllpassBassdrum2.wav", &x[0], N, sampleRate, 16);
 
   // Observations:
-  // -When loQ=4 and hiQ=1, then the sound becomes kinda warbly. It's also warbly when having it the 
-  //  other way around
+  // -When loQ=4 and hiQ=1, then the sound becomes kinda warbly. It's also warbly when having it 
+  //  the other way around
   // -Using more stages per chain (and reducing the number of chains to keep the product constant),
   //  the amp-envelope seems to become more steppy. There seem to be plateaus. With just 1 stage 
   //  per chain, the amp-env does not feature such plateaus
+  // -For steppy amp-env, try numStages = 10, numChains = 5. For a smooth one, use numStages = 1, 
+  //  numChains = 50. The total number of allpasses is 50 in both cases.
   //
   // Conclusions:
-  // -We may scrap the numStages parameter and just always use 1 stage
-  //
-  // ToDo:
-  // -Maybe let the frequencies and Q-values pass through a nonlinear function - maybe the linfrac
-  //  warping map should be applied to the normalized values
+  // -We may scrap the numStages parameter and just always use 1 stage, if smoothness is the goal.
+  //  This has been done in rsFlatZapper
 }
+
+/*
 void createAllpassBassdrum3()
 {
+  // This is now obsolete and my be deleted
+
   // User parameters:
   int    sampleRate = 48000;  // Sample rate in Hz
   double length     = 0.5;    // Length in seconds
@@ -680,6 +692,7 @@ void createAllpassBassdrum3()
   // -Positive values of shF make the sweep initially faster, I think. It sounds more snappy.
   // -For Q=0, we get a DC output. That's wrong!
 }
+*/
 
 
 // maybe rename to renderBrownZap
@@ -906,7 +919,7 @@ void createAllpassDrums()
 
   // Obsolete:
   //createAllpassBassdrum1();
-  //createAllpassBassdrum2();
+  createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
   // Move these experiments somewhere else, add plotting
