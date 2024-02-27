@@ -235,7 +235,8 @@ int main(int argc, char* argv[])
   //shepardTone();
   //additiveEngine();
   //multiplicativeSynth();
-  //puleWidthModulationViaTwoSaws();  // just a stub at the moment
+  //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
+  flatZapper();
 
   // Modulators:
   //attackDecayEnvelope();

@@ -3213,7 +3213,7 @@ void rsSquareToSaw2(const T* sqr, T* saw, int P)
 }
 
 
-void puleWidthModulationViaTwoSaws()
+void pulseWidthModulationViaTwoSaws()
 {
   // In many analog synthesizers, the pulse-wave is created by adding two sawtooth waves, one of
   // which is sign-inverted and phase-shifted. When the phase-shift is exactly one half-cycle, we
@@ -3436,3 +3436,11 @@ void puleWidthModulationViaTwoSaws()
 
   int dummy = 0;
 }
+
+void flatZapper()
+{
+
+
+  int dummy = 0;
+}
+
