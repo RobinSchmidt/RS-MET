@@ -665,3 +665,63 @@ std::vector<double> createNamedSound(const std::string& s, double fs, int N)
 
   return v;
 }
+
+//=================================================================================================
+
+void rsSamplePostProcessor::applyOnePoleLowpass(double* x, int N, double cutoff)
+{
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setSampleRate(sampleRate);
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setCutoff(cutoff);
+  for(int n = 0; n < N; n++)
+    x[n] = flt.getSample(x[n]);
+}
+
+void rsSamplePostProcessor::applyOnePoleHighpass(double* x, int N, double cutoff)
+{
+  RAPT::rsOnePoleFilter<double, double> flt;
+  flt.setSampleRate(sampleRate);
+  flt.setMode(flt.HIGHPASS_MZT);
+  flt.setCutoff(cutoff);
+  for(int n = 0; n < N; n++)
+    x[n] = flt.getSample(x[n]);
+}
+
+void rsSamplePostProcessor::shortenTail(std::vector<double>& x, double thresholdDb, 
+  double fadeOutTime, double releaseTime)
+{
+  RAPT::rsEnvelopeFollower<double, double> ef;
+  ef.setSampleRate(sampleRate);
+  ef.setAttackTime(0.0);
+  ef.setReleaseTime(1000 * releaseTime);
+  int N = (int) x.size();
+  std::vector<double> env(N);
+  for(int n = 0; n < N; n++)
+    env[n] = ef.getSample(x[n]);
+  //rsPlotVectors(x, env);
+  // I tried to use the more advanced rsEnvelopeFollower2 but this produced total garbage results
+  // for this sort of signal. The simpler works much better.
+
+  // Find last sample that exceeds the threshold:
+  double envMax   = RAPT::rsArrayTools::maxValue(&env[0], N);
+  double thresh   = RAPT::rsDbToAmp(thresholdDb);
+  thresh *= envMax;  // threshold should be relative
+  int nCut = N-1;
+  while(nCut > 0)
+  {
+    if(env[nCut] >= thresh)
+      break;
+    nCut--;
+  }
+
+  // Shorten the signal:
+  N = nCut+1;
+  x.resize(N);
+
+  // Apply a smooth fade out:
+  int fadeSamples = sampleRate * fadeOutTime;
+  fadeSamples = rsMin(fadeSamples, N/4);
+  rsFadeOut(&x[0], N-fadeSamples-1, N-1);
+  //rsPlotVectors(x, env);
+}

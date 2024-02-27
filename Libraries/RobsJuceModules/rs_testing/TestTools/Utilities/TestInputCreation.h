@@ -164,7 +164,64 @@ ToDo Saw,NaiveSaw, Square,NaiveSquare, Triangle/NaiveTriangle, Pulse40/NaivePuls
 */
 std::vector<double> createNamedSound(const std::string& name, double sampleRate, int numSamples);
 
+//=================================================================================================
 
+/** This is a class a for post-processing the rendered samples. It includes functions for common
+post-filtering operations for spectral shaping (for example white-to-pink) or clean-up (for example 
+highpass below desired fundamental) or boosting/cutting certain frequencies with peaking filters to
+impose a tonality. It also has functionality to shorten samples, apply fade-out, etc. ...TBC... */
+
+class rsSamplePostProcessor
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \Setup
+
+  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Processing
+
+  void applyOnePoleLowpass(double* x, int N, double cutoff);
+  // Maybe add optional parameters: bool bidirectional = false, int numPasses = 1
+
+
+  void applyOnePoleHighpass(double* x, int N, double cutoff);
+
+
+  // ToDo: applyTilt, applyOnePoleHighpass, applyButterworthHighpass, applyEllipticHighpass, 
+  // shortenTail(cutThresholdDb, fadeTime) etc.
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Convenience
+
+  void applyOnePoleLowpass(std::vector<double>& x, double cutoff)
+  { applyOnePoleLowpass(&x[0], (int) x.size(), cutoff); }
+
+  void applyOnePoleHighpass(std::vector<double>& x, double cutoff)
+  { applyOnePoleHighpass(&x[0], (int) x.size(), cutoff); }
+
+  /** Shortens the tail of the signal x. Cuts off everything from the end that falls below a given 
+  threshold in dB. The threshold is interpreted as being relative to the maximum sample value. 
+  After shortening the length, it then applies a smooth fade-out envelope to the new end of given 
+  length in seconds. A good value for the threshold is -60 dB and for the fade out time 0.02 
+  seconds, i.e. 20 milliseconds. */
+  void shortenTail(std::vector<double>& x, double thresholdDb, double fadeOutTime, 
+    double releaseTime);
+
+
+protected:
+
+  double sampleRate = 1.0;
+
+};
+// Maybe move to somewhere else - maybe rosic/rendering
+// See also rsBiDirectionalFilter in MiscUnfinished.h in rapt/Unfininished/Sampling. It has similar
+// functionality - maybe merge.
 
 
 

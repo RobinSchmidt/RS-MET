@@ -685,123 +685,6 @@ void createAllpassBassdrum3()
 // Move to TestInputCreation.h/cpp:
 //=================================================================================================
 
-/** This is a class a for post-processing the rendered samples. It includes functions for common
-post-filtering operations for spectral shaping (for example white-to-pink) or clean-up (for example 
-highpass below desired fundamental) or boosting/cutting certain frequencies with peaking filters to
-impose a tonality. It also has functionality to shorten samples, apply fade-out, etc. ...TBC... */
-
-class rsSamplePostProcessor
-{
-
-public:
-
-  //-----------------------------------------------------------------------------------------------
-  // \Setup
-
-  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
-
-
-  //-----------------------------------------------------------------------------------------------
-  // \Processing
-
-  void applyOnePoleLowpass(double* x, int N, double cutoff);
-  // Maybe add optional parameters: bool bidirectional = false, int numPasses = 1
-
-
-  void applyOnePoleHighpass(double* x, int N, double cutoff);
-
-
-  // ToDo: applyTilt, applyOnePoleHighpass, applyButterworthHighpass, applyEllipticHighpass, 
-  // shortenTail(cutThresholdDb, fadeTime) etc.
-
-
-  //-----------------------------------------------------------------------------------------------
-  // \Convenience
-
-  void applyOnePoleLowpass(std::vector<double>& x, double cutoff)
-  { applyOnePoleLowpass(&x[0], (int) x.size(), cutoff); }
-
-  void applyOnePoleHighpass(std::vector<double>& x, double cutoff)
-  { applyOnePoleHighpass(&x[0], (int) x.size(), cutoff); }
-
-  /** Shortens the tail of the signal x. Cuts off everything from the end that falls below a given 
-  threshold in dB. The threshold is interpreted as being relative to the maximum sample value. 
-  After shortening the length, it then applies a smooth fade-out envelope to the new end of given 
-  length in seconds. A good value for the threshold is -60 dB and for the fade out time 0.02 
-  seconds, i.e. 20 milliseconds. */
-  void shortenTail(std::vector<double>& x, double thresholdDb, double fadeOutTime, 
-    double releaseTime);
-
-
-protected:
-
-  double sampleRate = 1.0;
-
-};
-// Maybe move to somewhere else - maybe rosic/rendering
-// See also rsBiDirectionalFilter in MiscUnfinished.h in rapt/Unfininished/Sampling. It has similar
-// functionality - maybe merge.
-
-void rsSamplePostProcessor::applyOnePoleLowpass(double* x, int N, double cutoff)
-{
-  RAPT::rsOnePoleFilter<double, double> flt;
-  flt.setSampleRate(sampleRate);
-  flt.setMode(flt.LOWPASS_IIT);
-  flt.setCutoff(cutoff);
-  for(int n = 0; n < N; n++)
-    x[n] = flt.getSample(x[n]);
-}
-
-void rsSamplePostProcessor::applyOnePoleHighpass(double* x, int N, double cutoff)
-{
-  RAPT::rsOnePoleFilter<double, double> flt;
-  flt.setSampleRate(sampleRate);
-  flt.setMode(flt.HIGHPASS_MZT);
-  flt.setCutoff(cutoff);
-  for(int n = 0; n < N; n++)
-    x[n] = flt.getSample(x[n]);
-}
-
-void rsSamplePostProcessor::shortenTail(std::vector<double>& x, double thresholdDb, 
-  double fadeOutTime, double releaseTime)
-{
-  RAPT::rsEnvelopeFollower<double, double> ef;
-  ef.setSampleRate(sampleRate);
-  ef.setAttackTime(0.0);
-  //ef.setReleaseTime(1000 * 0.25 * 1.0/lowFreq);
-  ef.setReleaseTime(1000 * releaseTime);
-  int N = (int) x.size();
-  std::vector<double> env(N);
-  for(int n = 0; n < N; n++)
-    env[n] = ef.getSample(x[n]);
-  //rsPlotVectors(x, env);
-  // I tried to use the more advanced rsEnvelopeFollower2 but this produced total garbage results
-  // for this sort of signal. The simpler works much better.
-
-  // Find last sample that exceeds the threshold:
-  double envMax   = RAPT::rsArrayTools::maxValue(&env[0], N);
-  double thresh   = RAPT::rsDbToAmp(thresholdDb);
-  thresh *= envMax;  // threshold should be relative
-  int nCut = N-1;
-  while(nCut > 0)
-  {
-    if(env[nCut] >= thresh)
-      break;
-    nCut--;
-  }
-
-  // Shorten the signal:
-  N = nCut+1;
-  x.resize(N);
-
-  // Apply a smooth fade out:
-  int fadeSamples = sampleRate * fadeOutTime;
-  fadeSamples = rsMin(fadeSamples, N/4);
-  rsFadeOut(&x[0], N-fadeSamples-1, N-1);
-  //rsPlotVectors(x, env);
-}
-
-
 // Maybe wrap this into a class. It has too many parameters already and will probably get some 
 // more:
 std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
@@ -882,6 +765,9 @@ std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highF
 
   return x;
 }
+
+
+
 
 
 // Refactor this into:
@@ -1139,7 +1025,7 @@ void createAllpassDrums()
   //createBrownZap(50,  250, 500, 0.0);      // 1 octave
 
   std::vector<double> zap = getBrownZap(50, 15, 8000, 0.0);
-  //rsPlotVector(zap);
+  rsPlotVector(zap);
 
   // For plotting tests:
   //double Q = 4.0;
