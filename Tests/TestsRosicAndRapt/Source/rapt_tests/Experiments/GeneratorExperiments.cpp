@@ -3529,28 +3529,42 @@ void allpassChainBassdrum()
 
 void flatZapperPhaseTweaks()
 {
-  using Vec = std::vector<double>;
-
-  int sampleRate = 48000;
-  //double length = 1.0;
+  // We tweak some parameters (numStages, lowfreq, highFreq) and investigate, what effects this has
+  // on the phase of the signal. Eventually, we want to able to control the phase especially in
+  // end of the sweep because that's where the phase-problems may occur when mixing a so created
+  // bassdrum with a bassline. We want to have control over the phase there.
 
   // Create the reference signal:
+  using Vec = std::vector<double>;
   Vec x_50_15_8000 = getBrownZap(50, 15,  8000, 0.0);
 
-  // Create variants with more and less numStages:
+  // Create variants with more and less numStages. This affects the phases in the initial and final
+  // section. It affects also the length noticably:
   Vec x_45_15_8000 = getBrownZap(45, 15,  8000, 0.0);
   Vec x_55_15_8000 = getBrownZap(55, 15,  8000, 0.0);
   rsPlotVectors(x_50_15_8000, x_45_15_8000, x_55_15_8000);
 
-  // Create variants with lower and higher lowfreq:
+  // Create variants with lower and higher lowfreq. This affects the phases in the initial and 
+  // final section. It affects also the length noticably:
   Vec x_50_13_8000 = getBrownZap(50, 13,  8000, 0.0);
   Vec x_50_17_8000 = getBrownZap(50, 17,  8000, 0.0);
   rsPlotVectors(x_50_15_8000, x_50_13_8000, x_50_17_8000);
 
-  // Create variants with lower and higher highFreq:
+  // Create variants with lower and higher highFreq. This affects the phases in the initial 
+  // section. The final phases are not affected very much. An effect on the length is also there 
+  // but it's small:
   Vec x_50_15_7500 = getBrownZap(50, 15,  7500, 0.0);
   Vec x_50_15_8500 = getBrownZap(50, 15,  8500, 0.0);
   rsPlotVectors(x_50_15_8000, x_50_15_7500, x_50_15_8500);
+}
+
+void flatZapperOpposingLengthTweaks()
+{
+  // The length of the output is determined mostly by the numStages and lowFreq parameter. In this
+  // experiment we increase one and decrease the other in order to maintain a constant length. We
+  // are interested in the effect that this has o the signal.
+
+
 }
 
 void showFlatZapPlots()
@@ -3577,6 +3591,7 @@ void flatZapper()
 {
   //allpassChainBassdrum();
   //flatZapperPhaseTweaks();
+  flatZapperOpposingLengthTweaks();
   showFlatZapPlots();
 
 
@@ -3667,12 +3682,7 @@ void flatZapper()
   //  lowQ seems to be the more appropriate way to go.
   // -I think, the samples are self-similar in the sense that when one zooms in, it looks the 
   //  same. Try it! Yes - but only for freqShape = 0.
-  // -Tweaking the highFreq affects the phases in the initial section (try 15/7500, 15/8000, 
-  //  15/8500). An effect on the length is also there but it's small.
-  // -Tweaking the lowFreq affects the phases in the initial and final section (try 13/8000, 
-  //  15/8000, 17/8000). It affects also the length.  
-  // -Tweaking numStages also affects the phases - in the initial and final section (try 45, 50, 
-  //  55). It affects also the length.
+
   // -When measuring the lengths of the last few pseudo-cycles in the sweep, their frequency is
   //  close to lowFreq (it's slightly above, it seems)
   //
