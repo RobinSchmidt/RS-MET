@@ -539,7 +539,7 @@ void createMiscSamples()
 }
 
 // maybe rename to renderBrownZap
-void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
+void renderBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, 
   double maxLength = 1.0, int sampleRate = 48000)
 {
@@ -760,17 +760,14 @@ void createAllpassDrums()
   // for a drum sound. Later, it may be further shaped by using lopwass/highpass/bandpass/peak/etc.
   // filters.
 
-  // Obsolete:
-  //createAllpassBassdrum1();
-  //createAllpassBassdrum2();
-  //createAllpassBassdrum3();
+
 
   // Move these experiments somewhere else, add plotting
   // Experimental:
-  //createBrownZap(30,  100,  500, 0.0);   // Tom?
-  //createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
-  //createBrownZap(50,  250, 4000, 0.0);   // 4 octaves
-  //createBrownZap(50,  250, 500, 0.0);      // 1 octave
+  //renderBrownZap(30,  100,  500, 0.0);   // Tom?
+  //renderBrownZap(50,  100, 2000, 0.0);   // Laser Zap
+  //renderBrownZap(50,  250, 4000, 0.0);   // 4 octaves
+  //renderBrownZap(50,  250, 500, 0.0);      // 1 octave
 
   std::vector<double> zap = getBrownZap(50, 15, 8000, 0.0);
   rsPlotVector(zap);
@@ -781,61 +778,61 @@ void createAllpassDrums()
 
   // Let's try to figure out what happens when we shorten the length by decrasing numStages while 
   // at the same time decreasing lowFreq to compensate for the length shortening:
-  createBrownZap(50, 15,  8000, 0.0);  // Reference to match
-  createBrownZap(45, 15,  8000, 0.0);  // Shorter by decaresing numStages
+  renderBrownZap(50, 15,  8000, 0.0);  // Reference to match
+  renderBrownZap(45, 15,  8000, 0.0);  // Shorter by decaresing numStages
 
   // With these settings the file length is roughly matched - that means we use the fade-out 
   // threshold as length measuring reference point:
-  //createBrownZap(45, 14,  8000, 0.0);  // Compensating for shortening by decreasing lowFreq
-  //createBrownZap(40, 13,  8000, 0.0);
-  //createBrownZap(35, 12,  8000, 0.0);
+  //renderBrownZap(45, 14,  8000, 0.0);  // Compensating for shortening by decreasing lowFreq
+  //renderBrownZap(40, 13,  8000, 0.0);
+  //renderBrownZap(35, 12,  8000, 0.0);
   // They seem to be too short
 
   // Let's try to use the last maximum bump for the length reference point. That's more 
   // perceptually relevant, I guess:
-  createBrownZap(45, 13.65,  8000, 0.0);
-  createBrownZap(40, 12.2,   8000, 0.0);
-  createBrownZap(35, 11.0,   8000, 0.0);
-  createBrownZap(30,  7.0,   8000, 0.0);
+  renderBrownZap(45, 13.65,  8000, 0.0);
+  renderBrownZap(40, 12.2,   8000, 0.0);
+  renderBrownZap(35, 11.0,   8000, 0.0);
+  renderBrownZap(30,  7.0,   8000, 0.0);
   // OK - these are matched such that "last big cycle" occurs at roughly the same time. The
   // reference sound features more midrange, there's more of an audible sweep going on. The
   // ones with less stages de-emphasize this midrange sweepiness. 
 
 
 
-  //createBrownZap(50, 10,  1000, 0.0);
-  //createBrownZap(50, 100,   100, 0.0);
-  //createBrownZap(50,  100, 1000, 0.0);
-  //createBrownZap(50, 1000,  100, 0.0);   // swapping low and hi freq has no effect
-  //createBrownZap(50, 100, 10000, 0.0, Q, Q);
-  //createBrownZap(10, 10,  1000, 0.0);
+  //renderBrownZap(50, 10,  1000, 0.0);
+  //renderBrownZap(50, 100,   100, 0.0);
+  //renderBrownZap(50,  100, 1000, 0.0);
+  //renderBrownZap(50, 1000,  100, 0.0);   // swapping low and hi freq has no effect
+  //renderBrownZap(50, 100, 10000, 0.0, Q, Q);
+  //renderBrownZap(10, 10,  1000, 0.0);
 
 
   // Exciters:
-  createBrownZap(10,  200,  200, 0.0);
-  createBrownZap(10,  400,  400, 0.0);
-  createBrownZap(10,  800,  800, 0.0); // also good for percussion - like claves or something?
-  createBrownZap(10, 1600, 1600, 0.0); 
+  renderBrownZap(10,  200,  200, 0.0);
+  renderBrownZap(10,  400,  400, 0.0);
+  renderBrownZap(10,  800,  800, 0.0); // also good for percussion - like claves or something?
+  renderBrownZap(10, 1600, 1600, 0.0); 
 
   // Nice soft bassdrum or low tom:
-  createBrownZap(45, 25, 200, -3.0);  // phase-plot looks wrong - I think this is a bug in the plotter
-  createBrownZap(45, 25, 200,  0.0);
-  createBrownZap(45, 25, 200, +3.0);
+  renderBrownZap(45, 25, 200, -3.0);  // phase-plot looks wrong - I think this is a bug in the plotter
+  renderBrownZap(45, 25, 200,  0.0);
+  renderBrownZap(45, 25, 200, +3.0);
 
   // One octave sweeps from around 200 to 100 Hz make for nice electronic toms:
-  createBrownZap(45, 100, 200, -3.0);
-  createBrownZap(45, 120, 180, -3.0);
-  createBrownZap(45, 140, 160, -3.0);
-  createBrownZap(45, 149, 151, -3.0);
+  renderBrownZap(45, 100, 200, -3.0);
+  renderBrownZap(45, 120, 180, -3.0);
+  renderBrownZap(45, 140, 160, -3.0);
+  renderBrownZap(45, 149, 151, -3.0);
   // They sound all quite similar.
 
   //double freq = 100;
-  createBrownZap(45,  60,  60, 0.0);
-  createBrownZap(45,  80,  80, 0.0);
-  createBrownZap(45, 100, 100, 0.0);
-  createBrownZap(45, 120, 120, 0.0);
-  createBrownZap(45, 140, 140, 0.0);
-  createBrownZap(45, 160, 160, 0.0);
+  renderBrownZap(45,  60,  60, 0.0);
+  renderBrownZap(45,  80,  80, 0.0);
+  renderBrownZap(45, 100, 100, 0.0);
+  renderBrownZap(45, 120, 120, 0.0);
+  renderBrownZap(45, 140, 140, 0.0);
+  renderBrownZap(45, 160, 160, 0.0);
   // Maybe call them SweepyTomXXX - maybe for the higher freqs, the numStages should go down.
 
 
@@ -851,7 +848,7 @@ void createAllpassDrums()
     for(int k = shapeLo; k <= shapeHi; k++)
     {
       double freqShape = k;
-      createBrownZap(numStages, 15, 8000, freqShape);
+      renderBrownZap(numStages, 15, 8000, freqShape);
     }
   }
   // My favorites: 20/-2, 20/0, 30/-3, 40/-3, 40/1..2, 50/-3, 50/1..2, 60/-4, 60/2, 70/-4, 70/2..3,
