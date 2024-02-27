@@ -3624,6 +3624,17 @@ void showFlatZapPlots()
   int N = x.size();
 
 
+  // Helper function to set up a spectrum plotter:
+  using SP = SpectrumPlotter<double>;
+  auto setupSpectrumPlotter =[&](SP& sp)
+  {
+    sp.setFftSize(65536);
+    sp.setLogFreqAxis(true);
+    sp.setSampleRate(sampleRate);
+    sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
+  };
+
+
   // Plot the signal itself:
   if(plotSignal)
     rsPlotVector(x);
@@ -3631,12 +3642,8 @@ void showFlatZapPlots()
   // Plot the phase spectrum:
   if(plotPhaseSpectrum)
   {
-    using SP = SpectrumPlotter<double>;
     SP sp;
-    sp.setFftSize(65536);
-    sp.setLogFreqAxis(true);
-    sp.setSampleRate(sampleRate);
-    sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
+    setupSpectrumPlotter(sp);
     sp.setPlotType(SP::PlotType::phaseUnwrapped); 
     sp.plotSpectra(N, &x[0]);  
   }
