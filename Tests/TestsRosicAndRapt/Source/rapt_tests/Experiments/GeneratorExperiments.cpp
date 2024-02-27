@@ -3441,11 +3441,36 @@ void pulseWidthModulationViaTwoSaws()
 
 
 
+void flatZapperPhaseTweaks()
+{
+  using Vec = std::vector<double>;
 
+  int sampleRate = 48000;
+  //double length = 1.0;
+
+  // Create the reference signal:
+  Vec x_50_15_8000 = getBrownZap(50, 15,  8000, 0.0);
+
+  // Create variants with more and less numStages:
+  Vec x_45_15_8000 = getBrownZap(45, 15,  8000, 0.0);
+  Vec x_55_15_8000 = getBrownZap(55, 15,  8000, 0.0);
+  rsPlotVectors(x_50_15_8000, x_45_15_8000, x_55_15_8000);
+
+  // Create variants with lower and higher lowfreq:
+  Vec x_50_13_8000 = getBrownZap(50, 13,  8000, 0.0);
+  Vec x_50_17_8000 = getBrownZap(50, 17,  8000, 0.0);
+  rsPlotVectors(x_50_15_8000, x_50_13_8000, x_50_17_8000);
+
+  // Create variants with lower and higher highFreq:
+  Vec x_50_15_7500 = getBrownZap(50, 15,  7500, 0.0);
+  Vec x_50_15_8500 = getBrownZap(50, 15,  8500, 0.0);
+  rsPlotVectors(x_50_15_8000, x_50_15_7500, x_50_15_8500);
+}
 
 
 void flatZapper()
 {
+  flatZapperPhaseTweaks();
 
 
   int dummy = 0;
