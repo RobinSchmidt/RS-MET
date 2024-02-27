@@ -138,8 +138,6 @@ std::vector<double> createModalPluck(double key, double sampleRate, int length);
 std::vector<double> createModalBellGloriosa(double sampleRate, int length);
 // maybe also take a key paramter...but maybe not - we just create it at its original frequency
 
-
-
 void applyVibrato(double *x, int N, double freq, double sampleRate, double depth);
 // depth is in semitones, introduces delay due to delayline
 
@@ -165,5 +163,9 @@ VibratoSine: sine wave with vibrato, Freq, Rate, Depth
 ToDo Saw,NaiveSaw, Square,NaiveSquare, Triangle/NaiveTriangle, Pulse40/NaivePulse40, ...
 */
 std::vector<double> createNamedSound(const std::string& name, double sampleRate, int numSamples);
+
+
+
+
 
 #endif
