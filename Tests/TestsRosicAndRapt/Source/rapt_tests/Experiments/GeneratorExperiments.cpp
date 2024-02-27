@@ -3631,13 +3631,19 @@ void showFlatZapPlots()
   // Plot the phase spectrum:
   if(plotPhaseSpectrum)
   {
-    SpectrumPlotter<double> sp;
+    using SP = SpectrumPlotter<double>;
+
+    SP sp;
     sp.setFftSize(65536);
     sp.setLogFreqAxis(true);
     sp.setSampleRate(sampleRate);
-    sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-    sp.plotSpectra(N, &x[0]);  // Test - shows the effect of post-processing filters
-    //sp.plotPhaseSpectra(N, &x[0]);
+    sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
+    //sp.setPlotType(SP::PlotType::magnitudeDb); // Test - shows the effect of post-processing filters
+    sp.setPlotType(SP::PlotType::phaseUnwrapped); 
+
+    sp.plotSpectra(N, &x[0]);  
+
+    //sp.plotPhaseSpectra(N, &x[0]);  // old
   }
 
   // Plot the measured instantaneous frequency:

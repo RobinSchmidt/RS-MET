@@ -226,6 +226,9 @@ public:
     //groupDelay
   };
 
+  /** Sets the type of plot that should be produced. @see: PlotType. The default is magnitudeDb. */
+  void setPlotType(PlotType newType) {  plotType = newType; }
+
 
   /** Sets the FFT size. Does not have to be a power of 2 - we use Bluestein FFT here. Resets the
   minBin/maxBin settings, i.e. the frequency range for plotting. */
