@@ -631,8 +631,8 @@ std::vector<double> getBrownZap(int numStages, double lowFreq, double highFreq, 
     sp.setLogFreqAxis(true);
     sp.setSampleRate(sampleRate);
     sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-    //sp.plotDecibelSpectra(N, &x[0]);  // Should be flat. Yep - it is.
-    sp.plotPhaseSpectra(N, &x[0]);
+    sp.setPlotType(SpectrumPlotter<double>::PlotType::phaseUnwrapped); 
+    sp.plotSpectra(N, &x[0]);
     // ToDo: Maybe alternatively plot phase-delay or group-delay
   }
 

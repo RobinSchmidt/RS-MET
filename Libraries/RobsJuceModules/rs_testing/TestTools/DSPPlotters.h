@@ -287,7 +287,7 @@ public:
   // rename to plotDecibelSpectra ..nope..we want to switch depending on plotType
 
 
-
+  /*
   // Under construction:
   void plotPhaseSpectra(int signalLength, const T *x0, const T *x1 = nullptr, 
     const T *x2 = nullptr, const T *x3 = nullptr, const T *x4 = nullptr, const T *x5 = nullptr, 
@@ -298,6 +298,7 @@ public:
 
   // Maybe to avoid code duplication, have just one plotSpectra method and a plotMode member that
   // can be: decibels, phase, phaseDelay, groupDelay, etc
+  */
 
 
 protected:

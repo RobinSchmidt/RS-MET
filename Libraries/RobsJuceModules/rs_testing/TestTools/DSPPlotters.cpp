@@ -567,6 +567,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   setupPlotterAndPlot();
 }
 
+/*
 template <class T>
 void SpectrumPlotter<T>::plotPhaseSpectra(int signalLength, const T* x0, const T* x1 = nullptr,
   const T* x2 = nullptr, const T* x3 = nullptr, const T* x4 = nullptr, const T* x5 = nullptr,
@@ -592,37 +593,12 @@ void SpectrumPlotter<T>::plotPhaseSpectra(const T** signals, int numSignals, int
   for(int i = 0; i < numSignals; i++) 
   {
     computeComplexSpectrum(signals[i], signalLength, spec);
-
-
     toPhase(spec, phs, true);
-
-    /*
-
-    // Compute phase (factor out so it can be re-used in plotting phase-delay and group-delay):
-    for(int k = 0; k < numBins; k++)
-      phs[k] = arg(spec[k]);
-    RAPT::rsArrayTools::unwrap(&phs[0], numBins, T(2*PI));    // Maybe make unwrapping optional
-    RAPT::rsArrayTools::scale( &phs[0], numBins, T(180/PI));  // Convert to degrees
-
-    // Experimental - to plot the group delay:
-    //RAPT::rsArrayTools::difference(&phs[0], numBins);
-    //RAPT::rsArrayTools::scale(&phs[0], numBins, T(-1));
-    // ToDo: 
-    // -Later use RAPT::rsNumericDifferentiator<T> for 2nd order accurate estimate
-    // -Figure out and apply the correct scaler
-    // -Switch this on and off according to a use settable member - we should consolidate all 
-    //  plotting function into a common plotSpectra method that just has a switch in the for-i loop
-    //  to switch between various kinds of processing the spec-array. We need a plotMode member
-    //  that can be magnitudeDb, phase, phaseDelay, etc.
-    // -See: https://en.wikipedia.org/wiki/Group_delay_and_phase_delay#Mathematical_definition_of_group_delay_and_phase_delay
-    */
-
-
-
     addDataArrays(maxBin-minBin+1, &f[minBin], &phs[minBin]);
   }
   setupPlotterAndPlot();
 }
+*/
 
 
 template <class T>
