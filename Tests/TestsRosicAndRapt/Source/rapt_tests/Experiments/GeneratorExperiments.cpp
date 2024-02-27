@@ -3597,9 +3597,59 @@ void flatZapperOpposingLengthTweaks()
 void showFlatZapPlots()
 {
   // We generate an impule response of the rsFlatZapper and show various plots for inspection.
+  double sampleRate = 48000;
 
-  std::vector<double> x = getBrownZap(50, 15, 8000, 0.0);
-  rsPlotVector(x);
+  // Here it can be selected which types of plot should be generated:
+  bool plotSignal         = false;
+  bool plotPhaseSpectrum  = false;
+  bool plotInstFreq       = true;  // Plot instantaneous frequency measurement
+
+  // Create the signal to analyze:
+  using Vec = std::vector<double>;
+  Vec x;
+
+  x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // These are the defalut parameter settings.
+
+  //x = getBrownZap(45, 25, 200, -3.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // The phase-plot looks wrong with these settings. I think this is a bug in the plotter. Figure
+  // out what is going on!
+
+  int N = x.size();
+
+
+  // Plot the signal itself:
+  if(plotSignal)
+    rsPlotVector(x);
+
+  // Plot the phase spectrum:
+  if(plotPhaseSpectrum)
+  {
+    SpectrumPlotter<double> sp;
+    sp.setFftSize(65536);
+    sp.setLogFreqAxis(true);
+    sp.setSampleRate(sampleRate);
+    sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
+    //sp.plotDecibelSpectra(N, &x[0]);  // Should be flat. Yep - it is.
+    sp.plotPhaseSpectra(N, &x[0]);
+  }
+
+  // Plot the measured instantaneous frequency:
+  if(plotInstFreq)
+  {
+    // Use rsSingleSineModeler to estimate the instantaneous frequency:
+    rsSingleSineModeler<double> ssm;
+    Vec a(N), w(N);
+    ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+    Vec f = (sampleRate / (2*PI)) * w;
+    rsPlotVector(f);
+  }
+  // Maybe plot the pitch instead
+
+
+
+  // ToDo: 
+  // -plot phase-delay or group-delay
 
   // Create a spectrogram:
   //rsSpectrogramProcessor<double> specProc;
@@ -3618,10 +3668,8 @@ void flatZapper()
 {
   //allpassChainBassdrum();
   //flatZapperPhaseTweaks();
-  flatZapperOpposingLengthTweaks();
+  //flatZapperOpposingLengthTweaks();
   showFlatZapPlots();
-
-
 
   int dummy = 0;
 

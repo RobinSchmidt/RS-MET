@@ -576,48 +576,13 @@ void createAllpassDrums()
 
 
   //---------------------------------------------------------------------------
+  // Experimental - Move some of these calls to flatZapper() in GeneratorExperiements.cpp. Add 
+  // plotting there.
 
-  // Move some of these calls to flatZapper() in GeneratorExperiements.cpp. Add plotting:
-  // Experimental:
   //renderBrownZap(30,  100,  500, 0.0);   // Tom?
   //renderBrownZap(50,  100, 2000, 0.0);   // Laser Zap
   //renderBrownZap(50,  250, 4000, 0.0);   // 4 octaves
   //renderBrownZap(50,  250, 500, 0.0);      // 1 octave
-
-  // For plotting tests:
-  //double Q = 4.0;
-
-
-
-
-
-
-  // Let's try to figure out what happens when we shorten the length by decrasing numStages while 
-  // at the same time decreasing lowFreq to compensate for the length shortening:
-  renderBrownZap(50, 15,  8000, 0.0);  // Reference to match
-  renderBrownZap(45, 15,  8000, 0.0);  // Shorter by decreasing numStages
-
-  // With these settings the file length is roughly matched - that means we use the fade-out 
-  // threshold as length measuring reference point:
-  //renderBrownZap(45, 14,  8000, 0.0);  // Compensating for shortening by decreasing lowFreq
-  //renderBrownZap(40, 13,  8000, 0.0);
-  //renderBrownZap(35, 12,  8000, 0.0);
-  // They seem to be too short
-
-  // Let's try to use the last maximum bump for the length reference point. That's more 
-  // perceptually relevant, I guess:
-  renderBrownZap(45, 13.65,  8000, 0.0);
-  renderBrownZap(40, 12.2,   8000, 0.0);
-  renderBrownZap(35, 11.0,   8000, 0.0);
-  renderBrownZap(30,  7.0,   8000, 0.0);
-  // OK - these are matched such that "last big cycle" occurs at roughly the same time. The
-  // reference sound features more midrange, there's more of an audible sweep going on. The
-  // ones with less stages de-emphasize this midrange sweepiness. 
-
-
-
-
-
 
   //renderBrownZap(50, 10,  1000, 0.0);
   //renderBrownZap(50, 100,   100, 0.0);
@@ -644,7 +609,6 @@ void createAllpassDrums()
   renderBrownZap(45, 149, 151, -3.0);
   // They sound all quite similar.
 
-
   //double freq = 100;
   renderBrownZap(45,  60,  60, 0.0);
   renderBrownZap(45,  80,  80, 0.0);
@@ -655,9 +619,6 @@ void createAllpassDrums()
   // Maybe call them SweepyTomXXX - maybe for the higher freqs, the numStages should go down.
 
   //---------------------------------------------------------------------------
-
-
-
 
 
   // Create the ZappyKickXXX.wav bassdrums for the ZappyKick sample pack:

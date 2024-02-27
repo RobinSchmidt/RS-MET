@@ -153,8 +153,8 @@ std::vector<double> attackDecaySine(int N, double frequency, double amplitude, d
 std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
   double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
   double maxLength = 1.0, int sampleRate = 48000);
-// rename the createBrownZap for consistency - but this will cause a name clash with another 
-// function that renders these brwon zps to .wav files. Find a solution!
+// -Rename the createBrownZap for consistency. 
+// -Factor out a createFlatZap function that does not do the post-processing
 
 
 /** Creates one out of a collection of standard test sounds based on a name at a given sampleRate
