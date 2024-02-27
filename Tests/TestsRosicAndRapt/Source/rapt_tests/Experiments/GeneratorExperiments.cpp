@@ -3609,7 +3609,7 @@ void showFlatZapPlots()
   using Vec = std::vector<double>;
   Vec x;
 
-  x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  //x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // These are the defalut parameter settings.
 
   //x = getBrownZap(50, 15, 8000, 2.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
@@ -3617,6 +3617,10 @@ void showFlatZapPlots()
 
   //x = getBrownZap(100, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for numStages (100 instead of 50). 
+
+  x = getBrownZap(50,  10, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  x = getBrownZap(50, 100, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // for nice plots
 
   //x = getBrownZap(45, 25, 200, -3.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // The phase-plot looks wrong with these settings. I think this is a bug in the plotter. Figure
@@ -3657,7 +3661,7 @@ void showFlatZapPlots()
     sp.setPlotType(SP::PlotType::groupDelay); 
     sp.plotSpectra(N, &x[0]);  
   }
-  // Bins 0 and 1 look strange
+  // Bins 0 and 1 look strange - but maybe try it without the post-processing
 
   // Plot the measured instantaneous frequency:
   if(plotInstFreq)
@@ -3692,7 +3696,8 @@ void showFlatZapPlots()
 
 
   // ToDo: 
-  // -plot phase-delay or group-delay
+  // -use an un-post-processed signal
+  // -plot phase-delay
   // -Plot instantaneous freq plots for different settings of freqShape
 
   // Create a spectrogram:
