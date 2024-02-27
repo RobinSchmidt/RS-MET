@@ -220,7 +220,7 @@ public:
   enum class PlotType
   {
     magnitudeDb,
-    //phaseWrapped,
+    phaseWrapped,
     phaseUnwrapped
     //phaseDelay,
     //groupDelay
@@ -311,6 +311,8 @@ protected:
   void toDecibels(const std::vector<std::complex<T>>& spectrum, std::vector<T>& decibels, 
     int signalLength);
   // decibels is output
+
+  void toPhase(const std::vector<std::complex<T>>& spectrum, std::vector<T>& phase, bool unwrap);
 
 
 
