@@ -553,6 +553,13 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   {
     computeComplexSpectrum(signals[i], signalLength, spec);
 
+    // Factor out to getDecibels(spec, dB)
+
+
+    toDecibels(spec, dB, signalLength);
+
+
+    /*
     // Compute normalized dB-spectrum:
     T scaler = T(1);
     using NM = NormalizationMode;
@@ -566,6 +573,10 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
       dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(spec[k]), ampFloor);
     // The computation of the scaler may be not quite correct at DC (I think, because 
     // we need to incorporate the value at fftSize/2 or something?). Verify this!
+    */
+
+
+
 
     addDataArrays(maxBin-minBin+1, &f[minBin], &dB[minBin]);
   }
@@ -672,6 +683,28 @@ void SpectrumPlotter<T>::setupPlotterAndPlot()
     setLogScale("x"); // uses decadic ticks -> use octaves instead
   plot();
 }
+
+template <class T>
+void SpectrumPlotter<T>::toDecibels(const std::vector<std::complex<T>>& spec, std::vector<T>& dB, 
+  int signalLength)
+{
+  // Compute normalized dB-spectrum:
+  T ampFloor = RAPT::rsDbToAmp(dBFloor);
+  T scaler = T(1);
+  using NM = NormalizationMode;
+  switch(normMode)
+  {
+  case NM::cycle:    scaler = T(1) / T(signalLength);      break;  // verify!
+  case NM::impulse:  scaler = T(1);                        break; 
+  case NM::toZeroDb: scaler = T(1) / real(rsMaxAbs(spec)); break;
+  }
+  for(int k = 0; k < numBins; k++)
+    dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(spec[k]), ampFloor);
+  // The computation of the scaler may be not quite correct at DC (I think, because 
+  // we need to incorporate the value at fftSize/2 or something?). Verify this!
+
+}
+
 
 // template instantiations:
 template class SpectrumPlotter<float>;

@@ -200,14 +200,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \Setup
 
-  enum class FreqAxisUnits  // maybe rename to FreqAxisUnit
+  enum class FreqAxisUnits  // rename to FreqAxisUnit
   {
     binIndex = 0,    // 0...N/2     (verify!)
     normalized,      // 0...0.5
     omega,           // 0...pi
     hertz            // 0...fs/2    (verify!)
   };
-
 
   /** The different modes are suitable for different types of input signals.  */
   enum class NormalizationMode  // rename to NormalizeMode
@@ -217,6 +216,15 @@ public:
     toZeroDb     // maximum is always forced to 0 dB
   };
   // what about (auto)correlation functions? how should we normalize the plot for them?
+
+  enum class PlotType
+  {
+    magnitudeDb,
+    //phaseWrapped,
+    phaseUnwrapped
+    //phaseDelay,
+    //groupDelay
+  };
 
 
   /** Sets the FFT size. Does not have to be a power of 2 - we use Bluestein FFT here. Resets the
@@ -273,7 +281,7 @@ public:
   /** Plots the spectra of the given signals. The first index is the signal, the second the sample
   index. All signals are assumed to have the same length. */
   void plotSpectra(const T** signals, int numSignals, int signalLength);
-  // rename to plotDecibelSpectra
+  // rename to plotDecibelSpectra ..nope..we want to switch depending on plotType
 
 
 
@@ -300,8 +308,16 @@ protected:
   void setupPlotterAndPlot();
 
 
-  FreqAxisUnits freqAxisUnit = FreqAxisUnits::binIndex;
-  NormalizationMode normMode = NormalizationMode::cycle;
+  void toDecibels(const std::vector<std::complex<T>>& spectrum, std::vector<T>& decibels, 
+    int signalLength);
+  // decibels is output
+
+
+
+  FreqAxisUnits     freqAxisUnit = FreqAxisUnits::binIndex;
+  NormalizationMode normMode     = NormalizationMode::cycle;
+  PlotType          plotType     = PlotType::magnitudeDb;
+
 
   T sampleRate = T(1);
 

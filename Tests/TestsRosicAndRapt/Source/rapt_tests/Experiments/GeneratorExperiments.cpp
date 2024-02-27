@@ -3636,8 +3636,8 @@ void showFlatZapPlots()
     sp.setLogFreqAxis(true);
     sp.setSampleRate(sampleRate);
     sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-    //sp.plotDecibelSpectra(N, &x[0]);  // Should be flat. Yep - it is.
-    sp.plotPhaseSpectra(N, &x[0]);
+    sp.plotDecibelSpectra(N, &x[0]);  // Test - shows the effect of post-processing filters
+    //sp.plotPhaseSpectra(N, &x[0]);
   }
 
   // Plot the measured instantaneous frequency:
