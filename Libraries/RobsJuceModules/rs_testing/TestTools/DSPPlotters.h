@@ -221,9 +221,9 @@ public:
   {
     magnitudeDb,
     phaseWrapped,
-    phaseUnwrapped
+    phaseUnwrapped,
     //phaseDelay,
-    //groupDelay
+    groupDelay
   };
 
   /** Sets the type of plot that should be produced. @see: PlotType. The default is magnitudeDb. */
@@ -303,6 +303,9 @@ protected:
   // decibels is output
 
   void toPhase(const std::vector<std::complex<T>>& spectrum, std::vector<T>& phase, bool unwrap);
+
+  void toGroupDelay(const std::vector<std::complex<T>>& spectrum, std::vector<T>& groupDelay);
+
 
 
 

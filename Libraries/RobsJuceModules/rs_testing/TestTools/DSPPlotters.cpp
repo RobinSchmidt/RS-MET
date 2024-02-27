@@ -650,9 +650,20 @@ void SpectrumPlotter<T>::toPhase(const std::vector<std::complex<T>>& spec, std::
   RAPT::rsArrayTools::scale(&phs[0], numBins, T(180/PI));  // Convert to degrees
   // ToDo: maybe make the conversion to dgerees also optional
 
-  // Experimental - to plot the group delay:
-  //RAPT::rsArrayTools::difference(&phs[0], numBins);
-  //RAPT::rsArrayTools::scale(&phs[0], numBins, T(-1));
+ 
+}
+
+template <class T>
+void SpectrumPlotter<T>::toGroupDelay(const std::vector<std::complex<T>>& spec, std::vector<T>& dly)
+{
+  rsWarning("SpectrumPlotter<T>::toGroupDelay is still under construction");
+  // It seems to work generally but we need to figure out the correct scale factor to show the 
+  // group delay in samples or seconds.
+
+  toPhase(spec, dly, true);
+  RAPT::rsArrayTools::difference(&dly[0], numBins);
+  RAPT::rsArrayTools::scale(&dly[0], numBins, T(-1));
+
   // ToDo: 
   // -Later use RAPT::rsNumericDifferentiator<T> for 2nd order accurate estimate
   // -Figure out and apply the correct scaler
