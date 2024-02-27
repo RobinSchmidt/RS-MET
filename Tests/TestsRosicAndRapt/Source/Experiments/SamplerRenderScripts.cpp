@@ -575,24 +575,22 @@ void createAllpassDrums()
   // filters.
 
 
+  //---------------------------------------------------------------------------
 
-  // Move these experiments somewhere else, add plotting
+  // Move some of these calls to flatZapper() in GeneratorExperiements.cpp. Add plotting:
   // Experimental:
   //renderBrownZap(30,  100,  500, 0.0);   // Tom?
   //renderBrownZap(50,  100, 2000, 0.0);   // Laser Zap
   //renderBrownZap(50,  250, 4000, 0.0);   // 4 octaves
   //renderBrownZap(50,  250, 500, 0.0);      // 1 octave
 
-
-
   // For plotting tests:
   //double Q = 4.0;
-
 
   // Let's try to figure out what happens when we shorten the length by decrasing numStages while 
   // at the same time decreasing lowFreq to compensate for the length shortening:
   renderBrownZap(50, 15,  8000, 0.0);  // Reference to match
-  renderBrownZap(45, 15,  8000, 0.0);  // Shorter by decaresing numStages
+  renderBrownZap(45, 15,  8000, 0.0);  // Shorter by decreasing numStages
 
   // With these settings the file length is roughly matched - that means we use the fade-out 
   // threshold as length measuring reference point:
@@ -611,15 +609,12 @@ void createAllpassDrums()
   // reference sound features more midrange, there's more of an audible sweep going on. The
   // ones with less stages de-emphasize this midrange sweepiness. 
 
-
-
   //renderBrownZap(50, 10,  1000, 0.0);
   //renderBrownZap(50, 100,   100, 0.0);
   //renderBrownZap(50,  100, 1000, 0.0);
   //renderBrownZap(50, 1000,  100, 0.0);   // swapping low and hi freq has no effect
   //renderBrownZap(50, 100, 10000, 0.0, Q, Q);
   //renderBrownZap(10, 10,  1000, 0.0);
-
 
   // Exciters:
   renderBrownZap(10,  200,  200, 0.0);
@@ -639,6 +634,7 @@ void createAllpassDrums()
   renderBrownZap(45, 149, 151, -3.0);
   // They sound all quite similar.
 
+
   //double freq = 100;
   renderBrownZap(45,  60,  60, 0.0);
   renderBrownZap(45,  80,  80, 0.0);
@@ -648,9 +644,13 @@ void createAllpassDrums()
   renderBrownZap(45, 160, 160, 0.0);
   // Maybe call them SweepyTomXXX - maybe for the higher freqs, the numStages should go down.
 
+  //---------------------------------------------------------------------------
 
 
-  // Create the ZappyKickXXX.wav bassdrums:
+
+
+
+  // Create the ZappyKickXXX.wav bassdrums for the ZappyKick sample pack:
   int numStagesLo  = 20;
   int numStagesHi  = 80;
   int numStagesInc = 10;
@@ -672,7 +672,7 @@ void createAllpassDrums()
   // -Allow for more flexible shaping like in the linear fractional interpolation scheme. We want 
   //  to determine the slope at 0 as s0 = log2(param1), s1 = pow(s0, param2-1), shape = param3.
   //  param2 is some sort of SigmoidVsSpikey parameter and param3 is a shift up/down parameter, 
-  //  I think
+  //  I think. Maybe let the user even set intermediate nodes.
   // -Make a function createNoiseBurstDrums
   // -Instead of using noise-bursts as excitatition, try using impulse responses of allpass-delay
   //  series. Maybe these clicks can actually be used for another sample pack.
