@@ -1169,6 +1169,11 @@ void createAllpassDrums()
   // perceptually relevant, I guess:
   createBrownZap(45, 13.65,  8000, 0.0);
   createBrownZap(40, 12.2,   8000, 0.0);
+  createBrownZap(35, 11.0,   8000, 0.0);
+  createBrownZap(30,  7.0,   8000, 0.0);
+  // OK - these are matched such that "last big cycle" occurs at roughly the same time. The
+  // reference sound features more midrange, there's more of an audible sweep going on. The
+  // ones with less stages de-emphasize this midrange sweepiness. 
 
 
 
