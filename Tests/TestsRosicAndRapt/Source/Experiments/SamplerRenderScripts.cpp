@@ -1028,12 +1028,18 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // -I think, the samples are self-similar in the sense that when one zooms in, it looks the 
   //  same. Try it! Yes - but only for freqShape = 0.
   // -Tweaking the highFreq affects the phases in the initial section (try 15/7500, 15/8000, 
-  //  15/8500). Tweaking the lowFreq affects the phases in the final section (try 13/8000,
-  //  15/8000, 17/8000). So, we have a nice phase-control as well which might by important for
-  //  phase-aligning a kick with a bassline. For this especially the phase in the final section
-  //  matters. ToDo: Try also different setting for numStages
+  //  15/8500). An effect on the length is also there but it's small.
+  // -Tweaking the lowFreq affects the phases in the initial and final section (try 13/8000, 
+  //  15/8000, 17/8000). It affects also the length.  
+  // -Tweaking numStages also affects the phases - in the initial and final section (try 45, 50, 
+  //  55). It affects also the length.
+  // -When measuring the lengths of the last few pseudo-cycles in the sweep, their frequency is
+  //  close to lowFreq (it's slightly above, it seems)
   //
   // Conclusions:
+  // -With the lowFreq and numStages parameters, we have control over the late phase. This might 
+  //  by important for phase-aligning a kick with a bassline. For this especially the phase in the
+  //  final section matters.
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
   // -It makes sense to let it sweep down to around 15 Hz. If a sweep is desired that sweeps faster
   //  and only down to 30 Hz, we can just play the sample back at twice the speed. This will give a
@@ -1080,7 +1086,7 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  of inputs as well
   // -Try applying some of the allpasses in forward mode and some in backward mode. Maybe use lower
   //  Q for backward mode. When using the exact same allpass-chain for forward and backward pass,
-  //  the phase-responses shuld cancel and the original impulse should be reconstructed
+  //  the phase-responses should cancel and the original impulse should be reconstructed
   // -Figure out the shape of the pitch env by using the zero-crossing based pitch detector. 
   // -Try using use class rsSingleSineModeler. This may give better time resolution. Or maybe try 
   //  both approaches
@@ -1094,12 +1100,20 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  log-freq plot. Maybe the sum of both numstages params should equal the original single 
   //  numStages parameter because the total phase-shift at Nyquist-freq is always determined by the
   //  total number of stages. Although - the total shift at 24k may be irrelevant.
+  // -What happens when we reduce lowFreq to make it longer while at the same time decreasing
+  //  numStages to make it shorter? Try to find settings
   //
   // Ideas:
   // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 
   //  lengthening the event at which that frequency-band occurs by simulatneously lowering its
   //  amplitude to keep the energy constant. It would be nice to be able to set up an allpass in 
   //  terms of its "lengthening" response. Maybe that's what group delay is, after all?
+  // -Desired user parameter: length, phase (especially at the end), centerFreq, bandwidth
+  // -Algorithm parameters: numStages, lowFreq, highFreq, freqShape
+  // -Maybe to translate between user and alfgo params, we need a formula the time of occurence
+  //  of lowFreq. Maybe the group delay of lowFreq is relevant? Let's try to find a formula for
+  //  it in terms numStages, lowFreq, highfreq, freqShape assuming constant Q. Maybe try to work
+  //  it out for first order allpasses first because that's simpler
 }
 
 
@@ -1115,6 +1129,7 @@ void createAllpassDrums()
   //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
+  // Move these experiments somewhere else, add plotting
   // Experimental:
   //createBrownZap(30,  100,  500, 0.0);   // Tom?
   //createBrownZap(50,  100, 2000, 0.0);   // Laser Zap
@@ -1122,15 +1137,39 @@ void createAllpassDrums()
   //createBrownZap(50,  250, 500, 0.0);      // 1 octave
 
   std::vector<double> zap = getBrownZap(50, 15, 8000, 0.0);
-  rsPlotVector(zap);
+  //rsPlotVector(zap);
 
   // For plotting tests:
   //double Q = 4.0;
 
-  // Let's try to modify the phase by tweaking the numStages:
-  createBrownZap(49, 15,  8000, 0.0);
-  createBrownZap(50, 15,  8000, 0.0);
-  createBrownZap(51, 15,  8000, 0.0);
+  // Let's try to modify the phase by tweaking the numStages, lowFreq and highFreq:
+  //createBrownZap(45, 15,  8000, 0.0);
+  //createBrownZap(50, 15,  8000, 0.0);
+  //createBrownZap(55, 15,  8000, 0.0);
+  //createBrownZap(50, 13,  8000, 0.0);
+  //createBrownZap(50, 15,  8000, 0.0);
+  //createBrownZap(50, 17,  8000, 0.0);
+  //createBrownZap(50, 15,  7500, 0.0);
+  //createBrownZap(50, 15,  8000, 0.0);
+  //createBrownZap(50, 15,  8500, 0.0);
+
+  // Let's try to figure out what happens when we shorten the length by decrasing numStages while 
+  // at the same time decreasing lowFreq to compensate for the length shortening:
+  createBrownZap(50, 15,  8000, 0.0);  // Reference to match
+  createBrownZap(45, 15,  8000, 0.0);  // Shorter by decaresing numStages
+
+  // With these settings the file length is roughly matched - that means we use the fade-out 
+  // threshold as length measuring reference point:
+  //createBrownZap(45, 14,  8000, 0.0);  // Compensating for shortening by decreasing lowFreq
+  //createBrownZap(40, 13,  8000, 0.0);
+  //createBrownZap(35, 12,  8000, 0.0);
+  // They seem to be too short
+
+  // Let's try to use the last maximum bump for the length reference point. That's more 
+  // perceptually relevant, I guess:
+  createBrownZap(45, 13.65,  8000, 0.0);
+  createBrownZap(40, 12.2,   8000, 0.0);
+
 
 
   //createBrownZap(50, 10,  1000, 0.0);
