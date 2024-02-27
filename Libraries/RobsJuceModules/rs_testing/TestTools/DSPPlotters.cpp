@@ -558,7 +558,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     case PT::phaseWrapped:   toPhase(     spec, y, false);        break;
     case PT::phaseUnwrapped: toPhase(     spec, y, true);         break;
     case PT::groupDelay:     toGroupDelay(spec, y);               break;
-    default: rsError("Unknwon plot type in SpectrumPlotter<T>::plotSpectra");
+    default: rsError("Unknown plot type in SpectrumPlotter<T>::plotSpectra");
     }
     addDataArrays(maxBin-minBin+1, &f[minBin], &y[minBin]);
   }
@@ -647,8 +647,6 @@ void SpectrumPlotter<T>::toPhase(const std::vector<std::complex<T>>& spec, std::
     RAPT::rsArrayTools::unwrap(&phs[0], numBins, T(2*PI));
   RAPT::rsArrayTools::scale(&phs[0], numBins, T(180/PI));  // Convert to degrees
   // ToDo: maybe make the conversion to dgerees also optional
-
- 
 }
 
 template <class T>

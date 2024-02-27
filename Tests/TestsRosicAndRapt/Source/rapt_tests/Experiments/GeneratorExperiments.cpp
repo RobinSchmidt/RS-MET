@@ -3700,6 +3700,7 @@ void showFlatZapPlots()
   // -use an un-post-processed signal
   // -plot phase-delay
   // -Plot instantaneous freq plots for different settings of freqShape
+  // -plot spectrogram
 
   // Create a spectrogram:
   //rsSpectrogramProcessor<double> specProc;

@@ -574,7 +574,6 @@ void createAllpassDrums()
   // for a drum sound. Later, it may be further shaped by using lopwass/highpass/bandpass/peak/etc.
   // filters.
 
-
   //---------------------------------------------------------------------------
   // Experimental - Move some of these calls to flatZapper() in GeneratorExperiements.cpp. Add 
   // plotting there.
@@ -583,13 +582,6 @@ void createAllpassDrums()
   //renderBrownZap(50,  100, 2000, 0.0);   // Laser Zap
   //renderBrownZap(50,  250, 4000, 0.0);   // 4 octaves
   //renderBrownZap(50,  250, 500, 0.0);      // 1 octave
-
-  //renderBrownZap(50, 10,  1000, 0.0);
-  //renderBrownZap(50, 100,   100, 0.0);
-  //renderBrownZap(50,  100, 1000, 0.0);
-  //renderBrownZap(50, 1000,  100, 0.0);   // swapping low and hi freq has no effect
-  //renderBrownZap(50, 100, 10000, 0.0, Q, Q);
-  //renderBrownZap(10, 10,  1000, 0.0);
 
   // Exciters:
   renderBrownZap(10,  200,  200, 0.0);
