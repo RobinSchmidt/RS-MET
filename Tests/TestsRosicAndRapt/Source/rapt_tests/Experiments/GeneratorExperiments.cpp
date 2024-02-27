@@ -3601,18 +3601,21 @@ void showFlatZapPlots()
 
   // Here it can be selected which types of plot should be generated:
   bool plotSignal         = false;
-  bool plotPhaseSpectrum  = false;
-  bool plotInstFreq       = true;  // Plot instantaneous frequency measurement
+  bool plotPhaseSpectrum  = true;
+  bool plotInstFreq       = false;  // Instantaneous frequency measurement
 
   // Create the signal to analyze:
   using Vec = std::vector<double>;
   Vec x;
 
-  //x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // These are the defalut parameter settings.
 
-  x = getBrownZap(50, 15, 8000, 2.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  //x = getBrownZap(50, 15, 8000, 2.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for freqShape (2 instead of 0)
+
+  //x = getBrownZap(100, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // Defaults except for numStages (100 instead of 50). 
 
   //x = getBrownZap(45, 25, 200, -3.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // The phase-plot looks wrong with these settings. I think this is a bug in the plotter. Figure
@@ -3661,10 +3664,11 @@ void showFlatZapPlots()
     //rsPlotVectors(x, 0.01*p);
   }
   // The ampViaPeaks and freqViaFormula algorithms give very erratic results. There are spikes of
-  // erroneous measurements. In the ampViaPeaks algo, they occurr at the minima and maxima. In the
-  // freqViaFormula algo, they occurr at the zero crossings. Maybe we could combine the results of 
-  // both (or all three) algorithms to get a cleaner result. Maybe crossfade back and forth between
-  // ampViaPeaks and freqViaFormula.
+  // erroneous measurements. In the ampViaPeaks algo, they occurr at the minima and maxima of the 
+  // signal x. In the freqViaFormula algo, they occurr at the zero crossings. Maybe we could 
+  // combine the results of both (or all three) algorithms to get a cleaner result. Maybe crossfade 
+  // back and forth between ampViaPeaks and freqViaFormula. The results of the freqViaZeros algo
+  // look good for the first half of the plot. Beyond that, they start to wiggle weirdly.
 
 
 
@@ -3692,7 +3696,8 @@ void showFlatZapPlots()
   //  result into a single plot
   // -To figure this out, use a long setting, i.e. numStages = 256 or something. But maybe then we
   //  use decimated data for plotting because it will really get long. But that should give more
-  //  accurate results
+  //  accurate results. Maybe also try to use the raw signal, i.e. before post-processing, to see
+  //  if that gives better or worse results for inst-freq measurements.
 }
 
 void flatZapper()
