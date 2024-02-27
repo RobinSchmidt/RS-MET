@@ -3553,12 +3553,206 @@ void flatZapperPhaseTweaks()
   rsPlotVectors(x_50_15_8000, x_50_15_7500, x_50_15_8500);
 }
 
+void showFlatZapPlots()
+{
+  // We generate an impule response of the rsFlatZapper and show various plots for inspection.
+
+  std::vector<double> x = getBrownZap(50, 15, 8000, 0.0);
+  rsPlotVector(x);
+
+  // Create a spectrogram:
+  //rsSpectrogramProcessor<double> specProc;
+  //specProc.setBlockAndTrafoSize(256, 2048);
+  //specProc.setHopSize(64);
+  //specProc.setAnalysisWindowType(...);
+
+  // Plot a spectrogam:
+  //SpectrogramPlotter<double> sp;
+  //GNUPlotter plt;
+  // I think, the way the SpectrumPlotter class works is to call appropriate setup functions on an
+  // existing GNUPlotter object.
+}
+
 void flatZapper()
 {
-  allpassChainBassdrum();
-  flatZapperPhaseTweaks();
+  //allpassChainBassdrum();
+  //flatZapperPhaseTweaks();
+  showFlatZapPlots();
+
 
 
   int dummy = 0;
+
+
+
+
+
+  // Observations:
+  // -When applying the zapper twice, the result is similar to using a single zapper with twice the
+  //  number of stages, I think. So, we don't really get anything interesting new by chaining 
+  //  multiple zappers.
+  // -The Q factor does not seem to affect the sweep-speed but the waveshape. For low Q, it's 
+  //  sinusoidal. For high Q, it looks like harmonics appear. Higher Q-values should be used only
+  //  at high frequencies, i.e. highQ can be somewhat higher, but lowQ should always be low-ish. I
+  //  think, with lower Q, we get a cleaner time-separation of the different frequencies. With 
+  //  higher Q, they get mixed up more - or something.
+  // -Positive values of freqShape (freqShape) like +0.8 have the effect of cramming the signal more 
+  //  together. But the attack also gets longer - it gets crammed around some center that is not at
+  //  the start of the sample. Negative values like -0.8 seem to lengthen the thump/body portion of
+  //  the zap and shorten the transient.
+  // -Lowering highFreq makes the transient more clicky. Raising highFreq makes the transient more 
+  //  sweepy/zappy.
+  // -With a slope of -6, we seem to get a constant amplitude. Maybe try using a leaky integrator,
+  //  i.e. lowpass with 6dB/oct tuned to somewhere below lowFreq
+  // -When increasing lowFreq, it does not sweep down as much and the whole sweep happens faster. I 
+  //  think cranking up lowFreq by an octave makes the zap happen in half of the time
+  // -Playing the generated sample back at different speeds does not change the sonic impression 
+  //  very much
+  // -The highest frequency used affects how much the transient is smeared over time. When using 
+  //  1kHz as highes allpass freq, we get a strong impulse at the start. When usiing 16 kHz as 
+  //  highest freq, the initial impulse is more smeared out over time. I think, The higher we go,
+  //  the more smeared out the higher frequencies will be. That means, we can use that parameter to
+  //  determine the initial sweep speed? Going higher makes the sweep initially slower or 
+  //  something? Or to put it the other was: when the highest freq is rather low, then the high 
+  //  frequencies are more crammed into the initial section.
+  //  -I think, the sweet spot is around 8000. Going up to 16 doesn't seem to make much of an 
+  //   audible difference - but maybe that's just my ears
+  // -Previously, I was using rosic::AllpasChain which implements a chain of up to 24 allpass 
+  //  filters that all use the same set of coefficients. With this setup, using more stages per 
+  //  chain (and reducing the number of chains to keep the product constant), the amp-envelope 
+  //  seems to become more steppy. There seem to be plateaus. With just 1 stage per chain, the 
+  //  amp-env did not feature such plateaus. We could simulate this old setup by letting
+  //  rsWhiteZapper use groups of allpasses that have the same settings. For example, for a total
+  //  number of 50 allpasses, we could use 10 groups of 5 or 5 groups of 10 or 2 groups of 25. I 
+  //  don't think, that's desirable, though.
+  // -With lower Q, its seems to sweep further down at the end.
+  // -Using a sawtooth burst as input is not so interesting (maybe try an impulse-train burst?)
+  // -The phase response always goes down from 0° to -(numStages*360°) in a sigmoid shape.
+  // -The almost linear portion of the sigmoid is confined between lowFreq and highFreq.
+  // -The midpoint of the sigmoid occurs at the geometric mean of lowfreq and highFreq (when 
+  //  freqShape = 0) - tested with loFreq = 500, hiFreq = 2000 and loFreq = 250, hiFreq = 4000. in
+  //  both cases, the phase response's symmetry center goes through f = 1000.
+  // -Higher values for Q make the sigmoid sharper (i.e. more resembling a hard-clipper) at the 
+  //  expense of making the linear section wiggly (try Q = 16 with numStages = 10). The number of
+  //  wiggles seem to equal numStages. At around Q = 4, the wiggles become barely visible in the 
+  //  plot, with Q = 2 completely invisible, with Q = 1 we may actually already be in the 
+  //  oversmoothed range - although, it's still fine. (ToDo: check for other values of numStages).
+  //  Try createBrownZap(50, 100, 1000, 0.0, Q, Q, 0.0); and tweak Q
+  // -By the way, the allpass chain *closely* approximates a linear phase response.
+  // -Shape parameters other than 0 skew the sigmoid and make it asymmetric - maybe a bit like
+  //  the Gompertz function.
+  // -One octave sweeps from around 200 to 100 Hz make for nice electric toms:
+  //  createBrownZap(45, 100, 200, -3.0); Pulling the lowfreq and highFreq even closer together
+  //  does not change the sound very much. Even using 149 and 151, it sounds still rather similar.
+  // -It actually seems to work to have lowFreq == highFreq. We can even swap lowFreq and highFreq
+  //  and get the same result as when they are in correct order (I think)
+  // -for createBrownZap(45, 25, 200, -3.0); the phase plot looks wrong. Maybe try increasing 
+  //  maxLength - maybe it's because of truncation
+  // -The group delay starts flat then rises to a peak close to the lowFreq and then falls down to
+  //  zero. But why? Shouldn't it look like a flat-top bell function? Or has it to do with the 
+  //  log-scaled freq-axis? Yeah - I think, this is probably the explanation. The peak may occur
+  //  before or after lowFreq depending on numStages an highFreq. When highFreq is increased, the 
+  //  whole curve is also scaled down and the tail to the right rolls of less sharply. It might be
+  //  interesting to figure out, what the perceptual correlate to the peak at lowFreq is, if any.
+  //  lowFreq certainly affects the the perception of the overall "height" of the sound in the freq
+  //  domain (in the sense of how high up is it), even though there is no discernable pitch.
+  //  -When increasing freqShape, the curve is also lowered and the right tail is less steep. The
+  //   peak gets also wider.
+  //  -Higher Q make the left section steeper - it moves the "action" more to the right.
+  // -With negative freqShape and using a noise burst as input, the noisy part gets more confined 
+  //  to the start of the sample. numStages = 30, freqShape = -3 with a noise-burst gives a nice
+  //  acoustic sounding kick. freqSgape = -2 gives it more body/thump
+  // -If low-frequency rumble occurs toward the end, it helps to reduce the lowQ parameter. 
+  //  Currently, we use a highpass to counteract this rumble - but this is a kludge. Reducing
+  //  lowQ seems to be the more appropriate way to go.
+  // -I think, the samples are self-similar in the sense that when one zooms in, it looks the 
+  //  same. Try it! Yes - but only for freqShape = 0.
+  // -Tweaking the highFreq affects the phases in the initial section (try 15/7500, 15/8000, 
+  //  15/8500). An effect on the length is also there but it's small.
+  // -Tweaking the lowFreq affects the phases in the initial and final section (try 13/8000, 
+  //  15/8000, 17/8000). It affects also the length.  
+  // -Tweaking numStages also affects the phases - in the initial and final section (try 45, 50, 
+  //  55). It affects also the length.
+  // -When measuring the lengths of the last few pseudo-cycles in the sweep, their frequency is
+  //  close to lowFreq (it's slightly above, it seems)
+  //
+  // Conclusions:
+  // -With the lowFreq and numStages parameters, we have control over the late phase. This might 
+  //  by important for phase-aligning a kick with a bassline. For this especially the phase in the
+  //  final section matters.
+  // -Overall length is proportional to numStages and inversely proportional to lowFreq
+  // -It makes sense to let it sweep down to around 15 Hz. If a sweep is desired that sweeps faster
+  //  and only down to 30 Hz, we can just play the sample back at twice the speed. This will give a
+  //  similar sound.
+  // -Giving the user control over how Q changes with frequency seems overkill. Maybe a single Q
+  //  parameter is good enough. ...but maybe experiment a bit more... Or maybe I have just not set 
+  //  used it in the right range - I tried 1..16 - but maybe we should stay the smooth-oversmooth 
+  //  range like 0.125..4 or something. Maybe it makes sense to have a sharper transition at one 
+  //  end of the sigmoid.
+  //  Update: it may be needed to reduce rumble.
+  // -I think, the most important sound-shaping feature to be added is to give more flexibility to
+  //  the curve that distributes the allpass tuning frequencies. Using a fixed Q fo all allpasses
+  //  that migght even be hardcoded seems good enough. But maybe when we have more flexibility for
+  //  the freqs, more flexibility for the Qs may become more desirable? We'll see. However, the
+  //  current implementation of the Q-shape should be kept - but it doesn't need to be a user 
+  //  parameter on a GUI, when I make a module for ToolChain from it.
+  //
+  // ToDo:
+  // -Try a first order allpass chain
+  // -Plot a couple of curve families for thegroup delay for varying different parameters.
+  // -Maybe instead of writing the sample to disk, return it a std::vector. Or maybe factor out a 
+  //  getWhiteZapBassdrum function
+  // -We currently need numStages >= 2. For 0 and 1, it produces garbage (inf, nan). Fix this!
+  // -Test it with extreme settings like having the highest freq at fs/2. What if the lowest freq 
+  //  is 0? Does the allpass design admit this? However, the exponential scaling will not admit it
+  //  anyway.
+  // -Other interesting post-processing effects could be a peak-eq tuned to the desired bassdrum
+  //  fundamental frequency.
+  // -Let the function take the parameters as function arguments
+  // -Plot a spectrogram
+  // -Plot a group-delay response
+  // -Plot a ringing response
+  // -An alternative way to compute a delay-response could be to compute correlations with windowed
+  //  (complex) sinewaves and find the lag where this correlation has a maximum.
+  // -Can we create a stereo signal by using rsStateVectorFilter and using the two states to
+  //  generate two signals. ...if not, maybe try using the phase-stereoizer.
+  // -what about time-reversing some of the allpasses?
+  // -Use an EQ to boost the bass frequencies
+  // -Try to make a phaser from that
+  // -Try using oversampling. Does it improve the high-freq response do to less cramping?
+  // -Check out, if we can get a nice stereor signal by using noise-bursts with different seeds for
+  //  left and right (or for mid and side)
+  // -In a synth based on that, allow to mix noise-burst and impulse inputs - and maybe other types
+  //  of inputs as well
+  // -Try applying some of the allpasses in forward mode and some in backward mode. Maybe use lower
+  //  Q for backward mode. When using the exact same allpass-chain for forward and backward pass,
+  //  the phase-responses should cancel and the original impulse should be reconstructed
+  // -Figure out the shape of the pitch env by using the zero-crossing based pitch detector. 
+  // -Try using use class rsSingleSineModeler. This may give better time resolution. Or maybe try 
+  //  both approaches
+  // -Try combining (i.e. convolving) a strongly resonant "exciter" with a body for a tom or kick
+  // -Try to use a lower Q (or lower qLow) to avoid the low-freq flutter/rumble towrads the end 
+  //  that sometimes happens. Check if there's high-freq flutter at the start, too - and if that 
+  //  can be remedied by lower qHigh.
+  // -Split the freq range lo..hi into two: lo..mid, mid..hi and to use 2 zappers - 1 for the high 
+  //  freq range and one for the low freq range. Use lower numStages for the high part. Goal: We 
+  //  want to somehow introduce a (smooth) corner in the linear part of the phase-response on a 
+  //  log-freq plot. Maybe the sum of both numstages params should equal the original single 
+  //  numStages parameter because the total phase-shift at Nyquist-freq is always determined by the
+  //  total number of stages. Although - the total shift at 24k may be irrelevant.
+  // -What happens when we reduce lowFreq to make it longer while at the same time decreasing
+  //  numStages to make it shorter? Try to find settings
+  //
+  // Ideas:
+  // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 
+  //  lengthening the event at which that frequency-band occurs by simulatneously lowering its
+  //  amplitude to keep the energy constant. It would be nice to be able to set up an allpass in 
+  //  terms of its "lengthening" response. Maybe that's what group delay is, after all?
+  // -Desired user parameter: length, phase (especially at the end), centerFreq, bandwidth
+  // -Algorithm parameters: numStages, lowFreq, highFreq, freqShape
+  // -Maybe to translate between user and alfgo params, we need a formula the time of occurence
+  //  of lowFreq. Maybe the group delay of lowFreq is relevant? Let's try to find a formula for
+  //  it in terms numStages, lowFreq, highfreq, freqShape assuming constant Q. Maybe try to work
+  //  it out for first order allpasses first because that's simpler
 }
 
