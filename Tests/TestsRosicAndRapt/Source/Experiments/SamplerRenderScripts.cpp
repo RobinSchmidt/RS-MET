@@ -572,43 +572,6 @@ void applyAllpassChain(std::vector<double>& inOut, double freq, double quality, 
 {
   applyAllpassChain(&inOut[0], (int) inOut.size(), &inOut[0], freq, quality, numStages, sampleRate);
 }
-
-/*
-void createAllpassBassdrum1()
-{
-  // This is now obsolete and my be deleted
-
-  // This is the first attempt to render a sine-sweepdown based bassdrum sample.
-
-  // User parameters:
-  int    sampleRate = 48000;  // Sample rate in Hz
-  double length     = 0.5;    // Length in seconds
-  double Q          = 1.0;    // Using 0 will switch to 1st order allpass
-  double S          = 5;      // Number of stages per allpass chain
-
-  // Render sample:
-  int N = ceil(length * sampleRate);  // Number of samples to render
-  using Vec = std::vector<double>;
-  Vec x(N);
-  x[0] = 1;
-  applyAllpassChain(x, 16000.0,  Q, S, sampleRate);
-  applyAllpassChain(x,  8000.0,  Q, S, sampleRate);
-  applyAllpassChain(x,  4000.0,  Q, S, sampleRate);
-  applyAllpassChain(x,  2000.0,  Q, S, sampleRate);
-  applyAllpassChain(x,  1000.0,  Q, S, sampleRate);
-  applyAllpassChain(x,   500.0,  Q, S, sampleRate);
-  applyAllpassChain(x,   250.0,  Q, S, sampleRate);
-  applyAllpassChain(x,   125.0,  Q, S, sampleRate);
-  applyAllpassChain(x,    62.5,  Q, S, sampleRate);
-  applyAllpassChain(x,    31.25, Q, S, sampleRate);
-
-  // Normalize and write it to a wavefile:
-  RAPT::rsArrayTools::normalize(&x[0], N);
-  rosic::writeToMonoWaveFile("AllpassBassdrum1.wav", &x[0], N, sampleRate, 16);
-  //rsPlotVector(x);
-}
-*/
-
 void createAllpassBassdrum2()
 {
   // This function may be preserved and moved into an experiment to deonstrate the steppy
@@ -654,45 +617,6 @@ void createAllpassBassdrum2()
   //  This has been done in rsFlatZapper
 }
 
-/*
-void createAllpassBassdrum3()
-{
-  // This is now obsolete and my be deleted
-
-  // User parameters:
-  int    sampleRate = 48000;  // Sample rate in Hz
-  double length     = 0.5;    // Length in seconds
-  double loQ        = 1.0;
-  double hiQ        = 1.0;
-  double shQ        = 0.0;    // Shape parameter for Q
-  double loF        = 27.5;
-  double hiF        = 14080;
-  double shF        = 0.0;    // Shape parameter for frequency
-  int    numFilters = 50;     // Number of allpass filters
-
-  // Render sample:
-  int N = ceil(length * sampleRate);  // Number of samples to render
-  using Vec = std::vector<double>;
-  Vec x(N);
-  x[0] = 1;
-  auto shape = [](double x, double s) { return RAPT::rsRationalMap_01(x, s); };
-  for(int i = 0; i < numFilters; i++)
-  {
-    double p = double(i) / double(numFilters-1);               // Goes from 0 to 1
-    double f = rsLinToExp(shape(p, shF), 0.0, 1.0, loF, hiF);
-    double q = rsLinToExp(shape(p, shQ), 0.0, 1.0, loQ, hiQ);
-    applyAllpassChain(x, f, q, 1, sampleRate);
-  }
-
-  // Normalize and write it to a wavefile:
-  RAPT::rsArrayTools::normalize(&x[0], N);
-  rosic::writeToMonoWaveFile("AllpassBassdrum3.wav", &x[0], N, sampleRate, 16);
-
-  // Observations:
-  // -Positive values of shF make the sweep initially faster, I think. It sounds more snappy.
-  // -For Q=0, we get a DC output. That's wrong!
-}
-*/
 
 
 // maybe rename to renderBrownZap
@@ -709,15 +633,15 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
   int N = x.size();
 
   // Create filename from the parameters (maybe factor out):
-  std::string name = "ZappyKick"; // Nah - not all possible settings lead to bassdrums
-  //std::string name = "AllpassZap";
+  //std::string name = "ZappyKick"; // Nah - not all possible settings lead to bassdrums
+  std::string name = "BrownAllpassZap";
   name += "_NS=" + std::to_string(numStages);
-  if(lowFreq  != 15)   name += "_FL=" + rosic::rsToString(lowFreq);
-  if(highFreq != 8000) name += "_FH=" + rosic::rsToString(highFreq);
+  name += "_FL=" + rosic::rsToString(lowFreq);
+  name += "_FH=" + rosic::rsToString(highFreq);
   name += "_FS=" + rosic::rsToString(freqShape);
-  if(lowQ   != 1.0)  name += "_QL=" + rosic::rsToString(lowQ);
-  if(highQ  != 1.0)  name += "_QH=" + rosic::rsToString(highQ);
-  if(qShape != 0.0)  name += "_QS=" + rosic::rsToString(qShape);
+  if(lowQ   != 1.0) name += "_QL=" + rosic::rsToString(lowQ);
+  if(highQ  != 1.0) name += "_QH=" + rosic::rsToString(highQ);
+  if(qShape != 0.0) name += "_QS=" + rosic::rsToString(qShape);
   // ToDo: add mode
   name += ".wav";
   // Maybe let the caller pass a basic name - don't hardcode the "ZappyKick" name here. It may
@@ -919,7 +843,7 @@ void createAllpassDrums()
 
   // Obsolete:
   //createAllpassBassdrum1();
-  createAllpassBassdrum2();
+  //createAllpassBassdrum2();
   //createAllpassBassdrum3();
 
   // Move these experiments somewhere else, add plotting
@@ -939,12 +863,16 @@ void createAllpassDrums()
   //createBrownZap(45, 15,  8000, 0.0);
   //createBrownZap(50, 15,  8000, 0.0);
   //createBrownZap(55, 15,  8000, 0.0);
+
   //createBrownZap(50, 13,  8000, 0.0);
   //createBrownZap(50, 15,  8000, 0.0);
   //createBrownZap(50, 17,  8000, 0.0);
+
   //createBrownZap(50, 15,  7500, 0.0);
   //createBrownZap(50, 15,  8000, 0.0);
   //createBrownZap(50, 15,  8500, 0.0);
+  // Move to an experiment flatZapperPhaseTweaks, let it make plots
+
 
   // Let's try to figure out what happens when we shorten the length by decrasing numStages while 
   // at the same time decreasing lowFreq to compensate for the length shortening:
@@ -984,13 +912,12 @@ void createAllpassDrums()
   createBrownZap(10,  800,  800, 0.0); // also good for percussion - like claves or something?
   createBrownZap(10, 1600, 1600, 0.0); 
 
-
   // Nice soft bassdrum or low tom:
   createBrownZap(45, 25, 200, -3.0);  // phase-plot looks wrong - I think this is a bug in the plotter
   createBrownZap(45, 25, 200,  0.0);
   createBrownZap(45, 25, 200, +3.0);
 
-  // One octave sweeps from around 200 to 100 Hz make for nice electrnic toms:
+  // One octave sweeps from around 200 to 100 Hz make for nice electronic toms:
   createBrownZap(45, 100, 200, -3.0);
   createBrownZap(45, 120, 180, -3.0);
   createBrownZap(45, 140, 160, -3.0);
