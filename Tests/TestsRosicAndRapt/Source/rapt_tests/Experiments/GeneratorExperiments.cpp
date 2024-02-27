@@ -3638,18 +3638,30 @@ void showFlatZapPlots()
   if(plotInstFreq)
   {
     // Use rsSingleSineModeler to estimate the instantaneous frequency:
+
+    using Algo = rsSingleSineModeler<double>::Algorithm;
+
     rsSingleSineModeler<double> ssm;
+    //ssm.setAnalysisAlgorithm(Algo::ampViaPeaks);    // This is the default
+    //ssm.setAnalysisAlgorithm(Algo::freqViaFormula);
+    ssm.setAnalysisAlgorithm(Algo::freqViaZeros);     // This gives cleanest result
+
     Vec a(N), w(N);
     ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
     Vec f = (sampleRate / (2*PI)) * w;
-    rsPlotVector(f);
+    //rsPlotVector(f);
+    Vec p(N);
+    for(int n = 0; n < N; n++)
+      p[n] = RAPT::rsFreqToPitch(f[n]);
+    rsPlotVector(p);
   }
-  // Maybe plot the pitch instead
+
 
 
 
   // ToDo: 
   // -plot phase-delay or group-delay
+  // -Plot instantaneous freq plots for different settings of freqShape
 
   // Create a spectrogram:
   //rsSpectrogramProcessor<double> specProc;
