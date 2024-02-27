@@ -3608,8 +3608,11 @@ void showFlatZapPlots()
   using Vec = std::vector<double>;
   Vec x;
 
-  x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  //x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // These are the defalut parameter settings.
+
+  x = getBrownZap(50, 15, 8000, 2.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // Defaults except for freqShape (2 instead of 0)
 
   //x = getBrownZap(45, 25, 200, -3.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // The phase-plot looks wrong with these settings. I think this is a bug in the plotter. Figure
@@ -3654,8 +3657,14 @@ void showFlatZapPlots()
     for(int n = 0; n < N; n++)
       p[n] = RAPT::rsFreqToPitch(f[n]);
     rsPlotVector(p);
-  }
 
+    //rsPlotVectors(x, 0.01*p);
+  }
+  // The ampViaPeaks and freqViaFormula algorithms give very erratic results. There are spikes of
+  // erroneous measurements. In the ampViaPeaks algo, they occurr at the minima and maxima. In the
+  // freqViaFormula algo, they occurr at the zero crossings. Maybe we could combine the results of 
+  // both (or all three) algorithms to get a cleaner result. Maybe crossfade back and forth between
+  // ampViaPeaks and freqViaFormula.
 
 
 
@@ -3674,6 +3683,16 @@ void showFlatZapPlots()
   //GNUPlotter plt;
   // I think, the way the SpectrumPlotter class works is to call appropriate setup functions on an
   // existing GNUPlotter object.
+
+  // Observations:
+  // -With freqShape = 0, the shape of the instantaneous pitch looks a bit like a 1/n function.
+  //  Maybe try to fit a function to the data to figure out, what the actual shape is.
+  // -The exported plots are difficult to compare because they use different scalings for the 
+  //  axes. We may need to make a proper function family plot to plot multiple inst-freq analysis
+  //  result into a single plot
+  // -To figure this out, use a long setting, i.e. numStages = 256 or something. But maybe then we
+  //  use decimated data for plotting because it will really get long. But that should give more
+  //  accurate results
 }
 
 void flatZapper()
