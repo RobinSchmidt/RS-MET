@@ -148,6 +148,15 @@ std::vector<double> attackDecaySine(int N, double frequency, double amplitude, d
   double decay, double startPhase, double sampleRate);
 
 
+// Maybe wrap this into a class. It has too many parameters already and will probably get some 
+// more:
+std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
+  double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
+  double maxLength = 1.0, int sampleRate = 48000);
+// rename the createBrownZap for consistency - but this will cause a name clash with another 
+// function that renders these brwon zps to .wav files. Find a solution!
+
+
 /** Creates one out of a collection of standard test sounds based on a name at a given sampleRate
 and with a given number of samples. You can also specify some parameters of the sound such as its 
 frequency, amplitude, etc. in the string. For example: "Sine_Freq=100_Amp=0.5" creates a 100 Hz 
@@ -163,6 +172,10 @@ VibratoSine: sine wave with vibrato, Freq, Rate, Depth
 ToDo Saw,NaiveSaw, Square,NaiveSquare, Triangle/NaiveTriangle, Pulse40/NaivePulse40, ...
 */
 std::vector<double> createNamedSound(const std::string& name, double sampleRate, int numSamples);
+
+
+
+
 
 //=================================================================================================
 

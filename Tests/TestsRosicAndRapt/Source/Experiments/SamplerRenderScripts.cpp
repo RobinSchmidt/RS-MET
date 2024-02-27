@@ -682,119 +682,18 @@ void createAllpassBassdrum3()
 }
 
 
-// Move to TestInputCreation.h/cpp:
-//=================================================================================================
-
-// Maybe wrap this into a class. It has too many parameters already and will probably get some 
-// more:
-std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
-  double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
+// maybe rename to renderBrownZap
+void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
+  double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, 
   double maxLength = 1.0, int sampleRate = 48000)
-{
-  // Create and set up the zapper object:
-  rosic::rsFlatZapper wz;
-  wz.setSampleRate(sampleRate);
-  wz.setNumStages(numStages);
-  wz.setLowFreq(lowFreq);
-  wz.setHighFreq(highFreq);
-  wz.setFreqShape(freqShape);
-  wz.setLowQ(lowQ);
-  wz.setHighQ(highQ);
-  wz.setQShape(qShape);
-
-  // Render sample:
-  int N = ceil(maxLength * sampleRate);  // Number of samples to render
-  using Vec = std::vector<double>;
-  Vec x(N);
-  x[0] = 1;
-
-  // Test - with noise-burst:
-  //x = createNoise(N, -1.0, +1.0, 0);
-  //Vec e1 = attackDecayEnvelope(N, 50,     150);  // Decay = 100-200 seems nice
-  //Vec e2 = attackDecayEnvelope(N, 5000, 10000);
-  //Vec e  = e1;
-  //Vec e  = e1 + 0.001*e2;   // Trying to give it that snare effect - does not work well
-  //rsPlotVector(e);
-  //rsPlotVectors(e1, e2);
-  //x = x*e;
-  //rsPlotVector(x);
-  // Using a noise-burst makes it sound more acoustic and natural, less electronic. But maybe this
-  // doesn't count as raw-material anymore because it can be recreated from the impulse responses 
-  // using convolution. Actually, the user could just play the kick sample through a convolution
-  // reverb that uses a noise-burst as impulse-response
-
-  for(int n = 0; n < N; n++)
-    x[n] = wz.getSample(x[n]);
-  //rsPlotVector(x);
-
-  // Optionally plot a phase-spectrum of the allpass impulse response:
-  bool plotPhase = false;  // Maybe make this a function parameter
-  if(plotPhase)
-  {
-    SpectrumPlotter<double> sp;
-    sp.setFftSize(65536);
-    sp.setLogFreqAxis(true);
-    sp.setSampleRate(sampleRate);
-    sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-    //sp.plotDecibelSpectra(N, &x[0]);  // Should be flat. Yep - it is.
-    sp.plotPhaseSpectra(N, &x[0]);
-    // ToDo: Maybe alternatively plot phase-delay or group-delay
-  }
-
-
-  // Post-process the white zap. First we turn the spectrum from white to brown by applying a first
-  // order lowpass tuned somewhere below the lowest allpass tuning freq. The resulting -6 dB/oct 
-  // magnitude response is ideal in the sense that the amplitude stays constant during the sweep. 
-  // Then we do a bit of cleanup by applying a highpass. This removes some bumpiness that is 
-  // introduced by the lowpass (it looks like we get some sort of undulating DC towards the end in
-  // the lowpass - we want to remove that). Finally, the sample is shortened to remove the silence
-  //  in the tail:
-  rsSamplePostProcessor pp;
-  pp.setSampleRate(sampleRate);
-  pp.applyOnePoleLowpass( x, 0.5*lowFreq);
-  pp.applyOnePoleHighpass(x, 1.0*lowFreq);
-  pp.applyOnePoleHighpass(x, 1.0*lowFreq);
-  pp.applyOnePoleHighpass(x, 1.0*lowFreq);
-  pp.shortenTail(x, -60.0, 0.02, 0.25/lowFreq); 
-  N = x.size();
-  RAPT::rsArrayTools::normalize(&x[0], N);  // implement and use sp.normalize(x);
-  // Maybe a 3rd order Butterworth highpass would be better than applying a 1st order highpass 3
-  // times? Try it! Maybe also try a somwhat lower cutoff for the highpass like 0.75*lowFreq.
-  // Actually, it turns out that there's a better way top reduce the subsonic flutter/rumble:
-  // Reduce the lowQ parameter.
-
-  return x;
-}
-
-
-
-
-
-// Refactor this into:
-// -Generation of exciter signal x
-//  -Maybe make a class rsWhiteExciter with various options:
-//   -impulse, impulse-train, allpass-delay-chain, chirpUp, chirpDown, noise, allpass-FDN, 
-//    noise-burst
-// -Application of the allpass zapper
-// -Post-processing
-//  -Browning lowpass
-//  -Cleanup highpass
-//  -Shortening
-//  -Normalization
-// -Filename generation
-// -File writing
-void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, double freqShape = 0.0, 
-  double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, double maxLength = 1.0, int sampleRate = 48000)
 {
   // The result is like in the createAllpassBassdrumN() functions above but here, we use the class
   // rsWhiteZapper which encapsulates the allpass based algorithm which the other functions 
   // implement manually.
 
-
   std::vector<double> x = getBrownZap(numStages, lowFreq, highFreq, freqShape, lowQ, 
     highQ, qShape, maxLength, sampleRate);
   int N = x.size();
-
 
   // Create filename from the parameters (maybe factor out):
   std::string name = "ZappyKick"; // Nah - not all possible settings lead to bassdrums
@@ -812,13 +711,8 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   // default to AllpassZap. The function may be eventually used to render other allpass based 
   // sounds such as toms and snares.
 
-
   // Write it to a wavefile:
   rosic::writeToMonoWaveFile(name, &x[0], N, sampleRate, 16);
-
-
-
-
 
   // ToDo: factor this out:
   // Create a spectrogram:
@@ -826,7 +720,6 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //specProc.setBlockAndTrafoSize(256, 2048);
   //specProc.setHopSize(64);
   //specProc.setAnalysisWindowType(...);
-
 
   // Plot a spectrogam:
   //SpectrogramPlotter<double> sp;
@@ -1003,7 +896,6 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  it in terms numStages, lowFreq, highfreq, freqShape assuming constant Q. Maybe try to work
   //  it out for first order allpasses first because that's simpler
 }
-
 
 void createAllpassDrums()
 {
