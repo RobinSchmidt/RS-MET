@@ -9,6 +9,7 @@ Equalizer::Equalizer()
   sampleRate       = 44100.0;
   globalGainFactor = 1.0;
   mono             = false;
+  bands.reserve(8);              // Added 2024/02/27 - might be a good idea.
 }
 
 Equalizer::~Equalizer()

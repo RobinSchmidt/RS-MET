@@ -262,14 +262,14 @@ protected:
 //=================================================================================================
 
 /** A chain of allpass filters that has "zap" like sound as its impulse response, i.e. a fast 
-sinusoidal downward sweep. Due to its allpass nature, the overall output has a white (i.e. white) 
+sinusoidal downward sweep. Due to its allpass nature, the overall output has a white (i.e. flat) 
 spectrum. It's meant to be used to create (raw material for) synthesized drum and percussion 
 sounds. It turned out to be useful to apply a first order lowpass afterwards to convert the white 
 spectrum into a brown one, i.e. one with -6 dB/oct falloff. The browning filter should probably be 
 tuned somewhere below the lowest allpass tuning frequency as set by setLowFreq().
 
-Eventually, it can be driven by sources other than an impulse generator - maybe noise-bursts could 
-be interesting. */
+Eventually, it can be driven by sources other than an impulse generator. Noise bursts are
+interesting as excitation signal, too. */
 
 class rsFlatZapper
 {
@@ -394,12 +394,21 @@ protected:
 };
 
 // ToDo:
-// -Maybe introduce global feedback - but the the output will not be white anymore. But maybe we 
-//  can use the allpass nesting technique to achieve a white output with feedback?
+// -Maybe introduce global feedback - but then the output will not be white anymore. But maybe we 
+//  can use the allpass nesting technique to achieve a white output with feedback? Is it possible
+//  (in a practical way) to implement zero-delay feedback for the whole class rsBiquadCascade? If 
+//  so, maybe do it.
+// -Let the user set up the frequency curve more flexibly by having an arbitrary number of nodes 
+//  distributed in 0..1 and map that curve to lowPitch...highPitch. that may be a use case for
+//  rsLinearFractionalInterpolator. But maybe do that in a subclass.
+// -Maybe have a function rsBiquadCascade::getSampleDF1_1p1z etc. that can be called alternatively
+//  if a2 = b2 = 0. Maybe such an optimizing dispatch can be done in rsBiqadCascade itself in a 
+//  processBlock function (the dispatcher overhead may make it not worthwhile in getSample but for
+//  a whole block, that may be a good optimization)
 // -Maybe we can build a phaser from it
-// -Maybe rename to rsFlatZapper - sounds cooler
 // -Maybe create a class rsBrownZapper that also includes the browning filter and the cleanup 
-//  highpass.It max also include a slope/tilt filter for further shaping.
+//  highpass and perhaps more post-processing. For example, a slope/tilt filter could be useful for
+//  further shaping. Or maybe an 8 band EQ.
 // -Make a subclass that also has some post-processing
 
 }

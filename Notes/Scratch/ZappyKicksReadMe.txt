@@ -2,7 +2,7 @@ A pack of samples that can be used as electronic bassdrums or, depending on the 
 "zap" sounds. The samples are all based on impulse responses of a specifically tuned chain of 
 allpass filters. This means, the initial raw material has a *perfectly* white spectrum because the 
 impulse itself is perfectly white and an allpass has a white magnitude spectrum by definition. The 
-idea for this was inpired by a statement of Ady Scorb in this video at 9:57:
+idea for this was inpired by a statement of Ady (Scorb) in this video at 9:57:
 
   https://www.youtube.com/watch?v=n3tmeChr7ec&t=9m57s
 
@@ -11,11 +11,14 @@ idea for this was inpired by a statement of Ady Scorb in this video at 9:57:
   frequency in a space and therefore you'll gonna get less nulls, less peaks and better translation 
   and better power in more spaces."
 
-The technique of feeding an impulse into an allpass filter achieves exactly that - smearing an 
-impulse in time - in a mathematically perfect way. No frequencies are boosted or attenuated. A bit 
-of post-processing has been applied, though: the initially white output of the allpass chain has 
-been filtered by a first order lowpass to give the spectrum a -6 dB/oct slope. Then, some subsonic 
-rumble has been removed by a DC blocker highpass. Then a smooth fade-out was applied. 
+When I heard him say "impulse smeared in time", I immediately thought: "Dispersion! Phase delay! 
+Allpass!". The technique of feeding an impulse into an allpass filter achieves exactly the desired 
+time smearing effect in a mathematically perfect way. No frequencies are boosted or attenuated by an 
+allpass. That implies that the initially white spectrum of the input impulse remains completely 
+white by construction. A bit of post-processing has been applied, though: the initially white output 
+of the allpass chain has been filtered by a first order lowpass to give the spectrum a -6 dB/oct 
+slope. Then, some subsonic rumble has been removed by a DC blocker highpass. Then a smooth fade-out 
+was applied. 
 
 The samples are named using the following scheme:
 
@@ -38,12 +41,14 @@ two corner frequencies of the allpass chain. These limitations thwart perfect se
 the self similarity is close enough to perfect such that you won't hear a big change for moderate 
 playback speed changes.
 
-Although the samples can be used as is, they are mainly meant to be used as raw material for 
-further shaping. Out of the box, the samples as such are completely atonal. For example, if you like 
-tuned bassdrums, you may want to process them further by perhaps boosting some frequency around your
+Although the samples can be used as is, they are mainly meant to serve as raw material for further 
+shaping. Out of the box, the samples are completely atonal. No frequency stands out. But if you like 
+tuned bassdrums, you may want to process them further by perhaps boosting some frequency around your 
 fundamental with a peaking filter or maybe a resonant highpass. Or you may want to apply some 
-distortion or layer them with some click samples. What is also interesting is to convolve them with 
-a short noise burst.
+distortion or layer them with some click samples and/or perhaps apply further 
+
+envelopes, etc.. What is also interesting is to convolve them with a short noise burst. Especially 
+the shorter ones get some acoustic kickdrum flavor from that. 
 
 The samples were created algorithmically by Robin Schmidt and are released under the Creative 
 Commons CC BY-SA 4.0 License. See:

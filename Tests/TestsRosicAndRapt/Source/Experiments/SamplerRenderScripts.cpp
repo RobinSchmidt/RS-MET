@@ -800,6 +800,8 @@ void rsSamplePostProcessor::shortenTail(std::vector<double>& x, double threshold
 }
 
 
+// Maybe wrap this into a class. It has too many parameters already and will probably get some 
+// more:
 std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
   double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
   double maxLength = 1.0, int sampleRate = 48000)
@@ -841,7 +843,7 @@ std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highF
   //rsPlotVector(x);
 
   // Optionally plot a phase-spectrum of the allpass impulse response:
-  bool plotPhase = true;  // Maybe make this a function parameter
+  bool plotPhase = false;  // Maybe make this a function parameter
   if(plotPhase)
   {
     SpectrumPlotter<double> sp;
@@ -1024,7 +1026,12 @@ void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   //  Currently, we use a highpass to counteract this rumble - but this is a kludge. Reducing
   //  lowQ seems to be the more appropriate way to go.
   // -I think, the samples are self-similar in the sense that when one zooms in, it looks the 
-  //  same. Try it!
+  //  same. Try it! Yes - but only for freqShape = 0.
+  // -Tweaking the highFreq affects the phases in the initial section (try 15/7500, 15/8000, 
+  //  15/8500). Tweaking the lowFreq affects the phases in the final section (try 13/8000,
+  //  15/8000, 17/8000). So, we have a nice phase-control as well which might by important for
+  //  phase-aligning a kick with a bassline. For this especially the phase in the final section
+  //  matters. ToDo: Try also different setting for numStages
   //
   // Conclusions:
   // -Overall length is proportional to numStages and inversely proportional to lowFreq
@@ -1119,7 +1126,17 @@ void createAllpassDrums()
 
   // For plotting tests:
   //double Q = 4.0;
-  //createBrownZap(50, 15,  8000, 0.0, 0.5, 2.0, 0.0);
+
+  // Let's try to modify the phase by tweaking the highFreq:
+  createBrownZap(50, 15,  7500, 0.0);
+  createBrownZap(50, 15,  8000, 0.0);
+  createBrownZap(50, 15,  8500, 0.0);
+  // OK - tweking the high freq affects the phases in the initial section
+  createBrownZap(50, 13,  8000, 0.0);
+  createBrownZap(50, 15,  8000, 0.0);
+  createBrownZap(50, 17,  8000, 0.0);
+
+
   //createBrownZap(50, 10,  1000, 0.0);
   //createBrownZap(50, 100,   100, 0.0);
   //createBrownZap(50,  100, 1000, 0.0);
