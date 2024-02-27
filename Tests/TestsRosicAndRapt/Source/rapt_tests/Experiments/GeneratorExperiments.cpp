@@ -3564,7 +3564,34 @@ void flatZapperOpposingLengthTweaks()
   // experiment we increase one and decrease the other in order to maintain a constant length. We
   // are interested in the effect that this has o the signal.
 
+  // Create the reference signal:
+  using Vec = std::vector<double>;
+  Vec x_50 = getBrownZap(50, 15,  8000, 0.0);
 
+  // Create various variants with less numStages and lower lowFreq. Lowering the lowFreq 
+  // counteracts the shortening effect from lowering numStages:
+  Vec x_45 = getBrownZap(45, 13.65, 8000, 0.0);
+  Vec x_40 = getBrownZap(40, 12.2,  8000, 0.0);
+  Vec x_35 = getBrownZap(35, 11.0,  8000, 0.0);
+  Vec x_30 = getBrownZap(30,  7.0,  8000, 0.0);
+  // To "match" the lengths, I used the maximum bump for the length reference point. The lengths
+  // are matched in such a was that "last big cycle" occurs at roughly the same time. In the
+  // reference signal, this bump occurs at around sample 13135.
+
+  // To make the plots not overly busy, we plot 3 signals at a time. First the reference together
+  // with slightly changed variants, then with more drastically changed variants:
+  rsPlotVectors(x_50, x_45, x_40);
+  rsPlotVectors(x_50, x_40, x_30);
+
+  // Observations:
+  // -The reference sound features more midrange, there's more of an audible sweep going on. The
+  //  ones with less stages de-emphasize this midrange sweepiness. 
+  //
+  // ToDo: 
+  // -Try to get a closer match. It's currently only very roughly matched. Maybe even writen an 
+  //  algorithm that automatically matches this. Identify a reference point in the reference 
+  //  signal and trace, how this point "moves" when we decrease the numStages and use some sort of
+  //  bisection algorithm to find the right lowFreq value for a match.
 }
 
 void showFlatZapPlots()

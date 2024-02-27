@@ -587,6 +587,11 @@ void createAllpassDrums()
   // For plotting tests:
   //double Q = 4.0;
 
+
+
+
+
+
   // Let's try to figure out what happens when we shorten the length by decrasing numStages while 
   // at the same time decreasing lowFreq to compensate for the length shortening:
   renderBrownZap(50, 15,  8000, 0.0);  // Reference to match
@@ -608,6 +613,11 @@ void createAllpassDrums()
   // OK - these are matched such that "last big cycle" occurs at roughly the same time. The
   // reference sound features more midrange, there's more of an audible sweep going on. The
   // ones with less stages de-emphasize this midrange sweepiness. 
+
+
+
+
+
 
   //renderBrownZap(50, 10,  1000, 0.0);
   //renderBrownZap(50, 100,   100, 0.0);
