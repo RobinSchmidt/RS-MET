@@ -3441,6 +3441,92 @@ void pulseWidthModulationViaTwoSaws()
 
 
 
+
+
+// move this stuff to GeneratoExperiments.h/cpp and call createAllpassBassdrum2 from flatZapper:
+void applyAllpassChain(const double* x, int N, double* y, double freq, double quality, 
+  int numStages, double sampleRate)
+{
+  // As a convention, we switch to a first order allpass chain when the quality fcator Q is zero:
+  bool useBiquad = quality != 0.0;
+
+  // Create and set up the allpass chain filter:
+  rosic::AllpassChain apc;
+  apc.setSampleRate(sampleRate);
+  apc.setFrequency(freq);
+  apc.setNumStages(numStages);
+  apc.setQ(quality);
+  if(useBiquad)
+    apc.setMode(apc.SECOND_ORDER_ALLPASS);
+  else
+    apc.setMode(apc.FIRST_ORDER_ALLPASS);
+
+  // Apply the allpass to x and write the result into y:
+  for(int n = 0; n < N; n++)
+    y[n] = apc.getSample(x[n]);
+
+  // ToDo: 
+  // -Allow for arbitrary number of stages. Currently rosic::AllpassChain has a limit of 24.
+}
+void applyAllpassChain(std::vector<double>& inOut, double freq, double quality, int numStages,
+  double sampleRate)
+{
+  applyAllpassChain(&inOut[0], (int) inOut.size(), &inOut[0], freq, quality, numStages, sampleRate);
+}
+void allpassChainBassdrum()
+{
+  // We create a bassdrum-like zap using the class rosic::AllpassChain. This uses a different kind
+  // of allpass chain than class rsFlatZapper. Here, many allpasses are tuned to the same frequency
+  // if the numStages parameter below is > 1. numStages is the number of stages per allpass chain
+  // object. Then we use a chain of such numChains of such objects such that the total number of 
+  // allpasses used ins numStages * numChains. But with each rosic::AllpassChain, every allpass 
+  // uses the same settings. 
+  //
+  // What we observe is that when many allpasses use the same settings, we get a sort of steppy 
+  // amplitude envelope in the output signal.
+
+  // User parameters:
+  int    sampleRate = 48000;  // Sample rate in Hz
+  double length     = 0.5;    // Length in seconds
+  double loQ        = 0.5;
+  double hiQ        = 1.0;
+  double loF        = 27.5;
+  double hiF        = 14080;
+  int    numStages  = 10;       // Number of stages per allpass chain
+  int    numChains  = 5;        // With 10, we get exact octaves for the tuning freqs
+
+                              // Render sample:
+  int N = ceil(length * sampleRate);  // Number of samples to render
+  using Vec = std::vector<double>;
+  Vec x(N);
+  x[0] = 1;
+  for(int i = 1; i <= numChains; i++)
+  {
+    double f = rsLinToExp(double(i), 1.0, double(numChains), loF, hiF);
+    double q = rsLinToExp(double(i), 1.0, double(numChains), loQ, hiQ);
+    applyAllpassChain(x, f, q, numStages, sampleRate);
+  }
+
+  rsPlotVector(x);
+
+  // Normalize and write it to a wavefile:
+  //RAPT::rsArrayTools::normalize(&x[0], N);
+  //rosic::writeToMonoWaveFile("AllpassBassdrum2.wav", &x[0], N, sampleRate, 16);
+
+  // Observations:
+  // -When loQ=4 and hiQ=1, then the sound becomes kinda warbly. It's also warbly when having it 
+  //  the other way around
+  // -Using more stages per chain (and reducing the number of chains to keep the product constant),
+  //  the amp-envelope seems to become more steppy. There seem to be plateaus. With just 1 stage 
+  //  per chain, the amp-env does not feature such plateaus
+  // -For steppy amp-env, try numStages = 10, numChains = 5. For a smooth one, use numStages = 1, 
+  //  numChains = 50. The total number of allpasses is 50 in both cases.
+  //
+  // ToDo:
+  // -Plot the amp envelope - maybe on a log-amplitude scale
+  // -Try applying the post-processing with the lowpass and see how that changes the amp-env
+}
+
 void flatZapperPhaseTweaks()
 {
   using Vec = std::vector<double>;
@@ -3467,9 +3553,9 @@ void flatZapperPhaseTweaks()
   rsPlotVectors(x_50_15_8000, x_50_15_7500, x_50_15_8500);
 }
 
-
 void flatZapper()
 {
+  allpassChainBassdrum();
   flatZapperPhaseTweaks();
 
 

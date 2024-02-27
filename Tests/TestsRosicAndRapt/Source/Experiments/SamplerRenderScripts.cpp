@@ -538,87 +538,6 @@ void createMiscSamples()
   int dummy = 0;
 }
 
-
-
-
-// This function and its callers may be obsolete now. But the callers still contain some comments 
-// that should be preserved:
-void applyAllpassChain(const double* x, int N, double* y, double freq, double quality, 
-  int numStages, double sampleRate)
-{
-  // As a convention, we switch to a first order allpass chain when the quality fcator Q is zero:
-  bool useBiquad = quality != 0.0;
-
-  // Create and set up the allpass chain filter:
-  rosic::AllpassChain apc;
-  apc.setSampleRate(sampleRate);
-  apc.setFrequency(freq);
-  apc.setNumStages(numStages);
-  apc.setQ(quality);
-  if(useBiquad)
-    apc.setMode(apc.SECOND_ORDER_ALLPASS);
-  else
-    apc.setMode(apc.FIRST_ORDER_ALLPASS);
-
-  // Apply the allpass to x and write the result into y:
-  for(int n = 0; n < N; n++)
-    y[n] = apc.getSample(x[n]);
-
-  // ToDo: 
-  // -Allow for arbitrary number of stages. Currently rosic::AllpassChain has a limit of 24.
-}
-void applyAllpassChain(std::vector<double>& inOut, double freq, double quality, int numStages,
-  double sampleRate)
-{
-  applyAllpassChain(&inOut[0], (int) inOut.size(), &inOut[0], freq, quality, numStages, sampleRate);
-}
-void createAllpassBassdrum2()
-{
-  // This function may be preserved and moved into an experiment to deonstrate the steppy
-  // amp-env artifact when tuning several allpasses to the same frequency
-
-  // User parameters:
-  int    sampleRate = 48000;  // Sample rate in Hz
-  double length     = 0.5;    // Length in seconds
-  double loQ        = 0.5;
-  double hiQ        = 1.0;
-  double loF        = 27.5;
-  double hiF        = 14080;
-  int    numStages  = 10;       // Number of stages per allpass chain
-  int    numChains  = 5;      // With 10, we get exact octaves
-
-  // Render sample:
-  int N = ceil(length * sampleRate);  // Number of samples to render
-  using Vec = std::vector<double>;
-  Vec x(N);
-  x[0] = 1;
-  for(int i = 1; i <= numChains; i++)
-  {
-    double f = rsLinToExp(double(i), 1.0, double(numChains), loF, hiF);
-    double q = rsLinToExp(double(i), 1.0, double(numChains), loQ, hiQ);
-    applyAllpassChain(x, f, q, numStages, sampleRate);
-  }
-
-  // Normalize and write it to a wavefile:
-  RAPT::rsArrayTools::normalize(&x[0], N);
-  rosic::writeToMonoWaveFile("AllpassBassdrum2.wav", &x[0], N, sampleRate, 16);
-
-  // Observations:
-  // -When loQ=4 and hiQ=1, then the sound becomes kinda warbly. It's also warbly when having it 
-  //  the other way around
-  // -Using more stages per chain (and reducing the number of chains to keep the product constant),
-  //  the amp-envelope seems to become more steppy. There seem to be plateaus. With just 1 stage 
-  //  per chain, the amp-env does not feature such plateaus
-  // -For steppy amp-env, try numStages = 10, numChains = 5. For a smooth one, use numStages = 1, 
-  //  numChains = 50. The total number of allpasses is 50 in both cases.
-  //
-  // Conclusions:
-  // -We may scrap the numStages parameter and just always use 1 stage, if smoothness is the goal.
-  //  This has been done in rsFlatZapper
-}
-
-
-
 // maybe rename to renderBrownZap
 void createBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000, 
   double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0, 
@@ -858,20 +777,6 @@ void createAllpassDrums()
 
   // For plotting tests:
   //double Q = 4.0;
-
-  // Let's try to modify the phase by tweaking the numStages, lowFreq and highFreq:
-  //createBrownZap(45, 15,  8000, 0.0);
-  //createBrownZap(50, 15,  8000, 0.0);
-  //createBrownZap(55, 15,  8000, 0.0);
-
-  //createBrownZap(50, 13,  8000, 0.0);
-  //createBrownZap(50, 15,  8000, 0.0);
-  //createBrownZap(50, 17,  8000, 0.0);
-
-  //createBrownZap(50, 15,  7500, 0.0);
-  //createBrownZap(50, 15,  8000, 0.0);
-  //createBrownZap(50, 15,  8500, 0.0);
-  // Move to an experiment flatZapperPhaseTweaks, let it make plots
 
 
   // Let's try to figure out what happens when we shorten the length by decrasing numStages while 
