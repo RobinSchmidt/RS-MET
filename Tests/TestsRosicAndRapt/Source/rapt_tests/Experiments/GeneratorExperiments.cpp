@@ -3602,6 +3602,7 @@ void showFlatZapPlots()
   // Here it can be selected which types of plot should be generated:
   bool plotSignal         = false;
   bool plotPhaseSpectrum  = true;
+  bool plotGroupDelay     = true;
   bool plotInstFreq       = false;  // Instantaneous frequency measurement
 
   // Create the signal to analyze:
@@ -3647,6 +3648,16 @@ void showFlatZapPlots()
     sp.setPlotType(SP::PlotType::phaseUnwrapped); 
     sp.plotSpectra(N, &x[0]);  
   }
+
+  // Plot the group delay:
+  if(plotGroupDelay)
+  {
+    SP sp;
+    setupSpectrumPlotter(sp);
+    sp.setPlotType(SP::PlotType::groupDelay); 
+    sp.plotSpectra(N, &x[0]);  
+  }
+  // Bins 0 and 1 look strange
 
   // Plot the measured instantaneous frequency:
   if(plotInstFreq)

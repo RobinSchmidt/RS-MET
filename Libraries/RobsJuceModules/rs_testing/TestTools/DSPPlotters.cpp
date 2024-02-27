@@ -548,20 +548,18 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
 
   // Produce the data, add it to the datafile and invoke the plotter:
   setupTransformer();
-  //T ampFloor = RAPT::rsDbToAmp(dBFloor);
   for(int i = 0; i < numSignals; i++) 
   {
     computeComplexSpectrum(signals[i], signalLength, spec);
-
     using PT = PlotType;
     switch(plotType)
     {
-    case PT::magnitudeDb:    toDecibels(spec, y, signalLength); break;
-    case PT::phaseWrapped:   toPhase(   spec, y, false);        break;
-    case PT::phaseUnwrapped: toPhase(   spec, y, true);         break;
+    case PT::magnitudeDb:    toDecibels(  spec, y, signalLength); break;
+    case PT::phaseWrapped:   toPhase(     spec, y, false);        break;
+    case PT::phaseUnwrapped: toPhase(     spec, y, true);         break;
+    case PT::groupDelay:     toGroupDelay(spec, y);               break;
+    default: rsError("Unknwon plot type in SpectrumPlotter<T>::plotSpectra");
     }
-
-
     addDataArrays(maxBin-minBin+1, &f[minBin], &y[minBin]);
   }
   setupPlotterAndPlot();
