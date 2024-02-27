@@ -270,13 +270,13 @@ public:
   setFftSize and may be different from signalLength - if signalLength is shorter, the FFT buffers
   will be padded with zeros and if it's longer, only the leading sections of buffers will be 
   used. */
-  void plotDecibelSpectra(int signalLength, const T *x0, const T *x1 = nullptr, 
+  void plotSpectra(int signalLength, const T *x0, const T *x1 = nullptr, 
     const T *x2 = nullptr, const T *x3 = nullptr, const T *x4 = nullptr, const T *x5 = nullptr, 
     const T *x6 = nullptr, const T *x7 = nullptr, const T *x8 = nullptr, const T *x9 = nullptr);
 
   /** Plots the spectra of the rows of the given matrix. Each row is taken to be a signal in the
   time domain, e.g. an impulse response. */
-  void plotDecibelSpectraOfRows(const rsMatrix<T>& signals);
+  void plotSpectraOfRows(const rsMatrix<T>& signals);
 
   /** Plots the spectra of the given signals. The first index is the signal, the second the sample
   index. All signals are assumed to have the same length. */

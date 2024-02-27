@@ -4372,7 +4372,7 @@ void samplerFilters()
     plt.setNormalizationMode(SP::NormalizationMode::impulse);
     plt.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
     plt.setPixelSize(1200, 400);
-    plt.plotDecibelSpectra(N, &yL[0], &yH[0], &yB[0]);
+    plt.plotSpectra(N, &yL[0], &yH[0], &yB[0]);
   };
 
   // Move out into separate experiment. What we are actually interested in (I think), is the 

@@ -3636,7 +3636,7 @@ void showFlatZapPlots()
     sp.setLogFreqAxis(true);
     sp.setSampleRate(sampleRate);
     sp.setFreqAxisUnit(SpectrumPlotter<double>::FreqAxisUnits::hertz);
-    sp.plotDecibelSpectra(N, &x[0]);  // Test - shows the effect of post-processing filters
+    sp.plotSpectra(N, &x[0]);  // Test - shows the effect of post-processing filters
     //sp.plotPhaseSpectra(N, &x[0]);
   }
 

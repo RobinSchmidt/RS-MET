@@ -1142,41 +1142,41 @@ void windowFunctionSpectra()
   //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum..maybe setLowFreqZoom
                    // ...or, more generally, allow a bandpass-like setting
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
+  //plt.plotSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
   //rsPlotVectors(rectangular, triangular, hanning, hamming);
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
+  //plt.plotSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
   //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
+  //plt.plotSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+  //plt.plotSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
   //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
 
-  //plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
+  //plt.plotSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
   //  &hannPoisson4[0], &hannPoisson5[0]);
   //rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
   // Something goes wrong here - the plot window immediately closes itself
 
-  //plt.plotDecibelSpectra(N, &cheby20[0], &rectangular[0]);// compare rectangular and cheby20
-  //plt.plotDecibelSpectra(N, &cheby40[0], &hamming[0]);  // compare hamming and cheby40
-  //plt.plotDecibelSpectra(N, &cheby60[0], &blackman[0]); // compare blackman and cheby60
-  //plt.plotDecibelSpectra(N, &cheby100[0], &blackmanHarris[0]); // compare blackmanHarris and cheby100
+  //plt.plotSpectra(N, &cheby20[0], &rectangular[0]);// compare rectangular and cheby20
+  //plt.plotSpectra(N, &cheby40[0], &hamming[0]);  // compare hamming and cheby40
+  //plt.plotSpectra(N, &cheby60[0], &blackman[0]); // compare blackman and cheby60
+  //plt.plotSpectra(N, &cheby100[0], &blackmanHarris[0]); // compare blackmanHarris and cheby100
 
 
-  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  plt.plotSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
   rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
 
-  //plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
+  //plt.plotSpectra(N, &cheby60[0], &cheby60_2[0]);
 
-  //plt.plotDecibelSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);
+  //plt.plotSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);
   //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5);
 
-  //plt.plotDecibelSpectra(N, &salFlatTopMin3[0], &salFlatTopMin4[0], &salFlatTopMin5[0]);
+  //plt.plotSpectra(N, &salFlatTopMin3[0], &salFlatTopMin4[0], &salFlatTopMin5[0]);
   //rsPlotVectors(salFlatTopMin3, salFlatTopMin4, salFlatTopMin5); 
 
-  //plt.plotDecibelSpectra(N, &hrsFlatTop70[0], &hrsFlatTop95[0], &hrsFlatTop90D[0], 
+  //plt.plotSpectra(N, &hrsFlatTop70[0], &hrsFlatTop95[0], &hrsFlatTop90D[0], 
   //  &hrsFlatTop116D[0], &hrsFlatTop144D[0], &hrsFlatTop169D[0], &hrsFlatTop196D[0], 
   //  &hrsFlatTop223D[0], &hrsFlatTop248D[0]);
   //rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D, 
@@ -1186,8 +1186,8 @@ void windowFunctionSpectra()
   // without explicitly doing so)
   // try flatTop90D for sinusoidal analysis
 
-  //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
-  //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
+  //plt.plotSpectra(N, &rectangular[0], &chebyTweak[0]);
+  //plt.plotSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
 
 
 

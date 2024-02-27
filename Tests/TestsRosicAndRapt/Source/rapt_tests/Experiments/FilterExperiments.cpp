@@ -295,7 +295,7 @@ void bandpassAndNotch()
 
   Y = splitIntoBands(impulse); 
   //plotMatrixRows(Y);
-  plt.plotDecibelSpectraOfRows(Y);
+  plt.plotSpectraOfRows(Y);
 
   // Observations:
   // -The purple impulse resonse looks strange - it has only positive values but is very erratic.
@@ -442,7 +442,7 @@ void bandSplittingThreeWay()
   plt.setSampleRate(fs);
   plt.setLogFreqAxis(true);
   plt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
-  plt.plotDecibelSpectraOfRows(Y);
+  plt.plotSpectraOfRows(Y);
 
   // Observations:
   // -We do indeed see a nice bandpass response and punctured lowpass and highpass responses
@@ -585,7 +585,7 @@ void bandSplittingThreeWay2p2z()
   splt.setLogFreqAxis(true);
   //splt.setRange(15.625, fs/2);  // doesn't have any effect
   splt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
-  splt.plotDecibelSpectraOfRows(Y);
+  splt.plotSpectraOfRows(Y);
 
   // Observations:
   // -Filters have a slope of 20 dB/dec = 6 dB/oct, so they are not really steeper that the old

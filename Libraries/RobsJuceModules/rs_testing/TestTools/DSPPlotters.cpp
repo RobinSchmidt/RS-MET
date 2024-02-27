@@ -521,7 +521,7 @@ const vector<const T*> getMatrixRowPointers(const rsMatrix<T>& A)
 
 
 template <class T>
-void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1,
+void SpectrumPlotter<T>::plotSpectra(int signalLength, const T *x0, const T *x1,
   const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8,
   const T *x9)
 {
@@ -530,7 +530,7 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
 }
 
 template <class T>
-void SpectrumPlotter<T>::plotDecibelSpectraOfRows(const rsMatrix<T>& X)
+void SpectrumPlotter<T>::plotSpectraOfRows(const rsMatrix<T>& X)
 {
   const vector<const T*> signals = getMatrixRowPointers(X);
   plotSpectra((const T**) &signals[0], (int) signals.size(), X.getNumColumns());
@@ -544,49 +544,25 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
   // Create temp buffers for the data:
   std::vector<std::complex<T>> spec(fftSize);  // Complex spectrum
   std::vector<T> f = getFreqAxis(numBins);     // Frequency axis
-  std::vector<T> dB(numBins);                  // dB-spectrum
+  std::vector<T> y(numBins);                   // y-valus of spectrum (dB or phase, etc.)
 
   // Produce the data, add it to the datafile and invoke the plotter:
   setupTransformer();
-  T ampFloor = RAPT::rsDbToAmp(dBFloor);
+  //T ampFloor = RAPT::rsDbToAmp(dBFloor);
   for(int i = 0; i < numSignals; i++) 
   {
     computeComplexSpectrum(signals[i], signalLength, spec);
 
-    // Factor out to getDecibels(spec, dB)
-
     using PT = PlotType;
     switch(plotType)
     {
-    case PT::magnitudeDb:    toDecibels(spec, dB, signalLength); break;
-    case PT::phaseWrapped:   toPhase(   spec, dB, false);        break;
-    case PT::phaseUnwrapped: toPhase(   spec, dB, true);         break;
+    case PT::magnitudeDb:    toDecibels(spec, y, signalLength); break;
+    case PT::phaseWrapped:   toPhase(   spec, y, false);        break;
+    case PT::phaseUnwrapped: toPhase(   spec, y, true);         break;
     }
 
 
-    //toDecibels(spec, dB, signalLength);
-
-
-    /*
-    // Compute normalized dB-spectrum:
-    T scaler = T(1);
-    using NM = NormalizationMode;
-    switch(normMode)
-    {
-    case NM::cycle:    scaler = T(1) / T(signalLength);      break;  // verify!
-    case NM::impulse:  scaler = T(1);                        break; 
-    case NM::toZeroDb: scaler = T(1) / real(rsMaxAbs(spec)); break;
-    }
-    for(int k = 0; k < numBins; k++)
-      dB[k] = RAPT::rsAmpToDbWithCheck(scaler * abs(spec[k]), ampFloor);
-    // The computation of the scaler may be not quite correct at DC (I think, because 
-    // we need to incorporate the value at fftSize/2 or something?). Verify this!
-    */
-
-
-
-
-    addDataArrays(maxBin-minBin+1, &f[minBin], &dB[minBin]);
+    addDataArrays(maxBin-minBin+1, &f[minBin], &y[minBin]);
   }
   setupPlotterAndPlot();
 }
