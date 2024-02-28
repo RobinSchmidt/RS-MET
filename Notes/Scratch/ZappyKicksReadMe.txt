@@ -11,14 +11,14 @@ idea for this was inpired by a statement of Ady (Scorb) in this video at 9:57:
   frequency in a space and therefore you'll gonna get less nulls, less peaks and better translation 
   and better power in more spaces."
 
-When I heard him say "impulse smeared in time", I immediately thought: "Dispersion! Phase delay! 
-Allpass!". The technique of feeding an impulse into an allpass filter achieves exactly the desired 
-time smearing effect in a mathematically perfect way. No frequencies are boosted or attenuated by an 
-allpass. That implies that the initially white spectrum of the input impulse remains completely 
-white by construction. A bit of post-processing has been applied, though: the initially white output 
-of the allpass chain has been filtered by a first order lowpass to give the spectrum a -6 dB/oct 
-slope. Then, some subsonic rumble has been removed by a DC blocker highpass. Then a smooth fade-out 
-was applied. 
+I highly recommend watching the whole video. When I heard him say "impulse smeared in time", I 
+immediately thought: "Dispersion! Phase delay! Allpass!". The technique of feeding an impulse into 
+an allpass filter achieves exactly the desired time smearing effect in a mathematically perfect way. 
+No frequencies are boosted or attenuated by an allpass. That implies that the initially white 
+spectrum of the input impulse remains completely white by construction. A bit of post-processing has 
+been applied, though: the initially white output of the allpass chain has been filtered by a first 
+order lowpass to give the spectrum a -6 dB/oct slope. Then, some subsonic rumble has been removed by 
+a DC blocker highpass. Then a smooth fade-out was applied. 
 
 The samples are named using the following scheme:
 

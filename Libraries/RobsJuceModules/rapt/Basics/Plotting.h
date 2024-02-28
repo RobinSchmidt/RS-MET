@@ -38,6 +38,7 @@ inline void rsPlotArrays(int N, const T* a1, const T* a2 = nullptr, const T* a3 
   const T* a4 = nullptr, const T* a5 = nullptr)
 {
   GNUPlotter plt;
+  plt.setToDarkMode();
   plt.plotArrays(N, a1, a2, a3, a4, a5);
 }
 // maybe allow for more than 5
@@ -47,6 +48,7 @@ inline void rsPlotArraysXY(int N, const T* x, const T* y1 = nullptr, const T* y2
   const T* y3 = nullptr, const T* y4 = nullptr, const T* y5 = nullptr, const T* y6 = nullptr)
 {
   GNUPlotter plt;
+  plt.setToDarkMode();
   plt.addDataArrays(N, x, y1, y2, y3, y4, y5, y6);
   plt.plot();
 }
@@ -63,6 +65,7 @@ template<class T>
 inline void rsStemPlot(int N, T *x, T *y)
 {
   GNUPlotter plt;
+  plt.setToDarkMode();
   plt.addDataArrays(N, x, y);
   plt.addDataArrays(N, x, y); // can probably be done without adding the data twice
   plt.setGraphStyles("impulses", "points pt 7 ps 1.2");
@@ -86,6 +89,7 @@ inline void rsPlotVectors(
 {
   // make a function that can take more vectors...maybe a vector of vectors?
   GNUPlotter plt;
+  plt.setToDarkMode();
   if(v0.size() > 0) plt.addDataArrays((int) v0.size(), &v0[0]);
   if(v1.size() > 0) plt.addDataArrays((int) v1.size(), &v1[0]);
   if(v2.size() > 0) plt.addDataArrays((int) v2.size(), &v2[0]);
@@ -115,6 +119,7 @@ inline void rsPlotVectorsXY(
 )
 {
   GNUPlotter plt;
+  plt.setToDarkMode();
   int N = (int) x.size();
   //rsAssert(y1.size() == N);
   if(y1.size() > 0) plt.addDataArrays(N, &x[0], &y1[0]);
@@ -172,6 +177,7 @@ inline void rsPlotSpectrum(std::vector<T> fftMagnitudes, T sampleRate = T(0),
   }
 
   GNUPlotter plt;
+  plt.setToDarkMode();
   plt.addDataArrays(N, &f[0], &db[0]);
   plt.plot();
 }
@@ -249,6 +255,7 @@ template<class T>
 inline void rsPlotFunction(const std::function<T(T)>& func, T xMin, T xMax, int N)
 {
   GNUPlotter plt;
+  plt.setToDarkMode();
   std::vector<T> x(N), y(N);
   plt.rangeLinear(&x[0], N, xMin, xMax);
   for(int i = 0; i < N; i++)

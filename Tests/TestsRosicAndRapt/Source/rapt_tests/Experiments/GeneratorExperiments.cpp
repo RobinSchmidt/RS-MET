@@ -3609,8 +3609,8 @@ void showFlatZapPlots()
   using Vec = std::vector<double>;
   Vec x;
 
-  //x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
-  // These are the defalut parameter settings.
+  x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // These are the default parameter settings.
 
   //x = getBrownZap(50, 15, 8000, 2.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for freqShape (2 instead of 0)
@@ -3618,7 +3618,7 @@ void showFlatZapPlots()
   //x = getBrownZap(100, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for numStages (100 instead of 50). 
 
-  x = getFlatZap(50,  10, 10000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  //x = getFlatZap(50,  10, 10000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   //x = getFlatZap(50,  10, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   //x = getFlatZap(50, 100, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // for nice group delay plots
@@ -3626,6 +3626,18 @@ void showFlatZapPlots()
   //x = getBrownZap(45, 25, 200, -3.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // The phase-plot looks wrong with these settings. I think this is a bug in the plotter. Figure
   // out what is going on!
+
+  //x = getBrownZap(50,  10, 24000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // Let's try fHi = sampleRate / 2, i.e. the Nyquist limit. OK - it seems to work.
+
+  //x = getBrownZap(50,  10, 25000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // Going above the Nyquist limit seems to give unstable filters.
+
+  //x = getBrownZap(50,  0.1, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // Try to go really close to zero with lowFreq. This makes the sweep really long. It doesn't 
+  // reach its end in the given maximum length (of 1 second)
+
+
 
   int N = x.size();
 
@@ -3724,6 +3736,10 @@ void showFlatZapPlots()
   //  use decimated data for plotting because it will really get long. But that should give more
   //  accurate results. Maybe also try to use the raw signal, i.e. before post-processing, to see
   //  if that gives better or worse results for inst-freq measurements.
+  //
+  // ToDo:
+  // -Try using a (bidirectionally) lowpassed version to get better instantaneous freq measurements 
+  //  with the zero-crossing based algo
 }
 
 void flatZapper()
@@ -3889,6 +3905,12 @@ void flatZapper()
   //  total number of stages. Although - the total shift at 24k may be irrelevant.
   // -What happens when we reduce lowFreq to make it longer while at the same time decreasing
   //  numStages to make it shorter? Try to find settings
+  // -Try to figure out the actual function for the instantaneous frequency. Maybe the time domain
+  //  signal is something like sin(1/x)? But no - that doesn't look self-similar when zooming in:
+  //  https://www.desmos.com/calculator/qatdgqpvio
+  //  -How about f(t) = sin(w * t)  with  w = w(t) = exp(-t)? Some heavy handed attempts:
+  //   https://www.desmos.com/calculator/ngcqjzdslq
+  //   https://www.desmos.com/calculator/z6z3cbyet4
   //
   // Ideas:
   // -Maybe the allpass action cannot only be imagined as delaying frequencies but also as 

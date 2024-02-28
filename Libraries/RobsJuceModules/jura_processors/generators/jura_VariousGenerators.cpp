@@ -461,7 +461,7 @@ void FlatZapperModule::createParameters()
 
 
   // Freq settings:
-  p = new Param("FreqLow", 10.0, 20000.0, 15.0, Parameter::EXPONENTIAL);
+  p = new Param("FreqLow", 1.0, 20000.0, 15.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<FZ>(fz, &FZ::setLowFreq);
 

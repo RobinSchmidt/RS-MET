@@ -260,6 +260,10 @@ protected:
   int freqMedianOrder  = 1;
   int freqAverageOrder = 3;
   int ampEnvPrecision  = 1;
+  // Maybe when averaging frequencies we may let the user select the kind of average (arithmetic 
+  // vs geometric vs harmonic, etc.) Rationale: the freq-sweep might have a certain shape that may
+  // have to be reflected by the averaging method. Maybe let the user set an averaging exponent
+  // (0 would mean geometric average, 1 would mean arithmetic, -1 harmonic etc.)
 
   bool trapezoidal = false;  
   // not yet used - should switch between using trapezoidal and running-sum integration for 
