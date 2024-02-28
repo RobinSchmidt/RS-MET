@@ -3684,12 +3684,13 @@ void showFlatZapPlots()
     using Algo = rsSingleSineModeler<double>::Algorithm;
 
     rsSingleSineModeler<double> ssm;
-    ssm.setAnalysisAlgorithm(Algo::ampViaPeaks);    // This is the default
+    //ssm.setAnalysisAlgorithm(Algo::ampViaPeaks);    // This is the default
     //ssm.setAnalysisAlgorithm(Algo::freqViaFormula);
     //ssm.setAnalysisAlgorithm(Algo::freqViaZeros);     // This gives cleanest result
 
     Vec a(N), w(N);
     ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+    //rsPlotVector(a);  // just to see what the algo does
     Vec f = (sampleRate / (2*PI)) * w;
     //rsPlotVector(f);
     Vec p(N);
@@ -3705,6 +3706,7 @@ void showFlatZapPlots()
   // combine the results of both (or all three) algorithms to get a cleaner result. Maybe crossfade 
   // back and forth between ampViaPeaks and freqViaFormula. The results of the freqViaZeros algo
   // look good for the first half of the plot. Beyond that, they start to wiggle weirdly.
+  // When using the 
 
 
 
@@ -3739,7 +3741,8 @@ void showFlatZapPlots()
   //
   // ToDo:
   // -Try using a (bidirectionally) lowpassed version to get better instantaneous freq measurements 
-  //  with the zero-crossing based algo
+  //  with the zero-crossing based algo. Rationale: it looks like freq estimation works better for 
+  //  the brown zaps than for the white ones - maybe further lowpass could improve it even more?
 }
 
 void flatZapper()
@@ -3923,5 +3926,8 @@ void flatZapper()
   //  of lowFreq. Maybe the group delay of lowFreq is relevant? Let's try to find a formula for
   //  it in terms numStages, lowFreq, highfreq, freqShape assuming constant Q. Maybe try to work
   //  it out for first order allpasses first because that's simpler
+  // -Another idea to create white or brown drums is to just apply a whitening filter to a given
+  //  signal. Would that work for any signal? If not, maybe it could at least work for any 
+  //  sweepdown?
 }
 
