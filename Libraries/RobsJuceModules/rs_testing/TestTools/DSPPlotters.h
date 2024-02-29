@@ -224,6 +224,8 @@ public:
     phaseUnwrapped,
     //phaseDelay,
     groupDelay
+    //ringing  // magnitude of complex derivative
+    //slope    // derivative of dB-magnitudes
   };
 
   /** Sets the type of plot that should be produced. @see: PlotType. The default is magnitudeDb. */

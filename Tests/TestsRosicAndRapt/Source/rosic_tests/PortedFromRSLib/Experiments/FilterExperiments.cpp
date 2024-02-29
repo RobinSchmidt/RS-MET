@@ -1050,7 +1050,7 @@ void brickwallAndAllpass()
 
   double sampleRate   = 44100;
   double oversampling = 10.0;  // Oversampling factor
-  int    N            = 500;   // Number of samples to generate
+  int    N            = 5000;   // Number of samples to generate
 
   // Allpass settings:
   //double freqScale = 0.9;
@@ -1067,8 +1067,15 @@ void brickwallAndAllpass()
   lpf.setSubDivision(oversampling);
   using Vec = std::vector<double>;
   Vec x(N);
+
+  // Step response:
+  //for(int n = 0; n < N; n++)
+  //  x[n] = lpf.getSample(1.0);
+
+  // Impulse response:
+  x[0] = lpf.getSample(1.0);
   for(int n = 0; n < N; n++)
-    x[n] = lpf.getSample(1.0);
+    x[n] = lpf.getSample(0.0);
 
 
   // Create and set up the zapper object that we use as allpass:
@@ -1092,9 +1099,33 @@ void brickwallAndAllpass()
   //rsPlotVectors(x, y, 0.5*(x+y));
   int dummy = 0;
 
+
+  // Plot the phase responses of the originla lowpass filter and the lowpass combined with the 
+  // allpass.
+  using SP = SpectrumPlotter<double>;
+  SP sp;
+  sp.setFftSize(65536);
+  sp.setLogFreqAxis(true);
+  sp.setSampleRate(sampleRate);
+  sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
+  sp.setNormalizationMode(SP::NormalizationMode::impulse);
+  //sp.setPlotType(SP::PlotType::phaseUnwrapped);
+  sp.setPlotType(SP::PlotType::groupDelay);
+  //sp.setPlotType(SP::PlotType::magnitudeDb);
+  sp.plotSpectra(N, &x[0], &y[0]);
+
+
+
   // Observations:
   // -The allpass does not seem to reduce the ripple - or at least I have not yet found any 
   //  good settings. It seems to just introduce additional delay which is not helpful
+  //
+  // ToDo:
+  // -Plot group delay responses of lowpass, allpass and combined filter.
+  // -Try to tweak the allpass in such a way that its group delay roughly looks like the inverse
+  //  of the group delay of the lowpass.
+  // -Other idea: could we perhaps put a notch filter on the ringing frequency? Or maybe a dip?
+  //  
 }
 
 void stateVariableFilter()
