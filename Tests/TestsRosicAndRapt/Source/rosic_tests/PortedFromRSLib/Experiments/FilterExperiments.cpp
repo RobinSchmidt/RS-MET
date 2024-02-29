@@ -1125,6 +1125,13 @@ void brickwallAndAllpass()
   // -Try to tweak the allpass in such a way that its group delay roughly looks like the inverse
   //  of the group delay of the lowpass.
   // -Other idea: could we perhaps put a notch filter on the ringing frequency? Or maybe a dip?
+  //  Yes - that seems to be promising - I have made a toolChain preset 
+  //  TestNotchedBrickwallRinging that uses EngineersFilter with a steep elliptic lowpass filter
+  //  and an Equalizer afterwards that produces a notoch at the cutoff of the lowpass. Switching
+  //  the EQ on and off makes an audible difference. The ringing is still visible in the scope but
+  //  it's audibly less annoying. The bandwidth setting of the notch should be aroun 0.3 octaves.
+  //  With less, the ringing becomes more audible again. With more, the notch affects the rest of
+  //  the spectrum too much.
   //  
 }
 
