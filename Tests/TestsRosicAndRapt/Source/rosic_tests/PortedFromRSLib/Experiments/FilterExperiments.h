@@ -9,6 +9,7 @@ void biDirectionalStateInit();
 void biquadDesignVicanek();
 void biquadTail();
 void biquadModulation();
+void brickwallAndAllpass();
 void stateVariableFilter();
 void stateVariableFilterMorph();
 void stateVectorFilter();

@@ -163,6 +163,7 @@ int main(int argc, char* argv[])
   //biDirectionalStateInit();
   //biquadDesignVicanek();         // maybe rename to biquadMatchVicanek
   //biquadTail();
+  brickwallAndAllpass();
   //complementaryFiltersIIR();
   //engineersFilterRingResp();   // ringing response (experimental idea)
   //engineersFilterFreqResps();

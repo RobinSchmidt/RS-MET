@@ -103,7 +103,6 @@ T bandwidthToDigitalQualityRBJ(T w0, T bw)
 }
 
 
-
 void bandpassAndNotch()
 {
   // Under construction...so far, perfect reconstruction seems to work but I did not yet check the

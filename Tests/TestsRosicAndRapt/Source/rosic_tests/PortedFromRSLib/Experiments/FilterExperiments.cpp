@@ -1041,6 +1041,53 @@ void biquadModulation()
   plt.plot();
 }
 
+void brickwallAndAllpass()
+{
+  // We try to combine a brickwall lowpass filter (uses for anti-aliasing) with an allpass with the
+  // goal of reducing the ripple.
+
+  double sampleRate   = 44100;
+  double oversampling = 10.0;  // Oversampling factor
+  int    N            = 500;   // Number of samples to generate
+
+  // Allpass settings:
+  double freqScale = 0.9;
+  double apFrqLo   = freqScale * sampleRate / oversampling;
+  double apFrqHi   = freqScale * sampleRate / oversampling;
+  int    numStages = 10;
+  double freqShape = 0.0;
+  double qLo       = 1.0;
+  double qHi       = 1.0;
+  double qShape    = 0.0;
+
+  // Produce step response of the standard elliptic filter that I use for downsampling:
+  RAPT::rsEllipticSubBandFilter<double, double> lpf;
+  lpf.setSubDivision(oversampling);
+  using Vec = std::vector<double>;
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = lpf.getSample(1.0);
+
+
+  // Create and set up the zapper object that we use as allpass:
+  rosic::rsFlatZapper apf;
+  apf.setSampleRate(sampleRate);
+  apf.setNumStages(numStages);
+  apf.setLowFreq(apFrqLo);
+  apf.setHighFreq(apFrqHi);
+  apf.setFreqShape(freqShape);
+  apf.setLowQ(qLo);
+  apf.setHighQ(qHi);
+  apf.setQShape(qShape);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = apf.getSample(x[n]);
+
+
+  rsPlotVectors(x, y);
+  int dummy = 0;
+}
+
 void stateVariableFilter()
 {
   double fs = 44100;  // samplerate in Hz
