@@ -1043,6 +1043,8 @@ void biquadModulation()
 
 void brickwallAndAllpass()
 {
+  // Under construction - not yet very far - just a stub, actually
+
   // We try to combine a brickwall lowpass filter (uses for anti-aliasing) with an allpass with the
   // goal of reducing the ripple.
 
@@ -1051,13 +1053,13 @@ void brickwallAndAllpass()
   int    N            = 500;   // Number of samples to generate
 
   // Allpass settings:
-  double freqScale = 0.9;
-  double apFrqLo   = freqScale * sampleRate / oversampling;
-  double apFrqHi   = freqScale * sampleRate / oversampling;
-  int    numStages = 10;
+  //double freqScale = 0.9;
+  double frqSclLo  = 0.5;
+  double frqSclHi  = 0.5;
+  int    numStages = 4;
   double freqShape = 0.0;
-  double qLo       = 1.0;
-  double qHi       = 1.0;
+  double qLo       = 8.0;
+  double qHi       = 8.0;
   double qShape    = 0.0;
 
   // Produce step response of the standard elliptic filter that I use for downsampling:
@@ -1070,6 +1072,8 @@ void brickwallAndAllpass()
 
 
   // Create and set up the zapper object that we use as allpass:
+  double apFrqLo = frqSclLo * sampleRate / oversampling;
+  double apFrqHi = frqSclHi * sampleRate / oversampling;
   rosic::rsFlatZapper apf;
   apf.setSampleRate(sampleRate);
   apf.setNumStages(numStages);
@@ -1085,7 +1089,12 @@ void brickwallAndAllpass()
 
 
   rsPlotVectors(x, y);
+  //rsPlotVectors(x, y, 0.5*(x+y));
   int dummy = 0;
+
+  // Observations:
+  // -The allpass does not seem to reduce the ripple - or at least I have not yet found any 
+  //  good settings. It seems to just introduce additional delay which is not helpful
 }
 
 void stateVariableFilter()
