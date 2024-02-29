@@ -375,6 +375,17 @@ void rsArrayTools::cumulativeSum(const T *x, T *y, int N, int order)
     cumulativeSum(y, y, N);
 }
 
+template <class T>
+void rsArrayTools::cumulativeMean(const T* x, T* y, int N)
+{
+  T sum = 0;
+  for(int n = 0; n < N; n++)
+  {
+    sum  += x[n];
+    y[n]  = sum / T(n+1);
+  }
+}
+
 template<class T>
 void rsArrayTools::deAllocateSquareArray2D(T**& theArray, int size)
 {

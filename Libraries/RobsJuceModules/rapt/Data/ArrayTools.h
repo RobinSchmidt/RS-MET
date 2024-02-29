@@ -246,10 +246,17 @@ public:
   template <class T>
   static void cumulativeSum(const T *x, T *y, int N);
 
-  /** Computes a cumulative sum of arbirtry order of x and stores it in y. Can be used in place. */
+  /** Computes a cumulative sum of arbitrary order of x and stores it in y. Can be used in 
+  place. */
   template <class T>
   static void cumulativeSum(const T *x, T *y, int N, int order);
-  // why two functions? use default argument instead
+  // Why two functions? Maybe use a default argument instead. But maybe it's more efficient to keep 
+  // both
+
+  /** Computes the cumulative mean of x and stores it in y. Can also be used in place (i.e. y may 
+  point to the same array as x). */
+  template <class T>
+  static void cumulativeMean(const T *x, T *y, int N);
 
   /** Frees memory allocated previously via rsAllocateSquareArray2D. */
   template<class T>

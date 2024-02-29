@@ -120,6 +120,7 @@ template void rsArrayTools::shift(float *buffer, int length, int numPlaces);
 // rsArrayTools<double>
 template void rsArrayTools::applyFunction(const double *x, double *y, int N, double (*f) (double));
 template void rsArrayTools::cumulativeSum(const double *x, double *y, int length, int order);
+template void rsArrayTools::cumulativeMean(const double *x, double *y, int length);
 template void rsArrayTools::deConvolve(const double *y, int yLength, const double *h, int hLength, double *x);
 template void rsArrayTools::deInterleave(double*, int, int);
 template void rsArrayTools::difference(double *buffer, int length, int order, bool periodic);

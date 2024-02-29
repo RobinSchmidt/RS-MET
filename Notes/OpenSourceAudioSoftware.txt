@@ -83,3 +83,7 @@ Brickworks:
 https://www.orastron.com/brickworks
 https://www.kvraudio.com/forum/viewtopic.php?t=589519
 -Audio DSP library available for licensing under GPL or commercially
+
+DtBlkFx:
+https://github.com/dozius/DtBlkFx
+-FFT based spectral processing plugin ("Darrel Tam's Block Effects?" ...probably)
