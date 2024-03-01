@@ -10,8 +10,10 @@ some band around that frequency out. The allpass is responsible for moving a par
 over to the left side of the edge, if you think in terms of the step response or a square wave 
 input. The settings of these partial filters have been hand tuned to strike an optimal balance 
 between the desirable steepness of the filter in the frequency domain and undesirable ringing of 
-the filter in the time domain. ...TBC...  
+the filter in the time domain. The different modes that can be set by setMode switch between 
+different configurations for the 3 filters that have been found to give good results.
 
+...TBC...  
 
 See the brickwallAndAllpass() in FilterExperiments.cpp and the BrickwallFilter presets for
 ToolChain- this class is meant to encapsulate the findings of these experiments. */
@@ -25,10 +27,16 @@ public:
 
   enum class Mode
   {
-    halpern12,   // 12th order Halpern LPF, ...
-    bessel6
+    halp12_halp4_ap8,   // 12th order Halpern lowpass, 4th order Halpern notch, 8th order allpass
+    bess6               // 6th order Bessel lowpass, ....
   };
 
+
+  void setMode(Mode newMode)
+  {
+    mode = newMode;
+    // setDirty();
+  }
 
 
 protected:
