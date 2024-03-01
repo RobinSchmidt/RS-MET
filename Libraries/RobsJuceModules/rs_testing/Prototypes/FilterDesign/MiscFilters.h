@@ -1,14 +1,20 @@
 #pragma once
 
 
-/** A brickwall lowpass filter class that is made from a chain of 3 filter parts: (1) a lowpass, 
-(2) a notch/bandstop, (3) an allpass. The lowpass is responsible for the general lowpass nature of 
-the filter. The notch is responsible for reducing the ringing at cutoff frequency by notching some
-band around that frequecy out. The allpass is responsible for moving a part of the ringing over to 
-the left side of the edge, if you think in terms of the step response or a square wave input. The 
-settings of these partial filters have been hand tuned to strike an optimal balance between the
-desirable steepness of the filter in the frequency domain and undesirable ringing of the filter in
-the time domain. ...TBC...  */
+/** Under Construction - just a stub at the moment.
+
+A brickwall lowpass filter class that is made from a chain of 3 filter parts: (1) a lowpass, 
+(2) a notch/bandstop, (3) an allpass. The lowpass is responsible for the general lowpass nature of
+the filter. The notch is responsible for reducing the ringing at the cutoff frequency by notching 
+some band around that frequency out. The allpass is responsible for moving a part of the ringing 
+over to the left side of the edge, if you think in terms of the step response or a square wave 
+input. The settings of these partial filters have been hand tuned to strike an optimal balance 
+between the desirable steepness of the filter in the frequency domain and undesirable ringing of 
+the filter in the time domain. ...TBC...  
+
+
+See the brickwallAndAllpass() in FilterExperiments.cpp and the BrickwallFilter presets for
+ToolChain- this class is meant to encapsulate the findings of these experiments. */
 
 template<class TSig, class TPar>
 class rsBrickwallFilter
@@ -16,6 +22,25 @@ class rsBrickwallFilter
 
 public:
 
+
+  enum class Mode
+  {
+    halpern12,   // 12th order Halpern LPF, ...
+    bessel6
+  };
+
+
+
 protected:
+
+  // User parameters:
+  Mode mode       = Mode::halpern12;
+  TPar sampleRate = TPar(44100);
+  TPar cutoff     = TPar(1000);
+
+  // Embedded objects:
+  RAPT::rsEngineersFilter<TSig, TPar> lowpass;
+  RAPT::rsEngineersFilter<TSig, TPar> notch;
+  rosic::rsFlatZapper                 allpass;  // Maybe replace by rsAllpassChain
 
 };
