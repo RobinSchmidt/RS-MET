@@ -12,8 +12,16 @@ public:
 
   AudioModuleEditor* createEditor(int type) override;
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-  virtual void handleMidiMessage(MidiMessage message) override;
+  void parameterChanged(Parameter* parameterThatHasChanged) override;
+
+  void handleMidiMessage(MidiMessage message) override;
+
+  void handleMidiMessageForVoice(MidiMessage msg, int voice) override
+  { handleMidiMessage(msg); }
+  // This is getting called instead of handleMidiMessage in ToolChain when the msg is a note event
+  // because note events need a voice dispatch. To not miss note events, we need to override 
+  // handleMidiMessageForVoice as well and pass the msg through to handleMidiMessage
+
 
   virtual void getSampleFrameStereo(double *inOutL, double *inOutR) { }
 

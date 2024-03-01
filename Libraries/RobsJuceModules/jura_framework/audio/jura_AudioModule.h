@@ -464,6 +464,7 @@ public:
 
   /** Handles a generic MidiMessage. */
   void handleMidiMessage(MidiMessage message) override;
+  // overriden from baseclass rsMidiMessageDispatcher
 
   /** Overrides setMidiController */
   void setMidiController(int controllerNumber, float controllerValue) override;

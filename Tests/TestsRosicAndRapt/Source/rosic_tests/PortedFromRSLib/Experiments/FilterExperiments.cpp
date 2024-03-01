@@ -1182,6 +1182,14 @@ void brickwallAndAllpass()
   //  have in common is that they all use a  lowpass -> notch -> allpass  chain but the exacty 
   //  settings of the different filters may vary. ..OK - there is now a stub for this in the
   //  prototypes
+  //
+  // Questions:
+  // -An interesting question would be whether we should try to minimize the maximal height of the
+  //  overshoot or the temporal length of the ringing. I think, it depends on the application.
+  //  Perceptually, the length of the ringing is probably more relevant, if the cutoff is in the 
+  //  audible range - but in downsampling, it will be close to the target Nyquist freq anyway. The
+  //  maximum overshoot might be more important for downstream DSP processes like peak limiters.
+  //  
 }
 
 void stateVariableFilter()

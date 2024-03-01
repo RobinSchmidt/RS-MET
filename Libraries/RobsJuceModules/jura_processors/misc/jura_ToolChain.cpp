@@ -298,10 +298,12 @@ void ToolChain::handleMidiMessage(MidiMessage message)
     // that they always receive a valid voice index in their per voice callbacks. This simplifies 
     // their implementations of which we will have many, so it's worth it.
 
-    for(int i = 0; i < size(modules); i++){
+    for(int i = 0; i < size(modules); i++)
+    {
       AudioModuleWithMidiIn* m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
       if(m != nullptr)
-        m->handleMidiMessageForVoice(message, voice); }
+        m->handleMidiMessageForVoice(message, voice); 
+    }
   }
   else
   {
