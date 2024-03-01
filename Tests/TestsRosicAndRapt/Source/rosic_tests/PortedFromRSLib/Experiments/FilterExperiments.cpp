@@ -1132,7 +1132,39 @@ void brickwallAndAllpass()
   //  it's audibly less annoying. The bandwidth setting of the notch should be aroun 0.3 octaves.
   //  With less, the ringing becomes more audible again. With more, the notch affects the rest of
   //  the spectrum too much.
-  //  
+  // -With some experimentation in ToolChain with 2 instances of EngineersFilter and 1 of 
+  //  FlatZapper, the following chain of filters turned out to be useful for a steep filter with 
+  //  reduced overshoot/ripple:
+  //  -Brickwall: Halpern filter of order N, tuned to f_c. N = 12 is typical
+  //  -Allpass:   Chain of N/2 first order allpasses also all tuned to f_c (maybe try tweaking)
+  //  -Notch:     1 biquad notch tuned to f_c, bandwidth = 1 oct (can be reduced, if desired - 
+  //              bandwidth dials in tradeoff between ringing and high-freq attenuation)
+  //  Another variation:
+  //  -Brickwall: 12th order Halpern
+  //  -Notch:     4th order Halpern, tuned to f_c, bw = 0.64 oct
+  //  -Allpass:   10 1st order stages, tuned to f_c
+  //  For tweaking, it seems best to first select the brickwall that has the best ripple-to-rolloff
+  //  ratio - that turned out to be the Halpern. Then use a notch to deuce the ripple further until
+  //  some good balance between residual ripple and high-freq damping is achieved. Then use the 
+  //  allpass chain to move the first lump of the overshoot partially over to the left side of the 
+  //  edge (use a sawtooth waveform for dialing the settings in) until the first lump on the right 
+  //  side of the edge froms a nice linear shape with the sunsequent lumps.
+  // -It may help to tune the notch a bit higher - above the briwckwall's cutoff. The notch has 
+  //  actually two purposes: reduce the ringing frequency and steepening the transition into the 
+  //  stopband. That steepening should probably happens in the right part of the transition band 
+  //  where the amplitude already is low. We don't want a steep curve a frequency that still has 
+  //  high amplitude because that gives ringing - I think. Maybe try a lower order filter with 
+  //  multiple nocthes - like Checbychev2 - but we tune the notches ourselves. For the notch, 
+  //  inverse Chebychev is also worth to check out.
+  // -Plot ringing responses. Plot families of such responses such that we can see the differences
+  //  for different parameters clearly. The goal is to design brickwall filter with maximum 
+  //  brickwallity and minimum ripple - or to find an optimal trade-off.
+  // -When "moving over" some lumps of the overshoot to the left side of the edge by cranking up 
+  //  the allpass order, it looks like when pushing it to higher values, the left ripples get
+  //  higher amplitudes than their right counterparts - but they are more confined temoparally. It
+  //  seems like with allpass order we can dial between "high but short left ripple" and "low but 
+  //  long right ripple"
+
 }
 
 void stateVariableFilter()

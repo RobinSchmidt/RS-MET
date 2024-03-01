@@ -295,6 +295,7 @@ public:
   {
     bypass = 0,
     onePole,       // maybe rename to allOnePole
+    //twoOnePoles,   // 2 one poles lumped into a biquad per stage -> optimization
     biquad,        // maybe rename to allBiquad
 
     // ToDo:
@@ -309,6 +310,7 @@ public:
   // But maybe it coul be worthwhile to have the first k filters firstorder and the remaining N-k
   // filters second order (or the other way around) for some user given k. That could perhaps 
   // introduce a knee in the phase response in the log freq domain
+  // 
 
   /** Sets the mode of the filter chain, i.e. the type of allpass filter that will be used per 
   stage. @see Mode. */

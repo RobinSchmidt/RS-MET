@@ -45,9 +45,13 @@ Bugs
 
 - MultiAnalyzer, waveform view: when zooming in, the horizontal scrollbar does not appear
 
-- Straightliner: when loading a ToolChain preset with straightliner, the NumVoices parameter is not
-  recalled. Try loading FuzzedZappedSaw. It was saved with NumVoices = 1 but is recalled with 
-  NumVoices = 16. It seems like the setting wasn't saved to the xml file. Figure out why!
+- Straightliner: 
+  -When loading a ToolChain preset with straightliner, the NumVoices parameter is not
+   recalled. Try loading FuzzedZappedSaw. It was saved with NumVoices = 1 but is recalled with 
+   NumVoices = 16. It seems like the setting wasn't saved to the xml file. Figure out why!
+  -In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build of
+   standalone, there's no problem. -> Try a debug build of the plugin
+   Oh - it does open - but it is in the background. It is not brought to the front.
 
 ---------------------------------------------------------------------------------------------------
 Features
