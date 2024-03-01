@@ -1163,7 +1163,12 @@ void brickwallAndAllpass()
   //  the allpass order, it looks like when pushing it to higher values, the left ripples get
   //  higher amplitudes than their right counterparts - but they are more confined temoparally. It
   //  seems like with allpass order we can dial between "high but short left ripple" and "low but 
-  //  long right ripple"
+  //  long right ripple". On the left, they also loow more like an (upward) chirp rather than a 
+  //  fixed frequency ring
+  // -Maybe implement a class rsBrickwallFilter that implements such a chain and has different 
+  //  modes that select between the different hand-optimized chains/configurations. What they all 
+  //  have in common is that they all use a  lowpass -> notch -> allpass  chain but the exacty 
+  //  settings of the different filters may vary.
 
 }
 

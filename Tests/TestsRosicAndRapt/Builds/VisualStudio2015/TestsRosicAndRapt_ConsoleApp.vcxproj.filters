@@ -2590,6 +2590,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\ComplementaryFilters.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\MiscFilters.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerAnalog.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
     </ClCompile>
@@ -4999,6 +5002,9 @@
       <Filter>JUCE Modules\rs_testing\Misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\ComplementaryFilters.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\MiscFilters.h">
       <Filter>JUCE Modules\rs_testing\Prototypes\FilterDesign</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerAnalog.h">

@@ -5,6 +5,7 @@
 #include "FilterDesign/PoleZeroDesignerAnalog.cpp"
 #include "FilterDesign/PoleZeroDesignerDigital.cpp"
 #include "FilterDesign/ComplementaryFilters.cpp"
+#include "FilterDesign/MiscFilters.cpp"
 
 #include "SafeArray.cpp"
 #include "ModalAnalyzer.cpp"

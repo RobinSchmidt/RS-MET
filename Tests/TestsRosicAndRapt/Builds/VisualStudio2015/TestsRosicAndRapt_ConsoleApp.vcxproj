@@ -2341,6 +2341,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\ComplementaryFilters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\MiscFilters.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerAnalog.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3228,6 +3231,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Legacy\MultiLayerPerceptron.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Misc\TestClasses.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\ComplementaryFilters.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\MiscFilters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerAnalog.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerDigital.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroMapper.h"/>
