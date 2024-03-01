@@ -81,7 +81,7 @@ bool TuningTable::loadFromTunFile(char *path)
   // the note frequencies to set up ourselves:
   if( success == true )
   {
-    //for(int n = 0; n < 127; n++)  // shouldn't is be "n <= 127" or "n < 128"?
+    //for(int n = 0; n < 127; n++)  // shouldn't it be "n <= 127" or "n < 128"?
     for(int n = 0; n < 128; n++)  // new - needs tests
       assignFrequency(n, cTuningMap.GetNoteFreq(n));
     return true;
@@ -119,7 +119,7 @@ double TuningTable::getFrequency(int note)
   if( note >= 0 && note <= 127 )
     return detuneFactor * table[note];
   else
-    return table[127];  // new since 2024/01/03
+    return detuneFactor * table[127];  // new since 2024/01/03
     //return 440.0;     // old
 }
 
