@@ -1054,9 +1054,9 @@ void brickwallAndAllpass()
 
   // Allpass settings:
   //double freqScale = 0.9;
-  double frqSclLo  = 0.5;
-  double frqSclHi  = 0.5;
-  int    numStages = 4;
+  double frqSclLo  = 1.0;
+  double frqSclHi  = 1.0;
+  int    numStages = 12;
   double freqShape = 0.0;
   double qLo       = 8.0;
   double qHi       = 8.0;
@@ -1090,11 +1090,13 @@ void brickwallAndAllpass()
   apf.setLowQ(qLo);
   apf.setHighQ(qHi);
   apf.setQShape(qShape);
+  apf.setMode(rosic::rsFlatZapper::Mode::onePole);
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = apf.getSample(x[n]);
 
 
+  //rsPlotVectors(y);
   rsPlotVectors(x, y);
   //rsPlotVectors(x, y, 0.5*(x+y));
   int dummy = 0;
@@ -1125,7 +1127,10 @@ void brickwallAndAllpass()
   //  seem to work well.
   // -It seems like using a chain biquad allpasses never helps but using first order allpasses does
   //  indeed help to move part of the ringing to the left side of the edge and thereby reduce the
-  //  ringing on the right side of the edge.
+  //  ringing on the right side of the edge. Looks like 1st and 2nd order allpasses have very 
+  //  different behaviors?
+  // -Hmm - it looks like I can't reproduce this "moving the 1st lump to the right" behavior from
+  //  ToolChain here. -> Figure out what is different here. Maybe it depends on the input signal?
   //
   // ToDo:
   // -Plot group delay responses of lowpass, allpass and combined filter.
