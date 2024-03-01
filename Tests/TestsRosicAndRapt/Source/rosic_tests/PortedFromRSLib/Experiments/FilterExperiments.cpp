@@ -1119,6 +1119,13 @@ void brickwallAndAllpass()
   // Observations:
   // -The allpass does not seem to reduce the ripple - or at least I have not yet found any 
   //  good settings. It seems to just introduce additional delay which is not helpful
+
+  // Notes:
+  // -I have actually created a couple of ToolChain presets where I dialed in som seettings that 
+  //  seem to work well.
+  // -It seems like using a chain biquad allpasses never helps but using first order allpasses does
+  //  indeed help to move part of the ringing to the left side of the edge and thereby reduce the
+  //  ringing on the right side of the edge.
   //
   // ToDo:
   // -Plot group delay responses of lowpass, allpass and combined filter.
@@ -1168,8 +1175,8 @@ void brickwallAndAllpass()
   // -Maybe implement a class rsBrickwallFilter that implements such a chain and has different 
   //  modes that select between the different hand-optimized chains/configurations. What they all 
   //  have in common is that they all use a  lowpass -> notch -> allpass  chain but the exacty 
-  //  settings of the different filters may vary.
-
+  //  settings of the different filters may vary. ..OK - there is now a stub for this in the
+  //  prototypes
 }
 
 void stateVariableFilter()
