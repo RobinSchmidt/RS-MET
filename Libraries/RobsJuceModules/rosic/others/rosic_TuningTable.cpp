@@ -44,7 +44,7 @@ void TuningTable::resetToDefaults()
   setName("12-TET");
   masterTuneA4 = 440.0;
   detuneFactor = masterTuneA4 / 440.0;
-  for(int i=0; i<128; i++)
+  for(int i = 0; i < 128; i++)
     table[i] = RAPT::rsPitchToFreq((double) i);
   //defaultState = true;
 }
@@ -58,7 +58,7 @@ void TuningTable::assignFrequency(int note, double newFrequency)
 
 void TuningTable::assignFrequencies(double *newFrequencies)
 {
-  for(int i=0; i<128; i++)
+  for(int i = 0; i < 128; i++)
     table[i] = newFrequencies[i];
   //defaultState = false;
 }
@@ -81,12 +81,15 @@ bool TuningTable::loadFromTunFile(char *path)
   // the note frequencies to set up ourselves:
   if( success == true )
   {
-    for(int n=0; n<127; n++)
+    //for(int n = 0; n < 127; n++)  // shouldn't is be "n <= 127" or "n < 128"?
+    for(int n = 0; n < 128; n++)  // new - needs tests
       assignFrequency(n, cTuningMap.GetNoteFreq(n));
     return true;
   }
   else
     return false;
+  // ToDo: maybe apply a sanity check to the note-values - maybe restrict the frequencies to
+  // the range 0..20000 or soemthing
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -102,7 +105,7 @@ bool TuningTable::isInDefaultState()
   if( masterTuneA4 != 440.0 )
     return false;
 
-  for(int i=0; i<128; i++)
+  for(int i = 0; i < 128; i++)
   {
     if( table[i] != RAPT::rsPitchToFreq((double) i) )
       return false;
@@ -116,7 +119,8 @@ double TuningTable::getFrequency(int note)
   if( note >= 0 && note <= 127 )
     return detuneFactor * table[note];
   else
-    return 440.0;
+    return table[127];  // new since 2024/01/03
+    //return 440.0;     // old
 }
 
 double TuningTable::getFrequency(double note)
@@ -131,7 +135,11 @@ double TuningTable::getFrequency(double note)
     return detuneFactor * RAPT::rsPitchToFreq(pitch);
   }
   else
-    return 440.0;
+  {
+    //return 440.0;  // old
+    return detuneFactor * table[127];
+    // New since 2024/03/01. We now saturate at the highest frequency in the table
+  }
 }
 
 double TuningTable::getMasterTuneA4()

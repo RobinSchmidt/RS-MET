@@ -78,8 +78,10 @@ namespace rosic
 
   protected:
 
-    double table[128];
+    double table[128];  // ToDo: use a symbolic constant tableLength
     /**< The table which contains the mapping from the note numbers to frequencies. */
+
+
 
     double masterTuneA4;
     /**< The master tuning frequency in Hz. */
