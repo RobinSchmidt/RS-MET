@@ -195,20 +195,19 @@ void DebugModuleEditor::createWidgets()
 
   popupContent = new jura::RectangleComponent();  // is be deleted by popupComponent (verify!)
   popupContent->setSize(400, 300);
-  //popupContent->setBounds(0, 0, 400, 300);   // trying to fix position when opened 1st time
   popupContent->setFillColour(Colours::black);
 
   popupComponent = new jura::RPopUpComponent();
   popupComponent->setContentComponent(popupContent);
-  //addChildComponent(popupComponent);
-  // Adding popupComponent as childComponent via addChildComponent(popupComponent) will cause it to
-  // be deleted in out destructor (due to the baseclass destructor calling deleteAllChilren). This 
-  // deletion will in turn also delete popupContent because calling 
-  // popupComponent->setContentComponent(popupContent) transfers the ownership of popupContent to 
-  // popupComponent. ...Verify all of this!
-  // ...nope - addChildcomponent doesn't work - we need to explicity delete it in our destructor
-  // because, I think, calling addToDesktop on a component will cause that Component to be removed
-  // from the childComponents.
+  // We do *not* add popupComponent as child component via addChildComponent(popupComponent) 
+  // because we want to add it to the Desktop later and doing so would remove it from the child 
+  // components anyway. We need to explicitly delete it in our destructor because we cannot rely on
+  // the deleteAllChildren call that our basclass constructor does. The popupContent, however,
+  // does not need to be explicitly deleted because calling 
+  // popupComponent->setContentComponent(popupContent); transfers ownership of the popupContent to
+  // the popupComponent. Also, using addChildComponent would make the popup appear in the wrong 
+  // place when it's opened for the first time.
+
 
   addWidget( popupButton3 = new RButton("Popup 3") );
   popupButton3->addRButtonListener(this);
