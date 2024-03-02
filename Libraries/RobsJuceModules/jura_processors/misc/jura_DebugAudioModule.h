@@ -58,6 +58,8 @@ class JUCE_API DebugModuleEditor : public AudioModuleEditor, public RButtonListe
 public:
 
   DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdit);
+  virtual ~DebugModuleEditor();
+
 
   void resized() override;
   void rButtonClicked(RButton *button) override;
@@ -79,8 +81,13 @@ protected:
   //rsAutomatableButton *invertButton;  
    // use ModulatabelSlider, etc later
 
+  RButton *popupButton1, *popupButton2;
 
-  RButton *popupButton;
+
+  jura::RectangleComponent* popupRect = nullptr;
+
+
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugModuleEditor)

@@ -362,8 +362,15 @@ void rsWindowFunction::hamming(T *window, int length)
 // https://www.cs.otago.ac.nz/graphics/Geoff/tartini/papers/Philip_McLeod_PhD.pdf
 // coeffs 0.53836, 0.46164 are used -> figure out why - apparently, the standard coeffs 0.54, 0.46
 // are rounded versions of something? Figure out what that *something* is exactly. I think, the 
-// numbers result from a certain cancellation of 1st and 2nd sidelobes or soemthing...Maybe 
+// numbers result from a certain cancellation of 1st and 2nd sidelobes or something...Maybe 
 // implement an "exactHamming" (we also already have exactBlackman, so that would fit nicely)
+// 
+// Update: Aha! Wikipedia now says that the 0.54 is supposed to be 25/46 = 0.54347826087 - but 
+// that's yet another value. That value places a zero crossing at (5*pi)/(N-1) which cancels the 
+// first sidelobe of the Hann window. The coeff 0.53836 comes from a numerical optimization for an
+// equiripple response. Maybe give the function an optional parameter to switch or maybe fade 
+// between the variants. Or better: let the use set the first coeff directly numerically and let
+// it default to to optimal value
 
 template<class T>
 void rsWindowFunction::hanning(T *window, int length)

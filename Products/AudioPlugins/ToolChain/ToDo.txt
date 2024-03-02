@@ -67,7 +67,9 @@ Bugs
     top mode is optional. The little orange button in the top-left of the window toggles 
     always-on-top mode on/off. But in Tracktion waveform, this doesn't seem to work. However, an 
     older version of ToolChain doesn't seem to have this problem in Waveform - or ..well ..now they
-    all do - but for a little moment, it seemed to work with one version. WTF!
+    all do - but for a little moment, it seemed to work with one version. WTF! Maybe for windows 
+    that are always on top, which one of them get precedence is determined by the exact sequence of
+    the window creation?
 
 
 

@@ -125,6 +125,11 @@ DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdi
   setSize(500, 460);
 }
 
+DebugModuleEditor::~DebugModuleEditor()
+{
+  delete popupRect;
+}
+
 void DebugModuleEditor::createWidgets()
 {
   typedef rsModulatableSlider Sld;
@@ -165,10 +170,18 @@ void DebugModuleEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
 
-  addWidget( popupButton = new RButton("Popup") );
-  popupButton->addRButtonListener(this);
-  popupButton->setDescription("Open/close popup menu");
-  popupButton->setClickingTogglesState(false);
+  addWidget( popupButton1 = new RButton("Popup 1") );
+  popupButton1->addRButtonListener(this);
+  popupButton1->setDescription("Open a stack-allocated juce::PopupMenu");
+  popupButton1->setClickingTogglesState(false);
+
+  popupRect = new jura::RectangleComponent();  // is deleted in destructor
+  popupRect->setSize(400, 300);
+
+  addWidget( popupButton2 = new RButton("Popup 2") );
+  popupButton2->addRButtonListener(this);
+  popupButton2->setDescription("Open/close an owned jura::RectangleComponent");
+  popupButton2->setClickingTogglesState(true);
 }
 
 void DebugModuleEditor::resized()
@@ -181,6 +194,7 @@ void DebugModuleEditor::resized()
   int h  = getHeight();
   int wh = 16;     // widget height
   int dy = wh-2;   // delta-y between widgets
+  int bw = 64;  // button width
 
   int xyPadSize = 200;
   //int size = jmin(getWidth(), getHeight()-y);
@@ -195,7 +209,9 @@ void DebugModuleEditor::resized()
   //testSlider  ->setBounds(x, y, 30, wh); y += dy; // for testing the text entry field
   smoothSlider->setBounds(x, y, w, wh); y += dy;
 
-  popupButton->setBounds(x, y, 64, wh); y += dy;
+  popupButton1->setBounds(x, y, bw, wh);
+  x += bw + 4;
+  popupButton2->setBounds(x, y, bw, wh); y += dy;
 
   if(nodeEditor)
   {
@@ -219,7 +235,7 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
 {
   // We use this to test, if it works even for a plugin GUI - because my oscillator context menu 
   // does not work - at least not in Tracktion - it's hidden behind the main GUI. 
-  if(button == popupButton)
+  if(button == popupButton1)
   {
     // See: https://docs.juce.com/master/classPopupMenu.html
     // https://docs.juce.com/master/classPopupMenu.html#details
@@ -228,7 +244,7 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
     m.addItem(2, "Item 2");
     m.addItem(3, "Item 3");
     m.addItem(4, "Item 4");
-    m.showMenuAsync (PopupMenu::Options(), [](int result)
+    m.showMenuAsync(PopupMenu::Options(), [](int result)
       {
         if(result == 0)
         {
@@ -242,10 +258,42 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
         {
           // user picked item 2
         }
+        // ...
       }
     );
   }
+  // OK - the popup menu shows up in Tracktion just fine. We now need to figure out, how that works
+  // and adapt WaveOscEditorContextMenu accrodingly. But there's a difference. the context menu for
+  // the osc whould not be modal. It should be persistent until the user closes it manually by 
+  // either using the close button on the menu iteself or the "More" button on the osc editor which
+  // toggles the context menu on and and off. Let's see what happens:
+  //
+  //   showMenuAsync  calls  showWithOptionalCallback  calls  createWindow
+  //
+  // These are all member functions of juce::PopupMenu. createWindow returns a 
+  //
+  //   new HelperClasses::MenuWindow(...)
+  //
+  // and I currently don't see where this is ever deleted. Naively looking at the code, this looks
+  // like a memory leak to me. However, MenuWindow is a subclass of Component.
 
+  if(button == popupButton2)
+  {
+    if(popupButton2->getToggleState() == true)
+    {
+      //int x = getScreenX() + getWidth();
+      //int y = getScreenY() - 102;
+      int x = popupButton2->getScreenX();
+      int y = popupButton2->getScreenY() + 16;
+      popupRect->setTopLeftPosition(x, y);
+      popupRect->addToDesktop(
+        ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
+      popupRect->setVisible(true);
+      popupRect->toFront(true);
+    }
+    else
+      popupRect->setVisible(false);
+  }
 
   int dummy = 0;
 }
