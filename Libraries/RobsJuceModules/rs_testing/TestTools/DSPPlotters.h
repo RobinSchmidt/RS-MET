@@ -223,9 +223,9 @@ public:
     phaseWrapped,
     phaseUnwrapped,
     //phaseDelay,
-    groupDelay
-    //ringing  // magnitude of complex derivative
-    //slope    // derivative of dB-magnitudes
+    groupDelay,
+    ringing        // magnitude of complex derivative
+    //slope        // derivative of dB-magnitudes
   };
 
   /** Sets the type of plot that should be produced. @see: PlotType. The default is magnitudeDb. */
@@ -308,7 +308,9 @@ protected:
 
   void toGroupDelay(const std::vector<std::complex<T>>& spectrum, std::vector<T>& groupDelay);
 
-
+  void toRinging(const std::vector<std::complex<T>>& spectrum, std::vector<T>& ringing);
+  // Maybe renam to ringTime - scale appropriately such that the unit is seconds. Maybe have also a
+  // ringCycles function that divides the ringTime by the frequency
 
 
   FreqAxisUnits     freqAxisUnit = FreqAxisUnits::binIndex;

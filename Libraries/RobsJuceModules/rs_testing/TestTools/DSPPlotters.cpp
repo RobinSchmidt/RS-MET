@@ -558,6 +558,7 @@ void SpectrumPlotter<T>::plotSpectra(const T** signals, int numSignals, int sign
     case PT::phaseWrapped:   toPhase(     spec, y, false);        break;
     case PT::phaseUnwrapped: toPhase(     spec, y, true);         break;
     case PT::groupDelay:     toGroupDelay(spec, y);               break;
+    case PT::ringing:        toRinging(   spec, y);               break;
     default: rsError("Unknown plot type in SpectrumPlotter<T>::plotSpectra");
     }
     addDataArrays(maxBin-minBin+1, &f[minBin], &y[minBin]);
@@ -668,6 +669,31 @@ void SpectrumPlotter<T>::toGroupDelay(const std::vector<std::complex<T>>& spec, 
   //  to switch between various kinds of processing the spec-array. We need a plotMode member
   //  that can be magnitudeDb, phase, phaseDelay, etc.
   // -See: https://en.wikipedia.org/wiki/Group_delay_and_phase_delay#Mathematical_definition_of_group_delay_and_phase_delay
+}
+
+
+template <class T>
+void SpectrumPlotter<T>::toRinging(const std::vector<std::complex<T>>& spec, std::vector<T>& rng)
+{
+  rsWarning("SpectrumPlotter<T>::toRinging is still under construction");
+  // The idea of a "ringing response" is still experimental. Filters ring alot at those frequencies
+  // where something is happening either in the maagnitude or phase response or both. So the idea 
+  // is to look at the magnitude of the complex derivative ...TBC...
+
+  // Find the numeric complex derivative (factor out):
+  //int N = spec.size();
+  int N = numBins;
+  std::vector<std::complex<T>> tmp(N);    // Buffer for the complex numerical derivative
+  tmp[0]   = spec[1]   - spec[0];
+  tmp[N-1] = spec[N-1] - spec[N-2];
+  for(int n = 1; n < N-1; n++)
+    tmp[n] = T(0.5) * (spec[n+1] - spec[n-1]);
+
+  // Find magnitude:
+  for(int n = 0; n < N; n++)
+    rng[n] = std::abs(tmp[n]);
+
+  // Maybe we should divide by the frequency? but what about DC? That would be a division by zero.
 }
 
 

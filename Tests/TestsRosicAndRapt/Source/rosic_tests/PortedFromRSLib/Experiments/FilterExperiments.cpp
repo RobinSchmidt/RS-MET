@@ -1112,8 +1112,9 @@ void brickwallAndAllpass()
   sp.setFreqAxisUnit(SP::FreqAxisUnits::hertz);
   sp.setNormalizationMode(SP::NormalizationMode::impulse);
   //sp.setPlotType(SP::PlotType::phaseUnwrapped);
-  sp.setPlotType(SP::PlotType::groupDelay);
+  //sp.setPlotType(SP::PlotType::groupDelay);
   //sp.setPlotType(SP::PlotType::magnitudeDb);
+  sp.setPlotType(SP::PlotType::ringing);
   sp.plotSpectra(N, &x[0], &y[0]);
 
 
