@@ -193,11 +193,11 @@ void DebugModuleEditor::createWidgets()
 
 
 
-  popupContent = new jura::RectangleComponent();  // is be deleted by popupComponent (verify!)
+  popupContent = new jura::RectangleComponent();      // will be owned by popupComponent
   popupContent->setSize(400, 300);
   popupContent->setFillColour(Colours::black);
 
-  popupComponent = new jura::RPopUpComponent();
+  popupComponent = new jura::RPopUpComponent();       // is explicitly deleted in our destructor
   popupComponent->setContentComponent(popupContent);
   // We do *not* add popupComponent as child component via addChildComponent(popupComponent) 
   // because we want to add it to the Desktop later and doing so would remove it from the child 
