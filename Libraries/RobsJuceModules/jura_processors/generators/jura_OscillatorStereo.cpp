@@ -855,7 +855,8 @@ void WaveOscEditor::rButtonClicked(RButton *b)
       // whereas in standalone mode this is not the case? Maybe check the Surge code, how they 
       // handle their context menus. Or maybe look into the code of juce::PopupMenu
       // juce::PopupMenu::showWithOptionalCallback - there, it creates a pointer to a window that
-      // is never deleted - that looks like a memory leak to me. 
+      // is never deleted - that looks like a memory leak to me. This problem also does not occur 
+      // in Bitwig - which is good.
 
       contextMenu->setVisible(true);
       contextMenu->toFront(true);

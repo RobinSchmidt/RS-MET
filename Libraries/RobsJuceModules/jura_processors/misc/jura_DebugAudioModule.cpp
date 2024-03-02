@@ -176,6 +176,7 @@ void DebugModuleEditor::createWidgets()
   popupButton1->setClickingTogglesState(false);
 
   popupRect = new jura::RectangleComponent();  // is deleted in destructor
+  popupRect->setAlwaysOnTop(true);
   popupRect->setSize(400, 300);
 
   addWidget( popupButton2 = new RButton("Popup 2") );
@@ -277,6 +278,7 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
   // and I currently don't see where this is ever deleted. Naively looking at the code, this looks
   // like a memory leak to me. However, MenuWindow is a subclass of Component.
 
+  // OK - this rectangle component exposes the same behavior as the context menu in the osc editor:
   if(button == popupButton2)
   {
     if(popupButton2->getToggleState() == true)
@@ -288,12 +290,52 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
       popupRect->setTopLeftPosition(x, y);
       popupRect->addToDesktop(
         ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
+
+
+      //popupRect->setBroughtToFrontOnMouseClick(false);  // Test
+      // Interesting: Even when calling  setBroughtToFrontOnMouseClick(false)   mouse clicks will 
+      // still bring it to the front.
+
+
       popupRect->setVisible(true);
       popupRect->toFront(true);
+
+
+      // Next test:
+      juce::ComponentPeer* popupPeer = popupRect->getPeer();
+      if(popupPeer)
+      {
+        popupPeer->setAlwaysOnTop(true);
+        popupPeer->toFront(false);  // false: do not take keyboard focus
+        // ...nope - this also doesn't help. 
+        // There are also methods like ComponentPeer::setAlwaysOnTop etc. - Check them out, too.
+      }
+
+
+
+      //popupRect->grabKeyboardFocus();   // Test - nope - doesn't help
+
+      //juce::MouseEvent me;
+      //popupRect->mouseDown(me);
     }
     else
       popupRect->setVisible(false);
   }
+  // Due to the fact that it is large enough, parts of it are visible - and when clicking on this 
+  // part, it actually comes to the front. Could we perhaps somehow trigger the same action that is
+  // triggered from mouse-clicks? Maybe some sort of grabFocus()? Check
+  // setBroughtToFrontOnMouseClick(), setExplicitFocusOrder(), setFocusContainerType(), 
+  // findFocusContainer()  - maybe we could just send a dummy mouseDown event to it? That would be 
+  // an ugly hack, though. Generating mock mouse events seems not to be easy, though:
+  // https://forum.juce.com/t/creating-a-mouseevent/32635/11
+  // https://forum.juce.com/t/simulate-mouse-actions/29362/4
+  // https://forum.juce.com/t/my-solution-for-key-mouse-remote-events-handling/37698
+
+  // try setting  setBroughtToFrontOnMouseClick(false)  and check, if mouse click will then not 
+  // bring it to front anymore. If not, check what actually happens inside the mouse-handler that 
+  // brings it to front. OK - done - actually, calling setBroughtToFrontOnMouseClick(false); does 
+  // not prevent it from coming to the front on mouse clicks
+
 
   int dummy = 0;
 }
