@@ -194,6 +194,7 @@ void DebugModuleEditor::createWidgets()
 
   popupContent = new jura::RectangleComponent();  // is be deleted by popupComponent (verify!)
   popupContent->setSize(400, 300);
+  //popupContent->setBounds(0, 0, 400, 300);   // trying to fix position when opened 1st time
   popupContent->setFillColour(Colours::black);
 
   popupComponent = new jura::RPopUpComponent();
@@ -204,6 +205,12 @@ void DebugModuleEditor::createWidgets()
   // deletion will in turn also delete popupContent because calling 
   // popupComponent->setContentComponent(popupContent) transfers the ownership of popupContent to 
   // popupComponent. ...Verify all of this!
+
+  addWidget( popupButton3 = new RButton("Popup 3") );
+  popupButton3->addRButtonListener(this);
+  popupButton3->setDescription("Open/close an owned jura::RPopUpComponent");
+  popupButton3->setClickingTogglesState(true);
+
 
 
   int dummy = 0;
@@ -236,7 +243,12 @@ void DebugModuleEditor::resized()
 
   popupButton1->setBounds(x, y, bw, wh);
   x += bw + 4;
-  popupButton2->setBounds(x, y, bw, wh); y += dy;
+  popupButton2->setBounds(x, y, bw, wh);
+  x += bw + 4;
+  popupButton3->setBounds(x, y, bw, wh);
+  y += dy;
+
+
 
   if(nodeEditor)
   {
@@ -364,6 +376,30 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
   // bring it to front anymore. If not, check what actually happens inside the mouse-handler that 
   // brings it to front. OK - done - actually, calling setBroughtToFrontOnMouseClick(false); does 
   // not prevent it from coming to the front on mouse clicks
+
+
+  if(button == popupButton3)
+  {
+    if(popupButton3->getToggleState() == true)
+    {
+      bool showModally = false;
+      int x = popupButton3->getScreenX();
+      int y = popupButton3->getScreenY() + 16;
+      popupComponent->showAt(showModally, x, y, 400, 300);
+      // ToDo: try to let it determine the desired size by itself by using the size of the 
+      // contentComponent. Has it to do with the poisiton of the content component? Nope. Using
+      // setBounds instead of setSize during creation doe not help.
+
+      int dummy = 0;
+    }
+    else
+    {
+
+    }
+  }
+  // When clicking the button the 1st time, the window appears in a wrong position
+
+
 
 
   int dummy = 0;
