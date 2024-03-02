@@ -1,8 +1,3 @@
-//#include "rosic_StereoWidth.h"
-//using namespace rosic;
-
-//-------------------------------------------------------------------------------------------------
-// construction/destruction:
 
 StereoWidth::StereoWidth()
 {
@@ -11,6 +6,7 @@ StereoWidth::StereoWidth()
   setSideGain(0.0);
   setGlobalGain(0.0);
   mixToMono = false;
+  invertPolarity = false;
 }
 
 StereoWidth::~StereoWidth()
