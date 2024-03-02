@@ -128,6 +128,7 @@ DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdi
 DebugModuleEditor::~DebugModuleEditor()
 {
   delete popupRect;
+  delete popupComponent;
 }
 
 void DebugModuleEditor::createWidgets()
@@ -199,12 +200,15 @@ void DebugModuleEditor::createWidgets()
 
   popupComponent = new jura::RPopUpComponent();
   popupComponent->setContentComponent(popupContent);
-  addChildComponent(popupComponent);
+  //addChildComponent(popupComponent);
   // Adding popupComponent as childComponent via addChildComponent(popupComponent) will cause it to
   // be deleted in out destructor (due to the baseclass destructor calling deleteAllChilren). This 
   // deletion will in turn also delete popupContent because calling 
   // popupComponent->setContentComponent(popupContent) transfers the ownership of popupContent to 
   // popupComponent. ...Verify all of this!
+  // ...nope - addChildcomponent doesn't work - we need to explicity delete it in our destructor
+  // because, I think, calling addToDesktop on a component will cause that Component to be removed
+  // from the childComponents.
 
   addWidget( popupButton3 = new RButton("Popup 3") );
   popupButton3->addRButtonListener(this);
@@ -397,7 +401,13 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
 
     }
   }
-  // When clicking the button the 1st time, the window appears in a wrong position
+  // When clicking the button the 1st time, the window appears in a wrong position.
+  // In Tracktion, this popup doesn not appear at all - not even in the background!
+  // When using showModally = true; we get a memory leak on exit. But: when doing that, the 
+  // rectangle actually does show up in Tracktion - but in the background.
+  // Oh - the leak seems to happen even in non-modal mode. Could it be that adding a Component
+  // to the desktop, removes it from the child components? I think so.
+  // Oh - not calling addChildComponent also fixes the problem with the position of apperance.
 
 
 

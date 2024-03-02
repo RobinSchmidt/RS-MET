@@ -97,6 +97,12 @@ protected:
   jura::RectangleComponent* popupContent   = nullptr;
 
 
+  //jura::RPopUpMenu* popupMeu = nullptr;
+
+
+  // ToDo: 
+  // -Add a jura::RPopupMenu. If that doesn't work, add a RComboBox.
+  // -Rename the buttons to something more descriptive
 
 
 
