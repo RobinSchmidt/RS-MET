@@ -37,11 +37,19 @@ public:
     RAPT::rsEqualPowerGainFactors(newRatio, &midGain, &sideGain, 0.0, 1.0);
   }
 
-/** Adjusts the gain for the mid-signal - value is expected in dB. */
-  void setMidGain(double newMidGain) { midGain = RAPT::rsDbToAmp(newMidGain); }
+
+  /** Adjusts the gain for the mid-signal - value is expected in dB. */
+  //void setMidGain(double newMidGain) { midGain = RAPT::rsDbToAmp(newMidGain); }
 
   /** Adjusts the gain for the side-signal - value is expected in dB. */
-  void setSideGain(double newSideGain) { sideGain = RAPT::rsDbToAmp(newSideGain); }
+  //void setSideGain(double newSideGain) { sideGain = RAPT::rsDbToAmp(newSideGain); }
+
+  // The setMidGain/setSideGain functions are deprecated and are replaced by setMidSideRatio. It 
+  // doesn't make sense to keep them because using them together with setMidSideRatio will 
+  // interfere. Either the user should use setMidGain/setSideGain *or* setMidSideRatio - but not a
+  // mix of them. So we enforce this here to reduce possible misuse. There doesn't seem to be any
+  // code that uses setMidGain/setSideGain anyway.
+
 
   /** Adjusts the global gain for the signal - value is expected in dB. */
   void setGlobalGain(double newGlobalGain) { globalGain = SQRT2_INV*RAPT::rsDbToAmp(newGlobalGain); }
@@ -86,7 +94,7 @@ INLINE void StereoWidth::getSampleFrameStereo(double* inOutL, double* inOutR)
   if(mixToMono == true)
     * inOutL = *inOutR = SQRT2_INV * (*inOutL + *inOutR);
 
-  if(invertPolarity == true);
+  if(invertPolarity == true)
   {
     *inOutL = -(*inOutL);
     *inOutR = -(*inOutR);

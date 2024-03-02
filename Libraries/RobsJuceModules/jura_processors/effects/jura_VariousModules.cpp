@@ -5110,6 +5110,11 @@ void StereoWidthAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setGlobalGain);
 
+  p = new Param("Mono", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
+  addObservedParameter(p);
+  p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setMixToMono);
+
+
   // ToDo:
   // -Add a "Mono" button to quickly switch to mono
   // -Add an "Invert" button to switch polarity
@@ -5121,20 +5126,25 @@ StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock,
 : AudioModuleEditor(newStereoWidthAudioModule)
 {
   ScopedLock scopedLock(*lock);
-
-  jassert(newStereoWidthAudioModule != NULL ); // you must pass a valid module here
+  jassert(newStereoWidthAudioModule != nullptr ); // you must pass a valid module here
 
   addWidget( midSideRatioSlider = new rsModulatableSlider );
   midSideRatioSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
-  midSideRatioSlider->setDescription(juce::String(("Ratio between mid and side signal (stereo-width)")));
+  midSideRatioSlider->setDescription("Ratio between mid and side signal (stereo-width)");
   midSideRatioSlider->setDescriptionField(infoField);
   midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( gainSlider = new rsModulatableSlider );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
-  gainSlider->setDescription(juce::String(("Global gain for compensation of gain changes")));
+  gainSlider->setDescription("Global gain for compensation of gain changes");
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
+
+  addWidget( monoButton = new RButton("Mono") );
+  monoButton->assignParameter( moduleToEdit->getParameterByName("Mono") );
+  monoButton->setDescription("Mix output to mono");
+  monoButton->setDescriptionField(infoField);
+  monoButton->setClickingTogglesState(true);
 
   updateWidgetsAccordingToState();
 }
@@ -5144,14 +5154,18 @@ void StereoWidthModuleEditor::resized()
   ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
-  int x = 0;
-  int y = 0;
-  int w = getWidth();
+  int x  = 0;
+  int y  = 0;
+  int w  = getWidth();
   //int h = getHeight();
+  int bw = 48;  // Button width
+
   y = getPresetSectionBottom();
   midSideRatioSlider->setBounds(x+4, y+4, w-8, 16);
   y += 20;
   gainSlider->setBounds(x+4, y+4, w-8, 16);
+  y += 20;
+  monoButton->setBounds(x+4, y+4, bw, 16);
 }
 
 //=================================================================================================

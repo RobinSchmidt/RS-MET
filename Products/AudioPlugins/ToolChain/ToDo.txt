@@ -70,6 +70,7 @@ Bugs
     all do - but for a little moment, it seemed to work with one version. WTF! Maybe for windows 
     that are always on top, which one of them get precedence is determined by the exact sequence of
     the window creation?
+   -Ty, if this also affects my own popup menus
 
 - Quadrifex: 
   -PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters
@@ -78,6 +79,8 @@ Bugs
    Dry/Wet to 100/0, the PhaseOffset parameter seems to have no effect. Check
    rosic::PhaseStereoizer::getSampleFrameStereo. Implement a unit test for it.
 
+- TackMeter:
+  -It shortly freezes on midi note-off events
 
 
 ---------------------------------------------------------------------------------------------------

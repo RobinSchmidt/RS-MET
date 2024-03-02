@@ -1039,6 +1039,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   rsModulatableSlider *midSideRatioSlider, *gainSlider; // maybe include a correlation meter?
+  RButton *monoButton;
 };
 
 //===============================================================================================
