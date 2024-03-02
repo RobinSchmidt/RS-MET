@@ -164,6 +164,11 @@ void DebugModuleEditor::createWidgets()
   s->setDescription("Test Parameter");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
+
+  addWidget( popupButton = new RButton("Popup") );
+  popupButton->addRButtonListener(this);
+  popupButton->setDescription("Open/close popup menu");
+  popupButton->setClickingTogglesState(false);
 }
 
 void DebugModuleEditor::resized()
@@ -190,6 +195,8 @@ void DebugModuleEditor::resized()
   //testSlider  ->setBounds(x, y, 30, wh); y += dy; // for testing the text entry field
   smoothSlider->setBounds(x, y, w, wh); y += dy;
 
+  popupButton->setBounds(x, y, 64, wh); y += dy;
+
   if(nodeEditor)
   {
     // preliminary - it overlaps with eq-editor
@@ -206,4 +213,39 @@ void DebugModuleEditor::resized()
     h = getHeight() - y;
     eqEditor->setBounds(0, y, getWidth(), h);
   }
+}
+
+void DebugModuleEditor::rButtonClicked(RButton* button)
+{
+  // We use this to test, if it works even for a plugin GUI - because my oscillator context menu 
+  // does not work - at least not in Tracktion - it's hidden behind the main GUI. 
+  if(button == popupButton)
+  {
+    // See: https://docs.juce.com/master/classPopupMenu.html
+    // https://docs.juce.com/master/classPopupMenu.html#details
+    PopupMenu m;
+    m.addItem(1, "Item 1");
+    m.addItem(2, "Item 2");
+    m.addItem(3, "Item 3");
+    m.addItem(4, "Item 4");
+    m.showMenuAsync (PopupMenu::Options(), [](int result)
+      {
+        if(result == 0)
+        {
+          // user dismissed the menu without picking anything
+        }
+        else if(result == 1)
+        {
+          // user picked item 1
+        }
+        else if(result == 2)
+        {
+          // user picked item 2
+        }
+      }
+    );
+  }
+
+
+  int dummy = 0;
 }

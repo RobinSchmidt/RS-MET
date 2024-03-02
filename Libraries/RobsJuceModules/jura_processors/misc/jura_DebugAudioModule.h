@@ -52,13 +52,16 @@ protected:
 
 /** Editor for the debugging AudioModule. */
 
-class JUCE_API DebugModuleEditor : public AudioModuleEditor
+class JUCE_API DebugModuleEditor : public AudioModuleEditor, public RButtonListener
 {
 
 public:
 
   DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdit);
-  virtual void resized() override;
+
+  void resized() override;
+  void rButtonClicked(RButton *button) override;
+
 
 protected:
 
@@ -75,6 +78,10 @@ protected:
   //rsAutomatableComboBox *modeComboBox;
   //rsAutomatableButton *invertButton;  
    // use ModulatabelSlider, etc later
+
+
+  RButton *popupButton;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugModuleEditor)
 };

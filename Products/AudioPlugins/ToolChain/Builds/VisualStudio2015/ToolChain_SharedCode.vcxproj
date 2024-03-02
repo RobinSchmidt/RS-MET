@@ -6169,7 +6169,7 @@
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\HowToAddFeatures.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md"/>
-    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\SfzNotes.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\PolyphonyInRosic.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.txt"/>

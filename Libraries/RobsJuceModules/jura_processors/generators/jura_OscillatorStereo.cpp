@@ -805,7 +805,12 @@ WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
 
 WaveOscEditor::~WaveOscEditor()
 {
-  delete contextMenu; // this is not a child component -> must be deleted separately (later, when we use a viewport, we don't need this anymore)
+  delete contextMenu; 
+  // This is not a child component -> must be deleted separately (later, when we use a viewport,
+  // we don't need this anymore). In the constructor, we actually call 
+  //   addChildColourSchemeComponent(contextMenu, false, false);
+  // but the first "false" parameter says that it should not be added as child component. But then
+  // who is the parent? ...it's actually a nullptr.
 
   if( waveformBuffer != NULL )
     delete[] waveformBuffer;
@@ -827,9 +832,31 @@ void WaveOscEditor::rButtonClicked(RButton *b)
     {
       int x = getScreenX() + getWidth();
       int y = getScreenY() - 102; // this is a kludgy thing here with the context menu positioning
+
+      // Move this code into a function WaveOscEditorContextMenu::showAt(x, y):
+
       contextMenu->setTopLeftPosition(x, y);
       contextMenu->addToDesktop(
         ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
+
+      // Experimental since 2024/03/01 to try to fix the problem that the menu is behind the main 
+      // GUI when ToolChain is used as plugin:
+      /*
+      juce::ComponentPeer* contextPeer = contextMenu->getPeer();
+      if(contextPeer)
+      {
+        contextPeer->toFront(false);  // false: do not take keyboard focus
+        // ...nope - this also doesn't help. 
+        // There are also methods like ComponentPeer::setAlwaysOnTop etc. - Check them out, too.
+      }
+      */
+      // We don't have such a problem in standalone mode. I think, the problem might be related to
+      // the fact that plugin GUIs are themselves opened in "always on top" mode by the host 
+      // whereas in standalone mode this is not the case? Maybe check the Surge code, how they 
+      // handle their context menus. Or maybe look into the code of juce::PopupMenu
+      // juce::PopupMenu::showWithOptionalCallback - there, it creates a pointer to a window that
+      // is never deleted - that looks like a memory leak to me. 
+
       contextMenu->setVisible(true);
       contextMenu->toFront(true);
 

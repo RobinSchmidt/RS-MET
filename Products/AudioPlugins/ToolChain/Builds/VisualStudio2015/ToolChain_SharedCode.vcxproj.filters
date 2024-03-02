@@ -10214,7 +10214,7 @@
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </None>
-    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md">
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\SfzNotes.txt">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt">

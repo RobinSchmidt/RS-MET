@@ -45,7 +45,7 @@
     <TargetExt>.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\Shared Code\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\Shared Code\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ToolChain</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ToolChain_Debug</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\Shared Code\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\Shared Code\</IntDir>
@@ -80,17 +80,17 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\ToolChain.lib</OutputFile>
+      <OutputFile>$(OutDir)\ToolChain_Debug.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\ToolChain.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\ToolChain_Debug.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(IntDir)\ToolChain.bsc</OutputFile>
+      <OutputFile>$(IntDir)\ToolChain_Debug.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -6108,7 +6108,7 @@
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\HowToAddFeatures.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md"/>
-    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\SfzNotes.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\PolyphonyInRosic.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.txt"/>

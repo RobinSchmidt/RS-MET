@@ -22754,13 +22754,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/ReadMe.md">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option target="Shared Code | Debug32"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SamplerData.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -22853,6 +22846,13 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/rosic_SfzCodeBook.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option target="Shared Code | Debug32"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/sampler/SfzNotes.txt">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option target="Shared Code | Debug32"/>
