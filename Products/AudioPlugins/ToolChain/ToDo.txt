@@ -71,6 +71,13 @@ Bugs
     that are always on top, which one of them get precedence is determined by the exact sequence of
     the window creation?
 
+- Quadrifex: 
+  -PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters
+   (like PhaeOffset) still affects the sound. That seems to be wrong. If it's intentional, this
+   should be documented. It's not what one would expect. When Mid/Side is set to 0/100 and 
+   Dry/Wet to 100/0, the PhaseOffset parameter seems to have no effect. Check
+   rosic::PhaseStereoizer::getSampleFrameStereo. Implement a unit test for it.
+
 
 
 ---------------------------------------------------------------------------------------------------

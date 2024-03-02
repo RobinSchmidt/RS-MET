@@ -4651,33 +4651,36 @@ PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlu
 
   addWidget( phaseOffsetSlider = new rsModulatableSlider );
   phaseOffsetSlider->assignParameter( moduleToEdit->getParameterByName("StereoPhaseOffset") );
-  phaseOffsetSlider->setDescription(juce::String(("Phase offset between left and right (wet) signal in degrees")));
+  phaseOffsetSlider->setSliderName("StereoOffset");
+  phaseOffsetSlider->setDescription("Phase offset between left and right (wet) signal in degrees");
   phaseOffsetSlider->setDescriptionField(infoField);
   phaseOffsetSlider->setStringConversionFunction(&degreesToStringWithUnit0);
 
   addWidget( dryWetRatioSlider = new rsModulatableSlider );
   dryWetRatioSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
-  dryWetRatioSlider->setDescription(juce::String(("Ratio between dry (original) and wet (phase-shifted) signal")));
+  dryWetRatioSlider->setSliderName("Dry/Wet");
+  dryWetRatioSlider->setDescription("Ratio between dry (original) and wet (phase-shifted) signal");
   dryWetRatioSlider->setDescriptionField(infoField);
   dryWetRatioSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( sideLowpassSlider = new rsModulatableSlider );
   sideLowpassSlider->assignParameter( moduleToEdit->getParameterByName("Lowpass") );
-  sideLowpassSlider->setSliderName(juce::String(("Lowpass")));
-  sideLowpassSlider->setDescription(juce::String(("Cutoff frequency of the lowpass filter for the wet side signal")));
+  //sideLowpassSlider->setSliderName("Lowpass"); // superfluous
+  sideLowpassSlider->setDescription("Cutoff frequency of the lowpass filter for the wet side signal");
   sideLowpassSlider->setDescriptionField(infoField);
   sideLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( sideHighpassSlider = new rsModulatableSlider );
   sideHighpassSlider->assignParameter( moduleToEdit->getParameterByName("Highpass") );
-  sideHighpassSlider->setSliderName(juce::String(("Highpass")));
-  sideHighpassSlider->setDescription(juce::String(("Cutoff frequency of the highpass filter for the wet side signal")));
+  //sideHighpassSlider->setSliderName("Highpass");  // superfluous
+  sideHighpassSlider->setDescription("Cutoff frequency of the highpass filter for the wet side signal");
   sideHighpassSlider->setDescriptionField(infoField);
   sideHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( midSideRatioSlider = new rsModulatableSlider );
   midSideRatioSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
-  midSideRatioSlider->setDescription(juce::String(("Ratio between mid and side signal (stereo-width)")));
+  midSideRatioSlider->setSliderName("Mid/Side");
+  midSideRatioSlider->setDescription("Ratio between mid and side signal (stereo-width)");
   midSideRatioSlider->setDescriptionField(infoField);
   midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
@@ -4992,6 +4995,8 @@ void StereoPanAudioModule::createStaticParameters()
   p = new Param("Gain", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setGain);
+
+
 }
 
 StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, StereoPanAudioModule* newStereoPanAudioModule)
@@ -5035,6 +5040,17 @@ StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, Ste
   addPlot(plot);
 
   updateWidgetsAccordingToState();
+
+  // ToDo:
+  // -Maybe have parameters "Pan" and "Balance". "Balance" just applies gains to the channels, 
+  //  "Pan" may remix them. But we already have the different curves - some of them remix channels
+  //  and some don't.
+  // 
+  // See:
+  // https://en.wikipedia.org/wiki/Panning_(audio)
+  // https://en.wikipedia.org/wiki/Stereophonic_sound#Balance
+  // https://en.wikipedia.org/wiki/Panning_law
+  // https://www.production-expert.com/production-expert-1/the-difference-between-stereo-pan-and-stereo-balance
 }
 
 StereoPanModuleEditor::~StereoPanModuleEditor()
@@ -5093,6 +5109,12 @@ void StereoWidthAudioModule::createStaticParameters()
   p = new Param("Gain", -6.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setGlobalGain);
+
+  // ToDo:
+  // -Add a "Mono" button to quickly switch to mono
+  // -Add an "Invert" button to switch polarity
+  // -Add "Pan" and "Position" parameters (see sfz spec for how they work)
+  // -Make it available in ToolChain, too.
 }
 
 StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock, StereoWidthAudioModule* newStereoWidthAudioModule)

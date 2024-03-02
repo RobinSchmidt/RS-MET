@@ -117,7 +117,7 @@ namespace rosic
     // apply mid/side, filtering and dry/wet:
     double wetM = mid  * (wetL + wetR);
     double wetS = side * (wetL - wetR);
-    //wetM        = filterM.getSample(wetM);
+    //wetM        = filterM.getSample(wetM);  // Why is this commented out?
     wetS        = filterS.getSample(wetS);
     wetL        = 0.5  * (wetM + wetS);
     wetR        = 0.5  * (wetM - wetS);
@@ -134,7 +134,23 @@ namespace rosic
 
     //*inOutL     = dry*(*inOutL) + wet*wetL;
     //*inOutR     = dry*(*inOutR) + wet*wetR;
+
+    // ToDo:
+    // -Document why wetM = filterM.getSample(wetM); is commented out. The rationale may have been
+    //  that the mid signal is centered and therefore doesn't contribute to the stereo width and 
+    //  there shound't be filtered?
+    // -Maybe have different algorithms where the parameters are interpreted differently. In this 
+    //  algo, they don not really behave as one would expect. For example, when dryWetRatio is set
+    //  to 100/0 in ToolChain, the other parameters may still affect the output which is 
+    //  counterintutive. we may already have patches that depend on this behavior, so to change it,
+    //  it may make more sense to provide an additional "Algorithm" or "Mode" parameter that 
+    //  switches between "Legacy" behavior and the new one. We may also introduce otther filtering
+    //  algorithms. Ideally, I'd like to set up a PhaseOffset parameter p and the left channel will 
+    //  be phase-shifted by -p/2 and the right channel by +p/2 - just like the StereoPhaseOffset in
+    //  the waveform oscillator. That may be more difficult to achieve DSP-wise, though.
   }
+
+
 
 } // end namespace rosic
 
