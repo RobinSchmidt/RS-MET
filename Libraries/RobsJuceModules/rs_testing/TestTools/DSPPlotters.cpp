@@ -694,6 +694,8 @@ void SpectrumPlotter<T>::toRinging(const std::vector<std::complex<T>>& spec, std
     rng[n] = std::abs(tmp[n]);
 
   // Maybe we should divide by the frequency? but what about DC? That would be a division by zero.
+  // Check the ringing response experiment. Take the formulas from there. I think, there I divide 
+  // by frequency. 
 }
 
 
