@@ -81,10 +81,20 @@ protected:
   //rsAutomatableButton *invertButton;  
    // use ModulatabelSlider, etc later
 
-  RButton *popupButton1, *popupButton2;
 
 
-  jura::RectangleComponent* popupRect = nullptr;
+
+  // These are the buttons with which we try to let popup components pop up:
+  RButton *popupButton1;  // Pops up a juce::PopupMenu
+  RButton *popupButton2;  // Pops up a jura::RectangleCompnent
+  RButton *popupButton3;  // Pops up a jura::RPopUpComponent (with RectangleCompnent as content)
+
+  // With this we try to let a rectangle pop up directly:
+  jura::RectangleComponent* popupRect  = nullptr;
+
+  // With these, we try to to pop up a rectangle using RPopUpComponent:
+  jura::RPopUpComponent*    popupComponent = nullptr;
+  jura::RectangleComponent* popupContent   = nullptr;
 
 
 

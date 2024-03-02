@@ -170,19 +170,43 @@ void DebugModuleEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
 
+
+
+
   addWidget( popupButton1 = new RButton("Popup 1") );
   popupButton1->addRButtonListener(this);
   popupButton1->setDescription("Open a stack-allocated juce::PopupMenu");
   popupButton1->setClickingTogglesState(false);
 
-  popupRect = new jura::RectangleComponent();  // is deleted in destructor
+
+
+  popupRect = new jura::RectangleComponent();  // is explicitly deleted in our destructor
   popupRect->setAlwaysOnTop(true);
   popupRect->setSize(400, 300);
+  popupRect->setFillColour(Colours::black);
 
   addWidget( popupButton2 = new RButton("Popup 2") );
   popupButton2->addRButtonListener(this);
   popupButton2->setDescription("Open/close an owned jura::RectangleComponent");
   popupButton2->setClickingTogglesState(true);
+
+
+
+  popupContent = new jura::RectangleComponent();  // is be deleted by popupComponent (verify!)
+  popupContent->setSize(400, 300);
+  popupContent->setFillColour(Colours::black);
+
+  popupComponent = new jura::RPopUpComponent();
+  popupComponent->setContentComponent(popupContent);
+  addChildComponent(popupComponent);
+  // Adding popupComponent as childComponent via addChildComponent(popupComponent) will cause it to
+  // be deleted in out destructor (due to the baseclass destructor calling deleteAllChilren). This 
+  // deletion will in turn also delete popupContent because calling 
+  // popupComponent->setContentComponent(popupContent) transfers the ownership of popupContent to 
+  // popupComponent. ...Verify all of this!
+
+
+  int dummy = 0;
 }
 
 void DebugModuleEditor::resized()
@@ -277,6 +301,11 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
   //
   // and I currently don't see where this is ever deleted. Naively looking at the code, this looks
   // like a memory leak to me. However, MenuWindow is a subclass of Component.
+  //
+  // Try it with RPopupMenu - I actually already know that this works - figure out how that handles
+  // the addToDesktop/show/toFront etc. business. We have class  RPopUpComponent  which is a general
+  // component that can pop up. Maybe try to show a rectangle component using that, i.e. set the
+  // content component of a RPopUpComponent to a RecatngelComponent
 
   // OK - this rectangle component exposes the same behavior as the context menu in the osc editor:
   if(button == popupButton2)

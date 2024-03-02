@@ -137,7 +137,7 @@ public:
 
 /**
 
-A popup component that can be attached to another component in order to followe its movements.
+A popup component that can be attached to another component in order to follow its movements.
 
 */
 
