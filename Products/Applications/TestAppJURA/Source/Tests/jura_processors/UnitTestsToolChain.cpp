@@ -531,7 +531,7 @@ void UnitTestToolChain::runTestStraightliner()
   v = p->getValue();
   expect(v == 0.0);
 
-  // Here, it works. -> Investingate the xml. Looks correct. It does indeed not have the 
+  // Here, it works. -> The xml string looks correct. It does indeed not have the 
   // "Mute=1" attribute. Why do we get it in the xml file when saving a patch from 
   // Straightliner?
 
