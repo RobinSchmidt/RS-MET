@@ -36,13 +36,21 @@ protected:
 
 
   // called from runTest:
+
+  // Tests of the infrastructure:
   void runTestVoiceManager();
-  void runTestEqualizer();
-  void runTestMultiAnalyzer();
-  void runTestWaveOscillator();
-  void runTestQuadrifex();
   void runTestEditorCreation(int seed);
   void runTestStateRecall(int seed);
+
+  // Tests of individual modules:
+  void runTestEqualizer();
+  void runTestMultiAnalyzer();
+  void runTestQuadrifex();
+  void runTestWaveOscillator();
+
+
+
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestToolChain)
