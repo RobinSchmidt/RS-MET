@@ -5,6 +5,8 @@ using namespace jura;
 
 void UnitTestToolChain::runTest()
 {
+  runTestStraightliner();
+
   runTestVoiceManager();
   runTestEqualizer();
   //runTestMultiAnalyzer();  // Fails - see comments there. Fixing has low priority.
@@ -470,6 +472,15 @@ void UnitTestToolChain::runTestQuadrifex()
 
   // Clean up memory:
   delete proc;
+}
+
+void UnitTestToolChain::runTestStraightliner()
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::StraightlinerAudioModule stLn(&lock);
+
+
+  int dummy = 0;
 }
 
 void UnitTestToolChain::runTestWaveOscillator()

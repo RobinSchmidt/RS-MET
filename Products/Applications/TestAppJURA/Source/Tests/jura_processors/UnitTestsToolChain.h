@@ -49,6 +49,7 @@ protected:
   void runTestEqualizer();
   void runTestMultiAnalyzer();
   void runTestQuadrifex();
+  void runTestStraightliner();
   void runTestWaveOscillator();
 
 
