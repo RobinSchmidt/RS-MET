@@ -490,6 +490,27 @@ void UnitTestToolChain::runTestStraightliner()
   jura::WaveOscModule*                  osc3     = oscs->osc3Module;
   jura::WaveOscModule*                  osc4     = oscs->osc4Module;
 
+  // Check that all the oscillators are in the expected default states. All 4 oscs should have the
+  // sawtooth wave loaded and osc1 should be active (i.e. non-muted) and oscs 2..4 should be 
+  // muted:
+  //juce::String wave1 = osc1->getCurrentWaveformPath();
+
+  jura::Parameter* p = nullptr;
+  double v = 0.0;                         // Value of parameter
+  p = osc1->getParameterByName("Mute");
+  expect(p != nullptr);
+  v = p->getValue();
+  expect(v == 0.0);
+  p = osc2->getParameterByName("Mute");
+  expect(p != nullptr);
+  v = p->getValue();
+  expect(v == 1.0);
+
+
+  // ...
+
+  // Check that the envelope generators are in default state:
+
 
 
 
