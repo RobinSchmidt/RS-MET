@@ -84,6 +84,8 @@ Bugs
    not stting the "Mute" parameter? I think, the bug is in  jura::WaveOscEditor. See comments at
    the bottom of the class declaration and also WaveOscEditor::mouseDown.
 
+   https://forum.juce.com/t/creating-a-mouseevent/32635
+
 
 - Quadrifex: 
   -PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters

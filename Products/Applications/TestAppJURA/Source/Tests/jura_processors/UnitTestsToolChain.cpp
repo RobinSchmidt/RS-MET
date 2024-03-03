@@ -5,12 +5,14 @@ using namespace jura;
 
 void UnitTestToolChain::runTest()
 {
-  runTestStraightliner();
+  runTestWaveOscillator();
+
 
   runTestVoiceManager();
   runTestEqualizer();
   //runTestMultiAnalyzer();  // Fails - see comments there. Fixing has low priority.
-  runTestWaveOscillator();
+  runTestStraightliner();
+
 
   runTestQuadrifex();
   runTestEditorCreation(0);
@@ -545,6 +547,8 @@ void UnitTestToolChain::runTestStraightliner()
   expect( checkOscParams("Mute", 0, 0, 1, 1) );
 
 
+
+
   // Here, it works. -> The xml string looks correct. It does indeed not have the 
   // "Mute=1" attribute. Why do we get it in the xml file when saving a patch from 
   // Straightliner?
@@ -594,14 +598,47 @@ void UnitTestToolChain::runTestWaveOscillator()
   // This fails! Could it have to do with encoding or with CR/LF stuff? ...OK - this is currently 
   // not terribly important but eventually I want to figure this out and include such a test
 
-
-
-
-
   // Clean up:
   delete xml1; xml1 = nullptr;
 
-  // <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<WaveOscillator PatchFormat=\"1\"/>\n
+
+
+  // The Problem is related to the GUI editor of the osc setting its mute state bypassing the
+  // "Mute" parameter. Let's try to expose this with mock mouse events. See:
+  //
+  //   https://forum.juce.com/t/creating-a-mouseevent/32635/10
+  //
+  // But we don't nee Straightline for that. We can do that in runTestWaveOscillator
+
+  //auto mouseSource = juce::Desktop::getInstance().getMainMouseSource();
+  //auto fakeEvent = juce::MouseEvent(mouseSource, );
+  //component.mouseDown (fakeEvent);
+
+  // Create a fake mouseDown event:
+  float mouseX      = 0.f;
+  float mouseY      = 0.f;
+  float mouseDownX  = 0.f;
+  float mouseDownY  = 0.f;
+  float pressure    = 1.f;
+  float orientation = 0.f;
+  float rotation    = 0.f;
+  float tiltX       = 0.f;
+  float tiltY       = 0.f;
+  juce::Time eventTime;      // Maybe try to somehow obtain the "now" time
+  juce::Time mouseDownTime;
+  int   numClicks   = 1;
+  bool  wasDragged  = false;
+  juce::Component* eventComponent = nullptr;
+  juce::Component* originatorComponent = nullptr;
+  juce::MouseInputSource mouseSource = juce::Desktop::getInstance().getMainMouseSource();
+  juce::ModifierKeys     modKeys;
+  juce::MouseEvent mouseEvent(mouseSource, 
+    juce::Point<float>(mouseX, mouseY), modKeys, pressure, orientation, rotation, tiltX, tiltY,
+    eventComponent, originatorComponent, eventTime, juce::Point<float>(mouseDownX, mouseDownY),
+    mouseDownTime, numClicks, wasDragged);
+
+    
+
 
 
   int dummy = 0;
