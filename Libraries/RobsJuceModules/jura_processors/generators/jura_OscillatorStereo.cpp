@@ -951,12 +951,18 @@ void WaveOscEditor::mouseDown(const MouseEvent &e)
   if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return;
 
-  // New (still buggy, though):
+  // New:
   if(containsPoint(waveformDisplay, e.x, e.y))
   {
-
-    oscModule->wrappedOsc->setMute( !oscModule->wrappedOsc->isMuted() );  
+    // Old, buggy:
+    //oscModule->wrappedOsc->setMute( !oscModule->wrappedOsc->isMuted() );
     // !!!BUG!!! Directly accessing the DSP core object bypasses "Mute" parameter.
+
+    // New:
+    jura::Parameter* p = oscModule->getParameterByName("Mute");
+    jassert(p);
+    bool muted = p->getValue();
+    p->setValue(!muted, true, true);
 
 
     updateWidgetVisibility();
