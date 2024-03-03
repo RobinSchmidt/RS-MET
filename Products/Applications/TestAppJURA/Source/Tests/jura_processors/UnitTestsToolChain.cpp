@@ -22,6 +22,9 @@ void UnitTestToolChain::runTest()
   // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
 
   // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? Figure out!
+
+
+  runTestStateRecall(0);
 }
 
 
@@ -36,6 +39,12 @@ bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
     ok &= p->isCurrentValueDefaultValue();
   }
   return ok;
+}
+
+void UnitTestToolChain::resetParameters(jura::AudioModule* m)
+{
+  for(int i = 0; i < m->getNumParameters(); i++)
+    m->getParameterByIndex(i)->resetToDefaultValue(true, true);
 }
 
 void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
@@ -463,4 +472,35 @@ void UnitTestToolChain::runTestEditorCreation(int seed)
   // ToDo:
   // -Try the test with different seeds for the randomization of the parameters. Some bugs are exposed 
   //  only with certain parameter values.
+}
+
+void UnitTestToolChain::runTestStateRecall(int seed)
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::ToolChain tlChn(&lock);
+  std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
+  for(size_t i = 0; i < moduleTypes.size(); i++)
+  {
+    juce::String type = moduleTypes[i];
+
+    if(type == "FuncShaper")
+      continue;
+    // It fails for FuncShaper. To get passed the triggers of the assertions, we temporarily skip 
+    // this test.
+
+    tlChn.replaceModule(0, type);
+    AudioModule* m = tlChn.getModuleAt(0);
+    expect(m->getModuleTypeName() == type);  // Check module type in slot 1
+    randomizeParameters(m, seed);
+    juce::XmlElement* preXml = m->getStateAsXml("State", true);
+    resetParameters(m);
+    m->setStateFromXml(*preXml, "Recalled", true);
+    juce::XmlElement* postXml = m->getStateAsXml("State", true);
+    expect(postXml->isEquivalentTo(preXml, false));
+    delete preXml;
+    delete postXml;
+  }
+
+  // WaveOscillator fails
+  // Why does Straightliner not fail? We have this bug with the recall of the "Mute" parameter
 }

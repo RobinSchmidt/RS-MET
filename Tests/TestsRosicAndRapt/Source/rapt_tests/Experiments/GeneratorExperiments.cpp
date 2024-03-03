@@ -3601,8 +3601,9 @@ void showFlatZapPlots()
 
   // Here it can be selected which types of plot should be generated:
   bool plotSignal         = true;
-  bool plotPhaseSpectrum  = true;
-  bool plotGroupDelay     = true;
+  bool plotPhaseSpectrum  = false;
+  bool plotGroupDelay     = false;
+  bool plotRinging        = false;
   bool plotInstFreq       = true;  // Instantaneous frequency measurement
 
   // Create the signal to analyze:
@@ -3676,6 +3677,16 @@ void showFlatZapPlots()
   }
   // Bins 0 and 1 look strange - but maybe try it without the post-processing
 
+  if(plotRinging)
+  {
+    SP sp;
+    setupSpectrumPlotter(sp);
+    sp.setPlotType(SP::PlotType::ringing);
+    sp.plotSpectra(N, &x[0]);  
+  }
+  // Looks like a nice bell curve
+
+
   // Plot the measured instantaneous frequency:
   if(plotInstFreq)
   {
@@ -3697,6 +3708,16 @@ void showFlatZapPlots()
     for(int n = 0; n < N; n++)
       p[n] = RAPT::rsFreqToPitch(f[n]);
     rsPlotVector(p);
+
+    //// Try to model the function f[n]:
+    //Vec mdl(N);
+    //for(int n = 0; n < N; n++)
+    //{
+    //  //mdl[n] = 8000.0 / pow(n+1, 0.5);
+    //  mdl[n] = 8000.0 / (1+0.2*log(double(n+1)));
+    //}
+    //rsPlotVectors(f, mdl);
+    //// Só far, this does not look anywhere close to f
 
     //rsPlotVectors(x, 0.01*p);
   }

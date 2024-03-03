@@ -26,8 +26,12 @@ protected:
   /** Checks if all parameters of the module have their default values. */
   bool isInDefaultState(const jura::AudioModule* m);
 
+  /** Resets all the parameters of the given jura::AudioModule to their default values. */
+  void resetParameters(jura::AudioModule* m);
+
   /** Randomizes all the parameters of the given jura::AudioModule. */
   void randomizeParameters(jura::AudioModule* m, int seed = 0);
+
 
 
 
@@ -38,6 +42,7 @@ protected:
   void runTestWaveOscillator();
   void runTestQuadrifex();
   void runTestEditorCreation(int seed);
+  void runTestStateRecall(int seed);
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestToolChain)

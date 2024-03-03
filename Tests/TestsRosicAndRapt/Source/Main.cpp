@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
   //biDirectionalStateInit();
   //biquadDesignVicanek();         // maybe rename to biquadMatchVicanek
   //biquadTail();
-  brickwallAndAllpass();         // stub
+  //brickwallAndAllpass();         // stub
   //complementaryFiltersIIR();
   //engineersFilterRingResp();   // ringing response (experimental idea)
   //engineersFilterFreqResps();
@@ -237,7 +237,7 @@ int main(int argc, char* argv[])
   //additiveEngine();
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
-  //flatZapper();
+  flatZapper();
 
   // Modulators:
   //attackDecayEnvelope();

@@ -71,6 +71,17 @@ Bugs
     that are always on top, which one of them get precedence is determined by the exact sequence of
     the window creation?
    -Ty, if this also affects my own popup menus
+  -Patch ChordyPattern is supposed to use 3 oscillators - but only the 1st is active-. 2 and 3 are 
+   off on recall/load. The saved patch does indeed have a "Mute=1" attribute set. Check default
+   values. In WaveOscModule::createParameters() the default value of mute is set to 0. OK - it can 
+   be reproduced as follows:
+   -Plug in Straightliner
+   -Load init patch (if it isn't loaded automatically - which it should)
+   -Activate 2nd osc
+   -Save patch
+   -Load patch
+   Try to make a unit test that exposes it
+
 
 - Quadrifex: 
   -PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters

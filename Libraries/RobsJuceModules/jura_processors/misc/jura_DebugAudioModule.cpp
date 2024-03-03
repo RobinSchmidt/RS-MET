@@ -389,19 +389,14 @@ void DebugModuleEditor::rButtonClicked(RButton* button)
       int x = popupButton3->getScreenX();
       int y = popupButton3->getScreenY() + 16;
       popupComponent->showAt(showModally, x, y, 400, 300);
-      // ToDo: try to let it determine the desired size by itself by using the size of the 
-      // contentComponent. Has it to do with the poisiton of the content component? Nope. Using
-      // setBounds instead of setSize during creation doe not help.
-
-      int dummy = 0;
+      // In Tracktion, this popup doesn not appear at all - not even in the background! Except when
+      // using showModally = true;
     }
     else
-    {
-
-    }
+      popupComponent->setVisible(false);
   }
   // When clicking the button the 1st time, the window appears in a wrong position.
-  // In Tracktion, this popup doesn not appear at all - not even in the background!
+
   // When using showModally = true; we get a memory leak on exit. But: when doing that, the 
   // rectangle actually does show up in Tracktion - but in the background.
   // Oh - the leak seems to happen even in non-modal mode. Could it be that adding a Component
