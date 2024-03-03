@@ -109,7 +109,7 @@ protected:
   rosic::Straightliner *wrappedStraightliner;
 
 
-  //friend class UnitTestToolChain;       
+  friend class UnitTestToolChain;       
   // Compiles fine in the ToolChain project but not in the TestAppJURA project. In the latter, it 
   // says: 'UnitTestToolChain': ambiguous symbol. Could be 'UnitTestToolChain' or 
   // 'jura::UnitTestToolChain' 

@@ -480,7 +480,7 @@ void UnitTestToolChain::runTestStraightliner()
   jura::StraightlinerAudioModule synth(&lock);
 
   // Obtain pointers to the submodules
-  //jura::MultiModeFilterAudioModule* filter = synth.filterModule;  
+  jura::MultiModeFilterAudioModule* filter = synth.filterModule;  
   // We have no access. We need a friend declaration in jura::Straightliner - but I can't get that 
   // to compile. -> figure out!
   

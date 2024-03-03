@@ -1,12 +1,19 @@
 #ifndef jura_UnitTestsView_h
 #define jura_UnitTestsView_h  
 
+// We want our test classes to be in the jura namespace to make friend declarations work there.
+// They are problematic across namespace boundaries. Unfortunately, this doesn't compile:
+//namespace jura {
+
 #include "jura_framework/UnitTestsParameter.h"
 #include "jura_framework/UnitTestsModulation.h"
 #include "jura_framework/UnitTestsMisc.h"
 
 #include "jura_processors/UnitTestsToolChain.h"
 #include "jura_processors/UnitTestsSampler.h"
+
+//}  // namespace jura
+
 
 
 /** A component to perform unit tests for jura classes, print results, etc. */
