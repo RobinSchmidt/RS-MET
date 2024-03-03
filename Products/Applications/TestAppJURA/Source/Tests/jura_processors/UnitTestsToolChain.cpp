@@ -527,36 +527,12 @@ void UnitTestToolChain::runTestStraightliner()
   };
 
   expect( checkOscParams("Mute", 0, 1, 1, 1) );
-
-
-
-  jura::Parameter* p = nullptr;
-  /*
-  double v = 0.0;                         // Value of parameter
-  p = osc1->getParameterByName("Mute");
-  expect(p != nullptr);
-  v = p->getValue();
-  expect(v == 0.0);
-  p = osc2->getParameterByName("Mute");
-  expect(p != nullptr);
-  v = p->getValue();
-  expect(v == 1.0);
-  p = osc3->getParameterByName("Mute");
-  expect(p != nullptr);
-  v = p->getValue();
-  expect(v == 1.0);
-  p = osc4->getParameterByName("Mute");
-  expect(p != nullptr);
-  v = p->getValue();
-  expect(v == 1.0);
-  // Maybe factor out into a helper function checkOscParams("Mute", 0, 1, 1, 1);
-  */
-
-  // Check that the envelope generators are in default state:
+  // Initially osc1 shoudl be active (non-muted), the others are muted
 
 
   // Now try setting the 2nd osc non-muted, retrieve and recall the state, then check, if the
   // "Mute" settings are as expected (1 and 2 non-muted, 3 and 4 muted):
+  jura::Parameter* p = nullptr;
   p = osc2->getParameterByName("Mute");
   p->setValue(0.0, true, true);           // Activate Osc2
 
@@ -568,8 +544,6 @@ void UnitTestToolChain::runTestStraightliner()
 
   expect( checkOscParams("Mute", 0, 0, 1, 1) );
 
-  //v = p->getValue();
-  //expect(v == 0.0);
 
   // Here, it works. -> The xml string looks correct. It does indeed not have the 
   // "Mute=1" attribute. Why do we get it in the xml file when saving a patch from 
