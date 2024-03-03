@@ -21,7 +21,9 @@ public:
 
 protected:
 
-  // Helper functions:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Helper functions
 
   /** Checks if all parameters of the module have their default values. */
   bool isInDefaultState(const jura::AudioModule* m);
@@ -33,24 +35,21 @@ protected:
   void randomizeParameters(jura::AudioModule* m, int seed = 0);
 
 
-
-
-  // called from runTest:
+  //-----------------------------------------------------------------------------------------------
+  // \name Tests
 
   // Tests of the infrastructure:
   void runTestVoiceManager();
   void runTestEditorCreation(int seed);
   void runTestStateRecall(int seed);
+  // Some tests use some randomization internally. They can be called with a seed parameter for the 
+  // PRNG.
 
   // Tests of individual modules:
   void runTestEqualizer();
   void runTestMultiAnalyzer();
   void runTestQuadrifex();
   void runTestWaveOscillator();
-
-
-
-
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestToolChain)

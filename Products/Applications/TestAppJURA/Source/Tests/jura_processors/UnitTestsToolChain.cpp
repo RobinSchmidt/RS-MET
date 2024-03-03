@@ -27,7 +27,6 @@ void UnitTestToolChain::runTest()
   runTestStateRecall(0);
 }
 
-
 bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
 {
   bool ok = true;
@@ -70,6 +69,81 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
   }
 }
 
+//-------------------------------------------------------------------------------------------------
+// Tests for the infrastructure:
+
+void UnitTestToolChain::runTestEditorCreation(int seed)
+{
+  // This test triggers a couple of assertions -> try to fix!
+
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::ToolChain tlChn(&lock);
+
+  // Let the ToolChain object create a module of each of the available types and plug it into the
+  // first slot, then randomize its parameters, retrieve the state, open the editor, retrieve the
+  // state again and then compare both states:
+  std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
+  for(size_t i = 0; i < moduleTypes.size(); i++)
+  {
+    juce::String type = moduleTypes[i];
+
+    if(type == "MultiAnalyzer")
+      continue;
+    // It fails for MultiAnalyzer but it's not a big issue so we just skip it for the time being. 
+    // There's a separate unit test for this which can be used for fixing this. When done, this 
+    // skipping here can be removed as well.
+
+    tlChn.replaceModule(0, type);
+
+    AudioModule* m = tlChn.getModuleAt(0);
+    expect(m->getModuleTypeName() == type);  // Check module type in slot 1
+    randomizeParameters(m, seed);
+
+    // Get the state, create the editor, get the state again and compare both states:
+    juce::XmlElement* preXml  = m->getStateAsXml("State", true);
+    jura::AudioModuleEditor* editor = m->createEditor(0);
+    juce::XmlElement* postXml = m->getStateAsXml("State", true);
+    expect(postXml->isEquivalentTo(preXml, false));
+    delete preXml;
+    delete editor;
+    delete postXml;
+  }
+
+  // ToDo:
+  // -Try the test with different seeds for the randomization of the parameters. Some bugs are exposed 
+  //  only with certain parameter values.
+}
+
+void UnitTestToolChain::runTestStateRecall(int seed)
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::ToolChain tlChn(&lock);
+  std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
+  for(size_t i = 0; i < moduleTypes.size(); i++)
+  {
+    juce::String type = moduleTypes[i];
+
+    if(type == "FuncShaper")
+      continue;
+    // It fails for FuncShaper. To get passed the triggers of the assertions, we temporarily skip 
+    // this test.
+
+    tlChn.replaceModule(0, type);
+    AudioModule* m = tlChn.getModuleAt(0);
+    expect(m->getModuleTypeName() == type);  // Check module type in slot 1
+    randomizeParameters(m, seed);
+    juce::XmlElement* preXml = m->getStateAsXml("State", true);
+    resetParameters(m);
+    m->setStateFromXml(*preXml, "Recalled", true);
+    juce::XmlElement* postXml = m->getStateAsXml("State", true);
+    expect(postXml->isEquivalentTo(preXml, false));
+    delete preXml;
+    delete postXml;
+  }
+
+  // WaveOscillator fails
+  // Why does Straightliner not fail? We have this bug with the recall of the "Mute" parameter
+}
 
 void UnitTestToolChain::runTestVoiceManager()
 {
@@ -281,6 +355,56 @@ void UnitTestToolChain::runTestVoiceManager()
 // and put this test there
 
 
+//-------------------------------------------------------------------------------------------------
+// Tests for individual modules:
+
+void UnitTestToolChain::runTestEqualizer()
+{
+  // This test was motivated by an access violation in the frequency response plot of the equalizer
+  // in both of the modes that need to plot two graphs instead of just one. there was somet bug in
+  // jura::rsDataPlot
+
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::EqualizerAudioModule eq(&lock);
+  eq.getParameterByName("StereoMode")->setValue( 1.0, true, true);  // 1 is Stereo L/R
+  jura::AudioModuleEditor* editor = eq.createEditor(0);
+  delete editor;
+  // The call to eq.createEditor(0); triggers an access violation in rsPlotDrawer::drawWithLines 
+  // but only if we call randomizeParameters before. Or 
+  // eq.getParameterByName("StereoMode")->setValue( 0.83, true, true);
+  // It seems to be the stereo mode parameter 0-Linked: ok, 1-L/R: crash, 2-M/S: crash, 3: ok
+  // ..soo it seems like those stereo modes that have two graphs cause problems.
+  // This also happes when actually runnign toolChain. plugging in an Equalizer and swicthing
+  // the stereo mode from the GUI
+  // OK - this crash might be fixed.
+}
+
+void UnitTestToolChain::runTestMultiAnalyzer()
+{
+  CriticalSection lock;
+  jura::MultiAnalyzerAudioModule ana(&lock);
+
+
+  // Get the state, create the editor, get the state again and compare both states:
+  juce::XmlElement* preXml  = ana.getStateAsXml("State", true);
+  jura::AudioModuleEditor* editor = ana.createEditor(0);
+  juce::XmlElement* postXml = ana.getStateAsXml("State", true);
+
+  juce::XmlDocument preDoc  = preXml ->toString();
+  juce::XmlDocument postDoc = postXml->toString();
+
+  expect(postXml->isEquivalentTo(preXml, false));
+  // This fails!
+  // Creating the editor apparently sets the TimeWindowLength parameter of the oscilloscope to 1.5
+  // I think, this happens when the zoomer with scrollbars is created and wired up. In the 
+  // oscilloscope that parameters are controlled by scrollbars rather than the usula sliders and this
+  // behaves differently. It's not a big issue so fixing this should have lower priority.
+
+  delete preXml;
+  delete editor;
+  delete postXml;
+}
+
 void UnitTestToolChain::runTestQuadrifex()
 {
   // This code parallels what is done in createPluginFilter() in the ToolChain project. This is the
@@ -348,66 +472,13 @@ void UnitTestToolChain::runTestQuadrifex()
   delete proc;
 }
 
-void UnitTestToolChain::runTestEqualizer()
-{
-  // This test was motivated by an access violation in the frequency response plot of the equalizer
-  // in both of the modes that need to plot two graphs instead of just one. there was somet bug in
-  // jura::rsDataPlot
-
-  CriticalSection lock;                   // Mocks the pluginLock.
-  jura::EqualizerAudioModule eq(&lock);
-  eq.getParameterByName("StereoMode")->setValue( 1.0, true, true);  // 1 is Stereo L/R
-  jura::AudioModuleEditor* editor = eq.createEditor(0);
-  delete editor;
-  // The call to eq.createEditor(0); triggers an access violation in rsPlotDrawer::drawWithLines 
-  // but only if we call randomizeParameters before. Or 
-  // eq.getParameterByName("StereoMode")->setValue( 0.83, true, true);
-  // It seems to be the stereo mode parameter 0-Linked: ok, 1-L/R: crash, 2-M/S: crash, 3: ok
-  // ..soo it seems like those stereo modes that have two graphs cause problems.
-  // This also happes when actually runnign toolChain. plugging in an Equalizer and swicthing
-  // the stereo mode from the GUI
-  // OK - this crash might be fixed.
-}
-
-void UnitTestToolChain::runTestMultiAnalyzer()
-{
-  CriticalSection lock;
-  jura::MultiAnalyzerAudioModule ana(&lock);
-
-
-  // Get the state, create the editor, get the state again and compare both states:
-  juce::XmlElement* preXml  = ana.getStateAsXml("State", true);
-  jura::AudioModuleEditor* editor = ana.createEditor(0);
-  juce::XmlElement* postXml = ana.getStateAsXml("State", true);
-
-  juce::XmlDocument preDoc  = preXml ->toString();
-  juce::XmlDocument postDoc = postXml->toString();
-
-  expect(postXml->isEquivalentTo(preXml, false));
-  // This fails!
-  // Creating the editor apparently sets the TimeWindowLength parameter of the oscilloscope to 1.5
-  // I think, this happens when the zoomer with scrollbars is created and wired up. In the 
-  // oscilloscope that parameters are controlled by scrollbars rather than the usula sliders and this
-  // behaves differently. It's not a big issue so fixing this should have lower priority.
-
-  delete preXml;
-  delete editor;
-  delete postXml;
-}
-
 void UnitTestToolChain::runTestWaveOscillator()
 {
-  // This test was motivated by a bug which caused the creation of an editor for a Wave-oscillator
-  // to potnetially change some of its settings. This was caused by some erroneous function call 
+  // Thie test was motivated by a bug which caused the creation of an editor for a Wave-oscillator
+  // to potentially change some of its settings. This was caused by some erroneous function call 
   // sequence when connecting widgets (e.g. sliders) to the parameters. The sliders should take 
   // over the value from the parameter (and its range, etc.) but for some reason, it also did set
   // the value. Of course, opening an editor should never change the state of an AudioModule.
-  //
-  // ToDo: maybe write a more general test that checks for every AudioModule included in ToolChain
-  // that opening the editor does not affect the state. Loop through all availablbe modules, 
-  // intantiate one, randomize the state, retrieve the state-xml, open the editor, retrieve the 
-  // state-xml again and check that both state xmls match. ..is under construction
-
 
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::WaveOscModule wvOsc1(&lock);
@@ -427,80 +498,46 @@ void UnitTestToolChain::runTestWaveOscillator()
   // Clean up memory:
   delete ed1;
 
+
+  // Another problem that occurrs that when we fire up Straightliner, activate the 2nd osc, save 
+  // the preset and reload it, the 2nd osc is off again. The state xml file has stored a "Mute=1"
+  // attribute. We check, if that problem already occurs in the wave oscillator:
+
+  juce::XmlElement* xml1 = wvOsc1.getStateAsXml("State", true);
+
+  // Check, if the xml-string is as expected:
+  juce::String str1 = xml1->toString();
+  juce::String strT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<WaveOscillator PatchFormat=\"1\"/>\n";
+  int cmp = str1.compare(strT);  // == 1. Should be 0, if the strings are equal
+  //expect(str1 == strT);
+  // This fails! Could it have to do with encoding or with CR/LF stuff? ...OK - this is currently 
+  // not terribly important but eventually I want to figure this out and include such a test
+
+
+
+
+
+  // Clean up:
+  delete xml1; xml1 = nullptr;
+
+  // <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<WaveOscillator PatchFormat=\"1\"/>\n
+
+
+  int dummy = 0;
+
+
+  // ...if not, do a similar test with FourOscSection - maybe manually set the 2nd oscillator to
+  // Mute=0, retrieve state, set it and check that mute is off
+
+
+
   // ToDo: 
   // -Test creating a jura::WaveOscModule that creates the underlying DSP core of the oscillator 
   //  itself and one that wraps an existing oscillator.
+  // -Maybe write a more general test that checks for every AudioModule included in ToolChain
+  //  that opening the editor does not affect the state. Loop through all availablbe modules, 
+  //  intantiate one, randomize the state, retrieve the state-xml, open the editor, retrieve the 
+  //  state-xml again and check that both state xmls match. ..is under construction
+
 }
 
-void UnitTestToolChain::runTestEditorCreation(int seed)
-{
-  // This test triggers a couple of assertions -> try to fix!
-
-  CriticalSection lock;                   // Mocks the pluginLock.
-  jura::ToolChain tlChn(&lock);
-
-  // Let the ToolChain object create a module of each of the available types and plug it into the
-  // first slot, then randomize its parameters, retrieve the state, open the editor, retrieve the
-  // state again and then compare both states:
-  std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
-  for(size_t i = 0; i < moduleTypes.size(); i++)
-  {
-    juce::String type = moduleTypes[i];
-
-    if(type == "MultiAnalyzer")
-      continue;
-    // It fails for MultiAnalyzer but it's not a big issue so we just skip it for the time being. 
-    // There's a separate unit test for this which can be used for fixing this. When done, this 
-    // skipping here can be removed as well.
-
-    tlChn.replaceModule(0, type);
-
-    AudioModule* m = tlChn.getModuleAt(0);
-    expect(m->getModuleTypeName() == type);  // Check module type in slot 1
-    randomizeParameters(m, seed);
-
-    // Get the state, create the editor, get the state again and compare both states:
-    juce::XmlElement* preXml  = m->getStateAsXml("State", true);
-    jura::AudioModuleEditor* editor = m->createEditor(0);
-    juce::XmlElement* postXml = m->getStateAsXml("State", true);
-    expect(postXml->isEquivalentTo(preXml, false));
-    delete preXml;
-    delete editor;
-    delete postXml;
-  }
-
-  // ToDo:
-  // -Try the test with different seeds for the randomization of the parameters. Some bugs are exposed 
-  //  only with certain parameter values.
-}
-
-void UnitTestToolChain::runTestStateRecall(int seed)
-{
-  CriticalSection lock;                   // Mocks the pluginLock.
-  jura::ToolChain tlChn(&lock);
-  std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
-  for(size_t i = 0; i < moduleTypes.size(); i++)
-  {
-    juce::String type = moduleTypes[i];
-
-    if(type == "FuncShaper")
-      continue;
-    // It fails for FuncShaper. To get passed the triggers of the assertions, we temporarily skip 
-    // this test.
-
-    tlChn.replaceModule(0, type);
-    AudioModule* m = tlChn.getModuleAt(0);
-    expect(m->getModuleTypeName() == type);  // Check module type in slot 1
-    randomizeParameters(m, seed);
-    juce::XmlElement* preXml = m->getStateAsXml("State", true);
-    resetParameters(m);
-    m->setStateFromXml(*preXml, "Recalled", true);
-    juce::XmlElement* postXml = m->getStateAsXml("State", true);
-    expect(postXml->isEquivalentTo(preXml, false));
-    delete preXml;
-    delete postXml;
-  }
-
-  // WaveOscillator fails
-  // Why does Straightliner not fail? We have this bug with the recall of the "Mute" parameter
-}

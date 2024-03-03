@@ -51,9 +51,12 @@ AudioModuleEditor* StraightlinerAudioModule::createEditor(int type)
 void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState, 
   const juce::String &stateName, bool markAsClean)
 {
-  // retrieve the patch format of the xml-file to enable different interpretations of the patch for 
+  // Retrieve the patch format of the xml-file to enable different interpretations of the patch for 
   // backwards compatibility:
   int xmlPatchFormat = xmlState.getIntAttribute("PatchFormat", 0);
+  // If the xml-state does not have a "PatchFormat" attribute, it is an old preset, saved before I
+  // introduced the PatchFormat attribute. The the xmlPatchFormat will be 0. Valid patch format 
+  // numbers start at 1.
 
   // this override is specific to straightliner - in other plugins, we may hopefully rely on the 
   // StateManager infrastructure...

@@ -56,8 +56,9 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
 
   bool success = false;
 
-  // temporarily switch off the automatic re-rendering of the mip-map, to multiple rendering (one for each
-  // parameter):
+  // Temporarily switch off the automatic re-rendering of the mip-map, to avoid multiple renderings
+  // (one for each parameter)...but that should probaly be done in WaveOscModule::getStateAsXml.
+  // Doing it here worked in the legacy code:
   bool oldAutoReRenderState = osc->waveTable->isMipMapAutoReRenderingActive();
   osc->waveTable->setAutomaticMipMapReRendering(false);
   osc->waveTable->fillWithAllZeros();
@@ -91,7 +92,11 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
   }
   else
   {
-    //  maybe init waveform with silence
+    // ToDo: maybe init waveform with silence - call a function like:
+    //osc->waveTable->initWaveform();
+    // which would have to be written. It makes more sense to use silence than to keep whatever
+    // waveform is currently loaded. That would create a false impression of the state.
+    // ...what about fillWithAllZeros that is called above
   }
 
   // pass the path as c-string:
