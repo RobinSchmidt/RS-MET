@@ -3,6 +3,9 @@
 
 #include "../../../JuceLibraryCode/JuceHeader.h"
 
+namespace jura
+{
+
 /**  */
 
 class JUCE_API UnitTestsSampler : public juce::UnitTest
@@ -51,6 +54,6 @@ public:
 
 };
 
-
+}
 
 #endif

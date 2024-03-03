@@ -108,23 +108,7 @@ protected:
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::Straightliner *wrappedStraightliner;
 
-
-  friend class UnitTestToolChain;       
-  // Compiles fine in the ToolChain project but not in the TestAppJURA project. In the latter, it 
-  // says: 'UnitTestToolChain': ambiguous symbol. Could be 'UnitTestToolChain' or 
-  // 'jura::UnitTestToolChain' 
-
-  //friend class ::UnitTestToolChain;   
-  // Compiles neither in TestAppJURA
-
-  // In the second case, it says UnitTestToolChain is not a member of the global namespace. 
-  // However, UnitTestToolChain isn't a member of the jura namespace either. So why does the first
-  // compile fine while the other doesn't?
-  // Wait - it seems UnitTestToolChain exists in both global and jura namespaces? Why?
-
-  // I think, we need to make the unit tests also part of the jura namespace. I guess, friend 
-  // declaration cannot escape namespace boundaries?
-
+  friend class UnitTestToolChain;  // This class is part of the TestAppJURA project.
   juce_UseDebuggingNewOperator;
 };
 

@@ -3,6 +3,8 @@
 
 #include "../../../JuceLibraryCode/JuceHeader.h"
 
+namespace jura
+{
 
 /** Unit tests for jura::Parameter and its various subclasses. */
 
@@ -33,10 +35,10 @@ protected:
   void runTestModulatableParameter();
 
   // functions that perform tests on the passed Parameter pointers:
-  void testParameter(  jura::Parameter* p);
-  void testSmoothable( jura::rsSmoothableParameter* p);
+  void testParameter(jura::Parameter* p);
+  void testSmoothable(jura::rsSmoothableParameter* p);
   void testMetaControl(jura::MetaControlledParameter* p);
-  void testModulation( jura::ModulatableParameter* p);
+  void testModulation(jura::ModulatableParameter* p);
 
   /** Performs smoothing iterations until target value has been reached and returns the number of
   iterations that were needed. */
@@ -55,5 +57,7 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestParameter)
 };
+
+}
 
 #endif

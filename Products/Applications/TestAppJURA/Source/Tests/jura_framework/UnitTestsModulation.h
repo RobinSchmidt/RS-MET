@@ -3,6 +3,9 @@
 
 #include "../../../JuceLibraryCode/JuceHeader.h"
 
+namespace jura
+{
+
 class JUCE_API UnitTestModulation : public juce::UnitTest
 {
 
@@ -42,5 +45,6 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestModulation)
 };
 
+}
 
 #endif

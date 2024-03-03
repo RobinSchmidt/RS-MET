@@ -3,6 +3,8 @@
 
 #include "../../../JuceLibraryCode/JuceHeader.h"
 
+namespace jura
+{
 
 /** Unit tests for miscellanneous smaller classes and functions of jura. */
 
@@ -25,5 +27,7 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestMisc)
 };
+
+}
 
 #endif

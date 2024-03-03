@@ -1,6 +1,6 @@
 #include "UnitTestsSampler.h"
 //using namespace juce;
-//using namespace jura;
+using namespace jura;
 
 void UnitTestsSampler::runTest()
 {

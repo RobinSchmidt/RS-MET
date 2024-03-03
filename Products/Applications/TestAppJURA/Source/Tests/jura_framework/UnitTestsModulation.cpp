@@ -1,4 +1,5 @@
 #include "UnitTestsModulation.h"
+using namespace jura;
 
 // Define Some subclasses of AudioModule that are used in the tests. They have two parameters:
 // Frequency and Amplitude which are also used as output signals for the per-sample callback, so we
