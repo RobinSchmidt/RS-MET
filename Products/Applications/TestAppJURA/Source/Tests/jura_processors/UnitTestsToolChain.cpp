@@ -505,12 +505,30 @@ void UnitTestToolChain::runTestStraightliner()
   expect(p != nullptr);
   v = p->getValue();
   expect(v == 1.0);
-
-
-  // ...
+  p = osc3->getParameterByName("Mute");
+  expect(p != nullptr);
+  v = p->getValue();
+  expect(v == 1.0);
+  p = osc4->getParameterByName("Mute");
+  expect(p != nullptr);
+  v = p->getValue();
+  expect(v == 1.0);
 
   // Check that the envelope generators are in default state:
 
+
+  // Now try setting the 2nd osc non-muted, retrieve and recall the state, then check, if the
+  // "Mute" settings are as expected (1 and 2 non-muted, 3 and 4 muted):
+  p = osc2->getParameterByName("Mute");
+  p->setValue(0.0, true, true);           // Activate Osc2
+
+  // Factor out into retrieveAndRecallState - could be used for any AudioModule:
+  juce::XmlElement* xml = synth.getStateAsXml("State", true);
+  synth.setStateFromXml(*xml, "State", true);
+  delete xml; xml = nullptr;
+
+  v = p->getValue();
+  expect(v == 0.0);
 
 
 
