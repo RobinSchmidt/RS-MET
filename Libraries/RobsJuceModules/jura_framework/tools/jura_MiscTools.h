@@ -192,8 +192,8 @@ inline bool containsPoint(juce::Component* c, int x, int y)
     return false;
   if( y < c->getY() )
     return false;
-  if( x >= c->getX() + c->getWidth() )     // or should it be >?
-    return false;
+  if( x >= c->getX() + c->getWidth() )   // It's >= not >. Something that starts at pixel 5 with
+    return false;                        // width = 3 extends over 5,6,7. 8 = 5+3 is not included.
   if( y >= c->getY() + c->getHeight() )
     return false;
   return true;
