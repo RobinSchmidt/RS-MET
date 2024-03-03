@@ -524,12 +524,16 @@ void UnitTestToolChain::runTestStraightliner()
 
   // Factor out into retrieveAndRecallState - could be used for any AudioModule:
   juce::XmlElement* xml = synth.getStateAsXml("State", true);
+  juce::String str = xml->toString();
   synth.setStateFromXml(*xml, "State", true);
   delete xml; xml = nullptr;
 
   v = p->getValue();
   expect(v == 0.0);
 
+  // Here, it works. -> Investingate the xml. Looks correct. It does indeed not have the 
+  // "Mute=1" attribute. Why do we get it in the xml file when saving a patch from 
+  // Straightliner?
 
 
   int dummy = 0;
