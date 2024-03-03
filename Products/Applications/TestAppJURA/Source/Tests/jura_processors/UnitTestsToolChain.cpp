@@ -480,22 +480,58 @@ void UnitTestToolChain::runTestStraightliner()
   jura::StraightlinerAudioModule synth(&lock);
 
   // Obtain pointers to the submodules:
-  jura::MultiModeFilterAudioModule*     filter   = synth.filterModule;
-  jura::FourOscSectionAudioModule*      oscs     = synth.oscSectionModule;
+  jura::MultiModeFilterAudioModule* filter   = synth.filterModule;
+  jura::FourOscSectionAudioModule* oscs     = synth.oscSectionModule;
   jura::BreakpointModulatorAudioModule* pitchEnv = synth.pitchEnvModule;
   jura::BreakpointModulatorAudioModule* filtEnv  = synth.filterEnvModule;
   jura::BreakpointModulatorAudioModule* ampEnv   = synth.ampEnvModule;
-  jura::WaveOscModule*                  osc1     = oscs->osc1Module;
-  jura::WaveOscModule*                  osc2     = oscs->osc2Module;
-  jura::WaveOscModule*                  osc3     = oscs->osc3Module;
-  jura::WaveOscModule*                  osc4     = oscs->osc4Module;
+  jura::WaveOscModule* osc1     = oscs->osc1Module;
+  jura::WaveOscModule* osc2     = oscs->osc2Module;
+  jura::WaveOscModule* osc3     = oscs->osc3Module;
+  jura::WaveOscModule* osc4     = oscs->osc4Module;
 
   // Check that all the oscillators are in the expected default states. All 4 oscs should have the
   // sawtooth wave loaded and osc1 should be active (i.e. non-muted) and oscs 2..4 should be 
   // muted:
   //juce::String wave1 = osc1->getCurrentWaveformPath();
 
+  // Helper function to check if the parameters with given name have the expected values 
+  // v1,v2,v3,v4 in the 4 oscillators respectively:
+  auto checkOscParams = [&](const char* name, double v1, double v2, double v3, double v4)
+  {
+    bool ok = true;
+    jura::Parameter* p = nullptr;           // Parameter object
+    double v = 0.0;                         // Value of parameter
+
+    p = osc1->getParameterByName(name);
+    jassert(p != nullptr);
+    v = p->getValue();
+    ok &= v == v1;
+
+    p = osc2->getParameterByName(name);
+    jassert(p != nullptr);
+    v = p->getValue();
+    ok &= v == v2;
+
+    p = osc3->getParameterByName(name);
+    jassert(p != nullptr);
+    v = p->getValue();
+    ok &= v == v3;
+
+    p = osc4->getParameterByName(name);
+    jassert(p != nullptr);
+    v = p->getValue();
+    ok &= v == v4;
+
+    return ok;
+  };
+
+  expect( checkOscParams("Mute", 0, 1, 1, 1) );
+
+
+
   jura::Parameter* p = nullptr;
+  /*
   double v = 0.0;                         // Value of parameter
   p = osc1->getParameterByName("Mute");
   expect(p != nullptr);
@@ -513,6 +549,8 @@ void UnitTestToolChain::runTestStraightliner()
   expect(p != nullptr);
   v = p->getValue();
   expect(v == 1.0);
+  // Maybe factor out into a helper function checkOscParams("Mute", 0, 1, 1, 1);
+  */
 
   // Check that the envelope generators are in default state:
 
@@ -528,8 +566,10 @@ void UnitTestToolChain::runTestStraightliner()
   synth.setStateFromXml(*xml, "State", true);
   delete xml; xml = nullptr;
 
-  v = p->getValue();
-  expect(v == 0.0);
+  expect( checkOscParams("Mute", 0, 0, 1, 1) );
+
+  //v = p->getValue();
+  //expect(v == 0.0);
 
   // Here, it works. -> The xml string looks correct. It does indeed not have the 
   // "Mute=1" attribute. Why do we get it in the xml file when saving a patch from 
