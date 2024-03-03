@@ -285,6 +285,12 @@ protected:
   // have a pointer to jura::WaveOscModule. Otherwise, Setting something up here will not be
   // refelcted in the Parameter objects in the WaveOscModule
 
+
+  /** Pointer to the actual WaveOscModule object which is being edited. */
+  //WaveOscModule* oscModule;
+  // new
+
+
   // get rid of this - it doesn't belog here:
   int      numSamplesInPlot;
   double*  waveformBuffer;
