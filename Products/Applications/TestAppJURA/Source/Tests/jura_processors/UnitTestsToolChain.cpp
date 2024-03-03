@@ -73,20 +73,9 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
   }
 }
 
-juce::MouseEvent UnitTestToolChain::getMockMouseEvent(float mouseX, float mouseY)
+juce::MouseEvent UnitTestToolChain::getMockMouseDownEvent(float mouseX, float mouseY, 
+  juce::Component* eventComp, juce::Component* originatorComp)
 {
-  // The Problem is related to the GUI editor of the osc setting its mute state bypassing the
-  // "Mute" parameter. Let's try to expose this with mock mouse events. See:
-  //
-  //   https://forum.juce.com/t/creating-a-mouseevent/32635/10
-  //
-  // But we don't nee Straightline for that. We can do that in runTestWaveOscillator
-
-  //auto mouseSource = juce::Desktop::getInstance().getMainMouseSource();
-  //auto fakeEvent = juce::MouseEvent(mouseSource, );
-  //component.mouseDown (fakeEvent);
-
-  // Create a fake mouseDown event:
   float mouseDownX  = 0.f;
   float mouseDownY  = 0.f;
   float pressure    = 1.f;
@@ -98,16 +87,20 @@ juce::MouseEvent UnitTestToolChain::getMockMouseEvent(float mouseX, float mouseY
   juce::Time mouseDownTime;
   int   numClicks   = 1;
   bool  wasDragged  = false;
-  juce::Component* eventComponent = nullptr;
-  juce::Component* originatorComponent = nullptr;
+  //juce::Component* eventComponent = nullptr;
+  //juce::Component* originatorComponent = nullptr;
   juce::MouseInputSource mouseSource = juce::Desktop::getInstance().getMainMouseSource();
   juce::ModifierKeys     modKeys;
+
   juce::MouseEvent mouseEvent(mouseSource, 
     juce::Point<float>(mouseX, mouseY), modKeys, pressure, orientation, rotation, tiltX, tiltY,
-    eventComponent, originatorComponent, eventTime, juce::Point<float>(mouseDownX, mouseDownY),
+    eventComp, originatorComp, eventTime, juce::Point<float>(mouseDownX, mouseDownY),
     mouseDownTime, numClicks, wasDragged);
 
   return mouseEvent;
+
+  // It's surprisingly difficult to create mock mouse events in juce. See:
+  // https://forum.juce.com/t/creating-a-mouseevent/32635/10
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -609,16 +602,16 @@ void UnitTestToolChain::runTestWaveOscillator()
   expect(isInDefaultState(&wvOsc1));
 
   // Create an editor object for the osc:
-  jura::AudioModuleEditor* ed1 = wvOsc1.createEditor(0);
+  jura::AudioModuleEditor* amEd = wvOsc1.createEditor(0);
 
   // Check that the right kind of editor was created:
-  expect( dynamic_cast<jura::WaveOscEditor*>(ed1) );
+  jura::WaveOscEditor* wvEd = dynamic_cast<jura::WaveOscEditor*>(amEd);
+  expect(wvEd != nullptr);
 
   // Check that creating the editor didn't mess with the state, i.e. didn't change any parameters:
   expect(isInDefaultState(&wvOsc1));
 
-  // Clean up memory:
-  delete ed1;
+
 
 
   // Another problem that occurrs that when we fire up Straightliner, activate the 2nd osc, save 
@@ -639,14 +632,22 @@ void UnitTestToolChain::runTestWaveOscillator()
   delete xml1; xml1 = nullptr;
 
 
+  juce::Rectangle<int> r = wvEd->getWaveDisplayBounds();
+  int x = r.getX() + r.getWidth()  / 2;
+  int y = r.getY() + r.getHeight() / 2;
+  juce::MouseEvent mouseEvent = getMockMouseDownEvent(x, y, wvEd, wvEd);
+  amEd->mouseDown(mouseEvent);  // deliberately using the basclass pointer
+  // Hmm - apparently, the editor doesn't think that the event is within the waveform display
 
+  // Component::contains (Point<int> point)
+  // returns false when we call  waveformDisplay->contains(Point<int>(e2.x, e2.y))  in 
+  // WaveOscEditor::mouseDown. Figure out why! I think Component::hitTest returns false.
+  // This is hard to debug because when we set a breakpoint there, it will trigger as soon as 
+  // the mouse enters the GUI
 
-  juce::MouseEvent mouseEvent = getMockMouseEvent();
-    
+  // Clean up memory:
+  delete amEd;
 
-
-
-  int dummy = 0;
 
 
   // ...if not, do a similar test with FourOscSection - maybe manually set the 2nd oscillator to

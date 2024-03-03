@@ -37,8 +37,10 @@ protected:
   /** Randomizes all the parameters of the given jura::AudioModule. */
   void randomizeParameters(jura::AudioModule* m, int seed = 0);
 
-  /** Generates a mock mouse event t´hat can be used to test GUI stuff. */
-  juce::MouseEvent getMockMouseEvent(float mouseX = 0.f, float mouseY = 0.f);
+  /** Generates a mock mouseDown event t´hat can be used to test GUI stuff. */
+  juce::MouseEvent getMockMouseDownEvent(float mouseX = 0.f, float mouseY = 0.f, 
+    juce::Component* eventComp = nullptr, juce::Component* originatorComp = nullptr);
+  // What does the distinction between eventComp and originatorComp mean?
 
   //-----------------------------------------------------------------------------------------------
   // \name Tests

@@ -928,15 +928,15 @@ void WaveOscEditor::updateWidgetsAccordingToState()
     return;
 
   // update the widgets:
-  levelSlider->setValue(oscillatorToEdit->getLevel(),                                      false);
-  tuneSlider->setValue(oscillatorToEdit->getDetuneSemitones(),                             false);
-  pitchModulationSlider->setValue(oscillatorToEdit->getPitchEnvelopeDepth(),               false);
+  levelSlider->setValue(          oscillatorToEdit->getLevel(),              false);
+  tuneSlider->setValue(           oscillatorToEdit->getDetuneSemitones(),    false);
+  pitchModulationSlider->setValue(oscillatorToEdit->getPitchEnvelopeDepth(), false);
 
   // update the waveform display plot:
   updatePlot();
   updateWidgetVisibility();
 
-  // update tzhe widgets of the context menu, too:
+  // update the widgets of the context menu, too:
   contextMenu->updateWidgetsAccordingToState();
 }
 
@@ -945,16 +945,24 @@ void WaveOscEditor::mouseDown(const MouseEvent &e)
   if( oscillatorToEdit == NULL )
     return;
 
-  MouseEvent e2 = e.getEventRelativeTo(waveformDisplay);
-  if( waveformDisplay->contains(Point<int>(e2.x, e2.y)) )
+  // New (still buggy, though):
+  if(containsPoint(waveformDisplay, e.x, e.y))
   {
     oscillatorToEdit->setMute( !oscillatorToEdit->isMuted() );
-    // !!BUG!! This does not update the "Mute" parameter. We bypass the jura::Parameter framework
-    // in jura::AudioModule here. When switching on/off the osc on the GUI and saving a preset,
-    // the osc's on/off state will be saved wrongly.
-
     updateWidgetVisibility();
   }
+
+
+  //// Old:
+  //MouseEvent e2 = e.getEventRelativeTo(waveformDisplay);
+  //if( waveformDisplay->contains(Point<int>(e2.x, e2.y)) )
+  //{
+  //  oscillatorToEdit->setMute( !oscillatorToEdit->isMuted() );
+  //  // !!BUG!! This does not update the "Mute" parameter. We bypass the jura::Parameter framework
+  //  // in jura::AudioModule here. When switching on/off the osc on the GUI and saving a preset,
+  //  // the osc's on/off state will be saved wrongly.
+  //  updateWidgetVisibility();
+  //}
 }
 
 void WaveOscEditor::resized()

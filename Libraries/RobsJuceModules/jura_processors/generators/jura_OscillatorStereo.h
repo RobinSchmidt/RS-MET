@@ -227,6 +227,13 @@ public:
   //virtual bool setWaveformFromFile(const File &fileToLoadFrom);
 
   //---------------------------------------------------------------------------------------------
+  // inquiry:
+
+  /** Returns the bounds of the waveform display. Mainly for testing */
+  juce::Rectangle<int> getWaveDisplayBounds() const { return waveformDisplay->getBounds(); }
+
+
+  //---------------------------------------------------------------------------------------------
   // callbacks:
 
   virtual void rButtonClicked(RButton *buttonThatWasClicked);

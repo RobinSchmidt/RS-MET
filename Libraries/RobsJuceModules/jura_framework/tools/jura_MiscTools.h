@@ -186,6 +186,18 @@ inline void setRightKeepLeft(juce::Component* c, int newRight)
   c->setBounds(x, y, newWidth, h);
 }
 
+inline bool containsPoint(juce::Component* c, int x, int y)
+{
+  if( x < c->getX() )
+    return false;
+  if( y < c->getY() )
+    return false;
+  if( x >= c->getX() + c->getWidth() )     // or should it be >?
+    return false;
+  if( y >= c->getY() + c->getHeight() )
+    return false;
+  return true;
+}
 
 
 
