@@ -949,6 +949,10 @@ void WaveOscEditor::mouseDown(const MouseEvent &e)
   if( waveformDisplay->contains(Point<int>(e2.x, e2.y)) )
   {
     oscillatorToEdit->setMute( !oscillatorToEdit->isMuted() );
+    // !!BUG!! This does not update the "Mute" parameter. We bypass the jura::Parameter framework
+    // in jura::AudioModule here. When switching on/off the osc on the GUI and saving a preset,
+    // the osc's on/off state will be saved wrongly.
+
     updateWidgetVisibility();
   }
 }

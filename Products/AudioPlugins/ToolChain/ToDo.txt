@@ -80,7 +80,9 @@ Bugs
    -Activate 2nd osc
    -Save patch
    -Load patch
-   Try to make a unit test that exposes it
+   Try to make a unit test that exposes it. Maybe it has to do with a click on the osc-waveform
+   not stting the "Mute" parameter? I think, the bug is in  jura::WaveOscEditor. See comments at
+   the bottom of the class declaration and also WaveOscEditor::mouseDown.
 
 
 - Quadrifex: 

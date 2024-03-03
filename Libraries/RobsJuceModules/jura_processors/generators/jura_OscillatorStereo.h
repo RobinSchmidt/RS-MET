@@ -274,6 +274,9 @@ protected:
 
   /** Pointer to the actual StereoOscillator object which is being edited. */
   rosic::OscillatorStereo* oscillatorToEdit;
+  // !!!BUG!!! We should not edit a rosic::OscillatorStereo object directly! Instead, we need to
+  // have a pointer to jura::WaveOscModule. Otherwise, Setting something up here will not be
+  // refelcted in the Parameter objects in the WaveOscModule
 
   // get rid of this - it doesn't belog here:
   int      numSamplesInPlot;
