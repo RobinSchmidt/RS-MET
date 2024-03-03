@@ -108,6 +108,14 @@ protected:
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::Straightliner *wrappedStraightliner;
 
+
+  //friend class UnitTestToolChain;       // compiles fine in ToolChain and TestAppJURA projects
+  //friend class ::UnitTestToolChain;   // doesn't compile
+  // In the second case, it says UnitTestToolChain is not a member of the global namespace. 
+  // However, UnitTestToolChain isn't a member of the jura namespace either. So why does the first
+  // compile fine while the other doesn't?
+  // Wait - it seems UnitTestToolChain exists in both global and jura namespaces? Why?
+
   juce_UseDebuggingNewOperator;
 };
 

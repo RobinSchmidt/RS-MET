@@ -477,7 +477,14 @@ void UnitTestToolChain::runTestQuadrifex()
 void UnitTestToolChain::runTestStraightliner()
 {
   CriticalSection lock;                   // Mocks the pluginLock.
-  jura::StraightlinerAudioModule stLn(&lock);
+  jura::StraightlinerAudioModule synth(&lock);
+
+  // Obtain pointers to the submodules
+  //jura::MultiModeFilterAudioModule* filter = synth.filterModule;  
+  // We have no access. We need a friend declaration in jura::Straightliner - but I can't get that 
+  // to compile. -> figure out!
+  
+
 
 
   int dummy = 0;
