@@ -769,18 +769,15 @@ WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
   jassert( newWaveOscModule != nullptr );
   oscModule = newWaveOscModule;
 
-  //oscillatorToEdit = NULL; // old
-
   createWidgets();
 
-  // overwrite the descriptions of the inherited sample-load widgets:
-  //sampleFileLabel->setDescription("Name of the currently loaded single cycle audio file");  // too long for gui
+  // Overwrite the descriptions of the inherited sample-load widgets:
   sampleFileLabel->setDescription("Name of the currently loaded waveform");
   sampleLoadButton->setDescription("Load a waveform");
   samplePlusButton->setDescription("Next waveform in current directory");
   sampleMinusButton->setDescription("Previous waveform in current directory");
 
-  // maybe create this only when needed and init to nullptr:
+  // Maybe create this only when needed and init to nullptr as in lazy initialization:
   contextMenu = new WaveOscEditorContextMenu(newWaveOscModule, this);
   contextMenu->addChangeListener(this);
   contextMenu->setAlwaysOnTop(true);
@@ -798,19 +795,15 @@ WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
   isTopLevelEditor = false;
   setHeadlineStyle(NO_HEADLINE);
 
-  // initialize the current directory for waveform loading:
+  // Initialize the current directory for waveform loading:
   AudioFileManager::setActiveDirectory(getSupportDirectory() + "/Samples/SingleCycle/Classic");
 
-  //setOscillatorToEdit(newWaveOscModule->wrappedOscillatorStereo);
-  // this will also set up the widgets according to the state of the oscillator
 
-  //oscillatorToEdit = newWaveOscModule->wrappedOsc; // old
 
 
   updateWidgetsAccordingToState();
 
-  // widget arrangement is optimized for this size:
-  setSize(232, 136);
+  setSize(232, 136);  // Widget arrangement is optimized for this size
 }
 
 WaveOscEditor::~WaveOscEditor()
@@ -933,10 +926,13 @@ void WaveOscEditor::updateWidgetsAccordingToState()
     return;
 
   // Update the widgets:
-  levelSlider->setValue(          oscModule->wrappedOsc->getLevel(),              false);
-  tuneSlider->setValue(           oscModule->wrappedOsc->getDetuneSemitones(),    false);
-  pitchModulationSlider->setValue(oscModule->wrappedOsc->getPitchEnvelopeDepth(), false);
+  //levelSlider->setValue(          oscModule->wrappedOsc->getLevel(),              false);
+  //tuneSlider->setValue(           oscModule->wrappedOsc->getDetuneSemitones(),    false);
+  //pitchModulationSlider->setValue(oscModule->wrappedOsc->getPitchEnvelopeDepth(), false);
   // This code should probably go way, too. This was the old way of updating
+  // Maybe we should assign these sliders to the underlying parameters. Then we would have two 
+  // sliders with the same assigned parameter - but that should not be a problem. 
+  // Yep - this code does not seem to be neede anymore
 
   // update the waveform display plot:
   updatePlot();
