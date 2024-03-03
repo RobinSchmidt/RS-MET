@@ -479,20 +479,17 @@ void UnitTestToolChain::runTestStraightliner()
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::StraightlinerAudioModule synth(&lock);
 
-  // Obtain pointers to the submodules
+  // Obtain pointers to the submodules:
   jura::MultiModeFilterAudioModule*     filter   = synth.filterModule;
   jura::FourOscSectionAudioModule*      oscs     = synth.oscSectionModule;
   jura::BreakpointModulatorAudioModule* pitchEnv = synth.pitchEnvModule;
   jura::BreakpointModulatorAudioModule* filtEnv  = synth.filterEnvModule;
   jura::BreakpointModulatorAudioModule* ampEnv   = synth.ampEnvModule;
+  jura::WaveOscModule*                  osc1     = oscs->osc1Module;
+  jura::WaveOscModule*                  osc2     = oscs->osc2Module;
+  jura::WaveOscModule*                  osc3     = oscs->osc3Module;
+  jura::WaveOscModule*                  osc4     = oscs->osc4Module;
 
-
-
-
-
-  // We have no access. We need a friend declaration in jura::Straightliner - but I can't get that 
-  // to compile. -> figure out!
-  
 
 
 

@@ -59,7 +59,7 @@ protected:
   // here in order to make them automatable:
   WaveOscModule *osc1Module, *osc2Module, *osc3Module, *osc4Module;
 
-
+  friend class UnitTestToolChain;  // This class is part of the TestAppJURA project.
   juce_UseDebuggingNewOperator;
 };
 
