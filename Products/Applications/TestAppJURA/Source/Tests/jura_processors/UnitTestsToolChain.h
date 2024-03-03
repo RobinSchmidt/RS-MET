@@ -37,6 +37,8 @@ protected:
   /** Randomizes all the parameters of the given jura::AudioModule. */
   void randomizeParameters(jura::AudioModule* m, int seed = 0);
 
+  /** Generates a mock mouse event t´hat can be used to test GUI stuff. */
+  juce::MouseEvent getMockMouseEvent(float mouseX = 0.f, float mouseY = 0.f);
 
   //-----------------------------------------------------------------------------------------------
   // \name Tests

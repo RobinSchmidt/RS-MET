@@ -73,6 +73,43 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
   }
 }
 
+juce::MouseEvent UnitTestToolChain::getMockMouseEvent(float mouseX, float mouseY)
+{
+  // The Problem is related to the GUI editor of the osc setting its mute state bypassing the
+  // "Mute" parameter. Let's try to expose this with mock mouse events. See:
+  //
+  //   https://forum.juce.com/t/creating-a-mouseevent/32635/10
+  //
+  // But we don't nee Straightline for that. We can do that in runTestWaveOscillator
+
+  //auto mouseSource = juce::Desktop::getInstance().getMainMouseSource();
+  //auto fakeEvent = juce::MouseEvent(mouseSource, );
+  //component.mouseDown (fakeEvent);
+
+  // Create a fake mouseDown event:
+  float mouseDownX  = 0.f;
+  float mouseDownY  = 0.f;
+  float pressure    = 1.f;
+  float orientation = 0.f;
+  float rotation    = 0.f;
+  float tiltX       = 0.f;
+  float tiltY       = 0.f;
+  juce::Time eventTime;      // Maybe try to somehow obtain the "now" time
+  juce::Time mouseDownTime;
+  int   numClicks   = 1;
+  bool  wasDragged  = false;
+  juce::Component* eventComponent = nullptr;
+  juce::Component* originatorComponent = nullptr;
+  juce::MouseInputSource mouseSource = juce::Desktop::getInstance().getMainMouseSource();
+  juce::ModifierKeys     modKeys;
+  juce::MouseEvent mouseEvent(mouseSource, 
+    juce::Point<float>(mouseX, mouseY), modKeys, pressure, orientation, rotation, tiltX, tiltY,
+    eventComponent, originatorComponent, eventTime, juce::Point<float>(mouseDownX, mouseDownY),
+    mouseDownTime, numClicks, wasDragged);
+
+  return mouseEvent;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Tests for the infrastructure:
 
@@ -603,40 +640,8 @@ void UnitTestToolChain::runTestWaveOscillator()
 
 
 
-  // The Problem is related to the GUI editor of the osc setting its mute state bypassing the
-  // "Mute" parameter. Let's try to expose this with mock mouse events. See:
-  //
-  //   https://forum.juce.com/t/creating-a-mouseevent/32635/10
-  //
-  // But we don't nee Straightline for that. We can do that in runTestWaveOscillator
 
-  //auto mouseSource = juce::Desktop::getInstance().getMainMouseSource();
-  //auto fakeEvent = juce::MouseEvent(mouseSource, );
-  //component.mouseDown (fakeEvent);
-
-  // Create a fake mouseDown event:
-  float mouseX      = 0.f;
-  float mouseY      = 0.f;
-  float mouseDownX  = 0.f;
-  float mouseDownY  = 0.f;
-  float pressure    = 1.f;
-  float orientation = 0.f;
-  float rotation    = 0.f;
-  float tiltX       = 0.f;
-  float tiltY       = 0.f;
-  juce::Time eventTime;      // Maybe try to somehow obtain the "now" time
-  juce::Time mouseDownTime;
-  int   numClicks   = 1;
-  bool  wasDragged  = false;
-  juce::Component* eventComponent = nullptr;
-  juce::Component* originatorComponent = nullptr;
-  juce::MouseInputSource mouseSource = juce::Desktop::getInstance().getMainMouseSource();
-  juce::ModifierKeys     modKeys;
-  juce::MouseEvent mouseEvent(mouseSource, 
-    juce::Point<float>(mouseX, mouseY), modKeys, pressure, orientation, rotation, tiltX, tiltY,
-    eventComponent, originatorComponent, eventTime, juce::Point<float>(mouseDownX, mouseDownY),
-    mouseDownTime, numClicks, wasDragged);
-
+  juce::MouseEvent mouseEvent = getMockMouseEvent();
     
 
 
