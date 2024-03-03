@@ -766,8 +766,11 @@ WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
   WaveOscModule* newWaveOscModule) : SampleBasedAudioModuleEditor(newWaveOscModule)
 {
   // init the pointer to the modulator to be edited to NULL:
-  oscillatorToEdit = NULL;
-  jassert( newWaveOscModule != NULL );
+  jassert( newWaveOscModule != nullptr );
+  oscModule = newWaveOscModule;
+
+  //oscillatorToEdit = NULL; // old
+
   createWidgets();
 
   // overwrite the descriptions of the inherited sample-load widgets:
@@ -787,10 +790,10 @@ WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
   //contextMenu->setSize(200, 200);
 
   numSamplesInPlot    = 0;
-  waveformBuffer      = NULL;
+  waveformBuffer      = nullptr;
   waveformPointers    = new double*[2];
-  waveformPointers[0] = NULL;
-  waveformPointers[1] = NULL;
+  waveformPointers[0] = nullptr;
+  waveformPointers[1] = nullptr;
 
   isTopLevelEditor = false;
   setHeadlineStyle(NO_HEADLINE);
@@ -801,7 +804,9 @@ WaveOscEditor::WaveOscEditor(CriticalSection *newPlugInLock,
   //setOscillatorToEdit(newWaveOscModule->wrappedOscillatorStereo);
   // this will also set up the widgets according to the state of the oscillator
 
-  oscillatorToEdit = newWaveOscModule->wrappedOsc; // get rid of this...
+  //oscillatorToEdit = newWaveOscModule->wrappedOsc; // old
+
+
   updateWidgetsAccordingToState();
 
   // widget arrangement is optimized for this size:
@@ -817,9 +822,9 @@ WaveOscEditor::~WaveOscEditor()
   // but the first "false" parameter says that it should not be added as child component. But then
   // who is the parent? ...it's actually a nullptr.
 
-  if( waveformBuffer != NULL )
+  if( waveformBuffer != nullptr )
     delete[] waveformBuffer;
-  if( waveformPointers != NULL )
+  if( waveformPointers != nullptr )
     delete[] waveformPointers;
 }
 
@@ -828,7 +833,7 @@ WaveOscEditor::~WaveOscEditor()
 
 void WaveOscEditor::rButtonClicked(RButton *b)
 {
-  if( oscillatorToEdit == NULL )
+  if( oscModule == nullptr )
     return;
 
   if( b == moreButton )
@@ -894,7 +899,7 @@ void WaveOscEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChang
   updateWidgetsAccordingToState();
   sendChangeMessage();
   */
-  if( oscillatorToEdit == NULL )
+  if( oscModule == nullptr )
     return;
 
   if( objectThatHasChanged == contextMenu )
@@ -908,7 +913,7 @@ void WaveOscEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChang
 
 void WaveOscEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
 {
-  if( oscillatorToEdit == NULL )
+  if( oscModule == nullptr )
     return;
 
   moduleToEdit->markStateAsDirty();
@@ -924,13 +929,14 @@ void WaveOscEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
 
 void WaveOscEditor::updateWidgetsAccordingToState()
 {
-  if( oscillatorToEdit == NULL )
+  if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return;
 
-  // update the widgets:
-  levelSlider->setValue(          oscillatorToEdit->getLevel(),              false);
-  tuneSlider->setValue(           oscillatorToEdit->getDetuneSemitones(),    false);
-  pitchModulationSlider->setValue(oscillatorToEdit->getPitchEnvelopeDepth(), false);
+  // Update the widgets:
+  levelSlider->setValue(          oscModule->wrappedOsc->getLevel(),              false);
+  tuneSlider->setValue(           oscModule->wrappedOsc->getDetuneSemitones(),    false);
+  pitchModulationSlider->setValue(oscModule->wrappedOsc->getPitchEnvelopeDepth(), false);
+  // This code should probably go way, too. This was the old way of updating
 
   // update the waveform display plot:
   updatePlot();
@@ -942,13 +948,17 @@ void WaveOscEditor::updateWidgetsAccordingToState()
 
 void WaveOscEditor::mouseDown(const MouseEvent &e)
 {
-  if( oscillatorToEdit == NULL )
+  if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return;
 
   // New (still buggy, though):
   if(containsPoint(waveformDisplay, e.x, e.y))
   {
-    oscillatorToEdit->setMute( !oscillatorToEdit->isMuted() );
+
+    oscModule->wrappedOsc->setMute( !oscModule->wrappedOsc->isMuted() );  
+    // !!!BUG!!! Directly accessing the DSP core object bypasses "Mute" parameter.
+
+
     updateWidgetVisibility();
   }
 
@@ -1010,15 +1020,17 @@ void WaveOscEditor::resized()
   if( 2*waveformDisplay->getWidth() != numSamplesInPlot )
   {
     numSamplesInPlot = jmax(1, 2*waveformDisplay->getWidth()); // 2x oversampling of the plot to avoid jaggedness
-    if( waveformBuffer != NULL )
+    if( waveformBuffer != nullptr )
       delete[] waveformBuffer;
     waveformBuffer = new double[2*numSamplesInPlot];
     for(int n=0; n<2*numSamplesInPlot; n++)
       waveformBuffer[n] = 0.0;
     waveformPointers[0] = &(waveformBuffer[0]);
     waveformPointers[1] = &(waveformBuffer[numSamplesInPlot]);
-    if( oscillatorToEdit != NULL )
-      oscillatorToEdit->getWaveformForDisplay(waveformPointers, numSamplesInPlot);
+    if(oscModule != nullptr && oscModule->wrappedOsc != nullptr)
+    {
+      oscModule->wrappedOsc->getWaveformForDisplay(waveformPointers, numSamplesInPlot);
+    }
     waveformDisplay->setWaveform(waveformPointers, numSamplesInPlot, 2);
   }
 
@@ -1094,7 +1106,7 @@ void WaveOscEditor::createWidgets()
 
 void WaveOscEditor::updatePlot()
 {
-  if( oscillatorToEdit == NULL )
+  if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return;
 
   // update the waveform display:
@@ -1103,53 +1115,54 @@ void WaveOscEditor::updatePlot()
   {
     // retrieve the filename (the full path), cut it down to the filename only and display it in
     // the filename field:
-    juce::String fileName = juce::String(oscillatorToEdit->waveTable->getSampleName());
+    juce::String fileName = juce::String(oscModule->wrappedOsc->waveTable->getSampleName());
     if( fileName.contains("\\") )
       fileName = fileName.fromLastOccurrenceOf("\\", false, false);
     if( fileName.contains("/") )
       fileName = fileName.fromLastOccurrenceOf("/", false, false);
     sampleFileLabel->setText(fileName);
 
-
     // ToDo: include a setActiveDirectory method in the FileManager class....
     //AudioFileManager::setActiveDirectory...
-
 
     // update the waveform display:
     waveformDisplay->setAutoReRendering(false);
     waveformDisplay->setMaximumRangeX(0.0, numSamplesInPlot);
     waveformDisplay->setCurrentRangeX(0.0, numSamplesInPlot);
-    oscillatorToEdit->getWaveformForDisplay(waveformPointers, numSamplesInPlot);
+    oscModule->wrappedOsc->getWaveformForDisplay(waveformPointers, numSamplesInPlot);
     waveformDisplay->setWaveform(waveformPointers, numSamplesInPlot, 2);
     waveformDisplay->updatePlotImage();
     waveformDisplay->setAutoReRendering(true);
   }
 
-  waveformDisplay->setVisible( !oscillatorToEdit->isMuted() );
-  emptyDisplay->setVisible(     oscillatorToEdit->isMuted() );
+  waveformDisplay->setVisible( !oscModule->wrappedOsc->isMuted() );
+  emptyDisplay->setVisible(     oscModule->wrappedOsc->isMuted() );
 }
 
 void WaveOscEditor::updateWidgetVisibility()
 {
-  if( oscillatorToEdit == NULL )
+  if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return;
-
-  sampleLoadButton->setVisible(      !oscillatorToEdit->isMuted() );
-  samplePlusButton->setVisible(      !oscillatorToEdit->isMuted() );
-  sampleMinusButton->setVisible(     !oscillatorToEdit->isMuted() );
-  sampleFileLabel->setVisible(       !oscillatorToEdit->isMuted() );
-  moreButton->setVisible(            !oscillatorToEdit->isMuted() );
-  levelSlider->setVisible(           !oscillatorToEdit->isMuted() );
-  tuneSlider->setVisible(            !oscillatorToEdit->isMuted() );
-  pitchModulationSlider->setVisible( !oscillatorToEdit->isMuted() );
-  waveformDisplay->setVisible(       !oscillatorToEdit->isMuted() );
-  emptyDisplay->setVisible(           oscillatorToEdit->isMuted() );
+  bool muted = oscModule->wrappedOsc->isMuted();
+  sampleLoadButton->setVisible(     !muted);
+  samplePlusButton->setVisible(     !muted);
+  sampleMinusButton->setVisible(    !muted);
+  sampleFileLabel->setVisible(      !muted);
+  moreButton->setVisible(           !muted);
+  levelSlider->setVisible(          !muted);
+  tuneSlider->setVisible(           !muted);
+  pitchModulationSlider->setVisible(!muted);
+  waveformDisplay->setVisible(      !muted);
+  emptyDisplay->setVisible(          muted);
 }
 
 bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
   const juce::File& underlyingFile, bool markAsClean)
 {
-  if( newBuffer != NULL && newBuffer->getNumChannels() > 0 && newBuffer->getNumSamples() > 0 )
+  if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
+    return false;
+
+  if( newBuffer != nullptr && newBuffer->getNumChannels() > 0 && newBuffer->getNumSamples() > 0 )
   {
     float* channelPointers[2];
     channelPointers[0] = newBuffer->getWritePointer(0, 0);
@@ -1157,7 +1170,7 @@ bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
       channelPointers[1] = newBuffer->getWritePointer(1, 0);
     else
       channelPointers[1] = newBuffer->getWritePointer(0, 0);
-    oscillatorToEdit->waveTable->setWaveform(channelPointers, newBuffer->getNumSamples());
+    oscModule->wrappedOsc->waveTable->setWaveform(channelPointers, newBuffer->getNumSamples());
 
     //juce::String relativePath = underlyingFile.getRelativePathFrom(rootDirectory);
     // this seems wrong - we must use the support-folder as root directory
@@ -1168,7 +1181,7 @@ bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
     //juce::String support = getSupportDirectory();
 
     char* fileNameC = toZeroTerminatedString(relativePath);
-    oscillatorToEdit->waveTable->setSampleName(fileNameC);
+    oscModule->wrappedOsc->waveTable->setSampleName(fileNameC);
     delete[] fileNameC;
     sampleFileLabel->setText(underlyingFile.getFileName());
     updatePlot();

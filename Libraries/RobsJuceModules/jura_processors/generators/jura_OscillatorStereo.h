@@ -280,14 +280,14 @@ protected:
   virtual void updateWidgetVisibility();
 
   /** Pointer to the actual StereoOscillator object which is being edited. */
-  rosic::OscillatorStereo* oscillatorToEdit;
+  //rosic::OscillatorStereo* oscillatorToEdit;  // old
   // !!!BUG!!! We should not edit a rosic::OscillatorStereo object directly! Instead, we need to
   // have a pointer to jura::WaveOscModule. Otherwise, Setting something up here will not be
   // refelcted in the Parameter objects in the WaveOscModule
 
 
   /** Pointer to the actual WaveOscModule object which is being edited. */
-  //WaveOscModule* oscModule;
+  WaveOscModule* oscModule;
   // new
 
 
