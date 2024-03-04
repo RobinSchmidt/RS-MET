@@ -267,7 +267,8 @@ public:
   RButton      *moreButton;
   RSlider      *levelSlider, *pitchModulationSlider;
   TuningSlider *tuneSlider;
-    // remove the pitch-modulation slider - let it remain visible only for straightliner
+  // Remove the pitch-modulation slider from the GUI by default. Let it remain visible only for 
+  // Straightliner. In other contexts, it doesn't make sense.
 
 protected:
 
@@ -279,22 +280,16 @@ protected:
   /** Updates the visibility of the widgets according to the on/off state of the oscillator. */
   virtual void updateWidgetVisibility();
 
-  /** Pointer to the actual StereoOscillator object which is being edited. */
-  //rosic::OscillatorStereo* oscillatorToEdit;  // old
-  // !!!BUG!!! We should not edit a rosic::OscillatorStereo object directly! Instead, we need to
-  // have a pointer to jura::WaveOscModule. Otherwise, Setting something up here will not be
-  // refelcted in the Parameter objects in the WaveOscModule
-
-
   /** Pointer to the actual WaveOscModule object which is being edited. */
   WaveOscModule* oscModule;
-  // new
 
 
-  // get rid of this - it doesn't belog here:
+  // Try to get rid of this - it doesn't belong here:
   int      numSamplesInPlot;
   double*  waveformBuffer;
   double** waveformPointers;
+  // I think, it should go into the SampleBasedAudioModuleEditor baseclass.
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveOscEditor)
 };

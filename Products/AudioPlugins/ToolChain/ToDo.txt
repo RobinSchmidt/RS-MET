@@ -71,6 +71,8 @@ Bugs
     that are always on top, which one of them get precedence is determined by the exact sequence of
     the window creation?
    -Ty, if this also affects my own popup menus
+
+
   -Patch ChordyPattern is supposed to use 3 oscillators - but only the 1st is active-. 2 and 3 are 
    off on recall/load. The saved patch does indeed have a "Mute=1" attribute set. Check default
    values. In WaveOscModule::createParameters() the default value of mute is set to 0. OK - it can 

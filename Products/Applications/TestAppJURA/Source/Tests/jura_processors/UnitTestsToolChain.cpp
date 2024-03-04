@@ -593,7 +593,7 @@ void UnitTestToolChain::runTestWaveOscillator()
   // to potentially change some of its settings. This was caused by some erroneous function call 
   // sequence when connecting widgets (e.g. sliders) to the parameters. The sliders should take 
   // over the value from the parameter (and its range, etc.) but for some reason, it also did set
-  // the value. Of course, opening an editor should never change the state of an AudioModule.
+  // the value. Of course, opening an editor should never change the state of an AudioModule:
 
   CriticalSection lock;                   // Mocks the pluginLock.
   jura::WaveOscModule wvOsc1(&lock);
@@ -612,11 +612,10 @@ void UnitTestToolChain::runTestWaveOscillator()
   expect(isInDefaultState(&wvOsc1));
 
 
-
-
-  // Another problem that occurrs that when we fire up Straightliner, activate the 2nd osc, save 
-  // the preset and reload it, the 2nd osc is off again. The state xml file has stored a "Mute=1"
-  // attribute. We check, if that problem already occurs in the wave oscillator:
+  // Another problem that we had was that when Straightliner was fired up, we activate the 2nd osc,
+  // save the preset and reload it, the 2nd osc is off again. The state xml file has stored a 
+  // "Mute=1" attribute. The problem was that the GUI action of activating the osc bypassed the
+  // Parameter infrastructure. The bug was fixed - here we check that it works as expected:
 
   juce::XmlElement* xml1 = wvOsc1.getStateAsXml("State", true);
 
@@ -632,26 +631,27 @@ void UnitTestToolChain::runTestWaveOscillator()
   delete xml1; xml1 = nullptr;
 
 
+  // Test if clicking on the waveform display toggles the oscillator's "Mute" parameter on/off:
+  jura::Parameter* p = nullptr;
+  double v;
+  p = wvOsc1.getParameterByName("Mute");
+  jassert(p);
+  v = p->getValue();
+  expect(v == 0);       // Initially, it should be unmuted
+
+  // Mock the mouse-click on the wvaeform display:
   juce::Rectangle<int> r = wvEd->getWaveDisplayBounds();
   int x = r.getX() + r.getWidth()  / 2;
   int y = r.getY() + r.getHeight() / 2;
   juce::MouseEvent mouseEvent = getMockMouseDownEvent(x, y, wvEd, wvEd);
-  amEd->mouseDown(mouseEvent);  // deliberately using the basclass pointer
-  // Hmm - apparently, the editor doesn't think that the event is within the waveform display
+  amEd->mouseDown(mouseEvent);  // Deliberately using the baseclass pointer
 
-  // Component::contains (Point<int> point)
-  // returns false when we call  waveformDisplay->contains(Point<int>(e2.x, e2.y))  in 
-  // WaveOscEditor::mouseDown. Figure out why! I think Component::hitTest returns false.
-  // This is hard to debug because when we set a breakpoint there, it will trigger as soon as 
-  // the mouse enters the GUI
+  // Check "Mute" parameter again:
+  v = p->getValue();
+  expect(v == 1);       // Now it should be muted
 
   // Clean up memory:
   delete amEd;
-
-
-
-  // ...if not, do a similar test with FourOscSection - maybe manually set the 2nd oscillator to
-  // Mute=0, retrieve state, set it and check that mute is off
 
 
 

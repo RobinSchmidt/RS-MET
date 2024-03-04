@@ -922,32 +922,25 @@ void WaveOscEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
 
 void WaveOscEditor::updateWidgetsAccordingToState()
 {
+  // Check, if this is needed - if not, remove:
   if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return;
 
-  // Update the widgets:
-  //levelSlider->setValue(          oscModule->wrappedOsc->getLevel(),              false);
-  //tuneSlider->setValue(           oscModule->wrappedOsc->getDetuneSemitones(),    false);
-  //pitchModulationSlider->setValue(oscModule->wrappedOsc->getPitchEnvelopeDepth(), false);
-  // This code should probably go way, too. This was the old way of updating
-  // Maybe we should assign these sliders to the underlying parameters. Then we would have two 
-  // sliders with the same assigned parameter - but that should not be a problem. 
-  // Yep - this code does not seem to be neede anymore
 
-  // update the waveform display plot:
+  // Update the waveform display plot:
   updatePlot();
   updateWidgetVisibility();
 
-  // update the widgets of the context menu, too:
+  // Update the widgets of the context menu, too:
   contextMenu->updateWidgetsAccordingToState();
 }
 
 void WaveOscEditor::mouseDown(const MouseEvent &e)
 {
+  // Check, if this is needed - if not, remove:
   if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return;
 
-  // New:
   if(containsPoint(waveformDisplay, e.x, e.y))
   {
     // Old, buggy:
@@ -963,18 +956,6 @@ void WaveOscEditor::mouseDown(const MouseEvent &e)
 
     updateWidgetVisibility();
   }
-
-
-  //// Old:
-  //MouseEvent e2 = e.getEventRelativeTo(waveformDisplay);
-  //if( waveformDisplay->contains(Point<int>(e2.x, e2.y)) )
-  //{
-  //  oscillatorToEdit->setMute( !oscillatorToEdit->isMuted() );
-  //  // !!BUG!! This does not update the "Mute" parameter. We bypass the jura::Parameter framework
-  //  // in jura::AudioModule here. When switching on/off the osc on the GUI and saving a preset,
-  //  // the osc's on/off state will be saved wrongly.
-  //  updateWidgetVisibility();
-  //}
 }
 
 void WaveOscEditor::resized()
