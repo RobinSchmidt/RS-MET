@@ -433,64 +433,61 @@ void WaveOscModule::createParameters()
   addObservedParameter(sp);
 }
 
-bool WaveOscModule::setWaveform(AudioSampleBuffer* newBuffer, const juce::File& underlyingFile)
-{
-  bool success = false;
-
-
-  return success;
-}
-
-bool WaveOscModule::loadWaveform(const String& relativePath)
+bool WaveOscModule::setWaveform(AudioSampleBuffer* buffer, const juce::File& waveFile)
 {
   jassert(wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr);
   if(wrappedOsc == nullptr || wrappedOsc->waveTable == nullptr)
     return false;
 
-  bool success = false;
-
-  // Old presets were stored with backslashes - these don't work on mac unless we replace 
-  // the backslashes by forward slashes:
-  juce::String relPath = relativePath.replaceCharacter('\\', '/');
-  juce::String absPath = getSupportDirectory() + File::getSeparatorString() + relPath;
-
-  // Try to load the waveform from the file, in case of failure initialize as empty:
-  juce::File waveFile(absPath);
-  AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(waveFile, true);
-
-
-  // Factor this out into setWaveform:
+  // Set up the waveform in the DSP core from the given buffer or initialize as empty in case of 
+  // nulltptr:
   if( buffer != nullptr )
   {
+    juce::String relPath = waveFile.getRelativePathFrom(getSupportDirectory());
     float* channelPointers[2];
     channelPointers[0] = buffer->getWritePointer(0, 0);
     if( buffer->getNumChannels() >= 2 )
       channelPointers[1] = buffer->getWritePointer(1, 0);
     else
       channelPointers[1] = buffer->getWritePointer(0, 0);
-    wrappedOsc->waveTable->setWaveform(channelPointers, buffer->getNumSamples() );
+    wrappedOsc->waveTable->setWaveform(channelPointers, buffer->getNumSamples());
     delete buffer;
+    wrappedOsc->waveTable->renderMipMap(); // Shouldn't this happen automatically?
     wrappedOsc->waveTable->setSampleName(relPath.toStdString().c_str()); // Redundant...
-    samplePathRelative = relPath;                                 // ...this line should be enough
-    success = true;
+    samplePathRelative = relPath;                                        // ...this line should be enough
+    return true;
   }
   else
   {
     wrappedOsc->waveTable->fillWithAllZeros();
     wrappedOsc->waveTable->setSampleName("");  // Redundant...
-    samplePathRelative = "";            // ...this line should be enough
-    success = false;
+    samplePathRelative = "";                   // ...this line should be enough
+    return false;
   }
-
-  wrappedOsc->waveTable->renderMipMap(); // Shouldn't this happen automatically?
-  return success;
 
   // ToDo: 
   // -Store the sample name only directly here. The core DSP class should not be concerned with 
   //  this. The fact that we store the sample name there has only historical reasons.
-  // -Factor out a method setWaveformFromBuffer(AudioSampleBuffer* buffer, File& underlyingFile)
-  //  that can be called from WaveOscEditor::setAudioData(). This function needs to be rewritten
-  //  anyway. Maybe try to get rid of the File parameter. ...hmm...but i think, that's not easy.
+  // -What if the buffer has the wrong number of channels? can this happen?
+  // -Get rid of storing the sample path redundantly in wrappedOsc
+  // -Figure out if we need the call to renderMipMap
+  // -Why do we acquire write-pointers in buffer->getWritePointer. Maybe because setWaveform isn't
+  //  const-correct? -> make it so and acquire red pointers.
+}
+
+bool WaveOscModule::loadWaveform(const String& relativePath)
+{
+  //jassert(wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr);
+  //if(wrappedOsc == nullptr || wrappedOsc->waveTable == nullptr)
+  //  return false;
+
+  // Old presets were stored with backslashes - these don't work on mac unless we replace 
+  // the backslashes by forward slashes:
+  juce::String relPath = relativePath.replaceCharacter('\\', '/');
+  juce::String absPath = getSupportDirectory() + File::getSeparatorString() + relPath;
+  juce::File waveFile(absPath);
+  AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(waveFile, true);
+  return setWaveform(buffer, waveFile);
 }
 
 void WaveOscModule::loadDefaultWaveform()
