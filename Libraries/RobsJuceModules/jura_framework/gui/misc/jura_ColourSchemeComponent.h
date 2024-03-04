@@ -114,6 +114,7 @@ public:
   /** Returns the color used for regular text on the editor. */
   virtual Colour getTextColour() const { return editorColourScheme.text; }
 
+
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
@@ -183,6 +184,8 @@ protected:
 
   bool drawWithEnclosingRectangle;
 
+
+  friend class UnitTestToolChain;  // Class is defined in the TestAppJURA project
   juce_UseDebuggingNewOperator;
 };
 

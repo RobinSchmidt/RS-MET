@@ -42,6 +42,11 @@ protected:
     juce::Component* eventComp = nullptr, juce::Component* originatorComp = nullptr);
   // What does the distinction between eventComp and originatorComp mean?
 
+  /** Returns a vector of pointer to all the widgets in the given editor that have no parameter 
+  assigned to them. A widget without an assigned parameter, i.e. an "orphaned" widget, may 
+  indicate a bug. */
+  std::vector<jura::RWidget*> getWidgetsWithoutParameter(jura::AudioModuleEditor* editor);
+
   //-----------------------------------------------------------------------------------------------
   // \name Tests
 

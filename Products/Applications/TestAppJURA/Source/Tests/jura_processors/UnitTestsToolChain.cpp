@@ -115,6 +115,20 @@ juce::MouseEvent UnitTestToolChain::getMockMouseDownEvent(float mouseX, float mo
   // https://forum.juce.com/t/creating-a-mouseevent/32635/10
 }
 
+std::vector<jura::RWidget*> UnitTestToolChain::getWidgetsWithoutParameter(
+  jura::AudioModuleEditor* editor)
+{
+  std::vector<jura::RWidget*> orphans;
+  for(size_t i = 0; i < editor->widgets.size(); i++)
+  {
+    RWidget* w = editor->widgets[i];
+    if(!w->hasAssignedParameter())
+      orphans.push_back(w);
+  }
+  return orphans;
+}
+
+
 //-------------------------------------------------------------------------------------------------
 // Tests for the infrastructure:
 
@@ -588,10 +602,17 @@ void UnitTestToolChain::runTestStraightliner()
   expect( checkOscParams("Mute", 0, 0, 1, 1) );
 
 
+  jura::AudioModuleEditor* synthEditor = synth.createEditor(0);
+  std::vector<jura::RWidget*> widgets = getWidgetsWithoutParameter(synthEditor);
+  // Whoa! It has 10 widgets without parameter. Some of them are labels and text fields - which is
+  // OK.
+
+
   p = synth.getParameterByName("NumVoices");
   // Such a parameter does not exist!
 
 
+  delete synthEditor;
 
   int dummy = 0;
 }
@@ -677,4 +698,14 @@ void UnitTestToolChain::runTestWaveOscillator()
   //  state-xml again and check that both state xmls match. ..is under construction
 
 }
+
+
+/*
+
+
+ToDo:
+-Write a function  std::vector<RWidget*> getWidgetsWithoutParameter(AudioModuleEditor* ed);  and 
+ use it to quickly check that there are nor unintenionally "orphaned" widgets in an editor.
+
+*/
 
