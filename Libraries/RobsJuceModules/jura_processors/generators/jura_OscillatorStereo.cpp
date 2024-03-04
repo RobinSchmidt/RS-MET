@@ -440,7 +440,7 @@ bool WaveOscModule::setWaveform(AudioSampleBuffer* buffer, const juce::File& wav
     return false;
 
   // Set up the waveform in the DSP core from the given buffer or initialize as empty in case of 
-  // nulltptr:
+  // nullptr:
   if( buffer != nullptr )
   {
     juce::String relPath = waveFile.getRelativePathFrom(getSupportDirectory());
@@ -451,7 +451,6 @@ bool WaveOscModule::setWaveform(AudioSampleBuffer* buffer, const juce::File& wav
     else
       channelPointers[1] = buffer->getWritePointer(0, 0);
     wrappedOsc->waveTable->setWaveform(channelPointers, buffer->getNumSamples());
-    delete buffer;
     wrappedOsc->waveTable->renderMipMap(); // Shouldn't this happen automatically?
     wrappedOsc->waveTable->setSampleName(relPath.toStdString().c_str()); // Redundant...
     samplePathRelative = relPath;                                        // ...this line should be enough
@@ -487,7 +486,15 @@ bool WaveOscModule::loadWaveform(const String& relativePath)
   juce::String absPath = getSupportDirectory() + File::getSeparatorString() + relPath;
   juce::File waveFile(absPath);
   AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(waveFile, true);
-  return setWaveform(buffer, waveFile);
+  bool success = setWaveform(buffer, waveFile);
+  delete buffer;
+  return success;
+
+  //return setWaveform(buffer, waveFile);
+
+  // ToDo:
+  // -Try to avoid usage of raw pointer and manual deletion for the buffer. Let 
+  //  AudioFileManager::createAudioSampleBufferFromFile return some sort of smart pointer.
 }
 
 void WaveOscModule::loadDefaultWaveform()
@@ -1262,16 +1269,16 @@ void WaveOscEditor::updateWidgetVisibility()
 bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
   const juce::File& underlyingFile, bool markAsClean)
 {
-  /*
   // New - causes access violations when clicking on the "load Next" button:
   jassert(oscModule != nullptr);
   if(oscModule == nullptr)
     return false;
-  return oscModule->setWaveform(newBuffer, underlyingFile);
-  */
+  bool success = oscModule->setWaveform(newBuffer, underlyingFile);
+  updatePlot();
+  return success;
 
 
-
+  /*
   // old:
   if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return false;
@@ -1304,6 +1311,7 @@ bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
     return true;
   }
   return false;
+  */
 }
 
 
