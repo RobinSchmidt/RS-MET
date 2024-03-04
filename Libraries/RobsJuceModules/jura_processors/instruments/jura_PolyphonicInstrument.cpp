@@ -186,6 +186,7 @@ void PolyphonicInstrumentEditor::rButtonClicked(RButton *buttonThatWasClicked)
   }
 }
 
+/*
 void PolyphonicInstrumentEditor::rSliderValueChanged(RSlider* sliderThatHasChanged)
 {
   ScopedLock scopedLock(*lock);
@@ -203,6 +204,7 @@ void PolyphonicInstrumentEditor::rSliderValueChanged(RSlider* sliderThatHasChang
 
   moduleToEdit->markStateAsDirty();
 }
+*/
 
 /*
 void PolyphonicInstrumentEditor::updateWidgetsAccordingToState()

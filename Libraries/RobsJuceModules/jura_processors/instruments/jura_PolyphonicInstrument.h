@@ -97,7 +97,7 @@ protected:
 //=================================================================================================
 
 class PolyphonicInstrumentEditor : public AudioModuleEditor, public ChangeBroadcaster, 
-  public RSliderListener, public TuningFileManager
+  /*public RSliderListener,*/ public TuningFileManager
 {
 
 public:
@@ -130,7 +130,7 @@ public:
   virtual void rButtonClicked(RButton *buttonThatWasClicked);
   //virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
   //virtual void  rLabelTextChanged(RLabel *rLabelThatHasChanged);
-  virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+  //virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
   //virtual void updateWidgetsAccordingToState();
   virtual void resized();
 
