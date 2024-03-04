@@ -28,7 +28,7 @@ we build up our suite of unit tests along the way.
   ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 
 - Straightliner: 
-  -[5] When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
+  -[F] When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
    recalled. Try loading _TestRecallBugNumVoices. It was saved with NumVoices = 1 but is recalled 
    with NumVoices = 16. It seems like the setting wasn't saved to the xml file. Figure out why!
    The NumVoices parameter seems to be not recalled at all when loading a preset. 

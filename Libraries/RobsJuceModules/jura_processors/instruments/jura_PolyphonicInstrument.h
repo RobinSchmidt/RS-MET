@@ -113,10 +113,10 @@ public:
   // \name Setup
 
   /** Sets the colours for the preset section widgets. */
-  virtual void setPresetSectionColourScheme(const WidgetColourScheme& newColourScheme);
+  //virtual void setPresetSectionColourScheme(const WidgetColourScheme& newColourScheme);
 
   /** Sets the colours for the tuning section widgets. */
-  virtual void setTuningSectionColourScheme(const WidgetColourScheme& newColourScheme);
+  //virtual void setTuningSectionColourScheme(const WidgetColourScheme& newColourScheme);
 
   /** Sets the text colour for the info field. */
   virtual void setInfoFieldTextColour(const Colour newColour);

@@ -114,23 +114,24 @@ PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugI
 //-------------------------------------------------------------------------------------------------
 // setup:
 
+/*
 // Check if we need these - if not, get rid:
 void PolyphonicInstrumentEditor::setPresetSectionColourScheme(const WidgetColourScheme& newColourScheme)
 {
   //stateWidgetSet->setWidgetColourScheme(newColourScheme);
 }
-
+*/
+/*
 void PolyphonicInstrumentEditor::setTuningSectionColourScheme(const WidgetColourScheme& newColourScheme)
 {
-  /*
   tuningLabel->setColourScheme(newColourScheme);
   tuningFileNameLabel->setColourScheme(newColourScheme);
   tuningLoadButton->setColourScheme(newColourScheme);
   tuningPlusButton->setColourScheme(newColourScheme);
   tuningMinusButton->setColourScheme(newColourScheme);
   // \todo: maybe create also a class TuningWidgetset
-  */
 }
+*/
 
 void PolyphonicInstrumentEditor::setInfoFieldTextColour(const Colour newColour)
 {
