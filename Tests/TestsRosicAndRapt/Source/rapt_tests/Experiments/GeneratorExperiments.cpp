@@ -3964,7 +3964,7 @@ void sineSweepBassdrum()
   Real length     =     0.25;    // Length of the sweep in seconds
   Real phase      =     0;       // Start phase in radians
   Real amplitude  =     0.5;     // Overall amplitude
-  Real param      =     0.99;    // Shape parameter
+  Real param      =     7.0;     // Shape parameter
 
   // The functions that determines the shape of the frequency sweepdown in a normalied coordinate 
   // system from 0 to 1:
@@ -3977,7 +3977,11 @@ void sineSweepBassdrum()
 
   auto shapeFuncLinFrac = [](Real x, Real p) 
   { 
-    return RAPT::rsRationalMap_01(x, p);
+    // A linear fractional mapping with a parameter p in -inf..+inf where p = 0 is linear. Uses the
+    // same parameter mapping as in rsFlatZapper.
+    double s = RAPT::rsPow(2.0, p);       // Slope at x = 0
+    double a = (s-1)/(s+1);               // Function parameter for rational map in -1..+1
+    return RAPT::rsRationalMap_01(x, a);
   };
 
   // Select one of the above defined shape function to be used:
@@ -4013,10 +4017,12 @@ void sineSweepBassdrum()
   // Observations:
   // -The shapeFuncLin spends way too much time in the high frequency range. Linear sweeps are
   //  very bad.
-  // -The shapeFuncLinFrac gets into bassdrum territory for values close to 1 - like 0.98..0.99.
-  //  We should really apply a parameter mapping function like in rsFlatZapper to the parameter p.
+  // -The shapeFuncLinFrac gets into bassdrum territory for values around 7.
   //
   // ToDo:
   // -Try an exponential mapping like in the env-gen of the sampler.
   // -Combine exp and linfrac mapping in both ways. We may need two parameters for this.
+  // -Due to having full control over the instantaneous phase, we can create stereo versions with
+  //  90° phase shift between the channels.
+  // -Plot the instantaneous frequency and/or pitch
 }

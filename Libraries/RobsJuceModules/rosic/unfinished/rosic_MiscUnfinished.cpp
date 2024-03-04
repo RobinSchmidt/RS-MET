@@ -516,7 +516,7 @@ void rsFlatZapper::updateCoeffs()
   }; // For convenience
   // ToDo: 
   // -Avoid conversion from s to a. Using s directly leads ot a simpler formula.
-  // -Use the more felxible 3-parametric shape from rsLinearFractionalInterpolator. Have 3 
+  // -Use the more flexible 3-parametric shape from rsLinearFractionalInterpolator. Have 3 
   //  parameters 
   //  -slope: -inf...+inf - this is the current one
   //  -sigmoidVsSpikey: -inf...+inf - controls the center portion of the shape
