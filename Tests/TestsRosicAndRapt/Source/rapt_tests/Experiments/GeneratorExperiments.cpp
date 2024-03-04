@@ -3950,6 +3950,12 @@ void flatZapper()
 
 void sineSweepBassdrum()
 {
+  // We generate electronic bassdrum sounds by sinusoidal sweepdowns. The goal is to figure out
+  // which kind of function the instantaneous frequency should follow for the best sound. To define
+  // the shape independently from length and frequency range of the sweep, we use a normalized
+  // map that maps the unit interval 0..1 to itself to define the shape. That shape is then mapped
+  // to startFreq..endFreq within the time interval given by the desired length.
+
   using Real = double;
 
   int  sampleRate = 44100;       // Sampling rate in Hz
