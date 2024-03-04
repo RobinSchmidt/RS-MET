@@ -472,7 +472,7 @@ bool WaveOscModule::loadSampleIntoOsc(OscillatorStereo* osc, const String& relat
 
 void WaveOscModule::loadDefaultWaveform()
 {
-  RAPT::rsError("Not yet implemented");
+  //RAPT::rsError("Not yet implemented");
 }
 
 //=================================================================================================

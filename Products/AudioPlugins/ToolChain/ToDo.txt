@@ -44,7 +44,6 @@ we build up our suite of unit tests along the way.
    NumVoices parameter. But how does the slider then affect the engine? Aha - via:
    PolyphonicInstrumentEditor::rSliderValueChanged
 
-
   -[4] In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build 
    of standalone, there's no problem. -> Try a debug build of the plugin
    Oh - it does open - but it is in the background. It is not brought to the front.
@@ -68,6 +67,8 @@ we build up our suite of unit tests along the way.
     the window creation?
    -Try, if this also affects my own popup menus
 
+   [4] The preset doesn't include the Tuning. Maybe it should store the filename of the tuning file
+
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
 
@@ -89,6 +90,8 @@ we build up our suite of unit tests along the way.
 
 - TackMeter:
   -[2] It shortly freezes on midi note-off events
+  -[2] It doesn't work at all in EqualizerAPO. The same is true for all analyzers. Seems like GUI 
+   animations generally don't work there?
 
 - Equalizer:
   -[1] When loading an EQ preset while ToolChain is plugged in in EqualizerAPO, the name of the 
