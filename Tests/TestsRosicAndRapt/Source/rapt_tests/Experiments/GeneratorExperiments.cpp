@@ -3959,12 +3959,12 @@ void sineSweepBassdrum()
   using Real = double;
 
   int  sampleRate = 44100;       // Sampling rate in Hz
-  Real startFreq  =  8000;       // Start frequency of the sweep
-  Real endFreq    =    20;       // End frequency of the sweep
+  Real startFreq  =  1000;       // Start frequency of the sweep
+  Real endFreq    =     0;       // End frequency of the sweep
   Real length     =     0.25;    // Length of the sweep in seconds
   Real phase      =     0;       // Start phase in radians
   Real amplitude  =     0.5;     // Overall amplitude
-  Real param      =     7.0;     // Shape parameter
+  Real param      =     5.0;     // Shape parameter
 
   // The functions that determines the shape of the frequency sweepdown in a normalied coordinate 
   // system from 0 to 1:
@@ -3984,6 +3984,8 @@ void sineSweepBassdrum()
     return RAPT::rsRationalMap_01(x, a);
   };
 
+
+
   // Select one of the above defined shape function to be used:
   auto shapeFunc = shapeFuncLinFrac;
 
@@ -3991,17 +3993,17 @@ void sineSweepBassdrum()
 
   int  N = ceil(length * sampleRate);
   using Vec = std::vector<Real>;
-  Vec x(N);
+  Vec f(N), x(N);                         // Instantaneous frequency and output signal
   Real p = RAPT::rsDegreeToRadiant(phase);
   for(int n = 0; n < N; n++)
   {
     x[n] = amplitude * sin(p);            // Signal generation
 
     // Compute instantaneous radian frequency w:
-    Real pos  = double(n) / double(N-1);  // Map 0..N-1 to 0..1
-    Real q    = shapeFunc(pos, param);
-    Real freq = RAPT::rsLinToLin(q, 0.0, 1.0, startFreq, endFreq);
-    Real w    = 2*PI*freq/sampleRate;
+    Real pos = double(n) / double(N-1);  // Map 0..N-1 to 0..1
+    Real q   = shapeFunc(pos, param);
+    f[n]     = RAPT::rsLinToLin(q, 0.0, 1.0, startFreq, endFreq);
+    Real w   = 2*PI*f[n]/sampleRate;
 
     p += w;                               // Phase increment
   }
@@ -4011,13 +4013,16 @@ void sineSweepBassdrum()
   // -Create a name from the parameters (startFreq, endFreq, length, shapeFunc, param, ...)
 
   rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
+  rsPlotVector(f);
   rsPlotVector(x);
 
 
   // Observations:
   // -The shapeFuncLin spends way too much time in the high frequency range. Linear sweeps are
   //  very bad.
-  // -The shapeFuncLinFrac gets into bassdrum territory for values around 7.
+  // -The shapeFuncLinFrac gets into bassdrum territory for param values around 7 when 
+  //  starFreq = 8000. With lower starFreq, we can use lower values for param, too. For example,
+  //  1000/5 kinda works, too. It doesn't sound very good, though.
   //
   // ToDo:
   // -Try an exponential mapping like in the env-gen of the sampler.
@@ -4025,4 +4030,9 @@ void sineSweepBassdrum()
   // -Due to having full control over the instantaneous phase, we can create stereo versions with
   //  90° phase shift between the channels.
   // -Plot the instantaneous frequency and/or pitch
+  // -Try to apply the same functions to pitch instead of frequency, i.e. instead of a 
+  //  freq-envelope, define a pitch envelope. But maybe use a separate function for this. But this
+  //  requires to factor out the shapeFunc stuff. Maybe make a class rsUnitIntervalMapper that 
+  //  provides different mapping curves. The parameter should have a similar meaning for the 
+  //  different shapes. Available shapes should be: linFrac, exp, sinh, tanh, ...what else?
 }
