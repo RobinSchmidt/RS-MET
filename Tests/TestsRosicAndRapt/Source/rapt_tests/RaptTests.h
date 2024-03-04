@@ -70,6 +70,7 @@ void additiveEngine();
 void multiplicativeSynth();
 void pulseWidthModulationViaTwoSaws();
 void flatZapper();
+void sineSweepBassdrum();
 
 
 // Graphics Experiments:

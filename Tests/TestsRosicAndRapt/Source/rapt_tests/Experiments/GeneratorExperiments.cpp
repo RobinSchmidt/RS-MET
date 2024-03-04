@@ -3775,10 +3775,6 @@ void flatZapper()
 
   int dummy = 0;
 
-
-
-
-
   // Observations:
   // -When applying the zapper twice, the result is similar to using a single zapper with twice the
   //  number of stages, I think. So, we don't really get anything interesting new by chaining 
@@ -3952,3 +3948,43 @@ void flatZapper()
   //  sweepdown?
 }
 
+void sineSweepBassdrum()
+{
+  using Real = double;
+
+  int  sampleRate = 44100;       // Sampling rate in Hz
+  Real startFreq  =  8000;       // Start frequency of the sweep
+  Real endFreq    =    20;       // End frequency of the sweep
+  Real length     =     0.25;    // Length of the sweep in seconds
+  Real phase      =     0;       // Start phase in radians
+  Real amplitude  =     0.5;     // Overall amplitude
+  Real param      =     0.0;     // Shape parameter
+
+  // The function that determines the shape of the frequency sweepdown in a normalied coordinate 
+  // system from 0 to 1:
+  auto shapeFunc = [](Real x, Real p)
+  {
+    return x;  // preliminary
+  };
+
+
+  int  N = ceil(length * sampleRate);
+  using Vec = std::vector<Real>;
+  Vec x(N);
+  Real p = RAPT::rsDegreeToRadiant(phase);
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = amplitude * sin(p);            // Signal generation
+
+    // Compute instantaneous radian frequency w:
+    Real pos  = double(n) / double(N-1);  // Map 0..N-1 to 0..1
+    Real q    = shapeFunc(pos, param);
+    Real freq = RAPT::rsLinToLin(q, 0.0, 1.0, startFreq, endFreq);
+    Real w    = 2*PI*freq/sampleRate;
+
+    p += w;                               // Phase increment
+  }
+
+
+  rsPlotVector(x);
+}
