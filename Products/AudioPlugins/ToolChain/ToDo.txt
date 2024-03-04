@@ -1,13 +1,22 @@
 ---------------------------------------------------------------------------------------------------
 Bugs
 
-We give the priorities from 1 to 5 with meaning:
-[1]  Minor annoyance: cosmetic GUI issues
-[2]  Major annoyance: 
-[3]  Minor feature not working
-[4]  Major feature not working
-[5]  Showstopper: crashes, false state recalls, instability explosions, ...
+We give the priorities from 1 to 5 with meanings:
 
+[1]  Minor annoyance: cosmetic GUI issues,
+[2]  Major annoyance: things like unresponsive GUI or false GUI feedback
+[3]  Minor feature not working (like zoom in a plot, highlighting of GUI elements)
+[4]  Major feature not working (like setting an important DSP parameter)
+[5]  Showstoppers: crashes, false state recalls, filter instability explosions, wrong signals, 
+     Nans, infinities, ...
+
+[Q]  Questionable behavior which might in fact be intended and therfore not strictly a bug
+[F]  Fixed, not verified
+[V]  Fixed and verified
+
+
+- In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
+  ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 
 - Straightliner: 
   -[5] When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
@@ -39,36 +48,8 @@ We give the priorities from 1 to 5 with meaning:
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
 
-- [Might be fixed - needs tests inside some host]
-  Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
-  https://www.kvraudio.com/forum/viewtopic.php?p=7257577#p7257577
-  https://www.kvraudio.com/forum/viewtopic.php?t=606099
-  - This is not surprising because ToolChain itself currently has no mechanism in place to 
-    retrieve the time-info from the host and pass it on to its sub-modules in the slots. 
-  - Solution: Implement such a mechanism. Maybe by adding a virtual method setMidiTimeInfo to
-    jura::AudioModule and in ToolChain::processBlock, retrieve the time-info from the host and
-    loop over the slots to call that method to set it up. A refinement/optimization could be to do
-    that only when at least one of the slots has a module that actually needs the time info (not 
-    all do). That would require to keep track of that in the add/remove/replaceModule functions, 
-    so it would be more code with more potential errors for later maintenance, so there's a 
-    trade-off to be made: either always do that additinal loop thorugh all modules per block which 
-    often may be unnecessary or tolerate some additional complication.
-  - See: AudioProcessor::getPlayHead(), AudioPlayHead, AudioPlayHead::CurrentPositionInfo
-  - There is some code in AudioPluginWithMidiIn::processBlock. We need to make sure that 
-    ToolChainAudioModule::wantsTempoSyncInfo is true and implement 
-    ToolChainAudioModule::setBeatsPerMinute
-    ...soo - after all - there is actually already some infrastructure/mechanisam in place. It just
-    needs to be used correctly.
-  - OK - I added an implementation of ToolChain::setBeatsPerMinute ...that should perhaps solve it 
-    when ToolChain is used as plugin. We still need some solution when it is used as Standalone. 
-    Maybe like in Surge: have an optional keyboard at the bottom and next to it some midi settings
-    like tempo
-
 - [3] Scope: Switching to sync and then back does not seem to update the sync frequency to the old 
   value. When moving the ScanFreq slicer, we get back to the old setting.
-
-- In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
-  ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 
 - [4] Load ToolChain preset BrassyOsc, play a couple of notes, load preset ButterSnap. It will 
   click only on the note that was last played with the previous patch. Something about the voice 
@@ -76,11 +57,8 @@ We give the priorities from 1 to 5 with meaning:
 
 - [3] MultiAnalyzer, waveform view: when zooming in, the horizontal scrollbar does not appear
 
-
-
-
 - Quadrifex: 
-  -[2] PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters
+  -[Q] PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters
    (like PhaeOffset) still affects the sound. That seems to be wrong. If it's intentional, this
    should be documented. It's not what one would expect. When Mid/Side is set to 0/100 and 
    Dry/Wet to 100/0, the PhaseOffset parameter seems to have no effect. Check
@@ -108,6 +86,31 @@ We give the priorities from 1 to 5 with meaning:
 - [1] WaveOscillator: Initially when not yet any file was loaded manually, the first click on the 
   "Next" button loads the first file in the current directory instead of the next one according to 
   the currently loaded one. 
+
+
+- [F] Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
+  https://www.kvraudio.com/forum/viewtopic.php?p=7257577#p7257577
+  https://www.kvraudio.com/forum/viewtopic.php?t=606099
+  - This is not surprising because ToolChain itself currently has no mechanism in place to 
+    retrieve the time-info from the host and pass it on to its sub-modules in the slots. 
+  - Solution: Implement such a mechanism. Maybe by adding a virtual method setMidiTimeInfo to
+    jura::AudioModule and in ToolChain::processBlock, retrieve the time-info from the host and
+    loop over the slots to call that method to set it up. A refinement/optimization could be to do
+    that only when at least one of the slots has a module that actually needs the time info (not 
+    all do). That would require to keep track of that in the add/remove/replaceModule functions, 
+    so it would be more code with more potential errors for later maintenance, so there's a 
+    trade-off to be made: either always do that additinal loop thorugh all modules per block which 
+    often may be unnecessary or tolerate some additional complication.
+  - See: AudioProcessor::getPlayHead(), AudioPlayHead, AudioPlayHead::CurrentPositionInfo
+  - There is some code in AudioPluginWithMidiIn::processBlock. We need to make sure that 
+    ToolChainAudioModule::wantsTempoSyncInfo is true and implement 
+    ToolChainAudioModule::setBeatsPerMinute
+    ...soo - after all - there is actually already some infrastructure/mechanisam in place. It just
+    needs to be used correctly.
+  - OK - I added an implementation of ToolChain::setBeatsPerMinute ...that should perhaps solve it 
+    when ToolChain is used as plugin. We still need some solution when it is used as Standalone. 
+    Maybe like in Surge: have an optional keyboard at the bottom and next to it some midi settings
+    like tempo
 
 ---------------------------------------------------------------------------------------------------
 Features
