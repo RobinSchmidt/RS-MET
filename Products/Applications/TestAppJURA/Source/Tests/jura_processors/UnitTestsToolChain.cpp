@@ -6,9 +6,7 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   // Test currently worked on copied to top of the function:
-  runTestWaveOscillator();
-  //runTestStraightliner();
-
+  runTestStraightliner();  // triggers jassert
 
 
   // All the tests in order:
@@ -19,7 +17,7 @@ void UnitTestToolChain::runTest()
   runTestWaveOscillator();
 
   runTestQuadrifex();
-  runTestEditorCreation(0);
+  runTestEditorCreation(0);  // Takes quite long
   // These tests are currently called last because they creates an actual jura::ToolChain object 
   // which in turn instantiates all modules once in populateModuleFactory - which is annyoing 
   // during debugging because certain initialization functions for ToolChain's built in 
@@ -31,7 +29,7 @@ void UnitTestToolChain::runTest()
 
   // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? Figure out!
 
-  runTestStateRecall(0);
+  runTestStateRecall(0);  // FAILS!!
 }
 
 bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
@@ -590,7 +588,7 @@ void UnitTestToolChain::runTestStraightliner()
   expect( checkOscParams("Mute", 0, 0, 1, 1) );
 
 
-  //p = synth.getParameterByName("NumVoices");
+  p = synth.getParameterByName("NumVoices");
   // Such a parameter does not exist!
 
 
