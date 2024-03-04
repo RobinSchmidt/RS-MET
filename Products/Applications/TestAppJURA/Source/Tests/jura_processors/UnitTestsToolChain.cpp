@@ -5,14 +5,20 @@ using namespace jura;
 
 void UnitTestToolChain::runTest()
 {
-  runTestWaveOscillator();
+  // Test currently worked on copied to top of the function:
+  runTestStateRecall(0);
+  // WaveOscillator triggers an assertion "File not found"
+
+  //runTestStraightliner();
 
 
+
+  // All the tests in order:
   runTestVoiceManager();
   runTestEqualizer();
   //runTestMultiAnalyzer();  // Fails - see comments there. Fixing has low priority.
   runTestStraightliner();
-
+  runTestWaveOscillator();
 
   runTestQuadrifex();
   runTestEditorCreation(0);
@@ -26,7 +32,6 @@ void UnitTestToolChain::runTest()
   // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
 
   // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? Figure out!
-
 
   runTestStateRecall(0);
 }
@@ -48,6 +53,8 @@ void UnitTestToolChain::resetParameters(jura::AudioModule* m)
 {
   for(int i = 0; i < m->getNumParameters(); i++)
     m->getParameterByIndex(i)->resetToDefaultValue(true, true);
+
+  // toDo: call it recursively on the child modules
 }
 
 void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
@@ -70,6 +77,15 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
     double max    = p->getMaxValue();
     double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
     p->setValue(newVal, true, true);
+  }
+
+  // Call randomizeParameters on all the child-modules recursively:
+  int numChildren = m->getNumChildAudioModules();
+  for(int i = 0; i < numChildren; i++)
+  {
+    int newSeed = (int) prng.getSampleRaw();
+    jura::AudioModule* childModule = m->getChildAudioModule(i);
+    randomizeParameters(childModule, newSeed);
   }
 }
 
@@ -561,7 +577,6 @@ void UnitTestToolChain::runTestStraightliner()
   expect( checkOscParams("Mute", 0, 1, 1, 1) );
   // Initially osc1 shoudl be active (non-muted), the others are muted
 
-
   // Now try setting the 2nd osc non-muted, retrieve and recall the state, then check, if the
   // "Mute" settings are as expected (1 and 2 non-muted, 3 and 4 muted):
   jura::Parameter* p = nullptr;
@@ -577,11 +592,9 @@ void UnitTestToolChain::runTestStraightliner()
   expect( checkOscParams("Mute", 0, 0, 1, 1) );
 
 
+  //p = synth.getParameterByName("NumVoices");
+  // Such a parameter does not exist!
 
-
-  // Here, it works. -> The xml string looks correct. It does indeed not have the 
-  // "Mute=1" attribute. Why do we get it in the xml file when saving a patch from 
-  // Straightliner?
 
 
   int dummy = 0;

@@ -60,7 +60,7 @@ class JUCE_API AudioModule : public ParameterManager, public StateFileManager
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // \name Construction/Destruction:
+  // \name Lifetime
 
   /** Constructor. The caller must pass a pointer to a critical section object that must exist 
   somewhere outside and will be used here to acquire mutually exclusive access from different 
@@ -75,7 +75,7 @@ public:
   virtual ~AudioModule();
 
   //-----------------------------------------------------------------------------------------------
-  // \name Setup:
+  // \name Setup
 
   /** Override this to set the sample-rate for this module. */
   virtual void setSampleRate(double newSampleRate);
@@ -170,7 +170,7 @@ public:
   virtual void detachMetaParameters();
 
   //-----------------------------------------------------------------------------------------------
-  // \name Inquiry:
+  // \name Inquiry
 
   /** Returns the name of this module, for example "Filter1". */
   virtual juce::String getModuleName() const { return moduleName; }
@@ -219,6 +219,14 @@ public:
   /** Returns the module that is at the top of the parent/children hierarchy, i.e. the outermost 
   AudioModule. */
   AudioModule* getTopLevelModule();
+
+  /** Returns the number of child audio modules that this module has. */
+  int getNumChildAudioModules() const { return (int) childModules.size(); }
+
+  /** Returns a pointer to the child audio module with given index. */
+  AudioModule* getChildAudioModule(int index) { return childModules[index]; }
+
+  // Maybe have a function getParentAudioModule()
 
   /** Returns a string that gives the "path" of the AudioModule, for example a string like
   Straightliner.OscSection.Osc2. would be returned from the 2nd oscillator of Straightliner. */

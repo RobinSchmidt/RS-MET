@@ -40,6 +40,10 @@ we build up our suite of unit tests along the way.
    -Compares the 2nd xml to the 1st
    That unit test should expose the not recalled NumVoices parameter - and maybe more.
 
+   OK - the problem seems to be jura::PolyphonicInstrumentAudioModule. It doesn't create a 
+   NumVoices parameter. But how does the slider then affect the engine? Aha - via:
+   PolyphonicInstrumentEditor::rSliderValueChanged
+
 
   -[4] In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build 
    of standalone, there's no problem. -> Try a debug build of the plugin

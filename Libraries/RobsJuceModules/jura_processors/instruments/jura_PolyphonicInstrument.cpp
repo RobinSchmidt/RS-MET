@@ -65,6 +65,10 @@ void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement& xmlState
   const juce::String& stateName, bool markAsClean)
 {
   underlyingRosicInstrument->allNotesOff();
+  // Maybe an even more drastic resetMidiState would be appropriate. noteOff will trigger releases
+  // but that may not be enough.
+
+
   AudioModuleWithMidiIn::setStateFromXml(xmlState, stateName, markAsClean);
 }
 
