@@ -47,6 +47,14 @@ protected:
   indicate a bug. */
   std::vector<jura::RWidget*> getWidgetsWithoutParameter(jura::AudioModuleEditor* editor);
 
+  /** Filters out only widgets of a specific type from the given widgets array. Can be used like:
+
+  std::vector<jura::RSlider*> sliders = filterWidgets<RSlider>(widgets);
+
+  to filter out only the sliders from a given array of widgets, for example.  */
+  template<class WidgetType>
+  std::vector<WidgetType*> filterWidgets(const std::vector<jura::RWidget*>& widgets);
+
   //-----------------------------------------------------------------------------------------------
   // \name Tests
 

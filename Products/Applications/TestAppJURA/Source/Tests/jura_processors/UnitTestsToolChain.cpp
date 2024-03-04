@@ -129,7 +129,7 @@ std::vector<jura::RWidget*> UnitTestToolChain::getWidgetsWithoutParameter(
 }
 
 template<class WidgetType>
-std::vector<WidgetType*> filterWidgets(const std::vector<jura::RWidget*>& widgets)
+std::vector<WidgetType*> UnitTestToolChain::filterWidgets(const std::vector<jura::RWidget*>& widgets)
 {
   std::vector<WidgetType*> matches;
   for(size_t i = 0; i < widgets.size(); i++)
