@@ -1262,6 +1262,17 @@ void WaveOscEditor::updateWidgetVisibility()
 bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
   const juce::File& underlyingFile, bool markAsClean)
 {
+  /*
+  // New - causes access violations when clicking on the "load Next" button:
+  jassert(oscModule != nullptr);
+  if(oscModule == nullptr)
+    return false;
+  return oscModule->setWaveform(newBuffer, underlyingFile);
+  */
+
+
+
+  // old:
   if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return false;
 
