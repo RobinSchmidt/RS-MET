@@ -6,9 +6,7 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   // Test currently worked on copied to top of the function:
-  runTestStateRecall(0);
-  // WaveOscillator triggers an assertion "File not found"
-
+  runTestWaveOscillator();
   //runTestStraightliner();
 
 
@@ -662,6 +660,10 @@ void UnitTestToolChain::runTestWaveOscillator()
   // Check "Mute" parameter again:
   v = p->getValue();
   expect(v == 1);       // Now it should be muted
+
+
+
+
 
   // Clean up memory:
   delete amEd;

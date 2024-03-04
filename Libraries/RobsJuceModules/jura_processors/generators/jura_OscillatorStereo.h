@@ -112,7 +112,7 @@ protected:
   virtual void createParameters();
 
 
-  virtual bool loadSampleIntoOsc(rosic::OscillatorStereo* osc, const String& relativePath);
+  virtual bool loadWaveform(const String& relativePath);
   // get rid of the osc parameter - access the wrappedOsc member instead, then rename to
   // loadWaveForm
 

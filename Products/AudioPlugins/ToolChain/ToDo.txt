@@ -21,6 +21,9 @@ that triggers and checks the buggy behavior programmatically and only *then* fix
 we build up our suite of unit tests along the way.
 
 
+- [5] WaveOscillator: when switching the waveform fom the gui, clsoing ToolChain and re-opening,
+  it ends up with playing the sine wave. I think WaveOscEditor::setAudioData needs to be rewritten.
+
 - In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
   ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 

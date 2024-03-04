@@ -36,9 +36,8 @@ AudioModuleEditor* WaveOscModule::createEditor(int type)
 // state saving and recall:
 
 
-
-
-// These two functions are legacy code and shoudl go away:
+/*
+// These two functions are legacy code and shoudl go away - still using them is actually a bug:
 XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlElementToStartFrom)
 {
   // the XmlElement which stores all the releveant state-information:
@@ -126,6 +125,7 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
 
   return success;
 }
+*/
 
 
 
@@ -155,7 +155,7 @@ void WaveOscModule::setStateFromXml(
     wrappedOsc->waveTable->setAutomaticMipMapReRendering(false);
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
   juce::String samplePath = xmlState.getStringAttribute("AudioFileRelativePath", "");
-  loadSampleIntoOsc(wrappedOsc, samplePath);
+  loadWaveform(samplePath);
   if( wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr )
     wrappedOsc->waveTable->setAutomaticMipMapReRendering(true);
 
@@ -167,7 +167,11 @@ void WaveOscModule::setStateFromXml(
   //
   // ToDo:
   // Maybe if the "AudioFileRelativePath" attribute is not found, use some default file that
-  // always exists like Silence.flac.
+  // always exists like Silence.flac. That would avoid the popping up of a warning box that says 
+  // that the audio file [with empty name] wasn't found. In this case, it's acceptable to go 
+  // without warning because the xml did not pecify a sample file anyway. Or maybe have a special
+  // function clearWaveform or setToEmptyWaveform or something - it shouldn't even need a file 
+  // with silence for this
 
 
   /*
@@ -429,8 +433,12 @@ void WaveOscModule::createParameters()
   addObservedParameter(sp);
 }
 
-bool WaveOscModule::loadSampleIntoOsc(OscillatorStereo* osc, const String& relativePath)
+bool WaveOscModule::loadWaveform(const String& relativePath)
 {
+  jassert(wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr);
+  if(wrappedOsc == nullptr || wrappedOsc->waveTable == nullptr)
+    return false;
+
   bool success = false;
 
   // Old presets were stored with backslashes - these don't work on mac unless we replace 
@@ -448,32 +456,35 @@ bool WaveOscModule::loadSampleIntoOsc(OscillatorStereo* osc, const String& relat
       channelPointers[1] = buffer->getWritePointer(1, 0);
     else
       channelPointers[1] = buffer->getWritePointer(0, 0);
-    osc->waveTable->setWaveform(channelPointers, buffer->getNumSamples() );
+    wrappedOsc->waveTable->setWaveform(channelPointers, buffer->getNumSamples() );
     delete buffer;
-    osc->waveTable->setSampleName(relPath.toStdString().c_str()); // Redundant...
+    wrappedOsc->waveTable->setSampleName(relPath.toStdString().c_str()); // Redundant...
     samplePathRelative = relPath;                                 // ...this line should be enough
     success = true;
   }
   else
   {
-    osc->waveTable->fillWithAllZeros();
-    osc->waveTable->setSampleName("");  // Redundant...
+    wrappedOsc->waveTable->fillWithAllZeros();
+    wrappedOsc->waveTable->setSampleName("");  // Redundant...
     samplePathRelative = "";            // ...this line should be enough
     success = false;
   }
 
-  osc->waveTable->renderMipMap(); // Shouldn't this happen automatically?
+  wrappedOsc->waveTable->renderMipMap(); // Shouldn't this happen automatically?
   return success;
 
   // ToDo: 
   // -Store the sample name only directly here. The core DSP class should not be concerned with 
   //  this. The fact that we store the sample name there has only historical reasons.
+  // -Factor out a method setWaveformFromBuffer(AudioSampleBuffer* buffer, File& underlyingFile)
+  //  that can be called from WaveOscEditor::setAudioData(). This function needs to be rewritten
+  //  anyway. Maybe try to get rid of the File parameter. ...hmm...but i think, that's not easy.
 }
 
 void WaveOscModule::loadDefaultWaveform()
 {
-  //loadSampleIntoOsc(wrappedOsc, "/Samples/SingleCycle/Classic/Saw.flac");
-  loadSampleIntoOsc(wrappedOsc, "/Samples/SingleCycle/Classic/Sine.flac");
+  //loadWaveform(wrappedOsc, "/Samples/SingleCycle/Classic/Saw.flac");
+  loadWaveform("/Samples/SingleCycle/Classic/Sine.flac");
   // I think, the saw is too aggressive to be fired up immediately when the osc is plugged in. The
   // sine is better as default (= initial) waveform. Maybe we should even reduce the volume 
   // initially, i.e. set the Level parameter to soething like -10 initially (but leave the deafult
@@ -1244,6 +1255,8 @@ bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
 {
   if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
     return false;
+
+  // This needs to be rewritten
 
   if( newBuffer != nullptr && newBuffer->getNumChannels() > 0 && newBuffer->getNumSamples() > 0 )
   {
