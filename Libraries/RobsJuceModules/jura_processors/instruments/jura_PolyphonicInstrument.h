@@ -131,7 +131,7 @@ public:
   //virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
   //virtual void  rLabelTextChanged(RLabel *rLabelThatHasChanged);
   virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
-  virtual void updateWidgetsAccordingToState();
+  //virtual void updateWidgetsAccordingToState();
   virtual void resized();
 
 protected:

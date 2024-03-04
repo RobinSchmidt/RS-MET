@@ -204,6 +204,7 @@ void PolyphonicInstrumentEditor::rSliderValueChanged(RSlider* sliderThatHasChang
   moduleToEdit->markStateAsDirty();
 }
 
+/*
 void PolyphonicInstrumentEditor::updateWidgetsAccordingToState()
 {
   ScopedLock scopedLock(*lock);
@@ -231,6 +232,7 @@ void PolyphonicInstrumentEditor::updateWidgetsAccordingToState()
   // maybe this call is redundant because it is also called in
   // AudioModuleEditor::updateWidgetsAccordingToState();
 }
+*/
 
 void PolyphonicInstrumentEditor::setInstrumentToEdit(rosic::PolyphonicInstrument* newInstrumentToEdit)
 {
