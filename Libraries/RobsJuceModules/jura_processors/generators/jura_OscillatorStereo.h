@@ -112,10 +112,11 @@ protected:
   virtual void createParameters();
 
 
+  virtual bool setWaveform(AudioSampleBuffer* newBuffer, const juce::File& underlyingFile);
+
   virtual bool loadWaveform(const String& relativePath);
   // get rid of the osc parameter - access the wrappedOsc member instead, then rename to
   // loadWaveForm
-
 
   /** Called from the constructor to load the default waveform. */
   virtual void loadDefaultWaveform();

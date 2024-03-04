@@ -433,6 +433,14 @@ void WaveOscModule::createParameters()
   addObservedParameter(sp);
 }
 
+bool WaveOscModule::setWaveform(AudioSampleBuffer* newBuffer, const juce::File& underlyingFile)
+{
+  bool success = false;
+
+
+  return success;
+}
+
 bool WaveOscModule::loadWaveform(const String& relativePath)
 {
   jassert(wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr);
@@ -447,7 +455,11 @@ bool WaveOscModule::loadWaveform(const String& relativePath)
   juce::String absPath = getSupportDirectory() + File::getSeparatorString() + relPath;
 
   // Try to load the waveform from the file, in case of failure initialize as empty:
-  AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(absPath, true);
+  juce::File waveFile(absPath);
+  AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(waveFile, true);
+
+
+  // Factor this out into setWaveform:
   if( buffer != nullptr )
   {
     float* channelPointers[2];
