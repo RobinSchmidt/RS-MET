@@ -94,6 +94,8 @@ void EnvGenCore::processFrame(float* L, float* R)
     return (1.f - expf(t*shp)) / (1.f - expf(shp));
     // return (1.f - expf(t*shp)) * scl;  // Optimize: precompute 1/(1-exp(shp))
   };
+  // ToDo: document where this shape function comes from. Maybe factor it out into RAPT. Maybe put
+  // it into RealFunctions.h
 
   auto assignOutputs = [&](float t, float y0, float y1, float shp)
   {

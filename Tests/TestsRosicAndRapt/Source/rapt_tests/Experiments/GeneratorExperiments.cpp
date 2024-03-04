@@ -3959,12 +3959,12 @@ void sineSweepBassdrum()
   using Real = double;
 
   int  sampleRate = 44100;       // Sampling rate in Hz
-  Real startFreq  =  1000;       // Start frequency of the sweep
+  Real startFreq  =  8000;       // Start frequency of the sweep
   Real endFreq    =     0;       // End frequency of the sweep
   Real length     =     0.25;    // Length of the sweep in seconds
   Real phase      =     0;       // Start phase in radians
   Real amplitude  =     0.5;     // Overall amplitude
-  Real param      =     5.0;     // Shape parameter
+  Real param      =    15.0;     // Shape parameter
 
   // The functions that determines the shape of the frequency sweepdown in a normalied coordinate 
   // system from 0 to 1:
@@ -3973,7 +3973,13 @@ void sineSweepBassdrum()
     return x; 
   };
 
-  //auto shapeFuncExp = [](Real x, Real p) { };
+  auto shapeFuncExp = [](Real x, Real p) 
+  { 
+    p = -p;  // We re-interpret the parameter here.
+
+    // Taken from rosic::Sampler::EnvGenCore::processFrame. Maybe factor out:
+    return (1 - exp(x*p)) / (1 - exp(p));
+  };
 
   auto shapeFuncLinFrac = [](Real x, Real p) 
   { 
@@ -3987,8 +3993,8 @@ void sineSweepBassdrum()
 
 
   // Select one of the above defined shape function to be used:
-  auto shapeFunc = shapeFuncLinFrac;
-
+  //auto shapeFunc = shapeFuncLinFrac;
+  auto shapeFunc = shapeFuncExp;
 
 
   int  N = ceil(length * sampleRate);
@@ -4012,8 +4018,8 @@ void sineSweepBassdrum()
   // ToDo:
   // -Create a name from the parameters (startFreq, endFreq, length, shapeFunc, param, ...)
 
-  rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
   rsPlotVector(f);
+  rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
   rsPlotVector(x);
 
 
