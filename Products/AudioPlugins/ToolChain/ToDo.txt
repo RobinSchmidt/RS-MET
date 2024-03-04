@@ -70,23 +70,7 @@ Bugs
     all do - but for a little moment, it seemed to work with one version. WTF! Maybe for windows 
     that are always on top, which one of them get precedence is determined by the exact sequence of
     the window creation?
-   -Ty, if this also affects my own popup menus
-
-
-  -Patch ChordyPattern is supposed to use 3 oscillators - but only the 1st is active-. 2 and 3 are 
-   off on recall/load. The saved patch does indeed have a "Mute=1" attribute set. Check default
-   values. In WaveOscModule::createParameters() the default value of mute is set to 0. OK - it can 
-   be reproduced as follows:
-   -Plug in Straightliner
-   -Load init patch (if it isn't loaded automatically - which it should)
-   -Activate 2nd osc
-   -Save patch
-   -Load patch
-   Try to make a unit test that exposes it. Maybe it has to do with a click on the osc-waveform
-   not stting the "Mute" parameter? I think, the bug is in  jura::WaveOscEditor. See comments at
-   the bottom of the class declaration and also WaveOscEditor::mouseDown.
-
-   https://forum.juce.com/t/creating-a-mouseevent/32635
+   -Try, if this also affects my own popup menus
 
 
 - Quadrifex: 
