@@ -35,121 +35,16 @@ AudioModuleEditor* WaveOscModule::createEditor(int type)
 //-------------------------------------------------------------------------------------------------
 // state saving and recall:
 
-
-/*
-// These two functions are legacy code and shoudl go away - still using them is actually a bug:
-XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlElementToStartFrom)
-{
-  // the XmlElement which stores all the releveant state-information:
-  XmlElement* xmlState;
-  if(xmlElementToStartFrom == nullptr)
-    xmlState = new XmlElement("WaveOscillator");
-    //xmlState = new XmlElement(juce::String("OscillatorStereo"));  //wrong? should be OscillatorStereoState
-  else
-    xmlState = xmlElementToStartFrom;
-
-  juce::String samplePath = juce::String(osc->waveTable->getSampleName());
-  if(!samplePath.isEmpty())   // new
-    xmlState->setAttribute("AudioFileRelativePath", samplePath);
-  return xmlState;
-}
-bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlState)
-{
-  // this gets called multiple times on startup - why?
-
-  bool success = false;
-
-  // Temporarily switch off the automatic re-rendering of the mip-map, to avoid multiple renderings
-  // (one for each parameter)...but that should probably be done in WaveOscModule::getStateAsXml.
-  // Doing it here worked in the legacy code:
-  bool oldAutoReRenderState = osc->waveTable->isMipMapAutoReRenderingActive();
-  osc->waveTable->setAutomaticMipMapReRendering(false);
-  osc->waveTable->fillWithAllZeros();
-
-  // let the oscillator and all its slaves calculate their increment:
-  //osc->setFrequency(1000.0);
-  osc->calculateIncrementForAllSlaves();
-
-  // load the audio-file into the wavetable for the oscillator:
-  juce::String relativePath = xmlState.getStringAttribute("AudioFileRelativePath", juce::String());
-  juce::String absolutePath = getSupportDirectory() + File::getSeparatorString() + relativePath;
-
-  // old presets were stored with backslashes - these don't work on mac unless we replace 
-  // the backslashes by forward slashes:
-  relativePath = relativePath.replaceCharacter('\\', '/');
-  absolutePath = absolutePath.replaceCharacter('\\', '/');
-
-
-  //juce::File audioFile(absolutePath);
-  //if( !audioFile.existsAsFile() )
-  //  return false;
-  // ...Nope! That bypasses the warning message box triggered in 
-  // AudioFileManager::createAudioSampleBufferFromFile when the file couldn't be loaded. But we 
-  // want to see that warning! It's important to alert the user when waveform loading goes wrong.
-  // Just silently skipping it is not acceptable.
-
-
-  AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(absolutePath, true);
-  if( buffer != nullptr )
-  {
-    // pass the actual audio data:
-    float* channelPointers[2];
-    channelPointers[0] = buffer->getWritePointer(0, 0);
-    if( buffer->getNumChannels() >= 2 )
-      channelPointers[1] = buffer->getWritePointer(1, 0);
-    else
-      channelPointers[1] = buffer->getWritePointer(0, 0);
-    osc->waveTable->setWaveform(channelPointers, buffer->getNumSamples() );
-    delete buffer;
-    success = true;
-  }
-  else
-  {
-    // ToDo: maybe init waveform with silence - call a function like:
-    //osc->waveTable->initWaveform();
-    // which would have to be written. It makes more sense to use silence than to keep whatever
-    // waveform is currently loaded. That would create a false impression of the state.
-    // ...what about fillWithAllZeros that is called above
-  }
-
-  // pass the path as c-string:
-  char* fileNameC = toZeroTerminatedString(relativePath);
-  //jassert(fileNameC[0] != 'C'); // for debug
-  osc->waveTable->setSampleName(fileNameC);
-  delete[] fileNameC;
-
-  // let the (wavetable inside the) oscillator render the mip map and restore the old state of the
-  // automatic re-rendering:
-  osc->waveTable->renderMipMap();
-  osc->waveTable->setAutomaticMipMapReRendering(oldAutoReRenderState);
-
-  return success;
-}
-*/
-
-
-
 XmlElement* WaveOscModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
-  // New: 
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
   xmlState->setAttribute("AudioFileRelativePath", samplePathRelative);
   return xmlState;
-
-
-  /*
-  // Old:
-  XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
-  if( wrappedOsc != nullptr ) // that should actually never be the case
-    xmlState = oscillatorStereoStateToXml(wrappedOsc, xmlState);
-  return xmlState;
-  */
 }
 
 void WaveOscModule::setStateFromXml(
   const XmlElement& xmlState, const juce::String& stateName, bool markAsClean)
 {
-  // New:
   jassert(wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr);
   if( wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr )
     wrappedOsc->waveTable->setAutomaticMipMapReRendering(false);
@@ -172,14 +67,6 @@ void WaveOscModule::setStateFromXml(
   // without warning because the xml did not pecify a sample file anyway. Or maybe have a special
   // function clearWaveform or setToEmptyWaveform or something - it shouldn't even need a file 
   // with silence for this
-
-
-  /*
-  // Old:
-  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
-  if( wrappedOsc != nullptr )
-    oscillatorStereoStateFromXml(wrappedOsc, xmlState);
-    */
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -476,10 +363,6 @@ bool WaveOscModule::setWaveform(AudioSampleBuffer* buffer, const juce::File& wav
 
 bool WaveOscModule::loadWaveform(const String& relativePath)
 {
-  //jassert(wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr);
-  //if(wrappedOsc == nullptr || wrappedOsc->waveTable == nullptr)
-  //  return false;
-
   // Old presets were stored with backslashes - these don't work on mac unless we replace 
   // the backslashes by forward slashes:
   juce::String relPath = relativePath.replaceCharacter('\\', '/');
@@ -489,8 +372,6 @@ bool WaveOscModule::loadWaveform(const String& relativePath)
   bool success = setWaveform(buffer, waveFile);
   delete buffer;
   return success;
-
-  //return setWaveform(buffer, waveFile);
 
   // ToDo:
   // -Try to avoid usage of raw pointer and manual deletion for the buffer. Let 
@@ -532,32 +413,11 @@ WaveOscEditorContextMenu::~WaveOscEditorContextMenu()
 
 void WaveOscEditorContextMenu::rButtonClicked(RButton *buttonThatWasClicked)
 {
-  /* not needed anymore
-  if( oscillatorModuleToEdit == NULL )
-    return;
-  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
-    return;
-
-  rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
-
-  if( buttonThatWasClicked == reverseButton )
-    o->setTimeReverse( reverseButton->getToggleState() );
-  if( buttonThatWasClicked == invertButton )
-    o->setPolarityInversion( invertButton->getToggleState() );
-    */
-
   sendChangeMessage();
 }
 
 void WaveOscEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged)
 {
-  /*
-  if( oscillatorModuleToEdit == NULL )
-    return;
-  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
-    return;
-  //rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
-  */
   sendChangeMessage();
 }
 // ToDo: Document why we send change messages. Who picks them up? What gets updated in response?
@@ -781,47 +641,6 @@ void WaveOscEditorContextMenu::createWidgets()
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 }
 
-/*
-// may be obsolete - verify and delete
-void WaveOscEditorContextMenu::updateWidgetsAccordingToState()
-{
-  if( oscillatorModuleToEdit == NULL )
-    return;
-  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
-    return;
-  rosic::OscillatorStereo* o         = oscillatorModuleToEdit->wrappedOscillatorStereo;
-  rosic::MipMappedWaveTableStereo* w = o->waveTable;
-
-  // update the widgets:
-  levelSlider->setValue(                  o->getLevel(),                   false);
-  levelByKeySlider->setValue(             o->getLevelByKey(),              false);
-  levelByVelSlider->setValue(             o->getLevelByVel(),              false);
-  panSlider->setValue(                    o->getPan(),                     false);
-  midSideSlider->setValue(                o->getMidSide(),                 false);
-  startPhaseSlider->setValue(             o->getStartPhase(),              false);
-  fullWavePhaseWarpSlider->setValue(      w->getFullWavePhaseWarp(),       false);
-  halfWavePhaseWarpSlider->setValue(      w->getHalfWavePhaseWarp(),       false);
-  combHarmonicSlider->setValue(           w->getCombHarmonic(),            false);
-  combAmountSlider->setValue(             w->getCombAmount(),              false);
-  tuneSlider->setValue(                   o->getDetuneSemitones(),         false);
-  detuneHzSlider->setValue(               o->getDetuneHz(),                false);
-  stereoDetuneSlider->setValue(           o->getStereoDetuneSemitones(),   false);
-  stereoDetuneHzSlider->setValue(         o->getStereoDetuneHz(),          false);
-  spectralContrastSlider->setValue(       w->getSpectralContrast(),        false);
-  spectralSlopeSlider->setValue(          w->getSpectralSlope(),           false);
-  highestHarmonicSlider->setValue(        w->getHighestHarmonicToKeep(),   false);
-  lowestHarmonicSlider->setValue(         w->getLowestHarmonicToKeep(),    false);
-  evenOddSlider->setValue(                w->getEvenOddRatio(),            false);
-  phaseScaleSlider->setValue(             w->getPhaseScale(),              false);
-  phaseShiftSlider->setValue(             w->getPhaseShift(),              false);
-  stereoPhaseShiftSlider->setValue(       w->getStereoPhaseShift(),        false);
-  evenOddPhaseShiftSlider->setValue(      w->getEvenOddPhaseShift(),       false);
-  evenOddStereoPhaseShiftSlider->setValue(w->getEvenOddStereoPhaseShift(), false);
-  reverseButton->setToggleState(          w->isTimeReversed(),             false);
-  invertButton->setToggleState(           w->isPolarityInverted(),         false);
-}
-*/
-
 void WaveOscEditorContextMenu::resized()
 {
   Component::resized();
@@ -882,6 +701,7 @@ void WaveOscEditorContextMenu::componentPeerChanged()
 {
 int dummy = 0;
 }
+// The intention is to move the context menu along when the pseudo-parent moves, I guess.
 */
 
 //=================================================================================================
@@ -1277,42 +1097,6 @@ bool WaveOscEditor::setAudioData(AudioSampleBuffer* newBuffer,
   bool success = oscModule->setWaveform(newBuffer, underlyingFile);
   updatePlot();
   return success;
-
-
-  /*
-  // old:
-  if( oscModule == nullptr || oscModule->wrappedOsc == nullptr )
-    return false;
-
-  // This needs to be rewritten
-
-  if( newBuffer != nullptr && newBuffer->getNumChannels() > 0 && newBuffer->getNumSamples() > 0 )
-  {
-    float* channelPointers[2];
-    channelPointers[0] = newBuffer->getWritePointer(0, 0);
-    if( newBuffer->getNumChannels() >= 2 )
-      channelPointers[1] = newBuffer->getWritePointer(1, 0);
-    else
-      channelPointers[1] = newBuffer->getWritePointer(0, 0);
-    oscModule->wrappedOsc->waveTable->setWaveform(channelPointers, newBuffer->getNumSamples());
-
-    //juce::String relativePath = underlyingFile.getRelativePathFrom(rootDirectory);
-    // this seems wrong - we must use the support-folder as root directory
-
-    juce::String relativePath = underlyingFile.getRelativePathFrom(getSupportDirectory());
-
-    //juce::String root = rootDirectory;
-    //juce::String support = getSupportDirectory();
-
-    char* fileNameC = toZeroTerminatedString(relativePath);
-    oscModule->wrappedOsc->waveTable->setSampleName(fileNameC);
-    delete[] fileNameC;
-    sampleFileLabel->setText(underlyingFile.getFileName());
-    updatePlot();
-    return true;
-  }
-  return false;
-  */
 }
 
 

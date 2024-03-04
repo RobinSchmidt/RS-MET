@@ -111,12 +111,15 @@ protected:
   /** Fills the array of automatable parameters. */
   virtual void createParameters();
 
-
+  /** Sets up the waveform oin the oscillator from a given AudiosampleBuffer. You need to also pass
+  the underlying file that the given buffer was loaded from. This is needed such that we can store 
+  that information here because it's need for state recall. The return values informs if the 
+  operation was successful. It will fail when passing a nullptr for the buffer. */
   virtual bool setWaveform(AudioSampleBuffer* newBuffer, const juce::File& underlyingFile);
 
+  /** Loads the waveform from a file with the given path relative to our support directory and 
+  informs if this operation completed successfully. */
   virtual bool loadWaveform(const String& relativePath);
-  // get rid of the osc parameter - access the wrappedOsc member instead, then rename to
-  // loadWaveForm
 
   /** Called from the constructor to load the default waveform. */
   virtual void loadDefaultWaveform();
