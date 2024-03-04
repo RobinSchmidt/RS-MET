@@ -472,7 +472,12 @@ bool WaveOscModule::loadSampleIntoOsc(OscillatorStereo* osc, const String& relat
 
 void WaveOscModule::loadDefaultWaveform()
 {
-  //RAPT::rsError("Not yet implemented");
+  //loadSampleIntoOsc(wrappedOsc, "/Samples/SingleCycle/Classic/Saw.flac");
+  loadSampleIntoOsc(wrappedOsc, "/Samples/SingleCycle/Classic/Sine.flac");
+  // I think, the saw is too aggressive to be fired up immediately when the osc is plugged in. The
+  // sine is better as default (= initial) waveform. Maybe we should even reduce the volume 
+  // initially, i.e. set the Level parameter to soething like -10 initially (but leave the deafult
+  // at zero nonetheless).
 }
 
 //=================================================================================================

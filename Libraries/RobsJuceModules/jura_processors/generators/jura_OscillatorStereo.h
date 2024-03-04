@@ -113,12 +113,15 @@ protected:
 
 
   virtual bool loadSampleIntoOsc(rosic::OscillatorStereo* osc, const String& relativePath);
+  // get rid of the osc parameter - access the wrappedOsc member instead, then rename to
+  // loadWaveForm
+
 
   /** Called from the constructor to load the default waveform. */
   virtual void loadDefaultWaveform();
 
   /** Pointer to the underlying rosic object which is wrapped. */
-  rosic::OscillatorStereo *wrappedOsc;
+  rosic::OscillatorStereo *wrappedOsc = nullptr;
 
   bool wrappedOscIsOwned = false;
   rosic::MipMappedWaveTableStereo *waveTable = nullptr; 
