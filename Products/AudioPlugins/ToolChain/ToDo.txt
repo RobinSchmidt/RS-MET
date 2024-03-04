@@ -83,6 +83,11 @@ Bugs
 - TackMeter:
   -It shortly freezes on midi note-off events
 
+- Equalizer:
+  -When loading an EQ preset while ToolChain is plugged in in EqualizerAPO, the name of the preset
+   appears only for a short moment and is then replaced by "Equalizer". Check if this happens in 
+   other hosts and/or standalone, too.
+
 
 ---------------------------------------------------------------------------------------------------
 Features
