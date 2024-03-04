@@ -3958,14 +3958,25 @@ void sineSweepBassdrum()
   Real length     =     0.25;    // Length of the sweep in seconds
   Real phase      =     0;       // Start phase in radians
   Real amplitude  =     0.5;     // Overall amplitude
-  Real param      =     0.0;     // Shape parameter
+  Real param      =     0.99;    // Shape parameter
 
-  // The function that determines the shape of the frequency sweepdown in a normalied coordinate 
+  // The functions that determines the shape of the frequency sweepdown in a normalied coordinate 
   // system from 0 to 1:
-  auto shapeFunc = [](Real x, Real p)
+  auto shapeFuncLin = [](Real x, Real p)  // Identity function
   {
-    return x;  // preliminary
+    return x; 
   };
+
+  //auto shapeFuncExp = [](Real x, Real p) { };
+
+  auto shapeFuncLinFrac = [](Real x, Real p) 
+  { 
+    return RAPT::rsRationalMap_01(x, p);
+  };
+
+  // Select one of the above defined shape function to be used:
+  auto shapeFunc = shapeFuncLinFrac;
+
 
 
   int  N = ceil(length * sampleRate);
@@ -3986,5 +3997,20 @@ void sineSweepBassdrum()
   }
 
 
+  // ToDo:
+  // -Create a name from the parameters (startFreq, endFreq, length, shapeFunc, param, ...)
+
+  rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
   rsPlotVector(x);
+
+
+  // Observations:
+  // -The shapeFuncLin spends way too much time in the high frequency range. Linear sweeps are
+  //  very bad.
+  // -The shapeFuncLinFrac gets into bassdrum territory for values close to 1 - like 0.98..0.99.
+  //  We should really apply a parameter mapping function like in rsFlatZapper to the parameter p.
+  //
+  // ToDo:
+  // -Try an exponential mapping like in the env-gen of the sampler.
+  // -Combine exp and linfrac mapping in both ways. We may need two parameters for this.
 }
