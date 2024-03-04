@@ -87,3 +87,8 @@ https://www.kvraudio.com/forum/viewtopic.php?t=589519
 DtBlkFx:
 https://github.com/dozius/DtBlkFx
 -FFT based spectral processing plugin ("Darrel Tam's Block Effects?" ...probably)
+
+EqualizerAPO:
+https://equalizerapo.com/
+https://sourceforge.net/projects/equalizerapo/
+-System wide equalizer for Windows. Allows hosting of VST plugins, too.
