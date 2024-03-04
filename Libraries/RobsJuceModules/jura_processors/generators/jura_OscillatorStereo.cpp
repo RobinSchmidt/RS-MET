@@ -131,22 +131,51 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
 
 XmlElement* WaveOscModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
+  // New: 
+  XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
+  xmlState->setAttribute("AudioFileRelativePath", samplePathRelative);
+  return xmlState;
 
+
+  /*
   // Old:
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
   if( wrappedOsc != nullptr ) // that should actually never be the case
     xmlState = oscillatorStereoStateToXml(wrappedOsc, xmlState);
   return xmlState;
+  */
 }
 
 void WaveOscModule::setStateFromXml(
   const XmlElement& xmlState, const juce::String& stateName, bool markAsClean)
 {
+  // New:
+  jassert(wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr);
+  if( wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr )
+    wrappedOsc->waveTable->setAutomaticMipMapReRendering(false);
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  juce::String samplePath = xmlState.getStringAttribute("AudioFileRelativePath", "");
+  loadSampleIntoOsc(wrappedOsc, samplePath);
+  if( wrappedOsc != nullptr && wrappedOsc->waveTable != nullptr )
+    wrappedOsc->waveTable->setAutomaticMipMapReRendering(true);
 
+  // Note:
+  // The reason for switching the automatic re-rendering of the mip-map in the embedded 
+  // wrappedOsc->waveTable temporarily off is that because otherwise our call to 
+  // AudioModule::setStateFromXml would trigger multiple re-renderings - one for each recalled 
+  // parameter that affects the mip-map. I think so, at least ...verify!
+  //
+  // ToDo:
+  // Maybe if the "AudioFileRelativePath" attribute is not found, use some default file that
+  // always exists like Silence.flac.
+
+
+  /*
   // Old:
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
   if( wrappedOsc != nullptr )
     oscillatorStereoStateFromXml(wrappedOsc, xmlState);
+    */
 }
 
 //-------------------------------------------------------------------------------------------------
