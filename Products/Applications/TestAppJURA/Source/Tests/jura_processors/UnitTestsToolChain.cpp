@@ -622,12 +622,16 @@ void UnitTestToolChain::runTestStraightliner()
 
   // Filter out only the sliders:
   std::vector<jura::RSlider*> sliders = filterWidgets<RSlider>(widgets);
-  expect(sliders.size() == 0);  // FAILS! That's our bug!
-  // Aha! This filters out exactly one slider - with name "Voices"! That's our buggy slider!
+  expect(sliders.size() == 0); 
+ 
+  // Filter out only the buttons:
+  std::vector<jura::RButton*> buttons = filterWidgets<RButton>(widgets);
+  expect(buttons.size() == 5); 
+  // 5 buttons without an assigned Parameter: Tuning Load/Plus/Minus, the (invisible) "Setup" 
+  // button and the (also invisible) weblink. Try to get rid of the latter two
 
+  // We have additionally the "Glide" button orphaned - that's a bug!
 
-  p = synth.getParameterByName("NumVoices");
-  // Such a parameter does not exist!
 
 
   delete synthEditor;

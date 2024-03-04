@@ -32,18 +32,6 @@ public:
   create the object in you subclass constructor and then call this function. */
   void setInstrumentToWrap(rosic::PolyphonicInstrument *instrumentToWrap);
 
-  /** Overrides the parameterChanged() method of the indirect AutomationListener base class in
-  order to respond to interesting automation events. */
-  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-    // get rid of this
-
-  /** Returns the state (i.e. the settings of all relevant parameters) in form of an
-  XmlElement. */
-  //virtual XmlElement* getStateAsXml(XmlElement* xmlElementToStartFrom = NULL);
-
-  /** Recalls a state (i.e. the settings of all relevant parameters) from an XmlElement. */
-  //virtual void setStateFromXml(const XmlElement& xmlState);
-
   /** Overriden to call allNotesOff before restoring the state. */
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;

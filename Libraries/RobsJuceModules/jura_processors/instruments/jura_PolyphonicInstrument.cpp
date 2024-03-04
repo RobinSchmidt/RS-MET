@@ -22,93 +22,17 @@ void PolyphonicInstrumentAudioModule::setInstrumentToWrap(rosic::PolyphonicInstr
 }
 
 //-------------------------------------------------------------------------------------------------
-// automation:
-
-// Legacy code - obsolete? Well - we need to wire up the callback in createParameters - after 
-// that, it may be indeed obsolete
-void PolyphonicInstrumentAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
-{
-  ScopedLock scopedLock(*lock);
-  AudioModuleWithMidiIn::parameterRangeChanged(parameterThatHasChanged);
-
-  /*
-  if( underlyingRosicInstrument == NULL )
-    return;
-
-  // find out the index in the vector of the parameter that has been changed:
-  int parameterIndex = getIndexOfParameter(parameterThatHasChanged);
-
-  // parameterIndex now contains the index in the array of the parameter that has changed now set
-  // up the signal processing:
-
-  // \todo replace this dispatching switch statement by the new callback-system
-
-  double value = parameterThatHasChanged->getValue();
-  switch( parameterIndex )
-  {
-  case   0: underlyingRosicInstrument->setMasterLevel(        value);     break;
-  case   1: underlyingRosicInstrument->setVoiceLevelByKey(    value);     break;
-  case   2: underlyingRosicInstrument->setVoiceLevelByVel(    value);     break;
-  case   3: underlyingRosicInstrument->setMasterLevelByVoices(value);     break;
-  case   4: underlyingRosicInstrument->setMidSideRatio(       value);     break;
-  case   5: underlyingRosicInstrument->setGlideMode(   0.0 != value);     break;
-  case   6: underlyingRosicInstrument->setGlideTime(          value);     break;
-  case   7: underlyingRosicInstrument->setMasterTuneA4(       value);     break;
-  case   8: underlyingRosicInstrument->setPitchWheelRange(    value);     break;
-  default:
-    {
-      // do nothing
-    }
-
-  } // end of switch( parameterIndex )
-  */
-}
 
 void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement& xmlState,
   const juce::String& stateName, bool markAsClean)
 {
   underlyingRosicInstrument->allNotesOff();
-  // Maybe an even more drastic resetMidiState would be appropriate. noteOff will trigger releases
-  // but that may not be enough.
-
-
   AudioModuleWithMidiIn::setStateFromXml(xmlState, stateName, markAsClean);
+
+  // Maybe an even more drastic resetMidiState (which perhaps needs to be written) would be 
+  // appropriate. A call to allNotesOff will trigger releases but that may not be enough. Or will 
+  // it? Perhaps it actually does a hrd reset? But then the function should be renamed.
 }
-
-/*
-XmlElement* PolyphonicInstrumentAudioModule::getStateAsXml(XmlElement* xmlElementToStartFrom)
-{
-  if( underlyingRosicInstrument == NULL )
-    return NULL;
-
-  XmlElement* xmlState;
-  if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String(T("InstrumentState")));
-  else
-    xmlState = xmlElementToStartFrom;
-
-  // store the setting of the inherited AudioModule object:
-  xmlState = AudioModule::getStateAsXml(xmlState);
-
-  return xmlState;
-}
-
-void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement &xmlState)
-{
-  if( underlyingRosicInstrument == NULL )
-    return;
-
-  // we want to preserve the clean state but when we set automatable parameters it will be set to
-  // dirty - so we remember if it was clean and restore it after setting the parameters:
-  bool presetIsClean = !underlyingRosicInstrument->isPresetDirty();
-
-  // restore the settings of the inherited AudioModule object:
-  AudioModule::setStateFromXml(xmlState);
-
-  if( presetIsClean )
-    underlyingRosicInstrument->markPresetAsClean();
-}
-*/
 
 //-------------------------------------------------------------------------------------------------
 // internal functions:
@@ -116,16 +40,6 @@ void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement &xmlState
 
 void PolyphonicInstrumentAudioModule::createParameters()
 {
-  // Create the automatable parameters and add them to the list - note that the order of the adds
-  // is important because in parameterChanged(), the index (position in the array) will be used to
-  // identify which particular parameter has changed.
-  // Hmm - that comment is old - does the order still matter? I think, it shouldn't. I think, it 
-  // mattered back in the day when they were mapped directly to host-automatable parameters. 
-  // -> Figure out and update the comment!
-  //
-  // Update: I have modernized it all - the old code is still there in the comments but cna someday
-  // be deleted for good
-
   ScopedLock scopedLock(*lock);
 
   //using Param = AutomatableParameter;
@@ -135,73 +49,50 @@ void PolyphonicInstrumentAudioModule::createParameters()
   using Inst = rosic::PolyphonicInstrument;
   Inst* inst = underlyingRosicInstrument;
 
-  //p = new Param(lock, "MasterLevel", -36.0, 12.0, 0.1, 0.0, Parameter::LINEAR, 7);
   p = new Param("MasterLevel", -36.0, 12.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setMasterLevel);
 
-  //p = new Param(lock, "VoiceLevelByKey", -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   p = new Param("VoiceLevelByKey", -24.0, 24.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setVoiceLevelByKey);
 
-  //p = new Param(lock, "VoiceLevelByVel", 0.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
   p = new Param("VoiceLevelByVel", 0.0, 12.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setVoiceLevelByVel);
 
-  //p = new Param(lock, "MasterLevelByVoices", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   p = new Param("MasterLevelByVoices", 0.0, 100.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setMasterLevelByVoices);
 
-  //p = new Param(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   p = new Param("MidSideRatio", 0.0, 1.0, 0.5, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setMidSideRatio);
 
-  //p = new Param(lock, "NumVoices", 1.0, 16.0, 1.0, 16, Parameter::LINEAR);
   p = new Param("NumVoices", 1.0, 16.0, 16, Parameter::LINEAR, 1.0);
   //p->setCallbackLock(lock);  // might be a good idea to acquire the lock b4 changing NumVoices?
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setNumPlayableVoices);
   // A function p->setCallbackLock(lock) does not yet exist but might be good to add.
 
-  //p = new Param(lock, "GlideSwitch", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
   p = new Param("GlideSwitch", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setGlideMode);
 
-  //p = new Param(lock, "GlideTime", 5.0, 2000.0, 0.0, 50.0, Parameter::EXPONENTIAL);
   p = new Param("GlideTime", 5.0, 2000.0, 50.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setGlideTime);
 
-  //p = new Param(lock, "MasterTuneA4", 220.0, 880.0, 0.01, 440.0, Parameter::EXPONENTIAL);
   p = new Param("MasterTuneA4", 220.0, 880.0, 440.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setMasterTuneA4);
 
-  //p = new Param(lock, "PitchWheelRange", 0.0, 24.0, 0.1, 12.0, Parameter::LINEAR);
   p = new Param("PitchWheelRange", 0.0, 24.0, 12.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setPitchWheelRange);
-
-  // Make a call to setValue for each parameter in order to set up all the slave voices:
-  //for(int i=0; i < (int) parameters.size(); i++ )
-  //  parameterChanged(parameters[i]);
-  // ToDo: Verify, if this is still needed. It might also be a remnant from older days. Ah - I see:
-  // we have a method  parameterChanged() change here which then calls the actual setter in the
-  // embedded DSP-object. I think, we should instead do things like:
-  // using Instrum = rosic::PolyphonicInstrument;
-  // p->setValueChangeCallback<Instrum>(instrum, &Instrum::setMasterLevel);
-  // ...etc.
-  // such that the value change callbacks are called directly. See the AcidDevil code for how it's
-  // now supposed to be done.
 }
 
 //=================================================================================================
-
 
 PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugInLock,
   PolyphonicInstrumentAudioModule* newInstrumentToEdit) : AudioModuleEditor(newInstrumentToEdit)
@@ -223,6 +114,7 @@ PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugI
 //-------------------------------------------------------------------------------------------------
 // setup:
 
+// Check if we need these - if not, get rid:
 void PolyphonicInstrumentEditor::setPresetSectionColourScheme(const WidgetColourScheme& newColourScheme)
 {
   //stateWidgetSet->setWidgetColourScheme(newColourScheme);
@@ -512,5 +404,8 @@ void PolyphonicInstrumentEditor::createWidgets()
 
   updateWidgetsAccordingToState(); // ToDo: Check, if this is needed and if so, document why
 
-  // ToDo: maybe clean this up - see AciDevilModuleEditor::createWidgets()
+  // ToDo: 
+  // -The glideButton should be connected to the "Glide" parameter
+  // -Maybe clean this up - see AciDevilModuleEditor::createWidgets()
+  // -In the unit test, filter for the orphaned buttons - we expect 3: tuningLoad, tuningPlus, tuningMinus
 }
