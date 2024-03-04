@@ -96,10 +96,10 @@ protected:
 
 //=================================================================================================
 
-// Why do we inherit from ChangeBroadcaster? Maybe we can get rid of that baseclass?
+// Inheriting from TuningFileManager here is no good idea. PolyphonicInstrumentAudioModule should
+// be responsible for that
 
-class PolyphonicInstrumentEditor : public AudioModuleEditor, public ChangeBroadcaster, 
-  public TuningFileManager
+class PolyphonicInstrumentEditor : public AudioModuleEditor, public TuningFileManager
 {
 
 public:
