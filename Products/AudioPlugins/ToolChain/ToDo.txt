@@ -1,12 +1,16 @@
 ---------------------------------------------------------------------------------------------------
 Bugs
 
-- Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
-  Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
+We give the priorities from 1 to 5 with meaning:
+[1]  Minor annoyance: cosmetic GUI issues
+[2]  Major annoyance: 
+[3]  Minor feature not working
+[4]  Major feature not working
+[5]  Showstopper: crashes, false state recalls, instability explosions, ...
 
-- WaveOscillator: Initially when not yet any file was loaded manually, the first click on the 
-  "Next" button loads the first file in the current directory instead of the next one according to 
-  the currently loaded one. 
+
+- [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
+  Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
 
 - [Might be fixed - needs tests inside some host]
   Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
@@ -33,24 +37,24 @@ Bugs
     Maybe like in Surge: have an optional keyboard at the bottom and next to it some midi settings
     like tempo
 
-- Scope: Swicthing to sync and then back does not seem to update the saciing frequency to the old 
-  value. When moving the ScanFreq slicer, we egt back to the old setting.
+- [3] Scope: Switching to sync and then back does not seem to update the sync frequency to the old 
+  value. When moving the ScanFreq slicer, we get back to the old setting.
 
 - In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
   ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 
-- Load ToolChain preset BrassyOsc, play a couple of notes, load preset ButterSnap. It will click 
-  only on the note that was last played with the previous patch. Something about the voice 
+- [4] Load ToolChain preset BrassyOsc, play a couple of notes, load preset ButterSnap. It will 
+  click only on the note that was last played with the previous patch. Something about the voice 
   manager? Maybe it's a bug in Liberty? It seems to affect only liberty
 
-- MultiAnalyzer, waveform view: when zooming in, the horizontal scrollbar does not appear
+- [3] MultiAnalyzer, waveform view: when zooming in, the horizontal scrollbar does not appear
 
 - Straightliner: 
-  -When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
+  -[5] When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
    recalled. Try loading FuzzedZappedSaw. It was saved with NumVoices = 1 but is recalled with 
    NumVoices = 16. It seems like the setting wasn't saved to the xml file. Figure out why!
-  -In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build of
-   standalone, there's no problem. -> Try a debug build of the plugin
+  -[4] In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build 
+   of standalone, there's no problem. -> Try a debug build of the plugin
    Oh - it does open - but it is in the background. It is not brought to the front.
    Check class WaveOscEditorContextMenu in jura_OscillatorStereo.h/cpp and also
    WaveOscEditor::rButtonClicked where the context menu is opened. There, we call
@@ -74,29 +78,34 @@ Bugs
 
 
 - Quadrifex: 
-  -PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters
+  -[2] PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters
    (like PhaeOffset) still affects the sound. That seems to be wrong. If it's intentional, this
    should be documented. It's not what one would expect. When Mid/Side is set to 0/100 and 
    Dry/Wet to 100/0, the PhaseOffset parameter seems to have no effect. Check
    rosic::PhaseStereoizer::getSampleFrameStereo. Implement a unit test for it.
 
 - TackMeter:
-  -It shortly freezes on midi note-off events
+  -[2] It shortly freezes on midi note-off events
 
 - Equalizer:
-  -When loading an EQ preset while ToolChain is plugged in in EqualizerAPO, the name of the preset
-   appears only for a short moment and is then replaced by "Equalizer". Check if this happens in 
-   other hosts and/or standalone, too. Standalone, Kushview Element, Tracktion, Bitwig: fine
+  -[1] When loading an EQ preset while ToolChain is plugged in in EqualizerAPO, the name of the 
+   preset appears only for a short moment and is then replaced by "Equalizer". Check if this 
+   happens in other hosts and/or standalone, too. Standalone, Kushview Element, Tracktion, 
+   Bitwig: fine
 
-- LadderFilter: In EqulaizerAPO it looks like the filter has an overall gain of around -6 dB
+- [4] LadderFilter: In EqulaizerAPO it looks like the filter has an overall gain of around -6 dB
   when no resonance is applied. That gets worse with resonance. -> Make a unit test that checks
   the DC gain. Resonance makes the bandpass asymmetric
 
-- EngineersFilter: The frequency responses measured by EqualizerAPO look not exactly like they 
+- [4] EngineersFilter: The frequency responses measured by EqualizerAPO look not exactly like they 
   should. There is some error going on in the stopband range - maybe numerical roundoff? 
   Increasing the FFT resolution doesn't help, so it's not a truncation issue. High order (20)
   Halpern bandpass with large bandwidth (around 7) is especially crazy. freq = 1000. It seems to be
   real - it's audible. It affects Papoulis and Chebychev, too. For bandreject, it's even worse.
+
+- [1] WaveOscillator: Initially when not yet any file was loaded manually, the first click on the 
+  "Next" button loads the first file in the current directory instead of the next one according to 
+  the currently loaded one. 
 
 ---------------------------------------------------------------------------------------------------
 Features
