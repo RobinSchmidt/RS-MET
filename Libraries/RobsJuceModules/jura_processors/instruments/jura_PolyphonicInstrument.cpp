@@ -24,6 +24,8 @@ void PolyphonicInstrumentAudioModule::setInstrumentToWrap(rosic::PolyphonicInstr
 //-------------------------------------------------------------------------------------------------
 // automation:
 
+// Legacy code - obsolete? Well - we need to wire up the callback in createParameters - after 
+// that, it may be indeed obsolete
 void PolyphonicInstrumentAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
   ScopedLock scopedLock(*lock);
@@ -118,41 +120,79 @@ void PolyphonicInstrumentAudioModule::createParameters()
   // Hmm - that comment is old - does the order still matter? I think, it shouldn't. I think, it 
   // mattered back in the day when they were mapped directly to host-automatable parameters. 
   // -> Figure out and update the comment!
+  //
+  // Update: I have modernized it all - the old code is still there in the comments but cna someday
+  // be deleted for good
 
 
-  using Param = AutomatableParameter;
+  ScopedLock scopedLock(*lock);
+
+
+  //using Param = AutomatableParameter;
+  using Param = jura::Parameter;
   Param* p;
 
-  p = new Param(lock, "MasterLevel", -36.0, 12.0, 0.1, 0.0, Parameter::LINEAR, 7);
-  addObservedParameter(p);
+  using Inst = rosic::PolyphonicInstrument;
+  Inst* inst = underlyingRosicInstrument;
 
-  p = new Param(lock, "VoiceLevelByKey", -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  //p = new Param(lock, "MasterLevel", -36.0, 12.0, 0.1, 0.0, Parameter::LINEAR, 7);
+  p = new Param("MasterLevel", -36.0, 12.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setMasterLevel);
 
-  p = new Param(lock, "VoiceLevelByVel", 0.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  //p = new Param(lock, "VoiceLevelByKey", -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("VoiceLevelByKey", -24.0, 24.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setVoiceLevelByKey);
 
-  p = new Param(lock, "MasterLevelByVoices", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  //p = new Param(lock, "VoiceLevelByVel", 0.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("VoiceLevelByVel", 0.0, 12.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setVoiceLevelByVel);
 
-  p = new Param(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  //p = new Param(lock, "MasterLevelByVoices", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("MasterLevelByVoices", 0.0, 100.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setMasterLevelByVoices);
 
-  p = new Param(lock, "GlideSwitch", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
+  //p = new Param(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("MidSideRatio", 0.0, 1.0, 0.5, Parameter::LINEAR);
   addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setMidSideRatio);
 
-  p = new Param(lock, "GlideTime", 5.0, 2000.0, 0.0, 50.0, Parameter::EXPONENTIAL);
+  //p = new Param(lock, "NumVoices", 1.0, 16.0, 1.0, 16, Parameter::LINEAR);
+  p = new Param("NumVoices", 1.0, 16.0, 16, Parameter::LINEAR, 1.0);
+  //p->setCallbackLock(lock);  // might be a good idea to acquire the lock b4 changing NumVoices?
   addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setNumPlayableVoices);
+  // A function p->setCallbackLock(lock) does not yet exist but might be good to add.
 
-  p = new Param(lock, "MasterTuneA4", 220.0, 880.0, 0.01, 440.0, Parameter::EXPONENTIAL);
+  //p = new Param(lock, "GlideSwitch", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("GlideSwitch", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setGlideMode);
 
-  p = new Param(lock, "PitchWheelRange", 0.0, 24.0, 0.1, 12.0, Parameter::LINEAR);
+  //p = new Param(lock, "GlideTime", 5.0, 2000.0, 0.0, 50.0, Parameter::EXPONENTIAL);
+  p = new Param("GlideTime", 5.0, 2000.0, 50.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setGlideTime);
+
+  //p = new Param(lock, "MasterTuneA4", 220.0, 880.0, 0.01, 440.0, Parameter::EXPONENTIAL);
+  p = new Param("MasterTuneA4", 220.0, 880.0, 440.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setMasterTuneA4);
+
+  //p = new Param(lock, "PitchWheelRange", 0.0, 24.0, 0.1, 12.0, Parameter::LINEAR);
+  p = new Param("PitchWheelRange", 0.0, 24.0, 12.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<Inst>(inst, &Inst::setPitchWheelRange);
+
+
+
 
   // Make a call to setValue for each parameter in order to set up all the slave voices:
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameterChanged(parameters[i]);
+  //for(int i=0; i < (int) parameters.size(); i++ )
+  //  parameterChanged(parameters[i]);
   // ToDo: Verify, if this is still needed. It might also be a remnant from older days. Ah - I see:
   // we have a method  parameterChanged() change here which then calls the actual setter in the
   // embedded DSP-object. I think, we should instead do things like:
@@ -388,13 +428,24 @@ void PolyphonicInstrumentEditor::createWidgets()
   midSideRatioSlider->setDescriptionField(infoField);
   midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
+
+  // New:
   addWidget( numVoicesSlider = new RSlider("NumVoicesSlider") );
+  numVoicesSlider->assignParameter(moduleToEdit->getParameterByName("NumVoices") );
   numVoicesSlider->setSliderName("Voices");
   numVoicesSlider->setDescription("Maximum number of playing voices");
-  numVoicesSlider->addListener(this);
   numVoicesSlider->setDescriptionField(infoField);
   numVoicesSlider->setStringConversionFunction(&valueToString0);
-  numVoicesSlider->setRange(0.0, 16.0, 1.0, 8.0);
+
+  // Old:
+  //addWidget( numVoicesSlider = new RSlider("NumVoicesSlider") );
+  //numVoicesSlider->setSliderName("Voices");
+  //numVoicesSlider->setDescription("Maximum number of playing voices");
+  //numVoicesSlider->addListener(this);
+  //numVoicesSlider->setDescriptionField(infoField);
+  //numVoicesSlider->setStringConversionFunction(&valueToString0);
+  //numVoicesSlider->setRange(0.0, 16.0, 1.0, 8.0);
+
 
   addWidget( compSlider = new RSlider("CompSlider") );
   compSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevelByVoices") );

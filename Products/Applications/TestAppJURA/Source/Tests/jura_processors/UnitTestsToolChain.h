@@ -37,14 +37,15 @@ protected:
   /** Randomizes all the parameters of the given jura::AudioModule. */
   void randomizeParameters(jura::AudioModule* m, int seed = 0);
 
-  /** Generates a mock mouseDown event t´hat can be used to test GUI stuff. */
+  /** Generates a mock mouseDown event that can be used to test GUI stuff. */
   juce::MouseEvent getMockMouseDownEvent(float mouseX = 0.f, float mouseY = 0.f, 
     juce::Component* eventComp = nullptr, juce::Component* originatorComp = nullptr);
   // What does the distinction between eventComp and originatorComp mean?
 
   /** Returns a vector of pointer to all the widgets in the given editor that have no parameter 
   assigned to them. A widget without an assigned parameter, i.e. an "orphaned" widget, may 
-  indicate a bug. */
+  indicate a bug. It may not always be a bug, though. Some widgets may legitimately have no 
+  parameter assigned but these are more the exception rather than the rule. */
   std::vector<jura::RWidget*> getWidgetsWithoutParameter(jura::AudioModuleEditor* editor);
 
   /** Filters out only widgets of a specific type from the given widgets array. Can be used like:

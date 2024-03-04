@@ -622,6 +622,7 @@ void UnitTestToolChain::runTestStraightliner()
 
   // Filter out only the sliders:
   std::vector<jura::RSlider*> sliders = filterWidgets<RSlider>(widgets);
+  expect(sliders.size() == 0);  // FAILS! That's our bug!
   // Aha! This filters out exactly one slider - with name "Voices"! That's our buggy slider!
 
 
