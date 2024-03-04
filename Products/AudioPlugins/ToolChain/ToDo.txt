@@ -9,6 +9,33 @@ We give the priorities from 1 to 5 with meaning:
 [5]  Showstopper: crashes, false state recalls, instability explosions, ...
 
 
+- Straightliner: 
+  -[5] When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
+   recalled. Try loading FuzzedZappedSaw. It was saved with NumVoices = 1 but is recalled with 
+   NumVoices = 16. It seems like the setting wasn't saved to the xml file. Figure out why!
+  -[4] In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build 
+   of standalone, there's no problem. -> Try a debug build of the plugin
+   Oh - it does open - but it is in the background. It is not brought to the front.
+   Check class WaveOscEditorContextMenu in jura_OscillatorStereo.h/cpp and also
+   WaveOscEditor::rButtonClicked where the context menu is opened. There, we call
+     contextMenu->toFront(true);
+   but this doesn't seem to be enough? The doc says that toFront brings the component in front
+   of its *siblings*. But maybe the outer editor counts not a ssibling but as parent? Maybe we need
+   to call addToDesktop() as well? But we do that in WaveOscEditor::rButtonClicked
+   https://docs.juce.com/master/classComponent.html#ad717da76012d971197fd8cf943f3e721
+   It can also be checked with the WaveOscillatorModule. In this case, the menu is visible because
+   the window that would obscure it is not big enough. But we may verify that the context menu is
+   at the back by moving the main GUI over it
+   -Maybe it's because when running it as plugin, the main GUI window runs in always-on-top mode 
+    whereas in standalone, this is not the case? Ah - yes - and in Kushview Element, this always on
+    top mode is optional. The little orange button in the top-left of the window toggles 
+    always-on-top mode on/off. But in Tracktion waveform, this doesn't seem to work. However, an 
+    older version of ToolChain doesn't seem to have this problem in Waveform - or ..well ..now they
+    all do - but for a little moment, it seemed to work with one version. WTF! Maybe for windows 
+    that are always on top, which one of them get precedence is determined by the exact sequence of
+    the window creation?
+   -Try, if this also affects my own popup menus
+
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
 
@@ -49,32 +76,7 @@ We give the priorities from 1 to 5 with meaning:
 
 - [3] MultiAnalyzer, waveform view: when zooming in, the horizontal scrollbar does not appear
 
-- Straightliner: 
-  -[5] When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
-   recalled. Try loading FuzzedZappedSaw. It was saved with NumVoices = 1 but is recalled with 
-   NumVoices = 16. It seems like the setting wasn't saved to the xml file. Figure out why!
-  -[4] In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build 
-   of standalone, there's no problem. -> Try a debug build of the plugin
-   Oh - it does open - but it is in the background. It is not brought to the front.
-   Check class WaveOscEditorContextMenu in jura_OscillatorStereo.h/cpp and also
-   WaveOscEditor::rButtonClicked where the context menu is opened. There, we call
-     contextMenu->toFront(true);
-   but this doesn't seem to be enough? The doc says that toFront brings the component in front
-   of its *siblings*. But maybe the outer editor counts not a ssibling but as parent? Maybe we need
-   to call addToDesktop() as well? But we do that in WaveOscEditor::rButtonClicked
-   https://docs.juce.com/master/classComponent.html#ad717da76012d971197fd8cf943f3e721
-   It can also be checked with the WaveOscillatorModule. In this case, the menu is visible because
-   the window that would obscure it is not big enough. But we may verify that the context menu is
-   at the back by moving the main GUI over it
-   -Maybe it's because when running it as plugin, the main GUI window runs in always-on-top mode 
-    whereas in standalone, this is not the case? Ah - yes - and in Kushview Element, this always on
-    top mode is optional. The little orange button in the top-left of the window toggles 
-    always-on-top mode on/off. But in Tracktion waveform, this doesn't seem to work. However, an 
-    older version of ToolChain doesn't seem to have this problem in Waveform - or ..well ..now they
-    all do - but for a little moment, it seemed to work with one version. WTF! Maybe for windows 
-    that are always on top, which one of them get precedence is determined by the exact sequence of
-    the window creation?
-   -Try, if this also affects my own popup menus
+
 
 
 - Quadrifex: 
