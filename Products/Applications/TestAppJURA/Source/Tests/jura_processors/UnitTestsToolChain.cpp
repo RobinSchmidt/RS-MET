@@ -128,6 +128,19 @@ std::vector<jura::RWidget*> UnitTestToolChain::getWidgetsWithoutParameter(
   return orphans;
 }
 
+template<class WidgetType>
+std::vector<WidgetType*> filterWidgets(const std::vector<jura::RWidget*>& widgets)
+{
+  std::vector<WidgetType*> matches;
+  for(size_t i = 0; i < widgets.size(); i++)
+  {
+    WidgetType* casted = dynamic_cast<WidgetType*>(widgets[i]);
+    if(casted != nullptr)
+      matches.push_back(casted);
+  }
+  return matches;
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // Tests for the infrastructure:
@@ -606,6 +619,10 @@ void UnitTestToolChain::runTestStraightliner()
   std::vector<jura::RWidget*> widgets = getWidgetsWithoutParameter(synthEditor);
   // Whoa! It has 10 widgets without parameter. Some of them are labels and text fields - which is
   // OK.
+
+  // Filter out only the sliders:
+  std::vector<jura::RSlider*> sliders = filterWidgets<RSlider>(widgets);
+  // Aha! This filters out exactly one slider - with name "Voices"! That's our buggy slider!
 
 
   p = synth.getParameterByName("NumVoices");
