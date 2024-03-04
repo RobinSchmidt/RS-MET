@@ -3964,16 +3964,18 @@ void sineSweepBassdrum()
   Real length     =     0.25;    // Length of the sweep in seconds
   Real phase      =     0;       // Start phase in radians
   Real amplitude  =     0.5;     // Overall amplitude
-  Real param      =    15.0;     // Shape parameter
+  Real param1     =     4.0;     // Shape parameter 1
+  Real param2     =     4.0;     // Shape parameter 2
+
 
   // The functions that determines the shape of the frequency sweepdown in a normalied coordinate 
   // system from 0 to 1:
-  auto shapeFuncLin = [](Real x, Real p)  // Identity function
-  {
-    return x; 
-  };
+  //auto shapeFuncLin = [](Real x, Real dummy1, Real dummy2)  // Identity function
+  //{
+  //  return x; 
+  //};
 
-  auto shapeFuncExp = [](Real x, Real p) 
+  auto shapeExp = [](Real x, Real p, Real dummy) 
   { 
     p = -p;  // We re-interpret the parameter here.
 
@@ -3981,7 +3983,7 @@ void sineSweepBassdrum()
     return (1 - exp(x*p)) / (1 - exp(p));
   };
 
-  auto shapeFuncLinFrac = [](Real x, Real p) 
+  auto shapeLinFrac = [](Real x, Real p, Real dummy) 
   { 
     // A linear fractional mapping with a parameter p in -inf..+inf where p = 0 is linear. Uses the
     // same parameter mapping as in rsFlatZapper.
@@ -3990,11 +3992,21 @@ void sineSweepBassdrum()
     return RAPT::rsRationalMap_01(x, a);
   };
 
+  // Combine a linfrac and an exp shape:
+  auto shapeLinFracExp = [&](Real x, Real p1, Real p2)
+  {
+    Real d = 0.0;                       // Dummy parameter
+    Real y = shapeLinFrac(x, p1, d);
+    Real z = shapeExp(    y, p2, d);
+    return z;
+  };
+
 
 
   // Select one of the above defined shape function to be used:
-  //auto shapeFunc = shapeFuncLinFrac;
-  auto shapeFunc = shapeFuncExp;
+  //auto shapeFunc = shapeLinFrac;
+  //auto shapeFunc = shapeExp;
+  auto shapeFunc = shapeLinFracExp;
 
 
   int  N = ceil(length * sampleRate);
@@ -4007,7 +4019,7 @@ void sineSweepBassdrum()
 
     // Compute instantaneous radian frequency w:
     Real pos = double(n) / double(N-1);  // Map 0..N-1 to 0..1
-    Real q   = shapeFunc(pos, param);
+    Real q   = shapeFunc(pos, param1, param2);
     f[n]     = RAPT::rsLinToLin(q, 0.0, 1.0, startFreq, endFreq);
     Real w   = 2*PI*f[n]/sampleRate;
 
@@ -4041,4 +4053,7 @@ void sineSweepBassdrum()
   //  requires to factor out the shapeFunc stuff. Maybe make a class rsUnitIntervalMapper that 
   //  provides different mapping curves. The parameter should have a similar meaning for the 
   //  different shapes. Available shapes should be: linFrac, exp, sinh, tanh, ...what else?
+  // -We can actually make a chain linfrac -> exp -> linfrac -> exp etc.
+  //  What about exp -> exp? Will that reduce to a single exp with different parameter? I don't
+  //  think so.
 }
