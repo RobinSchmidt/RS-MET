@@ -56,7 +56,7 @@ public:
 
   /** Sets the name (i.e. the relative path) of the current sample) - this function is only
   for conveniently handling preset management in a plugIn-context */
-  void setSampleName(char* newSampleName);
+  void setSampleName(const char* newSampleName);
 
   /** Time-reverses the waveform. */
   void setTimeReverse(bool shouldBeReversed);

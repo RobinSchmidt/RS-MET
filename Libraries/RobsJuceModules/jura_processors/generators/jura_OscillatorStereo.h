@@ -111,6 +111,9 @@ protected:
   /** Fills the array of automatable parameters. */
   virtual void createParameters();
 
+
+  virtual bool loadSampleIntoOsc(rosic::OscillatorStereo* osc, const String& relativePath);
+
   /** Called from the constructor to load the default waveform. */
   virtual void loadDefaultWaveform();
 
@@ -121,6 +124,7 @@ protected:
   rosic::MipMappedWaveTableStereo *waveTable = nullptr; 
   // only needed when the wrapped osc is owned - in this case, we also need an owned wavetable
 
+  juce::String samplePathRelative;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveOscModule)
 };

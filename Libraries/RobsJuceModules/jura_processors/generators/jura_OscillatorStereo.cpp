@@ -35,6 +35,10 @@ AudioModuleEditor* WaveOscModule::createEditor(int type)
 //-------------------------------------------------------------------------------------------------
 // state saving and recall:
 
+
+
+
+// These two functions are legacy code and shoudl go away:
 XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlElementToStartFrom)
 {
   // the XmlElement which stores all the releveant state-information:
@@ -50,15 +54,11 @@ XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlEle
     xmlState->setAttribute("AudioFileRelativePath", samplePath);
   return xmlState;
 }
-
 bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlState)
 {
   // this gets called multiple times on startup - why?
 
   bool success = false;
-
-
-
 
   // Temporarily switch off the automatic re-rendering of the mip-map, to avoid multiple renderings
   // (one for each parameter)...but that should probably be done in WaveOscModule::getStateAsXml.
@@ -127,8 +127,12 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
   return success;
 }
 
+
+
 XmlElement* WaveOscModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
+
+  // Old:
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
   if( wrappedOsc != nullptr ) // that should actually never be the case
     xmlState = oscillatorStereoStateToXml(wrappedOsc, xmlState);
@@ -138,6 +142,8 @@ XmlElement* WaveOscModule::getStateAsXml(const juce::String& stateName, bool mar
 void WaveOscModule::setStateFromXml(
   const XmlElement& xmlState, const juce::String& stateName, bool markAsClean)
 {
+
+  // Old:
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
   if( wrappedOsc != nullptr )
     oscillatorStereoStateFromXml(wrappedOsc, xmlState);
@@ -392,6 +398,47 @@ void WaveOscModule::createParameters()
   sp->setValueChangeCallback<WT>(wt, &WT::setEvenOddStereoPhaseShift);
   sp->setDefaultValues(defaultValues);
   addObservedParameter(sp);
+}
+
+bool WaveOscModule::loadSampleIntoOsc(OscillatorStereo* osc, const String& relativePath)
+{
+  bool success = false;
+
+  // Old presets were stored with backslashes - these don't work on mac unless we replace 
+  // the backslashes by forward slashes:
+  juce::String relPath = relativePath.replaceCharacter('\\', '/');
+  juce::String absPath = getSupportDirectory() + File::getSeparatorString() + relPath;
+
+  // Try to load the waveform from the file, in case of failure initialize as empty:
+  AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(absPath, true);
+  if( buffer != nullptr )
+  {
+    float* channelPointers[2];
+    channelPointers[0] = buffer->getWritePointer(0, 0);
+    if( buffer->getNumChannels() >= 2 )
+      channelPointers[1] = buffer->getWritePointer(1, 0);
+    else
+      channelPointers[1] = buffer->getWritePointer(0, 0);
+    osc->waveTable->setWaveform(channelPointers, buffer->getNumSamples() );
+    delete buffer;
+    osc->waveTable->setSampleName(relPath.toStdString().c_str()); // Redundant...
+    samplePathRelative = relPath;                                 // ...this line should be enough
+    success = true;
+  }
+  else
+  {
+    osc->waveTable->fillWithAllZeros();
+    osc->waveTable->setSampleName("");  // Redundant...
+    samplePathRelative = "";            // ...this line should be enough
+    success = false;
+  }
+
+  osc->waveTable->renderMipMap(); // Shouldn't this happen automatically?
+  return success;
+
+  // ToDo: 
+  // -Store the sample name only directly here. The core DSP class should not be concerned with 
+  //  this. The fact that we store the sample name there has only historical reasons.
 }
 
 void WaveOscModule::loadDefaultWaveform()

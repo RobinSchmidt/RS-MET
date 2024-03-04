@@ -109,7 +109,7 @@ void MipMappedWaveTableStereo::setWaveform(float** newWaveForm, int lengthInSamp
   mutex.unlock();
 }
 
-void MipMappedWaveTableStereo::setSampleName(char *newSampleName)
+void MipMappedWaveTableStereo::setSampleName(const char *newSampleName)
 {
   mutex.lock();
 
