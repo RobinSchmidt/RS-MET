@@ -560,6 +560,7 @@ void WaveOscEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged
   */
   sendChangeMessage();
 }
+// ToDo: Document why we send change messages. Who picks them up? What gets updated in response?
 
 void WaveOscEditorContextMenu::createWidgets()
 {
