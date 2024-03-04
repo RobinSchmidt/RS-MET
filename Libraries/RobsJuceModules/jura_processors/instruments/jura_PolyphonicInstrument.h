@@ -96,8 +96,10 @@ protected:
 
 //=================================================================================================
 
+// Why do we inherit from ChangeBroadcaster? Maybe we can get rid of that baseclass?
+
 class PolyphonicInstrumentEditor : public AudioModuleEditor, public ChangeBroadcaster, 
-  /*public RSliderListener,*/ public TuningFileManager
+  public TuningFileManager
 {
 
 public:
@@ -112,15 +114,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Sets the colours for the preset section widgets. */
-  //virtual void setPresetSectionColourScheme(const WidgetColourScheme& newColourScheme);
-
-  /** Sets the colours for the tuning section widgets. */
-  //virtual void setTuningSectionColourScheme(const WidgetColourScheme& newColourScheme);
-
-  /** Sets the text colour for the info field. */
-  virtual void setInfoFieldTextColour(const Colour newColour);
-
   /** Attaches this editor to the actual plugin which is to be edited. */
   virtual void setInstrumentToEdit(rosic::PolyphonicInstrument* newInstrumentToEdit);
 
@@ -128,10 +121,6 @@ public:
   // \name Callbacks
 
   virtual void rButtonClicked(RButton *buttonThatWasClicked);
-  //virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
-  //virtual void  rLabelTextChanged(RLabel *rLabelThatHasChanged);
-  //virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
-  //virtual void updateWidgetsAccordingToState();
   virtual void resized();
 
 protected:

@@ -114,52 +114,20 @@ PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugI
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-/*
-// Check if we need these - if not, get rid:
-void PolyphonicInstrumentEditor::setPresetSectionColourScheme(const WidgetColourScheme& newColourScheme)
+void PolyphonicInstrumentEditor::setInstrumentToEdit(rosic::PolyphonicInstrument* newInstrumentToEdit)
 {
-  //stateWidgetSet->setWidgetColourScheme(newColourScheme);
-}
-*/
-/*
-void PolyphonicInstrumentEditor::setTuningSectionColourScheme(const WidgetColourScheme& newColourScheme)
-{
-  tuningLabel->setColourScheme(newColourScheme);
-  tuningFileNameLabel->setColourScheme(newColourScheme);
-  tuningLoadButton->setColourScheme(newColourScheme);
-  tuningPlusButton->setColourScheme(newColourScheme);
-  tuningMinusButton->setColourScheme(newColourScheme);
-  // \todo: maybe create also a class TuningWidgetset
-}
-*/
-
-void PolyphonicInstrumentEditor::setInfoFieldTextColour(const Colour newColour)
-{
-  Colour tb = Colours::transparentBlack;
-
-  //WidgetColourScheme tmpColourScheme(tb, tb, tb, newColour, tb, tb);
-  WidgetColourScheme tmpColourScheme;  // preliminary
-
-  infoField->setColourScheme(tmpColourScheme);
+  ScopedLock scopedLock(*lock);
+  instrumentEngine = newInstrumentToEdit;
 }
 
 //-------------------------------------------------------------------------------------------------
-// widget callbacks:
+// callbacks:
 
 void PolyphonicInstrumentEditor::rButtonClicked(RButton *buttonThatWasClicked)
 {
   ScopedLock scopedLock(*lock);
   if( instrumentEngine == NULL )
     return;
-
- 
-  //// Obsolete:
-  //if( buttonThatWasClicked == glideButton )
-  //{
-  //  instrumentEngine->setGlideMode(glideButton->getToggleState());
-  //  moduleToEdit->markStateAsDirty();
-  //}
-
 
   if( buttonThatWasClicked == tuningLoadButton )
   {
@@ -185,62 +153,6 @@ void PolyphonicInstrumentEditor::rButtonClicked(RButton *buttonThatWasClicked)
     // it must have been an inherited button:
     AudioModuleEditor::rButtonClicked(buttonThatWasClicked);
   }
-}
-
-/*
-void PolyphonicInstrumentEditor::rSliderValueChanged(RSlider* sliderThatHasChanged)
-{
-  ScopedLock scopedLock(*lock);
-  if( instrumentEngine == NULL )
-    return;
-
-
-  //// Obsolete:
-  //if( sliderThatHasChanged == numVoicesSlider )
-  //{
-  //  instrumentEngine->setNumPlayableVoices( (int) numVoicesSlider->getValue() );
-  //  numVoicesSlider->setValue((double) instrumentEngine->getNumPlayableVoices());
-  //}
-
-
-  moduleToEdit->markStateAsDirty();
-}
-*/
-
-/*
-void PolyphonicInstrumentEditor::updateWidgetsAccordingToState()
-{
-  ScopedLock scopedLock(*lock);
-  if( instrumentEngine == NULL )
-    return;
-
-  AudioModuleEditor::updateWidgetsAccordingToState();
-
-  // update tuning widgets:
-  masterTuneSlider->setValue( instrumentEngine->getMasterTuneA4(),        false);
-  tuningFileNameLabel->setText(juce::String(instrumentEngine->tuningTable.getName()));
-
-  // update global widgets:
-  levelSlider->setValue(       instrumentEngine->getMasterLevel(),         false);
-  levelByKeySlider->setValue(  instrumentEngine->getVoiceLevelByKey(),     false);
-  levelByVelSlider->setValue(  instrumentEngine->getVoiceLevelByVel(),     false);
-  midSideRatioSlider->setValue(instrumentEngine->getMidSideRatio(),        false);
-  numVoicesSlider->setValue(   instrumentEngine->getNumPlayableVoices(),   false);
-  compSlider->setValue(        instrumentEngine->getMasterLevelByVoices(), false);
-  wheelRangeSlider->setValue(  instrumentEngine->getPitchWheelRange(),     false);
-  glideTimeSlider->setValue(   instrumentEngine->getGlideTime(),           false);
-  glideButton->setToggleState( instrumentEngine->isInGlideMode(),          false);
-
-  stateWidgetSet->stateFileNameLabel->setText(moduleToEdit->getStateNameWithStarIfDirty());
-  // maybe this call is redundant because it is also called in
-  // AudioModuleEditor::updateWidgetsAccordingToState();
-}
-*/
-
-void PolyphonicInstrumentEditor::setInstrumentToEdit(rosic::PolyphonicInstrument* newInstrumentToEdit)
-{
-  ScopedLock scopedLock(*lock);
-  instrumentEngine = newInstrumentToEdit;
 }
 
 void PolyphonicInstrumentEditor::resized()
@@ -331,24 +243,12 @@ void PolyphonicInstrumentEditor::createWidgets()
   midSideRatioSlider->setDescriptionField(infoField);
   midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
-
-  // New:
   addWidget( numVoicesSlider = new RSlider("NumVoicesSlider") );
   numVoicesSlider->assignParameter(moduleToEdit->getParameterByName("NumVoices") );
   numVoicesSlider->setSliderName("Voices");
   numVoicesSlider->setDescription("Maximum number of playing voices");
   numVoicesSlider->setDescriptionField(infoField);
   numVoicesSlider->setStringConversionFunction(&valueToString0);
-
-  // Old:
-  //addWidget( numVoicesSlider = new RSlider("NumVoicesSlider") );
-  //numVoicesSlider->setSliderName("Voices");
-  //numVoicesSlider->setDescription("Maximum number of playing voices");
-  //numVoicesSlider->addListener(this);
-  //numVoicesSlider->setDescriptionField(infoField);
-  //numVoicesSlider->setStringConversionFunction(&valueToString0);
-  //numVoicesSlider->setRange(0.0, 16.0, 1.0, 8.0);
-
 
   addWidget( compSlider = new RSlider("CompSlider") );
   compSlider->assignParameter(moduleToEdit->getParameterByName("MasterLevelByVoices") );
@@ -402,23 +302,10 @@ void PolyphonicInstrumentEditor::createWidgets()
   wheelRangeSlider->setDescriptionField(infoField);
   wheelRangeSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
-
-
-  // New:
   addWidget( glideButton = new RButton("Glide") );
   glideButton->assignParameter(moduleToEdit->getParameterByName("GlideSwitch"));
   glideButton->setDescription("Switch glide on/off");
   glideButton->setDescriptionField(infoField);
-
-  // Old:
-  //addWidget( glideButton = new RButton("Glide") );
-  //glideButton->addRButtonListener(this);
-  //glideButton->setDescription("Switch glide on/off");
-  //glideButton->setDescriptionField(infoField);
-  //glideButton->setClickingTogglesState(true);
-  //glideButton->setToggleState(false, false);
-
-
 
   addWidget( glideTimeSlider = new RSlider("GlideTimeSlider") );
   glideTimeSlider->assignParameter(moduleToEdit->getParameterByName("GlideTime") );
@@ -430,7 +317,5 @@ void PolyphonicInstrumentEditor::createWidgets()
   updateWidgetsAccordingToState(); // ToDo: Check, if this is needed and if so, document why
 
   // ToDo: 
-  // -The glideButton should be connected to the "Glide" parameter
   // -Maybe clean this up - see AciDevilModuleEditor::createWidgets()
-  // -In the unit test, filter for the orphaned buttons - we expect 3: tuningLoad, tuningPlus, tuningMinus
 }
