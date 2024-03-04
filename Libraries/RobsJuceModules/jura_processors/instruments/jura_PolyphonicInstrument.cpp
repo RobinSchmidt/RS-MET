@@ -31,6 +31,7 @@ void PolyphonicInstrumentAudioModule::parameterChanged(Parameter* parameterThatH
   ScopedLock scopedLock(*lock);
   AudioModuleWithMidiIn::parameterRangeChanged(parameterThatHasChanged);
 
+  /*
   if( underlyingRosicInstrument == NULL )
     return;
 
@@ -60,7 +61,7 @@ void PolyphonicInstrumentAudioModule::parameterChanged(Parameter* parameterThatH
     }
 
   } // end of switch( parameterIndex )
-
+  */
 }
 
 void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement& xmlState,
@@ -112,6 +113,7 @@ void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement &xmlState
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
+
 void PolyphonicInstrumentAudioModule::createParameters()
 {
   // Create the automatable parameters and add them to the list - note that the order of the adds
@@ -124,9 +126,7 @@ void PolyphonicInstrumentAudioModule::createParameters()
   // Update: I have modernized it all - the old code is still there in the comments but cna someday
   // be deleted for good
 
-
   ScopedLock scopedLock(*lock);
-
 
   //using Param = AutomatableParameter;
   using Param = jura::Parameter;
@@ -186,9 +186,6 @@ void PolyphonicInstrumentAudioModule::createParameters()
   p = new Param("PitchWheelRange", 0.0, 24.0, 12.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Inst>(inst, &Inst::setPitchWheelRange);
-
-
-
 
   // Make a call to setValue for each parameter in order to set up all the slave voices:
   //for(int i=0; i < (int) parameters.size(); i++ )
