@@ -21,31 +21,25 @@ that triggers and checks the buggy behavior programmatically and only *then* fix
 we build up our suite of unit tests along the way.
 
 
-- [5] WaveOscillator: when switching the waveform fom the gui, clsoing ToolChain and re-opening,
+- [V] WaveOscillator: when switching the waveform fom the gui, closing ToolChain and re-opening,
   it ends up with playing the sine wave. I think WaveOscEditor::setAudioData needs to be rewritten.
 
 - In jura_ToolChain.cpp at the bottom, there is a list of more bugs that affect the whole 
   ToolChain. -> Move this list to here. Try to reproduce the crashes in a unit test in TestAppJURA.
 
 - Straightliner: 
-  -[F] When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
+  -[V] When loading a ToolChain preset with Straightliner, the NumVoices parameter is not
    recalled. Try loading _TestRecallBugNumVoices. It was saved with NumVoices = 1 but is recalled 
    with NumVoices = 16. It seems like the setting wasn't saved to the xml file. Figure out why!
    The NumVoices parameter seems to be not recalled at all when loading a preset. 
-
-   Try implementing a unit test that: 
-   -Randomizes all parameters while remembering their new values
-   -Retrieves the state as xml
-   -Randomizes the parameters again
-   -Recalls the state from the xml
-   -Checks the recalled paramters against the remembered ones
-   -Retrieves the state again
-   -Compares the 2nd xml to the 1st
-   That unit test should expose the not recalled NumVoices parameter - and maybe more.
-
    OK - the problem seems to be jura::PolyphonicInstrumentAudioModule. It doesn't create a 
    NumVoices parameter. But how does the slider then affect the engine? Aha - via:
    PolyphonicInstrumentEditor::rSliderValueChanged
+
+  -[4] The preset doesn't include the Tuning. Maybe it should store the filename of the tuning file.
+   The PolyphonicInstrumentEditor is subclass of TuningFileManager. That is wrong! 
+   PolyphonicInstrumentAudioModule should have that responsibility and store the name of the tuning
+   file as part of the preset and reload it on recall.
 
   -[4] In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build 
    of standalone, there's no problem. -> Try a debug build of the plugin
@@ -70,7 +64,7 @@ we build up our suite of unit tests along the way.
     the window creation?
    -Try, if this also affects my own popup menus
 
-   [4] The preset doesn't include the Tuning. Maybe it should store the filename of the tuning file
+
 
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo

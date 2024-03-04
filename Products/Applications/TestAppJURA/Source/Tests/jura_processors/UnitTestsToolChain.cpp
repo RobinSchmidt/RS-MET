@@ -726,8 +726,17 @@ void UnitTestToolChain::runTestWaveOscillator()
 
 
 ToDo:
--Write a function  std::vector<RWidget*> getWidgetsWithoutParameter(AudioModuleEditor* ed);  and 
- use it to quickly check that there are nor unintenionally "orphaned" widgets in an editor.
+
+-Write a unit test that: 
+ -Randomizes all parameters while remembering their new values
+ -Retrieves the state as xml
+ -Randomizes the parameters again
+ -Recalls the state from the xml
+ -Checks the recalled paramters against the remembered ones
+ -Retrieves the state again
+ -Compares the 2nd xml to the 1st
+ That unit test should expose the not recalled NumVoices parameter - and maybe more.
+
 
 */
 
