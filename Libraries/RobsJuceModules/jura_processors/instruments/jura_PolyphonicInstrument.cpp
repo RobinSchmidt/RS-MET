@@ -151,12 +151,16 @@ void PolyphonicInstrumentEditor::rButtonClicked(RButton *buttonThatWasClicked)
   if( instrumentEngine == NULL )
     return;
 
-  if( buttonThatWasClicked == glideButton )
-  {
-    instrumentEngine->setGlideMode(glideButton->getToggleState());
-    moduleToEdit->markStateAsDirty();
-  }
-  else if( buttonThatWasClicked == tuningLoadButton )
+ 
+  //// Obsolete:
+  //if( buttonThatWasClicked == glideButton )
+  //{
+  //  instrumentEngine->setGlideMode(glideButton->getToggleState());
+  //  moduleToEdit->markStateAsDirty();
+  //}
+
+
+  if( buttonThatWasClicked == tuningLoadButton )
   {
     TuningFileManager::openLoadingDialog();
     TuningFileManager::loadTuningFromFile( TuningFileManager::getActiveFile() );
@@ -187,11 +191,16 @@ void PolyphonicInstrumentEditor::rSliderValueChanged(RSlider* sliderThatHasChang
   ScopedLock scopedLock(*lock);
   if( instrumentEngine == NULL )
     return;
-  if( sliderThatHasChanged == numVoicesSlider )
-  {
-    instrumentEngine->setNumPlayableVoices( (int) numVoicesSlider->getValue() );
-    numVoicesSlider->setValue((double) instrumentEngine->getNumPlayableVoices());
-  }
+
+
+  //// Obsolete:
+  //if( sliderThatHasChanged == numVoicesSlider )
+  //{
+  //  instrumentEngine->setNumPlayableVoices( (int) numVoicesSlider->getValue() );
+  //  numVoicesSlider->setValue((double) instrumentEngine->getNumPlayableVoices());
+  //}
+
+
   moduleToEdit->markStateAsDirty();
 }
 
@@ -388,12 +397,23 @@ void PolyphonicInstrumentEditor::createWidgets()
   wheelRangeSlider->setDescriptionField(infoField);
   wheelRangeSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
+
+
+  // New:
   addWidget( glideButton = new RButton("Glide") );
-  glideButton->addRButtonListener(this);
+  glideButton->assignParameter(moduleToEdit->getParameterByName("GlideSwitch"));
   glideButton->setDescription("Switch glide on/off");
   glideButton->setDescriptionField(infoField);
-  glideButton->setClickingTogglesState(true);
-  glideButton->setToggleState(false, false);
+
+  // Old:
+  //addWidget( glideButton = new RButton("Glide") );
+  //glideButton->addRButtonListener(this);
+  //glideButton->setDescription("Switch glide on/off");
+  //glideButton->setDescriptionField(infoField);
+  //glideButton->setClickingTogglesState(true);
+  //glideButton->setToggleState(false, false);
+
+
 
   addWidget( glideTimeSlider = new RSlider("GlideTimeSlider") );
   glideTimeSlider->assignParameter(moduleToEdit->getParameterByName("GlideTime") );
