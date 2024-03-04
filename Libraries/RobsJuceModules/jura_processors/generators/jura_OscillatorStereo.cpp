@@ -16,6 +16,7 @@ WaveOscModule::WaveOscModule(CriticalSection *newPlugInLock,
   //setModuleTypeName("OscillatorStereo"); // old name
   setModuleTypeName("WaveOscillator");
   createParameters();
+  loadDefaultWaveform();
 }
 
 WaveOscModule::~WaveOscModule()
@@ -56,8 +57,11 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
 
   bool success = false;
 
+
+
+
   // Temporarily switch off the automatic re-rendering of the mip-map, to avoid multiple renderings
-  // (one for each parameter)...but that should probaly be done in WaveOscModule::getStateAsXml.
+  // (one for each parameter)...but that should probably be done in WaveOscModule::getStateAsXml.
   // Doing it here worked in the legacy code:
   bool oldAutoReRenderState = osc->waveTable->isMipMapAutoReRenderingActive();
   osc->waveTable->setAutomaticMipMapReRendering(false);
@@ -76,8 +80,18 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
   relativePath = relativePath.replaceCharacter('\\', '/');
   absolutePath = absolutePath.replaceCharacter('\\', '/');
 
+
+  //juce::File audioFile(absolutePath);
+  //if( !audioFile.existsAsFile() )
+  //  return false;
+  // ...Nope! That bypasses the warning message box triggered in 
+  // AudioFileManager::createAudioSampleBufferFromFile when the file couldn't be loaded. But we 
+  // want to see that warning! It's important to alert the user when waveform loading goes wrong.
+  // Just silently skipping it is not acceptable.
+
+
   AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(absolutePath, true);
-  if( buffer != NULL )
+  if( buffer != nullptr )
   {
     // pass the actual audio data:
     float* channelPointers[2];
@@ -378,6 +392,11 @@ void WaveOscModule::createParameters()
   sp->setValueChangeCallback<WT>(wt, &WT::setEvenOddStereoPhaseShift);
   sp->setDefaultValues(defaultValues);
   addObservedParameter(sp);
+}
+
+void WaveOscModule::loadDefaultWaveform()
+{
+  RAPT::rsError("Not yet implemented");
 }
 
 //=================================================================================================
