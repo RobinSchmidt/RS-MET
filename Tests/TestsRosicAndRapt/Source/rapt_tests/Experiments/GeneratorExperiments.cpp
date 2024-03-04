@@ -4001,12 +4001,21 @@ void sineSweepBassdrum()
     return z;
   };
 
+  auto shapeExpLinFrac = [&](Real x, Real p1, Real p2)
+  {
+    Real d = 0.0;                       // Dummy parameter
+    Real y = shapeExp(    x, p1, d);
+    Real z = shapeLinFrac(y, p2, d);
+    return z;
+  };
+
 
 
   // Select one of the above defined shape function to be used:
   //auto shapeFunc = shapeLinFrac;
   //auto shapeFunc = shapeExp;
-  auto shapeFunc = shapeLinFracExp;
+  //auto shapeFunc = shapeLinFracExp;
+  auto shapeFunc = shapeExpLinFrac;
 
 
   int  N = ceil(length * sampleRate);
@@ -4041,6 +4050,12 @@ void sineSweepBassdrum()
   // -The shapeFuncLinFrac gets into bassdrum territory for param values around 7 when 
   //  starFreq = 8000. With lower starFreq, we can use lower values for param, too. For example,
   //  1000/5 kinda works, too. It doesn't sound very good, though.
+  // -Combining linfrac with exp or vice versa with both params around 4 also leads to sounds in
+  //  kick territory - but the result sound really bad.
+  //
+  // Conclusions:
+  // -Trying to use simple functions for the frequency envelope does not yet give good results. The
+  //  exact shape of the freq env is super important and not so easy to get right.
   //
   // ToDo:
   // -Try an exponential mapping like in the env-gen of the sampler.
