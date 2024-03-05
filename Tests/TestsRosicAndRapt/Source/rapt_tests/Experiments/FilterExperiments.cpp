@@ -1221,13 +1221,14 @@ void engineersFilterFreqResps()
 
 void engineersFilterFreqRespsMeasured()
 {
-  // Under construction
+  // Under construction - stub at the moment
 
   // Here, we actually measure the frequency response by feeding an impulse into EngineersFilter 
   // and doing an FFT on the impulse response. The computed freq responses turned out to be 
-  // inaccurate for certain settings and thereby hide severe problems. This mostly affects bandpass
-  // and bandreject filters with high order (20) and wide bandwidth (>= 6 octaves). Affected are 
-  // Halpern, Papoulis and Chebychev-1 filters.
+  // inaccurate for certain settings and thereby hide severe problems leading to botched frequency 
+  // responses and maybe even instability. This mostly affects bandpass and bandreject filters with
+  // high order (20) and wide bandwidth (>= 6 octaves). Most affected are Halpern, Papoulis and 
+  // Chebychev-1 filters.
 
   // For convenience:
   using EF     = rsEngineersFilter<double, double>;
