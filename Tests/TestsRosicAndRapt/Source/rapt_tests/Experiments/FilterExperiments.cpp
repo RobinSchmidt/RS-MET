@@ -1247,15 +1247,20 @@ void engineersFilterFreqRespsMeasured()
   Method method = Method::HALPERN;
 
 
+  // ...tbc...
 
 
-
-
-
-
-
-  
   int dummy = 0;
+
+  // Conclusions:
+  // -The fact that also Chebychev-1 filters are affected may mean that the polynomial root finder
+  //  is not the culprit (Chebychev desings use analytic formulas for the poles and zeros).
+  // -Maybe it's the LP -> BP transform. But then it should affect also peaking filters - which 
+  //  doesn't seem to be the case either. 
+  //
+  // ToDo:
+  // -Try a different implementaion structure (SVF, etc. - maybe a cascade of complex 1-poles might
+  //  be of interest as well for testing - not in practice, though)
 }
 
 void firstOrderFilters()
