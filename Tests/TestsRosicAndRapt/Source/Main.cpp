@@ -165,8 +165,9 @@ int main(int argc, char* argv[])
   //biquadTail();
   //brickwallAndAllpass();         // stub
   //complementaryFiltersIIR();
-  //engineersFilterRingResp();   // ringing response (experimental idea)
+  //engineersFilterRingResp();         // ringing response (experimental idea)
   //engineersFilterFreqResps();
+  engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
@@ -238,7 +239,7 @@ int main(int argc, char* argv[])
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
   //flatZapper();
-  sineSweepBassdrum();
+  //sineSweepBassdrum();
 
   // Modulators:
   //attackDecayEnvelope();

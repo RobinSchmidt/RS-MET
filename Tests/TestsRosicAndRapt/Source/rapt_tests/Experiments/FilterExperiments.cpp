@@ -1219,6 +1219,44 @@ void engineersFilterFreqResps()
   int dummy = 0;
 }
 
+void engineersFilterFreqRespsMeasured()
+{
+  // Under construction
+
+  // Here, we actually measure the frequency response by feeding an impulse into EngineersFilter 
+  // and doing an FFT on the impulse response. The computed freq responses turned out to be 
+  // inaccurate for certain settings and thereby hide severe problems. This mostly affects bandpass
+  // and bandreject filters with high order (20) and wide bandwidth (>= 6 octaves). Affected are 
+  // Halpern, Papoulis and Chebychev-1 filters.
+
+  // For convenience:
+  using EF     = rsEngineersFilter<double, double>;
+  using PTD    = rsPrototypeDesigner<double>;
+  using IIRD   = rsInfiniteImpulseResponseDesigner<double>;
+  using Method = PTD::approximationMethods;
+  using Mode   = IIRD::modes;
+
+  // Setup:
+  int    N      = 16384;             // Maybe try 32768, 65536 as well
+  int    smpRt  = 48000;             // Sample rate in Hz
+  int    freq   = 1000;              // Center or cutoff frequency in Hz
+  int    bwOct  = 6;                 // Bandwidth in octaves
+  int    order  = 20;                // Filter prototype order
+  Mode   mode   = Mode::BANDPASS;
+  Method method = Method::HALPERN;
+
+
+
+
+
+
+
+
+
+  
+  int dummy = 0;
+}
+
 void firstOrderFilters()
 {
   typedef rsOnePoleFilter<double, double> FLT;

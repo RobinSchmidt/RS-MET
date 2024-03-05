@@ -22,6 +22,11 @@ plotting functions wil actually invoke the plotter in this project. */
 // cpp file?
 
 
+// We need better colors - see getGraphColors and plotFrequencyResponses in FilterPlotter<T> for a 
+// possible implementation. The code to compute the colors should go into the GNUPlotter class. It 
+// uses rsColor<T>::hsl2hex. That function is something wee need also in GNUPlotter
+
+
 #include "GNUPlotter.h"
 
 template<class T>

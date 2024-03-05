@@ -482,8 +482,8 @@ std::vector<std::string> FilterPlotter<T>::getGraphColors(int numGraphs) const
   char hex[7];
   std::vector<Str> hexColors;
   //T L  = T(0.3);   // lightness
-  T L  = T(0.5);   // lightness, 0.3 is good for light mode, 
-  T S  = T(0.75);  // saturation
+  T L  = T(0.7);   // lightness, 0.3 is good for light mode, 
+  T S  = T(0.5);   // saturation
   T H0 = T(0.0);   // start hue (0.0: red)
   for(int i = 0; i < numGraphs; i++)
   {

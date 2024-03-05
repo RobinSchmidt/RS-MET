@@ -29,7 +29,13 @@ we build up our suite of unit tests along the way.
   -[4] The preset doesn't include the Tuning. Maybe it should store the filename of the tuning file.
    The PolyphonicInstrumentEditor is subclass of TuningFileManager. That is wrong! 
    PolyphonicInstrumentAudioModule should have that responsibility and store the name of the tuning
-   file as part of the preset and reload it on recall.
+   file as part of the preset and reload it on recall. Perhaps it's best to remove the Tuning 
+   functionality from Straightliner and moe it into ToolChain. The infrastructure for that should 
+   perhaps be to just augment all noteOn calls with an additional double noteFreq parameter. Then 
+   we can do the key -> freq conversion in one central place in ToolChain and all modules will 
+   receive the frequency in their noteOn calls, so we don't need much additional infrastructure to 
+   support it. The tuning file in ToolChain could be integrated into a midi section together with
+   tempo, keyboard, modwheel maybe performance parameters.
 
   -[4] In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build 
    of standalone, there's no problem. -> Try a debug build of the plugin
@@ -93,8 +99,13 @@ we build up our suite of unit tests along the way.
 - [4] EngineersFilter: The frequency responses measured by EqualizerAPO look not exactly like they 
   should. There is some error going on in the stopband range - maybe numerical roundoff? 
   Increasing the FFT resolution doesn't help, so it's not a truncation issue. High order (20)
-  Halpern bandpass with large bandwidth (around 7) is especially crazy. freq = 1000. It seems to be
-  real - it's audible. It affects Papoulis and Chebychev, too. For bandreject, it's even worse.
+  Halpern bandpass with large bandwidth (around 6-7) is especially crazy. freq = 1000. It seems to 
+  be real - it's audible. It affects Papoulis and Chebychev, too. For bandreject, it's even worse.
+  Maybe it has to do with the precision of the polynomial root finder? But that wouldn't explain 
+  why Chebychev filters are also affected. It affects only bandpass and bandreject - peak is not
+  affectd. That's strange because peak/dip also uses the LP -> BP transform. Maybe try different
+  implementation structures, e.g. SVF. It is strange that the effect is not reflected in the
+  frequency response plot - it uses the actual filter coeffs, too.
 
 - [1] WaveOscillator: Initially when not yet any file was loaded manually, the first click on the 
   "Next" button loads the first file in the current directory instead of the next one according to 
