@@ -1217,15 +1217,6 @@ void engineersFilterFreqResps()
 
   plt.plotFrequencyResponses(numFreqs, 20.0, fs/2, true);
   //plt.plotFrequencyResponses(numFreqs, 20.0, fs/2, true, true, true, false);
-
-  // Observations:
-  // -the colors need to be adjusted
-  //
-  // ToDo:
-  // -Plot Halpern vs Papoulis, Butterworth vs Chebychev-2, Elliptic vs Cheby1 vs Cheby2, 
-  //  Gauss vs Bessel
-
-  int dummy = 0;
 }
 
 void engineersFilterFreqRespsMeasured()
@@ -1354,21 +1345,56 @@ void engineersFilterMethodsComparison()
   flt.setMode(mode);
 
   // Create and set up the plotter object:
-  FilterPlotter<Real> plt;
+
   //plt.setLogScale("x", 2.0, true);
 
   // Compare Papoulis and Halpern filters. Of interest is the steepness at the cutoff frequency and
-  // the tail/asymptotic steepness and how that relates to the ringing of the filters. I observed 
-  // that Halpern filters ring significantly less than Papoulis filters while being similar in 
-  // terms of overall frequency response. That has presumably to do with the steepness at the 
-  // cutoff frequency. 
+  // the tail/asymptotic steepness and how that relates to the ringing of the filters.
+  FilterPlotter<Real> plt1;
   flt.setApproximationMethod(Method::HALPERN);
-  addFilterToPlotter(flt, plt);
+  addFilterToPlotter(flt, plt1);
   flt.setApproximationMethod(Method::PAPOULIS);
-  addFilterToPlotter(flt, plt);
-  plt.plotFrequencyResponses(numFreqs, 20.0, smpRt/2, true);
+  addFilterToPlotter(flt, plt1);
+  plt1.plotFrequencyResponses(numFreqs, 20.0, smpRt/2, true);
+  // I observed in ToolChain that Halpern filters ring significantly less than Papoulis filters 
+  // while being similar in terms of overall frequency response. That has presumably to do with the 
+  // steepness at the cutoff frequency. The magnitude response plot clearly show that difference.
+  // We also see that the Halpern filter also shows mor attenuation in the passband and a slightly
+  // improved rejection of the stopband.
+  // ToDo: plot impulse-, step- and ringing-responses of both.
 
 
+  // Compare Butterworth and Chebychev-2 filters. Of interest is the flatness in the passband:
+  FilterPlotter<Real> plt2;
+  flt.setApproximationMethod(Method::BUTTERWORTH);
+  addFilterToPlotter(flt, plt2);
+  flt.setApproximationMethod(Method::INVERSE_CHEBYCHEV);
+  addFilterToPlotter(flt, plt2);
+  plt2.plotFrequencyResponses(numFreqs, 20.0, smpRt/2, true);
+  //
+  //
+  // The phase unwrapping seems to not work correctly for the Chebychev-2 filter
+
+  // ...tbc...
+
+
+  // Compare ellptic with Chebychev-1 and Chebychev-2 filters. Cheby-1 and 2 filters have ripples 
+  // in the passband and stopbadn respectively. Elliptic filters have ripples in both...
+  // ...tbc...
+
+
+  // Compare Gauss and Bessel filters. Both types of filters have very good time domain 
+  // characteristics (i.e. waveshape preservation, no ringing). How do they compare frequency 
+  // response wise with respect to flatness, steepness, etc.
+
+
+
+
+
+  //
+  // ToDo:
+  // -Plot Halpern vs Papoulis, , Elliptic vs Cheby1 vs Cheby2, 
+  //  Gauss vs Bessel
 }
 
 void firstOrderFilters()
