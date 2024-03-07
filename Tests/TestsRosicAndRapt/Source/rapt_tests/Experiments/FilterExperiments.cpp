@@ -1332,10 +1332,10 @@ void engineersFilterMethodsComparison()
 
   // Common setup:
   int  smpRt    = 48000;             // Sample rate in Hz
-  int  freq     = 2000;              // Center or cutoff frequency in Hz
+  int  freq     = 1000;              // Center or cutoff frequency in Hz
   int  order    = 10;                // Filter prototype order
   Mode mode     = Mode::LOWPASS;
-  int  numFreqs = 1000;
+  int  numFreqs = 2000;
 
   // Create and set up the filter object:
   EF flt;
@@ -1387,12 +1387,22 @@ void engineersFilterMethodsComparison()
   // And/or maybe the algo also needs the mag-response to look at to conditionally use another rule
   // whenever the magnitude is (close to) zero.
 
-  // ...tbc...
+
+
 
 
   // Compare ellptic with Chebychev-1 and Chebychev-2 filters. Cheby-1 and 2 filters have ripples 
   // in the passband and stopbadn respectively. Elliptic filters have ripples in both...
   // ...tbc...
+  FilterPlotter<Real> plt3;
+  flt.setApproximationMethod(Method::ELLIPTIC);
+  addFilterToPlotter(flt, plt3);
+  flt.setApproximationMethod(Method::CHEBYCHEV);
+  addFilterToPlotter(flt, plt3);
+  flt.setApproximationMethod(Method::INVERSE_CHEBYCHEV);
+  addFilterToPlotter(flt, plt3);
+  plt3.plotFrequencyResponses(numFreqs, 20.0, smpRt/2, true);
+
 
 
   // Compare Gauss and Bessel filters. Both types of filters have very good time domain 
@@ -1405,8 +1415,8 @@ void engineersFilterMethodsComparison()
 
   //
   // ToDo:
-  // -Plot Halpern vs Papoulis, , Elliptic vs Cheby1 vs Cheby2, 
-  //  Gauss vs Bessel
+  // -Check if the freq-axis is scaled correctly. Looks like the cutoff is not where it's supposed
+  //  to be. Maybe the sample-rate in the plotter is set up wrongly?
 }
 
 void firstOrderFilters()
