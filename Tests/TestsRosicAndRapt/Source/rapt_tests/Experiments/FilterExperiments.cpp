@@ -1332,7 +1332,7 @@ void engineersFilterMethodsComparison()
 
   // Common setup:
   int  smpRt    = 48000;             // Sample rate in Hz
-  int  freq     = 1000;              // Center or cutoff frequency in Hz
+  int  freq     = 2000;              // Center or cutoff frequency in Hz
   int  order    = 10;                // Filter prototype order
   Mode mode     = Mode::LOWPASS;
   int  numFreqs = 1000;
@@ -1371,9 +1371,21 @@ void engineersFilterMethodsComparison()
   flt.setApproximationMethod(Method::INVERSE_CHEBYCHEV);
   addFilterToPlotter(flt, plt2);
   plt2.plotFrequencyResponses(numFreqs, 20.0, smpRt/2, true);
+  // The Chebychev-2 filter is even flatter than the Butterworth filter. The magnitude stays close
+  // to 0 dB for a bit further to the right. The phase response does also not drop off as quickly,
+  // i.e. the phase in the passband is not delayed as much as in the Butterworth filter. I'm 
+  // inclined to conclude that in most practical scenarios where we use a chain of biquads that
+  // implement zeros anyway, it would make more sense to put these zeros to use by using a Cheby-2
+  // design rather than an (allpole-prototype) Butterworth design. the difference between Butter
+  // and Cheby is more apparent for higher orders. Overall, Cheby-2 is a quite good choice in many
+  // situations where a steep, passband-ripple-free freq-response is desired. Using Butter seems to
+  // forgo some potential.
   //
-  //
-  // The phase unwrapping seems to not work correctly for the Chebychev-2 filter
+  // The phase unwrapping seems to not work correctly for the Chebychev-2 filter. Maybe it's at the
+  // places where the magnitude response goes through zero where the phase unwrapping algo fails?
+  // Maybe we need to look at two left neighbours rather than just one in the unwrapping algo. 
+  // And/or maybe the algo also needs the mag-response to look at to conditionally use another rule
+  // whenever the magnitude is (close to) zero.
 
   // ...tbc...
 
