@@ -1402,7 +1402,8 @@ void engineersFilterMethodsComparison()
   flt.setApproximationMethod(Method::INVERSE_CHEBYCHEV);
   addFilterToPlotter(flt, plt3);
   plt3.plotFrequencyResponses(numFreqs, 20.0, smpRt/2, true);
-
+  // The ripples (both tpyes, passband and stopband) of the elliptic filter are more squished 
+  // toward the cutoff frequency.
 
 
   // Compare Gauss and Bessel filters. Both types of filters have very good time domain 
