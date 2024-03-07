@@ -166,8 +166,9 @@ int main(int argc, char* argv[])
   //brickwallAndAllpass();         // stub
   //complementaryFiltersIIR();
   //engineersFilterRingResp();         // ringing response (experimental idea)
-  //engineersFilterFreqResps();
-  engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
+  engineersFilterFreqResps();
+  //engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
+  //engineersFilterMethodsComparison();
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();

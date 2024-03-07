@@ -1192,6 +1192,7 @@ void engineersFilterFreqResps()
   flt.setFrequency(fc);
   flt.setMode(IIRD::LOWPASS);
 
+  // Factor out a addFilterToPlotter(flt, plt) method
   FilterPlotter<double> plt;
   double *a1, *a2, *b0, *b1, *b2;
   a1 = flt.getAddressA1();
@@ -1206,12 +1207,10 @@ void engineersFilterFreqResps()
     ZPK zpk = sos2zpk(b0, b1, b2, a1, a2, flt.getNumStages());
     zpk.sampleRate = fs;
     plt.addFilterSpecificationZPK(zpk);
-    int dummy = 0;
   }
 
   plt.plotFrequencyResponses(numFreqs, 20.0, fs/2, true);
   //plt.plotFrequencyResponses(numFreqs, 20.0, fs/2, true, true, true, false);
-
 
   // Observations:
   // -the colors need to be adjusted
@@ -1318,6 +1317,47 @@ void engineersFilterFreqRespsMeasured()
   //  https://web.mit.edu/tabbott/Public/quaddouble-debian/qd-2.3.4-old/docs/qd.pdf
   //  https://github.com/scibuilder/QD
   //  https://www.codeproject.com/Articles/884606/The-double-double-type
+}
+
+void engineersFilterMethodsComparison()
+{
+  // We compare the features of different filter design methods in frequency response plots.
+
+  // For convenience:
+  using Real   = double;
+  using EF     = rsEngineersFilter<Real, Real>;
+  using PTD    = rsPrototypeDesigner<Real>;
+  using IIRD   = rsInfiniteImpulseResponseDesigner<Real>;
+  using Method = PTD::approximationMethods;
+  using Mode   = IIRD::modes;
+  using Vec    = std::vector<Real>;
+
+
+  // Common setup:
+  int  smpRt = 48000;             // Sample rate in Hz
+  int  freq  = 1000;              // Center or cutoff frequency in Hz
+  int  order = 10;                // Filter prototype order
+  Mode mode  = Mode::LOWPASS;
+
+  // Create and set up the filter object:
+  EF flt;
+  flt.setSampleRate(smpRt);
+  flt.setFrequency(freq);
+  flt.setPrototypeOrder(order);
+  flt.setMode(mode);
+
+
+
+  // Compare Papoulis and Halpern filters. Of interest is the steepness at the cutoff frequency and
+  // the tail/asymptotic steepness and how that relates to the ringing of the filters. I observed 
+  // that Halpern filters ring significantly less than Papoulis filters while being similar in 
+  // terms of overall frequency response. That has presumably to do with the steepness at the 
+  // cutoff frequency. 
+
+  flt.setApproximationMethod(Method::HALPERN);
+
+
+
 }
 
 void firstOrderFilters()

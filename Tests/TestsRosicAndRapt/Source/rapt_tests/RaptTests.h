@@ -19,6 +19,7 @@ void firstOrderFilters();
 void engineersFilterRingResp();
 void engineersFilterFreqResps();
 void engineersFilterFreqRespsMeasured();
+void engineersFilterMethodsComparison();
 void ladderResonanceManipulation();
 // insert movingAverage here
 void nonUniformMovingAverage();
