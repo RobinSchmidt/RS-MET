@@ -1393,7 +1393,6 @@ void engineersFilterMethodsComparison()
 
   // Compare ellptic with Chebychev-1 and Chebychev-2 filters. Cheby-1 and 2 filters have ripples 
   // in the passband and stopbadn respectively. Elliptic filters have ripples in both...
-  // ...tbc...
   FilterPlotter<Real> plt3;
   flt.setApproximationMethod(Method::ELLIPTIC);
   addFilterToPlotter(flt, plt3);
@@ -1410,9 +1409,14 @@ void engineersFilterMethodsComparison()
   // Compare Gauss and Bessel filters. Both types of filters have very good time domain 
   // characteristics (i.e. waveshape preservation, no ringing). How do they compare frequency 
   // response wise with respect to flatness, steepness, etc.
-
-
-
+  FilterPlotter<Real> plt4;
+  flt.setApproximationMethod(Method::BESSEL);
+  addFilterToPlotter(flt, plt4);
+  flt.setApproximationMethod(Method::GAUSSIAN);
+  addFilterToPlotter(flt, plt4);
+  plt4.plotFrequencyResponses(numFreqs, 20.0, smpRt/2, true);
+  // They are very similar. Bessel has a slightly better passband response because it doesn't drop
+  // off as much in the higher passband.
 
 
   //
