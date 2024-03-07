@@ -1215,6 +1215,10 @@ void engineersFilterFreqResps()
 
   // Observations:
   // -the colors need to be adjusted
+  //
+  // ToDo:
+  // -Plot Halpern vs Papoulis, Butterworth vs Chebychev-2, Elliptic vs Cheby1 vs Cheby2, 
+  //  Gauss vs Bessel
 
   int dummy = 0;
 }
@@ -1231,36 +1235,89 @@ void engineersFilterFreqRespsMeasured()
   // Chebychev-1 filters.
 
   // For convenience:
-  using EF     = rsEngineersFilter<double, double>;
-  using PTD    = rsPrototypeDesigner<double>;
-  using IIRD   = rsInfiniteImpulseResponseDesigner<double>;
+  using Real   = double;
+  using EF     = rsEngineersFilter<Real, Real>;
+  using PTD    = rsPrototypeDesigner<Real>;
+  using IIRD   = rsInfiniteImpulseResponseDesigner<Real>;
   using Method = PTD::approximationMethods;
   using Mode   = IIRD::modes;
+  using Vec    = std::vector<Real>;
 
   // Setup:
-  int    N      = 16384;             // Maybe try 32768, 65536 as well
+  int    N      = 65536;             // Maybe try 32768, 65536 as well
   int    smpRt  = 48000;             // Sample rate in Hz
   int    freq   = 1000;              // Center or cutoff frequency in Hz
   int    bwOct  = 6;                 // Bandwidth in octaves
-  int    order  = 20;                // Filter prototype order
+  int    order  = 10;                // Filter prototype order
   Mode   mode   = Mode::BANDPASS;
   Method method = Method::HALPERN;
 
+  // Create and set up the filter object:
+  EF flt;
+  flt.setSampleRate(smpRt);
+  flt.setFrequency(freq);
+  flt.setBandwidth(bwOct);
+  flt.setPrototypeOrder(order);
+  flt.setMode(mode);
+  flt.setApproximationMethod(method);
 
-  // ...tbc...
+  // Record the impulse responses of DF1 and DF2 impementations:
+  Vec h1(N), h2(N);
+  h1[0] = flt.getSampleDirect1(1.0);
+  for(int n = 1; n < N; n++)
+    h1[n] = flt.getSampleDirect1(0.0);
+  flt.reset();
+  h2[0] = flt.getSampleDirect2(1.0);
+  for(int n = 1; n < N; n++)
+    h2[n] = flt.getSampleDirect2(0.0);
+  //rsPlotVectors(h1, h2);  // To inspect, if it has rung out sufficiently
+  //rsPlotVectors(h1); 
+  //rsPlotVectors(h2); 
+  //rsPlotVector(h2-h1);      // Difference between DF2 and DF1
+
+  // Create and set up the plotter and plot the measured magnitude response:
+  SpectrumPlotter<Real> plt;
+  plt.setSampleRate(smpRt);
+  plt.setFftSize(N);
+  plt.setLogFreqAxis(true);
+  plt.setFloorLevel(-120);
+  plt.setNormalizationMode(SpectrumPlotter<Real>::NormalizationMode::impulse);
+  plt.plotSpectra(N, &h1[0], &h2[0]);
 
 
   int dummy = 0;
 
+  // Observations:
+  // -With freq = 1000, bwOct = 6, order = 20, mode = bandpass, method = halpern, we can clearly 
+  //  see the problem: Near the lower bandedge, there's a weird resonance.
+  // -h2 (using DF2) is much quiter than h1 (using DF1). Both have this weird resonance near the 
+  //  lower cutoff, but with DF1, it's more pronounced.
+  // -With Real = float (rather than double), it breaks down already for 10th order (or maybe 
+  //  less).
+  //
   // Conclusions:
   // -The fact that also Chebychev-1 filters are affected may mean that the polynomial root finder
   //  is not the culprit (Chebychev desings use analytic formulas for the poles and zeros).
   // -Maybe it's the LP -> BP transform. But then it should affect also peaking filters - which 
-  //  doesn't seem to be the case either. 
+  //  doesn't seem to be the case either.
+  // -Even though both DF1 and DF2 use the exact same coeffs, the responses are very different. The
+  //  same doeffs are also used for computing the freq responses in the plots in EngineersFilter in
+  //  ToolChain and these plots look actually fine.
   //
   // ToDo:
   // -Try a different implementaion structure (SVF, etc. - maybe a cascade of complex 1-poles might
-  //  be of interest as well for testing - not in practice, though)
+  //  be of interest as well for testing - not in practice, though). If it works well, try to 
+  //  bypass the step of computing biquad coeffs and try to compute SVF coeffs directly from the 
+  //  poles and zeros. And/or use a state-vector filter implementation. The coefficient computation
+  //  from the poles and zeros should be straighforward for this implementation.
+  // -Plot the measured and the computed magnitude response in one plot.
+  // -look into "double-double" arithmetic - a way to to (kind of) quad-precsion arithmetic using a
+  //  pair of doubles. It's more efficient than general arbitrary precision arithmetic so it might
+  //  be a reasonable compromise:
+  //  https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format#Double-double_arithmetic
+  //  https://web.mit.edu/tabbott/Public/quaddouble-debian/qd-2.3.4-old/docs/qd.pdf
+  //  https://github.com/scibuilder/QD
+  //  https://www.codeproject.com/Articles/884606/The-double-double-type
 }
 
 void firstOrderFilters()
