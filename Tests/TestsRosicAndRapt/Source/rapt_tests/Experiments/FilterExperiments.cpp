@@ -1169,6 +1169,21 @@ void engineersFilterRingResp()
   //  anti-aliasing filters in downsampling.
 }
 
+
+// Move somewhere else:
+template<class T>
+void addFilterToPlotter(const rsEngineersFilter<T, T>& flt, FilterPlotter<T>& plt)
+{
+  T* a1 = flt.getAddressA1();
+  T* a2 = flt.getAddressA2();
+  T* b0 = flt.getAddressB0();
+  T* b1 = flt.getAddressB1();
+  T* b2 = flt.getAddressB2();
+  rsFilterSpecificationZPK<T> zpk = sos2zpk(b0, b1, b2, a1, a2, flt.getNumStages());
+  zpk.sampleRate = flt.getSampleRate();
+  plt.addFilterSpecificationZPK(zpk);
+}
+
 void engineersFilterFreqResps()
 {
   // We plot frequency responses of engineer's filter for various orders. The main aim is actually
@@ -1192,8 +1207,11 @@ void engineersFilterFreqResps()
   flt.setFrequency(fc);
   flt.setMode(IIRD::LOWPASS);
 
-  // Factor out a addFilterToPlotter(flt, plt) method
+
   FilterPlotter<double> plt;
+
+  /*
+  // Factor out a addFilterToPlotter(flt, plt) method
   double *a1, *a2, *b0, *b1, *b2;
   a1 = flt.getAddressA1();
   a2 = flt.getAddressA2();
@@ -1207,6 +1225,14 @@ void engineersFilterFreqResps()
     ZPK zpk = sos2zpk(b0, b1, b2, a1, a2, flt.getNumStages());
     zpk.sampleRate = fs;
     plt.addFilterSpecificationZPK(zpk);
+  }
+  */
+
+  for(int i = 0; i < numOrders; i++)
+  {
+    int order = minOrder + i*orderInc;
+    flt.setPrototypeOrder(order);
+    addFilterToPlotter(flt, plt);
   }
 
   plt.plotFrequencyResponses(numFreqs, 20.0, fs/2, true);

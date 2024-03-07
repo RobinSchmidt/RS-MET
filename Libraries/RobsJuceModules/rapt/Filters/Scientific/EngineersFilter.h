@@ -76,6 +76,10 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
+  // ToDo: make all of them const-correct!
+
+  /** Returns the sample rate at which this filter operates. */
+  TPar getSampleRate() const { return sampleRate; }
 
   /** Returns the approximation method to be used
   @see enum PrototypeDesigner::approximationMethods. */
@@ -102,6 +106,8 @@ public:
   several biquad-cascades in series. */
   void getMagnitudeResponse(TPar* frequencies, TPar* magnitudes, int numBins,
     bool inDecibels = false, bool accumulate = false);
+
+
 
 protected:
 
