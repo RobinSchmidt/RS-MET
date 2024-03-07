@@ -1207,27 +1207,7 @@ void engineersFilterFreqResps()
   flt.setFrequency(fc);
   flt.setMode(IIRD::LOWPASS);
 
-
   FilterPlotter<double> plt;
-
-  /*
-  // Factor out a addFilterToPlotter(flt, plt) method
-  double *a1, *a2, *b0, *b1, *b2;
-  a1 = flt.getAddressA1();
-  a2 = flt.getAddressA2();
-  b0 = flt.getAddressB0();
-  b1 = flt.getAddressB1();
-  b2 = flt.getAddressB2();
-  for(int i = 0; i < numOrders; i++)
-  {
-    int order = minOrder + i*orderInc;
-    flt.setPrototypeOrder(order);
-    ZPK zpk = sos2zpk(b0, b1, b2, a1, a2, flt.getNumStages());
-    zpk.sampleRate = fs;
-    plt.addFilterSpecificationZPK(zpk);
-  }
-  */
-
   for(int i = 0; i < numOrders; i++)
   {
     int order = minOrder + i*orderInc;
@@ -1360,10 +1340,11 @@ void engineersFilterMethodsComparison()
 
 
   // Common setup:
-  int  smpRt = 48000;             // Sample rate in Hz
-  int  freq  = 1000;              // Center or cutoff frequency in Hz
-  int  order = 10;                // Filter prototype order
-  Mode mode  = Mode::LOWPASS;
+  int  smpRt    = 48000;             // Sample rate in Hz
+  int  freq     = 1000;              // Center or cutoff frequency in Hz
+  int  order    = 10;                // Filter prototype order
+  Mode mode     = Mode::LOWPASS;
+  int  numFreqs = 1000;
 
   // Create and set up the filter object:
   EF flt;
@@ -1372,16 +1353,20 @@ void engineersFilterMethodsComparison()
   flt.setPrototypeOrder(order);
   flt.setMode(mode);
 
-
+  // Create and set up the plotter object:
+  FilterPlotter<Real> plt;
+  //plt.setLogScale("x", 2.0, true);
 
   // Compare Papoulis and Halpern filters. Of interest is the steepness at the cutoff frequency and
   // the tail/asymptotic steepness and how that relates to the ringing of the filters. I observed 
   // that Halpern filters ring significantly less than Papoulis filters while being similar in 
   // terms of overall frequency response. That has presumably to do with the steepness at the 
   // cutoff frequency. 
-
   flt.setApproximationMethod(Method::HALPERN);
-
+  addFilterToPlotter(flt, plt);
+  flt.setApproximationMethod(Method::PAPOULIS);
+  addFilterToPlotter(flt, plt);
+  plt.plotFrequencyResponses(numFreqs, 20.0, smpRt/2, true);
 
 
 }

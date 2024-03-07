@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
   //engineersFilterRingResp();         // ringing response (experimental idea)
   engineersFilterFreqResps();
   //engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
-  //engineersFilterMethodsComparison();
+  engineersFilterMethodsComparison();
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
