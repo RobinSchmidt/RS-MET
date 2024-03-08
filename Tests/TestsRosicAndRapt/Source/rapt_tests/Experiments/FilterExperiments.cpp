@@ -1344,9 +1344,6 @@ void engineersFilterMethodsComparison()
   flt.setPrototypeOrder(order);
   flt.setMode(mode);
 
-  // Create and set up the plotter object:
-
-  //plt.setLogScale("x", 2.0, true);
 
   // Compare Papoulis and Halpern filters. Of interest is the steepness at the cutoff frequency and
   // the tail/asymptotic steepness and how that relates to the ringing of the filters.
@@ -1386,9 +1383,6 @@ void engineersFilterMethodsComparison()
   // Maybe we need to look at two left neighbours rather than just one in the unwrapping algo. 
   // And/or maybe the algo also needs the mag-response to look at to conditionally use another rule
   // whenever the magnitude is (close to) zero.
-
-
-
 
 
   // Compare ellptic with Chebychev-1 and Chebychev-2 filters. Cheby-1 and 2 filters have ripples 
