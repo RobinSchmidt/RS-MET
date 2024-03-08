@@ -113,8 +113,41 @@ public:
 
 protected:
 
+  inline TSig getStageOutput(int stage, TSig in);
+
+
   std::vector<rsStateVariableFilterData<TSig, TCoef>> data;
 
 };
 
+
+
+template<class TSig, class TCoef> 
+TSig rsStateVariableFilterChain<TSig, TCoef>::getStageOutput(int stage, TSig in)
+{
+  // Shorthands for convenience:
+  rsStateVariableFilterCoeffs<TCoef>& c = data[stage].coeffs;
+  rsStateVariableFilterState<TSig>&   s = data[stage].state;
+
+  // Compute the 3 outputs (LP, BP, HP):
+  TSig yH = (in - c.R2pg * s.s1 - s.s2) * c.h;
+  TSig yB = c.g*yH + s.s1;
+  s.s1    = c.g*yH + yB; 
+  TSig yL = c.g*yB + s.s2;
+  s.s2    = c.g*yB + yL;
+
+  // Combine the 3 outputs to final output:
+  return c.cL*yL + c.cB*yB + c.cH*yH;
+
+  // See comments in rsStateVariableFilter<TSig, TPar>::getSample for what's going on
+}
+
+template<class TSig, class TCoef> 
+TSig rsStateVariableFilterChain<TSig, TCoef>::getSample(TSig in)
+{
+  TSig y = in;
+  for(int i = 0; i < (int)data.size(); i++)  // ToDo: try to avoid conversion
+    y = getStageOutput(i, y);
+  return y;
+}
 

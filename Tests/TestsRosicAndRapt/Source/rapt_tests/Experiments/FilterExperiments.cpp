@@ -1274,6 +1274,11 @@ void engineersFilterFreqRespsMeasured()
   // Now convert to an SVF implementation and record the impulse response of that:
   rsStateVariableFilterChain<Real, Real> svf;
   svf.setupFrom(flt);
+  Vec h3(N);
+  h3[0] = svf.getSample(1.0);
+  for(int n = 1; n < N; n++)
+    h3[n] = svf.getSample(0.0);
+  //rsPlotVectors(h1, h3);
 
 
   // Create and set up the plotter and plot the measured magnitude response:
@@ -1283,7 +1288,7 @@ void engineersFilterFreqRespsMeasured()
   plt.setLogFreqAxis(true);
   plt.setFloorLevel(-120);
   plt.setNormalizationMode(SpectrumPlotter<Real>::NormalizationMode::impulse);
-  plt.plotSpectra(N, &h1[0], &h2[0]);
+  plt.plotSpectra(N, &h1[0], &h2[0], &h3[0]);
 
 
   int dummy = 0;
