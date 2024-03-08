@@ -551,6 +551,10 @@ template class RAPT::rsCrossOver4Way<double, double>;
 
 
 
+template class rsStateVariableFilterChain<double, double>; // not yet in RAPT namespace
+
+
+
 // Physics:
 template class RAPT::rsParticleSystem<float>;
 

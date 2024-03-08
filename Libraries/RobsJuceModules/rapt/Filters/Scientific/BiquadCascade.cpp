@@ -168,6 +168,17 @@ void rsBiquadCascade<TSig, TCoef>::resetAllCoeffs()
 // inquiry:
 
 template<class TSig, class TCoef>
+void rsBiquadCascade<TSig, TCoef>::getCoeffs(
+  int i, TCoef* B0, TCoef* B1, TCoef* B2, TCoef* A1, TCoef* A2) const
+{
+  *B0 = b0[i];
+  *B1 = b1[i];
+  *B2 = b2[i];
+  *A1 = a1[i];
+  *A2 = a2[i];
+}
+
+template<class TSig, class TCoef>
 std::complex<TCoef> rsBiquadCascade<TSig, TCoef>::getTransferFunctionAt(std::complex<TCoef> z)
 { 
   std::complex<TCoef> H(TCoef(1), TCoef(0));

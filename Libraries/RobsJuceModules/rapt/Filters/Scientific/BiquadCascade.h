@@ -102,6 +102,9 @@ public:
   //   void setCoeffs(int stage, T newB0, T newB1, T newB2, T newA1, T newA2)
 
 
+  void getCoeffs(int stage, TCoef* b0, TCoef* b1, TCoef* b2, TCoef* a1, TCoef* a2) const;
+
+
   /** Returns the global gain factor. */
   //TCoef getGlobalGainFactor() const { return gain; }
 

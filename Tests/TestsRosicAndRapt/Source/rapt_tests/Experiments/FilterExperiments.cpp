@@ -1271,6 +1271,11 @@ void engineersFilterFreqRespsMeasured()
   //rsPlotVectors(h2); 
   //rsPlotVector(h2-h1);      // Difference between DF2 and DF1
 
+  // Now convert to an SVF implementation and record the impulse response of that:
+  rsStateVariableFilterChain<Real, Real> svf;
+  svf.setupFrom(flt);
+
+
   // Create and set up the plotter and plot the measured magnitude response:
   SpectrumPlotter<Real> plt;
   plt.setSampleRate(smpRt);
