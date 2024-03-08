@@ -97,6 +97,8 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
   //  more drastic error condition - so maybe we can indeed assume that either u1,u2 are both 
   //  positive or both negative? Figure that out!
 }
+// Maybe factor out into a static function - or maybe move the conversion into 
+// rsFilterCoefficientConverter.
 
 // Misc:
 

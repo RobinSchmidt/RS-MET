@@ -263,4 +263,10 @@ ToDo:
  State-vector/phasor, maybe others? what about lattice? state-space? That would be useful for
  experimentation
 
+-Maybe change the current struct-of-arrays (SoA) into an array-of-structs (AoS) implementation. 
+ To do this, first define two structs rsBiquadCoeffs containing b0,b1,b2,a1,a2 and rsBiquadState
+ containing x1,x2,y1,y2. Then have member arrays of both types. This may also facilitate the 
+ implementation of different topologies later. Our coeffs and state member arrays could use
+ unions such that they can be interpreted in different ways.
+
 */

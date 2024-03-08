@@ -92,3 +92,8 @@ EqualizerAPO:
 https://equalizerapo.com/
 https://sourceforge.net/projects/equalizerapo/
 -System wide equalizer for Windows. Allows hosting of VST plugins, too.
+
+
+
+https://github.com/sudara/awesome-juce
+-List of open source JUCE libraries, plugins and utilities.

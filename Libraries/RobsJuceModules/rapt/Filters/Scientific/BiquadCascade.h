@@ -11,7 +11,7 @@ does not do the filter-design. The coefficients can be calculated by one of the 
 such as for example the BiquadDesigner class. */
 
 template<class TSig, class TCoef>  // types for signal and coefficients
-class rsBiquadCascade // rename to BiquadChain
+class rsBiquadCascade // rename to BiquadChain because that's shorter
 {
   typedef const TSig&  CRSig;   // const reference to a signal value
   typedef const TCoef& CRCoef;  // const reference to a coefficient value
@@ -92,6 +92,16 @@ public:
   /** Returns the memory-address of the a2 array. */
   TCoef* getAddressA2() const { return a2; }
 
+  // Retrieving these addresses is convenient (and perhaps also more efficient) in the context of 
+  // setting up the filter chain - but when we later want to switch to an array-of-structs 
+  // implementation, we can't keep them anymore. So maybe try to stop using them and eventually get
+  // rid of them. They lock us in to a struct-of-arrays implementation. Client code should 
+  // exclusivley use setCoeffs to set up the coefficients. Maybe we need an additional variant to
+  // set up the coeffs of a given stage like:
+  //
+  //   void setCoeffs(int stage, T newB0, T newB1, T newB2, T newA1, T newA2)
+
+
   /** Returns the global gain factor. */
   //TCoef getGlobalGainFactor() const { return gain; }
 
@@ -152,6 +162,9 @@ protected:
   TSig  *x1, *x2, *y1, *y2;       // buffering
   int numStages;                  // current number of biquad-stages
   int maxNumStages;               // maximum number of biquad-stages
+
+
+
 };
 
 //-------------------------------------------------------------------------------------------------

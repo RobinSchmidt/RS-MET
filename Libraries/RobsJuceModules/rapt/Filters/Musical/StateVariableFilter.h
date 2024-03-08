@@ -142,7 +142,7 @@ protected:
   // filter coefficients:
   TPar g;          // embedded integrator gain
   TPar R2;         // twice the damping coefficient (R2 == 2*R == 1/Q) -> store R2+g instead (call it R2_p_g
-  TPar h;          // factor for feedback (== 1/(1+2*R*g+g*g)) - rename to d
+  TPar h;          // factor for feedback (== 1/(1+2*R*g+g*g)) - rename to d (why d?)
   TPar cL, cB, cH; // coefficients for low-, band-, and highpass signals
 
   // parameters:
