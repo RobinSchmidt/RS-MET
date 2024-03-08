@@ -1244,7 +1244,7 @@ void engineersFilterFreqRespsMeasured()
   int    smpRt  = 48000;             // Sample rate in Hz
   int    freq   = 1000;              // Center or cutoff frequency in Hz
   int    bwOct  = 6;                 // Bandwidth in octaves
-  int    order  = 10;                // Filter prototype order
+  int    order  = 20;                // Filter prototype order
   Mode   mode   = Mode::BANDPASS;
   Method method = Method::HALPERN;
 
@@ -1300,6 +1300,8 @@ void engineersFilterFreqRespsMeasured()
   //  lower cutoff, but with DF1, it's more pronounced.
   // -With Real = float (rather than double), it breaks down already for 10th order (or maybe 
   //  less).
+  // -Switching to an SVF implementation doesn't seem to make the situation much better. The freq
+  //  response looks a bit different but it is still a mess.
   //
   // Conclusions:
   // -The fact that also Chebychev-1 filters are affected may mean that the polynomial root finder
