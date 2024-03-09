@@ -97,5 +97,9 @@ Helm:
 https://github.com/mtytel/helm
 -Subtractive synthesizer 
 
+CLAP-SDK and related stuff:
+https://github.com/free-audio
+-Liberally licensed audio plugin format.
+
 https://github.com/sudara/awesome-juce
 -List of open source JUCE libraries, plugins and utilities.
