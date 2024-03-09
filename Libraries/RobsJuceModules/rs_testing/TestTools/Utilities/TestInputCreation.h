@@ -154,12 +154,13 @@ std::vector<double> attackDecaySine(int N, double frequency, double amplitude, d
 // more:
 std::vector<double> getFlatZap(int numStages, double lowFreq = 15, double highFreq = 8000,
   double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
-  double maxLength = 1.0, int sampleRate = 48000);
+  double length = 1.0, int sampleRate = 48000);
 
 std::vector<double> getBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
   double freqShape = 0.0, double lowQ = 1.0, double highQ = 1.0, double qShape = 0.0,
   double maxLength = 1.0, int sampleRate = 48000);
-// -Rename the createBrownZap for consistency. 
+// -Rename the createBrownZap for consistency. Or better createRedZap. The "brown" in "Brown noise"
+//  is not the color but a reference to Robert Brown who discovered Brown (aka Brownian) noise.
 // -Factor out a createFlatZap function that does not do the post-processing
 
 

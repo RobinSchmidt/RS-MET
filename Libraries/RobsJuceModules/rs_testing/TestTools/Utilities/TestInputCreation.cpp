@@ -584,7 +584,7 @@ std::vector<double> attackDecaySine(int N, double frequency, double amplitude, d
 }
 
 std::vector<double> getFlatZap(int numStages, double lowFreq, double highFreq, double freqShape, 
-  double lowQ, double highQ, double qShape, double maxLength, int sampleRate)
+  double lowQ, double highQ, double qShape, double length, int sampleRate)
 {
   // Create and set up the zapper object:
   rosic::rsFlatZapper wz;
@@ -598,7 +598,7 @@ std::vector<double> getFlatZap(int numStages, double lowFreq, double highFreq, d
   wz.setQShape(qShape);
 
   // Render sample:
-  int N = ceil(maxLength * sampleRate);  // Number of samples to render
+  int N = ceil(length * sampleRate);  // Number of samples to render
   using Vec = std::vector<double>;
   Vec x(N);
   x[0] = 1;

@@ -3779,7 +3779,7 @@ void showFlatZapPlots()
   //  250, 500, 1000, 2000, 4000
 }
 
-void showFlatZapsInstFreq()
+void showRedZapsInstFreqs()
 {
   // Under construction
 
@@ -3790,10 +3790,51 @@ void showFlatZapsInstFreq()
 
   using Real = double;
   using Vec  = std::vector<Real>;
+  using Mat  = rsMatrix<Real>;
 
   // Setup:
   Real sampleRate = 48000;
+  int  numStages  = 50;
   Vec  freqs      = Vec({ 250, 500, 1000, 2000, 4000 });
+  Real length     = 0.2;     // Length in seconds
+  bool usePitch   = false;   // If true, inst. pitch instead of inst. freq will be plotted
+
+
+  // Helper function to estimate the instantaneos frequencies in x:
+  auto getInstFreqs = [&](const Vec& x)
+  {
+
+  
+    return x;  // preliminary
+  };
+
+
+    
+  int numSamples = (int) ceil(length * sampleRate);
+  int numPlots   = (int) freqs.size();
+  Mat plots(numPlots, numSamples);
+  for(int i = 0; i < numPlots; i++)
+  {
+    // Create a spectrally flat (aka white) zap:
+    Real f = freqs[i];
+    Vec  x = getFlatZap(numStages, f, f, 0.0, 1.0, 1.0, 0.0, length, sampleRate);
+
+    // Apply lowpass:
+    rsSamplePostProcessor pp;
+    pp.setSampleRate(sampleRate);
+    pp.applyOnePoleLowpass(x, 0.5*f);
+    RAPT::rsArrayTools::normalize(&x[0], numSamples);
+
+    // Estimate instantaneous frequency:
+    Vec freqs = getInstFreqs(x);
+
+    // Add plot data to matrix:
+    plots.setRow(i, freqs);
+  }
+
+
+  // Plot the rows of the matrix as function family:
+  plotMatrixRows(plots);
 
 
 
@@ -3807,7 +3848,7 @@ void flatZapper()
   //flatZapperPhaseTweaks();
   //flatZapperOpposingLengthTweaks();
   //showFlatZapPlots();
-  showFlatZapsInstFreq();
+  showRedZapsInstFreqs();
 
   int dummy = 0;
 
