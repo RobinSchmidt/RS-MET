@@ -1171,8 +1171,8 @@ void engineersFilterRingResp()
 
 
 // Move somewhere else:
-template<class T>
-void addFilterToPlotter(const rsEngineersFilter<T, T>& flt, FilterPlotter<T>& plt)
+template<class T, class S>
+void addFilterToPlotter(const rsEngineersFilter<S, T>& flt, FilterPlotter<T>& plt)
 {
   T* a1 = flt.getAddressA1();
   T* a2 = flt.getAddressA2();
@@ -1290,6 +1290,12 @@ void engineersFilterFreqRespsMeasured()
   plt.plotSpectra(N, &h1[0], &h2[0], &h3[0]);
 
 
+  FilterPlotter<TPar> fplt;
+  addFilterToPlotter(flt, fplt);
+  fplt.plotPolesAndZeros();
+
+
+
   int dummy = 0;
 
   // Observations:
@@ -1303,6 +1309,7 @@ void engineersFilterFreqRespsMeasured()
   //  response looks a bit different but it is still a mess.
   // -Using double for parameters (and coefficients) and float only for the signal gives only a 
   //  very minor improvement over using float for everything.
+  // -The poles are indeed rather close to the unit circle in the problematic cases.
   //
   // Conclusions:
   // -The fact that also Chebychev-1 filters are affected may mean that the polynomial root finder
