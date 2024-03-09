@@ -1319,6 +1319,7 @@ void engineersFilterFreqRespsMeasured()
   //  poles and zeros. And/or use a state-vector filter implementation. The coefficient computation
   //  from the poles and zeros should be straighforward for this implementation.
   // -Plot the measured and the computed magnitude response in one plot.
+  // -Try the state-vector filter
   // -look into "double-double" arithmetic - a way to to (kind of) quad-precsion arithmetic using a
   //  pair of doubles. It's more efficient than general arbitrary precision arithmetic so it might
   //  be a reasonable compromise:
