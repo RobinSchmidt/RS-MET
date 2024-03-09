@@ -3836,10 +3836,12 @@ void showRedZapsInstFreqs()
     rsSamplePostProcessor pp;
     pp.setSampleRate(sampleRate);
     pp.applyOnePoleLowpass(x, 0.5*f);
-    //RAPT::rsArrayTools::normalize(&x[0], numSamples);  // maybe we should do it?
 
     // Apply highpass:
-    // ...maybe...
+    pp.applyOnePoleHighpass(x, 1.0*f);
+    pp.applyOnePoleHighpass(x, 1.0*f);
+    pp.applyOnePoleHighpass(x, 1.0*f);
+    RAPT::rsArrayTools::normalize(&x[0], numSamples);  // maybe we should do it?
 
     // Estimate instantaneous frequency and convert to pitch:
     Vec instFreq = getInstFreqs(x);
