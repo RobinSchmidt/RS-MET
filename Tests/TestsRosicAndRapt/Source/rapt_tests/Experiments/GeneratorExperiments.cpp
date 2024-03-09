@@ -3913,6 +3913,15 @@ void showRedZapsInstFreqs()
   // -The fact that the pitch curves for different settings of the tuning frequencies are just 
   //  vertically shifted copies lets us pick just one of them for more detailed investigations and
   //  transfer the results to the general case.
+  // -We can get a pretty damn good fit to the numerical derivative of the instantaneous pitch p(n)
+  //  by using a function like  a / (n+1)  where a is something like -20 and we use n+1 only to 
+  //  avoid division by zero and that +1 doesn't really change much. So, in an idnealized scenario,
+  //  with continuous time t, let's say p'(t) = a/t. Then, taking the integral, we get 
+  //  p(t) = a * ln(t) + C. This is our pitch envelope as function of time t.
+  // -Converting from pitch to freq, we use exp, so, when we ignore constants, we get 
+  //  f(t) = exp(p(t)) = exp(a * ln(t) + C) = exp(a*ln(t)) * exp(C) = exp(ln(t))^a * exp(C) 
+  //       = t^a * exp(C)
+  // -I think, the freq-envelope should perhaps be a combination of a linfrac-law and a power law.
   //
   // ToDo:
   // -Plot differences of the pitch curves to figure out, if they are just shifted with respect to
@@ -4136,6 +4145,7 @@ void sineSweepBassdrum()
   //  return x; 
   //};
 
+  // Exponential with offset:
   auto shapeExp = [](Real x, Real p, Real dummy) 
   { 
     p = -p;  // We re-interpret the parameter here.
@@ -4144,6 +4154,7 @@ void sineSweepBassdrum()
     return (1 - exp(x*p)) / (1 - exp(p));
   };
 
+  // Linear fractional law:
   auto shapeLinFrac = [](Real x, Real p, Real dummy) 
   { 
     // A linear fractional mapping with a parameter p in -inf..+inf where p = 0 is linear. Uses the
@@ -4152,6 +4163,15 @@ void sineSweepBassdrum()
     double a = (s-1)/(s+1);               // Function parameter for rational map in -1..+1
     return RAPT::rsRationalMap_01(x, a);
   };
+
+  // Power law:
+  auto shapePow = [](Real x, Real p, Real dummy)
+  {
+    p = rsLog2(p);  // The actual power that we use - the parameter p is its base-2 log
+    return pow(x, p);
+  };
+  // needs tests
+
 
   // Combine a linfrac and an exp shape:
   auto shapeLinFracExp = [&](Real x, Real p1, Real p2)
