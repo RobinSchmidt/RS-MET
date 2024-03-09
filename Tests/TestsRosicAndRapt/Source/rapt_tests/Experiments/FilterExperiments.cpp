@@ -1231,13 +1231,15 @@ void engineersFilterFreqRespsMeasured()
   // Chebychev-1 filters.
 
   // For convenience:
-  using Real   = float;
-  using EF     = rsEngineersFilter<Real, Real>;
-  using PTD    = rsPrototypeDesigner<Real>;
-  using IIRD   = rsInfiniteImpulseResponseDesigner<Real>;
+  //using Real   = float;
+  using TSig   = float;                                       // Signal type
+  using TPar   = double;                                      // Parameter type
+  using EF     = rsEngineersFilter<TSig, TPar>;
+  using PTD    = rsPrototypeDesigner<TPar>;
+  using IIRD   = rsInfiniteImpulseResponseDesigner<TPar>;
   using Method = PTD::approximationMethods;
   using Mode   = IIRD::modes;
-  using Vec    = std::vector<Real>;
+  using Vec    = std::vector<TSig>;
 
   // Setup:
   int    N      = 65536;             // Maybe try 32768, 65536 as well
@@ -1272,7 +1274,7 @@ void engineersFilterFreqRespsMeasured()
   //rsPlotVector(h2-h1);      // Difference between DF2 and DF1
 
   // Now convert to an SVF implementation and record the impulse response of that:
-  rsStateVariableFilterChain<Real, Real> svf;
+  rsStateVariableFilterChain<TSig, TPar> svf;
   svf.setupFrom(flt);
   Vec h3(N);
   h3[0] = svf.getSample(1.0);
@@ -1282,12 +1284,12 @@ void engineersFilterFreqRespsMeasured()
 
 
   // Create and set up the plotter and plot the measured magnitude response:
-  SpectrumPlotter<Real> plt;
+  SpectrumPlotter<TSig> plt;
   plt.setSampleRate(smpRt);
   plt.setFftSize(N);
   plt.setLogFreqAxis(true);
   plt.setFloorLevel(-120);
-  plt.setNormalizationMode(SpectrumPlotter<Real>::NormalizationMode::impulse);
+  plt.setNormalizationMode(SpectrumPlotter<TSig>::NormalizationMode::impulse);
   plt.plotSpectra(N, &h1[0], &h2[0], &h3[0]);
 
 
@@ -1302,6 +1304,8 @@ void engineersFilterFreqRespsMeasured()
   //  less).
   // -Switching to an SVF implementation doesn't seem to make the situation much better. The freq
   //  response looks a bit different but it is still a mess.
+  // -Using double for parameters (and coefficients) and float only for the signal gives only a 
+  //  very minor improvement over using float for everything.
   //
   // Conclusions:
   // -The fact that also Chebychev-1 filters are affected may mean that the polynomial root finder

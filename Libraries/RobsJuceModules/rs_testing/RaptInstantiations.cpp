@@ -538,6 +538,7 @@ template class RAPT::rsInfiniteImpulseResponseDesigner<float>;
 template class RAPT::rsFilterAnalyzer<float>;
 template class RAPT::rsBiquadCascade<float, float>;
 template class RAPT::rsEngineersFilter<float, float>;
+template class RAPT::rsEngineersFilter<float, double>;
 template class RAPT::rsLinkwitzRileyCrossOver<float, float>;
 template class RAPT::rsCrossOver4Way<float, float>;
 template class RAPT::rsDirectFormFilter<float, float>;
@@ -553,6 +554,7 @@ template class RAPT::rsCrossOver4Way<double, double>;
 
 template class rsStateVariableFilterChain<double, double>; // not yet in RAPT namespace
 template class rsStateVariableFilterChain<float, float>; 
+template class rsStateVariableFilterChain<float, double>; 
 
 
 // Physics:
