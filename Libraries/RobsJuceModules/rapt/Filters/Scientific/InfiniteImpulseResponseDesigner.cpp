@@ -222,6 +222,7 @@ void rsInfiniteImpulseResponseDesigner<T>::getPolesAndZeros(Complex* poles, Comp
     if( f1 > T(0.999*0.5)*fs )
       f1 = T(0.999*0.5)*fs;  // ensure frequency < sampleRate/2
   }
+  // maybe factor this out!
 
   // prewarp the frequencies to the desired frequencies required for the design of the
   // (unnormalized) analog prototype filter:
@@ -248,10 +249,10 @@ void rsInfiniteImpulseResponseDesigner<T>::getPolesAndZeros(Complex* poles, Comp
   else
     prototypeDesigner.setReferenceGain(0.0);
 
-  // allocate temporary memory:
+  // Allocate temporary memory (Get rid of this! Preallocate):
   //Complex* protoPoles = new Complex[prototypeOrder];
   //Complex* protoZeros = new Complex[prototypeOrder];
-  std::vector<Complex> pp(prototypeOrder), pz(prototypeOrder);
+  std::vector<Complex> pp(prototypeOrder), pz(prototypeOrder); // !!!HEAP-ALLOCATION!!!
   Complex* protoPoles = &pp[0];
   Complex* protoZeros = &pz[0];
 
@@ -403,8 +404,8 @@ void rsInfiniteImpulseResponseDesigner<T>::getBiquadCascadeCoefficients(T *b0, T
     //wa2 = 0.0;                  // unused
   }
 
+  std::vector<Complex> poles(finalOrder), zeros(finalOrder); // !!!HEAP-ALLOCATION!!!
 
-  std::vector<Complex> poles(finalOrder), zeros(finalOrder);
   getPolesAndZeros(&poles[0], &zeros[0]); // seems to return zeros in wrong order for elliptic bandpass
   rsFilterCoefficientConverter<T>::polesAndZerosToBiquadCascade(&poles[0], &zeros[0], finalOrder, 
     b0, b1, b2, a1, a2);
@@ -482,3 +483,15 @@ void rsInfiniteImpulseResponseDesigner<T>::normalizeGain(T *b0, T *b1, T *b2,
   rsFilterCoefficientConverter<T>::normalizeBiquadStages(b0, b1, b2, a1, a2, w, numBiquads, 
     normalizeFactor);
 }
+
+
+/*
+
+ToDo:
+
+- Get rid of the heap allocations for temporary poles and zeros (i.e. the transformed poles and
+  zeros with s-domain and s-to-z transformations applied). Use pre-allocated buffers for that, i.e.
+  member variables. This has the additional advantage that we have the poles and zeros available
+  for inspection and possibly even for running the filter in complex 1-pole form.
+
+*/

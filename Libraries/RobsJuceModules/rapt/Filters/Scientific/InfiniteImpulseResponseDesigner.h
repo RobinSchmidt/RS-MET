@@ -127,13 +127,16 @@ public:
 
   /** Returns the z-domain poles and zeros. */
   void getPolesAndZeros(Complex* poles, Complex* zeros);
+  // ALLOCATES HEAP MEMORY!!!
 
   /** Calculates and stores the coefficients for a biquad cascade which realizes the filter with 
   the desired specifications. */
   void getBiquadCascadeCoefficients(T* b0, T* b1, T* b2, T* a1, T* a2);
+  // ALLOCATES HEAP MEMORY!!!
 
   /** Calculates and returns the coefficients for a direct-form implementation. */
   void getDirectFormCoefficients(T* b, T* a);
+  // ALLOCATES HEAP MEMORY!!!
 
   //===============================================================================================
 
