@@ -3794,9 +3794,10 @@ void showRedZapsInstFreqs()
 
   // Setup:
   Real sampleRate = 48000;
-  int  numStages  = 50;
+  int  numStages  = 256;
   Vec  freqs      = Vec({ 250, 500, 1000, 2000, 4000 });
   Real length     = 0.2;     // Length in seconds
+  Real Q          = 0.7;
   //bool usePitch   = false;   // If true, inst. pitch instead of inst. freq will be plotted
 
 
@@ -3830,7 +3831,7 @@ void showRedZapsInstFreqs()
   {
     // Create a spectrally flat (aka white) zap:
     Real f = freqs[i];
-    Vec  x = getFlatZap(numStages, f, f, 0.0, 1.0, 1.0, 0.0, length, sampleRate);
+    Vec  x = getFlatZap(numStages, f, f, 0.0, Q, Q, 0.0, length, sampleRate);
 
     // Apply lowpass:
     rsSamplePostProcessor pp;
@@ -3838,9 +3839,9 @@ void showRedZapsInstFreqs()
     pp.applyOnePoleLowpass(x, 0.5*f);
 
     // Apply highpass:
-    pp.applyOnePoleHighpass(x, 1.0*f);
-    pp.applyOnePoleHighpass(x, 1.0*f);
-    pp.applyOnePoleHighpass(x, 1.0*f);
+    //pp.applyOnePoleHighpass(x, 1.0*f);
+    //pp.applyOnePoleHighpass(x, 1.0*f);
+    //pp.applyOnePoleHighpass(x, 1.0*f);
     RAPT::rsArrayTools::normalize(&x[0], numSamples);  // maybe we should do it?
 
     // Estimate instantaneous frequency and convert to pitch:
