@@ -3797,7 +3797,7 @@ void showRedZapsInstFreqs()
   int  numStages  = 50;
   Vec  freqs      = Vec({ 250, 500, 1000, 2000, 4000 });
   Real length     = 0.2;     // Length in seconds
-  bool usePitch   = false;   // If true, inst. pitch instead of inst. freq will be plotted
+  //bool usePitch   = false;   // If true, inst. pitch instead of inst. freq will be plotted
 
 
   // Helper function to estimate the instantaneos frequencies in x:
@@ -3809,11 +3809,14 @@ void showRedZapsInstFreqs()
   };
 
 
-    
+  // Generate the signals and Estimate instantaneous frequencies and pitches:
   int numSamples = (int) ceil(length * sampleRate);
-  int numPlots   = (int) freqs.size();
-  Mat plots(numPlots, numSamples);
-  for(int i = 0; i < numPlots; i++)
+  int numSignals = (int) freqs.size();
+  Mat signals(    numSignals, numSamples);
+  Mat instFreqs(  numSignals, numSamples);
+  Mat instPitches(numSignals, numSamples);
+
+  for(int i = 0; i < numSignals; i++)
   {
     // Create a spectrally flat (aka white) zap:
     Real f = freqs[i];
@@ -3823,18 +3826,28 @@ void showRedZapsInstFreqs()
     rsSamplePostProcessor pp;
     pp.setSampleRate(sampleRate);
     pp.applyOnePoleLowpass(x, 0.5*f);
-    RAPT::rsArrayTools::normalize(&x[0], numSamples);
+    //RAPT::rsArrayTools::normalize(&x[0], numSamples);  // maybe we should do it?
 
-    // Estimate instantaneous frequency:
-    Vec freqs = getInstFreqs(x);
+    // Apply highpass:
+    // ...maybe...
 
-    // Add plot data to matrix:
-    plots.setRow(i, freqs);
+    // Estimate instantaneous frequency and convert to pitch:
+    Vec instFreq = getInstFreqs(x);
+    Vec instPitch(numSamples);
+    for(int n = 0; n < numSamples; n++)
+      instPitch[n] = RAPT::rsFreqToPitch(instFreq[i]);
+
+    // Add plot data to matrices:
+    signals.    setRow(i, x);
+    instFreqs.  setRow(i, instFreq);
+    instPitches.setRow(i, instPitch);
   }
 
 
   // Plot the rows of the matrix as function family:
-  plotMatrixRows(plots);
+  plotMatrixRows(signals);
+
+
 
 
 
