@@ -1289,7 +1289,7 @@ void engineersFilterFreqRespsMeasured()
   plt.setNormalizationMode(SpectrumPlotter<TSig>::NormalizationMode::impulse);
   plt.plotSpectra(N, &h1[0], &h2[0], &h3[0]);
 
-
+  // Plot the poles and zeros:
   FilterPlotter<TPar> fplt;
   addFilterToPlotter(flt, fplt);
   fplt.plotPolesAndZeros();
@@ -1309,7 +1309,7 @@ void engineersFilterFreqRespsMeasured()
   //  response looks a bit different but it is still a mess.
   // -Using double for parameters (and coefficients) and float only for the signal gives only a 
   //  very minor improvement over using float for everything.
-  // -The poles are indeed rather close to the unit circle in the problematic cases. in the case of
+  // -The poles are indeed rather close to the unit circle in the problematic cases. In the case of
   //  elliptic filters, there are zeros nearby which alleviate the problem to some extent.
   //
   // Conclusions:
@@ -1323,13 +1323,14 @@ void engineersFilterFreqRespsMeasured()
   //
   //
   // ToDo:
-  // -Try a different implementaion structure (SVF, etc. - maybe a cascade of complex 1-poles might
+  // -Try a different implementation structure (SVF, etc. - maybe a cascade of complex 1-poles might
   //  be of interest as well for testing - not in practice, though). If it works well, try to 
   //  bypass the step of computing biquad coeffs and try to compute SVF coeffs directly from the 
   //  poles and zeros. And/or use a state-vector filter implementation. The coefficient computation
   //  from the poles and zeros should be straighforward for this implementation.
   // -Plot the measured and the computed magnitude response in one plot.
   // -Try the state-vector filter and a complex one-pole chain
+  // -Try using long double and compile x86 where long double has 80 bit
   // -Plot pole-zero diagrams of the problematic filters. I suppose the problem come from poles 
   //  close to the unit circle with no nearby zeros to compensate for their resonance.
   // -look into "double-double" arithmetic - a way to to (kind of) quad-precsion arithmetic using a
