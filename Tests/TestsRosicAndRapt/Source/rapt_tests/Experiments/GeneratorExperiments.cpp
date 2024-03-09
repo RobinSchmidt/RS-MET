@@ -3803,9 +3803,19 @@ void showRedZapsInstFreqs()
   // Helper function to estimate the instantaneos frequencies in x:
   auto getInstFreqs = [&](const Vec& x)
   {
+    using Algo = rsSingleSineModeler<Real>::Algorithm;
+    rsSingleSineModeler<Real> ssm;
+    //ssm.setAnalysisAlgorithm(Algo::ampViaPeaks);    // This is the default
+    //ssm.setAnalysisAlgorithm(Algo::freqViaFormula);
+    ssm.setAnalysisAlgorithm(Algo::freqViaZeros);     // This gives cleanest result
 
-  
-    return x;  // preliminary
+    int N = (int) x.size();
+    Vec a(N), w(N);
+    ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+    //rsPlotVector(a);  // just to see what the algo does
+    Vec f = (sampleRate / (2*PI)) * w;
+    //rsPlotVector(f);
+    return f;
   };
 
 
@@ -3835,7 +3845,7 @@ void showRedZapsInstFreqs()
     Vec instFreq = getInstFreqs(x);
     Vec instPitch(numSamples);
     for(int n = 0; n < numSamples; n++)
-      instPitch[n] = RAPT::rsFreqToPitch(instFreq[i]);
+      instPitch[n] = RAPT::rsFreqToPitch(instFreq[n]);
 
     // Add plot data to matrices:
     signals.    setRow(i, x);
@@ -3846,7 +3856,8 @@ void showRedZapsInstFreqs()
 
   // Plot the rows of the matrix as function family:
   plotMatrixRows(signals);
-
+  plotMatrixRows(instFreqs);
+  plotMatrixRows(instPitches);  // just two flat lines - that looks wrong
 
 
 
