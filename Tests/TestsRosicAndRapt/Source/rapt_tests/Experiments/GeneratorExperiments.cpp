@@ -3877,16 +3877,24 @@ void showRedZapsInstFreqs()
   // Grab the lowest frequency row for more detailed analysis:
   Vec x = instPitches.getRowAsVector(0);
   int N = (int) x.size();
-  rsPlotVector(x);
+  //rsPlotVector(x);
 
   // Plot numerical derivative:
   //using ND = rsNumericDifferentiator<Real>; 
   using AT = rsArrayTools;
   Vec dx = x;
   AT::difference(&dx[0], N);
-  rsPlotVector(dx);
+  //rsPlotVector(dx);
   // ToDo: compute more accurate estimates using central differences
   // The derivative looks like an upside down 1/x function
+
+  Vec mdx(N);  // model of dx
+  for(int n = 0; n < N; n++)
+    mdx[n] = -20.0 / (double(n+1));
+  rsPlotVectors(dx, mdx);
+  // That's a pretty good fit!
+
+  //rsPlotVectors(dx, mdx);
 
   //ND::derivative(&x[0]
 
