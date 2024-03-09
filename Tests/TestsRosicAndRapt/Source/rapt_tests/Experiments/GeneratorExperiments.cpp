@@ -3797,7 +3797,7 @@ void showRedZapsInstFreqs()
   int  numStages  = 256;
   //Vec  freqs      = Vec({ 250, 500, 1000, 2000, 4000 });
   Vec  freqs      = Vec({ 100, 200, 300, 400, 500 });
-  Real length     = 0.2;     // Length in seconds
+  Real length     = 0.3;     // Length in seconds
   Real Q          = 0.7;
   //bool usePitch   = false;   // If true, inst. pitch instead of inst. freq will be plotted
 
@@ -3861,13 +3861,38 @@ void showRedZapsInstFreqs()
   // Plot the rows of the matrix as function family:
   plotMatrixRows(signals);
   plotMatrixRows(instFreqs);
-  plotMatrixRows(instPitches);  // just two flat lines - that looks wrong
+  plotMatrixRows(instPitches);
+
+  // Create row-wise differences of tbe pitches to figure out if the graphs are just shifted copies
+  // of one another which would lead to a constant row-wise difference:
+  Mat pitchDiffs(numSignals-1, numSamples);
+  for(int i = 0; i < numSignals-1; i++)
+  {
+    for(int j = 0; j < numSamples; j++)
+      pitchDiffs(i, j) = instPitches(i+1, j) - instPitches(i, j);
+  }
+  plotMatrixRows(pitchDiffs); 
+
+  //rsPlotVectors()
 
 
 
 
 
   int dummy = 0;
+
+  // Observations:
+  // -The row-wise pitch differences do indeed look almost flat, i.e. constant, which indicates 
+  //  that the different graphs are indeed almost vertically shifted copies of one another. This
+  //  seems plausible because the absolute frequency should not really affect the general shape - 
+  //  at least not in an mathematically idealized scenario (like in continuous time).
+  //  
+  //
+  // ToDo:
+  // -Plot differences of the pitch curves to figure out, if they are just shifted with respect to
+  //  one another
+  // -Try numerical derivatives - maybe that could give use more hints for what the function could
+  //  be
 }
 
 void flatZapper()
