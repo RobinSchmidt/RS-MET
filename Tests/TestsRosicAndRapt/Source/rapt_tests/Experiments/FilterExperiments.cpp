@@ -1228,10 +1228,17 @@ void engineersFilterFreqRespsMeasured()
   // high order (20 for double, 10 for float) and wide bandwidth (>= 6 octaves). Most affected are 
   // Halpern, Papoulis and Chebychev-1 filters.
 
+  // Data types to use for plotting, the signals in the DSP process and the parameters (and coeffs)
+  // of the filters. The precision of the types should be non-decresasing to make sense. For 
+  // example float/float/double is OK, float/double/long double is OK, double/double/double is OK, 
+  // etc.
+  using TPlt = float;                                    // Plot data type
+  using TSig = float;                                    // Signal type
+  using TPar = double;                                   // Parameter type
+  // ...eventually, I want to try double/long double/long double (in x86 mode) but it doesn't 
+  // compile yet with these types in x86. There's some config problem with the SSE code
+
   // For convenience:
-  using TSig   = long double;                              // Signal type
-  using TPar   = long double;                              // Parameter type
-  using TPlt   = double;                                   // Plot data type
   using EF     = rsEngineersFilter<TSig, TPar>;
   using PTD    = rsPrototypeDesigner<TPar>;
   using IIRD   = rsInfiniteImpulseResponseDesigner<TPar>;
@@ -1294,6 +1301,8 @@ void engineersFilterFreqRespsMeasured()
   //FilterPlotter<TPlt> fplt;
   //addFilterToPlotter(flt, fplt);
   //fplt.plotPolesAndZeros();
+  // This doesn't compile when we use long double for TSig and TPar
+
 
 
 

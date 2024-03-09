@@ -82,3 +82,4 @@ Tests/Optimization/VS2019/x64/Release/
 
 Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Debug/App/StateFileManagerTest/
 Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Release/App/StateFileManagerTest/
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/Win32/Debug x86-32Bit/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
