@@ -1229,14 +1229,15 @@ void engineersFilterFreqRespsMeasured()
   // Halpern, Papoulis and Chebychev-1 filters.
 
   // For convenience:
-  using TSig   = float;                                       // Signal type
-  using TPar   = double;                                      // Parameter type
+  using TSig   = long double;                              // Signal type
+  using TPar   = long double;                              // Parameter type
+  using TPlt   = double;                                   // Plot data type
   using EF     = rsEngineersFilter<TSig, TPar>;
   using PTD    = rsPrototypeDesigner<TPar>;
   using IIRD   = rsInfiniteImpulseResponseDesigner<TPar>;
   using Method = PTD::approximationMethods;
   using Mode   = IIRD::modes;
-  using Vec    = std::vector<TSig>;
+  using Vec    = std::vector<TPlt>;
 
   // Setup:
   int    N      = 65536;             // Maybe try 32768, 65536 as well
@@ -1281,18 +1282,18 @@ void engineersFilterFreqRespsMeasured()
 
 
   // Create and set up the plotter and plot the measured magnitude response:
-  SpectrumPlotter<TSig> plt;
+  SpectrumPlotter<TPlt> plt;
   plt.setSampleRate(smpRt);
   plt.setFftSize(N);
   plt.setLogFreqAxis(true);
   plt.setFloorLevel(-120);
-  plt.setNormalizationMode(SpectrumPlotter<TSig>::NormalizationMode::impulse);
+  plt.setNormalizationMode(SpectrumPlotter<TPlt>::NormalizationMode::impulse);
   plt.plotSpectra(N, &h1[0], &h2[0], &h3[0]);
 
   // Plot the poles and zeros:
-  FilterPlotter<TPar> fplt;
-  addFilterToPlotter(flt, fplt);
-  fplt.plotPolesAndZeros();
+  //FilterPlotter<TPlt> fplt;
+  //addFilterToPlotter(flt, fplt);
+  //fplt.plotPolesAndZeros();
 
 
 

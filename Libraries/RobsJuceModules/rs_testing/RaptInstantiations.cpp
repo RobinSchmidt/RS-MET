@@ -416,6 +416,10 @@ template class RAPT::rsFourierTransformerBluestein<float>;
 template class RAPT::rsFourierTransformerRadix2<double>;
 template class RAPT::rsFourierTransformerBluestein<double>;
 
+template class RAPT::rsFourierTransformerRadix2<long double>;
+template class RAPT::rsFourierTransformerBluestein<long double>;
+
+
 template class RAPT::rsSineIterator<double>;
 template class RAPT::rsComplexExponentialIterator<double>;
 template class RAPT::rsPolynomialIterator<float, 3>;
@@ -535,10 +539,12 @@ template class RAPT::rsPrototypeDesigner<float>;
 template class RAPT::rsPoleZeroMapper<float>;
 template class RAPT::rsFilterCoefficientConverter<float>;
 template class RAPT::rsInfiniteImpulseResponseDesigner<float>;
+template class RAPT::rsInfiniteImpulseResponseDesigner<long double>;
 template class RAPT::rsFilterAnalyzer<float>;
 template class RAPT::rsBiquadCascade<float, float>;
 template class RAPT::rsEngineersFilter<float, float>;
 template class RAPT::rsEngineersFilter<float, double>;
+template class RAPT::rsEngineersFilter<long double, long double>;
 template class RAPT::rsLinkwitzRileyCrossOver<float, float>;
 template class RAPT::rsCrossOver4Way<float, float>;
 template class RAPT::rsDirectFormFilter<float, float>;
@@ -555,6 +561,7 @@ template class RAPT::rsCrossOver4Way<double, double>;
 template class rsStateVariableFilterChain<double, double>; // not yet in RAPT namespace
 template class rsStateVariableFilterChain<float, float>; 
 template class rsStateVariableFilterChain<float, double>; 
+template class rsStateVariableFilterChain<long double, long double>; 
 
 
 // Physics:

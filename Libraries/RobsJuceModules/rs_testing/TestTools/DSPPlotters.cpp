@@ -504,6 +504,7 @@ std::vector<std::string> FilterPlotter<T>::getGraphColors(int numGraphs) const
 // template instantiations:
 template class FilterPlotter<float>;
 template class FilterPlotter<double>;
+//template class FilterPlotter<long double>;
 
 //=================================================================================================
 
@@ -702,6 +703,7 @@ void SpectrumPlotter<T>::toRinging(const std::vector<std::complex<T>>& spec, std
 // template instantiations:
 template class SpectrumPlotter<float>;
 template class SpectrumPlotter<double>;
+//template class SpectrumPlotter<long double>;
 // move to somewhere else - a template instantiations file
 
 //=================================================================================================
