@@ -918,5 +918,22 @@ the user to specify an assumed analysis frequency for each step
 
 
 
+More ideas:
+-Use a meta algorithm. I observed that the ampViaPeaks and freqViaFormula algorithms may give 
+ spikes of erroneous measurements (see showFlatZapPlots() in generatorExperiments.cpp ). In the 
+ ampViaPeaks algo, the maximum errors occurr at the minima and maxima of the signal x. In the 
+ freqViaFormula algo, they occurr at the zero crossings. So, where one algo is good, the other is 
+ bad and vice versa - they complement each other. Maybe we could combine the results of both (or 
+ all three) algorithms to get a cleaner result. Maybe crossfade back and forth between ampViaPeaks 
+ and freqViaFormula with some sort flat-top crossfading function. The exact function would have to 
+ be found experimentally.
+-Use a refined model that assumes that the instantaneous frequency and amplitude may change 
+ linearly over time and then use 5 samples to estimate instaneous freq, phase, amp, freq-change 
+ ("sweep"), amp-change ("rise", "swell"). If the equations are not solvable analytically, maybe try
+ 5D Newton iteration using as initial estimates the normal 3 parameters an init sweep and swell to 
+ zero.
+
+
+
 
 */

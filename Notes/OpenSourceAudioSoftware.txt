@@ -93,7 +93,9 @@ https://equalizerapo.com/
 https://sourceforge.net/projects/equalizerapo/
 -System wide equalizer for Windows. Allows hosting of VST plugins, too.
 
-
+Helm:
+https://github.com/mtytel/helm
+-Subtractive synthesizer 
 
 https://github.com/sudara/awesome-juce
 -List of open source JUCE libraries, plugins and utilities.

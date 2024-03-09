@@ -167,7 +167,7 @@ int main(int argc, char* argv[])
   //complementaryFiltersIIR();
   //engineersFilterRingResp();         // ringing response (experimental idea)
   //engineersFilterFreqResps();
-  engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
+  //engineersFilterFreqRespsMeasured();  // Measured freq responses - the computated ones may lie!
   //engineersFilterMethodsComparison();
   //firstOrderFilters();
   //ladderResonanceManipulation();
@@ -239,7 +239,7 @@ int main(int argc, char* argv[])
   //additiveEngine();
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
-  //flatZapper();
+  flatZapper();
   //sineSweepBassdrum();
 
   // Modulators:

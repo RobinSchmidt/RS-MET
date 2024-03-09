@@ -3600,7 +3600,7 @@ void showFlatZapPlots()
   double sampleRate = 48000;
 
   // Here it can be selected which types of plot should be generated:
-  bool plotSignal         = true;
+  bool plotSignal         = false;
   bool plotPhaseSpectrum  = false;
   bool plotGroupDelay     = false;
   bool plotRinging        = false;
@@ -3610,7 +3610,7 @@ void showFlatZapPlots()
   using Vec = std::vector<double>;
   Vec x;
 
-  x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  //x = getBrownZap(50, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // These are the default parameter settings.
 
   //x = getBrownZap(50, 15, 8000, 2.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
@@ -3618,6 +3618,12 @@ void showFlatZapPlots()
 
   //x = getBrownZap(100, 15, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for numStages (100 instead of 50). 
+
+  //x = getBrownZap(50, 250, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // Defaults except for lowFreq (250 instead of 15). 
+
+  x = getBrownZap(50, 1000, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  // All allpasses tuned to 1 kHz
 
   //x = getFlatZap(50,  10, 10000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   //x = getFlatZap(50,  10, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
@@ -3703,7 +3709,7 @@ void showFlatZapPlots()
     ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
     //rsPlotVector(a);  // just to see what the algo does
     Vec f = (sampleRate / (2*PI)) * w;
-    //rsPlotVector(f);
+    rsPlotVector(f);
     Vec p(N);
     for(int n = 0; n < N; n++)
       p[n] = RAPT::rsFreqToPitch(f[n]);
@@ -3759,11 +3765,33 @@ void showFlatZapPlots()
   //  use decimated data for plotting because it will really get long. But that should give more
   //  accurate results. Maybe also try to use the raw signal, i.e. before post-processing, to see
   //  if that gives better or worse results for inst-freq measurements.
+  // -The shape of the instantaneous pitch seems to have two sections: the first one shows a curve
+  //  while the second one looks almost linear. Could it be that the linear part is the one where
+  //  the sweepdown has reached the lowFreq? -> Figure out. 
   //
   // ToDo:
   // -Try using a (bidirectionally) lowpassed version to get better instantaneous freq measurements 
   //  with the zero-crossing based algo. Rationale: it looks like freq estimation works better for 
   //  the brown zaps than for the white ones - maybe further lowpass could improve it even more?
+  // -Try it with a bunch alpasses tune all to the same freq. How does the instantaneous freq/pitch
+  //  look in this case? OK - done - looks similar. I don't see any other important features
+  //  -> Try plottinga family of measurements for different settings of the freq like 
+  //  250, 500, 1000, 2000, 4000
+}
+
+void showFlatZapsInstFreq()
+{
+  // Under construction
+
+  // We show a family of measurements of the instantaneous frequency and pitch for the 
+  // rsFlatZapper. The goal is to get a better feeling for how the shape of the inst-freq plot
+  // behaves as function of the allpass frequency. We use a single tuning frequency for all
+  // allpasses, i.e. lowFreq = highFreq = freq.
+
+
+
+
+  int dummy = 0;
 }
 
 void flatZapper()
@@ -3771,7 +3799,8 @@ void flatZapper()
   //allpassChainBassdrum();
   //flatZapperPhaseTweaks();
   //flatZapperOpposingLengthTweaks();
-  showFlatZapPlots();
+  //showFlatZapPlots();
+  showFlatZapsInstFreq();
 
   int dummy = 0;
 
@@ -3946,6 +3975,11 @@ void flatZapper()
   // -Another idea to create white or brown drums is to just apply a whitening filter to a given
   //  signal. Would that work for any signal? If not, maybe it could at least work for any 
   //  sweepdown?
+
+  // see also:
+  // https://kilohearts.com/products/disperser
+  // https://github.com/robbert-vdh/diopser
+
 }
 
 void sineSweepBassdrum()
