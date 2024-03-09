@@ -3795,7 +3795,8 @@ void showRedZapsInstFreqs()
   // Setup:
   Real sampleRate = 48000;
   int  numStages  = 256;
-  Vec  freqs      = Vec({ 250, 500, 1000, 2000, 4000 });
+  //Vec  freqs      = Vec({ 250, 500, 1000, 2000, 4000 });
+  Vec  freqs      = Vec({ 100, 200, 300, 400, 500 });
   Real length     = 0.2;     // Length in seconds
   Real Q          = 0.7;
   //bool usePitch   = false;   // If true, inst. pitch instead of inst. freq will be plotted
