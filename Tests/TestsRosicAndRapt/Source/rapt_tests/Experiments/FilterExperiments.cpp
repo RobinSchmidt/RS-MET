@@ -1309,7 +1309,8 @@ void engineersFilterFreqRespsMeasured()
   //  response looks a bit different but it is still a mess.
   // -Using double for parameters (and coefficients) and float only for the signal gives only a 
   //  very minor improvement over using float for everything.
-  // -The poles are indeed rather close to the unit circle in the problematic cases.
+  // -The poles are indeed rather close to the unit circle in the problematic cases. in the case of
+  //  elliptic filters, there are zeros nearby which alleviate the problem to some extent.
   //
   // Conclusions:
   // -The fact that also Chebychev-1 filters are affected may mean that the polynomial root finder
