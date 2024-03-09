@@ -21,6 +21,8 @@ void biquadToStateVariableFilter(
   *cH = (b0 - b1 + b2) / (T(1) - a1 + a2);  // 16c, == -(b0-b1+b2) / s1 before taking the sqrt?
   *cB = s * T(2) * (b2 - b0);               // 16d, but with a factor of -1 (why?)
   *cL = (b0 + b1 + b2) / (T(1) + a1 + a2);  // 16e
+
+
   //h  = 1 / (1 + R2*g + g*g);               // factor for feedback precomputation
 
   // The formulas are taken from (Eq 16 a-e) here:

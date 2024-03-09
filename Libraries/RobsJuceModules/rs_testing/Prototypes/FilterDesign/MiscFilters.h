@@ -87,9 +87,8 @@ struct rsStateVariableFilterData
 };
 
 
- /** A class that implements a chain of zero delay feedback (ZDF) state variable filters (SVFs).
-
- ...tbc...  */
+ /** A class that implements a chain of zero delay feedback (ZDF) state variable filters (SVFs). It
+ can be used to replace a rsBiquadCascade ...TBC...  */
 
 template<class TSig, class TCoef>  // types for signal and coefficients
 class rsStateVariableFilterChain

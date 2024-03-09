@@ -1221,17 +1221,14 @@ void engineersFilterFreqResps()
 
 void engineersFilterFreqRespsMeasured()
 {
-  // Under construction - stub at the moment
-
   // Here, we actually measure the frequency response by feeding an impulse into EngineersFilter 
   // and doing an FFT on the impulse response. The computed freq responses turned out to be 
   // inaccurate for certain settings and thereby hide severe problems leading to botched frequency 
   // responses and maybe even instability. This mostly affects bandpass and bandreject filters with
-  // high order (20) and wide bandwidth (>= 6 octaves). Most affected are Halpern, Papoulis and 
-  // Chebychev-1 filters.
+  // high order (20 for double, 10 for float) and wide bandwidth (>= 6 octaves). Most affected are 
+  // Halpern, Papoulis and Chebychev-1 filters.
 
   // For convenience:
-  //using Real   = float;
   using TSig   = float;                                       // Signal type
   using TPar   = double;                                      // Parameter type
   using EF     = rsEngineersFilter<TSig, TPar>;
@@ -1316,6 +1313,7 @@ void engineersFilterFreqRespsMeasured()
   //  same doeffs are also used for computing the freq responses in the plots in EngineersFilter in
   //  ToolChain and these plots look actually fine.
   //
+  //
   // ToDo:
   // -Try a different implementaion structure (SVF, etc. - maybe a cascade of complex 1-poles might
   //  be of interest as well for testing - not in practice, though). If it works well, try to 
@@ -1324,7 +1322,8 @@ void engineersFilterFreqRespsMeasured()
   //  from the poles and zeros should be straighforward for this implementation.
   // -Plot the measured and the computed magnitude response in one plot.
   // -Try the state-vector filter and a complex one-pole chain
-  // -Try a filter with double coeffs and float signals
+  // -Plot pole-zero diagrams of the problematic filters. I suppose the problem come from poles 
+  //  close to the unit circle with no nearby zeros to compensate for their resonance.
   // -look into "double-double" arithmetic - a way to to (kind of) quad-precsion arithmetic using a
   //  pair of doubles. It's more efficient than general arbitrary precision arithmetic so it might
   //  be a reasonable compromise:
