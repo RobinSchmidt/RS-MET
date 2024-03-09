@@ -1231,7 +1231,7 @@ void engineersFilterFreqRespsMeasured()
   // Chebychev-1 filters.
 
   // For convenience:
-  using Real   = double;
+  using Real   = float;
   using EF     = rsEngineersFilter<Real, Real>;
   using PTD    = rsPrototypeDesigner<Real>;
   using IIRD   = rsInfiniteImpulseResponseDesigner<Real>;
@@ -1244,7 +1244,7 @@ void engineersFilterFreqRespsMeasured()
   int    smpRt  = 48000;             // Sample rate in Hz
   int    freq   = 1000;              // Center or cutoff frequency in Hz
   int    bwOct  = 6;                 // Bandwidth in octaves
-  int    order  = 20;                // Filter prototype order
+  int    order  = 10;                // Filter prototype order
   Mode   mode   = Mode::BANDPASS;
   Method method = Method::HALPERN;
 
@@ -1320,6 +1320,7 @@ void engineersFilterFreqRespsMeasured()
   //  from the poles and zeros should be straighforward for this implementation.
   // -Plot the measured and the computed magnitude response in one plot.
   // -Try the state-vector filter and a complex one-pole chain
+  // -Try a filter with double coeffs and float signals
   // -look into "double-double" arithmetic - a way to to (kind of) quad-precsion arithmetic using a
   //  pair of doubles. It's more efficient than general arbitrary precision arithmetic so it might
   //  be a reasonable compromise:

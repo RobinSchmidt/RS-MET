@@ -552,7 +552,7 @@ template class RAPT::rsCrossOver4Way<double, double>;
 
 
 template class rsStateVariableFilterChain<double, double>; // not yet in RAPT namespace
-
+template class rsStateVariableFilterChain<float, float>; 
 
 
 // Physics:
