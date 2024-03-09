@@ -3857,13 +3857,7 @@ void showRedZapsInstFreqs()
     instPitches.setRow(i, instPitch);
   }
 
-
-  // Plot the rows of the matrix as function family:
-  plotMatrixRows(signals);
-  plotMatrixRows(instFreqs);
-  plotMatrixRows(instPitches);
-
-  // Create row-wise differences of tbe pitches to figure out if the graphs are just shifted copies
+  // Create row-wise differences of the pitches to figure out if the graphs are just shifted copies
   // of one another which would lead to a constant row-wise difference:
   Mat pitchDiffs(numSignals-1, numSamples);
   for(int i = 0; i < numSignals-1; i++)
@@ -3871,10 +3865,30 @@ void showRedZapsInstFreqs()
     for(int j = 0; j < numSamples; j++)
       pitchDiffs(i, j) = instPitches(i+1, j) - instPitches(i, j);
   }
-  plotMatrixRows(pitchDiffs); 
 
-  //rsPlotVectors()
 
+  // Plot the rows of the matrix as function family:
+  //plotMatrixRows(signals);
+  //plotMatrixRows(instFreqs);
+  //plotMatrixRows(instPitches);
+  //plotMatrixRows(pitchDiffs);
+
+
+  // Grab the lowest frequency row for more detailed analysis:
+  Vec x = instPitches.getRowAsVector(0);
+  int N = (int) x.size();
+  rsPlotVector(x);
+
+  // Plot numerical derivative:
+  //using ND = rsNumericDifferentiator<Real>; 
+  using AT = rsArrayTools;
+  Vec dx = x;
+  AT::difference(&dx[0], N);
+  rsPlotVector(dx);
+  // ToDo: compute more accurate estimates using central differences
+  // The derivative looks like an upside down 1/x function
+
+  //ND::derivative(&x[0]
 
 
 
@@ -3886,7 +3900,11 @@ void showRedZapsInstFreqs()
   //  that the different graphs are indeed almost vertically shifted copies of one another. This
   //  seems plausible because the absolute frequency should not really affect the general shape - 
   //  at least not in an mathematically idealized scenario (like in continuous time).
-  //  
+  //
+  // Conclusions:
+  // -The fact that the pitch curves for different settings of the tuning frequencies are just 
+  //  vertically shifted copies lets us pick just one of them for more detailed investigations and
+  //  transfer the results to the general case.
   //
   // ToDo:
   // -Plot differences of the pitch curves to figure out, if they are just shifted with respect to
@@ -4206,4 +4224,10 @@ void sineSweepBassdrum()
   // -We can actually make a chain linfrac -> exp -> linfrac -> exp etc.
   //  What about exp -> exp? Will that reduce to a single exp with different parameter? I don't
   //  think so.
+  // -Try to unify the mapping  (1 - exp(x*p)) / (1 - exp(p)) as seen here:
+  //  https://www.desmos.com/calculator/obgp9byqgh 
+  //  with our rsLinToExp mapping. The rsLinToExp can't be used with outMin = 0, though. Maybe we
+  //  need to rsLinToExpWithOffset instead? See here:
+  //  https://www.desmos.com/calculator/8r4hnpgomh
+  //  using p = 3.1, a = 3.1, ...
 }

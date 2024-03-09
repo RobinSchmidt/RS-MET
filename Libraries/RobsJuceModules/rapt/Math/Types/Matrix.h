@@ -561,6 +561,8 @@ public:
   }
   // todo: use *= - (needs implementation of that operator in rsRationalFunction)
 
+  /** Returns a copy of the i-th row as a std::vector. */
+  std::vector<T> getRowAsVector(int i) const { return toVector(getRowPointerConst(i), numCols); }
 
   /** Copies data of i-th row into given array arr which should be of length numCols. */
   void copyRow(int i, T* arr) const
