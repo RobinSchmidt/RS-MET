@@ -3534,7 +3534,7 @@ void flatZapperPhaseTweaks()
   // end of the sweep because that's where the phase-problems may occur when mixing a so created
   // bassdrum with a bassline. We want to have control over the phase there.
 
-  // Create the reference signal:
+  // Create the reference signal using the default parameter settings:
   using Vec = std::vector<double>;
   Vec x_50_15_8000 = getBrownZap(50, 15,  8000, 0.0);
 
@@ -3787,6 +3787,13 @@ void showFlatZapsInstFreq()
   // rsFlatZapper. The goal is to get a better feeling for how the shape of the inst-freq plot
   // behaves as function of the allpass frequency. We use a single tuning frequency for all
   // allpasses, i.e. lowFreq = highFreq = freq.
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  // Setup:
+  Real sampleRate = 48000;
+  Vec  freqs      = Vec({ 250, 500, 1000, 2000, 4000 });
 
 
 

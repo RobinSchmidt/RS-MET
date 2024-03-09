@@ -604,6 +604,18 @@ void rsFlatZapper::updateCoeffs()
   //  a setup(T inMin, T inMax, T outMin, T outMax) function and a map(T x) function. See 
   //  rsMapper in RAPT (Math/Functions/Mappers.h/cpp)
   // -precompute 1 / (numStages-1)
-  // -avoid the typecast to double per iteration - maybe use a double as second loop counter
+  // -avoid the typecast to double per iteration - maybe use a double variable as second loop 
+  //  counter that just counts up a double in parallel. We still need the int i, though because of
+  //  the call to setup...AllpassStage which takes an int as first parameter.
   // -Use simd
 }
+
+// See also:
+// https://kilohearts.com/products/disperser
+// https://github.com/robbert-vdh/diopser
+// They seem to be similar in what they do. Diopser also seems to have a mor where the allpass 
+// tunings are distributed linearly. Try that, too. I think, we just need to replace the calls to
+// rsLinToExp with calls to rsLinToLin. But even better would be a continuous parameter to morph 
+// between liner and exponential and maybe go beyond. Check the functions used the 
+// sineSweepBassdrum() experiment. There's this adjustable exp mapping that is also used for the 
+// shape of the envelope segments in the sampler.
