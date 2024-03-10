@@ -4298,6 +4298,15 @@ void sineSweepBassdrum2()
   // We just need to multiply numertaor and denominator by 1/c whenever c != 1. This doesn't change
   // the function. So, we have actually 4 algo parameters: a,b,d,p. The eventual goal is to map 
   // some intuitive user parameters to these 4 algo parameters ...TBC...
+  //
+  // The initial start frequency f_s = f(0) = a/c = a  when c = 1. The asymptotic end frequency is
+  // given by b/d which is zero when b = 0. The speed and shape of the sweep are determined by
+  // d and p. Increasing d makes the sweep faster.
+  //
+  // It seems like start and (asymptotic) end freq f_s and f_e (or fHigh, fLow) could make for good
+  // user parameters. But we some´how need to disentangle speed and shape. I think, d only controls
+  // the speed but not the shape (verify!) whereas p influences both - speed and shape.
+  //   // 
 
 
   using Real       = double;
