@@ -3915,13 +3915,15 @@ void showRedZapsInstFreqs()
   //  transfer the results to the general case.
   // -We can get a pretty damn good fit to the numerical derivative of the instantaneous pitch p(n)
   //  by using a function like  a / (n+1)  where a is something like -20 and we use n+1 only to 
-  //  avoid division by zero and that +1 doesn't really change much. So, in an idnealized scenario,
+  //  avoid division by zero and that +1 doesn't really change much. So, in an idealized scenario,
   //  with continuous time t, let's say p'(t) = a/t. Then, taking the integral, we get 
   //  p(t) = a * ln(t) + C. This is our pitch envelope as function of time t.
   // -Converting from pitch to freq, we use exp, so, when we ignore constants, we get 
   //  f(t) = exp(p(t)) = exp(a * ln(t) + C) = exp(a*ln(t)) * exp(C) = exp(ln(t))^a * exp(C) 
-  //       = t^a * exp(C)
+  //       = t^a * exp(C)  ...where a is negative. I think, the larger the absolute value of a, the
+  //  faster the decay
   // -I think, the freq-envelope should perhaps be a combination of a linfrac-law and a power law.
+  //  Maybe something like (a + b x^p) / (c + d x^p)
   //
   // ToDo:
   // -Plot differences of the pitch curves to figure out, if they are just shifted with respect to
@@ -4134,8 +4136,8 @@ void sineSweepBassdrum()
   Real length     =     0.25;    // Length of the sweep in seconds
   Real phase      =     0;       // Start phase in radians
   Real amplitude  =     0.5;     // Overall amplitude
-  Real param1     =     4.0;     // Shape parameter 1
-  Real param2     =     4.0;     // Shape parameter 2
+  Real param1     =     2.0;     // Shape parameter 1
+  Real param2     =     2.0;     // Shape parameter 2
 
 
   // The functions that determines the shape of the frequency sweepdown in a normalied coordinate 
@@ -4167,11 +4169,15 @@ void sineSweepBassdrum()
   // Power law:
   auto shapePow = [](Real x, Real p, Real dummy)
   {
-    p = rsLog2(p);  // The actual power that we use - the parameter p is its base-2 log
+    //p = rsLog2(p);  // The actual power that we use - the parameter p is its base-2 log
+    // maybe negate? we want positive values of p to give the "right" shape
+
+    p = RAPT::rsPow(2.0, -p);
     return pow(x, p);
   };
-  // needs tests
-
+  // https://www.desmos.com/calculator/irqvnj13di
+  // Another variant would be to mirror this curve over the line through (0,1),(1,0), i.e. make it
+  // more pointy towards 1 and smoother towards 0
 
   // Combine a linfrac and an exp shape:
   auto shapeLinFracExp = [&](Real x, Real p1, Real p2)
@@ -4196,7 +4202,8 @@ void sineSweepBassdrum()
   //auto shapeFunc = shapeLinFrac;
   //auto shapeFunc = shapeExp;
   //auto shapeFunc = shapeLinFracExp;
-  auto shapeFunc = shapeExpLinFrac;
+  //auto shapeFunc = shapeExpLinFrac;
+  auto shapeFunc = shapePow;
 
 
   int  N = ceil(length * sampleRate);
