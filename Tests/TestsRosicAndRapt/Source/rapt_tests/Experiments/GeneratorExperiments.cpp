@@ -4300,8 +4300,8 @@ void sineSweepBassdrum2()
   Real  a          =  8000;
   Real  b          =     0;
   Real  c          =     1;        // We may always normalize to c=1, I think
-  Real  d          =  2000;        // Sweep speed
-  Real  p          =     1;        // Sweep shape.
+  Real  d          = 25000;        // Sweep speed
+  Real  p          =     2;        // Sweep shape.
 
   //Real startFreq  =  8000;       // Start frequency of the sweep
 
@@ -4335,6 +4335,12 @@ void sineSweepBassdrum2()
 
 
   int dummy = 0;
+
+  // Observations:
+  // -Higher p (like p=2) let the sweep reside a bit at the highest freq before the sweepdown 
+  //  begins. This may be used to emphasize the initial high-freq transient.
+  // -With higher p, we also need higher d.
+  // -Good settings: (a=8000, b=0, c=1, d=2000, p=1), (a=8000, b=0, c=1, d=25000, p=2)
 
   // ToDo:
   // -Add more envelope shapes into the BreakpointModulator: Exp, Rat, Pow from above but also Log
