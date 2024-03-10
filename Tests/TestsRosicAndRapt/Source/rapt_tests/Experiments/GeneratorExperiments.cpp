@@ -4134,7 +4134,7 @@ void sineSweepBassdrum1()
   Real startFreq  =  8000;       // Start frequency of the sweep
   Real endFreq    =     0;       // End frequency of the sweep
   Real length     =     0.25;    // Length of the sweep in seconds
-  Real phase      =     0;       // Start phase in radians
+  Real phase      =     0;       // Start phase in degrees
   Real amplitude  =     0.5;     // Overall amplitude
   Real param1     =    +2.0;     // Shape parameter 1
   Real param2     =    +4.0;     // Shape parameter 2
@@ -4176,28 +4176,29 @@ void sineSweepBassdrum1()
   // Another variant would be to mirror this curve over the line through (0,1),(1,0), i.e. make it
   // more pointy towards 1 and smoother towards 0
 
-  // Combine a linfrac and an exp shape:
+  // Combine a rational and an exponential shape:
   auto shapeRatExp = [&](Real x, Real p1, Real p2)
   {
     Real d = 0.0;                       // Dummy parameter
     Real y = shapeRat(x, p1, d);
-    Real z = shapeExp(    y, p2, d);
+    Real z = shapeExp(y, p2, d);
     return z;
   };
 
+  // Combine an exponential and a rational shape:
   auto shapeExpRat = [&](Real x, Real p1, Real p2)
   {
     Real d = 0.0;                       // Dummy parameter
-    Real y = shapeExp(    x, p1, d);
+    Real y = shapeExp(x, p1, d);
     Real z = shapeRat(y, p2, d);
     return z;
   };
 
-
+  // 
   auto shapePowRat = [&](Real x, Real p1, Real p2)
   {
     Real d = 0.0;                       // Dummy parameter
-    Real y = shapePow(    x, p1, d);
+    Real y = shapePow(x, p1, d);
     Real z = shapeRat(y, p2, d);
     return z;
   };
@@ -4276,35 +4277,78 @@ void sineSweepBassdrum1()
   //  need to rsLinToExpWithOffset instead? See here:
   //  https://www.desmos.com/calculator/8r4hnpgomh
   //  using p = 3.1, a = 3.1, ...
-
-  // This video:
-  // https://www.youtube.com/watch?v=ss0nUoE17yg
-  // the transient of a drum sound is up to 5 ms long, the body around 40 ms and the tail however
-  // log it takes 
 }
 
 void sineSweepBassdrum2()
 {
   // Under Construction
   
-  // 
+  // Previous experiments found that a function like f(t) = (a + b*t^p) / (c + d*t^p) might be 
+  // suitable for the instantaneous frequency f as function of t when the goal is to recreate the
+  // shape that we get in allpass impulse responses. Here, a,b,c,d,p are user adjustable 
+  // parameters. The eventual goal is to map some intuitive user parameters to these 5 algo 
+  // parameters ...TBC...
 
-  using Real = double;
-  int  sampleRate = 44100;       // Sampling rate in Hz
+
+  using Real       = double;
+
+  // Setup:
+  int   sampleRate = 44100;        // Sampling rate in Hz
+  Real  length     =     0.3;      // Length in seconds
+  Real  phase      =     0;        // Start phase in degrees
+  Real  amplitude  =     0.5;      // Overall amplitude
+  Real  a          =  8000;
+  Real  b          =     0;
+  Real  c          =     1;        // We may always normalize to c=1, I think
+  Real  d          =  2000;        // Sweep speed
+  Real  p          =     1;        // Sweep shape.
 
   //Real startFreq  =  8000;       // Start frequency of the sweep
+
+  // Function to produce the shape f(t) = (a + b*t^p) / (c + d*t^p):
+  auto shape = [&](Real t) 
+  { 
+    Real tp = pow(t, p);
+    Real y  = (a + b*tp) / (c + d*tp);
+    return y;
+  };
+
+  // Generate the signal:
+  int N = ceil(length * sampleRate);
+  using Vec = std::vector<Real>;
+  Vec f(N), x(N);                         // Instantaneous frequency and output signal
+  Real phs = RAPT::rsDegreeToRadiant(phase);
+  for(int n = 0; n < N; n++)
+  {
+    x[n]   = amplitude * sin(phs);          // Signal generation
+    Real t = Real(n) / sampleRate;
+    f[n]   = shape(t);
+    Real w = 2*PI*f[n] / sampleRate;
+    phs += w;                               // Phase increment
+  }
+
+  // Visualize
+  rsPlotVector(f);
+  rsPlotVector(x);
+  rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
 
 
 
   int dummy = 0;
 
   // ToDo:
-  // -Add more nevlope shapes into the BreakpointModulator: Exp, Rat, Pow from above but also Log
-  //  
+  // -Add more envelope shapes into the BreakpointModulator: Exp, Rat, Pow from above but also Log
+  // -Replace the low-level a,b,c,d,p algo-parameters by intuitive user-parameters in the setup
 }
 
 void sineSweepBassdrum()
 {
   //sineSweepBassdrum1();
   sineSweepBassdrum2();
+
+
+  // This video:
+  // https://www.youtube.com/watch?v=ss0nUoE17yg
+  // the transient of a drum sound is up to 5 ms long, the body around 40 ms and the tail however
+  // log it takes 
 }
