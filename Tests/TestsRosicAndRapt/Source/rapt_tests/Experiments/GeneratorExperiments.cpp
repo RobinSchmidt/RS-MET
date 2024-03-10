@@ -4294,14 +4294,14 @@ void sineSweepBassdrum2()
 
   // Setup:
   int   sampleRate = 44100;        // Sampling rate in Hz
-  Real  length     =     0.3;      // Length in seconds
+  Real  length     =     0.5;      // Length in seconds
   Real  phase      =     0;        // Start phase in degrees
   Real  amplitude  =     0.5;      // Overall amplitude
   Real  a          =  8000;
   Real  b          =     0;
   Real  c          =     1;        // We may always normalize to c=1, I think
-  Real  d          = 25000;        // Sweep speed
-  Real  p          =     2;        // Sweep shape.
+  Real  d          =   800;        // Sweep speed
+  Real  p          =     0.75;     // Sweep shape
 
   //Real startFreq  =  8000;       // Start frequency of the sweep
 
@@ -4340,7 +4340,9 @@ void sineSweepBassdrum2()
   // -Higher p (like p=2) let the sweep reside a bit at the highest freq before the sweepdown 
   //  begins. This may be used to emphasize the initial high-freq transient.
   // -With higher p, we also need higher d.
-  // -Good settings: (a=8000, b=0, c=1, d=2000, p=1), (a=8000, b=0, c=1, d=25000, p=2)
+  // -Good settings: (a=8000, b=0, c=1, d=2000, p=1), (a=8000, b=0, c=1, d=25000, p=2),
+  //  (a=8000, b=0, c=1, d=8000, p=1.5), (a=8000, b=0, c=1, d=200, p=0.5) -> play back at 
+  //  speed ~ 0.6, (a=8000, b=0, c=1, d=800, p=0.75) -> play at 1.0..2.0
 
   // ToDo:
   // -Add more envelope shapes into the BreakpointModulator: Exp, Rat, Pow from above but also Log
