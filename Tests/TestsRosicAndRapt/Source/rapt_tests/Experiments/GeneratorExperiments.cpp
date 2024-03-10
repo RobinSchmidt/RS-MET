@@ -4120,7 +4120,7 @@ void flatZapper()
 
 }
 
-void sineSweepBassdrum()
+void sineSweepBassdrum1()
 {
   // We generate electronic bassdrum sounds by sinusoidal sweepdowns. The goal is to figure out
   // which kind of function the instantaneous frequency should follow for the best sound. To define
@@ -4157,7 +4157,7 @@ void sineSweepBassdrum()
   };
 
   // Linear fractional law:
-  auto shapeLinFrac = [](Real x, Real p, Real dummy)  // rename to shapeFrac
+  auto shapeLinFrac = [](Real x, Real p, Real dummy)  // rename to shapeFrac or shapeRat
   { 
     // A linear fractional mapping with a parameter p in -inf..+inf where p = 0 is linear. Uses the
     // same parameter mapping as in rsFlatZapper.
@@ -4276,4 +4276,31 @@ void sineSweepBassdrum()
   //  need to rsLinToExpWithOffset instead? See here:
   //  https://www.desmos.com/calculator/8r4hnpgomh
   //  using p = 3.1, a = 3.1, ...
+
+  // This video:
+  // https://www.youtube.com/watch?v=ss0nUoE17yg
+  // the transient of a drum sound is up to 5 ms long, the body around 40 ms and the tail however
+  // log it takes 
+}
+
+void sineSweepBassdrum2()
+{
+  // Under Construction
+  
+  // 
+
+  using Real = double;
+  int  sampleRate = 44100;       // Sampling rate in Hz
+
+  //Real startFreq  =  8000;       // Start frequency of the sweep
+
+  // ToDo:
+  // -Add more nevlope shapes into the BreakpointModulator: Exp, Rat, Pow from above but also Log
+  //  
+}
+
+void sineSweepBassdrum()
+{
+  //sineSweepBassdrum1();
+  sineSweepBassdrum2();
 }
