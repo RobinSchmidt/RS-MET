@@ -4136,8 +4136,8 @@ void sineSweepBassdrum()
   Real length     =     0.25;    // Length of the sweep in seconds
   Real phase      =     0;       // Start phase in radians
   Real amplitude  =     0.5;     // Overall amplitude
-  Real param1     =     2.0;     // Shape parameter 1
-  Real param2     =     2.0;     // Shape parameter 2
+  Real param1     =    +2.0;     // Shape parameter 1
+  Real param2     =    +4.0;     // Shape parameter 2
 
 
   // The functions that determines the shape of the frequency sweepdown in a normalied coordinate 
@@ -4157,7 +4157,7 @@ void sineSweepBassdrum()
   };
 
   // Linear fractional law:
-  auto shapeLinFrac = [](Real x, Real p, Real dummy) 
+  auto shapeLinFrac = [](Real x, Real p, Real dummy)  // rename to shapeFrac
   { 
     // A linear fractional mapping with a parameter p in -inf..+inf where p = 0 is linear. Uses the
     // same parameter mapping as in rsFlatZapper.
@@ -4169,9 +4169,6 @@ void sineSweepBassdrum()
   // Power law:
   auto shapePow = [](Real x, Real p, Real dummy)
   {
-    //p = rsLog2(p);  // The actual power that we use - the parameter p is its base-2 log
-    // maybe negate? we want positive values of p to give the "right" shape
-
     p = RAPT::rsPow(2.0, -p);
     return pow(x, p);
   };
@@ -4197,13 +4194,23 @@ void sineSweepBassdrum()
   };
 
 
+  auto shapePowLinFrac = [&](Real x, Real p1, Real p2)
+  {
+    Real d = 0.0;                       // Dummy parameter
+    Real y = shapePow(    x, p1, d);
+    Real z = shapeLinFrac(y, p2, d);
+    return z;
+  };
+
+
 
   // Select one of the above defined shape function to be used:
   //auto shapeFunc = shapeLinFrac;
   //auto shapeFunc = shapeExp;
   //auto shapeFunc = shapeLinFracExp;
   //auto shapeFunc = shapeExpLinFrac;
-  auto shapeFunc = shapePow;
+  //auto shapeFunc = shapePow;
+  auto shapeFunc = shapePowLinFrac;
 
 
   int  N = ceil(length * sampleRate);
@@ -4240,6 +4247,10 @@ void sineSweepBassdrum()
   //  1000/5 kinda works, too. It doesn't sound very good, though.
   // -Combining linfrac with exp or vice versa with both params around 4 also leads to sounds in
   //  kick territory - but the result sound really bad.
+  // -The raw power law is too "pointy" at the start. I think, we need some sort of tamed power 
+  //  law. Maybe we could control the pointyness?
+  // -With shapePowLinFrac and p1, p2 both positive, we get a rather hard L-shape. Good settings:
+  //  (p1,p2) = (2,4), 
   //
   // Conclusions:
   // -Trying to use simple functions for the frequency envelope does not yet give good results. The
