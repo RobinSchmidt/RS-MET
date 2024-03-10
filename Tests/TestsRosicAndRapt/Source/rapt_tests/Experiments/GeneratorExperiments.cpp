@@ -4157,7 +4157,7 @@ void sineSweepBassdrum1()
   };
 
   // Linear fractional law:
-  auto shapeLinFrac = [](Real x, Real p, Real dummy)  // rename to shapeFrac or shapeRat
+  auto shapeRat = [](Real x, Real p, Real dummy)  // rename to shapeFrac or shapeRat
   { 
     // A linear fractional mapping with a parameter p in -inf..+inf where p = 0 is linear. Uses the
     // same parameter mapping as in rsFlatZapper.
@@ -4177,40 +4177,40 @@ void sineSweepBassdrum1()
   // more pointy towards 1 and smoother towards 0
 
   // Combine a linfrac and an exp shape:
-  auto shapeLinFracExp = [&](Real x, Real p1, Real p2)
+  auto shapeRatExp = [&](Real x, Real p1, Real p2)
   {
     Real d = 0.0;                       // Dummy parameter
-    Real y = shapeLinFrac(x, p1, d);
+    Real y = shapeRat(x, p1, d);
     Real z = shapeExp(    y, p2, d);
     return z;
   };
 
-  auto shapeExpLinFrac = [&](Real x, Real p1, Real p2)
+  auto shapeExpRat = [&](Real x, Real p1, Real p2)
   {
     Real d = 0.0;                       // Dummy parameter
     Real y = shapeExp(    x, p1, d);
-    Real z = shapeLinFrac(y, p2, d);
+    Real z = shapeRat(y, p2, d);
     return z;
   };
 
 
-  auto shapePowLinFrac = [&](Real x, Real p1, Real p2)
+  auto shapePowRat = [&](Real x, Real p1, Real p2)
   {
     Real d = 0.0;                       // Dummy parameter
     Real y = shapePow(    x, p1, d);
-    Real z = shapeLinFrac(y, p2, d);
+    Real z = shapeRat(y, p2, d);
     return z;
   };
 
 
 
   // Select one of the above defined shape function to be used:
-  //auto shapeFunc = shapeLinFrac;
+  //auto shapeFunc = shapeRat;
   //auto shapeFunc = shapeExp;
-  //auto shapeFunc = shapeLinFracExp;
-  //auto shapeFunc = shapeExpLinFrac;
+  //auto shapeFunc = shapeRatExp;
+  //auto shapeFunc = shapeExpRat;
   //auto shapeFunc = shapePow;
-  auto shapeFunc = shapePowLinFrac;
+  auto shapeFunc = shapePowRat;
 
 
   int  N = ceil(length * sampleRate);
@@ -4293,6 +4293,10 @@ void sineSweepBassdrum2()
   int  sampleRate = 44100;       // Sampling rate in Hz
 
   //Real startFreq  =  8000;       // Start frequency of the sweep
+
+
+
+  int dummy = 0;
 
   // ToDo:
   // -Add more nevlope shapes into the BreakpointModulator: Exp, Rat, Pow from above but also Log
