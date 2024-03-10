@@ -4283,11 +4283,21 @@ void sineSweepBassdrum2()
 {
   // Under Construction
   
-  // Previous experiments found that a function like f(t) = (a + b*t^p) / (c + d*t^p) might be 
-  // suitable for the instantaneous frequency f as function of t when the goal is to recreate the
-  // shape that we get in allpass impulse responses. Here, a,b,c,d,p are user adjustable 
-  // parameters. The eventual goal is to map some intuitive user parameters to these 5 algo 
-  // parameters ...TBC...
+  // Previous experiments (in showRedZapsInstFreqs()) found that a function like 
+  // f(t) = (a + b*t^p) / (c + d*t^p) might be  suitable for the instantaneous frequency f as 
+  // function of t when the goal is to recreate the shape that we get in allpass impulse responses.
+  // I found that the derivative of the instantaneous pitch looks genenrally like dp(t)/dt = a/t 
+  // for some negative constant a. That means that the instantaneous pitch itself look 
+  // qualitatively like p(t) = a * log(t) + C. Exponentiating that, we get the instantaneous freq
+  // as something like f(t) = exp(a * log(t) + C) = exp(a * log(t)) * exp(C) = t^a * exp(C).
+  // Remembering that a was negative and renaming variables (-a -> p, exp(C) -> a), we get:
+  // f(t) = a / t^p where p is now a positive parameter (not inst. pitch anymore). To avoid a 
+  // singularity at t=0, we modify that into f(t) = a / (1 + t^p). Generalizing a bit further,
+  // we arrive at the general form given above: f(t) = (a + b*t^p) / (c + d*t^p). Here, a,b,c,d,p 
+  // are user adjustable parameters. We can actually always normalize the function to c=1, though.
+  // We just need to multiply numertaor and denominator by 1/c whenever c != 1. This doesn't change
+  // the function. So, we have actually 4 algo parameters: a,b,d,p. The eventual goal is to map 
+  // some intuitive user parameters to these 4 algo parameters ...TBC...
 
 
   using Real       = double;
