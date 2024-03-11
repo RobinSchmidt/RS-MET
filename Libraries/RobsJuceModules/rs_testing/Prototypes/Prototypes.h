@@ -416,40 +416,30 @@ template<class T>
 T rsUnitIntervalMapper<T>::mapLinearFractional(T x, T p)
 {
   T c = T(0.5) * (p+T(1));  // -1..+1  ->  0..1. Desired y-value at x=0.5
-  T a = T(2)*c - 1;
+  T a = T(2)*c - T(1);
   return RAPT::rsRationalMap_01(x, a);
-
   // ToDo: simplify computation of a.
 }
 
 template<class T>
 T rsUnitIntervalMapper<T>::mapExponential(T x, T p)
 {
-
   T c = T(0.5) * (p+T(1)); 
-  T a = 2.0*log((1.0-c)/c);
-  return (1.0 - exp(a*x)) / (1.0 - exp(a));
-  
-  //return x;  // preliminary
+  T a = T(2)*log((T(1)-c)/c);
+  return (T(1) - exp(a*x)) / (T(1) - exp(a));
 }
 
 template<class T>
 T rsUnitIntervalMapper<T>::mapPower(T x, T p)
 {
   T c = T(0.5) * (p+T(1));
+  T a = rsLog(1.0/c) / rsLog(2.0);
+  return pow(x, a);
 
-  T a1 = rsLogB(c, T(0.5));  // Logarithm to base 0.5 ...seems wrong
-
-  T a = rsLog(1.0/c) / rsLog(2.0);  // via wolfram
   // https://www.wolframalpha.com/input?i=solve+%281%2F2%29%5Ea+%3D+c+for+a
-
-  return pow(x, a);  // rsPow has stack overflow
-
-  // That seems to be still wrong
-
-  //return x;  // preliminary
-
-  // ToDo: optimize: logB(x) = log(x) / log(B)  ->  precompute 1/log(B)
+  // ToDo: 
+  // -Optimize: logB(x) = log(x) / log(B)  ->  precompute 1/log(B) as constexpr
+  // -Use rsPow - but it currently produces a stack overflow. Figure out why and fix this!
 }
 
 // The formulas were derived by first computing the desired y-value at x=0.5 from the parameter p.
@@ -463,9 +453,16 @@ template<class T>
 T rsUnitIntervalMapper<T>::map(T x) const
 {
   rsAssert(x >= T(0) && x <= T(1), "Input out of range in rsUnitIntervalMapper::map");
-
-  return x;  // preliminary
+  T p = shapeParam;
+  switch(shape)
+  {
+  case Shape::linfrac:     return mapLinearFractional(x, p);
+  case Shape::exponential: return mapExponential(     x, p);
+  case Shape::power:       return mapPower(           x, p);
+  default:                 return x;
+  }
 }
+// Needs tests
 
 
 
