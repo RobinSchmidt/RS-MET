@@ -4050,12 +4050,13 @@ void unitIntervalMap()
 
   // Create the normal, raw mappings:
   Vec x = rsLinearRangeVector(N, 0, 1);
-  Vec yRat(N), yPow(N), yExp(N);
+  Vec yRat(N), yPow(N), yExp(N), yTanh(N);
   for(int n = 0; n < N; n++)
   {
-    yRat[n] = Mapper::mapLinearFractional(x[n], p);
-    yPow[n] = Mapper::mapPower(           x[n], p);
-    yExp[n] = Mapper::mapExponential(     x[n], p);
+    yRat[n]  = Mapper::mapLinearFractional(x[n], p);
+    yPow[n]  = Mapper::mapPower(           x[n], p);
+    yExp[n]  = Mapper::mapExponential(     x[n], p);
+    yTanh[n] = Mapper::mapTanh(            x[n], p);
   }
 
   // Create reversed mappings. We negate the p as well to maintain it's meaning in terms of 
@@ -4077,7 +4078,8 @@ void unitIntervalMap()
   //rsPlotVectorsXY(x, yRat, zRat);         // They are the same - as expected
   //rsPlotVectorsXY(x, yExp, zExp);         // Dito
   //rsPlotVectorsXY(x, yPow, zPow);         // These are indeed different
-  rsPlotVectorsXY(x, yRat, yExp, yPow, zPow);
+  //rsPlotVectorsXY(x, yRat, yExp, yPow, zPow);
+  rsPlotVectorsXY(x, yRat, yExp, yTanh);  // Tanh looks wrong - doesn't go through (0.5,c)
 
   // ToDo:
   // -For p = 0, we get NaN for the exp-mapping. This case needs special treatment. Also for values

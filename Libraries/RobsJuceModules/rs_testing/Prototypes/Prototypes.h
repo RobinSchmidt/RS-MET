@@ -390,6 +390,9 @@ public:
   static T mapPower(           T x, T p);
   static T mapPowerReverse(    T x, T p);
 
+  static T mapTanh(            T x, T p);  // experimental
+
+
   // Maybe give the function names some qualifier that says something about the meanign of p.
   // Maybe use abbreviations for the shapes (Rat, Exp, Pow)
 
@@ -456,13 +459,24 @@ T rsUnitIntervalMapper<T>::mapPower(T x, T p)
   //  called using implicit conversion which will give wrong results. 
 }
 
-
 template<class T>
 T rsUnitIntervalMapper<T>::mapPowerReverse(T x, T p)
 {
   return T(1) - mapPower(T(1)-x, -p);
 }
 // Needs tests
+
+
+template<class T>
+T rsUnitIntervalMapper<T>::mapTanh(T x, T p)
+{
+  T c = T(0.5) * (p+T(1));
+  T b = 2*atanh(c*tanh(c));
+  T a = 1 / tanh(b);
+  return a * tanh(b*x);
+}
+// needs tests
+
 
 
 // The formulas were derived by first computing the desired y-value at x=0.5 from the parameter p.
