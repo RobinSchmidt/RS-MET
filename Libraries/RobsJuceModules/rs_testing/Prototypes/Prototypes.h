@@ -367,10 +367,11 @@ public:
 
   enum class Shape
   {
-    identity,      // f(x) = x
-    linfrac,       // f(x) = (a x + b) / (c x + d)
-    exponential,   // f(x) = ....
-    power          // f(x) = x^p  where  p = ...
+    identity,       // f(x) = x
+    linfrac,        // f(x) = (a x + b) / (c x + d)
+    exponential,    // f(x) = ....
+    power           // f(x) = x^p  where  p = ...
+    //powerReverse,   // g(x) = 1 - f(1-x) where f(x) is power function x^p, p is negated, though
   };
 
 
@@ -387,6 +388,8 @@ public:
   static T mapLinearFractional(T x, T p);  // maybe abbreviate
   static T mapExponential(     T x, T p);
   static T mapPower(           T x, T p);
+  static T mapPowerReverse(    T x, T p);
+
   // Maybe give the function names some qualifier that says something about the meanign of p.
   // Maybe use abbreviations for the shapes (Rat, Exp, Pow)
 
@@ -452,6 +455,15 @@ T rsUnitIntervalMapper<T>::mapPower(T x, T p)
   // -Use rsPow - but currently we only have an implementation with integer exponents. It will get
   //  called using implicit conversion which will give wrong results. 
 }
+
+
+template<class T>
+T rsUnitIntervalMapper<T>::mapPowerReverse(T x, T p)
+{
+  return T(1) - mapPower(T(1)-x, -p);
+}
+// Needs tests
+
 
 // The formulas were derived by first computing the desired y-value at x=0.5 from the parameter p.
 // Let's call that y-value c. Then we have c = (p+1)/2. Then the formula f(x,a) with its internal 

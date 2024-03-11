@@ -4072,16 +4072,18 @@ void unitIntervalMap()
 
 
   // Plotting:
-  rsPlotVectorsXY(x, yRat, yPow, yExp);   // Regular mappings
-  rsPlotVectorsXY(x, zRat, zPow, zExp);   // Reversed mappings
-  rsPlotVectorsXY(x, yRat, zRat);         // They are the same - as expected
-  rsPlotVectorsXY(x, yExp, zExp);         // Dito
-  rsPlotVectorsXY(x, yPow, zPow);         // These are indeed different
+  //rsPlotVectorsXY(x, yRat, yPow, yExp);   // Regular mappings
+  //rsPlotVectorsXY(x, zRat, zPow, zExp);   // Reversed mappings
+  //rsPlotVectorsXY(x, yRat, zRat);         // They are the same - as expected
+  //rsPlotVectorsXY(x, yExp, zExp);         // Dito
+  //rsPlotVectorsXY(x, yPow, zPow);         // These are indeed different
+  rsPlotVectorsXY(x, yRat, yExp, yPow, zPow);
 
   // ToDo:
   // -For p = 0, we get NaN for the exp-mapping. This case needs special treatment. Also for values
   //  close to 0. We need to figure out, how close we can get.
   // -Implement a unit test.
+  // -Integrate these shapes into rsBreakpointModulator and rsNodeBasedFunction
 
   // Ideas:
   // -Maybe it would be more convenient for the user to drag the shape adjustment point diagonally
