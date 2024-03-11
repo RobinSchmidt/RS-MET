@@ -413,7 +413,15 @@ protected:
 template<class T>
 T rsUnitIntervalMapper<T>::mapLinearFractional(T x, T p)
 {
-  return x;  // preliminary
+
+  //rsRationalMap_01
+  T c = T(0.5) * (p+T(1));  // -1..+1  ->  0..1
+  T a = T(2)*c - 1;
+  return RAPT::rsRationalMap_01(x, a);
+
+  //return x;  // preliminary
+
+  // ToDo: simplify computation of a.
 }
 
 template<class T>
