@@ -1,4 +1,7 @@
-Links to interesting open source audio software projects:
+Links to interesting open source projects
+
+----------------------------------------------------------------------------------------------------
+Audio Software
 
 Ardour:
 https://github.com/Ardour/ardour
@@ -97,9 +100,18 @@ Helm:
 https://github.com/mtytel/helm
 -Subtractive synthesizer 
 
+https://github.com/sudara/awesome-juce
+-List of open source JUCE libraries, plugins and utilities.
+
+----------------------------------------------------------------------------------------------------
+Libraries and SDKs
+
+https://github.com/nothings/stb/
+-Single-file public domain (or MIT licensed) libraries for C/C++.
+-Has image (.png,etc.) read/write, .ttf-rendering
+
 CLAP-SDK and related stuff:
 https://github.com/free-audio
 -Liberally licensed audio plugin format.
 
-https://github.com/sudara/awesome-juce
--List of open source JUCE libraries, plugins and utilities.
+

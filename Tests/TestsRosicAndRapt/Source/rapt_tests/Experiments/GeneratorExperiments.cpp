@@ -4174,7 +4174,16 @@ void sineSweepBassdrum1()
   };
   // https://www.desmos.com/calculator/irqvnj13di
   // Another variant would be to mirror this curve over the line through (0,1),(1,0), i.e. make it
-  // more pointy towards 1 and smoother towards 0
+  // more pointy towards 1 and smoother towards 0. I think, we should use g(x) = 1 - f(1-x) for the
+  // mirrored function g(x) when f(x) is the original function. See:
+  // https://www.desmos.com/calculator/ovjvzxyo2e
+  //
+  // Maybe use a common parameter for all 3 of the shaping functions (exp, rat, pow) that controls 
+  // the y-value for x=0.5, i.e. at the center. It should be in the range 0..1 (ends exclusive) and
+  // can be mapped to the range -1..+1 (ends exclusive). This would make the different functions 
+  // "feel" similar in their usage. Maybe wrap that into a class rsUnitIntervalMapper that has the
+  // shape parameter in -1..+1 and a parameter to select the mapping function.
+
 
   // Combine a rational and an exponential shape:
   auto shapeRatExp = [&](Real x, Real p1, Real p2)
@@ -4365,12 +4374,23 @@ void sineSweepBassdrum2()
   // -Hmm - for p = 1 we have d = 2000, for p = 2 -> d ~= 20000, for p = 0.5 -> d ~= 200. Maybe for
   //  each factor of 2 in p, we need a factor of 10 in d
   // -The parameter d should be proportional to a. d = a/4 seems nice
+  // -This initial flat behavior for p >= 2 (I think) might be not so desirable, after all. Maybe 
+  //  it can be avoided by using the function: x = (t+1)^p, y = (a + b*x) / (d*x). We would drag 
+  //  the +1 into the power function and thereby using only the chunk of the 1/x function where 
+  //  x >= 1.
 
   // ToDo:
   // -Add more envelope shapes into the BreakpointModulator: Exp, Rat, Pow from above but also Log
   // -Replace the low-level a,b,c,d,p algo-parameters by intuitive user-parameters in the setup
   // -Make ToolChain module. HighFreq and LowFreq should be set up in terms midi pitch offset with
   //  respect to the played note. ...but that should be controlled by a "ByKey" parameter.
+  // -Maybe instead of the "speed" parameter, use a time parameter that gives the time at which the
+  //  instantaneous frequency passes through some fixed given low frequency (like 50 Hz). ...but 
+  //  that would become a problem when we use a lowFreq that is above 50 Hz. Or maybe 
+  //  max(k*lowFreq, 50) where k is a constant > 1 (like 1.2 or 1.5 or something in that ballpark).
+  // -For a bassdrum synthesizer, let the user adjust the waveform between SawUp/Sine/SawDown via 
+  //  phase-shaping (using the 2-segment linfrac function, i.e. the saddle/sigmoid version). Then 
+  //  also add an adjustable tanh shaper that turns it into a square (maybe with DC offset).
   //
   // Ideas for the user-parameters fStart (500..20k), fEnd (0..100), shape (-1..+1), speed ()
   // to algo-parameter translation:
