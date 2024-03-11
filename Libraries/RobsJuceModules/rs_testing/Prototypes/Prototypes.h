@@ -413,13 +413,9 @@ protected:
 template<class T>
 T rsUnitIntervalMapper<T>::mapLinearFractional(T x, T p)
 {
-
-  //rsRationalMap_01
-  T c = T(0.5) * (p+T(1));  // -1..+1  ->  0..1
+  T c = T(0.5) * (p+T(1));  // -1..+1  ->  0..1. Desired y-value at x=0.5
   T a = T(2)*c - 1;
   return RAPT::rsRationalMap_01(x, a);
-
-  //return x;  // preliminary
 
   // ToDo: simplify computation of a.
 }
@@ -433,9 +429,26 @@ T rsUnitIntervalMapper<T>::mapExponential(T x, T p)
 template<class T>
 T rsUnitIntervalMapper<T>::mapPower(T x, T p)
 {
-  return x;  // preliminary
+  T c = T(0.5) * (p+T(1));
+
+  T a1 = rsLogB(c, T(0.5));  // Logarithm to base 0.5 ...seems wrong
+
+  T a = rsLog(1.0/c) / rsLog(2.0);  // via wolfram
+  // https://www.wolframalpha.com/input?i=solve+%281%2F2%29%5Ea+%3D+c+for+a
+
+  return pow(x, a);  // rsPow has stack overflow
+
+  // That seems to be still wrong
+
+  //return x;  // preliminary
+
+  // ToDo: optimize: logB(x) = log(x) / log(B)  ->  precompute 1/log(B)
 }
 
+// The formulas were derived by first computing the desired y-value at x=0.5 from the parameter p.
+// Let's call that y-value c. Then we have c = (p+1)/2. Then the formula f(x,a) with its internal 
+// formula parameter a is equated to that constant c while setting x to 0.5:  f(0.5,a) = c. Then
+// the equation is solved for the formula parameter a.
 
 
 
