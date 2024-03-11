@@ -4039,6 +4039,29 @@ void unitIntervalMap()
 
   using Real   = double;
   using Mapper = rsUnitIntervalMapper<Real>;
+  using Vec    = std::vector<Real>;
+
+  Real p = 0.6;  // Parameter that controls the shape in -1..+1, ends exclusive.
+  int  N = 800;  // Number of sample points for the plot.
+
+  //
+  //Mapper mapper;
+
+
+
+  Vec x = rsLinearRangeVector(N, 0, 1);
+  Vec yRat(N), yPow(N), yExp(N);
+  for(int n = 0; n < N; n++)
+  {
+    yRat[n] = Mapper::mapLinearFractional(x[n], p);
+    yPow[n] = Mapper::mapPower(           x[n], p);
+    yExp[n] = Mapper::mapExponential(     x[n], p);
+  }
+
+  rsPlotVectorsXY(x, yRat, yPow, yExp);
+
+
+
 
 
   int dummy = 0;

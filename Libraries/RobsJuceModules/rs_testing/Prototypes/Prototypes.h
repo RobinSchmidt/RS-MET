@@ -411,6 +411,27 @@ protected:
 
 
 template<class T>
+T rsUnitIntervalMapper<T>::mapLinearFractional(T x, T p)
+{
+  return x;  // preliminary
+}
+
+template<class T>
+T rsUnitIntervalMapper<T>::mapExponential(T x, T p)
+{
+  return x;  // preliminary
+}
+
+template<class T>
+T rsUnitIntervalMapper<T>::mapPower(T x, T p)
+{
+  return x;  // preliminary
+}
+
+
+
+
+template<class T>
 T rsUnitIntervalMapper<T>::map(T x) const
 {
   rsAssert(x >= T(0) && x <= T(1), "Input out of range in rsUnitIntervalMapper::map");
