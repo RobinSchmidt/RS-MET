@@ -470,13 +470,21 @@ T rsUnitIntervalMapper<T>::mapPowerReverse(T x, T p)
 template<class T>
 T rsUnitIntervalMapper<T>::mapTanh(T x, T p)
 {
+  rsAssert(p > 0, "Works only for p > 0 at the moment");
+  // This is still under construction. I'm not sure yet what to do for p < 0.
+
   T c = T(0.5) * (p+T(1));
-  //T b = 2*atanh(c*tanh(c));
+
+  // Works only for p > 0:
   T b = log( (sqrt(2*c-1)-c) / (c-1) );
   T a = 1 / tanh(b);
   return a * tanh(b*x);
-
   // https://www.wolframalpha.com/input?i=solve+tanh%28b%2F2%29%2Ftanh%28b%29+%3D+c+for+b
+
+  // ToDo:
+  // Use something based on atanh fo c < 0 - hmm - wolfram can't solve this:
+  // https://www.wolframalpha.com/input?i=solve+atanh%28a%2F2%29%2Fatanh%28a%29+%3D+c+for+a
+  // ...at least not in standard computation time. Maybe this needs to be solved numercially?
 }
 // needs tests
 
