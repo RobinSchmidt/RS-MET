@@ -3990,6 +3990,13 @@ double spreadAmounts2(double x, double y)
 }
 void twoParamRemap()
 {
+  // There's is some discussion with Elan on my GitHub about this -> find this and document what we
+  // are trying to achieve here. I think, it's meant to map from a single "amount" parameter 
+  // together with an associated "spread" parameter to two indiviudal amounts. Like, when we want 
+  // to have two cutoffs for left and right channel but want to give the use one parameter for the 
+  // cutoff and another for the cutoff difference between the channels.
+
+
   // ...figure out, if for every output pair (z1,z2) there is an input pair (x,y) that leads to
   // the desired output pair...maybe try to find the inverse function 
   // we have (z1,z2) = f(x,y) -> find (x,y) = g(z1,z2) where g is the inverse of z
@@ -4023,6 +4030,18 @@ void twoParamRemap()
 
 
   //http://gnuplot.sourceforge.net/demo/contours.html
+}
+
+void unitIntervalMap()
+{
+  // Tests class rsUnitIntervalMapper that maps the unit interval 0..1 to itself using a mapping
+  // function that can be adjusted by a user parameter to control the shape. ...TBC...
+
+  using Real   = double;
+  using Mapper = rsUnitIntervalMapper<Real>;
+
+
+  int dummy = 0;
 }
 
 void numberTheoreticTrafo()

@@ -104,6 +104,8 @@ int main(int argc, char* argv[])
   //particleBouncerExperiment();
 
   // Math:
+
+  // Linear Algebra:
   //determinant();
   //characteristicPolynomial();
   //testSubSpaces();               // todo: move to unit tests
@@ -117,10 +119,13 @@ int main(int argc, char* argv[])
   //expBipolar();
   //expGaussBell();
   //iteratedNumDiff();
+
+  // Interpolation:
   //linearFractionalInterpolation();
   //monotonicInterpolation();
   //interpolatingFunction();
 
+  // Curve Fitting:
   //linearRegression();
   //multipleRegression();
   //polynomialRegression();
@@ -141,6 +146,7 @@ int main(int argc, char* argv[])
   //ratiosMetallic();
   //sinCosTable();   // new polynomial approximation is called from unit tests
   //twoParamRemap();
+  unitIntervalMap();
   //numberTheoreticTrafo();   // move to unit tests!
   //numberTheoreticTrafoModuli();
   //powerIterator();
@@ -240,7 +246,7 @@ int main(int argc, char* argv[])
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
   //flatZapper();
-  sineSweepBassdrum();
+  //sineSweepBassdrum();
 
   // Modulators:
   //attackDecayEnvelope();

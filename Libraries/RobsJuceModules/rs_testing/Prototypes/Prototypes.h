@@ -354,6 +354,74 @@ void rsCircularShift(int* a, int N, int k);
 
 //=================================================================================================
 
+/** NOT YET FINISHED.
+
+Class to map the unit interval invertibly onto itself providing different mapping functions. 
+...TBC...  */
+
+template<class T>
+class rsUnitIntervalMapper
+{
+
+public:
+
+  enum class Shape
+  {
+    identity,      // f(x) = x
+    linfrac,       // f(x) = (a x + b) / (c x + d)
+    exponential,   // f(x) = ....
+    power          // f(x) = x^p  where  p = ...
+  };
+
+
+  T map(T x) const;
+
+  // Maybe have also an unmap function. Our mapping functions are designed in such a way that the
+  // unmap (i.e. the inverse of map) is always the same as map but with negated parameter. 
+  // ...or is it?
+
+
+  static T mapLinearFractional(T x, T p);
+
+
+  static T mapExponential(T x, T p);
+
+
+  static T mapPower(T x, T p);
+
+
+
+protected:
+
+
+
+  //T shape = T(0);  // Shape parameter in -1..+1, ends exclusive
+
+  Shape shape = Shape::identity;
+  T shapeParam = T(0);               // < 0: convex, = 0: identity, > 0: concave
+
+  // See also rsNodeBasedFunction
+
+};
+
+// Maybe have 2 bool options:
+// -reverse: use g(x) = 1 - f(1-x). For linfrac, it will make no difference, I think. But for 
+//  others, it will.
+// -bipolar: use 2 segments that meet at (0.5,0.5) -> turn concave/convex into saddle/sigmoid.
+
+
+template<class T>
+T rsUnitIntervalMapper<T>::map(T x) const
+{
+  rsAssert(x >= T(0) && x <= T(1), "Input out of range in rsUnitIntervalMapper::map");
+
+  return x;  // preliminary
+}
+
+
+
+//=================================================================================================
+
 /** Linear fractional interpolation is an interpolation method constructed around the so called 
 linear fractional transformations. These are functions of the form:
 

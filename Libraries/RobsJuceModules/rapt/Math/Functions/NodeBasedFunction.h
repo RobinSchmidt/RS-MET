@@ -112,6 +112,8 @@ public:
   may not be removed, if the overriden isNodeRemovable function in a subclass returns false
   for the node in question). */
   virtual bool removeNode(size_t index);
+  // I think, the idea is that in some contexts, some nodes must always be there - like the first 
+  // and last - and can therefore not be removed (-> verify and document).
 
   /** Moves an existing datapoint with given index to a new position. Because we always keep our 
   data arrays sorted, this may change the index of the datapoint inside the array. The return value
@@ -122,6 +124,7 @@ public:
   position. It will move the node up or down in the array of nodes (by successive swaps) to keep 
   the array sorted. The return value is the new index. */
   size_t moveNodeToSortedIndex(size_t index);
+  // Maybe move into protected area, if possible
 
   /** Sets the shape type for the node at given index. */
   virtual void setNodeShapeType(size_t index, int newType) { nodes[index].setShapeType(newType); }
@@ -140,7 +143,7 @@ public:
   it in a subclass if your subclass - for example - requires a certain minimum number of nodes. */
   virtual bool isNodeRemovable(size_t /*index*/) const { return true; }
 
-  // todo: maybe add a canNodeBeAdded(T x, T y) function. subclasses my have a maximum number of
+  // todo: maybe add a canNodeBeAdded(T x, T y) function. subclasses may have a maximum number of
   // nodes and/or disallow adding nodes outside a given (x,y) range
 
   /** This function is called after a node has been inserted or moved to a new position. You can
@@ -180,7 +183,8 @@ public:
 
   /** Returns a reference to our array of nodes. It's a constant reference because client code
   is not allowed to edit that data directly. Instead, it must use the moveNode function which
-  will update the datapoint and do some additional stuff. */ 
+  will update the datapoint and do some additional bookkeeping stuff (like keeping the nodes 
+  sorted). */ 
   const std::vector<rsFunctionNode<T>>& getNodes() const { return nodes; }
 
   /** Returns true, if the datapoint at index i+1 is considered to be "less than" the datapoint at 
@@ -197,8 +201,14 @@ public:
         return i;
     return nodes.size();
   }
-  // todo: use binary search with a start-index based on the previously retrieved value
+  // ToDo: use binary search with a start-index based on the previously retrieved value
   // see https://www.geeksforgeeks.org/binary-search/
+  // ...although, for small arrays, linear search might actually be better:
+  // https://www.reddit.com/r/cpp/comments/w939hb/why_is_linear_search_faster_than_binary_search/
+  // where "small" means <= 128 according to this post. Tn the way that this class is currently 
+  // used mostly (for parameter remapping in the context of modulation and automation), this will 
+  // usually be the case. See also:
+  // https://dirtyhandscoding.wordpress.com/2017/08/25/performance-comparison-linear-search-vs-binary-search/
 
   //-----------------------------------------------------------------------------------------------
   // \name Output computation
@@ -227,7 +237,12 @@ public:
 
     //return getValueLinear(x, i-1);
   }
-  // rename to applyFunction
+  // ToDo:
+  // -Maybe rename to applyFunction
+  // -Maybe let the caller pass an initial guess for where the node/segment is and then do a 
+  //  forward/backward search instead of searching through the whoel array every time. This initial
+  //  guess could be based ona a previous call - usually, function values will be requested in 
+  //  order rather that randomly. Or maybe keep such a guess-index as member variable.
 
   /** The function call operator. Returns the same value as getValue and makes objects of this 
   class usable as functors/function-objects suitable for input into root-finders, etc. */

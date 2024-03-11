@@ -127,6 +127,7 @@ void sinCosTable();
 void expBipolar();
 void expGaussBell();
 void twoParamRemap();
+void unitIntervalMap();
 void numberTheoreticTrafo();
 
 
