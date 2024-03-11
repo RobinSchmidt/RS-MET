@@ -4048,6 +4048,7 @@ void unitIntervalMap()
   // p/2 + 1/2 = (p+1)/2.
 
 
+  // Create the normal, raw mappings:
   Vec x = rsLinearRangeVector(N, 0, 1);
   Vec yRat(N), yPow(N), yExp(N);
   for(int n = 0; n < N; n++)
@@ -4057,9 +4058,8 @@ void unitIntervalMap()
     yExp[n] = Mapper::mapExponential(     x[n], p);
   }
 
-  rsPlotVectorsXY(x, yRat, yPow, yExp);
-
-  // Create reversed mappings:
+  // Create reversed mappings. We negate the p as well to maintain it's meaning in terms of 
+  // concave/convex:
   Vec zRat(N), zPow(N), zExp(N);
   for(int n = 0; n < N; n++)
   {
@@ -4067,18 +4067,27 @@ void unitIntervalMap()
     zPow[n] = 1 - Mapper::mapPower(           1-x[n], -p);
     zExp[n] = 1 - Mapper::mapExponential(     1-x[n], -p);
   }
-  // We negate the p as well to maintain it's meaning in terms of concave/convex
+  //
 
 
-  rsPlotVectorsXY(x, zRat, zPow, zExp);
 
-
+  // Plotting:
+  //rsPlotVectorsXY(x, yRat, yPow, yExp);  // Regular mappings
+  //rsPlotVectorsXY(x, zRat, zPow, zExp);  // Reversed mappings
+  //rsPlotVectorsXY(x, yRat, zRat);          // They are the same - as expected
+  //rsPlotVectorsXY(x, yExp, zExp);            // Dito
+  rsPlotVectorsXY(x, yPow, zPow);
 
   // ToDo:
   // -For p = 0, we get NaN for the exp-mapping. This case needs special treatment. Also for values
   //  close to 0. We need to figure out, how close we can get.
   // -Implement a unit test.
 
+  // Ideas:
+  // -Maybe it would be more convenient for the user to drag the shape adjustment point diagonally
+  //  rather than vertically? For example, let the curve go through (0.2,0.8) or (0.1,0.9) or 
+  //  (0.3, 0.7) etc. Or maybe let the user just freely pick an intermediate point (x,y) without
+  //  any restrictions (other than 0 < x,y < 1, of course.)
 
   int dummy = 0;
 }
