@@ -4304,7 +4304,7 @@ void sineSweepBassdrum2()
   // d and p. Increasing d makes the sweep faster.
   //
   // It seems like start and (asymptotic) end freq f_s and f_e (or fHigh, fLow) could make for good
-  // user parameters. But we some´how need to disentangle speed and shape. I think, d only controls
+  // user parameters. But we somehow need to disentangle speed and shape. I think, d only controls
   // the speed but not the shape (verify!) whereas p influences both - speed and shape.
   //   // 
 
@@ -4316,11 +4316,11 @@ void sineSweepBassdrum2()
   Real  length     =     0.5;      // Length in seconds
   Real  phase      =     0;        // Start phase in degrees
   Real  amplitude  =     0.5;      // Overall amplitude
-  Real  a          =  8000;
-  Real  b          =     0;
+  Real  a          =  8000;        // Controls (actually equals) start frequency.
+  Real  b          =     0;        // Controls end frequency: fEnd = b/d
   Real  c          =     1;        // We may always normalize to c=1, I think
-  Real  d          =   800;        // Sweep speed
-  Real  p          =     0.75;     // Sweep shape
+  Real  d          =   200;        // Sweep speed
+  Real  p          =     0.5;      // Sweep shape
 
   //Real startFreq  =  8000;       // Start frequency of the sweep
 
@@ -4335,20 +4335,20 @@ void sineSweepBassdrum2()
   // Generate the signal:
   int N = ceil(length * sampleRate);
   using Vec = std::vector<Real>;
-  Vec f(N), x(N);                         // Instantaneous frequency and output signal
+  Vec f(N), x(N);                             // Instantaneous frequency and output signal
   Real phs = RAPT::rsDegreeToRadiant(phase);
   for(int n = 0; n < N; n++)
   {
-    x[n]   = amplitude * sin(phs);          // Signal generation
+    x[n]   = amplitude * sin(phs);            // Signal generation
     Real t = Real(n) / sampleRate;
     f[n]   = shape(t);
     Real w = 2*PI*f[n] / sampleRate;
-    phs += w;                               // Phase increment
+    phs += w;                                 // Phase increment
   }
 
   // Visualize
-  rsPlotVector(f);
-  rsPlotVector(x);
+  //rsPlotVector(f);
+  //rsPlotVector(x);
   rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
 
 
@@ -4362,10 +4362,23 @@ void sineSweepBassdrum2()
   // -Good settings: (a=8000, b=0, c=1, d=2000, p=1), (a=8000, b=0, c=1, d=25000, p=2),
   //  (a=8000, b=0, c=1, d=8000, p=1.5), (a=8000, b=0, c=1, d=200, p=0.5) -> play back at 
   //  speed ~ 0.6, (a=8000, b=0, c=1, d=800, p=0.75) -> play at 1.0..2.0
+  // -Hmm - for p = 1 we have d = 2000, for p = 2 -> d ~= 20000, for p = 0.5 -> d ~= 200. Maybe for
+  //  each factor of 2 in p, we need a factor of 10 in d
+  // -The parameter d should be proportional to a. d = a/4 seems nice
 
   // ToDo:
   // -Add more envelope shapes into the BreakpointModulator: Exp, Rat, Pow from above but also Log
   // -Replace the low-level a,b,c,d,p algo-parameters by intuitive user-parameters in the setup
+  // -Make ToolChain module. HighFreq and LowFreq should be set up in terms midi pitch offset with
+  //  respect to the played note. ...but that should be controlled by a "ByKey" parameter.
+  //
+  // Ideas for the user-parameters fStart (500..20k), fEnd (0..100), shape (-1..+1), speed ()
+  // to algo-parameter translation:
+  //   a = fStart, p = 2^shape, d = a/4 * someFunc(p) , b = fEnd * d
+  // where f = someFunc(p) should have the feature: f(1) = 1, f(0.5) = 0.1, f(2) = 10. Maybe
+  // we should just use 10^shape such that d = speed * 10^shape * a / 4  (maybe thr /4 can be 
+  // removed, i.e. absorbed in the speed. Try to implement these and check, if it feels good. Maybe
+  // try some greater range for shape like -2..+2 and check, if it still feels right
 }
 
 void sineSweepBassdrum()
