@@ -383,13 +383,16 @@ public:
   // may be better to have this "negative value inverts function" feature?
 
 
-  static T mapLinearFractional(T x, T p);
+  // Mappings that use a parameter p in the range -1 < p < +1:
+  static T mapLinearFractional(T x, T p);  // maybe abbreviate
+  static T mapExponential(     T x, T p);
+  static T mapPower(           T x, T p);
+  // Maybe give the function names some qualifier that says something about the meanign of p.
+  // Maybe use abbreviations for the shapes (Rat, Exp, Pow)
 
 
-  static T mapExponential(T x, T p);
 
 
-  static T mapPower(T x, T p);
 
 
 
@@ -427,19 +430,27 @@ T rsUnitIntervalMapper<T>::mapExponential(T x, T p)
   T c = T(0.5) * (p+T(1)); 
   T a = T(2)*log((T(1)-c)/c);
   return (T(1) - exp(a*x)) / (T(1) - exp(a));
+
+  // ToDo:
+  // -Use rsLog and rsExp
 }
 
 template<class T>
 T rsUnitIntervalMapper<T>::mapPower(T x, T p)
 {
   T c = T(0.5) * (p+T(1));
-  T a = rsLog(1.0/c) / rsLog(2.0);
+
+  //T a = rsLog(1.0/c) / rsLog(2.0);  // Old, unoptimized
+  const T s = T(1) / rsLog(T(2));     // Constant scaler (ToDo: try constexpr)
+  T a = -s *rsLog(c);   
+
+  //return rsPow(x, a);  // calls function with integer exponent -> wrong!
   return pow(x, a);
 
   // https://www.wolframalpha.com/input?i=solve+%281%2F2%29%5Ea+%3D+c+for+a
   // ToDo: 
-  // -Optimize: logB(x) = log(x) / log(B)  ->  precompute 1/log(B) as constexpr
-  // -Use rsPow - but it currently produces a stack overflow. Figure out why and fix this!
+  // -Use rsPow - but currently we only have an implementation with integer exponents. It will get
+  //  called using implicit conversion which will give wrong results. 
 }
 
 // The formulas were derived by first computing the desired y-value at x=0.5 from the parameter p.

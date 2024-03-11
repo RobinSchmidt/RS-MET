@@ -265,7 +265,8 @@ T rsPow(const T& base, int exponent)
   //rsAssert(exponent >= 0, "Doesn't work yet for negative exponents");
   // ToDo: fix this. maybe something like:
   if(exponent < 0)
-    return rsPow(rsInv(base), -exponent);  // recursive call with inverse arguments
+    return rsPow(rsInv(base), -exponent);  
+    // Recursive call with inversed base and positive exponent: x^(-a) = (1/x)^a
 
   T result = rsUnityValue(base);
   T square(base);

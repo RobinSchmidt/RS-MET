@@ -74,6 +74,10 @@ template<class T> inline bool rsIsFiniteNumbers(T* x, int N)
 }
 // rename to rsAllFiniteNumbers
 
+// We wrap the math functions from the standard library such that in the code, we can call these 
+// instead. The reason is that we want the code to be generic - we may provide different explicit
+// specializations for selfmade numeric data types (like simd vectors, multiprecision numbers, 
+// etc.):
 template<class T> inline T rsSqrt( T x) { return std::sqrt( x); }
 template<class T> inline T rsExp(  T x) { return std::exp(  x); }
 template<class T> inline T rsLog(  T x) { return std::log(  x); }
@@ -86,9 +90,18 @@ template<class T> inline T rsRound(T x) { return std::round(x); }
 //template<class T> inline T rsSinh( T x) { return std::sinh( x); }
 //template<class T> inline T rsCosh( T x) { return std::cosh( x); }
 //template<class T> inline T rsTanh( T x) { return std::tanh( x); }
-// the hyperbolic functions are already defined elsewhere (and differently!)
+// The hyperbolic functions are already defined elsewhere (and differently!). That's kinda bad! May
+// these selfmade definitions should use further qualifiers like "Fast" (when using exp to compute
+// tanh, for example) or "Approx" (when approximations are used) or _mPi_Pi when only inputs 
+// in -pi..+pi are allowed (such that we can do away any range reduction code) etc..
+// ToDo: Try to declare them as constexpr.
 
 template<class T> inline T rsAtan2(T y, T x) { return std::atan2(y, x); }
+
+//template<class T> inline T rsPow(  T x, T y) { return std::pow(  x, y); }
+// Defining this gives compilation error "ambiguous call ..." because of rsPow(T, int). This is 
+// bad. Try to fix this! Maybe the version with integer exponent should be renamed to rsPowInt.
+
 
 // todo: 
 // -sort them alphabetically, maybe use a shorthand #define for the common prefix
