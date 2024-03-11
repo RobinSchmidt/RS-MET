@@ -4041,7 +4041,7 @@ void unitIntervalMap()
   using Mapper = rsUnitIntervalMapper<Real>;
   using Vec    = std::vector<Real>;
 
-  int  N =  800;  // Number of sample points for the plot.
+  int  N = 1001;  // Number of sample points for the plot.
   Real p = -0.6;  // Parameter that controls the shape in -1..+1, ends exclusive.
   // For p = 0.6, the graph should go through (x,y) = (0.5,0.8). For p = -0.6, its should go 
   // through (0.5,0.2). The x-coordinate is always 0.5 and the y.coordinate should be 

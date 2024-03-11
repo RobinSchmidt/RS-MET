@@ -378,7 +378,9 @@ public:
 
   // Maybe have also an unmap function. Our mapping functions are designed in such a way that the
   // unmap (i.e. the inverse of map) is always the same as map but with negated parameter. 
-  // ...or is it?
+  // ...or is it? ...I actually don't think so. Our re-mapping seems to thwart that. Hmm...so maybe
+  // the re-mapping might not be the best thing to do in all contexts? Maybe in another context, it
+  // may be better to have this "negative value inverts function" feature?
 
 
   static T mapLinearFractional(T x, T p);
@@ -423,7 +425,12 @@ T rsUnitIntervalMapper<T>::mapLinearFractional(T x, T p)
 template<class T>
 T rsUnitIntervalMapper<T>::mapExponential(T x, T p)
 {
-  return x;  // preliminary
+
+  T c = T(0.5) * (p+T(1)); 
+  T a = 2.0*log((1.0-c)/c);
+  return (1.0 - exp(a*x)) / (1.0 - exp(a));
+  
+  //return x;  // preliminary
 }
 
 template<class T>
