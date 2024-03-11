@@ -4079,7 +4079,8 @@ void unitIntervalMap()
   //rsPlotVectorsXY(x, yExp, zExp);         // Dito
   //rsPlotVectorsXY(x, yPow, zPow);         // These are indeed different
   //rsPlotVectorsXY(x, yRat, yExp, yPow, zPow);
-  rsPlotVectorsXY(x, yRat, yExp, yTanh);  // Tanh looks wrong - doesn't go through (0.5,c)
+  rsPlotVectorsXY(x, yExp, yRat, yTanh);
+  rsPlotVectorsXY(x, yTanh);  // Will work only for p > 0, I guess
 
   // ToDo:
   // -For p = 0, we get NaN for the exp-mapping. This case needs special treatment. Also for values

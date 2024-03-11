@@ -471,9 +471,12 @@ template<class T>
 T rsUnitIntervalMapper<T>::mapTanh(T x, T p)
 {
   T c = T(0.5) * (p+T(1));
-  T b = 2*atanh(c*tanh(c));
+  //T b = 2*atanh(c*tanh(c));
+  T b = log( (sqrt(2*c-1)-c) / (c-1) );
   T a = 1 / tanh(b);
   return a * tanh(b*x);
+
+  // https://www.wolframalpha.com/input?i=solve+tanh%28b%2F2%29%2Ftanh%28b%29+%3D+c+for+b
 }
 // needs tests
 
