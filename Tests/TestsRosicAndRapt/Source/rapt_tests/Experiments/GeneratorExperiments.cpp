@@ -4418,7 +4418,7 @@ void sineSweepBassdrum3()
   Real hiFreq     = 10000;        // Highest instantaneous frequency (occurrs at t = 0)
   Real refFreq    =    50.0;      // Reference frequency
   Real refTime    =     0.2;      // Time at which f(t) passes through refFreq
-  Real shape      =     0.0;      // 0: default
+  Real shape      =    -1.0;      // 0: default
 
 
   // Compute algo parameters:
