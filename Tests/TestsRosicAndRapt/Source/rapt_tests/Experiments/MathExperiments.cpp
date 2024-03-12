@@ -4056,7 +4056,7 @@ void unitIntervalMap()
     yRat[n]  = Mapper::mapLinearFractional(x[n], p);
     yPow[n]  = Mapper::mapPower(           x[n], p);
     yExp[n]  = Mapper::mapExponential(     x[n], p);
-    yTanh[n] = Mapper::mapTanh(            x[n], p);
+    //yTanh[n] = Mapper::mapTanh(            x[n], p);  // Works ony for p > 0.
   }
 
   // Create reversed mappings. We negate the p as well to maintain it's meaning in terms of 

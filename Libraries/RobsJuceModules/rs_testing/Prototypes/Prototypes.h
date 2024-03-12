@@ -433,6 +433,10 @@ T rsUnitIntervalMapper<T>::mapLinearFractional(T x, T p)
 template<class T>
 T rsUnitIntervalMapper<T>::mapExponential(T x, T p)
 {
+  T thresh = 0.0001;       // Ad-hoc. Figure out more meaningful value!
+  if(rsAbs(p) < thresh)
+    return x;
+
   T c = T(0.5) * (p+T(1)); 
   T a = T(2)*log((T(1)-c)/c);
   return (T(1) - exp(a*x)) / (T(1) - exp(a));
