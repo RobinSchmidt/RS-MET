@@ -4450,13 +4450,23 @@ void sineSweepBassdrum3()
   rsPlotVector(x);
   rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
 
-
+  // Observations:
+  // -Higher shape parameters emphasize the initial high-freq component (by making it longer).
 
   // ToDo: 
   // -Maybe instead of using simple (Riemann-sum) numerical integration, compute an analytic 
   //  expression for the instantaneous phase and use that. -> No dependency on the sample-rate and
   //  we may be able solve it in such a way that the user can prescribe a phase at an arbitrary
   //  time instant (not sur about that, though).
+  //  f(t) = a / (1 + b*t)^p, w(t) = (2*pi/fs) * f(t), phi(t) = int_0^t w(s) ds
+  //  w(t) = k *(1 + b*t)^(-p)  where  k = 2*pi*a/fs
+  //  phi(t) = int_0^t w(s) ds = int_0^t k *(1 + b*s)^(-p) ds
+  //  Subs: u = 1+b*s, du/ds = b, ...
+  //
+  // Questions:
+  // -Wouldn't an "almost" power law (it can't be exact because that would imply a singularity at 
+  //  t=0) for f(t) imply a linear law in the pitch domain? But that's not what we see in the 
+  //  allpass impulse responses. There, we see some sort of upside-down logarithm shape
 }
 
 void sineSweepBassdrum()
