@@ -4417,7 +4417,7 @@ void sineSweepBassdrum3()
   Real hiFreq     = 10000;        // Highest instantaneous frequency (occurrs at t = 0)
   Real refFreq    =    50.0;      // Reference frequency
   Real refTime    =     0.2;      // Time at which f(t) passes through refFreq
-  Real shape      =    -1.0;      // 0: default
+  Real shape      =    -0.5;      // 0: default
 
 
   // Compute algo parameters:
@@ -4452,7 +4452,7 @@ void sineSweepBassdrum3()
 
   // Observations:
   // -Higher shape parameters emphasize the initial high-freq component (by making it longer).
-
+  //
   // ToDo: 
   // -Maybe instead of using simple (Riemann-sum) numerical integration, compute an analytic 
   //  expression for the instantaneous phase and use that. -> No dependency on the sample-rate and
