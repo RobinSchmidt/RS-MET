@@ -4290,8 +4290,6 @@ void sineSweepBassdrum1()
 
 void sineSweepBassdrum2()
 {
-  // Under Construction
-  
   // Previous experiments (in showRedZapsInstFreqs()) found that a function like 
   // f(t) = (a + b*t^p) / (c + d*t^p) might be  suitable for the instantaneous frequency f as 
   // function of t when the goal is to recreate the shape that we get in allpass impulse responses.
@@ -4401,11 +4399,72 @@ void sineSweepBassdrum2()
   // try some greater range for shape like -2..+2 and check, if it still feels right
 }
 
+void sineSweepBassdrum3()
+{
+  // Under construction
+
+  // Maybe it's better to use a function of the form  f(t) = a / (1 + b*t)^p  for the instantaneous
+  // frequency. The higherst freq fH will be given driectly by a. For p, we can use p = 2^shape 
+  // where shape = -2..+2, say. We can compute b by solving 50 = a / (1 + b*t50)^p where t50 is the
+  // time at which f passes through 50 Hz - which is a nice reference frequency for bassdrums.
+
+  using Real       = double;
+
+  // Setup:
+  int  sampleRate = 44100;        // Sampling rate in Hz
+  Real length     =     0.5;      // Length in seconds
+  Real phase      =     0;        // Start phase in degrees
+  Real amplitude  =     0.5;      // Overall amplitude
+  Real hiFreq     = 10000;        // Highest instantaneous frequency (occurrs at t = 0)
+  Real refFreq    =    50.0;      // Reference frequency
+  Real refTime    =     0.2;      // Time at which f(t) passes through refFreq
+  Real shape      =     0.0;      // 0: default
+
+
+  // Compute algo parameters:
+  Real a = hiFreq;
+  Real p = pow(2, shape);
+  Real b = (pow(a/refFreq, 1/p) - 1) / refTime; // refFreq = a / (1 + b * refTime)^p
+
+  // Function to produce the shape f(t) =  a / (1 + b*t)^p:
+  auto shapeFunc = [&](Real t) 
+  { 
+    return a / pow(1 + b*t, p);
+  };
+
+  // Generate the signal:
+  int N = ceil(length * sampleRate);
+  using Vec = std::vector<Real>;
+  Vec f(N), x(N);                             // Instantaneous frequency and output signal
+  Real phs = RAPT::rsDegreeToRadiant(phase);
+  for(int n = 0; n < N; n++)
+  {
+    x[n]   = amplitude * sin(phs);            // Signal generation
+    Real t = Real(n) / sampleRate;
+    f[n]   = shapeFunc(t);
+    Real w = 2*PI*f[n] / sampleRate;
+    phs += w;                                 // Phase increment
+  }
+
+  // Visualize
+  rsPlotVector(f);
+  rsPlotVector(x);
+  rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
+
+
+
+  // ToDo: 
+  // -Maybe instead of using simple (Riemann-sum) numerical integration, compute an analytic 
+  //  expression for the instantaneous phase and use that. -> No dependency on the sample-rate and
+  //  we may be able solve it in such a way that the user can prescribe a phase at an arbitrary
+  //  time instant (not sur about that, though).
+}
+
 void sineSweepBassdrum()
 {
   //sineSweepBassdrum1();
-  sineSweepBassdrum2();
-
+  //sineSweepBassdrum2();
+  sineSweepBassdrum3();
 
   // This video:
   // https://www.youtube.com/watch?v=ss0nUoE17yg

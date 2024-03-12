@@ -4078,9 +4078,14 @@ void unitIntervalMap()
   //rsPlotVectorsXY(x, yRat, zRat);         // They are the same - as expected
   //rsPlotVectorsXY(x, yExp, zExp);         // Dito
   //rsPlotVectorsXY(x, yPow, zPow);         // These are indeed different
-  rsPlotVectorsXY(x, yRat, yExp, yPow, zPow);
+  //rsPlotVectorsXY(x, yRat, yExp, yPow, zPow);
   //rsPlotVectorsXY(x, yExp, yRat, yTanh);
+  rsPlotVectorsXY(x, yPow);
+  rsPlotVectorsXY(x, zPow);
   //rsPlotVectorsXY(x, yTanh);  // Will work only for p > 0
+
+  // Observations:
+  // -yPow looks suitable for instantaneous freq for bassdrums.
 
   // ToDo:
   // -For p = 0, we get NaN for the exp-mapping. This case needs special treatment. Also for values

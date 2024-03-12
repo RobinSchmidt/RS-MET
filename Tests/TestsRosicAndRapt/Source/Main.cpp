@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
   //ratiosMetallic();
   //sinCosTable();   // new polynomial approximation is called from unit tests
   //twoParamRemap();
-  unitIntervalMap();
+  //unitIntervalMap();
   //numberTheoreticTrafo();   // move to unit tests!
   //numberTheoreticTrafoModuli();
   //powerIterator();
