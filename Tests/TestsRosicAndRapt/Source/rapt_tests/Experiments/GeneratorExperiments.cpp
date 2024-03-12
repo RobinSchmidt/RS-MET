@@ -4401,8 +4401,7 @@ void sineSweepBassdrum2()
 
 void sineSweepBassdrum3()
 {
-  // Under construction
-
+  // Hmm - maybe the function f(t) used above might not be the best choice after all.
   // Maybe it's better to use a function of the form  f(t) = a / (1 + b*t)^p  for the instantaneous
   // frequency. The higherst freq fH will be given driectly by a. For p, we can use p = 2^shape 
   // where shape = -2..+2, say. We can compute b by solving 50 = a / (1 + b*t50)^p where t50 is the
