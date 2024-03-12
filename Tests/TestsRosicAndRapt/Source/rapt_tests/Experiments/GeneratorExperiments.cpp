@@ -4452,6 +4452,8 @@ void sineSweepBassdrum3()
 
   // Observations:
   // -Higher shape parameters emphasize the initial high-freq component (by making it longer).
+  // -The sweet spot for the shape seems to be in -1..0. At least when refTime = 0.2 and 
+  //  refFreq = 50.
   //
   // ToDo: 
   // -Maybe instead of using simple (Riemann-sum) numerical integration, compute an analytic 
@@ -4462,6 +4464,8 @@ void sineSweepBassdrum3()
   //  w(t) = k *(1 + b*t)^(-p)  where  k = 2*pi*a/fs
   //  phi(t) = int_0^t w(s) ds = int_0^t k *(1 + b*s)^(-p) ds
   //  Subs: u = 1+b*s, du/ds = b, ...
+  // -Try incorporating a lowFreq parameter by using f(t) = (a + b*x^p) / (c + d*x^p) where 
+  //  x = (t+1). Currently, we would have b = c = 0.
   //
   // Questions:
   // -Wouldn't an "almost" power law (it can't be exact because that would imply a singularity at 
