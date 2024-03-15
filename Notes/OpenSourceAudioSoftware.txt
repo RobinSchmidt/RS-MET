@@ -103,6 +103,13 @@ https://github.com/mtytel/helm
 https://github.com/sudara/awesome-juce
 -List of open source JUCE libraries, plugins and utilities.
 
+Airwindows:
+https://www.airwindows.com/
+https://github.com/airwindows
+https://github.com/airwindows/airwindows
+-A collection of plugins - GUI-less but interesting DSP-wise, including Kalman filtering
+
+
 ----------------------------------------------------------------------------------------------------
 Libraries and SDKs
 

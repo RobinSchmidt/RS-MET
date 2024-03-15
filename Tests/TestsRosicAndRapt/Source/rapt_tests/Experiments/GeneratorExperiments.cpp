@@ -4169,7 +4169,8 @@ void sineSweepBassdrum1()
   // Power law:
   auto shapePow = [](Real x, Real p, Real dummy)
   {
-    p = RAPT::rsPow(2.0, -p);
+    //p = RAPT::rsPow(2.0, -p);  // calls pow with integer exponent?
+    p = pow(2.0, -p);
     return pow(x, p);
   };
   // https://www.desmos.com/calculator/irqvnj13di
@@ -4259,8 +4260,8 @@ void sineSweepBassdrum1()
   //  kick territory - but the result sound really bad.
   // -The raw power law is too "pointy" at the start. I think, we need some sort of tamed power 
   //  law. Maybe we could control the pointyness?
-  // -With shapePowLinFrac and p1, p2 both positive, we get a rather hard L-shape. Good settings:
-  //  (p1,p2) = (2,4), 
+  // -With shapePowRat and p1, p2 both positive, we get a rather hard L-shape. Good settings:
+  //  (p1,p2) = (2,4), (1,5)
   //
   // Conclusions:
   // -Trying to use simple functions for the frequency envelope does not yet give good results. The
@@ -4431,7 +4432,8 @@ void sineSweepBassdrum3()
     return a / pow(1 + b*t, p);
   };
 
-  // Generate the signal:
+  // Generate the signal using numerical integration (Riemann summing) of the instantaneous 
+  // frequency to obtain the instantaneous phase:
   int N = ceil(length * sampleRate);
   using Vec = std::vector<Real>;
   Vec f(N), x(N);                             // Instantaneous frequency and output signal
@@ -4444,6 +4446,31 @@ void sineSweepBassdrum3()
     Real w = 2*PI*f[n] / sampleRate;
     phs += w;                                 // Phase increment
   }
+
+
+  // This does not yet work:
+  // Now we produce the signal using analytic integration:
+  Vec y(N);
+  Real k = 2*PI*a / sampleRate;
+  for(int n = 0; n < N; n++)
+  {
+    Real t   = Real(n) / sampleRate;                     // Current time in seconds
+    //Real t = n;  // test
+
+
+    Real phi = k * (pow(b*t + 1, 1-p) - 1) / (b - b*p);  // Instantaneous phase
+
+    //y[n] = phi;  // just for test
+
+    y[n] = amplitude * sin(phi);
+  }
+  //rsPlotVectors(y); // Values are very small
+  // ToDo: plot the instantaneous phase from the numerical computation above together with the
+  // analytic computation here.
+  // The idea is that shapefunc gives our function for the instantaneous frequency and here, we 
+  // want to compute the resulting instantaneous phase analytically and use that to produce the 
+  // signal. 
+
 
   // Visualize
   rsPlotVector(f);
@@ -4464,8 +4491,21 @@ void sineSweepBassdrum3()
   //  w(t) = k *(1 + b*t)^(-p)  where  k = 2*pi*a/fs
   //  phi(t) = int_0^t w(s) ds = int_0^t k *(1 + b*s)^(-p) ds
   //  Subs: u = 1+b*s, du/ds = b, ...
+  //  https://www.wolframalpha.com/input?i=integral+%281+%2B+b+x%29%5E%28-p%29+from+0+to+t
   // -Try incorporating a lowFreq parameter by using f(t) = (a + b*x^p) / (c + d*x^p) where 
-  //  x = (t+1). Currently, we would have b = c = 0.
+  //  x = (t+1). Currently, we would have b = c = 0. Maybe we could generalize further by using
+  //  f(t) = (a + b*x^q) / (c + d*x^p) with q <= p. This would give an asymptotic shape like
+  //  x^q / x^p = x^(q-p) and an initial shape like a / d*x^p
+  // -Make ToolChain module "SweepKicker" that uses this algo. We also want  an amp-env - or maybe
+  //  we can just control an "Amplitude" parameter by the EnvelopeGeneraor. We should also have at 
+  //  least 2 waveform parameters: SawDown/Sine/SawUp and a "Squarify" (i.e. tanh saturation) 
+  //  parameter. Or maybe make a modulatort based on the formula - or any formula like in 
+  //  FuncShaper - a formula modulator. It should have access to the following variables: 
+  //  timeInSeconds or timeSinceNoteOn, sampleRate, tempoInBpm or beatsPerMinute. As an 
+  //  optimization, maybe the modulation generator could have a control-rate, i.e. evaluate the
+  //  formula only every N samples and linearly interpolate the segment in between. Maybe the
+  //  formula can have access to the variables from the previous sample instant (such that basic
+  //  numerical integration becomes feasible)
   //
   // Questions:
   // -Wouldn't an "almost" power law (it can't be exact because that would imply a singularity at 
@@ -4475,8 +4515,8 @@ void sineSweepBassdrum3()
 
 void sineSweepBassdrum()
 {
-  //sineSweepBassdrum1();
-  //sineSweepBassdrum2();
+  sineSweepBassdrum1();
+  sineSweepBassdrum2();
   sineSweepBassdrum3();
 
   // This video:
