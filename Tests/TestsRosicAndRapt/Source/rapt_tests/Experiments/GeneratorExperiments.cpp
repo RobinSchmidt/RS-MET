@@ -4525,11 +4525,20 @@ void sineSweepBassdrum4()
   //   f(t) = (a + b*t^(p*q)) / (1 + c*t^p)^q
   //
   // The rationale for using two exponents p,q, one before and one after adding 1 in the 
-  // denominator is that the first exponent p controls the attack shape (higher p let the freq 
-  // initiall reside at highFreq somewhat longer) and the combined effect of p and q controls the
-  // overall decay just as p alone did before when we assume b = 0. But when b > 0, we can also 
+  // denominator is that the first exponent p controls the attack shape and the combined effect of 
+  // p and q controls the overall decay . But when 
+  // b > 0, we can also 
   // control the asymptotic low frequency. The exponent must be p*q to match the exponent of
-  // (t^p)^q in the denominator, I think.
+  // (t^p)^q in the denominator, I think. I expect the following behavior of the parameters:
+  // 
+  // p:   controls attack shape. Higher values let the freq initially reside at highFreq somewhat 
+  //      longer
+  // q*p: controls the overall decay shape just as p alone did in the simpler formula (when we 
+  //      assume b = 0, too - as was the case in the simpler formula).
+  // b:   controls the low, i.e. asymptoic freq. I think, it's given by b/c^q (verify!)
+  // a:   controls the high freq as before.
+  // c:   controls the sweep speed as before.
+  //
   // ...TBC...
 
   using Real      = double;
@@ -4539,6 +4548,10 @@ void sineSweepBassdrum4()
   Real length     =     0.5;      // Length in seconds
 
 
+  int dummy = 0;
+
+  // ToDo:
+  // -Verify if the assumptions about the initial and asymptotic behavior are true
 }
 
 void sineSweepBassdrum()
