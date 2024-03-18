@@ -4246,7 +4246,7 @@ void sineSweepBassdrum1()
   // -Create a name from the parameters (startFreq, endFreq, length, shapeFunc, param, ...)
 
   rsPlotVector(f);
-  rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("SweepKick1.wav", &x[0], N, sampleRate);
   rsPlotVector(x);
 
 
@@ -4357,7 +4357,7 @@ void sineSweepBassdrum2()
   // Visualize
   //rsPlotVector(f);
   //rsPlotVector(x);
-  rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("SweepKick2.wav", &x[0], N, sampleRate);
 
 
 
@@ -4419,7 +4419,7 @@ void sineSweepBassdrum3()
   Real refFreq    =    50.0;      // Reference frequency
   Real refTime    =     0.2;      // Time at which f(t) passes through refFreq
   Real shape      =    -0.5;      // 0: default
-
+  Real stereoPhs  =    90;        // Stereo phase offset
 
   // Compute algo parameters:
   Real a = hiFreq;
@@ -4450,20 +4450,25 @@ void sineSweepBassdrum3()
   // Now we produce the signal using analytic integration. The idea is that shapefunc gives our 
   // function for the instantaneous frequency and here, we want to compute the resulting 
   // instantaneous phase analytically and use that to produce the signal:
-  Vec  y(N);
+  Vec  yL(N), yR(N);
   Real k = 2*PI*a;
+  Real phsL = RAPT::rsDegreeToRadiant(phase - stereoPhs/2);
+  Real phsR = RAPT::rsDegreeToRadiant(phase + stereoPhs/2);
   for(int n = 0; n < N; n++)
   {
     Real t   = Real(n) / sampleRate;                     // Current time in seconds
     Real phi = k * (pow(b*t + 1, 1-p) - 1) / (b - b*p);  // Instantaneous phase
-    y[n] = amplitude * sin(phi);
+    yL[n] = amplitude * sin(phi + phsL);
+    yR[n] = amplitude * sin(phi + phsR);
   }
 
   // Visualize:
   rsPlotVector(f);
   //rsPlotVector(x);
-  rsPlotVectors(x, y); 
-  rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
+  rsPlotVectors(x, yL, yR); 
+  rosic::writeToMonoWaveFile("SweepKick3.wav", &x[0], N, sampleRate);
+  rosic::writeToStereoWaveFile("SweepKick3St.wav", &yL[0], &yR[0], N, sampleRate);
+
 
   // Observations:
   // -Higher shape parameters emphasize the initial high-freq component (by making it longer).
@@ -4522,4 +4527,6 @@ void sineSweepBassdrum()
   // https://www.youtube.com/watch?v=ss0nUoE17yg
   // the transient of a drum sound is up to 5 ms long, the body around 40 ms and the tail however
   // log it takes 
+  //
+  // https://d16.pl/punchbox  Drum Synth - for inspiration
 }
