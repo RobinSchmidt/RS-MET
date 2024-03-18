@@ -4546,12 +4546,33 @@ void sineSweepBassdrum4()
   // Setup:
   int  sampleRate = 44100;        // Sampling rate in Hz
   Real length     =     0.5;      // Length in seconds
+  Real phase      =     0;        // Start phase in degrees
+  Real amplitude  =     0.5;      // Overall amplitude
+  Real hiFreq     = 10000;        // Highest instantaneous frequency (occurrs at t = 0)
+  Real loFreq     =     0;        // Lowest instantaneous frequency (approached when t -> inf)
+  Real refFreq    =    50.0;      // Reference frequency
+  Real refTime    =     0.2;      // Time at which f(t) passes through refFreq (when loFreq = 0)
+  Real shapeAtt   =     0.0;      // 0: default
+  Real shapeDec   =     0.0;      // 0: default
+
+
+  // Compute algo parameters:
+  Real a = hiFreq;
+  Real p = pow(2, shapeAtt);
+  Real q = pow(2, shapeDec);
+  Real c = (pow(a/refFreq, 1/q) - 1) / pow(refTime, p); // refFreq = a / (1 + c * refTime^p)^q
+  Real b = loFreq / pow(c, q);                          // fL = b / c^q   ...I think
+  // These formulas need verification!
+
+
 
 
   int dummy = 0;
 
   // ToDo:
   // -Verify if the assumptions about the initial and asymptotic behavior are true
+  //  -> Verify, if we really approach loFreq for t -> inf (look a the plot for inst freq). If not,
+  //     then the formula to compute b is probably wrong.
 }
 
 void sineSweepBassdrum()
