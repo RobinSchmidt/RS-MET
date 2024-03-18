@@ -4517,11 +4517,36 @@ void sineSweepBassdrum3()
   //  try to scale both of these sections into the unit interval. Will they look different?
 }
 
+void sineSweepBassdrum4()
+{
+  // OK - the function for the instantaneous frequency  f(t) = a / (1 + b*t)^p  used above is well 
+  // and good but we want to try to get a bit more flexibility. Let's try now:
+  //
+  //   f(t) = (a + b*t^(p*q)) / (1 + c*t^p)^q
+  //
+  // The rationale for using two exponents p,q, one before and one after adding 1 in the 
+  // denominator is that the first exponent p controls the attack shape (higher p let the freq 
+  // initiall reside at highFreq somewhat longer) and the combined effect of p and q controls the
+  // overall decay just as p alone did before when we assume b = 0. But when b > 0, we can also 
+  // control the asymptotic low frequency. The exponent must be p*q to match the exponent of
+  // (t^p)^q in the denominator, I think.
+  // ...TBC...
+
+  using Real      = double;
+
+  // Setup:
+  int  sampleRate = 44100;        // Sampling rate in Hz
+  Real length     =     0.5;      // Length in seconds
+
+
+}
+
 void sineSweepBassdrum()
 {
   //sineSweepBassdrum1();
   //sineSweepBassdrum2();
-  sineSweepBassdrum3();
+  //sineSweepBassdrum3();
+  sineSweepBassdrum4();
 
   // This video:
   // https://www.youtube.com/watch?v=ss0nUoE17yg
@@ -4529,4 +4554,7 @@ void sineSweepBassdrum()
   // log it takes 
   //
   // https://d16.pl/punchbox  Drum Synth - for inspiration
+  // 
+  // ToDo:
+  // -Implement a drum synthesis algorithm in ToolChain. Maybe call it SweepKicker. 
 }
