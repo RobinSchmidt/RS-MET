@@ -77,15 +77,14 @@ https://bitbucket.org/Mayae/ape/src/master/
 -https://www.kvraudio.com/forum/viewtopic.php?t=402054
  https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622
 
+Cmajor:
+https://github.com/cmajor-lang
+-A C/C++ like domain specific language (DSL) for audio DSP.
+
 Sfizz:
 https://github.com/sfztools/sfizz
 https://github.com/sfztools/sfizz-ui
 -SFZ player
-
-Brickworks:
-https://www.orastron.com/brickworks
-https://www.kvraudio.com/forum/viewtopic.php?t=589519
--Audio DSP library available for licensing under GPL or commercially
 
 DtBlkFx:
 https://github.com/dozius/DtBlkFx
@@ -100,18 +99,48 @@ Helm:
 https://github.com/mtytel/helm
 -Subtractive synthesizer 
 
-https://github.com/sudara/awesome-juce
--List of open source JUCE libraries, plugins and utilities.
-
-Airwindows:
+Airwindows Plugins:
 https://www.airwindows.com/
 https://github.com/airwindows
 https://github.com/airwindows/airwindows
--A collection of plugins - GUI-less but interesting DSP-wise, including Kalman filtering
+-A collection of plugins - GUI-less but does interesting/exotic stuff DSP-wise (including Kalman 
+ filtering) so it might be inspirational
+
+MDA Plugins:
+https://sourceforge.net/projects/mda-vst/
+https://drobilla.net/software/mda-lv2.html
+https://gitlab.com/drobilla/mda-lv2
+https://github.com/hollance/mda-plugins-juce
+-Another collection of GUI-less plugins
+
+CMT (Computer Music toolkit) Plugins:
+https://www.ladspa.org/cmt/plugins.html
+https://www.ladspa.org/download/index.html
+-Yes another collection of (GUI-less?) plugins
+
+Freeverb:
+https://github.com/sinshu/freeverb
+https://www.dsprelated.com/freebooks/pasp/Freeverb.html
+-Schroeder/Moorer allpass based reverb (public domain)
 
 
 ----------------------------------------------------------------------------------------------------
 Libraries and SDKs
+
+Brickworks:
+https://www.orastron.com/brickworks
+https://www.kvraudio.com/forum/viewtopic.php?t=589519
+-Audio DSP library available for licensing under GPL or commercially
+
+Synthesis Toolkit (STK):
+https://ccrma.stanford.edu/software/stk/
+https://github.com/thestk/stk
+-Audio DSP library
+
+Audio Toolkit:
+https://github.com/AudioTK
+https://github.com/AudioTK/AudioTK
+-Audio DSP library
 
 https://github.com/nothings/stb/
 -Single-file public domain (or MIT licensed) libraries for C/C++.
@@ -120,5 +149,18 @@ https://github.com/nothings/stb/
 CLAP-SDK and related stuff:
 https://github.com/free-audio
 -Liberally licensed audio plugin format.
+
+
+----------------------------------------------------------------------------------------------------
+Other resources for open source audio software:
+
+https://github.com/sudara/awesome-juce
+-List of open source JUCE libraries, plugins and utilities.
+
+http://ccrma.stanford.edu/planetccrma/software/ladspaworld.html
+-List of LADSPA plugins
+
+https://www.musicdsp.org/en/latest/
+
 
 

@@ -110,6 +110,8 @@ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=574866 Cool new plug in form
 https://www.kvraudio.com/forum/viewtopic.php?f=7&t=574273
 https://www.kvraudio.com/forum/viewtopic.php?t=583172      CLAP... thoughts?
 https://www.kvraudio.com/forum/viewtopic.php?t=583138      CLAP: The New Audio Plug-in Standard (by U-he, Bitwig and others)
+https://www.kvraudio.com/forum/viewtopic.php?t=607884      So what happened to that long list of devs supporting CLAP?
+
 
 https://community.native-instruments.com/discussion/comment/20904/#Comment_20904
 
@@ -122,11 +124,18 @@ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=546433 VST3 SDK: separation 
 https://www.kvraudio.com/forum/viewtopic.php?f=31&t=398532 VST3 - known issues (Updated Jan 2019)
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=172013 VST3 Rumours
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=204080 Don't know if anyone noticed... VST3
+https://www.kvraudio.com/forum/viewtopic.php?t=608115      Bye bye VST2
+https://www.kvraudio.com/forum/viewtopic.php?t=508845      Selling VST2 after October 2018: Steinberg agreement
+
 
 more CLAP discussions:
 https://forums.steinberg.net/t/a-shot-across-steinbergs-vst3-bow/791643
 https://forum.juce.com/t/juce7-technical-preview-branch/50866/140
 
+
+
+
+https://prod.fabfilter.com/forum/add-comment?id=6602  Automatic VST2 to VST3 migration?
 
 Misc
 http://www.kvraudio.com/forum/viewtopic.php?t=307408 oversampling - why powers of 2?

@@ -4451,7 +4451,8 @@ void sineSweepBassdrum3()
   // This does not yet work:
   // Now we produce the signal using analytic integration:
   Vec y(N);
-  Real k = 2*PI*a / sampleRate;
+  //Real k = 2*PI*a / sampleRate;  // wrong!
+  Real k = 2*PI*a;
   for(int n = 0; n < N; n++)
   {
     Real t   = Real(n) / sampleRate;                     // Current time in seconds
@@ -4464,12 +4465,16 @@ void sineSweepBassdrum3()
 
     y[n] = amplitude * sin(phi);
   }
-  //rsPlotVectors(y); // Values are very small
-  // ToDo: plot the instantaneous phase from the numerical computation above together with the
-  // analytic computation here.
+  rsPlotVectors(x, y);  
+  // Looks OK. There's a slight phase offset but that can probably be explained by the numerical
+  // integration error.
+
   // The idea is that shapefunc gives our function for the instantaneous frequency and here, we 
   // want to compute the resulting instantaneous phase analytically and use that to produce the 
   // signal. 
+
+  // Ah - I think when the time t is in seconds rather than in samples, then k = 2*PI*a rather
+  // than k = 2*PI*a / sampleRate. w(t) is the non-normalized, i.e. continuous radian frequency.
 
 
   // Visualize
@@ -4511,12 +4516,20 @@ void sineSweepBassdrum3()
   // -Wouldn't an "almost" power law (it can't be exact because that would imply a singularity at 
   //  t=0) for f(t) imply a linear law in the pitch domain? But that's not what we see in the 
   //  allpass impulse responses. There, we see some sort of upside-down logarithm shape
+  // -Figure out, if we can just extract any chunk of the 1/x function and bring it in alignment 
+  //  with another chunk of 1/x juts be stretching and shifting inputs and outputs. See also:
+  //  https://www.desmos.com/calculator/ykadywytkd
+  //  The function 12/x passes through (12,1),(6,2),(4,3),(3,4),(2,6),(1,12). Maybe grab the 
+  //  section spanning (6,2),(4,3) and try to rescale it to the section spanning (3,4),(2,6). Is 
+  //  that possible. If so, it would mean that it doesn't really matter which chunk of 1/x we use.
+  //  We can rescale it as we wish and don't get different shapes by selecting another chunk. Or 
+  //  try to scale both of these sections into the unit interval. Will they look different?
 }
 
 void sineSweepBassdrum()
 {
-  sineSweepBassdrum1();
-  sineSweepBassdrum2();
+  //sineSweepBassdrum1();
+  //sineSweepBassdrum2();
   sineSweepBassdrum3();
 
   // This video:
