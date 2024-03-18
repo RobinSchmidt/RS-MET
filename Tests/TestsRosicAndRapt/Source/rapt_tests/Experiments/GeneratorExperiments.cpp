@@ -4447,45 +4447,31 @@ void sineSweepBassdrum3()
     phs += w;                                 // Phase increment
   }
 
-
-  // This does not yet work:
-  // Now we produce the signal using analytic integration:
-  Vec y(N);
-  //Real k = 2*PI*a / sampleRate;  // wrong!
+  // Now we produce the signal using analytic integration. The idea is that shapefunc gives our 
+  // function for the instantaneous frequency and here, we want to compute the resulting 
+  // instantaneous phase analytically and use that to produce the signal:
+  Vec  y(N);
   Real k = 2*PI*a;
   for(int n = 0; n < N; n++)
   {
     Real t   = Real(n) / sampleRate;                     // Current time in seconds
-    //Real t = n;  // test
-
-
     Real phi = k * (pow(b*t + 1, 1-p) - 1) / (b - b*p);  // Instantaneous phase
-
-    //y[n] = phi;  // just for test
-
     y[n] = amplitude * sin(phi);
   }
-  rsPlotVectors(x, y);  
-  // Looks OK. There's a slight phase offset but that can probably be explained by the numerical
-  // integration error.
 
-  // The idea is that shapefunc gives our function for the instantaneous frequency and here, we 
-  // want to compute the resulting instantaneous phase analytically and use that to produce the 
-  // signal. 
-
-  // Ah - I think when the time t is in seconds rather than in samples, then k = 2*PI*a rather
-  // than k = 2*PI*a / sampleRate. w(t) is the non-normalized, i.e. continuous radian frequency.
-
-
-  // Visualize
+  // Visualize:
   rsPlotVector(f);
-  rsPlotVector(x);
+  //rsPlotVector(x);
+  rsPlotVectors(x, y); 
   rosic::writeToMonoWaveFile("SweepKick.wav", &x[0], N, sampleRate);
 
   // Observations:
   // -Higher shape parameters emphasize the initial high-freq component (by making it longer).
   // -The sweet spot for the shape seems to be in -1..0. At least when refTime = 0.2 and 
   //  refFreq = 50.
+  // -The signal using the analytical formula for the instantaneous pahse looks OK, i.e. similar to
+  //  the one computed using Riemann summing of the instantaneous frequency. There's a slight phase
+  //  offset but that can probably be explained by the numerical integration error.
   //
   // ToDo: 
   // -Maybe instead of using simple (Riemann-sum) numerical integration, compute an analytic 
