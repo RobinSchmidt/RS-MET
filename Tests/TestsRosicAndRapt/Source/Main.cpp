@@ -269,7 +269,7 @@ int main(int argc, char* argv[])
   //gradientify();
   //contours();
   //complexContours();
-  //implicitCurves();
+  implicitCurves();
   //parametricCurve();
   //spirals();                 // move to Rendering.cpp in research codebase
   //fractal();

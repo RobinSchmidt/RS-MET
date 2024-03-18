@@ -602,7 +602,7 @@ void FreqSweeperAudioModule::createParameters()
   using FSM   = jura::FreqSweeperAudioModule;
   using Param = jura::Parameter;
 
-  FS*   core = &sweeperCore;
+  //FS*   core = &sweeperCore;
   Param* p;
 
   // Input/output settings
@@ -613,14 +613,54 @@ void FreqSweeperAudioModule::createParameters()
 
   p = new Param("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<FS>(core, &FS::setHighFreq);
-
-  p = new Param("FreqLow", 0.0, 400.0, 0.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
-  p->setValueChangeCallback<FS>(core, &FS::setLowFreq);
+  p->setValueChangeCallback<FSM>(this, &FSM::setHighFreq);
 
   p = new Param("SweepTime", 50.0, 500.0, 0.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<FSM>(this, &FSM::setSweepTimeMilliseconds);
+  p->setValueChangeCallback<FSM>(this, &FSM::setSweepTime);
 
+  p = new Param("FreqLow", 0.0, 400.0, 0.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FSM>(this, &FSM::setLowFreq);
+
+  // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
+  // the reference key (which is 64 - but verify if this is consistent with usage in other modules, 
+  // e.g. in Straightliner)
+
+}
+
+void FreqSweeperAudioModule::processStereoFrame(double* left, double* right)
+{
+  double tmpL, tmpR;
+  core.getSampleFrameStereo(&tmpL, &tmpR);
+  *left  = passThroughAmp * *left   +  amplitude * tmpL;
+  *right = passThroughAmp * *right  +  amplitude * tmpR;
+}
+
+
+double midiKeyAndVelToFreqFactor(int key, int vel, double keytrack, double veltrack)
+{
+  return pow(2.0, (0.01*keytrack/12.0)*(key-64.0)) * pow(2.0, (0.01*veltrack/63.0)*(vel-64.0));
+
+  // Formula was adapted from:
+  // rosic::MultiModeFilter::updateFreqWithKeyAndVel
+  // ...maybe this factored out function can be moved to the library and called from the filter.
+}
+
+void FreqSweeperAudioModule::noteOn(int key, int vel)
+{
+  // These should become user parameters. They are meant to be in percent:
+  double hiFreqByKey = 100;
+  double hiFreqByVel =   0;
+  double loFreqByKey = 100;
+  double loFreqByVel =   0;
+  double freqFactor;
+
+  // Set up the core:
+  freqFactor = midiKeyAndVelToFreqFactor(key, vel, hiFreqByKey, hiFreqByVel);
+  core.setHighFreq(freqFactor * hiFreq);
+  freqFactor = midiKeyAndVelToFreqFactor(key, vel, loFreqByKey, loFreqByVel);
+  core.setHighFreq(freqFactor * loFreq);
+  core.reset();
+  // I'm not yet sure if a hard reset is the right thing
 }

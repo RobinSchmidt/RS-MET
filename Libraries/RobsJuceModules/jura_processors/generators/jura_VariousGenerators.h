@@ -226,7 +226,7 @@ public:
   dynamically and are thus always there). */
   virtual void createParameters();
 
-  // overriden from AudioModule baseclass:
+  // Overriden from AudioModule baseclass:
   //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override;
@@ -283,18 +283,38 @@ public:
 
   virtual void createParameters();
 
+  // Overriden from AudioModule baseclass:
+  //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  virtual void processStereoFrame(double* left, double* right) override;
+  virtual void setSampleRate(double newRate) override { core.setSampleRate(newRate); }
+  virtual void reset() override { core.reset(); }
+  virtual void noteOn(int noteNumber, int velocity) override;
+
 
   // Parameter callback targets:
-  void setAmplitude(double newAmplitude) { masterAmp = newAmplitude; }
-  void setSweepTimeMilliseconds(double newTime) { sweeperCore.setSweepTime(0.001*newTime); }
+  void setAmplitude(double newAmp)  { amplitude = newAmp; }
+  void setHighFreq( double newFreq) { hiFreq = newFreq; }
+  void setLowFreq(  double newFreq) { loFreq = newFreq; }
+  void setSweepTime(double newTime) { core.setSweepTime(0.001*newTime); } // in ms
 
 
 protected:
 
-  rosic::rsFreqSweeper sweeperCore;
+  rosic::rsFreqSweeper core;
 
 
-  double masterAmp = 1.0;
+  double passThroughAmp = 0.0;
+  double amplitude = 1.0; 
+
+  double hiFreq = 10000;
+  double loFreq = 0;
+
+  // ToDo:
+  // -Maybe have two loFreq parameters - one used during sustain and one during release
+  // -Maybe have a cutoffFreq: when it's reached and a zero crossing is detected, switch the sound
+  //  off.
+  // -Maybe allow negative lowFreq
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FreqSweeperAudioModule)

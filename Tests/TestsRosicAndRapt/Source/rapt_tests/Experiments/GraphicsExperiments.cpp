@@ -1547,6 +1547,7 @@ void implicitCurvesConic()
   // See also:
   // https://www.youtube.com/watch?v=6oMZb3yP_H8
   // https://www.youtube.com/watch?v=yOgIncKp0BE
+  // https://www.youtube.com/watch?v=gEswjuCo6fQ  How to Graph an Egg.
 }
 // other curves to try:
 // https://en.wikipedia.org/wiki/Pedal_curve
