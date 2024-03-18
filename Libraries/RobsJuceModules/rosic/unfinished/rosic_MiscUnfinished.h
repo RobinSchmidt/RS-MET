@@ -477,38 +477,31 @@ public:
   /** Calculates one output stereo sample-frame at a time. */
   INLINE void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
-
-
     // Output computation:
     *inOutL = sin(instPhase + phase - 0.5*phaseStereo);
     *inOutR = sin(instPhase + phase + 0.5*phaseStereo);
     // ToDo: allow other waveshapes
 
     // State update:
-    time += 1.0/sampleRate;
-    double newFreq = getInstFreq(time);
-
-    instPhase += (2.0 * PI / sampleRate) * 0.5 * (instFreq + newFreq);  
-    // Trapezoidal integration: phi[n] = 0.5*(omega[n] + omega[n-1])  where  omega = 2*PI*f/fs
-
-
-    while(instPhase >= 2.0*PI)  // Maybe an "if" is enough?
-      instPhase -= 2.0*PI;
+    sampleCount++;
+    double newFreq = getInstFreq(sampleCount / sampleRate);
+    RAPT::rsAssert(newFreq <  0.5 * sampleRate);                // Sanity check for debug
+    instPhase += (PI / sampleRate) * (instFreq + newFreq);      // Trapezoidal integration
+    if(instPhase >= 2.0*PI)    // A while-loop would be safer but when we assume sane values for
+      instPhase -= 2.0*PI;     // newFreq and instFreq, the "if" should be good enough
     instFreq  = newFreq;
-    // Maybe we should keep the time in samples to avoid roundoff error - like:
-    // sampleCount++; 
-    // newFreq = getInstFreq(sampleCount * (1.0/sampleRate));
-
+    // The trapezoidal integration computes the instantaneous phase as: 
+    //   phi[n] = 0.5*(omega[n] + omega[n-1])  where  omega = 2*PI*f/fs  
+    // such that the 2 cancels with the 0.5.
+    // ToDo:
+    // -Optimize: keep the reciprocal of the sample rate as member
   }
-
-
-
 
   void reset()
   {
-    time      = 0.0;
-    instPhase = 0.0;
-    instFreq  = freqHi;
+    sampleCount = 0;
+    instPhase   = 0.0;
+    instFreq    = freqHi;
   }
 
 
@@ -518,7 +511,7 @@ protected:
 
   void updateCoeffs();
 
-  //static const double refFreq = 50.0;
+  static const double refFreq; // = 50. Hard-coded reference frequency.
 
   // User parameters:
   double sampleRate;
@@ -526,7 +519,7 @@ protected:
   double freqHi;         // Maybe rename to startFreq
   double shapeAtt;       // Determines (mostly) attack shape
   double shapeDec;       // Determines (mostly) decay shape
-  double refFreq = 50;   // reference frequency (is hardcoded and fixed - todo: use static const)
+  //double refFreq = 50;   // reference frequency (is hardcoded and fixed - todo: use static const)
   double sweepTime;      // Time to sweep down to refFreq in seconds
 
   double phase;
@@ -537,7 +530,8 @@ protected:
   bool dirty;
   double a, b, c, p, q;  // Formula parameters
 
-  double instPhase, instFreq, time;
+  double instPhase, instFreq;
+  int    sampleCount;
 
 };
 // ToDo:

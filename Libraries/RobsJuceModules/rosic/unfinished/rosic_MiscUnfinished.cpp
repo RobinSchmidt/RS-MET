@@ -622,6 +622,8 @@ void rsFlatZapper::updateCoeffs()
 
 //=================================================================================================
 
+const double rsFreqSweeper::refFreq = 50.0;
+
 rsFreqSweeper::rsFreqSweeper()
 {
   initSettings(true);
