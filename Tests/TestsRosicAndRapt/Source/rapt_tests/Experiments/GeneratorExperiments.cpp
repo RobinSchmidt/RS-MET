@@ -4123,9 +4123,9 @@ void freqSweeper()
 {
   // Setup:
   int    sampleRate = 50000;       // Sampling rate in Hz
-  double length     =     0.5;
+  double length     =     1.5;
   double hiFreq     = 10000;       // Start frequency of the sweep
-  double loFreq     =     0;
+  double loFreq     =   100;
   double sweepTime  =     0.2;
 
   // Create and set up the DSP object:
@@ -4140,6 +4140,17 @@ void freqSweeper()
   using Vec = std::vector<double>;
   Vec f(N), xL(N), xR(N);
 
+  // This could go into a unit test
+  // Check asymptotic frequency:
+  double endTime = 10000;                   // Time at which we measure the "asymptotic" behavior
+  double endFreq = fs.getInstFreq(endTime);
+  bool ok = true;
+  double freqErr = endFreq - loFreq;
+  ok &= freqErr <= 10.0 / endTime;
+  // The required tolerance which depends on how far out we are in time - further out, we should 
+  // get closer to the asymptotic loFreq. 
+
+
   // Compute instantaneous frequency:
   for(int n = 0; n < N; n++)
     f[n] = fs.getInstFreq(double(n) / double(sampleRate));
@@ -4151,7 +4162,9 @@ void freqSweeper()
 
 
   rsPlotVector(f);
-  rsPlotVectors(xL, xR);
+
+
+  //rsPlotVectors(xL, xR);
 
 
   int dummy = 0;

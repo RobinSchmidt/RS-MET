@@ -652,7 +652,8 @@ void rsFreqSweeper::updateCoeffs()
   p = pow(2, shapeAtt);
   q = pow(2, shapeDec);
   c = (pow(a/refFreq, 1/q) - 1) / pow(sweepTime, p); // refFreq = a / (1 + c * sweepTime^p)^q
-  b = freqLo / pow(c, q);                            // fL = b / c^q   ...I think
-  // These formulas need verification!
+  //b = freqLo / pow(c, q);                            // fL = b / c^q   ...I think
+  b = freqLo * pow(c, q);                            // fL = b * c^q   ...I think
+  // These formulas need verification! Do they behave as expected and is that behavior "musical"?
 }
 
