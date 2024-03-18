@@ -233,7 +233,7 @@ public:
   virtual void reset() override;
   virtual void noteOn(int noteNumber, int velocity) override;
 
-  // parameter callback targets:
+  // Parameter callback targets:
   void setLevel(         double newLevel)   { masterAmp  = RAPT::rsDbToAmp(newLevel); }
   void setExciterPercent(double newPercent) { exciterAmp = 0.01 * newPercent; }
   void setInputPercent(  double newPercent) { inputAmp   = 0.01 * newPercent; }
@@ -270,8 +270,35 @@ protected:
 };
 
 
+//=================================================================================================
 
 
+class JUCE_API FreqSweeperAudioModule : public jura::AudioModuleWithMidiIn
+{
+
+public:
+
+  FreqSweeperAudioModule(CriticalSection *lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
+
+  virtual void createParameters();
+
+
+  // Parameter callback targets:
+  void setAmplitude(double newAmplitude) { masterAmp = newAmplitude; }
+  void setSweepTimeMilliseconds(double newTime) { sweeperCore.setSweepTime(0.001*newTime); }
+
+
+protected:
+
+  rosic::rsFreqSweeper sweeperCore;
+
+
+  double masterAmp = 1.0;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FreqSweeperAudioModule)
+};
 
 
 

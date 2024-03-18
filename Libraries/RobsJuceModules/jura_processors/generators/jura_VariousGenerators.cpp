@@ -553,7 +553,6 @@ void FlatZapperModule::setAllpassMode(double newMode)
   // string values to the "AllpassMode" parameter in createParameters()
 }
 
-
 // Observations:
 // -This algorithm is good for zap, kick and tom sounds
 // -When retriggering in fast succession like in a machine gun effect, it behaves nicely natural. 
@@ -583,3 +582,45 @@ void FlatZapperModule::setAllpassMode(double newMode)
 // -Add parameter for the allpass mode (biquad, 1-pole)
 // -Make a custom GUI that shows a preview of the output and later maybe also the phase-response,
 //  phase-delay and group delay response
+
+//=================================================================================================
+
+FreqSweeperAudioModule::FreqSweeperAudioModule(CriticalSection *lockToUse, 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("FreqSweeper");
+  createParameters();
+}
+
+void FreqSweeperAudioModule::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  using FS    = rosic::rsFreqSweeper;
+  using FSM   = jura::FreqSweeperAudioModule;
+  using Param = jura::Parameter;
+
+  FS*   core = &sweeperCore;
+  Param* p;
+
+  // Input/output settings
+  p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FSM>(this, &FSM::setAmplitude);
+  // The goal is to make that modulatable to get away without having a built-in amp-env.
+
+  p = new Param("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FS>(core, &FS::setHighFreq);
+
+  p = new Param("FreqLow", 0.0, 400.0, 0.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FS>(core, &FS::setLowFreq);
+
+  p = new Param("SweepTime", 50.0, 500.0, 0.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<FSM>(this, &FSM::setSweepTimeMilliseconds);
+
+}
