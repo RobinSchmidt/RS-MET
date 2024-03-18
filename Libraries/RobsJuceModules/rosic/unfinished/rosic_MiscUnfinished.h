@@ -413,4 +413,32 @@ protected:
 //  further shaping. Or maybe an 8 band EQ.
 // -Make a subclass that also has some post-processing
 
+//=================================================================================================
+
+/** A class that generates sounds based on frequency sweeps. The original idea was to create sounds
+similar to the impulse responses of rsFlatZapper by using a sinusoidal oscillator with a specially
+shaped envelope for the instantaneous frequency. The advantages of using an oscillator over an 
+allpass are: more direct control, different waveforms possible, stereo phase offsets possible. We 
+still want to synthesize bassdrums ...TBC...  */
+
+class rsFreqSweeper
+{
+
+public:
+
+
+protected:
+
+
+  // User parameters:
+  double freqLo;
+  double freqHi;
+
+
+};
+// ToDo:
+// -Maybe the wavesshape could be determined by a user-defined function using std::function. Maybe
+//  for flexibility, the function should receive the instantaneous phase and additionaly the 
+//  absolute time to (potentially) implement time-varying waveshapes.
+
 }

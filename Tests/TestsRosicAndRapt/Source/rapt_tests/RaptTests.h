@@ -72,6 +72,7 @@ void additiveEngine();
 void multiplicativeSynth();
 void pulseWidthModulationViaTwoSaws();
 void flatZapper();
+void freqSweeper();
 void sineSweepBassdrum();
 
 

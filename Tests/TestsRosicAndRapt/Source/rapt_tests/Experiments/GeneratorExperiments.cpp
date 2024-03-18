@@ -4117,7 +4117,15 @@ void flatZapper()
   // see also:
   // https://kilohearts.com/products/disperser
   // https://github.com/robbert-vdh/diopser
+}
 
+void freqSweeper()
+{
+  using FS = rosic::rsFreqSweeper;
+
+  FS fs;
+
+  int dummy = 0;
 }
 
 void sineSweepBassdrum1()
@@ -4550,7 +4558,7 @@ void sineSweepBassdrum4()
   Real amplitude  =     0.5;      // Overall amplitude
   Real hiFreq     = 10000;        // Highest instantaneous frequency (occurrs at t = 0)
   Real loFreq     =     0;        // Lowest instantaneous frequency (approached when t -> inf)
-  Real refFreq    =    50.0;      // Reference frequency
+  Real refFreq    =    50.0;      // Reference frequency (fixed constant)
   Real refTime    =     0.2;      // Time at which f(t) passes through refFreq (when loFreq = 0)
   Real shapeAtt   =     0.0;      // 0: default
   Real shapeDec   =     0.0;      // 0: default
@@ -4565,14 +4573,83 @@ void sineSweepBassdrum4()
   // These formulas need verification!
 
 
+  // Function to produce the shape f(t) = (a + b*t^(p*q)) / (1 + c*t^p)^q:
+  auto shapeFunc = [&](Real t) 
+  { 
+    return (a + b*pow(t, p*q)) / pow(1 + c*pow(t,p), q);
+  };
+
+  // Generate the signal using numerical integration (Riemann summing) of the instantaneous 
+  // frequency to obtain the instantaneous phase:
+  int N = ceil(length * sampleRate);
+  using Vec = std::vector<Real>;
+  Vec f(N), x(N);                             // Instantaneous frequency and output signal
+  Real phs = RAPT::rsDegreeToRadiant(phase);
+  for(int n = 0; n < N; n++)
+  {
+    x[n]   = amplitude * sin(phs);            // Signal generation
+    Real t = Real(n) / sampleRate;
+    f[n]   = shapeFunc(t);
+    Real w = 2*PI*f[n] / sampleRate;
+    phs += w;                                 // Phase increment
+  }
 
 
-  int dummy = 0;
+  // Visualize:
+  rsPlotVector(f);
+  rsPlotVector(x);
+  rosic::writeToMonoWaveFile("SweepKick4.wav", &x[0], N, sampleRate);
 
   // ToDo:
   // -Verify if the assumptions about the initial and asymptotic behavior are true
   //  -> Verify, if we really approach loFreq for t -> inf (look a the plot for inst freq). If not,
   //     then the formula to compute b is probably wrong.
+  // -Maybe the hiFreq should not be set as absolute freq but as offset above the loFreq. That way,
+  //  we can ensure that it's always >= loFreq (I don't know if anything bad happens when that 
+  //  assumption is violated -> try it!). ...Oh - and we want refFreq in between loFreq and hiFreq, 
+  //  I think. But maybe that doesn't need to be the case? In the computation of c, we assume b=0
+  //  anyway
+  // -Try to find an analytic formula for the instantaneous phase like for the simpler formula. But
+  //  for this more complicated formula here, the standard computation time on wolfram alpha is not
+  //  enough. Try using SageMath. If it fails, we may need to resort to numerical integration. That 
+  //  would not be the end of the world - but it would make the output sample-rate more dependent 
+  //  which would be nice to avoid, if possible. We need to eavluate (in pseudo LaTeX):
+  //  \phi(t) = \int_0^t \omega(s) ds  where  \omega(s) = (A + B s^{p q}) / (1 + c s^p)^q
+  //  and A = 2 \pi a, B = 2 \pi b. Maybe try to evaluate the integral for some non-negative 
+  //  integers p,q first.
+  // -...hmm - I have not been able to crack the integral analytically, so maybe numerical 
+  //  integration is the way to go. -> Figure out if a trapezoidal integration is better behaved 
+  //  with respect to different sample-rates, i.e. produces more similar results at different 
+  //  sample rates. It probably is the better way.
+
+  /*
+  // OK - here is some Sage code for a simplified version of the function with some additional 
+  // assumptions:
+  var("x p q t")
+  assume(p, 'integer')
+  assume(p > 0)
+  assume(q, 'integer')
+  assume(q > 0)
+  assume(t > 0)
+  f(x) = 1 / (1 + x^p)^q
+  I = integral(f(x), x, 0, t)
+  I
+
+  t*gamma(1/p)*hypergeometric((1/p, q), (1/p + 1,), -t^p)/(p*gamma(1/p + 1))
+  */
+
+  /*
+  // This is the real deal - but we don't get a result for that:
+  var("x p q t c A B")
+  assume(p, 'integer')
+  assume(p > 0)
+  assume(q, 'integer')
+  assume(q > 0)
+  assume(t > 0)
+  f(x) = (A + B * x^(p*q)) / (1 + c * x^p)^q
+  I = integral(f(x), x, 0, t)
+  I
+  */
 }
 
 void sineSweepBassdrum()
@@ -4590,5 +4667,5 @@ void sineSweepBassdrum()
   // https://d16.pl/punchbox  Drum Synth - for inspiration
   // 
   // ToDo:
-  // -Implement a drum synthesis algorithm in ToolChain. Maybe call it SweepKicker. 
+  // -Implement a drum synthesis algorithm in ToolChain. Maybe call it SweepKicker. Or FreqSweeper.
 }
