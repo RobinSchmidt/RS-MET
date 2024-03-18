@@ -247,7 +247,7 @@ int main(int argc, char* argv[])
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
   //flatZapper();
   freqSweeper();
-  sineSweepBassdrum();
+  //sineSweepBassdrum();
 
   // Modulators:
   //attackDecayEnvelope();

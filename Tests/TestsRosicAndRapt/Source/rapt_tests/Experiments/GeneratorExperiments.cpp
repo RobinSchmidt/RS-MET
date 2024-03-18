@@ -4121,9 +4121,38 @@ void flatZapper()
 
 void freqSweeper()
 {
-  using FS = rosic::rsFreqSweeper;
+  // Setup:
+  int    sampleRate = 50000;       // Sampling rate in Hz
+  double length     =     0.5;
+  double hiFreq     = 10000;       // Start frequency of the sweep
+  double loFreq     =     0;
+  double sweepTime  =     0.2;
 
+  // Create and set up the DSP object:
+  using FS = rosic::rsFreqSweeper;
   FS fs;
+  fs.setSampleRate(sampleRate);
+  fs.setHighFreq(hiFreq);
+  fs.setLowFreq(loFreq);
+  fs.setSweepTime(sweepTime);
+
+  int   N   = ceil(length * sampleRate);
+  using Vec = std::vector<double>;
+  Vec f(N), xL(N), xR(N);
+
+  // Compute instantaneous frequency:
+  for(int n = 0; n < N; n++)
+    f[n] = fs.getInstFreq(double(n) / double(sampleRate));
+
+  // Compute output signal:
+  for(int n = 0; n < N; n++)
+    fs.getSampleFrameStereo(&xL[n], &xR[n]);
+
+
+
+  rsPlotVector(f);
+  rsPlotVectors(xL, xR);
+
 
   int dummy = 0;
 }
@@ -4548,6 +4577,8 @@ void sineSweepBassdrum4()
   // c:   controls the sweep speed as before.
   //
   // ...TBC...
+  //
+  // The rersults from this are the basis of the algorithm in rosic::rsFreqSweeper
 
   using Real      = double;
 

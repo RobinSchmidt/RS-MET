@@ -426,14 +426,118 @@ class rsFreqSweeper
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \Lifetime
+
+  rsFreqSweeper();
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Setup
+
+  /** Sets the sample rate at which this object should operate. */
+  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; /*setDirty();*/ }
+  // Maybe we should store the reciprocal because that's what we actually need for the DSP
+
+
+  /** Sets the frequency to which the lowest allpass filter should be tuned. */
+  void setLowFreq(double newFreq) { freqLo = newFreq; setDirty(); }
+
+  /** Sets the frequency to which the highest allpass filter should be tuned. */
+  void setHighFreq(double newFreq) { freqHi = newFreq; setDirty(); }
+
+  /** Sets up the time (in seconds) that it will take to sweep down from the highest frequency at
+  the start (set by setHighFreq) to some fixed, hardcoded reference frequency (which happens to be
+  50 Hz above the low, asymptotic frequency (set by setLowFreq)). The rationale behind choosing 50 
+  Hz as reference frequency is that this makes for a nice low-freq target in bassdrums when 
+  low-freq is set to zero. */
+  void setSweepTime(double newTime) { sweepTime = newTime; setDirty(); }
+
+  /** Initializes all parameter values to their initial/default values. The sample rate may or may
+  not be re-initialized also. */
+  void initSettings(bool initAlsoSampleRate = false);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Processing
+
+  /** Implements the formula to compute the instantaneous frequency at time t (in seconds). */
+  INLINE double getInstFreq(double t)
+  {
+    // Coefficient update if necessary:
+    if(dirty)
+      updateCoeffs();
+
+    // Compute instantaneous frequency:
+    return (a + b*pow(t, p*q)) / pow(1 + c*pow(t,p), q);
+  }
+  // ToDo: Document how I came up with this formula.
+
+
+  /** Calculates one output stereo sample-frame at a time. */
+  INLINE void getSampleFrameStereo(double* inOutL, double* inOutR)
+  {
+
+
+    // Output computation:
+    *inOutL = sin(instPhase + phase - 0.5*phaseStereo);
+    *inOutR = sin(instPhase + phase + 0.5*phaseStereo);
+    // ToDo: allow other waveshapes
+
+    // State update:
+    time += 1.0/sampleRate;
+    double newFreq = getInstFreq(time);
+
+    instPhase += (2.0 * PI / sampleRate) * 0.5 * (instFreq + newFreq);  
+    // Trapezoidal integration: phi[n] = 0.5*(omega[n] + omega[n-1])  where  omega = 2*PI*f/fs
+
+
+    while(instPhase >= 2.0*PI)  // Maybe an "if" is enough?
+      instPhase -= 2.0*PI;
+    instFreq  = newFreq;
+    // Maybe we should keep the time in samples to avoid roundoff error - like:
+    // sampleCount++; 
+    // newFreq = getInstFreq(sampleCount * (1.0/sampleRate));
+
+  }
+
+
+
+
+  void reset()
+  {
+    time      = 0.0;
+    instPhase = 0.0;
+    instFreq  = freqHi;
+  }
+
 
 protected:
 
+  void setDirty() { dirty = true; }
+
+  void updateCoeffs();
+
+  //static const double refFreq = 50.0;
 
   // User parameters:
-  double freqLo;
-  double freqHi;
+  double sampleRate;
+  double freqLo;         // Maybe rename to endFreq
+  double freqHi;         // Maybe rename to startFreq
+  double shapeAtt;       // Determines (mostly) attack shape
+  double shapeDec;       // Determines (mostly) decay shape
+  double refFreq = 50;   // reference frequency (is hardcoded and fixed - todo: use static const)
+  double sweepTime;      // Time to sweep down to refFreq in seconds
 
+  double phase;
+  double phaseStereo;
+
+
+  // Internals:
+  bool dirty;
+  double a, b, c, p, q;  // Formula parameters
+
+  double instPhase, instFreq, time;
 
 };
 // ToDo:

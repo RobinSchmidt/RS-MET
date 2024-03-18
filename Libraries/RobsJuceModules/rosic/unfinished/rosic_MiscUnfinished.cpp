@@ -471,11 +471,11 @@ https://github.com/kupix/bungee  Phase vocoder based pitch-shifter/time-stretche
 
 */
 
-//-------------------------------------------------------------------------------------------------
+//=================================================================================================
 
 rsFlatZapper::rsFlatZapper() : allpassChain(maxNumStages)
 {
-  initSettings();
+  initSettings(true);
 }
 
 void rsFlatZapper::initSettings(bool initAlsoSampleRate)
@@ -619,3 +619,38 @@ void rsFlatZapper::updateCoeffs()
 // between liner and exponential and maybe go beyond. Check the functions used the 
 // sineSweepBassdrum() experiment. There's this adjustable exp mapping that is also used for the 
 // shape of the envelope segments in the sampler.
+
+//=================================================================================================
+
+rsFreqSweeper::rsFreqSweeper()
+{
+  initSettings(true);
+  reset();
+}
+
+void rsFreqSweeper::initSettings(bool initAlsoSampleRate)
+{
+  freqHi      = 10000.0;
+  freqLo      =     0.0;
+  shapeAtt    =     0.0;
+  shapeDec    =     0.0;
+  sweepTime   =     0.2; 
+  phase       =     0.0;
+  phaseStereo =     0.0;
+
+  if(initAlsoSampleRate)
+    sampleRate = 44100.0;
+
+  setDirty();
+}
+
+void rsFreqSweeper::updateCoeffs()
+{
+  a = freqHi;
+  p = pow(2, shapeAtt);
+  q = pow(2, shapeDec);
+  c = (pow(a/refFreq, 1/q) - 1) / pow(sweepTime, p); // refFreq = a / (1 + c * sweepTime^p)^q
+  b = freqLo / pow(c, q);                            // fL = b / c^q   ...I think
+  // These formulas need verification!
+}
+
