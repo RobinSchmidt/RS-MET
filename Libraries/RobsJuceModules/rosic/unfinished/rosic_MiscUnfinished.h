@@ -459,6 +459,12 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  // \Inquiry
+
+  double getSampleRate() const { return sampleRate; }
+
+
+  //-----------------------------------------------------------------------------------------------
   // \Processing
 
   /** Implements the formula to compute the instantaneous frequency at time t (in seconds). */
@@ -487,9 +493,9 @@ public:
     // State update:
     sampleCount++;
     double newFreq = getInstFreq(sampleCount / sampleRate);
-    //RAPT::rsAssert(newFreq <  0.5 * sampleRate);                // Sanity check for debug
+    RAPT::rsAssert(newFreq <= 0.5 * sampleRate);               // Sanity check for debug
     instPhase += (PI / sampleRate) * (instFreq + newFreq);      // Trapezoidal integration
-    while(instPhase >= 2.0*PI)    // A while-loop would be safer but when we assume sane values for
+    if(instPhase >= 2.0*PI)    // A while-loop would be safer but when we assume sane values for
       instPhase -= 2.0*PI;     // newFreq and instFreq, the "if" should be good enough
     instFreq  = newFreq;
     // The trapezoidal integration computes the instantaneous phase as: 

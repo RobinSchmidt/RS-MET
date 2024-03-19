@@ -683,18 +683,29 @@ void rsSweepKicker::noteOn(int key, int vel)
 {
   //RAPT::rsError("Not yet implemented");
 
+  // Maybe here is the place where we should clip the values, if they get too high
 
   double factor;
-  //double freq;
 
+  // Set up frequencies:
+  double maxFreq = 0.5 * freqSweeper.getSampleRate(); // We clip the freq at the Nyquist limit
+  double freq;
   factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqHiByKey, frqHiByVel);
-  freqSweeper.setHighFreq(factor * frqHi);
-
+  freq   = RAPT::rsClip(factor * frqHi, 0.0, maxFreq);
+  freqSweeper.setHighFreq(freq);
   factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqLoByKey, frqLoByVel);
-  freqSweeper.setLowFreq(factor * frqLo);
+  freq   = RAPT::rsClip(factor * frqLo, 0.0, maxFreq);
+  freqSweeper.setLowFreq(freq);
+
+  // Set up speed, shape, etc:
+  double time = swpTm;
+  freqSweeper.setSweepTime(time);
+
+
 
   freqSweeper.reset();
-  // I'm not yet sure if a hard reset is the right thing here
+  // I'm not yet sure if a hard reset is the right thing here. Maybe we should reset only under 
+  // certain conditions.
 
 }
 
