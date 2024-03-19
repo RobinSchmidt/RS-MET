@@ -604,11 +604,12 @@ void SweepKickerModule::createParameters()
   using ModPar = jura::ModulatableParameter;
 
   FixPar* fp;
+  ModPar* mp;
 
   // Input/output settings
-  fp = new FixPar("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
-  addObservedParameter(fp);
-  fp->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
+  mp = new ModPar("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(mp);
+  mp->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
   // The goal is to make that modulatable to get away without having a built-in amp-env.
 
   fp = new FixPar("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
@@ -627,6 +628,10 @@ void SweepKickerModule::createParameters()
   // the reference key (which is 64 - but verify if this is consistent with usage in other modules, 
   // e.g. in Straightliner)
 
+  // Maybe introduce a modulatable FreqScale parameter and/or a Detune parameter
+
+  // In the framework, we have 3 types of parameters with an incremental feature set:
+  // fixed, automatable, modulatable
 }
 
 void SweepKickerModule::processStereoFrame(double* left, double* right)
