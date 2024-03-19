@@ -4129,10 +4129,11 @@ void freqSweeper()
   double sweepTime  =     0.2;
 
 
-  double shapeAtt   =     0.0;
-
+  double shapeAtt   =    -1.0;
   double shapeDec   =     0.0;     // -1..+1 is a good range
-  // smaller values -> we get close to refFreq earlier, i.e. it is initially steeper
+  // Smaller values -> we get close to refFreq earlier, i.e. it is initially steeper. This is true 
+  // for both values.
+
 
   // Create and set up the DSP object:
   using FS = rosic::rsFreqSweeper;
