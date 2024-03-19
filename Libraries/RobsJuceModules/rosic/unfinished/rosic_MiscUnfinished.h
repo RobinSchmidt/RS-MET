@@ -571,7 +571,6 @@ public:
     numFadeSamples = newNumber;
   }
 
-
   void noteOn()
   {
     state = State::open;
@@ -581,10 +580,7 @@ public:
   {
     state = State::fading;
     remainingFadeSamples = numFadeSamples;
-
-    //sampleCount = 0;
   }
-
 
   double getSample()
   {
@@ -601,10 +597,6 @@ public:
       }
       else
       {
-        //double out = double(numFadeSamples-sampleCount) / double(numFadeSamples);
-        //sampleCount++;
-        //return out;
-
         double out = double(remainingFadeSamples) / double(numFadeSamples+1);
         remainingFadeSamples--;
         return out;
@@ -613,21 +605,12 @@ public:
         // -Optimize: 
         //  -avoid division by keeping 1.0 / numfadeSamples as member
         //  -avoid int -> double conversion by using double for all members
-        //  -use a countdown instead of counting up -> avoid the subtraction. We just want to do:
-        //   out = remainingFadeSamples / numFadeSamples
-        // -Check, if we need to do the increment pre or post output computation.
-        // -Check formula. Desired behavior: if numFadeSamples == 1, there should be a single 
-        //  output sample of value 0.5 in between open and silent state. For numfadeSamples == 2, 
-        //  there should be two samples of values 0.666.. and 0.333.. etc. Write a unit test for 
-        //  that.
         // -Maybe allow for different shapes. But maybe that should be done in a subclass
 
       }
     }
 
     }
-
-    //return 1.0;  // preliminary
   }
 
   void reset()
@@ -640,8 +623,6 @@ protected:
 
   int numFadeSamples = 0;
   int remainingFadeSamples = 0;
-
-  //int sampleCount    = 0;
 
   enum class State
   {
