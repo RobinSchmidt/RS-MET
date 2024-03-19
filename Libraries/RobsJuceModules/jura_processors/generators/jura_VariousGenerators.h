@@ -273,12 +273,12 @@ protected:
 //=================================================================================================
 
 
-class JUCE_API SweepKickerAudioModule : public jura::AudioModuleWithMidiIn
+class JUCE_API SweepKickerModule : public jura::AudioModuleWithMidiIn
 {
 
 public:
 
-  SweepKickerAudioModule(CriticalSection *lockToUse,
+  SweepKickerModule(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
 
   virtual void createParameters();
@@ -317,7 +317,7 @@ protected:
 
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SweepKickerAudioModule)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SweepKickerModule)
 };
 
 

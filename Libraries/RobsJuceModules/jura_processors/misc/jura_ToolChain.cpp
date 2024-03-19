@@ -721,6 +721,8 @@ void ToolChain::populateModuleFactory()
   f.registerModuleType([](CS cs)->AM { return new WaveOscModule(cs);                 }, s, "WaveOscillator");
   f.registerModuleType([](CS cs)->AM { return new SamplerModule(cs);                 }, s, "Sampler");
   f.registerModuleType([](CS cs)->AM { return new FlatZapperModule(cs);              }, s, "FlatZapper");
+  f.registerModuleType([](CS cs)->AM { return new SweepKickerModule(cs);             }, s, "SweepKicker");
+
   // DualWaveOsc, WaveScanningOsc
   //f.registerModuleType([](CS cs)->AM { return new FourOscSectionAudioModule(cs);     }, s, "FourOscSection");
 

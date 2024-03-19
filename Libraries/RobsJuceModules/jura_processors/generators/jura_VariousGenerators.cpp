@@ -585,21 +585,21 @@ void FlatZapperModule::setAllpassMode(double newMode)
 
 //=================================================================================================
 
-SweepKickerAudioModule::SweepKickerAudioModule(CriticalSection *lockToUse, 
+SweepKickerModule::SweepKickerModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
-  setModuleTypeName("FreqSweeper");
+  setModuleTypeName("SweepKicker");
   createParameters();
 }
 
-void SweepKickerAudioModule::createParameters()
+void SweepKickerModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
   //using FS = rosic::rsFreqSweeper;
-  using SK = jura::SweepKickerAudioModule;
+  using SK = jura::SweepKickerModule;
   using Param = jura::Parameter;
 
   //FS*   core = &sweeperCore;
@@ -615,11 +615,11 @@ void SweepKickerAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SK>(this, &SK::setHighFreq);
 
-  p = new Param("SweepTime", 50.0, 500.0, 0.0, Parameter::EXPONENTIAL);
+  p = new Param("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<SK>(this, &SK::setSweepTime);
 
-  p = new Param("FreqLow", 0.0, 400.0, 0.0, Parameter::EXPONENTIAL);
+  p = new Param("FreqLow", 0.0, 400.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<SK>(this, &SK::setLowFreq);
 
@@ -629,7 +629,7 @@ void SweepKickerAudioModule::createParameters()
 
 }
 
-void SweepKickerAudioModule::processStereoFrame(double* left, double* right)
+void SweepKickerModule::processStereoFrame(double* left, double* right)
 {
   double tmpL, tmpR;
   core.getSampleFrameStereo(&tmpL, &tmpR);
@@ -649,11 +649,11 @@ double midiKeyAndVelToFreqFactor(int key, int vel, double keytrack, double veltr
   // rosic::MultiModeFilter::updateFreqWithKeyAndVel
   // ...maybe this factored out function can be moved to the library and called from the filter.
 }
-// Move into RAPT - maybe make a class with static functions
+// Moved into RAPT - maybe make a class with static functions
 // rsMidiResponseFormulas
 
 // Move to rosic:
-void SweepKickerAudioModule::noteOn(int key, int vel)
+void SweepKickerModule::noteOn(int key, int vel)
 {
   // These should become user parameters. They are meant to be in percent:
   double hiFreqByKey = 100;

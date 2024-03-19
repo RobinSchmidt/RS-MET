@@ -657,3 +657,34 @@ void rsFreqSweeper::updateCoeffs()
   // These formulas need verification! Do they behave as expected and is that behavior "musical"?
 }
 
+//=================================================================================================
+
+rsSweepKicker::rsSweepKicker()
+{
+  initSettings(true);
+  reset();
+}
+
+void rsSweepKicker::initSettings(bool initAlsoSampleRate)
+{
+  freqSweeper.initSettings(initAlsoSampleRate);
+  frqLo      =     0;
+  frqLoByKey =   100;
+  frqLoByVel =     0;
+  frqHi      = 10000;
+  frqHiByKey =   100;
+  frqHiByVel =     0;
+  swpTm      =     0.2;
+  swpTmByKey =     0;
+  swpTmByVel =     0;
+}
+
+void rsSweepKicker::noteOn(int key, int vel)
+{
+  RAPT::rsError("Not yet implemented");
+}
+
+void rsSweepKicker::noteOff(int key)
+{
+  RAPT::rsError("Not yet implemented");
+}

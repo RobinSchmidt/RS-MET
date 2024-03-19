@@ -543,13 +543,58 @@ protected:
 
 //=================================================================================================
 
-/** A monophonic drum synthesizer based on rsFreqSweeper. */
+/** A monophonic drum synthesizer based on rsFreqSweeper. The implementation consists mostly of
+keeping track of the midi state and delegating setter calls to the embedded rsFreqSweeper object 
+at the right moments (e.g. calls to frequency setters deferred to noteOn events and may take into
+accoutn key and velocity as modifiers for the actual frequencies etc.).  */
 
 class rsSweepKicker
 {
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \Lifetime
+
+  rsSweepKicker();
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Setup
+
+  // This code is mostly boilerplate:
+  void setSampleRate(   double newRate)  { freqSweeper.setSampleRate(newRate); }
+
+  void setLowFreq(      double newFreq)  { frqLo      = newFreq;  }
+  void setLowFreqByKey( double newByKey) { frqLoByKey = newByKey; }
+  void setLowFreqByVel( double newByVel) { frqLoByVel = newByVel; }
+
+  void setHighFreq(     double newFreq)  { frqHi      = newFreq;  }
+  void setHighFreqByKey(double newByKey) { frqHiByKey = newByKey; }
+  void setHighFreqByVel(double newByVel) { frqHiByVel = newByVel; }
+
+  // void setSweepTime(double newTime)
+  // ...
+
+  void initSettings(bool initAlsoSampleRate = false);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \Processing
+
+  INLINE void getSampleFrameStereo(double* inOutL, double* inOutR)
+  {
+    freqSweeper.getSampleFrameStereo(inOutL, inOutR);
+  }
+
+  void reset()
+  {
+    freqSweeper.reset();
+  }
+
+  void noteOn( int key, int vel);
+
+  void noteOff(int key);
 
 
 protected:
@@ -562,7 +607,12 @@ protected:
 
   double frqLo, frqLoByKey, frqLoByVel;
   double frqHi, frqHiByKey, frqHiByVel;
-  // ...tbc...
+  double swpTm, swpTmByKey, swpTmByVel;
+
+  // ...tbc... have two waveShape parameters - one that morphs between sawUp/sin/sawDown, one that
+  // drives the result into saturation (to squarify it) ...maybe a third that addds an offset after
+  // the drive before the saturating function. Maybe the API should allow rsFreqSweeper to take a
+  // std::function for producing the waveform - and we provide one here.
 
 
 
