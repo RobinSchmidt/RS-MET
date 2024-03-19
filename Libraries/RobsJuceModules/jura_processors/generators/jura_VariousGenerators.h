@@ -296,7 +296,7 @@ public:
   void setAmplitude(double newAmp)  { amplitude = newAmp; }
   //void setHighFreq( double newFreq) { hiFreq = newFreq; }
   //void setLowFreq(  double newFreq) { loFreq = newFreq; }
-  void setSweepTime(double newTime) { core.setSweepTime(0.001*newTime); } // in ms
+  //void setSweepTime(double newTime) { core.setSweepTime(0.001*newTime); } // in ms
   // Maybe move them all into rosic::rsSweepKicker as well for cleaner and more consistent code.
   // But there call it setSweepTimeMs or ..Milliseconds
 

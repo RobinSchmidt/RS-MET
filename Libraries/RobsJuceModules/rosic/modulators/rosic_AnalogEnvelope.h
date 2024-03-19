@@ -137,8 +137,9 @@ namespace rosic
     /** Returns, when currently a note is on (the noteIsOn flag is set). */
     bool isNoteOn() const { return noteIsOn; }
 
-    /** True, if output is below 40 dB. */
+    /** True, if output is below some hardcoded threshold. */
     bool endIsReached();  
+    // ToDo: Document the threshold. Maybe make it accessible as parameter.
 
     //---------------------------------------------------------------------------------------------
     // audio processing:

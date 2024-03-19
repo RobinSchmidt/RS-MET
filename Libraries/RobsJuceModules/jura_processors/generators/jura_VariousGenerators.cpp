@@ -598,30 +598,30 @@ void SweepKickerModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  using SK  = rosic::rsSweepKicker;
-  using SKM = jura::SweepKickerModule;
-  using Param = jura::Parameter;
+  using SK     = rosic::rsSweepKicker;
+  using SKM    = jura::SweepKickerModule;
+  using FixPar = jura::Parameter;
+  using ModPar = jura::ModulatableParameter;
 
-  //FS*   core = &sweeperCore;
-  Param* p;
+  FixPar* fp;
 
   // Input/output settings
-  p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
+  fp = new FixPar("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
   // The goal is to make that modulatable to get away without having a built-in amp-env.
 
-  p = new Param("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
-  p->setValueChangeCallback<SK>(&core, &SK::setHighFreq);
+  fp = new FixPar("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SK>(&core, &SK::setHighFreq);
 
-  p = new Param("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
-  p->setValueChangeCallback<SKM>(this, &SKM::setSweepTime);
+  fp = new FixPar("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SK>(&core, &SK::setSweepTimeInMs);
 
-  p = new Param("FreqLow", 0.0, 400.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<SK>(&core, &SK::setLowFreq);
+  fp = new FixPar("FreqLow", 0.0, 400.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SK>(&core, &SK::setLowFreq);
 
   // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
   // the reference key (which is 64 - but verify if this is consistent with usage in other modules, 

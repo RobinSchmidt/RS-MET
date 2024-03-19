@@ -452,6 +452,7 @@ public:
   Hz as reference frequency is that this makes for a nice low-freq target in bassdrums when 
   low-freq is set to zero. */
   void setSweepTime(double newTime) { sweepTime = newTime; setDirty(); }
+  // Maybe rename to setSweepTimeInSecs
 
   /** Initializes all parameter values to their initial/default values. The sample rate may or may
   not be re-initialized also. */
@@ -579,11 +580,23 @@ public:
   void setHighFreqByKey(double newByKey) { frqHiByKey = newByKey; }
   void setHighFreqByVel(double newByVel) { frqHiByVel = newByVel; }
 
-  void setSweepTime(    double newTime)  { swpTm = newTime; }
+  //void setSweepTime(    double newTime)  { swpTm = newTime; }  // not needed
+
+  void setSweepTimeInMs(double newTime) { swpTm = 0.001*newTime; }
+
+  // Maybe rename to setSweepTimeInMs and accept milliseconds instead of seconds
   // ...ByKy, ByVel
 
   void initSettings(bool initAlsoSampleRate = false);
 
+  //void setReleaseTime(  double newTime)
+
+  //-----------------------------------------------------------------------------------------------
+  // \Inquiry
+
+
+  double getSampleRate() const { return freqSweeper.getSampleRate(); }
+  // It's stored only in the embedded object to avoid redundancy
 
   //-----------------------------------------------------------------------------------------------
   // \Processing
@@ -620,7 +633,7 @@ protected:
   // the drive before the saturating function. Maybe the API should allow rsFreqSweeper to take a
   // std::function for producing the waveform - and we provide one here.
 
-
+  // Maybe integrate an AHDSR envelope for the amplitude
 
 };
 
