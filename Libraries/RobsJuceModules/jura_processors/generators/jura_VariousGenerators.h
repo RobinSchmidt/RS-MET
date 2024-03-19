@@ -287,27 +287,29 @@ public:
   //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double* left, double* right) override;
   virtual void setSampleRate(double newRate) override { core.setSampleRate(newRate); }
-  virtual void reset() override { core.reset(); }
-  virtual void noteOn(int noteNumber, int velocity) override;
+  virtual void reset()                       override { core.reset();                }
+  virtual void noteOn( int key, int vel)     override { core.noteOn(key, vel);       }
+  virtual void noteOff(int key)              override { core.noteOff(key);           }
 
 
   // Parameter callback targets:
   void setAmplitude(double newAmp)  { amplitude = newAmp; }
-  void setHighFreq( double newFreq) { hiFreq = newFreq; }
-  void setLowFreq(  double newFreq) { loFreq = newFreq; }
+  //void setHighFreq( double newFreq) { hiFreq = newFreq; }
+  //void setLowFreq(  double newFreq) { loFreq = newFreq; }
   void setSweepTime(double newTime) { core.setSweepTime(0.001*newTime); } // in ms
-
+  // Maybe move them all into rosic::rsSweepKicker as well for cleaner and more consistent code.
+  // But there call it setSweepTimeMs or ..Milliseconds
 
 protected:
 
-  rosic::rsFreqSweeper core; // use rsSweepKicker
+  rosic::rsSweepKicker core;
 
 
   double passThroughAmp = 0.0;
   double amplitude = 1.0; 
 
-  double hiFreq = 10000;
-  double loFreq = 0;
+  //double hiFreq = 10000;
+  //double loFreq = 0;
 
   // ToDo:
   // -Maybe have two loFreq parameters - one used during sustain and one during release

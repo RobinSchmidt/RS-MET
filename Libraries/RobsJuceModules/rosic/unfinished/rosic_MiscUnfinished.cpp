@@ -681,7 +681,20 @@ void rsSweepKicker::initSettings(bool initAlsoSampleRate)
 
 void rsSweepKicker::noteOn(int key, int vel)
 {
-  RAPT::rsError("Not yet implemented");
+  //RAPT::rsError("Not yet implemented");
+
+
+  double factor;
+
+  factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqHiByKey, frqHiByVel);
+  freqSweeper.setHighFreq(factor * frqHi);
+
+  factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqLoByKey, frqLoByVel);
+  freqSweeper.setLowFreq(factor * frqLo);
+
+  freqSweeper.reset();
+  // I'm not yet sure if a hard reset is the right thing here
+
 }
 
 void rsSweepKicker::noteOff(int key)

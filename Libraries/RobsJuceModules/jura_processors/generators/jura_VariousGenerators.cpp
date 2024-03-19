@@ -598,8 +598,8 @@ void SweepKickerModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  //using FS = rosic::rsFreqSweeper;
-  using SK = jura::SweepKickerModule;
+  using SK  = rosic::rsSweepKicker;
+  using SKM = jura::SweepKickerModule;
   using Param = jura::Parameter;
 
   //FS*   core = &sweeperCore;
@@ -608,20 +608,20 @@ void SweepKickerModule::createParameters()
   // Input/output settings
   p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<SK>(this, &SK::setAmplitude);
+  p->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
   // The goal is to make that modulatable to get away without having a built-in amp-env.
 
   p = new Param("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<SK>(this, &SK::setHighFreq);
+  p->setValueChangeCallback<SK>(&core, &SK::setHighFreq);
 
   p = new Param("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<SK>(this, &SK::setSweepTime);
+  p->setValueChangeCallback<SKM>(this, &SKM::setSweepTime);
 
   p = new Param("FreqLow", 0.0, 400.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<SK>(this, &SK::setLowFreq);
+  p->setValueChangeCallback<SK>(&core, &SK::setLowFreq);
 
   // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
   // the reference key (which is 64 - but verify if this is consistent with usage in other modules, 
@@ -638,6 +638,7 @@ void SweepKickerModule::processStereoFrame(double* left, double* right)
 }
 
 
+/*
 double midiKeyAndVelToFreqFactor(int key, int vel, double keytrack, double veltrack)
 {
   return pow(2.0, (0.01*keytrack/12.0)*(key-64.0)) * pow(2.0, (0.01*veltrack/63.0)*(vel-64.0));
@@ -651,7 +652,9 @@ double midiKeyAndVelToFreqFactor(int key, int vel, double keytrack, double veltr
 }
 // Moved into RAPT - maybe make a class with static functions
 // rsMidiResponseFormulas
+*/
 
+/*
 // Move to rosic:
 void SweepKickerModule::noteOn(int key, int vel)
 {
@@ -670,3 +673,4 @@ void SweepKickerModule::noteOn(int key, int vel)
   core.reset();
   // I'm not yet sure if a hard reset is the right thing
 }
+*/

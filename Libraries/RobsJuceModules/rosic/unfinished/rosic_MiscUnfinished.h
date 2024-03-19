@@ -573,8 +573,8 @@ public:
   void setHighFreqByKey(double newByKey) { frqHiByKey = newByKey; }
   void setHighFreqByVel(double newByVel) { frqHiByVel = newByVel; }
 
-  // void setSweepTime(double newTime)
-  // ...
+  void setSweepTime(    double newTime)  { swpTm = newTime; }
+  // ...ByKy, ByVel
 
   void initSettings(bool initAlsoSampleRate = false);
 
