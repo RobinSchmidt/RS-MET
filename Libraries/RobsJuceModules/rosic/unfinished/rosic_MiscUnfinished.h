@@ -471,7 +471,9 @@ public:
     // Compute instantaneous frequency:
     return (a + b*pow(t, p*q)) / pow(1 + c*pow(t,p), q);
   }
-  // ToDo: Document how I came up with this formula.
+  // ToDo: 
+  // -Document how I came up with this formula.
+  // -Try to parallelize it. Maybe use float instead of double to get even more bang for the buck.
 
 
   /** Calculates one output stereo sample-frame at a time. */
@@ -538,5 +540,35 @@ protected:
 // -Maybe the wavesshape could be determined by a user-defined function using std::function. Maybe
 //  for flexibility, the function should receive the instantaneous phase and additionaly the 
 //  absolute time to (potentially) implement time-varying waveshapes.
+
+//=================================================================================================
+
+/** A monophonic drum synthesizer based on rsFreqSweeper. */
+
+class rsSweepKicker
+{
+
+public:
+
+
+
+protected:
+
+  // The embedded object:
+  rsFreqSweeper freqSweeper;
+
+  // We mostly have the same parameters as the embedded rsFreqSweeper object. However - here, the
+  // parameters also repsond to key and velocity.
+
+  double frqLo, frqLoByKey, frqLoByVel;
+  double frqHi, frqHiByKey, frqHiByVel;
+  // ...tbc...
+
+
+
+};
+
+
+
 
 }
