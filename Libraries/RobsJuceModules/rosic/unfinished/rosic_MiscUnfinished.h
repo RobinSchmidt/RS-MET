@@ -548,6 +548,96 @@ protected:
 //  for flexibility, the function should receive the instantaneous phase and additionaly the 
 //  absolute time to (potentially) implement time-varying waveshapes.
 
+
+//=================================================================================================
+
+/** UNDER CONSTRUCTION
+
+A very simple envlope whose sole purpose is to create a fade-out for example, after a 
+noteOff. */
+
+class rsFadeOutEnvelope
+{
+
+public:
+
+
+  void noteOn()
+  {
+    state = State::open;
+  }
+
+  void noteOff()
+  {
+    state = State::fading;
+    sampleCount = 0;
+  }
+
+
+  double getSample()
+  {
+    switch(state)
+    {
+    case State::open:    return 1.0;
+    case State::silent:  return 0.0;
+    case State::fading:
+    {
+      if(sampleCount >= numFadeSamples)
+      {
+        state = State::silent;
+        return 0.0;
+      }
+      else
+      {
+        double out = double(numFadeSamples-sampleCount) / double(numFadeSamples);
+        sampleCount++;
+        return out;
+
+        // ToDo: 
+        // -Optimize: 
+        //  -avoid division by keeping 1.0 / numfadeSamples as member
+        //  -avoid int -> double conversion by using double for all members
+        //  -use a countdown instead of counting up -> avoid the subtraction. We just want to do:
+        //   out = remainingFadeSamples / numFadeSamples
+        // -Check, if we need to do the increment pre or post output computation.
+        // -Check formula. Desired behavior: if numFadeSamples == 1, there should be a single 
+        //  output sample of value 0.5 in between open and silent state. For numfadeSamples == 2, 
+        //  there should be two samples of values 0.666.. and 0.333.. etc. Write a unit test for 
+        //  that.
+        // -Maybe allow for different shapes. But maybe that should be done in a subclass
+
+      }
+    }
+
+    }
+
+    //return 1.0;  // preliminary
+  }
+
+  void reset()
+  {
+    sampleCount = 0;
+    state       = State::open;
+  }
+
+protected:
+
+  int numFadeSamples = 0;
+  int sampleCount    = 0;
+
+  enum class State
+  {
+    open,      // Volume is fully open
+    fading,    // Volume is fading out
+    silent     // Volume has reached zero
+  };
+
+  State state;
+
+};
+
+
+
 //=================================================================================================
 
 /** A monophonic drum synthesizer based on rsFreqSweeper. The implementation consists mostly of
