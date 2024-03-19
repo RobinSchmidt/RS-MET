@@ -561,6 +561,16 @@ class rsFadeOutEnvelope
 
 public:
 
+  rsFadeOutEnvelope()
+  {
+    reset();
+  }
+
+  void setNumFadeSamples(int newNumber)
+  {
+    numFadeSamples = newNumber;
+  }
+
 
   void noteOn()
   {

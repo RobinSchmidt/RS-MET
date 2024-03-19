@@ -84,7 +84,26 @@ void rotes::testConsecutiveExponentialDecay()
 bool rotes::testFadeOutEnvelope()
 {
   bool ok = true;
+  double y; 
 
+
+  rosic::rsFadeOutEnvelope env;
+
+  env.setNumFadeSamples(0);
+  y = env.getSample();  ok &= y == 1.0;
+  env.noteOff();
+  y = env.getSample();  ok &= y == 0.0;
+  env.noteOn();
+  y = env.getSample();  ok &= y == 1.0;
+  env.noteOff();
+  y = env.getSample();  ok &= y == 0.0;
+
+
+  env.setNumFadeSamples(1);
+  env.noteOn();
+  y = env.getSample();  ok &= y == 1.0;
+  env.noteOff();
+  y = env.getSample();  ok &= y == 0.5;
 
 
   return ok;
