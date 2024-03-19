@@ -597,6 +597,7 @@ namespace rosic
   // from here: definitions of the functions to be inlined, i.e. all functions which are supposed
   // to be called at audio-rate (they can't be put into the .cpp file):
 
+  // Should this really be inlined? It's quite big
   INLINE double BreakpointModulator::getSample()
   {
     double tmp1, tmp2; // temporary variables for intermediate results

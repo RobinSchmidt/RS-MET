@@ -571,6 +571,8 @@ public:
     numFadeSamples = newNumber;
   }
 
+  bool endIsReached() const { return state == State::silent; }
+
   void noteOn()
   {
     state = State::open;
@@ -580,6 +582,12 @@ public:
   {
     state = State::fading;
     remainingFadeSamples = numFadeSamples;
+  }
+
+  void goToEnd()
+  {
+    remainingFadeSamples = 0;
+    state = State::silent;
   }
 
   double getSample()
@@ -605,6 +613,7 @@ public:
         // -Optimize: 
         //  -avoid division by keeping 1.0 / numfadeSamples as member
         //  -avoid int -> double conversion by using double for all members
+        //  -after implementing that, run the unit test again
         // -Maybe allow for different shapes. But maybe that should be done in a subclass
 
       }
@@ -613,11 +622,14 @@ public:
     }
   }
 
+ 
   void reset()
   {
-    remainingFadeSamples = numFadeSamples;
-    state = State::open;
+    goToEnd();
+    //remainingFadeSamples = numFadeSamples;
+    //state = State::open;
   }
+
 
 protected:
 
@@ -633,6 +645,11 @@ protected:
 
   State state;
 
+  // For the purposes that I have in mind, float should be good enough for the numFadeSamples and
+  // remainingFadeSamples - see:
+  // https://stackoverflow.com/questions/3793838/which-is-the-first-integer-that-an-ieee-754-float-is-incapable-of-representing-e
+  // The largest exacly representable integer is 2^24 ...but does that mean that all the smaller 
+  // ones will be produced when decrementing?
 };
 
 
@@ -659,7 +676,11 @@ public:
   // \Setup
 
   // This code is mostly boilerplate:
-  void setSampleRate(   double newRate)  { freqSweeper.setSampleRate(newRate); }
+  void setSampleRate(   double newRate)  
+  { 
+    freqSweeper.setSampleRate(newRate);
+    fadeOutEnv.setNumFadeSamples(fadeOutTime * newRate);
+  }
 
   void setLowFreq(      double newFreq)  { frqLo      = newFreq;  }
   void setLowFreqByKey( double newByKey) { frqLoByKey = newByKey; }
@@ -678,7 +699,11 @@ public:
 
   void initSettings(bool initAlsoSampleRate = false);
 
-  //void setReleaseTime(  double newTime)
+  void setFadeOutTime(double newTime)
+  {
+    fadeOutTime = newTime;
+    fadeOutEnv.setNumFadeSamples(fadeOutTime * getSampleRate());
+  }
 
   //-----------------------------------------------------------------------------------------------
   // \Inquiry
@@ -692,7 +717,16 @@ public:
 
   INLINE void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
+    if(fadeOutEnv.endIsReached())
+    {
+      *inOutL =  *inOutR = 0.0;
+      return;
+    }
+
     freqSweeper.getSampleFrameStereo(inOutL, inOutR);
+    double env = fadeOutEnv.getSample();
+    *inOutL *= env;
+    *inOutR *= env;
   }
 
   void reset()
@@ -707,8 +741,9 @@ public:
 
 protected:
 
-  // The embedded object:
-  rsFreqSweeper freqSweeper;
+  // The embedded objects:
+  rsFreqSweeper     freqSweeper;
+  rsFadeOutEnvelope fadeOutEnv;
 
   // We mostly have the same parameters as the embedded rsFreqSweeper object. However - here, the
   // parameters also repsond to key and velocity.
@@ -716,6 +751,8 @@ protected:
   double frqLo, frqLoByKey, frqLoByVel;
   double frqHi, frqHiByKey, frqHiByVel;
   double swpTm, swpTmByKey, swpTmByVel;
+
+  double fadeOutTime;
 
   // ...tbc... have two waveShape parameters - one that morphs between sawUp/sin/sawDown, one that
   // drives the result into saturation (to squarify it) ...maybe a third that addds an offset after

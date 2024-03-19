@@ -91,7 +91,7 @@ bool rotes::testFadeOutEnvelope()
 
   // A fade-out time of 0 samples should shut the signal off immediately after noteOff:
   env.setNumFadeSamples(0);
-  y = env.getSample();  ok &= y == 1.0;
+  y = env.getSample();  ok &= y == 0.0;
   env.noteOff();
   y = env.getSample();  ok &= y == 0.0;
   env.noteOn();

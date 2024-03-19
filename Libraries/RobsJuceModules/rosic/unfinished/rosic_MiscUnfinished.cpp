@@ -667,16 +667,18 @@ rsSweepKicker::rsSweepKicker()
 
 void rsSweepKicker::initSettings(bool initAlsoSampleRate)
 {
+  frqLo       =     0;
+  frqLoByKey  =   100;
+  frqLoByVel  =     0;
+  frqHi       = 10000;
+  frqHiByKey  =   100;
+  frqHiByVel  =     0;
+  swpTm       =     0.2;
+  swpTmByKey  =     0;
+  swpTmByVel  =     0;
+  fadeOutTime =     0;
   freqSweeper.initSettings(initAlsoSampleRate);
-  frqLo      =     0;
-  frqLoByKey =   100;
-  frqLoByVel =     0;
-  frqHi      = 10000;
-  frqHiByKey =   100;
-  frqHiByVel =     0;
-  swpTm      =     0.2;
-  swpTmByKey =     0;
-  swpTmByVel =     0;
+  fadeOutEnv.setNumFadeSamples(fadeOutTime * getSampleRate());
 }
 
 void rsSweepKicker::noteOn(int key, int vel)
@@ -707,9 +709,14 @@ void rsSweepKicker::noteOn(int key, int vel)
   // I'm not yet sure if a hard reset is the right thing here. Maybe we should reset only under 
   // certain conditions.
 
+
+  fadeOutEnv.noteOn();
+
 }
 
 void rsSweepKicker::noteOff(int key)
 {
+  fadeOutEnv.noteOff();
+
   //RAPT::rsError("Not yet implemented");
 }
