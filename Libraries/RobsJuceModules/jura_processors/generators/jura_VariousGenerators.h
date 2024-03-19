@@ -273,12 +273,12 @@ protected:
 //=================================================================================================
 
 
-class JUCE_API FreqSweeperAudioModule : public jura::AudioModuleWithMidiIn
+class JUCE_API SweepKickerAudioModule : public jura::AudioModuleWithMidiIn
 {
 
 public:
 
-  FreqSweeperAudioModule(CriticalSection *lockToUse,
+  SweepKickerAudioModule(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
 
   virtual void createParameters();
@@ -300,7 +300,7 @@ public:
 
 protected:
 
-  rosic::rsFreqSweeper core;
+  rosic::rsFreqSweeper core; // use rsSweepKicker
 
 
   double passThroughAmp = 0.0;
@@ -317,7 +317,7 @@ protected:
 
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FreqSweeperAudioModule)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SweepKickerAudioModule)
 };
 
 

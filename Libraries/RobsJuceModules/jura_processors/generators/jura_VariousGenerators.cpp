@@ -585,7 +585,7 @@ void FlatZapperModule::setAllpassMode(double newMode)
 
 //=================================================================================================
 
-FreqSweeperAudioModule::FreqSweeperAudioModule(CriticalSection *lockToUse, 
+SweepKickerAudioModule::SweepKickerAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
 {
@@ -594,12 +594,12 @@ FreqSweeperAudioModule::FreqSweeperAudioModule(CriticalSection *lockToUse,
   createParameters();
 }
 
-void FreqSweeperAudioModule::createParameters()
+void SweepKickerAudioModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  using FS    = rosic::rsFreqSweeper;
-  using FSM   = jura::FreqSweeperAudioModule;
+  //using FS = rosic::rsFreqSweeper;
+  using SK = jura::SweepKickerAudioModule;
   using Param = jura::Parameter;
 
   //FS*   core = &sweeperCore;
@@ -608,20 +608,20 @@ void FreqSweeperAudioModule::createParameters()
   // Input/output settings
   p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<FSM>(this, &FSM::setAmplitude);
+  p->setValueChangeCallback<SK>(this, &SK::setAmplitude);
   // The goal is to make that modulatable to get away without having a built-in amp-env.
 
   p = new Param("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<FSM>(this, &FSM::setHighFreq);
+  p->setValueChangeCallback<SK>(this, &SK::setHighFreq);
 
   p = new Param("SweepTime", 50.0, 500.0, 0.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<FSM>(this, &FSM::setSweepTime);
+  p->setValueChangeCallback<SK>(this, &SK::setSweepTime);
 
   p = new Param("FreqLow", 0.0, 400.0, 0.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<FSM>(this, &FSM::setLowFreq);
+  p->setValueChangeCallback<SK>(this, &SK::setLowFreq);
 
   // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
   // the reference key (which is 64 - but verify if this is consistent with usage in other modules, 
@@ -629,7 +629,7 @@ void FreqSweeperAudioModule::createParameters()
 
 }
 
-void FreqSweeperAudioModule::processStereoFrame(double* left, double* right)
+void SweepKickerAudioModule::processStereoFrame(double* left, double* right)
 {
   double tmpL, tmpR;
   core.getSampleFrameStereo(&tmpL, &tmpR);
@@ -653,7 +653,7 @@ double midiKeyAndVelToFreqFactor(int key, int vel, double keytrack, double veltr
 // rsMidiResponseFormulas
 
 // Move to rosic:
-void FreqSweeperAudioModule::noteOn(int key, int vel)
+void SweepKickerAudioModule::noteOn(int key, int vel)
 {
   // These should become user parameters. They are meant to be in percent:
   double hiFreqByKey = 100;
