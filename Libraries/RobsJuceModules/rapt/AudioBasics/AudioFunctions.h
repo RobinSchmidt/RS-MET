@@ -177,6 +177,35 @@ inline T rsSecondsToBeats(T timeInSeconds, T bpm)
   return timeInSeconds * (bpm/60.0);
 }
 
+/** NOT YET TESTED.
+
+Computes a frequency multiplication factor (for e.g. filter cutoff frequencies, oscillators, 
+etc.) based on midi note key and velocity info and corresponding key- and vel-tracking parameters.
+It is meant to consolidate the used formula for such tracking functionality into one place. The key
+and vel parameters are midi values (i.e. 0..127) and keytrack/veltrack are in percent with the 
+following meaning: At the reference key and vel (both at 64), the factor is 1.0, i.e. the frequency
+should be unchanged. At 100% keytrack will respond with a 1 octave per octave characteristic, i.e.
+1 octave above (i.e. 12 semitones above refKey=64, i.e. at key = 76) will give rise to a factor of 
+2. For veltrack, 100% means that a factor 2 will be produced at full velocity (vel=127) and 0.5 
+will be produced at the lowest nonzero velocity (vel=1). That makes sense because vel=0 is used for
+noteOff anyway. VERIFY!  ...TBC... */
+template<class T>
+inline T rsMidiKeyAndVelToFreqFactor(int key, int vel, T keytrack, T veltrack)
+{
+  return   pow( T(2), (T(0.01/12.0)*keytrack)*(key-T(64)) ) 
+         * pow( T(2), (T(0.01/63.0)*veltrack)*(vel-T(64)) );
+}
+// Needs tests
+// The formula was adapted from  rosic::MultiModeFilter::updateFreqWithKeyAndVel  and factored out
+// into into a RAPT library function with the intention to consolidate the formula used for 
+// key/vel-tracking of frequency parameters into one central place - here.
+// ToDo: 
+// -Call it from there and find other places where the formula is currently implemented 
+//  directly and it can be replaced by a call to this.
+// -Try to optimize to make use of exp instead of pow using a^x = e^(x*log(a)) and use also 
+//  2^x * 2^y = 2^(x+y). We can replace 2 pow-calls with one exp-call. That's a good optimization.
+
+
 /** Returns the frequency ratio (with respect to the fundamental) of a stiff string, such as a 
 piano string, for the given harmonic number. The stiffness parameter controls the amount of 
 inharmonicity. At zero, the ratio is strictly harmonic, i.e. an integer.  

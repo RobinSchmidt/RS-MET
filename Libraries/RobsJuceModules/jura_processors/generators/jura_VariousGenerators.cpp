@@ -642,11 +642,17 @@ double midiKeyAndVelToFreqFactor(int key, int vel, double keytrack, double veltr
 {
   return pow(2.0, (0.01*keytrack/12.0)*(key-64.0)) * pow(2.0, (0.01*veltrack/63.0)*(vel-64.0));
 
+  // ToDo: use RAPT::rsMidiKeyAndVelToFreqFactor
+
+
   // Formula was adapted from:
   // rosic::MultiModeFilter::updateFreqWithKeyAndVel
   // ...maybe this factored out function can be moved to the library and called from the filter.
 }
+// Move into RAPT - maybe make a class with static functions
+// rsMidiResponseFormulas
 
+// Move to rosic:
 void FreqSweeperAudioModule::noteOn(int key, int vel)
 {
   // These should become user parameters. They are meant to be in percent:
