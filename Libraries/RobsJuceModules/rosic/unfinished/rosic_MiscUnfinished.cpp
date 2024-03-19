@@ -699,5 +699,5 @@ void rsSweepKicker::noteOn(int key, int vel)
 
 void rsSweepKicker::noteOff(int key)
 {
-  RAPT::rsError("Not yet implemented");
+  //RAPT::rsError("Not yet implemented");
 }
