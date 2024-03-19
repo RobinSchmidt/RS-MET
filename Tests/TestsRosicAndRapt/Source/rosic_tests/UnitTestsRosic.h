@@ -73,6 +73,7 @@ void testSamplerEngine();
 
 // modulators:
 void testConsecutiveExponentialDecay();
+bool testFadeOutEnvelope();
 
 // analysis:
 void testOscilloscopeBuffer();
@@ -121,7 +122,7 @@ bool testRosicFile();
 bool testRosicEffects();
 bool testRosicFilter();
 //void testRosicGenerators();
-//void testRosicModulators();
+bool testRosicModulators();
 bool testRosicMath();
 bool testRosicNumerical();
 bool testRosicNonRealTime();

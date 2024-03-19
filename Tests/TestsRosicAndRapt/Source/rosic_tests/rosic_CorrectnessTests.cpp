@@ -24,10 +24,6 @@ bool rotes::testRosicFile()
   return ok;
 }
 
-
-
-
-
 bool rotes::testRosicEffects()
 {
   bool ok = true;
@@ -44,6 +40,15 @@ bool rotes::testRosicFilter()
   bool ok = true;
   ok &= testConvolverPartitioned();
   ok &= testFiniteImpulseResponseFilter();  // fails! convolver imp-resp update is conditional
+  return ok;
+}
+
+bool rotes::testRosicModulators()
+{
+  bool ok = true;
+
+  ok &= testFadeOutEnvelope();
+
   return ok;
 }
 

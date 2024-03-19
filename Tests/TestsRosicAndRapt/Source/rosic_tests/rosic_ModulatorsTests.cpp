@@ -80,3 +80,12 @@ void rotes::testConsecutiveExponentialDecay()
   plotData(plotLength, plotIndices, plotData1[0], plotData2[0]);
   */
 }
+
+bool rotes::testFadeOutEnvelope()
+{
+  bool ok = true;
+
+
+
+  return ok;
+}
