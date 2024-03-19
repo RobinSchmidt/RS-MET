@@ -685,6 +685,7 @@ void rsSweepKicker::noteOn(int key, int vel)
 
 
   double factor;
+  //double freq;
 
   factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqHiByKey, frqHiByVel);
   freqSweeper.setHighFreq(factor * frqHi);
