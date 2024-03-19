@@ -4125,8 +4125,14 @@ void freqSweeper()
   int    sampleRate = 50000;       // Sampling rate in Hz
   double length     =     1.5;
   double hiFreq     = 10000;       // Start frequency of the sweep
-  double loFreq     =   100;
+  double loFreq     =     0;
   double sweepTime  =     0.2;
+
+
+  double shapeAtt   =     0.0;
+
+  double shapeDec   =     0.0;     // -1..+1 is a good range
+  // smaller values -> we get close to refFreq earlier, i.e. it is initially steeper
 
   // Create and set up the DSP object:
   using FS = rosic::rsFreqSweeper;
@@ -4135,6 +4141,8 @@ void freqSweeper()
   fs.setHighFreq(hiFreq);
   fs.setLowFreq(loFreq);
   fs.setSweepTime(sweepTime);
+  fs.setAttackShape(shapeAtt);
+  fs.setDecayShape(shapeDec);
 
   int   N   = ceil(length * sampleRate);
   using Vec = std::vector<double>;

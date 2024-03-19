@@ -454,6 +454,14 @@ public:
   void setSweepTime(double newTime) { sweepTime = newTime; setDirty(); }
   // Maybe rename to setSweepTimeInSecs
 
+
+  void setAttackShape(double newShape) { shapeAtt = newShape; setDirty(); }
+
+  void setDecayShape( double newShape) { shapeDec = newShape; setDirty(); }
+  // ToDo: figure out, if the names are really appropriate
+
+
+
   /** Initializes all parameter values to their initial/default values. The sample rate may or may
   not be re-initialized also. */
   void initSettings(bool initAlsoSampleRate = false);
@@ -693,15 +701,20 @@ public:
   //void setSweepTime(    double newTime)  { swpTm = newTime; }  // not needed
 
   void setSweepTimeInMs(double newTime) { swpTm = 0.001*newTime; }
-
-  // Maybe rename to setSweepTimeInMs and accept milliseconds instead of seconds
   // ...ByKy, ByVel
+
+  //void setTransientShape
+  //void setFreqDecayShape(double newShape)
+
+  void setAttackShape(double newShape) {  freqSweeper.setAttackShape(newShape); }
+  void setDecayShape( double newShape) {  freqSweeper.setDecayShape( newShape); }
+
 
   void initSettings(bool initAlsoSampleRate = false);
 
-  void setFadeOutTime(double newTime)
+  void setFadeOutTimeMs(double newTime)
   {
-    fadeOutTime = newTime;
+    fadeOutTime = 0.001 * newTime;
     fadeOutEnv.setNumFadeSamples(fadeOutTime * getSampleRate());
   }
 

@@ -693,10 +693,12 @@ void rsSweepKicker::noteOn(int key, int vel)
   double maxFreq = 0.5 * getSampleRate(); // We clip the freq at the Nyquist limit
   double freq;
   factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqHiByKey, frqHiByVel);
-  freq   = RAPT::rsClip(factor * frqHi, 0.0, maxFreq);
+  //freq   = RAPT::rsClip(factor * frqHi, 0.0, maxFreq);
+  freq   = RAPT::rsMin(factor * frqHi, maxFreq);
   freqSweeper.setHighFreq(freq);
   factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqLoByKey, frqLoByVel);
-  freq   = RAPT::rsClip(factor * frqLo, 0.0, maxFreq);
+  //freq   = RAPT::rsClip(factor * frqLo, 0.0, maxFreq);
+  freq   = RAPT::rsMin(factor * frqLo, maxFreq);
   freqSweeper.setLowFreq(freq);
 
   // Set up speed, shape, etc:

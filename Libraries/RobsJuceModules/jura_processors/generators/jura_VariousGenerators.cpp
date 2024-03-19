@@ -612,6 +612,10 @@ void SweepKickerModule::createParameters()
   mp->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
   // The goal is to make that modulatable to get away without having a built-in amp-env.
 
+  fp = new FixPar("FadeOut", 0.0, 500.0, 10.0, Parameter::LINEAR);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SK>(&core, &SK::setFadeOutTimeMs);
+
   fp = new FixPar("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setHighFreq);
@@ -621,8 +625,25 @@ void SweepKickerModule::createParameters()
   fp->setValueChangeCallback<SK>(&core, &SK::setSweepTimeInMs);
 
   fp = new FixPar("FreqLow", 0.0, 400.0, 0.0, Parameter::LINEAR);
+  //fp = new FixPar("FreqLow", -400.0, 400.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setLowFreq);
+
+
+
+  // This is not a good parametrization:
+  fp = new FixPar("ShapeAtt", -1.0, +1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SK>(&core, &SK::setAttackShape);
+
+  fp = new FixPar("ShapeDec", -1.0, +1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SK>(&core, &SK::setDecayShape);
+  // Better would be to use their average and their (halved) difference. But before that, figure 
+  // out, if we really go through the refFreq (50 Hz) at the dialed in time instant. I find that
+  // questionable from what i hear. Look at plots of the instantaneous freq for various settings!
+
+
 
   // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
   // the reference key (which is 64 - but verify if this is consistent with usage in other modules, 
