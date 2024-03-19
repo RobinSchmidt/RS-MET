@@ -580,7 +580,9 @@ public:
   void noteOff()
   {
     state = State::fading;
-    sampleCount = 0;
+    remainingFadeSamples = numFadeSamples;
+
+    //sampleCount = 0;
   }
 
 
@@ -592,15 +594,19 @@ public:
     case State::silent:  return 0.0;
     case State::fading:
     {
-      if(sampleCount >= numFadeSamples)
+      if(remainingFadeSamples <= 0)
       {
         state = State::silent;
         return 0.0;
       }
       else
       {
-        double out = double(numFadeSamples-sampleCount) / double(numFadeSamples);
-        sampleCount++;
+        //double out = double(numFadeSamples-sampleCount) / double(numFadeSamples);
+        //sampleCount++;
+        //return out;
+
+        double out = double(remainingFadeSamples) / double(numFadeSamples+1);
+        remainingFadeSamples--;
         return out;
 
         // ToDo: 
@@ -626,14 +632,16 @@ public:
 
   void reset()
   {
-    sampleCount = 0;
-    state       = State::open;
+    remainingFadeSamples = numFadeSamples;
+    state = State::open;
   }
 
 protected:
 
   int numFadeSamples = 0;
-  int sampleCount    = 0;
+  int remainingFadeSamples = 0;
+
+  //int sampleCount    = 0;
 
   enum class State
   {

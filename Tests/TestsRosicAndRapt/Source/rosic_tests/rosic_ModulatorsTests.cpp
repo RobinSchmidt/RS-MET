@@ -89,6 +89,7 @@ bool rotes::testFadeOutEnvelope()
 
   rosic::rsFadeOutEnvelope env;
 
+  // A fade-out time of 0 samples should shut the signal off immediately after noteOff:
   env.setNumFadeSamples(0);
   y = env.getSample();  ok &= y == 1.0;
   env.noteOff();
@@ -98,12 +99,24 @@ bool rotes::testFadeOutEnvelope()
   env.noteOff();
   y = env.getSample();  ok &= y == 0.0;
 
-
+  // A single fade-out sample means that there should be 1 nonzero sample in between fully open and
+  // fully closed state and that sample should have a value of 0.5:
   env.setNumFadeSamples(1);
   env.noteOn();
   y = env.getSample();  ok &= y == 1.0;
   env.noteOff();
   y = env.getSample();  ok &= y == 0.5;
+  y = env.getSample();  ok &= y == 0.0;
+
+  // For 2 fade out samples, we want to see 2 nonzero samples with values 2/3 and 1/3 between fully 
+  // open and fully closed state:
+  env.setNumFadeSamples(2);
+  env.noteOn();
+  y = env.getSample();  ok &= y == 1.0;
+  env.noteOff();
+  y = env.getSample();  ok &= y == 2.0/3.0;
+  y = env.getSample();  ok &= y == 1.0/3.0;
+  y = env.getSample();  ok &= y == 0.0;
 
 
   return ok;
