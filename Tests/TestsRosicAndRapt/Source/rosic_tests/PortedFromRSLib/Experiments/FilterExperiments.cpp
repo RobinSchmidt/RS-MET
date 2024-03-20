@@ -108,6 +108,10 @@ void allpassFDN()
 
 
   int dummy = 0;
+
+  // Ideas for naming the matrices:
+  // -FeedIn, FeedBack (standard), FeedOut, FeedThrough
+  // -Injection, Transition (standard), Extraction, Circumvention
 }
 
 // Move to prototypes - maybe rename to rsSVF:

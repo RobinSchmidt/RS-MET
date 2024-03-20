@@ -379,7 +379,7 @@ int main(int argc, char* argv[])
   //basicIntegerDelayLine();
 
   // Filter:
-  //allpassFDN();                    // Under construction
+  allpassFDN();                    // Under construction
   //bandwidthScaling();
   //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();

@@ -617,20 +617,36 @@ void SweepKickerModule::createParameters()
   fp->setValueChangeCallback<SK>(&core, &SK::setFadeOutTimeMs);
   // 100 seems good as default
 
+  // ToDo:
+  // Pass-Through Amplitude - how should it be named? ThruAmp, LayerInput (nah), Layering (nah) ,
+  // ThruGain, PassGain, DryGain. Maybe every module should have:
+  // InGain:   Gain for input that goes into the DSP process
+  // ThruGain: Gain for input directly fed to output
+  // OutGain:  Gain for output of the DSP process
+  // ...but we already have a lot of modules with an "Amplitude" parameter. That corresponds to the
+  // OutGain. In FlatZapper, we have "Input" - that corresponds to InGain. Maybe call the ThruGain
+  // PassThrough, PassBy, FeedThrough
+
+
+  // Frequency parameters:
+
   fp = new FixPar("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setHighFreq);
-
-  fp = new FixPar("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL);
-  addObservedParameter(fp);
-  fp->setValueChangeCallback<SK>(&core, &SK::setSweepTimeInMs);
 
   fp = new FixPar("FreqLow", 0.0, 400.0, 0.0, Parameter::LINEAR);
   //fp = new FixPar("FreqLow", -400.0, 400.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setLowFreq);
 
+  // ToDo: FreqScale (modulatable)
 
+
+  // Freq envelope parameters:
+
+  fp = new FixPar("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SK>(&core, &SK::setSweepTimeInMs);
 
   fp = new FixPar("Chirp", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
@@ -640,7 +656,12 @@ void SweepKickerModule::createParameters()
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setDecayShape);
   // ChirpShape doesn't seem to do much for bassdrum like sounds but for snares, it does have some
-  // more impact (LofwFreq = 100, HiFreq = 1000
+  // more impact (LofwFreq = 100, HiFreq = 1000)
+
+  // ToDo: Formula (maybe)
+
+  // Waveform parameters:
+  // Phase, StereoPhase, SinToSaw/PhaseShape/WarpHalf (see Straighliner's oscs).
 
 
 
