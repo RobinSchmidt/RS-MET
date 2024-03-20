@@ -607,7 +607,7 @@ void SweepKickerModule::createParameters()
   // fixed, automatable, modulatable. 
 
   FixPar* fp;
-  //AutPar* ap; 
+  //AutPar* ap;
   ModPar* mp;
 
   // Input/output settings
@@ -688,41 +688,3 @@ void SweepKickerModule::processStereoFrame(double* left, double* right)
   *left  = passThroughAmp * *left   +  amplitude * tmpL;
   *right = passThroughAmp * *right  +  amplitude * tmpR;
 }
-
-
-/*
-double midiKeyAndVelToFreqFactor(int key, int vel, double keytrack, double veltrack)
-{
-  return pow(2.0, (0.01*keytrack/12.0)*(key-64.0)) * pow(2.0, (0.01*veltrack/63.0)*(vel-64.0));
-
-  // ToDo: use RAPT::rsMidiKeyAndVelToFreqFactor
-
-
-  // Formula was adapted from:
-  // rosic::MultiModeFilter::updateFreqWithKeyAndVel
-  // ...maybe this factored out function can be moved to the library and called from the filter.
-}
-// Moved into RAPT - maybe make a class with static functions
-// rsMidiResponseFormulas
-*/
-
-/*
-// Move to rosic:
-void SweepKickerModule::noteOn(int key, int vel)
-{
-  // These should become user parameters. They are meant to be in percent:
-  double hiFreqByKey = 100;
-  double hiFreqByVel =   0;
-  double loFreqByKey = 100;
-  double loFreqByVel =   0;
-  double freqFactor;
-
-  // Set up the core:
-  freqFactor = midiKeyAndVelToFreqFactor(key, vel, hiFreqByKey, hiFreqByVel);
-  core.setHighFreq(freqFactor * hiFreq);
-  freqFactor = midiKeyAndVelToFreqFactor(key, vel, loFreqByKey, loFreqByVel);
-  core.setHighFreq(freqFactor * loFreq);
-  core.reset();
-  // I'm not yet sure if a hard reset is the right thing
-}
-*/
