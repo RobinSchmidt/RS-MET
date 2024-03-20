@@ -454,11 +454,16 @@ public:
   void setSweepTime(double newTime) { sweepTime = newTime; setDirty(); }
   // Maybe rename to setSweepTimeInSecs
 
-
   void setChirpAmount(double newAmount) { chirpAmount = newAmount; setDirty(); }
 
   void setChirpShape( double newShape)  { chirpShape  = newShape;  setDirty(); }
 
+  /** Sets the start phase in degrees. */
+  void setStartPhase(double newPhase) { phase = RAPT::rsDegreeToRadiant(newPhase); }
+
+  /** Sets the phase shift between left and right channel in degrees. The left channel will half of
+  the shift applied negatively and the right channel half of it positively. */
+  void setStereoPhaseShift(double newShift) { phaseStereo =  RAPT::rsDegreeToRadiant(newShift); }
 
   /** Initializes all parameter values to their initial/default values. The sample rate may or may
   not be re-initialized also. */
@@ -711,6 +716,10 @@ public:
   void setChirpAmount(double newAmount) {  freqSweeper.setChirpAmount(newAmount); }
 
   void setChirpShape( double newShape)  {  freqSweeper.setChirpShape( newShape); }
+
+
+  void setStartPhase(      double newPhase) { freqSweeper.setStartPhase(newPhase);       }
+  void setStereoPhaseShift(double newShift) { freqSweeper.setStereoPhaseShift(newShift); }
 
 
   void initSettings(bool initAlsoSampleRate = false);

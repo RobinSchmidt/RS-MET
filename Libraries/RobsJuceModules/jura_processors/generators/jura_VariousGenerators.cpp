@@ -661,7 +661,19 @@ void SweepKickerModule::createParameters()
   // ToDo: Formula (maybe)
 
   // Waveform parameters:
-  // Phase, StereoPhase, SinToSaw/PhaseShape/WarpHalf (see Straighliner's oscs).
+  // Phase (modulatable), StereoPhase, SinToSaw/PhaseShape/WarpHalf (see Straighliner's oscs).
+
+
+  mp = new ModPar("Phase", -180.0, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(mp);
+  mp->setValueChangeCallback<SK>(&core, &SK::setStartPhase);
+
+  mp = new ModPar("PhaseStereoShift", -180.0, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(mp);
+  mp->setValueChangeCallback<SK>(&core, &SK::setStereoPhaseShift);
+  // It is interesting to compare the stereo phase shift dialed in here to the same value with the
+  // PhaseStereoizer as effect. It does indeed sound different
+
 
 
 
