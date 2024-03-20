@@ -272,6 +272,7 @@ protected:
 
 //=================================================================================================
 
+/** A module the produces bassdrum (aka kickdrum) sounds via downward sweeps. */
 
 class JUCE_API SweepKickerModule : public jura::AudioModuleWithMidiIn
 {
@@ -302,11 +303,6 @@ protected:
 
   double passThroughAmp = 0.0;
   double amplitude = 1.0; 
-
-  // ToDo:
-  // -Maybe have two loFreq parameters - one used during sustain and one during release. It may 
-  //  make sense to drop the freq further after releasing the note
-  // -Maybe allow negative lowFreq - OK - tried it - doesn't give good results.
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SweepKickerModule)
 };

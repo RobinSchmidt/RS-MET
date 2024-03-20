@@ -625,10 +625,8 @@ void SweepKickerModule::createParameters()
   fp->setValueChangeCallback<SKM>(this, &SKM::setPassThroughAmplitude);
 
 
-  // Frequency parameters:
-  // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
-  // the reference key (which is 69). But they respond both to the midi-key with a 100% (i.e. 1 
-  // oct/oct) keytrack characteristic:
+  // Frequency parameters. We use them as is when the incoming note is on the reference key (which
+  // is A4 = 69). But they both respond to the midi-key with 100% (i.e. 1 oct/oct) keytracking:
 
   fp = new FixPar("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(fp);
@@ -637,11 +635,12 @@ void SweepKickerModule::createParameters()
   fp = new FixPar("FreqLow", 0.0, 400.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setLowFreq);
+  // I tried negative values for the minimum but the results were not so good, so 0 seems suitable.
 
 
   // Freq envelope parameters:
 
-  fp = new FixPar("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL); // In seconds
+  fp = new FixPar("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL); // In milliseconds
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setSweepTimeInMs);
 
@@ -664,7 +663,7 @@ void SweepKickerModule::createParameters()
   addObservedParameter(mp);
   mp->setValueChangeCallback<SK>(&core, &SK::setStereoPhaseShift);
   // It is interesting to compare the stereo phase shift dialed in here to the same value with the
-  // PhaseStereoizer as effect. It does indeed sound different
+  // PhaseStereoizer as post processing effect. It does indeed sound different
 
 
   // ToDo:
@@ -675,6 +674,12 @@ void SweepKickerModule::createParameters()
   //  modulate a single FreqScale parameter with different modes, I guess - and also: for linear FM
   //  it would have to be an additive offset parameter, I think)
   // -Add descriptions for the parameters
+  // -Maybe have two loFreq parameters - one used during sustain and one during release. It may 
+  //  make sense to drop the freq further after releasing the note
+  // -Maybe allow negative lowFreq - OK - tried it - doesn't give good results.
+  // -Maybe use the function from the LinFracInterpolator for phase-shaping. But how should it be
+  //  parameterized? In the interpolation context, each segment has 3 parameters: SlopeAt0, 
+  //  SlopeAt1 and Shape. These need to be translated to menaingful user parameters. But how?
 }
 
 void SweepKickerModule::processStereoFrame(double* left, double* right)
