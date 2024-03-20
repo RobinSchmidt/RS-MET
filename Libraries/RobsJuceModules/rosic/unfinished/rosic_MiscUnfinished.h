@@ -745,6 +745,8 @@ public:
   void reset()
   {
     freqSweeper.reset();
+    fadeOutEnv.reset();    // Will go into silent state
+    currentNote = -1;
   }
 
   void noteOn( int key, int vel);
@@ -766,6 +768,8 @@ protected:
   double swpTm, swpTmByKey, swpTmByVel;
 
   double fadeOutTime;
+
+  int currentNote = -1;
 
   // ...tbc... have two waveShape parameters - one that morphs between sawUp/sin/sawDown, one that
   // drives the result into saturation (to squarify it) ...maybe a third that addds an offset after

@@ -723,13 +723,15 @@ void rsSweepKicker::noteOn(int key, int vel)
 
   fadeOutEnv.noteOn();
 
+  currentNote = key;
+
 }
 
 void rsSweepKicker::noteOff(int key)
 {
-  fadeOutEnv.noteOff();
-  // We should do this only when the noteOff key matches the last received noteOn key. Otherwise,
-  // we get strange behavior
-
-  //RAPT::rsError("Not yet implemented");
+  if(key == currentNote)
+    fadeOutEnv.noteOff();
+  // Without the conditional, it would behave strangely when the player plays a note, then a second
+  // note, then releases the first. It would go into realease even though the most recent note is 
+  // still held.
 }

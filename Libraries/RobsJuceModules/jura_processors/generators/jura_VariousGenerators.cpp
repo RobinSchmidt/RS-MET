@@ -612,9 +612,10 @@ void SweepKickerModule::createParameters()
   mp->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
   // The goal is to make that modulatable to get away without having a built-in amp-env.
 
-  fp = new FixPar("FadeOut", 0.0, 500.0, 10.0, Parameter::LINEAR);
+  fp = new FixPar("FadeOut", 0.0, 500.0, 100.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setFadeOutTimeMs);
+  // 100 seems good as default
 
   fp = new FixPar("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(fp);
