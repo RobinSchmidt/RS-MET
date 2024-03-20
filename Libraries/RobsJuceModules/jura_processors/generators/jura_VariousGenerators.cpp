@@ -601,9 +601,13 @@ void SweepKickerModule::createParameters()
   using SK     = rosic::rsSweepKicker;
   using SKM    = jura::SweepKickerModule;
   using FixPar = jura::Parameter;
+  //using AutPar = jura::AutomatableParameter;
   using ModPar = jura::ModulatableParameter;
+  // In the framework, we have 3 types of parameters with an incremental feature set:
+  // fixed, automatable, modulatable. 
 
   FixPar* fp;
+  //AutPar* ap; 
   ModPar* mp;
 
   // Input/output settings
@@ -676,10 +680,7 @@ void SweepKickerModule::createParameters()
   //  modulate a single FreqScale parameter with different modes, I guess - and also: for linear FM
   //  it would have to be an additive offset parameter, I think)
   //
-  // Note:
-  //
-  // In the framework, we have 3 types of parameters with an incremental feature set:
-  // fixed, automatable, modulatable. 
+
 }
 
 void SweepKickerModule::processStereoFrame(double* left, double* right)
