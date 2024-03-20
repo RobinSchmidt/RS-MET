@@ -626,29 +626,17 @@ void SweepKickerModule::createParameters()
   fp->setValueChangeCallback<SKM>(this, &SKM::setPassThroughAmplitude);
 
 
-  // ToDo:
-  // Pass-Through Amplitude - how should it be named? ThruAmp, LayerInput (nah), Layering (nah) ,
-  // ThruGain, PassGain, DryGain. Maybe every module should have:
-  // InGain:   Gain for input that goes into the DSP process
-  // ThruGain: Gain for input directly fed to output
-  // OutGain:  Gain for output of the DSP process
-  // ...but we already have a lot of modules with an "Amplitude" parameter. That corresponds to the
-  // OutGain. In FlatZapper, we have "Input" - that corresponds to InGain. Maybe call the ThruGain
-  // PassThrough, PassBy, FeedThrough
-
-
   // Frequency parameters:
+  // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
+  // the reference key (which is 69)
 
   fp = new FixPar("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setHighFreq);
 
   fp = new FixPar("FreqLow", 0.0, 400.0, 0.0, Parameter::LINEAR);
-  //fp = new FixPar("FreqLow", -400.0, 400.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setLowFreq);
-
-  // ToDo: FreqScale (modulatable)
 
 
   // Freq envelope parameters:
@@ -664,14 +652,10 @@ void SweepKickerModule::createParameters()
   fp = new FixPar("ChirpShape", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setChirpShape);
-  // ChirpShape doesn't seem to do much for bassdrum like sounds but for snares, it does have some
-  // more impact (LofwFreq = 100, HiFreq = 1000)
 
-  // ToDo: Formula (maybe)
 
-  // Waveform parameters:
-  // Phase (modulatable), StereoPhase, SinToSaw/PhaseShape/WarpHalf (see Straighliner's oscs).
 
+  // Oscillator parameters:
 
   mp = new ModPar("Phase", -180.0, +180.0, 0.0, Parameter::LINEAR);
   addObservedParameter(mp);
@@ -684,16 +668,18 @@ void SweepKickerModule::createParameters()
   // PhaseStereoizer as effect. It does indeed sound different
 
 
-
-
-  // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
-  // the reference key (which is 64 - but verify if this is consistent with usage in other modules, 
-  // e.g. in Straightliner)
-
-  // Maybe introduce a modulatable FreqScale parameter and/or a Detune parameter
-
+  // ToDo:
+  // -FreqHighByVel, FreqScale (modulatable), ChirpByVel, Formula (maybe - let the use choose 
+  //  different formulas for freq-env), SinToSaw/PhaseShape/WarpHalf (see Straighliner's oscs),
+  //  Detune (maybe - but would be somewhat redundant with FreqScale - but may respond differently
+  //  to modulation - linear vs exponential FM - so it might be worthwhile - but we could also 
+  //  modulate a single FreqScale parameter with different modes, I guess - and also: for linear FM
+  //  it would have to be an additive offset parameter, I think)
+  //
+  // Note:
+  //
   // In the framework, we have 3 types of parameters with an incremental feature set:
-  // fixed, automatable, modulatable
+  // fixed, automatable, modulatable. 
 }
 
 void SweepKickerModule::processStereoFrame(double* left, double* right)

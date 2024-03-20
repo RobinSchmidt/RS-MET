@@ -177,6 +177,11 @@ Features
     nevertheless makes sense to pass the input into their DSP-section should have an "Input" or
     "InputGain" parameter. See FlatZapper for an example. Straightliner and AcidDevil could do 
     that, too. There, the input would be mixed to the internal osc output.
+  - Basically, all modules where it makes sense should have gain parameters for in/out/thru just
+    like midi devices for midi events. The out gains may be "Amplitude" and or "Volume"/"Level"
+    parameters (the difference is that one is linear, the other in dB). The in gains may be named 
+    "Input" (and should always be linear). The "thru" gains may be named "PassThrough" and should 
+    also be linear.
 
 ---------------------------------------------------------------------------------------------------
 Modules
