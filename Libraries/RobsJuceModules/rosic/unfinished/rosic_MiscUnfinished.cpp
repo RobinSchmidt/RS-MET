@@ -648,9 +648,18 @@ void rsFreqSweeper::initSettings(bool initAlsoSampleRate)
 
 void rsFreqSweeper::updateCoeffs()
 {
+  //double ep = shapeAtt;
+  //double eq = shapeDec;
+
+  double ep = 0.5*(shapeAtt + shapeDec);
+  double eq = 0.5*(shapeAtt - shapeDec);
+  // ShapeAtt could be called "smack" or "blip" or "chirp"
+  // ShapeDec does not seem to make much difference. It only shapes the details a bit, I think.
+
   a = freqHi;
-  p = pow(2, shapeAtt);
-  q = pow(2, shapeDec);
+  p = pow(2, ep);
+  q = pow(2, eq);
+
   c = (pow(a/refFreq, 1/q) - 1) / pow(sweepTime, p); // refFreq = a / (1 + c * sweepTime^p)^q
   //b = freqLo / pow(c, q);                            // fL = b / c^q   ...I think
   b = freqLo * pow(c, q);                            // fL = b * c^q   ...I think

@@ -123,6 +123,7 @@ https://www.kvraudio.com/news/steinberg-announces-vst-2-coming-to-an-end-41324
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=546433 VST3 SDK: separation between Editor and Audioprocessor
 https://www.kvraudio.com/forum/viewtopic.php?f=31&t=398532 VST3 - known issues (Updated Jan 2019)
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=172013 VST3 Rumours
+https://www.kvraudio.com/forum/viewtopic.php?t=204365      Specific technical questions about VST3, and info for users
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=204080 Don't know if anyone noticed... VST3
 https://www.kvraudio.com/forum/viewtopic.php?t=608115      Bye bye VST2
 https://www.kvraudio.com/forum/viewtopic.php?t=508845      Selling VST2 after October 2018: Steinberg agreement

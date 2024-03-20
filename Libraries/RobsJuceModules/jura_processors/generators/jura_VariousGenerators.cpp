@@ -643,6 +643,7 @@ void SweepKickerModule::createParameters()
   // out, if we really go through the refFreq (50 Hz) at the dialed in time instant. I find that
   // questionable from what i hear. Look at plots of the instantaneous freq for various settings!
 
+  // OK - it seems like ShapeAtt should be renamed to "Chirpy" or something
 
 
   // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
