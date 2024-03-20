@@ -650,11 +650,11 @@ void SweepKickerModule::createParameters()
 
   fp = new FixPar("Chirp", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
-  fp->setValueChangeCallback<SK>(&core, &SK::setAttackShape);
+  fp->setValueChangeCallback<SK>(&core, &SK::setChirpAmount);
 
   fp = new FixPar("ChirpShape", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
-  fp->setValueChangeCallback<SK>(&core, &SK::setDecayShape);
+  fp->setValueChangeCallback<SK>(&core, &SK::setChirpShape);
   // ChirpShape doesn't seem to do much for bassdrum like sounds but for snares, it does have some
   // more impact (LofwFreq = 100, HiFreq = 1000)
 
