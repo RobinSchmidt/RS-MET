@@ -177,9 +177,7 @@ inline T rsSecondsToBeats(T timeInSeconds, T bpm)
   return timeInSeconds * (bpm/60.0);
 }
 
-/** NOT YET TESTED.
-
-Computes a frequency multiplication factor (for e.g. filter cutoff frequencies, oscillators, 
+/** Computes a frequency multiplication factor (for e.g. filter cutoff frequencies, oscillators, 
 etc.) based on midi note key and velocity info and corresponding key- and vel-tracking parameters.
 It is meant to consolidate the used formula for such tracking functionality into one place. The key
 and vel parameters are midi values (i.e. 0..127) and keytrack/veltrack are in percent with the 
@@ -206,9 +204,8 @@ inline T rsMidiKeyAndVelToFreqFactor(int key, int vel, T keytrack, T veltrack,
   //  frequencies to get the tuning right.
   // -refVel = 64 was chosen as default because it is right in the middle.
 }
-// Maybe the reference key should be A4 (key = 69, freq = 440) such that we can dial in a nice 
-// number such as 440 or 220 in a frequency parameter
-// Needs tests
+// Needs unit tests (seems to work fine in practice, though)
+//
 // The formula was adapted from  rosic::MultiModeFilter::updateFreqWithKeyAndVel  and factored out
 // into into a RAPT library function with the intention to consolidate the formula used for 
 // key/vel-tracking of frequency parameters into one central place - here.

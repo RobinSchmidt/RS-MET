@@ -610,20 +610,15 @@ void SweepKickerModule::createParameters()
   //AutPar* ap;
   ModPar* mp;
 
-  // Input/output settings
+  // Amplitude parameters:
   mp = new ModPar("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
   addObservedParameter(mp);
   mp->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
-  // The goal is to make that modulatable to get away without having a built-in amp-env.
-  // Maybe using 1.0 as default is too loud. AcidDevil uses -12 dB as default value for Volume
-  // Maybe fro consistency, we should use 0.25 for amplitude. But other modules like the 
-  // oscillators all use 1.0 as amp or 0 dB for levels. Maybe ToolChain itself should have a 
-  // master volume slider. 
+  // Modulatable to get away without having a built-in amp-env.
 
   fp = new FixPar("FadeOut", 0.0, 500.0, 100.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setFadeOutTimeMs);
-  // 100 seems good as default
 
   fp = new FixPar("PassThrough", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
@@ -632,7 +627,8 @@ void SweepKickerModule::createParameters()
 
   // Frequency parameters:
   // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on
-  // the reference key (which is 69)
+  // the reference key (which is 69). But they respond both to the midi-key with a 100% (i.e. 1 
+  // oct/oct) keytrack characteristic:
 
   fp = new FixPar("FreqHigh", 500.0, 20000.0, 10000.0, Parameter::EXPONENTIAL);
   addObservedParameter(fp);
@@ -645,7 +641,7 @@ void SweepKickerModule::createParameters()
 
   // Freq envelope parameters:
 
-  fp = new FixPar("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL);
+  fp = new FixPar("SweepTime", 50.0, 500.0, 200.0, Parameter::EXPONENTIAL); // In seconds
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setSweepTimeInMs);
 
@@ -656,7 +652,6 @@ void SweepKickerModule::createParameters()
   fp = new FixPar("ChirpShape", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setChirpShape);
-
 
 
   // Oscillator parameters:
@@ -673,12 +668,13 @@ void SweepKickerModule::createParameters()
 
 
   // ToDo:
-  // -FreqHighByVel, FreqScale (modulatable), ChirpByVel, Formula (maybe - let the use choose 
+  // -Add FreqHighByVel, FreqScale (modulatable), ChirpByVel, Formula (maybe - let the use choose 
   //  different formulas for freq-env), SinToSaw/PhaseShape/WarpHalf (see Straighliner's oscs),
   //  Detune (maybe - but would be somewhat redundant with FreqScale - but may respond differently
   //  to modulation - linear vs exponential FM - so it might be worthwhile - but we could also 
   //  modulate a single FreqScale parameter with different modes, I guess - and also: for linear FM
   //  it would have to be an additive offset parameter, I think)
+  // -Add descriptions for the parameters
 }
 
 void SweepKickerModule::processStereoFrame(double* left, double* right)
