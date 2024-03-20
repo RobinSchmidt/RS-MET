@@ -4122,18 +4122,13 @@ void flatZapper()
 void freqSweeper()
 {
   // Setup:
-  int    sampleRate = 50000;       // Sampling rate in Hz
-  double length     =     1.5;
-  double hiFreq     = 10000;       // Start frequency of the sweep
-  double loFreq     =     0;
-  double sweepTime  =     0.2;
-
-
-  double shapeAtt   =    -1.0;  // rename
-  double shapeDec   =     0.0;     // -1..+1 is a good range
-  // Smaller values -> we get close to refFreq earlier, i.e. it is initially steeper. This is true 
-  // for both values.
-
+  int    sampleRate  = 50000;       // Sampling rate in Hz
+  double length      =     1.5;
+  double hiFreq      = 10000;       // Start frequency of the sweep
+  double loFreq      =     0;
+  double sweepTime   =     0.2;
+  double chirpAmount =     0.0;     // -1..+1 is a good range
+  double chirpShape  =     0.0;     // -1..+1 is a good range
 
   // Create and set up the DSP object:
   using FS = rosic::rsFreqSweeper;
@@ -4142,8 +4137,8 @@ void freqSweeper()
   fs.setHighFreq(hiFreq);
   fs.setLowFreq(loFreq);
   fs.setSweepTime(sweepTime);
-  fs.setChirpAmount(shapeAtt);
-  fs.setChirpShape(shapeDec);
+  fs.setChirpAmount(chirpAmount);
+  fs.setChirpShape(chirpShape);
 
   int   N   = ceil(length * sampleRate);
   using Vec = std::vector<double>;
@@ -4168,15 +4163,7 @@ void freqSweeper()
   for(int n = 0; n < N; n++)
     fs.getSampleFrameStereo(&xL[n], &xR[n]);
 
-
-
   rsPlotVector(f);
-
-
-  //rsPlotVectors(xL, xR);
-
-
-  int dummy = 0;
 }
 
 void sineSweepBassdrum1()
