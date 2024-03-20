@@ -679,8 +679,6 @@ void SweepKickerModule::createParameters()
   //  to modulation - linear vs exponential FM - so it might be worthwhile - but we could also 
   //  modulate a single FreqScale parameter with different modes, I guess - and also: for linear FM
   //  it would have to be an additive offset parameter, I think)
-  //
-
 }
 
 void SweepKickerModule::processStereoFrame(double* left, double* right)
