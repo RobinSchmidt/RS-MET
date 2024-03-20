@@ -246,7 +246,7 @@ int main(int argc, char* argv[])
   //multiplicativeSynth();
   //pulseWidthModulationViaTwoSaws();  // just a stub at the moment
   //flatZapper();
-  freqSweeper();
+  //freqSweeper();
   //sineSweepBassdrum();
 
   // Modulators:
@@ -269,7 +269,7 @@ int main(int argc, char* argv[])
   //gradientify();
   //contours();
   //complexContours();
-  implicitCurves();
+  //implicitCurves();
   //parametricCurve();
   //spirals();                 // move to Rendering.cpp in research codebase
   //fractal();
@@ -379,7 +379,7 @@ int main(int argc, char* argv[])
   //basicIntegerDelayLine();
 
   // Filter:
-  allpassFDN();                    // Under construction
+  //allpassFDN();                    // Under construction
   //bandwidthScaling();
   //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();
@@ -489,8 +489,8 @@ int main(int argc, char* argv[])
   //triSaw();
   //phaseShapingCurvePoly4();
   //phaseShapingCurvesRational();
-  phaseShaping();
-  phaseShapingSkew();
+  //phaseShaping();
+  //phaseShapingSkew();
   zeroDelayFeedbackPhaseMod();
 
   // Partial Extraction:

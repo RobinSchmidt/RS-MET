@@ -255,11 +255,12 @@ void phaseShaping()
 
   // plot:
   GNUPlotter plt;
-  //plt.addDataArrays(N, &p[0]);
+  plt.addDataArrays(N, &p[0]);
   //plt.addDataArrays(N, &ps[0]);
   //plt.addDataArrays(N, &ySin[0]);
-  //plt.addDataArrays(N, &m[0]);
+  //plt.addDataArrays(N, &m[0]);    // m does not exist
   //plt.plot();
+  // Plotting phase does not make sense for a full signal
 
   int dummy = 0;
 
@@ -353,7 +354,7 @@ void zeroDelayFeedbackPhaseMod()
   auto func = [&](double y) { return y - sin(p + a*y); };
 
 
-  for(int n = 1; n < N; n++)
+  for(int n = 1; n < N; n++)           // starts from 1 to enable UDF, y[0]=z[0]=q[0]=0 anyway
   {
     p = w*n;                           // sine phase
     double t = sin(p + a*y[n-1]);      // initial guess using UDF-FB-PM, may be better to use z
@@ -414,9 +415,17 @@ void zeroDelayFeedbackPhaseMod()
   //rsArrayTools::unwrap(&q[0], N, 2*PI);
   // ...that doesn't seem to work yet. ah - because the unwrapping assumes discontinuities in the
   // function itself but we have only discontinuities in the derivative. Maybe try to
-  // differentiate -> unwrap -> integrate (numerically)? But wrap at what value?
+  // differentiate -> unwrap -> integrate (numerically)? But wrap at what value? Or use the more 
+  // advanced phase-unwrapping algorithms in rsSingleSineModeler. It has these unreflectPhase...
+  // functions. The phase shouldn't go backward.
+
+  using SSM = rsSingleSineModeler<double>;
+  SSM::unreflectPhaseFromSig(&z[0], &q[0], N);
+
+
 
   //rsPlotVectors(y);  // only UDF signal
+  rsPlotVectors(q);    // only the phase
   rsPlotVectors(y, z, z-y, q);
   int dummy = 0;
 
