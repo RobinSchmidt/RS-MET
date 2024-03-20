@@ -101,6 +101,7 @@ public:
   /** Adds the passed AudioModule at the end of the chain. This ToolChain object will take over 
   ownership of the module. */
   void addModule(AudioModule* module);
+  // Maybe this should be protected. It's used only internally, I think.
 
   /** Deletes the module at the given index. */
   void deleteModule(int index);
@@ -114,14 +115,20 @@ public:
   todo: maybe it should return true, if the module was actually replaced, false otherwise */
   void replaceModule(int index, const juce::String& type);
 
+  // todo:
+  //void moveModule(int oldIndex, int newIndex);
+
+  /* !!!NOT YET IMPLEMENTED!!!
+  Swaps the modules at the two given indices. */
+  void swapModules(int index1, int index2);
+  // Idea: the GUI should have up/down buttons that move the active module up or down. That 
+  // functionality needs to call such a swap function. Later, we may also support drag-and-drop.
+
   /** Ensures that at the end of the module chain, there is exactly one empty slot that can be used
   to insert another module into the chain. If the last slot is not empty, an empty slot will be 
   added, if there are more than one empty slots at the end, the superfluous ones will be 
   deleted. */
   void ensureOneEmptySlotAtEnd();
-
-  // todo:
-  //void moveModule(int oldIndex, int newIndex);
 
 
   //-----------------------------------------------------------------------------------------------

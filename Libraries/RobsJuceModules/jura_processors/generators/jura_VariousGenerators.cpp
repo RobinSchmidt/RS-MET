@@ -611,11 +611,20 @@ void SweepKickerModule::createParameters()
   addObservedParameter(mp);
   mp->setValueChangeCallback<SKM>(this, &SKM::setAmplitude);
   // The goal is to make that modulatable to get away without having a built-in amp-env.
+  // Maybe using 1.0 as default is too loud. AcidDevil uses -12 dB as default value for Volume
+  // Maybe fro consistency, we should use 0.25 for amplitude. But other modules like the 
+  // oscillators all use 1.0 as amp or 0 dB for levels. Maybe ToolChain itself should have a 
+  // master volume slider. 
 
   fp = new FixPar("FadeOut", 0.0, 500.0, 100.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setFadeOutTimeMs);
   // 100 seems good as default
+
+  fp = new FixPar("PassThrough", -1.0, +1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(fp);
+  fp->setValueChangeCallback<SKM>(this, &SKM::setPassThroughAmplitude);
+
 
   // ToDo:
   // Pass-Through Amplitude - how should it be named? ThruAmp, LayerInput (nah), Layering (nah) ,

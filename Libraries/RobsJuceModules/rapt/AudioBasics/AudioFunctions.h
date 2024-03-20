@@ -190,18 +190,32 @@ should be unchanged. At 100% keytrack will respond with a 1 octave per octave ch
 will be produced at the lowest nonzero velocity (vel=1). That makes sense because vel=0 is used for
 noteOff anyway. VERIFY!  ...TBC... */
 template<class T>
-inline T rsMidiKeyAndVelToFreqFactor(int key, int vel, T keytrack, T veltrack)
+inline T rsMidiKeyAndVelToFreqFactor(int key, int vel, T keytrack, T veltrack, 
+  int refKey = 69, int refVel = 64)
 {
-  return   pow( T(2), (T(0.01/12.0)*keytrack)*(key-T(64)) ) 
-         * pow( T(2), (T(0.01/63.0)*veltrack)*(vel-T(64)) );
+  return   pow( T(2), (T(0.01/12.0)*keytrack)*(key-T(refKey)) ) 
+         * pow( T(2), (T(0.01/63.0)*veltrack)*(vel-T(refVel)) );
+
+  // Notes:
+  // -refKey = 69 was chosen as default because it corresponds to A4 with 440 Hz which is used as
+  //  reference pitch for musical tuning. Using that as reference implies that when we dial in 
+  //  440 Hz for some oscillator or filter frequency then it will indeed still be tuned to 440 Hz
+  //  even with nonzero keytrack when A4 is being played. That is convenient for dialing in 
+  //  frequencies. Other options would be C4 = 60 because this is commonly used as reference or 
+  //  E4 = 64 because it's in the middle. But then we would have to dial in ugly noninteger 
+  //  frequencies to get the tuning right.
+  // -refVel = 64 was chosen as default because it is right in the middle.
 }
+// Maybe the reference key should be A4 (key = 69, freq = 440) such that we can dial in a nice 
+// number such as 440 or 220 in a frequency parameter
 // Needs tests
 // The formula was adapted from  rosic::MultiModeFilter::updateFreqWithKeyAndVel  and factored out
 // into into a RAPT library function with the intention to consolidate the formula used for 
 // key/vel-tracking of frequency parameters into one central place - here.
 // ToDo: 
 // -Call it from there and find other places where the formula is currently implemented 
-//  directly and it can be replaced by a call to this.
+//  directly and it can be replaced by a call to this. But there, the reference key is 64. Maybe
+//  let the caller pass it as parameter
 // -Try to optimize to make use of exp instead of pow using a^x = e^(x*log(a)) and use also 
 //  2^x * 2^y = 2^(x+y). We can replace 2 pow-calls with one exp-call. That's a good optimization.
 

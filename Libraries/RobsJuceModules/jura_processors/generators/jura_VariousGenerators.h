@@ -291,33 +291,22 @@ public:
   virtual void noteOn( int key, int vel)     override { core.noteOn(key, vel);       }
   virtual void noteOff(int key)              override { core.noteOff(key);           }
 
-
   // Parameter callback targets:
-  void setAmplitude(double newAmp)  { amplitude = newAmp; }
-  //void setHighFreq( double newFreq) { hiFreq = newFreq; }
-  //void setLowFreq(  double newFreq) { loFreq = newFreq; }
-  //void setSweepTime(double newTime) { core.setSweepTime(0.001*newTime); } // in ms
-  // Maybe move them all into rosic::rsSweepKicker as well for cleaner and more consistent code.
-  // But there call it setSweepTimeMs or ..Milliseconds
+  void setAmplitude(           double newAmp) { amplitude      = newAmp; }
+  void setPassThroughAmplitude(double newAmp) { passThroughAmp = newAmp; }
+
 
 protected:
 
   rosic::rsSweepKicker core;
 
-
   double passThroughAmp = 0.0;
   double amplitude = 1.0; 
 
-  //double hiFreq = 10000;
-  //double loFreq = 0;
-
   // ToDo:
-  // -Maybe have two loFreq parameters - one used during sustain and one during release
-  // -Maybe have a cutoffFreq: when it's reached and a zero crossing is detected, switch the sound
-  //  off.
-  // -Maybe allow negative lowFreq
-
-
+  // -Maybe have two loFreq parameters - one used during sustain and one during release. It may 
+  //  make sense to drop the freq further after releasing the note
+  // -Maybe allow negative lowFreq - OK - tried it - doesn't give good results.
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SweepKickerModule)
 };

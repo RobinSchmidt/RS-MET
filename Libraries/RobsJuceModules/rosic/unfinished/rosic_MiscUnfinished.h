@@ -498,9 +498,16 @@ public:
   INLINE void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     // Output computation:
-    *inOutL = sin(instPhase + phase - 0.5*phaseStereo);
-    *inOutR = sin(instPhase + phase + 0.5*phaseStereo);
-    // ToDo: allow other waveshapes
+    //*inOutL = sin(instPhase + phase - 0.5*phaseStereo);
+    //*inOutR = sin(instPhase + phase + 0.5*phaseStereo);
+    *inOutL = wave(instPhase + phase - 0.5*phaseStereo);
+    *inOutR = wave(instPhase + phase + 0.5*phaseStereo);
+    // ToDo: 
+    // -Make performance tests with wave vs sin
+    // -parallelize
+
+    // ToDo: allow other waveshapes by using a std::function. Maybe the function should accept a 
+    // phase in 0..1 and an absolute time to allow for shape modulations later
 
     // State update:
     sampleCount++;
@@ -557,6 +564,7 @@ protected:
   double instPhase, instFreq;
   int    sampleCount;
 
+  std::function<double(double phase)> wave = &RAPT::rsSin<double>;
 };
 // ToDo:
 // -Maybe the wavesshape could be determined by a user-defined function using std::function. Maybe
@@ -566,9 +574,7 @@ protected:
 
 //=================================================================================================
 
-/** UNDER CONSTRUCTION
-
-A very simple envlope whose sole purpose is to create a fade-out for example, after a 
+/** A very simple envlope whose sole purpose is to create a fade-out for example, after a 
 noteOff. */
 
 class rsFadeOutEnvelope

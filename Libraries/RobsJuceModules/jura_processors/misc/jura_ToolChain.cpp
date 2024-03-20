@@ -129,6 +129,12 @@ void ToolChain::replaceModule(int index, const juce::String& type)
   }
 }
 
+void ToolChain::swapModules(int index1, int index2)
+{
+  RAPT::rsError("Not yet implemented");
+  // ToDo: write a unit test for that first as in TDD - then implement it and make the test pass.
+}
+
 void ToolChain::ensureOneEmptySlotAtEnd()
 {
   ScopedLock scopedLock(*lock);

@@ -628,6 +628,11 @@ rsFreqSweeper::rsFreqSweeper()
 {
   initSettings(true);
   reset();
+
+  //wave = &RAPT::rsSin<double>;
+    
+  //std::function<double(double phase)> wave;
+
 }
 
 void rsFreqSweeper::initSettings(bool initAlsoSampleRate)
@@ -654,7 +659,7 @@ void rsFreqSweeper::updateCoeffs()
   p = pow(2, ep);
   q = pow(2, eq);
   c = (pow(a/refFreq, 1/q) - 1) / pow(sweepTime, p); // refFreq = a / (1 + c * sweepTime^p)^q
-  b = freqLo * pow(c, q);                            // fl = b * c^q   ...i think
+  b = freqLo * pow(c, q);
 }
 
 //=================================================================================================

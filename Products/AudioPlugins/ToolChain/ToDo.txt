@@ -160,6 +160,23 @@ Features
   left. Maybe auto-freeze when the scanning has reached the end and auto-unfreeze when a new 
   trigger is received.
 
+- Global:
+  - It would be nice, if all modules could also serve as (audio-rate) modulators. This is 
+    complicated by the fact that modulators have only one output whereas the audio modules have two
+    and by the fact that modulators are treated differently in the framwork - they are computed 
+    first. Hmm...maybe it's not so important after all.
+  - Master Volume slider
+  - MIDI state display (active notes, bpm, maybe transport and ticks)
+  - Global setup -> extend the color setup to have more stuff in it.
+  - Way to move modules up and down in the chain. ideally per drag-and-drop but easier to implement
+    would be up/down buttons that swap the current module with the previous/next (or do nothing in 
+    case of first and last). ToolChain needs a swapModules(int index1, int index2) function
+  - All modules for which layering with the input makes sense should have a PassThrough parameter.
+    See SweepKicker for an example.
+  - All modules which produce their own sound (generators and instruments) but for which it 
+    nevertheless makes sense to pass the input into their DSP-section should have an "Input" or
+    "InputGain" parameter. See FlatZapper for an example. Straightliner and AcidDevil could do 
+    that, too. There, the input would be mixed to the internal osc output.
 
 ---------------------------------------------------------------------------------------------------
 Modules
