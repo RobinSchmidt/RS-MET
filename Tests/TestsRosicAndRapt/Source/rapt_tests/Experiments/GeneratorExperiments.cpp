@@ -4129,7 +4129,7 @@ void freqSweeper()
   double sweepTime  =     0.2;
 
 
-  double shapeAtt   =    -1.0;
+  double shapeAtt   =    -1.0;  // rename
   double shapeDec   =     0.0;     // -1..+1 is a good range
   // Smaller values -> we get close to refFreq earlier, i.e. it is initially steeper. This is true 
   // for both values.
@@ -4142,8 +4142,8 @@ void freqSweeper()
   fs.setHighFreq(hiFreq);
   fs.setLowFreq(loFreq);
   fs.setSweepTime(sweepTime);
-  fs.setAttackShape(shapeAtt);
-  fs.setDecayShape(shapeDec);
+  fs.setChirpAmount(shapeAtt);
+  fs.setChirpShape(shapeDec);
 
   int   N   = ceil(length * sampleRate);
   using Vec = std::vector<double>;
