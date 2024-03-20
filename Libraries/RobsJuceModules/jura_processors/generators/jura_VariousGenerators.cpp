@@ -631,19 +631,16 @@ void SweepKickerModule::createParameters()
 
 
 
-  // This is not a good parametrization:
-  fp = new FixPar("ShapeAtt", -1.0, +1.0, 0.0, Parameter::LINEAR);
+  fp = new FixPar("Chirp", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setAttackShape);
 
-  fp = new FixPar("ShapeDec", -1.0, +1.0, 0.0, Parameter::LINEAR);
+  fp = new FixPar("ChirpShape", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setDecayShape);
-  // Better would be to use their average and their (halved) difference. But before that, figure 
-  // out, if we really go through the refFreq (50 Hz) at the dialed in time instant. I find that
-  // questionable from what i hear. Look at plots of the instantaneous freq for various settings!
+  // ChirpShape doesn't seem to do much for bassdrum like sounds but for snares, it does have some
+  // more impact (LofwFreq = 100, HiFreq = 1000
 
-  // OK - it seems like ShapeAtt should be renamed to "Chirpy" or something
 
 
   // Interpretation of the frequency parameters: we use them unchanged when the incoming note is on

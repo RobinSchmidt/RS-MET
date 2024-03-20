@@ -728,6 +728,8 @@ void rsSweepKicker::noteOn(int key, int vel)
 void rsSweepKicker::noteOff(int key)
 {
   fadeOutEnv.noteOff();
+  // We should do this only when the noteOff key matches the last received noteOn key. Otherwise,
+  // we get strange behavior
 
   //RAPT::rsError("Not yet implemented");
 }
