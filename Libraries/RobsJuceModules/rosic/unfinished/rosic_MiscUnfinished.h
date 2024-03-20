@@ -455,11 +455,9 @@ public:
   // Maybe rename to setSweepTimeInSecs
 
 
-  void setChirpAmount(double newAmount) { shapeAtt = newAmount; setDirty(); }
+  void setChirpAmount(double newAmount) { chirpAmount = newAmount; setDirty(); }
 
-  void setChirpShape( double newShape)  { shapeDec = newShape;  setDirty(); }
-  // ToDo: figure out, if the names are really appropriate
-
+  void setChirpShape( double newShape)  { chirpShape  = newShape;  setDirty(); }
 
 
   /** Initializes all parameter values to their initial/default values. The sample rate may or may
@@ -536,8 +534,8 @@ protected:
   double freqHi;         // Maybe rename to startFreq
 
   // Rename into chirpAmount, chirpShape
-  double shapeAtt;       // Determines (mostly) attack shape
-  double shapeDec;       // Determines (mostly) decay shape
+  double chirpAmount;       // Determines (mostly) attack shape
+  double chirpShape;        // Determines (mostly) decay shape
 
 
   //double refFreq = 50;   // reference frequency (is hardcoded and fixed - todo: use static const)
@@ -710,9 +708,9 @@ public:
   //void setTransientShape
   //void setFreqDecayShape(double newShape)
 
-  void setChirpAmount(double newAmount) {  freqSweeper.setAttackShape(newAmount); }
+  void setChirpAmount(double newAmount) {  freqSweeper.setChirpAmount(newAmount); }
 
-  void setChirpShape( double newShape)  {  freqSweeper.setDecayShape( newShape); }
+  void setChirpShape( double newShape)  {  freqSweeper.setChirpShape( newShape); }
 
 
   void initSettings(bool initAlsoSampleRate = false);

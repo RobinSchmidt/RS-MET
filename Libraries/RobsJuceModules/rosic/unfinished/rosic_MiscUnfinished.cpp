@@ -634,8 +634,8 @@ void rsFreqSweeper::initSettings(bool initAlsoSampleRate)
 {
   freqHi      = 10000.0;
   freqLo      =     0.0;
-  shapeAtt    =     0.0;
-  shapeDec    =     0.0;
+  chirpAmount =     0.0;
+  chirpShape  =     0.0;
   sweepTime   =     0.2; 
   phase       =     0.0;
   phaseStereo =     0.0;
@@ -648,22 +648,13 @@ void rsFreqSweeper::initSettings(bool initAlsoSampleRate)
 
 void rsFreqSweeper::updateCoeffs()
 {
-  //double ep = shapeAtt;
-  //double eq = shapeDec;
-
-  double ep = 0.5*(shapeAtt + shapeDec);
-  double eq = 0.5*(shapeAtt - shapeDec);
-  // ShapeAtt could be called "smack" or "blip" or "chirp"
-  // ShapeDec does not seem to make much difference. It only shapes the details a bit, I think.
-
+  double ep = 0.5*(chirpAmount + chirpShape);
+  double eq = 0.5*(chirpAmount - chirpShape);
   a = freqHi;
   p = pow(2, ep);
   q = pow(2, eq);
-
   c = (pow(a/refFreq, 1/q) - 1) / pow(sweepTime, p); // refFreq = a / (1 + c * sweepTime^p)^q
-  //b = freqLo / pow(c, q);                            // fL = b / c^q   ...I think
-  b = freqLo * pow(c, q);                            // fL = b * c^q   ...I think
-  // These formulas need verification! Do they behave as expected and is that behavior "musical"?
+  b = freqLo * pow(c, q);                            // fl = b * c^q   ...i think
 }
 
 //=================================================================================================
@@ -692,21 +683,15 @@ void rsSweepKicker::initSettings(bool initAlsoSampleRate)
 
 void rsSweepKicker::noteOn(int key, int vel)
 {
-  //RAPT::rsError("Not yet implemented");
-
-  // Maybe here is the place where we should clip the values, if they get too high
-
   double factor;
 
   // Set up frequencies:
   double maxFreq = 0.5 * getSampleRate(); // We clip the freq at the Nyquist limit
   double freq;
   factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqHiByKey, frqHiByVel);
-  //freq   = RAPT::rsClip(factor * frqHi, 0.0, maxFreq);
   freq   = RAPT::rsMin(factor * frqHi, maxFreq);
   freqSweeper.setHighFreq(freq);
   factor = RAPT::rsMidiKeyAndVelToFreqFactor(key, vel, frqLoByKey, frqLoByVel);
-  //freq   = RAPT::rsClip(factor * frqLo, 0.0, maxFreq);
   freq   = RAPT::rsMin(factor * frqLo, maxFreq);
   freqSweeper.setLowFreq(freq);
 
@@ -715,16 +700,13 @@ void rsSweepKicker::noteOn(int key, int vel)
   freqSweeper.setSweepTime(time);
 
 
-
   freqSweeper.reset();
-  // I'm not yet sure if a hard reset is the right thing here. Maybe we should reset only under 
-  // certain conditions.
+  // I'm not yet sure if always doing a hard reset is the right thing here. Maybe we should reset 
+  // only under certain conditions. Maybe only if the fadeOutEnv has reached its end?
 
 
   fadeOutEnv.noteOn();
-
   currentNote = key;
-
 }
 
 void rsSweepKicker::noteOff(int key)
