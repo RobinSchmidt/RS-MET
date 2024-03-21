@@ -164,8 +164,12 @@ double phaseShapeRational(double p, double a, double b = 1, double c = 1)
 
 
 //  a = 0.5..2
-double phaseShapePower(double p, double a) 
+// get rid
+double phaseShapePower(double p, double a)
 {
+  return rosic::rsPhaseShaper::powerLaw(p, a);
+
+  /*
   p = rsLinToLin(p, 0.0, 1.0, -1.0, +1.0);   // 0..1 -> -1..+1
   if(p >= 0)
     p =  pow( p, a);
@@ -173,6 +177,7 @@ double phaseShapePower(double p, double a)
     p = -pow(-p, a);
   p = rsLinToLin(p, -1.0, +1.0, 0.0, 1.0);   // -1..+1 -> 0..1
   return p;
+  */
 }
 // needs test
 
@@ -383,8 +388,8 @@ void phaseShapingSkew()
     y2[n] = amp * sin(2*PI*ps[n] + 1.0*PI);
     y3[n] = amp * sin(2*PI*ps[n] + 1.5*PI);
   }
-  //rsPlotVector(ps);
-  //writeToMonoWaveFile("PhaseShapePowSine0.wav", &y0[0], N, (int) fs, 16);
+  rsPlotVector(ps);
+  writeToMonoWaveFile("PhaseShapePowSine0.wav", &y0[0], N, (int) fs, 16);
   //writeToMonoWaveFile("PhaseShapePowSine1.wav", &y1[0], N, (int) fs, 16);
   //writeToMonoWaveFile("PhaseShapePowSine2.wav", &y2[0], N, (int) fs, 16);
   //writeToMonoWaveFile("PhaseShapePowSine3.wav", &y3[0], N, (int) fs, 16);
@@ -401,6 +406,9 @@ void phaseShapingSkew()
   //  from that, compute the phase
   // -Or maybe instead of just inverting the power, we also need to reverse the direction and then
   //  flip up/down?
+  // -Given f(p,a) we want to find a function g(p,a) such that sin(g(p,a)) = -sin(f(p,-a)). 
+  //  Solving for g(p,a) gives g(p,a) = asin(-sin(f(p,-a))) = asin(sin(-f(p,-a))) = -f(p,-a)
+  //  Note that in that equation, f(p,a) = phaseShapePower(p, 2^a)
 
   for(int n = 0; n < N; n++)
   {
@@ -411,13 +419,13 @@ void phaseShapingSkew()
     {
       //ps[n] = -phaseShapePower(p[n], pow(2.0, -a));     // (1)
       //ps[n] = 1 - phaseShapePower(p[n], pow(2.0, -a));  // (2)
-      //ps[n] = 1 - phaseShapePower(1-p[n], pow(2.0, -a));  // (3)
+      ps[n] = 1 - phaseShapePower(1-p[n], pow(2.0, -a));  // (3)
       //ps[n] =  -phaseShapePower(1-p[n], pow(2.0, -a));  // (4)
 
       // (5)
-      double tmp = phaseShapePower(p[n], pow(2.0, -a));
-      double y   = sin(2*PI*tmp);
-      ps[n]      = asin(-y) / (2*PI) + 0.5;
+      //double tmp = phaseShapePower(p[n], pow(2.0, -a));
+      //double y   = sin(2*PI*tmp);
+      //ps[n]      = asin(-y) / (2*PI) + 0.5;
     }
     y0[n] = amp * sin(2*PI*ps[n] + 0.0*PI);
   }
@@ -429,7 +437,8 @@ void phaseShapingSkew()
   // So, (3) is best although it still doesn't do exactly what I want. (5) has the same behavior. 
   // Here, the problem could be due to multi-valuedness of asin. Maybe we need phase-unreflection. 
   // That would imply that the osc needs a state to remember the previous phase to achieve this 
-  // disambiguation.
+  // disambiguation. I tend to think that we need to conditionally switch between (1) and (2) based
+  // on what the phase (and maybe it's derivative) was at the previous sample. Maybe add 
 
   //
   // ToDo: 

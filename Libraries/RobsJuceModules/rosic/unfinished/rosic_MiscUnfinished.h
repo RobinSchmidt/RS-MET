@@ -413,6 +413,28 @@ protected:
 //  further shaping. Or maybe an 8 band EQ.
 // -Make a subclass that also has some post-processing
 
+
+//=================================================================================================
+
+/** A class for phaseshaping. Phaseshaping is like waveshaping but it is applied to a normalized
+phase value, i.e. a value between 0 and 1 that is used as an osillator phase. */
+
+class rsPhaseShaper
+{
+
+public:
+
+
+  static double powerLaw(double phase, double shapeParam);
+  // let s = shapeParam, 
+  // s < 0: sine turns to upward saw
+  // s = 0: sine is unchanged
+  // s > 0: sine is squeezed
+
+
+};
+
+
 //=================================================================================================
 
 /** A class that generates sounds based on frequency sweeps. The original idea was to create sounds
