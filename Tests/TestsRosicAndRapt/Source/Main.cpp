@@ -490,8 +490,8 @@ int main(int argc, char* argv[])
   //phaseShapingCurvePoly4();
   //phaseShapingCurvesRational();
   //phaseShaping();
-  phaseShapingSkew();
-  //zeroDelayFeedbackPhaseMod();
+  //phaseShapingSkew();
+  zeroDelayFeedbackPhaseMod();
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests

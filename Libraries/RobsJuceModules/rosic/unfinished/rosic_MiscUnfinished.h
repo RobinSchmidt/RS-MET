@@ -611,8 +611,12 @@ public:
   INLINE void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     // Output computation:
-    *inOutL = wave(instPhase + phase - 0.5*phaseStereo);
-    *inOutR = wave(instPhase + phase + 0.5*phaseStereo);
+
+    double tmpPhase = instPhase + phase;
+    tmpPhase += fbPhsMod * oldOutL; // Experimental
+    *inOutL = wave(tmpPhase - 0.5*phaseStereo);
+    *inOutR = wave(tmpPhase + 0.5*phaseStereo);
+    oldOutL = *inOutL;
     // ToDo: 
     // -parallelize
 
@@ -621,6 +625,9 @@ public:
     double newFreq = getInstFreq(sampleCount / sampleRate);
     RAPT::rsAssert(newFreq <= 0.5 * sampleRate);               // Sanity check for debug
     instPhase += (0.5/sampleRate) * (instFreq + newFreq);      // Trapezoidal integration
+
+    //instPhase += fbPhsMod * *inOutL; // Experimental
+
     if(instPhase >= 1.0)    // A while-loop would be safer but when we assume sane values for
       instPhase -= 1.0;     // newFreq and instFreq, the "if" should be good enough
     instFreq  = newFreq;
@@ -633,7 +640,14 @@ public:
     sampleCount = 0;
     instPhase   = 0.0;
     instFreq    = freqHi;
+
+    oldOutL     = 0;
   }
+
+
+  // Experimental:
+  double fbPhsMod = 0;
+  double oldOutL  = 0;
 
 
 protected:
@@ -753,6 +767,15 @@ public:
 
   void setStartPhase(      double newPhase) { freqSweeper.setStartPhase(newPhase);       }
   void setStereoPhaseShift(double newShift) { freqSweeper.setStereoPhaseShift(newShift); }
+
+
+  /** Sets the parameter that controls the shape of the waveform. 0 means sine, < 0 turns it into a
+  saw and > 0 kind of squeezes the sine. */
+  void setWaveFormParameter(double newParam) { waveParam = newParam; }
+  // ToDo: provide more waveshapes
+
+  // Experimental:
+  void setFeedbackPhaseMod(double amount) { freqSweeper.fbPhsMod = amount; }
 
 
   void initSettings(bool initAlsoSampleRate = false);

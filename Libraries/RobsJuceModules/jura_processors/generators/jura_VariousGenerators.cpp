@@ -666,6 +666,24 @@ void SweepKickerModule::createParameters()
   // PhaseStereoizer as post processing effect. It does indeed sound different
 
 
+  // Experimental:
+  //fp = new FixPar("FeedbackPhaseMod", -1.0, +1.0, 0.0, Parameter::LINEAR);
+  //addObservedParameter(fp);
+  //fp->setValueChangeCallback<SK>(&core, &SK::setFeedbackPhaseMod);
+  // OK - it does something- but not what I expected. I expected a sin-to-saw transformation like 
+  // in zeroDelayFeedbackFM experiment. Instead, it seems to shorten one half-cycle and lengthen 
+  // the other. But it seems, the overall cycle-length is also affected. I guess that's the effect
+  // of the unit delay. Also, it is strange how small the amount needs to be. Ah - OK - there in
+  // zeroDelayFeedbackPhaseMod, I don't apply the feedback-FM to the accumulator but to the phase
+  // as used
+
+  //mp = new ModPar("WaveShapeParam", -1.0, +1.0, 0.0, Parameter::LINEAR);
+  //addObservedParameter(mp);
+  //mp->setValueChangeCallback<SK>(&core, &SK::setWaveFormParameter);
+  // I have not yet settled for the range and behavior of this parameter. That's why it's not yet
+  // available. But when uncommenting the code, we can already play with it.
+
+
   // ToDo:
   // -Add FreqHighByVel, FreqScale (modulatable), ChirpByVel, Formula (maybe - let the use choose 
   //  different formulas for freq-env), SinToSaw/PhaseShape/WarpHalf (see Straighliner's oscs),
@@ -680,6 +698,9 @@ void SweepKickerModule::createParameters()
   // -Maybe use the function from the LinFracInterpolator for phase-shaping. But how should it be
   //  parameterized? In the interpolation context, each segment has 3 parameters: SlopeAt0, 
   //  SlopeAt1 and Shape. These need to be translated to menaingful user parameters. But how?
+  // -I think, we should probably not try to use feedback-FM or phase-shaping to try to achieve
+  //  different waveforms but instead use a wavetable. See how Surge or Vital do this. Until that
+  //  is in place, keep the sine wave.
 }
 
 void SweepKickerModule::processStereoFrame(double* left, double* right)

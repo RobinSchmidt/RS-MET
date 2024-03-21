@@ -689,7 +689,10 @@ rsSweepKicker::rsSweepKicker()
   auto waveFunc = [this](double p) 
   { 
     p = fmod(p, 1.0);
-    p = rsPhaseShaper::powerLaw(p, pow(2.0, waveParam));
+    p = rsPhaseShaper::powerLaw(p, pow(2.0, 2.0 * waveParam));
+    // The scaler 2.0 is rather ad hoc. The goal is that the user gets a parameter in -1..+1 where
+    // the ends correspond to bright waves
+
     return sin(2*PI*p);
     // ToDo:
     // -Try to optimize. I think, we need the fmod because due to the phase-offset parameters. 
@@ -697,6 +700,8 @@ rsSweepKicker::rsSweepKicker()
     //  In this case, all bets are off. But maybe have an optimized path when waveParam == 0. In 
     //  this case, it's just a sine wave.
   };
+  // Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be ZDF
+  // feedback. UDF is good enough
 
   freqSweeper.setWaveForm(waveFunc);
   reset();
