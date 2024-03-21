@@ -383,16 +383,44 @@ void phaseShapingSkew()
     y2[n] = amp * sin(2*PI*ps[n] + 1.0*PI);
     y3[n] = amp * sin(2*PI*ps[n] + 1.5*PI);
   }
-  rsPlotVector(ps);
-  writeToMonoWaveFile("PhaseShapePowSine0.wav", &y0[0], N, (int) fs, 16);
-  writeToMonoWaveFile("PhaseShapePowSine1.wav", &y1[0], N, (int) fs, 16);
-  writeToMonoWaveFile("PhaseShapePowSine2.wav", &y2[0], N, (int) fs, 16);
-  writeToMonoWaveFile("PhaseShapePowSine3.wav", &y3[0], N, (int) fs, 16);
+  //rsPlotVector(ps);
+  //writeToMonoWaveFile("PhaseShapePowSine0.wav", &y0[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("PhaseShapePowSine1.wav", &y1[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("PhaseShapePowSine2.wav", &y2[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("PhaseShapePowSine3.wav", &y3[0], N, (int) fs, 16);
   // Observations:
   // -The signal using the power map looks nice at the beginning (similar to an unfiltered saw) but
   //  strange at the end. It's not like an inverted saw but like a squeezed one. May be useful but
   //  is not exactly what I wanted. Maybe what I want (inversion) can be achieved by some math. 
   //  Plug in the desired output signal and solve for the phase via asin?
+  // -Try using:
+  //  a >= 0: f(p,a) = powerLaw(p, 2^a), y = sin(f(p,a))
+  //  a <  0: y = -sin(f(p,a))  ->  asin(-y) = f(p,-a)
+  //  where f(p,a) is the phase-shaping function with input phase p and parameter a.
+  // -Or maybe instead of just inverting the power, we also need to reverse the direction and then
+  //  flip up/down?
+
+  for(int n = 0; n < N; n++)
+  {
+    double a = rsLinToLin(double(n), 0.0, N-1.0, aMin, aMax);
+    if(a <= 0)
+      ps[n] = phaseShapePower(p[n], pow(2.0, a));
+    else
+    {
+      ps[n] = -phaseShapePower(p[n], pow(2.0, -a));
+
+      //double tmp = phaseShapePower(p[n], pow(2.0, a));
+      //double y   = sin(2*PI*tmp);
+      //ps[n]      = asin(-y);
+    }
+    y0[n] = amp * sin(2*PI*ps[n] + 0.0*PI);
+  }
+  rsPlotVector(ps);
+  writeToMonoWaveFile("PhaseShapePow2Sine0.wav", &y0[0], N, (int) fs, 16);
+  // Could be problematic due to multi-valuedness of asin. Maybe we need phase-unreflection. That 
+  // would imply that the osc needs a state to remember the previous phase to achieve this 
+  // disambiguation.
+
 
 
   /*
