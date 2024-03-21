@@ -395,8 +395,10 @@ void phaseShapingSkew()
   //  Plug in the desired output signal and solve for the phase via asin?
   // -Try using:
   //  a >= 0: f(p,a) = powerLaw(p, 2^a), y = sin(f(p,a))
-  //  a <  0: y = -sin(f(p,a))  ->  asin(-y) = f(p,-a)
-  //  where f(p,a) is the phase-shaping function with input phase p and parameter a.
+  //  a <  0: y = -sin(f(p,-a))  ->  asin(-y) = f(p,-a)
+  //  where f(p,a) is the phase-shaping function with input phase p and parameter a. The idea is 
+  //  that we first compute what the desired output signal should be (namely -sin(f(p,-a))) and 
+  //  from that, compute the phase
   // -Or maybe instead of just inverting the power, we also need to reverse the direction and then
   //  flip up/down?
 
@@ -407,38 +409,27 @@ void phaseShapingSkew()
       ps[n] = phaseShapePower(p[n], pow(2.0, a));
     else
     {
-      ps[n] = -phaseShapePower(p[n], pow(2.0, -a));
+      //ps[n] = -phaseShapePower(p[n], pow(2.0, -a));     // (1)
+      //ps[n] = 1 - phaseShapePower(p[n], pow(2.0, -a));  // (2)
+      //ps[n] = 1 - phaseShapePower(1-p[n], pow(2.0, -a));  // (3)
+      //ps[n] =  -phaseShapePower(1-p[n], pow(2.0, -a));  // (4)
 
-      //double tmp = phaseShapePower(p[n], pow(2.0, a));
-      //double y   = sin(2*PI*tmp);
-      //ps[n]      = asin(-y);
+      // (5)
+      double tmp = phaseShapePower(p[n], pow(2.0, -a));
+      double y   = sin(2*PI*tmp);
+      ps[n]      = asin(-y) / (2*PI) + 0.5;
     }
     y0[n] = amp * sin(2*PI*ps[n] + 0.0*PI);
   }
   rsPlotVector(ps);
   writeToMonoWaveFile("PhaseShapePow2Sine0.wav", &y0[0], N, (int) fs, 16);
-  // Could be problematic due to multi-valuedness of asin. Maybe we need phase-unreflection. That 
-  // would imply that the osc needs a state to remember the previous phase to achieve this 
+  // (1) and (2) seem to work but there's a discontinuity in the derivative. The phase reverses 
+  // direction, I think. For (3), we don't have a phase discontinuity - but the saw goes up in any
+  // case, i.e. at both ends. For (4), this is also true, but the phase is not in the right range.
+  // So, (3) is best although it still doesn't do exactly what I want. (5) has the same behavior. 
+  // Here, the problem could be due to multi-valuedness of asin. Maybe we need phase-unreflection. 
+  // That would imply that the osc needs a state to remember the previous phase to achieve this 
   // disambiguation.
-
-
-
-  /*
-  // create a phase-shaped sine wave:
-  for(n = 0; n < N; n++)
-  {
-    //ySin[n] = amp * sin(2*PI*ps[n]);
-    //ySin[n] = amp * cos(2*PI*ps[n]);
-    //ySin[n] = amp * sin(2*PI*ps[n] + PI);
-  }
-  */
-
-  // write output wavefile
-  //writeToMonoWaveFile("PhaseShapeSkewSine.wav", &ySin[0], N, (int) fs, 16);
-
-
-  // Observations:
-
 
   //
   // ToDo: 
