@@ -568,19 +568,11 @@ public:
   void setChirpShape( double newShape)  { chirpShape  = newShape;  setDirty(); }
 
   /** Sets the start phase in degrees. */
-  void setStartPhase(double newPhase) 
-  { 
-    //phase = RAPT::rsDegreeToRadiant(newPhase); 
-    phase = newPhase / 360; 
-  }
+  void setStartPhase(double newPhase) { phase = newPhase * (1.0/360.0); }
 
   /** Sets the phase shift between left and right channel in degrees. The left channel will half of
   the shift applied negatively and the right channel half of it positively. */
-  void setStereoPhaseShift(double newShift) 
-  { 
-    //phaseStereo =  RAPT::rsDegreeToRadiant(newShift); 
-    phaseStereo = newShift / 360; 
-  }
+  void setStereoPhaseShift(double newShift) { phaseStereo = newShift * (1.0/360.0); }
 
   /** Sets the function that is used to generate the waveform. If you don't set this up, it will
   use a sine by default. */
@@ -619,45 +611,19 @@ public:
   INLINE void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     // Output computation:
-    //*inOutL = sin(2*PI*(instPhase + phase - 0.5*phaseStereo));
-    //*inOutR = sin(2*PI*(instPhase + phase + 0.5*phaseStereo));
-
-    //*inOutL = wave(2*PI*(instPhase + phase - 0.5*phaseStereo));
-    //*inOutR = wave(2*PI*(instPhase + phase + 0.5*phaseStereo));
-
     *inOutL = wave(instPhase + phase - 0.5*phaseStereo);
     *inOutR = wave(instPhase + phase + 0.5*phaseStereo);
-
-
     // ToDo: 
-    // -Make performance tests with wave vs sin
     // -parallelize
-    // -let wave take it's argument in 0..1 rather than 0..2pi
-
-    // ToDo: allow other waveshapes by using a std::function. Maybe the function should accept a 
-    // phase in 0..1 and an absolute time to allow for shape modulations later
 
     // State update:
     sampleCount++;
     double newFreq = getInstFreq(sampleCount / sampleRate);
     RAPT::rsAssert(newFreq <= 0.5 * sampleRate);               // Sanity check for debug
-
-
-    // old - use phase in 0...2pi:
-    //instPhase += (PI / sampleRate) * (instFreq + newFreq);      // Trapezoidal integration
-    //if(instPhase >= 2.0*PI)    // A while-loop would be safer but when we assume sane values for
-    //  instPhase -= 2.0*PI;     // newFreq and instFreq, the "if" should be good enough
-
-    // new - use phase in 0..1:
     instPhase += (0.5/sampleRate) * (instFreq + newFreq);      // Trapezoidal integration
     if(instPhase >= 1.0)    // A while-loop would be safer but when we assume sane values for
       instPhase -= 1.0;     // newFreq and instFreq, the "if" should be good enough
-
-
     instFreq  = newFreq;
-    // The trapezoidal integration computes the instantaneous phase as: 
-    //   phi[n] = 0.5*(omega[n] + omega[n-1])  where  omega = 2*PI*f/fs  
-    // such that the 2 cancels with the 0.5.
     // ToDo:
     // -Optimize: keep the reciprocal of the sample rate as member
   }
