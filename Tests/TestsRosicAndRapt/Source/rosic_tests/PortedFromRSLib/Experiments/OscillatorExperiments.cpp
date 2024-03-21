@@ -389,8 +389,10 @@ void phaseShapingSkew()
   writeToMonoWaveFile("PhaseShapePowSine2.wav", &y2[0], N, (int) fs, 16);
   writeToMonoWaveFile("PhaseShapePowSine3.wav", &y3[0], N, (int) fs, 16);
   // Observations:
-  // -
-
+  // -The signal using the power map looks nice at the beginning (similar to an unfiltered saw) but
+  //  strange at the end. It's not like an inverted saw but like a squeezed one. May be useful but
+  //  is not exactly what I wanted. Maybe what I want (inversion) can be achieved by some math. 
+  //  Plug in the desired output signal and solve for the phase via asin?
 
 
   /*
@@ -409,9 +411,7 @@ void phaseShapingSkew()
 
   // Observations:
 
-  // -The signal using the power map looks nice at the beginning (similar to an unfiltered saw) but
-  //  strange at the end. Maybe it has to do with the phase. Try adding an offset of pi or pi/2 or
-  //  3pi/2
+
   //
   // ToDo: 
   // -Experiment with different shaping functions. The goal is so morph between saws and regular 
