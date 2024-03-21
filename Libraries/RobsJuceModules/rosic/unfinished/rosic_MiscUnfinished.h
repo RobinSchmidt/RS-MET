@@ -414,25 +414,112 @@ protected:
 // -Make a subclass that also has some post-processing
 
 
+
+
 //=================================================================================================
 
-/** A class for phaseshaping. Phaseshaping is like waveshaping but it is applied to a normalized
-phase value, i.e. a value between 0 and 1 that is used as an osillator phase. */
+/** A very simple envelope whose sole purpose is to create a fade-out for example, after a 
+noteOff. */
 
-class rsPhaseShaper
+class rsFadeOutEnvelope
 {
 
 public:
 
+  rsFadeOutEnvelope()
+  {
+    reset();
+  }
 
-  static double powerLaw(double phase, double shapeParam);
-  // let s = shapeParam, 
-  // s < 0: sine turns to upward saw
-  // s = 0: sine is unchanged
-  // s > 0: sine is squeezed
+  void setNumFadeSamples(int newNumber)
+  {
+    numFadeSamples = newNumber;
+  }
+
+  bool endIsReached() const { return state == State::silent; }
+
+  void noteOn()
+  {
+    state = State::open;
+  }
+
+  void noteOff()
+  {
+    state = State::fading;
+    remainingFadeSamples = numFadeSamples;
+  }
+
+  void goToEnd()
+  {
+    remainingFadeSamples = 0;
+    state = State::silent;
+  }
+
+  double getSample()
+  {
+    switch(state)
+    {
+    case State::open:    return 1.0;
+    case State::silent:  return 0.0;
+    case State::fading:
+    {
+      if(remainingFadeSamples <= 0)
+      {
+        state = State::silent;
+        return 0.0;
+      }
+      else
+      {
+        double out = double(remainingFadeSamples) / double(numFadeSamples+1);
+        remainingFadeSamples--;
+        return out;
+
+        // ToDo: 
+        // -Optimize: 
+        //  -avoid division by keeping 1.0 / numfadeSamples as member
+        //  -avoid int -> double conversion by using double for all members
+        //  -after implementing that, run the unit test again
+        // -Maybe allow for different shapes. But maybe that should be done in a subclass
+
+      }
+    }
+
+    }
+  }
 
 
+  void reset()
+  {
+    goToEnd();
+    //remainingFadeSamples = numFadeSamples;
+    //state = State::open;
+  }
+
+
+protected:
+
+  int numFadeSamples = 0;
+  int remainingFadeSamples = 0;
+
+  enum class State
+  {
+    open,      // Volume is fully open
+    fading,    // Volume is fading out
+    silent     // Volume has reached zero
+  };
+
+  State state;
+
+  // For the purposes that I have in mind, float should be good enough for the numFadeSamples and
+  // remainingFadeSamples - see:
+  // https://stackoverflow.com/questions/3793838/which-is-the-first-integer-that-an-ieee-754-float-is-incapable-of-representing-e
+  // The largest exacly representable integer is 2^24 ...but does that mean that all the smaller 
+  // ones will be produced when decrementing?
 };
+
+
+
+
 
 
 //=================================================================================================
@@ -481,11 +568,23 @@ public:
   void setChirpShape( double newShape)  { chirpShape  = newShape;  setDirty(); }
 
   /** Sets the start phase in degrees. */
-  void setStartPhase(double newPhase) { phase = RAPT::rsDegreeToRadiant(newPhase); }
+  void setStartPhase(double newPhase) 
+  { 
+    //phase = RAPT::rsDegreeToRadiant(newPhase); 
+    phase = newPhase / 360; 
+  }
 
   /** Sets the phase shift between left and right channel in degrees. The left channel will half of
   the shift applied negatively and the right channel half of it positively. */
-  void setStereoPhaseShift(double newShift) { phaseStereo =  RAPT::rsDegreeToRadiant(newShift); }
+  void setStereoPhaseShift(double newShift) 
+  { 
+    //phaseStereo =  RAPT::rsDegreeToRadiant(newShift); 
+    phaseStereo = newShift / 360; 
+  }
+
+  /** Sets the function that is used to generate the waveform. If you don't set this up, it will
+  use a sine by default. */
+  void setWaveForm(const std::function<double(double phase01)> newWaveFunc) { wave = newWaveFunc; }
 
   /** Initializes all parameter values to their initial/default values. The sample rate may or may
   not be re-initialized also. */
@@ -522,8 +621,14 @@ public:
     // Output computation:
     //*inOutL = sin(2*PI*(instPhase + phase - 0.5*phaseStereo));
     //*inOutR = sin(2*PI*(instPhase + phase + 0.5*phaseStereo));
-    *inOutL = wave(2*PI*(instPhase + phase - 0.5*phaseStereo));
-    *inOutR = wave(2*PI*(instPhase + phase + 0.5*phaseStereo));
+
+    //*inOutL = wave(2*PI*(instPhase + phase - 0.5*phaseStereo));
+    //*inOutR = wave(2*PI*(instPhase + phase + 0.5*phaseStereo));
+
+    *inOutL = wave(instPhase + phase - 0.5*phaseStereo);
+    *inOutR = wave(instPhase + phase + 0.5*phaseStereo);
+
+
     // ToDo: 
     // -Make performance tests with wave vs sin
     // -parallelize
@@ -607,103 +712,22 @@ protected:
 
 //=================================================================================================
 
-/** A very simple envlope whose sole purpose is to create a fade-out for example, after a 
-noteOff. */
+/** A class for phaseshaping. Phaseshaping is like waveshaping but it is applied to a normalized
+phase value, i.e. a value between 0 and 1 that is used as an osillator phase. */
 
-class rsFadeOutEnvelope
+class rsPhaseShaper
 {
 
 public:
 
-  rsFadeOutEnvelope()
-  {
-    reset();
-  }
 
-  void setNumFadeSamples(int newNumber)
-  {
-    numFadeSamples = newNumber;
-  }
-
-  bool endIsReached() const { return state == State::silent; }
-
-  void noteOn()
-  {
-    state = State::open;
-  }
-
-  void noteOff()
-  {
-    state = State::fading;
-    remainingFadeSamples = numFadeSamples;
-  }
-
-  void goToEnd()
-  {
-    remainingFadeSamples = 0;
-    state = State::silent;
-  }
-
-  double getSample()
-  {
-    switch(state)
-    {
-    case State::open:    return 1.0;
-    case State::silent:  return 0.0;
-    case State::fading:
-    {
-      if(remainingFadeSamples <= 0)
-      {
-        state = State::silent;
-        return 0.0;
-      }
-      else
-      {
-        double out = double(remainingFadeSamples) / double(numFadeSamples+1);
-        remainingFadeSamples--;
-        return out;
-
-        // ToDo: 
-        // -Optimize: 
-        //  -avoid division by keeping 1.0 / numfadeSamples as member
-        //  -avoid int -> double conversion by using double for all members
-        //  -after implementing that, run the unit test again
-        // -Maybe allow for different shapes. But maybe that should be done in a subclass
-
-      }
-    }
-
-    }
-  }
-
- 
-  void reset()
-  {
-    goToEnd();
-    //remainingFadeSamples = numFadeSamples;
-    //state = State::open;
-  }
+  static double powerLaw(double phase, double shapeParam);
+  // let s = shapeParam, 
+  // s < 0: sine turns to upward saw
+  // s = 0: sine is unchanged
+  // s > 0: sine is squeezed
 
 
-protected:
-
-  int numFadeSamples = 0;
-  int remainingFadeSamples = 0;
-
-  enum class State
-  {
-    open,      // Volume is fully open
-    fading,    // Volume is fading out
-    silent     // Volume has reached zero
-  };
-
-  State state;
-
-  // For the purposes that I have in mind, float should be good enough for the numFadeSamples and
-  // remainingFadeSamples - see:
-  // https://stackoverflow.com/questions/3793838/which-is-the-first-integer-that-an-ieee-754-float-is-incapable-of-representing-e
-  // The largest exacly representable integer is 2^24 ...but does that mean that all the smaller 
-  // ones will be produced when decrementing?
 };
 
 

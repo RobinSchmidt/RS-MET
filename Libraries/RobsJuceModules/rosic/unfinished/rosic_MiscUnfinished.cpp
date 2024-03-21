@@ -622,27 +622,20 @@ void rsFlatZapper::updateCoeffs()
 
 //=================================================================================================
 
-double rsPhaseShaper::powerLaw(double p, double a) 
-{
-  p = RAPT::rsLinToLin(p, 0.0, 1.0, -1.0, +1.0);   // 0..1 -> -1..+1
-  if(p >= 0)
-    p =  pow( p, a);
-  else
-    p = -pow(-p, a);
-  p = RAPT::rsLinToLin(p, -1.0, +1.0, 0.0, 1.0);   // -1..+1 -> 0..1
-  return p;
-}
-// This is totally unoptimized! The rsLinToLin calls can be replaced by simpler formulas.
-
-
-//=================================================================================================
-
 const double rsFreqSweeper::refFreq = 50.0;
 
 rsFreqSweeper::rsFreqSweeper()
 {
   initSettings(true);
   reset();
+
+
+  auto waveFunc = [](double p) 
+  { 
+    return RAPT::rsSin<double>(2*PI*p);
+  };
+
+  wave = waveFunc;
 
   //wave = &RAPT::rsSin<double>;
     
@@ -679,9 +672,30 @@ void rsFreqSweeper::updateCoeffs()
 
 //=================================================================================================
 
+double rsPhaseShaper::powerLaw(double p, double a) 
+{
+  p = RAPT::rsLinToLin(p, 0.0, 1.0, -1.0, +1.0);   // 0..1 -> -1..+1
+  if(p >= 0)
+    p =  pow( p, a);
+  else
+    p = -pow(-p, a);
+  p = RAPT::rsLinToLin(p, -1.0, +1.0, 0.0, 1.0);   // -1..+1 -> 0..1
+  return p;
+}
+// This is totally unoptimized! The rsLinToLin calls can be replaced by simpler formulas.
+
+//=================================================================================================
+
 rsSweepKicker::rsSweepKicker()
 {
+  //freqSweeper.setWaveForm(RAPT::rsSin<double>);
+
+
+  //auto waveFunc = [](double p) { return rsSin<double> };
+
+
   initSettings(true);
+
   reset();
 }
 
