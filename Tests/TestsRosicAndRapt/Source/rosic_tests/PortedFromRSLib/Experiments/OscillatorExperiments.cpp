@@ -139,23 +139,43 @@ double rsRationalMap(double x, double a)
 // the left with negative values which is intuitive when using a horizontal slider for a. On the 
 // other, it also moves up for negative values which is counterintuitive for a vertical slider.
 
-double phaseShapeRational(double p, double a)
+double phaseShapeRational(double p, double a, double b = 1, double c = 1)
 {
   double y;
+  p = pow(p, b);
   if(p <= 0.5)
   {
-    p = rsLinToLin(p, 0.0, 0.5, -1.0, +1.0);  // optimize...
+    p = rsLinToLin(p, 0.0, 0.5, -1.0, +1.0);  // 0..0.5 -> -1..+1
     y = rsRationalMap(p, a);
-    y = rsLinToLin(y, -1.0, +1.0, 0.0, 0.5);
+    y = rsLinToLin(y, -1.0, +1.0, 0.0, 0.5);  // -1..+1 -> 0..0.5
   }
   else
   {
-    p = rsLinToLin(p, 0.5, 1.0, -1.0, +1.0);  // optimize...
+    p = rsLinToLin(p, 0.5, 1.0, -1.0, +1.0);  // 0.5..1 -> -1..+1
     y = rsRationalMap(p, -a);
-    y = rsLinToLin(y, -1.0, +1.0, 0.5, 1.0);
+    y = rsLinToLin(y, -1.0, +1.0, 0.5, 1.0);  // -1..+1 -> 0.5..1
   }
+  y = pow(y, c);
   return y;
 }
+// This is the same map as now implemented in rsLinearFractionalInterpolator - ah - no - not quite.
+// Here we use
+// Maybe introduce an exponent applied to p before the switch
+
+
+//  a = 0.5..2
+double phaseShapePower(double p, double a) 
+{
+  p = rsLinToLin(p, 0.0, 1.0, -1.0, +1.0);   // 0..1 -> -1..+1
+  if(p >= 0)
+    p =  pow( p, a);
+  else
+    p = -pow(-p, a);
+  p = rsLinToLin(p, -1.0, +1.0, 0.0, 1.0);   // -1..+1 -> 0..1
+  return p;
+}
+// needs test
+
 
 void phaseShapingCurvesRational()
 {
@@ -163,6 +183,10 @@ void phaseShapingCurvesRational()
 
   static const int N = 201;        // number of function values
   static const int numCurves = 7;  // number of curves in the function family on each side
+
+  // some more tweakable parameters:
+  double b = 2.0;   // 0.5..2, default 1
+  double c = 0.5;   // ....dito........., 1/b may make sense
 
   double x[N], y[N];
   RAPT::rsArrayTools::fillWithRangeLinear(x, N, 0.0, 1.0);
@@ -177,17 +201,24 @@ void phaseShapingCurvesRational()
   {
     ai = i * a1;
     for(n = 0; n < N; n++)
-      y[n] = phaseShapeRational(x[n], ai);
+      y[n] = phaseShapeRational(x[n],  ai, b, c);
     plt.addDataArrays(N, x, y);
     for(n = 0; n < N; n++)
-      y[n] = phaseShapeRational(x[n], -ai);
+      y[n] = phaseShapeRational(x[n], -ai, b, c);
     plt.addDataArrays(N, x, y);
   }
   plt.plot();
 
+  // Observations:
+  // -I think for b != 1 and/or c != 1, the slopes at 0 and 1 don't match (verify!)
+
   // ToDo:
   // -Use shaping function y(x) = (a + b*x) / (c + dx) and require: y(0)=0, y(1)=1, y'(0)=y'(1)
   //  (1) leads to a=0, then (2) leads to b= c+d
+  // -Try to apply the exponent at a different place. It doesn't have the effect that I wanted of 
+  //  changing the shape symmetrically. I think, it's because the function here is based on mapping
+  //  -1..+1 rather than 0..1 to itself
+  // -Try using a symmetrized power function
 }
 
 vector<double> createPhase(int N, double f, double fs)
@@ -311,18 +342,34 @@ void phaseShapingSkew()
   int n;
   vector<double> ps(N);
   for(n = 0; n < N; n++)
-    ps[n] = phaseShapeRational(p[n], a[n]);
+  {
+    //ps[n] = phaseShapeRational(p[n], a[n]);
+    ps[n] = phaseShapePower(p[n], pow(2.0, 2*a[n]));  // new, test
+  }
 
   // create a phase-shaped sine wave:
   vector<double> ySin(N);
   for(n = 0; n < N; n++)
+  {
     ySin[n] = amp * sin(2*PI*ps[n]);
+    //ySin[n] = amp * cos(2*PI*ps[n]);
+    //ySin[n] = amp * sin(2*PI*ps[n] + PI);
+  }
 
   // write output wavefile
   writeToMonoWaveFile("PhaseShapeSkewSine.wav", &ySin[0], N, (int) fs, 16);
 
 
-  // todo: maybe experiment with different shaping functions (for example, Laguerre map)
+  // Observations:
+  // -The signal using the rational map morphs from a highpassed downward saw through sine to a
+  //  highpassed upward saw.
+  // -The signal using the power map looks nice at the beginning (similar to saw) but strange at 
+  //  the end
+  //
+  // ToDo: 
+  // -Experiment with different shaping functions. The goal is so morph between saws and regular 
+  //  saw - not this highpassed looking one. Just like the ZDF-FM experiment. There, the phase 
+  //  looks more like maximal slope is 2 rather than 1? -> figure that out!
 
   int dummy = 0;
 }
@@ -339,8 +386,10 @@ void zeroDelayFeedbackPhaseMod()
   int N = 6000;         // number of samples to render
   double cycle = 2000;  // length of one cycle of the sinewave
 
-  double a = 0.996;     
+  double a = 0.996;
   // feedback amount, 0.996 works for cycle=2000 with Newton, 0.997 doesn't
+
+  a = 0.8;  // test
 
   double tol = 1.e-13;
   int maxIts = 100;     // maximum number of Newton steps, if 0, we get unit-delay feedback PM
@@ -423,11 +472,16 @@ void zeroDelayFeedbackPhaseMod()
   SSM::unreflectPhaseFromSig(&z[0], &q[0], N);
 
 
-
   //rsPlotVectors(y);  // only UDF signal
   rsPlotVectors(q);    // only the phase
   rsPlotVectors(y, z, z-y, q);
   int dummy = 0;
+
+  // Observations:
+  // -The phase looks qualitatively similar to what is produced in the phaseShapingCurvesRational
+  //  experiment. That means that with such a phase-shaping algo, we could produce a similar signal
+  //  with an explicit algorithm that doesn't need Newton iteration. phaseShapingSkew seems to try 
+  //  that
 
 
   // Resources:

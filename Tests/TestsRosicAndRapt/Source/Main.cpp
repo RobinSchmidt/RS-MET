@@ -490,7 +490,7 @@ int main(int argc, char* argv[])
   //phaseShapingCurvePoly4();
   //phaseShapingCurvesRational();
   //phaseShaping();
-  //phaseShapingSkew();
+  phaseShapingSkew();
   zeroDelayFeedbackPhaseMod();
 
   // Partial Extraction:
