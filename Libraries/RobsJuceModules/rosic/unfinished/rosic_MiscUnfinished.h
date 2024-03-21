@@ -668,7 +668,11 @@ protected:
   double instPhase, instFreq;
   int    sampleCount;
 
-  std::function<double(double phase)> wave = &RAPT::rsSin<double>;
+
+  std::function<double(double phase)> wave = [](double p)  
+  { 
+    return RAPT::rsSin<double>(2*PI*p); 
+  };
 };
 // ToDo:
 // -Maybe the wavesshape could be determined by a user-defined function using std::function. Maybe
@@ -809,6 +813,8 @@ protected:
   double swpTm, swpTmByKey, swpTmByVel;
 
   double fadeOutTime;
+
+  double waveParam;  // parameter to control the waveshape
 
   int currentNote = -1;
 

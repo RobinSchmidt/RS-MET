@@ -628,19 +628,6 @@ rsFreqSweeper::rsFreqSweeper()
 {
   initSettings(true);
   reset();
-
-
-  auto waveFunc = [](double p) 
-  { 
-    return RAPT::rsSin<double>(2*PI*p);
-  };
-
-  wave = waveFunc;
-
-  //wave = &RAPT::rsSin<double>;
-    
-  //std::function<double(double phase)> wave;
-
 }
 
 void rsFreqSweeper::initSettings(bool initAlsoSampleRate)
@@ -696,6 +683,22 @@ rsSweepKicker::rsSweepKicker()
 
   initSettings(true);
 
+  //waveParam = -0.5; // test
+
+  // This is a phase-shaped sine wave:
+  auto waveFunc = [this](double p) 
+  { 
+    p = fmod(p, 1.0);
+    p = rsPhaseShaper::powerLaw(p, pow(2.0, waveParam));
+    return sin(2*PI*p);
+    // ToDo:
+    // -Try to optimize. I think, we need the fmod because due to the phase-offset parameters. 
+    //  But maybe a simple if statement is good enough? But maybe not when we use phase-modulation.
+    //  In this case, all bets are off. But maybe have an optimized path when waveParam == 0. In 
+    //  this case, it's just a sine wave.
+  };
+
+  freqSweeper.setWaveForm(waveFunc);
   reset();
 }
 
@@ -711,6 +714,7 @@ void rsSweepKicker::initSettings(bool initAlsoSampleRate)
   swpTmByKey  =     0;
   swpTmByVel  =     0;
   fadeOutTime =     0;
+  waveParam   =     0;
   freqSweeper.initSettings(initAlsoSampleRate);
   fadeOutEnv.setNumFadeSamples(fadeOutTime * getSampleRate());
 }
