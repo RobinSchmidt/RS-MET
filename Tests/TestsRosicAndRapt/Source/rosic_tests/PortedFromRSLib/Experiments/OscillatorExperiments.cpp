@@ -354,12 +354,12 @@ void phaseShapingSkew()
 
     //ps[n] = phaseShapePower(p[n], pow(2.0, 2*a[n]));  // new, test
   }
-  rsPlotVector(ps);
+  //rsPlotVector(ps);
   //rsPlotVectors(y0, y1);
-  writeToMonoWaveFile("PhaseShapeRatSine0.wav", &y0[0], N, (int) fs, 16);
-  writeToMonoWaveFile("PhaseShapeRatSine1.wav", &y1[0], N, (int) fs, 16);
-  writeToMonoWaveFile("PhaseShapeRatSine2.wav", &y2[0], N, (int) fs, 16);
-  writeToMonoWaveFile("PhaseShapeRatSine3.wav", &y3[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("PhaseShapeRatSine0.wav", &y0[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("PhaseShapeRatSine1.wav", &y1[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("PhaseShapeRatSine2.wav", &y2[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("PhaseShapeRatSine3.wav", &y3[0], N, (int) fs, 16);
   // Observations:
   // -The signal "PhaseShapeRatSine0.wav" morphs from a highpassed downward saw through sine to a
   //  highpassed upward saw. The morph looks like: highpass -> lowpass -> inverting highpass if we
@@ -367,7 +367,29 @@ void phaseShapingSkew()
   //  is: neutral -> lowpass -> inverted, i.e. we want: sawDown -> sine -> sawUp. The shaped phase
   //  goes from spikey (highpassed saw) through saw to sigmoid.
   // -PhaseShapeRatSine1 looks like DC+spikes -> sine -> DC+spikes
-  // -Signals with a phase difference of pi are negatives of one another.
+  // -Signals with a phase difference of pi are negatives of one another. So, it's actually 
+  //  pointless to generate 4 signals. 0 and 1 are enough. 3 and 4 are just negatives of these.
+
+
+  // Generate the signal with power-law phase-shaping map:
+  aMin = -3.0;        // minimum a-value
+  aMax = +3.0;        // maximum a-value
+  for(int n = 0; n < N; n++)
+  {
+    double a = rsLinToLin(double(n), 0.0, N-1.0, aMin, aMax);
+    ps[n] = phaseShapePower(p[n], pow(2.0, a));
+    y0[n] = amp * sin(2*PI*ps[n] + 0.0*PI);
+    y1[n] = amp * sin(2*PI*ps[n] + 0.5*PI);
+    y2[n] = amp * sin(2*PI*ps[n] + 1.0*PI);
+    y3[n] = amp * sin(2*PI*ps[n] + 1.5*PI);
+  }
+  rsPlotVector(ps);
+  writeToMonoWaveFile("PhaseShapePowSine0.wav", &y0[0], N, (int) fs, 16);
+  writeToMonoWaveFile("PhaseShapePowSine1.wav", &y1[0], N, (int) fs, 16);
+  writeToMonoWaveFile("PhaseShapePowSine2.wav", &y2[0], N, (int) fs, 16);
+  writeToMonoWaveFile("PhaseShapePowSine3.wav", &y3[0], N, (int) fs, 16);
+  // Observations:
+  // -
 
 
 
