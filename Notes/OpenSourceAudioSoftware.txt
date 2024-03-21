@@ -123,6 +123,11 @@ https://github.com/sinshu/freeverb
 https://www.dsprelated.com/freebooks/pasp/Freeverb.html
 -Schroeder/Moorer allpass based reverb (public domain)
 
+ZL-Audio Plugins:
+https://github.com/ZL-Audio
+https://github.com/ZL-Audio/ZLEqualizer
+-Some plugins made with JUCE. The EQ appears to have a nice visual and modern GUI and uses the
+ Vicanek design formulas. It's dynamic as well.
 
 ----------------------------------------------------------------------------------------------------
 Libraries and SDKs

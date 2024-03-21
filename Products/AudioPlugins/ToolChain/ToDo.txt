@@ -111,6 +111,13 @@ we build up our suite of unit tests along the way.
   "Next" button loads the first file in the current directory instead of the next one according to 
   the currently loaded one. 
 
+- Liberty: Open TestNoise.xml. Go into the ColorFilter module (by clicking on the module in the 
+  graph or on the name in the TreeView. Select the Out2 module. Many more cables are drawn in red 
+  than should be. Also, it doesn't seem to be possible to disconnect cables - or i have forgotten 
+  how. A selected cable should be removable by clicking on delete and/or by right-click. Ah - OK - 
+  on right-click, one can choose "Delete Selection". Also: try to connect two cables to a single
+  input pin - it will delete the first connection. Maybe it's not possible to connect multiple 
+  outputs to one input and we need to include an explicit adder module to achieve that?
 
 - [F] Here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
   https://www.kvraudio.com/forum/viewtopic.php?p=7257577#p7257577
@@ -182,6 +189,24 @@ Features
     parameters (the difference is that one is linear, the other in dB). The in gains may be named 
     "Input" (and should always be linear). The "thru" gains may be named "PassThrough" and should 
     also be linear.
+
+ - Here: https://github.com/RobinSchmidt/RS-MET/issues/342  someone requests bringing back single
+   purpose plugins, specifically FuncShaper. Just compiling with the line:
+     jura::ToolChain *dummy = nullptr; return createPluginWithMidi(dummy, 10); 
+   changed to 
+     jura::FuncShaperAudioModule *dummy = nullptr; return createPluginWithoutMidi(dummy);
+   in PluginProcessor.cpp does not seem to be enough to achieve that. The pluin identification
+   mechanism will still say ToolChain. Also, when building the FuncShaper as standalone and then 
+   again the ToolChain, the state recall of ToolChain will fail - expected and probably not a big 
+   deal because noone will ever want to use single purpose plugins in standalone mode anyway. I 
+   also have no idea what that would mean for automation, so...well...not sure, how feasible that 
+   would be. Doing such a thing would require big infrastructural changes to the codebase. Maybe it
+   would be better to fix the automatibility issue for ToolChain. To make it memory efficient, we 
+   should perhaps factor out all the shared (DSP and GUI) code into a separate dll such that all 
+   the plugins can be tiny. For the binary size, it doesn't matter, if we build ToolChain or 
+   FuncShaper via changing the line. Another option could be to just dig out the legacy codebase 
+   before creating ToolChain and uploading it all to GitHub to make the old plugins compilable
+   again.
 
 ---------------------------------------------------------------------------------------------------
 Modules

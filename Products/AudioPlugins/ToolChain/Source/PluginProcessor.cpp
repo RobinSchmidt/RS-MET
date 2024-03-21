@@ -21,6 +21,9 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
   //jura::Ladder       *dummy = nullptr; return createPluginWithMidi(dummy);
   //jura::Enveloper    *dummy = nullptr; return createPluginWithMidi(dummy);
   //jura::SamplerModule *dummy = nullptr; return createPluginWithMidi(dummy, 10);
+  //jura::FuncShaperAudioModule *dummy = nullptr; return createPluginWithoutMidi(dummy);
+
+
 
   //// just for testing the resizing constraints:
   //jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(10);
