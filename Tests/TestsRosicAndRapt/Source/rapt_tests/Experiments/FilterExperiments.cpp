@@ -3040,13 +3040,14 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 127;                 // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 128;                 // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
-  //WT  window  = WT::blackmanHarris;
-  WT  window  = WT::blackman;
-  //WT  window  = WT::rectangular;
+  WT  window  = WT::rectangular;
+  int numSamples    = 300;           // Number of samples for test waveform
+  double freq       = 441;
+  double sampleRate = 44100;
 
-  // Design the filter:
+  // Design the filter and plot its impulse response:
   using Vec = std::vector<double>;
   Vec h(numTaps);
   makeHilbertFilter(&h[0], numTaps, window);
@@ -3061,6 +3062,18 @@ void hilbertFilter()
   //plt.setPlotType(SP::PlotType::groupDelay);      // uncomment for group delay response
   //plt.setLogFreqAxis(true);                       // uncomment for logarithmic frequency axis
   plt.plotSpectra(numTaps, &h[0]);
+
+  // Filter a periodic waveform with the Hilbert filter and plot result:
+  using AT = rsArrayTools;
+  int N = numSamples;
+  Vec x(N);
+  createWaveform(&x[0], N, 2, freq, sampleRate);  // 0: sine, 1: saw, 2: square, 3: triangle
+  Vec y(N+numTaps-1);                             // Convolution result length is M+N-1
+  AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);  // Convolution with Hilbert impulse response
+  AT::shift(&y[0], N+numTaps-1, -numTaps/2);      // Compensate delay
+  y.resize(N);                                    // Shorten y to original length of x
+  rsPlotVectors(x, y);                            // Signal and its Hilbert transform
+
 
   // Observations:
   // -The magnitude response looks approximately flat, the phase response linear, the group delay

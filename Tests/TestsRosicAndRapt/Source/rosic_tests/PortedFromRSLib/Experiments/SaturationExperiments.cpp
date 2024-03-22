@@ -681,7 +681,7 @@ void hilbertDistortion()
   // Generate input signal:
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 0, 441.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
+  createWaveform(&x[0], N, 2, 441.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
 
   // Apply a bell-shaped (Hanning window) amplitude-envelope:
@@ -721,7 +721,7 @@ void hilbertDistortion()
 
 
   // Visualization:
-  //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
+  rsPlotVectors(x, y);       // Input signal and its Hilbert transform
   //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
   //rsPlotVectors(xD, yD);     // Distorted real and imaginary part
   //rsPlotVectors(x, xD);      // Original and distorted signal

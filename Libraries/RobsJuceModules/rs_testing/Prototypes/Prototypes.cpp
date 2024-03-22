@@ -33,9 +33,43 @@ using namespace RAPT;
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
-  RAPT::rsAssert(rsIsOdd(numTaps), "Currently supports only odd lengths");
+  //RAPT::rsAssert(rsIsOdd(numTaps), "Currently supports only odd lengths");
+
 
   int c = numTaps/2;                   // Center tap
+  if(rsIsOdd(numTaps))
+  {
+
+    for(int k = 1; k <= numTaps/2; k++)
+    {
+      //T hk = T(1) / T(PI*k);         // Nah! Wrong!
+      T hk = (1 - cos(k*PI))/(k*PI);   // Yeah! Works.
+      h[c+k] = +hk;
+      h[c-k] = -hk;
+    }
+  }
+  else
+  {
+    // This needs tests and the clean up:
+
+    for(int k = 0; k < c; k++)
+    {
+      double t = double(k) + 0.5;
+
+      //T hk = (1 - cos(t*PI))/(t*PI);
+
+      T hk = 1.0/(t*PI);
+
+      int kr = c+k;
+      int kl = c-k-1;
+
+      h[kr] = +hk;
+      h[kl] = -hk;
+    }
+  }
+  //rsPlotArrays(numTaps, h);
+
+  /*
   for(int k = 1; k <= numTaps/2; k++)
   {
     //T hk = T(1) / T(PI*k);         // Nah! Wrong!
@@ -43,6 +77,7 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
     h[c+k] = +hk;
     h[c-k] = -hk;
   }
+  */
 
   // Apply window:
   std::vector<T> w(numTaps);
