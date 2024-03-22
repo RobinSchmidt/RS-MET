@@ -729,11 +729,12 @@ void hilbertDistortion()
   // -For the sawtooth and a drive of 2, I get a result similar as shown in the KVR thread. But 
   //  there is some ripple at the Nyquist freq going on. What is this? Is this due to the non-ideal
   //  Hilbert filter? Increasing the length of the filter doesn't seem to help. Maybe it's because
-  //  of the bandpass characteristic of the Hilbert filter. ToDo: Try some highpass Hilbert-filter 
-  //  design! See wikipedia article and hilbertFilter experiment for more resources.
+  //  of the bandpass characteristic of the Hilbert filter. Or maybe it is because we need a 
+  //  half-sample delay somewhere? But I don't think so - my odd length Hilbert filter should not 
+  //  need that.
   // 
   // ToDo:
-  // -Try it on a sawtooth with envelope. I guess, the distortion will be independent from the
-  //  amplitude.
+  // -Try some highpass Hilbert-filter design and see if this removes the Nyquist ripples.
+  //  See wikipedia article and hilbertFilter experiment for more resources.
   // -Try scaling with the reciprocal. For a saw, that should make it look highpassish.
 }
