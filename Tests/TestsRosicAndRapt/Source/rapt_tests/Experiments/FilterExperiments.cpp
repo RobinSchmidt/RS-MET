@@ -3040,7 +3040,7 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 128;                 // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 127;                 // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
   WT  window  = WT::blackman;
   int numSamples    = 300;           // Number of samples for test waveform
@@ -3087,6 +3087,9 @@ void hilbertFilter()
   //  a prepended zero sample. So, even lengths don't make sense. They just introduce one sample
   //  delay more and add another multiply-add. Oh - no - it's not exactly the same as the odd N-1
   //  filter. Try it with N=11 and N=12. For short lengths, the difference becomes apparent.
+  // -For even lengths, the sawtooth need a delay of half a sample to make its zero-crossings align
+  //  with the peaks of the Hilbert trafo. That's exactly like the literature says it should be, so
+  //  the implementation is probably correct. but still, it needs more thorough verification.
   //
   // ToDo:
   // -Plot the phase delay. It should be constant at 90°, I think.
@@ -3098,6 +3101,11 @@ void hilbertFilter()
   // -Figure out which kind of window function is best suited for this purpose. I think, we want a 
   //  fast transition and low passband ripple. I don't really know what the sidelobes will do. 
   //  -> Figure out. Maybe they reflect back into the passband and mess it up?
+  // -For an even number of taps, we should either also delay the direct path signal by half a 
+  //  sample or delay the filtered signa by half a sample less. In any case, we need some 
+  //  interpolation. In an actual application, it's better to delay the filtered signal by one 
+  //  sample less because that allows for transparent operation of an effect when the settings are
+  //  neutral.
   //
   // See:
   // https://en.wikipedia.org/wiki/Hilbert_transform

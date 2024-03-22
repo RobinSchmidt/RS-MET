@@ -46,10 +46,18 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
 
     for(int k = 1; k <= numTaps/2; k++)
     {
-      //T hk = T(1) / T(PI*k);         // Nah! Wrong!
-      T hk = (1 - cos(k*PI))/(k*PI);   // Yeah! Works. ...but should be optimized
+      //T hk = T(1) / T(PI*k);           // Nah! Wrong!
+      //T hk = (1 - cos(k*PI))/(k*PI);   // Yeah! Works. ...but should be optimized
+
+      T hk = T(0);
+      if(rsIsOdd(k))
+        hk = T(2) / T(k*PI);             // This is the optimized version...halfway
+      //else                               // ..could be mad branchless someday
+      //  hk = T(0);
       h[c+k] = +hk;
       h[c-k] = -hk;
+      // actually, we could just skip the even k by using k+=2 instead of k++. But that assumes 
+      // that h is initialized with zeros which is not a safe assumption
     }
   }
   else
@@ -60,10 +68,10 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
       // Looks good but should be verified and then cleaned up:
       double t = double(k) + 0.5;
       T hk = 1.0/(t*PI);
-      int kr = c+k;
-      int kl = c-k-1;
-      h[kr] = +hk;
-      h[kl] = -hk;
+      //int kr = c+k;
+      //int kl = c-k-1;
+      h[c+k] = +hk;
+      h[c-k-1] = -hk;
     }
   }
   //rsPlotArrays(numTaps, h);

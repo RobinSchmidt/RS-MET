@@ -721,12 +721,12 @@ void hilbertDistortion()
 
 
   // Visualization:
-  rsPlotVectors(x, y);       // Input signal and its Hilbert transform
-  //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
-  //rsPlotVectors(xD, yD);     // Distorted real and imaginary part
-  //rsPlotVectors(x, xD);      // Original and distorted signal
+  rsPlotVectors(x, y);         // Input signal and its Hilbert transform
+  //rsPlotVectors(mag, magD);    // Magnitude and distorted magnitude
+  //rsPlotVectors(xD, yD);       // Distorted real and imaginary part
+  //rsPlotVectors(x, xD);        // Original and distorted signal
   //rsPlotVectors(scl);          // The scaling factor, i.e. the applied gain
-  rsPlotVectors(x, xD, scl); // Original, distorted signal and applied scaler
+  rsPlotVectors(x, xD, scl);   // Original, distorted signal and applied scaler
 
 
   // Observations:
