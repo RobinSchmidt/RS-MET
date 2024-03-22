@@ -654,11 +654,11 @@ void hilbertDistortion()
   using WT = RAPT::rsWindowFunction::WindowType;
 
   // Setup:
-  int numTaps    = 255;              // Number of taps for Hilbert filter. Should be odd
+  int numTaps    = 511;              // Number of taps for Hilbert filter. Should be odd
   WT  window     = WT::blackman;     // Window function for Hilbert filter
   int sampleRate = 44100;
   double length  = 0.02;             // Length in seconds
-  double drive   = 1.0;              // Drive for tanh-waveshaper
+  double drive   = 2.0;              // Drive for tanh-waveshaper
 
 
   // Design the Hilbert filter:
@@ -671,7 +671,8 @@ void hilbertDistortion()
   using Vec = std::vector<double>;
   Vec x(N);
   //createSineWave(&x[0], N, 440.0, 1.0, sampleRate);
-  createSawWave(&x[0], N, 440.0, sampleRate);
+  //createSawWave(&x[0], N, 440.0, sampleRate);
+  createWaveform(&x[0], N, 1, 440.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
 
   // Obtain Hilbert transform:
