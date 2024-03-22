@@ -38,15 +38,8 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   int c = numTaps/2;                   // Center tap
   for(int k = 1; k <= numTaps/2; k++)
   {
-    //T hk = T(2) / T(PI*k);             // May need a scaler. Maybe pi or 1/pi? Look up!
-    //T hk = T(1) / T(PI*k);             // May need a scaler. Maybe pi or 1/pi? Look up!
-
-    //T hk = T(1) / T(k); 
-
-
-    T hk = (1 - cos(k*PI))/(k*PI);
-
-
+    //T hk = T(1) / T(PI*k);         // Nah! Wrong!
+    T hk = (1 - cos(k*PI))/(k*PI);   // Yeah! Works.
     h[c+k] = +hk;
     h[c-k] = -hk;
   }
@@ -54,26 +47,34 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   // Apply window:
   std::vector<T> w(numTaps);
   using WF = RAPT::rsWindowFunction;
-  //WF::createWindow(&w[0], numTaps, type, true);
   WF::createWindow(&w[0], numTaps, type, false);
   //rsPlotVector(w);
   for(int n = 0; n < numTaps; n++)
     h[n] *= w[n];
 
-  // ToDo: 
-  // -Verify if the scaling is right
-  // -Apply a window. Maybe this requires a rescaling? Maybe by the reciprocal of the average of 
-  //  the window coeffs, i.e. by the reciprocal of window's DC gain?
-  //  -> OK we can create a window with normalized average, so we don't need to scale afterwards.
-  //  -> hmm - that doesn't seem to work. It's too loud when we use the DC-nomralized window
+  // Notes:
+  // -The formula is taken from:
+  //  https://www.kvraudio.com/forum/viewtopic.php?t=608320
+  //  I first tried to use simply 1 / (PI*k) but that didn't work. The formula above lets every 
+  //  other sample be zero. But I wonder why we need that. In the plot:
+  //  https://en.wikipedia.org/wiki/File:Highpass_discrete_Hilbert_transform_filter.tif
+  //  from the wikipedia article:
+  //  https://en.wikipedia.org/wiki/Hilbert_transform#Discrete_Hilbert_transform
+  //  there don't seem to be zero samples. However, this "every other sample is zero" business can
+  //  be done more easily without the cosine for an optimization. I guess the cosine is needed when
+  //  we need some passband scaling - like with windowed sincs? Figure out! I need to learn more
+  //  about Hilbert filter design. But for the time being, it works and I'm happy with that.
+  //
+  // ToDo:
   // -Allow for even lengths as well. Actually, it seems there are 4 types of Hilbert filter
   //  FIR designs. Maybe implement all 4 and give the function a parameter for the type to be 
-  //  designed.
-  // -For a production version, avoid the memoray allocation. Compute the window first (and the 
+  //  designed. Maybe it would already work for even lengths? Try it! ...hmm..it actually looks OK.
+  // -For a production version, avoid the memory allocation. Compute the window first (and the 
   //  scaling factor) and then multiply in the 1/k
   // -When it's finished, move into the library. Maybe it should go into the FIR filter designer.
   //
   // See:
+  // https://www.kvraudio.com/forum/viewtopic.php?t=608320
   // https://en.wikipedia.org/wiki/Hilbert_transform#Discrete_Hilbert_transform
   // https://www.dsprelated.com/freebooks/sasp/Hilbert_Transform_Design_Example.html
   // https://www.intechopen.com/chapters/39362

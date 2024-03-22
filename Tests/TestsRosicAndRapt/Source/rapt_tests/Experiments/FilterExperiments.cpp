@@ -3039,11 +3039,11 @@ void hilbertFilter()
   using WT = RAPT::rsWindowFunction::WindowType;
 
 
-  int numTaps = 101;                 // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 32;                 // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
-  WT  window  = WT::blackmanHarris;
+  //WT  window  = WT::blackmanHarris;
   //WT  window  = WT::blackman;
-  //WT  window  = WT::rectangular;
+  WT  window  = WT::rectangular;
 
   // Design the filter:
   using Vec = std::vector<double>;
@@ -3057,22 +3057,22 @@ void hilbertFilter()
   plt.setFftSize(fftSize);
   plt.setNormalizationMode(SP::NormalizationMode::impulse);
   //plt.setPlotType(SP::PlotType::phaseUnwrapped);
+  //plt.setPlotType(SP::PlotType::groupDelay);
   //plt.setLogFreqAxis(true);
   plt.plotSpectra(numTaps, &h[0]);
 
-
-
-  int dummy = 0;
-
   // Observations:
-  // -The filter without window has currently strong ripple and a slight lowpassish response.
-  // -With blackmanHarris, the ripple goes away, but the lowpassing seems to stay the same and we
-  //  get an overall gain boost.
-  // -The phase doesn't look right either. I expect a constant pahse of 90° - but it actually 
-  //  starts at some other negative value and then goes way down.
-  // -Increasing the length doesn't really help much with these issues
+  // -The magnitude response looks approximately flat, the phase response linear, the group delay
+  //  constant. The deviations from this ideal are at and around DC and Nyquist. There is some 
+  //  bandpass effect going on. This is all as expected.
+  // -Increasing the length confines the bandpass closer to DC and Nyquist, i.e. the passband gets
+  //  wider.
+  // -An even length filter of length N seems to be equal to an odd filter of length N-1 just with
+  //  a prepended zero sample. So, even lengths don't make sense. They just introduce one sample
+  //  delay more and add another multiply-add.
   //
   // ToDo:
+  // -Plot the phase delay. It should be constant at 90°, I think.
   // -[done] Check, if the normalization of the SpectrumPlotter is actually correct. Pass it a unit 
   //  impulse of different lengths to see if the DC gain is one. Done - seems OK.
   // -Check the formula for the coeffs.
