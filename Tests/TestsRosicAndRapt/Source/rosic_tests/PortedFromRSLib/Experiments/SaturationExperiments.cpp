@@ -655,9 +655,10 @@ void hilbertDistortion()
 
   // Setup:
   int numTaps    = 255;              // Number of taps for Hilbert filter. Should be odd
-  WT  window     = WT::blackman;     // Window function for Hilbert filter   
+  WT  window     = WT::blackman;     // Window function for Hilbert filter
   int sampleRate = 44100;
-  double length  = 0.1;              // length in seconds
+  double length  = 0.02;             // Length in seconds
+  double drive   = 4.0;              // Drive for tanh-waveshaper
 
 
   // Design the Hilbert filter:
@@ -669,25 +670,37 @@ void hilbertDistortion()
   int N = ceil(length * sampleRate);
   using Vec = std::vector<double>;
   Vec x(N);
-  createSineWave(&x[0], N, 440.0, 0.5, sampleRate);
+  //createSineWave(&x[0], N, 440.0, 1.0, sampleRate);
+  createSawWave(&x[0], N, 440.0, sampleRate);
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
 
-
-  //rsPlotVector(x);
-
   // Obtain Hilbert transform:
-  Vec y(N+numTaps-1);
-
   using AT = rsArrayTools;
-
+  Vec y(N+numTaps-1);
   AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);
   AT::shift(&y[0], N, -numTaps/2);                 // compensate delay
 
+  // Obtain magnitude of analytic signal:
+  Vec mag(N);
+  for(int n = 0; n < N; n++)
+    mag[n] = sqrt(x[n]*x[n] + y[n]*y[n]);
 
-  // ToDo: compensate for the delay - I think we need to shift y to the left by numTaps/2
+  // Apply distortion:
+  Vec magD(N), xD(N), yD(N);
+  for(int n = 0; n < N; n++)
+  {
+    magD[n] = tanh(drive * mag[n]);
+    double scaler = 1.0 / magD[n];
+    xD[n] = scaler * x[n];
+    yD[n] = scaler * y[n];
+  }
 
-  //rsPlotVectors(x);
-  rsPlotVectors(x, y);
+  // Visualization:
+  rsPlotVectors(x, y);       // Input signal an its Hilbert transform
+  rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
+  rsPlotVectors(xD, yD);     // Distorted real and imaginray part
+  rsPlotVectors(x, xD);      // Original and distorted signal
+
 
   //createPl
 
@@ -697,4 +710,7 @@ void hilbertDistortion()
   // Observations:
   // -For a fundamental of 440 Hz, 127 are not enough. The Hilbert transform of a sinewave at 
   //  440 Hz will be too quiet with 127 taps. 255 seems to be enough.
+  // -For a sinewave of constant amplitude of 1 with drive of 4, the original and distorted 
+  //  magnitudes look the same - except for artifacts at the ends and some wiggles. It's the
+  //  original magnitude that wiggles - I guess, the distortion smoothes/saturates them out.
 }
