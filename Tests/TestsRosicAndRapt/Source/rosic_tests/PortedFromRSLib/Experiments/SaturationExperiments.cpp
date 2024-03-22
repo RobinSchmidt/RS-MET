@@ -666,7 +666,7 @@ void hilbertDistortion()
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
-  double drive   =  2.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
+  double drive   =  0.5;         // Drive for tanh-waveshaper as raw amplitude multiplier
   double comp    =  1.0;         // Compression amount. 1: normal, 0: none, -1: expand
 
   // Processing:
@@ -754,13 +754,23 @@ void hilbertDistortion()
   //   what creates the smoothing/rounding effect. The amplitude goes down and thereby rounds off 
   //   the sawtooth shape. This combing is stronger for louder saws. When the saw is quiet, there 
   //   is not much rounding going on. Quiet saws are expanded, loud saws are smoothed.
+  //  -For drive = 0.5, comp = 1.0, there is an overall attenuation of 0.5 and an additional (comb)
+  //   smoothing for the louder section.
   //
   // Conclusions:
-  // -Values for drive < 1 seem to be not so interesting. We just get an overall attenuation.
+  // -Values for drive < 1 seem to be not so interesting for sine inputs. We just get an overall 
+  //  attenuation.
+  // -For saw inputs, values of drive < 1 (like 0.5) give us attenutaion and smoothing. Maybe the
+  //  attenuation should be compesated by a compensation gain to get only the smoothing effect?
   // -For drive > 1 and comp > 0, we get an upward compression effect on sinusoids. For comp < 0,
   //  we get an expansion effect.
   // 
   // ToDo:
+  // -Compare the effects on signals with different overall amplitudes. Use a signal with 
+  //  amplitude 1, 2 and 0.5, apply the effect and plot the outputs with gain compensation, i.e.
+  //  make the loud output quieter etc. Does an overall gain make a difference? I think so. Then
+  //  we should perhaps include a pre-gain parameter. Maybe rename "drive" to "magDrive" to 
+  //  distinguish it.
   // -Try some highpass Hilbert-filter design and see if this removes the Nyquist ripples.
   //  See wikipedia article and hilbertFilter experiment for more resources.
   // -Try scaling with the reciprocal. For a saw, that should make it look highpassish.
