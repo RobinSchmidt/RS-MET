@@ -666,8 +666,8 @@ void hilbertDistortion()
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
-  double drive   =  3.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
-  double comp    = -1.0;         // Compression amount. 1: normal, 0: none, -1: expand
+  double drive   =  1.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
+  double comp    =  1.0;         // Compression amount. 1: normal, 0: none, -1: expand
 
   // Processing:
 
@@ -752,6 +752,8 @@ void hilbertDistortion()
   //   drive = 0.5 (comp=1) we get an overall attenuation by factor 0.5 that doesn't depend much
   //   on the input amplitude.
   //  -For comp = -1, drive = 4, the quiet signals are attenuated by a factor of 0.25.
+  //  -For comp =  1, drive = 1, we get unit gain for (near) zero signals and an attenuation for 
+  //   louder signals.
   //
   // Conclusions:
   // -Values for drive < 1 are not so interesting. We just get an overall attenuation.
