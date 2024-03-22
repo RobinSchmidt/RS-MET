@@ -666,7 +666,7 @@ void hilbertDistortion()
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
-  double drive   =  1.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
+  double drive   =  2.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
   double comp    =  1.0;         // Compression amount. 1: normal, 0: none, -1: expand
 
   // Processing:
@@ -679,7 +679,7 @@ void hilbertDistortion()
   // Generate input signal:
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 0, 440.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
+  createWaveform(&x[0], N, 1, 440.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
 
   // Apply a bell-shaped (Hanning window) amplitude-envelope:
@@ -711,14 +711,8 @@ void hilbertDistortion()
     double scaler = magD[n] / mag[n];
     scaler = pow(scaler, comp);
     scl[n] = scaler;
-
-    //double scaler = mag[n] / magD[n];
-    // ToDo: record the scaler into an array an plot it, too
-    // maybe use scaler = pow(magD[n] / mag[n], p);
-    // for some parameter p. 1 means upward compression, 0 means no change, -1 means expansion
-
-    xD[n] = scaler * x[n];
-    yD[n] = scaler * y[n];
+    xD[n]  = scaler * x[n];
+    yD[n]  = scaler * y[n];
   }
 
 
@@ -754,9 +748,17 @@ void hilbertDistortion()
   //  -For comp = -1, drive = 4, the quiet signals are attenuated by a factor of 0.25.
   //  -For comp =  1, drive = 1, we get unit gain for (near) zero signals and an attenuation for 
   //   louder signals.
+  // -Results for the sawtooth with bell envelope:
+  //  -The general amplitude expansion or compression curve that we see for sines has a 
+  //   superimposed comb shape. It drives the amplitude down around the jumps of the saw. This is 
+  //   what creates the smoothing/rounding effect. The amplitude goes down and thereby rounds off 
+  //   the sawtooth shape. This combing is stronger for louder saws. When the saw is quiet, there 
+  //   is not much rounding going on. Quiet saws are expanded, loud saws are smoothed.
   //
   // Conclusions:
-  // -Values for drive < 1 are not so interesting. We just get an overall attenuation.
+  // -Values for drive < 1 seem to be not so interesting. We just get an overall attenuation.
+  // -For drive > 1 and comp > 0, we get an upward compression effect on sinusoids. For comp < 0,
+  //  we get an expansion effect.
   // 
   // ToDo:
   // -Try some highpass Hilbert-filter design and see if this removes the Nyquist ripples.
