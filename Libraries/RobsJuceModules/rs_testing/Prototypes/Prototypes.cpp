@@ -54,8 +54,8 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   // Apply window:
   std::vector<T> w(numTaps);
   using WF = RAPT::rsWindowFunction;
-  WF::createWindow(&w[0], numTaps, type, true);
-  //WF::createWindow(&w[0], numTaps, WF::WindowType::blackmanHarris, true);
+  //WF::createWindow(&w[0], numTaps, type, true);
+  WF::createWindow(&w[0], numTaps, type, false);
   //rsPlotVector(w);
   for(int n = 0; n < numTaps; n++)
     h[n] *= w[n];
@@ -65,7 +65,7 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   // -Apply a window. Maybe this requires a rescaling? Maybe by the reciprocal of the average of 
   //  the window coeffs, i.e. by the reciprocal of window's DC gain?
   //  -> OK we can create a window with normalized average, so we don't need to scale afterwards.
-  // -Let the user select the window.
+  //  -> hmm - that doesn't seem to work. It's too loud when we use the DC-nomralized window
   // -Allow for even lengths as well. Actually, it seems there are 4 types of Hilbert filter
   //  FIR designs. Maybe implement all 4 and give the function a parameter for the type to be 
   //  designed.

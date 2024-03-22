@@ -3039,11 +3039,11 @@ void hilbertFilter()
   using WT = RAPT::rsWindowFunction::WindowType;
 
 
-  int numTaps = 2001;                // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 1001;                // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
-  //WT  window  = WT::blackmanHarris;
+  WT  window  = WT::blackmanHarris;
   //WT  window  = WT::blackman;
-  WT  window  = WT::rectangular;
+  //WT  window  = WT::rectangular;
 
   // Design the filter:
   using Vec = std::vector<double>;
