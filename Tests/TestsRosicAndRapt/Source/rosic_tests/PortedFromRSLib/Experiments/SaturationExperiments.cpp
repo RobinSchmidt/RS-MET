@@ -666,8 +666,8 @@ void hilbertDistortion()
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
-  double drive   = 1.5;          // Drive for tanh-waveshaper as raw amplitude multiplier
-  double comp    = 1.0;          // Compression amount. 1: normal, 0: none, -1: expand
+  double drive   =  3.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
+  double comp    = -1.0;         // Compression amount. 1: normal, 0: none, -1: expand
 
   // Processing:
 
@@ -746,8 +746,15 @@ void hilbertDistortion()
   // -The choice window function does not seem to have impact on these ripples
   // -Results for a sinusoid with bell enevlope:
   //  -When comp = 1, the drive parameter gives the maximum amount of amplitude boost, i.e. the 
-  //   boost that signals close to zero get. 
-  //  -For drive = 1.5 and comp = 1.0, the signal gets actually attenuated in the middle.
+  //   boost that signals close to zero get. For example, for drive = 4, the gain for a zero signal
+  //   will be 4.
+  //  -For drive = 1.5 and comp = 1.0, the signal gets actually attenuated in the middle. For
+  //   drive = 0.5 (comp=1) we get an overall attenuation by factor 0.5 that doesn't depend much
+  //   on the input amplitude.
+  //  -For comp = -1, drive = 4, the quiet signals are attenuated by a factor of 0.25.
+  //
+  // Conclusions:
+  // -Values for drive < 1 are not so interesting. We just get an overall attenuation.
   // 
   // ToDo:
   // -Try some highpass Hilbert-filter design and see if this removes the Nyquist ripples.
@@ -755,4 +762,6 @@ void hilbertDistortion()
   // -Try scaling with the reciprocal. For a saw, that should make it look highpassish.
   // -Try lowpassing instead of waveshaping as "urosh" suggested in the thread.
   // -Try other (perhaps better) windows for the Hilbert filter
+  // -For production code, we need to take care of possible division by zero in the computation of
+  //  the scaler. We divide by mag[n]. That would be zero for zero signals.
 }
