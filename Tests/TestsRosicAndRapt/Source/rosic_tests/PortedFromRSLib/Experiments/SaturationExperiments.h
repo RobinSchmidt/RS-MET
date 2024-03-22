@@ -11,5 +11,6 @@ void sigmoidScaleAndShift();
 void quarticMonotonic();
 void sigmoidPrototypes();
 void sixticPositive();
+void hilbertDistortion();
 
 #endif

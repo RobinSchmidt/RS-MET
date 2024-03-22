@@ -557,7 +557,7 @@ double sixticValue(double x)
   double x4 = x2*x2;  // x^4
   return x - 0.3125*x4 + 0.1875*x4*x - 0.03125*x4*x2;
 }
-// move these to RSLib....
+
 void sixticPositive()
 {
   // For positive x-values use a polynomial:
@@ -644,4 +644,57 @@ void sixticPositive()
   GNUPlotter plt;
   plt.addDataArrays(N, x, y);
   plt.plot();
+}
+
+void hilbertDistortion()
+{
+  // Implements an idea posted here:
+  // https://www.kvraudio.com/forum/viewtopic.php?t=608320
+
+  using WT = RAPT::rsWindowFunction::WindowType;
+
+  // Setup:
+  int numTaps    = 255;              // Number of taps for Hilbert filter. Should be odd
+  WT  window     = WT::blackman;     // Window function for Hilbert filter   
+  int sampleRate = 44100;
+  double length  = 0.1;              // length in seconds
+
+
+  // Design the Hilbert filter:
+  using Vec = std::vector<double>;
+  Vec h(numTaps);
+  makeHilbertFilter(&h[0], numTaps, window);
+
+  // Generate input signal:
+  int N = ceil(length * sampleRate);
+  using Vec = std::vector<double>;
+  Vec x(N);
+  createSineWave(&x[0], N, 440.0, 0.5, sampleRate);
+  //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
+
+
+  //rsPlotVector(x);
+
+  // Obtain Hilbert transform:
+  Vec y(N+numTaps-1);
+
+  using AT = rsArrayTools;
+
+  AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);
+  AT::shift(&y[0], N, -numTaps/2);                 // compensate delay
+
+
+  // ToDo: compensate for the delay - I think we need to shift y to the left by numTaps/2
+
+  //rsPlotVectors(x);
+  rsPlotVectors(x, y);
+
+  //createPl
+
+
+  //GNUPlotter plt;
+
+  // Observations:
+  // -For a fundamental of 440 Hz, 127 are not enough. The Hilbert transform of a sinewave at 
+  //  440 Hz will be too quiet with 127 taps. 255 seems to be enough.
 }

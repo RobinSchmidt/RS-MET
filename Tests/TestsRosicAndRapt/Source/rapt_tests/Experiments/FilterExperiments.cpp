@@ -3040,7 +3040,7 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 127;                 // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 12;                 // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
   //WT  window  = WT::blackmanHarris;
   WT  window  = WT::blackman;
@@ -3072,7 +3072,8 @@ void hilbertFilter()
   //  for production code.
   // -An even length filter of length N seems to be equal to an odd filter of length N-1 just with
   //  a prepended zero sample. So, even lengths don't make sense. They just introduce one sample
-  //  delay more and add another multiply-add.
+  //  delay more and add another multiply-add. Oh - no - it's not exactly the same as the odd N-1
+  //  filter. Try it with N=11 and N=12. For short lengths, the difference becomes apparent.
   //
   // ToDo:
   // -Plot the phase delay. It should be constant at 90°, I think.
