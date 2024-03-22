@@ -666,9 +666,10 @@ void hilbertDistortion()
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
-  double drive   =  0.5;         // Drive for tanh-waveshaper as raw amplitude multiplier
+  double drive   =  4.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
   double comp    =  1.0;         // Compression amount. 1: normal, 0: none, -1: expand
-  bool   makeUp  = true;         // true: Divide by drive again after computing tanh(drive * mag)
+  bool   makeUp  = false;        // true: Divide by drive again after computing tanh(drive * mag)
+
 
   // Processing:
 
@@ -709,8 +710,6 @@ void hilbertDistortion()
     magD[n] = tanh(drive * mag[n]);
     if(makeUp)
       magD[n] /= drive;              // This is what A_SN does
-
-    //magD[n] = tanh(drive * mag[n]) / drive;
 
     // Scale x and y according to ratio of original and distorted magnitude:
     double scaler = magD[n] / mag[n];
