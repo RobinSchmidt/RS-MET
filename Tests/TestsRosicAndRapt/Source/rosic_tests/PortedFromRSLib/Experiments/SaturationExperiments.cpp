@@ -662,12 +662,12 @@ void hilbertDistortion()
   using WT = RAPT::rsWindowFunction::WindowType;  // Shorthand for convenience
 
   // Setup:
-  int numTaps    = 511;              // Number of taps for Hilbert filter. Should be odd.
-  WT  window     = WT::blackman;     // Window function for Hilbert filter
-  int sampleRate = 44100;            // Sample rate in Hz
-  int numSamples = 2000;             // Number of samples to render
-  double drive   = 4.0;              // Drive for tanh-waveshaper as raw amplitude multiplier
-
+  int numTaps    = 511;          // Number of taps for Hilbert filter. Should be odd.
+  WT  window     = WT::blackman; // Window function for Hilbert filter
+  int sampleRate = 44100;        // Sample rate in Hz
+  int numSamples = 2000;         // Number of samples to render
+  double drive   = 1.5;          // Drive for tanh-waveshaper as raw amplitude multiplier
+  double comp    = 1.0;          // Compression amount. 1: normal, 0: none, -1: expand
 
   // Processing:
 
@@ -701,7 +701,7 @@ void hilbertDistortion()
     mag[n] = sqrt(x[n]*x[n] + y[n]*y[n]);
 
   // Apply distortion:
-  Vec magD(N), xD(N), yD(N);
+  Vec magD(N), scl(N), xD(N), yD(N);
   for(int n = 0; n < N; n++)
   {
     // Distort magnitude:
@@ -709,6 +709,9 @@ void hilbertDistortion()
 
     // Scale x and y according to ratio of original and distorted magnitude:
     double scaler = magD[n] / mag[n];
+    scaler = pow(scaler, comp);
+    scl[n] = scaler;
+
     //double scaler = mag[n] / magD[n];
     // ToDo: record the scaler into an array an plot it, too
     // maybe use scaler = pow(magD[n] / mag[n], p);
@@ -721,9 +724,10 @@ void hilbertDistortion()
 
   // Visualization:
   //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
-  rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
+  //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
   //rsPlotVectors(xD, yD);     // Distorted real and imaginary part
-  rsPlotVectors(x, xD);      // Original and distorted signal
+  //rsPlotVectors(x, xD);      // Original and distorted signal
+  rsPlotVectors(x, xD, scl); // Original, distorted signal and applied scaler
 
 
   // Observations:
@@ -740,6 +744,10 @@ void hilbertDistortion()
   //  half-sample delay somewhere? But I don't think so - my odd length Hilbert filter should not 
   //  need that.
   // -The choice window function does not seem to have impact on these ripples
+  // -Results for a sinusoid with bell enevlope:
+  //  -When comp = 1, the drive parameter gives the maximum amount of amplitude boost, i.e. the 
+  //   boost that signals close to zero get. 
+  //  -For drive = 1.5 and comp = 1.0, the signal gets actually attenuated in the middle.
   // 
   // ToDo:
   // -Try some highpass Hilbert-filter design and see if this removes the Nyquist ripples.
