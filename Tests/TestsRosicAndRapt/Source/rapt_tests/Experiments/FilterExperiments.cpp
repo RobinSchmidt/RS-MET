@@ -3036,25 +3036,29 @@ void makeHilbertFilter(T* h, int numTaps)
 
 void hilbertFilter()
 {
-  int numTaps = 255;    // Should be odd (ToDo: allow even lengths later, too)
-  int fftSize = 4096;   // FFT size for plotting frequency response
+  using WT = RAPT::rsWindowFunction::WindowType;
 
+
+  int numTaps = 2001;                // Should be odd (ToDo: allow even lengths later, too)
+  int fftSize = 4096;                // FFT size for plotting frequency response
+  //WT  window  = WT::blackmanHarris;
+  //WT  window  = WT::blackman;
+  WT  window  = WT::rectangular;
+
+  // Design the filter:
   using Vec = std::vector<double>;
   Vec h(numTaps);
-
-  makeHilbertFilter(&h[0], numTaps);
-
-
-
-
+  makeHilbertFilter(&h[0], numTaps, window);
   rsStemPlot(h);
 
+  // Plot its magnitude response - it should be (approximately) flat:
   using SP = SpectrumPlotter<double>;
   SP plt;
   plt.setFftSize(fftSize);
   plt.setNormalizationMode(SP::NormalizationMode::impulse);
+  //plt.setPlotType(SP::PlotType::phaseUnwrapped);
+  plt.setLogFreqAxis(true);
   plt.plotSpectra(numTaps, &h[0]);
-  //pl
 
 
 
@@ -3062,7 +3066,16 @@ void hilbertFilter()
 
   // Observations:
   // -The filter without window has currently strong ripple and a slight lowpassish response.
-  // -With blackmanHarris, the ripple goes away, but the lowpassing seems to get worse
+  // -With blackmanHarris, the ripple goes away, but the lowpassing seems to stay the same and we
+  //  get an overall gain boost.
+  // -The phase doesn't look right either. I expect a constant pahse of 90° - but it actually 
+  //  starts at some other negative value and then goes way down.
+  // -Increasing the length doesn't really help much with these issues
+  //
+  // ToDo:
+  // -[done] Check, if the normalization of the SpectrumPlotter is actually correct. Pass it a unit 
+  //  impulse of different lengths to see if the DC gain is one. Done - seems OK.
+  // -Check the formula for the coeffs.
 
   // See:
   // https://en.wikipedia.org/wiki/Hilbert_transform

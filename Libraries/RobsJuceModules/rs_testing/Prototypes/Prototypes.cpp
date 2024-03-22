@@ -31,13 +31,22 @@
 using namespace RAPT;
 
 template<class T>
-void makeHilbertFilter(T* h, int numTaps)
+void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
   RAPT::rsAssert(rsIsOdd(numTaps), "Currently supports only odd lengths");
+
   int c = numTaps/2;                   // Center tap
   for(int k = 1; k <= numTaps/2; k++)
   {
-    T hk = T(2) / T(PI*k);             // May need a scaler. Maybe pi or 1/pi? Look up!
+    //T hk = T(2) / T(PI*k);             // May need a scaler. Maybe pi or 1/pi? Look up!
+    //T hk = T(1) / T(PI*k);             // May need a scaler. Maybe pi or 1/pi? Look up!
+
+    //T hk = T(1) / T(k); 
+
+
+    T hk = (1 - cos(k*PI))/(k*PI);
+
+
     h[c+k] = +hk;
     h[c-k] = -hk;
   }
@@ -45,8 +54,9 @@ void makeHilbertFilter(T* h, int numTaps)
   // Apply window:
   std::vector<T> w(numTaps);
   using WF = RAPT::rsWindowFunction;
-  WF::createWindow(&w[0], numTaps, WF::WindowType::blackmanHarris, true);
-  rsPlotVector(w);
+  WF::createWindow(&w[0], numTaps, type, true);
+  //WF::createWindow(&w[0], numTaps, WF::WindowType::blackmanHarris, true);
+  //rsPlotVector(w);
   for(int n = 0; n < numTaps; n++)
     h[n] *= w[n];
 
@@ -68,7 +78,7 @@ void makeHilbertFilter(T* h, int numTaps)
   // https://www.dsprelated.com/freebooks/sasp/Hilbert_Transform_Design_Example.html
   // https://www.intechopen.com/chapters/39362
 }
-template void makeHilbertFilter(double* h, int numTaps);
+template void makeHilbertFilter(double* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
 
 
 double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b)
