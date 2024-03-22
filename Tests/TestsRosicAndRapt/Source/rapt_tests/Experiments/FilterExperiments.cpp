@@ -3039,7 +3039,7 @@ void hilbertFilter()
   using WT = RAPT::rsWindowFunction::WindowType;
 
 
-  int numTaps = 1001;                // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 101;                 // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
   WT  window  = WT::blackmanHarris;
   //WT  window  = WT::blackman;
@@ -3057,7 +3057,7 @@ void hilbertFilter()
   plt.setFftSize(fftSize);
   plt.setNormalizationMode(SP::NormalizationMode::impulse);
   //plt.setPlotType(SP::PlotType::phaseUnwrapped);
-  plt.setLogFreqAxis(true);
+  //plt.setLogFreqAxis(true);
   plt.plotSpectra(numTaps, &h[0]);
 
 
