@@ -651,14 +651,18 @@ void hilbertDistortion()
   // Implements an idea posted here:
   // https://www.kvraudio.com/forum/viewtopic.php?t=608320
 
+
   using WT = RAPT::rsWindowFunction::WindowType;
 
   // Setup:
   int numTaps    = 511;              // Number of taps for Hilbert filter. Should be odd
   WT  window     = WT::blackman;     // Window function for Hilbert filter
   int sampleRate = 44100;
-  double length  = 0.02;             // Length in seconds
-  double drive   = 2.0;              // Drive for tanh-waveshaper
+  //double length  = 0.05;              // Length in seconds
+  double drive   = 4.0;              // Drive for tanh-waveshaper
+  int numSamples = 2000;             // number of samples to render
+
+
 
 
   // Design the Hilbert filter:
@@ -667,13 +671,20 @@ void hilbertDistortion()
   makeHilbertFilter(&h[0], numTaps, window);
 
   // Generate input signal:
-  int N = ceil(length * sampleRate);
+  //int N = ceil(length * sampleRate);
+  int N = numSamples;
   using Vec = std::vector<double>;
   Vec x(N);
   //createSineWave(&x[0], N, 440.0, 1.0, sampleRate);
   //createSawWave(&x[0], N, 440.0, sampleRate);
-  createWaveform(&x[0], N, 1, 440.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
+  createWaveform(&x[0], N, 0, 440.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
+
+  // Apply an amplitude-envelope:
+  Vec env(N);
+  RAPT::rsWindowFunction::createWindow(&env[0], N, WT::hanningZZ, false);
+  for(int n = 0; n < N; n++)
+    x[n] *= env[n];
 
   // Obtain Hilbert transform:
   using AT = rsArrayTools;
@@ -694,10 +705,7 @@ void hilbertDistortion()
     magD[n] = tanh(drive * mag[n]);
 
     // Scale x and y according to ratio of original and distorted magnitude:
-    //double scaler = 1.0 / magD[n];*/  // or should it be mag[n] / magD[n]?
-    //double scaler = mag[n] / magD[n];
     double scaler = magD[n] / mag[n];
-
     xD[n] = scaler * x[n];
     yD[n] = scaler * y[n];
   }
@@ -705,19 +713,24 @@ void hilbertDistortion()
   // Visualization:
   //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
   //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
-  //rsPlotVectors(xD, yD);     // Distorted real and imaginray part
+  //rsPlotVectors(xD, yD);     // Distorted real and imaginary part
   rsPlotVectors(x, xD);      // Original and distorted signal
 
 
-  //createPl
-
-
-  //GNUPlotter plt;
-
   // Observations:
-  // -For a fundamental of 440 Hz, 127 are not enough. The Hilbert transform of a sinewave at 
+  // -For a fundamental of 440 Hz, 127 taps are not enough. The Hilbert transform of a sinewave at 
   //  440 Hz will be too quiet with 127 taps. 255 seems to be enough.
   // -For a sinewave of constant amplitude of 1 with drive of 4, the original and distorted 
   //  magnitudes look the same - except for artifacts at the ends and some wiggles. It's the
   //  original magnitude that wiggles - I guess, the distortion smoothes/saturates them out.
+  // -For the sawtooth and a drive of 2, i get a result similar as shown in the KVR thread. But 
+  //  there is some ripple at the Nyquist freq going on. What is this? Is this due to the non-ideal
+  //  Hilbert filter? Increasing the length of the filter doesn't seem to help. Maybe it's because
+  //  of the bandpass characteristic of the Hilbert filter. Try some highpass Hilbert-filter 
+  //  design! See wikipedia article and hilbertFilter experiment for more resources.
+  // 
+  // ToDo:
+  // -Try it on a sawtooth with envelope. I guess, the distortion will be independent from the
+  //  amplitude.
+  // -Try scaling with the reciprocal. For a saw, that should make it look highpassish.
 }
