@@ -658,7 +658,7 @@ void hilbertDistortion()
   WT  window     = WT::blackman;     // Window function for Hilbert filter
   int sampleRate = 44100;
   double length  = 0.02;             // Length in seconds
-  double drive   = 4.0;              // Drive for tanh-waveshaper
+  double drive   = 1.0;              // Drive for tanh-waveshaper
 
 
   // Design the Hilbert filter:
@@ -689,16 +689,22 @@ void hilbertDistortion()
   Vec magD(N), xD(N), yD(N);
   for(int n = 0; n < N; n++)
   {
+    // Distort magnitude:
     magD[n] = tanh(drive * mag[n]);
-    double scaler = 1.0 / magD[n];
+
+    // Scale x and y according to ratio of original and distorted magnitude:
+    //double scaler = 1.0 / magD[n];*/  // or should it be mag[n] / magD[n]?
+    //double scaler = mag[n] / magD[n];
+    double scaler = magD[n] / mag[n];
+
     xD[n] = scaler * x[n];
     yD[n] = scaler * y[n];
   }
 
   // Visualization:
-  rsPlotVectors(x, y);       // Input signal an its Hilbert transform
-  rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
-  rsPlotVectors(xD, yD);     // Distorted real and imaginray part
+  //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
+  //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
+  //rsPlotVectors(xD, yD);     // Distorted real and imaginray part
   rsPlotVectors(x, xD);      // Original and distorted signal
 
 
