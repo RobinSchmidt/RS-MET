@@ -3036,14 +3036,15 @@ void makeHilbertFilter(T* h, int numTaps)
 
 void hilbertFilter()
 {
+  // We design a Hilbert tranform filter and plot its impulse response and frequency response.
+
   using WT = RAPT::rsWindowFunction::WindowType;
 
-
-  int numTaps = 32;                 // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 127;                 // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
   //WT  window  = WT::blackmanHarris;
-  //WT  window  = WT::blackman;
-  WT  window  = WT::rectangular;
+  WT  window  = WT::blackman;
+  //WT  window  = WT::rectangular;
 
   // Design the filter:
   using Vec = std::vector<double>;
@@ -3051,14 +3052,14 @@ void hilbertFilter()
   makeHilbertFilter(&h[0], numTaps, window);
   rsStemPlot(h);
 
-  // Plot its magnitude response - it should be (approximately) flat:
+  // Plot the frequency response - it should be (approximately) flat:
   using SP = SpectrumPlotter<double>;
   SP plt;
   plt.setFftSize(fftSize);
   plt.setNormalizationMode(SP::NormalizationMode::impulse);
-  //plt.setPlotType(SP::PlotType::phaseUnwrapped);
-  //plt.setPlotType(SP::PlotType::groupDelay);
-  //plt.setLogFreqAxis(true);
+  //plt.setPlotType(SP::PlotType::phaseUnwrapped);  // uncomment for phase response
+  //plt.setPlotType(SP::PlotType::groupDelay);      // uncomment for group delay response
+  //plt.setLogFreqAxis(true);                       // uncomment for logarithmic frequency axis
   plt.plotSpectra(numTaps, &h[0]);
 
   // Observations:
@@ -3067,6 +3068,8 @@ void hilbertFilter()
   //  bandpass effect going on. This is all as expected.
   // -Increasing the length confines the bandpass closer to DC and Nyquist, i.e. the passband gets
   //  wider.
+  // -Every other sample in the impulse response is zero. This offers an optimization opportunity
+  //  for production code.
   // -An even length filter of length N seems to be equal to an odd filter of length N-1 just with
   //  a prepended zero sample. So, even lengths don't make sense. They just introduce one sample
   //  delay more and add another multiply-add.
@@ -3076,7 +3079,12 @@ void hilbertFilter()
   // -[done] Check, if the normalization of the SpectrumPlotter is actually correct. Pass it a unit 
   //  impulse of different lengths to see if the DC gain is one. Done - seems OK.
   // -Check the formula for the coeffs.
-
+  // -Make more experiments to figure out what length we need for good audio quality. We want the
+  //  passband go down to 20 Hz or even lower.
+  // -Figure out which kind of window function is best suited for this purpose. I think, we want a 
+  //  fast transition and low passband ripple. I don't really know what the sidelobes will do. 
+  //  -> Figure out. Maybe they reflect back into the passband and mess it up?
+  //
   // See:
   // https://en.wikipedia.org/wiki/Hilbert_transform
 
