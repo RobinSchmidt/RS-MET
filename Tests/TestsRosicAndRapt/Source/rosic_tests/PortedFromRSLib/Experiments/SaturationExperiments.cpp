@@ -648,7 +648,7 @@ void sixticPositive()
 
 void hilbertDistortion()
 {
-  // Implements an idea posted here:
+  // This experiment implements an idea posted here:
   // https://www.kvraudio.com/forum/viewtopic.php?t=608320
   //
   // We apply waveshaping distortion to the magnitude of an analytic signal and are interested in
@@ -692,7 +692,8 @@ void hilbertDistortion()
   using AT = rsArrayTools;
   Vec y(N+numTaps-1);                             // Convolution result length is M+N-1
   AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);  // Convolution with Hilbert impulse response
-  AT::shift(&y[0], N, -numTaps/2);                // Compensate delay
+  AT::shift(&y[0], N+numTaps-1, -numTaps/2);      // Compensate delay
+  y.resize(N);                                    // Shorten y to original length of x
 
   // Obtain magnitude of analytic signal:
   Vec mag(N);
@@ -714,15 +715,16 @@ void hilbertDistortion()
 
 
   // Visualization:
-  //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
-  //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
-  //rsPlotVectors(xD, yD);     // Distorted real and imaginary part
+  rsPlotVectors(x, y);       // Input signal an its Hilbert transform
+  rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
+  rsPlotVectors(xD, yD);     // Distorted real and imaginary part
   rsPlotVectors(x, xD);      // Original and distorted signal
 
 
   // Observations:
   // -For a fundamental of 440 Hz, 127 taps are not enough. The Hilbert transform of a sinewave at 
-  //  440 Hz will be too quiet with 127 taps. 255 seems to be enough.
+  //  440 Hz will be too quiet with 127 taps. 255 seems to be enough. For lower fundamentals, we'll
+  //  probably need more.
   // -For a sinewave of constant amplitude of 1 with drive of 4, the original and distorted 
   //  magnitudes look the same - except for artifacts at the ends and some wiggles. It's the
   //  original magnitude that wiggles - I guess, the distortion smoothes/saturates them out.
@@ -732,9 +734,12 @@ void hilbertDistortion()
   //  of the bandpass characteristic of the Hilbert filter. Or maybe it is because we need a 
   //  half-sample delay somewhere? But I don't think so - my odd length Hilbert filter should not 
   //  need that.
+  // -The choice window function does not seem to have impact on these ripples
   // 
   // ToDo:
   // -Try some highpass Hilbert-filter design and see if this removes the Nyquist ripples.
   //  See wikipedia article and hilbertFilter experiment for more resources.
   // -Try scaling with the reciprocal. For a saw, that should make it look highpassish.
+  // -Try lowpassing instead of waveshaping as "urosh" suggested in the thread.
+  // -Try other (perhaps better) windows for the Hilbert filter
 }
