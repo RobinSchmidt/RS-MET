@@ -3042,7 +3042,7 @@ void hilbertFilter()
 
   int numTaps = 128;                 // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
-  WT  window  = WT::rectangular;
+  WT  window  = WT::blackman;
   int numSamples    = 300;           // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
@@ -3067,7 +3067,7 @@ void hilbertFilter()
   using AT = rsArrayTools;
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 2, freq, sampleRate);  // 0: sine, 1: saw, 2: square, 3: triangle
+  createWaveform(&x[0], N, 1, freq, sampleRate);  // 0: sine, 1: saw, 2: square, 3: triangle
   Vec y(N+numTaps-1);                             // Convolution result length is M+N-1
   AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);  // Convolution with Hilbert impulse response
   AT::shift(&y[0], N+numTaps-1, -numTaps/2);      // Compensate delay

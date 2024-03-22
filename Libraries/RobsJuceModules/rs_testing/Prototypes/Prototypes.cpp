@@ -34,6 +34,10 @@ template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
   //RAPT::rsAssert(rsIsOdd(numTaps), "Currently supports only odd lengths");
+  RAPT::rsWarning("Hilbert filter design routine needs verification");
+  // The results look good but we should verify the results by comparing to some reference
+  // implementation - maybe look inot numpy, scipy, octave or something. Design a filter there and
+  // compare with results obtained from here
 
 
   int c = numTaps/2;                   // Center tap
@@ -43,41 +47,26 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
     for(int k = 1; k <= numTaps/2; k++)
     {
       //T hk = T(1) / T(PI*k);         // Nah! Wrong!
-      T hk = (1 - cos(k*PI))/(k*PI);   // Yeah! Works.
+      T hk = (1 - cos(k*PI))/(k*PI);   // Yeah! Works. ...but should be optimized
       h[c+k] = +hk;
       h[c-k] = -hk;
     }
   }
   else
   {
-    // This needs tests and the clean up:
-
+    // This needs tests and the cleaned up:
     for(int k = 0; k < c; k++)
     {
+      // Looks good but should be verified and then cleaned up:
       double t = double(k) + 0.5;
-
-      //T hk = (1 - cos(t*PI))/(t*PI);
-
       T hk = 1.0/(t*PI);
-
       int kr = c+k;
       int kl = c-k-1;
-
       h[kr] = +hk;
       h[kl] = -hk;
     }
   }
   //rsPlotArrays(numTaps, h);
-
-  /*
-  for(int k = 1; k <= numTaps/2; k++)
-  {
-    //T hk = T(1) / T(PI*k);         // Nah! Wrong!
-    T hk = (1 - cos(k*PI))/(k*PI);   // Yeah! Works.
-    h[c+k] = +hk;
-    h[c-k] = -hk;
-  }
-  */
 
   // Apply window:
   std::vector<T> w(numTaps);
