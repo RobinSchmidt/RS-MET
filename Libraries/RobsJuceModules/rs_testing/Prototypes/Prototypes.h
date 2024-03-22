@@ -55,6 +55,10 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
+
+template<class T>
+void makeHilbertFilter(T* h, int numTaps);
+
 /** Implements the code from here for the golden ratio algorithm:
 https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio   */
 double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b);

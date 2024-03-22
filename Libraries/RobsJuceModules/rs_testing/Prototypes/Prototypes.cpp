@@ -30,6 +30,46 @@
 
 using namespace RAPT;
 
+template<class T>
+void makeHilbertFilter(T* h, int numTaps)
+{
+  RAPT::rsAssert(rsIsOdd(numTaps), "Currently supports only odd lengths");
+  int c = numTaps/2;                   // Center tap
+  for(int k = 1; k <= numTaps/2; k++)
+  {
+    T hk = T(2) / T(PI*k);             // May need a scaler. Maybe pi or 1/pi? Look up!
+    h[c+k] = +hk;
+    h[c-k] = -hk;
+  }
+
+  // Apply window:
+  std::vector<T> w(numTaps);
+  using WF = RAPT::rsWindowFunction;
+  WF::createWindow(&w[0], numTaps, WF::WindowType::blackmanHarris, true);
+  rsPlotVector(w);
+  for(int n = 0; n < numTaps; n++)
+    h[n] *= w[n];
+
+  // ToDo: 
+  // -Verify if the scaling is right
+  // -Apply a window. Maybe this requires a rescaling? Maybe by the reciprocal of the average of 
+  //  the window coeffs, i.e. by the reciprocal of window's DC gain?
+  //  -> OK we can create a window with normalized average, so we don't need to scale afterwards.
+  // -Let the user select the window.
+  // -Allow for even lengths as well. Actually, it seems there are 4 types of Hilbert filter
+  //  FIR designs. Maybe implement all 4 and give the function a parameter for the type to be 
+  //  designed.
+  // -For a production version, avoid the memoray allocation. Compute the window first (and the 
+  //  scaling factor) and then multiply in the 1/k
+  // -When it's finished, move into the library. Maybe it should go into the FIR filter designer.
+  //
+  // See:
+  // https://en.wikipedia.org/wiki/Hilbert_transform#Discrete_Hilbert_transform
+  // https://www.dsprelated.com/freebooks/sasp/Hilbert_Transform_Design_Example.html
+  // https://www.intechopen.com/chapters/39362
+}
+template void makeHilbertFilter(double* h, int numTaps);
+
 
 double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b)
 {
