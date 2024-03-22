@@ -666,8 +666,9 @@ void hilbertDistortion()
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
-  double drive   =  2.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
+  double drive   =  0.5;         // Drive for tanh-waveshaper as raw amplitude multiplier
   double comp    =  1.0;         // Compression amount. 1: normal, 0: none, -1: expand
+  bool   makeUp  = true;         // true: Divide by drive again after computing tanh(drive * mag)
 
   // Processing:
 
@@ -679,7 +680,7 @@ void hilbertDistortion()
   // Generate input signal:
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 1, 441.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
+  createWaveform(&x[0], N, 0, 441.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
 
   // Apply a bell-shaped (Hanning window) amplitude-envelope:
@@ -706,6 +707,10 @@ void hilbertDistortion()
   {
     // Distort magnitude:
     magD[n] = tanh(drive * mag[n]);
+    if(makeUp)
+      magD[n] /= drive;              // This is what A_SN does
+
+    //magD[n] = tanh(drive * mag[n]) / drive;
 
     // Scale x and y according to ratio of original and distorted magnitude:
     double scaler = magD[n] / mag[n];
@@ -717,11 +722,12 @@ void hilbertDistortion()
 
 
   // Visualization:
-  rsPlotVectors(x, y);       // Input signal an its Hilbert transform
+  //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
   //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
   //rsPlotVectors(xD, yD);     // Distorted real and imaginary part
   //rsPlotVectors(x, xD);      // Original and distorted signal
-  //rsPlotVectors(x, xD, scl); // Original, distorted signal and applied scaler
+  //rsPlotVectors(scl);          // The scaling factor, i.e. the applied gain
+  rsPlotVectors(x, xD, scl); // Original, distorted signal and applied scaler
 
 
   // Observations:
@@ -747,7 +753,7 @@ void hilbertDistortion()
   //  convolution sum is taken over a different set of samples.
   // -Maybe it's because the saw has a component at the Nyquist freq which gets filtered out due
   //  to the bandpass nature?
-  // -Results for a sinusoid with bell enevlope:
+  // -Results for a sinusoid with bell enevlope (makeUp = false):
   //  -When comp = 1, the drive parameter gives the maximum amount of amplitude boost, i.e. the 
   //   boost that signals close to zero get. For example, for drive = 4, the gain for a zero signal
   //   will be 4.
@@ -757,7 +763,11 @@ void hilbertDistortion()
   //  -For comp = -1, drive = 4, the quiet signals are attenuated by a factor of 0.25.
   //  -For comp =  1, drive = 1, we get unit gain for (near) zero signals and an attenuation for 
   //   louder signals.
-  // -Results for the sawtooth with bell envelope:
+  // -Results for a sinusoid with bell enevlope (makeUp = true):
+  //  -When makeUp = true, we get regular compression rather than upward compression. The quiet 
+  //   signals are multiplied by 1 and the loud (unit amplitude) signals are multiplied by 1/drive
+  //   when drive > 1. When drive < 1 (like 0.5), not much is happening.
+  // -Results for the sawtooth with bell envelope (makeUp = false):
   //  -The general amplitude expansion or compression curve that we see for sines has a 
   //   superimposed comb shape. It drives the amplitude down around the jumps of the saw. This is 
   //   what creates the smoothing/rounding effect. The amplitude goes down and thereby rounds off 
