@@ -650,20 +650,26 @@ void hilbertDistortion()
 {
   // Implements an idea posted here:
   // https://www.kvraudio.com/forum/viewtopic.php?t=608320
+  //
+  // We apply waveshaping distortion to the magnitude of an analytic signal and are interested in
+  // what that does to the original signal. Given a signal x[n], we first obtain the imaginary part
+  // y[n] of the analytic complex signal z[n] = x[n] + i*y[n] by means of a Hilbert transform 
+  // filter, then compute the magnitude of this complex signal and pass that into a waveshaper.
+  // The output of that waveshaper represents our distorted magnitude. To impose the new magnitude
+  // onto our signal z[n], we have to multiply it by the ratio of the distorted magnitude and the
+  // original magnitude.
 
-
-  using WT = RAPT::rsWindowFunction::WindowType;
+  using WT = RAPT::rsWindowFunction::WindowType;  // Shorthand for convenience
 
   // Setup:
-  int numTaps    = 511;              // Number of taps for Hilbert filter. Should be odd
+  int numTaps    = 511;              // Number of taps for Hilbert filter. Should be odd.
   WT  window     = WT::blackman;     // Window function for Hilbert filter
-  int sampleRate = 44100;
-  //double length  = 0.05;              // Length in seconds
-  double drive   = 4.0;              // Drive for tanh-waveshaper
-  int numSamples = 2000;             // number of samples to render
+  int sampleRate = 44100;            // Sample rate in Hz
+  int numSamples = 2000;             // Number of samples to render
+  double drive   = 4.0;              // Drive for tanh-waveshaper as raw amplitude multiplier
 
 
-
+  // Processing:
 
   // Design the Hilbert filter:
   using Vec = std::vector<double>;
@@ -671,16 +677,12 @@ void hilbertDistortion()
   makeHilbertFilter(&h[0], numTaps, window);
 
   // Generate input signal:
-  //int N = ceil(length * sampleRate);
   int N = numSamples;
-  using Vec = std::vector<double>;
   Vec x(N);
-  //createSineWave(&x[0], N, 440.0, 1.0, sampleRate);
-  //createSawWave(&x[0], N, 440.0, sampleRate);
   createWaveform(&x[0], N, 0, 440.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
 
-  // Apply an amplitude-envelope:
+  // Apply a bell-shaped (Hanning window) amplitude-envelope:
   Vec env(N);
   RAPT::rsWindowFunction::createWindow(&env[0], N, WT::hanningZZ, false);
   for(int n = 0; n < N; n++)
@@ -688,9 +690,9 @@ void hilbertDistortion()
 
   // Obtain Hilbert transform:
   using AT = rsArrayTools;
-  Vec y(N+numTaps-1);
-  AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);
-  AT::shift(&y[0], N, -numTaps/2);                 // compensate delay
+  Vec y(N+numTaps-1);                             // Convolution result length is M+N-1
+  AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);  // Convolution with Hilbert impulse response
+  AT::shift(&y[0], N, -numTaps/2);                // Compensate delay
 
   // Obtain magnitude of analytic signal:
   Vec mag(N);
@@ -710,6 +712,7 @@ void hilbertDistortion()
     yD[n] = scaler * y[n];
   }
 
+
   // Visualization:
   //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
   //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
@@ -723,10 +726,10 @@ void hilbertDistortion()
   // -For a sinewave of constant amplitude of 1 with drive of 4, the original and distorted 
   //  magnitudes look the same - except for artifacts at the ends and some wiggles. It's the
   //  original magnitude that wiggles - I guess, the distortion smoothes/saturates them out.
-  // -For the sawtooth and a drive of 2, i get a result similar as shown in the KVR thread. But 
+  // -For the sawtooth and a drive of 2, I get a result similar as shown in the KVR thread. But 
   //  there is some ripple at the Nyquist freq going on. What is this? Is this due to the non-ideal
   //  Hilbert filter? Increasing the length of the filter doesn't seem to help. Maybe it's because
-  //  of the bandpass characteristic of the Hilbert filter. Try some highpass Hilbert-filter 
+  //  of the bandpass characteristic of the Hilbert filter. ToDo: Try some highpass Hilbert-filter 
   //  design! See wikipedia article and hilbertFilter experiment for more resources.
   // 
   // ToDo:
