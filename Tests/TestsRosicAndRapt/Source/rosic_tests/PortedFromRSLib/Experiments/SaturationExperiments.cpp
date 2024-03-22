@@ -666,7 +666,7 @@ void hilbertDistortion()
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
-  double drive   =  0.5;         // Drive for tanh-waveshaper as raw amplitude multiplier
+  double drive   =  2.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
   double comp    =  1.0;         // Compression amount. 1: normal, 0: none, -1: expand
 
   // Processing:
@@ -679,7 +679,7 @@ void hilbertDistortion()
   // Generate input signal:
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 1, 440.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
+  createWaveform(&x[0], N, 1, 441.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
 
   // Apply a bell-shaped (Hanning window) amplitude-envelope:
@@ -717,11 +717,11 @@ void hilbertDistortion()
 
 
   // Visualization:
-  //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
+  rsPlotVectors(x, y);       // Input signal an its Hilbert transform
   //rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
   //rsPlotVectors(xD, yD);     // Distorted real and imaginary part
   //rsPlotVectors(x, xD);      // Original and distorted signal
-  rsPlotVectors(x, xD, scl); // Original, distorted signal and applied scaler
+  //rsPlotVectors(x, xD, scl); // Original, distorted signal and applied scaler
 
 
   // Observations:
@@ -737,7 +737,16 @@ void hilbertDistortion()
   //  of the bandpass characteristic of the Hilbert filter. Or maybe it is because we need a 
   //  half-sample delay somewhere? But I don't think so - my odd length Hilbert filter should not 
   //  need that.
-  // -The choice window function does not seem to have impact on these ripples
+  // -The choice window function does not seem to have impact on these ripples. 
+  // -I tried to use nicer sawtooth frequency (441) to make the aliasing align with the harmonics
+  //  but that also doesn't help against the ripples.
+  // -The nature of the ripples is: when the saw has no envelope, then the signal y[n] is constant
+  //  over every two samples. Sample y[n+1] == y[n]. At the even samples, y jumps to a new value 
+  //  and at the odd samples, the value is just repeated. Maybe it has to do with the fact that 
+  //  every other sample in h[n] is zero? But that doesn't really explain it because the 
+  //  convolution sum is taken over a different set of samples.
+  // -Maybe it's because the saw has a component at the Nyquist freq which gets filtered out due
+  //  to the bandpass nature?
   // -Results for a sinusoid with bell enevlope:
   //  -When comp = 1, the drive parameter gives the maximum amount of amplitude boost, i.e. the 
   //   boost that signals close to zero get. For example, for drive = 4, the gain for a zero signal
