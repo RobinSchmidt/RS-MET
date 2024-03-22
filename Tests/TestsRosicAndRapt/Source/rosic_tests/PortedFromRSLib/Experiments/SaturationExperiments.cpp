@@ -709,15 +709,20 @@ void hilbertDistortion()
 
     // Scale x and y according to ratio of original and distorted magnitude:
     double scaler = magD[n] / mag[n];
+    //double scaler = mag[n] / magD[n];
+    // ToDo: record the scaler into an array an plot it, too
+    // maybe use scaler = pow(magD[n] / mag[n], p);
+    // for some parameter p. 1 means upward compression, 0 means no change, -1 means expansion
+
     xD[n] = scaler * x[n];
     yD[n] = scaler * y[n];
   }
 
 
   // Visualization:
-  rsPlotVectors(x, y);       // Input signal an its Hilbert transform
+  //rsPlotVectors(x, y);       // Input signal an its Hilbert transform
   rsPlotVectors(mag, magD);  // Magnitude and distorted magnitude
-  rsPlotVectors(xD, yD);     // Distorted real and imaginary part
+  //rsPlotVectors(xD, yD);     // Distorted real and imaginary part
   rsPlotVectors(x, xD);      // Original and distorted signal
 
 
