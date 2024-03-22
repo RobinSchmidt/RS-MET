@@ -190,6 +190,7 @@ int main(int argc, char* argv[])
   //poleZeroPrototype();  // new implementation - but we don't need that
   //seriesConnectionDecay();
   //quantileFilter();
+  hilbertFilter();
   //simdFilter<float, 4>();  // doesn't work
 
   // Physics:
@@ -491,7 +492,7 @@ int main(int argc, char* argv[])
   //phaseShapingCurvesRational();
   //phaseShaping();
   //phaseShapingSkew();
-  zeroDelayFeedbackPhaseMod();
+  //zeroDelayFeedbackPhaseMod();
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests

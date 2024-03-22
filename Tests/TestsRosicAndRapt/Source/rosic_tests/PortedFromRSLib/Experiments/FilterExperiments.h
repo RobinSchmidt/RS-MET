@@ -75,6 +75,7 @@ void fakeResoDifferentDelays();
 void samplerFilters();
 
 void quantileFilter();
+void hilbertFilter();
 
 template<class T, int N> void simdFilter();
 

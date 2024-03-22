@@ -2993,14 +2993,38 @@ void quantileFilterResonant()
   return;
 }
 
-
 void quantileFilter()
 {
   //quantileFilterElongation();  // tests producing the length L+1 output by length L filter
-  //quantileFilterSweep();  // tests non-integer length quatile filter
+  //quantileFilterSweep();       // tests non-integer length quatile filter
   //quantileFilterDelay();
-  //quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
+  //quantileFilterDual();        // tests the dual-quantile filter (with highpass mode, etc.)
   quantileFilterResonant();
+}
+
+void hilbertFilter()
+{
+  int numTaps = 101;  // Should be odd (ToDo: allow even lengths later, too)
+
+  using Vec = std::vector<double>;
+  Vec h(numTaps);
+  int c = numTaps/2;  // center tap;
+  for(int k = 1; k <= numTaps/2; k++)
+  {
+    double hk = 1.0 / k;   // May need a scaler. Maybe pi or 1/pi? Look up!
+    h[c+k] =  hk;
+    h[c-k] = -hk;
+  }
+
+  rsStemPlot(h);
+  //plotVector(h);
+
+
+  int dummy = 0;
+
+  // See:
+  // https://en.wikipedia.org/wiki/Hilbert_transform
+  // https://www.dsprelated.com/freebooks/sasp/Hilbert_Transform_Design_Example.html
 }
 
 template<class T, int M>  // M: simd vector size
