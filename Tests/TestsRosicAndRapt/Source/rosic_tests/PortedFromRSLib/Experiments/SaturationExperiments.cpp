@@ -662,7 +662,7 @@ void hilbertDistortion()
   using WT = RAPT::rsWindowFunction::WindowType;  // Shorthand for convenience
 
   // Setup:
-  int numTaps    = 256;          // Number of taps for Hilbert filter.
+  int numTaps    = 255;          // Number of taps for Hilbert filter.
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
@@ -697,7 +697,8 @@ void hilbertDistortion()
   if(smooth)
   {
     if(rsIsOdd(numTaps))
-      AT::movingAverage3pt(&y[0], N+numTaps-1, &y[0]); // ToDo: use kernel [0.25 0.5 0.25]
+      weightedAverage3pt(&y[0], N+numTaps-1, &y[0], 0.25, 0.5, 0.25);
+      //AT::movingAverage3pt(&y[0], N+numTaps-1, &y[0]); // ToDo: use kernel [0.25 0.5 0.25]
     else
       movingAverage2ptBackward(&y[0], N+numTaps-1, &y[0]);
   }

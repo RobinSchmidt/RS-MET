@@ -98,8 +98,27 @@ void movingAverage2ptBackward(const T* x, int N, T* y)
     y[n] = T(0.5) * (x[n] + x[n-1]);
   y[0] = x[0];
 }
-
 // I think, it can be used in place (verify!)
+
+template<class T>
+void weightedAverage3pt(const T* x, int N, T* y, T wL, T wC, T wR)
+{
+  T xL = x[0];                       // Left input
+  T xC = x[1];                       // Center input
+  y[0] = wL*xL + wC*xC;              // Overwrites x[0] if used in place
+  for(int n = 1; n < N-1; n++)
+  {
+    T xR = x[n+1];
+    y[n] = wL*xL + wC*xC + wR*xR;    // Overwrites x[n] if used in place
+    xL = xC;
+    xC = xR;
+  }
+  y[N-1] = wC*xC + wR*x[N-1];
+}
+// Needs unit test for in place and out of place usage
+// The way we handle the boundaries here is equivalent to assuming zeros in x[n] for n < 0 and 
+// n >= N. Maybe we should optionally leave the values fixed like the unweighted 3-point MA 
+// routine does?
 
 
 /** Returns the index of the element in the array A (of length N) that is the best match to the 
