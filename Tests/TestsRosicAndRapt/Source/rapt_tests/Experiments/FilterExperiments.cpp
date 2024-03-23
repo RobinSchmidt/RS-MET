@@ -3093,6 +3093,7 @@ void hilbertFilter()
   //  the implementation is probably correct. but still, it needs more thorough verification.
   //
   // ToDo:
+  // -Try edge cases numTaps = 0,1,2,3
   // -Plot the phase delay. It should be constant at 90°, I think.
   // -[done] Check, if the normalization of the SpectrumPlotter is actually correct. Pass it a unit 
   //  impulse of different lengths to see if the DC gain is one. Done - seems OK.

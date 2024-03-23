@@ -39,21 +39,21 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   // implementation - maybe look inot numpy, scipy, octave or something. Design a filter there and
   // compare with results obtained from here
 
+  // Create the window:
+  RAPT::rsWindowFunction::createWindow(h, numTaps, type, false);
 
-  int c = numTaps/2;                   // Center tap
+  // Multiply in the Hilbert-filter weights:
+  int c = numTaps/2;    // Center tap
   if(rsIsOdd(numTaps))
   {
-
-    for(int k = 1; k < numTaps; k+=2)
+    for(int k = 1; k < numTaps; k += 2)
       h[k] = T(0);
-    for(int k = 1; k <= c; k+=2)
+    for(int k = 1; k <= c; k += 2)
     {
       T hk = T(2) / T(k*PI);
-      h[c+k] = +hk;
-      h[c-k] = -hk;
+      h[c+k] *= +hk;
+      h[c-k] *= -hk;
     }
-
-    //int dummy = 0;
   }
   else
   {
@@ -61,12 +61,13 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
     {
       T t  = T(k) + T(0.5); 
       T hk = T(1) / (t*PI);
-      h[c+k]   = +hk;
-      h[c-k-1] = -hk;
+      h[c+k]   *= +hk;
+      h[c-k-1] *= -hk;
     }
   }
   //rsPlotArrays(numTaps, h);
 
+  /*
   // Apply window:
   std::vector<T> w(numTaps);
   using WF = RAPT::rsWindowFunction;
@@ -74,6 +75,7 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   //rsPlotVector(w);
   for(int n = 0; n < numTaps; n++)
     h[n] *= w[n];
+    */
 
   // Notes:
   // -The formula is taken from:
