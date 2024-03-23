@@ -33,76 +33,42 @@ using namespace RAPT;
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
-  //RAPT::rsAssert(rsIsOdd(numTaps), "Currently supports only odd lengths");
-  RAPT::rsWarning("Hilbert filter design routine needs verification");
-  // The results look good but we should verify the results by comparing to some reference
-  // implementation - maybe look inot numpy, scipy, octave or something. Design a filter there and
-  // compare with results obtained from here
-
   // Create the window:
   RAPT::rsWindowFunction::createWindow(h, numTaps, type, false);
 
   // Multiply in the Hilbert-filter weights:
-  int c = numTaps/2;    // Center tap
+  int m = numTaps/2;    // Middle tap
   if(rsIsOdd(numTaps))
   {
     for(int k = 1; k < numTaps; k += 2)
       h[k] = T(0);
-    for(int k = 1; k <= c; k += 2)
+    for(int k = 1; k <= m; k += 2)
     {
       T hk = T(2) / T(k*PI);
-      h[c+k] *= +hk;
-      h[c-k] *= -hk;
+      h[m+k] *= +hk;
+      h[m-k] *= -hk;
     }
   }
   else
   {
-    for(int k = 0; k < c; k++)
+    for(int k = 0; k < m; k++)
     {
       T t  = T(k) + T(0.5); 
       T hk = T(1) / (t*PI);
-      h[c+k]   *= +hk;
-      h[c-k-1] *= -hk;
+      h[m+k]   *= +hk;
+      h[m-k-1] *= -hk;
     }
   }
-  //rsPlotArrays(numTaps, h);
 
-  /*
-  // Apply window:
-  std::vector<T> w(numTaps);
-  using WF = RAPT::rsWindowFunction;
-  WF::createWindow(&w[0], numTaps, type, false);
-  //rsPlotVector(w);
-  for(int n = 0; n < numTaps; n++)
-    h[n] *= w[n];
-    */
-
-  // Notes:
-  // -The formula is taken from:
-  //  https://www.kvraudio.com/forum/viewtopic.php?t=608320
-  //  I first tried to use simply 1 / (PI*k) but that didn't work. The formula above lets every 
-  //  other sample be zero. But I wonder why we need that. In the plot:
-  //  https://en.wikipedia.org/wiki/File:Highpass_discrete_Hilbert_transform_filter.tif
-  //  from the wikipedia article:
-  //  https://en.wikipedia.org/wiki/Hilbert_transform#Discrete_Hilbert_transform
-  //  there don't seem to be zero samples. However, this "every other sample is zero" business can
-  //  be done more easily without the cosine for an optimization. I guess the cosine is needed when
-  //  we need some passband scaling - like with windowed sincs? Figure out! I need to learn more
-  //  about Hilbert filter design. But for the time being, it works and I'm happy with that.
-  //
-  // ToDo:
-  // -Allow for even lengths as well. Actually, it seems there are 4 types of Hilbert filter
-  //  FIR designs. Maybe implement all 4 and give the function a parameter for the type to be 
-  //  designed. Maybe it would already work for even lengths? Try it! ...hmm..it actually looks OK.
-  // -For a production version, avoid the memory allocation. Compute the window first (and the 
-  //  scaling factor) and then multiply in the 1/k
-  // -When it's finished, move into the library. Maybe it should go into the FIR filter designer.
-  //
   // See:
   // https://www.kvraudio.com/forum/viewtopic.php?t=608320
   // https://en.wikipedia.org/wiki/Hilbert_transform#Discrete_Hilbert_transform
   // https://www.dsprelated.com/freebooks/sasp/Hilbert_Transform_Design_Example.html
   // https://www.intechopen.com/chapters/39362
+  //
+  // ToDo:
+  // -Compare the results of this routine with those of some reference implementations from octave 
+  //  or numpy/scipy
 }
 template void makeHilbertFilter(double* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
 
