@@ -78,7 +78,28 @@ From pg 125 here: https://www.cs.otago.ac.nz/graphics/Geoff/tartini/papers/Phili
 @param len The size of x and y  */
 template<class T>
 void complexMovingAverage(const T* x, T* y, int N, int L);
+// "...the complex moving-average (CMA) filter, which describes a fast method to perform a Hann
+// weighted convolution..." (from page 119 in "Fast, Accurate Pitch Detection Tools for Music 
+// Analysis" by Philip McLeod - the pdf linked above (It's a PhD dissertation))
 
+
+template<class T>
+void movingAverage2ptForward(const T* x, int N, T* y)
+{
+  for(int n = 0; n < N-1; n++)
+    y[n] = T(0.5) * (x[n] + x[n+1]);
+  y[N-1] = x[N-1];
+}
+
+template<class T>
+void movingAverage2ptBackward(const T* x, int N, T* y)
+{
+  for(int n = N-1; n > 0; n--)
+    y[n] = T(0.5) * (x[n] + x[n-1]);
+  y[0] = x[0];
+}
+
+// I think, it can be used in place (verify!)
 
 
 /** Returns the index of the element in the array A (of length N) that is the best match to the 

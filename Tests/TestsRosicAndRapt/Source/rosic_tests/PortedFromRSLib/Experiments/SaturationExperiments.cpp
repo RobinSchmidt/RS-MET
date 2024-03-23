@@ -662,7 +662,7 @@ void hilbertDistortion()
   using WT = RAPT::rsWindowFunction::WindowType;  // Shorthand for convenience
 
   // Setup:
-  int numTaps    = 511;          // Number of taps for Hilbert filter. Should be odd.
+  int numTaps    = 256;          // Number of taps for Hilbert filter.
   WT  window     = WT::blackman; // Window function for Hilbert filter
   int sampleRate = 44100;        // Sample rate in Hz
   int numSamples = 2000;         // Number of samples to render
@@ -681,7 +681,7 @@ void hilbertDistortion()
   // Generate input signal:
   int N = numSamples;
   Vec x(N);
-  createWaveform(&x[0], N, 2, 441.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
+  createWaveform(&x[0], N, 1, 441.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
   //createModalPluck(&x[0], N, 69.0, sampleRate);  // key = 69 = A4 = 440 Hz
 
   // Apply a bell-shaped (Hanning window) amplitude-envelope:
@@ -694,6 +694,10 @@ void hilbertDistortion()
   using AT = rsArrayTools;
   Vec y(N+numTaps-1);                             // Convolution result length is M+N-1
   AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);  // Convolution with Hilbert impulse response
+
+  //AT::movingAverage3pt(&y[0], N+numTaps-1, &y[0]); // Test
+  movingAverage2ptBackward(&y[0], N+numTaps-1, &y[0]); // Test - suitable for even Hilber length
+
   AT::shift(&y[0], N+numTaps-1, -numTaps/2);      // Compensate delay
   y.resize(N);                                    // Shorten y to original length of x
 
@@ -722,6 +726,7 @@ void hilbertDistortion()
 
   // Visualization:
   rsPlotVectors(x, y);         // Input signal and its Hilbert transform
+  rsPlotVectors(x, mag);       // Input and instantaneous envelope
   //rsPlotVectors(mag, magD);    // Magnitude and distorted magnitude
   //rsPlotVectors(xD, yD);       // Distorted real and imaginary part
   //rsPlotVectors(x, xD);        // Original and distorted signal
@@ -784,6 +789,7 @@ void hilbertDistortion()
   //  we get an expansion effect.
   // 
   // ToDo:
+  // -Try using an odd length filter and an MA filter with weights [0.25 0.5 0.25]
   // -Compare the effects on signals with different overall amplitudes. Use a signal with 
   //  amplitude 1, 2 and 0.5, apply the effect and plot the outputs with gain compensation, i.e.
   //  make the loud output quieter etc. Does an overall gain make a difference? I think so. Then
@@ -820,5 +826,8 @@ void hilbertDistortion()
   //  solutions - so we are free to negate the result. Here, I have fudged the graph to make it 
   //  look more like the result we actually get:
   //  https://www.desmos.com/calculator/9rp8yrpjod
-  //  ...what's going here? Where is my mistake? Why do I need this fudging?
+  //  ...what's going here? Where is my mistake? Why do I need this fudging? Maybe it's wrong to 
+  //  assume that the instantaneous envelope of the saw is just 1? The instantaneous envelope is 
+  //  *defined* to be the magnitude of the analytic signal but I guess that doesn't necessarily 
+  //  mean that it is the same thing that we intuitively view as envelope visually.
 }

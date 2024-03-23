@@ -3040,10 +3040,10 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 128;                 // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 128;                 // Odd lengths give bandpass, even highpass approximations
   int fftSize = 4096;                // FFT size for plotting frequency response
   WT  window  = WT::blackman;
-  int numSamples    = 300;           // Number of samples for test waveform
+  int numSamples    = 800;           // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
 
@@ -3091,8 +3091,12 @@ void hilbertFilter()
   // -For even lengths, the sawtooth need a delay of half a sample to make its zero-crossings align
   //  with the peaks of the Hilbert trafo. That's exactly like the literature says it should be, so
   //  the implementation is probably correct. but still, it needs more thorough verification.
+  // -The Hilbert trafo of a saw wave looks spikey - with spikes at the zero-crossings of the saw.
+  // -With shorter lengths, the spikes get thinner.
+  // -It seems like the length should be at least 2 cycles for optimal results.
   //
   // ToDo:
+  // -Figure out if using filters longer than 2 cycles improve results further
   // -Try edge cases numTaps = 0,1,2,3
   // -Plot the phase delay. It should be constant at 90°, I think.
   // -[done] Check, if the normalization of the SpectrumPlotter is actually correct. Pass it a unit 
