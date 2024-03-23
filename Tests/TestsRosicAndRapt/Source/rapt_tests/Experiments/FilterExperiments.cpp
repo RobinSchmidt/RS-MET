@@ -3040,7 +3040,7 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 127;                 // Should be odd (ToDo: allow even lengths later, too)
+  int numTaps = 128;                 // Should be odd (ToDo: allow even lengths later, too)
   int fftSize = 4096;                // FFT size for plotting frequency response
   WT  window  = WT::blackman;
   int numSamples    = 300;           // Number of samples for test waveform
@@ -3050,6 +3050,7 @@ void hilbertFilter()
   // Design the filter and plot its impulse response:
   using Vec = std::vector<double>;
   Vec h(numTaps);
+  rsArrayTools::fillWithNaN(&h[0], numTaps);  // To make sure, the next routine fills the array correctly
   makeHilbertFilter(&h[0], numTaps, window);
   rsStemPlot(h);
 

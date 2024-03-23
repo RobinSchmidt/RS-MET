@@ -801,8 +801,12 @@ void hilbertDistortion()
   //  interpolation, we essentially apply a 2-sample MA filter after the Hilbert filter which will 
   //  also supress the Nyquist freq. This MA filter will actually attenuate high frequencies quite
   //  a lot - so it's like an additional smoother. This may not be such a bad thing in the context 
-  //  of envelope detection, though - so try it.
-  // -
+  //  of envelope detection, though - so try it. Maybe also try to realize the half-integer shift 
+  //  with cubic interpolation (Lagrange, Hermite, etc. - maybe also try "Elephant" interpolation).
+  // -When we use some sort of smoothing anyway then maybe we can also use a 3-point MA on the 
+  //  result of odd length Hilbert filter to get rid of the stairsteps. Maybe a kernel of
+  //  [0.25 0.5 0.25] could be suitable. Making it causal would add another sample of delay to 
+  //  which needs to be compensated for.
   //
   // Notes:
   // -The instantaneous envelope of a signal is defined as env[n] = sqrt(x^2[n] + y^2[n]) which we 
