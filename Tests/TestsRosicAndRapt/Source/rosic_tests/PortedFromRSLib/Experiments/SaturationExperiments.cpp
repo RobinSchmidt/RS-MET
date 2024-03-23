@@ -669,7 +669,7 @@ void hilbertDistortion()
   double drive   =  4.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
   double comp    =  1.0;         // Compression amount. 1: normal, 0: none, -1: expand
   bool   makeUp  = false;        // true: Divide by drive again after computing tanh(drive * mag)
-
+  bool   smooth  = true;         // Apply smoothing to Hilbert filter output
 
   // Processing:
 
@@ -694,10 +694,13 @@ void hilbertDistortion()
   using AT = rsArrayTools;
   Vec y(N+numTaps-1);                             // Convolution result length is M+N-1
   AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);  // Convolution with Hilbert impulse response
-
-  //AT::movingAverage3pt(&y[0], N+numTaps-1, &y[0]); // Test
-  movingAverage2ptBackward(&y[0], N+numTaps-1, &y[0]); // Test - suitable for even Hilber length
-
+  if(smooth)
+  {
+    if(rsIsOdd(numTaps))
+      AT::movingAverage3pt(&y[0], N+numTaps-1, &y[0]); // ToDo: use kernel [0.25 0.5 0.25]
+    else
+      movingAverage2ptBackward(&y[0], N+numTaps-1, &y[0]);
+  }
   AT::shift(&y[0], N+numTaps-1, -numTaps/2);      // Compensate delay
   y.resize(N);                                    // Shorten y to original length of x
 
