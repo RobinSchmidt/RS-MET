@@ -796,4 +796,25 @@ void hilbertDistortion()
   // -Try other (perhaps better) windows for the Hilbert filter
   // -For production code, we need to take care of possible division by zero in the computation of
   //  the scaler. We divide by mag[n]. That would be zero for zero signals.
+  // -Use a Hilbert filter with an even number of taps. That gets rid of the staistep artifacts. 
+  //  But it will require a shift of y[n] by a half-integer amount. If we do this shift with linear
+  //  interpolation, we essentially apply a 2-sample MA filter after the Hilbert filter which will 
+  //  also supress the Nyquist freq. This MA filter will actually attenuate high frequencies quite
+  //  a lot - so it's like an additional smoother. This may not be such a bad thing in the context 
+  //  of envelope detection, though - so try it.
+  // -
+  //
+  // Notes:
+  // -The instantaneous envelope of a signal is defined as env[n] = sqrt(x^2[n] + y^2[n]) which we 
+  //  can easily solve for y[n] = sqrt(env^2[n] - x^2[n]). Here is a desmos plot for when x is a 
+  //  sawtooth and the envelope is constantly 1 (I use f,g there in place of x,y because desmos
+  //  already uses x for the independent variable):
+  //  https://www.desmos.com/calculator/fun0mfarbo
+  //  The resulting kind of looks like what we get for the Hilbert trafo - but not quite - it's 
+  //  upside down and has a DC. I'm still doing something wrong, I guess. -> Figure out.
+  //  Well - the upside-down could be explained by considering that the sqrt has actually two 
+  //  solutions - so we are free to negate the result. Here, I have fudged the graph to make it 
+  //  look more like the result we actually get:
+  //  https://www.desmos.com/calculator/9rp8yrpjod
+  //  ...what's going here? Where is my mistake? Why do I need this fudging?
 }
