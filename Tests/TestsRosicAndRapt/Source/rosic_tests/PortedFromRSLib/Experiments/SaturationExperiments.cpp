@@ -782,6 +782,11 @@ void hilbertDistortion()
   //   is not much rounding going on. Quiet saws are expanded, loud saws are smoothed.
   //  -For drive = 0.5, comp = 1.0, there is an overall attenuation of 0.5 and an additional (comb)
   //   smoothing for the louder section.
+  // -The best results are obtained by using even Hilbert filter lengths with smoothing. And odd 
+  //  length filter produces these ugly stairstep artifacts and is wasteful anyway because half of
+  //  its coeffs are zero (although that could certainly be optimized in production code). The 
+  //  smoothing in case of even length has actually the purpose to introduce the required 
+  //  half-sample delay. 
   //
   // Conclusions:
   // -Values for drive < 1 seem to be not so interesting for sine inputs. We just get an overall 
