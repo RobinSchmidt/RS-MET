@@ -43,7 +43,10 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   int c = numTaps/2;                   // Center tap
   if(rsIsOdd(numTaps))
   {
-    rsArrayTools::fillWithZeros(h, numTaps);
+    rsArrayTools::fillWithZeros(h, numTaps); 
+    // Would actually be enough to do this with a stride of 2
+
+
     for(int k = 1; k <= numTaps/2; k+=2)
     {
       T hk = T(2) / T(k*PI);
@@ -51,7 +54,9 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
       h[c-k] = -hk;
     }
 
-    /*
+
+    // Old:
+    /* 
     for(int k = 1; k <= numTaps/2; k++)
     {
       //T hk = T(1) / T(PI*k);           // Nah! Wrong!
@@ -71,15 +76,11 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   }
   else
   {
-    // This needs tests and the cleaned up:
     for(int k = 0; k < c; k++)
     {
-      // Looks good but should be verified and then cleaned up:
-      double t = double(k) + 0.5;  // use T
-      T hk = 1.0/(t*PI);
-      //int kr = c+k;
-      //int kl = c-k-1;
-      h[c+k] = +hk;
+      T t  = T(k) + T(0.5); 
+      T hk = T(1) / (t*PI);
+      h[c+k]   = +hk;
       h[c-k-1] = -hk;
     }
   }
