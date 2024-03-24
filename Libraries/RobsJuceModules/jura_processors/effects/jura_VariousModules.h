@@ -172,29 +172,28 @@ protected:
 };
 
 //-----------------------------------------------------------------------------------------------
-// EnvyDriver:
+// EnvyDriver - not yet used anywhere:
 
-/*
 class EnvyDriverAudioModule : public ModulatableAudioModule
 {
 public:
-  EnvyDriverAudioModule(CriticalSection *newPlugInLock, rosic::SlewRateLimiterStereo *newSlewRateLimiterToWrap);
+  EnvyDriverAudioModule(CriticalSection *newPlugInLock, rosic::rsEnvyDriverStereo *newEnvyDriver);
 protected:
   virtual void createStaticParameters();
-  rosic::SlewRateLimiterStereo *wrappedSlewRateLimiter;
+  rosic::rsEnvyDriverStereo *wrappedEnvyDriver;
   juce_UseDebuggingNewOperator;
 };
 
-class SlewRateLimiterModuleEditor : public AudioModuleEditor
+class EnvyDriverModuleEditor : public AudioModuleEditor
 {
 public:
-  SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock, SlewRateLimiterAudioModule* newSlewRateLimiterAudioModule);
+  EnvyDriverModuleEditor(CriticalSection *newPlugInLock, EnvyDriverAudioModule* newModule);
   virtual void resized();
 protected:
-  rsModulatableSlider *attackSlider, *releaseSlider;
+  rsModulatableSlider *driveSlider, *compressSlider;
+  RSlider *hilbertLengthSlider;
   juce_UseDebuggingNewOperator;
 };
-*/
 
 //-----------------------------------------------------------------------------------------------
 // WaveShaper:

@@ -7,7 +7,8 @@ additional functionality to make it more convenient to use the classes. These co
 are for tasks like converting between two doubles and rsFloat64x2 in case of SIMD-type
 instantiations and/or providing suitable callback target functions in the case where the underlying
 RAPT class doesn't conform to the interface required by our callback system in jura etc. This code
-is all really ugly administrative clutter - don't look at it, if you want to avoid eye cancer! */
+is all really ugly administrative boilerplate clutter - don't look at it, if you want to avoid 
+eye cancer! */
 
 namespace rosic
 {
@@ -229,7 +230,6 @@ public:
 // Preliminary implementation not using SSE:
 class rsEnvyDriverStereo
 {
-
 public:
 
   void setHilbertFilterLength(int newLength)
@@ -237,7 +237,16 @@ public:
     hilbDistL.setHilbertFilterLength(newLength);
     hilbDistR.setHilbertFilterLength(newLength);
   }
-
+  void setDrive(double newDrive) 
+  { 
+    hilbDistL.setDrive(newDrive);
+    hilbDistR.setDrive(newDrive);
+  }
+  void setCompression(double newCompression)
+  { 
+    hilbDistL.setCompression(newCompression);
+    hilbDistR.setCompression(newCompression);
+  }
   inline void getSampleFrameStereo(double* left, double* right)
   {
     *left  = hilbDistL.getSample(*left);
