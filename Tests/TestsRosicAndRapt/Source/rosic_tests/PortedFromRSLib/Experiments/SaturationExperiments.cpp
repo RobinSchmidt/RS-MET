@@ -646,7 +646,7 @@ void sixticPositive()
   plt.plot();
 }
 
-void hilbertDistortion()
+void hilbertDistortion1()
 {
   // This experiment implements an idea posted here:
   // https://www.kvraudio.com/forum/viewtopic.php?t=608320
@@ -850,4 +850,41 @@ void hilbertDistortion()
   //  assume that the instantaneous envelope of the saw is just 1? The instantaneous envelope is 
   //  *defined* to be the magnitude of the analytic signal but I guess that doesn't necessarily 
   //  mean that it is the same thing that we intuitively view as envelope visually.
+}
+
+void hilbertDistortion2()
+{
+  // Like hilbertDistortion1 but here we use the class that wraps the whole algorithm into a 
+  // realtime processing friendly form.
+
+  // Setup:
+  int numTaps    = 255;      // Number of taps for Hilbert filter.
+  int sampleRate = 44100;    // Sample rate in Hz
+  int numSamples = 2000;     // Number of samples to render
+  double drive   =  4.0;     // Drive for tanh-waveshaper as raw amplitude multiplier
+  double comp    =  1.0;     // Compression amount. 1: normal, 0: none, -1: expand
+
+  // Create and set up the Hilbert distortion object:
+  rsHilbertDistortion<double, double> dist;
+  dist.setHilbertFilterLength(numTaps);
+  dist.setDrive(drive);
+  dist.setCompression(comp);
+
+  // Generate input signal:
+  using Vec = std::vector<double>;
+  int N = numSamples;
+  Vec x(N);
+  createWaveform(&x[0], N, 1, 441.0, double(sampleRate)); // 0: sine, 1: saw, 2: square, 3: triang
+
+  // Produce and plot output:
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = dist.getSample(x[n]);
+  rsPlotVectors(x, y); 
+}
+
+void hilbertDistortion()
+{
+  //hilbertDistortion1();
+  hilbertDistortion2();
 }

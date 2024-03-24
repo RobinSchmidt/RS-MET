@@ -1001,7 +1001,7 @@ bool hilbertFilterUnitTest()
 
   using WT = RAPT::rsWindowFunction::WindowType; 
 
-  int numTaps    = 101;               // Number of taps for Hilbert filter.
+  int numTaps    = 100;               // Number of taps for Hilbert filter.
   WT  window     = WT::rectangular;
   int numSamples = 2000;
 
@@ -1046,7 +1046,7 @@ bool hilbertFilterUnitTest()
   for(int n = 0; n < N; n++)
     complexifier.processSampleFrame(&re[n], &im[n]); // triggers assert - we need to pre-allocate
   rsPlotVectors(re, im);
-  // Looks correct! include programmatic test
+  // Looks correct! ToDo: Include programmatic test
 
     
 

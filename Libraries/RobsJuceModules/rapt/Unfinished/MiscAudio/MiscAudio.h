@@ -177,6 +177,74 @@ respectively. For the deBias parameter, @see rsMaxCorrelationLag() */
 template<class T>
 T rsGetShiftForBestMatch(T *x1, T *x2, int N, bool deBias = false);
 
+//=================================================================================================
+
+/** Under construction 
+
+Implements a strange distortion unit that uses the Hilbert transform of the input. The effect is 
+actually more like a compression or expansion depending on the settings. ...TBC... */
+
+template<class TSig, class TPar>
+class rsHilbertDistortion
+{
+
+public:
+
+
+  rsHilbertDistortion() 
+  {
+    complexifier.setMaxLength(maxLength);
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void setHilbertFilterLength(int newLength) 
+  { complexifier.setLength(rsMin(newLength, maxLength)); }
+
+  void setDrive(TPar newDrive) { drive = newDrive; }
+
+  void setCompression(TPar newCompression) { comp = newCompression; }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Computes one output sample at a time.  */
+  inline TSig getSample(TSig in)
+  {
+    TSig x = in;
+    TSig y;
+    complexifier.processSampleFrame(&x, &y);
+    TSig mag = sqrt(x*x + y*y);
+
+    // Distort magnitude:
+    TSig magD = tanh(drive * mag);
+    //if(makeUp)
+    //  magD[/= drive;         // This is what A_SN does. Maybe make makeUp parameter continuous
+
+    // Scale delayed x according to ratio of original and distorted magnitude:
+    TSig scaler = TSig(1);
+    if(mag != 0)            // Take care of division by zero - maybe use some finite threshold
+      scaler = magD / mag;
+    scaler = rsPow(scaler, comp);
+    return scaler * x;
+  }
+
+
+protected:
+
+  static const int maxLength = 1024;  // Maybe make thsi also user adjustable
+
+  rsComplexifier<TSig, TPar> complexifier;
+
+  TPar drive = 1.0;
+  TPar comp  = 1.0;
+
+};
+
 
 
 
