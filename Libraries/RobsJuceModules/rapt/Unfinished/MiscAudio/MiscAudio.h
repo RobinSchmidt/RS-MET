@@ -218,10 +218,10 @@ public:
     TSig x = in;
     TSig y;
     complexifier.processSampleFrame(&x, &y);
-    TSig mag = sqrt(x*x + y*y);
+    TSig mag = rsSqrt(x*x + y*y);
 
     // Distort magnitude:
-    TSig magD = tanh(drive * mag);
+    TSig magD = rsTanh(drive * mag);
     //if(makeUp)
     //  magD[/= drive;         // This is what A_SN does. Maybe make makeUp parameter continuous
 
@@ -244,6 +244,7 @@ protected:
   TPar comp  = 1.0;
 
 };
+// Maybe rename to AnalyticDistortion or EnvelopeDriver EnvDriver/EnvyDriver
 
 
 

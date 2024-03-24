@@ -226,6 +226,48 @@ public:
 };
 
 
+// Preliminary implementation not using SSE:
+class rsEnvyDriverStereo
+{
+
+public:
+
+  void setHilbertFilterLength(int newLength)
+  {
+    hilbDistL.setHilbertFilterLength(newLength);
+    hilbDistR.setHilbertFilterLength(newLength);
+  }
+
+  inline void getSampleFrameStereo(double* left, double* right)
+  {
+    *left  = hilbDistL.getSample(*left);
+    *right = hilbDistR.getSample(*right);
+  }
+
+protected:
+
+  RAPT::rsHilbertDistortion<double, double> hilbDistL, hilbDistR;
+};
+
+
+/*
+// This is how we want to do it someday - at the moment, it doesn't compile:
+class rsEnvyDriverStereo : public RAPT::rsHilbertDistortion<rsFloat64x2, double>
+{
+public:
+  inline void getSampleFrameStereo(double* left, double* right)
+  {
+    rsFloat64x2 tmp(*left, *right);
+    tmp = getSample(tmp);
+    *left  = tmp[0];
+    *right = tmp[1];
+  }
+};
+*/
+
+
+
+
 
 
 

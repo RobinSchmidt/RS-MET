@@ -155,10 +155,10 @@ class SlewRateLimiterAudioModule : public ModulatableAudioModule
 {
 public:
   SlewRateLimiterAudioModule(CriticalSection *newPlugInLock, rosic::SlewRateLimiterStereo *newSlewRateLimiterToWrap);
-  juce_UseDebuggingNewOperator;
 protected:
   virtual void createStaticParameters();
   rosic::SlewRateLimiterStereo *wrappedSlewRateLimiter;
+  juce_UseDebuggingNewOperator;
 };
 
 class SlewRateLimiterModuleEditor : public AudioModuleEditor
@@ -166,10 +166,35 @@ class SlewRateLimiterModuleEditor : public AudioModuleEditor
 public:
   SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock, SlewRateLimiterAudioModule* newSlewRateLimiterAudioModule);
   virtual void resized();
-  juce_UseDebuggingNewOperator;
 protected:
   rsModulatableSlider *attackSlider, *releaseSlider;
+  juce_UseDebuggingNewOperator;
 };
+
+//-----------------------------------------------------------------------------------------------
+// EnvyDriver:
+
+/*
+class EnvyDriverAudioModule : public ModulatableAudioModule
+{
+public:
+  EnvyDriverAudioModule(CriticalSection *newPlugInLock, rosic::SlewRateLimiterStereo *newSlewRateLimiterToWrap);
+protected:
+  virtual void createStaticParameters();
+  rosic::SlewRateLimiterStereo *wrappedSlewRateLimiter;
+  juce_UseDebuggingNewOperator;
+};
+
+class SlewRateLimiterModuleEditor : public AudioModuleEditor
+{
+public:
+  SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock, SlewRateLimiterAudioModule* newSlewRateLimiterAudioModule);
+  virtual void resized();
+protected:
+  rsModulatableSlider *attackSlider, *releaseSlider;
+  juce_UseDebuggingNewOperator;
+};
+*/
 
 //-----------------------------------------------------------------------------------------------
 // WaveShaper:
@@ -214,10 +239,10 @@ class CompShaperAudioModule : public ModulatableAudioModule
 {
 public:
   CompShaperAudioModule(CriticalSection *newPlugInLock, rosic::CompShaper *newCompShaperToWrap);
-  juce_UseDebuggingNewOperator;
 protected:
   virtual void createStaticParameters();
   rosic::CompShaper *wrappedCompShaper;
+  juce_UseDebuggingNewOperator;
 };
 
 class CompShaperModuleEditor : public AudioModuleEditor
@@ -225,14 +250,18 @@ class CompShaperModuleEditor : public AudioModuleEditor
 public:
   CompShaperModuleEditor(CriticalSection *newPlugInLock, CompShaperAudioModule* newCompShaperAudioModule);
   virtual void resized();
-  juce_UseDebuggingNewOperator;
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
   rsModulatableSlider *driveSlider, *outLevelSlider, *amountSlider, *thresholdSlider, *ratioSlider, 
     *kneeSlider;
   RButton    *clipButton;
+  juce_UseDebuggingNewOperator;
 };
+
+
+
+
 
 //===============================================================================================
 // Dynamics:
