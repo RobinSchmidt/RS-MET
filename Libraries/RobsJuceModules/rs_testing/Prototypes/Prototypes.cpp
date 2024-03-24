@@ -30,6 +30,7 @@
 
 using namespace RAPT;
 
+/*
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
@@ -71,7 +72,7 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   //  or numpy/scipy
 }
 template void makeHilbertFilter(double* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
-
+*/
 
 double goldenRatioMethodMax(double(*p_pFunction)(double), double a, double b)
 {

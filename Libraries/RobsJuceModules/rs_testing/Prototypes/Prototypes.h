@@ -56,8 +56,8 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 */
 
 
-template<class T>
-void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
+//template<class T>
+//void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
 // Obsolete - the code has now been copied into the library into:
 // rsHilbertFilter<TSig, TPar>::computeCoeffs
 

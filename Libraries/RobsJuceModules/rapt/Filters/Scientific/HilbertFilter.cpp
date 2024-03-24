@@ -1,5 +1,5 @@
 
-
+/*
 template<class TSig, class TPar>
 void rsHilbertFilter<TSig, TPar>::computeCoeffs(TPar* h, int numTaps, 
   RAPT::rsWindowFunction::WindowType type)
@@ -41,3 +41,4 @@ void rsHilbertFilter<TSig, TPar>::computeCoeffs(TPar* h, int numTaps,
   // -Compare the results of this routine with those of some reference implementations from octave 
   //  or numpy/scipy
 }
+*/
