@@ -93,7 +93,10 @@ void rsConvolverNaive<TSig, TPar>::reset()
 
 //=================================================================================================
 
-// ToDo: Move this as static member into a class rsFiniteImpulseResponseDesigner
+/** A free function that designs an FIR Hilbert filter using the windowing method. The impulse 
+response will be written into the array "h" which must be "numTaps" long. You also need to specify 
+which window function shall be used by specify the "type" parameter as one of the types defined in 
+the rsWindowFunction::WindowType enum class. */
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
@@ -133,6 +136,7 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   // ToDo:
   // -Compare the results of this routine with those of some reference implementations from octave 
   //  or numpy/scipy
+  // -Move this as static member into a class rsFiniteImpulseResponseDesigner
 }
 
 

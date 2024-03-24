@@ -615,6 +615,10 @@ void SpectrumPlotter<T>::setupPlotterAndPlot()
 {
   if(logFreqAxis)
     setLogScale("x"); // uses decadic ticks -> use octaves instead
+
+  setToDarkMode();
+
+
   plot();
 }
 

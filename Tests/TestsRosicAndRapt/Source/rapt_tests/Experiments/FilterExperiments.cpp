@@ -3040,7 +3040,7 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 103;                 // Odd lengths give bandpass, even highpass approximations
+  int numTaps = 101;                 // Odd lengths give bandpass, even highpass approximations
   int fftSize = 4096;                // FFT size for plotting frequency response
   WT  window  = WT::blackman;
   int numSamples    = 800;           // Number of samples for test waveform
@@ -3059,7 +3059,7 @@ void hilbertFilter()
   SP plt;
   plt.setFftSize(fftSize);
   plt.setNormalizationMode(SP::NormalizationMode::impulse);
-  //plt.setPlotType(SP::PlotType::phaseUnwrapped);  // uncomment for phase response
+  plt.setPlotType(SP::PlotType::phaseUnwrapped);  // uncomment for phase response
   //plt.setPlotType(SP::PlotType::groupDelay);      // uncomment for group delay response
   //plt.setLogFreqAxis(true);                       // uncomment for logarithmic frequency axis
   plt.plotSpectra(numTaps, &h[0]);
@@ -3077,8 +3077,6 @@ void hilbertFilter()
 
 
   // Observations:
-  // -With length = 101, 17,21, we get garbage
-  //  11, 15, 19 is fine, 13,17,21 is not
   // -The magnitude response looks approximately flat, the phase response linear, the group delay
   //  constant. The deviations from this ideal are at and around DC and Nyquist. There is some 
   //  bandpass effect going on. This is all as expected.
@@ -3086,6 +3084,11 @@ void hilbertFilter()
   //  wider.
   // -Every other sample in the impulse response is zero. This offers an optimization opportunity
   //  for production code.
+  // -For odd values of numTaps, the Hilbert trafo of the sawtooth wave has stairstep like 
+  //  artifacts. Figure out, if this is normal. The magnitude responses look fine. The phase 
+  //  responses look like linear phase plus offset of around 90°. At the Nyquist freq, there is 
+  //  some additional thing going on, though. For even lengths, this doesn't happen. So yeah - 
+  //  maybe it's the phase response at the Nyquist freq.
   // -An even length filter of length N seems to be equal to an odd filter of length N-1 just with
   //  a prepended zero sample. So, even lengths don't make sense. They just introduce one sample
   //  delay more and add another multiply-add. Oh - no - it's not exactly the same as the odd N-1

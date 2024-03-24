@@ -154,6 +154,8 @@ protected:
   void addGraphLines(int graphIndex, bool yAxis2 = false);
 
   std::vector<std::string> getGraphColors(int numGraphs) const;
+  // ToDo: Move out of this class! It has nothing to specifically with filters and we want to use 
+  // it elsewhere, too.
 
   T freqScale = 1.0;
   T dBFloor   = T(-120);
