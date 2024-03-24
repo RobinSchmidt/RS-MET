@@ -207,7 +207,10 @@ public:
   void setDrive(TPar newDrive) { drive = newDrive; }
 
   void setCompression(TPar newCompression) { comp = newCompression; }
+  // maybe rename to setAmount
 
+
+  void setMakeUp(TPar newMakeUp) { makeUp = newMakeUp; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -223,6 +226,10 @@ public:
 
     // Distort magnitude:
     TSig magD = rsTanh(drive * mag);
+
+    // Apply continuously adjustable make-up gain:
+    magD /= rsPow(drive, makeUp);
+
     //if(makeUp)
     //  magD[/= drive;         // This is what A_SN does. Maybe make makeUp parameter continuous
 
@@ -243,8 +250,9 @@ protected:
 
   rsComplexifier<TSig, TPar> complexifier;
 
-  TPar drive = 1.0;
-  TPar comp  = 1.0;
+  TPar drive  = 1.0;
+  TPar comp   = 1.0;
+  TPar makeUp = 0.0;
 
 };
 // Maybe rename to AnalyticDistortion or EnvelopeDriver EnvDriver/EnvyDriver

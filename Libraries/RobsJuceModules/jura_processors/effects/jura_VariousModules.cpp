@@ -5356,6 +5356,18 @@ void EnvyDriverModule::createParameters()
   p = new Param("Drive", -10.0, +40.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<ED>(&core, &ED::setDriveInDb);
+
+  p = new Param("Amount", -2.0, +2.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<ED>(&core, &ED::setCompression);
+
+  p = new Param("MakeUp", 0.0, 1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<ED>(&core, &ED::setMakeUp);
+
+
+  // ToDo: HilbertLength
+
 }
 
 void EnvyDriverModule::processStereoFrame(double* left, double* right)

@@ -243,11 +243,17 @@ public:
     hilbDistL.setDrive(driveAmp);
     hilbDistR.setDrive(driveAmp);
   }
-  void setCompression(double newCompression)
+  void setCompression(double newCompression)    // rename to setAmount
   {
     hilbDistL.setCompression(newCompression);
     hilbDistR.setCompression(newCompression);
   }
+  void setMakeUp(double newMakeUp)
+  {
+    hilbDistL.setMakeUp(newMakeUp);
+    hilbDistR.setMakeUp(newMakeUp);
+  }
+
   inline void getSampleFrameStereo(double* left, double* right)
   {
     *left  = hilbDistL.getSample(*left);
