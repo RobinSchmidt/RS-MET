@@ -24,9 +24,44 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Sets up the impulse response to be used. */
+
+  /** Sets up the length of the impulse response. Note that after calling setLength, the content of
+  impulse response is undefined. The intention for this function is to be called in a sequence 
+  like:
+
+    c.setLength(newLength);
+    computeCoeffs(c.getCoeffPointer(), c.getLength());
+
+  where "c" is some convolver object and computeCoeffs is some filter design routine. c.getLength()
+  should return "newLength". The idea is that we want client code to be able to set up the impulse 
+  response without having to have an additional buffer for it. It can invoke the design routing 
+  directly on our buffer here. */
+  void setLength(int newLength);
+  // This may allocate if the newLength is greater than our current capacity
+  // Maybe have a boolean parameter "init"
+  // Document the intention better
+
+
+  /** Sets up the impulse response to be used. This can be used by client code, if it already has 
+  the impulse response in some buffer. */
   void setImpulseResponse(TPar* newImpulseResponse, int newLength);
   // This may allocate if the newLength is greater than our current capacity
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  int getLength() const { return length; }
+
+  TPar* getCoeffPointer() { return &h[0]; }
+  // Idea: If client code wants to invoke a filter design routine directly on our member array here
+  // instead of first computing the impulse response in its own buffer and then calling 
+  // setImpulseResponse, it can do so by doing:
+  //
+  //   computeCoeffs(c.getCoeffPointer(), c.getLength())
+  //
+  // when "c" is the convolver object
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -40,19 +75,28 @@ public:
 
 protected:
 
+
   std::vector<TPar> h;    // Impulse response
   std::vector<TSig> buf;  // Circular buffer for input samples
   int length = 0;         // Number of filter taps
   int tapIn  = 0;         // Keeps track of position in circular buffer
 
+  //template<class U, class V> friend class rsHilbertFilter;
+
 };
 
 template<class TSig, class TPar>
-void rsConvolverNaive<TSig, TPar>::setImpulseResponse(TPar* hNew, int newLength)
+void rsConvolverNaive<TSig, TPar>::setLength(int newLength)
 {
   length = newLength;
   h.resize(length);
   buf.resize(length);
+}
+
+template<class TSig, class TPar>
+void rsConvolverNaive<TSig, TPar>::setImpulseResponse(TPar* hNew, int newLength)
+{
+  setLength(newLength);
   rsCopyToVector(hNew, length, h);
 }
 
@@ -140,6 +184,8 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
 }
 
 
+//=================================================================================================
+
 /** Under construction. Not yet usable */
 
 template<class TSig, class TPar>
@@ -160,6 +206,20 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  void setLength(int newLength) { convolver.setLength(newLength); setDirty(); }
+
+  void setWindow(rsWindowFunction::WindowType newWindow)
+  { window = newWindow; setDirty(); }
+
+
+  //void setMaxLength(int newMaxLength);
+  // should be called before going into realtime operation to allocate enough memory fo the 
+  // buffers
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  bool isDirty() const { return dirty; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -171,7 +231,12 @@ public:
   /** \name Processing */
 
   /** Computes one output sample for a given input sample at a time. */
-  inline TSig getSample(TSig in) { return convolver.getSample(in); }
+  inline TSig getSample(TSig in) 
+  { 
+    if(isDirty())
+      updateCoeffs();
+    return convolver.getSample(in); 
+  }
 
   /** Resets the filter state. */
   void reset() { convolver.reset(); }
@@ -180,11 +245,39 @@ public:
 
 protected:
 
+  void updateCoeffs();
+
+  void setDirty() { dirty = true; }
+
   // ToDo: embedd an object of class rsConvolverNaive rather than subclassing:
   rsConvolverNaive<TSig, TPar> convolver;
   // ..this will need a bit of delegation but it's cleaner API-wise.
 
+  bool dirty = true;
+  // Maybe use std::atomic<bool>
+
+
+  rsWindowFunction::WindowType window = rsWindowFunction::WindowType::blackman;
+  // I'm not yet sure, if Blackman is a good default. We'll see...
+
 };
+
+template<class TSig, class TPar>
+void rsHilbertFilter<TSig, TPar>::updateCoeffs()
+{
+  makeHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), window);
+  dirty = false;
+}
+
+
+/*
+template<class TSig, class TPar>
+void rsHilbertFilter<TSig, TPar>::setLength(int newLength)
+{
+  convolver.setLength();
+}
+*/
+
 
 
 #endif
