@@ -1009,7 +1009,7 @@ bool hilbertFilterUnitTest()
   int M = numTaps;
   using Vec = std::vector<double>;
   Vec h(M);
-  makeHilbertFilter(&h[0], numTaps, window);
+  makeHilbertFilter(&h[0], numTaps, window);  // use M
   //rsPlotVectors(h); 
 
   // Create input signal:
@@ -1026,24 +1026,32 @@ bool hilbertFilterUnitTest()
 
   // Obtain Hilbert transform by rsHilbertFilter:
   Vec z(Ny);
-
-  //RAPT::rsConvolverNaive<double, double> hlbFlt;
-  //hlbFlt.setImpulseResponse(&h[0], M);
-
-  // Later, we want ot call it like:
   RAPT::rsHilbertFilter<double, double> hlbFlt;
   hlbFlt.setLength(M);
   hlbFlt.setWindow(window);
-
-
   for(int n = 0; n < N; n++)
     z[n] = hlbFlt.getSample(x[n]);
   for(int n = N; n < Ny; n++)
     z[n] = hlbFlt.getSample(0);
   Vec err = z-y;
   ok &= rsIsAllZeros(err);
-  rsPlotVectors(x, y, z, err);
+  //rsPlotVectors(x, y, z, err);
 
+  // Obtain complex analytic signal with proper compesation delay for the real part:
+  rsComplexifier<double, double> complexifier;
+  complexifier.setLength(M);
+  Vec re(N), im(N);
+  re = x;
+  //for(int n = 0; n < N; n++)
+  //  complexifier.processSampleFrame(&re[n], &im[n]); // triggers assert - we need to pre-allocate
+  rsPlotVectors(re, im);
+
+    
+
+
+
+  // ToDo:
+  // -Check the behavior with regard to delay compensation
 
 
   return ok;

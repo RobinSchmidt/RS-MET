@@ -183,13 +183,12 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   // -Move this as static member into a class rsFiniteImpulseResponseDesigner
 }
 
-
 //=================================================================================================
 
-/** Under construction. Not yet usable */
+/** Under construction. */
 
 template<class TSig, class TPar>
-class rsHilbertFilter //: public rsConvolverNaive<TSig, TPar>
+class rsHilbertFilter
 {
 
 public:
@@ -222,6 +221,10 @@ public:
   bool isDirty() const { return dirty; }
 
 
+  //TPar getDelay() const {  }
+  // This can be a half-integer
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Design */
 
@@ -249,16 +252,14 @@ protected:
 
   void setDirty() { dirty = true; }
 
-  // ToDo: embedd an object of class rsConvolverNaive rather than subclassing:
-  rsConvolverNaive<TSig, TPar> convolver;
-  // ..this will need a bit of delegation but it's cleaner API-wise.
 
-  bool dirty = true;
-  // Maybe use std::atomic<bool>
+  rsConvolverNaive<TSig, TPar> convolver;
 
 
   rsWindowFunction::WindowType window = rsWindowFunction::WindowType::blackman;
   // I'm not yet sure, if Blackman is a good default. We'll see...
+
+  bool dirty = true;  // Maybe use std::atomic<bool>
 
 };
 
@@ -269,14 +270,55 @@ void rsHilbertFilter<TSig, TPar>::updateCoeffs()
   dirty = false;
 }
 
+//=================================================================================================
 
-/*
+/** Under construction
+
+Combines an FIR Hilbert filter with a suitable compensation delay for the direct signal to produce
+a complex signal with synchronized, delayed real and imaginary parts.
+
+. ...TBC...  */
+
 template<class TSig, class TPar>
-void rsHilbertFilter<TSig, TPar>::setLength(int newLength)
+class rsComplexifier
 {
-  convolver.setLength();
-}
-*/
+
+public:
+
+  void setLength(int newLength) 
+  { 
+    hilbert.setLength(newLength); 
+    delay.setLength(newLength/2); 
+  }
+  // Needs unit tests for even and odd lengths.
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Computes one output sample frame at a time. The first parameter is an in/out parameter for 
+  the real part which will be delayed on output. The second parameter is an out parameter for the
+  imaginary part. */
+  inline void processSampleFrame(TSig* inOutRe, TSig* outIm)
+  {
+    *outIm   = hilbert.getSample(*inOutRe);  // Imaginary part
+    *inOutRe = delay.getSample(*inOutRe);    // Real part (delayed)
+  }
+
+protected:
+
+  rsHilbertFilter<TSig, TPar> hilbert;
+  rsDelayBuffer<TSig>         delay;
+
+};
+
+
+
+// ToDo:
+// -Implement a convenience class that combines a Hilbert filter with a suitable compensation
+//  delay to produce the delayed complex analytic signal. Maybe call is rsComplexifier or 
+//  rsQuadratureFilter (but that clashes with the IIR-variant)
+
+
 
 
 
