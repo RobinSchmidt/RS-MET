@@ -3040,10 +3040,10 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 101;                 // Odd lengths give bandpass, even highpass approximations
+  int numTaps = 256;                 // Odd lengths give bandpass, even highpass approximations
   int fftSize = 4096;                // FFT size for plotting frequency response
   WT  window  = WT::blackman;
-  int numSamples    = 800;           // Number of samples for test waveform
+  int numSamples    = 300;           // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
 
@@ -3059,7 +3059,7 @@ void hilbertFilter()
   SP plt;
   plt.setFftSize(fftSize);
   plt.setNormalizationMode(SP::NormalizationMode::impulse);
-  plt.setPlotType(SP::PlotType::phaseUnwrapped);  // uncomment for phase response
+  //plt.setPlotType(SP::PlotType::phaseUnwrapped);  // uncomment for phase response
   //plt.setPlotType(SP::PlotType::groupDelay);      // uncomment for group delay response
   //plt.setLogFreqAxis(true);                       // uncomment for logarithmic frequency axis
   plt.plotSpectra(numTaps, &h[0]);
@@ -3088,7 +3088,9 @@ void hilbertFilter()
   //  artifacts. Figure out, if this is normal. The magnitude responses look fine. The phase 
   //  responses look like linear phase plus offset of around 90°. At the Nyquist freq, there is 
   //  some additional thing going on, though. For even lengths, this doesn't happen. So yeah - 
-  //  maybe it's the phase response at the Nyquist freq.
+  //  maybe it's the phase response at the Nyquist freq. I think, the phase response at Nyquist is
+  //  forced to be a multiple of 180° - and for odd filters that multiple does not happen to lie on
+  //  that line of the linear phase response. For even filters, it does.
   // -An even length filter of length N seems to be equal to an odd filter of length N-1 just with
   //  a prepended zero sample. So, even lengths don't make sense. They just introduce one sample
   //  delay more and add another multiply-add. Oh - no - it's not exactly the same as the odd N-1

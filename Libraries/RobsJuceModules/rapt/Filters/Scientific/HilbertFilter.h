@@ -95,8 +95,8 @@ void rsConvolverNaive<TSig, TPar>::reset()
 
 /** A free function that designs an FIR Hilbert filter using the windowing method. The impulse 
 response will be written into the array "h" which must be "numTaps" long. You also need to specify 
-which window function shall be used by specify the "type" parameter as one of the types defined in 
-the rsWindowFunction::WindowType enum class. */
+which window function shall be used via the "type" parameter as one of the types defined in the 
+rsWindowFunction::WindowType enum class. */
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
