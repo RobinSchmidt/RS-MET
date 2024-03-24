@@ -1043,9 +1043,10 @@ bool hilbertFilterUnitTest()
   complexifier.setLength(M);
   Vec re(N), im(N);
   re = x;
-  //for(int n = 0; n < N; n++)
-  //  complexifier.processSampleFrame(&re[n], &im[n]); // triggers assert - we need to pre-allocate
+  for(int n = 0; n < N; n++)
+    complexifier.processSampleFrame(&re[n], &im[n]); // triggers assert - we need to pre-allocate
   rsPlotVectors(re, im);
+  // Looks correct! include programmatic test
 
     
 
