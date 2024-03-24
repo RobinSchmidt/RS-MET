@@ -1142,10 +1142,7 @@ public:
 
   virtual void processStereoFrame(double* left, double* right) override;
 
-  virtual void reset() override 
-  { 
-    //core.reset(); 
-  }
+  virtual void reset() override { core.reset(); }
 
 protected:
 

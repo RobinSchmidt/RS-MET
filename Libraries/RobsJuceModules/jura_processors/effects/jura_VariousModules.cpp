@@ -5362,5 +5362,5 @@ void EnvyDriverModule::createParameters()
 
 void EnvyDriverModule::processStereoFrame(double* left, double* right)
 {
-  //core.getSampleFrameStereo(left, right);
+  core.getSampleFrameStereo(left, right);
 }
