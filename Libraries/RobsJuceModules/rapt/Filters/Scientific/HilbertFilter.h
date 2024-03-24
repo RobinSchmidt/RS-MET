@@ -18,7 +18,15 @@ public:
   /** \name Lifetime */
 
   /** Constructor. */
-  rsConvolverNaive();
+  //rsConvolverNaive();
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets up the impulse response to be used. */
+  void setImpulseResponse(TPar* newImpulseResponse, int newLength);
+  // This may allocate if the newLength is greater than our current capacity
 
 
   //-----------------------------------------------------------------------------------------------
@@ -26,16 +34,25 @@ public:
 
   inline TSig getSample(TSig x);
 
+  void reset();
 
 protected:
 
   std::vector<TPar> h;    // Impulse response
   std::vector<TSig> buf;  // Circular buffer for input samples
-  rsUint32 length = 0;    // Number of filter taps (nominal, i.e. zero-valued taps also count)
-  rsUint32 tapIn  = 0;    // Keeps track of position in circular buffer
-
+  int length = 0;         // Number of filter taps (nominal, i.e. zero-valued taps also count)
+  int tapIn  = 0;         // Keeps track of position in circular buffer
 
 };
+
+template<class TSig, class TPar>
+void rsConvolverNaive<TSig, TPar>::setImpulseResponse(TPar* hNew, int newLength)
+{
+  length = newLength;
+  h.resize(length);
+  buf.resize(length);
+  rsCopyToVector(hNew, length, h);
+}
 
 template<class TSig, class TPar>
 TSig rsConvolverNaive<TSig, TPar>::getSample(TSig x)
@@ -44,10 +61,10 @@ TSig rsConvolverNaive<TSig, TPar>::getSample(TSig x)
   buf[tapIn] = x;
 
   // Compute output:
-  TSig sum = T(0);
-  for(rsUint32 i = 0; i <= tapIn; i++)
+  TSig sum = TSig(0);
+  for(int i = 0; i <= tapIn; i++)
     sum += h[i] * buf[tapIn-i];
-  for(rsUint32 i = tapIn+1; i < length; i++)
+  for(int i = tapIn+1; i < length; i++)
     sum += h[i] * buf[tapIn-i+length];
   
   // Update write index:
@@ -60,6 +77,13 @@ TSig rsConvolverNaive<TSig, TPar>::getSample(TSig x)
 }
 // Needs test
 // Optimize this: use s buffer length that is a power of 2 wrap around via masking...maybe
+
+template<class TSig, class TPar>
+void rsConvolverNaive<TSig, TPar>::reset()
+{
+  rsFill(buf, T(0));
+  tapIn = 0;
+}
 
 
 // see rosic::ConvolverBruteForce, FiniteImpulseResponseDesigner::getHilbertTransformerResponse
@@ -79,7 +103,7 @@ public:
   /** \name Lifetime */
 
   /** Constructor. */
-  rsHilbertFilter();
+  //rsHilbertFilter() {}
 
 
 protected:

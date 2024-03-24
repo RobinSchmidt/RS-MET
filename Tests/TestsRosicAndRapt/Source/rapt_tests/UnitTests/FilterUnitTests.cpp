@@ -1010,21 +1010,33 @@ bool hilbertFilterUnitTest()
   using Vec = std::vector<double>;
   Vec h(M);
   makeHilbertFilter(&h[0], numTaps, window);
-  rsPlotVectors(h); 
-  // Looks wrong!
+  //rsPlotVectors(h); 
 
   // Create input signal:
   int N = numSamples;
   Vec x(N);
   createWaveform(&x[0], N, 1, 441.0, 44100.0);
 
-  // Obtain Hilbert transform:
+  // Obtain Hilbert transform by direct convolution of x and h:
   using AT = rsArrayTools;
-  Vec y(N+M-1);                             // Convolution result length is M+N-1
+  int Ny = N+M-1;                // Length of convolution result y
+  Vec y(Ny);                             
   rsArrayTools::convolve(&x[0], N, &h[0], numTaps, &y[0]); 
+  //rsPlotVectors(x, y);
+
+  // Obtain Hilbert transform by rsHilbertFilter:
+  Vec z(Ny);
+  RAPT::rsHilbertFilter<double, double> hlbFlt;
+  hlbFlt.setImpulseResponse(&h[0], M);
+  for(int n = 0; n < N; n++)
+    z[n] = hlbFlt.getSample(x[n]);
+  for(int n = N; n < Ny; n++)
+    z[n] = hlbFlt.getSample(0);
+  Vec err = z-y;
+  ok &= rsIsAllZeros(err);
+  //rsPlotVectors(x, y, z, err);
 
 
-  rsPlotVectors(x, y); 
 
   return ok;
 }
