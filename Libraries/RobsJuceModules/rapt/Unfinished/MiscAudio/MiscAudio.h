@@ -240,6 +240,8 @@ public:
     scaler = pow(scaler, comp);
     return scaler * x;
   }
+  // I think, makeUp works as intended only for comp == 1
+
   // ToDo: use rsPow - but currently, that converts the 2nd parameter to int. So we need an
   // implementation with two parameters of the template type.
 

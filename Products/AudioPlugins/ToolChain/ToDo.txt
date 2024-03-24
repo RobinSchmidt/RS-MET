@@ -143,6 +143,8 @@ we build up our suite of unit tests along the way.
     Maybe like in Surge: have an optional keyboard at the bottom and next to it some midi settings
     like tempo
 
+Scope: Sometimes the graphics vanishes in sync mode
+
 ---------------------------------------------------------------------------------------------------
 Features
 
