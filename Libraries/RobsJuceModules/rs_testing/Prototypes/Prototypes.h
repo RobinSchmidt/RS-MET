@@ -58,6 +58,8 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
+// Obsolete - the code has now been copied into the library into:
+// rsHilbertFilter<TSig, TPar>::computeCoeffs
 
 /** Implements the code from here for the golden ratio algorithm:
 https://stackoverflow.com/questions/21144309/method-of-the-golden-ratio   */
