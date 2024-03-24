@@ -5349,15 +5349,13 @@ void EnvyDriverModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  /*
   using ED    = rosic::rsEnvyDriverStereo;
-  using Param = Parameter Param;
+  using Param = Parameter;
   Param* p;
 
   p = new Param("Drive", -10.0, +40.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<ED>(&core, &ED::setDriveInDb);
-  */
 }
 
 void EnvyDriverModule::processStereoFrame(double* left, double* right)
