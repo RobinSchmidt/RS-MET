@@ -83,7 +83,7 @@ TSig rsConvolverNaive<TSig, TPar>::getSample(TSig x)
 template<class TSig, class TPar>
 void rsConvolverNaive<TSig, TPar>::reset()
 {
-  rsFill(buf, T(0));
+  rsFill(buf, TSig(0));
   tapIn = 0;
 }
 
@@ -143,7 +143,7 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
 /** Under construction. Not yet usable */
 
 template<class TSig, class TPar>
-class rsHilbertFilter : public rsConvolverNaive<TSig, TPar>
+class rsHilbertFilter //: public rsConvolverNaive<TSig, TPar>
 {
 
 public:
@@ -165,16 +165,23 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Design */
 
-  void computeCoeffs(TPar* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
+  //void computeCoeffs(TPar* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
+  /** Computes one output sample for a given input sample at a time. */
+  inline TSig getSample(TSig in) { return convolver.getSample(in); }
+
+  /** Resets the filter state. */
+  void reset() { convolver.reset(); }
 
 
 
 protected:
 
   // ToDo: embedd an object of class rsConvolverNaive rather than subclassing:
-  //rsConvolverNaive<TSig, TPar> convolver;
+  rsConvolverNaive<TSig, TPar> convolver;
   // ..this will need a bit of delegation but it's cleaner API-wise.
 
 };
