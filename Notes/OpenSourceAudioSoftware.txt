@@ -13,9 +13,12 @@ https://github.com/LMMS/lmms
 -Another DAW similar to FL
 
 Surge:
+https://surge-synthesizer.github.io/
 https://github.com/surge-synthesizer/surge
 -A hybrid synthesizer (mostly VA but with some more exotic oscillator types). Very poppular with 
  active community.
+-https://surge-synth-team.org/ is a portal website with links to other projects of the Surge Synth
+ Team
 
 Element:
 https://github.com/kushview/element
@@ -99,6 +102,14 @@ Helm:
 https://github.com/mtytel/helm
 -Subtractive synthesizer 
 
+Odin:
+https://github.com/TheWaveWarden/odin2
+-Subtractive Synthesizer
+
+Dexed:
+https://asb2m10.github.io/dexed/
+-FM-Synthesizer, Yamaha DX-7 emulation
+
 Airwindows Plugins:
 https://www.airwindows.com/
 https://github.com/airwindows
@@ -123,11 +134,16 @@ https://github.com/sinshu/freeverb
 https://www.dsprelated.com/freebooks/pasp/Freeverb.html
 -Schroeder/Moorer allpass based reverb (public domain)
 
+https://github.com/robbert-vdh/nih-plug/
+-API-agnostic audio plugin framework written in Rust, as well as a small collection of plugins.
+
 ZL-Audio Plugins:
 https://github.com/ZL-Audio
 https://github.com/ZL-Audio/ZLEqualizer
 -Some plugins made with JUCE. The EQ appears to have a nice visual and modern GUI and uses the
  Vicanek design formulas. It's dynamic as well.
+
+
 
 ----------------------------------------------------------------------------------------------------
 Libraries and SDKs
@@ -154,7 +170,25 @@ https://github.com/nothings/stb/
 CLAP-SDK and related stuff:
 https://github.com/free-audio
 -Liberally licensed audio plugin format.
+-Tutorial: https://www.kvraudio.com/forum/viewtopic.php?t=589258
 
+Avendish:
+https://github.com/celtera/avendish/
+-Solution to the quadratic glue MxN problem: With M plugin formats and N plugins we need to write 
+ and maintain(!) an amount of O(M*N) boilerplate glue code. Avendish claims to solve this 
+ maintenance nightmare.
+
+SA-Toolkit:
+https://github.com/skei/SA_Toolkit
+-Plugin framework by Tor Helge Skei
+
+Dust-Toolkit:
+https://github.com/signaldust/dust-toolkit
+-Application and GUI toolkit by mystran, includes font rendering 
+
+Anti Grain Geometry
+https://github.com/ghaerr/agg-2.6
+-Rasterization based 2D graphics rendering library.
 
 ----------------------------------------------------------------------------------------------------
 Other resources for open source audio software:

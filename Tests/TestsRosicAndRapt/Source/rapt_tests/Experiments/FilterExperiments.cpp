@@ -3040,9 +3040,9 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 13;                 // Odd lengths give bandpass, even highpass approximations
+  int numTaps = 103;                 // Odd lengths give bandpass, even highpass approximations
   int fftSize = 4096;                // FFT size for plotting frequency response
-  WT  window  = WT::rectangular;
+  WT  window  = WT::blackman;
   int numSamples    = 800;           // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
