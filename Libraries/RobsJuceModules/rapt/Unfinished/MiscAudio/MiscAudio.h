@@ -194,6 +194,7 @@ public:
   rsHilbertDistortion() 
   {
     complexifier.setMaxLength(maxLength);
+    complexifier.setLength(511);
   }
 
 

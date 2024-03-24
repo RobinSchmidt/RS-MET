@@ -751,7 +751,9 @@ void ToolChain::populateModuleFactory()
   //f.registerModuleType([](CS cs)->AM { return new PingPongEchoAudioModule(cs); }, s, "PingPongEcho");
   //f.registerModuleType([](CS cs)->AM { return new PitchShifterAudioModule(cs); }, s, "PitchShifter");
   //f.registerModuleType([](CS cs)->AM { return new DspWorkbenchAudioModule(cs); }, s, "DspWorkbench");
-  f.registerModuleType([](CS cs)->AM { return new MultiBandEffect(cs); }, s, "MultiBandEffect");
+  f.registerModuleType([](CS cs)->AM { return new MultiBandEffect(cs);  }, s, "MultiBandEffect");
+  f.registerModuleType([](CS cs)->AM { return new EnvyDriverModule(cs); }, s, "EnvyDriver");
+
 
   // Instruments:
   f.registerModuleType([](CS cs)->AM { return new ModalSynthAudioModule(cs);   }, s, "ModalSynth");

@@ -5341,7 +5341,7 @@ EnvyDriverModule::EnvyDriverModule(CriticalSection* lock, MetaParameterManager* 
   : jura::ModulatableAudioModule(lock, metaMan, modMan)
 {
   ScopedLock scopedLock(*lock);
-  setModuleTypeName("EvyDriver");
+  setModuleTypeName("EnvyDriver");
   createParameters();
 }
 
