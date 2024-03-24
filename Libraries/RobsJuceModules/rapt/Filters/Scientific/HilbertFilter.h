@@ -6,7 +6,7 @@
 //=================================================================================================
 
 
-/** Under construction. Not yet usable */
+/** Under construction.... */
 
 template<class TSig, class TPar>
 class rsConvolverNaive
@@ -32,15 +32,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  inline TSig getSample(TSig x);
+  /** Computes one output sample for a given input sample at a time. */
+  inline TSig getSample(TSig in);
 
+  /** Resets the filter state. */
   void reset();
 
 protected:
 
   std::vector<TPar> h;    // Impulse response
   std::vector<TSig> buf;  // Circular buffer for input samples
-  int length = 0;         // Number of filter taps (nominal, i.e. zero-valued taps also count)
+  int length = 0;         // Number of filter taps
   int tapIn  = 0;         // Keeps track of position in circular buffer
 
 };
@@ -76,7 +78,7 @@ TSig rsConvolverNaive<TSig, TPar>::getSample(TSig x)
   return sum;
 }
 // Needs test
-// Optimize this: use s buffer length that is a power of 2 wrap around via masking...maybe
+// Optimize this: use a buffer length that is a power of 2 wrap around via masking...maybe
 
 template<class TSig, class TPar>
 void rsConvolverNaive<TSig, TPar>::reset()
@@ -99,6 +101,8 @@ class rsHilbertFilter : public rsConvolverNaive<TSig, TPar>
 
 public:
 
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
@@ -106,9 +110,25 @@ public:
   //rsHilbertFilter() {}
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Design */
+
+  void computeCoeffs(TPar* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
+
+
+
+
+
 protected:
 
-
+  // ToDo: embedd an object of class rsConvolverNaive rather than subclassing:
+  //rsConvolverNaive<TSig, TPar> convolver;
+  // ..this will need a bit of delegation but it's cleaner API-wise.
 
 };
 
