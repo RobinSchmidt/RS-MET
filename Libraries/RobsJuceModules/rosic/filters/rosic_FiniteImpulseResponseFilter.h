@@ -4,8 +4,13 @@
 namespace rosic
 {
 
-/** This class implements a filter with finite impulse response.It uses a partitioned fast 
-convolution algorithm to perform the filtering. */
+/** This class implements a filter with finite impulse response. It uses a partitioned fast 
+convolution algorithm to perform the filtering. 
+
+ToDo: Maybe rename this filter to WindowedSincFilter. Factor out a class that does the actual 
+filttering but doesn't conatin all the filter design stuff.
+
+*/
 
 class FiniteImpulseResponseFilter
 {

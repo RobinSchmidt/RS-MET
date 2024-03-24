@@ -95,6 +95,8 @@ namespace rosic
 
     return tmp;
   }
+  // ToDo: implement this using a circular buffer - get rid of the memmove - that's wasteful. But 
+  // measure performance! Maybe keep both implementations
 
 } 
 

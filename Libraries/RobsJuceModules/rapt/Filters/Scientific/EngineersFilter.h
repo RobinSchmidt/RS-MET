@@ -12,7 +12,7 @@ class rsEngineersFilter : public rsBiquadCascade<TSig, TPar>
 public:
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Construction/Destruction */
+  /** \name Lifetime */
 
   /** Constructor. */
   rsEngineersFilter();

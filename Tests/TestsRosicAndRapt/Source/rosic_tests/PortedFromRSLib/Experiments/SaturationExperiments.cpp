@@ -669,7 +669,7 @@ void hilbertDistortion()
   double drive   =  4.0;         // Drive for tanh-waveshaper as raw amplitude multiplier
   double comp    =  1.0;         // Compression amount. 1: normal, 0: none, -1: expand
   bool   makeUp  = false;        // true: Divide by drive again after computing tanh(drive * mag)
-  bool   smooth  = true;         // Apply smoothing to Hilbert filter output
+  bool   smooth  = false;        // Apply smoothing to Hilbert filter output
 
   // Processing:
 
@@ -698,7 +698,6 @@ void hilbertDistortion()
   {
     if(rsIsOdd(numTaps))
       weightedAverage3pt(&y[0], N+numTaps-1, &y[0], 0.25, 0.5, 0.25);
-      //AT::movingAverage3pt(&y[0], N+numTaps-1, &y[0]); // ToDo: use kernel [0.25 0.5 0.25]
     else
       movingAverage2ptBackward(&y[0], N+numTaps-1, &y[0]);
   }
@@ -783,11 +782,17 @@ void hilbertDistortion()
   //   is not much rounding going on. Quiet saws are expanded, loud saws are smoothed.
   //  -For drive = 0.5, comp = 1.0, there is an overall attenuation of 0.5 and an additional (comb)
   //   smoothing for the louder section.
-  // -The best results are obtained by using even Hilbert filter lengths with smoothing. And odd 
-  //  length filter produces these ugly stairstep artifacts and is wasteful anyway because half of
-  //  its coeffs are zero (although that could certainly be optimized in production code). The 
+  // -The best results are obtained by using even Hilbert filter lengths with smoothing. The 
   //  smoothing in case of even length has actually the purpose to introduce the required 
-  //  half-sample delay. 
+  //  half-sample delay. We don't really need it to smooth out any ripple artifacts because the
+  //  even lengths do not produce such artifacts. But if we leave the smoothing out, the alignment
+  //  is off by half a sample.
+  // -In case of odd filter lengths, we get ugly stairstep artifacts without smoothing. For 
+  //  production code, an odd length may be preferable because half of its coeffs are zero which 
+  //  allows for a nice optimization. However - even length might potentially give better quality
+  //  because of its highpass (rather than bandpass) characteristic. The kernel used for smoothing
+  //  is [0.25, 0.5, 0.25]. This produces a zero at the Nyquist freq. This zero goes on top of the
+  //  one that the Hilbert filter itself already has.
   //
   // Conclusions:
   // -Values for drive < 1 seem to be not so interesting for sine inputs. We just get an overall 
@@ -811,17 +816,23 @@ void hilbertDistortion()
   // -Try other (perhaps better) windows for the Hilbert filter
   // -For production code, we need to take care of possible division by zero in the computation of
   //  the scaler. We divide by mag[n]. That would be zero for zero signals.
-  // -Use a Hilbert filter with an even number of taps. That gets rid of the staistep artifacts. 
-  //  But it will require a shift of y[n] by a half-integer amount. If we do this shift with linear
-  //  interpolation, we essentially apply a 2-sample MA filter after the Hilbert filter which will 
-  //  also supress the Nyquist freq. This MA filter will actually attenuate high frequencies quite
-  //  a lot - so it's like an additional smoother. This may not be such a bad thing in the context 
-  //  of envelope detection, though - so try it. Maybe also try to realize the half-integer shift 
-  //  with cubic interpolation (Lagrange, Hermite, etc. - maybe also try "Elephant" interpolation).
+  // -[Done] Use a Hilbert filter with an even number of taps. That gets rid of the staistep 
+  //  artifacts. But it will require a shift of y[n] by a half-integer amount. If we do this shift 
+  //  with linear interpolation, we essentially apply a 2-sample MA filter after the Hilbert filter 
+  //  which will also supress the Nyquist freq. This MA filter will actually attenuate high 
+  //  frequencies quite a lot - so it's like an additional smoother. This may not be such a bad 
+  //  thing in the context of envelope detection, though - so try it. Maybe also try to realize the 
+  //  half-integer shift with cubic interpolation (Lagrange, Hermite, etc. - maybe also try 
+  //  "Elephant" interpolation).
   // -When we use some sort of smoothing anyway then maybe we can also use a 3-point MA on the 
   //  result of odd length Hilbert filter to get rid of the stairsteps. Maybe a kernel of
   //  [0.25 0.5 0.25] could be suitable. Making it causal would add another sample of delay to 
   //  which needs to be compensated for.
+  // -Wrap the whole Hilbert filtering business into a class rsHilbertFilter. This should also
+  //  include the smoothing (optionally - on by default). But maybe for even lengths, where the
+  //  smoothing is not really needed, provide alternative ways to achive the half-sample delay. 
+  //  Namely by polynomial interpolation. The function makeHilbertFilter could be turned into 
+  //  static member function of that class. Maybe call it computeCoeffs().
   //
   // Notes:
   // -The instantaneous envelope of a signal is defined as env[n] = sqrt(x^2[n] + y^2[n]) which we 
