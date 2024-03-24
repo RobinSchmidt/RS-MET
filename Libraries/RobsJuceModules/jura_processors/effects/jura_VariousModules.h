@@ -1126,11 +1126,12 @@ protected:
 
 
 //#################################################################################################
+// Maybe move this into a separate file:
 // From here are some experimental effects that are not yet used in Quadrifex and don't have their
 // own custom GUI editor. The format is a bit different due to using a different infrastructure.
-// It's moer similar to the modules in jura_VariousGenerators.h
+// It's more similar to the modules in jura_VariousGenerators.h
 
-class EnvyDriverModule : public jura::AudioModule
+class EnvyDriverModule : public jura::ModulatableAudioModule
 {
 
 public:
@@ -1141,13 +1142,16 @@ public:
 
   virtual void processStereoFrame(double* left, double* right) override;
 
-  virtual void reset() override { core.reset(); }
+  virtual void reset() override 
+  { 
+    //core.reset(); 
+  }
 
 protected:
 
   virtual void createParameters();
 
-  rosic::rsEnvyDriverStereo core;
+  //rosic::rsEnvyDriverStereo core;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvyDriverModule)

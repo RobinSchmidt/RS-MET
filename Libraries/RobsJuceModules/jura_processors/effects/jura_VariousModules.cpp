@@ -5331,3 +5331,36 @@ void NoisifierModuleEditor::resized()
   highestFreqSlider->setBounds(x+4, y+4, w-8, 16);
   y += 20;
 }
+
+
+//#################################################################################################
+// Experimental modules:
+
+EnvyDriverModule::EnvyDriverModule(CriticalSection* lock, MetaParameterManager* metaMan, 
+  ModulationManager* modMan)
+  : jura::ModulatableAudioModule(lock, metaMan, modMan)
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("EvyDriver");
+  createParameters();
+}
+
+void EnvyDriverModule::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  /*
+  using ED    = rosic::rsEnvyDriverStereo;
+  using Param = Parameter Param;
+  Param* p;
+
+  p = new Param("Drive", -10.0, +40.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<ED>(&core, &ED::setDriveInDb);
+  */
+}
+
+void EnvyDriverModule::processStereoFrame(double* left, double* right)
+{
+  //core.getSampleFrameStereo(left, right);
+}

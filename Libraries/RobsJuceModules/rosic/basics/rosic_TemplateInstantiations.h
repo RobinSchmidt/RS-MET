@@ -237,10 +237,11 @@ public:
     hilbDistL.setHilbertFilterLength(newLength);
     hilbDistR.setHilbertFilterLength(newLength);
   }
-  void setDrive(double newDrive)
+  void setDriveInDb(double newDrive)
   {
-    hilbDistL.setDrive(newDrive);
-    hilbDistR.setDrive(newDrive);
+    double driveAmp = RAPT::rsDbToAmp(newDrive);
+    hilbDistL.setDrive(driveAmp);
+    hilbDistR.setDrive(driveAmp);
   }
   void setCompression(double newCompression)
   {
