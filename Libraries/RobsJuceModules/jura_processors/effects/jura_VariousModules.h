@@ -4,7 +4,8 @@
 // AudioModuleFactory and get rid of that ugly, messy code there related to selecting
 // which module to plug in
 
-/** This file defines a bunch of smaller AudioModules and their editors.
+/** This file defines a bunch of smaller AudioModules and their editors. If I remember correctly,
+these are the modules that are used mostly in Quadrifex.
 
 mmm... lots of boilerplate code here - is it perhaps possible to avoid some of it by using 
 templates (maybe with explicit specializations)?
@@ -174,6 +175,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // EnvyDriver - not yet used anywhere:
 
+/*
 class EnvyDriverAudioModule : public ModulatableAudioModule
 {
 public:
@@ -194,6 +196,7 @@ protected:
   RSlider *hilbertLengthSlider;
   juce_UseDebuggingNewOperator;
 };
+*/
 
 //-----------------------------------------------------------------------------------------------
 // WaveShaper:
@@ -1119,5 +1122,37 @@ protected:
   rsModulatableSlider *passLevelSlider, *noiseLevelSlider, *spectralSlopeSlider, *lowestFreqSlider,
     *highestFreqSlider;
 };
+
+
+
+//#################################################################################################
+// From here are some experimental effects that are not yet used in Quadrifex and don't have their
+// own custom GUI editor. The format is a bit different due to using a different infrastructure.
+// It's moer similar to the modules in jura_VariousGenerators.h
+
+class EnvyDriverModule : public jura::AudioModule
+{
+
+public:
+
+  EnvyDriverModule(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr);
+
+
+  virtual void processStereoFrame(double* left, double* right) override;
+
+  virtual void reset() override { core.reset(); }
+
+protected:
+
+  virtual void createParameters();
+
+  rosic::rsEnvyDriverStereo core;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvyDriverModule)
+};
+
+
 
 #endif 

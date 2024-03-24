@@ -315,6 +315,12 @@ public:
     *inOutRe = delay.getSample(*inOutRe);    // Real part (delayed)
   }
 
+  void reset()
+  {
+    hilbert.reset();
+    delay.reset();
+  }
+
 protected:
 
   rsHilbertFilter<TSig, TPar> hilbert;

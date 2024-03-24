@@ -237,13 +237,13 @@ public:
     hilbDistL.setHilbertFilterLength(newLength);
     hilbDistR.setHilbertFilterLength(newLength);
   }
-  void setDrive(double newDrive) 
-  { 
+  void setDrive(double newDrive)
+  {
     hilbDistL.setDrive(newDrive);
     hilbDistR.setDrive(newDrive);
   }
   void setCompression(double newCompression)
-  { 
+  {
     hilbDistL.setCompression(newCompression);
     hilbDistR.setCompression(newCompression);
   }
@@ -252,6 +252,12 @@ public:
     *left  = hilbDistL.getSample(*left);
     *right = hilbDistR.getSample(*right);
   }
+  void reset()
+  {
+    hilbDistL.reset();
+    hilbDistR.reset();
+  }
+
 
 protected:
 

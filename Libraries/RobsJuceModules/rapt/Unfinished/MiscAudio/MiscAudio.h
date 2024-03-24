@@ -233,6 +233,8 @@ public:
     return scaler * x;
   }
 
+  void reset() { complexifier.reset(); }
+
 
 protected:
 
