@@ -228,7 +228,7 @@ public:
     TSig magD = rsTanh(drive * mag);
 
     // Apply continuously adjustable make-up gain:
-    magD /= rsPow(drive, makeUp);
+    magD /= pow(drive, makeUp);
 
     //if(makeUp)
     //  magD[/= drive;         // This is what A_SN does. Maybe make makeUp parameter continuous
@@ -237,9 +237,11 @@ public:
     TSig scaler = TSig(1);
     if(mag != 0)            // Take care of division by zero - maybe use some finite threshold
       scaler = magD / mag;
-    scaler = rsPow(scaler, comp);
+    scaler = pow(scaler, comp);
     return scaler * x;
   }
+  // ToDo: use rsPow - but currently, that converts the 2nd parameter to int. So we need an
+  // implementation with two parameters of the template type.
 
   void reset() { complexifier.reset(); }
 
