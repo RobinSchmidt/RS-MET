@@ -15,6 +15,7 @@ public:
   /** Sets a new capacity for this buffer. The actual capacity will be the next power of two of
   given value. */
   void setCapacity(size_t newCapacity);
+  // Maybe rename to setMaxLength or setMaxDelay
 
   /** Initializes all the buffer elements with given value (default is zero). */
   void initBufferValues(T value = T(0));

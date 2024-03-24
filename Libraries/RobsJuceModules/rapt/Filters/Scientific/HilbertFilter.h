@@ -25,6 +25,9 @@ public:
   /** \name Setup */
 
 
+  void setMaxLength(int newMaxLength) { h.reserve(newMaxLength); buf.reserve(newMaxLength); }
+
+
   /** Sets up the length of the impulse response. Note that after calling setLength, the content of
   impulse response is undefined. The intention for this function is to be called in a sequence 
   like:
@@ -205,15 +208,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  void setLength(int newLength) { convolver.setLength(newLength); setDirty(); }
 
-  void setWindow(rsWindowFunction::WindowType newWindow)
-  { window = newWindow; setDirty(); }
-
-
-  //void setMaxLength(int newMaxLength);
+  void setMaxLength(int newMaxLength) { convolver.setMaxLength(newMaxLength); }
   // should be called before going into realtime operation to allocate enough memory fo the 
   // buffers
+
+  void setLength(int newLength) { convolver.setLength(newLength); setDirty(); }
+
+  void setWindow(rsWindowFunction::WindowType newWindow) { window = newWindow; setDirty(); }
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -284,6 +289,12 @@ class rsComplexifier
 {
 
 public:
+
+  void setMaxLength(int newMaxLength)
+  {
+    hilbert.setMaxLength(newMaxLength);
+    delay.setCapacity(newMaxLength);     // Maybe rename function to setMaxDelay
+  }
 
   void setLength(int newLength) 
   { 

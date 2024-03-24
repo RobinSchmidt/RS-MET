@@ -1039,6 +1039,7 @@ bool hilbertFilterUnitTest()
 
   // Obtain complex analytic signal with proper compesation delay for the real part:
   rsComplexifier<double, double> complexifier;
+  complexifier.setMaxLength(M);
   complexifier.setLength(M);
   Vec re(N), im(N);
   re = x;
