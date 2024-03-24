@@ -82,7 +82,9 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&ladderUnitTest,              "rsLadder"); 
   ok &= runUnitTest(&stateVariableFilterUnitTest, "rsStateVariableFilter");
   ok &= runUnitTest(&engineersFilterUnitTest,     "rsEngineersFilter");
+  ok &= runUnitTest(&hilbertFilterUnitTest,       "rsHilbertFilterUnitTest");
 
+  
   // Visualization:
   ok &= runUnitTest(&imagePainterUnitTest,   "rsImagePainter");
   ok &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");

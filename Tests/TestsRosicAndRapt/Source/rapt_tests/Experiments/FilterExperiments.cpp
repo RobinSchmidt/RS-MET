@@ -3040,9 +3040,9 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 128;                 // Odd lengths give bandpass, even highpass approximations
+  int numTaps = 13;                 // Odd lengths give bandpass, even highpass approximations
   int fftSize = 4096;                // FFT size for plotting frequency response
-  WT  window  = WT::blackman;
+  WT  window  = WT::rectangular;
   int numSamples    = 800;           // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
@@ -3077,6 +3077,8 @@ void hilbertFilter()
 
 
   // Observations:
+  // -With length = 101, 17,21, we get garbage
+  //  11, 15, 19 is fine, 13,17,21 is not
   // -The magnitude response looks approximately flat, the phase response linear, the group delay
   //  constant. The deviations from this ideal are at and around DC and Nyquist. There is some 
   //  bandpass effect going on. This is all as expected.

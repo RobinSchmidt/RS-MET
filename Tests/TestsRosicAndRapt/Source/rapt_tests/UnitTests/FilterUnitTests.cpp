@@ -991,3 +991,40 @@ bool engineersFilterUnitTest()
   // Notes:
   // -OK - it seems to work now. The bug was fixed.
 }
+
+bool hilbertFilterUnitTest()
+{
+  bool ok = true;
+
+  // ToDo: Wrap this into a helper function taking numTaps as parameter and try for various numbers
+  // of taps including 1,2,3:
+
+  using WT = RAPT::rsWindowFunction::WindowType; 
+
+  int numTaps    = 101;               // Number of taps for Hilbert filter.
+  WT  window     = WT::rectangular;
+  int numSamples = 2000;
+
+  // Design the Hilbert filter:
+  int M = numTaps;
+  using Vec = std::vector<double>;
+  Vec h(M);
+  makeHilbertFilter(&h[0], numTaps, window);
+  rsPlotVectors(h); 
+  // Looks wrong!
+
+  // Create input signal:
+  int N = numSamples;
+  Vec x(N);
+  createWaveform(&x[0], N, 1, 441.0, 44100.0);
+
+  // Obtain Hilbert transform:
+  using AT = rsArrayTools;
+  Vec y(N+M-1);                             // Convolution result length is M+N-1
+  rsArrayTools::convolve(&x[0], N, &h[0], numTaps, &y[0]); 
+
+
+  rsPlotVectors(x, y); 
+
+  return ok;
+}

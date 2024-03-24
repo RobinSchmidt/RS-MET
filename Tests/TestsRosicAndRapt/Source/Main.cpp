@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
   //poleZeroPrototype();  // new implementation - but we don't need that
   //seriesConnectionDecay();
   //quantileFilter();
-  //hilbertFilter();
+  hilbertFilter();
   //simdFilter<float, 4>();  // doesn't work
 
   // Physics:
