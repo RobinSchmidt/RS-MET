@@ -1151,7 +1151,7 @@ protected:
 
   virtual void createParameters();
 
-  //rosic::rsEnvyDriverStereo core;
+  rosic::rsEnvyDriverStereo core;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvyDriverModule)
