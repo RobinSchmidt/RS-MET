@@ -1027,12 +1027,13 @@ bool hilbertFilterUnitTest()
   // Obtain Hilbert transform by rsHilbertFilter:
   Vec z(Ny);
 
-  RAPT::rsConvolverNaive<double, double> hlbFlt;
-  hlbFlt.setImpulseResponse(&h[0], M);
+  //RAPT::rsConvolverNaive<double, double> hlbFlt;
+  //hlbFlt.setImpulseResponse(&h[0], M);
 
   // Later, we want ot call it like:
-  //RAPT::rsHilbertFilter<double, double> hlbFlt;
-  //hlbFlt.setLength(M);
+  RAPT::rsHilbertFilter<double, double> hlbFlt;
+  hlbFlt.setLength(M);
+  hlbFlt.setWindow(window);
 
 
   for(int n = 0; n < N; n++)
@@ -1041,7 +1042,7 @@ bool hilbertFilterUnitTest()
     z[n] = hlbFlt.getSample(0);
   Vec err = z-y;
   ok &= rsIsAllZeros(err);
-  //rsPlotVectors(x, y, z, err);
+  rsPlotVectors(x, y, z, err);
 
 
 
