@@ -40,29 +40,7 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   int m = numTaps/2;    // Middle tap
   if(rsIsOdd(numTaps))
   {
-    // Old - for reference - doesn't conatin the window because it overwrites instead of 
-    // multiplying:
-    
-    /*
-    rsArrayTools::fillWithZeros(h, numTaps);
-    for(int k = 1; k <= numTaps/2; k++)
-    {
-      T hk = (1 - cos(k*PI))/(k*PI);  // See DAFX, pg 79
-      h[m+k] = +hk;
-      h[m-k] = -hk;
-    }
-    */
-    
-
-    
-    //rsAssert(rsIsOdd(m), "Function is still buggy for the m = even case.");
-    
-    // New - works only if numTaps % 4 == 3, I think. For numTaps % 4 == 1, it fails:
-
-    int s = m % 2;  // start index
-
-    //for(int k = 1; k < numTaps; k += 2)
-    for(int k = s; k < numTaps; k += 2)   // k starts at 0 if m is even and at 1 if m is odd
+    for(int k = m % 2; k < numTaps; k += 2)   // k starts at 0 if m is even and at 1 if m is odd
       h[k] = T(0);
     for(int k = 1; k <= m; k += 2)
     {
@@ -70,12 +48,6 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
       h[m+k] *= +hk;
       h[m-k] *= -hk;
     }
-    //rsPlotArray(h, numTaps);
-    
-    // I think, when m is odd, it works as is and if m is even, we need to do something else.
-    // Maybe in the other case, one or both loops need to start at 0 rather than 1?
-    // Maybe the upper loop limits need also modifications?
-
   }
   else
   {
