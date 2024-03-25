@@ -23,6 +23,7 @@ namespace RAPT
 #include "Scientific/FilterSpecifications.cpp"
 #include "Scientific/QuantileFilter.cpp"
 #include "Scientific/WindowedFilterDesigner.cpp"
+#include "Scientific/Convolver.cpp"
 #include "Scientific/HilbertFilter.cpp"
 
 #include "Musical/LadderFilter.cpp"

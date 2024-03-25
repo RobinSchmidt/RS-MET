@@ -32,6 +32,7 @@ namespace RAPT
 #include "Scientific/FilterSpecifications.h"
 #include "Scientific/QuantileFilter.h"
 #include "Scientific/WindowedFilterDesigner.h"
+#include "Scientific/Convolver.h"
 #include "Scientific/HilbertFilter.h"
 
 //#include "Convolution/WindowedSinc.h" 
