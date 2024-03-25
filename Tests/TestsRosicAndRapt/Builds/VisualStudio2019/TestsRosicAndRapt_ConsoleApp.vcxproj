@@ -624,6 +624,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuantileFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\WindowedFilterDesigner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Filters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2655,6 +2658,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\PrototypeDesigner.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuadratureNetwork.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuantileFilter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\WindowedFilterDesigner.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Filters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\Generators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\NoiseGenerator.h"/>

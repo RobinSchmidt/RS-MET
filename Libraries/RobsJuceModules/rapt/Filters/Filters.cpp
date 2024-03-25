@@ -22,6 +22,7 @@ namespace RAPT
 #include "Scientific/QuadratureNetwork.cpp"
 #include "Scientific/FilterSpecifications.cpp"
 #include "Scientific/QuantileFilter.cpp"
+#include "Scientific/WindowedFilterDesigner.cpp"
 #include "Scientific/HilbertFilter.cpp"
 
 #include "Musical/LadderFilter.cpp"

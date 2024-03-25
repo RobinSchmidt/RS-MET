@@ -184,7 +184,8 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
   // ToDo:
   // -Compare the results of this routine with those of some reference implementations from octave 
   //  or numpy/scipy
-  // -Move this as static member into a class rsFiniteImpulseResponseDesigner
+  // -Move this as static member into a class rsFiniteImpulseResponseDesigner or 
+  //  rsWindowedFilterDesigner
 }
 
 

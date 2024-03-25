@@ -31,6 +31,7 @@ namespace RAPT
 #include "Scientific/QuadratureNetwork.h"
 #include "Scientific/FilterSpecifications.h"
 #include "Scientific/QuantileFilter.h"
+#include "Scientific/WindowedFilterDesigner.h"
 #include "Scientific/HilbertFilter.h"
 
 //#include "Convolution/WindowedSinc.h" 
