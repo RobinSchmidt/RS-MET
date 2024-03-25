@@ -3039,9 +3039,9 @@ void makeHilbertFilter(T* h, int numTaps)
 // two-sample MA with kernel [0.5 0.5] for smoothing. If the nominal length is odd, the smoothed
 // length will be 2 samples longer because we use 3-sample MA with kernel [0.25 0.5 0.25]. For
 // odd nominal lengths, such smoothing will remove the Nyquist ripple artifacts present in the 
-// approximated Hilbert trafo of a saw wave obtained by the filter. For even nomnal length, the
+// approximated Hilbert trafo of a saw wave obtained by the filter. For even nominal length, the
 // smoothing will bring the orignally half-integer delay that the filter introduces back to a full
-// integer delay, naking it easier to align the Hilbert trafo with the original signal.
+// integer delay, making it easier to align the Hilbert trafo with the original signal.
 // ....TBC...
 template<class T>
 void makeSmoothOddHilbertFilter(T* h, int numTaps, 
@@ -3064,6 +3064,14 @@ void makeSmoothOddHilbertFilter(T* h, int numTaps,
     weightedAverage3pt(h, M, h, T(0.25), T(0.5), T(0.25));
   }
 }
+// ToDo: 
+// -In the case of even nominal length, the main purposes of the MA smoothing is to bring the delay
+//  from a hlaf-integer to a full integer. Maybe that can be done in better ways by interpolating
+//  the impulse response with polynomial interpolators. The 2-sample MA is basically a linear 
+//  interpolator that reads out the raw impulse response at half-integer poistions. We can do 
+//  better than linear! Doing so may give more desirable magnitude responses, i.e. less lowpassing.
+//  Although, that lowpassing might not be such a bad thing in the context of instantaneous 
+//  envelope detection.
 
 void hilbertFilter()
 {
@@ -3081,8 +3089,6 @@ void hilbertFilter()
 
   // Design the filter and plot its impulse response:
   using Vec = std::vector<double>;
-  //Vec h(numTaps);
-  //rsArrayTools::fillWithNaN(&h[0], numTaps);  // To make sure, the next routine fills the array correctly
   Vec h;
   if(smooth)
   {
@@ -3104,7 +3110,6 @@ void hilbertFilter()
     h.resize(numTaps);
     makeHilbertFilter(&h[0], numTaps, window);
   }
-
   rsStemPlot(h);
 
   // Plot the frequency response - it should be (approximately) flat:
