@@ -3035,8 +3035,14 @@ void makeHilbertFilter(T* h, int numTaps)
 
 // A function to design smoothed Hilbert filters. They represent a Hilbert filter with an 
 // additional MA filter applied. Such smoothed Hilbert filters will always have odd lengths. If 
-// the nominal length is even, the smoothed length will be 1 sample longer. If the nominal length
-// is odd, the smoothed length will be 2 samples longer. ....TBC...
+// the nominal length is even, the smoothed length will be 1 sample longer because we use a 
+// two-sample MA with kernel [0.5 0.5] for smoothing. If the nominal length is odd, the smoothed
+// length will be 2 samples longer because we use 3-sample MA with kernel [0.25 0.5 0.25]. For
+// odd nominal lengths, such smoothing will remove the Nyquist ripple artifacts present in the 
+// approximated Hilbert trafo of a saw wave obtained by the filter. For even nomnal length, the
+// smoothing will bring the orignally half-integer delay that the filter introduces back to a full
+// integer delay, naking it easier to align the Hilbert trafo with the original signal.
+// ....TBC...
 template<class T>
 void makeSmoothOddHilbertFilter(T* h, int numTaps, 
   RAPT::rsWindowFunction::WindowType type, bool evenNominalLength)
@@ -3065,13 +3071,13 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 256;                 // Odd lengths give bandpass, even highpass approximations
+  int numTaps = 255;                 // Odd lengths give bandpass, even highpass approximations
   int fftSize = 4096;                // FFT size for plotting frequency response
   WT  window  = WT::blackman;
   int numSamples    = 300;           // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
-  bool   smooth     = false;         // Apply a 2-sample MA to even lengths or 3-saempl MA to odd lengths
+  bool   smooth     = true;         // Apply a 2-sample MA to even lengths or 3-saempl MA to odd lengths
 
   // Design the filter and plot its impulse response:
   using Vec = std::vector<double>;
@@ -3148,6 +3154,16 @@ void hilbertFilter()
   // -The Hilbert trafo of a saw wave looks spikey - with spikes at the zero-crossings of the saw.
   // -With shorter lengths, the spikes get thinner.
   // -It seems like the length should be at least 2 cycles for optimal results.
+  // -For even smoothed Hilbert filters, the delay compensation is off by one sample
+  // -With smoothing, the Hilbert filters get an additional lowpass characteristic backed in. The 
+  //  rolloff is stronger in case of odd lengths.
+  //
+  // Conclusions:
+  // -I think, for instantaneous envelope detection, an even length with smoothing could be the 
+  //  best choice. -> Try it! Currently, we use an odd length without smoothing in EnvyShaper. 
+  //  Maybe we can improve the quality by using an even smoothed envelope. But it will perhaps not
+  //  make an audible difference anyway. But maybe with some extreme signals, it may? Try and
+  //  impulse-train, white noise, strong transients - noise-bursts, drums, etc.
   //
   // ToDo:
   // -Figure out if using filters longer than 2 cycles improve results further
