@@ -697,9 +697,9 @@ void hilbertDistortion1()
   if(smooth)
   {
     if(rsIsOdd(numTaps))
-      weightedAverage3pt(&y[0], N+numTaps-1, &y[0], 0.25, 0.5, 0.25);
+      AT::weightedAverage3pt(&y[0], N+numTaps-1, &y[0], 0.25, 0.5, 0.25);
     else
-      movingAverage2ptBackward(&y[0], N+numTaps-1, &y[0]);
+      AT::movingAverage2ptBackward(&y[0], N+numTaps-1, &y[0]);
   }
   AT::shift(&y[0], N+numTaps-1, -numTaps/2);      // Compensate delay
   y.resize(N);                                    // Shorten y to original length of x

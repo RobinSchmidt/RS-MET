@@ -3081,7 +3081,7 @@ void hilbertFilter()
 
   using WT = RAPT::rsWindowFunction::WindowType;
 
-  int numTaps = 255;                 // Odd lengths give bandpass, even highpass approximations
+  int numTaps = 256;                 // Odd lengths give bandpass, even highpass approximations
   int fftSize = 4096;                // FFT size for plotting frequency response
   WT  window  = WT::blackman;
   int numSamples    = 300;           // Number of samples for test waveform
@@ -3092,6 +3092,7 @@ void hilbertFilter()
   // Design the filter and plot its impulse response:
   using Vec = std::vector<double>;
   Vec h;
+  int delay = numTaps/2;
   if(smooth)
   {
     if(rsIsEven(numTaps))
@@ -3099,6 +3100,7 @@ void hilbertFilter()
       numTaps += 1;
       h.resize(numTaps);
       makeSmoothOddHilbertFilter(&h[0], numTaps, window, true);
+      delay -= 1;
     }
     else
     {
@@ -3131,7 +3133,7 @@ void hilbertFilter()
   createWaveform(&x[0], N, 1, freq, sampleRate);  // 0: sine, 1: saw, 2: square, 3: triangle
   Vec y(N+numTaps-1);                             // Convolution result length is M+N-1
   AT::convolve(&x[0], N, &h[0], numTaps, &y[0]);  // Convolution with Hilbert impulse response
-  AT::shift(&y[0], N+numTaps-1, -numTaps/2);      // Compensate delay
+  AT::shift(&y[0], N+numTaps-1, -delay);          // Compensate delay
   y.resize(N);                                    // Shorten y to original length of x
   rsPlotVectors(x, y);                            // Signal and its Hilbert transform
 
@@ -3161,7 +3163,6 @@ void hilbertFilter()
   // -The Hilbert trafo of a saw wave looks spikey - with spikes at the zero-crossings of the saw.
   // -With shorter lengths, the spikes get thinner.
   // -It seems like the length should be at least 2 cycles for optimal results.
-  // -For even smoothed Hilbert filters, the delay compensation is off by one sample
   // -With smoothing, the Hilbert filters get an additional lowpass characteristic backed in. The 
   //  rolloff is stronger in case of odd lengths.
   //

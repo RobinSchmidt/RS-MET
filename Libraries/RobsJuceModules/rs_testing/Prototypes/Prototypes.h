@@ -80,6 +80,7 @@ void complexMovingAverage(const T* x, T* y, int N, int L);
 // Analysis" by Philip McLeod - the pdf linked above (It's a PhD dissertation))
 
 
+/*
 // These 3 are now in rsArrayTools - so they can at some point be deleted here:
 template<class T>
 void movingAverage2ptForward(const T* x, int N, T* y)
@@ -114,6 +115,7 @@ void weightedAverage3pt(const T* x, int N, T* y, T wL, T wC, T wR)
 // The way we handle the boundaries here is equivalent to assuming zeros in x[n] for n < 0 and 
 // n >= N. Maybe we should optionally leave the values fixed like the unweighted 3-point MA 
 // routine does?
+*/
 
 
 /** Returns the index of the element in the array A (of length N) that is the best match to the 
