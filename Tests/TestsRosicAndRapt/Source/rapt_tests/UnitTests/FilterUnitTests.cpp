@@ -1027,7 +1027,7 @@ bool hilbertFilterUnitTest()
   // Obtain Hilbert transform by rsHilbertFilter:
   Vec z(Ny);
   RAPT::rsHilbertFilter<double, double> hlbFlt;
-  hlbFlt.setLength(M);
+  hlbFlt.setNominalLength(M);
   hlbFlt.setWindow(window);
   for(int n = 0; n < N; n++)
     z[n] = hlbFlt.getSample(x[n]);

@@ -252,13 +252,18 @@ public:
   /** \name Setup */
 
 
-  void setMaxLength(int newMaxLength) { convolver.setMaxLength(newMaxLength); }
+  void setMaxNominalLength(int newMaxLength) 
+  { 
+    convolver.setMaxLength(newMaxLength+2); 
+    // +2 because smoothing can increase actual length by at most 2 sample with respect to nominal
+    // length
+  }
   // should be called before going into realtime operation to allocate enough memory fo the 
   // buffers
 
-  void setLength(int newLength) 
+  void setNominalLength(int newLength) 
   { 
-    length = newLength;
+    nominalLength = newLength;
     //convolver.setLength(newLength); 
     setDirty(); 
   }
@@ -276,7 +281,7 @@ public:
 
 
   //TPar getDelay() const {  }
-  // This can be a half-integer
+  // This will be a half-integer for even nominal length without smoothing
 
 
   //-----------------------------------------------------------------------------------------------
@@ -313,7 +318,7 @@ protected:
   rsWindowFunction::WindowType window = rsWindowFunction::WindowType::blackman;
   // I'm not yet sure, if Blackman is a good default. We'll see...
 
-  int length  = 101;  // rename to nominalLength
+  int nominalLength  = 101;  // rename to nominalLength
 
   bool smooth = false;
 
@@ -324,7 +329,7 @@ protected:
 template<class TSig, class TPar>
 void rsHilbertFilter<TSig, TPar>::updateCoeffs()
 {
-  int M = length;
+  int M = nominalLength;
   if(smooth)
   {
     if(rsIsEven(M))
@@ -373,15 +378,17 @@ class rsComplexifier
 
 public:
 
-  void setMaxLength(int newMaxLength)
+  void setMaxLength(int newMaxLength)  // maybe rename to setMaxNominalLength
   {
-    hilbert.setMaxLength(newMaxLength);
+    hilbert.setMaxNominalLength(newMaxLength);
+
     delay.setCapacity(newMaxLength);     // Maybe rename function to setMaxDelay
+    // actually half of that should be enough. maybe plus 1
   }
 
   void setLength(int newLength) 
   { 
-    hilbert.setLength(newLength); 
+    hilbert.setNominalLength(newLength); 
     delay.setLength(newLength/2); 
   }
   // Needs unit tests for even and odd lengths.
