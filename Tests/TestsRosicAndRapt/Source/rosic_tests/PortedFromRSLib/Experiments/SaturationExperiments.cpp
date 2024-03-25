@@ -674,9 +674,10 @@ void hilbertDistortion1()
   // Processing:
 
   // Design the Hilbert filter:
+  using WFD = rsWindowedFilterDesigner;
   using Vec = std::vector<double>;
   Vec h(numTaps);
-  makeHilbertFilter(&h[0], numTaps, window);
+  WFD::hilbert(&h[0], numTaps, window);
 
   // Generate input signal:
   int N = numSamples;

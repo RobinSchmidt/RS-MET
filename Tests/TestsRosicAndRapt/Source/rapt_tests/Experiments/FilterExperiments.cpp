@@ -3090,6 +3090,7 @@ void hilbertFilter()
   bool   smooth     = true;         // Apply a 2-sample MA to even lengths or 3-saempl MA to odd lengths
 
   // Design the filter and plot its impulse response:
+  using WFD = rsWindowedFilterDesigner;
   using Vec = std::vector<double>;
   Vec h;
   int delay = numTaps/2;
@@ -3099,20 +3100,20 @@ void hilbertFilter()
     {
       numTaps += 1;
       h.resize(numTaps);
-      makeSmoothOddHilbertFilter(&h[0], numTaps, window, true);
+      WFD::hilbertSmoothed(&h[0], numTaps, window, true);
       delay -= 1;
     }
     else
     {
       numTaps += 2;
       h.resize(numTaps);
-      makeSmoothOddHilbertFilter(&h[0], numTaps, window, false);
+      WFD::hilbertSmoothed(&h[0], numTaps, window, false);
     }
   }
   else
   {
     h.resize(numTaps);
-    makeHilbertFilter(&h[0], numTaps, window);
+    WFD::hilbert(&h[0], numTaps, window);
   }
   rsStemPlot(h);
 

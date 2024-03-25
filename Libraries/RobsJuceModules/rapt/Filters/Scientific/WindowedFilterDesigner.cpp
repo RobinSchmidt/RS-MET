@@ -50,16 +50,17 @@ void rsWindowedFilterDesigner::hilbertSmoothed(T* h, int numTaps,
 {
   rsAssert(rsIsOdd(numTaps));
 
+  using WFD = rsWindowedFilterDesigner;
   int M = numTaps;
   if(evenNominalLength)
   {
-    makeHilbertFilter(h, M-1, type);
+    WFD::hilbert(h, M-1, type);
     h[M-1] = T(0);
     rsArrayTools::movingAverage2ptForward(h, M, h);
   }
   else
   {
-    makeHilbertFilter(&h[1], M-2, type);
+    WFD::hilbert(&h[1], M-2, type);
     h[0]   = 0;
     h[M-1] = 0;
     rsArrayTools::weightedAverage3pt(h, M, h, T(0.25), T(0.5), T(0.25));

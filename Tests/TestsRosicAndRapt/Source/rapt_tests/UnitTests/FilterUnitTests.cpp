@@ -1009,7 +1009,8 @@ bool hilbertFilterUnitTest()
   int M = numTaps;
   using Vec = std::vector<double>;
   Vec h(M);
-  makeHilbertFilter(&h[0], numTaps, window);  // use M
+  using WFD = rsWindowedFilterDesigner;
+  WFD::hilbert(&h[0], numTaps, window);  // use M
   //rsPlotVectors(h); 
 
   // Create input signal:

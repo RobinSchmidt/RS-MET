@@ -141,6 +141,7 @@ void rsConvolverNaive<TSig, TPar>::reset()
 
 //=================================================================================================
 
+/*
 // Obsolete now:
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
@@ -154,6 +155,7 @@ void makeSmoothOddHilbertFilter(T* h, int numTaps,
 {
   rsWindowedFilterDesigner::hilbertSmoothed(h, numTaps, type, evenNominalLength);
 }
+*/
 
 
 //=================================================================================================
@@ -259,6 +261,7 @@ protected:
 template<class TSig, class TPar>
 void rsHilbertFilter<TSig, TPar>::updateCoeffs()
 {
+  using WFD = rsWindowedFilterDesigner;
   int M = nominalLength;
   if(smooth)
   {
@@ -266,21 +269,19 @@ void rsHilbertFilter<TSig, TPar>::updateCoeffs()
     {
       M += 1;
       convolver.setLength(M);
-      makeSmoothOddHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), 
-        window, true);
+      WFD::hilbertSmoothed(convolver.getCoeffPointer(), convolver.getLength(), window, true);
     }
     else
     {
       M += 2;
       convolver.setLength(M);
-      makeSmoothOddHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), 
-        window, false);
+      WFD::hilbertSmoothed(convolver.getCoeffPointer(), convolver.getLength(), window, false);
     }
   }
   else
   {
     convolver.setLength(M);
-    makeHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), window);
+    WFD::hilbert(convolver.getCoeffPointer(), convolver.getLength(), window);
   }
   dirty = false;
 }
