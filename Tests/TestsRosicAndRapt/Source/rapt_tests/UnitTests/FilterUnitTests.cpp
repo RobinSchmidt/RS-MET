@@ -1041,12 +1041,15 @@ bool hilbertFilterUnitTest()
   rsComplexifier<double, double> complexifier;
   complexifier.setMaxLength(M);
   complexifier.setLength(M);
+  complexifier.setSmoothing(false);
   Vec re(N), im(N);
   re = x;
   for(int n = 0; n < N; n++)
-    complexifier.processSampleFrame(&re[n], &im[n]); // triggers assert - we need to pre-allocate
+    complexifier.processSampleFrame(&re[n], &im[n]);
+
   rsPlotVectors(re, im);
-  // Looks correct! ToDo: Include programmatic test
+  // Looks correct! ToDo: Include programmatic test. Maybe that can be best done with a sine input
+
 
     
 

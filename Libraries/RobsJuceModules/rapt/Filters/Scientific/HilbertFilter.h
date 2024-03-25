@@ -4,6 +4,7 @@
 
 
 //=================================================================================================
+// This file is still very much under ocnstruction and needs to be cleaned up
 
 
 /** Under construction.... */
@@ -261,18 +262,19 @@ public:
   // should be called before going into realtime operation to allocate enough memory fo the 
   // buffers
 
-  void setNominalLength(int newLength) 
-  { 
-    nominalLength = newLength;
-    //convolver.setLength(newLength); 
-    setDirty(); 
-  }
-  // rename to setNominalLength
+  /** Sets the nominal length of the Hilber filter impulse response, i.e. the number of taps of the
+  raw Hilbert filter. The actual filter may be up to 2 taps longer when smoothing is activated. */
+  void setNominalLength(int newLength) { nominalLength = newLength; setDirty();  }
 
   void setWindow(rsWindowFunction::WindowType newWindow) { window = newWindow; setDirty(); }
 
-
+  /** Activates smoothing. This will modify the Hilbert filter's impulse response in such a way 
+  that the end result is that of a Hilbert filter with a moving average filter after it */
   void setSmoothing(bool shouldSmooth) { smooth = shouldSmooth; setDirty(); }
+  // ToDo: make unit test that check, if the smoothing result is indeed the same as when literally
+  // applying the MA filter. Maybe also test, if literally using an MA filter rather than smooting
+  // has numerical precision advantages. Maybe provide more advanced smoothing modes for even 
+  // lengths based on higher order interpolation
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -389,9 +391,11 @@ public:
   void setLength(int newLength) 
   { 
     hilbert.setNominalLength(newLength); 
-    delay.setLength(newLength/2); 
+    delay.setLength(newLength/2);   // call hilbert.getDelay
   }
   // Needs unit tests for even and odd lengths.
+
+  void setSmoothing(bool shouldSmooth) { hilbert.setSmoothing(shouldSmooth); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */

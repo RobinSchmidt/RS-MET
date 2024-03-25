@@ -3163,7 +3163,7 @@ void hilbertFilter()
   // -The Hilbert trafo of a saw wave looks spikey - with spikes at the zero-crossings of the saw.
   // -With shorter lengths, the spikes get thinner.
   // -It seems like the length should be at least 2 cycles for optimal results.
-  // -With smoothing, the Hilbert filters get an additional lowpass characteristic backed in. The 
+  // -With smoothing, the Hilbert filters get an additional lowpass characteristic baked in. The 
   //  rolloff is stronger in case of odd lengths.
   //
   // Conclusions:
@@ -3195,6 +3195,11 @@ void hilbertFilter()
   //  interpolation. In an actual application, it's better to delay the filtered signal by one 
   //  sample less because that allows for transparent operation of an effect when the settings are
   //  neutral.
+  // -Figure out what effect the smoothing has on the estimation of the envelope. I think, it means
+  //  that for high-frequency sinusoids, the instantaneous amplitude will get underestimated. 
+  //  Verify that! But what does that imply for the EnvyDriver? Maybe high frequencies will be 
+  //  distorted less? That might be a good thing. Or more? That might be a bad thing. But sinusoids
+  //  aren't really distorted anyway - they are compressed. 
   //
   // See:
   // https://en.wikipedia.org/wiki/Hilbert_transform
