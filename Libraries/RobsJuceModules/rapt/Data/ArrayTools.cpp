@@ -1103,6 +1103,24 @@ T rsArrayTools::median(const T *buffer, int length)
 // maybe use std::n_thelement, see here:
 // https://www.youtube.com/watch?v=sWgDk-o-6ZE 33:25
 
+
+
+template<class T>
+void rsArrayTools::movingAverage2ptForward(const T* x, int N, T* y)
+{
+  for(int n = 0; n < N-1; n++)
+    y[n] = T(0.5) * (x[n] + x[n+1]);
+  y[N-1] = x[N-1];
+}
+
+template<class T>
+void rsArrayTools::movingAverage2ptBackward(const T* x, int N, T* y)
+{
+  for(int n = N-1; n > 0; n--)
+    y[n] = T(0.5) * (x[n] + x[n-1]);
+  y[0] = x[0];
+}
+
 template <class T>
 void rsArrayTools::movingAverage3pt(const T* x, int N, T* y, bool endsFixed)
 {
@@ -1129,6 +1147,26 @@ void rsArrayTools::movingAverage3pt(const T* x, int N, T* y, bool endsFixed)
 }
 
 template<class T>
+void rsArrayTools::weightedAverage3pt(const T* x, int N, T* y, T wL, T wC, T wR)
+{
+  T xL = x[0];                       // Left input
+  T xC = x[1];                       // Center input
+  y[0] = wL*xL + wC*xC;              // Overwrites x[0] if used in place
+  for(int n = 1; n < N-1; n++)
+  {
+    T xR = x[n+1];
+    y[n] = wL*xL + wC*xC + wR*xR;    // Overwrites x[n] if used in place
+    xL = xC;
+    xC = xR;
+  }
+  y[N-1] = wC*xC + wR*x[N-1];
+}
+// Needs unit test for in place and out of place usage
+// The way we handle the boundaries here is equivalent to assuming zeros in x[n] for n < 0 and 
+// n >= N. Maybe we should optionally leave the values fixed like the unweighted 3-point MA 
+// routine does?
+
+template<class T>
 void rsArrayTools::movingMedian3pt(const T* x, int N, T* y)
 {
   T x1 = x[0];  // x[n-1]
@@ -1143,7 +1181,6 @@ void rsArrayTools::movingMedian3pt(const T* x, int N, T* y)
   // average of the middle two samples)...hmmm...
   // or maybe we should use linear extrapolation?
 }
-
 
 template <class T1, class T2, class TR>
 void rsArrayTools::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length)

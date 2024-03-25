@@ -80,6 +80,7 @@ void complexMovingAverage(const T* x, T* y, int N, int L);
 // Analysis" by Philip McLeod - the pdf linked above (It's a PhD dissertation))
 
 
+// These 3 are now in rsArrayTools - so they can at some point be deleted here:
 template<class T>
 void movingAverage2ptForward(const T* x, int N, T* y)
 {
@@ -87,7 +88,6 @@ void movingAverage2ptForward(const T* x, int N, T* y)
     y[n] = T(0.5) * (x[n] + x[n+1]);
   y[N-1] = x[N-1];
 }
-
 template<class T>
 void movingAverage2ptBackward(const T* x, int N, T* y)
 {
@@ -95,8 +95,6 @@ void movingAverage2ptBackward(const T* x, int N, T* y)
     y[n] = T(0.5) * (x[n] + x[n-1]);
   y[0] = x[0];
 }
-// I think, it can be used in place (verify!)
-
 template<class T>
 void weightedAverage3pt(const T* x, int N, T* y, T wL, T wC, T wR)
 {

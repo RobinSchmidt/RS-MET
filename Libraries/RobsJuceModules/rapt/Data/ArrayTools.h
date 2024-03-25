@@ -622,6 +622,14 @@ public:
   static T median(const T *buffer, int length);
   // Allocates heap memory - todo: pass a workspace.
 
+
+  template<class T>
+  void movingAverage2ptForward(const T* x, int N, T* y);
+  // I think, it can be used in place (verify and document!)
+
+  template<class T>
+  void movingAverage2ptBackward(const T* x, int N, T* y);
+
   /** Applies a 3-point moving average filter to the length-N array x and stores the result in y, 
   which may point to the same memory location, i.e. the filter may be used in place. The endpoints
   are either held fixed or handled using a 1-sided 2-point average, depending on the optional 
@@ -636,13 +644,19 @@ public:
   // the difference
   // maybe have a version that leaves the endpoints alone - rationale: the array may represent a
   // trajectory that should be smoothed, but the start- and enpoints should not change - maybe
-  // have a boolean parameter "fixEnds"
+  // have a boolean parameter "fixEnds" - done?
   // -maybe include a stride parameter - needed when this is used to filter nD arrays like images
   // there's a 5 point version under construction near the unit test of this, so if one is needed,
   // look there first
 
   template<class T>
+  void weightedAverage3pt(const T* x, int N, T* y, T wL, T wC, T wR);
+
+  template<class T>
   static void movingMedian3pt(const T* x, int N, T* y);
+
+
+
 
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
