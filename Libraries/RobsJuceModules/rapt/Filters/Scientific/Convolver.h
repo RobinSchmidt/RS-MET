@@ -1,0 +1,7 @@
+#ifndef RAPT_CONVOLVER_H_INCLUDED
+#define RAPT_CONVOLVER_H_INCLUDED
+
+
+
+
+#endif

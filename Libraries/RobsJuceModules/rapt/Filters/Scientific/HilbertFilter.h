@@ -135,28 +135,7 @@ void rsConvolverNaive<TSig, TPar>::reset()
   tapIn = 0;
 }
 
-
 // see rosic::ConvolverBruteForce, FiniteImpulseResponseDesigner::getHilbertTransformerResponse
-
-
-//=================================================================================================
-
-/*
-// Obsolete now:
-template<class T>
-void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
-{
-  rsWindowedFilterDesigner::hilbert(h, numTaps, type);
-}
-
-template<class T>
-void makeSmoothOddHilbertFilter(T* h, int numTaps, 
-  rsWindowFunction::WindowType type, bool evenNominalLength)
-{
-  rsWindowedFilterDesigner::hilbertSmoothed(h, numTaps, type, evenNominalLength);
-}
-*/
-
 
 //=================================================================================================
 
@@ -207,17 +186,13 @@ public:
   // has numerical precision advantages. Maybe provide more advanced smoothing modes for even 
   // lengths based on higher order interpolation
 
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   //TPar getDelay() const {  }
   // This will be a half-integer for even nominal length without smoothing
 
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Design */
-
-  //void computeCoeffs(TPar* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
