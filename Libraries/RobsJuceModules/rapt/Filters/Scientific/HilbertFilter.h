@@ -191,13 +191,13 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
 // A function to design smoothed Hilbert filters. They represent a Hilbert filter with an 
 // additional MA filter applied. Such smoothed Hilbert filters will always have odd lengths. If 
 // the nominal length is even, the smoothed length will be 1 sample longer because we use a 
-// two-sample MA with kernel [0.5 0.5] for smoothing. If the nominal length is odd, the smoothed
-// length will be 2 samples longer because we use 3-sample MA with kernel [0.25 0.5 0.25]. For
-// odd nominal lengths, such smoothing will remove the Nyquist ripple artifacts present in the 
-// approximated Hilbert trafo of a saw wave obtained by the filter. For even nominal length, the
-// smoothing will bring the orignally half-integer delay that the filter introduces back to a full
-// integer delay, making it easier to align the Hilbert trafo with the original signal.
-// ....TBC...
+// two-sample MA with kernel [0.5 0.5] for smoothing which increases the length by one. If the 
+// nominal length is odd, the smoothed length will be 2 samples longer because we use 3-sample MA 
+// with kernel [0.25 0.5 0.25]. For odd nominal lengths, such smoothing will remove the Nyquist 
+// ripple artifacts present in the approximated Hilbert trafo of a saw wave obtained by the filter.
+// For even nominal length, the smoothing will bring the orignally half-integer delay that the 
+// filter introduces back to a full integer delay, making it easier to align the Hilbert trafo 
+// with the original signal.  ....TBC...
 template<class T>
 void makeSmoothOddHilbertFilter(T* h, int numTaps, 
   rsWindowFunction::WindowType type, bool evenNominalLength)
@@ -221,7 +221,7 @@ void makeSmoothOddHilbertFilter(T* h, int numTaps,
 }
 // ToDo: 
 // -In the case of even nominal length, the main purposes of the MA smoothing is to bring the delay
-//  from a hlaf-integer to a full integer. Maybe that can be done in better ways by interpolating
+//  from a half-integer to a full integer. Maybe that can be done in better ways by interpolating
 //  the impulse response with polynomial interpolators. The 2-sample MA is basically a linear 
 //  interpolator that reads out the raw impulse response at half-integer poistions. We can do 
 //  better than linear! Doing so may give more desirable magnitude responses, i.e. less lowpassing.
@@ -252,21 +252,24 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-
-  void setMaxNominalLength(int newMaxLength) 
-  { 
-    convolver.setMaxLength(newMaxLength+2); 
-    // +2 because smoothing can increase actual length by at most 2 sample with respect to nominal
-    // length
-  }
-  // should be called before going into realtime operation to allocate enough memory fo the 
-  // buffers
+  /** Sets the maximal (nominal) length of the impulse response. The actual length can be upt to
+  two samples longer due to smoothing, if smoothing is active. @see setSmoothing. When you intend
+  to operate the filter in a realtime context, it's advisable to call this function with the
+  maximum length you want to support some time soon after construction or inside some sort of 
+  prepareToPlay function (IIRC, that is what is was called in VST2) to avoid memory re-allocations
+  in calls to setNominalLength. */
+  void setMaxNominalLength(int newMaxLength) { convolver.setMaxLength(newMaxLength+2); }
+  // +2 because smoothing can increase actual length by at most 2 sample with respect to nominal
+  // length.
 
   /** Sets the nominal length of the Hilber filter impulse response, i.e. the number of taps of the
   raw Hilbert filter. The actual filter may be up to 2 taps longer when smoothing is activated. */
   void setNominalLength(int newLength) { nominalLength = newLength; setDirty();  }
 
+  /** Sets the window function to be used to window the impulse response. The default window is a 
+  Blackman window, so if you never call this function, a Blackman window will be used. */
   void setWindow(rsWindowFunction::WindowType newWindow) { window = newWindow; setDirty(); }
+  // I'm not yet sure, if Blackman is a good default. We'll see...
 
   /** Activates smoothing. This will modify the Hilbert filter's impulse response in such a way 
   that the end result is that of a Hilbert filter with a moving average filter after it */
@@ -278,9 +281,6 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
-
-  bool isDirty() const { return dirty; }
-
 
   //TPar getDelay() const {  }
   // This will be a half-integer for even nominal length without smoothing
@@ -309,22 +309,24 @@ public:
 
 protected:
 
-  void updateCoeffs();
 
+  /** Called from the setters to indicate tha coefficient recalculation is necesarry. */
   void setDirty() { dirty = true; }
 
+  /** Called from getSample to trigger coefficient recalculation on the audio thread, if needed. */
+  bool isDirty() const { return dirty; }
 
+  /** Updates the filter coefficients according to the settings and sets the dirty flag to 
+  false. */
+  void updateCoeffs();
+
+
+  // Data members:
   rsConvolverNaive<TSig, TPar> convolver;
-
-
   rsWindowFunction::WindowType window = rsWindowFunction::WindowType::blackman;
-  // I'm not yet sure, if Blackman is a good default. We'll see...
-
-  int nominalLength  = 101;  // rename to nominalLength
-
+  int nominalLength  = 101;
   bool smooth = false;
-
-  bool dirty  = true;  // Maybe use std::atomic<bool>
+  std::atomic<bool> dirty  = true;
 
 };
 
@@ -354,14 +356,6 @@ void rsHilbertFilter<TSig, TPar>::updateCoeffs()
     convolver.setLength(M);
     makeHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), window);
   }
-
-
-
-  // Old:
-  //convolver.setLength(M);
-  //makeHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), window);
-
-
   dirty = false;
 }
 
