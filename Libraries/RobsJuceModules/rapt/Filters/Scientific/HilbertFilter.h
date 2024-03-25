@@ -166,6 +166,9 @@ template<class T>
 void makeSmoothOddHilbertFilter(T* h, int numTaps, 
   rsWindowFunction::WindowType type, bool evenNominalLength)
 {
+  rsWindowedFilterDesigner::hilbertSmoothed(h, numTaps, type, evenNominalLength);
+
+  /*
   rsAssert(rsIsOdd(numTaps));
 
   int M = numTaps;
@@ -182,6 +185,7 @@ void makeSmoothOddHilbertFilter(T* h, int numTaps,
     h[M-1] = 0;
     rsArrayTools::weightedAverage3pt(h, M, h, T(0.25), T(0.5), T(0.25));
   }
+  */
 }
 // ToDo: 
 // -In the case of even nominal length, the main purposes of the MA smoothing is to bring the delay

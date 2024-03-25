@@ -227,8 +227,11 @@ template class RAPT::rsNonUniformComplexOnePole<double>;
 template class RAPT::rsNonUniformOnePole<double>;
 template class RAPT::rsNonUniformFilterIIR<double>;
 
-template void RAPT::rsWindowedFilterDesigner::hilbert(double* h, int numTaps, 
-  rsWindowFunction::WindowType type);
+//template void RAPT::rsWindowedFilterDesigner::hilbert(double* h, int numTaps, 
+//  rsWindowFunction::WindowType type);
+
+template void RAPT::rsWindowedFilterDesigner::hilbertSmoothed(double* h, int numTaps, 
+  rsWindowFunction::WindowType type, bool evenNominalLength);
 
 //-------------------------------------------------------------------------------------------------
 // Misc:
