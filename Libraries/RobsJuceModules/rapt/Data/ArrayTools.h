@@ -624,11 +624,11 @@ public:
 
 
   template<class T>
-  void movingAverage2ptForward(const T* x, int N, T* y);
+  static void movingAverage2ptForward(const T* x, int N, T* y);
   // I think, it can be used in place (verify and document!)
 
   template<class T>
-  void movingAverage2ptBackward(const T* x, int N, T* y);
+  static void movingAverage2ptBackward(const T* x, int N, T* y);
 
   /** Applies a 3-point moving average filter to the length-N array x and stores the result in y, 
   which may point to the same memory location, i.e. the filter may be used in place. The endpoints
@@ -650,7 +650,7 @@ public:
   // look there first
 
   template<class T>
-  void weightedAverage3pt(const T* x, int N, T* y, T wL, T wC, T wR);
+  static void weightedAverage3pt(const T* x, int N, T* y, T wL, T wC, T wR);
 
   template<class T>
   static void movingMedian3pt(const T* x, int N, T* y);

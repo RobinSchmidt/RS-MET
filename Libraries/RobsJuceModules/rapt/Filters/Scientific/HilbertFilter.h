@@ -208,14 +208,14 @@ void makeSmoothOddHilbertFilter(T* h, int numTaps,
   {
     makeHilbertFilter(h, M-1, type);
     h[M-1] = T(0);
-    movingAverage2ptForward(h, M, h);
+    rsArrayTools::movingAverage2ptForward(h, M, h);
   }
   else
   {
     makeHilbertFilter(&h[1], M-2, type);
     h[0]   = 0;
     h[M-1] = 0;
-    weightedAverage3pt(h, M, h, T(0.25), T(0.5), T(0.25));
+    rsArrayTools::weightedAverage3pt(h, M, h, T(0.25), T(0.5), T(0.25));
   }
 }
 // ToDo: 
@@ -256,12 +256,18 @@ public:
   // should be called before going into realtime operation to allocate enough memory fo the 
   // buffers
 
-  void setLength(int newLength) { convolver.setLength(newLength); setDirty(); }
+  void setLength(int newLength) 
+  { 
+    length = newLength;
+    //convolver.setLength(newLength); 
+    setDirty(); 
+  }
+  // rename to setNominalLength
 
   void setWindow(rsWindowFunction::WindowType newWindow) { window = newWindow; setDirty(); }
 
 
-
+  void setSmoothing(bool shouldSmooth) { smooth = shouldSmooth; setDirty(); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -307,14 +313,48 @@ protected:
   rsWindowFunction::WindowType window = rsWindowFunction::WindowType::blackman;
   // I'm not yet sure, if Blackman is a good default. We'll see...
 
-  bool dirty = true;  // Maybe use std::atomic<bool>
+  int length  = 101;  // rename to nominalLength
+
+  bool smooth = false;
+
+  bool dirty  = true;  // Maybe use std::atomic<bool>
 
 };
 
 template<class TSig, class TPar>
 void rsHilbertFilter<TSig, TPar>::updateCoeffs()
 {
-  makeHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), window);
+  int M = length;
+  if(smooth)
+  {
+    if(rsIsEven(M))
+    {
+      M += 1;
+      convolver.setLength(M);
+      makeSmoothOddHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), 
+        window, true);
+    }
+    else
+    {
+      M += 2;
+      convolver.setLength(M);
+      makeSmoothOddHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), 
+        window, false);
+    }
+  }
+  else
+  {
+    convolver.setLength(M);
+    makeHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), window);
+  }
+
+
+
+  // Old:
+  //convolver.setLength(M);
+  //makeHilbertFilter(convolver.getCoeffPointer(), convolver.getLength(), window);
+
+
   dirty = false;
 }
 

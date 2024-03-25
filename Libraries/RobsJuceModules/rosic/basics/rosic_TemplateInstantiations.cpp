@@ -32,6 +32,12 @@ template void RAPT::rsArrayTools::fillWithRandomValues(rsFloat32x4* x, int N,
 template int RAPT::rsArrayTools::maxIndex(const double *buffer, int length);
 template int RAPT::rsArrayTools::minIndex(const double *buffer, int length);
 template double RAPT::rsArrayTools::meanSquare(const double *x, int N);
+
+template void RAPT::rsArrayTools::movingAverage2ptForward(const double* x, int N, double* y);
+template void RAPT::rsArrayTools::movingAverage2ptBackward(const double* x, int N, double* y);
+template void RAPT::rsArrayTools::weightedAverage3pt(const double* x, int N, double* y, 
+  double wL, double wC, double wR);
+
 template class RAPT::rsRingBuffer<double>;
 template class RAPT::rsDelayBuffer<double>;
 
