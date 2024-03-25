@@ -7,10 +7,10 @@ class rsWindowedFilterDesigner
 public:
 
   template<class T>
-  void hilbert(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
+  static void hilbert(T* h, int numTaps, rsWindowFunction::WindowType type);
 
   template<class T>
-  void hilbertSmoothed(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type);
+  static void hilbertSmoothed(T* h, int numTaps, rsWindowFunction::WindowType type);
 
 };
 

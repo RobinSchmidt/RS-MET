@@ -148,6 +148,9 @@ rsWindowFunction::WindowType enum class. */
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
+  rsWindowedFilterDesigner::hilbert(h, numTaps, type);
+
+  /*
   // Create the window:
   RAPT::rsWindowFunction::createWindow(h, numTaps, type, false);
 
@@ -174,6 +177,7 @@ void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType typ
       h[m-k-1] *= -hk;
     }
   }
+  */
 
   // See:
   // https://www.kvraudio.com/forum/viewtopic.php?t=608320
