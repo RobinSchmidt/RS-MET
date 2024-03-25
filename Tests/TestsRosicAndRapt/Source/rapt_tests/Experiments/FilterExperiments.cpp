@@ -3033,6 +3033,7 @@ void makeHilbertFilter(T* h, int numTaps)
 }
 */
 
+/* Moved to RAPT:
 // A function to design smoothed Hilbert filters. They represent a Hilbert filter with an 
 // additional MA filter applied. Such smoothed Hilbert filters will always have odd lengths. If 
 // the nominal length is even, the smoothed length will be 1 sample longer because we use a 
@@ -3072,6 +3073,7 @@ void makeSmoothOddHilbertFilter(T* h, int numTaps,
 //  better than linear! Doing so may give more desirable magnitude responses, i.e. less lowpassing.
 //  Although, that lowpassing might not be such a bad thing in the context of instantaneous 
 //  envelope detection.
+*/
 
 void hilbertFilter()
 {
