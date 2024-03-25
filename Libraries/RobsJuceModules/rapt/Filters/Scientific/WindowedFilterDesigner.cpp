@@ -42,3 +42,35 @@ void rsWindowedFilterDesigner::hilbert(T* h, int numTaps, rsWindowFunction::Wind
   // -Move this as static member into a class rsFiniteImpulseResponseDesigner or 
   //  rsWindowedFilterDesigner
 }
+
+
+template<class T>
+void rsWindowedFilterDesigner::hilbertSmoothed(T* h, int numTaps, 
+  rsWindowFunction::WindowType type, bool evenNominalLength)
+{
+  rsAssert(rsIsOdd(numTaps));
+
+  int M = numTaps;
+  if(evenNominalLength)
+  {
+    makeHilbertFilter(h, M-1, type);
+    h[M-1] = T(0);
+    rsArrayTools::movingAverage2ptForward(h, M, h);
+  }
+  else
+  {
+    makeHilbertFilter(&h[1], M-2, type);
+    h[0]   = 0;
+    h[M-1] = 0;
+    rsArrayTools::weightedAverage3pt(h, M, h, T(0.25), T(0.5), T(0.25));
+  }
+
+  // ToDo: 
+  // -In the case of even nominal length, the main purposes of the MA smoothing is to bring the 
+  //  delay from a half-integer to a full integer. Maybe that can be done in better ways by 
+  //  interpolating the impulse response with polynomial interpolators. The 2-sample MA is 
+  //  basically a linear interpolator that reads out the raw impulse response at half-integer 
+  //  positions. We can do better than linear! Doing so may give more desirable magnitude 
+  //  responses, i.e. less lowpassing. Although, that lowpassing might not be such a bad thing 
+  //  in the context of instantaneous envelope detection.
+}
