@@ -141,61 +141,19 @@ void rsConvolverNaive<TSig, TPar>::reset()
 
 //=================================================================================================
 
-/** A free function that designs an FIR Hilbert filter using the windowing method. The impulse 
-response will be written into the array "h" which must be "numTaps" long. You also need to specify 
-which window function shall be used via the "type" parameter as one of the types defined in the 
-rsWindowFunction::WindowType enum class. */
+// Obsolete now:
 template<class T>
 void makeHilbertFilter(T* h, int numTaps, RAPT::rsWindowFunction::WindowType type)
 {
   rsWindowedFilterDesigner::hilbert(h, numTaps, type);
 }
 
-
-// A function to design smoothed Hilbert filters. They represent a Hilbert filter with an 
-// additional MA filter applied. Such smoothed Hilbert filters will always have odd lengths. If 
-// the nominal length is even, the smoothed length will be 1 sample longer because we use a 
-// two-sample MA with kernel [0.5 0.5] for smoothing which increases the length by one. If the 
-// nominal length is odd, the smoothed length will be 2 samples longer because we use 3-sample MA 
-// with kernel [0.25 0.5 0.25]. For odd nominal lengths, such smoothing will remove the Nyquist 
-// ripple artifacts present in the approximated Hilbert trafo of a saw wave obtained by the filter.
-// For even nominal length, the smoothing will bring the orignally half-integer delay that the 
-// filter introduces back to a full integer delay, making it easier to align the Hilbert trafo 
-// with the original signal.  ....TBC...
 template<class T>
 void makeSmoothOddHilbertFilter(T* h, int numTaps, 
   rsWindowFunction::WindowType type, bool evenNominalLength)
 {
   rsWindowedFilterDesigner::hilbertSmoothed(h, numTaps, type, evenNominalLength);
-
-  /*
-  rsAssert(rsIsOdd(numTaps));
-
-  int M = numTaps;
-  if(evenNominalLength)
-  {
-    makeHilbertFilter(h, M-1, type);
-    h[M-1] = T(0);
-    rsArrayTools::movingAverage2ptForward(h, M, h);
-  }
-  else
-  {
-    makeHilbertFilter(&h[1], M-2, type);
-    h[0]   = 0;
-    h[M-1] = 0;
-    rsArrayTools::weightedAverage3pt(h, M, h, T(0.25), T(0.5), T(0.25));
-  }
-  */
 }
-// ToDo: 
-// -In the case of even nominal length, the main purposes of the MA smoothing is to bring the delay
-//  from a half-integer to a full integer. Maybe that can be done in better ways by interpolating
-//  the impulse response with polynomial interpolators. The 2-sample MA is basically a linear 
-//  interpolator that reads out the raw impulse response at half-integer poistions. We can do 
-//  better than linear! Doing so may give more desirable magnitude responses, i.e. less lowpassing.
-//  Although, that lowpassing might not be such a bad thing in the context of instantaneous 
-//  envelope detection.
-
 
 
 //=================================================================================================

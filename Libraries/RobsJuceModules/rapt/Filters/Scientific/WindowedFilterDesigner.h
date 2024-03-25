@@ -2,10 +2,14 @@
 #define RAPT_WINDOWEDFILTERDESIGNER_H_INCLUDED
 
 
-/** This class has functions to design various filters using the windowing method. The impulse 
-response will be written into the array "h" which must be "numTaps" long. You also need to 
-specify which window function shall be used via the "type" parameter as one of the types 
-defined in the  rsWindowFunction::WindowType enum class. */
+/** This class has functions to design various filters using the windowing method. The API of the 
+functions will typically look like:
+
+  void lowpass(T* h, int numTaps, rsWindowFunction::WindowType type, T cutoff, ...)
+
+The impulse response will be written into the array "h" which must be "numTaps" long. You also need
+to specify which window function shall be used via the "type" parameter as one of the types defined 
+in the  rsWindowFunction::WindowType enum class. */
 
 class rsWindowedFilterDesigner
 {
@@ -32,11 +36,7 @@ public:
   static void hilbertSmoothed(T* h, int numTaps, rsWindowFunction::WindowType type, 
     bool evenNominalLength);
 
-
-
-
 };
-
 
 
 #endif
