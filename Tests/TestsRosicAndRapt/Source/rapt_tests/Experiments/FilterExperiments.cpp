@@ -3033,6 +3033,31 @@ void makeHilbertFilter(T* h, int numTaps)
 }
 */
 
+// A function to design smoothed Hilbert filters. They represent a Hilbert filter with an 
+// additional MA filter applied. Such smoothed Hilbert filters will always have odd lengths. If 
+// the nominal length is even, the smoothed length will be 1 sample longer. If the nominal length
+// is odd, the smoothed length will be 2 samples longer. ....TBC...
+template<class T>
+void makeSmoothOddHilbertFilter(T* h, int numTaps, 
+  RAPT::rsWindowFunction::WindowType type, bool evenNominalLength)
+{
+  rsAssert(rsIsOdd(numTaps));
+
+  int M = numTaps;
+  if(evenNominalLength)
+  {
+    makeHilbertFilter(h, M-1, type);
+    h[M-1] = T(0);
+    movingAverage2ptForward(h, M, h);
+  }
+  else
+  {
+    makeHilbertFilter(&h[1], M-2, type);
+    h[0]   = 0;
+    h[M-1] = 0;
+    weightedAverage3pt(h, M, h, T(0.25), T(0.5), T(0.25));
+  }
+}
 
 void hilbertFilter()
 {
@@ -3046,12 +3071,34 @@ void hilbertFilter()
   int numSamples    = 300;           // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
+  bool   smooth     = false;         // Apply a 2-sample MA to even lengths or 3-saempl MA to odd lengths
 
   // Design the filter and plot its impulse response:
   using Vec = std::vector<double>;
-  Vec h(numTaps);
-  rsArrayTools::fillWithNaN(&h[0], numTaps);  // To make sure, the next routine fills the array correctly
-  makeHilbertFilter(&h[0], numTaps, window);
+  //Vec h(numTaps);
+  //rsArrayTools::fillWithNaN(&h[0], numTaps);  // To make sure, the next routine fills the array correctly
+  Vec h;
+  if(smooth)
+  {
+    if(rsIsEven(numTaps))
+    {
+      numTaps += 1;
+      h.resize(numTaps);
+      makeSmoothOddHilbertFilter(&h[0], numTaps, window, true);
+    }
+    else
+    {
+      numTaps += 2;
+      h.resize(numTaps);
+      makeSmoothOddHilbertFilter(&h[0], numTaps, window, false);
+    }
+  }
+  else
+  {
+    h.resize(numTaps);
+    makeHilbertFilter(&h[0], numTaps, window);
+  }
+
   rsStemPlot(h);
 
   // Plot the frequency response - it should be (approximately) flat:
@@ -3105,6 +3152,11 @@ void hilbertFilter()
   // ToDo:
   // -Figure out if using filters longer than 2 cycles improve results further
   // -Try edge cases numTaps = 0,1,2,3
+  // -Figure out the unit of the group delay. The implementation of the group delay plot is 
+  //  preliminary and may need some scaling to get to a physically menaingful unit. See:
+  //  https://en.wikipedia.org/wiki/Group_delay_and_phase_delay#Mathematical_definition_of_group_delay_and_phase_delay
+  //  I think, both group delay and phase delay are measured in seconds. In DSP maybe we could
+  //  measure it in samples as well.
   // -Plot the phase delay. It should be constant at 90°, I think.
   // -[done] Check, if the normalization of the SpectrumPlotter is actually correct. Pass it a unit 
   //  impulse of different lengths to see if the DC gain is one. Done - seems OK.
