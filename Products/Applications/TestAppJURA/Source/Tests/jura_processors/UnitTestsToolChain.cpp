@@ -516,12 +516,12 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   expect(doSlotsContain(&tlChn, { eq, fs, ldr, scp, non }));
   expect(areArraysConsistent(editor));
 
-
-  // This currently fails because swapping is not yet implemented:
+  // Test swapping modules:
   editor->swapModules(1, 3);
   expect(doSlotsContain(&tlChn, { eq, scp, ldr, fs, non }));
-
-
+  expect(areArraysConsistent(editor));
+  // The tests pass, but we get an access violation in the destructor of ToolChain whne we do
+  // the swap - oh - no we also get it without the swap, so it must be something else
 
   int dummy = 0;
 
