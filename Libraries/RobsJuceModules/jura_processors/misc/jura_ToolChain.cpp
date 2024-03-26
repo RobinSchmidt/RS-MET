@@ -827,8 +827,6 @@ ToolChainEditor::ToolChainEditor(jura::ToolChain *moduleChainToEdit)
 {
   ScopedLock scopedLock(*lock);
 
-
-
   createWidgets();
 
   chain = moduleChainToEdit;
@@ -1189,12 +1187,24 @@ void ToolChainEditor::createWidgets()
   // Maybe factor out into a createWidgets method, maybe wrap int compile-time conditional like
   // #ifdef JUCE_DEBUG or RS_DEBUG_WIDGETS ...we'll see... :
   addWidget( screenShotButton = new RClickButton("Shot") );
-  screenShotButton->setDescription("Take screenshot of the active module");
+  screenShotButton->setDescription("Take screenshot of the active module. Ends up in C:/Temp/Test.png");
   screenShotButton->setDescriptionField(descriptionField);
   screenShotButton->addRButtonListener(this);
   //screenShotButton->setVisible(false);  // Comment this for taking screenshots
 
+   
+    
+  addWidget( moveUpButton = new RClickButton("Up") );
+  moveUpButton->setDescription("Move active module up.");
+  moveUpButton->setDescriptionField(descriptionField);
+  moveUpButton->addRButtonListener(this);
 
+  addWidget( moveDownButton = new RClickButton("Dn") );
+  moveDownButton->setDescription("Move active module down.");
+  moveDownButton->setDescriptionField(descriptionField);
+  moveDownButton->addRButtonListener(this);
+
+  // ToDo: use arrows instead of Up/Dn
 }
 
 void ToolChainEditor::scheduleSelectorArrayUpdate()
