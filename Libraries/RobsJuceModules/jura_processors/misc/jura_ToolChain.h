@@ -136,12 +136,13 @@ public:
 
   /** Returns true if the module at the given index matches the type specified by the type 
   string. */
-  bool isModuleOfType(int index, const juce::String& type);
-  // Should be const?
+  bool isModuleOfType(int index, const juce::String& type) const;
 
-  /** Returns the moduel in the chain at the given index. If the index is out of range, it will 
+  /** Returns the module in the chain at the given index. If the index is out of range, it will 
   return a nullptr. */
   AudioModule* getModuleAt(int index);
+  // ToDo: Check if we can return a const pointer and if so, do so. Document what the caller is 
+  // supposed to do with this pointer. What is the use case of this function?
 
   /** Returns the number of modules that is currently plugged in into the slots. */
   int getNumModules() const { return (int) modules.size(); }

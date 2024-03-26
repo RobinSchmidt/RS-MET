@@ -429,20 +429,14 @@ void UnitTestToolChain::runTestVoiceManager()
 // and put this test there
 
 
-// ToDo: make Toolchain pointer const
-bool doSlotsContain(/*const*/ jura::ToolChain* toolChain, const std::vector<juce::String>& typeNames)
+// ToDo: make this a member function:
+bool doSlotsContain(const jura::ToolChain* toolChain, const std::vector<juce::String>& typeNames)
 {
   bool ok = toolChain->getNumModules() == (int) typeNames.size();
   if(!ok)
     return false;
-
   for(int i = 0; i < (int)typeNames.size(); i++)
-  {
     ok &= toolChain->isModuleOfType(i, typeNames[i]);
-    //ok &= toolChain->getModuleAt(i)->getModuleTypeName() == typeNames[i];
-  }
-
-
   return ok;
 }
 
@@ -462,28 +456,25 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   juce::String scp = "Scope";
   juce::String non = "None";
 
-  // Chain: None
-  expect(tlChn.getNumModules() == 1);  // The "None" module at the end of the chain counts, too
-
-  // Insert an Equalizer into the first slot via the editor:
-  editor->replaceModule(0, eq);        // Chain: Equalizer, None
-
+  // Insert some modules into the slots via the editor and check if after each insertion, the slots
+  // are filled with the expected modules:
+  expect(doSlotsContain(&tlChn, { non }));
+  editor->replaceModule(0, eq);
   expect(doSlotsContain(&tlChn, { eq, non }));
+  editor->replaceModule(1, fs);
+  expect(doSlotsContain(&tlChn, { eq, fs, non }));
+  editor->replaceModule(2, ldr);
+  expect(doSlotsContain(&tlChn, { eq, fs, ldr, non }));
+  editor->replaceModule(3, scp);
+  expect(doSlotsContain(&tlChn, { eq, fs, ldr, scp, non }));
 
-
-  expect(tlChn.getNumModules() == 2);
-  expect(tlChn.getModuleAt(0)->getModuleTypeName() == eq);
-  expect(tlChn.getModuleAt(1)->getModuleTypeName() == non);
-
-  editor->replaceModule(1, fs);        // Chain: Equalizer, None
-
-
-  // Maybe write a helper function that gets a pointer to a ToolChain object and an array of 
-  // strings and checks if the chain has modules plugged in as the string-array says. We want to
-  // call it like:  doSlotsContain(tlChn, { eq, non } );   It may make sense to have this as 
-  // member function
 
   int dummy = 0;
+
+
+  // ToDo:
+  // -Maybe instead of calling replaceModule, mock the GUI actions that would in practice trigger
+  //  these calls.
 }
 
 //-------------------------------------------------------------------------------------------------

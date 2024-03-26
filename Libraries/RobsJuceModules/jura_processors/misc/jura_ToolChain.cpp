@@ -154,7 +154,7 @@ void ToolChain::ensureOneEmptySlotAtEnd()
 }
 
 
-bool ToolChain::isModuleOfType(int index, const juce::String& type)
+bool ToolChain::isModuleOfType(int index, const juce::String& type) const
 {
   ScopedLock scopedLock(*lock);
   jassert(index >= 0 && index < size(modules)); // index out of range
