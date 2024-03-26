@@ -8,15 +8,11 @@ class AudioModuleEditor;
 deleted. Mainly intended as baseclass for GUI elements that keep a pointer to an AudioModule that 
 is being edited 
 
-hmm.. - maybe, we don't need that. The documentation of the 
-AudioProcessorEditor* AudioProcessor::createEditor() function says:
-"It's safe to assume that an editor will be deleted before its filter." 
-
-\todo: maybe move these classes down into jura_framework - some plugins may want to use these 
-baseclasses without needing any of the dsp-stuff here - for example PrettyScope wouldn't need a 
-dependency on jura_processors anymore
-
-*/
+Maybe, we don't need that. The documentation of juce::AudioProcessor::createEditor() says:
+"It's safe to assume that an editor will be deleted before its filter." AudioModuleEditor doesn't
+even derive from this. But some subclasses of it do - namely ÉchoLabDelayLineModuleEditor. I 
+think, it can attach itself to a delayline, i.e. a "lollipop" - but these can get deleted and then
+the editor must invalidate its pointer. */
 
 class JUCE_API AudioModuleDeletionWatcher
 {

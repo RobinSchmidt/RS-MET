@@ -6,7 +6,7 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   // Test currently worked on copied to top of the function:
-  runTestEqualizer();
+  //runTestEqualizer();
   runTestSlotInsertRemoveEtc();
 
 
@@ -491,8 +491,8 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   // Some shorthands for the names of the different mdoule types that we intend to add:
   //std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
 
-  //juce::String eq  = "Equalizer";
-  juce::String eq  = "EngineersFilter";  // For test - because the "Equalizer" leads to a crash
+  juce::String eq  = "Equalizer";
+  //juce::String eq  = "EngineersFilter";  // For test - because the "Equalizer" leads to a crash
   juce::String fs  = "FuncShaper";
   juce::String ldr = "Ladder";
   juce::String scp = "Scope";
@@ -525,6 +525,15 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   expect(areArraysConsistent(editor));
   // The tests pass, but we get an access violation in the destructor of ToolChain whne we do
   // the swap - oh - no we also get it without the swap, so it must be something else
+
+
+  delete editor;  
+  // We need to delete the editor before ToolChain gets out of scope - otherwise we trigger an
+  // access violation. But this should be expected behavior - we expect anyway that an AudioModule
+  // will always outlive its editor. The exception is when the editor is also an 
+  // AudioModuleDeletionWatcher. This mechanism can be used to un-attach editors form modules that
+  // may somehow get deleted before their editor. This is useful for re-use existing editors like
+  // it iss done in EchoLabDelayLineModuleEditor.
 
   int dummy = 0;
 
@@ -575,17 +584,23 @@ void UnitTestToolChain::runTestEqualizer()
   // A test using a pointer:
   {
     jura::EqualizerAudioModule* eq = new jura::EqualizerAudioModule(&lock);
-
     jura::AudioModuleEditor* editor = eq->createEditor(0);
 
-    delete eq;  
-    // This trigger the access violation that triggers a debug break. And the call stack in the 
-    // debugger is *very* strange. There are functions in it that do not seem to be called by outer
-    // functions. From the stack, it looks like  FileManager::setActiveFileIfInList  is called from
-    // EqualizerPlotEditor::updatePlot  But it isn't called there. It calls 
-    // equalizerModuleToEdit->getMagnitudeResponse. Very weird! 
+    delete editor;
+    // Needed to avoid the access violation below.
 
-    int dummy = 0;
+    delete eq;  
+    // This trigger the access violation that triggers a debug break unless we delete the editor 
+    // first. And the call stack in the debugger is *very* strange. There are functions in it that 
+    // do not seem to be called by outer functions. From the stack, it looks like 
+    // FileManager::setActiveFileIfInList is called from EqualizerPlotEditor::updatePlot. 
+    // But it isn't called there. It calls equalizerModuleToEdit->getMagnitudeResponse. Very weird! 
+    //
+    // Now I'm not totally sure but I think within ToolChain in it's usual context, the AudioModule
+    // will always outlive its editor, so a situation in which a module is deleted before the 
+    // corresponding editor is deleted will not occur in practice. Or will it? We actually do have
+    // some infrastructure in place to handle such situations - namely 
+    // jura::AudioModuleDeletionWatcher. 
   }
 
 
@@ -603,8 +618,6 @@ void UnitTestToolChain::runTestEqualizer()
   }
   */
   
-
-
   int dummy = 0;
 
 }
