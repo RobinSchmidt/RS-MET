@@ -445,12 +445,22 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   juce::String scp = "Scope";
   juce::String non = "None";
 
+  // Chain: None
+  expect(tlChn.getNumModules() == 1);  // The "None" module at the end of the chain counts, too
+
   // Insert an Equalizer into the first slot via the editor:
-  editor->replaceModule(0, eq);
-  expect(tlChn.getNumModules() == 2);  // The "None" module at the end of the chain counts, too
+  editor->replaceModule(0, eq);        // Chain: Equalizer, None
+  expect(tlChn.getNumModules() == 2);
   expect(tlChn.getModuleAt(0)->getModuleTypeName() == eq);
   expect(tlChn.getModuleAt(1)->getModuleTypeName() == non);
 
+  editor->replaceModule(1, fs);        // Chain: Equalizer, None
+
+
+  // Maybe write a helper function that gets a pointer to a ToolChain object and an array of 
+  // strings and checks if the chain has modules plugged in as the string-array says. We want to
+  // call it like:  doSlotsContain(tlChn, { eq, non } );   It may make sense to have this as 
+  // member function
 
   int dummy = 0;
 }
