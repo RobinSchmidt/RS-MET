@@ -219,6 +219,9 @@ public:
 
   int activeSlot = 0;            // slot for which the editor is currently shown 
   // for Elan's subclass (?)
+  // Maybe rename to selectedSlot, and write a getSelectedSlot function..or maybe keep the name
+  // and write a getActiveSlot. I think, in the xml-files, it's also called ActiveSlot, so we 
+  // should be consistent with that
 
 
 

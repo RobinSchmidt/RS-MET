@@ -492,39 +492,68 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   //std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
 
   juce::String eq  = "Equalizer";
-  //juce::String eq  = "EngineersFilter";  // For test - because the "Equalizer" leads to a crash
   juce::String fs  = "FuncShaper";
   juce::String ldr = "Ladder";
   juce::String scp = "Scope";
   juce::String non = "None";
 
   // Insert some modules into the slots via the editor and check if after each insertion, the slots
-  // are filled with the expected modules:
+  // are filled with the expected modules. Replacing the "None" module at the end with some actually
+  // useful module will also have the side effect of selecting/activating the just inserted module.
+
   expect(doSlotsContain(&tlChn, { non }));
   expect(areArraysConsistent(editor));
+  expect(tlChn.activeSlot == 0); 
 
   editor->replaceModule(0, eq);
   expect(doSlotsContain(&tlChn, { eq, non }));
   expect(areArraysConsistent(editor));
+  expect(tlChn.activeSlot == 0); 
 
   editor->replaceModule(1, fs);
   expect(doSlotsContain(&tlChn, { eq, fs, non }));
   expect(areArraysConsistent(editor));
+  expect(tlChn.activeSlot == 1); 
 
   editor->replaceModule(2, ldr);
   expect(doSlotsContain(&tlChn, { eq, fs, ldr, non }));
   expect(areArraysConsistent(editor));
+  expect(tlChn.activeSlot == 2); 
 
   editor->replaceModule(3, scp);
   expect(doSlotsContain(&tlChn, { eq, fs, ldr, scp, non }));
   expect(areArraysConsistent(editor));
+  expect(tlChn.activeSlot == 3); 
 
-  // Test swapping modules:
+
+  // Test swapping modules. If one of the swapped modules is the active one, the new active one 
+  // will also switch to the other. This is the behavior we wnat when bubbling up or down the 
+  // selectors - we want the selected module to remain selected, even when it's no at a different
+  // position.
+
   editor->swapModules(1, 3);
   expect(doSlotsContain(&tlChn, { eq, scp, ldr, fs, non }));
   expect(areArraysConsistent(editor));
-  // The tests pass, but we get an access violation in the destructor of ToolChain whne we do
-  // the swap - oh - no we also get it without the swap, so it must be something else
+  expect(tlChn.activeSlot == 3);  // Fails!
+
+
+
+  // Mock clicking on the selector of Slot 3 (index 2) to select the Ladder and then mock clicking
+  // the moveUp button to move the ladder one slot up and check if that leads to the desired 
+  // result:
+
+  //expect(tlChn.activeSlot == 0);     // Before the mouse click, slot 0 is active
+
+  AudioModuleSelector* sel = editor->selectors[2];
+  juce::MouseEvent mouseEvent = getMockMouseDownEvent(8.f, 8.f, sel, sel);
+  sel->mouseDown(mouseEvent);
+
+  expect(tlChn.activeSlot == 2);     // After the mouse click, slot 2 is active
+
+
+
+  //editor->selectors[2]->mouseDown(ev);
+
 
 
   delete editor;  
@@ -535,13 +564,8 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   // may somehow get deleted before their editor. This is useful for re-use existing editors like
   // it iss done in EchoLabDelayLineModuleEditor.
 
-  int dummy = 0;
-
 
   // ToDo:
-  // -I discovered anther problem: plugging in an Equalizer leads to a crash in the destructor. 
-  //  This doesn't happen when we use an EngineersFilter instead. This should be investigated
-  //  furtHer
   // -Maybe instead of calling replaceModule, mock the GUI actions that would in practice trigger
   //  these calls.
   // -I think, swapping two modules will potentially lead to problems when the state is saved and 
