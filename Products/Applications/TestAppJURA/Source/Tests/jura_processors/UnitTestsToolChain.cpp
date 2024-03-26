@@ -576,20 +576,7 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   expect(tlChn.getNumModules() == 5);
   tlChn.activeSlot = 3;
 
-  // Mock clicking on the selector of Slot 3 (index 2) to select the Ladder and then mock clicking
-  // the moveUp button to move the ladder one slot up and check if that leads to the desired 
-  // result:
 
-  //AudioModuleSelector* sel = editor->selectors[2];
-  //juce::MouseEvent mouseEvent = getMockMouseDownEvent(8.f, 8.f, sel, sel);
-  //sel->mouseDown(mouseEvent);
-  // Oh! This will actually open a treeview popup menu on the screen! It appears in the top-left
-  // region of the screen and is unresponsive. Maybe we should achieve the selction in some other 
-  // way. See  ToolChainEditor::mouseDown  its works differently: if the mouse click occured on an
-  // inactive selector, it gets active. If it occurs on an active selector, it opens the menu.
-
-  //expect(tlChn.activeSlot == 2);     // After the mouse click, slot 2 is active
-  //editor->selectors[2]->mouseDown(ev);
 
 
 
@@ -597,9 +584,9 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   // We need to delete the editor before ToolChain gets out of scope - otherwise we trigger an
   // access violation. But this should be expected behavior - we expect anyway that an AudioModule
   // will always outlive its editor. The exception is when the editor is also an 
-  // AudioModuleDeletionWatcher. This mechanism can be used to un-attach editors form modules that
+  // AudioModuleDeletionWatcher. This mechanism can be used to un-attach editors from modules that
   // may somehow get deleted before their editor. This is useful for re-use existing editors like
-  // it iss done in EchoLabDelayLineModuleEditor.
+  // it is done in EchoLabDelayLineModuleEditor.
 
 
   // ToDo:
