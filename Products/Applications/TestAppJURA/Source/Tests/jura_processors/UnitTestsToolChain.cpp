@@ -489,7 +489,9 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
 
   // Some shorthands for the names of the different mdoule types that we intend to add:
   //std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
-  juce::String eq  = "Equalizer";
+
+  //juce::String eq  = "Equalizer";
+  juce::String eq  = "EngineersFilter";  // For test - because the "Equalizer" leads to a crash
   juce::String fs  = "FuncShaper";
   juce::String ldr = "Ladder";
   juce::String scp = "Scope";
@@ -527,10 +529,11 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
 
 
   // ToDo:
+  // -I discovered anther problem: plugging in an Equalizer leads to a crash in the destructor. 
+  //  This doesn't happen when we use an EngineersFilter instead. This should be investigated
+  //  furtHer
   // -Maybe instead of calling replaceModule, mock the GUI actions that would in practice trigger
   //  these calls.
-  // -Maybe check also, if the order of the editors and selectors matches that of modules. Maybe
-  //  have a function isModuleArrayOrderConsistent(editor)
   // -I think, swapping two modules will potentially lead to problems when the state is saved and 
   //  recalled when the swapped modules are modulators. The evaluation order may be different. I 
   //  think we may need to also change their order in the list of modulators. Maybe set up some 
