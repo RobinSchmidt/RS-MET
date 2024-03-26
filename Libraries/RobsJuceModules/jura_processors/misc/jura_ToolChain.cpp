@@ -131,6 +131,8 @@ void ToolChain::replaceModule(int index, const juce::String& type)
 
 void ToolChain::swapModules(int index1, int index2)
 {
+  ScopedLock scopedLock(*lock);
+
   RAPT::rsError("Not yet implemented");
   // ToDo: write a unit test for that first as in TDD - then implement it and make the test pass.
 }
@@ -854,6 +856,13 @@ void ToolChainEditor::replaceModule(int index, const juce::String& type)
     scheduleSelectorArrayUpdate();                // deferred call to updateSelectorArray
                                                   // may be superfluous now
   }
+}
+
+void ToolChainEditor::swapModules(int index1, int index2)
+{
+  ScopedLock scopedLock(*lock);
+  RAPT::rsAssert("Not yet implemented");
+
 }
 
 void ToolChainEditor::updateSelectorArray()

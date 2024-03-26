@@ -323,6 +323,10 @@ public:
   replaces the corresponding editor. */
   void replaceModule(int index, const juce::String& type);
 
+  /* !!!NOT YET IMPLEMENTED!!!
+  Swaps the modules at the two given indices. */
+  void swapModules(int index1, int index2);
+
   /** Updates our array of selector-widgets (comboboxes) to select the module for each slot. */
   void updateSelectorArray();
 
@@ -345,8 +349,7 @@ public:
   void rButtonClicked(RButton *b) override;
   void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
   void changeListenerCallback(ChangeBroadcaster *source) override;
-  void audioModuleWasAdded(ToolChain *chain, 
-    AudioModule *module, int index) override;
+  void audioModuleWasAdded(ToolChain *chain, AudioModule *module, int index) override;
   void audioModuleWillBeDeleted(ToolChain *chain, AudioModule *module, int index) override;
   void audioModuleWasReplaced(ToolChain *chain, AudioModule *oldModule, AudioModule *newModule, 
     int index) override;

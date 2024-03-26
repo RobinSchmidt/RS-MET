@@ -23,7 +23,7 @@ void rsWindowedFilterDesigner::hilbert(T* h, int numTaps, rsWindowFunction::Wind
   {
     for(int k = 0; k < m; k++)
     {
-      T t  = T(k) + T(0.5); 
+      T t  = T(k) + T(0.5);
       T hk = T(1) / (t*PI);
       h[m+k]   *= +hk;
       h[m-k-1] *= -hk;
@@ -39,8 +39,6 @@ void rsWindowedFilterDesigner::hilbert(T* h, int numTaps, rsWindowFunction::Wind
   // ToDo:
   // -Compare the results of this routine with those of some reference implementations from octave 
   //  or numpy/scipy
-  // -Move this as static member into a class rsFiniteImpulseResponseDesigner or 
-  //  rsWindowedFilterDesigner
 }
 
 

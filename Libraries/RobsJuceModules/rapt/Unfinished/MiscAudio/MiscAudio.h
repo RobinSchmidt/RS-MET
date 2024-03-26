@@ -203,6 +203,7 @@ public:
 
   void setHilbertFilterLength(int newLength) 
   { complexifier.setLength(rsMin(newLength, maxLength)); }
+  // Maybe this should take the parameter in (milli)seconds?
 
   void setDrive(TPar newDrive) { drive = newDrive; }
 
@@ -211,6 +212,8 @@ public:
 
 
   void setMakeUp(TPar newMakeUp) { makeUp = newMakeUp; }
+
+  //void setCutoff(TPar newCutoff);
 
 
   //-----------------------------------------------------------------------------------------------

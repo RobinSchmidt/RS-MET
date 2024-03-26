@@ -3087,7 +3087,7 @@ void hilbertFilter()
   int numSamples    = 300;           // Number of samples for test waveform
   double freq       = 441;
   double sampleRate = 44100;
-  bool   smooth     = true;         // Apply a 2-sample MA to even lengths or 3-saempl MA to odd lengths
+  bool   smooth     = false;         // Apply a 2-sample MA to even lengths or 3-saempl MA to odd lengths
 
   // Design the filter and plot its impulse response:
   using WFD = rsWindowedFilterDesigner;
