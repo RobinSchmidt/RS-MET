@@ -1135,7 +1135,11 @@ void ToolChainEditor::rButtonClicked(RButton* b)
   }
   else if(b == moveDownButton)
   {
-
+    int i = chain->activeSlot;
+    int N = chain->getNumModules();
+    if(i < N-1)
+      swapModules(i, i+1);
+    arrangeSelectorWidgets();
   }
   else
     AudioModuleEditor::rButtonClicked(b);
