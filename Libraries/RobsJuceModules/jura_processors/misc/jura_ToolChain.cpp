@@ -922,7 +922,7 @@ void ToolChainEditor::updateEditorArray()
   int numEditors = size(editors);
   AudioModuleEditor *e;
 
-  // remove superfluous editors:
+  // Remove superfluous editors:
   while(numEditors > numModules){
     e = editors[numEditors-1];
     if(e == activeEditor)
@@ -932,11 +932,17 @@ void ToolChainEditor::updateEditorArray()
     numEditors--;
   }
 
-  // add placeholders for required selectors:
+  // Add placeholders for required selectors:
   while(numModules > numEditors){
     append(editors, (AudioModuleEditor*)nullptr);
     numEditors++;
   }
+  // I think, the idea here is that the number of selectors equals the number of modules plugged in
+  // but not for every plugged in module an editor exists. We want to create the editors lazily, 
+  // i.e. only when needed. As long as the user doesn't select a slot i, the editor for slot i does
+  // not need to be created. Therefore, as long as there isn't a valid (pointer to) an editor, we
+  // store a nullptr as placeholder. ...but I'm not so sure about thsi anymore - take it with a 
+  // grain of salt.
 }
 
 void ToolChainEditor::updateActiveEditor()

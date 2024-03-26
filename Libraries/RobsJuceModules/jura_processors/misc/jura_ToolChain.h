@@ -324,7 +324,12 @@ public:
 
   /** Returns an editor for the AudioModule in the given slot index. Note that this may return a 
   nullptr in the case when the "modules" and "editors" arrays are empty (this occurs as a 
-  transitional situation when recalling the state of the chainer from an xml).*/
+  transitional situation when recalling the state of the chainer from an xml). In other situations,
+  it will either return the index-th element of our editor array directly (if the editor exists, 
+  i.e. isn't null) or create the editor, overwrite the nullptr in our array with the valid pointer
+  and then return that. We create editors lazily, i.e. only on demand. The editors array is filled
+  with nullptrs as placeholders until the editor at index i is actually requested via this 
+  function. */
   AudioModuleEditor* getEditorForSlot(int index);
 
   /** Returns the editor for the currently active slot.  */
