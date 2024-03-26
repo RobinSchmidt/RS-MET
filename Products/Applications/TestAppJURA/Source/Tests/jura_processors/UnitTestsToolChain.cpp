@@ -536,11 +536,35 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   expect(areArraysConsistent(editor));
   expect(tlChn.activeSlot == 1);
 
-  RButton* btn = editor->moveUpButton;
-  juce::MouseEvent mouseEvent = getMockMouseDownEvent(8.f, 8.f, btn, btn);
-  btn->mouseDown(mouseEvent);
+  // Now do the swapping via mock GUI events:
+  auto moveUp = [&]()  // Mock click on "Up" button
+  {
+    RButton* btn = editor->moveUpButton;
+    juce::MouseEvent mouseEvent = getMockMouseDownEvent(8.f, 8.f, btn, btn);
+    btn->mouseDown(mouseEvent);
+  };
+  auto moveDown = [&]()  // Mock click on "Up" button
+  {
+    RButton* btn = editor->moveDownButton;
+    juce::MouseEvent mouseEvent = getMockMouseDownEvent(8.f, 8.f, btn, btn);
+    btn->mouseDown(mouseEvent);
+  };
+
+  moveUp();    // Moves Scope from slot 1 to slot 0
   expect(doSlotsContain(&tlChn, { scp, eq, ldr, fs, non }));
   expect(areArraysConsistent(editor));
+  expect(tlChn.activeSlot == 0);
+
+  moveUp();    // Does nothing because the active slot is on top
+  expect(doSlotsContain(&tlChn, { scp, eq, ldr, fs, non }));
+  expect(areArraysConsistent(editor));
+  expect(tlChn.activeSlot == 0);
+
+  moveDown();  // Moves the Scope back into slot 1
+  expect(doSlotsContain(&tlChn, { eq, scp, ldr, fs, non }));
+  expect(areArraysConsistent(editor));
+  expect(tlChn.activeSlot == 1);
+
 
 
   // Mock clicking on the selector of Slot 3 (index 2) to select the Ladder and then mock clicking
@@ -570,6 +594,10 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
 
 
   // ToDo:
+  // -Test what happens when we move a "None" module to the bottom and when we swap the "None" 
+  //  module at the bottom with the module before it. Also check what happens when we move the
+  //  second-to-bottom module down to the last slot. In any case, there should alway be exactly 
+  //  one "None" moduel at the bottom
   // -Maybe instead of calling replaceModule, mock the GUI actions that would in practice trigger
   //  these calls.
   // -I think, swapping two modules will potentially lead to problems when the state is saved and 
