@@ -827,13 +827,9 @@ ToolChainEditor::ToolChainEditor(jura::ToolChain *moduleChainToEdit)
 {
   ScopedLock scopedLock(*lock);
 
-  // Maybe factor out into a createWidgets method, maybe wrap int compile-time conditional like
-  // #ifdef JUCE_DEBUG or RS_DEBUG_WIDGETS ...we'll see... :
-  addWidget( screenShotButton = new RClickButton("Shot") );
-  screenShotButton->setDescription("Take screenshot of the active module");
-  screenShotButton->setDescriptionField(descriptionField);
-  screenShotButton->addRButtonListener(this);
-  screenShotButton->setVisible(false);  // comment for taking screenshots
+
+
+  createWidgets();
 
   chain = moduleChainToEdit;
   setHeadlinePosition(TOP_LEFT);
@@ -999,8 +995,9 @@ void ToolChainEditor::mouseDown(const MouseEvent &e)
   bool wasHandled = false;
   int i = chain->activeSlot;
   juce::Rectangle<int> rect = selectors[i]->getBounds();
-  if(rect.contains(e.x, e.y)){
-    // click was on active slot selector - pass event through:
+  if(rect.contains(e.x, e.y))
+  {
+    // Click was on active slot selector - pass event to the selector:
     selectors[i]->mouseDown(e.getEventRelativeTo(selectors[i]));
     wasHandled = true;
   }
@@ -1008,7 +1005,7 @@ void ToolChainEditor::mouseDown(const MouseEvent &e)
     for(i = 0; i < size(selectors); i++){
       rect = selectors[i]->getBounds();
       if(rect.contains(e.x, e.y)){
-        // click was on inactive slot selector - activate:
+        // Click was on inactive slot selector - activate:
         chain->activeSlot = i;
         updateActiveEditor();
         updateActiveSelector();
@@ -1185,6 +1182,19 @@ void ToolChainEditor::audioModuleWasReplaced(ToolChain *chain,
 {
   ScopedLock scopedLock(*lock);
   deleteEditor(index);
+}
+
+void ToolChainEditor::createWidgets()
+{
+  // Maybe factor out into a createWidgets method, maybe wrap int compile-time conditional like
+  // #ifdef JUCE_DEBUG or RS_DEBUG_WIDGETS ...we'll see... :
+  addWidget( screenShotButton = new RClickButton("Shot") );
+  screenShotButton->setDescription("Take screenshot of the active module");
+  screenShotButton->setDescriptionField(descriptionField);
+  screenShotButton->addRButtonListener(this);
+  //screenShotButton->setVisible(false);  // Comment this for taking screenshots
+
+
 }
 
 void ToolChainEditor::scheduleSelectorArrayUpdate()

@@ -538,20 +538,20 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
 
 
 
+
   // Mock clicking on the selector of Slot 3 (index 2) to select the Ladder and then mock clicking
   // the moveUp button to move the ladder one slot up and check if that leads to the desired 
   // result:
 
-  //expect(tlChn.activeSlot == 0);     // Before the mouse click, slot 0 is active
+  //AudioModuleSelector* sel = editor->selectors[2];
+  //juce::MouseEvent mouseEvent = getMockMouseDownEvent(8.f, 8.f, sel, sel);
+  //sel->mouseDown(mouseEvent);
+  // Oh! This will actually open a treeview popup menu on the screen! It appears in the top-left
+  // region of the screen and is unresponsive. Maybe we should achieve the selction in some other 
+  // way. See  ToolChainEditor::mouseDown  its works differently: if the mouse click occured on an
+  // inactive selector, it gets active. If it occurs on an active selector, it opens the menu.
 
-  AudioModuleSelector* sel = editor->selectors[2];
-  juce::MouseEvent mouseEvent = getMockMouseDownEvent(8.f, 8.f, sel, sel);
-  sel->mouseDown(mouseEvent);
-
-  expect(tlChn.activeSlot == 2);     // After the mouse click, slot 2 is active
-
-
-
+  //expect(tlChn.activeSlot == 2);     // After the mouse click, slot 2 is active
   //editor->selectors[2]->mouseDown(ev);
 
 
