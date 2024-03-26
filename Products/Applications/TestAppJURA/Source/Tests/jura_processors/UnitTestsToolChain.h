@@ -31,6 +31,15 @@ protected:
   /** Checks if all parameters of the module have their default values. */
   bool isInDefaultState(const jura::AudioModule* m);
 
+  /** Checks if the slots of the passed ToolChain are of the correct type. You can call it like 
+
+    doSlotsContain(toolChain, { "Equalizer", "FuncShaper", "None" } );
+  
+  when you expect an Equalizer in the 1st slot, etc.  */
+  bool doSlotsContain(const jura::ToolChain* toolChain, 
+    const std::vector<juce::String>& typeNames);
+
+
   /** Resets all the parameters of the given jura::AudioModule to their default values. */
   void resetParameters(jura::AudioModule* m);
 

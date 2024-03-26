@@ -125,7 +125,10 @@ void ToolChain::replaceModule(int index, const juce::String& type)
     sendAudioModuleWasReplacedNotification(oldModule, newModule, index);
     delete oldModule;
     activeSlot = index;
-    ensureOneEmptySlotAtEnd();
+
+    ensureOneEmptySlotAtEnd(); 
+      // Shouldn't this be called before calling sendAudioModuleWasReplacedNotification? If not, 
+      // document why not.
   }
 }
 
@@ -856,15 +859,20 @@ void ToolChainEditor::replaceModule(int index, const juce::String& type)
     index = chain->activeSlot;
     editors[index] = getEditorForSlot(index);
     updateActiveEditor();
-    scheduleSelectorArrayUpdate();                // deferred call to updateSelectorArray
-                                                  // may be superfluous now
+
+    scheduleSelectorArrayUpdate();                
+    // deferred call to updateSelectorArray may be superfluous now 
+    // ... why?
   }
 }
 
 void ToolChainEditor::swapModules(int index1, int index2)
 {
   ScopedLock scopedLock(*lock);
-  RAPT::rsAssert("Not yet implemented");
+  jassert(index1 >= 0 && index1 < size(editors));  // index out of range
+  jassert(index2 >= 0 && index2 < size(editors));  // index out of range
+
+  jassertfalse; // Not yet implemented
 
 }
 
@@ -1155,7 +1163,10 @@ void ToolChainEditor::audioModuleWasReplaced(ToolChain *chain,
 void ToolChainEditor::scheduleSelectorArrayUpdate()
 {
   sendChangeMessage();
-  // we will receive the message ourselves which causes a call to updateSelectorArray()
+  // We will receive the message ourselves which causes a call to updateSelectorArray()
+  // This is ugly! First of all - document why this update deferral is needed in the first place.
+  // Secondly, do not use the generic ChangeListnerCallback infrastructure for this. It's
+  // confusing.
 }
 
 void ToolChainEditor::deleteEditor(int index)

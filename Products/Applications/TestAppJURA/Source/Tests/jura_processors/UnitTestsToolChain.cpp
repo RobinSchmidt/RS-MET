@@ -430,7 +430,8 @@ void UnitTestToolChain::runTestVoiceManager()
 
 
 // ToDo: make this a member function:
-bool doSlotsContain(const jura::ToolChain* toolChain, const std::vector<juce::String>& typeNames)
+bool UnitTestToolChain::doSlotsContain(const jura::ToolChain* toolChain, 
+  const std::vector<juce::String>& typeNames)
 {
   bool ok = toolChain->getNumModules() == (int) typeNames.size();
   if(!ok)
@@ -459,6 +460,7 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   // Insert some modules into the slots via the editor and check if after each insertion, the slots
   // are filled with the expected modules:
   expect(doSlotsContain(&tlChn, { non }));
+  expect(doSlotsContain(&tlChn, { "None" }));
   editor->replaceModule(0, eq);
   expect(doSlotsContain(&tlChn, { eq, non }));
   editor->replaceModule(1, fs);
@@ -480,6 +482,14 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   // ToDo:
   // -Maybe instead of calling replaceModule, mock the GUI actions that would in practice trigger
   //  these calls.
+  // -Maybe check also, if the order of the editors and selectors matches that of modules. Maybe
+  //  have a function isModuleArrayOrderConsistent(editor)
+  // -I think, swapping two modules will potentially lead to problems when the state is saved and 
+  //  recalled when the swapped modules are modulators. The evaluation order may be different. I 
+  //  think we may need to also change their order in the list of modulators. Maybe set up some 
+  //  cross-feedback modulation between two modulator modules, then swap them, then check, if the 
+  //  output signal is still the same. Maybe two LFO that cross-feedback modulate their 
+  //  frequencies. In such a configuration, the evaluation order matters.
 }
 
 //-------------------------------------------------------------------------------------------------

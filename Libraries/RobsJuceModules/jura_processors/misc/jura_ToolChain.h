@@ -35,8 +35,20 @@ class JUCE_API ToolChain; // forward declaration
 /** Baseclass for objects that must keep track of the state of one (or more) ToolChain 
 objects. Observers must override some callback fucntions to take appropriate actions for various 
 kinds of state changes. 
-\todo: maybe it's sufficient to pass the index in the callbacks - we may not really need to pass 
-the pointers along as well
+
+\ToDo: 
+-Maybe it's sufficient to pass the index in the callbacks - we may not really need to pass 
+ the pointers along as well
+-Why do we need this at all? I think, the only way that modules are added/deleted/replaced/swapped
+ is due to actions on the GUI - and the only observer of these actions is also the GUI. Right? That
+ means means the GUI does not need to use the complicated observer infrastructure just to observe
+ the actions that it itself triggers. Figure out, if these actions are triggered elsewhere - if 
+ not, simplify the implementation and get rid of this observer mechanism. If it turns out that we 
+ need it then document why! Maybe state recall is another circumstance where such actions occur?
+ But in this case, the editor should just be called back one after the stae has been fully 
+ established - it's not interested in every step. Maybe it's for anticipating multiple GUI windows
+ manipulating the state?
+
 */
 
 class JUCE_API ToolChainObserver
