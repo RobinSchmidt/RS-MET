@@ -6,6 +6,7 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   // Test currently worked on copied to top of the function:
+  runTestEqualizer();
   runTestSlotInsertRemoveEtc();
 
 
@@ -553,18 +554,53 @@ void UnitTestToolChain::runTestEqualizer()
   // jura::rsDataPlot
 
   CriticalSection lock;                   // Mocks the pluginLock.
-  jura::EqualizerAudioModule eq(&lock);
-  eq.getParameterByName("StereoMode")->setValue( 1.0, true, true);  // 1 is Stereo L/R
-  jura::AudioModuleEditor* editor = eq.createEditor(0);
-  delete editor;
-  // The call to eq.createEditor(0); triggers an access violation in rsPlotDrawer::drawWithLines 
-  // but only if we call randomizeParameters before. Or 
-  // eq.getParameterByName("StereoMode")->setValue( 0.83, true, true);
-  // It seems to be the stereo mode parameter 0-Linked: ok, 1-L/R: crash, 2-M/S: crash, 3: ok
-  // ..soo it seems like those stereo modes that have two graphs cause problems.
-  // This also happes when actually runnign toolChain. plugging in an Equalizer and swicthing
-  // the stereo mode from the GUI
-  // OK - this crash might be fixed.
+
+  // Tests for the Equalizer in isolation:
+  {
+    jura::EqualizerAudioModule eq(&lock);
+    eq.getParameterByName("StereoMode")->setValue(1.0, true, true);  // 1 is Stereo L/R
+    jura::AudioModuleEditor* editor = eq.createEditor(0);
+    delete editor;
+    // The call to eq.createEditor(0); triggers an access violation in rsPlotDrawer::drawWithLines 
+    // but only if we call randomizeParameters before. Or 
+    // eq.getParameterByName("StereoMode")->setValue( 0.83, true, true);
+    // It seems to be the stereo mode parameter 0-Linked: ok, 1-L/R: crash, 2-M/S: crash, 3: ok
+    // ..soo it seems like those stereo modes that have two graphs cause problems.
+    // This also happes when actually runnign toolChain. plugging in an Equalizer and swicthing
+    // the stereo mode from the GUI
+    // OK - this crash might be fixed.
+  }
+
+
+  // A test using a pointer:
+  {
+    jura::EqualizerAudioModule* eq = new jura::EqualizerAudioModule(&lock);
+    delete eq;
+    int dummy = 0;
+  }
+  // This is OK
+
+
+  
+  // Tests for the Equalizer in ToolChain:
+  {
+    jura::ToolChain tlChn(&lock);
+    jura::ToolChainEditor* editor = dynamic_cast<jura::ToolChainEditor*> (tlChn.createEditor(0));
+    expect(editor != nullptr);
+
+    editor->replaceModule(0, "Equalizer"); 
+    // This leads to an access violation in the destructor of ToolChain that triggers a debug 
+    // break. And the call stack in the debugger is *very* strange. There are functions in it that
+    // do not seem to be called by outer functions. From the stack, it look like
+    // FileManager::setActiveFileIfInList  is called from  EqualizerPlotEditor::updatePlot  But it 
+    // isn't called there. It calls  equalizerModuleToEdit->getMagnitudeResponse
+    // Very weird!
+  }
+  
+
+
+  int dummy = 0;
+
 }
 
 void UnitTestToolChain::runTestMultiAnalyzer()
