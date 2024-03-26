@@ -1116,6 +1116,8 @@ void ToolChainEditor::paintOverChildren(Graphics& g)
 
 void ToolChainEditor::rButtonClicked(RButton* b)
 {
+  ScopedLock scopedLock(*lock);
+
   if(b == screenShotButton)
   {
     juce::Rectangle<int> areaToGrab(0, 0, 200, 100);  // preliminary
@@ -1139,6 +1141,18 @@ void ToolChainEditor::rButtonClicked(RButton* b)
     // https://stackoverflow.com/questions/7292757/how-to-get-screenshot-of-a-window-as-bitmap-object-in-c
     int dummy = 0;
   }
+  else if(b == moveUpButton)
+  {
+    int i = chain->activeSlot;
+    if(i > 0)
+      swapModules(i, i-1);
+
+    // Do we need to trigger a repaint? or call resized to trigger the reaArangement
+  }
+  else if(b == moveDownButton)
+  {
+
+  }
   else
     AudioModuleEditor::rButtonClicked(b);
 }
@@ -1157,7 +1171,12 @@ void ToolChainEditor::changeListenerCallback(ChangeBroadcaster *source)
   if(source == this)
   {
     updateSelectorArray();
-    resized();  // to arrange selectors
+
+    resized();
+    // To arrange selectors - this is ugly. Maybe updateSelectorArray should take a bool parameter
+    // "updateView" or "triggerRepaint" or "reArrangeWidgets". Or maybe write a function 
+    // arrangeSelectorWidgets (factor it out from resized). Then call *that* function here. That 
+    // would be cleaner
   }
   else
     AudioModuleEditor::changeListenerCallback(source);
@@ -1197,21 +1216,16 @@ void ToolChainEditor::createWidgets()
   screenShotButton->addRButtonListener(this);
   screenShotButton->setVisible(false);  // Comment this for taking screenshots
 
-   
-    
-  //addWidget( moveUpButton = new RClickButton("Up") );
+
   addWidget( moveUpButton = new RClickButton(RButton::buttonSymbols::ARROW_UP) );
-  moveUpButton->setDescription("Move active module up.");
+  moveUpButton->setDescription("Move active module up");
   moveUpButton->setDescriptionField(descriptionField);
   moveUpButton->addRButtonListener(this);
 
-  //addWidget( moveDownButton = new RClickButton("Dn") );
   addWidget( moveDownButton = new RClickButton(RButton::buttonSymbols::ARROW_DOWN) );
-  moveDownButton->setDescription("Move active module down.");
+  moveDownButton->setDescription("Move active module down");
   moveDownButton->setDescriptionField(descriptionField);
   moveDownButton->addRButtonListener(this);
-
-  // ToDo: use arrows instead of Up/Dn
 }
 
 void ToolChainEditor::scheduleSelectorArrayUpdate()

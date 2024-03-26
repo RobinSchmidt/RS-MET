@@ -536,7 +536,11 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   expect(areArraysConsistent(editor));
   expect(tlChn.activeSlot == 1);
 
-
+  RButton* btn = editor->moveUpButton;
+  juce::MouseEvent mouseEvent = getMockMouseDownEvent(8.f, 8.f, btn, btn);
+  btn->mouseDown(mouseEvent);
+  expect(doSlotsContain(&tlChn, { scp, eq, ldr, fs, non }));
+  expect(areArraysConsistent(editor));
 
 
   // Mock clicking on the selector of Slot 3 (index 2) to select the Ladder and then mock clicking
