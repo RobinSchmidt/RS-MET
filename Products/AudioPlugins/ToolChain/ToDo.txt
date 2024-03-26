@@ -210,6 +210,9 @@ Features
    before creating ToolChain and uploading it all to GitHub to make the old plugins compilable
    again.
 
+- GUI: The numbers for the slots in ToolChain are small for values of 6 upwards. Apparently, the 
+  font doesn't have large enough glyphs.
+
 ---------------------------------------------------------------------------------------------------
 Modules
 

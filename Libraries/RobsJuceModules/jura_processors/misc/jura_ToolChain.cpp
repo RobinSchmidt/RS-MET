@@ -1130,19 +1130,31 @@ void ToolChainEditor::rButtonClicked(RButton* b)
   {
     int i = chain->activeSlot;
     if(i > 0)
+    {
       swapModules(i, i-1);
-    arrangeSelectorWidgets();
+      chain->ensureOneEmptySlotAtEnd();  // New
+      updateSelectorArray();             // New
+      arrangeSelectorWidgets();
+    }
   }
   else if(b == moveDownButton)
   {
     int i = chain->activeSlot;
     int N = chain->getNumModules();
     if(i < N-1)
+    {
       swapModules(i, i+1);
-    arrangeSelectorWidgets();
+      chain->ensureOneEmptySlotAtEnd();  // New
+      updateSelectorArray();             // New
+      arrangeSelectorWidgets();
+    }
   }
   else
     AudioModuleEditor::rButtonClicked(b);
+
+  // Notes:
+  // -When the lines marked with "New" are uncommented, the beahvior is such that there is 
+  //  always an empty slot available at the end of the chain
 }
 
 void ToolChainEditor::rComboBoxChanged(RComboBox* box)

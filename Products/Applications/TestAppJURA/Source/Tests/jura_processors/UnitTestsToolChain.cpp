@@ -566,6 +566,13 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   expect(tlChn.activeSlot == 1);
 
 
+  // Now check the behavior when "None" moduesl are moved to/from the bottom
+
+  tlChn.activeSlot = 3;  // 2nd to last, FuncShaper
+  moveDown();
+
+
+
 
   // Mock clicking on the selector of Slot 3 (index 2) to select the Ladder and then mock clicking
   // the moveUp button to move the ladder one slot up and check if that leads to the desired 
@@ -597,7 +604,8 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   // -Test what happens when we move a "None" module to the bottom and when we swap the "None" 
   //  module at the bottom with the module before it. Also check what happens when we move the
   //  second-to-bottom module down to the last slot. In any case, there should alway be exactly 
-  //  one "None" moduel at the bottom
+  //  one "None" moduel at the bottom. Check also when a none module comes from above and hits
+  //  the secodn to last slot. 
   // -Maybe instead of calling replaceModule, mock the GUI actions that would in practice trigger
   //  these calls.
   // -I think, swapping two modules will potentially lead to problems when the state is saved and 
