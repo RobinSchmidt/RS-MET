@@ -535,8 +535,9 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   //  recalled when the swapped modules are modulators. The evaluation order may be different. I 
   //  think we may need to also change their order in the list of modulators. Maybe set up some 
   //  cross-feedback modulation between two modulator modules, then swap them, then check, if the 
-  //  output signal is still the same. Maybe two LFO that cross-feedback modulate their 
-  //  frequencies. In such a configuration, the evaluation order matters.
+  //  output signal is still the differen. Maybe two LFO that cross-feedback modulate their 
+  //  frequencies. In such a configuration, the evaluation order matters because of the feedback 
+  //  delay
 }
 
 //-------------------------------------------------------------------------------------------------

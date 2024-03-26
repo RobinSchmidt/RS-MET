@@ -132,12 +132,18 @@ void ToolChain::replaceModule(int index, const juce::String& type)
   }
 }
 
-void ToolChain::swapModules(int index1, int index2)
+void ToolChain::swapModules(int i, int j)
 {
   ScopedLock scopedLock(*lock);
+  std::swap(modules[i], modules[j]);
 
-  RAPT::rsError("Not yet implemented");
-  // ToDo: write a unit test for that first as in TDD - then implement it and make the test pass.
+  // Is that enough? Or maybe we need to tell the ModulationManager about that swap, too? It could
+  // affect the order of the processing. ...Check that with two modulators that cross-modulate
+  // each other. Swapping them may subtly change the output due to the unit sample feedback delay.
+  //
+  // Should we send out a sort of swap-notification like we do when modules get created, deleted or
+  // replaced? Maybe not because in swapping, there is no object creation or deletion involved, so
+  // it's a much less intrusive action
 }
 
 void ToolChain::ensureOneEmptySlotAtEnd()
@@ -866,14 +872,17 @@ void ToolChainEditor::replaceModule(int index, const juce::String& type)
   }
 }
 
-void ToolChainEditor::swapModules(int index1, int index2)
+void ToolChainEditor::swapModules(int i, int j)
 {
   ScopedLock scopedLock(*lock);
-  jassert(index1 >= 0 && index1 < size(editors));  // index out of range
-  jassert(index2 >= 0 && index2 < size(editors));  // index out of range
+  jassert(i >= 0 && i < size(editors));  // index out of range
+  jassert(j >= 0 && j < size(editors));  // index out of range
 
-  jassertfalse; // Not yet implemented
+  chain->swapModules(i, j);
+  std::swap(editors[i],   editors[j]);
+  std::swap(selectors[i], selectors[j]);
 
+  // Maybe we need to trigger a repaint for the selectors array?
 }
 
 void ToolChainEditor::updateSelectorArray()
