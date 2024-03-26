@@ -46,6 +46,31 @@ bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
   return ok;
 }
 
+bool UnitTestToolChain::doSlotsContain(const jura::ToolChain* toolChain, 
+  const std::vector<juce::String>& typeNames)
+{
+  bool ok = toolChain->getNumModules() == (int) typeNames.size();
+  if(!ok)
+    return false;
+  for(int i = 0; i < (int)typeNames.size(); i++)
+    ok &= toolChain->isModuleOfType(i, typeNames[i]);
+  return ok;
+}
+
+bool UnitTestToolChain::areArraysConsistent(jura::ToolChainEditor* editor)
+{
+  bool ok = true;
+
+  //const jura::AudioModule* tmp = editor->getModuleToEdit();
+  
+  const jura::ToolChain* tlChn = dynamic_cast<const jura::ToolChain*>(editor->getModuleToEdit());
+  expect(tlChn != nullptr);
+
+
+  return ok;
+}
+
+
 void UnitTestToolChain::resetParameters(jura::AudioModule* m)
 {
   for(int i = 0; i < m->getNumParameters(); i++)
@@ -429,17 +454,6 @@ void UnitTestToolChain::runTestVoiceManager()
 // and put this test there
 
 
-// ToDo: make this a member function:
-bool UnitTestToolChain::doSlotsContain(const jura::ToolChain* toolChain, 
-  const std::vector<juce::String>& typeNames)
-{
-  bool ok = toolChain->getNumModules() == (int) typeNames.size();
-  if(!ok)
-    return false;
-  for(int i = 0; i < (int)typeNames.size(); i++)
-    ok &= toolChain->isModuleOfType(i, typeNames[i]);
-  return ok;
-}
 
 void UnitTestToolChain::runTestSlotInsertRemoveEtc()
 {
@@ -460,15 +474,24 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   // Insert some modules into the slots via the editor and check if after each insertion, the slots
   // are filled with the expected modules:
   expect(doSlotsContain(&tlChn, { non }));
-  expect(doSlotsContain(&tlChn, { "None" }));
+  expect(areArraysConsistent(editor));
+
   editor->replaceModule(0, eq);
   expect(doSlotsContain(&tlChn, { eq, non }));
+  expect(areArraysConsistent(editor));
+
   editor->replaceModule(1, fs);
   expect(doSlotsContain(&tlChn, { eq, fs, non }));
+  expect(areArraysConsistent(editor));
+
   editor->replaceModule(2, ldr);
   expect(doSlotsContain(&tlChn, { eq, fs, ldr, non }));
+  expect(areArraysConsistent(editor));
+
   editor->replaceModule(3, scp);
   expect(doSlotsContain(&tlChn, { eq, fs, ldr, scp, non }));
+  expect(areArraysConsistent(editor));
+
 
   // This currently fails because swapping is not yet implemented:
   editor->swapModules(1, 3);
