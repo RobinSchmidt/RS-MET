@@ -60,40 +60,38 @@ bool UnitTestToolChain::doSlotsContain(const jura::ToolChain* toolChain,
 bool UnitTestToolChain::areArraysConsistent(jura::ToolChainEditor* editor)
 {
   bool ok = true;
-
-  //const jura::AudioModule* tmp = editor->getModuleToEdit();
-  
   const jura::ToolChain* tlChn = dynamic_cast<const jura::ToolChain*>(editor->getModuleToEdit());
   expect(tlChn != nullptr);
 
-  // Check if sizes match:
+  // Check if array sizes match:
   int numModules = tlChn->getNumModules();
   ok &= editor->editors.size()   == numModules;
   ok &= editor->selectors.size() == numModules;
   if(!ok)
     return false;
 
-  // Check if the editors correspond to the right modules:
+  // Check if array contents match:
   for(int i = 0; i < numModules; i++)
   {
-    jura::AudioModule*       m  = tlChn->modules[i];     // i-th module
-    //jura::AudioModuleEditor* e  = editor->editors[i];    // i-th editor
+    // Check if i-th editor corresponds to i-th module:
+    jura::AudioModule*       m  = tlChn->modules[i];           // i-th module
     jura::AudioModuleEditor* e  = editor->getEditorForSlot(i); // i-th editor (call may create it)
     const jura::AudioModule* em = e->getModuleToEdit();        // module edited by i-th editor
     ok &= m == em;
-  }
 
+    // Check if i-th selector corresponds to the type of i-th module:
+    jura::AudioModuleSelector* s = editor->selectors[i];       // i-th selector (combo box)
+    juce::String selectorText = s->getSelectedItemText();
+    juce::String moduleType   = m->getModuleTypeName();
+    ok &= selectorText == moduleType;
+  }
 
   return ok;
 
   // Notes:
   // -The function getEditorForSlot(i) may either return an existing editor or create one if the 
   //  editor for the respective slot did not already exist.
-
-
-  // -We get an access violation. Apparently it is not the case that every module has an editor.
-  //  I think the editors are created only when needed as in lazy initialization? Figure out, if 
-  //  this is the case. It would indeed make a lot of sense to save memory. 
+  // -A "selector" is a combo-box by which the type of AudioModule can be selected
 }
 
 
