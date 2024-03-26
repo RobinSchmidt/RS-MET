@@ -1250,8 +1250,8 @@ void ToolChainEditor::arrangeSelectorWidgets()
   int bw  = 16;  // Button width
   int bh  = 16;  // Button height
   x = stateWidgetSet->getRight() - 2*bw + 2;
-  moveDownButton->setBounds(x,         y, bw, bh);
-  moveUpButton  ->setBounds(x + bw - 2, y, bw, bh);
+  moveDownButton->setBounds(x,      y, bw, bh);
+  moveUpButton  ->setBounds(x+bw-2, y, bw, bh);
 }
 
 void ToolChainEditor::scheduleSelectorArrayUpdate()

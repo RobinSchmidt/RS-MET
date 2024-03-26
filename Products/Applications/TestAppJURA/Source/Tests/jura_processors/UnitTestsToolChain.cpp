@@ -566,13 +566,15 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   expect(tlChn.activeSlot == 1);
 
 
-  // Now check the behavior when "None" moduesl are moved to/from the bottom
-
+  // Now check the behavior when "None" modules are moved to/from the bottom
+  expect(tlChn.getNumModules() == 5);
   tlChn.activeSlot = 3;  // 2nd to last, FuncShaper
   moveDown();
-
-
-
+  expect(tlChn.getNumModules() == 6);
+  tlChn.activeSlot = 4; 
+  moveUp();
+  expect(tlChn.getNumModules() == 5);
+  tlChn.activeSlot = 3;
 
   // Mock clicking on the selector of Slot 3 (index 2) to select the Ladder and then mock clicking
   // the moveUp button to move the ladder one slot up and check if that leads to the desired 
