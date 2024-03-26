@@ -1022,7 +1022,7 @@ void ToolChainEditor::resized()
 
   Editor::resized();
 
-  int x, y, w, h, dy, margin;
+  int x, y, w, h, margin;
   margin = 4;
   x = margin;
   y = getHeadlineBottom() + margin;
@@ -1031,32 +1031,9 @@ void ToolChainEditor::resized()
   stateWidgetSet->setBounds(x, y, w, 32);
 
 
+  arrangeSelectorWidgets();
 
-
-  // Arrange selectors:
-  y  = getPresetSectionBottom() + margin;
-  dy = h-2;
-  for(int i = 0; i < size(selectors); i++){
-    selectors[i]->setBounds(x, y, w, h);
-    y += dy;
-  }
-  // todo: maybe put a number in front of the selector - it's easier to see what module is in which
-  // slot when the slots are numbered - especially if there are several slots with the same type
-  // of module - in the modualtion setup, we may see Slot7-TriSawModulator, Slot8-TriSawModulator, 
-  // etc. and to figure out which is which, we may have to actually count slots
-
-  int bw  = 16;  // Button width
-  int bh  = 16;  // Button height
-  x = stateWidgetSet->getRight() - 2*bw + 2;
-  moveDownButton->setBounds(x,         y, bw, bh);
-  moveUpButton  ->setBounds(x + bw - 2, y, bw, bh);
-
-
-
-
-
-  //y += dy;
-  y = moveUpButton->getY() + dy;
+  y = moveUpButton->getY() + 20;
   screenShotButton->setBounds(margin, y+margin, 32, 16); // preliminary
 
 
@@ -1234,6 +1211,30 @@ void ToolChainEditor::createWidgets()
   moveDownButton->setDescription("Move active module down");
   moveDownButton->setDescriptionField(descriptionField);
   moveDownButton->addRButtonListener(this);
+}
+
+void ToolChainEditor::arrangeSelectorWidgets()
+{
+  int margin = 4;
+  int x = margin;
+  int y = getPresetSectionBottom() + margin;
+  int w = leftColumnWidth - x - margin;
+  int h = 16;
+  int dy = h-2;
+  for(int i = 0; i < size(selectors); i++){
+    selectors[i]->setBounds(x, y, w, h);
+    y += dy;
+  }
+  // ToDo: maybe put a number in front of the selector - it's easier to see what module is in which
+  // slot when the slots are numbered - especially if there are several slots with the same type
+  // of module - in the modualtion setup, we may see Slot7-TriSawModulator, Slot8-TriSawModulator, 
+  // etc. and to figure out which is which, we may have to actually count slots
+
+  int bw  = 16;  // Button width
+  int bh  = 16;  // Button height
+  x = stateWidgetSet->getRight() - 2*bw + 2;
+  moveDownButton->setBounds(x,         y, bw, bh);
+  moveUpButton  ->setBounds(x + bw - 2, y, bw, bh);
 }
 
 void ToolChainEditor::scheduleSelectorArrayUpdate()

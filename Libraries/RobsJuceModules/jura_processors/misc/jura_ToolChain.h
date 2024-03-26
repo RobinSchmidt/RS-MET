@@ -382,6 +382,9 @@ protected:
   /** Creates the GUI widgets. */
   void createWidgets();
 
+  /** Sets up the bounds of the selector widgets. */
+  void arrangeSelectorWidgets();
+
   /** Sends out a change message that we will receive ourselves. On receive, we will call
   updateSelectorArray. This mechanism is used to cause a deferred update of the selectors array 
   from replaceModule. The deferrence is necessarry, because replaceModule is called from 
