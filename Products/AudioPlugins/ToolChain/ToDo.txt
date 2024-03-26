@@ -94,7 +94,8 @@ we build up our suite of unit tests along the way.
 
 - [4] LadderFilter: In EqulaizerAPO it looks like the filter has an overall gain of around -6 dB
   when no resonance is applied. That gets worse with resonance. -> Make a unit test that checks
-  the DC gain. Resonance makes the bandpass asymmetric
+  the DC gain. Resonance makes the bandpass asymmetric. I think, the makeup gain formula works only
+  for LP24 mode
 
 - [4] EngineersFilter: The frequency responses measured by EqualizerAPO look not exactly like they 
   should. There is some error going on in the stopband range - maybe numerical roundoff? 
