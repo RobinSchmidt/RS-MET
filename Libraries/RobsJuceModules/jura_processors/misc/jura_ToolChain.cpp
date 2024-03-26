@@ -1042,8 +1042,8 @@ void ToolChainEditor::resized()
   // of module - in the modualtion setup, we may see Slot7-TriSawModulator, Slot8-TriSawModulator, 
   // etc. and to figure out which is which, we may have to actually count slots
 
-  int bw  = 20;  // Button width
-  int bh  = 20;  // Button height
+  int bw  = 16;  // Button width
+  int bh  = 16;  // Button height
   x = stateWidgetSet->getRight() - 2*bw + 2;
   moveDownButton->setBounds(x,         y, bw, bh);
   moveUpButton  ->setBounds(x + bw - 2, y, bw, bh);
