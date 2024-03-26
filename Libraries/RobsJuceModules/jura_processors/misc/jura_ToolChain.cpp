@@ -163,6 +163,9 @@ bool ToolChain::isModuleOfType(int index, const juce::String& type)
 
 AudioModule* ToolChain::getModuleAt(int index)
 {
+  // Why is the lock not acquired here like everywhere else? Is this a bug? If it is intentional, 
+  // it should be documented.
+
   if(index < 0 || index >= size(modules))  // no assert, this is supposed to happen
     return nullptr;
   return modules[index];

@@ -137,6 +137,7 @@ public:
   /** Returns true if the module at the given index matches the type specified by the type 
   string. */
   bool isModuleOfType(int index, const juce::String& type);
+  // Should be const?
 
   /** Returns the moduel in the chain at the given index. If the index is out of range, it will 
   return a nullptr. */

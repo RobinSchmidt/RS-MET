@@ -429,6 +429,23 @@ void UnitTestToolChain::runTestVoiceManager()
 // and put this test there
 
 
+// ToDo: make Toolchain pointer const
+bool doSlotsContain(/*const*/ jura::ToolChain* toolChain, const std::vector<juce::String>& typeNames)
+{
+  bool ok = toolChain->getNumModules() == (int) typeNames.size();
+  if(!ok)
+    return false;
+
+  for(int i = 0; i < (int)typeNames.size(); i++)
+  {
+    ok &= toolChain->isModuleOfType(i, typeNames[i]);
+    //ok &= toolChain->getModuleAt(i)->getModuleTypeName() == typeNames[i];
+  }
+
+
+  return ok;
+}
+
 void UnitTestToolChain::runTestSlotInsertRemoveEtc()
 {
   CriticalSection lock;                   // Mocks the pluginLock.
@@ -450,6 +467,10 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
 
   // Insert an Equalizer into the first slot via the editor:
   editor->replaceModule(0, eq);        // Chain: Equalizer, None
+
+  expect(doSlotsContain(&tlChn, { eq, non }));
+
+
   expect(tlChn.getNumModules() == 2);
   expect(tlChn.getModuleAt(0)->getModuleTypeName() == eq);
   expect(tlChn.getModuleAt(1)->getModuleTypeName() == non);
