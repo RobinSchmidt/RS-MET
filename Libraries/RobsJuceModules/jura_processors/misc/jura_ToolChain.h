@@ -385,7 +385,11 @@ protected:
 
   jura::RClickButton *screenShotButton = nullptr;
 
+  jura::RClickButton *moveUpButton   = nullptr;  // Move active module one slot up
+  jura::RClickButton *moveDownButton = nullptr;  // Move active module one slot up
 
+
+  friend class UnitTestToolChain;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChainEditor)
 };
 

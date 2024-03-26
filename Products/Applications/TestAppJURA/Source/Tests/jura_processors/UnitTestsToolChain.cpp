@@ -6,11 +6,12 @@ using namespace jura;
 void UnitTestToolChain::runTest()
 {
   // Test currently worked on copied to top of the function:
-  runTestStraightliner();  // triggers jassert
+  runTestSlotInsertRemoveEtc();
 
 
   // All the tests in order:
   runTestVoiceManager();
+  runTestSlotInsertRemoveEtc();
   runTestEqualizer();
   //runTestMultiAnalyzer();  // Fails - see comments there. Fixing has low priority.
   runTestStraightliner();
@@ -427,6 +428,32 @@ void UnitTestToolChain::runTestVoiceManager()
 // actually, that test belongs into the framework tests - maybe make files UnitTestsAudio/Midi
 // and put this test there
 
+
+void UnitTestToolChain::runTestSlotInsertRemoveEtc()
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+  jura::ToolChain tlChn(&lock);
+
+  jura::ToolChainEditor* editor = dynamic_cast<jura::ToolChainEditor*> (tlChn.createEditor(0));
+  expect(editor != nullptr);
+
+  // Some shorthands for the names of the different mdoule types that we intend to add:
+  //std::vector<juce::String> moduleTypes = tlChn.getAvailableModuleTypes();
+  juce::String eq  = "Equalizer";
+  juce::String fs  = "FuncShaper";
+  juce::String ldr = "Ladder";
+  juce::String scp = "Scope";
+  juce::String non = "None";
+
+  // Insert an Equalizer into the first slot via the editor:
+  editor->replaceModule(0, eq);
+  expect(tlChn.getNumModules() == 2);  // The "None" module at the end of the chain counts, too
+  expect(tlChn.getModuleAt(0)->getModuleTypeName() == eq);
+  expect(tlChn.getModuleAt(1)->getModuleTypeName() == non);
+
+
+  int dummy = 0;
+}
 
 //-------------------------------------------------------------------------------------------------
 // Tests for individual modules:

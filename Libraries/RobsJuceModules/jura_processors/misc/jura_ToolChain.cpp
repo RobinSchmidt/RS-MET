@@ -1110,9 +1110,7 @@ void ToolChainEditor::rComboBoxChanged(RComboBox* box)
   ScopedLock scopedLock(*lock);
   for(int i = 0; i < size(selectors); i++){
     if(box == selectors[i]){
-      replaceModule(i, box->getSelectedItemText());
-    }
-  }
+      replaceModule(i, box->getSelectedItemText()); }}
 }
 
 void ToolChainEditor::changeListenerCallback(ChangeBroadcaster *source)

@@ -59,8 +59,12 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Tests
 
-  // Tests of the infrastructure:
+  // Tests of the infrastructure - ToDo: document them all:
   void runTestVoiceManager();
+
+  /** Tests insertion, removal, replacement and swapping of modules. */
+  void runTestSlotInsertRemoveEtc();
+
   void runTestEditorCreation(int seed);
   void runTestStateRecall(int seed);
   // Some tests use some randomization internally. They can be called with a seed parameter for the 
