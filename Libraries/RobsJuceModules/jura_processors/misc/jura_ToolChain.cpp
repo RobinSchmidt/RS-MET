@@ -1042,17 +1042,14 @@ void ToolChainEditor::resized()
   // of module - in the modualtion setup, we may see Slot7-TriSawModulator, Slot8-TriSawModulator, 
   // etc. and to figure out which is which, we may have to actually count slots
 
+  int bw  = 20;  // Button width
+  int bh  = 20;  // Button height
+  x = stateWidgetSet->getRight() - 2*bw + 2;
+  moveDownButton->setBounds(x,         y, bw, bh);
+  moveUpButton  ->setBounds(x + bw - 2, y, bw, bh);
 
   y += dy;
   screenShotButton->setBounds(margin, y+margin, 32, 16); // preliminary
-
-  // Up/Down buttons:
-  int mid = leftColumnWidth / 2;
-  int bw  = 16;  // Button width
-  int bh  = 16;  // Button height
-  moveDownButton->setBounds(mid - bw/2, y, bw, bh);
-  moveUpButton  ->setBounds(mid + bw/2, y, bw, bh);
-  // They don't really look centered. But maybe they should go to the right anyway. 
 
 
   // set up bounds of the editor for the active module:
@@ -1198,7 +1195,7 @@ void ToolChainEditor::createWidgets()
   screenShotButton->setDescription("Take screenshot of the active module. Ends up in C:/Temp/Test.png");
   screenShotButton->setDescriptionField(descriptionField);
   screenShotButton->addRButtonListener(this);
-  //screenShotButton->setVisible(false);  // Comment this for taking screenshots
+  screenShotButton->setVisible(false);  // Comment this for taking screenshots
 
    
     
