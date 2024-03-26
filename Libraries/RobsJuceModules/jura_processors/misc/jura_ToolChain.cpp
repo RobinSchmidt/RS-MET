@@ -137,9 +137,21 @@ void ToolChain::swapModules(int i, int j)
   ScopedLock scopedLock(*lock);
   std::swap(modules[i], modules[j]);
 
+  // If one the indices was the active slot then after swap, the other one shall be active:
+  if(activeSlot == i)
+    activeSlot = j;
+  else if(activeSlot == j)
+    activeSlot = i;
+  // This behavior is desired for bubbling up or down modules in the chain without affecting which
+  // editor is shown on the right. The editor will just remain in place but now just refer to a 
+  // different active slot.
+
+
   // Is that enough? Or maybe we need to tell the ModulationManager about that swap, too? It could
   // affect the order of the processing. ...Check that with two modulators that cross-modulate
-  // each other. Swapping them may subtly change the output due to the unit sample feedback delay.
+  // each other (two LFOs doing crossfeedback FM). Swapping them may subtly change the output due 
+  // to the unit sample feedback delay. If the output is unchanged after the swap, something might 
+  // be wrong
   //
   // Should we send out a sort of swap-notification like we do when modules get created, deleted or
   // replaced? Maybe not because in swapping, there is no object creation or deletion involved, so

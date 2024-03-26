@@ -534,7 +534,7 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   editor->swapModules(1, 3);
   expect(doSlotsContain(&tlChn, { eq, scp, ldr, fs, non }));
   expect(areArraysConsistent(editor));
-  expect(tlChn.activeSlot == 3);  // Fails!
+  expect(tlChn.activeSlot == 1);
 
 
 
