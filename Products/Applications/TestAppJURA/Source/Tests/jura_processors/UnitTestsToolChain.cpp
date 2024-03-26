@@ -468,6 +468,11 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
   editor->replaceModule(3, scp);
   expect(doSlotsContain(&tlChn, { eq, fs, ldr, scp, non }));
 
+  // This currently fails because swapping is not yet implemented:
+  editor->swapModules(1, 3);
+  expect(doSlotsContain(&tlChn, { eq, scp, ldr, fs, non }));
+
+
 
   int dummy = 0;
 
