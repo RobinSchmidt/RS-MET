@@ -1046,6 +1046,14 @@ void ToolChainEditor::resized()
   y += dy;
   screenShotButton->setBounds(margin, y+margin, 32, 16); // preliminary
 
+  // Up/Down buttons:
+  int mid = leftColumnWidth / 2;
+  int bw  = 16;  // Button width
+  int bh  = 16;  // Button height
+  moveDownButton->setBounds(mid - bw/2, y, bw, bh);
+  moveUpButton  ->setBounds(mid + bw/2, y, bw, bh);
+  // They don't really look centered. But maybe they should go to the right anyway. 
+
 
   // set up bounds of the editor for the active module:
   if(activeEditor != nullptr){
