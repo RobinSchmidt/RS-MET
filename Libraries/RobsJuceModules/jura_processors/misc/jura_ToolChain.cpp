@@ -1030,7 +1030,10 @@ void ToolChainEditor::resized()
   h = 16;
   stateWidgetSet->setBounds(x, y, w, 32);
 
-  // arrange selectors:
+
+
+
+  // Arrange selectors:
   y  = getPresetSectionBottom() + margin;
   dy = h-2;
   for(int i = 0; i < size(selectors); i++){
@@ -1048,7 +1051,12 @@ void ToolChainEditor::resized()
   moveDownButton->setBounds(x,         y, bw, bh);
   moveUpButton  ->setBounds(x + bw - 2, y, bw, bh);
 
-  y += dy;
+
+
+
+
+  //y += dy;
+  y = moveUpButton->getY() + dy;
   screenShotButton->setBounds(margin, y+margin, 32, 16); // preliminary
 
 
@@ -1214,7 +1222,7 @@ void ToolChainEditor::createWidgets()
   screenShotButton->setDescription("Take screenshot of the active module. Ends up in C:/Temp/Test.png");
   screenShotButton->setDescriptionField(descriptionField);
   screenShotButton->addRButtonListener(this);
-  screenShotButton->setVisible(false);  // Comment this for taking screenshots
+  //screenShotButton->setVisible(false);  // Comment this for taking screenshots
 
 
   addWidget( moveUpButton = new RClickButton(RButton::buttonSymbols::ARROW_UP) );
