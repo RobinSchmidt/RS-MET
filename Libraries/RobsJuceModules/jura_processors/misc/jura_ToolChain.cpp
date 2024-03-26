@@ -1131,8 +1131,7 @@ void ToolChainEditor::rButtonClicked(RButton* b)
     int i = chain->activeSlot;
     if(i > 0)
       swapModules(i, i-1);
-
-    // Do we need to trigger a repaint? or call resized to trigger the reaArangement
+    arrangeSelectorWidgets();
   }
   else if(b == moveDownButton)
   {
@@ -1157,11 +1156,13 @@ void ToolChainEditor::changeListenerCallback(ChangeBroadcaster *source)
   {
     updateSelectorArray();
 
-    resized();
+    arrangeSelectorWidgets();  // New
+
+    //resized();  // OLD
     // To arrange selectors - this is ugly. Maybe updateSelectorArray should take a bool parameter
     // "updateView" or "triggerRepaint" or "reArrangeWidgets". Or maybe write a function 
     // arrangeSelectorWidgets (factor it out from resized). Then call *that* function here. That 
-    // would be cleaner
+    // would be cleaner. OK - Done. Needs some tests and then this old code can be deleted.
   }
   else
     AudioModuleEditor::changeListenerCallback(source);
