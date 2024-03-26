@@ -575,13 +575,23 @@ void UnitTestToolChain::runTestEqualizer()
   // A test using a pointer:
   {
     jura::EqualizerAudioModule* eq = new jura::EqualizerAudioModule(&lock);
-    delete eq;
+
+    jura::AudioModuleEditor* editor = eq->createEditor(0);
+
+    delete eq;  
+    // This trigger the access violation that triggers a debug break. And the call stack in the 
+    // debugger is *very* strange. There are functions in it that do not seem to be called by outer
+    // functions. From the stack, it looks like  FileManager::setActiveFileIfInList  is called from
+    // EqualizerPlotEditor::updatePlot  But it isn't called there. It calls 
+    // equalizerModuleToEdit->getMagnitudeResponse. Very weird! 
+
     int dummy = 0;
   }
-  // This is OK
+
 
 
   
+  /*
   // Tests for the Equalizer in ToolChain:
   {
     jura::ToolChain tlChn(&lock);
@@ -589,13 +599,9 @@ void UnitTestToolChain::runTestEqualizer()
     expect(editor != nullptr);
 
     editor->replaceModule(0, "Equalizer"); 
-    // This leads to an access violation in the destructor of ToolChain that triggers a debug 
-    // break. And the call stack in the debugger is *very* strange. There are functions in it that
-    // do not seem to be called by outer functions. From the stack, it look like
-    // FileManager::setActiveFileIfInList  is called from  EqualizerPlotEditor::updatePlot  But it 
-    // isn't called there. It calls  equalizerModuleToEdit->getMagnitudeResponse
-    // Very weird!
+
   }
+  */
   
 
 
