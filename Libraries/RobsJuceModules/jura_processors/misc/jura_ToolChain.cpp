@@ -1199,12 +1199,14 @@ void ToolChainEditor::createWidgets()
 
    
     
-  addWidget( moveUpButton = new RClickButton("Up") );
+  //addWidget( moveUpButton = new RClickButton("Up") );
+  addWidget( moveUpButton = new RClickButton(RButton::buttonSymbols::ARROW_UP) );
   moveUpButton->setDescription("Move active module up.");
   moveUpButton->setDescriptionField(descriptionField);
   moveUpButton->addRButtonListener(this);
 
-  addWidget( moveDownButton = new RClickButton("Dn") );
+  //addWidget( moveDownButton = new RClickButton("Dn") );
+  addWidget( moveDownButton = new RClickButton(RButton::buttonSymbols::ARROW_DOWN) );
   moveDownButton->setDescription("Move active module down.");
   moveDownButton->setDescriptionField(descriptionField);
   moveDownButton->addRButtonListener(this);
