@@ -894,8 +894,8 @@ void ToolChainEditor::replaceModule(int index, const juce::String& type)
 void ToolChainEditor::swapModules(int i, int j)
 {
   ScopedLock scopedLock(*lock);
-  jassert(i >= 0 && i < size(editors));  // index out of range
-  jassert(j >= 0 && j < size(editors));  // index out of range
+  jassert(i >= 0 && i < size(editors));  // Index out of range
+  jassert(j >= 0 && j < size(editors));  // Index out of range
 
   // Do the swaps:
   chain->swapModules(i, j);
@@ -907,11 +907,6 @@ void ToolChainEditor::swapModules(int i, int j)
     editors[i]->setHeadlineText(chain->getModuleAt(i)->getModuleName());
   if(editors[j] != nullptr)
     editors[j]->setHeadlineText(chain->getModuleAt(j)->getModuleName());
-
-
-
-  // Maybe we need to trigger a repaint for the selectors array? Nope. It's fine. But maybe we need
-  // to update the headline string of the editor because it contains the slot number.
 }
 
 void ToolChainEditor::updateSelectorArray()

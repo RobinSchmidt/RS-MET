@@ -71,7 +71,7 @@ bool UnitTestToolChain::areArraysConsistent(jura::ToolChainEditor* editor)
   if(!ok)
     return false;
 
-  // Check if array contents match:
+  // Check if array contents match (plus some additional stuff):
   for(int i = 0; i < numModules; i++)
   {
     // Check if i-th editor corresponds to i-th module:
@@ -86,13 +86,14 @@ bool UnitTestToolChain::areArraysConsistent(jura::ToolChainEditor* editor)
     juce::String typeName   = m->getModuleTypeName();
     ok &= selectorText == typeName;
 
-    // Check, if the display name of the module is correct. It should be Slot + "i-" + "TypeName"
-    juce::String editorText = m->getModuleName();
-    ok &= editorText == "Slot" + juce::String(i+1) + "-" + typeName;
-    // This new addition makes the unit test fail!
+    // Check, if the display name in the module is correct. It should be Slot + "i-" + "TypeName"
+    juce::String moduleName = m->getModuleName();
+    ok &= moduleName == "Slot" + juce::String(i+1) + "-" + typeName;
 
+    // Check if display name in the editor is correct:
+    juce::String editorName = e->getHeadlineString();
+    ok &= editorName == moduleName;
     int dummy = 0;
-
   }
 
   return ok;
