@@ -4891,6 +4891,10 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
   };
   glyphBitmaps[108] = new ColourizableBitmap(5, 16, glyph_l);
 
+
+  // Here, the lowercase m is wider than the uppercase M. In the smaller font, it's the other 
+  // way around. That's inconsistent! Maybe narrow the lowercase m to 11x16
+
   unsigned char glyph_M[11*16] = 
   {
     X,X,X,_,_,_,_,_,X,X,X,
@@ -4932,6 +4936,8 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
     X,X,X,_,_,X,X,X,_,_,X,X,X
   };
   glyphBitmaps[109] = new ColourizableBitmap(13, 16, glyph_m);
+
+
 
   unsigned char glyph_N[10*16] = 
   {
@@ -5397,6 +5403,9 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
   glyphBitmaps[120] = new ColourizableBitmap(11, 16, glyph_x);
 
 
+
+  // These Ys are inconsistent with those of the smaller font:
+
   unsigned char glyph_Y[11*16] = 
   {
     X,X,X,_,_,_,_,_,X,X,X,
@@ -5438,6 +5447,8 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
     _,_,_,_,X,X,X,_,_,_,_
   };
   glyphBitmaps[121] = new ColourizableBitmap(11, 16, glyph_y);
+
+
 
   unsigned char glyph_Z[9*16] = 
   {
@@ -5483,6 +5494,9 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
   glyphBitmaps[122] = new ColourizableBitmap(9, 16, glyph_z);
 
 
+
+  // Needs to be bigger:
+
   unsigned char glyph_0[6*10] = 
   {
     _,X,X,X,X,_,
@@ -5497,6 +5511,8 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
     _,X,X,X,X,_
   };
   glyphBitmaps[48] = new ColourizableBitmap(6, 10, glyph_0);
+
+
 
   unsigned char glyph_1[7*16] = 
   {
@@ -5603,6 +5619,10 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
     X,X,X,X,X,X,_,_,_
   };
   glyphBitmaps[53] = new ColourizableBitmap(9, 16, glyph_5);
+
+
+
+  // These are still under construction:
 
   unsigned char glyph_6[6*10] = 
   {
