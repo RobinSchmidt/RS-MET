@@ -165,6 +165,9 @@ we build up our suite of unit tests along the way.
 - [1] Some glyphs in the big font are not so nice (m may be too wide - it's wider than M) and/or 
   inconsistent with the corresponding glyphs in smaller fonts (see Y,y)
 
+- [1] When the chain is long and one clicks on a module with a small editor, parts of the chain
+  may become invisible unless one manually increases the window size
+
 ---------------------------------------------------------------------------------------------------
 Features
 
