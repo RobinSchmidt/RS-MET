@@ -5643,11 +5643,6 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
   glyphBitmaps[53] = new ColourizableBitmap(9, 16, glyph_5);
   */
 
-
-
-  // These are still under construction:
-
-
   unsigned char glyph_6[9*16] = 
   {
     _,_,X,X,X,X,X,X,_,
@@ -5668,41 +5663,28 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
     _,_,X,X,X,X,X,_,_
   };
   glyphBitmaps[54] = new ColourizableBitmap(9, 16, glyph_6);
-  /*
-  unsigned char glyph_6[6*10] = 
+
+
+  unsigned char glyph_7[9*16] = 
   {
-    _,X,X,X,X,X,
-    X,X,X,X,X,X,
-    X,X,_,_,_,_,
-    X,X,_,_,_,_,
-    X,X,X,X,X,_,
-    X,X,X,X,X,X,
-    X,X,_,_,X,X,
-    X,X,_,_,X,X,
-    X,X,X,X,X,X,
-    _,X,X,X,X,_
+    X,X,X,X,X,X,X,X,X,
+    X,X,X,X,X,X,X,X,X,
+    X,X,X,X,X,X,X,X,X,
+    _,_,_,_,_,_,X,X,X,
+    _,_,_,_,_,X,X,X,_,
+    _,_,_,_,_,X,X,X,_,
+    _,_,_,_,X,X,X,_,_,
+    _,_,_,_,X,X,X,_,_,
+    _,_,_,X,X,X,_,_,_,
+    _,_,_,X,X,X,_,_,_,
+    _,_,X,X,X,_,_,_,_,
+    _,_,X,X,X,_,_,_,_,
+    _,X,X,X,_,_,_,_,_,
+    _,X,X,X,_,_,_,_,_,
+    X,X,X,_,_,_,_,_,_,
+    X,X,X,_,_,_,_,_,_,
   };
-  glyphBitmaps[54] = new ColourizableBitmap(6, 10, glyph_6);
-  */
-
-
-  unsigned char glyph_7[6*10] = 
-  {
-    X,X,X,X,X,X,
-    X,X,X,X,X,X,
-    _,_,_,_,X,X,
-    _,_,_,X,X,X,
-    _,_,_,X,X,_,
-    _,_,X,X,X,_,
-    _,_,X,X,_,_,
-    _,X,X,X,_,_,
-    _,X,X,_,_,_,
-    X,X,X,_,_,_
-  };
-  glyphBitmaps[55] = new ColourizableBitmap(6, 10, glyph_7);
-
-
-
+  glyphBitmaps[55] = new ColourizableBitmap(9, 16, glyph_7);
 
 
   unsigned char glyph_8[9*16] = 
@@ -5725,24 +5707,11 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
     _,_,X,X,X,X,X,_,_
   };
   glyphBitmaps[56] = new ColourizableBitmap(9, 16, glyph_8);
-  /*
-  unsigned char glyph_8[6*10] = 
-  {
-    _,X,X,X,X,_,
-    X,X,X,X,X,X,
-    X,X,_,_,X,X,
-    X,X,_,_,X,X,
-    _,X,X,X,X,X,
-    X,X,X,X,X,_,
-    X,X,_,_,X,X,
-    X,X,_,_,X,X,
-    X,X,X,X,X,X,
-    _,X,X,X,X,_
-  };
-  glyphBitmaps[56] = new ColourizableBitmap(6, 10, glyph_8);
-  */
 
 
+
+
+  // These are still under construction:
 
 
   unsigned char glyph_9[6*10] = 
