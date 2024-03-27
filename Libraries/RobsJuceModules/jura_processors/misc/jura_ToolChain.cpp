@@ -141,13 +141,9 @@ void ToolChain::swapModules(int i, int j)
 {
   ScopedLock scopedLock(*lock);
 
-  setupModuleName(modules[i], j); 
-  setupModuleName(modules[j], i); 
-
-  std::swap(modules[i], modules[j]);
-
-
-
+  std::swap(modules[i], modules[j]);   // The actual swap in our array of DSP modules
+  setupModuleName(modules[i], i);      // New GUI headlines shall reflect new positions of..
+  setupModuleName(modules[j], j);      // ..the two module that have been swapped
 
   // If one the indices was the active slot then after swap, the other one shall be active:
   if(activeSlot == i)
