@@ -140,7 +140,14 @@ void ToolChain::replaceModule(int index, const juce::String& type)
 void ToolChain::swapModules(int i, int j)
 {
   ScopedLock scopedLock(*lock);
+
+  setupModuleName(modules[i], j); 
+  setupModuleName(modules[j], i); 
+
   std::swap(modules[i], modules[j]);
+
+
+
 
   // If one the indices was the active slot then after swap, the other one shall be active:
   if(activeSlot == i)
