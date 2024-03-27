@@ -79,10 +79,11 @@ protected:
   /** Tests insertion, removal, replacement and swapping of modules. */
   void runTestSlotInsertRemoveEtc();
 
+  // Tests that run through all modules available in ToolChain except some specified ignored ones:
   void runTestEditorCreation(int seed);
-  void runTestStateRecall(int seed);
+  void runTestStateRecall(int seed, const juce::StringArray& ignoreList);
   // Some tests use some randomization internally. They can be called with a seed parameter for the 
-  // PRNG.
+  // PRNG. Maybe these tests should take an array of strings of modules to ignore
 
   // Tests of individual modules:
   void runTestEqualizer();
