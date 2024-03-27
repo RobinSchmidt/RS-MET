@@ -10,6 +10,8 @@ Optional:
 -Polyphonic modulation would be nice to have but may take longer to implement and get right. 
 -Polyphonic automation might be some feature for later to be used with the clap feature for that.
 -Would be nice, if a simple version of the SFZ engine could be included.
+-It would be nice, if the plugin dll could export not only ToolChain but also (some of) its 
+ modules.
 
 
 ---------------------------------------------------------------------------------------------------
