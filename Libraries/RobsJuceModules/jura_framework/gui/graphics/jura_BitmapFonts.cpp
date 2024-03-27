@@ -5709,27 +5709,33 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
   glyphBitmaps[56] = new ColourizableBitmap(9, 16, glyph_8);
 
 
+  unsigned char glyph_9[9*16] = 
+  {
+    _,_,X,X,X,X,X,_,_,
+    _,X,X,X,X,X,X,X,_,
+    X,X,X,X,X,X,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,X,X,X,X,X,X,
+    _,X,X,X,X,X,X,X,X,
+    _,_,X,X,X,X,X,X,X,
+    _,_,_,_,_,_,X,X,X,
+    _,_,_,_,_,_,X,X,X,
+    _,_,_,_,_,_,X,X,X,
+    X,X,X,X,X,X,X,X,X,
+    X,X,X,X,X,X,X,X,_,
+    _,X,X,X,X,X,X,_,_,
+  };
+  glyphBitmaps[57] = new ColourizableBitmap(9, 16, glyph_9);
+
+
+
+
 
 
   // These are still under construction:
-
-
-  unsigned char glyph_9[6*10] = 
-  {
-    _,X,X,X,X,_,
-    X,X,X,X,X,X,
-    X,X,_,_,X,X,
-    X,X,_,_,X,X,
-    X,X,X,X,X,X,
-    _,X,X,X,X,X,
-    _,_,_,_,X,X,
-    _,_,_,_,X,X,
-    X,X,X,X,X,X,
-    X,X,X,X,X,_
-  };
-  glyphBitmaps[57] = new ColourizableBitmap(6, 10, glyph_9);
-
-
 
   unsigned char glyph_sharp[8*10] = 
   {
