@@ -28,18 +28,19 @@ public:
 
 protected:
 
-  // called from runTest:
-  void runTestParameter();
+  // Called from runTest:
+  void runTestBasicParameter();  // Maybe rename to runTestBasicParameter
   void runTestSmoothableParameter();
   void runTestMetaControlledParameter();
   void runTestModulatableParameter();
+  void runTestParameterMapping();
 
-  // functions that perform tests on the passed Parameter pointers:
-  void testParameter(jura::Parameter* p);  // rename to testCallbacks_0_10
 
-  void testSmoothable(jura::rsSmoothableParameter* p);// rename to testCallbacksSmoothable_0_10
-  void testMetaControl(jura::MetaControlledParameter* p); // rename
-  void testModulation(jura::ModulatableParameter* p);
+  // Functions that perform tests on the passed Parameter pointers:
+  void testCallbacks_0_10(jura::Parameter* p);        // _0_10 is the assumed range of p
+  void testCallbacksSmoothable_0_10(jura::rsSmoothableParameter* p);
+  void testCallbacksMetaControlled_0_10(jura::MetaControlledParameter* p);
+  void testCallbacksModulated_0_10(jura::ModulatableParameter* p);
 
   /** Performs smoothing iterations until target value has been reached and returns the number of
   iterations that were needed. */

@@ -46,6 +46,7 @@ AudioModuleEditor* FuncShaperAudioModule::createEditor(int type)
 XmlElement* FuncShaperAudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
+  //juce::String str = xmlState->toString();  // For debug
   xmlState->setAttribute("FunctionString", juce::String(wrappedFuncShaper->getFunctionString()));
   return xmlState;
 }
@@ -84,8 +85,7 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xml,
 void FuncShaperAudioModule::recallFormulaParameterFromXml(const XmlElement& xml, 
   const juce::String& name)
 {
-  juce::String str = xml.toString();  // For debug
-
+  //juce::String str = xml.toString();  // For debug
   setFormulaParameterAndRange(name, 
     xml.getDoubleAttribute(name,          0.0), 
     xml.getDoubleAttribute(name + "Min", -1.0), 

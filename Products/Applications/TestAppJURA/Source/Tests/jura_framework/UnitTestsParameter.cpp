@@ -28,10 +28,11 @@ UnitTestParameter::UnitTestParameter()
 
 void UnitTestParameter::runTest()
 {
-  runTestParameter();
+  runTestBasicParameter();
   runTestSmoothableParameter();
   runTestMetaControlledParameter();
   runTestModulatableParameter();
+  runTestParameterMapping();
 }
 
 void UnitTestParameter::parameterChanged(Parameter* parameterThatHasChanged)
@@ -51,9 +52,11 @@ void UnitTestParameter::resetCounters()
   numNotificationsReceived = 0; 
 }
 
-void UnitTestParameter::runTestParameter()
+void UnitTestParameter::runTestBasicParameter()
 {
-  beginTest("Parameter");
+  // Tests callback behavior of the normal, basic Parameter class, i.e. the baseclass.
+
+  beginTest("BasicParameter");
   resetCounters();
 
   jura::Parameter p("Parameter", 0.0, 10.0, 5.0);
@@ -65,7 +68,7 @@ void UnitTestParameter::runTestParameter()
   expectEquals(p.getValue(),             5.0);
   expectEquals(p.getNormalizedValue(),   0.5);
 
-  testParameter(&p);  // rename - this applies only to parameters with range 0..1, I think
+  testCallbacks_0_10(&p);  // rename - this applies only to parameters with range 0..1, I think
 }
 
 void UnitTestParameter::runTestSmoothableParameter()
@@ -83,8 +86,8 @@ void UnitTestParameter::runTestSmoothableParameter()
   expectEquals(p.getValue(),             5.0);
   expectEquals(p.getNormalizedValue(),   0.5);
 
-  testParameter( &p);
-  testSmoothable(&p);
+  testCallbacks_0_10( &p);
+  testCallbacksSmoothable_0_10(&p);
 }
 
 void UnitTestParameter::runTestMetaControlledParameter()
@@ -103,9 +106,9 @@ void UnitTestParameter::runTestMetaControlledParameter()
   expectEquals(p.getValue(),             5.0);
   expectEquals(p.getNormalizedValue(),   0.5);
 
-  testParameter(  &p);
-  testSmoothable( &p);
-  testMetaControl(&p);
+  testCallbacks_0_10(  &p);
+  testCallbacksSmoothable_0_10( &p);
+  testCallbacksMetaControlled_0_10(&p);
 }
 
 void UnitTestParameter::runTestModulatableParameter()
@@ -125,13 +128,36 @@ void UnitTestParameter::runTestModulatableParameter()
   expectEquals(p.getValue(),             5.0);
   expectEquals(p.getNormalizedValue(),   0.5);
 
-  testParameter(  &p);
-  testSmoothable( &p);
-  testMetaControl(&p);
-  testModulation( &p);
+  testCallbacks_0_10(  &p);
+  testCallbacksSmoothable_0_10( &p);
+  testCallbacksMetaControlled_0_10(&p);
+  testCallbacksModulated_0_10( &p);
 }
 
-void UnitTestParameter::testParameter(jura::Parameter* p)
+void UnitTestParameter::runTestParameterMapping()
+{
+  beginTest("Parameter Mapping");
+
+  using Param = jura::Parameter;
+  using Scale = jura::Parameter::Scaling;
+
+
+  Param pInf("MinusToPlusInf", -INF, +INF, 0.0, Scale::IDENTITY);
+
+  double val;
+  val = pInf.getValue(); expect(val == 0);
+  int dummy = 0;
+
+
+  // ToDo:
+  // -Test different mapping functions
+  // -Test, if inverse mapping works
+  // -Test quantization
+  // -Test what happens when one sets the min and/or max to infinity for a mapper that doesn't
+  //  allow this. Will this be handled gracefully?
+}
+
+void UnitTestParameter::testCallbacks_0_10(jura::Parameter* p)
 {
   resetCounters();
 
@@ -161,7 +187,7 @@ void UnitTestParameter::testParameter(jura::Parameter* p)
   int dummy = 0;
 }
 
-void UnitTestParameter::testSmoothable(jura::rsSmoothableParameter* p)
+void UnitTestParameter::testCallbacksSmoothable_0_10(jura::rsSmoothableParameter* p)
 {
   resetCounters();
   smoothingManager.setSampleRate(1000.0);
@@ -194,7 +220,7 @@ void UnitTestParameter::testSmoothable(jura::rsSmoothableParameter* p)
   p->setSmoothingTime(0.0); // reset to not thwart subsequent tests
 }
 
-void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
+void UnitTestParameter::testCallbacksMetaControlled_0_10(jura::MetaControlledParameter* p)
 {
   resetCounters();
 
@@ -267,7 +293,7 @@ void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
   mapper->initToIdentity(); // to not thwart subsequent tests
 }
 
-void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
+void UnitTestParameter::testCallbacksModulated_0_10(jura::ModulatableParameter* p)
 {
   resetCounters();
 

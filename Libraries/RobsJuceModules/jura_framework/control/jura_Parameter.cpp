@@ -39,8 +39,11 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   jassert(!(newMin <= 0.0 && newScaling == EXPONENTIAL)); 
   // Exponential scaling requires strictly positive minimum value
 
-  jassert((RAPT::rsIsFinite(newMin) && RAPT::rsIsFinite(newMax)) 
-    || (scaling == Scaling::IDENTITY));
+  //bool cond1 = RAPT::rsIsFiniteNumber(newMin) && RAPT::rsIsFiniteNumber(newMax);
+  //bool cond2 = scaling == Scaling::IDENTITY;
+
+  jassert((RAPT::rsIsFiniteNumber(newMin) && RAPT::rsIsFiniteNumber(newMax)) 
+    || (newScaling == Scaling::IDENTITY));
   // For infinite ranges, we currently only support identity mapping because the formulas for other
   // mappings will produce garbage
 

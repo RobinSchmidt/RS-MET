@@ -726,9 +726,24 @@ void UnitTestToolChain::runTestFuncShaper()
 {
   CriticalSection lock;                   // Mocks the pluginLock.
 
+  // The state recall unit test for FuncShaper triggered a jassert. When the state is recalled, it 
+  // want to set up the aMin, aMax, bMin, etc. to NaN. The stored xml element actually contains
+  // these NaNs. The min/max parameters get set to NaN in randomizeParameters.
+
+
   jura::FuncShaperAudioModule fnSh(&lock);
 
-  jura::Parameter* p = fnSh.getParameterByName("aMin");
+  randomizeParameters(&fnSh, 0);
+
+  jura::Parameter*  p = fnSh.getParameterByName("aMin");
+  // Value of p is NaN. It happened in the randomization.
+
+
+  //juce::XmlElement* xml = fnSh.getStateAsXml("", false);
+  //juce::String      str = xml->toString();
+  //delete xml;
+  // That xml string does only contain the offending NaNs if we didi the randomization
+
 
 
 
@@ -737,8 +752,7 @@ void UnitTestToolChain::runTestFuncShaper()
   // add a test to the unit test of Parameter
 
 
-  // When the state is recalled, it want to set up the aMin, aMax, bMin, etc. to NaN. The stored 
-  // xml element actually does contain these NaNs.
+
   //
 
   // I think, the problem is that the aMin, aMax, bMin, etc. parameters have infinite range. In
