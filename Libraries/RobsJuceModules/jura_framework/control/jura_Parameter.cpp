@@ -39,9 +39,6 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   jassert(!(newMin <= 0.0 && newScaling == EXPONENTIAL)); 
   // Exponential scaling requires strictly positive minimum value
 
-  //bool cond1 = RAPT::rsIsFiniteNumber(newMin) && RAPT::rsIsFiniteNumber(newMax);
-  //bool cond2 = scaling == Scaling::IDENTITY;
-
   jassert((RAPT::rsIsFiniteNumber(newMin) && RAPT::rsIsFiniteNumber(newMax)) 
     || (newScaling == Scaling::IDENTITY));
   // For infinite ranges, we currently only support identity mapping because the formulas for other
@@ -50,15 +47,13 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   if(newScaling == STRING)
     newInterval = 1.0;      // multiple choice are parameters represented by integers
 
-  // OLD:
   mapper = new rsParameterMapperLinear();
+  // ToDo: Try to avoid this. This allocation might be undone by the call to setScaling below and 
+  // be replaced by a new allocation. We do not really want to double-allocate. But setRange and
+  // setScaling also do need a valid object. Hmm...that's a somewhat messy situation. Maybe factor 
+  // out a function reAllocateMapper(newScaling, newMin, newMax)...yeah...that seems to be the
+  // cleanest solution.
 
-
-  //// NEW, experimental:
-  //if(scaling == Scaling::IDENTITY)
-  //  mapper = new rsParameterMapperIdentity();
-  //else
-  //  mapper = new rsParameterMapperLinear();
 
   scaling  = newScaling;    
   // Delete soon. Hmm...or maybe not? Not sure. Maybe we should keep it. I think, the scaling 
@@ -78,7 +73,7 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
 
   valueChangeCallbackFunction = [](double) {};
 
-  // I think , we can assign the mapper here to a nullptr and leave it to setScaling to create the
+  // I think, we can assign the mapper here to a nullptr and leave it to setScaling to create the
   // mapper. But it should be called before calling setRange because setRange will call into the 
   // mapper, so itmust exist already.
 }
