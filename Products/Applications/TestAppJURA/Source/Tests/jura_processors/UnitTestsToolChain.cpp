@@ -726,6 +726,33 @@ void UnitTestToolChain::runTestFuncShaper()
 {
   CriticalSection lock;                   // Mocks the pluginLock.
 
+  jura::FuncShaperAudioModule fnSh(&lock);
+
+  jura::Parameter* p = fnSh.getParameterByName("aMin");
+
+
+
+  expect(testStateRecall(&fnSh)); // Triggers a jassert -> Fix this!
+
+
+  // When the state is recalled, it want to set up the aMin, aMax, bMin, etc. to NaN. The stored 
+  // xml element actually does contain these NaNs.
+  //
+
+  // I think, the problem is that the aMin, aMax, bMin, etc. parameters have infinite range. In
+  // FuncShaper::createParameters, they are created like:
+  //
+  //   q = new Parameter("aMin", -INF, +INF, -1.0, Parameter::IDENTITY);
+  //
+  // When the Parameter object is created, it uses by default 
+  //
+  //   mapper   = new rsParameterMapperLinear();
+  // 
+  // I think, the best solution would be to use a ParameterMapperIdentity whenever either min or
+  // max is infinite. It will then be insensitive to min and max, though. Or maybe it should clip
+  // at those values?
+
+
   int dummy = 0;
 }
 
@@ -747,7 +774,7 @@ void UnitTestToolChain::runTestMultiAnalyzer()
   // This fails!
   // Creating the editor apparently sets the TimeWindowLength parameter of the oscilloscope to 1.5
   // I think, this happens when the zoomer with scrollbars is created and wired up. In the 
-  // oscilloscope that parameters are controlled by scrollbars rather than the usula sliders and this
+  // oscilloscope that parameters are controlled by scrollbars rather than the usual sliders and this
   // behaves differently. It's not a big issue so fixing this should have lower priority.
 
   delete preXml;

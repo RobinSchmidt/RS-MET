@@ -69,7 +69,7 @@ public:
   double unmap(double y) const override 
   { 
     if(max == min)
-      return 0.5;    // When max == min, the normalized param is always in the middle
+      return 0.5;    // When max == min, the normalized param is always in the middle (by convention?)
     else
       return (y-min) / (max-min); 
   }
@@ -80,7 +80,10 @@ public:
 
 /** Subclass of rsParameterMapper for identity mapping. This mapper should be used when the range
 must be unrestricted, i.e. go from -inf to +inf. In this case, the linear mapper would produce
-NaN. */
+NaN. The identity mapper is insensitive to trying to set up the range via setRange. Another 
+possible behavior could be to clip - but that's more costly and may be unconvenient with respect
+to unmapping (i.e. the inverse function - it would be undefined when values outside min..max are
+passed). An identity function is always an identity and that's it. */
 
 class JUCE_API rsParameterMapperIdentity : public rsParameterMapper
 {
@@ -91,6 +94,8 @@ public:
   void setRange(double newMin, double newMax) override {} // do nothing
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperIdentity)
 };
+// Maybe call it "Unrestricted". Maybe in some contexts, it may be desired to have a range from 
+// zero to infinity. Maybe that could be called "NonNegative"
 
 //=================================================================================================
 

@@ -84,6 +84,8 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xml,
 void FuncShaperAudioModule::recallFormulaParameterFromXml(const XmlElement& xml, 
   const juce::String& name)
 {
+  juce::String str = xml.toString();  // For debug
+
   setFormulaParameterAndRange(name, 
     xml.getDoubleAttribute(name,          0.0), 
     xml.getDoubleAttribute(name + "Min", -1.0), 

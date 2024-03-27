@@ -33,14 +33,30 @@ bool Parameter::storeDefaultValues = false;
 Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   double newDefault, Scaling newScaling, double newInterval)
 {
-  jassert(!(newMin >= newMax));                           // invalid range
-  jassert(!(newMin <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
+  jassert(!(newMin >= newMax));                           
+  // Invalid range
+
+  jassert(!(newMin <= 0.0 && newScaling == EXPONENTIAL)); 
+  // Exponential scaling requires strictly positive minimum value
+
+  jassert((RAPT::rsIsFinite(newMin) && RAPT::rsIsFinite(newMax)) 
+    || (scaling == Scaling::IDENTITY));
+  // For infinite ranges, we currently only support identity mapping because the formulas for other
+  // mappings will produce garbage
 
   if(newScaling == STRING)
     newInterval = 1.0;      // multiple choice are parameters represented by integers
 
-  mapper   = new rsParameterMapperLinear();
-  scaling  = newScaling;    // delete soon - hmm...or maybe not? Not sure. Maybe we should keep it
+  if(scaling == Scaling::IDENTITY)
+    mapper = new rsParameterMapperIdentity();
+  else
+    mapper = new rsParameterMapperLinear();
+
+  scaling  = newScaling;    
+  // Delete soon. Hmm...or maybe not? Not sure. Maybe we should keep it. I think, the scaling 
+  // member is now redundant with the mapper (which is more flexible). But maybe it's useful to be 
+  // able to report the kind of mapping to some higher levele code.
+
   setRange(newMin, newMax);
   setScaling(newScaling);
 
@@ -51,6 +67,10 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   normalizedValue = valueToProportion(value);
 
   valueChangeCallbackFunction = [](double) {};
+
+  // I think , we can assign the mapper here to a nullptr and leave it to setScaling to create the
+  // mapper. But it should be called before calling setRange because setRange will call into the 
+  // mapper, so itmust exist already.
 }
 
 Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newName,
