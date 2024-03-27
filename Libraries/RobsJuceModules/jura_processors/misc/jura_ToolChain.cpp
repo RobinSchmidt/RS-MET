@@ -902,7 +902,7 @@ void ToolChainEditor::swapModules(int i, int j)
   std::swap(editors[i],   editors[j]);
   std::swap(selectors[i], selectors[j]);
 
-  // Update the headline texts in the editors, if they exists:
+  // Update the headline texts in the editors, if they exist:
   if(editors[i] != nullptr)
     editors[i]->setHeadlineText(chain->getModuleAt(i)->getModuleName());
   if(editors[j] != nullptr)
