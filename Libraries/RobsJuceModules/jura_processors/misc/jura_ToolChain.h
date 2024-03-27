@@ -230,9 +230,14 @@ protected:
   void recallSlotsFromXml(      const XmlElement &xmlState, bool markAsClean);
   void recallModulationsFromXml(const XmlElement &xmlState); // move to ModulatbleAudioModule
 
+  /** Sets up the name of the module as it is shown in headline of the editor, i.e. something 
+  like "Slot2-FuncShaper" for a FuncShaper module sitting in the slot with array-arrayIndex 1 
+  (and therefore display-index 2). */
+  void setupModuleName(AudioModule* mod, int arrayIndex);
+
   /** Sets up the pointers to the SmoothingManager, MetaParameterManager and ModulationManager in
   the passed module. */
-  void setupManagers(AudioModule* module);
+  void setupManagers(AudioModule* mod);
 
   // Might become relevant when we want to allow the user to change the maxNumVoices at runtime. 
   // Currently, this is fixed after construction..

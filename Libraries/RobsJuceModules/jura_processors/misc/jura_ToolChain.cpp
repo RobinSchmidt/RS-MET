@@ -111,7 +111,12 @@ void ToolChain::replaceModule(int index, const juce::String& type)
     AudioModule* oldModule = modules[index];
     //AudioModule* newModule = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
     AudioModule* newModule =  moduleFactory.createModule(type); // maybe we need to set up the managers?
-    newModule->setModuleName("Slot" + String(index+1) + "-" + type);
+
+
+    // Factor out into setupModuleName(module, index), the call it here and also from swapModules:
+    //newModule->setModuleName("Slot" + String(index+1) + "-" + type);  // old
+
+    setupModuleName(newModule, index);   // new
 
     setupManagers(newModule);
     //newModule->setSmoothingManager(smoothingManager);
@@ -548,6 +553,11 @@ void ToolChain::recallModulationsFromXml(const XmlElement &xmlState)
     modManager->setStateFromXml(*modXml);  // recall modulation settings
 }
 
+void ToolChain::setupModuleName(AudioModule* mod, int arrayIndex)
+{
+  mod->setModuleName("Slot" + String(arrayIndex+1) + "-" + mod->getModuleTypeName());
+}
+
 void ToolChain::setupManagers(AudioModule* m)
 {
   m->setSmoothingManager(smoothingManager);
@@ -888,7 +898,8 @@ void ToolChainEditor::swapModules(int i, int j)
   std::swap(editors[i],   editors[j]);
   std::swap(selectors[i], selectors[j]);
 
-  // Maybe we need to trigger a repaint for the selectors array?
+  // Maybe we need to trigger a repaint for the selectors array? Nope. It's fine. But maybe we need
+  // to update the headline string of the editor because it contains the slot number.
 }
 
 void ToolChainEditor::updateSelectorArray()
