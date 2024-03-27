@@ -1234,7 +1234,17 @@ void ToolChainEditor::createWidgets()
   screenShotButton->setDescription("Take screenshot of the active module. Ends up in C:/Temp/Test.png");
   screenShotButton->setDescriptionField(descriptionField);
   screenShotButton->addRButtonListener(this);
-  //screenShotButton->setVisible(false);  // Comment this for taking screenshots
+  screenShotButton->setVisible(false);  
+  // Comment this line if you want to for take screenshots. It's a feature only for internal use
+  // for creating screenshots of the module GUIs for the website etc. See the rButtonClicked 
+  // callback where we handle che clicks on this for more details.
+  // ToDo: Maybe make this an official feature. It could be useful for users as well. But then we 
+  // need to be more careful about where image file ends up. Maybe it would be best to store it in
+  // the clipboard. But that's inconvenient when taking many screenshots. In this case, it would be
+  // more convenient, if files are created with suitably (automatically) chosen names. Maybe 
+  // somehing like Screenshot_ToolChain_Straightliner_Slot1.png. Or shorter: Straightliner.png. 
+  // Maybe with an appended number, when such a file already exists. The path for storing them
+  // could be a member screenshotPath.
 
 
   addWidget( moveUpButton = new RClickButton(RButton::buttonSymbols::ARROW_UP) );

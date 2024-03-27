@@ -195,6 +195,12 @@ Features
     parameters (the difference is that one is linear, the other in dB). The in gains may be named 
     "Input" (and should always be linear). The "thru" gains may be named "PassThrough" and should 
     also be linear.
+  - Add a section at the bottom of the left section with a slider fro BPM with an attached "Sync" 
+    button. The Sync button syncs the BPM to the host (and the slider reflects that). Add  "Notes"
+    display that shows a list of currently held notes - or at least a field that shows the number 
+    of notes. Maybe a field with the last received midi-message. And maybe a global volume meter
+    and perhaps a global volume slider - or maybe two for input-feedthrough and output, i.e. allow
+    layering with input. Maybe these sliders should be small, maybe draggable numbers.
 
  - Here: https://github.com/RobinSchmidt/RS-MET/issues/342  someone requests bringing back single
    purpose plugins, specifically FuncShaper. Just compiling with the line:
