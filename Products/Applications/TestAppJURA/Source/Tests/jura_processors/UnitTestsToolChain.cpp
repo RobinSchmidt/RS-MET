@@ -138,13 +138,19 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
   {
     // Retrieve i-th parameter and its name:
     jura::Parameter* p    = m->getParameterByIndex(i);
-    juce::String     name = p->getName();
+    juce::String     name = p->getName();                // For inspection in the debugger
 
     // Randomize its value:
-    double min    = p->getMinValue();
-    double max    = p->getMaxValue();
-    double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
-    p->setValue(newVal, true, true);
+
+    // OLD:
+    //double min    = p->getMinValue();
+    //double max    = p->getMaxValue();
+    //double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
+    //p->setValue(newVal, true, true);
+
+    // NEW:
+    p->setNormalizedValue(prng.getSample(), true, true);
+    // The new version should work also when the range is infinite
   }
 
   // Call randomizeParameters on all the child-modules recursively:
@@ -739,15 +745,18 @@ void UnitTestToolChain::runTestFuncShaper()
   // Value of p is NaN. It happened in the randomization.
 
 
-  //juce::XmlElement* xml = fnSh.getStateAsXml("", false);
-  //juce::String      str = xml->toString();
-  //delete xml;
+  juce::XmlElement* xml = fnSh.getStateAsXml("", false);
+  juce::String      str = xml->toString();
+  delete xml;
   // That xml string does only contain the offending NaNs if we didi the randomization
 
 
 
 
   expect(testStateRecall(&fnSh)); // Triggers a jassert -> Fix this!
+  // OK...after switching to using the mapper in randomizeParameters, we have no NaN anymore. But
+  // we still hit another error condition: The min may be above the max. The randomization does not
+  // respect such constraints among parameter ranges.
 
   // add a test to the unit test of Parameter
 
