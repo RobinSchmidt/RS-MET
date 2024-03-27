@@ -160,7 +160,10 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
 
     // NEW:
     //p->setNormalizedValue(prng.getSample(), true, true); // Randomize its value
-    // Using this new version breaks the state recall test.
+    // Using this new version breaks the state recall test. I think, this breakage could have 
+    // something to do with with parameter quantization. Comparing some pre/post state XMLs with
+    // this new version of the code, some parameters are quantized in one of the states but not in
+    // the other.
   }
 
   // Call randomizeParameters on all the child-modules recursively:
