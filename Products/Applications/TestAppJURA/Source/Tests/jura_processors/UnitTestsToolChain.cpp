@@ -10,20 +10,13 @@ void UnitTestToolChain::runTest()
   // included in the next release anyway. So we make some ignore lists. The goal is that they 
   // should get shorter over time
   juce::StringArray ignoreListForStateRecall = { "FuncShaper", "MultiBandEffect", "SamplePlayer" };
-  // FuncShaper is actually included in the upcoming release but we have to exclude it from the 
-  // state recall test because of an idiosynchrasy it has: It has the aMin, aMax, bMin, ...etc. 
-  // parameters which have infinite range. That trips up the state recall unit test in a way that 
-  // is understood and expected (see comments in runtestFuncShaper for details). If that's the only
-  // problem, it should be fine because that state recall test produces states that are invalid for
-  // for FuncShaper in its randomization of the parameters which are sanitized in the attempted 
-  // recall - which causes the test to fail because the sanitized state deosn't match the radomized
-  // state.
-  //
+
   // Test currently worked on copied to top of the function:
   //runTestStateRecall(0);
-
-  runTestFuncShaper();
+  //runTestFuncShaper();
   runTestStateRecall(0, ignoreListForStateRecall);
+  // Fails for DebugAudioModule ...What! It seems to fail for more modules now! This is new! Figure
+  // out since which commit this got broken!
 
 
 
@@ -50,6 +43,17 @@ void UnitTestToolChain::runTest()
 
   // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? Figure out!
 
+
+  // Notes:
+  //
+  // -FuncShaper is actually included in the upcoming release but we have to exclude it from the 
+  //  state recall test because of an idiosynchrasy it has: It has the aMin, aMax, bMin, ...etc. 
+  //  parameters which have infinite range. That trips up the state recall unit test in a way that 
+  //  is understood and expected (see comments in runtestFuncShaper for details). If that's the 
+  //  only problem, it should be fine because that state recall test produces states that are 
+  //  invalid for for FuncShaper in its randomization of the parameters which are sanitized in the
+  //  attempted recall - which causes the test to fail because the sanitized state deosn't match 
+  //  the radomized state.
 
 }
 
@@ -143,21 +147,9 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
   int numParams = m->getNumParameters();
   for(int i = 0; i < numParams; i++)
   {
-    // Retrieve i-th parameter and its name:
-    jura::Parameter* p    = m->getParameterByIndex(i);
-    juce::String     name = p->getName();                // For inspection in the debugger
-
-    // Randomize its value:
-
-    // OLD:
-    //double min    = p->getMinValue();
-    //double max    = p->getMaxValue();
-    //double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
-    //p->setValue(newVal, true, true);
-
-    // NEW:
-    p->setNormalizedValue(prng.getSample(), true, true);
-    // The new version should work also when the range is infinite
+    jura::Parameter* p    = m->getParameterByIndex(i);   // Retrieve i-th parameter
+    juce::String     name = p->getName();                // Name for inspection in the debugger
+    p->setNormalizedValue(prng.getSample(), true, true); // Randomize its value
   }
 
   // Call randomizeParameters on all the child-modules recursively:
@@ -177,6 +169,10 @@ bool UnitTestToolChain::testStateRecall(jura::AudioModule* m, int seed)
   resetParameters(m);
   m->setStateFromXml(*preXml, "Recalled", true);
   juce::XmlElement* postXml = m->getStateAsXml("State", true);
+
+  juce::String preStr  = preXml->toString();
+  juce::String postStr = postXml->toString();
+
   bool ok = postXml->isEquivalentTo(preXml, false);
   delete preXml;
   delete postXml;
@@ -758,38 +754,16 @@ void UnitTestToolChain::runTestFuncShaper()
   // That xml string does only contain the offending NaNs if we didi the randomization
 
 
+  //expect(testStateRecall(&fnSh)); 
+  // This test would fail because the randomization of the parameters does does not respect the
+  // aMin <= a <= aMax etc. conditions for a valid FuncShaper state. Upon recall, these randomized
+  // and invalid values are sanitized leading to a different state and therefore to a failure in
+  // the unit test. One solution to this could be to treat different kinds of modules differently 
+  // in the randomization by dispatching to different randomization functions based on 
+  // dynamic_cast. With this, we could also randomize more than just the parameters - for example,
+  // the sample loaded or a string parameter. Yeah...that sound attractive.
+  
 
-
-  expect(testStateRecall(&fnSh)); // Triggers a jassert -> Fix this!
-  // OK...after switching to using the mapper in randomizeParameters, we have no NaN anymore. But
-  // we still hit another error condition: The min may be above the max. The randomization does not
-  // respect such constraints among parameter ranges.
-  // What can we do to make FuncShaper not trigger this anymore?
-  // Sanitize the values written into the xml? No - Sanize the values in:
-  // FuncShaperAudioModule::recallFormulaParameterFromXml
-  //
-  // OK - it doesn't trigger the jassert anymore. But the test doesn't pass. The sanitization 
-  // causes the state recall to fail I guess. The randomization sets the FuncShaper into an invalid
-  // state but after recall, the sanitized state is different.
-
-  // add a test to the unit test of Parameter
-
-
-
-  //
-
-  // I think, the problem is that the aMin, aMax, bMin, etc. parameters have infinite range. In
-  // FuncShaper::createParameters, they are created like:
-  //
-  //   q = new Parameter("aMin", -INF, +INF, -1.0, Parameter::IDENTITY);
-  //
-  // When the Parameter object is created, it uses by default 
-  //
-  //   mapper   = new rsParameterMapperLinear();
-  // 
-  // I think, the best solution would be to use a ParameterMapperIdentity whenever either min or
-  // max is infinite. It will then be insensitive to min and max, though. Or maybe it should clip
-  // at those values?
 
 
   int dummy = 0;

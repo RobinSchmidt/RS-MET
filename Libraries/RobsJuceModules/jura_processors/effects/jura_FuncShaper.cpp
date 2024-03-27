@@ -85,8 +85,6 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xml,
 void FuncShaperAudioModule::recallFormulaParameterFromXml(const XmlElement& xml, 
   const juce::String& name)
 {
-  //juce::String str = xml.toString();  // For debug
-
   // Retrieve formula parameters (e.g. "a", "aMin", "aMax", "b", "bMin", ...):
   double val = xml.getDoubleAttribute(name,          0.0);
   double min = xml.getDoubleAttribute(name + "Min", -1.0);
@@ -96,11 +94,6 @@ void FuncShaperAudioModule::recallFormulaParameterFromXml(const XmlElement& xml,
   max = RAPT::rsMax(min, max);          // Enforce max >= min
   val = RAPT::rsClip(val, min, max);    // Enforce min <= val <= max
   setFormulaParameterAndRange(name, val, min, max);
-
-  //setFormulaParameterAndRange(name, 
-  //  xml.getDoubleAttribute(name,          0.0), 
-  //  xml.getDoubleAttribute(name + "Min", -1.0), 
-  //  xml.getDoubleAttribute(name + "Max", +1.0));
 }
 
 //-------------------------------------------------------------------------------------------------
