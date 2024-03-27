@@ -15,6 +15,7 @@ void UnitTestToolChain::runTest()
   // Test currently worked on copied to top of the function:
   //runTestStateRecall(0);
 
+  runTestFuncShaper();
   runTestStateRecall(0, ignoreListForStateRecall);
 
 
@@ -25,6 +26,7 @@ void UnitTestToolChain::runTest()
   runTestSlotInsertRemoveEtc();
   runTestStateRecall(0, ignoreListForStateRecall);
   runTestEqualizer();
+  runTestFuncShaper();
   //runTestMultiAnalyzer();  // Fails - see comments there. Fixing has low priority.
   runTestStraightliner();
   runTestWaveOscillator();
@@ -155,6 +157,19 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
   }
 }
 
+bool UnitTestToolChain::testStateRecall(jura::AudioModule* m, int seed)
+{
+  randomizeParameters(m, seed);
+  juce::XmlElement* preXml = m->getStateAsXml("State", true);
+  resetParameters(m);
+  m->setStateFromXml(*preXml, "Recalled", true);
+  juce::XmlElement* postXml = m->getStateAsXml("State", true);
+  bool ok = postXml->isEquivalentTo(preXml, false);
+  delete preXml;
+  delete postXml;
+  return ok;
+}
+
 juce::MouseEvent UnitTestToolChain::getMockMouseDownEvent(float mouseX, float mouseY, 
   juce::Component* eventComp, juce::Component* originatorComp)
 {
@@ -282,6 +297,12 @@ void UnitTestToolChain::runTestStateRecall(int seed, const juce::StringArray& ig
     tlChn.replaceModule(0, type);
     AudioModule* m = tlChn.getModuleAt(0);
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
+
+    expect(testStateRecall(m, seed));
+
+
+    /*
+    // Factor out into a bool testStateRecall (done):
     randomizeParameters(m, seed);
     juce::XmlElement* preXml = m->getStateAsXml("State", true);
     resetParameters(m);
@@ -290,6 +311,7 @@ void UnitTestToolChain::runTestStateRecall(int seed, const juce::StringArray& ig
     expect(postXml->isEquivalentTo(preXml, false));
     delete preXml;
     delete postXml;
+    */
   }
 
   // WaveOscillator fails
@@ -698,8 +720,13 @@ void UnitTestToolChain::runTestEqualizer()
   }
   */
   
-  int dummy = 0;
+}
 
+void UnitTestToolChain::runTestFuncShaper()
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+
+  int dummy = 0;
 }
 
 void UnitTestToolChain::runTestMultiAnalyzer()

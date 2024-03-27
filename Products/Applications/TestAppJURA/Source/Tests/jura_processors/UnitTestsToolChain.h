@@ -51,6 +51,12 @@ protected:
   /** Randomizes all the parameters of the given jura::AudioModule. */
   void randomizeParameters(jura::AudioModule* m, int seed = 0);
 
+  /** Tests the state recall for the given module by setting up the parameters randomly (using the
+  given seed for the PRNG), the retrieving the state-xml, then resetting all parameters to 
+  defaults, then recalling the state, then rertrieving the the new, recalled state and the 
+  checking the two xmls for equivalence.  */
+  bool testStateRecall(jura::AudioModule* m, int seed = 0);
+
   /** Generates a mock mouseDown event that can be used to test GUI stuff. */
   juce::MouseEvent getMockMouseDownEvent(float mouseX = 0.f, float mouseY = 0.f, 
     juce::Component* eventComp = nullptr, juce::Component* originatorComp = nullptr);
@@ -87,6 +93,7 @@ protected:
 
   // Tests of individual modules:
   void runTestEqualizer();
+  void runTestFuncShaper();
   void runTestMultiAnalyzer();
   void runTestQuadrifex();
   void runTestStraightliner();
