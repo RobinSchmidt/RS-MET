@@ -144,7 +144,9 @@ we build up our suite of unit tests along the way.
     Maybe like in Surge: have an optional keyboard at the bottom and next to it some midi settings
     like tempo
 
-Scope: Sometimes the graphics vanishes in sync mode
+- [2] Scope: Sometimes the graphics vanishes in sync mode
+
+- [1] Display name of module SlotN-ModuleName - the N may be wrong after swapping.
 
 ---------------------------------------------------------------------------------------------------
 Features

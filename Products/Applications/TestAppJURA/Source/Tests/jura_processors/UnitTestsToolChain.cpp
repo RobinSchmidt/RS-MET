@@ -83,8 +83,16 @@ bool UnitTestToolChain::areArraysConsistent(jura::ToolChainEditor* editor)
     // Check if i-th selector corresponds to the type of i-th module:
     jura::AudioModuleSelector* s = editor->selectors[i];       // i-th selector (combo box)
     juce::String selectorText = s->getSelectedItemText();
-    juce::String moduleType   = m->getModuleTypeName();
-    ok &= selectorText == moduleType;
+    juce::String typeName   = m->getModuleTypeName();
+    ok &= selectorText == typeName;
+
+    // Check, if the display name of the module is correct. It should be Slot + "i-" + "TypeName"
+    juce::String editorText = m->getModuleName();
+    ok &= editorText == "Slot" + juce::String(i) + "-" + typeName;
+    // This new addition makes the unit test fail!
+
+    int dummy = 0;
+
   }
 
   return ok;

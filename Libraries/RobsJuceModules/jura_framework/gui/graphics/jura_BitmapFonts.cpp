@@ -5599,6 +5599,7 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
   };
   glyphBitmaps[52] = new ColourizableBitmap(9, 16, glyph_4);
 
+
   unsigned char glyph_5[9*16] = 
   {
     X,X,X,X,X,X,X,X,X,
@@ -5615,10 +5616,32 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
     _,_,_,_,_,_,X,X,X,
     _,_,_,_,_,X,X,X,X,
     X,X,X,X,X,X,X,X,_,
-    X,X,X,X,X,X,X,_,_,
+    X,X,X,X,X,X,X,X,_,
     X,X,X,X,X,X,_,_,_
   };
   glyphBitmaps[53] = new ColourizableBitmap(9, 16, glyph_5);
+  /*
+  unsigned char glyph_5[9*16] = 
+  {
+    X,X,X,X,X,X,X,X,X,
+    X,X,X,X,X,X,X,X,X,
+    X,X,X,X,X,X,X,X,X,
+    X,X,X,_,_,_,_,_,_,
+    X,X,X,_,_,_,_,_,_,
+    X,X,X,_,_,_,_,_,_,
+    X,X,X,X,X,X,X,_,_,
+    X,X,X,X,X,X,X,X,_,
+    X,X,X,X,X,X,X,X,X,
+    _,_,_,_,_,_,X,X,X,
+    _,_,_,_,_,_,X,X,X,
+    _,_,_,_,_,_,X,X,X,
+    _,_,_,_,_,X,X,X,X,
+    X,X,X,X,X,X,X,X,_,
+    X,X,X,X,X,X,X,_,_,   // This line is different 
+    X,X,X,X,X,X,_,_,_
+  };
+  glyphBitmaps[53] = new ColourizableBitmap(9, 16, glyph_5);
+  */
 
 
 
@@ -5655,6 +5678,32 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
   };
   glyphBitmaps[55] = new ColourizableBitmap(6, 10, glyph_7);
 
+
+
+
+
+  unsigned char glyph_8[9*16] = 
+  {
+    _,_,X,X,X,X,X,_,_,
+    _,X,X,X,X,X,X,X,_,
+    X,X,X,X,X,X,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    _,X,X,X,X,X,X,X,_,
+    _,_,X,X,X,X,X,_,_,
+    _,X,X,X,X,X,X,X,_,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,_,_,_,X,X,X,
+    X,X,X,X,X,X,X,X,X,
+    _,X,X,X,X,X,X,X,_,
+    _,_,X,X,X,X,X,_,_
+  };
+  glyphBitmaps[56] = new ColourizableBitmap(9, 16, glyph_8);
+
+  /*
   unsigned char glyph_8[6*10] = 
   {
     _,X,X,X,X,_,
@@ -5669,6 +5718,10 @@ void BitmapFontRoundedBoldA16D0::createGlyphBitmaps()
     _,X,X,X,X,_
   };
   glyphBitmaps[56] = new ColourizableBitmap(6, 10, glyph_8);
+  */
+
+
+
 
   unsigned char glyph_9[6*10] = 
   {
