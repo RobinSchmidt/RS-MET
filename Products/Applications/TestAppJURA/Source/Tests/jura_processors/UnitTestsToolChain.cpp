@@ -10,11 +10,13 @@ void UnitTestToolChain::runTest()
   // included in the next release anyway. So we make some ignore lists. The goal is that they 
   // should get shorter over time
   juce::StringArray ignoreListForStateRecall = { "FuncShaper", "MultiBandEffect", "SamplePlayer" };
+  // There's only this one ignore-list so far.
 
   // Test currently worked on copied to top of the function:
   //runTestStateRecall(0);
   //runTestFuncShaper();
-  runTestStateRecall(0, ignoreListForStateRecall);
+  runTestMultiAnalyzer();
+  //runTestStateRecall(0, ignoreListForStateRecall);
   // Fails for DebugAudioModule ...What! It seems to fail for more modules now! This is new! Figure
   // out since which commit this got broken!
 
@@ -801,8 +803,8 @@ void UnitTestToolChain::runTestMultiAnalyzer()
   // This fails!
   // Creating the editor apparently sets the TimeWindowLength parameter of the oscilloscope to 1.5
   // I think, this happens when the zoomer with scrollbars is created and wired up. In the 
-  // oscilloscope that parameters are controlled by scrollbars rather than the usual sliders and this
-  // behaves differently. It's not a big issue so fixing this should have lower priority.
+  // oscilloscope that parameters are controlled by scrollbars rather than the usual sliders and 
+  // this behaves differently. It's not a big issue so fixing this should have lower priority.
 
   delete preXml;
   delete editor;
