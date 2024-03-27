@@ -1,3 +1,17 @@
+ToDo for the next release:
+-Fix all bugs of priority 2..5
+-Make automation and modulation system work for the monophonic case. 
+-Switch build system to CMake
+-Update to most recent JUCE, use the fork from the clap team to enable building for clap.
+-Try to build also for LV2
+-Try to build on Windows/Linux/Mac
+
+Optional:
+-Polyphonic modulation would be nice to have but may take longer to implement and get right. 
+-Polyphonic automation might be some feature for later to be used with the clap feature for that.
+-Would be nice, if a simple version of the SFZ engine could be included.
+
+
 ---------------------------------------------------------------------------------------------------
 Bugs
 
