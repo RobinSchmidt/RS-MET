@@ -149,7 +149,18 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
   {
     jura::Parameter* p    = m->getParameterByIndex(i);   // Retrieve i-th parameter
     juce::String     name = p->getName();                // Name for inspection in the debugger
-    p->setNormalizedValue(prng.getSample(), true, true); // Randomize its value
+
+
+    // OLD:
+    double min    = p->getMinValue();
+    double max    = p->getMaxValue();
+    double newVal = RAPT::rsLinToLin(prng.getSample(), 0.0, 1.0, min, max);
+    p->setValue(newVal, true, true);   // Randomize its value
+
+
+    // NEW:
+    //p->setNormalizedValue(prng.getSample(), true, true); // Randomize its value
+    // Using this new version breaks the state recall test.
   }
 
   // Call randomizeParameters on all the child-modules recursively:
