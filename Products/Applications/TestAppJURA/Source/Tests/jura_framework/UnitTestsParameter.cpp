@@ -65,7 +65,7 @@ void UnitTestParameter::runTestParameter()
   expectEquals(p.getValue(),             5.0);
   expectEquals(p.getNormalizedValue(),   0.5);
 
-  testParameter(&p);
+  testParameter(&p);  // rename - this applies only to parameters with range 0..1, I think
 }
 
 void UnitTestParameter::runTestSmoothableParameter()

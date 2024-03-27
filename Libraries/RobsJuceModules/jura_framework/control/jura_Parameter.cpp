@@ -47,15 +47,22 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   if(newScaling == STRING)
     newInterval = 1.0;      // multiple choice are parameters represented by integers
 
-  if(scaling == Scaling::IDENTITY)
-    mapper = new rsParameterMapperIdentity();
-  else
-    mapper = new rsParameterMapperLinear();
+  // OLD:
+  mapper = new rsParameterMapperLinear();
+
+
+  //// NEW, experimental:
+  //if(scaling == Scaling::IDENTITY)
+  //  mapper = new rsParameterMapperIdentity();
+  //else
+  //  mapper = new rsParameterMapperLinear();
 
   scaling  = newScaling;    
   // Delete soon. Hmm...or maybe not? Not sure. Maybe we should keep it. I think, the scaling 
   // member is now redundant with the mapper (which is more flexible). But maybe it's useful to be 
-  // able to report the kind of mapping to some higher levele code.
+  // able to report the kind of mapping to some higher level code. Furthermore, it includes more 
+  // information (like if it's a choice/string, bool, bipolar, etc.). Yeah - I think, we should
+  // keep it.
 
   setRange(newMin, newMax);
   setScaling(newScaling);
@@ -242,7 +249,8 @@ void Parameter::setScaling(Scaling newScaling)
   }
   else
   {
-    // default case, catches LINEAR, LINEAR_BIPOLAR, INTEGER, BOOLEAN, STRING, uses linear mapper
+    // Default case. Catches LINEAR, LINEAR_BIPOLAR, INTEGER, BOOLEAN, STRING. Uses linear mapper 
+    // for all of these
     rsParameterMapperLinear* tmp = dynamic_cast<rsParameterMapperLinear*>(mapper);
     if(tmp == nullptr) 
     {

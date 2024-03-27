@@ -35,9 +35,10 @@ protected:
   void runTestModulatableParameter();
 
   // functions that perform tests on the passed Parameter pointers:
-  void testParameter(jura::Parameter* p);
-  void testSmoothable(jura::rsSmoothableParameter* p);
-  void testMetaControl(jura::MetaControlledParameter* p);
+  void testParameter(jura::Parameter* p);  // rename to testCallbacks_0_10
+
+  void testSmoothable(jura::rsSmoothableParameter* p);// rename to testCallbacksSmoothable_0_10
+  void testMetaControl(jura::MetaControlledParameter* p); // rename
   void testModulation(jura::ModulatableParameter* p);
 
   /** Performs smoothing iterations until target value has been reached and returns the number of

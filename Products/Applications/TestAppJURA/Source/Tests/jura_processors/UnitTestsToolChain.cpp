@@ -734,6 +734,8 @@ void UnitTestToolChain::runTestFuncShaper()
 
   expect(testStateRecall(&fnSh)); // Triggers a jassert -> Fix this!
 
+  // add a test to the unit test of Parameter
+
 
   // When the state is recalled, it want to set up the aMin, aMax, bMin, etc. to NaN. The stored 
   // xml element actually does contain these NaNs.
