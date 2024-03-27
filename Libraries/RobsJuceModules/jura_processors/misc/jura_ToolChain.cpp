@@ -897,9 +897,18 @@ void ToolChainEditor::swapModules(int i, int j)
   jassert(i >= 0 && i < size(editors));  // index out of range
   jassert(j >= 0 && j < size(editors));  // index out of range
 
+  // Do the swaps:
   chain->swapModules(i, j);
   std::swap(editors[i],   editors[j]);
   std::swap(selectors[i], selectors[j]);
+
+  // Update the headline texts in the editors, if they exists:
+  if(editors[i] != nullptr)
+    editors[i]->setHeadlineText(chain->getModuleAt(i)->getModuleName());
+  if(editors[j] != nullptr)
+    editors[j]->setHeadlineText(chain->getModuleAt(j)->getModuleName());
+
+
 
   // Maybe we need to trigger a repaint for the selectors array? Nope. It's fine. But maybe we need
   // to update the headline string of the editor because it contains the slot number.
