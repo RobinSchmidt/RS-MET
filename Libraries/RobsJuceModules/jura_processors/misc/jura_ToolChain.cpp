@@ -73,8 +73,8 @@ void ToolChain::addModule(AudioModule* m)
   jassert(m != nullptr);
   setupManagers(m);
   append(modules, m);
-  //m->setModuleName("Slot" + String(size(modules)) + "-" + type);
   m->setModuleName("Slot" + String(size(modules)) + "-" + m->getModuleTypeName());
+  //auto name = m->getModuleName();  // for debug
   addToModulatorsIfApplicable(m);
   sendAudioModuleWasAddedNotification(m, size(modules)-1);
 }

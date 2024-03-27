@@ -88,7 +88,7 @@ bool UnitTestToolChain::areArraysConsistent(jura::ToolChainEditor* editor)
 
     // Check, if the display name of the module is correct. It should be Slot + "i-" + "TypeName"
     juce::String editorText = m->getModuleName();
-    ok &= editorText == "Slot" + juce::String(i) + "-" + typeName;
+    ok &= editorText == "Slot" + juce::String(i+1) + "-" + typeName;
     // This new addition makes the unit test fail!
 
     int dummy = 0;
@@ -541,7 +541,7 @@ void UnitTestToolChain::runTestSlotInsertRemoveEtc()
 
   editor->swapModules(1, 3);
   expect(doSlotsContain(&tlChn, { eq, scp, ldr, fs, non }));
-  expect(areArraysConsistent(editor));
+  expect(areArraysConsistent(editor));  // FAILS!
   expect(tlChn.activeSlot == 1);
 
   // Now do the swapping via mock GUI events:
