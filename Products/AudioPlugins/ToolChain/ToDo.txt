@@ -146,7 +146,8 @@ we build up our suite of unit tests along the way.
 
 - [2] Scope: Sometimes the graphics vanishes in sync mode
 
-- [1] Display name of module SlotN-ModuleName - the N may be wrong after swapping.
+- [1] Some glyphs in the big font are not so nice (m may be too wide - it's wider than M) and/or 
+  inconsistent with the corresponding glyphs in smaller fonts (see Y,y)
 
 ---------------------------------------------------------------------------------------------------
 Features
