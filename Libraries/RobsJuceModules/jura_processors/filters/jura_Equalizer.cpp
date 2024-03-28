@@ -6,8 +6,8 @@ EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock,
   rosic::EqualizerStereo *equalizerStereoToWrap) : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-  jassert(equalizerStereoToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  //  ---nah, this Module admits NULL pointers for use inside EchoLab ...why?
+  jassert(equalizerStereoToWrap != nullptr); // you must pass a valid rosic-object to the constructor
+  //  ---nah, this Module admits nullptr pointers for use inside EchoLab ...why?
   wrappedEqualizerStereo = equalizerStereoToWrap;
   init();
 }
@@ -185,7 +185,7 @@ XmlElement EqualizerAudioModule::convertXmlStateIfNecessary(const XmlElement& xm
 
   //int xmlPatchFormatIndex = xmlState.getIntAttribute("PatchFormat", patchFormatIndex);
 
-  if( xmlState.getChildByName(juce::String("Channel")) == NULL )
+  if( xmlState.getChildByName(juce::String("Channel")) == nullptr )
   {
     // wrap the band-data into a "Channel" child element:
     XmlElement convertedState(xmlState);
@@ -476,7 +476,7 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
   ParameterObserver::setIsGuiElement(true);
 
   plugInLock            = newPlugInLock;
-  equalizerModuleToEdit = NULL;  // will be assigned later via call to setEqualizerModuleToEdit
+  equalizerModuleToEdit = nullptr;  // will be assigned later via call to setEqualizerModuleToEdit
 
   // set up the plot range:
   setAutoReRendering(false);
@@ -493,17 +493,13 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
   currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);
   setMouseCursor(currentMouseCursor);
 
-  filterModeParameter = NULL;
-  frequencyParameter  = NULL;
-  gainParameter       = NULL;
-  bandwidthParameter  = NULL;
-  globalGainParameter = NULL;
+  filterModeParameter = nullptr;
+  frequencyParameter  = nullptr;
+  gainParameter       = nullptr;
+  bandwidthParameter  = nullptr;
+  globalGainParameter = nullptr;
 
-  // this stuff will be (re-) assigned in resized():
-  numBins       = 0;
-  //frequencies   = NULL;
-  //magnitudes1   = NULL;
-  //magnitudes2   = NULL;
+  // This stuff will be (re-) assigned in resized():
   magnitudes[0] = nullptr;
   magnitudes[1] = nullptr;
 
@@ -517,7 +513,7 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
 
 EqualizerPlotEditor::~EqualizerPlotEditor(void)
 {
-  setEqualizerModuleToEdit(NULL); // to remove ourselves as ChangeListener
+  setEqualizerModuleToEdit(nullptr); // to remove ourselves as ChangeListener
 
   //deleteAndZero(frequencies);
   //deleteAndZero(magnitudes1);
@@ -534,16 +530,16 @@ void EqualizerPlotEditor::setEqualizerModuleToEdit(EqualizerAudioModule* newEqua
   if( newEqualizerModuleToEdit == equalizerModuleToEdit )
     return;
 
-  if( equalizerModuleToEdit != NULL )
+  if( equalizerModuleToEdit != nullptr )
     equalizerModuleToEdit->deRegisterParameterSetObserver(this);
 
   equalizerModuleToEdit = newEqualizerModuleToEdit;
 
-  if( globalGainParameter != NULL )
+  if( globalGainParameter != nullptr )
     globalGainParameter->deRegisterParameterObserver(this);
-  globalGainParameter = NULL;
+  globalGainParameter = nullptr;
 
-  if( equalizerModuleToEdit != NULL )
+  if( equalizerModuleToEdit != nullptr )
   {
     equalizerModuleToEdit->registerParameterSetObserver(this);
     globalGainParameter = equalizerModuleToEdit->getParameterByName("GlobalGain");
@@ -558,21 +554,21 @@ void EqualizerPlotEditor::unAssignParameters()
 {
   ScopedPointerLock spl(plugInLock);
 
-  if( filterModeParameter != NULL )
+  if( filterModeParameter != nullptr )
     filterModeParameter->deRegisterParameterObserver(this);
-  filterModeParameter = NULL;
+  filterModeParameter = nullptr;
 
-  if( frequencyParameter != NULL )
+  if( frequencyParameter != nullptr )
     frequencyParameter->deRegisterParameterObserver(this);
-  frequencyParameter = NULL;
+  frequencyParameter = nullptr;
 
-  if( gainParameter != NULL )
+  if( gainParameter != nullptr )
     gainParameter->deRegisterParameterObserver(this);
-  gainParameter = NULL;
+  gainParameter = nullptr;
 
-  if( bandwidthParameter != NULL )
+  if( bandwidthParameter != nullptr )
     bandwidthParameter->deRegisterParameterObserver(this);
-  bandwidthParameter = NULL;
+  bandwidthParameter = nullptr;
 }
 
 void EqualizerPlotEditor::assignParametersToSelectedBand()
@@ -581,7 +577,7 @@ void EqualizerPlotEditor::assignParametersToSelectedBand()
 
   unAssignParameters();
 
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return;
 
   int channel = equalizerModuleToEdit->selectedChannel;
@@ -609,7 +605,7 @@ void EqualizerPlotEditor::assignParametersToSelectedBand()
 int EqualizerPlotEditor::getBandIndexAtPixelPosition(int x, int y)
 {
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return -1;
 
   double globalGain = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
@@ -685,13 +681,13 @@ void EqualizerPlotEditor::parameterWillBeDeleted(Parameter* p)
   p->deRegisterParameterObserver(this);
 
   if( p == filterModeParameter )
-    filterModeParameter = NULL;
+    filterModeParameter = nullptr;
   else if( p == frequencyParameter )
-    frequencyParameter = NULL;
+    frequencyParameter = nullptr;
   else if( p == gainParameter )
-    gainParameter = NULL;
+    gainParameter = nullptr;
   else if( p == bandwidthParameter )
-    bandwidthParameter = NULL;
+    bandwidthParameter = nullptr;
 
   updatePlot();
 }
@@ -699,7 +695,7 @@ void EqualizerPlotEditor::parameterWillBeDeleted(Parameter* p)
 void EqualizerPlotEditor::mouseMove(const MouseEvent &e)
 {
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return;
 
   int index = getBandIndexAtPixelPosition(e.x, e.y);
@@ -753,7 +749,7 @@ void EqualizerPlotEditor::mouseMove(const MouseEvent &e)
 void EqualizerPlotEditor::mouseDown(const MouseEvent &e)
 {
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return;
 
   currentlyDraggedHandle = getDragHandleAt(e.x, e.y);
@@ -802,12 +798,12 @@ void EqualizerPlotEditor::mouseDown(const MouseEvent &e)
     {
       /*
       // this stuff should not be necesarry, but let's try for debugging:
-      if( frequencyParameter != NULL )
+      if( frequencyParameter != nullptr )
       frequencyParameter->deRegisterParameterObserver(this);
-      frequencyParameter = NULL;
-      if( gainParameter != NULL )
+      frequencyParameter = nullptr;
+      if( gainParameter != nullptr )
       gainParameter->deRegisterParameterObserver(this);
-      gainParameter = NULL;
+      gainParameter = nullptr;
       // end debug
       */
 
@@ -832,11 +828,11 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
     return;   // ignore right-drags because the band was just removed, alos ignore just-clicks
 
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return;
 
-  if( frequencyParameter == NULL || gainParameter == NULL || bandwidthParameter == NULL
-    || globalGainParameter == NULL )
+  if( frequencyParameter == nullptr || gainParameter == nullptr || bandwidthParameter == nullptr
+    || globalGainParameter == nullptr )
   {
     if( currentlyDraggedHandle != GLOBALGAIN_LINE )
       return;
@@ -896,7 +892,7 @@ void EqualizerPlotEditor::mouseUp(const juce::MouseEvent &e)
 void EqualizerPlotEditor::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
 {
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return;
 
   int channel = equalizerModuleToEdit->selectedChannel;
@@ -916,7 +912,7 @@ void EqualizerPlotEditor::mouseWheelMove(const MouseEvent& e, const MouseWheelDe
 int EqualizerPlotEditor::getDragHandleAt(int x, int y)
 {
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return NONE;
 
   double globalGain = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
@@ -990,27 +986,7 @@ void EqualizerPlotEditor::resized()
 {
   rsSpectrumPlot::resized();
 
-  /*
-  // OLD - buggy (caused memleak):
-  // (re) allocate and fill the arrays for the magnitude plot
-  numBins = getWidth();
-  if( frequencies == NULL )   // This makes no sense! Should probably be != NULL. But we should
-    delete[] frequencies;     // use std::vector anyway!
-  if( magnitudes1 == NULL )
-    delete[] magnitudes1;
-  if( magnitudes2 == NULL )
-    delete[] magnitudes2;
-
-  frequencies   = new double[numBins];
-  magnitudes1   = new double[numBins];
-  magnitudes2   = new double[numBins];
-  magnitudes[0] = magnitudes1;
-  magnitudes[1] = magnitudes2;
-  */
-
-
   numBins = jmax(1, getWidth());
-
   frequencies.resize(numBins);
   magnitudes1.resize(numBins);
   magnitudes2.resize(numBins);
@@ -1024,7 +1000,7 @@ void EqualizerPlotEditor::resized()
 void EqualizerPlotEditor::updatePlot()
 {
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
   {
     fillWithZeros(&magnitudes1[0], numBins);
     fillWithZeros(&magnitudes2[0], numBins);
@@ -1041,7 +1017,7 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   XmlElement *targetSVG)
 {
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return;
 
   rsDataPlot::setNumCurves( equalizerModuleToEdit->getNumChannelsToPlot() );
@@ -1135,7 +1111,7 @@ menu->addItem(8, juce::String(T("Insert node: Notch 2*6 dB/oct"))   );
 void EqualizerPlotEditor::handleRightClickPopupMenuResult(int result, int x, int y)
 {
 ScopedPointerLock spl(plugInLock);
-if( equalizerModuleToEdit == NULL )
+if( equalizerModuleToEdit == nullptr )
 return;
 
 double g = (double) y;
@@ -1158,10 +1134,10 @@ updatePlot();
 
 void EqualizerPlotEditor::openRightClickPopupMenu(int x, int y)
 {
-PopupMenu* menu = NULL;
+PopupMenu* menu = nullptr;
 createRightClickPopupMenu(menu);
 int result = menu->show();
-if( menu != NULL )
+if( menu != nullptr )
 delete menu;
 handleRightClickPopupMenuResult(result, x, y);
 }
@@ -1170,7 +1146,7 @@ handleRightClickPopupMenuResult(result, x, y);
 void EqualizerPlotEditor::xyToFrequencyAndGain(double &x, double &y)
 {
   ScopedPointerLock spl(plugInLock);
-  if( equalizerModuleToEdit == NULL )
+  if( equalizerModuleToEdit == nullptr )
     return;
 
   double globalGain = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
@@ -1234,7 +1210,7 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
 
 EqualizerModuleEditor::~EqualizerModuleEditor()
 {
-  if( plotEditor->equalizerModuleToEdit != NULL )
+  if( plotEditor->equalizerModuleToEdit != nullptr )
   {
     plotEditor->equalizerModuleToEdit->deRegisterParameterSetObserver(this);
     //plotEditor->equalizerModuleToEdit->removeStateWatcher(stateWidgetSet);
@@ -1251,16 +1227,16 @@ void EqualizerModuleEditor::setEqualizerModuleToEdit(EqualizerAudioModule* newEq
   //  return;
 
   // unassign widgets from parameters of the old equalizer:
-  bypassButton->assignParameter(      NULL);
-  stereoModeComboBox->assignParameter(NULL);
-  gainRangeComboBox->assignParameter( NULL);
-  globalGainSlider->assignParameter(  NULL);
-  filterModeComboBox->assignParameter(NULL);
-  frequencySlider->assignParameter(   NULL);
-  gainSlider->assignParameter(        NULL);
-  bandwidthSlider->assignParameter(   NULL);
+  bypassButton->assignParameter(      nullptr);
+  stereoModeComboBox->assignParameter(nullptr);
+  gainRangeComboBox->assignParameter( nullptr);
+  globalGainSlider->assignParameter(  nullptr);
+  filterModeComboBox->assignParameter(nullptr);
+  frequencySlider->assignParameter(   nullptr);
+  gainSlider->assignParameter(        nullptr);
+  bandwidthSlider->assignParameter(   nullptr);
 
-  if( plotEditor->equalizerModuleToEdit != NULL )
+  if( plotEditor->equalizerModuleToEdit != nullptr )
   {
     plotEditor->equalizerModuleToEdit->deRegisterParameterSetObserver(this);
     plotEditor->equalizerModuleToEdit->removeStateWatcher(stateWidgetSet);
@@ -1268,7 +1244,7 @@ void EqualizerModuleEditor::setEqualizerModuleToEdit(EqualizerAudioModule* newEq
 
   plotEditor->setEqualizerModuleToEdit(newEqualizerModuleToEdit);
 
-  if( plotEditor->equalizerModuleToEdit != NULL )
+  if( plotEditor->equalizerModuleToEdit != nullptr )
   {
     plotEditor->equalizerModuleToEdit->registerParameterSetObserver(this);
     plotEditor->equalizerModuleToEdit->addStateWatcher(stateWidgetSet);
@@ -1308,7 +1284,7 @@ void EqualizerModuleEditor::setUseSmallComboBox(bool shouldBeSmall)
 void EqualizerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
 {
   ScopedPointerLock spl(lock);
-  if( plotEditor->equalizerModuleToEdit == NULL )
+  if( plotEditor->equalizerModuleToEdit == nullptr )
     return;
 
   if( buttonThatWasClicked == channelSelectButton1 || buttonThatWasClicked == channelSelectButton2 )
@@ -1328,7 +1304,7 @@ void EqualizerModuleEditor::rComboBoxChanged(RComboBox  *rComboBoxThatHasChanged
 void EqualizerModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
 {
   ScopedPointerLock spl(lock);
-  if( plotEditor->equalizerModuleToEdit == NULL )
+  if( plotEditor->equalizerModuleToEdit == nullptr )
     return;
 
   // the call must have been due to preset recall - deselect band in this case:
@@ -1355,7 +1331,7 @@ void EqualizerModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThat
 void EqualizerModuleEditor::parameterSetChanged(ParameterSetHolder* parameterSetHolderThatHasChanged)
 {
   ScopedPointerLock spl(lock);
-  if( plotEditor->equalizerModuleToEdit == NULL )
+  if( plotEditor->equalizerModuleToEdit == nullptr )
     return;
 
   if( parameterSetHolderThatHasChanged == plotEditor->equalizerModuleToEdit )
@@ -1367,7 +1343,7 @@ void EqualizerModuleEditor::updateWidgetsAccordingToState()
   ScopedPointerLock spl(lock);
 
   AudioModuleEditor::updateWidgetsAccordingToState();
-  if( plotEditor->equalizerModuleToEdit == NULL )
+  if( plotEditor->equalizerModuleToEdit == nullptr )
   {
     updateWidgetVisibility();
     updateWidgetAppearance();
@@ -1690,7 +1666,7 @@ void EqualizerModuleEditor::createWidgets()
   plotEditor = new EqualizerPlotEditor(lock, equalizerModule);
   plotEditor->setDescriptionField(infoField);
   //plotEditor->addChangeListener(this);
-  //if( equalizerModuleToEdit != NULL )
+  //if( equalizerModuleToEdit != nullptr )
   //  plotEditor->setEqualizerToEdit(equalizerModuleToEdit->wrappedEqualizer);
   addPlot( plotEditor );
 }
@@ -1708,7 +1684,7 @@ void EqualizerModuleEditor::updateWidgetVisibility()
   globalGainSlider->setVisible(    false);
   stateWidgetSet->setVisible(      false);
 
-  if( plotEditor->equalizerModuleToEdit == NULL )
+  if( plotEditor->equalizerModuleToEdit == nullptr )
     return;
 
   globalGainSlider->setVisible(    true);
@@ -1732,7 +1708,7 @@ void EqualizerModuleEditor::updateWidgetAppearance()
 {
   ScopedPointerLock spl(lock);
 
-  if( plotEditor->equalizerModuleToEdit == NULL )
+  if( plotEditor->equalizerModuleToEdit == nullptr )
     return;
 
   if( plotEditor->equalizerModuleToEdit->wrappedEqualizerStereo->getStereoMode() == rosic::EqualizerStereo::LEFT_RIGHT )

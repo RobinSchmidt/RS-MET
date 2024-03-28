@@ -307,14 +307,14 @@ protected:
     *globalGainParameter;
 
   // magnitude response display stuff:
-  int    numBins;
 
-
-  //double *frequencies, *magnitudes1, *magnitudes2;   // OLD
-
-  std::vector<double> frequencies, magnitudes1, magnitudes2;  // NEW
-
+  std::vector<double> frequencies, magnitudes1, magnitudes2;
   double *magnitudes[2];  // Needed for call to setSpectra()
+
+  int numBins = 1;
+  // Should not be zero, so use at least 1! It should not be zero because it determines the 
+  // allocation size for the magnitudes1/2 arrays and the magnitudes[2] array points to the first
+  // elements of these arrays.
 
   juce_UseDebuggingNewOperator;
 };
