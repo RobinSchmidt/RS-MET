@@ -3448,6 +3448,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.cpp">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\PeakFinding.cpp">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.cpp">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClCompile>
@@ -3517,6 +3520,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\Convolver.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\CrossOver4Way.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
@@ -3541,6 +3547,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\FilterSpecifications.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\HilbertFilter.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
@@ -3557,6 +3566,9 @@
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuantileFilter.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\WindowedFilterDesigner.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Filters.cpp">
@@ -8286,6 +8298,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\PeakFinding.h">
+      <Filter>JUCE Modules\rapt\Analysis</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h">
       <Filter>JUCE Modules\rapt\Analysis</Filter>
     </ClInclude>
@@ -8373,6 +8388,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\Convolver.h">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\CrossOver4Way.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
@@ -8397,6 +8415,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\FilterSpecifications.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\HilbertFilter.h">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
@@ -8413,6 +8434,9 @@
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuantileFilter.h">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\WindowedFilterDesigner.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Filters.h">
@@ -10322,6 +10346,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\ReadMe.txt">
+      <Filter>TestAppJURA</Filter>
+    </None>
+    <None Include="..\..\ToDo.txt">
+      <Filter>TestAppJURA</Filter>
+    </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt">
       <Filter>JUCE Modules\juce_audio_devices\native\oboe</Filter>
     </None>
@@ -10375,6 +10405,9 @@
     </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\ToDo.txt">
       <Filter>JUCE Modules\jura_framework</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\Documentation.txt">
+      <Filter>JUCE Modules\jura_processors</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\ToDo.txt">
       <Filter>JUCE Modules\jura_processors</Filter>
@@ -10448,10 +10481,13 @@
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt">
       <Filter>JUCE Modules\rosic\math</Filter>
     </None>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\HowToAddFeatures.txt">
+      <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
+    </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </None>
-    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md">
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\SfzNotes.txt">
       <Filter>JUCE Modules\rosic\unfinished\sampler</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt">

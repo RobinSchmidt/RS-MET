@@ -2621,6 +2621,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\PeakFinding.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2690,6 +2693,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\Convolver.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\CrossOver4Way.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2714,6 +2720,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\FilterSpecifications.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\HilbertFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2730,6 +2739,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuantileFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\WindowedFilterDesigner.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Filters.cpp">
@@ -5482,6 +5494,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Temp\Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\PeakFinding.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiterLinear.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\AudioBasics\AudioBasics.h"/>
@@ -5511,6 +5524,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\Convolver.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\CrossOver4Way.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\DirectFormFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\EllipticSubBandFilter.h"/>
@@ -5519,12 +5533,14 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\FilterAnalyzer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\FilterCoefficientConverter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\FilterSpecifications.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\HilbertFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\LinkwitzRileyCrossOver.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\PoleZeroMapper.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\PrototypeDesigner.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuadratureNetwork.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuantileFilter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\WindowedFilterDesigner.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Filters.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\Generators.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\NoiseGenerator.h"/>
@@ -6162,6 +6178,8 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\ReadMe.txt"/>
+    <None Include="..\..\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_devices\native\oboe\readme.md"/>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
@@ -6180,6 +6198,7 @@
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\Notes.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\ToDo.txt"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\Documentation.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt"/>
@@ -6204,8 +6223,9 @@
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\MovedToRAPT\ReadMe.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\minBlep.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\HowToAddFeatures.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md"/>
-    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ReadMe.md"/>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\SfzNotes.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\ToDo.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\PolyphonyInRosic.txt"/>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.txt"/>

@@ -89,6 +89,7 @@
 		703D500ABCB1A7BA53F886DE /* ../../Source/Tests/RAPT/Tests.h */ /* Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Tests.h; path = ../../Source/Tests/RAPT/Tests.h; sourceTree = SOURCE_ROOT; };
 		70E6F4AE42F7010430ADF098 /* ../../../../../Libraries/RobsJuceModules/rapt */ /* rapt */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rapt; path = ../../../../../Libraries/RobsJuceModules/rapt; sourceTree = SOURCE_ROOT; };
 		734094F1A01EC0C3251A558F /* ../../JuceLibraryCode/include_juce_data_structures.mm */ /* include_juce_data_structures.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_data_structures.mm; path = ../../JuceLibraryCode/include_juce_data_structures.mm; sourceTree = SOURCE_ROOT; };
+		7688FCB412B40C6DC7D99465 /* ../../ToDo.txt */ /* ToDo.txt */ = {isa = PBXFileReference; lastKnownFileType = text.txt; name = ToDo.txt; path = ../../ToDo.txt; sourceTree = SOURCE_ROOT; };
 		7B905DC22F998B1CAAD2FF89 /* ../../../../../Libraries/RobsJuceModules/jura_framework */ /* jura_framework */ = {isa = PBXFileReference; lastKnownFileType = folder; name = jura_framework; path = ../../../../../Libraries/RobsJuceModules/jura_framework; sourceTree = SOURCE_ROOT; };
 		7FD4FC4800C89B3E2E4DF6DA /* ../../../../../Libraries/JUCE/modules/juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = ../../../../../Libraries/JUCE/modules/juce_gui_extra; sourceTree = SOURCE_ROOT; };
 		897A71535B83100C4253C4AA /* ../../JuceLibraryCode/include_juce_video.mm */ /* include_juce_video.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_video.mm; path = ../../JuceLibraryCode/include_juce_video.mm; sourceTree = SOURCE_ROOT; };
@@ -131,6 +132,7 @@
 		E5B2660121776CD077C2C2E9 /* System/Library/Frameworks/AVFoundation.framework */ /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E78C68BA4C1B0DFC207B3F9C /* ../../JuceLibraryCode/include_juce_gui_extra.mm */ /* include_juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_extra.mm; path = ../../JuceLibraryCode/include_juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
 		E961945AE2F84A31CDF944D4 /* System/Library/Frameworks/QuartzCore.framework */ /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		EA76B59CECD3447556628BB9 /* ../../ReadMe.txt */ /* ReadMe.txt */ = {isa = PBXFileReference; lastKnownFileType = text.txt; name = ReadMe.txt; path = ../../ReadMe.txt; sourceTree = SOURCE_ROOT; };
 		EC11A37B81532D9E4174AD83 /* ../../JuceLibraryCode/include_juce_audio_basics.mm */ /* include_juce_audio_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_basics.mm; path = ../../JuceLibraryCode/include_juce_audio_basics.mm; sourceTree = SOURCE_ROOT; };
 		EED4441BF82D03F37DB31173 /* ../../Source/Tests/RAPT/Visualization/ImageProcessing/ImagePainterTests.h */ /* ImagePainterTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ImagePainterTests.h; path = ../../Source/Tests/RAPT/Visualization/ImageProcessing/ImagePainterTests.h; sourceTree = SOURCE_ROOT; };
 		F5E0029FF9B088F22E3F0C52 /* ../../JuceLibraryCode/include_romos.cpp */ /* include_romos.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_romos.cpp; path = ../../JuceLibraryCode/include_romos.cpp; sourceTree = SOURCE_ROOT; };
@@ -265,6 +267,8 @@
 			isa = PBXGroup;
 			children = (
 				5A52812561ECE794CB2C5CD8,
+				EA76B59CECD3447556628BB9,
+				7688FCB412B40C6DC7D99465,
 			);
 			name = TestAppJURA;
 			sourceTree = "<group>";

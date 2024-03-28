@@ -51,6 +51,8 @@
             file="Source/MainComponent.cpp"/>
       <FILE id="xStltQ" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
+    <FILE id="VWO3Fa" name="ReadMe.txt" compile="0" resource="0" file="ReadMe.txt"/>
+    <FILE id="KO7Gt9" name="ToDo.txt" compile="0" resource="0" file="ToDo.txt"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2015 targetFolder="Builds/VisualStudio2015">
