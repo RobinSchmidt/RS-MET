@@ -1,3 +1,8 @@
+
+
+- We get memory leaks from  UnitTestToolChain::runTest()  and more specifically from 
+  runTestEditorCreation
+
 - The unit tests for ToolChain currently report one unit test that fails - but only when compiled
   in release mode. Figure out which one that is and why it fails - and then fix it to make it pass!
 
