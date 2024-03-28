@@ -1099,13 +1099,25 @@ void UnitTestToolChain::runTestEchoLab()
   jura::AudioModuleEditor* editor = el.createEditor(0);
   delete editor;
   // It seems to be the call to setSize() at the bottom of the constructor of the editor. When 
-  // commenting it out, the leak goes away. SetSize triggers a call to resized. Commenting out 
+  // commenting it out, the leak goes away. setSize triggers a call to resized. Commenting out 
   // some code there lets us also get rid of the leak. It's the call to
-  // delayLineModuleEditor->setBounds() at the bottom of resized -> check
-  // EchoLabDelayLineModuleEditor::resized()
+  //
+  //   delayLineModuleEditor->setBounds() 
+  //
+  // at the bottom of resized -> check
+  //
+  //   EchoLabDelayLineModuleEditor::resized()
+  //
   // it's in the calls to 
+  //
   //  inputEqualizerEditor   ->setBounds(x,                 y, w+2, h);
   //  feedbackEqualizerEditor->setBounds(x+w+middleWidth-2, y, w+2, h);
+  //
+  // check
+  //
+  //   EqualizerModuleEditor::resized()
+  //
+  // ...
 
 }
 
