@@ -979,7 +979,8 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
 void EqualizerPlotEditor::resized()
 {
   rsSpectrumPlot::resized();
-  allocateDisplayBuffers(getWidth());
+  numBins = getWidth();
+  allocateDisplayBuffers(numBins);
   updatePlot();
 }
 
