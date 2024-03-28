@@ -44,7 +44,13 @@ void UnitTestToolChain::runTest()
   // ToDo: Factor out the creation of a ToolChain object from the Quadrifex test. It should be a 
   // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
 
-  // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? Figure out!
+  // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? 
+  // Figure out! When coomenting out the line
+  //
+  //   jura::AudioModuleEditor* editor = m->createEditor(0);
+  //
+  // the memleak goes away. Apparently, one of the editors causes it. Figure out which one it is!
+  // Maybe comment out some sections in ToolChainAudioModule::populateModuleFactory.
 
 
   // Notes:
@@ -330,6 +336,7 @@ void UnitTestToolChain::runTestEditorCreation(int seed, const juce::StringArray&
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
     randomizeParameters(m, seed);
 
+   
     // Get the state, create the editor, get the state again and compare both states:
     juce::XmlElement* preXml  = m->getStateAsXml("State", true);
     jura::AudioModuleEditor* editor = m->createEditor(0);
