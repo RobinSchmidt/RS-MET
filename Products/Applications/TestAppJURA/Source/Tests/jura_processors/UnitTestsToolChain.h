@@ -60,10 +60,12 @@ protected:
   void resetParameters(jura::AudioModule* m);
 
   /** Randomizes all the parameters of the given jura::AudioModule. You can pass a seed for the
-  pseudo random number generator that is used for the randomization. */
-  void randomizeParameters(jura::AudioModule* m, int randomSeed = 0);
+  pseudo random number generator that is used for the randomization. You can also select whether
+  or not the randomization shall be applied recursively to the child modules if the given module 
+  has any. */
+  void randomizeParameters(jura::AudioModule* m, int randomSeed = 0, bool recursively = true);
 
-  //void randomizeAudioModule(jura::AudioModule* m, int seed = 0);
+  void randomizeAudioModule(jura::AudioModule* m, int seed = 0, bool recursively = true);
   // Not yet implemented.
   // Should randomize the state of the given AudioModule. This includes randomization of the 
   // parameters, loading random samples or other sorts of files (ColorMaps, Tunings, etc.), 

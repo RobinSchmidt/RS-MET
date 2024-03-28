@@ -138,7 +138,7 @@ void UnitTestToolChain::resetParameters(jura::AudioModule* m)
   // toDo: call it recursively on the child modules
 }
 
-void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
+void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed, bool recursively)
 {
   // Create a pseudo random number generator:
   RAPT::rsNoiseGenerator<double> prng;
@@ -169,20 +169,70 @@ void UnitTestToolChain::randomizeParameters(jura::AudioModule* m, int seed)
   }
 
   // Call randomizeParameters on all the child-modules recursively:
-  int numChildren = m->getNumChildAudioModules();
-  for(int i = 0; i < numChildren; i++)
+  if(recursively == true)
   {
-    int newSeed = (int) prng.getSampleRaw();
-    jura::AudioModule* childModule = m->getChildAudioModule(i);
-    randomizeParameters(childModule, newSeed);
+    int numChildren = m->getNumChildAudioModules();
+    for(int i = 0; i < numChildren; i++)
+    {
+      int newSeed = (int)prng.getSampleRaw();
+      jura::AudioModule* childModule = m->getChildAudioModule(i);
+      randomizeParameters(childModule, newSeed, true);
+    }
   }
+}
+
+void UnitTestToolChain::randomizeAudioModule(jura::AudioModule* m, int seed, bool recursively)
+{
+  // Randomize the parameters:
+  randomizeParameters(m, seed);
+  // ToDo: give this a bool parameter "recurseChildModules" and pass false to it from here because
+  // we already call ourselves recursively here which will then also randomize the parameters of 
+  // the child modules
+
+  // Randomize other aspects - this is individually different for the different types of modules,
+  // so we dispatch based on the module type:
+  // ....
+
+
+  // Create a pseudo random number generator:
+  RAPT::rsNoiseGenerator<double> prng;
+  prng.setRange(0.0, 1.0);
+  prng.setSeed(seed);
+
+
+
+
+
+  // Call randomizeAudioModule on all the child-modules recursively:
+  if(recursively == true)
+  {
+    int numChildren = m->getNumChildAudioModules();
+    for(int i = 0; i < numChildren; i++)
+    {
+      int newSeed = (int)prng.getSampleRaw();
+      jura::AudioModule* childModule = m->getChildAudioModule(i);
+      randomizeAudioModule(childModule, newSeed, true);
+    }
+  }
+  // This code is repetitive. The last section of randomizeParameters looks almost the same. Try
+  // to refactor to get rid of the duplication! Maybe we could have a function that could be called
+  // like:
+  //
+  //   callRecursively(&randomizeAudioModule, m, prng.getSampleRaw));
+  //
+  // The problem is probably that we cannot easily pass a pointer to a member function, i.e.
+  // something like &randomizeAudioModule will likely not compile. We may need some sort of member
+  // function callback. Or maybe use std::function for the parameter and wrap the call into a 
+  // lambda here.
+  // Or maybe at least try to reduce the amount of repetitive code. Get rid of the variables
+  // newSeed, childModule, numChildren.
 }
 
 bool UnitTestToolChain::testStateRecall(jura::AudioModule* m, int seed)
 {
-  randomizeParameters(m, seed);
+  randomizeParameters(m, seed);    // ToDo: use randomizeAudioModule
   juce::XmlElement* preXml = m->getStateAsXml("State", true);
-  resetParameters(m);
+  resetParameters(m);              // ToDo: use resetAudioModule
   m->setStateFromXml(*preXml, "Recalled", true);
   juce::XmlElement* postXml = m->getStateAsXml("State", true);
 
