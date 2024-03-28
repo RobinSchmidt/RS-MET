@@ -1315,7 +1315,7 @@ void EchoLabModuleEditor::resized()
   w = delaySyncButton->getX()-x;
   dryWetSlider->setBounds(x+4,       y, w/2-8, 16);
   wetLevelSlider->setBounds(x+w/2+4, y, w/2-8, 16);
-
+  
   x = 0; 
   y = delayPlotZoomer->getBottom() - RWidget::outlineThickness;
   w = getWidth() - 0;
