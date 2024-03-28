@@ -18,12 +18,14 @@ void UnitTestToolChain::runTest()
   //runTestFuncShaper();
   //runTestMultiAnalyzer();
   //runTestStateRecall(0, ignoreListForStateRecall);
+  //runTestEditorCreation(0, {});
   // Fails for DebugAudioModule ...What! It seems to fail for more modules now! This is new! Figure
   // out since which commit this got broken!
 
 
 
 
+  
   // All the tests in order:
   runTestVoiceManager();
   runTestSlotInsertRemoveEtc();
@@ -44,13 +46,8 @@ void UnitTestToolChain::runTest()
   // ToDo: Factor out the creation of a ToolChain object from the Quadrifex test. It should be a 
   // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
 
-  // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? 
-  // Figure out! When coomenting out the line
-  //
-  //   jura::AudioModuleEditor* editor = m->createEditor(0);
-  //
-  // the memleak goes away. Apparently, one of the editors causes it. Figure out which one it is!
-  // Maybe comment out some sections in ToolChainAudioModule::populateModuleFactory.
+
+  // 
 
 
   // Notes:
@@ -63,7 +60,19 @@ void UnitTestToolChain::runTest()
   //  invalid for for FuncShaper in its randomization of the parameters which are sanitized in the
   //  attempted recall - which causes the test to fail because the sanitized state doesn't match 
   //  the radomized state.
-
+  //
+  // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? 
+  // Figure out! When coomenting out the line
+  //
+  //   jura::AudioModuleEditor* editor = m->createEditor(0);
+  //
+  // the memleak goes away. Apparently, one of the editors causes it. Figure out which one it is!
+  // Maybe comment out some sections in ToolChainAudioModule::populateModuleFactory. OK - it looks
+  // like EchoLab is the offender.
+  //
+  // ToDo:
+  // -Make a test for EchoLab - it should create the editor. We want to fix the memory leak that it
+  //  causes.
 }
 
 bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
