@@ -46,12 +46,14 @@ we build up our suite of unit tests along the way.
    The PolyphonicInstrumentEditor is subclass of TuningFileManager. That is wrong! 
    PolyphonicInstrumentAudioModule should have that responsibility and store the name of the tuning
    file as part of the preset and reload it on recall. Perhaps it's best to remove the Tuning 
-   functionality from Straightliner and moe it into ToolChain. The infrastructure for that should 
+   functionality from Straightliner and move it into ToolChain. The infrastructure for that should 
    perhaps be to just augment all noteOn calls with an additional double noteFreq parameter. Then 
    we can do the key -> freq conversion in one central place in ToolChain and all modules will 
    receive the frequency in their noteOn calls, so we don't need much additional infrastructure to 
    support it. The tuning file in ToolChain could be integrated into a midi section together with
-   tempo, keyboard, modwheel maybe performance parameters.
+   tempo, keyboard, modwheel maybe performance parameters. But eventually , we may want to be able
+   to let the user plug in the modules as separate plugins (contained in one dll), so stripping 
+   away the tuning would be not so good.
 
   -[4] In the release build of the VST plugin, the Osc "More" menu doesn't open. In release build 
    of standalone, there's no problem. -> Try a debug build of the plugin
@@ -60,7 +62,7 @@ we build up our suite of unit tests along the way.
    WaveOscEditor::rButtonClicked where the context menu is opened. There, we call
      contextMenu->toFront(true);
    but this doesn't seem to be enough? The doc says that toFront brings the component in front
-   of its *siblings*. But maybe the outer editor counts not a ssibling but as parent? Maybe we need
+   of its *siblings*. But maybe the outer editor counts not a sibling but as parent? Maybe we need
    to call addToDesktop() as well? But we do that in WaveOscEditor::rButtonClicked
    https://docs.juce.com/master/classComponent.html#ad717da76012d971197fd8cf943f3e721
    It can also be checked with the WaveOscillatorModule. In this case, the menu is visible because
@@ -82,7 +84,7 @@ we build up our suite of unit tests along the way.
   Parameter name DryWetRatio. It may be the Harmonics and/or the Reverb algo
 
 - [3] Scope: Switching to sync and then back does not seem to update the sync frequency to the old 
-  value. When moving the ScanFreq slicer, we get back to the old setting.
+  value. When moving the ScanFreq slider, we get back to the old setting.
 
 - [4] Load ToolChain preset BrassyOsc, play a couple of notes, load preset ButterSnap. It will 
   click only on the note that was last played with the previous patch. Something about the voice 
