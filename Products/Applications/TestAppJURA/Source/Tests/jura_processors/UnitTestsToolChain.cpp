@@ -10,12 +10,13 @@ void UnitTestToolChain::runTest()
   // included in the next release anyway. So we make some ignore lists. The goal is that they 
   // should get shorter over time
   juce::StringArray ignoreListForStateRecall = { "FuncShaper", "MultiBandEffect", "SamplePlayer" };
-  // There's only this one ignore-list so far.
+  juce::StringArray ignoreListForEditorCreation = { "MultiAnalyzer" };
+
 
   // Test currently worked on copied to top of the function:
   //runTestStateRecall(0);
   //runTestFuncShaper();
-  runTestMultiAnalyzer();
+  //runTestMultiAnalyzer();
   //runTestStateRecall(0, ignoreListForStateRecall);
   // Fails for DebugAudioModule ...What! It seems to fail for more modules now! This is new! Figure
   // out since which commit this got broken!
@@ -33,7 +34,7 @@ void UnitTestToolChain::runTest()
   runTestStraightliner();
   runTestWaveOscillator();
   runTestQuadrifex();
-  runTestEditorCreation(0);  // Takes quite long
+  runTestEditorCreation(0, ignoreListForEditorCreation);  // Takes quite long
   // These tests are currently called last because they creates an actual jura::ToolChain object 
   // which in turn instantiates all modules once in populateModuleFactory - which is annyoing 
   // during debugging because certain initialization functions for ToolChain's built in 
@@ -54,7 +55,7 @@ void UnitTestToolChain::runTest()
   //  is understood and expected (see comments in runtestFuncShaper for details). If that's the 
   //  only problem, it should be fine because that state recall test produces states that are 
   //  invalid for for FuncShaper in its randomization of the parameters which are sanitized in the
-  //  attempted recall - which causes the test to fail because the sanitized state deosn't match 
+  //  attempted recall - which causes the test to fail because the sanitized state doesn't match 
   //  the radomized state.
 
 }
@@ -305,7 +306,7 @@ std::vector<WidgetType*> UnitTestToolChain::filterWidgets(const std::vector<jura
 //-------------------------------------------------------------------------------------------------
 // Tests for the infrastructure:
 
-void UnitTestToolChain::runTestEditorCreation(int seed)
+void UnitTestToolChain::runTestEditorCreation(int seed, const juce::StringArray& ignoreList)
 {
   // This test triggers a couple of assertions -> try to fix!
 
@@ -320,11 +321,8 @@ void UnitTestToolChain::runTestEditorCreation(int seed)
   {
     juce::String type = moduleTypes[i];
 
-    if(type == "MultiAnalyzer")
+    if(ignoreList.contains(type))
       continue;
-    // It fails for MultiAnalyzer but it's not a big issue so we just skip it for the time being. 
-    // There's a separate unit test for this which can be used for fixing this. When done, this 
-    // skipping here can be removed as well.
 
     tlChn.replaceModule(0, type);
 
@@ -359,34 +357,11 @@ void UnitTestToolChain::runTestStateRecall(int seed, const juce::StringArray& ig
     if(ignoreList.contains(type))
       continue;
 
-
-    //if(type == "MultiBandEffect") continue;
-    // Fails but that's not relevant fo the next release because it won't be included anyway
-
-
-    //if(type == "FuncShaper")      continue;
-    // It fails for FuncShaper. To get passed the triggers of the assertions, we temporarily skip 
-    // this test.
-
-
     tlChn.replaceModule(0, type);
     AudioModule* m = tlChn.getModuleAt(0);
     expect(m->getModuleTypeName() == type);  // Check module type in slot 1
 
     expect(testStateRecall(m, seed));
-
-
-    /*
-    // Factor out into a bool testStateRecall (done):
-    randomizeParameters(m, seed);
-    juce::XmlElement* preXml = m->getStateAsXml("State", true);
-    resetParameters(m);
-    m->setStateFromXml(*preXml, "Recalled", true);
-    juce::XmlElement* postXml = m->getStateAsXml("State", true);
-    expect(postXml->isEquivalentTo(preXml, false));
-    delete preXml;
-    delete postXml;
-    */
   }
 
   // WaveOscillator fails

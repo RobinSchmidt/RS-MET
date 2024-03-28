@@ -131,7 +131,7 @@ protected:
   void runTestSlotInsertRemoveEtc();
 
   // Tests that run through all modules available in ToolChain except some specified ignored ones:
-  void runTestEditorCreation(int randomSeed);
+  void runTestEditorCreation(int randomSeed, const juce::StringArray& ignoreList);
   void runTestStateRecall(int randomSeed, const juce::StringArray& ignoreList);
   //  Maybe these tests should take an array of strings of modules to ignore
 
