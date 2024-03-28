@@ -34,38 +34,19 @@ void UnitTestToolChain::runTest()
   runTestQuadrifex();
 
 
-  // These tests are currently called last because they creates an actual jura::ToolChain object 
-  // which in turn instantiates all modules once in populateModuleFactory - which is annyoing 
-  // during debugging because certain initialization functions for ToolChain's built in 
-  // AudioModules will get called more often than one would expect in the tests, i.e. the 
-  // breakpoints will trigger more often than the actual running test justifies. Putting this 
-  // test to the end fixes this. 
-  // ToDo: Factor out the creation of a ToolChain object from the Quadrifex test. It should be a 
-  // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
-
   // Notes:
-  //
-  // -FuncShaper is actually included in the upcoming release but we have to exclude it from the 
-  //  state recall test because of an idiosynchrasy it has: It has the aMin, aMax, bMin, ...etc. 
-  //  parameters which have infinite range. That trips up the state recall unit test in a way that 
-  //  is understood and expected (see comments in runtestFuncShaper for details). If that's the 
-  //  only problem, it should be fine because that state recall test produces states that are 
-  //  invalid for for FuncShaper in its randomization of the parameters which are sanitized in the
-  //  attempted recall - which causes the test to fail because the sanitized state doesn't match 
-  //  the radomized state.
-  //
-  // We get memory leaks. They come from runTestEditorCreation. Maybe it's ToolChain itself? 
-  // Figure out! When coomenting out the line
-  //
-  //   jura::AudioModuleEditor* editor = m->createEditor(0);
-  //
-  // the memleak goes away. Apparently, one of the editors causes it. Figure out which one it is!
-  // Maybe comment out some sections in ToolChainAudioModule::populateModuleFactory. OK - it looks
-  // like EchoLab is the offender.
+  // -FuncShaper is excluded from the state recall test even though FuncShaper is actually
+  //  included in the upcoming release but we have to exclude it because of an idiosynchrasy it 
+  //  has: It has the aMin, aMax, bMin, ...etc. parameters which have infinite range. That trips
+  //  up the state recall unit test in a way that is understood and expected (see comments in 
+  //  runtestFuncShaper for details). If that's the only problem, it should be fine because that 
+  //  state recall test produces states that are invalid for FuncShaper in its randomization of 
+  //  the parameter. These invalid values (situations where aMin > aMax, etc.) do not occur in 
+  //  normal operation and the values are sanitized in the attempted state recall. This causes the 
+  //  test to fail because the sanitized state doesn't match the randomized state - obviously.
   //
   // ToDo:
-  // -Make a test for EchoLab - it should create the editor. We want to fix the memory leak that it
-  //  causes.
+  // -Document why MultiAnalyzer is excluded from the editor creation test.
 }
 
 bool UnitTestToolChain::isInDefaultState(const jura::AudioModule* m)
