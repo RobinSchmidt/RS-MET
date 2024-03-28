@@ -991,8 +991,8 @@ void EqualizerPlotEditor::resized()
 
   // (re) allocate and fill the arrays for the magnitude plot
   numBins = getWidth();
-  if( frequencies == NULL )
-    delete[] frequencies;
+  if( frequencies == NULL )   // This makes no sense! Should probably be != NULL. But we should
+    delete[] frequencies;     // use std::vector anyway!
   if( magnitudes1 == NULL )
     delete[] magnitudes1;
   if( magnitudes2 == NULL )
@@ -1467,13 +1467,13 @@ void EqualizerModuleEditor::resized()
 
     //globalGainSlider->setLayout(RSlider::NAME_ABOVE);
     //globalGainSlider->setBounds(x+4, y+4, w-8, 32);
-
+   
     x = 0;
     w = rightSectionRectangle.getX()-x;
     y = getPresetSectionBottom();
     h = infoField->getY() - y - bottomSectionHeight;
     plotEditor->setBounds(x, y+4, w+2, h-4);
-
+    
     // new widgets for v10.04:
     y = plotEditor->getBottom()-2;
     bottomSectionRectangle.setBounds(0, y, getWidth(), bottomSectionHeight+4); 
@@ -1492,6 +1492,7 @@ void EqualizerModuleEditor::resized()
 
     w = 92;
     gainRangeComboBox->setBounds(globalGainSlider->getX()-w-4, y+4, w, 16);
+
   }
   if( layout == SLIDERS_BELOW )
   {

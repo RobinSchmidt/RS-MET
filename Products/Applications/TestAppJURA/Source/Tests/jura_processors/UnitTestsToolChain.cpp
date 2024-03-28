@@ -1104,20 +1104,33 @@ void UnitTestToolChain::runTestEchoLab()
   //
   //   delayLineModuleEditor->setBounds() 
   //
-  // at the bottom of resized -> check
+  // at the bottom of resized -> check:
   //
   //   EchoLabDelayLineModuleEditor::resized()
   //
-  // it's in the calls to 
+  // it's in the calls to:
   //
   //  inputEqualizerEditor   ->setBounds(x,                 y, w+2, h);
   //  feedbackEqualizerEditor->setBounds(x+w+middleWidth-2, y, w+2, h);
   //
-  // check
+  // check:
   //
   //   EqualizerModuleEditor::resized()
   //
-  // ...
+  // we enter the:
+  //
+  //   if( layout == SLIDERS_RIGHT )
+  //
+  // path. It's the call to:
+  //
+  //   plotEditor->setBounds(x, y+4, w+2, h-4);
+  //
+  // in line 1475. Check:
+  //
+  //   EqualizerPlotEditor::resized()
+  //
+  // Aha! There are some call to "new"!
+
 
 }
 
