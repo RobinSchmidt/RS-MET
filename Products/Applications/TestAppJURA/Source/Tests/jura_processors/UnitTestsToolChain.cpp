@@ -1098,7 +1098,8 @@ void UnitTestToolChain::runTestEchoLab()
   jura::EchoLabAudioModule el(&lock);
   jura::AudioModuleEditor* editor = el.createEditor(0);
   delete editor;
-
+  // It seems to be the call to setSize() at the bottom of the constructor of the editor. When 
+  // commenting it out, the leak goes away.
 
 }
 

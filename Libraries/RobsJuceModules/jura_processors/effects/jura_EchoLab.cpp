@@ -1129,6 +1129,7 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   jassert( newEchoLabAudioModule != NULL ); // you must pass a valid module here
   echoLabModuleToEdit = newEchoLabAudioModule;
 
+
   addWidget( dryWetSlider = new RSlider("DryWetSlider") );
   dryWetSlider->setSliderName(juce::String("Dry/Wet"));
   dryWetSlider->assignParameter( echoLabModuleToEdit->getParameterByName("DryWet") );
@@ -1157,6 +1158,7 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   snapToTimeGridButton->setDescriptionField(infoField);
   snapToTimeGridButton->addRButtonListener(this);
 
+
   addWidget( timeGridComboBox = new RTimeGridComboBox(juce::String("TimeGridComboBox")) );
   timeGridComboBox->setDescriptionField(infoField);
   timeGridComboBox->registerComboBoxObserver(this);
@@ -1183,9 +1185,10 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   delayPlotEditor->setDelayLineModuleEditor(delayLineModuleEditor);
 
   numHueOffsets = 1; // for filter-sections
-
+  
   initializeColourScheme();
   updateWidgetsAccordingToState();
+
   setSize(900, 400);
 }
 
