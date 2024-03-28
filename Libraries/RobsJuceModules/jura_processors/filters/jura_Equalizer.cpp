@@ -501,11 +501,11 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
 
   // this stuff will be (re-) assigned in resized():
   numBins       = 0;
-  frequencies   = NULL;
-  magnitudes1   = NULL;
-  magnitudes2   = NULL;
-  magnitudes[0] = magnitudes1;
-  magnitudes[1] = magnitudes2;
+  //frequencies   = NULL;
+  //magnitudes1   = NULL;
+  //magnitudes2   = NULL;
+  magnitudes[0] = nullptr;
+  magnitudes[1] = nullptr;
 
   currentlyDraggedHandle = NONE;
 
@@ -518,9 +518,10 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
 EqualizerPlotEditor::~EqualizerPlotEditor(void)
 {
   setEqualizerModuleToEdit(NULL); // to remove ourselves as ChangeListener
-  deleteAndZero(frequencies);
-  deleteAndZero(magnitudes1);
-  deleteAndZero(magnitudes2);
+
+  //deleteAndZero(frequencies);
+  //deleteAndZero(magnitudes1);
+  //deleteAndZero(magnitudes2);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -989,6 +990,8 @@ void EqualizerPlotEditor::resized()
 {
   rsSpectrumPlot::resized();
 
+  /*
+  // OLD - buggy (caused memleak):
   // (re) allocate and fill the arrays for the magnitude plot
   numBins = getWidth();
   if( frequencies == NULL )   // This makes no sense! Should probably be != NULL. But we should
@@ -1003,9 +1006,18 @@ void EqualizerPlotEditor::resized()
   magnitudes2   = new double[numBins];
   magnitudes[0] = magnitudes1;
   magnitudes[1] = magnitudes2;
+  */
 
 
-  getDisplayedFrequencies(frequencies, numBins);
+  numBins = jmax(1, getWidth());
+
+  frequencies.resize(numBins);
+  magnitudes1.resize(numBins);
+  magnitudes2.resize(numBins);
+  magnitudes[0] = &magnitudes1[0];
+  magnitudes[1] = &magnitudes2[0];
+
+  getDisplayedFrequencies(&frequencies[0], numBins);
   updatePlot();
 }
 
@@ -1014,15 +1026,15 @@ void EqualizerPlotEditor::updatePlot()
   ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
   {
-    fillWithZeros(magnitudes1, numBins);
-    fillWithZeros(magnitudes2, numBins);
+    fillWithZeros(&magnitudes1[0], numBins);
+    fillWithZeros(&magnitudes2[0], numBins);
   }
   else
   {
-    equalizerModuleToEdit->getMagnitudeResponse(0, frequencies, magnitudes1, numBins);
-    equalizerModuleToEdit->getMagnitudeResponse(1, frequencies, magnitudes2, numBins);
+    equalizerModuleToEdit->getMagnitudeResponse(0, &frequencies[0], &magnitudes1[0], numBins);
+    equalizerModuleToEdit->getMagnitudeResponse(1, &frequencies[0], &magnitudes2[0], numBins);
   }
-  setSpectra(numBins, 2, frequencies, magnitudes);
+  setSpectra(numBins, 2, &frequencies[0], magnitudes);
 }
 
 void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,

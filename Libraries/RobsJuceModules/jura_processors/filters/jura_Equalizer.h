@@ -308,8 +308,13 @@ protected:
 
   // magnitude response display stuff:
   int    numBins;
-  double *frequencies, *magnitudes1, *magnitudes2;
-  double *magnitudes[2];
+
+
+  //double *frequencies, *magnitudes1, *magnitudes2;   // OLD
+
+  std::vector<double> frequencies, magnitudes1, magnitudes2;  // NEW
+
+  double *magnitudes[2];  // Needed for call to setSpectra()
 
   juce_UseDebuggingNewOperator;
 };
