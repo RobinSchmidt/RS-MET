@@ -13,15 +13,18 @@ void UnitTestToolChain::runTest()
   juce::StringArray ignoreListForEditorCreation = { "MultiAnalyzer" };
 
 
-  // Test currently worked on copied to top of the function:
-  runTestEchoLab();
+  // Test currently worked on copied to top of the function os we don't have to wait for the others
+  // to pass:
+  //runTestEchoLab();
 
-  
-  /*
-  // All the tests in order:
+
+  // Global infracstructure tests:
   runTestVoiceManager();
   runTestSlotInsertRemoveEtc();
   runTestStateRecall(0, ignoreListForStateRecall);
+  runTestEditorCreation(0, ignoreListForEditorCreation);  // Takes quite long
+
+  // Tests of individual modules:
   runTestEqualizer();
   runTestFuncShaper();
   //runTestMultiAnalyzer();  // Fails - see comments there. Fixing has low priority.
@@ -29,8 +32,8 @@ void UnitTestToolChain::runTest()
   runTestWaveOscillator();
   runTestEchoLab();
   runTestQuadrifex();
-  runTestEditorCreation(0, ignoreListForEditorCreation);  // Takes quite long
-  */
+
+
   // These tests are currently called last because they creates an actual jura::ToolChain object 
   // which in turn instantiates all modules once in populateModuleFactory - which is annyoing 
   // during debugging because certain initialization functions for ToolChain's built in 
@@ -39,10 +42,6 @@ void UnitTestToolChain::runTest()
   // test to the end fixes this. 
   // ToDo: Factor out the creation of a ToolChain object from the Quadrifex test. It should be a 
   // test in its own right. Then, it shouldn't matter where we put the test for Quadrifex.
-
-
-  // 
-
 
   // Notes:
   //
@@ -1098,39 +1097,7 @@ void UnitTestToolChain::runTestEchoLab()
   jura::EchoLabAudioModule el(&lock);
   jura::AudioModuleEditor* editor = el.createEditor(0);
   delete editor;
-  // It seems to be the call to setSize() at the bottom of the constructor of the editor. When 
-  // commenting it out, the leak goes away. setSize triggers a call to resized. Commenting out 
-  // some code there lets us also get rid of the leak. It's the call to
-  //
-  //   delayLineModuleEditor->setBounds() 
-  //
-  // at the bottom of resized -> check:
-  //
-  //   EchoLabDelayLineModuleEditor::resized()
-  //
-  // it's in the calls to:
-  //
-  //  inputEqualizerEditor   ->setBounds(x,                 y, w+2, h);
-  //  feedbackEqualizerEditor->setBounds(x+w+middleWidth-2, y, w+2, h);
-  //
-  // check:
-  //
-  //   EqualizerModuleEditor::resized()
-  //
-  // we enter the:
-  //
-  //   if( layout == SLIDERS_RIGHT )
-  //
-  // path. It's the call to:
-  //
-  //   plotEditor->setBounds(x, y+4, w+2, h-4);
-  //
-  // in line 1475. Check:
-  //
-  //   EqualizerPlotEditor::resized()
-  //
-  // Aha! There are some call to "new"!
-
+  // OK - the bug was found and fixed.
 
 }
 

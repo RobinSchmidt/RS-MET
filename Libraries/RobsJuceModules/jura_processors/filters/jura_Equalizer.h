@@ -297,6 +297,9 @@ protected:
   /** Converts a pixel-position to the corresponing frequency and gain values. */
   virtual void xyToFrequencyAndGain(double &x, double &y);
 
+  virtual void allocateDisplayBuffers(int numBins);
+
+
   CriticalSection      *plugInLock;              // mutex to access the edited AudioModule object 
   EqualizerAudioModule *equalizerModuleToEdit;   // the edited AudioModule object
 

@@ -499,9 +499,7 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
   bandwidthParameter  = nullptr;
   globalGainParameter = nullptr;
 
-  // This stuff will be (re-) assigned in resized():
-  magnitudes[0] = nullptr;
-  magnitudes[1] = nullptr;
+  allocateDisplayBuffers(numBins);   // numBins == 1 initially
 
   currentlyDraggedHandle = NONE;
 
@@ -514,10 +512,6 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
 EqualizerPlotEditor::~EqualizerPlotEditor(void)
 {
   setEqualizerModuleToEdit(nullptr); // to remove ourselves as ChangeListener
-
-  //deleteAndZero(frequencies);
-  //deleteAndZero(magnitudes1);
-  //deleteAndZero(magnitudes2);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -985,15 +979,7 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
 void EqualizerPlotEditor::resized()
 {
   rsSpectrumPlot::resized();
-
-  numBins = jmax(1, getWidth());
-  frequencies.resize(numBins);
-  magnitudes1.resize(numBins);
-  magnitudes2.resize(numBins);
-  magnitudes[0] = &magnitudes1[0];
-  magnitudes[1] = &magnitudes2[0];
-
-  getDisplayedFrequencies(&frequencies[0], numBins);
+  allocateDisplayBuffers(getWidth());
   updatePlot();
 }
 
@@ -1156,6 +1142,17 @@ void EqualizerPlotEditor::xyToFrequencyAndGain(double &x, double &y)
   g                -= globalGain;
   x                 = f;
   y                 = g;
+}
+
+void EqualizerPlotEditor::allocateDisplayBuffers(int numBins)
+{
+  numBins = jmax(1, numBins);         // Allocate arrays of lengt at least 1
+  frequencies.resize(numBins);
+  magnitudes1.resize(numBins);
+  magnitudes2.resize(numBins);
+  magnitudes[0] = &magnitudes1[0];
+  magnitudes[1] = &magnitudes2[0];
+  getDisplayedFrequencies(&frequencies[0], numBins);
 }
 
 //=================================================================================================
