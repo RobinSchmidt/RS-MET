@@ -170,6 +170,11 @@ we build up our suite of unit tests along the way.
 - [1] When the chain is long and one clicks on a module with a small editor, parts of the chain
   may become invisible unless one manually increases the window size
 
+- [4] EchoLab: plug it in, close ToolChain -> memory leak! I think, it is the editor. When 
+  switching to another slot, clsoing ToolChain and re-opening it such that EchoLab will be created
+  but not its editor (because the other slot is active and no editor is created because they are 
+  created lazily), the leak goes away.
+
 ---------------------------------------------------------------------------------------------------
 Features
 

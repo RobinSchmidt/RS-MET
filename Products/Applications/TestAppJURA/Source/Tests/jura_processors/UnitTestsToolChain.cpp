@@ -14,18 +14,10 @@ void UnitTestToolChain::runTest()
 
 
   // Test currently worked on copied to top of the function:
-  //runTestStateRecall(0);
-  //runTestFuncShaper();
-  //runTestMultiAnalyzer();
-  //runTestStateRecall(0, ignoreListForStateRecall);
-  //runTestEditorCreation(0, {});
-  // Fails for DebugAudioModule ...What! It seems to fail for more modules now! This is new! Figure
-  // out since which commit this got broken!
-
-
-
+  runTestEchoLab();
 
   
+  /*
   // All the tests in order:
   runTestVoiceManager();
   runTestSlotInsertRemoveEtc();
@@ -35,8 +27,10 @@ void UnitTestToolChain::runTest()
   //runTestMultiAnalyzer();  // Fails - see comments there. Fixing has low priority.
   runTestStraightliner();
   runTestWaveOscillator();
+  runTestEchoLab();
   runTestQuadrifex();
   runTestEditorCreation(0, ignoreListForEditorCreation);  // Takes quite long
+  */
   // These tests are currently called last because they creates an actual jura::ToolChain object 
   // which in turn instantiates all modules once in populateModuleFactory - which is annyoing 
   // during debugging because certain initialization functions for ToolChain's built in 
@@ -1092,6 +1086,19 @@ void UnitTestToolChain::runTestWaveOscillator()
   //  that opening the editor does not affect the state. Loop through all availablbe modules, 
   //  intantiate one, randomize the state, retrieve the state-xml, open the editor, retrieve the 
   //  state-xml again and check that both state xmls match. ..is under construction
+
+}
+
+
+void UnitTestToolChain::runTestEchoLab()
+{
+  CriticalSection lock;                   // Mocks the pluginLock.
+
+  // We want to trigger the memory leak in the editor:
+  jura::EchoLabAudioModule el(&lock);
+  jura::AudioModuleEditor* editor = el.createEditor(0);
+  delete editor;
+
 
 }
 

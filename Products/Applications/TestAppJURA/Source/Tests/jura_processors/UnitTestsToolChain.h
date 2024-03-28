@@ -142,7 +142,7 @@ protected:
   void runTestQuadrifex();
   void runTestStraightliner();
   void runTestWaveOscillator();
-
+  void runTestEchoLab();
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestToolChain)
 };
