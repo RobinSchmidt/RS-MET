@@ -210,4 +210,9 @@ Resources:
 https://www.youtube.com/watch?v=o4-CwDo2zpg Fastware - Andrei Alexandrescu
 https://www.youtube.com/watch?v=Qq_WaiwzOtI CppCon 2014: Andrei Alexandrescu "Optimization Tips - Mo' Hustle Mo' Problems"
 
+
+This has a function to convert from double to int faster than the usual way:
+https://stackoverflow.com/questions/28668348/how-expensive-is-it-to-convert-between-int-and-double
+
+
 */

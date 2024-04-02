@@ -196,8 +196,12 @@ Other resources for open source audio software:
 https://github.com/sudara/awesome-juce
 -List of open source JUCE libraries, plugins and utilities.
 
+https://github.com/webprofusion/OpenAudio
+-List of open source audio software
+
 http://ccrma.stanford.edu/planetccrma/software/ladspaworld.html
 -List of LADSPA plugins
+
 
 https://www.musicdsp.org/en/latest/
 
