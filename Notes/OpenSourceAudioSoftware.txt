@@ -12,6 +12,10 @@ https://lmms.io/
 https://github.com/LMMS/lmms
 -Another DAW similar to FL
 
+Qtractor:
+https://qtractor.org/qtractor-index.html#Intro
+-A DAW based on Qt for Linux.
+
 Surge:
 https://surge-synthesizer.github.io/
 https://github.com/surge-synthesizer/surge

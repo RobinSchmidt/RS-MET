@@ -1,3 +1,6 @@
+This file is now obsolete  and can be deleted. The right one is in Notes/Scratch
+
+
 A pack of samples that can be used as electronic bassdrums or, depending on the parameters, for 
 "zap" sounds. The samples are all based on impulse responses of a specifically tuned chain of 
 allpass filters. This means, the initial raw material has a *perfectly* white spectrum because the 
