@@ -160,6 +160,9 @@ inline T rsPitchToFreq(T pitch)
 // todo: make a function rsPitchToOmega(T pitch, T sampleRate)
 // maybe compute the coefficients as constexpr here to document the formulas used - something with
 // a * pow(b, c) = a * exp(log(b) * c) = ...something -> look it up!
+// Maybe it can be further optimized by replacing exp by exp2? Maybe it's cheaper to compute 2^x 
+// than e^x? Do some benchmarks! If so, then there are a lot of places where this optimization can
+// be applied. See: https://en.cppreference.com/w/cpp/numeric/math/exp2
 
 /** Converts a MIDI-note value into a frequency in Hz for arbitrary master-tunings of A4. Uses 
 three multiplications and one call to exp. */

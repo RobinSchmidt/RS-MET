@@ -122,7 +122,7 @@
     #pragma intrinsic (__debugbreak)
     #define RS_DEBUG_BREAK __debugbreak();
   #else
-    #define RS_DEBUG_BREAK __builtin_trap();  // preliminary - gcc only
+    #define RS_DEBUG_BREAK __builtin_trap();  // Preliminary - GCC only?
   #endif
 #else
   #define RS_DEBUG_BREAK { }

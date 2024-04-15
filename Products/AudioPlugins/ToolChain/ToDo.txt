@@ -175,6 +175,26 @@ we build up our suite of unit tests along the way.
   but not its editor (because the other slot is active and no editor is created because they are 
   created lazily), the leak goes away.
 
+- [1] The Meta Parameters seem to have a default value of 0.0 while having an initial value of 0.5.
+  Make that consistent
+
+- [1] The frequency respons plots have tick makrs at 128, 256, 512, etc. We want the usual marks at
+  32, 63, 125, 250, 500, 1000, etc.
+
+- [3] Straightline: pluugin it in freshly in bitwig, it doesn't open with the init patch. Instead
+  all 4 oscs are active with sinewaves.
+
+- [1] I get CPU load spikes in Bitwig whenn plugging in a module (and smaller spikes when plugging 
+  one out)
+
+- [4] Straightliner doesn't respond to pitch wheel in Bitwig
+
+- [5] Straightliner sometimes seems to loose note-offs. It seems to happen with big clusters - play
+  a cluster of at least 9 notes - hit 9 key quasi-simultaneously and release them immediately again.
+  Some notes will hang! It doesn't seem to happen with clusters of 8 or less notes. It seems like 
+  it's always the oldest note that hangs.
+
+
 ---------------------------------------------------------------------------------------------------
 Features
 

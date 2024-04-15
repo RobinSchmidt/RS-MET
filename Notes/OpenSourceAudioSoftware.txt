@@ -19,7 +19,7 @@ https://qtractor.org/qtractor-index.html#Intro
 Surge:
 https://surge-synthesizer.github.io/
 https://github.com/surge-synthesizer/surge
--A hybrid synthesizer (mostly VA but with some more exotic oscillator types). Very poppular with 
+-A hybrid synthesizer (mostly VA but with some more exotic oscillator types). Very popular with 
  active community.
 -https://surge-synth-team.org/ is a portal website with links to other projects of the Surge Synth
  Team
@@ -131,23 +131,43 @@ https://github.com/hollance/mda-plugins-juce
 CMT (Computer Music toolkit) Plugins:
 https://www.ladspa.org/cmt/plugins.html
 https://www.ladspa.org/download/index.html
--Yes another collection of (GUI-less?) plugins
+-Yet another collection of (GUI-less?) plugins
 
 Freeverb:
 https://github.com/sinshu/freeverb
 https://www.dsprelated.com/freebooks/pasp/Freeverb.html
 -Schroeder/Moorer allpass based reverb (public domain)
 
+Aether:
+https://github.com/Dougal-s/Aether
+-Algorithmic reverb plugin for LV2
+
+Cloudseed:
+https://github.com/ValdemarOrn/CloudSeed
+-The DSP algo on which Aether is based.
+
+quantumVerb
+https://qvbdev.github.io/quantumVerb/
+https://github.com/QVbDev/quantumVerb
+-Convolution reverb
+
+KlangFalter
+https://github.com/HiFi-LoFi/KlangFalter
+-Convolution reverb
+
 https://github.com/robbert-vdh/nih-plug/
 -API-agnostic audio plugin framework written in Rust, as well as a small collection of plugins.
 
-ZL-Audio Plugins:
+ZL-Audio Plugins
 https://github.com/ZL-Audio
 https://github.com/ZL-Audio/ZLEqualizer
 -Some plugins made with JUCE. The EQ appears to have a nice visual and modern GUI and uses the
  Vicanek design formulas. It's dynamic as well.
 
-
+WayVerb
+https://reuk.github.io/wayverb/
+https://github.com/reuk/wayverb
+-Raytracing based impulse response generator
 
 ----------------------------------------------------------------------------------------------------
 Libraries and SDKs
@@ -193,6 +213,50 @@ https://github.com/signaldust/dust-toolkit
 Anti Grain Geometry
 https://github.com/ghaerr/agg-2.6
 -Rasterization based 2D graphics rendering library.
+
+Dear ImGUI
+https://www.dearimgui.com/
+https://github.com/ocornut/imgui
+-Immediate mode GUI framework
+
+Elements
+https://github.com/cycfi/elements
+-Lightweight GUI framework
+
+Tracktion Engine
+https://www.tracktion.com/develop/tracktion-engine
+https://github.com/Tracktion/tracktion_engine/
+-Audio engine of the Tracktion DAW
+
+JUCE
+https://juce.com/
+https://github.com/juce-framework/JUCE
+-Framework for building audio software and plugins
+
+IPlug2
+https://iplug2.github.io/
+https://github.com/iPlug2/iPlug2
+-Another audio plugin framework. More lightweight and more liberally licensed than JUCE.
+
+WDL
+https://www.cockos.com/wdl/
+-GUI-library plus some audio related stuff
+
+Choc
+https://github.com/Tracktion/choc/
+-Julian Storer's new, small, header-only library
+
+Farbot (FAbian's Realtime Box o' Tricks)
+https://github.com/hogliux/farbot
+-Library for thread-sync tasks typical in audio software programming
+
+Spleeter
+https://github.com/deezer/spleeter
+-AI based source separation
+
+Demucs
+https://github.com/facebookresearch/demucs
+-AI based source separation
 
 ----------------------------------------------------------------------------------------------------
 Other resources for open source audio software:

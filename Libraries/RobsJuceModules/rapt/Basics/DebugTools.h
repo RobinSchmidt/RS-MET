@@ -60,8 +60,8 @@ inline void rsAssert(bool expression, const char *errorMessage = nullptr)
 // https://docs.microsoft.com/en-us/cpp/cpp/errors-and-exception-handling-modern-cpp?view=msvc-160
 
 inline void rsAssertFalse(const char *errorMessage = nullptr) { rsAssert(false, errorMessage); }
-// LOL! this is stupid! Use rsError directly! juce had (or still has?) such a thing and i just 
-// mimicked the idea from there
+// LOL! This is stupid! We should use rsError directly instead! JUCE had (or still has?) such a 
+// thing and I just mimicked the idea from there.
 
 // todo: have functions for logging and printing
 
