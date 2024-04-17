@@ -54,6 +54,11 @@ Cardinal:
 https://github.com/DISTRHO/Cardinal
 -A VCV-Rack-style modular synthesizer
 
+Soonth Blocks:
+https://www.soonth.com/
+https://github.com/dan-german/blocks
+-Semi modular synth - conceptually similar to Zebra? 
+
 Geonkick:
 https://geonkick.org/
 https://github.com/Geonkick-Synthesizer/geonkick
