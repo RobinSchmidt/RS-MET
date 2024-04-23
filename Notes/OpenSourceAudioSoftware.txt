@@ -24,6 +24,14 @@ https://github.com/surge-synthesizer/surge
 -https://surge-synth-team.org/ is a portal website with links to other projects of the Surge Synth
  Team
 
+Shortcircuit:
+https://github.com/surge-synthesizer/shortcircuit-xt
+-The sampler cousin of Surge.
+
+Monique Mono-Synth:
+https://github.com/surge-synthesizer/monique-monosynth
+-Monophonic synthesizer
+
 Element:
 https://github.com/kushview/element
 -A modular AU/LV2/VST/VST3 audio plugin host. Works standalone or as plugin. 
@@ -79,8 +87,8 @@ https://github.com/FigBug/Wavetable
 Plugins:
 https://github.com/FigBug/SocaLabs
 -Audio Plugins by FigBug - includes the "Wavetable" synth above. Other plugins are an organ, a 
- piano, Voc (vocal synth), mverb (Dattorro figure-8 reverb), emulations of: Commodore SID, Nintendo 
- RP2A03, Gameboy PAPU, Sega SN76489
+ piano, Voc (vocal synth), mverb (Dattorro figure-8 reverb), emulations of chiptune synths: 
+ Commodore SID, Nintendo RP2A03, Gameboy PAPU, Sega SN76489
 
 Audio Programming Environment:
 https://www.jthorborg.com/ape.html
@@ -101,6 +109,11 @@ https://github.com/sfztools/sfizz-ui
 DtBlkFx:
 https://github.com/dozius/DtBlkFx
 -FFT based spectral processing plugin ("Darrel Tam's Block Effects?" ...probably)
+
+SpectrumWorx:
+https://github.com/LittleEndianLtd/SpectrumWorx
+https://www.kvraudio.com/forum/viewtopic.php?t=609517
+-Spectral effects plugin
 
 EqualizerAPO:
 https://equalizerapo.com/
@@ -251,6 +264,11 @@ Choc
 https://github.com/Tracktion/choc/
 -Julian Storer's new, small, header-only library
 
+ASPik:
+http://www.aspikplugins.com/
+https://github.com/willpirkleaudio/ASPiK
+-Audio plugin framework by Will Pirkle for AAX, AU, VST3 on Windows and Mac
+
 Farbot (FAbian's Realtime Box o' Tricks)
 https://github.com/hogliux/farbot
 -Library for thread-sync tasks typical in audio software programming
@@ -280,3 +298,6 @@ https://www.musicdsp.org/en/latest/
 
 
 
+ToDo:
+-Sort better. Categories: Hosts, Effect Plugins, Instrument Plugins, Frameworks, DSP-Libraries,
+ Other Libraries,
