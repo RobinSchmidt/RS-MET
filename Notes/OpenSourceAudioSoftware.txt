@@ -205,6 +205,10 @@ https://github.com/AudioTK
 https://github.com/AudioTK/AudioTK
 -Audio DSP library
 
+Maximilian
+https://github.com/micknoise/Maximilian
+-Audio DSP library
+
 https://github.com/nothings/stb/
 -Single-file public domain (or MIT licensed) libraries for C/C++.
 -Has image (.png,etc.) read/write, .ttf-rendering
