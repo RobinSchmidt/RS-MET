@@ -1,7 +1,7 @@
 Links to interesting open source projects
 
 ----------------------------------------------------------------------------------------------------
-Audio Software
+Hosts
 
 Ardour:
 https://github.com/Ardour/ardour
@@ -10,11 +10,26 @@ https://github.com/Ardour/ardour
 LMMS:
 https://lmms.io/
 https://github.com/LMMS/lmms
--Another DAW similar to FL
+-Another DAW, similar to FL
 
 Qtractor:
 https://qtractor.org/qtractor-index.html#Intro
 -A DAW based on Qt for Linux.
+
+Element:
+https://github.com/kushview/element
+-A modular AU/LV2/VST/VST3 audio plugin host. Works standalone or as plugin. 
+
+Giada:
+https://www.giadamusic.com/
+-Not sure...seems to be some sort of tracker like music software with focus on live performance?
+
+Carla:
+https://kx.studio/Applications:Carla
+-A modular audio plugin host. Works standalone only, I think (verify!).
+
+----------------------------------------------------------------------------------------------------
+Instrument Plugins
 
 Surge:
 https://surge-synthesizer.github.io/
@@ -32,20 +47,11 @@ Monique Mono-Synth:
 https://github.com/surge-synthesizer/monique-monosynth
 -Monophonic synthesizer
 
-Element:
-https://github.com/kushview/element
--A modular AU/LV2/VST/VST3 audio plugin host. Works standalone or as plugin. 
-
 Vital:
 https://github.com/mtytel/vital
 -A spectral warping wavetable synthesizer with very visual GUI.
 -Source code seems to be not get updated anymore since a while.
 -Check out also Vitalium: ...
-
-Distrho:
-https://github.com/DISTRHO/DISTRHO-Ports
--open source project with the goal of making cross-platform audio plugins and GNU/Linux + LV2 ports.
--Includes Vitalium: https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium
 
 BespokeSynth:
 https://github.com/BespokeSynth/BespokeSynth
@@ -72,14 +78,6 @@ https://geonkick.org/
 https://github.com/Geonkick-Synthesizer/geonkick
 -A drum synthesizer with focus on bassdrums
 
-Giada:
-https://www.giadamusic.com/
--Not sure...seems to be some sort of tracker like music software with focus on live performance?
-
-Carla:
-https://kx.studio/Applications:Carla
--A modular audio plugin host. Works standalone only, I think (verify!).
-
 Wavetable:
 https://github.com/FigBug/Wavetable
 -A 2 oscillator wavetable synth with flexible modulation options.
@@ -90,35 +88,10 @@ https://github.com/FigBug/SocaLabs
  piano, Voc (vocal synth), mverb (Dattorro figure-8 reverb), emulations of chiptune synths: 
  Commodore SID, Nintendo RP2A03, Gameboy PAPU, Sega SN76489
 
-Audio Programming Environment:
-https://www.jthorborg.com/ape.html
-https://bitbucket.org/Mayae/ape/src/master/
--An audio plugin, that allows to directly program C++ DSP in real time.
--https://www.kvraudio.com/forum/viewtopic.php?t=402054
- https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622
-
-Cmajor:
-https://github.com/cmajor-lang
--A C/C++ like domain specific language (DSL) for audio DSP.
-
 Sfizz:
 https://github.com/sfztools/sfizz
 https://github.com/sfztools/sfizz-ui
 -SFZ player
-
-DtBlkFx:
-https://github.com/dozius/DtBlkFx
--FFT based spectral processing plugin ("Darrel Tam's Block Effects?" ...probably)
-
-SpectrumWorx:
-https://github.com/LittleEndianLtd/SpectrumWorx
-https://www.kvraudio.com/forum/viewtopic.php?t=609517
--Spectral effects plugin
-
-EqualizerAPO:
-https://equalizerapo.com/
-https://sourceforge.net/projects/equalizerapo/
--System wide equalizer for Windows. Allows hosting of VST plugins, too.
 
 Helm:
 https://github.com/mtytel/helm
@@ -131,6 +104,18 @@ https://github.com/TheWaveWarden/odin2
 Dexed:
 https://asb2m10.github.io/dexed/
 -FM-Synthesizer, Yamaha DX-7 emulation
+
+----------------------------------------------------------------------------------------------------
+Effect Plugins
+
+DtBlkFx:
+https://github.com/dozius/DtBlkFx
+-FFT based spectral processing plugin ("Darrel Tam's Block Effects?" ...probably)
+
+SpectrumWorx:
+https://github.com/LittleEndianLtd/SpectrumWorx
+https://www.kvraudio.com/forum/viewtopic.php?t=609517
+-Spectral effects plugin
 
 Airwindows Plugins:
 https://www.airwindows.com/
@@ -160,10 +145,6 @@ Aether:
 https://github.com/Dougal-s/Aether
 -Algorithmic reverb plugin for LV2
 
-Cloudseed:
-https://github.com/ValdemarOrn/CloudSeed
--The DSP algo on which Aether is based.
-
 quantumVerb
 https://qvbdev.github.io/quantumVerb/
 https://github.com/QVbDev/quantumVerb
@@ -173,82 +154,14 @@ KlangFalter
 https://github.com/HiFi-LoFi/KlangFalter
 -Convolution reverb
 
-https://github.com/robbert-vdh/nih-plug/
--API-agnostic audio plugin framework written in Rust, as well as a small collection of plugins.
-
 ZL-Audio Plugins
 https://github.com/ZL-Audio
 https://github.com/ZL-Audio/ZLEqualizer
 -Some plugins made with JUCE. The EQ appears to have a nice visual and modern GUI and uses the
  Vicanek design formulas. It's dynamic as well.
 
-WayVerb
-https://reuk.github.io/wayverb/
-https://github.com/reuk/wayverb
--Raytracing based impulse response generator
-
 ----------------------------------------------------------------------------------------------------
-Libraries and SDKs
-
-Brickworks:
-https://www.orastron.com/brickworks
-https://www.kvraudio.com/forum/viewtopic.php?t=589519
--Audio DSP library available for licensing under GPL or commercially
-
-Synthesis Toolkit (STK):
-https://ccrma.stanford.edu/software/stk/
-https://github.com/thestk/stk
--Audio DSP library
-
-Audio Toolkit:
-https://github.com/AudioTK
-https://github.com/AudioTK/AudioTK
--Audio DSP library
-
-Maximilian
-https://github.com/micknoise/Maximilian
--Audio DSP library
-
-https://github.com/nothings/stb/
--Single-file public domain (or MIT licensed) libraries for C/C++.
--Has image (.png,etc.) read/write, .ttf-rendering
-
-CLAP-SDK and related stuff:
-https://github.com/free-audio
--Liberally licensed audio plugin format.
--Tutorial: https://www.kvraudio.com/forum/viewtopic.php?t=589258
-
-Avendish:
-https://github.com/celtera/avendish/
--Solution to the quadratic glue MxN problem: With M plugin formats and N plugins we need to write 
- and maintain(!) an amount of O(M*N) boilerplate glue code. Avendish claims to solve this 
- maintenance nightmare.
-
-SA-Toolkit:
-https://github.com/skei/SA_Toolkit
--Plugin framework by Tor Helge Skei
-
-Dust-Toolkit:
-https://github.com/signaldust/dust-toolkit
--Application and GUI toolkit by mystran, includes font rendering 
-
-Anti Grain Geometry
-https://github.com/ghaerr/agg-2.6
--Rasterization based 2D graphics rendering library.
-
-Dear ImGUI
-https://www.dearimgui.com/
-https://github.com/ocornut/imgui
--Immediate mode GUI framework
-
-Elements
-https://github.com/cycfi/elements
--Lightweight GUI framework
-
-Tracktion Engine
-https://www.tracktion.com/develop/tracktion-engine
-https://github.com/Tracktion/tracktion_engine/
--Audio engine of the Tracktion DAW
+Frameworks
 
 JUCE
 https://juce.com/
@@ -273,9 +186,56 @@ http://www.aspikplugins.com/
 https://github.com/willpirkleaudio/ASPiK
 -Audio plugin framework by Will Pirkle for AAX, AU, VST3 on Windows and Mac
 
-Farbot (FAbian's Realtime Box o' Tricks)
-https://github.com/hogliux/farbot
--Library for thread-sync tasks typical in audio software programming
+Distrho:
+https://github.com/DISTRHO/DISTRHO-Ports
+-open source project with the goal of making cross-platform audio plugins and GNU/Linux + LV2 ports.
+-Includes Vitalium: https://github.com/DISTRHO/DISTRHO-Ports/tree/master/ports-juce6.0/vitalium
+
+SA-Toolkit:
+https://github.com/skei/SA_Toolkit
+-Plugin framework by Tor Helge Skei
+
+Dust-Toolkit:
+https://github.com/signaldust/dust-toolkit
+-Application and GUI toolkit by mystran, includes font rendering 
+
+Dear ImGUI
+https://www.dearimgui.com/
+https://github.com/ocornut/imgui
+-Immediate mode GUI framework
+
+Elements
+https://github.com/cycfi/elements
+-Lightweight GUI framework
+
+https://github.com/robbert-vdh/nih-plug/
+-API-agnostic audio plugin framework written in Rust, as well as a small collection of plugins.
+
+----------------------------------------------------------------------------------------------------
+DSP-Libraries
+
+Cloudseed:
+https://github.com/ValdemarOrn/CloudSeed
+-The DSP algo on which Aether is based.
+
+Brickworks:
+https://www.orastron.com/brickworks
+https://www.kvraudio.com/forum/viewtopic.php?t=589519
+-Audio DSP library available for licensing under GPL or commercially
+
+Synthesis Toolkit (STK):
+https://ccrma.stanford.edu/software/stk/
+https://github.com/thestk/stk
+-Audio DSP library
+
+Audio Toolkit:
+https://github.com/AudioTK
+https://github.com/AudioTK/AudioTK
+-Audio DSP library
+
+Maximilian
+https://github.com/micknoise/Maximilian
+-Audio DSP library
 
 Spleeter
 https://github.com/deezer/spleeter
@@ -285,8 +245,63 @@ Demucs
 https://github.com/facebookresearch/demucs
 -AI based source separation
 
+WayVerb
+https://reuk.github.io/wayverb/
+https://github.com/reuk/wayverb
+-Raytracing based impulse response generator
+
 ----------------------------------------------------------------------------------------------------
-Other resources for open source audio software:
+Other Libraries
+
+Anti Grain Geometry
+https://github.com/ghaerr/agg-2.6
+-Rasterization based 2D graphics rendering library.
+
+Farbot (FAbian's Realtime Box o' Tricks)
+https://github.com/hogliux/farbot
+-Library for thread-sync tasks typical in audio software programming
+
+https://github.com/nothings/stb/
+-Single-file public domain (or MIT licensed) libraries for C/C++.
+-Has image (.png,etc.) read/write, .ttf-rendering
+
+----------------------------------------------------------------------------------------------------
+Misc
+
+Audio Programming Environment:
+https://www.jthorborg.com/ape.html
+https://bitbucket.org/Mayae/ape/src/master/
+-An audio plugin, that allows to directly program C++ DSP in real time.
+-https://www.kvraudio.com/forum/viewtopic.php?t=402054
+ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=560622
+
+Cmajor:
+https://github.com/cmajor-lang
+-A C/C++ like domain specific language (DSL) for audio DSP.
+
+Tracktion Engine
+https://www.tracktion.com/develop/tracktion-engine
+https://github.com/Tracktion/tracktion_engine/
+-Audio engine of the Tracktion DAW
+
+EqualizerAPO:
+https://equalizerapo.com/
+https://sourceforge.net/projects/equalizerapo/
+-System wide equalizer for Windows. Allows hosting of VST plugins, too.
+
+CLAP-SDK and related stuff:
+https://github.com/free-audio
+-Liberally licensed audio plugin format.
+-Tutorial: https://www.kvraudio.com/forum/viewtopic.php?t=589258
+
+Avendish:
+https://github.com/celtera/avendish/
+-Solution to the quadratic glue MxN problem: With M plugin formats and N plugins we need to write 
+ and maintain(!) an amount of O(M*N) boilerplate glue code. Avendish claims to solve this 
+ maintenance nightmare.
+
+----------------------------------------------------------------------------------------------------
+Resources
 
 https://github.com/sudara/awesome-juce
 -List of open source JUCE libraries, plugins and utilities.
@@ -297,11 +312,4 @@ https://github.com/webprofusion/OpenAudio
 http://ccrma.stanford.edu/planetccrma/software/ladspaworld.html
 -List of LADSPA plugins
 
-
 https://www.musicdsp.org/en/latest/
-
-
-
-ToDo:
--Sort better. Categories: Hosts, Effect Plugins, Instrument Plugins, Frameworks, DSP-Libraries,
- Other Libraries,
