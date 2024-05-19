@@ -68,7 +68,8 @@ public:
 
   /** Accepts the entire input signal at once for processing. The signal should be a mono-signal
   in single precision floating point format. When the function returns (which may take a while
-  for long signals), the detected onsets can be found in the member 'onsets'.  */
+  for long signals), the detected onsets can be found in the member 'onsets' and can be retrieved 
+  via getOnsets(). */
   void processSignalAtOnce(float *sampleData, int numSamples, int sampleRate);
 
   /** Prepares the object for block-wise processing (allocating the required buffers, etc.). You
@@ -97,6 +98,7 @@ public:
 
   /** Returns a vector containing the detected onsets. */
   std::vector<Onset> getOnsets() { return onsets; }
+  // ToDo: Maybe return a const reference
 
   //===============================================================================================
 

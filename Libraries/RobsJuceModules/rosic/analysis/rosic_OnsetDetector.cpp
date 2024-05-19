@@ -377,4 +377,10 @@ void OnsetDetector::fitQuadratic(float *x, float *y, float &a, float &b, float &
   a = (y[2]-k4*x[2]-y[0]+k4*x[0]) / (x[2]*x[2]+k5*x[2]-x[0]*x[0]-k5*x[0]);
   b = (k1+k2*a)/k3;
   c = y[0]-a*x[0]*x[0]-b*x[0];
+
+  // ToDo:
+  //
+  // -Factor this function out and make it generally available. There actually is already some 
+  //  implementation somewhere, I think. I'm not sure about whether or not the API matches, though.
+  //  Probably not.
 }

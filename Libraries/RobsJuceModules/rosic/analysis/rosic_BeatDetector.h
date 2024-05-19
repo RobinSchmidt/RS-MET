@@ -9,7 +9,7 @@ namespace rosic
 
   /**
 
-  This class ...
+  This class ...needs documentation
 
   */
 

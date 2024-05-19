@@ -132,8 +132,8 @@ int main(int argc, char* argv[])
   //gaussianRegression();
   //butterworthViaGaussians();
 
-  //numericOptimization();
-  //numericMinimization1D();
+  numericOptimization();
+  numericMinimization1D();
   //numericRootFinding1D();
 
   //polynomialSinc();

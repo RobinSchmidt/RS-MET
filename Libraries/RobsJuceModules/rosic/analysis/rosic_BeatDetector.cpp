@@ -368,6 +368,17 @@ float BeatDetector::wrapIntoOctave(float x, float xMin)
 
 
 
+/*
 
+Some resources that may be worth to check out:
+
+https://github.com/adamstark/BTrack
+https://github.com/chrvadala/music-beat-detector
+https://github.com/gtreshchev/AudioAnalysisTools
+https://github.com/generic-beat-detector/GBD
+https://github.com/Steppschuh/Micro-Beat-Detection
+
+
+*/
 
 

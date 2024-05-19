@@ -2914,6 +2914,12 @@ bool testNumericMinimization()
   // https://en.wikipedia.org/wiki/Gradient_descent
   // https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization
 
+  // See also:
+  // https://www.youtube.com/watch?v=MD2fYip6QsQ  
+  // Who's Adam and What's He Optimizing? | Deep Dive into Optimizers for Machine Learning!
+  // -> discusses SGD (stochastic gradient descent), Momentum, Nestov Accelerated Descent, Root 
+  //    Mean Squared Propagation (RMSProp), Adaptive Gradients (AdaGrad), ADAM
+
   return r;
 }
 

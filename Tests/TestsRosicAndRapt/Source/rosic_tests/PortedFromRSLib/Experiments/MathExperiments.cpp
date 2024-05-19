@@ -1523,6 +1523,13 @@ void numericDifferentiation()
   // -with x0 = 1, f = sin(x), plotting a range from k = -25..+5 shows, where the linear rule stops
   //  to hold (namely, for k = -16...+1)...that it goes up so high is actually surprising - k=1, 
   //  means h = 2, which seems way too large to count as neighborhood - what's going on?
+
+  // ToDo:
+  // -Create plots of the relative error of the numeric derivative with respect to an analytic 
+  //  derivative as function of x. Maybe use f(x) = 2^x as example function. Plot this error for 
+  //  different values of the stepsize h, i.e. h = 1/8, 1/16, ..., 1/1024, ... The goal is to 
+  //  figure out an optimal h for a given subset of the domain. That optimal h will depend on the 
+  //  function f(x) as well as the evaluation point x.
 }
 
 void numericIntegration()

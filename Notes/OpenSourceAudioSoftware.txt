@@ -105,6 +105,15 @@ Dexed:
 https://asb2m10.github.io/dexed/
 -FM-Synthesizer, Yamaha DX-7 emulation
 
+DSP56300 Emulation:
+https://dsp56300.wordpress.com/
+https://github.com/dsp56300/gearmulator/
+https://www.kvraudio.com/forum/viewtopic.php?t=559359
+-Emulates various older digital synthesizers based on the Motorola DSP563xx DSP chip.
+-Needs the ROM dumps of the respective synth to run - google "synthesizer ROM archive" or see:
+ https://dbwbp.com/index.php/9-misc/37-synth-eprom-dumps
+ ...I didn't try it yet and am not sure about the legality
+
 ----------------------------------------------------------------------------------------------------
 Effect Plugins
 
@@ -123,6 +132,10 @@ https://github.com/airwindows
 https://github.com/airwindows/airwindows
 -A collection of plugins - GUI-less but does interesting/exotic stuff DSP-wise (including Kalman 
  filtering) so it might be inspirational
+-All these plugins consolidated into one:
+ https://github.com/baconpaul/airwin2rack/blob/main/doc/manualdaw.md
+ https://github.com/baconpaul/airwin2rack
+ https://www.kvraudio.com/forum/viewtopic.php?t=609965
 
 MDA Plugins:
 https://sourceforge.net/projects/mda-vst/
