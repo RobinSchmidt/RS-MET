@@ -72,6 +72,8 @@ https://www.kvraudio.com/forum/viewtopic.php?&t=419595 Best Lightweight Reverb A
 
 Distortion:
 http://www.kvraudio.com/forum/viewtopic.php?t=465091 Variable tanh() for saturation
+https://www.kvraudio.com/forum/viewtopic.php?t=332930 Table Lookup for tanh() versus other solutions
+
 
 Frequency- and Phase-Modulation:
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=399705 FM Synth anti aliasing.
@@ -166,7 +168,8 @@ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=510794  My b^x approximation
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=519852  Smooth approximations of 2^x
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=519728  Accurate SSE2/FMA tanh approximation.
 
-
+Sound Design:
+https://www.kvraudio.com/forum/viewtopic.php?t=610507  How to harden a kick?
 
 Business:
 http://www.kvraudio.com/forum/viewtopic.php?t=437160  Pay someone to build app to split voice samples into pitch and noise components
