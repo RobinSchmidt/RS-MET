@@ -187,3 +187,9 @@ https://math.stackexchange.com/questions/1708146/shortest-path-between-two-point
 
 http://www.dsprelated.com/showarticle/176.php Understanding the 'Phasing Method' of Single Sideband Demodulation
 
+
+GUI-Frameworks:
+https://forum.juce.com/t/torn-between-juce-and-qt/47858/4
+https://forum.juce.com/t/juce-vs-qt-gui-only/42053
+https://forum.juce.com/t/juce-vs-qt/4522
+https://www.qt.io/blog/juce-x-qt
