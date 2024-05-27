@@ -393,4 +393,11 @@ https://en.wikipedia.org/wiki/Smoothstep
 https://www.youtube.com/watch?v=60VoL-F-jIQ Smoothstep: The most useful function
 https://www.youtube.com/watch?v=YJ4iyff7zbk&list=PLGmrMu-IwbgsY3onv9rrzHvm7OpG43Uvk Function Smoothing Explained!
 
+
+Implement also:
+https://en.wikipedia.org/wiki/Gudermannian_function  f(x) = (2/pi) * atan(sinh((pi/2)*x))
+See also:
+https://www.youtube.com/watch?v=oIChUOV_0w4  at 5:55
+
+
 */

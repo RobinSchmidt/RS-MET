@@ -167,6 +167,11 @@ KlangFalter
 https://github.com/HiFi-LoFi/KlangFalter
 -Convolution reverb
 
+Neural Amp Modeler 
+https://github.com/sdatkinson/neural-amp-modeler
+https://github.com/sdatkinson/NeuralAmpModelerPlugin
+-Models guitar amps using neural netwrok technology
+
 ZL-Audio Plugins
 https://github.com/ZL-Audio
 https://github.com/ZL-Audio/ZLEqualizer
@@ -262,6 +267,10 @@ WayVerb
 https://reuk.github.io/wayverb/
 https://github.com/reuk/wayverb
 -Raytracing based impulse response generator
+
+AudioDSPTools, NeuralAmpModeler
+https://github.com/sdatkinson/AudioDSPTools
+https://github.com/sdatkinson/NeuralAmpModelerCore
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries

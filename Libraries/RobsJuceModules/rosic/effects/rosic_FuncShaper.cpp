@@ -267,4 +267,18 @@ void FuncShaper::calculateTable()
 
 
 
+/*=================================================================================================
 
+ToDo:
+
+-Let the user set up the range of the lookup-table. Maybe the resolution and interpolation method 
+ also.
+-Make the usage of the lookup table optional.
+-Rationale: some distortion functions like (foldovers, i.e. sin, etc) may not play well with 
+ tabulation...although, the different table range could be simulated by pre- and post scaling of 
+ the signal, so maybe it's not really necessary introduce extra parameter for that
+
+ See: 
+ https://www.youtube.com/watch?v=oIChUOV_0w4  Ivan Cohen - Fifty shades of distortion (ADC'17)
+
+*/
