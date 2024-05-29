@@ -926,7 +926,7 @@ void engineersFilterRingResp1()
 
   // See this thread: https://www.kvraudio.com/forum/viewtopic.php?f=33&t=569114 
 
-  // filter parameters:
+  // Filter parameters:
   double fs  = 44100;  // samplerate in Hz
   double fc  = 100;    // center or cutoff frequency in Hz
   double bw  = 2.0;    // bandwidth in octaves
@@ -1154,12 +1154,59 @@ void engineersFilterRingResp2()
   //  out if these plots can reveal anything useful
 }
 
+void engineersFilterRingResp3()
+{
+  // Under Construction
 
+  // We compare the ringing responses of different filter approximation methods. The goal is to 
+  // find a method with minimal ringing while still being steep enough to serve as atni-aliasing
+  // filter 
+
+
+  // Filter parameters:
+  double fs  = 44100;  // Sample rate in Hz
+  double fc  = 100;    // Cutoff frequency in Hz
+  int    ord = 8;      // Order
+
+  using EF   = rsEngineersFilter<double, double>;
+  using PTD  = rsPrototypeDesigner<double>;
+  using IIRD = rsInfiniteImpulseResponseDesigner<double>;
+
+  EF flt;
+  //flt.setApproximationMethod(PTD::BUTTERWORTH);
+  flt.setApproximationMethod(PTD::ELLIPTIC);
+  //flt.setApproximationMethod(PTD::CHEBYCHEV);
+  //flt.setApproximationMethod(PTD::INVERSE_CHEBYCHEV);
+  //flt.setApproximationMethod(PTD::BESSEL);
+  //flt.setApproximationMethod(PTD::PAPOULIS);
+  flt.setSampleRate(fs);
+  flt.setFrequency(fc);
+  flt.setBandwidth(2);
+  flt.setMode(IIRD::LOWPASS);
+  flt.setRipple(1.0);
+  flt.setStopbandRejection(80.0); 
+  flt.setPrototypeOrder(ord);
+
+  // Plot ringing responses:
+  plotMagAndRingResponse(flt,  5000, 10.0, 1000.0, fs, true);  // experimental
+
+
+  // ToDo:
+  //
+  // -Refactor the rininging response plotting function to extract a function that computes
+  //  the ringing response
+  // -Plot ringing responses of different filter types in one plot
+  // -Make another plot that shows the step responses and compare to the ringing responses to 
+  //  assess, if the ringing response is indeed a good measure for the ringing (so far, it's just
+  //  an idea and I'm not sure, if it's a good one).
+}
 
 void engineersFilterRingResp()
 {
-  engineersFilterRingResp1(); 
-  engineersFilterRingResp2();  // maybe rename to BiShelfRingResp
+  //engineersFilterRingResp1(); 
+  //engineersFilterRingResp2();  // maybe rename to BiShelfRingResp
+  engineersFilterRingResp3();
+
 
   // ToDo:
   // -Figure out, if we can reduce the ringing time of a steep (e.g. elliptic) lowpass filter by

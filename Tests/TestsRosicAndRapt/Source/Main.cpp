@@ -132,8 +132,8 @@ int main(int argc, char* argv[])
   //gaussianRegression();
   //butterworthViaGaussians();
 
-  numericOptimization();
-  numericMinimization1D();
+  //numericOptimization();
+  //numericMinimization1D();
   //numericRootFinding1D();
 
   //polynomialSinc();
@@ -358,7 +358,7 @@ int main(int argc, char* argv[])
   //autoCorrelationPitchDetectorOffline();
   //crossCorrelationBestMatch();
   //combineFFTs(); // move to math experiments
-  //envelopeFollower();
+  envelopeFollower();
   ////zeroCrossingPitchDetector(); // commented in header - why?
   //instantaneousFrequency();
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)

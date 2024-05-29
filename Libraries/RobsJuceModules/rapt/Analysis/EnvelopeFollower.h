@@ -130,7 +130,7 @@ RS_INLINE TSig rsEnvelopeFollower<TSig, TPar>::getSampleRootMeanSquare(TSig in)
 //=================================================================================================
 
 
-/** An advanced envelope follower implementing the following proceesing chain:
+/** An advanced envelope follower implementing the following processing chain:
 
 -Bessel lowpass      - gets rid of "Gibbs gurgle", if any, see
                          https://github.com/RobinSchmidt/RS-MET/issues/265
