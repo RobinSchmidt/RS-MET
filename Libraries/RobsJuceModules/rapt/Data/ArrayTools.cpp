@@ -1389,6 +1389,43 @@ T rsArrayTools::shiftToMakeMinimumZero(const T* x, int N, T* y)
   return minVal;
 }
 
+/*
+template <class T>
+T rsArrayTools::softMax(const T* x, int N, T* y, T temperature)
+{
+  T k   = T(1) / temperature;
+  T sum = T(0);
+
+  // Exponentiate array elements and accumulate the sum of these values:
+  for(int i = 0; i < N; i++)
+  {
+    y[i] = exp(k * x[i]);
+    sum += y[i];
+  }
+
+  // Normalize entries such that they add up to 1:
+  k = T(1) / sum;
+  for(int i = 0; i < N; i++)
+    y[i] *= k;
+    
+
+  // See:
+  // https://victorzhou.com/blog/softmax/
+  //
+  // ToDo:
+  //
+  // Test it with the follwoing Python code:
+  //
+  // import numpy as np
+  // from scipy.special import softmax
+  // x = np.array([1, 0.5, 0.2, 3]);
+  // y = softmax(x)
+  // x, y
+  //
+  // which produces: 0.10587707, 0.06421769, 0.04757363, 0.78233161
+}
+*/
+
 template <class T>
 T rsArrayTools::sum(const T* buffer, int length)
 {

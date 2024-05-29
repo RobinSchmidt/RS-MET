@@ -178,6 +178,23 @@ int orderByPredicate(T* x, int N, Pred pred)
 // j also instead of decrementing it. Or: init i as the first element that doesn't satisfy the 
 // constraint, j as the first element after i that does satisfy it and then....
 
+bool testArrayFuncs()
+{
+  bool ok = true;
+
+  typedef std::vector<double> Vec;
+  typedef RAPT::rsArrayTools AT;
+
+  Vec x({1, 0.5, 0.2, 3});
+
+
+  //AT::softMax(&x[0], (int) x.size(), &x[0]);
+
+
+  return ok;
+}
+
+
 bool testArrayMisc()
 {
   bool ok = true;
@@ -748,6 +765,7 @@ bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
 
   ok &= testContainerFuncs();
   ok &= testArrayFiltering();
+  ok &= testArrayFuncs();
   ok &= testArrayMisc();
   ok &= testTokenize();
   ok &= rsArrayViewTest();

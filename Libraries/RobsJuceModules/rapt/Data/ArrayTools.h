@@ -820,6 +820,22 @@ public:
   static T shiftToMakeMinimumZero(const T* x, int N, T* y);
   // could also be called subtractMinimum - but the current name better reveals the intention
 
+
+
+  /** Under Construction (The cpp file has a commeneted implemenation and in testArrayFuncs(), 
+  there's a commented unit test and in RaptInstantiations.cpp in the rs_testing module, a commented
+  explicit instantitation
+
+  Computes the so called soft-max function of the array x and stores it in y...TBC...  */
+  //template <class T>
+  //static T softMax(const T* x, int N, T* y, T temperature = T(1));
+  // ToDo: explain what this function is good for
+  // See: https://www.youtube.com/watch?v=wjZofJX0v4M at around 24 min
+  // -Outputs of the function can be interpreted as probabilities
+  // -Inputs are sometimes called "logits"
+  
+
+
   /** Returns true, iff for all values x[i] in the x-array, adding s*dx[i] does not actually change 
   the x[i] value (up to some relative tolerance tolR). Useful primarily for multidimensional 
   convergence tests: if adding s*dx to x does not change x (up to tolerance), an algo may be 

@@ -272,6 +272,9 @@ AudioDSPTools, NeuralAmpModeler
 https://github.com/sdatkinson/AudioDSPTools
 https://github.com/sdatkinson/NeuralAmpModelerCore
 
+
+
+
 ----------------------------------------------------------------------------------------------------
 Other Libraries
 
@@ -321,6 +324,19 @@ https://github.com/celtera/avendish/
 -Solution to the quadratic glue MxN problem: With M plugin formats and N plugins we need to write 
  and maintain(!) an amount of O(M*N) boilerplate glue code. Avendish claims to solve this 
  maintenance nightmare.
+
+
+----------------------------------------------------------------------------------------------------
+Audio AI projects and related stuff:
+
+AudioGen
+https://felixkreuk.github.io/audiogen/
+-Textually Guided Audio Generation
+
+Frechet Audio Distance
+https://github.com/gudgud96/frechet-audio-distance
+-Library to compute the Frechet Audio Distance (FAD) in PyTorch
+
 
 ----------------------------------------------------------------------------------------------------
 Resources

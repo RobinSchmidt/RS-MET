@@ -150,6 +150,7 @@ template void rsArrayTools::reverse(const double* x, double* y, int length);
 template void rsArrayTools::rightShift(double *buffer, int length, int numPlaces);
 template void rsArrayTools::sequenceSqrt(const double *y, int yLength, double *x);
 template void rsArrayTools::shift(double *buffer, int length, int numPlaces);
+//template void rsArrayTools::softMax(const double* x, int N, double* y, double temperature);
 template double rsArrayTools::sumOfAbsoluteValues(const double *x, const int N);
 template void rsArrayTools::transposeSquareArray(double **in, double **out, int size);
 template void rsArrayTools::unwrap(double* a, int N, double p);
