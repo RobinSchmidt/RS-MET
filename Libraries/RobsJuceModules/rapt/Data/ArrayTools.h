@@ -470,6 +470,8 @@ public:
   values - like -10..+10 or something!). https://en.wikipedia.org/wiki/Generalized_mean */
   template<class T>
   static T generalizedMean(const T* x, int N, T p);
+  // Maybe implement also:
+  // https://en.wikipedia.org/wiki/Logarithmic_mean
 
   /** Fills the array h with the impulse of the filter specified by the direct form coefficients
   given in b and a. \todo comment on the sign of the a-coeffs, whether or not an a0 is included,

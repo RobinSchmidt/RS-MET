@@ -192,6 +192,12 @@ bool testArrayFuncs()
 
 
   return ok;
+
+  // ToDo:
+  //
+  // -Maybe implement and test some of these:
+  //  https://en.wikipedia.org/wiki/LogSumExp
+  //  https://en.wikipedia.org/wiki/Smooth_maximum
 }
 
 

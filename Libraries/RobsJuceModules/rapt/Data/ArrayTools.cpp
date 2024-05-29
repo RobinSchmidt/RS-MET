@@ -1410,6 +1410,7 @@ T rsArrayTools::softMax(const T* x, int N, T* y, T temperature)
     
 
   // See:
+  // https://en.wikipedia.org/wiki/Softmax_function
   // https://victorzhou.com/blog/softmax/
   //
   // ToDo:
