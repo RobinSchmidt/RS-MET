@@ -170,13 +170,16 @@ https://github.com/HiFi-LoFi/KlangFalter
 Neural Amp Modeler 
 https://github.com/sdatkinson/neural-amp-modeler
 https://github.com/sdatkinson/NeuralAmpModelerPlugin
--Models guitar amps using neural netwrok technology
+-Models guitar amps using neural network technology
 
 ZL-Audio Plugins
 https://github.com/ZL-Audio
 https://github.com/ZL-Audio/ZLEqualizer
 -Some plugins made with JUCE. The EQ appears to have a nice visual and modern GUI and uses the
  Vicanek design formulas. It's dynamic as well.
+
+https://github.com/Chowdhury-DSP/PitchShift
+-Pitch-hsifter based on Bungee algorithm
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
@@ -272,8 +275,21 @@ AudioDSPTools, NeuralAmpModeler
 https://github.com/sdatkinson/AudioDSPTools
 https://github.com/sdatkinson/NeuralAmpModelerCore
 
+Bungee
+https://github.com/kupix/bungee
+-FFT based pitch shift / time stretch algorithm
 
+Signalsmith stretch:
+https://github.com/Signalsmith-Audio/signalsmith-stretch
+-FFT based pitch shift / time stretch algorithm
 
+SountTouch
+https://github.com/VinMing/soundtouch
+https://codeberg.org/soundtouch/soundtouch.git
+-Time domain pitch shift / time stretch algorithm (granular, PSOLA, I think)
+-There are variuos repos and I don't know, which is official and most recent
+-I think, the latest version is v2.3.2 
+ -> figure that out before grabbing the library from somewhere
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries
