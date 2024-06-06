@@ -2336,7 +2336,9 @@ void singleSineCycleWobbles()
   //   bump function to make it smooth with finite support.
   //
   // - Add shifted versions of these functions to see how they overlap. Will the overlap of 
-  //   various shifted "wobble" functions approximate a sine well?
+  //   various shifted "wobble" functions approximate a sine well? What about orthogonality of 
+  //   shifted versions? What about orthogonality of versions with different frequencies / time
+  //   scales?
 
 
 }
