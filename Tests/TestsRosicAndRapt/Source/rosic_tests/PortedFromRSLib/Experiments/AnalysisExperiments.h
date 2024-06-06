@@ -35,6 +35,7 @@ void zeroCrossingPitchDetectorTwoTones();
 void ropewayAlgo();
 void peakPicker();
 void singleSineModel();
+void singleSineCycleWobbles();
 
 
 

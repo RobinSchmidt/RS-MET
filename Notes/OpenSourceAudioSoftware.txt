@@ -179,7 +179,7 @@ https://github.com/ZL-Audio/ZLEqualizer
  Vicanek design formulas. It's dynamic as well.
 
 https://github.com/Chowdhury-DSP/PitchShift
--Pitch-hsifter based on Bungee algorithm
+-Pitch-shifter based on Bungee algorithm
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
@@ -231,6 +231,10 @@ https://github.com/cycfi/elements
 
 https://github.com/robbert-vdh/nih-plug/
 -API-agnostic audio plugin framework written in Rust, as well as a small collection of plugins.
+
+https://github.com/Torsion-Audio/nn-inference-template
+https://www.youtube.com/watch?v=z_RKgHU59r0
+-A Template Audio Plugin for Real-time Neural Network Inference
 
 ----------------------------------------------------------------------------------------------------
 DSP-Libraries
@@ -290,6 +294,14 @@ https://codeberg.org/soundtouch/soundtouch.git
 -There are variuos repos and I don't know, which is official and most recent
 -I think, the latest version is v2.3.2 
  -> figure that out before grabbing the library from somewhere
+
+Mesh2HRTF:
+https://mesh2hrtf.org/
+https://github.com/Any2HRTF/Mesh2HRTF
+https://arxiv.org/abs/2312.00005
+https://www.sciencedirect.com/science/article/pii/S0955799724000171
+-Numerical calculation of the head-related tranfer functions by the use of the Burton-Miller 
+ collocation boundary-element method coupled with the multi-level fast multipole method.
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries

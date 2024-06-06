@@ -400,4 +400,17 @@ See also:
 https://www.youtube.com/watch?v=oIChUOV_0w4  at 5:55
 
 
+Maybe make a similar file for functions of the "1-cycle", "wobble" kind. Examples:
+
+x * exp(-x^2), x - x*tanh(x^2), ...
+
+We can construct it by multiplying a bell shape with x, taking a derivative of a bell, subtracting
+x*sigmoid(x^2) from x, ... See:
+
+https://www.desmos.com/calculator/qnueorgb0z
+
+Maybe define the length as two times the length between minimum and maximum. These shapes could be 
+useful for some sort of time-scale transform.
+
+
 */

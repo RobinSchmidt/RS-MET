@@ -2287,3 +2287,43 @@ void singleSineModel()
   singleSineModelForResoSweep();
   //singleSineModelForLadderSweep();
 }
+
+void singleSineCycleWobbles()
+{
+  // We plot some functions haing the general shape of "one cycle of a sine" ...TBC...
+
+  // x * exp(-x^2), x - x*tanh(x^2), ...
+
+  double xMin = -2.0;
+  double xMax = +2.0;
+  int    N    =  801;
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+
+
+  Vec x(N), s(N);
+  Vec y1(N), y2(N);
+
+  AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
+
+  for(int n = 0; n < N; n++)
+  {
+    double t = x[n];
+
+    s[n]  = sin(PI*t);
+
+    t = 1.41 * x[n];
+    y1[n] = 2.33 * t * exp(-t*t);
+    // The constants (1.41, 2.33) have been eyeballed. ToDo: figure out their exact values using
+    // calculus. We want the minimum and maximum to be matched (in position and height) to the 
+    // min/max of the sine.
+
+    t = 1.22 * x[n];
+    y2[n] = 2.56 * (t - t * tanh(t*t));
+
+  }
+
+
+  rsPlotVectorsXY(x, s, y1, y2);
+}
