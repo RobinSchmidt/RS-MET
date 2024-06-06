@@ -2315,15 +2315,28 @@ void singleSineCycleWobbles()
 
     t = 1.41 * x[n];
     y1[n] = 2.33 * t * exp(-t*t);
-    // The constants (1.41, 2.33) have been eyeballed. ToDo: figure out their exact values using
-    // calculus. We want the minimum and maximum to be matched (in position and height) to the 
-    // min/max of the sine.
 
     t = 1.22 * x[n];
     y2[n] = 2.56 * (t - t * tanh(t*t));
 
   }
 
+  //rsPlotVectorsXY(x, s, y1, y2);
+  rsPlotVectorsXY(x, s, y2);
 
-  rsPlotVectorsXY(x, s, y1, y2);
+
+  // ToDo:
+  //
+  // - The constants (1.41, 2.33, ...) have been eyeballed. Figure out their exact values using
+  //   calculus. We want the minimum and maximum to be matched (in position and height) to the 
+  //   min/max of the sine.
+  //
+  // - Find more functions. One way to construct them is to start with a bell shape and multiply it
+  //   by x. Another is to take the derivative of a bell shape. Maybe try something based on the
+  //   bump function to make it smooth with finite support.
+  //
+  // - Add shifted versions of these functions to see how they overlap. Will the overlap of 
+  //   various shifted "wobble" functions approximate a sine well?
+
+
 }
