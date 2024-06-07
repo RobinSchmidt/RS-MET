@@ -2310,15 +2310,24 @@ void singleSineCycleWobbles()
   for(int n = 0; n < N; n++)
   {
     double t = x[n];
+    double sx, sy;                          // Scalers for x and y to match min/max of the sine
 
-    s[n]  = sin(PI*t);
+    s[n]  = sin(PI*t);                      // Our reference sine wave
 
+    // A function based on x * exp(-x^2):
     t = 1.41 * x[n];
     y1[n] = 2.33 * t * exp(-t*t);
+    // ToDo: Use wolfram Alpha to compute exact scale factors
 
-    t = 1.22 * x[n];
-    y2[n] = 2.56 * (t - t * tanh(t*t));
 
+    // A function based on x - x * tanh(x^2):
+    sx = 2.0 * 0.6077972651845382326314893; // 1.2155945303690765
+    sy = 1.0 / 0.3929518028665251581597273; // 2.5448413589278589
+    t  = sx * x[n];
+    y2[n] = sy * (t - t * tanh(t*t));
+    // https://www.wolframalpha.com/input?i=x+-+x++tanh%28x%5E2%29
+    // Maximize[x - x Tanh[x^2], x]
+    // max{x - x tanh(x^2)} ~= 0.3929518028665251581597273 at x ~= 0.6077972651845382326314893
   }
 
   //rsPlotVectorsXY(x, s, y1, y2);
