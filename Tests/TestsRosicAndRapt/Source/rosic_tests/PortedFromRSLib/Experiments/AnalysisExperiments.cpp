@@ -2315,8 +2315,16 @@ void singleSineCycleWobbles()
     s[n]  = sin(PI*t);                      // Our reference sine wave
 
     // A function based on x * exp(-x^2):
-    t = 1.41 * x[n];
-    y1[n] = 2.33 * t * exp(-t*t);
+    sx = 2 * 1.0 / sqrt(2.0);
+    sy =           sqrt(2.0 * EULER);
+    t  = sx * x[n];
+    y1[n] = sy * t * exp(-t*t);
+    // https://www.wolframalpha.com/input?i=x++exp%28-x%5E2%29
+
+
+
+    //t = 1.41 * x[n];
+    //y1[n] = 2.33 * t * exp(-t*t);
     // ToDo: Use wolfram Alpha to compute exact scale factors
 
 
@@ -2331,6 +2339,7 @@ void singleSineCycleWobbles()
   }
 
   //rsPlotVectorsXY(x, s, y1, y2);
+  rsPlotVectorsXY(x, s, y1);
   rsPlotVectorsXY(x, s, y2);
 
 
