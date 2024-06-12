@@ -142,5 +142,9 @@ resulting function. That's how cosh is created from exp. ..oh - but maybe then t
 or something -> figure out! See: https://www.desmos.com/calculator/kthmhd4r5x
 Interestingly, the even and odd functions
 
+More ideas:
+
+f(x) = x / sinh(x)
+
 
 */

@@ -2345,10 +2345,9 @@ void singleSineCycleWobbles()
   }
 
   rsPlotVectorsXY(x, s, y1, y2);
-  //rsPlotVectorsXY(x, s, y1);
-  //rsPlotVectorsXY(x, s, y2);
-
-  //rsPlotVectorsXY(x, s, y3);
+  rsPlotVectorsXY(x, s, y1);
+  rsPlotVectorsXY(x, s, y2);
+  rsPlotVectorsXY(x, s, y3);
 
 
   // ToDo:
@@ -2364,6 +2363,7 @@ void singleSineCycleWobbles()
   //   f(x) = x - x * sigmoid(x^2)  But why does that actually work? Explain! It does seem to work 
   //   well, though. Well, 1 - sigmoid(x^2) is a bell shape. Multiplying that whole thing with x, 
   //   we again end up in the f(x) = x * bell(x) approach.
+  //   f(x) = x / cosh(x^2)   https://www.desmos.com/calculator/kfkjdmtwte
   //
   // - Add shifted versions of these functions to see how they overlap. Will the overlap of 
   //   various shifted "wobble" functions approximate a sine well? What about orthogonality of 
@@ -2412,6 +2412,17 @@ void multiSineCycleWobbles()
       y[n] += wub1(x[n] - offsets[i]);
   }
 
+
+  y = 1.012 * y;  // Eyeballed scaling factor
+
+
   rsPlotVectorsXY(x, s, y);
   int dummy = 0;
+
+  // Observations:
+  //
+  // - The minima and maxima of the sum-of-wubs do not quite match with those of the sine wave. 
+  //   They are quite close, though.. The constants in wub1() are chose in such a way as to match 
+  //   the min/max of the sine for one single wub - but apparently, the interactions in the 
+  //   summation shift and scale these min/max values.
 }
