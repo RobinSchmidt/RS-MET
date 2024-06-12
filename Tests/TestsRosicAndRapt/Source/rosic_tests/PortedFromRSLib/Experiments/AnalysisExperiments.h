@@ -36,6 +36,7 @@ void ropewayAlgo();
 void peakPicker();
 void singleSineModel();
 void singleSineCycleWobbles();
+void multiSineCycleWobbles();
 
 
 

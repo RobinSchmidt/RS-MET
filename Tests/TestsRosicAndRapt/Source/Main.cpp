@@ -375,7 +375,8 @@ int main(int argc, char* argv[])
   //ropewayAlgo();
   //peakPicker();
   //singleSineModel();
-  singleSineCycleWobbles();
+  //singleSineCycleWobbles();
+  multiSineCycleWobbles();
 
   // Delay:
   //basicIntegerDelayLine();

@@ -2288,6 +2288,10 @@ void singleSineModel()
   //singleSineModelForLadderSweep();
 }
 
+
+
+
+
 void singleSineCycleWobbles()
 {
   // We plot some functions haing the general shape of "one cycle of a sine" ...TBC...
@@ -2300,10 +2304,12 @@ void singleSineCycleWobbles()
 
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
+  using BF  = rsPositiveBellFunctions<double>;
+  using SF  = rsNormalizedSigmoids<double>;
 
 
   Vec x(N), s(N);
-  Vec y1(N), y2(N);
+  Vec y1(N), y2(N), y3(N);
 
   AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
 
@@ -2319,13 +2325,8 @@ void singleSineCycleWobbles()
     sy =           sqrt(2.0 * EULER);
     t  = sx * x[n];
     y1[n] = sy * t * exp(-t*t);
+    // The constants sx, sy were found with:
     // https://www.wolframalpha.com/input?i=x++exp%28-x%5E2%29
-
-
-
-    //t = 1.41 * x[n];
-    //y1[n] = 2.33 * t * exp(-t*t);
-    // ToDo: Use wolfram Alpha to compute exact scale factors
 
 
     // A function based on x - x * tanh(x^2):
@@ -2336,11 +2337,18 @@ void singleSineCycleWobbles()
     // https://www.wolframalpha.com/input?i=x+-+x++tanh%28x%5E2%29
     // Maximize[x - x Tanh[x^2], x]
     // max{x - x tanh(x^2)} ~= 0.3929518028665251581597273 at x ~= 0.6077972651845382326314893
+
+
+    t = rsAbs(1.05 * x[n]);
+    y3[n] = 2.78 * rsSign(x[n]) * t * BF::bump(t);
+
   }
 
-  //rsPlotVectorsXY(x, s, y1, y2);
-  rsPlotVectorsXY(x, s, y1);
-  rsPlotVectorsXY(x, s, y2);
+  rsPlotVectorsXY(x, s, y1, y2);
+  //rsPlotVectorsXY(x, s, y1);
+  //rsPlotVectorsXY(x, s, y2);
+
+  //rsPlotVectorsXY(x, s, y3);
 
 
   // ToDo:
@@ -2351,12 +2359,59 @@ void singleSineCycleWobbles()
   //
   // - Find more functions. One way to construct them is to start with a bell shape and multiply it
   //   by x. Another is to take the derivative of a bell shape. Maybe try something based on the
-  //   bump function to make it smooth with finite support.
+  //   bump function to make it smooth with finite support. Another way is to take the identity and
+  //   subtract the identity multiplied by a sigmoid applied to the square, i.e. 
+  //   f(x) = x - x * sigmoid(x^2)  But why does that actually work? Explain! It does seem to work 
+  //   well, though. Well, 1 - sigmoid(x^2) is a bell shape. Multiplying that whole thing with x, 
+  //   we again end up in the f(x) = x * bell(x) approach.
   //
   // - Add shifted versions of these functions to see how they overlap. Will the overlap of 
   //   various shifted "wobble" functions approximate a sine well? What about orthogonality of 
   //   shifted versions? What about orthogonality of versions with different frequencies / time
   //   scales?
+}
+
+/** Encapsulates the single cycle "wub" based on x - x * tanh(x^2) from the function above. */
+template<class T>
+T wub1(T x)
+{
+  T sx = 2.0 * 0.6077972651845382326314893; // 1.2155945303690765
+  T sy = 1.0 / 0.3929518028665251581597273; // 2.5448413589278589
+  T t  = sx * x;
+  return sy * (t - t * tanh(t*t));
+
+  // ToDo:
+  //
+  // - Find better name for the function
+}
+
+void multiSineCycleWobbles()
+{
+  double xMin = -10.0;
+  double xMax = +10.0;
+  int    N    =  1001;
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+
+  Vec offsets = { -6, -4, -2, 0, +2 , +4, +6 };
 
 
+
+  Vec x(N), s(N), y(N);
+
+  AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
+
+
+  for(int n = 0; n < N; n++)
+  {
+    s[n] = sin(PI*x[n]);
+    y[n] = 0.0;
+    for(int i = 0; i < (int) offsets.size(); i++)
+
+      y[n] += wub1(x[n] - offsets[i]);
+  }
+
+  rsPlotVectorsXY(x, s, y);
+  int dummy = 0;
 }
