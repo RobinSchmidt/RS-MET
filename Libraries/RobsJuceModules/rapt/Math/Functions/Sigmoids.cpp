@@ -413,4 +413,8 @@ Maybe define the length as two times the length between minimum and maximum. The
 useful for some sort of time-scale transform.
 
 
+Maybe implement these in C++
+https://easings.net/
+Clicking on the graphics will lead toa page where javascript code is given for the functions
+
 */

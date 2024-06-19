@@ -113,7 +113,7 @@ T rsParticleSystem<T>::getKineticEnergy()
   for(size_t i = 0; i < particles.size(); i++)
     E += particles[i].getKineticEnergy();
   //return E;
-  return E/stepSize; // plots suggest that we need to scale it that way
+  return E/stepSize; // plots suggest that we need to scale it that way - but why?
 }
 
 template<class T>
@@ -205,6 +205,9 @@ T rsParticleSystem<T>::getForceScalerByDistance(T d, T size1, T size2)
   //return 1 / (size1 + size2 + pow(d,p)); 
   return 1 / (rsMax(size1 + size2, pow(d,p))); 
   //return 1 / (max(size1,  size2, pow(d,p))); 
+
+  // ToDo:
+  // -Introduce an enum for the force-law. Or maybe use a std::function.
 }
 
 template<class T>
@@ -387,5 +390,15 @@ B2: magnetic field at p1 caused by p2 (vector)
 We should have functions in rsParticle to compute the gravitational, electric and magnetic
 fields at some position vector p. Then, we can compute the forces via the formula above and compare
 to the results in rsParticle system in a unit test.
+
+
+
+See also:
+
+Bertrand's Theorem and Orbits in any Dimension
+https://www.youtube.com/watch?v=DV16p2l7MLM
+-Try to re-create some of these simulations
+
+
 */
 
