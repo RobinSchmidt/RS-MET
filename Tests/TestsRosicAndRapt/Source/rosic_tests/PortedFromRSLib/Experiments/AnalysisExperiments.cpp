@@ -2487,7 +2487,7 @@ void multiHalfCycleWobbles()
 
 
       // Sign alternation:
-      double sign  = 1.0;
+      double sign = 1.0;
       if(rsIsEven(i))
         sign = -1.0;
       double mu = offsets[i];
