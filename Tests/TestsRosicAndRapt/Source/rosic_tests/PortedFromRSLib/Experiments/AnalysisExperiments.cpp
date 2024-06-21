@@ -2480,8 +2480,8 @@ void multiHalfCycleWobbles()
       //sigma = 0.250; scaler = 0.63;
       //sigma = 0.300; scaler = 0.76;
       //sigma = 0.350; scaler = 0.91;
-      sigma = 0.368; scaler = 0.97;
-      //sigma = 0.376; scaler = 1.00;
+      //sigma = 0.368; scaler = 0.9707;
+      sigma = 0.376; scaler = 1.00;
       //sigma = 0.400; scaler = 1.10;
       //sigma = 0.450; scaler = 1.36;
       //sigma = 0.500; scaler = 1.71;
