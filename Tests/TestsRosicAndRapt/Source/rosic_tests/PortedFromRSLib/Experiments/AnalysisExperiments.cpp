@@ -2466,7 +2466,7 @@ void multiHalfCycleWobbles()
   using AT  = rsArrayTools;
 
 
-  Vec offsets = { -4.5, -3.5, -2.5, -1.5, -0.5, +0.5 , +1.5, +2.5, +3.5, 4.5 };
+  Vec offsets = { -6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,+0.5,+1.5,+2.5,+3.5,+4.5,+5.5,+6.5 };
 
   Vec x(N), s(N), y(N);
 
@@ -2481,13 +2481,13 @@ void multiHalfCycleWobbles()
     {
 
       double mu    = offsets[i];
-      double sigma = 0.25;
+      double sigma = 0.3;
 
       double sign  = 1.0;
       if(rsIsEven(i))
         sign = -1.0;
 
-      double scaler = sign * 0.6;
+      double scaler = sign * 0.76;
 
       y[n] += scaler * RAPT::rsGauss(x[n], mu, sigma);
     }
@@ -2495,4 +2495,9 @@ void multiHalfCycleWobbles()
 
 
   rsPlotVectorsXY(x, s, y);
+
+  // Observations:
+  //
+  // - When sigma is too small, the shape looks too much triangular. Increasing sigma tends to 
+  //   round the shape of the extrema.
 }
