@@ -2480,8 +2480,9 @@ void multiHalfCycleWobbles()
       //sigma = 0.250; scaler = 0.63;
       //sigma = 0.300; scaler = 0.76;
       //sigma = 0.350; scaler = 0.91;
-      //sigma = 0.368; scaler = 0.98;
-      sigma = 0.400; scaler = 1.10;
+      //sigma = 0.368; scaler = 0.97;
+      sigma = 0.376; scaler = 1.00;
+      //sigma = 0.400; scaler = 1.10;
       //sigma = 0.450; scaler = 1.36;
       //sigma = 0.500; scaler = 1.71;
 
@@ -2530,7 +2531,9 @@ void multiHalfCycleWobbles()
   //   it will converge to an exact sine wave as sigma grows larger? Would that be an interesting
   //   mathematical result? Maybe it's even a known result? If so, our optimization should perhaps
   //   use a cost function that takes the overshoot errors at the ends also into account. Maybe try 
-  //   sigma = 1/e = 0.367879...
+  //   sigma = 1/e = 0.367879... OK - yeah - it works quite well because it's in the sweet spot 
+  //   range but this specific value doesn't seem to have any special significance - or does it?
+  //   What about using a value for sigma that calls for a scaler of 1.0? It's around 0.376.
   //
   // - Maybe use as basis functions a Gaussian that is not normalized to unit area under the curve 
   //   but rather to unit peak value. That may simplify the scaling factors. They'll probably come 
