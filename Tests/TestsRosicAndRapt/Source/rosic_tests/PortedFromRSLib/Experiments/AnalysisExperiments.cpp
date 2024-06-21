@@ -2369,6 +2369,14 @@ void singleSineCycleWobbles()
   //   various shifted "wobble" functions approximate a sine well? What about orthogonality of 
   //   shifted versions? What about orthogonality of versions with different frequencies / time
   //   scales?
+  //
+  // - Try to recreate a sine wave from bell functions with alternating signs. Bell functions may
+  //   be better suited to model asymmetric signals. Hmm...I think, using bell functions amounts to
+  //   overlapping impulse responses of lowpass filters whereas using "wub" functions amounts to 
+  //   overlapping bandpass responses. 
+  
+  // - Maybe we could approximate transients using a projection pursuit algo using (delayed) 
+  //   bandpass responses a building blocks.
 }
 
 /** Encapsulates the single cycle "wub" based on x - x * tanh(x^2) from the function above. */
