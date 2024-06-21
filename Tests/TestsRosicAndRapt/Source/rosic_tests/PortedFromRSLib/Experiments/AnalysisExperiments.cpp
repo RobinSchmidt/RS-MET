@@ -2475,28 +2475,36 @@ void multiHalfCycleWobbles()
     y[n] = 0.0;
     for(int i = 0; i < (int)offsets.size(); i++)
     {
-      double mu    = offsets[i];
-      double sigma = 0.3;              // 0.3 was eyeballed
+
+      //double sigma = 0.3;              // 0.3 was eyeballed
 
       // Sign alternation:
       double sign  = 1.0;
       if(rsIsEven(i))
         sign = -1.0;
 
-      double scaler = sign * 0.76;     // 0.76 was eyeballed
+      //double scaler = sign * 0.76;     // 0.76 was eyeballed
 
       // Test:
-      sigma = 0.35; scaler = sign * 0.91;
-      sigma = 0.40; scaler = sign * 1.10;
-      sigma = 0.45; scaler = sign * 1.35;
+      double sigma, scaler;
+
+      sigma = 0.30; scaler = sign * 0.76;
+      //sigma = 0.35; scaler = sign * 0.91;
+      //sigma = 0.40; scaler = sign * 1.10;
+      //sigma = 0.45; scaler = sign * 1.36;
 
 
 
-
-
+      double mu = offsets[i];
       y[n] += scaler * RAPT::rsGauss(x[n], mu, sigma);
     }
   }
+
+
+  //AT::normalize(&y[0], N);
+  // Nope - that doesn't work because the maxima may overshoot at the ends. We should find
+  // the first maximum after the middle and use that as reference.
+
 
   rsPlotVectorsXY(x, s, y);
 
