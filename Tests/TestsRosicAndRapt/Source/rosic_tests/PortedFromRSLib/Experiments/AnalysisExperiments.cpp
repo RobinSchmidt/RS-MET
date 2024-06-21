@@ -2458,7 +2458,41 @@ void multiSineCycleWobbles()
 
 void multiHalfCycleWobbles()
 {
+  double xMin = -10.0;
+  double xMax = +10.0;
+  int    N    =  1001;
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
 
 
-  int dummy = 0;
+  Vec offsets = { -4.5, -3.5, -2.5, -1.5, -0.5, +0.5 , +1.5, +2.5, +3.5, 4.5 };
+
+  Vec x(N), s(N), y(N);
+
+  AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
+
+
+  for(int n = 0; n < N; n++)
+  {
+    s[n] = sin(PI*x[n]);
+    y[n] = 0.0;
+    for(int i = 0; i < (int)offsets.size(); i++)
+    {
+
+      double mu    = offsets[i];
+      double sigma = 0.25;
+
+      double sign  = 1.0;
+      if(rsIsEven(i))
+        sign = -1.0;
+
+      double scaler = sign * 0.6;
+
+      y[n] += scaler * RAPT::rsGauss(x[n], mu, sigma);
+    }
+  }
+
+
+  rsPlotVectorsXY(x, s, y);
 }
