@@ -2465,13 +2465,9 @@ void multiHalfCycleWobbles()
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
 
-
   Vec offsets = { -6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,+0.5,+1.5,+2.5,+3.5,+4.5,+5.5,+6.5 };
-
   Vec x(N), s(N), y(N);
-
   AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
-
 
   for(int n = 0; n < N; n++)
   {
@@ -2479,20 +2475,18 @@ void multiHalfCycleWobbles()
     y[n] = 0.0;
     for(int i = 0; i < (int)offsets.size(); i++)
     {
-
       double mu    = offsets[i];
-      double sigma = 0.3;
+      double sigma = 0.3;              // 0.3 was eyeballed
 
+      // Sign alternation:
       double sign  = 1.0;
       if(rsIsEven(i))
         sign = -1.0;
 
-      double scaler = sign * 0.76;
-
+      double scaler = sign * 0.76;     // 0.76 was eyeballed
       y[n] += scaler * RAPT::rsGauss(x[n], mu, sigma);
     }
   }
-
 
   rsPlotVectorsXY(x, s, y);
 
@@ -2500,4 +2494,14 @@ void multiHalfCycleWobbles()
   //
   // - When sigma is too small, the shape looks too much triangular. Increasing sigma tends to 
   //   round the shape of the extrema.
+  //
+  // - The match is not as good as in multiSineCycleWobbles - but we did not yet optimize sigma 
+  //   seriously, so the comparison my not yet be fair.
+  //
+  //
+  // ToDo:
+  //
+  // - Find an optimal value for sigma. Maybe in the minimax or least-squares sense. The scaler can
+  //   be found for each sigma by just figuring out the value of the maximum of the function and 
+  //   scaling by the reciprocal, i.e. it's not a parameter that needs to optimized independently.
 }
