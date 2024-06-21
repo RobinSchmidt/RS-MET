@@ -2486,12 +2486,12 @@ void multiHalfCycleWobbles()
       double scaler = sign * 0.76;     // 0.76 was eyeballed
 
       // Test:
-      sigma  = 0.35;
-      scaler = sign * 0.91;
+      sigma = 0.35; scaler = sign * 0.91;
+      sigma = 0.40; scaler = sign * 1.10;
+      sigma = 0.45; scaler = sign * 1.35;
 
-      // Test:
-      sigma  = 0.4;
-      scaler = sign * 1.1;
+
+
 
 
       y[n] += scaler * RAPT::rsGauss(x[n], mu, sigma);
@@ -2504,6 +2504,10 @@ void multiHalfCycleWobbles()
   //
   // - When sigma is too small, the shape looks too much triangular. Increasing sigma tends to 
   //   round the shape of the extrema.
+
+  // - When increasing sigma (and also increasing the scaler to match the heights of the extrema) 
+  //   from 0.3 to 0.4, we can achieve a better match at the center at the cost of introducing a
+  //   worse match at the ends. It will overshoot there more.
   //
   // - The match is not as good as in multiSineCycleWobbles - but we did not yet optimize sigma 
   //   seriously, so the comparison my not yet be fair.
@@ -2511,6 +2515,7 @@ void multiHalfCycleWobbles()
   // - The sign-alternation will give the wrong sign when cutting off the first and last offset 
   //   from the offsets array. A general formula should perhaps be based on the floor of the
   //   actual offset value rather than its index in the array.
+  //
   //
   //
   // ToDo:
