@@ -376,7 +376,7 @@ int main(int argc, char* argv[])
   //peakPicker();
   //singleSineModel();
   //singleSineCycleWobbles();
-  multiSineCycleWobbles();
+  //multiSineCycleWobbles();
   multiHalfCycleWobbles();
 
   // Delay:

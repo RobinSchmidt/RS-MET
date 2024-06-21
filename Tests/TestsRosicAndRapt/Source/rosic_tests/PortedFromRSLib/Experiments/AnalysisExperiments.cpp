@@ -2484,6 +2484,11 @@ void multiHalfCycleWobbles()
         sign = -1.0;
 
       double scaler = sign * 0.76;     // 0.76 was eyeballed
+
+      // Test:
+      sigma  = 0.35;
+      scaler = sign * 0.91;
+
       y[n] += scaler * RAPT::rsGauss(x[n], mu, sigma);
     }
   }
@@ -2497,6 +2502,10 @@ void multiHalfCycleWobbles()
   //
   // - The match is not as good as in multiSineCycleWobbles - but we did not yet optimize sigma 
   //   seriously, so the comparison my not yet be fair.
+  //
+  // - The sign-alternation will give the wrong sign when cutting off the first and last offset 
+  //   from the offsets array. A general formula should perhaps be based on the floor of the
+  //   actual offset value rather than its index in the array.
   //
   //
   // ToDo:
