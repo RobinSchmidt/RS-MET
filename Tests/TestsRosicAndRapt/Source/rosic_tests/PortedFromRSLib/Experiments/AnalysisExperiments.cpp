@@ -2480,12 +2480,12 @@ void multiHalfCycleWobbles()
       //sigma = 0.250; scaler = 0.63;
       //sigma = 0.300; scaler = 0.76;
       //sigma = 0.350; scaler = 0.91;
-      //sigma = 0.368; scaler = 0.97;
+      sigma = 0.368; scaler = 0.97;
       //sigma = 0.376; scaler = 1.00;
       //sigma = 0.400; scaler = 1.10;
       //sigma = 0.450; scaler = 1.36;
       //sigma = 0.500; scaler = 1.71;
-      sigma = 0.600; scaler = 2.95;
+      //sigma = 0.600; scaler = 2.95;
       //sigma = 1.000; scaler = 70.0;
 
 
@@ -2537,7 +2537,23 @@ void multiHalfCycleWobbles()
   //   range but this specific value doesn't seem to have any special significance - or does it?
   //   What about using a value for sigma that calls for a scaler of 1.0? It's around 0.376.
   //
+  // - Maybe create a long pseudo-sine from Gaussians and measure its FFT spectrum. Maybe our error
+  //   function should involve a spectral measure. Maybe try to match the shape in such a way to
+  //   get below a ceratin threshold for the loudest harmonic amplitude - maybe below 80 dB or 
+  //   something.
+  //
   // - Maybe use as basis functions a Gaussian that is not normalized to unit area under the curve 
   //   but rather to unit peak value. That may simplify the scaling factors. They'll probably come 
   //   out as 1 then? Not sure, but that seems plausible.
+  //
+  // - Maybe try to find a sigma such that the original Gaussian (centered at 0) is orthogonal to 
+  //   the shifted and negated version. ...hmm...dunno...that probably won't work out. I think, 
+  //   they may never become orthogonal. But maybe we can minimize the (square of) the 
+  //   cross-correlation or something? Or maybe do not consider the cross-correlation but the 
+  //   difference between original and shifted function?
+  //
+  // - Maybe try to do the same thing with other kinds of bell shaped functions. In particular,
+  //   try some with finite support such as the bump functions or common window functions. Maybe 
+  //   the non-smoothness at the ends deosn't even matter because the summation will cancel out the
+  //   discontinuities in the derivatives? 
 }
