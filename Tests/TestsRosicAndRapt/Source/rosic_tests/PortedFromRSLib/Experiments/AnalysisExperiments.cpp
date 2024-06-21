@@ -2489,6 +2489,11 @@ void multiHalfCycleWobbles()
       sigma  = 0.35;
       scaler = sign * 0.91;
 
+      // Test:
+      sigma  = 0.4;
+      scaler = sign * 1.1;
+
+
       y[n] += scaler * RAPT::rsGauss(x[n], mu, sigma);
     }
   }
