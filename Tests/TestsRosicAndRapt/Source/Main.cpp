@@ -377,6 +377,7 @@ int main(int argc, char* argv[])
   //singleSineModel();
   //singleSineCycleWobbles();
   multiSineCycleWobbles();
+  //multiHalfCycleWobbles();
 
   // Delay:
   //basicIntegerDelayLine();

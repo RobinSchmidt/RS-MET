@@ -2371,9 +2371,12 @@ void singleSineCycleWobbles()
   //   scales?
   //
   // - Try to recreate a sine wave from bell functions with alternating signs. Bell functions may
-  //   be better suited to model asymmetric signals. Hmm...I think, using bell functions amounts to
-  //   overlapping impulse responses of lowpass filters whereas using "wub" functions amounts to 
-  //   overlapping bandpass responses. 
+  //   be better suited to model asymmetric signals. We would mode the sine wvae using half-cycles
+  //   instead of full single cycles. This could potentially lead to a finer modeling abilities 
+  //   especially for highly asymmetric signals, i.e. signal that have a high positive and low 
+  //   negative excursion or vice versa. I think, using bell functions amounts to overlapping 
+  //   impulse responses of lowpass filters whereas using "wub" functions amounts to overlapping 
+  //   bandpass responses. 
   
   // - Maybe we could approximate transients using a projection pursuit algo using (delayed) 
   //   bandpass responses a building blocks.
@@ -2449,4 +2452,13 @@ void multiSineCycleWobbles()
   //   with a function defined by an infinite sum. But maybe it's possible - try it!
   //
   // - The factors should pehaps be built into the function wub1 itself.
+}
+
+
+
+void multiHalfCycleWobbles()
+{
+
+
+  int dummy = 0;
 }

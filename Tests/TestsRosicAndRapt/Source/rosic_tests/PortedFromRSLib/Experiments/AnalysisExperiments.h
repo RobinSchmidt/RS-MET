@@ -37,6 +37,7 @@ void peakPicker();
 void singleSineModel();
 void singleSineCycleWobbles();
 void multiSineCycleWobbles();
+void multiHalfCycleWobbles();
 
 
 
