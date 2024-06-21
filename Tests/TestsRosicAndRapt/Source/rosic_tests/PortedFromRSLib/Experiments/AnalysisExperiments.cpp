@@ -2402,27 +2402,43 @@ void multiSineCycleWobbles()
 
   AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
 
+  // Eyeballed scaling factors for best match:
+  double cx = 0.98;
+  double cy = 1.012;
+
+  // Test - no scaling:
+  //cx = cy = 1.0;
 
   for(int n = 0; n < N; n++)
   {
     s[n] = sin(PI*x[n]);
     y[n] = 0.0;
-    for(int i = 0; i < (int) offsets.size(); i++)
-
-      y[n] += wub1(x[n] - offsets[i]);
+    for(int i = 0; i < (int)offsets.size(); i++)
+    {
+      y[n] += wub1(cx*(x[n] - offsets[i]));
+    }
   }
-
-
-  y = 1.012 * y;  // Eyeballed scaling factor
-
+  y = cy * y;
 
   rsPlotVectorsXY(x, s, y);
   int dummy = 0;
 
   // Observations:
   //
-  // - The minima and maxima of the sum-of-wubs do not quite match with those of the sine wave. 
-  //   They are quite close, though.. The constants in wub1() are chose in such a way as to match 
-  //   the min/max of the sine for one single wub - but apparently, the interactions in the 
-  //   summation shift and scale these min/max values.
+  // - With cx = cy = 1, the minima and maxima of the sum-of-wubs do not quite match with those of 
+  //   the sine wave. They are quite close, though.. The constants in wub1() are chosen in such a 
+  //   way as to match the min/max of the sine for one single wub - but apparently, the 
+  //   interactions in the summation shift and scale these min/max values.
+  //
+  // - The match can be improved by suing cx < 1, cy > 1. The values above were eyeballed for a 
+  //   visually good match.
+  //
+  //
+  // ToDo:
+  //
+  // - Compute exact values for the desired sclaing factors cx, cy - either by numeric optimization
+  //   or by finding min and max analytically. The latter may be difficult because we have to deal
+  //   with a function defined by an infinite sum. But maybe it's possible - try it!
+  //
+  // - The factors should pehaps be built into the function wub1 itself.
 }
