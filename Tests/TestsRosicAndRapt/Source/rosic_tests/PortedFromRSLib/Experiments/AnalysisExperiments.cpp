@@ -2475,28 +2475,23 @@ void multiHalfCycleWobbles()
     y[n] = 0.0;
     for(int i = 0; i < (int)offsets.size(); i++)
     {
+      // Scalers that have been eyeballed for a good match:
+      double sigma, scaler;
+      //sigma = 0.25; scaler = 0.63;
+      //sigma = 0.30; scaler = 0.76;
+      //sigma = 0.35; scaler = 0.91;
+      //sigma = 0.40; scaler = 1.10;
+      //sigma = 0.45; scaler = 1.36;
+      sigma = 0.50; scaler = 1.71;
 
-      //double sigma = 0.3;              // 0.3 was eyeballed
+
 
       // Sign alternation:
       double sign  = 1.0;
       if(rsIsEven(i))
         sign = -1.0;
-
-      //double scaler = sign * 0.76;     // 0.76 was eyeballed
-
-      // Test:
-      double sigma, scaler;
-
-      sigma = 0.30; scaler = sign * 0.76;
-      //sigma = 0.35; scaler = sign * 0.91;
-      //sigma = 0.40; scaler = sign * 1.10;
-      //sigma = 0.45; scaler = sign * 1.36;
-
-
-
       double mu = offsets[i];
-      y[n] += scaler * RAPT::rsGauss(x[n], mu, sigma);
+      y[n] += sign * scaler * RAPT::rsGauss(x[n], mu, sigma);
     }
   }
 
@@ -2531,4 +2526,8 @@ void multiHalfCycleWobbles()
   // - Find an optimal value for sigma. Maybe in the minimax or least-squares sense. The scaler can
   //   be found for each sigma by just figuring out the value of the maximum of the function and 
   //   scaling by the reciprocal, i.e. it's not a parameter that needs to optimized independently.
+  //
+  // - Maybe use as basis functions a Gaussian that is not normalized to unit area under the curve 
+  //   but rather to unit peak value. That may simplify the scaling factors. They'll probably come 
+  //   out as 1 then? Not sure, but that seems plausible.
 }
