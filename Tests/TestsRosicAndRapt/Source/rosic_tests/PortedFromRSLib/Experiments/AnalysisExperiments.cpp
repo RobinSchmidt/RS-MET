@@ -2465,6 +2465,9 @@ void multiHalfCycleWobbles()
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
 
+
+  //Vec offsets = { -0.5,+0.5 };
+  //Vec offsets = { -2.5,-1.5,-0.5,+0.5,+1.5,+2.5 };
   Vec offsets = { -6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,+0.5,+1.5,+2.5,+3.5,+4.5,+5.5,+6.5 };
   Vec x(N), s(N), y(N);
   AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
@@ -2481,11 +2484,12 @@ void multiHalfCycleWobbles()
       //sigma = 0.300; scaler = 0.76;
       //sigma = 0.350; scaler = 0.91;
       //sigma = 0.368; scaler = 0.9707;
-      sigma = 0.376; scaler = 1.00;
+      //sigma = 0.376; scaler = 1.00;
       //sigma = 0.400; scaler = 1.10;
       //sigma = 0.450; scaler = 1.36;
       //sigma = 0.500; scaler = 1.71;
       //sigma = 0.600; scaler = 2.95;
+      sigma = 0.700; scaler = 5.62;
       //sigma = 1.000; scaler = 70.0;
 
 
@@ -2521,6 +2525,11 @@ void multiHalfCycleWobbles()
   // - The sign-alternation will give the wrong sign when cutting off the first and last offset 
   //   from the offsets array. A general formula should perhaps be based on the floor of the
   //   actual offset value rather than its index in the array.
+  //
+  // - Shortening the offsets array by 4 entries (2 at the front and 2 at the back) gives back the 
+  //   correct sign. Such shortening wil have no significant effect on the amount of overshoot, by 
+  //   the way. Even shortening to just 2 entries, i.e. to { -0.5, +0.5 } will leave the amount of
+  //   overshoot unaffected - at least visually.
   //
   //
   // ToDo:
