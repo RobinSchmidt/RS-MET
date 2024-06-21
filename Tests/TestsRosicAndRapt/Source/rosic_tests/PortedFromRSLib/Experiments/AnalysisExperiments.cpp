@@ -2477,13 +2477,13 @@ void multiHalfCycleWobbles()
     {
       // Scalers that have been eyeballed for a good match:
       double sigma, scaler;
-      //sigma = 0.25; scaler = 0.63;
-      //sigma = 0.30; scaler = 0.76;
-      //sigma = 0.35; scaler = 0.91;
-      //sigma = 0.40; scaler = 1.10;
-      //sigma = 0.45; scaler = 1.36;
-      sigma = 0.50; scaler = 1.71;
-
+      //sigma = 0.250; scaler = 0.63;
+      //sigma = 0.300; scaler = 0.76;
+      //sigma = 0.350; scaler = 0.91;
+      //sigma = 0.368; scaler = 0.98;
+      sigma = 0.400; scaler = 1.10;
+      //sigma = 0.450; scaler = 1.36;
+      //sigma = 0.500; scaler = 1.71;
 
 
       // Sign alternation:
@@ -2510,15 +2510,14 @@ void multiHalfCycleWobbles()
 
   // - When increasing sigma (and also increasing the scaler to match the heights of the extrema) 
   //   from 0.3 to 0.4, we can achieve a better match at the center at the cost of introducing a
-  //   worse match at the ends. It will overshoot there more.
-  //
-  // - The match is not as good as in multiSineCycleWobbles - but we did not yet optimize sigma 
-  //   seriously, so the comparison my not yet be fair.
+  //   worse match at the ends. It will overshoot there more. Using 0.4 will give rise to an 
+  //   overshoot of roughly 5% at the ends while giving a visually really close match in the 
+  //   middle. 0.3 or less will have very little overshoot (or none at all?) but the match of the
+  //   shape is not as good.. Reasonable values should probably be in the range 0.3..0.5.
   //
   // - The sign-alternation will give the wrong sign when cutting off the first and last offset 
   //   from the offsets array. A general formula should perhaps be based on the floor of the
   //   actual offset value rather than its index in the array.
-  //
   //
   //
   // ToDo:
@@ -2526,6 +2525,12 @@ void multiHalfCycleWobbles()
   // - Find an optimal value for sigma. Maybe in the minimax or least-squares sense. The scaler can
   //   be found for each sigma by just figuring out the value of the maximum of the function and 
   //   scaling by the reciprocal, i.e. it's not a parameter that needs to optimized independently.
+  //
+  // - But perhaps the match in the middle will get better and better while increasing sigma? Maybe
+  //   it will converge to an exact sine wave as sigma grows larger? Would that be an interesting
+  //   mathematical result? Maybe it's even a known result? If so, our optimization should perhaps
+  //   use a cost function that takes the overshoot errors at the ends also into account. Maybe try 
+  //   sigma = 1/e = 0.367879...
   //
   // - Maybe use as basis functions a Gaussian that is not normalized to unit area under the curve 
   //   but rather to unit peak value. That may simplify the scaling factors. They'll probably come 
