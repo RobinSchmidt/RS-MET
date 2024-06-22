@@ -2590,7 +2590,10 @@ void sineFromDecayingSines()
   };
 
 
-  Vec offsets = { 0.0 };
+  //Vec offsets = { 0 };
+  Vec offsets = { -6, -5, -4, -3, -2, -1, 0, +1, +2, +3, +4, +5, +6 };
+  //Vec offsets = { -1, 0, +1 };
+  //Vec offsets = { -2, 0, +2 };
   //Vec offsets = { -0.5,+0.5 };
   //Vec offsets = { -6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,+0.5,+1.5,+2.5,+3.5,+4.5,+5.5,+6.5 };
   Vec x(N), s(N), y(N);
@@ -2599,9 +2602,9 @@ void sineFromDecayingSines()
 
   double a, f, p, c;
   a = 1.0;
-  f = 1.0;
+  f = 0.915;
   p = 0;
-  c = 1;
+  c = 1.12;
 
   for(int n = 0; n < N; n++)
   {
