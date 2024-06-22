@@ -4867,14 +4867,18 @@ std::function<T(T)> rsAntiDerivative(const std::function<T(T)>& f, T a, T c, int
 // function figure out the number of steps that gives maxium accuracy or even better make accuracy
 // parameter optional
 
-
+// Crosfades between functions f and g using a crossfading function c. This should be a symmetric
+// sigmoid with a range of 0..1 and produce the value 0.5 at y = 0. A typical example could be the
+// logistic function  1 / (1 + exp(-x)). If these criteria are met, we will get the following 
+// features for the resulting function h(x). At x = 0, both input functions f and g have equal 
+// weights, i.e. h(x) = (f(x) + g(x))/2. As x -> -inf, h -> f. As x -> +inf, h -> g.
 template<class T>
 inline std::function<T(T)> rsCrossFade(
-  const std::function<T(T)>& f, const std::function<T(T)>& g, const std::function<T(T)>& cf)
+  const std::function<T(T)>& f, const std::function<T(T)>& g, const std::function<T(T)>& c)
 {
   return [=](T x) 
   { 
-    T s = cf(x);
+    T s = c(x);
     return (1-s)*f(x) + s*g(x);
   };
 }
@@ -4968,7 +4972,8 @@ void functionOperators()
 
   // ToDo:
   //
-  // - Use a typedef'd Real instead of double
+  // - Create functions by a 3-way-crossfade with the function of interest in the middle and maybe
+  //   the identity for the left and right sections
 }
 
 
