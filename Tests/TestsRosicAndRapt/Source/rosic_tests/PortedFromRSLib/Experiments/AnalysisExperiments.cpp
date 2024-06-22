@@ -2573,6 +2573,8 @@ void multiHalfCycleWobbles()  // Maybe rename to sineFromGaussians
 
 void sineFromDecayingSines()
 {
+  // DOES NOR YET WORK!
+
   double xMin = -10.0;
   double xMax = +10.0;
   int    N    =  1001;
@@ -2580,23 +2582,25 @@ void sineFromDecayingSines()
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
 
-  auto expSin = [](double x, double a, double w, double p)
+  auto expSin = [](double x, double a, double f, double p)
   {
     if(x < 0.0)
       return 0.0;
-    return exp(-a*x) * sin(w*x + p);
+    return exp(-a*x) * sin(PI*f*x + p);
   };
 
 
-  Vec offsets = { -6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,+0.5,+1.5,+2.5,+3.5,+4.5,+5.5,+6.5 };
+  Vec offsets = { 0.0 };
+  //Vec offsets = { -0.5,+0.5 };
+  //Vec offsets = { -6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,+0.5,+1.5,+2.5,+3.5,+4.5,+5.5,+6.5 };
   Vec x(N), s(N), y(N);
   AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
 
 
-  double a, w, p, c;
-  a = 1;
-  w = 1;
-  p = 1;
+  double a, f, p, c;
+  a = 1.0;
+  f = 1.0;
+  p = 0;
   c = 1;
 
   for(int n = 0; n < N; n++)
@@ -2608,10 +2612,10 @@ void sineFromDecayingSines()
     {
       // Sign alternation:
       double sign = 1.0;
-      if(rsIsEven(i))
+      if(rsIsOdd(i))
         sign = -1.0;
       double x0 = offsets[i];
-      y[n] += sign * c * expSin(x[n]-x0, a, w, p);
+      y[n] += sign * c * expSin(x[n]-x0, a, f, p);
     }
 
   }
