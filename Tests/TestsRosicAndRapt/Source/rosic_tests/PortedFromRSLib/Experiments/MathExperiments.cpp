@@ -4898,6 +4898,25 @@ inline std::function<T(T)> rsCrossFade(
 }
 
 
+template<class T>
+inline std::function<T(T)> rsCrossFade3Way(
+  const std::function<T(T)>& fL, const std::function<T(T)>& fM, const std::function<T(T)>& fR,
+  const std::function<T(T)>& cLM, T shiftLM, T scaleLM,
+  const std::function<T(T)>& cMR, T shiftMR, T scaleMR)
+{
+  return [=](T x) 
+  { 
+    T wL = cLM(-scaleLM * (x - shiftLM));      // weight for fL
+    T wR = cMR(+scaleMR * (x - shiftMR));      // weight for fR
+    T wM = 1 - (wL + wR);                    // weight for fM
+    return wL*fL(x) + wM*fM(x) + wR*fR(x);
+  };
+}
+
+
+
+
+
 
 void functionOperators()
 {
@@ -4909,12 +4928,23 @@ void functionOperators()
   using Real = double;
   using Func = std::function<Real(Real)>;
 
-  Func f, g, h;                                // Holds our functions
+  Func f, g, h, fL, fM, fR;                    // Hold our functions
   //double y;
 
   // Some constant functions:
   Func sigmoid = [=](Real x) { return 1 / (1 + exp(-x)); };
   // ToDo: saturate (like sigmoid but with range -1...+1 like tanh)
+
+
+  fL = [=](Real x) { return 8; };              // fL(x) = 8
+  fM = [=](Real x) { return 2; };              // fM(x) = 2
+  fR = [=](Real x) { return 6; };              // fR(x) = 6
+  h = rsCrossFade3Way(fL, fM, fR, 
+                      sigmoid, -5.0, 2.0, 
+                      sigmoid, +5.0, 3.0);
+  rsPlotFunction(h, -10.0, +10.0, 201);
+
+
 
   // A sort of soft-abs function created by a smooth crossfade between f(x) = -x for the left 
   // half-plane and g(x) = +x for the right half-plane:
@@ -4923,6 +4953,13 @@ void functionOperators()
   h = rsCrossFade(f, g, sigmoid);
   rsPlotFunction(h, -10.0, +10.0, 1000);
  
+
+
+
+
+
+
+
   // Periodicized polynomial:
   f = [=](Real x) { return x*(x-PI)*(x+PI); }; // Polynomial
   f = rsMakePeriodic(f, -PI, PI);              // Sine-ish
@@ -5008,6 +5045,11 @@ void functionOperators()
   //
   // - What about the antiderivative of a Butterwoth response. It should be a clipper with variable 
   //   hardness.
+  //
+  //
+  // See also:
+  //
+  // - https://www.youtube.com/watch?v=Jz8VCv1MIYE  Ableitungen à la carte (Borels Lemma)
 }
 
 

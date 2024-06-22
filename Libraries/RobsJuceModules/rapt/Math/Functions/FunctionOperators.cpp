@@ -19,6 +19,11 @@ Basic transformations:
   g(x) = -f(-x)                        Reflect about origin
   g(x) = (f(x) + f(-x)) / 2            Extract symmetric (aka even) part
   g(x) = (f(x) - f(-x)) / 2            Extract antisymmetric (aka odd) part
+  g(x) = 1/f(x)                        Reciprocal function
+  g(x) = f(1/x)                        Turns the fucntion "inside out"
+  g(x) = f^-1 (x)                      Inverse function
+  g(x) = f^n (x)                       Iterated function (n times)
+  g(x) = f^(n) (x)                     n-th derivative (notaion a bit ambiuguous)
 
 
 Functionals involving a sigmoid function s(x) with range 0..1 like the logistic function:
@@ -50,6 +55,9 @@ Ideas:
 
 - Multiplication by a bell function can smoothly crossfade between zero, f(x) and back to zero if
   the bell falls off quickly enough, i.e. more quickly than f increases, if it does increase.
+
+- g(x) = (f(x-a) + f(x+a)) / 2
+
 
 
 */
