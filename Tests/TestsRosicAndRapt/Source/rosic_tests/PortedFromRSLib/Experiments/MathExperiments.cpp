@@ -4869,9 +4869,10 @@ std::function<T(T)> rsAntiDerivative(const std::function<T(T)>& f, T a, T c, int
 
 // Crosfades between functions f and g using a crossfading function c. This should be a symmetric
 // sigmoid with a range of 0..1 and produce the value 0.5 at y = 0. A typical example could be the
-// logistic function  1 / (1 + exp(-x)). If these criteria are met, we will get the following 
-// features for the resulting function h(x). At x = 0, both input functions f and g have equal 
-// weights, i.e. h(x) = (f(x) + g(x))/2. As x -> -inf, h -> f. As x -> +inf, h -> g.
+// logistic function c(x) = 1 / (1 + exp(-x)) or the error function c(x) = erf(x). If these 
+// criteria are met, we will get the following features for the resulting function h(x). At x = 0, 
+// both input functions f and g have equal weights, i.e. h(x) = (f(x) + g(x))/2. As x -> -inf, 
+// h -> f. As x -> +inf, h -> g.
 template<class T>
 inline std::function<T(T)> rsCrossFade(
   const std::function<T(T)>& f, const std::function<T(T)>& g, const std::function<T(T)>& c)
@@ -4881,6 +4882,15 @@ inline std::function<T(T)> rsCrossFade(
     T s = c(x);
     return (1-s)*f(x) + s*g(x);
   };
+
+  // Notes:
+  //
+  // - Another way could be to use h(x) = c(-x)*f(x) + c(x)*g(x) but this would require two 
+  //   evaluations of c and for a proper sigmoid with the right symmetry around (0,0.5), the result
+  //   should be the same. However, for asymmetric sigmoids, the results will be different. Here, we
+  //   enforce that the used weights sum up to one. The formula above would enforce the weighting 
+  //   functions to be mirror images of one another...I guess -> verify! The logistic function or
+  //   erf satisfy both of these conditions.
 }
 
 
@@ -4888,7 +4898,9 @@ inline std::function<T(T)> rsCrossFade(
 void functionOperators()
 {
   // For testing various operators that take a function as input and return another functions as 
-  // output
+  // output. We also demonstrate, how these operators can be used to construct functions with 
+  // desired features from existing functions - although in practice (i.e. for production code), 
+  // we'd rather construct these functions with pen and paper or with a CAS..
 
   using Real = double;
   using Func = std::function<Real(Real)>;
@@ -4974,6 +4986,14 @@ void functionOperators()
   //
   // - Create functions by a 3-way-crossfade with the function of interest in the middle and maybe
   //   the identity for the left and right sections
+  //
+  // -What about x / (1 + (x^2)^N) - this creates a zero-down-up-zero "wub" function and N controls
+  //  the hardness. For negative N, it creates a "clamp low values to zero" function that leaves 
+  //  high values as is. I.e. it's the identity away from zero and the zero function close to zero.
+  //  https://www.desmos.com/calculator/j9z6jwckhm
+  //  Replacing the x in the numerator by 1 gives the Butterworth magnitude responses for N > 0 and
+  //  inverted ones fro N < 0. They could be useful for fading between a function in the middle and
+  //  another function to the left and right.
 }
 
 
