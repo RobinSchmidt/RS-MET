@@ -4891,6 +4891,10 @@ inline std::function<T(T)> rsCrossFade(
   //   enforce that the used weights sum up to one. The formula above would enforce the weighting 
   //   functions to be mirror images of one another...I guess -> verify! The logistic function or
   //   erf satisfy both of these conditions.
+  //
+  // ToDo:
+  //
+  // - Maybe rename f,g to fL,fR for func-left, func-right
 }
 
 
@@ -4987,13 +4991,23 @@ void functionOperators()
   // - Create functions by a 3-way-crossfade with the function of interest in the middle and maybe
   //   the identity for the left and right sections
   //
-  // -What about x / (1 + (x^2)^N) - this creates a zero-down-up-zero "wub" function and N controls
-  //  the hardness. For negative N, it creates a "clamp low values to zero" function that leaves 
-  //  high values as is. I.e. it's the identity away from zero and the zero function close to zero.
-  //  https://www.desmos.com/calculator/j9z6jwckhm
-  //  Replacing the x in the numerator by 1 gives the Butterworth magnitude responses for N > 0 and
-  //  inverted ones fro N < 0. They could be useful for fading between a function in the middle and
-  //  another function to the left and right.
+  // - What about f(x) = x / (1 + (x^2)^N) - this creates a zero-down-up-zero "wub" function and N 
+  //   controls the hardness. For negative N, it creates a "clamp low values to zero" function that 
+  //   leaves high values as is. I.e. it's the identity away from zero and the zero function close 
+  //   to zero. https://www.desmos.com/calculator/j9z6jwckhm
+  //   Replacing the x in the numerator by 1 gives the Butterworth magnitude responses for N > 0 and
+  //   inverted ones fro N < 0. They could be useful for fading between a function in the middle and
+  //   another function to the left and right. When using x - f(x), it seems to have the same effect
+  //   as negating N (verify!).
+  //
+  // - f(x) = x - saturate(a*x) creates a function that looks like a shifted identity awy from the 
+  //   origin and has a controllable slope (by a) at the origin:
+  //   https://www.desmos.com/calculator/ru0p7qnh9o
+  //   With negative a, this might be useful to boost quiet signals, i.e. for upward compression. 
+  //   Using asinh instead of tanh may also be useful
+  //
+  // - What about the antiderivative of a Butterwoth response. It should be a clipper with variable 
+  //   hardness.
 }
 
 
