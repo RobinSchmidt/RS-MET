@@ -4868,37 +4868,64 @@ std::function<T(T)> rsAntiDerivative(const std::function<T(T)>& f, T a, T c, int
 // parameter optional
 
 
+template<class T>
+inline std::function<T(T)> rsCrossFade(
+  const std::function<T(T)>& f, const std::function<T(T)>& g, const std::function<T(T)>& cf)
+{
+  return [=](T x) 
+  { 
+    T s = cf(x);
+    return (1-s)*f(x) + s*g(x);
+  };
+}
+
+
+
 void functionOperators()
 {
   // For testing various operators that take a function as input and return another functions as 
   // output
 
-  std::function<double(double)> f;               // Holds our function
+  using Real = double;
+  using Func = std::function<Real(Real)>;
+
+  Func f, g, h;                                // Holds our functions
   //double y;
 
+  // Some constant functions:
+  Func sigmoid = [=](Real x) { return 1 / (1 + exp(-x)); };
+  // ToDo: saturate (like sigmoid but with range -1...+1 like tanh)
+
+  // A sort of soft-abs function created by a smooth crossfade between f(x) = -x for the left 
+  // half-plane and g(x) = +x for the right half-plane:
+  f = [=](Real x) { return -x; };              // f(x) = -x
+  g = [=](Real x) { return +x; };              // f(x) = +x
+  h = rsCrossFade(f, g, sigmoid);
+  rsPlotFunction(h, -10.0, +10.0, 1000);
+ 
   // Periodicized polynomial:
-  f = [=](double x) { return x*(x-PI)*(x+PI); }; // Polynomial
-  f = rsMakePeriodic(f, -PI, PI);                // Sine-ish
+  f = [=](Real x) { return x*(x-PI)*(x+PI); }; // Polynomial
+  f = rsMakePeriodic(f, -PI, PI);              // Sine-ish
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
   // Periodicized indentity:
-  f = [=](double x) { return x; };               // Identity
-  f = rsMakePeriodic(f, -3.0, 2.0);              // Sawtooth (with strange range -3..+2)
+  f = [=](Real x) { return x; };               // Identity
+  f = rsMakePeriodic(f, -3.0, 2.0);            // Sawtooth (with strange range -3..+2)
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
   // Derivative:
-  f = [=](double x) { return sin(2*x); };        // f(x)  =   sin(2*x)
-  f = rsDerivative(f, 0.01);                     // f'(x) = 2*cos(2*x)
+  f = [=](Real x) { return sin(2*x); };        // f(x)  =   sin(2*x)
+  f = rsDerivative(f, 0.01);                   // f'(x) = 2*cos(2*x)
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
   // Antiderivative:
-  f = [=](double x) { return sin(2*x); };        // f(x) = sin(2*x)
-  f = rsAntiDerivative(f, 0.0, -0.5, 128);       // F(x) = -1/2 * cos(2*x) + c
+  f = [=](Real x) { return sin(2*x); };        // f(x) = sin(2*x)
+  f = rsAntiDerivative(f, 0.0, -0.5, 128);     // F(x) = -1/2 * cos(2*x) + c
   rsPlotFunction(f, -6.0, +6.0, 1000);
 
   // Inverse function:
-  f = [=](double x) { return x*x*x; };           // f(x)    = x^3
-  f = rsInverse(f);                              // f^-1(x) = cubeRoot(x)
+  f = [=](Real x) { return x*x*x; };           // f(x)    = x^3
+  f = rsInverse(f);                            // f^-1(x) = cubeRoot(x)
   rsPlotFunction(f, -5.0, +5.0, 1000);
   // inversion needs some more care - we need to support (monotonically) decreasing functions as 
   // well (we should automatically determine which case it is) - maybe have two versions
@@ -4909,20 +4936,20 @@ void functionOperators()
   // within the range -1...+1
 
   // This will probably not work (hang):
-  //f = [=](double x) { return -x*x*x; };           // f(x)   = -x^3
-  //f = rsInverse(f);                              // f^-1(x) = -cubeRoot(x)
+  //f = [=](Real x) { return -x*x*x; };           // f(x)   = -x^3
+  //f = rsInverse(f);                             // f^-1(x) = -cubeRoot(x)
   //rsPlotFunction(f, -5.0, +5.0, 1000); 
   // yep - hangs because the function is decreasing and the bracket-search assumes an increasing 
   // function
 
   // Even part:
-  f = [=](double x) { return exp(x); };          // f(x)  = e^x
-  f = rsEvenPart(f);                             // fe(x) = (e^x + e^-x) / 2 = cosh(x)
+  f = [=](Real x) { return exp(x); };          // f(x)  = e^x
+  f = rsEvenPart(f);                           // fe(x) = (e^x + e^-x) / 2 = cosh(x)
   rsPlotFunction(f, -5.0, +5.0, 1000);
 
   // Odd part::
-  f = [=](double x) { return exp(x); };          // f(x)  = e^x
-  f = rsOddPart(f);                              // fo(x) = (e^x - e^-x) / 2 = sinh(x)
+  f = [=](Real x) { return exp(x); };          // f(x)  = e^x
+  f = rsOddPart(f);                            // fo(x) = (e^x - e^-x) / 2 = sinh(x)
   rsPlotFunction(f, -5.0, +5.0, 1000);
 
 
