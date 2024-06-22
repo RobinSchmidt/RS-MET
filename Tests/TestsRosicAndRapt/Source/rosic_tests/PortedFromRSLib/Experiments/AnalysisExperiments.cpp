@@ -2641,4 +2641,8 @@ void sineFromDecayingSines()
   // - Investigate using a sine with attck-decay envelope. That should even allo us to use start 
   //   phases other than zero - or alternatively, when using zero, we may get a continuous 1st 
   //   derivative as well? I'm not sure but I think so - try it!
+  //
+  // - Maybe try a recursive filter using some nonlinear recursion like
+  //   y = tanh(c * y^2)  with c < 1...hmm..dunno if that's interesting - and it's kinda off-topic 
+  //   here
 }

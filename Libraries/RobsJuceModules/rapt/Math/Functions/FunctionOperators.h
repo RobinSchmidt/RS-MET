@@ -6,14 +6,14 @@ an operator could be "take the derivative" which turns f(x) into f'(x) or "multi
 argument" which turns f(x) into x*f(x). The input- and output functions are represented as 
 std::function objects. */
 
-/** Takes the segment of the function func from xMin to xMax and periodically repeats it. */
+/** Takes the segment of the function f from xMin to xMax and periodically repeats it. */
 template<class T>
-inline std::function<T(T)> rsMakePeriodic(const std::function<T(T)>& func, T xMin, T xMax)
+inline std::function<T(T)> rsMakePeriodic(const std::function<T(T)>& f, T xMin, T xMax)
 {
   T P = xMax - xMin;  // period length
-  return [=](T x) { T d = ceil((x-xMax) / P); return func(x-P*d); };
+  return [=](T x) { T d = ceil((x-xMax) / P); return f(x-P*d); };
 }
-// maybe make a bivariate version of that
+// ToDo: maybe make a bivariate version of that
 
 /** Returns the numerical derivative of f computed via a central difference using step-size h. */
 template<class T>
@@ -30,8 +30,7 @@ inline std::function<T(T)> rsDerivative(const std::function<T(T)>& f, T h)
 //  x and f(x)?
 // -advantage of forward/backward difference: only one evaluation of f, may be used at points where
 //  the function is undefined in either of the two directions from the point
-// -maybe fit a parabola through x-h, x, x+h and take the derivative of that -> more accurate (?) 
- // ..or maybe the contribution of the (x,f(x)) point cancels and it actually gives the same result?
+
 
 /** Extracts the even part of the function, i.e. the part with even symmetry (axial symmetry with 
 respect to the y-axis). */
@@ -58,3 +57,6 @@ inline std::function<T(T)> rsOddPart(const std::function<T(T)>& f)
 // integral should be limited to a finite range (i.e. finite instead of infinite integration 
 // limits)
 // maybe de-inline
+//
+// There are a couple of more defined in MathExperiments.cpp in the TestsRosicAndRapt project which
+// are under construction and can eventually be integrated here.

@@ -349,7 +349,7 @@ int main(int argc, char* argv[])
   //primeDistribution();
   //numberTheoreticTransform();           // triggers assert
   //variousFunctions();
-  //functionOperators();
+  functionOperators();
 
   // Analysis:
   //autoCorrelation();

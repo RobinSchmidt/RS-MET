@@ -4873,30 +4873,30 @@ void functionOperators()
   // For testing various operators that take a function as input and return another functions as 
   // output
 
-  std::function<double(double)> f;               // holds our function
+  std::function<double(double)> f;               // Holds our function
   //double y;
 
-  // periodicized polynomial:
-  f = [=](double x) { return x*(x-PI)*(x+PI); }; // polynomial
-  f = rsMakePeriodic(f, -PI, PI);                // sine-ish
+  // Periodicized polynomial:
+  f = [=](double x) { return x*(x-PI)*(x+PI); }; // Polynomial
+  f = rsMakePeriodic(f, -PI, PI);                // Sine-ish
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
-  // periodicized indentity:
-  f = [=](double x) { return x; };               // identity
-  f = rsMakePeriodic(f, -3.0, 2.0);              // sawtooth
+  // Periodicized indentity:
+  f = [=](double x) { return x; };               // Identity
+  f = rsMakePeriodic(f, -3.0, 2.0);              // Sawtooth (with strange range -3..+2)
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
-  // derivative:
+  // Derivative:
   f = [=](double x) { return sin(2*x); };        // f(x)  =   sin(2*x)
   f = rsDerivative(f, 0.01);                     // f'(x) = 2*cos(2*x)
   rsPlotFunction(f, -10.0, +10.0, 1000);
 
-  // antiderivative:
+  // Antiderivative:
   f = [=](double x) { return sin(2*x); };        // f(x) = sin(2*x)
   f = rsAntiDerivative(f, 0.0, -0.5, 128);       // F(x) = -1/2 * cos(2*x) + c
   rsPlotFunction(f, -6.0, +6.0, 1000);
 
-  // inverse function:
+  // Inverse function:
   f = [=](double x) { return x*x*x; };           // f(x)    = x^3
   f = rsInverse(f);                              // f^-1(x) = cubeRoot(x)
   rsPlotFunction(f, -5.0, +5.0, 1000);
@@ -4908,22 +4908,27 @@ void functionOperators()
   // the main branch of arcsin - it should trigger an assert when called with values that are not
   // within the range -1...+1
 
-  // this will probably not work (hang):
+  // This will probably not work (hang):
   //f = [=](double x) { return -x*x*x; };           // f(x)   = -x^3
   //f = rsInverse(f);                              // f^-1(x) = -cubeRoot(x)
   //rsPlotFunction(f, -5.0, +5.0, 1000); 
   // yep - hangs because the function is decreasing and the bracket-search assumes an increasing 
   // function
 
-  // even part:
+  // Even part:
   f = [=](double x) { return exp(x); };          // f(x)  = e^x
   f = rsEvenPart(f);                             // fe(x) = (e^x + e^-x) / 2 = cosh(x)
   rsPlotFunction(f, -5.0, +5.0, 1000);
 
-  // odd part::
+  // Odd part::
   f = [=](double x) { return exp(x); };          // f(x)  = e^x
   f = rsOddPart(f);                              // fo(x) = (e^x - e^-x) / 2 = sinh(x)
   rsPlotFunction(f, -5.0, +5.0, 1000);
+
+
+
+
+
 
   //f = &sin2;  // works
   //f = sin2;  // works
@@ -4933,6 +4938,10 @@ void functionOperators()
   // opertator? try: y + a*y' + b*y'' = g(x) ...maybe throw a root-finder at...
   // ....‰‰‰hh - no - i think, that doesn't work if we don't know the input function y(x) already
   // and that's exactly what we try to find
+
+  // ToDo:
+  //
+  // - Use a typedef'd Real instead of double
 }
 
 
