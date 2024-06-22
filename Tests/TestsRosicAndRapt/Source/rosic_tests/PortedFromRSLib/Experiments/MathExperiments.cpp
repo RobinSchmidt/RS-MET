@@ -4908,7 +4908,7 @@ inline std::function<T(T)> rsCrossFade3Way(
   { 
     T wL = cLM(-scaleLM * (x - shiftLM));      // weight for fL
     T wR = cMR(+scaleMR * (x - shiftMR));      // weight for fR
-    T wM = 1 - (wL + wR);                    // weight for fM
+    T wM = 1 - (wL + wR);                      // weight for fM
     return wL*fL(x) + wM*fM(x) + wR*fR(x);
   };
 }
@@ -4936,14 +4936,23 @@ void functionOperators()
   // ToDo: saturate (like sigmoid but with range -1...+1 like tanh)
 
 
+  // A 3-way crossfade between 3 constant functions:
   fL = [=](Real x) { return 8; };              // fL(x) = 8
   fM = [=](Real x) { return 2; };              // fM(x) = 2
   fR = [=](Real x) { return 6; };              // fR(x) = 6
   h = rsCrossFade3Way(fL, fM, fR, 
-                      sigmoid, -5.0, 2.0, 
+                      sigmoid, -5.0, 2.0,      // -5 is breakpoint, 2.0 steepness
                       sigmoid, +5.0, 3.0);
   rsPlotFunction(h, -10.0, +10.0, 201);
 
+  // A slightly more interesting example of a 3-way crossfade:
+  fL = [=](Real x) { return exp(+0.3*x); };
+  fM = [=](Real x) { return cos(  PI*x); };
+  fR = [=](Real x) { return exp(-0.3*x); };
+  h = rsCrossFade3Way(fL, fM, fR, 
+                      sigmoid, -3.0, 3.0,  
+                      sigmoid, +3.0, 3.0);
+  rsPlotFunction(h, -10.0, +10.0, 801);
 
 
   // A sort of soft-abs function created by a smooth crossfade between f(x) = -x for the left 
