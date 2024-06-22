@@ -2601,10 +2601,9 @@ void sineFromDecayingSines()
 
 
   double a, f, p, c;
-  a = 1.0;
-  f = 0.915;
-  p = 0;
-  c = 1.12;
+  //a = 1.0;  f = 0.915; p = 0; c = 1.12;
+  a = 0.9;  f = 0.93; p = 0; c = 0.99;
+
 
   for(int n = 0; n < N; n++)
   {
