@@ -2603,8 +2603,8 @@ void sineFromDecayingSines()
   double a, f, p, c;
   //a = 1.0;  f = 0.915; p = 0; c = 1.12;
   //a = 0.9;  f = 0.93; p = 0; c = 0.99;
-  a = 0.7;  f = 0.95; p = 0; c = 0.75;
-
+  a = 0.7;  f = 0.95; p = 0.0; c = 0.75;     // takes about 4 cycles to go to steady state
+  //a = 0.5;  f = 0.97; p = 0; c = 0.54;
 
   for(int n = 0; n < N; n++)
   {
@@ -2624,4 +2624,21 @@ void sineFromDecayingSines()
   }
 
   rsPlotVectorsXY(x, s, y);
+
+  // Observations:
+  //
+  // - When decreasing the damping factor, we need to increase the frequency.
+  //
+  // - With less damping, we can get a closer approximation to the sine at the cost of a longer
+  //   time to reach steady state, i.e. the attack and decay phases will take longer.
+  //
+  // - I think, we should always use p = 0. Any other value will give rise to discontinuities in
+  //   the signal. With p = 0, we'll get only discontinuities in the slope.
+  //
+  //
+  // ToDo:
+  //
+  // - Investigate using a sine with attck-decay envelope. That should even allo us to use start 
+  //   phases other than zero - or alternatively, when using zero, we may get a continuous 1st 
+  //   derivative as well? I'm not sure but I think so - try it!
 }
