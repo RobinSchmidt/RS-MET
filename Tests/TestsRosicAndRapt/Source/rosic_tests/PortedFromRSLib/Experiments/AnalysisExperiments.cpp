@@ -2393,10 +2393,10 @@ T wub1(T x)
 
   // ToDo:
   //
-  // - Find better name for the function
+  // - Find better name for the function. Maybe blip?
 }
 
-void multiSineCycleWobbles()
+void multiSineCycleWobbles()  // Maybe rename to sineFromTanhWubs
 {
   double xMin = -10.0;
   double xMax = +10.0;
@@ -2454,10 +2454,10 @@ void multiSineCycleWobbles()
   // - The factors should pehaps be built into the function wub1 itself.
 }
 
-
-
-void multiHalfCycleWobbles()
+void multiHalfCycleWobbles()  // Maybe rename to sineFromGaussians
 {
+  // We try to recreate a sine wave by a superposition of shifted Gaussian bell curves.
+
   double xMin = -10.0;
   double xMax = +10.0;
   int    N    =  1001;
@@ -2484,12 +2484,12 @@ void multiHalfCycleWobbles()
       //sigma = 0.300; scaler = 0.76;
       //sigma = 0.350; scaler = 0.91;
       //sigma = 0.368; scaler = 0.9707;
-      //sigma = 0.376; scaler = 1.00;
+      sigma = 0.376; scaler = 1.00;
       //sigma = 0.400; scaler = 1.10;
       //sigma = 0.450; scaler = 1.36;
       //sigma = 0.500; scaler = 1.71;
       //sigma = 0.600; scaler = 2.95;
-      sigma = 0.700; scaler = 5.62;
+      //sigma = 0.700; scaler = 5.62;
       //sigma = 1.000; scaler = 70.0;
 
 
@@ -2505,7 +2505,8 @@ void multiHalfCycleWobbles()
 
   //AT::normalize(&y[0], N);
   // Nope - that doesn't work because the maxima may overshoot at the ends. We should find
-  // the first maximum after the middle and use that as reference.
+  // the first maximum after the middle and use that as reference. Maybe we should also use a 
+  // normalization function that finds intersample peaks.
 
 
   rsPlotVectorsXY(x, s, y);
@@ -2565,4 +2566,55 @@ void multiHalfCycleWobbles()
   //   try some with finite support such as the bump functions or common window functions. Maybe 
   //   the non-smoothness at the ends deosn't even matter because the summation will cancel out the
   //   discontinuities in the derivatives? 
+  //
+  // - Try an exponentially enveloped sine, like f(x) = exp(-a*x) * sin(w*x + phi)  for x >= 0, 
+  //   or 0 for x < 0. The rationale is that we can eventually produce such signals by filters.
+}
+
+void sineFromDecayingSines()
+{
+  double xMin = -10.0;
+  double xMax = +10.0;
+  int    N    =  1001;
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+
+  auto expSin = [](double x, double a, double w, double p)
+  {
+    if(x < 0.0)
+      return 0.0;
+    return exp(-a*x) * sin(w*x + p);
+  };
+
+
+  Vec offsets = { -6.5,-5.5,-4.5,-3.5,-2.5,-1.5,-0.5,+0.5,+1.5,+2.5,+3.5,+4.5,+5.5,+6.5 };
+  Vec x(N), s(N), y(N);
+  AT::fillWithRangeLinear(&x[0], N, xMin, xMax);
+
+
+  double a, w, p, c;
+  a = 1;
+  w = 1;
+  p = 1;
+  c = 1;
+
+  for(int n = 0; n < N; n++)
+  {
+    s[n] = sin(PI*x[n]);
+    y[n] = 0.0;
+
+    for(int i = 0; i < (int)offsets.size(); i++)
+    {
+      // Sign alternation:
+      double sign = 1.0;
+      if(rsIsEven(i))
+        sign = -1.0;
+      double x0 = offsets[i];
+      y[n] += sign * c * expSin(x[n]-x0, a, w, p);
+    }
+
+  }
+
+  rsPlotVectorsXY(x, s, y);
 }

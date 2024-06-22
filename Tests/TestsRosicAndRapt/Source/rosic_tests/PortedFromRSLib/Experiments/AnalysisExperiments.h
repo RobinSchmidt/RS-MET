@@ -38,6 +38,7 @@ void singleSineModel();
 void singleSineCycleWobbles();
 void multiSineCycleWobbles();
 void multiHalfCycleWobbles();
+void sineFromDecayingSines();
 
 
 
