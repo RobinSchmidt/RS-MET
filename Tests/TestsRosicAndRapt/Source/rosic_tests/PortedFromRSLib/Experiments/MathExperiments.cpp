@@ -4897,7 +4897,10 @@ inline std::function<T(T)> rsCrossFade(
   // - Maybe rename f,g to fL,fR for func-left, func-right
 }
 
-
+// Crossfades between 3 functions fL, fM, fR for the left, right and middle section. The weights for 
+// the left and right functions are determined by 2 sigmoids cLM, cMR with shift and scaling 
+// parameters and the weight for the middle function is given as one minus the sum of the two outer
+// function weights.
 template<class T>
 inline std::function<T(T)> rsCrossFade3Way(
   const std::function<T(T)>& fL, const std::function<T(T)>& fM, const std::function<T(T)>& fR,
