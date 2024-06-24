@@ -5082,7 +5082,7 @@ void functionOperatorsRotation()
 
   //Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150});
   // OK for x + x^3... but 150° would fail. It just produces a vertical line. I think, it starts
-  // to fail when the rotated grpah doesn't represent a function anymore, i.e. when there are more
+  // to fail when the rotated graph doesn't represent a function anymore, i.e. when there are more
   // that one intersection point with a vertical line...I think
 
   //Vec angles({0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180});
