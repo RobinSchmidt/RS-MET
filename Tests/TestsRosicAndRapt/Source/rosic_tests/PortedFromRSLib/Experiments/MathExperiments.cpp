@@ -4940,39 +4940,63 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
   //std::function<T(T)> g, h;
 
   // Define the bivariate function that describes the transformed graph by way of its zero set:
-  std::function<T(T, T)> F;
-  F = [=](T x, T y) 
+  std::function<T(T, T)> F = [=](T x, T y) 
   {
-    return f(a*x + b*y) - d*y - c*x;
+    //return f(a*x + b*y) - d*y - c*x;
+
+    T xp = a*x + b*y;   // x'
+    T yp = c*x + d*y;   // y'
+    return yp - f(xp);
   };
   // Check, if this is really correct
 
 
-  std::function<T(T)> g;
-  g = [=](T x) 
+  // The function that we eventually will return, i.e. f transformed by the matrix:
+  std::function<T(T)> h = [=](T x0)
   {
-    // Define univariate function in terms of given x and the bivariate F as the function that 
-    // assigns x to the given value and takes y as its variable:
-    std::function<T(T)> h;
-    h = [=](T y)
+    // The univariate function g of the sought value y0 with parameter x0 baked in:
+    std::function<T(T)> Fx0 = [=](T y0)
     {
-      return F(x, y);
+      return F(x0, y0);
     };
 
-    // Find the value of y that lets h(y) return zero:
-
-    // Hangs:
-    //T yL = findLeftBracket( h, 0.0);
-    //T yR = findRightBracket(h, 0.0);
-
-    // Preliminary:
-    T yL = -100;
-    T yR = +100;
-
-    T y  = rsRootFinder<T>::bisection(h, yL, yR, 0); // use better algo
-    return y;
+    // Find the parameter t0 at which the line intersects the function:
+    T y0 = rsFindRoot(Fx0, T(0));
+    return y0;  // Verify!
   };
-  return g;
+  return h;
+
+
+
+
+
+  //std::function<T(T)> g;
+  //g = [=](T x) 
+  //{
+  //  // Define univariate function in terms of given x and the bivariate F as the function that 
+  //  // assigns x to the given value and takes y as its variable:
+  //  std::function<T(T)> h;
+  //  h = [=](T y)
+  //  {
+  //    return F(x, y);
+  //  };
+
+  //  // Find the value of y that lets h(y) return zero:
+
+  //  // Hangs:
+  //  //T yL = findLeftBracket( h, 0.0);
+  //  //T yR = findRightBracket(h, 0.0);
+
+  //  // Preliminary:
+  //  T yL = -100;
+  //  T yR = +100;
+
+  //  T y  = rsRootFinder<T>::bisection(h, yL, yR, 0); // use better algo
+  //  return y;
+  //};
+  //return g;
+
+
 
   //// Function to find root of:
   //g = [=](T x) {
@@ -5173,14 +5197,19 @@ void functionOperatorsScaling()
 
   GNUPlotter plt;
 
-  g = rsTransform2(f, 1.0, 0.0, 0.0, 1.0);    // Identity
-  addDataFunction(plt, g, xMin, xMax, N);
-  g = rsTransform2(f, 2.0, 0.0, 0.0, 2.0);    // Scale all by 2
-  addDataFunction(plt, g, xMin, xMax, N);
-  g = rsTransform2(f, 2.0, 0.0, 0.0, 1.0);    // Scale x by 2
-  addDataFunction(plt, g, xMin, xMax, N);
-  g = rsTransform2(f, 1.0, 0.0, 0.0, 2.0);    // Scale y by 2
-  addDataFunction(plt, g, xMin, xMax, N);
+  // Both functions rsTransform1/rsTransform2 seem to work - uncomment one of the sections:
+
+  // Using rsTransform1:
+  g = rsTransform1(f, 1.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Identity
+  g = rsTransform1(f, 2.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale by 2
+  g = rsTransform1(f, 2.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Scale x by 2
+  g = rsTransform1(f, 1.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale y by 2
+
+  // Using rsTransform2:
+  //g = rsTransform2(f, 1.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Identity
+  //g = rsTransform2(f, 2.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale by 2
+  //g = rsTransform2(f, 2.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Scale x by 2
+  //g = rsTransform2(f, 1.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale y by 2
 
   plt.setRange(-1, +1, -1, +1);
   plt.addCommand("set size square");
