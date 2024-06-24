@@ -5039,15 +5039,15 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
     };
 
     // Find the parameter t0 at which the line intersects the function:
-    T t0 = rsFindRoot(gx0, T(0)); 
+    T t0 = rsFindRoot(gx0, T(0));
+    return t0;  // Verify!
 
+
+    /*
     // Find transformed x,y coordinates of intersection point, i.e. x0',y0', by evaluating the line
     // equation at the found t0:
     T x0p = a*x0 + t0*b;
     T y0p = c*x0 + t0*d;
-
-
-
 
     // But this is actually y' - we need to transform to y by using the lower row of the inverse
     // of A...
@@ -5060,9 +5060,10 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
     // Test:
     T x0r = Ai.a * x0p  +  Ai.b *y0p;  // Should be equal to x0, I think
 
-
-
     return y0;
+    */
+
+    // I think, we could just return t0
   };
   return h;
 
@@ -5107,8 +5108,13 @@ void functionOperators()
   f = [=](Real x) { return x + x*x*x; };       // f(x) = x + x^3
   //f = [=](Real x) { return x*x; };       // f(x) = x^2
   //f = rsTransform2(f, 0.8, -0.6, +0.6, 0.8);
-  f = rsTransform2(f, 1.0, 0.0, 0.0, 1.0); 
+  //f = rsTransform2(f, 1.0, 0.0, 0.0, 1.0); 
+  f = rsTransform2(f, 1.0, 0.0, 0.0, 2.0); 
   rsPlotFunction(f, -2.0, +2.0, 1001);
+  // The matrix seems to have the opposite effect of what is intended. I think, it's because we 
+  // actually appaly the transformation to the coordinate system, not to the graph. If we use a 
+  // stretching factor of 2 for the y-axis, i.e. A = [1,0; 0,2], the graph will get compressed in 
+  // the y-direction by a factor of 2
 
 
 
