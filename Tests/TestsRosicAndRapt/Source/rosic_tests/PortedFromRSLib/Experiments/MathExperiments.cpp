@@ -5104,17 +5104,24 @@ void functionOperators()
 
 
 
-  // DOES NOT YET WORK:
-  f = [=](Real x) { return x + x*x*x; };       // f(x) = x + x^3
+  // UNDER CONSTRUCTION - MAY NOT YET WORK - NEEDS MORE TESTS:
+  //f = [=](Real x) { return x + x*x*x; };       // f(x) = x + x^3
   //f = [=](Real x) { return x*x; };       // f(x) = x^2
-  //f = rsTransform2(f, 0.8, -0.6, +0.6, 0.8);
-  //f = rsTransform2(f, 1.0, 0.0, 0.0, 1.0); 
-  f = rsTransform2(f, 1.0, 0.0, 0.0, 2.0); 
+  f = [=](Real x) { return x*x*x; };       // f(x) = x^3
+
+
+  f = rsTransform2(f, 0.0, -1.0, +1.0, 0.0);  // Rotation by 90°
+  //f = rsTransform2(f, 0.8, -0.6, +0.6, 0.8);  // Rotation
+  //f = rsTransform2(f, 1.0, 0.0, 0.0, 1.0);  // Identity
+  //f = rsTransform2(f, 1.0, 0.0, 0.0, 2.0);  // Scale y-axis by 2
+
   rsPlotFunction(f, -2.0, +2.0, 1001);
   // The matrix seems to have the opposite effect of what is intended. I think, it's because we 
   // actually appaly the transformation to the coordinate system, not to the graph. If we use a 
   // stretching factor of 2 for the y-axis, i.e. A = [1,0; 0,2], the graph will get compressed in 
   // the y-direction by a factor of 2
+  //
+  // For the rotation, the effect is hard to see because the automatic scaling  of the plot.
 
 
 
