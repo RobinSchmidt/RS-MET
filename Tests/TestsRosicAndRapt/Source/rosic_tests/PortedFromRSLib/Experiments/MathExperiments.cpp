@@ -4939,7 +4939,6 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
 
   //std::function<T(T)> g, h;
 
-
   // Define the bivariate function that describes the transformed graph by way of its zero set:
   std::function<T(T, T)> F;
   F = [=](T x, T y) 
@@ -4975,29 +4974,26 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
   };
   return g;
 
-  /*
-  // Function to find root of:
-  g = [=](T x) {
-    T y = f(x);
-    return f(a*x + b*y) - d*y - c*x;
-  };
-  // Idea: If y = f(x) and y' = f(x') and x' = ax + by, y' = cx + dy then we must also have
-  // cx + dy = f(ax + by)  or  f(ax + by) - cx - dy = 0. The idea is now to find the y that 
-  // satisfies this equation ...not sure, if that's the right approach.
-  // ...I think, it's wwrong to produce a preliminary y as f(x). We porbably need to define a
-  // bivariate function g(x,y)
+  //// Function to find root of:
+  //g = [=](T x) {
+  //  T y = f(x);
+  //  return f(a*x + b*y) - d*y - c*x;
+  //};
+  //// Idea: If y = f(x) and y' = f(x') and x' = ax + by, y' = cx + dy then we must also have
+  //// cx + dy = f(ax + by)  or  f(ax + by) - cx - dy = 0. The idea is now to find the y that 
+  //// satisfies this equation ...not sure, if that's the right approach.
+  //// ...I think, it's wwrong to produce a preliminary y as f(x). We porbably need to define a
+  //// bivariate function g(x,y)
 
-  h = [=](T x) {
-    // wrap these 3 lines into rsRootFinder::findRoot(f, y)
-    T xL = findLeftBracket( g, 0.0);
-    T xR = findRightBracket(g, 0.0);
-    T y = rsRootFinder<T>::bisection(g, xL, xR, 0); // use better algo
-    return y;
-  };
-  return h;
-  // Nah - that seems to be all wrong!
-  */
-
+  //h = [=](T x) {
+  //  // wrap these 3 lines into rsRootFinder::findRoot(f, y)
+  //  T xL = findLeftBracket( g, 0.0);
+  //  T xR = findRightBracket(g, 0.0);
+  //  T y = rsRootFinder<T>::bisection(g, xL, xR, 0); // use better algo
+  //  return y;
+  //};
+  //return h;
+  //// Nah - that seems to be all wrong!
 
   //return [=](T x)
   //{
@@ -5005,9 +5001,11 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
   //  return c*x + d*y;  // First shot - not sure! ...nah! is wrong!
   //};
 
-  // Maybe write a general function that takes a bivariate equation g(x,y) = 0 and a function that
-  // finds y when x is given. This problem here can then be seen as a special case of that where
-  // g(x,y) = f(a*x + b*y) - d*y - c*x  for a given f and x
+  // Maybe write a general function that takes a bivariate equation F(x,y) = 0 and a function that
+  // finds y when x = x0 is given by e.g. bisection. We can define a univariate function 
+  // g(y) = F(x0, y) and then throw the root-finder at g. This problem here can then be seen as a 
+  // special case of that where F(x,y) = f(a*x + b*y) - d*y - c*x  for a given f and x, I think.
+  // The function below uses a different approach - but perhaps it's equivalent?
 }
 
 template<class T>
@@ -5029,7 +5027,7 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
     return F(x, y);
   };
 
-  // The function that we eventually will return, i.e. f transformed by the matrix...
+  // The function that we eventually will return, i.e. f transformed by the matrix:
   std::function<T(T)> h = [=](T x0)
   {
     // The univariate function g with parameter x0 baked in:
@@ -5049,12 +5047,10 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
 
     //// Find transformed x,y coordinates of intersection point, i.e. x0',y0', by evaluating the line
     //// equation at the found t0:
-    //T x0p = a*x0 + t0*b;
-    //T y0p = c*x0 + t0*d;
+    //T x0p = a*x0 + t0*b;  // x0'
+    //T y0p = c*x0 + t0*d;  // y0'
 
-    //// But this is actually y' - we need to transform to y by using the lower row of the inverse
-    //// of A...
-
+    //// We need to transform y' to y by using the lower row of the inverse of A:
     //rsMatrix2x2<T> A(a,b,c,d);
     //rsMatrix2x2<T> Ai = A.getInverse();
     //T y0 = Ai.c * x0p  +  Ai.d *y0p;
@@ -5062,8 +5058,8 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
 
     //// Test:
     //T x0r = Ai.a * x0p  +  Ai.b *y0p;  // Should be equal to x0, I think
-
-    //return y0;
+    //T y0r = Ai.c * x0p  +  Ai.d *y0p;  // Should be equal to t0, I think
+    //return y0r;
   };
   return h;
 
@@ -5074,22 +5070,21 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
   // intersects the function graph in the new (x',y') coordinate system. The vertical line in the 
   // old system translates to the line (a*x0, c*x0) + t*(b, d) in the new system by just applying 
   // the matrix [a,b; c,d] to the vectors (x0,0), (0,1) in our parametric line. Now that we have a 
-  // line equation in the new system, we can scan long this line to find the parameter value t, 
+  // line equation in the new system, we can scan along this line to find the parameter value t, 
   // where F(x'(t),y'(t)) = 0. This is our t-value where the line intersects the new, transformed 
   // graph. Let's call the value t0. As soon as we have found t0, we can compute its coordinates
   // in the (x',y')-system as x0' = a*x0 + t0*b, y0' = c*x0 + t0*d. We could then transform this 
   // point into the old system using the inverse of A. However - it's actually simpler than that:
-  // The x-coordinate in the old system is just x0. The 
+  // The x-coordinate in the old system is just x0 and the y-coordinate is just t0.
 }
 
 template<class T>
-inline std::function<T(T)> rsRotate(const std::function<T(T)>& f, T phi)
+inline std::function<T(T)> rsRotateFunction(const std::function<T(T)>& f, T phi)
 {
   T c = cos(phi);
   T s = sin(phi);
   return rsTransform2(f, c, -s, s, c);
 }
-
 
 void functionOperatorsRotation()
 {
@@ -5104,11 +5099,10 @@ void functionOperatorsRotation()
 
   Func f;
 
-  //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
+  f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
   //f = [=](Real x) { return x*x*x; };        // f(x) = x^3
 
-  f = [=](Real x) { return x + x*x*x; };        // f(x) = x + x^3
-
+  //f = [=](Real x) { return x + x*x*x; };        // f(x) = x + x^3
 
   //Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
   //Vec angles({0}); 
@@ -5118,26 +5112,23 @@ void functionOperatorsRotation()
   //Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90});
   // OK for f(x) = x + 0.5, x^3, x + x^3
 
-  Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150});
+  //Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150});
   // OK for x + x^3... but 150° would fail. It just produces a vertical line. I think, it starts
   // to fail when the rotated grpah doesn't represent a function anymore, i.e. when there are more
   // that one intersection point with a vertical line...I think
 
-
-  //Vec angles({0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180});
-  // With f(x) = x + 0.5, it looks ggod up to 90°, I think
-
+  Vec angles({0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180});
+  // With f(x) = x + 0.5, it looks ggod up to 120°, I think
 
   //Vec angles({0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360}); 
   // Hangs with f(x) = x + 0.5
-
 
 
   GNUPlotter plt;
   for(size_t i = 0; i < angles.size(); i++)
   {
     Real phi = rsDegreeToRadiant(angles[i]);
-    Func g   = rsRotate(f, phi);
+    Func g   = rsRotateFunction(f, phi);
 
     addDataFunction(plt, g, xMin, xMax, N);
   }
@@ -5148,11 +5139,16 @@ void functionOperatorsRotation()
   plt.plot();
 
 
-
+  // Observations:
+  //
+  // - Only under certain circumstances will the rotated graph actually represent a function. The 
+  //   allowed angles will depend on the function.
+  //
+  //
+  // ToDo:
+  //
+  // - Figure out the conditions
 }
-
-
-
 
 
 void functionOperators()
