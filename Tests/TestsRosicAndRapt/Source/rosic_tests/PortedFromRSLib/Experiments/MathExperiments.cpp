@@ -4794,13 +4794,13 @@ inline double sin2(double x)
 }
 
 // move to rsRootFinder:
+// These two bracket finders work only for increasing functions
 template<class T>
 T findLeftBracket(const std::function<T(T)>& f, T y, T xL = T(0), T d = T(1))
 {
   while(f(xL) > y) { xL -= d; d *= 2; }
   return xL;
 }
-
 template<class T>
 T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
 {
@@ -4809,6 +4809,8 @@ T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
 }
 // passed xR is initial guess, d is the initial increment
 
+// Is still BUGGY and works only for increasing functions because the bracket finders only work for
+// increasing functions:
 template<class T>
 T rsFindRoot(const std::function<T(T)>& f, T y)
 {
@@ -4817,22 +4819,15 @@ T rsFindRoot(const std::function<T(T)>& f, T y)
   T x = rsRootFinder<T>::bisection(f, xL, xR, y); // use better algo
   return x;
 }
-
+// To fix it, maybe implement a single function that computes both brackets. Start the the initial 
+// guess x0 and expand to both sides simultaneously...TBC...
 
 template<class T>
 inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
 {
-  std::function<T(T)> fi;  // inverse function
-  fi = [=](T y) {
-
+  std::function<T(T)> fi = [=](T y)  // Inverse function
+  {
     return rsFindRoot(f, y);
-
-    // wrap these 3 lines into rsRootFinder::findRoot(f, y)
-    //T xL = findLeftBracket( f, y);
-    //T xR = findRightBracket(f, y);
-    //T x = rsRootFinder<T>::bisection(f, xL, xR, y); // use better algo
-    //return x;
-
   };
   return fi;
 
@@ -4943,7 +4938,24 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
   {
     T xp = a*x + b*y;   // x'
     T yp = c*x + d*y;   // y'
+
     return yp - f(xp);
+    // Has problems with the "swap x and y" matrix, i.e. function inversion
+
+    //return f(xp) - yp;    
+    // Test - has problems with the identity matrix!
+
+    // Maybe we should switch between the two formulas depending on the sign of the determinant?
+    // Let's try it:
+    //T D = a*d - b*c;
+    //if(D > 0.0)
+    //  return yp - f(xp);
+    //else
+    //  return f(xp) - yp;
+    // OK - this seems to work in both cases. But why do we need this? Is this a bug in rsFindRoot?
+    // Perhaps in the bracketing algo? Yes - I think, findLeft/RightBracket assume that the 
+    // function is increasing. We should really fix it there rather than implementing the 
+    // workaround here.
   };
 
   // The function that we eventually will return, i.e. f transformed by the matrix. It takes as
@@ -5193,7 +5205,11 @@ void functionOperatorsMatrix()
   int  N     = 501;
   Func f, g;
 
-  f = [=](Real x) { return sqrt(1 - x*x); };  // f(x) = sqrt(1 - x^2), half-circle
+
+
+  //f = [=](Real x) { return 2*x; };          // f(x) = 2*x
+  f = [=](Real x) { return x*x*x; };          // f(x) = x^3
+  //f = [=](Real x) { return sqrt(1 - x*x); };  // f(x) = sqrt(1 - x^2), half-circle
 
   GNUPlotter plt;
 
@@ -5204,46 +5220,31 @@ void functionOperatorsMatrix()
     addDataFunction(plt, g, xMin, xMax, N);
   };
 
-
-
+  // Add some transformed versions of the function f:
   add(1.0,  0.0,  0.0, 1.0);  // Identity
   //add(1.0, +0.5,  0.0, 1.0);  // Leftward shear
   //add(1.0, -0.5,  0.0, 1.0);  // Rightward shear
   //add(1.0,  0.0, +0.5, 1.0);  // Downward shear
   //add(1.0,  0.0, -0.5, 1.0);  // Upward shear
+  add(0.0,  1.0,  1.0, 0.0);  // "Swap x with y", i.e. invert f - Nope, doesn't work
 
-  add(0.0,  1.0,  1.0, 0.0);  // Swap x,y, i.e. invert f - Nope
-
-
-
-  /*
-  g = rsTransform1(f, 1.0, 0.0, 0.0, 1.0); 
-  addDataFunction(plt, g, xMin, xMax, N); // Identity
-
-  g = rsTransform1(f, 1.0, +0.5, 0.0, 1.0); 
-  addDataFunction(plt, g, xMin, xMax, N); // Leftward shear
-
-  g = rsTransform1(f, 1.0, -0.5, 0.0, 1.0); 
-  addDataFunction(plt, g, xMin, xMax, N); // Rightward shear
-
-  g = rsTransform1(f, 1.0, 0.0, +0.5, 1.0); 
-  addDataFunction(plt, g, xMin, xMax, N);  // Downward shear
-
-  g = rsTransform1(f, 1.0, 0.0, -0.5, 1.0); 
-  addDataFunction(plt, g, xMin, xMax, N);  // Upward shear
-  */
-
-
-
-  //g = rsTransform1(f, 0.0, 1.0, 1.0, 0.0); 
-  //addDataFunction(plt, g, xMin, xMax, N); // Swap x,y, i.e. invert f - Nope
-
+  // Set up plotter and plot:
   plt.setRange(xMin, xMax, xMin, xMax);
   plt.addCommand("set size square");
   plt.setPixelSize(600, 600);
   plt.plot();
 
 
+  // Observations:
+  //
+  // - The "Swap x with y" does not seem to work at all. Why? That seems so simple! It should 
+  //   produce the inverse function. When debugging this, compare the algo with the explicit 
+  //   inversion functional rsInverse(f). Try if it makes a difference if we use y - f(x) or
+  //   f(x) - y in the defintion of F(x,y)
+  // - The half-circle function works only in x = -1..+1 ..which is not surprising, I guess
+  // - the x^3 function with shear needs investigation
+  //
+  //
   // ToDo:
   // 
   // - Try inverting the matrix first. I think, this should really transform the graph with the
