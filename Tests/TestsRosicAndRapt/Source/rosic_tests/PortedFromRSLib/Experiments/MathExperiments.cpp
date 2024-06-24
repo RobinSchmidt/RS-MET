@@ -4931,11 +4931,14 @@ inline std::function<T(T)> rsCrossFade3Way(
   };
 }
 
-// UNDER CONSTRUCTION - seems to work in some cases but needs more tests:
+// UNDER CONSTRUCTION - seems to work in some cases but not in others - needs more tests and 
+// refinement:
 template<class T>
 inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, T c, T d)
 {
-  // Define the bivariate function that describes the transformed graph by way of its zero set:
+  // The bivariate function F(x,y) whose zero set { (x,y) : F(x,y) = 0 } is the set of points that
+  // define the graph of the transformed function. F(x,y) is zero, whenever f(a*x+b*y) = c*x + d*y,
+  // i.e. f(x') = y'.
   std::function<T(T, T)> F = [=](T x, T y) 
   {
     T xp = a*x + b*y;   // x'
@@ -4943,7 +4946,10 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
     return yp - f(xp);
   };
 
-  // The function that we eventually will return, i.e. f transformed by the matrix:
+  // The function that we eventually will return, i.e. f transformed by the matrix. It takes as
+  // argument the x-coordinate in the old, untransformed coordinate system and returns the 
+  // corresponding y-coordinate also in the old system - but the y-coordinate belongs to the 
+  // transformed graph (ToDo: explain better).
   std::function<T(T)> h = [=](T x0)
   {
     // The univariate function of the sought value y0 with parameter x0 baked in:
@@ -4968,6 +4974,12 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
   // The function below uses a different approach - but perhaps it's equivalent?
 }
 
+// Attempts to do the same thing as rsTransform1 but the idea for the algorithm is a bit different
+// and involves scanning a parametric line. It's more complicated because it introdcues this 
+// auxiliary line whereas the algo above does not introduce such a thing. I think, in the end, the 
+// two algos may boil down to the same thing, though -> todo: verify that. Maybe if the simpler 
+// function above eventually goes into production code, keep this version here somewhere in the
+// prototypes for education and documentation purposes.
 template<class T>
 inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, T c, T d)
 {
@@ -5000,10 +5012,13 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
     T t0 = rsFindRoot(gx0, T(0));
     return t0;  // Verify!
 
-    // The code below seems to be superfluous. Returning t0 is good enough beause in the original 
-    // (x,y)-coordinate system, we have the line equation (x0,0) + t*(0,1) and with t=t0, we get 
-    // (x0,0) + (0,t0) = (x0,t0) = (x0,y0), i.e. t0 is exactly our desired y0 value because that's 
-    // how constructed it...that's not really a good explaanation...do better!
+    // The code below seems to be superfluous but I think, it may serve as a nice check and
+    // demonstration of what we are actually doing here. Returning t0 is good enough though beause 
+    // in the original (x,y)-coordinate system, we have the line equation  (x0,0) + t*(0,1)  and 
+    // with t=t0, we get  (x0,0) + (0,t0) = (x0,t0) = (x0,y0),  i.e. t0 is exactly our desired y0 
+    // value because that's how constructed it. The parameter t0 plugged into the original line 
+    // equation in the old system will give exactly the vector (x0,y0) with y0 = t0 ..that's not 
+    // really a good explaanation...do better!
 
     //// Find transformed x,y coordinates of intersection point, i.e. x0',y0', by evaluating the line
     //// equation at the found t0:
@@ -5052,26 +5067,27 @@ inline std::function<T(T)> rsRotateFunction(const std::function<T(T)>& f, T phi)
   return rsTransform1(f, c, -s, s, c);
   //return rsTransform2(f, c, -s, s, c);
 
-  // It doesn't seem to make a difference if we use rsTransform1 or rsTransform2
+  // It doesn't seem to make a difference if we use rsTransform1 or rsTransform2. If both are 
+  // equally valid, we prefer rsTransform1 because it's simpler.
 }
-
 void functionOperatorsRotation()
 {
+  // Tests the matrix-based functionals using rotation matrices as examples.
+
   using Real = double;
   using Func = std::function<Real(Real)>;
   using Vec  = std::vector<Real>;
+  Real xMin  =  -1;
+  Real xMax  =  +1;
+  int  N     = 501;
 
-  Real xMin =  -1;
-  Real xMax =  +1;
-  int  N    = 501;
-
+  // Define the function y = f(x):
   Func f;
-
   //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
   f = [=](Real x) { return x*x*x; };        // f(x) = x^3
-
   //f = [=](Real x) { return x + x*x*x; };        // f(x) = x + x^3
 
+  // Define the rotation angles:
   //Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
   //Vec angles({0}); 
   //Vec angles({0, 5, 10, 15}); 
@@ -5092,15 +5108,14 @@ void functionOperatorsRotation()
   // Hangs with f(x) = x + 0.5
 
 
+  // Create the rotated functions and plot them:
   GNUPlotter plt;
   for(size_t i = 0; i < angles.size(); i++)
   {
     Real phi = rsDegreeToRadiant(angles[i]);
     Func g   = rsRotateFunction(f, phi);
-
     addDataFunction(plt, g, xMin, xMax, N);
   }
-
   plt.setRange(-1, +1, -1, +1);
   plt.addCommand("set size square");
   plt.setPixelSize(600, 600);
@@ -5118,23 +5133,21 @@ void functionOperatorsRotation()
   // - Figure out the conditions
 }
 
-
 void functionOperatorsScaling()
 {
+  // Tests the matrix-based functionals using scaling matrices as examples.
+
   using Real = double;
   using Func = std::function<Real(Real)>;
   using Vec  = std::vector<Real>;
-
-
-  Real xMin =  -1;
-  Real xMax =  +1;
-  int  N    = 501;
-
+  Real xMin  =  -1;
+  Real xMax  =  +1;
+  int  N     = 501;
   Func f, g;
 
   //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
-  f = [=](Real x) { return x*x*x; };        // f(x) = x^3
-  //f = [=](Real x) { return sqrt(1 - x*x); };        // f(x) = sqrt(1 - x^2), half-circle
+  //f = [=](Real x) { return x*x*x; };          // f(x) = x^3
+  f = [=](Real x) { return sqrt(1 - x*x); };  // f(x) = sqrt(1 - x^2), half-circle
 
 
   GNUPlotter plt;
@@ -5156,13 +5169,10 @@ void functionOperatorsScaling()
   //g = rsTransform2(f, 2.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Scale x by 2
   //g = rsTransform2(f, 1.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale y by 2
 
-
-
   plt.setRange(-1, +1, -1, +1);
   plt.addCommand("set size square");
   plt.setPixelSize(600, 600);
   plt.plot();
-
 
   // Observations:
   //
@@ -5170,6 +5180,17 @@ void functionOperatorsScaling()
   //   transformation matrix is applied to the coordinate system, not to the graph. I think, if we
   //   want to transform the graph itself, we need to use the inverse of the transformation matrix.
 }
+
+void functionOperatorsMatrix()
+{
+  // Tests the matrix-based functionals using freely defined matrices as examples.
+
+
+
+
+}
+
+
 
 
 
