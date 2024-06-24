@@ -5110,7 +5110,10 @@ inline std::function<T(T)> rsRotateFunction(const std::function<T(T)>& f, T phi)
 {
   T c = cos(phi);
   T s = sin(phi);
-  return rsTransform2(f, c, -s, s, c);
+  return rsTransform1(f, c, -s, s, c);
+  //return rsTransform2(f, c, -s, s, c);
+
+  // It doesn't seem to make a difference if we use rsTransform1 or rsTransform2
 }
 
 void functionOperatorsRotation()
@@ -5233,8 +5236,9 @@ void functionOperators()
   // desired features from existing functions - although in practice (i.e. for production code), 
   // we'd rather construct these functions with pen and paper or with a CAS..
 
-  functionOperatorsScaling();
   functionOperatorsRotation();
+  functionOperatorsScaling();
+
 
 
   using Real = double;
