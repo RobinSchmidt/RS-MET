@@ -5010,6 +5010,28 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
   // g(x,y) = f(a*x + b*y) - d*y - c*x  for a given f and x
 }
 
+template<class T>
+inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, T c, T d)
+{
+  // The bivariate function F(x,y) whose zero set { (x,y) : F(x,y) = 0 } is the graph of our 
+  // function { (x,y) : f(x) = y }.
+  std::function<T(T, T)> F = [=](T x, T y) 
+  {
+    return y - f(x);
+  };
+
+  //
+
+
+  // Idea:
+  //
+  // For some given x0, we want to figure out where the vertical line expressed by the parametric
+  // equation (x0,0) + t*(0,1) in the old (x,y) coordinate system intersects the function graph 
+  // in the new (x',y') coordinate system. The vertical line in the old system translates to the
+  // line (a*x0, c*x0) + t*(b, d) in the new system by just applying the matrix [a,b; c,d] to the 
+  // vectors (x0,0), (0,1) in our parametric line.
+}
+
 
 
 
