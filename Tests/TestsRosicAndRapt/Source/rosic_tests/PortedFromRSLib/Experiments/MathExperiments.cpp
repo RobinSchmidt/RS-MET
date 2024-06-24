@@ -5067,10 +5067,6 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
   };
   return h;
 
-
-
-
-
   // Idea:
   //
   // For some given x0, we want to figure out where the vertical line expressed by the parametric
@@ -5080,6 +5076,50 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
   // vectors (x0,0), (0,1) in our parametric line.
 }
 
+template<class T>
+inline std::function<T(T)> rsRotate(const std::function<T(T)>& f, T phi)
+{
+  T c = cos(phi);
+  T s = sin(phi);
+  return rsTransform2(f, c, -s, s, c);
+}
+
+
+void functionOperatorsRotation()
+{
+  using Real = double;
+  using Func = std::function<Real(Real)>;
+  using Vec  = std::vector<Real>;
+
+
+  Real xMin =  -2;
+  Real xMax =  +2;
+  int  N    = 1001;
+
+  Func f;
+
+  //f = [=](Real x) { return x + 0.1; };        // f(x) = x + 0.1
+  f = [=](Real x) { return x*x*x; };        // f(x) = x^3
+
+
+  //Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
+  //Vec angles({0}); 
+  Vec angles({0, 5, 10, 15}); 
+
+
+  GNUPlotter plt;
+  for(size_t i = 0; i < angles.size(); i++)
+  {
+    Real phi = rsDegreeToRadiant(angles[i]);
+    Func g   = rsRotate(f, phi);
+
+    addDataFunction(plt, g, xMin, xMax, N);
+  }
+  plt.plot();
+
+
+
+}
 
 
 
@@ -5091,6 +5131,10 @@ void functionOperators()
   // output. We also demonstrate, how these operators can be used to construct functions with 
   // desired features from existing functions - although in practice (i.e. for production code), 
   // we'd rather construct these functions with pen and paper or with a CAS..
+
+
+  functionOperatorsRotation();
+
 
   using Real = double;
   using Func = std::function<Real(Real)>;
@@ -5104,16 +5148,20 @@ void functionOperators()
 
 
 
+
   // UNDER CONSTRUCTION - MAY NOT YET WORK - NEEDS MORE TESTS:
   //f = [=](Real x) { return x + x*x*x; };       // f(x) = x + x^3
   //f = [=](Real x) { return x*x; };       // f(x) = x^2
   f = [=](Real x) { return x*x*x; };       // f(x) = x^3
 
-
-  f = rsTransform2(f, 0.0, -1.0, +1.0, 0.0);  // Rotation by 90°
-  //f = rsTransform2(f, 0.8, -0.6, +0.6, 0.8);  // Rotation
   //f = rsTransform2(f, 1.0, 0.0, 0.0, 1.0);  // Identity
+  //f = rsTransform2(f, 2.0, 0.0, 0.0, 2.0);  // Scale uniformly by 2
+  //f = rsTransform2(f, 2.0, 0.0, 0.0, 1.0);  // Scale x-axis by 2
   //f = rsTransform2(f, 1.0, 0.0, 0.0, 2.0);  // Scale y-axis by 2
+
+  //f = rsTransform2(f, 0.0, -1.0, +1.0, 0.0);  // Rotation by 90° - looks OK
+  //f = rsTransform2(f, 0.0, +1.0, -1.0, 0.0);  // Rotation by -90° - FAILS!
+  //f = rsTransform2(f, 0.8, -0.6, +0.6, 0.8);  // Rotation..I think - looks weird but may be due to plot scaling
 
   rsPlotFunction(f, -2.0, +2.0, 1001);
   // The matrix seems to have the opposite effect of what is intended. I think, it's because we 
@@ -5122,6 +5170,7 @@ void functionOperators()
   // the y-direction by a factor of 2
   //
   // For the rotation, the effect is hard to see because the automatic scaling  of the plot.
+  // Make a test that takes a graph and rotates it by different angles - maybe 15,30,45,..,90
 
 
 

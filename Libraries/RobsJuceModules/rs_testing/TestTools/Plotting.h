@@ -449,6 +449,22 @@ inline void addDataPartially(GNUPlotter& plt,
   // another version that uses int
 }
 
+template<class T>
+inline void addDataFunction(GNUPlotter& plt, const std::function<T(T)>& f, T xMin, T xMax, int N)
+{
+  std::vector<T> x = rsRangeLinear(xMin, xMax, N);
+
+  // Maybe factor out into y = rsApply(f, x):
+  std::vector<T> y(N);
+  for(int i = 0; i < N; i++)
+    y[i] = f(x[i]);
+
+  plt.addDataArrays(N, &x[0], &y[0]);
+}
+// This function could go into class GNUPlotter itself
+
+
+
 
 
 #endif
