@@ -5158,7 +5158,7 @@ void functionOperatorsScaling()
   using Real = double;
   using Func = std::function<Real(Real)>;
   using Vec  = std::vector<Real>;
-  //using Mat  = rsMatrix2x2<Real>;
+
 
   Real xMin =  -1;
   Real xMax =  +1;
@@ -5168,25 +5168,19 @@ void functionOperatorsScaling()
 
   //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
   //f = [=](Real x) { return x*x*x; };        // f(x) = x^3
-
-  f = [=](Real x) { return sqrt(1 - x*x); };        // f(x) = sqrt(1 - x^2)
+  f = [=](Real x) { return sqrt(1 - x*x); };        // f(x) = sqrt(1 - x^2), half-circle
 
 
   GNUPlotter plt;
 
   g = rsTransform2(f, 1.0, 0.0, 0.0, 1.0);    // Identity
   addDataFunction(plt, g, xMin, xMax, N);
-
   g = rsTransform2(f, 2.0, 0.0, 0.0, 2.0);    // Scale all by 2
   addDataFunction(plt, g, xMin, xMax, N);
-
   g = rsTransform2(f, 2.0, 0.0, 0.0, 1.0);    // Scale x by 2
   addDataFunction(plt, g, xMin, xMax, N);
-
   g = rsTransform2(f, 1.0, 0.0, 0.0, 2.0);    // Scale y by 2
   addDataFunction(plt, g, xMin, xMax, N);
-
-
 
   plt.setRange(-1, +1, -1, +1);
   plt.addCommand("set size square");
@@ -5194,11 +5188,11 @@ void functionOperatorsScaling()
   plt.plot();
 
 
-
-  //Mat A;
-  //A = Mat({1,0,0,1});  // Identity
-
-
+  // Observations:
+  //
+  // - The graphs are actually scaled by the reciprocals of the scaling factors. It's because the
+  //   transformation matrix is applied to the coordinate system, not to the graph. I think, if we
+  //   want to transform the graph itself, we need to use the inverse of the transformation matrix.
 }
 
 
