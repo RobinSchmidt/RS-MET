@@ -4931,100 +4931,36 @@ inline std::function<T(T)> rsCrossFade3Way(
   };
 }
 
-// UNDER CONSTRUCTION - does not yet work - move to ScratchPad.cpp 
+// UNDER CONSTRUCTION - seems to work in some cases but needs more tests:
 template<class T>
 inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, T c, T d)
 {
-  //return f; // preliminary
-
-  //std::function<T(T)> g, h;
-
   // Define the bivariate function that describes the transformed graph by way of its zero set:
   std::function<T(T, T)> F = [=](T x, T y) 
   {
-    //return f(a*x + b*y) - d*y - c*x;
-
     T xp = a*x + b*y;   // x'
     T yp = c*x + d*y;   // y'
     return yp - f(xp);
   };
-  // Check, if this is really correct
-
 
   // The function that we eventually will return, i.e. f transformed by the matrix:
   std::function<T(T)> h = [=](T x0)
   {
-    // The univariate function g of the sought value y0 with parameter x0 baked in:
+    // The univariate function of the sought value y0 with parameter x0 baked in:
     std::function<T(T)> Fx0 = [=](T y0)
     {
       return F(x0, y0);
     };
 
-    // Find the parameter t0 at which the line intersects the function:
+    // Find the value y0 at which the univariate function of y0 with constant x0 baked in returns 
+    // zero:
     T y0 = rsFindRoot(Fx0, T(0));
-    return y0;  // Verify!
+    return y0; 
   };
   return h;
 
-
-
-
-
-  //std::function<T(T)> g;
-  //g = [=](T x) 
-  //{
-  //  // Define univariate function in terms of given x and the bivariate F as the function that 
-  //  // assigns x to the given value and takes y as its variable:
-  //  std::function<T(T)> h;
-  //  h = [=](T y)
-  //  {
-  //    return F(x, y);
-  //  };
-
-  //  // Find the value of y that lets h(y) return zero:
-
-  //  // Hangs:
-  //  //T yL = findLeftBracket( h, 0.0);
-  //  //T yR = findRightBracket(h, 0.0);
-
-  //  // Preliminary:
-  //  T yL = -100;
-  //  T yR = +100;
-
-  //  T y  = rsRootFinder<T>::bisection(h, yL, yR, 0); // use better algo
-  //  return y;
-  //};
-  //return g;
-
-
-
-  //// Function to find root of:
-  //g = [=](T x) {
-  //  T y = f(x);
-  //  return f(a*x + b*y) - d*y - c*x;
-  //};
-  //// Idea: If y = f(x) and y' = f(x') and x' = ax + by, y' = cx + dy then we must also have
-  //// cx + dy = f(ax + by)  or  f(ax + by) - cx - dy = 0. The idea is now to find the y that 
-  //// satisfies this equation ...not sure, if that's the right approach.
-  //// ...I think, it's wwrong to produce a preliminary y as f(x). We porbably need to define a
-  //// bivariate function g(x,y)
-
-  //h = [=](T x) {
-  //  // wrap these 3 lines into rsRootFinder::findRoot(f, y)
-  //  T xL = findLeftBracket( g, 0.0);
-  //  T xR = findRightBracket(g, 0.0);
-  //  T y = rsRootFinder<T>::bisection(g, xL, xR, 0); // use better algo
-  //  return y;
-  //};
-  //return h;
-  //// Nah - that seems to be all wrong!
-
-  //return [=](T x)
-  //{
-  //  T y = f(x);
-  //  return c*x + d*y;  // First shot - not sure! ...nah! is wrong!
-  //};
-
+  // ToDo:
+  //
   // Maybe write a general function that takes a bivariate equation F(x,y) = 0 and a function that
   // finds y when x = x0 is given by e.g. bisection. We can define a univariate function 
   // g(y) = F(x0, y) and then throw the root-finder at g. This problem here can then be seen as a 
@@ -5103,6 +5039,9 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
   //
   // I think, the transformation of the coordinate system leads to an inverse transofrmation of the
   // function graph?
+  //
+  // I think, at the end, the algorithm boils down to the same thing as in rsTransform1, but here 
+  // we seem to do it in a more complicated way.
 }
 
 template<class T>
@@ -5128,8 +5067,8 @@ void functionOperatorsRotation()
 
   Func f;
 
-  f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
-  //f = [=](Real x) { return x*x*x; };        // f(x) = x^3
+  //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
+  f = [=](Real x) { return x*x*x; };        // f(x) = x^3
 
   //f = [=](Real x) { return x + x*x*x; };        // f(x) = x + x^3
 
@@ -5138,7 +5077,7 @@ void functionOperatorsRotation()
   //Vec angles({0, 5, 10, 15}); 
   //Vec angles({0, 10, 20, 30, 40, 50, 60}); 
 
-  //Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90});
+  Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90});
   // OK for f(x) = x + 0.5, x^3, x + x^3
 
   //Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150});
@@ -5146,7 +5085,7 @@ void functionOperatorsRotation()
   // to fail when the rotated grpah doesn't represent a function anymore, i.e. when there are more
   // that one intersection point with a vertical line...I think
 
-  Vec angles({0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180});
+  //Vec angles({0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180});
   // With f(x) = x + 0.5, it looks ggod up to 120°, I think
 
   //Vec angles({0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360}); 
@@ -5207,6 +5146,7 @@ void functionOperatorsScaling()
   g = rsTransform1(f, 2.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale by 2
   g = rsTransform1(f, 2.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Scale x by 2
   g = rsTransform1(f, 1.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale y by 2
+  //g = rsTransform1(f, 1.0, 1.0, 0.0, 0.5); addDataFunction(plt, g, xMin, xMax, N); // Shear - Nope!
 
   // Using rsTransform2:
   //g = rsTransform2(f, 1.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Identity
@@ -5236,8 +5176,11 @@ void functionOperators()
   // desired features from existing functions - although in practice (i.e. for production code), 
   // we'd rather construct these functions with pen and paper or with a CAS..
 
+
   functionOperatorsRotation();
   functionOperatorsScaling();
+
+
 
 
 
