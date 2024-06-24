@@ -5042,38 +5042,44 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
     T t0 = rsFindRoot(gx0, T(0));
     return t0;  // Verify!
 
+    // The code below seems to be superfluous. Returning t0 is good enough beause in the original 
+    // (x,y)-coordinate system, we have the line equation (x0,0) + t*(0,1) and with t=t0, we get 
+    // (x0,0) + (0,t0) = (x0,t0) = (x0,y0), i.e. t0 is exactly our desired y0 value because that's 
+    // how constructed it...that's not really a good explaanation...do better!
 
-    /*
-    // Find transformed x,y coordinates of intersection point, i.e. x0',y0', by evaluating the line
-    // equation at the found t0:
-    T x0p = a*x0 + t0*b;
-    T y0p = c*x0 + t0*d;
+    //// Find transformed x,y coordinates of intersection point, i.e. x0',y0', by evaluating the line
+    //// equation at the found t0:
+    //T x0p = a*x0 + t0*b;
+    //T y0p = c*x0 + t0*d;
 
-    // But this is actually y' - we need to transform to y by using the lower row of the inverse
-    // of A...
+    //// But this is actually y' - we need to transform to y by using the lower row of the inverse
+    //// of A...
 
-    rsMatrix2x2<T> A(a,b,c,d);
-    rsMatrix2x2<T> Ai = A.getInverse();
-    T y0 = Ai.c * x0p  +  Ai.d *y0p;
-    // Simplify this to get away without using rsMatrix2x2
+    //rsMatrix2x2<T> A(a,b,c,d);
+    //rsMatrix2x2<T> Ai = A.getInverse();
+    //T y0 = Ai.c * x0p  +  Ai.d *y0p;
+    //// Simplify this to get away without using rsMatrix2x2
 
-    // Test:
-    T x0r = Ai.a * x0p  +  Ai.b *y0p;  // Should be equal to x0, I think
+    //// Test:
+    //T x0r = Ai.a * x0p  +  Ai.b *y0p;  // Should be equal to x0, I think
 
-    return y0;
-    */
-
-    // I think, we could just return t0
+    //return y0;
   };
   return h;
 
   // Idea:
   //
-  // For some given x0, we want to figure out where the vertical line expressed by the parametric
-  // equation (x0,0) + t*(0,1) in the old (x,y) coordinate system intersects the function graph 
-  // in the new (x',y') coordinate system. The vertical line in the old system translates to the
-  // line (a*x0, c*x0) + t*(b, d) in the new system by just applying the matrix [a,b; c,d] to the 
-  // vectors (x0,0), (0,1) in our parametric line.
+  // For some given x0 located on the original x-axis, we want to figure out where the vertical 
+  // line expressed by the parametric equation (x0,0) + t*(0,1) in the old (x,y) coordinate system
+  // intersects the function graph in the new (x',y') coordinate system. The vertical line in the 
+  // old system translates to the line (a*x0, c*x0) + t*(b, d) in the new system by just applying 
+  // the matrix [a,b; c,d] to the vectors (x0,0), (0,1) in our parametric line. Now that we have a 
+  // line equation in the new system, we can scan long this line to find the parameter value t, 
+  // where F(x'(t),y'(t)) = 0. This is our t-value where the line intersects the new, transformed 
+  // graph. Let's call the value t0. As soon as we have found t0, we can compute its coordinates
+  // in the (x',y')-system as x0' = a*x0 + t0*b, y0' = c*x0 + t0*d. We could then transform this 
+  // point into the old system using the inverse of A. However - it's actually simpler than that:
+  // The x-coordinate in the old system is just x0. The 
 }
 
 template<class T>
@@ -5098,14 +5104,33 @@ void functionOperatorsRotation()
 
   Func f;
 
-  //f = [=](Real x) { return x + 0.1; };        // f(x) = x + 0.1
-  f = [=](Real x) { return x*x*x; };        // f(x) = x^3
+  //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
+  //f = [=](Real x) { return x*x*x; };        // f(x) = x^3
+
+  f = [=](Real x) { return x + x*x*x; };        // f(x) = x + x^3
 
 
-  Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
+  //Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
   //Vec angles({0}); 
   //Vec angles({0, 5, 10, 15}); 
   //Vec angles({0, 10, 20, 30, 40, 50, 60}); 
+
+  //Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90});
+  // OK for f(x) = x + 0.5, x^3, x + x^3
+
+  Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150});
+  // OK for x + x^3... but 150° would fail. It just produces a vertical line. I think, it starts
+  // to fail when the rotated grpah doesn't represent a function anymore, i.e. when there are more
+  // that one intersection point with a vertical line...I think
+
+
+  //Vec angles({0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180});
+  // With f(x) = x + 0.5, it looks ggod up to 90°, I think
+
+
+  //Vec angles({0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360}); 
+  // Hangs with f(x) = x + 0.5
+
 
 
   GNUPlotter plt;
