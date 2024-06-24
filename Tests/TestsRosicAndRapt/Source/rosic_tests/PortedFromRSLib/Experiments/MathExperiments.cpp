@@ -5133,8 +5133,8 @@ void functionOperatorsScaling()
   Func f, g;
 
   //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
-  //f = [=](Real x) { return x*x*x; };        // f(x) = x^3
-  f = [=](Real x) { return sqrt(1 - x*x); };        // f(x) = sqrt(1 - x^2), half-circle
+  f = [=](Real x) { return x*x*x; };        // f(x) = x^3
+  //f = [=](Real x) { return sqrt(1 - x*x); };        // f(x) = sqrt(1 - x^2), half-circle
 
 
   GNUPlotter plt;
@@ -5146,13 +5146,17 @@ void functionOperatorsScaling()
   g = rsTransform1(f, 2.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale by 2
   g = rsTransform1(f, 2.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Scale x by 2
   g = rsTransform1(f, 1.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale y by 2
+  // Some non-scaling trafos:
   //g = rsTransform1(f, 1.0, 1.0, 0.0, 0.5); addDataFunction(plt, g, xMin, xMax, N); // Shear - Nope!
+  //g = rsTransform1(f, 0.0, 1.0, 1.0, 0.0); addDataFunction(plt, g, xMin, xMax, N); // Swap x,y, i.e. invert f
 
   // Using rsTransform2:
   //g = rsTransform2(f, 1.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Identity
   //g = rsTransform2(f, 2.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale by 2
   //g = rsTransform2(f, 2.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Scale x by 2
   //g = rsTransform2(f, 1.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale y by 2
+
+
 
   plt.setRange(-1, +1, -1, +1);
   plt.addCommand("set size square");
