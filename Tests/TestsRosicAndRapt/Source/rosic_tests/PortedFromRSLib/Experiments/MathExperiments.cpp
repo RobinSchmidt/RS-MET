@@ -5148,7 +5148,7 @@ void functionOperatorsScaling()
   g = rsTransform1(f, 1.0, 0.0, 0.0, 2.0); addDataFunction(plt, g, xMin, xMax, N); // Scale y by 2
   // Some non-scaling trafos:
   //g = rsTransform1(f, 1.0, 1.0, 0.0, 0.5); addDataFunction(plt, g, xMin, xMax, N); // Shear - Nope!
-  //g = rsTransform1(f, 0.0, 1.0, 1.0, 0.0); addDataFunction(plt, g, xMin, xMax, N); // Swap x,y, i.e. invert f
+  //g = rsTransform1(f, 0.0, 1.0, 1.0, 0.0); addDataFunction(plt, g, xMin, xMax, N); // Swap x,y, i.e. invert f - Nope
 
   // Using rsTransform2:
   //g = rsTransform2(f, 1.0, 0.0, 0.0, 1.0); addDataFunction(plt, g, xMin, xMax, N); // Identity
