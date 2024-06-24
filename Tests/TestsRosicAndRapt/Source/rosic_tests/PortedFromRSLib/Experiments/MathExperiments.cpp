@@ -5092,8 +5092,8 @@ void functionOperatorsRotation()
   using Vec  = std::vector<Real>;
 
 
-  Real xMin =  -2;
-  Real xMax =  +2;
+  Real xMin =  -1;
+  Real xMax =  +1;
   int  N    = 1001;
 
   Func f;
@@ -5104,7 +5104,8 @@ void functionOperatorsRotation()
 
   //Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
   //Vec angles({0}); 
-  Vec angles({0, 5, 10, 15}); 
+  //Vec angles({0, 5, 10, 15}); 
+  Vec angles({0, 10, 20, 30, 40, 50, 60}); 
 
 
   GNUPlotter plt;
@@ -5115,6 +5116,10 @@ void functionOperatorsRotation()
 
     addDataFunction(plt, g, xMin, xMax, N);
   }
+
+  plt.setRange(-1, +1, -1, +1);
+  plt.addCommand("set size square");
+  plt.setPixelSize(800, 800);
   plt.plot();
 
 
