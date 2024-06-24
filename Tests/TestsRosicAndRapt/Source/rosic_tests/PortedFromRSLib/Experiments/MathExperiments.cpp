@@ -5094,7 +5094,7 @@ void functionOperatorsRotation()
 
   Real xMin =  -1;
   Real xMax =  +1;
-  int  N    = 1001;
+  int  N    = 501;
 
   Func f;
 
@@ -5102,10 +5102,10 @@ void functionOperatorsRotation()
   f = [=](Real x) { return x*x*x; };        // f(x) = x^3
 
 
-  //Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
+  Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
   //Vec angles({0}); 
   //Vec angles({0, 5, 10, 15}); 
-  Vec angles({0, 10, 20, 30, 40, 50, 60}); 
+  //Vec angles({0, 10, 20, 30, 40, 50, 60}); 
 
 
   GNUPlotter plt;
@@ -5119,7 +5119,7 @@ void functionOperatorsRotation()
 
   plt.setRange(-1, +1, -1, +1);
   plt.addCommand("set size square");
-  plt.setPixelSize(800, 800);
+  plt.setPixelSize(600, 600);
   plt.plot();
 
 
