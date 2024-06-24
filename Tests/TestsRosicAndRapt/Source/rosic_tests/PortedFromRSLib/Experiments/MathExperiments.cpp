@@ -5185,9 +5185,48 @@ void functionOperatorsMatrix()
 {
   // Tests the matrix-based functionals using freely defined matrices as examples.
 
+  using Real = double;
+  using Func = std::function<Real(Real)>;
+  using Vec  = std::vector<Real>;
+  Real xMin  =  -1;
+  Real xMax  =  +1;
+  int  N     = 501;
+  Func f, g;
+
+  f = [=](Real x) { return sqrt(1 - x*x); };  // f(x) = sqrt(1 - x^2), half-circle
+
+  GNUPlotter plt;
+
+  g = rsTransform1(f, 1.0, 0.0, 0.0, 1.0); 
+  addDataFunction(plt, g, xMin, xMax, N); // Identity
+
+  g = rsTransform1(f, 1.0, +0.5, 0.0, 1.0); 
+  addDataFunction(plt, g, xMin, xMax, N); // Leftward shear
+
+  g = rsTransform1(f, 1.0, -0.5, 0.0, 1.0); 
+  addDataFunction(plt, g, xMin, xMax, N); // Rightward shear
+
+  g = rsTransform1(f, 1.0, 0.0, +0.5, 1.0); 
+  addDataFunction(plt, g, xMin, xMax, N);  // Downward shear
+
+  g = rsTransform1(f, 1.0, 0.0, -0.5, 1.0); 
+  addDataFunction(plt, g, xMin, xMax, N);  // Upward shear
 
 
 
+  //g = rsTransform1(f, 0.0, 1.0, 1.0, 0.0); 
+  //addDataFunction(plt, g, xMin, xMax, N); // Swap x,y, i.e. invert f - Nope
+
+  plt.setRange(-1, +1, -1, +1);
+  plt.addCommand("set size square");
+  plt.setPixelSize(600, 600);
+  plt.plot();
+
+
+  // ToDo:
+  // 
+  // - Try inverting the matrix first. I think, this should really transform the graph with the
+  //   matrix
 }
 
 
@@ -5202,6 +5241,7 @@ void functionOperators()
   // we'd rather construct these functions with pen and paper or with a CAS..
 
 
+  functionOperatorsMatrix();
   functionOperatorsRotation();
   functionOperatorsScaling();
 
