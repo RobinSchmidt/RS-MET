@@ -5076,6 +5076,9 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
   // in the (x',y')-system as x0' = a*x0 + t0*b, y0' = c*x0 + t0*d. We could then transform this 
   // point into the old system using the inverse of A. However - it's actually simpler than that:
   // The x-coordinate in the old system is just x0 and the y-coordinate is just t0.
+  //
+  // I think, the transformation of the coordinate system leads to an inverse transofrmation of the
+  // function graph?
 }
 
 template<class T>
@@ -5091,7 +5094,6 @@ void functionOperatorsRotation()
   using Real = double;
   using Func = std::function<Real(Real)>;
   using Vec  = std::vector<Real>;
-
 
   Real xMin =  -1;
   Real xMax =  +1;
@@ -5151,6 +5153,56 @@ void functionOperatorsRotation()
 }
 
 
+void functionOperatorsScaling()
+{
+  using Real = double;
+  using Func = std::function<Real(Real)>;
+  using Vec  = std::vector<Real>;
+  //using Mat  = rsMatrix2x2<Real>;
+
+  Real xMin =  -1;
+  Real xMax =  +1;
+  int  N    = 501;
+
+  Func f, g;
+
+  //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
+  //f = [=](Real x) { return x*x*x; };        // f(x) = x^3
+
+  f = [=](Real x) { return sqrt(1 - x*x); };        // f(x) = sqrt(1 - x^2)
+
+
+  GNUPlotter plt;
+
+  g = rsTransform2(f, 1.0, 0.0, 0.0, 1.0);    // Identity
+  addDataFunction(plt, g, xMin, xMax, N);
+
+  g = rsTransform2(f, 2.0, 0.0, 0.0, 2.0);    // Scale all by 2
+  addDataFunction(plt, g, xMin, xMax, N);
+
+  g = rsTransform2(f, 2.0, 0.0, 0.0, 1.0);    // Scale x by 2
+  addDataFunction(plt, g, xMin, xMax, N);
+
+  g = rsTransform2(f, 1.0, 0.0, 0.0, 2.0);    // Scale y by 2
+  addDataFunction(plt, g, xMin, xMax, N);
+
+
+
+  plt.setRange(-1, +1, -1, +1);
+  plt.addCommand("set size square");
+  plt.setPixelSize(600, 600);
+  plt.plot();
+
+
+
+  //Mat A;
+  //A = Mat({1,0,0,1});  // Identity
+
+
+}
+
+
+
 void functionOperators()
 {
   // For testing various operators that take a function as input and return another functions as 
@@ -5158,7 +5210,7 @@ void functionOperators()
   // desired features from existing functions - although in practice (i.e. for production code), 
   // we'd rather construct these functions with pen and paper or with a CAS..
 
-
+  functionOperatorsScaling();
   functionOperatorsRotation();
 
 
