@@ -412,6 +412,13 @@ https://www.desmos.com/calculator/qnueorgb0z
 Maybe define the length as two times the length between minimum and maximum. These shapes could be 
 useful for some sort of time-scale transform.
 
+The inverse function of f(x) = x + x^3:
+https://www.wolframalpha.com/input?i=inverse+function+of+x+%2B+x%5E3
+could be useful as a function that has an s-shape but is unbounded, but grows slowly - namely, 
+asymptotically like the cube-root. Maybe such a behavior can sometimes be useful for stabilizing
+recursive systems without setting hard saturation limits. asinh would grow even slower 
+(logarithmically). We could also consider inverses of x + x^n where n is any odd integer
+
 
 Maybe implement these in C++
 https://easings.net/

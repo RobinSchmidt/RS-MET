@@ -58,6 +58,19 @@ Ideas:
 
 - g(x) = (f(x-a) + f(x+a)) / 2
 
+- What if we want to apply an arbitrary linear transform to the graph of a function. We start with
+  a graph of y = f(x). Now we take the so constructed set of points (x,y) and apply a matrix 
+  A = [a,b; c,d]. We get a new set of points (x',y') where (x',y') = A * (x,y), i.e. 
+  x' = ax + by, y' = cx + dy. We have y = f(x) and y' = f(x') - but how could we express this new 
+  graph as a function of the original input variable x? We want to input our *original* x and want 
+  as output the *transformed* y'. Can we just compute y = f(x) and return cx + dy? Or maybe we 
+  should express the function as a parameteric curve? Or as an implcit equation? Maybe try to 
+  figure it out with a rotation first.
+  https://math.stackexchange.com/questions/17246/is-there-a-way-to-rotate-the-graph-of-a-function
+  https://www.youtube.com/watch?v=h9OWnuarYuc
+  ...hmmm...I think, we just need to solve cx + dy = f(ax + by) for y. It's an implicit equation 
+  for y. Maybe we could try fixed point iteration or bisection. But that would give us y'. But when
+  we have y', we could...hmm...dunno
 
 
 */
