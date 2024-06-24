@@ -5020,7 +5020,54 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
     return y - f(x);
   };
 
-  //
+  // The univariate function g(t) with x0 as constant parameter that gives our parametric line in
+  // the new coordinate system:
+  std::function<T(T, T)> g = [=](T t, T x0)
+  {
+    T x = a*x0 + t*b;
+    T y = c*x0 + t*d;
+    return F(x, y);
+  };
+
+  // The function that we eventually will return, i.e. f transformed by the matrix...
+  std::function<T(T)> h = [=](T x0)
+  {
+    // The univariate function g with parameter x0 baked in:
+    std::function<T(T)> gx0 = [=](T t)
+    {
+      return g(t, x0);
+    };
+
+    // Find the parameter t0 at which the line intersects the function:
+    T t0 = rsFindRoot(gx0, T(0)); 
+
+    // Find transformed x,y coordinates of intersection point, i.e. x0',y0', by evaluating the line
+    // equation at the found t0:
+    T x0p = a*x0 + t0*b;
+    T y0p = c*x0 + t0*d;
+
+
+
+
+    // But this is actually y' - we need to transform to y by using the lower row of the inverse
+    // of A...
+
+    rsMatrix2x2<T> A(a,b,c,d);
+    rsMatrix2x2<T> Ai = A.getInverse();
+    T y0 = Ai.c * x0p  +  Ai.d *y0p;
+    // Simplify this to get away without using rsMatrix2x2
+
+    // Test:
+    T x0r = Ai.a * x0p  +  Ai.b *y0p;  // Should be equal to x0, I think
+
+
+
+    return y0;
+  };
+  return h;
+
+
+
 
 
   // Idea:
@@ -5057,9 +5104,10 @@ void functionOperators()
 
 
   // DOES NOT YET WORK:
-  //f = [=](Real x) { return x + x*x*x; };       // f(x) = x + x^3
-  f = [=](Real x) { return x*x; };       // f(x) = x^2
-  f = rsTransform1(f, 0.8, -0.6, 0.8, 0.6);    
+  f = [=](Real x) { return x + x*x*x; };       // f(x) = x + x^3
+  //f = [=](Real x) { return x*x; };       // f(x) = x^2
+  //f = rsTransform2(f, 0.8, -0.6, +0.6, 0.8);
+  f = rsTransform2(f, 1.0, 0.0, 0.0, 1.0); 
   rsPlotFunction(f, -2.0, +2.0, 1001);
 
 
