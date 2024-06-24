@@ -5188,8 +5188,8 @@ void functionOperatorsMatrix()
   using Real = double;
   using Func = std::function<Real(Real)>;
   using Vec  = std::vector<Real>;
-  Real xMin  =  -1;
-  Real xMax  =  +1;
+  Real xMin  =  -1.5;
+  Real xMax  =  +1.5;
   int  N     = 501;
   Func f, g;
 
@@ -5197,6 +5197,26 @@ void functionOperatorsMatrix()
 
   GNUPlotter plt;
 
+  // Helper function to add transformed function with trafo coeffs a,b,c,d to the plot:
+  auto add = [&](Real a, Real b, Real c, Real d)
+  {
+    Func g = rsTransform1(f, a, b, c, d); 
+    addDataFunction(plt, g, xMin, xMax, N);
+  };
+
+
+
+  add(1.0,  0.0,  0.0, 1.0);  // Identity
+  //add(1.0, +0.5,  0.0, 1.0);  // Leftward shear
+  //add(1.0, -0.5,  0.0, 1.0);  // Rightward shear
+  //add(1.0,  0.0, +0.5, 1.0);  // Downward shear
+  //add(1.0,  0.0, -0.5, 1.0);  // Upward shear
+
+  add(0.0,  1.0,  1.0, 0.0);  // Swap x,y, i.e. invert f - Nope
+
+
+
+  /*
   g = rsTransform1(f, 1.0, 0.0, 0.0, 1.0); 
   addDataFunction(plt, g, xMin, xMax, N); // Identity
 
@@ -5211,13 +5231,14 @@ void functionOperatorsMatrix()
 
   g = rsTransform1(f, 1.0, 0.0, -0.5, 1.0); 
   addDataFunction(plt, g, xMin, xMax, N);  // Upward shear
+  */
 
 
 
   //g = rsTransform1(f, 0.0, 1.0, 1.0, 0.0); 
   //addDataFunction(plt, g, xMin, xMax, N); // Swap x,y, i.e. invert f - Nope
 
-  plt.setRange(-1, +1, -1, +1);
+  plt.setRange(xMin, xMax, xMin, xMax);
   plt.addCommand("set size square");
   plt.setPixelSize(600, 600);
   plt.plot();
