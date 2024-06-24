@@ -20,13 +20,14 @@ Basic transformations:
   g(x) = (f(x) + f(-x)) / 2            Extract symmetric (aka even) part
   g(x) = (f(x) - f(-x)) / 2            Extract antisymmetric (aka odd) part
   g(x) = 1/f(x)                        Reciprocal function
-  g(x) = f(1/x)                        Turns the fucntion "inside out"
+  g(x) = f(1/x)                        Turns the function "inside out"
+  g(x) = 1/f(1/x)                      Reciprocal of inside-out
   g(x) = f^-1 (x)                      Inverse function
   g(x) = f^n (x)                       Iterated function (n times)
-  g(x) = f^(n) (x)                     n-th derivative (notaion a bit ambiuguous)
+  g(x) = f^(n) (x)                     n-th derivative (notation a bit ambiguous)
 
 
-Functionals involving a sigmoid function s(x) with range 0..1 like the logistic function:
+Functionals involving a fixed sigmoid function s(x) with range 0..1 like the logistic function:
 
   s(x) = 1 / (1 + exp(-x)) = exp(x) / (1 + exp(x)) = 1 - s(-x)
 
