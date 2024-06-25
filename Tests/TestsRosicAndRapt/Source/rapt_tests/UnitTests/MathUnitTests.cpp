@@ -454,6 +454,8 @@ void guessRootBrackets(const std::function<float(float)>& f,
 }
 // Needs tests and when it works as it should, it can be moved into rsRootFinder
 // use pointers for output variables
+// Maybe use an iteration counter and a maxIts variable to prevent hangs. Maybe return the number of 
+// iterations
 
 
 bool testBracketGuessing()
@@ -478,7 +480,8 @@ bool testBracketGuessing()
   guessRootBrackets(f, 2.f, xL, xR, 8.f); ok &= xL == 5.f && xR == 8.f;
 
 
-  // ToDo: use an increasing function as well
+  // ToDo: use an increasing function as well - and maybe a constant one - and one that is constant
+  // in some interval. Maybe also try wiggly ones
 
 
 
