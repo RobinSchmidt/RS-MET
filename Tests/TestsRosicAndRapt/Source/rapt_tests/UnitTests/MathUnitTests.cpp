@@ -364,6 +364,9 @@ bool interpolationUnitTest()
 
 
 
+
+
+
 // For testing the root-finder, we use a 3rd oder polynomial as example function with roots at
 // -1, +1, +2. We define a function and a functor that implements that function in order to pass it
 // to the root finder:
@@ -398,6 +401,70 @@ bool testRootFinding(std::function<float(float)>& func, float xL, float xR, floa
 // parameter - maybe the root-finder itself also needs a tolerance parameter...or maybe two - one
 // for dx and one for dy...but maybe that should be optional for convenience
 
+
+// UNDER CONSTRUCTION - function to gues an initial bracket for a root
+void guessRootBrackets(const std::function<float(float)>& f, 
+  float y, float& xL, float& xR, float x0 = 0.f)
+{
+  xL = xR = x0;       // Init bracket to degenrate interval [x0, x0]
+
+  float yL, yR;
+  yL = yR = f(x0);
+
+  float dR, dL;       // Expansion deltas
+  dL = dR = 1.f;
+
+  // Helper functions to expand the current interval:
+  auto expandRight = [&]()
+  {
+    xR += dR;
+    dR *= 2.f;
+    yR  = f(xR);
+  };
+  auto expandLeft = [&]()
+  {
+    xL -= dL;
+    dL *= 2.f;
+    yL  = f(xL);
+  };
+
+  // The loop that progressively expands the interval to the left or right until yL <= y <= yR or
+  // yL => y => yR. ToDo: verify, if the <= and >= are correct or if it is < and >.
+  while(true)
+  {
+    if(yL < yR)              // Function f goes upward inside current interval
+    { 
+      if(yR < y)             // yR is too small
+        expandRight();       //   ..so let's expand right where yR gets bigger
+      else if(yL > y)        // yL is too big
+        expandLeft();        //   ..so let's expand left where yL gets smaller
+      else
+        break;               // We have reached yL <= y <= yR
+    }
+    else                     // yL >= yR so f goes down or is constant inside current interval.
+    {
+      if(yR > y)             // yR is too big
+        expandRight();       //   ..so let's expand right where yR gets smaller
+      else if(yL < y)        // yL is too small
+        expandLeft();        //   ..so let's expand left where yL gets bigger
+      else
+        break;               // We have reached yL >= y >= yR
+    }
+  }
+}
+// Needs tests and when it works as it should, it can be moved into rsRootFinder
+
+
+bool testBracketGuessing()
+{
+  bool ok = true;
+
+
+
+  return ok;
+}
+
+
 bool rootFinderUnitTest()
 {
   bool r = true;                 // Test result
@@ -407,6 +474,8 @@ bool rootFinderUnitTest()
   using RF = rsRootFinder<float>;
 
   //float root;
+
+  r &= testBracketGuessing();
 
 
 
