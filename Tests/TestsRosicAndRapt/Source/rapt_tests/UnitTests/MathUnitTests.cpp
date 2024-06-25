@@ -453,7 +453,7 @@ void guessRootBrackets(const std::function<float(float)>& f,
   }
 }
 // Needs tests and when it works as it should, it can be moved into rsRootFinder
-// use pointers for output variables
+// use pointers for output variables, make y optionla (default to 0)
 // Maybe use an iteration counter and a maxIts variable to prevent hangs. Maybe return the number of 
 // iterations
 
@@ -487,9 +487,9 @@ bool testBracketGuessing()
   auto checkFunc = [&](const Func& f)
   {
     bool ok = true;
-    for(int i = -9; i < +9; i++)    // evaluation points
+    for(int i = -9; i < +9; i++)    // Evaluation points
     {
-      for(int j = -9; j < +9; j++)  // start values
+      for(int j = -9; j < +9; j++)  // Start values
       {
         ok &= checkRoot(f, float(i), float(j));
       }
