@@ -4817,7 +4817,7 @@ T rsFindRoot(const std::function<T(T)>& f, T y)
   // New:
   using RF = RAPT::rsRootFinder<T>;
   T xL, xR;
-  RF::findBrackets(f, &xL, &xR, y);
+  RF::findBracket(f, &xL, &xR, y);
   return RF::bisection(f, xL, xR, y); // use better algo
 
   //// Old:
@@ -5108,8 +5108,8 @@ void functionOperatorsRotation()
   // Define the function y = f(x):
   Func f;
   //f = [=](Real x) { return x + 0.5; };        // f(x) = x + 0.5
-  f = [=](Real x) { return x*x*x; };        // f(x) = x^3
-  //f = [=](Real x) { return x + x*x*x; };        // f(x) = x + x^3
+  //f = [=](Real x) { return x*x*x; };        // f(x) = x^3
+  f = [=](Real x) { return x + x*x*x; };        // f(x) = x + x^3
 
   // Define the rotation angles:
   //Vec angles({0, 15, 30, 45, 60, 75, 90});  // Rotation angles in degrees
@@ -5117,10 +5117,10 @@ void functionOperatorsRotation()
   //Vec angles({0, 5, 10, 15}); 
   //Vec angles({0, 10, 20, 30, 40, 50, 60}); 
 
-  Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90});
+  //Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90});
   // OK for f(x) = x + 0.5, x^3, x + x^3
 
-  //Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150});
+  Vec angles({0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150});
   // OK for x + x^3... but 150° would fail. It just produces a vertical line. I think, it starts
   // to fail when the rotated graph doesn't represent a function anymore, i.e. when there are more
   // that one intersection point with a vertical line...I think
@@ -5151,10 +5151,12 @@ void functionOperatorsRotation()
   // - Only under certain circumstances will the rotated graph actually represent a function. The 
   //   allowed angles will depend on the function.
   //
-  //
-  // ToDo:
-  //
-  // - Figure out the conditions
+  // - When the rotation is such that the resulting graph does not represent a function anymore, 
+  //   the result is a graph with discontinuities. The rotated pseudo-function selects one of the
+  //   branches. Which branch it is depends on the details of the implementation of the root-finder
+  //   algorithm that is used internally. This behavior is expected and there's nothing we can do
+  //   about it when we enforce the result to be a function - which we do, because we are dealing
+  //   with functionals here, i.e. mappings from functions to functions.
 }
 
 void functionOperatorsScaling()
@@ -5275,8 +5277,9 @@ void functionOperators()
   // we'd rather construct these functions with pen and paper or with a CAS..
 
 
-  functionOperatorsMatrix();
+
   functionOperatorsRotation();
+  functionOperatorsMatrix();
   functionOperatorsScaling();
 
 

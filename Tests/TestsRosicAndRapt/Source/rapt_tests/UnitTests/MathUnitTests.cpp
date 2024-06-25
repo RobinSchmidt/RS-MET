@@ -416,7 +416,7 @@ bool testBracketGuessing()
     float xL, xR;
 
     //guessRootBrackets(f, &xL, &xR, y0, start);
-    RF::findBrackets(f, &xL, &xR, y0, start);
+    RF::findBracket(f, &xL, &xR, y0, start);
 
     ok &= xL <= x0;
     ok &= xR >= x0;

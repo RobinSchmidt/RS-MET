@@ -65,7 +65,7 @@ T rsRootFinder<T>::falsePosition(const std::function<T(T)>& f, T xL, T xR, T y)
 }
 
 template<class T>
-void rsRootFinder<T>::findBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y, T x0)
+void rsRootFinder<T>::findBracket(const std::function<T(T)>& f, T* xL, T* xR, T y, T x0)
 {
   // Init:
   T yL, yR, dL, dR;          // Declare internal variables.
