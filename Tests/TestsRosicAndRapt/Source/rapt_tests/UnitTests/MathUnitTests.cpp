@@ -456,6 +456,11 @@ void guessRootBrackets(const std::function<float(float)>& f,
 // use pointers for output variables, make y optionla (default to 0)
 // Maybe use an iteration counter and a maxIts variable to prevent hangs. Maybe return the number of 
 // iterations
+//
+// Maybe we should assert that 
+// (f(-inf) = -inf and f(inf) = inf)  or  (f(-inf) = inf and f(inf) = -inf) 
+// to be sure that there is a root. This is not a necessarry condition for a root to exist but a 
+// sufficient one ...assuming that f is continuous
 
 
 bool testBracketGuessing()
@@ -507,6 +512,8 @@ bool testBracketGuessing()
   float b = float(EULER);
   f = [&](float x) { return a - b*x; };  ok &= checkFunc(f);
   f = [&](float x) { return a + b*x; };  ok &= checkFunc(f);
+
+  // Make a continuous function with a constant section
 
 
   //f = [&](float x) { return sin(2*a*x); };  ok &= checkFunc(f);
