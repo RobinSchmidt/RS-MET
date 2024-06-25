@@ -67,51 +67,48 @@ T rsRootFinder<T>::falsePosition(const std::function<T(T)>& f, T xL, T xR, T y)
 template<class T>
 void rsRootFinder<T>::findBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y, T x0)
 {
-  *xL = *xR = x0;       // Init bracket to degenrate interval [x0, x0]
+  T yL, yR, dL, dR;
 
-  T yL, yR;
-  yL = yR = f(x0);
-
-  T dR, dL;             // Expansion deltas
-  dL = dR = 1.f;
+  // Init:
+  *xL = *xR = x0;       // Init bracket to degenerate interval [xL, xR] = [x0, x0]
+  yL  =  yR = f(x0);    // Function values at the bracket points.
+  dL  =  dR = T(1);     // Expansion deltas for left and right. They grow over time.
 
   // Helper functions to expand the current interval:
-  auto expandRight = [&]()
-  {
-    *xR += dR;
-    dR  *= 2.f;
-    yR   = f(*xR);
-  };
-  auto expandLeft = [&]()
-  {
-    *xL -= dL;
-    dL  *= 2.f;
-    yL   = f(*xL);
-  };
+  auto expandRight = [&]() { *xR += dR; dR *= T(2); yR = f(*xR); };
+  auto expandLeft  = [&]() { *xL -= dL; dL *= T(2); yL = f(*xL); };
 
-  // The loop that progressively expands the interval to the left or right until yL <= y <= yR or
-  // yL => y => yR. ToDo: verify, if the <= and >= are correct or if it is < and >.
+  // Expand the interval to the left or right until yL <= y <= yR or yL >= y >= yR:
   while(true)
   {
     if(yL < yR)              // Function f goes upward inside current interval
     { 
-      if(yR < y)             // yR is too small
+      if(yR < y)             // yR is too small (and yL is even smaller)
         expandRight();       //   ..so let's expand right where yR gets bigger
-      else if(yL > y)        // yL is too big
+      else if(yL > y)        // yL is too big (and yR is even bigger)
         expandLeft();        //   ..so let's expand left where yL gets smaller
       else
         break;               // We have reached yL <= y <= yR
     }
     else                     // yL >= yR so f goes down or is constant inside current interval.
     {
-      if(yR > y)             // yR is too big
+      if(yR > y)             // yR is too big (and yL is at least as big)
         expandRight();       //   ..so let's expand right where yR gets smaller
-      else if(yL < y)        // yL is too small
+      else if(yL < y)        // yL is too small (and yR is at least as small)
         expandLeft();        //   ..so let's expand left where yL gets bigger
       else
         break;               // We have reached yL >= y >= yR
     }
   }
+
+  // ToDo: 
+  //
+  // - Verify, if the <= and >= are used correctly in all the descriptions and code or if it 
+  //   should be < and > etc., i.e. verify, if the edge-case behavior is working and documented 
+  //   correctly.
+  //
+  // - Maybe allow the user to also select the initial values for dL, dR (both 1.0) and theri 
+  //   growth factors (both 2.0)
 }
 
 
