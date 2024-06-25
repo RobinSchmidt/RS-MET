@@ -466,10 +466,53 @@ bool testBracketGuessing()
   float xL, xR;
   Func f;
 
+  // Helper function that tries to find a bracket around x0 using the given start value:
+  auto checkRoot = [](const Func& f, float x0, float start)
+  {
+    float y0 = f(x0);
 
+    float xL, xR;
+    guessRootBrackets(f, y0, xL, xR, start);
+
+    bool ok = true;
+    ok &= xL <= x0;
+    ok &= xR >= x0;
+
+    return ok;
+  };
+
+  // Helper function to check the given function for various values of x0 using various starting
+  // points:
+  auto checkFunc = [&](const Func& f)
+  {
+    bool ok = true;
+    for(int i = -9; i < +9; i++)    // evaluation points
+    {
+      for(int j = -9; j < +9; j++)  // start values
+      {
+        ok &= checkRoot(f, float(i), float(j));
+        rsAssert(ok);
+      }
+    }
+    return ok;
+  };
+
+
+
+
+  f = [] (float x)->float { return 5.f - 0.5*x; };
+
+  ok &= checkFunc(f);
+
+
+
+
+
+  /*
   // Use the decreasing function  f(x) = 5 - 0.5*x  that goes through 2 at x = 6:
   f = [] (float x)->float { return 5.f - 0.5*x; };
 
+  
   // Find a bracket using a couple of different starting values:
   guessRootBrackets(f, 2.f, xL, xR, 0.f); ok &= xL == 0.f && xR == 7.f;
   guessRootBrackets(f, 2.f, xL, xR, 2.f); ok &= xL == 2.f && xR == 9.f;
@@ -479,15 +522,20 @@ bool testBracketGuessing()
   guessRootBrackets(f, 2.f, xL, xR, 7.f); ok &= xL == 6.f && xR == 7.f;  // Edge case
   guessRootBrackets(f, 2.f, xL, xR, 8.f); ok &= xL == 5.f && xR == 8.f;
 
-  // Use the increasing function  f(x) = 5 + 0.5*x  that goes through 7 at x = 6:
+  // Use the increasing function  f(x) = 5 + 0.5*x  that goes through 7 at x = 4:
   f = [] (float x)->float { return 5.f + 0.5*x; };
-  guessRootBrackets(f, 7.f, xL, xR, 0.f); ok &= xL == 0.f && xR == 7.f;
+  guessRootBrackets(f, 7.f, xL, xR, 0.f); ok &= xL == -1.f && xR == 7.f;
   guessRootBrackets(f, 7.f, xL, xR, 2.f); ok &= xL == 2.f && xR == 9.f;
   guessRootBrackets(f, 7.f, xL, xR, 4.f); ok &= xL == 4.f && xR == 7.f;
-  guessRootBrackets(f, 7.f, xL, xR, 5.f); ok &= xL == 5.f && xR == 6.f;  // Edge case
-  guessRootBrackets(f, 7.f, xL, xR, 6.f); ok &= xL == 6.f && xR == 6.f;  // Edge case
-  guessRootBrackets(f, 7.f, xL, xR, 7.f); ok &= xL == 6.f && xR == 7.f;  // Edge case
+  guessRootBrackets(f, 7.f, xL, xR, 5.f); ok &= xL == 5.f && xR == 6.f;
+  guessRootBrackets(f, 7.f, xL, xR, 6.f); ok &= xL == 6.f && xR == 6.f;
+  guessRootBrackets(f, 7.f, xL, xR, 7.f); ok &= xL == 6.f && xR == 7.f;
   guessRootBrackets(f, 7.f, xL, xR, 8.f); ok &= xL == 5.f && xR == 8.f;
+  // These checks are wrong - but that does not necessarily mean that the algo is wrong. I think
+  // we are fine as long as xL <= 4 and xR >= 4. Maybe we should just check that. The checks above
+  // for the exact values of xL, xR need to know what the algo actually does. But some cases do
+  // not even satisfy that
+  */
 
 
 
