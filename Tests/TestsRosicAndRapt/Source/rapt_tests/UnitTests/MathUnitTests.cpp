@@ -492,7 +492,6 @@ bool testBracketGuessing()
       for(int j = -9; j < +9; j++)  // start values
       {
         ok &= checkRoot(f, float(i), float(j));
-        //rsAssert(ok);
       }
     }
     return ok;
@@ -516,8 +515,8 @@ bool testBracketGuessing()
   // attained at many more points - not only at x0 itself. The bracket guessing algo may find an 
   // interval around one of the other x-values for which f(x) = y0 and then the test will fail 
   // because we check that x0 gets bracketed.
-
-
+  //
+  // Mostly obsolete in the light of the above:
   // Maybe try some random functions with random a,b. Use also non-monotonic functions. Maybe try
   // random polynomials of degree 5. I'm not sure, if the algo can handle wiggly functions properly
   // in all possible cases. The outermost conditional yL < yR may be true, i.e. f my go upward 
