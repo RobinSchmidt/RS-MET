@@ -460,11 +460,8 @@ bool testBracketGuessing()
 {
   bool ok = true;
 
-
   using Func = std::function<float(float)>;
-
   float xL, xR;
-
   Func f;
 
 
@@ -477,7 +474,8 @@ bool testBracketGuessing()
   guessRootBrackets(f, 2.f, xL, xR, 4.f); ok &= xL == 4.f && xR == 7.f;
   guessRootBrackets(f, 2.f, xL, xR, 5.f); ok &= xL == 5.f && xR == 6.f;  // Edge case
   guessRootBrackets(f, 2.f, xL, xR, 6.f); ok &= xL == 6.f && xR == 6.f;  // Edge case
-
+  guessRootBrackets(f, 2.f, xL, xR, 7.f); ok &= xL == 6.f && xR == 7.f;  // Edge case
+  guessRootBrackets(f, 2.f, xL, xR, 8.f); ok &= xL == 5.f && xR == 8.f;
 
 
   // ToDo: use an increasing function as well
