@@ -4793,47 +4793,14 @@ inline double sin2(double x)
   return sin(x);
 }
 
-// move to rsRootFinder:
-// These two bracket finders work only for increasing functions
-//template<class T>
-//T findLeftBracket(const std::function<T(T)>& f, T y, T xL = T(0), T d = T(1))
-//{
-//  while(f(xL) > y) { xL -= d; d *= 2; }
-//  return xL;
-//}
-//template<class T>
-//T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
-//{
-//  while(f(xR) < y) { xR += d; d *= 2; }
-//  return xR;
-//}
-// passed xR is initial guess, d is the initial increment
-
-// Is still BUGGY and works only for increasing functions because the bracket finders only work for
-// increasing functions:
+// The functioanlity has been moved into rsRootFinder - maybe get rid of this function - it serves
+// no purpose anymore and just wraps the implementation in rsRootFinder:
 template<class T>
 T rsFindRoot(const std::function<T(T)>& f, T y)
 {
-  // Newer:
   return RAPT::rsRootFinder<T>::findRoot(f, y);
-
-  //// New:
-  //using RF = RAPT::rsRootFinder<T>;
-  //T xL, xR;
-  //RF::findBracket(f, &xL, &xR, y);
-  //return RF::bisection(f, xL, xR, y); // use better algo
-
-  //// Old:
-  //T xL = findLeftBracket( f, y);
-  //T xR = findRightBracket(f, y);
-  //T x = rsRootFinder<T>::bisection(f, xL, xR, y); // use better algo
-  //return x;
 }
-// Done:
-// To fix it, maybe implement a single function that computes both brackets. Start the the initial 
-// guess x0 and expand to both sides simultaneously...TBC...
-//
-// ToDo: move this function into rsRootFinder
+
 
 template<class T>
 inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
