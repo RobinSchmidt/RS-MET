@@ -403,15 +403,15 @@ bool testRootFinding(std::function<float(float)>& func, float xL, float xR, floa
 
 
 // UNDER CONSTRUCTION - function to gues an initial bracket for a root
-void guessRootBrackets(const std::function<float(float)>& f, float* xL, float* xR, 
-  float y, float x0 = 0.f)
+template<class T>
+void guessRootBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y = T(0), T x0 = T(0))
 {
   *xL = *xR = x0;       // Init bracket to degenrate interval [x0, x0]
 
-  float yL, yR;
+  T yL, yR;
   yL = yR = f(x0);
 
-  float dR, dL;       // Expansion deltas
+  T dR, dL;             // Expansion deltas
   dL = dR = 1.f;
 
   // Helper functions to expand the current interval:
