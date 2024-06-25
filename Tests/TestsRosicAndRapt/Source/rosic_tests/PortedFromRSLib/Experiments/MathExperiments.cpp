@@ -4793,27 +4793,16 @@ inline double sin2(double x)
   return sin(x);
 }
 
-// The functioanlity has been moved into rsRootFinder - maybe get rid of this function - it serves
-// no purpose anymore and just wraps the implementation in rsRootFinder:
-template<class T>
-T rsFindRoot(const std::function<T(T)>& f, T y)
-{
-  return RAPT::rsRootFinder<T>::findRoot(f, y);
-}
-
-
 template<class T>
 inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
 {
   std::function<T(T)> fi = [=](T y)  // Inverse function
   {
-    return rsFindRoot(f, y);
+    return rsRootFinder<T>::findRoot(f, y);
   };
   return fi;
 
   // todo: 
-  // -make it work for monotonically decreasing functions (it currently works only for 
-  //  monotonically increasing function)
   // -allow the user to restrict the domain such that we can pick a chunk of a function where it
   //  is monotonic in case it is not monotonic over the whole real number line
   // -figure out, what it does when there are multiple solutions or no solution
@@ -4918,33 +4907,14 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
   {
     T xp = a*x + b*y;   // x'
     T yp = c*x + d*y;   // y'
-
     return yp - f(xp);
-    // Has problems with the "swap x and y" matrix, i.e. function inversion
-
-    //return f(xp) - yp;    
-    // Test - has problems with the identity matrix!
-
-    // Maybe we should switch between the two formulas depending on the sign of the determinant?
-    // Let's try it:
-    //T D = a*d - b*c;
-    //if(D > 0.0)
-    //  return yp - f(xp);
-    //else
-    //  return f(xp) - yp;
-    // OK - this seems to work in both cases. But why do we need this? Is this a bug in rsFindRoot?
-    // Perhaps in the bracketing algo? Yes - I think, findLeft/RightBracket assume that the 
-    // function is increasing. We should really fix it there rather than implementing the 
-    // workaround here.
-    //
-    // ...OK...rsRootFinder has now a function findBrackets
   };
 
   // The function that we eventually will return, i.e. f transformed by the matrix. It takes as
   // argument the x-coordinate in the old, untransformed coordinate system and returns the 
   // corresponding y-coordinate also in the old system - but the y-coordinate belongs to the 
   // transformed graph (ToDo: explain better).
-  std::function<T(T)> h = [=](T x0)
+  std::function<T(T)> g = [=](T x0)
   {
     // The univariate function of the sought value y0 with parameter x0 baked in:
     std::function<T(T)> Fx0 = [=](T y0)
@@ -4954,18 +4924,22 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
 
     // Find the value y0 at which the univariate function of y0 with constant x0 baked in returns 
     // zero:
-    T y0 = rsFindRoot(Fx0, T(0));
+    T y0 = rsRootFinder<T>::findRoot(Fx0, T(0));
     return y0; 
   };
-  return h;
+  return g;
 
   // ToDo:
   //
-  // Maybe write a general function that takes a bivariate equation F(x,y) = 0 and a function that
-  // finds y when x = x0 is given by e.g. bisection. We can define a univariate function 
-  // g(y) = F(x0, y) and then throw the root-finder at g. This problem here can then be seen as a 
-  // special case of that where F(x,y) = f(a*x + b*y) - d*y - c*x  for a given f and x, I think.
-  // The function below uses a different approach - but perhaps it's equivalent?
+  // - Maybe write a general function that takes a bivariate equation F(x,y) = 0 and a function 
+  //   that finds y when x = x0 is given by e.g. bisection. We can define a univariate function 
+  //   g(y) = F(x0, y) and then throw the root-finder at g. This problem here can then be seen as 
+  //   a special case of that where F(x,y) = f(a*x + b*y) - d*y - c*x  for a given f and x, I 
+  //   think. The function below uses a different approach - but perhaps it's equivalent?
+  //
+  // - In F(x,y), we use yp - f(xp). We could also use f(xp) - yp. I don't knwo if there's any good
+  //   reason to use one or the other. Maybe it should even depend on the determinant of the 
+  //   matrix?
 }
 
 // Attempts to do the same thing as rsTransform1 but the idea for the algorithm is a bit different
@@ -4986,7 +4960,7 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
 
   // The univariate function g(t) with x0 as constant parameter that gives our parametric line in
   // the new coordinate system:
-  std::function<T(T, T)> g = [=](T t, T x0)
+  std::function<T(T, T)> g = [=](T t, T x0) // rename to soemthing else
   {
     T x = a*x0 + t*b;
     T y = c*x0 + t*d;
@@ -4994,7 +4968,7 @@ inline std::function<T(T)> rsTransform2(const std::function<T(T)>& f, T a, T b, 
   };
 
   // The function that we eventually will return, i.e. f transformed by the matrix:
-  std::function<T(T)> h = [=](T x0)
+  std::function<T(T)> h = [=](T x0)  // rename to g
   {
     // The univariate function g with parameter x0 baked in:
     std::function<T(T)> gx0 = [=](T t)
