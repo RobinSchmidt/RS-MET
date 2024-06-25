@@ -4814,11 +4814,14 @@ inline double sin2(double x)
 template<class T>
 T rsFindRoot(const std::function<T(T)>& f, T y)
 {
-  // New:
-  using RF = RAPT::rsRootFinder<T>;
-  T xL, xR;
-  RF::findBracket(f, &xL, &xR, y);
-  return RF::bisection(f, xL, xR, y); // use better algo
+  // Newer:
+  return RAPT::rsRootFinder<T>::findRoot(f, y);
+
+  //// New:
+  //using RF = RAPT::rsRootFinder<T>;
+  //T xL, xR;
+  //RF::findBracket(f, &xL, &xR, y);
+  //return RF::bisection(f, xL, xR, y); // use better algo
 
   //// Old:
   //T xL = findLeftBracket( f, y);

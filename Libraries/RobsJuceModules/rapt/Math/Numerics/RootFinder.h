@@ -20,6 +20,11 @@ class rsRootFinder
 {
 public:
 
+  /** A high-level function that needs only the function, the desired y-value and an optional 
+  initial guess for where the root might be. It's recommended to be used only when you don't have
+  any guess for the initial root bracket available ...TBC...  */
+  static T findRoot(const std::function<T(T)>& f, T y, T x0 = T(0));
+
   /** Bisection takes an initial interval xLeft, xRight (assumed to bracket the root) and evaluates 
   the function at the midpoint of the interval. Depending on the function value, the midpoint 
   becomes either the new left or the new right border of the bracketing interval. So, in each 

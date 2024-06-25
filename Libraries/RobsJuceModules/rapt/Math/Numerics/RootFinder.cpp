@@ -1,3 +1,13 @@
+
+template<class T>
+T rsRootFinder<T>::findRoot(const std::function<T(T)>& f, T y, T x0)
+{
+  T xL, xR;
+  findBracket(f, &xL, &xR, y, x0);
+  return bisection(f, xL, xR, y);   // ToDo: use better algo
+}
+
+// Helper function:
 template<class T>
 inline bool isConvergedToRoot(T xL, T xR, T yM, T xTol, T yTol)
 {
