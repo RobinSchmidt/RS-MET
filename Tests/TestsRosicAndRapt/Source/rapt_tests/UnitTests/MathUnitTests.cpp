@@ -468,7 +468,7 @@ bool testBracketGuessing()
 
 
   // Use the decreasing function  f(x) = 5 - 0.5*x  that goes through 2 at x = 6:
-  f = [] (float x)->float { return 5.f - 0.5*x; };  // f(x) = 5 - 0.5*x
+  f = [] (float x)->float { return 5.f - 0.5*x; };
 
   // Find a bracket using a couple of different starting values:
   guessRootBrackets(f, 2.f, xL, xR, 0.f); ok &= xL == 0.f && xR == 7.f;
@@ -479,9 +479,22 @@ bool testBracketGuessing()
   guessRootBrackets(f, 2.f, xL, xR, 7.f); ok &= xL == 6.f && xR == 7.f;  // Edge case
   guessRootBrackets(f, 2.f, xL, xR, 8.f); ok &= xL == 5.f && xR == 8.f;
 
+  // Use the increasing function  f(x) = 5 + 0.5*x  that goes through 7 at x = 6:
+  f = [] (float x)->float { return 5.f + 0.5*x; };
+  guessRootBrackets(f, 7.f, xL, xR, 0.f); ok &= xL == 0.f && xR == 7.f;
+  guessRootBrackets(f, 7.f, xL, xR, 2.f); ok &= xL == 2.f && xR == 9.f;
+  guessRootBrackets(f, 7.f, xL, xR, 4.f); ok &= xL == 4.f && xR == 7.f;
+  guessRootBrackets(f, 7.f, xL, xR, 5.f); ok &= xL == 5.f && xR == 6.f;  // Edge case
+  guessRootBrackets(f, 7.f, xL, xR, 6.f); ok &= xL == 6.f && xR == 6.f;  // Edge case
+  guessRootBrackets(f, 7.f, xL, xR, 7.f); ok &= xL == 6.f && xR == 7.f;  // Edge case
+  guessRootBrackets(f, 7.f, xL, xR, 8.f); ok &= xL == 5.f && xR == 8.f;
+
+
 
   // ToDo: use an increasing function as well - and maybe a constant one - and one that is constant
   // in some interval. Maybe also try wiggly ones
+
+
 
 
 
