@@ -526,6 +526,8 @@ bool testBracketGuessing()
 
 
 
+  // I think, this commented code is obsolete - but maybe it's not a bad idea to do them anyway. 
+  // They check the exact results, i.e. make assumptions about how the algo works internally:
 
   /*
   // Use the decreasing function  f(x) = 5 - 0.5*x  that goes through 2 at x = 6:
@@ -555,6 +557,8 @@ bool testBracketGuessing()
   // for the exact values of xL, xR need to know what the algo actually does. But some cases do
   // not even satisfy that
   */
+
+
 
 
 
