@@ -7,8 +7,14 @@ right hand side does not actually need to be equal to zero but can be any target
 actually finds solutions to f(x) = y for given f(x) and given y (which defaults to zero). This 
 little addition to standard textbook root-finding algorithms doesn't change much algorithmically 
 (we just need to subtract the target value in each function evaluation), yet adds a lot to the 
-flexibility. Some algorithms require the user to pass an initial interval that is assumed to 
-bracket the root, others require an initial estimate of the root.
+flexibility and ease of use. Some algorithms require the user to pass an initial interval that is 
+assumed to bracket the root, others require an initial estimate of the root. Some higher level 
+functions don't require anything like that - but these functions will need to make a guess for the 
+bracket internally which may lead to suboptimal performance - because, you know, good guesses are 
+hard to come by when you don't have any information to work with. So, these high-level functions
+are mostly meant for quick-and-dirty prototype implementations. If you know a bit more about your 
+particular function at hand, it's a good idea to use that knowledge together with the lower level 
+root-finding functions.
 
 References
 (1) Numerical Recipies in C (2nd Edition), Chapter 9
@@ -20,10 +26,11 @@ class rsRootFinder
 {
 public:
 
-  /** A high-level function that needs only the function, the desired y-value and an optional 
-  initial guess for where the root might be. It's recommended to be used only when you don't have
-  any guess for the initial root bracket available ...TBC...  */
-  static T findRoot(const std::function<T(T)>& f, T y, T x0 = T(0));
+  /** A high-level function that needs only the function, the desired y-value (defaulting to zero) 
+  and an optional initial guess for where the root/y-value might be found (also defaulting to 
+  zero). It's recommended to be used only when you don't have any guess for the initial root 
+  bracket available. It uses a rather dumb bracket-guessing algorithm internally. ...TBC...  */
+  static T findRoot(const std::function<T(T)>& f, T y = T(0), T x0 = T(0));
 
   /** Bisection takes an initial interval xLeft, xRight (assumed to bracket the root) and evaluates 
   the function at the midpoint of the interval. Depending on the function value, the midpoint 
