@@ -4795,18 +4795,18 @@ inline double sin2(double x)
 
 // move to rsRootFinder:
 // These two bracket finders work only for increasing functions
-template<class T>
-T findLeftBracket(const std::function<T(T)>& f, T y, T xL = T(0), T d = T(1))
-{
-  while(f(xL) > y) { xL -= d; d *= 2; }
-  return xL;
-}
-template<class T>
-T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
-{
-  while(f(xR) < y) { xR += d; d *= 2; }
-  return xR;
-}
+//template<class T>
+//T findLeftBracket(const std::function<T(T)>& f, T y, T xL = T(0), T d = T(1))
+//{
+//  while(f(xL) > y) { xL -= d; d *= 2; }
+//  return xL;
+//}
+//template<class T>
+//T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
+//{
+//  while(f(xR) < y) { xR += d; d *= 2; }
+//  return xR;
+//}
 // passed xR is initial guess, d is the initial increment
 
 // Is still BUGGY and works only for increasing functions because the bracket finders only work for
@@ -4814,13 +4814,23 @@ T findRightBracket(const std::function<T(T)>& f, T y, T xR = T(0), T d = T(1))
 template<class T>
 T rsFindRoot(const std::function<T(T)>& f, T y)
 {
-  T xL = findLeftBracket( f, y);
-  T xR = findRightBracket(f, y);
-  T x = rsRootFinder<T>::bisection(f, xL, xR, y); // use better algo
-  return x;
+  // New:
+  using RF = RAPT::rsRootFinder<T>;
+  T xL, xR;
+  RF::findBrackets(f, &xL, &xR, y);
+  return RF::bisection(f, xL, xR, y); // use better algo
+
+  //// Old:
+  //T xL = findLeftBracket( f, y);
+  //T xR = findRightBracket(f, y);
+  //T x = rsRootFinder<T>::bisection(f, xL, xR, y); // use better algo
+  //return x;
 }
+// Done:
 // To fix it, maybe implement a single function that computes both brackets. Start the the initial 
 // guess x0 and expand to both sides simultaneously...TBC...
+//
+// ToDo: move this function into rsRootFinder
 
 template<class T>
 inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
@@ -4956,6 +4966,8 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
     // Perhaps in the bracketing algo? Yes - I think, findLeft/RightBracket assume that the 
     // function is increasing. We should really fix it there rather than implementing the 
     // workaround here.
+    //
+    // ...OK...rsRootFinder has now a function findBrackets
   };
 
   // The function that we eventually will return, i.e. f transformed by the matrix. It takes as

@@ -444,17 +444,26 @@ bool testBracketGuessing()
   };
 
 
-  // Check some functions:
+  // Check on linear functions:
   Func f;
   f = [](float x) { return 5.f - 0.5*x; };  ok &= checkFunc(f);
   f = [](float x) { return 5.f + 0.5*x; };  ok &= checkFunc(f);
-
-  float a = float(PI);
+  float a = float(PI);     // Let's use some irrational numbers!
   float b = float(EULER);
   f = [&](float x) { return a - b*x; };  ok &= checkFunc(f);
   f = [&](float x) { return a + b*x; };  ok &= checkFunc(f);
 
-  // Make a continuous function with a constant section
+  // Check on wiggly functions:
+
+
+  f = [](float x) { float t = 0.2*x; return t*t*t - t + 1.f; }; 
+  ok &= checkRoot(f, 0.f, 0.f);
+  // ToDo: 
+  // -Plot and compare to:  https://www.desmos.com/calculator/mplw4arhwt
+  // -Try different starting points and maybe different values - but pick only those that are
+  //  attained only once. 2 would be a possible choice. Maybe do the same with a more complicated
+  //  function
+  
 
 
   //f = [&](float x) { return sin(2*a*x); };  ok &= checkFunc(f);
@@ -474,41 +483,6 @@ bool testBracketGuessing()
 
 
 
-  // I think, this commented code is obsolete - but maybe it's not a bad idea to do them anyway. 
-  // They check the exact results, i.e. make assumptions about how the algo works internally:
-
-  /*
-  // Use the decreasing function  f(x) = 5 - 0.5*x  that goes through 2 at x = 6:
-  f = [] (float x)->float { return 5.f - 0.5*x; };
-
-  
-  // Find a bracket using a couple of different starting values:
-  guessRootBrackets(f, 2.f, xL, xR, 0.f); ok &= xL == 0.f && xR == 7.f;
-  guessRootBrackets(f, 2.f, xL, xR, 2.f); ok &= xL == 2.f && xR == 9.f;
-  guessRootBrackets(f, 2.f, xL, xR, 4.f); ok &= xL == 4.f && xR == 7.f;
-  guessRootBrackets(f, 2.f, xL, xR, 5.f); ok &= xL == 5.f && xR == 6.f;  // Edge case
-  guessRootBrackets(f, 2.f, xL, xR, 6.f); ok &= xL == 6.f && xR == 6.f;  // Edge case
-  guessRootBrackets(f, 2.f, xL, xR, 7.f); ok &= xL == 6.f && xR == 7.f;  // Edge case
-  guessRootBrackets(f, 2.f, xL, xR, 8.f); ok &= xL == 5.f && xR == 8.f;
-
-  // Use the increasing function  f(x) = 5 + 0.5*x  that goes through 7 at x = 4:
-  f = [] (float x)->float { return 5.f + 0.5*x; };
-  guessRootBrackets(f, 7.f, xL, xR, 0.f); ok &= xL == -1.f && xR == 7.f;
-  guessRootBrackets(f, 7.f, xL, xR, 2.f); ok &= xL == 2.f && xR == 9.f;
-  guessRootBrackets(f, 7.f, xL, xR, 4.f); ok &= xL == 4.f && xR == 7.f;
-  guessRootBrackets(f, 7.f, xL, xR, 5.f); ok &= xL == 5.f && xR == 6.f;
-  guessRootBrackets(f, 7.f, xL, xR, 6.f); ok &= xL == 6.f && xR == 6.f;
-  guessRootBrackets(f, 7.f, xL, xR, 7.f); ok &= xL == 6.f && xR == 7.f;
-  guessRootBrackets(f, 7.f, xL, xR, 8.f); ok &= xL == 5.f && xR == 8.f;
-  // These checks are wrong - but that does not necessarily mean that the algo is wrong. I think
-  // we are fine as long as xL <= 4 and xR >= 4. Maybe we should just check that. The checks above
-  // for the exact values of xL, xR need to know what the algo actually does. But some cases do
-  // not even satisfy that
-  */
-
-
-
-
 
   // ToDo: use a constant function - and one that is constant in some interval. Maybe also try 
   // wiggly ones
@@ -523,6 +497,17 @@ bool testBracketGuessing()
 
 
   return ok;
+
+  // ToDo:
+  //
+  // - Test it on a continuous function with a constant section.
+  // - Test it on a non-monotonic function. Maybe t = c*x, f = t^3 - t + 1. The stretch by c is to 
+  //   make the wiggle have the right scale such that the algo thinks that the function is of the 
+  //   increasing type when in fact, it is a (globally) decreasing one - or the other way around. 
+  //   The +1 is to raise it such that it crosses zero only once - we should search for a zero 
+  //   then. For example, with c = 0.2, the initial interval would be 0..1 (I guess) where the 
+  //   function looks increasing, suggesting a root to the left, when in fact the root more is to 
+  //   the right. See:  https://www.desmos.com/calculator/mplw4arhwt
 }
 
 

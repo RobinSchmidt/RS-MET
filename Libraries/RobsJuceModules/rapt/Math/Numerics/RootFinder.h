@@ -58,7 +58,9 @@ public:
   for the interval. But sometimes, this dirty guesswork is just needed. Numerical analysis can be a 
   messy business. */
   static void findBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y = T(0), T x0 = T(0));
-
+  // -Maybe rename to findBracket - singular!
+  // -Maybe return num-iterations (or error-code).
+  // -Maybe have a function isBracket
 
   /** For a given function f = f(x) and target vaule y, finds a reasonable left bracket xL such 
   that f(xL) <= y. You can pass an initial guess for xL as well as an initial distance d by which
