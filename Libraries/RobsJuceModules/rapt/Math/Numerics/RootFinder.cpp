@@ -67,12 +67,11 @@ T rsRootFinder<T>::falsePosition(const std::function<T(T)>& f, T xL, T xR, T y)
 template<class T>
 void rsRootFinder<T>::findBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y, T x0)
 {
-  T yL, yR, dL, dR;
-
   // Init:
-  *xL = *xR = x0;       // Init bracket to degenerate interval [xL, xR] = [x0, x0]
-  yL  =  yR = f(x0);    // Function values at the bracket points.
-  dL  =  dR = T(1);     // Expansion deltas for left and right. They grow over time.
+  T yL, yR, dL, dR;          // Declare internal variables.
+  *xL = *xR = x0;            // Init bracket to degenerate interval [xL, xR] = [x0, x0].
+  yL  =  yR = f(x0);         // Function values at the bracket points.
+  dL  =  dR = T(1);          // Expansion deltas for left and right. They grow over time.
 
   // Helper functions to expand the current interval:
   auto expandRight = [&]() { *xR += dR; dR *= T(2); yR = f(*xR); };
@@ -107,7 +106,7 @@ void rsRootFinder<T>::findBrackets(const std::function<T(T)>& f, T* xL, T* xR, T
   //   should be < and > etc., i.e. verify, if the edge-case behavior is working and documented 
   //   correctly.
   //
-  // - Maybe allow the user to also select the initial values for dL, dR (both 1.0) and theri 
+  // - Maybe allow the user to also select the initial values for dL, dR (both 1.0) and their 
   //   growth factors (both 2.0)
 }
 
