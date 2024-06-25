@@ -403,6 +403,7 @@ bool testRootFinding(std::function<float(float)>& func, float xL, float xR, floa
 
 
 // UNDER CONSTRUCTION - function to gues an initial bracket for a root
+/*
 template<class T>
 void guessRootBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y = T(0), T x0 = T(0))
 {
@@ -452,6 +453,7 @@ void guessRootBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y = T(0), T
     }
   }
 }
+*/
 // Needs tests and when it works as it should, it can be moved into rsRootFinder
 // use pointers for output variables, make y optionla (default to 0)
 // Maybe use an iteration counter and a maxIts variable to prevent hangs. Maybe return the number of 
@@ -467,6 +469,7 @@ bool testBracketGuessing()
 {
   bool  ok   = true;
   using Func = std::function<float(float)>;
+  using RF   = rsRootFinder<float>;
 
   // Helper function that tries to find a bracket around x0 using the given start value:
   auto checkRoot = [](const Func& f, float x0, float start)
@@ -475,13 +478,14 @@ bool testBracketGuessing()
     float y0 = f(x0);
     float xL, xR;
 
-    guessRootBrackets(f, &xL, &xR, y0, start);
+    //guessRootBrackets(f, &xL, &xR, y0, start);
+    RF::findBrackets(f, &xL, &xR, y0, start);
+
     ok &= xL <= x0;
     ok &= xR >= x0;
 
     // Maybe we can somehow also check that the intervall is not excessively large? And maybe also
     // that the number of iterations taken is not too large?
-
 
     rsAssert(ok);
     return ok;
