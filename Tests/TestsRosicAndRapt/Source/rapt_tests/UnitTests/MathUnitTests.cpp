@@ -402,69 +402,6 @@ bool testRootFinding(std::function<float(float)>& func, float xL, float xR, floa
 // for dx and one for dy...but maybe that should be optional for convenience
 
 
-// UNDER CONSTRUCTION - function to gues an initial bracket for a root
-/*
-template<class T>
-void guessRootBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y = T(0), T x0 = T(0))
-{
-  *xL = *xR = x0;       // Init bracket to degenrate interval [x0, x0]
-
-  T yL, yR;
-  yL = yR = f(x0);
-
-  T dR, dL;             // Expansion deltas
-  dL = dR = 1.f;
-
-  // Helper functions to expand the current interval:
-  auto expandRight = [&]()
-  {
-    *xR += dR;
-    dR  *= 2.f;
-    yR   = f(*xR);
-  };
-  auto expandLeft = [&]()
-  {
-    *xL -= dL;
-    dL  *= 2.f;
-    yL   = f(*xL);
-  };
-
-  // The loop that progressively expands the interval to the left or right until yL <= y <= yR or
-  // yL => y => yR. ToDo: verify, if the <= and >= are correct or if it is < and >.
-  while(true)
-  {
-    if(yL < yR)              // Function f goes upward inside current interval
-    { 
-      if(yR < y)             // yR is too small
-        expandRight();       //   ..so let's expand right where yR gets bigger
-      else if(yL > y)        // yL is too big
-        expandLeft();        //   ..so let's expand left where yL gets smaller
-      else
-        break;               // We have reached yL <= y <= yR
-    }
-    else                     // yL >= yR so f goes down or is constant inside current interval.
-    {
-      if(yR > y)             // yR is too big
-        expandRight();       //   ..so let's expand right where yR gets smaller
-      else if(yL < y)        // yL is too small
-        expandLeft();        //   ..so let's expand left where yL gets bigger
-      else
-        break;               // We have reached yL >= y >= yR
-    }
-  }
-}
-*/
-// Needs tests and when it works as it should, it can be moved into rsRootFinder
-// use pointers for output variables, make y optionla (default to 0)
-// Maybe use an iteration counter and a maxIts variable to prevent hangs. Maybe return the number of 
-// iterations
-//
-// Maybe we should assert that 
-// (f(-inf) = -inf and f(inf) = inf)  or  (f(-inf) = inf and f(inf) = -inf) 
-// to be sure that there is a root. This is not a necessarry condition for a root to exist but a 
-// sufficient one ...assuming that f is continuous
-
-
 bool testBracketGuessing()
 {
   bool  ok   = true;
