@@ -47,6 +47,19 @@ public:
   // when no convergence can be epxected (like when the function has poles like 1/x)
 
 
+  /** Many root finding algorithms require the user to provide an initial guess for the interval in
+  which the root is to be found. This is called "root bracketing". The root is assumed to lie 
+  somewhere in the bracket between xL and xR. If you don't have any such guess for the bracket, you 
+  can use this function to produce one. It's using a simple algorithm that starts at an initial 
+  point x0 (defaulting to 0) and then progressively expands an interval [xL, xR] around that point 
+  until f(xL) <= y <= f(xR). It's not very sophisticated and guaranteed to work only for functions 
+  that satisfy (f(-inf) = -inf and f(+inf) = +inf) or (f(-inf) = +inf and f(+inf) = -inf). I 
+  recommend to try to avoid using it if you have any better way of coming up with a initial guess 
+  for the interval. But sometimes, this dirty guesswork is just needed. Numerical analysis can be a 
+  messy business. */
+  static void findBrackets(const std::function<T(T)>& f, T* xL, T* xR, T y = T(0), T x0 = T(0));
+
+
   /** For a given function f = f(x) and target vaule y, finds a reasonable left bracket xL such 
   that f(xL) <= y. You can pass an initial guess for xL as well as an initial distance d by which
   xL will be decremented, in case, the condition f(xL) doesn't hold. */
