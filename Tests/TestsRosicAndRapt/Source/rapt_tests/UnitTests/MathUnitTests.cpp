@@ -460,24 +460,25 @@ void guessRootBrackets(const std::function<float(float)>& f,
 
 bool testBracketGuessing()
 {
-  bool ok = true;
-
+  bool  ok   = true;
   using Func = std::function<float(float)>;
-  float xL, xR;
-  Func f;
 
   // Helper function that tries to find a bracket around x0 using the given start value:
   auto checkRoot = [](const Func& f, float x0, float start)
   {
+    bool  ok = true;
     float y0 = f(x0);
-
     float xL, xR;
-    guessRootBrackets(f, y0, xL, xR, start);
 
-    bool ok = true;
+    guessRootBrackets(f, y0, xL, xR, start);
     ok &= xL <= x0;
     ok &= xR >= x0;
 
+    // Maybe we can somehow also check that the intervall is not excessively large? And maybe also
+    // that the number of iterations taken is not too large?
+
+
+    rsAssert(ok);
     return ok;
   };
 
@@ -491,19 +492,38 @@ bool testBracketGuessing()
       for(int j = -9; j < +9; j++)  // start values
       {
         ok &= checkRoot(f, float(i), float(j));
-        rsAssert(ok);
+        //rsAssert(ok);
       }
     }
     return ok;
   };
 
 
+  // Check some functions:
+  Func f;
+  f = [](float x) { return 5.f - 0.5*x; };  ok &= checkFunc(f);
+  f = [](float x) { return 5.f + 0.5*x; };  ok &= checkFunc(f);
+
+  float a = float(PI);
+  float b = float(EULER);
+  f = [&](float x) { return a - b*x; };  ok &= checkFunc(f);
+  f = [&](float x) { return a + b*x; };  ok &= checkFunc(f);
 
 
-  f = [] (float x)->float { return 5.f - 0.5*x; };
+  //f = [&](float x) { return sin(2*a*x); };  ok &= checkFunc(f);
+  // Nope - that fails! I think, it is because it may find a different bracket around a different
+  // section of the function that also goes through the same y-value. For a given x0, y0 = f(x0) is
+  // attained at many more points - not only at x0 itself. The bracket guessing algo may find an 
+  // interval around one of the other x-values for which f(x) = y0 and then the test will fail 
+  // because we check that x0 gets bracketed.
 
-  ok &= checkFunc(f);
 
+  // Maybe try some random functions with random a,b. Use also non-monotonic functions. Maybe try
+  // random polynomials of degree 5. I'm not sure, if the algo can handle wiggly functions properly
+  // in all possible cases. The outermost conditional yL < yR may be true, i.e. f my go upward 
+  // locally, even though it goes downward globally. I'm not sure, if that matters, though. Maybe
+  // use even higher degrees to get more wiggly functions. High degree polynomials are pehaps a 
+  // good stress-test for the algorithm. Maybe try sine functions, too.
 
 
 
@@ -539,8 +559,8 @@ bool testBracketGuessing()
 
 
 
-  // ToDo: use an increasing function as well - and maybe a constant one - and one that is constant
-  // in some interval. Maybe also try wiggly ones
+  // ToDo: use a constant function - and one that is constant in some interval. Maybe also try 
+  // wiggly ones
 
 
 
