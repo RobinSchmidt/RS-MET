@@ -4924,7 +4924,7 @@ inline std::function<T(T)> rsTransform1(const std::function<T(T)>& f, T a, T b, 
 
     // Find the value y0 at which the univariate function of y0 with constant x0 baked in returns 
     // zero:
-    T y0 = rsRootFinder<T>::findRoot(Fx0, T(0));
+    T y0 = rsRootFinder<T>::findRoot(Fx0);
     return y0; 
   };
   return g;
@@ -5221,7 +5221,8 @@ void functionOperators()
   // we'd rather construct these functions with pen and paper or with a CAS..
 
 
-
+  // Test some special operators that have their own test functions because these operators are 
+  // kinda complicated:
   functionOperatorsRotation();
   functionOperatorsMatrix();
   functionOperatorsScaling();
