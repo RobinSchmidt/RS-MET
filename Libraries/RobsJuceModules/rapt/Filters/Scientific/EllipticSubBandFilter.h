@@ -24,8 +24,10 @@ public:
 protected:
 
   TPar subDivision;
+
   Complex prototypePoles[6];
   Complex prototypeZeros[6];
+  // What are these arrays used for? Document that.
 
 };
 

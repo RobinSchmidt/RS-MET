@@ -3344,14 +3344,65 @@ void simdFilter()
   //  matrix: it applies a matrix to M subsequent input samples to establish the input vector to 
   //  the filter that operates at a decimated sample rate. This matrix is specific to the filter. 
 
-
-
-
   rsPlotVectors(x, y);
-
-
 
   int dummy = 0;
 }
 
 template void simdFilter<float, 4>();
+
+
+void subBandFilter()
+{
+  // UNDER CONSTRUCTION....
+
+  // Setup:
+  using Real = double;                 // Data type for real numbers (double, float, ...)
+  using Vec  = std::vector<Real>;      // For the arrays of real numbers.
+  int   N    = 8192;                   // Number of samples in impulse response
+
+  // Obtain impulse response of a RAPT::rsEllipticSubBandFilter with subdivision set to 4:
+  RAPT::rsEllipticSubBandFilter<Real, Real> sbf;
+  sbf.setSubDivision(4);
+  Vec irSbf = impulseResponse(sbf, N, Real(1));
+  rsPlotVector(irSbf);
+
+  // Obtain impulse response of a rosic::rsEllipticQuarterBandFilter:
+  rosic::rsEllipticQuarterBandFilter qbf;
+  Vec irQbf = impulseResponse(qbf, N, Real(1));
+  rsPlotVector(irQbf);
+
+  // Obtain and plot difference of the two impulse responses:
+  Vec diff  = irSbf - irQbf;
+  rsPlotVector(diff);
+
+
+  // Observations:
+  //
+  // - With "Real = double", the difference signal is some low-level signal of order 5.e-10 due to
+  //   the different implementation structures of the filters, namely biquad-cascade vs 
+  //   direct-form
+  //
+  // - With "Real = float", the RAPT::rsEllipticSubBandFilter fails. 
+  //   rosic::rsEllipticQuarterBandFilter is not affected because it is not a template, i.e. uses
+  //   double explicitly.
+  //
+  //
+  // Conclusions:
+  //
+  // - Just switching from direct-form to biquad-chain will not help to make the quarterband filter
+  //   work with float. 
+  // 
+  //
+  // ToDo:
+  //
+  // - Plot frequency responses of RAPT::rsEllipticSubBandFilter and 
+  //   rosic::rsEllipticQuarterBandFilter and figure out the setting which were used to design the
+  //   latter.
+  //
+  // - Figure out if it helps to switch to an SVF-biquad cascade to make the sbf work with 
+  //   Real = float.
+  //
+  // - Document the filter settings for rosic::rsEllipticQuarterBandFilter. I think, it is
+  //   fc/fs = 0.9 * 0.5 / 4, passband-ripple = 0.1 dB, stopband-rejection = 96 dB
+}
