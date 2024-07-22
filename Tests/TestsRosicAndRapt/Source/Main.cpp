@@ -200,8 +200,8 @@ int main(int argc, char* argv[])
   //waveEquation1D();
   //rectangularMembrane();
   //rectangularRoom();
-  //particleForceDistanceLaw();
-  //particleSystem();
+  particleForceDistanceLaw();
+  particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
   //quantumSpinEntanglement();
   //quantumGates();            // move to unit tests

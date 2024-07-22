@@ -132,7 +132,6 @@ protected:
 /** Explicit template instantiations, to be used by the rsPow template-function and also in 
 rsPolynomial etc.. */
 
-
 template<class T>
 rsModularInteger<T> rsZeroValue(rsModularInteger<T> value)
 { 
@@ -152,7 +151,7 @@ rsModularInteger<T> rsConstantValue(T value, rsModularInteger<T> targetTemplate)
 }
 
 // ToDo: Implement the default, templatized rsZeroValue and rsUnityValue functions in terms of 
-// rsConstantValue uch that rsModularInteger and all other similar classes need to provide only an 
+// rsConstantValue such that rsModularInteger and all other similar classes need to provide only an 
 // implementation of rsConstantValue
 
 #endif

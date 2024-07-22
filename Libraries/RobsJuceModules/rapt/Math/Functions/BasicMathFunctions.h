@@ -63,7 +63,8 @@ inline bool rsIsInRange(T x, T min, T max);
 return value, the fractional part in the second argument. */
 inline int rsIntAndFracPart(double x, double &frac);
 
-/** Computes an integer power of x by successively multiplying x with itself. */
+/** OBSOLETE - I think. Use rsPow instead.
+Computes an integer power of x by successively multiplying x with itself. */
 inline double rsIntegerPower(double x, int exponent);
 
 /** Limits the value of an object.   ...redundant with clip */

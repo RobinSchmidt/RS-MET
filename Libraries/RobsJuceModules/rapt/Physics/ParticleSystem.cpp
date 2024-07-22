@@ -392,6 +392,16 @@ fields at some position vector p. Then, we can compute the forces via the formul
 to the results in rsParticle system in a unit test.
 
 
+Can we perhaps turn the field/force calculation for each particle from an O(n^2) into an O(n) algo
+by not computing for each particle the force/field that it feels from all other particles but 
+rather first compute the center of mass of all particles in one O(n) pass and then, in a 2nd O(n) 
+pass for each particle i, subtract out the contribution from the particle i from the center of mass 
+to obtain center of mass as it would be without the particle i and then use that to compute the 
+force? That sounds a bit too good to be true, though - maybe I'm missing something. Oh - no - that 
+is nonsense - think of two equal masses at -1 and +1. A mass at 0.5 will not be attracted to the 
+center of mass at zero but rather to the closer mass at 1. I think, the idea may only work for a 
+linear fore-distance law - like a Hooke spring - but maybe not even then.
+
 
 See also:
 

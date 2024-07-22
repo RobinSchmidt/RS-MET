@@ -181,6 +181,9 @@ https://github.com/ZL-Audio/ZLEqualizer
 https://github.com/Chowdhury-DSP/PitchShift
 -Pitch-shifter based on Bungee algorithm
 
+https://github.com/je3928/RE201models
+-Digital model of the Roland RE-201 taype delay
+
 ----------------------------------------------------------------------------------------------------
 Frameworks
 
@@ -302,6 +305,9 @@ https://arxiv.org/abs/2312.00005
 https://www.sciencedirect.com/science/article/pii/S0955799724000171
 -Numerical calculation of the head-related tranfer functions by the use of the Burton-Miller 
  collocation boundary-element method coupled with the multi-level fast multipole method.
+
+Code of JEPlugins Audio DSP video series:
+https://github.com/je3928/JEPluginsAudioDSP
 
 ----------------------------------------------------------------------------------------------------
 Other Libraries

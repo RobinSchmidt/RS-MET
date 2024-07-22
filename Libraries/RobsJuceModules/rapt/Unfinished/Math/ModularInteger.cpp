@@ -30,7 +30,7 @@ rsModularInteger<T>::rsModularInteger(const rsModularInteger<T>& other)
   value   = other.value;
 }
 
-// setup:
+// Setup:
 
 template<class T>
 void rsModularInteger<T>::set(T newValue, T newModulus) 
@@ -41,7 +41,7 @@ void rsModularInteger<T>::set(T newValue, T newModulus)
   canonicalize();            // We only allow canonical representations!
 }
 
-// inquiry:
+// Inquiry:
 
 template<class T>
 bool rsModularInteger<T>::hasInverse() const
@@ -54,7 +54,7 @@ bool rsModularInteger<T>::hasInverse() const
   return one == T(1);
 }
 
-// operators:
+// Operators:
 
 template<class T>
 rsModularInteger<T> rsModularInteger<T>::operator-() const
