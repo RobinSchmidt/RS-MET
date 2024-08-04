@@ -440,7 +440,7 @@ see https://www.desmos.com/calculator/yxlnijspzg
 comparison with other sigmoids: https://www.desmos.com/calculator/iiml3yqzf6
 ...it approaches +-1 more slowly. How about raising x to an odd power? In the inverse, we could
 use the same formula and at the end, extract the n-th root. How about using poles and/or zeros
-with multiplicities, like  y = -x^k / ((x-1)^m * (x+1)^n) ? This way, we coul pehaps make
+with multiplicities, like  y = -x^k / ((x-1)^m * (x+1)^n) ? This way, we could pehaps make
 asymmetric sigmoids. 
 Here is it with the branch implemented via sign: sign(x) * sqrt(1 + 1/(2x)^2) - 1/(2x)
 https://www.desmos.com/calculator/ziw32b5ovy
