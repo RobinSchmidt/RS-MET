@@ -445,7 +445,6 @@ A variation: (sign(x) * sqrt(a + 1/(2x)^2) - 1/(2x)) / a
 https://www.desmos.com/calculator/7mhot2u03b
 with a = 1, we recover the old one.
 
-\ \ \frac{\left(\operatorname{sign}\left(x\right)\cdot\sqrt{a+1/(2x)^{2}}-1/(2x)\right)}{a}
 
 How about considering the function  1 / (1 - sigmoid(x))  and using its growth behavior to
 categorize sigmoids? The idea is that the decay of  1 - sigmoid(x)  mesures how quickly the
@@ -457,6 +456,11 @@ a meaningful measurement on a sigmoid. Is it linear, quadratic, exponential, etc
 
 Maybe implement these in C++
 https://easings.net/
-Clicking on the graphics will lead toa page where javascript code is given for the functions
+Clicking on the graphics will lead to a page where javascript code is given for the functions
+Ah - here is the code, I guess:
+https://github.com/ai/easings.net
+
+
+
 
 */
