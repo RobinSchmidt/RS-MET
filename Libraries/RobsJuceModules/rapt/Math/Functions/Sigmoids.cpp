@@ -426,6 +426,9 @@ asymptotically like the cube-root. Maybe such a behavior can sometimes be useful
 recursive systems without setting hard saturation limits. asinh would grow even slower 
 (logarithmically). We could also consider inverses of x + x^n where n is any odd integer
 
+
+Implemented as invRational:
+
 The simplest function that I could think of to map the interval [-1,+1] to [-inf,+inf] is
 y = -x / ((x-1)*(x+1)) = -x / (x^2 - 1), see https://www.desmos.com/calculator/1h1evzhyay
 I just created a rational function with a zero at 0 and two poles at +-1. How about using the 
@@ -445,13 +448,37 @@ A variation: (sign(x) * sqrt(a + 1/(2x)^2) - 1/(2x)) / a
 https://www.desmos.com/calculator/7mhot2u03b
 with a = 1, we recover the old one.
 
-
 How about considering the function  1 / (1 - sigmoid(x))  and using its growth behavior to
 categorize sigmoids? The idea is that the decay of  1 - sigmoid(x)  mesures how quickly the
-sigmoid approaches one. Using its reciprocal therefore expressed this apparoach in a way in 
+sigmoid approaches one. Using its reciprocal therefore expressed this approach in a way in 
 which a faster growth means a quicker approach. Maybe we can then design sigmoids with desired
 approach-rates? I think, the asymptotic approach rate by which a sigmoid approaches one could be
 a meaningful measurement on a sigmoid. Is it linear, quadratic, exponential, etc.?
+
+Looks like the approach-rate of the invRat function is 2*(x + 1/4), see:
+https://www.desmos.com/calculator/iugvzyoeqs
+...so it's indeed linear. Btw: the approach-rate function itself looks like a smooth version of
+the ReLU function - so maybe it could be useful as activation function in neural networks. See:
+https://www.desmos.com/calculator/mb982w6mkw
+
+Variations:
+y = -x    / ((x  -1)*(x  +1))
+y = -x    / ((x^3-1)*(x^3+1))
+y = -x^3  / ((x^3-1)*(x^3+1))
+y = -4x^3 / ((x^3-1)*(x^3+1))
+y = -x^3  / ((x-1)^3*(x+1)^3)
+
+
+
+The approach-rate for tanh looks more like an exponential - but not quite. The approach-rate of
+x / sqrt(1+x^2) looks kinda parabolic - a bit like (1.3 x + 1)^2 + 1. Try to find more accurate
+asymptotic expressions in a systematic way - these were found by trial and error. Maybe to find
+an asymptotic expression for some function f(x), we could to a Taylor expansion of f(1/x) around 0?
+See: 
+https://en.wikipedia.org/wiki/Asymptotology
+https://en.wikipedia.org/wiki/Asymptotic_analysis
+https://en.wikipedia.org/wiki/Asymptotic_expansion
+
 
 
 Maybe implement these in C++
@@ -459,7 +486,7 @@ https://easings.net/
 Clicking on the graphics will lead to a page where javascript code is given for the functions
 Ah - here is the code, I guess:
 https://github.com/ai/easings.net
-
+OK - I have copied all the code into Notes/FadeInOut.txt
 
 
 
