@@ -482,19 +482,19 @@ void quarticMonotonic()
 
 void sigmoidPrototypes()
 {
-  // plots various normalized prototype sigmoids that can be used as basic building blocks for
+  // We plot various normalized prototype sigmoids that can be used as basic building blocks for
   // saturators, soft-clippers, etc.
 
   static const int N = 1001;
   double xMin = 0.0;
-  double xMax = 2.0;
+  double xMax = 5.0;
   double t    = 0.5;    // threshold below which the function is linear (for the softclipper)
 
   double x[N];
   RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
 
   int n;
-  double yHard[N], yCubic[N], yQuartic[N], yHexic[N], ySoft[N], yTanh[N];
+  double yHard[N], yCubic[N], yQuartic[N], yHexic[N], ySoft[N], yTanh[N], yInvRat[N];
 
   using NS = rsNormalizedSigmoids<double>;
 
@@ -504,16 +504,23 @@ void sigmoidPrototypes()
   for(n = 0; n < N; n++) yHexic[n]   = NS::hexic(x[n]);
   for(n = 0; n < N; n++) ySoft[n]    = rsPositiveSigmoidsD::softClipHexic(x[n], t);
   for(n = 0; n < N; n++) yTanh[n]    = NS::tanh(x[n]);
-  // using NS:: for ySoft doesn't compile - why?
+  for(n = 0; n < N; n++) yInvRat[n]  = rsPositiveSigmoidsD::invRational(x[n]);
+  // Using NS:: for ySoft doesn't compile - why? ...Ahh - the function with parameter t is only 
+  // available in rsPositiveSigmoidsD but not in rsNormalizedSigmoids
 
   GNUPlotter plt;
   plt.addDataArrays(N, x, yHard);
   //plt.addDataArrays(N, x, yCubic);
   //plt.addDataArrays(N, x, yQuartic);
-  plt.addDataArrays(N, x, yHexic);
-  plt.addDataArrays(N, x, ySoft);
-  //plt.addDataArrays(N, x, yTanh);
+  //plt.addDataArrays(N, x, yHexic);
+  //plt.addDataArrays(N, x, ySoft);
+  plt.addDataArrays(N, x, yTanh);
+  plt.addDataArrays(N, x, yInvRat);
   plt.plot();
+
+  // ToDo:
+  //
+  // - Add symmetrized versions for all the functions in rsPositiveSigmoids and the use them here.
 }
 
 // value of the polynomial a1*x + a4*x^4 + a5*x^5 + a6*x^6

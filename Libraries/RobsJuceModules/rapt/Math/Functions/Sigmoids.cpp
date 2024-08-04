@@ -76,6 +76,13 @@ T rsPositiveSigmoids<T>::softClipHexic(T x)
     return T(0.5 + 0.5 * hexic(2*(x-(T)0.5)));
 }
 
+template<class T>
+T rsPositiveSigmoids<T>::invRational(T x)
+{
+  T p2 = T(1) / (T(2)*x);              //  p/2 in pq-formula
+  return -p2 + rsSqrt(p2*p2 + T(1));   // -p/2 + sqrt( (p/2)^2 - q )
+}
+
 // saturation polynomials:
 //
 // f(x) = k*x + a_3*x^3
@@ -432,12 +439,20 @@ comparison with other sigmoids: https://www.desmos.com/calculator/iiml3yqzf6
 use the same formula and at the end, extract the n-th root. How about using poles and/or zeros
 with multiplicities, like  y = -x^k / ((x-1)^m * (x+1)^n) ? This way, we coul pehaps make
 asymmetric sigmoids. 
+Here is it with the branch implemented via sign: sign(x) * sqrt(1 + 1/(2x)^2) - 1/(2x)
+https://www.desmos.com/calculator/ziw32b5ovy
+A variation: (sign(x) * sqrt(a + 1/(2x)^2) - 1/(2x)) / a
+https://www.desmos.com/calculator/7mhot2u03b
+with a = 1, we recover the old one.
+
+\ \ \frac{\left(\operatorname{sign}\left(x\right)\cdot\sqrt{a+1/(2x)^{2}}-1/(2x)\right)}{a}
 
 How about considering the function  1 / (1 - sigmoid(x))  and using its growth behavior to
 categorize sigmoids? The idea is that the decay of  1 - sigmoid(x)  mesures how quickly the
 sigmoid approaches one. Using its reciprocal therefore expressed this apparoach in a way in 
 which a faster growth means a quicker approach. Maybe we can then design sigmoids with desired
-approach-rates?
+approach-rates? I think, the asymptotic approach rate by which a sigmoid approaches one could be
+a meaningful measurement on a sigmoid. Is it linear, quadratic, exponential, etc.?
 
 
 Maybe implement these in C++

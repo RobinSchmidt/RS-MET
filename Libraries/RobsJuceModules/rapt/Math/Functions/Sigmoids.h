@@ -55,6 +55,21 @@ public:
   /** Special case of softClipHexic(double x, double t) where t = 0.5. */
   static T softClipHexic(T x);
 
+  /** Inverse of the rational function f(x) = -x / (x^2 - 1) = -x / ((x-1)*(x+1)). This is the 
+  simplemost rational function that I could think of that maps the domain [-1,+1] to the range
+  [-inf,+inf]. It's inverse therefore maps [-inf,+inf] to [-1,+1]. ...TBC... */
+  static T invRational(T x);
+  // Needs unit tests
+  //
+  // Maybe rename to invRational_1_1_1. The _1_1_1 denotes the number of poles at -1, number of 
+  // zeros at 0 and number of poles at +1. Then make up more of such functions with different 
+  // numbers of poles and zeros.
+  // We could use a single pole at +1 and leave out the pole at -1 and then symmetrize the 
+  // function using abs and sign. But then, I think, we would get a discontinuity in the 1st 
+  // (or 2nd?) derivative at the origin. Maybe that can be useful for distortion purposes. But how
+  // about symmetrizing using (f(x)+f(-x))/2? I guess, then it wouldn't be a sigmoid anymore.
+
+
   // maybe try this from here:
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=521377
   // softer(x) = x / sqrt(1 + x^2)
