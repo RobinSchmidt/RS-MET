@@ -419,6 +419,26 @@ asymptotically like the cube-root. Maybe such a behavior can sometimes be useful
 recursive systems without setting hard saturation limits. asinh would grow even slower 
 (logarithmically). We could also consider inverses of x + x^n where n is any odd integer
 
+The simplest function that I could think of to map the interval [-1,+1] to [-inf,+inf] is
+y = -x / ((x-1)*(x+1)) = -x / (x^2 - 1), see https://www.desmos.com/calculator/1h1evzhyay
+I just created a rational function with a zero at 0 and two poles at +-1. How about using the 
+inverse of that as sigmoid? We just need to solve it for x in terms of y:
+y = -x / (x^2 - 1)  ->  y * (x^2 - 1) = -x  ->  y*x^2 + x - y = 0  ->  x^2 + x/y - 1 = 0
+...use pq-formula with p = 1/y, q = -1  ->  x = -(1/(2y)) +- sqrt( (1/(4y^2)) + 1 )
+we need the +branch for positive y and the -branch for negative y
+see https://www.desmos.com/calculator/yxlnijspzg  
+comparison with other sigmoids: https://www.desmos.com/calculator/iiml3yqzf6
+...it approaches +-1 more slowly. How about raising x to an odd power? In the inverse, we could
+use the same formula and at the end, extract the n-th root. How about using poles and/or zeros
+with multiplicities, like  y = -x^k / ((x-1)^m * (x+1)^n) ? This way, we coul pehaps make
+asymmetric sigmoids. 
+
+How about considering the function  1 / (1 - sigmoid(x))  and using its growth behavior to
+categorize sigmoids? The idea is that the decay of  1 - sigmoid(x)  mesures how quickly the
+sigmoid approaches one. Using its reciprocal therefore expressed this apparoach in a way in 
+which a faster growth means a quicker approach. Maybe we can then design sigmoids with desired
+approach-rates?
+
 
 Maybe implement these in C++
 https://easings.net/
