@@ -496,18 +496,15 @@ void sigmoidPrototypes()
   int n;
   double yHard[N], yCubic[N], yQuartic[N], yHexic[N], ySoft[N], yTanh[N];
 
-  for(n = 0; n < N; n++)
-    yHard[n] = rsNormalizedSigmoidsD::clip(x[n]);
-  for(n = 0; n < N; n++)
-    yCubic[n] = rsPositiveSigmoidsD::cubic(x[n]);
-  for(n = 0; n < N; n++)
-    yQuartic[n] = rsPositiveSigmoidsD::quartic(x[n]);
-  for(n = 0; n < N; n++)
-    yHexic[n] = rsPositiveSigmoidsD::hexic(x[n]);
-  for(n = 0; n < N; n++)
-    ySoft[n] = rsPositiveSigmoidsD::softClipHexic(x[n], t);
-  for(n = 0; n < N; n++)
-    yTanh[n] = rsNormalizedSigmoidsD::tanh(x[n]);
+  using NS = rsNormalizedSigmoids<double>;
+
+  for(n = 0; n < N; n++) yHard[n]    = NS::clip(x[n]);
+  for(n = 0; n < N; n++) yCubic[n]   = NS::cubic(x[n]);
+  for(n = 0; n < N; n++) yQuartic[n] = NS::quartic(x[n]);
+  for(n = 0; n < N; n++) yHexic[n]   = NS::hexic(x[n]);
+  for(n = 0; n < N; n++) ySoft[n]    = rsPositiveSigmoidsD::softClipHexic(x[n], t);
+  for(n = 0; n < N; n++) yTanh[n]    = NS::tanh(x[n]);
+  // using NS:: for ySoft doesn't compile - why?
 
   GNUPlotter plt;
   plt.addDataArrays(N, x, yHard);

@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
   //quantileFilter();
   //hilbertFilter();
   //simdFilter<float, 4>();  // doesn't work
-  subBandFilter();
+  //subBandFilter();
 
   // Physics:
   //doublePendulum(); // takes long
@@ -200,8 +200,8 @@ int main(int argc, char* argv[])
   //waveEquation1D();
   //rectangularMembrane();
   //rectangularRoom();
-  particleForceDistanceLaw();
-  particleSystem();
+  //particleForceDistanceLaw();
+  //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
   //quantumSpinEntanglement();
   //quantumGates();            // move to unit tests
@@ -218,8 +218,8 @@ int main(int argc, char* argv[])
   //waveformFractalization();
   //noise();
   //noiseReverseMode();
-  noiseTriModal();
-  noiseWaveShaped();
+  //noiseTriModal();
+  //noiseWaveShaped();
   //blit();
   //blep();
   //polyBlep();
@@ -350,7 +350,7 @@ int main(int argc, char* argv[])
   //primeDistribution();
   //numberTheoreticTransform();           // triggers assert
   //variousFunctions();
-  functionOperators();
+  //functionOperators();
 
   // Analysis:
   //autoCorrelation();
@@ -376,10 +376,10 @@ int main(int argc, char* argv[])
   //ropewayAlgo();
   //peakPicker();
   //singleSineModel();
-  //singleSineCycleWobbles();
+  //singleSineCycleWobbles();    // maybe rename - sineFromWub, sineFromWavelet
   //multiSineCycleWobbles();
   //multiHalfCycleWobbles();
-  sineFromDecayingSines();
+  //sineFromDecayingSines();
 
   // Delay:
   //basicIntegerDelayLine();
@@ -580,9 +580,9 @@ int main(int argc, char* argv[])
   //saturator();
   //sigmoidScaleAndShift();
   //quarticMonotonic();
-  //sigmoidPrototypes();
+  sigmoidPrototypes();
   //sixticPositive();
-  hilbertDistortion();
+  //hilbertDistortion();
 
 
   // Distortion:
