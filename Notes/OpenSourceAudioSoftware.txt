@@ -175,14 +175,17 @@ https://github.com/sdatkinson/NeuralAmpModelerPlugin
 ZL-Audio Plugins
 https://github.com/ZL-Audio
 https://github.com/ZL-Audio/ZLEqualizer
+https://github.com/ZL-Audio/ZLSplitter
 -Some plugins made with JUCE. The EQ appears to have a nice visual and modern GUI and uses the
- Vicanek design formulas. It's dynamic as well.
+ Vicanek design formulas. It's dynamic as well. The splitter splits signals into transient and 
+ steady part.
 
 https://github.com/Chowdhury-DSP/PitchShift
 -Pitch-shifter based on Bungee algorithm
 
 https://github.com/je3928/RE201models
 -Digital model of the Roland RE-201 taype delay
+
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
