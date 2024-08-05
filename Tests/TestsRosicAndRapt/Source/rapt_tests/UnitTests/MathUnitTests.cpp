@@ -506,34 +506,28 @@ bool testDerivativeBasedRootFinding()
 {
   // Tests for the root-finding methods based on derivatives of the functions. These methods are
   // also known as Housholder methods. The first two specimen of this kind are Newton- and Halley-
-  // iteration. ...TBC...
+  // iteration. We use the sin function as example and want to find the x-value where 
+  // y = sin(x) = 0.8
+
 
   bool ok = true;
 
   using Real = double;
   using RF   = RAPT::rsRootFinder<Real>;
 
-  // The function types that we need. The API is written such that function takes an x-value as 
-  // input parameter and produces 0th, 1st, 2nd, ... derivatives in output parameters that are 
-  // passed by pointer:
+  Real y   = 0.8;      // y-value that we want to hit
+  Real xt  = asin(y);  // x-value that we want to find
+  Real x0  = 0;        // Initial guess for x
+  Real tol = 1.e-15;   // Tolerance
+
+  int  numCalls = 0;   // Number of calls of the function f1, f2 or f3. Used to count iterations.
+
+  // The function types and functions that we need. The API of the derivative based root finders is
+  // written such that function takes an x-value as input parameter and produces 0th, 1st, 2nd, ...
+  // derivatives in output parameters that are passed by pointer:
   using F1 = std::function<void(Real, Real*, Real*)>;
   using F2 = std::function<void(Real, Real*, Real*, Real*)>;
   using F3 = std::function<void(Real, Real*, Real*, Real*, Real*)>;
-
-
-  // We use the sin function as example and want to find the x-value where y = sin(x) = 0.8
-
-  Real y  = 0.8;      // y-value that we want to hit
-  Real xt = asin(y);  // x-value that we want to find
-  Real x0 = 0;        // Initial guess for x
-  //Real x;             // Root produced by root-finder
-  //Real d;             // Difference x - xt
-  Real tol = 1.e-15;  // Tolerance
-
-
-  int  numCalls = 0;  // Number of calls of the function f1, f2 or f3
-
-
   F1 f1 = [&](Real x, Real* f, Real* f1)
   {
     *f  = sin(x);
@@ -561,9 +555,9 @@ bool testDerivativeBasedRootFinding()
   // their own name.
   auto test = [&](int method, int expectedIts)
   {
-    numCalls = 0;     // Reset call/iteration counter. 1 call to f1, etc. is 1 iteration.
-    bool ok  = true;
+    numCalls = 0; // Reset call/iteration counter. 1 call to f1, etc. is 1 iteration in the algo.
 
+    // Find the x-value where the graph of sin(x) goes through y using x0 as initial guess:
     Real x;
     switch(method)
     {
@@ -572,29 +566,18 @@ bool testDerivativeBasedRootFinding()
     case 3: x = RF::householder3(f3, x0, y); break;
     }
 
-    Real d = x - xt;
+    Real d  = x - xt;
+    bool ok = true;
     ok &= rsAbs(d) <= tol;
     ok &= numCalls == expectedIts;
     return ok;
   };
-
 
   // Run the tests for the different method. We check, if the result is with the tolerance and if
   // the number of iterations is as expected:
   ok &= test(1, 6);  // Newton takes 6 iterations
   ok &= test(2, 5);  // Halley takes 6 iterations
   ok &= test(3, 4);  // 3rd order Householder takes 6 iterations
-
-
-  // Redundant:
-  //x = RF::newton(      f1, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 6 iterations
-  //x = RF::halley(      f2, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 5 iterations
-  //x = RF::householder3(f3, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 4 iterations
-
-
-
-
-
 
   return ok;
 
@@ -605,6 +588,9 @@ bool testDerivativeBasedRootFinding()
   // - Use a high precision datatype such that we need more iterations to reach the precision 
   //   limit. Perhaps then we can see the differences in the convergence rates of the different 
   //   methods better.
+  //
+  // - Maybe try other functions that are "more difficult" and need more iterations. Maybe exp?
+  //   Or maybe a polynomial? Of maybe 1/x or some other ational function?
 }
 
 
