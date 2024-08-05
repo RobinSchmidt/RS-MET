@@ -101,7 +101,7 @@ public:
 
   //static T modifiedFalsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
 
-  //static T newtonStep(const T& f, const T& fp) { return -f/fp; }
+  static T newtonStep(const T& f, const T& fp) { return -f/fp; }
   // can be used like x += newtonStep(f, fp)
   // https://en.wikipedia.org/wiki/Newton%27s_method
   // https://de.wikipedia.org/wiki/Newtonverfahren

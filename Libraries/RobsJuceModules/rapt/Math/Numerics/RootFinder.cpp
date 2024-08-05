@@ -133,13 +133,27 @@ void rsRootFinder<T>::findBracket(const std::function<T(T)>& f, T* xL, T* xR, T 
 template<class T>
 T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y)
 {
-  T x = xGuess;
+  static const int maxNumIterations = 60;
+  T tol = std::numeric_limits<T>::epsilon();
 
-  // ...stuff to do...
+
+  T x = xGuess;
+  T f, f1, dx;
+
+  for(int i = 1; i <= maxNumIterations; i++)
+  {
+    func(x, &f, &f1);
+    f  -= y;
+    dx  = newtonStep(f, f1);
+    x  += dx;
+    if(rsAbs(dx) < rsAbs(x*tol))
+      break;
+  }
+
 
   return x;
 }
-
+// Needs tests
 
 
 /*
