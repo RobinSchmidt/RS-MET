@@ -441,7 +441,8 @@ comparison with other sigmoids: https://www.desmos.com/calculator/iiml3yqzf6
 ...it approaches +-1 more slowly. How about raising x to an odd power? In the inverse, we could
 use the same formula and at the end, extract the n-th root. How about using poles and/or zeros
 with multiplicities, like  y = -x^k / ((x-1)^m * (x+1)^n) ? This way, we could pehaps make
-asymmetric sigmoids. 
+asymmetric sigmoids. This is how Wolfram solves it:
+https://www.wolframalpha.com/input?i=solve+y+%3D+-x+%2F+%28%28x-1%29*%28x%2B1%29%29+for+x
 Here is it with the branch implemented via sign: sign(x) * sqrt(1 + 1/(2x)^2) - 1/(2x)
 https://www.desmos.com/calculator/ziw32b5ovy
 A variation: (sign(x) * sqrt(a + 1/(2x)^2) - 1/(2x)) / a
@@ -458,6 +459,11 @@ y = -x^3  / ((x-1)^3*(x+1)^3)
 y = -4x^3 / ((x^3-1)*(x^3+1))
 y =  -x   / sqrt(|x^2-1|)
 ...these need to be inverted, of course.
+
+The 2nd one has an explicit solution:
+https://www.wolframalpha.com/input?i=solve+y+%3D+-x+%2F+%28%28x-1%29%5E2*%28x%2B1%29%5E2%29+for+x
+it's looks messy but many expressions are repeated
+
 
 How about considering the function  1 / (1 - sigmoid(x))  and using its growth behavior to
 categorize sigmoids? The idea is that the decay of  1 - sigmoid(x)  mesures how quickly the

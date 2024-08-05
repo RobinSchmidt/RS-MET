@@ -294,6 +294,7 @@ ToDo:
  https://en.wikipedia.org/wiki/Inverse_quadratic_interpolation
  https://en.wikipedia.org/wiki/Muller%27s_method
  https://en.wikipedia.org/wiki/Ridders%27_method
+ https://en.wikipedia.org/wiki/Steffensen%27s_method
  I think, inverse quadratic interpolation methods should find the root in one step when the 
  function f(x) is of the form: f(x) = a + b*sqrt(x+c). Here, c shifts the parabola left/right, a
  shifts it up/down and b determines the shape. Try this for example with these a,b,c:
@@ -303,9 +304,11 @@ ToDo:
  iteration. That could create a nonzero imaginary part. That may be a good or bad thing, depending 
  on whether a complex root may be expected or not. The Brent method should perhaps be the go-to 
  method for root-finding without derivatives
+-There is an implementation of Brent's method in the prototypes - but it's grabbed from the 
+ internet and needs validation.
 -Implement ternary search ("trisection"?) for finding minima or maxima. See:
  https://cp-algorithms.com/num_methods/ternary_search.html
-
+-Implement fixed point iteration
 
 
 Resources for higher order variants of Newton iteration:
