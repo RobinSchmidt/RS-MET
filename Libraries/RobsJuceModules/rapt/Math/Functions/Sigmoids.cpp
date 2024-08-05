@@ -448,12 +448,21 @@ A variation: (sign(x) * sqrt(a + 1/(2x)^2) - 1/(2x)) / a
 https://www.desmos.com/calculator/7mhot2u03b
 with a = 1, we recover the old one.
 
+More variations:
+y = -x    / ((x  -1)*(x  +1))
+y = -x    / ((x^3-1)*(x^3+1))
+y = -x^3  / ((x^3-1)*(x^3+1))
+y = -4x^3 / ((x^3-1)*(x^3+1))
+y = -x^3  / ((x-1)^3*(x+1)^3)
+y =  -x   / sqrt(|x^2-1|)
+...these need to be inverted, of course.
+
 How about considering the function  1 / (1 - sigmoid(x))  and using its growth behavior to
 categorize sigmoids? The idea is that the decay of  1 - sigmoid(x)  mesures how quickly the
 sigmoid approaches one. Using its reciprocal therefore expressed this approach in a way in 
 which a faster growth means a quicker approach. Maybe we can then design sigmoids with desired
 approach-rates? I think, the asymptotic approach rate by which a sigmoid approaches one could be
-a meaningful measurement on a sigmoid. Is it linear, quadratic, exponential, etc.?
+a meaningful measurement/feature of a sigmoid. Is it linear, quadratic, exponential, etc.?
 
 Looks like the approach-rate of the invRat function is 2*(x + 1/4), see:
 https://www.desmos.com/calculator/iugvzyoeqs
@@ -461,23 +470,29 @@ https://www.desmos.com/calculator/iugvzyoeqs
 the ReLU function - so maybe it could be useful as activation function in neural networks. See:
 https://www.desmos.com/calculator/mb982w6mkw
 
-Variations:
-y = -x    / ((x  -1)*(x  +1))
-y = -x    / ((x^3-1)*(x^3+1))
-y = -x^3  / ((x^3-1)*(x^3+1))
-y = -4x^3 / ((x^3-1)*(x^3+1))
-y = -x^3  / ((x-1)^3*(x+1)^3)
+It makes sense to consider the ratio of the approach-rate and the proposed asymptotic function. If
+that ratio approaches 1, the proposed asymptotic function is indeed asymptotically equivalent. 
+Maybe one could also consider their difference.
+
+The approach-rate for tanh looks more like an exponential - but not quite. More like exp(2x) / 2:
+https://www.desmos.com/calculator/hnhyhshyep
+
+The approach-rate of  x / sqrt(1+x^2)  looks kinda parabolic - a bit like (1.3 x + 1)^2 + 1. Or 
+maybe it's 2x^2. See:
+https://www.desmos.com/calculator/nbfhswqn19
 
 
 
-The approach-rate for tanh looks more like an exponential - but not quite. The approach-rate of
-x / sqrt(1+x^2) looks kinda parabolic - a bit like (1.3 x + 1)^2 + 1. Try to find more accurate
-asymptotic expressions in a systematic way - these were found by trial and error. Maybe to find
-an asymptotic expression for some function f(x), we could to a Taylor expansion of f(1/x) around 0?
-See: 
+
+
+
+Try to find more accurate asymptotic expressions in a systematic way - these were found by trial 
+and error. See: 
 https://en.wikipedia.org/wiki/Asymptotology
 https://en.wikipedia.org/wiki/Asymptotic_analysis
 https://en.wikipedia.org/wiki/Asymptotic_expansion
+Maybe to find an asymptotic expression for some function f(x), we could to a Laurent expansion of 
+f(1/x) around 0 and the take the reciprocal of teh result?
 
 
 
