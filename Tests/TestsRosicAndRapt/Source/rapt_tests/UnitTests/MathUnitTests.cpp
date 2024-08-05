@@ -567,7 +567,11 @@ bool testDerivativeBasedRootFinding()
 
   // ToDo:
   //
-  // - Maybe count iterations
+  // - Maybe count iterations within f1,f2,f3. 
+  //
+  // - Use a high precision datatype such that we need more iterations to reach the precision 
+  //   limit. Perhaps then we can see the differences in the convergence rates of the different 
+  //   methods better.
 }
 
 
