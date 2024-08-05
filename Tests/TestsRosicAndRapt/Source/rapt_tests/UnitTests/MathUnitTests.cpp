@@ -579,6 +579,36 @@ bool testDerivativeBasedRootFinding()
   ok &= test(2, 5);  // Halley takes 6 iterations
   ok &= test(3, 4);  // 3rd order Householder takes 6 iterations
 
+
+  // Use f(x) = 1/x as another example. We want to find the x-value where 1/x = 1/10. That value is
+  // x = 10.
+  y  = 1.0 / 10.0;
+  xt = 10.0;
+  x0 = 1.0;
+
+
+  f1 = [&](Real x, Real* f, Real* f1)
+  {
+    *f  =  1/(x);
+    *f1 = -1/(x*x);
+    numCalls++;
+  };
+  f2 = [&](Real x, Real* f, Real* f1, Real* f2)
+  {
+    *f  =  1/(x);
+    *f1 = -1/(x*x);
+    *f2 =  2/(x*x*x);
+    numCalls++;
+  };
+
+
+
+  ok &= test(1, 10);
+  ok &= test(2,  3);
+
+
+
+
   return ok;
 
   // ToDo:
