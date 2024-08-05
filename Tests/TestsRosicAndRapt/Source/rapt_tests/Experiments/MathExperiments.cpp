@@ -3022,6 +3022,11 @@ void numericMinimization1D()
   // -Maybe define an alternative error function based on the sum of squares or on max(err1, err2)
 }
 
+
+
+
+
+
 void numericRootFinding1D()
 {
   bool ok = true;

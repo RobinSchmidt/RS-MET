@@ -482,19 +482,10 @@ bool testBracketGuessing()
   // good stress-test for the algorithm. Maybe try sine functions, too.
 
 
-
-
   // ToDo: use a constant function - and one that is constant in some interval. Maybe also try 
   // wiggly ones
 
-
-
-
-
   //rsPlotFunction(f, -2.0, +2.0, 1001); // Not available - damn! Move elsewhere or fix includes
-
-
-
 
   return ok;
 
@@ -511,6 +502,53 @@ bool testBracketGuessing()
 }
 
 
+bool testDerivativeBasedRootFinding()
+{
+  // Tests for the root-finding methods based on derivatives of the functions. These methods are
+  // also known as Housholder methods. The first two specimen of this kind are Newton- and Halley-
+  // iteration. ...TBC...
+
+  bool ok = true;
+
+  using Real = double;
+  using RF   = RAPT::rsRootFinder<Real>;
+
+  // The function types that we need. The API is written such that function takes an x-value as 
+  // input parameter and produces 0th, 1st, 2nd, ... derivatives in output parameters that are 
+  // passed by pointer:
+  using F1 = std::function<void(Real, Real*, Real*)>;
+  using F2 = std::function<void(Real, Real*, Real*, Real*)>;
+
+  // We use the sin function as example and want to find the x-value where y = sin(x) = 0.8
+
+  Real y  = 0.8;      // y-value that we want to hit
+  Real xt = asin(y);  // x-value that we want to find
+  Real x0 = y;        // Initial guess for x
+  Real x;             // Root produced by root-finder
+
+
+  F1 f1 = [](Real x, Real* f, Real* f1)
+  {
+    *f  = sin(x);
+    *f1 = cos(x);
+  };
+
+
+  x = RF::newton(f1, x0, y);
+
+
+
+
+
+  return ok;
+
+  // ToDo:
+  //
+  // - Maybe count iterations
+}
+
+
+
 bool rootFinderUnitTest()
 {
   bool r = true;                 // Test result
@@ -522,7 +560,7 @@ bool rootFinderUnitTest()
   //float root;
 
   r &= testBracketGuessing();
-
+  r &= testDerivativeBasedRootFinding();
 
 
   // Moved temporarily up for debugging:

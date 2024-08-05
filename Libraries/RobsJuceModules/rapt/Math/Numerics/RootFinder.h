@@ -27,9 +27,15 @@ class rsRootFinder
 public:
 
   /** A high-level function that needs only the function, the desired y-value (defaulting to zero) 
-  and an optional initial guess for where the root/y-value might be found (also defaulting to 
+  and an optional initial guess for x where the root/y-value might be found (also defaulting to 
   zero). It's recommended to be used only when you don't have any guess for the initial root 
-  bracket available. It uses a rather dumb bracket-guessing algorithm internally. ...TBC...  */
+  bracket available. It uses a rather dumb bracket-guessing algorithm internally, namely the one
+  implemented in the findBracket() function. Also, it currently uses the simple bisection method 
+  for the actual root finding whose convergence rate is not really great. The function is meant for 
+  quick and dirty prototype stuff to get something running. Later, you may want to refine the code 
+  by coming up with a better initial guess/bracket and picking the most suitable algorithm for the 
+  problem at hand yourself. For this, you'll have to use the lower level functions of this class 
+  yourself.  */
   static T findRoot(const std::function<T(T)>& f, T y = T(0), T x0 = T(0));
 
   /** Bisection takes an initial interval xLeft, xRight (assumed to bracket the root) and evaluates 
@@ -66,7 +72,7 @@ public:
   point x0 (defaulting to 0) and then progressively expands an interval [xL, xR] around that point 
   until f(xL) <= y <= f(xR). It's not very sophisticated and guaranteed to work only for functions 
   that satisfy (f(-inf) = -inf and f(+inf) = +inf) or (f(-inf) = +inf and f(+inf) = -inf). I 
-  recommend to try to avoid using it if you have any better way of coming up with a initial guess 
+  recommend to try to avoid using it if you have any better way of coming up with an initial guess 
   for the interval. But sometimes, this dirty guesswork is just needed. Numerical analysis can be a 
   messy business. */
   static void findBracket(const std::function<T(T)>& f, T* xL, T* xR, T y = T(0), T x0 = T(0));
@@ -100,6 +106,14 @@ public:
   // https://en.wikipedia.org/wiki/Newton%27s_method
   // https://de.wikipedia.org/wiki/Newtonverfahren
 
+  /** Under Construction */
+  static T newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y = 0);
+
+  // func should take the x value as 1st parameter and produce value and derivative in 2nd and 3rd
+  // parameter respectively
+
+
+
   //static T halleyStep(const T& f, const T& f1, const T& f2) { return (2*f*f1) / (f*f2 - 2*f1*f1); }
   // can be used like x += halleyStep(f, f1, f2) where f,f1,f2 are: value, 1st derivative, 
   // 2nd derivative respectively
@@ -109,6 +123,7 @@ public:
 
   // Has formula with 3 derivatives:
   // https://en.wikipedia.org/wiki/Householder%27s_method#Example
+  // return (3*f*f*f2 - 6*f*f1*f1) / (6*f1*f1*f1 - 6*f*f1*f2 + f*f*f3);
 
   // Higher order variants of Newton iteration:
   // http://numbers.computation.free.fr/Constants/Algorithms/newton.html

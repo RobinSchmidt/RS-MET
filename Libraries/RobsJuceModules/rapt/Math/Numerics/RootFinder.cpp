@@ -51,6 +51,11 @@ T rsRootFinder<T>::bisection(const std::function<T(T)>& f, T xL, T xR, T y)
   }
   rsError("rsRootFinder::bisection failed to converge");
   return xM;
+
+  // ToDo:
+  //
+  // - Let the user (optionally) pass tolerance and maxNumIterations. Maybe report iterations taken
+  //   in (optional) output parameter
 }
 
 template<class T>
@@ -72,6 +77,11 @@ T rsRootFinder<T>::falsePosition(const std::function<T(T)>& f, T xL, T xR, T y)
   }
   rsError("rsRootFinder::falsePosition failed to converge");
   return xM;
+
+  // ToDo:
+  //
+  // - Let the user (optionally) pass tolerance and maxNumIterations. Maybe report iterations taken
+  //   in (optional) output parameter
 }
 
 template<class T>
@@ -120,6 +130,15 @@ void rsRootFinder<T>::findBracket(const std::function<T(T)>& f, T* xL, T* xR, T 
   //   growth factors (both 2.0)
 }
 
+template<class T>
+T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y)
+{
+  T x = xGuess;
+
+  // ...stuff to do...
+
+  return x;
+}
 
 
 
