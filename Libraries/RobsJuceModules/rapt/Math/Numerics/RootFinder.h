@@ -124,6 +124,16 @@ public:
   static T halley(const std::function<void(T, T*, T*, T*)>& func, T xGuess, T y = 0);
 
 
+
+  static T householder3Step(const T& f, const T& f1, const T& f2, const T& f3) 
+  { 
+    return (3*f*f*f2 - 6*f*f1*f1) / (6*f1*f1*f1 - 6*f*f1*f2 + f*f*f3);
+  }
+
+
+  static T householder3(const std::function<void(T, T*, T*, T*, T*)>& func, T xGuess, T y = 0);
+
+
   // Has formula with 3 derivatives:
   // https://en.wikipedia.org/wiki/Householder%27s_method#Example
   // return (3*f*f*f2 - 6*f*f1*f1) / (6*f1*f1*f1 - 6*f*f1*f2 + f*f*f3);
@@ -132,6 +142,7 @@ public:
   // http://numbers.computation.free.fr/Constants/Algorithms/newton.html
   // https://tminka.github.io/papers/minka-newton.pdf
   // https://www.researchgate.net/publication/268555974_Beyond_Newton's_Method_Generalized_Higher-Order_Approximation_Methods
+  //  -> discusses Chebychev's method as a vector generalization of Halley's method
   // https://en.wikipedia.org/wiki/Householder%27s_method
   // https://archive.org/details/numericaltreatme0000hous
 

@@ -518,12 +518,14 @@ bool testDerivativeBasedRootFinding()
   // passed by pointer:
   using F1 = std::function<void(Real, Real*, Real*)>;
   using F2 = std::function<void(Real, Real*, Real*, Real*)>;
+  using F3 = std::function<void(Real, Real*, Real*, Real*, Real*)>;
+
 
   // We use the sin function as example and want to find the x-value where y = sin(x) = 0.8
 
   Real y  = 0.8;      // y-value that we want to hit
   Real xt = asin(y);  // x-value that we want to find
-  Real x0 = y;        // Initial guess for x
+  Real x0 = 0;        // Initial guess for x
   Real x;             // Root produced by root-finder
   Real d;             // Difference x - xt
   Real tol = 1.e-15;  // Tolerance
@@ -542,12 +544,19 @@ bool testDerivativeBasedRootFinding()
     *f2 = -sin(x);
   };
 
+  F3 f3 = [](Real x, Real* f, Real* f1, Real* f2, Real* f3)
+  {
+    *f  =  sin(x);
+    *f1 =  cos(x);
+    *f2 = -sin(x);
+    *f3 = -cos(x);
+  };
 
 
-  x = RF::newton(f1, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 5 iterations
-  x = RF::halley(f2, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 4 iterations
 
-
+  x = RF::newton(      f1, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 6 iterations
+  x = RF::halley(      f2, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 5 iterations
+  x = RF::householder3(f3, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 4 iterations
 
 
 

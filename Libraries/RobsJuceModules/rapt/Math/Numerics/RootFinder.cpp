@@ -180,6 +180,26 @@ T rsRootFinder<T>::halley(const std::function<void(T, T*, T*, T*)>& func, T x, T
 }
 
 
+template<class T>
+T rsRootFinder<T>::householder3(const std::function<void(T, T*, T*, T*, T*)>& func, T x, T y)
+{
+  static const int maxNumIterations = 60;
+  T tol = std::numeric_limits<T>::epsilon();
+
+  T f, f1, f2, f3, dx;
+  for(int i = 1; i <= maxNumIterations; i++)
+  {
+    func(x, &f, &f1, &f2, &f3);
+    f  -= y;
+    dx  = householder3Step(f, f1, f2, f3);
+    x  += dx;
+    if(rsAbs(dx) < rsAbs(x*tol))
+      break;
+  }
+  return x;
+}
+
+
 /*
 
 
