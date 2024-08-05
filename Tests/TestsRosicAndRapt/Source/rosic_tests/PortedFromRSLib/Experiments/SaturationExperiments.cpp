@@ -483,58 +483,31 @@ void quarticMonotonic()
 
 double invRat2(double y)
 {
+  // Inverse of f(x) = -x / ((x+1)^2 * (x-1)^2)
+
   // UNDER CONSTRUCTION. The output from Wolfram Alpha is a mess. We need to extract repetitive terms 
-  // and simplify....
+  // and simplify....OK kinda done - but this needs to be cleaned up
 
+  if(y == 0.0)
+    return 0.0;
 
-
-  double a  = cbrt(2.0);  // 2^(1/3)
-  double b  = sqrt(3.0);
-  double y2 = y*y;
-  double y3 = y*y2;
-  double y4 = y2*y2;
-
+  double a   = cbrt(2.0);  // 2^(1/3)
+  double b   = sqrt(3.0);
+  double y2  = y*y;
+  double y3  = y*y2;
+  double y4  = y2*y2;
   double k1  = (128*y3 + 3*b* sqrt(256*y4 + 27*y2) + 27*y);
   double cr1 = cbrt(k1);
   double sr1 = sqrt((16*a*y)/cr1 + cr1/(a*y) + 4);
+  double ay  = a*y;
 
-
-  //return 0;  // preliminary
-
-  // x1 - Nan:
-  // return sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)/(2*b) - 1./2 * sqrt(-(16*a*y)/(3*cr1) - cr1/(3*a*y) - (2*b)/(sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)*y) + 8./3.);
-
-  // x2 - Nan:
-  //return sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)/(2*b) + 1./2 * sqrt(-(16*a*y)/(3*cr1) - cr1/(3*a*y) - (2*b)/(sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)* y) + 8./3);
-
-  // x3 - looks wrong:
-  //return -sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)/(2*b) - 1./2 * sqrt(-(16*a*y)/(3*cr1) - cr1/(3*a*y) + (2*b)/(sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)*y) + 8./3);
-
-  // x4 - seems to have wrong sign but look otherwise ok:
-  return -(1./2 * sqrt(-(16*a*y)/(3*cr1) - cr1/(3*a*y) + (2*b)/(sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)*y) + 8./3) - sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)/(2*b));
-  // OK - I just flipped the sign - now it looks ok
-
-  // x1 =  sqrt((16 a y)/cr1 + cr1/(a y) + 4)/(2 b) - 1/2 sqrt(-(16 a y)/(3 cr1) - cr1/(3 a y) - (2 b)/(sqrt((16 a y)/cr1 + cr1/(a y) + 4) y) + 8/3) 
-  // x2 =  sqrt((16 a y)/cr1 + cr1/(a y) + 4)/(2 b) + 1/2 sqrt(-(16 a y)/(3 cr1) - cr1/(3 a y) - (2 b)/(sqrt((16 a y)/cr1 + cr1/(a y) + 4) y) + 8/3) 
-  // x3 = -sqrt((16 a y)/cr1 + cr1/(a y) + 4)/(2 b) - 1/2 sqrt(-(16 a y)/(3 cr1) - cr1/(3 a y) + (2 b)/(sqrt((16 a y)/cr1 + cr1/(a y) + 4) y) + 8/3)
-  // x4 =  1/2 sqrt(-(16 a y)/(3 cr1) - cr1/(3 a y) + (2 b)/(sqrt((16 a y)/cr1 + cr1/(a y) + 4) y) + 8/3) - sqrt((16 a y)/cr1 + cr1/(a y) + 4)/(2 b) 
-
-
-  //double r1 = 
-
-
-  
-
-
-  // x1 =  sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4)/(2 sqrt(3)) - 1/2 sqrt(-(16 2^(1/3) y)/(3 (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)) - (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(3 2^(1/3) y) - (2 sqrt(3))/(sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4) y) + 8/3) and y!=0
-  // x2 =  sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4)/(2 sqrt(3)) + 1/2 sqrt(-(16 2^(1/3) y)/(3 (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)) - (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(3 2^(1/3) y) - (2 sqrt(3))/(sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4) y) + 8/3) and y!=0
-  // x3 = -sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4)/(2 sqrt(3)) - 1/2 sqrt(-(16 2^(1/3) y)/(3 (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)) - (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(3 2^(1/3) y) + (2 sqrt(3))/(sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4) y) + 8/3) and y!=0
-  // x4 =  1/2 sqrt(-(16 2^(1/3) y)/(3 (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)) - (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(3 2^(1/3) y) + (2 sqrt(3))/(sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4) y) + 8/3) - sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4)/(2 sqrt(3)) and y!=0
-
+  return -(1./2 * sqrt(-(16*ay)/(3*cr1) - cr1/(3*ay) + (2*b)/(sr1*y) + 8./3) 
+                - sqrt( (16*ay)/cr1     + cr1/(ay)   + 4           )/(2*b) );
 
   // See:
   // https://www.wolframalpha.com/input?i=solve+y+%3D+-x+%2F+%28%28x-1%29%5E2*%28x%2B1%29%5E2%29+for+x
-
+  // I had to use the 4th solution - and for some reason flip the overall sign.
+  // Maybe we would be better of with a root-finder - Newton or Halley or something
 }
 
 void sigmoidPrototypes()
