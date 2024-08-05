@@ -621,6 +621,8 @@ bool testDerivativeBasedRootFinding()
   //   examples. Maybe for some, the advantage is more clear? Or maybe there are other factors 
   //   than order leading to diminishing returns when increasing the order further?
   //
+  // - Maybe try log(x)
+  //
   // - Use a high precision datatype such that we need more iterations to reach the precision 
   //   limit. Perhaps then we can see the differences in the convergence rates of the different 
   //   methods better.

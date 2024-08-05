@@ -141,7 +141,7 @@ T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T x, T y)
   {
     func(x, &f, &f1);
     f  -= y;
-    dx  = newtonStep(f, f1);
+    dx  = stepNewton(f, f1);
     x  += dx;
     if(rsAbs(dx) < rsAbs(x*tol))
       break;
@@ -166,7 +166,7 @@ T rsRootFinder<T>::halley(const std::function<void(T, T*, T*, T*)>& func, T x, T
   {
     func(x, &f, &f1, &f2);
     f  -= y;
-    dx  = halleyStep(f, f1, f2);
+    dx  = stepHalley(f, f1, f2);
     x  += dx;
     if(rsAbs(dx) < rsAbs(x*tol))
       break;
@@ -191,12 +191,17 @@ T rsRootFinder<T>::householder3(const std::function<void(T, T*, T*, T*, T*)>& fu
   {
     func(x, &f, &f1, &f2, &f3);
     f  -= y;
-    dx  = householder3Step(f, f1, f2, f3);
+    dx  = stepHouseholder3(f, f1, f2, f3);
     x  += dx;
     if(rsAbs(dx) < rsAbs(x*tol))
       break;
   }
   return x;
+
+  // ToDo:
+  //
+  // - Let the user (optionally) pass tolerance and maxNumIterations. Maybe report iterations taken
+  //   in (optional) output parameter
 }
 
 
@@ -205,7 +210,7 @@ T rsRootFinder<T>::householder3(const std::function<void(T, T*, T*, T*, T*)>& fu
 
 
 ToDo: 
--Implement the modified false position method describen in Hamming's "Numerical Methods 
+-Implement the modified false position method described in Hamming's "Numerical Methods 
  for Scientists and Enginners (2nd Ed)", pages 65-67 - should converge better for functions with
  flat regions see also: https://en.wikipedia.org/wiki/False_position_method#The_Illinois_algorithm
  "When the new y-value has the same sign as the previous one, meaning that the data point before 
@@ -300,6 +305,18 @@ ToDo:
  method for root-finding without derivatives
 -Implement ternary search ("trisection"?) for finding minima or maxima. See:
  https://cp-algorithms.com/num_methods/ternary_search.html
+
+
+
+Resources for higher order variants of Newton iteration:
+
+  http://numbers.computation.free.fr/Constants/Algorithms/newton.html
+  https://tminka.github.io/papers/minka-newton.pdf
+  https://www.researchgate.net/publication/268555974_Beyond_Newton's_Method_Generalized_Higher-Order_Approximation_Methods
+    -> discusses Chebychev's method as a vector generalization of Halley's method
+  https://en.wikipedia.org/wiki/Householder%27s_method
+  https://archive.org/details/numericaltreatme0000hous
+
 
 
 */
