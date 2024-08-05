@@ -466,6 +466,7 @@ a meaningful measurement/feature of a sigmoid. Is it linear, quadratic, exponent
 
 Looks like the approach-rate of the invRat function is 2*(x + 1/4), see:
 https://www.desmos.com/calculator/iugvzyoeqs
+https://www.desmos.com/calculator/mzjko9scsm
 ...so it's indeed linear. Btw: the approach-rate function itself looks like a smooth version of
 the ReLU function - so maybe it could be useful as activation function in neural networks. See:
 https://www.desmos.com/calculator/mb982w6mkw
@@ -474,14 +475,20 @@ It makes sense to consider the ratio of the approach-rate and the proposed asymp
 that ratio approaches 1, the proposed asymptotic function is indeed asymptotically equivalent. 
 Maybe one could also consider their difference.
 
-The approach-rate for tanh looks more like an exponential - but not quite. More like exp(2x) / 2:
-https://www.desmos.com/calculator/hnhyhshyep
-
 The approach-rate of  x / sqrt(1+x^2)  looks kinda parabolic - a bit like (1.3 x + 1)^2 + 1. Or 
 maybe it's 2x^2. See:
 https://www.desmos.com/calculator/nbfhswqn19
 
+The approach-rate for tanh looks more like an exponential - but not quite. More like exp(2x) / 2:
+https://www.desmos.com/calculator/hnhyhshyep
+Oh - it seems to be exactly exp(2x)/2 + 1/2:
+https://www.desmos.com/calculator/oj7rmbite8
 
+erf(x)  ->  approach rate looks like k*x*exp(x^2)  for some constant k:
+https://www.desmos.com/calculator/v9sc1c1vsi
+
+atan(x)  ->  2.5*x
+https://www.desmos.com/calculator/d1s53s6efl
 
 
 
@@ -492,7 +499,8 @@ https://en.wikipedia.org/wiki/Asymptotology
 https://en.wikipedia.org/wiki/Asymptotic_analysis
 https://en.wikipedia.org/wiki/Asymptotic_expansion
 Maybe to find an asymptotic expression for some function f(x), we could to a Laurent expansion of 
-f(1/x) around 0 and the take the reciprocal of teh result?
+f(1/x) around 0 and the take the reciprocal of the result? What are the approach rates of erf, 
+etc.?
 
 
 
