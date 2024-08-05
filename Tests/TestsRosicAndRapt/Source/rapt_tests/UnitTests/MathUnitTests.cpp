@@ -585,8 +585,6 @@ bool testDerivativeBasedRootFinding()
   y  = 1.0 / 10.0;
   xt = 10.0;
   x0 = 1.0;
-
-
   f1 = [&](Real x, Real* f, Real* f1)
   {
     *f  =  1/(x);
@@ -600,12 +598,17 @@ bool testDerivativeBasedRootFinding()
     *f2 =  2/(x*x*x);
     numCalls++;
   };
-
-
-
-  ok &= test(1, 10);
-  ok &= test(2,  3);
-
+  f3 = [&](Real x, Real* f, Real* f1, Real* f2, Real* f3)
+  {
+    *f  =  1/(x);
+    *f1 = -1/(x*x);
+    *f2 =  2/(x*x*x);
+    *f3 = -6/(x*x*x*x);
+    numCalls++;
+  };
+  ok &= test(1, 10); // Newton takes 10 iterations in this case.
+  ok &= test(2,  3); // Big advantage for Halley's method over Newton: 3 vs 10 iterations
+  ok &= test(3,  3); // No further advantage for 3rd order method over Halley's 2nd order method.
 
 
 
@@ -613,7 +616,10 @@ bool testDerivativeBasedRootFinding()
 
   // ToDo:
   //
-  // - Maybe count iterations within f1,f2,f3. 
+  // - Figure out why the 3rd order method does not seem to give further advantages over the 2nd
+  //   order (Halley) method. Maybe the formula is not correct? Figure out! Maybe take different
+  //   examples. Maybe for some, the advantage is more clear? Or maybe there are other factors 
+  //   than order leading to diminishing returns when increasing the order further?
   //
   // - Use a high precision datatype such that we need more iterations to reach the precision 
   //   limit. Perhaps then we can see the differences in the convergence rates of the different 

@@ -106,6 +106,8 @@ public:
   // https://en.wikipedia.org/wiki/Newton%27s_method
   // https://de.wikipedia.org/wiki/Newtonverfahren
 
+  // maybe rename to stepNewton
+
   /** Under Construction */
   static T newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y = 0);
 
@@ -124,13 +126,20 @@ public:
   static T halley(const std::function<void(T, T*, T*, T*)>& func, T xGuess, T y = 0);
 
 
+  /** Implements one update step in the 3rd order Householder iteration method. The step uses the
+  formula xNew = xOld + dx with:
+  
+                3 * f^2 * f2  -  6 * f * f1^2
+    dx = -------------------------------------------
+          6 * f1^3  -  6 * f * f1 * f2  +  f^2 * f3
 
+  where f = f(x), f1 = f'(x), f2 = f''(x), f3 = f'''(x). */
   static T householder3Step(const T& f, const T& f1, const T& f2, const T& f3) 
-  { 
-    return (3*f*f*f2 - 6*f*f1*f1) / (6*f1*f1*f1 - 6*f*f1*f2 + f*f*f3);
-  }
+  { return (3*f*f*f2 - 6*f*f1*f1) / (6*f1*f1*f1 - 6*f*f1*f2 + f*f*f3); }
 
-
+  /** Implements root finding via the 3rd order Householder method. The function "func" must take 
+  the input a first parameter and produce the 0th, 1st, 2nd and 3rd derivative in the following 
+  output parameters which are passed by pointer. */
   static T householder3(const std::function<void(T, T*, T*, T*, T*)>& func, T xGuess, T y = 0);
 
 
