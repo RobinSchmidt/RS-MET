@@ -628,9 +628,18 @@ bool testDerivativeBasedRootFinding()
     *f2 = -1/(x*x);
     numCalls++;
   };
+  f3 = [&](Real x, Real* f, Real* f1, Real* f2, Real* f3)
+  {
+    *f  = log(x);
+    *f1 =  1/(x);
+    *f2 = -1/(x*x);
+    *f3 =  2/(x*x*x);
+    numCalls++;
+  };
 
   ok &= test(1, 6);
   ok &= test(2, 4);
+  ok &= test(3, 4);
 
 
 
@@ -642,8 +651,6 @@ bool testDerivativeBasedRootFinding()
   //   order (Halley) method. Maybe the formula is not correct? Figure out! Maybe take different
   //   examples. Maybe for some, the advantage is more clear? Or maybe there are other factors 
   //   than order leading to diminishing returns when increasing the order further?
-  //
-  // - Maybe try log(x)
   //
   // - Use a high precision datatype such that we need more iterations to reach the precision 
   //   limit. Perhaps then we can see the differences in the convergence rates of the different 
