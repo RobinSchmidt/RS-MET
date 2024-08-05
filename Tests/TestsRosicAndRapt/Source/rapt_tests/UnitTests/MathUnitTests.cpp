@@ -526,37 +526,70 @@ bool testDerivativeBasedRootFinding()
   Real y  = 0.8;      // y-value that we want to hit
   Real xt = asin(y);  // x-value that we want to find
   Real x0 = 0;        // Initial guess for x
-  Real x;             // Root produced by root-finder
-  Real d;             // Difference x - xt
+  //Real x;             // Root produced by root-finder
+  //Real d;             // Difference x - xt
   Real tol = 1.e-15;  // Tolerance
 
 
-  F1 f1 = [](Real x, Real* f, Real* f1)
+  int  numCalls = 0;  // Number of calls of the function f1, f2 or f3
+
+
+  F1 f1 = [&](Real x, Real* f, Real* f1)
   {
     *f  = sin(x);
     *f1 = cos(x);
+    numCalls++;
   };
-
-  F2 f2 = [](Real x, Real* f, Real* f1, Real* f2)
+  F2 f2 = [&](Real x, Real* f, Real* f1, Real* f2)
   {
     *f  =  sin(x);
     *f1 =  cos(x);
     *f2 = -sin(x);
+    numCalls++;
   };
-
-  F3 f3 = [](Real x, Real* f, Real* f1, Real* f2, Real* f3)
+  F3 f3 = [&](Real x, Real* f, Real* f1, Real* f2, Real* f3)
   {
     *f  =  sin(x);
     *f1 =  cos(x);
     *f2 = -sin(x);
     *f3 = -cos(x);
+    numCalls++;
+  };
+
+  // Helper function to perform the tests of the different methods. 1: Newton, 2: Halley, 3: 3rd
+  // order Householder. Newton and Halley are 1st and 2nd order Householder methods and they have 
+  // their own name.
+  auto test = [&](int method, int expectedIts)
+  {
+    numCalls = 0;     // Reset call/iteration counter. 1 call to f1, etc. is 1 iteration.
+    bool ok  = true;
+
+    Real x;
+    switch(method)
+    {
+    case 1: x = RF::newton(      f1, x0, y); break;
+    case 2: x = RF::halley(      f2, x0, y); break;
+    case 3: x = RF::householder3(f3, x0, y); break;
+    }
+
+    Real d = x - xt;
+    ok &= rsAbs(d) <= tol;
+    ok &= numCalls == expectedIts;
+    return ok;
   };
 
 
+  // Run the tests for the different method. We check, if the result is with the tolerance and if
+  // the number of iterations is as expected:
+  ok &= test(1, 6);  // Newton takes 6 iterations
+  ok &= test(2, 5);  // Halley takes 6 iterations
+  ok &= test(3, 4);  // 3rd order Householder takes 6 iterations
 
-  x = RF::newton(      f1, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 6 iterations
-  x = RF::halley(      f2, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 5 iterations
-  x = RF::householder3(f3, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 4 iterations
+
+  // Redundant:
+  //x = RF::newton(      f1, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 6 iterations
+  //x = RF::halley(      f2, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 5 iterations
+  //x = RF::householder3(f3, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 4 iterations
 
 
 
