@@ -488,42 +488,42 @@ double invRat2(double y)
 
 
 
-  double cbrt2 = cbrt(2.0);  // 2^(1/3)
-  double sqrt3 = sqrt(3.0);
-  double y2    = y*y;
-  double y3    = y*y2;
-  double y4    = y2*y2;
+  double a  = cbrt(2.0);  // 2^(1/3)
+  double b  = sqrt(3.0);
+  double y2 = y*y;
+  double y3 = y*y2;
+  double y4 = y2*y2;
 
-  double k1    = (128*y3 + 3*sqrt3* sqrt(256*y4 + 27*y2) + 27*y);
-  double cr1   = cbrt(k1);
-  double sr1   = sqrt((16*cbrt2*y)/cr1 + cr1/( cbrt2*y) + 4);
+  double k1  = (128*y3 + 3*b* sqrt(256*y4 + 27*y2) + 27*y);
+  double cr1 = cbrt(k1);
+  double sr1 = sqrt((16*a*y)/cr1 + cr1/(a*y) + 4);
 
 
-  return 0;  // preliminary
+  //return 0;  // preliminary
 
-  // x1 =  sqrt((16 2^(1/3) y)/cr1 + cr1/(2^(1/3) y) + 4)/(2 sqrt(3)) - 1/2 sqrt(-(16 2^(1/3) y)/(3 cr1) - cr1/(3 2^(1/3) y) - (2 sqrt(3))/(sqrt((16 2^(1/3) y)/cr1 + cr1/(2^(1/3) y) + 4) y) + 8/3) and y!=0
-  // x2 =  sqrt((16 2^(1/3) y)/cr1 + cr1/(2^(1/3) y) + 4)/(2 sqrt(3)) + 1/2 sqrt(-(16 2^(1/3) y)/(3 cr1) - cr1/(3 2^(1/3) y) - (2 sqrt(3))/(sqrt((16 2^(1/3) y)/cr1 + cr1/(2^(1/3) y) + 4) y) + 8/3) and y!=0
-  // x3 = -sqrt((16 2^(1/3) y)/cr1 + cr1/(2^(1/3) y) + 4)/(2 sqrt(3)) - 1/2 sqrt(-(16 2^(1/3) y)/(3 cr1) - cr1/(3 2^(1/3) y) + (2 sqrt(3))/(sqrt((16 2^(1/3) y)/cr1 + cr1/(2^(1/3) y) + 4) y) + 8/3) and y!=0
-  // x4 =  1/2 sqrt(-(16 2^(1/3) y)/(3 cr1) - cr1/(3 2^(1/3) y) + (2 sqrt(3))/(sqrt((16 2^(1/3) y)/cr1 + cr1/(2^(1/3) y) + 4) y) + 8/3) - sqrt((16 2^(1/3) y)/cr1 + cr1/(2^(1/3) y) + 4)/(2 sqrt(3)) and y!=0
+  // x1 - Nan:
+  // return sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)/(2*b) - 1./2 * sqrt(-(16*a*y)/(3*cr1) - cr1/(3*a*y) - (2*b)/(sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)*y) + 8./3.);
+
+  // x2 - Nan:
+  //return sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)/(2*b) + 1./2 * sqrt(-(16*a*y)/(3*cr1) - cr1/(3*a*y) - (2*b)/(sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)* y) + 8./3);
+
+  // x3 - looks wrong:
+  //return -sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)/(2*b) - 1./2 * sqrt(-(16*a*y)/(3*cr1) - cr1/(3*a*y) + (2*b)/(sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)*y) + 8./3);
+
+  // x4 - seems to have wrong sign but look otherwise ok:
+  return -(1./2 * sqrt(-(16*a*y)/(3*cr1) - cr1/(3*a*y) + (2*b)/(sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)*y) + 8./3) - sqrt((16*a*y)/cr1 + cr1/(a*y) + 4)/(2*b));
+  // OK - I just flipped the sign - now it looks ok
+
+  // x1 =  sqrt((16 a y)/cr1 + cr1/(a y) + 4)/(2 b) - 1/2 sqrt(-(16 a y)/(3 cr1) - cr1/(3 a y) - (2 b)/(sqrt((16 a y)/cr1 + cr1/(a y) + 4) y) + 8/3) 
+  // x2 =  sqrt((16 a y)/cr1 + cr1/(a y) + 4)/(2 b) + 1/2 sqrt(-(16 a y)/(3 cr1) - cr1/(3 a y) - (2 b)/(sqrt((16 a y)/cr1 + cr1/(a y) + 4) y) + 8/3) 
+  // x3 = -sqrt((16 a y)/cr1 + cr1/(a y) + 4)/(2 b) - 1/2 sqrt(-(16 a y)/(3 cr1) - cr1/(3 a y) + (2 b)/(sqrt((16 a y)/cr1 + cr1/(a y) + 4) y) + 8/3)
+  // x4 =  1/2 sqrt(-(16 a y)/(3 cr1) - cr1/(3 a y) + (2 b)/(sqrt((16 a y)/cr1 + cr1/(a y) + 4) y) + 8/3) - sqrt((16 a y)/cr1 + cr1/(a y) + 4)/(2 b) 
 
 
   //double r1 = 
 
-  //return sqrt((16*cbrt2*y) / cr1  
-  //  + cr1  / (cbrt2*y)+4)/(2*sqrt3) 
-  //  + 1./2 * sqrt(-(16 * cbrt2 * y)/(3 * cr1) 
-  //  - cr1 / (3*cbrt2*y) 
-  //  - (2*sqrt3)/( sr1 * y) + 8./3.);
 
   
-  //return sqrt((16*cbrt2*y) / cr1  
-  //  + cr1  / (cbrt2*y)+4)/(2*sqrt3) 
-  //  - 1./2 * sqrt(-(16 * cbrt2 * y)/(3 * cr1) 
-  //  - cr1 / (3*cbrt2*y) 
-  //  - (2*sqrt3)/(sqrt((16*cbrt2*y)/cr1 
-  //  + cr1 / ( cbrt2*y) + 4)*y) + 8./3.);
-  
-
 
 
   // x1 =  sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4)/(2 sqrt(3)) - 1/2 sqrt(-(16 2^(1/3) y)/(3 (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)) - (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(3 2^(1/3) y) - (2 sqrt(3))/(sqrt((16 2^(1/3) y)/(128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3) + (128 y^3 + 3 sqrt(3) sqrt(256 y^4 + 27 y^2) + 27 y)^(1/3)/(2^(1/3) y) + 4) y) + 8/3) and y!=0
