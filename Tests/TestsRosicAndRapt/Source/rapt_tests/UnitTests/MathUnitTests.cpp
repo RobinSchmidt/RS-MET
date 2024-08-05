@@ -525,6 +525,8 @@ bool testDerivativeBasedRootFinding()
   Real xt = asin(y);  // x-value that we want to find
   Real x0 = y;        // Initial guess for x
   Real x;             // Root produced by root-finder
+  Real d;             // Difference x - xt
+  Real tol = 1.e-15;  // Tolerance
 
 
   F1 f1 = [](Real x, Real* f, Real* f1)
@@ -535,6 +537,10 @@ bool testDerivativeBasedRootFinding()
 
 
   x = RF::newton(f1, x0, y);
+  d = x - xt;
+  ok &= rsAbs(d) <= tol;
+  // takes 5 iterations
+
 
 
 

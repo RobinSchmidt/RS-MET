@@ -131,15 +131,12 @@ void rsRootFinder<T>::findBracket(const std::function<T(T)>& f, T* xL, T* xR, T 
 }
 
 template<class T>
-T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y)
+T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T x, T y)
 {
   static const int maxNumIterations = 60;
   T tol = std::numeric_limits<T>::epsilon();
 
-
-  T x = xGuess;
   T f, f1, dx;
-
   for(int i = 1; i <= maxNumIterations; i++)
   {
     func(x, &f, &f1);
@@ -149,9 +146,12 @@ T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T xGuess, 
     if(rsAbs(dx) < rsAbs(x*tol))
       break;
   }
-
-
   return x;
+
+  // ToDo:
+  //
+  // - Let the user (optionally) pass tolerance and maxNumIterations. Maybe report iterations taken
+  //   in (optional) output parameter
 }
 // Needs tests
 
