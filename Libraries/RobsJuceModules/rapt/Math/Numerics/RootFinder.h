@@ -114,11 +114,14 @@ public:
 
 
 
-  //static T halleyStep(const T& f, const T& f1, const T& f2) { return (2*f*f1) / (f*f2 - 2*f1*f1); }
+  static T halleyStep(const T& f, const T& f1, const T& f2) { return (2*f*f1) / (f*f2 - 2*f1*f1); }
   // can be used like x += halleyStep(f, f1, f2) where f,f1,f2 are: value, 1st derivative, 
   // 2nd derivative respectively
   // https://en.wikipedia.org/wiki/Halley%27s_method
   // https://de.wikipedia.org/wiki/Halley-Verfahren
+
+
+  static T halley(const std::function<void(T, T*, T*, T*)>& func, T xGuess, T y = 0);
 
 
   // Has formula with 3 derivatives:

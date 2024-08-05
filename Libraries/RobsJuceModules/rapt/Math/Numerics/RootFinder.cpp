@@ -155,6 +155,30 @@ T rsRootFinder<T>::newton(const std::function<void(T, T*, T*)>& func, T x, T y)
 }
 // Needs tests
 
+template<class T>
+T rsRootFinder<T>::halley(const std::function<void(T, T*, T*, T*)>& func, T x, T y)
+{
+  static const int maxNumIterations = 60;
+  T tol = std::numeric_limits<T>::epsilon();
+
+  T f, f1, f2, dx;
+  for(int i = 1; i <= maxNumIterations; i++)
+  {
+    func(x, &f, &f1, &f2);
+    f  -= y;
+    dx  = halleyStep(f, f1, f2);
+    x  += dx;
+    if(rsAbs(dx) < rsAbs(x*tol))
+      break;
+  }
+  return x;
+
+  // ToDo:
+  //
+  // - Let the user (optionally) pass tolerance and maxNumIterations. Maybe report iterations taken
+  //   in (optional) output parameter
+}
+
 
 /*
 

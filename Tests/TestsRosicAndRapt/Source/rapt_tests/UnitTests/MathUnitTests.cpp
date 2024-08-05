@@ -535,11 +535,19 @@ bool testDerivativeBasedRootFinding()
     *f1 = cos(x);
   };
 
+  F2 f2 = [](Real x, Real* f, Real* f1, Real* f2)
+  {
+    *f  =  sin(x);
+    *f1 =  cos(x);
+    *f2 = -sin(x);
+  };
 
-  x = RF::newton(f1, x0, y);
-  d = x - xt;
-  ok &= rsAbs(d) <= tol;
-  // takes 5 iterations
+
+
+  x = RF::newton(f1, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 5 iterations
+  x = RF::halley(f2, x0, y); d = x-xt; ok &= rsAbs(d) <= tol;  // Takes 4 iterations
+
+
 
 
 
