@@ -611,6 +611,28 @@ bool testDerivativeBasedRootFinding()
   ok &= test(3,  3); // No further advantage for 3rd order method over Halley's 2nd order method.
 
 
+  // Use f(x) = log(x)
+  y  = 2.0;
+  xt = exp(y);
+  x0 = 5.0;
+  f1 = [&](Real x, Real* f, Real* f1)
+  {
+    *f  = log(x);
+    *f1 =  1/(x);
+    numCalls++;
+  };
+  f2 = [&](Real x, Real* f, Real* f1, Real* f2)
+  {
+    *f  = log(x);
+    *f1 =  1/(x);
+    *f2 = -1/(x*x);
+    numCalls++;
+  };
+
+  ok &= test(1, 6);
+  ok &= test(2, 4);
+
+
 
   return ok;
 
