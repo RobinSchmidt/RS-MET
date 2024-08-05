@@ -133,9 +133,11 @@ public:
     dx = -------------------------------------------
           6 * f1^3  -  6 * f * f1 * f2  +  f^2 * f3
 
-  where f = f(x), f1 = f'(x), f2 = f''(x), f3 = f'''(x). */
+  where f = f(x), f1 = f'(x), f2 = f''(x), f3 = f'''(x). See:
+  https://en.wikipedia.org/wiki/Householder%27s_method#Example  */
   static T householder3Step(const T& f, const T& f1, const T& f2, const T& f3) 
   { return (3*f*f*f2 - 6*f*f1*f1) / (6*f1*f1*f1 - 6*f*f1*f2 + f*f*f3); }
+
 
   /** Implements root finding via the 3rd order Householder method. The function "func" must take 
   the input a first parameter and produce the 0th, 1st, 2nd and 3rd derivative in the following 
@@ -143,9 +145,7 @@ public:
   static T householder3(const std::function<void(T, T*, T*, T*, T*)>& func, T xGuess, T y = 0);
 
 
-  // Has formula with 3 derivatives:
-  // https://en.wikipedia.org/wiki/Householder%27s_method#Example
-  // return (3*f*f*f2 - 6*f*f1*f1) / (6*f1*f1*f1 - 6*f*f1*f2 + f*f*f3);
+
 
   // Higher order variants of Newton iteration:
   // http://numbers.computation.free.fr/Constants/Algorithms/newton.html
