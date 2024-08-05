@@ -450,10 +450,12 @@ with a = 1, we recover the old one.
 
 More variations:
 y = -x    / ((x  -1)*(x  +1))
+y =  x    / ((x-1)^2*(x+1)^2)    ...has even slower approach-rate
 y = -x    / ((x^3-1)*(x^3+1))
+y = -x^3  / ((x  -1)*(x  +1))
 y = -x^3  / ((x^3-1)*(x^3+1))
-y = -4x^3 / ((x^3-1)*(x^3+1))
 y = -x^3  / ((x-1)^3*(x+1)^3)
+y = -4x^3 / ((x^3-1)*(x^3+1))
 y =  -x   / sqrt(|x^2-1|)
 ...these need to be inverted, of course.
 
