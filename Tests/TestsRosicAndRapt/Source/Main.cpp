@@ -134,7 +134,8 @@ int main(int argc, char* argv[])
 
   //numericOptimization();
   //numericMinimization1D();
-  //numericRootFinding1D();
+  numericRootFinding1D();
+
 
   //polynomialSinc();
   //polynomialPrediction();  // not yet implemented

@@ -493,8 +493,6 @@ atan(x)  ->  2.5*x
 https://www.desmos.com/calculator/d1s53s6efl
 
 
-
-
 Try to find more accurate asymptotic expressions in a systematic way - these were found by trial 
 and error. See: 
 https://en.wikipedia.org/wiki/Asymptotology
@@ -504,7 +502,21 @@ Maybe to find an asymptotic expression for some function f(x), we could to a Lau
 f(1/x) around 0 and the take the reciprocal of the result? What are the approach rates of erf, 
 etc.?
 
+To design sigmoids according to desired approach rates:
+-Let's call the approach-rate function g. It's defined as  g = 1 / (1-f)  where f = f(x) is our
+ sigmoid.
+-Solving for f gives:  f = (g-1) / g
+-g should perhaps be a function that smoothly crossfades between a constant and the desired growth
+ function
 
+-Looking at functions like  x / (1 - x^2), sin(pi*x/2) / cos(pi*x/2), it looks like we need a 
+ numerator function that goes from -1 to +1 and a denominator function that goes from 0 to 1 to 0
+ in an arc. Then invert the function. This could be a general recipe to produce sigmoids. The exact
+ shape of numerator and denomiator determine the approach rate (as well as other features)
+ See: https://www.desmos.com/calculator/o9jlteohlh
+ We can also parametrize the numerator  x  as  ((1-a)*x + a*x^3) / (1-a)
+ https://www.desmos.com/calculator/tkrn9pyrx0
+ with a in [0,1). With a = 0, we recover the numerator x
 
 Maybe implement these in C++
 https://easings.net/

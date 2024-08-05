@@ -93,9 +93,29 @@ public:
   //}
 
 
-
   //static T modifiedFalsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
 
+  //static T newtonStep(const T& f, const T& fp) { return -f/fp; }
+  // can be used like x += newtonStep(f, fp)
+  // https://en.wikipedia.org/wiki/Newton%27s_method
+  // https://de.wikipedia.org/wiki/Newtonverfahren
+
+  //static T halleyStep(const T& f, const T& f1, const T& f2) { return (2*f*f1) / (f*f2 - 2*f1*f1); }
+  // can be used like x += halleyStep(f, f1, f2) where f,f1,f2 are: value, 1st derivative, 
+  // 2nd derivative respectively
+  // https://en.wikipedia.org/wiki/Halley%27s_method
+  // https://de.wikipedia.org/wiki/Halley-Verfahren
+
+
+  // Has formula with 3 derivatives:
+  // https://en.wikipedia.org/wiki/Householder%27s_method#Example
+
+  // Higher order variants of Newton iteration:
+  // http://numbers.computation.free.fr/Constants/Algorithms/newton.html
+  // https://tminka.github.io/papers/minka-newton.pdf
+  // https://www.researchgate.net/publication/268555974_Beyond_Newton's_Method_Generalized_Higher-Order_Approximation_Methods
+  // https://en.wikipedia.org/wiki/Householder%27s_method
+  // https://archive.org/details/numericaltreatme0000hous
 
   // secant, newton, ridders, brent, ...
 

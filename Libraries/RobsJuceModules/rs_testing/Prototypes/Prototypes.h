@@ -197,7 +197,8 @@ without any attempt to optimize the efficiency. I recommend to use rsFraction<in
 parameter T. Maybe the algo can be turned into an O(N) algo by not creating the polynomial p from 
 scratch leaving out the i=j factor each time but instead construction a "master" polynomial and 
 dividing out the i=j factor in each iteration. Oh, and the factorials could be computed more 
-efficiently, too. */
+efficiently, too. Oh - and it allocates in the loop, too (due to constructor of Poly - and more).
+So, that's definitely prototype code not meant for production use. */
 template<class T>
 std::vector<T> coeffsAdamsBashforth(int order)
 {
