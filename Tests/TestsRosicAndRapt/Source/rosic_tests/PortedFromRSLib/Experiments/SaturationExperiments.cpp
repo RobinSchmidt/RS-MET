@@ -575,11 +575,11 @@ void sigmoidGrowthRates()
   Vec cInvRat(N), cInvRat2(N);
 
   // Guessed growth rate functions:
-  Vec gInvRat(N);
+  Vec gInvRat(N), gInvRat2(N);
 
 
   // Ratios between actual and guessed growth rates:
-  Vec rInvRat(N);
+  Vec rInvRat(N), rInvRat2(N);
 
 
   for(int n = 0; n < N; n++)
@@ -591,14 +591,17 @@ void sigmoidGrowthRates()
     gInvRat[n] = 2 * x[n] + 0.5;
     rInvRat[n] = cInvRat[n] / gInvRat[n];
 
+    y = invRat2(x[n]);
+    cInvRat2[n] = 1 / (1 - y);
+
+
+
   }
 
-
-
   GNUPlotter plt;
-  plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0], &rInvRat[0]);
+  //plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0], &rInvRat[0]);
+  plt.addDataArrays(N, &x[0], &cInvRat[0], &cInvRat2[0]);
   plt.plot();
-
 
   int dummy = 0;
 
