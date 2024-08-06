@@ -534,6 +534,11 @@ To design sigmoids according to desired approach rates:
  -start with desired growth function g = 1 / (1-f) and solve for f = (g-1) / g
  -starting with some function f(x) and then doing f_o(x) / f_e(x) where f_o, f_e are the even and
   odd parts of f. That's how tanh is built from exp. Maybe that can be applied to more general f.
+ -dividing a linear or smooth-step function (like identity, sine,...) something that goes from 
+  -1 to +1 in -1..+1 by an "arc" function (like 1-x^2, cosine,...) that goes from 1 to 0 to 1 and 
+  then inverting the resulting function.
+
+Maybe make a KVR thread - design and analysis of sigmoids
 
 
 Maybe implement these in C++
