@@ -577,6 +577,11 @@ void sigmoidGrowthRates()
   // Guessed growth rate functions:
   Vec gInvRat(N);
 
+
+  // Ratios between actual and guessed growth rates:
+  Vec rInvRat(N);
+
+
   for(int n = 0; n < N; n++)
   {
     Real y;
@@ -584,13 +589,14 @@ void sigmoidGrowthRates()
     y = PS::invRational(x[n]);
     cInvRat[n] = 1 / (1 - y);
     gInvRat[n] = 2 * x[n] + 0.5;
+    rInvRat[n] = cInvRat[n] / gInvRat[n];
 
   }
 
 
 
   GNUPlotter plt;
-  plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0]);
+  plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0], &rInvRat[0]);
   plt.plot();
 
 
@@ -600,6 +606,9 @@ void sigmoidGrowthRates()
   // ToDo:
   //
   // - Maybe rename to sigmoidApproachRates or sigmoidConvergenceRate
+  //
+  // - Form quotient of actual rate and guessed rate function. If it approaches 1 as x -> inf, the 
+  //   guess is asymptotically equivalent.
 }
 
 
