@@ -593,14 +593,21 @@ void sigmoidGrowthRates()
 
     y = invRat2(x[n]);
     cInvRat2[n] = 1 / (1 - y);
-
+    gInvRat2[n] = 2 * sqrt(x[n]);
+    rInvRat2[n] = cInvRat2[n] / gInvRat2[n];
+    // Looks good but match can possibly improved by adding a small offset
 
 
   }
 
   GNUPlotter plt;
+
   //plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0], &rInvRat[0]);
-  plt.addDataArrays(N, &x[0], &cInvRat[0], &cInvRat2[0]);
+
+  plt.addDataArrays(N, &x[0], &cInvRat2[0], &gInvRat2[0], &rInvRat[0]);
+
+
+  //plt.addDataArrays(N, &x[0], &cInvRat[0], &cInvRat2[0]);
   plt.plot();
 
   int dummy = 0;
