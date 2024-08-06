@@ -483,31 +483,29 @@ void quarticMonotonic()
 
 double invRat2(double y)
 {
-  // Inverse of f(x) = -x / ((x+1)^2 * (x-1)^2)
-
-  // UNDER CONSTRUCTION. The output from Wolfram Alpha is a mess. We need to extract repetitive terms 
-  // and simplify....OK kinda done - but this needs to be cleaned up
+  // Inverse function of y = f(x) = -x / ((x+1)^2 * (x-1)^2) for y >= 0. The formulas have been 
+  // produced with Wolfram Alpha using:
+  // https://www.wolframalpha.com/input?i=solve+y+%3D+-x+%2F+%28%28x-1%29%5E2*%28x%2B1%29%5E2%29+for+x
+  // And then manually extracting repetitive terms in the resulting mess. The result is still not 
+  // pretty. I had to use the 4th solution - and for some reason flip the overall sign (why?). Oh!
+  // I think, the function f(x) should not use -x in the numerator but +x. Maybe in practice, we 
+  // would be better of with a root-finder of f instead of using this messy formula - Newton or 
+  // Halley or something. 
 
   if(y == 0.0)
-    return 0.0;
+    return 0.0;           // Because the formula divides by y
 
-  double a   = cbrt(2.0);  // 2^(1/3)
-  double b   = sqrt(3.0);
-  double y2  = y*y;
-  double y3  = y*y2;
-  double y4  = y2*y2;
-  double k1  = (128*y3 + 3*b* sqrt(256*y4 + 27*y2) + 27*y);
-  double cr1 = cbrt(k1);
-  double sr1 = sqrt((16*a*y)/cr1 + cr1/(a*y) + 4);
-  double ay  = a*y;
+  double a  = cbrt(2.0);
+  double b  = sqrt(3.0);
+  double y2 = y*y;
+  double y3 = y*y2;
+  double y4 = y2*y2;
+  double c  = cbrt(128*y3 + 3*b* sqrt(256*y4 + 27*y2) + 27*y);
+  double d  = sqrt((16*a*y)/c + c/(a*y) + 4);
+  double ay = a*y;
 
-  return -(1./2 * sqrt(-(16*ay)/(3*cr1) - cr1/(3*ay) + (2*b)/(sr1*y) + 8./3) 
-                - sqrt( (16*ay)/cr1     + cr1/(ay)   + 4           )/(2*b) );
-
-  // See:
-  // https://www.wolframalpha.com/input?i=solve+y+%3D+-x+%2F+%28%28x-1%29%5E2*%28x%2B1%29%5E2%29+for+x
-  // I had to use the 4th solution - and for some reason flip the overall sign.
-  // Maybe we would be better of with a root-finder - Newton or Halley or something
+  return -(1./2 * sqrt(-(16*ay)/(3*c) - c/(3*ay) + (2*b)/(d*y) + 8./3) 
+                - sqrt( (16*ay)/c     + c/(ay)   + 4         )/(2*b) );
 }
 
 void sigmoidPrototypes()
