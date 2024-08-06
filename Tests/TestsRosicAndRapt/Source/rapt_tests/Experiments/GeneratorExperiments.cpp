@@ -4450,7 +4450,7 @@ void sineSweepBassdrum3()
 {
   // Hmm - maybe the function f(t) used above might not be the best choice after all.
   // Maybe it's better to use a function of the form  f(t) = a / (1 + b*t)^p  for the instantaneous
-  // frequency. The higherst freq fH will be given driectly by a. For p, we can use p = 2^shape 
+  // frequency. The higherst freq fH will be given directly by a. For p, we can use p = 2^shape 
   // where shape = -2..+2, say. We can compute b by solving 50 = a / (1 + b*t50)^p where t50 is the
   // time at which f passes through 50 Hz - which is a nice reference frequency for bassdrums.
 
@@ -4587,7 +4587,7 @@ void sineSweepBassdrum4()
   //
   // ...TBC...
   //
-  // The rersults from this are the basis of the algorithm in rosic::rsFreqSweeper
+  // The results from this are the basis of the algorithm in rosic::rsFreqSweeper. 
 
   using Real      = double;
 
@@ -4661,6 +4661,8 @@ void sineSweepBassdrum4()
   //  integration is the way to go. -> Figure out if a trapezoidal integration is better behaved 
   //  with respect to different sample-rates, i.e. produces more similar results at different 
   //  sample rates. It probably is the better way.
+  // -Maybe try a simple  f(t) = sin(a/max(c,t))  function. Here, a controls the sweep rate and 
+  //  c > 0 the initial frequency and avoids division by 0.
 
   /*
   // OK - here is some Sage code for a simplified version of the function with some additional 

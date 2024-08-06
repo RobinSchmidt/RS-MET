@@ -553,6 +553,57 @@ void sigmoidPrototypes()
   // - Add symmetrized versions for all the functions in rsPositiveSigmoids and the use them here.
 }
 
+void sigmoidGrowthRates()
+{
+  // Under construction.
+  //
+  // We plot the growth rates of various sigmoids. If the sigmoid is given by f = f(x), we define 
+  // the growth rate as g(x) = 1 / (1-f).
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using PS   = rsPositiveSigmoids<Real>;
+
+  int   N    = 1001;
+  Real  xMin =  0.0;
+  Real  xMax = 50.0;
+
+
+  Vec x = rsRangeLinear(xMin, xMax, N);
+
+  // Actual grwoth rates as measured:
+  Vec cInvRat(N), cInvRat2(N);
+
+  // Guessed growth rate functions:
+  Vec gInvRat(N);
+
+  for(int n = 0; n < N; n++)
+  {
+    Real y;
+
+    y = PS::invRational(x[n]);
+    cInvRat[n] = 1 / (1 - y);
+    gInvRat[n] = 2 * x[n] + 0.5;
+
+  }
+
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0]);
+  plt.plot();
+
+
+  int dummy = 0;
+
+
+  // ToDo:
+  //
+  // - Maybe rename to sigmoidApproachRates or sigmoidConvergenceRate
+}
+
+
+
 // value of the polynomial a1*x + a4*x^4 + a5*x^5 + a6*x^6
 double sixticValue(double x, double a1, double a4, double a5, double a6)
 {

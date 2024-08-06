@@ -581,7 +581,8 @@ int main(int argc, char* argv[])
   //saturator();
   //sigmoidScaleAndShift();
   //quarticMonotonic();
-  sigmoidPrototypes();
+  //sigmoidPrototypes();
+  sigmoidGrowthRates();   // rename to sigmoidConvergenceRates
   //sixticPositive();
   //hilbertDistortion();
 
