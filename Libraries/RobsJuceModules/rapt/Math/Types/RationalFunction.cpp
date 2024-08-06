@@ -450,4 +450,20 @@ for integrating, see here: ftp://ftp.cs.wisc.edu/pub/techreports/1970/TR91.pdf
 page 9 in particluar - we could let the function return another rational function for the rational 
 part and the alpha_i, b_i coeffs for the transcendental part
 
+-Implement evaluation with derivative. Use quotient rule  (u/v)' = (u'*v - v'*u) / v^2. The 
+ polynomial class has a function to evaluate the polynomial with derivative. Use that. Oh - we 
+ already have valueAndSlopeAt. 
+-Derive formula for (u/v)'' in terms of u,u',u'',v,v',v'' and implement that, too. Use quotient 
+ rule on ((u'*v - v'*u) / v^2)'   v^2' = 2*v*v', so I think, we get:
+    ((u'*v - v'*u)' * v^2 - (u'*v - v'*u)*2*v*v) / (v^4) 
+ =  ( ( (u''*v + u'*v')  - (v''*u + v'*u') )' * v^2 - (u'*v - v'*u)*2*v*v) / (v^4) 
+ ...Verify this! Check the formulas numerically by comparing to numerical differentiation result.
+ Add a function valueSlopeAndCurvature or valueAndDerivatives2. Look into rsPolynomial (it has such 
+ functions) and use matching naming conventions and API.
+-Add a function evaluateInverse(y, xGuess). It should use Newton or Halley iteration (using the 
+ evaluation with derivative(s) function) to find an x such that r(x) = y. The rational function 
+ r(x) may not be invertible, so the user should provide an initial guess for x and the function 
+ will produce a value near the given x
+
+
 */

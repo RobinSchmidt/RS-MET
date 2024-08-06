@@ -526,19 +526,18 @@ void sigmoidPrototypes()
   int n;
   double yHard[N], yCubic[N], yQuartic[N], yHexic[N], ySoft[N], yTanh[N], yInvRat[N], yInvRat2[N];
 
-  using NS = rsNormalizedSigmoids<double>;
+  using PS = rsPositiveSigmoids<double>;    // Try to get rid by implementing symmetrized versions 
+  using NS = rsNormalizedSigmoids<double>;  // ..in NS for all functions in PS
 
   for(n = 0; n < N; n++) yHard[n]    = NS::clip(x[n]);
   for(n = 0; n < N; n++) yCubic[n]   = NS::cubic(x[n]);
   for(n = 0; n < N; n++) yQuartic[n] = NS::quartic(x[n]);
   for(n = 0; n < N; n++) yHexic[n]   = NS::hexic(x[n]);
-  for(n = 0; n < N; n++) ySoft[n]    = rsPositiveSigmoidsD::softClipHexic(x[n], t);
+  for(n = 0; n < N; n++) ySoft[n]    = PS::softClipHexic(x[n], t);
   for(n = 0; n < N; n++) yTanh[n]    = NS::tanh(x[n]);
-  for(n = 0; n < N; n++) yInvRat[n]  = rsPositiveSigmoidsD::invRational(x[n]);
+  for(n = 0; n < N; n++) yInvRat[n]  = PS::invRational(x[n]);
   for(n = 0; n < N; n++) yInvRat2[n] = invRat2(x[n]);
 
-  // Using NS:: for ySoft doesn't compile - why? ...Ahh - the function with parameter t is only 
-  // available in rsPositiveSigmoidsD but not in rsNormalizedSigmoids
 
   GNUPlotter plt;
   //plt.addDataArrays(N, x, yHard);

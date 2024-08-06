@@ -524,6 +524,18 @@ To design sigmoids according to desired approach rates:
  https://www.desmos.com/calculator/tkrn9pyrx0
  with a in [0,1). With a = 0, we recover the numerator x
 
+-General ideas for prodcuing sigmoids:
+ -integrating bell functions
+ -differentiating a function that looks like soft-abs (somewhere i have constructed such a 
+  soft-abs function)
+ -inverting functions with zeros at 0 and poles at +-1
+ -maybe generalize x / sqrt(1+x^2)  to  p(x) / sqrt(q(x))  where p has odd degree and only odd 
+  terms, q has twice the degree of p and only even terms
+ -start with desired growth function g = 1 / (1-f) and solve for f = (g-1) / g
+ -starting with some function f(x) and then doing f_o(x) / f_e(x) where f_o, f_e are the even and
+  odd parts of f. That's how tanh is built from exp. Maybe that can be applied to more general f.
+
+
 Maybe implement these in C++
 https://easings.net/
 Clicking on the graphics will lead to a page where javascript code is given for the functions

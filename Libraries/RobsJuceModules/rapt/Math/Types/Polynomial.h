@@ -105,24 +105,24 @@ public:
   /** Shifts the polynomial up and down in the y direction by the given dy. */
   void shiftY(T dy) { coeffs[0] += dy; }
 
-  /** Turns this polynomial into the indefinite integral of itself with integration constant c 
-  (this c becomes the coeff fo x^0 = 1). */
+  /** Turns this polynomial into the indefinite integral of itself with integration constant c.
+  This c becomes the coeff for x^0 = 1. */
   void integrate(T c = T(0))
   { 
     coeffs.resize(coeffs.size()+1);
     integral(&coeffs[0], &coeffs[0], getDegree()-1, c); // -1 bcs resize has increased degree
   }
 
-  /** Sets the allcoated degree of this polynomial. The "allocated" qualifier means, that we are 
+  /** Sets the allcated degree of this polynomial. The "allocated" qualifier means, that we are 
   talking about the length of the coeff array (minus 1) regardless whether the highest coeff in 
   this array is zero or not. If the new degree is less than the old one, we'll just cut off the 
   coefficient array at the given new endpoint. If the new degree is greater than the old one, we
   take over the lower coefficients and fill higher coefficients with zero. */
   void setAllocatedDegree(int newDegree) { coeffs.resize(newDegree+1); }
 
-  /** Adds the givne polynomial q multiplied by a scalar weight into this one. If q has higher 
-  degree thatn this one, the degree of this will be increased to accomodate for the higher 
-  coefficients in q - so the function may reallocate memory. */
+  /** Adds the given polynomial q multiplied by a scalar weight into this one. If q has higher 
+  degree than this one, the degree of this will be increased to accomodate for the higher 
+  coefficients in q - so the function may reallocate memory in this case. */
   void addWithWeight(const rsPolynomial<T>& q, T w)
   {
     int qDeg = q.getDegree();
@@ -146,15 +146,16 @@ public:
   highest power of x which has a nonzero coefficient....but the function currently just returns the 
   degree as it is determined by the length of the coefficient array, not checking if that last 
   value is zero because doing so would need some tolerance when using floating point numbers and 
-  i'm not yet sure, how to best handle that...typically, client code wants to know, how long the
-  coefficient array is anyway....tbc... */
+  I'm not yet sure, how to best handle that...typically, client code wants to know, how long the
+  coefficient array is anyway....TBC... */
   int getDegree() const { return (int)coeffs.size()-1; }
   // should take into account trailing zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
   // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
   // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
   // defaulting to 0...but no - the calls may still be ambiguous from client code, when nothing is 
-  // passed...it's also confusing to pass a number into such a getter
+  // passed...it's also confusing to pass a number into such a getter. 
+  // Maybe rename the function to getAllocatedDegree to reflect setAllocatedDegree
 
   /** Returns a const pointer to our std::vector of coefficients. */
   const std::vector<T>& getCoeffs() const { return coeffs; }
@@ -197,10 +198,12 @@ public:
   }
   // Maybe rename to getCoeffSafe.
 
-  /** Returns a pointer to our coefficient array - breaks encapsulation - use with care! */
+  /** Returns a pointer to our coefficient array. Breaks encapsulation! So, use with utmost care 
+  and maybe try to avoid using it at all! */
   T* getCoeffPointer() { return &coeffs[0]; }
   // Try to get rid of this - when we really need low-level access to the coeff-array, we declare 
-  // the functions/classes that need it as friends. Comment this out later
+  // the functions/classes that need it as friends. Comment this out later. Figure out where and 
+  // why we need this and try to find better solutions for these situations.
 
   const T* getCoeffPointerConst() const { return &coeffs[0]; }
 
@@ -221,23 +224,15 @@ public:
   /** \name Operators */
 
   /** Adds two polynomials. */
-  rsPolynomial<T> operator+(const rsPolynomial<T>& q) const {
+  rsPolynomial<T> operator+(const rsPolynomial<T>& q) const 
+  {
+    T one = rsUnityValue(coeffs[0]);  // T(1) doesn't work when T == rsModularInteger
     rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
-
-    // new:
-    T one = rsUnityValue(coeffs[0]);
-    weightedSum(coeffs.data(), getDegree(), one,
-      q.coeffs.data(), q.getDegree(), one,
-      r.coeffs.data());
-
-
-    // old:
-    //weightedSum(coeffs.data(), getDegree(), T(1),
-    //  q.coeffs.data(), q.getDegree(), T(1),
-    //  r.coeffs.data());
-
+    weightedSum(  coeffs.data(),   getDegree(), one, 
+                q.coeffs.data(), q.getDegree(), one, r.coeffs.data());
     return r;
   }
+  // Maybe move to .cpp file
 
   /** Adds the polynomial b to "this" polynomial. */
   rsPolynomial<T>& operator+=(const rsPolynomial<T>& b) 
