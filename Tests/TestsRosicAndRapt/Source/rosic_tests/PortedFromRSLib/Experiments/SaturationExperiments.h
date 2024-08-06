@@ -10,7 +10,7 @@ void saturator();
 void sigmoidScaleAndShift();
 void quarticMonotonic();
 void sigmoidPrototypes();
-void sigmoidGrowthRates();
+void sigmoidConvergenceRates();
 void sixticPositive();
 void hilbertDistortion();
 

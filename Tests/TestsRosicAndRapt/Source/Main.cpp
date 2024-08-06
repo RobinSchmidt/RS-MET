@@ -582,7 +582,7 @@ int main(int argc, char* argv[])
   //sigmoidScaleAndShift();
   //quarticMonotonic();
   //sigmoidPrototypes();
-  sigmoidGrowthRates();   // rename to sigmoidConvergenceRates
+  sigmoidConvergenceRates();
   //sixticPositive();
   //hilbertDistortion();
 

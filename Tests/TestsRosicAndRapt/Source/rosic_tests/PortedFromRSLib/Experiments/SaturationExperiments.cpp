@@ -553,12 +553,14 @@ void sigmoidPrototypes()
   // - Add symmetrized versions for all the functions in rsPositiveSigmoids and the use them here.
 }
 
-void sigmoidGrowthRates()
+void sigmoidConvergenceRates()
 {
   // Under construction.
   //
-  // We plot the growth rates of various sigmoids. If the sigmoid is given by f = f(x), we define 
-  // the growth rate as g(x) = 1 / (1-f).
+  // We plot the convergence rates of various sigmoids. If the sigmoid is given by f = f(x), we 
+  // define the convergence rate as c(x) = 1 / (1-f). Along with the actually measired convergence
+  // rate, we plot a "guess" function that is supposed to be asymptotically equivalent to c(x), 
+  // i.e. the limit of the quotient between actual and guess approaches 1 as x -> inf.
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -615,10 +617,18 @@ void sigmoidGrowthRates()
 
   // ToDo:
   //
-  // - Maybe rename to sigmoidApproachRates or sigmoidConvergenceRate
+  // - Try to derive the asymptotic "guess" functions algebraically starting from the definition 
+  //   c(x) = 1 / (1-f(x)) and simplify by scrapping terms that don't matter as x -> inf, etc.
   //
   // - Form quotient of actual rate and guessed rate function. If it approaches 1 as x -> inf, the 
   //   guess is asymptotically equivalent.
+
+  // Conclusions:
+  //
+  // - It appears, we can design sigmoids with convergence rates of inverse powers of n, i.e. like
+  //   c(x) ~ x^(1/n)  by using the inverse function of x / ((x-1)^n * (x+1)^n). Verify! This could
+  //   be useful if we need a slowly converging sigmoid in some context. The standard sigmoids 
+  //   converge much fatser to 1. I think tanh converges exponentially and atan linearly.
 }
 
 
