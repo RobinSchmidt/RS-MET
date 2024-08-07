@@ -524,6 +524,11 @@ To design sigmoids according to desired approach rates:
  https://www.desmos.com/calculator/tkrn9pyrx0
  with a in [0,1). With a = 0, we recover the numerator x
 
+-Important features of sigmoids:
+ -convergence rate
+ -hardness
+ -asymmetry
+
 -General ideas for producing sigmoids:
  -integrating bell functions
  -differentiating a function that looks like soft-abs (somewhere i have constructed such a 

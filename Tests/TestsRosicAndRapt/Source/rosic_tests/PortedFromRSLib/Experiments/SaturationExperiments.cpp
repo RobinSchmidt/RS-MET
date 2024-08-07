@@ -523,6 +523,11 @@ double sigmoidInvSinhRat(double x)
   // experimentation. Maybe for production use, we should use Newton or Halley iteration. Or
   // maybe Brent's method or Ridders or something like that. The value for b was chosen 
   // ad hoc. Try to find a better way or try to justify the choice.
+
+  // Try also:
+  // sinh(1/(x-1)) + sinh(1/(x+1))
+  // Maybe make a small class that encapsulates the inversion procedure and keeps a 
+  // std::function with the to-be-inverted function as member.
 }
 
 
@@ -532,28 +537,29 @@ void sigmoidPrototypes()
   // saturators, soft-clippers, etc.
 
   static const int N = 1001;
-  double xMin = 0.0;
-  double xMax = 5.0;
-  double t    = 0.5;    // threshold below which the function is linear (for the softclipper)
+  double xMin =  0.0;
+  double xMax = 20.0;
+  double t    =  0.5;    // threshold below which the function is linear (for the softclipper)
 
   double x[N];
   RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
 
   int n;
-  double yHard[N], yCubic[N], yQuartic[N], yHexic[N], ySoft[N], yTanh[N], yInvRat[N], yInvRat2[N];
+  double yHard[N], yCubic[N], yQuartic[N], yHexic[N], ySoft[N], yTanh[N], yInvRat[N], yInvRat2[N],
+         yInvSinhRat[N];
 
   using PS = rsPositiveSigmoids<double>;    // Try to get rid by implementing symmetrized versions 
   using NS = rsNormalizedSigmoids<double>;  // ..in NS for all functions in PS
 
-  for(n = 0; n < N; n++) yHard[n]    = NS::clip(x[n]);
-  for(n = 0; n < N; n++) yCubic[n]   = NS::cubic(x[n]);
-  for(n = 0; n < N; n++) yQuartic[n] = NS::quartic(x[n]);
-  for(n = 0; n < N; n++) yHexic[n]   = NS::hexic(x[n]);
-  for(n = 0; n < N; n++) ySoft[n]    = PS::softClipHexic(x[n], t);
-  for(n = 0; n < N; n++) yTanh[n]    = NS::tanh(x[n]);
-  for(n = 0; n < N; n++) yInvRat[n]  = PS::invRational(x[n]);
-  for(n = 0; n < N; n++) yInvRat2[n] = invRat2(x[n]);
-
+  for(n = 0; n < N; n++) yHard[n]       = NS::clip(x[n]);
+  for(n = 0; n < N; n++) yCubic[n]      = NS::cubic(x[n]);
+  for(n = 0; n < N; n++) yQuartic[n]    = NS::quartic(x[n]);
+  for(n = 0; n < N; n++) yHexic[n]      = NS::hexic(x[n]);
+  for(n = 0; n < N; n++) ySoft[n]       = PS::softClipHexic(x[n], t);
+  for(n = 0; n < N; n++) yTanh[n]       = NS::tanh(x[n]);
+  for(n = 0; n < N; n++) yInvRat[n]     = PS::invRational(x[n]);
+  for(n = 0; n < N; n++) yInvRat2[n]    = invRat2(x[n]);
+  for(n = 0; n < N; n++) yInvSinhRat[n] = sigmoidInvSinhRat(x[n]);
 
   GNUPlotter plt;
   //plt.addDataArrays(N, x, yHard);
@@ -564,6 +570,7 @@ void sigmoidPrototypes()
   //plt.addDataArrays(N, x, yTanh);
   plt.addDataArrays(N, x, yInvRat);
   plt.addDataArrays(N, x, yInvRat2);
+  plt.addDataArrays(N, x, yInvSinhRat);
   plt.plot();
 
   // ToDo:
@@ -591,20 +598,20 @@ void sigmoidConvergenceRates()
 
   int   N    = 1001;
   Real  xMin =  0.0;
-  Real  xMax = 50.0;
+  Real  xMax =  5.0;
 
 
   Vec x = rsRangeLinear(xMin, xMax, N);
 
   // Actual convergence rates as measured:
-  Vec cInvRat(N), cInvRat2(N), cInvSinhRat(N);
+  Vec cInvRat(N), cInvRat2(N), cInvSinhRat(N), cTanh(N);
 
-  // Guessed convergence rate functions:
-  Vec gInvRat(N), gInvRat2(N), gInvSinhRat(N);
+  // Guessed asymptotic convergence rate functions:
+  Vec aInvRat(N), aInvRat2(N), aInvSinhRat(N), aTanh(N);
   // rename to a... instead of g... where the a stands for "asymptotic"
 
-  // Ratios between actual and guessed convergence rates:
-  Vec rInvRat(N), rInvRat2(N), rInvSinhRat(N);
+  // Ratios between actual and (guessed) asymptotic convergence rate functions:
+  Vec rInvRat(N), rInvRat2(N), rInvSinhRat(N), rTanh(N);
 
 
   for(int n = 0; n < N; n++)
@@ -613,27 +620,32 @@ void sigmoidConvergenceRates()
 
     y = PS::invRational(x[n]);
     cInvRat[n] = 1 / (1 - y);
-    gInvRat[n] = 2 * x[n] + 0.5;
-    rInvRat[n] = cInvRat[n] / gInvRat[n];
+    aInvRat[n] = 2 * x[n] + 0.5;              // Linear
+    rInvRat[n] = cInvRat[n] / aInvRat[n];
 
     y = invRat2(x[n]);
     cInvRat2[n] = 1 / (1 - y);
-    gInvRat2[n] = 2 * sqrt(x[n]);
-    rInvRat2[n] = cInvRat2[n] / gInvRat2[n];
-    // Looks good but match can possibly improved by adding a small offset
+    aInvRat2[n] = 2 * sqrt(x[n]);             // Square-root, maybe add a small offset
+    rInvRat2[n] = cInvRat2[n] / aInvRat2[n]; 
 
     y = sigmoidInvSinhRat(x[n]);
     cInvSinhRat[n] = 1 / (1 - y);
-    gInvSinhRat[n] = 2*log(x[n]) + 2;
-    rInvSinhRat[n] = cInvSinhRat[n] / gInvSinhRat[n];
+    aInvSinhRat[n] = 2*log(x[n]) + 2;         // Logarithmic
+    rInvSinhRat[n] = cInvSinhRat[n] / aInvSinhRat[n];
+
+    y = tanh(x[n]);
+    cTanh[n] = 1 / (1 - y);
+    aTanh[n] = 0.5*exp(2.0*x[n]) + 0.5;       // Exponential - exact match
+    rTanh[n] = cTanh[n] / aTanh[n];
   }
 
   // Uncomment one at a time (it doesn't work to make multiple plots in succession this way):
   GNUPlotter plt;
-  //plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0], &rInvRat[0]);
-  //plt.addDataArrays(N, &x[0], &cInvRat2[0], &gInvRat2[0], &rInvRat[0]);
-  //plt.addDataArrays(N, &x[0], &cInvSinhRat[0], &gInvSinhRat[0], &rInvSinhRat[0]);
-  plt.addDataArrays(N, &x[0], &cInvRat[0], &cInvRat2[0], &cInvSinhRat[0]);
+  //plt.addDataArrays(N, &x[0], &cInvRat[0],     &aInvRat[0],     &rInvRat[0]);
+  //plt.addDataArrays(N, &x[0], &cInvRat2[0],    &aInvRat2[0],    &rInvRat[0]);
+  //plt.addDataArrays(N, &x[0], &cInvSinhRat[0], &aInvSinhRat[0], &rInvSinhRat[0]);
+  plt.addDataArrays(N, &x[0], &cTanh[0],     &aTanh[0],     &rTanh[0]);
+  //plt.addDataArrays(N, &x[0], &cInvRat[0],     &cInvRat2[0],    &cInvSinhRat[0]);
   plt.plot();
 
   int dummy = 0;
@@ -644,8 +656,11 @@ void sigmoidConvergenceRates()
   // - Try to derive the asymptotic "guess" functions algebraically starting from the definition 
   //   c(x) = 1 / (1-f(x)) and simplify by scrapping terms that don't matter as x -> inf, etc.
   //
-  // - Form quotient of actual rate and guessed rate function. If it approaches 1 as x -> inf, the 
-  //   guess is asymptotically equivalent.
+  // - Add tanh. I think, it has exponential convergence rate. We can cover the spectrum between
+  //   logarithmic and exponential convergence - with power functions in between. And maybe we
+  //   can even go beyond - with erf of by doing crazy stuff like tanh(sinh(x)) which should give
+  //   extremely fast convergence. tanh(sinh(a*x)/a) is also nice:
+  //   https://www.desmos.com/calculator/fbmryxwcqp
 
   // Conclusions:
   //
