@@ -512,21 +512,26 @@ double invRat2(double y)  // rename to sigmoidInvRat2
 // Inverse of  sinh( -x/(x^2 - 1) ). Should have logarithmic convergence, I guess.
 double sigmoidInvSinhRat(double x)
 {
-  rsError("sigmoidInvSinhRat does not yet work");
+  //rsError("sigmoidInvSinhRat does not yet work");
   // The intention is to find the inverse function of  f(x) = sinh( -x/(x^2 - 1) )  using 
   // rsRootFinder but for some reason, this does not yet work. -> Figure out!
+  // I think, it may have to do with the function f being discontinuous. It has poles which trip up
+  // the root finder. 
 
 
   using RF = rsRootFinder<double>;
 
   // This is the function that we want to invert:
-  std::function<double(double)> f = [](double x) { return  -x / (x*x-1); };
-  //std::function<double(double)> f = [](double x) { return  sinh(-x / (x*x-1)); };
+  //std::function<double(double)> f = [](double x) { return  -x / (x*x-1); };
+  std::function<double(double)> f = [](double x) { return  sinh(-x / (x*x-1)); };
 
   //double xL, xR;
   //RF::findBracket(f, &xL, &xR, x);
 
-  double y = RF::bisection(f, -1000.0, +1000.0, x);
+  //double y = RF::bisection(f, -1000.0, +1000.0, x);
+
+  double y = RF::bisection(f, -0.99, +0.99, x);
+  return y;
 
   //return f(x);  // test - looks ok
 
@@ -598,12 +603,9 @@ void sigmoidConvergenceRates()
   // rate, we plot a "guess" function that is supposed to be asymptotically equivalent to c(x), 
   // i.e. the limit of the quotient between actual and guess approaches 1 as x -> inf.
 
-
   // Test:
-  //GNUPlotter plt1;
-  //plt1.plotFunctions(1001, -0.1, +0.1, &sigmoidInvSinhRat);
-  //plt1.plotFunctions(1001, -0.01, +0.01, &sigmoidInvSinhRat);
-  // Plot looks wrong - looks like the sign function
+  GNUPlotter plt1;
+  plt1.plotFunctions(1001, -10.0, +10.0, &sigmoidInvSinhRat);
 
 
   using Real = double;
