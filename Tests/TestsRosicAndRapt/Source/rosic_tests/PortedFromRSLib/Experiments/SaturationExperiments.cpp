@@ -590,6 +590,7 @@ void sigmoidConvergenceRates()
   using Real = double;
   using Vec  = std::vector<Real>;
   using PS   = rsPositiveSigmoids<Real>;
+  using NS   = rsNormalizedSigmoids<Real>; 
 
   int   N    = 1001;
   Real  xMin =  0.0;
@@ -599,13 +600,13 @@ void sigmoidConvergenceRates()
   Vec x = rsRangeLinear(xMin, xMax, N);
 
   // Actual convergence rates as measured:
-  Vec cInvRat(N), cInvRat2(N), cInvSinhRat(N), cTanh(N);
+  Vec cInvRat(N), cInvRat2(N), cInvSinhRat(N), cTanh(N), cAtan(N);
 
   // Guessed asymptotic convergence rate functions:
-  Vec aInvRat(N), aInvRat2(N), aInvSinhRat(N), aTanh(N);
+  Vec aInvRat(N), aInvRat2(N), aInvSinhRat(N), aTanh(N), aAtan(N);
 
   // Ratios between actual and (guessed) asymptotic convergence rate functions:
-  Vec rInvRat(N), rInvRat2(N), rInvSinhRat(N), rTanh(N);
+  Vec rInvRat(N), rInvRat2(N), rInvSinhRat(N), rTanh(N), rAtan(N);
 
   // Produce the data for plotting - we create the data in the order from slow to fast converging
   // sigmoids.
@@ -628,6 +629,12 @@ void sigmoidConvergenceRates()
     aInvRat[n] = 2 * x[n] + 0.5;              // Linear
     rInvRat[n] = cInvRat[n] / aInvRat[n];
 
+    y = NS::atan(x[n]);
+    cAtan[n] = 1 / (1 - y);
+    aAtan[n] = 2.46824 * x[n];              // Linear
+    //aAtan[n] = x[n];              // Linear
+    rAtan[n] = cAtan[n] / aAtan[n];
+
     y = tanh(x[n]);
     cTanh[n] = 1 / (1 - y);
     aTanh[n] = 0.5*exp(2.0*x[n]) + 0.5;       // Exponential - we actually get an exact match
@@ -637,11 +644,13 @@ void sigmoidConvergenceRates()
   // Uncomment one at a time (it doesn't work to make multiple plots in succession this way):
   GNUPlotter plt;
   //plt.addDataArrays(N, &x[0], &cInvRat[0],     &aInvRat[0],     &rInvRat[0]);
+  plt.addDataArrays(N, &x[0], &cAtan[0],     &aAtan[0],     &rAtan[0]);
   //plt.addDataArrays(N, &x[0], &cInvRat2[0],    &aInvRat2[0],    &rInvRat[0]);
   //plt.addDataArrays(N, &x[0], &cInvSinhRat[0], &aInvSinhRat[0], &rInvSinhRat[0]);
   //plt.addDataArrays(N, &x[0], &cTanh[0],     &aTanh[0],     &rTanh[0]);
 
-  plt.addDataArrays(N, &x[0], &cInvRat2[0], &cInvSinhRat[0]);
+  //plt.addDataArrays(N, &x[0], &cInvRat[0], &cAtan[0]);
+  //plt.addDataArrays(N, &x[0], &cInvRat2[0], &cInvSinhRat[0]);
   plt.plot();
 
 
