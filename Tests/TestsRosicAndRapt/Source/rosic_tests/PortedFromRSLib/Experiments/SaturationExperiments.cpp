@@ -580,17 +580,10 @@ void sigmoidPrototypes()
 
 void sigmoidConvergenceRates()
 {
-  // Under construction.
-  //
   // We plot the convergence rates of various sigmoids. If the sigmoid is given by f = f(x), we 
-  // define the convergence rate as c(x) = 1 / (1-f). Along with the actually measired convergence
+  // define the convergence rate as c(x) = 1 / (1-f). Along with the actually measured convergence
   // rate, we plot a "guess" function that is supposed to be asymptotically equivalent to c(x), 
   // i.e. the limit of the quotient between actual and guess approaches 1 as x -> inf.
-
-  // Test:
-  //GNUPlotter plt1;
-  //plt1.plotFunctions(1001, -50.0, +50.0, &sigmoidInvSinhRat);
-
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -598,8 +591,8 @@ void sigmoidConvergenceRates()
 
   int   N    = 1001;
   Real  xMin =  0.0;
-  Real  xMax =  5.0;
-
+  Real  xMax =  5.0;  // Tweak that - low values are needed for sigmoids with fast convergence. For
+                      // sigmoids with slow convergence, higher values are better
 
   Vec x = rsRangeLinear(xMin, xMax, N);
 
@@ -608,34 +601,34 @@ void sigmoidConvergenceRates()
 
   // Guessed asymptotic convergence rate functions:
   Vec aInvRat(N), aInvRat2(N), aInvSinhRat(N), aTanh(N);
-  // rename to a... instead of g... where the a stands for "asymptotic"
 
   // Ratios between actual and (guessed) asymptotic convergence rate functions:
   Vec rInvRat(N), rInvRat2(N), rInvSinhRat(N), rTanh(N);
 
-
+  // Produce the data for plotting - we create the data in the order from slow to fast converging
+  // sigmoids.
   for(int n = 0; n < N; n++)
   {
     Real y;
-
-    y = PS::invRational(x[n]);
-    cInvRat[n] = 1 / (1 - y);
-    aInvRat[n] = 2 * x[n] + 0.5;              // Linear
-    rInvRat[n] = cInvRat[n] / aInvRat[n];
-
-    y = invRat2(x[n]);
-    cInvRat2[n] = 1 / (1 - y);
-    aInvRat2[n] = 2 * sqrt(x[n]);             // Square-root, maybe add a small offset
-    rInvRat2[n] = cInvRat2[n] / aInvRat2[n]; 
 
     y = sigmoidInvSinhRat(x[n]);
     cInvSinhRat[n] = 1 / (1 - y);
     aInvSinhRat[n] = 2*log(x[n]) + 2;         // Logarithmic
     rInvSinhRat[n] = cInvSinhRat[n] / aInvSinhRat[n];
 
+    y = invRat2(x[n]);
+    cInvRat2[n] = 1 / (1 - y);
+    aInvRat2[n] = 2 * sqrt(x[n]);             // Square-root - maybe add a small offset
+    rInvRat2[n] = cInvRat2[n] / aInvRat2[n]; 
+
+    y = PS::invRational(x[n]);
+    cInvRat[n] = 1 / (1 - y);
+    aInvRat[n] = 2 * x[n] + 0.5;              // Linear
+    rInvRat[n] = cInvRat[n] / aInvRat[n];
+
     y = tanh(x[n]);
     cTanh[n] = 1 / (1 - y);
-    aTanh[n] = 0.5*exp(2.0*x[n]) + 0.5;       // Exponential - exact match
+    aTanh[n] = 0.5*exp(2.0*x[n]) + 0.5;       // Exponential - we actually get an exact match
     rTanh[n] = cTanh[n] / aTanh[n];
   }
 
@@ -648,9 +641,22 @@ void sigmoidConvergenceRates()
   //plt.addDataArrays(N, &x[0], &cInvRat[0],     &cInvRat2[0],    &cInvSinhRat[0]);
   plt.plot();
 
-  int dummy = 0;
 
-
+  // Observations:
+  //
+  // - invRational has linear convergence, invRat2 has sqrt-like convergence, sigmoidInvSinhRat
+  //   has logarithmic convergence and tanh has exponential convergence. So, our collection of 
+  //   sigmoids covers a broad range of convergence rates - which is good.
+  //
+  //
+  // Conclusions:
+  //
+  // - It appears, we can design sigmoids with convergence rates of inverse powers of n, i.e. like
+  //   c(x) ~ x^(1/n)  by using the inverse function of x / ((x-1)^n * (x+1)^n). Verify! This could
+  //   be useful if we need a slowly converging sigmoid in some context. The standard sigmoids 
+  //   converge much fatser to 1. I think tanh converges exponentially and atan linearly.
+  //
+  //
   // ToDo:
   //
   // - Try to derive the asymptotic "guess" functions algebraically starting from the definition 
@@ -661,13 +667,9 @@ void sigmoidConvergenceRates()
   //   can even go beyond - with erf of by doing crazy stuff like tanh(sinh(x)) which should give
   //   extremely fast convergence. tanh(sinh(a*x)/a) is also nice:
   //   https://www.desmos.com/calculator/fbmryxwcqp
-
-  // Conclusions:
   //
-  // - It appears, we can design sigmoids with convergence rates of inverse powers of n, i.e. like
-  //   c(x) ~ x^(1/n)  by using the inverse function of x / ((x-1)^n * (x+1)^n). Verify! This could
-  //   be useful if we need a slowly converging sigmoid in some context. The standard sigmoids 
-  //   converge much fatser to 1. I think tanh converges exponentially and atan linearly.
+  // - Try to apply cbrt an ^3 functions before and after the sigmoid. Check what that does to the
+  //   convergence. 
 }
 
 
