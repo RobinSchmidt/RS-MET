@@ -594,7 +594,7 @@ void sigmoidConvergenceRates()
 
   int   N    = 1001;
   Real  xMin =  0.0;
-  Real  xMax = 20.0;  // Tweak that - low values are needed for sigmoids with fast convergence. For
+  Real  xMax =  5.0;  // Tweak that - low values are needed for sigmoids with fast convergence. For
                       // sigmoids with slow convergence, higher values are better
 
   Vec x = rsRangeLinear(xMin, xMax, N);
@@ -631,8 +631,7 @@ void sigmoidConvergenceRates()
 
     y = NS::atan(x[n]);
     cAtan[n] = 1 / (1 - y);
-    aAtan[n] = 2.46824 * x[n];              // Linear
-    //aAtan[n] = x[n];              // Linear
+    aAtan[n] = 2.46824 * x[n];                // Linear - factor taken from measuring the slope
     rAtan[n] = cAtan[n] / aAtan[n];
 
     y = tanh(x[n]);
@@ -643,8 +642,8 @@ void sigmoidConvergenceRates()
 
   // Uncomment one at a time (it doesn't work to make multiple plots in succession this way):
   GNUPlotter plt;
-  //plt.addDataArrays(N, &x[0], &cInvRat[0],     &aInvRat[0],     &rInvRat[0]);
-  plt.addDataArrays(N, &x[0], &cAtan[0],     &aAtan[0],     &rAtan[0]);
+  plt.addDataArrays(N, &x[0], &cInvRat[0],     &aInvRat[0],     &rInvRat[0]);
+  //plt.addDataArrays(N, &x[0], &cAtan[0],       &aAtan[0],       &rAtan[0]);
   //plt.addDataArrays(N, &x[0], &cInvRat2[0],    &aInvRat2[0],    &rInvRat[0]);
   //plt.addDataArrays(N, &x[0], &cInvSinhRat[0], &aInvSinhRat[0], &rInvSinhRat[0]);
   //plt.addDataArrays(N, &x[0], &cTanh[0],     &aTanh[0],     &rTanh[0]);
