@@ -4793,6 +4793,7 @@ inline double sin2(double x)
   return sin(x);
 }
 
+// Move into FunctionOperators.h:
 template<class T>
 inline std::function<T(T)> rsInverse(const std::function<T(T)>& f)
 {

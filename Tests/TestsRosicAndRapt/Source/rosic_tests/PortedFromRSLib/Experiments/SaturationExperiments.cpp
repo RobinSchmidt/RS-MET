@@ -481,7 +481,7 @@ void quarticMonotonic()
 //}
 
 
-double invRat2(double y)
+double invRat2(double y)  // rename to sigmoidInvRat2
 {
   // Inverse function of y = f(x) = -x / ((x+1)^2 * (x-1)^2) for y >= 0. The formulas have been 
   // produced with Wolfram Alpha using:
@@ -507,6 +507,42 @@ double invRat2(double y)
   return -(1./2 * sqrt(-(16*ay)/(3*c) - c/(3*ay) + (2*b)/(d*y) + 8./3) 
                 - sqrt( (16*ay)/c     + c/(ay)   + 4         )/(2*b) );
 }
+
+// UNDER CONSTRUCTION - DOES NOT YET WORK!
+// Inverse of  sinh( -x/(x^2 - 1) ). Should have logarithmic convergence, I guess.
+double sigmoidInvSinhRat(double x)
+{
+  rsError("sigmoidInvSinhRat does not yet work");
+  // The intention is to find the inverse function of  f(x) = sinh( -x/(x^2 - 1) )  using 
+  // rsRootFinder but for some reason, this does not yet work. -> Figure out!
+
+
+  using RF = rsRootFinder<double>;
+
+  // This is the function that we want to invert:
+  std::function<double(double)> f = [](double x) { return  -x / (x*x-1); };
+  //std::function<double(double)> f = [](double x) { return  sinh(-x / (x*x-1)); };
+
+  //double xL, xR;
+  //RF::findBracket(f, &xL, &xR, x);
+
+  double y = RF::bisection(f, -1000.0, +1000.0, x);
+
+  //return f(x);  // test - looks ok
+
+  //return RF::findRoot(f, x); // fails! looks like -sign(x)
+
+  //return f(x);  // preliminary
+
+  //auto fi = rsInverse(f);
+  //return fi(x);
+
+  return 0;  // preliminary
+
+  // I think, this is not an efficient way to implement this. But it's good enough for 
+  // experimentation.
+}
+
 
 void sigmoidPrototypes()
 {
@@ -562,6 +598,14 @@ void sigmoidConvergenceRates()
   // rate, we plot a "guess" function that is supposed to be asymptotically equivalent to c(x), 
   // i.e. the limit of the quotient between actual and guess approaches 1 as x -> inf.
 
+
+  // Test:
+  //GNUPlotter plt1;
+  //plt1.plotFunctions(1001, -0.1, +0.1, &sigmoidInvSinhRat);
+  //plt1.plotFunctions(1001, -0.01, +0.01, &sigmoidInvSinhRat);
+  // Plot looks wrong - looks like the sign function
+
+
   using Real = double;
   using Vec  = std::vector<Real>;
   using PS   = rsPositiveSigmoids<Real>;
@@ -573,14 +617,14 @@ void sigmoidConvergenceRates()
 
   Vec x = rsRangeLinear(xMin, xMax, N);
 
-  // Actual grwoth rates as measured:
-  Vec cInvRat(N), cInvRat2(N);
+  // Actual convergence rates as measured:
+  Vec cInvRat(N), cInvRat2(N), cInvSinhRat(N);
 
-  // Guessed growth rate functions:
+  // Guessed convergence rate functions:
   Vec gInvRat(N), gInvRat2(N);
+  // rename to a... instead of g... where the a stands for "asymptotic"
 
-
-  // Ratios between actual and guessed growth rates:
+  // Ratios between actual and guessed convergence rates:
   Vec rInvRat(N), rInvRat2(N);
 
 
@@ -600,15 +644,16 @@ void sigmoidConvergenceRates()
     // Looks good but match can possibly improved by adding a small offset
 
 
+    //y = sigmoidInvSinhRat(x[n]);
+    //cInvSinhRat[n] = 1 / (1 - y);
+    // looks totally wrong
   }
 
+  // Uncomment one at a time (it doesn't work to make multiple plots in succession this way):
   GNUPlotter plt;
-
   //plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0], &rInvRat[0]);
-
   plt.addDataArrays(N, &x[0], &cInvRat2[0], &gInvRat2[0], &rInvRat[0]);
-
-
+  //plt.addDataArrays(N, &x[0], &cInvSinhRat[0]);
   //plt.addDataArrays(N, &x[0], &cInvRat[0], &cInvRat2[0]);
   plt.plot();
 

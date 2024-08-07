@@ -1,5 +1,7 @@
 #pragma once
 
+// ToDo: wrap these functions into a class
+
 /** This file contains operators in the mathematical sense of the term. In mathematics, an operator
 is an object that takes a function as input and returns another function as output. An example for
 an operator could be "take the derivative" which turns f(x) into f'(x) or "multiply by input 
@@ -47,6 +49,8 @@ inline std::function<T(T)> rsOddPart(const std::function<T(T)>& f)
 {
   return [=](T x) { return (f(x) - f(-x)) / 2; };
 }
+
+
 
 // -make scaled/shifted version(see class rsScaledAndShiftedSigmoid)
 

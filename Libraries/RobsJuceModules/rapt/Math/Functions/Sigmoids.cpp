@@ -524,7 +524,7 @@ To design sigmoids according to desired approach rates:
  https://www.desmos.com/calculator/tkrn9pyrx0
  with a in [0,1). With a = 0, we recover the numerator x
 
--General ideas for prodcuing sigmoids:
+-General ideas for producing sigmoids:
  -integrating bell functions
  -differentiating a function that looks like soft-abs (somewhere i have constructed such a 
   soft-abs function)
@@ -537,6 +537,13 @@ To design sigmoids according to desired approach rates:
  -dividing a linear or smooth-step function (like identity, sine,...) something that goes from 
   -1 to +1 in -1..+1 by an "arc" function (like 1-x^2, cosine,...) that goes from 1 to 0 to 1 and 
   then inverting the resulting function.
+ -take an existing sigmoid and apply a function with odd symmetry that maps the interval -1..+1 
+  monotonically to itself. Examples: odd polynomials, cube-root, 5th-root, odd-root, sinh, other
+  sigmoids, all linear combinations of the former
+ -maybe take sinh(1/x) and shift it to -1 and +1 and add them?
+  sinh(1/(x-1)) + sinh(1/(x+1))  ...and then invert the function
+  https://www.desmos.com/calculator/q0eiojdcnf
+  I guess, this will show logarithmic convergence?
 
 Maybe make a KVR thread - design and analysis of sigmoids
 
