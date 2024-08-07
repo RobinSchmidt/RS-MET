@@ -508,44 +508,21 @@ double invRat2(double y)  // rename to sigmoidInvRat2
                 - sqrt( (16*ay)/c     + c/(ay)   + 4         )/(2*b) );
 }
 
-// UNDER CONSTRUCTION - DOES NOT YET WORK!
 // Inverse of  sinh( -x/(x^2 - 1) ). Should have logarithmic convergence, I guess.
 double sigmoidInvSinhRat(double x)
 {
-  //rsError("sigmoidInvSinhRat does not yet work");
-  // The intention is to find the inverse function of  f(x) = sinh( -x/(x^2 - 1) )  using 
-  // rsRootFinder but for some reason, this does not yet work. -> Figure out!
-  // I think, it may have to do with the function f being discontinuous. It has poles which trip up
-  // the root finder. 
-
-
-  using RF = rsRootFinder<double>;
-
   // This is the function that we want to invert:
-  //std::function<double(double)> f = [](double x) { return  -x / (x*x-1); };
-  std::function<double(double)> f = [](double x) { return  sinh(-x / (x*x-1)); };
+  std::function<double(double)> f = [](double x) { return sinh(-x/(x*x-1)); };
 
-  //double xL, xR;
-  //RF::findBracket(f, &xL, &xR, x);
-
-  //double y = RF::bisection(f, -1000.0, +1000.0, x);
-
-  double y = RF::bisection(f, -0.99, +0.99, x);
+  using  RF = rsRootFinder<double>;
+  double b  = 0.999;                        // Initial root bracket is -b..+b
+  double y  = RF::bisection(f, -b, +b, x);
   return y;
 
-  //return f(x);  // test - looks ok
-
-  //return RF::findRoot(f, x); // fails! looks like -sign(x)
-
-  //return f(x);  // preliminary
-
-  //auto fi = rsInverse(f);
-  //return fi(x);
-
-  return 0;  // preliminary
-
   // I think, this is not an efficient way to implement this. But it's good enough for 
-  // experimentation.
+  // experimentation. Maybe for production use, we should use Newton or Halley iteration. Or
+  // maybe Brent's method or Ridders or something like that. The value for b was chosen 
+  // ad hoc. Try to find a better way or try to justify the choice.
 }
 
 
@@ -604,8 +581,8 @@ void sigmoidConvergenceRates()
   // i.e. the limit of the quotient between actual and guess approaches 1 as x -> inf.
 
   // Test:
-  GNUPlotter plt1;
-  plt1.plotFunctions(1001, -10.0, +10.0, &sigmoidInvSinhRat);
+  //GNUPlotter plt1;
+  //plt1.plotFunctions(1001, -50.0, +50.0, &sigmoidInvSinhRat);
 
 
   using Real = double;
@@ -623,11 +600,11 @@ void sigmoidConvergenceRates()
   Vec cInvRat(N), cInvRat2(N), cInvSinhRat(N);
 
   // Guessed convergence rate functions:
-  Vec gInvRat(N), gInvRat2(N);
+  Vec gInvRat(N), gInvRat2(N), gInvSinhRat(N);
   // rename to a... instead of g... where the a stands for "asymptotic"
 
   // Ratios between actual and guessed convergence rates:
-  Vec rInvRat(N), rInvRat2(N);
+  Vec rInvRat(N), rInvRat2(N), rInvSinhRat(N);
 
 
   for(int n = 0; n < N; n++)
@@ -645,18 +622,18 @@ void sigmoidConvergenceRates()
     rInvRat2[n] = cInvRat2[n] / gInvRat2[n];
     // Looks good but match can possibly improved by adding a small offset
 
-
-    //y = sigmoidInvSinhRat(x[n]);
-    //cInvSinhRat[n] = 1 / (1 - y);
-    // looks totally wrong
+    y = sigmoidInvSinhRat(x[n]);
+    cInvSinhRat[n] = 1 / (1 - y);
+    gInvSinhRat[n] = 2*log(x[n]) + 2;
+    rInvSinhRat[n] = cInvSinhRat[n] / gInvSinhRat[n];
   }
 
   // Uncomment one at a time (it doesn't work to make multiple plots in succession this way):
   GNUPlotter plt;
   //plt.addDataArrays(N, &x[0], &cInvRat[0], &gInvRat[0], &rInvRat[0]);
-  plt.addDataArrays(N, &x[0], &cInvRat2[0], &gInvRat2[0], &rInvRat[0]);
-  //plt.addDataArrays(N, &x[0], &cInvSinhRat[0]);
-  //plt.addDataArrays(N, &x[0], &cInvRat[0], &cInvRat2[0]);
+  //plt.addDataArrays(N, &x[0], &cInvRat2[0], &gInvRat2[0], &rInvRat[0]);
+  //plt.addDataArrays(N, &x[0], &cInvSinhRat[0], &gInvSinhRat[0], &rInvSinhRat[0]);
+  plt.addDataArrays(N, &x[0], &cInvRat[0], &cInvRat2[0], &cInvSinhRat[0]);
   plt.plot();
 
   int dummy = 0;
