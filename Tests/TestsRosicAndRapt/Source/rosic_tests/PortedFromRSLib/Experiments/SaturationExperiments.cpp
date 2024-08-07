@@ -581,9 +581,11 @@ void sigmoidPrototypes()
 void sigmoidConvergenceRates()
 {
   // We plot the convergence rates of various sigmoids. If the sigmoid is given by f = f(x), we 
-  // define the convergence rate as c(x) = 1 / (1-f). Along with the actually measured convergence
-  // rate, we plot a "guess" function that is supposed to be asymptotically equivalent to c(x), 
-  // i.e. the limit of the quotient between actual and guess approaches 1 as x -> inf.
+  // define the convergence rate as c(x) = 1 / (1-f). It's a function that measures, how quickly 
+  // the sigmoid approaches 1 when the input x approaches infinity. Along with the actually 
+  // measured convergence rate, we plot a "guess" function that is supposed to be asymptotically 
+  // equivalent to c(x), i.e. the limit of the quotient between actual and guess approaches 1 as 
+  // x -> inf.
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -670,6 +672,10 @@ void sigmoidConvergenceRates()
   //
   // - Try to apply cbrt an ^3 functions before and after the sigmoid. Check what that does to the
   //   convergence. 
+  //
+  // - Try some of the sigmoids as activation function in neural networks. Maybe the ones with 
+  //   slower convergence rates can help to combat the vanishing gradient problem. Maybe invRat
+  //   is a good candidate. maybe linear convergence is desirable?
 }
 
 
