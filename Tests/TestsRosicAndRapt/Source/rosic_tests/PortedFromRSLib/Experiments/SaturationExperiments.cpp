@@ -481,7 +481,7 @@ void quarticMonotonic()
 //}
 
 
-double invRat2(double y)  // rename to sigmoidInvRat2
+double sigmoidInvRat2(double y)  // rename input to x
 {
   // Inverse function of y = f(x) = -x / ((x+1)^2 * (x-1)^2) for y >= 0. The formulas have been 
   // produced with Wolfram Alpha using:
@@ -558,7 +558,7 @@ void sigmoidPrototypes()
   for(n = 0; n < N; n++) ySoft[n]       = PS::softClipHexic(x[n], t);
   for(n = 0; n < N; n++) yTanh[n]       = NS::tanh(x[n]);
   for(n = 0; n < N; n++) yInvRat[n]     = PS::invRational(x[n]);
-  for(n = 0; n < N; n++) yInvRat2[n]    = invRat2(x[n]);
+  for(n = 0; n < N; n++) yInvRat2[n]    = sigmoidInvRat2(x[n]);
   for(n = 0; n < N; n++) yInvSinhRat[n] = sigmoidInvSinhRat(x[n]);
 
   GNUPlotter plt;
@@ -593,7 +593,7 @@ void sigmoidConvergenceRates()
 
   int   N    = 1001;
   Real  xMin =  0.0;
-  Real  xMax =  5.0;  // Tweak that - low values are needed for sigmoids with fast convergence. For
+  Real  xMax = 20.0;  // Tweak that - low values are needed for sigmoids with fast convergence. For
                       // sigmoids with slow convergence, higher values are better
 
   Vec x = rsRangeLinear(xMin, xMax, N);
@@ -618,7 +618,7 @@ void sigmoidConvergenceRates()
     aInvSinhRat[n] = 2*log(x[n]) + 2;         // Logarithmic
     rInvSinhRat[n] = cInvSinhRat[n] / aInvSinhRat[n];
 
-    y = invRat2(x[n]);
+    y = sigmoidInvRat2(x[n]);
     cInvRat2[n] = 1 / (1 - y);
     aInvRat2[n] = 2 * sqrt(x[n]);             // Square-root - maybe add a small offset
     rInvRat2[n] = cInvRat2[n] / aInvRat2[n]; 
@@ -639,8 +639,9 @@ void sigmoidConvergenceRates()
   //plt.addDataArrays(N, &x[0], &cInvRat[0],     &aInvRat[0],     &rInvRat[0]);
   //plt.addDataArrays(N, &x[0], &cInvRat2[0],    &aInvRat2[0],    &rInvRat[0]);
   //plt.addDataArrays(N, &x[0], &cInvSinhRat[0], &aInvSinhRat[0], &rInvSinhRat[0]);
-  plt.addDataArrays(N, &x[0], &cTanh[0],     &aTanh[0],     &rTanh[0]);
-  //plt.addDataArrays(N, &x[0], &cInvRat[0],     &cInvRat2[0],    &cInvSinhRat[0]);
+  //plt.addDataArrays(N, &x[0], &cTanh[0],     &aTanh[0],     &rTanh[0]);
+
+  plt.addDataArrays(N, &x[0], &cInvRat2[0], &cInvSinhRat[0]);
   plt.plot();
 
 
