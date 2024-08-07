@@ -424,7 +424,9 @@ https://www.wolframalpha.com/input?i=inverse+function+of+x+%2B+x%5E3
 could be useful as a function that has an s-shape but is unbounded, but grows slowly - namely, 
 asymptotically like the cube-root. Maybe such a behavior can sometimes be useful for stabilizing
 recursive systems without setting hard saturation limits. asinh would grow even slower 
-(logarithmically). We could also consider inverses of x + x^n where n is any odd integer
+(logarithmically). We could also consider inverses of x + x^n where n is any odd integer. Or
+f(x) = x + a*x^3 for some parameter a that controls the amount of limiting. Try such functions in 
+feedback loops of ladder filters.
 
 
 Implemented as invRational:
@@ -451,8 +453,8 @@ with a = 1, we recover the old one.
 
 More variations:
 y = -x    / ((x  -1)*(x  +1))
-y =  x    / ((x-1)^2*(x+1)^2)    ...has even slower approach-rate
-y = -x    / ((x^3-1)*(x^3+1))
+y =  x    / ((x-1)^2*(x+1)^2)     has even slower approach-rate
+y = -x    / ((x^3-1)*(x^3+1))     has nice straight section in the middle
 y = -x^3  / ((x  -1)*(x  +1))
 y = -x^3  / ((x^3-1)*(x^3+1))
 y = -x^3  / ((x-1)^3*(x+1)^3)
