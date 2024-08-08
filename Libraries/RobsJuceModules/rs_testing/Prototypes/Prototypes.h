@@ -440,13 +440,7 @@ public:
 
 
 
-
-
-
-
 protected:
-
-
 
   //T shape = T(0);  // Shape parameter in -1..+1, ends exclusive
 
