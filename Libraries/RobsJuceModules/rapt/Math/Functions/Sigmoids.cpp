@@ -417,7 +417,7 @@ x*sigmoid(x^2) from x, ... See:
 https://www.desmos.com/calculator/qnueorgb0z
 
 Maybe define the length as two times the length between minimum and maximum. These shapes could be 
-useful for some sort of time-scale transform.
+useful for some sort of time-scale transform. like a mother wavelet.
 
 The inverse function of f(x) = x + x^3:
 https://www.wolframalpha.com/input?i=inverse+function+of+x+%2B+x%5E3
