@@ -2524,10 +2524,9 @@ rsPolynomial<rsModularInteger<T>> toModular(const rsPolynomial<T>& p, T modulus)
   int N = p.getDegree();
   rsPolynomial<rsModularInteger<T>> q(N);
   for(int i = 0; i <= N; i++)
-    q[i] = rsModularInteger<T>(p[i], modulus);
+    q[i] = rsModularInteger<T>(p.getCoeff(i), modulus);
   return q;
 }
-
 
 //template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
 
@@ -2544,9 +2543,13 @@ bool testModularIntegerPolynomial()
   using PolyI  = rsPolynomial<Int>;
   using PolyM  = rsPolynomial<ModInt>;
 
-  //PolyI pi({2,9,6,8});
-  //PolyI qi({6,3,5,9,2});
-  //PolyI ri = pi * qi;
+  PolyI pi({2,9,6,8});
+  PolyI qi({6,3,5,9,2});
+  PolyI ri = pi * qi;
+
+  Int m = 7;
+
+  //PolyM pm = toModular(pi, 7);
 
 
 
