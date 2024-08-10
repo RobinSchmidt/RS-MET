@@ -1665,6 +1665,21 @@ T rsPolynomial<T>::chebychevRecursive(T x, int N)
   return t0;
 }
 
+template<class T>
+template<class U>
+U rsPolynomial<T>::chebychevDirect(U x, int N)
+{
+  rsAssert(N >= 0, "polynomial degree must be non-negative");
+  if(rsAbs(x) <= U(1)) return  cos( U(N)*acos ( x));
+  if(      x  >  U(1)) return  cosh(U(N)*acosh( x));
+  if(rsIsEven(N))      return  cosh(U(N)*acosh(-x));
+  else                 return -cosh(U(N)*acosh(-x));
+
+  // Maybe replace U(1) and U(N) by rsUnityValue and rsConstantValue
+}
+
+
+
 
 /*
 

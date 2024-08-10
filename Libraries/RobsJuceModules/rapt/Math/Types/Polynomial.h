@@ -1151,26 +1151,13 @@ public:
 
   /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by recursion. */
   static T chebychevRecursive(T x, int N);
-  /*
-  {
-    rsAssert(N >= 0, "polynomial degree must be non-negative");
-    //T t0 = T(1); T t1 = x; T tn = T(1);  // old - doesn't compile for T = rsModularInteger<int>
-    T t0  = rsUnityValue(x);  // Needed to make it compile with T = rsModularInteger. t0 is still
-    T t1  = x;                // ..initialized to 1 but it needs to copy the modulus from x
-    T tn  = rsUnityValue(x);
-    T two = rsConstantValue(2, x);
-    for(int i = 0; i < N; i++) {
-      tn = two*x*t1 - t0; t0 = t1; t1 = tn; }
-    return t0;
-  }
-  */
-  // move to .cpp file - done
   // maybe rename to evalChebyRecursive, have also a function coeffsCheby
 
   /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by means of acos and cos or 
   acosh and cosh. */
   template<class U>
-  static U chebychevDirect(U x, int N)
+  static U chebychevDirect(U x, int N);
+  /*
   {
     rsAssert(N >= 0, "polynomial degree must be non-negative");
     if(rsAbs(x) <= U(1)) return  cos( U(N)*acos ( x));
@@ -1178,8 +1165,10 @@ public:
     if(rsIsEven(N))      return  cosh(U(N)*acosh(-x));
     else                 return -cosh(U(N)*acosh(-x));
   }
-  // we can't use template parameter T here because of compiler errors when instantiating 
+  */
+  // We can't use template parameter T here because of compiler errors when instantiating 
   // rsPolynomial for std::complex
+  // Maybe move into .cpp file. Maybe replace U(1) and U(N) by rsUnityValue and rsConstantValue
 
   // todo: figure out for which N which of the two functions is faster and/or more accurate - maybe
   // provide a dispatcher function - it seems, at least for lower degrees, the recursion is more 
