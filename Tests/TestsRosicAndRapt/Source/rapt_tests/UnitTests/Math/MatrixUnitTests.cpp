@@ -1351,6 +1351,59 @@ bool testMatrixConvolution()
 // for producing reference output, see:
 // http://juanreyero.com/article/python/python-convolution.html
 
+
+// Convenience function to convert a matrix of integers into a matrix of modular integers with 
+// given modulus:
+template<class T>
+rsMatrix<rsModularInteger<T>> toModular(const rsMatrix<T>& A, T modulus)
+{
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+  rsMatrix<rsModularInteger<T>> B(M, N);
+  for(int i = 0; i < M; i++)
+    for(int j = 0; j < N; j++)
+      B(i, j) = rsModularInteger<T>(A(i,j), modulus);
+  return B;
+}
+
+bool testModIntMatrix()
+{
+  // We test matrices of modular integers.
+
+  bool ok = true;
+
+  using Int  = int;
+  using Mod  = rsModularInteger<Int>;
+  using MatI = rsMatrix<Int>;
+  using MatM = rsMatrix<Mod>;
+
+  // Test matrix multiplication with matrices of modular integers with modulus m = 7:
+  Int  m = 7;                         // Modulus to use
+  MatI Ai(2, 3, {9,4,2, 4,6,8});      // Matrix A as integer matrix
+  MatI Bi(3, 2, {7,5, 2,8, 5,3});     // ..same for B
+  MatM Am = toModular(Ai, m);         // A converted to modular integers
+  MatM Bm = toModular(Bi, m);         // ..same for B
+  MatI Ci = Ai * Bi;                  // Product C = A * B as integer matrix
+  MatM Ct = toModular(Ci, m);         // Target result: C as modular integers
+  MatM Cm = Am * Bm;                  // Actual result
+  ok &= Cm == Ct;                     // Test
+  Ci = Bi * Ai;                       // Now the same for the product B * A, i.e. with swapped
+  Ct = toModular(Ci, m);              // factors
+  Cm = Bm * Am;
+  ok &= Cm == Ct;
+
+
+
+
+
+  return ok;
+
+  // ToDo:
+  //
+  // - Try to solve a linear system of equations.
+}
+
+
 bool testMatrix()
 {
   bool ok = true;
@@ -1371,6 +1424,7 @@ bool testMatrix()
   ok &= testKroneckerProduct();
   //ok &= testTransformMatrices();
   ok &= testMatrixConvolution();
+  ok &= testModIntMatrix();
   // todo: inverse, pseudo-inverse: (A^T * A)^-1 * A^T
 
   // Tests for the sparse matrix class:
