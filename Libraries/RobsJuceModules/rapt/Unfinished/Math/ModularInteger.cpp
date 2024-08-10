@@ -1,3 +1,14 @@
+
+
+
+template<class T>
+bool isCanonical(const rsModularInteger<T>& x) 
+{ 
+  T v = x.getValue();
+  T m = x.getModulus();
+  return v >= T(0) && v < m; 
+}
+
 // construction/destruction:
 
 /*
@@ -25,7 +36,16 @@ rsModularInteger<T>::rsModularInteger(const T& initialValue, const T& modulusToU
 template<class T>
 rsModularInteger<T>::rsModularInteger(const rsModularInteger<T>& other)
 {
-  rsAssert(other.isCanonical());
+  // rsAssert(other.isCanonical());  // Old
+
+  // New:
+  if constexpr(std::is_integral<T>::value)
+    rsAssert(isCanonical(other));
+  // The reason for wrapping the assertion into an "if constexpr" is that isCanonical() works only
+  // when the type T implements the comparison operators >= and <. What we actually want would be
+  // something like std::is_comparable<T>::value but such a type-trait does not exist so we use
+  // is_integral as a proxy for what we actually mean.
+
   modulus = other.modulus;
   value   = other.value;
 }

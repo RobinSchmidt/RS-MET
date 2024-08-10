@@ -1048,7 +1048,9 @@ bool hilbertFilterUnitTest()
   for(int n = 0; n < N; n++)
     complexifier.processSampleFrame(&re[n], &im[n]);
 
-  rsPlotVectors(re, im);
+
+
+  //rsPlotVectors(re, im);
   // Looks correct! ToDo: Include programmatic test. Maybe that can be best done with a sine input
 
 

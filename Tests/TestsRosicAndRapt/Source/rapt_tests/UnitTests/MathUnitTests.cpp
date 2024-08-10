@@ -530,8 +530,8 @@ bool testDerivativeBasedRootFinding()
   using F3 = std::function<void(Real, Real*, Real*, Real*, Real*)>;
   F1 f1 = [&](Real x, Real* f, Real* f1)
   {
-    *f  = sin(x);
-    *f1 = cos(x);
+    *f  = sin(x);  // Value f(x)
+    *f1 = cos(x);  // 1st derivative f'(x)
     numCalls++;
   };
   F2 f2 = [&](Real x, Real* f, Real* f1, Real* f2)
@@ -576,8 +576,8 @@ bool testDerivativeBasedRootFinding()
   // Run the tests for the different method. We check, if the result is with the tolerance and if
   // the number of iterations is as expected:
   ok &= test(1, 6);  // Newton takes 6 iterations
-  ok &= test(2, 5);  // Halley takes 6 iterations
-  ok &= test(3, 4);  // 3rd order Householder takes 6 iterations
+  ok &= test(2, 5);  // Halley takes 5 iterations
+  ok &= test(3, 4);  // 3rd order Householder takes 4 iterations
 
 
   // Use f(x) = 1/x as another example. We want to find the x-value where 1/x = 1/10. That value is

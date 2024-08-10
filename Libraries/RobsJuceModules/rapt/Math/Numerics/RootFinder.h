@@ -16,8 +16,9 @@ are mostly meant for quick-and-dirty prototype implementations. If you know a bi
 particular function at hand, it's a good idea to use that knowledge together with the lower level 
 root-finding functions.
 
-References
-(1) Numerical Recipies in C (2nd Edition), Chapter 9
+References:
+
+  (1) Numerical Recipies in C (2nd Edition), Chapter 9
 
 */
 
@@ -115,16 +116,25 @@ public:
   // \name Derivative Methods
 
   /** Computes the delta for one update step in the Newton iteration method. The update step uses 
-  the formula  xNew = xOld + dx  with  dx = -f(x) / f'(x). This function computes the dx and can be
-  used within the Newton iteration like  x += newtonStep(f, fp)  after you have computed function 
-  value f and derivative fp at the current estimate for x. In practice, you'll probably want to 
-  assign the dx to a variable, though - so you can check the convergence  criterion. 
+  the formula  xNew = xOld + dx  with: 
+  
+          -f(x)
+    dx = -------
+          f'(x)
+  
+  This function computes the dx and can be used within the Newton iteration like  
+  x += newtonStep(f, fp)  after you have computed function value f and derivative fp at the 
+  current estimate for x. In practice, you'll probably want to assign the dx to a variable, though
+  - so you can check the convergence  criterion. 
   See:  https://en.wikipedia.org/wiki/Newton%27s_method  */
   static T stepNewton(const T& f, const T& fp) { return -f/fp; }
 
   /** Implements root finding via Newton iteration. The function func should take the x value as 
   1st parameter and produce the value and derivative in 2nd and 3rd parameter respectively. These
-  re output parameters and passed by pointer. */
+  are output parameters and passed by pointer. The reason to use a single function to compute value
+  and derivative is that it often happens that it's more efficient to evaluate a function and its
+  derivative at the same time rather than starting completely from scratch for evaluating the 
+  derivative. */
   static T newton(const std::function<void(T, T*, T*)>& func, T xGuess, T y = 0);
 
 

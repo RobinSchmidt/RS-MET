@@ -286,6 +286,7 @@ public:
       d.coeffs.data(), d.getDegree(), q.coeffs.data(), r.coeffs.data());
     return r;
   }
+  // ToDo: scrap the trailing zeros, if any. We should do this also in the operators /,+,-
 
   // maybe move implementations into cpp file, implement +=, *=, etc.
   // +,-,*,/ for scalar second arguments (left and right), unary -
