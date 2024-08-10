@@ -140,6 +140,20 @@ RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt)
 }
 
 
+// Maybe delete:
+template<class T>
+TestPoly<T>::TestPoly(T value)
+{
+  //v = rsConstantValue( value, 
+
+
+  int dummy = 0;
+}
+
+// Instantiation:
+template class TestPoly<RAPT::rsModularInteger<int>>;
+
+
 void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
   const std::vector<float>& sample, float keyCenter, double sampleRate)
 {

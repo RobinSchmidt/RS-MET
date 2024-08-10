@@ -257,7 +257,10 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 // Now the roles of int and uint are reversed.
 //
 // Maybe try to move ModularInteger.h/cpp from the "unfinished" folder into the regular math
-// folder and include it before rsPolynomial
+// folder and include it before rsPolynomial...DONE...nope - doesn't help.
+// Try to make a mini test class like rsPolynomial that triggers the problem
+// Maybe let rsConstantValue have only one template parameter and the first parameter is always
+// an integer. Maybe call it rsIntegerValue or rsIntValue
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
