@@ -231,23 +231,42 @@ template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 
 
+
+
 //template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
-// Fails to compile. We need to replace occurrences of expressions like T(0), T(1), T(i+1) etc. by
-// calls to e.g. rsZeroValue(coeffs[0]) or rsZeroValue(x), rsUnityValue(...), rsConstantValue(...). 
-// See comment at the bottom of rsPolynomial.cpp - there, it is done. We now get an error that says
-// "cannot convert from 'TVal' to 'TTgt' with TVal=RAPT::rsUint32 and 
-// TTgt=RAPT::rsModularInteger<int>" ...it seems that the compiler tries to use the fallback 
-// implementation of rsConstantValue in BasicFunctions.h instead of the explicit specialization in
-// rsModularInteger.h. Maybe rsConstantValue function gets called somewhere before the compiler has 
-// seen the explicit specialization? -> figure that out and fix it!
-// In the implementation of chebychevRecursive in Polynomial.h we catualy call both 
-// rsConstantValue and rsUnityValue. Maybe try to move the implementation into Polynomial.cpp and
-// see if that helps.
+//
+// Fails to compile. We get an error that says 
+//
+//   "cannot convert from 'TVal' to 'TTgt' with TVal=RAPT::rsUint32 and 
+//    TTgt=RAPT::rsModularInteger<int>" 
+//
+// It seems that the compiler tries to use the fallback implementation of rsConstantValue in 
+// BasicFunctions.h instead of the (partial) explicit specialization in rsModularInteger.h. 
+// Trying to add a full specialization also didn't help. Maybe rsConstantValue function gets called
+// somewhere before the compiler has seen the explicit specialization? Trying to put the 
+// instantiation directly at the bottom of ModularInteger.cpp also didn't help (it actually produces
+// some more errors - they are all the same type of error, though)
+//
+// WAIT! Why does it say TVal=rsUint32? We instantiate for int, not uint!
+
+// Test - what happens when we actually do instantiate it for uint?:
+//template class RAPT::rsPolynomial<RAPT::rsModularInteger<rsUint32>>;
+// ..strange - that produces an error that says:
+//   "cannot convert from 'TVal' to 'TTgt' with TVal=int and 
+//    TTgt=RAPT::rsModularInteger<RAPT::rsUint32>" 
+// Now the roles of int and uint are reversed.
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
 // todo: instantiate rsPolynomial also for float, int, maybe also for 
 // rsMatrix<float>, etc.
+
+// Try to instantiate RAPT::rsMatrix<RAPT::rsModularInteger<int>>; and see if it produces 
+// similar problems:
+//template class RAPT::rsMatrix<RAPT::rsModularInteger<int>>;
+// OK - we need to replace occurences of T(0), T(1), ... with the prototype based construction
+
+
 
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter

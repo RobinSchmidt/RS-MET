@@ -161,6 +161,15 @@ rsModularInteger<T> rsConstantValue(T value, rsModularInteger<T> targetTemplate)
 //   inline TTgt rsConstantValue(TVal value, TTgt targetTemplate) { return (TTgt) value; }
 // in BasicFunctions.h
 
+/*
+template<class T>
+template<class U> 
+rsModularInteger<T> rsConstantValue(U value, rsModularInteger<T> targetTemplate) 
+{ 
+  return rsModularInteger<T>(T(value), targetTemplate.modulus);
+}
+*/
+
 
 // ToDo: Implement the default, templatized rsZeroValue and rsUnityValue functions in terms of 
 // rsConstantValue such that rsModularInteger and all other similar classes need to provide only an 
