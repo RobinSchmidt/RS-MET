@@ -800,6 +800,8 @@ public:
   static std::vector<std::complex<R>> rootsCubic(const R& a, const R& b, const R& c, const R& d);
   // todo: make the order of the arguments consistent with evaluateCubic - but careful - this will
   // break client code! ...rename parameters to a0,a1,a2,a3 to make it clear, how it's meant
+  // Maybe use a std::array instead of std::vector for the return values because we already know
+  // its size at compile time (it's 3) and we don't want a heap allocation if we can avoid it.
 
   /** Discriminant of cubic polynomial \f[ a_0 + a_1 x + a_2 x^2 + a_3 x^3 = 0 \f].
   D > 0: 3 distinct real roots, D == 0: 3 real roots, 2 or 3 of which may coincide,
@@ -808,7 +810,7 @@ public:
   static R cubicDiscriminant(const R& a0, const R& a1, const R& a2, const R& a3);
   // rename to discriminantCubic
 
-  // todo: write function quadraticDiscriminant
+  // ToDo: write function quadraticDiscriminant
 
   /** under construction - does not yet work */
   template<class R>
@@ -839,6 +841,9 @@ public:
     const R& max, int maxIterations = 10);
   // todo: rename to rootCubicNear, change order of variables, maybe use bisection, if 
   // newton-iteration diverges
+
+  // ToDo: rootsDepressedCubic(const R& a0, const R& a1, outputs). Should find roots of
+  // a0 + a1*x + x^3.
 
   /** Iteratively improves an initial estimate for the root of the polynomial equation:
   \f[ a[order] x^order + ... + a[1] x + a[0] = 0   \f]

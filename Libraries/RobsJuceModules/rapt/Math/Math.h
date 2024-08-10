@@ -45,6 +45,7 @@ namespace RAPT
 #include "Functions/FunctionObjects.h" // obsolete thx to std::function?
 #include "Functions/Sigmoids.h"
 #include "Functions/SinCosTable.h"
+#include "Functions/MiscMathFunctions.h"
 
 #include "Geometry/Line2D.h"
 #include "Geometry/ConicSection.h"

@@ -685,6 +685,13 @@ void sigmoidConvergenceRates()
   // - Try some of the sigmoids as activation function in neural networks. Maybe the ones with 
   //   slower convergence rates can help to combat the vanishing gradient problem. Maybe invRat
   //   is a good candidate. maybe linear convergence is desirable?
+  //
+  // - I think, in thos sigmoids that are constructed as inverse function of rational functions 
+  //   with poles at +-1 maybe the ratio of the derivatives of numerator and denominator at those
+  //   poles determines the asymptotic convergence rate? In the inverse of -x / (x^2-1), we see an
+  //   asymptotic convergence function of 2*x. I'd like to construct a sigmoid whose convergence 
+  //   rate function approaches the identity function. Maybe try -((1-a)*x + a*x^3) / (x^2 - 1) and
+  //   adjust a such that the derivative at x = 1 of the numerator is 1/2. 
 }
 
 

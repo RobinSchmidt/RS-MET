@@ -377,9 +377,9 @@ int main(int argc, char* argv[])
   //ropewayAlgo();
   //peakPicker();
   //singleSineModel();
-  //singleSineCycleWobbles();    // maybe rename - sineFromWub, sineFromWavelet
-  //multiSineCycleWobbles();
-  //multiHalfCycleWobbles();
+  singleSineCycleWobbles();    // maybe rename - sineFromWub, sineFromWavelet
+  multiSineCycleWobbles();
+  multiHalfCycleWobbles();
   //sineFromDecayingSines();
 
   // Delay:

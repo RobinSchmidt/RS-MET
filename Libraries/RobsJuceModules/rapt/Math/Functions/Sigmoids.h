@@ -89,7 +89,7 @@ sense that they go through the output range from -1 to +1 as the input x goes fr
 they also have unit slope at the origin. */
 
 template<class T>
-class rsNormalizedSigmoids
+class rsNormalizedSigmoids  // Maybe rename to rsSigmoids
 {
 
 public:

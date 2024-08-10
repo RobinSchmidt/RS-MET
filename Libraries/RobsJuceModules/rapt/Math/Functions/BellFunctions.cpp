@@ -144,7 +144,7 @@ Interestingly, the even and odd functions
 
 More ideas:
 
-f(x) = x / sinh(x)
+f(x) = x / sinh(x)  ...when scaled appropriately, it falls in between 1/cosh(x) and exp(-x^2)
 
 
 */
