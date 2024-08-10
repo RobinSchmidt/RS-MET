@@ -125,9 +125,9 @@ std::complex<R> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
 template<class T>
 T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N)
 {
-  T y = rsConstantValue(N, x) * a[N];
+  T y = rsIntValue(N, x) * a[N];
   for(int i = N-1; i >= 1; i--)
-    y = y*x + rsConstantValue(i, x) * a[i];
+    y = y*x + rsIntValue(i, x) * a[i];
   return y;
 }
 
@@ -138,9 +138,9 @@ T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
   if(n > N)
     return rsZeroValue(x); // avoid evaluating products including zero (starting at negative indices)
   //T y = T(rsProduct(N-n+1, N)) * a[N];
-  T y = rsConstantValue(rsProduct(N-n+1, N), x) * a[N];
+  T y = rsIntValue(rsProduct(N-n+1, N), x) * a[N];
   for(int i = N-1; i >= n; i--)
-    y = y*x + rsConstantValue(rsProduct(i-n+1, i), x) * a[i];
+    y = y*x + rsIntValue(rsProduct(i-n+1, i), x) * a[i];
     //y = y*x + T(rsProduct(i-n+1, i)) * a[i];
   return y;
 }
@@ -175,9 +175,9 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
   }
 
   // new - should work without warning also for T = rsFraction<int>:
-  T fac = rsConstantValue(2, x);
+  T fac = rsIntValue(2, x);
   for(int i = 2; i <= numDerivatives; i++) {
-    results[i] *= fac; fac *= rsConstantValue(i+1, x);  }
+    results[i] *= fac; fac *= rsIntValue(i+1, x);  }
 
   // old:
   //rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
@@ -211,16 +211,16 @@ R rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
     P[1] = z * P[1] + P[0];
     P[0] = z * P[0] + a[j];
     err  = abs(P[0]) + zA*err; }
-  P[2] *= rsConstantValue(2, zeroR);  // P[2] *= 2
+  P[2] *= rsIntValue(2, zeroR);  // P[2] *= 2
   return err;
 }
 
 template<class T>
 T rsPolynomial<T>::evaluateIntegral(const T& x, const T* a, int N, T c)
 {
-  T y = a[N] / rsConstantValue(N+1, x);
+  T y = a[N] / rsIntValue(N+1, x);
   for(int i = N-1; i >= 0; i--)
-    y = y*x + a[i] / rsConstantValue(i+1, x);
+    y = y*x + a[i] / rsIntValue(i+1, x);
   return y*x + c;
 }
 // maybe make a variant that takes lower and upper integration limits a,b - this can be optimized:
@@ -233,13 +233,13 @@ template<class T>
 T rsPolynomial<T>::evaluateHermite(const T& x, int n)
 {
   T one = rsUnityValue(x);
-  T two = rsConstantValue(2, x);
+  T two = rsIntValue(2, x);
   if(n == 0) return one;
   if(n == 1) return two*x;
   T h0 = one;
   T h1 = two*x;
   for(int i = 1; i < n; i++) {
-    T tmp = two * (x*h1 - rsConstantValue(i, x)*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
+    T tmp = two * (x*h1 - rsIntValue(i, x)*h0); // H[n+1](x) = 2*x*H[n](x) - 2*n*H[n-1](x)
     h0 = h1;
     h1 = tmp;
   }
@@ -411,8 +411,8 @@ void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
 template<class T>
 void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)
 {
-  T two   = rsConstantValue(2, a[0]);
-  T three = rsConstantValue(3, a[0]);
+  T two   = rsIntValue(2, a[0]);
+  T three = rsIntValue(3, a[0]);
   T b02   = b0*b0;
   T b12   = b1*b1;
   c[0]    = a[3]*b0*b02 + a[2]*b02 + a[1]*b0 + a[0];
@@ -439,7 +439,7 @@ void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)
 template <class T>
 void rsPolynomial<T>::negateArgument(const T *a, T *am, int N)
 {
-  scaleArgument(a, am, N, rsConstantValue(-1, a[0]));
+  scaleArgument(a, am, N, rsIntValue(-1, a[0]));
   //scaleArgument(a, am, N, T(-1));
 }
 
@@ -491,7 +491,7 @@ template <class T>
 void rsPolynomial<T>::derivative(const T *a, T *ad, int N)
 {
   for(int n = 1; n <= N; n++)
-    ad[n-1] = rsConstantValue(n, a[0]) * a[n]; // new
+    ad[n-1] = rsIntValue(n, a[0]) * a[n]; // new
     //ad[n-1] = T(n) * a[n]; // old
 }
 
@@ -499,7 +499,7 @@ template <class T>
 void rsPolynomial<T>::integral(const T *a, T *ai, int N, T c)
 {
   for(int n = N+1; n >= 1; n--)
-    ai[n] = a[n-1] / rsConstantValue(n, c);
+    ai[n] = a[n-1] / rsIntValue(n, c);
     //ai[n] = a[n-1] / T(n);
   ai[0] = c;
 }
@@ -529,7 +529,7 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
 {
   // (possibly alternating) powers of the stepsize h:
   T *hk = new T[N+1];
-  T hs  = rsConstantValue(direction, h) * h;
+  T hs  = rsIntValue(direction, h) * h;
   //hk[0] = T(1);
   hk[0] = rsUnityValue(h);
   for(int k = 1; k <= N; k++)
@@ -546,11 +546,11 @@ void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, 
   for(unsigned int n = 0; n <= (rsUint32)N; n++)
   {
     for(unsigned int k = 1; k <= n; k++)
-      ad[n-k] += a[n] * rsConstantValue(rsPascalTriangle(binomCoeffs, n, k), h) * hk[k];
+      ad[n-k] += a[n] * rsIntValue(rsPascalTriangle(binomCoeffs, n, k), h) * hk[k];
       //ad[n-k] += a[n] * T(rsPascalTriangle(binomCoeffs, n, k)) * hk[k];
   }
   if(direction == -1)
-    rsArrayTools::scale(ad, N, rsConstantValue(-1, h));
+    rsArrayTools::scale(ad, N, rsIntValue(-1, h));
     //rsArrayTools::scale(ad, N, -1);
 
   delete[] hk;
@@ -1070,9 +1070,9 @@ template<class T>
 void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const T *y, const T *dy)
 {
   T one   = rsUnityValue(a[0]);
-  T two   = rsConstantValue(2, a[0]);
-  T three = rsConstantValue(3, a[0]);
-  T six   = rsConstantValue(6, a[0]);
+  T two   = rsIntValue(2, a[0]);
+  T three = rsIntValue(3, a[0]);
+  T six   = rsIntValue(6, a[0]);
 
   // compute intermediate variables:
   T x0_2 = x[0]*x[0]; // x[0]^2
@@ -1096,8 +1096,8 @@ template<class T>
 void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *y, const T *dy)
 {
   T one   = rsUnityValue(a[0]);
-  T two   = rsConstantValue(2, a[0]);
-  T three = rsConstantValue(3, a[0]);
+  T two   = rsIntValue(2, a[0]);
+  T three = rsIntValue(3, a[0]);
   a[0] = y[0];
   a[1] = dy[0];
   a[2] = three*(y[1]-a[1]-a[0])-dy[1]+a[1];
@@ -1108,9 +1108,9 @@ template<class T>
 void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
 {
   T one  = rsUnityValue(a[0]);
-  T two  = rsConstantValue(2, a[0]);
-  T four = rsConstantValue(4, a[0]);
-  T six  = rsConstantValue(6, a[0]);
+  T two  = rsIntValue(2, a[0]);
+  T four = rsIntValue(4, a[0]);
+  T six  = rsIntValue(6, a[0]);
   a[0] = y[0];
   a[2] = (one/two)*(y[-1]+y[1]-two*a[0]);
   a[3] = (one/six)*(y[2]-y[1]+y[-1]-a[0]-four*a[2]);
@@ -1207,7 +1207,7 @@ void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, in
 {
   T *x = new T[N];
   for(int n = 0; n < N; n++)
-    x[n] = x0 + rsConstantValue(n, x0)*dx;
+    x[n] = x0 + rsIntValue(n, x0)*dx;
   interpolant(a, x, y, N);
   delete[] x;
 }
@@ -1272,7 +1272,7 @@ template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)
 {
   T one = rsUnityValue(a[0]);
-  T two = rsConstantValue(2, a[0]);
+  T two = rsIntValue(2, a[0]);
   a[2] = (one/two)*(y[0]+y[2])-y[1];
   a[1] = y[1]-y[0]-a[2];
   a[0] = y[0];
@@ -1282,7 +1282,7 @@ template<class T>
 void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, const T *y)
 {
   T one = rsUnityValue(a[0]);
-  T two = rsConstantValue(2, a[0]);
+  T two = rsIntValue(2, a[0]);
   a[0] = y[1];
   a[1] = (one/two)*(y[2]-y[0]);
   a[2] = y[2] - a[0] - a[1];
@@ -1291,8 +1291,8 @@ void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, const T *y)
 template<class T>
 T rsPolynomial<T>::quadraticExtremumPosition(const T *a)
 {
-  T minusOne = rsConstantValue(-1, a[0]);
-  T two = rsConstantValue(2, a[0]);
+  T minusOne = rsIntValue(-1, a[0]);
+  T two = rsIntValue(2, a[0]);
   return (minusOne/two) * a[1]/a[2]; 
   // it's the client's responsibility to ensure that a[2] is nonzero
 }
@@ -1300,15 +1300,15 @@ T rsPolynomial<T>::quadraticExtremumPosition(const T *a)
 template<class T>
 void rsPolynomial<T>::fitQuarticWithDerivatives(T *a, const T *y, const T& s0, const T& s2)
 {
-  T c2  = rsConstantValue( 2, a[0]);
-  T c3  = rsConstantValue( 3, a[0]);
-  T c4  = rsConstantValue( 4, a[0]);
-  T c5  = rsConstantValue( 5, a[0]);
-  T c7  = rsConstantValue( 7, a[0]);
-  T c8  = rsConstantValue( 8, a[0]);
-  T c9  = rsConstantValue( 9, a[0]);
-  T c11 = rsConstantValue(11, a[0]);
-  T c16 = rsConstantValue(16, a[0]);
+  T c2  = rsIntValue( 2, a[0]);
+  T c3  = rsIntValue( 3, a[0]);
+  T c4  = rsIntValue( 4, a[0]);
+  T c5  = rsIntValue( 5, a[0]);
+  T c7  = rsIntValue( 7, a[0]);
+  T c8  = rsIntValue( 8, a[0]);
+  T c9  = rsIntValue( 9, a[0]);
+  T c11 = rsIntValue(11, a[0]);
+  T c16 = rsIntValue(16, a[0]);
 
   a[0] = y[0];
   a[1] = s0;
@@ -1392,7 +1392,7 @@ void rsPolynomial<T>::besselPolynomial(T *a, int degree)
   b2[0] = one; b2[1] = zero;
   b1[0] = one; b1[1] = one;
   for(n = 2; n <= degree; n++) {
-    T c = rsConstantValue(2*n-1, a[0]);
+    T c = rsIntValue(2*n-1, a[0]);
     for(m = n; m >  0; m--)   a[m]  = c*b1[m-1];
     a[0] = zero;
     for(m = 0; m <  n-1; m++) a[m] += b2[m];
@@ -1452,9 +1452,9 @@ template<class T>
 void rsPolynomial<T>::jacobiRecursionCoeffs(int n, T a, T b, T *w0, T *w1, T *w1x, T *w2)
 {
   T one  = rsUnityValue(a);
-  T two  = rsConstantValue(2, a);
-  T enn  = rsConstantValue(n, a);
-  T enn2 = rsConstantValue(2*n, a);
+  T two  = rsIntValue(2, a);
+  T enn  = rsIntValue(n, a);
+  T enn2 = rsIntValue(2*n, a);
 
   T k  = enn2+a+b;
   *w0  = enn2*(enn+a+b)*(k-two);
@@ -1468,7 +1468,7 @@ template<class T>
 void rsPolynomial<T>::jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b)
 {
   T one = rsUnityValue(a);
-  T two = rsConstantValue(2, a);
+  T two = rsIntValue(2, a);
 
   // initialization:
   if( n == 0 ) {
@@ -1497,8 +1497,8 @@ void rsPolynomial<T>::legendreRecursion(T *a, int n, T *a1, T *a2)
 {
   T zero = rsZeroValue(a1[0]);
   T one  = rsUnityValue(a1[0]);
-  T enn  = rsConstantValue(n, a1[0]);
-  T enn2 = rsConstantValue(2*n, a1[0]);
+  T enn  = rsIntValue(n, a1[0]);
+  T enn2 = rsIntValue(2*n, a1[0]);
 
   if( n == 0 ) { a[0] = one;              return; }
   if( n == 1 ) { a[0] = zero; a[1] = one; return; }
@@ -1659,7 +1659,7 @@ T rsPolynomial<T>::chebychevRecursive(T x, int N)
   T t0  = rsUnityValue(x);  // Needed to make it compile with T = rsModularInteger. t0 is still
   T t1  = x;                // ..initialized to 1 but it needs to copy the modulus from x
   T tn  = rsUnityValue(x);
-  T two = rsConstantValue(2, x);
+  T two = rsIntValue(2, x);
   for(int i = 0; i < N; i++) {
     tn = two*x*t1 - t0; t0 = t1; t1 = tn; }
   return t0;

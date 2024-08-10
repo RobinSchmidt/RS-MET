@@ -157,10 +157,16 @@ rsModularInteger<T> rsUnityValue(rsModularInteger<T> value)
 }
 
 template<class T> 
-rsModularInteger<T> rsConstantValue(T value, rsModularInteger<T> targetTemplate) 
+rsModularInteger<T> rsIntValue(int value, rsModularInteger<T> targetTemplate) 
 { 
-  return rsModularInteger<T>(value, targetTemplate.modulus);
+  return rsModularInteger<T>(T(value), targetTemplate.modulus);
 }
+
+//template<class T> 
+//rsModularInteger<T> rsConstantValue(T value, rsModularInteger<T> targetTemplate) 
+//{ 
+//  return rsModularInteger<T>(value, targetTemplate.modulus);
+//}
 // This is an explicit specialization of:
 //   template<class TVal, class TTgt> 
 //   inline TTgt rsConstantValue(TVal value, TTgt targetTemplate) { return (TTgt) value; }

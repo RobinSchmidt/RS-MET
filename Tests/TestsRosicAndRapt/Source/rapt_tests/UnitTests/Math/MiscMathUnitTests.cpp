@@ -1037,9 +1037,9 @@ bool testModularInteger()
 
   // Test the prototype-based construction/factory functions:
   ModInt c;
-  c = rsZeroValue(p2);        ok &= c.getValue() == 0 && c.getModulus() == 5;
-  c = rsUnityValue(p2);       ok &= c.getValue() == 1 && c.getModulus() == 5;
-  c = rsConstantValue(8, p2); ok &= c.getValue() == 3 && c.getModulus() == 5; // 8 % 5 = 3
+  c = rsZeroValue(p2);   ok &= c.getValue() == 0 && c.getModulus() == 5;
+  c = rsUnityValue(p2);  ok &= c.getValue() == 1 && c.getModulus() == 5;
+  c = rsIntValue(8, p2); ok &= c.getValue() == 3 && c.getModulus() == 5; // 8 % 5 = 3
 
 
   TestPoly<ModInt> tp(c);
