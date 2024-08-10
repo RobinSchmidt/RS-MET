@@ -225,17 +225,13 @@ template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, doub
 
 template class RAPT::rsMatrixOld<double>;  // try to get rid
 
-// Various kinds of polynomials:
+// Various kinds of polynomials. Although we do not reall need all these kinds in production code,
+// we want to be able to build rsPolynomial for all these types:
 template class RAPT::rsPolynomial<int>;
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
-// Although we do not reall need all these kinds in production code, we want to be able to build
-// rsPolynomial for all these types
-
-
-
 
 //template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
 //

@@ -1033,6 +1033,13 @@ bool testModularInteger()
   q = p1 / p0; ok &= q == p0; r = q * p0; ok &= r == p0;
   ok &= p0.hasInverse() == false;
 
+  // Test the prototype-based construction/factory functions:
+  ModInt c;
+  c = rsZeroValue(p2);        ok &= c.getValue() == 0 && c.getModulus() == 5;
+  c = rsUnityValue(p2);       ok &= c.getValue() == 1 && c.getModulus() == 5;
+  c = rsConstantValue(8, p2); ok &= c.getValue() == 3 && c.getModulus() == 5; // 8 % 5 = 3
+
+
   // ToDo: 
   // -Drag the experiment with the NTT convolution into the unit test
   // -Test it with an unsigned integer type, too. Maybe templatize this function...hmm - but we use
