@@ -255,6 +255,9 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 //   "cannot convert from 'TVal' to 'TTgt' with TVal=int and 
 //    TTgt=RAPT::rsModularInteger<RAPT::rsUint32>" 
 // Now the roles of int and uint are reversed.
+//
+// Maybe try to move ModularInteger.h/cpp from the "unfinished" folder into the regular math
+// folder and include it before rsPolynomial
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
