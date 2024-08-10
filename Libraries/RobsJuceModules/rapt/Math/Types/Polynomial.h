@@ -1157,18 +1157,8 @@ public:
   acosh and cosh. */
   template<class U>
   static U chebychevDirect(U x, int N);
-  /*
-  {
-    rsAssert(N >= 0, "polynomial degree must be non-negative");
-    if(rsAbs(x) <= U(1)) return  cos( U(N)*acos ( x));
-    if(      x  >  U(1)) return  cosh(U(N)*acosh( x));
-    if(rsIsEven(N))      return  cosh(U(N)*acosh(-x));
-    else                 return -cosh(U(N)*acosh(-x));
-  }
-  */
   // We can't use template parameter T here because of compiler errors when instantiating 
   // rsPolynomial for std::complex
-  // Maybe move into .cpp file. Maybe replace U(1) and U(N) by rsUnityValue and rsConstantValue
 
   // todo: figure out for which N which of the two functions is faster and/or more accurate - maybe
   // provide a dispatcher function - it seems, at least for lower degrees, the recursion is more 
