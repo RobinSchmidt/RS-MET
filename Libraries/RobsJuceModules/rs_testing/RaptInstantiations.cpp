@@ -230,6 +230,7 @@ template class RAPT::rsPolynomial<double>;
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 
+
 //template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
 // Fails to compile. We need to replace occurrences of expressions like T(0), T(1), T(i+1) etc. by
 // calls to e.g. rsZeroValue(coeffs[0]) or rsZeroValue(x), rsUnityValue(...), rsConstantValue(...). 
@@ -239,6 +240,9 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 // implementation of rsConstantValue in BasicFunctions.h instead of the explicit specialization in
 // rsModularInteger.h. Maybe rsConstantValue function gets called somewhere before the compiler has 
 // seen the explicit specialization? -> figure that out and fix it!
+// In the implementation of chebychevRecursive in Polynomial.h we catualy call both 
+// rsConstantValue and rsUnityValue. Maybe try to move the implementation into Polynomial.cpp and
+// see if that helps.
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int

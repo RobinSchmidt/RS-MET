@@ -1162,6 +1162,7 @@ public:
       tn = two*x*t1 - t0; t0 = t1; t1 = tn; }
     return t0;
   }
+  // move to .cpp file
   // maybe rename to evalChebyRecursive, have also a function coeffsCheby
 
   /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by means of acos and cos or 
