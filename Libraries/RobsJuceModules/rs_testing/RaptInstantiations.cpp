@@ -264,10 +264,7 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 // Try to instantiate RAPT::rsMatrix<RAPT::rsModularInteger<int>>; and see if it produces 
 // similar problems:
 template class RAPT::rsMatrix<RAPT::rsModularInteger<int>>;
-// OK - we need to replace occurences of T(0), T(1), ... with the prototype based construction
-// setToZero/setToIdentity now need a prototype for initialization. Changing these signatures may 
-// cause a lot of ripples throughout the codebase.
-// DONE - this compiles fine. 
+// OK - this compiles fine. 
 // TODO: add unit tests for matrices of modular integers. Having it compile is one thing but having
 //       it working as is should is another.
 
