@@ -3385,6 +3385,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\Convolver.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\CrossOver4Way.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
@@ -3409,6 +3412,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\FilterSpecifications.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\HilbertFilter.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
@@ -3425,6 +3431,9 @@
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuantileFilter.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\WindowedFilterDesigner.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Filters.cpp">
@@ -3464,6 +3473,9 @@
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\Mappers.cpp">
+      <Filter>JUCE Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\MiscMathFunctions.cpp">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\NodeBasedFunction.cpp">
@@ -3551,6 +3563,9 @@
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\ModularInteger.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
@@ -3653,9 +3668,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Matrix.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\ModularInteger.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.cpp">
@@ -8121,6 +8133,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\Convolver.h">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\CrossOver4Way.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
@@ -8145,6 +8160,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\FilterSpecifications.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\HilbertFilter.h">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
@@ -8161,6 +8179,9 @@
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\QuantileFilter.h">
+      <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\WindowedFilterDesigner.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Filters.h">
@@ -8206,6 +8227,9 @@
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\Mappers.h">
+      <Filter>JUCE Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\MiscMathFunctions.h">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\MoebiusTransform.h">
@@ -8293,6 +8317,9 @@
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\ModularInteger.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">
@@ -8401,9 +8428,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Matrix.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\ModularInteger.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.h">

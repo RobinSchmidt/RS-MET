@@ -31,6 +31,7 @@ namespace RAPT
 #include "Functions/SinCosTable.cpp"
 #include "Functions/MiscMathFunctions.cpp"
 
+#include "Types/ModularInteger.cpp"
 #include "Types/Matrix.cpp"
 #include "Types/Polynomial.cpp"
 #include "Types/RationalFunction.cpp"

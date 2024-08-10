@@ -26,7 +26,6 @@ namespace RAPT
 #include "Math/Rectangle2D.h"
 #include "Math/Triangle2D.h"
 #include "Math/AffineTransform2D.h"
-#include "Math/ModularInteger.h"
 
 // still missing math files from RSLib:  BigInt/BigFloat (should go into rosic)
 

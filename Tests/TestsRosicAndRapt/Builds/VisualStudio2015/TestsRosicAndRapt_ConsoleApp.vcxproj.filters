@@ -946,6 +946,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\ModularInteger.cpp">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
@@ -1046,9 +1049,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Matrix.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\ModularInteger.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.cpp">
@@ -3243,6 +3243,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\ModularInteger.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
@@ -3349,9 +3352,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Matrix.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\ModularInteger.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.h">

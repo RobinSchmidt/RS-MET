@@ -13,7 +13,6 @@ namespace RAPT
 #include "Math/Transforms.cpp"
 #include "Math/Statistics.cpp"
 #include "Math/GeometricFunctions.cpp"
-#include "Math/ModularInteger.cpp"
 
 #include "MiscAudio/Interpolator.cpp"
 #include "MiscAudio/DelayLine.cpp"

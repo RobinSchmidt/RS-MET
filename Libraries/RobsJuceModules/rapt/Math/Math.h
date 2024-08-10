@@ -17,6 +17,7 @@ namespace RAPT
 
 #include "Functions/BasicMathFunctions.h"
 
+#include "Types/ModularInteger.h"
 #include "Types/Vector.h"  // move to LinearAlgebra
 #include "Types/Matrix.h"
 #include "Types/Polynomial.h"

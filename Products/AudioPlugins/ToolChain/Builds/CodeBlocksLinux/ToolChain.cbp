@@ -11964,6 +11964,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/Convolver.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/Convolver.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/CrossOver4Way.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -12060,6 +12072,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/HilbertFilter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/HilbertFilter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/InfiniteImpulseResponseDesigner.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -12127,6 +12151,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/QuantileFilter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/WindowedFilterDesigner.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Scientific/WindowedFilterDesigner.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -12295,6 +12331,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Functions/Mappers.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Functions/MiscMathFunctions.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Functions/MiscMathFunctions.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -12655,6 +12703,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Types/Matrix.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Types/ModularInteger.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Types/ModularInteger.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -13081,18 +13141,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Math/Matrix.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Math/ModularInteger.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Math/ModularInteger.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
