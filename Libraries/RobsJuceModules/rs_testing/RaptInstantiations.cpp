@@ -265,6 +265,8 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 // similar problems:
 //template class RAPT::rsMatrix<RAPT::rsModularInteger<int>>;
 // OK - we need to replace occurences of T(0), T(1), ... with the prototype based construction
+// setToZero/setToIdentity now need a prototype for initialization. Changing these signatures may 
+// cause a lot of ripples throughout the codebase
 
 
 

@@ -797,7 +797,8 @@ public:
     rsAssert(C->numRows == A.numRows);
     for(int i = 0; i < C->numRows; i++) {
       for(int j = 0; j < C->numCols; j++) {
-        (*C)(i, j) = T(0);
+        //(*C)(i, j) = T(0);
+        (*C)(i, j) = rsZeroValue(A(0,0));
         for(int k = 0; k < A.numCols; k++)
           (*C)(i, j) += A.at(i, k) * B.at(k, j); }}
   }
@@ -930,7 +931,8 @@ public:
     rsAssert(C->numRows == Mc && C->numCols == Nc, "Result matrix has wrong shape");
     for(int m = 0; m < Mc; m++) {
       for(int n = 0; n < Nc; n++) {
-        T s = T(0);
+        //T s = T(0);
+        T s = rsZeroValue(A(0,0));
         for(int i = rsMax(0, m-Ma+1); i <= rsMin(Mb-1, m); i++) {
           for(int j = rsMax(0, n-Na+1); j <= rsMin(Nb-1, n); j++) {
             s += B(i, j) * A(m-i, n-j);  }}
@@ -1009,9 +1011,12 @@ replacement needs to partially conform to the interface and implementation of st
 to store the data in a contiguous memory area, it needs to have a resize() method...tbc... 
 
 ToDo: 
--those member functions that use std::vector for parameters or return types should be changed 
- to use the template parameter V instead (the transition from hardcoded std::vector and V is not
- yet complete)
+
+- Those member functions that use std::vector for parameters or return types should be changed 
+  to use the template parameter V instead (the transition from hardcoded std::vector and V is not
+  yet complete)
+
+- Make it work for rsModularInteger
 
 */
 
@@ -1334,9 +1339,10 @@ public:
 
   /** Divides this matrix by a scalar and returns the result. */
   rsMatrix<T, V>& operator/=(const T& s)
-  { this->scale(T(1)/s); return *this; }
-
-
+  { 
+    this->scale(rsUnityValue(s) / s); return *this; 
+    //this->scale(T(1)/s); return *this; 
+  }
 
   /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
   std::vector<T> operator*(const std::vector<T>& x) const
@@ -1344,7 +1350,8 @@ public:
     rsAssert((int) x.size() == this->numCols, "Vector incompatible for left multiply by matrix");
     std::vector<T> y(this->numRows);
     for(int i = 0; i < this->numRows; i++) {
-      y[i] = T(0);
+      //y[i] = T(0);
+      y[i] = rsZeroValue(x[0]);
       for(int j = 0; j < this->numCols; j++)
         y[i] += this->at(i, j) * x[j]; }
     return y;

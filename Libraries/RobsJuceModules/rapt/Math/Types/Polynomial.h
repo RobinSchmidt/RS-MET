@@ -22,6 +22,10 @@ and std::complex<R> for the complex type. This is done because this class templa
 to be instantiated for real and complex types "T", so using the same template parameter could lead
 to confusion like the compiler using a nested complex type which makes no sense.
 
+ToDo: 
+
+  - Make it work for rsModularInteger
+
 ....documentation under construction....tbc...  */
 
 template<class T>
