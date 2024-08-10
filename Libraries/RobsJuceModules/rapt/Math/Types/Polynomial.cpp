@@ -1651,6 +1651,21 @@ void rsPolynomial<T>::coeffsNewton(const T* x, T* y, int N)
 // https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
 // https://en.wikipedia.org/wiki/Neville%27s_algorithm
 
+template<class T>
+T rsPolynomial<T>::chebychevRecursive(T x, int N)
+{
+  rsAssert(N >= 0, "polynomial degree must be non-negative");
+  //T t0 = T(1); T t1 = x; T tn = T(1);  // old - doesn't compile for T = rsModularInteger<int>
+  T t0  = rsUnityValue(x);  // Needed to make it compile with T = rsModularInteger. t0 is still
+  T t1  = x;                // ..initialized to 1 but it needs to copy the modulus from x
+  T tn  = rsUnityValue(x);
+  T two = rsConstantValue(2, x);
+  for(int i = 0; i < N; i++) {
+    tn = two*x*t1 - t0; t0 = t1; t1 = tn; }
+  return t0;
+}
+
+
 /*
 
 Notes:

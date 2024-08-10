@@ -1150,7 +1150,8 @@ public:
   // with "evaluate" or none should
 
   /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by recursion. */
-  static T chebychevRecursive(T x, int N)
+  static T chebychevRecursive(T x, int N);
+  /*
   {
     rsAssert(N >= 0, "polynomial degree must be non-negative");
     //T t0 = T(1); T t1 = x; T tn = T(1);  // old - doesn't compile for T = rsModularInteger<int>
@@ -1162,7 +1163,8 @@ public:
       tn = two*x*t1 - t0; t0 = t1; t1 = tn; }
     return t0;
   }
-  // move to .cpp file
+  */
+  // move to .cpp file - done
   // maybe rename to evalChebyRecursive, have also a function coeffsCheby
 
   /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by means of acos and cos or 
