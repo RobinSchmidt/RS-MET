@@ -373,7 +373,15 @@ public:
   polynomial, let's say q, then the resulting polynominal is r(x) = q(p(x)). */
   rsPolynomial<T> operator()(const rsPolynomial<T>& p) const
   {
-    rsPolynomial<T> r(getDegree() * p.getDegree());
+    // Old:
+    //rsPolynomial<T> r(getDegree() * p.getDegree());
+
+    // New:
+    rsPolynomial<T> r;
+    r.setDegree(getDegree() * p.getDegree());
+
+
+
     compose(&p.coeffs[0], p.getDegree(), &coeffs[0], getDegree(), &r.coeffs[0]);
     return r;
   }
@@ -447,8 +455,22 @@ public:
 
   rsPolynomial<T> derivative() const
   { 
-    if(getDegree() == 0) return rsPolynomial<T>(); // a constant polynomial has zero derivative
-    rsPolynomial<T> d(getDegree()-1); derivative(&coeffs[0], &d.coeffs[0], getDegree()); 
+    // A constant polynomial has zero derivative and the default constructor constructs the zero
+    // polynomial:
+    if(getDegree() == 0) 
+      return rsPolynomial<T>(); 
+
+
+    // Old:
+    //rsPolynomial<T> d(getDegree()-1); 
+
+    // New:
+    rsPolynomial<T> d;
+    d.setDegree(getDegree()-1);
+    //d.coeffs.resize(getDegree());
+
+
+    derivative(&coeffs[0], &d.coeffs[0], getDegree()); 
     return d;
   }
 
@@ -1180,7 +1202,11 @@ public:
 
 
 
+
 protected:
+
+  void setDegree(int newDegree) { coeffs.resize(newDegree+1); }
+
 
   std::vector<T> coeffs;   // array of coefficients - index correpsonds to power of x
 

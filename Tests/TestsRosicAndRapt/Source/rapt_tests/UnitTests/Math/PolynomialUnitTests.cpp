@@ -2515,6 +2515,23 @@ bool testPadeApproximation()
   return ok;
 }
 
+
+// Convenience function to convert a polynomial of integers into a polynomial of modular integers
+// with given modulus:
+template<class T>
+rsPolynomial<rsModularInteger<T>> toModular(const rsPolynomial<T>& p, T modulus)
+{
+  int N = p.getDegree();
+  rsPolynomial<rsModularInteger<T>> q(N);
+  for(int i = 0; i <= N; i++)
+    q[i] = rsModularInteger<T>(p[i], modulus);
+  return q;
+}
+
+
+//template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
+
+// Maybe rename to testModIntPolynomial to be consistent with testModIntMatrix
 bool testModularIntegerPolynomial()
 {
   // We test the class rsPolynomial using rsModularInteger<int> for the template parameter.
@@ -2524,7 +2541,13 @@ bool testModularIntegerPolynomial()
 
   using Int    = int;
   using ModInt = rsModularInteger<Int>;
-  using Poly   = rsPolynomial<ModInt>;
+  using PolyI  = rsPolynomial<Int>;
+  using PolyM  = rsPolynomial<ModInt>;
+
+  //PolyI pi({2,9,6,8});
+  //PolyI qi({6,3,5,9,2});
+  //PolyI ri = pi * qi;
+
 
 
   //Poly p; 
@@ -2538,6 +2561,8 @@ bool testModularIntegerPolynomial()
 
 
   return ok;
+
+  // See also testModIntMatrix() in MatrixUnitTests.cpp
 }
 
 

@@ -1392,10 +1392,6 @@ bool testModIntMatrix()
   Cm = Bm * Am;
   ok &= Cm == Ct;
 
-
-
-
-
   return ok;
 
   // ToDo:

@@ -225,6 +225,9 @@ template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, doub
 
 template class RAPT::rsMatrixOld<double>;  // try to get rid
 
+
+template class RAPT::rsPolynomial<int>;
+
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
 template class RAPT::rsPolynomial<std::complex<double>>;

@@ -204,6 +204,8 @@ Ideas:
  -maybe for defining the equality comparison between such multimodular integers, one should compare
   the remainders modulo the gcd of both moduli? ..but would such a definition actually satisfy the 
   constraints for an equivalence relation? ...i think, it breaks transitivity...
+ -Maybe solving a system of equations in multimodular integers can be related to teh Chinese
+  remainder theorem?
 -does the notion of a modular rational number make any sense? i.e. numerator and/or denominator are 
  modular integers?
 -What about Galois fields? Maybe we can have a class rsGaloisField where the user can set the base
@@ -250,8 +252,8 @@ ToDo:
 -plot lcm(x,y) / (x*y) ...this should be some sort of measure, how small the lcm of of x and y 
  actually is relative to how big it could be at most - a sort of measure how-much-mutually-prime two 
  numbers are as opposed to a simple boolean yes/no, pairs with a smaller value are more simply 
- related, Mutually prime numbers get a value of 1 whereas other numbers get a smaller number. Plot 
- that as a heat-map...maybe also create decimated versions of it. here, i created a plot of the 
+ related. Mutually prime numbers get a value of 1 whereas other numbers get a smaller number. Plot 
+ that as a heat-map...maybe also create decimated versions of it. here, I created a plot of the 
  coprimes:
  https://www.facebook.com/MusicEngineer/posts/2296213557119978
  ...maybe run correlation filters with various patterns over it...especially the 
