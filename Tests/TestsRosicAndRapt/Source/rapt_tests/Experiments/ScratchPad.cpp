@@ -582,7 +582,7 @@ rsMatrix<T> getNullSpaceTailParams(rsMatrix<T> A, T tol)
 
   // compute filled up basis vectors:
   Matrix B = Matrix(A.getNumColumns(), nullity);
-  B.setToZero();
+  B.setToZero(A(0,0));
   for(int j = 0; j < nullity; ++j) {
     for(int i = 0; i < rank; i++)
       B(i, j) = b(i, j);
@@ -736,7 +736,7 @@ bool solveUnderDeterminedRowEchelon(
   rsMatrix<T> b = getSubMatrix(B, 0, 0, rankA, B.getNumColumns());
   rsMatrix<T> x(b.getNumRows(), b.getNumColumns());
   RAPT::rsLinearAlgebraNew::solveTriangular(a, x, b); // A is in echelon form - and so is a
-  X.setToZero();
+  X.setToZero(A(0,0));
   for(int i = 0; i < x.getNumRows(); ++i)
     for(int j = 0; j < x.getNumColumns(); ++j)
       X(i, j) = x(i, j);
@@ -833,7 +833,7 @@ rsMatrix<T> getNullSpace(rsMatrix<T> A, T tol)  // maybe to needs to be a separa
 
   // write solutions into output ("scatter") and fill up with ones and zeros:
   Matrix B(A.getNumColumns(), nRhs);               // final result
-  B.setToZero();
+  B.setToZero(A(0,0));
   for(i = 0; i < nEqn; i++)
     for(j = 0; j < nRhs; j++)
       B(pivots[i], j) = b(i, j);
@@ -1328,7 +1328,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // Construct the diagonal matrix S from the singular values sigma_i, which are the square-roots
   // of the eigenvalues lambda_i:
   S.setShape(m, n);
-  S.setToZero();
+  S.setToZero(A(0,0));
   //for(i = 0; i < rsMin(m, n); i++)
   for(i = 0; i < rsMin(r, n); i++)    // for i >= r, sqrt(lambda[i]) == 0 - no need to compute it
     S(i, i) = sqrt(lambda[i]);
@@ -1339,7 +1339,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // values sigma_i and corresponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the
   // remaining u_{r+1},...,u_m (if any) are a basis of the orthogonal complement of u_1,..,u_r:
   U.setShape(m, m);
-  U.setToZero();
+  U.setToZero(A(0,0));
   for(i = 0; i < r; i++) {             // i: col-index into U
     for(j = 0; j < m; j++) {           // j: row-index into U
       for(k = 0; k < n; k++)           // k: col-index into A, row-index into V (...is n correct?)

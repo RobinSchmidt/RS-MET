@@ -334,10 +334,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  void initialize(int degX, int degY)
+  void initialize(int degX, int degY, T value)
   {
     coeffs.setShape(degX+1, degY+1);
-    coeffs.setToZero();
+    coeffs.setAllValues(value);
+    //coeffs.setToZero();  // old
   }
   // todo: write a setDegrees function that takes over the content of the old matrix and fills up
   // with zeros

@@ -583,14 +583,21 @@ public:
   /** \name Manipulation */
 
   /** Sets all matrix elements to zero. */
-  void setToZero() { rsArrayTools::fillWithZeros(dataPointer, getSize()); }
+  void setToZero(T zeroProto) 
+  { 
+    // new:
+    T zero = rsZeroValue(zeroProto);
+    setAllValues(zero);
+
+    //rsArrayTools::fillWithZeros(dataPointer, getSize()); // old
+  }
 
   /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and
   the rest with zeros. If the matrix is not square, then the overhanging portion to the right or
   bottom will be all zeros as well (-> verify this). */
   void setToIdentity(T oneProto) 
   { 
-    setToZero(); 
+    setToZero(oneProto); 
     //setDiagonalValues(T(1)); // old
     setDiagonalValues(rsUnityValue(oneProto)); // new
   }
@@ -1151,8 +1158,13 @@ public:
 
 
   /** Creates a zero matrix with given number of rows and columns. */
-  static rsMatrix<T, V> zero(int numRows, int numColumns)
-  { rsMatrix<T, V> Z(numRows, numColumns); Z.setToZero(); return Z; }
+  static rsMatrix<T, V> zero(int numRows, int numColumns, T prototype)
+  { 
+    rsMatrix<T, V> Z(numRows, numColumns); 
+    Z.setToZero(prototype); 
+    return Z; 
+  }
+  // should also take a prototype
 
   /** Creates an identity matrix of given size. */
   static rsMatrix<T, V> identity(int size, T prototype)

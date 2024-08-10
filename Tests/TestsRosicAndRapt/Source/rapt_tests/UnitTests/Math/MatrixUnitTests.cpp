@@ -982,7 +982,7 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   ok &= E == Matrix(4, 4, {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1});
   ok &= allocs == 38;
 
-  E = Matrix::zero(3, 4);
+  E = Matrix::zero(3, 4, 0.0);
   ok &= allocs == 39;
   ok &= E == Matrix(3, 4, {0,0,0,0, 0,0,0,0, 0,0,0,0});
   ok &= allocs == 40;

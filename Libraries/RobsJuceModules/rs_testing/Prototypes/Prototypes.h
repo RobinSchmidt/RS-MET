@@ -3722,7 +3722,7 @@ void potentialToDivergence(const rsBivariatePolynomial<T>& P, rsBivariatePolynom
 {
   int M = P.getDegreeX(); 
   int N = P.getDegreeY();
-  D.initialize(M, N);
+  D.initialize(M, N, T(0));
   for(int m = 0; m <= M; m++) {
     for(int n = 0; n <= N; n++) {
       if(m <= M-2 && n <= N-2)
@@ -3740,7 +3740,7 @@ void divergenceToPotential1(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 {
   int M = D.getDegreeX();
   int N = D.getDegreeY();
-  P.initialize(M+2, N+2);
+  P.initialize(M+2, N+2, T(0));
   for(int m = 0; m <= M; m++) 
     for(int n = 0; n <= N; n++) 
       P.coeff(m+2, n) = (D.coeff(m, n) - (n+1)*(n+2)*P.coeff(m, n+2)) / ((m+1)*(m+2));
@@ -3755,7 +3755,7 @@ void divergenceToPotential4(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 {
   int M = D.getDegreeX();
   int N = D.getDegreeY();
-  P.initialize(M+2, N+2);
+  P.initialize(M+2, N+2, T(0));
   for(int m = 0; m <= M; m++) 
     for(int n = 0; n <= N; n++) 
       P.coeff(m+2, n) = (D.coeff(m, n) - (n+1)*(n+2)*P.coeff(m, n+2)) / ((m+1)*(m+2));
@@ -3771,7 +3771,7 @@ void divergenceToPotential2(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 {
   int M = D.getDegreeX();
   int N = D.getDegreeY();
-  P.initialize(M+2, N+2);
+  P.initialize(M+2, N+2, T(0));
   for(int n = 0; n <= N; n++)
     for(int m = 0; m <= M; m++)
       P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
@@ -3784,7 +3784,7 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 {
   int M = D.getDegreeX();
   int N = D.getDegreeY();
-  P.initialize(M+2, N+2);
+  P.initialize(M+2, N+2, T(0));
   for(int n = 0; n <= N; n++)
     for(int m = 0; m <= M; m++)
       if(m <= M-2 /* || n <= N-2*/)

@@ -455,7 +455,7 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
 {
   int N = p.getDegree();
   rsBivariatePolynomial<T> r(N, N);
-  r.coeffs.setToZero();
+  r.coeffs.setToZero(a);
   const T* c = p.getCoeffPointerConst();
   int N1 = N+1;
   std::vector<T> wrk(3*N1);             // workspace
@@ -490,7 +490,7 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinearOld(
 {
   int N = p.getDegree();
   rsBivariatePolynomial<T> r(N, N);
-  r.coeffs.setToZero();
+  r.coeffs.setToZero(a);
   const T* c = p.getCoeffPointerConst();
   for(int n = 0; n <= N; n++)
     for(int k = 0; k <= n; k++)
@@ -567,10 +567,11 @@ template<class R>
 void rsBivariatePolynomial<T>::splitRealImag(const rsBivariatePolynomial<std::complex<R>>& p,
   rsBivariatePolynomial<R>& pRe, rsBivariatePolynomial<R>& pIm)
 {
+  R zero = rsZeroValue(real(p.getCoeffPadded(0,0)));
   int m = p.getDegreeX();
   int n = p.getDegreeY();
-  pRe.initialize(m, n);
-  pIm.initialize(m, n);
+  pRe.initialize(m, n, zero);
+  pIm.initialize(m, n, zero);
   for(int i = 0; i <= m; i++) {
     for(int j = 0; j <= n; j++) {
       pRe.coeff(i, j) = p.coeff(i, j).real();
