@@ -588,7 +588,12 @@ public:
   /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and
   the rest with zeros. If the matrix is not square, then the overhanging portion to the right or
   bottom will be all zeros as well (-> verify this). */
-  void setToIdentity() { setToZero(); setDiagonalValues(T(1)); }
+  void setToIdentity(T oneProto) 
+  { 
+    setToZero(); 
+    //setDiagonalValues(T(1)); // old
+    setDiagonalValues(rsUnityValue(oneProto)); // new
+  }
   // needs test
 
   /** Sets all elements in the matrix to the given value. */
@@ -1150,8 +1155,13 @@ public:
   { rsMatrix<T, V> Z(numRows, numColumns); Z.setToZero(); return Z; }
 
   /** Creates an identity matrix of given size. */
-  static rsMatrix<T, V> identity(int size)
-  { rsMatrix<T, V> E(size, size); E.setToIdentity(); return E; }
+  static rsMatrix<T, V> identity(int size, T prototype)
+  { 
+    rsMatrix<T, V> E(size, size); 
+    E.setToIdentity(prototype); 
+    return E; 
+  }
+  // The prototype is needed for matrices with T = rsModularInteger
 
   /** Creates a diagonal matrix of given size with all diagonal values set to d. */
   static rsMatrix<T, V> diag(int size, const T& d)

@@ -977,7 +977,7 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   ok &= allocs == 36;
 
   // factory functions:
-  E = Matrix::identity(4);
+  E = Matrix::identity(4, 1.0);
   ok &= allocs == 37;
   ok &= E == Matrix(4, 4, {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1});
   ok &= allocs == 38;

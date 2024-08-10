@@ -1201,8 +1201,8 @@ void linearSolverPrecision()
   int N = 100;  // size
 
   Matrix A(N, N), B(N, N), X(N, N);
-  A.setToIdentity();   // coefficient matrix
-  B.setToIdentity();   // solution matrix
+  A.setToIdentity(1.0);   // coefficient matrix
+  B.setToIdentity(1.0);   // solution matrix
 
   // ...in this case, the solution is expected to be the identity matrix
 

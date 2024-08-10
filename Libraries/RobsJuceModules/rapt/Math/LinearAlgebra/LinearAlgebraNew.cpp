@@ -15,7 +15,7 @@ RAPT::rsMatrix<T> rsLinearAlgebraNew::inverse(const RAPT::rsMatrixView<T>& A)
   rsAssert(A.isSquare());
   int N = A.getNumRows();
   RAPT::rsMatrix<T> tmp(N, N, A.getDataPointerConst()), E(N, N);
-  E.setToIdentity();
+  E.setToIdentity(A(0,0));
   solve(tmp, E, E);
   return E; 
 }

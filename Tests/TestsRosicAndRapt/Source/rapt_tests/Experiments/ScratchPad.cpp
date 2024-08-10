@@ -1148,7 +1148,7 @@ rsMatrix<T> getHouseholderReflection(rsMatrix<T>& a)
 {
   rsAssert(a.isColumnVector());
   T w = T(2) / getColumnSquaredNorm(a, 0);
-  return rsMatrix<T>::identity(a.getNumRows()) - w * a * a.getTranspose();
+  return rsMatrix<T>::identity(a.getNumRows(), a(0,0)) - w * a * a.getTranspose();
 }
 // needs test, maybe optimize
 // H_a = I - (2/(a^T * a)) * a * a^T - reflection along vector a (i think, this means reflection
@@ -1198,7 +1198,7 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
   int r = A.getNumColumns();
   rsAssert(n >= r);    // Karpf. pg.181 - do we need this?
   Q.setShape(n, n);
-  Q.setToIdentity();
+  Q.setToIdentity(A(0,0));
   R = A;
   rsMatrix<T> s(n, 1), a(n, 1), H(n, n);
   for(int j = 0; j < r; j++)
