@@ -1337,7 +1337,7 @@ void engineersFilterFreqRespsMeasured()
 
   // Create and set up the plotter and plot the measured magnitude response:
   SpectrumPlotter<TPlt> plt;
-  plt.setSampleRate(smpRt);
+  plt.setSampleRate(TPlt(smpRt));
   plt.setFftSize(N);
   plt.setLogFreqAxis(true);
   plt.setFloorLevel(-120);

@@ -457,7 +457,7 @@ bool testBracketGuessing()
   // Check on wiggly functions:
 
 
-  f = [](float x) { float t = 0.2*x; return t*t*t - t + 1.f; }; 
+  f = [](float x) { float t = 0.2f*x; return t*t*t - t + 1.f; }; 
   ok &= checkRoot(f, 0.f, 0.f);
   // ToDo: 
   // -Plot and compare to:  https://www.desmos.com/calculator/mplw4arhwt

@@ -163,8 +163,8 @@ void rotes::allpassDisperser()
   for(int i = 0; i < numStages; i++)
   {
     int j = numStages - i - 1;
-    apdn.setMaxDelayInSamples(i, nestScale*delays[j]);
-    apdn.setDelayInSamples(   i, nestScale*delays[j]);
+    apdn.setMaxDelayInSamples(i, int(nestScale*delays[j]));
+    apdn.setDelayInSamples(   i, int(nestScale*delays[j]));
     apdn.setAllpassCoeff(     i, coeffs[i]);
   }
   Vec u2(N);
@@ -176,8 +176,8 @@ void rotes::allpassDisperser()
   for(int i = 0; i < numStages; i++)
   {
     int j = numStages - i - 1;
-    apdn.setMaxDelayInSamples(i, nestScale*delays[i]);
-    apdn.setDelayInSamples(   i, nestScale*delays[i]);
+    apdn.setMaxDelayInSamples(i, int(nestScale*delays[i]));
+    apdn.setDelayInSamples(   i, int(nestScale*delays[i]));
     apdn.setAllpassCoeff(     i, coeffs[j]);
   }
   Vec u3(N);
@@ -190,8 +190,8 @@ void rotes::allpassDisperser()
   for(int i = 0; i < numStages; i++)
   {
     int j = numStages - i - 1;
-    apdn.setMaxDelayInSamples(i, nestScale*delays[j]);
-    apdn.setDelayInSamples(   i, nestScale*delays[j]);
+    apdn.setMaxDelayInSamples(i, int(nestScale*delays[j]));
+    apdn.setDelayInSamples(   i, int(nestScale*delays[j]));
     apdn.setAllpassCoeff(     i, coeffs[j]);
   }
   Vec u4(N);
@@ -1486,7 +1486,7 @@ void rotes::spectralFilter()
   double sampleRate    = 44100;
   int    maxBlockSize  = 4096;
   int    blockSize     = 1024;
-  int    numSamples    = 2*sampleRate;
+  int    numSamples    = int(2*sampleRate);
 
   // Input signal parameters:
   double sawFreq       = 100;
@@ -1518,8 +1518,8 @@ void rotes::spectralFilter()
     y[n] = filter.getSample(x[n]);
 
   // Write input and output into wave files:
-  rosic::writeToMonoWaveFile("SpectralFilterInput.wav",  &x[0], N, sampleRate, 16);
-  rosic::writeToMonoWaveFile("SpectralFilterOutput.wav", &y[0], N, sampleRate, 16);
+  rosic::writeToMonoWaveFile("SpectralFilterInput.wav",  &x[0], N, (int)sampleRate, 16);
+  rosic::writeToMonoWaveFile("SpectralFilterOutput.wav", &y[0], N, (int)sampleRate, 16);
 
 
   // ToDo:
