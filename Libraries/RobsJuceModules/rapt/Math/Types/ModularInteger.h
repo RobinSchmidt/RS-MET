@@ -71,7 +71,7 @@ public:
   bool operator==(const rsModularInteger& other) const;
   bool operator!=(const rsModularInteger& other) const;
 
-  // The size comparison operators have questionable semantics but may be needed for some things:
+  // The size comparison operators have questionable semantics but are needed for some things:
   bool operator> (const rsModularInteger& other) const;
   bool operator< (const rsModularInteger& other) const;
   bool operator>=(const rsModularInteger& other) const;
@@ -113,7 +113,8 @@ public:
     // There's also code for when m is negative, but we don't need that here. What would that even
     // mean? Maybe move the function into the library as rsModulo.
   };
-  // But what if T is unsigned?
+  // But what if T is unsigned? Does this implementation still work for e.g. 
+  // T = rsPolynomial<double>?
   // maybe move to .cpp
 
 

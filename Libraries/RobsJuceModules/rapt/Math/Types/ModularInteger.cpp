@@ -37,7 +37,8 @@ rsModularInteger<T>::rsModularInteger(const T& initialValue, const T& modulusToU
 template<class T>
 rsModularInteger<T>::rsModularInteger(const rsModularInteger<T>& other)
 {
-  rsAssert(other.isCanonical());  // Old
+  rsAssert(other.isCanonical());  // Old...but I made it work that way, so the "new" version below
+                                  // may not be neede anymore
 
   // New:
   //if constexpr(std::is_integral<T>::value)
@@ -162,8 +163,8 @@ rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &ot
   rsAssert( modulus == other.modulus );
   return *this * rsModularInteger<T>( rsModularInverse(other.value, modulus), modulus);
 }
-// what, if there is no modular inverse (i think, it exists only if the value is coprime with the 
-// modulus - verify)
+// what, if there is no modular inverse (I think, it exists only if the value is coprime with the 
+// modulus - verify and document)
 
 template<class T>
 rsModularInteger<T>& rsModularInteger<T>::operator+=(const rsModularInteger<T> &other)
