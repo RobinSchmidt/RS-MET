@@ -118,9 +118,7 @@ public:
   // But what if T is unsigned? Does this implementation still work for e.g. 
   // T = rsPolynomial<double>? Maybe for this, we need to allow for negative moduli?
   // maybe move to .cpp
-
-
-
+  // Move into IntegerFunctions.h/cpp
 
 
 protected:
@@ -138,6 +136,10 @@ protected:
   // - Documnet the choices for the default values. 0 for the value is natural but 2 for the 
   //   modulus not necessarily so. It's the smallest modulus that makes sense. 0 or 1 or negative
   //   numbers make no sense as modulus.
+
+
+
+
 
   void canonicalize() { value = modulo(value, modulus); }
 

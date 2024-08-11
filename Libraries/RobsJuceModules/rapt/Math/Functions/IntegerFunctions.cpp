@@ -110,6 +110,29 @@ TInt rsGeneralizedDelta(TInt superscripts[], TInt subscripts[], TInt N)
   // is this formula right? what if leviCivita returns 0 but the subscripts
 }
 
+template<class TInt>
+TInt rsModulo(TInt x, TInt m)
+{
+  rsAssert(m > 1);   // Modulus must be positive integer >= 2
+  T r = x % m;       // Division remainder
+  if(r < 0)          // r < 0 happens for x < 0
+    return r + m;
+  return r;
+
+  // ToDo:
+  //
+  // - Figure out if we still get meaningful results for m = 1. If so, change the assertion to
+  //   "m > 0" and update the documentation.
+  //
+  //
+  // See: https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
+  //
+  // There's also code for when m is negative, but we don't need that here. What would that even
+  // mean? Also - what if T is unsigned? And: Does this implementation still work for e.g. 
+  // T = rsPolynomial<double>? Maybe for this, we need to allow for general (including negative) 
+  // moduli? What would it even mean for a polynomial to be "negative"? Figure out and document!
+}
+
 template<class TUInt>
 TUInt rsMultinomialCoefficient(TUInt *k, TUInt kSize)
 {

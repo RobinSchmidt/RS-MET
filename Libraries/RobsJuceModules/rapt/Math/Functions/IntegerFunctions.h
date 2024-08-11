@@ -54,6 +54,16 @@ superscripts-array is an odd permutation of the subscripts-array and 0 otherwise
 template<class TInt>
 TInt rsGeneralizedDelta(TInt superscripts[], TInt subscripts[], TInt N);
 
+/** Implements the modulo operation in a way that works mathematically correctly even when the 
+left operand x is negative. The modulus m, i.e. the right operand, is still assumed to be 
+positive, though - although it uses the same template parameter (and not some additional TUint). 
+But m should be positive nonetheless. Actually, it should even be greater than 1. The C/C++ modulo
+operator % works correctly only when both arguments are nonnegative. A mathematically correct 
+treatment of negative values is important to implement modular arithmetic as in e.g. 
+rsModularInteger. */
+template<class TInt>
+TInt rsModulo(TInt x, TInt m);
+
 /** Computes the multinomial coefficient defined as:
 c = (      n     ) = n! / (k1! * k2! * ... * km!)
     (k1,k2,...,km)
