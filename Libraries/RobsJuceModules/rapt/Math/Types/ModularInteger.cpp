@@ -39,6 +39,9 @@ bool rsModularInteger<T>::hasInverse() const
   T inv = rsModularInverse(value, modulus);
   T one = (value * inv) % modulus;           // should be 1, if inv is indeed the modular inverse
   return one == T(1);
+
+  // I think, this can be implemented more simply as:
+  // return rsGCD(value, modulus) == 1;
 }
 
 // Operators:

@@ -20,7 +20,12 @@ ToDo:
   division by such numbers impossible - it basically behaves like division by zero. The resulting
   mathematical structure is then only a ring, not a field. Document this.
 
-- Add more unit tests in general.    */
+- Add more unit tests in general.    
+
+- Compare implementation to rsFraction and maybe use the same style/conventions here with regard to
+  what goes into the .h and what goes into the .cpp file, naming operator parameters, etc.
+
+*/
 
 template<class T>
 class rsModularInteger
@@ -62,7 +67,10 @@ public:
 
   T getModulus() const { return modulus; }
 
+  /** Returns true, iff this modular integer has a multiplicative inverse. */
   bool hasInverse() const;
+  // ToDo: Document the mathematical conditions for when this is the case. I think, the value must
+  // be coprime with the modulus or something...
 
 
   //-----------------------------------------------------------------------------------------------
@@ -72,6 +80,8 @@ public:
   { value = b.value; modulus = b.modulus; return *this; }
 
   rsModularInteger operator-() const;
+  // Maybe add unary + as well. It's just the identity, i.e. trivial...but still. Some code 
+  // explicitly writes out the plusses
 
   bool operator==(const rsModularInteger& other) const;
   bool operator!=(const rsModularInteger& other) const;
@@ -96,53 +106,10 @@ public:
   rsModularInteger& operator--();
 
 
-  //-----------------------------------------------------------------------------------------------
-  /** \name Misc */
-
-
-  /** Implements the modulo operation in a way that works also for when the left operand (or first
-  function parameter) is negative. The result of the C++ operator % is equal to modulo-result only 
-  when the left operand is >= 0. ToDo: Maybe allow m to be negative, too - but what would a 
-  negative modulus even mean mathematically? Does it even make sense? */
-  /*
-  static T modulo (T x, T m)
-  {
-    rsAssert(m > 1);   // modulus must be positive integer >= 2
-    T r = x % m;       // division remainder
-    if(r < 0)          // r < 0 happens for x < 0
-      return r + m;
-    return r;
-    // See https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
-    // There's also code for when m is negative, but we don't need that here. What would that even
-    // mean? Maybe move the function into the library as rsModulo.
-  };
-  */
-  // But what if T is unsigned? Does this implementation still work for e.g. 
-  // T = rsPolynomial<double>? Maybe for this, we need to allow for negative moduli?
-  // maybe move to .cpp
-  // Move into IntegerFunctions.h/cpp
-
-
 protected:
 
 
-  //-----------------------------------------------------------------------------------------------
-  /** \name Data */
-
-  //T value, modulus; // old - left them uninitialized on default construction
-  T value   = T(0);
-  T modulus = T(2);
-  // ToDo: 
-  // - Make protected, provide accessors. Reason: Setters should canonicalize the 
-  //   representation, similar to rsFraction
-  // - Documnet the choices for the default values. 0 for the value is natural but 2 for the 
-  //   modulus not necessarily so. It's the smallest modulus that makes sense. 0 or 1 or negative
-  //   numbers make no sense as modulus.
-
-
-
-
-
+  /** Makes sure that our value is in the range 0...modulus-1. */
   void canonicalize() { value = rsModulo(value, modulus); }
 
   /** Checks, if the representation is canonical. It's protected because we use it only internally 
@@ -150,6 +117,13 @@ protected:
   represented canonically or it shouldn't even care how it is represented, so there shouldn't be a
   situation where client code wants to check that condition. If it isn't, we have a bug. */
   bool isCanonical() const { return value >= 0 && value < modulus; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
+
+  T value   = T(0);
+  T modulus = T(2);
 
 };
 
