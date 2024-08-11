@@ -239,6 +239,9 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 // replace all the T(0) occurences with a prototype based zero-initialization and we somehow need
 // to handle the tolerance. Maybe we should have a function rsDefaultTolerance or let the user pass
 // in a tolerance - yeah - I think, that is the best solution.
+//
+// ...OK done - now we fail in rsLinearAlgebra::rsChangeOfBasisRowWise. Perhaps we should pass a 
+// tolerance to that, too.
 
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
