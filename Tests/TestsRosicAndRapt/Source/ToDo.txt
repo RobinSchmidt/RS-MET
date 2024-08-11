@@ -1,5 +1,4 @@
 
-- Move code/comments from Math/Function/BasicMathFunctions.h/cpp to Basics/BasicFunctions.h
 
 
 - figure out, why rsSinusoidalAnalyzer may produce negative values for the amplitude of the DC 

@@ -27,22 +27,27 @@ inline void rsSwap(T& x, T& y)
   rsSwapViaMove(x, y);
 }
 
-
+/** Returns a unity value of the given type. The idea is to use this template function to create
+a unity-value inside other template functions where it might be required that the unity-value is
+somehow parametrized. As an example, rsPow uses a unity-value as initializer for a multiplicative
+accumulator. When it is invoked with a matrix-type, an explicit instantiation of rsUnity for the
+matrix-type will be used to create an identity matrix with the required size (which is the same
+as the size of "value"). If no explicit instantiation exists for the given type, it will fall
+back to the default implementation, which returns T(1). It's also useful for modular integers to
+create 1 with the same modulus as some other number. */
 template<class T> inline T rsUnityValue(T /*value*/) { return T(1); }
+
+/** Returns a zero value of the given type. @see rsUnityValue */
 template<class T> inline T rsZeroValue( T /*value*/) { return T(0); }
 
-
-//template<class TVal, class TTgt> 
-//inline TTgt rsConstantValue(TVal value, TTgt targetTemplate) { return (TTgt) value; }
-
-// Try to get rid of rsConstantValue - replace by:
+/** Turns a given integer constant into another target type T using a value from that target type
+as prototype. It is used, for example, to convert an integer into a modular integer. The prototype
+value is used to copy the modulus from the prototype into the result. */
 template<class T> inline T rsIntValue(int value, T targetTemplate) { return T(value); }
-// this is under construction
-
 
 
 template<class T> inline T rsIdentity(  T value) { return value; }
-
+// identity function
 
 
 /** Returns true, if x is not-a-number, false otherwise. */
