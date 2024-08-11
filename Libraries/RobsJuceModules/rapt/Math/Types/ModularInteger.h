@@ -4,7 +4,10 @@
 /** This is a class for representing integers modulo some modulus m. The arithmetic operators 
 always return values between 0...m-1 (inclusive) and it is assumed (and not checked), that the user
 always initializes the value inside that range as well (for example, in constructors and
-assignments).
+assignments). 
+
+VERIFY that - I think, it may now be valid to initialize also with values outside
+0...m-1? If not, maybe it should be like that - the constructor should wrap the value, if needed.
 
 Note that, if you weant to use the division operator, you should instatiate the template-class
 with a signed integer type (this is because computation of the modular inverse relies on the
@@ -111,7 +114,7 @@ public:
     // mean? Maybe move the function into the library as rsModulo.
   };
   // But what if T is unsigned? Does this implementation still work for e.g. 
-  // T = rsPolynomial<double>?
+  // T = rsPolynomial<double>? Maybe for this, we need to allow for negative moduli?
   // maybe move to .cpp
 
 
