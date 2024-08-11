@@ -200,6 +200,11 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
   T multiplier;   // matrices because rsAbs returns a real number for complex inputs and two
   T tmpSum;       // complex numbers can't be compared for size anyway -> figure out a solution
 
+
+  T zero = rsZeroValue(A[0][0]);
+
+  //T tol = std::numeric_limits<T>::epsilon * 1024;
+
   T tol = T(1.e-12); // ad hoc, seems reasonable for T == double
   // ToDo: use something based on std::numeric_limits<T> and/or let the user pick a threshold. 
   // also, It should probably be a relative value. If T is something like rsFraction, we may want
@@ -216,7 +221,8 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 
     // search for largest pivot in the i-th column from the i-th row downward:
     p       = i;
-    biggest = T(0);
+    //biggest = T(0);
+    biggest = zero;
     for(j = i; j < N; j++)
     {
       if( rsGreaterAbs(A[j][i], biggest) )
@@ -226,7 +232,8 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
         p = j;
       }
     }
-    if(rsIsCloseTo(biggest, T(0), tol))
+    //if(rsIsCloseTo(biggest, T(0), tol))
+    if(rsIsCloseTo(biggest, zero, tol))
     {
       matrixIsSingular = true;
       rsError("Matrix singular (or numerically close to)");
@@ -263,7 +270,8 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
   {
     // multiply the already obtained x-values by their coefficients from the current row and
     // accumulate them:
-    tmpSum = T(0);
+    //tmpSum = T(0);
+    tmpSum = zero;
     for(j = i+1; j < N; j++)
       tmpSum += A[i][j] * x[j];
 

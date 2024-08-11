@@ -233,9 +233,12 @@ template class RAPT::rsPolynomial<double>;
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 
-//template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
+template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
 //
-// Fails to compile. We get an error that says ...
+// Fails to compile. We get an error in rsLinearAlgebra::rsSolveLinearSystemInPlace. We need to
+// replace all the T(0) occurences with a prototype based zero-initialization and we somehow need
+// to handle the tolerance. Maybe we should have a function rsDefaultTolerance or let the user pass
+// in a tolerance - yeah - I think, that is the best solution.
 
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
