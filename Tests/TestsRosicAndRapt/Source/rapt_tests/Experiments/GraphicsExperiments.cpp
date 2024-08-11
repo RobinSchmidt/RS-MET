@@ -2334,7 +2334,7 @@ int numIterationsToDivergence(std::function<T(T, T)> fx, std::function<T(T, T)> 
   //  something like (rNew-rOld) / ((rNew+rOld)/2). 
 }
 
-/** A variant that returns a floating point number whoe fractional part tries to somehow provide for
+/** A variant that returns a floating point number whose fractional part tries to somehow provide for
 a smoother image ....tbc... */
 template<class T>
 float numIterationsToDivergence2(std::function<T(T, T)> fx, std::function<T(T, T)> fy, T x0, T y0,
@@ -2344,10 +2344,10 @@ float numIterationsToDivergence2(std::function<T(T, T)> fx, std::function<T(T, T
   T yOld = y0;
   for(int i = 0; i <= maxNumIterations; i++)
   {
-    float xNew  = fx(xOld, yOld);
-    float yNew  = fy(xOld, yOld);
-    float r2Old = xOld*xOld + yOld*yOld;
-    float r2New = xNew*xNew + yNew*yNew;
+    float xNew  = (float) fx(xOld, yOld);
+    float yNew  = (float) fy(xOld, yOld);
+    float r2Old = float(xOld*xOld + yOld*yOld);
+    float r2New = float(xNew*xNew + yNew*yNew);
     if(r2New > thresh)
     {
       //float r = r2Old / r2New;

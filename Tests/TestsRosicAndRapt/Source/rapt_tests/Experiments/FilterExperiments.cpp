@@ -518,7 +518,7 @@ void applyFilter(const rsFilterSpecificationBA<T>& spec, T* x, T* y, int N)
   for(size_t i = 0; i < b.size(); i++) b[i] = real(spec.b[i]);
 
   // Create and set up a direct from filter:
-  int order = rsMax(spec.a.size(), spec.b.size()) - 1;
+  int order = (int) rsMax(spec.a.size(), spec.b.size()) - 1;
   rsDirectFormFilter<T, T> flt(order);
   flt.setCoefficients(&a[0], &b[0], order);
 
