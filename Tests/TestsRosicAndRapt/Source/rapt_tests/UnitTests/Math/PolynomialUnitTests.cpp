@@ -2534,8 +2534,8 @@ rsPolynomial<rsModularInteger<T>> toModular(const rsPolynomial<T>& p, T modulus)
 // Maybe rename to testModIntPolynomial to be consistent with testModIntMatrix
 bool testModularIntegerPolynomial()
 {
-  // We test the class rsPolynomial using rsModularInteger<int> for the template parameter.
-  // ...tbc...
+  // We test the class rsPolynomial using rsModularInteger<int> for the template parameter. That
+  // is, we look at polynomials over finite rings/fields. ...TBC...
 
   bool ok = true;
 
@@ -2544,29 +2544,32 @@ bool testModularIntegerPolynomial()
   using PolyI  = rsPolynomial<Int>;
   using PolyM  = rsPolynomial<ModInt>;
 
+  // Example data:
+  Int m = 7;
   PolyI pi({2,9,6,8});
   PolyI qi({6,3,5,9,2});
+
+  // Multiplication:
   PolyI ri = pi * qi;
-
-  Int m = 7;
-
-  //PolyM pm = toModular(pi, 7);
-
-
-
-  //Poly p; 
-  // Produces linker error because we have no instantiation of rsPolynomial with rsModularInteger. 
-  // For adding one, see file RaptInstantiations.cpp in the rs_tetsing project, line 227 (as of 
-  // Nov 2022), near the other instatiations of rsPolynomial. When we try to add such an 
-  // instatiation there, the compiler complains about Poly::integralAt. See comment there for a 
-  // possible solution....
-  // OK - solved - but there are many similar problems which still need to be solved in the same 
-  // way. It's a bit of grunt work. See comment at the relevant place in RaptInstantiations.cpp.
-
+  PolyM pm = toModular(pi, m);
+  PolyM qm = toModular(qi, m);
+  PolyM rm = pm * qm;
+  PolyM rt = toModular(ri, m);
+  ok &= rm == rt;
 
   return ok;
 
-  // See also testModIntMatrix() in MatrixUnitTests.cpp
+  // ToDo:
+  //
+  // - Test other operations on polynomials over the modular integers. Currently, we test only
+  //   polynomial multiplication. For addition, subtraction and division, make sure that the 
+  //   coeff arrays of the results are appropriately shortened/truncated if trailing zeros occur in
+  //   the result. Getting trailing zeros in the result can't happen in a polynomial multiplication
+  //   unless one of the factors has already trailing zeros - but for add/sub/mul, it can happen.
+  //
+  // - See also testModIntMatrix() in MatrixUnitTests.cpp. It does similar tests with matrices of
+  //   modular integers. The implementation of that function should probably look similar to this
+  //   function.
 }
 
 

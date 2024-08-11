@@ -62,7 +62,7 @@ void rsMinSqrDifFixSum(T* v, int N, T* s, T* w)
 template<class T>
 T rsMinimizer1D<T>::goldenSectionMin(const std::function<T(T)>& f, T a, T b)
 {
-  rsWarning("Not yet tested thoroughly!");
+  rsWarning("rsMinimizer1D::goldenSectionMin: Not yet tested thoroughly!");
   // This function seems to work but has no proper unit tests yet.
 
   static const int maxIts = 1000;             // Maximum number of iterations.

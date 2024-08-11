@@ -124,11 +124,12 @@ rsModularInteger<T> rsModularInteger<T>::operator*(const rsModularInteger<T> &ot
 template<class T>
 rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &other) const
 {
-  rsWarning("Tests needed for: rsModularInteger<T>::operator/");
+  //rsWarning("Tests needed for: rsModularInteger<T>::operator/");
+
   rsAssert( modulus == other.modulus );
   return *this * rsModularInteger<T>( rsModularInverse(other.value, modulus), modulus);
 }
-// what, if there is no modular inverse (I think, it exists only if the value is coprime with the 
+// What, if there is no modular inverse (I think, it exists only if the value is coprime with the 
 // modulus - verify and document)
 
 template<class T>
@@ -152,7 +153,8 @@ rsModularInteger<T>& rsModularInteger<T>::operator*=(const rsModularInteger<T> &
 template<class T>
 rsModularInteger<T>& rsModularInteger<T>::operator/=(const rsModularInteger<T> &other)
 {
-  rsWarning("Tests needed for: rsModularInteger<T>::operator/=");
+  //rsWarning("Tests needed for: rsModularInteger<T>::operator/=");
+
   *this = *this / other;
   return *this;
 }
