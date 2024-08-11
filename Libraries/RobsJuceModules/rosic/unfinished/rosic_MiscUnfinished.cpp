@@ -721,7 +721,7 @@ void rsSweepKicker::initSettings(bool initAlsoSampleRate)
   fadeOutTime =     0;
   waveParam   =     0;
   freqSweeper.initSettings(initAlsoSampleRate);
-  fadeOutEnv.setNumFadeSamples(fadeOutTime * getSampleRate());
+  fadeOutEnv.setNumFadeSamples(RAPT::rsRoundToInt(fadeOutTime * getSampleRate()));
 }
 
 void rsSweepKicker::noteOn(int key, int vel)

@@ -545,7 +545,7 @@ void renderBrownZap(int numStages, double lowFreq = 15, double highFreq = 8000,
 {
   std::vector<double> x = getBrownZap(numStages, lowFreq, highFreq, freqShape, lowQ, 
     highQ, qShape, maxLength, sampleRate);
-  int N = x.size();
+  int N = (int) x.size();
 
   // Create filename from the parameters (maybe factor out):
   //std::string name = "ZappyKick"; // Nah - not all possible settings lead to bassdrums
@@ -617,8 +617,8 @@ void createAllpassDrums()
   int numStagesLo  = 20;
   int numStagesHi  = 80;
   int numStagesInc = 10;
-  double shapeLo   = -5;
-  double shapeHi   = +5;
+  int shapeLo      = -5;
+  int shapeHi      = +5;
   for(int numStages = numStagesLo; numStages <= numStagesHi; numStages += numStagesInc)
   {
     for(int k = shapeLo; k <= shapeHi; k++)

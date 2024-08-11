@@ -741,7 +741,7 @@ public:
   void setSampleRate(   double newRate)  
   { 
     freqSweeper.setSampleRate(newRate);
-    fadeOutEnv.setNumFadeSamples(fadeOutTime * newRate);
+    fadeOutEnv.setNumFadeSamples(RAPT::rsRoundToInt(fadeOutTime * newRate));
   }
 
   void setLowFreq(      double newFreq)  { frqLo      = newFreq;  }
@@ -783,7 +783,7 @@ public:
   void setFadeOutTimeMs(double newTime)
   {
     fadeOutTime = 0.001 * newTime;
-    fadeOutEnv.setNumFadeSamples(fadeOutTime * getSampleRate());
+    fadeOutEnv.setNumFadeSamples(RAPT::rsRoundToInt(fadeOutTime * getSampleRate()));
   }
 
   //-----------------------------------------------------------------------------------------------

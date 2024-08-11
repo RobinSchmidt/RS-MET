@@ -276,6 +276,7 @@ template void RAPT::rsPolynomial<std::complex<double>>::roots(
 
 template class RAPT::rsRationalFunction<std::complex<double>>;
 
+
 template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::partialFractions(
   const std::vector<std::complex<double>>& numerator,
   const std::vector<std::complex<double>>& denominator,

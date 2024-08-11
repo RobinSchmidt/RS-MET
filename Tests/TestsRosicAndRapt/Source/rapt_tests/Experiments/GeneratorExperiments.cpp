@@ -3646,7 +3646,7 @@ void showFlatZapPlots()
 
 
 
-  int N = x.size();
+  int N = (int)x.size();
 
 
   // Helper function to set up a spectrum plotter:

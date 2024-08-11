@@ -943,7 +943,7 @@ int SfzCodeBook::findInstrumentStart(const std::string& code)
     r = code.find("<group>", 0);
   if(r == -1)
     r = code.find("<region>", 0);
-  return r;
+  return (int) r;
 }
 // needs tests
 

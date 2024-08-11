@@ -1025,14 +1025,14 @@ bool SfzInstrument::setupControls(const std::string& str)
 
     if(rsStartsWith(lhs, label_cc))
     {
-      int idx = parseNaturalNumber(lhs, 8, splitIndex-1);         // 8 == length("label_cc")
+      int idx = parseNaturalNumber(lhs, 8, (int)splitIndex-1);         // 8 == length("label_cc")
       setMidiControllerLabel(idx, rhs);
     }
     else if(rsStartsWith(lhs, set_cc))
     {
       if(!rsIsNaturalNumber(rhs))    // rhs must represent a natural number
         return false;
-      int idx = parseNaturalNumber(lhs, 6, splitIndex-1);         // 6 == length("set_cc")
+      int idx = parseNaturalNumber(lhs, 6, (int)splitIndex-1);         // 6 == length("set_cc")
       int val = parseNaturalNumber(rhs, 0, int(rhs.size())-1);
       setMidiControllerInitValue(idx, val);
     }
