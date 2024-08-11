@@ -77,9 +77,6 @@ public:
   bool operator>=(const rsModularInteger& other) const;
   bool operator<=(const rsModularInteger& other) const;
 
-
-
-
   rsModularInteger operator+(const rsModularInteger& other) const;
   rsModularInteger operator-(const rsModularInteger& other) const;
   rsModularInteger operator*(const rsModularInteger& other) const;
@@ -135,14 +132,6 @@ protected:
   represented canonically or it shouldn't even care how it is represented, so there shouldn't be a
   situation where client code wants to check that condition. If it isn't, we have a bug. */
   bool isCanonical() const { return value >= 0 && value < modulus; }
-  // Maybe move out of the class - it hinders instantiation of the class for T = rsPolynomial. But
-  // that alone will not solve the problem because we actually use it in an assertion in the 
-  // copy-constructor. Maybe the solution is to implement the comparison operators in rsPolynomial
-  // in some meaningful way. But how? Or get rid of the function and the assertion. Or maybe 
-  // compile the assertion only conditionally if the type T implements <, <=. See:
-  // https://en.cppreference.com/w/cpp/header/type_traits
-  // An instantiation with rsPolynomial may be useful for implementing Galois fields (I think).
-  // OK...done...needs tests...
 
 };
 
@@ -167,28 +156,8 @@ rsModularInteger<T> rsIntValue(int value, rsModularInteger<T> targetTemplate)
   return rsModularInteger<T>(T(value), targetTemplate.modulus);
 }
 
-//template<class T> 
-//rsModularInteger<T> rsConstantValue(T value, rsModularInteger<T> targetTemplate) 
-//{ 
-//  return rsModularInteger<T>(value, targetTemplate.modulus);
-//}
-// This is an explicit specialization of:
-//   template<class TVal, class TTgt> 
-//   inline TTgt rsConstantValue(TVal value, TTgt targetTemplate) { return (TTgt) value; }
-// in BasicFunctions.h
-
-/*
-template<class T>
-template<class U> 
-rsModularInteger<T> rsConstantValue(U value, rsModularInteger<T> targetTemplate) 
-{ 
-  return rsModularInteger<T>(T(value), targetTemplate.modulus);
-}
-*/
-
-
 // ToDo: Implement the default, templatized rsZeroValue and rsUnityValue functions in terms of 
-// rsConstantValue such that rsModularInteger and all other similar classes need to provide only an 
+// rsIntValue such that rsModularInteger and all other similar classes need to provide only an 
 // implementation of rsConstantValue
 
 #endif
