@@ -232,24 +232,12 @@ template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
-
 template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
-//
-// Fails to compile. We get an error in rsLinearAlgebra::rsSolveLinearSystemInPlace. We need to
-// replace all the T(0) occurences with a prototype based zero-initialization and we somehow need
-// to handle the tolerance. Maybe we should have a function rsDefaultTolerance or let the user pass
-// in a tolerance - yeah - I think, that is the best solution.
-//
-// ...OK done - now we fail in rsLinearAlgebra::rsChangeOfBasisRowWise. Perhaps we should pass a 
-// tolerance to that, too.
-
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
 // todo: instantiate rsPolynomial also for float, int, maybe also for 
 // rsMatrix<float>, etc.
-
-
 
 
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
