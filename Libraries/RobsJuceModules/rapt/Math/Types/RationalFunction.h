@@ -3,7 +3,7 @@
 //namespace RAPT
 //{
 
-/** Under construction. Not yet ready for use in production.
+/** Under construction. Not yet ready for use in production. Maybe move itno Prototypes
 
 A class for representing rational functions R(x) = P(x) / Q(x) where P and Q are both 
 polynomials in x. Rational functions are important in signal processing because the transfer 
