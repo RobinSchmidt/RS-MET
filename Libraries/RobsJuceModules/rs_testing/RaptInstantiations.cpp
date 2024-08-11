@@ -223,7 +223,8 @@ template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, doub
   const double* upperDiag, RAPT::rsMatrixView<double>& X, RAPT::rsMatrixView<double>& B);
 
 
-template class RAPT::rsMatrixOld<double>;  // try to get rid
+template class RAPT::rsMatrixOld<double>;  // Try to get rid
+
 
 // Various kinds of polynomials. Although we do not really need all these kinds in production code,
 // we want to be able to build rsPolynomial for all these types for library quality reasons:
@@ -239,6 +240,8 @@ template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
 // matrices. It would be nice, if the coeffs could be matrices, too
 
 
+// Some of the static member functions need separate instantiations:
+
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter
 
@@ -247,13 +250,14 @@ template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, 
 //  std::complex<double>* r);
 // duplicate explicit instantiation in gcc
 
-
 template void RAPT::rsPolynomial<float>::rootsQuadraticComplex(
   const std::complex<float>& a0, const std::complex<float>& a1, const std::complex<float>& a2,
   std::complex<float>* x1, std::complex<float>* x2);
+
 template void RAPT::rsPolynomial<double>::rootsQuadraticComplex(
   const std::complex<double>& a0, const std::complex<double>& a1, const std::complex<double>& a2,
   std::complex<double>* x1, std::complex<double>* x2);
+
 template float RAPT::rsPolynomial<float>::cubicDiscriminant(
   const float& a0, const float& a1, const float& a2, const float& a3);
 
@@ -264,6 +268,13 @@ template void RAPT::rsPolynomial<float>::rootsCubicComplex(
 
 template void RAPT::rsPolynomial<std::complex<double>>::roots(
   const std::complex<double>* a, int degree, std::complex<double>* roots);
+
+// ToDo: Verify, if they are still needed. Document why they are needed.
+
+
+
+
+template class RAPT::rsRationalFunction<std::complex<double>>;
 
 template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::partialFractions(
   const std::vector<std::complex<double>>& numerator,
@@ -276,7 +287,10 @@ template std::vector<std::complex<double>> RAPT::rsRationalFunction<double>::par
   const std::vector<std::complex<double>>& poles,
   const std::vector<int>& multiplicities);
 
-template class RAPT::rsRationalFunction<std::complex<double>>;
+
+
+
+
 
 
 template class RAPT::rsMatrixView<double>;

@@ -992,25 +992,22 @@ bool testFraction()  // maybe move up
   return res;
 }
 
-
-
 bool testModularInteger()
 {
   bool ok = true;
 
-  using Int = int;
+  using Int    = int;
   using ModInt = rsModularInteger<Int>;
 
- // shorthands for convenience
+  // Shorthands to extract value and modulus for convenience:
   auto val = [](ModInt x){ return x.getValue();   };
   auto mod = [](ModInt x){ return x.getModulus(); };
 
-
   // Test canonicalization in construction:
-  Int    m = 5;                                            // modulus
-  ModInt p0( 0,m), p1( 1,m), p2( 2,m), p3( 3,m), p4( 4,m); // positive 0..4
-  ModInt p5( 5,m), p6( 6,m), p7( 7,m), p8( 8,m), p9( 9,m); // positive 5..9
-  ModInt n1(-1,m), n2(-2,m), n3(-3,m), n4(-4,m), n5(-5,m); // negative 1..5
+  Int    m = 5;                                            // Modulus. If prime, we get a field.
+  ModInt p0( 0,m), p1( 1,m), p2( 2,m), p3( 3,m), p4( 4,m); // Positive 0..4
+  ModInt p5( 5,m), p6( 6,m), p7( 7,m), p8( 8,m), p9( 9,m); // Positive 5..9
+  ModInt n1(-1,m), n2(-2,m), n3(-3,m), n4(-4,m), n5(-5,m); // Negative 1..5
   ok &= p0.getValue() == 0 && p5.getValue() == 0 && n5.getValue() == 0;
   ok &= p1.getValue() == 1 && p6.getValue() == 1 && n4.getValue() == 1;
   ok &= p2.getValue() == 2 && p7.getValue() == 2 && n3.getValue() == 2;
@@ -1022,6 +1019,9 @@ bool testModularInteger()
   r = p2 + p4; ok &= val(r) == 1 && mod(r) == 5;
   r = p2 - p4; ok &= val(r) == 3 && mod(r) == 5;
   r = p2 * p4; ok &= val(r) == 3 && mod(r) == 5;
+  r = p4 / p2; ok &= p2 * r == p4;
+  r = p2 / p3; ok &= p3 * r == p2;
+  r = p2 / p4; ok &= p4 * r == p2;
 
   // Test modular inversion:
   ModInt q;  // quotient with a numerator of 1, i.e. the modular inverse of p1,p2, p3,...
@@ -1041,21 +1041,22 @@ bool testModularInteger()
   c = rsUnityValue(p2);  ok &= c.getValue() == 1 && c.getModulus() == 5;
   c = rsIntValue(8, p2); ok &= c.getValue() == 3 && c.getModulus() == 5; // 8 % 5 = 3
 
-
-
-
+  return ok;
 
   // ToDo: 
-  // -Drag the experiment with the NTT convolution into the unit test
-  // -Test it with an unsigned integer type, too. Maybe templatize this function...hmm - but we use
-  //  constructor calls with negative numbers here. When using them with an unsigned int type, they
-  //  will first wrap around to some big potive number using a power-of-2 modulus
-  // -Do tests with modulus 6. Modular inverses should exist only for numbers comprime with 6, i.e.
-  //  1 and 5. If we try division by numbers other than 1 and 5, we should get the result zero, 
-  //  even though that makes no mathematical sense - it's just how we arbitrarily define the 
-  //  behavior.
-
-  return ok;
+  //
+  // - Drag the experiment with the NTT convolution into the unit test
+  //
+  // - Test it with an unsigned integer type, too. Maybe templatize this function...hmm - but we 
+  //   use constructor calls with negative numbers here. When using them with an unsigned int type,
+  //   they will first wrap around to some big potive number using a power-of-2 modulus
+  //
+  // - Do tests with modulus 6. Modular inverses should exist only for numbers coprime with 6, 
+  //   i.e. 1 and 5. If we try division by numbers other than 1 and 5, we should get the result 
+  //   zero, even though that makes no mathematical sense - it's just how we arbitrarily define the 
+  //   behavior.
+  //
+  // - Test it with Int = rsInt64
 }
 
 bool testMeshDerivatives()

@@ -1,20 +1,26 @@
 #ifndef RAPT_MODULARINTEGER_H
 #define RAPT_MODULARINTEGER_H
 
-/** This is a class for representing integers modulo some modulus m. The arithmetic operators 
-always return values between 0...m-1 (inclusive) and it is assumed (and not checked), that the user
-always initializes the value inside that range as well (for example, in constructors and
-assignments). 
-
-VERIFY that - I think, it may now be valid to initialize also with values outside
-0...m-1? If not, maybe it should be like that - the constructor should wrap the value, if needed.
+/** This is a class for representing integers modulo some modulus m. The value will always be in
+the range 0...m-1. If you pass a value outside this range to a constructor or to set(), then the 
+class will automatically wrap it into the allowed range such that even in this case, the invariant
+is maintained.
 
 Note that, if you weant to use the division operator, you should instatiate the template-class
-with a signed integer type (this is because computation of the modular inverse relies on the
-extended Euclid algorithm, which operates with signed values) - maybe we should get rid of the
-division operator anyway...
+with a signed integer type. This is because computation of the modular inverse relies on the
+extended Euclid algorithm, which operates with signed values.
 
-class is not yet tested  */
+
+ToDo:
+
+- Try to make it work also with unsigned integer types for T
+
+- Add unit tests for division when the modulus is not a prime. In this case, there are zero 
+  divisors, i.e. number a != 0 with the property that a * b = 0 for some b != 0. That makes 
+  division by such numbers impossible - it basically behaves like division by zero. The resulting
+  mathematical structure is then only a ring, not a field. Document this.
+
+- Add more unit tests in general.    */
 
 template<class T>
 class rsModularInteger
@@ -25,19 +31,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-  /** Default constructor. Leaves value and modulus uninitialized. */
+  /** Default constructor. On default construction, the value will be initialized to 0 and the 
+  modulus to 2. That's the smallest modulus that makes sense. */
   rsModularInteger() {}
 
-  /** Constructor. You may initialize the number by passing some unsigned 64-bit integer. */
-  //rsModularInteger(rsUint64 initialValue, rsUint64 modulusToUse);
-  // This is weird! Why does the constructor not just take a pair of type T? Try to get rid!
-
-
-
+  /** Constructor. Creates a modular integer with given value and modulus. */
   rsModularInteger(const T& initialValue, const T& modulusToUse);
 
   /** Copy constructor. */
   rsModularInteger(const rsModularInteger& other);
+
+  // ToDo: Copy/Move-assigment, etc.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -48,8 +52,6 @@ public:
   matter if you pass 3 or 8 or 13,... or -2 or -7 or -12,... for the value. It will always be 
   stored as 3. */
   void set(T newValue, T newModulus);
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -122,9 +124,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  T value, modulus;  
-  // ToDo: make protected, provide accessors. Reason: Setters should canonicalize the 
-  // representation, similar to rsFraction
+  //T value, modulus; // old - left them uninitialized on default construction
+  T value   = T(0);
+  T modulus = T(2);
+  // ToDo: 
+  // - Make protected, provide accessors. Reason: Setters should canonicalize the 
+  //   representation, similar to rsFraction
+  // - Documnet the choices for the default values. 0 for the value is natural but 2 for the 
+  //   modulus not necessarily so. It's the smallest modulus that makes sense. 0 or 1 or negative
+  //   numbers make no sense as modulus.
 
 protected:
 
@@ -138,8 +146,9 @@ protected:
 
 };
 
-/** Explicit template instantiations, to be used by the rsPow template-function and also in 
-rsPolynomial etc.. */
+
+// Explicit template instantiations, to be used by the rsPow template-function and also in 
+// rsPolynomial etc.:
 
 template<class T>
 rsModularInteger<T> rsZeroValue(rsModularInteger<T> value)

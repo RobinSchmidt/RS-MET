@@ -354,7 +354,7 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
 
 
   std::complex<R> tol = 1.e-12;
-  // TODO: use something based on epsilon
+  // TODO: use something based on numeric_limits::epsilon or let the user pass it in
 
 
   rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denDeg, tol);
@@ -375,13 +375,17 @@ void rsRationalFunction<T>::partialFractionExpansion(
   const std::complex<R> *poles, const int *multiplicities, int numDistinctPoles,
   std::complex<R> *pfeCoeffs, std::complex<R>* polyCoeffs)
 {
-  // make denominator monic:
+  // Make denominator monic:
   std::complex<R> s = T(1)/den[denDeg];
   rsArrayTools::scale(num, numDeg+1, s);
   rsArrayTools::scale(den, denDeg+1, s);
+  // TODO: factor out - or maybe try to get rid and declare num and den const
 
-  // obtain polynomial ("FIR") part by polynomial division (maybe factor out):
-  T tol = 1.e-12; // ad hoc - use something based on numeric_limits::epsilon
+  // Obtain polynomial ("FIR") part by polynomial division (maybe factor out):
+
+  T tol = 1.e-12; 
+  // TODO: use something based on numeric_limits::epsilon or let the user pass it in
+
   if(numDeg >= denDeg) {
     rsAssert(polyCoeffs != nullptr, "function has a polynomial part"); 
     rsPolynomial<std::complex<T>>::divide(num, numDeg, den, denDeg, polyCoeffs, num);
@@ -391,11 +395,11 @@ void rsRationalFunction<T>::partialFractionExpansion(
   else if(polyCoeffs != nullptr)
     rsArrayTools::fillWithZeros(polyCoeffs, denDeg+1);  // or should it be numDeg+1, does it matter?
 
-  // sanity checks:
+  // Sanity checks:
   rsAssert(numDeg < denDeg);
   rsAssert(rsArrayTools::sum(multiplicities, numDistinctPoles) == denDeg);
 
-  // dispatch between all-poles-distinct or poles-with-multiplicities algorithm: 
+  // Dispatch between all-poles-distinct or poles-with-multiplicities algorithm: 
   if(denDeg == numDistinctPoles)
     partialFractionExpansionDistinctPoles(num, numDeg, den, denDeg, poles, pfeCoeffs);
   else

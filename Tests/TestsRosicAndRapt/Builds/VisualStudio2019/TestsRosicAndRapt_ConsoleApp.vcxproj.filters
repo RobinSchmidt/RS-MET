@@ -5168,6 +5168,9 @@
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt">
       <Filter>TestsRosicAndRapt\Source\rosic_tests\PortedFromRSLib\Experiments</Filter>
     </None>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\ReadMe.txt">
+      <Filter>JUCE Modules\rapt\_Deprecated</Filter>
+    </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
     </None>
