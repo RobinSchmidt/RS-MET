@@ -109,21 +109,24 @@ inline bool rsIsOdd(T x)
 }
 */
 
-inline bool rsIsPowerOfTwo(unsigned int x)
-{
-  unsigned int currentPower = 1;
-  while(currentPower <= x)
-  {
-    if(currentPower == x)
-      return true;
-    currentPower *= 2;
-  }
-  return false;
-}
-// ToDo: use an algorithm based on finding the highest bit
-// https://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
-// see also here, at 32:41
-// https://www.youtube.com/watch?v=ImLFlLjSveM
+// Moved to .h file:
+//template<class T>
+//inline bool rsIsPowerOfTwo(T x)
+//{
+//  T currentPower = T(1);
+//  while(currentPower <= x)
+//  {
+//    if(currentPower == x)
+//      return true;
+//    currentPower *= T(2);
+//  }
+//  return false;
+//}
+//// ToDo: use an algorithm based on finding the highest bit
+//// https://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
+//// see also here, at 32:41
+//// https://www.youtube.com/watch?v=ImLFlLjSveM
+//// make a compile time check that T is an (unsigned?) integer type
 
 inline bool rsIsPowerOfN(unsigned int x, unsigned int N)
 {

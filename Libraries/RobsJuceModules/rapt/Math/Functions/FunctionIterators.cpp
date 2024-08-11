@@ -62,7 +62,8 @@ void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
     {
       T bi = T(0);
       for(int j = i; j <= n; j++)
-        bi += a[j] * rsPow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
+        bi += a[j] * T(rsPow(h, j-i)) * T(rsBinomialCoefficient(j, j-i));
+        //bi += a[j] * rsPow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
       c[i] = bi - a[i];
     }
   };

@@ -294,7 +294,9 @@ template<class T>
 void rsLinearAlgebraNew::solveTriangular(
   rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B)
 {
-  T tol = 1.e-12;
+  T tol = T(1.e-12);
+  // ToDo: let the user pass this in
+
   int M = X.getNumColumns();  // number of required solution vectors
   int N = A.getNumRows();     // number of elements in each solution vector
   for(int k = 0; k < M; k++) {

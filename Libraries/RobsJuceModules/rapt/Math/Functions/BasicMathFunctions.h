@@ -48,8 +48,9 @@ template<class T>
 //inline bool rsIsCloseTo(T x, T targetValue, double tolerance);
 inline bool rsIsCloseTo(T x, T targetValue, T tolerance);
 
-/** Checks, if x is a power of 2. */
-inline bool rsIsPowerOfTwo(unsigned int x);
+/** Checks, if x is a power of 2. t should be some unsigned integer type.  */
+template<class T>
+inline bool rsIsPowerOfTwo(T x);
 // templatize it!
 
 /** Checks, if x is a power of N. */
@@ -249,6 +250,23 @@ inline bool rsIsInRange(T x, T min, T max)
     return false;
 }
 
+template<class T>
+inline bool rsIsPowerOfTwo(T x)
+{
+  T currentPower = T(1);
+  while(currentPower <= x)
+  {
+    if(currentPower == x)
+      return true;
+    currentPower *= T(2);
+  }
+  return false;
+}
+// ToDo: use an algorithm based on finding the highest bit
+// https://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
+// see also here, at 32:41
+// https://www.youtube.com/watch?v=ImLFlLjSveM
+// make a compile time check that T is an (unsigned?) integer type
 
 template<class T>
 inline T rsLinToExp(T in, T inMin, T inMax, T outMin, T outMax)
