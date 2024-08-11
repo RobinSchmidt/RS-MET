@@ -230,14 +230,13 @@ template class RAPT::rsMatrixOld<double>;  // try to get rid
 template class RAPT::rsPolynomial<int>;
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
+template class RAPT::rsPolynomial<std::complex<float>>;
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
-
-//template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
-//template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
-// todo: instantiate rsPolynomial also for float, int, maybe also for 
-// rsMatrix<float>, etc.
+// ToDo: instantiate rsPolynomial also for for rsMatrix<float>, etc. I'd like to have polynomials 
+// where the coeffs are real numbers (or from some other field) and the x and y-values could be 
+// matrices. It would be nice, if the coeffs could be matrices, too
 
 
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
