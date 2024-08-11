@@ -519,28 +519,6 @@ void randomizeCoeffs(rsPolynomial<T>* p, T min, T max, int seed, bool roundToInt
 //  polynomials is needed?
 
 //=================================================================================================
-// A class that should trigger the instantiation problem of 
-// template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
-
-template<class T>
-class TestPoly
-{
-
-public:
-
-  TestPoly(T value);
-
-protected:
-
-  T v;
-
-  //std::vector<T> coeffs;
-
-};
-// Try to get rid - it was meant as throw-away code
-
-
-//=================================================================================================
 // Stuff for facilitating tests for the sampler engine
 
 /** Helper function to add a single region for the given sample to the engine. The region is added

@@ -101,13 +101,12 @@ bool rsModularInteger<T>::operator!=(const rsModularInteger<T>& other) const
   return !(*this == other);
 }
 
-/*
 template<class T>
 bool rsModularInteger<T>::operator>(const rsModularInteger<T>& other) const
 {
   return value > other.value;
 }
-*/
+// ToDo: >=, <, <=
 
 template<class T>
 rsModularInteger<T> rsModularInteger<T>::operator+(const rsModularInteger<T> &other) const

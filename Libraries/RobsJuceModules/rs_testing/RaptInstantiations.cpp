@@ -225,8 +225,8 @@ template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, doub
 
 template class RAPT::rsMatrixOld<double>;  // try to get rid
 
-// Various kinds of polynomials. Although we do not reall need all these kinds in production code,
-// we want to be able to build rsPolynomial for all these types:
+// Various kinds of polynomials. Although we do not really need all these kinds in production code,
+// we want to be able to build rsPolynomial for all these types for library quality reasons:
 template class RAPT::rsPolynomial<int>;
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
@@ -235,44 +235,14 @@ template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 
 //template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
 //
-// Fails to compile. We get an error that says 
-//
-//   "cannot convert from 'TVal' to 'TTgt' with TVal=RAPT::rsUint32 and 
-//    TTgt=RAPT::rsModularInteger<int>" 
-//
-// It seems that the compiler tries to use the fallback implementation of rsConstantValue in 
-// BasicFunctions.h instead of the (partial) explicit specialization in rsModularInteger.h. 
-// Trying to add a full specialization also didn't help. Maybe rsConstantValue function gets called
-// somewhere before the compiler has seen the explicit specialization? Trying to put the 
-// instantiation directly at the bottom of ModularInteger.cpp also didn't help (it actually produces
-// some more errors - they are all the same type of error, though)
-//
-// WAIT! Why does it say TVal=rsUint32? We instantiate for int, not uint!
+// Fails to compile. We get an error that says ...
 
-// Test - what happens when we actually do instantiate it for uint?:
-//template class RAPT::rsPolynomial<RAPT::rsModularInteger<rsUint32>>;
-// ..strange - that produces an error that says:
-//   "cannot convert from 'TVal' to 'TTgt' with TVal=int and 
-//    TTgt=RAPT::rsModularInteger<RAPT::rsUint32>" 
-// Now the roles of int and uint are reversed.
-//
-// Maybe try to move ModularInteger.h/cpp from the "unfinished" folder into the regular math
-// folder and include it before rsPolynomial...DONE...nope - doesn't help.
-// Try to make a mini test class like rsPolynomial that triggers the problem
-// Maybe let rsConstantValue have only one template parameter and the first parameter is always
-// an integer. Maybe call it rsIntegerValue or rsIntValue
 
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
 // todo: instantiate rsPolynomial also for float, int, maybe also for 
 // rsMatrix<float>, etc.
 
-// Try to instantiate RAPT::rsMatrix<RAPT::rsModularInteger<int>>; and see if it produces 
-// similar problems:
-template class RAPT::rsMatrix<RAPT::rsModularInteger<int>>;
-// OK - this compiles fine. 
-// TODO: add unit tests for matrices of modular integers. Having it compile is one thing but having
-//       it working as is should is another.
 
 
 
@@ -324,6 +294,10 @@ template std::vector<double> RAPT::rsLinearAlgebraNew::solve(
 
 template std::vector<float> RAPT::rsLinearAlgebraNew::solve(
   const rsMatrixView<float>& A, const std::vector<float>& B);
+
+
+template class RAPT::rsMatrix<RAPT::rsModularInteger<int>>;
+
 
 template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
   const rsMatrixView<std::complex<double>>& A,

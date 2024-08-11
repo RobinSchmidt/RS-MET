@@ -72,7 +72,7 @@ public:
   bool operator!=(const rsModularInteger& other) const;
 
   // The size comparison operators have questionable semantics but may be needed for some things:
-  //bool operator>(const rsModularInteger& other) const;
+  bool operator>(const rsModularInteger& other) const;
   // ToDo: >=, <, <=
 
 

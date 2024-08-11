@@ -1042,8 +1042,6 @@ bool testModularInteger()
   c = rsIntValue(8, p2); ok &= c.getValue() == 3 && c.getModulus() == 5; // 8 % 5 = 3
 
 
-  TestPoly<ModInt> tp(c);
-
 
   // ToDo: 
   // -Drag the experiment with the NTT convolution into the unit test
