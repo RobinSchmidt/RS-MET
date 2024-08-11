@@ -432,6 +432,12 @@ inline size_t rsCount(std::vector<T>& v, const T elementToCheckFor)
 }
 
 template<class T>
+inline bool rsContainsOnce(std::vector<T>& v, const T elementToCheckFor)
+{
+  return rsCount(v, elementToCheckFor) == 1;
+}
+
+template<class T>
 inline void rsAppendIfNotAlreadyThere(std::vector<T>& v, T newElement)
 {
   if(!rsContains(v, newElement))
