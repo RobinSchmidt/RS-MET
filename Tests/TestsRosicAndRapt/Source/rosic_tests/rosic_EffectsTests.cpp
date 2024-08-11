@@ -1539,8 +1539,8 @@ void rotes::formantShifter()
   // Setup:
 
   // Output file parameters:
-  double sampleRate    = 44100;         // Sample rate for the signals in Hz
-  int    numSamples    = 2*sampleRate;  // We create a 2 seconds long signal.
+  double sampleRate    = 44100;              // Sample rate for the signals in Hz
+  int    numSamples    = int(2*sampleRate);  // We create a 2 seconds long signal.
 
   // Input signal parameters:
   double sawFreq       = 80;            // Fundamental frequency of the sawtooth
@@ -1579,8 +1579,8 @@ void rotes::formantShifter()
     z[n] = formantShifter.getSample(y[n]);
 
   // Write input and output into wave files:
-  rosic::writeToMonoWaveFile("FormantShifterInput.wav",  &y[0], N, sampleRate, 16);
-  rosic::writeToMonoWaveFile("FormantShifterOutput.wav", &z[0], N, sampleRate, 16);
+  rosic::writeToMonoWaveFile("FormantShifterInput.wav",  &y[0], N, (int)sampleRate, 16);
+  rosic::writeToMonoWaveFile("FormantShifterOutput.wav", &z[0], N, (int)sampleRate, 16);
 
   // ToDo:
   // -formantAmount seems to have no effect. Must be a bug in VowelFilterStereo. Fix it!
@@ -2260,8 +2260,8 @@ void testSpectralShiftViaJH()
   // Setup:
 
   // Output file parameters:
-  double sampleRate  = 44100;         // Sample rate for the signals in Hz
-  int    numSamples  = sampleRate/10; // We create a 1/10 seconds long signal.
+  double sampleRate  = 44100;              // Sample rate for the signals in Hz
+  int    numSamples  = int(sampleRate/10); // We create a 1/10 seconds long signal.
 
   // Input signal parameters:
   double inputPeriod = 128;           // Length of one cycle in samples
@@ -2341,8 +2341,8 @@ void testSpectralShiftViaRS()
   // Setup:
 
   // Output file parameters:
-  double sampleRate   = 44100;         // Sample rate for the signals in Hz
-  int    numSamples   = sampleRate/10; // We create a 1/10 seconds long signal.
+  double sampleRate   = 44100;              // Sample rate for the signals in Hz
+  int    numSamples   = int(sampleRate/10); // We create a 1/10 seconds long signal.
 
   // Input signal parameters:
   double inputPeriod  = 128;           // Length of one cycle in samples

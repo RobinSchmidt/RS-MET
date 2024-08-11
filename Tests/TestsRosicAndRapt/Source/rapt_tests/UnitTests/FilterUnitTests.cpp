@@ -877,7 +877,7 @@ bool stateVariableFilterUnitTest1(Real tol)
     {
       for(size_t j = 0; j < Q.size(); j++)
       {
-        Real wc = 2*PI*fc[i]/fs;
+        Real wc = Real(2*PI)*fc[i]/fs;
         Real b0, b1, b2, a1, a2;
 
         FDF::mvLowpassSimple(wc, Q[j], &b0, &b1, &b2, &a1, &a2);
@@ -894,19 +894,19 @@ bool stateVariableFilterUnitTest1(Real tol)
   };
 
 
-  // Test biquads with hand-picked coefficients:         // vars in SVF::setupFromBiquad
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, -0.5);  // u1 =  0, u2 = -1  ->  s = inf
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, +0.5);  // u1 = -2, u2 = -1  ->  s = -0.707
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.5, +0.5);  // u1 = -1, u2 = -2  ->  s = -0.707
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.5, -0.5);  // u1 = -1, u2 =  0  ->  s = inf
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -1.5,  0.0);  // u1 = 0.5, u2 =-2.5 -> s =inf
+  // Test biquads with hand-picked coefficients:              // vars in SVF::setupFromBiquad
+  ok &= testBiquadCoeffs(+4.0f, +0.5f, +2.0f, -0.5f, -0.5f);  // u1 =  0, u2 = -1  ->  s = inf
+  ok &= testBiquadCoeffs(+4.0f, +0.5f, +2.0f, +0.5f, +0.5f);  // u1 = -2, u2 = -1  ->  s = -0.707
+  ok &= testBiquadCoeffs(+4.0f, +0.5f, +2.0f, -0.5f, +0.5f);  // u1 = -1, u2 = -2  ->  s = -0.707
+  ok &= testBiquadCoeffs(+4.0f, +0.5f, +2.0f, +0.5f, -0.5f);  // u1 = -1, u2 =  0  ->  s = inf
+  ok &= testBiquadCoeffs(+4.0f, +0.5f, +2.0f, -1.5f,  0.0f);  // u1 = 0.5, u2 =-2.5 -> s =inf
 
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, +0.2, +0.5);  // u1 = -1.7, u2 = -1.3
-  ok &= testBiquadCoeffs(+4.0, +0.5, +2.0, -0.8, +0.9);  // u1 = -1.1, u2 = -2.7
+  ok &= testBiquadCoeffs(+4.0f, +0.5f, +2.0f, +0.2f, +0.5f);  // u1 = -1.7, u2 = -1.3
+  ok &= testBiquadCoeffs(+4.0f, +0.5f, +2.0f, -0.8f, +0.9f);  // u1 = -1.1, u2 = -2.7
 
-  ok &= testBiquadCoeffs( 0.0, +4.0,  0.0, -0.8, +0.9);
-  ok &= testBiquadCoeffs( 0.0,  0.0, +4.0, -0.8, +0.9);
-  ok &= testBiquadCoeffs(+4.0,  0.0, +4.0, -0.8, +0.9);
+  ok &= testBiquadCoeffs( 0.0f, +4.0f,  0.0f, -0.8f, +0.9f);
+  ok &= testBiquadCoeffs( 0.0f,  0.0f, +4.0f, -0.8f, +0.9f);
+  ok &= testBiquadCoeffs(+4.0f,  0.0f, +4.0f, -0.8f, +0.9f);
 
   // Test designed biquads:
   ok &= testBiquadDesigns(44100.0, 
