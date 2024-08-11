@@ -943,7 +943,7 @@ bool stateVariableFilterUnitTest()
 {
   bool ok = true;
 
-  ok &= stateVariableFilterUnitTest1<float>( 1.e-5);
+  ok &= stateVariableFilterUnitTest1<float>( 1.e-5f);
   ok &= stateVariableFilterUnitTest1<double>(1.e-13);
 
   return ok;

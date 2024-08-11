@@ -4919,14 +4919,14 @@ bool samplerMidiModulationsTest()
   ok &= testSamplerOutput2(&se, tgt, tgt, events, tol, false);
 
   // Add a second amplifier and let its volume parameter also be controlled by cc7 and cc8:
-  vol1ByCC7       = 1.7;
-  vol1ByCC8       = 1.8;
+  vol1ByCC7       = 1.7f;
+  vol1ByCC8       = 1.8f;
   float vol2ByCC7 = 2.7f;
   float vol2ByCC8 = 2.8f;
   gain = rsDbToAmp(vol1ByCC7 + vol1ByCC8 + vol2ByCC7 + vol2ByCC8);
   fillTarget(tgt, gain, ns);
 
-  tol = 1.e-6;  // We need some tolerance here
+  tol = 1.e-6f;  // We need some tolerance here
   se.setRegionSetting(0, 0, OC::volumeN,  0.f, 2);
   se.setRegionModulation(0,0, OT::MidiCtrl, 1, OC::volumeN, 1, vol1ByCC7, Mode::absolute);
   se.setRegionModulation(0,0, OT::MidiCtrl, 2, OC::volumeN, 1, vol1ByCC8, Mode::absolute);
@@ -5114,7 +5114,7 @@ bool samplerFixedModulationsTest()
   //rsPlotVectors(dc, tgt);
 
   // Produce sampler output signal and check against target:
-  float tol = 1.e-5;
+  float tol = 1.e-5f;
   ok &= testSamplerNote2(&se, 69, 100, tgt, tgt, tol, -1, false, false);
 
   // ToDo:

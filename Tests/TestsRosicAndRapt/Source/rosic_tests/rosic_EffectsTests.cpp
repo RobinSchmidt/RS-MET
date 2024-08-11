@@ -138,8 +138,8 @@ void rotes::allpassDisperser()
 
   for(int i = 0; i < numStages; i++)
   {
-    apdn.setMaxDelayInSamples(i, nestScale*delays[i]);
-    apdn.setDelayInSamples(   i, nestScale*delays[i]);
+    apdn.setMaxDelayInSamples(i, int(nestScale*delays[i]));
+    apdn.setDelayInSamples(   i, int(nestScale*delays[i]));
     apdn.setAllpassCoeff(     i, coeffs[i]);
   }
   // ToDo:

@@ -888,7 +888,7 @@ bool minimizerUnitTest()
   using Real = double;
   using MM   = RAPT::rsMinimizer1D<Real>;
 
-  Real x, y;                      // function in/out values
+  //Real x, y;                      // function in/out values
   std::function<Real(Real)> f;    // the function to find the minimum of
 
 

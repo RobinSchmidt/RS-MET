@@ -3495,8 +3495,8 @@ void allpassChainBassdrum()
   int    numStages  = 10;       // Number of stages per allpass chain
   int    numChains  = 5;        // With 10, we get exact octaves for the tuning freqs
 
-                              // Render sample:
-  int N = ceil(length * sampleRate);  // Number of samples to render
+  // Render sample:
+  int N = (int) ceil(length * sampleRate);  // Number of samples to render
   using Vec = std::vector<double>;
   Vec x(N);
   x[0] = 1;
@@ -3622,7 +3622,7 @@ void showFlatZapPlots()
   //x = getBrownZap(50, 250, 8000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
   // Defaults except for lowFreq (250 instead of 15). 
 
-  x = getBrownZap(50, 1000, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
+  x = getBrownZap(50, 1000, 1000, 0.0, 1.0, 1.0, 0.0, 1.0, (int)sampleRate);
   // All allpasses tuned to 1 kHz
 
   //x = getFlatZap(50,  10, 10000, 0.0, 1.0, 1.0, 0.0, 1.0, sampleRate);
@@ -3832,7 +3832,7 @@ void showRedZapsInstFreqs()
   {
     // Create a spectrally flat (aka white) zap:
     Real f = freqs[i];
-    Vec  x = getFlatZap(numStages, f, f, 0.0, Q, Q, 0.0, length, sampleRate);
+    Vec  x = getFlatZap(numStages, f, f, 0.0, Q, Q, 0.0, length, (int)sampleRate);
 
     // Apply lowpass:
     rsSamplePostProcessor pp;
@@ -4140,7 +4140,7 @@ void freqSweeper()
   fs.setChirpAmount(chirpAmount);
   fs.setChirpShape(chirpShape);
 
-  int   N   = ceil(length * sampleRate);
+  int   N   = (int) ceil(length * sampleRate);
   using Vec = std::vector<double>;
   Vec f(N), xL(N), xR(N);
 
@@ -4270,7 +4270,7 @@ void sineSweepBassdrum1()
   auto shapeFunc = shapePowRat;
 
 
-  int  N = ceil(length * sampleRate);
+  int  N = (int) ceil(length * sampleRate);
   using Vec = std::vector<Real>;
   Vec f(N), x(N);                         // Instantaneous frequency and output signal
   Real p = RAPT::rsDegreeToRadiant(phase);
@@ -4387,7 +4387,7 @@ void sineSweepBassdrum2()
   };
 
   // Generate the signal:
-  int N = ceil(length * sampleRate);
+  int N = (int) ceil(length * sampleRate);
   using Vec = std::vector<Real>;
   Vec f(N), x(N);                             // Instantaneous frequency and output signal
   Real phs = RAPT::rsDegreeToRadiant(phase);
@@ -4480,7 +4480,7 @@ void sineSweepBassdrum3()
 
   // Generate the signal using numerical integration (Riemann summing) of the instantaneous 
   // frequency to obtain the instantaneous phase:
-  int N = ceil(length * sampleRate);
+  int N = (int) ceil(length * sampleRate);
   using Vec = std::vector<Real>;
   Vec f(N), x(N);                             // Instantaneous frequency and output signal
   Real phs = RAPT::rsDegreeToRadiant(phase);
@@ -4621,7 +4621,7 @@ void sineSweepBassdrum4()
 
   // Generate the signal using numerical integration (Riemann summing) of the instantaneous 
   // frequency to obtain the instantaneous phase:
-  int N = ceil(length * sampleRate);
+  int N = (int) ceil(length * sampleRate);
   using Vec = std::vector<Real>;
   Vec f(N), x(N);                             // Instantaneous frequency and output signal
   Real phs = RAPT::rsDegreeToRadiant(phase);
