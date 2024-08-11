@@ -909,9 +909,9 @@ bool stateVariableFilterUnitTest1(Real tol)
   ok &= testBiquadCoeffs(+4.0f,  0.0f, +4.0f, -0.8f, +0.9f);
 
   // Test designed biquads:
-  ok &= testBiquadDesigns(44100.0, 
-    Vec({ 10.0, 100.0, 1000.0, 10000.0 }), 
-    Vec({ 0.1, 1.0, 10.0, 100.0, Real(sqrt(0.5)) }) );
+  ok &= testBiquadDesigns(44100.0f, 
+    Vec({ 10.0f, 100.0f, 1000.0f, 10000.0f }), 
+    Vec({ 0.1f, 1.0f, 10.0f, 100.0f, Real(sqrt(0.5)) }) );
     // It seems like lower cutoff frequencies require higher tolerances - which is typical for IIR
     // filters.
 

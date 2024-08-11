@@ -219,7 +219,7 @@ inline void rsFilterDesignFormulas::mvBandpassSimple(
   T f02 = f0*f0;
   T k   = (1-f02);
   T r1  = ((1 - *a1 + *a2)*f0/Q) / sqrt(k*k + f02/(Q*Q));
-  T r0  = (1 + *a1 + *a2) / (PI * f0 * Q);
+  T r0  = (T(1) + *a1 + *a2) / (T(PI) * f0 * Q);
 
   *b1 = T(-0.5) * r1;
   *b0 = T( 0.5) * (r0 - *b1);
