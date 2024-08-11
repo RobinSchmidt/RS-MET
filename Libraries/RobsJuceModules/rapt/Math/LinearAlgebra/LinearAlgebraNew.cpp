@@ -322,7 +322,14 @@ std::vector<T> rsLinearAlgebraNew::solveOld(rsMatrix<T> A, std::vector<T> b)
   B = new T*[M];
   for(int i = 0; i < M; i++)
     B[i] = A.getRowPointer(i);
-  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(B, &x[0], &b[0], N);
+
+
+  T tol = 1.e-12;  
+  // TODO: let user pass tolerance
+
+  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(B, &x[0], &b[0], N, tol);
+
+
   delete[] B;
   return x;
 }

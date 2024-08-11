@@ -191,7 +191,7 @@ void rsLinearAlgebra::solveMinNorm(T a, T b, T p, T* x, T* y)
 
 
 template<class T>
-bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
+bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N, const T& tol)
 {
   bool   matrixIsSingular = false;
   int i, j, k, p;
@@ -205,7 +205,7 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 
   //T tol = std::numeric_limits<T>::epsilon * 1024;
 
-  T tol = T(1.e-12); // ad hoc, seems reasonable for T == double
+  //T tol = T(1.e-12); // ad hoc, seems reasonable for T == double
   // ToDo: use something based on std::numeric_limits<T> and/or let the user pick a threshold. 
   // also, It should probably be a relative value. If T is something like rsFraction, we may want
   // to use an entirely different criterion, like using simpler fractions as pivots to decrease the
@@ -290,7 +290,7 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
 
 template<class T>
 //bool rsSolveLinearSystem(const T **A, T *x, const T *b, int N)
-bool rsLinearAlgebra::rsSolveLinearSystem(T** A, T* x, const T* b, int N)
+bool rsLinearAlgebra::rsSolveLinearSystem(T** A, T* x, const T* b, int N, const T& tol)
 //bool rsLinearAlgebra::rsSolveLinearSystem(T **A, T *x, T *b, int N)
 {
   int i, j;
@@ -313,7 +313,7 @@ bool rsLinearAlgebra::rsSolveLinearSystem(T** A, T* x, const T* b, int N)
   }
 
   // solve the linear system in place with the temporary arrays:
-  bool success = rsSolveLinearSystemInPlace(tmpAP, x, tmpB, N);
+  bool success = rsSolveLinearSystemInPlace(tmpAP, x, tmpB, N, tol);
 
   // free allocated memory:
   delete[] tmpB;
@@ -490,7 +490,11 @@ bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int 
   rsMatrixTools::matrixVectorMultiply(A, va, ve, N, N);
 
   // coordinates of v in basis B: A * va = ve = B * vb
-  bool result = rsSolveLinearSystem(B, vb, ve, N);
+
+  T tol = 1.e-12;  
+  // TODO: use something based on epsilon
+
+  bool result = rsSolveLinearSystem(B, vb, ve, N, tol);
 
   delete[] ve;
   return result;
@@ -502,7 +506,14 @@ bool rsLinearAlgebra::rsChangeOfBasisRowWise(T **A, T **B, T *va, T *vb, int N)
   T *ve = new T[N];
   rsMatrixTools::transposedMatrixVectorMultiply(A, va, ve, N, N);
   rsArrayTools::transposeSquareArray(B, N);
-  bool result = rsSolveLinearSystem(B, vb, ve, N);
+
+
+  T tol = 1.e-12;  
+  // TODO: use something based on epsilon
+
+  bool result = rsSolveLinearSystem(B, vb, ve, N, tol);
+
+
   rsArrayTools::transposeSquareArray(B, N);
   delete[] ve;
   return result;

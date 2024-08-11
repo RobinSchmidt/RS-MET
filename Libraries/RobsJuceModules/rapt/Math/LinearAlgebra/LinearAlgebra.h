@@ -77,7 +77,7 @@ public:
   or that there is not a unique solution.  */
   template<class T>
   //static bool rsSolveLinearSystem(const T **A, T *x, const T *b, int N); // compiler error
-  static bool rsSolveLinearSystem(T** A, T* x, const T* b, int N);
+  static bool rsSolveLinearSystem(T** A, T* x, const T* b, int N, const T& tol);
   // deprecate! 
 
   //static bool rsSolveLinearSystem(T **A, T *x, T *b, int N);
@@ -93,7 +93,7 @@ public:
   the system, you can use this function directly to get rid of the copying overhead. The algorithm 
   is Gaussian elimination with partial pivoting (...i think -> verify this). */
   template<class T>
-  static bool rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N);
+  static bool rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N, const T& tol);
   // deprecate! use rsMatrix instead ...but keep around for the comments
 
   // todo: add functions to solve NxM systems with N != M (find minimum-norm solution for 

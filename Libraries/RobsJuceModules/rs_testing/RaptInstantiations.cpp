@@ -199,7 +199,7 @@ template double rsLinearAlgebra::eigenvalue2x2_2(double, double, double, double)
 template void rsLinearAlgebra::eigenvector2x2_1(double, double, double, double, double*, double*, bool);
 template void rsLinearAlgebra::eigenvector2x2_2(double, double, double, double, double*, double*, bool);
 
-template bool rsLinearAlgebra::rsSolveLinearSystem(double **A, double *x, const double *b, int N);
+template bool rsLinearAlgebra::rsSolveLinearSystem(double **A, double *x, const double *b, int N, const double& tol);
 template bool rsLinearAlgebra::rsInvertMatrix(double **A, int N);
 template bool rsLinearAlgebra::rsSolveTridiagonalSystem(double *lowerDiagonal, double *mainDiagonal,
   double *upperDiagonal, double *rightHandSide, double *solution, int N);
@@ -209,7 +209,7 @@ template bool rsLinearAlgebra::rsChangeOfBasisRowWise(double **A, double **B, do
   double *vb, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
-template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N);
+template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N, const cmplxD& tol);
 
 template std::vector<double> rsLinearAlgebraNew::solveOld(rsMatrix<double> A, std::vector<double> b);
 

@@ -20,7 +20,14 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
     for(j = 0; j < k; j++)
       M[i][j] = y[i+j];
   }
-  rsLinearAlgebra::rsSolveLinearSystem(M, C, rhs, k);
+
+
+  T tol = 1.e-12;  
+  // TODO: use something based on epsilon
+
+  rsLinearAlgebra::rsSolveLinearSystem(M, C, rhs, k, tol);
+
+
   C[k] = 1.0;
   //rsComplexDbl *roots = new rsComplexDbl[k];
   std::complex<T> *roots = new std::complex<T>[k];
@@ -39,7 +46,7 @@ bool rsCurveFitter::fitExponentialSum(T* y, int numValues, T* A, T* a, int numEx
       for(j = 0; j < k; j++)
         M[i][j] = exp(a[j]*i); // == pow(roots[j].re, i)
     }
-    rsLinearAlgebra::rsSolveLinearSystem(M, A, rhs, k);
+    rsLinearAlgebra::rsSolveLinearSystem(M, A, rhs, k, tol);
   }
 
   // clean up and return result:

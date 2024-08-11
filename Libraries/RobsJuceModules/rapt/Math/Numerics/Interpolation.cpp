@@ -204,7 +204,8 @@ void getHermiteCoeffsM(const T *y0, const T *y1, T *a, int M)
   }
 
   // solve the linear system and cleanup:
-  rsLinearAlgebra::rsSolveLinearSystem(A.getDataPointer(), &a[M+1], k, M+1);
+  double tol = 1.e-12;
+  rsLinearAlgebra::rsSolveLinearSystem(A.getDataPointer(), &a[M+1], k, M+1, tol);
   delete[] k;
 }
 

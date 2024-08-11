@@ -286,7 +286,11 @@ void rsNumericDifferentiator<T>::stencilCoeffs(const T* x, int N, int d, T* c)
   rhs[d] = rsFactorial(d);
 
   // compute coeffs by solving the linear system and clean up:
-  rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N);
+
+  T tol = 1.e-12;  
+  // TODO: use something based on epsilon
+
+  rsLinearAlgebra::rsSolveLinearSystem(A, &c[0], &rhs[0], N, tol);
   rsMatrixTools::deallocateMatrix(A, N, N);
   // In practice, the resulting coefficients have to be divided by h^d where h is the step-size and
   // d is the order of the derivative to be approximated. The stencil offsets in x are actually 

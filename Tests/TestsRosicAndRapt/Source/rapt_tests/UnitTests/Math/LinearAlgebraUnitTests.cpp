@@ -268,7 +268,9 @@ bool testLinearSystemViaGauss()
   for(int i = 0; i < 3; i++)
     pA[i] = &A[i][0]; // we need a pointer-to-pointer for the solver
 
-  rsLinearAlgebra::rsSolveLinearSystem(pA, x, y, 3);
+  
+  Complex tolC = 1.e-12;
+  rsLinearAlgebra::rsSolveLinearSystem(pA, x, y, 3, tolC);
 
   Complex xt[3] = {Complex(-2,+1), Complex(+3,-2), Complex(+1,-1)};
   double tol = 1.e-14;
@@ -331,7 +333,8 @@ bool testTridiagonalSystemOld()
     pA[i] = &A[i][0];
 
   // solve via standard procedure to obtain the target solution:
-  rsLinearAlgebra::rsSolveLinearSystem(pA, xt, y, 5);
+  double tol = 1.e-12;
+  rsLinearAlgebra::rsSolveLinearSystem(pA, xt, y, 5, tol);
 
   // solve via special tridiagonal procedure:
   double lower[4] = {+3, +2, +5, -3};     // lower diagonal of A
@@ -340,7 +343,7 @@ bool testTridiagonalSystemOld()
   rsLinearAlgebra::rsSolveTridiagonalSystem(lower, main, upper, y, x, 5);
 
   // compare results:
-  double tol = 1.e-14;
+  tol = 1.e-14;
   for(int i = 0; i < 5; i++)
     ok &= fabs(x[i]-xt[i]) < tol;
 

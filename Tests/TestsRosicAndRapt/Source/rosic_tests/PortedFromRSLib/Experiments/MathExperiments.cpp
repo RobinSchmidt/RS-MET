@@ -2482,7 +2482,8 @@ void rsPolyWithDerivativeValues(double *a, int N, double *x, double *yp, double 
   double **A = RAPT::rsPolynomial<double>::vandermondeMatrix(x, N);
   RAPT::rsArrayTools::fillWithZeros(A[N-1], N-1);
   A[N-1][N-1] = 1;
-  RAPT::rsLinearAlgebra::rsSolveLinearSystem(A, a, yp, N);
+  double tol = 1.e-12;
+  RAPT::rsLinearAlgebra::rsSolveLinearSystem(A, a, yp, N, tol);
   RAPT::rsArrayTools::deAllocateSquareArray2D(A, N);  
   RAPT::rsPolynomial<double>::integral(a, a, N-1, shift);
 }

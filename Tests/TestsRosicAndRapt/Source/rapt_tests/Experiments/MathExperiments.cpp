@@ -2364,8 +2364,9 @@ void multipleRegression()
   RAPT::rsMatrixTools::matrixMultiplySecondTransposed(X, X, XX, 3, 7, 3); // is this correct?
 
   // estimate parameter vector by solving the linear system:
-  double b[3];  
-  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(XX, b, Y, 3); // get rid of rs prefix
+  double b[3];
+  double tol = 1.e-12;
+  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(XX, b, Y, 3, tol); // get rid of rs prefix
   // verify, if the result is correct!
 
   // Use the model to predict the pizza prices from their diameters and extras:

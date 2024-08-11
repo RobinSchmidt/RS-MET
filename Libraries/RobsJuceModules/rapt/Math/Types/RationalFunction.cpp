@@ -351,7 +351,13 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
   // solve the linear system using an appropriately zero-padded numerator as RHS:
   rsArrayTools::copy(num, tmp, numDeg+1);
   rsArrayTools::fillWithZeros(&tmp[numDeg+1], denDeg-(numDeg+1));
-  rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denDeg);
+
+
+  std::complex<R> tol = 1.e-12;
+  // TODO: use something based on epsilon
+
+
+  rsLinearAlgebra::rsSolveLinearSystem(A, pfeCoeffs, tmp, denDeg, tol);
 
   // clean up:
   rsArrayTools::deAllocateSquareArray2D(A, denDeg);

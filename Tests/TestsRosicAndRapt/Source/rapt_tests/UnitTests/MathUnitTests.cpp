@@ -119,7 +119,8 @@ void fitOddRatFunc4(double *x, double* y, double *coeffs)
   }
 
   // solve linear system and clean up:
-  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(A, coeffs, b, 4);
+  double tol = 1.e-12;
+  RAPT::rsLinearAlgebra::rsSolveLinearSystemInPlace(A, coeffs, b, 4, tol);
   RAPT::rsArrayTools::deAllocateSquareArray2D(A, 4);
 }
 double oddRatFunc4(double x, double *c) // evaluates (c0*x + c1*x^3) / (1 + c2*x^2 + c3*x^4)
