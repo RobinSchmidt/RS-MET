@@ -1054,7 +1054,7 @@ bool testModularInteger()
   // - Do tests with modulus 6. Modular inverses should exist only for numbers coprime with 6, 
   //   i.e. 1 and 5. If we try division by numbers other than 1 and 5, we should get the result 
   //   zero, even though that makes no mathematical sense - it's just how we arbitrarily define the 
-  //   behavior.
+  //   behavior. Test hasInverse()
   //
   // - Test it with Int = rsInt64
 }

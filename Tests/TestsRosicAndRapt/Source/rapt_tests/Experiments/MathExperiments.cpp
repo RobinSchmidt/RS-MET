@@ -4317,10 +4317,10 @@ void numberTheoreticTrafoModuli()
       ModInt yM(x, M);
       int i;
       for(i = 1; i <= k; i++) {
-        yM = yM * yM;      // i think, repeated squaring works only for radix R = 2 - in general,
-        if(yM.value == 1)  // we must repeatedly do: yM = yM^R
+        yM = yM * yM;           // i think, repeated squaring works only for radix R = 2 - in general,
+        if(yM.getValue() == 1)  // we must repeatedly do: yM = yM^R
           break;    }
-      if(yM.value == 1 && i == k)
+      if(yM.getValue() == 1 && i == k)
         return x;
 
 

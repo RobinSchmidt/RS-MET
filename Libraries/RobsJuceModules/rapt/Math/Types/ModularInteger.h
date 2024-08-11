@@ -121,6 +121,11 @@ public:
 
 
 
+
+
+protected:
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
@@ -133,8 +138,6 @@ public:
   // - Documnet the choices for the default values. 0 for the value is natural but 2 for the 
   //   modulus not necessarily so. It's the smallest modulus that makes sense. 0 or 1 or negative
   //   numbers make no sense as modulus.
-
-protected:
 
   void canonicalize() { value = modulo(value, modulus); }
 
@@ -153,19 +156,19 @@ protected:
 template<class T>
 rsModularInteger<T> rsZeroValue(rsModularInteger<T> value)
 { 
-  return rsModularInteger<T>(T(0), value.modulus); 
+  return rsModularInteger<T>(T(0), value.getModulus()); 
 }
 
 template<class T>
 rsModularInteger<T> rsUnityValue(rsModularInteger<T> value)
 { 
-  return rsModularInteger<T>(T(1), value.modulus); 
+  return rsModularInteger<T>(T(1), value.getModulus()); 
 }
 
 template<class T> 
 rsModularInteger<T> rsIntValue(int value, rsModularInteger<T> targetTemplate) 
 { 
-  return rsModularInteger<T>(T(value), targetTemplate.modulus);
+  return rsModularInteger<T>(T(value), targetTemplate.getModulus());
 }
 
 // ToDo: Implement the default, templatized rsZeroValue and rsUnityValue functions in terms of 
