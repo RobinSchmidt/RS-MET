@@ -168,7 +168,6 @@ rsModularInteger<T>& rsModularInteger<T>::operator--()
 
 // internal:
 
-
 /*
 
 Ideas:

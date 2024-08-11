@@ -104,6 +104,7 @@ public:
   function parameter) is negative. The result of the C++ operator % is equal to modulo-result only 
   when the left operand is >= 0. ToDo: Maybe allow m to be negative, too - but what would a 
   negative modulus even mean mathematically? Does it even make sense? */
+  /*
   static T modulo (T x, T m)
   {
     rsAssert(m > 1);   // modulus must be positive integer >= 2
@@ -115,6 +116,7 @@ public:
     // There's also code for when m is negative, but we don't need that here. What would that even
     // mean? Maybe move the function into the library as rsModulo.
   };
+  */
   // But what if T is unsigned? Does this implementation still work for e.g. 
   // T = rsPolynomial<double>? Maybe for this, we need to allow for negative moduli?
   // maybe move to .cpp
@@ -141,7 +143,7 @@ protected:
 
 
 
-  void canonicalize() { value = modulo(value, modulus); }
+  void canonicalize() { value = rsModulo(value, modulus); }
 
   /** Checks, if the representation is canonical. It's protected because we use it only internally 
   for assertions and unit tests. Client code is supposed to assume that the value is always 

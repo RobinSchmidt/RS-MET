@@ -239,7 +239,7 @@ void noiseReverseMode()
 
   // Helper function to perform the mathematically correct modulo operation even for negative 
   // inputs x:
-  auto mod = [](Int x, Int m) { return rsModularInteger<Int>::modulo(x, m); };
+  auto mod = [](Int x, Int m) { return rsModulo(x, m); };
 
   // Functions to update and downdate a state of the PRNG:
   auto next = [&](Int x) { return mod((a * x) + b , m); };

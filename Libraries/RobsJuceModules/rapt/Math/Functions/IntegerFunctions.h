@@ -62,7 +62,7 @@ operator % works correctly only when both arguments are nonnegative. A mathemati
 treatment of negative values is important to implement modular arithmetic as in e.g. 
 rsModularInteger. */
 template<class TInt>
-TInt rsModulo(TInt x, TInt m);
+RS_INLINE TInt rsModulo(TInt x, TInt m);
 
 /** Computes the multinomial coefficient defined as:
 c = (      n     ) = n! / (k1! * k2! * ... * km!)
@@ -236,6 +236,30 @@ RS_INLINE float rsIndexToNormalizedValue(TInt index, TInt numIndices)
 {
   return (float)(2 * index + 1) / (float)(2 * numIndices);
 }
+
+template<class TInt>
+RS_INLINE TInt rsModulo(TInt x, TInt m)
+{
+  rsAssert(m > 1);   // Modulus must be positive integer >= 2
+  TInt r = x % m;    // Division remainder
+  if(r < 0)          // This happens for x < 0
+    return r + m;
+  return r;
+
+  // ToDo:
+  //
+  // - Figure out if we still get meaningful results for m = 1. If so, change the assertion to
+  //   "m > 0" and update the documentation.
+  //
+  //
+  // See: https://stackoverflow.com/questions/11720656/modulo-operation-with-negative-numbers
+  //
+  // There's also code for when m is negative, but we don't need that here. What would that even
+  // mean? Also - what if T is unsigned? And: Does this implementation still work for e.g. 
+  // T = rsPolynomial<double>? Maybe for this, we need to allow for general (including negative) 
+  // moduli? What would it even mean for a polynomial to be "negative"? Figure out and document!
+}
+
 
 template<class TInt>
 RS_INLINE TInt rsNormalizedValueToIndex(float normalizedValue, TInt numIndices)
