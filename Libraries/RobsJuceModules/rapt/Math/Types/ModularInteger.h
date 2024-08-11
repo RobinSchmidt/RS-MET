@@ -149,6 +149,15 @@ rsModularInteger<T> rsIntValue(int value, rsModularInteger<T> targetTemplate)
   return rsModularInteger<T>(T(value), targetTemplate.getModulus());
 }
 
+/*
+template <class T>
+bool rsGreaterAbs(const rsModularInteger<T>& lhs, const rsModularInteger<T>& rhs)
+{
+  rsAssert(lhs.getModulus() == rhs.getModulus());
+  return lhs.getValue() > rhs.getValue();
+}
+*/
+
 // ToDo: Implement the default, templatized rsZeroValue and rsUnityValue functions in terms of 
 // rsIntValue such that rsModularInteger and all other similar classes need to provide only an 
 // implementation of rsConstantValue

@@ -48,8 +48,7 @@ void rsPolynomial<T>::truncateTrailingZeros(const T& thresh)
 {
   int i = (int) coeffs.size()-1;
   while(i > 0) {
-    //if( rsAbs(coeffs[i]) > thresh ) // must be strictly greater to work correctly with thresh == 0
-    if( rsGreaterAbs(coeffs[i], thresh) ) // must be strictly greater to work correctly with thresh == 0
+    if( rsGreaterAbs(coeffs[i], thresh) ) // Must be strictly greater to work for thresh == 0
       break;
     i--;
   }
