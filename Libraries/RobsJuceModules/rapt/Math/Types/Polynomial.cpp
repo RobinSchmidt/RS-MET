@@ -297,13 +297,27 @@ void rsPolynomial<T>::divide(const T *p, int pDegree, const T *d, int dDegree, T
 {
   using AT = rsArrayTools;
   AT::copy(p, r, pDegree+1);       // init remainder with p
-  AT::fillWithZeros(q, pDegree+1); // init quotient with zeros
+
+
+
+  //AT::fillWithZeros(q, pDegree+1); // init quotient with zeros
+
+
+  T zero = rsZeroValue(p[0]);
+  AT::fillWithValue(q, pDegree+1, zero);// init quotient with zeros
+
+
   for(int k = pDegree-dDegree; k >= 0; k--) {
     q[k] = r[dDegree+k] / d[dDegree];
     for(int j = dDegree+k-1; j >= k; j--)
       r[j] -= q[k] * d[j-k];
   }
-  AT::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
+
+  AT::fillWithValue(&r[dDegree], pDegree-dDegree+1, zero);
+
+  //AT::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
+
+
   // maybe return the degree of the quotient, the degree of the remainder is then
   // pDegree-qDegree - ...what if dDegree > pDegree? the most sensibe thing in this case would be,
   // if the remainder is equal to p ...and the quotient should be 0 ...i think, the model is:
