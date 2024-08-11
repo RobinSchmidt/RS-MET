@@ -901,7 +901,8 @@ bool testPolynomialBaseChange()
   }
 
   // get the expansion coeffs in terms of R-polynomials:
-  rsPolynomial<double>::baseChange(Q, a, R, b, N);
+  double tol = 1.e-12;
+  rsPolynomial<double>::baseChange(Q, a, R, b, N, tol);
 
   // select a value for the argument:
   double x = 2.0;

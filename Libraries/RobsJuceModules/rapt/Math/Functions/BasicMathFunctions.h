@@ -220,7 +220,9 @@ inline T rsExpToLinWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offs
 template<class T>
 inline bool rsIsCloseTo(T x, T targetValue, T tolerance)
 {
-  rsAssert(tolerance >= T(0), "tolerance must be non-negative");
+  rsAssert(tolerance >= rsZeroValue(x), "tolerance must be non-negative");
+  //rsAssert(tolerance >= T(0), "tolerance must be non-negative");
+
   if(rsAbs(x - targetValue) <= tolerance)
     return true;
   else

@@ -483,7 +483,7 @@ bool rsSolvePentaDiagonalSystem(T* M, T* L, T* D, T* U, T* V, T* B, T *x, int N)
 }
 
 template<class T>
-bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int N)
+bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int N, const T& tol)
 {
   // coordinates of v in canonical basis:
   T *ve = new T[N];
@@ -491,7 +491,7 @@ bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int 
 
   // coordinates of v in basis B: A * va = ve = B * vb
 
-  T tol = 1.e-12;  
+  //T tol = 1.e-12;  
   // TODO: use something based on epsilon
 
   bool result = rsSolveLinearSystem(B, vb, ve, N, tol);
@@ -501,14 +501,14 @@ bool rsLinearAlgebra::rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int 
 }
 
 template<class T>
-bool rsLinearAlgebra::rsChangeOfBasisRowWise(T **A, T **B, T *va, T *vb, int N)
+bool rsLinearAlgebra::rsChangeOfBasisRowWise(T **A, T **B, T *va, T *vb, int N, const T& tol)
 {
   T *ve = new T[N];
   rsMatrixTools::transposedMatrixVectorMultiply(A, va, ve, N, N);
   rsArrayTools::transposeSquareArray(B, N);
 
 
-  T tol = 1.e-12;  
+  //T tol = 1.e-12;  
   // TODO: use something based on epsilon
 
   bool result = rsSolveLinearSystem(B, vb, ve, N, tol);

@@ -901,9 +901,9 @@ public:
   The basis polynomials Q and R are passed as 2-dimensional arrays where the k-th row represents
   the coefficients of the k-th basis polynomial. If R is not a basis, the function will not succeed
   and return false, otherwise true. */
-  static bool baseChange(T **Q, T *a, T **R, T *b, int degree)
-  {
-    return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, degree+1);
+  static bool baseChange(T **Q, T *a, T **R, T *b, int degree, const T& tol)
+  {   
+    return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, degree+1, tol);
   }
   // ToDo:
   // -make const-correct - first make functions in rsLinearAlgebra const-correct

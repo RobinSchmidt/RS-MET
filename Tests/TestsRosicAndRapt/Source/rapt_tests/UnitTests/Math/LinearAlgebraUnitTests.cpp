@@ -489,7 +489,8 @@ bool testChangeOfBasis()
 
   // compute coordinates of v in basis B:
   double vb[3];
-  rsLinearAlgebra::rsChangeOfBasisColumnWise(pA, pB, va, vb, 3);
+  double tol = 1.e-12;  
+  rsLinearAlgebra::rsChangeOfBasisColumnWise(pA, pB, va, vb, 3, tol);
 
   // compute canonical coordinates of v from its coordinates in va and vb and compare:
   double vea[3], veb[3];
@@ -507,7 +508,7 @@ bool testChangeOfBasis()
   testResult &= rsArrayTools::almostEqual(vb, vb2, 3, 1.e-14);
 
   // tests for row-based representations of bases A and B:
-  rsLinearAlgebra::rsChangeOfBasisRowWise(pAT, pBT, va, vb, 3);
+  rsLinearAlgebra::rsChangeOfBasisRowWise(pAT, pBT, va, vb, 3, tol);
   testResult &= rsArrayTools::almostEqual(vb, vb2, 3, 1.e-14);
 
   rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(pAT, pBT, pCT, 3);

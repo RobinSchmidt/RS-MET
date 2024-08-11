@@ -204,9 +204,9 @@ template bool rsLinearAlgebra::rsInvertMatrix(double **A, int N);
 template bool rsLinearAlgebra::rsSolveTridiagonalSystem(double *lowerDiagonal, double *mainDiagonal,
   double *upperDiagonal, double *rightHandSide, double *solution, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisColumnWise(double **A, double **B, double *va,
-  double *vb, int N);
+  double *vb, int N, const double& tol);
 template bool rsLinearAlgebra::rsChangeOfBasisRowWise(double **A, double **B, double *va,
-  double *vb, int N);
+  double *vb, int N, const double& tol);
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixColumnWise(double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, double **B, double **C, int N);
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N, const cmplxD& tol);
@@ -233,7 +233,7 @@ template class RAPT::rsPolynomial<double>;
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 
-//template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
+template class RAPT::rsPolynomial<RAPT::rsModularInteger<int>>;
 //
 // Fails to compile. We get an error in rsLinearAlgebra::rsSolveLinearSystemInPlace. We need to
 // replace all the T(0) occurences with a prototype based zero-initialization and we somehow need

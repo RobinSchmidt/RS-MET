@@ -148,12 +148,12 @@ public:
   basis? will it work anyway? quite possible, i think - because it just restricts the vector v to 
   lie in some subspace of R^N which is no problem). */
   template<class T>
-  static bool rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int N);
+  static bool rsChangeOfBasisColumnWise(T **A, T **B, T *va, T *vb, int N, const T& tol);
 
   /** Similar to rsChangeOfBasisColumnWise but here, the basis vectors are given by the rows of the 
   matrices A and B. */
   template<class T>
-  static bool rsChangeOfBasisRowWise(T **A, T **B, T *va, T *vb, int N);
+  static bool rsChangeOfBasisRowWise(T **A, T **B, T *va, T *vb, int N, const T& tol);
 
   /** Given NxN matrices A and B whose columns are assumed to constitue two bases for R^N, this 
   function computes the change-of-basis matrix C which converts coordinates with respect to basis A 
