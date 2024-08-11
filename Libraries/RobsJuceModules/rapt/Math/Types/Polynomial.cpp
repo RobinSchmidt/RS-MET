@@ -296,16 +296,12 @@ template <class T>
 void rsPolynomial<T>::divide(const T *p, int pDegree, const T *d, int dDegree, T *q, T *r)
 {
   using AT = rsArrayTools;
-  AT::copy(p, r, pDegree+1);       // init remainder with p
-
-
-
-  //AT::fillWithZeros(q, pDegree+1); // init quotient with zeros
-
+  AT::copy(p, r, pDegree+1);              // Init remainder with p
 
   T zero = rsZeroValue(p[0]);
-  AT::fillWithValue(q, pDegree+1, zero);// init quotient with zeros
+  AT::fillWithValue(q, pDegree+1, zero);  // Init quotient with zeros
 
+  //AT::fillWithZeros(q, pDegree+1); // init quotient with zeros
 
   for(int k = pDegree-dDegree; k >= 0; k--) {
     q[k] = r[dDegree+k] / d[dDegree];
