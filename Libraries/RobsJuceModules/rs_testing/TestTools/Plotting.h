@@ -284,14 +284,29 @@ inline void plotMatrix(const rsMatrix<T>& A, bool asHeatMap = true)  // use cons
   // data of A directly
 
 
+  plt.setToDarkMode();
+  plt.setPixelSize(800, 800);
 
   if(asHeatMap) {
     //plt.addCommand("set size square");  // make optional
+
     plt.addGraph("i 0 nonuniform matrix w image notitle");
+
+    // CJ_BuYlRd11
+
+    plt.setColorPalette(GNUPlotter::ColorPalette::CJ_BuYlRd11, false);
+    //plt.setColorPalette(GNUPlotter::ColorPalette::ML_Parula, false);
+    //plt.setColorPalette(GNUPlotter::ColorPalette::SW_Inferno, false);
     //plt.addCommand("set palette gray");
-    plt.addCommand("set palette rgbformulae 7,5,15");
+    //plt.addCommand("set palette rgbformulae 7,5,15");
     // http://gnuplot.info/demo_5.2/pm3dcolors.html
+
+
     //plt.setRange(0, A.getNumRows()-1, 0, A.getNumColumns()-1, -1.0, +1.0); // doesn't work
+
+    if(A.isSquare())
+      plt.addCommand("set size square");
+
     plt.plot();
   }
   else
