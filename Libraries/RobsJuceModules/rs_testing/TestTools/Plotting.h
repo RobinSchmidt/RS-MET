@@ -267,11 +267,24 @@ void plotMatrix(RAPT::rsMatrix<T>& z, std::vector<T>& x, std::vector<T>& y)
 // get rid of that - use function below instead - maybe it should take optional x,y arguments
 
 template<class T>
-inline void plotMatrix(rsMatrix<T>& A, bool asHeatMap = true)  // use const
+inline void plotMatrix(const rsMatrix<T>& A, bool asHeatMap = true)  // use const
 {
   GNUPlotter plt;
-  //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
-  plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
+
+  // old:
+  ////plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getDataPointerConst());
+  //plt.addDataMatrixFlat( A.getNumRows(), A.getNumColumns(), A.getRowPointer(0));
+
+
+  // new:
+  rsMatrix B = A;
+  plt.addDataMatrixFlat(B.getNumRows(), B.getNumColumns(), B.getRowPointer(0));
+  // This is ugly - we need to make a copy because GNUPlotter is not yet const correct but we want
+  // to be const correct in our signature! Fix this in GNUPlotter and then revert to passing the 
+  // data of A directly
+
+
+
   if(asHeatMap) {
     //plt.addCommand("set size square");  // make optional
     plt.addGraph("i 0 nonuniform matrix w image notitle");
