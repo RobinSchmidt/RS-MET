@@ -85,7 +85,7 @@ rsImage<T> rsImageProcessor<T>::interpolateBilinear(const rsImage<T>& img, int k
 {
   int w = img.getWidth();
   int h = img.getHeight();
-  rsImage<T> result(kx*(w-1)+1, ky*(h-1)+1);
+  rsImage<T> result(kx*(w-1)+1, ky*(h-1)+1);     // ToDo: document why not just kx*w, ky*h
   T kxI = T(1) / kx;
   T kyI = T(1) / ky; 
   for(int y = 0; y < h-1; y++) {

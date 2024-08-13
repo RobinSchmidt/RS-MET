@@ -23,7 +23,7 @@ bool writeImageToFilePPM(const RAPT::rsImage<float>& red, const RAPT::rsImage<fl
 
 /** Writes a naively (by pixel duplication) scaled up version of the given image into a file. This 
 is useful for taking a close look at what the rendering algorithms do. */
-bool writeScaledImageToFilePPM(RAPT::rsImage<float>& image, const char* path, int scale);
+bool writeScaledImageToFilePPM(RAPT::rsImage<float>& image, const char* path, int scale = 1);
 
 
 
