@@ -109,6 +109,7 @@ rsImage<T> rsImageProcessor<T>::interpolateBilinear(const rsImage<T>& img, int k
 //  this would complicate the code considerably, so I think, it's OK like that.
 // -What if the the type T is something like an RGB color made from 3 char variables? This 
 //  implementation assumes T so be some sort of floating point format (float, double, simd, ...)
+// -
 
 template<class T>
 void rsImageProcessor<T>::sineShape(rsImage<T>& img)
