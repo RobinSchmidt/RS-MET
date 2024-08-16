@@ -24,6 +24,9 @@ public:
   static void invert(rsImage<T>& img);
 
   /** Normalizes the range of the pixel values to be 0..1. */
+  static void scaleBrightness(rsImage<T>& img, T scaler);
+
+  /** Normalizes the range of the pixel values to be 0..1. */
   static void normalize(rsImage<T>& img);
 
   /** Faster but less numerically precise implementation of normalization. */

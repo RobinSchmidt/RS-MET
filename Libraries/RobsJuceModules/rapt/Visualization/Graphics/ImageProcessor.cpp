@@ -15,6 +15,12 @@ void rsImageProcessor<T>::invert(rsImage<T>& img)
 }
 
 template<class T>
+void rsImageProcessor<T>::scaleBrightness(rsImage<T>& img, T scaler)
+{
+  rsArrayTools::scale(img.getPixelPointer(), img.getNumPixels(), scaler);
+}
+
+template<class T>
 void rsImageProcessor<T>::normalize(rsImage<T>& img)
 {
   T* p = img.getPixelPointer(0, 0);

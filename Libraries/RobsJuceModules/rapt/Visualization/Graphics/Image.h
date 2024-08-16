@@ -105,14 +105,15 @@ public:
   inline int getLineStrideInBytes() const { return width*sizeof(TPix); }
 
   /** Returns a pointer to the pixel at the specified location. */
-  inline TPix* getPixelPointer(int x, int y) const 
+  inline TPix* getPixelPointer(int x = 0, int y = 0) const 
   { 
     //return &data[y*width+x]; 
     const TPix* d = data.data();
     return (TPix*) (d + y*width+x);  // Dirty! Casting away const! 
   }
-  // Make function non-const. We allow caller to write the pixels. That's the intention
-  // maybe use operator (x, y) instead of function..., but the operator should return a reference
+  // -Make function non-const. We allow caller to write the pixels. That's the intention
+  //  maybe use operator (x, y) instead of function..., but the operator should return a reference.
+  // -Make x,y parameters optional, defaulting to 0
 
   /** Returns the color of the pixel at (x,y). */
   inline TPix getPixelColor(int x, int y) const { return data[y*width+x]; }
