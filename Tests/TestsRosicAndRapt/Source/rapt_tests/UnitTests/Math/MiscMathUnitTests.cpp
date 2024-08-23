@@ -895,6 +895,7 @@ template<class T>
 rsFraction<T> rsTrunc(const rsFraction<T>& x)
 {
   return x.getNumerator() / x.getDenominator();
+  // Trunction is just integer division, i.e. floor-division
 }
 
 bool testFraction()  // maybe move up

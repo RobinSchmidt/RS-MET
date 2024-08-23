@@ -48,6 +48,17 @@ public:
   // should keep it.
 
 
+  // These need tests:
+  bool isZero()     const { return num == T(0); }
+  bool isPositive() const { return num >  T(0); }
+  bool isNegative() const { return num <  T(0); }
+  bool isInteger()  const { return den == T(1); }
+  
+  // isInteger works because we always keep the representation canonical.
+
+  // ToDo: isNonNegative, isNonPositive (using <= and >= operators on num), isOne
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Arithmetic operators
 
@@ -103,14 +114,17 @@ protected:
 
   /** Reduces to lowest terms and ensures that denominator is nonnegative. */
   void canonicalize() { reduce(); if(den < 0) { num = -num; den = -den; }  }
+  // Actually, the denominator is supposed to be positive and not only "nonnegative". However,
+  // this function here really does only ensure nonnegativity, so the documentation is actually
+  // accurate. That the denominator is nonzero must be ensured elsewhere.
 
-
-
-  T num, den;  // Numerator and denominator (they are always kept canonical)
+  /** Numerator and denominator. They are always kept canonical, i.e. in reduced form and with 
+  minus sign in numerator if the number is negative. */
+  T num, den;
 
 };
 
-// operators for integer left argument:
+// Operators for integer left argument:
 template<class T>
 rsFraction<T> operator+(const T& i, const rsFraction<T>& r)
 { return rsFraction<T>(i * r.getDenominator() + r.getNumerator(), r.getDenominator()); }
@@ -132,7 +146,8 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 // -Implement functions for truncation, floor, ceiling, rounding. Maybe as free functions rsTrunc, 
 //  rsFloor, rsCeil, rsRound. I think, truncation can simply be done by returning num / den, i.e. 
 //  doing integer division. See also Basics/BasicFunctions.h. There are the fallback versions for 
-//  float, double, etc. We should implement explicit specializations for rsFraction here.
+//  float, double, etc. We should implement explicit specializations for rsFraction here. There's
+//  some prototype code in the unit test already which may be dragged over here.
 // -Maybe implement rsPow - at least for integer exponents
 // -Maybe use algorithms for the arithmetic operators that make overflow less likely (divide by gcd 
 //  before computing products, use lcm in + and - instead of just computing products, etc.).
