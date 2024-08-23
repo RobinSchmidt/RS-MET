@@ -49,14 +49,15 @@ public:
 
 
   // These need tests:
-  bool isZero()     const { return num == T(0); }
-  bool isPositive() const { return num >  T(0); }
-  bool isNegative() const { return num <  T(0); }
-  bool isInteger()  const { return den == T(1); }
-  
-  // isInteger works because we always keep the representation canonical.
+  bool isZero()        const { return num == T(0); }
+  bool isPositive()    const { return num >  T(0); }
+  bool isNegative()    const { return num <  T(0); }
+  bool isNonPositive() const { return num <= T(0); }
+  bool isNonNegative() const { return num >= T(0); }
+  bool isInteger()     const { return den == T(1); }
 
-  // ToDo: isNonNegative, isNonPositive (using <= and >= operators on num), isOne
+  // isInteger works because we always keep the representation canonical.
+  // ToDo:  isOne
 
 
   //-----------------------------------------------------------------------------------------------

@@ -898,6 +898,22 @@ rsFraction<T> rsTrunc(const rsFraction<T>& x)
   // Trunction is just integer division, i.e. floor-division
 }
 
+template<class T>
+rsFraction<T> rsFloor(const rsFraction<T>& x)
+{
+  if(x.isInteger())       // Integers stay as is
+    return x;
+  if(x.isNonNegative())   // Non-negative fractions are truncated
+    return rsTrunc(x);
+  return rsTrunc(x) - 1;  // Negative fractions need a -1 after truncation
+
+  // ToDo: Optimize - maybe use:
+  // return rsFraction<T>(x.getNumerator() / x.getDenominator() - 1, 1);
+  // for the last case. This avoids the subtraction of fractions (which is expensive) and uses only
+  // subtraction of integers.
+}
+// Needs test
+
 bool testFraction()  // maybe move up
 {
   bool ok = true;
