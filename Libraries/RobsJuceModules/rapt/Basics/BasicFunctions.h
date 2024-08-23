@@ -41,8 +41,8 @@ template<class T> inline T rsUnityValue(T /*value*/) { return T(1); }
 template<class T> inline T rsZeroValue( T /*value*/) { return T(0); }
 
 /** Turns a given integer constant into another target type T using a value from that target type
-as prototype. It is used, for example, to convert an integer into a modular integer. The prototype
-value is used to copy the modulus from the prototype into the result. */
+as prototype. It is used, for example, to convert an integer into a modular integer. in this case, 
+the prototype value is used to copy the modulus from the prototype into the result. */
 template<class T> inline T rsIntValue(int value, T targetTemplate) { return T(value); }
 
 
@@ -99,6 +99,7 @@ template<class T> inline T rsTan(  T x) { return std::tan(  x); }
 template<class T> inline T rsFloor(T x) { return std::floor(x); }
 template<class T> inline T rsCeil( T x) { return std::ceil( x); }
 template<class T> inline T rsRound(T x) { return std::round(x); }
+//template<class T> inline T rsTrunc(T x) { return std::trunc(x); }
 //template<class T> inline T rsSinh( T x) { return std::sinh( x); }
 //template<class T> inline T rsCosh( T x) { return std::cosh( x); }
 //template<class T> inline T rsTanh( T x) { return std::tanh( x); }
@@ -124,6 +125,7 @@ template<class T> inline T rsAtan2(T y, T x) { return std::atan2(y, x); }
 // -add more, see:
 //  https://en.cppreference.com/w/cpp/header/cmath
 //  https://en.cppreference.com/w/cpp/numeric/special_functions (C++17)
+//  https://www.programiz.com/cpp-programming/library-function/cmath/trunc
 // -wrap and use modf, where appropriate - maybe it optimizes the splitting into int/frac
 // -maybe take the arguments by const reference
 

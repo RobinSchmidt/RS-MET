@@ -4,7 +4,10 @@
 /** Class for representing fractions a.k.a. rational numbers, i.e. ratios of two integers. 
 Numerator and denominator are kept as signed integers "num", "den". On construction and in 
 arithmetic operations, fractions are always put into a canonical representation which is a 
-reduced form where the minus sign (if any) is put into the numerator. */
+reduced form where the minus sign (if any) is put into the numerator. 
+
+
+ToDo: document what happens when the user tries to create a fraction with zero as denominator. */
 
 template<class T>  // T should be a signed int type
 class rsFraction
@@ -18,7 +21,9 @@ public:
 
   rsFraction(T numerator = T(0), T denominator = T(1)) : num(numerator), den(denominator)
   { 
-    canonicalize(); 
+    canonicalize();
+    // ToDo: 
+    // -Maybe do a static assert to make sure that T is a signed integer type.
   }
 
 
@@ -46,10 +51,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Arithmetic operators
 
-  // unary plus and minus:
+  // Unary plus and minus:
   rsFraction operator+() const { return rsFraction(+num, den); }
   rsFraction operator-() const { return rsFraction(-num, den); }
-  // optimization: these may avoid calling canonicalize()
+  // ToDo: Optimization: these may avoid the call to canonicalize() in the constructor. Maybe have a 
+  // private factory function that bypasses the call to canonicalize.
 
   // +,-,*,/ where both arguments are fractions:
   rsFraction operator+(const rsFraction& b) const { return rsFraction(num*b.den + b.num*den, den * b.den); }
@@ -100,7 +106,7 @@ protected:
 
 
 
-  T num, den;  // numerator and denominator (they are always kept canonical)
+  T num, den;  // Numerator and denominator (they are always kept canonical)
 
 };
 
@@ -123,6 +129,11 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 
 
 // ToDo:
+// -Implement functions for truncation, floor, ceiling, rounding. Maybe as free functions rsTrunc, 
+//  rsFloor, rsCeil, rsRound. I think, truncation can simply be done by returning num / den, i.e. 
+//  doing integer division. See also Basics/BasicFunctions.h. There are the fallback versions for 
+//  float, double, etc. We should implement explicit specializations for rsFraction here.
+// -Maybe implement rsPow - at least for integer exponents
 // -Maybe use algorithms for the arithmetic operators that make overflow less likely (divide by gcd 
 //  before computing products, use lcm in + and - instead of just computing products, etc.).
 //  I think addition of a/b + c/d could be like (2 variants):
@@ -169,6 +180,7 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 //  experiments in R&D), naive (for reference in unit tests), etc. Or maybe overflow shouldn't be 
 //  interpreted as inf? Maybe +-inf should only be the result of dividing +-n by +-0 for any finite
 //  n. We'll see...
+// -Maybe integrate some stuff that deals with continued fractions - see the unit test
 //  
 
 // Notes:

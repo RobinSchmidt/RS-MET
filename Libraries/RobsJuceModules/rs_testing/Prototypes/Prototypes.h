@@ -2341,7 +2341,7 @@ rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
 // maybe move into class rsContinuedFractionGenerator...maybe as static method
 // ..but i don't think that this continued fraction stuff should go into rsFraction - it's stuff
 // on top of it
-// -note the the convegents are not eqaul to the best approximants. there's some additional stuff
+// -note the the convergents are not equal to the best approximants. there's some additional stuff
 //  that needs to be done - maybe implement that in a function rsRationalApproximant:
 //  https://en.wikipedia.org/wiki/Continued_fraction#Best_rational_approximations
 //
@@ -2532,7 +2532,7 @@ public:
   int getNumElements() const { return (int) elements.size(); }
   // Maybe rename to getSize() to match rsMatrix ...but maybe it's intentional to not match it 
   // because for a sparse matrix, the notion of "size" is a bit ambiguous because the number of 
-  // stored elements is not predetermined?.
+  // *stored* elements is not predetermined?.
 
   int getNumRows() const { return numRows; }
 
@@ -2563,8 +2563,10 @@ public:
         D.set(elements[k].i, elements[k].j, elements[k].value);
     return D;
   }
-  // maybe this should return a vector instead of a sparse matrix, maybe make a function that 
-  // splits A into diagonal and non-diagonal at once: splitOutDiagonalPart(Vec& D, Mat& N)
+  // Maybe this should return a vector instead of a sparse matrix, maybe make a function that 
+  // splits A into diagonal and non-diagonal at once: splitOutDiagonalPart(Vec& D, Mat& N).
+  // Document use cases of the A = D + N decomposition. I think, it's used in interation methods
+  // like Gauss-Seidel, Jacobi, SOR, etc.
 
   /** Returns the diagonal part N of this matrix A, such that A = D + N (where D is the 
   diagonal part). */
@@ -2600,9 +2602,11 @@ public:
   }
   // todo:
   // -implement sortElements
-  // -maybe rename to insertFastUnsafe or appendFastAndUnsafe
+  // -maybe rename to insertFastUnsafe or appendFastAndUnsafe...maybe captitalize the UNSAFE
   // -add a method isConsistent() which can be used by client code to check object consistency 
   //  after using fast and usafe methods to build a matrix
+  // -explain in more detail, why it might be impractical in certain situations to build a matrix
+  //  using the safe methods - how much worse is it efficiency-wise, etc.
 
   void setShape(int newNumRows, int newNumColumns)
   {
@@ -2615,6 +2619,7 @@ public:
       if(elements[k].i >= numRows || elements[k].j >= numRows) {
         rsRemove(elements, k);
         k--;  }}
+    // Maybe factor this out into a function cropToShape() or something
   }
 
   /** Sets the element at position (i,j) to the given new value. This may lead to insertion of a 
@@ -2640,7 +2645,7 @@ public:
   void sortElements()
   {
     std::sort(elements.begin(), elements.end());
-    //RAPT::rsHeapSort(&elements[0], getNumElements()); // linker error
+    //RAPT::rsHeapSort(&elements[0], getNumElements()); // linker error - why?
   }
 
   /** Transposes this matrix in place. */
@@ -2654,6 +2659,11 @@ public:
       elements[k].i = elements[k].j;
       elements[k].j = tmp;  }
     sortElements();
+    // Maybe make the function shorter by using rsSwap or std::swap like:
+    //
+    // rsSwap(numRows, numCols);
+    // for(size_t k = 0; k < elements.size(); k++)
+    //   rsSwap(elements[k].i, elements[k].j);
   }
 
 
