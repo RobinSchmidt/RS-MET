@@ -995,7 +995,18 @@ bool testFraction()  // maybe move up
   ok &= rsFloor(R(-39, 10)) == R(-4,1);   // floor(-39/10) = -4
   ok &= rsFloor(R(-40, 10)) == R(-4,1);   // floor(-40/10) = -4
 
-  // ToDo: test ceil/round
+  ok &= rsCeil( R( 29, 10)) == R( 3,1);   // ceil(  29/10) =  3
+  ok &= rsCeil( R( 30, 10)) == R( 3,1);   // ceil(  30/10) =  3
+  ok &= rsCeil( R( 31, 10)) == R( 4,1);   // ceil(  31/10) =  4
+  ok &= rsCeil( R( 39, 10)) == R( 4,1);   // ceil(  39/10) =  4
+  ok &= rsCeil( R( 40, 10)) == R( 4,1);   // ceil(  40/10) =  4
+  ok &= rsCeil( R(-29, 10)) == R(-2,1);   // ceil( -29/10) = -2
+  ok &= rsCeil( R(-30, 10)) == R(-3,1);   // ceil( -30/10) = -3
+  ok &= rsCeil( R(-31, 10)) == R(-3,1);   // ceil( -31/10) = -3
+  ok &= rsCeil( R(-39, 10)) == R(-3,1);   // ceil( -39/10) = -3
+  ok &= rsCeil( R(-40, 10)) == R(-4,1);   // ceil( -40/10) = -4
+
+  // ToDo: test round
 
 
   // Test using vectors and matrices of rational numbers
