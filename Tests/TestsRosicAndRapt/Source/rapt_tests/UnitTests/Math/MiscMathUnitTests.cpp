@@ -914,6 +914,18 @@ rsFraction<T> rsFloor(const rsFraction<T>& x)
 }
 // Needs test
 
+template<class T>
+rsFraction<T> rsCeil(const rsFraction<T>& x)
+{
+  if(x.isInteger())
+    return x;
+  if(x.isNonPositive())
+    return rsTrunc(x);
+  return rsTrunc(x) + 1;
+}
+
+
+
 bool testFraction()  // maybe move up
 {
   bool ok = true;
@@ -960,7 +972,7 @@ bool testFraction()  // maybe move up
   ok &= !(R(3,5) >= R(4,5));
   // are all cases covered? or are more tests needed?
 
-  // Test floor/ceil/round/trunc:
+  // Test trunc/floor/ceil/round:
   ok &= rsTrunc(R( 29, 10)) == R( 2,1);   // trunc( 29/10) =  2
   ok &= rsTrunc(R( 30, 10)) == R( 3,1);   // trunc( 30/10) =  3
   ok &= rsTrunc(R( 31, 10)) == R( 3,1);   // trunc( 31/10) =  3
@@ -973,7 +985,19 @@ bool testFraction()  // maybe move up
   ok &= rsTrunc(R(-39, 10)) == R(-3,1);   // trunc(-39/10) = -3
   ok &= rsTrunc(R(-40, 10)) == R(-4,1);   // trunc(-40/10) = -4
 
-  // ...
+  ok &= rsFloor(R( 29, 10)) == R( 2,1);   // floor( 29/10) =  2
+  ok &= rsFloor(R( 30, 10)) == R( 3,1);   // floor( 30/10) =  3
+  ok &= rsFloor(R( 31, 10)) == R( 3,1);   // floor( 31/10) =  3
+  ok &= rsFloor(R( 39, 10)) == R( 3,1);   // floor( 39/10) =  3
+  ok &= rsFloor(R( 40, 10)) == R( 4,1);   // floor( 40/10) =  4
+
+  ok &= rsFloor(R(-29, 10)) == R(-3,1);   // floor(-29/10) = -3
+  ok &= rsFloor(R(-30, 10)) == R(-3,1);   // floor(-30/10) = -3
+  ok &= rsFloor(R(-31, 10)) == R(-4,1);   // floor(-31/10) = -4
+  ok &= rsFloor(R(-39, 10)) == R(-4,1);   // floor(-39/10) = -4
+  ok &= rsFloor(R(-40, 10)) == R(-4,1);   // floor(-40/10) = -4
+
+  // ToDo: test ceil/round
 
 
   // Test using vectors and matrices of rational numbers
