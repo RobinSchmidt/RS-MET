@@ -978,7 +978,6 @@ bool testFraction()  // maybe move up
   ok &= rsTrunc(R( 31, 10)) == R( 3,1);   // trunc( 31/10) =  3
   ok &= rsTrunc(R( 39, 10)) == R( 3,1);   // trunc( 39/10) =  3
   ok &= rsTrunc(R( 40, 10)) == R( 4,1);   // trunc( 40/10) =  4
-
   ok &= rsTrunc(R(-29, 10)) == R(-2,1);   // trunc(-29/10) = -2
   ok &= rsTrunc(R(-30, 10)) == R(-3,1);   // trunc(-30/10) = -3
   ok &= rsTrunc(R(-31, 10)) == R(-3,1);   // trunc(-31/10) = -3
@@ -990,7 +989,6 @@ bool testFraction()  // maybe move up
   ok &= rsFloor(R( 31, 10)) == R( 3,1);   // floor( 31/10) =  3
   ok &= rsFloor(R( 39, 10)) == R( 3,1);   // floor( 39/10) =  3
   ok &= rsFloor(R( 40, 10)) == R( 4,1);   // floor( 40/10) =  4
-
   ok &= rsFloor(R(-29, 10)) == R(-3,1);   // floor(-29/10) = -3
   ok &= rsFloor(R(-30, 10)) == R(-3,1);   // floor(-30/10) = -3
   ok &= rsFloor(R(-31, 10)) == R(-4,1);   // floor(-31/10) = -4
