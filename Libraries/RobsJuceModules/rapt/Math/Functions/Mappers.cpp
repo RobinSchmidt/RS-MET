@@ -88,4 +88,12 @@ Ideas:
  (f(0.25) - 0.5)^2 + (f(0.75) - 2.0)^2. There is some experiment in the TestRosicAndRapt project or
  maybe in the research codebase?
 
+
+
+
+https://www.youtube.com/watch?v=6tC5GJLCIlo  How to stretch a colormap to infinity?
+-Very useful general for designing functions with ceratin desired properties in the context of
+ creating colormaps for an unbounded input range - but the ideas may be useful for parameter
+ mappings as well
+
 */

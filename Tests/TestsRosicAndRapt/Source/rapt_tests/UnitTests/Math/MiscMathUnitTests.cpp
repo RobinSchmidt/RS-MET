@@ -912,7 +912,6 @@ rsFraction<T> rsFloor(const rsFraction<T>& x)
   // for the last case. This avoids the subtraction of fractions (which is expensive) and uses only
   // subtraction of integers.
 }
-// Needs test
 
 template<class T>
 rsFraction<T> rsCeil(const rsFraction<T>& x)
