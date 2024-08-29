@@ -81,7 +81,7 @@ inline T eigenDiscriminant2x2(T a, T b, T c, T d)
 {
   return a*a + T(4)*b*c - T(2)*a*d + d*d;
 }
-// this expression occurs in all the square-roots in the functions below - it discriminates between
+// This expression occurs in all the square-roots in the functions below - it discriminates between
 // real and complex eigenvalues, when the coeffs are real - dunno, if it's useful to have this 
 // function - if so, maybe add it to rsLinearAlgebra
 
@@ -96,6 +96,8 @@ T rsLinearAlgebra::eigenvalue2x2_2(T a, T b, T c, T d)
 {
   return T(0.5) * (a + d + sqrt(a*a + T(4)*b*c - T(2)*a*d + d*d));
 }
+// These two functions use the charactersitic polynomial to compute the eigenvalues. Maybe we could
+// also use det(A) = v1 * v1, tr(A) = v1 + v1. Maybe that would give simpler formulas?
 
 template<class T>
 void rsLinearAlgebra::eigenvector2x2_1(T a, T b, T c, T d, T* vx, T* vy, bool normalize)

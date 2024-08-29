@@ -1005,7 +1005,7 @@ bool testFraction()  // maybe move up
   ok &= rsCeil( R(-39, 10)) == R(-3,1);   // ceil( -39/10) = -3
   ok &= rsCeil( R(-40, 10)) == R(-4,1);   // ceil( -40/10) = -4
 
-  // ToDo: test round
+  // ToDo: implement and test rsRound
 
 
   // Test using vectors and matrices of rational numbers
