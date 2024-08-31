@@ -3979,57 +3979,99 @@ void expGaussBell()
 
 void gaussBellProduct()
 {
-  // The product of two Gaussian bell curves g1(x) = (1/sqrt(2*pi*s1^2)) * exp(-(x-m1)^2/s1^2)
-  // and g2(x) = (1/sqrt(2*pi*s2^2)) * exp(-(x-m2)^2/s2^2) is, up to an overall scaling factor c, 
-  // another Gaussian g(x) = c * (1/sqrt(2*pi*s^2)) * exp(-(x-m)^2/s^2) where:
+  // The product of two Gaussian bell curves y1(x) = (1/sqrt(2*pi*s1^2)) * exp(-(x-m1)^2/s1^2)
+  // and y2(x) = (1/sqrt(2*pi*s2^2)) * exp(-(x-m2)^2/s2^2) is, up to an overall scaling factor c, 
+  // another Gaussian y(x) = c * (1/sqrt(2*pi*s^2)) * exp(-(x-m)^2/s^2) where:
   //
-  //   s^2 = 1 / (1/s1^2 + 1/s2^2)       s is harmonic mean of s1,s2
-  //   m   = (m1/s1^2 + m2/s2^2)*s^2
-  //   c   = 1/sqrt(2*pi*s1^2*s2^2/s^2) * exp(- ((m1-m2)^2*s^2)/(2*s1^2*s2^2) )
+  //   sp^2 = 1 / (1/s1^2 + 1/s2^2)       sp is harmonic mean of s1,s2? Or half of it?
+  //   mp   = (m1/s1^2 + m2/s2^2)*sp^2
+  //   c    = 1/sqrt(2*pi*s1^2*s2^2/sp^2) * exp(- ((m1-m2)^2*sp^2)/(2*s1^2*s2^2) )
   //
-  // We do some plots to demonsterate this
+  // We do some plots to demonsterate this. This factoid is one of things that make the Kalman 
+  // filter work.
 
   using Real = double;
   using Vec  = std::vector<Real>;
 
-  int  N     = 501;
-  Real xMin  = -10;
-  Real xMax  = +20;
-  Real m1    = 2.0;
-  Real s1    = 5.0;
-  Real m2    = 7.0;
-  Real s2    = 3.0;
-
+  // Setup:
+  int  N    = 501;       // Number of samples in plot
+  Real xMin = -20;       // Minimum for x-axis
+  Real xMax = +30;       // Maximum for x-axis
+  Real m1   =  -2.0;     // Mean of 1st Gaussian
+  Real s1   =   5.0;     // Standard deviation of 1st Gaussian
+  Real m2   = +10.0;     // ...same for...
+  Real s2   =   3.0;     // ...2nd Gaussian
 
   // Compute mean, standard variation and scale factor for the product:
-  Real s1_2 = s1*s1;                  // s1^2
-  Real s2_2 = s2*s2;                  // s2^2
-  Real s_2  = 1 / (1/s1_2 + 1/s2_2);  // s^2  maybe rename to sp_2 - p for product
-  Real s = sqrt(s_2);         
-  Real m = (m1/s1_2 + m2/s2_2) * s_2;
+  Real s1_2 = s1*s1;                      // s1^2
+  Real s2_2 = s2*s2;                      // s2^2
+  Real sp_2 = 1 / (1/s1_2 + 1/s2_2);      // sp^2. Variance of the product
+  Real sp = sqrt(sp_2);                   // Standard deviation of product
+  Real mp = (m1/s1_2 + m2/s2_2) * sp_2;   // Mean of the product
+  Real c  = 1/sqrt(2*PI*s1_2*s2_2/sp_2) * exp(-(m1-m2)*(m1-m2)*sp_2 / (2*s1_2*s2_2)); // Scaler
 
-
+  // Create plot data and plot it:
   Vec x = rsRangeLinear(xMin, xMax, N);
-  Vec y1(N), y2(N), y(N);
-
+  Vec y1(N), y2(N), yp(N), y(N);
   for(int n = 0; n < N; n++)
   {
-    y1[n] = rsGauss(x[n], m1, s1);
-    y2[n] = rsGauss(x[n], m2, s2);
-    y[n]  = rsGauss(x[n], m,  s );
+    // The 2 Gaussians:
+    y1[n]  = rsGauss(x[n], m1, s1);
+    y2[n]  = rsGauss(x[n], m2, s2);
 
+    // Their scaled product:
+    yp[n]  = y1[n] * y2[n];
+    yp[n] /= c;
+
+    // Predicted resulting Gaussian:
+    y[n]   = rsGauss(x[n], mp, sp);
   }
+  rsPlotVectorsXY(x, y1, y2, yp, y);
 
 
-  rsPlotVectorsXY(x, y1, y2, y);
-
-  int dummy = 0;
-
-
+  // Observations:
+  //
+  // - Indeed: The product of the two Gaussians gives, up to a scale factor, another Gaussian. If 
+  //   we divide the product by the scale factor, we get another normalized Gaussian that agrees 
+  //   with our predicted Gaussian y[n]. After scaling yp[n] by 1/c, it overdraws y[n] such that 
+  //   the graph looks thicker/weightier than those of y1[n] and y2[n].
+  //
+  //
+  // Notes:
+  // 
+  // - The fact that the product of two Gaussians gives again a (scaled) Gaussian is one of the 
+  //   things that make the Kalman filter work. The Kalman filter is an algorithm that tries to 
+  //   estimate the current state of a system (expressed as state vector) from two bits of 
+  //   information: 
+  //
+  //    (1) A state vector estimate from a previous time step that is advanced using a noisy
+  //        state update rule with known noise covariance matrix.
+  //    (2) A current state measurement that is also subject to noise with known covariance 
+  //        matrix.
+  //
+  //   The Kalman filter combines these two information sources in an optimal way. ...if I 
+  //   understand it correctly, that is. A good introductory explanation (in German) is given here:
+  //   https://www.youtube.com/watch?v=EBjca6tPuO0
+  //
+  // - It's actually a pretty interesting feature of the Gaussian bell shape that multiplying two
+  //   of them gives the same kind of shape. Are there any other functions that behave like tthis?
+  //   Multiplying two Dirac delta spike trains with a common period would also give a new spike 
+  //   train (with period at the lowest common multiple of the two, I think) - which is interesting
+  //   because Gaussians and Dirac spike trains lead also to the same kind of shape after doing a 
+  //   Fourier transform.
+  //
+  //
+  // ToDo:
+  //
+  // - Try to implement the multivariate version of this formula.
+  //
+  // - Try to implementa Kalman filter.
+  //
+  //
   // See:
   // https://math.stackexchange.com/questions/114420/calculate-the-product-of-two-gaussian-pdfs
   // https://en.wikipedia.org/wiki/Normal_distribution
-  // http://www.lucamartino.altervista.org/2003-003.pdf
+  // http://www.lucamartino.altervista.org/2003-003.pdf   Eq. 1 and 2
 }
 
 
