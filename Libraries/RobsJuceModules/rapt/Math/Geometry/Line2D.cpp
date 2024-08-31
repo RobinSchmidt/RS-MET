@@ -11,6 +11,15 @@ void rsLine2D<T>::twoPointToImplicit(T x0, T y0, T x1, T y1, T* A, T* B, T* C, b
     *B *= s;
     *C *= s;
   }
+
+  // ToDo:
+  //
+  // Maybe get rid of the "normalize" flag parameter. Flag parameters are bad practice because it's
+  // unclear on the call site what they mean. Instead, let the function just not normalize the 
+  // result and provide a seperate function for normalization and a function that combines both 
+  // which could be called twoPointToHessNormal(T x0, T y0, T x1, T y1, T* nx, T* ny, T* d)
+  // where n = (nx, ny) is the unit normal vector and d is the distance to the origin. Because an
+  // implicit from with normalized A,B is precisely the Hesse normal form.
 }
 
 template<class T>
@@ -20,11 +29,15 @@ void rsLine2D<T>::reflectPointInLine(T x, T y, T A, T B, T C, T *xr, T *yr)
   *xr = x - A*d;
   *yr = y - B*d;
 
-  // formula taken from:
+  // Formula taken from:
   // https://math.stackexchange.com/questions/1013230/how-to-find-coordinates-of-reflected-point
-  // its also in Salomon's "Computer Graphics...", page 71, Eq. 3.12
+  // Its also in Salomon's "Computer Graphics...", page 71, Eq. 3.12
 
-  // maybe make a version that assumes A^2 + B^2 = 1 so we can get rid of the division
+  // ToDo:
+  //
+  // Maybe make a version that assumes A^2 + B^2 = 1 so we can get rid of the division. Maybe 
+  // rename to reflectPointInImplicitLine and have similar functions for reflections for lines in
+  // other representations
 }
 
 /*

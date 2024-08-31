@@ -114,6 +114,12 @@ https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
  
 -check use of std::list<> in rosic::PolymorphicIntrumentVoice
 
+
+Some more advice:
+https://www.linkedin.com/pulse/what-bad-code-how-write-clean-sultan-mahamud/
+-It recoomends to avoid flag parameters. I use them in a couple of places. Maybe I should try to 
+ change that.
+
 ---------------------------------------------------------------------------------------------------
 general guidelines:
 a good api should be:
