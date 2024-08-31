@@ -4000,18 +4000,28 @@ void gaussBellProduct()
   Real m2    = 7.0;
   Real s2    = 3.0;
 
+
+  // Compute mean, standard variation and scale factor for the product:
+  Real s1_2 = s1*s1;                  // s1^2
+  Real s2_2 = s2*s2;                  // s2^2
+  Real s_2  = 1 / (1/s1_2 + 1/s2_2);  // s^2  maybe rename to sp_2 - p for product
+  Real s = sqrt(s_2);         
+  Real m = (m1/s1_2 + m2/s2_2) * s_2;
+
+
   Vec x = rsRangeLinear(xMin, xMax, N);
-  Vec y1(N), y2(N);
+  Vec y1(N), y2(N), y(N);
 
   for(int n = 0; n < N; n++)
   {
     y1[n] = rsGauss(x[n], m1, s1);
     y2[n] = rsGauss(x[n], m2, s2);
+    y[n]  = rsGauss(x[n], m,  s );
 
   }
 
 
-  rsPlotVectorsXY(x, y1, y2);
+  rsPlotVectorsXY(x, y1, y2, y);
 
   int dummy = 0;
 
