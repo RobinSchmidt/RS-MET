@@ -574,6 +574,8 @@ RS_INLINE double rsFrac(double x)
 RS_INLINE double rsGauss(double x, double mu, double sigma)
 {
   return (1.0 / (rsSqrt(2*PI)*sigma)) * std::exp(-((x-mu)*(x-mu)) / (2*sigma*sigma));
+
+  // ToDo: Use a constant for sqrt(2*PI)
 }
 
 RS_INLINE double rsLogistic(double x, double b)

@@ -3977,6 +3977,51 @@ void expGaussBell()
   plt.plot();
 }
 
+void gaussBellProduct()
+{
+  // The product of two Gaussian bell curves g1(x) = (1/sqrt(2*pi*s1^2)) * exp(-(x-m1)^2/s1^2)
+  // and g2(x) = (1/sqrt(2*pi*s2^2)) * exp(-(x-m2)^2/s2^2) is, up to an overall scaling factor c, 
+  // another Gaussian g(x) = c * (1/sqrt(2*pi*s^2)) * exp(-(x-m)^2/s^2) where:
+  //
+  //   s^2 = 1 / (1/s1^2 + 1/s2^2)       s is harmonic mean of s1,s2
+  //   m   = (m1/s1^2 + m2/s2^2)*s^2
+  //   c   = 1/sqrt(2*pi*s1^2*s2^2/s^2) * exp(- ((m1-m2)^2*s^2)/(2*s1^2*s2^2) )
+  //
+  // We do some plots to demonsterate this
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  int  N     = 501;
+  Real xMin  = -10;
+  Real xMax  = +20;
+  Real m1    = 2.0;
+  Real s1    = 5.0;
+  Real m2    = 7.0;
+  Real s2    = 3.0;
+
+  Vec x = rsRangeLinear(xMin, xMax, N);
+  Vec y1(N), y2(N);
+
+  for(int n = 0; n < N; n++)
+  {
+    y1[n] = rsGauss(x[n], m1, s1);
+    y2[n] = rsGauss(x[n], m2, s2);
+
+  }
+
+
+  rsPlotVectorsXY(x, y1, y2);
+
+  int dummy = 0;
+
+
+  // See:
+  // https://math.stackexchange.com/questions/114420/calculate-the-product-of-two-gaussian-pdfs
+  // https://en.wikipedia.org/wiki/Normal_distribution
+  // http://www.lucamartino.altervista.org/2003-003.pdf
+}
+
 
 void spreadAmounts(double amount, double spread, double* amount1, double *amount2)
 {

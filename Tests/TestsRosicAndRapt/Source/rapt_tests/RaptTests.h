@@ -127,6 +127,7 @@ void ratiosMetallic();
 void sinCosTable();
 void expBipolar();
 void expGaussBell();
+void gaussBellProduct();
 void twoParamRemap();
 void unitIntervalMap();
 void numberTheoreticTrafo();
