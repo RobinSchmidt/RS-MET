@@ -3987,7 +3987,7 @@ void gaussBellProduct()
   //   mp   = (m1/s1^2 + m2/s2^2)*sp^2
   //   c    = 1/sqrt(2*pi*s1^2*s2^2/sp^2) * exp(- ((m1-m2)^2*sp^2)/(2*s1^2*s2^2) )
   //
-  // We do some plots to demonsterate this. This factoid is one of things that make the Kalman 
+  // We do some plots to demonstrate this. This factoid is one of things that make the Kalman 
   // filter work.
 
   using Real = double;
