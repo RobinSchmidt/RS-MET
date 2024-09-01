@@ -94,7 +94,7 @@ inline void rsPlotVectors(
 {
   // make a function that can take more vectors...maybe a vector of vectors?
   GNUPlotter plt;
-  plt.setToDarkMode();
+  //plt.setToDarkMode();
   if(v0.size() > 0) plt.addDataArrays((int) v0.size(), &v0[0]);
   if(v1.size() > 0) plt.addDataArrays((int) v1.size(), &v1[0]);
   if(v2.size() > 0) plt.addDataArrays((int) v2.size(), &v2[0]);
