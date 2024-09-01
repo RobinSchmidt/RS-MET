@@ -155,6 +155,12 @@ public:
 
 };
 
+template<class T>
+rsVector2D<T> rsZeroValue(rsVector2D<T> value)
+{ 
+  return rsVector2D<T>(0,0);
+}
+
 /** Multiplies a number and a vector. We need to define this operator outside the class because the 
 left operand is not of class rsVector2D (but of some real number type). We use the fact that 
 number*vector == vector*number to compute the result.  */

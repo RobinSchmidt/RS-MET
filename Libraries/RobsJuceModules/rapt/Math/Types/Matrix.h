@@ -118,6 +118,7 @@ public:
   // n = 0.5. What about n = -1? Would that be the inverse matrix?
   // What about the matrix exponential? And maybe sine and cosine, too? Maybe even logarithm? See
   // the code for geometric algebra in the Research repo for possible algorithms.
+  // Maybe move into a free function rsPow - or have both
 
 
   //-----------------------------------------------------------------------------------------------
@@ -233,12 +234,28 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
   return rsMatrix2x2<T>(s*A.a, s*A.b, s*A.c, s*A.d);
 }
 
+template<class T>
+rsMatrix2x2<T> rsZeroValue(rsMatrix2x2<T> value)
+{ 
+  return rsMatrix2x2<T>::zero();
+}
+
+template<class T>
+rsMatrix2x2<T> rsUnityValue(rsMatrix2x2<T> value)
+{ 
+  return rsMatrix2x2<T>::identity();
+}
+
+
 // ToDo: 
 // -Implement matrix exponential for 2x2 matrices as free function rsExp. If A is invertible, use
 //  the formula based on diagonalization. If it isn't...dunno...maybe use Taylor expansion similar
 //  to the geometric algebra code in the research codebase? Or maybe Jordan normal form? See also
 //  https://www.youtube.com/watch?v=Iz7PSlTpjyI -> exp(tr(A)) = det(exp(A)) -> verify 
 //  experimentally. also: tr(A) = sum of eigenvalues, det(A) = product of eigenvalues
+// -About Putzer algorithm (German): https://www.youtube.com/watch?v=zUcwmGWh2UA
+//  https://de.wikipedia.org/wiki/Putzer-Algorithmus
+//  https://proofwiki.org/wiki/Putzer_Algorithm
 
 //=================================================================================================
 
