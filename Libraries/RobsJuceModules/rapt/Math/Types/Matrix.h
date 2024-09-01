@@ -75,6 +75,10 @@ public:
   // -Implement a getEigenSystem() function that computes both eigenvalues and -vectors at once, 
   //  avoiding redundant calculations. Maybe also getEigenValues, getEigenVectors
 
+
+  /** Returns the transpose of this matrix. */
+  rsMatrix2x2<T> getTranspose() const { return rsMatrix2x2<T>(a, c, b, d); }
+
   /** Returns the inverse of this matrix. */
   rsMatrix2x2<T> getInverse() const
   { T D = getDeterminant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
@@ -235,17 +239,28 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 }
 
 template<class T>
-rsMatrix2x2<T> rsZeroValue(rsMatrix2x2<T> value)
+rsMatrix2x2<T> rsZeroValue(rsMatrix2x2<T> A)
 { 
   return rsMatrix2x2<T>::zero();
 }
 
 template<class T>
-rsMatrix2x2<T> rsUnityValue(rsMatrix2x2<T> value)
+rsMatrix2x2<T> rsUnityValue(rsMatrix2x2<T> A)
 { 
   return rsMatrix2x2<T>::identity();
 }
 
+template<class T>
+rsMatrix2x2<T> rsTrans(rsMatrix2x2<T> A)
+{ 
+  return A.getTranspose();
+}
+
+template<class T>
+rsMatrix2x2<T> rsInv(rsMatrix2x2<T> A)
+{ 
+  return A.getInverse();
+}
 
 // ToDo: 
 // -Implement matrix exponential for 2x2 matrices as free function rsExp. If A is invertible, use
