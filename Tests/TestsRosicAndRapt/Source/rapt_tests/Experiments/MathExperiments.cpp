@@ -4036,6 +4036,9 @@ void gaussBellProduct()
   //   with our predicted Gaussian y[n]. After scaling yp[n] by 1/c, it overdraws y[n] such that 
   //   the graph looks thicker/weightier than those of y1[n] and y2[n].
   //
+  // - The product distribution seems to tend to be narrower than each of the factors. Maybe this
+  //   is what the Kalman filter exploits? It reduces noise by narrowing its distribution?
+  //
   //
   // Notes:
   // 
@@ -4066,6 +4069,8 @@ void gaussBellProduct()
   // - Try to implement the multivariate version of this formula.
   //
   // - Try to implementa Kalman filter.
+  //
+  // - Figure out, how it generalizes to a product of 3 or more Gaussians.
   //
   //
   // See:
