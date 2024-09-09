@@ -417,7 +417,8 @@ public:
     return areSameShape(*this, rhs)
       && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
   }
-
+  // Maybe use the equals function to mean exactly equal and have another function isCloseTo for
+  // comparison with tolerance.
 
   /** Returns true, iff this matrix has the given shape. */
   bool hasShape(int numRows, int numCols) const
@@ -1205,7 +1206,9 @@ public:
     E.setToIdentity(prototype); 
     return E; 
   }
-  // The prototype is needed for matrices with T = rsModularInteger
+  // The prototype is needed for matrices with T = rsModularInteger. But then we don't seem to need
+  // the size anymore because we can pull it out of the prototype. Ah - no - the prototype is for
+  // the elements.
 
   /** Creates a diagonal matrix of given size with all diagonal values set to d. */
   static rsMatrix<T, V> diag(int size, const T& d)
