@@ -103,7 +103,13 @@ class rsNoiseGenerator2 : public rsNoiseGenerator<T>
 
 public:
 
-  inline void setOrder(unsigned long newOrder) { order = newOrder;  updateCoeffs();}
+  inline void setOrder(unsigned long newOrder) 
+  { 
+    rsAssert(newOrder > 0);
+    order = newOrder;
+    updateCoeffs();
+  }
+  // maybe assert that newOrder > 0
 
   inline void setRange(T newMin, T newMax) { min = newMin; max = newMax; updateCoeffs(); }
 
