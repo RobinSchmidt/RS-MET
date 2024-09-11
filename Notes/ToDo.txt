@@ -1,3 +1,13 @@
+Clean up the Git Repo:
+-The file Documentation/RAPT/LaTeX/UserManual/UserManual.pdf was accidentally added to the repo at 
+ some point early on. It should never have been tracked, though. When learning Git, I made mistakes.
+ It needs to be removed and purged from the history. I don't know Git well enough how to do that, 
+ though. It's probably a dangerous thing to do. 
+-Find out which files were deleted in the history of this repo. There might be some of them which 
+ should also be purged from history. 
+-But before doing such a history clean-up, definitely create a backup archive of the repo and store 
+ it in some safe place!
+
 Create github projects for:
 DSP, DAW, rosic, Plugin Framework, Documentation, Library organization
 DSP: cols: synthesis, analysis, effects, modulation, 
