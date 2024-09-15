@@ -457,7 +457,7 @@ C(curve) = (curve - 50)/100
 D(curve) = (1/16) - curve/400 + curve^2 / (4*10^4)
 
 ...maybe try to create wvaeshaping curves based on the idea of boosting low amplitude samples and
-leaving high amplitude samples alone. The boost should be describen as a slope-at-the-origin 
+leaving high amplitude samples alone. The boost should be described as a slope-at-the-origin 
 parameter. Maybe use a function family with a couple of parameters and find the parameters according
 to the requirements:  f(0) = 0, f(1)  = 1, f'(0) = s  where s is the slope-at-the origin. Maybe use
 optional other contstarints like f'(1) = 0 or f'(1) = 1. Maybe require f''(0) = 0. Experiment a bit.
@@ -476,3 +476,12 @@ Stereoization:
 -Add scaled difference to side: side += amount * diff
 -Convert back to left/right: L = M+S, R = L-S  (verify!)
 -It should be mono-compatible because we only modify the side signal. The mid signal stays as is.
+
+-------------------------------------------------------------------------------
+Waveform Orthogonalization:
+
+-Take a bunch of single cycle waveforms and perform Gram-Schmidt orthogonalization on them
+-The resulting can be used to mix the exact same set of waveforms as the originla ones - but 
+ possibly in a more intuitive way due to their orthogonality (i.e. non-interference)
+-Maybe the original waveforms could be saws and square waves at different frequencies (i.e. 
+ multiples of a fundamental)
