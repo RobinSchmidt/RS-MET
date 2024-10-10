@@ -180,7 +180,7 @@ Ideas for finding global minima without getting trapped in local minima:
  https://www.desmos.com/calculator/le5jjxeg97
  f  = f(x)   = x^2 + 2 * sin(2*pi*x) + 2
  f1 = f'(x)  = 2*x * 2 * 2*pi * cos(2*pi*x)
- f2 = f''(x) = 2 - 2 * 4*pi^2 * sin(2*pi*x)
+ f2 = f''(x) = 2 - 2 * 4*pi^2 * sin(2*pi*x)   -> Verify, if the derivatives are correct with wolfram alpha
  g  = f + a * f * f2 / (b + f1^2)  with  a = 0.7, b = 50
  -> local minima become maxima (good!), local maxima becom minima (bad!)
  ...but we can escape those newly created local minima by alternating between minimizing the 
@@ -196,7 +196,11 @@ Ideas for finding global minima without getting trapped in local minima:
  f''  = 12*x^2 - 18
  g    = f + a * f * f2 / (1 + b * abs(f1)^p)
 
-
 -To generalize to nD, replace f'' by the Laplacian and f' by the length/norm of the gradient. That
  is g = f + a * f * Lap(f) / (b + |grad(f)|^p)  or  g = f + a * f * Lap(f) / (1 + b*|grad(f)|^p).
  Maybe look into image processing operators (Sobel, ..) for inspiration
+
+-Maybe alternate between minimizing f, f', f'', f'''. in nD maybe use the norm of the gradient of 
+ the Laplacian for f'''. Or maybe use iterated norms of gradients, i.e. f' is the norm of the 
+ gradient of f, f'' is the norm of the graienten of f' etc. ...not sure, if that makes any sense...
+ ..oh - no taking the norm already breaks the idea in 1D
