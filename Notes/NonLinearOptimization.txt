@@ -123,3 +123,80 @@ https://en.wikipedia.org/wiki/Trust_region
 
 
 
+---------------------------------------------------------------------------------------------------
+Ideas for finding global minima without getting trapped in local minima:
+
+-Work with a modified cost function that is a smoothed (lowpassed) version of the original cost 
+ function and progressively reduce the amount of smoothing after the minimum of the smoothed version
+ has been found. But the act of finding the lowpassed/smoothed function may be difficult. It can be 
+ expressed as a convolution operator which involves an integral.
+
+-Penalize complex mapping functions with an additional term in the error function. For neural 
+ networks, this might be something like the sum of absolute values of the weights or soemthing like 
+ that. that is called regularization. During optimization, scaled down the regularization term.
+
+-If the cost function is baed on data, maybe use simplified (smoothed) data in the early stages of
+ learning. This is akin to multigrid methods for PDEs where we first solve for a coarse grid, then
+ use a finer grid and interpolate our solution to it, then refine via learning again, etc.
+
+-Use simpler model in early stages of learning and successively complexify the model, e.g. by adding
+ more neurons.
+
+-Simulated annealing: ...
+
+-Downhill simplex algo: ...
+
+-Maybe modify the cost function in some way that adds an artifical slope to points depending on the 
+ total height, i.e. on the value of f(x,y) where (x,y) is a 2D point and f is the cost function. 
+ Let's look at it in 1D first, i.e. consider f(x) as a 1D cost function. We want to modify in such a 
+ way that when f(x) is small, we keep it almost as is and when f(x) is high but f'(x) is low/zero, 
+ we want to add some amount of artificial slope into the direction of the global minimum (or some 
+ lower local minimum). Let's use g(x) = f(x) + a * T[f](x) as the modfied cost function. Maybe T[f] 
+ should be proportional to f(x) to give the modification more weight where f is high. Maybe take as 
+ example: a*x^4 + x^3 - x^2 with a = 3 (tweaking a increases the difference between the global and 
+ local minimum) https://www.desmos.com/calculator/wm2rfgdpvw. It has a local minimum at around 0.3 
+ and a global one around -0.55. Oh - OK - the first thing we need to do is perhaps add an offset to 
+ make it all positive. 0.2 seems to work fine. Or maybe define g(x) to be not the added on term but 
+ rather the modified cost function, i.e. g(x) = f(x) + something  or  
+ g(x) = (1-a)*f(x) + a*something ...i.e. let a be a crossfade parameter...but maybe just adding the 
+ "something" term on top is better than crossfading. The something term could be 
+ T[f] = f * f'' / (1 + b * |f'|^p)  in operator notation. b,p would be adjustable parameters
+
+-In general, we want to craft an operator that takes our cots function f and creates a modified 
+ function g that preserves the location of the global minimum and washes out local minima. We want 
+ to be able to morph between the original cost function/landscape and modified one. When we have 
+ found a minimum of the modified cost, we want to morph back to the original cost while tracking 
+ the minimum.
+
+-In conjunction with momentum, it may not be necessary to completely get rid of local minima. It may 
+ be enough to make them less pronounced such that the "ball" can "roll through" them via its 
+ inertia.
+
+-When we can track the minimum during morph, we may also tolerate some shift of the location of the
+ minimum in the modified function.
+
+-Example in 1D:  https://www.desmos.com/calculator/oow2xttspi
+ https://www.desmos.com/calculator/wlgfskjczt
+ https://www.desmos.com/calculator/le5jjxeg97
+ f  = f(x)   = x^2 + 2 * sin(2*pi*x) + 2
+ f1 = f'(x)  = 2*x * 2 * 2*pi * cos(2*pi*x)
+ f2 = f''(x) = 2 - 2 * 4*pi^2 * sin(2*pi*x)
+ g  = f + a * f * f2 / (b + f1^2)  with  a = 0.7, b = 50
+ -> local minima become maxima (good!), local maxima becom minima (bad!)
+ ...but we can escape those newly created local minima by alternating between minimizing the 
+ original function f and the modified function g. Using
+ g  = f + a * f * f2 / (b + abs(f1))  seems to work better - or maybe not? The artificial maxima 
+ disappear. But there are new minima where the original f is steep. That could also be good for an 
+ alternatination algorithm (that alternates between minimizing f a nd g)
+ https://www.desmos.com/calculator/odb9m9lkdr
+
+-Other example:  https://www.desmos.com/calculator/yn9sustdvt
+ f(x) = x^4 - 9*x^2 + 4*x + 30
+ f'   = 4*x^3 - 18*x + 4
+ f''  = 12*x^2 - 18
+ g    = f + a * f * f2 / (1 + b * abs(f1)^p)
+
+
+-To generalize to nD, replace f'' by the Laplacian and f' by the length/norm of the gradient. That
+ is g = f + a * f * Lap(f) / (b + |grad(f)|^p)  or  g = f + a * f * Lap(f) / (1 + b*|grad(f)|^p).
+ Maybe look into image processing operators (Sobel, ..) for inspiration
