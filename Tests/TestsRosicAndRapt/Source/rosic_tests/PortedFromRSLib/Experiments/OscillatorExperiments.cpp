@@ -454,13 +454,18 @@ void phaseShapingSkew()
 
 void phaseShapingLinFrac()
 {
+  // We use the symmetrized linear fractional mapping function as phase-shaping function for a sine
+  // wave with the goal of shaping it into a waveform that looks similar to a sawtooth wave. With
+  // negative values for the slope parameter, we'll ge an upward saw and with positive ones, a
+  // downward saw.
+
   using Real = double;
   using Vec  = std::vector<Real>;
   using LFI  = rsLinearFractionalInterpolator<Real>;
 
   // User parameters for the plots:
   int   N           = 257;         // Number of samples
-  Real  shapePar    =  0.0;        // 0.0: symmetric (default)
+  Real  shapePar    =  0.0;        // 0.0: symmetric (default) ...may be superfluous
   Real  minSlopePar = -4.0;
   Real  maxSlopePar = +4.0;
   int   numGraphs   =  9;
@@ -472,6 +477,7 @@ void phaseShapingLinFrac()
   {
     for(int n = 0; n < N; n++)
       y[n] = LFI::getNormalizedY(x[n], slopeAt0, slopeAt1, shape);
+    // Try using LFI::symmetricMap. I think, it's simpler and does the same job.
   };
 
   // Helper function to create the phase-shaped sinusoid:
@@ -509,12 +515,19 @@ void phaseShapingLinFrac()
 
   // Observations:
   //
+  // - We can indeed shape the sine into a waveform that looks similar to a sawUp or sawDown wave.
+  //
   // - shapePar does not seem to make a visible difference (verify!)
   //
   //
   // ToDo:
   //
   // - Maybe allow moving the split point around like in phaseShapingCurvesRational().
+  //
+  // - To use this for an oscillator, maybe negate the slope parameter such that positive values
+  //   turn a sine into an upward saw. Maybe write a class SinSawOscLinFrac for this. Maybe use it
+  //   in the bassdrum synth. Or make it a more general PhaseShapeOsc with various options for the
+  //   shaping function.
   //
   //
   // See also: 
