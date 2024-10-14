@@ -467,11 +467,22 @@ void phaseShapingLinFrac()
 
 
   // Helper function to produce the phase-shaping curve:
-  auto createGraph = [](Real* x, Real* y, int N, Real slopeAt0, Real slopeAt1, Real shape = 0.0)
+  auto createPhaseGraph = [](Real* x, Real* y, int N, 
+                             Real slopeAt0, Real slopeAt1, Real shape = 0.0)
   {
     for(int n = 0; n < N; n++)
       y[n] = LFI::getNormalizedY(x[n], slopeAt0, slopeAt1, shape);
   };
+
+  // Helper function to create the phase-shaped sinusoid:
+  auto createShapedSine = [&](Real* x, Real* y, int N,
+    Real slopeAt0, Real slopeAt1, Real shape = 0.0)
+  {
+    createPhaseGraph(x, y, N, slopeAt0, slopeAt1, shape);
+    for(int n = 0; n < N; n++)
+      y[n] = sin(2*PI*y[n]);
+  };
+
 
   // Maybe factor this plot out into its own function:
   Real slopeParInc = (maxSlopePar - minSlopePar) / (numGraphs - 1);
@@ -482,9 +493,12 @@ void phaseShapingLinFrac()
   {
     Real slopePar = minSlopePar + i * slopeParInc;
     Real slope    = pow(2.0, slopePar);
-    createGraph(&x[0], &y[0], N, slope, slope, shapePar);
+
+    // Uncomment one of the two:
+    //createPhaseGraph(&x[0], &y[0], N, slope, slope, shapePar);
+    createShapedSine(&x[0], &y[0], N, slope, slope, shapePar);
+
     plt.addDataArrays(N, &x[0], &y[0]);
-    //int dummy = 0;
   }
   plt.plot();
 
