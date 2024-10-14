@@ -466,13 +466,12 @@ void phaseShapingLinFrac()
   int   numGraphs   =  9;
 
 
-  // Helper function:
+  // Helper function to produce the phase-shaping curve:
   auto createGraph = [](Real* x, Real* y, int N, Real slopeAt0, Real slopeAt1, Real shape = 0.0)
   {
     for(int n = 0; n < N; n++)
       y[n] = LFI::getNormalizedY(x[n], slopeAt0, slopeAt1, shape);
   };
-
 
   // Maybe factor this plot out into its own function:
   Real slopeParInc = (maxSlopePar - minSlopePar) / (numGraphs - 1);
@@ -491,7 +490,22 @@ void phaseShapingLinFrac()
 
   int dummy = 0;
 
-  // See also: phaseShapingCurvesRational(), linearFractionalInterpolation()
+
+
+
+  // Observations:
+  //
+  // - shapePar does not seem to make a visible difference (verify!)
+  //
+  //
+  // ToDo:
+  //
+  // - Maybe allow moving the split point around like in phaseShapingCurvesRational().
+  //
+  //
+  // See also: 
+  //
+  // - linearFractionalInterpolation()
 }
 
 void zeroDelayFeedbackPhaseMod()

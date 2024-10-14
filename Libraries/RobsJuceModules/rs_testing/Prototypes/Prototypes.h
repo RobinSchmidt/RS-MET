@@ -916,7 +916,7 @@ void rsLinearFractionalInterpolator<T>::interpolate(
 //  invalid input data will be detected rather than just potentially go unnoticed and cause a 
 //  quality degradation of some higher level algorithm. In a test/debug environment, we may 
 //  trigger an assert.
-// -Maybe write some unit tests that cover extreme situations, like N = 0,1,2,3, nonomonotonic
+// -Maybe write some unit tests that cover extreme situations, like N = 0,1,2,3, nonmonotonic
 //  data, target slopes of zero, etc.
 // -Maybe make the class instantiable. The idea of using it could be like
 //    rsLinearFractionalInterpolator<float> lfi;
