@@ -98,10 +98,14 @@ protected:
 
 /** An oscillator based on morphing between saw-up/triangle/saw-down waveforms. 
 
-todo: produce info for blep/blamp anti-aliasing, make a DualTriSawOsc - drive that controls two
+todo: Produce info for blep/blamp anti-aliasing, make a DualTriSawOsc - drive that controls two
 TriSaws and allows them to interact - in particular hardsync...or maybe even a TripleTriSawOsc - it
 may be cool to have two independent sync-masters ...or maybe that sync-stuff could even be 
 implemented in liberty
+
+Factor out the code for resetting and updating the phase. It can be re-used in other phasor-based
+oscillators
+
 */
 
 template<class T>
@@ -365,5 +369,36 @@ protected:
 
   T mix = 0.5;
 };
+
+//=================================================================================================
+
+/** UNDER CONSTRUCTION
+
+See phaseShapingLinFrac() in OscillatorExperiments.cpp
+
+*/
+
+/*
+template<class T>
+class rsPhaseShapingOscillator
+{
+
+public:
+
+
+protected:
+
+  // State:
+  T p          = 0;     // current phase in 0..1  maybe rename to phase or pos
+  T inc        = 0;     // phase increment
+
+  // Parameters:
+  T startPhase = 0;
+  T shapeParam = 0;
+
+
+};
+*/
+
 
 #endif
