@@ -146,6 +146,17 @@ Ideas for finding global minima without getting trapped in local minima:
 
 -Downhill simplex algo: ...
 
+-Genetic algo: Pick a number n. Sample f at m = n*(n+1)/2 locations x1,..,xm. Pick those n locations 
+ x1,..,xn with lowest f for the next iteration. Form all the possible different averages of them. 
+ There are n*(n+1)/2 of them - not n^2 because of the symmetry: avg(xi,xj) = avg(xj,xi). 
+ -The n best locations from the previous iteration are inluded as avg(xi,xi) = xi such that we will 
+  never lose the current best estimate in the algo. 
+ -As stated, the algo only includes cross-breeding but no mutation. These could be integrated by 
+  also randomizing. We could add some more offspring than the n*(n+1)/2 for each generation.
+ -We could also think about not using the vectors xi as is inside the crossing by some invertible
+  transformation of them
+
+
 -Maybe modify the cost function in some way that adds an artifical slope to points depending on the 
  total height, i.e. on the value of f(x,y) where (x,y) is a 2D point and f is the cost function. 
  Let's look at it in 1D first, i.e. consider f(x) as a 1D cost function. We want to modify in such a 
@@ -194,7 +205,13 @@ Ideas for finding global minima without getting trapped in local minima:
  f(x) = x^4 - 9*x^2 + 4*x + 30
  f'   = 4*x^3 - 18*x + 4
  f''  = 12*x^2 - 18
- g    = f + a * f * f2 / (1 + b * abs(f1)^p)
+ g    = f + a * f * f2 / (1 + b * |f1|^p)         where |f1| = abs(f1)
+     or f + a * f^p * f2^q / (1 + b * |f1|^r) 
+     or f + a * f^p * f2^q / max(1, |f1|^r)       ..or maybe use a "smoothmax" instead of a max
+
+-A smoothmax function smax(x,y) could be constructed as:
+ smax(x,y) = (1-a)*x + a*y  or  smoothfade(x,y,a) with parameter a computed as:
+ a = smoothstep(x-y) with smoothstep(..) being something like the logistic function
 
 -To generalize to nD, replace f'' by the Laplacian and f' by the length/norm of the gradient. That
  is g = f + a * f * Lap(f) / (b + |grad(f)|^p)  or  g = f + a * f * Lap(f) / (1 + b*|grad(f)|^p).
@@ -203,4 +220,5 @@ Ideas for finding global minima without getting trapped in local minima:
 -Maybe alternate between minimizing f, f', f'', f'''. in nD maybe use the norm of the gradient of 
  the Laplacian for f'''. Or maybe use iterated norms of gradients, i.e. f' is the norm of the 
  gradient of f, f'' is the norm of the graienten of f' etc. ...not sure, if that makes any sense...
- ..oh - no taking the norm already breaks the idea in 1D
+ ..oh - no taking the norm already breaks the idea in 1D. Maybe alternate between the two functions 
+ f and Lap(f)

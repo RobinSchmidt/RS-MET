@@ -284,6 +284,7 @@ https://github.com/reuk/wayverb
 AudioDSPTools, NeuralAmpModeler
 https://github.com/sdatkinson/AudioDSPTools
 https://github.com/sdatkinson/NeuralAmpModelerCore
+-The DSP core of the neural amp modeler that is listed in the "Effects" section
 
 Bungee
 https://github.com/kupix/bungee
@@ -293,7 +294,7 @@ Signalsmith stretch:
 https://github.com/Signalsmith-Audio/signalsmith-stretch
 -FFT based pitch shift / time stretch algorithm
 
-SountTouch
+SoundTouch
 https://github.com/VinMing/soundtouch
 https://codeberg.org/soundtouch/soundtouch.git
 -Time domain pitch shift / time stretch algorithm (granular, PSOLA, I think)
@@ -312,6 +313,12 @@ https://www.sciencedirect.com/science/article/pii/S0955799724000171
 Code of JEPlugins Audio DSP video series:
 https://github.com/je3928/JEPluginsAudioDSP
 
+Dr. Baloney's Audio Converter
+https://github.com/drbaloney/audio-converter/tree/main
+-Resampling library for conversion between common sample rates. 
+-Has push- and pull API.
+-Written in C.
+
 ----------------------------------------------------------------------------------------------------
 Other Libraries
 
@@ -324,7 +331,7 @@ https://github.com/hogliux/farbot
 -Library for thread-sync tasks typical in audio software programming
 
 https://github.com/nothings/stb/
--Single-file public domain (or MIT licensed) libraries for C/C++.
+-Single-file public domain (or MIT licensed) libraries for C/C++ for various tasks.
 -Has image (.png,etc.) read/write, .ttf-rendering
 
 ----------------------------------------------------------------------------------------------------
@@ -360,7 +367,7 @@ Avendish:
 https://github.com/celtera/avendish/
 -Solution to the quadratic glue MxN problem: With M plugin formats and N plugins we need to write 
  and maintain(!) an amount of O(M*N) boilerplate glue code. Avendish claims to solve this 
- maintenance nightmare.
+ maintenance nightmare (I don't know how, though).
 
 
 ----------------------------------------------------------------------------------------------------
