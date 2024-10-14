@@ -122,6 +122,29 @@ https://en.wikipedia.org/wiki/Trust_region
 
 
 
+---------------------------------------------------------------------------------------------------
+Update rules:
+
+-Maybe instead of simple momentum:
+ d_i = (1-m) * g_i  +  m * d_{i-1}
+ where d_i is the update direction at time i and g_i is the gradient and m is the momentum, try a 
+ higher order filter. Maybe as first improvement, use a 1-pole/1-zero filter instead of just a 
+ 1-pole and place the zero at z=-1:
+ d_i = (1-m) * (g_i + g_{i-1})/2  +  m * d_{i-1}
+ This may remove zig-zags with period 2 which are a common obstacle to convergence. More generally,
+ we could use biquad filters. We could also replace the coeffs with matrices to create true MIMO 
+ filters. Maybe the coefficient matrices could be learned/adapted, too. Maybe using a Kalman-filter
+ like algo? The "state" s could be the current value of the cost function and the transition 
+ prediction could be s_{i+1} = s_i + k * d_i  with update rate k and the measurement could be the
+ actual cost function evaluation ...just brainstorming...might be nonsense
+ 
+
+
+ 
+
+
+
+
 
 ---------------------------------------------------------------------------------------------------
 Ideas for finding global minima without getting trapped in local minima:
@@ -155,6 +178,8 @@ Ideas for finding global minima without getting trapped in local minima:
   also randomizing. We could add some more offspring than the n*(n+1)/2 for each generation.
  -We could also think about not using the vectors xi as is inside the crossing by some invertible
   transformation of them
+ -To sample a d-dimensional f, we need of tbe order of k^d samples where k is some desired sampling
+  density.
 
 
 -Maybe modify the cost function in some way that adds an artifical slope to points depending on the 
@@ -222,3 +247,4 @@ Ideas for finding global minima without getting trapped in local minima:
  gradient of f, f'' is the norm of the graienten of f' etc. ...not sure, if that makes any sense...
  ..oh - no taking the norm already breaks the idea in 1D. Maybe alternate between the two functions 
  f and Lap(f)
+
