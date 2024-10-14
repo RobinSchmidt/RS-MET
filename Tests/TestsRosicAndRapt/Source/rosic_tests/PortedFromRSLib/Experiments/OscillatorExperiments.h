@@ -6,9 +6,9 @@ void triSaw();
 
 void phaseShapingCurvePoly4();
 void phaseShapingCurvesRational();
-
 void phaseShaping();
 void phaseShapingSkew();
+void phaseShapingLinFrac();
 void zeroDelayFeedbackPhaseMod();
 
 #endif

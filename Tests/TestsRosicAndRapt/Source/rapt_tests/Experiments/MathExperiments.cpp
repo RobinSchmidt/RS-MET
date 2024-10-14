@@ -4049,6 +4049,7 @@ void gaussBellProduct()
   //
   //    (1) A state vector estimate from a previous time step that is advanced using a noisy
   //        state update rule with known noise covariance matrix.
+  //
   //    (2) A current state measurement that is also subject to noise with known covariance 
   //        matrix.
   //
@@ -4057,7 +4058,7 @@ void gaussBellProduct()
   //   https://www.youtube.com/watch?v=EBjca6tPuO0
   //
   // - It's actually a pretty interesting feature of the Gaussian bell shape that multiplying two
-  //   of them gives the same kind of shape. Are there any other functions that behave like tthis?
+  //   of them gives the same kind of shape. Are there any other functions that behave like this?
   //   Multiplying two Dirac delta spike trains with a common period would also give a new spike 
   //   train (with period at the lowest common multiple of the two, I think) - which is interesting
   //   because Gaussians and Dirac spike trains lead also to the same kind of shape after doing a 
@@ -4068,7 +4069,7 @@ void gaussBellProduct()
   //
   // - Try to implement the multivariate version of this formula.
   //
-  // - Try to implementa Kalman filter.
+  // - Try to implement a Kalman filter.
   //
   // - Figure out, how it generalizes to a product of 3 or more Gaussians.
   //

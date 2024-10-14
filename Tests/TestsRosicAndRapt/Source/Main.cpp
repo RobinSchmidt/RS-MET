@@ -118,11 +118,11 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-  gaussBellProduct();
+  //gaussBellProduct();
   //iteratedNumDiff();
 
   // Interpolation:
-  //linearFractionalInterpolation();
+  //linearFractionalInterpolation();  // aka LinFrac
   //monotonicInterpolation();
   //interpolatingFunction();
 
@@ -329,7 +329,7 @@ int main(int argc, char* argv[])
   ////void stretchPolynomial();             // commented in header
   //monotonicPolynomials();
   //mixedPolynomialRoots();
-  parametricBell();
+  //parametricBell();
   //partialFractionExpansion();
   //partialFractionExpansion2();
   //partialFractionExpansion3();
@@ -378,9 +378,9 @@ int main(int argc, char* argv[])
   //ropewayAlgo();
   //peakPicker();
   //singleSineModel();
-  singleSineCycleWobbles();    // maybe rename - sineFromWub, sineFromWavelet
-  multiSineCycleWobbles();
-  multiHalfCycleWobbles();
+  //singleSineCycleWobbles();    // maybe rename - sineFromWub, sineFromWavelet
+  //multiSineCycleWobbles();
+  //multiHalfCycleWobbles();
   //sineFromDecayingSines();
 
   // Delay:
@@ -499,6 +499,7 @@ int main(int argc, char* argv[])
   //phaseShapingCurvesRational();
   //phaseShaping();
   //phaseShapingSkew();
+  phaseShapingLinFrac();           // stub
   //zeroDelayFeedbackPhaseMod();
 
   // Partial Extraction:
@@ -583,7 +584,7 @@ int main(int argc, char* argv[])
   //sigmoidScaleAndShift();
   //quarticMonotonic();
   //sigmoidPrototypes();
-  sigmoidConvergenceRates();
+  //sigmoidConvergenceRates();
   //sixticPositive();
   //hilbertDistortion();
 

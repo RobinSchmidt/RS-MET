@@ -224,7 +224,10 @@ void phaseShapingCurvesRational()
   //  changing the shape symmetrically. I think, it's because the function here is based on mapping
   //  -1..+1 rather than 0..1 to itself
   // -Try using a symmetrized power function
+  // -Try the symmetrized LinFrac formula
 }
+
+
 
 vector<double> createPhase(int N, double f, double fs)
 {
@@ -447,6 +450,48 @@ void phaseShapingSkew()
   //  looks more like maximal slope is 2 rather than 1? -> figure that out!
 
   int dummy = 0;
+}
+
+void phaseShapingLinFrac()
+{
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using LFI  = rsLinearFractionalInterpolator<Real>;
+
+  // User parameters for the plots:
+  int   N           = 257;         // Number of samples
+  Real  shapePar    =  0.0;        // 0.0: symmetric (default)
+  Real  minSlopePar = -4.0;
+  Real  maxSlopePar = +4.0;
+  int   numGraphs   =  9;
+
+
+  // Helper function:
+  auto createGraph = [](Real* x, Real* y, int N, Real slopeAt0, Real slopeAt1, Real shape = 0.0)
+  {
+    for(int n = 0; n < N; n++)
+      y[n] = LFI::getNormalizedY(x[n], slopeAt0, slopeAt1, shape);
+  };
+
+
+  // Maybe factor this plot out into its own function:
+  Real slopeParInc = (maxSlopePar - minSlopePar) / (numGraphs - 1);
+  Vec  x = rsLinearRangeVector(N, 0.0, 1.0);
+  Vec  y(N);
+  GNUPlotter plt;
+  for(int i = 0; i < numGraphs; i++)
+  {
+    Real slopePar = minSlopePar + i * slopeParInc;
+    Real slope    = pow(2.0, slopePar);
+    createGraph(&x[0], &y[0], N, slope, slope, shapePar);
+    plt.addDataArrays(N, &x[0], &y[0]);
+    //int dummy = 0;
+  }
+  plt.plot();
+
+  int dummy = 0;
+
+  // See also: phaseShapingCurvesRational(), linearFractionalInterpolation()
 }
 
 void zeroDelayFeedbackPhaseMod()
