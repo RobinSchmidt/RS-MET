@@ -494,7 +494,7 @@ int main(int argc, char* argv[])
   //triSawModulator();
 
   // Oscillator:
-  //triSaw();
+  triSaw();
   //phaseShapingCurvePoly4();
   //phaseShapingCurvesRational();
   //phaseShaping();

@@ -22,12 +22,19 @@ double triSaw(double x, double p) // p=0: triangle, p=-0.99: saw down, p=+0.99: 
 
 void triSaw()
 {
+  // Oscillator that moprhs between sawDown/triangle/sawUp. With sinusoidal waveshaping we can also
+  // make it morph between fatSawDown/sine/fatSawUp where "fatSaw" is a variation of the saw that
+  // bulges outward.
+
   double p = -0.5;           // parameter 0: triangle, -1: saw down, +1: saw up
   static const int N = 501;  // number of function values
-  double t[N], y[N];
+  double t[N], y[N], z[N];
   RAPT::rsArrayTools::fillWithRangeLinear(t, N, 0.0, 20.0); 
   for(int n = 0; n < N; n++)
-    y[n] = RAPT::rsTriSaw(t[n], p);
+  {
+    y[n] = RAPT::rsTriSaw(t[n], p); // TriSaw
+    z[n] = sin(0.5*PI * y[n]);      // SinSaw
+  }
 
   // regular triangle:
   //for(int n = 0; n < N; n++)
@@ -42,7 +49,7 @@ void triSaw()
 
   // plot:
   GNUPlotter plt;
-  plt.addDataArrays(N, t, y);
+  plt.addDataArrays(N, t, y, z);
   plt.plot();
 
   int dummy = 0;
@@ -528,6 +535,9 @@ void phaseShapingLinFrac()
   //   turn a sine into an upward saw. Maybe write a class SinSawOscLinFrac for this. Maybe use it
   //   in the bassdrum synth. Or make it a more general PhaseShapeOsc with various options for the
   //   shaping function.
+  //
+  // - Make a morphable SawDown/Sin/SawUp oscillator based on the TriSaw oscillator by applying a
+  //   sinusoidal waveshaper to its output
   //
   //
   // See also: 

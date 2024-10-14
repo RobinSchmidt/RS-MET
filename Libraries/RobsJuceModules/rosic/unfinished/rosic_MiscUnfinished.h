@@ -685,13 +685,18 @@ protected:
 
   std::function<double(double phase)> wave = [](double p)  
   { 
-    return RAPT::rsSin<double>(2*PI*p); 
+    return RAPT::rsSin<double>(2*PI*p);
   };
 };
+
 // ToDo:
-// -Maybe the wavesshape could be determined by a user-defined function using std::function. Maybe
-//  for flexibility, the function should receive the instantaneous phase and additionaly the 
-//  absolute time to (potentially) implement time-varying waveshapes.
+//
+// - Maybe the wavesshape could be determined by a user-defined function using std::function. Maybe
+//   for flexibility, the function should receive the instantaneous phase and additionaly the 
+//   absolute time to (potentially) implement time-varying waveshapes.
+//
+// - Maybe use a sinusoidally shaped TriSaw waveform with parameter -1..+1. See triSaw() 
+//   experiment. Or maybe use a wavetable (in the Waldorf sense). 
 
 
 //=================================================================================================
