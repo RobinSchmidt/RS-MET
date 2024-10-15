@@ -702,25 +702,14 @@ rsSweepKicker::rsSweepKicker()
     switch(waveShape)
     {
 
-    // Seems OK:
     case WS::Sine:
     {
       return sin(2*PI*p);
     }
 
-
-    // This looks wrong - it produces a saw even when waveParam = 0. It should produce a triangle
-    // in this case:
     case WS::TriSaw:
     {
-      double y = RAPT::rsTriSaw(2*PI*p, waveParam); // TriSaw
-      return y;
-
-      //return RAPT::rsSin<double>(0.5*PI * y);  // SinSaw
-
-      // ToDo:
-      // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
-      //  back-and-forth conversion
+      return RAPT::rsTriSaw(2*PI*p, waveParam);
     }
 
     case WS::SinFatSaw:
@@ -728,17 +717,18 @@ rsSweepKicker::rsSweepKicker()
       double y = RAPT::rsTriSaw(2*PI*p, waveParam);  // TriSaw
       return RAPT::rsSin<double>(0.5*PI * y);        // SinFatSaw
     }
+    // Seems wrong when WaveShapeParam = -0.8 and PhaseStereoShift = -70. Maybe the range-reduction
+    // by fmod doesn't work as desired when the input is negative? Whats the behavior of fmod
+    // for negative inputs anyway?
 
-
-    // Seems OK:
     case WS::PowerLaw:
     {
       p = fmod(p, 1.0);
       p = rsPhaseShaper::powerLaw(p, pow(2.0, -2.0 * waveParam));
-      // The scaler 2.0 is rather ad hoc. The goal is that the user gets a parameter in -1..+1 
-      // where the ends correspond to bright waves. We want the sematic to be: 
-      // -1: sawDown, 0: sine, +1: sawUp
       return sin(2*PI*p);
+      // The scaler 2.0 in front of waveParam is rather ad hoc. The goal is that the user gets a 
+      // parameter in -1..+1 where the ends correspond to bright waves. We want the sematic to be: 
+      // -1: sawDown, 0: sine, +1: sawUp
     }
 
     } // end of switch(waveShape)
@@ -747,9 +737,14 @@ rsSweepKicker::rsSweepKicker()
     // -Try to optimize away the calls to fmod. I think, we need the fmod because due to the 
     //  phase-offset parameters. But maybe a simple if statement is good enough? But maybe not 
     //  when we use phase-modulation. In this case, all bets are off. But maybe have an optimized 
-    //  path when waveParam == 0. In this case, it's just a sine wave.
+    //  path when waveParam == 0. In this case, it's just a sine or triangle wave.
     // -Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be 
     //  ZDF feedback. UDF is good enough. Feedback-FM gives a nice morph between saw and sin.
+    // -Factor the whole code out into a free function or class. But then we need to drag out the
+    //  WaveShape out of this class as well. Maybe put everything into the class rsPhaseShaper and
+    //  rename it into something like rsWaveMorphOsc or something. We'll see...
+    // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
+    //  back-and-forth conversion
 
   };
 

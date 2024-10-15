@@ -283,7 +283,8 @@ T rsTriSaw(T x, T p)
 // coeffs are computed according to the desired output range - it can be nicely extendend to higher
 // order polynomial shapes as well (for example to introduce smoothness constraints)
 // -Make a variant of the function that expects the argument in 0..1. Maybe call it rsTriSaw_01.
-//  We can then get rid of the x *= (1/(2*PI)); 
+//  We can then get rid of the x *= (1/(2*PI));
+// -Verify if fmod behaves correctly for negative x.
 
 
 
