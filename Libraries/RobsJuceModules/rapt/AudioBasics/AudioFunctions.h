@@ -261,7 +261,12 @@ template<class T>
 T rsTriSaw(T x, T p)
 {
   x *= T(1/(2*PI));   // We expect the phase argument x in 0..2*pi but the code below needs 0..1.
-  x  = fmod(x, 1);    // We also allow x to be off by a multiple of the period.
+
+
+  //x  = fmod(x, 1);    // We also allow x to be off by a multiple of the period. ..old - wrong
+  x = rsWrapAround(x, 1.0); // New
+
+
   T r2 = 0.25*(p+1);
   if(x < r2)
     return x / r2;

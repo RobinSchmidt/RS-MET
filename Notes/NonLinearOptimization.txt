@@ -197,6 +197,7 @@ Ideas for finding global minima without getting trapped in local minima:
  g(x) = (1-a)*f(x) + a*something ...i.e. let a be a crossfade parameter...but maybe just adding the 
  "something" term on top is better than crossfading. The something term could be 
  T[f] = f * f'' / (1 + b * |f'|^p)  in operator notation. b,p would be adjustable parameters
+ Or maybe use g(x) = (1-a) * f(x) + a * T[f](x). Or maybe alternatingly minimize f and T[f]
 
 -In general, we want to craft an operator that takes our cots function f and creates a modified 
  function g that preserves the location of the global minimum and washes out local minima. We want 
@@ -246,5 +247,5 @@ Ideas for finding global minima without getting trapped in local minima:
  the Laplacian for f'''. Or maybe use iterated norms of gradients, i.e. f' is the norm of the 
  gradient of f, f'' is the norm of the graienten of f' etc. ...not sure, if that makes any sense...
  ..oh - no taking the norm already breaks the idea in 1D. Maybe alternate between the two functions 
- f and Lap(f)
+ f and Lap(f) or f and T[f] where T[f] = Lap(f), f*Lap(f) / (1+|grad(f)|), Lap(f) / (1+|grad(f)|)
 

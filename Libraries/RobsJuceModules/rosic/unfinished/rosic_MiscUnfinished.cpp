@@ -753,6 +753,8 @@ rsSweepKicker::rsSweepKicker()
     //  rename it into something like rsWaveMorphOsc or something. We'll see...
     // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
     //  back-and-forth conversion
+    // -Figure out a suitable mapper for the waveParam. the desired mapping function my be 
+    //  different for the different waveforms. For TriSaw, we need more resolution at the ends
 
   };
 
