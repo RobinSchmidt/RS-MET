@@ -686,17 +686,20 @@ rsSweepKicker::rsSweepKicker()
 
   initSettings(true);
 
+
+
   // Test:
   //waveShape = WaveShape::Sine;
   //waveShape = WaveShape::PowerLaw;
   //waveShape = WaveShape::TriSaw;
-  waveShape = WaveShape::SinFatSaw;
+  //waveShape = WaveShape::SinFatSaw;
 
   // Set up the waveshape function in the embedded freqSweeper object:
-
-  // This is a phase-shaped sine wave:
   auto waveFunc = [this](double p) 
   { 
+    // ToDo: apply a nonlinear mapping to the waveParam - which mapping is most suitable may depend
+    // the waveShape
+
     using WS = WaveShape;
 
     switch(waveShape)
@@ -717,7 +720,7 @@ rsSweepKicker::rsSweepKicker()
       double y = RAPT::rsTriSaw(2*PI*p, waveParam);  // TriSaw
       return RAPT::rsSin<double>(0.5*PI * y);        // SinFatSaw
     }
-    // !!!!  BUG  !!!!
+    // !!!!  BUG  !!!! ...seems to be fixed
     // Seems wrong when WaveShapeParam = -0.8 and PhaseStereoShift = -70. Maybe the range-reduction
     // by fmod doesn't work as desired when the input is negative? Whats the behavior of fmod
     // for negative inputs anyway?
@@ -725,7 +728,15 @@ rsSweepKicker::rsSweepKicker()
 
     case WS::PowerLaw:
     {
-      p = fmod(p, 1.0);
+      //p = fmod(p, 1.0);
+      // Might be a BUG - we maybe need to use rsWrapAound instead. Test it with different sttings
+      // for the Phase and StereoPhase parameters
+      // Yes - indeed!
+
+
+      p = RAPT::rsWrapAround(p, 1.0); // New
+
+
       p = rsPhaseShaper::powerLaw(p, pow(2.0, -2.0 * waveParam));
       return sin(2*PI*p);
       // The scaler 2.0 in front of waveParam is rather ad hoc. The goal is that the user gets a 
@@ -755,6 +766,8 @@ rsSweepKicker::rsSweepKicker()
     //  back-and-forth conversion
     // -Figure out a suitable mapper for the waveParam. the desired mapping function my be 
     //  different for the different waveforms. For TriSaw, we need more resolution at the ends
+    //  For TriSaw and FtSinSaw, it seems like the "half-brightness" point is somewhere around
+    //  0.95
 
   };
 
