@@ -721,7 +721,11 @@ rsSweepKicker::rsSweepKicker()
       //double par = waveParam;
 
       // Test:
-      double map = 0.70;
+      double map = 0.50;
+      // 0.5 seems good, 
+      // 0.8: too little resolution around 0
+      // To evaluate, listen to perceived difference between 0.0 amd 0.2 compared to 0.8 and 1.0
+
       double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
       // This mapping seem ok - but maybe tweak the map parameter 0.70 further so find some 
       // "optimum", i.e. a value that feels most musical. Use the same formula for the triSaw as 
