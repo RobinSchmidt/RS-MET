@@ -718,39 +718,22 @@ rsSweepKicker::rsSweepKicker()
 
     case WS::SinFatSaw:
     {
-      //double par = waveParam;
-
       // Test:
       double map = 0.50;
-      // 0.5 seems good, 
-      // 0.8: too little resolution around 0
-      // To evaluate, listen to perceived difference between 0.0 amd 0.2 compared to 0.8 and 1.0
-
       double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
-      // This mapping seem ok - but maybe tweak the map parameter 0.70 further so find some 
-      // "optimum", i.e. a value that feels most musical. Use the same formula for the triSaw as 
-      // well
+      // This mapping seem ok - but maybe tweak the map parameter further so find some 
+      // "optimum", i.e. a value that feels most musical. Use the same formula for the TriSaw as 
+      // well. 0.5 seems good. 0.8: too little resolution around 0.
+      // To evaluate, listen to perceived difference between 0.0 amd 0.2 compared to 0.8 and 1.0
 
       double y = RAPT::rsTriSaw(2*PI*p, par);    // TriSaw
       return RAPT::rsSin<double>(0.5*PI * y);    // SinFatSaw
     }
-    // !!!!  BUG  !!!! ...seems to be fixed
-    // Seems wrong when WaveShapeParam = -0.8 and PhaseStereoShift = -70. Maybe the range-reduction
-    // by fmod doesn't work as desired when the input is negative? Whats the behavior of fmod
-    // for negative inputs anyway?
-    // Yes! See fmodTest() in MathExperiments.cpp
+ 
 
     case WS::PowerLaw:
     {
-      //p = fmod(p, 1.0);
-      // Might be a BUG - we maybe need to use rsWrapAound instead. Test it with different sttings
-      // for the Phase and StereoPhase parameters
-      // Yes - indeed!
-
-
       p = RAPT::rsWrapAround(p, 1.0); // New
-
-
       p = rsPhaseShaper::powerLaw(p, pow(2.0, -2.0 * waveParam));
       return sin(2*PI*p);
       // The scaler 2.0 in front of waveParam is rather ad hoc. The goal is that the user gets a 
