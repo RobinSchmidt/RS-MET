@@ -677,9 +677,9 @@ void SweepKickerModule::createParameters()
   // zeroDelayFeedbackPhaseMod, I don't apply the feedback-FM to the accumulator but to the phase
   // as used
 
-  //mp = new ModPar("WaveShapeParam", -1.0, +1.0, 0.0, Parameter::LINEAR);
-  //addObservedParameter(mp);
-  //mp->setValueChangeCallback<SK>(&core, &SK::setWaveFormParameter);
+  mp = new ModPar("WaveShapeParam", -1.0, +1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(mp);
+  mp->setValueChangeCallback<SK>(&core, &SK::setWaveFormParameter);
   // I have not yet settled for the range and behavior of this parameter. That's why it's not yet
   // available. But when uncommenting the code, we can already play with it.
 

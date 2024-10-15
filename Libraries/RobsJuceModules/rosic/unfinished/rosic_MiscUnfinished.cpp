@@ -678,35 +678,91 @@ double rsPhaseShaper::powerLaw(double p, double a)
 
 rsSweepKicker::rsSweepKicker()
 {
+  // Old:
   //freqSweeper.setWaveForm(RAPT::rsSin<double>);
-
-
   //auto waveFunc = [](double p) { return rsSin<double> };
+
 
 
   initSettings(true);
 
-  //waveParam = -0.5; // test
+  // Test:
+  //waveShape = WaveShape::Sine;
+  //waveShape = WaveShape::PowerLaw;
+  waveShape = WaveShape::TriSaw;
+
+  // Set up the waveshape function in the embedded freqSweeper object:
 
   // This is a phase-shaped sine wave:
   auto waveFunc = [this](double p) 
   { 
-    p = fmod(p, 1.0);
-    p = rsPhaseShaper::powerLaw(p, pow(2.0, 2.0 * waveParam));
-    // The scaler 2.0 is rather ad hoc. The goal is that the user gets a parameter in -1..+1 where
-    // the ends correspond to bright waves
+    using WS = WaveShape;
 
-    return sin(2*PI*p);
+    switch(waveShape)
+    {
+
+    // Seems OK:
+    case WS::Sine:
+    {
+      return sin(2*PI*p);
+    }
+
+
+    // This looks wrong - it produces a saw even when waveParam = 0. It should produce a triangle
+    // in this case:
+    case WS::TriSaw:
+    {
+      //return sin(2*PI*p);
+
+      // Old:
+      //return RAPT::rsSin<double>(2*PI*p);
+
+      // New:
+      //p = fmod(p, 1.0); // Not needed - done internally in rsTriSaw
+
+      double y = RAPT::rsTriSaw(2*PI*p, waveParam); // TriSaw
+
+      //double y = RAPT::rsTriSaw(2*PI*p, 0.0);  // Test
+      // inside the function, we seem to always enter the 1st branch
+
+      return y;  // test
+
+      //return RAPT::rsSin<double>(0.5*PI * y);  // SinSaw
+
+      // ToDo:
+      // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
+      //  back-and-forth conversion
+    }
+
+
+    // Seems OK:
+    case WS::PowerLaw:
+    {
+      p = fmod(p, 1.0);
+      p = rsPhaseShaper::powerLaw(p, pow(2.0, -2.0 * waveParam));
+      // The scaler 2.0 is rather ad hoc. The goal is that the user gets a parameter in -1..+1 
+      // where the ends correspond to bright waves. We want the sematic to be: 
+      // -1: sawDown, 0: sine, +1: sawUp
+      return sin(2*PI*p);
+    }
+
+    } // end of switch(waveShape)
+
     // ToDo:
-    // -Try to optimize. I think, we need the fmod because due to the phase-offset parameters. 
-    //  But maybe a simple if statement is good enough? But maybe not when we use phase-modulation.
-    //  In this case, all bets are off. But maybe have an optimized path when waveParam == 0. In 
-    //  this case, it's just a sine wave.
-  };
-  // Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be ZDF
-  // feedback. UDF is good enough
+    // -Try to optimize away the calls to fmod. I think, we need the fmod because due to the 
+    //  phase-offset parameters. But maybe a simple if statement is good enough? But maybe not 
+    //  when we use phase-modulation. In this case, all bets are off. But maybe have an optimized 
+    //  path when waveParam == 0. In this case, it's just a sine wave.
+    // -Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be 
+    //  ZDF feedback. UDF is good enough. Feedback-FM gives a nice morph between saw and sin.
 
+  };
+
+ 
   freqSweeper.setWaveForm(waveFunc);
+
+
+
   reset();
 }
 
@@ -723,6 +779,7 @@ void rsSweepKicker::initSettings(bool initAlsoSampleRate)
   swpTmByVel  =     0;
   fadeOutTime =     0;
   waveParam   =     0;
+  waveShape   = WaveShape::Sine;
   freqSweeper.initSettings(initAlsoSampleRate);
   fadeOutEnv.setNumFadeSamples(RAPT::rsRoundToInt(fadeOutTime * getSampleRate()));
 }

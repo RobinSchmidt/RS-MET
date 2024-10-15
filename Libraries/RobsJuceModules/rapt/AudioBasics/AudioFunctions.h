@@ -255,13 +255,13 @@ inline T rsTauToDecayTime(T tau, T decayLevel)
 
 /** A waveform that morphs between saw-down (p = -1), triangle (p = 0) and saw-up (p = +1) - but 
 note that the limiting values (+-1) should not actually be used because of divisions by zero, so
-use a range -0.99...+0.99 instead for example. */
+use a range -0.99...+0.99 instead for example. It expects the phase argument x in 0..2*pi such that
+it has the same API as std::sin, etc. */
 template<class T>
 T rsTriSaw(T x, T p)
 {
-  //x /= 2*PI;
-  x *= (1/(2*PI)); 
-  x  = fmod(x, 1);
+  x *= T(1/(2*PI));   // We expect the phase argument x in 0..2*pi but the code below needs 0..1.
+  x  = fmod(x, 1);    // We also allow x to be off by a multiple of the period.
   T r2 = 0.25*(p+1);
   if(x < r2)
     return x / r2;
@@ -282,6 +282,8 @@ T rsTriSaw(T x, T p)
 // separates upward and downward "half"-waves (they are not actually half a cycle long) and the
 // coeffs are computed according to the desired output range - it can be nicely extendend to higher
 // order polynomial shapes as well (for example to introduce smoothness constraints)
+// -Make a variant of the function that expects the argument in 0..1. Maybe call it rsTriSaw_01.
+//  We can then get rid of the x *= (1/(2*PI)); 
 
 
 

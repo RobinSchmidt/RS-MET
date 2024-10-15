@@ -804,9 +804,21 @@ public:
   void setStartPhase(      double newPhase) { freqSweeper.setStartPhase(newPhase);       }
   void setStereoPhaseShift(double newShift) { freqSweeper.setStereoPhaseShift(newShift); }
 
+  /** Enumeration of the available wave shapes: */
+  enum class WaveShape
+  {
+    Sine = 0,       // Just a sine. Ignores waveParam
+    TriSaw,         // 
+    SinFatSaw,
+    PowerLaw,       // Phase-shaping with power law
 
-  /** Sets the parameter that controls the shape of the waveform. 0 means sine, < 0 turns it into a
-  saw and > 0 kind of squeezes the sine. */
+    NumWaveShapes
+  };
+
+  /** Sets the parameter that controls the shape of the waveform. 0 means sine
+
+
+  Power: -1: squeezed sine, +1: sawUp*/
   void setWaveFormParameter(double newParam) { waveParam = newParam; }
   // ToDo: provide more waveshapes
 
@@ -873,7 +885,10 @@ protected:
 
   double fadeOutTime;
 
-  double waveParam;  // parameter to control the waveshape
+  double    waveParam;    // Parameter to control/morph the waveshape in -1..+1
+  WaveShape waveShape;    // Select the type of morphable waveshape
+
+
 
   int currentNote = -1;
 

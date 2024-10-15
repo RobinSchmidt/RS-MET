@@ -351,7 +351,7 @@ bool WaveOscModule::setWaveform(AudioSampleBuffer* buffer, const juce::File& wav
     return false;
   }
 
-  // ToDo: 
+  // ToDo:
   // -Store the sample name only directly here. The core DSP class should not be concerned with 
   //  this. The fact that we store the sample name there has only historical reasons.
   // -What if the buffer has the wrong number of channels? can this happen?
