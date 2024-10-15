@@ -539,6 +539,8 @@ void phaseShapingLinFrac()
   // - Make a morphable SawDown/Sin/SawUp oscillator based on the TriSaw oscillator by applying a
   //   sinusoidal waveshaper to its output
   //
+  // - Implement a class rsPhaseShaper. There's a stub for this in rosic_MiscUnfinished.h
+  //
   //
   // See also: 
   //

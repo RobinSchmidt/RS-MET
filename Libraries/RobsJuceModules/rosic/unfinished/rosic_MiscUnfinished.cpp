@@ -639,6 +639,7 @@ void rsFreqSweeper::initSettings(bool initAlsoSampleRate)
   sweepTime   =     0.2; 
   phase       =     0.0;
   phaseStereo =     0.0;
+  //waveShape   =     0.0;
 
   if(initAlsoSampleRate)
     sampleRate = 44100.0;
@@ -668,8 +669,10 @@ double rsPhaseShaper::powerLaw(double p, double a)
     p = -pow(-p, a);
   p = RAPT::rsLinToLin(p, -1.0, +1.0, 0.0, 1.0);   // -1..+1 -> 0..1
   return p;
+
+  // ToDo:
+  // -Optimize: Replace the (moderately expensive) rsLinToLin calls by simpler formulas.
 }
-// This is totally unoptimized! The rsLinToLin calls can be replaced by simpler formulas.
 
 //=================================================================================================
 

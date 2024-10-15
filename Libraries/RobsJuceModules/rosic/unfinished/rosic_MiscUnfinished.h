@@ -418,8 +418,11 @@ protected:
 
 //=================================================================================================
 
-/** A very simple envelope whose sole purpose is to create a fade-out for example, after a 
-noteOff. */
+/** A very simple envelope whose sole purpose is to create a fade-out. This can be used to avoid 
+note-off clicks in simple midi-controlled oscillator modules that should not have a full blown
+envelope generator built in but still need some way to avoid those pesky clicks. It can be used 
+when the osc should neither continue running after receiving a note off nor abruptly turn off (i.e.
+switch output to zero) on receiving a note-off.  */
 
 class rsFadeOutEnvelope
 {
@@ -574,6 +577,11 @@ public:
   the shift applied negatively and the right channel half of it positively. */
   void setStereoPhaseShift(double newShift) { phaseStereo = newShift * (1.0/360.0); }
 
+  /** Sets the parameter for the waveshape. The range is -1..+1 where -1: fat sawDown, 0: sine,
+  +1: fat saw up. The "fat saw" is like a saw that bulges out. The downward fat saw is the first
+  half cycle of the cosine (i.e. from 0 to pi). The upward fat saw is the second half.  */
+  //void setWaveShapeParam(double newParam) { waveShape = newParam; }
+
   /** Sets the function that is used to generate the waveform. If you don't set this up, it will
   use a sine by default. */
   void setWaveForm(const std::function<double(double phase01)> newWaveFunc) { wave = newWaveFunc; }
@@ -611,7 +619,6 @@ public:
   INLINE void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     // Output computation:
-
     double tmpPhase = instPhase + phase;
     tmpPhase += fbPhsMod * oldOutL; // Experimental
     *inOutL = wave(tmpPhase - 0.5*phaseStereo);
@@ -631,8 +638,9 @@ public:
     if(instPhase >= 1.0)    // A while-loop would be safer but when we assume sane values for
       instPhase -= 1.0;     // newFreq and instFreq, the "if" should be good enough
     instFreq  = newFreq;
+
     // ToDo:
-    // -Optimize: keep the reciprocal of the sample rate as member
+    // -Optimize: keep the reciprocal of the sample rate as member to avoid division
   }
 
   void reset()
@@ -660,8 +668,11 @@ protected:
 
   // User parameters:
   double sampleRate;
+
   double freqLo;         // Maybe rename to endFreq
   double freqHi;         // Maybe rename to startFreq
+  // Rationale for renaming: It's really about the time. One may perhaps even start at a low freq 
+  // (not sure, if that would work, though).
 
   // Rename into chirpAmount, chirpShape
   double chirpAmount;       // Determines (mostly) attack shape
@@ -674,6 +685,9 @@ protected:
   double phase;
   double phaseStereo;
 
+  // Wave shape parameters:
+  //double waveShape;  // -1: fat saw down, 0: sine, +1 fat saw up
+
 
   // Internals:
   bool dirty;
@@ -683,9 +697,18 @@ protected:
   int    sampleCount;
 
 
-  std::function<double(double phase)> wave = [](double p)  
+  std::function<double(double phase)> wave = [](double p)
   { 
+    // Old:
     return RAPT::rsSin<double>(2*PI*p);
+
+    // New:
+    //double y = RAPT::rsTriSaw(p, waveShape); // TriSaw
+    //return RAPT::rsSin<double>(0.5*PI * y);  // SinSaw
+
+    // ToDo: Verify if "&" is the correct/best capture mode for this purpose. Maybe "=" or "this" 
+    // is better? Or maybe we shouldn't capture the waveShape parameter but instead pass it in as
+    // an additional parameter
   };
 };
 
@@ -701,7 +724,9 @@ protected:
 
 //=================================================================================================
 
-/** A class for phaseshaping. Phaseshaping is like waveshaping but it is applied to a normalized
+/** UNDER CONSTRUCTION. Just a stub at the moment.
+
+A class for phaseshaping. Phaseshaping is like waveshaping but it is applied to a normalized
 phase value, i.e. a value between 0 and 1 that is used as an osillator phase. */
 
 class rsPhaseShaper
@@ -715,6 +740,12 @@ public:
   // s < 0: sine turns to upward saw
   // s = 0: sine is unchanged
   // s > 0: sine is squeezed
+  //
+  // Phase should be normalized to the range 0..1, shapeParam in -1..+1. All the different 
+  // phase-shaping laws should use that API.
+
+  //static double symmetricLinFracLaw(double phase, double shapeParam);
+  // See phaseShapingLinFrac() in OscillatorExperiments.cpp
 
 
 };
