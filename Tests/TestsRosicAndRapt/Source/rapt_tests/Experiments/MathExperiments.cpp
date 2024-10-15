@@ -3977,8 +3977,11 @@ void expGaussBell()
   plt.plot();
 }
 
-void fmodTest()
+void fmodTest()  // rename to wrapAroundTest
 {
+  // We test the behavior of various functions that can be used in situations where we need a phase
+  // wraparound
+
   // Settings:
   using Real = double;
   int   N    = 300;        // number of values
@@ -3989,22 +3992,37 @@ void fmodTest()
   using Vec = std::vector<Real>;
 
   Vec x = rsLinearRangeVector(N, xMin, xMax);
-  Vec y1(N), y2(N);
+  Vec yFmod(N), yRem(N), yWrap1(N), yWrap2(N);
   for(int n = 0; n < N; n++)
   {
-    y1[n] = std::fmod(x[n], mod);
-    y2[n] = std::remainder(x[n], mod);
+    yFmod[n]  = std::fmod(             x[n],      mod);
+    yRem[n]   = std::remainder(        x[n],      mod);
+    yWrap1[n] = RAPT::rsWrapToInterval(x[n], 0.0, mod);
+    yWrap2[n] = RAPT::rsWrapAround(    x[n],      mod);
   }
 
 
-  rsPlotVectorsXY(x, y1, y2);
-
+  // Plot the results of the different functions:
+  rsPlotVectorsXY(x, yFmod);           // Nope! Negative part is wrong!
+  rsPlotVectorsXY(x, yRem);            // Nope! It's all shifted down by 0.5.
+  rsPlotVectorsXY(x, yWrap1);          // Yes! That looks good!
+  rsPlotVectorsXY(x, yWrap2);          // Dito.
+  rsPlotVectorsXY(x, yWrap1, yWrap2);  // They are exactly the same as they should.
 
 
   // Observations:
   //
-  // -fmod does not behave the way that I need it to for negative arguments. I want to use it for
-  //  range reduction for phase arguments
+  // - fmod does not behave the way that I need it to for negative arguments. I want to use it for
+  //   range reduction for phase arguments. It's ok for positive arguments, though
+  //
+  // - std::remainder seems to be workable when we add 0.5*mod
+  //
+  //
+  // ToDo:
+  //
+  // -Try other ranges like -pi..+pi. Try other implementations. Benchmark them all. This code is
+  //  performance critical in oscillators.
+  //
   //
   // See:
   // https://stackoverflow.com/questions/39966190/output-of-fmod-function-c

@@ -365,7 +365,19 @@ inline double rsWrapToInterval(double x, double min, double max)
   }
   return tmp + min;
 }
-// why no template? because of fmod?
+// Why no template? Because of fmod? Maybe try a different implementation like:
+//
+// while(x < min) 
+//   x += r;
+// while(x > max)
+//   x -= r;
+//
+// It may be not so good numerically due to error accumulation in the loop and it may be less
+// efficient when x is far outside the range. But mostly, x will be outside min..max only by one
+// cycle (like in oscillators when we deal with phase wrap-arounds).
+// Maybe call the implementations rsWrapViaFmod, rsWrapViaLoop, maybe also have rsWrapViaRemainder.
+// See fmodTest in Mathexperiments.cpp. Maybe make a simplified implementation that assumes 
+// min = 0 which is a relevant special case
 
 inline double rsZeroFunction(double x)
 {
