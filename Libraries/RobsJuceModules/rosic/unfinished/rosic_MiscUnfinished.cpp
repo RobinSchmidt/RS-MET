@@ -711,26 +711,29 @@ rsSweepKicker::rsSweepKicker()
       return sin(2*PI*p);
     }
 
-    case WS::TriSaw:
-    {
-      return RAPT::rsTriSaw(2*PI*p, waveParam);
-    }
-
     case WS::SinFatSaw:
     {
       // Test:
       double map = 0.50;
       double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
-      // This mapping seem ok - but maybe tweak the map parameter further so find some 
-      // "optimum", i.e. a value that feels most musical. Use the same formula for the TriSaw as 
-      // well. 0.5 seems good. 0.8: too little resolution around 0.
-      // To evaluate, listen to perceived difference between 0.0 amd 0.2 compared to 0.8 and 1.0
+      // This mapping seems ok - but maybe tweak the map parameter further so find some 
+      // "optimum", i.e. a value that feels most musical. 0.5 seems good. 0.8: too little 
+      // resolution around 0. To evaluate, listen to perceived difference between 0.0 amd 0.2 
+      // compared to 0.8 and 1.0.
+      // Use the same formula for the TriSaw as well. Maybe optimize - the formula simplfies with
+      // a parameter of 0.5 because it cancels with a factor of 2.
 
       double y = RAPT::rsTriSaw(2*PI*p, par);    // TriSaw
       return RAPT::rsSin<double>(0.5*PI * y);    // SinFatSaw
     }
- 
 
+    case WS::TriSaw:
+    {
+      return RAPT::rsTriSaw(2*PI*p, waveParam);
+    }
+
+
+    // Maybe remove for the moment:
     case WS::PowerLaw:
     {
       p = RAPT::rsWrapAround(p, 1.0); // New
