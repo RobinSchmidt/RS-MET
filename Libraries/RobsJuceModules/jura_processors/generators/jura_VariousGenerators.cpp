@@ -693,7 +693,7 @@ void SweepKickerModule::createParameters()
   fp->addStringValue("Sine");
   fp->addStringValue("SinFatSaw");
   fp->addStringValue("TriSaw");
-  fp->addStringValue("PhaseShapePow");
+  //fp->addStringValue("PhaseShapePow");  // may be added later (core needs to uncomment code, too)
   addObservedParameter(fp);
   fp->setValueChangeCallback<SK>(&core, &SK::setWaveForm);
 

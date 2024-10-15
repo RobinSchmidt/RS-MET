@@ -729,11 +729,16 @@ rsSweepKicker::rsSweepKicker()
 
     case WS::TriSaw:
     {
-      return RAPT::rsTriSaw(2*PI*p, waveParam);
+      double map = 0.50;
+      double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
+      // Code duplication! Hmm...but the "map" parameter could perhaps be different in this case.
+      // But nah...or...dunno
+
+      return RAPT::rsTriSaw(2*PI*p, par);
     }
 
-
-    // Maybe remove for the moment:
+    /*
+    // Not yet ready for prime time:
     case WS::PowerLaw:
     {
       p = RAPT::rsWrapAround(p, 1.0); // New
@@ -743,6 +748,7 @@ rsSweepKicker::rsSweepKicker()
       // parameter in -1..+1 where the ends correspond to bright waves. We want the sematic to be: 
       // -1: sawDown (but more like a squeezed sine), 0: sine, +1: sawUp
     }
+    */
 
     default:
     {

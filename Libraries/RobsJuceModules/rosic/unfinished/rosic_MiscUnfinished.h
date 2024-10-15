@@ -810,7 +810,8 @@ public:
     Sine = 0,             // Just a sine. Ignores waveParam.
     SinFatSaw,            // TriSaw (see below) with sinusoidal waveshaping
     TriSaw,               // SawDown / Triangle / SawUp
-    PowerLaw,             // Phase-shaping with power law - rename to PhaseShapePow
+
+    //PowerLaw,             // Phase-shaping with power law - rename to PhaseShapePow
     //PhaseShapeLinFrac,
 
     NumWaveShapes
