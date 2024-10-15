@@ -717,6 +717,7 @@ rsSweepKicker::rsSweepKicker()
       double y = RAPT::rsTriSaw(2*PI*p, waveParam);  // TriSaw
       return RAPT::rsSin<double>(0.5*PI * y);        // SinFatSaw
     }
+    // !!!!  BUG  !!!!
     // Seems wrong when WaveShapeParam = -0.8 and PhaseStereoShift = -70. Maybe the range-reduction
     // by fmod doesn't work as desired when the input is negative? Whats the behavior of fmod
     // for negative inputs anyway?
@@ -728,7 +729,13 @@ rsSweepKicker::rsSweepKicker()
       return sin(2*PI*p);
       // The scaler 2.0 in front of waveParam is rather ad hoc. The goal is that the user gets a 
       // parameter in -1..+1 where the ends correspond to bright waves. We want the sematic to be: 
-      // -1: sawDown, 0: sine, +1: sawUp
+      // -1: sawDown (but more like a squeezed sine), 0: sine, +1: sawUp
+    }
+
+    default:
+    {
+      RAPT::rsError("Unknown WaveShape");
+      return 0.0;
     }
 
     } // end of switch(waveShape)

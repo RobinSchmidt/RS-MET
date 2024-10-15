@@ -798,32 +798,38 @@ public:
 
   void setChirpAmount(double newAmount) {  freqSweeper.setChirpAmount(newAmount); }
 
-  void setChirpShape( double newShape)  {  freqSweeper.setChirpShape( newShape); }
+  void setChirpShape( double newShape)  {  freqSweeper.setChirpShape( newShape);  }
 
 
   void setStartPhase(      double newPhase) { freqSweeper.setStartPhase(newPhase);       }
   void setStereoPhaseShift(double newShift) { freqSweeper.setStereoPhaseShift(newShift); }
 
-  /** Enumeration of the available wave shapes: */
-  enum class WaveShape
+  /** Enumeration of the available wave forms. */
+  enum WaveShape // rename to WaveForm
   {
-    Sine = 0,       // Just a sine. Ignores waveParam
-    TriSaw,         // 
-    SinFatSaw,
-    PowerLaw,       // Phase-shaping with power law
+    Sine = 0,             // Just a sine. Ignores waveParam.
+    SinFatSaw,            // TriSaw (see below) with sinusoidal waveshaping
+    TriSaw,               // SawDown / Triangle / SawUp
+    PowerLaw,             // Phase-shaping with power law - rename to PhaseShapePow
+    //PhaseShapeLinFrac,
 
     NumWaveShapes
   };
+  // ToDo: provide more waveshapes - for example PhaseShapeLinFrac
 
-  /** Sets the parameter that controls the shape of the waveform. 0 means sine
+  /** Sets the waveshape to be used. */
+  void setWaveForm(int newShape) { waveShape = (WaveShape) newShape; }
 
 
-  Power: -1: squeezed sine, +1: sawUp*/
+  /** Sets the parameter that controls the shape of the waveform. 0 means sine or triangle 
+  (depending on waveShape), -1 is something similar to a downward saw and +1 is similar to an 
+  upward saw. But the exact shapes will depend on waveShape.  */
   void setWaveFormParameter(double newParam) { waveParam = newParam; }
-  // ToDo: provide more waveshapes
+
 
   // Experimental:
   void setFeedbackPhaseMod(double amount) { freqSweeper.fbPhsMod = amount; }
+  // Maybe get rid of this. It seems to make more trouble than its worth. We'll see....
 
 
   void initSettings(bool initAlsoSampleRate = false);

@@ -281,6 +281,10 @@ public:
 
   /** Adds a string value to the array - relevant only for string-based parameters. */
   virtual void addStringValue(const juce::String& valueToAdd);
+  // ToDo: Provide a variant of that function that takes an integer as second parameter. This 
+  // should determine where the string appears in a combobox widget. Currently thee strings will be
+  // appended to the array in the order of the calls. Maybe the function with the int parameter 
+  // should be named setStringValue and take the int as 1st parameter
 
   /** Sometimes you want to use numeric values but represent them as strings, for example in 
   dropdown menus. in such cases, you can conveniently add a range of numeric string values via 
