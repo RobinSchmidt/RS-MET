@@ -701,6 +701,7 @@ rsSweepKicker::rsSweepKicker()
     // the waveShape
 
     using WS = WaveShape;
+    //using namespace RAPT;
 
     switch(waveShape)
     {
@@ -717,8 +718,17 @@ rsSweepKicker::rsSweepKicker()
 
     case WS::SinFatSaw:
     {
-      double y = RAPT::rsTriSaw(2*PI*p, waveParam);  // TriSaw
-      return RAPT::rsSin<double>(0.5*PI * y);        // SinFatSaw
+      //double par = waveParam;
+
+      // Test:
+      double map = 0.70;
+      double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
+      // This mapping seem ok - but maybe tweak the map parameter 0.70 further so find some 
+      // "optimum", i.e. a value that feels most musical. Use the same formula for the triSaw as 
+      // well
+
+      double y = RAPT::rsTriSaw(2*PI*p, par);    // TriSaw
+      return RAPT::rsSin<double>(0.5*PI * y);    // SinFatSaw
     }
     // !!!!  BUG  !!!! ...seems to be fixed
     // Seems wrong when WaveShapeParam = -0.8 and PhaseStereoShift = -70. Maybe the range-reduction
