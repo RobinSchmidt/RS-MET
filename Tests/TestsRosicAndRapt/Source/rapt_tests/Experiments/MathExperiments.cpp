@@ -3977,6 +3977,26 @@ void expGaussBell()
   plt.plot();
 }
 
+void fmodTest()
+{
+  // Settings:
+  using Real = double;
+  int   N    = 300;        // number of values
+  Real  xMin = -5.0;
+  Real  xMax = +5.0;
+  Real  mod  =  1.0;       // modulus
+
+  using Vec = std::vector<Real>;
+
+  Vec x = rsLinearRangeVector(N, xMin, xMax);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = fmod(x[n], mod);
+
+
+  rsPlotVectorsXY(x, y);
+}
+
 void gaussBellProduct()
 {
   // The product of two Gaussian bell curves y1(x) = (1/sqrt(2*pi*s1^2)) * exp(-(x-m1)^2/s1^2)

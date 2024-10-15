@@ -118,6 +118,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
+  fmodTest();
   //gaussBellProduct();
   //iteratedNumDiff();
 

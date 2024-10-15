@@ -683,6 +683,9 @@ void SweepKickerModule::createParameters()
   // The do not yet play nicely with the Phase and PhaseStereoShift parameters. There's something 
   // wrong - I guess it may have to do with the phase wrap-around behavior. Maybe fmod does not 
   // behave as I expect it to when the input is negative? Check that!
+  // See: 
+  // https://stackoverflow.com/questions/39966190/output-of-fmod-function-c
+  // https://stackoverflow.com/questions/26519082/why-am-i-getting-a-different-result-from-stdfmod-and-stdremainder
 
   fp = new FixPar("WaveShape", 0.0, 3.0, 0.0, Parameter::STRING);
   fp->addStringValue("Sine");

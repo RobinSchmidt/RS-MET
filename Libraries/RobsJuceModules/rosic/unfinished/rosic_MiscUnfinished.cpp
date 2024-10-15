@@ -721,6 +721,7 @@ rsSweepKicker::rsSweepKicker()
     // Seems wrong when WaveShapeParam = -0.8 and PhaseStereoShift = -70. Maybe the range-reduction
     // by fmod doesn't work as desired when the input is negative? Whats the behavior of fmod
     // for negative inputs anyway?
+    // Yes! See fmodTest() in MathExperiments.cpp
 
     case WS::PowerLaw:
     {
