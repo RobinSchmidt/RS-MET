@@ -3989,12 +3989,27 @@ void fmodTest()
   using Vec = std::vector<Real>;
 
   Vec x = rsLinearRangeVector(N, xMin, xMax);
-  Vec y(N);
+  Vec y1(N), y2(N);
   for(int n = 0; n < N; n++)
-    y[n] = fmod(x[n], mod);
+  {
+    y1[n] = std::fmod(x[n], mod);
+    y2[n] = std::remainder(x[n], mod);
+  }
 
 
-  rsPlotVectorsXY(x, y);
+  rsPlotVectorsXY(x, y1, y2);
+
+
+
+  // Observations:
+  //
+  // -fmod does not behave the way that I need it to for negative arguments. I want to use it for
+  //  range reduction for phase arguments
+  //
+  // See:
+  // https://stackoverflow.com/questions/39966190/output-of-fmod-function-c
+  // https://stackoverflow.com/questions/26519082/why-am-i-getting-a-different-result-from-stdfmod-and-stdremainder
+
 }
 
 void gaussBellProduct()
