@@ -689,7 +689,8 @@ rsSweepKicker::rsSweepKicker()
   // Test:
   //waveShape = WaveShape::Sine;
   //waveShape = WaveShape::PowerLaw;
-  waveShape = WaveShape::TriSaw;
+  //waveShape = WaveShape::TriSaw;
+  waveShape = WaveShape::SinFatSaw;
 
   // Set up the waveshape function in the embedded freqSweeper object:
 
@@ -712,26 +713,20 @@ rsSweepKicker::rsSweepKicker()
     // in this case:
     case WS::TriSaw:
     {
-      //return sin(2*PI*p);
-
-      // Old:
-      //return RAPT::rsSin<double>(2*PI*p);
-
-      // New:
-      //p = fmod(p, 1.0); // Not needed - done internally in rsTriSaw
-
       double y = RAPT::rsTriSaw(2*PI*p, waveParam); // TriSaw
-
-      //double y = RAPT::rsTriSaw(2*PI*p, 0.0);  // Test
-      // inside the function, we seem to always enter the 1st branch
-
-      return y;  // test
+      return y;
 
       //return RAPT::rsSin<double>(0.5*PI * y);  // SinSaw
 
       // ToDo:
       // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
       //  back-and-forth conversion
+    }
+
+    case WS::SinFatSaw:
+    {
+      double y = RAPT::rsTriSaw(2*PI*p, waveParam);  // TriSaw
+      return RAPT::rsSin<double>(0.5*PI * y);        // SinFatSaw
     }
 
 
