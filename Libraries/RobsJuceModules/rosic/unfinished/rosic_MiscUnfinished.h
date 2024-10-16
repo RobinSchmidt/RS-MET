@@ -703,7 +703,7 @@ protected:
 
 //=================================================================================================
 
-/** UNDER CONSTRUCTION. Just a stub at the moment.
+/** UNDER CONSTRUCTION. 
 
 A class for producing various waveforms with bipolar parameters in the range -1..+1 that have the 
 general feature that at -1 we have a downward waveshape (like downward saw), at 0, we have some 
@@ -769,32 +769,18 @@ public:
   double getWaveValue_01(double pos);
 
 
-  //-----------------------------------------------------------------------------------------------
-  // \name Phase shaping laws
-
-  static double phaseShapePow(double phase, double shapeParam);
-  // let s = shapeParam, 
-  // s < 0: sine turns to upward saw
-  // s = 0: sine is unchanged
-  // s > 0: sine is squeezed
-  //
-  // Phase should be normalized to the range 0..1, shapeParam in -1..+1. All the different 
-  // phase-shaping laws should use that API.
-
-  //static double symmetricLinFracLaw(double phase, double shapeParam);
-  // See phaseShapingLinFrac() in OscillatorExperiments.cpp
-
-  // Maybe move into protected section. Or maybe these phase-shaping laws could be factored out 
-  // into class of its own.
-
-
-
 protected:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Data
 
   // User parameters:
   double   waveParam;    // Parameter to control/morph the waveshape in -1..+1
   WaveForm waveForm;     // Select the type of morphable waveshape
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Internal functions
 
   /** Mapping from the raw parameter in -1..+1 to the same range but nonlinear in a way to produce
   a perceptually reasonable parameter behavior. This map is used for the waveforms based on
@@ -816,6 +802,22 @@ protected:
     // Use the same formula for the TriSaw as well. Maybe optimize - the formula simplfies with
     // a parameter of 0.5 because it cancels with a factor of 2.
   }
+
+  /** UNDER CONSTRUCTION */
+  static double phaseShapePow(double phase, double shapeParam);
+  // let s = shapeParam, 
+  // s < 0: sine turns to upward saw
+  // s = 0: sine is unchanged
+  // s > 0: sine is squeezed
+  //
+  // Phase should be normalized to the range 0..1, shapeParam in -1..+1. All the different 
+  // phase-shaping laws should use that API.
+
+  //static double symmetricLinFracLaw(double phase, double shapeParam);
+  // See phaseShapingLinFrac() in OscillatorExperiments.cpp
+
+  // Maybe move into protected section. Or maybe these phase-shaping laws could be factored out 
+  // into class of its own.
 
 };
 
