@@ -752,7 +752,7 @@ public:
   upward saw. But the exact shapes will depend on waveShape.  */
   void setWaveFormParameter(double newParam) { waveParam = newParam; }
 
-
+  /** Initializes all parameter values to their initial/default values. */
   void initSettings();
 
 
@@ -760,8 +760,16 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
+  /** Given a phasor position "pos", this function will produce the output value of the waveform at
+  that position. If pos is outside the nominal range of 0..1, it will first wrap it into that 
+  range. */
   double getWaveValue(double pos);
 
+  /** Like getWaveValue() but this function assumes that the phasor value pos is already inside the
+  nominal range such that 0.0 <= pos < 1.0. If that's not the case, it will trigger a debug 
+  assertion. It can be used when the caller is already sure that the position is inside the correct
+  range to bypass our internal range reduction for optimization purposes. */
+  double getWaveValue_01(double pos);
 
 
   //-----------------------------------------------------------------------------------------------

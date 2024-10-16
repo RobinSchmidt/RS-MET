@@ -680,68 +680,39 @@ void rsMorphWaveBipolar::initSettings()
   waveForm  = WaveForm::Sine;
 }
 
-double rsMorphWaveBipolar::getWaveValue(double pos)
+double rsMorphWaveBipolar::getWaveValue_01(double pos)
 {
-  using WF = WaveForm;
+  RAPT::rsAssert(pos >= 0.0 && pos < 1.0, "pos out of assumed range");
 
+  using WF = WaveForm;
   switch(waveForm)
   {
-
   case WF::Sine:
   {
     return sin(2*PI*pos);
   }
-
   case WF::SinFatSaw:
   {
-    // Test:
-    //double map = 0.50;
-    //double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
-    // This mapping seems ok - but maybe tweak the map parameter further so find some 
-    // "optimum", i.e. a value that feels most musical. 0.5 seems good. 0.8: too little 
-    // resolution around 0. To evaluate, listen to perceived difference between 0.0 amd 0.2 
-    // compared to 0.8 and 1.0.
-    // Use the same formula for the TriSaw as well. Maybe optimize - the formula simplfies with
-    // a parameter of 0.5 because it cancels with a factor of 2.
-
-
     double par = triSawParamMap(waveParam);
     double tmp = RAPT::rsTriSaw(2*PI*pos, par);    // TriSaw
     return RAPT::rsSin<double>(0.5*PI * tmp);      // SinFatSaw by sinusoidal waveshaping
   }
-
   case WF::TriSaw:
   {
-    //double map = 0.50;
-    //double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
-    // Code duplication! Hmm...but the "map" parameter could perhaps be different in this case.
-    // But nah...or...dunno
-
     double par = triSawParamMap(waveParam);
     return RAPT::rsTriSaw(2*PI*pos, par);
   }
 
-
-
-  // Not yet ready for prime time:
+  // Not yet ready for prime time - the mapping is not yet tuned
   case WF::PowerLaw:
   {
-    pos = RAPT::rsWrapAround(pos, 1.0); 
-    // ToDo: 
-    // -Move to the beginning of the whole function - it should apply to all waveforms
-    // -Implement an unsafe getWaveValue_01 function that assumes that pos in in 0..1
-    // -For the TriSaw bases waves, use an optimzed function that avoids the internal wrap-around
-    //  code (it would then be redundant) and also directly works with the 0..1 range
-
-
     pos = phaseShapePow(pos, pow(2.0, -2.0 * waveParam));
     return sin(2*PI*pos);
     // The scaler 2.0 in front of waveParam is rather ad hoc. The goal is that the user gets a 
     // parameter in -1..+1 where the ends correspond to bright waves. We want the sematic to be: 
     // -1: sawDown (but more like a squeezed sine), 0: sine, +1: sawUp
+    // 
   }
-
-
 
   default:
   {
@@ -756,6 +727,9 @@ double rsMorphWaveBipolar::getWaveValue(double pos)
   //  phase-offset parameters. But maybe a simple if statement is good enough? But maybe not 
   //  when we use phase-modulation. In this case, all bets are off. But maybe have an optimized 
   //  path when waveParam == 0. In this case, it's just a sine or triangle wave.
+  // -Replace the calls to RAPT::rsTriSaw by calls to some optimized function that directly works
+  //  with the 0..1 range rather than 0..2pi and that avoids the internal range reduction to
+  //  0..1 because here, we assume that pos is in 0..1
   // -Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be 
   //  ZDF feedback. UDF is good enough. Feedback-FM gives a nice morph between saw and sin.
   // -Factor the whole code out into a free function or class. But then we need to drag out the
@@ -768,6 +742,13 @@ double rsMorphWaveBipolar::getWaveValue(double pos)
   //  For TriSaw and FtSinSaw, it seems like the "half-brightness" point is somewhere around
   //  0.95
 }
+
+double rsMorphWaveBipolar::getWaveValue(double pos)
+{
+  pos = RAPT::rsWrapAround(pos, 1.0);  // Range reduction due to periodicity
+  return getWaveValue_01(pos);
+}
+
 
 //=================================================================================================
 
