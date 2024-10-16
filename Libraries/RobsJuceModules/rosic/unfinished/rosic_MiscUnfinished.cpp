@@ -899,8 +899,8 @@ void rsSweepKicker::initSettings(bool initAlsoSampleRate)
 
 
   // Soon obsolete:
-  waveParam   =     0;
-  waveShape   = WaveShape::Sine;
+  //waveParam   =     0;
+  //waveShape   = WaveShape::Sine;
 
 
   waveForm.initSettings();

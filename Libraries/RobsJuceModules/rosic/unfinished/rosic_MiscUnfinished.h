@@ -905,7 +905,7 @@ public:
   /** Sets the waveshape to be used. */
   void setWaveForm(int newShape) 
   { 
-    waveShape = (WaveShape) newShape;  // old
+    //waveShape = (WaveShape) newShape;  // old
     waveForm.setWaveForm(newShape);    // new
   }
 
@@ -915,7 +915,7 @@ public:
   upward saw. But the exact shapes will depend on waveShape.  */
   void setWaveFormParameter(double newParam) 
   { 
-    waveParam = newParam;                     // old
+    //waveParam = newParam;                     // old
     waveForm.setWaveFormParameter(newParam);  // new
   }
 
@@ -986,8 +986,8 @@ protected:
   double fadeOutTime;
 
   // Move to rsMorphWaveBipolar:
-  double    waveParam;    // Parameter to control/morph the waveshape in -1..+1
-  WaveShape waveShape;    // Select the type of morphable waveshape
+  //double    waveParam;    // Parameter to control/morph the waveshape in -1..+1
+  //WaveShape waveShape;    // Select the type of morphable waveshape
 
 
 
