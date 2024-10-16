@@ -749,12 +749,42 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
+
+  /** Enumeration of the available wave forms. */
+  enum WaveForm
+  {
+    Sine = 0,             // Just a sine. Ignores waveParam.
+    SinFatSaw,            // TriSaw (see below) with sinusoidal waveshaping
+    TriSaw,               // SawDown / Triangle / SawUp
+
+    PowerLaw,             // Phase-shaping with power law - rename to PhaseShapePow
+    //PhaseShapeLinFrac,
+
+    NumWaveShapes
+  };
+
+  /** Sets the waveshape to be used. */
+  void setWaveForm(int newShape) { waveForm = (WaveForm) newShape; }
+
+  /** Sets the parameter that controls the shape of the waveform. 0 means sine or triangle 
+  (depending on waveShape), -1 is something similar to a downward saw and +1 is similar to an 
+  upward saw. But the exact shapes will depend on waveShape.  */
+  void setWaveFormParameter(double newParam) { waveParam = newParam; }
 
 
 
   //-----------------------------------------------------------------------------------------------
-  // Phase shaping laws
+  // \name Processing
+
+  double getWaveValue(double pos);
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Phase shaping laws
 
   static double powerLaw(double phase, double shapeParam);
   // let s = shapeParam, 
@@ -768,6 +798,14 @@ public:
   //static double symmetricLinFracLaw(double phase, double shapeParam);
   // See phaseShapingLinFrac() in OscillatorExperiments.cpp
 
+  // Maybe these phase-shaping laws could be fectored out into class of its own.
+
+
+protected:
+
+
+  double   waveParam;    // Parameter to control/morph the waveshape in -1..+1
+  WaveForm waveForm;     // Select the type of morphable waveshape
 
 };
 
@@ -929,6 +967,7 @@ protected:
 
   double fadeOutTime;
 
+  // Move to rsMorphWaveBipolar:
   double    waveParam;    // Parameter to control/morph the waveshape in -1..+1
   WaveShape waveShape;    // Select the type of morphable waveshape
 
