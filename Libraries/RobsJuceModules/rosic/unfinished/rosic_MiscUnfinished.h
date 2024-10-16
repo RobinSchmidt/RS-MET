@@ -733,7 +733,8 @@ public:
   enum WaveForm
   {
     Sine = 0,             // Just a sine. Ignores waveParam.
-    SinFatSaw,            // TriSaw (see below) with sinusoidal waveshaping
+    SinFatSaw,            // TriSaw (see below) with sinusoidal waveshaping. This Turns the 
+                          // triangle into a sine and the saw into a bulged out ("fat") saw.
     TriSaw,               // SawDown / Triangle / SawUp
 
     PhaseShapePow,        // Phase-shaping with power law 
@@ -790,6 +791,14 @@ protected:
     double map = 0.60;
     double par = RAPT::rsSign(rawParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(rawParam), map);
     return par;
+    // The value of map = 0.60 was found by trial and error. For evaluation, I listen to the 
+    // perceived difference between 0.0 and 0.5 as compared to the difference between 0.5 and 1.0.
+    // I also compare the difference between 0.0 and 0.2 compared to 0.8 and 1.0. I also pay 
+    // attention to what happens in the first and last 10% of the range. Does soemthing happen or 
+    // does it sound almost the same? Maybe the value can be further refined - maybe we could even
+    // use an entirel different mapping function. Further fine-tunig might be appropriate.
+
+
     // This mapping seems ok - but maybe tweak the map parameter further so find some 
     // "optimum", i.e. a value that feels most musical. 0.5 seems good. 0.8: too little 
     // resolution around 0. To evaluate, listen to perceived difference between 0.0 amd 0.2 

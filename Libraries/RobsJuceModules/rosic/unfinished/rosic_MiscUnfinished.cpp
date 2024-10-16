@@ -694,8 +694,8 @@ double rsMorphWaveBipolar::getWaveValue_01(double pos)
   case WF::SinFatSaw:
   {
     double par = triSawParamMap(waveParam);
-    double tmp = RAPT::rsTriSaw(2*PI*pos, par);    // TriSaw
-    return RAPT::rsSin<double>(0.5*PI * tmp);      // SinFatSaw by sinusoidal waveshaping
+    double tmp = RAPT::rsTriSaw(2*PI*pos, par);  // We start with a TriSaw and use sinusoidal..
+    return RAPT::rsSin<double>(0.5*PI * tmp);    // ..waveshaping to get the SinFatSaw
   }
   case WF::TriSaw:
   {
@@ -724,8 +724,10 @@ double rsMorphWaveBipolar::getWaveValue_01(double pos)
 
   // ToDo:
   // -Replace the calls to RAPT::rsTriSaw by calls to some optimized function that directly works
-  //  with the 0..1 range rather than 0..2pi and that avoids the internal range reduction to
-  //  0..1 because here, we assume that pos is in 0..1
+  //  with the 0..1 range rather than 0..2pi. We convert here from 0..1 to 0..2pi and then there, 
+  //  we convert back from 0..2pi to 0..1. That's, of course, silly. We also want to avoid the 
+  //  internal range reduction there to 0..1 because here, we assume that pos is already in 0..1 so
+  //  the range reduction would be redundant. 
 }
 
 double rsMorphWaveBipolar::getWaveValue(double pos)
