@@ -726,16 +726,35 @@ protected:
 
 /** UNDER CONSTRUCTION. Just a stub at the moment.
 
-A class for phaseshaping. Phaseshaping is like waveshaping but it is applied to a normalized
-phase value, i.e. a value between 0 and 1 that is used as an osillator phase. */
+A class for producing various waveforms with bipolar parameters in the range -1..+1 that have the 
+general feature that at -1 we have a downward waveshape (like downward saw), at 0, we have some 
+symmetric waveshape (like sine or triangle) and at +1, we have an upward waveshape (like an upward 
+saw). It can be used by creating an object of type rsMorphWaveBipolar, then call setup function 
+like setWaveType, setWaveParameter and after setup calling a function getWaveValue(double pos) 
+where "pos" is a position "phasor" in the range 0..1 that the caller should maintain in some sort 
+of oscillator object. Here, we do not care about frequencies and phase-increments - this must be 
+done by the caller. ...TBC...
 
-class rsPhaseShaper
+
+Old:
+A class for phaseshaping. Phaseshaping is like waveshaping but it is applied to a normalized
+phase value, i.e. a value between 0 and 1 that is used as an osillator phase. 
+
+*/
+
+class rsMorphWaveBipolar
 {
 
 public:
 
 
 
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // Phase shaping laws
 
   static double powerLaw(double phase, double shapeParam);
   // let s = shapeParam, 
@@ -832,6 +851,7 @@ public:
 
     NumWaveShapes
   };
+  // Move into class rsMorphWaveBipolar
   // ToDo: provide more waveshapes - for example PhaseShapeLinFrac. Look into RAPT::rsTriSawOsc.
   // I think, it does something similar to SinFatSaw when we use the cubic polynomial segments
 

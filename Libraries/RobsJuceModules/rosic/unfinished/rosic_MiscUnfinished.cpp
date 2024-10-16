@@ -660,7 +660,7 @@ void rsFreqSweeper::updateCoeffs()
 
 //=================================================================================================
 
-double rsPhaseShaper::powerLaw(double p, double a) 
+double rsMorphWaveBipolar::powerLaw(double p, double a) 
 {
   p = RAPT::rsLinToLin(p, 0.0, 1.0, -1.0, +1.0);   // 0..1 -> -1..+1
   if(p >= 0)
@@ -737,18 +737,18 @@ rsSweepKicker::rsSweepKicker()
       return RAPT::rsTriSaw(2*PI*p, par);
     }
 
-    /*
+    
     // Not yet ready for prime time:
     case WS::PowerLaw:
     {
       p = RAPT::rsWrapAround(p, 1.0); // New
-      p = rsPhaseShaper::powerLaw(p, pow(2.0, -2.0 * waveParam));
+      p = rsMorphWaveBipolar::powerLaw(p, pow(2.0, -2.0 * waveParam));
       return sin(2*PI*p);
       // The scaler 2.0 in front of waveParam is rather ad hoc. The goal is that the user gets a 
       // parameter in -1..+1 where the ends correspond to bright waves. We want the sematic to be: 
       // -1: sawDown (but more like a squeezed sine), 0: sine, +1: sawUp
     }
-    */
+    
 
     default:
     {
