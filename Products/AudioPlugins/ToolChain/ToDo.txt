@@ -1,3 +1,5 @@
+Maybe make separate ToDo - files: ToDo-Bugs.txt, ToDo-Features.txt, ToDo-CodeQuality.txt, etc.
+
 ToDo for the next release:
 -Fix all bugs of priority 2..5
 -Make automation and modulation system work for the monophonic case. 
@@ -78,6 +80,14 @@ we build up our suite of unit tests along the way.
     the window creation?
    -Try, if this also affects my own popup menus
 
+
+- Func Shaper:
+
+  -[5] It's not possible to enter a comma in the formula field because it gets converted to a 
+   point. I did this auto-conversion for convenience when entering nuermic values for sliders with
+   the number pad of the keyboard - but the automatic conversion should apply only to sliders, not 
+   to normal text-entry fields! Entering a comma is essential for functions with multiple 
+   parameters!
 
 
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 

@@ -817,7 +817,11 @@ account key and velocity as modifiers for the actual frequencies etc.).
 
 ToDo:
 -Add various ByKey, ByVel parameters for certain parameters where that makes sense. That makes the
- instrument more dynamically playable
+ instrument more dynamically playable. Obvious candidates are:
+ -ByKey: Amplitude, FreqHigh, FreqLow, SweepTime
+ -ByVel: Amplitude, FreqHigh, 
+ If we do this, the instrument really needs a custom GUI.
+
 
 */
 
