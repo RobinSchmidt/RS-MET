@@ -791,6 +791,10 @@ rsSweepKicker::rsSweepKicker()
   // Set up the waveshape function in the embedded freqSweeper object:
   auto waveFunc = [this](double p) 
   { 
+    return waveForm.getWaveValue(p);
+
+
+    /*
     // ToDo: apply a nonlinear mapping to the waveParam - which mapping is most suitable may depend
     // the waveShape
 
@@ -868,6 +872,7 @@ rsSweepKicker::rsSweepKicker()
     //  different for the different waveforms. For TriSaw, we need more resolution at the ends
     //  For TriSaw and FtSinSaw, it seems like the "half-brightness" point is somewhere around
     //  0.95
+    */
 
   };
 
