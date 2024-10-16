@@ -891,8 +891,14 @@ void rsSweepKicker::initSettings(bool initAlsoSampleRate)
   swpTmByKey  =     0;
   swpTmByVel  =     0;
   fadeOutTime =     0;
+
+
+  // Soon obsolete:
   waveParam   =     0;
   waveShape   = WaveShape::Sine;
+
+
+  waveForm.initSettings();
   freqSweeper.initSettings(initAlsoSampleRate);
   fadeOutEnv.setNumFadeSamples(RAPT::rsRoundToInt(fadeOutTime * getSampleRate()));
 }
