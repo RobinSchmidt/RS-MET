@@ -720,27 +720,12 @@ double rsMorphWaveBipolar::getWaveValue_01(double pos)
     return 0.0;
   }
 
-  } // end of switch(waveShape)
+  }
 
   // ToDo:
-  // -Try to optimize away the calls to fmod. I think, we need the fmod because due to the 
-  //  phase-offset parameters. But maybe a simple if statement is good enough? But maybe not 
-  //  when we use phase-modulation. In this case, all bets are off. But maybe have an optimized 
-  //  path when waveParam == 0. In this case, it's just a sine or triangle wave.
   // -Replace the calls to RAPT::rsTriSaw by calls to some optimized function that directly works
   //  with the 0..1 range rather than 0..2pi and that avoids the internal range reduction to
   //  0..1 because here, we assume that pos is in 0..1
-  // -Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be 
-  //  ZDF feedback. UDF is good enough. Feedback-FM gives a nice morph between saw and sin.
-  // -Factor the whole code out into a free function or class. But then we need to drag out the
-  //  WaveShape out of this class as well. Maybe put everything into the class rsPhaseShaper and
-  //  rename it into something like rsWaveMorphOsc or something. We'll see...
-  // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
-  //  back-and-forth conversion
-  // -Figure out a suitable mapper for the waveParam. the desired mapping function my be 
-  //  different for the different waveforms. For TriSaw, we need more resolution at the ends
-  //  For TriSaw and FtSinSaw, it seems like the "half-brightness" point is somewhere around
-  //  0.95
 }
 
 double rsMorphWaveBipolar::getWaveValue(double pos)
@@ -748,7 +733,6 @@ double rsMorphWaveBipolar::getWaveValue(double pos)
   pos = RAPT::rsWrapAround(pos, 1.0);  // Range reduction due to periodicity
   return getWaveValue_01(pos);
 }
-
 
 //=================================================================================================
 

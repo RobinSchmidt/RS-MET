@@ -726,10 +726,8 @@ public:
   rsMorphWaveBipolar() { initSettings(); }
 
 
-
   //-----------------------------------------------------------------------------------------------
   // \name Setup
-
 
   /** Enumeration of the available wave forms. */
   enum WaveForm
@@ -754,7 +752,6 @@ public:
 
   /** Initializes all parameter values to their initial/default values. */
   void initSettings();
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -787,12 +784,14 @@ public:
   //static double symmetricLinFracLaw(double phase, double shapeParam);
   // See phaseShapingLinFrac() in OscillatorExperiments.cpp
 
-  // Maybe these phase-shaping laws could be fectored out into class of its own.
+  // Maybe move into protected section. Or maybe these phase-shaping laws could be factored out 
+  // into class of its own.
+
 
 
 protected:
 
-
+  // User parameters:
   double   waveParam;    // Parameter to control/morph the waveshape in -1..+1
   WaveForm waveForm;     // Select the type of morphable waveshape
 

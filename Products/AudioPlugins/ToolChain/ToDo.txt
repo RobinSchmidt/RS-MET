@@ -30,7 +30,8 @@ We give the priorities from 1 to 5 with meanings:
 
 In addition to the priorities 1-5, we also use the following tags:
 
-[Q]  Questionable behavior which might in fact be intended and therefore not strictly a bug
+[Q]  Questionable behavior which might in fact be correct/intended/expected and therefore not 
+     strictly a bug but might be perceived as such. Maybe it's a design mistake.
 [F]  Fixed, not verified
 [V]  Fixed and verified
 
@@ -83,8 +84,8 @@ we build up our suite of unit tests along the way.
 
 - Func Shaper:
 
-  -[5] It's not possible to enter a comma in the formula field because it gets converted to a 
-   point. I did this auto-conversion for convenience when entering nuermic values for sliders with
+  -[4] It's not possible to enter a comma in the formula field because it gets converted to a 
+   point. I did this auto-conversion for convenience when entering numeric values for sliders with
    the number pad of the keyboard - but the automatic conversion should apply only to sliders, not 
    to normal text-entry fields! Entering a comma is essential for functions with multiple 
    parameters!
@@ -101,6 +102,9 @@ we build up our suite of unit tests along the way.
   manager? Maybe it's a bug in Liberty? It seems to affect only liberty
 
 - [3] MultiAnalyzer, waveform view: when zooming in, the horizontal scrollbar does not appear
+
+- [Q] SweepKicker: Load the preset _Test-SweepsUpward.xml. Why does it sweep upward? That shouldn't 
+  happen, I think.
 
 - Quadrifex: 
   -[Q] PhaseStereoizer: when Dry/Wet is set to 100/0 (i.e. dry only), tweaking the other parameters
@@ -135,6 +139,13 @@ we build up our suite of unit tests along the way.
   affectd. That's strange because peak/dip also uses the LP -> BP transform. Maybe try different
   implementation structures, e.g. SVF. It is strange that the effect is not reflected in the
   frequency response plot - it uses the actual filter coeffs, too.
+  There is now some experiment (I think, in TestsRosicAndRapt - but I'm not sure) that exposes 
+  this behavior. It's a very real problem with numerical accuracy. Fixing it won't be easy because
+  we already use double precision! Maybe we need multiprecision for the coeff-calculations. Trying
+  to switch to a state-variable filter structure did not seem to help much. See:
+  https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format#Double-double_arithmetic
+  for a possible way to achieve quad-precision with reasonable performance. But we would also need
+  to implement all the elementary functions for that type which is a big task.
 
 - [1] WaveOscillator: Initially when not yet any file was loaded manually, the first click on the 
   "Next" button loads the first file in the current directory instead of the next one according to 
