@@ -64,6 +64,12 @@ inline T rsCubicFadeOut(T x)
   //return x*x*(x-2)+1;   // slope = -1 at x = 1
   return x*x*((2-PI/2)*x+(PI/2-3))+1;
 }
+// Maybe move these two into a class rsFadeFunctions where we can also have other fadeIn/Out 
+// functions. See Notes/FadeInOut.txt for more ideas. We may also want to include exact sin/cos
+// based fadeIn/Out - and maybe other functions with constant-power-sum. See also the panner
+// module in Quadrifex. It also has some constant-power-pan functions which can also be used
+// in a crossfading context.
+
 
 /** NOT YET USABLE (buggy)!
 
@@ -74,7 +80,10 @@ phase value. The actual returned value will be the one that is closest to the or
 phase that also satisfies the consistency criterion of being k*2*pi away from targetPhase. */
 //template<class T>
 //T rsFindCosistentPhase(T targetPhase, T tentativePhase);
-// maybe switch argument order, let the targetPhase be in the range -PI..+PI instead of 0..2pi
+// ToDo:
+// -Maybe switch argument order, let the targetPhase be in the range -PI..+PI instead of 0..2pi
+// -Document uses-cases for this function. I think, it's meant for "cleaning up" inaccurate 
+//  phase measurments to fit them to some sinusoidal model or something? 
 
 
 /** Assume to have some interval of values, where values that fall outside the interval are 
