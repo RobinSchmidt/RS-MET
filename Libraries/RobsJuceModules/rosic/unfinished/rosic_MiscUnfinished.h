@@ -735,6 +735,8 @@ class rsPhaseShaper
 public:
 
 
+
+
   static double powerLaw(double phase, double shapeParam);
   // let s = shapeParam, 
   // s < 0: sine turns to upward saw
@@ -756,11 +758,13 @@ public:
 //  complete waveform generation from rsSweepKicker such that it can also be used in a regular 
 //  oscillator. With that oscillator, we can more meaningfully tweak the mapping parameters. The 
 //  goal is to create a perceptually linear sweep from -1 to +1 for the waveshape parameter.
-// -The high level API should rpovide functions setWaveType (TriSaw, etc.), setWaveParam (-1..+1)
+// -The high level API should provide functions setWaveType (TriSaw, etc.), setWaveParam (-1..+1)
 //  for setup and a phaseToWave01(double phasor01) function that takes a phasor in 0..1 and 
 //  produces the final waveform output. There should also be a function that accepts the phase
 //  in the 0..1 range but allows for periodic wrapping. i.e. it uses RAPT::rsWrapAround(p, 1.0)
-//  internally and then calls the other function
+//  internally and then calls the other function.
+// -To implement the oscillator, factor out the phasor stuff (variables pos and inc, update, 
+//  reset,...) from rsTriSawOsc and use the same baseclass for an rsMorphWaveOsc class.
 //  
 
 
@@ -823,12 +827,13 @@ public:
     SinFatSaw,            // TriSaw (see below) with sinusoidal waveshaping
     TriSaw,               // SawDown / Triangle / SawUp
 
-    //PowerLaw,             // Phase-shaping with power law - rename to PhaseShapePow
+    PowerLaw,             // Phase-shaping with power law - rename to PhaseShapePow
     //PhaseShapeLinFrac,
 
     NumWaveShapes
   };
-  // ToDo: provide more waveshapes - for example PhaseShapeLinFrac
+  // ToDo: provide more waveshapes - for example PhaseShapeLinFrac. Look into RAPT::rsTriSawOsc.
+  // I think, it does something similar to SinFatSaw when we use the cubic polynomial segments
 
   /** Sets the waveshape to be used. */
   void setWaveForm(int newShape) { waveShape = (WaveShape) newShape; }
