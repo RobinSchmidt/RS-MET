@@ -685,9 +685,6 @@ protected:
   double phase;
   double phaseStereo;
 
-  // Wave shape parameters:
-  //double waveShape;  // -1: fat saw down, 0: sine, +1 fat saw up
-
 
   // Internals:
   bool dirty;
@@ -696,31 +693,13 @@ protected:
   double instPhase, instFreq;
   int    sampleCount;
 
-
+  // This std::function member is used to produce the actual waveform. We initialize it to produce
+  // a sine function:
   std::function<double(double phase)> wave = [](double p)
   { 
-    // Old:
     return RAPT::rsSin<double>(2*PI*p);
-
-    // New:
-    //double y = RAPT::rsTriSaw(p, waveShape); // TriSaw
-    //return RAPT::rsSin<double>(0.5*PI * y);  // SinSaw
-
-    // ToDo: Verify if "&" is the correct/best capture mode for this purpose. Maybe "=" or "this" 
-    // is better? Or maybe we shouldn't capture the waveShape parameter but instead pass it in as
-    // an additional parameter
   };
 };
-
-// ToDo:
-//
-// - Maybe the wavesshape could be determined by a user-defined function using std::function. Maybe
-//   for flexibility, the function should receive the instantaneous phase and additionaly the 
-//   absolute time to (potentially) implement time-varying waveshapes.
-//
-// - Maybe use a sinusoidally shaped TriSaw waveform with parameter -1..+1. See triSaw() 
-//   experiment. Or maybe use a wavetable (in the Waldorf sense). 
-
 
 //=================================================================================================
 
@@ -733,14 +712,7 @@ saw). It can be used by creating an object of type rsMorphWaveBipolar, then call
 like setWaveType, setWaveParameter and after setup calling a function getWaveValue(double pos) 
 where "pos" is a position "phasor" in the range 0..1 that the caller should maintain in some sort 
 of oscillator object. Here, we do not care about frequencies and phase-increments - this must be 
-done by the caller. ...TBC...
-
-
-Old:
-A class for phaseshaping. Phaseshaping is like waveshaping but it is applied to a normalized
-phase value, i.e. a value between 0 and 1 that is used as an osillator phase. 
-
-*/
+done by the caller. ...TBC...  */
 
 class rsMorphWaveBipolar
 {
@@ -818,7 +790,7 @@ protected:
 
 };
 
-// ToDo:
+// ToDo (partially done):
 // -Rename to rsMorphWave and integrate the code from waveFunc in rsSweepKicker::rsSweepKicker
 //  here. The waveShape parameter there whould be moved into this class. I want to factor out the
 //  complete waveform generation from rsSweepKicker such that it can also be used in a regular 
@@ -831,7 +803,9 @@ protected:
 //  internally and then calls the other function.
 // -To implement the oscillator, factor out the phasor stuff (variables pos and inc, update, 
 //  reset,...) from rsTriSawOsc and use the same baseclass for an rsMorphWaveOsc class.
-//  
+// -Have two waveShape parameters - one that morphs between sawUp/sin/sawDown, one that
+//  drives the result into saturation (to squarify it) ...maybe a third that addds an offset after
+//  the drive before the saturating function. 
 
 
 //=================================================================================================
@@ -839,7 +813,13 @@ protected:
 /** A monophonic drum synthesizer based on rsFreqSweeper. The implementation consists mostly of
 keeping track of the midi state and delegating setter calls to the embedded rsFreqSweeper object 
 at the right moments (e.g. calls to frequency setters deferred to noteOn events and may take into
-accoutn key and velocity as modifiers for the actual frequencies etc.).  */
+account key and velocity as modifiers for the actual frequencies etc.).  
+
+ToDo:
+-Add various ByKey, ByVel parameters for certain parameters where that makes sense. That makes the
+ instrument more dynamically playable
+
+*/
 
 class rsSweepKicker
 {
@@ -886,38 +866,15 @@ public:
   void setStartPhase(      double newPhase) { freqSweeper.setStartPhase(newPhase);       }
   void setStereoPhaseShift(double newShift) { freqSweeper.setStereoPhaseShift(newShift); }
 
-  /** Enumeration of the available wave forms. */
-  enum WaveShape // rename to WaveForm
-  {
-    Sine = 0,             // Just a sine. Ignores waveParam.
-    SinFatSaw,            // TriSaw (see below) with sinusoidal waveshaping
-    TriSaw,               // SawDown / Triangle / SawUp
 
-    PowerLaw,             // Phase-shaping with power law - rename to PhaseShapePow
-    //PhaseShapeLinFrac,
-
-    NumWaveShapes
-  };
-  // Move into class rsMorphWaveBipolar
-  // ToDo: provide more waveshapes - for example PhaseShapeLinFrac. Look into RAPT::rsTriSawOsc.
-  // I think, it does something similar to SinFatSaw when we use the cubic polynomial segments
-
-  /** Sets the waveshape to be used. */
-  void setWaveForm(int newShape) 
-  { 
-    //waveShape = (WaveShape) newShape;  // old
-    waveForm.setWaveForm(newShape);    // new
-  }
-
+  /** Sets the waveshape to be used. See the enum rsMorphWaveBipolar::WaveForm for the meaning
+  of the newShape parameter. We use the values defined there.  */
+  void setWaveForm(int newShape) { waveForm.setWaveForm(newShape); }
 
   /** Sets the parameter that controls the shape of the waveform. 0 means sine or triangle 
   (depending on waveShape), -1 is something similar to a downward saw and +1 is similar to an 
   upward saw. But the exact shapes will depend on waveShape.  */
-  void setWaveFormParameter(double newParam) 
-  { 
-    //waveParam = newParam;                     // old
-    waveForm.setWaveFormParameter(newParam);  // new
-  }
+  void setWaveFormParameter(double newParam) { waveForm.setWaveFormParameter(newParam); }
 
 
   // Experimental:
@@ -985,18 +942,8 @@ protected:
 
   double fadeOutTime;
 
-  // Move to rsMorphWaveBipolar:
-  //double    waveParam;    // Parameter to control/morph the waveshape in -1..+1
-  //WaveShape waveShape;    // Select the type of morphable waveshape
-
-
-
   int currentNote = -1;
 
-  // ...tbc... have two waveShape parameters - one that morphs between sawUp/sin/sawDown, one that
-  // drives the result into saturation (to squarify it) ...maybe a third that addds an offset after
-  // the drive before the saturating function. Maybe the API should allow rsFreqSweeper to take a
-  // std::function for producing the waveform - and we provide one here.
 
   // Maybe integrate an AHDSR envelope for the amplitude
 

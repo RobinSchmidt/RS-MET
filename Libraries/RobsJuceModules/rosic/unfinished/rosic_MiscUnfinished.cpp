@@ -748,138 +748,40 @@ double rsMorphWaveBipolar::getWaveValue(double pos)
 
   } // end of switch(waveShape)
 
-    // ToDo:
-    // -Try to optimize away the calls to fmod. I think, we need the fmod because due to the 
-    //  phase-offset parameters. But maybe a simple if statement is good enough? But maybe not 
-    //  when we use phase-modulation. In this case, all bets are off. But maybe have an optimized 
-    //  path when waveParam == 0. In this case, it's just a sine or triangle wave.
-    // -Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be 
-    //  ZDF feedback. UDF is good enough. Feedback-FM gives a nice morph between saw and sin.
-    // -Factor the whole code out into a free function or class. But then we need to drag out the
-    //  WaveShape out of this class as well. Maybe put everything into the class rsPhaseShaper and
-    //  rename it into something like rsWaveMorphOsc or something. We'll see...
-    // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
-    //  back-and-forth conversion
-    // -Figure out a suitable mapper for the waveParam. the desired mapping function my be 
-    //  different for the different waveforms. For TriSaw, we need more resolution at the ends
-    //  For TriSaw and FtSinSaw, it seems like the "half-brightness" point is somewhere around
-    //  0.95
-
-
+  // ToDo:
+  // -Try to optimize away the calls to fmod. I think, we need the fmod because due to the 
+  //  phase-offset parameters. But maybe a simple if statement is good enough? But maybe not 
+  //  when we use phase-modulation. In this case, all bets are off. But maybe have an optimized 
+  //  path when waveParam == 0. In this case, it's just a sine or triangle wave.
+  // -Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be 
+  //  ZDF feedback. UDF is good enough. Feedback-FM gives a nice morph between saw and sin.
+  // -Factor the whole code out into a free function or class. But then we need to drag out the
+  //  WaveShape out of this class as well. Maybe put everything into the class rsPhaseShaper and
+  //  rename it into something like rsWaveMorphOsc or something. We'll see...
+  // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
+  //  back-and-forth conversion
+  // -Figure out a suitable mapper for the waveParam. the desired mapping function my be 
+  //  different for the different waveforms. For TriSaw, we need more resolution at the ends
+  //  For TriSaw and FtSinSaw, it seems like the "half-brightness" point is somewhere around
+  //  0.95
 }
 
 //=================================================================================================
 
 rsSweepKicker::rsSweepKicker()
 {
-  // Old:
-  //freqSweeper.setWaveForm(RAPT::rsSin<double>);
-  //auto waveFunc = [](double p) { return rsSin<double> };
-
-
-
   initSettings(true);
 
-
-
-  // Test:
-  //waveShape = WaveShape::Sine;
-  //waveShape = WaveShape::PowerLaw;
-  //waveShape = WaveShape::TriSaw;
-  //waveShape = WaveShape::SinFatSaw;
-
-  // Set up the waveshape function in the embedded freqSweeper object:
-  auto waveFunc = [this](double p) 
-  { 
-    return waveForm.getWaveValue(p);
-
-
-    /*
-    // ToDo: apply a nonlinear mapping to the waveParam - which mapping is most suitable may depend
-    // the waveShape
-
-    using WS = WaveShape;
-    //using namespace RAPT;
-
-    switch(waveShape)
-    {
-
-    case WS::Sine:
-    {
-      return sin(2*PI*p);
-    }
-
-    case WS::SinFatSaw:
-    {
-      // Test:
-      double map = 0.50;
-      double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
-      // This mapping seems ok - but maybe tweak the map parameter further so find some 
-      // "optimum", i.e. a value that feels most musical. 0.5 seems good. 0.8: too little 
-      // resolution around 0. To evaluate, listen to perceived difference between 0.0 amd 0.2 
-      // compared to 0.8 and 1.0.
-      // Use the same formula for the TriSaw as well. Maybe optimize - the formula simplfies with
-      // a parameter of 0.5 because it cancels with a factor of 2.
-
-      double y = RAPT::rsTriSaw(2*PI*p, par);    // TriSaw
-      return RAPT::rsSin<double>(0.5*PI * y);    // SinFatSaw
-    }
-
-    case WS::TriSaw:
-    {
-      double map = 0.50;
-      double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
-      // Code duplication! Hmm...but the "map" parameter could perhaps be different in this case.
-      // But nah...or...dunno
-
-      return RAPT::rsTriSaw(2*PI*p, par);
-    }
-
-    
-    // Not yet ready for prime time:
-    case WS::PowerLaw:
-    {
-      p = RAPT::rsWrapAround(p, 1.0); // New
-      p = rsMorphWaveBipolar::phaseShapePow(p, pow(2.0, -2.0 * waveParam));
-      return sin(2*PI*p);
-      // The scaler 2.0 in front of waveParam is rather ad hoc. The goal is that the user gets a 
-      // parameter in -1..+1 where the ends correspond to bright waves. We want the sematic to be: 
-      // -1: sawDown (but more like a squeezed sine), 0: sine, +1: sawUp
-    }
-    
-
-    default:
-    {
-      RAPT::rsError("Unknown WaveShape");
-      return 0.0;
-    }
-
-    } // end of switch(waveShape)
-
-    // ToDo:
-    // -Try to optimize away the calls to fmod. I think, we need the fmod because due to the 
-    //  phase-offset parameters. But maybe a simple if statement is good enough? But maybe not 
-    //  when we use phase-modulation. In this case, all bets are off. But maybe have an optimized 
-    //  path when waveParam == 0. In this case, it's just a sine or triangle wave.
-    // -Maybe try using feedback-FM to turn the wwaveshape from sin to saw. It doesn't need to be 
-    //  ZDF feedback. UDF is good enough. Feedback-FM gives a nice morph between saw and sin.
-    // -Factor the whole code out into a free function or class. But then we need to drag out the
-    //  WaveShape out of this class as well. Maybe put everything into the class rsPhaseShaper and
-    //  rename it into something like rsWaveMorphOsc or something. We'll see...
-    // -Use a version of rsTriSaw that expects p in 0..1 rather than 0..2pi to avoid the 
-    //  back-and-forth conversion
-    // -Figure out a suitable mapper for the waveParam. the desired mapping function my be 
-    //  different for the different waveforms. For TriSaw, we need more resolution at the ends
-    //  For TriSaw and FtSinSaw, it seems like the "half-brightness" point is somewhere around
-    //  0.95
-    */
-
-  };
-
- 
+  // The freqSweeper uses a std::function member to actually produce its waveform output for 
+  // flexibility with reaard to the produced waveform. Here, we assign that member via its 
+  // setWaveForm setter. We assign it to a function "waveFunc" that itself uses our waveForm member
+  // for the waveform production:
+  auto waveFunc = [this](double p) { return waveForm.getWaveValue(p); };
   freqSweeper.setWaveForm(waveFunc);
-
-
+  // ToDo: 
+  // -Verify if "this" is the correct/best capture mode for this purpose. Maybe "=" or "&" 
+  //  is better? Or maybe we shouldn't capture the waveShape parameter but instead pass it in as
+  //  an additional parameter
 
   reset();
 }
@@ -896,13 +798,6 @@ void rsSweepKicker::initSettings(bool initAlsoSampleRate)
   swpTmByKey  =     0;
   swpTmByVel  =     0;
   fadeOutTime =     0;
-
-
-  // Soon obsolete:
-  //waveParam   =     0;
-  //waveShape   = WaveShape::Sine;
-
-
   waveForm.initSettings();
   freqSweeper.initSettings(initAlsoSampleRate);
   fadeOutEnv.setNumFadeSamples(RAPT::rsRoundToInt(fadeOutTime * getSampleRate()));
