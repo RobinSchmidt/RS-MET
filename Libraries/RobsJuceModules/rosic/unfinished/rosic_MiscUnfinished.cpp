@@ -695,8 +695,8 @@ double rsMorphWaveBipolar::getWaveValue(double pos)
   case WF::SinFatSaw:
   {
     // Test:
-    double map = 0.50;
-    double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
+    //double map = 0.50;
+    //double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
     // This mapping seems ok - but maybe tweak the map parameter further so find some 
     // "optimum", i.e. a value that feels most musical. 0.5 seems good. 0.8: too little 
     // resolution around 0. To evaluate, listen to perceived difference between 0.0 amd 0.2 
@@ -704,17 +704,20 @@ double rsMorphWaveBipolar::getWaveValue(double pos)
     // Use the same formula for the TriSaw as well. Maybe optimize - the formula simplfies with
     // a parameter of 0.5 because it cancels with a factor of 2.
 
-    double y = RAPT::rsTriSaw(2*PI*pos, par);    // TriSaw
-    return RAPT::rsSin<double>(0.5*PI * y);      // SinFatSaw by sinusoidal waveshaping
+
+    double par = triSawParamMap(waveParam);
+    double tmp = RAPT::rsTriSaw(2*PI*pos, par);    // TriSaw
+    return RAPT::rsSin<double>(0.5*PI * tmp);      // SinFatSaw by sinusoidal waveshaping
   }
 
   case WF::TriSaw:
   {
-    double map = 0.50;
-    double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
+    //double map = 0.50;
+    //double par = RAPT::rsSign(waveParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(waveParam), map);
     // Code duplication! Hmm...but the "map" parameter could perhaps be different in this case.
     // But nah...or...dunno
 
+    double par = triSawParamMap(waveParam);
     return RAPT::rsTriSaw(2*PI*pos, par);
   }
 

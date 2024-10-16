@@ -788,6 +788,28 @@ protected:
   double   waveParam;    // Parameter to control/morph the waveshape in -1..+1
   WaveForm waveForm;     // Select the type of morphable waveshape
 
+
+  /** Mapping from the raw parameter in -1..+1 to the same range but nonlinear in a way to produce
+  a perceptually reasonable parameter behavior. This map is used for the waveforms based on
+  the TriSaw waveshape. */
+  static double triSawParamMap(double rawParam)
+  {
+    double map = 0.60;
+    double par = RAPT::rsSign(rawParam) * RAPT::rsRationalMap_01(RAPT::rsAbs(rawParam), map);
+    return par;
+    // This mapping seems ok - but maybe tweak the map parameter further so find some 
+    // "optimum", i.e. a value that feels most musical. 0.5 seems good. 0.8: too little 
+    // resolution around 0. To evaluate, listen to perceived difference between 0.0 amd 0.2 
+    // compared to 0.8 and 1.0. Or maybe check the perceived difference between 0 and 0.5 vs 
+    // between 0.5 and 1.0. ...hmm...I think the difference between 0.5 and 1.0 is greater
+    // for map = 0.5. But that may also depend on whether we use the TriSaw wave or the FatSinSaw
+    // wave. With 0.7, the last 10% below 1.0 does not much. 0.6 seems an OK compromise.
+    // If we indeed end up using 0.5 for the map parameter, we may also optimize the call to 
+    // rsRationalMap because it has a factor 2 somewhere which we could cancel the the 0.5.
+    // Use the same formula for the TriSaw as well. Maybe optimize - the formula simplfies with
+    // a parameter of 0.5 because it cancels with a factor of 2.
+  }
+
 };
 
 // ToDo (partially done):

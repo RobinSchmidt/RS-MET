@@ -460,7 +460,7 @@ D(curve) = (1/16) - curve/400 + curve^2 / (4*10^4)
 leaving high amplitude samples alone. The boost should be described as a slope-at-the-origin 
 parameter. Maybe use a function family with a couple of parameters and find the parameters according
 to the requirements:  f(0) = 0, f(1)  = 1, f'(0) = s  where s is the slope-at-the origin. Maybe use
-optional other contstarints like f'(1) = 0 or f'(1) = 1. Maybe require f''(0) = 0. Experiment a bit.
+optional other contstraints like f'(1) = 0 or f'(1) = 1. Maybe require f''(0) = 0. Experiment a bit.
 Try to minimize the THD in some sense. Maybe if we use only polynomials, we can predict the maximum
 generated bandwidth and use oversampling to avoid aliasing. Or maybe we can use anti-derivative 
 anti-aliasing.
