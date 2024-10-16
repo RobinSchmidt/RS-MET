@@ -704,7 +704,7 @@ double rsMorphWaveBipolar::getWaveValue_01(double pos)
   }
 
   // Not yet ready for prime time - the mapping is not yet tuned
-  case WF::PowerLaw:
+  case WF::PhaseShapePow:
   {
     pos = phaseShapePow(pos, pow(2.0, -2.0 * waveParam));
     return sin(2*PI*pos);

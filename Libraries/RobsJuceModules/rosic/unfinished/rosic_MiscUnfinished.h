@@ -736,7 +736,7 @@ public:
     SinFatSaw,            // TriSaw (see below) with sinusoidal waveshaping
     TriSaw,               // SawDown / Triangle / SawUp
 
-    PowerLaw,             // Phase-shaping with power law - rename to PhaseShapePow
+    PhaseShapePow,        // Phase-shaping with power law 
     //PhaseShapeLinFrac,
 
     NumWaveShapes
