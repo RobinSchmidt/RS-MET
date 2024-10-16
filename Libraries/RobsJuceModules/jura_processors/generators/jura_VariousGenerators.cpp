@@ -679,16 +679,6 @@ void SweepKickerModule::createParameters()
   // should be thrown out
 
 
-
-
-
-
-
-  // UNDER CONSTRUCTION:
-  // The do not yet play nicely with the Phase and PhaseStereoShift parameters. There's something 
-  // wrong - I guess it may have to do with the phase wrap-around behavior. Maybe fmod does not 
-  // behave as I expect it to when the input is negative? Check that!
-
   fp = new FixPar("WaveShape", 0.0, 3.0, 0.0, Parameter::STRING);
   fp->addStringValue("Sine");
   fp->addStringValue("SinFatSaw");
@@ -700,11 +690,6 @@ void SweepKickerModule::createParameters()
   mp = new ModPar("WaveShapeParam", -1.0, +1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(mp);
   mp->setValueChangeCallback<SK>(&core, &SK::setWaveFormParameter);
-  // I have not yet settled for the range and behavior of this parameter. That's why it's not yet
-  // available. But when uncommenting the code, we can already play with it.
-  // Hmm...OK - I think, it's going to have the range -1..+1 where 0 means symmetric (like sine or
-  // triangle), -1 means sawDown and +1 means sawUp.
-  //
 
 
   // ToDo:
