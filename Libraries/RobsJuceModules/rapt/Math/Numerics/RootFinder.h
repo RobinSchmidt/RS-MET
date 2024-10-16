@@ -7,14 +7,15 @@ right hand side does not actually need to be equal to zero but can be any target
 actually finds solutions to f(x) = y for given f(x) and given y (which defaults to zero). This 
 little addition to standard textbook root-finding algorithms doesn't change much algorithmically 
 (we just need to subtract the target value in each function evaluation), yet adds a lot to the 
-flexibility and ease of use. Some algorithms require the user to pass an initial interval that is 
-assumed to bracket the root, others require an initial estimate of the root. Some higher level 
-functions don't require anything like that - but these functions will need to make a guess for the 
-bracket internally which may lead to suboptimal performance - because, you know, good guesses are 
-hard to come by when you don't have any information to work with. So, these high-level functions
-are mostly meant for quick-and-dirty prototype implementations. If you know a bit more about your 
-particular function at hand, it's a good idea to use that knowledge together with the lower level 
-root-finding functions.
+flexibility and ease of use. Some algorithms (e.g. bisection) require the user to pass an initial 
+interval that is assumed to bracket the root, others (e.g. Newton iteration) require an initial 
+estimate of the root that should be somewhere near the root. Some higher level functions don't 
+require anything like that - but these functions will need to make a guess for the bracket or 
+initial estimate internally which may lead to suboptimal performance - because, you know, good 
+guesses are hard to come by when you don't have any information at all about the particual function
+to work with. So, these high-level functions are mostly meant for quick-and-dirty prototype 
+implementations. If you know a bit more about your particular function at hand, it's a good idea to 
+use that knowledge together with the lower level root-finding functions.
 
 References:
 
@@ -54,8 +55,8 @@ public:
   // -Maybe declare the template parameters in front of the functions, not the class (like in 
   //  rsArrayTools)
   // -Let the function take a tolerance parameter (maybe defaulting 
-  //  std::numeric_limits<T>::epsilon)
-  // -Let the function take a maxNumIterations paremeter.
+  //  std::numeric_limits<T>::epsilon). We currently use a hard-coded tolerance.
+  // -Let the function take a maxNumIterations paremeter. It's currently hard-coded, too.
   // -When adding these additional parameters, make sure that their API and semantics matches that
   //  in rsMinimizer1D (in Optimization.h/cpp). 
 
@@ -65,11 +66,14 @@ public:
   for bisection and convergence is guranteed. But for some functions, the convergence may also be 
   slower than bisection. The method is also known as "regula falsi". */
   static T falsePosition(const std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
-
   // ToDo: 
   // -Let caller pass a tolerance (maybe separate for x and y), state pathological conditions
   //  when no convergence can be epxected (like when the function has poles like 1/x)
   // -secant, ridders, brent, ... see RSLib::UnivariateScalarFunction in file FunctionObjects.h/cpp
+  // -Document for which functions the method may be slower than bisection. I think, it's functions
+  //  that have a relatively flat section within most of the bracket and then a steep drop near the 
+  //  boundary of the bracket. See Numerical Recipies - IIRC, there's an example. Maybe make an 
+  //  experiment with this using some sort of "Butterworth" function, i.e. f(x) = 1 / (1 + x^2n)
 
 
   //static T modifiedFalsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
@@ -87,7 +91,9 @@ public:
   static void findBracket(const std::function<T(T)>& f, T* xL, T* xR, T y = T(0), T x0 = T(0));
   // -Maybe return num-iterations (or error-code).
   // -Maybe have a function isBracket that can be used in unit tests as well as in assertions
-  //  inside higher level functions (like findRoot) that use findBracket
+  //  inside higher level functions (like findRoot) that use findBracket. We can also use it in
+  //  the lower level functions that require the caller to pass a bracket. It's good to alert the
+  //  users if they pass invalid brackets.
 
 
 
@@ -176,9 +182,14 @@ public:
   // iterations), so that could be noise/coincidence. More tests are needed.
 
   /** Implements root finding via the 3rd order Householder method. The function "func" must take 
-  the input a first parameter and produce the 0th, 1st, 2nd and 3rd derivative in the following 
+  the input as first parameter and produce the 0th, 1st, 2nd and 3rd derivative in the following 
   output parameters which are passed by pointer. */
   static T householder3(const std::function<void(T, T*, T*, T*, T*)>& func, T xGuess, T y = 0);
+
+  // I think, in practice, going higher than 3rd order with the Householder method may be not 
+  // advantageous and higher order methods may be more of academic interest. I'm not sure, though.
+  // Maybe it's worth to try even higher order methods at some point. For the time being, I'll
+  // stop at 3, though.
 
 
 };

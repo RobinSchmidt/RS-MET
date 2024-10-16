@@ -174,13 +174,15 @@ public:
   static T partialDerivative(const F& f, T* x, int /*N*/, int n, const T h)
   {
     T t  = x[n];                  // temporary
-    x[n] = t + h; T fp = f(x);    // fp = f(x0,x1,..,xn+h,..,x_M)
+    x[n] = t + h; T fp = f(x);    // fp = f(x0,x1,..,xn+h,..,x_M), M := N-1
     x[n] = t - h; T fm = f(x);    // fm = f(x0,x1,..,xn-h,..,x_M)
     T f1 = (fp - fm) / (T(2)*h);  // df/dxn
     x[n] = t;                     // restore x[n]
     return f1;
   }
-  // get rid of parameter N
+  // Maybe get rid of parameter N - we don't actually use it here. We just require that 0 <= n < N.
+  // But maybe keep it for consency of the API with other functions. Maybe we should add an assertion 
+  // to catch misuse, e.g. rsAssert(n >= 0 && n < N, "n out of range").
 
   /** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
   to the n-th coordinate and also the diagonal element H(n,n) of the Hessian matrix, i.e. the 2nd 
@@ -216,13 +218,21 @@ public:
     for(int n = 0; n < N; n++) 
       g[n] = partialDerivative(f, x, N, n, h[n]);
   }
-  // move output variables to the end to make it consistent with the other functions like
-  // derivativesUpTo2
+  // Move output variables to the end to make it consistent with the other functions like
+  // derivativesUpTo2 - but swapping the order of g and h is dangerous because they have the same
+  // type. If we do this, we need to be super careful to find all call sites and swap the order 
+  // there, too (currently, there aren't many, though - and those that exist are not in any 
+  // production code (I think)).
   // The gradient gives the direction of steepest ascent of f and it's norm meausres, how fast f
   // would change when going along that direction
 
-  // todo: make a function for the directional derivative - this is just the scalar product of
-  // the gradient with a given vector (but that vector should be normalized to length 1, i think)
+  // ToDo: make a function for the directional derivative - this is just the scalar product of
+  // the gradient with a given vector (but that vector should be normalized to length 1, I think).
+  // But maybe the directional derivative could be computed more efficiently using the definition 
+  // directly as df/dd = (x + h*d) / h  where x is the location vector and d is the direction 
+  // vector and h is a scalar stepsize. Maybe we could also use an h-vector and then divide the 
+  // resulting estimate element wise? That is, compute (df/dd)[i] = (x[i] + h[i]*d[i]) / h[i]. I'm 
+  // not sure about that formula, though. Try it!
 
   /** Computes a numerical approximation of the Hessian matrix of the function f at the given 
   N-dimensional position vector x and writes the result into H which should be a pointer to the 
@@ -316,10 +326,10 @@ public:
     return sum;
   }
 
-  // todo: curl - this is more complicated in general N-dimensional space and needs more research. 
-  // i think, it should be an anti-symmetrical NxN matrix of differences of partial derivatives.  
+  // ToDo: curl - this is more complicated in general N-dimensional space and needs more research. 
+  // I think, it should be an anti-symmetrical NxN matrix of differences of partial derivatives.  
   // But how exactly the values should be arranged as matrix elements and which elements get 
-  // negative signs is something that i have not yet figured out... see:
+  // negative signs is something that I have not yet figured out... see:
   // https://en.wikipedia.org/wiki/Vector_calculus#Generalizations
   // https://en.wikipedia.org/wiki/Curl_(mathematics)#Generalizations
   // We probably should use the definition of the exterior derivative as the proper generalization
@@ -327,7 +337,10 @@ public:
   // z-component or something -> figure out. If so, maybe the function should not be called "curl"
   // but rather "exterior" or something and it should be documented, how the (trivial) conversion
   // can be done. Maybe there should be a convenience function that does the conversion internally
-  // ..maybe *that* can then be properly called "curl"
+  // ..maybe *that* can then be properly called "curl". But maybe we can implement a curl3D 
+  // function specifically for the 3D case. And maybe also curl2D which produces a scalar and is a
+  // kind of hack - it basically embeds the 2D plane in 3D space and uses the 3D curl formula and 
+  // returns the z-component of it. It "works" because x- and y-component are always zero anyway.
 
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives
@@ -530,7 +543,7 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 // ...done - function is now obsolete
 
 
-/** just a stub, at the moment */
+/** Under Construction.... */
 
 //template<class Tx, class Ty>
 template<class T>
@@ -551,8 +564,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Functor integrals
 
-  /** Computes the definite integral of f in the interval from a to b using the trapezoidal rule 
-  with the given number N of intervals. */
+  /** Computes the definite integral of the function f in the interval from a to b using the 
+  trapezoidal rule with the given number N of intervals. */
   template<class Tx, class F>
   static T trapezoidal(const F& f, const Tx& a, const Tx& b, int N);
 
@@ -573,6 +586,13 @@ public:
 protected:
 
   //int numSamples = 10;
+
+  // ToDo: implement Simpson's rule, Romberg, ...
+  // -Maybe find rules that exactly invert certain numerical differentiation formulas such that
+  //  numerically integrating and then numerically differentiating becomes an identity operation
+  //  (up to roundoff).
+  // -Implement formulas for improper integrals, i.e. with singularities in the interval and/or
+  //  infinite integration limits. See Numerical Recipies.
 
 };
 
@@ -595,10 +615,14 @@ T rsNumericIntegrator<T>::trapezoidal(const F& f, const Tx& a, const Tx& b, int 
 // ToDo: 
 // -move to cpp file
 // -maybe try to use xR += dx for optimization - but that might give more roundoff error 
-//  accumulation
+//  accumulation, so the small efficiency gain might not be worth it. Maybe implement both variants
+//  and do a benchmark. The "a + i * dx" contains an int -> float conversion which actually is 
+//  moderately expensive. We could use and additional float i as well, though and then also 
+//  increment it inside the loop
+//  
 // -implement midpoint formula
 // -In MathExperiments.cpp, there is some code rsTrapezoidalStage, integrateTrapezoidal, 
-//  integrateSimpson. Check what that does and mybe integrate it here.
+//  integrateSimpson. Check what that does and maybe integrate it here.
 
 template<class T>
 template<class Tx>
