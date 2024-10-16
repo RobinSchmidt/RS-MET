@@ -903,13 +903,21 @@ public:
   // I think, it does something similar to SinFatSaw when we use the cubic polynomial segments
 
   /** Sets the waveshape to be used. */
-  void setWaveForm(int newShape) { waveShape = (WaveShape) newShape; }
+  void setWaveForm(int newShape) 
+  { 
+    waveShape = (WaveShape) newShape;  // old
+    waveForm.setWaveForm(newShape);    // new
+  }
 
 
   /** Sets the parameter that controls the shape of the waveform. 0 means sine or triangle 
   (depending on waveShape), -1 is something similar to a downward saw and +1 is similar to an 
   upward saw. But the exact shapes will depend on waveShape.  */
-  void setWaveFormParameter(double newParam) { waveParam = newParam; }
+  void setWaveFormParameter(double newParam) 
+  { 
+    waveParam = newParam;                     // old
+    waveForm.setWaveFormParameter(newParam);  // new
+  }
 
 
   // Experimental:
