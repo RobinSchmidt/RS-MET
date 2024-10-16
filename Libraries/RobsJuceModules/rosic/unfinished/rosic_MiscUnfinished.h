@@ -786,7 +786,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Phase shaping laws
 
-  static double powerLaw(double phase, double shapeParam);
+  static double phaseShapePow(double phase, double shapeParam);
   // let s = shapeParam, 
   // s < 0: sine turns to upward saw
   // s = 0: sine is unchanged
