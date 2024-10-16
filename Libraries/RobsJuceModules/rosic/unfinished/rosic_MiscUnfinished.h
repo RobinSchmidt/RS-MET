@@ -748,6 +748,12 @@ class rsMorphWaveBipolar
 public:
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
+  rsMorphWaveBipolar() { initSettings(); }
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -773,6 +779,9 @@ public:
   (depending on waveShape), -1 is something similar to a downward saw and +1 is similar to an 
   upward saw. But the exact shapes will depend on waveShape.  */
   void setWaveFormParameter(double newParam) { waveParam = newParam; }
+
+
+  void initSettings();
 
 
 
@@ -955,8 +964,9 @@ public:
 protected:
 
   // The embedded objects:
-  rsFreqSweeper     freqSweeper;
-  rsFadeOutEnvelope fadeOutEnv;
+  rsFreqSweeper      freqSweeper;
+  rsFadeOutEnvelope  fadeOutEnv;
+  rsMorphWaveBipolar waveForm;
 
   // We mostly have the same parameters as the embedded rsFreqSweeper object. However - here, the
   // parameters also repsond to key and velocity.

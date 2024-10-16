@@ -674,6 +674,12 @@ double rsMorphWaveBipolar::phaseShapePow(double p, double a)
   // -Optimize: Replace the (moderately expensive) rsLinToLin calls by simpler formulas.
 }
 
+void rsMorphWaveBipolar::initSettings()
+{
+  waveParam = 0;
+  waveForm  = WaveForm::Sine;
+}
+
 double rsMorphWaveBipolar::getWaveValue(double pos)
 {
   using WF = WaveForm;
