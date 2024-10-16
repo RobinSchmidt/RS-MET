@@ -750,6 +750,18 @@ public:
 
 };
 
+// ToDo:
+// -Rename to rsMorphWave and integrate the code from waveFunc in rsSweepKicker::rsSweepKicker
+//  here. The waveShape parameter there whould be moved into this class. I want to factor out the
+//  complete waveform generation from rsSweepKicker such that it can also be used in a regular 
+//  oscillator. With that oscillator, we can more meaningfully tweak the mapping parameters. The 
+//  goal is to create a perceptually linear sweep from -1 to +1 for the waveshape parameter.
+// -The high level API should rpovide functions setWaveType (TriSaw, etc.), setWaveParam (-1..+1)
+//  for setup and a phaseToWave01(double phasor01) function that takes a phasor in 0..1 and 
+//  produces the final waveform output. There should also be a function that accepts the phase
+//  in the 0..1 range but allows for periodic wrapping. i.e. it uses RAPT::rsWrapAround(p, 1.0)
+//  internally and then calls the other function
+//  
 
 
 //=================================================================================================
