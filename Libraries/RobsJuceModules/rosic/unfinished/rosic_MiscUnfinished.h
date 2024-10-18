@@ -737,7 +737,7 @@ public:
                           // triangle into a sine and the saw into a bulged out ("fat") saw.
     TriSaw,               // SawDown / Triangle / SawUp
 
-    PhaseShapePow,        // Phase-shaping with power law 
+    //PhaseShapePow,        // Phase-shaping with power law 
     //PhaseShapeLinFrac,
 
     NumWaveShapes

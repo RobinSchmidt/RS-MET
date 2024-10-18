@@ -703,7 +703,9 @@ double rsMorphWaveBipolar::getWaveValue_01(double pos)
     return RAPT::rsTriSaw(2*PI*pos, par);
   }
 
-  // Not yet ready for prime time - the mapping is not yet tuned
+  /*
+  // Not yet ready to use. The mapping between waveParam and the phase/position is not yet properly 
+  // tuned for perceptual uniformity.
   case WF::PhaseShapePow:
   {
     pos = phaseShapePow(pos, pow(2.0, -2.0 * waveParam));
@@ -713,6 +715,7 @@ double rsMorphWaveBipolar::getWaveValue_01(double pos)
     // -1: sawDown (but more like a squeezed sine), 0: sine, +1: sawUp
     // 
   }
+  */
 
   default:
   {
@@ -743,15 +746,14 @@ rsSweepKicker::rsSweepKicker()
   initSettings(true);
 
   // The freqSweeper uses a std::function member to actually produce its waveform output for 
-  // flexibility with reaard to the produced waveform. Here, we assign that member via its 
+  // flexibility with regard to the produced waveform. Here, we assign that member via its 
   // setWaveForm setter. We assign it to a function "waveFunc" that itself uses our waveForm member
   // for the waveform production:
   auto waveFunc = [this](double p) { return waveForm.getWaveValue(p); };
   freqSweeper.setWaveForm(waveFunc);
   // ToDo: 
   // -Verify if "this" is the correct/best capture mode for this purpose. Maybe "=" or "&" 
-  //  is better? Or maybe we shouldn't capture the waveShape parameter but instead pass it in as
-  //  an additional parameter
+  //  is better?
 
   reset();
 }

@@ -369,6 +369,9 @@ https://github.com/celtera/avendish/
  and maintain(!) an amount of O(M*N) boilerplate glue code. Avendish claims to solve this 
  maintenance nightmare (I don't know how, though).
 
+Open NSynth Super:
+https://github.com/googlecreativelab/open-nsynth-super
+-Experimental physical interface for NSynth, a machine learning algorithm developed by Google
 
 ----------------------------------------------------------------------------------------------------
 Audio AI projects and related stuff:
