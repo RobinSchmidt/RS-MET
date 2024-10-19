@@ -84,7 +84,7 @@ we build up our suite of unit tests along the way.
 
 - Func Shaper:
 
-  -[4] It's not possible to enter a comma in the formula field because it gets converted to a 
+  -[V] It's not possible to enter a comma in the formula field because it gets converted to a 
    point. I did this auto-conversion for convenience when entering numeric values for sliders with
    the number pad of the keyboard - but the automatic conversion should apply only to sliders, not 
    to normal text-entry fields! Entering a comma is essential for functions with multiple 

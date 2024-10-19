@@ -228,7 +228,7 @@ double RWidget::openModalNumberEntryField(double numberToShowInitially)
   entryField->setBounds(2, 2, getWidth()-4, getHeight()-4);
   entryField->setColourScheme(getColourScheme());
   addAndMakeVisible(entryField);
-  entryField->setPermittedCharacters(String("0123456789.-"));
+  entryField->setPermittedCharacters(String("0123456789.,-"));
   entryField->selectAll();
 
   entryField->runModalLoop(); // should not be used according to doc...
@@ -239,10 +239,18 @@ double RWidget::openModalNumberEntryField(double numberToShowInitially)
   // https://github.com/RobinSchmidt/RS-MET/issues/221#issuecomment-427450329
 
 
-  double result = entryField->getText().getDoubleValue();
+  // Old:
+  //double result = entryField->getText().getDoubleValue();
   // Maybe replace by a call to a rsStringToDouble() function that also interprets the comma as
   // decimal point. We already have  toDouble(const juce::String& s)  in jura_StringTools.h/cpp. 
   // Maybe use that and then modify it to include the replacement of ',' by '.'
+
+  // New:
+  juce::String str = entryField->getText();
+  str = str.replaceCharacter(',', '.');           // ToDo: maybe replace the character in place
+  double result = str.getDoubleValue();
+  // The point of replacing a comma witha point is to allow a decimal point be entered on German 
+  // number pad for better usability.
 
 
   removeChildComponent(entryField);
