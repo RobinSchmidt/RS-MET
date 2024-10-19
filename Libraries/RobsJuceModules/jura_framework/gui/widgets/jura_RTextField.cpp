@@ -305,34 +305,6 @@ bool RTextEntryField::keyPressed(const KeyPress &key)
   else
   {
     juce_wchar ch = key.getTextCharacter();
-
-  
-    
-
-
-    // Obsolete:
-
-    // Allow decimal point be entered on german number pad for better usability:
-
-    //if(key == KeyPress::numberPadDecimalPoint) ch = '.';
-    // doesn't work
-
-    // !!! BUG !!!
-    //if(ch == ',')
-    //  ch = '.';
-    // This replacement should happen only for the entry-field of sliders! If we do it here, it 
-    // will also affect the formula entry fiedl in FuncShaper which is a no go. Maybe we should do 
-    // the conversion of ',' to '.' inside RWidget::openModalNumberEntryField. Maybe by replacing 
-    // the call to  entryField->getText().getDoubleValue();  by some other call to a custom 
-    // function rsStringToDouble( entryField->getText().getDoubleValue() );  which internally 
-    // replaces the comma by a dot.
-
-
-
-
-
-
-
     if( permittedCharacters != String() && !permittedCharacters.containsChar(ch) )
       return true; // character is not among the permitted ones 
     getHeadAndTailString(head, tail);
