@@ -811,3 +811,18 @@ void rsSweepKicker::noteOff(int key)
   // note, then releases the first. It would go into realease even though the most recent note is 
   // still held.
 }
+
+// ToDo:
+//
+// -Maybe introduce an oversampling parameter
+// -Maybe add a 2nd osc that can be adjusted in relative pitch (maybe +-24 semitones) and serve as
+//  source for FM/PM (linear or exponential - maybe we can smoothly morph the lin-vs-exp behavior)
+//  and also as source for AM/RM (maybe AM can also be done exponentially?). Maybe let the effect 
+//  of the picth envelope on the second osc be adjustable from 0% to 100% ...or maybe beyond.
+// -But maybe instead of integrating all of that into SweepKicker itself, we could also just create
+//  such patches using the semimodular facilities of ToolChain. Just use an LFO as modulation 
+//  source. But then we need to give the LFO a mode in which it can produce audio-signals. It 
+//  should the respond to MIDI input.
+// -Maybe give it modulatable detune and freq-offset parameter that can be used to to linear and
+//  exponential FM by an external source. We already have a phase-parameter, so PM should already 
+//  be possible - try that in ToolChain - make a patch that does this.

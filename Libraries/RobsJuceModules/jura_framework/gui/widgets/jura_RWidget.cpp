@@ -238,7 +238,13 @@ double RWidget::openModalNumberEntryField(double numberToShowInitially)
   // see here for Elan's solution:
   // https://github.com/RobinSchmidt/RS-MET/issues/221#issuecomment-427450329
 
+
   double result = entryField->getText().getDoubleValue();
+  // Maybe replace by a call to a rsStringToDouble() function that also interprets the comma as
+  // decimal point. We already have  toDouble(const juce::String& s)  in jura_StringTools.h/cpp. 
+  // Maybe use that and then modify it to include the replacement of ',' by '.'
+
+
   removeChildComponent(entryField);
   delete entryField;
   return result;

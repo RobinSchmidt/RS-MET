@@ -88,7 +88,10 @@ we build up our suite of unit tests along the way.
    point. I did this auto-conversion for convenience when entering numeric values for sliders with
    the number pad of the keyboard - but the automatic conversion should apply only to sliders, not 
    to normal text-entry fields! Entering a comma is essential for functions with multiple 
-   parameters!
+   parameters! It requires changes to:
+   RWidget::openModalNumberEntryField(), 
+   toDouble (in jura_StringTools), 
+   RTextEntryField::keyPressed()
 
 
 - [4] Quadrifex: load preset NonLinearReverb002. We hit a jassert in getParameterByName with a 

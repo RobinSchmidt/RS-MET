@@ -17,7 +17,7 @@ JUCE_API juce::String createAudioFileInfoString(juce::File fileToCreateStringFro
 /** Returns the sign of the value as String (+ or - or empty) */
 JUCE_API juce::String getSignAsString(double value);
 
-/** Returns a string with prescribed minimum number of digits, prepending zeros if necesarry. */
+/** Returns a string with prescribed minimum number of digits, prepending zeros if necessary. */
 JUCE_API juce::String intToStringWithLeadingZeros(int value, int minNumDigits);
 
 /** Converts a MidiMessage int a String.  */
