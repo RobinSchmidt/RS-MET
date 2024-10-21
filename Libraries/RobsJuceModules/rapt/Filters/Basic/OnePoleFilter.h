@@ -19,11 +19,11 @@ public:
   // for convenience:
   typedef const TSig& CRSig;  // const reference to a signal value
   //typedef const TPar& CRPar;  // const reference to a parameter value
-  // we need to pass signalvalues as const reference because otherwise, we get a compiler error 
-  // when instantiating the template with rsFloat64x2 for the signal type an compile for 32 bit
+  // We need to pass signal values as const reference because otherwise, we get a compiler error 
+  // when instantiating the template with rsFloat64x2 for the signal type and compile for 32 bit
   // ("formal parameter with requested alignment of 16 won't be aligned")
   // ...when we want to instantiate it with rsFloat64x2 for TPar, too, we'll probably have to pass
-  // all parameters as const reference, too - that really sucks!
+  // all parameters as const reference, too. That really sucks!
 
 
   //-----------------------------------------------------------------------------------------------
@@ -104,6 +104,11 @@ public:
     // w = 0:  t = 0 -> a1 = 1, b0,b1 = 0
     // w = pi: t = inf -> a1,b0,b1 = NaN
   }
+  // See also: https://www.kvraudio.com/forum/viewtopic.php?t=615195
+  // It gives different formulas:
+  // Difference equation: y[n] = a * (x[n] + x[n-1]) + b * y[n-1]
+  // Coeff computation:   b = cos(2*pi*fc/fs) / (1 + sin(2*pi*fc/fs)); a = (1 - b) / 2;
+  // Our a1 is their b. I think, the computation
 
   /** Highpass via bilinear transform (from DAFX) */
   template<class T>
@@ -171,11 +176,11 @@ public:
   }
   // rename to setState
 
-  // todo:
+  // ToDo:
   // void setup(int mode, TPar omega, TPar gain = TPar(1));
 
 
-    //-----------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   TPar getB0() const { return b0; }
@@ -295,12 +300,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  // buffering:
+  // Buffering:
   TSig x1 = 0, y1 = 0; // past input x[n-1] and output y[n-1]
 
-  // filter coefficients:
+  // Filter coefficients:
   TPar b0 = 1, b1 = 0; // feedforward coeffs
   TPar a1 = 0;         // feedback coeff
+
+  // ToDo: make the data protected - why is it public in the first place?
 
 };
 
@@ -325,7 +332,7 @@ public:
 
 
   /** This is an enumeration of the available filter modes. */
-  enum modes
+  enum modes          // ToDo: rename to Mode
   {
     BYPASS = 0,
     LOWPASS_IIT,      // lowpass via impulse invariant transform
@@ -342,6 +349,7 @@ public:
 
   };
   // NMM maybe can also be called PMM for pointwise magnitude match
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */

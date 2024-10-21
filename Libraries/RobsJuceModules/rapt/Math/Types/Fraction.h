@@ -197,6 +197,7 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 //  interpreted as inf? Maybe +-inf should only be the result of dividing +-n by +-0 for any finite
 //  n. We'll see...
 // -Maybe integrate some stuff that deals with continued fractions - see the unit test
+//  See:   https://www.youtube.com/watch?v=tBc_xcRzMxk  Continued Fraction Arithmetic
 //  
 
 // Notes:
