@@ -174,9 +174,13 @@ double phaseShapeRational(double p, double a, double b = 1, double c = 1)
 // get rid
 double phaseShapePower(double p, double a)
 {
-  return rosic::rsPhaseShaper::powerLaw(p, a);
+  //return rosic::rsPhaseShaper::powerLaw(p, a);
+  // I think, it has been renamed to rsMorphWaveBipolar::phaseShapePow() but is protected now.
+  // I think, it does the same as the code below.
+  // ToDo: Factor it out into rsPhaseShaper::powerLaw that gets called from 
+  // rsMorphWaveBipolar::phaseShapePow()
 
-  /*
+  
   p = rsLinToLin(p, 0.0, 1.0, -1.0, +1.0);   // 0..1 -> -1..+1
   if(p >= 0)
     p =  pow( p, a);
@@ -184,7 +188,6 @@ double phaseShapePower(double p, double a)
     p = -pow(-p, a);
   p = rsLinToLin(p, -1.0, +1.0, 0.0, 1.0);   // -1..+1 -> 0..1
   return p;
-  */
 }
 // needs test
 

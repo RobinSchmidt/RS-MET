@@ -581,7 +581,7 @@ void sigmoidPrototypes()
 void sigmoidConvergenceRates()
 {
   // We plot the convergence rates of various sigmoids. If the sigmoid is given by f = f(x), we 
-  // define the convergence rate as c(x) = 1 / (1-f). It's a function that measures, how quickly 
+  // define the convergence rate as c(x) = 1 / (1-f(x)). It's a function that measures, how quickly
   // the sigmoid approaches 1 when the input x approaches infinity. Along with the actually 
   // measured convergence rate, we plot a "guess" function that is supposed to be asymptotically 
   // equivalent to c(x), i.e. the limit of the quotient between actual and guess approaches 1 as 
@@ -665,7 +665,7 @@ void sigmoidConvergenceRates()
   // - It appears, we can design sigmoids with convergence rates of inverse powers of n, i.e. like
   //   c(x) ~ x^(1/n)  by using the inverse function of x / ((x-1)^n * (x+1)^n). Verify! This could
   //   be useful if we need a slowly converging sigmoid in some context. The standard sigmoids 
-  //   converge much fatser to 1. I think tanh converges exponentially and atan linearly.
+  //   converge much faster to 1. I think tanh converges exponentially and atan linearly.
   //
   //
   // ToDo:
@@ -694,6 +694,9 @@ void sigmoidConvergenceRates()
   //   adjust a such that the derivative at x = 1 of the numerator is 1/2. 
 }
 
+// ToDo:
+//
+// - 
 
 
 // value of the polynomial a1*x + a4*x^4 + a5*x^5 + a6*x^6

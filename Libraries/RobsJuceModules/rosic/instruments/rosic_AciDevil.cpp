@@ -377,6 +377,10 @@ void AciDevil::updateNormalizer2()
 
 Ideas:
 
+-Let the SubOsc have adjustable phase. And/or maybe the main osc should be adjustable. Rationale:
+ it's the difference that matters so it's sufficient to have the feature in one of the oscs and the
+ main osc is more important. We could make it modulatable to have phase-modulation. 
+-Maybe have a (modulatable) master tuning parameter. Can be used for vibrato with external LFO.
 -Let each note have its own length (or length-scaler)
 -Let each note have an adjustable amount of accent rather than just a binary on/off switch
 -Let each note define its own scaler for the slide time

@@ -397,6 +397,12 @@ Frechet Audio Distance
 https://github.com/gudgud96/frechet-audio-distance
 -Library to compute the Frechet Audio Distance (FAD) in PyTorch
 
+----------------------------------------------------------------------------------------------------
+Online Tools
+
+CarveToy:
+https://www.carvetoy.online/
+-Wavetable generator
 
 ----------------------------------------------------------------------------------------------------
 Resources

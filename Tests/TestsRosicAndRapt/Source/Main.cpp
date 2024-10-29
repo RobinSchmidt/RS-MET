@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
   //ellipseLineIntersections();
   //expBipolar();
   //expGaussBell();
-  fmodTest();
+  //fmodTest();                      // Tests for wrap-around functions
   //gaussBellProduct();
   //iteratedNumDiff();
 
@@ -495,12 +495,12 @@ int main(int argc, char* argv[])
   //triSawModulator();
 
   // Oscillator:
-  triSaw();
+  //triSaw();
   //phaseShapingCurvePoly4();
   //phaseShapingCurvesRational();
   //phaseShaping();
   //phaseShapingSkew();
-  phaseShapingLinFrac();           // stub
+  //phaseShapingLinFrac();           // stub
   //zeroDelayFeedbackPhaseMod();
 
   // Partial Extraction:
@@ -585,12 +585,15 @@ int main(int argc, char* argv[])
   //sigmoidScaleAndShift();
   //quarticMonotonic();
   //sigmoidPrototypes();
-  //sigmoidConvergenceRates();
+  sigmoidConvergenceRates();
   //sixticPositive();
   //hilbertDistortion();
 
 
   // Distortion:
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // Performance Tests:
