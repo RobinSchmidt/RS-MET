@@ -696,7 +696,19 @@ void sigmoidConvergenceRates()
 
 // ToDo:
 //
-// - 
+// - Define numeric measurements for a given waveshaping function f(x) that somehow characterizes
+//   its behavior. Ideas: apply some operator to it to obtaina new function g(x) and then integrate
+//   g(x) over the domain of interest (maybe -1..+1 or -inf..+inf)
+//
+// - Ideas for g(x):
+//   g(x) = (f (x) - x)^2   measures deviation from identity
+//   g(x) = (f'(x) - 1)^2   measures deviation from unit slope
+//   g(x) = (f''(x))^2      measures curvature
+//
+// - Maybe apply a weighting function w(x) to g(x). For example, w(x) = 1 / (1 + x^2). Idea: if it
+//   distorts strongly around 0 (i.e. even quiet inputs are strongly distorted), it counts more.
+//
+// - Maybe instead of x use sin(x) and integrate over one cycle
 
 
 // value of the polynomial a1*x + a4*x^4 + a5*x^5 + a6*x^6
