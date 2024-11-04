@@ -1534,6 +1534,17 @@ void numericDifferentiation1()
 
 void numericDifferentiation2()
 {
+  // We implement the idea explained in this video:
+  //
+  // Visualizing Derivatives on Multivariable Surface Plots of Average Rates of Change
+  // https://www.youtube.com/watch?v=_pSLfCjSZvQ
+  //
+  // The idea is to take a function y = f(x) and use it to define a 2-variable function 
+  // f(a,b) = (f(b) - f(a)) / (b - a) and plot that. In the case of b = a, the limit is f'(x). That
+  // is treated as a special case.
+
+
+
   using Real = double;
   using Func = std::function<Real(Real)>;
   using Vec  = std::vector<Real>;
@@ -1563,26 +1574,8 @@ void numericDifferentiation2()
         z(i, j) = (f(b[j]) - f(a[i])) / (b[j] - a[i]);
     }
   }
-
-
   plotMatrix(z);
-
   plotMatrix(z, a, b);
-
-
-
-
-  /*
-  Vec x(Nx), y(Nx);
-  x = rsLinearRangeVector(Nx, xMin, xMax);
-  for(int n = 0; n < Nx; n++)
-  {
-
-  }
-  */
-
-
-
 
 
 
@@ -1590,23 +1583,30 @@ void numericDifferentiation2()
 
 
 
-  // ToDo: implement a plot of that:
-  // Visualizing Derivatives on Multivariable Surface Plots of Average Rates of Change
-  // https://www.youtube.com/watch?v=_pSLfCjSZvQ
 
 
-
-  // -Implement numerical differentiation rules that respect the inverse function rule. That means:
-  //  when swapping the x- and y-arrays, the derivative estimate should turn into its reciprocal.
-  //  Such a differentiation rule can be useful for inverting the linfrac interpolation when we
-  //  have to use numerical derivatives. Somewhere near the linfrac test, there is already some 
-  //  code with ideas for that.
+  // ToDo:
+  //
+  // - Define a 2D function slightly differently: instead of using variables a,b use x,h and 
+  //   instead of  f(a,b) = (f(b) - f(a)) / (b - a)  use  f(x,h) = numDif(f, x, h) for some
+  //   numerical differentiation formula (and use f' for the special case that h = 0). Maybe the
+  //   plot can reveal some features of the formula. I think, it should rotate the ab-plot. Using
+  //   the xh-plane instead of the ab-plane let's the exact derivative appear at the h=0 line 
+  //   rather than the diagonal a=b line
 }
 
 void numericDifferentiation()
 {
   //numericDifferentiation1();
   numericDifferentiation2();
+
+  // ToDo:
+  //
+  // - Implement numerical differentiation rules that respect the inverse function rule. That 
+  //   means: when swapping the x- and y-arrays, the derivative estimate should turn into its 
+  //   reciprocal. Such a differentiation rule can be useful for inverting the linfrac 
+  //   interpolation when we have to use numerical derivatives. Somewhere near the linfrac test, 
+  //   there is already some code with ideas for that.
 }
 
 void numericIntegration()
