@@ -1542,18 +1542,29 @@ void numericDifferentiation2()
   // The idea is to take a function y = f(x) and use it to define a 2-variable function 
   // f(a,b) = (f(b) - f(a)) / (b - a) and plot that. In the case of b = a, the limit is f'(x). That
   // is treated as a special case.
-
+  //
+  // After that plot of f(a,b), we do a variant that computes numerical derivatives with a finite
+  // step-size h and plot f(x,h) = numDif(f,x,h)  where by "numDif" I mean some numerical 
+  // differentiation formula such as the central difference formula:
+  // f(x,h) = (f(x+h) - f(x-h)) / (2h)
+  //
+  // As example function we use f(x) = sin(x^2) with the derivative f'(x) = 2*x*cos(x^2).
 
 
   using Real = double;
   using Func = std::function<Real(Real)>;
   using Vec  = std::vector<Real>;
   using Mat  = rsMatrix<Real>;
+  using ND   = rsNumericDifferentiator<Real>;
 
   // Plotting range and resolution:
-  int  N   = 80;
-  Real min =  0.0;
-  Real max =  5.0;
+  int  N    = 80;      // Resolution for a,b,x
+  int  Nh   = 50;      // Resolution for h
+  Real min  =  0.0;    // Minimum for a,b,x
+  Real max  =  5.0;    // Maximum for a,b,x
+  Real hMin =  0.0;    // Minimum for h
+  Real hMax =  2.0;    // Maximum for h
+
 
   // Define our example function and its derivative:
   Func f  = [](Real x){ return sin(x*x);     };  // f (x) = sin(x^2)
@@ -1576,13 +1587,7 @@ void numericDifferentiation2()
   plotMatrix(z);
   plotMatrix(z, a, b);
 
-
-
-
   // Create and plot the xh-plot:
-  int  Nh   = 50;
-  Real hMin =  0.0;
-  Real hMax =  1.0;
   Vec  x = rsLinearRangeVector(N,   min,  max);
   Vec  h = rsLinearRangeVector(Nh, hMin, hMax);
   z.setShape(N, Nh);
@@ -1593,30 +1598,29 @@ void numericDifferentiation2()
       if(h[j] == 0.0)
         z(i, j) = fp(x[i]);
       else
-      {
-        z(i, j) = (f(x[i]+h[j]) - f(x[i]-h[j])) / (2*h[j]);
-        // ToDo: use rsNumericDifferentiator instead
-      }
+        z(i, j) = ND::derivative(f, x[i], h[j]); // == (f(x[i]+h[j]) - f(x[i]-h[j])) / (2*h[j]);
     }
   }
   plotMatrix(z);
   plotMatrix(z, x, h);
 
 
-  int dummy = 0;
-
-
-
-
-
+  // Observations:
+  //
+  // - In the ab-plot, the exact derivative appears on the diagonal b=a line. In the xh-plot, it 
+  //   appears at the h=0 line, i.e. the bottom horizontal in the heatmap.
+  //
+  // - With higher h, the derivative tends to get underestimated. The estimate tends to zero as h
+  //   gets really large. The same decay to zero happens in the ab-plot when we move away from the 
+  //   diagonal. That is plausible because the denominator (b-a or 2*h) gets larger whereas the 
+  //   function values stay bounded between -1 and +1 because f is a sine(sweep).
+  //
+  //
   // ToDo:
   //
-  // - Define a 2D function slightly differently: instead of using variables a,b use x,h and 
-  //   instead of  f(a,b) = (f(b) - f(a)) / (b - a)  use  f(x,h) = numDif(f, x, h) for some
-  //   numerical differentiation formula (and use f' for the special case that h = 0). Maybe the
-  //   plot can reveal some features of the formula. I think, it should rotate the ab-plot. Using
-  //   the xh-plane instead of the ab-plane let's the exact derivative appear at the h=0 line 
-  //   rather than the diagonal a=b line
+  // - Try other numerical differentiation formulas, e.g. higher order formulas, formulas that
+  //   respect the inverse function rule, etc. Figure out what we can learn from such a plot about
+  //   the numerical differentiation formula.
 }
 
 void numericDifferentiation()
