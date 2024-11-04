@@ -1550,17 +1550,16 @@ void numericDifferentiation2()
   using Vec  = std::vector<Real>;
   using Mat  = rsMatrix<Real>;
 
+  // Plotting range and resolution:
+  int  N   = 80;
+  Real min =  0.0;
+  Real max =  5.0;
 
-  int  N   =   50;
-  Real min =    0.0;
-  Real max =    5.0;
-
-  // Example function and its derivative:
+  // Define our example function and its derivative:
   Func f  = [](Real x){ return sin(x*x);     };  // f (x) = sin(x^2)
   Func fp = [](Real x){ return 2*x*cos(x*x); };  // f'(x) = 2*x*cos(x^2)
 
-
-
+  // Create and plot the ab-plot:
   Vec a = rsLinearRangeVector(N, min, max);
   Vec b = rsLinearRangeVector(N, min, max);
   Mat z(N, N);
@@ -1577,6 +1576,31 @@ void numericDifferentiation2()
   plotMatrix(z);
   plotMatrix(z, a, b);
 
+
+
+
+  // Create and plot the xh-plot:
+  int  Nh   = 50;
+  Real hMin =  0.0;
+  Real hMax =  1.0;
+  Vec  x = rsLinearRangeVector(N,   min,  max);
+  Vec  h = rsLinearRangeVector(Nh, hMin, hMax);
+  z.setShape(N, Nh);
+  for(int i = 0; i < N; i++)
+  {
+    for(int j = 0; j < Nh; j++)
+    {
+      if(h[j] == 0.0)
+        z(i, j) = fp(x[i]);
+      else
+      {
+        z(i, j) = (f(x[i]+h[j]) - f(x[i]-h[j])) / (2*h[j]);
+        // ToDo: use rsNumericDifferentiator instead
+      }
+    }
+  }
+  plotMatrix(z);
+  plotMatrix(z, x, h);
 
 
   int dummy = 0;
