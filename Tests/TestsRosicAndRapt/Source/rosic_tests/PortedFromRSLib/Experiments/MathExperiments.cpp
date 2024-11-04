@@ -1574,16 +1574,12 @@ void numericDifferentiation2()
   Vec a = rsLinearRangeVector(N, min, max);
   Vec b = rsLinearRangeVector(N, min, max);
   Mat z(N, N);
-  for(int i = 0; i < N; i++)
-  {
-    for(int j = 0; j < N; j++)
-    {
+  for(int i = 0; i < N; i++) {
+    for(int j = 0; j < N; j++) {
       if(b[j] == a[i])
         z(i, j) = fp(a[i]);
       else
-        z(i, j) = (f(b[j]) - f(a[i])) / (b[j] - a[i]);
-    }
-  }
+        z(i, j) = (f(b[j]) - f(a[i])) / (b[j] - a[i]); }}
   plotMatrix(z);
   plotMatrix(z, a, b);
 
