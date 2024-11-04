@@ -1423,7 +1423,7 @@ double forwardDifference(const F& f, double x, double h)
   return (f(x+h) - f(x)) / h;
 }
 
-void numericDifferentiation()
+void numericDifferentiation1()
 {
   // When using numerical differentiation formulas, there are two sources of error: the error 
   // coming from the approximation itself and the roundoff error due to finite precision 
@@ -1530,6 +1530,83 @@ void numericDifferentiation()
   //  different values of the stepsize h, i.e. h = 1/8, 1/16, ..., 1/1024, ... The goal is to 
   //  figure out an optimal h for a given subset of the domain. That optimal h will depend on the 
   //  function f(x) as well as the evaluation point x.
+}
+
+void numericDifferentiation2()
+{
+  using Real = double;
+  using Func = std::function<Real(Real)>;
+  using Vec  = std::vector<Real>;
+  using Mat  = rsMatrix<Real>;
+
+
+  int  N   =   50;
+  Real min =    0.0;
+  Real max =    5.0;
+
+  // Example function and its derivative:
+  Func f  = [](Real x){ return sin(x*x);     };  // f (x) = sin(x^2)
+  Func fp = [](Real x){ return 2*x*cos(x*x); };  // f'(x) = 2*x*cos(x^2)
+
+
+
+  Vec a = rsLinearRangeVector(N, min, max);
+  Vec b = rsLinearRangeVector(N, min, max);
+  Mat z(N, N);
+  for(int i = 0; i < N; i++)
+  {
+    for(int j = 0; j < N; j++)
+    {
+      if(b[j] == a[i])
+        z(i, j) = fp(a[i]);
+      else
+        z(i, j) = (f(b[j]) - f(a[i])) / (b[j] - a[i]);
+    }
+  }
+
+
+  plotMatrix(z);
+
+  plotMatrix(z, a, b);
+
+
+
+
+  /*
+  Vec x(Nx), y(Nx);
+  x = rsLinearRangeVector(Nx, xMin, xMax);
+  for(int n = 0; n < Nx; n++)
+  {
+
+  }
+  */
+
+
+
+
+
+
+  int dummy = 0;
+
+
+
+  // ToDo: implement a plot of that:
+  // Visualizing Derivatives on Multivariable Surface Plots of Average Rates of Change
+  // https://www.youtube.com/watch?v=_pSLfCjSZvQ
+
+
+
+  // -Implement numerical differentiation rules that respect the inverse function rule. That means:
+  //  when swapping the x- and y-arrays, the derivative estimate should turn into its reciprocal.
+  //  Such a differentiation rule can be useful for inverting the linfrac interpolation when we
+  //  have to use numerical derivatives. Somewhere near the linfrac test, there is already some 
+  //  code with ideas for that.
+}
+
+void numericDifferentiation()
+{
+  //numericDifferentiation1();
+  numericDifferentiation2();
 }
 
 void numericIntegration()
