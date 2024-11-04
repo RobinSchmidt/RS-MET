@@ -1558,12 +1558,12 @@ void numericDifferentiation2()
   using ND   = rsNumericDifferentiator<Real>;
 
   // Plotting range and resolution:
-  int  N    = 80;      // Resolution for a,b,x
-  int  Nh   = 50;      // Resolution for h
-  Real min  =  0.0;    // Minimum for a,b,x
-  Real max  =  5.0;    // Maximum for a,b,x
-  Real hMin =  0.0;    // Minimum for h
-  Real hMax =  2.0;    // Maximum for h
+  int  N    = 80;                                // Resolution for a,b,x
+  int  Nh   = 50;                                // Resolution for h
+  Real min  =  0.0;                              // Minimum for a,b,x
+  Real max  =  5.0;                              // Maximum for a,b,x
+  Real hMin =  0.0;                              // Minimum for h
+  Real hMax =  2.0;                              // Maximum for h
 
 
   // Define our example function and its derivative:
