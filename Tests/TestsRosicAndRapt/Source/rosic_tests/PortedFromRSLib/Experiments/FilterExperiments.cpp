@@ -1350,14 +1350,13 @@ void stateVariableFilterMorph()
 }
 
 
+
+
 template<class T>
 class rsStateVarFilterSimper
 {
 
-
 public:
-
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -1413,8 +1412,6 @@ protected:
 template<class T>
 void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 {
-  // omega = 2*pi*fc/fs
-
   T w2 = 0.5*omega;
 
   switch(mode)
@@ -1424,7 +1421,6 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     m0 = 1;
     a1 = a2 = a3 = m1 = m2 = 0;
-    // Verify!
   }
   break;
 
@@ -1453,6 +1449,21 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     m2 = -1;
   }
   break;
+
+  case Mode::Bandpass:
+  {
+    T g = tan(w2);
+    T k = 1/Q;
+    a1 = 1 / (1 + g*(g + k));
+    a2 = g*a1;
+    a3 = g*a2;
+    m0 = 0;
+    m1 = 1;
+    m2 = 0;
+  }
+  break;
+
+
 
 
 
@@ -1529,6 +1540,7 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);
   plotFilteredSaw(Mode::Highpass);
+  plotFilteredSaw(Mode::Bandpass);
 
 
 
