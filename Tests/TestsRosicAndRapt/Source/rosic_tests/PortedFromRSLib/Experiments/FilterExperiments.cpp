@@ -1463,6 +1463,19 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
+  case Mode::Notch:
+  {
+    T g = tan(w2);
+    T k = 1/Q;
+    a1 = 1 / (1 + g*(g + k));
+    a2 = g*a1;
+    a3 = g*a2;
+    m0 = 1;
+    m1 = -k;
+    m2 = 0;
+  }
+  break;
+
 
 
 
@@ -1541,6 +1554,8 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Lowpass);
   plotFilteredSaw(Mode::Highpass);
   plotFilteredSaw(Mode::Bandpass);
+  plotFilteredSaw(Mode::Notch);
+
 
 
 
