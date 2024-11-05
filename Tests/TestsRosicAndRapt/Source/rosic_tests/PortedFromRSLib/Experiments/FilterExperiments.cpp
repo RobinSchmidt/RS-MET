@@ -1402,7 +1402,7 @@ protected:
   T ic2eq = 0;
 
   // Coeffs:
-  T a1, a2, a3;  // ?
+  T a1, a2, a3;  // Filter coeffs (ToDo: explain better)
   T m0, m1, m2;  // Mixing coeffs
 
 };
@@ -1528,6 +1528,18 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
+  case Mode::HighShelf:
+  {
+    T g = tan(w2) * sqrt(A);
+    T k = 1/Q;
+    a1 =  1 / (1 + g*(g + k));
+    a2 =  g*a1;
+    a3 =  g*a2;
+    m0 =  A*A;
+    m1 =  k*(1 - A)*A;
+    m2 =  (1 - A*A );
+  }
+  break;
 
 
 
@@ -1610,8 +1622,6 @@ void stateVarFilterSimper()
   };
 
 
-  plotFilteredSaw(Mode::LowShelf);
-
   // Do the plots for the different response types:
   plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);
@@ -1622,9 +1632,7 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Allpass);
   plotFilteredSaw(Mode::Bell);
   plotFilteredSaw(Mode::LowShelf);
-
-
-
+  plotFilteredSaw(Mode::HighShelf);
 
 
   // ToDo:
@@ -1632,6 +1640,13 @@ void stateVarFilterSimper()
   // - Plot frequency responses
   //
   // - Render wave files
+  //
+  //
+  // See:
+  //
+  // - An implementation of the filter in C++ 
+  //   https://gist.github.com/hollance/2891d89c57adc71d9560bcf0e1e55c4b
+  //   It's quite similar to mine.
 }
 
 void stateVectorFilter()
