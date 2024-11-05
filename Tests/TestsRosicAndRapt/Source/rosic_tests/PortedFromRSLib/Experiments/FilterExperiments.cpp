@@ -1422,8 +1422,8 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Bypass:
   {
+    m0 = 1;
     a1 = a2 = a3 = m1 = m2 = 0;
-    m1 = 1;
     // Verify!
   }
   break;
@@ -1455,10 +1455,11 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   break;
 
 
+
+
   default:
   {
-    a1 = a2 = a3 = m1 = m2 = 0;
-    m1 = 1;
+    a1 = a2 = a3 = m0 = m1 = m2 = 0;
   };
 
   }
@@ -1525,30 +1526,13 @@ void stateVarFilterSimper()
 
 
   // Do the plots for the different response types:
+  plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);
   plotFilteredSaw(Mode::Highpass);
 
 
 
 
-
-  /*
-  // Create and plot lowpass signal:
-  Vec yLP(N);
-  flt.reset();
-  flt.setup(Mode::Lowpass, w, Q);
-  for(int n = 0; n < N; n++)
-    yLP[n] = flt.getSample(x[n]);
-  rsPlotVectors(x, yLP);
-
-  // Create and plot highpass signal:
-  Vec yHP(N);
-  flt.reset();
-  flt.setup(Mode::Highpass, w, Q);
-  for(int n = 0; n < N; n++)
-    yHP[n] = flt.getSample(x[n]);
-  rsPlotVectors(x, yHP);
-  */
 
   int dummy = 0;
 }
