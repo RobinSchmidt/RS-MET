@@ -1515,6 +1515,19 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
+  case Mode::LowShelf:
+  {
+    T g = tan(w2) / sqrt(A);
+    T k = 1/Q;
+    a1 =  1 / (1 + g*(g + k));
+    a2 =  g*a1;
+    a3 =  g*a2;
+    m0 =  1;
+    m1 =  k*(A - 1);
+    m2 =  (A*A - 1);
+  }
+  break;
+
 
 
 
@@ -1597,7 +1610,7 @@ void stateVarFilterSimper()
   };
 
 
-  plotFilteredSaw(Mode::Bell);
+  plotFilteredSaw(Mode::LowShelf);
 
   // Do the plots for the different response types:
   plotFilteredSaw(Mode::Bypass);
@@ -1608,6 +1621,7 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Peak);
   plotFilteredSaw(Mode::Allpass);
   plotFilteredSaw(Mode::Bell);
+  plotFilteredSaw(Mode::LowShelf);
 
 
 
