@@ -1428,12 +1428,12 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 = 1 / (1 + g*(g + k));
-    a2 = g*a1;
-    a3 = g*a2;
-    m0 = 0;
-    m1 = 0;
-    m2 = 1;
+    a1 =  1 / (1 + g*(g + k));
+    a2 =  g*a1;
+    a3 =  g*a2;
+    m0 =  0;
+    m1 =  0;
+    m2 =  1;
   }
   break;
 
@@ -1441,10 +1441,10 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 = 1 / (1 + g*(g + k));
-    a2 = g*a1;
-    a3 = g*a2;
-    m0 = 1;
+    a1 =  1 / (1 + g*(g + k));
+    a2 =  g*a1;
+    a3 =  g*a2;
+    m0 =  1;
     m1 = -k;
     m2 = -1;
   }
@@ -1467,14 +1467,41 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 = 1 / (1 + g*(g + k));
-    a2 = g*a1;
-    a3 = g*a2;
-    m0 = 1;
+    a1 =  1 / (1 + g*(g + k));
+    a2 =  g*a1;
+    a3 =  g*a2;
+    m0 =  1;
     m1 = -k;
-    m2 = 0;
+    m2 =  0;
   }
   break;
+
+  case Mode::Peak:
+  {
+    T g = tan(w2);
+    T k = 1/Q;
+    a1 =  1 / (1 + g*(g + k));
+    a2 =  g*a1;
+    a3 =  g*a2;
+    m0 =  1;
+    m1 = -k;
+    m2 = -2;
+  }
+  break;
+
+  case Mode::Allpass:
+  {
+    T g = tan(w2);
+    T k = 1/Q;
+    a1 =  1 / (1 + g*(g + k));
+    a2 =  g*a1;
+    a3 =  g*a2;
+    m0 =  1;
+    m1 = -2*k;
+    m2 =  0;
+  }
+  break;
+
 
 
 
@@ -1487,6 +1514,11 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   };
 
   }
+
+  // ToDo:
+  //
+  // - Get rid of the code duplication! The computation of a1,a2,a3 is always the same. The 
+  //   computation of g,k is almost always the same
 }
 
 template<class T>
@@ -1555,13 +1587,18 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Highpass);
   plotFilteredSaw(Mode::Bandpass);
   plotFilteredSaw(Mode::Notch);
+  plotFilteredSaw(Mode::Peak);
+  plotFilteredSaw(Mode::Allpass);
 
 
 
 
 
-
-  int dummy = 0;
+  // ToDo:
+  //
+  // - Plot frequency responses
+  //
+  // - Render wave files
 }
 
 void stateVectorFilter()
