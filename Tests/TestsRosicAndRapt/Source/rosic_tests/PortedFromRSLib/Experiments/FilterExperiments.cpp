@@ -1502,6 +1502,21 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
+  case Mode::Bell:
+  {
+    T g = tan(w2);
+    T k = 1/(Q*A);
+    a1 =  1 / (1 + g*(g + k));
+    a2 =  g*a1;
+    a3 =  g*a2;
+    m0 =  1;
+    m1 =  k*(A*A - 1);
+    m2 =  0;
+  }
+  break;
+
+
+
 
 
 
@@ -1557,7 +1572,7 @@ void stateVarFilterSimper()
   Real sampleRate = 44100;
   Real cutoff     =  1000;
   Real Q          =     3.0;  
-  Real gainDb     =     0.0;  // For bell and shelf filters
+  Real gainDb     =    12.0;  // For bell and shelf filters
 
 
   // Create input sawtooth signal:
@@ -1572,7 +1587,8 @@ void stateVarFilterSimper()
   // Helper function to plot filter output together with sawtooth input:
   auto plotFilteredSaw = [&](Mode mode)
   {
-    flt.setup(mode, w, Q);  // ToDo: pass A (linear gain)
+    Real A = pow(10, gainDb/40);
+    flt.setup(mode, w, Q, A);
     flt.reset();
     Vec y(N);
     for(int n = 0; n < N; n++)
@@ -1580,6 +1596,8 @@ void stateVarFilterSimper()
     rsPlotVectors(x, y);
   };
 
+
+  plotFilteredSaw(Mode::Bell);
 
   // Do the plots for the different response types:
   plotFilteredSaw(Mode::Bypass);
@@ -1589,6 +1607,7 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Notch);
   plotFilteredSaw(Mode::Peak);
   plotFilteredSaw(Mode::Allpass);
+  plotFilteredSaw(Mode::Bell);
 
 
 
