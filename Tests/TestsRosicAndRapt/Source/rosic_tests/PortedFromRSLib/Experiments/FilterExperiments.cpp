@@ -1441,6 +1441,20 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
+  case Mode::Highpass:
+  {
+    T g = tan(w2);
+    T k = 1/Q;
+    a1 = 1 / (1 + g*(g + k));
+    a2 = g*a1;
+    a3 = g*a2;
+    m0 = 1;
+    m1 = -k;
+    m2 = -1;
+  }
+  break;
+
+
   default:
   {
     a1 = a2 = a3 = m1 = m2 = 0;
@@ -1450,20 +1464,20 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
 }
 
-
 template<class T>
 T rsStateVarFilterSimper<T>::getSample(T v0)
 {
-  v3 = v0 - ic2eq;                     // Feedback?
-  v1 = a1*ic1eq + a2*v3;
-  v2 = ic2eq + a2*ic1eq + a3*v3;
+  // Intermediate variables (voltages?)
+  T v3 = v0 - ic2eq;                     // Feedback?
+  T v1 = a1*ic1eq + a2*v3;
+  T v2 = ic2eq + a2*ic1eq + a3*v3;
 
+  // State update (capacitor currents?)
   ic1eq = 2*v1 - ic1eq;
   ic2eq = 2*v2 - ic2eq;
 
+  // Mix final output:
   return m0*v0 + m1*v1 + m2*v2;
-
-  // Verify these!
 }
 
 
@@ -1485,22 +1499,40 @@ void stateVarFilterSimper()
   Real sawFreq    =   100;    // Frequency of input sawtooth wave
   Real sampleRate = 44100;
   Real cutoff     =  1000;
-  Real Q          =     1.0;  
+  Real Q          =     3.0;  
   Real gainDb     =     0.0;  // For bell and shelf filters
 
 
-  Vec x(N), yLP(N);
+  // Create input sawtooth signal:
+  Vec x(N);
   createWaveform(&x[0], N, 1, sawFreq, sampleRate);
 
-
-  Real w = 2*PI*cutoff/sampleRate;
+  // Create filter and compute normalized radian frequency omega:
   rsStateVarFilterSimper<Real> flt;
+  Real w = 2*PI*cutoff/sampleRate;
+
+
+
+
+
+  // Create and plot lowpass signal:
+  Vec yLP(N);
+  flt.reset();
   flt.setup(Mode::Lowpass, w, Q);
+  for(int n = 0; n < N; n++)
+    yLP[n] = flt.getSample(x[n]);
+  rsPlotVectors(x, yLP);
 
- 
+  // Create and plot highpass signal:
+  Vec yHP(N);
+  flt.reset();
+  flt.setup(Mode::Highpass, w, Q);
+  for(int n = 0; n < N; n++)
+    yHP[n] = flt.getSample(x[n]);
+  rsPlotVectors(x, yHP);
 
 
-  rsPlotVectors(x);
+
 
 
 
