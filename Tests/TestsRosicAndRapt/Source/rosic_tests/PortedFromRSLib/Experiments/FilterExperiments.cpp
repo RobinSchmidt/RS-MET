@@ -1541,15 +1541,9 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
-
-
-
-
-
-
-
   default:
   {
+    rsError("Unknown filter type in rsStateVarFilterSimper::setup");
     a1 = a2 = a3 = m0 = m1 = m2 = 0;
   };
 
@@ -1592,7 +1586,7 @@ void stateVarFilterSimper()
   using Mode = rsStateVarFilterSimper<Real>::Mode;
 
   // Setup:
-  int  N          =  2000;    // Number of samples to produce
+  int  N          =  4096;    // Number of samples to produce
   Real sawFreq    =   100;    // Frequency of input sawtooth wave
   Real sampleRate = 44100;
   Real cutoff     =  1000;
@@ -1619,11 +1613,19 @@ void stateVarFilterSimper()
     for(int n = 0; n < N; n++)
       y[n] = flt.getSample(x[n]);
     rsPlotVectors(x, y);
+
+  
+    SpectrumPlotter<Real> plt;
+    plt.setFftSize(N);
+    plt.setSampleRate(sampleRate);
+    plt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
+    plt.setLogFreqAxis(true);
+    plt.plotSpectra(N, &y[0]);
   };
 
 
   // Do the plots for the different response types:
-  plotFilteredSaw(Mode::Bypass);
+  //plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);
   plotFilteredSaw(Mode::Highpass);
   plotFilteredSaw(Mode::Bandpass);
@@ -1633,6 +1635,9 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Bell);
   plotFilteredSaw(Mode::LowShelf);
   plotFilteredSaw(Mode::HighShelf);
+
+
+
 
 
   // ToDo:
