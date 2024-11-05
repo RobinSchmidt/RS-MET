@@ -1358,8 +1358,35 @@ class rsStateVarFilterSimper
 public:
 
 
-  inline T getSample(T in);
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  enum Mode
+  {
+    Bypass,
+    Lowpass,
+    Highpass,
+    Bandpass,
+    Notch,
+    Peak,
+    Allpass,
+    Bell,
+    LowShelf,
+    HighShelf,
+
+    NumModes
+  };
+
+  /** */
+  void setup(Mode mode, T omega, T Q, T A = T(1));
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Computes one sample at a time. */
+  inline T getSample(T in);
 
   /** Resets the internal state. */
   void reset()
@@ -1376,18 +1403,67 @@ protected:
   T ic2eq = 0;
 
   // Coeffs:
-  T a1, a2, a3;
-  T m0, m1, m2;
+  T a1, a2, a3;  // ?
+  T m0, m1, m2;  // Mixing coeffs
 
 };
+
+
+
+template<class T>
+void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
+{
+  // omega = 2*pi*fc/fs
+
+  T w2 = 0.5*omega;
+
+  switch(mode)
+  {
+
+  case Mode::Bypass:
+  {
+    a1 = a2 = a3 = m1 = m2 = 0;
+    m1 = 1;
+    // Verify!
+  }
+  break;
+
+  case Mode::Lowpass:
+  {
+    T g = tan(w2);
+    T k = 1/Q;
+    a1 = 1 / (1 + g*(g + k));
+    a2 = g*a1;
+    a3 = g*a2;
+    m0 = 0;
+    m1 = 0;
+    m2 = 1;
+  }
+  break;
+
+  default:
+  {
+    a1 = a2 = a3 = m1 = m2 = 0;
+    m1 = 1;
+  };
+
+  }
+}
+
 
 template<class T>
 T rsStateVarFilterSimper<T>::getSample(T v0)
 {
-  v3 = v0 - ic2eq;
+  v3 = v0 - ic2eq;                     // Feedback?
+  v1 = a1*ic1eq + a2*v3;
+  v2 = ic2eq + a2*ic1eq + a3*v3;
 
+  ic1eq = 2*v1 - ic1eq;
+  ic2eq = 2*v2 - ic2eq;
 
-  // ...
+  return m0*v0 + m1*v1 + m2*v2;
+
+  // Verify these!
 }
 
 
@@ -1399,6 +1475,32 @@ void stateVarFilterSimper()
   //   https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
   //
   //
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using Mode = rsStateVarFilterSimper<Real>::Mode;
+
+  // Setup:
+  int  N          =  2000;    // Number of samples to produce
+  Real sawFreq    =   100;    // Frequency of input sawtooth wave
+  Real sampleRate = 44100;
+  Real cutoff     =  1000;
+  Real Q          =     1.0;  
+  Real gainDb     =     0.0;  // For bell and shelf filters
+
+
+  Vec x(N), yLP(N);
+  createWaveform(&x[0], N, 1, sawFreq, sampleRate);
+
+
+  Real w = 2*PI*cutoff/sampleRate;
+  rsStateVarFilterSimper<Real> flt;
+  flt.setup(Mode::Lowpass, w, Q);
+
+ 
+
+
+  rsPlotVectors(x);
 
 
 
