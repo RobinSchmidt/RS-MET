@@ -1512,9 +1512,27 @@ void stateVarFilterSimper()
   Real w = 2*PI*cutoff/sampleRate;
 
 
+  // Helper function to plot filter output together with sawtooth input:
+  auto plotFilteredSaw = [&](Mode mode)
+  {
+    flt.setup(mode, w, Q);  // ToDo: pass A (linear gain)
+    flt.reset();
+    Vec y(N);
+    for(int n = 0; n < N; n++)
+      y[n] = flt.getSample(x[n]);
+    rsPlotVectors(x, y);
+  };
+
+
+  // Do the plots for the different response types:
+  plotFilteredSaw(Mode::Lowpass);
+  plotFilteredSaw(Mode::Highpass);
 
 
 
+
+
+  /*
   // Create and plot lowpass signal:
   Vec yLP(N);
   flt.reset();
@@ -1530,12 +1548,7 @@ void stateVarFilterSimper()
   for(int n = 0; n < N; n++)
     yHP[n] = flt.getSample(x[n]);
   rsPlotVectors(x, yHP);
-
-
-
-
-
-
+  */
 
   int dummy = 0;
 }
