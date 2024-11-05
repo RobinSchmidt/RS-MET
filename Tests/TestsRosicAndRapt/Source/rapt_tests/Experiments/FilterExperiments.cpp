@@ -3350,6 +3350,9 @@ void simdFilter()
 }
 
 template void simdFilter<float, 4>();
+// What is this?
+
+
 
 
 void subBandFilter()

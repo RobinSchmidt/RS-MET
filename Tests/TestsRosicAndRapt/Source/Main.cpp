@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
   //numericRootFinding1D();
 
 
-  polynomialSinc();          // approximation of sinc by polynomial constructed from roots
+  //polynomialSinc();          // approximation of sinc by polynomial constructed from roots
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
@@ -313,7 +313,7 @@ int main(int argc, char* argv[])
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
 
-  numericDifferentiation();                // num. dif. on a function object
+  //numericDifferentiation();                // num. dif. on a function object
   //numericIntegration();                   // a.k.a. numeric "quadrature"
   //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
   //testNonUniformInvertibleDiff();         // algo that produces reciprocals when swapping x and y
@@ -394,6 +394,7 @@ int main(int argc, char* argv[])
   //butterworthEnergy();
   //stateVariableFilter();
   //stateVariableFilterMorph();
+  stateVarFilterSimper();
   //stateVectorFilter();   // just a stub, at the moment
   //biquadModulation();    // compares modulation properties of various biquad structures
   //transistorLadder();    // triggers assert

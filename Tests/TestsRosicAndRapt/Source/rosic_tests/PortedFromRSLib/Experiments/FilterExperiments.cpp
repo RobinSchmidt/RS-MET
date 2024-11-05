@@ -1349,6 +1349,63 @@ void stateVariableFilterMorph()
   plotData(N/2, f, m0, m1, m2, m3, m4);
 }
 
+
+template<class T>
+class rsStateVarFilterSimper
+{
+
+
+public:
+
+
+  inline T getSample(T in);
+
+
+  /** Resets the internal state. */
+  void reset()
+  {
+    ic1eq = 0;
+    ic2eq = 0;
+  }
+
+
+protected:
+
+  // State:
+  T ic1eq = 0;
+  T ic2eq = 0;
+
+  // Coeffs:
+  T a1, a2, a3;
+  T m0, m1, m2;
+
+};
+
+template<class T>
+T rsStateVarFilterSimper<T>::getSample(T v0)
+{
+  v3 = v0 - ic2eq;
+
+
+  // ...
+}
+
+
+
+void stateVarFilterSimper()
+{
+  // Test of Andrew Simper's circuit modeled state variable filter from here:
+  //
+  //   https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
+  //
+  //
+
+
+
+
+  int dummy = 0;
+}
+
 void stateVectorFilter()
 {
   // Idea: create a filter similar to the complex-phasor filter, but more general, using a 2D

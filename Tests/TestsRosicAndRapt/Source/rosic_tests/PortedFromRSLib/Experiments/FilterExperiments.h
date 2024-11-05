@@ -12,6 +12,7 @@ void biquadModulation();
 void brickwallAndAllpass();
 void stateVariableFilter();
 void stateVariableFilterMorph();
+void stateVarFilterSimper();
 void stateVectorFilter();
 void transistorLadder();
 void phonoFilterPrototypePlot();
