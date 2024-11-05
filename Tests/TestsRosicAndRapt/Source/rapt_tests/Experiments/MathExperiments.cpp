@@ -3190,7 +3190,8 @@ void polynomialSinc()
   //  decreases (good) and the spectral rolloff increases (good)
   // -When increasing the number of zeros, keeping everything else constant, the amount of 
   //  passband ripple increases. It can be counteracted by choosing a higher window exponent. 
-  //  Seems like the windoExponent should equal halfNumZeros for a good looking freq resp.
+  //  Seems like the windoExponent should equal (or similar) to halfNumZeros for a good looking 
+  //  freq resp.
   // -For higher num zeros, the optimized evaluation seems to produce progressively less 
   //  accurate results (or is it the naive version that gets less accurate? anyway, they diverge)
   // -A choice of 8,8 seems to give a reasonably good looking response. Maybe, if a datatype
@@ -3204,9 +3205,16 @@ void polynomialSinc()
   // -try to expand the optimized form and evaluate it via Horner's rule -> check numerical and 
   //  performance properties
 
-  // Altenatively, we may try a polynomial that has a zero also at zero and then divied the whole
+  // Altenatively, we may try a polynomial that has a zero also at zero and then divide the whole
   // thing by x...but we have that expensive division and we also need to take care about avoiding
   // division by zero, so that should be considred only, when the above approach fails...
+  //
+  //
+  // See:
+  //
+  // - https://www.youtube.com/watch?v=FCpRl0NzVu4
+  //   The Basel Problem Part 2: Euler's Proof and the Riemann Hypothesis
+  //   It does something similar for f(x) = sin(x)
 }
 
 

@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
   //numericRootFinding1D();
 
 
-  //polynomialSinc();
+  polynomialSinc();          // approximation of sinc by polynomial constructed from roots
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();

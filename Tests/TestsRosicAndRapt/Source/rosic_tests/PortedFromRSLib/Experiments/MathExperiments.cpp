@@ -1630,7 +1630,9 @@ void numericDifferentiation()
   //   means: when swapping the x- and y-arrays, the derivative estimate should turn into its 
   //   reciprocal. Such a differentiation rule can be useful for inverting the linfrac 
   //   interpolation when we have to use numerical derivatives. Somewhere near the linfrac test, 
-  //   there is already some code with ideas for that.
+  //   there is already some code with ideas for that. Oh - but in the linfrac case, we operate on
+  //   data arrays rtaher than function objects to compute numerical derivatives. However - can a
+  //   inverse-rule respecting formula also be found for using it on function objects?
 }
 
 void numericIntegration()
