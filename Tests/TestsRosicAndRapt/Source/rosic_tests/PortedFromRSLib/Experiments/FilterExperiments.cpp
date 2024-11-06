@@ -1410,9 +1410,10 @@ void stateVarFilterSimper()
 
   // Do the plots for the different response types:
 
-  plotFreqResponse(Mode::Lowpass);
-  plotFreqResponse(Mode::Highpass);
+  //plotFreqResponse(Mode::Lowpass);
+  //plotFreqResponse(Mode::Highpass);
   plotFreqResponse(Mode::Bandpass);
+  plotFreqResponse(Mode::BandpassPeak);
   plotFreqResponse(Mode::Notch);
   plotFreqResponse(Mode::Peak);
   plotFreqResponse(Mode::Allpass);

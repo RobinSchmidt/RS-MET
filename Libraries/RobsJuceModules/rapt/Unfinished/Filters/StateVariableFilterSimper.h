@@ -32,7 +32,7 @@ public:
     Lowpass,
     Highpass,
     Bandpass,        // ToDo: rename to BandpassSkirt
-    //BandpassPeak,
+    BandpassPeak,
     Notch,
     Allpass,
     Bell,            // This is what RBJ calls "peak"
@@ -139,6 +139,19 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
+
+  // Experimental:
+  case Mode::BandpassPeak:
+  {
+    T k = 1/Q;
+    calcFilterCoeffs(tw2, k);
+    m0 = 0;
+    m1 = k;   // Just a guess. ...yes - looks good!
+    m2 = 0;
+  }
+  break;
+
+
   case Mode::Notch:
   {
     T k = 1/Q;
@@ -146,16 +159,6 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     m0 =  1;
     m1 = -k;
     m2 =  0;
-  }
-  break;
-
-  case Mode::Peak:
-  {
-    T k = 1/Q;
-    calcFilterCoeffs(tw2, k);
-    m0 =  1;
-    m1 = -k;
-    m2 = -2;
   }
   break;
 
@@ -196,6 +199,16 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     m0 = A*A;
     m1 = k*(1 - A)*A;
     m2 = (1 - A*A);
+  }
+  break;
+
+  case Mode::Peak:
+  {
+    T k = 1/Q;
+    calcFilterCoeffs(tw2, k);
+    m0 =  1;
+    m1 = -k;
+    m2 = -2;
   }
   break;
 
