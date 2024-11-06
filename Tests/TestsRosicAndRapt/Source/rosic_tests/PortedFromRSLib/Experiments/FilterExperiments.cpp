@@ -1375,7 +1375,7 @@ void stateVarFilterSimper()
   createWaveform(&x[0], N, 1, sawFreq, sampleRate);
 
   // Create filter and compute normalized radian frequency omega and linear gain:
-  rsStateVariableFilterSimper<Real> flt;
+  rsStateVariableFilterSimper<Real> svf;
   Real w = 2*PI*cutoff/sampleRate;
   Real A = pow(10, gainDb/40);
 
@@ -1383,20 +1383,23 @@ void stateVarFilterSimper()
   // Helper function to plot filter output together with sawtooth input:
   auto plotFilteredSaw = [&](Mode mode)
   {
-    flt.setup(mode, w, Q, A);
-    flt.reset();
+    svf.setup(mode, w, Q, A);
+    svf.reset();
     Vec y(N);
     for(int n = 0; n < N; n++)
-      y[n] = flt.getSample(x[n]);
+      y[n] = svf.getSample(x[n]);
     rsPlotVectors(x, y);
   };
 
   // Helper function to plot filter frequency response:
   auto plotFreqResponse = [&](Mode mode)
   {
-    flt.setup(mode, w, Q, A);
+    svf.setup(mode, w, Q, A);
     Vec y(N);
-    getImpulseResponse(flt, &y[0], N);
+    getImpulseResponse(svf, &y[0], N);
+
+
+
     SpectrumPlotter<Real> plt;
     plt.setFftSize(N);
     plt.setNormalizationMode(SpectrumPlotter<Real>::NormalizationMode::impulse);

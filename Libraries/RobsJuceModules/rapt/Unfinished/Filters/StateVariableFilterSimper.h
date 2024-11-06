@@ -39,6 +39,7 @@ public:
     LowShelf,
     HighShelf,
     Peak,            // Not the same as the "peak" characteristic in the RBJ filters
+                     // Maybe rename to resonator (but first figure out if it actually is one)
 
     NumModes
   };
