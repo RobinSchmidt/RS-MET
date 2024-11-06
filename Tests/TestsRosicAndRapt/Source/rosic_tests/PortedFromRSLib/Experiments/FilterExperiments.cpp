@@ -1601,21 +1601,26 @@ void stateVarFilterSimper()
   // Create filter and compute normalized radian frequency omega:
   rsStateVarFilterSimper<Real> flt;
   Real w = 2*PI*cutoff/sampleRate;
+  Real A = pow(10, gainDb/40);
 
 
   // Helper function to plot filter output together with sawtooth input:
   auto plotFilteredSaw = [&](Mode mode)
   {
-    Real A = pow(10, gainDb/40);
     flt.setup(mode, w, Q, A);
     flt.reset();
     Vec y(N);
     for(int n = 0; n < N; n++)
       y[n] = flt.getSample(x[n]);
     rsPlotVectors(x, y);
+  };
 
-  
+  auto plotFreqResponse = [&](Mode mode)
+  {
     //flt.reset();
+    //Real A = pow(10, gainDb/40);
+    flt.setup(mode, w, Q, A);
+    Vec y(N);
     getImpulseResponse(flt, &y[0], N);
     SpectrumPlotter<Real> plt;
     plt.setFftSize(N);
@@ -1627,7 +1632,13 @@ void stateVarFilterSimper()
   };
 
 
+
+
   // Do the plots for the different response types:
+
+  plotFreqResponse(Mode::Lowpass);
+
+
   //plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);
   plotFilteredSaw(Mode::Highpass);
@@ -1638,6 +1649,10 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Bell);
   plotFilteredSaw(Mode::LowShelf);
   plotFilteredSaw(Mode::HighShelf);
+
+
+
+
 
 
 
