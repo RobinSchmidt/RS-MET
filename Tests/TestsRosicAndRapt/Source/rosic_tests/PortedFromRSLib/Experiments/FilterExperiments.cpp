@@ -1453,9 +1453,6 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     T g = tan(w2);
     T k = 1/Q;
 
-    //a1 =  1 / (1 + g*(g + k));
-    //a2 =  g*a1;
-    //a3 =  g*a2;
     calcFilterCoeffs(g, k);
 
     m0 =  0;
@@ -1469,9 +1466,6 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     T g = tan(w2);
     T k = 1/Q;
 
-    //a1 =  1 / (1 + g*(g + k));
-    //a2 =  g*a1;
-    //a3 =  g*a2;
     calcFilterCoeffs(g, k);
 
     m0 =  1;
@@ -1485,9 +1479,6 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     T g = tan(w2);
     T k = 1/Q;
 
-    //a1 = 1 / (1 + g*(g + k));
-    //a2 = g*a1;
-    //a3 = g*a2;
     calcFilterCoeffs(g, k);
 
     m0 = 0;
@@ -1501,11 +1492,7 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     T g = tan(w2);
     T k = 1/Q;
 
-    //a1 =  1 / (1 + g*(g + k));
-    //a2 =  g*a1;
-    //a3 =  g*a2;
     calcFilterCoeffs(g, k);
-
 
     m0 =  1;
     m1 = -k;
@@ -1517,9 +1504,9 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 =  1 / (1 + g*(g + k));
-    a2 =  g*a1;
-    a3 =  g*a2;
+
+    calcFilterCoeffs(g, k);
+
     m0 =  1;
     m1 = -k;
     m2 = -2;
@@ -1530,9 +1517,9 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 =  1 / (1 + g*(g + k));
-    a2 =  g*a1;
-    a3 =  g*a2;
+
+    calcFilterCoeffs(g, k);
+
     m0 =  1;
     m1 = -2*k;
     m2 =  0;
@@ -1543,9 +1530,9 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/(Q*A);
-    a1 =  1 / (1 + g*(g + k));
-    a2 =  g*a1;
-    a3 =  g*a2;
+
+    calcFilterCoeffs(g, k);
+
     m0 =  1;
     m1 =  k*(A*A - 1);
     m2 =  0;
@@ -1556,9 +1543,9 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2) / sqrt(A);
     T k = 1/Q;
-    a1 =  1 / (1 + g*(g + k));
-    a2 =  g*a1;
-    a3 =  g*a2;
+
+    calcFilterCoeffs(g, k);
+
     m0 =  1;
     m1 =  k*(A - 1);
     m2 =  (A*A - 1);
@@ -1569,9 +1556,9 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2) * sqrt(A);
     T k = 1/Q;
-    a1 =  1 / (1 + g*(g + k));
-    a2 =  g*a1;
-    a3 =  g*a2;
+
+    calcFilterCoeffs(g, k);
+
     m0 =  A*A;
     m1 =  k*(1 - A)*A;
     m2 =  (1 - A*A );
