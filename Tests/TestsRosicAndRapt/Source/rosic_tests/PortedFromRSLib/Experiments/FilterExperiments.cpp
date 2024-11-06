@@ -1438,6 +1438,9 @@ void stateVarFilterSimper()
   // - Make a unit test that tests also having TSig != TPar. For example, use TPar = double and
   //   TSig = rsFloat64x2 for a stereo linked filter.
   //
+  // - Compare freq responses to those of RBJ cookbook filter...and maybe my old SVF 
+  //   implementation.
+  //
   //
   // See:
   //

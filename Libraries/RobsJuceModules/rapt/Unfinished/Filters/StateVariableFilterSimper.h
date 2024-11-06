@@ -31,15 +31,14 @@ public:
     Bypass,
     Lowpass,
     Highpass,
-    Bandpass,        // ToDo: rename to BandpassSkirt
-    BandpassPeak,
+    BandpassSkirt,   // Bandpass with constant skirt gain
+    BandpassPeak,    // Bandpass with constant peak gain
     Notch,
     Allpass,
     Bell,            // This is what RBJ calls "peak"
     LowShelf,
     HighShelf,
     Peak,            // Not the same as the "peak" characteristic in the RBJ filters
-
 
     NumModes
   };
@@ -52,6 +51,9 @@ public:
   // 
   // rosic::CookBookFilter has the modes in that order:  BYPASS = 0, LOWPASS, HIGHPASS, 
   // BANDPASS_CONST_SKIRT,  BANDPASS_CONST_PEAK, BANDREJECT, ALLPASS, PEAK, LOW_SHELF, HIGH_SHELF
+  //
+  // Maybe make the names consistent. This can be done when dragging over the CookBookFilter into
+  // RAPT.
 
   /** Sets up the filter coefficients so as to achieve the desired mode, cutoff, Q and gain. The 
   mode must be one of the values from the Mode enum, omega = 2*pi*freq/sampleRate is the usual 
