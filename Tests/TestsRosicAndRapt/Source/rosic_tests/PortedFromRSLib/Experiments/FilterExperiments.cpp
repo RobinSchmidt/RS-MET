@@ -1427,7 +1427,8 @@ protected:
 template<class T>
 void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 {
-  T w2 = 0.5*omega;
+  T w2  = 0.5*omega;
+  T tw2 = tan(w2);
 
   // Helper function to calculate the a-coefficients from g and k:
   auto calcFilterCoeffs = [&](T g, T k)
@@ -1450,11 +1451,10 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Lowpass:
   {
-    T g = tan(w2);
-    T k = 1/Q;
+    //T g = tan(w2);
+    //T k = 1/Q;
 
-    calcFilterCoeffs(g, k);
-
+    calcFilterCoeffs(tw2, 1/Q);
     m0 =  0;
     m1 =  0;
     m2 =  1;
@@ -1463,11 +1463,10 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Highpass:
   {
-    T g = tan(w2);
+    //T g = tan(w2);
+
     T k = 1/Q;
-
-    calcFilterCoeffs(g, k);
-
+    calcFilterCoeffs(tw2, k);
     m0 =  1;
     m1 = -k;
     m2 = -1;
@@ -1476,11 +1475,11 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Bandpass:
   {
-    T g = tan(w2);
-    T k = 1/Q;
+    //T g = tan(w2);
+    //T k = 1/Q;
+    //calcFilterCoeffs(g, k);
 
-    calcFilterCoeffs(g, k);
-
+    calcFilterCoeffs(tw2, 1/Q);
     m0 = 0;
     m1 = 1;
     m2 = 0;
@@ -1489,11 +1488,13 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Notch:
   {
-    T g = tan(w2);
+    //T g = tan(w2);
+    //T k = 1/Q;
+    //calcFilterCoeffs(g, k);
+
+
     T k = 1/Q;
-
-    calcFilterCoeffs(g, k);
-
+    calcFilterCoeffs(tw2, k);
     m0 =  1;
     m1 = -k;
     m2 =  0;
@@ -1502,11 +1503,12 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Peak:
   {
-    T g = tan(w2);
+    //T g = tan(w2);
+    //T k = 1/Q;
+    //calcFilterCoeffs(g, k);
+
     T k = 1/Q;
-
-    calcFilterCoeffs(g, k);
-
+    calcFilterCoeffs(tw2, k);
     m0 =  1;
     m1 = -k;
     m2 = -2;
@@ -1515,10 +1517,12 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Allpass:
   {
-    T g = tan(w2);
-    T k = 1/Q;
+    //T g = tan(w2);
+    //T k = 1/Q;
+    //calcFilterCoeffs(g, k);
 
-    calcFilterCoeffs(g, k);
+    T k = 1/Q;
+    calcFilterCoeffs(tw2, k);
 
     m0 =  1;
     m1 = -2*k;
@@ -1528,11 +1532,10 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Bell:
   {
-    T g = tan(w2);
+    //T g = tan(w2);
+
     T k = 1/(Q*A);
-
-    calcFilterCoeffs(g, k);
-
+    calcFilterCoeffs(tw2, k);
     m0 =  1;
     m1 =  k*(A*A - 1);
     m2 =  0;
@@ -1541,10 +1544,11 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::LowShelf:
   {
-    T g = tan(w2) / sqrt(A);
+    //T g = tan(w2) / sqrt(A);
+
     T k = 1/Q;
 
-    calcFilterCoeffs(g, k);
+    calcFilterCoeffs(tw2 / sqrt(A), k);
 
     m0 =  1;
     m1 =  k*(A - 1);
@@ -1554,11 +1558,10 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::HighShelf:
   {
-    T g = tan(w2) * sqrt(A);
+    //T g = tan(w2) * sqrt(A);
+
     T k = 1/Q;
-
-    calcFilterCoeffs(g, k);
-
+    calcFilterCoeffs(tw2 * sqrt(A), k);
     m0 =  A*A;
     m1 =  k*(1 - A)*A;
     m2 =  (1 - A*A );
