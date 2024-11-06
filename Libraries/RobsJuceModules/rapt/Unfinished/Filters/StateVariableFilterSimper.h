@@ -47,7 +47,9 @@ public:
   // peak gain behavior, we just need to scale by k = 1/Q? ...just a guess - figure it out!
   // The RBJ filters are also missing a "peak" filter in the sense meant here. I think, it's just
   // a resonator? If so, try to introduce it in the RBJ filters as well. Maybe rename the mode to
-  // "Reson" or "Resonator".
+  // "Reson" or "Resonator". Maybe rename "Notch" to "Bandreject" for consistency. Or maybe call 
+  // them Bandstop everywhere.  https://en.wikipedia.org/wiki/Band-stop_filter
+  //
   // 
   // rosic::CookBookFilter has the modes in that order:  BYPASS = 0, LOWPASS, HIGHPASS, 
   // BANDPASS_CONST_SKIRT,  BANDPASS_CONST_PEAK, BANDREJECT, ALLPASS, PEAK, LOW_SHELF, HIGH_SHELF
@@ -132,7 +134,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
-  case Mode::Bandpass:
+  case Mode::BandpassSkirt:
   {
     calcFilterCoeffs(tw2, 1/Q);
     m0 = 0;
