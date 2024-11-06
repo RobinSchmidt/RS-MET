@@ -3,13 +3,20 @@
 
 /** An implementation of Andrew Simper's circuit modeled state variable filter from here:
 
-https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf  
+https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 
-*/
+It provides similar responses as the RBJ cookbook filters but the SVF is better suited to be used
+as a VCF in the context of a synthesizer because it responds nicely to modulation.
+
+This class implements the minimal core of the filter without any convenience features such as 
+setters like setSampleRate, setFrequency, setMode, etc. We don't do this here because we don't want
+to keep so many member variables around. These convenience features can be implemented on top of 
+the core class in a subclass or in some object that embeds such an SVF core. Here, we have only the
+minimum set of member variables that is needed to make the filter work. */
 
 
-template<class T>             // have TSig, TPar template parameters
-class rsStateVarFilterSimper
+template<class T>                   // ToDo: have TSig, TPar template parameters
+class rsStateVariableFilterSimper
 {
 
 public:
@@ -24,16 +31,27 @@ public:
     Bypass,
     Lowpass,
     Highpass,
-    Bandpass,
+    Bandpass,        // ToDo: rename to BandpassSkirt
+    //BandpassPeak,
     Notch,
-    Peak,            // Not the same as the "peak" characteristic in the RBJ filters
     Allpass,
     Bell,            // This is what RBJ calls "peak"
     LowShelf,
     HighShelf,
+    Peak,            // Not the same as the "peak" characteristic in the RBJ filters
+
 
     NumModes
   };
+  // ToDo: adjust the order of the modes to be the same as in the RBJ filter...but RBJ has two 
+  // bandpass variants. I think, this here is a const skirt gain bandpass. Maybe to obtain const 
+  // peak gain behavior, we just need to scale by k = 1/Q? ...just a guess - figure it out!
+  // The RBJ filters are also missing a "peak" filter in the sense meant here. I think, it's just
+  // a resonator? If so, try to introduce it in the RBJ filters as well. Maybe rename the mode to
+  // "Reson" or "Resonator".
+  // 
+  // rosic::CookBookFilter has the modes in that order:  BYPASS = 0, LOWPASS, HIGHPASS, 
+  // BANDPASS_CONST_SKIRT,  BANDPASS_CONST_PEAK, BANDREJECT, ALLPASS, PEAK, LOW_SHELF, HIGH_SHELF
 
   /** Sets up the filter coefficients so as to achieve the desired mode, cutoff, Q and gain. The 
   mode must be one of the values from the Mode enum, omega = 2*pi*freq/sampleRate is the usual 
@@ -49,17 +67,13 @@ public:
   inline T getSample(T in);
 
   /** Resets the internal state. */
-  void reset()
-  {
-    ic1eq = 0;
-    ic2eq = 0;
-  }
+  void reset() { ic1eq = ic2eq = 0; }
 
 
 protected:
 
   // State:
-  T ic1eq = 0;
+  T ic1eq = 0;  // Maybe rename to i1
   T ic2eq = 0;
   // I think these may be currents into the two capacitors?
 
@@ -73,12 +87,12 @@ protected:
 // Implementation
 
 template<class T>
-void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
+void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 {
   // Prewarping cutoff, I guess:
   T tw2 = tan(0.5*omega); 
 
-  // Helper function to calculate the a-coefficients from g and k:
+  // Helper function to calculate the a-coefficients from the intermediate variables g and k:
   auto calcFilterCoeffs = [&](T g, T k)
   {
     a1 = 1 / (1 + g*(g + k));
@@ -201,7 +215,7 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 }
 
 template<class T>
-T rsStateVarFilterSimper<T>::getSample(T v0)
+T rsStateVariableFilterSimper<T>::getSample(T v0)
 {
   // Intermediate variables (voltages?):
   T v3 = v0 - ic2eq;                     // Feedback?
@@ -222,6 +236,8 @@ T rsStateVarFilterSimper<T>::getSample(T v0)
 // - Maybe have two template parameters TSig, TPar as in the other filters. I think,
 //   v0,v1,v2,v3,ic1eq,ic2eq must all be TSig, a1,a2,a3,m1,m2,m3 must be TPar
 // - Maybe move implementation into .cpp file ...but maybe not.
+// - Figure out the z-domain transfer function and implement a function 
+//   getTransferFunctionAt(rsComplex<TPar> z)
 
 
 #endif

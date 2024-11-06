@@ -1359,7 +1359,7 @@ void stateVarFilterSimper()
 
   using Real = double;
   using Vec  = std::vector<Real>;
-  using Mode = rsStateVarFilterSimper<Real>::Mode;
+  using Mode = rsStateVariableFilterSimper<Real>::Mode;
 
   // Setup:
   int  N          =  4096;    // Number of samples to produce
@@ -1375,7 +1375,7 @@ void stateVarFilterSimper()
   createWaveform(&x[0], N, 1, sawFreq, sampleRate);
 
   // Create filter and compute normalized radian frequency omega and linear gain:
-  rsStateVarFilterSimper<Real> flt;
+  rsStateVariableFilterSimper<Real> flt;
   Real w = 2*PI*cutoff/sampleRate;
   Real A = pow(10, gainDb/40);
 
