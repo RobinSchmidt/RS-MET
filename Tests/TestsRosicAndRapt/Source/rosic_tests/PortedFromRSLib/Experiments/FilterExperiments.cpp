@@ -1380,6 +1380,11 @@ void stateVarFilterSimper()
   Real A = pow(10, gainDb/40);
 
 
+  CookbookFilter cbf;
+
+
+
+
   // Helper function to plot filter output together with sawtooth input:
   auto plotFilteredSaw = [&](Mode mode)
   {
@@ -1392,37 +1397,51 @@ void stateVarFilterSimper()
   };
 
   // Helper function to plot filter frequency response:
-  auto plotFreqResponse = [&](Mode mode)
+  auto plotFreqResponses = [&](Mode mode)
   {
+    Vec ySvf(N);
     svf.setup(mode, w, Q, A);
-    Vec y(N);
-    getImpulseResponse(svf, &y[0], N);
+    getImpulseResponse(svf, &ySvf[0], N);
+
+    Vec yCbf(N);
+    cbf.setSampleRate(sampleRate);
+    cbf.setNumStages(1);  // Important!
+    cbf.setFreq(cutoff);
+    cbf.setQ(Q);
+    cbf.setGain(gainDb);
+    cbf.setMode(mode);    // The mode parameter is actually from the wrong enum. But the enums
+                          // are compatible. That's very dirty, though!
+    getImpulseResponse(cbf, &yCbf[0], N);
 
 
+    // Plot impulse responses of the different filters:
+    //rsPlotVectors(ySvf, yCbf);
 
+    // Plot magnitude responses of the different filters:
     SpectrumPlotter<Real> plt;
     plt.setFftSize(N);
     plt.setNormalizationMode(SpectrumPlotter<Real>::NormalizationMode::impulse);
     plt.setSampleRate(sampleRate);
     plt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
     plt.setLogFreqAxis(true);
-    plt.plotSpectra(N, &y[0]);
+    //plt.plotSpectra(N, &ySvf[0]);
+    plt.plotSpectra(N, &ySvf[0], &yCbf[0]);
   };
 
 
 
   // Do the plots for the different response types:
 
-  plotFreqResponse(Mode::Lowpass);
-  plotFreqResponse(Mode::Highpass);
-  plotFreqResponse(Mode::BandpassSkirt);
-  plotFreqResponse(Mode::BandpassPeak);
-  plotFreqResponse(Mode::Notch);
-  plotFreqResponse(Mode::Peak);
-  plotFreqResponse(Mode::Allpass);
-  plotFreqResponse(Mode::Bell);
-  plotFreqResponse(Mode::LowShelf);
-  plotFreqResponse(Mode::HighShelf);
+  plotFreqResponses(Mode::Lowpass);
+  plotFreqResponses(Mode::Highpass);
+  plotFreqResponses(Mode::BandpassSkirt);
+  plotFreqResponses(Mode::BandpassPeak);
+  plotFreqResponses(Mode::Notch);
+  plotFreqResponses(Mode::Peak);
+  plotFreqResponses(Mode::Allpass);
+  plotFreqResponses(Mode::Bell);
+  plotFreqResponses(Mode::LowShelf);
+  plotFreqResponses(Mode::HighShelf);
 
   plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);

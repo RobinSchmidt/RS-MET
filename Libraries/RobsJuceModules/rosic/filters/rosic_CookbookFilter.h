@@ -83,6 +83,8 @@ namespace rosic
 
   INLINE void setGain(double newGain);
   //< Sets the gain value for shelving and peaking modes.
+  // ToDo: Document if the gain is expected in dB or as linear factor.
+  // I think, it's dB
 
   INLINE void setCoeffs(double newA1, double newA2,
                         double newB0, double newB1,
@@ -135,9 +137,18 @@ namespace rosic
   //---------------------------------------------------------------------------
   // others:
 
-  void resetBuffers ();
+  void resetBuffers();
   /**< Sets the buffers for the previous input and output samples of all biquad
        stages to zero. */
+
+  void reset()
+  {
+    resetBuffers();
+  }
+  // New - for consistency with the other filters. The resetBuffers() function
+  // should be deprecated.
+
+
 
   //===========================================================================
 
