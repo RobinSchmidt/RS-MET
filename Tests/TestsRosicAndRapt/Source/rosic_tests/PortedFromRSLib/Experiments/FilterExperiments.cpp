@@ -1369,6 +1369,10 @@ class rsStateVarFilterSimper
 public:
 
   //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
+
+  //-----------------------------------------------------------------------------------------------
   // \name Setup
 
   enum Mode
@@ -1413,8 +1417,8 @@ protected:
   // I think these may be currents into the two capacitors?
 
   // Coeffs:
-  T a1, a2, a3;  // Filter coeffs (ToDo: explain better)
-  T m0, m1, m2;  // Mixing coeffs
+  T a1 = 0, a2 = 0, a3 = 0;  // Filter coeffs (ToDo: explain better)
+  T m0 = 1, m1 = 0, m2 = 0;  // Mixing coeffs
 
 };
 
@@ -1426,10 +1430,13 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   T w2 = 0.5*omega;
 
   // Helper function to calculate the a-coefficients from g and k:
-  auto calcFilterCoeffs = [](T g, T k)
+  auto calcFilterCoeffs = [&](T g, T k)
   {
-  
+    a1 = 1 / (1 + g*(g + k));
+    a2 = g*a1;
+    a3 = g*a2;
   };
+
 
   switch(mode)
   {
@@ -1445,9 +1452,12 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 =  1 / (1 + g*(g + k));
-    a2 =  g*a1;
-    a3 =  g*a2;
+
+    //a1 =  1 / (1 + g*(g + k));
+    //a2 =  g*a1;
+    //a3 =  g*a2;
+    calcFilterCoeffs(g, k);
+
     m0 =  0;
     m1 =  0;
     m2 =  1;
@@ -1458,9 +1468,12 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 =  1 / (1 + g*(g + k));
-    a2 =  g*a1;
-    a3 =  g*a2;
+
+    //a1 =  1 / (1 + g*(g + k));
+    //a2 =  g*a1;
+    //a3 =  g*a2;
+    calcFilterCoeffs(g, k);
+
     m0 =  1;
     m1 = -k;
     m2 = -1;
@@ -1471,9 +1484,12 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 = 1 / (1 + g*(g + k));
-    a2 = g*a1;
-    a3 = g*a2;
+
+    //a1 = 1 / (1 + g*(g + k));
+    //a2 = g*a1;
+    //a3 = g*a2;
+    calcFilterCoeffs(g, k);
+
     m0 = 0;
     m1 = 1;
     m2 = 0;
@@ -1484,9 +1500,13 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   {
     T g = tan(w2);
     T k = 1/Q;
-    a1 =  1 / (1 + g*(g + k));
-    a2 =  g*a1;
-    a3 =  g*a2;
+
+    //a1 =  1 / (1 + g*(g + k));
+    //a2 =  g*a1;
+    //a3 =  g*a2;
+    calcFilterCoeffs(g, k);
+
+
     m0 =  1;
     m1 = -k;
     m2 =  0;
