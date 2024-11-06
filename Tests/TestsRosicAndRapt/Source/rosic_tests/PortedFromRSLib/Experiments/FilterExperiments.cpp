@@ -1415,7 +1415,7 @@ void stateVarFilterSimper()
 
 
     // Plot impulse responses of the different filters:
-    //rsPlotVectors(ySvf, yCbf);
+    rsPlotVectors(ySvf, yCbf);
 
     // Plot magnitude responses of the different filters:
     SpectrumPlotter<Real> plt;
@@ -1437,11 +1437,12 @@ void stateVarFilterSimper()
   plotFreqResponses(Mode::BandpassSkirt);
   plotFreqResponses(Mode::BandpassPeak);
   plotFreqResponses(Mode::Notch);
-  plotFreqResponses(Mode::Peak);
   plotFreqResponses(Mode::Allpass);
   plotFreqResponses(Mode::Bell);
   plotFreqResponses(Mode::LowShelf);
   plotFreqResponses(Mode::HighShelf);
+  plotFreqResponses(Mode::Peak);               // Not available in RBJ - ToDo: implement it!
+
 
   plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);
@@ -1455,13 +1456,24 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::HighShelf);
 
 
+  // Observations:
+  //
+  // - The impulse- and frequency responses of the RBJ cookbook filters and the Simper SVF do 
+  //   indeed look the same.
+  //
+  //
   // ToDo:
+  //
+  // - Try some more extreme settings - like a wide bell with center freq 15 kHz. Maybe in such 
+  //   cases differences will appear?
   //
   // - Make a unit test that tests also having TSig != TPar. For example, use TPar = double and
   //   TSig = rsFloat64x2 for a stereo linked filter.
   //
   // - Compare freq responses to those of RBJ cookbook filter...and maybe my old SVF 
   //   implementation.
+  //
+  // - Try to derive a cookbook formula for the peak/resonator filter type
   //
   //
   // See:
