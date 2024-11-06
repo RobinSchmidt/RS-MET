@@ -1396,7 +1396,8 @@ void stateVarFilterSimper()
     rsPlotVectors(x, y);
   };
 
-  // Helper function to plot filter frequency response:
+  // Helper function to plot filter frequency responses of different finter implementations for 
+  // comparison:
   auto plotFreqResponses = [&](Mode mode)
   {
     Vec ySvf(N);
@@ -1415,7 +1416,7 @@ void stateVarFilterSimper()
 
 
     // Plot impulse responses of the different filters:
-    rsPlotVectors(ySvf, yCbf);
+    //rsPlotVectors(ySvf, yCbf);
 
     // Plot magnitude responses of the different filters:
     SpectrumPlotter<Real> plt;
@@ -1465,7 +1466,7 @@ void stateVarFilterSimper()
   // ToDo:
   //
   // - Try some more extreme settings - like a wide bell with center freq 15 kHz. Maybe in such 
-  //   cases differences will appear?
+  //   cases differences will appear? Nope! The resonses still look all the same. Good!
   //
   // - Make a unit test that tests also having TSig != TPar. For example, use TPar = double and
   //   TSig = rsFloat64x2 for a stereo linked filter.
