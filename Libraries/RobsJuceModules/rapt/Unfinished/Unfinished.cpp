@@ -35,6 +35,7 @@ namespace RAPT
 #include "Filters/FakeResonanceFilter.cpp"
 #include "Filters/Biquad.cpp"
 #include "Filters/NonUniformFilter.cpp"
+#include "Filters/StateVariableFilterSimper.cpp"
 
 // the new polyphony stuff:
 #include "MiscAudio/Polyphony.cpp"

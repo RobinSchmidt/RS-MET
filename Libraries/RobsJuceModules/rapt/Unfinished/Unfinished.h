@@ -50,6 +50,7 @@ namespace RAPT
 #include "Filters/FakeResonanceFilter.h"
 #include "Filters/Biquad.h"
 #include "Filters/NonUniformFilter.h"
+#include "Filters/StateVariableFilterSimper.h"
 
 // the new polyphony stuff:
 #include "MiscAudio/Polyphony.h"
