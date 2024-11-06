@@ -1350,6 +1350,16 @@ void stateVariableFilterMorph()
 }
 
 
+/** An implementation of Andrew Simper's circuit modeled state variable filter from here:
+
+      https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf  
+
+
+ToDo:
+
+- Document the code more - explain what the variables mean, etc.
+
+*/
 
 
 template<class T>
@@ -1400,6 +1410,7 @@ protected:
   // State:
   T ic1eq = 0;
   T ic2eq = 0;
+  // I think these may be currents into the two capacitors?
 
   // Coeffs:
   T a1, a2, a3;  // Filter coeffs (ToDo: explain better)
@@ -1413,6 +1424,12 @@ template<class T>
 void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 {
   T w2 = 0.5*omega;
+
+  // Helper function to calculate the a-coefficients from g and k:
+  auto calcFilterCoeffs = [](T g, T k)
+  {
+  
+  };
 
   switch(mode)
   {
@@ -1553,6 +1570,10 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   //
   // - Get rid of the code duplication! The computation of a1,a2,a3 is always the same. The 
   //   computation of g,k is almost always the same
+  //
+  // - Figure out and document what the coefficients and intermediat variables mean. Looking at the
+  //   scribble on the front page on the paper, it seem like k is the feedback factor after the 1st
+  //   integrator? And the a1, a2 are the gains of the integrators? And g is affecting them?
 }
 
 template<class T>
