@@ -1561,7 +1561,7 @@ T rsStateVarFilterSimper<T>::getSample(T v0)
   // Intermediate variables (voltages?)
   T v3 = v0 - ic2eq;                     // Feedback?
   T v1 = a1*ic1eq + a2*v3;
-  T v2 = ic2eq + a2*ic1eq + a3*v3;
+  T v2 = a2*ic1eq + a3*v3 + ic2eq;
 
   // State update (capacitor currents?)
   ic1eq = 2*v1 - ic1eq;
@@ -1666,6 +1666,8 @@ void stateVarFilterSimper()
   // - An implementation of the filter in C++ 
   //   https://gist.github.com/hollance/2891d89c57adc71d9560bcf0e1e55c4b
   //   It's quite similar to mine.
+  //
+  // - More papers: https://cytomic.com/technical-papers/
 }
 
 void stateVectorFilter()
