@@ -301,8 +301,8 @@ ToDo:
  Here are some more papers:
  https://cytomic.com/technical-papers/
  I think, v0 is the input signal (voltage) ic1eq, ic2eq are the filter states (currents into the
- capacitors?) and v1,v2,v3 local intermediate variables? But I'm not sure.
-
+ capacitors?) and v1,v2,v3 local intermediate variables? But I'm not sure. See experiment in:
+ stateVarFilterSimper()
 
 
 

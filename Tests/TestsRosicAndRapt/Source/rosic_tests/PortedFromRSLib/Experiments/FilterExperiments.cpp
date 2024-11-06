@@ -1264,21 +1264,21 @@ void stateVariableFilter()
   getImpulseResponse(svf, yAP, N);
 
   // get magnitude responses from impulse responses:
-  rsMagnitudeAndPhase(yL, N, mL);
-  rsMagnitudeAndPhase(yB, N, mB);
-  rsMagnitudeAndPhase(yH, N, mH);
-  rsMagnitudeAndPhase(yPK, N, mPK);
-  rsMagnitudeAndPhase(yLS, N, mLS);
-  rsMagnitudeAndPhase(yHS, N, mHS);
-  rsMagnitudeAndPhase(yAP, N, mAP, pAP); RAPT::rsArrayTools::scale(pAP, N/2, 180.0/PI);
-  rsMagnitudeAndPhase(yBR, N, mBR);
+  rsMagnitudeAndPhase(yL,    N, mL);
+  rsMagnitudeAndPhase(yB,    N, mB);
+  rsMagnitudeAndPhase(yH,    N, mH);
+  rsMagnitudeAndPhase(yPK,   N, mPK);
+  rsMagnitudeAndPhase(yLS,   N, mLS);
+  rsMagnitudeAndPhase(yHS,   N, mHS);
+  rsMagnitudeAndPhase(yAP,   N, mAP, pAP); RAPT::rsArrayTools::scale(pAP, N/2, 180.0/PI);
+  rsMagnitudeAndPhase(yBR,   N, mBR);
   rsMagnitudeAndPhase(yBPCP, N, mBPCP);
 
   // magnitude response plots:
-  //plotData(N/2, f, mL, mB, mH);    // LP, BP, HP - the bandwidth doesn't have any effect - why?
+  plotData(N/2, f, mL, mB, mH);    // LP, BP, HP - the bandwidth doesn't have any effect - why?
   plotData(N/2, f, mBPCP, mBR);    // BR and BP (const peak gain)
-  //plotData(N/2, f, mPK, mLS, mHS); // bell, low- and highshelf
-  //plotData(N/2, f, mAP, pAP);      // allpass, plot also phase
+  plotData(N/2, f, mPK, mLS, mHS); // bell, low- and highshelf
+  plotData(N/2, f, mAP, pAP);      // allpass, plot also phase
 }
 
 void stateVariableFilterMorph()
@@ -1615,8 +1615,11 @@ void stateVarFilterSimper()
     rsPlotVectors(x, y);
 
   
+    //flt.reset();
+    getImpulseResponse(flt, &y[0], N);
     SpectrumPlotter<Real> plt;
     plt.setFftSize(N);
+    plt.setNormalizationMode(SpectrumPlotter<Real>::NormalizationMode::impulse);
     plt.setSampleRate(sampleRate);
     plt.setFreqAxisUnit(SpectrumPlotter<Real>::FreqAxisUnits::hertz);
     plt.setLogFreqAxis(true);
