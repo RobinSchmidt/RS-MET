@@ -1598,7 +1598,7 @@ void stateVarFilterSimper()
   Vec x(N);
   createWaveform(&x[0], N, 1, sawFreq, sampleRate);
 
-  // Create filter and compute normalized radian frequency omega:
+  // Create filter and compute normalized radian frequency omega and linear gain:
   rsStateVarFilterSimper<Real> flt;
   Real w = 2*PI*cutoff/sampleRate;
   Real A = pow(10, gainDb/40);
@@ -1615,10 +1615,9 @@ void stateVarFilterSimper()
     rsPlotVectors(x, y);
   };
 
+  // Helper function to plot filter frequency response:
   auto plotFreqResponse = [&](Mode mode)
   {
-    //flt.reset();
-    //Real A = pow(10, gainDb/40);
     flt.setup(mode, w, Q, A);
     Vec y(N);
     getImpulseResponse(flt, &y[0], N);
@@ -1633,13 +1632,19 @@ void stateVarFilterSimper()
 
 
 
-
   // Do the plots for the different response types:
 
   plotFreqResponse(Mode::Lowpass);
+  plotFreqResponse(Mode::Highpass);
+  plotFreqResponse(Mode::Bandpass);
+  plotFreqResponse(Mode::Notch);
+  plotFreqResponse(Mode::Peak);
+  plotFreqResponse(Mode::Allpass);
+  plotFreqResponse(Mode::Bell);
+  plotFreqResponse(Mode::LowShelf);
+  plotFreqResponse(Mode::HighShelf);
 
-
-  //plotFilteredSaw(Mode::Bypass);
+  plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);
   plotFilteredSaw(Mode::Highpass);
   plotFilteredSaw(Mode::Bandpass);
@@ -1651,16 +1656,7 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::HighShelf);
 
 
-
-
-
-
-
-
-
   // ToDo:
-  //
-  // - Plot frequency responses
   //
   // - Render wave files
   //
