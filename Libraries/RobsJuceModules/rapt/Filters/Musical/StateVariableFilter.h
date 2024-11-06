@@ -69,6 +69,7 @@ public:
 
     NUM_MODES
   };
+  // ToDo: use consistent CamelCase
 
 
   /** Chooses the filter mode. See the enumeration for available modes. */

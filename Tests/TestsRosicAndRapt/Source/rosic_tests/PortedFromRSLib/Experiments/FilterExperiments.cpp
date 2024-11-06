@@ -1359,11 +1359,13 @@ ToDo:
 
 - Document the code more - explain what the variables mean, etc.
 
+- Maybe have two template parameters TSig, TPar as in the other filters
+
 */
 
 
 template<class T>
-class rsStateVarFilterSimper
+class rsStateVarFilterSimper  // Maybe rename to rsSimperSVF or rsCytomicSVF
 {
 
 public:
@@ -1427,8 +1429,8 @@ protected:
 template<class T>
 void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 {
-  T w2  = 0.5*omega;
-  T tw2 = tan(w2);
+  // Prewarping cutoff, I guess:
+  T tw2 = tan(0.5*omega); 
 
   // Helper function to calculate the a-coefficients from g and k:
   auto calcFilterCoeffs = [&](T g, T k)
@@ -1438,7 +1440,7 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     a3 = g*a2;
   };
 
-
+  // Filter- and mixing coefficient calculations according to desired mode:
   switch(mode)
   {
 
@@ -1451,20 +1453,15 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Lowpass:
   {
-    //T g = tan(w2);
-    //T k = 1/Q;
-
     calcFilterCoeffs(tw2, 1/Q);
-    m0 =  0;
-    m1 =  0;
-    m2 =  1;
+    m0 = 0;
+    m1 = 0;
+    m2 = 1;
   }
   break;
 
   case Mode::Highpass:
   {
-    //T g = tan(w2);
-
     T k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 =  1;
@@ -1475,10 +1472,6 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Bandpass:
   {
-    //T g = tan(w2);
-    //T k = 1/Q;
-    //calcFilterCoeffs(g, k);
-
     calcFilterCoeffs(tw2, 1/Q);
     m0 = 0;
     m1 = 1;
@@ -1488,11 +1481,6 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Notch:
   {
-    //T g = tan(w2);
-    //T k = 1/Q;
-    //calcFilterCoeffs(g, k);
-
-
     T k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 =  1;
@@ -1503,10 +1491,6 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Peak:
   {
-    //T g = tan(w2);
-    //T k = 1/Q;
-    //calcFilterCoeffs(g, k);
-
     T k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 =  1;
@@ -1517,13 +1501,8 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Allpass:
   {
-    //T g = tan(w2);
-    //T k = 1/Q;
-    //calcFilterCoeffs(g, k);
-
     T k = 1/Q;
     calcFilterCoeffs(tw2, k);
-
     m0 =  1;
     m1 = -2*k;
     m2 =  0;
@@ -1532,54 +1511,43 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Bell:
   {
-    //T g = tan(w2);
-
     T k = 1/(Q*A);
     calcFilterCoeffs(tw2, k);
-    m0 =  1;
-    m1 =  k*(A*A - 1);
-    m2 =  0;
+    m0 = 1;
+    m1 = k*(A*A - 1);
+    m2 = 0;
   }
   break;
 
   case Mode::LowShelf:
   {
-    //T g = tan(w2) / sqrt(A);
-
     T k = 1/Q;
-
     calcFilterCoeffs(tw2 / sqrt(A), k);
-
-    m0 =  1;
-    m1 =  k*(A - 1);
-    m2 =  (A*A - 1);
+    m0 = 1;
+    m1 = k*(A - 1);
+    m2 = (A*A - 1);
   }
   break;
 
   case Mode::HighShelf:
   {
-    //T g = tan(w2) * sqrt(A);
-
     T k = 1/Q;
     calcFilterCoeffs(tw2 * sqrt(A), k);
-    m0 =  A*A;
-    m1 =  k*(1 - A)*A;
-    m2 =  (1 - A*A );
+    m0 = A*A;
+    m1 = k*(1 - A)*A;
+    m2 = (1 - A*A);
   }
   break;
 
   default:
   {
     rsError("Unknown filter type in rsStateVarFilterSimper::setup");
-    a1 = a2 = a3 = m0 = m1 = m2 = 0;
+    a1 = a2 = a3 = m0 = m1 = m2 = 0;  // We will produce a zero output in such a case.
   };
 
   }
 
   // ToDo:
-  //
-  // - Get rid of the code duplication! The computation of a1,a2,a3 is always the same. The 
-  //   computation of g,k is almost always the same
   //
   // - Figure out and document what the coefficients and intermediat variables mean. Looking at the
   //   scribble on the front page on the paper, it seem like k is the feedback factor after the 1st
@@ -1589,12 +1557,12 @@ void rsStateVarFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 template<class T>
 T rsStateVarFilterSimper<T>::getSample(T v0)
 {
-  // Intermediate variables (voltages?)
+  // Intermediate variables (voltages?):
   T v3 = v0 - ic2eq;                     // Feedback?
   T v1 = a1*ic1eq + a2*v3;
   T v2 = a2*ic1eq + a3*v3 + ic2eq;
 
-  // State update (capacitor currents?)
+  // State update (capacitor currents?):
   ic1eq = 2*v1 - ic1eq;
   ic2eq = 2*v2 - ic2eq;
 
@@ -1609,8 +1577,7 @@ void stateVarFilterSimper()
   // Test of Andrew Simper's circuit modeled state variable filter from here:
   //
   //   https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
-  //
-  //
+
 
   using Real = double;
   using Vec  = std::vector<Real>;
@@ -1699,6 +1666,7 @@ void stateVarFilterSimper()
   //   It's quite similar to mine.
   //
   // - More papers: https://cytomic.com/technical-papers/
+  //   Maybe implement the SKF (Sallen-Key filter), too
 }
 
 void stateVectorFilter()
