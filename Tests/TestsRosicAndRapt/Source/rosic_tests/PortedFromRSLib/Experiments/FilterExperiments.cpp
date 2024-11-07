@@ -1015,15 +1015,68 @@ void biquadModulation()
   
   // not yet finsihed
 
-  int    N  = 10000;         // number of samples
-  double fs = 44100;         // sample rate
-  double f  = 50;            // input signal frequency
-  double f1 = 5000;          // first filter frequency
-  double f2 = 500;           // second filter frequency
-  double q  = 5.0;           // Q value
-  //double g  = 2;             // gain factor (for shelf or bell filters)
+  using Real = double;
+  using Vec  = std::vector<Real>;
 
 
+  int  N   = 3000 ;         // Number of samples
+  Real fs  = 44100;         // Sample rate
+  Real fIn = 50;            // Input signal frequency
+  Real f1  = 5000;          // 1st frequency
+  int  n1  = N/3;           // Instant of switch from f1 to f2
+  Real f2  = 500;           // 2nd frequency
+  int  n2  = 2*N/3;         // Instant of switch from f2 to f3
+  Real f3  = 5000;          // 3rd frequency
+  Real Q   = 5.0;           // Q value
+  //Real g  = 2;             // gain factor (for shelf or bell filters)
+
+
+  // Create input sawtooth signal:
+  Vec x(N);
+  createWaveform(&x[0], N, 1, fIn, fs);
+
+
+
+  // Create and set up Andrew Simper's SVF: 
+  using SVF1 = rsStateVariableFilterSimper<Real>;
+  rsStateVariableFilterSimper<Real> svf1;
+  // ...
+
+
+  // Create and set up Robert Bristow Johnson's cookbook filter: 
+  using CBF = CookbookFilter;
+  CookbookFilter cbf;
+  cbf.setMode(CBF::modes::LOWPASS);
+  cbf.setNumStages(1);
+  cbf.setSampleRate(fs);
+  cbf.setQ(Q);
+
+
+
+  Real w;
+  Vec yCBF(N), ySVF1(N);
+  w = 2*PI*f1/fs;
+  cbf.setFreq(f1);
+  cbf.calcCoeffs();
+  svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  for(int n = 0; n < n1; n++)
+  {
+    yCBF[n]  = cbf.getSample(x[n]);
+    ySVF1[n] = svf1.getSample(x[n]);
+  }
+
+
+
+  rsPlotVectors(x, yCBF, ySVF1);
+
+
+
+
+  //Real w = 2*PI*cutoff/sampleRate;
+  //Real A = pow(10, gainDb/40);
+
+
+  /*
   double b0, b1, b2, a1, a2; // biquad coeffs
   typedef rosic::BiquadDesigner DSN;
   rosic::BiquadMonoDF1 bqd;
@@ -1035,6 +1088,7 @@ void biquadModulation()
   // uses + convention for a-coeffs
   //bqd.setCoefficients(b0, b1, b2, a1, a2);
   //stVecFlt.setupFromBiquad(b0, b1, b2, -a1, -a2);
+  */
 
 
 
@@ -1042,7 +1096,16 @@ void biquadModulation()
   GNUPlotter plt;
   //plt.addDataArrays(N, &yBqd[0]);
   //plt.addDataArrays(N, &yStVec[0]);
-  plt.plot();
+  //plt.plot();
+
+  // ToDo:
+  //
+  // - Test also switch between high and low Q
+  //
+  // - The API of rosic::CookbookFilter sucks. We need to call calcCoeffs manually after setFreq.
+  //   I did this to avoid redundant calculations when one sets up cutoff and Q at one instant. But
+  //   this should better be done by a setup(..) function. When we drag the class to RAPT, we 
+  //   should change the API accordingly.
 }
 
 void brickwallAndAllpass()
@@ -1276,7 +1339,9 @@ void sallenKeyFilterSimper()
   //   formula is  Q = 1 / (2 - 2*reso)  but that works only for reso < 1. Maybe we can implement
   //   the setup function of the SVF directly in terms of reso? Can we then make it slef-oscillate, 
   //   too - or is self-oscillation something that should better be done with and SKF?
-
+  //
+  // - Compare modulation responses of SVF and SKF. Maybe compare them also to the mod-responses
+  //   of the old RBJ biquad filters. ...and also to my older SVF implementation
 } 
 
 void stateVariableFilter()
