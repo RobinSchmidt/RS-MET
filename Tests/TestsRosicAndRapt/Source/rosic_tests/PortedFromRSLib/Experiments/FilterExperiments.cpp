@@ -1679,7 +1679,24 @@ void stateVarFilterSimper()
   //     H(z)  = m0 * H0(z)  +  m1 * H1(z)  +  m2 * H2(z)
   //
   //   That is what we then need to solve explicitly for H(z), I think. So, what we really want is
-  //   explicit expressions for H1, H2.
+  //   explicit expressions for H1, H2. Maybe try to bring the difference equation into the 
+  //   standard from y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] - a1*y[n-1] - a2*y[n-2]. Instead of 
+  //   writing transfer functions, we could write it in terms of the signals x[n], etc:
+  //
+  //     v0[n] = x[n]
+  //     v3[n] = v0[n] - i1[n-1]
+  //     v1[n] = a1*i1[n-1] + a2*v3[n]
+  //     v2[n] = a2*i1[n-1] + a3*v3[n] + i2[n-1]
+  //     i1[n] = 2*v1[n] - i1[n-1]
+  //     i2[n] = 2*v2[n] - i2[n-1]
+  //      y[n] = m0*v0[n] + m1*v1[n] + m2*v2[n]
+  //
+  //   This needs to be brought into the standard biquad form. We really want expressions for
+  //   v1[n] and v2[n] (bandpass and lowpass output) in terms of 
+  //   x[n], x[n-1], x[n-2], v1[n-1], v1[n-2]  for bandpass
+  //
+  // - Write functions toBiquad, fromBiquad to convert between biquad coeffs and SVF coeffs. See:
+  //   https://cytomic.com/files/dsp/SvfLinearTrapezoidalSin.pdf  page 7
   //
   //
   // See:

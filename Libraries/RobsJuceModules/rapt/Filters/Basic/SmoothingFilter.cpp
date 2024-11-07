@@ -97,7 +97,13 @@ ToDo:
 - The env-follower should be availbale as modulation source in chainer
 
 - Look inot this  https://cytomic.com/files/dsp/DynamicSmoothing.pdf  for an idea of a dynamic
-  smoothing filter. 
+  smoothing filter. The results are indeed smoother that for a normal filter with fixed cutoff. The
+  idea is that in a multimode filter the (absolute value of) the bandpass output can be seen as a 
+  measure for how much the signal is changing (why?) and that is used to modulate the cutoff 
+  frequency of the filter. If the signal is changing a lot, the opens the filter. Or put another 
+  way, when not much is happening, the filter can use a lower cutoff and therby smooth more 
+  aggressively. It is tested there on a noisy signal with steps in it like a typical control 
+  signal.
 
 - In Notes/SmoothingFilter.txt are some more ideas.
 

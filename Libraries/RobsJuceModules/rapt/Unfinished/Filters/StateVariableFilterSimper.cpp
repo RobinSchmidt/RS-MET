@@ -41,6 +41,13 @@ ToDo:
     https://cytomic.com/files/dsp/SvfLinearTrapAllOutputs.pdf
   and look into the other papers here:
     https://cytomic.com/technical-papers/
+  This one:
+    https://cytomic.com/files/dsp/SvfLinearTrapezoidalSin.pdf
+  has also a part where the g,k,m0,m1,m2 coeffs are computed from direct from biquad coeffs. There
+  are also hints for how to compute the transfer function. It's all buried in the Mathematica 
+  code, though.
+
+
 
 
 */
