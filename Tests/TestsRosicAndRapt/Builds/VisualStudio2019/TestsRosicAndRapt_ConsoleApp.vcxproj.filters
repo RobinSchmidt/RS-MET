@@ -1045,6 +1045,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\SallenKeyFilterSimper.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterSimper.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
@@ -3345,6 +3348,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.h">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\SallenKeyFilterSimper.h">
+      <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterSimper.h">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
@@ -5241,6 +5247,9 @@
       <Filter>JUCE Modules\rosic\legacy\MovedToRAPT</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\minBlep.txt">
+      <Filter>JUCE Modules\rosic\legacy</Filter>
+    </None>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\ReadMe.txt">
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt">

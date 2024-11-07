@@ -2656,6 +2656,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/Filters/SallenKeyFilterSimper.cpp">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/Filters/SallenKeyFilterSimper.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Unfinished/Filters/StateVariableFilterSimper.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
@@ -7937,6 +7949,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rosic/legacy/RandomNumberGenerator.h">
+      <Option target="ConsoleApp | Debug"/>
+      <Option target="ConsoleApp | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/RobsJuceModules/rosic/legacy/ReadMe.txt">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

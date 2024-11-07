@@ -799,6 +799,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\SallenKeyFilterSimper.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterSimper.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2688,6 +2691,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\MovingAverage.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\NonUniformFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\SallenKeyFilterSimper.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterSimper.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\AffineTransform2D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\DifferentialEquationSystem.h"/>
@@ -3322,6 +3326,7 @@
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\infrastructure\ToDo.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\MovedToRAPT\ReadMe.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\minBlep.txt"/>
+    <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\ReadMe.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\HowToAddFeatures.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\sampler\Ideas.md"/>
