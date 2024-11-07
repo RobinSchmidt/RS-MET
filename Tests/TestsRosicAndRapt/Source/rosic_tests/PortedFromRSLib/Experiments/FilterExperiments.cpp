@@ -1302,9 +1302,25 @@ void sallenKeyFilterSimper()
   // Observations:
   //
   // - It seems like reso = 1 is the stability limit.
-
-
-  int dummy = 0;
+  //
+  //
+  // ToDo:
+  //
+  // - Introduce clipping or saturation somewhere in the filter to make it usable with resonance
+  //   values above the (linear) stability limit.
+  //
+  // - Find a good mapping for the resonance parameter such that it feels perceptually uniform. The
+  //   raw resonance parameter will probably have too much resolution in the lower range and too
+  //   little resolution in the upper range. Maybe a power function with exponent < 1? Maybe sqrt
+  //   or cbrt? Or maybe the rational mapping?
+  //
+  // - Implement the other algorithm. This requires also using a different setup function. Maybe
+  //   have functions setupAlgo1/getSampleAlgo1, and setupAlgo2/getSampleAlgo2 ..or maybe 
+  //   processAlgo1. The setup/getSample functions can the call these lower level functions.
+  //
+  // - Figure out how to obtain highpass, bandpass, etc. from the filter and implement it.
+  //
+  // - Compare it to the state variable filter.
 }
 
 void stateVariableFilter()
