@@ -1197,6 +1197,14 @@ void brickwallAndAllpass()
   //  
 }
 
+
+
+void sallenKeyFilterSimper()
+{
+
+  int dummy = 0;
+}
+
 void stateVariableFilter()
 {
   double fs = 44100;  // samplerate in Hz
@@ -1348,7 +1356,6 @@ void stateVariableFilterMorph()
   // magnitude response plot:
   plotData(N/2, f, m0, m1, m2, m3, m4);
 }
-
 
 void stateVarFilterSimper()
 {
