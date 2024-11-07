@@ -1208,7 +1208,7 @@ public:
   // \name Setup
 
   /** Sets up the filter coefficients ...TBC... */
-  void setup(T omega, T reso) { setup1(omega, reso); }
+  inline void setup(T omega, T reso) { setup1(omega, reso); }
 
 
 
@@ -1246,6 +1246,14 @@ protected:
 
 };
 
+// Notes:
+//
+// - setup() and getSample() must delegate to setup1()/getSample1() or setup2()/getSample2() 
+//   respectively. These are the two variants of the algorithm. The 2nd differs in the 
+//   computation of a4 (in setup) and of v2 (in getSample). Algo 2 has less total operations but is
+//   also less parallelizable because v1 is used in the compuation of v2. That reduces the number
+//   of operations at the price of introducing a serial dependency. 
+
 template<class T>
 void rsSallenKeyFilterSimper<T>::setup1(T omega, T reso)
 {
@@ -1279,8 +1287,30 @@ T rsSallenKeyFilterSimper<T>::getSample1(T v0)
   // https://cytomic.com/files/dsp/SkfLinearTrapOptimised2.pdf
 }
 
+template<class T>
+void rsSallenKeyFilterSimper<T>::setup2(T omega, T reso)
+{
+  T g  = tan(0.5*omega);
+  T g1 = 1+g;
 
+  k  = 2*reso;
+  a0 = 1 / (g1*g1 - g*k);
+  a1 = k*a0;
+  a2 = g1*a0;
+  a3 = g*a2;
+  a4 = 1 / g1;                             // That's the only difference to setup1()
+  a5 = g*a4;
+}
 
+template<class T>
+T rsSallenKeyFilterSimper<T>::getSample2(T v0)
+{
+   T v1 = a1*ic2eq + a2*ic1eq + a3*v0;
+   T v2 = a4*ic2eq + a5*v1;                // That's the only difference to getSample1()
+   ic1eq = 2*(v1 - k*v2) - ic1eq;
+   ic2eq = 2*(v2       ) - ic2eq;
+   return v2;
+}
 
 
 void sallenKeyFilterSimper()
@@ -1291,21 +1321,21 @@ void sallenKeyFilterSimper()
   // Setup:
   int  N          =  4096;    // Number of samples to produce
   Real sawFreq    =   100;    // Frequency of input sawtooth wave
-  Real sampleRate = 44100;
-  Real cutoff     =  1000;
-  Real reso       =     0.9;
-
+  Real sampleRate = 44100;    // Sample rate for the numerical test.
+  Real cutoff     =  1000;    // Cutoff frequency of the filter
+  Real reso       =     0.95; // Resonance. 1 is apparently the self-oscillation limit.
 
   // Create input sawtooth signal:
   Vec x(N);
   createWaveform(&x[0], N, 1, sawFreq, sampleRate);
 
-  // Create filter and compute normalized radian frequency omega and linear gain:
+  // Create and set up the filter:
   rsSallenKeyFilterSimper<Real> skf;
   Real w = 2*PI*cutoff/sampleRate;
-
   skf.setup(w, reso);
   skf.reset();
+
+  // Produce the filter output and plot it together with the input:
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = skf.getSample(x[n]);
@@ -1333,7 +1363,10 @@ void sallenKeyFilterSimper()
   //
   // - Figure out how to obtain highpass, bandpass, etc. from the filter and implement it.
   //
-  // - Compare it to the state variable filter.
+  // - Compare the output to the state variable filter. How does the resonance parameter here 
+  //   relate to the Q parameter there? Can we find a 1-to-1 mapping? It is desirable to be able to
+  //   set up both filters in terms of the same user parameters. Then, the user could switch 
+  //   between the filters but keep the common resonance/Q setting. 
 }
 
 void stateVariableFilter()
