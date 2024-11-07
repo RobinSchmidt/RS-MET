@@ -1536,6 +1536,24 @@ void stateVarFilterSimper()
   //
   // - Try to derive a cookbook formula for the peak/resonator filter type
   //
+  // - Implement and test a getTransferFunctionAt(complex z) function. I think, to derive an 
+  //   expression for the transfer function we should first define that Hk(z) are the transfer
+  //   functions for the voltages vk and Gk(z) those for the currents ik. Then we can read off
+  //   from the difference equations:
+  //
+  //     H0(z) = 1
+  //     H3(z) = H0(z)  +  z^-1 * G2(z)
+  //     H1(z) = a1 * z^-1 * G1(z)  +  a2 * H3(z)
+  //     H2(z) = a2 * z^-1 * G1(z)  +  a3 * H3(z)  +  z^-1 * G2(z)
+  //
+  //     G1(z) = 2 * H1(z)  +  z^-1 * G1(z)
+  //     G2(z) = 2 * H2(z)  +  z^-1 * G2(z)
+  //
+  //     H(z)  = m0 * H0(z)  +  m1 * H1(z)  +  m2 * H2(z)
+  //
+  //   That is what we then need to solve explicitly for H(z), I think. So, what we really want is
+  //   explicit expressions for H1, H2.
+  //
   //
   // See:
   //
