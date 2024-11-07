@@ -1198,9 +1198,79 @@ void brickwallAndAllpass()
 }
 
 
+template<class T>                   // ToDo: have TSig, TPar template parameters
+class rsSallenKeyFilterSimper
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Computes one sample at a time. */
+  inline T getSample(T in);
+
+  /** Resets the internal state. */
+  void reset() { ic1eq = ic2eq = 0; }
+
+protected:
+
+
+
+  // State:
+  T ic1eq = 0;  // Maybe rename to i1
+  T ic2eq = 0;
+
+
+  // Coeffs:
+  T a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0;
+  T k  = 0;
+
+};
+
+template<class T>
+T rsSallenKeyFilterSimper<T>::getSample(T v0)
+{
+   // Compute node voltages:
+   v1 = a1*ic2eq + a2*ic1eq + a3*v0;
+   v2 = a2*ic2eq + a4*ic1eq + a5*v0;
+
+   // Update state (compute capacitor currents, I guess?):
+   ic1eq = 2*(v1 - k*v2) - ic1eq;
+   ic2eq = 2*(v2       ) - ic2eq;
+
+   // Return v2 as the lowpass output:
+   return v2;
+
+  // See page 3 ("Final Algorithm") here:
+  // https://cytomic.com/files/dsp/SkfLinearTrapOptimised2.pdf
+}
+
 
 void sallenKeyFilterSimper()
 {
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  // Setup:
+  int  N          =  4096;    // Number of samples to produce
+  Real sawFreq    =   100;    // Frequency of input sawtooth wave
+  Real sampleRate = 44100;
+  Real cutoff     =  1000;
+  Real reso       =     0;
+
+
+  // Create input sawtooth signal:
+  Vec x(N);
+  createWaveform(&x[0], N, 1, sawFreq, sampleRate);
+
+  // Create filter and compute normalized radian frequency omega and linear gain:
+  rsSallenKeyFilterSimper<Real> skf;
+  Real w = 2*PI*cutoff/sampleRate;
+
+
+
 
   int dummy = 0;
 }
