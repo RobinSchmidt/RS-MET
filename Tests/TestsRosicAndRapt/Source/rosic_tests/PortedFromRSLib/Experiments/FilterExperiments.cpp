@@ -1117,17 +1117,36 @@ void biquadModulation()
   //   from lower to higher cutoff, the resoance amplitude gets diminished.
   //
   // - The svf1 and skf outputs look the same. Their difference is indeed at the level of numeric
-  //   roundoff error at around 10^-13
+  //   roundoff error at around 10^-13. The same is true for svf1 and svf2.
+  //
+  //
+  // Conclusions:
+  //
+  // - For the modulation response, it doesn't semm to matter if we use the old or new 
+  //   implementation of the SVF or even the SKF. They all respond the same. Due to its higher 
+  //   flexibility with regard to different modes, it seems the SVF should be the default choice.
+  //   And I would use the Simper version of it - it has less messy coeff calculations. Maybe the
+  //   SKF can be made to produce HPF, BPF, etc. responses, too. Well - I'm pretty sure, it can. I
+  //   just need to figure out how to mix the various intermediate signals. Maybe the same coeffs
+  //   as in the SVF could work? At least for the lowpass response, this seems to be true.
+  //
+  // - Unsurprisingly, the RBJ cookbook filter stands out in a bad way. Its modulation response 
+  //   sucks. ...although - who knows - maybe the artifacts could be useful in certain contexts? If
+  //   I remember correctly, harsh cutoff drops at high resonance with the RBJ filter create some
+  //   sort of "plopp" or "thump" sound which might actually be useful. Maybe we could say "That's
+  //   a feature, not a bug"? ;-)  I'm only half serious, though.
   //
   //
   // ToDo:
   //
-  // - Test also switch between high and low Q
+  // - Test also switch between high and low Q.
   //
   // - The API of rosic::CookbookFilter sucks. We need to call calcCoeffs manually after setFreq.
   //   I did this to avoid redundant calculations when one sets up cutoff and Q at one instant. But
   //   this should better be done by a setup(..) function. When we drag the class to RAPT, we 
   //   should change the API accordingly.
+  //
+  // - Integrate the
 }
 
 void brickwallAndAllpass()
