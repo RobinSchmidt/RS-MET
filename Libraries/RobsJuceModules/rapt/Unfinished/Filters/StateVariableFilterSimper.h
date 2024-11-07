@@ -3,9 +3,9 @@
 
 /** An implementation of Andrew Simper's circuit modeled state variable filter from here:
 
-https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
+      https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 
-It provides similar responses as the RBJ cookbook filters but the SVF is better suited to be used
+It provides the same responses as the RBJ cookbook filters but the SVF is better suited to be used
 as a VCF in the context of a synthesizer because it responds nicely to modulation.
 
 This class implements the minimal core of the filter without any convenience features such as 
