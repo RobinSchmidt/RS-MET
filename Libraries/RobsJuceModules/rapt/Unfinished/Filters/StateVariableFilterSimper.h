@@ -155,6 +155,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
     m2 = 0;
   }
   break;
+  // OK - this seems to work as intended.
 
 
   case Mode::Notch:
@@ -225,37 +226,23 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   }
 
-  // ToDo:
-  //
-  // - Figure out and document what the coefficients and intermediat variables mean. Looking at the
-  //   scribble on the front page on the paper, it seem like k is the feedback factor after the 1st
-  //   integrator? And the a1, a2 are the gains of the integrators? And g is affecting them?
 }
 
 template<class T>
 T rsStateVariableFilterSimper<T>::getSample(T v0)
 {
   // Intermediate variables (voltages?):
-  T v3 = v0 - ic2eq;                     // Feedback?
-  T v1 = a1*ic1eq + a2*v3;
-  T v2 = a2*ic1eq + a3*v3 + ic2eq;
+  T v3 = v0 - ic2eq;                       // Feedback (?)
+  T v1 = a1*ic1eq + a2*v3;                 // Voltage at node 1, Bandpass output (?)
+  T v2 = a2*ic1eq + a3*v3 + ic2eq;         // Voltage at node 2, Lowpass output (?)
 
   // State update (capacitor currents?):
-  ic1eq = 2*v1 - ic1eq;
+  ic1eq = 2*v1 - ic1eq;                    // Eq. 2?
   ic2eq = 2*v2 - ic2eq;
 
   // Mix final output:
   return m0*v0 + m1*v1 + m2*v2;
 }
-
-
-// ToDo:
-// - Document the code more - explain what the variables mean, etc.
-// - Maybe have two template parameters TSig, TPar as in the other filters. I think,
-//   v0,v1,v2,v3,ic1eq,ic2eq must all be TSig, a1,a2,a3,m1,m2,m3 must be TPar
-// - Maybe move implementation into .cpp file ...but maybe not.
-// - Figure out the z-domain transfer function and implement a function 
-//   getTransferFunctionAt(rsComplex<TPar> z)
 
 
 #endif
