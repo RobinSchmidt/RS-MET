@@ -12,11 +12,13 @@ Notes:
 ToDo:
 
 - Figure out and document what the coefficients and intermediate variables mean. Looking at 
-  the scribble on the front page on the paper, it seem like k is the feedback factor after the
+  the scribble on the front page on the paper, it seems like k is the feedback factor after the
   1st integrator? And the a1, a2 are the gains of the integrators? And g is affecting them?
   v0 is the input voltage, v1, v2 the voltages after the 1st and 2nd integrator stage 
   representing bandpass and lowpass output? This can be inferred from the mixing coeffs 
-  m0,m1,m2. They are 0,1,0 for bandpass and 0,0,1 for lowpass.
+  m0,m1,m2. They are 0,1,0 for bandpass and 0,0,1 for lowpass. I guess, the ic1eq, ic2eq in the
+  paper (that I have just called i1, i2 here) stand for something like "current into capacitor 1" 
+  but somehow "equalized" as in "normalized"?
 
 - Maybe have two template parameters TSig, TPar as in the other filters. I think,
   v0,v1,v2,v3,ic1eq,ic2eq must all be TSig, a1,a2,a3,m1,m2,m3 must be TPar

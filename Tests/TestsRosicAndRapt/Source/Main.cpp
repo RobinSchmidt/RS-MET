@@ -392,7 +392,7 @@ int main(int argc, char* argv[])
   //bandwidthScaling();
   //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();
-  sallenKeyFilterSimper();
+  //sallenKeyFilterSimper();
   //stateVariableFilter();
   //stateVariableFilterMorph();
   stateVarFilterSimper();

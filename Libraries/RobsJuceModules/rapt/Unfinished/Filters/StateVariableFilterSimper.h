@@ -65,7 +65,7 @@ public:
 protected:
 
   // State:
-  T i1 = 0, i2 = 0;  // Capacitor currents (I guess) ic1eq, ic2eq in the paper.
+  T i1 = 0, i2 = 0;          // Capacitor currents (I guess) ic1eq, ic2eq in the paper.
 
   // Coeffs:
   T a1 = 0, a2 = 0, a3 = 0;  // Filter coeffs (ToDo: explain better)
@@ -82,13 +82,16 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   // Prewarping cutoff (I guess):
   T tw2 = tan(0.5*omega); 
 
-  // Helper function to calculate the a-coefficients from the intermediate variables g and k:
+  // Local helper function to calculate and assign the a-coefficients from the intermediate 
+  // variables g and k:
   auto calcFilterCoeffs = [&](T g, T k)
   {
     a1 = 1 / (1 + g*(g + k));
     a2 = g*a1;
     a3 = g*a2;
   };
+  // ToDo: Figure out, if the [this] capture mode is better than [&]. Both work but maybe they are 
+  // different performance-wise? 
 
   // Filter- and mixing coefficient calculations according to desired mode:
   switch(mode)
