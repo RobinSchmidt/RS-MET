@@ -72,14 +72,15 @@ public:
   inline T getSample(T in);
 
   /** Resets the internal state. */
-  void reset() { ic1eq = ic2eq = 0; }
+  void reset() { i1 = i2 = 0; }
 
 
 protected:
 
   // State:
-  T ic1eq = 0;  // Maybe rename to i1
-  T ic2eq = 0;
+  T i1 = 0, i2 = 0;  // Capacitor currents (I guess) ic1eq, ic2eq in the paper.
+  //T ic1eq = 0;  // Maybe rename to i1
+  //T ic2eq = 0;
   // I think these may be currents into the two capacitors?
 
   // Coeffs:
@@ -94,7 +95,7 @@ protected:
 template<class T>
 void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 {
-  // Prewarping cutoff, I guess:
+  // Prewarping cutoff (I guess):
   T tw2 = tan(0.5*omega); 
 
   // Helper function to calculate the a-coefficients from the intermediate variables g and k:
@@ -221,7 +222,8 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   default:
   {
     rsError("Unknown filter type in rsStateVarFilterSimper::setup");
-    a1 = a2 = a3 = m0 = m1 = m2 = 0;  // We will produce a zero output in such a case.
+    a1 = a2 = a3 = m0 = m1 = m2 = 0;  
+    // We will produce an output of zero in such a case.
   };
 
   }
@@ -232,13 +234,13 @@ template<class T>
 T rsStateVariableFilterSimper<T>::getSample(T v0)
 {
   // Intermediate variables (voltages?):
-  T v3 = v0 - ic2eq;                       // Feedback (?)
-  T v1 = a1*ic1eq + a2*v3;                 // Voltage at node 1, Bandpass output (?)
-  T v2 = a2*ic1eq + a3*v3 + ic2eq;         // Voltage at node 2, Lowpass output (?)
+  T v3 = v0 - i2;                          // Feedback (?)
+  T v1 = a1*i1 + a2*v3;                    // Voltage at node 1, Bandpass output (?)
+  T v2 = a2*i1 + a3*v3 + i2;               // Voltage at node 2, Lowpass output (?)
 
   // State update (capacitor currents?):
-  ic1eq = 2*v1 - ic1eq;                    // Eq. 2?
-  ic2eq = 2*v2 - ic2eq;
+  i1 = 2*v1 - i1;                          // Eq. 2?
+  i2 = 2*v2 - i2;
 
   // Mix final output:
   return m0*v0 + m1*v1 + m2*v2;

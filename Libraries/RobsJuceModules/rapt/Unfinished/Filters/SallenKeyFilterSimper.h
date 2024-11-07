@@ -30,7 +30,7 @@ public:
   inline T getSample(T in) { return getSample1(in); }
 
   /** Resets the internal state. */
-  void reset() { ic1eq = ic2eq = 0; }
+  void reset() { i1 = i2 = 0; }
 
 
 protected:
@@ -55,8 +55,7 @@ protected:
 
 
   // State:
-  T ic1eq = 0;  // Maybe rename to i1
-  T ic2eq = 0;
+  T i1 = 0, i2 = 0;  // Capacitor currents (I guess) ic1eq, ic2eq in the paper.
 
   // Coeffs:
   T a0 = 0, a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0;
@@ -84,12 +83,12 @@ template<class T>
 T rsSallenKeyFilterSimper<T>::getSample1(T v0)
 {
   // Compute node voltages (I guess):
-  T v1 = a1*ic2eq + a2*ic1eq + a3*v0;
-  T v2 = a2*ic2eq + a4*ic1eq + a5*v0;
+  T v1 = a1*i2 + a2*i1 + a3*v0;
+  T v2 = a2*i2 + a4*i1 + a5*v0;
 
   // Update state (compute capacitor currents, I guess?):
-  ic1eq = 2*(v1 - k*v2) - ic1eq;
-  ic2eq = 2*(v2       ) - ic2eq;
+  i1 = 2*(v1 - k*v2) - i1;
+  i2 = 2*(v2       ) - i2;
 
   // Return v2 as the lowpass output:
   return v2;
@@ -113,10 +112,10 @@ void rsSallenKeyFilterSimper<T>::setup2(T omega, T reso)
 template<class T>
 T rsSallenKeyFilterSimper<T>::getSample2(T v0)
 {
-  T v1 = a1*ic2eq + a2*ic1eq + a3*v0;
-  T v2 = a4*ic2eq + a5*v1;                // That's the only difference to getSample1()
-  ic1eq = 2*(v1 - k*v2) - ic1eq;
-  ic2eq = 2*(v2       ) - ic2eq;
+  T v1 = a1*i2 + a2*i1 + a3*v0;
+  T v2 = a4*i2 + a5*v1;                    // That's the only difference to getSample1()
+  i1 = 2*(v1 - k*v2) - i1;
+  i2 = 2*(v2       ) - i2;
   return v2;
 }
 

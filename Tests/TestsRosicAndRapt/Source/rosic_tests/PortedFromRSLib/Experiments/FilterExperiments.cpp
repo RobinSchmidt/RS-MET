@@ -1251,7 +1251,12 @@ void sallenKeyFilterSimper()
   //   relate to the Q parameter there? Can we find a 1-to-1 mapping? It is desirable to be able to
   //   set up both filters in terms of the same user parameters. Then, the user could switch 
   //   between the filters but keep the common resonance/Q setting. 
-}
+  //
+  // - Implement a unit test. This should also run the setup1/getSample1 and setup2/getSample2
+  //   functions directly instead of relying on the delegation by setup/getSample. We may do that
+  //   by introducing a subclass in the test code (it will be able to acces these protected 
+  //   functions). They should produce the same outputs
+} 
 
 void stateVariableFilter()
 {
