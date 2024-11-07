@@ -1197,9 +1197,6 @@ void brickwallAndAllpass()
   //  
 }
 
-
-
-
 void sallenKeyFilterSimper()
 {
   using Real = double;

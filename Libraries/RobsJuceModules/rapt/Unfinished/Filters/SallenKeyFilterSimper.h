@@ -1,7 +1,11 @@
 #ifndef RAPT_SALLENKEYFILTERSIMPER_H
 #define RAPT_SALLENKEYFILTERSIMPER_H
 
+/** Implements a Sallen-Key filter as described by Andrew Simper here:
 
+      https://cytomic.com/files/dsp/SkfLinearTrapOptimised2.pdf
+
+The algorithm is based on a (linear) model of the analog filter circuit. */
 
 template<class T>                   // ToDo: have TSig, TPar template parameters
 class rsSallenKeyFilterSimper
@@ -12,7 +16,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Sets up the filter coefficients ...TBC... */
+  /** Sets up the filter coefficients according to the desired cutoff frequency given as normalized
+  radian frequency 2*pi*f/fs and resonance parameter in 0..1 where 1 is the self oscillation limit.
+  The resonance parameter is quite raw and does not yet include any meaningful (i.e. perceptually 
+  uniform) mapping that a user might expect. */
   inline void setup(T omega, T reso) { setup1(omega, reso); }
 
 
@@ -76,7 +83,7 @@ void rsSallenKeyFilterSimper<T>::setup1(T omega, T reso)
 template<class T>
 T rsSallenKeyFilterSimper<T>::getSample1(T v0)
 {
-  // Compute node voltages:
+  // Compute node voltages (I guess):
   T v1 = a1*ic2eq + a2*ic1eq + a3*v0;
   T v2 = a2*ic2eq + a4*ic1eq + a5*v0;
 
@@ -86,9 +93,6 @@ T rsSallenKeyFilterSimper<T>::getSample1(T v0)
 
   // Return v2 as the lowpass output:
   return v2;
-
-  // See page 3 ("Final Algorithm") here:
-  // https://cytomic.com/files/dsp/SkfLinearTrapOptimised2.pdf
 }
 
 template<class T>
@@ -115,8 +119,6 @@ T rsSallenKeyFilterSimper<T>::getSample2(T v0)
   ic2eq = 2*(v2       ) - ic2eq;
   return v2;
 }
-
-
 
 
 #endif
