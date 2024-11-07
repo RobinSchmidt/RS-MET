@@ -1204,6 +1204,13 @@ class rsSallenKeyFilterSimper
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  /** Sets up the filter coefficients ...TBC... */
+  void setup(T omega, T reso);
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -1228,6 +1235,21 @@ protected:
   T k  = 0;
 
 };
+
+template<class T>
+void rsSallenKeyFilterSimper<T>::setup(T omega, T reso)
+{
+  T g  = tan(0.5*omega);
+  T g1 = 1+g;
+
+  k  = 2*reso;
+  a0 = 1 / (g1*g1 - g*k);
+  a1 = k*a0;
+  a2 = g1*a0;
+  a3 = g*a2;
+  a4 = g*a0;
+  a5 = g*a4;
+}
 
 template<class T>
 T rsSallenKeyFilterSimper<T>::getSample(T v0)
