@@ -26,5 +26,12 @@ ToDo:
 - Figure out the z-domain transfer function and implement a function 
   getTransferFunctionAt(rsComplex<TPar> z)
 
+- Adjust the order of the modes in the enum to be the same as in the RBJ filter [DONE]...but RBJ
+  has two bandpass variants. I think, this here is a const skirt gain bandpass. Maybe to obtain 
+  const peak gain behavior, we just need to scale by k = 1/Q? [YES - DONE - seems OK]. The RBJ 
+  filters are also missing a "peak" filter in the sense meant here. I think, it's just a 
+  resonator? If so, try to introduce it in the RBJ filters as well. Maybe rename the mode to
+  "Reson" or "Resonator". Maybe rename "Notch" to "Bandreject" for consistency. Or maybe call them
+  Bandstop everywhere.  https://en.wikipedia.org/wiki/Band-stop_filter
 
 */

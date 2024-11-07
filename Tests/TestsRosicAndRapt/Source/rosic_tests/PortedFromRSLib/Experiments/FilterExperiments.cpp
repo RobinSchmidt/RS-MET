@@ -1250,7 +1250,9 @@ void sallenKeyFilterSimper()
   // - Compare the output to the state variable filter. How does the resonance parameter here 
   //   relate to the Q parameter there? Can we find a 1-to-1 mapping? It is desirable to be able to
   //   set up both filters in terms of the same user parameters. Then, the user could switch 
-  //   between the filters but keep the common resonance/Q setting. 
+  //   between the filters but keep the common resonance/Q setting. Ah - on page 6 of the SVF paper
+  //   there's also the "k = 1/Q = 2 - 2*res". Maybe that could be it? Figure out! Create an SVF
+  //   in lowpass mode and set it up with Q = 1 / (2-2*res)
   //
   // - Implement a unit test. This should also run the setup1/getSample1 and setup2/getSample2
   //   functions directly instead of relying on the delegation by setup/getSample. We may do that

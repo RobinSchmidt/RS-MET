@@ -43,20 +43,7 @@ public:
 
     NumModes
   };
-  // ToDo: adjust the order of the modes to be the same as in the RBJ filter...but RBJ has two 
-  // bandpass variants. I think, this here is a const skirt gain bandpass. Maybe to obtain const 
-  // peak gain behavior, we just need to scale by k = 1/Q? ...just a guess - figure it out!
-  // The RBJ filters are also missing a "peak" filter in the sense meant here. I think, it's just
-  // a resonator? If so, try to introduce it in the RBJ filters as well. Maybe rename the mode to
-  // "Reson" or "Resonator". Maybe rename "Notch" to "Bandreject" for consistency. Or maybe call 
-  // them Bandstop everywhere.  https://en.wikipedia.org/wiki/Band-stop_filter
-  //
-  // 
-  // rosic::CookBookFilter has the modes in that order:  BYPASS = 0, LOWPASS, HIGHPASS, 
-  // BANDPASS_CONST_SKIRT,  BANDPASS_CONST_PEAK, BANDREJECT, ALLPASS, PEAK, LOW_SHELF, HIGH_SHELF
-  //
-  // Maybe make the names consistent. This can be done when dragging over the CookBookFilter into
-  // RAPT.
+
 
   /** Sets up the filter coefficients so as to achieve the desired mode, cutoff, Q and gain. The 
   mode must be one of the values from the Mode enum, omega = 2*pi*freq/sampleRate is the usual 
@@ -79,9 +66,6 @@ protected:
 
   // State:
   T i1 = 0, i2 = 0;  // Capacitor currents (I guess) ic1eq, ic2eq in the paper.
-  //T ic1eq = 0;  // Maybe rename to i1
-  //T ic2eq = 0;
-  // I think these may be currents into the two capacitors?
 
   // Coeffs:
   T a1 = 0, a2 = 0, a3 = 0;  // Filter coeffs (ToDo: explain better)
