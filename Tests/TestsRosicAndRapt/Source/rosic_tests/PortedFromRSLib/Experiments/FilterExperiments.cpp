@@ -1208,7 +1208,7 @@ public:
   // \name Setup
 
   /** Sets up the filter coefficients ...TBC... */
-  void setup(T omega, T reso);
+  void setup(T omega, T reso) { setup1(omega, reso); }
 
 
 
@@ -1216,12 +1216,22 @@ public:
   // \name Processing
 
   /** Computes one sample at a time. */
-  inline T getSample(T in);
+  inline T getSample(T in) { return getSample1(in); }
 
   /** Resets the internal state. */
   void reset() { ic1eq = ic2eq = 0; }
 
+
+
+
 protected:
+
+  // Setup and process functions for the two different algorithms:
+  void setup1(T omega, T reso);
+  T getSample1(T in);
+
+  void setup2(T omega, T reso);
+  T getSample2(T in);
 
 
 
@@ -1237,7 +1247,7 @@ protected:
 };
 
 template<class T>
-void rsSallenKeyFilterSimper<T>::setup(T omega, T reso)
+void rsSallenKeyFilterSimper<T>::setup1(T omega, T reso)
 {
   T g  = tan(0.5*omega);
   T g1 = 1+g;
@@ -1252,7 +1262,7 @@ void rsSallenKeyFilterSimper<T>::setup(T omega, T reso)
 }
 
 template<class T>
-T rsSallenKeyFilterSimper<T>::getSample(T v0)
+T rsSallenKeyFilterSimper<T>::getSample1(T v0)
 {
    // Compute node voltages:
    T v1 = a1*ic2eq + a2*ic1eq + a3*v0;
@@ -1268,6 +1278,9 @@ T rsSallenKeyFilterSimper<T>::getSample(T v0)
   // See page 3 ("Final Algorithm") here:
   // https://cytomic.com/files/dsp/SkfLinearTrapOptimised2.pdf
 }
+
+
+
 
 
 void sallenKeyFilterSimper()
