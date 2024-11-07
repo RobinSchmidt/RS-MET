@@ -1231,7 +1231,7 @@ protected:
 
 
   // Coeffs:
-  T a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0;
+  T a0 = 0, a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0;
   T k  = 0;
 
 };
@@ -1255,8 +1255,8 @@ template<class T>
 T rsSallenKeyFilterSimper<T>::getSample(T v0)
 {
    // Compute node voltages:
-   v1 = a1*ic2eq + a2*ic1eq + a3*v0;
-   v2 = a2*ic2eq + a4*ic1eq + a5*v0;
+   T v1 = a1*ic2eq + a2*ic1eq + a3*v0;
+   T v2 = a2*ic2eq + a4*ic1eq + a5*v0;
 
    // Update state (compute capacitor currents, I guess?):
    ic1eq = 2*(v1 - k*v2) - ic1eq;
@@ -1280,7 +1280,7 @@ void sallenKeyFilterSimper()
   Real sawFreq    =   100;    // Frequency of input sawtooth wave
   Real sampleRate = 44100;
   Real cutoff     =  1000;
-  Real reso       =     0;
+  Real reso       =     0.9;
 
 
   // Create input sawtooth signal:
@@ -1291,7 +1291,17 @@ void sallenKeyFilterSimper()
   rsSallenKeyFilterSimper<Real> skf;
   Real w = 2*PI*cutoff/sampleRate;
 
+  skf.setup(w, reso);
+  skf.reset();
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = skf.getSample(x[n]);
+  rsPlotVectors(x, y);
 
+
+  // Observations:
+  //
+  // - It seems like reso = 1 is the stability limit.
 
 
   int dummy = 0;
