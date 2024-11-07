@@ -6,7 +6,8 @@
 Notes:
 
 - On page 6, there's also the formula "k = 1/Q = 2 - 2*res". Does that mean there could be a 
-  "resonance" parameter instead of Q? Figure out!
+  "resonance" parameter instead of Q? Figure out! Yes - this seems to be the right formula.
+  So we have Q = 1 / (2 - 2*R), R = (1/Q - 2) / (-2) = (2 - 1/Q) / 2
 
 
 ToDo:

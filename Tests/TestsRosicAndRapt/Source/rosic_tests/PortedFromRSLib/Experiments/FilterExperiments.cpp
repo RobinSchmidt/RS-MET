@@ -1034,11 +1034,6 @@ void biquadModulation()
   Vec x(N);
   createWaveform(&x[0], N, 1, fIn, fs);
 
-  // Create and set up Andrew Simper's SVF: 
-  using SVF1 = rsStateVariableFilterSimper<Real>;
-  rsStateVariableFilterSimper<Real> svf1;
-  // ...
-
 
   // Create and set up Robert Bristow Johnson's cookbook filter: 
   using CBF = CookbookFilter;
@@ -1048,67 +1043,55 @@ void biquadModulation()
   cbf.setSampleRate(fs);
   cbf.setQ(Q);
 
+  // Create Andrew Simper's SVF and SKF: 
+  using SVF1 = rsStateVariableFilterSimper<Real>;
+  rsStateVariableFilterSimper<Real> svf1;
+  rsSallenKeyFilterSimper<Real> skf;
+
+  // Variables for intermediate values filter outputs:
   Real w;
-  Vec yCBF(N), ySVF1(N);
+  Real R = (2 - 1/Q) / 2;
+  Vec yCBF(N), ySVF1(N), ySKF(N);
 
   // Create the output signals - we switch the cutoff at 2 time instants:
   w = 2*PI*f1/fs;
   cbf.setFreq(f1);
   cbf.calcCoeffs();
   svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  skf.setup(w, R);
   for(int n = 0; n < n1; n++)
   {
     yCBF[n]  = cbf.getSample(x[n]);
     ySVF1[n] = svf1.getSample(x[n]);
+    ySKF[n]  = skf.getSample(x[n]);
   }
   w = 2*PI*f2/fs;
   cbf.setFreq(f2);
   cbf.calcCoeffs();
   svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  skf.setup(w, R);
   for(int n = n1; n < n2; n++)
   {
     yCBF[n]  = cbf.getSample(x[n]);
     ySVF1[n] = svf1.getSample(x[n]);
+    ySKF[n]  = skf.getSample(x[n]);
   }
   w = 2*PI*f3/fs;
   cbf.setFreq(f3);
   cbf.calcCoeffs();
   svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  skf.setup(w, R);
   for(int n = n2; n < N; n++)
   {
     yCBF[n]  = cbf.getSample(x[n]);
     ySVF1[n] = svf1.getSample(x[n]);
+    ySKF[n]  = skf.getSample(x[n]);
   }
 
+  // Plot the outputs of the different filters:
+  rsPlotVectors(x, yCBF, ySVF1, ySKF);
+  rsPlotVectors(ySVF1 - ySKF);  // Difference between svf1 and skf - it's zero!
 
-  rsPlotVectors(x, yCBF, ySVF1);
-
-
-  //Real w = 2*PI*cutoff/sampleRate;
-  //Real A = pow(10, gainDb/40);
-
-
-  /*
-  double b0, b1, b2, a1, a2; // biquad coeffs
-  typedef rosic::BiquadDesigner DSN;
-  rosic::BiquadMonoDF1 bqd;
-  rsStateVectorFilter<double, double> stVecFlt;
-
-  // has to be put into a loop:
-  //DSN::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, 1/fs, f, q, g);
-  DSN::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1/fs, f, q);
-  // uses + convention for a-coeffs
-  //bqd.setCoefficients(b0, b1, b2, a1, a2);
-  //stVecFlt.setupFromBiquad(b0, b1, b2, -a1, -a2);
-  */
-
-
-
-  // plot:
-  GNUPlotter plt;
-  //plt.addDataArrays(N, &yBqd[0]);
-  //plt.addDataArrays(N, &yStVec[0]);
-  //plt.plot();
 
   // Observations:
   //
@@ -1118,7 +1101,10 @@ void biquadModulation()
   //   signal, all is well but if we happen to switch at a bad moment, the resonance amplitude goes
   //   up by a lot when the cutoff is switched from a high to a low freq. In the case of a switch 
   //   from lower to higher cutoff, the resoance amplitude gets diminished.
-
+  //
+  // - The svf1 and skf outputs look the same. Their difference is indeed
+  //
+  //
   // ToDo:
   //
   // - Test also switch between high and low Q
