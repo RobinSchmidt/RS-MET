@@ -1019,23 +1019,20 @@ void biquadModulation()
   using Vec  = std::vector<Real>;
 
 
-  int  N   = 3000 ;         // Number of samples
+  int  N   = 2000;          // Number of samples
   Real fs  = 44100;         // Sample rate
-  Real fIn = 50;            // Input signal frequency
+  Real fIn = 100;           // Input signal frequency
   Real f1  = 5000;          // 1st frequency
   int  n1  = N/3;           // Instant of switch from f1 to f2
   Real f2  = 500;           // 2nd frequency
   int  n2  = 2*N/3;         // Instant of switch from f2 to f3
   Real f3  = 5000;          // 3rd frequency
-  Real Q   = 5.0;           // Q value
-  //Real g  = 2;             // gain factor (for shelf or bell filters)
+  Real Q   = 10.0;          // Q value
 
 
   // Create input sawtooth signal:
   Vec x(N);
   createWaveform(&x[0], N, 1, fIn, fs);
-
-
 
   // Create and set up Andrew Simper's SVF: 
   using SVF1 = rsStateVariableFilterSimper<Real>;
@@ -1051,10 +1048,10 @@ void biquadModulation()
   cbf.setSampleRate(fs);
   cbf.setQ(Q);
 
-
-
   Real w;
   Vec yCBF(N), ySVF1(N);
+
+  // Create the output signals - we switch the cutoff at 2 time instants:
   w = 2*PI*f1/fs;
   cbf.setFreq(f1);
   cbf.calcCoeffs();
@@ -1064,12 +1061,27 @@ void biquadModulation()
     yCBF[n]  = cbf.getSample(x[n]);
     ySVF1[n] = svf1.getSample(x[n]);
   }
-
+  w = 2*PI*f2/fs;
+  cbf.setFreq(f2);
+  cbf.calcCoeffs();
+  svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  for(int n = n1; n < n2; n++)
+  {
+    yCBF[n]  = cbf.getSample(x[n]);
+    ySVF1[n] = svf1.getSample(x[n]);
+  }
+  w = 2*PI*f3/fs;
+  cbf.setFreq(f3);
+  cbf.calcCoeffs();
+  svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  for(int n = n2; n < N; n++)
+  {
+    yCBF[n]  = cbf.getSample(x[n]);
+    ySVF1[n] = svf1.getSample(x[n]);
+  }
 
 
   rsPlotVectors(x, yCBF, ySVF1);
-
-
 
 
   //Real w = 2*PI*cutoff/sampleRate;
@@ -1097,6 +1109,15 @@ void biquadModulation()
   //plt.addDataArrays(N, &yBqd[0]);
   //plt.addDataArrays(N, &yStVec[0]);
   //plt.plot();
+
+  // Observations:
+  //
+  // - I think that for the CBF, the response depends a lot on what the current state of the filter
+  //   is at the instant of the switch - whether the resoance waveform is currently at a high value 
+  //   or passes through the origin. When we swicth at a moment where there sin'T much resonance 
+  //   signal, all is well but if we happen to switch at a bad moment, the resonance amplitude goes
+  //   up by a lot when the cutoff is switched from a high to a low freq. In the case of a switch 
+  //   from lower to higher cutoff, the resoance amplitude gets diminished.
 
   // ToDo:
   //
