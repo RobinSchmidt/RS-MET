@@ -1213,22 +1213,35 @@ void sallenKeyFilterSimper()
   Vec x(N);
   createWaveform(&x[0], N, 1, sawFreq, sampleRate);
 
-  // Create and set up the filter:
+  // Create and set up the Sallen-Key filter and produce its output:
   rsSallenKeyFilterSimper<Real> skf;
   Real w = 2*PI*cutoff/sampleRate;
   skf.setup(w, reso);
-  skf.reset();
-
-  // Produce the filter output and plot it together with the input:
-  Vec y(N);
+  Vec ySKF(N);
   for(int n = 0; n < N; n++)
-    y[n] = skf.getSample(x[n]);
-  rsPlotVectors(x, y);
+    ySKF[n] = skf.getSample(x[n]);
+  //rsPlotVectors(x, ySKF);
+
+  // Create a state variable filter and produce its output for comparison:
+  using SVF = rsStateVariableFilterSimper<Real>;
+  SVF svf;
+  Real Q = 1 / (2 - 2*reso);
+  svf.setup(SVF::Mode::Lowpass, w, Q);
+  Vec ySVF(N);
+  for(int n = 0; n < N; n++)
+    ySVF[n] = svf.getSample(x[n]);
+
+  // Plot input and both filters outputs:
+  rsPlotVectors(x, ySKF, ySVF);
+
 
 
   // Observations:
   //
   // - It seems like reso = 1 is the stability limit.
+  //
+  // - A state variable filter in lowpass mode with  Q = 1 / (2 - 2*reso)  produces the same 
+  //   result.
   //
   //
   // ToDo:
@@ -1258,6 +1271,12 @@ void sallenKeyFilterSimper()
   //   functions directly instead of relying on the delegation by setup/getSample. We may do that
   //   by introducing a subclass in the test code (it will be able to acces these protected 
   //   functions). They should produce the same outputs
+  //
+  // - Figure out how to parametrize the SVF in terms of resonance instead of Q. The conversion 
+  //   formula is  Q = 1 / (2 - 2*reso)  but that works only for reso < 1. Maybe we can implement
+  //   the setup function of the SVF directly in terms of reso? Can we then make it slef-oscillate, 
+  //   too - or is self-oscillation something that should better be done with and SKF?
+
 } 
 
 void stateVariableFilter()
