@@ -91,8 +91,17 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
 /*
 
 ToDo:
--make an envelope follower based on this filter for use in dynamics processors
--the env-follower should be availbale as modulation source in chainer
+
+- Make an envelope follower based on this filter for use in dynamics processors
+
+- The env-follower should be availbale as modulation source in chainer
+
+- Look inot this  https://cytomic.com/files/dsp/DynamicSmoothing.pdf  for an idea of a dynamic
+  smoothing filter. 
+
+
+
+Move this into a text file somewhere else:
 
 Trying to work out a formula for where the step response goes through 0.5. The impulse response
 of the 1st order filter with unit time constant is given by:

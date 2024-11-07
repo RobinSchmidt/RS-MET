@@ -1146,7 +1146,7 @@ void biquadModulation()
   //   this should better be done by a setup(..) function. When we drag the class to RAPT, we 
   //   should change the API accordingly.
   //
-  // - Integrate the
+  // - Integrate the filter into the sampler. It seems to be the best default choice
 }
 
 void brickwallAndAllpass()

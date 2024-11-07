@@ -37,4 +37,10 @@ ToDo:
   "Reson" or "Resonator". Maybe rename "Notch" to "Bandreject" for consistency. Or maybe call them
   Bandstop everywhere.  https://en.wikipedia.org/wiki/Band-stop_filter
 
+- Maybe implement also this stuff:
+    https://cytomic.com/files/dsp/SvfLinearTrapAllOutputs.pdf
+  and look into the other papers here:
+    https://cytomic.com/technical-papers/
+
+
 */

@@ -395,9 +395,9 @@ int main(int argc, char* argv[])
   //sallenKeyFilterSimper();
   //stateVariableFilter();
   //stateVariableFilterMorph();
-  //stateVarFilterSimper();
+  stateVarFilterSimper();
   //stateVectorFilter();   // just a stub, at the moment
-  biquadModulation();      // Stub - compares modulation properties of various biquad structures
+  //biquadModulation();      // compares modulation properties of various biquad structures
 
   //transistorLadder();    // triggers assert
   //phonoFilterPrototypePlot();
