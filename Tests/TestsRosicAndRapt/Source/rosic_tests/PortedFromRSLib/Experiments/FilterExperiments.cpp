@@ -1043,53 +1043,67 @@ void biquadModulation()
   cbf.setSampleRate(fs);
   cbf.setQ(Q);
 
-  // Create Andrew Simper's SVF and SKF: 
-  using SVF1 = rsStateVariableFilterSimper<Real>;
-  rsStateVariableFilterSimper<Real> svf1;
+  // Create Andrew Simper's SKF and SVF: 
   rsSallenKeyFilterSimper<Real> skf;
+  using SVF1 = rsStateVariableFilterSimper<Real>;
+  SVF1 svf1;
+
+  // Create and set up instance my older SVF implementation:
+  using SVF2 = rsStateVariableFilter<Real, Real>;
+  SVF2 svf2;
+  svf2.setMode(SVF2::modes::LOWPASS);
+  svf2.setGain(Q);
+  svf2.setSampleRate(fs);
 
   // Variables for intermediate values filter outputs:
   Real w;
   Real R = (2 - 1/Q) / 2;
-  Vec yCBF(N), ySVF1(N), ySKF(N);
+  Vec yCBF(N), ySVF1(N), ySVF2(N), ySKF(N);
 
   // Create the output signals - we switch the cutoff at 2 time instants:
   w = 2*PI*f1/fs;
   cbf.setFreq(f1);
   cbf.calcCoeffs();
   svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  svf2.setFrequency(f1);
   skf.setup(w, R);
   for(int n = 0; n < n1; n++)
   {
-    yCBF[n]  = cbf.getSample(x[n]);
+    yCBF [n] =  cbf.getSample(x[n]);
     ySVF1[n] = svf1.getSample(x[n]);
-    ySKF[n]  = skf.getSample(x[n]);
+    ySVF2[n] = svf2.getSample(x[n]);
+    ySKF [n] =  skf.getSample(x[n]);
   }
   w = 2*PI*f2/fs;
   cbf.setFreq(f2);
   cbf.calcCoeffs();
   svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  svf2.setFrequency(f2);
   skf.setup(w, R);
   for(int n = n1; n < n2; n++)
   {
-    yCBF[n]  = cbf.getSample(x[n]);
+    yCBF [n] =  cbf.getSample(x[n]);
     ySVF1[n] = svf1.getSample(x[n]);
-    ySKF[n]  = skf.getSample(x[n]);
+    ySVF2[n] = svf2.getSample(x[n]);
+    ySKF [n] =  skf.getSample(x[n]);
   }
   w = 2*PI*f3/fs;
   cbf.setFreq(f3);
   cbf.calcCoeffs();
   svf1.setup(SVF1::Mode::Lowpass, w, Q);
+  svf2.setFrequency(f3);
   skf.setup(w, R);
   for(int n = n2; n < N; n++)
   {
-    yCBF[n]  = cbf.getSample(x[n]);
+    yCBF [n] =  cbf.getSample(x[n]);
     ySVF1[n] = svf1.getSample(x[n]);
-    ySKF[n]  = skf.getSample(x[n]);
+    ySVF2[n] = svf2.getSample(x[n]);
+    ySKF [n] =  skf.getSample(x[n]);
   }
 
   // Plot the outputs of the different filters:
-  rsPlotVectors(x, yCBF, ySVF1, ySKF);
+  rsPlotVectors(x, yCBF, ySVF1, ySVF2, ySKF);
+  rsPlotVectors(ySVF1 - ySVF2); 
   rsPlotVectors(ySVF1 - ySKF);  // Difference between svf1 and skf - it's zero!
 
 
@@ -1102,7 +1116,8 @@ void biquadModulation()
   //   up by a lot when the cutoff is switched from a high to a low freq. In the case of a switch 
   //   from lower to higher cutoff, the resoance amplitude gets diminished.
   //
-  // - The svf1 and skf outputs look the same. Their difference is indeed
+  // - The svf1 and skf outputs look the same. Their difference is indeed at the level of numeric
+  //   roundoff error at around 10^-13
   //
   //
   // ToDo:

@@ -83,6 +83,7 @@ public:
   /** Sets the resonance gain (as linear gain factor) for low-, high- and (constant skirt gain)
   bandpass filters or the boost/cut gain for bell- and shelving filters. */
   void setGain(TPar newGain);
+  // We could also call this setQ - maybe provide an alias name.
 
   /** Sets the bandwidth (in octaves) for (constant peak gain) bandpass filters and bell filters.
   In the case of shelving filters, this also determines the slope at the halfgain point.
@@ -95,7 +96,7 @@ public:
 
   /** Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
   void setupFromBiquad(CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2);
-  // not yet tested
+  // Not yet tested well
 
 
   //-----------------------------------------------------------------------------------------------
