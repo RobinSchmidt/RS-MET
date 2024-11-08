@@ -1764,7 +1764,7 @@ void stateVarFilterSimper()
   cbf.setQ(Q);
   cbf.setMode(mode);  
   getImpulseResponse(cbf, &yCbf[0], N);
-  rsPlotVectors(ySvf, yCbf);
+  //rsPlotVectors(ySvf, yCbf);
   // a1 = -1.9452088697173038,    a2 = 0.96512050674256789
   // b0 =  0.0049779092563160153, b1 = 0.0099558185126320305, b2 = 0.0049779092563160153
 
@@ -1777,6 +1777,7 @@ void stateVarFilterSimper()
   // This already fails in the calculation of g and k. We should get the values as above:
   // g  = 0.071358680866949298,  k = 0.25  but we don't. It seems that there is already soemthing
   // wrong with pc and qc. They are purely imaginary instead of purely real as we would expect.
+  // t1 is negative, t2 is positive (the arguments for the two square-roots)
 
 
   int dummy = 0;

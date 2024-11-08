@@ -36,8 +36,15 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
 
   // Intermediate variables:
   using Complex = std::complex<T>;
-  Complex t1 = -1 + a1 + a2;          // Argument of first square root
-  Complex t2 = -1 - a1 + a2;          // Argument of second square root
+
+  //Complex t1 = -1 + a1 + a2;          // Argument of first square root
+  //Complex t2 = -1 - a1 + a2;          // Argument of second square root
+  // This formula doesn't work. Why?
+
+  Complex t1 = 1 + a1 + a2;          // Argument of first square root
+  Complex t2 = 1 - a1 + a2;          // Argument of second square root
+  // This formula seems to work. Why?
+
   Complex s1 = sqrt(t1);              // Square root in the denominator of formula for g
   Complex s2 = sqrt(t2);              // Square root in the numerator of formula for g
   Complex qc = s1 / s2;               // Quotient
@@ -46,21 +53,35 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   T p = real(pc);                     // ..same for pc
 
   // Compute intermediate variables g,k:
-  T g = -q;
-  T k = (1 + a2) / p;                 //  Solution 1 seems to be the right one
+  //T g = -q;
+  //T k = (1 + a2) / p;                 //  Solution 1 seems to be the right one
+  // This formula doesn't work. Why?
 
-  // Test:
-  //g = -g; k = -k; // Test - this is the 2nd solution
-
+  T g = q;
+  T k = 2*( 1 - a2) / p;   
+  // This formula seems to work! Why?
 
   // This assigns our a-coeffcient member variables:
   calcFilterCoeffs(g, k);
 
+  // ...OK...It seems that the computation of g and k works now and therfore also the computation 
+  // of our a-members. The code below for the m-coeffs is still worng thouh
 
   // These formulas use the a1,a2 function parameters, not our member variables:
-  m0 = (b0 - b1 + b2) / (1 + a1 - a2);
-  m1 = 2*(b0 - b2)    / p;
-  m2 = (b0 + b1 + b2) / (1 - a1 - a2);
+  //m0 = (b0 - b1 + b2) / (1 + a1 - a2);
+  //m1 = 2*(b0 - b2)    / p;
+  //m2 = (b0 + b1 + b2) / (1 - a1 - a2);
+  // seems wrong
+
+  //m0 = (b0 - b1 + b2) / (-1 + a1 - a2);
+  //m1 = 2*(b0 - b2)    / p;
+  //m2 = (b0 + b1 + b2) / (-1 - a1 - a2);
+  // Seems to have wrong sign
+
+  m0 = -(b0 - b1 + b2) / (-1 + a1 - a2);
+  m1 = -2*(b0 - b2)    / p;
+  m2 = -(b0 + b1 + b2) / (-1 - a1 - a2);
+
 }
 
 
