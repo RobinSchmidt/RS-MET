@@ -1029,40 +1029,56 @@ bool stateVariableFilterUnitTest3()
 
   bool ok = true;
 
-  using TPar = double;                   // Scalars for parameters
-  using TSig = RAPT::rsVector2D<double>; // Vectors for signals (i.e. multichannel)
+  // Setup:
+  using TPar = double;                    // Scalars for parameters
+  using TSig = RAPT::rsVector2D<double>;  // Vectors for signals (i.e. multichannel)
+  int   N    = 100;                       // Number of samples for test signals
 
-  using SVF_DV_D = rsStateVariableFilterSimper<TSig, TPar>;
-  using Mode     = SVF_DV_D::Mode;
-  SVF_DV_D svf_dv_d;
+  // Arrays for signals:
+  std::vector<double> xL(N), xR(N), tL(N), tR(N), yL(N), yR(N);
 
-  svf_dv_d.setup(Mode::Bell, 2.0*PI*1000.0/44100.0, 4.0, 5.0);
-  // Maybe rename to svfSt for stereo, have also svfMn for mono
-
-
-  int N = 1000;
-
-  std::vector<double> xL(N), xR(N), yL(N), yR(N);
-
+  // Create stereo noise input signal:
   RAPT::rsNoiseGenerator<double> prng;
-
   for(int n = 0; n < N; n++)
   {
     xL[n] = prng.getSample();
     xR[n] = prng.getSample();
+  }
 
+  // Create target output by two independendent mono filters:
+  using SVF_MN = rsStateVariableFilterSimper<TPar, TPar>;
+  using ModeMn = SVF_MN::Mode;
+  SVF_MN svfMnL, svfMnR;
+  svfMnL.setup(ModeMn::Bell, 2.0*PI*1000.0/44100.0, 4.0, 5.0);
+  svfMnR.setup(ModeMn::Bell, 2.0*PI*1000.0/44100.0, 4.0, 5.0);
+  for(int n = 0; n < N; n++)
+  {
+    tL[n] = svfMnL.getSample(xL[n]);
+    tR[n] = svfMnR.getSample(xR[n]);
+  }
+
+  // Create stereo output by a single vectorized filter:
+  using SVF_ST = rsStateVariableFilterSimper<TSig, TPar>;
+  using ModeSt = SVF_ST::Mode;
+  SVF_ST svfSt;
+  svfSt.setup(ModeSt::Bell, 2.0*PI*1000.0/44100.0, 4.0, 5.0);
+  for(int n = 0; n < N; n++)
+  {
     TSig x(xL[n], xR[n]);
-    TSig y = svf_dv_d.getSample(x);
-
+    TSig y = svfSt.getSample(x);
     yL[n] = y.x;
     yR[n] = y.y;
   }
 
-
-
-  //using SVF_D_DV = rsStateVariableFilterSimper<double, rosic::rsFloat64x2>;
-  // Doesn't work because of include order? rosic is not yet included here?
-
+  // Check if the result when using one single vector/stereo filter is the same as when
+  // using two independent scalar/mono filters:
+  ok &= yL == tL;
+  ok &= yR == tR;
+  if(!ok)
+  {
+    rsPlotVectors(tL, yL, yL - tL);
+    rsPlotVectors(tR, yR, yR - tR);
+  }
 
   return ok;
 
@@ -1070,10 +1086,11 @@ bool stateVariableFilterUnitTest3()
   //
   // - Create an actual test signal and filter it. It should behave in such a way that all channels
   //   are filtered the same way. Maybe use stereo noise as input signal. Compare the result to
-  //   the output of two independent scalar filters
+  //   the output of two independent scalar filters.
   //
   // - Instead of using rsVector<double> use a proper SIMD vector type. We just use a normal vector
-  //   type to simulate the SIMD operation at the moment.
+  //   type to simulate the SIMD operation at the moment. Using rosic::rsFloat64x2 doesn't compile
+  //   here. I guess, rosic is not included or something.
   //
   // - Test it in full SIMD mode, i.e. with both TSig and TPar being SIMD-vector types.
 }
