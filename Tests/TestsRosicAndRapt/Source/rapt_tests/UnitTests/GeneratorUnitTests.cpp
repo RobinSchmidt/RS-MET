@@ -2363,7 +2363,7 @@ bool samplerFilterTest()
   ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, cutoff, reso, 1.e-5f, false);  // old
   //ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6, cutoff, reso, 1.e-5f, false); 
 
-  //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, true);
+  //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, cutoff, reso, 1.e-5f, true);
   // BRF fails! they look very similar though. Maybe there are different definitions in place for
   // how to intepret the resoGain parameter. It's questionable anyway, if we have implemented
   // to correct behavior as sfz wants it. This needs to be verified! Maybe compare to directly

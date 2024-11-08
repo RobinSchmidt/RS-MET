@@ -423,7 +423,7 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
     i.svf.core.setup(SVF::Mode::Notch, w, Q);
     // Needs tests!
 
-
+    return;
   }
 
   }
@@ -538,7 +538,7 @@ void FilterCore::processFrame(float* L, float* R)
   case FT::bp_6_6: io = i.svf.getSample(io); break;
   case FT::br_6_6: io = i.svf.getSample(io); break;
 
-  case FT::pk_2p:  io = i.bqd.getSample(io); break;
+  case FT::pk_2p:  io = i.bqd.getSample(io); break;  // ToDo: use SVF here, too
 
   };
   *L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
@@ -563,14 +563,13 @@ void FilterCore::resetState()
 
   case FT::lp_6:   i.fo.resetState();  return;
   case FT::hp_6:   i.fo.resetState();  return;
-
   case FT::lp_12:  i.svf.resetState(); return;
   case FT::hp_12:  i.svf.resetState(); return;
   case FT::bp_6_6: i.svf.resetState(); return;
   case FT::br_6_6: i.svf.resetState(); return;
 
 
-  case FT::pk_2p:  i.bqd.resetState(); return;
+  case FT::pk_2p:  i.bqd.resetState(); return;  // ToDo: use SVF here, too
 
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::resetState");
