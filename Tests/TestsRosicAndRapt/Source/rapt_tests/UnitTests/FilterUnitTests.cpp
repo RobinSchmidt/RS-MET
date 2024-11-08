@@ -1023,15 +1023,41 @@ bool stateVariableFilterUnitTest2()
 
 bool stateVariableFilterUnitTest3()
 {
+  // We test the instantiation of rsStateVariableFilterSimper with different datatypes for the 
+  // template parameters. Of special interest is the case where the signal type is a vector
+  // version of the parameter type.
+
   bool ok = true;
 
-  using TPar = double;
-  using TSig = RAPT::rsVector2D<double>;
+  using TPar = double;                   // Scalars for parameters
+  using TSig = RAPT::rsVector2D<double>; // Vectors for signals (i.e. multichannel)
 
-  using SVF_DV_D = rsStateVariableFilterSimper<RAPT::rsVector2D<double>, double>;
-
-
+  using SVF_DV_D = rsStateVariableFilterSimper<TSig, TPar>;
+  using Mode     = SVF_DV_D::Mode;
   SVF_DV_D svf_dv_d;
+
+  svf_dv_d.setup(Mode::Bell, 2.0*PI*1000.0/44100.0, 4.0, 5.0);
+  // Maybe rename to svfSt for stereo, have also svfMn for mono
+
+
+  int N = 1000;
+
+  std::vector<double> xL(N), xR(N), yL(N), yR(N);
+
+  RAPT::rsNoiseGenerator<double> prng;
+
+  for(int n = 0; n < N; n++)
+  {
+    xL[n] = prng.getSample();
+    xR[n] = prng.getSample();
+
+    TSig x(xL[n], xR[n]);
+    TSig y = svf_dv_d.getSample(x);
+
+    yL[n] = y.x;
+    yR[n] = y.y;
+  }
+
 
 
   //using SVF_D_DV = rsStateVariableFilterSimper<double, rosic::rsFloat64x2>;
@@ -1039,6 +1065,17 @@ bool stateVariableFilterUnitTest3()
 
 
   return ok;
+
+  // ToDo:
+  //
+  // - Create an actual test signal and filter it. It should behave in such a way that all channels
+  //   are filtered the same way. Maybe use stereo noise as input signal. Compare the result to
+  //   the output of two independent scalar filters
+  //
+  // - Instead of using rsVector<double> use a proper SIMD vector type. We just use a normal vector
+  //   type to simulate the SIMD operation at the moment.
+  //
+  // - Test it in full SIMD mode, i.e. with both TSig and TPar being SIMD-vector types.
 }
 
 bool stateVariableFilterUnitTest()
