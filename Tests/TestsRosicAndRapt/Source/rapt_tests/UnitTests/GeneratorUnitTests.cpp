@@ -2350,8 +2350,8 @@ bool samplerFilterTest()
   // implement a unit test that tests the biquad -> svf conversion for that setting (fc = 1000, 
   // fs = 44100, Q = sqrt(0.5).
 
-  //ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  cutoff, reso, 1.e-5f, false); // old
-  ok &= testAgainstSvf(svf.HighpassMVS,    Type::hp_12,  cutoff, reso, 1.e-5f, false);   // new
+  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  cutoff, reso, 1.e-5f, false); // old
+  //ok &= testAgainstSvf(svf.HighpassMVS,    Type::hp_12,  cutoff, reso, 1.e-5f, false);   // new
 
   /*
   // Old:

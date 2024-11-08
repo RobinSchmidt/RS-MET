@@ -379,12 +379,18 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
 
   case FT::hp_12: 
   {
+    // Older
     //BQ::calculateCookbookHighpassCoeffs(
     //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
     
-    FDF::mvHighpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
-    i.bqd.a1 *= -1;
-    i.bqd.a2 *= -1;
+    // Old:
+    //FDF::mvHighpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
+    //i.bqd.a1 *= -1;
+    //i.bqd.a2 *= -1;
+
+    // New:
+    i.svf.core.setup(SVF::Mode::Highpass, w, Q);
+
     
     return;
   }
@@ -516,8 +522,9 @@ void FilterCore::processFrame(float* L, float* R)
   //case FT::lp_12:  io = i.bqd.getSample(io); break;
   case FT::lp_12:  io = i.svf.getSample(io); break;
 
+  //case FT::hp_12:  io = i.bqd.getSample(io); break;
+  case FT::hp_12:  io = i.svf.getSample(io); break;
 
-  case FT::hp_12:  io = i.bqd.getSample(io); break;
   case FT::bp_6_6: io = i.bqd.getSample(io); break;
   case FT::br_6_6: io = i.bqd.getSample(io); break;
   case FT::pk_2p:  io = i.bqd.getSample(io); break;
@@ -550,7 +557,10 @@ void FilterCore::resetState()
   case FT::lp_12:  i.svf.resetState(); return;
 
 
-  case FT::hp_12:  i.bqd.resetState(); return;
+  //case FT::hp_12:  i.bqd.resetState(); return;
+  case FT::hp_12:  i.svf.resetState(); return;
+
+
   case FT::bp_6_6: i.bqd.resetState(); return;
   case FT::br_6_6: i.bqd.resetState(); return;
   case FT::pk_2p:  i.bqd.resetState(); return;
