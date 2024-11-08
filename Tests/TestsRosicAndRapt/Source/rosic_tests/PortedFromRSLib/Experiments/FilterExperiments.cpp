@@ -1711,6 +1711,7 @@ void stateVarFilterSimper()
   */
 
 
+
   // Try setting it up from a set of biquad coeffs:
   Real b0 =  1.0;
   Real b1 = +0.5;

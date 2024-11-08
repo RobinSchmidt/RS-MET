@@ -13,20 +13,16 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   // real coeffs.
 
 
-
+  // Intermediate variables:
   using Complex = std::complex<T>;
   Complex t1 = -1 - b1 - b2;          // Argument of first square root
   Complex t2 = -1 + b1 - b2;          // Argument of second square root
   Complex s1 = sqrt(t1);              // Square root in the denominator of formula for g
   Complex s2 = sqrt(t2);              // Square root in the numerator of formula for g
-
-  // 
   Complex qc = s1 / s2;               // Quotient
   Complex pc = s1 * s2;               // Product
   T q = real(qc);                     // imag(qc) should be zero anyway
   T p = real(pc);                     // ..same for pc
-
-
 
   // Solution 1:
   //T g  = - q;
@@ -37,8 +33,8 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   T k = (b2 - 1) / p;
 
 
-  //calcFilterCoeffs(g, k); // Needs to be a member function
-  // This assigns our a-coeffcient member variables
+  // This assigns our a-coeffcient member variables:
+  calcFilterCoeffs(g, k);
 
   // These formulas use the a1,a2 function parameters, not our member variables:
   m0 = (1 - a1 + a2) / (1 - b1 + b2);
