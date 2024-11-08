@@ -1,5 +1,38 @@
 
 
+template<class T>
+void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a2)
+{
+  // ToDo:
+  // Verify everything in numerical tests. Could the argument of the sqrt become negative? What 
+  // then? Maybe use absolute value of argument and then flip the sign of all mixing coeffs? Or 
+  // maybe we need to use complex arithmetic? ...but nah! Or well maybe. The formulas use only the
+  // quotient and the product of s1 and s2 - if they are complex conjugates, we may end up with
+  // real coeffs.
+
+  // Arguments for the square-roots for debugging:
+  T tmp1 = -1 - b1 - b2;
+  T tmp2 = -1 + b1 - b2;
+
+
+  T s1 = sqrt(-1 - b1 - b2);
+  T s2 = sqrt(-1 + b1 - b2);
+
+  T g  = - s1 / s2;
+  T k  = (1 - b2) / (s1 * s2);  // Verify if this has the right sign!
+
+  //calcFilterCoeffs(); // Needs to be a member function
+  // This assigns our a-coeffcient member variables
+
+  // These formulas use the a1,a2 function parameters, not our member variables:
+  m0 = (1 - a1 + a2) / (1 - b1 + b2);
+  m1 = 2*(1 - a2)    / (s1 * s2);
+  m2 = (1 + a1 + a2) / (1 + b1 + b2);
+
+
+}
+
+
 //=================================================================================================
 /*
 

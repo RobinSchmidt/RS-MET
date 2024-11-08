@@ -52,6 +52,11 @@ public:
   void setup(Mode mode, T omega, T Q, T A = T(1));
 
 
+  /** UNDER CONSTRUCTION....
+  Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
+  void setupFromBiquad(T b0, T b1, T b2, T a1, T a2);
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 

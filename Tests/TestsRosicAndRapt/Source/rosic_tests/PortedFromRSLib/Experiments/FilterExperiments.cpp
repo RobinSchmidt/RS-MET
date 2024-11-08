@@ -1684,9 +1684,8 @@ void stateVarFilterSimper()
   };
 
 
-
   // Do the plots for the different response types:
-
+  /*
   plotFreqResponses(Mode::Lowpass);
   plotFreqResponses(Mode::Highpass);
   plotFreqResponses(Mode::BandpassSkirt);
@@ -1709,6 +1708,20 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Bell);
   plotFilteredSaw(Mode::LowShelf);
   plotFilteredSaw(Mode::HighShelf);
+  */
+
+
+  // Try setting it up from a set of biquad coeffs:
+  Real b0 =  1.0;
+  Real b1 =  0.5;
+  Real b2 = -0.7;
+  Real a1 =  0.5;
+  Real a2 = -0.2;
+  svf.setupFromBiquad(b0, b1, b2, a1, a2);
+
+
+  int dummy = 0;
+
 
 
   // Observations:
