@@ -3,6 +3,8 @@
 template<class T>
 void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a2)
 {
+  // This is under construction. It doesn't work yet
+
   // ToDo:
   // Verify everything in numerical tests. Could the argument of the sqrt become negative? What 
   // then? Maybe use absolute value of argument and then flip the sign of all mixing coeffs? Or 
@@ -10,23 +12,37 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   // quotient and the product of s1 and s2 - if they are complex conjugates, we may end up with
   // real coeffs.
 
-  // Arguments for the square-roots for debugging:
-  T tmp1 = -1 - b1 - b2;
-  T tmp2 = -1 + b1 - b2;
 
 
-  T s1 = sqrt(-1 - b1 - b2);
-  T s2 = sqrt(-1 + b1 - b2);
+  using Complex = std::complex<T>;
+  Complex t1 = -1 - b1 - b2;          // Argument of first square root
+  Complex t2 = -1 + b1 - b2;          // Argument of second square root
+  Complex s1 = sqrt(t1);              // Square root in the denominator of formula for g
+  Complex s2 = sqrt(t2);              // Square root in the numerator of formula for g
 
-  T g  = - s1 / s2;
-  T k  = (1 - b2) / (s1 * s2);  // Verify if this has the right sign!
+  // 
+  Complex qc = s1 / s2;               // Quotient
+  Complex pc = s1 * s2;               // Product
+  T q = real(qc);                     // imag(qc) should be zero anyway
+  T p = real(pc);                     // ..same for pc
 
-  //calcFilterCoeffs(); // Needs to be a member function
+
+
+  // Solution 1:
+  //T g  = - q;
+  //T k  = (1 - b2) / p;          // Verify if this has the right sign!
+
+  // Solution 2:
+  T g = q;
+  T k = (b2 - 1) / p;
+
+
+  //calcFilterCoeffs(g, k); // Needs to be a member function
   // This assigns our a-coeffcient member variables
 
   // These formulas use the a1,a2 function parameters, not our member variables:
   m0 = (1 - a1 + a2) / (1 - b1 + b2);
-  m1 = 2*(1 - a2)    / (s1 * s2);
+  m1 = 2*(1 - a2)    / p;
   m2 = (1 + a1 + a2) / (1 + b1 + b2);
 
 

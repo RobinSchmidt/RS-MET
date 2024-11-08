@@ -1713,10 +1713,10 @@ void stateVarFilterSimper()
 
   // Try setting it up from a set of biquad coeffs:
   Real b0 =  1.0;
-  Real b1 =  0.5;
-  Real b2 = -0.7;
-  Real a1 =  0.5;
-  Real a2 = -0.2;
+  Real b1 = +0.5;
+  Real b2 = +0.2;
+  Real a1 = +0.4;
+  Real a2 = +0.2;
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
 
 
