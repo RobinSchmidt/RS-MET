@@ -1025,12 +1025,18 @@ bool stateVariableFilterUnitTest3()
 {
   bool ok = true;
 
-  //using TPar = double;
-  //using TSig = RAPT::rsVector2D<double>;
+  using TPar = double;
+  using TSig = RAPT::rsVector2D<double>;
 
-  //using SVF_DD = rsStateVariableFilterSimper<double, double>;
+  using SVF_DV_D = rsStateVariableFilterSimper<RAPT::rsVector2D<double>, double>;
 
-  //SVF_DD svf_dd;
+
+  SVF_DV_D svf_dv_d;
+
+
+  //using SVF_D_DV = rsStateVariableFilterSimper<double, rosic::rsFloat64x2>;
+  // Doesn't work because of include order? rosic is not yet included here?
+
 
   return ok;
 }

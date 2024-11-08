@@ -229,8 +229,8 @@ TSig rsStateVariableFilterSimper<TSig, TPar>::getSample(TSig v0)
   TSig v2 = a2*i1 + a3*v3 + i2;            // Voltage at node 2, Lowpass output (?)
 
   // State update (by computing "equivalent"(?) capacitor currents):
-  i1 = 2*v1 - i1;                          // Eq. 2?
-  i2 = 2*v2 - i2;
+  i1 = TPar(2)*v1 - i1;                    // Eq. 2?
+  i2 = TPar(2)*v2 - i2;
 
   // Mix final output:
   return m0*v0 + m1*v1 + m2*v2;

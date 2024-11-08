@@ -547,7 +547,10 @@ template class RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
 template class RAPT::rsPhasorFilter<float, float>;
 template class RAPT::rsPhasorStateMapper<float>;
 template class RAPT::rsStateVariableFilter<float, float>;
+
 template class RAPT::rsStateVariableFilterSimper<double, double>;
+template class RAPT::rsStateVariableFilterSimper<RAPT::rsVector2D<double>, double>;
+
 
 // Filters-Scientific:
 template class RAPT::rsPrototypeDesigner<float>;
