@@ -1711,17 +1711,14 @@ void stateVarFilterSimper()
   */
 
 
-
+  /*
   // Try setting it up from a set of biquad coeffs:
   Real b0 =  1.0;
   Real b1 = +0.0;
   Real b2 = +0.0;
-  Real a1 = -0.9;
+  Real a1 = -0.2;
   Real a2 = +0.7;
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
-
-  //svf.setupFromBiquad(1, a1, a2, -b1, -b2);
-
   cbf.setCoeffs(a1, a2, b0, b1, b2);
   Vec ySvf(N);
   Vec yCbf(N);
@@ -1733,6 +1730,7 @@ void stateVarFilterSimper()
     yCbf[n] = cbf.getSample(x[n]);
   }
   rsPlotVectors(yCbf, ySvf);
+  */
   // Nope! This is wrong! They are not the same! Inverting the signs of a1,a2 in the call to
   // cbf.setCoeffs() doesn't fix the problem.
   // Ah! I think, the problem is that the Simper paper uses the convention of using the a-coeffs
@@ -1742,8 +1740,33 @@ void stateVarFilterSimper()
   // have to deal with two different differences in the used convention how to name the biquad
   // coeffs.
 
+  // Maybe try it with a lowpass rather than an arbitrary set of coeffs and let the SVF design 
+  // itself and first check that the computation of g and k works.
 
 
+  // Test biquad-to-svf converion with lowpass
+  Mode mode = Mode::Lowpass;
+  cutoff    =  1000;
+  Q         =     4.0;
+  w         = 2*PI*cutoff/sampleRate;
+
+  Vec ySvf(N);
+  svf.setup(mode, w, Q, A);             
+  getImpulseResponse(svf, &ySvf[0], N);
+  // g = 0.071358680866949298, k = 0.25000000000000000
+  // a1 = 0.97758234411496792, a2 = 0.069758986514864202, a3 = 0.0049779092563160144
+  // m0 = 0, m1 = 0, m2 = 1
+
+  Vec yCbf(N);
+  cbf.setSampleRate(sampleRate);
+  cbf.setNumStages(1);  // Important!
+  cbf.setFreq(cutoff);
+  cbf.setQ(Q);
+  cbf.setMode(mode);  
+  getImpulseResponse(cbf, &yCbf[0], N);
+  rsPlotVectors(ySvf, yCbf);
+  // a1 = -1.9452088697173038,    a2 = 0.96512050674256789
+  // b0 =  0.0049779092563160153, b1 = 0.0099558185126320305, b2 = 0.0049779092563160153
 
   int dummy = 0;
 

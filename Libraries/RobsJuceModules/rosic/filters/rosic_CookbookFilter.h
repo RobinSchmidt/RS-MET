@@ -157,7 +157,9 @@ namespace rosic
   static const int maxNumStages = 5;
 
   // direct form coefficients:
-  doubleA a0, a1, a2, b0, b1, b2;
+  doubleA a0, a1, a2, b0, b1, b2; 
+  // a0 should not be a member! It should be normalized to 1. It actually is and 
+  // it is not used in the getSample function.
 
   // normalized ladder coefficients:
   doubleA k1, k2, c1, c2, ladderGain;
@@ -404,6 +406,7 @@ namespace rosic
 
   // scale all coefficients by (1/a0):
   a0Rec  = 1.0 / a0;
+  a0    *= a0Rec;       // ToDo: Remove the a0 member! It's always 1 and not used in getSample
   a1    *= a0Rec;
   a2    *= a0Rec;
   b0    *= a0Rec;

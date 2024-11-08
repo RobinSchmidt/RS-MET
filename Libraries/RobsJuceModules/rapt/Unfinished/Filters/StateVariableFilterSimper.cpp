@@ -3,7 +3,28 @@
 template<class T>
 void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a2)
 {
-  // This is under construction. It doesn't work yet
+  rsError("This is under construction. It doesn't work yet!");
+
+  // When done, this function should implement the conversion formulas from biquad to SVF coeffs
+  // given here on page 8:
+  //
+  //   https://cytomic.com/files/dsp/SvfLinearTrapezoidalSin.pdf
+  //
+  // Note that the paper uses the convention of writing DF biquad transfer functions as:
+  //
+  //           a0 + a1 z^-1 + a2 z^-2
+  //   H(z) = ------------------------
+  //           1  - b1 z^-1 - b2 z^-2
+  //
+  // whereas I usually use the convention:
+  //
+  //           b0 + b1 z^-1 + b2 z^-2
+  //   H(z) = ------------------------
+  //           1  + a1 z^-1 + a2 z^-2
+  //
+  // i.e. with a- and b-coeffs swapped and a sign inversion on the numerator coeffs. The function
+  // parameters are supposed to be given in my convention. ...TBC...
+
 
   // ToDo:
   // Verify everything in numerical tests. Could the argument of the sqrt become negative? What 
@@ -12,37 +33,34 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   // quotient and the product of s1 and s2 - if they are complex conjugates, we may end up with
   // real coeffs.
 
-  // Change coefficient convention:
-  //T B0 = b0, B1 = b1, B2 = b2, A1 = a1, A2 = a2;  // Wrong!
-  //T B0 = 1, B1 = a1, B2 = a2, A1 = b1, A2 = b2;       //  Resonance too quiet
-
-  //T B0 = 1, B1 = -a1, B2 = -a2, A1 = b1, A2 = b2;   // Produces NaNs
-
-  //T B0 = 1, B1 = a1, B2 = a2, A1 = -b1, A2 = -b2;   // Resonance too quiet
-
 
   // Intermediate variables:
   using Complex = std::complex<T>;
-  Complex t1 = -1 - B1 - B2;          // Argument of first square root
-  Complex t2 = -1 + B1 - B2;          // Argument of second square root
+  Complex t1 = -1 + a1 + a2;          // Argument of first square root
+  Complex t2 = -1 - a1 + a2;          // Argument of second square root
   Complex s1 = sqrt(t1);              // Square root in the denominator of formula for g
   Complex s2 = sqrt(t2);              // Square root in the numerator of formula for g
   Complex qc = s1 / s2;               // Quotient
   Complex pc = s1 * s2;               // Product
-  T q = real(qc);                     // imag(qc) should be zero anyway
+  T q = real(qc);                     // imag(qc) should be zero anyway, I guess?
   T p = real(pc);                     // ..same for pc
 
   // Compute intermediate variables g,k:
-  T g  = -q;
-  T k  = (1 - B2) / p;                //  Solution 1 seems to be the right one
+  T g = -q;
+  T k = (1 + a2) / p;                 //  Solution 1 seems to be the right one
+
+  // Test:
+  //g = -g; k = -k; // Test - this is the 2nd solution
+
 
   // This assigns our a-coeffcient member variables:
   calcFilterCoeffs(g, k);
 
+
   // These formulas use the a1,a2 function parameters, not our member variables:
-  m0 = (1 - A1 + A2) / (1 - B1 + B2);
-  m1 = 2*(1 - A2)    / p;
-  m2 = (1 + A1 + A2) / (1 + B1 + B2);
+  m0 = (b0 - b1 + b2) / (1 + a1 - a2);
+  m1 = 2*(b0 - b2)    / p;
+  m2 = (b0 + b1 + b2) / (1 - a1 - a2);
 }
 
 
