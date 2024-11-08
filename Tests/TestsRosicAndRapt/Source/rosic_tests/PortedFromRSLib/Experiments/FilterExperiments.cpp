@@ -1719,6 +1719,9 @@ void stateVarFilterSimper()
   Real a1 = -0.9;
   Real a2 = +0.5;
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
+
+  //svf.setupFromBiquad(1, a1, a2, -b1, -b2);
+
   cbf.setCoeffs(a1, a2, b0, b1, b2);
   Vec ySvf(N);
   Vec yCbf(N);
