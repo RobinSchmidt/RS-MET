@@ -338,7 +338,7 @@ protected:
 
 //=================================================================================================
 
-class EqualizerCore  // Not yet used - ToDo: use in the equalizer
+class EqualizerCore
 {
 
 public:
@@ -349,6 +349,8 @@ public:
     float rawGain = RAPT::rsDbToAmp(gainDb);
     RAPT::rsBiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(
       b0, b1, b2, a1, a2, 1.f, s*omega, bw, rawGain, 1.f);
+    // The type parameter is not used - maybe remove it. But maybe we should keep it in 
+    // anticipation of offering more equalizer types later.
   }
 
   void processFrame(float* xL, float* xR)
