@@ -1795,8 +1795,19 @@ void stateVarFilterSimper()
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
   getImpulseResponse(svf, &ySvf2[0], N);
   rsPlotVectors(yCbf, ySvf2);                   // Both should be the same
-  // Has wrong sign!
 
+  // Now a highpass:
+  mode = Mode::Highpass;
+  cbf.setMode(mode);
+  getImpulseResponse(cbf, &yCbf[0], N);
+  a1 = -1.9452088697173038;
+  a2 =  0.96512050674256789;
+  b0 =  0.97758234411496803;
+  b1 = -1.9551646882299361;
+  b2 =  0.97758234411496803;
+  svf.setupFromBiquad(b0, b1, b2, a1, a2);
+  getImpulseResponse(svf, &ySvf2[0], N);
+  rsPlotVectors(yCbf, ySvf2);                   // Both should be the same
 
 
 
@@ -1812,6 +1823,17 @@ void stateVarFilterSimper()
   //
   // - The impulse- and frequency responses of the RBJ cookbook filters and the Simper SVF do 
   //   indeed look the same.
+  //
+  // - The setupFromBiquad works only for lowpass and bandpass. For these, only m2 != 0 or 
+  //   m1 != 0 respectively. I think, it may be that the formulas in this paper
+  //   https://cytomic.com/files/dsp/SvfLinearTrapezoidalSin.pdf  do not refer to the same filter
+  //   algorithm but to a variant where m0 is not the coeff for the input voltage but rather for 
+  //   the highpass voltage. I had to tweak a lot of formulas anyway, so something seems off 
+  //   anyway. In the original paper the highpass mixing coeffs are given by:
+  //   m0 = 1, m1 = -k, m2 = -1. The paper seems to assume that in highpass mode, we would have
+  //   the mixing coeffs as m0 = 1, m1 = 0, m2 = 0. This can be inferred from page 9. There is a
+  //   highpass at the top and the Mathematica output does indeed produce  m0 = 1, m1 = 0, m2 = 0
+  //   in this case.
   //
   //
   // ToDo:

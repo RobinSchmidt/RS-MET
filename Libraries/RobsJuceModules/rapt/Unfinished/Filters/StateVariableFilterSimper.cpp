@@ -26,14 +26,6 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   // parameters are supposed to be given in my convention. ...TBC...
 
 
-  // ToDo:
-  // Verify everything in numerical tests. Could the argument of the sqrt become negative? What 
-  // then? Maybe use absolute value of argument and then flip the sign of all mixing coeffs? Or 
-  // maybe we need to use complex arithmetic? ...but nah! Or well maybe. The formulas use only the
-  // quotient and the product of s1 and s2 - if they are complex conjugates, we may end up with
-  // real coeffs.
-
-
   // Intermediate variables:
   using Complex = std::complex<T>;
 
@@ -58,14 +50,14 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   // This formula doesn't work. Why?
 
   T g = q;
-  T k = 2*( 1 - a2) / p;   
+  T k = 2*(1 - a2) / p;
   // This formula seems to work! Why?
 
   // This assigns our a-coeffcient member variables:
   calcFilterCoeffs(g, k);
 
   // ...OK...It seems that the computation of g and k works now and therfore also the computation 
-  // of our a-members. The code below for the m-coeffs is still worng thouh
+  // of our a-members. The code below for the m-coeffs is still wrong though
 
   // These formulas use the a1,a2 function parameters, not our member variables:
   //m0 = (b0 - b1 + b2) / (1 + a1 - a2);
@@ -73,22 +65,25 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   //m2 = (b0 + b1 + b2) / (1 - a1 - a2);
   // seems wrong
 
-  //m0 = (b0 - b1 + b2) / (-1 + a1 - a2);
-  //m1 = 2*(b0 - b2)    / p;
-  //m2 = (b0 + b1 + b2) / (-1 - a1 - a2);
-  // Seems to have wrong sign
 
   m0 = -(b0 - b1 + b2) / (-1 + a1 - a2);
-  m1 = -2*(b0 - b2)    / p;
+  m1 =  2*(b0 - b2)    / p;
   m2 = -(b0 + b1 + b2) / (-1 - a1 - a2);
-  // Seems to work for lowpass (only m2 != 0)
+  // Seems to work for lowpass (only m2 != 0) and bandpass (only m1 !=0). I think, the formula
+  // for m0 is still wrong.
 
 
-  //m0 = (b0 - b1 + b2) / (+1 + a1 - a2);
-  //m1 = -2*(b0 - b2)    / p;
-  //m2 = -(b0 + b1 + b2) / (-1 - a1 - a2);
-
-
+  // ToDo:
+  //
+  // - Figure out, if the two papers
+  //     https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
+  //     https://cytomic.com/files/dsp/SvfLinearTrapezoidalSin.pdf
+  //   are really referring to the same filter algorithm. In the second paper, there are places 
+  //   where it seems like the m0,m1,m2 refer to input,bandpass,lowpass signals (in that order,
+  //   see page 5 tick-function: "high = v0 - k*v1 - v2; band = v1; low = v2" - that's the same
+  //   mixing coeffs as we use here for high, band and low). And then there are other places where
+  //   it seems like they refer to highpass,bandpass,lowpass (page 9: only m0 = 1 for highpass). 
+  //   I'm confused!
 }
 
 
