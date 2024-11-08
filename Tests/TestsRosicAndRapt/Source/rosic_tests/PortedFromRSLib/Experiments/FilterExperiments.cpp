@@ -1341,7 +1341,7 @@ T rsOnePoleFilterSimper<T>::getSample(T v0)
   //return vc;
 }
 // Maybe make a class that can swicth between using forward Euler, backward Euler and trapezoidal
-// integration schemes
+// integration schemes - but maybe let's do that in the private repo
 
 
 void onePoleFilterSimper()
