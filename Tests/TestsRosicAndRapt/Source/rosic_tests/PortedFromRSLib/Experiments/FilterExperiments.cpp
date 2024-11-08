@@ -1301,6 +1301,43 @@ void brickwallAndAllpass()
   //  
 }
 
+
+
+template<class T>                   // ToDo: have TSig, TPar template parameters
+class rsOnePoleFilterSimper
+{
+
+public:
+
+protected:
+
+};
+
+
+void onePoleFilterSimper()
+{
+  // Under Construction
+
+  // We implement this filter:
+  //
+  //    https://cytomic.com/files/dsp/OnePoleLinearLowPass.pdf
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  // Setup:
+  int  N          =  4096;    // Number of samples to produce
+  Real sawFreq    =   100;    // Frequency of input sawtooth wave
+  Real sampleRate = 44100;    // Sample rate for the numerical test.
+  Real cutoff     =  1000;    // Cutoff frequency of the filter
+
+  rsOnePoleFilterSimper<Real> flt;
+  Real w = 2*PI*cutoff/sampleRate;
+
+
+  int dummy = 0;
+}
+
 void sallenKeyFilterSimper()
 {
   using Real = double;
@@ -1693,7 +1730,8 @@ void stateVarFilterSimper()
   //
   //   This needs to be brought into the standard biquad form. We really want expressions for
   //   v1[n] and v2[n] (bandpass and lowpass output) in terms of 
-  //   x[n], x[n-1], x[n-2], v1[n-1], v1[n-2]  for bandpass
+  //   x[n], x[n-1], x[n-2], v1[n-1], v1[n-2]  for bandpass. See also the textfile
+  //   StateVariableFilter.txt in the private repo
   //
   // - Write functions toBiquad, fromBiquad to convert between biquad coeffs and SVF coeffs. See:
   //   https://cytomic.com/files/dsp/SvfLinearTrapezoidalSin.pdf  page 7

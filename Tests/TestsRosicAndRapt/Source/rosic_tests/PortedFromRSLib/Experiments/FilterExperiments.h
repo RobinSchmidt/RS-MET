@@ -10,6 +10,7 @@ void biquadDesignVicanek();
 void biquadTail();
 void biquadModulation();
 void brickwallAndAllpass();
+void onePoleFilterSimper();
 void sallenKeyFilterSimper();
 void stateVariableFilter();
 void stateVariableFilterMorph();

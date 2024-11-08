@@ -65,7 +65,7 @@ public:
 protected:
 
   // State:
-  T i1 = 0, i2 = 0;          // Capacitor currents (I guess) ic1eq, ic2eq in the paper.
+  T i1 = 0, i2 = 0;          // Capacitor equivalent(?) currents ic1eq, ic2eq in the paper.
 
   // Coeffs:
   T a1 = 0, a2 = 0, a3 = 0;  // Filter coeffs (ToDo: explain better)

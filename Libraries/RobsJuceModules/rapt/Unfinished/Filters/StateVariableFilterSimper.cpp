@@ -19,7 +19,9 @@ ToDo:
   representing bandpass and lowpass output? This can be inferred from the mixing coeffs 
   m0,m1,m2. They are 0,1,0 for bandpass and 0,0,1 for lowpass. I guess, the ic1eq, ic2eq in the
   paper (that I have just called i1, i2 here) stand for something like "current into capacitor 1" 
-  but somehow "equalized" as in "normalized"?
+  but somehow "equalized" as in "normalized"? Ah - see here, page 5:
+  https://cytomic.com/files/dsp/OnePoleLinearLowPass.pdf
+  he talks about "equivalent current"
 
 - Maybe have two template parameters TSig, TPar as in the other filters. I think,
   v0,v1,v2,v3,ic1eq,ic2eq must all be TSig, a1,a2,a3,m1,m2,m3 must be TPar
