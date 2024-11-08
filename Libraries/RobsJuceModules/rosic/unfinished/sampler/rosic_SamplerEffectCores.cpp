@@ -401,9 +401,15 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
     //BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
     //i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); 
     
-    FDF::mvBandpassSimple(w, Q, true, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
-    i.bqd.a1 *= -1;
-    i.bqd.a2 *= -1;
+    //FDF::mvBandpassSimple(w, Q, true, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
+    //i.bqd.a1 *= -1;
+    //i.bqd.a2 *= -1;
+
+
+    i.svf.core.setup(SVF::Mode::BandpassSkirt, w, Q);
+
+
+
     
     return;
   }
@@ -525,7 +531,9 @@ void FilterCore::processFrame(float* L, float* R)
   //case FT::hp_12:  io = i.bqd.getSample(io); break;
   case FT::hp_12:  io = i.svf.getSample(io); break;
 
-  case FT::bp_6_6: io = i.bqd.getSample(io); break;
+  case FT::bp_6_6: io = i.svf.getSample(io); break;
+
+
   case FT::br_6_6: io = i.bqd.getSample(io); break;
   case FT::pk_2p:  io = i.bqd.getSample(io); break;
 
@@ -561,7 +569,8 @@ void FilterCore::resetState()
   case FT::hp_12:  i.svf.resetState(); return;
 
 
-  case FT::bp_6_6: i.bqd.resetState(); return;
+  case FT::bp_6_6: i.svf.resetState(); return;
+
   case FT::br_6_6: i.bqd.resetState(); return;
   case FT::pk_2p:  i.bqd.resetState(); return;
 

@@ -2360,8 +2360,8 @@ bool samplerFilterTest()
   ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.01f, 40.f, 1.e-3f, true);
   */
 
-  //ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, cutoff, reso, 1.e-5f, false);  // old
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6, cutoff, reso, 1.e-5f, false); 
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, cutoff, reso, 1.e-5f, false);  // old
+  //ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6, cutoff, reso, 1.e-5f, false); 
 
   //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, true);
   // BRF fails! they look very similar though. Maybe there are different definitions in place for
