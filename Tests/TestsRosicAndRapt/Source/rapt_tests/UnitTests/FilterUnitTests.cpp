@@ -941,7 +941,7 @@ bool stateVariableFilterUnitTest1(Real tol)
 
 bool stateVariableFilterUnitTest2()
 {
-  // We test if the two different SVF implementations produce the same results as the RBJ cookbook
+  // We test if the Simper-SVF implementation produces the same results as the RBJ cookbook
   // filters.
 
   bool ok = true;
@@ -953,20 +953,10 @@ bool stateVariableFilterUnitTest2()
   // Setup:
   int  N          =   128;    // Number of samples to produce for each test case
   Real sampleRate = 44100;
-  //Real tol        = 1.e-14;   // Works on Windows with MSVC. Maybe for other compilers, we need
-                              // to give more tolerance. We'll see...
 
   // Helper function to run a single test:
   auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
   {
-    // Produce the SVF impulse response:
-    rsStateVariableFilterSimper<Real> svf;
-    Vec ySvf(N);
-    Real w = 2*PI*freq/sampleRate;
-    Real A = pow(10, gainDb/40);
-    svf.setup(mode, w, Q, A);
-    getImpulseResponse(svf, &ySvf[0], N);
-
     // Produce the RBJ impulse response as reference signal:
     rosic::CookbookFilter cbf;
     Vec yCbf(N);
@@ -975,11 +965,18 @@ bool stateVariableFilterUnitTest2()
     cbf.setFreq(freq);
     cbf.setQ(Q);
     cbf.setGain(gainDb);
-    cbf.setMode(mode);    // The mode parameter is actually from the wrong enum. But the enums
-                          // are compatible. That's very dirty, though!
+    cbf.setMode(mode);                     // Dirty! See comment below.
     getImpulseResponse(cbf, &yCbf[0], N);
+    // The mode parameter is actually from the wrong enum. But the enums are compatible. That's 
+    // very dirty, though!
 
-    // Check, if both filters produced the same result:
+    // Produce the SVF impulse response and compare against reference:
+    rsStateVariableFilterSimper<Real> svf;
+    Vec ySvf(N);
+    Real w = 2*PI*freq/sampleRate;
+    Real A = pow(10, gainDb/40);
+    svf.setup(mode, w, Q, A);
+    getImpulseResponse(svf, &ySvf[0], N);
     ok &= rsIsCloseTo(ySvf, yCbf, tol);
     rsAssert(ok);
 
@@ -987,6 +984,17 @@ bool stateVariableFilterUnitTest2()
     if(!ok)
       rsPlotVectors(ySvf, yCbf, yCbf - ySvf);
     // Can be uncommented when the test fails to see what's going on
+
+
+    // Under construction:
+    // Produce my older SVF's impulse response and check it against the reference:
+    //rsStateVariableFilter<Real, Real> svf2;
+    //int modeSvf2 = convertEnumMode_RBJ_to_SVF(mode);
+    //svf2.setMode(modeSvf2);
+    //svf2.setSampleRate(sampleRate);
+    //svf2.setFrequency(freq);
+    //svf2.setGain(Q);
+    // ...TBC...we can re-use the ySvf array for the output
   };
 
   // Test different settings:
@@ -1011,9 +1019,6 @@ bool stateVariableFilterUnitTest2()
   //   a separate helper function for that. The older SVF implementation is not quite so compatible
   //   in terms of its parametrization. But maybe instead of accomodating for this incompatibility,
   //   we should actiually make it compatible!
-  //
-  // - Maybe use different tolerances for different tests. The bell mode needs 1.e-14, the ones 
-  //   before can use 1.e-15.
 }
 
 
