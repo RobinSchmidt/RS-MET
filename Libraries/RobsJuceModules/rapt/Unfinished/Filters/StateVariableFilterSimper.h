@@ -56,6 +56,12 @@ public:
   Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
   void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
 
+  /** Initializes all coefficients to achieve a neutral "bypass" response. */
+  void initCoeffs()
+  {
+    a1 = 0, a2 = 0, a3 = 0;
+    m0 = 1, m1 = 0, m2 = 0;
+  }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

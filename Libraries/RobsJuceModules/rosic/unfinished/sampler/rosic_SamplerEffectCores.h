@@ -299,9 +299,11 @@ protected:
   };
   struct SvfImpl                // state variable filter (using ZDF)
   {
-    TSig  s1, s2;               // state
-    TCoef R;                    // damping(?) - what obout the freq-scaling and weights?
-                                // ...stuff to do...
+    // We use an embedded DSP object from RAPT for the SVF mode:
+    RAPT::rsStateVariableFilterSimper<TSig, TCoef> core;
+    void resetState()              { core.reset(); }
+    void initCoeffs()              { core.initCoeffs(); }
+    TSig getSample(const TSig& in) { return core.getSample(in); }
   };
   struct LadderImpl             // ladder filter (using UDF)
   {
