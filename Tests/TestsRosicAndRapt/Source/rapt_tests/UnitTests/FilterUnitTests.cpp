@@ -953,7 +953,7 @@ bool stateVariableFilterUnitTest2()
   // Setup:
   int  N          =   128;    // Number of samples to produce for each test case
   Real sampleRate = 44100;
-  Real tol        = 1.e-15;   // Works on Windows with MSVC. Maybe for other compilers, we need
+  Real tol        = 1.e-14;   // Works on Windows with MSVC. Maybe for other compilers, we need
                               // to give more tolerance. We'll see...
 
   // Helper function to run a single test:
@@ -983,8 +983,9 @@ bool stateVariableFilterUnitTest2()
     ok &= rsIsCloseTo(ySvf, yCbf, tol);
     rsAssert(ok);
 
-    // Plot impulse responses of SVF and RBJ and their difference:
-    //rsPlotVectors(ySvf, yCbf, yCbf - ySvf);
+    // Plot impulse responses of SVF and RBJ and their difference in case fo failure:
+    if(!ok)
+      rsPlotVectors(ySvf, yCbf, yCbf - ySvf);
     // Can be uncommented when the test fails to see what's going on
   };
 
@@ -996,14 +997,23 @@ bool stateVariableFilterUnitTest2()
   runTest(Mode::BandpassPeak,  1000, 4.0, 0.0);
   runTest(Mode::Notch,         1000, 4.0, 0.0);
   runTest(Mode::Allpass,       1000, 4.0, 0.0);
-  runTest(Mode::Bell,          1000, 4.0, 0.0);
-  runTest(Mode::LowShelf,      1000, 4.0, 0.0);
-  runTest(Mode::HighShelf,     1000, 4.0, 0.0);
+  runTest(Mode::Bell,          1000, 4.0, 5.0);
+  runTest(Mode::LowShelf,      1000, 4.0, 5.0);
+  runTest(Mode::HighShelf,     1000, 4.0, 5.0);
   //runTest(Mode::Peak,          1000, 4.0, 0.0);  // Not yet available in RBJ filter
 
   return ok;
 
-  // ToDo: test other SVF implementation as well!
+
+  // ToDo: 
+  //
+  // - Test other SVF implementation as well! It's under construction. But maybe we should create
+  //   a separate helper function for that. The older SVF implementation is not quite so compatible
+  //   in terms of its parametrization. But maybe instead of accomodating for this incompatibility,
+  //   we should actiually make it compatible!
+  //
+  // - Maybe use different tolerances for different tests. The bell mode needs 1.e-14, the ones 
+  //   before can use 1.e-15.
 }
 
 
