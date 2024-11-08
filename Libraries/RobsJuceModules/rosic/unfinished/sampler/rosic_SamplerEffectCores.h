@@ -284,6 +284,7 @@ protected:
       return y;
     }
   };
+  /*
   struct BiquadImpl             // biquad filter, using DF2 (todo: try TDF1 -> smaller state)
   {
     TSig  x1, x2, y1, y2;       // state
@@ -297,6 +298,7 @@ protected:
       return y;
     }
   };
+  */
   struct SvfImpl                // state variable filter (using ZDF)
   {
     // We use an embedded DSP object from RAPT for the SVF mode:
@@ -316,7 +318,7 @@ protected:
   {
     FilterImpl() {}             // without it, msc complains - why?
     OnePoleImpl fo;             // first order
-    BiquadImpl  bqd;            // biquad
+    //BiquadImpl  bqd;            // biquad
     SvfImpl     svf;            // state variable filter
     LadderImpl  ldr;            // ladder
    //PhasorImpl psr;            // phasor filter
