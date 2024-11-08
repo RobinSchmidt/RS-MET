@@ -1,7 +1,8 @@
 
 
-template<class T>
-void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a2)
+template<class TSig, class TPar>
+void rsStateVariableFilterSimper<TSig, TPar>::setupFromBiquad(
+  TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
 {
   rsError("This is under construction. It doesn't work yet!");
 
@@ -27,7 +28,7 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
 
 
   // Intermediate variables:
-  using Complex = std::complex<T>;
+  using Complex = std::complex<TPar>;
 
   //Complex t1 = -1 + a1 + a2;          // Argument of first square root
   //Complex t2 = -1 - a1 + a2;          // Argument of second square root
@@ -41,16 +42,16 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   Complex s2 = sqrt(t2);              // Square root in the numerator of formula for g
   Complex qc = s1 / s2;               // Quotient
   Complex pc = s1 * s2;               // Product
-  T q = real(qc);                     // imag(qc) should be zero anyway, I guess?
-  T p = real(pc);                     // ..same for pc
+  TPar q = real(qc);                  // imag(qc) should be zero anyway, I guess?
+  TPar p = real(pc);                  // ..same for pc
 
   // Compute intermediate variables g,k:
   //T g = -q;
   //T k = (1 + a2) / p;                 //  Solution 1 seems to be the right one
   // This formula doesn't work. Why?
 
-  T g = q;
-  T k = 2*(1 - a2) / p;
+  TPar g = q;
+  TPar k = 2*(1 - a2) / p;
   // This formula seems to work! Why?
 
   // This assigns our a-coeffcient member variables:

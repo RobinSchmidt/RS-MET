@@ -1045,7 +1045,7 @@ void biquadModulation()
 
   // Create Andrew Simper's SKF and SVF: 
   rsSallenKeyFilterSimper<Real> skf;
-  using SVF1 = rsStateVariableFilterSimper<Real>;
+  using SVF1 = rsStateVariableFilterSimper<Real, Real>;
   SVF1 svf1;
 
   // Create and set up instance my older SVF implementation:
@@ -1394,7 +1394,7 @@ void sallenKeyFilterSimper()
   //rsPlotVectors(x, ySKF);
 
   // Create a state variable filter and produce its output for comparison:
-  using SVF = rsStateVariableFilterSimper<Real>;
+  using SVF = rsStateVariableFilterSimper<Real, Real>;
   SVF svf;
   Real Q = 1 / (2 - 2*reso);
   svf.setup(SVF::Mode::Lowpass, w, Q);
@@ -1613,7 +1613,7 @@ void stateVarFilterSimper()
 
   using Real = double;
   using Vec  = std::vector<Real>;
-  using Mode = rsStateVariableFilterSimper<Real>::Mode;
+  using Mode = rsStateVariableFilterSimper<Real, Real>::Mode;
 
   // Setup:
   int  N          =  4096;    // Number of samples to produce
@@ -1629,7 +1629,7 @@ void stateVarFilterSimper()
   createWaveform(&x[0], N, 1, sawFreq, sampleRate);
 
   // Create filter and compute normalized radian frequency omega and linear gain:
-  rsStateVariableFilterSimper<Real> svf;
+  rsStateVariableFilterSimper<Real, Real> svf;
   Real w = 2*PI*cutoff/sampleRate;
   Real A = pow(10, gainDb/40);
 

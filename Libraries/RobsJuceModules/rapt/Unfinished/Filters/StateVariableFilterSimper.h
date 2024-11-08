@@ -15,7 +15,7 @@ the core class in a subclass or in some object that embeds such an SVF core. Her
 minimum set of member variables that is needed to make the filter work. */
 
 
-template<class T>                   // ToDo: have TSig, TPar template parameters
+template<class TSig, class TPar>
 class rsStateVariableFilterSimper
 {
 
@@ -49,19 +49,19 @@ public:
   mode must be one of the values from the Mode enum, omega = 2*pi*freq/sampleRate is the usual 
   normalized radian frequency, Q is the quality factor which determines the resonance and A is the
   linear (!) gain for bell and shelf filter modes. */
-  void setup(Mode mode, T omega, T Q, T A = T(1));
+  void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
 
 
   /** UNDER CONSTRUCTION....Does not yet work!
   Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
-  void setupFromBiquad(T b0, T b1, T b2, T a1, T a2);
+  void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
   /** Computes one sample at a time. */
-  inline T getSample(T in);
+  inline TSig getSample(TSig in);
 
   /** Resets the internal state. */
   void reset() { i1 = i2 = 0; }
@@ -71,34 +71,34 @@ protected:
 
   /** Helper function to calculate and assign the a-coefficients from the intermediate variables 
   g and k.  ToDo: explain meaning of g and k.  */
-  void calcFilterCoeffs(T g, T k);
+  void calcFilterCoeffs(TPar g, TPar k);
 
 
   // State:
-  T i1 = 0, i2 = 0;          // Capacitor equivalent(?) currents ic1eq, ic2eq in the paper.
+  TSig i1 = 0, i2 = 0;          // Capacitor equivalent(?) currents ic1eq, ic2eq in the paper.
 
   // Coeffs:
-  T a1 = 0, a2 = 0, a3 = 0;  // Filter coeffs (ToDo: explain better)
-  T m0 = 1, m1 = 0, m2 = 0;  // Mixing coeffs
+  TPar a1 = 0, a2 = 0, a3 = 0;  // Filter coeffs (ToDo: explain better)
+  TPar m0 = 1, m1 = 0, m2 = 0;  // Mixing coeffs
 
 };
 
 //-------------------------------------------------------------------------------------------------
 // Implementation
 
-template<class T>
-void rsStateVariableFilterSimper<T>:: calcFilterCoeffs(T g, T k)
+template<class TSig, class TPar>
+void rsStateVariableFilterSimper<TSig, TPar>:: calcFilterCoeffs(TPar g, TPar k)
 {
   a1 = 1 / (1 + g*(g + k));
   a2 = g*a1;
   a3 = g*a2;
 }
 
-template<class T>
-void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
+template<class TSig, class TPar>
+void rsStateVariableFilterSimper<TSig, TPar>::setup(Mode mode, TPar omega, TPar Q, TPar A)
 {
   // Prewarping cutoff (I guess):
-  T tw2 = tan(0.5*omega); 
+  TPar tw2 = tan(0.5*omega);
 
   // Filter- and mixing coefficient calculations according to desired mode:
   switch(mode)
@@ -122,7 +122,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Highpass:
   {
-    T k = 1/Q;
+    TPar k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 =  1;
     m1 = -k;
@@ -141,7 +141,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::BandpassPeak:
   {
-    T k = 1/Q;
+    TPar k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 = 0;
     m1 = k;
@@ -151,7 +151,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Notch:
   {
-    T k = 1/Q;
+    TPar k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 =  1;
     m1 = -k;
@@ -161,7 +161,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Allpass:
   {
-    T k = 1/Q;
+    TPar k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 =  1;
     m1 = -2*k;
@@ -171,7 +171,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Bell:
   {
-    T k = 1/(Q*A);
+    TPar k = 1/(Q*A);
     calcFilterCoeffs(tw2, k);
     m0 = 1;
     m1 = k*(A*A - 1);
@@ -181,7 +181,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::LowShelf:
   {
-    T k = 1/Q;
+    TPar k = 1/Q;
     calcFilterCoeffs(tw2 / sqrt(A), k);
     m0 = 1;
     m1 = k*(A - 1);
@@ -191,7 +191,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::HighShelf:
   {
-    T k = 1/Q;
+    TPar k = 1/Q;
     calcFilterCoeffs(tw2 * sqrt(A), k);
     m0 = A*A;
     m1 = k*(1 - A)*A;
@@ -201,7 +201,7 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
   case Mode::Peak:
   {
-    T k = 1/Q;
+    TPar k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 =  1;
     m1 = -k;
@@ -220,13 +220,13 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 
 }
 
-template<class T>
-T rsStateVariableFilterSimper<T>::getSample(T v0)
+template<class TSig, class TPar>
+TSig rsStateVariableFilterSimper<TSig, TPar>::getSample(TSig v0)
 {
   // Compute node voltages:
-  T v3 = v0 - i2;                          // Feedback (?)
-  T v1 = a1*i1 + a2*v3;                    // Voltage at node 1, Bandpass output (?)
-  T v2 = a2*i1 + a3*v3 + i2;               // Voltage at node 2, Lowpass output (?)
+  TSig v3 = v0 - i2;                       // Feedback (?)
+  TSig v1 = a1*i1 + a2*v3;                 // Voltage at node 1, Bandpass output (?)
+  TSig v2 = a2*i1 + a3*v3 + i2;            // Voltage at node 2, Lowpass output (?)
 
   // State update (by computing "equivalent"(?) capacitor currents):
   i1 = 2*v1 - i1;                          // Eq. 2?

@@ -948,7 +948,7 @@ bool stateVariableFilterUnitTest2()
 
   using Real = double;
   using Vec  = std::vector<Real>;
-  using Mode = rsStateVariableFilterSimper<Real>::Mode;
+  using Mode = rsStateVariableFilterSimper<Real, Real>::Mode;
 
   // Setup:
   int  N          =   128;    // Number of samples to produce for each test case
@@ -971,7 +971,7 @@ bool stateVariableFilterUnitTest2()
     // very dirty, though!
 
     // Produce the SVF impulse response and compare against reference:
-    rsStateVariableFilterSimper<Real> svf;
+    rsStateVariableFilterSimper<Real, Real> svf;
     Vec ySvf(N);
     Real w = 2*PI*freq/sampleRate;
     Real A = pow(10, gainDb/40);
@@ -1025,15 +1025,12 @@ bool stateVariableFilterUnitTest3()
 {
   bool ok = true;
 
-  using TPar = double;
-  using TSig = RAPT::rsVector2D<double>;
+  //using TPar = double;
+  //using TSig = RAPT::rsVector2D<double>;
 
+  //using SVF_DD = rsStateVariableFilterSimper<double, double>;
 
-  using SVF_DD = rsStateVariableFilterSimper<double>;
-
-  SVF_DD svf_dd;
-
-
+  //SVF_DD svf_dd;
 
   return ok;
 }
