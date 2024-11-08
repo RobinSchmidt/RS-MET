@@ -13,8 +13,12 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   // real coeffs.
 
   // Change coefficient convention:
-  //T B0 = b0, B1 = b1, B2 = b2, A1 = a1, A2 = a2;
-  T B0 = 1, B1 = a1, B2 = a2, A1 = b1, A2 = b2;
+  //T B0 = b0, B1 = b1, B2 = b2, A1 = a1, A2 = a2;  // Wrong!
+  //T B0 = 1, B1 = a1, B2 = a2, A1 = b1, A2 = b2;       //  Resonance too quiet
+
+  //T B0 = 1, B1 = -a1, B2 = -a2, A1 = b1, A2 = b2;   // Produces NaNs
+
+  //T B0 = 1, B1 = a1, B2 = a2, A1 = -b1, A2 = -b2;   // Resonance too quiet
 
 
   // Intermediate variables:
@@ -28,14 +32,9 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   T q = real(qc);                     // imag(qc) should be zero anyway
   T p = real(pc);                     // ..same for pc
 
-  // Solution 1:
-  T g  = - q;
-  T k  = (1 - B2) / p;          // Verify if this has the right sign!
-
-  // Solution 2:
-  //T g = q;
-  //T k = (b2 - 1) / p;
-
+  // Compute intermediate variables g,k:
+  T g  = -q;
+  T k  = (1 - B2) / p;                //  Solution 1 seems to be the right one
 
   // This assigns our a-coeffcient member variables:
   calcFilterCoeffs(g, k);

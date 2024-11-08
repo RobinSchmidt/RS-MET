@@ -1717,7 +1717,7 @@ void stateVarFilterSimper()
   Real b1 = +0.0;
   Real b2 = +0.0;
   Real a1 = -0.9;
-  Real a2 = +0.5;
+  Real a2 = +0.7;
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
 
   //svf.setupFromBiquad(1, a1, a2, -b1, -b2);
