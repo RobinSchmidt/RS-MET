@@ -946,15 +946,15 @@ bool stateVariableFilterUnitTest2()
 
   bool ok = true;
 
-
   using Real = double;
   using Vec  = std::vector<Real>;
   using Mode = rsStateVariableFilterSimper<Real>::Mode;
 
   // Setup:
-  int  N          =   128;    // Number of samples to produce
+  int  N          =   128;    // Number of samples to produce for each test case
   Real sampleRate = 44100;
- Real  tol        = 1.e-10;
+  Real tol        = 1.e-15;   // Works on Windows with MSVC. Maybe for other compilers, we need
+                              // to give more tolerance. We'll see...
 
   // Helper function to run a single test:
   auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb = 0)
@@ -981,22 +981,29 @@ bool stateVariableFilterUnitTest2()
 
     // Check, if both filters produced the same result:
     ok &= rsIsCloseTo(ySvf, yCbf, tol);
+    rsAssert(ok);
 
     // Plot impulse responses of SVF and RBJ and their difference:
     //rsPlotVectors(ySvf, yCbf, yCbf - ySvf);
     // Can be uncommented when the test fails to see what's going on
   };
 
-
+  // Test different settings:
+  runTest(Mode::Bypass,        1000, 4.0, 0.0);
   runTest(Mode::Lowpass,       1000, 4.0, 0.0);
   runTest(Mode::Highpass,      1000, 4.0, 0.0);
   runTest(Mode::BandpassSkirt, 1000, 4.0, 0.0);
   runTest(Mode::BandpassPeak,  1000, 4.0, 0.0);
-
-
-
+  runTest(Mode::Notch,         1000, 4.0, 0.0);
+  runTest(Mode::Allpass,       1000, 4.0, 0.0);
+  runTest(Mode::Bell,          1000, 4.0, 0.0);
+  runTest(Mode::LowShelf,      1000, 4.0, 0.0);
+  runTest(Mode::HighShelf,     1000, 4.0, 0.0);
+  //runTest(Mode::Peak,          1000, 4.0, 0.0);  // Not yet available in RBJ filter
 
   return ok;
+
+  // ToDo: test other SVF implementation as well!
 }
 
 
