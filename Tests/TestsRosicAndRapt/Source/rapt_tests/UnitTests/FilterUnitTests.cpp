@@ -953,11 +953,11 @@ bool stateVariableFilterUnitTest2()
   // Setup:
   int  N          =   128;    // Number of samples to produce for each test case
   Real sampleRate = 44100;
-  Real tol        = 1.e-14;   // Works on Windows with MSVC. Maybe for other compilers, we need
+  //Real tol        = 1.e-14;   // Works on Windows with MSVC. Maybe for other compilers, we need
                               // to give more tolerance. We'll see...
 
   // Helper function to run a single test:
-  auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb = 0)
+  auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
   {
     // Produce the SVF impulse response:
     rsStateVariableFilterSimper<Real> svf;
@@ -990,16 +990,16 @@ bool stateVariableFilterUnitTest2()
   };
 
   // Test different settings:
-  runTest(Mode::Bypass,        1000, 4.0, 0.0);
-  runTest(Mode::Lowpass,       1000, 4.0, 0.0);
-  runTest(Mode::Highpass,      1000, 4.0, 0.0);
-  runTest(Mode::BandpassSkirt, 1000, 4.0, 0.0);
-  runTest(Mode::BandpassPeak,  1000, 4.0, 0.0);
-  runTest(Mode::Notch,         1000, 4.0, 0.0);
-  runTest(Mode::Allpass,       1000, 4.0, 0.0);
-  runTest(Mode::Bell,          1000, 4.0, 5.0);
-  runTest(Mode::LowShelf,      1000, 4.0, 5.0);
-  runTest(Mode::HighShelf,     1000, 4.0, 5.0);
+  runTest(Mode::Bypass,        1000, 4.0, 0.0, 1.e-15);
+  runTest(Mode::Lowpass,       1000, 4.0, 0.0, 1.e-15);
+  runTest(Mode::Highpass,      1000, 4.0, 0.0, 1.e-15);
+  runTest(Mode::BandpassSkirt, 1000, 4.0, 0.0, 1.e-15);
+  runTest(Mode::BandpassPeak,  1000, 4.0, 0.0, 1.e-15);
+  runTest(Mode::Notch,         1000, 4.0, 0.0, 1.e-15);
+  runTest(Mode::Allpass,       1000, 4.0, 0.0, 1.e-15);
+  runTest(Mode::Bell,          1000, 4.0, 5.0, 1.e-14);
+  runTest(Mode::LowShelf,      1000, 4.0, 5.0, 1.e-14);
+  runTest(Mode::HighShelf,     1000, 4.0, 5.0, 1.e-14);
   //runTest(Mode::Peak,          1000, 4.0, 0.0);  // Not yet available in RBJ filter
 
   return ok;
