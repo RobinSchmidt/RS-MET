@@ -320,32 +320,21 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   using FO  = rsOnePoleFilter<float, float>; // Shouldn't it be ...<TSig, TCoef>?
   using SVF = rsStateVariableFilterSimper<TSig, TCoef>;
 
-  // This should soon be obsolete:
-  using BQ  = rsBiquadDesigner;  // maybe it should have a template parameter?
-  using FDF = rsFilterDesignFormulas;
-
-
-  // Get rid:
-  static const float s = float(1/(2*PI));
-  // Preliminary to cater for the API of rsBiquadDesigner - ToDo: change API (maybe write a new 
-  // class fo that and deprecate the old)
-
-
-
   // Compute the desired filter quality factor Q from the resonance gain in dB:
   float A = rsDbToAmp(resoGainDb);  // Raw resonance amplitude
   float Q = A;                      // This is correct for 2nd order bandpass filters...
   if(type == FT::lp_12 || type == FT::hp_12)           // ..low- and highpass filters need..
     Q = rsBandwidthConverter::lowpassResoGainToQ(A);   // ..a more complicated formula
 
-
-
-  //Q = A;  
+  //Q = A;
   // Test - this is cheaper but has considerable freq-response error at low Q values. Maybe we 
   // should do a polynomial approximations of the exact lowpassResoGainToQ function. Maybe try also
-  // an approximation in the dB domian, i.e. apply some appropriate function to resoGainDb before
+  // an approximation in the dB domain, i.e. apply some appropriate function to resoGainDb before
   // going into rsDbToAmp. Maybe we can somehow fuse the exp-call in rsDbToAmp with the one that 
   // occurs in the design formulas? 
+  //
+  // However - I think, we should go with the simple formula anyway and accept the error. Hmm - or
+  // maybe not? The formula isn't too expensive - it has two calls to sqrt
 
 
   FilterImpl& i = impl;  // as abbreviation
@@ -354,77 +343,14 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   case FT::off: FO::coeffsBypass(&i.fo.b0, &i.fo.b1, &i.fo.a1); return;
     // maybe use this as default branch
 
-  case FT::lp_6: FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
-  case FT::hp_6: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+  case FT::lp_6:   FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+  case FT::hp_6:   FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
 
-    // This API sucks - fix it! The functions should take w for the frequency (not freq in Hz and 
-    // sample-rate), their names should be much shorter (e.g. coeffsLowpassRBJ or just lowpassRBJ),
-    // output params should come last and be passed as pointers.
-  case FT::lp_12:  
-  {
-    // Older:
-    //BQ::calculateCookbookLowpassCoeffs(
-    //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
-
-    // Old:
-    //FDF::mvLowpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
-    //i.bqd.a1 *= -1;
-    //i.bqd.a2 *= -1;
-
-    // New:
-    i.svf.core.setup(SVF::Mode::Lowpass, w, Q);
-
-
-
-    return;
-  } 
-
-  case FT::hp_12: 
-  {
-    // Older
-    //BQ::calculateCookbookHighpassCoeffs(
-    //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
-    
-    // Old:
-    //FDF::mvHighpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
-    //i.bqd.a1 *= -1;
-    //i.bqd.a2 *= -1;
-
-    // New:
-    i.svf.core.setup(SVF::Mode::Highpass, w, Q);
-
-    
-    return;
-  }
-
-
-  case FT::bp_6_6: 
-  {
-    //BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
-    //i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); 
-    
-    //FDF::mvBandpassSimple(w, Q, true, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
-    //i.bqd.a1 *= -1;
-    //i.bqd.a2 *= -1;
-
-
-    i.svf.core.setup(SVF::Mode::BandpassSkirt, w, Q);
-
-    
-    return;
-  }
-
-
-  case FT::br_6_6: 
-  {
-    //BQ::calculateCookbookBandrejectCoeffsViaQ(
-    //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
-
-    i.svf.core.setup(SVF::Mode::Notch, w, Q);
-    // Needs tests!
-
-    return;
-  }
+  case FT::lp_12:  i.svf.core.setup(SVF::Mode::Lowpass,       w, Q); return;
+  case FT::hp_12:  i.svf.core.setup(SVF::Mode::Highpass,      w, Q); return;
+  case FT::bp_6_6: i.svf.core.setup(SVF::Mode::BandpassSkirt, w, Q); return;
+  case FT::br_6_6: i.svf.core.setup(SVF::Mode::Notch,         w, Q); return;
+    // More modes to come...
 
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::setupCutRes");
@@ -470,7 +396,8 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   //  filters - compare results to what an FM'ed oscillator does.
 }
 
-/*
+// Not sure, if we will need that someday - maybe not:
+/* 
 void FilterCore::setupGainFreqBw(FilterType type, float gainDb, float w, float bw)
 {
   using namespace RAPT;
@@ -532,13 +459,13 @@ void FilterCore::processFrame(float* L, float* R)
   case FT::lp_6:   io = i.fo.getSample(io); break;
   case FT::hp_6:   io = i.fo.getSample(io); break;
 
-    // Biquads:
+    // 2nd order filters:
   case FT::lp_12:  io = i.svf.getSample(io); break;
   case FT::hp_12:  io = i.svf.getSample(io); break;
   case FT::bp_6_6: io = i.svf.getSample(io); break;
   case FT::br_6_6: io = i.svf.getSample(io); break;
 
-  case FT::pk_2p:  io = i.bqd.getSample(io); break;  // ToDo: use SVF here, too
+  //case FT::pk_2p:  io = i.bqd.getSample(io); break;  // ToDo: use SVF here, too
 
   };
   *L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
@@ -569,7 +496,7 @@ void FilterCore::resetState()
   case FT::br_6_6: i.svf.resetState(); return;
 
 
-  case FT::pk_2p:  i.bqd.resetState(); return;  // ToDo: use SVF here, too
+  //case FT::pk_2p:  i.bqd.resetState(); return;  // ToDo: use SVF here, too
 
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::resetState");
