@@ -569,7 +569,10 @@ public:
   void updateCoeffs(double sampleRate) override;
   void resetState() override { core.resetState(); }
 protected:
-  FilterCore core;
+
+  EqualizerCore core;  // New
+
+  //FilterCore core;
   // ToDo: use a more efficient implementation and call it EqualizerCore - it needs to support 
   // only a biquad mode. Maybe use TDF1. A patch can use a lot of eq bands, so we may need many
   // eqs, so we should be more frugal with memory than for the filter opcode where there is 

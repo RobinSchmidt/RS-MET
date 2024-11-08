@@ -358,6 +358,9 @@ public:
 
     float yR = b0 * *xR + b1*x1R + b2*x2R + a1*y1R + a2*y2R;
     x2R = x1R; x1R = *xR; y2R = y1R; y1R = yR;
+
+    *xL = yL;
+    *xR = yR;
   }
 
   void resetState()
