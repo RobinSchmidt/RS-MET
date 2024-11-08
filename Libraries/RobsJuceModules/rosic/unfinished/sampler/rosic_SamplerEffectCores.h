@@ -284,21 +284,6 @@ protected:
       return y;
     }
   };
-  /*
-  struct BiquadImpl             // biquad filter, using DF2 (todo: try TDF1 -> smaller state)
-  {
-    TSig  x1, x2, y1, y2;       // state
-    TCoef b0, b1, b2, a1, a2;   // coeffs
-    void resetState() { x1 = x2 = y1 = y2 = TSig(0); }
-    void initCoeffs() { b0 = TCoef(1); b1 = b2 = a1 = a2 = TCoef(0); }
-    TSig getSample(const TSig& in)
-    {
-      TSig y = b0*in + b1*x1 + b2*x2 + a1*y1 + a2*y2;  // compute output
-      x2 = x1; x1 = in; y2 = y1; y1 = y;               // update state
-      return y;
-    }
-  };
-  */
   struct SvfImpl                // state variable filter (using ZDF)
   {
     // We use an embedded DSP object from RAPT for the SVF mode:
@@ -318,10 +303,8 @@ protected:
   {
     FilterImpl() {}             // without it, msc complains - why?
     OnePoleImpl fo;             // first order
-    //BiquadImpl  bqd;            // biquad
     SvfImpl     svf;            // state variable filter
     LadderImpl  ldr;            // ladder
-   //PhasorImpl psr;            // phasor filter
   };
   // ToDo: implement reset/getSample etc. also in StateVars, etc. all these structs should provide 
   // the same API, but implement it in a way that is suitable to the given filter topology.

@@ -356,11 +356,6 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   RAPT::rsError("Unknown filter type in rsSamplerFilter::setupCutRes");
 
   // ToDo:
-  // -Get rid of all the DF-biquad stuff. It's obsolete. We should use the Simpler SVF everywhere.
-  // -Make a consistent choice for all of RAPT whether recursion coeffs of filters should have a 
-  //  minus sign or not and update all code accordingly. Be careful - this change ripples through 
-  //  all products - maybe introduce new names for the functions and deprecate the old ones instead
-  //  of just changing their code. Make benchmarks what is faster, ask at KVR what others do.
   // -Optimize: Compute resonance related stuff only when applicable. ...but maybe we should have 
   //  a separate class for first order filters anyway to save memory
   // -Figure out, if sfz+ and other implementations also use the exact formula for Q for lowpass 
@@ -372,7 +367,7 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   // -Allow for R := resoGainDb < 0. resoGainDb is supposed to denote the max-gain, i.e. the gain
   //  at the peak of the freq-response which in case of strong resonant filter occurs near the 
   //  cutoff w and in case of zero resonance is at DC (in the lowpass case). When R < 0, there 
-  //  could be two possible behaviors that coudl make sense:
+  //  could be two possible behaviors that could make sense:
   //  (1) When R = 0, then the gain at the cutoff is -3.01 dB. Maybe when R < 0, that gain at w
   //      should be reduced to -3.01 + R by lowering the effective cutoff of the filter by an 
   //      appropriate amount. I think, we may achive this behavior by:
@@ -385,7 +380,7 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   //      we should just decrease the overall output amplitude by R.
   //  Try both versions under sinusoidal and squarewave modulation of the resonance and investigate
   //  the effects. What does it both sound like? What sounds better? Are there any other problems 
-  //  with one or the other choice. Base the decision on these experiments. I tend to think that 
+  //  with one or the other choice? Base the decision on these experiments. I tend to think that 
   //  (1) might be the better choice...it somehow feels more "natural" but I really don't know yet.
   //  Yes - I think just reducing Q further is the right choice.
   // -Allow the cutoff frequency go below 0. For bandpass, a cutoff of 0 should probably result in 
@@ -465,8 +460,6 @@ void FilterCore::processFrame(float* L, float* R)
   case FT::bp_6_6: io = i.svf.getSample(io); break;
   case FT::br_6_6: io = i.svf.getSample(io); break;
 
-  //case FT::pk_2p:  io = i.bqd.getSample(io); break;  // ToDo: use SVF here, too
-
   };
   *L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
   *R = io.y;
@@ -494,9 +487,6 @@ void FilterCore::resetState()
   case FT::hp_12:  i.svf.resetState(); return;
   case FT::bp_6_6: i.svf.resetState(); return;
   case FT::br_6_6: i.svf.resetState(); return;
-
-
-  //case FT::pk_2p:  i.bqd.resetState(); return;  // ToDo: use SVF here, too
 
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::resetState");
