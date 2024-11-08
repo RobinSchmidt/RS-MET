@@ -1303,7 +1303,7 @@ void brickwallAndAllpass()
 
 
 
-/** UNDER CONSTRUCTION. Justa stub at the moment. */
+/** UNDER CONSTRUCTION. Just a stub at the moment. Maybe I should get rid of it. */
 
 template<class T>
 class rsOnePoleFilterSimper
@@ -1346,7 +1346,7 @@ T rsOnePoleFilterSimper<T>::getSample(T v0)
 
 void onePoleFilterSimper()
 {
-  // Under Construction
+  // Under Construction ...Maybe it should be deleted
 
   // We implement this filter:
   //
