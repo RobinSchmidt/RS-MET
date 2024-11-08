@@ -1719,6 +1719,19 @@ void stateVarFilterSimper()
   Real a1 = +0.4;
   Real a2 = +0.2;
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
+  cbf.setCoeffs(a1, a2, b0, b1, b2);
+
+  Vec ySvf(N);
+  Vec yCbf(N);
+  for(int n = 0; n < N; n++)
+  {
+    ySvf[n] = svf.getSample(x[n]);
+    yCbf[n] = cbf.getSample(x[n]);
+  }
+  rsPlotVectors(ySvf, yCbf);
+  // Nope! This is wrong! They are not the same!
+
+
 
 
   int dummy = 0;

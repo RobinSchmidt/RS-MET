@@ -40,8 +40,6 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   m0 = (1 - a1 + a2) / (1 - b1 + b2);
   m1 = 2*(1 - a2)    / p;
   m2 = (1 + a1 + a2) / (1 + b1 + b2);
-
-
 }
 
 
