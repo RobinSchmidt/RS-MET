@@ -1084,10 +1084,6 @@ bool stateVariableFilterUnitTest3()
 
   // ToDo:
   //
-  // - Create an actual test signal and filter it. It should behave in such a way that all channels
-  //   are filtered the same way. Maybe use stereo noise as input signal. Compare the result to
-  //   the output of two independent scalar filters.
-  //
   // - Instead of using rsVector<double> use a proper SIMD vector type. We just use a normal vector
   //   type to simulate the SIMD operation at the moment. Using rosic::rsFloat64x2 doesn't compile
   //   here. I guess, rosic is not included or something.
