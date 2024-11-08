@@ -3,7 +3,7 @@
 template<class T>
 void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a2)
 {
-  //rsError("This is under construction. It doesn't work yet!");
+  rsError("This is under construction. It doesn't work yet!");
 
   // When done, this function should implement the conversion formulas from biquad to SVF coeffs
   // given here on page 8:
@@ -57,20 +57,21 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   calcFilterCoeffs(g, k);
 
   // ...OK...It seems that the computation of g and k works now and therfore also the computation 
-  // of our a-members. The code below for the m-coeffs is still wrong though
+  // of our a-members (the filter coefficients). The code below for the m-coeffs (mixing coeffs) is
+  // still wrong though
 
   // These formulas use the a1,a2 function parameters, not our member variables:
   //m0 = (b0 - b1 + b2) / (1 + a1 - a2);
   //m1 = 2*(b0 - b2)    / p;
   //m2 = (b0 + b1 + b2) / (1 - a1 - a2);
-  // seems wrong
+  // Taken from the paper - but seems wrong...
 
 
   m0 = -(b0 - b1 + b2) / (-1 + a1 - a2);
   m1 =  2*(b0 - b2)    / p;
   m2 = -(b0 + b1 + b2) / (-1 - a1 - a2);
-  // Seems to work for lowpass (only m2 != 0) and bandpass (only m1 !=0). I think, the formula
-  // for m0 is still wrong.
+  // This seems to work for lowpass (only m2 != 0) and bandpass (only m1 !=0). I think, the 
+  // formula for m0 is still wrong.
 
 
   // Notes:
@@ -93,7 +94,6 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   //   see page 5 tick-function: "high = v0 - k*v1 - v2; band = v1; low = v2" - that's the same
   //   mixing coeffs as we use here for high, band and low). And then there are other places where
   //   it seems like they refer to highpass,bandpass,lowpass (page 9: only m0 = 1 for highpass). 
-  //   I'm confused!
 }
 
 
