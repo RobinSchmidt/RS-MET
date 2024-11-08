@@ -319,7 +319,7 @@ protected:
     BiquadImpl  bqd;            // biquad
     SvfImpl     svf;            // state variable filter
     LadderImpl  ldr;            // ladder
-                                //PhasorImpl psr;           // phasor filter
+   //PhasorImpl psr;            // phasor filter
   };
   // ToDo: implement reset/getSample etc. also in StateVars, etc. all these structs should provide 
   // the same API, but implement it in a way that is suitable to the given filter topology.

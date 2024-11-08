@@ -579,6 +579,10 @@ protected:
   // is cheaper. ...but maybe it should provide keytrack and veltrack, too - but maybe not 
   // controller response ...what about MS-processing? maybe have another opcode big_eqN ...how
   // about EngineersFilter? maybe engfilN_type, engfilN_freq, etc.
+  // There's another reason to not use the FilterCore: There, we want to use the SVF implementation
+  // also for bell mode. This uses a more efficient coefficient calculation formual but features 
+  // the bilinear frequency cramping. But for the fixed EQ, we may afford to use the more expensive
+  // prescribed Nyquist gain design.
 };
 
 class WaveShaper : public Processor
