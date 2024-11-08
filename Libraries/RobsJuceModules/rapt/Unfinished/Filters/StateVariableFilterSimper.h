@@ -132,19 +132,15 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
   }
   break;
 
-
-  // Experimental:
   case Mode::BandpassPeak:
   {
     T k = 1/Q;
     calcFilterCoeffs(tw2, k);
     m0 = 0;
-    m1 = k;   // Just a guess. ...yes - looks good!
+    m1 = k;
     m2 = 0;
   }
   break;
-  // OK - this seems to work as intended.
-
 
   case Mode::Notch:
   {
