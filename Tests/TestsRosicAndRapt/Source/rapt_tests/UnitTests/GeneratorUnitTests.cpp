@@ -2342,8 +2342,8 @@ bool samplerFilterTest()
 
 
   // in transition:
-  //ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);  // old
-  ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, false); // new
+  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5f, false);  // old
+  //ok &= testAgainstSvf(svf.LowpassMVS,     Type::lp_12,  cutoff, reso, 1.e-5f, false); // new
   // In order to check the new implementation, the FDF::mvLowpassSimple(...) call in 
   // FilterCore::setupCutRes (rosic_SamplerEffectCores, line 347) needs to be uncommented. When 
   // doing so, the plots look very similar but one seems to be delayed by one sample. ToDo:

@@ -365,12 +365,12 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
     //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
 
     // Old:
-    FDF::mvLowpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
-    i.bqd.a1 *= -1;
-    i.bqd.a2 *= -1;
+    //FDF::mvLowpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
+    //i.bqd.a1 *= -1;
+    //i.bqd.a2 *= -1;
 
     // New:
-    //i.svf.core.setup(SVF::Mode::Lowpass, w, Q);
+    i.svf.core.setup(SVF::Mode::Lowpass, w, Q);
 
 
 
@@ -513,8 +513,8 @@ void FilterCore::processFrame(float* L, float* R)
   case FT::hp_6:   io = i.fo.getSample(io); break;
 
     // Biquads:
-  case FT::lp_12:  io = i.bqd.getSample(io); break;
-  //case FT::lp_12:  io = i.svf.getSample(io); break;
+  //case FT::lp_12:  io = i.bqd.getSample(io); break;
+  case FT::lp_12:  io = i.svf.getSample(io); break;
 
 
   case FT::hp_12:  io = i.bqd.getSample(io); break;
@@ -546,8 +546,8 @@ void FilterCore::resetState()
   case FT::lp_6:   i.fo.resetState();  return;
   case FT::hp_6:   i.fo.resetState();  return;
 
-  case FT::lp_12:  i.bqd.resetState(); return;
-  //case FT::lp_12:  i.svf.resetState(); return;
+  //case FT::lp_12:  i.bqd.resetState(); return;
+  case FT::lp_12:  i.svf.resetState(); return;
 
 
   case FT::hp_12:  i.bqd.resetState(); return;
