@@ -81,6 +81,13 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   m0 = -(b0 - b1 + b2) / (-1 + a1 - a2);
   m1 = -2*(b0 - b2)    / p;
   m2 = -(b0 + b1 + b2) / (-1 - a1 - a2);
+  // Seems to work for lowpass (only m2 != 0)
+
+
+  //m0 = (b0 - b1 + b2) / (+1 + a1 - a2);
+  //m1 = -2*(b0 - b2)    / p;
+  //m2 = -(b0 + b1 + b2) / (-1 - a1 - a2);
+
 
 }
 

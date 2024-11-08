@@ -1712,18 +1712,19 @@ void stateVarFilterSimper()
 
 
   Real b0, b1, b2, a1, a2;
+  Vec ySvf(N), ySvf2(N);
+  Vec yCbf(N);
 
+ 
   /*
   // Try setting it up from a set of biquad coeffs:
-  Real b0 =  1.0;
-  Real b1 = +0.0;
-  Real b2 = +0.0;
-  Real a1 = -0.2;
-  Real a2 = +0.7;
+  b0 =  1.0;
+  b1 = +0.0;
+  b2 = +0.0;
+  a1 = -0.2;
+  a2 = +0.7;
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
   cbf.setCoeffs(a1, a2, b0, b1, b2);
-  Vec ySvf(N);
-  Vec yCbf(N);
   svf.reset();
   cbf.reset();
   for(int n = 0; n < N; n++)
@@ -1748,38 +1749,59 @@ void stateVarFilterSimper()
 
   // Test biquad-to-svf converion with lowpass
   N = 500;
+  //Mode mode = Mode::BandpassSkirt;
   Mode mode = Mode::Lowpass;
   cutoff    =  1000;
   Q         =     4.0;
   w         = 2*PI*cutoff/sampleRate;
 
-  Vec ySvf(N);
-  svf.setup(mode, w, Q, A);             
+  // Reference LP-SVF coeffs and output:
+  svf.setup(mode, w, Q, A);
   getImpulseResponse(svf, &ySvf[0], N);
   // g  = 0.071358680866949298,  k = 0.25
   // a1 = 0.97758234411496792,  a2 = 0.069758986514864202, a3 = 0.0049779092563160144
   // m0 = 0, m1 = 0, m2 = 1
 
-  Vec yCbf(N);
+  // Produce the same output with a CBF:
   cbf.setSampleRate(sampleRate);
   cbf.setFreq(cutoff);
   cbf.setQ(Q);
-  cbf.setMode(mode);  
+  cbf.setMode(mode);
   getImpulseResponse(cbf, &yCbf[0], N);
   //rsPlotVectors(ySvf, yCbf);
   // a1 = -1.9452088697173038,    a2 = 0.96512050674256789
   // b0 =  0.0049779092563160153, b1 = 0.0099558185126320305, b2 = 0.0049779092563160153
 
+  // Now set up an SVF with the CBF biquad coeffs:
   b0 =  0.0049779092563160153;
   b1 =  0.0099558185126320305;
   b2 =  0.0049779092563160153;
   a1 = -1.9452088697173038;
   a2 =  0.96512050674256789;
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
-  // This already fails in the calculation of g and k. We should get the values as above:
-  // g  = 0.071358680866949298,  k = 0.25  but we don't. It seems that there is already soemthing
-  // wrong with pc and qc. They are purely imaginary instead of purely real as we would expect.
-  // t1 is negative, t2 is positive (the arguments for the two square-roots)
+  getImpulseResponse(svf, &ySvf2[0], N);
+  rsPlotVectors(ySvf, yCbf, ySvf2);             // All 3 should be the same
+
+
+  // OK - now test a bandpass. This time, we don't set up a reference SVF.
+  mode = Mode::BandpassSkirt;
+  cbf.setMode(mode);
+  getImpulseResponse(cbf, &yCbf[0], N);
+  a1 = -1.9452088697173038;
+  a2 =  0.96512050674256789;
+  b0 =  0.069758986514864202;
+  b1 =  0.0000000000000000;
+  b2 = -0.069758986514864202;
+  svf.setupFromBiquad(b0, b1, b2, a1, a2);
+  getImpulseResponse(svf, &ySvf2[0], N);
+  rsPlotVectors(yCbf, ySvf2);                   // Both should be the same
+  // Has wrong sign!
+
+
+
+
+
+
 
 
   int dummy = 0;
