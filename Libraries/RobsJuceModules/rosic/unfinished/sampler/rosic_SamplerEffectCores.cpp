@@ -325,10 +325,12 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   using FDF = rsFilterDesignFormulas;
 
 
-
+  // Get rid:
   static const float s = float(1/(2*PI));
   // Preliminary to cater for the API of rsBiquadDesigner - ToDo: change API (maybe write a new 
   // class fo that and deprecate the old)
+
+
 
   // Compute the desired filter quality factor Q from the resonance gain in dB:
   float A = rsDbToAmp(resoGainDb);  // Raw resonance amplitude
@@ -408,8 +410,6 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
 
     i.svf.core.setup(SVF::Mode::BandpassSkirt, w, Q);
 
-
-
     
     return;
   }
@@ -417,8 +417,11 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
 
   case FT::br_6_6: 
   {
-    BQ::calculateCookbookBandrejectCoeffsViaQ(
-      i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+    //BQ::calculateCookbookBandrejectCoeffsViaQ(
+    //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+
+    i.svf.core.setup(SVF::Mode::Notch, w, Q);
+    // Needs tests!
 
 
   }
@@ -533,9 +536,8 @@ void FilterCore::processFrame(float* L, float* R)
   case FT::lp_12:  io = i.svf.getSample(io); break;
   case FT::hp_12:  io = i.svf.getSample(io); break;
   case FT::bp_6_6: io = i.svf.getSample(io); break;
+  case FT::br_6_6: io = i.svf.getSample(io); break;
 
-
-  case FT::br_6_6: io = i.bqd.getSample(io); break;
   case FT::pk_2p:  io = i.bqd.getSample(io); break;
 
   };
@@ -565,8 +567,9 @@ void FilterCore::resetState()
   case FT::lp_12:  i.svf.resetState(); return;
   case FT::hp_12:  i.svf.resetState(); return;
   case FT::bp_6_6: i.svf.resetState(); return;
+  case FT::br_6_6: i.svf.resetState(); return;
 
-  case FT::br_6_6: i.bqd.resetState(); return;
+
   case FT::pk_2p:  i.bqd.resetState(); return;
 
   }
