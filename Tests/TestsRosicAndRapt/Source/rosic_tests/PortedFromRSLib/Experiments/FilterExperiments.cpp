@@ -1303,15 +1303,45 @@ void brickwallAndAllpass()
 
 
 
-template<class T>                   // ToDo: have TSig, TPar template parameters
+/** UNDER CONSTRUCTION. Justa stub at the moment. */
+
+template<class T>
 class rsOnePoleFilterSimper
 {
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Computes one sample at a time. */
+  inline T getSample(T in);
+
+  /** Resets the internal state. */
+  void reset() { ic1eq = 0; }
+
 protected:
 
+  T iceq = 0;  // State
+  T a1   = 0;  // Coeff
 };
+
+template<class T>
+T rsOnePoleFilterSimper<T>::getSample(T v0)
+{
+  return 0;
+
+  // Compute capacitor voltage:
+  //T vc = v0 - iceq;  // Verify this - it's just a guess based on the SVF
+  //T vc = 
+
+  // Update state (equivalent cpacitor current):
+  //iceq = 2*gc*vc - iceq;
+
+  //return vc;
+}
+// Maybe make a class that can swicth between using forward Euler, backward Euler and trapezoidal
+// integration schemes
 
 
 void onePoleFilterSimper()
