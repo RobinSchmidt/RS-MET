@@ -1635,7 +1635,7 @@ void stateVarFilterSimper()
 
 
   CookbookFilter cbf;
-
+  cbf.setNumStages(1);  // Important!
 
 
 
@@ -1660,7 +1660,7 @@ void stateVarFilterSimper()
 
     Vec yCbf(N);
     cbf.setSampleRate(sampleRate);
-    cbf.setNumStages(1);  // Important!
+    //cbf.setNumStages(1);  // is done outside
     cbf.setFreq(cutoff);
     cbf.setQ(Q);
     cbf.setGain(gainDb);
@@ -1745,6 +1745,7 @@ void stateVarFilterSimper()
 
 
   // Test biquad-to-svf converion with lowpass
+  N = 500;
   Mode mode = Mode::Lowpass;
   cutoff    =  1000;
   Q         =     4.0;
@@ -1759,7 +1760,6 @@ void stateVarFilterSimper()
 
   Vec yCbf(N);
   cbf.setSampleRate(sampleRate);
-  cbf.setNumStages(1);  // Important!
   cbf.setFreq(cutoff);
   cbf.setQ(Q);
   cbf.setMode(mode);  
