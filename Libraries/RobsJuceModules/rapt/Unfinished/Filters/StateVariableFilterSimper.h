@@ -52,7 +52,7 @@ public:
   void setup(Mode mode, T omega, T Q, T A = T(1));
 
 
-  /** UNDER CONSTRUCTION....
+  /** UNDER CONSTRUCTION....Does not yet work!
   Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
   void setupFromBiquad(T b0, T b1, T b2, T a1, T a2);
 
@@ -70,14 +70,8 @@ public:
 protected:
 
   /** Helper function to calculate and assign the a-coefficients from the intermediate variables 
-  g and k. */
-  void calcFilterCoeffs(T g, T k)
-  {
-    a1 = 1 / (1 + g*(g + k));
-    a2 = g*a1;
-    a3 = g*a2;
-  }
-  // ToDo: explain meaning of g and k.
+  g and k.  ToDo: explain meaning of g and k.  */
+  void calcFilterCoeffs(T g, T k);
 
 
   // State:
@@ -93,23 +87,18 @@ protected:
 // Implementation
 
 template<class T>
+void rsStateVariableFilterSimper<T>:: calcFilterCoeffs(T g, T k)
+{
+  a1 = 1 / (1 + g*(g + k));
+  a2 = g*a1;
+  a3 = g*a2;
+}
+
+template<class T>
 void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 {
   // Prewarping cutoff (I guess):
   T tw2 = tan(0.5*omega); 
-
-  /*
-  // Local helper function to calculate and assign the a-coefficients from the intermediate 
-  // variables g and k:
-  auto calcFilterCoeffs = [&](T g, T k)
-  {
-    a1 = 1 / (1 + g*(g + k));
-    a2 = g*a1;
-    a3 = g*a2;
-  };
-  */
-  // ToDo: Figure out, if the [this] capture mode is better than [&]. Both work but maybe they are 
-  // different performance-wise? 
 
   // Filter- and mixing coefficient calculations according to desired mode:
   switch(mode)

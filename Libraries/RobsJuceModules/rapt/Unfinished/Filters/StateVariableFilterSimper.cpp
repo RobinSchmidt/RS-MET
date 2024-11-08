@@ -73,6 +73,16 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   // for m0 is still wrong.
 
 
+  // Notes:
+  //
+  // - I think, the formulas for calculating g and k are correct but they are not the formulas 
+  //   from the paper. I found them by tweaking those from the paper by trial and error until they
+  //   worked. Im also had to tweak the computation of t1,t2. This is confusing! I also had to
+  //   tweak the m0,m1,m2 formulas. Now everthing seems to work for lowpass and bandpass but not
+  //   for highpass settings. I think, the m0 formula might still be wrong. For lowpass we have
+  //   m0 = m1 = 0, m2 = 1 and for bandpass m0 = m2 = 0, m1 = 1.
+  //
+  //
   // ToDo:
   //
   // - Figure out, if the two papers

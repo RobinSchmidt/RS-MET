@@ -1716,7 +1716,7 @@ void stateVarFilterSimper()
   Vec yCbf(N);
 
  
-  /*
+  
   // Try setting it up from a set of biquad coeffs:
   b0 =  1.0;
   b1 = +0.0;
@@ -1733,7 +1733,6 @@ void stateVarFilterSimper()
     yCbf[n] = cbf.getSample(x[n]);
   }
   rsPlotVectors(yCbf, ySvf);
-  */
   // Nope! This is wrong! They are not the same! Inverting the signs of a1,a2 in the call to
   // cbf.setCoeffs() doesn't fix the problem.
   // Ah! I think, the problem is that the Simper paper uses the convention of using the a-coeffs
