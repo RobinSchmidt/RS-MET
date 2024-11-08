@@ -2375,15 +2375,15 @@ bool samplerFilterTest()
   // slightly higher Q than low- or highpasses with the same resonance gain. We test it for 
   // frequencies from all the way up to all the way down. For the lower cutoffs, we need higher 
   // tolerances:
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6, 22050.f,   40.f, 1.e-2f, false); // why does this case need such a high tolerance?
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6, 20000.f,   40.f, 1.e-3f, false);
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6, 10000.f,   40.f, 1.e-4f, false);
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6,  1000.f,   40.f, 1.e-3f, false);
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6,   100.f,   40.f, 1.e-2f, false); // why does this case need such a high tolerance?
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6,    10.f,   40.f, 1.e-3f, false);
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6,     5.f,   40.f, 1.e-3f, false);
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6,     2.f,   40.f, 1.e-3f, false);
-  ok &= testAgainstSvf(svf.BandpassSkirtMVS, Type::bp_6_6,     1.9f,  40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 22050.f,   40.f, 1.e-2f, false); // why does this case need such a high tolerance?
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 20000.f,   40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 10000.f,   40.f, 1.e-4f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,  1000.f,   40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,   100.f,   40.f, 1.e-2f, false); // why does this case need such a high tolerance?
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,    10.f,   40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     5.f,   40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     2.f,   40.f, 1.e-3f, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     1.9f,  40.f, 1.e-3f, false);
 
   // These fail now since using the MVS designs. Except for the very last cutoff=0, these tests 
   // did pass when we used the old RBJ designs. cutoff=0 never worked:
@@ -2814,7 +2814,8 @@ bool samplerDspChainTest()
   SVF svf;
   svf.setSampleRate(fs);
   svf.setFrequency(cutoff5);
-  svf.setMode(SVF::LowpassMVS);
+  //svf.setMode(SVF::LowpassMVS);
+  svf.setMode(SVF::LOWPASS);
   float G = 1.f / sqrt(2.f);
   svf.setGain(G);
   for(int n = 0; n < N; n++)

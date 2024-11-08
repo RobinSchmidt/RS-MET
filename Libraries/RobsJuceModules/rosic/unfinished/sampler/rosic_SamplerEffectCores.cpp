@@ -415,8 +415,13 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   }
 
 
-  case FT::br_6_6: BQ::calculateCookbookBandrejectCoeffsViaQ(
-    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+  case FT::br_6_6: 
+  {
+    BQ::calculateCookbookBandrejectCoeffsViaQ(
+      i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+
+
+  }
 
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::setupCutRes");
@@ -525,12 +530,8 @@ void FilterCore::processFrame(float* L, float* R)
   case FT::hp_6:   io = i.fo.getSample(io); break;
 
     // Biquads:
-  //case FT::lp_12:  io = i.bqd.getSample(io); break;
   case FT::lp_12:  io = i.svf.getSample(io); break;
-
-  //case FT::hp_12:  io = i.bqd.getSample(io); break;
   case FT::hp_12:  io = i.svf.getSample(io); break;
-
   case FT::bp_6_6: io = i.svf.getSample(io); break;
 
 
@@ -561,14 +562,8 @@ void FilterCore::resetState()
   case FT::lp_6:   i.fo.resetState();  return;
   case FT::hp_6:   i.fo.resetState();  return;
 
-  //case FT::lp_12:  i.bqd.resetState(); return;
   case FT::lp_12:  i.svf.resetState(); return;
-
-
-  //case FT::hp_12:  i.bqd.resetState(); return;
   case FT::hp_12:  i.svf.resetState(); return;
-
-
   case FT::bp_6_6: i.svf.resetState(); return;
 
   case FT::br_6_6: i.bqd.resetState(); return;
