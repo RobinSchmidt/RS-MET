@@ -3,7 +3,7 @@
 template<class T>
 void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a2)
 {
-  rsError("This is under construction. It doesn't work yet!");
+  //rsError("This is under construction. It doesn't work yet!");
 
   // When done, this function should implement the conversion formulas from biquad to SVF coeffs
   // given here on page 8:

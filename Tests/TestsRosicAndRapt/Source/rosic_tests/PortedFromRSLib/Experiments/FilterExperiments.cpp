@@ -1754,7 +1754,7 @@ void stateVarFilterSimper()
   Vec ySvf(N);
   svf.setup(mode, w, Q, A);             
   getImpulseResponse(svf, &ySvf[0], N);
-  // g  = 0.071358680866949298,  k = 0.25000000000000000
+  // g  = 0.071358680866949298,  k = 0.25
   // a1 = 0.97758234411496792,  a2 = 0.069758986514864202, a3 = 0.0049779092563160144
   // m0 = 0, m1 = 0, m2 = 1
 
@@ -1767,6 +1767,17 @@ void stateVarFilterSimper()
   rsPlotVectors(ySvf, yCbf);
   // a1 = -1.9452088697173038,    a2 = 0.96512050674256789
   // b0 =  0.0049779092563160153, b1 = 0.0099558185126320305, b2 = 0.0049779092563160153
+
+  Real b0 =  0.0049779092563160153;
+  Real b1 =  0.0099558185126320305;
+  Real b2 =  0.0049779092563160153;
+  Real a1 = -1.9452088697173038;
+  Real a2 =  0.96512050674256789;
+  svf.setupFromBiquad(b0, b1, b2, a1, a2);
+  // This already fails in the calculation of g and k. We should get the values as above:
+  // g  = 0.071358680866949298,  k = 0.25  but we don't. It seems that there is already soemthing
+  // wrong with pc and qc. They are purely imaginary instead of purely real as we would expect.
+
 
   int dummy = 0;
 
