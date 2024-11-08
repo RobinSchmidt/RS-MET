@@ -338,6 +338,44 @@ protected:
 
 //=================================================================================================
 
+class EqualizerCore  // Not yet used - ToDo: use in the equalizer
+{
+
+public:
+
+  void setupGainFreqBw(FilterType type, float gainDb, float omega, float bw)
+  {
+    static const float s = float(1/(2*PI));
+    float rawGain = RAPT::rsDbToAmp(gainDb);
+    RAPT::rsBiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(
+      b0, b1, b2, a1, a2, 1.f, s*omega, bw, rawGain, 1.f);
+  }
+
+  void processFrame(float* xL, float* xR)
+  {
+    float yL = b0 * *xL + b1*x1L + b2*x2L + a1*y1L + a2*y2L;
+    x2L = x1L; x1L = *xL; y2L = y1L; y1L = yL;
+
+    float yR = b0 * *xR + b1*x1R + b2*x2R + a1*y1R + a2*y2R;
+    x2R = x1R; x1R = *xR; y2R = y1R; y1R = yR;
+  }
+
+  void resetState()
+  {
+    x1L = x2L = y1L = y2L = 0;
+    x1R = x2R = y1R = y2R = 0;
+  }
+
+protected:
+
+  float  x1L, x2L, y1L, y2L;   // state for left  channel
+  float  x1R, x2R, y1R, y2R;   // state for right channel
+  float  b0, b1, b2, a1, a2;   // coeffs
+
+};
+
+//=================================================================================================
+
 /**  */
 
 class WaveshaperCore
