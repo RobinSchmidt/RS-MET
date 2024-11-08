@@ -514,6 +514,9 @@ void FilterCore::processFrame(float* L, float* R)
 
     // Biquads:
   case FT::lp_12:  io = i.bqd.getSample(io); break;
+  //case FT::lp_12:  io = i.svf.getSample(io); break;
+
+
   case FT::hp_12:  io = i.bqd.getSample(io); break;
   case FT::bp_6_6: io = i.bqd.getSample(io); break;
   case FT::br_6_6: io = i.bqd.getSample(io); break;
@@ -542,7 +545,11 @@ void FilterCore::resetState()
 
   case FT::lp_6:   i.fo.resetState();  return;
   case FT::hp_6:   i.fo.resetState();  return;
+
   case FT::lp_12:  i.bqd.resetState(); return;
+  //case FT::lp_12:  i.svf.resetState(); return;
+
+
   case FT::hp_12:  i.bqd.resetState(); return;
   case FT::bp_6_6: i.bqd.resetState(); return;
   case FT::br_6_6: i.bqd.resetState(); return;
