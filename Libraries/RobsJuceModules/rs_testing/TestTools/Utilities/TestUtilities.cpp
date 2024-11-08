@@ -312,3 +312,27 @@ void generateTestSamples()  // rename to gerenrateSamplerTestSamples
 
   int dummy = 0;
 }
+
+int convertEnumMode_RBJ_to_SVF(int rbjMode)
+{
+  using RM = rosic::CookbookFilter::modes;
+  using SM = RAPT::rsStateVariableFilter<float, float>::modes;
+  switch(rbjMode)
+  {
+  case RM::BYPASS:               return SM::BYPASS;
+  case RM::LOWPASS:              return SM::LOWPASS;
+  case RM::HIGHPASS:             return SM::HIGHPASS;
+  case RM::BANDPASS_CONST_SKIRT: return SM::BANDPASS_SKIRT;
+  case RM::BANDPASS_CONST_PEAK:  return SM::BANDPASS_PEAK;
+  case RM::BANDREJECT:           return SM::BANDREJECT;
+  case RM::PEAK:                 return SM::BELL;
+  case RM::LOW_SHELF:            return SM::LOWSHELF;
+  case RM::HIGH_SHELF:           return SM::HIGHSHELF;
+  case RM::ALLPASS:              return SM::ALLPASS;
+  default:
+  {
+    rsError("Unknown mode in convertEnumMode_RBJ_to_SVF.");
+    return -1;
+  }
+  };
+}

@@ -571,6 +571,13 @@ void generateTestSamples();
 
 
 //=================================================================================================
+// Conversions between different enums
+
+int convertEnumMode_RBJ_to_SVF(int rbjMode);
+
+
+
+//=================================================================================================
 
 /** Experimental - goal: resemble numpy/scipy/matplotlib functionality, so we may easily port such 
 code to C++. */
