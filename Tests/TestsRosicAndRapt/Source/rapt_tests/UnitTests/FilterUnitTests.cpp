@@ -939,12 +939,75 @@ bool stateVariableFilterUnitTest1(Real tol)
   return ok;
 }
 
+bool stateVariableFilterUnitTest2()
+{
+  // We test if the two different SVF implementations produce the same results as the RBJ cookbook
+  // filters.
+
+  bool ok = true;
+
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using Mode = rsStateVariableFilterSimper<Real>::Mode;
+
+  // Setup:
+  int  N          =   128;    // Number of samples to produce
+  Real sampleRate = 44100;
+ Real  tol        = 1.e-10;
+
+  // Helper function to run a single test:
+  auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb = 0)
+  {
+    // Produce the SVF impulse response:
+    rsStateVariableFilterSimper<Real> svf;
+    Vec ySvf(N);
+    Real w = 2*PI*freq/sampleRate;
+    Real A = pow(10, gainDb/40);
+    svf.setup(mode, w, Q, A);
+    getImpulseResponse(svf, &ySvf[0], N);
+
+    // Produce the RBJ impulse response as reference signal:
+    rosic::CookbookFilter cbf;
+    Vec yCbf(N);
+    cbf.setSampleRate(sampleRate);
+    cbf.setNumStages(1); 
+    cbf.setFreq(freq);
+    cbf.setQ(Q);
+    cbf.setGain(gainDb);
+    cbf.setMode(mode);    // The mode parameter is actually from the wrong enum. But the enums
+                          // are compatible. That's very dirty, though!
+    getImpulseResponse(cbf, &yCbf[0], N);
+
+    // Check, if both filters produced the same result:
+    ok &= rsIsCloseTo(ySvf, yCbf, tol);
+
+    // Plot impulse responses of SVF and RBJ and their difference:
+    //rsPlotVectors(ySvf, yCbf, yCbf - ySvf);
+    // Can be uncommented when the test fails to see what's going on
+  };
+
+
+  runTest(Mode::Lowpass,       1000, 4.0, 0.0);
+  runTest(Mode::Highpass,      1000, 4.0, 0.0);
+  runTest(Mode::BandpassSkirt, 1000, 4.0, 0.0);
+  runTest(Mode::BandpassPeak,  1000, 4.0, 0.0);
+
+
+
+
+  return ok;
+}
+
+
 bool stateVariableFilterUnitTest()
 {
   bool ok = true;
 
   ok &= stateVariableFilterUnitTest1<float>( 1.e-5f);
   ok &= stateVariableFilterUnitTest1<double>(1.e-13);
+
+  ok &= stateVariableFilterUnitTest2();
 
   return ok;
 }
