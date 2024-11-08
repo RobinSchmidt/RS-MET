@@ -1021,6 +1021,22 @@ bool stateVariableFilterUnitTest2()
   //   we should actiually make it compatible!
 }
 
+bool stateVariableFilterUnitTest3()
+{
+  bool ok = true;
+
+  using TPar = double;
+  using TSig = RAPT::rsVector2D<double>;
+
+
+  using SVF_DD = rsStateVariableFilterSimper<double>;
+
+  SVF_DD svf_dd;
+
+
+
+  return ok;
+}
 
 bool stateVariableFilterUnitTest()
 {
@@ -1028,8 +1044,8 @@ bool stateVariableFilterUnitTest()
 
   ok &= stateVariableFilterUnitTest1<float>( 1.e-5f);
   ok &= stateVariableFilterUnitTest1<double>(1.e-13);
-
   ok &= stateVariableFilterUnitTest2();
+  ok &= stateVariableFilterUnitTest3();
 
   return ok;
 }

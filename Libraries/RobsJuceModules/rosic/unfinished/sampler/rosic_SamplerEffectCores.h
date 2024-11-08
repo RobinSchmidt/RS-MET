@@ -262,7 +262,7 @@ protected:
   these. Then, we declare a member of the union type to store our data. */
 
   using TCoef = float;
-  using TSig  = RAPT::rsVector2D<float>;  
+  using TSig  = RAPT::rsVector2D<float>;
   // for stereo, preliminary. maybe use rsSimdVector<float, 2> if possible, else 
   // rsSimdVector<float, 4>...hmm...but that may increase the size of the struct. Maybe keep using
   // rsVector2D but use simd within the computation, if possible - but let's not do premature
@@ -330,7 +330,8 @@ protected:
   FilterImpl impl;
 
   // ToDo: maybe include also a state-vector filter (maybe rename to phasor filter to avoid name 
-  // clash in abbreviation with svf)
+  // clash in abbreviation with svf). Maybe get rid of the biquad and just use the Simper-SVF
+  // instead. But first we should introduce TSig, TPar
 };
 
 //=================================================================================================

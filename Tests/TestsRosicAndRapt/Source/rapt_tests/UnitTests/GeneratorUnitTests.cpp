@@ -2413,6 +2413,7 @@ bool samplerFilterTest()
 
 
   // ToDo
+  // -Switch to the Simper-SVF implementation!
   // -MVS Bandpasses with high Q and low (subsonic) center freq seem to have numerical problems. 
   //  Try using double precision for the coeffs and/or try a direct SVF design rather than going 
   //  to SVF via an intermediate biquad design and see if that fixes it. We may also wnat to allow
