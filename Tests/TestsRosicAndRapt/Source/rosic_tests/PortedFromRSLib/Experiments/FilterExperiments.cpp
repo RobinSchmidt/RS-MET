@@ -1714,22 +1714,30 @@ void stateVarFilterSimper()
 
   // Try setting it up from a set of biquad coeffs:
   Real b0 =  1.0;
-  Real b1 = +0.5;
-  Real b2 = +0.2;
-  Real a1 = +0.4;
-  Real a2 = +0.2;
+  Real b1 = +0.0;
+  Real b2 = +0.0;
+  Real a1 = -0.9;
+  Real a2 = +0.5;
   svf.setupFromBiquad(b0, b1, b2, a1, a2);
   cbf.setCoeffs(a1, a2, b0, b1, b2);
-
   Vec ySvf(N);
   Vec yCbf(N);
+  svf.reset();
+  cbf.reset();
   for(int n = 0; n < N; n++)
   {
     ySvf[n] = svf.getSample(x[n]);
     yCbf[n] = cbf.getSample(x[n]);
   }
-  rsPlotVectors(ySvf, yCbf);
-  // Nope! This is wrong! They are not the same!
+  rsPlotVectors(yCbf, ySvf);
+  // Nope! This is wrong! They are not the same! Inverting the signs of a1,a2 in the call to
+  // cbf.setCoeffs() doesn't fix the problem.
+  // Ah! I think, the problem is that the Simper paper uses the convention of using the a-coeffs
+  // in the numerator and the b-coeffs in the denominator! It writes the digital transfer function
+  // as:  H(z) = (a0 + a1*z^-1 + a2*z^-2) / (1 - b1*z^-1 - b2*z^-2)
+  // so it swaps numerator and dnominator as well as using minus signs in the denominator. So we 
+  // have to deal with two different differences in the used convention how to name the biquad
+  // coeffs.
 
 
 

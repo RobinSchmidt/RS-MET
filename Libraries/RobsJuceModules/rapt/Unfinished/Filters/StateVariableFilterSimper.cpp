@@ -25,12 +25,12 @@ void rsStateVariableFilterSimper<T>::setupFromBiquad(T b0, T b1, T b2, T a1, T a
   T p = real(pc);                     // ..same for pc
 
   // Solution 1:
-  //T g  = - q;
-  //T k  = (1 - b2) / p;          // Verify if this has the right sign!
+  T g  = - q;
+  T k  = (1 - b2) / p;          // Verify if this has the right sign!
 
   // Solution 2:
-  T g = q;
-  T k = (b2 - 1) / p;
+  //T g = q;
+  //T k = (b2 - 1) / p;
 
 
   // This assigns our a-coeffcient member variables:
