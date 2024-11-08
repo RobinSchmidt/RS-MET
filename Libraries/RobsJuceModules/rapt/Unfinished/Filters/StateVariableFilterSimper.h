@@ -223,12 +223,12 @@ void rsStateVariableFilterSimper<T>::setup(Mode mode, T omega, T Q, T A)
 template<class T>
 T rsStateVariableFilterSimper<T>::getSample(T v0)
 {
-  // Intermediate variables (voltages?):
+  // Compute node voltages:
   T v3 = v0 - i2;                          // Feedback (?)
   T v1 = a1*i1 + a2*v3;                    // Voltage at node 1, Bandpass output (?)
   T v2 = a2*i1 + a3*v3 + i2;               // Voltage at node 2, Lowpass output (?)
 
-  // State update (capacitor currents?):
+  // State update (by computing "equivalent"(?) capacitor currents):
   i1 = 2*v1 - i1;                          // Eq. 2?
   i2 = 2*v2 - i2;
 

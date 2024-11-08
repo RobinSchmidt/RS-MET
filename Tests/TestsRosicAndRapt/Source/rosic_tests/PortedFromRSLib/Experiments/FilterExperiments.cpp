@@ -1685,7 +1685,7 @@ void stateVarFilterSimper()
 
 
   // Do the plots for the different response types:
-  /*
+
   plotFreqResponses(Mode::Lowpass);
   plotFreqResponses(Mode::Highpass);
   plotFreqResponses(Mode::BandpassSkirt);
@@ -1697,7 +1697,6 @@ void stateVarFilterSimper()
   plotFreqResponses(Mode::HighShelf);
   plotFreqResponses(Mode::Peak);               // Not available in RBJ - ToDo: implement it!
 
-
   plotFilteredSaw(Mode::Bypass);
   plotFilteredSaw(Mode::Lowpass);
   plotFilteredSaw(Mode::Highpass);
@@ -1708,15 +1707,14 @@ void stateVarFilterSimper()
   plotFilteredSaw(Mode::Bell);
   plotFilteredSaw(Mode::LowShelf);
   plotFilteredSaw(Mode::HighShelf);
-  */
 
+
+  // Next, we try to simulate arbitrary DF biquad transfer functions with the SVF:
 
   Real b0, b1, b2, a1, a2;
   Vec ySvf(N), ySvf2(N);
   Vec yCbf(N);
 
- 
-  
   // Try setting it up from a set of biquad coeffs:
   b0 =  1.0;
   b1 = +0.0;
