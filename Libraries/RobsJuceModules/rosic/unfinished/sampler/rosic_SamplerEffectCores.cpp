@@ -317,9 +317,14 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   using namespace RAPT;
 
   this->type = type;
-  using FO  = rsOnePoleFilter<float, float>;
+  using FO  = rsOnePoleFilter<float, float>; // Shouldn't it be ...<TSig, TCoef>?
+  using SVF = rsStateVariableFilterSimper<TSig, TCoef>;
+
+  // This should soon be obsolete:
   using BQ  = rsBiquadDesigner;  // maybe it should have a template parameter?
   using FDF = rsFilterDesignFormulas;
+
+
 
   static const float s = float(1/(2*PI));
   // Preliminary to cater for the API of rsBiquadDesigner - ToDo: change API (maybe write a new 
@@ -355,12 +360,19 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
     // output params should come last and be passed as pointers.
   case FT::lp_12:  
   {
+    // Older:
     //BQ::calculateCookbookLowpassCoeffs(
     //  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q);   // old
 
+    // Old:
     FDF::mvLowpassSimple(w, Q, &i.bqd.b0, &i.bqd.b1, &i.bqd.b2, &i.bqd.a1, &i.bqd.a2); // new 
     i.bqd.a1 *= -1;
     i.bqd.a2 *= -1;
+
+    // New:
+    //i.svf.core.setup(SVF::Mode::Lowpass, w, Q);
+
+
 
     return;
   } 
@@ -398,6 +410,7 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   RAPT::rsError("Unknown filter type in rsSamplerFilter::setupCutRes");
 
   // ToDo:
+  // -Get rid of all the DF-biquad stuff. It's obsolete. We should use the Simpler SVF everywhere.
   // -Make a consistent choice for all of RAPT whether recursion coeffs of filters should have a 
   //  minus sign or not and update all code accordingly. Be careful - this change ripples through 
   //  all products - maybe introduce new names for the functions and deprecate the old ones instead
