@@ -470,6 +470,7 @@ void FilterCore::setupCutRes(FilterType type, float w, float resoGainDb)
   //  filters - compare results to what an FM'ed oscillator does.
 }
 
+/*
 void FilterCore::setupGainFreqBw(FilterType type, float gainDb, float w, float bw)
 {
   using namespace RAPT;
@@ -488,21 +489,20 @@ void FilterCore::setupGainFreqBw(FilterType type, float gainDb, float w, float b
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, bw, rawGain, 1.f);
 
 
-  /*
-  float k = powf(2.f, 0.5f*bw);
-  float Q = k / (k*k - 1.f);       // Q = 2^(bo/2) / (2^bo - 1)
-  // ToDo: verify formula - if correct, move to RAPT::rsBandwidthConverter and call it like:
-  //float Q = rsBandwidthConverter::octavesToQ(bw);
+
+  //float k = powf(2.f, 0.5f*bw);
+  //float Q = k / (k*k - 1.f);       // Q = 2^(bo/2) / (2^bo - 1)
+  //// ToDo: verify formula - if correct, move to RAPT::rsBandwidthConverter and call it like:
+  ////float Q = rsBandwidthConverter::octavesToQ(bw);
 
 
-  using BQ = rsBiquadDesigner;
-
-  rsBiquadDesigner::calculateCookbookPeakFilterCoeffsViaQ(
-  i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q, rawGain);
-  */
+  //using BQ = rsBiquadDesigner;
+  //rsBiquadDesigner::calculateCookbookPeakFilterCoeffsViaQ(
+  //i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q, rawGain);
 
   //rsError("Unknown filter type in rsSamplerFilter::setupGainFreqBw");
 }
+*/
 
 /*
 void FilterCore::initCoeffs()

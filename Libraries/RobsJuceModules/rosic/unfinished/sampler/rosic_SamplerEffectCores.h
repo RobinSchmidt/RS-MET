@@ -241,7 +241,7 @@ public:
   /** Sets the filter up in terms of gain (in decibels), frequency (normalized radian) and 
   bandwidth (in octaves). This parametrization is suitable when used for the equalizer opcodes in 
   sfz. */
-  void setupGainFreqBw(FilterType type, float gain, float omega, float bw);
+  //void setupGainFreqBw(FilterType type, float gain, float omega, float bw);
 
   //void initCoeffs();
   //void updateCoeffs();
