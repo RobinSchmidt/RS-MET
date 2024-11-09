@@ -1917,8 +1917,7 @@ void stateVarFilterMystran()
     bool ok = rsIsCloseTo(h_s, h_m, tol);
     if(!ok)
     {
-      //rsPlotVectors(h_s, h_m, h_m - h_s);
-
+      rsPlotVectors(h_s, h_m, h_m - h_s);
       rsPlotVectors(h_s, h_m, h_m / h_s);
     }
 
@@ -1938,11 +1937,8 @@ void stateVarFilterMystran()
   ok &= runTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
-
-  ok &= runTest(Mode::LowShelf,      1000.0, 5.0, 6.02, tol);
-  // Nope! That seems to be still wrong!
-  // But they seem to differ only by a contant gain difference. Ah! I think, scaling the 
-  // s-variable also requires rescaling the gain? with gain = 6.02, the factor is...
+  ok &= runTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
+  ok &= runTest(Mode::HighShelf,     1000.0, 5.0, 8.0, tol);
 
   rsAssert(ok);
 
