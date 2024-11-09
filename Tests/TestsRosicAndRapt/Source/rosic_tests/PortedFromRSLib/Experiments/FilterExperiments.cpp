@@ -1942,26 +1942,48 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  // Needs tests:
   bool isLowpass()       const { return a0 == 1 && a1 == 0 && a2 == 0; }
-
   bool isHighpass()      const { return a0 == 0 && a1 == 0 && a2 == 1; }
-
   bool isBandpassSkirt() const { return a0 == 0 && a1 == 1 && a2 == 0; }
-
   bool isBandpassPeak()  const { return a0 == 0 && a1 != 1 && a2 == 0; }  // a1 = r = 1/Q
-
+  bool isBandpass()      const { return a0 == 0 && a1 >  0 && a2 == 0; }
   bool isBandstop()      const { return a0 == 1 && a1 == 0 && a2 == 1; }
-
   bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }  // a1 = -1/Q
-
-  bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }  // a1 = A^2 / Q
-
-
-
-
+  bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }  // a1 = A^2/Q
+  bool isLowShelf()      const { return a0 >  0 && a1 >  0 && a2 == 1; }  // a0 = A^2, a1 = A/Q
+  bool isHighShelf()     const { return a0 == 1 && a1 >  0 && a2 >  0; }  // a1 = A/Q, a2 = A^2
   // I think there's an edge case of Q = 1 where constant peak and constant skirt bandpasses are
   // indistinguishable. I think, it this case, both should return true - but they currently don't
-  // I think.
+  // I think. We need to check that in any case one and only one of them returns true, i.e. that
+  // the conditions are disjoint or mutually exclusive - except in edge cases maybe.
+
+
+
+  TPar getQualityFactor() const
+  {
+    if(isBell())
+    {
+      rsError("I don't know hwo to compute Q");
+
+      //return sqrt(a1); // Nope! That's wrong
+      // We have 3 equations involving r, Q, A: (1) r = 1/(Q*A), (2) gpr = g + r, (3) a1 = A^2 * r
+      // where the knowns are  gpr, g, a1  and the unknowns are r, Q, A. We can plug (1) in (2)
+      // to get: (4) gpr = g + 1/(Q*A)  and solve that for  A = 1/(Q*(gpr-g))  Then we plug that
+      // into (3) to get: (5) a1 = r / (Q^2)
+      // We can solve (1) for 
+
+    }
+    else
+      return 1 / (gpr - g);  // gpr = g + r  ->  r = gpr - g = 1/Q
+  }
+    
+
+
+
+
+
+
 
 
 
@@ -2025,6 +2047,28 @@ void stateVarFilterMystran()
   ok &= runTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
   ok &= runTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
   ok &= runTest(Mode::HighShelf,     1000.0, 5.0, 8.0, tol);
+
+  // Test the inquiry functions
+  Real freq = 1000;
+  Real Q    = 7.0;
+  Real w    = 2*PI*freq/sampleRate;
+  Real A    = 3.0;
+
+  Real res;
+
+  rsStateVariableFilterMystran2<Real, Real> svf;
+  svf.setupLowpass(w, Q);
+  ok &= svf.isLowpass() == true;
+  res = svf.getQualityFactor();
+
+
+  svf.setupBell(w, Q, A);
+  res = svf.getQualityFactor();
+
+
+  // ToDo: check that all other is.. functions return false
+
+
 
   rsAssert(ok);
 
