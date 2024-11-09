@@ -2058,7 +2058,7 @@ void stateVarFilterMystran()
   rsStateVariableFilterSimper<Real, Real>  svf_s;
   rsStateVariableFilterMystran<Real, Real> svf_m;
 
-  auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb)
+  auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
   {
     // Compute normalized radian frequency omega and linear gain:
     Real w = 2*PI*cutoff/sampleRate;
@@ -2075,25 +2075,22 @@ void stateVarFilterMystran()
     // Compare impusle responses:
     Vec h_s = getImpulseResponse(svf_s, N, Real(1));
     Vec h_m = getImpulseResponse(svf_m, N, Real(1));
-    rsPlotVectors(h_s, h_m);
+    bool ok = rsIsCloseTo(h_s, h_m, tol);
+    if(!ok)
+      rsPlotVectors(h_s, h_m);
+
+    return ok;
   };
 
-  runTest(Mode::Lowpass,       1000.0, 5.0, 0.0);
-  runTest(Mode::Highpass,      1000.0, 5.0, 0.0);
-  runTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0);
+  bool ok = true;
 
+  Real tol = 1.e-13;
 
-  /*
-  // Compare lowpass impusle responses:
-  svf_s.setup(Mode::Lowpass, w, Q);
-  Vec y_s = getImpulseResponse(svf_s, N, Real(1));
+  ok &= runTest(Mode::Lowpass,       1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::Highpass,      1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
 
-  svf_m.setupLowpass(w, Q);
-  Vec y_m = getImpulseResponse(svf_m, N, Real(1));
-
-  rsPlotVectors(y_s, y_m);
-  */
-
+  rsAssert(ok);
 
 
   // ToDo:
