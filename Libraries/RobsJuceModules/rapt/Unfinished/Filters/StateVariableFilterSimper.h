@@ -33,7 +33,7 @@ public:
     Highpass,
     BandpassSkirt,   // Bandpass with constant skirt gain
     BandpassPeak,    // Bandpass with constant peak gain
-    Notch,
+    Notch,           // Rename to Bandstop!
     Allpass,
     Bell,            // This is what RBJ calls "peak"
     LowShelf,

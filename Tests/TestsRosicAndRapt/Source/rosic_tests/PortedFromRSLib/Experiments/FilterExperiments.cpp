@@ -1904,7 +1904,7 @@ public:
     Highpass,
     BandpassSkirt,
     BandpassPeak,
-    Notch,
+    Bandstop,
     Allpass,
     Bell,
     LowShelf,
@@ -1925,6 +1925,8 @@ public:
   void setupHighpass(     TPar omega, TPar Q);
   void setupBandpassSkirt(TPar omega, TPar Q);
   void setupBandpassPeak( TPar omega, TPar Q);
+  void setupBandstop(     TPar omega, TPar Q);
+
 
 
 
@@ -1959,6 +1961,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::setup(Mode mode, TPar w, TPar Q, 
   case Mode::Highpass:      setupHighpass(     w, Q);  break;
   case Mode::BandpassSkirt: setupBandpassSkirt(w, Q);  break;
   case Mode::BandpassPeak:  setupBandpassPeak( w, Q);  break;
+  case Mode::Bandstop:      setupBandstop(     w, Q);  break;
+
 
   default:
   {
@@ -2022,6 +2026,16 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
   a2 = 0;
   a1 = r;
   a0 = 0;
+}
+
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setupBandstop(TPar w, TPar Q)
+{
+  g  = tan(0.5*w); 
+  r  = 1/Q;
+  a2 = 1;
+  a1 = 0;
+  a0 = 1;
 }
 
 
@@ -2093,6 +2107,11 @@ void stateVarFilterMystran()
   ok &= runTest(Mode::Highpass,      1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::BandpassPeak,  1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
+
+
+
+
 
   rsAssert(ok);
 
