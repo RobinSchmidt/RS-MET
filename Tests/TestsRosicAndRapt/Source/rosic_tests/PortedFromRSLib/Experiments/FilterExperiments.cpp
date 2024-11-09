@@ -2072,9 +2072,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
   // H(s) = (s^2 + s*(A/Q) + 1) / (s^2 + s/(A*Q) + 1)
 
   g  = tan(0.5*w); 
-  r  = 1/(Q*A);      // Q' = Q*A
+  r  = 1/(Q*A);      // Q' = Q*A, r = 1/Q'
   a0 = 1;
-  a1 = (A*A)/(Q*A);  // A^2 / Q' = 
+  a1 = A*A*r;        // A^2 / Q' = A/Q = A^2 * r
   a2 = 1;
 }
 
@@ -2147,8 +2147,6 @@ void stateVarFilterMystran()
   ok &= runTest(Mode::BandpassPeak,  1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
-
-
   ok &= runTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
 
 
