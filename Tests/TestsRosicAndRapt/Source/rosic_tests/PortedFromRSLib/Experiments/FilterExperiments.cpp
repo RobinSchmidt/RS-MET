@@ -1911,7 +1911,7 @@ protected:
 };
 
 template<class TSig, class TPar>
-TSig rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
+void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
 {
   g  = tan(0.5*w); 
   r  = 1/Q;
@@ -1942,6 +1942,30 @@ void stateVarFilterMystran()
   // Trying to implement this:
   //
   //   https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653
+
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using Mode = rsStateVariableFilterSimper<Real, Real>::Mode;
+
+  // Setup:
+  int  N          =  512;     // Number of samples to produce
+  Real sampleRate = 44100;
+  Real cutoff     =  1000;
+  Real Q          =     3.0;  
+  Real gainDb     =    12.0;  // For bell and shelf filters
+
+  // Compute normalized radian frequency omega and linear gain:
+  Real w = 2*PI*cutoff/sampleRate;
+  Real A = pow(10, gainDb/40);
+
+  // Create filters:
+  rsStateVariableFilterSimper<Real, Real>  svf_s;
+  rsStateVariableFilterMystran<Real, Real> svf_m;
+
+
+
+
 
 
 }
