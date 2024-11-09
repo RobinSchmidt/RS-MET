@@ -1892,12 +1892,24 @@ class rsStateVariableFilterMystran
 
 public:
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
   //void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
 
   void setupLowpass(TPar omega, TPar Q);
 
 
-  TSig getSample(TSig in);
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Computes one sample at a time. */
+  inline TSig getSample(TSig in);
+
+  /** Resets the internal state. */
+  void reset() { z1 = z2 = 0; }
+
 
 protected:
 
@@ -1952,7 +1964,7 @@ void stateVarFilterMystran()
   int  N          =  512;     // Number of samples to produce
   Real sampleRate = 44100;
   Real cutoff     =  1000;
-  Real Q          =     3.0;  
+  Real Q          =     5.0;  
   Real gainDb     =    12.0;  // For bell and shelf filters
 
   // Compute normalized radian frequency omega and linear gain:
@@ -1964,8 +1976,16 @@ void stateVarFilterMystran()
   rsStateVariableFilterMystran<Real, Real> svf_m;
 
 
+  // Compare lowpass impusle responses:
+  svf_s.setup(Mode::Lowpass, w, Q);
+  Vec y_s = getImpulseResponse(svf_s, N, Real(1));
+
+  svf_m.setupLowpass(w, Q);
+  Vec y_m = getImpulseResponse(svf_m, N, Real(1));
 
 
+
+  rsPlotVectors(y_s, y_m);
 
 
 }

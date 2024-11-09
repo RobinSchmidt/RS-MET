@@ -9,10 +9,10 @@
 reference. The class to which the module belongs must provide a reset() and getSample()
 function. */
 template<class TFlt, class TSig>
-inline void getImpulseResponse(TFlt &module, TSig *h, int N)
+inline void getImpulseResponse(TFlt &module, TSig *h, int N, TSig scale = TSig(1))
 {
   module.reset();
-  h[0] = module.getSample(1.0);
+  h[0] = module.getSample(scale);
   for(int n = 1; n < N; n++)
     h[n] = module.getSample(0.0);
 }
@@ -37,6 +37,18 @@ inline void getResponse(TFlt &module, TSig *x, TSig *y, int N)
   for(int n = 0; n < N; n++)
     y[n] = module.getSample(x[n]);
 }
+
+// Convenience functions to directly return a std::vector:
+
+template<class TFlt, class TSig>
+inline std::vector<TSig> getImpulseResponse(TFlt &module, int N, TSig scale)
+{
+  std::vector<TSig> h(N);
+  getImpulseResponse(module, &h[0], N, scale);
+  return h;
+}
+
+
 
 
 #endif
