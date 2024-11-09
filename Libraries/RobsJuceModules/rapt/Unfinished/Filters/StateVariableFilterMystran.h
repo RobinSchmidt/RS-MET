@@ -23,34 +23,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  
-  /** Enumeration of the available filter modes. */
-  /*
-  enum Mode
-  {
-    Bypass,
-    Lowpass,
-    Highpass,
-    BandpassSkirt,
-    BandpassPeak,
-    Bandstop,
-    Allpass,
-    Bell,
-    LowShelf,
-    HighShelf,
-
-    NumModes
-  };
-
-  void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
-  // Convenience function...I'm not sure about this...maybe get rid. An API like that is more 
-  // suitable for a higher level, I think.
-  */
-
-
-  // Separate setup functions for the different modes to allow to bypass the switch-statement in 
-  // the general setup function
-
   void setupBypass();
   void setupLowpass(      TPar omega, TPar Q);
   void setupHighpass(     TPar omega, TPar Q);
@@ -86,33 +58,7 @@ protected:
 
 };
 
-/*
-template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setup(Mode mode, TPar w, TPar Q, TPar A)
-{
-  switch(mode)
-  {
-  case Mode::Bypass:        setupBypass();               break;
-  case Mode::Lowpass:       setupLowpass(      w, Q);    break;
-  case Mode::Highpass:      setupHighpass(     w, Q);    break;
-  case Mode::BandpassSkirt: setupBandpassSkirt(w, Q);    break;
-  case Mode::BandpassPeak:  setupBandpassPeak( w, Q);    break;
-  case Mode::Bandstop:      setupBandstop(     w, Q);    break;
-  case Mode::Allpass:       setupAllpass(      w, Q);    break;
-  case Mode::Bell:          setupBell(         w, Q, A); break;
-  case Mode::LowShelf:      setupLowShelf(     w, Q, A); break;
-  case Mode::HighShelf:     setupHighShelf(    w, Q, A); break;
-  default:
-  {
-    rsError("Unknown filter type in rsStateVariableFilterMystran::setup");
-    a0 = a1 = a2 = 0;
-    g = 0;
-    gpr = 0;
-    scl = 0;
-  };
-  }
-}
-*/
+// Setup:
 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupBypass()
@@ -236,7 +182,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
   scl = 1 / (1 + g*gpr);
   a0  = A*A;
   a1  = A*r;
-  a2  = 1;                             // High-freq gain should be one for a low-shelf.
+  a2  = 1;
 }
 
 template<class TSig, class TPar>
@@ -248,11 +194,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TP
   g   = tan(0.5*w) * sqrt(A);
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 1;                             // Low-freq gain should be one for a low-shelf.
+  a0  = 1;
   a1  = A*r;
   a2  = A*A;
 }
 
+// Processing:
 
 template<class TSig, class TPar>
 TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
