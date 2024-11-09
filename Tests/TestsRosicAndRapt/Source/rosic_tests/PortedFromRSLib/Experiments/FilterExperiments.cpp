@@ -2044,24 +2044,14 @@ void stateVarFilterMystran()
   using ModeM = rsStateVariableFilterMystran<Real, Real>::Mode;
 
   // Setup:
-  int  N          =  512;     // Number of samples to produce
+  int  N          =   512;    // Number of samples to produce
   Real sampleRate = 44100;
-  Real cutoff     =  1000;
-  Real Q          =     5.0;  
-  Real gainDb     =    12.0;  // For bell and shelf filters
 
-  // Compute normalized radian frequency omega and linear gain:
-  //Real w = 2*PI*cutoff/sampleRate;
-  //Real A = pow(10, gainDb/40);
-
-  // Create filters:
-  rsStateVariableFilterSimper<Real, Real>  svf_s;
-  rsStateVariableFilterMystran<Real, Real> svf_m;
-
+  // Helper function to compare the outputs of the two implementations and report if thy match: 
   auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
   {
     // Compute normalized radian frequency omega and linear gain:
-    Real w = 2*PI*cutoff/sampleRate;
+    Real w = 2*PI*freq/sampleRate;
     Real A = pow(10, gainDb/40);
 
     // Create and set up filters:
@@ -2076,22 +2066,21 @@ void stateVarFilterMystran()
     Vec h_s = getImpulseResponse(svf_s, N, Real(1));
     Vec h_m = getImpulseResponse(svf_m, N, Real(1));
     bool ok = rsIsCloseTo(h_s, h_m, tol);
-    if(!ok)
+    //if(!ok)
       rsPlotVectors(h_s, h_m);
 
     return ok;
   };
 
-  bool ok = true;
-
+  bool ok  = true;
   Real tol = 1.e-13;
 
+  ok &= runTest(Mode::Bypass,        1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Lowpass,       1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Highpass,      1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
 
   rsAssert(ok);
-
 
   // ToDo:
   //
