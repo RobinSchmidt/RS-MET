@@ -2108,31 +2108,50 @@ void stateVarFilterMystran()
   ok &= svf.isBell()          == false;
   ok &= svf.isLowShelf()      == false;
   ok &= svf.isHighShelf()     == false;
-
-  // ToDo: check that all other isHighpass, isBandpass, etc. functions return false
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
 
   svf.setupBell(w, Q, A);
-  ok &= svf.isBell() == true;
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == true;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
 
   svf.setupLowShelf(w, Q, A);
-  ok &= svf.isLowShelf() == true;
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isLowShelf()      == true;
+  ok &= svf.isHighShelf()     == false;
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
 
   svf.setupHighShelf(w, Q, A);
-  ok &= svf.isHighShelf() == true;
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == true;
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
-
-
-
-
-
-
 
 
   rsAssert(ok);
