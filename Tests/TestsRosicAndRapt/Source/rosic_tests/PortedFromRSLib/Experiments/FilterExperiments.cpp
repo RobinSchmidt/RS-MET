@@ -1942,29 +1942,19 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  // Needs tests:
   bool isLowpass()       const { return a0 == 1 && a1 == 0 && a2 == 0; }
   bool isHighpass()      const { return a0 == 0 && a1 == 0 && a2 == 1; }
   bool isBandpass()      const { return a0 == 0 && a1 >  0 && a2 == 0; }
   bool isBandpassSkirt() const { return a0 == 0 && a1 == 1 && a2 == 0; }
-  bool isBandpassPeak()  const { return a0 == 0 && a1 != 1 && a2 == 0; }  // a1 = r = 1/Q
+  bool isBandpassPeak()  const { return a0 == 0 && a1 != 1 && a2 == 0; }        // a1 = r = 1/Q
   bool isBandstop()      const { return a0 == 1 && a1 == 0 && a2 == 1; }
-  bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }  // a1 = -1/Q
-  bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }  // a1 = A^2/Q
+  bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }        // a1 = -1/Q
+  bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }        // a1 = A^2/Q
+  bool isLowShelf()  const { return a0 >  0 && a0 != 1 && a1 >  0 && a2 == 1; } // a0=A^2, a1=A/Q
+  bool isHighShelf() const { return a0 == 1 && a1 >  0 && a2 >  0 && a2 != 1; } // a2=A^2, a1=A/Q
 
-  //bool isLowShelf()      const { return a0 >  0 && a1 >  0 && a2 == 1; }  // a0 = A^2, a1 = A/Q
 
-  bool isLowShelf()      const 
-  { 
-    return a0 >  0 && a0 != 1 && a1 >  0 && a2 == 1; 
-  }  // a0 = A^2, a1 = A/Q
-  // ToDo: check, if we really need the a0 > 0 condition
-
-  bool isHighShelf()     const 
-  { 
-    return a0 == 1 && a1 >  0 && a2 >  0 && a2 != 1; 
-  }  // a1 = A/Q, a2 = A^2
-  // ToDo: check, if we really need the a2 > 0 condition
+  // ToDo: check, if we really need the a0 > 0 condition for LS and a2 > 0 condition for HS
 
   // I think there's an edge case of Q = 1 where constant peak and constant skirt bandpasses are
   // indistinguishable. I think, it this case, both should return true - but they currently don't
@@ -2013,6 +2003,12 @@ public:
       return 1 / (gpr - g);  // gpr = g + r  ->  r = gpr - g = 1/Q
   }
 
+  TPar getBellGain() const
+  {
+    rsAssert(isBell(), "Calling this function only makes sense for bell filters");
+    TPar Q = sqrt(1/(a1*(gpr-g)));
+    return 1 / (Q*(gpr-g));
+  }
 
 
   // ToDo: getBellGain, getLowShelfGain, getHighShelfGain. Should assert that filter is of the 
@@ -2195,6 +2191,7 @@ void stateVarFilterMystran()
   ok &= svf.isHighShelf()     == false;
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+  res = svf.getBellGain();       ok &= rsIsCloseTo(res, A, tol);
 
   svf.setupLowShelf(w, Q, A);
   ok &= svf.isLowpass()       == false;
