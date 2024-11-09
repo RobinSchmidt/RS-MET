@@ -1995,18 +1995,6 @@ public:
 };
 // Maybe move into rs_testing module
 
-/*
-var("gpr g a1 r  Q A")
-e1 = r   == 1/(Q*A)
-e2 = gpr == g + r
-e3 = a1  == A^2 * r
-solve([e1,e2,e3],[r,Q,A])
-
-[[r == -g + gpr, Q ==  sqrt(-1/(a1*g - a1*gpr)), A == -1/((g - gpr)*sqrt(-1/(a1*g - a1*gpr)))], 
- [r == -g + gpr, Q == -sqrt(-1/(a1*g - a1*gpr)), A ==  1/((g - gpr)*sqrt(-1/(a1*g - a1*gpr)))]]
-
-*/
-
 
 void stateVarFilterMystran()
 {
