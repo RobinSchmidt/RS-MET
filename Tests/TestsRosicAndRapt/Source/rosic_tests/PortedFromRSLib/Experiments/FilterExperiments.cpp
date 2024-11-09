@@ -1966,9 +1966,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setup(Mode mode, TPar w, TPar Q, 
   case Mode::BandpassPeak:  setupBandpassPeak( w, Q);    break;
   case Mode::Bandstop:      setupBandstop(     w, Q);    break;
   case Mode::Allpass:       setupAllpass(      w, Q);    break;
-
   case Mode::Bell:          setupBell(         w, Q, A); break;
 
+  case Mode::LowShelf:      setupLowShelf(     w, Q, A); break;
 
   default:
   {
@@ -2134,16 +2134,50 @@ void stateVarFilterMystran()
   //   H(s) = -------------------
   //           1 + s/(A*Q) + s^2
   //
-  // By letting  Q'= AQ  we get:
+  // which not exactly of the right form because in the denominator, we see an  s/(A*Q)  term 
+  // instead of the desired  s/Q  term. But by letting  P = A*Q  we can replace  A*Q  by  P in
+  // the denominator and in the numerator replace  Q  by  P/A  to get:
   // 
-  //           1 + s*A^2/Q' + s^2
+  //           1 + s*A^2/P + s^2
   //   H(s) = --------------------
-  //           1 +   s/Q'   + s^2
+  //           1 +   s/P   + s^2
   //
-  // which is of the desired form. We would just Q' in place of Q and get  a0 = a2 = 1, 
-  // a1 = A^2/Q' = A/Q
+  // This substitution can be automated using the following Sage code:
+  //
+  //   var("s Q A P")
+  //   H = (s^2 + s*(A/Q) + 1) / (s^2 + s/(A*Q) + 1)
+  //   G = H.subs(Q == P/A)
+  //   G
+  //
+  // which produces the output:  (A^2*s/P + s^2 + 1)/(s^2 + s/P + 1))  where G is in the desired 
+  // of the desired form but with instead of Q. We can now just use P in place of Q and get 
+  // a0 = a2 = 1, a1 = A^2/P = A/Q. For the low shelving filter, the RBJ prototype transfer 
+  // function is:
+  //
+  //                s^2  + (sqrt(A)/Q)*s + A     A^2 + (sqrt(A)/Q)*s + s^2
+  //   H(s) = A * --------------------------- = -----------------------------
+  //               A*s^2 + (sqrt(A)/Q)*s + 1      1  + (sqrt(A)/Q)*s + A*s^2
+  //
+  // Now we have two problems: the factor for s as well the one for s^2 is wrong. Instead of
+  // 1/Q and 1 as coeffs for s and s^2, we see sqrt(A)/Q and A. Both problems can be solved by
+  // substituting  t = s*sqrt(A), i.e. s = t/sqrt(A). The following Sage snippet solves does this:
+  //
+  //   var("s Q A t")
+  //   H = A*(s^2+sqrt(A)/Q*s+A)/(A*s^2+sqrt(A)/Q*s+1)
+  //   G = H.subs(s == t/sqrt(A))
+  //   G
+  //
+  // which produces:  (A + t^2/A + t/Q)*A/(t^2 + t/Q + 1). Again, we can read off the a0,a1,a2 
+  // coeffs from G as a0 = A, a1 = 1/Q, a2 = 1/A. Our  s <-> t  substitution means that we now must
+  // scale the frequencies because that's the effect of multiplying s by a factor. ... TBC...
 
 
+
+  // var("s Q A P t")
+  //  H = A*(s^2+sqrt(A)/Q*s+A)/(A*s^2+sqrt(A)/Q*s+1)
+  //  G = H.subs(s == t/sqrt(A))
+  //  #F = G.subs(Q == P/A)
+  //  H, G
 
   using Real  = double;
   using Vec   = std::vector<Real>;
@@ -2190,6 +2224,8 @@ void stateVarFilterMystran()
   ok &= runTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
+
+  ok &= runTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
 
 
   rsAssert(ok);
