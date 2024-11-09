@@ -1896,8 +1896,31 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  //void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
+  /** Enumeration of the available filter modes. */
+  enum Mode
+  {
+    Bypass,
+    Lowpass,
+    Highpass,
+    BandpassSkirt,
+    BandpassPeak,
+    Notch,
+    Allpass,
+    Bell,
+    LowShelf,
+    HighShelf,
 
+    NumModes
+  };
+
+  void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
+  // Convenience function
+
+
+  // Separate setup functions for the different modes to allow to bypass the switch-statement in 
+  // the general setup function
+
+  void setupBypass();
   void setupLowpass(      TPar omega, TPar Q);
   void setupHighpass(     TPar omega, TPar Q);
   void setupBandpassSkirt(TPar omega, TPar Q);
@@ -1921,9 +1944,43 @@ protected:
 
   // Coeffs:
   TPar a0 = 0, a1 = 0, a2 = 0;  // Mixing coeffs - maybe rename to aL, aB, aH
-  TPar g, r;                    // Filter coeffs
+  TPar g  = 0, r  = 0;          // Filter coeffs
 
 };
+
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setup(Mode mode, TPar w, TPar Q, TPar A)
+{
+  switch(mode)
+  {
+  case Mode::Bypass:        setupBypass();             break;
+  case Mode::Lowpass:       setupLowpass(      w, Q);  break;
+  case Mode::Highpass:      setupHighpass(     w, Q);  break;
+  case Mode::BandpassSkirt: setupBandpassSkirt(w, Q);  break;
+
+  default:
+  {
+    rsError("Unknown filter type in rsStateVariableFilterMystran::setup");
+    a0 = a1 = a2 = 0;
+    g = r = 0;
+    //a1 = a2 = a3 = m0 = m1 = m2 = 0;  
+    // We will produce an output of zero in such a case.
+  };
+
+  }
+
+}
+
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setupBypass()
+{
+  // Verify, if this really gives a bypass mode
+  g  = 0; 
+  r  = 0;
+  a2 = 1;
+  a1 = 0;
+  a0 = 0;
+}
 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
@@ -1946,7 +2003,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar omega, TPar Q)
+void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q)
 {
   g  = tan(0.5*w); 
   r  = 1/Q;
@@ -1981,9 +2038,10 @@ void stateVarFilterMystran()
   //   https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653
 
 
-  using Real = double;
-  using Vec  = std::vector<Real>;
-  using Mode = rsStateVariableFilterSimper<Real, Real>::Mode;
+  using Real  = double;
+  using Vec   = std::vector<Real>;
+  using Mode  = rsStateVariableFilterSimper<Real, Real>::Mode;
+  using ModeM = rsStateVariableFilterMystran<Real, Real>::Mode;
 
   // Setup:
   int  N          =  512;     // Number of samples to produce
@@ -1993,14 +2051,37 @@ void stateVarFilterMystran()
   Real gainDb     =    12.0;  // For bell and shelf filters
 
   // Compute normalized radian frequency omega and linear gain:
-  Real w = 2*PI*cutoff/sampleRate;
-  Real A = pow(10, gainDb/40);
+  //Real w = 2*PI*cutoff/sampleRate;
+  //Real A = pow(10, gainDb/40);
 
   // Create filters:
   rsStateVariableFilterSimper<Real, Real>  svf_s;
   rsStateVariableFilterMystran<Real, Real> svf_m;
 
+  auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb)
+  {
+    // Compute normalized radian frequency omega and linear gain:
+    Real w = 2*PI*cutoff/sampleRate;
+    Real A = pow(10, gainDb/40);
 
+    // Create and set up filters:
+    rsStateVariableFilterSimper<Real, Real>  svf_s;
+    svf_s.setup(mode, w, Q, A);
+
+    rsStateVariableFilterMystran<Real, Real> svf_m;
+    ModeM mode_m = (ModeM)(int)mode;
+    svf_m.setup(mode_m, w, Q, A);
+
+    // Compare impusle responses:
+    Vec h_s = getImpulseResponse(svf_s, N, Real(1));
+    Vec h_m = getImpulseResponse(svf_m, N, Real(1));
+    rsPlotVectors(h_s, h_m);
+  };
+
+  runTest(Mode::Lowpass, 1000.0, 5.0, 0.0);
+
+
+  /*
   // Compare lowpass impusle responses:
   svf_s.setup(Mode::Lowpass, w, Q);
   Vec y_s = getImpulseResponse(svf_s, N, Real(1));
@@ -2008,11 +2089,14 @@ void stateVarFilterMystran()
   svf_m.setupLowpass(w, Q);
   Vec y_m = getImpulseResponse(svf_m, N, Real(1));
 
-
-
   rsPlotVectors(y_s, y_m);
+  */
 
 
+
+  // ToDo:
+  //
+  // - Add the mystran SVF to the modulation tests.
 }
 
 
