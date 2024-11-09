@@ -1885,12 +1885,72 @@ void stateVarFilterSimper()
   //   Maybe implement the SKF (Sallen-Key filter), too
 }
 
+
+// Subclass of rsStateVariableFilterMystran that extends it by a general setup() function that
+// takes a mode parameter and then dispatches to the different setup functions
+template<class TSig, class TPar>
+class rsStateVariableFilterMystran2 : public rsStateVariableFilterMystran<TSig, TPar>
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  /** Enumeration of the available filter modes. */
+  enum Mode
+  {
+    Bypass,
+    Lowpass,
+    Highpass,
+    BandpassSkirt,
+    BandpassPeak,
+    Bandstop,
+    Allpass,
+    Bell,
+    LowShelf,
+    HighShelf,
+
+    NumModes
+  };
+
+  void setup(Mode mode, TPar w, TPar Q, TPar A = TPar(1))
+  {
+    switch(mode)
+    {
+    case Mode::Bypass:        setupBypass();               break;
+    case Mode::Lowpass:       setupLowpass(      w, Q);    break;
+    case Mode::Highpass:      setupHighpass(     w, Q);    break;
+    case Mode::BandpassSkirt: setupBandpassSkirt(w, Q);    break;
+    case Mode::BandpassPeak:  setupBandpassPeak( w, Q);    break;
+    case Mode::Bandstop:      setupBandstop(     w, Q);    break;
+    case Mode::Allpass:       setupAllpass(      w, Q);    break;
+    case Mode::Bell:          setupBell(         w, Q, A); break;
+    case Mode::LowShelf:      setupLowShelf(     w, Q, A); break;
+    case Mode::HighShelf:     setupHighShelf(    w, Q, A); break;
+    default:
+    {
+      rsError("Unknown filter type in rsStateVariableFilterMystran::setup");
+      a0 = a1 = a2 = 0;
+      g = 0;
+      gpr = 0;
+      scl = 0;
+    };
+    }
+  }
+
+};
+// Maybe move into rs_testing module
+
+
 void stateVarFilterMystran()
 {
+  // Maybe turn this into a unit test.
+
   using Real  = double;
   using Vec   = std::vector<Real>;
   using Mode  = rsStateVariableFilterSimper<Real, Real>::Mode;
-  using ModeM = rsStateVariableFilterMystran<Real, Real>::Mode;
+  using ModeM = rsStateVariableFilterMystran2<Real, Real>::Mode;
 
   // Setup:
   int  N          =   512;    // Number of samples to produce
@@ -1907,7 +1967,7 @@ void stateVarFilterMystran()
     rsStateVariableFilterSimper<Real, Real>  svf_s;
     svf_s.setup(mode, w, Q, A);
 
-    rsStateVariableFilterMystran<Real, Real> svf_m;
+    rsStateVariableFilterMystran2<Real, Real> svf_m;
     ModeM mode_m = (ModeM)(int)mode;
     svf_m.setup(mode_m, w, Q, A);
 
@@ -1954,7 +2014,8 @@ void stateVariableFilters()
   //stateVariableFilter();       // The old implementation following Vadim Zavalishin's book
   //stateVariableFilterMorph();  // Trying to figure otu hwo to morph between types
   //stateVarFilterSimper();      // The new implementation following Adrew Simper's paper
-  stateVarFilterMystran();
+
+  stateVarFilterMystran();       // This is more unit-test than experiment - maybe move over
 }
 
 
