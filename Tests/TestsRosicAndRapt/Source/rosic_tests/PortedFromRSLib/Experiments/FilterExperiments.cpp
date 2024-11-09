@@ -1945,9 +1945,9 @@ public:
   // Needs tests:
   bool isLowpass()       const { return a0 == 1 && a1 == 0 && a2 == 0; }
   bool isHighpass()      const { return a0 == 0 && a1 == 0 && a2 == 1; }
+  bool isBandpass()      const { return a0 == 0 && a1 >  0 && a2 == 0; }
   bool isBandpassSkirt() const { return a0 == 0 && a1 == 1 && a2 == 0; }
   bool isBandpassPeak()  const { return a0 == 0 && a1 != 1 && a2 == 0; }  // a1 = r = 1/Q
-  bool isBandpass()      const { return a0 == 0 && a1 >  0 && a2 == 0; }
   bool isBandstop()      const { return a0 == 1 && a1 == 0 && a2 == 1; }
   bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }  // a1 = -1/Q
   bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }  // a1 = A^2/Q
@@ -2098,7 +2098,17 @@ void stateVarFilterMystran()
   rsStateVariableFilterMystran2<Real, Real> svf;
 
   svf.setupLowpass(w, Q);
-  ok &= svf.isLowpass() == true;  
+  ok &= svf.isLowpass()       == true;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+
   // ToDo: check that all other isHighpass, isBandpass, etc. functions return false
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
