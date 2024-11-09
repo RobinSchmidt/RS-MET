@@ -1929,6 +1929,7 @@ public:
   void setupAllpass(      TPar omega, TPar Q);
   void setupBell(         TPar omega, TPar Q, TPar A);
 
+  void setupLowShelf(     TPar omega, TPar Q, TPar A);
 
 
 
@@ -2078,7 +2079,23 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
   a2 = 1;
 }
 
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPar A)
+{
+  // H(s) = A * (s^2 + (sqrt(A)/Q)*s + A)/(A*s^2 + (sqrt(A)/Q)*s + 1)
 
+  g = tan(0.5*w) / sqrt(A);
+
+
+
+  //g  = tan(0.5*w); 
+  //r  = 1/(Q*A);      // Q' = Q*A, r = 1/Q'
+  //a0 = 1;
+  //a1 = A*A*r;        // A^2 / Q' = A/Q = A^2 * r
+  //a2 = 1;
+}
+
+//   void setupLowShelf(     TPar omega, TPar Q, TPar A);
 
 template<class TSig, class TPar>
 TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
@@ -2101,6 +2118,31 @@ void stateVarFilterMystran()
   // Trying to implement this:
   //
   //   https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653
+  //
+  // As mystran explains, the analog prototype response of this filter is:
+  //
+  //           a0 + a1 s + a2 s^2
+  //   H(s) = --------------------
+  //           1  + s/Q  + s^2
+  //
+  // so the a-coefficients are the polynomial coefficients of the numerator of the s-domain 
+  // transfer function. If we can manage to bring a given s-domain transfer function into this form
+  // we can read off our mixing coeffs. For the bell filter, the RBJ prototype response is of the 
+  // form  
+  //
+  //           1 + s*(A/Q) + s^2
+  //   H(s) = -------------------
+  //           1 + s/(A*Q) + s^2
+  //
+  // By letting  Q'= AQ  we get:
+  // 
+  //           1 + s*A^2/Q' + s^2
+  //   H(s) = --------------------
+  //           1 +   s/Q'   + s^2
+  //
+  // which is of the desired form. We would just Q' in place of Q and get  a0 = a2 = 1, 
+  // a1 = A^2/Q' = A/Q
+
 
 
   using Real  = double;
@@ -2151,6 +2193,8 @@ void stateVarFilterMystran()
 
 
   rsAssert(ok);
+
+
 
   // ToDo:
   //
