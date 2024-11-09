@@ -40,6 +40,7 @@ namespace RAPT
 #include "Musical/LadderFilter.h"
 #include "Musical/PhasorFilter.h"
 #include "Musical/StateVariableFilter.h"
+#include "Musical/StateVariableFilterMystran.h"
 //include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
 //#include "Basic/Equalizer.h"
 

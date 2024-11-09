@@ -763,6 +763,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterMystran.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.cpp">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
@@ -1046,9 +1049,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\SallenKeyFilterSimper.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterMystran.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterSimper.cpp">
@@ -3063,6 +3063,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterMystran.h">
+      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.h">
       <Filter>JUCE Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
@@ -3352,9 +3355,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\SallenKeyFilterSimper.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterMystran.h">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterSimper.h">

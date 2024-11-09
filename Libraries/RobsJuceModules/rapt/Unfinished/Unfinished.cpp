@@ -37,7 +37,6 @@ namespace RAPT
 #include "Filters/NonUniformFilter.cpp"
 #include "Filters/SallenKeyFilterSimper.cpp"
 #include "Filters/StateVariableFilterSimper.cpp"
-#include "Filters/StateVariableFilterMystran.cpp"
 
 // the new polyphony stuff:
 #include "MiscAudio/Polyphony.cpp"
