@@ -1950,13 +1950,47 @@ public:
   bool isBandpass()      const { return a0 == 0 && a1 >  0 && a2 == 0; }
   bool isBandstop()      const { return a0 == 1 && a1 == 0 && a2 == 1; }
   bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }  // a1 = -1/Q
+
   bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }  // a1 = A^2/Q
-  bool isLowShelf()      const { return a0 >  0 && a1 >  0 && a2 == 1; }  // a0 = A^2, a1 = A/Q
-  bool isHighShelf()     const { return a0 == 1 && a1 >  0 && a2 >  0; }  // a1 = A/Q, a2 = A^2
+
+  //bool isLowShelf()      const { return a0 >  0 && a1 >  0 && a2 == 1; }  // a0 = A^2, a1 = A/Q
+
+  bool isLowShelf()      const 
+  { 
+    return a0 >  0 && a0 != 1 && a1 >  0 && a2 == 1; 
+  }  // a0 = A^2, a1 = A/Q
+  // ToDo: check, if we really need the a0 > 0 condition
+
+  bool isHighShelf()     const 
+  { 
+    return a0 == 1 && a1 >  0 && a2 >  0 && a2 != 1; 
+  }  // a1 = A/Q, a2 = A^2
+  // ToDo: check, if we really need the a2 > 0 condition
+
   // I think there's an edge case of Q = 1 where constant peak and constant skirt bandpasses are
   // indistinguishable. I think, it this case, both should return true - but they currently don't
   // I think. We need to check that in any case one and only one of them returns true, i.e. that
   // the conditions are disjoint or mutually exclusive - except in edge cases maybe.
+
+  // isLowShelf returns true even if the filter is a bell
+
+  TPar getOmega() const
+  {
+    if(isLowShelf())
+    {
+      TPar r = gpr - g;
+      TPar A = a1 / r;
+      return 2*atan(g*sqrt(A));
+    }
+    else if(isHighShelf())
+    {
+      TPar r = gpr - g;
+      TPar A = a1 / r;
+      return 2*atan(g/sqrt(A));  // Needs test
+    }
+    else
+      return 2*atan(g);  // g = tan(w/2)
+  }
 
 
 
@@ -1971,18 +2005,21 @@ public:
       // grabbed directly from the code in setupBell(). Sage can solve this simple nonlinear 
       // system of equations for us with the following code:
       //
-      //   var("gpr g a1 r  Q A")
-      //   e1 = r   == 1/(Q*A)
-      //   e2 = gpr == g + r
-      //   e3 = a1  == A^2 * r
-      //   solve([e1,e2,e3],[r,Q,A])
+      //  var("gpr g a1 r  Q A")
+      //  e1 = r   == 1/(Q*A)
+      //  e2 = gpr == g + r
+      //  e3 = a1  == A^2 * r
+      //  solve([e1,e2,e3],[r,Q,A])
       //
       // Picking the 1st solution and manually making it prettier gives the result above.
     }
     else
       return 1 / (gpr - g);  // gpr = g + r  ->  r = gpr - g = 1/Q
   }
-    
+
+
+
+  // ToDo: getOmega, getIntegratorGain, getBellGain, getLowShelfGain, getHighShelfGain
 
 
 
@@ -2060,19 +2097,35 @@ void stateVarFilterMystran()
   Real A    = 3.0;
 
   Real res;
+  tol = 1.e-15;
 
   rsStateVariableFilterMystran2<Real, Real> svf;
-  svf.setupLowpass(w, Q);
-  ok &= svf.isLowpass() == true;
-  res = svf.getQualityFactor();
 
+  svf.setupLowpass(w, Q);
+  ok &= svf.isLowpass() == true;  
+  // ToDo: check that all other isHighpass, isBandpass, etc. functions return false
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
 
   svf.setupBell(w, Q, A);
-  res = svf.getQualityFactor();
-  ok &= rsIsCloseTo(res, Q, 1.e-15);
+  ok &= svf.isBell() == true;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+
+  svf.setupLowShelf(w, Q, A);
+  ok &= svf.isLowShelf() == true;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+
+  svf.setupHighShelf(w, Q, A);
+  ok &= svf.isHighShelf() == true;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
 
 
-  // ToDo: check that all other is.. functions return false
+
+
+
 
 
 
