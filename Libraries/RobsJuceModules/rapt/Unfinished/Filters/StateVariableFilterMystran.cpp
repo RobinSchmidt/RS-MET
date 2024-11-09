@@ -19,6 +19,12 @@ ToDo:
 
 - Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
 
+- Maybe add inquiry functions such as getIntegratorGain() = g, getOmega() = 2*atan(g), 
+  getQualityFactor() = 1 / (gpr - g). But the Q formula is wrong for bell filters and the omega
+  formula is wrong for shelf filters. But maybe we can infer in which mode we are and then dispatch
+  to the appropriate formula. The mode could be figured out by looking at the pattern of the mixing
+  the mixing coeffs. I think, we have  LP: 1,0,0  HP: 0,0,1  BPS: 0,1,0  BPP: 0,+,0  BS: 1,0,1  
+  AP: 1,-,1  PK: 1,+,1  LS: +,+,1  HS: 1,+,+.
 
 ---------------------------------------------------------------------------------------------------
 Algorithm

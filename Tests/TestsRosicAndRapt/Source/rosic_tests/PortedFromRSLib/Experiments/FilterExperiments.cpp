@@ -1939,6 +1939,32 @@ public:
     }
   }
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  bool isLowpass()       const { return a0 == 1 && a1 == 0 && a2 == 0; }
+
+  bool isHighpass()      const { return a0 == 0 && a1 == 0 && a2 == 1; }
+
+  bool isBandpassSkirt() const { return a0 == 0 && a1 == 1 && a2 == 0; }
+
+  bool isBandpassPeak()  const { return a0 == 0 && a1 != 1 && a2 == 0; }  // a1 = r = 1/Q
+
+  bool isBandstop()      const { return a0 == 1 && a1 == 0 && a2 == 1; }
+
+  bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }  // a1 = -1/Q
+
+  bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }  // a1 = A^2 / Q
+
+
+
+
+  // I think there's an edge case of Q = 1 where constant peak and constant skirt bandpasses are
+  // indistinguishable. I think, it this case, both should return true - but they currently don't
+  // I think.
+
+
+
 };
 // Maybe move into rs_testing module
 
