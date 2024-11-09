@@ -14,7 +14,7 @@ It implements this idea:
 
 See comments in the .cpp file for some more details.  */
 
-template<class TSig, class TPar> // signal, parameter types
+template<class TSig, class TPar>       // Data types for signals and parameters
 class rsStateVariableFilterMystran
 {
 
@@ -41,8 +41,8 @@ public:
   };
 
   void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
-  // Convenience function...not sure about this...maybe get rid. An API like that is more suitable
-  // for a higher level, I think.
+  // Convenience function...I'm not sure about this...maybe get rid. An API like that is more 
+  // suitable for a higher level, I think.
 
 
   // Separate setup functions for the different modes to allow to bypass the switch-statement in 
