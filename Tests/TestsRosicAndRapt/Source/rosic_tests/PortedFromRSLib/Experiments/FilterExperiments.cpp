@@ -2078,7 +2078,9 @@ void stateVarFilterMystran()
     rsPlotVectors(h_s, h_m);
   };
 
-  runTest(Mode::Lowpass, 1000.0, 5.0, 0.0);
+  runTest(Mode::Lowpass,       1000.0, 5.0, 0.0);
+  runTest(Mode::Highpass,      1000.0, 5.0, 0.0);
+  runTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0);
 
 
   /*
