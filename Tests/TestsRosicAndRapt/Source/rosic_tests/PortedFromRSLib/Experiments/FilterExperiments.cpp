@@ -1898,7 +1898,10 @@ public:
 
   //void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
 
-  void setupLowpass(TPar omega, TPar Q);
+  void setupLowpass(      TPar omega, TPar Q);
+  void setupHighpass(     TPar omega, TPar Q);
+  void setupBandpassSkirt(TPar omega, TPar Q);
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1931,6 +1934,28 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
   a1 = 0;
   a0 = 1;
 }
+
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
+{
+  g  = tan(0.5*w); 
+  r  = 1/Q;
+  a2 = 1;
+  a1 = 0;
+  a0 = 0;
+}
+
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar omega, TPar Q)
+{
+  g  = tan(0.5*w); 
+  r  = 1/Q;
+  a2 = 0;
+  a1 = 1;
+  a0 = 0;
+}
+
+
 
 
 template<class TSig, class TPar>
