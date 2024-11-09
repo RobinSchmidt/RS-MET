@@ -1950,8 +1950,10 @@ public:
   bool isBandstop()      const { return a0 == 1 && a1 == 0 && a2 == 1; }
   bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }        // a1 = -1/Q
   bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }        // a1 = A^2/Q
+  bool isShelf()         const { return isLowShelf() || isHighShelf(); }
   bool isLowShelf()  const { return a0 >  0 && a0 != 1 && a1 >  0 && a2 == 1; } // a0=A^2, a1=A/Q
   bool isHighShelf() const { return a0 == 1 && a1 >  0 && a2 >  0 && a2 != 1; } // a2=A^2, a1=A/Q
+
 
 
   // ToDo: check, if we really need the a0 > 0 condition for LS and a2 > 0 condition for HS
@@ -2010,17 +2012,11 @@ public:
     return 1 / (Q*(gpr-g));
   }
 
-
-  // ToDo: getBellGain, getLowShelfGain, getHighShelfGain. Should assert that filter is of the 
-  // assumed type
-
-
-
-
-
-
-
-
+  TPar getShelfGain() const
+  {
+    rsAssert(isShelf(), "Calling this function only makes sense for shelf filters");
+    return a1 / (gpr - g);
+  }
 
 };
 // Maybe move into rs_testing module
@@ -2206,6 +2202,7 @@ void stateVarFilterMystran()
   ok &= svf.isHighShelf()     == false;
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+  res = svf.getShelfGain();      ok &= rsIsCloseTo(res, A, tol);
 
   svf.setupHighShelf(w, Q, A);
   ok &= svf.isLowpass()       == false;
@@ -2220,7 +2217,7 @@ void stateVarFilterMystran()
   ok &= svf.isHighShelf()     == true;
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
-
+  res = svf.getShelfGain();      ok &= rsIsCloseTo(res, A, tol);
 
   rsAssert(ok);
 
