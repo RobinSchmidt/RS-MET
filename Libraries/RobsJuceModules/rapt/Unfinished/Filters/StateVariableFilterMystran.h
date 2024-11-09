@@ -202,16 +202,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
 
   g  = tan(0.5*w) / sqrt(A);
   r  = 1/Q;
-
-  //TPar s = sqrt(A);
-  //TPar s = 1/sqrt(A);
-  TPar s = A;
-
-  a0 = s * A;
-  a1 = s * r;
-  a2 = s / A;
-
-  // This doesn't seem to work right
+  a0 = A*A;
+  a1 = A*r;
+  a2 = 1;     // High-freq gain should be one for a low-shelf.
 }
 
 template<class TSig, class TPar>
