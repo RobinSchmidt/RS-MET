@@ -51,9 +51,9 @@ protected:
   TSig z1 = 0, z2 = 0;
 
   // Coeffs:
-  TPar a0 = 0, a1 = 0, a2 = 0;  // Mixing coeffs - maybe rename to aL, aB, aH
-  TPar g   = 0;                 // Integrator gain (?)
-  TPar gpr = 0;                 // g + r where r is the damping (I think)
+  TPar a0 = 0, a1 = 0, a2 = 0;  // Mixing coeffs (maybe rename to aL, aB, aH)
+  TPar g   = 0;                 // Integrator gain
+  TPar gpr = 0;                 // g + r (r is 2*R in Vadim's book, R is the damping coeff)
   TPar scl = 1;                 // Scaler given by 1 / (1 + g*(g+r));
 
 };
