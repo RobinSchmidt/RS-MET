@@ -1887,7 +1887,10 @@ void stateVarFilterSimper()
 
 
 // Subclass of rsStateVariableFilterMystran that extends it by a general setup() function that
-// takes a mode parameter and then dispatches to the different setup functions
+// takes a mode parameter and then dispatches to the different setup functions. It also adds some
+// inquiry functions that retrieve the design parameter from the coefficients. That's probably a
+// rather useless functionality - if something like that is desired, it would make more sense to
+// just store it in additional member variables in some wrapper subclass.
 template<class TSig, class TPar>
 class rsStateVariableFilterMystran2 : public rsStateVariableFilterMystran<TSig, TPar>
 {
@@ -1951,8 +1954,8 @@ public:
   bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }        // a1 = -1/Q
   bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }        // a1 = A^2/Q
   bool isShelf()         const { return isLowShelf() || isHighShelf(); }
-  bool isLowShelf()  const { return a0 >  0 && a0 != 1 && a1 >  0 && a2 == 1; } // a0=A^2, a1=A/Q
-  bool isHighShelf() const { return a0 == 1 && a1 >  0 && a2 >  0 && a2 != 1; } // a2=A^2, a1=A/Q
+  bool isLowShelf()  const { return /*a0 >  0 &&*/ a0 != 1 && a1 >  0 && a2 == 1; } // a0=A^2, a1=A/Q
+  bool isHighShelf() const { return a0 == 1 && a1 >  0 && /* a2 >  0 && */ a2 != 1; } // a2=A^2, a1=A/Q
 
 
 
@@ -2232,6 +2235,9 @@ void stateVarFilterMystran()
 
 
   // ToDo:
+  //
+  // - Put the test in a helper function that can be called with various values for w,Q,A and then
+  //   try it with various values
   //
   // - Add the mystran SVF to the modulation tests.
 }
