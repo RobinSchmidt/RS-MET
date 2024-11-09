@@ -52,6 +52,7 @@ namespace RAPT
 #include "Filters/NonUniformFilter.h"
 #include "Filters/SallenKeyFilterSimper.h"
 #include "Filters/StateVariableFilterSimper.h"
+#include "Filters/StateVariableFilterMystran.h"
 
 // the new polyphony stuff:
 #include "MiscAudio/Polyphony.h"

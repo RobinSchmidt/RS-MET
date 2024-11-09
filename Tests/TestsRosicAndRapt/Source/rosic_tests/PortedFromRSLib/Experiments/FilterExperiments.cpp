@@ -2084,10 +2084,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
 {
   // H(s) = A * (s^2 + (sqrt(A)/Q)*s + A)/(A*s^2 + (sqrt(A)/Q)*s + 1)
 
-  //g  = tan(0.5*w) / sqrt(A);
-
-  //g  = tan(0.5 * w / sqrt(A));
-
+  g  = tan(0.5*w) / sqrt(A);
   r  = 1/Q;
   a0 = A;
   a1 = r;
