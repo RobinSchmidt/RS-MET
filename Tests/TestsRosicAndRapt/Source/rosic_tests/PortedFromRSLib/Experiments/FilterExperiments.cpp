@@ -1950,7 +1950,6 @@ public:
   bool isBandpass()      const { return a0 == 0 && a1 >  0 && a2 == 0; }
   bool isBandstop()      const { return a0 == 1 && a1 == 0 && a2 == 1; }
   bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }  // a1 = -1/Q
-
   bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }  // a1 = A^2/Q
 
   //bool isLowShelf()      const { return a0 >  0 && a1 >  0 && a2 == 1; }  // a0 = A^2, a1 = A/Q
@@ -1972,7 +1971,6 @@ public:
   // I think. We need to check that in any case one and only one of them returns true, i.e. that
   // the conditions are disjoint or mutually exclusive - except in edge cases maybe.
 
-  // isLowShelf returns true even if the filter is a bell
 
   TPar getOmega() const
   {
@@ -1980,19 +1978,17 @@ public:
     {
       TPar r = gpr - g;
       TPar A = a1 / r;
-      return 2*atan(g*sqrt(A));
+      return 2*atan(g*sqrt(A));        // g = tan(w/2) / sqrt(A);
     }
     else if(isHighShelf())
     {
       TPar r = gpr - g;
       TPar A = a1 / r;
-      return 2*atan(g/sqrt(A));  // Needs test
+      return 2*atan(g/sqrt(A));        // g = tan(w/2) * sqrt(A)
     }
     else
-      return 2*atan(g);  // g = tan(w/2)
+      return 2*atan(g);                // g = tan(w/2)
   }
-
-
 
   TPar getQualityFactor() const
   {
