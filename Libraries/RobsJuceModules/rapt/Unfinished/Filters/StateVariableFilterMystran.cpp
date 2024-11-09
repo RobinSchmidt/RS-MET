@@ -31,9 +31,10 @@ from a ZDF-SVF. As mystran explains, the analog prototype response of this SVF i
           1  + s/Q  + s^2
 
 so the a-coefficients are the polynomial coefficients of the numerator of the s-domain 
-transfer function. If we can manage to bring a given s-domain transfer function into this form
-we can read off our mixing coeffs. The lowpass, highpass, bandpass, bandstop and allpass transfer
-functions are indeed of this form, so we can directly read off our a-coeffs from these. 
+transfer function. If we can manage to bring a given s-domain transfer function into this form,
+then we can directly read off our mixing coeffs from the transfer function. The lowpass, highpass,
+bandpass, bandstop and allpass transfer functions are indeed of this form, so we can directly read
+off our a-coeffs from these. 
 
 
 For the peak/bell filter, the RBJ prototype response is of the form:
@@ -82,7 +83,8 @@ coeffs from G as a0 = A, a1 = 1/Q, a2 = 1/A. Our  s <-> t  substitution means th
 scale the frequencies because that's the effect of multiplying s by a factor. But those coeffs
 will give a response that is off from the desired one by a scaling factor. The high frequency 
 gain is supposed to be unity and it is given by coeff in front of t^2, so it would be 1/A. To get
-it back to unity, we need to scale all coeffs by A such that:  a0 = A^2, a1 = A/Q, a2 = 1.
+it back to unity, we need to scale all coeffs by A such that:  a0 = A^2, a1 = A/Q, a2 = 1. 
+ToDo: Figure out what went wrong to require this additional scaling!
 
 
 For the high shelf the prototype transfer function is:
@@ -101,10 +103,6 @@ With this Sage code:
 We get:  (A^2*t^2 + A*t/Q + 1)*A/(A*t^2 + A + A*t/Q). Apparently, Sage didn't fully simplify the
 expression. We can cancel the A to get: (A^2*t^2 + A*t/Q + 1)/(t^2 + 1 + t/Q) so we read off:
 a0 = 1, a1 = A/Q, a2 = A^2. This time, we don't need to scale anything. The a0 coeff, i.e. the 
-lowpass gain, already came out as 1.
-
-
-
-
+lowpass gain, already came out as 1 as it should for high-shelving filter.
 
 */
