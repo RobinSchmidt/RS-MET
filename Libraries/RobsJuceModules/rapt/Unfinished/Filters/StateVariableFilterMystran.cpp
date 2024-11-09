@@ -14,11 +14,6 @@ ToDo:
 
 - Try to achieve more general responses
 
-- Maybe the general setup() function should go away and that functionality should be delegated to 
-  a higher level (i.e. a subclass or some embedding object). It's not so great to have to deal with
-  enums on the lowest DSP level because when they need to be expanded or changed, that may break 
-  recall of certain things on the plugin level. If we do not provide such an enum based API anyway,
-  we are save here.
 
 ---------------------------------------------------------------------------------------------------
 Algorithm
