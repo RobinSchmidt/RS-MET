@@ -163,15 +163,15 @@ protected:
 template<class TSig, class TPar>
 inline void rsStateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSig &yB, TSig &yH)
 {
-  // compute highpass output via Eq. 5.1:
+  // Compute highpass output via Eq. 5.1:
   //yH = (in - R2*s1 - g*s1 - s2) * h;  // 3 mul, 3 sub
   yH = (in - (R2+g) * s1 - s2) * h;     // 2 mul, 2 sub, 1 add - todo: precompute R2+g
 
-  // compute bandpass output by applying 1st integrator to highpass output:
+  // Compute bandpass output by applying 1st integrator to highpass output:
   yB = g*yH + s1;
   s1 = g*yH + yB; // state update in 1st integrator
 
-  // compute lowpass output by applying 2nd integrator to bandpass output:
+  // Compute lowpass output by applying 2nd integrator to bandpass output:
   yL = g*yB + s2;
   s2 = g*yB + yL; // state update in 2nd integrator
 

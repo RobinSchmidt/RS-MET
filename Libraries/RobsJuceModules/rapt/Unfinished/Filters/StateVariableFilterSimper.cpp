@@ -147,6 +147,9 @@ ToDo:
   are also hints for how to compute the transfer function. It's all buried in the Mathematica 
   code, though.
 
+- Maybe drag out separate setupLowpass, setupHighpass, etc. functions. That may make the class more
+  efficient when the setupLowpass, etc. functions are called per sample instead of the general
+  setup funcion because the switch statement is bypassed
 
 
 

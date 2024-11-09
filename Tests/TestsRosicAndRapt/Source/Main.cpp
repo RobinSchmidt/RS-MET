@@ -388,21 +388,15 @@ int main(int argc, char* argv[])
   //basicIntegerDelayLine();
 
   // Filter:
-  //allpassFDN();                    // Under construction
+  //allpassFDN();                  // Under construction
   //bandwidthScaling();
   //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();
   onePoleFilterSimper();           // Stub - maybe get rid of it!
   //sallenKeyFilterSimper();
-
-  //stateVariableFilter();
-  //stateVariableFilterMorph();
-  //stateVarFilterSimper();
-
-  stateVariableFilters();
-
-  //stateVectorFilter();   // just a stub, at the moment
-  //biquadModulation();      // compares modulation properties of various biquad structures
+  stateVariableFilters();          // Tests with various SVF implementations
+  //stateVectorFilter();           // Stub
+  //biquadModulation();            // compares modulation properties of various biquad structures
 
   //transistorLadder();    // triggers assert
   //phonoFilterPrototypePlot();

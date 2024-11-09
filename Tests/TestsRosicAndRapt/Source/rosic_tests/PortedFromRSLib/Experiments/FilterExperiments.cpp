@@ -1806,15 +1806,7 @@ void stateVarFilterSimper()
   getImpulseResponse(svf, &ySvf2[0], N);
   rsPlotVectors(yCbf, ySvf2);                   // Both should be the same
 
-
-
-
-
-
-
   int dummy = 0;
-
-
 
   // Observations:
   //
@@ -1879,7 +1871,7 @@ void stateVarFilterSimper()
   //   x[n], x[n-1], x[n-2], v1[n-1], v1[n-2]  for bandpass. See also the textfile
   //   StateVariableFilter.txt in the private repo
   //
-  // - Write functions toBiquad, fromBiquad to convert between biquad coeffs and SVF coeffs. See:
+  // - Write functions toBiquad, from Biquad to convert between biquad coeffs and SVF coeffs. See:
   //   https://cytomic.com/files/dsp/SvfLinearTrapezoidalSin.pdf  page 7
   //
   //
@@ -1893,11 +1885,74 @@ void stateVarFilterSimper()
   //   Maybe implement the SKF (Sallen-Key filter), too
 }
 
+
+template<class TSig, class TPar> // signal, parameter types
+class rsStateVariableFilterMystran
+{
+
+public:
+
+  //void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
+
+  void setupLowpass(TPar omega, TPar Q);
+
+
+  TSig getSample(TSig in);
+
+protected:
+
+  // State:
+  TSig z1 = 0, z2 = 0;
+
+  // Coeffs:
+  TPar a0 = 0, a1 = 0, a2 = 0;  // Mixing coeffs - maybe rename to aL, aB, aH
+  TPar g, r;                    // Filter coeffs
+
+};
+
+template<class TSig, class TPar>
+TSig rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
+{
+  g  = tan(0.5*w); 
+  r  = 1/Q;
+  a2 = 0;
+  a1 = 0;
+  a0 = 1;
+}
+
+
+template<class TSig, class TPar>
+TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
+{
+  // Compute outputs:
+  TSig hp = (in - (g+r)*z1 - z2) / (1 + g*(g+r));
+  TSig bp = z1 + g*hp; 
+  TSig lp = z2 + g*bp;
+
+  // State variable update:
+  z1 = 2*bp - z1;                // Equivalent to: z1 += 2*g*hp
+  z2 = 2*lp - z2;                // Equivalent to: z2 += 2*g*bp
+
+  // Mix final output:
+  return a2*hp + a1*bp + a0*lp;
+}
+
+void stateVarFilterMystran()
+{
+  // Trying to implement this:
+  //
+  //   https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653
+
+
+}
+
+
 void stateVariableFilters()
 {
-  stateVariableFilter();       // The old implementation following Vadim Zavalishin's book
-  stateVariableFilterMorph();  // Trying to figure otu hwo to morph between types
-  stateVarFilterSimper();      // The new implementation following Adrew Simper's paper
+  //stateVariableFilter();       // The old implementation following Vadim Zavalishin's book
+  //stateVariableFilterMorph();  // Trying to figure otu hwo to morph between types
+  //stateVarFilterSimper();      // The new implementation following Adrew Simper's paper
+  stateVarFilterMystran();
 }
 
 

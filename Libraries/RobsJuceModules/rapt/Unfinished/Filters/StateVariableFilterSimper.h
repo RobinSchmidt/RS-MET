@@ -44,12 +44,13 @@ public:
     NumModes
   };
 
-
   /** Sets up the filter coefficients so as to achieve the desired mode, cutoff, Q and gain. The 
   mode must be one of the values from the Mode enum, omega = 2*pi*freq/sampleRate is the usual 
   normalized radian frequency, Q is the quality factor which determines the resonance and A is the
   linear (!) gain for bell and shelf filter modes. */
   void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
+
+
 
 
   /** UNDER CONSTRUCTION....Does not yet work!
