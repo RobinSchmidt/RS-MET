@@ -2015,7 +2015,8 @@ public:
 
 
 
-  // ToDo: getOmega, getIntegratorGain, getBellGain, getLowShelfGain, getHighShelfGain
+  // ToDo: getBellGain, getLowShelfGain, getHighShelfGain. Should assert that filter is of the 
+  // assumed type
 
 
 
@@ -2153,8 +2154,33 @@ void stateVarFilterMystran()
   res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
 
+  svf.setupBandstop(w, Q);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == true;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
 
-
+  svf.setupAllpass(w, Q);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == true;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
 
   svf.setupBell(w, Q, A);
   ok &= svf.isLowpass()       == false;
