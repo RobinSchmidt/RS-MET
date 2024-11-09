@@ -2073,9 +2073,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
   // H(s) = (s^2 + s*(A/Q) + 1) / (s^2 + s/(A*Q) + 1)
 
   g  = tan(0.5*w); 
-  r  = 1/(Q*A);      // Q' = Q*A, r = 1/Q'
+  r  = 1/(Q*A);      // P = Q*A, r = 1/P
   a0 = 1;
-  a1 = A*A*r;        // A^2 / Q' = A/Q = A^2 * r
+  a1 = A*A*r;        // A^2 / P = A/Q = A^2 * r
   a2 = 1;
 }
 
@@ -2084,18 +2084,17 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
 {
   // H(s) = A * (s^2 + (sqrt(A)/Q)*s + A)/(A*s^2 + (sqrt(A)/Q)*s + 1)
 
-  g = tan(0.5*w) / sqrt(A);
+  //g  = tan(0.5*w) / sqrt(A);
 
+  //g  = tan(0.5 * w / sqrt(A));
 
+  r  = 1/Q;
+  a0 = A;
+  a1 = r;
+  a2 = 1/A;
 
-  //g  = tan(0.5*w); 
-  //r  = 1/(Q*A);      // Q' = Q*A, r = 1/Q'
-  //a0 = 1;
-  //a1 = A*A*r;        // A^2 / Q' = A/Q = A^2 * r
-  //a2 = 1;
+  // This doesn't seem to work right
 }
-
-//   void setupLowShelf(     TPar omega, TPar Q, TPar A);
 
 template<class TSig, class TPar>
 TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
@@ -2173,11 +2172,7 @@ void stateVarFilterMystran()
 
 
 
-  // var("s Q A P t")
-  //  H = A*(s^2+sqrt(A)/Q*s+A)/(A*s^2+sqrt(A)/Q*s+1)
-  //  G = H.subs(s == t/sqrt(A))
-  //  #F = G.subs(Q == P/A)
-  //  H, G
+
 
   using Real  = double;
   using Vec   = std::vector<Real>;
@@ -2226,6 +2221,7 @@ void stateVarFilterMystran()
   ok &= runTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
 
   ok &= runTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
+  // Nope! That seems to be still wrong!
 
 
   rsAssert(ok);
