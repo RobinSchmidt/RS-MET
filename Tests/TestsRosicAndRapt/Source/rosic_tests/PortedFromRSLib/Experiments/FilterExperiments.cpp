@@ -1926,6 +1926,8 @@ public:
   void setupBandpassSkirt(TPar omega, TPar Q);
   void setupBandpassPeak( TPar omega, TPar Q);
   void setupBandstop(     TPar omega, TPar Q);
+  void setupAllpass(      TPar omega, TPar Q);
+  void setupBell(         TPar omega, TPar Q, TPar A);
 
 
 
@@ -1956,12 +1958,15 @@ void rsStateVariableFilterMystran<TSig, TPar>::setup(Mode mode, TPar w, TPar Q, 
 {
   switch(mode)
   {
-  case Mode::Bypass:        setupBypass();             break;
-  case Mode::Lowpass:       setupLowpass(      w, Q);  break;
-  case Mode::Highpass:      setupHighpass(     w, Q);  break;
-  case Mode::BandpassSkirt: setupBandpassSkirt(w, Q);  break;
-  case Mode::BandpassPeak:  setupBandpassPeak( w, Q);  break;
-  case Mode::Bandstop:      setupBandstop(     w, Q);  break;
+  case Mode::Bypass:        setupBypass();               break;
+  case Mode::Lowpass:       setupLowpass(      w, Q);    break;
+  case Mode::Highpass:      setupHighpass(     w, Q);    break;
+  case Mode::BandpassSkirt: setupBandpassSkirt(w, Q);    break;
+  case Mode::BandpassPeak:  setupBandpassPeak( w, Q);    break;
+  case Mode::Bandstop:      setupBandstop(     w, Q);    break;
+  case Mode::Allpass:       setupAllpass(      w, Q);    break;
+
+  case Mode::Bell:          setupBell(         w, Q, A); break;
 
 
   default:
@@ -1980,65 +1985,98 @@ void rsStateVariableFilterMystran<TSig, TPar>::setup(Mode mode, TPar w, TPar Q, 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupBypass()
 {
-  // Verify, if this really gives a bypass mode
+  // H(s) = 1 
+
   g  = 0; 
   r  = 0;
-  a2 = 1;
-  a1 = 0;
   a0 = 0;
+  a1 = 0;
+  a2 = 1;
 }
 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
 {
+  // H(s) = 1 / (s^2 + s/Q + 1)
+
   g  = tan(0.5*w); 
   r  = 1/Q;
-  a2 = 0;
-  a1 = 0;
   a0 = 1;
+  a1 = 0;
+  a2 = 0;
 }
 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
 {
+  // H(s) = s^2 / (s^2 + s/Q + 1)
+
   g  = tan(0.5*w); 
   r  = 1/Q;
-  a2 = 1;
-  a1 = 0;
   a0 = 0;
+  a1 = 0;
+  a2 = 1;
 }
 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q)
 {
+  // H(s) = s / (s^2 + s/Q + 1)  (constant skirt gain, peak gain = Q)
+
   g  = tan(0.5*w); 
   r  = 1/Q;
-  a2 = 0;
-  a1 = 1;
   a0 = 0;
+  a1 = 1;
+  a2 = 0;
 }
 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
 {
+  // H(s) = (s/Q) / (s^2 + s/Q + 1)      (constant 0 dB peak gain)
+
   g  = tan(0.5*w); 
   r  = 1/Q;
-  a2 = 0;
-  a1 = r;
   a0 = 0;
+  a1 = r;
+  a2 = 0;
 }
 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupBandstop(TPar w, TPar Q)
 {
+  // H(s) = (s^2 + 1) / (s^2 + s/Q + 1)
+
   g  = tan(0.5*w); 
   r  = 1/Q;
-  a2 = 1;
-  a1 = 0;
   a0 = 1;
+  a1 = 0;
+  a2 = 1;
 }
 
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setupAllpass(TPar w, TPar Q)
+{
+  // H(s) = (s^2 - s/Q + 1) / (s^2 + s/Q + 1)
 
+  g  = tan(0.5*w); 
+  r  = 1/Q;
+  a0 = 1;
+  a1 = -r;
+  a2 = 1;
+}
+
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
+{
+  // H(s) = (s^2 + s*(A/Q) + 1) / (s^2 + s/(A*Q) + 1)
+
+  g  = tan(0.5*w); 
+  r  = 1/(Q*A);      // Q' = Q*A
+  a0 = 1;
+  a1 = (A*A)/(Q*A);  // A^2 / Q' = 
+  a2 = 1;
+}
 
 
 
@@ -2093,7 +2131,7 @@ void stateVarFilterMystran()
     Vec h_s = getImpulseResponse(svf_s, N, Real(1));
     Vec h_m = getImpulseResponse(svf_m, N, Real(1));
     bool ok = rsIsCloseTo(h_s, h_m, tol);
-    //if(!ok)
+    if(!ok)
       rsPlotVectors(h_s, h_m);
 
     return ok;
@@ -2108,9 +2146,10 @@ void stateVarFilterMystran()
   ok &= runTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::BandpassPeak,  1000.0, 5.0, 0.0, tol);
   ok &= runTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
 
 
-
+  ok &= runTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
 
 
   rsAssert(ok);

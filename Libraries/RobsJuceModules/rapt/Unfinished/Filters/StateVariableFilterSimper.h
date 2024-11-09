@@ -134,6 +134,7 @@ void rsStateVariableFilterSimper<TSig, TPar>::setup(Mode mode, TPar omega, TPar 
     m0 =  1;
     m1 = -k;
     m2 = -1;
+    // highpass = input - k*bandpass - lowpass
   }
   break;
 
@@ -163,6 +164,7 @@ void rsStateVariableFilterSimper<TSig, TPar>::setup(Mode mode, TPar omega, TPar 
     m0 =  1;
     m1 = -k;
     m2 =  0;
+    // notch = input - bandpass
   }
   break;
 
@@ -183,6 +185,7 @@ void rsStateVariableFilterSimper<TSig, TPar>::setup(Mode mode, TPar omega, TPar 
     m0 = 1;
     m1 = k*(A*A - 1);
     m2 = 0;
+    // bell = input + c * bandpass
   }
   break;
 
