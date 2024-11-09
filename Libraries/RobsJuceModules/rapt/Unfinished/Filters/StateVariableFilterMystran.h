@@ -202,9 +202,14 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
 
   g  = tan(0.5*w) / sqrt(A);
   r  = 1/Q;
-  a0 = A;
-  a1 = r;
-  a2 = 1/A;
+
+  //TPar s = sqrt(A);
+  //TPar s = 1/sqrt(A);
+  TPar s = A;
+
+  a0 = s * A;
+  a1 = s * r;
+  a2 = s / A;
 
   // This doesn't seem to work right
 }
