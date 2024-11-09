@@ -1964,14 +1964,20 @@ public:
   {
     if(isBell())
     {
-      rsError("I don't know hwo to compute Q");
+      //TPar test = sqrt(-1/(a1*g - a1*gpr));
 
+      //rsError("I don't know how to compute Q");
+      // In the case of bell filters, we have r = 1/(Q*A) rather than r = 1/Q. We can compute r
+      // via r = gpr-g but we don't know A. Can we compute it somehow? Let's see...
+
+      return sqrt(-1/(a1*g - a1*gpr));
       //return sqrt(a1); // Nope! That's wrong
+
       // We have 3 equations involving r, Q, A: (1) r = 1/(Q*A), (2) gpr = g + r, (3) a1 = A^2 * r
       // where the knowns are  gpr, g, a1  and the unknowns are r, Q, A. We can plug (1) in (2)
       // to get: (4) gpr = g + 1/(Q*A)  and solve that for  A = 1/(Q*(gpr-g))  Then we plug that
-      // into (3) to get: (5) a1 = r / (Q^2)
-      // We can solve (1) for 
+      // into (3) to get: (5) a1 = r / (Q^2) 
+
 
     }
     else
@@ -1989,6 +1995,18 @@ public:
 
 };
 // Maybe move into rs_testing module
+
+/*
+var("gpr g a1 r  Q A")
+e1 = r   == 1/(Q*A)
+e2 = gpr == g + r
+e3 = a1  == A^2 * r
+solve([e1,e2,e3],[r,Q,A])
+
+[[r == -g + gpr, Q ==  sqrt(-1/(a1*g - a1*gpr)), A == -1/((g - gpr)*sqrt(-1/(a1*g - a1*gpr)))], 
+ [r == -g + gpr, Q == -sqrt(-1/(a1*g - a1*gpr)), A ==  1/((g - gpr)*sqrt(-1/(a1*g - a1*gpr)))]]
+
+*/
 
 
 void stateVarFilterMystran()
@@ -2064,6 +2082,7 @@ void stateVarFilterMystran()
 
   svf.setupBell(w, Q, A);
   res = svf.getQualityFactor();
+  ok &= rsIsCloseTo(res, Q, 1.e-15);
 
 
   // ToDo: check that all other is.. functions return false
