@@ -2,6 +2,18 @@
 #define RAPT_STATEVARIABLEFILTERMYSTRAN_H
 
 
+/** A zero delay feedback (ZDF) state variable filter (SVF). It offers all the frequency responses
+from the RBJ biquad cookbook. The filter is parameterized in terms of the normalized radian 
+frequency omega = 2*pi*frequency/sampleRate, the quality factor Q and for bell and shelving 
+filters, the linear gain A. High values of Q generally mean "more resonance" or "narrower 
+bandwidths". The filter is based on trapezoidal integration using TDF2 integrators.
+
+It implements this idea:
+
+  https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653
+
+See comments in the .cpp file for some more details.  */
+
 template<class TSig, class TPar> // signal, parameter types
 class rsStateVariableFilterMystran
 {
@@ -29,7 +41,8 @@ public:
   };
 
   void setup(Mode mode, TPar omega, TPar Q, TPar A = TPar(1));
-  // Convenience function
+  // Convenience function...not sure about this...maybe get rid. An API like that is more suitable
+  // for a higher level, I think.
 
 
   // Separate setup functions for the different modes to allow to bypass the switch-statement in 
@@ -64,13 +77,9 @@ protected:
 
   // Coeffs:
   TPar a0 = 0, a1 = 0, a2 = 0;  // Mixing coeffs - maybe rename to aL, aB, aH
-  TPar g  = 0;                  // Integrator gain (?)
-  
-  TPar r  = 0;          // Damping (?)
-
-
-  TPar gpr = 0;
-  TPar scl = 1;
+  TPar g   = 0;                 // Integrator gain (?)
+  TPar gpr = 0;                 // g + r where r is the damping (I think)
+  TPar scl = 1;                 // Scaler given by 1 / (1 + g*(g+r));
 
 };
 
@@ -93,7 +102,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setup(Mode mode, TPar w, TPar Q, 
   {
     rsError("Unknown filter type in rsStateVariableFilterMystran::setup");
     a0 = a1 = a2 = 0;
-    g = r = 0;
+    g = 0;
     gpr = 0;
     scl = 0;
   };
@@ -106,7 +115,6 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBypass()
   // H(s) = 1 
 
   g   = 0; 
-  r   = 0;
   gpr = 0;
   scl = 1;
   a0  = 0;
@@ -119,8 +127,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
 {
   // H(s) = 1 / (s^2 + s/Q + 1)
 
+  TPar r = 1/Q;
   g   = tan(0.5*w); 
-  r   = 1/Q;
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
   a0  = 1;
@@ -133,8 +141,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
 {
   // H(s) = s^2 / (s^2 + s/Q + 1)
 
+  TPar r = 1/Q;
   g   = tan(0.5*w); 
-  r   = 1/Q;
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
   a0  = 0;
@@ -145,10 +153,10 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q)
 {
-  // H(s) = s / (s^2 + s/Q + 1)  (constant skirt gain, peak gain = Q)
+  // H(s) = s / (s^2 + s/Q + 1)   (constant skirt gain, peak gain = Q)
 
+  TPar r = 1/Q;
   g   = tan(0.5*w); 
-  r   = 1/Q;
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
   a0  = 0;
@@ -159,10 +167,10 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
 {
-  // H(s) = (s/Q) / (s^2 + s/Q + 1)      (constant 0 dB peak gain)
+  // H(s) = (s/Q) / (s^2 + s/Q + 1)   (constant 0 dB peak gain)
 
+  TPar r = 1/Q;
   g   = tan(0.5*w); 
-  r   = 1/Q;
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
   a0  = 0;
@@ -175,8 +183,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandstop(TPar w, TPar Q)
 {
   // H(s) = (s^2 + 1) / (s^2 + s/Q + 1)
 
+  TPar r = 1/Q;
   g   = tan(0.5*w); 
-  r   = 1/Q;
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
   a0  = 1;
@@ -189,8 +197,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupAllpass(TPar w, TPar Q)
 {
   // H(s) = (s^2 - s/Q + 1) / (s^2 + s/Q + 1)
 
+  TPar r = 1/Q;
   g   = tan(0.5*w); 
-  r   = 1/Q;
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
   a0  = 1;
@@ -203,12 +211,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
 {
   // H(s) = (s^2 + s*(A/Q) + 1) / (s^2 + s/(A*Q) + 1)
 
+  TPar r = 1/(Q*A);
   g   = tan(0.5*w); 
-  r   = 1/(Q*A);                  // P = Q*A, r = 1/P
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
   a0  = 1;
-  a1  = A*A*r;                    // A^2 / P = A/Q = A^2 * r
+  a1  = A*A*r;
   a2  = 1;
 }
 
@@ -217,13 +225,13 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
 {
   // H(s) = A * (s^2 + (sqrt(A)/Q)*s + A)/(A*s^2 + (sqrt(A)/Q)*s + 1)
 
+  TPar r = 1/Q;
   g   = tan(0.5*w) / sqrt(A);
-  r   = 1/Q;
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
   a0  = A*A;
   a1  = A*r;
-  a2  = 1;                        // High-freq gain should be one for a low-shelf.
+  a2  = 1;                             // High-freq gain should be one for a low-shelf.
 }
 
 template<class TSig, class TPar>
@@ -231,11 +239,11 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TP
 {
   // H(s) = A * (A*s^2 + (sqrt(A)/Q)*s + 1)/(s^2 + (sqrt(A)/Q)*s + A)
 
+  TPar r = 1/Q;
   g   = tan(0.5*w) * sqrt(A);
-  r   = 1/Q;
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 1;                        // Low-freq gain should be one for a low-shelf.
+  a0  = 1;                             // Low-freq gain should be one for a low-shelf.
   a1  = A*r;
   a2  = A*A;
 }
@@ -245,28 +253,16 @@ template<class TSig, class TPar>
 TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
 {
   // Compute outputs:
-  //TSig hp = (in - (g+r)*z1 - z2) / (1 + g*(g+r));
-  TSig hp = (in - gpr*z1 - z2) * scl;
+  TSig hp = (in - gpr*z1 - z2) * scl;  // == (in - (g+r)*z1 - z2) / (1 + g*(g+r));
   TSig bp = z1 + g*hp; 
   TSig lp = z2 + g*bp;
 
   // State variable update:
-  z1 = 2*bp - z1;                // Equivalent to: z1 += 2*g*hp
-  z2 = 2*lp - z2;                // Equivalent to: z2 += 2*g*bp
+  z1 = 2*bp - z1;                      // Equivalent to: z1 += 2*g*hp
+  z2 = 2*lp - z2;                      // Equivalent to: z2 += 2*g*bp
 
   // Mix final output:
   return a2*hp + a1*bp + a0*lp;
-
-  // ToDo:
-  //
-  // - Optimize: Precompute g+r and 1/(1+g*(g+r)) in the setup functions. We may then get rid of
-  //   the r member variable
 }
-
-
-
-
-
-
 
 #endif

@@ -6,25 +6,24 @@
 
 ToDo:
 
+- Maybe have a "Muted" mode before "Bypass"
+
 - Add a getTransferFunctionAt(std::complex<TPar> z).
 
 - Add a setupFromBiquad(TPar b0, ...) function
 
 - Try to achieve more general responses
 
+- Maybe the general setup() function should go away and that functionality should be delegated to 
+  a higher level (i.e. a subclass or some embedding object). It's not so great to have to deal with
+  enums on the lowest DSP level because when they need to be expanded or changed, that may break 
+  recall of certain things on the plugin level. If we do not provide such an enum based API anyway,
+  we are save here.
 
 ---------------------------------------------------------------------------------------------------
 Algorithm
 
-This filter implements this idea:
-
-  https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653
-
-to obtain the cookbook biquad transfer functions given here:
-
-  https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/OtherAuthors/Audio-EQ-Cookbook.txt
-
-from a ZDF-SVF. As mystran explains, the analog prototype response of this SVF is:
+As mystran explains, the analog prototype response of this SVF is:
 
           a0 + a1 s + a2 s^2
   H(s) = --------------------
@@ -32,9 +31,13 @@ from a ZDF-SVF. As mystran explains, the analog prototype response of this SVF i
 
 so the a-coefficients are the polynomial coefficients of the numerator of the s-domain 
 transfer function. If we can manage to bring a given s-domain transfer function into this form,
-then we can directly read off our mixing coeffs from the transfer function. The lowpass, highpass,
-bandpass, bandstop and allpass transfer functions are indeed of this form, so we can directly read
-off our a-coeffs from these. 
+then we can directly read off our mixing coeffs from the transfer function. From the RBJ
+cookbook filters descirbed here:
+
+  https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/OtherAuthors/Audio-EQ-Cookbook.txt
+
+the lowpass, highpass, bandpass, bandstop and allpass transfer functions are indeed of this form, 
+so we can directly read off our a-coeffs from these. 
 
 
 For the peak/bell filter, the RBJ prototype response is of the form:
