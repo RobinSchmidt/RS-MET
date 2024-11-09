@@ -14,6 +14,11 @@ ToDo:
 
 - Try to achieve more general responses
 
+- Provide a getOutputs(in, outLP, outBP, outHP) function such that the user can obtain all 3 
+  outputs and mix them by themselves. 
+
+- Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
+
 
 ---------------------------------------------------------------------------------------------------
 Algorithm
