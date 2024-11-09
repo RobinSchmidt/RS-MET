@@ -12,9 +12,14 @@ void biquadModulation();
 void brickwallAndAllpass();
 void onePoleFilterSimper();
 void sallenKeyFilterSimper();
-void stateVariableFilter();
-void stateVariableFilterMorph();
-void stateVarFilterSimper();
+
+
+//void stateVariableFilter();
+//void stateVariableFilterMorph();
+//void stateVarFilterSimper();
+
+void stateVariableFilters();
+
 void stateVectorFilter();
 void transistorLadder();
 void phonoFilterPrototypePlot();

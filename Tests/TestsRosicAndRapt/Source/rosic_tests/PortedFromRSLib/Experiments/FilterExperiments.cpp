@@ -1893,6 +1893,14 @@ void stateVarFilterSimper()
   //   Maybe implement the SKF (Sallen-Key filter), too
 }
 
+void stateVariableFilters()
+{
+  stateVariableFilter();       // The old implementation following Vadim Zavalishin's book
+  stateVariableFilterMorph();  // Trying to figure otu hwo to morph between types
+  stateVarFilterSimper();      // The new implementation following Adrew Simper's paper
+}
+
+
 void stateVectorFilter()
 {
   // Idea: create a filter similar to the complex-phasor filter, but more general, using a 2D
