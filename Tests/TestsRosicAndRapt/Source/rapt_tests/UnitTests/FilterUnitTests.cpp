@@ -1300,9 +1300,10 @@ bool stateVariableFilterUnitTest4()
 
   // Test evaluation of transfer function:
   N = 1024;
-  Vec ws = rsLinearRangeVector(N, 0, 2*PI);  // maybe go only up to pi
+  Vec ws = rsLinearRangeVector(N, 0, PI);  // maybe go only up to pi
   Vec mag(N);
-  svf.setupLowpass(w, Q);
+  svf.setupLowpass(0.5, 8.0);
+  //svf.setupBell(2.5, 8.0, 2.0);
   for(int k = 0; k < N; k++)
   {
     rsComplex<Real> j(0,1);
@@ -1311,7 +1312,7 @@ bool stateVariableFilterUnitTest4()
     mag[k] = rsAbs(H);
   }
   rsPlotVectorsXY(ws, mag);
-  // OK - looks reasonable
+  // OK - looks reasonable - or well... the frequency axis scaling may be off
 
 
   rsAssert(ok);

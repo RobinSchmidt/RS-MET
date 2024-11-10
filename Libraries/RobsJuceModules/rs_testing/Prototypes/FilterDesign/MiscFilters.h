@@ -295,7 +295,18 @@ public:
 
     TPar w = getOmega();
     TPar Q = getQualityFactor();
-    rsComplex<TPar> s = (w/tan(0.5*w)) * (z-TPar(1))/(z+TPar(1));
+
+    //rsComplex<TPar> s = (w/tan(0.5*w)) * (z-TPar(1))/(z+TPar(1));
+
+    //rsComplex<TPar> s = (w/g) * (z-TPar(1))/(z+TPar(1));
+
+    //rsComplex<TPar> s = (z-TPar(1)) / (z+TPar(1));   // Nope!
+
+    //rsComplex<TPar> s = g * (z-TPar(1)) / (z+TPar(1));   // ?
+
+    rsComplex<TPar> s = (1/g) * (z-TPar(1)) / (z+TPar(1)); // That looks good!
+
+
     return (a0 + a1*s + a2*s*s) / (TPar(1) + s/Q + s*s);
 
     // Someday, we want to have a proper implementation that directly computes H(z) in terms of
