@@ -1306,8 +1306,6 @@ bool stateVariableFilterUnitTest4()
   // - Add the mystran SVF to the modulation tests.
 }
 
-
-
 bool stateVariableFilterUnitTest()
 {
   bool ok = true;
