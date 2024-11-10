@@ -1300,15 +1300,11 @@ bool stateVariableFilterUnitTest4()
 
 
 
-  svf.setupLowpass(2.5, 8.0);
-  rsComplex<Real> j(0,1);
-  rsComplex<Real> z = rsExp(j*PI);
-  rsComplex<Real> H = svf.getTransferFunctionAt(z);
-  Real mag = rsAbs(H);
-  int dummy = 0;
 
 
 
+  // Helper function to design a cookbook biquad. We need this to produce the reference magnitude 
+  // responses
   auto designBiquad = [&](Mode mode, Real freq, Real Q, Real gainDb, 
     Real& b0, Real& b1, Real& b2, Real& a1, Real& a2)
   {
@@ -1328,23 +1324,8 @@ bool stateVariableFilterUnitTest4()
       BD::calculateCookbookBandrejectCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
 
 
-
-
-
-
-
     };
-
-
   };
-
-
-
-
-
-
-
-
   
   // Helper function to compare the calculated transfer functions between the SVF and some 
   // reference filter
@@ -1374,7 +1355,6 @@ bool stateVariableFilterUnitTest4()
       mag_svf[k] = rsAbs(H);
       mag_bqd[k] = rosic::BiquadDesigner::getBiquadMagnitudeAt(
         b0, b1, b2, a1, a2, ws[k]/(2*PI), 1.0);
-        // Produces NaN in the very last bin where ws[k] = PI
     }
 
     // Check if they are the same. If not, we may want to look at a plot to spot the problem:
@@ -1394,9 +1374,9 @@ bool stateVariableFilterUnitTest4()
   tol = 1.e-9;
   ok &= runTransferFuncTest(Mode::Lowpass,       1000, 8.0, 0.0, 1.e-9);
   ok &= runTransferFuncTest(Mode::Highpass,      1000, 8.0, 0.0, 1.e-6);
-  ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, tol);
+  ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, 1.e-9);
   //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol);
-  ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, tol);
+  ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, 1.e-10);
 
 
   // We need a rather high tolerance here. The error is greatest around the resonance peak for the
@@ -1404,25 +1384,6 @@ bool stateVariableFilterUnitTest4()
 
 
 
-
-
-  /*
-  // Test evaluation of transfer function:
-  N = 1024;
-  Vec ws = rsLinearRangeVector(N, 0, PI);  // maybe go only up to pi
-  Vec mag(N);
-  svf.setupLowpass(2.5, 8.0);
-  //svf.setupBell(2.5, 8.0, 2.0);
-  for(int k = 0; k < N; k++)
-  {
-    rsComplex<Real> j(0,1);
-    rsComplex<Real> z = rsExp(j*ws[k]);
-    rsComplex<Real> H = svf.getTransferFunctionAt(z);
-    mag[k] = rsAbs(H);
-  }
-  rsPlotVectorsXY(ws, mag);
-  // OK - looks reasonable - or well... the frequency axis scaling may be off
-  */
 
 
   rsAssert(ok);
