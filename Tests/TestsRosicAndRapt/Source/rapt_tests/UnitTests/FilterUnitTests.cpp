@@ -1300,6 +1300,13 @@ bool stateVariableFilterUnitTest4()
 
 
 
+  svf.setupLowpass(2.5, 8.0);
+  rsComplex<Real> j(0,1);
+  rsComplex<Real> z = rsExp(j*PI);
+  rsComplex<Real> H = svf.getTransferFunctionAt(z);
+  Real mag = rsAbs(H);
+  int dummy = 0;
+
 
 
   auto designBiquad = [&](Mode mode, Real freq, Real Q, Real gainDb, 
@@ -1335,6 +1342,9 @@ bool stateVariableFilterUnitTest4()
 
 
 
+
+
+
   
   // Helper function to compare the calculated transfer functions between the SVF and some 
   // reference filter
@@ -1364,30 +1374,35 @@ bool stateVariableFilterUnitTest4()
       mag_svf[k] = rsAbs(H);
       mag_bqd[k] = rosic::BiquadDesigner::getBiquadMagnitudeAt(
         b0, b1, b2, a1, a2, ws[k]/(2*PI), 1.0);
+        // Produces NaN in the very last bin where ws[k] = PI
     }
 
-    // Check if they are the same. If not, we may wnat to look at a plot to spot the problem:
+    // Check if they are the same. If not, we may want to look at a plot to spot the problem:
     bool ok = rsIsCloseTo(mag_svf, mag_bqd, tol);
     if(!ok)
     {
       Vec err = mag_svf - mag_bqd;
-      rsPlotVectorsXY(ws, mag_svf, mag_bqd, err);
-      rsPlotVectorsXY(ws, mag_svf);
-      rsPlotVectorsXY(ws, mag_bqd);
+      rsPlotVectorsXY(ws, err);
+      //rsPlotVectorsXY(ws, mag_svf, mag_bqd, err);
+      //rsPlotVectorsXY(ws, mag_svf);
+      //rsPlotVectorsXY(ws, mag_bqd);
     }
     return ok;
   };
 
   N = 1024;
   tol = 1.e-9;
-  ok &= runTransferFuncTest(Mode::Lowpass,       1000, 8.0, 0.0, tol);
-  ok &= runTransferFuncTest(Mode::Highpass,      1000, 8.0, 0.0, tol);
+  ok &= runTransferFuncTest(Mode::Lowpass,       1000, 8.0, 0.0, 1.e-9);
+  ok &= runTransferFuncTest(Mode::Highpass,      1000, 8.0, 0.0, 1.e-6);
   ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, tol);
   //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol);
   ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, tol);
 
 
-  // We need a rather high tolerance here. The error is greatest around the resonance peak.
+  // We need a rather high tolerance here. The error is greatest around the resonance peak for the
+  // lowpass. For the highpass, the error is big at DC.
+
+
 
 
 

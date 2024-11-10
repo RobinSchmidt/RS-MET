@@ -13,7 +13,21 @@ double BiquadDesigner::getBiquadMagnitudeAt(const double &b0, const double &b1, 
 
   double num = b0*b0 + b1*b1   + b2*b2   + 2.0*(b0*b1 + b1*b2)  *c1 + 2.0*b0*b2*c2;
   double den = 1.0   + a1m*a1m + a2m*a2m + 2.0*(  a1m + a1m*a2m)*c1 + 2.0*  a2m*c2;
-  double mag = sqrt(num/den);
+  //double mag = sqrt(num/den);              // Old
+  double mag = sqrt(std::max(num,0.0)/den);  // New
+
+  //RAPT::rsAssert(RAPT::rsIsFiniteNumber(mag));
+  // With:
+  //
+  //   b0 = 0.0050216978251745245, b1 = 0.010043395650349049, b2 = 0.0050216978251745245, 
+  //   a1 = 1.9623200519727306, a2 = -0.98240684327342864, frequency = 0.5, sampleRate = 1
+  //
+  // we get: 
+  //
+  //   num = -6.7762635780344027e-21
+  //
+  // and calling sqrt with that produces a NaN. That's why we need to use max(num,0) inside the
+  // sqrt
 
   return mag;
 }
