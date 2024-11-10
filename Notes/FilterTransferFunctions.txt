@@ -229,7 +229,9 @@ This is our desired final form of:
 
 with 
 
-  b0 = g*s, b1 = 2*g*s, b2 = g*s, a0 = 1/g, a1 = -2/g + 2*c*s + 2*g*s, a2 = 1/g - 2*c*s + 2*g*s
+  ┌───────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ b0 = g*s, b1 = 2*g*s, b2 = g*s, a0 = 1/g, a1 = -2/g + 2*c*s + 2*g*s, a2 = 1/g - 2*c*s + 2*g*s │
+  └───────────────────────────────────────────────────────────────────────────────────────────────┘
 
 For the highpass and bandpass transfer function, we need to do something similar to end up with 
 expressions for B/X and H/X ...or maybe we could backsubstitute our lowpass result somewhere?
@@ -277,7 +279,9 @@ So:
 
 We read off:
 
-  b0 = s, b1 = -2*s, b2 = s, a0 = 1, a1 = 2*c*g*s + 2*g*g*s - 2, a2 = -2*c*g*s + 2*g*g*s + 1
+  ┌────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ b0 = s, b1 = -2*s, b2 = s, a0 = 1, a1 = 2*c*g*s + 2*g*g*s - 2, a2 = -2*c*g*s + 2*g*g*s + 1 │
+  └────────────────────────────────────────────────────────────────────────────────────────────┘
 
 OK - and now finally for the bandpass. For this, we go back to equation (12) which is repeated here:
 
@@ -309,6 +313,11 @@ and bring it over to the left:
    X     (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)        Denominator
 
 We recognize that the denominator is the same as in the highpass case, so our a0,a1,a2 coeffs will
-be the same as for highpass. The b-coeffs are: b0 = g*s, b1 = 0, b2 = -g*s.
+be the same as for highpass. The b-coeffs are: 
+
+  ┌────────────────────────────────────────────────────────────┐
+  │ b0 = g*s, b1 = 0, b2 = -g*s, a-coeffs same as for highpass │
+  └────────────────────────────────────────────────────────────┘
+
 
 
