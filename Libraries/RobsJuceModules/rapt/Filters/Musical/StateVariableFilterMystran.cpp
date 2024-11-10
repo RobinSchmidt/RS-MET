@@ -26,6 +26,10 @@ ToDo:
   the mixing coeffs. I think, we have  LP: 1,0,0  HP: 0,0,1  BPS: 0,1,0  BPP: 0,+,0  BS: 1,0,1  
   AP: 1,-,1  PK: 1,+,1  LS: +,+,1  HS: 1,+,+.
 
+- In the prototype folder in MiscFilters.h, there is some subclass  rsStateVariableFilterMystran2
+  that extends this class by some add-on functionality. Maybe someday, some of it should be
+  dragged over.
+
 ---------------------------------------------------------------------------------------------------
 Algorithm
 

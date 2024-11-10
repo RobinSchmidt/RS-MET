@@ -287,7 +287,7 @@ public:
     return a1 / (gpr - g);
   }
 
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
+  rsComplex<TPar> getTransferFunctionAtOld(const rsComplex<TPar>& z)
   {
     // We cheat here. We know that the filter has the s-domain trasfer function 
     // H(s) = (a0 + a1*s + a2*s^2) / (1 + s/Q + s^2) and we know that we need to substitute
@@ -309,6 +309,8 @@ public:
       return (a0 + a1*s + a2*s*s) / (TPar(1) + s/(Q/A) + s*s); // 
 
       //return (a0 + a1*s*A + a2*s*s) / (TPar(1) + s/Q + s*s);  // Wrong
+
+      // Or maybe there were not wrong - it seems that the reference may have been wrong
     }
 
     return (a0 + a1*s + a2*s*s) / (TPar(1) + s/Q + s*s);
@@ -320,6 +322,14 @@ public:
 
 
 
+  // New - needs test:
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
+  {
+    rsComplex<TPar> H_lp = getLowpassTransferFunctionAt(z);
+    rsComplex<TPar> H_bp = getBandpassTransferFunctionAt(z);
+    rsComplex<TPar> H_hp = getHighpassTransferFunctionAt(z);
+    return a0*H_lp + a1*H_bp + a2*H_hp;
+  }
 
   rsComplex<TPar> getLowpassTransferFunctionAt(const rsComplex<TPar>& z)
   {
@@ -331,7 +341,7 @@ public:
     TPar a0 =  1/g;
     TPar a1 = -2/g + 2*c*s + 2*g*s;
     TPar a2 =  1/g - 2*c*s + 2*g*s;
-    rsComplex<TPar> d = TPar(1)/z, d2 = d*d;               // d = z^-1, d2 = z^-2
+    rsComplex<TPar> d = TPar(1)/z, d2 = d*d; // d = z^-1, d2 = z^-2
     rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (a0 + a1*d + a2*d2);
     return H;
   }
@@ -364,6 +374,8 @@ public:
     rsComplex<TPar> d = TPar(1)/z, d2 = d*d;
     rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (a0 + a1*d + a2*d2);
     return H;
+
+    // Note: The a-coeffs are the same as in the highpass case.
   }
 
 

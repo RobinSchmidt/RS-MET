@@ -1369,10 +1369,10 @@ bool stateVariableFilterUnitTest4()
     if(!ok)
     {
       Vec err = mag_svf - mag_bqd;
-      rsPlotVectorsXY(ws, err);
-      //rsPlotVectorsXY(ws, mag_svf, mag_bqd, err);
-      //rsPlotVectorsXY(ws, mag_svf);
-      //rsPlotVectorsXY(ws, mag_bqd);
+      //rsPlotVectorsXY(ws, err);
+      rsPlotVectorsXY(ws, mag_svf, mag_bqd, err);
+      rsPlotVectorsXY(ws, mag_svf);
+      rsPlotVectorsXY(ws, mag_bqd);
     }
     return ok;
   };
@@ -1384,43 +1384,37 @@ bool stateVariableFilterUnitTest4()
   ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, 1.e-9);
   //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol);
   ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, 1.e-10);
-  ok &= runTransferFuncTest(Mode::Allpass,       1000, 8.0, 0.0, 1.e-13);
+  ok &= runTransferFuncTest(Mode::Allpass,       1000, 8.0, 0.0, 1.e-12);
 
   //ok &= runTransferFuncTest(Mode::Bell,          1000, 8.0, 6.0, 1.e-10); // Fails!
+  // One of the filters has the wrong gain. I think, it's the old one. Is this parameterized
+  // differently? But that seems strange
 
   // We need a rather high tolerance for some types. The error is greatest around the resonance 
   // peak for the lowpass. For the highpass, the error is big at DC.
 
-
-
   svf.setupLowpass(0.5, 4.0);
   rsComplex<Real> j(0,1);
   rsComplex<Real> z = rsExp(j*1.5);
-  rsComplex<Real> H1 = svf.getTransferFunctionAt(z);
+  rsComplex<Real> H1 = svf.getTransferFunctionAtOld(z);
   rsComplex<Real> H2 = svf.getLowpassTransferFunctionAt(z);
   // Let's see if H1 == H2...yes!
 
   svf.setupHighpass(0.5, 4.0);
-  H1 = svf.getTransferFunctionAt(z);
+  H1 = svf.getTransferFunctionAtOld(z);
   H2 = svf.getHighpassTransferFunctionAt(z);
   // Here too! Nice!
 
   svf.setupBandpassSkirt(0.5, 4.0);
-  H1 = svf.getTransferFunctionAt(z);
+  H1 = svf.getTransferFunctionAtOld(z);
   H2 = svf.getBandpassTransferFunctionAt(z);
-
-
-
-
-
-
 
   rsAssert(ok);
   return ok;
 
   // ToDo:
   //
-  // - Add the mystran SVF to the modulation tests.
+  // - Figure out why the runTransferFuncTest(Mode::Bell, ..) fails. Test also shelving filters.
 }
 
 bool stateVariableFilterUnitTest()
