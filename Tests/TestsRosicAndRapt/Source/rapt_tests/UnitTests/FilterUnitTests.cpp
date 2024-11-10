@@ -1298,6 +1298,22 @@ bool stateVariableFilterUnitTest4()
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
   res = svf.getShelfGain();      ok &= rsIsCloseTo(res, A, tol);
 
+  // Test evaluation of transfer function:
+  N = 1024;
+  Vec ws = rsLinearRangeVector(N, 0, 2*PI);  // maybe go only up to pi
+  Vec mag(N);
+  svf.setupLowpass(w, Q);
+  for(int k = 0; k < N; k++)
+  {
+    rsComplex<Real> j(0,1);
+    rsComplex<Real> z = rsExp(j*ws[k]);
+    rsComplex<Real> H = svf.getTransferFunctionAt(z);
+    mag[k] = rsAbs(H);
+  }
+  rsPlotVectorsXY(ws, mag);
+  // OK - looks reasonable
+
+
   rsAssert(ok);
   return ok;
 

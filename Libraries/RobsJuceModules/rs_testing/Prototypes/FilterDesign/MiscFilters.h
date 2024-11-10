@@ -287,5 +287,21 @@ public:
     return a1 / (gpr - g);
   }
 
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
+  {
+    // We cheat here. We know that the filter has the s-domain trasfer function 
+    // H(s) = (a0 + a1*s + a2*s^2) / (1 + s/Q + s^2) and we know that we need to substitute
+    // s according to the bilinear transform as s = (w/tan(w/2)) * (z-1)/(z+1).
+
+    TPar w = getOmega();
+    TPar Q = getQualityFactor();
+    rsComplex<TPar> s = (w/tan(0.5*w)) * (z-TPar(1))/(z+TPar(1));
+    return (a0 + a1*s + a2*s*s) / (TPar(1) + s/Q + s*s);
+
+    // Someday, we want to have a proper implementation that directly computes H(z) in terms of
+    // our coefficients without reconstructing the design parameters. I have not yet figured that
+    // out, though.
+  }
+
 };
 
