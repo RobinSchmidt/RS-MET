@@ -1311,8 +1311,20 @@ bool stateVariableFilterUnitTest4()
     {
     case Mode::Lowpass: 
       BD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
+    case Mode::Highpass: 
+      BD::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
+    case Mode::BandpassSkirt: 
+      BD::calculateCookbookBandpassConstSkirtCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
+    //case Mode::BandpassPeak: 
+    //  BD::calculateCookbookBandpassConstPeakCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
+    case Mode::Notch: 
+      BD::calculateCookbookBandrejectCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
 
-      // ...
+
+
+
+
+
 
     };
 
@@ -1358,16 +1370,23 @@ bool stateVariableFilterUnitTest4()
     bool ok = rsIsCloseTo(mag_svf, mag_bqd, tol);
     if(!ok)
     {
-      rsPlotVectorsXY(ws, mag_svf, mag_bqd, mag_svf - mag_bqd);
-      //rsPlotVectorsXY(ws, mag_svf);
-      //rsPlotVectorsXY(ws, mag_bqd);
+      Vec err = mag_svf - mag_bqd;
+      rsPlotVectorsXY(ws, mag_svf, mag_bqd, err);
+      rsPlotVectorsXY(ws, mag_svf);
+      rsPlotVectorsXY(ws, mag_bqd);
     }
     return ok;
   };
 
   N = 1024;
   tol = 1.e-9;
-  ok &= runTransferFuncTest(Mode::Lowpass, 1000, 8.0, 0.0, tol);
+  ok &= runTransferFuncTest(Mode::Lowpass,       1000, 8.0, 0.0, tol);
+  ok &= runTransferFuncTest(Mode::Highpass,      1000, 8.0, 0.0, tol);
+  ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, tol);
+  //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol);
+  ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, tol);
+
+
   // We need a rather high tolerance here. The error is greatest around the resonance peak.
 
 
