@@ -120,7 +120,6 @@ protected:
 };
 
 
-
 template<class TSig, class TCoef> 
 TSig rsStateVariableFilterChain<TSig, TCoef>::getStageOutput(int stage, TSig in)
 {
@@ -150,3 +149,4 @@ TSig rsStateVariableFilterChain<TSig, TCoef>::getSample(TSig in)
   return y;
 }
 
+//=================================================================================================
