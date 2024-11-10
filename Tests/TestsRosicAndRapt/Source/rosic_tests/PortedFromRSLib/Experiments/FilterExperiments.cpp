@@ -1885,6 +1885,7 @@ void stateVarFilterSimper()
   //   Maybe implement the SKF (Sallen-Key filter), too
 }
 
+/*
 void stateVarFilterMystran()
 {
   // Maybe turn this into a unit test.
@@ -2101,6 +2102,7 @@ void stateVarFilterMystran()
   //
   // - Add the mystran SVF to the modulation tests.
 }
+*/
 
 
 void stateVariableFilters()
@@ -2109,7 +2111,8 @@ void stateVariableFilters()
   //stateVariableFilterMorph();  // Trying to figure otu hwo to morph between types
   //stateVarFilterSimper();      // The new implementation following Adrew Simper's paper
 
-  stateVarFilterMystran();       // This is more unit-test than experiment - maybe move over
+
+  //stateVarFilterMystran();       // This is more unit-test than experiment - maybe move over - done
 }
 
 
