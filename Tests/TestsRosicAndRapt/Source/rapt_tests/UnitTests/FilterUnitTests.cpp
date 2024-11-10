@@ -1107,7 +1107,7 @@ bool stateVariableFilterUnitTest4()
   Real sampleRate = 44100;
 
   // Helper function to compare the outputs of the two implementations and report if thy match: 
-  auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
+  auto runImpRespTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
   {
     // Compute normalized radian frequency omega and linear gain:
     Real w = 2*PI*freq/sampleRate;
@@ -1137,16 +1137,16 @@ bool stateVariableFilterUnitTest4()
 
   // Test if outputs match the Simper SVF:
   Real tol = 1.e-13;
-  ok &= runTest(Mode::Bypass,        1000.0, 5.0, 0.0, tol);
-  ok &= runTest(Mode::Lowpass,       1000.0, 5.0, 0.0, tol);
-  ok &= runTest(Mode::Highpass,      1000.0, 5.0, 0.0, tol);
-  ok &= runTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
-  ok &= runTest(Mode::BandpassPeak,  1000.0, 5.0, 0.0, tol);
-  ok &= runTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
-  ok &= runTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
-  ok &= runTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
-  ok &= runTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
-  ok &= runTest(Mode::HighShelf,     1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::Bypass,        1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Lowpass,       1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Highpass,      1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::BandpassPeak,  1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
+  ok &= runImpRespTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
+  ok &= runImpRespTest(Mode::HighShelf,     1000.0, 5.0, 8.0, tol);
 
 
   // Test the inquiry functions
@@ -1298,11 +1298,69 @@ bool stateVariableFilterUnitTest4()
   res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
   res = svf.getShelfGain();      ok &= rsIsCloseTo(res, A, tol);
 
+
+
+
+
+  auto designBiquad = [&](Mode mode, Real freq, Real Q, Real gainDb, 
+    Real& b0, Real& b1, Real& b2, Real& a1, Real& a2)
+  {
+    using BD = rosic::BiquadDesigner;
+    Real fsr = 1/sampleRate;
+    switch(mode)
+    {
+    case Mode::Lowpass: 
+      BD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
+
+    };
+
+    // calculateCookbookLowpassCoeffs(double& b0, double& b1, double& b2,
+    //double& a1, double& a2, const double& oneOverSampleRate, const double& frequency,
+    //  const double& q);
+
+  };
+
+
+
+
+
+  /*
+  // Helper function to compare the calculated transfer functions between the SVF and some 
+  // reference filter
+  auto runTransferFuncTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
+  {
+    // Compute normalized radian frequency omega and linear gain:
+    Real w = 2*PI*freq/sampleRate;
+    Real A = pow(10, gainDb/40);
+
+    // Create and set up filters:
+
+    rsStateVariableFilterMystran2<Real, Real> svf_m;
+    ModeM mode_m = (ModeM)(int)mode;
+    svf_m.setup(mode_m, w, Q, A);
+
+    // Compare impusle responses:
+    Vec h_s = getImpulseResponse(svf_s, N, Real(1));
+    Vec h_m = getImpulseResponse(svf_m, N, Real(1));
+    bool ok = rsIsCloseTo(h_s, h_m, tol);
+    if(!ok)
+    {
+      rsPlotVectors(h_s, h_m, h_m - h_s);
+      rsPlotVectors(h_s, h_m, h_m / h_s);
+    }
+
+    return ok;
+  };
+  */
+
+
+
+
   // Test evaluation of transfer function:
   N = 1024;
   Vec ws = rsLinearRangeVector(N, 0, PI);  // maybe go only up to pi
   Vec mag(N);
-  svf.setupLowpass(0.5, 8.0);
+  svf.setupLowpass(2.5, 8.0);
   //svf.setupBell(2.5, 8.0, 2.0);
   for(int k = 0; k < N; k++)
   {

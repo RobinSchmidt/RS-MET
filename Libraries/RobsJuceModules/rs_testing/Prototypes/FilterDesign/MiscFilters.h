@@ -291,22 +291,19 @@ public:
   {
     // We cheat here. We know that the filter has the s-domain trasfer function 
     // H(s) = (a0 + a1*s + a2*s^2) / (1 + s/Q + s^2) and we know that we need to substitute
-    // s according to the bilinear transform as s = (w/tan(w/2)) * (z-1)/(z+1).
+    // s according to the bilinear transform as s = k * (z-1)/(z+1) where the scaling factor k is
+    // given by 1/g which I figured out by trial and error (ToDo: give an explanation why it is 
+    // that factor
 
     TPar w = getOmega();
     TPar Q = getQualityFactor();
 
     //rsComplex<TPar> s = (w/tan(0.5*w)) * (z-TPar(1))/(z+TPar(1));
-
     //rsComplex<TPar> s = (w/g) * (z-TPar(1))/(z+TPar(1));
-
     //rsComplex<TPar> s = (z-TPar(1)) / (z+TPar(1));   // Nope!
-
     //rsComplex<TPar> s = g * (z-TPar(1)) / (z+TPar(1));   // ?
 
-    rsComplex<TPar> s = (1/g) * (z-TPar(1)) / (z+TPar(1)); // That looks good!
-
-
+    rsComplex<TPar> s = (1/g) * (z-TPar(1)) / (z+TPar(1));
     return (a0 + a1*s + a2*s*s) / (TPar(1) + s/Q + s*s);
 
     // Someday, we want to have a proper implementation that directly computes H(z) in terms of
