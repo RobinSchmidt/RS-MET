@@ -1312,11 +1312,10 @@ bool stateVariableFilterUnitTest4()
     case Mode::Lowpass: 
       BD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
 
+      // ...
+
     };
 
-    // calculateCookbookLowpassCoeffs(double& b0, double& b1, double& b2,
-    //double& a1, double& a2, const double& oneOverSampleRate, const double& frequency,
-    //  const double& q);
 
   };
 
@@ -1324,7 +1323,7 @@ bool stateVariableFilterUnitTest4()
 
 
 
-  /*
+  
   // Helper function to compare the calculated transfer functions between the SVF and some 
   // reference filter
   auto runTransferFuncTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
@@ -1333,29 +1332,47 @@ bool stateVariableFilterUnitTest4()
     Real w = 2*PI*freq/sampleRate;
     Real A = pow(10, gainDb/40);
 
-    // Create and set up filters:
-
-    rsStateVariableFilterMystran2<Real, Real> svf_m;
+    // Create and set up filter:
+    rsStateVariableFilterMystran2<Real, Real> svf;
     ModeM mode_m = (ModeM)(int)mode;
-    svf_m.setup(mode_m, w, Q, A);
+    svf.setup(mode_m, w, Q, A);
 
-    // Compare impusle responses:
-    Vec h_s = getImpulseResponse(svf_s, N, Real(1));
-    Vec h_m = getImpulseResponse(svf_m, N, Real(1));
-    bool ok = rsIsCloseTo(h_s, h_m, tol);
-    if(!ok)
+    // Create coeffs of reference filter:
+    Real b0, b1, b2, a1, a2;
+    designBiquad(mode, freq, Q, gainDb, b0, b1, b2, a1, a2);
+
+    // Compute magnitude responses of SVF and reference biquad:
+    Vec ws = rsLinearRangeVector(N, 0, PI);
+    Vec mag_svf(N), mag_bqd(N);
+    for(int k = 0; k < N; k++)
     {
-      rsPlotVectors(h_s, h_m, h_m - h_s);
-      rsPlotVectors(h_s, h_m, h_m / h_s);
+      rsComplex<Real> j(0,1);
+      rsComplex<Real> z = rsExp(j*ws[k]);
+      rsComplex<Real> H = svf.getTransferFunctionAt(z);
+      mag_svf[k] = rsAbs(H);
+      mag_bqd[k] = rosic::BiquadDesigner::getBiquadMagnitudeAt(
+        b0, b1, b2, a1, a2, ws[k]/(2*PI), 1.0);
     }
 
+    // Check if they are the same. If not, we may wnat to look at a plot to spot the problem:
+    bool ok = rsIsCloseTo(mag_svf, mag_bqd, tol);
+    if(!ok)
+    {
+      rsPlotVectorsXY(ws, mag_svf, mag_bqd, mag_svf - mag_bqd);
+      //rsPlotVectorsXY(ws, mag_svf);
+      //rsPlotVectorsXY(ws, mag_bqd);
+    }
     return ok;
   };
-  */
+
+  N = 1024;
+  tol = 1.e-9;
+  ok &= runTransferFuncTest(Mode::Lowpass, 1000, 8.0, 0.0, tol);
+  // We need a rather high tolerance here. The error is greatest around the resonance peak.
 
 
 
-
+  /*
   // Test evaluation of transfer function:
   N = 1024;
   Vec ws = rsLinearRangeVector(N, 0, PI);  // maybe go only up to pi
@@ -1371,6 +1388,7 @@ bool stateVariableFilterUnitTest4()
   }
   rsPlotVectorsXY(ws, mag);
   // OK - looks reasonable - or well... the frequency axis scaling may be off
+  */
 
 
   rsAssert(ok);
