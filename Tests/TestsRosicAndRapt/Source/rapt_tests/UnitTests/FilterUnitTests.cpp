@@ -1405,6 +1405,11 @@ bool stateVariableFilterUnitTest4()
   H2 = svf.getHighpassTransferFunctionAt(z);
   // Here too! Nice!
 
+  svf.setupBandpassSkirt(0.5, 4.0);
+  H1 = svf.getTransferFunctionAt(z);
+  H2 = svf.getBandpassTransferFunctionAt(z);
+
+
 
 
 

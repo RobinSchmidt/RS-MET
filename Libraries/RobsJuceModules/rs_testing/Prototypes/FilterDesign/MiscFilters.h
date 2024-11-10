@@ -318,6 +318,9 @@ public:
     // out, though.
   }
 
+
+
+
   rsComplex<TPar> getLowpassTransferFunctionAt(const rsComplex<TPar>& z)
   {
     TPar s  =  scl;
@@ -340,6 +343,21 @@ public:
     TPar b0 =  s;
     TPar b1 = -2*s;
     TPar b2 =  s;
+    TPar a0 =  1;
+    TPar a1 =  2*c*g*s + 2*g*g*s - 2;
+    TPar a2 = -2*c*g*s + 2*g*g*s + 1;
+    rsComplex<TPar> d = TPar(1)/z, d2 = d*d;
+    rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (a0 + a1*d + a2*d2);
+    return H;
+  }
+
+  rsComplex<TPar> getBandpassTransferFunctionAt(const rsComplex<TPar>& z)
+  {
+    TPar s  =  scl;
+    TPar c  =  gpr;
+    TPar b0 =  g*s;
+    TPar b1 =  0;
+    TPar b2 = -g*s;
     TPar a0 =  1;
     TPar a1 =  2*c*g*s + 2*g*g*s - 2;
     TPar a2 = -2*c*g*s + 2*g*g*s + 1;
