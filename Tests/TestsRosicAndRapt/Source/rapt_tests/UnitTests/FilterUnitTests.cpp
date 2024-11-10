@@ -1091,6 +1091,223 @@ bool stateVariableFilterUnitTest3()
   // - Test it in full SIMD mode, i.e. with both TSig and TPar being SIMD-vector types.
 }
 
+bool stateVariableFilterUnitTest4()
+{
+  // We test the class rsStateVariableFilterMystran2 here.
+
+  bool ok = true;
+
+  using Real  = double;
+  using Vec   = std::vector<Real>;
+  using Mode  = rsStateVariableFilterSimper<Real, Real>::Mode;
+  using ModeM = rsStateVariableFilterMystran2<Real, Real>::Mode;
+
+  // Setup:
+  int  N          =   512;    // Number of samples to produce
+  Real sampleRate = 44100;
+
+  // Helper function to compare the outputs of the two implementations and report if thy match: 
+  auto runTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
+  {
+    // Compute normalized radian frequency omega and linear gain:
+    Real w = 2*PI*freq/sampleRate;
+    Real A = pow(10, gainDb/40);
+
+    // Create and set up filters:
+    rsStateVariableFilterSimper<Real, Real>  svf_s;
+    svf_s.setup(mode, w, Q, A);
+
+    rsStateVariableFilterMystran2<Real, Real> svf_m;
+    ModeM mode_m = (ModeM)(int)mode;
+    svf_m.setup(mode_m, w, Q, A);
+
+    // Compare impusle responses:
+    Vec h_s = getImpulseResponse(svf_s, N, Real(1));
+    Vec h_m = getImpulseResponse(svf_m, N, Real(1));
+    bool ok = rsIsCloseTo(h_s, h_m, tol);
+    if(!ok)
+    {
+      rsPlotVectors(h_s, h_m, h_m - h_s);
+      rsPlotVectors(h_s, h_m, h_m / h_s);
+    }
+
+    return ok;
+  };
+
+
+  // Test if outputs match the Simper SVF:
+  Real tol = 1.e-13;
+  ok &= runTest(Mode::Bypass,        1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::Lowpass,       1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::Highpass,      1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::BandpassSkirt, 1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::BandpassPeak,  1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::Notch,         1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::Allpass,       1000.0, 5.0, 0.0, tol);
+  ok &= runTest(Mode::Bell,          1000.0, 5.0, 8.0, tol);
+  ok &= runTest(Mode::LowShelf,      1000.0, 5.0, 8.0, tol);
+  ok &= runTest(Mode::HighShelf,     1000.0, 5.0, 8.0, tol);
+
+
+  // Test the inquiry functions
+  Real freq = 1000;
+  Real Q    = 7.0;
+  Real w    = 2*PI*freq/sampleRate;
+  Real A    = 3.0;
+
+  Real res;
+  tol = 1.e-15;
+
+  rsStateVariableFilterMystran2<Real, Real> svf;
+
+  svf.setupLowpass(w, Q);
+  ok &= svf.isLowpass()       == true;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isShelf()         == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+
+  svf.setupHighpass(w, Q);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == true;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isShelf()         == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+
+  svf.setupBandpassSkirt(w, Q);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == true;
+  ok &= svf.isBandpassSkirt() == true;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isShelf()         == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+
+  svf.setupBandpassPeak(w, Q);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == true;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == true;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isShelf()         == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+
+  svf.setupBandstop(w, Q);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == true;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isShelf()         == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+
+  svf.setupAllpass(w, Q);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == true;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isShelf()         == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+
+  svf.setupBell(w, Q, A);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == true;
+  ok &= svf.isShelf()         == false;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+  res = svf.getBellGain();       ok &= rsIsCloseTo(res, A, tol);
+
+  svf.setupLowShelf(w, Q, A);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isShelf()         == true;
+  ok &= svf.isLowShelf()      == true;
+  ok &= svf.isHighShelf()     == false;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+  res = svf.getShelfGain();      ok &= rsIsCloseTo(res, A, tol);
+
+  svf.setupHighShelf(w, Q, A);
+  ok &= svf.isLowpass()       == false;
+  ok &= svf.isHighpass()      == false;
+  ok &= svf.isBandpass()      == false;
+  ok &= svf.isBandpassSkirt() == false;
+  ok &= svf.isBandpassPeak()  == false;
+  ok &= svf.isBandstop()      == false;
+  ok &= svf.isAllpass()       == false;
+  ok &= svf.isBell()          == false;
+  ok &= svf.isShelf()         == true;
+  ok &= svf.isLowShelf()      == false;
+  ok &= svf.isHighShelf()     == true;
+  res = svf.getOmega();          ok &= rsIsCloseTo(res, w, tol);
+  res = svf.getQualityFactor();  ok &= rsIsCloseTo(res, Q, tol);
+  res = svf.getShelfGain();      ok &= rsIsCloseTo(res, A, tol);
+
+  rsAssert(ok);
+  return ok;
+
+  // ToDo:
+  //
+  // - Add the mystran SVF to the modulation tests.
+}
+
+
+
 bool stateVariableFilterUnitTest()
 {
   bool ok = true;
@@ -1099,6 +1316,7 @@ bool stateVariableFilterUnitTest()
   ok &= stateVariableFilterUnitTest1<double>(1.e-13);
   ok &= stateVariableFilterUnitTest2();
   ok &= stateVariableFilterUnitTest3();
+  ok &= stateVariableFilterUnitTest4();
 
   return ok;
 }
