@@ -1,5 +1,5 @@
 We want to figure out a general way for how to find expressions for z-domain filter transfer 
-functions for a given time domain filterig algorithm in the form of a set of difference equations.
+functions for a given time domain filtering algorithm in the form of a set of difference equations.
 The transfer function of a filter is the ratio of the z-transforms of the output signal and the 
 input signal of the filter, i.e. H(z) = Y(z)/X(z). 
 
@@ -7,8 +7,8 @@ input signal of the filter, i.e. H(z) = Y(z)/X(z).
 First Order Direct Form 1 filter
 --------------------------------
 
-Let's start with a very simple first order direct form 1 (DF1) filter. In this case, the derivation 
-of H(z) = Y(z) / X(z) proceeds as follows:
+Let's start with a very simple first order direct form 1 (DF1) filter as warm up. In this case, the 
+derivation of H(z) = Y(z) / X(z) proceeds as follows:
 
   y[n] = b0*x[n] + b1*x[n-1] - a1*y[n-1]                Translate to z-domain
 
@@ -67,7 +67,7 @@ Moog Ladder with Unit Delay Feedback (UDF)
 ------------------------------------------
 
 As the next example, let's have a look at a Moog-style ladder filter that is built from 4 one
-pole filters with a feedback loop that includes a unit delay. We define the differenze equation and
+pole filters with a feedback loop that includes a unit delay. We define the difference equation and
 transfer function of the 1-pole as:
 
   g1[n] = b0*x[n] - a1*g1[n-1]      <-->    G1(z) = b0 / (1 + a1*z-^1)
@@ -270,6 +270,7 @@ expr.expand()
   -> -2*c*d^2*g*s + 2*d^2*g^2*s + 2*c*d*g*s + 2*d*g^2*s + d^2 - 2*d + 1
 
 So:
+
    H                        s - s*2*d + s*d^2
   --- = -----------------------------------------------------------------------
    X      1  +  2*c*d*g*s + 2*d*g^2*s - 2*d  - 2*c*d^2*g*s + 2*d^2*g^2*s + d^2
