@@ -1392,14 +1392,18 @@ bool stateVariableFilterUnitTest4()
   // peak for the lowpass. For the highpass, the error is big at DC.
 
 
+
   svf.setupLowpass(0.5, 4.0);
   rsComplex<Real> j(0,1);
   rsComplex<Real> z = rsExp(j*1.5);
   rsComplex<Real> H1 = svf.getTransferFunctionAt(z);
   rsComplex<Real> H2 = svf.getLowpassTransferFunctionAt(z);
-  // Let's see if H1 == H2...
+  // Let's see if H1 == H2...yes!
 
-
+  svf.setupHighpass(0.5, 4.0);
+  H1 = svf.getTransferFunctionAt(z);
+  H2 = svf.getHighpassTransferFunctionAt(z);
+  // Here too! Nice!
 
 
 
