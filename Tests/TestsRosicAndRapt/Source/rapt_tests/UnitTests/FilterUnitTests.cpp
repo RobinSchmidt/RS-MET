@@ -1308,6 +1308,7 @@ bool stateVariableFilterUnitTest4()
   auto designBiquad = [&](Mode mode, Real freq, Real Q, Real gainDb, 
     Real& b0, Real& b1, Real& b2, Real& a1, Real& a2)
   {
+    Real A = rsDbToAmp(gainDb);
     using BD = rosic::BiquadDesigner;
     Real fsr = 1/sampleRate;
     switch(mode)
@@ -1322,6 +1323,12 @@ bool stateVariableFilterUnitTest4()
     //  BD::calculateCookbookBandpassConstPeakCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
     case Mode::Notch: 
       BD::calculateCookbookBandrejectCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q); break;
+    case Mode::Allpass: 
+      BD::calculateCookbookAllpassCoeffs(b0, b1, b2, a1, a2, fsr, freq, Q); break;
+    case Mode::Bell: 
+      BD::calculateCookbookPeakFilterCoeffsViaQ(b0, b1, b2, a1, a2, fsr, freq, Q, A); break;
+
+
 
 
     };
@@ -1377,10 +1384,23 @@ bool stateVariableFilterUnitTest4()
   ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, 1.e-9);
   //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol);
   ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, 1.e-10);
+  ok &= runTransferFuncTest(Mode::Allpass,       1000, 8.0, 0.0, 1.e-13);
+
+  //ok &= runTransferFuncTest(Mode::Bell,          1000, 8.0, 6.0, 1.e-10); // Fails!
+
+  // We need a rather high tolerance for some types. The error is greatest around the resonance 
+  // peak for the lowpass. For the highpass, the error is big at DC.
 
 
-  // We need a rather high tolerance here. The error is greatest around the resonance peak for the
-  // lowpass. For the highpass, the error is big at DC.
+  svf.setupLowpass(0.5, 4.0);
+  rsComplex<Real> j(0,1);
+  rsComplex<Real> z = rsExp(j*1.5);
+  rsComplex<Real> H1 = svf.getTransferFunctionAt(z);
+  rsComplex<Real> H2 = svf.getLowpassTransferFunctionAt(z);
+  // Let's see if H1 == H2...
+
+
+
 
 
 

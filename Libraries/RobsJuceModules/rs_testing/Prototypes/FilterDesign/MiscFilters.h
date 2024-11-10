@@ -228,7 +228,7 @@ public:
   // ToDo: check, if we really need the a0 > 0 condition for LS and a2 > 0 condition for HS
 
   // I think there's an edge case of Q = 1 where constant peak and constant skirt bandpasses are
-  // indistinguishable. I think, it this case, both should return true - but they currently don't
+  // indistinguishable. I think, in this case, both should return true - but they currently don't
   // I think. We need to check that in any case one and only one of them returns true, i.e. that
   // the conditions are disjoint or mutually exclusive - except in edge cases maybe.
 
@@ -293,23 +293,48 @@ public:
     // H(s) = (a0 + a1*s + a2*s^2) / (1 + s/Q + s^2) and we know that we need to substitute
     // s according to the bilinear transform as s = k * (z-1)/(z+1) where the scaling factor k is
     // given by 1/g which I figured out by trial and error (ToDo: give an explanation why it is 
-    // that factor
+    // that factor)
 
-    TPar w = getOmega();
+    //TPar w = getOmega();
     TPar Q = getQualityFactor();
-
-    //rsComplex<TPar> s = (w/tan(0.5*w)) * (z-TPar(1))/(z+TPar(1));
-    //rsComplex<TPar> s = (w/g) * (z-TPar(1))/(z+TPar(1));
-    //rsComplex<TPar> s = (z-TPar(1)) / (z+TPar(1));   // Nope!
-    //rsComplex<TPar> s = g * (z-TPar(1)) / (z+TPar(1));   // ?
-
     rsComplex<TPar> s = (1/g) * (z-TPar(1)) / (z+TPar(1));
+
+    if(isBell())
+    {
+      rsError("This does not yet work. The formula is still wrong.");
+      TPar A = getBellGain();
+      //TPar P = A*Q;
+
+      //return (a0 + a1*s + a2*s*s) / (TPar(1) + s/(Q*A) + s*s); // Nope! Wrong!
+      return (a0 + a1*s + a2*s*s) / (TPar(1) + s/(Q/A) + s*s); // 
+
+      //return (a0 + a1*s*A + a2*s*s) / (TPar(1) + s/Q + s*s);  // Wrong
+    }
+
     return (a0 + a1*s + a2*s*s) / (TPar(1) + s/Q + s*s);
 
     // Someday, we want to have a proper implementation that directly computes H(z) in terms of
     // our coefficients without reconstructing the design parameters. I have not yet figured that
     // out, though.
   }
+
+  rsComplex<TPar> getLowpassTransferFunctionAt(const rsComplex<TPar>& z)
+  {
+    TPar s  =  scl;
+    TPar c  =  gpr;
+    TPar b0 =  g*s;
+    TPar b1 =  2*g*s;
+    TPar b2 =  g*s;
+    TPar a0 =  1/g;
+    TPar a1 = -2/g + 2*c*s + 2*g*s;
+    TPar a2 =  1/g - 2*c*s + 2*g*s;
+    const rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                        // d = z^-1, d2 = z^-2
+    const rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (a0 + a1*d + a2*d2);
+    return H;
+
+    //   b0 = g*s, b1 = 2*g*s, b2 = g*s, a0 = 1/g, a1 = -2/g + 2*c*s + 2*g*s, a2 = 1/g - 2*c*s + 2*g*s
+  }
+
 
 };
 
