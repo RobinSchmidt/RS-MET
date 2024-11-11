@@ -1395,17 +1395,37 @@ bool stateVariableFilterUnitTest4()
 
 
 
-  // Temporary throw-awy code:
+  // Temporary throw-awy code (can be thrown away when code like that has been integrated into one
+  // of the runTest() functions):
 
   // Test the conversion to biquad coeffs:
-  Real b0, b1, b2, a1, a2;
-  designBiquad(Mode::Lowpass, 1000, 5, 0, b0, b1, b2, a1, a2);
-
-  svf.setupLowpass(2*PI*1000/sampleRate, 5);
+  Real b0,  b1,  b2,  a1,  a2;
   Real b0s, b1s, b2s, a1s, a2s;
+  tol = 1.e-12;
+
+  designBiquad(Mode::Lowpass, 1000, 5, 0, b0, b1, b2, a1, a2);
+  svf.setupLowpass(2*PI*1000/sampleRate, 5);
   svf.getBiquadNumeratorCoeffsLP(&b0s, &b1s, &b2s);
   svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
+  ok &= rsIsCloseTo( b0, b0s, tol);
+  ok &= rsIsCloseTo( b1, b1s, tol);
+  ok &= rsIsCloseTo( b2, b2s, tol);
+  ok &= rsIsCloseTo(-a1, a1s, tol);
+  ok &= rsIsCloseTo(-a2, a2s, tol);
   // The a-coeffs have a different sign but that's ok. The old code uses the other sign convention.
+
+
+  designBiquad(Mode::BandpassSkirt, 1000, 5, 0, b0, b1, b2, a1, a2);
+  svf.setupLowpass(2*PI*1000/sampleRate, 5);
+  svf.getBiquadNumeratorCoeffsBP(&b0s, &b1s, &b2s);
+  svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
+  ok &= rsIsCloseTo( b0, b0s, tol);
+  ok &= rsIsCloseTo( b1, b1s, tol);
+  ok &= rsIsCloseTo( b2, b2s, tol);
+  ok &= rsIsCloseTo(-a1, a1s, tol);
+  ok &= rsIsCloseTo(-a2, a2s, tol);
+
+
 
 
 

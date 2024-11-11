@@ -402,11 +402,24 @@ public:
     *b0 =   s*g*g;
     *b1 = 2*s*g*g;
     *b2 =   s*g*g;
-
-
-    // (d^2*g^2 + 2*d*g^2 + g^2)*s 
-    //  s*g^2 * d^2 + 2*s*g^2 * d + s*g^2
   }
+
+
+  void getBiquadNumeratorCoeffsBP(TPar* b0, TPar* b1, TPar* b2)
+  {
+    TPar s = scl;
+    TPar c = gpr;
+
+    *b0 =  g*s;
+    *b1 =  0;
+    *b2 = -g*s;
+
+    // -(d^2*g   -             g)*s 
+
+    // -d^2 * g*s   -          g*s
+  }
+
+
 
 
 
