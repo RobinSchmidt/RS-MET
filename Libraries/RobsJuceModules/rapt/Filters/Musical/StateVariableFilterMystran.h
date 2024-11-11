@@ -110,7 +110,8 @@ public:
   }
   */
 
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z);
+  /*
   {
     TPar b0, b1, b2, a1, a2;
     convertToBiquad(&b0, &b1, &b2, &a1, &a2);
@@ -118,6 +119,7 @@ public:
     rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
     return H;
   }
+  */
 
 
 
