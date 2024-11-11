@@ -38,6 +38,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+
+  /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z);
+
   /** Produces the coefficients of an equivalent direct form biquad filter that implements the
   difference equation:
 
@@ -48,43 +52,29 @@ public:
     H(z) = (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^-1 + a2*z^-2)
 
   The biquad coefficients are useful for evaluating the transfer function for a given z which in
-  turn is useful to evaluate the frequency response, for example, for plotting it on a GUI. Maybe
-  the transfer function can also be evaluated in other ways directly from our coefficients her. 
-  However, the implementation of getTransferFunctionAt() makes use of this conversion 
-  internally. */
+  turn is useful to evaluate the frequency response, for example, for plotting it on a GUI.  */
   void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2);
-  /*
-  {
-    getBiquadNumeratorCoeffs(b0, b1, b2);
-    getBiquadDenominatorCoeffs(  a1, a2);
-  }
-  */
-  // ToDo: implement also a setupFromBiquad method
 
 
-  void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
-  {
-    TPar s = scl;
-    TPar c = gpr;
-    *a1 =  2*(c*g + g*g)*s - 2;
-    *a2 = -2*(c*g - g*g)*s + 1;
-    // Simplify: factor out g, create variable for the common subexpression
-  }
+  /** Produces the denominator coefficients of an equivalent direct form biquad filter. */
+  void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2);
 
+
+  /** Produces the numerator coefficients of an equivalent direct form biquad filter. */
   void getBiquadNumeratorCoeffs(  TPar* b0, TPar* b1, TPar* b2);
 
 
+  /** Produces the numerator coefficients of the lowpass part of an equivalent direct form biquad 
+  filter. */
   void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2);
 
-
+  /** Produces the numerator coefficients of the bandpass part of an equivalent direct form biquad 
+  filter. */
   void getBiquadNumeratorCoeffsBP(TPar* b0, TPar* b1, TPar* b2);
 
-
+  /** Produces the numerator coefficients of the highpass part of an equivalent direct form biquad 
+  filter. */
   void getBiquadNumeratorCoeffsHP(TPar* b0, TPar* b1, TPar* b2);
-
-
-  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z);
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -101,11 +91,8 @@ public:
   void reset() { z1 = z2 = 0; }
 
 
+
 protected:
-
-
-
-
 
   // State:
   TSig z1 = 0, z2 = 0;
