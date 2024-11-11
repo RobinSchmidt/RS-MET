@@ -108,6 +108,16 @@ public:
     *b2 =  s;
   }
 
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
+  {
+    TPar b0, b1, b2, a1, a2;
+    getBiquadCoeffs(&b0, &b1, &b2, &a1, &a2);
+    rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                              // d = z^-1, d2 = z^-2
+    rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
+    return H;
+  }
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -302,8 +312,8 @@ template<class TSig, class TPar>
 inline TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
 {
   TSig yL, yB, yH;
-  getOutputs(in, &yL, &yB, &yH);  // Produce LP, BP and HP signals
-  return aH*yH + aB*yB + aL*yL;   // Mix them according to desired filter type
+  getOutputs(in, &yL, &yB, &yH);   // Produce LP, BP and HP signals
+  return aH*yH + aB*yB + aL*yL;    // Mix them according to desired filter type
 }
 
 #endif
