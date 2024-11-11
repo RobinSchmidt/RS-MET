@@ -1400,10 +1400,12 @@ bool stateVariableFilterUnitTest4()
     Vec mag_svf(N), mag_bqd(N);
     for(int k = 0; k < N; k++)
     {
-      rsComplex<Real> j(0,1);
-      rsComplex<Real> z = rsExp(j*ws[k]);
-      rsComplex<Real> H = svf.getTransferFunctionAt(z);
-      mag_svf[k] = rsAbs(H);
+      //rsComplex<Real> j(0,1);
+      //rsComplex<Real> z = rsExp(j*ws[k]);
+      //rsComplex<Real> H = svf.getTransferFunctionAt(z);
+      //mag_svf[k] = rsAbs(H);
+
+      mag_svf[k] = svf.getMagnitudeAt(ws[k]);
       mag_bqd[k] = rosic::BiquadDesigner::getBiquadMagnitudeAt(
         b0, b1, b2, a1, a2, ws[k]/(2*PI), 1.0);
     }
