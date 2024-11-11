@@ -203,7 +203,7 @@ rhs.simplify_full()
   
 We have now whittled the whole system down to a single equation that contains only  L,X  and the 
 constants  g,s,c  and the delay operator  d  and its square  d^2  indicating a 2-sample delay. The 
-equation is a quite messy:
+equation is quite messy:
 
                     (L*d^2 - 2*L*d + L)/((d^2 + 2*d + 1)*g^2)
 
@@ -246,7 +246,7 @@ Factor out L on the left and X on the right:
   = 
   X * (d^2*g*s + 2*d*g*s + g*s)
 
-And this can now easily rearranged into L/X = "something" form as:
+And this can now easily be rearranged into L/X = "something" form as:
 
    L                   d^2*g*s + 2*d*g*s + g*s
   --- = -----------------------------------------------------------------
@@ -393,5 +393,21 @@ diff.simplify_full()
 
   ->  0
 
-OK. The difference of both denominators is zero.
+OK. The difference of both denominators is zero. We notice that the denominators of all3 transfer 
+functions are the same. That means all 3 transfer functions have the same poles. They differ only
+in the zeros which determine whether it's a lowpass, bandpass or highpass response. To find the 
+biquad denominator coeffs, we could use the following code to extract the coeffs for 1, z^-1 and 
+z^-2:
 
+var("d c g s")
+D = (d^2 - 2*((c*g - g^2)*d^2 - (c*g + g^2)*d)*s - 2*d + 1)
+D.expand()
+a0 = D(d=0)               # a0 = D.coefficient(d^0) returns 0. Why?
+a1 = D.coefficient(d)
+a2 = D.coefficient(d^2)
+a0, a1, a2
+
+  ->  (1, 2*(c*g + g^2)*s - 2, -2*(c*g - g^2)*s + 1)
+
+For a0, we just evaluated the expression at zero. Trying to retrieve the a0 coefficient via 
+a0 = D.coefficient(1) or a0 = D.coefficient(d^0) returns 0 (Why?).

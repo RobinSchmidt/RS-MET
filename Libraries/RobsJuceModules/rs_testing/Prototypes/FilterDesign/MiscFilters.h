@@ -321,6 +321,12 @@ public:
   }
 
 
+  void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
+  {
+
+  }
+
+
 
   // New - needs test:
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
@@ -377,6 +383,8 @@ public:
 
     // Note: The a-coeffs are the same as in the highpass case.
   }
+
+
 
 
 
