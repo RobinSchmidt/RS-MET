@@ -51,7 +51,7 @@ protected:
   TSig z1 = 0, z2 = 0;
 
   // Coeffs:
-  TPar a0 = 0, a1 = 0, a2 = 0;  // Mixing coeffs (maybe rename to aL, aB, aH)
+  TPar aL = 0, aB = 0, aH = 0;  // Mixing coeffs for lowpass, bandpass and highpass signals
   TPar g   = 0;                 // Integrator gain
   TPar gpr = 0;                 // g + r (r is 2*R in Vadim's book, R is the damping coeff)
   TPar scl = 1;                 // Scaler given by 1 / (1 + g*(g+r));
@@ -68,9 +68,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBypass()
   g   = 0; 
   gpr = 0;
   scl = 1;
-  a0  = 0;
-  a1  = 0;
-  a2  = 1;
+  aL  = 0;
+  aB  = 0;
+  aH  = 1;
 }
 
 template<class TSig, class TPar>
@@ -82,9 +82,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
   g   = tan(0.5*w); 
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 1;
-  a1  = 0;
-  a2  = 0;
+  aL  = 1;
+  aB  = 0;
+  aH  = 0;
 }
 
 template<class TSig, class TPar>
@@ -96,9 +96,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
   g   = tan(0.5*w); 
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 0;
-  a1  = 0;
-  a2  = 1;
+  aL  = 0;
+  aB  = 0;
+  aH  = 1;
 }
 
 template<class TSig, class TPar>
@@ -110,9 +110,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q
   g   = tan(0.5*w); 
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 0;
-  a1  = 1;
-  a2  = 0;
+  aL  = 0;
+  aB  = 1;
+  aH  = 0;
 }
 
 template<class TSig, class TPar>
@@ -124,9 +124,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
   g   = tan(0.5*w); 
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 0;
-  a1  = r;
-  a2  = 0;
+  aL  = 0;
+  aB  = r;
+  aH  = 0;
 }
 
 template<class TSig, class TPar>
@@ -138,9 +138,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandstop(TPar w, TPar Q)
   g   = tan(0.5*w); 
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 1;
-  a1  = 0;
-  a2  = 1;
+  aL  = 1;
+  aB  = 0;
+  aH  = 1;
 }
 
 template<class TSig, class TPar>
@@ -152,9 +152,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupAllpass(TPar w, TPar Q)
   g   = tan(0.5*w); 
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 1;
-  a1  = -r;
-  a2  = 1;
+  aL  = 1;
+  aB  = -r;
+  aH  = 1;
 }
 
 template<class TSig, class TPar>
@@ -166,9 +166,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
   g   = tan(0.5*w); 
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 1;
-  a1  = A*A*r;
-  a2  = 1;
+  aL  = 1;
+  aB  = A*A*r;
+  aH  = 1;
 }
 
 template<class TSig, class TPar>
@@ -180,9 +180,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
   g   = tan(0.5*w) / sqrt(A);
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = A*A;
-  a1  = A*r;
-  a2  = 1;
+  aL  = A*A;
+  aB  = A*r;
+  aH  = 1;
 }
 
 template<class TSig, class TPar>
@@ -194,9 +194,9 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TP
   g   = tan(0.5*w) * sqrt(A);
   gpr = g + r;
   scl = 1 / (1 + g*gpr);
-  a0  = 1;
-  a1  = A*r;
-  a2  = A*A;
+  aL  = 1;
+  aB  = A*r;
+  aH  = A*A;
 }
 
 // Processing:
@@ -214,7 +214,7 @@ TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
   z2 = 2*lp - z2;                      // Equivalent to: z2 += 2*g*bp
 
   // Mix final output:
-  return a2*hp + a1*bp + a0*lp;
+  return aH*hp + aB*bp + aL*lp;
 }
 
 #endif

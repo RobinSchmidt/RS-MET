@@ -200,7 +200,7 @@ public:
     default:
     {
       rsError("Unknown filter type in rsStateVariableFilterMystran::setup");
-      a0 = a1 = a2 = 0;
+      aL = aB = aH = 0;
       g = 0;
       gpr = 0;
       scl = 0;
@@ -211,21 +211,21 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  bool isLowpass()       const { return a0 == 1 && a1 == 0 && a2 == 0; }
-  bool isHighpass()      const { return a0 == 0 && a1 == 0 && a2 == 1; }
-  bool isBandpass()      const { return a0 == 0 && a1 >  0 && a2 == 0; }
-  bool isBandpassSkirt() const { return a0 == 0 && a1 == 1 && a2 == 0; }
-  bool isBandpassPeak()  const { return a0 == 0 && a1 != 1 && a2 == 0; }        // a1 = r = 1/Q
-  bool isBandstop()      const { return a0 == 1 && a1 == 0 && a2 == 1; }
-  bool isAllpass()       const { return a0 == 1 && a1 <  0 && a2 == 1; }        // a1 = -1/Q
-  bool isBell()          const { return a0 == 1 && a1 >  0 && a2 == 1; }        // a1 = A^2/Q
+  bool isLowpass()       const { return aL == 1 && aB == 0 && aH == 0; }
+  bool isHighpass()      const { return aL == 0 && aB == 0 && aH == 1; }
+  bool isBandpass()      const { return aL == 0 && aB >  0 && aH == 0; }
+  bool isBandpassSkirt() const { return aL == 0 && aB == 1 && aH == 0; }
+  bool isBandpassPeak()  const { return aL == 0 && aB != 1 && aH == 0; }        // a1 = r = 1/Q
+  bool isBandstop()      const { return aL == 1 && aB == 0 && aH == 1; }
+  bool isAllpass()       const { return aL == 1 && aB <  0 && aH == 1; }        // a1 = -1/Q
+  bool isBell()          const { return aL == 1 && aB >  0 && aH == 1; }        // a1 = A^2/Q
   bool isShelf()         const { return isLowShelf() || isHighShelf(); }
-  bool isLowShelf()  const { return /*a0 >  0 &&*/ a0 != 1 && a1 >  0 && a2 == 1; } // a0=A^2, a1=A/Q
-  bool isHighShelf() const { return a0 == 1 && a1 >  0 && /* a2 >  0 && */ a2 != 1; } // a2=A^2, a1=A/Q
+  bool isLowShelf()  const { return /*aL >  0 &&*/ aL != 1 && aB >  0 && aH == 1; } // a0=A^2, a1=A/Q
+  bool isHighShelf() const { return aL == 1 && aB >  0 && /* aH >  0 && */ aH != 1; } // a2=A^2, a1=A/Q
 
 
 
-  // ToDo: check, if we really need the a0 > 0 condition for LS and a2 > 0 condition for HS
+  // ToDo: check, if we really need the aL > 0 condition for LS and aH > 0 condition for HS
 
   // I think there's an edge case of Q = 1 where constant peak and constant skirt bandpasses are
   // indistinguishable. I think, in this case, both should return true - but they currently don't
@@ -238,13 +238,13 @@ public:
     if(isLowShelf())
     {
       TPar r = gpr - g;
-      TPar A = a1 / r;
+      TPar A = aB / r;
       return 2*atan(g*sqrt(A));        // g = tan(w/2) / sqrt(A);
     }
     else if(isHighShelf())
     {
       TPar r = gpr - g;
-      TPar A = a1 / r;
+      TPar A = aB / r;
       return 2*atan(g/sqrt(A));        // g = tan(w/2) * sqrt(A)
     }
     else
@@ -255,7 +255,7 @@ public:
   {
     if(isBell())
     {
-      return sqrt(1/(a1*(gpr-g)));
+      return sqrt(1/(aB*(gpr-g)));
 
       // We have 3 equations involving r, Q, A: (1) r = 1/(Q*A), (2) gpr = g + r, (3) a1 = A^2 * r
       // where the knowns are  gpr, g, a1  and the unknowns are r, Q, A. These equations can be 
@@ -277,14 +277,14 @@ public:
   TPar getBellGain() const
   {
     rsAssert(isBell(), "Calling this function only makes sense for bell filters");
-    TPar Q = sqrt(1/(a1*(gpr-g)));
+    TPar Q = sqrt(1/(aB*(gpr-g)));
     return 1 / (Q*(gpr-g));
   }
 
   TPar getShelfGain() const
   {
     rsAssert(isShelf(), "Calling this function only makes sense for shelf filters");
-    return a1 / (gpr - g);
+    return aB / (gpr - g);
   }
 
   rsComplex<TPar> getTransferFunctionAtOld(const rsComplex<TPar>& z)
@@ -306,14 +306,14 @@ public:
       //TPar P = A*Q;
 
       //return (a0 + a1*s + a2*s*s) / (TPar(1) + s/(Q*A) + s*s); // Nope! Wrong!
-      return (a0 + a1*s + a2*s*s) / (TPar(1) + s/(Q/A) + s*s); // 
+      return (aL + aB*s + aH*s*s) / (TPar(1) + s/(Q/A) + s*s); // 
 
       //return (a0 + a1*s*A + a2*s*s) / (TPar(1) + s/Q + s*s);  // Wrong
 
       // Or maybe there were not wrong - it seems that the reference may have been wrong
     }
 
-    return (a0 + a1*s + a2*s*s) / (TPar(1) + s/Q + s*s);
+    return (aL + aB*s + aH*s*s) / (TPar(1) + s/Q + s*s);
 
     // Someday, we want to have a proper implementation that directly computes H(z) in terms of
     // our coefficients without reconstructing the design parameters. I have not yet figured that
@@ -339,7 +339,7 @@ public:
     rsComplex<TPar> H_lp = getLowpassTransferFunctionAt(z);
     rsComplex<TPar> H_bp = getBandpassTransferFunctionAt(z);
     rsComplex<TPar> H_hp = getHighpassTransferFunctionAt(z);
-    rsComplex<TPar> H    = a0*H_lp + a1*H_bp + a2*H_hp;
+    rsComplex<TPar> H    = aL*H_lp + aB*H_bp + aH*H_hp;
     return H;
 
 
@@ -420,19 +420,19 @@ public:
     TPar t0, t1, t2;  // Temporaries
 
     getBiquadNumeratorCoeffsLP(&t0, &t1, &t2);
-    *b0 = a0*t0;
-    *b1 = a0*t1;
-    *b2 = a0*t2;
+    *b0 = aL*t0;
+    *b1 = aL*t1;
+    *b2 = aL*t2;
 
     getBiquadNumeratorCoeffsBP(&t0, &t1, &t2);
-    *b0 += a1*t0;
-    *b1 += a1*t1;
-    *b2 += a1*t2;
+    *b0 += aB*t0;
+    *b1 += aB*t1;
+    *b2 += aB*t2;
 
     getBiquadNumeratorCoeffsHP(&t0, &t1, &t2);
-    *b0 += a2*t0;
-    *b1 += a2*t1;
-    *b2 += a2*t2;
+    *b0 += aH*t0;
+    *b1 += aH*t1;
+    *b2 += aH*t2;
 
     // We really should rename a0 to aL etc.
   }
