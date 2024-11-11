@@ -6,7 +6,13 @@
 from the RBJ biquad cookbook. The filter is parameterized in terms of the normalized radian 
 frequency omega = 2*pi*frequency/sampleRate, the quality factor Q and for bell and shelving 
 filters, the linear gain A. High values of Q generally mean "more resonance" or "narrower 
-bandwidths". The filter is based on trapezoidal integration using TDF2 integrators.  */
+bandwidths". The filter is based on trapezoidal integration using TDF2 integrators. The filter
+produces internally a lowpass, bandpass and highpass signal which are available at the same time.
+You can produce these 3 signals using the getPartialOutputs() function. Alternatively, you can use
+getSample() which produces a single signal that is a mix of these 3 signals using some mixing 
+coefficients that are determined by the desired filter mode. Consider getSample() as the high level
+API and getPartialOutputs() as a lower level API. Most of the time, client code will want to use 
+getSample() but the 3 separate outputs are made available as well, just in case you want them. */
 
 template<class TSig, class TPar>       // Data types for signals and parameters
 class rsStateVariableFilterMystran
@@ -81,7 +87,7 @@ public:
   inline TSig getSample(TSig in);
 
   /** Returns the 3 outputs (lowpass, bandpass, highpass) of the core SVF. */
-  inline void getOutputs(TSig in, TSig* yL, TSig* yB, TSig* yH);
+  inline void getPartialOutputs(TSig in, TSig* yL, TSig* yB, TSig* yH);
 
   /** Resets the internal state. */
   void reset() { z1 = z2 = 0; }
@@ -248,7 +254,7 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TP
 // Processing:
 
 template<class TSig, class TPar>
-inline void rsStateVariableFilterMystran<TSig, TPar>::getOutputs(
+inline void rsStateVariableFilterMystran<TSig, TPar>::getPartialOutputs(
   TSig in, TSig* yL, TSig* yB, TSig* yH)
 {
   // Compute outputs:
@@ -265,8 +271,8 @@ template<class TSig, class TPar>
 inline TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
 {
   TSig yL, yB, yH;
-  getOutputs(in, &yL, &yB, &yH);   // Produce LP, BP and HP signals
-  return aH*yH + aB*yB + aL*yL;    // Mix them according to desired filter type
+  getPartialOutputs(in, &yL, &yB, &yH);  // Produce LP, BP and HP signals
+  return aH*yH + aB*yB + aL*yL;          // Mix them according to desired filter type
 }
 
 #endif

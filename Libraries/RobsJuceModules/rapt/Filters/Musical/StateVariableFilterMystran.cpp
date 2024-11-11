@@ -98,6 +98,9 @@ ToDo:
   also provide these 1st order modes but one doesn't want to dispatch to a different filter object 
   for getting them.
 
+- Maybe implement a getPartialMagnitudesAt(complex z, TPar* low, TPar* band, TPar* high)
+  function that produces the 3 magnitude responses for lowpass, bandpass and highpass
+
 - Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
 
 - Maybe add inquiry functions such as getIntegratorGain() = g, getOmega() = 2*atan(g), 
