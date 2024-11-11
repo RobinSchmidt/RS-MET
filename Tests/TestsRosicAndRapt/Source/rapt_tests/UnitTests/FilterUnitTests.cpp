@@ -1300,6 +1300,43 @@ bool stateVariableFilterUnitTest4()
 
 
 
+  // Helper function to compare the outputs of the two implementations and report if thy match: 
+  auto runBiquadConversionTest = [&](Mode mode, Real freq, Real Q, Real gainDb, Real tol)
+  {
+    // Compute normalized radian frequency omega and linear gain:
+    Real w = 2*PI*freq/sampleRate;
+    Real A = pow(10, gainDb/40);
+
+    // Create and set up filter:
+    rsStateVariableFilterMystran2<Real, Real> svf;
+    ModeM mode_m = (ModeM)(int)mode;
+    svf.setup(mode_m, w, Q, A);
+
+    // Convert svf coeffs to biquad coeffs:
+    Real b0, b1, b2, a1, a2;
+    svf.getBiquadCoeffs(&b0, &b1, &b2, &a1, &a2);
+
+    // Produce biquad impusle response:
+    Vec h_s = getImpulseResponse(svf, N, Real(1));
+    Vec h_b(N);
+    RAPT::rsBiquadDF1<Real, Real> bqd;
+    bqd.setCoefficients(b0, b1, b2, -a1, -a2);  // ToDo: swithc sign convention in RAPT::rsBiquad
+    h_b[0] = bqd.getSample(1.0);
+    for(int n = 1; n < N; n++)
+      h_b[n] = bqd.getSample(0.0);
+
+    // Compare both impulse responses:
+    bool ok = rsIsCloseTo(h_s, h_b, tol);
+    if(!ok)
+      rsPlotVectors(h_s, h_b, h_b - h_s);
+    return ok;
+  };
+
+
+  tol = 1.e-12;
+  ok &= runBiquadConversionTest(Mode::Lowpass,       1000, 8.0, 0.0, tol);
+
+
 
 
 
