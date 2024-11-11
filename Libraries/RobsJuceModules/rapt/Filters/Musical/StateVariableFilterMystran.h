@@ -43,13 +43,26 @@ public:
   //void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2);
 
 
-  /** Produces the coefficients of an equivalent direct form biquad filter. */
-  void getBiquadCoeffs(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2)
+  /** Produces the coefficients of an equivalent direct form biquad filter that implements the
+  difference equation:
+
+    y[n] = b0*x[n] + b1*x[n-1] + b2*x[n-2] - a1*y[n-1] - a2*y[n-2]
+
+  and therefore has the transfer function:
+
+    H(z) = (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^-1 + a2*z^-2)
+
+  The biquad coefficients are useful for evaluating the transfer function for a given z which in
+  turn is useful to evaluate the frequency response, for example, for plotting it on a GUI. Maybe
+  the transfer function can also be evaluated in other ways directly from our coefficients her. 
+  However, the implementation of getTransferFunctionAt() makes use of this conversion 
+  internally. */
+  void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2)
   {
     getBiquadNumeratorCoeffs(b0, b1, b2);
     getBiquadDenominatorCoeffs(  a1, a2);
   }
-  // Maybe rename to convertToBiquad, implement also a setupFromBiquad methos
+  // ToDo: implement also a setupFromBiquad method
 
 
   void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
@@ -111,7 +124,7 @@ public:
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
   {
     TPar b0, b1, b2, a1, a2;
-    getBiquadCoeffs(&b0, &b1, &b2, &a1, &a2);
+    convertToBiquad(&b0, &b1, &b2, &a1, &a2);
     rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                              // d = z^-1, d2 = z^-2
     rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
     return H;

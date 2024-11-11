@@ -1314,7 +1314,7 @@ bool stateVariableFilterUnitTest4()
 
     // Convert svf coeffs to biquad coeffs:
     Real b0, b1, b2, a1, a2;
-    svf.getBiquadCoeffs(&b0, &b1, &b2, &a1, &a2);
+    svf.convertToBiquad(&b0, &b1, &b2, &a1, &a2);
 
     // Produce biquad impusle response:
     Vec h_s = getImpulseResponse(svf, N, Real(1));
@@ -1454,7 +1454,7 @@ bool stateVariableFilterUnitTest4()
   svf.setupLowpass(2*PI*1000/sampleRate, 5);
   //svf.getBiquadNumeratorCoeffsLP(&b0s, &b1s, &b2s);
   //svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
-  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s); 
+  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
   ok &= rsIsCloseTo( b2, b2s, tol);
@@ -1467,7 +1467,7 @@ bool stateVariableFilterUnitTest4()
   svf.setupBandpassSkirt(2*PI*1000/sampleRate, 5);
   //svf.getBiquadNumeratorCoeffsBP(&b0s, &b1s, &b2s);
   //svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
-  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s); 
+  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
   ok &= rsIsCloseTo( b2, b2s, tol);
@@ -1478,7 +1478,7 @@ bool stateVariableFilterUnitTest4()
   svf.setupHighpass(2*PI*1000/sampleRate, 5);
   //svf.getBiquadNumeratorCoeffsHP(&b0s, &b1s, &b2s);
   //svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
-  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s); 
+  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
   ok &= rsIsCloseTo( b2, b2s, tol);
@@ -1487,7 +1487,7 @@ bool stateVariableFilterUnitTest4()
 
   designBiquad(Mode::Notch, 1000, 5, 0, b0, b1, b2, a1, a2);
   svf.setupBandstop(2*PI*1000/sampleRate, 5);
-  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s); 
+  svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
   ok &= rsIsCloseTo( b2, b2s, tol);
