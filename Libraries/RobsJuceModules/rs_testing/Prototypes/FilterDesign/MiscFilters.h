@@ -334,69 +334,7 @@ public:
     rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                  // d = z^-1, d2 = z^-2
     rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
     return H;
-  
-
-    //// Old:
-    //rsComplex<TPar> H_lp = getLowpassTransferFunctionAt(z);
-    //rsComplex<TPar> H_bp = getBandpassTransferFunctionAt(z);
-    //rsComplex<TPar> H_hp = getHighpassTransferFunctionAt(z);
-    //rsComplex<TPar> H    = aL*H_lp + aB*H_bp + aH*H_hp;
-    //return H;
-
-
   }
-
-
-  // Obsolete:
-
-  /*
-  rsComplex<TPar> getLowpassTransferFunctionAt(const rsComplex<TPar>& z)
-  {
-    TPar s  =  scl;
-    TPar c  =  gpr;
-    TPar b0 =  g*s;
-    TPar b1 =  2*g*s;
-    TPar b2 =  g*s;
-    TPar a0 =  1/g;
-    TPar a1 = -2/g + 2*c*s + 2*g*s;
-    TPar a2 =  1/g - 2*c*s + 2*g*s;
-    rsComplex<TPar> d = TPar(1)/z, d2 = d*d; // d = z^-1, d2 = z^-2
-    rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (a0 + a1*d + a2*d2);
-    return H;
-  }
-
-  rsComplex<TPar> getHighpassTransferFunctionAt(const rsComplex<TPar>& z)
-  {
-    TPar s  =  scl;
-    TPar c  =  gpr;
-    TPar b0 =  s;
-    TPar b1 = -2*s;
-    TPar b2 =  s;
-    TPar a0 =  1;
-    TPar a1 =  2*c*g*s + 2*g*g*s - 2;
-    TPar a2 = -2*c*g*s + 2*g*g*s + 1;
-    rsComplex<TPar> d = TPar(1)/z, d2 = d*d;
-    rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (a0 + a1*d + a2*d2);
-    return H;
-  }
-
-  rsComplex<TPar> getBandpassTransferFunctionAt(const rsComplex<TPar>& z)
-  {
-    TPar s  =  scl;
-    TPar c  =  gpr;
-    TPar b0 =  g*s;
-    TPar b1 =  0;
-    TPar b2 = -g*s;
-    TPar a0 =  1;
-    TPar a1 =  2*c*g*s + 2*g*g*s - 2;
-    TPar a2 = -2*c*g*s + 2*g*g*s + 1;
-    rsComplex<TPar> d = TPar(1)/z, d2 = d*d;
-    rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (a0 + a1*d + a2*d2);
-    return H;
-
-    // Note: The a-coeffs are the same as in the highpass case.
-  }
-  */
 
 
 
@@ -404,6 +342,7 @@ public:
   // New: needs tests:
 
 
+  /*
   void getBiquadCoeffs(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2)
   {
     getBiquadNumeratorCoeffs(b0, b1, b2);
@@ -439,8 +378,6 @@ public:
     *b0 += aH*t0;
     *b1 += aH*t1;
     *b2 += aH*t2;
-
-    // We really should rename a0 to aL etc.
   }
 
   void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2)
@@ -470,7 +407,7 @@ public:
     *b2 =  s;
   }
 
-
+  */
 
 
 

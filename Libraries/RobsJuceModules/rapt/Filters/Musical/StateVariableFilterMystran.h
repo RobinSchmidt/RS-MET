@@ -36,6 +36,81 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  // ToDo: move these to .cpp file
+
+  //void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2);
+
+
+  /** Produces the coefficients of an equivalent direct form biquad filter. */
+  void getBiquadCoeffs(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2)
+  {
+    getBiquadNumeratorCoeffs(b0, b1, b2);
+    getBiquadDenominatorCoeffs(  a1, a2);
+  }
+  // Maybe rename to convertToBiquad, implement also a setupFromBiquad methos
+
+
+  void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
+  {
+    TPar s = scl;
+    TPar c = gpr;
+    *a1 =  2*(c*g + g*g)*s - 2;
+    *a2 = -2*(c*g - g*g)*s + 1;
+    // Simplify: factor out g, create variable for the common subexpression
+  }
+
+  void getBiquadNumeratorCoeffs(TPar* b0, TPar* b1, TPar* b2)
+  {
+    TPar t0, t1, t2;  // Temporaries
+
+    getBiquadNumeratorCoeffsLP(&t0, &t1, &t2);
+    *b0 = aL*t0;
+    *b1 = aL*t1;
+    *b2 = aL*t2;
+
+    getBiquadNumeratorCoeffsBP(&t0, &t1, &t2);
+    *b0 += aB*t0;
+    *b1 += aB*t1;
+    *b2 += aB*t2;
+
+    getBiquadNumeratorCoeffsHP(&t0, &t1, &t2);
+    *b0 += aH*t0;
+    *b1 += aH*t1;
+    *b2 += aH*t2;
+  }
+
+  void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2)
+  {
+    TPar s = scl;
+    TPar c = gpr;
+    *b0 =   s*g*g;
+    *b1 = 2*s*g*g;
+    *b2 =   s*g*g;
+  }
+
+  void getBiquadNumeratorCoeffsBP(TPar* b0, TPar* b1, TPar* b2)
+  {
+    TPar s = scl;
+    TPar c = gpr;
+    *b0 =  g*s;
+    *b1 =  0;
+    *b2 = -g*s;
+  }
+
+  void getBiquadNumeratorCoeffsHP(TPar* b0, TPar* b1, TPar* b2)
+  {
+    TPar s = scl;
+    TPar c = gpr;
+    *b0 =  s;
+    *b1 = -2*s;
+    *b2 =  s;
+  }
+
+
+
+  //-----------------------------------------------------------------------------------------------
   // \name Processing
 
   /** Computes one sample at a time. Calls getOutputs() and mixes the produced lowpass, bandpass
@@ -50,6 +125,10 @@ public:
 
 
 protected:
+
+
+
+
 
   // State:
   TSig z1 = 0, z2 = 0;
