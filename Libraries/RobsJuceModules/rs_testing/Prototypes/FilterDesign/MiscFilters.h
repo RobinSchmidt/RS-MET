@@ -386,6 +386,15 @@ public:
 
   // New: needs tests:
 
+
+  void getBiquadCoeffs(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2)
+  {
+    getBiquadNumeratorCoeffs(b0, b1, b2);
+    getBiquadDenominatorCoeffs(  a1, a2);
+  }
+  // Maybe rename to toBiquad
+
+
   void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
   {
     TPar s = scl;
@@ -393,6 +402,28 @@ public:
     *a1 =  2*(c*g + g*g)*s - 2;
     *a2 = -2*(c*g - g*g)*s + 1;
     // Simplify: factor out g, create variable for the common subexpression
+  }
+
+  void getBiquadNumeratorCoeffs(TPar* b0, TPar* b1, TPar* b2)
+  {
+    TPar t0, t1, t2;  // Temporaries
+
+    getBiquadNumeratorCoeffsLP(&t0, &t1, &t2);
+    *b0 = a0*t0;
+    *b1 = a0*t1;
+    *b2 = a0*t2;
+
+    getBiquadNumeratorCoeffsBP(&t0, &t1, &t2);
+    *b0 += a1*t0;
+    *b1 += a1*t1;
+    *b2 += a1*t2;
+
+    getBiquadNumeratorCoeffsHP(&t0, &t1, &t2);
+    *b0 += a2*t0;
+    *b1 += a2*t1;
+    *b2 += a2*t2;
+
+    // We really should rename a0 to aL etc.
   }
 
   void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2)
@@ -420,9 +451,6 @@ public:
     *b0 =  s;
     *b1 = -2*s;
     *b2 =  s;
-     
-    // (d^2     - 2*d       + 1)*s 
-    // (s*d^2   - 2*s*d       + s)
   }
 
 

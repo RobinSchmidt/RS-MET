@@ -1419,7 +1419,7 @@ bool stateVariableFilterUnitTest4()
 
 
   designBiquad(Mode::BandpassSkirt, 1000, 5, 0, b0, b1, b2, a1, a2);
-  svf.setupLowpass(2*PI*1000/sampleRate, 5);
+  svf.setupBandpassSkirt(2*PI*1000/sampleRate, 5);
   svf.getBiquadNumeratorCoeffsBP(&b0s, &b1s, &b2s);
   svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
   ok &= rsIsCloseTo( b0, b0s, tol);
@@ -1429,15 +1429,25 @@ bool stateVariableFilterUnitTest4()
   ok &= rsIsCloseTo(-a2, a2s, tol);
 
   designBiquad(Mode::Highpass, 1000, 5, 0, b0, b1, b2, a1, a2);
-  svf.setupLowpass(2*PI*1000/sampleRate, 5);
+  svf.setupHighpass(2*PI*1000/sampleRate, 5);
   svf.getBiquadNumeratorCoeffsHP(&b0s, &b1s, &b2s);
   svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
+  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s);  // Makes it fail!
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
   ok &= rsIsCloseTo( b2, b2s, tol);
   ok &= rsIsCloseTo(-a1, a1s, tol);
   ok &= rsIsCloseTo(-a2, a2s, tol);
 
+  designBiquad(Mode::Bell, 1000, 5.0, 6.0, b0, b1, b2, a1, a2);
+  svf.setupBell(2*PI*1000/sampleRate, 5.0, 6.0);
+  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s);
+  ok &= rsIsCloseTo( b0, b0s, tol);
+  ok &= rsIsCloseTo( b1, b1s, tol);
+  ok &= rsIsCloseTo( b2, b2s, tol);
+  ok &= rsIsCloseTo(-a1, a1s, tol);
+  ok &= rsIsCloseTo(-a2, a2s, tol);
+  // Fails!
 
 
 
