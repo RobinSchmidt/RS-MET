@@ -202,8 +202,8 @@ public:
       rsError("Unknown filter type in rsStateVariableFilterMystran::setup");
       aL = aB = aH = 0;
       g = 0;
-      gpr = 0;
-      scl = 0;
+      c = 0;
+      s = 0;
     };
     }
   }
@@ -237,13 +237,13 @@ public:
   {
     if(isLowShelf())
     {
-      TPar r = gpr - g;
+      TPar r = c - g;
       TPar A = aB / r;
       return 2*atan(g*sqrt(A));        // g = tan(w/2) / sqrt(A);
     }
     else if(isHighShelf())
     {
-      TPar r = gpr - g;
+      TPar r = c - g;
       TPar A = aB / r;
       return 2*atan(g/sqrt(A));        // g = tan(w/2) * sqrt(A)
     }
@@ -255,7 +255,7 @@ public:
   {
     if(isBell())
     {
-      return sqrt(1/(aB*(gpr-g)));
+      return sqrt(1/(aB*(c-g)));
 
       // We have 3 equations involving r, Q, A: (1) r = 1/(Q*A), (2) gpr = g + r, (3) a1 = A^2 * r
       // where the knowns are  gpr, g, a1  and the unknowns are r, Q, A. These equations can be 
@@ -271,20 +271,20 @@ public:
       // Picking the 1st solution and manually making it prettier gives the result above.
     }
     else
-      return 1 / (gpr - g);  // gpr = g + r  ->  r = gpr - g = 1/Q
+      return 1 / (c - g);  // gpr = g + r  ->  r = gpr - g = 1/Q
   }
 
   TPar getBellGain() const
   {
     rsAssert(isBell(), "Calling this function only makes sense for bell filters");
-    TPar Q = sqrt(1/(aB*(gpr-g)));
-    return 1 / (Q*(gpr-g));
+    TPar Q = sqrt(1/(aB*(c-g)));
+    return 1 / (Q*(c-g));
   }
 
   TPar getShelfGain() const
   {
     rsAssert(isShelf(), "Calling this function only makes sense for shelf filters");
-    return aB / (gpr - g);
+    return aB / (c - g);
   }
 
   rsComplex<TPar> getTransferFunctionAtOld(const rsComplex<TPar>& z)

@@ -99,9 +99,9 @@ protected:
 
   // Coeffs:
   TPar aL = 0, aB = 0, aH = 0;  // Mixing coeffs for lowpass, bandpass and highpass signals
-  TPar g   = 0;                 // Integrator gain
-  TPar gpr = 0;                 // g + r (r is 2*R in Vadim's book, R is the damping coeff)
-  TPar scl = 1;                 // Scaler given by 1 / (1 + g*(g+r));
+  TPar g = 0;                   // Integrator gain
+  TPar c = 0;                   // g + r (r is 2*R in Vadim's book, R is the damping coeff)
+  TPar s = 1;                   // Scaler given by 1 / (1 + g*(g+r));
 
 };
 
@@ -112,12 +112,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBypass()
 {
   // H(s) = 1 
 
-  g   = 0; 
-  gpr = 0;
-  scl = 1;
-  aL  = 0;
-  aB  = 0;
-  aH  = 1;
+  g  = 0; 
+  c  = 0;
+  s  = 1;
+  aL = 0;
+  aB = 0;
+  aH = 1;
 }
 
 template<class TSig, class TPar>
@@ -126,12 +126,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowpass(TPar w, TPar Q)
   // H(s) = 1 / (s^2 + s/Q + 1)
 
   TPar r = 1/Q;
-  g   = tan(0.5*w); 
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = 1;
-  aB  = 0;
-  aH  = 0;
+  g  = tan(0.5*w); 
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = 1;
+  aB = 0;
+  aH = 0;
 }
 
 template<class TSig, class TPar>
@@ -140,12 +140,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighpass(TPar w, TPar Q)
   // H(s) = s^2 / (s^2 + s/Q + 1)
 
   TPar r = 1/Q;
-  g   = tan(0.5*w); 
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = 0;
-  aB  = 0;
-  aH  = 1;
+  g  = tan(0.5*w); 
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = 0;
+  aB = 0;
+  aH = 1;
 }
 
 template<class TSig, class TPar>
@@ -154,12 +154,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassSkirt(TPar w, TPar Q
   // H(s) = s / (s^2 + s/Q + 1)   (constant skirt gain, peak gain = Q)
 
   TPar r = 1/Q;
-  g   = tan(0.5*w); 
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = 0;
-  aB  = 1;
-  aH  = 0;
+  g  = tan(0.5*w); 
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = 0;
+  aB = 1;
+  aH = 0;
 }
 
 template<class TSig, class TPar>
@@ -168,12 +168,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandpassPeak(TPar w, TPar Q)
   // H(s) = (s/Q) / (s^2 + s/Q + 1)   (constant 0 dB peak gain)
 
   TPar r = 1/Q;
-  g   = tan(0.5*w); 
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = 0;
-  aB  = r;
-  aH  = 0;
+  g  = tan(0.5*w); 
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = 0;
+  aB = r;
+  aH = 0;
 }
 
 template<class TSig, class TPar>
@@ -182,12 +182,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBandstop(TPar w, TPar Q)
   // H(s) = (s^2 + 1) / (s^2 + s/Q + 1)
 
   TPar r = 1/Q;
-  g   = tan(0.5*w); 
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = 1;
-  aB  = 0;
-  aH  = 1;
+  g  = tan(0.5*w); 
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = 1;
+  aB = 0;
+  aH = 1;
 }
 
 template<class TSig, class TPar>
@@ -196,12 +196,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupAllpass(TPar w, TPar Q)
   // H(s) = (s^2 - s/Q + 1) / (s^2 + s/Q + 1)
 
   TPar r = 1/Q;
-  g   = tan(0.5*w); 
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = 1;
-  aB  = -r;
-  aH  = 1;
+  g  = tan(0.5*w); 
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = 1;
+  aB = -r;
+  aH = 1;
 }
 
 template<class TSig, class TPar>
@@ -210,12 +210,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupBell(TPar w, TPar Q, TPar A)
   // H(s) = (s^2 + s*(A/Q) + 1) / (s^2 + s/(A*Q) + 1)
 
   TPar r = 1/(Q*A);
-  g   = tan(0.5*w); 
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = 1;
-  aB  = A*A*r;
-  aH  = 1;
+  g  = tan(0.5*w); 
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = 1;
+  aB = A*A*r;
+  aH = 1;
 }
 
 template<class TSig, class TPar>
@@ -224,12 +224,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupLowShelf(TPar w, TPar Q, TPa
   // H(s) = A * (s^2 + (sqrt(A)/Q)*s + A)/(A*s^2 + (sqrt(A)/Q)*s + 1)
 
   TPar r = 1/Q;
-  g   = tan(0.5*w) / sqrt(A);
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = A*A;
-  aB  = A*r;
-  aH  = 1;
+  g  = tan(0.5*w) / sqrt(A);
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = A*A;
+  aB = A*r;
+  aH = 1;
 }
 
 template<class TSig, class TPar>
@@ -238,12 +238,12 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TP
   // H(s) = A * (A*s^2 + (sqrt(A)/Q)*s + 1)/(s^2 + (sqrt(A)/Q)*s + A)
 
   TPar r = 1/Q;
-  g   = tan(0.5*w) * sqrt(A);
-  gpr = g + r;
-  scl = 1 / (1 + g*gpr);
-  aL  = 1;
-  aB  = A*r;
-  aH  = A*A;
+  g  = tan(0.5*w) * sqrt(A);
+  c  = g + r;
+  s  = 1 / (1 + g*c);
+  aL = 1;
+  aB = A*r;
+  aH = A*A;
 }
 
 // Processing:
@@ -253,7 +253,7 @@ inline void rsStateVariableFilterMystran<TSig, TPar>::getOutputs(
   TSig in, TSig* yL, TSig* yB, TSig* yH)
 {
   // Compute outputs:
-  *yH = (in - gpr*z1 - z2) * scl;  // == (in - (g+r)*z1 - z2) / (1 + g*(g+r));
+  *yH = (in - c*z1 - z2) * s;      // == (in - (g+r)*z1 - z2) / (1 + g*(g+r));
   *yB = z1 + g * *yH; 
   *yL = z2 + g * *yB;
 

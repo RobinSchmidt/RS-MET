@@ -26,8 +26,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::convertToBiquad(
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
 {
-  TPar s = scl;
-  TPar c = gpr;
+  //TPar s = scl;
+  //TPar c = c;
   *a1 =  2*(c*g + g*g)*s - 2;
   *a2 = -2*(c*g - g*g)*s + 1;
   // Simplify: factor out g, create variable for the common subexpression
@@ -59,8 +59,8 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsLP(
   TPar* b0, TPar* b1, TPar* b2)
 {
-  TPar s = scl;
-  TPar c = gpr;
+  //TPar s = scl;
+  //TPar c = gpr;
   *b0 =   s*g*g;
   *b1 = 2*s*g*g;
   *b2 =   s*g*g;
@@ -70,8 +70,8 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsBP(
   TPar* b0, TPar* b1, TPar* b2)
 {
-  TPar s = scl;
-  TPar c = gpr;
+  //TPar s = scl;
+  //TPar c = gpr;
   *b0 =  g*s;
   *b1 =  0;
   *b2 = -g*s;
@@ -81,8 +81,8 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsHP(
   TPar* b0, TPar* b1, TPar* b2)
 {
-  TPar s = scl;
-  TPar c = gpr;
+  //TPar s = scl;
+  //TPar c = gpr;
   *b0 =  s;
   *b1 = -2*s;
   *b2 =  s;
