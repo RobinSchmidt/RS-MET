@@ -1,18 +1,23 @@
 
 template<class TSig, class TPar>
+TPar rsStateVariableFilterMystran<TSig, TPar>::getMagnitudeAt(TPar w)
+{
+  rsComplex<TPar> j(0, 1);                       // Imaginary unit
+  rsComplex<TPar> z = rsExp(j*w);                // Evaluation point in z-plane
+  rsComplex<TPar> H = getTransferFunctionAt(z);  // Complex frequency response at w
+  return rsAbs(H);                               // Absolute value of H is magnitude
+}
+// Needs unit test
+
+template<class TSig, class TPar>
 rsComplex<TPar> rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z)
 {
   TPar b0, b1, b2, a1, a2;
   convertToBiquad(&b0, &b1, &b2, &a1, &a2);
-  rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                              // d = z^-1, d2 = z^-2
+  rsComplex<TPar> d = TPar(1)/z, d2 = d*d;       // d = z^-1, d2 = z^-2
   rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
   return H;
-
-  // ToDo:
-  //
-  // - Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
-  //   doesn't go through a conversion to a direct form biquad.
 }
 
 template<class TSig, class TPar>
@@ -26,11 +31,8 @@ void rsStateVariableFilterMystran<TSig, TPar>::convertToBiquad(
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
 {
-  //TPar s = scl;
-  //TPar c = c;
   *a1 =  2*(c*g + g*g)*s - 2;
   *a2 = -2*(c*g - g*g)*s + 1;
-  // Simplify: factor out g, create variable for the common subexpression
 }
 
 template<class TSig, class TPar>
@@ -59,8 +61,6 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsLP(
   TPar* b0, TPar* b1, TPar* b2)
 {
-  //TPar s = scl;
-  //TPar c = gpr;
   *b0 =   s*g*g;
   *b1 = 2*s*g*g;
   *b2 =   s*g*g;
@@ -70,8 +70,6 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsBP(
   TPar* b0, TPar* b1, TPar* b2)
 {
-  //TPar s = scl;
-  //TPar c = gpr;
   *b0 =  g*s;
   *b1 =  0;
   *b2 = -g*s;
@@ -81,13 +79,10 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsHP(
   TPar* b0, TPar* b1, TPar* b2)
 {
-  //TPar s = scl;
-  //TPar c = gpr;
   *b0 =  s;
   *b1 = -2*s;
   *b2 =  s;
 }
-
 
 //=================================================================================================
 /*
@@ -96,14 +91,9 @@ ToDo:
 
 - Maybe have a "Muted" mode before "Bypass"
 
-- Add a getTransferFunctionAt(std::complex<TPar> z).
-
 - Add a setupFromBiquad(TPar b0, ...) function
 
 - Try to achieve more general responses
-
-- Provide a getOutputs(in, outLP, outBP, outHP) function such that the user can obtain all 3 
-  outputs and mix them by themselves. 
 
 - Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
 
@@ -118,8 +108,13 @@ ToDo:
   that extends this class by some add-on functionality. Maybe someday, some of it should be
   dragged over.
 
+- Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
+  doesn't go through a conversion to a direct form biquad.
+
+- Maybe move the desription of the algorithm below into a separate text file
+
 ---------------------------------------------------------------------------------------------------
-Algorithm
+Algorithm for computing the mixing coefficients aL, aB, aH
 
 As mystran explains, the analog prototype response of this SVF is:
 
@@ -144,7 +139,7 @@ For the peak/bell filter, the RBJ prototype response is of the form:
   H(s) = -------------------
           1 + s/(A*Q) + s^2
 
-which not exactly of the right form because in the denominator, we see an  s/(A*Q)  term 
+which is not exactly of the right form because in the denominator, we see an  s/(A*Q)  term 
 instead of the desired  s/Q  term. But by letting  P = A*Q  we can replace  A*Q  by  P in
 the denominator and in the numerator replace  Q  by  P/A  to get:
  
@@ -205,5 +200,28 @@ We get:  (A^2*t^2 + A*t/Q + 1)*A/(A*t^2 + A + A*t/Q). Apparently, Sage didn't fu
 expression. We can cancel the A to get: (A^2*t^2 + A*t/Q + 1)/(t^2 + 1 + t/Q) so we read off:
 a0 = 1, a1 = A/Q, a2 = A^2. This time, we don't need to scale anything. The a0 coeff, i.e. the 
 lowpass gain, already came out as 1 as it should for high-shelving filter.
+
+---------------------------------------------------------------------------------------------------
+References:
+
+- https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653  
+  mystran explains how to set up the mixing coefficient to achieve the well known RBJ cookbook 
+  transfer functions
+
+- The Art of Virtual Analog Filter Design
+  Vadim Zavalishin's excellent book has a chapter about ZDF-SVF filters (and much more good stuff)
+
+- https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
+  Andrew Simper describes a filter implementation that is very similar. But this filter mixes its 
+  final output not from highpass, bandpass and lowpass parts but rather from input, bandpass and 
+  lowpass. These are two variations of the same filter.
+
+- https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/FilterTransferFunctions.txt
+  My derivations for the formulas to convert from our coeffs here to direct from biquad coeffs.
+
+- https://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
+  Aaron Wishnick's paper has formulas (equation 16 a-c) for converting from direct form biquad 
+  coefficients to SVF coeffs that can be used here. (This is not yet implemented but may be added 
+  later)
 
 */

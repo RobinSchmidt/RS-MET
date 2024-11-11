@@ -6,13 +6,7 @@
 from the RBJ biquad cookbook. The filter is parameterized in terms of the normalized radian 
 frequency omega = 2*pi*frequency/sampleRate, the quality factor Q and for bell and shelving 
 filters, the linear gain A. High values of Q generally mean "more resonance" or "narrower 
-bandwidths". The filter is based on trapezoidal integration using TDF2 integrators.
-
-It implements this idea:
-
-  https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653
-
-See comments in the .cpp file for some more details.  */
+bandwidths". The filter is based on trapezoidal integration using TDF2 integrators.  */
 
 template<class TSig, class TPar>       // Data types for signals and parameters
 class rsStateVariableFilterMystran
@@ -41,6 +35,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  /** Evaluates the magnitude response of this filter at a given normalized radian frequency 
+  omega. This is useful for plotting it on a GUI. */
+  TPar getMagnitudeAt(TPar omega);
 
   /** Evaluates the filter's z-domain transfer function H(z) value at the given value of z. */
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z);
@@ -54,8 +51,7 @@ public:
 
     H(z) = (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^-1 + a2*z^-2)
 
-  The biquad coefficients are useful for evaluating the transfer function for a given z which in
-  turn is useful to evaluate the frequency response, for example, for plotting it on a GUI.  */
+  The biquad is equivalent in the sense that it has the same transfer function as this filter. */
   void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2);
 
   /** Produces the denominator coefficients of an equivalent direct form biquad filter. */
@@ -77,7 +73,6 @@ public:
   void getBiquadNumeratorCoeffsHP(TPar* b0, TPar* b1, TPar* b2);
 
 
-
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
@@ -92,11 +87,10 @@ public:
   void reset() { z1 = z2 = 0; }
 
 
-
 protected:
 
   // State:
-  TSig z1 = 0, z2 = 0;
+  TSig z1 = 0, z2 = 0;          // Maybe rename to u,v for consistency with derivation
 
   // Coeffs:
   TPar aL = 0, aB = 0, aH = 0;  // Mixing coeffs for lowpass, bandpass and highpass signals
