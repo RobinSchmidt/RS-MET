@@ -26,7 +26,50 @@ void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffs(
   *b2 += aH*t2;
 }
 
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsLP(
+  TPar* b0, TPar* b1, TPar* b2)
+{
+  TPar s = scl;
+  TPar c = gpr;
+  *b0 =   s*g*g;
+  *b1 = 2*s*g*g;
+  *b2 =   s*g*g;
+}
 
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsBP(
+  TPar* b0, TPar* b1, TPar* b2)
+{
+  TPar s = scl;
+  TPar c = gpr;
+  *b0 =  g*s;
+  *b1 =  0;
+  *b2 = -g*s;
+}
+
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsHP(
+  TPar* b0, TPar* b1, TPar* b2)
+{
+  TPar s = scl;
+  TPar c = gpr;
+  *b0 =  s;
+  *b1 = -2*s;
+  *b2 =  s;
+}
+
+/*
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(const rsComplex<TPar>& z)
+{
+  TPar b0, b1, b2, a1, a2;
+  convertToBiquad(&b0, &b1, &b2, &a1, &a2);
+  rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                              // d = z^-1, d2 = z^-2
+  rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
+  return H;
+}
+*/
 
 
 

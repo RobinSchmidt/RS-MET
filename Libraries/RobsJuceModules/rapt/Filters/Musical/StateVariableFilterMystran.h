@@ -77,7 +77,8 @@ public:
   void getBiquadNumeratorCoeffs(TPar* b0, TPar* b1, TPar* b2);
 
 
-  void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2)
+  void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2);
+  /*
   {
     TPar s = scl;
     TPar c = gpr;
@@ -85,8 +86,10 @@ public:
     *b1 = 2*s*g*g;
     *b2 =   s*g*g;
   }
+  */
 
-  void getBiquadNumeratorCoeffsBP(TPar* b0, TPar* b1, TPar* b2)
+  void getBiquadNumeratorCoeffsBP(TPar* b0, TPar* b1, TPar* b2);
+  /*
   {
     TPar s = scl;
     TPar c = gpr;
@@ -94,8 +97,10 @@ public:
     *b1 =  0;
     *b2 = -g*s;
   }
+  */
 
-  void getBiquadNumeratorCoeffsHP(TPar* b0, TPar* b1, TPar* b2)
+  void getBiquadNumeratorCoeffsHP(TPar* b0, TPar* b1, TPar* b2);
+  /*
   {
     TPar s = scl;
     TPar c = gpr;
@@ -103,6 +108,7 @@ public:
     *b1 = -2*s;
     *b2 =  s;
   }
+  */
 
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
   {
