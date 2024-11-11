@@ -188,12 +188,12 @@ public:
     switch(mode)
     {
     case Mode::Bypass:        setupBypass();               break;
-    case Mode::Lowpass:       setupLowpass(      w, Q);    break;
-    case Mode::Highpass:      setupHighpass(     w, Q);    break;
-    case Mode::BandpassSkirt: setupBandpassSkirt(w, Q);    break;
-    case Mode::BandpassPeak:  setupBandpassPeak( w, Q);    break;
-    case Mode::Bandstop:      setupBandstop(     w, Q);    break;
-    case Mode::Allpass:       setupAllpass(      w, Q);    break;
+    case Mode::Lowpass:       setupLowpass(      w, Q   ); break;
+    case Mode::Highpass:      setupHighpass(     w, Q   ); break;
+    case Mode::BandpassSkirt: setupBandpassSkirt(w, Q   ); break;
+    case Mode::BandpassPeak:  setupBandpassPeak( w, Q   ); break;
+    case Mode::Bandstop:      setupBandstop(     w, Q   ); break;
+    case Mode::Allpass:       setupAllpass(      w, Q   ); break;
     case Mode::Bell:          setupBell(         w, Q, A); break;
     case Mode::LowShelf:      setupLowShelf(     w, Q, A); break;
     case Mode::HighShelf:     setupHighShelf(    w, Q, A); break;

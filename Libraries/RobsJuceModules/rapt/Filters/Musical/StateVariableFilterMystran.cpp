@@ -7,7 +7,6 @@ TPar rsStateVariableFilterMystran<TSig, TPar>::getMagnitudeAt(TPar w)
   rsComplex<TPar> H = getTransferFunctionAt(z);  // Complex frequency response at w
   return rsAbs(H);                               // Absolute value of H is magnitude
 }
-// Needs unit test
 
 template<class TSig, class TPar>
 rsComplex<TPar> rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(
@@ -39,7 +38,7 @@ template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffs(
   TPar* b0, TPar* b1, TPar* b2)
 {
-  TPar t0, t1, t2;  // Temporaries
+  TPar t0, t1, t2;                               // Temporaries
 
   getBiquadNumeratorCoeffsLP(&t0, &t1, &t2);
   *b0 = aL*t0;
@@ -89,11 +88,15 @@ void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsHP(
 
 ToDo:
 
-- Maybe have a "Muted" mode before "Bypass"
+- Add a setupFromBiquad(TPar b0, ...) function. See older implementation and Wishnick paper in the
+  references. When done, make unit tests that test roundtrips for various settings. Maybe use also 
+  random biquad coeffs in these tests (maybe with some stability constraints).
 
-- Add a setupFromBiquad(TPar b0, ...) function
-
-- Try to achieve more general responses
+- Try to achieve more general responses. Maybe also add responses of 1st order LP, HP, LS, HS, AP
+  types. I think, these make only use of the first filter/integrator stage. Having these modes 
+  available in a class for a 2nd order filter can be convenient when a multimode filter should 
+  also provide these 1st order modes but one doesn't want to dispatch to a different filter object 
+  for getting them.
 
 - Figure out how to morph between LP/BP/HP, LP/AP/HP, LS/PK/HS, ...
 
@@ -111,7 +114,10 @@ ToDo:
 - Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
   doesn't go through a conversion to a direct form biquad.
 
-- Maybe move the desription of the algorithm below into a separate text file
+- Maybe rename the old implementation to rsStateVariableFilterOld and this class to 
+  rsStateVariableFilter. The old code is kinda rubbish and should be deprecated.
+
+- Maybe move the desription of the algorithm below into a separate text file.
 
 ---------------------------------------------------------------------------------------------------
 Algorithm for computing the mixing coefficients aL, aB, aH
@@ -124,16 +130,10 @@ As mystran explains, the analog prototype response of this SVF is:
 
 so the a-coefficients are the polynomial coefficients of the numerator of the s-domain 
 transfer function. If we can manage to bring a given s-domain transfer function into this form,
-then we can directly read off our mixing coeffs from the transfer function. From the RBJ
-cookbook filters descirbed here:
-
-  https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/OtherAuthors/Audio-EQ-Cookbook.txt
-
-the lowpass, highpass, bandpass, bandstop and allpass transfer functions are indeed of this form, 
-so we can directly read off our a-coeffs from these. 
-
-
-For the peak/bell filter, the RBJ prototype response is of the form:
+then we can directly read off our mixing coeffs from the transfer function. Among the RBJ
+cookbook filters, the lowpass, highpass, bandpass, bandstop and allpass transfer functions are 
+indeed of this form, so we can directly read off our a-coeffs from these. For the peak/bell 
+filter, the RBJ prototype response is of the form:
 
           1 + s*(A/Q) + s^2
   H(s) = -------------------
@@ -205,11 +205,13 @@ lowpass gain, already came out as 1 as it should for high-shelving filter.
 References:
 
 - https://www.kvraudio.com/forum/viewtopic.php?p=8992653#p8992653  
-  mystran explains how to set up the mixing coefficient to achieve the well known RBJ cookbook 
-  transfer functions
+  Teemu Voipio (aka mystran) explains how to set up the mixing coefficients to achieve the well 
+  known RBJ cookbook transfer functions. This discussion was what prompted me to re-implement the 
+  SVF using these ideas to compute the mixing coefficients. 
 
 - The Art of Virtual Analog Filter Design
-  Vadim Zavalishin's excellent book has a chapter about ZDF-SVF filters (and much more good stuff)
+  Vadim Zavalishin's excellent book has a chapter about ZDF-SVF filters (and much more good stuff).
+  This was what my earlier implementation was based on.
 
 - https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
   Andrew Simper describes a filter implementation that is very similar. But this filter mixes its 
@@ -217,11 +219,16 @@ References:
   lowpass. These are two variations of the same filter.
 
 - https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/FilterTransferFunctions.txt
-  My derivations for the formulas to convert from our coeffs here to direct from biquad coeffs.
+  My (Robin Schmidt's) derivations for the formulas to convert from our coeffs here to direct form 
+  biquad coeffs.
 
 - https://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
   Aaron Wishnick's paper has formulas (equation 16 a-c) for converting from direct form biquad 
   coefficients to SVF coeffs that can be used here. (This is not yet implemented but may be added 
-  later)
+  later.)
+
+- https://github.com/RobinSchmidt/RS-MET/blob/work/Notes/OtherAuthors/Audio-EQ-Cookbook.txt
+  Robert Bristow Johnson's classic biquad filter cookbook. The response types realized here are
+  precisely those described there.
 
 */

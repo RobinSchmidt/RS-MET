@@ -1400,11 +1400,6 @@ bool stateVariableFilterUnitTest4()
     Vec mag_svf(N), mag_bqd(N);
     for(int k = 0; k < N; k++)
     {
-      //rsComplex<Real> j(0,1);
-      //rsComplex<Real> z = rsExp(j*ws[k]);
-      //rsComplex<Real> H = svf.getTransferFunctionAt(z);
-      //mag_svf[k] = rsAbs(H);
-
       mag_svf[k] = svf.getMagnitudeAt(ws[k]);
       mag_bqd[k] = rosic::BiquadDesigner::getBiquadMagnitudeAt(
         b0, b1, b2, a1, a2, ws[k]/(2*PI), 1.0);
@@ -1428,7 +1423,7 @@ bool stateVariableFilterUnitTest4()
   ok &= runTransferFuncTest(Mode::Lowpass,       1000, 8.0, 0.0, 1.e-9);
   ok &= runTransferFuncTest(Mode::Highpass,      1000, 8.0, 0.0, 1.e-6);
   ok &= runTransferFuncTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, 1.e-9);
-  //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol);
+  //ok &= runTransferFuncTest(Mode::BandpassPeak,  1000, 8.0, 0.0, tol); // No reference available
   ok &= runTransferFuncTest(Mode::Notch,         1000, 8.0, 0.0, 1.e-10);
   ok &= runTransferFuncTest(Mode::Allpass,       1000, 8.0, 0.0, 1.e-12);
 
@@ -1442,9 +1437,7 @@ bool stateVariableFilterUnitTest4()
 
 
 
-
-
-  // Temporary throw-awy code (can be thrown away when code like that has been integrated into one
+  // Temporary throw-away code (can be thrown away when code like that has been integrated into one
   // of the runTest() functions):
 
   // Test the conversion to biquad coeffs:
@@ -1454,8 +1447,6 @@ bool stateVariableFilterUnitTest4()
 
   designBiquad(Mode::Lowpass, 1000, 5, 0, b0, b1, b2, a1, a2);
   svf.setupLowpass(2*PI*1000/sampleRate, 5);
-  //svf.getBiquadNumeratorCoeffsLP(&b0s, &b1s, &b2s);
-  //svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
   svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
@@ -1464,11 +1455,8 @@ bool stateVariableFilterUnitTest4()
   ok &= rsIsCloseTo(-a2, a2s, tol);
   // The a-coeffs have a different sign but that's ok. The old code uses the other sign convention.
 
-
   designBiquad(Mode::BandpassSkirt, 1000, 5, 0, b0, b1, b2, a1, a2);
   svf.setupBandpassSkirt(2*PI*1000/sampleRate, 5);
-  //svf.getBiquadNumeratorCoeffsBP(&b0s, &b1s, &b2s);
-  //svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
   svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
@@ -1478,8 +1466,6 @@ bool stateVariableFilterUnitTest4()
 
   designBiquad(Mode::Highpass, 1000, 5, 0, b0, b1, b2, a1, a2);
   svf.setupHighpass(2*PI*1000/sampleRate, 5);
-  //svf.getBiquadNumeratorCoeffsHP(&b0s, &b1s, &b2s);
-  //svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
   svf.convertToBiquad(&b0s, &b1s, &b2s, &a1s, &a2s); 
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
@@ -1507,13 +1493,6 @@ bool stateVariableFilterUnitTest4()
   //ok &= rsIsCloseTo(-a2, a2s, tol);
   //// Fails! Even the a-coeffs are wrong! Well, we had problems with the peak/bell mode before. The
   //// old code may have a bug or my use a different parametrization
-
-
-
-
-
-
-
 
 
 
