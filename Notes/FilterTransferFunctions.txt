@@ -60,8 +60,26 @@ And now divide both sides by X to get H = Y/X:
   H = Y/X = (b0 + b1*d) / (1 + a1*d) 
     = (b0 + b1*z^-1) / (1 + a1*z^-1)
 
-which is the same result as it should be.
+which is the same result as it should be. Instead of doing it by hand, it makes sense to automate 
+the job by handing is to a computer algebra system. The following code for SageMath produces the
+solution:
 
+var("b0 b1 a1 d X Y V H")       # b0,b1,a1: filter coeffs, d = z^-1, X=X(z),Y=Y(Z),etc.
+e1 = V == X - a1*V*d            # 1st equation from the filter's state update
+e2 = Y == b0*V + b1*V*d         # 2nd equation from the filter's output computation
+V_X = solve([e1],[V])           # V_X =  [V == X/(a1*d + 1)], V in terms of X
+e3  = e2.subs(V=V_X[0].rhs())   # e3  =  Y == X*b1*d/(a1*d + 1) + X*b0/(a1*d + 1)
+e3  = e3.simplify_full()        # e3  =  Y == (X*b1*d + X*b0)/(a1*d + 1)
+e4  = H == Y/X                  # Introduce auxiliary equation for H(z) = Y(z)/X(z)
+sln = solve([e3,e4],[H,Y])      # solve([e3,e4],[H,X]) works also
+sln[0][0]                       # prints the solution: H == (b1*d + b0)/(a1*d + 1)
+
+The code snippet can be copy-and-pasted and executed here https://sagecell.sagemath.org/. It 
+produces the desired output:
+
+  H == (b1*d + b0)/(a1*d + 1)
+
+Apparently, the solution sln is an array with two indices (Why? Wouldn't one index be enough?)
 
 Moog Ladder with Unit Delay Feedback (UDF)
 ------------------------------------------
