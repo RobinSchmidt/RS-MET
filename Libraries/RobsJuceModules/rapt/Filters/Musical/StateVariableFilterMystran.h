@@ -20,6 +20,7 @@ class rsStateVariableFilterMystran
 
 public:
 
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
@@ -33,6 +34,8 @@ public:
   void setupBell(         TPar omega, TPar Q, TPar A);
   void setupLowShelf(     TPar omega, TPar Q, TPar A);
   void setupHighShelf(    TPar omega, TPar Q, TPar A);
+
+  // ToDo: setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -55,14 +58,11 @@ public:
   turn is useful to evaluate the frequency response, for example, for plotting it on a GUI.  */
   void convertToBiquad(TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2);
 
-
   /** Produces the denominator coefficients of an equivalent direct form biquad filter. */
   void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2);
 
-
   /** Produces the numerator coefficients of an equivalent direct form biquad filter. */
-  void getBiquadNumeratorCoeffs(  TPar* b0, TPar* b1, TPar* b2);
-
+  void getBiquadNumeratorCoeffs(TPar* b0, TPar* b1, TPar* b2);
 
   /** Produces the numerator coefficients of the lowpass part of an equivalent direct form biquad 
   filter. */
@@ -75,6 +75,7 @@ public:
   /** Produces the numerator coefficients of the highpass part of an equivalent direct form biquad 
   filter. */
   void getBiquadNumeratorCoeffsHP(TPar* b0, TPar* b1, TPar* b2);
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -104,6 +105,10 @@ protected:
   TPar s = 1;                   // Scaler given by 1 / (1 + g*(g+r));
 
 };
+
+//-------------------------------------------------------------------------------------------------
+// Implementation. Those functions that are typically called per sample are defined in the .h file 
+// to facilitate inlining. The others are in the .cpp file.
 
 // Setup:
 
