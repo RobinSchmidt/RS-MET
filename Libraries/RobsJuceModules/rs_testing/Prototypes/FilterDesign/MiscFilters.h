@@ -328,18 +328,21 @@ public:
   // New - needs test:
   rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
   {
+    ////// New:
+    //TPar b0, b1, b2, a0, a1;
+    //getBiquadCoeffs(&b0, &b1, &b2, &a1, &a2);
+    //rsComplex<TPar> d  = TPar(1)/z, d2 = d*d;                  // d = z^-1, d2 = z^-2
+    //rsComplex<TPar> H_ = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
+    ////// Does not work! Why?
+
     // Old:
     rsComplex<TPar> H_lp = getLowpassTransferFunctionAt(z);
     rsComplex<TPar> H_bp = getBandpassTransferFunctionAt(z);
     rsComplex<TPar> H_hp = getHighpassTransferFunctionAt(z);
-    return a0*H_lp + a1*H_bp + a2*H_hp;
+    rsComplex<TPar> H    = a0*H_lp + a1*H_bp + a2*H_hp;
+    return H;
 
-    //// New:
-    //TPar b0, b1, b2, a0, a1;
-    //getBiquadCoeffs(&b0, &b1, &b2, &a1, &a2);
-    //rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                  // d = z^-1, d2 = z^-2
-    //return (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
-    //// Does not work! Why?
+
   }
 
   rsComplex<TPar> getLowpassTransferFunctionAt(const rsComplex<TPar>& z)
