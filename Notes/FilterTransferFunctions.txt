@@ -14,7 +14,7 @@ derivation of H(z) = Y(z) / X(z) proceeds as follows:
 
   Y(z) = b0*X(z) + b1*z^-1*X(z) - a1*z^-1*Y(z)          Move Y(z) terms to left and X(z) to right
   Y(z) + a1*z^-1*Y(z) = b0*X(z) + b1*z^-1*X(z)          Factor out Y and X
-  Y(z) (1 + a1*z^-1) = X(z)  (b0 + b1*z^-1)             Solve for X(z)/Y(z) and call that H(z)
+  Y(z) (1 + a1*z^-1) = X(z)  (b0 + b1*z^-1)             Solve for Y(z)/X(z) and call that H(z)
 
   H(z) = Y(z)/X(z) = (b0 + b1*z^-1) / (1 + a1*z^-1)     Done
 
@@ -189,13 +189,11 @@ This is already a mess - but it gets even messier: We now replace B by the expre
 
 Let's try to simplify both sides with Sage:
 
-
 var("d g L") 
 lhs = ((((L - (2*L/(1 + d))*d)/g) - (2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d)/g) 
 lhs.simplify_full()
  
   ->  (L*d^2 - 2*L*d + L)/((d^2 + 2*d + 1)*g^2)
-
 
 var("d g s c L X") 
 rhs = s*X - s*c*(2*((L - (2*L/(1 + d))*d)/g)/(1 + d))*d - s*(2*L/(1 + d))*d
@@ -206,7 +204,6 @@ rhs.simplify_full()
 We have now whittled the whole system down to a single equation that contains only  L,X  and the 
 constants  g,s,c  and the delay operator  d  and its square  d^2  indicating a 2-sample delay. The 
 equation is a quite messy:
-
 
                     (L*d^2 - 2*L*d + L)/((d^2 + 2*d + 1)*g^2)
 
