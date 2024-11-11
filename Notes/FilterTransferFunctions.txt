@@ -356,5 +356,45 @@ be the same as for highpass. The b-coeffs are:
   │ b0 = g*s, b1 = 0, b2 = -g*s, a-coeffs same as for highpass │
   └────────────────────────────────────────────────────────────┘
 
+That was quite a messy derivation. Later, I figured out how to let Sage do it. Here is the code:
 
+var("d  s c g  X H B L U V  TF_H TF_B TF_L")
+e1 = H == s*X - s*c*U*d - s*V*d
+e2 = B == g*H + U*d
+e3 = L == g*B + V*d
+e4 = U == 2*B - U*d
+e5 = V == 2*L - V*d
+e6 = TF_H == H/X
+e7 = TF_B == B/X
+e8 = TF_L == L/X
+sH = solve([e1,e2,e3,e4,e5, e6],[TF_H, H,B,L,U,V])
+sB = solve([e1,e2,e3,e4,e5, e7],[TF_B, H,B,L,U,V])
+sL = solve([e1,e2,e3,e4,e5, e8],[TF_L, H,B,L,U,V])
+sH[0][0], sB[0][0], sL[0][0]
+
+It gives the result (re-formatted by me):
+
+  (TF_H ==  (d^2     - 2*d       + 1)*s  /  (d^2 - 2*((c*g - g^2)*d^2 - (c*g + g^2)*d)*s - 2*d + 1),
+   TF_B == -(d^2*g   -             g)*s  /  (d^2 - 2*((c*g - g^2)*d^2 - (c*g + g^2)*d)*s - 2*d + 1),
+   TF_L ==  (d^2*g^2 + 2*d*g^2 + g^2)*s  /  (d^2 - 2*((c*g - g^2)*d^2 - (c*g + g^2)*d)*s - 2*d + 1))
+
+These solutions do not look exactly like what I have found manually - but I guess, they are 
+equivalent and can brought into the forms given above by further manipulations. Checking it for the 
+denominator of the highpass found earlier:
+
+   H                 (d^2 - 2*d + 1)*s
+  --- = ---------------------------------------------------------
+   X     (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+
+we see that the numerator already matches. Let's check if the denominators are equivalent with Sage:
+
+var("d c g s")
+d1 = (d^2 - 2*((c*g - g^2)*d^2 - (c*g + g^2)*d)*s - 2*d + 1)
+d2 = (d^2 + 2*((d^2 + d)*g^2 - (c*d^2 - c*d)*g)*s - 2*d + 1)
+diff = d1 - d2
+diff.simplify_full()
+
+  ->  0
+
+OK. The difference of both denominators is zero.
 
