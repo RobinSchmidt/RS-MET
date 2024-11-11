@@ -1441,19 +1441,26 @@ bool stateVariableFilterUnitTest4()
   ok &= rsIsCloseTo(-a1, a1s, tol);
   ok &= rsIsCloseTo(-a2, a2s, tol);
 
-
-
-
-
-  designBiquad(Mode::Bell, 1000, 5.0, 6.0, b0, b1, b2, a1, a2);
-  svf.setupBell(2*PI*1000/sampleRate, 5.0, 6.0);
-  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s);
+  designBiquad(Mode::Notch, 1000, 5, 0, b0, b1, b2, a1, a2);
+  svf.setupBandstop(2*PI*1000/sampleRate, 5);
+  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s); 
   ok &= rsIsCloseTo( b0, b0s, tol);
   ok &= rsIsCloseTo( b1, b1s, tol);
   ok &= rsIsCloseTo( b2, b2s, tol);
   ok &= rsIsCloseTo(-a1, a1s, tol);
   ok &= rsIsCloseTo(-a2, a2s, tol);
-  // Fails!
+
+
+  designBiquad(Mode::Bell, 1000, 5.0, 6.0, b0, b1, b2, a1, a2);
+  svf.setupBell(2*PI*1000/sampleRate, 5.0, 6.0);
+  svf.getBiquadCoeffs(&b0s, &b1s, &b2s, &a1s, &a2s);
+  ok &= rsIsCloseTo( b0, b0s, tol);  // !!!FAILS!!!
+  ok &= rsIsCloseTo( b1, b1s, tol);
+  ok &= rsIsCloseTo( b2, b2s, tol);
+  ok &= rsIsCloseTo(-a1, a1s, tol);
+  ok &= rsIsCloseTo(-a2, a2s, tol);
+  // Fails! Even the a-coeffs are wrong! Well, we had problems with the peak/bell mode before. The
+  // old code may have a bug or my use a different parametrization
 
 
 
