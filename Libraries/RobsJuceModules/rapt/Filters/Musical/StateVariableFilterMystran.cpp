@@ -1,8 +1,11 @@
 
-
-
-
-
+template<class TSig, class TPar>
+void rsStateVariableFilterMystran<TSig, TPar>::convertToBiquad(
+  TPar* b0, TPar* b1, TPar* b2, TPar* a1, TPar* a2)
+{
+  getBiquadNumeratorCoeffs(b0, b1, b2);
+  getBiquadDenominatorCoeffs(  a1, a2);
+}
 
 template<class TSig, class TPar>
 void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffs(
@@ -59,17 +62,6 @@ void rsStateVariableFilterMystran<TSig, TPar>::getBiquadNumeratorCoeffsHP(
   *b2 =  s;
 }
 
-/*
-rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z)
-{
-  TPar b0, b1, b2, a1, a2;
-  convertToBiquad(&b0, &b1, &b2, &a1, &a2);
-  rsComplex<TPar> d = TPar(1)/z, d2 = d*d;                              // d = z^-1, d2 = z^-2
-  rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
-  return H;
-}
-*/
-
 template<class TSig, class TPar>
 rsComplex<TPar> rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(
   const rsComplex<TPar>& z)
@@ -80,20 +72,6 @@ rsComplex<TPar> rsStateVariableFilterMystran<TSig, TPar>::getTransferFunctionAt(
   rsComplex<TPar> H = (b0 + b1*d + b2*d2) / (TPar(1) + a1*d + a2*d2);
   return H;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //=================================================================================================
 /*
