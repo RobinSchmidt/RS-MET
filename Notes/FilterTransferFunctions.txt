@@ -74,14 +74,20 @@ e4  = H == Y/X                  # Introduce auxiliary equation for H(z) = Y(z)/X
 sln = solve([e3,e4],[H,Y])      # solve([e3,e4],[H,X]) works also
 sln[0][0]                       # Prints the solution: H == (b1*d + b0)/(a1*d + 1)
 
-The code snippet can be copy-and-pasted and executed here https://sagecell.sagemath.org/. It 
-produces the desired output:
+It is important to ask the solver to solve for [H,Y] and not just for [H] even though we are 
+eventually only interested in H. But trying to just use  sln = solve([e3,e4],[H])  will not work.
+It will produce an empty solution set. I guess it has to do with having two equations for one 
+variable, i.e. 2 constraints and only 1 degree of freedom. The code snippet can be copy-and-pasted 
+and executed here https://sagecell.sagemath.org/. It produces the desired output:
 
   H == (b1*d + b0)/(a1*d + 1)
 
-Apparently, the solution sln is an array with two indices (Why? Wouldn't one index be enough?). 
-Well, actually the Sage code above can be simplified. We don't really need to do the intermeidate 
-solutions, substitution and simplifcations manually. This code here also works:
+Apparently, the solution sln is an array with two indices (Why? Wouldn't one index be enough?). The
+second element is an expression for Y which we are not interested in. Just for info, it is:
+Y == (X*b1*d + X*b0)/(a1*d + 1). That might actually be useful because one can read off the DF1 
+implementation from it. The Sage code above can be simplified. We don't really need to do the 
+intermediate solutions, substitution and simplifcations manually to get down to one equation plus
+our auxiliary. This code here also works:
 
 var("b0 b1 a1 d X Y V H")         # b0,b1,a1: filter coeffs, d = z^-1, X=X(z),Y=Y(Z),etc.
 e1 = V == X - a1*V*d              # 1st equation from the filter's state update
@@ -89,6 +95,9 @@ e2 = Y == b0*V + b1*V*d           # 2nd equation from the filter's output comput
 e3 = H == Y/X                     # Auxiliary equation for H(z) = Y(z)/X(z)
 sln = solve([e1,e2,e3],[H,X,Y])   # Solve the system of equations 
 sln[0][0]                         # The 1st element is what we are interested in
+
+Here, we used the original 2 equations and introduced the auxiliary H = Y/X equation as 3rd equation 
+and solved for 3 variables H,X,Y. Again, we are mainly interested in H.
 
 
 Moog Ladder with Unit Delay Feedback (UDF)
