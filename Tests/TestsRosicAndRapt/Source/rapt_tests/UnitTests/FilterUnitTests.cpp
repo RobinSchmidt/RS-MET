@@ -1393,6 +1393,27 @@ bool stateVariableFilterUnitTest4()
   // We need a rather high tolerance for some types. The error is greatest around the resonance 
   // peak for the lowpass. For the highpass, the error is big at DC.
 
+
+
+  // Temporary throw-awy code:
+
+  // Test the conversion to biquad coeffs:
+  Real b0, b1, b2, a1, a2;
+  designBiquad(Mode::Lowpass, 1000, 5, 0, b0, b1, b2, a1, a2);
+
+  svf.setupLowpass(2*PI*1000/sampleRate, 5);
+  Real b0s, b1s, b2s, a1s, a2s;
+  svf.getBiquadNumeratorCoeffsLP(&b0s, &b1s, &b2s);
+  svf.getBiquadDenominatorCoeffs(      &a1s, &a2s);
+  // The a-coeffs have a different sign but that's ok. The old code uses the other sign convention.
+
+
+
+
+
+
+
+
   svf.setupLowpass(0.5, 4.0);
   rsComplex<Real> j(0,1);
   rsComplex<Real> z = rsExp(j*1.5);
@@ -1408,6 +1429,8 @@ bool stateVariableFilterUnitTest4()
   svf.setupBandpassSkirt(0.5, 4.0);
   H1 = svf.getTransferFunctionAtOld(z);
   H2 = svf.getBandpassTransferFunctionAt(z);
+
+
 
   rsAssert(ok);
   return ok;

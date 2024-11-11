@@ -321,10 +321,7 @@ public:
   }
 
 
-  void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
-  {
 
-  }
 
 
 
@@ -386,6 +383,30 @@ public:
 
 
 
+
+  // New: needs tests:
+
+  void getBiquadDenominatorCoeffs(TPar* a1, TPar* a2)
+  {
+    TPar s = scl;
+    TPar c = gpr;
+    *a1 =  2*(c*g + g*g)*s - 2;
+    *a2 = -2*(c*g - g*g)*s + 1;
+    // Simplify: factor out g, create variable for the common subexpression
+  }
+
+  void getBiquadNumeratorCoeffsLP(TPar* b0, TPar* b1, TPar* b2)
+  {
+    TPar s = scl;
+    TPar c = gpr;
+    *b0 =   s*g*g;
+    *b1 = 2*s*g*g;
+    *b2 =   s*g*g;
+
+
+    // (d^2*g^2 + 2*d*g^2 + g^2)*s 
+    //  s*g^2 * d^2 + 2*s*g^2 * d + s*g^2
+  }
 
 
 
