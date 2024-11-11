@@ -575,12 +575,13 @@ template void RAPT::rsBiDirectionalFilter::applyLowpass(
 template class RAPT::rsCrossOver4Way<double, double>;
 //template class RAPT::rsQuantileFilter<double>;
 template class RAPT::rsHilbertFilter<double, double>;
-
+template class RAPT::rsStateVariableFilterMystran<double, double>;
 
 template class rsStateVariableFilterChain<double, double>; // not yet in RAPT namespace
 template class rsStateVariableFilterChain<float, float>; 
 template class rsStateVariableFilterChain<float, double>; 
 template class rsStateVariableFilterChain<long double, long double>; 
+
 
 
 // Physics:
