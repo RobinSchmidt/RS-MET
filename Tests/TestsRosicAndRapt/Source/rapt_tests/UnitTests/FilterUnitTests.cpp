@@ -1519,17 +1519,17 @@ bool stateVariableFilterUnitTest4()
   rsComplex<Real> j(0,1);
   rsComplex<Real> z = rsExp(j*1.5);
   rsComplex<Real> H1 = svf.getTransferFunctionAtOld(z);
-  rsComplex<Real> H2 = svf.getLowpassTransferFunctionAt(z);
+  rsComplex<Real> H2 = svf.getTransferFunctionAt(z);
   // Let's see if H1 == H2...yes!
 
   svf.setupHighpass(0.5, 4.0);
   H1 = svf.getTransferFunctionAtOld(z);
-  H2 = svf.getHighpassTransferFunctionAt(z);
+  H2 = svf.getTransferFunctionAt(z);
   // Here too! Nice!
 
   svf.setupBandpassSkirt(0.5, 4.0);
   H1 = svf.getTransferFunctionAtOld(z);
-  H2 = svf.getBandpassTransferFunctionAt(z);
+  H2 = svf.getTransferFunctionAt(z);
 
 
 

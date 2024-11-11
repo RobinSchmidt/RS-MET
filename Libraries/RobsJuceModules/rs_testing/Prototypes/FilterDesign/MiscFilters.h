@@ -346,6 +346,10 @@ public:
 
   }
 
+
+  // Obsolete:
+
+  /*
   rsComplex<TPar> getLowpassTransferFunctionAt(const rsComplex<TPar>& z)
   {
     TPar s  =  scl;
@@ -392,6 +396,7 @@ public:
 
     // Note: The a-coeffs are the same as in the highpass case.
   }
+  */
 
 
 
