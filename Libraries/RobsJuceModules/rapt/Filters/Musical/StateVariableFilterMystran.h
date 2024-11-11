@@ -41,6 +41,9 @@ public:
   /** Computes one sample at a time. */
   inline TSig getSample(TSig in);
 
+  /** Returns the 3 outputs (lowpass, bandpass, highpass) of the core SVF. */
+  inline void getOutputs(TSig in, TSig* yL, TSig* yB, TSig* yH);
+
   /** Resets the internal state. */
   void reset() { z1 = z2 = 0; }
 
@@ -202,19 +205,40 @@ void rsStateVariableFilterMystran<TSig, TPar>::setupHighShelf(TPar w, TPar Q, TP
 // Processing:
 
 template<class TSig, class TPar>
-TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
+inline void rsStateVariableFilterMystran<TSig, TPar>::getOutputs(TSig in, TSig* yL, TSig* yB, TSig* yH)
 {
   // Compute outputs:
-  TSig hp = (in - gpr*z1 - z2) * scl;  // == (in - (g+r)*z1 - z2) / (1 + g*(g+r));
-  TSig bp = z1 + g*hp; 
-  TSig lp = z2 + g*bp;
+  *yH = (in - gpr*z1 - z2) * scl;  // == (in - (g+r)*z1 - z2) / (1 + g*(g+r));
+  *yB = z1 + g * *yH; 
+  *yL = z2 + g * *yB;
 
   // State variable update:
-  z1 = 2*bp - z1;                      // Equivalent to: z1 += 2*g*hp
-  z2 = 2*lp - z2;                      // Equivalent to: z2 += 2*g*bp
+  z1 = 2 * *yB - z1;               // Equivalent to: z1 += 2 * g * *yH
+  z2 = 2 * *yL - z2;               // Equivalent to: z2 += 2 * g * *yB
+}
 
-  // Mix final output:
-  return aH*hp + aB*bp + aL*lp;
+template<class TSig, class TPar>
+inline TSig rsStateVariableFilterMystran<TSig, TPar>::getSample(TSig in)
+{
+  //// Old:
+
+  //// Compute outputs:
+  //TSig hp = (in - gpr*z1 - z2) * scl;  // == (in - (g+r)*z1 - z2) / (1 + g*(g+r));
+  //TSig bp = z1 + g*hp; 
+  //TSig lp = z2 + g*bp;
+
+  //// State variable update:
+  //z1 = 2*bp - z1;                      // Equivalent to: z1 += 2*g*hp
+  //z2 = 2*lp - z2;                      // Equivalent to: z2 += 2*g*bp
+
+  //// Mix final output:
+  //return aH*hp + aB*bp + aL*lp;
+
+
+  // New:
+  TSig yL, yB, yH;
+  getOutputs(in, &yL, &yB, &yH);
+  return aH*yH + aB*yB + aL*yL;
 }
 
 #endif
