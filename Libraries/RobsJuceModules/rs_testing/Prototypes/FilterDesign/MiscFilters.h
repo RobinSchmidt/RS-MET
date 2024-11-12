@@ -215,8 +215,8 @@ public:
     TPar r =  2*(a2 - 1) / (T*S);
 
 
-    aH = -(b0 - b1 + b2)/(a1 - a2 - 1);
-    aL =  (b0 + b1 + b2)/(a1 + a2 + 1);
+    aH = -(b0 - b1 + b2) / (a1 - a2 - 1);
+    aL =  (b0 + b1 + b2) / (a1 + a2 + 1);
     aB =  2*b0*S - 2*b2*S;
     g  = -1/((a1 - a2 - 1)*S);
     c  =  g + r;
@@ -235,6 +235,11 @@ public:
   // applicability of solution 1 or 2 by looking at the rhs in the computation of r. I think, r 
   // must always be positive - or does it? It is 1/Q and also 2*R where R is the damping. Maybe
   // a negative damping coeffs would lead to an unstable filter? Try it!
+  // Can it happen that the argument of the square-root is negative, i.e. T is positive? Maybe in 
+  // this case, we need to take the sqrt of the absolute value of T and then invert the signs of
+  // aB, g, r?
+  // Optimize the common subexpressions: 2*(a2 - 1), (a1 - a2 - 1). Maybe we can also take
+  // the sqrt of T itself rather than 1/T and then compute r = S * 2*(a2 - 1) / T
 
 
   //-----------------------------------------------------------------------------------------------
