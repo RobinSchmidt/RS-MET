@@ -1091,24 +1091,29 @@ void adHocTapeEmuIdea()
   // that opens and closes at audio rate using the input signal to modualte the cutoff. When the
   // magnitude of the input signal is rising, the filter should be open and when the magnitude is
   // falling, the filter should have a high time constant to try to make the signal stick. Or 
-  // maybe the filter shoul be open when magnitude is high and closed when it is low?
+  // maybe the filter shoul be open when magnitude is high and closed when it is low? In this 
+  // experiment we explaore a couple of ad-hoc algorithmic ideas for hwo to achieve a sticky
+  // stauration
 
 
   int    N            =  1000;
   double sampleRate   = 44100;
   double inFreq       =   100;
+  double inAmp        =     1.0;
 
 
 
   // Create input signal:
   using Vec = std::vector<double>;
 
-  Vec x = createWaveform(N, 0, inFreq, sampleRate);
-
+  Vec x  = inAmp * createWaveform(N, 0, inFreq, sampleRate);
+  Vec xd = inAmp * createWaveform(N, 0, inFreq, sampleRate, PI/2); // Derivative of x
+  //rsPlotVectors(x, xd);
+  //rsPlotVectors(x, xd, xd*xd);
 
 
   //---------------------------------------------------------------------------
-  // Algorithm Idea 1:
+  // Algorithm Idea:
   //
   // - A lowpass filter has its cutoff frequency modulated by some power of the magnitude of the
   //   input signal
@@ -1121,7 +1126,7 @@ void adHocTapeEmuIdea()
   lpf.setSampleRate(sampleRate);
   lpf.setMode(lpf.LOWPASS_IIT);
   Vec y(N);
-  for(int n = 0; n <N; n++)
+  for(int n = 0; n < N; n++)
   {
     double magSq   = (x[n]+asym)*(x[n]+asym);
     double magGain = pow(magSq, 0.5*power);
@@ -1141,6 +1146,45 @@ void adHocTapeEmuIdea()
   //   signal get shifted above (or below) zero
 
 
+  //---------------------------------------------------------------------------
+  // Algorithm Idea:
+  //
+  // - m[n] = x[n]*x[n], y[n] = m[n]*x[n] + (1 - m[n]) * y[n-1]. Rationale: Follow the input signal
+  //   immediately when amgnitude m[n] is high and stick to the old value when m[n] is low.
+
+  power = 16.0; 
+  asym  = 0.0;
+  y[0]  = 0;
+  for(int n = 1; n < N; n++)
+  {
+    double magSq = (x[n]+asym)*(x[n]+asym);
+    double m     = pow(magSq, 0.5*power);
+    y[n] = m * x[n] + (1-m) * y[n-1];
+  }
+  rsPlotVectors(x, y);
+
+  // - Similar to the result of the algor befor
+  //
+
+
+  //---------------------------------------------------------------------------
+  // Algorithm Idea:
+  //
+  // - A lowpass filter has its cutoff frequency modulated by some power of the magnitude of the
+  //   derivative of the input signal
+
+
+
+
+  //---------------------------------------------------------------------------
+  // Algorithm Idea:
+  //
+  // - We use a tanh waveshape with a DC offset that is modulated by a filtered version of the 
+  //   input signal
+
+
+
+  //
 
 
 

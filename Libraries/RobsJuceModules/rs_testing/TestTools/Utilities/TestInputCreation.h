@@ -32,7 +32,7 @@ expected in radians and there is an option to do anti-aliased synthesis (by mean
 the sinusoidal components up to the Nyquist frequency). Shapes: 0: sine, 1: saw, 2: square, 
 3: triangle. Explicit template instantiations exist for float and double. */
 template<class T>
-void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phase = 0.0, 
+void createWaveform(T *x, int N, int shape, T frequency, T sampleRate, T phaseRadians = 0.0, 
   bool antiAlias = false);
 
 /** Convenience fucction. */
