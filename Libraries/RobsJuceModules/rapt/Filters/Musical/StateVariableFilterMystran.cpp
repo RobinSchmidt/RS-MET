@@ -117,6 +117,9 @@ ToDo:
 - Figure out if there is a more direct way to evaluate the transfer function, i.e. one that 
   doesn't go through a conversion to a direct form biquad.
 
+- Add an experiment that looks at the DC-response when switching the cutoff freq. The Wishnick 
+  paper says that this is a good test for modulation response.
+
 - Maybe rename the old implementation to rsStateVariableFilterOld and this class to 
   rsStateVariableFilter. The old code is kinda rubbish and should be deprecated.
 

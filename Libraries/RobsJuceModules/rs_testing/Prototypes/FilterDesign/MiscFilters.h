@@ -217,21 +217,22 @@ public:
     {
       TPar S = sqrt(-1/T);
 
-      r  =  (2*(a2 - 1) / (T*S));
       aB =  (2*b0*S - 2*b2*S);
       g  = -(1/((a1 - a2 - 1)*S));
+      r  =  (2*(a2 - 1) / (T*S));
     }
     else
     {
       //rsError("Not yet implemented");
       TPar S = sqrt(1/T);
 
-      r  = +(2*(a2 - 1) / (T*S));                 // May need a minus
       aB = +(2*b0*S - 2*b2*S);                    // May need a minus
       g  = +(1/((a1 - a2 - 1)*S));                // May need a minus
+      r  = +(2*(a2 - 1) / (T*S));                 // May need a minus
 
       // Tested and found to be wrong: ---,--+,-+-,-++,+--,+-+,++-,+++
-      // Hmm - just 
+      // Hmm - just inverting the sign of the argument of the square root and then compensating via
+      // sign flips in the formulas for aB,g,r doesn't work
     }
     
 

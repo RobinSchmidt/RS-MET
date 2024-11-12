@@ -7,6 +7,7 @@ highpass) from the SVF core by calling getOutputs() or let the filter itself for
 combination of the these 3 to obtain a desired filter mode (in addition to the 3 modes above, there 
 are also shelvers, a bell, etc.). 
 
+
 References:
 
   (1) The Art of Virtual Analog Filter Design (Vadim Zavalishin)
@@ -17,8 +18,11 @@ References:
       http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
 
 
+Notes:
 
-*/
+This implementation is superseded by the newer implementation in rsStateVariabelFilterMystran.
+If the features of that other class are what you need, you should really use that. This class here 
+may be deprecated. It was my first attempt and the newer code is much cleaner. */
 
 template<class TSig, class TPar> // signal, parameter types
 class rsStateVariableFilter
