@@ -3379,7 +3379,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterMystran.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterOld.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.cpp">
@@ -3662,6 +3665,12 @@
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\SallenKeyFilterSimper.cpp">
+      <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterSimper.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\GeometricFunctions.cpp">
@@ -8127,7 +8136,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterMystran.h">
+      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterOld.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.h">
@@ -8416,6 +8428,12 @@
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\PhonoFilter.h">
+      <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\SallenKeyFilterSimper.h">
+      <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Filters\StateVariableFilterSimper.h">
       <Filter>JUCE Modules\rapt\Unfinished\Filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\AffineTransform2D.h">
@@ -10163,6 +10181,9 @@
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\ToDo.txt">
       <Filter>JUCE Modules\jura_processors</Filter>
     </None>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\ReadMe.txt">
+      <Filter>JUCE Modules\rapt\_Deprecated</Filter>
+    </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
     </None>
@@ -10227,6 +10248,9 @@
       <Filter>JUCE Modules\rosic\legacy\MovedToRAPT</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\minBlep.txt">
+      <Filter>JUCE Modules\rosic\legacy</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\legacy\ReadMe.txt">
       <Filter>JUCE Modules\rosic\legacy</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\math\ToDo.txt">

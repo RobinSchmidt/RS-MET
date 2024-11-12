@@ -1,5 +1,5 @@
-#ifndef RAPT_STATEVARIABLEFILTER_H_INCLUDED
-#define RAPT_STATEVARIABLEFILTER_H_INCLUDED
+#ifndef RAPT_STATEVARIABLEFILTEROLD_H_INCLUDED
+#define RAPT_STATEVARIABLEFILTEROLD_H_INCLUDED
 
 /** This is an implementation of a state variable filter using topology-preserving transform (TPT)
 and zero-delay feedback (ZDF) technology. You can either use 3 outputs (lowpass, bandpass, 

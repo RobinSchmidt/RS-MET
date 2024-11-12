@@ -760,10 +760,10 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterMystran.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterMystran.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterOld.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.cpp">
@@ -3060,10 +3060,10 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.h">
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterMystran.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterMystran.h">
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilterOld.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Scientific\BiquadCascade.h">
