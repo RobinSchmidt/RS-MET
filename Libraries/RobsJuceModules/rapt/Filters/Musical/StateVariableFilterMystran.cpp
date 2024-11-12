@@ -127,7 +127,7 @@ Algorithm for computing the mixing coefficients aL, aB, aH
 
 As mystran explains, the analog prototype response of this SVF is:
 
-          a0 + a1 s + a2 s^2
+          aL + aB s + aH s^2
   H(s) = --------------------
           1  + s/Q  + s^2
 

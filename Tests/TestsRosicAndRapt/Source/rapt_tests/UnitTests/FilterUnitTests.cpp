@@ -1351,7 +1351,37 @@ bool stateVariableFilterUnitTest4()
   ok &= runBiquadConversionTest(Mode::HighShelf,     1000, 8.0, 6.0, tol);
 
 
+  // Test biquad roundtrip conversions with random coeffs:
+  int numTests = 1000;
+  RAPT::rsNoiseGenerator<Real> prng;
+  prng.setRange(-2.0, +2.0);
+  for(int n = 0; n < numTests; n++)
+  {
+    // Create random biaud coeffs:
+    Real b0, b1, b2, a1, a2;
+    b0 = prng.getSample();
+    b1 = prng.getSample();
+    b2 = prng.getSample();
+    a1 = prng.getSample();
+    a2 = prng.getSample();
 
+    // Set up an SVF from them:
+    rsStateVariableFilterMystran2<Real, Real> svf;
+    svf.setupFromBiquad(b0, b1, b2, a1, a2);
+
+    // Retrieve the biquad coeffs again:
+    Real b0r, b1r, b2r, a1r, a2r;
+    svf.convertToBiquad(&b0r, &b1r, &b2r, &a1r, &a2r);
+
+
+    // It sometimes works and sometimes produces NaN. I guess, we need to switch between the two
+    // solutions based on some condition....
+
+
+
+
+    int dummy = 0;
+  }
 
 
 
