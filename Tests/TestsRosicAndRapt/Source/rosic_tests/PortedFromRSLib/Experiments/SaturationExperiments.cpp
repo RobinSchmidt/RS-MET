@@ -1097,7 +1097,7 @@ void adHocTapeEmuIdea()
   int    N            =  1000;
   double sampleRate   = 44100;
   double inFreq       =   100;
-  double cutoffScale  =    0.005;
+  double cutoffScale  =    0.02;
   double power        =    8.0;    // Power to which we raise the magnitude 
 
 
