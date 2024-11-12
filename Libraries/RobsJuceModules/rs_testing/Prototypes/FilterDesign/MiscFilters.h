@@ -223,7 +223,8 @@ public:
     }
     else
     {
-      //rsError("Not yet implemented");
+      rsError("Not yet implemented correctly");
+
       TPar S = sqrt(1/T);
 
       aB = +(2*b0*S - 2*b2*S);                    // May need a minus
