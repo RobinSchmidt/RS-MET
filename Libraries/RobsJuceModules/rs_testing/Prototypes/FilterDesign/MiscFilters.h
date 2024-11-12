@@ -226,11 +226,12 @@ public:
       //rsError("Not yet implemented");
       TPar S = sqrt(1/T);
 
-      r  =  (2*(a2 - 1) / (T*S));                 // May need a minus
-      aB =  (2*b0*S - 2*b2*S);                    // May need a minus
-      g  = -(1/((a1 - a2 - 1)*S));                // May need a minus
+      r  = +(2*(a2 - 1) / (T*S));                 // May need a minus
+      aB = +(2*b0*S - 2*b2*S);                    // May need a minus
+      g  = +(1/((a1 - a2 - 1)*S));                // May need a minus
 
-      // Tested and found to be wrong: ++-
+      // Tested and found to be wrong: ---,--+,-+-,-++,+--,+-+,++-,+++
+      // Hmm - just 
     }
     
 
