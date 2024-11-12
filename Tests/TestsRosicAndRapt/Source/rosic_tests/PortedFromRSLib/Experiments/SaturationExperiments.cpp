@@ -1101,24 +1101,17 @@ void adHocTapeEmuIdea()
   double inFreq       =   100;
   double inAmp        =     1.0;
 
-
-
   // Create input signal:
   using Vec = std::vector<double>;
-
   Vec x  = inAmp * createWaveform(N, 0, inFreq, sampleRate);
-  Vec xd = inAmp * createWaveform(N, 0, inFreq, sampleRate, PI/2); // Derivative of x
-  //rsPlotVectors(x, xd);
-  //rsPlotVectors(x, xd, xd*xd);
 
 
   //---------------------------------------------------------------------------
-  // Algorithm Idea:
+  // Algorithm Idea 1:
   //
   // - A lowpass filter has its cutoff frequency modulated by some power of the magnitude of the
   //   input signal
 
-   
   double cutoffScale  = 0.02;            // Overall scale factor for filter cutoff
   double power        = 8.0;             // Power to which we raise the magnitude 
   double asym         = 0.05;            // Asymmetry. Add an offset to the input before squaring
@@ -1130,11 +1123,11 @@ void adHocTapeEmuIdea()
   {
     double magSq   = (x[n]+asym)*(x[n]+asym);
     double magGain = pow(magSq, 0.5*power);
-    double cutoff  = cutoffScale*magGain*sampleRate/2; // Should be fully open when magSq == 1?
+    double cutoff  = cutoffScale*magGain*sampleRate/2;
     lpf.setCutoff(cutoff); 
     y[n] = lpf.getSample(x[n]);
   }
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y);
 
   // - High-freq sines are attenuated - maybe counteract by multiplying by a make-up gain that is 
   //   high for high-freq inputs. Maybe take the magnitude of a highpassed signal as gain signal.
@@ -1147,10 +1140,34 @@ void adHocTapeEmuIdea()
 
 
   //---------------------------------------------------------------------------
-  // Algorithm Idea:
+  // Algorithm Idea 2:
+  //
+  // - A lowpass filter has its cutoff frequency modulated by some power of the magnitude of the
+  //   derivative of the input signal
+
+  Vec xd = inAmp * createWaveform(N, 0, inFreq, sampleRate, PI/2); // Derivative of x
+  // Hmm - but the derivative should also include a scale factor that is proportional to the sine
+  // frequency. Maybe obtain it by numeric differentiation. That is also more realistic for an
+  // actual DSP algorithm that must somehow produce the derivative
+  //rsPlotVectors(x, xd);
+  //rsPlotVectors(x, xd, xd*xd);
+
+  lpf.reset();
+  for(int n = 0; n < N; n++)
+  {
+    double magSq   = (xd[n]+asym)*(xd[n]+asym);
+    double magGain = pow(magSq, 0.5*power);
+    double cutoff  = cutoffScale*magGain*sampleRate/2;
+    lpf.setCutoff(cutoff); 
+    y[n] = lpf.getSample(x[n]);
+  }
+  //rsPlotVectors(x, y);
+
+  //---------------------------------------------------------------------------
+  // Algorithm Idea 3:
   //
   // - m[n] = x[n]*x[n], y[n] = m[n]*x[n] + (1 - m[n]) * y[n-1]. Rationale: Follow the input signal
-  //   immediately when amgnitude m[n] is high and stick to the old value when m[n] is low.
+  //   immediately when magnitude m[n] is high and stick to the old value when m[n] is low.
 
   power = 16.0; 
   asym  = 0.0;
@@ -1161,17 +1178,14 @@ void adHocTapeEmuIdea()
     double m     = pow(magSq, 0.5*power);
     y[n] = m * x[n] + (1-m) * y[n-1];
   }
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y);
 
-  // - Similar to the result of the algor befor
-  //
+  // - Similar to the result of algo 1 
 
 
-  //---------------------------------------------------------------------------
-  // Algorithm Idea:
-  //
-  // - A lowpass filter has its cutoff frequency modulated by some power of the magnitude of the
-  //   derivative of the input signal
+
+
+
 
 
 
@@ -1182,12 +1196,24 @@ void adHocTapeEmuIdea()
   // - We use a tanh waveshape with a DC offset that is modulated by a filtered version of the 
   //   input signal
 
+  power = 2.0; 
 
+  double drive = 1.0;
+  double dc = 0;
+  lpf.reset();
+  lpf.setCutoff(1000);
+  for(int n = 0; n < N; n++)
+  {
+    double magSq = (x[n]+asym)*(x[n]+asym);
+    double m     = pow(magSq, 0.5*power);
 
-  //
+    dc += lpf.getSample(m * x[n]);
+    //dc += m * lpf.getSample(x[n]);
+    //dc += lpf.getSample(m) * x[n];
 
-
-
+    y[n] = rsTanh(drive * x[n] + dc);
+  }
+  rsPlotVectors(x, y);
 
 
   int dummy = 0;

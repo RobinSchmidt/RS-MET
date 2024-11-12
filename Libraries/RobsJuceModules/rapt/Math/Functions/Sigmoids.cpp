@@ -407,6 +407,13 @@ See also:
 https://www.youtube.com/watch?v=oIChUOV_0w4  at 5:55
 
 
+Langevin function L(x) = (1/tanh(x)) - (1/x)
+see: 
+https://en.wikipedia.org/wiki/Brillouin_and_Langevin_functions
+https://www.youtube.com/watch?v=6zxUNiweIgU
+https://www.desmos.com/calculator/ze1pu86obh
+
+
 Maybe make a similar file for functions of the "1-cycle", "wobble" kind. Examples:
 
 x * exp(-x^2), x - x*tanh(x^2), ...
