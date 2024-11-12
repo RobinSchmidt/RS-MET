@@ -1097,47 +1097,60 @@ void adHocTapeEmuIdea()
   int    N            =  1000;
   double sampleRate   = 44100;
   double inFreq       =   100;
-  double cutoffScale  =    0.02;
-  double power        =    8.0;    // Power to which we raise the magnitude 
 
 
+
+  // Create input signal:
   using Vec = std::vector<double>;
 
+  Vec x = createWaveform(N, 0, inFreq, sampleRate);
+
+
+
+  //---------------------------------------------------------------------------
+  // Algorithm Idea 1:
+  //
+  // - A lowpass filter has its cutoff frequency modulated by some power of the magnitude of the
+  //   input signal
+
+   
+  double cutoffScale  = 0.02;            // Overall scale factor for filter cutoff
+  double power        = 8.0;             // Power to which we raise the magnitude 
+  double asym         = 0.05;            // Asymmetry. Add an offset to the input before squaring
   rsOnePoleFilter<double, double> lpf;
   lpf.setSampleRate(sampleRate);
   lpf.setMode(lpf.LOWPASS_IIT);
-
-
-  Vec x = createWaveform(N, 0, inFreq, sampleRate);
-  Vec y1(N);
+  Vec y(N);
   for(int n = 0; n <N; n++)
   {
-    double magSq   = x[n]*x[n];
-
+    double magSq   = (x[n]+asym)*(x[n]+asym);
     double magGain = pow(magSq, 0.5*power);
-
-
-    //double mag   = sqrt(magSq);
-
-    double cutoff = cutoffScale*magGain*sampleRate/2;// Should be fully open when magSq == 1
-
+    double cutoff  = cutoffScale*magGain*sampleRate/2; // Should be fully open when magSq == 1?
     lpf.setCutoff(cutoff); 
-    y1[n] = lpf.getSample(x[n]);
+    y[n] = lpf.getSample(x[n]);
   }
-  // High-freq sines are attenuated - maybe counteract by multiplying by a make-up gain that is 
-  // high for high-freq inputs. Maybe take the magnitude of a highpassed signal as gain signal. Or
-  // maybe let the highpassed signal also control the cutoff
+  rsPlotVectors(x, y);
+
+  // - High-freq sines are attenuated - maybe counteract by multiplying by a make-up gain that is 
+  //   high for high-freq inputs. Maybe take the magnitude of a highpassed signal as gain signal.
+  //   Or maybe let the highpassed signal also control the cutoff
+  //
+  // - Higher values for the "power" make the output signal more squarish
+  //
+  // - Asymmetry parameter acts like a pulse-width control. But with too much of it, the whole 
+  //   signal get shifted above (or below) zero
 
 
 
 
-  rsPlotVectors(x, y1);
+
+
 
   int dummy = 0;
 
   // Observations:
   //
-  // - Higher values for the "power" make the output signal more squarish
+
   //
   //
   // ToDo:
