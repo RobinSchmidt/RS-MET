@@ -336,6 +336,10 @@ ofxATK
 https://github.com/aaronaanderson/ofxATK
 -DSP library made specifically for openFrameworks. Made by the author of the Terrain synth.
 
+DaisySP
+https://github.com/xiashj24/DaisySP
+
+
 ----------------------------------------------------------------------------------------------------
 Other Libraries
 
@@ -419,5 +423,12 @@ https://github.com/webprofusion/OpenAudio
 
 http://ccrma.stanford.edu/planetccrma/software/ladspaworld.html
 -List of LADSPA plugins
+
+https://github.com/BillyDM/awesome-audio-dsp
+-List of audio DSP (digital signal processing) and plugin development resources.
+
+https://github.com/AllenDowney/ThinkDSP
+-Introduction to Digital Signal Processing in Python. Has lots of notebooks. Has also a pdf book:
+ https://greenteapress.com/thinkdsp/thinkdsp.pdf
 
 https://www.musicdsp.org/en/latest/
