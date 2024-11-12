@@ -211,38 +211,33 @@ public:
   void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
   {
     TPar T = (a1*a1 - a2*a2 - 2*a2 - 1);
+    TPar r;
+
     if(T < 0)
     {
       TPar S = sqrt(-1/T);
-      TPar r = 2*(a2 - 1) / (T*S);
 
-      aH = -(b0 - b1 + b2) / (a1 - a2 - 1);
-      aL =  (b0 + b1 + b2) / (a1 + a2 + 1);
-
-      aB =  2*b0*S - 2*b2*S;
-      g  = -1/((a1 - a2 - 1)*S);
-
-
-      c  =  g + r;
-      s  =  1 / (1 + g*c);
+      r  =  (2*(a2 - 1) / (T*S));
+      aB =  (2*b0*S - 2*b2*S);
+      g  = -(1/((a1 - a2 - 1)*S));
     }
     else
     {
       //rsError("Not yet implemented");
       TPar S = sqrt(1/T);
 
-      TPar r = 2*(a2 - 1) / (T*S);                 // May need a minus
+      r  =  (2*(a2 - 1) / (T*S));                 // May need a minus
+      aB =  (2*b0*S - 2*b2*S);                    // May need a minus
+      g  = -(1/((a1 - a2 - 1)*S));                // May need a minus
 
-      aH = -(b0 - b1 + b2) / (a1 - a2 - 1);
-      aL =  (b0 + b1 + b2) / (a1 + a2 + 1);
-
-      aB =  2*b0*S - 2*b2*S;                       // May need a minus
-      g  = -1/((a1 - a2 - 1)*S);                   // May need a minus
-
-
-      c  =  g + r;
-      s  =  1 / (1 + g*c);
+      // Tested and found to be wrong: ++-
     }
+    
+
+    aH = -(b0 - b1 + b2) / (a1 - a2 - 1);
+    aL =  (b0 + b1 + b2) / (a1 + a2 + 1);
+    c  =  g + r;
+    s  =  1 / (1 + g*c);
 
     // Sage gave me a second solution:
     //   aB == -2*b0*S + 2*b2*S
