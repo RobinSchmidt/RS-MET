@@ -208,6 +208,7 @@ public:
     }
   }
 
+
   void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
   {
     TPar T = (a1*a1 - a2*a2 - 2*a2 - 1);

@@ -1,4 +1,5 @@
-Links to interesting open source audio software projects (and maybe some non-audio stuff, too):
+This my personal curated list of links to interesting open source audio software projects (and maybe 
+some non-audio stuff, too):
 
 ----------------------------------------------------------------------------------------------------
 Hosts
@@ -199,6 +200,18 @@ https://github.com/je3928/RE201models
 Florian Mrugalla's stuff:
 https://github.com/Mrugalla
 
+AnalogTapeModel
+https://github.com/jatinchowdhury18/AnalogTapeModel
+-CHOW Tape Model is a physical model of an analog tape machine
+
+CHOW Matrix
+https://github.com/Chowdhury-DSP/ChowMatrix
+-CHOW Matrix is a delay effect, made up of an infinitely growable tree of delay lines
+
+BYOD (Build-Your-Own Distortion)
+https://github.com/Chowdhury-DSP/BYOD
+-BYOD is a guitar effects plugin with a customisable signal chain that allows users to create their 
+ own guitar distortion effects.
 
 ----------------------------------------------------------------------------------------------------
 Frameworks
@@ -338,6 +351,9 @@ https://github.com/aaronaanderson/ofxATK
 
 DaisySP
 https://github.com/xiashj24/DaisySP
+
+
+
 
 
 ----------------------------------------------------------------------------------------------------

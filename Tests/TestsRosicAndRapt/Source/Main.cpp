@@ -66,9 +66,9 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
-  ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
+  //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
   // ...we may run very exhaustive tests that may take hours - but we don't want to run them as 
@@ -392,9 +392,9 @@ int main(int argc, char* argv[])
   //bandwidthScaling();
   //biquadResoGainToQ();           // investigate relation beween filter Q and resonance gain
   //butterworthEnergy();
-  onePoleFilterSimper();           // Stub - maybe get rid of it!
+  //onePoleFilterSimper();           // Stub - maybe get rid of it!
   //sallenKeyFilterSimper();
-  stateVariableFilters();          // Tests with various SVF implementations
+  //stateVariableFilters();          // Tests with various SVF implementations
   //stateVectorFilter();           // Stub
   //biquadModulation();            // compares modulation properties of various biquad structures
 
@@ -590,6 +590,7 @@ int main(int argc, char* argv[])
   //sigmoidConvergenceRates();
   //sixticPositive();
   //hilbertDistortion();
+  adHocTapeEmuIdea();
 
 
   // Distortion:

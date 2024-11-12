@@ -1083,3 +1083,71 @@ void hilbertDistortion()
   //hilbertDistortion1();
   hilbertDistortion2();
 }
+
+void adHocTapeEmuIdea()
+{
+  // Inspired by this video:  https://www.youtube.com/watch?v=XR5xhJmdFxM  I had the following 
+  // ad-hoc idea to crreate the desired behavior of "sticky saturation": Use a lowpass filter
+  // that opens and closes at audio rate using the input signal to modualte the cutoff. When the
+  // magnitude of the input signal is rising, the filter should be open and when the magnitude is
+  // falling, the filter should have a high time constant to try to make the signal stick. Or 
+  // maybe the filter shoul be open when magnitude is high and closed when it is low?
+
+
+  int    N            =  1000;
+  double sampleRate   = 44100;
+  double inFreq       =   100;
+  double cutoffScale  =    0.005;
+  double power        =    8.0;    // Power to which we raise the magnitude 
+
+
+  using Vec = std::vector<double>;
+
+  rsOnePoleFilter<double, double> lpf;
+  lpf.setSampleRate(sampleRate);
+  lpf.setMode(lpf.LOWPASS_IIT);
+
+
+  Vec x = createWaveform(N, 0, inFreq, sampleRate);
+  Vec y1(N);
+  for(int n = 0; n <N; n++)
+  {
+    double magSq   = x[n]*x[n];
+
+    double magGain = pow(magSq, 0.5*power);
+
+
+    //double mag   = sqrt(magSq);
+
+    double cutoff = cutoffScale*magGain*sampleRate/2;// Should be fully open when magSq == 1
+
+    lpf.setCutoff(cutoff); 
+    y1[n] = lpf.getSample(x[n]);
+  }
+  // High-freq sines are attenuated - maybe counteract by multiplying by a make-up gain that is 
+  // high for high-freq inputs. Maybe take the magnitude of a highpassed signal as gain signal. Or
+  // maybe let the highpassed signal also control the cutoff
+
+
+
+
+  rsPlotVectors(x, y1);
+
+  int dummy = 0;
+
+  // Observations:
+  //
+  // - Higher values for the "power" make the output signal more squarish
+  //
+  //
+  // ToDo:
+  //
+  // - Try a higher order filter
+  //
+  //
+  // Other ideas:
+  //
+  // - Use a tanh waveshaper and add a DC offset where the DC offset is moving around by a filtered
+  //   version of the input signal. The DC offset gets "pulled" by the input signal but it follows
+  //   with some delay or time lag
+}
