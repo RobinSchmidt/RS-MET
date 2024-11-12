@@ -1,7 +1,7 @@
 // Construction/Destruction:
 
 template<class TSig, class TPar>
-rsStateVariableFilter<TSig, TPar>::rsStateVariableFilter()
+rsStateVariableFilterOld<TSig, TPar>::rsStateVariableFilterOld()
 {
   fs   = 44100.0;
   fc   = 1000.0;
@@ -16,49 +16,49 @@ rsStateVariableFilter<TSig, TPar>::rsStateVariableFilter()
 // Setup:
 
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
+void rsStateVariableFilterOld<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   fs = newSampleRate;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::setMode(int newMode)
+void rsStateVariableFilterOld<TSig, TPar>::setMode(int newMode)
 {
   mode = newMode;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::setFrequency(TPar newFrequency)
+void rsStateVariableFilterOld<TSig, TPar>::setFrequency(TPar newFrequency)
 {
   fc = newFrequency;
   calcCoeffs();
 }
  
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::setGain(TPar newGain)
+void rsStateVariableFilterOld<TSig, TPar>::setGain(TPar newGain)
 {
   G = newGain;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::setBandwidth(TPar newBandwidth)
+void rsStateVariableFilterOld<TSig, TPar>::setBandwidth(TPar newBandwidth)
 {
   B = newBandwidth;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::setMorph(TPar newMorph)
+void rsStateVariableFilterOld<TSig, TPar>::setMorph(TPar newMorph)
 {
   m = newMorph;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
+void rsStateVariableFilterOld<TSig, TPar>::setupFromBiquad(
   CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2)
 {
   // Compute intermediate values. The square roots could be imaginary but when we form their 
@@ -103,7 +103,7 @@ void rsStateVariableFilter<TSig, TPar>::setupFromBiquad(
 // Misc:
 
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
+void rsStateVariableFilterOld<TSig, TPar>::calcCoeffs()
 {
   g = tan(TPar(PI) * fc/fs);  // embedded integrator gain (Fig 3.11), == tan(wc/2) I think
 
@@ -252,7 +252,7 @@ void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
 }
 
 template<class TSig, class TPar>
-TPar rsStateVariableFilter<TSig, TPar>::bandwidthToR(TPar B)
+TPar rsStateVariableFilterOld<TSig, TPar>::bandwidthToR(TPar B)
 {
   TPar fl = fc*pow(TPar(2), TPar(-B/2)); // lower bandedge frequency (in Hz)
   TPar gl = tan(TPar(PI)*fl/fs);         // warped radian lower bandedge frequency /(2*fs)
@@ -263,7 +263,7 @@ TPar rsStateVariableFilter<TSig, TPar>::bandwidthToR(TPar B)
 }
 
 template<class TSig, class TPar>
-void rsStateVariableFilter<TSig, TPar>::reset()
+void rsStateVariableFilterOld<TSig, TPar>::reset()
 {
   s1 = s2 = 0.0;
 }

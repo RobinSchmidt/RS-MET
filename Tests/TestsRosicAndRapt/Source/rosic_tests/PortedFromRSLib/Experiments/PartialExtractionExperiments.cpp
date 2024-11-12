@@ -903,7 +903,7 @@ void sineRecreationBandpassNoise()
 
 
   using Vec = std::vector<double>;
-  using Flt = rsStateVariableFilter<double, double>;
+  using Flt = rsStateVariableFilterOld<double, double>;
 
   // generate the sweeping bandpass noise:
   Vec x(N), fa(N);

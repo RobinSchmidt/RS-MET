@@ -2298,7 +2298,7 @@ bool samplerFilterTest()
   //  cheaper)
 
   // Test the sampler's 2nd order filter modes against the SVF implementation from RAPT:
-  using SVF = RAPT::rsStateVariableFilter<float, float>;
+  using SVF = RAPT::rsStateVariableFilterOld<float, float>;
   using BWC = RAPT::rsBandwidthConverter;
   SVF svf;
   svf.setSampleRate(fs);
@@ -2810,7 +2810,7 @@ bool samplerDspChainTest()
 
 
   updateTgt();
-  using SVF = RAPT::rsStateVariableFilter<float, float>;
+  using SVF = RAPT::rsStateVariableFilterOld<float, float>;
   SVF svf;
   svf.setSampleRate(fs);
   svf.setFrequency(cutoff5);

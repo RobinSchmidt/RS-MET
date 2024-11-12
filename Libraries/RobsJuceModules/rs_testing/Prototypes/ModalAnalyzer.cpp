@@ -620,7 +620,7 @@ void rsModalAnalyzer2<T>::extractMode(const T* x, T* y, int N,
   //rsBiquadDF1<T> filter;
 
   // Set up the filter:
-  using SVF = rsStateVariableFilter<T, T>;  // todo: maybe use a simpler direct-form biquad
+  using SVF = rsStateVariableFilterOld<T, T>;  // todo: maybe use a simpler direct-form biquad
   T bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bandwidthHz, centerFreqHz);
   SVF filter;
   filter.setSampleRate(sampleRate);

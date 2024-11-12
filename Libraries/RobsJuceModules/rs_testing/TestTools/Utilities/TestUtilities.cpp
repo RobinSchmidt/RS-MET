@@ -316,7 +316,7 @@ void generateTestSamples()  // rename to gerenrateSamplerTestSamples
 int convertEnumMode_RBJ_to_SVF(int rbjMode)
 {
   using RM = rosic::CookbookFilter::modes;
-  using SM = RAPT::rsStateVariableFilter<float, float>::modes;
+  using SM = RAPT::rsStateVariableFilterOld<float, float>::modes;
   switch(rbjMode)
   {
   case RM::BYPASS:               return SM::BYPASS;

@@ -97,11 +97,11 @@ void rsBiDirectionalFilter::applyConstPeakBandpassBwInHz(const TSig *x, TSig *y,
   TPar bo = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fc);
 
   // create and set up the filter:
-  rsStateVariableFilter<TSig, TPar> flt;  // maybe use a biquad later
+  rsStateVariableFilterOld<TSig, TPar> flt;  // maybe use a biquad later
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setBandwidth(bo);
-  flt.setMode(rsStateVariableFilter<TSig, TPar>::BANDPASS_PEAK);
+  flt.setMode(rsStateVariableFilterOld<TSig, TPar>::BANDPASS_PEAK);
 
   // apply filter:
   int P = getPaddingLength(bw, fs);

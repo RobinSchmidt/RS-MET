@@ -25,7 +25,7 @@ If the features of that other class are what you need, you should really use tha
 may be deprecated. It was my first attempt and the newer code is much cleaner. */
 
 template<class TSig, class TPar> // signal, parameter types
-class rsStateVariableFilter
+class rsStateVariableFilterOld
 {
   typedef const TSig& CRSig;
   typedef const TPar& CRPar;
@@ -36,7 +36,7 @@ public:
   /** \name Lifetime */
 
   /** Constructor. */
-  rsStateVariableFilter();
+  rsStateVariableFilterOld();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ protected:
 // inlined functions:
 
 template<class TSig, class TPar>
-inline void rsStateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSig &yB, TSig &yH)
+inline void rsStateVariableFilterOld<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSig &yB, TSig &yH)
 {
   // Compute highpass output via Eq. 5.1:
   //yH = (in - R2*s1 - g*s1 - s2) * h;  // 3 mul, 3 sub
@@ -200,7 +200,7 @@ inline void rsStateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSi
 }
 
 template<class TSig, class TPar>
-inline TSig rsStateVariableFilter<TSig, TPar>::getSample(TSig in)
+inline TSig rsStateVariableFilterOld<TSig, TPar>::getSample(TSig in)
 {
   TSig yL, yB, yH;
   getOutputs(in, yL, yB, yH);    // 6 mul, 5 add, 2 sub, 5 assign

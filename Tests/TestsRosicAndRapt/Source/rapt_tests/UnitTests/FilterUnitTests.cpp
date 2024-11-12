@@ -837,7 +837,7 @@ bool stateVariableFilterUnitTest1(Real tol)
 
   //using Real = double;
   using Vec  = std::vector<Real>;
-  using SVF  = RAPT::rsStateVariableFilter<Real, Real>;
+  using SVF  = RAPT::rsStateVariableFilterOld<Real, Real>;
   using FDF  = rsFilterDesignFormulas;
 
   // Helper function to test if an SVF can faithfully emulate a biquad with the given set of 

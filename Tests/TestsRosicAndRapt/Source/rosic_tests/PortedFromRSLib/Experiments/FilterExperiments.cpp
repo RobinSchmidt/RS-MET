@@ -1049,7 +1049,7 @@ void biquadModulation()
   SVF1 svf1;
 
   // Create and set up instance my older SVF implementation:
-  using SVF2 = rsStateVariableFilter<Real, Real>;
+  using SVF2 = rsStateVariableFilterOld<Real, Real>;
   SVF2 svf2;
   svf2.setMode(SVF2::modes::LOWPASS);
   svf2.setGain(Q);

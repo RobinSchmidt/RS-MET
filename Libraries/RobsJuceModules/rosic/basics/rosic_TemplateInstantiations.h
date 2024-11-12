@@ -50,7 +50,7 @@ typedef RAPT::rsModalFilterWithAttack2<double, double> rsModalFilterWithAttack2D
 typedef RAPT::rsModalFilterBank<double, double> rsModalFilterBankDD;
 
 
-typedef RAPT::rsStateVariableFilter<double, double> rsStateVariableFilterDD;
+typedef RAPT::rsStateVariableFilterOld<double, double> rsStateVariableFilterDD;
 typedef RAPT::rsPhonoFilter<double, double> rsPhonoFilterDD;
 typedef RAPT::rsMovingAverage<double, double> rsMovingAverageDD;
 

@@ -1841,7 +1841,7 @@ public:
   rsQuantileFilterResonant()
   {
     //resoHighpass.setMode(rsOnePoleFilter<T,T>::HIGHPASS_MZT);
-    resoHighpass.setMode(rsStateVariableFilter<T,T>::HIGHPASS);
+    resoHighpass.setMode(rsStateVariableFilterOld<T,T>::HIGHPASS);
     allocateResources();
     Base::dirty = true;
   }
@@ -2067,7 +2067,7 @@ protected:
 
   //rsOnePoleFilter<T, T> resoHighpass;
 
-  rsStateVariableFilter<T, T> resoHighpass;
+  rsStateVariableFilterOld<T, T> resoHighpass;
 
 };
 

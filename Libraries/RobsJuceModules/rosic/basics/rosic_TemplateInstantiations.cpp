@@ -149,7 +149,7 @@ template double RAPT::rsWindowFunction::dolphChebychevMainLobeWidth(int N, doubl
 //-------------------------------------------------------------------------------------------------
 // Filters:
 
-template class RAPT::rsStateVariableFilter<double, double>;
+template class RAPT::rsStateVariableFilterOld<double, double>;
 
 //template class RAPT::rsOnePoleFilter<double, double>;
 //template class RAPT::rsOnePoleFilter<rsFloat64x2, double>;
