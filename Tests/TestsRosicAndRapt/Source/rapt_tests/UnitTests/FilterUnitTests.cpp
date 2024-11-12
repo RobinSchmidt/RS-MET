@@ -1316,7 +1316,7 @@ bool stateVariableFilterUnitTest4()
     Real b0, b1, b2, a1, a2;
     svf.convertToBiquad(&b0, &b1, &b2, &a1, &a2);
 
-    // Produce biquad impusle response:
+    // Produce biquad impulse response:
     Vec h_s = getImpulseResponse(svf, N, Real(1));
     Vec h_b(N);
     RAPT::rsBiquadDF1<Real, Real> bqd;
@@ -1329,11 +1329,17 @@ bool stateVariableFilterUnitTest4()
     bool ok = rsIsCloseTo(h_s, h_b, tol);
     if(!ok)
       rsPlotVectors(h_s, h_b, h_b - h_s);
+
+    // Test conversion from biquad coeffs back to svf-coeffs:
+    rsStateVariableFilterMystran2<Real, Real> svf2;
+    svf2.setupFromBiquad(b0, b1, b2, a1, a2);
+    ok &= svf2.hasSameCoeffsAs(svf, tol);
+
+
     return ok;
   };
 
-
-  tol = 1.e-14;
+  tol = 1.e-13;
   ok &= runBiquadConversionTest(Mode::Lowpass,       1000, 8.0, 0.0, tol);
   ok &= runBiquadConversionTest(Mode::Highpass,      1000, 8.0, 0.0, tol);
   ok &= runBiquadConversionTest(Mode::BandpassSkirt, 1000, 8.0, 0.0, tol);
@@ -1343,6 +1349,10 @@ bool stateVariableFilterUnitTest4()
   ok &= runBiquadConversionTest(Mode::Bell,          1000, 8.0, 6.0, tol);
   ok &= runBiquadConversionTest(Mode::LowShelf,      1000, 8.0, 6.0, tol);
   ok &= runBiquadConversionTest(Mode::HighShelf,     1000, 8.0, 6.0, tol);
+
+
+
+
 
 
   int dummy = 0;

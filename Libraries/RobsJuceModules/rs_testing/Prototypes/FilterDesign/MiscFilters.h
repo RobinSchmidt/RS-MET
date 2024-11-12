@@ -208,6 +208,35 @@ public:
     }
   }
 
+  void setupFromBiquad(TPar b0, TPar b1, TPar b2, TPar a1, TPar a2)
+  {
+    TPar T = (a1*a1 - a2*a2 - 2*a2 - 1);
+    TPar S = sqrt(-1/T);
+    TPar r =  2*(a2 - 1) / (T*S);
+
+
+    aH = -(b0 - b1 + b2)/(a1 - a2 - 1);
+    aL =  (b0 + b1 + b2)/(a1 + a2 + 1);
+    aB =  2*b0*S - 2*b2*S;
+    g  = -1/((a1 - a2 - 1)*S);
+    c  =  g + r;
+    s  =  1 / (1 + g*c);
+
+    // Sage gave me a second solution:
+    //   aB == -2*b0*S + 2*b2*S
+    //   g  ==  1/((a1 - a2 - 1)*S)
+    //   r  == -2*(a2 - 1) / (T * S)
+    // The rest is the same. Maybe sometimes we need that solution? Maybe when the b-coeffs are
+    // negative?
+  }
+  // ToDo: check what happens with the second solution. Maybe it's needed in certain cases when
+  // the filter includes a sign inversion? Maybe make unit tests with random biquad coeffs and
+  // make roundtrips. Maybe also try random SVF coeffs. I think, we can distinguish between the 
+  // applicability of solution 1 or 2 by looking at the rhs in the computation of r. I think, r 
+  // must always be positive - or does it? It is 1/Q and also 2*R where R is the damping. Maybe
+  // a negative damping coeffs would lead to an unstable filter? Try it!
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
@@ -232,6 +261,16 @@ public:
   // I think. We need to check that in any case one and only one of them returns true, i.e. that
   // the conditions are disjoint or mutually exclusive - except in edge cases maybe.
 
+  bool hasSameCoeffsAs(const rsStateVariableFilterMystran2<TSig, TPar>& f, TPar tol)
+  {
+    if(!rsIsCloseTo(aL, f.aL, tol)) return false;
+    if(!rsIsCloseTo(aB, f.aB, tol)) return false;
+    if(!rsIsCloseTo(aH, f.aH, tol)) return false;
+    if(!rsIsCloseTo(g,  f.g,  tol)) return false;
+    if(!rsIsCloseTo(c,  f.c,  tol)) return false;
+    if(!rsIsCloseTo(s,  f.s,  tol)) return false;
+    return true;
+  }
 
   TPar getOmega() const
   {
