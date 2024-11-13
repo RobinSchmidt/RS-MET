@@ -1279,13 +1279,13 @@ public:
     TSig t1 = 1 / (tanh(x));
     TSig t2 = 1 / x;
     TSig y = t1 - t2;
-    stable = (abs(x)) > 0.0001;
+    bool stable = (abs(x)) > 0.0001;
     return stable ? y : x / 3;
   }
 
   TSig Langevin_Prime(TSig x) 
   {
-    stable = (abs(x)) > 0.0001;
+    bool stable = (abs(x)) > 0.0001;
     TSig t1 = 1 / (pow(x, 2));
     TSig t2 = 1 / (tanh(x));
     TSig t2_pow2 = pow(t2, 2);
@@ -1300,7 +1300,7 @@ public:
     TSig L_prime = Langevin_Prime(x);
     TSig M_diff = (M_s * L) - M;
     TSig delta = H_d > 0 ? 1 : -1;
-    TSig delta_M = (sign(delta)) == (sign(M_diff)) ? 1 : 0;
+    TSig delta_M = (rsSign(delta)) == (rsSign(M_diff)) ? 1 : 0;
     TSig denominator = 1 - (((((c * alpha)) * (M_s / a))) * L_prime);
     TSig t1_num = ((((1 - c)) * delta_M)) * M_diff;
     TSig t1_den = (((((1 - c)) * delta)) * k) - (alpha * M_diff);
@@ -1319,7 +1319,7 @@ public:
     return ((((((M_n1 + (k1 / 6))) + (k2 / 3))) + (k3 / 3))) + (k4 / 6);
   }
 
-  TSig getSample(TSig in)
+  TSig getSample(TSig in1)
   {
     // Magnetic Field for current Sample:
     TSig H = in1; 
@@ -1358,12 +1358,43 @@ protected:
   TSig H_d_n1 = 0;
   TSig M_n1   = 0;
 
+  // Maybe we need pre-gain (of 90000) and post-gain (of 1/90000). That's what Astrobear does in 
+  // the video.
 };
 
 
 void tapeEmulation()
 {
+  int    N            =  5000;
+  double sampleRate   = 44100;
+  double inFreq       =   100;
+  //double inAmp        =     1.0;
+
+  // Create input signal:
+  using Vec = std::vector<double>;
+
+
+  // Create input signal:
+  using Vec = std::vector<double>;
+  Vec x = createWaveform(N, 0, inFreq, sampleRate);
+
+
+  rsTapeSaturation<double, double> tapeSat;
+
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = tapeSat.getSample(x[n]);
+
+  rsPlotVectors(x, y);
 
 
   int dummy = 0;
+
+  // ToDo:
+  //
+  // - The output is very quiet and looks strange. Maybe it has to do with the missing pre/post
+  //   gain?
+  //
+  // - Maybe use a sine wave with varying amplitude to see how the amplitude affects the 
+  //   saturation.
 }
