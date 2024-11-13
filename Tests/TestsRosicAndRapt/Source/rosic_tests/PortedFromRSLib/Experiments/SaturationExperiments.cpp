@@ -1254,6 +1254,43 @@ void adHocTapeEmuIdeas()
   //   value to control the drive. ...hmm...but that would be stateless, so it can't be dynamic.
 }
 
+
+
+/** Translation of Astrobear's Ableton Max4Live code for Jatin Chowdhury's tape emulation algorithm 
+presented by Astrobear here: 
+
+https://www.youtube.com/watch?v=6zxUNiweIgU
+
+*/
+
+template<class TSig, class TPar>
+class rsTapeEmu
+{
+
+public:
+
+  TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
+  {
+    return ((2 / T) * (x - x_n1)) - x_d_n1;
+  }
+
+  TSig Langevin(TSig x) 
+  {
+    TSig t1 = 1 / (tanh(x));
+    TSig t2 = 1 / x;
+    TSig y = t1 - t2;
+    stable = (abs(x)) > 0.0001;
+    return stable ? y : x / 3;
+  }
+
+
+
+protected:
+
+
+};
+
+
 void tapeEmulation()
 {
 
