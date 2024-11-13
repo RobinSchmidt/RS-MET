@@ -1494,11 +1494,12 @@ void tapeEmulationViaOdeSolver()
   //
   // I try to re-implement the tape-saturation above using my ODE solver class. 
   
-  int    N            =  1000;
+  int    N            =  2000;
   double sampleRate   = 44100;
-  double inFreq       =   100;
+  double inFreq       =    50;
   double inAmp        =     1.0;
-  
+  double preGain      = 90000;
+
 
 
   // The relevant equations for the doel are:
@@ -1535,7 +1536,7 @@ void tapeEmulationViaOdeSolver()
     double k     = 2700;           // Measure of width of hysteresis loop
     double c     = 0.17;           // Ratio of normal and anhysteric initial susceptibilities
     double T     = 1.0/sampleRate; // 1/sampleRate
-    double gain  = 90000;        
+
 
     // Extract variables from state vector:
     double M  = y[0];              // M(t)
@@ -1543,7 +1544,7 @@ void tapeEmulationViaOdeSolver()
     double Hp = y[2];              // H'(t) = dH/dt
 
 
-    H *= gain;  // Apply pre-gain
+    //H *= gain;  // Apply pre-gain
 
     /*
     // Implement the model equations:
@@ -1568,13 +1569,15 @@ void tapeEmulationViaOdeSolver()
 
     double Mp = TapeSat::JilesAtherton(M, H, Hp, alpha, a, M_s, k, c);
 
-    Mp /= gain;  // Undo pre-gain
+    //Mp /= gain;  // Undo pre-gain
 
 
     // Store result of derivative computation in dy:
     dy[0] = Mp;
     dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
     dy[2] = 0;   // same for H'
+
+    // Nah - I think, we should not apply the pre/post gain here
 
     // When everything is zero, we get NaNs!
     // Is it allowed that d is zero? The paper says that it's 1 when h is increasing and -1 when 
@@ -1607,8 +1610,9 @@ void tapeEmulationViaOdeSolver()
   double M = 0;
   for(int n = 0; n < N; n++)
   {
-    double H  = x[n];
-    double Hp = xd[n];
+    // Get current input magnetic field and its derivative:
+    double H  = preGain * x[n];
+    double Hp = preGain * xd[n];
 
     // Do the step:
     p[0] = M;
@@ -1616,9 +1620,9 @@ void tapeEmulationViaOdeSolver()
     p[2] = Hp;
     ODE::stepForwardEuler(f, numDims, p, v, 1/sampleRate);
 
-    // Extract result:
-    M = p[0];   // p[1], p[2] should not have changed (verify that!)
-    y[n] = M;
+    // Extract the magnetization as result:
+    M = p[0];              // p[1], p[2] should not have changed (verify that!)
+    y[n] = M / preGain;
   }
   rsPlotVectors(y);
   rsPlotVectors(x, y);
