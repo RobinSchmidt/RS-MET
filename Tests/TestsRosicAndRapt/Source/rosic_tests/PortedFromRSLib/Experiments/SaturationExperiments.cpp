@@ -1279,11 +1279,15 @@ class rsTapeSaturation
 
 public:
 
+  // Internal helper functions:
+
+  // Numeric derivative calculuation:
   TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
   {
-    return ((2 / T) * (x - x_n1)) - x_d_n1;
+    return ((2 / T) * (x - x_n1)) - x_d_n1;  // Why - x_d_n1?
   }
 
+  // Langevin saturation function:
   TSig Langevin(TSig x) 
   {
     TSig t1 = 1 / (tanh(x));
@@ -1293,6 +1297,7 @@ public:
     return stable ? y : x / 3;
   }
 
+  // Derivative of Langevin function:
   TSig Langevin_Prime(TSig x) 
   {
     bool stable = (abs(x)) > 0.0001;
@@ -1303,6 +1308,7 @@ public:
     return stable ? y : 1 / 3;
   }
 
+  // Jiles-Atherton magnetization model:
   TSig JilesAtherton(TSig M, TSig H, TSig H_d, TPar alpha, TPar a, TPar M_s, TPar k, TPar c) 
   {
     TSig x = ((H + (alpha * M))) / a;
@@ -1318,21 +1324,19 @@ public:
     TSig t2 = ((((c * (M_s / a))) * H_d)) * L_prime;
     return ((t1 + t2)) / denominator;
   }
-  // Wait! some of the inputs are actually not signals but parameters! Figure out which and declare
-  // them as type TPar! I think, it's aplha, a, M_s, k, c. We actaully have them as members here, 
-  // so they can eventually be removed from the parameter list.
-  
-  // Also, we should moev some of the functions into the proceted section.
 
+  // Perform Runge-Kutta step (?):
   TSig M_n(TSig M_n1, TSig k1, TSig k2, TSig k3, TSig k4) 
   {
     return ((((((M_n1 + (k1 / 6))) + (k2 / 3))) + (k3 / 3))) + (k4 / 6);
   }
 
+
+  // Sample computation:
   TSig getSample(TSig in1)
   {
     // Magnetic Field for current Sample:
-    TSig H = gain * in1; 
+    TSig H = gain * in1;                         // We needs a whole lot of pre-gain!
 
     // 4th order Runge-Kutta solver:
     //T = 1 / samplerate;  // T is a member
@@ -1349,7 +1353,7 @@ public:
     H_d_n1 = H_d;
     M_n1   = M;
 
-    return out1 / gain;
+    return out1 / gain;                          // Undo the pre-gain
   }
 
 
