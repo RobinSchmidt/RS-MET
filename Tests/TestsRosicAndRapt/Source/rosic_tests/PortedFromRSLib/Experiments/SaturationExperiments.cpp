@@ -1146,22 +1146,32 @@ void adHocTapeEmuIdea()
   //   derivative of the input signal
 
   Vec xd = inAmp * createWaveform(N, 0, inFreq, sampleRate, PI/2); // Derivative of x
+
+  xd[0] = 0;
+  for(int n = 1; n < N; n++)
+    xd[n] = x[n] - x[n-1];
+
   // Hmm - but the derivative should also include a scale factor that is proportional to the sine
   // frequency. Maybe obtain it by numeric differentiation. That is also more realistic for an
   // actual DSP algorithm that must somehow produce the derivative
   //rsPlotVectors(x, xd);
   //rsPlotVectors(x, xd, xd*xd);
 
+  //cutoffScale = 0.0;
+  asym        = -0.1;
+  cutoffScale =  0.05;
+  power       =  4.0; 
+
   lpf.reset();
   for(int n = 0; n < N; n++)
   {
-    double magSq   = (xd[n]+asym)*(xd[n]+asym);
+    double magSq   = (80*xd[n]+asym)*(80*xd[n]+asym);      // Factor 80 ad hoc
     double magGain = pow(magSq, 0.5*power);
     double cutoff  = cutoffScale*magGain*sampleRate/2;
     lpf.setCutoff(cutoff); 
     y[n] = lpf.getSample(x[n]);
   }
-  //rsPlotVectors(x, y);
+  rsPlotVectors(x, y);
 
   //---------------------------------------------------------------------------
   // Algorithm Idea 3:
@@ -1182,16 +1192,8 @@ void adHocTapeEmuIdea()
 
   // - Similar to the result of algo 1 
 
-
-
-
-
-
-
-
-
   //---------------------------------------------------------------------------
-  // Algorithm Idea:
+  // Algorithm Idea 4:
   //
   // - We use a tanh waveshape with a DC offset that is modulated by a filtered version of the 
   //   input signal
@@ -1214,6 +1216,8 @@ void adHocTapeEmuIdea()
     y[n] = rsTanh(drive * x[n] + dc);
   }
   rsPlotVectors(x, y);
+
+  // - Doesn't seem to be useful so far
 
 
   int dummy = 0;
