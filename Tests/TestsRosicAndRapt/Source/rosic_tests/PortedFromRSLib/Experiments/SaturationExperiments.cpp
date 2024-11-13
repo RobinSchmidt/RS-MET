@@ -1389,7 +1389,7 @@ protected:
 
 void tapeEmulation()
 {
-  int    N            =  5000;
+  int    N            =  2000;
   double sampleRate   = 44100;
   double inFreq       =   500;
   double startAmp     =     0.0;
@@ -1421,7 +1421,7 @@ void tapeEmulation()
   //   pronounced and obvious (and ugly) at 500. Maybe the algo needs a lot of oversampling to 
   //   sound good? ...Wait! The jaggies seem to disappear when we slowly ramp up the input volume.
   //   With startAmp = endAmp = 1, we see them. With startAmp = 0, endAmp = 2, they are not there
-  //   anymore.
+  //   anymore. Maybe the algorithm needs a gentle warm-up or something?
   //
   // - The input and output levels are unequal. I needed to reduce the  output by a factor of 3 to
   //   bring it to the same level as the input.
