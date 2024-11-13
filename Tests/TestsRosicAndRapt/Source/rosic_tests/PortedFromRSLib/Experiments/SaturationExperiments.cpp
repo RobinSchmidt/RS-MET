@@ -1284,10 +1284,10 @@ public:
   // Numeric derivative calculuation:
   TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
   {
-    return ((2 / T) * (x - x_n1)) - x_d_n1;  // Why - x_d_n1?
+    return ((2 / T) * (x - x_n1)) - x_d_n1;  // Why - x_d_n1? (See eq 21 in the paper)
   }
 
-  // Langevin saturation function:
+  // Langevin's saturation function:
   TSig Langevin(TSig x) 
   {
     TSig t1 = 1 / (tanh(x));
@@ -1336,7 +1336,7 @@ public:
   TSig getSample(TSig in1)
   {
     // Magnetic Field for current Sample:
-    TSig H = gain * in1;                         // We needs a whole lot of pre-gain!
+    TSig H = gain * in1;                         // We need a whole lot of pre-gain!
 
     // 4th order Runge-Kutta solver:
     //T = 1 / samplerate;  // T is a member
@@ -1353,7 +1353,7 @@ public:
     H_d_n1 = H_d;
     M_n1   = M;
 
-    return out1 / gain;                          // Undo the pre-gain
+    return out1 / gain;      // Undo the pre-gain
   }
 
 
@@ -1369,7 +1369,8 @@ public:
 
   // More parameters (added by Robin Schmidt):
   TPar T     = 1.0/44100;    // 1/sampleRate
-  TPar gain  = 90000;        // The pre/post-gain that Astrobear applies outside the codebox
+  TPar gain  = 90000;        // The pre/post-gain that Astrobear applies outside the codebox. I 
+                             // guess, we want to bring the level up to the order of M_s?
 
   // State:
   TSig H_n1   = 0;           // Magnetic field, delayed by 1 sample
@@ -1391,9 +1392,10 @@ void tapeEmulation()
 {
   int    N            =  3000;
   double sampleRate   = 44100;
-  double inFreq       =  1000;
-  double startAmp     =     1.0;
+  double inFreq       =   500;
+  double startAmp     =     0.0;
   double endAmp       =     3.0;
+  double preGain      = 50000;       // Astrobear uses 90000 in the video
 
   // Create input signal - a sine-wave with linear amp envelope:
   using Vec = std::vector<double>;
@@ -1403,7 +1405,8 @@ void tapeEmulation()
 
   // Create saturator and produce and plot output:
   rsTapeSaturation<double, double> tapeSat;
-  tapeSat.gain = 90000;  // Default is 90000
+  tapeSat.gain = preGain;
+  tapeSat.T    = 1 / sampleRate;
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
@@ -1414,16 +1417,22 @@ void tapeEmulation()
   //
   // - For inFreq = 100, it looks pretty good, at 200 jaggies start to appear that become very 
   //   pronounced and obvious (and ugly) at 500. Maybe the algo needs a lot of oversampling to 
-  //   sound good? ...Wait! The jaggies seem to disappear when we slowly ramp up the input volume.
+  //   sound good? The paper says that the algo should run at an oversampling factor of 16x.
+  //
+  // - The jaggies seem to disappear when we slowly ramp up the input volume.
   //   With startAmp = endAmp = 1, we see them. With startAmp = 0, endAmp = 2, they are not there
   //   anymore. Maybe the algorithm needs a gentle warm-up or something? With inFreq = 1000,
   //   startAmp = endAmp = 2, we see truly nasty artifacts! And it only gets worse with higher
   //   frequency signals. The effect also seemt so depend on the signal amplitude. Higher input 
-  //   amplitudes produce more artifacts. 
+  //   amplitudes produce more artifacts. Maybe it's an instability in the ODE solver? That might 
+  //   explain the sensitivity to having or not having a "warmu up" (i.e. fade in) phase (or does 
+  //   it?)
   //
   // - It seems like reducing the pre/post gain parameter helps to mitigate these artifacts. 
   //   With a values well below M_s parameter (magnetization saturation) like 10000, there isn't 
-  //   really much saturation going on - but the waveshape is still modified.
+  //   really much saturation going on - but the waveshape is still modified. But with very low 
+  //   preGain factors (like 1 or 10), we again get very weird results - but in a different way.
+  //   With 10000, the output follows the input closely (up to a sclae factor)
   //
   // - The input and output levels are unequal. I needed to reduce the output by a factor of 3 to
   //   bring it to the same level as the input.
@@ -1434,10 +1443,15 @@ void tapeEmulation()
   // - Figure out, what's up with the jaggies and artifacts. Check against Jatin Chowdhury's own 
   //   implementation which is available on GitHub. 
   //   https://github.com/jatinchowdhury18/AnalogTapeModel/blob/master/Plugin/Source/Processors/Hysteresis/HysteresisProcessing.h
-  //   Maybe it's an instability in the ODE solver?
+  //   Jaitin's code has different solvers to choose
+  //   from. Maybe an (implicit) trapezoidal rule could be best (because it preserves system 
+  //   stability in the linear case)?
   //
   // - Try it on more complex input signals - maybe a mix of two sines. Eventually, we may want to
   //   use it as mastering effect, so we are really interested in what it does to complex signals.
   //   The jaggies that appear in high-freq input will probably become very problematic when we 
   //   deal with a full-bandwidth signal.
+  //
+  // - When oversampling is implemented, we may also implement the "biasing" which consists of 
+  //   adding a 50 kHz signal at the input and filtering it out with a lowpass at the output.
 }
