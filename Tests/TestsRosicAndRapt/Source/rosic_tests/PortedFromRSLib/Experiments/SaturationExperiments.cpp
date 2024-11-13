@@ -1386,6 +1386,29 @@ public:
 //   the private or protected section. I didn't do this because I wanted the C++ code to stay as 
 //   closely as possible to the M4L code. There's a lot of room for improving the code with regard
 //   to aesthetics and efficieny.
+//
+//
+// We define:
+//
+// H   = H(t) = input signal
+// H'  = dH/dt
+// d   = sign(H')
+// Q   = (H + alpha*M) / a
+// P   = M_s * L(Q) - M                                 with  L (x) = coth(x) - 1/x
+// R   = c * (M_s/a) * L'(Q)                            with  L'(x) = 1/x^2 - (coth(x))^2 + 1
+// d_M = 1, if d and M_s*L(Q) have same sign, else 0
+// S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P)
+//
+// Then the ODE can be written down as:
+//
+//  dM     S * H'  +  R * H'
+// ---- = ------------------- = f(t,M,H,H')  
+//  dt       1 - R * alpha
+//
+// M is the output signal and can be obtained by integrating dM/dt. Maybe try to throw that at a
+// general ODE solver
+
+
 
 
 void tapeEmulation()
