@@ -1259,7 +1259,10 @@ void adHocTapeEmuIdeas()
 /** Translation of Astrobear's Ableton Max4Live code for Jatin Chowdhury's tape saturation algorithm 
 fetauring hysteresis presented by Astrobear here: 
 
+See:
+
 https://www.youtube.com/watch?v=6zxUNiweIgU
+https://ccrma.stanford.edu/~jatin/420/tape/TapeModel_DAFx.pdf
 
 */
 
@@ -1322,7 +1325,7 @@ public:
   TSig getSample(TSig in1)
   {
     // Magnetic Field for current Sample:
-    TSig H = in1; 
+    TSig H = gain * in1; 
 
     // 4th order Runge-Kutta solver:
     //T = 1 / samplerate;  // T is a member
@@ -1339,7 +1342,7 @@ public:
     TSig H_d_n1 = H_d;
     TSig M_n1   = M;
 
-    return out1;
+    return out1 / gain;
   }
 
 
@@ -1353,10 +1356,14 @@ protected:
   TPar c     = 0.17;
   TPar T     = 1.0/44100;      // 1/sampleRate
 
+  TPar gain  = 90000;          // Added by Robin Schmidt
+
   // State:
   TSig H_n1   = 0;
   TSig H_d_n1 = 0;
   TSig M_n1   = 0;
+
+
 
   // Maybe we need pre-gain (of 90000) and post-gain (of 1/90000). That's what Astrobear does in 
   // the video.
@@ -1367,7 +1374,7 @@ void tapeEmulation()
 {
   int    N            =  5000;
   double sampleRate   = 44100;
-  double inFreq       =   100;
+  double inFreq       =  1000;
   //double inAmp        =     1.0;
 
   // Create input signal:
@@ -1385,15 +1392,22 @@ void tapeEmulation()
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
 
-  rsPlotVectors(x, y);
+  rsPlotVectors(x, (1./60) * y);  // (1./60) is eyballed to make the levels of in/out similar
 
 
-  int dummy = 0;
-
+  // Observations:
+  //
+  // - It looks wrong. It doens't look like "sticky saturation" at all. It looks actually more 
+  //   like non-sticky anti-saturation. Using different input frequencies changes ntohing about 
+  //   that. Also, the input and output levels are very different - I need to reduce the output by
+  //   a factor of 60 to bring it to the same level as the input.
+  //
+  //
   // ToDo:
   //
-  // - The output is very quiet and looks strange. Maybe it has to do with the missing pre/post
-  //   gain?
+  // - Figure out, what's wrong. Maybe check against Jatin Chowdhury's own implementation which is
+  //   available on GitHub. Could something have gone wrong in the translation to C++? It seemed 
+  //   all very straighforward, though.
   //
   // - Maybe use a sine wave with varying amplitude to see how the amplitude affects the 
   //   saturation.
