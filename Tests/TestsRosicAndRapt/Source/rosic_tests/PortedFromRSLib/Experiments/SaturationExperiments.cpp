@@ -1537,7 +1537,7 @@ void tapeEmulationViaOdeSolver()
     double Hp = y[2];              // H'(t) = dH/dt
 
     // Implement the model equations:
-    double d   = rsSign(Hp);
+    double d   = rsSign(Hp);       
     double Q   = (H + alpha*M) / a;
     double L   = TapeSat::Langevin(Q);
     double P   = M_s * L - M;
@@ -1552,6 +1552,11 @@ void tapeEmulationViaOdeSolver()
     dy[0] = Mp;
     dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
     dy[2] = 0;   // same for H'
+
+    // When everything is zero, we get NaNs!
+    // Is it allowed that d is zero? The paper says that it's 1 when h is increasing and -1 when 
+    // it's decreasing but says nothing about what happens when H is doing neither. I translated 
+    // that to sign(H) - but I'm not sure about that
   };
 
   // Set up ODE solver:
