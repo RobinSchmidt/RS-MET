@@ -1391,13 +1391,9 @@ void tapeEmulation()
 {
   int    N            =  2000;
   double sampleRate   = 44100;
-  double inFreq       =    500;
+  double inFreq       =   500;
   double startAmp     =     0.0;
   double endAmp       =     2.0;
-
-  // Create input signal:
-  using Vec = std::vector<double>;
-
 
   // Create input signal - a sine-wave with linear amp envelope:
   using Vec = std::vector<double>;
@@ -1405,13 +1401,11 @@ void tapeEmulation()
   Vec a = rsLinearRangeVector(N, startAmp, endAmp);
   x = a*x;
 
-
+  // Create saturator and produce and plot output:
   rsTapeSaturation<double, double> tapeSat;
-
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
-
   rsPlotVectors(x, (1./3) * y);  // (1./3) is eyballed to make the levels of in/out similar
 
 
@@ -1422,9 +1416,10 @@ void tapeEmulation()
   //   sound good? ...Wait! The jaggies seem to disappear when we slowly ramp up the input volume.
   //   With startAmp = endAmp = 1, we see them. With startAmp = 0, endAmp = 2, they are not there
   //   anymore. Maybe the algorithm needs a gentle warm-up or something? With inFreq = 1000,
-  //   startAmp = endAmp = 2, we see truly nasty artifacts!
+  //   startAmp = endAmp = 2, we see truly nasty artifacts! And it only gets worse with higher
+  //   frequency signals.
   //
-  // - The input and output levels are unequal. I needed to reduce the  output by a factor of 3 to
+  // - The input and output levels are unequal. I needed to reduce the output by a factor of 3 to
   //   bring it to the same level as the input.
   //
   //

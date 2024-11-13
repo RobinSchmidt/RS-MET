@@ -591,7 +591,7 @@ int main(int argc, char* argv[])
   //sixticPositive();
   //hilbertDistortion();
   //adHocTapeEmuIdeas();
-  tapeEmulation();
+  tapeEmulation();                  // Jatin Chowdhury's tape hysteresis algorithm
 
 
   // Distortion:
