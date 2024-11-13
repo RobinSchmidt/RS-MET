@@ -1305,7 +1305,7 @@ public:
     TSig t2 = 1 / (tanh(x));
     TSig t2_pow2 = pow(t2, 2);
     TSig y = (t1 - t2_pow2) + 1;
-    return stable ? y : 1 / 3;
+    return stable ? y : 1./3;
   }
 
   // Jiles-Atherton magnetization model:
@@ -1500,6 +1500,7 @@ void tapeEmulationViaOdeSolver()
   double inAmp        =     1.0;
   
 
+
   // The relevant equations for the doel are:
   //
   //   H   = H(t) = input signal
@@ -1519,6 +1520,11 @@ void tapeEmulationViaOdeSolver()
 
   using TapeSat = rsTapeSaturation<double, double>;
   using Func    = std::function<void(const double* y, double* dy)>;
+
+
+  GNUPlotter plt;
+  plt.plotFunctions(501, -10.0, +10.0, &TapeSat::Langevin, &TapeSat::Langevin_Prime);
+
 
   Func f = [&](const double* y, double* dy )
   {
@@ -1561,13 +1567,13 @@ void tapeEmulationViaOdeSolver()
 
   // Set up ODE solver:
   using ODE = rsInitialValueSolver2<double>;
-  ODE ode;
   static const int numDims = 3;      // M, H, H' where H, H' are only used for inputs
   double p[numDims];                 // Current position in phase space
   double v[numDims];                 // Velocity in phase space
   p[0] = p[1] = p[2] = 0;
   v[0] = v[1] = v[2] = 0;
-  ode.init(3, p, v);
+  //ODE ode;
+  //ode.init(3, p, v);
 
   // Create input signal and its (numerical) derivative:
   using Vec = std::vector<double>;
@@ -1591,7 +1597,7 @@ void tapeEmulationViaOdeSolver()
     p[0] = M;
     p[1] = H;
     p[2] = Hp;
-    ode.stepForwardEuler(f, numDims, p, v, 1/sampleRate);
+    ODE::stepForwardEuler(f, numDims, p, v, 1/sampleRate);
 
     // Extract result:
     M = p[0];   // p[1], p[2] should not have changed (verify that!)
