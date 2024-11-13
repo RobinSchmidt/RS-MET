@@ -1492,8 +1492,16 @@ void tapeEmulationViaOdeSolver()
 {
   // UNDER CONSTRUCTION
   //
-  // I try ti re-implement the tape-saturation above using my ODE solver class. The relevant 
-  // equations for the doel are:
+  // I try to re-implement the tape-saturation above using my ODE solver class. 
+  
+  int    N            =  1000;
+  double sampleRate   = 44100;
+  double inFreq       =   100;
+  double inAmp        =     1.0;
+  
+
+
+  // The relevant equations for the doel are:
   //
   //   H   = H(t) = input signal
   //   H'  = dH/dt
@@ -1510,28 +1518,24 @@ void tapeEmulationViaOdeSolver()
   //  ---- = ------------------- = f(t,M,H,H')  
   //   dt       1 - R * alpha
 
-
-
   using TapeSat = rsTapeSaturation<double, double>;
+  using Func    = std::function<void(const double* y, double* dy)>;
 
-
-  
-  using Func = std::function<void(const double* y, double* dy)>;
-  Func f = [](const double* y, double* dy )
+  Func f = [&](const double* y, double* dy )
   {
     // Parameters:
-    double alpha = 0.0016;       // Mean field parameter
-    double a     = 22000;        // Characterizes shape of anhysteric magnetization
-    double M_s   = 350000;       // Magnetization saturation
-    double k     = 2700;         // Measure of width of hysteresis loop
-    double c     = 0.17;         // Ratio of normal and anhysteric initial susceptibilities
-    double T     = 1.0/44100;    // 1/sampleRate
+    double alpha = 0.0016;         // Mean field parameter
+    double a     = 22000;          // Characterizes shape of anhysteric magnetization
+    double M_s   = 350000;         // Magnetization saturation
+    double k     = 2700;           // Measure of width of hysteresis loop
+    double c     = 0.17;           // Ratio of normal and anhysteric initial susceptibilities
+    double T     = 1.0/sampleRate; // 1/sampleRate
     double gain  = 90000;        
 
     // Extract variables from state vector:
-    double M  = y[0];            // M(t)
-    double H  = y[1];            // H(t)
-    double Hp = y[2];            // H'(t) = dH/dt
+    double M  = y[0];              // M(t)
+    double H  = y[1];              // H(t)
+    double Hp = y[2];              // H'(t) = dH/dt
 
     // Implement the model equations:
     double d   = rsSign(Hp);
@@ -1551,18 +1555,41 @@ void tapeEmulationViaOdeSolver()
     dy[2] = 0;   // same for H'
   };
 
-
-
-
+  // Set up ODE solver:
   using ODE = rsInitialValueSolver2<double>;
   ODE ode;
   static const int numDims = 3;      // M, H, H' where H, H' are only used for inputs
   double p[numDims];                 // Current position in phase space
   double v[numDims];                 // Velocity in phase space
+  p[0] = p[1] = p[2] = 0;
+  v[0] = v[1] = v[2] = 0;
   ode.init(3, p, v);
 
+  // Create input signal:
+  using Vec = std::vector<double>;
+  Vec x  = inAmp * createWaveform(N, 0, inFreq, sampleRate);
+  Vec xd(N);
+  xd[0] = 0;
+  for(int n = 1; n < N; n++)
+    xd[n] = (x[n] - x[n-1]) / sampleRate;
 
 
+  // Create output signal:
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+  {
+    double H  = x[n];
+    double Hp = xd[n];
+
+    // 
+
+
+
+  }
+
+
+
+  rsPlotVectors(x, xd);
 
 }
 
