@@ -13,6 +13,7 @@ void sigmoidPrototypes();
 void sigmoidConvergenceRates();
 void sixticPositive();
 void hilbertDistortion();
-void adHocTapeEmuIdea();
+void adHocTapeEmuIdeas();
+void tapeEmulation();
 
 #endif

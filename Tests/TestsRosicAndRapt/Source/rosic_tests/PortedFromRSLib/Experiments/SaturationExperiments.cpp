@@ -1084,7 +1084,7 @@ void hilbertDistortion()
   hilbertDistortion2();
 }
 
-void adHocTapeEmuIdea()
+void adHocTapeEmuIdeas()
 {
   // Inspired by this video:  https://www.youtube.com/watch?v=XR5xhJmdFxM  I had the following 
   // ad-hoc idea to crreate the desired behavior of "sticky saturation": Use a lowpass filter
@@ -1195,7 +1195,7 @@ void adHocTapeEmuIdea()
   //---------------------------------------------------------------------------
   // Algorithm Idea 4:
   //
-  // - We use a tanh waveshape with a DC offset that is modulated by a filtered version of the 
+  // - We use a tanh waveshaper with a DC offset that is modulated by a filtered version of the 
   //   input signal
 
   power = 2.0; 
@@ -1219,6 +1219,18 @@ void adHocTapeEmuIdea()
 
   // - Doesn't seem to be useful so far
 
+  //---------------------------------------------------------------------------
+  // Algorithm Idea 5:
+  //
+  // - We use a tanh waveshaper and let the drive be controlled by the input signal in the 
+  //   following way:
+  //   -When the input (is positive and falling) or (negative and rising), we increase the drive.
+  
+
+  // ...
+
+
+
 
   int dummy = 0;
 
@@ -1237,4 +1249,14 @@ void adHocTapeEmuIdea()
   // - Use a tanh waveshaper and add a DC offset where the DC offset is moving around by a filtered
   //   version of the input signal. The DC offset gets "pulled" by the input signal but it follows
   //   with some delay or time lag
+  //
+  // - Form a difference d = clip(x) - tanh(x) to measure how close we are to the limit. Use that
+  //   value to control the drive. ...hmm...but that would be stateless, so it can't be dynamic.
+}
+
+void tapeEmulation()
+{
+
+
+  int dummy = 0;
 }

@@ -590,7 +590,8 @@ int main(int argc, char* argv[])
   //sigmoidConvergenceRates();
   //sixticPositive();
   //hilbertDistortion();
-  adHocTapeEmuIdea();
+  //adHocTapeEmuIdeas();
+  tapeEmulation();
 
 
   // Distortion:
