@@ -1391,16 +1391,19 @@ void tapeEmulation()
 {
   int    N            =  5000;
   double sampleRate   = 44100;
-  double inFreq       =   300;
-  //double inAmp        =     1.0;
+  double inFreq       =   500;
+  double startAmp     =     0.0;
+  double endAmp       =     2.0;
 
   // Create input signal:
   using Vec = std::vector<double>;
 
 
-  // Create input signal:
+  // Create input signal - a sine-wave with linear amp envelope:
   using Vec = std::vector<double>;
   Vec x = createWaveform(N, 0, inFreq, sampleRate);
+  Vec a = rsLinearRangeVector(N, startAmp, endAmp);
+  x = a*x;
 
 
   rsTapeSaturation<double, double> tapeSat;
@@ -1415,10 +1418,10 @@ void tapeEmulation()
   // Observations:
   //
   // - For inFreq = 100, it looks pretty good, at 200 jaggies start to appear that become very 
-  //   pronounced and obvious at 500.
-  
-  //  It looks jaggy when the input frequency is high (try 1000 Hz, for example). Maybe it needs
-  //   a lot of oversampling?
+  //   pronounced and obvious (and ugly) at 500. Maybe the algo needs a lot of oversampling to 
+  //   sound good? ...Wait! The jaggies seem to disappear when we slowly ramp up the input volume.
+  //   With startAmp = endAmp = 1, we see them. With startAmp = 0, endAmp = 2, they are not there
+  //   anymore.
   //
   // - The input and output levels are unequal. I needed to reduce the  output by a factor of 3 to
   //   bring it to the same level as the input.
@@ -1429,6 +1432,8 @@ void tapeEmulation()
   // - Figure out, what's up with the jaggies. Maybe check against Jatin Chowdhury's own 
   //   implementation which is available on GitHub. 
   //
-  // - Maybe use a sine wave with varying amplitude to see how the amplitude affects the 
-  //   saturation.
+  // - Try it on more complex input signals - maybe a mix of two sines. Eventually, we may want to
+  //   use it as mastering effect, so we are really interested in what it does to complex signals.
+  //   The jaggies that appear in high-freq input will probably become very problematic when we 
+  //   deal with a full-bandwidth signal.
 }
