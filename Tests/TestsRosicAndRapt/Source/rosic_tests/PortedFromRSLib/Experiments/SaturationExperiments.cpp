@@ -1357,7 +1357,7 @@ public:
   }
 
 
-protected:
+//protected:
 
 
   // Parameters (from the original M4L patch):
@@ -1389,11 +1389,11 @@ protected:
 
 void tapeEmulation()
 {
-  int    N            =  2000;
+  int    N            =  3000;
   double sampleRate   = 44100;
-  double inFreq       =   500;
-  double startAmp     =     0.0;
-  double endAmp       =     2.0;
+  double inFreq       =  1000;
+  double startAmp     =     1.0;
+  double endAmp       =     3.0;
 
   // Create input signal - a sine-wave with linear amp envelope:
   using Vec = std::vector<double>;
@@ -1403,6 +1403,7 @@ void tapeEmulation()
 
   // Create saturator and produce and plot output:
   rsTapeSaturation<double, double> tapeSat;
+  tapeSat.gain = 90000;  // Default is 90000
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
@@ -1417,7 +1418,12 @@ void tapeEmulation()
   //   With startAmp = endAmp = 1, we see them. With startAmp = 0, endAmp = 2, they are not there
   //   anymore. Maybe the algorithm needs a gentle warm-up or something? With inFreq = 1000,
   //   startAmp = endAmp = 2, we see truly nasty artifacts! And it only gets worse with higher
-  //   frequency signals.
+  //   frequency signals. The effect also seemt so depend on the signal amplitude. Higher input 
+  //   amplitudes produce more artifacts. 
+  //
+  // - It seems like reducing the pre/post gain parameter helps to mitigate these artifacts. 
+  //   With a values well below M_s parameter (magnetization saturation) like 10000, there isn't 
+  //   really much saturation going on - but the waveshape is still modified.
   //
   // - The input and output levels are unequal. I needed to reduce the output by a factor of 3 to
   //   bring it to the same level as the input.
@@ -1428,6 +1434,7 @@ void tapeEmulation()
   // - Figure out, what's up with the jaggies and artifacts. Check against Jatin Chowdhury's own 
   //   implementation which is available on GitHub. 
   //   https://github.com/jatinchowdhury18/AnalogTapeModel/blob/master/Plugin/Source/Processors/Hysteresis/HysteresisProcessing.h
+  //   Maybe it's an instability in the ODE solver?
   //
   // - Try it on more complex input signals - maybe a mix of two sines. Eventually, we may want to
   //   use it as mastering effect, so we are really interested in what it does to complex signals.
