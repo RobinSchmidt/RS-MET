@@ -1430,7 +1430,7 @@ void tapeEmulation()
   //
   // ToDo:
   //
-  // - Figure out, what's up with the jaggies. Maybe check against Jatin Chowdhury's own 
+  // - Figure out, what's up with the jaggies and artifacts. Check against Jatin Chowdhury's own 
   //   implementation which is available on GitHub. 
   //
   // - Try it on more complex input signals - maybe a mix of two sines. Eventually, we may want to
