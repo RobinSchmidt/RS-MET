@@ -1408,7 +1408,7 @@ public:
 // M is the output signal and can be obtained by integrating dM/dt. Maybe try to throw that at a
 // general ODE solver
 
-void tapeEmulation()
+void tapeEmulationChow()
 {
   int    N            =  3000;
   double sampleRate   = 44100;
@@ -1432,8 +1432,15 @@ void tapeEmulation()
     y[n] = tapeSat.getSample(x[n]);
   rsPlotVectors(x, (1./3) * y);  // (1./3) is eyballed to make the levels of in/out similar
 
-  using ODE = rsDifferentialEquationSystem<double, double>;
+
+  // Try to create an implementation based on an ODE solver class
+  //using ODE = rsDifferentialEquationSystem<double, double>;
   //ODE ode.
+
+  //using ODE = rsInitialValueSolver2<double>;
+  //ODE ode;
+  //ode.init(3, y, v);
+
   
 
   // Observations:
@@ -1479,4 +1486,30 @@ void tapeEmulation()
   //
   // - When oversampling is implemented, we may also implement the "biasing" which consists of 
   //   adding a 50 kHz signal at the input and filtering it out with a lowpass at the output.
+}
+
+void tapeEmulationViaOdeSolver()
+{
+  //   H   = H(t) = input signal
+  //   H'  = dH/dt
+  //   d   = sign(H')
+  //   Q   = (H + alpha*M) / a
+  //   P   = M_s * L(Q) - M                                 with  L (x) = coth(x) - 1/x
+  //   R   = c * (M_s/a) * L'(Q)                            with  L'(x) = 1/x^2 - (coth(x))^2 + 1
+  //   d_M = 1, if d and M_s*L(Q) have same sign, else 0
+  //   S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P)
+  //
+  // Then the ODE can be written down as:
+  //
+  //   dM     S * H'  +  R * H'
+  //  ---- = ------------------- = f(t,M,H,H')  
+  //   dt       1 - R * alpha
+
+
+}
+
+void tapeEmulation()
+{
+  //tapeEmulationChow();
+  tapeEmulationViaOdeSolver();
 }
