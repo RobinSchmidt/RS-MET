@@ -524,6 +524,10 @@ template void RAPT::rsNumericDifferentiator<double>::laplacian2D_2(
   const rsGraph<rsVector2D<double>, double>& mesh, const std::vector<double>& u, 
   std::vector<double>& L);
 
+
+template class rsInitialValueSolver2<double>;
+
+
 //-------------------------------------------------------------------------------------------------
 // Filters:
 

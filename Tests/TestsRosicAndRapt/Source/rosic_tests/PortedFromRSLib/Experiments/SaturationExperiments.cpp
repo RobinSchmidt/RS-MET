@@ -1288,7 +1288,7 @@ public:
   }
 
   // Langevin's saturation function:
-  TSig Langevin(TSig x) 
+  static TSig Langevin(TSig x) 
   {
     TSig t1 = 1 / (tanh(x));
     TSig t2 = 1 / x;
@@ -1298,7 +1298,7 @@ public:
   }
 
   // Derivative of Langevin function:
-  TSig Langevin_Prime(TSig x) 
+  static TSig Langevin_Prime(TSig x) 
   {
     bool stable = (abs(x)) > 0.0001;
     TSig t1 = 1 / (pow(x, 2));
@@ -1490,6 +1490,11 @@ void tapeEmulationChow()
 
 void tapeEmulationViaOdeSolver()
 {
+  // UNDER CONSTRUCTION
+  //
+  // I try ti re-implement the tape-saturation above using my ODE solver class. The relevant 
+  // equations for the doel are:
+  //
   //   H   = H(t) = input signal
   //   H'  = dH/dt
   //   d   = sign(H')
@@ -1504,6 +1509,59 @@ void tapeEmulationViaOdeSolver()
   //   dM     S * H'  +  R * H'
   //  ---- = ------------------- = f(t,M,H,H')  
   //   dt       1 - R * alpha
+
+
+
+  using TapeSat = rsTapeSaturation<double, double>;
+
+
+  
+  using Func = std::function<void(const double* y, double* dy)>;
+  Func f = [](const double* y, double* dy )
+  {
+    // Parameters:
+    double alpha = 0.0016;       // Mean field parameter
+    double a     = 22000;        // Characterizes shape of anhysteric magnetization
+    double M_s   = 350000;       // Magnetization saturation
+    double k     = 2700;         // Measure of width of hysteresis loop
+    double c     = 0.17;         // Ratio of normal and anhysteric initial susceptibilities
+    double T     = 1.0/44100;    // 1/sampleRate
+    double gain  = 90000;        
+
+    // Extract variables from state vector:
+    double M  = y[0];            // M(t)
+    double H  = y[1];            // H(t)
+    double Hp = y[2];            // H'(t) = dH/dt
+
+    // Implement the model equations:
+    double d   = rsSign(Hp);
+    double Q   = (H + alpha*M) / a;
+    double L   = TapeSat::Langevin(Q);
+    double P   = M_s * L - M;
+    double R   = c * (M_s/a) * TapeSat::Langevin_Prime(Q);
+    double d_M = 0;
+    if(d*L > 0)
+      d_M = 1;
+    double S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P);
+    double Mp  = (S*Hp + R*Hp) / (1 - R*alpha) ;           // M'(t) = dM/dt
+
+    // Store result of derivative computation in dy:
+    dy[0] = M;
+    dy[1] = 0;   // H is only an input, so we treat it as constant with derivative zero
+    dy[2] = 0;   // same for H'
+  };
+
+
+
+
+  using ODE = rsInitialValueSolver2<double>;
+  ODE ode;
+  static const int numDims = 3;      // M, H, H' where H, H' are only used for inputs
+  double p[numDims];                 // Current position in phase space
+  double v[numDims];                 // Velocity in phase space
+  ode.init(3, p, v);
+
+
 
 
 }
