@@ -1282,7 +1282,7 @@ public:
   // Internal helper functions:
 
   // Numeric derivative calculuation:
-  TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
+  static TSig Derivative(TSig T, TSig x, TSig x_n1, TSig x_d_n1) 
   {
     return ((2 / T) * (x - x_n1)) - x_d_n1;  // Why - x_d_n1? (See eq 21 in the paper)
   }
@@ -1309,7 +1309,7 @@ public:
   }
 
   // Jiles-Atherton magnetization model:
-  TSig JilesAtherton(TSig M, TSig H, TSig H_d, TPar alpha, TPar a, TPar M_s, TPar k, TPar c) 
+  static TSig JilesAtherton(TSig M, TSig H, TSig H_d, TPar alpha, TPar a, TPar M_s, TPar k, TPar c) 
   {
     TSig x = ((H + (alpha * M))) / a;
     TSig L = Langevin(x);
@@ -1522,8 +1522,8 @@ void tapeEmulationViaOdeSolver()
   using Func    = std::function<void(const double* y, double* dy)>;
 
 
-  GNUPlotter plt;
-  plt.plotFunctions(501, -10.0, +10.0, &TapeSat::Langevin, &TapeSat::Langevin_Prime);
+  //GNUPlotter plt;
+  //plt.plotFunctions(501, -10.0, +10.0, &TapeSat::Langevin, &TapeSat::Langevin_Prime);
 
 
   Func f = [&](const double* y, double* dy )
@@ -1542,6 +1542,10 @@ void tapeEmulationViaOdeSolver()
     double H  = y[1];              // H(t)
     double Hp = y[2];              // H'(t) = dH/dt
 
+
+    H *= gain;  // Apply pre-gain
+
+    /*
     // Implement the model equations:
     double d   = rsSign(Hp);       
     double Q   = (H + alpha*M) / a;
@@ -1551,8 +1555,21 @@ void tapeEmulationViaOdeSolver()
     double d_M = 0;
     if(d*L > 0)
       d_M = 1;
+
+    //d_M = 1; P = 0.000001; // For debug
+
     double S   = ((1-c)*d_M*P) / ((1-c)*d*k - alpha*P);
+    // ToDo: catch division by zero. But what should the value be?
+
     double Mp  = (S*Hp + R*Hp) / (1 - R*alpha) ;           // M'(t) = dM/dt
+    // ToDo: catch division by zero!
+    */
+
+
+    double Mp = TapeSat::JilesAtherton(M, H, Hp, alpha, a, M_s, k, c);
+
+    Mp /= gain;  // Undo pre-gain
+
 
     // Store result of derivative computation in dy:
     dy[0] = Mp;
@@ -1603,7 +1620,8 @@ void tapeEmulationViaOdeSolver()
     M = p[0];   // p[1], p[2] should not have changed (verify that!)
     y[n] = M;
   }
-  rsPlotVectors(x, y); // y is full of NaNs!
+  rsPlotVectors(y);
+  rsPlotVectors(x, y);
 
   // ToDo:
   //
