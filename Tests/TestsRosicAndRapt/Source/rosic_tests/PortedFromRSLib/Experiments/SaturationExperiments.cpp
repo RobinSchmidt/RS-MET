@@ -1256,13 +1256,20 @@ void adHocTapeEmuIdeas()
 
 
 
-/** Translation of Astrobear's Ableton Max4Live code for Jatin Chowdhury's tape saturation algorithm 
-fetauring hysteresis presented by Astrobear here: 
+/** Translation to C++ of Astrobear's Ableton Max4Live code for Jatin Chowdhury's tape saturation 
+algorithm. It's a physical model and features hysteresis. 
 
-See:
+References:
 
-https://www.youtube.com/watch?v=6zxUNiweIgU
-https://ccrma.stanford.edu/~jatin/420/tape/TapeModel_DAFx.pdf
+  (1) https://www.youtube.com/watch?v=6zxUNiweIgU
+      Astrobear's video where he creates the Max4Live patch. It's part 3 of a 3-part mini-series. 
+      The previous parts explain the physical theory behind tape magnetization.
+
+  (2) https://ccrma.stanford.edu/~jatin/420/tape/TapeModel_DAFx.pdf
+      Jatin Chowdhury's paper describing the algorithm.
+
+  (3) https://github.com/jatinchowdhury18/AnalogTapeModel
+      Jatin Chowdhury's implementation as audio plugin.
 
 */
 
@@ -1338,9 +1345,9 @@ public:
     TSig out1 = M;
 
     // Set up the state for the next sample:
-    TSig H_n1   = H;
-    TSig H_d_n1 = H_d;
-    TSig M_n1   = M;
+    H_n1   = H;
+    H_d_n1 = H_d;
+    M_n1   = M;
 
     return out1 / gain;
   }
@@ -1362,11 +1369,6 @@ protected:
   TSig H_n1   = 0;
   TSig H_d_n1 = 0;
   TSig M_n1   = 0;
-
-
-
-  // Maybe we need pre-gain (of 90000) and post-gain (of 1/90000). That's what Astrobear does in 
-  // the video.
 };
 
 
@@ -1374,7 +1376,7 @@ void tapeEmulation()
 {
   int    N            =  5000;
   double sampleRate   = 44100;
-  double inFreq       =  1000;
+  double inFreq       =   300;
   //double inAmp        =     1.0;
 
   // Create input signal:
@@ -1392,22 +1394,25 @@ void tapeEmulation()
   for(int n = 0; n < N; n++)
     y[n] = tapeSat.getSample(x[n]);
 
-  rsPlotVectors(x, (1./60) * y);  // (1./60) is eyballed to make the levels of in/out similar
+  rsPlotVectors(x, (1./3) * y);  // (1./3) is eyballed to make the levels of in/out similar
 
 
   // Observations:
   //
-  // - It looks wrong. It doens't look like "sticky saturation" at all. It looks actually more 
-  //   like non-sticky anti-saturation. Using different input frequencies changes ntohing about 
-  //   that. Also, the input and output levels are very different - I need to reduce the output by
-  //   a factor of 60 to bring it to the same level as the input.
+  // - For inFreq = 100, it looks pretty good, at 200 jaggies start to appear that become very 
+  //   pronounced and obvious at 500.
+  
+  //  It looks jaggy when the input frequency is high (try 1000 Hz, for example). Maybe it needs
+  //   a lot of oversampling?
+  //
+  // - The input and output levels are unequal. I needed to reduce the  output by a factor of 3 to
+  //   bring it to the same level as the input.
   //
   //
   // ToDo:
   //
-  // - Figure out, what's wrong. Maybe check against Jatin Chowdhury's own implementation which is
-  //   available on GitHub. Could something have gone wrong in the translation to C++? It seemed 
-  //   all very straighforward, though.
+  // - Figure out, what's up with the jaggies. Maybe check against Jatin Chowdhury's own 
+  //   implementation which is available on GitHub. 
   //
   // - Maybe use a sine wave with varying amplitude to see how the amplitude affects the 
   //   saturation.
