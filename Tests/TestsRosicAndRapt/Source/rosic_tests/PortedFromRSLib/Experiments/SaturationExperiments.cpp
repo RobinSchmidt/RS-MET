@@ -1319,6 +1319,28 @@ public:
     return ((((((M_n1 + (k1 / 6))) + (k2 / 3))) + (k3 / 3))) + (k4 / 6);
   }
 
+  TSig getSample(TSig in)
+  {
+    // Magnetic Field for current Sample:
+    TSig H = in1; 
+
+    // 4th order Runge-Kutta solver:
+    //T = 1 / samplerate;  // T is a member
+    TSig H_d = Derivative(T, H, H_n1, H_d_n1);
+    TSig k1 = T * JilesAtherton(M_n1, H_n1, H_d_n1, alpha, a, M_s, k, c);
+    TSig k2 = T * JilesAtherton(M_n1 + k1 / 2, (H + H_n1) / 2, (H_d + H_d_n1) / 2, alpha, a, M_s, k, c);
+    TSig k3 = T * JilesAtherton(M_n1 + k2 / 2, (H + H_n1) / 2, (H_d + H_d_n1) / 2, alpha, a, M_s, k, c);
+    TSig k4 = T * JilesAtherton(M_n1 + k3, H, H_d, alpha, a, M_s, k, c);
+    TSig M    = M_n(M_n1, k1, k2, k3, k4);
+    TSig out1 = M;
+
+    // Set up the state for the next sample:
+    TSig H_n1   = H;
+    TSig H_d_n1 = H_d;
+    TSig M_n1   = M;
+
+    return out1;
+  }
 
 
 protected:
@@ -1329,6 +1351,7 @@ protected:
   TPar M_s   = 350000;
   TPar k     = 2700;
   TPar c     = 0.17;
+  TPar T     = 1.0/44100;      // 1/sampleRate
 
   // State:
   TSig H_n1   = 0;
